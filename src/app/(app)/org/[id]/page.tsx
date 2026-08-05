@@ -14,6 +14,7 @@ import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
@@ -375,13 +376,13 @@ export default async function OrgDetailPage({
       <SurfaceHero
         variant="org"
         eyebrow={(
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
+          <SectionEyebrow tone="onDark">
             {isConsultantView
               ? isHu
                 ? "Szervezet · tanácsadói nézet"
                 : "Organization · consultant view"
               : t("org.eyebrow", locale)}
-          </p>
+          </SectionEyebrow>
         )}
         title={(
           <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">

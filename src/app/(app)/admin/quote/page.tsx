@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { loadRateCard } from "@/lib/quote/rate-card.server";
 import { QuoteCalculator } from "@/components/admin/quote/QuoteCalculator";
 
@@ -28,9 +29,9 @@ export default async function QuoteCalculatorPage() {
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
       <header>
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// belső eszköz"}
-        </p>
+        <SectionEyebrow>
+          belső eszköz
+        </SectionEyebrow>
         <h1 className="mt-1 font-fraunces text-2xl text-ink">Ajánlat-kalkulátor</h1>
         <p className="mt-2 max-w-prose text-sm leading-relaxed text-ink-body">
           Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt

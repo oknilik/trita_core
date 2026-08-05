@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   calculateQuote,
   emptyQuoteInput,
@@ -467,9 +468,7 @@ export function QuoteCalculator({
       {/* ── Összegzés ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {"// ajánlat"}
-          </p>
+          <SectionEyebrow>ajánlat</SectionEyebrow>
 
           <ul className="mt-3 flex flex-col gap-1.5 text-sm">
             {result.lines.map((line) => (

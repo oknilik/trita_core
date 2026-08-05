@@ -1,4 +1,5 @@
 import { featureInterestLabel } from "@/lib/feature-interest";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Visszajelzések admin-nézet: szerep-kalibráció (RoleFitFeedback aggregát)
 // + érdeklődés-jelzések (FeatureInterest). Szerver-komponens, csak megjelenít.
@@ -61,9 +62,9 @@ export function AdminFeedbackSection({
           számba mosva félrevezető lenne (tanácsadó vs. egyéni, ársávok). */}
       {/* Elégedettség + dimenzió-pontosság (a megszűnt Kutatás fülről) */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// elégedettség"}
-        </p>
+        <SectionEyebrow>
+          elégedettség
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           Kitöltés utáni visszajelzések ({satisfactionSummary.count})
         </h2>
@@ -120,9 +121,9 @@ export function AdminFeedbackSection({
       </section>
       {/* Szerep-kalibráció */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// szerep-kalibráció"}
-        </p>
+        <SectionEyebrow>
+          szerep-kalibráció
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           Karrier-iránytű visszajelzések ({totalVotes} szavazat)
         </h2>
@@ -179,9 +180,9 @@ export function AdminFeedbackSection({
 
       {/* Érdeklődés-jelzések */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// érdeklődés-jelzések"}
-        </p>
+        <SectionEyebrow>
+          érdeklődés-jelzések
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           Lead-ek és javaslatok ({interests.length})
         </h2>

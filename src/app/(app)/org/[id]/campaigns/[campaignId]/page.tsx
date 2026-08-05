@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
@@ -486,9 +487,9 @@ export default async function CampaignDetailPage({
 
         {/* Header */}
         <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow>
             {eyebrowLabel(campaign.status, locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {campaign.name}
           </h1>
@@ -748,9 +749,9 @@ export default async function CampaignDetailPage({
           previousAvgScores &&
           previousCampaignName && (
             <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              <SectionEyebrow className="mb-1">
                 {t("org.campaign.devArcEyebrow", locale)}
-              </p>
+              </SectionEyebrow>
               <h2 className="mb-1 font-fraunces text-xl text-ink">
                 {t("org.campaign.devArcTitle", locale)}
               </h2>
@@ -800,9 +801,9 @@ export default async function CampaignDetailPage({
 
         {/* Participants */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.campaign.participantsEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("org.campaign.participantsTitle", locale)}{" "}
             <span className="font-sans text-sm font-normal text-ink-body/50">
@@ -938,9 +939,9 @@ export default async function CampaignDetailPage({
             const atLeastThree = receivedCounts.filter((r) => r._count._all >= 3).length;
             return (
               <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("org.campaign.peerFbStatsEyebrow", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="mb-3 text-sm font-semibold text-ink">
                   {t("org.campaign.peerFbStatsTitle", locale)}
                 </h2>
@@ -987,9 +988,9 @@ export default async function CampaignDetailPage({
         {/* Status transition */}
         {canManageCampaign && nextStatus && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="mb-3 text-sm font-semibold text-ink">
               {t("org.campaign.managementTitle", locale)}
             </h2>
@@ -1021,9 +1022,9 @@ export default async function CampaignDetailPage({
         {/* Lezárt mérésnél nincs státusz-átmenet — a törlés külön kártyán */}
         {canManageCampaign && campaign.status === "CLOSED" && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="text-sm font-semibold text-ink">
               {t("org.campaign.managementTitle", locale)}
             </h2>
@@ -1051,9 +1052,9 @@ export default async function CampaignDetailPage({
         ) : null}
         {!canManageCampaign && isManagerRole && manageGateCopy ? (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="mb-2 text-sm font-semibold text-ink">{manageGateCopy.title}</h2>
             <p className="text-xs text-ink-body/70">{manageGateCopy.description}</p>
           </section>

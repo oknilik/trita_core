@@ -181,7 +181,7 @@ export default async function OrgSettingsPage({
 
         {/* Danger zone */}
         <section className="rounded-2xl border border-rose-200 bg-rose-50 p-6 md:p-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-rose-600 mb-1">
+          <p className="mb-1 text-label uppercase text-rose-600">
             {t("org.settings.dangerEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-rose-900 mb-4">

@@ -6,6 +6,7 @@ import { getPostBySlug, getAllPosts, extractHeadings, slugifyHeading } from "@/l
 import { t } from "@/lib/i18n";
 import { getSiteUrl } from "@/lib/seo";
 import { TranslationRedirect } from "../TranslationRedirect";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ReadingProgress } from "@/components/blog/ReadingProgress";
 import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
@@ -158,9 +159,9 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
     <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
-      <div className="font-dm-sans mb-2 text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
-        {"//"} {isHu ? "kulcsgondolat" : "key insight"}
-      </div>
+      <SectionEyebrow as="div" tone="onDark" className="mb-2">
+        {isHu ? "kulcsgondolat" : "key insight"}
+      </SectionEyebrow>
       <div className="text-[16px] leading-[1.75] text-white/85">{children}</div>
     </div>
   );

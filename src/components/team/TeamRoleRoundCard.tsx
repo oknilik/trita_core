@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardStatusChip } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface TeamRoleMemberStatus {
   userId: string;
@@ -56,9 +57,9 @@ export function TeamRoleRoundCard({
     <div className="rounded-2xl border border-sand bg-white p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted">
-            {isHu ? "// csapat szerep teszt" : "// team role assessment"}
-          </p>
+          <SectionEyebrow tone="muted">
+            {isHu ? "csapat szerep teszt" : "team role assessment"}
+          </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-[18px] text-ink">
             {isHu ? "Csapatszerep kör" : "Team role round"}
           </h3>

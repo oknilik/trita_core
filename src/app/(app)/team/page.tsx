@@ -101,7 +101,6 @@ export default async function TeamListPage() {
         {canCreateTeam ? (
           <Card as="section" spacing="lg" className="md:p-8" id="create-team">
             <SectionEyebrow className="mb-1 text-micro tracking-widest">
-              {"// "}
               {t("team.createNew", locale)}
             </SectionEyebrow>
             <h2 className="mb-1 font-fraunces text-xl text-ink">

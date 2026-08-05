@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { hasJudgmentTone } from "@/lib/feedback-tone";
 import { EmojiRow } from "@/components/team/EmojiRow";
@@ -165,9 +166,9 @@ export function TeamFeedbackRequests({
 
   return (
     <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-      <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      <SectionEyebrow className="mb-1">
         {t("team.fb.eyebrow", locale)}
-      </p>
+      </SectionEyebrow>
       <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.fb.title", locale)}</h2>
       <p className="mb-4 text-caption leading-relaxed text-ink-body">{t("team.fb.hint", locale)}</p>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminListControls } from "@/app/(app)/admin/_components/AdminListControls";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -149,9 +150,9 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
     <div className="flex flex-col gap-6">
       {/* Meghívás */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// tanácsadó meghívása"}
-        </p>
+        <SectionEyebrow>
+          tanácsadó meghívása
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">Onboardolás a tritára</h2>
         <p className="mt-1 max-w-2xl text-sm text-ink-body">
           Add meg az emailt — ha a fiók már létezik, azonnal tanácsadó lesz; ha még

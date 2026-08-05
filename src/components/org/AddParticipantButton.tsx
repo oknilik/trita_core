@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface Member {
   userId: string;
@@ -82,9 +83,9 @@ export function AddParticipantButton({
           onSubmit={handleAdd}
           className="rounded-xl border border-sand bg-cream p-4"
         >
-          <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
+          <SectionEyebrow tone="muted" className="mb-3">
             {t("org.actions.selectEyebrow", loc)}
-          </p>
+          </SectionEyebrow>
           <div className="mb-4 max-h-56 overflow-y-auto space-y-1">
             {members.map((m) => (
               <label

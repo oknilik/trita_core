@@ -12,6 +12,7 @@ import {
   DashboardSectionHeader,
 } from "@/components/dashboard/DashboardPrimitives";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -339,9 +340,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       />
                     </div>
                     <div>
-                      <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                        {isHu ? "// validált csapatkép" : "// validated team picture"}
-                      </p>
+                      <SectionEyebrow>
+                        {isHu ? "validált csapatkép" : "validated team picture"}
+                      </SectionEyebrow>
                       {publishedPattern?.label ? (
                         <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
                           {publishedPattern.label}

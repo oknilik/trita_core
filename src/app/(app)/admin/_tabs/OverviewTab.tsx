@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
 import { t, type Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminStatCard } from "@/app/(app)/admin/_components/AdminStatCard";
 import { AdminMetricsGrid } from "@/app/(app)/admin/_components/AdminMetricsGrid";
 import { AdminTrendChart } from "@/app/(app)/admin/_components/AdminTrendChart";
@@ -251,9 +252,9 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
     <>
       {/* Dashboard-sorrend (2026-07-28): a legfontosabb metrikák FELÜL,
           kiemelve — a gyorsműveletek és a teszt-CTA alattuk. */}
-      <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
-        {"// kulcs-metrikák"}
-      </p>
+      <SectionEyebrow tone="muted" className="mb-3">
+        kulcs-metrikák
+      </SectionEyebrow>
       <AdminMetricsGrid>
         <AdminStatCard
           title={t("admin.totalUsers", locale)}
@@ -284,9 +285,9 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
 
       {/* ── Trend-szekció: időszak-szűrő + idősor-chart ── */}
       <div className="mb-3 mt-8 flex flex-wrap items-center justify-between gap-3">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
-          {"// trendek"}
-        </p>
+        <SectionEyebrow tone="muted">
+          trendek
+        </SectionEyebrow>
         <div className="flex flex-wrap gap-2">
           <AdminSegmentFilter active={segment} range={range} />
           <AdminRangeFilter active={range} segment={segment} />
@@ -323,9 +324,9 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         />
       </div>
 
-      <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
-        {"// gyorsműveletek"}
-      </p>
+      <SectionEyebrow tone="muted" className="mb-3">
+        gyorsműveletek
+      </SectionEyebrow>
       <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <Link
           href="/org/new"

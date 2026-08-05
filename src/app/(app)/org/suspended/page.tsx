@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 export const metadata: Metadata = {
   title: "Szervezet inaktív | trita",
@@ -28,9 +29,7 @@ export default function OrgSuspendedPage() {
           </span>
         </div>
 
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-3">
-          {"// inaktív"}
-        </p>
+        <SectionEyebrow className="mb-3">inaktív</SectionEyebrow>
         <h1 className="font-fraunces text-2xl text-ink mb-3">
           Szervezet inaktív
         </h1>

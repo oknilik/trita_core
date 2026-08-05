@@ -2,6 +2,7 @@
 
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 
 export interface TeaserTopDim {
@@ -42,10 +43,9 @@ export function TryTeaserCard({
       data-testid="try-teaser-card"
       className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5"
     >
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
-        {"// "}
+      <SectionEyebrow tone="muted">
         {t("tryComplete.teaserEyebrow", locale)}
-      </p>
+      </SectionEyebrow>
 
       <div className="mt-3">
         <TypeGlyph

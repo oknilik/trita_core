@@ -2,6 +2,7 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 const sections = [
   { id: "intro", index: "01", title: "privacy.introTitle", body: "privacy.introBody" },
@@ -64,16 +65,16 @@ const sections = [
 
 export function PrivacyContent() {
   const { locale } = useLocale();
-  const legalLabel = locale === "hu" ? "// jogi" : "// legal";
+  const legalLabel = locale === "hu" ? "jogi" : "legal";
   const tocLabel = locale === "hu" ? "Tartalom" : "Contents";
 
   return (
     <main className="min-h-dvh bg-cream">
       <section className="border-b border-sand bg-action-primary-bg px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
-          <p className="font-dm-sans mb-4 text-[11px] uppercase tracking-widest text-bronze">
+          <SectionEyebrow tone="onDark" className="mb-4">
             {legalLabel}
-          </p>
+          </SectionEyebrow>
           <h1 className="font-fraunces text-4xl leading-tight text-cream lg:text-[52px]">
             {t("privacy.title", locale)}
           </h1>

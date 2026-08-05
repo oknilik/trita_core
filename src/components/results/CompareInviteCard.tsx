@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 export interface SerializedCompareInvite {
   id: string;
@@ -127,10 +128,9 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
 
   return (
     <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
-        {"// "}
+      <SectionEyebrow tone="muted">
         {t("results.compareCardTitle", locale)}
-      </p>
+      </SectionEyebrow>
       <p className="mt-2 max-w-prose text-caption leading-relaxed text-ink-body">
         {t("results.compareCardBody", locale)}
       </p>

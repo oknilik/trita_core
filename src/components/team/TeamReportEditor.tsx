@@ -6,6 +6,7 @@ import Link from "next/link";
 import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-report";
 import type { ReportTranslationEn } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TeamReportView } from "@/components/team/TeamReportView";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 
@@ -395,9 +396,9 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     <DashboardPanel className="p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-            {isHu ? "// tanácsadói riport" : "// consultant report"}
-          </p>
+          <SectionEyebrow>
+            {isHu ? "tanácsadói riport" : "consultant report"}
+          </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-xl text-ink">
             {draft
               ? isHu ? "Riport-vázlat szerkesztése" : "Edit report draft"
@@ -742,11 +743,11 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     {latestPublished && (
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <SectionEyebrow tone="muted">
             {isHu
-              ? "// aktuális publikált riport — ezt látja a szervezet"
-              : "// current published report — this is what the organization sees"}
-          </p>
+              ? "aktuális publikált riport — ezt látja a szervezet"
+              : "current published report — this is what the organization sees"}
+          </SectionEyebrow>
           <button
             type="button"
             disabled={busy || !!draft}
@@ -769,11 +770,11 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
 
     {olderPublished.length > 0 && (
       <section className="flex flex-col gap-2">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
+        <SectionEyebrow tone="muted">
           {isHu
-            ? "// korábbi riportok — csak tanácsadói nézetben"
-            : "// earlier reports — consultant view only"}
-        </p>
+            ? "korábbi riportok — csak tanácsadói nézetben"
+            : "earlier reports — consultant view only"}
+        </SectionEyebrow>
         {olderPublished.map((r) => (
           <details key={r.id} className="rounded-[14px] border border-sand bg-white">
             <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm text-ink-body [&::-webkit-details-marker]:hidden">

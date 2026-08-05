@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { CAREER_FAKE_DOOR_MODULE, formatPrice } from "@/lib/fakedoor/career";
 import { buildFakeDoorReport, type FakeDoorCell } from "@/lib/fakedoor/report";
 
@@ -130,9 +131,9 @@ export default async function CareerFakeDoorReportPage() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <header>
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// kereslet-mérés"}
-        </p>
+        <SectionEyebrow>
+          kereslet-mérés
+        </SectionEyebrow>
         <h1 className="mt-1 font-fraunces text-2xl text-ink">
           Karrier-iránytű — fake door
         </h1>

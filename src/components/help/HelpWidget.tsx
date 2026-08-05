@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   getHelpTopics,
   type HelpAudience,
@@ -98,9 +99,9 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               </button>
             )}
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                {isHu ? "// segítség" : "// help"}
-              </p>
+              <SectionEyebrow>
+                {isHu ? "segítség" : "help"}
+              </SectionEyebrow>
               <p className="truncate font-fraunces text-base text-ink">
                 {askOpen
                   ? isHu ? "Kérdésem van" : "Ask a question"

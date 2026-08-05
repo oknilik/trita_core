@@ -423,7 +423,6 @@ function PeerComparison({
   return (
     <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
       <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
-        {"// "}
         {t("teamComp.peerEyebrow", loc)}
       </SectionEyebrow>
       <h4 className="mb-1 font-fraunces text-xl text-ink">
@@ -577,7 +576,6 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
     <div className="flex flex-col gap-8 py-6">
       <div>
         <SectionEyebrow className="text-[11px] tracking-widest">
-          {"// "}
           {t("teamComp.estimatedRolesEyebrow", loc)}
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-2xl text-ink">
@@ -601,7 +599,6 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       {/* Role composition */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
-          {"// "}
           {t("teamComp.roleDistributionEyebrow", loc)}
         </SectionEyebrow>
         <h4 className="mb-5 font-fraunces text-xl text-ink">
@@ -613,7 +610,6 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       {/* Alerts */}
       <section>
         <SectionEyebrow as="h3" className="mb-3 text-[11px] tracking-widest">
-          {"// "}
           {t("teamComp.balanceAlertsEyebrow", loc)}
         </SectionEyebrow>
         <RoleAlerts members={membersWithTeamRole} isHu={isHu} />
@@ -622,7 +618,6 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       {/* Cross-analysis */}
       <section>
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
-          {"// "}
           {t("teamComp.categoryAnalysisEyebrow", loc)}
         </SectionEyebrow>
         <p className="mb-4 text-sm text-ink-body">
@@ -634,7 +629,6 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       {/* Individual table */}
       <section>
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
-          {"// "}
           {t("teamComp.individualRolesEyebrow", loc)}
         </SectionEyebrow>
         <h4 className="mb-4 font-fraunces text-xl text-ink">

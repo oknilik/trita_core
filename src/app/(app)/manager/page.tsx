@@ -9,6 +9,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { getManagerCockpitData } from "@/lib/manager-cockpit";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -165,9 +166,9 @@ export default async function ManagerCockpitPage() {
       <SurfaceHero
         variant="team"
         eyebrow={
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
-            {isHu ? "// csapatvezető cockpit" : "// manager cockpit"}
-          </p>
+          <SectionEyebrow tone="onDark">
+            {isHu ? "csapatvezető cockpit" : "manager cockpit"}
+          </SectionEyebrow>
         }
         title={
           <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">

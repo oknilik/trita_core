@@ -1,4 +1,5 @@
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   PSYCH_SAFETY_ITEMS,
   PSYCH_SAFETY_ACTIONS,
@@ -327,11 +328,11 @@ export function TeamReportView({
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+              <SectionEyebrow>
                 {isDraft
-                  ? isHu ? "// csapatkép — előnézet" : "// team picture — preview"
-                  : isHu ? "// validált csapatkép" : "// validated team picture"}
-              </p>
+                  ? isHu ? "csapatkép — előnézet" : "team picture — preview"
+                  : isHu ? "validált csapatkép" : "validated team picture"}
+              </SectionEyebrow>
               <h2 className="mt-1 font-fraunces text-2xl text-ink">
                 {report.title ?? (isHu ? "Csapatkép" : "Team picture")}
               </h2>

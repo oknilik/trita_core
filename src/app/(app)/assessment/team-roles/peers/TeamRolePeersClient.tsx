@@ -11,6 +11,7 @@ import { TEAM_ROLE_ITEM_COUNT } from "@/lib/team-role-questions";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface Teammate {
   userId: string;
@@ -87,9 +88,9 @@ export function TeamRolePeersClient({
   if (phase === "intro") {
     return (
       <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("teamRolePeers.eyebrow", locale)}
-        </p>
+        </SectionEyebrow>
         <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
           {t("teamRolePeers.introTitle", locale)}
         </h1>
@@ -174,9 +175,9 @@ export function TeamRolePeersClient({
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col px-4 pt-8 pb-20">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("teamRolePeers.eyebrow", locale)}
-        </p>
+        </SectionEyebrow>
         <p className="font-mono text-[11px] text-muted">
           {tf("teamRolePeers.progress", locale, {
             done: doneCount,

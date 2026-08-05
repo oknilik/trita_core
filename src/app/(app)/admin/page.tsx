@@ -4,6 +4,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { FadeIn } from "@/components/landing/FadeIn";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminNav, type AdminTabId } from "@/app/(app)/admin/_components/AdminNav";
 import { isAdminRange, isAdminSegment, type AdminRange, type AdminSegment } from "@/app/(app)/admin/_components/AdminRangeFilter";
 import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
@@ -78,7 +79,7 @@ export default async function AdminPage({
       <div className="mx-auto max-w-7xl">
         <FadeIn>
           <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 lg:mb-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <SectionEyebrow>admin</SectionEyebrow>
             <h1 className="font-fraunces text-2xl text-ink md:text-3xl">
               {TAB_TITLES[activeTab]}
             </h1>

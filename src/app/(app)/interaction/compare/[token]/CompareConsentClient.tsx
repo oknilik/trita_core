@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface CompareConsentClientProps {
   token: string;
@@ -43,10 +44,9 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
 
   return (
     <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 md:p-10">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
-        {"// "}
+      <SectionEyebrow tone="muted">
         {t("results.compareConsentTitle", locale)}
-      </p>
+      </SectionEyebrow>
       <h1 className="mt-2 font-fraunces text-[26px] leading-tight tracking-tight text-ink">
         {tf("results.compareConsentBody", locale, { name: inviterName })}
       </h1>

@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
@@ -167,9 +168,9 @@ function TeamPanel() {
       <div className="rounded-2xl border border-sand bg-white p-5 shadow-lg shadow-black/[0.06] md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+            <SectionEyebrow>
               {t("landing.teamPanelEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <p className="mt-1 font-fraunces text-xl text-ink">{t("landing.teamPanelTitle", locale)}</p>
             <p className="mt-0.5 text-[11px] text-muted">{t("landing.teamPanelValidated", locale)}</p>
           </div>

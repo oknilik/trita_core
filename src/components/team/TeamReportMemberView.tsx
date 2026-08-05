@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import type { SerializedTeamReport } from "@/lib/team-report";
@@ -83,9 +84,9 @@ export function TeamReportMemberView({
                 {initialsOf(vm.memberName)}
               </div>
               <div>
-                <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                  {isHu ? "// a te nézeted" : "// your view"}
-                </p>
+                <SectionEyebrow>
+                  {isHu ? "a te nézeted" : "your view"}
+                </SectionEyebrow>
                 <h2 className="mt-0.5 font-fraunces text-2xl text-ink">
                   {isHu ? `${title} — a te szemszögedből` : `${title} — from your perspective`}
                 </h2>

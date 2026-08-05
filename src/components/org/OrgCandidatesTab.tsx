@@ -1,5 +1,6 @@
 "use client";
 
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import Link from "next/link";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
 
@@ -46,9 +47,9 @@ export function OrgCandidatesTab({
     <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// jelöltek" : "// candidates"}
-          </p>
+          <SectionEyebrow tone="bronze">
+            {isHu ? "jelöltek" : "candidates"}
+          </SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-xl text-ink">
             {isHu ? "Jelölt-felmérések" : "Candidate assessments"}
           </h2>

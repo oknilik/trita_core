@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Kérdések / érdeklődések admin-nézet: contact formról érkező megkeresések
 // listája státusz-kezeléssel, jegyzettel és user/org hozzákötéssel.
@@ -75,9 +76,9 @@ export function AdminInquiriesSection({
   return (
     <div className="mt-8 flex flex-col gap-6">
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// kérdések"}
-        </p>
+        <SectionEyebrow>
+          kérdések
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           Beérkezett kérdések ({inquiries.length}{newCount > 0 ? ` · ${newCount} új` : ""})
         </h2>

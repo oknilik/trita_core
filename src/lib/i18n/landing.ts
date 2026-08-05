@@ -49,7 +49,7 @@ export const landingTranslations = {
     teamCta: { hu: "Mesélj a csapatodról — mi meséljük a többit →", en: "Tell us about your team — we'll take it from there →" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
     // Team hero panel — a valódi publikált riport (TeamReportView) kicsinyített mása
-    teamPanelEyebrow: { hu: "// validált csapatkép", en: "// validated team picture" },
+    teamPanelEyebrow: { hu: "validált csapatkép", en: "validated team picture" },
     teamPanelTitle: { hu: "Sales csapat", en: "Sales team" },
     teamPanelValidated: { hu: "Tanácsadó által validálva", en: "Validated by consultant" },
     teamPanelPublished: { hu: "Publikált", en: "Published" },

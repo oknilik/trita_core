@@ -111,8 +111,21 @@ CI:
   `text-micro`. Arbitrary `text-[Npx]` új kódban kerülendő; 10px alatti méret
   lint-errort dob (kivétel: dekoratív, `aria-hidden` miniatűr, indokolt
   eslint-disable-lel).
-- **Eyebrow**: `SectionEyebrow` primitív — `variant="mono"` (admin/belső,
-  „// szekció") vagy `variant="clean"` (ügyfél-felület, text-label token).
+- **Eyebrow (2026-08-05, modernizálás)**: `SectionEyebrow` primitív — az
+  egységes alak mindenhol: tónus-színű pötty + `text-label` uppercase felirat.
+  A korábbi mono „// szekció" stílus KIVEZETVE: új kódban se `font-mono`
+  eyebrow, se „// " prefix (i18n értékben sem). Tónusok: `bronze` (default) ·
+  `muted` · `self`/`team`/`org`/`candidate` (felület-akcent) · `onDark`
+  (sötét hero-háttér, pl. `SurfaceHero` eyebrow-slot). Sűrű felsorolásban a
+  pötty elhagyható (`dot={false}`); egyedi szemantikus színnél (pl. danger
+  zóna rose) plain `text-label uppercase` + színosztály a minta. A régi
+  `variant="mono"`/`"clean"` prop alias — mindkettő ugyanezt rendereli.
+- **Breadcrumb**: a `PlatformPageShell` `chrome.breadcrumb` API-ja renderel —
+  `nav[aria-label="Breadcrumb"]` + `ol` lista, `text-caption`/muted linkek
+  chevron-szeparátorral, az utolsó (aktuális) elem `text-primary` + medium és
+  `aria-current="page"`; a linkek 44px-es érintő-célúak, a hosszú címkék
+  truncate-elnek. Oldal-oldalon csak `{ label, href? }` adatot adj át, saját
+  morzsasávot ne építs.
 - **Gomb/input**: `Button` és `TextField` primitív az inline `<button>`/
   `<input>` helyett — boy scout rule: amihez nyúlsz, azt átállítod.
 - **Szín TS-oldalon**: `src/lib/design-tokens.ts` (COLORS / EMAIL_COLORS /

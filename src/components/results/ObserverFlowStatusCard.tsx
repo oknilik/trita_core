@@ -1,6 +1,7 @@
 "use client";
 
 import { huArticle } from "@/lib/hu-grammar";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // A külső visszajelzés állapot-kártyája szervezeti tagoknak (self/csapat
 // szétválasztás, 2026-07-22). Állapot-nyelvet beszél, nem hiány-nyelvet:
@@ -63,9 +64,9 @@ export function ObserverFlowStatusCard({
     );
     return (
       <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
-        <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-          {isHu ? "// csapat-folyamat" : "// team process"}
-        </p>
+        <SectionEyebrow>
+          {isHu ? "csapat-folyamat" : "team process"}
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
           {isHu ? "Külső visszajelzés — folyamatban" : "Outside feedback — in progress"}
         </h2>

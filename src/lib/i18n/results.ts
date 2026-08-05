@@ -424,7 +424,7 @@ export const resultsTranslations = {
     heroAssessment: { hu: "Felmérés:", en: "Assessment:" },
 
     // Csapat-érdeklődés banner (results oldal alja)
-    teamInterestEyebrow: { hu: "// csapatszint", en: "// team level" },
+    teamInterestEyebrow: { hu: "csapatszint", en: "team level" },
     teamInterestTitle: {
       hu: "Kíváncsi vagy, hogyan néz ki ez csapatszinten?",
       en: "Curious what this looks like at team level?",
@@ -1551,7 +1551,7 @@ export const resultsTranslations = {
     personalityProfileFallback: { hu: "Személyiségprofil", en: "Personality profile" },
     noLowDimension: { hu: "nincs kritikusan alacsony dimenzió", en: "no critically low dimension" },
     // TeamRoleTeaser
-    teamRoleTeaserEyebrow: { hu: "// csapatszerepek", en: "// team roles" },
+    teamRoleTeaserEyebrow: { hu: "csapatszerepek", en: "team roles" },
     teamRoleTeaserEstimate: { hu: "becslés", en: "estimate" },
     teamRoleTeaserTitle: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
     teamRoleTeaserDesc: {
@@ -1567,10 +1567,10 @@ export const resultsTranslations = {
     },
     teamRoleTeaserJoinTeam: { hu: "Csapatba lépés →", en: "Join a team →" },
     // DimensionOverview
-    overviewEyebrow: { hu: "// áttekintés", en: "// overview" },
+    overviewEyebrow: { hu: "áttekintés", en: "overview" },
     overviewTitle: { hu: "Személyiségprofilod", en: "Your personality profile" },
     // DimensionDetail
-    detailEyebrow: { hu: "// dimenziók", en: "// dimensions" },
+    detailEyebrow: { hu: "dimenziók", en: "dimensions" },
     detailTitle: { hu: "A 6 dimenzió részletesen", en: "6 dimensions in detail" },
     // ObserverComparison
     observerInviteTitle: { hu: "Hívj meg 2–5 embert observernek", en: "Invite 2–5 people as observers" },

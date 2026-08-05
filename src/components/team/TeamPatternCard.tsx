@@ -111,7 +111,6 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       <div className="rounded-2xl border border-sand bg-white shadow-sm">
         <div className="border-b border-warm-mid px-6 py-4">
           <SectionEyebrow className="text-micro">
-            {"// "}
             {t("teamComp.teamPatternEyebrow", loc)}
           </SectionEyebrow>
           <h2 className="mt-0.5 font-fraunces text-xl text-ink">
@@ -135,7 +134,6 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       {/* Header */}
       <div className="border-b border-warm-mid px-6 py-4">
         <SectionEyebrow className="text-micro">
-          {"// "}
           {t("teamComp.teamPatternEyebrow", loc)}
         </SectionEyebrow>
         <div className="mt-1 flex flex-wrap items-start justify-between gap-2">
@@ -184,8 +182,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {content && (
           <div className="mb-5 grid grid-cols-1 gap-3 md:grid-cols-2">
             <div className="rounded-xl bg-[#f0fdf4] border border-[#a0d8c4] p-4">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[#059669]">
-                {"// "}
+              <p className="mb-2 text-label uppercase text-[#059669]">
                 {t("teamComp.strengthsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
@@ -198,8 +195,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
               </ul>
             </div>
             <div className="rounded-xl bg-[#fff8ee] border border-[#f5d99a] p-4">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[#b45309]">
-                {"// "}
+              <p className="mb-2 text-label uppercase text-[#b45309]">
                 {t("teamComp.blindSpotsEyebrow", loc)}
               </p>
               <ul className="space-y-1">
@@ -218,7 +214,6 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
         {content && content.leaderActions.length >= 3 && (
           <div className="mb-5">
             <SectionEyebrow className="mb-3 text-micro">
-              {"// "}
               {t("teamComp.nextStepsEyebrow", loc)}
             </SectionEyebrow>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
