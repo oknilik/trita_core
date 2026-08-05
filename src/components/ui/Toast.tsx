@@ -54,7 +54,10 @@ export function ToastProvider({ children }: ToastProviderProps) {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+      {/* Mobilon a jobb szélhez kötött, fix szélességű toast a bal viewport-
+          szélen túllógna — <md-en két oldalt 16px margóval feszül ki,
+          md-től marad a jobb alsó sarok. */}
+      <div className="fixed inset-x-4 bottom-4 z-50 flex flex-col gap-2 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-4">
         <AnimatePresence mode="popLayout">
           {toasts.map((toast) => (
             <ToastItem
@@ -108,7 +111,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, x: 100, scale: 0.95 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`flex min-w-[280px] max-w-sm items-start gap-3 rounded-xl border p-4 shadow-lg ${style.container}`}
+      className={`flex min-w-0 max-w-full items-start gap-3 rounded-xl border p-4 shadow-lg md:min-w-[280px] md:max-w-sm ${style.container}`}
     >
       {/* Icon */}
       <div className={`shrink-0 ${style.icon}`}>
@@ -157,7 +160,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
       </div>
 
       {/* Message */}
-      <p className={`flex-1 text-sm font-medium ${style.text}`}>
+      <p className={`min-w-0 flex-1 break-words text-sm font-medium ${style.text}`}>
         {toast.message}
       </p>
 

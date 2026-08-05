@@ -195,7 +195,9 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   // fókuszál és nem kezel billentyűt.
   useEffect(() => {
     const panel = panelRef.current;
-    if (!panel || panel.offsetParent === null) return;
+    // A rejtett (display:none) példányt getClientRects-szel szűrjük: a mobil ág
+    // panelje fixed pozicionálású, annál az offsetParent mindig null lenne.
+    if (!panel || panel.getClientRects().length === 0) return;
     // Szűkített alias: a hoistolt handleKeyDown-ban a TS nem viszi tovább a
     // fenti null-guardot.
     const panelEl: HTMLDivElement = panel;
@@ -273,7 +275,11 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
       aria-modal="true"
       aria-label={t("notifications.bellLabel", loc)}
       tabIndex={-1}
-      className="absolute right-0 top-[calc(100%+6px)] z-50 w-[340px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.06] focus:outline-none sm:w-[380px]"
+      // Mobilon a harang a hamburger mellett ül, ezért a hozzá horgonyzott
+      // panel a bal viewport-szélen túlnyúlna: <md-en fixed, a h-14 fejléc
+      // alatt, a viewport két oldalán 16px margóval. lg-től (desktop fejléc-ág)
+      // visszaáll a haranghoz horgonyzott dropdown.
+      className="fixed inset-x-4 top-[calc(3.5rem+6px)] z-50 overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.06] focus:outline-none md:inset-x-auto md:right-4 md:w-[380px] lg:absolute lg:right-0 lg:top-[calc(100%+6px)]"
       style={{ animation: "fade-in 150ms ease-out" }}
     >
       {/* Header */}
@@ -384,7 +390,9 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                     e.stopPropagation();
                     startDismiss(item.id);
                   }}
-                  className="mt-1 shrink-0 rounded p-0.5 text-[var(--color-text-faint)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-muted)]"
+                  // A vizuális méret marad (a sor nem nő), de a tap-area a
+                  // pseudo-elemmel ~46px-re bővül (érintőcél-konvenció).
+                  className="relative mt-1 shrink-0 rounded p-1 text-[var(--color-text-faint)] transition-colors before:absolute before:-inset-3 before:content-[''] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-muted)]"
                   aria-label={t("notifications.dismiss", loc)}
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

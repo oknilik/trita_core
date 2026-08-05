@@ -388,7 +388,7 @@ function NavHeaderContent({
           </Link>
           <Link
             href={homeHref}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
           >
             <span aria-hidden="true">←</span>
             {t("nav.backToHome", locale)}
@@ -807,7 +807,7 @@ function NavHeaderContent({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("closed")}
-                    className="flex items-center gap-1.5 text-caption text-[var(--color-text-muted)]"
+                    className="flex min-h-[44px] items-center gap-1.5 px-2 text-caption text-[var(--color-text-muted)]"
                   >
                     Bezárás
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

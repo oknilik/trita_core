@@ -88,7 +88,10 @@ export function Modal({
             exit={{ opacity: 0, scale: isBrand ? 0.985 : 0.95, y: isBrand ? 12 : 10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className={[
-              "relative w-full overflow-hidden border",
+              // max-h + görgethető törzs: nyitáskor a body scroll zárolva van,
+              // ezért magas tartalomnál a panel különben kilógna a viewportból
+              // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
+              "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
               isBrand
                 ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
                 : "max-w-md rounded-2xl bg-white shadow-2xl",
@@ -99,7 +102,7 @@ export function Modal({
           >
             <div
               className={[
-                "h-1 w-full",
+                "h-1 w-full shrink-0",
                 variant === "danger"
                   ? (isBrand
                     ? "bg-[var(--color-action-destructive-bg)]"
@@ -115,7 +118,9 @@ export function Modal({
                 type="button"
                 onClick={onClose}
                 className={[
-                  "absolute right-4 top-5 rounded-lg p-1 transition",
+                  // 44px érintőcél az ikon optikai közepének megtartásával
+                  // (a korábbi p-1 + 20px ikon ≈ 28px volt).
+                  "absolute right-2 top-3 flex h-11 w-11 items-center justify-center rounded-lg transition",
                   isBrand
                     ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
                     : "text-muted hover:bg-sand/50 hover:text-ink-body",
@@ -134,8 +139,8 @@ export function Modal({
 
             <div
               className={hideCloseButton
-                ? "p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
-                : "p-4 pr-11 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
+                ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
+                : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
             >
               {!hideHeader && (
                 <div

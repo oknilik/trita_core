@@ -164,7 +164,9 @@ export function TeamRoleQuestionnaire({
         <SectionEyebrow>
           {t("teamRole.eyebrow", resolvedLocale)}
         </SectionEyebrow>
-        <h3 className="mt-1 font-fraunces text-xl text-ink">
+        {/* A peer-változat interpolált nevet kap (email-fallback is lehet) —
+            a törhetetlen token ne folyjon ki a kártyából. */}
+        <h3 className="mt-1 font-fraunces text-xl text-ink [overflow-wrap:anywhere]">
           {phase === "select"
             ? perspective === "peer"
               ? tf("teamRole.selectHintPeer", resolvedLocale, {

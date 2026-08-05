@@ -121,9 +121,12 @@ function CompareTable({
   rightLabel: string;
   rows?: [string, string][];
 }) {
+  // Mobilon a két hasáb egymás alá kerül, cellánként megismételt
+  // oszlopcímkével (a fejléc-sáv csak md:-től látszik) — 320px-en a
+  // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
-      <div className="grid grid-cols-2">
+      <div className="hidden grid-cols-2 md:grid">
         <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
@@ -132,9 +135,19 @@ function CompareTable({
         </div>
       </div>
       {rows.map(([left, right], i) => (
-        <div key={i} className="grid grid-cols-2 border-t border-[var(--color-border-default)]">
-          <div className="bg-white px-5 py-3 text-caption text-[var(--color-text-secondary)]">{left}</div>
-          <div className="bg-[var(--color-text-primary)] px-5 py-3 text-caption text-white/80">{right}</div>
+        <div key={i} className="grid grid-cols-1 border-t border-[var(--color-border-default)] md:grid-cols-2">
+          <div className="bg-white px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
+            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
+              {leftLabel}
+            </span>
+            {left}
+          </div>
+          <div className="bg-[var(--color-text-primary)] px-4 py-3 text-caption text-white/80 md:px-5">
+            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-white/60 md:hidden">
+              {rightLabel}
+            </span>
+            {right}
+          </div>
         </div>
       ))}
     </div>

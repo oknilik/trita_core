@@ -70,11 +70,12 @@ function AxisSlider({
         <span>{axis.high}</span>
       </div>
 
-      {/* Track + input */}
-      <div className="relative flex items-center">
+      {/* Track + input — a 44px-es input negatív margóval ül a 20px-es
+          layout-sávban: az érintőfelület nő, a vizuális ritmus marad */}
+      <div className="relative -my-3 flex items-center">
         {/* Visual track — shows balanced zone */}
         <div
-          className="pointer-events-none absolute inset-0 h-2 self-center rounded-full"
+          className="pointer-events-none absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full"
           style={{
             background: `linear-gradient(to right,
               rgba(44,36,32,0.09) 35%,
@@ -90,6 +91,9 @@ function AxisSlider({
           value={value}
           onChange={(e) => onChange(parseInt(e.target.value, 10))}
           className="pattern-range w-full"
+          /* 44px érintőfelület (a vizuális track 8px marad, a thumb a track
+             közepére igazítva) — a globals.css 20px-es magasságát írja felül */
+          style={{ height: 44 }}
           aria-label={axis.name}
         />
       </div>
@@ -151,7 +155,7 @@ function PatternCard({
         </p>
 
         {/* Strengths + Risks */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <div
             className="rounded-xl p-3"
             style={{ backgroundColor: "rgba(46,107,80,0.07)", border: "1px solid rgba(46,107,80,0.15)" }}
@@ -332,7 +336,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
             </div>
 
             {/* 4 pattern cards */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
               {q.codes.map((code) => {
                 const pattern = PATTERNS[code];
                 if (!pattern) return null;
@@ -558,7 +562,7 @@ export function PatternExplorer() {
                 {isHybridState && activeCode && (
                   <button
                     onClick={() => setSelectedHybridCode(null)}
-                    className="flex items-center gap-1 text-xs font-semibold"
+                    className="flex min-h-[44px] items-center gap-1 self-start text-xs font-semibold"
                     style={{ color: T.muted }}
                   >
                     ← Vissza a határesethez
@@ -591,7 +595,7 @@ export function PatternExplorer() {
             {/* Show all toggle */}
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="mt-1 text-xs font-semibold underline-offset-2 hover:underline"
+              className="mt-1 inline-flex min-h-[44px] items-center self-start text-xs font-semibold underline-offset-2 hover:underline"
               style={{ color: T.muted }}
             >
               {showAll ? "Elrejtem az összes mintázatot" : "Mutasd az összes 16 mintázatot"}

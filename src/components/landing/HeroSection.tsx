@@ -80,11 +80,11 @@ function SelfPanel() {
               return (
                 <div
                   key={dim.name}
-                  className={`px-2 py-3.5 text-center ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
+                  className={`min-w-0 px-1 py-3.5 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
                   <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
                   <p className={`mb-1 font-fraunces text-[20px] leading-none ${colors.text}`}>{dim.value}</p>
-                  <span className={`inline-block rounded px-1.5 py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}>
+                  <span className={`inline-block max-w-full truncate rounded px-1 py-[2px] text-micro font-semibold md:px-1.5 ${colors.tagBg} ${colors.tagText}`}>
                     {getDimensionLabel(dim.value, locale)}
                   </span>
                 </div>
@@ -211,12 +211,12 @@ function TeamPanel() {
         {/* Dimenzió-átlagok ± szórás */}
         <div className="mt-4 flex flex-col gap-2.5 border-t border-sand pt-4">
           {dims.map((d) => (
-            <div key={d.name} className="flex items-center gap-3">
-              <span className="w-[118px] shrink-0 truncate text-[11px] text-ink-body">{d.name}</span>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-sand">
+            <div key={d.name} className="flex items-center gap-2 md:gap-3">
+              <span className="w-[92px] shrink-0 truncate text-[11px] text-ink-body md:w-[118px]">{d.name}</span>
+              <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
                 <div className="h-full rounded-full bg-sage" style={{ width: `${d.mean}%` }} />
               </div>
-              <span className="w-14 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink">
+              <span className="w-12 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink md:w-14">
                 {d.mean}
                 <span className="text-muted"> ±{d.spread}</span>
               </span>

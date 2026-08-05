@@ -28,7 +28,10 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
       aria-label={t("notifications.bellLabel", loc)}
       aria-haspopup="dialog"
       aria-expanded={isOpen}
-      className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-surface-subtle)]"
+      // 44px érintőcél a mobil/tablet fejlécben (a hamburger mellett ez az
+      // értesítések egyetlen belépési pontja); lg-től a desktop fejléc-ág
+      // sűrűsége marad.
+      className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-surface-subtle)] lg:h-8 lg:w-8"
     >
       <svg
         className="h-[18px] w-[18px]"
@@ -43,7 +46,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
         <path d="M8 16a2 2 0 0 0 4 0" />
       </svg>
       {count > 0 && (
-        <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-accent-primary)] px-1 text-micro font-bold leading-none text-white">
+        <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center lg:-right-0.5 lg:-top-0.5 rounded-full bg-[var(--color-accent-primary)] px-1 text-micro font-bold leading-none text-white">
           {count > 99 ? "99+" : count}
         </span>
       )}

@@ -9,6 +9,7 @@ import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
 import { useToast } from '@/components/ui/Toast'
+import { useAuthState } from '@/components/auth/auth-state'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import { JOURNEY_HOME_HANDOFF_PATH } from '@/lib/journey/routes'
@@ -64,6 +65,13 @@ export function AssessmentClient({
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
+  // Bejelentkezve az app-shell fókusz-fejléce (sticky, h-12 = 48px) már
+  // renderel a kitöltő fölött. Ilyenkor NEM ismételjük meg a logót, és a
+  // teljes-magasság számításából levonjuk a fejlécet — különben két
+  // trita-sáv eszi a mobil viewportot, és a lábléc a fold alá csúszik.
+  const { isSignedIn } = useAuthState()
+  const hasShellHeader = isSignedIn
+  const shellMinHeight = hasShellHeader ? "min-h-[calc(100dvh-3rem)]" : "min-h-dvh"
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
   const draftStorageKey = useMemo(() => getAssessmentDraftKey(testType), [testType])
@@ -559,13 +567,15 @@ export function AssessmentClient({
       { name: t("landing.selfDim3", locale), val: 34 },
     ]
     return (
-      <div className="min-h-dvh bg-[var(--color-surface-canvas)]">
-        {/* Minimal nav */}
-        <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
-          </Link>
-        </nav>
+      <div className={`${shellMinHeight} bg-[var(--color-surface-canvas)]`}>
+        {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
+        {!hasShellHeader && (
+          <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+            <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+              <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            </Link>
+          </nav>
+        )}
 
         {/* Two-column hero */}
         <div className="mx-auto max-w-4xl px-5 lg:px-10">
@@ -650,12 +660,19 @@ export function AssessmentClient({
   }
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
-      {/* ═══ MINIMAL NAV ═══ */}
-      <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
-        </Link>
+    <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
+      {/* ═══ MINIMAL NAV ═══ — a logó csak akkor, ha a shell fejléce nem
+          renderel fölötte (különben két azonos márkasáv ülne egymáson). */}
+      <nav
+        className={`flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-[rgba(250,249,246,0.95)] px-4 backdrop-blur-[12px] sm:px-10 lg:px-16 ${
+          hasShellHeader ? "justify-end py-1.5" : "justify-between py-3"
+        }`}
+      >
+        {!hasShellHeader && (
+          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          </Link>
+        )}
         <div className="flex items-center gap-3">
           {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
           <span className="text-micro text-[var(--color-action-primary-bg)]">
@@ -673,7 +690,7 @@ export function AssessmentClient({
       </nav>
 
       {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
+      <div className="flex shrink-0 items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-2.5 md:gap-4 md:px-7">
         <div className="flex items-baseline gap-1">
           <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
           <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
@@ -797,12 +814,12 @@ export function AssessmentClient({
       </div>
 
       {/* ═══ FOOTER BAR ═══ */}
-      <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border-default)] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-[var(--color-border-default)] bg-white px-4 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:flex-nowrap md:px-7">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-caption transition-all ${
+          className={`min-h-[44px] whitespace-nowrap rounded-lg border px-4 py-2.5 text-caption transition-all md:px-5 ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -811,7 +828,9 @@ export function AssessmentClient({
           ← {t('assessment.prevCta', locale)}
         </button>
 
-        <label className="flex cursor-pointer items-center gap-2">
+        {/* Mobilon saját sorba kerül (order-last + w-full), hogy a két
+            navigációs gomb ne préselődjön össze; asztalon a sorban marad. */}
+        <label className="order-last flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 md:order-none md:w-auto md:justify-start">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
@@ -835,7 +854,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleNextStep()}
             disabled={!canProceed}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
+            className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               canProceed
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -848,7 +867,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleFinish()}
             disabled={isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
+            className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

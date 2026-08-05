@@ -72,7 +72,7 @@ export default function TryClaimPage() {
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-cream px-5">
+      <div className="flex min-h-dvh flex-col items-center justify-center bg-cream px-5">
         <p className="mb-4 text-center text-body text-rose-700">{error}</p>
         <button
           type="button"
@@ -90,7 +90,7 @@ export default function TryClaimPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-cream">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-cream">
       <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent-primary)] border-t-transparent" />
       <p className="mt-4 text-sm text-[var(--color-text-muted)]">
         {t("tryClaim.loading", locale)}

@@ -95,14 +95,14 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
 
   if (hasDraft !== true) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream">
+      <div className="flex min-h-dvh items-center justify-center bg-cream">
         <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent-primary)] border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-cream px-5 py-10">
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-cream px-5 py-10">
       <div className="w-full max-w-md">
         {/* Logo */}
         <Link

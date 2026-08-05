@@ -233,7 +233,7 @@ function SignUpContent() {
                 type="button"
                 onClick={handleResendCode}
                 disabled={!canResend}
-                className="text-sm font-medium text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)] disabled:cursor-not-allowed disabled:text-[var(--color-text-muted)]"
+                className="inline-flex min-h-[44px] items-center justify-center px-2 text-sm font-medium text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)] disabled:cursor-not-allowed disabled:text-[var(--color-text-muted)]"
               >
                 {resendCooldown > 0
                   ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
@@ -253,7 +253,7 @@ function SignUpContent() {
                 setResendCooldown(0);
                 setResendNote(null);
               }}
-              className="mt-4 w-full text-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+              className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center text-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
             >
               {t("actions.backToSignUp", locale)}
             </button>

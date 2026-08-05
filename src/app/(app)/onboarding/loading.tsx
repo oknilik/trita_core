@@ -28,7 +28,7 @@ export default function OnboardingLoading() {
           <div className="flex flex-col gap-5">
             <div className="h-4 w-12 rounded bg-bronze-soft" />
             <div className="h-7 w-48 rounded bg-sand" />
-            <div className="h-4 w-64 rounded bg-warm" />
+            <div className="h-4 w-full max-w-[16rem] rounded bg-warm" />
             <div className="h-12 rounded-lg bg-warm" />
             <div className="grid grid-cols-2 gap-2">
               <div className="h-11 rounded-lg bg-warm" />

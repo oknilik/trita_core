@@ -276,7 +276,9 @@ export function PeerFeedbackClient({
       )}
 
       {/* ── Sticky haladásjelző ── */}
-      <div className="sticky top-0 z-10 -mx-4 mt-5 border-b border-sand/70 bg-cream/95 px-4 py-2.5 backdrop-blur-sm">
+      {/* A shell fókusz-fejléce is sticky (h-12 = 48px) az /assessment*
+          útvonalakon — a jelző ez alá tapad, hogy ne csússzon takarásba. */}
+      <div className="sticky top-12 z-10 -mx-4 mt-5 border-b border-sand/70 bg-cream/95 px-4 py-2.5 backdrop-blur-sm">
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-semibold text-ink" aria-live="polite">
             {tf("peerFb.stepLabel", locale, {
@@ -320,7 +322,11 @@ export function PeerFeedbackClient({
                 title={tm.name}
                 onClick={() => goTo(i)}
                 className={[
-                  "h-2 rounded-full transition-all duration-200",
+                  // A pötty vizuálisan 8px, de a találati területét
+                  // láthatatlan pseudo-elem tolja ki érinthető méretre —
+                  // a sor magassága nem nő.
+                  "relative h-2 rounded-full transition-all duration-200",
+                  "before:absolute before:-inset-x-1.5 before:-inset-y-[18px] before:content-['']",
                   isCurrent ? "w-5 bg-ink" : isDone ? "w-2 bg-sage" : "w-2 bg-sand",
                 ].join(" ")}
               />
@@ -333,12 +339,14 @@ export function PeerFeedbackClient({
       <section
         ref={cardRef}
         key={current.userId}
-        className="mt-5 scroll-mt-24 rounded-2xl border border-sand bg-white p-5 shadow-sm"
+        className="mt-5 scroll-mt-36 rounded-2xl border border-sand bg-white p-5 shadow-sm"
       >
         <div className="mb-3 flex items-center justify-between gap-2">
-          <h2 className="text-body font-semibold text-ink">{current.name}</h2>
+          <h2 className="min-w-0 truncate text-body font-semibold text-ink" title={current.name}>
+            {current.name}
+          </h2>
           {entryComplete(entry) && (
-            <span className="rounded-full bg-sage/15 px-2.5 py-0.5 text-[11px] font-semibold text-sage-dark">
+            <span className="shrink-0 rounded-full bg-sage/15 px-2.5 py-0.5 text-[11px] font-semibold text-sage-dark">
               {t("peerFb.personDoneBadge", locale)}
             </span>
           )}

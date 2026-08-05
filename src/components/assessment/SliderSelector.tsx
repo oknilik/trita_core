@@ -27,7 +27,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
   return (
     <div className="flex w-full flex-col items-center">
       {/* Circles */}
-      <div className="mb-3 flex gap-2.5 lg:gap-3">
+      <div className="mb-3 flex gap-1.5 md:gap-2.5 lg:gap-3">
         {[1, 2, 3, 4, 5].map((mark) => {
           const isSelected = value === mark
           const isHovered = hoveredMark === mark
@@ -40,7 +40,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               onMouseLeave={() => setHoveredMark(null)}
               whileTap={{ scale: 0.94 }}
               className={[
-                "flex h-14 w-14 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-body font-medium transition-all",
+                "flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-body font-medium transition-all md:h-14 md:w-14",
                 isSelected
                   ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered
@@ -58,7 +58,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
       </div>
 
       {/* End labels with center dot */}
-      <div className="mb-4 flex w-[320px] items-center justify-between">
+      <div className="mb-4 flex w-full max-w-[320px] items-center justify-between gap-2">
         <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endLeft', locale)}</span>
         <span className="text-micro text-[var(--color-border-default)]">·</span>
         <span className="text-xs font-medium text-[var(--color-text-muted)]">{t('assessment.endRight', locale)}</span>
