@@ -174,7 +174,10 @@ export function CrmInboxPanel({
                     {INQUIRY_TOPIC_LABELS[row.topic] ?? row.topic}
                   </StatusChip>
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
-                  <a href={`mailto:${row.email}`} className="text-xs text-bronze hover:underline">
+                  <a
+                    href={`mailto:${row.email}`}
+                    className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                  >
                     {row.email}
                   </a>
                   {row.company && <span className="text-xs text-muted">· {row.company}</span>}
@@ -216,6 +219,7 @@ export function CrmInboxPanel({
                       variant="secondary"
                       size="sm"
                       disabled={busy}
+                      className="max-w-full [overflow-wrap:anywhere]"
                       onClick={() => void attachTo(row.id, row.openDealMatch!.id)}
                     >
                       Csatolás: {row.openDealMatch.title}
@@ -231,7 +235,7 @@ export function CrmInboxPanel({
                         }}
                         onBlur={() => setAttachId(null)}
                         aria-label="Deal kiválasztása csatoláshoz"
-                        className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-sm text-ink-body"
+                        className="min-h-[44px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-2 text-sm text-ink-body md:w-auto md:flex-none"
                       >
                         <option value="">Melyik dealhez?</option>
                         {openDeals.map((deal) => (

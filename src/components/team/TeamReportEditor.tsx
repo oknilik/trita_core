@@ -511,7 +511,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             )}
             {actionItems.map((item, index) => (
               <div key={index} className="flex flex-col gap-2 rounded-lg border border-sand bg-cream/40 p-3">
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <input
                     type="text"
                     value={item.title}
@@ -521,7 +521,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                         items.map((it, i) => (i === index ? { ...it, title: e.target.value } : it)),
                       )
                     }
-                    className="min-h-[44px] flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink"
+                    className="min-h-[44px] min-w-[160px] flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink"
                   />
                   <select
                     value={item.timeframe}

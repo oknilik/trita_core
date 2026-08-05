@@ -115,8 +115,10 @@ export function CampaignCard({
         ? Math.round((campaign.fullyDoneCount / campaign.totalCount) * 100)
         : 0;
     return (
-      <div className="flex items-center justify-between gap-3 py-3 border-b border-sand last:border-0">
-        <div className="min-w-0 flex items-center gap-2 flex-1">
+      // Mobilon két sor: a chip + kampánynév kap teljes szélességet, a
+      // kitöltöttség és az összesítő-link alá kerül. md-től egysoros.
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3 border-b border-sand last:border-0">
+        <div className="flex w-full min-w-0 items-center gap-2 md:w-auto md:flex-1">
           <StatusChip variant="neutral" className="shrink-0">
             {t("org.card.closed", loc)}
           </StatusChip>
@@ -124,13 +126,13 @@ export function CampaignCard({
             {campaign.name}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex items-center gap-3 md:shrink-0">
           <span className="text-xs text-muted tabular-nums">
             {completionPct}% {t("org.card.complete", loc)}
           </span>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}
-            className="text-xs font-semibold text-bronze hover:underline whitespace-nowrap"
+            className="inline-flex min-h-[44px] items-center text-xs font-semibold text-bronze hover:underline whitespace-nowrap md:min-h-0"
           >
             {t("org.card.summaryLink", loc)}
           </Link>

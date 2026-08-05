@@ -100,7 +100,9 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
     "font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted";
   // Terrakotta (jelölt-felület) fókusz-akcent — 2026-08-05 vizuális frissítés.
   const inputClass =
-    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-caption text-ink outline-none transition focus:border-accent-candidate/60 focus:bg-white focus:shadow-[0_0_0_3px_rgba(138,74,50,0.10)]";
+    // Mobilon 16px-es mező-font: az iOS Safari 16px alatt fókuszkor
+    // rázoomol és elugrik a layout. md-től marad az eredeti 13px.
+    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-base text-ink outline-none transition focus:border-accent-candidate/60 focus:bg-white focus:shadow-[0_0_0_3px_rgba(138,74,50,0.10)] md:text-caption";
 
   return (
     <div className="flex flex-col gap-5">

@@ -278,6 +278,24 @@ function IndividualTeamRoleTable({
                     {isHu ? "becslés" : "estimate"}
                   </span>
                 ) : null}
+                {/* Mobil: a másodlagos/támogató szerep-oszlop rejtve van, ezért
+                    a chipek ide, a név alá kerülnek — így a top-3 profil egyik
+                    breakpointon sem vész el. */}
+                {m.top3[1] || m.top3[2] ? (
+                  <div className="mt-1.5 flex flex-wrap gap-1.5 sm:hidden">
+                    {m.top3[1] ? (
+                      <RoleChip role={m.top3[1].role} isHu={isHu} size="xs" />
+                    ) : null}
+                    {m.top3[2] ? (
+                      <RoleChip role={m.top3[2].role} isHu={isHu} size="xs" />
+                    ) : null}
+                  </div>
+                ) : null}
+                {m.top3[2] ? (
+                  <div className="mt-1.5 hidden flex-wrap gap-1.5 sm:flex md:hidden">
+                    <RoleChip role={m.top3[2].role} isHu={isHu} size="xs" />
+                  </div>
+                ) : null}
               </td>
               <td className="px-4 py-3">
                 {m.top3[0] ? (

@@ -177,7 +177,7 @@ function RiasecProfiler({
         <button
           type="button"
           onClick={onCancel}
-          className="text-micro font-semibold text-[var(--color-text-muted)] hover:text-ink"
+          className="inline-flex min-h-[44px] shrink-0 items-center text-micro font-semibold text-[var(--color-text-muted)] hover:text-ink"
         >
           {t("results.ccRiasecCancel", locale)} ✕
         </button>
@@ -222,7 +222,7 @@ function RiasecProfiler({
         <button
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          className="mt-3 text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-ink"
+          className="mt-3 inline-flex min-h-[44px] items-center text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-ink"
         >
           ← {t("results.ccBack", locale)}
         </button>
@@ -570,7 +570,7 @@ export function CareerCompass({
       <button
         type="button"
         onClick={() => goBack(from)}
-        className="text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
+        className="inline-flex min-h-[44px] items-center text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
       >
         {t("results.ccBack", locale)}
       </button>
@@ -1194,13 +1194,14 @@ export function CareerCompass({
                 <span className="text-[12px] text-[var(--color-text-secondary)]">
                   {t("results.industryFitMissingTitle", locale)}
                 </span>
+                {/* mobil: 16px betűméret, különben iOS Safari fókuszkor rázoomol */}
                 <input
                   type="text"
                   value={missingText}
                   onChange={(e) => setMissingText(e.target.value)}
                   maxLength={200}
                   placeholder={t("results.industryFitMissingPlaceholder", locale)}
-                  className="min-h-[36px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-[12px] text-[var(--color-text-primary)]"
+                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
                 />
                 <button
                   type="button"
@@ -1222,7 +1223,7 @@ export function CareerCompass({
         <button
           type="button"
           onClick={() => setMethodOpen((v) => !v)}
-          className="text-micro font-semibold text-[var(--color-text-muted)] transition hover:text-ink"
+          className="inline-flex min-h-[44px] items-center text-micro font-semibold text-[var(--color-text-muted)] transition hover:text-ink"
         >
           {t("results.ccMethodTitle", locale)} {methodOpen ? "▴" : "▾"}
         </button>

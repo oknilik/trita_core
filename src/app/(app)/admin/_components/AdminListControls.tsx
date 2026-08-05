@@ -43,7 +43,7 @@ export function AdminListControls({
           onChange={(e) => onQueryChange(e.target.value)}
           placeholder={placeholder}
           aria-label={placeholder}
-          className="min-h-[38px] w-full rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+          className="min-h-[40px] w-full rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
         />
       </div>
 
@@ -59,7 +59,7 @@ export function AdminListControls({
         <button
           type="button"
           onClick={onToggleShowAll}
-          className="min-h-[38px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink"
+          className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink"
         >
           {showAll ? `Csak az első ${limit}` : `Mind a ${matched} megjelenítése`}
         </button>

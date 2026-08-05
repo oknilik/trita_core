@@ -67,18 +67,21 @@ export function OrgCandidatesTab({
         </Link>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3">
-        <div className="rounded-xl border border-sand bg-cream p-3 text-center">
+      {/* Mobilon egymás alatti, vízszintes stat-sorok: a 3 oszlopos rács
+          ~50px-es csempéin a HU címkék („FOLYAMATBAN") kilógtak és rácsúsztak
+          a szomszédra. md-től változatlan a hármas, középre zárt rács. */}
+      <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{candidates.length}</p>
-          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Összes" : "Total"}</p>
+          <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Összes" : "Total"}</p>
         </div>
-        <div className="rounded-xl border border-sand bg-cream p-3 text-center">
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{pending}</p>
-          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Folyamatban" : "Pending"}</p>
+          <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Folyamatban" : "Pending"}</p>
         </div>
-        <div className="rounded-xl border border-sand bg-cream p-3 text-center">
+        <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
           <p className="font-fraunces text-[22px] leading-none tabular-nums text-sage">{completed}</p>
-          <p className="mt-1 text-micro uppercase tracking-wide text-muted">{isHu ? "Kész" : "Done"}</p>
+          <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Kész" : "Done"}</p>
         </div>
       </div>
 

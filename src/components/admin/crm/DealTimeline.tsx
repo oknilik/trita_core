@@ -215,7 +215,7 @@ export function DealTimeline({
                       </p>
                     )}
                     {!isSystem && (
-                      <div className="mt-2 flex items-center gap-3 text-xs">
+                      <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
                         <button
                           type="button"
                           disabled={busy}
@@ -225,25 +225,25 @@ export function DealTimeline({
                             setBodyDraft(activity.body ?? "");
                             setConfirmDeleteId(null);
                           }}
-                          className="text-bronze underline underline-offset-2"
+                          className="inline-flex min-h-[44px] items-center text-bronze underline underline-offset-2"
                         >
                           Szerkesztés
                         </button>
                         {confirmDeleteId === activity.id ? (
-                          <span className="inline-flex items-center gap-2">
+                          <span className="inline-flex flex-wrap items-center gap-x-4 gap-y-1">
                             <span className="text-muted">Biztos?</span>
                             <button
                               type="button"
                               disabled={busy}
                               onClick={() => void remove(activity.id)}
-                              className="font-semibold text-state-error-fg underline underline-offset-2"
+                              className="inline-flex min-h-[44px] items-center font-semibold text-state-error-fg underline underline-offset-2"
                             >
                               Törlés
                             </button>
                             <button
                               type="button"
                               onClick={() => setConfirmDeleteId(null)}
-                              className="text-muted underline underline-offset-2"
+                              className="inline-flex min-h-[44px] items-center text-muted underline underline-offset-2"
                             >
                               Mégse
                             </button>
@@ -253,7 +253,7 @@ export function DealTimeline({
                             type="button"
                             disabled={busy}
                             onClick={() => setConfirmDeleteId(activity.id)}
-                            className="text-muted underline underline-offset-2 hover:text-ink-body"
+                            className="inline-flex min-h-[44px] items-center text-muted underline underline-offset-2 hover:text-ink-body"
                           >
                             Törlés
                           </button>

@@ -117,7 +117,10 @@ export function AdminInquiriesSection({
                       {TOPIC_LABELS[row.topic] ?? row.topic}
                     </span>
                     <span className="text-sm font-semibold text-ink">{row.name}</span>
-                    <a href={`mailto:${row.email}`} className="text-xs text-bronze hover:underline">
+                    <a
+                      href={`mailto:${row.email}`}
+                      className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                    >
                       {row.email}
                     </a>
                     {row.company && (

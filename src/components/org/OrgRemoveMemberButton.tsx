@@ -46,13 +46,15 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
   // nyugalmi állapot halvány szöveg-link, nem piros gomb.
   if (confirm) {
     return (
-      <div className="flex flex-col items-end gap-1">
-        <div className="flex items-center gap-1.5">
+      <div className="flex flex-col items-start gap-1 md:items-end">
+        {/* Destruktív megerősítés: 44px-es érintési célok és nagyobb térköz —
+            mobilon ne lehessen a „Mégse" helyett az „Eltávolítás"-t nyomni. */}
+        <div className="flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={handleRemove}
             disabled={loading}
-            className="min-h-[32px] inline-flex items-center rounded-lg bg-rose-600 px-2.5 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+            className="min-h-[44px] inline-flex items-center rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
           >
             {loading ? "…" : isHu ? "Eltávolítás" : "Remove"}
           </button>
@@ -60,7 +62,7 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
             type="button"
             onClick={() => setConfirm(false)}
             disabled={loading}
-            className="min-h-[32px] inline-flex items-center rounded-lg border border-sand bg-white px-2.5 text-xs font-semibold text-ink-body transition hover:border-sage/30"
+            className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:border-sage/30"
           >
             {isHu ? "Mégse" : "Cancel"}
           </button>
@@ -71,11 +73,13 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
   }
 
   return (
-    <div className="flex flex-col items-end gap-1">
+    <div className="flex flex-col items-start gap-1 md:items-end">
+      {/* Láthatatlan 44px-es érintési sáv (before:-inset-y) — a diszkrét
+          szöveg-trigger vizuális mérete nem nő, a sor nem feszül szét. */}
       <button
         type="button"
         onClick={() => setConfirm(true)}
-        className="min-h-[32px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition hover:bg-rose-50 hover:text-rose-600"
+        className="relative min-h-[32px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] hover:bg-rose-50 hover:text-rose-600"
       >
         {t("org.actions.removeButton", loc)}
       </button>

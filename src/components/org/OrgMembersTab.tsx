@@ -108,7 +108,13 @@ export function OrgMembersTab({
           {members.map((m) => {
             const badge = roleBadgeConfig(m.role);
             return (
-              <div key={m.id} className="flex items-center justify-between gap-3 py-3">
+              // Mobilon a név/e-mail saját sorba kerül, a szerep-chip +
+              // dátum + műveletek alatta tördelve — md-től az eredeti
+              // egysoros elrendezés.
+              <div
+                key={m.id}
+                className="flex flex-col gap-1.5 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
+              >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-ink">
                     {m.user.username ?? m.user.email ?? "—"}
@@ -117,7 +123,7 @@ export function OrgMembersTab({
                     <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
                   )}
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 md:shrink-0">
                   <StatusChip variant={badge.variant} className={badge.className}>
                     {roleLabel(m.role, loc)}
                   </StatusChip>
@@ -125,9 +131,11 @@ export function OrgMembersTab({
                     {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
                   </span>
                   {dossierBaseHref && (
+                    // Láthatatlan 44px-es érintési sáv (before:-inset-y) —
+                    // a chip vizuális mérete nem nő, a sor nem feszül szét.
                     <Link
                       href={`${dossierBaseHref}/${m.userId}`}
-                      className="rounded-full border border-sand bg-cream px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
+                      className="relative inline-flex items-center rounded-full border border-sand bg-cream px-2.5 py-0.5 text-xs text-ink-body transition-colors before:absolute before:inset-x-0 before:-inset-y-3 before:content-[''] hover:border-sage-ring hover:text-ink"
                     >
                       {isHu ? "Dossié" : "Dossier"}
                     </Link>
@@ -158,14 +166,19 @@ export function OrgMembersTab({
             </summary>
             <div className="flex flex-col divide-y divide-sand border-t border-sand px-4">
               {pendingInvites.map((inv) => (
-                <div key={inv.id} className="flex items-center justify-between gap-3 py-3">
+                <div
+                  key={inv.id}
+                  className="flex flex-col gap-1.5 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
+                >
                   <div className="min-w-0 opacity-60">
-                    <p className="truncate text-sm font-semibold text-ink">{inv.email}</p>
+                    <p className="truncate text-sm font-semibold text-ink" title={inv.email}>
+                      {inv.email}
+                    </p>
                     <p className="text-xs text-ink-body/60">
                       {t("org.members.invitePending", loc)}
                     </p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2 md:shrink-0">
                     <StatusChip variant="warning" className="text-amber-600">
                       {t("org.members.pendingBadge", loc)}
                     </StatusChip>

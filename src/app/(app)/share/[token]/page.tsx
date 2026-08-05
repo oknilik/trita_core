@@ -200,7 +200,7 @@ export default async function SharedProfilePage({
                 />
               )}
               <div className="min-w-0">
-                <h1 className="font-fraunces text-[28px] tracking-tight text-white">
+                <h1 className="break-words font-fraunces text-[28px] tracking-tight text-white">
                   {displayName}
                 </h1>
                 <p className="mt-1 text-[11px] text-white/[0.25]">
@@ -218,18 +218,25 @@ export default async function SharedProfilePage({
 
         {/* Dimension strip */}
         <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white">
-          <div className="grid grid-cols-6">
-            {dimensions.map((dim, i) => {
+          {/* Mobil-first: 2 oszlop 320-767px között (a 6 oszlopos strip cellái
+              ott ~40px szélesek lennének, a címke/pontszám/badge átfolyna a
+              szomszédba), md:-től marad az eredeti 6 oszlopos sáv. A cellák
+              közti vonalat gap-px + háttér adja, így minden rácsban stimmel. */}
+          <div className="grid grid-cols-2 gap-px bg-[var(--color-border-default)] md:grid-cols-6">
+            {dimensions.map((dim) => {
               const tier = getDimensionTier(dim.score);
               const tierColor = tier === "high" ? "var(--color-action-primary-bg)" : tier === "mid" ? "var(--color-accent-primary)" : "var(--color-text-muted)";
               const tierBg = tier === "high" ? "var(--color-surface-self-accent-soft)" : tier === "mid" ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)";
               return (
                 <div
                   key={dim.code}
-                  className={`px-2.5 py-4 text-center ${i < dimensions.length - 1 ? "border-r border-[var(--color-border-default)]" : ""}`}
+                  className="min-w-0 bg-white px-2.5 py-4 text-center"
                 >
-                  <p className="mb-1.5 text-micro text-[var(--color-text-muted)]">
-                    {dim.label.length > 10 ? dim.label.slice(0, 10) + "." : dim.label}
+                  <p className="mb-1.5 break-words text-micro text-[var(--color-text-muted)]">
+                    <span className="md:hidden">{dim.label}</span>
+                    <span className="hidden md:inline">
+                      {dim.label.length > 10 ? dim.label.slice(0, 10) + "." : dim.label}
+                    </span>
                   </p>
                   <p className="mb-1.5 font-fraunces text-[22px] leading-none" style={{ color: tierColor }}>
                     {dim.score}

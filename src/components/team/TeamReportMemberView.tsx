@@ -141,39 +141,44 @@ export function TeamReportMemberView({
                   const bandEnd = Math.min(100, d.teamAvg + d.teamSpread);
                   const delta = d.self - d.teamAvg;
                   return (
-                    <div key={d.code} className="flex items-center gap-3">
-                      <span className="flex w-32 shrink-0 items-center gap-1.5 text-xs text-ink-body">
+                    <div
+                      key={d.code}
+                      className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                    >
+                      <span className="flex items-center gap-1.5 text-xs text-ink-body md:w-32 md:shrink-0">
                         <span
                           className="h-2 w-2 flex-shrink-0 rounded-full"
                           style={{ backgroundColor: color }}
                         />
                         {d.label}
                       </span>
-                      <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
-                        <div
-                          className="absolute inset-y-0 rounded-full opacity-25"
-                          style={{
-                            left: `${bandStart}%`,
-                            width: `${Math.max(0, bandEnd - bandStart)}%`,
-                            backgroundColor: color,
-                          }}
-                        />
-                        <div
-                          className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
-                          style={{ left: `${d.self}%`, backgroundColor: color }}
-                        />
+                      <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+                        <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
+                          <div
+                            className="absolute inset-y-0 rounded-full opacity-25"
+                            style={{
+                              left: `${bandStart}%`,
+                              width: `${Math.max(0, bandEnd - bandStart)}%`,
+                              backgroundColor: color,
+                            }}
+                          />
+                          <div
+                            className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
+                            style={{ left: `${d.self}%`, backgroundColor: color }}
+                          />
+                        </div>
+                        <span className="w-20 shrink-0 text-right font-mono text-xs text-ink md:w-24">
+                          <b>{d.self}</b>
+                          <span className="text-muted"> · {d.teamAvg}</span>
+                        </span>
+                        <span className="w-10 shrink-0 text-right md:w-12">
+                          {d.aboveTeam ? (
+                            <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-sage-dark">
+                              +{delta}
+                            </span>
+                          ) : null}
+                        </span>
                       </div>
-                      <span className="w-24 shrink-0 text-right font-mono text-xs text-ink">
-                        <b>{d.self}</b>
-                        <span className="text-muted"> · {d.teamAvg}</span>
-                      </span>
-                      <span className="w-12 shrink-0 text-right">
-                        {d.aboveTeam ? (
-                          <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-sage-dark">
-                            +{delta}
-                          </span>
-                        ) : null}
-                      </span>
                     </div>
                   );
                 })}

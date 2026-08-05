@@ -11,6 +11,7 @@ import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -497,6 +498,63 @@ export default async function OrgDetailPage({
           </>
         )}
       />
+
+      {/* Élő pillanatkép mobilra/tabletre: a hero aside-ja csak lg-től
+          renderel, így 1024px alatt sehol nem látszott az org-szintű és az
+          aktív mérés kitöltöttsége. Ugyanaz a tartalom, világos témán. */}
+      <section className="rounded-2xl border border-sand bg-white p-4 shadow-sm lg:hidden">
+        <p className="text-micro uppercase tracking-widest text-muted">
+          {t("orgHero.liveSnapshot", locale)}
+        </p>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.memberCount}</p>
+          </div>
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.teamCount}</p>
+          </div>
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
+          </div>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
+            <ProgressRing
+              percent={orgCompletionPct}
+              size={68}
+              label={`${orgCompletionPct}%`}
+              color="var(--color-sage)"
+              trackColor="var(--color-sand)"
+              labelClassName="fill-ink"
+            />
+            <p className="text-micro leading-tight text-ink-body">
+              {t("orgHero.orgCompletion", locale)}
+            </p>
+            <p className="text-micro text-muted">
+              {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
+            <ProgressRing
+              percent={completionPct}
+              size={68}
+              label={`${completionPct}%`}
+              color="var(--color-bronze)"
+              trackColor="var(--color-sand)"
+              labelClassName="fill-ink"
+            />
+            <p className="text-micro leading-tight text-ink-body">
+              {t("orgHero.activeCampaignCompletion", locale)}
+            </p>
+            <p className="text-micro text-muted">
+              {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
+            </p>
+          </div>
+        </div>
+      </section>
 
       {pacingTile ? (
         <CampaignPacingTile

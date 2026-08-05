@@ -127,7 +127,7 @@ export function CampaignPacingTile({
           )}
 
           {data.scheduledCount > 0 && countdown ? (
-            <p className="mt-1 text-[12px] text-muted">
+            <p className="mt-1 text-caption text-muted">
               {isHu ? "Következő küldés: " : "Next send in: "}
               <span className="font-mono font-semibold tabular-nums text-sage-dark">{countdown}</span>
               {isHu ? " óra múlva" : " hours"}
@@ -148,12 +148,14 @@ export function CampaignPacingTile({
                     isHu ? "Kiküldve — a nyitott lépés mindenkinél elérhető." : "Sent — the open step is now available to everyone.",
                   )
                 }
-                className="inline-flex min-h-[38px] items-center rounded-[10px] bg-action-primary-bg px-4 text-[12px] font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110 disabled:opacity-50 md:min-h-[38px]"
               >
                 {busy === "release" ? "…" : isHu ? "Küldés most" : "Send now"}
               </button>
             ) : null}
-            <div className="flex items-center gap-1.5">
+            {/* Élő beavatkozás mobilról is: tördelhető kapcsolósor,
+                44px-es érintési célokkal. */}
+            <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end md:gap-1.5">
               <span className="text-micro uppercase tracking-wide text-muted">
                 {isHu ? "Ütem" : "Pace"}
               </span>
@@ -172,7 +174,8 @@ export function CampaignPacingTile({
                     )
                   }
                   className={[
-                    "min-h-[30px] rounded-lg border px-2 text-[11px] font-semibold transition disabled:opacity-50",
+                    // Mobilon 44px-es érintési cél, md-től az eredeti kompakt méret.
+                    "min-h-[44px] min-w-[44px] rounded-lg border px-3 text-label font-semibold tracking-normal transition disabled:opacity-50 md:min-h-[30px] md:min-w-0 md:px-2",
                     data.stepIntervalHours === h
                       ? "border-ink bg-ink text-white"
                       : "border-sand bg-white text-ink-body hover:border-ink/40",
@@ -183,16 +186,16 @@ export function CampaignPacingTile({
               ))}
             </div>
             {/* Kontextus a kapcsolósorhoz (UX-audit #19): mit állít az ütem. */}
-            <p className="max-w-[260px] text-right text-[11px] leading-snug text-muted">
+            <p className="max-w-[260px] text-left text-label font-normal leading-snug tracking-normal text-muted sm:text-right">
               {isHu
                 ? "A teljesített kérdőív után ennyivel nyílik (és értesít) a következő lépés."
                 : "The next step opens (and notifies) this long after the previous one is completed."}
             </p>
             {saved ? (
-              <p className="text-[11px] font-semibold text-sage-dark">{saved}</p>
+              <p className="text-label font-semibold tracking-normal text-sage-dark">{saved}</p>
             ) : null}
             {error ? (
-              <p className="text-[11px] font-semibold text-amber-700">
+              <p className="text-label font-semibold tracking-normal text-amber-700">
                 {isHu ? "Nem sikerült — próbáld újra." : "Failed — please retry."}
               </p>
             ) : null}

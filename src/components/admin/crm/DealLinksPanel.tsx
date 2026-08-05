@@ -61,13 +61,13 @@ export function DealLinksPanel({
         <p className="text-label uppercase text-muted">Szervezet</p>
         {deal.organization ? (
           <p className="mt-1 flex items-center gap-2 text-sm text-ink">
-            {deal.organization.name}
+            <span className="min-w-0 [overflow-wrap:anywhere]">{deal.organization.name}</span>
             <button
               type="button"
               disabled={busy}
               onClick={() => void patch({ action: "unlink_org" })}
               title="Org-link oldása"
-              className="text-muted transition hover:text-state-error-fg"
+              className="-my-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
             >
               ×
             </button>
@@ -102,13 +102,15 @@ export function DealLinksPanel({
         <p className="text-label uppercase text-muted">Felhasználó</p>
         {deal.userProfile ? (
           <p className="mt-1 flex items-center gap-2 text-sm text-ink">
-            {deal.userProfile.username ?? deal.userProfile.email ?? deal.userProfile.id}
+            <span className="min-w-0 [overflow-wrap:anywhere]">
+              {deal.userProfile.username ?? deal.userProfile.email ?? deal.userProfile.id}
+            </span>
             <button
               type="button"
               disabled={busy}
               onClick={() => void patch({ action: "unlink_user" })}
               title="User-link oldása"
-              className="text-muted transition hover:text-state-error-fg"
+              className="-my-2 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
             >
               ×
             </button>
@@ -119,7 +121,7 @@ export function DealLinksPanel({
             size="sm"
             variant="secondary"
             disabled={busy}
-            className="mt-1"
+            className="mt-1 max-w-full [overflow-wrap:anywhere]"
             onClick={() => void patch({ action: "link_user", userProfileId: suggestedUser.id })}
           >
             Csatolás: {suggestedUser.email ?? suggestedUser.username ?? suggestedUser.id}
@@ -153,7 +155,7 @@ export function DealLinksPanel({
                   disabled={busy}
                   onClick={() => void patch({ action: "detach_inquiry", inquiryId: inquiry.id })}
                   title="Leválasztás a dealről"
-                  className="ml-auto text-muted transition hover:text-state-error-fg"
+                  className="-my-2 ml-auto inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-muted transition hover:text-state-error-fg"
                 >
                   ×
                 </button>
@@ -173,7 +175,7 @@ export function DealLinksPanel({
               setNoteDraft(deal.adminNote ?? "");
               setNoteOpen((open) => !open);
             }}
-            className="text-xs text-bronze underline underline-offset-2"
+            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-xs text-bronze underline underline-offset-2"
           >
             {noteOpen ? "Bezárás" : deal.adminNote ? "Szerkesztés" : "Jegyzet"}
           </button>

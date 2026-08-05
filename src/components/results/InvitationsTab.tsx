@@ -330,7 +330,7 @@ export function InvitationsTab({
               value={colleagueSearch}
               onChange={(e) => setColleagueSearch(e.target.value)}
               placeholder={t("invitations.colleagueSearchPlaceholder", locale)}
-              className="mt-3 min-h-[40px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-caption text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+              className="mt-3 min-h-[44px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none md:min-h-[40px] md:text-caption"
             />
           ) : null}
           <div className="mt-3 flex max-h-[260px] flex-col gap-1.5 overflow-y-auto">
@@ -364,7 +364,7 @@ export function InvitationsTab({
                       type="button"
                       onClick={() => handleInviteColleague(c.userId)}
                       disabled={invitingColleagueId !== null}
-                      className="min-h-[32px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3 py-1 text-[11px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-[11px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
                     >
                       {invitingColleagueId === c.userId ? "…" : t("invitations.colleagueInviteButton", locale)}
                     </button>
@@ -400,7 +400,7 @@ export function InvitationsTab({
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 placeholder={t("invitations.formPlaceholder", locale)}
-                className="min-h-[44px] flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-caption text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none"
+                className="min-h-[44px] min-w-0 flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none md:text-caption"
               />
               <button
                 type="button"
@@ -518,7 +518,7 @@ export function InvitationsTab({
                       <button
                         type="button"
                         onClick={() => handleCopy(inv.token)}
-                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                       </button>
@@ -528,7 +528,7 @@ export function InvitationsTab({
                         type="button"
                         onClick={() => setQrToken((prev) => (prev === inv.token ? null : inv.token))}
                         aria-expanded={qrToken === inv.token}
-                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         QR
                       </button>
@@ -536,7 +536,8 @@ export function InvitationsTab({
                         type="button"
                         onClick={() => handleDelete(inv.id)}
                         disabled={deletingId === inv.id}
-                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
+                        aria-label={t("actions.delete", locale)}
+                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
                       >
                         {deletingId === inv.id ? "..." : "✕"}
                       </button>

@@ -115,7 +115,12 @@ export function OrgInquiriesTab({
                     {TOPIC_LABELS[row.topic] ?? row.topic}
                   </span>
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
-                  <a href={`mailto:${row.email}`} className="text-xs text-bronze hover:underline">
+                  {/* Az e-mail egyetlen törhetetlen token — break-all nélkül
+                      320px-en kilógott a kártyából. */}
+                  <a
+                    href={`mailto:${row.email}`}
+                    className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                  >
                     {row.email}
                   </a>
                   <span className="ml-auto text-xs text-muted">

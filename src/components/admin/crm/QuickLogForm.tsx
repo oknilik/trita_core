@@ -157,7 +157,7 @@ export function QuickLogForm({
       <button
         type="button"
         onClick={() => setExpanded((open) => !open)}
-        className="self-start text-xs text-bronze underline underline-offset-2"
+        className="inline-flex min-h-[44px] items-center self-start text-xs text-bronze underline underline-offset-2"
       >
         {expanded ? "Kevesebb mező" : "Részletek + következő lépés"}
       </button>

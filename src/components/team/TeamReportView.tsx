@@ -221,9 +221,16 @@ function KpiTile({
   progressPct?: number;
 }) {
   return (
-    <div className="rounded-[14px] border border-sand bg-white p-3.5">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">{label}</p>
-      <p className={`mt-1 font-fraunces text-2xl leading-none ${accent ?? "text-ink"}`}>{value}</p>
+    <div className="min-w-0 rounded-[14px] border border-sand bg-white p-3.5">
+      <p className="break-words font-mono text-micro uppercase tracking-wide text-muted md:tracking-widest">
+        {label}
+      </p>
+      <p
+        title={value}
+        className={`mt-1 break-words font-fraunces text-xl leading-tight md:text-2xl md:leading-none ${accent ?? "text-ink"}`}
+      >
+        {value}
+      </p>
       {typeof progressPct === "number" && (
         <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-sand">
           <div
@@ -463,33 +470,38 @@ export function TeamReportView({
                   const bandStart = spread !== undefined ? Math.max(0, value - spread) : null;
                   const bandEnd = spread !== undefined ? Math.min(100, value + spread) : null;
                   return (
-                    <div key={dim} className="flex items-center gap-3">
-                      <span className="w-36 shrink-0 text-xs text-ink-body">
+                    <div
+                      key={dim}
+                      className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                    >
+                      <span className="text-xs text-ink-body md:w-36 md:shrink-0">
                         {DIM_LABELS[dim] ? (isHu ? DIM_LABELS[dim].hu : DIM_LABELS[dim].en) : dim}
                       </span>
-                      <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
-                        {bandStart !== null && bandEnd !== null && (
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
+                          {bandStart !== null && bandEnd !== null && (
+                            <div
+                              className="absolute inset-y-0 rounded-full opacity-30"
+                              style={{
+                                left: `${bandStart}%`,
+                                width: `${bandEnd - bandStart}%`,
+                                backgroundColor: DIM_COLORS[dim] ?? "var(--color-sage)",
+                              }}
+                            />
+                          )}
                           <div
-                            className="absolute inset-y-0 rounded-full opacity-30"
+                            className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
                             style={{
-                              left: `${bandStart}%`,
-                              width: `${bandEnd - bandStart}%`,
+                              left: `${value}%`,
                               backgroundColor: DIM_COLORS[dim] ?? "var(--color-sage)",
                             }}
                           />
-                        )}
-                        <div
-                          className="absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
-                          style={{
-                            left: `${value}%`,
-                            backgroundColor: DIM_COLORS[dim] ?? "var(--color-sage)",
-                          }}
-                        />
+                        </div>
+                        <span className="w-14 shrink-0 text-right font-mono text-xs text-ink">
+                          {value}
+                          {spread !== undefined && <span className="text-muted"> ±{spread}</span>}
+                        </span>
                       </div>
-                      <span className="w-14 shrink-0 text-right font-mono text-xs text-ink">
-                        {value}
-                        {spread !== undefined && <span className="text-muted"> ±{spread}</span>}
-                      </span>
                     </div>
                   );
                 })}
@@ -1015,25 +1027,30 @@ export function TeamReportView({
                 const pct = Math.max(0, Math.min(100, ((mean - 1) / 4) * 100));
                 const isWeak = agg.psychSafety!.weakItemIds.includes(item.id);
                 return (
-                  <div key={item.id} className="flex items-center gap-3">
+                  <div
+                    key={item.id}
+                    className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                  >
                     <span
-                      className={`w-56 shrink-0 text-xs leading-snug md:w-64 ${
+                      className={`text-xs leading-snug md:w-64 md:shrink-0 ${
                         isWeak ? "font-semibold text-amber-800" : "text-ink-body"
                       }`}
                     >
                       {isHu ? item.area.hu : item.area.en}
                     </span>
-                    <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
-                      <div
-                        className={`h-full rounded-full transition-all duration-700 ${
-                          isWeak ? "bg-amber-500" : "bg-sage"
-                        }`}
-                        style={{ width: `${pct}%` }}
-                      />
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
+                      <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
+                        <div
+                          className={`h-full rounded-full transition-all duration-700 ${
+                            isWeak ? "bg-amber-500" : "bg-sage"
+                          }`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="w-9 shrink-0 text-right text-xs tabular-nums text-muted">
+                        {mean.toFixed(1)}
+                      </span>
                     </div>
-                    <span className="w-9 text-right text-xs tabular-nums text-muted">
-                      {mean.toFixed(1)}
-                    </span>
                   </div>
                 );
               })}

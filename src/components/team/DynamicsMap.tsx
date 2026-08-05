@@ -276,11 +276,13 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">
-      {/* SVG */}
-      <div className="flex-1">
+      {/* SVG — mobilon a beágyazás ~230–290px-re nyomná össze a 360-as
+          viewBoxot (olvashatatlan nevek, 44px alatti tap-célok), ezért alsó
+          szélesség-korlát + vízszintesen görgethető konténer. */}
+      <div className="min-w-0 flex-1 overflow-x-auto">
         <svg
           viewBox="0 0 360 360"
-          className="w-full rounded-xl border border-sand bg-white"
+          className="w-full min-w-[340px] rounded-xl border border-sand bg-white"
         >
           {/* Edges */}
           {edges.map((e, i) => {
@@ -338,7 +340,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                   y={pos.y + 1}
                   textAnchor="middle"
                   dominantBaseline="central"
-                  fontSize={9}
+                  fontSize={11}
                   fontWeight="800"
                   fill={m.textColor}
                 >
@@ -346,13 +348,16 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
                 </text>
                 <text
                   x={pos.x}
-                  y={pos.y + r + 11}
+                  y={pos.y + r + 13}
                   textAnchor="middle"
-                  fontSize={9}
+                  fontSize={11}
                   fill="var(--color-text-secondary)"
                 >
                   {m.name.split(" ")[0]}
                 </text>
+                {/* Láthatatlan, nagyobb érintési cél: a node az egyetlen
+                    interakciós pont, a rajzolt sugár ujjhoz túl kicsi. */}
+                <circle cx={pos.x} cy={pos.y} r={r + 8} fill="transparent" />
               </g>
             );
           })}

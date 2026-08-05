@@ -228,12 +228,12 @@ export default async function CareerFakeDoorReportPage() {
           <h2 className="font-fraunces text-lg text-ink">
             Mennyit adnának érte — akiknek drága ({report.willingness.count})
           </h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="rounded-lg border border-sand bg-cream p-4">
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Medián
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.median == null
                   ? "—"
                   : formatPrice(report.willingness.median, "hu")}
@@ -243,7 +243,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Átlag
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.average == null
                   ? "—"
                   : formatPrice(report.willingness.average, "hu")}
@@ -253,7 +253,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 A látott ár hányada
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.medianShareOfShownPrice == null
                   ? "—"
                   : `${report.willingness.medianShareOfShownPrice}%`}
@@ -263,7 +263,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Semennyit
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.zero}
               </p>
             </div>

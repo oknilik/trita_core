@@ -113,7 +113,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
                   </StatusChip>
                   <Link
                     href={`/admin/crm/${deal.id}`}
-                    className="text-sm font-semibold text-ink underline-offset-2 hover:underline"
+                    className="min-w-0 text-sm font-semibold text-ink underline-offset-2 [overflow-wrap:anywhere] hover:underline"
                   >
                     {deal.title}
                   </Link>
@@ -150,7 +150,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
                   ))}
                   <Link
                     href={`/admin/crm/${deal.id}`}
-                    className="ml-auto min-h-[40px] rounded-lg border border-sand bg-white px-4 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                    className="ml-auto inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-white px-4 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                   >
                     Megnyitás
                   </Link>

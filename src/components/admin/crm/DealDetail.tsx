@@ -139,7 +139,7 @@ export function DealDetail({
       <DashboardPanel className="p-5 md:p-6">
         <Link
           href="/admin?tab=crm"
-          className="text-sm text-bronze underline underline-offset-2"
+          className="inline-flex min-h-[44px] items-center text-sm text-bronze underline underline-offset-2"
         >
           ← CRM
         </Link>
@@ -161,7 +161,9 @@ export function DealDetail({
         </div>
 
         <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-          <h1 className="font-fraunces text-2xl text-ink">{deal.title}</h1>
+          <h1 className="min-w-0 font-fraunces text-2xl text-ink [overflow-wrap:anywhere]">
+            {deal.title}
+          </h1>
           <button
             type="button"
             onClick={() =>
@@ -175,7 +177,7 @@ export function DealDetail({
                 expectedValue: deal.expectedValue != null ? String(deal.expectedValue) : "",
               })
             }
-            className="text-sm text-bronze underline underline-offset-2"
+            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-sm text-bronze underline underline-offset-2"
           >
             Szerkesztés
           </button>
@@ -184,11 +186,14 @@ export function DealDetail({
         <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-ink-body">
           <span className="font-semibold text-ink">{deal.contactName}</span>
           {deal.company && <span>{deal.company}</span>}
-          <a href={`mailto:${deal.contactEmail}`} className="text-bronze hover:underline">
+          <a
+            href={`mailto:${deal.contactEmail}`}
+            className="min-w-0 max-w-full break-all text-bronze hover:underline"
+          >
             {deal.contactEmail}
           </a>
           {deal.contactPhone && (
-            <a href={`tel:${deal.contactPhone.replaceAll(" ", "")}`} className="text-bronze hover:underline">
+            <a href={`tel:${deal.contactPhone.replaceAll(" ", "")}`} className="whitespace-nowrap text-bronze hover:underline">
               {deal.contactPhone}
             </a>
           )}

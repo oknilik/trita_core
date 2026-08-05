@@ -141,7 +141,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("results.compareEmailPlaceholder", locale)}
-          className="min-h-[44px] w-full flex-1 rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none focus:border-[var(--color-accent-primary)]/50"
+          className="min-h-[44px] w-full min-w-0 flex-1 rounded-[10px] border border-sand bg-cream px-3 text-base text-ink-body outline-none focus:border-[var(--color-accent-primary)]/50 md:text-caption"
         />
         <button
           type="button"

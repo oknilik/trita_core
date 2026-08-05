@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 // ─────────────────────────────────────────────────────────────────────
 // Admin idősor-chart (Vezérlő) — könnyű, könyvtár-mentes SVG.
@@ -17,7 +17,30 @@ export interface TrendSeries {
 
 const W = 640;
 const H = 220;
-const PAD = { top: 16, right: 76, bottom: 26, left: 34 };
+// Az SVG fix viewBox-szal skálázódik (w-full), ezért mobilon ~0,5× a
+// tényleges méret: a 10px-es feliratok olvashatatlanná zsugorodnának.
+// Keskeny nézeten NAGYOBB user-unit tipó + ritkább x-tick + több hely a
+// tengelyeknek — desktopon (md-től) az eredeti értékek maradnak. A vonalvégi
+// sorozat-címke mobilon kimarad (nagyobb tipóval kilógna); a sorozat-identitás
+// ott a chart alatti legendából jön, ami szín + név + összeg.
+const PAD_WIDE = { top: 16, right: 76, bottom: 26, left: 34 };
+const PAD_NARROW = { top: 16, right: 24, bottom: 42, left: 54 };
+
+const NARROW_QUERY = "(max-width: 767px)";
+
+function subscribeNarrow(onChange: () => void) {
+  const mq = window.matchMedia(NARROW_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+function useIsNarrow() {
+  return useSyncExternalStore(
+    subscribeNarrow,
+    () => window.matchMedia(NARROW_QUERY).matches,
+    () => false,
+  );
+}
 
 export function AdminTrendChart({
   labels,
@@ -28,6 +51,10 @@ export function AdminTrendChart({
 }) {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
+  const narrow = useIsNarrow();
+  const PAD = narrow ? PAD_NARROW : PAD_WIDE;
+  const axisFont = narrow ? 17 : 10;
+  const seriesFont = narrow ? 17 : 10.5;
 
   const maxValue = Math.max(1, ...series.flatMap((s) => s.values));
   // Kerek y-max (1-2-5 lépcső), hogy a rácsvonalak értelmes számokra essenek.
@@ -52,8 +79,8 @@ export function AdminTrendChart({
   // Dedupe: kis yMax-nál (1-2) a kerekített rácsértékek ütköznek — a
   // duplikátum React-kulcs hibát ÉS felesleges dupla vonalat adna.
   const gridLines = [...new Set([0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(yMax * f)))];
-  // Max 6 x-tengely felirat — a többi bucket címke a tooltipben él.
-  const tickEvery = Math.max(1, Math.ceil(n / 6));
+  // Max 6 (mobilon 3) x-tengely felirat — a többi bucket címke a tooltipben él.
+  const tickEvery = Math.max(1, Math.ceil(n / (narrow ? 3 : 6)));
 
   function onMove(e: React.PointerEvent<SVGSVGElement>) {
     const rect = svgRef.current?.getBoundingClientRect();
@@ -91,9 +118,9 @@ export function AdminTrendChart({
             />
             <text
               x={PAD.left - 6}
-              y={y(v) + 3}
+              y={y(v) + axisFont * 0.34}
               textAnchor="end"
-              fontSize={10}
+              fontSize={axisFont}
               fill="var(--color-muted)"
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
@@ -108,9 +135,9 @@ export function AdminTrendChart({
             <text
               key={i}
               x={x(i)}
-              y={H - 8}
+              y={H - (narrow ? 12 : 8)}
               textAnchor="middle"
-              fontSize={10}
+              fontSize={axisFont}
               fill="var(--color-muted)"
             >
               {label}
@@ -135,16 +162,18 @@ export function AdminTrendChart({
                 strokeLinecap="round"
               />
               {/* Végpont-hangsúly + direkt címke */}
-              <circle cx={x(n - 1)} cy={y(lastV)} r={3.5} fill={s.color} />
-              <text
-                x={x(n - 1) + 8}
-                y={y(lastV) + 3.5}
-                fontSize={10.5}
-                fontWeight={600}
-                fill="var(--color-ink-body)"
-              >
-                {s.name}
-              </text>
+              <circle cx={x(n - 1)} cy={y(lastV)} r={narrow ? 5 : 3.5} fill={s.color} />
+              {!narrow && (
+                <text
+                  x={x(n - 1) + 8}
+                  y={y(lastV) + seriesFont * 0.34}
+                  fontSize={seriesFont}
+                  fontWeight={600}
+                  fill="var(--color-ink-body)"
+                >
+                  {s.name}
+                </text>
+              )}
             </g>
           );
         })}

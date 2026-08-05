@@ -71,7 +71,7 @@ export function DealQuotesPanel({
         <SectionEyebrow>ajánlatok</SectionEyebrow>
         <Link
           href={`/admin/quote?dealId=${dealId}`}
-          className="min-h-[40px] rounded-lg bg-action-primary-bg px-3.5 py-2 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover"
+          className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 py-2 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover"
         >
           Új ajánlat
         </Link>
@@ -163,7 +163,7 @@ export function DealQuotesPanel({
                       <>
                         <Link
                           href={`/admin/quote?dealId=${dealId}&from=${quote.id}`}
-                          className="min-h-[40px] rounded-lg border border-sand bg-white px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                          className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-white px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                         >
                           Szerkesztés
                         </Link>
@@ -179,7 +179,7 @@ export function DealQuotesPanel({
                           type="button"
                           disabled={busy}
                           onClick={() => setDeleteId(quote.id)}
-                          className="ml-auto min-h-[40px] text-sm text-muted underline underline-offset-2 hover:text-state-error-fg"
+                          className="ml-auto inline-flex min-h-[40px] items-center text-sm text-muted underline underline-offset-2 hover:text-state-error-fg"
                         >
                           Törlés
                         </button>

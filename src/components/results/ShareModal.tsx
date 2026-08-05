@@ -229,13 +229,16 @@ export function ShareModal({
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
                 {t("content.shareLinkLabel", locale)}
               </p>
+              {/* iOS Safari 16px alatti betűméretnél fókuszkor rázoomol az
+                  inputra (és a zoom ott is ragad) — mobilon ezért text-base,
+                  md:-től az eredeti 13px. */}
               <div className="flex flex-col gap-2 sm:flex-row">
                 <input
                   type="text"
                   readOnly
                   value={shareUrl ?? "…"}
                   onFocus={(e) => e.currentTarget.select()}
-                  className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none"
+                  className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-base text-ink-body outline-none md:text-caption"
                 />
                 {/* Link nélkül is kattintható: az első másolás hozza létre
                     (vagy kéri vissza) a linket — a POST idempotens. */}

@@ -92,7 +92,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               rows={3}
               maxLength={2000}
               placeholder={t("results.teamInterestMessagePlaceholder", locale)}
-              className="rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink"
+              className="rounded-lg border border-sand bg-white px-3 py-2 text-base text-ink md:text-sm"
             />
           </label>
           {error && <p className="text-xs text-rose-600">{error}</p>}

@@ -298,7 +298,7 @@ export function QuoteCalculator({
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Terjedelem</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
               label="Létszám"
               value={input.headcount}
@@ -357,7 +357,7 @@ export function QuoteCalculator({
             Az ismételt hullám a mérési díj {rate.waveRatePct}%-áért megy: a setup és a
             csapat megismerése egyszeri munka. A havi kísérés ettől független tétel.
           </p>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
               label="Hullámok"
               value={input.waves}
@@ -426,7 +426,7 @@ export function QuoteCalculator({
             <button
               type="button"
               onClick={() => setShowRates((open) => !open)}
-              className="min-h-[40px] text-sm text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] items-center text-sm text-bronze underline underline-offset-2"
             >
               {showRates ? "Elrejtem" : "Szerkesztem"}
             </button>
@@ -440,7 +440,7 @@ export function QuoteCalculator({
 
           {showRates && (
             <div className="mt-4 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <NumberField
                   label="Programdíj"
                   value={rate.baseFee}
@@ -503,7 +503,7 @@ export function QuoteCalculator({
                 </p>
                 <div className="mt-2 flex flex-col gap-2">
                   {rate.headBands.map((band, index) => (
-                    <div key={index} className="flex items-center gap-2">
+                    <div key={index} className="flex flex-wrap items-center gap-2">
                       <span className="w-24 shrink-0 text-xs text-muted">
                         {band.upTo == null ? "afölött" : `${band.upTo} főig`}
                       </span>
@@ -519,9 +519,9 @@ export function QuoteCalculator({
                           };
                           setRate({ ...rate, headBands });
                         }}
-                        className="min-h-[40px] w-32 rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
+                        className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-32 md:flex-none md:basis-auto"
                       />
-                      <span className="text-xs text-muted">Ft / fő</span>
+                      <span className="shrink-0 text-xs text-muted">Ft / fő</span>
                     </div>
                   ))}
                 </div>
@@ -536,8 +536,8 @@ export function QuoteCalculator({
                     const stepRate = rate.stepRates[step];
                     if (!stepRate) return null;
                     return (
-                      <div key={step} className="flex items-center gap-2">
-                        <span className="w-44 shrink-0 text-xs text-muted">
+                      <div key={step} className="flex flex-wrap items-center gap-2">
+                        <span className="w-full text-xs text-muted md:w-44 md:shrink-0">
                           {QUOTE_STEP_LABELS[step]}
                         </span>
                         {(["perHead", "fixed"] as const).map((field) => (
@@ -555,7 +555,7 @@ export function QuoteCalculator({
                                 },
                               })
                             }
-                            className="min-h-[40px] w-28 rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
+                            className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-28 md:flex-none md:basis-auto"
                           />
                         ))}
                       </div>
@@ -568,7 +568,7 @@ export function QuoteCalculator({
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">
                   Óra-becslés (a fedezet-számításhoz)
                 </p>
-                <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-3">
+                <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                   {(
                     [
                       ["setup", "Setup"],
@@ -784,7 +784,7 @@ export function QuoteCalculator({
                 setCopied(true);
                 window.setTimeout(() => setCopied(false), 2000);
               }}
-              className="min-h-[36px] text-xs text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] shrink-0 items-center text-xs text-bronze underline underline-offset-2"
             >
               {copied ? "Másolva" : "Másolás"}
             </button>
