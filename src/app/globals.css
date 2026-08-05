@@ -67,6 +67,15 @@
   --color-surface-org-accent:       #3f6d9a;
   --color-surface-org-accent-soft:  #e8eff7;
   --color-surface-org-border:       #bfd0e2;
+  /* Jelölt-felület (2026-08-05): terrakotta akcent — a SurfaceHero
+     "candidate" variánsával (#8a4a32 → #47251a, primary #e0a878)
+     összehangolt világos-felületi készlet. */
+  --color-accent-candidate:         #8a4a32; /* szöveg/akcent világos alapon (AA) */
+  --color-accent-candidate-strong:  #6d3826; /* hover/emfázis */
+  --color-accent-candidate-mid:     #c2764c; /* sávok, grafikus akcent (nem szöveg) */
+  --color-accent-candidate-primary: #e0a878; /* sötét (hero) alapon CTA/jelölés */
+  --color-accent-candidate-soft:    #f6e5da; /* chip/panel háttér */
+  --color-accent-candidate-border:  #e8cbb8; /* keret világos panelen */
 
   /* Text roles */
   --color-text-primary:   var(--color-ink);

@@ -67,16 +67,12 @@ export default async function HiringPage({
 
     if (!candidateEvaluateDecision.allowed) {
       return (
-        <div className="min-h-dvh bg-cream">
-          <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
-            {bannerState ? (
-              <div className="mb-5">
-                <OrgSubscriptionBanner state={bannerState} locale={locale} />
-              </div>
-            ) : null}
-            <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isConsultantView} />
-          </main>
-        </div>
+        <PlatformPageShell surface="team" contentClassName="max-w-5xl gap-5 px-4 py-10">
+          {bannerState ? (
+            <OrgSubscriptionBanner state={bannerState} locale={locale} />
+          ) : null}
+          <HiringPaywall orgId={orgId} locale={locale} variant="no-subscription" isAdmin={isConsultantView} />
+        </PlatformPageShell>
       );
     }
     tier = getPlanTier(policySnapshot.subscription);
@@ -91,11 +87,9 @@ export default async function HiringPage({
         });
         if (existingCount === 0) {
           return (
-            <div className="min-h-dvh bg-cream">
-              <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
-                <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isConsultantView} />
-              </main>
-            </div>
+            <PlatformPageShell surface="team" contentClassName="max-w-5xl px-4 py-10">
+              <HiringPaywall orgId={orgId} locale={locale} variant="addon" planTier={tier} isAdmin={isConsultantView} />
+            </PlatformPageShell>
           );
         }
       }

@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { t, type Locale } from "@/lib/i18n";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 
 interface HiringPaywallProps {
   orgId: string;
@@ -10,6 +12,9 @@ interface HiringPaywallProps {
   isAdmin?: boolean;
 }
 
+// Jelölt-felület kapu (2026-08-05 vizuális frissítés): terrakotta akcentes,
+// DashboardPanel-alapú feature-kártyák; a CTA-k változatlanul a /contact-ra
+// mutatnak (tanácsadás-vezérelt modell).
 export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywallProps) {
   const features = [
     {
@@ -32,26 +37,26 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
   const isAddon = variant === "addon";
 
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-ink text-2xl">
-        {isAddon ? "🚀" : "🔒"}
+    <div className="flex flex-col items-center justify-center py-14 text-center">
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#8a4a32] to-[#47251a] text-2xl shadow-[0_14px_30px_rgba(109,56,38,0.25)]">
+        <span aria-hidden>{isAddon ? "🚀" : "🔒"}</span>
       </div>
 
-      <p className="mb-2 font-mono text-xs uppercase tracking-widest text-bronze">
+      <SectionEyebrow tone="bronze" className="mb-2">
         {isAddon
-          ? "// add-on"
+          ? t("hiring.addonEyebrow", locale)
           : t("hiring.premiumFeature", locale)}
-      </p>
+      </SectionEyebrow>
 
       <h1 className="mb-3 font-fraunces text-3xl text-ink">
         trita Hiring
       </h1>
 
-      <p className="mb-2 max-w-md text-sm text-ink-body leading-relaxed">
+      <p className="mb-2 max-w-md text-caption leading-relaxed text-ink-body">
         {t("hiring.paywallDesc", locale)}
       </p>
 
-      <p className="mb-8 text-xs text-muted">
+      <p className="mb-8 text-[12px] text-muted">
         {isAddon
           ? t("hiring.addonPricing", locale)
           : t("hiring.noSubPricing", locale)}
@@ -59,14 +64,15 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
 
       <div className="mb-8 grid w-full max-w-lg grid-cols-1 gap-3 text-left md:grid-cols-3">
         {features.map((f) => (
-          <div
-            key={f.title}
-            className="rounded-xl border border-sand bg-white p-4"
-          >
-            <div className="mb-2 text-xl">{f.icon}</div>
+          <DashboardPanel key={f.title} className="relative overflow-hidden p-4">
+            <span
+              aria-hidden
+              className="absolute inset-x-4 top-0 h-[3px] rounded-b-full bg-accent-candidate-mid"
+            />
+            <div aria-hidden className="mb-2 text-xl">{f.icon}</div>
             <p className="mb-1 text-caption font-semibold text-ink">{f.title}</p>
-            <p className="text-[11px] text-muted leading-relaxed">{f.desc}</p>
-          </div>
+            <p className="text-[11px] leading-relaxed text-muted">{f.desc}</p>
+          </DashboardPanel>
         ))}
       </div>
 
@@ -76,13 +82,14 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
             <Link
               href="/contact"
               className={getButtonClassName({
-                className: "px-8",
+                className:
+                  "bg-accent-candidate px-8 text-white hover:bg-accent-candidate-strong",
               })}
             >
               {t("hiring.activateAddon", locale)}
             </Link>
           ) : (
-            <p className="max-w-sm text-center text-sm text-ink-body">
+            <p className="max-w-sm text-center text-caption text-ink-body">
               {t("hiring.addonAdminRequired", locale)}
             </p>
           )
@@ -90,13 +97,14 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
           <Link
             href="/contact"
             className={getButtonClassName({
-              className: "px-8",
+              className:
+                "bg-accent-candidate px-8 text-white hover:bg-accent-candidate-strong",
             })}
           >
             {t("hiring.activateSubscription", locale)}
           </Link>
         ) : (
-          <p className="max-w-sm text-center text-sm text-ink-body">
+          <p className="max-w-sm text-center text-caption text-ink-body">
             {t("hiring.subscriptionAdminRequired", locale)}
           </p>
         )}

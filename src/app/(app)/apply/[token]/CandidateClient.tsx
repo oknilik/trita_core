@@ -4,9 +4,10 @@ import { estimateAssessmentMinutes } from "@/lib/questions/types";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProgressBar } from "@/components/assessment/ProgressBar";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { TeamRoleQuestionnaire } from "@/components/assessment/TeamRoleQuestionnaire";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { CandidateStateCard } from "./CandidateStateCard";
 import { useToast } from "@/components/ui/Toast";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { t, tf } from "@/lib/i18n";
@@ -320,47 +321,108 @@ export function CandidateClient({
     }
   };
 
-  // Intro screen
+  // Intro screen — a /try kitöltő-intróval azonos vizuális szint,
+  // terrakotta (jelölt) akcenttel. A logika változatlan: a CTA a phase-t
+  // állítja.
   if (phase === "intro") {
+    const steps: Array<{ title: string; sub: string }> = [
+      {
+        title: t("candidate.introStep1Title", locale),
+        sub: tf("candidate.introStep1Sub", locale, {
+          count: totalQuestions,
+          minutes: estimateAssessmentMinutes(totalQuestions),
+        }),
+      },
+      ...(includeTeamRole
+        ? [
+            {
+              title: t("candidate.introStepTeamRoleTitle", locale),
+              sub: t("candidate.introStepTeamRoleSub", locale),
+            },
+          ]
+        : []),
+      {
+        title: t("candidate.introStepSubmitTitle", locale),
+        sub: t("candidate.introStepSubmitSub", locale),
+      },
+    ];
+    const stepTileStyles = [
+      "bg-accent-candidate text-white",
+      "bg-accent-candidate-soft text-accent-candidate-strong",
+      "bg-warm-mid text-muted",
+    ];
+
     return (
       <div className="min-h-dvh bg-cream">
-        <div className="mx-auto max-w-2xl px-4 py-12 md:py-16">
-          <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-              {t("candidate.introEyebrow", locale)}
-            </p>
-            <h1 className="mt-3 font-fraunces text-2xl text-ink md:text-3xl">
-              {position
-                ? tf("candidate.introTitlePosition", locale, { position })
-                : t("candidate.introTitleGeneric", locale)}
-            </h1>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">
-              {tf("candidate.introBody", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) })}
-            </p>
-            <div className="mt-4 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-800">
-              {t("candidate.introAutoSave", locale)}
+        <div className="mx-auto max-w-4xl px-5 lg:px-10">
+          <div className="grid grid-cols-1 items-start gap-8 py-10 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:py-14">
+            {/* Bal oszlop — cím, kontextus, CTA */}
+            <div>
+              <SectionEyebrow tone="bronze" className="mb-2.5">
+                {t("candidate.introEyebrow", locale)}
+              </SectionEyebrow>
+              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-ink lg:text-[30px]">
+                {position
+                  ? tf("candidate.introTitlePosition", locale, { position })
+                  : t("candidate.introTitleGeneric", locale)}
+              </h1>
+              <p className="mb-5 max-w-[420px] text-body leading-relaxed text-ink-body">
+                {tf("candidate.introBody", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) })}
+              </p>
+              <div className="mb-5 rounded-r-lg border-l-2 border-accent-candidate bg-accent-candidate-soft/70 px-3.5 py-3">
+                <p className="text-caption leading-relaxed text-accent-candidate-strong">
+                  {t("candidate.introAutoSave", locale)}
+                </p>
+              </div>
+              <div className="mb-6 flex flex-col gap-2.5 text-caption text-ink-body">
+                <div className="flex items-center gap-2">
+                  <span aria-hidden className="text-accent-candidate">✓</span>
+                  {t("candidate.introNoReg", locale)}
+                </div>
+                <div className="flex items-center gap-2">
+                  <span aria-hidden className="text-accent-candidate">✓</span>
+                  {t("candidate.introConfidential", locale)}
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPhase("assessment")}
+                className="min-h-[48px] w-full rounded-[10px] bg-accent-candidate px-8 text-body font-semibold text-white shadow-md shadow-accent-candidate/20 transition-all hover:-translate-y-px hover:bg-accent-candidate-strong hover:shadow-lg lg:w-auto"
+              >
+                {t("candidate.introStartCta", locale)}
+              </button>
             </div>
-            <div className="mt-6 flex flex-col gap-3 rounded-xl border border-sand bg-cream p-4 text-sm text-ink-body">
-              <div className="flex items-center gap-2">
-                <span className="text-bronze">✓</span>
-                {t("candidate.introNoReg", locale)}
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-bronze">✓</span>
-                {tf("candidate.introScale", locale, { count: totalQuestions })}
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-bronze">✓</span>
-                {t("candidate.introConfidential", locale)}
-              </div>
+
+            {/* Jobb oszlop — lépéskártyák */}
+            <div className="flex flex-col gap-2.5">
+              <SectionEyebrow tone="muted" className="mb-0.5">
+                {t("candidate.introStepsLabel", locale)}
+              </SectionEyebrow>
+              {steps.map((step, idx) => {
+                const tileClass =
+                  idx === 0
+                    ? stepTileStyles[0]
+                    : idx === steps.length - 1
+                      ? stepTileStyles[2]
+                      : stepTileStyles[1];
+                return (
+                  <div
+                    key={step.title}
+                    className="flex items-start gap-2.5 rounded-[10px] border border-sand bg-white p-3 px-3.5"
+                  >
+                    <div
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${tileClass}`}
+                    >
+                      {idx + 1}
+                    </div>
+                    <div>
+                      <p className="text-caption font-semibold text-ink">{step.title}</p>
+                      <p className="text-[11px] leading-[1.4] text-muted">{step.sub}</p>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-            <button
-              type="button"
-              onClick={() => setPhase("assessment")}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
-            >
-              {t("candidate.introStartCta", locale)}
-            </button>
           </div>
         </div>
       </div>
@@ -397,10 +459,11 @@ export function CandidateClient({
     return (
       <div className="min-h-dvh bg-cream">
         <div className="mx-auto max-w-3xl px-4 pt-10 pb-20 md:pt-14">
-          <div className="mb-5 rounded-xl border border-sage-ring bg-sage-ghost px-4 py-3 text-sm leading-relaxed text-ink-body">
-            {locale === "en"
-              ? "Thanks — your assessment is in! One optional step remains: a short team-role questionnaire (~3 minutes). You can skip it."
-              : "Köszönjük — a felmérésed megérkezett! Egy opcionális lépés maradt: egy rövid csapatszerep-kérdőív (~3 perc). Ki is hagyhatod."}
+          <div className="mb-5 flex items-start gap-2.5 rounded-xl border border-accent-candidate-border bg-accent-candidate-soft/70 px-4 py-3">
+            <span aria-hidden className="mt-0.5 text-accent-candidate">✓</span>
+            <p className="text-caption leading-relaxed text-accent-candidate-strong">
+              {t("candidate.teamRoleBridge", locale)}
+            </p>
           </div>
           <TeamRoleQuestionnaire
             locale={locale}
@@ -418,79 +481,94 @@ export function CandidateClient({
   // Done screen
   if (phase === "done") {
     return (
-      <div className="min-h-dvh bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
-            <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {t("candidate.doneTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("candidate.doneBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CandidateStateCard
+        icon="🙏"
+        title={t("candidate.doneTitle", locale)}
+        body={t("candidate.doneBody", locale)}
+      />
     );
   }
 
   // Revoked screen
   if (phase === "revoked") {
     return (
-      <div className="min-h-dvh bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
-            <div className="text-5xl leading-none">🔒</div>
-            <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {t("candidate.revokedTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("candidate.revokedBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CandidateStateCard
+        icon="🔒"
+        title={t("candidate.revokedTitle", locale)}
+        body={t("candidate.revokedBody", locale)}
+      />
     );
   }
 
-  // Assessment screen
+  // Assessment screen — /try-szintű, egysoros haladás-fejléc terrakotta
+  // sávval; a kitöltés-logika érintetlen.
   const remainingQuestions = Math.max(totalQuestions - answeredCount, 0);
-  const etaMinutes = Math.max(1, Math.ceil((remainingQuestions * 15) / 60));
+  // UX-A4-minta: a landinggel/intróval azonos becslő-konstans (9 mp/item).
+  const etaMinutes = estimateAssessmentMinutes(remainingQuestions);
+  const progressPct = totalQuestions > 0 ? (answeredCount / totalQuestions) * 100 : 0;
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined;
 
   return (
     <div className="min-h-dvh bg-cream">
-      <div className="mx-auto max-w-3xl px-4 pt-8 pb-20 md:pt-12">
+      <div className="mx-auto max-w-3xl px-4 pt-6 pb-20 md:pt-10">
 
-        {/* Sticky progress bar */}
-        <div className="sticky top-2 z-20 mb-6 rounded-2xl border border-sand bg-white/90 px-4 py-3 shadow-sm backdrop-blur">
-          <ProgressBar current={answeredCount} total={totalQuestions} />
-          <div className="mt-2 flex items-center gap-2 text-xs text-muted">
-            <span className="rounded-md bg-warm-mid px-2 py-1 whitespace-nowrap">
+        {/* Sticky progress — számláló + terrakotta sáv + ETA */}
+        <div className="sticky top-2 z-20 mb-5 rounded-2xl border border-sand bg-white/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
+          <div className="flex items-center gap-3">
+            <div className="flex items-baseline gap-1 whitespace-nowrap">
+              <span className="font-fraunces text-[17px] font-medium leading-none text-ink">
+                {answeredCount}
+              </span>
+              <span className="text-[11px] text-muted">/ {totalQuestions}</span>
+            </div>
+            <div
+              className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-sand/80"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={totalQuestions}
+              aria-valuenow={answeredCount}
+              aria-label={tf("candidate.answeredCounter", locale, {
+                answered: answeredCount,
+                total: totalQuestions,
+              })}
+            >
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-accent-candidate-mid to-accent-candidate transition-all duration-300"
+                style={{ width: `${progressPct}%` }}
+              />
+            </div>
+            <span className="whitespace-nowrap rounded-full bg-accent-candidate-soft px-2.5 py-1 text-[11px] font-medium text-accent-candidate-strong">
               {tf("candidate.etaRemaining", locale, { minutes: etaMinutes })}
             </span>
-            {position && (
-              <span className="hidden truncate sm:block">
-                {position}
-              </span>
-            )}
           </div>
+          {position && (
+            <p className="mt-1.5 truncate text-[11px] text-muted">{position}</p>
+          )}
         </div>
 
-        <div className="mb-4 rounded-xl border border-sand bg-cream px-4 py-2.5 text-center text-sm text-ink-body">
-          {t("candidate.answerHint", locale)}
-        </div>
-
-        {/* Auto-advance toggle */}
-        <div className="mb-4">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink-body">
+        {/* Kitöltési tipp + auto-advance egy sorban */}
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+          <p className="text-caption italic text-muted">
+            {t("candidate.answerHint", locale)}
+          </p>
+          <label className="inline-flex min-h-[44px] cursor-pointer items-center gap-2">
+            <span
+              aria-hidden
+              className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
+                autoAdvance
+                  ? "border-accent-candidate bg-accent-candidate"
+                  : "border-warm-dark bg-white"
+              }`}
+            >
+              {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
+            </span>
             <input
               type="checkbox"
               checked={autoAdvance}
               onChange={(e) => setAutoAdvance(e.target.checked)}
-              className="h-4 w-4 rounded border-sand"
+              className="sr-only"
             />
-            {t("candidate.autoAdvance", locale)}
+            <span className="text-[11px] text-muted">{t("candidate.autoAdvance", locale)}</span>
           </label>
         </div>
 
@@ -522,15 +600,15 @@ export function CandidateClient({
           </AnimatePresence>
         </div>
 
-        {/* Navigation */}
+        {/* Navigation — terrakotta fő CTA */}
         <div className="mt-8 flex items-center justify-between gap-4">
           <motion.button
             onClick={handlePrevStep}
             disabled={!canGoPrev}
-            className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
+            className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
               !canGoPrev
-                ? "cursor-not-allowed bg-sand text-muted"
-                : "border border-sand bg-white text-ink-body hover:border-sage/40 hover:text-bronze"
+                ? "cursor-not-allowed bg-sand/70 text-muted"
+                : "border border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
             }`}
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}
@@ -542,9 +620,9 @@ export function CandidateClient({
             <motion.button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
+              className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 !isSubmitting
-                  ? "bg-sage text-white hover:bg-sage-dark"
+                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "bg-sand text-muted"
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
@@ -559,9 +637,9 @@ export function CandidateClient({
               onClick={handleNextStep}
               disabled={isSubmitting}
               aria-disabled={!currentQuestionAnswered || isSubmitting}
-              className={`min-h-[48px] rounded-lg px-6 text-sm font-semibold transition-all ${
+              className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 currentQuestionAnswered && !isSubmitting
-                  ? "bg-sage text-white hover:bg-sage-dark"
+                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "cursor-not-allowed bg-sand text-muted"
               }`}
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}
@@ -572,7 +650,7 @@ export function CandidateClient({
           )}
         </div>
 
-        <p className="mt-6 text-center text-sm text-muted">
+        <p className="mt-6 text-center text-caption text-muted">
           {t("candidate.scaleHint", locale)}
         </p>
       </div>
