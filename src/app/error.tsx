@@ -17,7 +17,7 @@ export default function GlobalError({
           Valami félrement
         </h1>
         <p className="text-sm text-ink-body/70 mb-6">
-          {error.message || "Kérjük, próbáld újra."}
+          {error.message || "Próbáld újra."}
         </p>
         <button
           onClick={reset}

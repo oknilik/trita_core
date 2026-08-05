@@ -110,7 +110,7 @@ const translations = {
       greeting: (name: string) => `Hi ${name}!`,
       body: "Great news: one of the people you invited completed the questionnaire. See how others perceive you!",
       cta: "View my results",
-      thanks: "Thank you for participating in the research!",
+      thanks: "Best regards,",
       team: "the trita team",
     },
   },
@@ -154,6 +154,56 @@ const translations = {
       cta: "Open the profile",
       footer:
         "The sender can revoke this link at any time. If you don't recognize the sender, you can ignore this email.",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+  },
+  reflectionPrompt: {
+    hu: {
+      subject: "Egy hét telt el — mit láttál magadból?",
+      greeting: "Szia,",
+      body: (dimLabel: string) =>
+        `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
+      body2:
+        "Ha kíváncsi vagy, hogyan működnétek együtt egy kollégáddal, a páros összehasonlítással meg is nézhetitek.",
+      cta: "Páros összehasonlítás megnyitása",
+      optOut: "Nem kérsz több ilyen emailt? Leiratkozás itt:",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "A week has passed — what did you notice?",
+      greeting: "Hi,",
+      body: (dimLabel: string) =>
+        `Your personality profile was completed a week ago. Your strongest dimension was ${dimLabel} — observe it deliberately in one concrete situation this week: when did it help, and when did it over-rev?`,
+      body2:
+        "If you're curious how you'd work with a colleague, the pair comparison will show you.",
+      cta: "Open the pair comparison",
+      optOut: "Don't want emails like this? Unsubscribe here:",
+      thanks: "Best regards,",
+      team: "the trita team",
+    },
+  },
+  compareInvite: {
+    hu: {
+      subject: "Hogyan működnétek együtt? – meghívó a tritán",
+      greeting: "Szia,",
+      body: (sender: string) =>
+        `${sender} meghívott egy páros összehasonlításra a tritán: a saját kitöltésed után mindketten látjátok, mi menne köztetek magától, hol várható súrlódás, és mit érdemes előre megbeszélni. A számszerű pontszámaid nem jelennek meg neki.`,
+      cta: "Meghívó megnyitása",
+      footer:
+        "A meghívó 30 napig él, és bármelyik fél bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
+      thanks: "Üdvözlettel,",
+      team: "a trita csapata",
+    },
+    en: {
+      subject: "How would you work together? – an invite on trita",
+      greeting: "Hi,",
+      body: (sender: string) =>
+        `${sender} invited you to a pair comparison on trita: after completing your own assessment, you both see what would come easily between you, where friction is likely, and what to agree on up front. Your numeric scores are not shown to them.`,
+      cta: "Open the invite",
+      footer:
+        "The invite lives for 30 days, and either side can revoke it at any time. If you don't recognize the sender, you can ignore this email.",
       thanks: "Best regards,",
       team: "the trita team",
     },
@@ -229,7 +279,7 @@ const translations = {
       subject: "Már majdnem kész vagy a teszttel – folytasd itt",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
-        `Láttuk, hogy elkezdted a személyiségtesztet a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
+        `Láttuk, hogy elkezdted ${withHuArticle(testName)} kitöltését a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
       thanks: "Üdvözlettel,",
@@ -242,7 +292,7 @@ const translations = {
         `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} — you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
       cta: "Continue my assessment",
       footer: "If you've already completed the test, feel free to ignore this email.",
-      thanks: "Thank you for participating in the research!",
+      thanks: "Best regards,",
       team: "the trita team",
     },
   },
@@ -528,6 +578,129 @@ export async function sendProfileShareEmail(params: {
     throw new Error("EMAIL_SEND_FAILED");
   }
   log.info({ event: "email.sent", template: "profile_share", to: params.to }, "Profile share sent");
+}
+
+function buildCompareInviteHtml(params: {
+  locale: Locale;
+  senderName: string;
+  token: string;
+}): string {
+  const t = translations.compareInvite[params.locale];
+  const cta = renderCtaButton({
+    href: `${APP_URL}/interaction/compare/${params.token}`,
+    label: t.cta,
+  });
+
+  const bodyContent = `
+    <p style="${EMAIL_P}">
+      ${t.greeting}
+    </p>
+    <p style="${EMAIL_P};margin-bottom:24px">
+      ${t.body(params.senderName)}
+    </p>
+    ${cta}
+    <p style="${EMAIL_P};margin-top:24px;font-size:13px;color:#8a8a98">
+      ${t.footer}
+    </p>`;
+
+  return buildEmailLayout({
+    locale: params.locale,
+    bodyContent,
+    thanks: t.thanks,
+    team: t.team,
+  });
+}
+
+// Reflexiós utókövetés (D1 follow-up) — ÉLETCIKLUS-email: kizárólag
+// lifecycleEmailsOptOut=false mellett küldhető, leiratkozó-linkkel.
+export async function sendReflectionPromptEmail(params: {
+  to: string;
+  dimLabel: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.reflectionPrompt[locale];
+  const ctaLink = `${APP_URL}/interaction`;
+  const optOutLink = `${APP_URL}/email-preferences`;
+
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.dimLabel),
+    "",
+    t.body2,
+    "",
+    `${t.cta}: ${ctaLink}`,
+    "",
+    `${t.optOut} ${optOutLink}`,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const cta = renderCtaButton({ href: ctaLink, label: t.cta });
+  const bodyContent = `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    <p style="${EMAIL_P}">${t.body(params.dimLabel)}</p>
+    <p style="${EMAIL_P};margin-bottom:24px">${t.body2}</p>
+    ${cta}
+    <p style="${EMAIL_P};margin-top:28px;font-size:12px;color:#8a8a98">
+      ${t.optOut} <a href="${optOutLink}" style="color:#8a8a98">${optOutLink}</a>
+    </p>`;
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html: buildEmailLayout({ locale, bodyContent, thanks: t.thanks, team: t.team }),
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "reflection_prompt", to: params.to, err: error }, "Failed to send reflection prompt");
+    throw new Error("EMAIL_SEND_FAILED");
+  }
+  log.info({ event: "email.sent", template: "reflection_prompt", to: params.to }, "Reflection prompt sent");
+}
+
+// Páros összehasonlítás meghívó (B1 follow-up) — a profil-megosztó email
+// mintájára; a link a consent-oldalra visz.
+export async function sendCompareInviteEmail(params: {
+  to: string;
+  senderName: string;
+  token: string;
+  locale?: Locale;
+}): Promise<void> {
+  const locale = params.locale ?? getLocale(params.to);
+  const t = translations.compareInvite[locale];
+  const link = `${APP_URL}/interaction/compare/${params.token}`;
+
+  const text = [
+    t.greeting,
+    "",
+    t.body(params.senderName),
+    "",
+    `${t.cta}: ${link}`,
+    "",
+    t.footer,
+    "",
+    t.thanks,
+    t.team,
+  ].join("\n");
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html: buildCompareInviteHtml({ locale, senderName: params.senderName, token: params.token }),
+    text,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "compare_invite", to: params.to, err: error }, "Failed to send compare invite");
+    throw new Error("EMAIL_SEND_FAILED");
+  }
+  log.info({ event: "email.sent", template: "compare_invite", to: params.to }, "Compare invite sent");
 }
 
 function buildObserverCompletionHtml(params: {

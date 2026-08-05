@@ -26,7 +26,16 @@ const CSP_REPORT_ONLY = [
 ].join("; ");
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["iridaceous-rickie-overloath.ngrok-free.dev", "192.168.173.183"],
+  // 127.0.0.1: az e2e (Playwright) böngészője IP-n éri el a dev-szervert
+  // (a CI-runneren a "localhost" névfeloldás megbízhatatlan volt). Enélkül
+  // a Next dev-guard 403-mal blokkolja az Origin-fejléces /_next/* kéréseket
+  // (pl. a HMR/devtools websocketet) — ld. a 2026-08-05-i e2e CI-futás
+  // „Blocked cross-origin request from 127.0.0.1" figyelmeztetését.
+  allowedDevOrigins: [
+    "iridaceous-rickie-overloath.ngrok-free.dev",
+    "192.168.173.183",
+    "127.0.0.1",
+  ],
 
   experimental: {
     // Kliens-oldali Router Cache élettartam.

@@ -246,10 +246,10 @@ export const PATTERNS: Record<string, PatternContent> = {
   },
   "0000": {
     name: "Erősen Független Egyéni Minta",
-    alias: "Zsoldosok",
+    alias: "Szabadúszók",
     description:
-      "Független, gyakorlatias egyéniségek, csapatként alig léteznek. Tranzakciós logika.",
-    strengths: ["Erős egyéni teljesítmény", "Pragmatikus döntések", "Alacsony maintenance", "Nyomásállóság"],
+      "Független, gyakorlatias egyéniségek; az elköteleződés inkább a feladathoz, mint a csapathoz kötődik. Tranzakciós logika.",
+    strengths: ["Erős egyéni teljesítmény", "Pragmatikus döntések", "Kevés vezetői ráfordítást igényelnek", "Nyomásállóság"],
     risks: ["Csapat nem létezik", "Nulla tudásmegosztás", "Alacsony lojalitás", "Visszajelzésre nem reagálnak"],
     people: "Önálló, pragmatikus, tranzakció-orientált egyének.",
     contexts: "Freelancer poolok, értékesítési hálózatok, befektetési csapatok",

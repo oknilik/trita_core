@@ -1,5 +1,7 @@
 "use client";
 
+import { huArticle } from "@/lib/hu-grammar";
+
 // A külső visszajelzés állapot-kártyája szervezeti tagoknak (self/csapat
 // szétválasztás, 2026-07-22). Állapot-nyelvet beszél, nem hiány-nyelvet:
 // a kampány-vezérelt observer nem a felhasználó személyes mulasztása.
@@ -70,7 +72,7 @@ export function ObserverFlowStatusCard({
         <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
           {flow.activeCampaignName
             ? isHu
-              ? `A(z) „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek — ők egy publikus linken, belépés nélkül töltenek ki rólad.`
+              ? `${huArticle(flow.activeCampaignName) === "az" ? "Az" : "A"} „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek — ők egy publikus linken, belépés nélkül töltenek ki rólad.`
               : `As part of the "${flow.activeCampaignName}" measurement you can request outside feedback: use the invite manager below to ask colleagues or external partners — they fill it in about you via a public link, no login needed.`
             : isHu
               ? "A szervezeted mérésében te kéred fel az értékelőidet: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek."

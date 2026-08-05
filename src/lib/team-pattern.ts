@@ -206,11 +206,14 @@ export function calculateTeamPattern(
   }
 
   // ── 3. Mintakód (domináns 4 betű) ──────────────────────
+  // A pólus-betűk a PATTERN_NAMES kulcs-ábécéje (E/R, C/V, S/F, X/P) —
+  // NEM a belső dimenziókódok. (A 2026-07-i TRITAN→HEXACO átnevezés itt
+  // tévedésből a betű-literálokat is átírta; a kulcsok 4 betűsek maradtak.)
   const patternCode = [
-    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "RESO", "R"),
-    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "THOR", "V"),
+    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "E", "R"),
+    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "C", "V"),
     poleLetter(rawAxes.discipline, THRESHOLDS.discipline, "S", "F"),
-    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "TEMP", "P"),
+    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "X", "P"),
   ].join("");
 
   // ── 4. Globális diverzitás suffix ──────────────────────
@@ -232,7 +235,7 @@ export function calculateTeamPattern(
     const axisIndex = ["drive", "cohesion", "discipline", "openness"].indexOf(mostUnstable);
     const currentLetter = altLetters[axisIndex];
     const flipMap: Record<string, string> = {
-      RESO: "R", R: "RESO", THOR: "V", V: "THOR", S: "F", F: "S", TEMP: "P", P: "TEMP",
+      E: "R", R: "E", C: "V", V: "C", S: "F", F: "S", X: "P", P: "X",
     };
     altLetters[axisIndex] = flipMap[currentLetter];
     alternativeCode = altLetters.join("");
@@ -356,7 +359,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     blindSpots: [
       "A tempó kiégéshez vezethet — a csapat nem mindig ismeri fel a saját korlátait",
       "Az újdonság iránti vonzalom elterelheti a fókuszt az alapfeladatokról",
-      "A magas kohézió csoportgondolkodást (groupthink) okozhat: senki nem mer ellentmondani",
+      "A magas kohézió csoportgondolkodást (groupthink) okozhat: előfordulhat, hogy senki nem mond ellent",
       "A struktúra rugalmatlansággá válhat, ha a folyamatok túlterheltek",
     ],
     communicationStyle:
@@ -384,10 +387,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Megbízható, kiszámítható teljesítmény",
     ],
     blindSpots: [
-      "Innovációs deficit — nehezen lépnek ki a komfortzónájukból",
+      "Az új megközelítések ritkábban jelennek meg — a komfortzónából kilépés külső impulzust igényelhet",
       "A pragmatizmus ellenállást szülhet új eszközök, módszerek iránt",
       "A harmonikus felszín alatt elfojtott feszültségek halmozódhatnak",
-      "Külső változásokra lassan reagálnak",
+      "Külső változásokra lassabban reagálhatnak",
     ],
     communicationStyle:
       "Világos, strukturált, feladatorientált. Szeretik a napirendeket, a rövid egyeztetéseket és a dokumentált döntéseket.",
@@ -415,9 +418,9 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     ],
     blindSpots: [
       "A struktúra hiánya kaotikus végrehajtáshoz vezethet",
-      "Nehéz priorizálni — minden ötlet egyformán vonzó",
-      "A határidők nem a legfontosabb értékük",
-      "A harmonikus légkör miatt nehéz negatív visszajelzést adni",
+      "Nehéz lehet priorizálni — minden ötlet egyformán vonzónak tűnhet",
+      "A határidők jellemzően nem a legfontosabb értékük",
+      "A harmonikus légkör miatt nehéz lehet negatív visszajelzést adni",
     ],
     communicationStyle:
       "Informális, szabad asszociációs, gyakran spontán. Sok ötletelés, kevés formális megbeszélés.",
@@ -446,8 +449,8 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     blindSpots: [
       "A lojalitás akadályozhatja a szükséges változásokat",
       "A pragmatizmus rövidtávú gondolkodást szülhet",
-      "Külső perspektívák kizárása — „mi tudjuk, hogyan kell”",
-      "A rugalmasság néha tervezetlenséget jelent",
+      "Külső perspektívák kizárása fordulhat elő — „mi tudjuk, hogyan kell”",
+      "A rugalmasság néha tervezetlenséget jelenthet",
     ],
     communicationStyle:
       "Közvetlen, személyes, néha informális a kelleténél. A döntések gyakran a folyosón születnek.",
@@ -479,7 +482,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "A versengés alááshatja az együttműködést — tudásmegosztás hiánya",
       "Magas stressz-szint, kiégés veszélye",
       "„Nyertes–vesztes” dinamika",
-      "Az egyéni siker fontosabb, mint a csapatcél",
+      "Az egyéni siker fontosabbá válhat a csapatcélnál",
     ],
     communicationStyle:
       "Direkt, eredményközpontú, néha konfrontatív. Az adatok és eredmények beszélnek.",
@@ -506,10 +509,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Kiszámítható, magas output",
     ],
     blindSpots: [
-      "Alacsony pszichológiai biztonság — nehéz hibát beismerni",
-      "A hierarchia elfojtja az alulról jövő ötleteket",
+      "A profil alapján felmerülhet, hogy a hibák kimondása nehezebb — ezt a pszichológiai biztonság pulzusmérése tudja megerősíteni vagy cáfolni",
+      "A hierarchia elfojthatja az alulról jövő ötleteket",
       "Rövid távú gondolkodás",
-      "Magas fluktuáció — aki nem bírja a tempót, elmegy",
+      "Magas fluktuáció fordulhat elő — aki nem bírja a tempót, könnyen továbbáll",
     ],
     communicationStyle:
       "Felülről lefelé, tömör, utasításjellegű. A megbeszélések rövidek és döntésközpontúak.",
@@ -531,15 +534,15 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Szikrázó, impulzív csapat, ahol mindenki a saját ötletét hajtja, de a kollektív energia előre visz.",
     strengths: [
       "Rendkívül magas kreativitás és energia",
-      "Bátor, unconventional ötletek",
+      "Bátor, konvenciókon túllépő ötletek",
       "Gyors adaptáció",
       "Vonzó kreatív tehetségek számára",
     ],
     blindSpots: [
-      "Szinte lehetetlen priorizálni",
+      "A priorizálás jellemzően nehezen megy",
       "Kaotikus végrehajtás",
-      "Hiányzik az összetartás — egyéni ambíciók dominálnak",
-      "Döntések születnek, de nem tartják be őket",
+      "Az összetartás hiányozhat — az egyéni ambíciók dominálhatnak",
+      "Döntések születnek, de a betartásuk elmaradhat",
     ],
     communicationStyle:
       "Hangos, gyors, egymásba vágnak. Spontán ötletelés, ad hoc döntéshozatal.",
@@ -569,7 +572,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Gyenge csapatidentitás",
       "Minimális tudásmegosztás",
       "Rövid távú pragmatizmus → stratégiai vakság",
-      "Új tagok nehezen integrálódnak",
+      "Új tagok nehezebben integrálódhatnak",
     ],
     communicationStyle:
       "Tömör, eredményközpontú, szükségalapú. Csak akkor kommunikálnak, ha kell.",
@@ -599,7 +602,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     ],
     blindSpots: [
       "Lassú döntéshozatal — perfekcionizmus béníthat",
-      "Nehezen kommunikálnak kifelé — a munka „láthatatlan”",
+      "Kifelé nehezebben megy a kommunikáció — a munka könnyen „láthatatlan” marad",
       "Konfrontáció-kerülés → felgyülemlett feszültség",
       "Kívülről passzivitásnak tűnhet",
     ],
@@ -629,9 +632,9 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     ],
     blindSpots: [
       "Változás-ellenállás — „eddig is így csináltuk”",
-      "Kívülről láthatatlanok",
+      "Kívülről könnyen láthatatlanok maradnak",
       "A csapat zárt lehet kívülállók felé",
-      "Az innováció szinte teljesen hiányzik",
+      "Az innováció háttérbe szorulhat",
     ],
     communicationStyle:
       "Halk, strukturált, ritka. Szükségalapú. Írásban jobbak, mint szóban.",
@@ -658,10 +661,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "A tagok tartósan elköteleződnek",
     ],
     blindSpots: [
-      "Nehéz a külvilággal kommunikálni — „saját nyelv”",
+      "Nehéz lehet a külvilággal kommunikálni — „saját nyelv”",
       "Lassú végrehajtás",
       "A belső harmónia fontosabb lehet, mint az eredmény",
-      "Nehezen kezelik a külső nyomást és határidőket",
+      "A külső nyomást és a határidőket nehezebben kezelhetik",
     ],
     communicationStyle:
       "Mély, személyes, gyakran nonverbális. Kívülállóknak nehéz csatlakozni.",
@@ -688,10 +691,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Jó alkalmazkodóképesség",
     ],
     blindSpots: [
-      "Alacsony ambíció — komfortzóna vonzóbb, mint a kihívás",
-      "Nehéz nehéz döntéseket hozni",
+      "A csapat ritkábban keresi magától a kihívást — a nagyobb célok külső kijelölést igényelhetnek",
+      "A kemény döntések meghozatala nehezükre eshet",
       "Kívülről „láthatatlan”",
-      "Innováció hiányzik — pragmatizmus → konzervativizmus",
+      "Az innováció háttérbe szorulhat — a pragmatizmus konzervativizmusba fordulhat",
     ],
     communicationStyle:
       "Meleg, személyes, támogató. Sok informális beszélgetés, kevés formális megbeszélés.",
@@ -720,9 +723,9 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Magas innovációs potenciál a szakterületen belül",
     ],
     blindSpots: [
-      "Silók — nem osztják meg a tudást",
+      "Silók alakulhatnak ki — a tudásmegosztás akadozhat",
       "Rejtett rivalizálás",
-      "Nehéz közös döntést hozni",
+      "Nehéz lehet közös döntést hozni",
       "Kívülről hidegnek, elérhetetlennek tűnhetnek",
     ],
     communicationStyle:
@@ -752,8 +755,8 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     blindSpots: [
       "Alacsony érzelmi kapcsolódás — „csak a munka számít”",
       "Kiégés veszélye",
-      "Új ötletek nehezen kapnak teret",
-      "Inkább egyéni hozzájárulók, mint valódi csapat",
+      "Új ötletek nehezebben kaphatnak teret",
+      "Inkább egyéni hozzájárulókként működhetnek, mint valódi csapatként",
     ],
     communicationStyle:
       "Tömör, technikai, szükségalapú. Részletes dokumentáció, minimális csevegés.",
@@ -780,10 +783,10 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "Vonzó autonómiát kereső tehetségek számára",
     ],
     blindSpots: [
-      "Szinte nincs csapatidentitás",
+      "A csapatidentitás jelei gyengék lehetnek",
       "Minimális koordináció — párhuzamos munkák",
       "Versengés + autonómia → izoláció",
-      "Nehéz közös irányba terelni",
+      "Nehéz lehet őket közös irányba terelni",
     ],
     communicationStyle:
       "Ritka, mély, 1:1 alapú. Gyenge csoportos kommunikáció.",
@@ -799,21 +802,21 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
   },
 
   RVFP: {
-    name: "Zsoldosok",
+    name: "Szabadúszók",
     subtitle: "Visszafogott · Versengő · Rugalmas · Pragmatikus",
     description:
-      "Független, gyakorlatias egyéniségek, csapatként alig léteznek. A tranzakciós logika dominál.",
+      "Független, gyakorlatias egyéniségek; az elköteleződés inkább a feladathoz, mint a csapathoz kötődik. A tranzakciós logika dominál.",
     strengths: [
       "Erős egyéni teljesítmény és önállóság",
       "Pragmatikus, gyors egyéni döntéshozatal",
-      "Alacsony maintenance — nem igényelnek sok figyelmet",
+      "Kevés vezetői ráfordítást igényelnek",
       "Jól kezelik a nyomást",
     ],
     blindSpots: [
-      "A csapat gyakorlatilag nem létezik",
-      "Nulla tudásmegosztás — ha valaki elmegy, a tudása is",
-      "Alacsony lojalitás — jobb ajánlatért azonnal váltanak",
-      "Vezetői visszajelzésre nem reagálnak",
+      "A közös csapatidentitás jelei gyengék",
+      "A tudásmegosztás jellemzően alkalomszerű — ha valaki elmegy, a tudása is vele mehet",
+      "Az elköteleződés inkább a feladathoz, mint a csapathoz kötődik",
+      "A vezetői visszajelzésre kevésbé lehetnek fogékonyak",
     ],
     communicationStyle:
       "Minimális, tranzakciós. Csak a szükséges info cserélődik.",
@@ -844,7 +847,7 @@ export const AXIS_LABELS = {
 export const GRADE_LABELS: Record<AxisGrade, string> = {
   strong_high: "erősen",
   slight_high: "enyhén",
-  balanced:    "balanszált",
+  balanced:    "kiegyensúlyozott",
   slight_low:  "enyhén",
   strong_low:  "erősen",
 };

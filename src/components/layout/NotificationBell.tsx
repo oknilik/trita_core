@@ -1,5 +1,8 @@
 "use client";
 
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { useNotifications } from "./NotificationsProvider";
 
 interface NotificationBellProps {
@@ -9,6 +12,8 @@ interface NotificationBellProps {
 
 export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
   const { count, ensureList } = useNotifications();
+  const { locale } = useLocale();
+  const loc = locale as Locale;
 
   function handleClick() {
     if (!isOpen) ensureList();
@@ -19,7 +24,10 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
     <button
       type="button"
       onClick={handleClick}
-      aria-label="Notifications"
+      // NH-F4PLUS: lokalizált címke + dialog-viszony jelzése a felolvasónak.
+      aria-label={t("notifications.bellLabel", loc)}
+      aria-haspopup="dialog"
+      aria-expanded={isOpen}
       className="relative flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-surface-subtle)]"
     >
       <svg

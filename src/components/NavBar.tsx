@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -117,7 +117,14 @@ export function NavBar({
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [hasDraft] = useState(() => hasAssessmentDraftInStorage("TRITAN"));
+  // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
+  // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
+  // komponensek useEffect-mintáját követjük.
+  const [hasDraft, setHasDraft] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setHasDraft(hasAssessmentDraftInStorage("TRITAN"));
+  }, []);
 
   // Hide on assessment/try pages (they have their own minimal nav)
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;

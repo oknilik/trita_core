@@ -28,7 +28,6 @@ const T = {
 
 function AxisSlider({
   axis,
-  index,
   value,
   onChange,
 }: {

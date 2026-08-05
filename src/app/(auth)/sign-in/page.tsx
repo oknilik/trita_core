@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, Suspense, useEffect, useState } from "react";
-import type { ErrorInfo, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -21,7 +21,7 @@ class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError:
   static getDerivedStateFromError() {
     return { hasError: true };
   }
-  componentDidCatch(_error: Error, _info: ErrorInfo) {
+  componentDidCatch() {
     try { window.sessionStorage.clear(); } catch { /* ignore */ }
   }
   render() {
@@ -29,7 +29,7 @@ class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError:
       return (
         <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
           <div className="w-full max-w-md rounded border border-sand bg-white p-8 text-center">
-            <p className="text-sm text-ink-body">Valami hiba történt. Kérjük, frissítsd az oldalt.</p>
+            <p className="text-sm text-ink-body">Hiba történt. Frissítsd az oldalt.</p>
             <button
               type="button"
               onClick={() => window.location.reload()}

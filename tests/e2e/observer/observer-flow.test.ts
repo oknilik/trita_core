@@ -2,9 +2,11 @@ import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { prisma } from "../../../src/lib/prisma";
 import { getTestConfig } from "../../../src/lib/questions";
+import { DEFAULT_ASSESSMENT_FORM } from "../../../src/lib/operating-mode";
 import { calculateScores } from "../../../src/lib/scoring";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
+const DAY_MS = 24 * 60 * 60 * 1000;
 const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
 
 function makeId(prefix: string): string {
@@ -25,7 +27,11 @@ async function createObserverFixture(options: {
 } = {}): Promise<ObserverFixture> {
   const inviterId = makeId("obs_inviter");
   const invitationCount = options.invitationCount ?? 1;
-  const config = getTestConfig("TRITAN");
+  // A /observe/[token] a mindenkori alapértelmezett formát szolgálja ki
+  // (TSFI-S, 60 item) — a fixture UGYANAZT a kérdéslistát használja, hogy az
+  // "utolsó kérdés kivételével kitöltött draft" tényleg egyetlen kattintásra
+  // hagyja a kitöltőt.
+  const config = getTestConfig("TRITAN", "en", DEFAULT_ASSESSMENT_FORM);
   const selfAnswers = config.questions.map((q) => ({
     questionId: q.id,
     value: 3,
@@ -58,6 +64,8 @@ async function createObserverFixture(options: {
     },
   });
 
+  // Relatív lejárat: a token-életciklus a VALÓS órához mérten dől el
+  // (resolveObserverTokenLifecycle) — fix dátummal a fixture elévülne.
   const invitations = await Promise.all(
     Array.from({ length: invitationCount }).map(() =>
       prisma.observerInvitation.create({
@@ -66,7 +74,7 @@ async function createObserverFixture(options: {
           inviterId,
           testType: "TRITAN",
           status: options.status ?? "PENDING",
-          expiresAt: options.expiresAt ?? new Date("2026-04-20T10:00:00.000Z"),
+          expiresAt: options.expiresAt ?? new Date(Date.now() + 30 * DAY_MS),
           observerType: "EXTERNAL",
         },
       }),
@@ -138,26 +146,21 @@ async function completeObserverViaUi(
   await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
   await page.getByRole("button", { name: /^4 - / }).first().click();
 
-  await expect
-    .poll(async () => {
-      const confidenceLabelVisible = await page
-        .getByText(/How confident are you|Mennyire vagy biztos/i)
-        .first()
-        .isVisible()
-        .catch(() => false);
-      if (confidenceLabelVisible) return "confidence";
-      const nextVisible = await page
-        .getByRole("button", { name: NEXT_BUTTON_LABEL })
-        .isVisible()
-        .catch(() => false);
-      return nextVisible ? "needs_next" : "pending";
-    })
-    .toMatch(/confidence|needs_next/);
-
-  const nextButton = page.getByRole("button", { name: NEXT_BUTTON_LABEL });
-  if (await nextButton.isVisible().catch(() => false)) {
-    await nextButton.click();
+  // Az utolsó válasz után az auto-advance (~130 ms) magától a confidence-
+  // lépésre visz; ha mégsem, a Tovább gomb visz át. A korábbi poll az
+  // auto-advance időzítése ELŐTT is elfogadta a Tovább-ágat, így a kattintás
+  // a fázisváltással (framer-motion átmenettel) versenyzett.
+  const confidenceLabel = page
+    .getByText(/How confident are you|Mennyire vagy biztos/i)
+    .first();
+  const reachedConfidence = await confidenceLabel
+    .waitFor({ state: "visible", timeout: 3_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!reachedConfidence) {
+    await page.getByRole("button", { name: NEXT_BUTTON_LABEL }).click();
   }
+  await expect(confidenceLabel).toBeVisible();
 
   await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
   await page.getByRole("button", { name: /^4 - / }).first().click();
@@ -212,7 +215,7 @@ test.describe("C5.6 Observer E2E happy path", () => {
   test("expired token shows expired state and cannot proceed", async ({ page }) => {
     const fixture = await createObserverFixture({
       invitationCount: 1,
-      expiresAt: new Date("2026-03-01T10:00:00.000Z"),
+      expiresAt: new Date(Date.now() - DAY_MS),
     });
     try {
       await page.goto(`/observe/${fixture.invitationTokens[0]}`, { waitUntil: "domcontentloaded" });

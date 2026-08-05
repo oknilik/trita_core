@@ -104,11 +104,15 @@ test("dashboard block visibility is role-aware", () => {
   assert.equal(canViewDashboardBlock("org_manager", "analytics_teaser"), true);
 });
 
-test("member topnav has results + tasks next to own teams (2026-07-29)", () => {
+test("member topnav has results + interaction + tasks next to own teams (UX-B7)", () => {
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "tasks", "teams"]);
+  assert.deepEqual(ids, ["home", "results", "interaction", "tasks", "teams"]);
+
+  // Az összehasonlítás-belépő az /interaction oldalra visz.
+  const interactionItem = navItems.find((item) => item.id === "interaction");
+  assert.equal(interactionItem?.primaryHref, "/interaction");
 });
 
 test("tasks badge counts open measurement work; hidden without org and tasks", () => {
@@ -139,7 +143,7 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "tasks"]);
+  assert.deepEqual(ids, ["home", "results", "interaction", "tasks"]);
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {

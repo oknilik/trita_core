@@ -1,9 +1,9 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { resolveGuestClaimViewerClerkId } from "@/lib/guest-claim-auth";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -15,7 +15,7 @@ const claimSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const userId = await resolveGuestClaimViewerClerkId();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
@@ -72,6 +72,43 @@ export async function POST(req: Request) {
     questionId: a.questionId,
     value: Number(a.value),
   }));
+
+  // Duplikált claim-védelem (idempotencia): a kliens hiba után újrapróbál
+  // (retry gomb), és a válasz azután is elveszhet, hogy a mentés a szerveren
+  // már sikerült. Ha a user legutóbbi self-eredménye UGYANEZT a
+  // válaszkészletet hordozza, nem írunk új sort — a meglévő eredmény id-ja
+  // megy vissza. Eltérő válaszkészlet (újrakitöltés) továbbra is új eredmény.
+  const canonicalAnswers = (list: Array<{ questionId: number; value: number }>) =>
+    JSON.stringify(
+      [...list]
+        .sort((a, b) => a.questionId - b.questionId)
+        .map((a) => [a.questionId, a.value]),
+    );
+
+  const latestSelf = await prisma.assessmentResult.findFirst({
+    where: { userProfileId: profile.id, isSelfAssessment: true },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, scores: true },
+  });
+  if (latestSelf) {
+    const storedAnswers = (latestSelf.scores as { answers?: unknown } | null)
+      ?.answers;
+    const storedTyped = Array.isArray(storedAnswers)
+      ? storedAnswers.filter(
+          (a): a is { questionId: number; value: number } =>
+            typeof a === "object" &&
+            a !== null &&
+            typeof (a as { questionId?: unknown }).questionId === "number" &&
+            typeof (a as { value?: unknown }).value === "number",
+        )
+      : null;
+    if (
+      storedTyped &&
+      canonicalAnswers(storedTyped) === canonicalAnswers(typedAnswers)
+    ) {
+      return NextResponse.json({ id: latestSelf.id, alreadyClaimed: true });
+    }
+  }
 
   const scores = calculateScores(testType, typedAnswers);
 

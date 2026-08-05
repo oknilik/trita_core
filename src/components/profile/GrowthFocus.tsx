@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
 interface FacetEntry {
@@ -8,6 +9,10 @@ interface FacetEntry {
   dimLabel: string;
   dimColor: string;
 }
+
+// LR-FACET: a „Szorongás" facethez nem-klinikai glossza jár — a feltétel a
+// facet-KÓDRA megy (nem a lokalizált névre), ld. DimensionAccordion párja.
+const ANXIETY_FACET_CODE = "anxiety";
 
 interface GrowthFocusProps {
   /** Top 3 lowest-scored facets (pre-computed in page) */
@@ -90,6 +95,12 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
                   {item.dimLabel}
                 </span>
               </div>
+
+              {item.code === ANXIETY_FACET_CODE && (
+                <p className="mt-1 text-xs leading-snug text-muted">
+                  {t("results.facetAnxietyGloss", locale)}
+                </p>
+              )}
 
               {/* Score bar */}
               <div className="mt-2 flex items-center gap-2">

@@ -19,7 +19,9 @@ import { can, resolveCapabilities } from "@/lib/policy-engine";
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-04-15T10:00:00.000Z");
+// Lejárathoz a VALÓS órához képesti jövő kell: a submit API a szerver-oldali
+// Date.now()-val ellenőriz, fix dátum idővel a múltba csúszna (teszt-rothadás).
+const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 
 function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;
@@ -349,7 +351,10 @@ test("C5.4 Observer → result linkage", async (t) => {
 
   // ── Entitlement: observerInvite capability ─────────────────────────────
 
-  await t.test("observerInvite denied for free self-only user (no purchase, no membership)", () => {
+  // Billing-korszak utáni szabály (2026-07, Stripe-réteg eltávolítva):
+  // nincs Plus/self_plus vásárlási kapu — az observerInvite org- vagy
+  // csapat-tagsághoz kötött, tagság nélkül CAPABILITY_NOT_GRANTED.
+  await t.test("observerInvite denied for self-only user (no org/team membership)", () => {
     const decision = can(
       {
         isAuthenticated: true,
@@ -360,22 +365,26 @@ test("C5.4 Observer → result linkage", async (t) => {
       {},
     );
 
-    assert.equal(decision.allowed, false, "Free user should be denied observerInvite");
-    assert.equal(decision.reason, "PURCHASE_REQUIRED");
+    assert.equal(decision.allowed, false, "Self-only user should be denied observerInvite");
+    assert.equal(decision.reason, "CAPABILITY_NOT_GRANTED");
   });
 
-  await t.test("observerInvite granted for Plus user (self_plus tier)", () => {
+  await t.test("observerInvite granted for standalone team member (no org membership)", () => {
     const decision = can(
       {
         isAuthenticated: true,
-        membership: undefined,
-        teamRole: null,
+        membership: { teamId: "team_1" },
+        teamRole: "member",
       },
       "observerInvite",
       {},
     );
 
-    assert.equal(decision.allowed, true, "Plus user should have observerInvite capability");
+    assert.equal(
+      decision.allowed,
+      true,
+      "Team membership alone should grant observerInvite",
+    );
   });
 
   await t.test("observerInvite granted for org member (active subscription)", () => {
@@ -455,7 +464,7 @@ test("C5.4 Observer → result linkage", async (t) => {
     const { profile } = await createInviterWithResult();
     const inv1 = await createInvitation(profile.id);
     const inv2 = await createInvitation(profile.id);
-    const inv3 = await createInvitation(profile.id);
+    await createInvitation(profile.id); // 3. aktív meghívó — beadás nélkül
 
     await submitObserver(inv1.token, 3);
     await submitObserver(inv2.token, 4);

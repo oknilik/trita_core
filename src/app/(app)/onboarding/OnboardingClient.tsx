@@ -1,12 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
@@ -26,7 +24,6 @@ export function OnboardingClient() {
   const { locale } = useLocale();
   const { showToast } = useToast();
 
-  const [step, setStep] = useState<1 | 2>(1);
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
@@ -114,7 +111,7 @@ export function OnboardingClient() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const canStep1 = usernameValid && birthYearValid && gender !== "" && country !== "";
+  const basicsValid = usernameValid && birthYearValid && gender !== "" && country !== "";
 
   // ── Flash + focus logic ──────────────────────────────────────────────────
 
@@ -151,23 +148,19 @@ export function OnboardingClient() {
     if (country === "") { flashField("country"); }
   };
 
-  // ── Step handlers ────────────────────────────────────────────────────────
-
-  const handleStep1Next = () => {
-    setUsernameTouched(true);
-    setBirthYearTouched(true);
-    if (!canStep1) {
-      focusFirstInvalid();
-      return;
-    }
-    setStep(2);
-  };
-
-
   // ── Submit ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
     if (isSubmitting || !consent) return;
+
+    // UX-A11: egyképernyős onboarding — a korábbi 1. lépés mezővalidációja
+    // a submitra került. A mentés + Clerk-szinkron logika változatlan.
+    setUsernameTouched(true);
+    setBirthYearTouched(true);
+    if (!basicsValid) {
+      focusFirstInvalid();
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -197,15 +190,9 @@ export function OnboardingClient() {
     }
   };
 
-  // ── Step indicator ───────────────────────────────────────────────────────
-
-  const stepLabels = [
-    t("onboarding.step1Label", locale),
-    t("onboarding.step2Label", locale),
-  ];
-  const progress = ((step - 1) / 1) * 100;
-
   // ── Render ───────────────────────────────────────────────────────────────
+  // UX-A11: egyetlen képernyő — nincs lépés-szerkezet, se step-progress jelző;
+  // a consent-checkbox közvetlenül a submit gomb felett van.
 
   return (
     <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-12">
@@ -224,48 +211,11 @@ export function OnboardingClient() {
           </div>
         </div>
 
-        {/* Step indicator */}
-        <div className="mb-8">
-          <div className="mb-2 flex items-center justify-between">
-            {stepLabels.map((label, i) => (
-              <div key={label} className="flex items-center gap-1.5">
-                <div
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
-                    i + 1 < step
-                      ? "bg-sage text-white"
-                      : i + 1 === step
-                      ? "bg-ink text-white"
-                      : "bg-sand text-muted"
-                  }`}
-                >
-                  {i + 1 < step ? "✓" : i + 1}
-                </div>
-                <span
-                  className={`hidden text-xs font-medium sm:block ${
-                    i + 1 === step ? "text-ink" : "text-muted"
-                  }`}
-                >
-                  {label}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="h-1 w-full overflow-hidden rounded-full bg-sand">
-            <div
-              className="h-full rounded-full bg-sage transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
         {/* Card */}
         <div className="bg-white rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
 
-          {/* ── Step 1: Alapadatok ──────────────────────────────────────── */}
-          {step === 1 && (
-            <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6">
               <div>
-                <SectionEyebrow className="mb-1">{"// 01"}</SectionEyebrow>
                 <p className="font-fraunces text-xl text-ink">
                   {t("onboarding.blockBasicsTitle", locale)}
                 </p>
@@ -407,30 +357,11 @@ export function OnboardingClient() {
 
               </div>
 
-              <button
-                type="button"
-                onClick={handleStep1Next}
-                disabled={isSubmitting}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
-              >
-                {t("actions.next", locale)}
-              </button>
-            </div>
-          )}
-
-          {/* ── Step 2: Hozzájárulás ────────────────────────────────────── */}
-          {step === 2 && (
-            <div className="flex flex-col gap-6">
-              <div>
-                <SectionEyebrow className="mb-1">{"// 02"}</SectionEyebrow>
-                <p className="font-fraunces text-xl text-ink">
-                  {t("onboarding.step2Title", locale)}
-                </p>
-              </div>
-
+              {/* Hozzájárulás — UX-A11: nem külön lépés, közvetlenül a
+                  submit gomb felett. */}
               <label
                 ref={consentFieldRef}
-                className="flex cursor-pointer items-start gap-3 rounded-lg p-2"
+                className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-sand p-2 pt-5"
               >
                 <input
                   ref={consentCheckboxRef}
@@ -462,27 +393,17 @@ export function OnboardingClient() {
                 </span>
               </label>
 
-              <div className="flex gap-3">
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
-                >
-                  ← {t("actions.back", locale)}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={isSubmitting || !consent}
-                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
-                >
-                  {isSubmitting
-                    ? t("onboarding.saving", locale)
-                    : t("onboarding.submit", locale)}
-                </button>
-              </div>
-            </div>
-          )}
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting || !consent}
+                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+              >
+                {isSubmitting
+                  ? t("onboarding.saving", locale)
+                  : t("onboarding.submit", locale)}
+              </button>
+          </div>
 
         </div>
 

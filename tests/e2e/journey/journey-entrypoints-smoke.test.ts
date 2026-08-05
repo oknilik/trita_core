@@ -1,5 +1,24 @@
 import { expect, test, type Page } from "@playwright/test";
 
+// A vendég-útvonalak MAI szerződése (src/proxy.ts):
+//   · védett route (/dashboard, /assessment, /onboarding, /billing/…) vendégként
+//     a landingre ("/") esik vissza (auth.protect unauthenticatedUrl) — NEM a
+//     /sign-in-re;
+//   · a /sign-in és /sign-up vendégnek helyben marad, bejelentkezett usert
+//     (e2e bypass cookie) a journey-kapura (/dashboard) irányítja;
+//   · érvénytelen join-token: az (app) not-found felület renderel, az URL nem
+//     változik. A notFound() streamelt válaszban érkezik (ld. a
+//     src/app/(app)/not-found.tsx kommentjét), ezért a HTTP-státusz nem 404 —
+//     a tartalmat és az URL-t assertáljuk.
+//
+// A korábbi sign-in/sign-up ŰRLAP-assertek (email input, intent-pick utáni
+// CTA-unlock) kivezetve: a custom Clerk flow űrlapja csak isLoaded után
+// renderel (clerk-js betöltés — az e2e dummy kulcsával nincs élő instance),
+// az intent-választó pedig consulting-led módban nem létezik (a sign-up
+// "explore" intent-tel indul, ld. src/app/(auth)/sign-up/page.tsx).
+
+const E2E_AUTH_COOKIE_NAME = "trita_e2e_user_id";
+
 function pathnameOf(url: string): string {
   return new URL(url).pathname;
 }
@@ -31,40 +50,55 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     }
   });
 
-  test("dashboard handoff forwards to sign-in", async ({ page }) => {
-    await expectRedirectPath(page, "/dashboard", "/sign-in");
+  test("dashboard handoff forwards guests to the landing page", async ({ page }) => {
+    await expectRedirectPath(page, "/dashboard", "/");
 
-    const emailInput = page.locator("input[type='email']").first();
-    const primaryCta = page.locator("form button[type='submit']").first();
-    await expect(emailInput).toBeVisible();
-    await expect(primaryCta).toBeVisible();
+    // A landing a vendég-belépő: a fejléc bejelentkezés-linkje a horgony.
+    await expect(
+      page.getByRole("link", { name: /sign in|bejelentkezés/i }).first(),
+    ).toBeVisible({ timeout: 15_000 });
   });
 
-  test("sign-in entrypoint keeps redirect intent and CTA remains coherent", async ({ page }) => {
-    await page.goto("/sign-in?redirect_url=%2Fdashboard", { waitUntil: "domcontentloaded" });
+  test("sign-in entrypoint stays in place for guests", async ({ page }) => {
+    const response = await page.goto("/sign-in?redirect_url=%2Fdashboard", {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response?.status()).toBe(200);
     await expectFinalPathname(page, "/sign-in");
-
-    const emailInput = page.locator("input[type='email']").first();
-    const primaryCta = page.locator("form button[type='submit']").first();
-    const signUpLink = page.getByRole("link", { name: /sign up|regisztr/i }).first();
-
-    await expect(emailInput).toBeVisible();
-    await expect(primaryCta).toBeVisible();
-    await expect(signUpLink).toHaveAttribute("href", /redirect_url=%2Fdashboard/);
   });
 
-  test("sign-up entrypoint keeps redirect intent and unlocks CTA only after intent pick", async ({ page }) => {
-    await page.goto("/sign-up?redirect_url=%2Fdashboard", { waitUntil: "domcontentloaded" });
+  test("sign-up entrypoint stays in place for guests", async ({ page }) => {
+    const response = await page.goto("/sign-up?redirect_url=%2Fdashboard", {
+      waitUntil: "domcontentloaded",
+    });
+    expect(response?.status()).toBe(200);
     await expectFinalPathname(page, "/sign-up");
+  });
 
-    const primaryCta = page.locator("form button[type='submit']").first();
-    const signInLink = page.getByRole("link", { name: /sign in|bejelentk/i }).first();
-    const intentButton = page.getByRole("button", { name: /Önismeret|Self-awareness/i }).first();
+  test("authenticated user is bounced from auth routes to the journey handoff", async ({
+    page,
+    context,
+    baseURL,
+  }) => {
+    if (baseURL) {
+      await context.addCookies([
+        {
+          name: E2E_AUTH_COOKIE_NAME,
+          value: "journey-smoke-authed-user",
+          url: baseURL,
+        },
+      ]);
+    }
 
-    await expect(primaryCta).toBeDisabled();
-    await intentButton.click();
-    await expect(primaryCta).toBeEnabled();
-    await expect(signInLink).toHaveAttribute("href", /redirect_url=%2Fdashboard/);
+    // A middleware-szerződést nyersen assertáljuk (maxRedirects: 0): a
+    // bejelentkezett user auth-route-ról a journey-kapura (/dashboard)
+    // pattan. A teljes lánc követése itt nem cél — a kapu mögötti út a
+    // user DB-állapotától függ (profil nélkül pl. /onboarding a vége).
+    for (const authRoute of ["/sign-in", "/sign-up"]) {
+      const response = await page.request.get(authRoute, { maxRedirects: 0 });
+      expect(response.status(), `${authRoute} should redirect`).toBe(307);
+      expect(response.headers()["location"]).toContain("/dashboard");
+    }
   });
 
   test("onboarding finish entrypoint falls back through protected-route guard", async ({ page }) => {
@@ -83,9 +117,13 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
     await expectRedirectPath(page, "/assessment", "/");
   });
 
-  test("invite accept entrypoint with invalid token returns 404 without wrong redirect", async ({ page }) => {
-    const response = await page.goto("/join/c4-smoke-invalid-token", { waitUntil: "domcontentloaded" });
-    expect(response?.status()).toBe(404);
+  test("invite accept entrypoint with invalid token shows not-found without wrong redirect", async ({ page }) => {
+    await page.goto("/join/c4-smoke-invalid-token", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/join/c4-smoke-invalid-token");
+    // A not-found tartalom streamelve érkezik — dev-fordítással együtt is
+    // beférő türelmi idő.
+    await expect(
+      page.getByText(/this page could not be found|ez az oldal nem található/i).first(),
+    ).toBeVisible({ timeout: 15_000 });
   });
 });

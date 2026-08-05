@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { SAME_DIMENSION_ATOMS, CROSS_DIMENSION_ATOMS } from "@/lib/interaction-atoms";
+import {
+  SAME_DIMENSION_ATOMS,
+  CROSS_DIMENSION_ATOMS,
+  LEADER_SUPPLEMENTS,
+} from "@/lib/interaction-atoms";
 import { hasHedge, findAbsoluteMarkers } from "@/lib/interaction-language";
 import type { Locale } from "@/lib/i18n";
 
@@ -14,6 +18,9 @@ import type { Locale } from "@/lib/i18n";
 //   · `easy` és `friction` ÁLLÍTÁST tesz a párosról → hedge kötelező;
 //   · `discuss` javaslat, nem állítás („beszéljétek meg…") → ott a hedge
 //     csak gyengítené a mondatot, viszont abszolutizáló ott sem lehet.
+//
+// A LEADER_SUPPLEMENTS ugyanígy fedett: egy NEM MÉRT vezetőről tesz
+// állítást, ezért hedge kötelező és abszolutizálás tilos.
 
 const LOCALES: Locale[] = ["hu", "en"];
 const ATOMS = [...SAME_DIMENSION_ATOMS, ...CROSS_DIMENSION_ATOMS];
@@ -40,22 +47,48 @@ const ENTRIES: Entry[] = ATOMS.flatMap((atom) =>
   ),
 );
 
+const LEADER_ENTRIES: Entry[] = Object.entries(LEADER_SUPPLEMENTS).flatMap(
+  ([dim, poles]) =>
+    (["high", "low"] as const).flatMap((pole) =>
+      LOCALES.map((locale) => ({
+        label: `leader.${dim}.${pole}.${locale}`,
+        text: poles[pole][locale],
+        locale,
+        block: "leader",
+      })),
+    ),
+);
+
+const ALL_ENTRIES: Entry[] = [...ENTRIES, ...LEADER_ENTRIES];
+
 test("a guardrail ténylegesen lát szövegeket", () => {
   assert.ok(ENTRIES.length > 200, `csak ${ENTRIES.length} szöveget talált`);
+  // 6 dimenzió × 2 pólus × 2 nyelv vezető-kiegészítő
+  assert.equal(LEADER_ENTRIES.length, 24, `csak ${LEADER_ENTRIES.length} vezető-szöveget talált`);
 });
 
 test("egyetlen interakció-szöveg sem abszolutizál", () => {
-  const hits = ENTRIES.flatMap(({ label, text, locale }) =>
+  const hits = ALL_ENTRIES.flatMap(({ label, text, locale }) =>
     findAbsoluteMarkers(text, locale).map((marker) => `${label}: „${marker}"`),
   );
   assert.deepEqual(hits, [], `abszolutizáló fordulat:\n${hits.join("\n")}`);
 });
 
 test("az állítást tevő blokkok valószínűségi jelölőt hordoznak", () => {
-  const missing = ENTRIES.filter(
+  const missing = ALL_ENTRIES.filter(
     (entry) => entry.block !== "discuss" && !hasHedge(entry.text, entry.locale),
   ).map((entry) => entry.label);
   assert.deepEqual(missing, [], `hedge nélküli állítás:\n${missing.join("\n")}`);
+});
+
+test("a vezető-kiegészítők hipotézis-keretben szólnak", () => {
+  const missing = LEADER_ENTRIES.filter(
+    (entry) =>
+      !(entry.locale === "hu"
+        ? entry.text.startsWith("Ha a vezetőd")
+        : entry.text.startsWith("If your leader")),
+  ).map((entry) => entry.label);
+  assert.deepEqual(missing, [], `nem hipotézis-keretes vezető-szöveg:\n${missing.join("\n")}`);
 });
 
 test("minden atomnak van discuss blokkja mindkét nyelven", () => {

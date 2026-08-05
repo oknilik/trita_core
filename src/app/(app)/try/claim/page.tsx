@@ -20,6 +20,9 @@ export default function TryClaimPage() {
   const { locale } = useLocale();
   const [error, setError] = useState<string | null>(null);
   const claimed = useRef(false);
+  // UX-A2: az "Újra" gombnak ténylegesen újra kell indítania a claimet —
+  // a nonce a dep-listában van, növelése újrafuttatja az effectet.
+  const [retryNonce, setRetryNonce] = useState(0);
 
   useEffect(() => {
     if (!isLoaded) return;
@@ -65,7 +68,7 @@ export default function TryClaimPage() {
         log.warn({ event: "try.claim_failed", err }, "Claim failed");
         setError(t("tryClaim.error", locale));
       });
-  }, [isLoaded, isSignedIn, router, locale]);
+  }, [isLoaded, isSignedIn, router, locale, retryNonce]);
 
   if (error) {
     return (
@@ -76,6 +79,7 @@ export default function TryClaimPage() {
           onClick={() => {
             setError(null);
             claimed.current = false;
+            setRetryNonce((n) => n + 1);
           }}
           className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-white"
         >

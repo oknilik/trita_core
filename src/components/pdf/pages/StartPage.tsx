@@ -33,7 +33,6 @@ export function StartPage({ data, pageNum, totalPages, locale }: Props) {
           name={data.userName}
           date={data.completedAt}
           type={data.personalityType}
-          percentile={data.percentile}
           insight={data.heroInsight}
           plan={data.plan}
           locale={locale}

@@ -1,7 +1,7 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { withHuArticle } from "@/lib/hu-grammar";
-import { auth } from "@clerk/nextjs/server";
-import { redirect, notFound } from "next/navigation";
+import { getServerAuth } from "@/lib/auth-server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -51,7 +51,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ManagerCockpitPage() {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  // getServerAuth (nem nyers Clerk auth()): a /dashboard elosztóval és a
+  // requireOrgContext-tel azonos auth-út — az e2e bypass is így működik itt.
+  const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) redirect("/sign-in");
 
   await requireOnboardedByClerkId(userId);
@@ -106,7 +108,7 @@ export default async function ManagerCockpitPage() {
     nextStep = {
       title: isHu ? "Csapat bővítése" : "Grow your team",
       description: isHu
-        ? `A(z) ${teamNeedingMembers.teamName} csapatnak legalább 3 tag kell a csapatképhez. Jelenleg ${teamNeedingMembers.memberCount} tag van.`
+        ? `${withHuArticle(teamNeedingMembers.teamName, { capitalize: true })} csapatnak legalább 3 tag kell a csapatképhez. Jelenleg ${teamNeedingMembers.memberCount} tag van.`
         : `${teamNeedingMembers.teamName} needs at least 3 members for team insights. Currently ${teamNeedingMembers.memberCount} members.`,
       primary: {
         label: isHu ? "Tagok meghívása" : "Invite members",
@@ -118,7 +120,7 @@ export default async function ManagerCockpitPage() {
     nextStep = {
       title: isHu ? "Kitöltések lezárása" : "Close pending assessments",
       description: isHu
-        ? `A(z) ${weakestTeam.teamName} csapatban ${missing} tag nem töltötte ki a személyiségtesztet.`
+        ? `${withHuArticle(weakestTeam.teamName, { capitalize: true })} csapatban ${missing} tag nem töltötte ki a személyiségtesztet.`
         : `${missing} members in ${weakestTeam.teamName} haven't completed the personality assessment.`,
       primary: {
         label: isHu ? "Tagok állapota" : "View member status",
@@ -175,7 +177,7 @@ export default async function ManagerCockpitPage() {
         summary={
           isSingleTeam
             ? (isHu
-                ? `A(z) ${data.teams[0].teamName} csapatod ${data.teams[0].completionPct}%-on áll.`
+                ? `${withHuArticle(data.teams[0].teamName, { capitalize: true })} csapatod ${data.teams[0].completionPct}%-on áll.`
                 : `Your ${data.teams[0].teamName} team is at ${data.teams[0].completionPct}% completion.`)
             : (isHu
                 ? `${teamCount} csapatodat kezeled, összesen ${data.totalMembers} taggal.`

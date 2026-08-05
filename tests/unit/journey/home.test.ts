@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { resolveHome } from "@/lib/journey/home";
-import type { JourneyStage } from "@/lib/journey/types";
 import {
   buildJourneyContext,
   buildJourneyState,

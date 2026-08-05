@@ -171,7 +171,8 @@ test("E2 guardrail integration: pending join invite preempts team/org home", asy
   });
 
   assert.equal(resolution.reason, "pending_join");
-  assert.equal(resolution.destination, `/join/${pendingInvite.id}`);
+  // A join-link 2026-07 óta token-alapú (/join/[token]), nem invite-id-s.
+  assert.equal(resolution.destination, `/join/${pendingInvite.token}`);
   assert.equal(resolution.activeSurface, "continuation");
   assert.notEqual(resolution.destination, "/dashboard");
 });

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { t } from "@/lib/i18n";
@@ -305,7 +305,6 @@ describe("E3 page action gating client tests", () => {
           userName="Alex"
           completedAt="April 1, 2026"
           personalityType="Strategic Builder"
-          percentile="Top 10%"
           insight="Strong strategic focus"
           accessLevel="plus"
           onDownloadPdf={onDownloadPdf}
@@ -329,7 +328,6 @@ describe("E3 page action gating client tests", () => {
             userName="Alex"
             completedAt="April 1, 2026"
             personalityType="Strategic Builder"
-            percentile="Top 10%"
             insight="Strong strategic focus"
             accessLevel="plus"
             onDownloadPdf={vi.fn()}

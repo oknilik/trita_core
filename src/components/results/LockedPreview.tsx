@@ -14,7 +14,11 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
 
   return (
     <div className="mt-[18px] flex flex-col gap-2">
-      <div className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-5 py-3.5 transition-colors hover:bg-[var(--color-border-default)]">
+      {/* UX-B8: kattinthatónak öltözött, handler nélküli sor volt —
+          consulting-led konvenció szerint a /contact-ra visz. */}
+      <a
+        href="/contact"
+        className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-5 py-3.5 transition-colors hover:bg-[var(--color-border-default)]">
         <span className="shrink-0 text-body opacity-25">🔒</span>
         <span className="flex-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
           {t("results.lockPreviewText", locale)}
@@ -22,7 +26,7 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
         <span className="shrink-0 rounded-md bg-[var(--color-surface-highlight-warm)] px-2.5 py-[3px] text-micro font-semibold text-[var(--color-accent-primary-strong)]">
           Plus · €9
         </span>
-      </div>
+      </a>
     </div>
   );
 }

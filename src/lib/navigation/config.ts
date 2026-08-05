@@ -1,4 +1,5 @@
 import { resolveWorkspaceNavRole, type WorkspaceNavRole } from "@/lib/navigation/roles";
+import { t, type Locale } from "@/lib/i18n";
 import { canViewNavSection } from "@/lib/navigation/visibility";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 
@@ -58,7 +59,7 @@ export interface WorkspaceNavDestination {
 }
 
 export interface WorkspaceNavItem {
-  id: "home" | "results" | "career" | "tasks" | "teams" | "hiring" | "org" | "analytics";
+  id: "home" | "results" | "interaction" | "career" | "tasks" | "teams" | "hiring" | "org" | "analytics";
   label: string;
   kind: "link" | "dropdown";
   primaryHref: string;
@@ -75,31 +76,44 @@ function stripQuery(path: string): string {
   return path.split("?")[0] ?? path;
 }
 
-function buildHomeItem(homeHref: string): WorkspaceNavItem {
+function buildHomeItem(homeHref: string, locale: Locale): WorkspaceNavItem {
   const homePath = stripQuery(homeHref);
 
   return {
     id: "home",
-    label: "Vezérlő",
+    label: t("nav.home", locale),
     kind: "link",
     primaryHref: homeHref,
     matchPrefixes: [homePath],
   };
 }
 
-function buildResultsItem(): WorkspaceNavItem {
+function buildResultsItem(locale: Locale): WorkspaceNavItem {
   return {
     id: "results",
-    label: "Eredményeim",
+    label: t("nav.results", locale),
     kind: "link",
     primaryHref: "/profile/results",
     matchPrefixes: ["/profile/results"],
   };
 }
 
+// UX-B7: „Hogyan működnétek együtt?" — eddig az egyetlen belépő a riport
+// legalján ült; a páros-összehasonlító meghívó-hurokkal együtt nav-szintű
+// felület lett. Az Eredményeim mellett a helye (ugyanabból a profilból dolgozik).
+function buildInteractionItem(locale: Locale): WorkspaceNavItem {
+  return {
+    id: "interaction",
+    label: t("nav.interaction", locale),
+    kind: "link",
+    primaryHref: "/interaction",
+    matchPrefixes: ["/interaction"],
+  };
+}
+
 // Karrier-iránytű: 2026-07-31 óta önálló oldal (korábban az Eredményeim egyik
 // füle). Az Eredményeim mellett van a helye, mert ugyanabból a profilból dolgozik.
-function buildCareerItem(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+function buildCareerItem(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (ctx.careerModuleHidden) return null;
   // Amíg a modul nem kész, a `/career` a kereslet-mérő ajánlót mutatja. Azt
   // egyetlen úton engedjük elérni (riport-oldali CTA), különben a tölcsér
@@ -108,7 +122,7 @@ function buildCareerItem(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
   if (!CAREER_MODULE_READY) return null;
   return {
     id: "career",
-    label: "Karrier",
+    label: t("nav.career", locale),
     kind: "link",
     primaryHref: "/career",
     matchPrefixes: ["/career"],
@@ -119,11 +133,11 @@ function buildCareerItem(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
 // tőlem kért observer-visszajelzések). Csak akkor jelenik meg, ha van rá
 // kontextus: org-tagság (csapatos működés) VAGY tényleges nyitott feladat —
 // magányos self-usernek felesleges menüpont lenne. Badge: nyitott darabszám.
-function buildTasksNav(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+function buildTasksNav(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (!ctx.org && ctx.openTaskCount === 0) return null;
   return {
     id: "tasks",
-    label: "Feladataim",
+    label: t("nav.tasks", locale),
     kind: "link",
     primaryHref: "/tasks",
     matchPrefixes: ["/tasks"],
@@ -133,12 +147,12 @@ function buildTasksNav(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
 
 // Csapatok: admin/tanácsadó → egyetlen link az org-oldal Csapatok fülére
 // (ott a lista és a létrehozás is); tag/manager → dropdown a saját csapatokkal.
-function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (role === "org_admin") {
     if (!ctx.org) return null;
     return {
       id: "teams",
-      label: "Csapatok",
+      label: t("nav.teams", locale),
       kind: "link",
       primaryHref: `/org/${ctx.org.id}?tab=teams`,
       matchPrefixes: ["/team"],
@@ -153,7 +167,7 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
     const only = ctx.teams[0];
     return {
       id: "teams",
-      label: role === "org_manager" ? "Csapatom" : (only.name || "Csapatom"),
+      label: role === "org_manager" ? t("nav.myTeam", locale) : (only.name || t("nav.myTeam", locale)),
       kind: "link",
       primaryHref: `/team/${only.id}?tab=overview`,
       matchPrefixes: uniqueMatchPrefixes("/team", `/team/${only.id}`),
@@ -166,13 +180,13 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
   const items: WorkspaceNavDestination[] = ctx.teams.map((team) => ({
     id: `team-${team.id}`,
     label: team.name,
-    description: "Csapatoldal és publikált csapatkép",
+    description: t("nav.teamItemDescription", locale),
     href: `/team/${team.id}?tab=overview`,
   }));
 
   return {
     id: "teams",
-    label: role === "org_manager" ? "Csapatom" : "Csapatok",
+    label: role === "org_manager" ? t("nav.myTeam", locale) : t("nav.teams", locale),
     kind: "dropdown",
     primaryHref: "/team",
     matchPrefixes: uniqueMatchPrefixes("/team", ...ctx.teams.map((team) => `/team/${team.id}`)),
@@ -183,12 +197,12 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext): Worksp
 // Jelöltek: sima link (UX-audit #25) — a korábbi 3-elemű dropdown minden
 // tétele gyakorlatilag ugyanarra az oldalra vitt; az „Új jelölt" és a
 // „Kreditek" akciók a /hiring felület fejlécében élnek.
-function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole): WorkspaceNavItem | null {
+function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole, locale: Locale): WorkspaceNavItem | null {
   void role;
   if (!ctx.org || !ctx.hasHiringAccess) return null;
   return {
     id: "hiring",
-    label: "Jelöltek",
+    label: t("nav.hiring", locale),
     kind: "link",
     primaryHref: `/hiring/${ctx.org.id}`,
     matchPrefixes: uniqueMatchPrefixes(`/hiring/${ctx.org.id}`),
@@ -197,11 +211,11 @@ function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole): Works
 
 // Szervezet: egyetlen link az egyszerű org-oldalra — a fülek (Csapatok ·
 // Kampányok · Tagok) és a Beállítások ott élnek. Badge: aktív mérések.
-function buildOrgNav(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
+function buildOrgNav(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (!ctx.org) return null;
   return {
     id: "org",
-    label: "Szervezet",
+    label: t("nav.org", locale),
     kind: "link",
     primaryHref: `/org/${ctx.org.id}`,
     matchPrefixes: [`/org/${ctx.org.id}`],
@@ -212,17 +226,21 @@ function buildOrgNav(ctx: WorkspaceNavContext): WorkspaceNavItem | null {
 export function buildWorkspaceNavigation(
   role: WorkspaceNavRole,
   ctx: WorkspaceNavContext,
+  locale: Locale = "hu",
 ): WorkspaceNavItem[] {
-  const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref)];
+  const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref, locale)];
 
-  if (canViewNavSection(role, "results")) items.push(buildResultsItem());
+  if (canViewNavSection(role, "results")) items.push(buildResultsItem(locale));
+  // Az összehasonlítás a személyes réteg része — ugyanaz a kapu, mint az
+  // Eredményeim.
+  if (canViewNavSection(role, "results")) items.push(buildInteractionItem(locale));
   // A karrier a személyes réteg része — ugyanaz a jogosultsági kapu, mint az
   // Eredményeim, plusz az org-szintű kikapcsolhatóság.
-  if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx));
-  if (canViewNavSection(role, "tasks")) items.push(buildTasksNav(ctx));
-  if (canViewNavSection(role, "teams")) items.push(buildTeamsNav(role, ctx));
-  if (canViewNavSection(role, "hiring")) items.push(buildHiringNav(ctx, role));
-  if (canViewNavSection(role, "org")) items.push(buildOrgNav(ctx));
+  if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx, locale));
+  if (canViewNavSection(role, "tasks")) items.push(buildTasksNav(ctx, locale));
+  if (canViewNavSection(role, "teams")) items.push(buildTeamsNav(role, ctx, locale));
+  if (canViewNavSection(role, "hiring")) items.push(buildHiringNav(ctx, role, locale));
+  if (canViewNavSection(role, "org")) items.push(buildOrgNav(ctx, locale));
 
   return items.filter((item): item is WorkspaceNavItem => Boolean(item));
 }

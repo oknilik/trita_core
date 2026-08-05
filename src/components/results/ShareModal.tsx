@@ -9,6 +9,8 @@ import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { ShareCardDownload } from "@/components/results/ShareCardDownload";
+import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -43,6 +45,7 @@ export function ShareModal({
   const [copied, setCopied] = useState(false);
   const [revoked, setRevoked] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [qrVisible, setQrVisible] = useState(false);
 
   const [email, setEmail] = useState("");
   const [emailState, setEmailState] = useState<EmailState>("idle");
@@ -52,41 +55,60 @@ export function ShareModal({
     if (copyTimer.current) clearTimeout(copyTimer.current);
   }, []);
 
-  const createLink = useCallback(async () => {
+  const createLink = useCallback(async (): Promise<string | null> => {
     setBusy(true);
     setLoadError(false);
     try {
       const res = await fetch("/api/profile/share", { method: "POST" });
       const data = await res.json();
       if (!data.token) throw new Error("NO_TOKEN");
-      setShareUrl(`${window.location.origin}/share/${data.token}`);
+      const url = `${window.location.origin}/share/${data.token}`;
+      setShareUrl(url);
       setRevoked(false);
+      return url;
     } catch {
       setLoadError(true);
+      return null;
     } finally {
       setBusy(false);
     }
   }, []);
 
-  // Megnyitáskor létrehozzuk (vagy visszakapjuk a meglévő) linket.
+  // UX-B6: publikus linket csak az ELSŐ tényleges megosztási szándéknál
+  // gyártunk (másolás/küldés) — a modal megnyitása önmagában ne írjon
+  // shareTokent az adatbázisba.
   useEffect(() => {
-    if (isOpen && !shareUrl && !revoked) void createLink();
     if (isOpen) {
       setCopied(false);
       setEmailState("idle");
+      setQrVisible(false);
     }
-  }, [isOpen, shareUrl, revoked, createLink]);
+  }, [isOpen]);
 
   const handleCopy = async () => {
-    if (!shareUrl) return;
+    const url = shareUrl ?? (await createLink());
+    if (!url) return;
     try {
-      await navigator.clipboard.writeText(shareUrl);
+      await navigator.clipboard.writeText(url);
       setCopied(true);
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopied(false), 2400);
     } catch {
       setLoadError(true);
     }
+  };
+
+  // UX-B6: a QR megjelenítése is megosztási szándék — az első felfedés
+  // hozza létre (vagy kéri vissza) a linket ugyanazzal a createLink-kel,
+  // mint a másolás; link nélkül QR-t nem rajzolunk.
+  const handleToggleQr = async () => {
+    if (qrVisible) {
+      setQrVisible(false);
+      return;
+    }
+    const url = shareUrl ?? (await createLink());
+    if (!url) return;
+    setQrVisible(true);
   };
 
   const handleSend = async () => {
@@ -119,6 +141,7 @@ export function ShareModal({
       setRevoked(true);
       setCopied(false);
       setEmailState("idle");
+      setQrVisible(false);
     } catch {
       setLoadError(true);
     } finally {
@@ -208,6 +231,26 @@ export function ShareModal({
               </div>
             )}
 
+            {/* UX-B6b: őszinte lista arról, mi kerül ténylegesen a megosztott
+                lapra — a kis preview-kártya ennél többet takar. */}
+            {preview && (
+              <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
+                {t("results.shareVisibleSummary", locale)}
+              </p>
+            )}
+
+            {/* A3: a kártya képként — letöltés / mobilon natív megosztás.
+                Kliens-oldali render, szerverre semmi nem megy; pontszám
+                nem kerül a képre. */}
+            {preview && previewGlyph && (
+              <ShareCardDownload
+                userName={preview.userName}
+                personalityType={preview.personalityType}
+                topDims={preview.topDims.map((d) => ({ label: d.label, score: d.score }))}
+                glyph={previewGlyph}
+              />
+            )}
+
             {/* Link + másolás */}
             <div>
               <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
@@ -221,11 +264,13 @@ export function ShareModal({
                   onFocus={(e) => e.currentTarget.select()}
                   className="min-h-[44px] w-full flex-1 truncate rounded-[10px] border border-sand bg-cream px-3 text-caption text-ink-body outline-none"
                 />
+                {/* Link nélkül is kattintható: az első másolás hozza létre
+                    (vagy kéri vissza) a linket — a POST idempotens. */}
                 <Button
                   type="button"
                   variant="secondary"
                   onClick={() => void handleCopy()}
-                  disabled={!shareUrl || busy}
+                  disabled={busy}
                   className="shrink-0"
                 >
                   {copied ? (
@@ -237,7 +282,31 @@ export function ShareModal({
                     t("content.shareCopyLink", locale)
                   )}
                 </Button>
+                {/* QR — workshop-helyzet: a kolléga a teremben, telefonnal
+                    olvassa be. A B6-elv itt is áll: a link az első
+                    felfedéskor jön létre. */}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => void handleToggleQr()}
+                  disabled={busy}
+                  aria-expanded={qrVisible}
+                  className="shrink-0"
+                >
+                  {qrVisible
+                    ? t("content.shareHideQr", locale)
+                    : t("content.shareShowQr", locale)}
+                </Button>
               </div>
+              {qrVisible && shareUrl ? (
+                <QrCodeBadge
+                  value={shareUrl}
+                  alt={t("content.shareQrAlt", locale)}
+                  hint={t("content.shareQrHint", locale)}
+                  onError={() => setLoadError(true)}
+                  className="mt-3"
+                />
+              ) : null}
             </div>
 
             {/* Email küldés */}
@@ -288,10 +357,13 @@ export function ShareModal({
 
             {/* Visszavonás */}
             <div className="border-t border-sand pt-4 text-center">
+              {/* A DELETE szerver-oldalon minden élő tokent visszavon, így
+                  korábbi munkamenetben létrehozott link is visszavonható
+                  anélkül, hogy előbb meg kellene jeleníteni. */}
               <button
                 type="button"
                 onClick={() => void handleRevoke()}
-                disabled={!shareUrl || busy}
+                disabled={busy}
                 className="min-h-[44px] rounded-[10px] px-4 text-sm font-semibold text-[#8c4a31] transition hover:bg-[#fcf5ef] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {t("content.shareRevoke", locale)}

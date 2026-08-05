@@ -98,6 +98,11 @@ model UserProfile {
   // Nem kényszerül tesztre; org-okhoz ORG_CONSULTANT tagsággal rendelhető.
   isConsultant Boolean @default(false)
 
+  // Életciklus-emailek (reflexiós utókövetés és hasonló, nem-tranzakcionális
+  // érintések) leiratkozás — a tranzakcionális emaileket (meghívók,
+  // eredmény-értesítők) nem érinti. Kapcsoló: /email-preferences.
+  lifecycleEmailsOptOut Boolean @default(false)
+
   assessmentResults       AssessmentResult[]
   assessmentDraft         AssessmentDraft?
   consultantInvitesSent   ConsultantInvite[]   @relation("ConsultantInviter")
@@ -136,6 +141,10 @@ model UserProfile {
 
   trustObservationsAbout TrustObservation[] @relation("TrustObservationAbout")
   trustObservationsGiven TrustObservation[] @relation("TrustObservationRater")
+
+  // Interakció-összehasonlítás (valódi páros mód) — meghívó mindkét irányból
+  compareInvitesSent     CompareInvite[] @relation("CompareInviter")
+  compareInvitesAccepted CompareInvite[] @relation("ComparePartner")
 
   // Notifications
   notifications Notification[]
@@ -666,6 +675,29 @@ model TeamRoleScore {
   @@index([campaignId])
 }
 
+// Valódi páros interakció-összehasonlítás meghívó (Lumina Share & Compare
+// analóg). Kölcsönös beleegyezés: a partner accept-je köti össze a párt;
+// bármelyik fél visszavonhatja (REVOKED). Pontszám NEM másolódik a modellbe —
+// mindig élőben, dimenzió-szinten olvasódik; a partner számszerű pontszámai a
+// másik félnek sosem jelennek meg, csak a szimuláció szövege és a glyph.
+// Terv: docs/product/tritanium.md (B1).
+model CompareInvite {
+  id         String    @id @default(cuid())
+  token      String    @unique @default(cuid())
+  inviterId  String
+  partnerId  String?
+  status     String    @default("PENDING") // PENDING | ACCEPTED | REVOKED | EXPIRED
+  createdAt  DateTime  @default(now())
+  acceptedAt DateTime?
+  expiresAt  DateTime
+
+  inviter UserProfile  @relation("CompareInviter", fields: [inviterId], references: [id])
+  partner UserProfile? @relation("ComparePartner", fields: [partnerId], references: [id])
+
+  @@index([inviterId])
+  @@index([partnerId])
+}
+
 // Csapattársi szerep-visszajelzés (peer-kör) — egy rater egy csapattársról,
 // egy kampány-körön belül. A raterUserId KIZÁRÓLAG dedupe-ra és a haladás
 // követésére szolgál; a felület mindig csak aggregált képet mutat, legalább
@@ -805,6 +837,8 @@ enum NotificationType {
   PEER_KUDOS_RECEIVED
   PEER_FEEDBACK_REQUESTED
   PEER_FEEDBACK_RESPONSE
+  REFLECTION_PROMPT
+  COMPARE_ACCEPTED
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).

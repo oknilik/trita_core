@@ -64,10 +64,13 @@ export async function GET(
     const ar = tm.user.assessmentResults[0];
     if (!ar) continue;
 
+    // FONTOS: a tárolt score-JSON a BELSŐ dimenziókódokat használja
+    // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO display-betűket —
+    // ugyanaz az olvasási szabály, mint a team-stats.ts-ben.
     const dims = (ar.scores as ScoreResult).dimensions;
     if (
-      dims.H === undefined || dims.E === undefined || dims.X === undefined ||
-      dims.A === undefined || dims.C === undefined || dims.O === undefined
+      dims.INTE === undefined || dims.RESO === undefined || dims.TEMP === undefined ||
+      dims.ADAP === undefined || dims.THOR === undefined || dims.OPEN === undefined
     ) {
       continue;
     }
@@ -75,12 +78,12 @@ export async function GET(
     membersWithScores.push({
       userId: tm.user.id,
       scores: {
-        INTE: dims.H,
-        RESO: dims.E,
-        TEMP: dims.X,
-        ADAP: dims.A,
-        THOR: dims.C,
-        OPEN: dims.O,
+        INTE: dims.INTE,
+        RESO: dims.RESO,
+        TEMP: dims.TEMP,
+        ADAP: dims.ADAP,
+        THOR: dims.THOR,
+        OPEN: dims.OPEN,
       },
     });
   }

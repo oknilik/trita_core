@@ -10,7 +10,7 @@ import {
 import {
   generateTeamSummary,
   getStrengthInsight,
-  getWeaknessInsight,
+  getWatchAreaInsight,
   getDiversityInsight,
 } from "@/lib/team-insights";
 import {
@@ -23,6 +23,7 @@ import {
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { buildTeamTrustNetwork } from "@/lib/trust-network.server";
+import { computeTeamPressure } from "@/lib/team-pressure";
 import {
   parseReportTranslations,
   type ReportTranslations,
@@ -41,7 +42,21 @@ export interface TeamReportAggregates {
   dimensionAverages: Record<string, number> | null;
   /** Dimenziónkénti szórás — a csapat heterogenitása */
   dimensionSpread: Record<string, number> | null;
-  pattern: { label: string; confidence: string } | null;
+  pattern: {
+    label: string;
+    confidence: string;
+    /**
+     * Stabilitás-jelzés a mintázat-motorból (opcionális — régebbi
+     * pillanatképekben nincs): a küszöb-közeli tengelyeken a mintázat
+     * kontextusfüggő, ezt a riportnak jeleznie kell.
+     */
+    stability?: "stabil" | "közepes" | "instabil";
+    stabilityNote?: string;
+    /** Küszöb-közeli tengelyek kulcsai (drive/cohesion/discipline/openness). */
+    unstableAxes?: string[];
+    /** Hány tagnál van >20 pontos tengely-eltérés a csapatmintától — név nélkül. */
+    tensionMemberCount?: number;
+  } | null;
   /** Elsődleges csapatszerep-eloszlás (szerepkód → fő) + lefedettség */
   roleDistribution: {
     counts: Record<string, number>;
@@ -114,6 +129,20 @@ export interface TeamReportAggregates {
     campaignName: string;
     campaignStatus: string;
     measuredAt: string;
+  } | null;
+  /**
+   * „Csapat nyomás alatt" — dimenzió-pólus koncentrációk (az értékelt tagok
+   * ≥ fele ugyanazon a póluson). Opcionális: régebbi pillanatképekben nem
+   * létezik; null, ha nincs kiemelhető koncentráció. Egyéni adat nem kerül
+   * ki — csak dimenzió, pólus és darabszám. Tartalom: lib/team-pressure.ts.
+   */
+  pressure?: {
+    concentrations: Array<{
+      dim: string;
+      pole: "high" | "low";
+      count: number;
+      assessedCount: number;
+    }>;
   } | null;
   /**
    * Csapattársi szerep-visszajelzés (peer-kör) aggregátuma. Opcionális:
@@ -389,6 +418,16 @@ export async function buildTeamReportAggregates(
     }
   }
 
+  // „Csapat nyomás alatt" — pólus-koncentrációk az értékelt tagokból.
+  // Csak dimenzió + pólus + darabszám kerül ki, egyéni adat soha.
+  const pressureConcentrations = hasMinimum
+    ? computeTeamPressure(assessed.map((m) => ({ scores: m.scores })))
+    : [];
+  const pressure =
+    pressureConcentrations.length > 0
+      ? { concentrations: pressureConcentrations }
+      : null;
+
   // Csapattársi szerep-visszajelzés (peer-kör) — aggregált, küszöb feletti kép.
   let peerRoles: TeamReportAggregates["peerRoles"] = null;
   const peerProfiles = await buildTeamPeerRoleProfiles(teamId);
@@ -437,6 +476,12 @@ export async function buildTeamReportAggregates(
         ? {
             label: teamData.patternResult.fullLabel,
             confidence: String(teamData.patternResult.confidence ?? ""),
+            stability: teamData.patternResult.stability,
+            stabilityNote: teamData.patternResult.stabilityNote,
+            unstableAxes: teamData.patternResult.unstableAxes ?? [],
+            tensionMemberCount: (teamData.patternResult.styleDistances ?? []).filter(
+              (d) => d.tensionAxes.length > 0,
+            ).length,
           }
         : null,
     roleDistribution,
@@ -445,6 +490,7 @@ export async function buildTeamReportAggregates(
     dynamics,
     trustHighlights,
     psychSafety,
+    pressure,
     peerRoles,
   };
 }
@@ -517,7 +563,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // Összefoglaló: profil-mondat + dinamika-számok.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő és ${agg.dynamics.frictionCount} mutat súrlódási potenciált.`;
+    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő, ${agg.dynamics.frictionCount} pedig súrlódási potenciált mutat.`;
   }
 
   const strengths = bullets([
@@ -528,7 +574,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   ]);
 
   const risks = bullets([
-    getWeaknessInsight(bottomDim),
+    getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
       ? `A tagpárok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
@@ -544,6 +590,14 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       : "",
     ps && ps.spread >= 20
       ? "A biztonság-élmény erősen megosztott a csapaton belül — az átlag mögött nagyon eltérő egyéni tapasztalatok állnak."
+      : "",
+    agg.pressure && agg.pressure.concentrations.length > 0
+      ? `Nyomás alatti kollektív minta: ${agg.pressure.concentrations
+          .map(
+            (c) =>
+              `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${c.pole === "high" ? "magas" : "alacsony"} pólus, ${c.count}/${c.assessedCount} tag)`,
+          )
+          .join(", ")} — az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
       : "",
   ]);
 
@@ -572,9 +626,9 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   ]);
 
   const leadershipGuide = bullets([
-    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál a csapat magától teljesít.`,
+    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál jellemzően kevesebb vezetői ráhatás is elég.`,
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
-    getWeaknessInsight(bottomDim),
+    getWatchAreaInsight(bottomDim),
     // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus
     // vezetői mintázat + ellenszer (keret: HBR 2026/07, saját adaptáció).
     ...(ps

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -114,12 +113,19 @@ export function ComparisonTab({
             : "Next step: request observer feedback or connect to a team to build a shared picture."}
         </p>
         <div className="mt-4 flex justify-center">
-          <Link
-            href="/profile/results?tab=comparison#invitations"
+          {/* UX-B15: a meghívó-blokk ugyanezen a tabon, lejjebb van — link
+              helyett görgetünk, nem navigálunk önmagunkra. */}
+          <button
+            type="button"
+            onClick={() =>
+              document
+                .getElementById("invitations")
+                ?.scrollIntoView({ behavior: "smooth", block: "start" })
+            }
             className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-[12px] font-semibold text-white transition hover:brightness-110"
           >
             {locale === "hu" ? "Observer meghívása" : "Invite observers"}
-          </Link>
+          </button>
         </div>
       </div>
     );

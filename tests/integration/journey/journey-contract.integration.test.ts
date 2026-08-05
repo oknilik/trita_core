@@ -128,7 +128,8 @@ test("journey integration: pending join invite preempts org cockpit home", async
   });
 
   assert.equal(resolution.reason, "pending_join");
-  assert.equal(resolution.destination, `/join/${pendingInvite.id}`);
+  // A join-link 2026-07 óta token-alapú (/join/[token]), nem invite-id-s.
+  assert.equal(resolution.destination, `/join/${pendingInvite.token}`);
   assert.equal(resolution.activeSurface, "continuation");
   assert.notEqual(resolution.destination, "/dashboard");
 });
@@ -299,8 +300,11 @@ test("journey integration: subscription restriction precedence matrix is enforce
       scenario.expected.requiresSubscriptionAction,
     );
 
-    assert.equal(resolution.destination, "/dashboard");
-    assert.equal(resolution.activeSurface, "org");
+    // Mai journey-modell: a /dashboard tiszta dispatcher, sosem cél; az
+    // ORG_MANAGER home-ja a /manager cockpit (activeSurface: team).
+    assert.equal(resolution.destination, "/manager");
+    assert.equal(resolution.reason, "manager_cockpit");
+    assert.equal(resolution.activeSurface, "team");
     assert.equal(resolution.home.primaryAction?.id, scenario.expectedHomePrimaryActionId);
   }
 });

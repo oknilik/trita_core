@@ -64,6 +64,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (error) {
     log.error({ event: "pilot.pilot_application_error", err: error }, "Pilot application error");
-    return NextResponse.json({ error: "Szerverhiba. Kérjük próbáld újra." }, { status: 500 });
+    return NextResponse.json({ error: "Szerverhiba. Próbáld újra." }, { status: 500 });
   }
 }

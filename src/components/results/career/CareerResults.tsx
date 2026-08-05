@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
+import { withHuArticle } from "@/lib/hu-grammar";
 import { TRITAN_DIMENSIONS } from "@/lib/tritan";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { INDUSTRIES } from "@/lib/industry-fit";
@@ -252,7 +253,10 @@ function OccupationCard({
               {tf("results.cfWhyInList", locale, { value: fit.choiceScore })}{" "}
               {fit.components[0] &&
                 tf("results.cfWhyThisOrder", locale, {
-                  dim: dimLabel(fit.components[0].dim, isHu),
+                  // HU: kész névelős alak megy a sablonba („az Extraverzió").
+                  dim: isHu
+                    ? withHuArticle(dimLabel(fit.components[0].dim, isHu))
+                    : dimLabel(fit.components[0].dim, isHu),
                   target: Math.round(fit.components[0].target),
                   user: fit.components[0].userValue,
                 })}

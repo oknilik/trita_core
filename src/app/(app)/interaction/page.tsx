@@ -5,12 +5,24 @@ import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, type Locale } from "@/lib/i18n";
-import { buildArchetypeSimulations } from "@/lib/interaction-view";
+import {
+  buildArchetypeSimulations,
+  buildPairSimulation,
+} from "@/lib/interaction-view";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import type { ScoreResult } from "@/lib/scoring";
+import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { InteractionSection } from "@/components/results/InteractionSection";
+import {
+  CompareInviteCard,
+  type SerializedCompareInvite,
+} from "@/components/results/CompareInviteCard";
+import {
+  PairInteractionView,
+  type PairGlyphInfo,
+} from "@/components/results/PairInteractionView";
 
 // „Hogyan működnétek együtt?" — ÖNÁLLÓ oldal (korábban az eredmény-oldal
 // utolsó szekciója).
@@ -34,7 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function InteractionPage() {
+export default async function InteractionPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) redirect("/sign-in");
 
@@ -53,10 +69,27 @@ export default async function InteractionPage() {
   });
 
   const scores = latestResult?.scores as ScoreResult | undefined;
-  // Saját profil nélkül nincs mit összevetni — a riport-oldal a belépő,
-  // ott már ott van a kitöltés hívása.
+  // UX-B10: saját eredmény nélkül nem néma redirect (az emailből érkező
+  // magyarázat nélkül pattant vissza) — címzett állapot-oldal CTA-val.
   if (!scores || scores.type !== "likert" || !latestResult?.testType) {
-    redirect("/profile/results");
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+          <h1 className="font-fraunces text-[26px] leading-tight tracking-tight text-ink">
+            {t("results.compareNeedResultTitle", locale)}
+          </h1>
+          <p className="mt-3 text-caption leading-relaxed text-ink-body">
+            {t("results.compareNeedResultBody", locale)}
+          </p>
+          <a
+            href="/assessment"
+            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+          >
+            {t("results.compareNeedResultCta", locale)}
+          </a>
+        </div>
+      </main>
+    );
   }
 
   const lang = (locale === "en" ? "en" : "hu") as Locale;
@@ -70,6 +103,92 @@ export default async function InteractionPage() {
   const personalityType = resolvePersonalityTypeFromScores(scoredDims, lang);
   const selfGlyph = resolveGlyphPair(scoredDims);
 
+  // ── Valódi páros mód (B1): meghívó-lista + kiválasztott pár ────────────
+  const now = new Date();
+  const rawInvites = await prisma.compareInvite.findMany({
+    where: { OR: [{ inviterId: profile.id }, { partnerId: profile.id }] },
+    orderBy: { createdAt: "desc" },
+    select: {
+      id: true,
+      token: true,
+      status: true,
+      createdAt: true,
+      acceptedAt: true,
+      expiresAt: true,
+      inviterId: true,
+      partnerId: true,
+      inviter: { select: { username: true } },
+      partner: { select: { username: true } },
+    },
+  });
+  const compareInvites: SerializedCompareInvite[] = rawInvites.map((inv) => {
+    const isInviter = inv.inviterId === profile.id;
+    return {
+      id: inv.id,
+      token: isInviter ? inv.token : null,
+      state: resolveCompareInviteState(inv, now),
+      role: isInviter ? "inviter" : "partner",
+      otherName: isInviter
+        ? (inv.partner?.username ?? null)
+        : (inv.inviter?.username ?? null),
+      createdAt: inv.createdAt.toISOString(),
+      acceptedAt: inv.acceptedAt?.toISOString() ?? null,
+      expiresAt: inv.expiresAt.toISOString(),
+    };
+  });
+
+  // Kiválasztott pár: csak ACCEPTED, csak résztvevőnek. A partner pontszámai
+  // a szerveren maradnak — a kliens a szimuláció szövegét + a glyph-párt kapja.
+  const sp = (await searchParams) ?? {};
+  const pairId = typeof sp.pair === "string" ? sp.pair : null;
+  let pairView: {
+    self: PairGlyphInfo;
+    other: PairGlyphInfo;
+    otherName: string;
+    sim: ReturnType<typeof buildPairSimulation>;
+  } | null = null;
+
+  if (pairId) {
+    const pair = rawInvites.find(
+      (inv) => inv.id === pairId && resolveCompareInviteState(inv, now) === "ACCEPTED",
+    );
+    const otherId = pair
+      ? pair.inviterId === profile.id
+        ? pair.partnerId
+        : pair.inviterId
+      : null;
+    if (pair && otherId) {
+      const otherResult = await prisma.assessmentResult.findFirst({
+        where: { userProfileId: otherId, isSelfAssessment: true },
+        orderBy: { createdAt: "desc" },
+        select: { scores: true },
+      });
+      const otherScores = otherResult?.scores as ScoreResult | undefined;
+      if (otherScores && otherScores.type === "likert") {
+        const otherDims = Object.entries(otherScores.dimensions).map(
+          ([code, score]) => ({ code, score }),
+        );
+        const otherGlyph = resolveGlyphPair(otherDims);
+        const otherLabel = resolvePersonalityTypeFromScores(otherDims, lang);
+        if (selfGlyph && personalityType && otherGlyph && otherLabel) {
+          const isInviter = pair.inviterId === profile.id;
+          pairView = {
+            self: { ...selfGlyph, label: personalityType },
+            other: { ...otherGlyph, label: otherLabel },
+            otherName:
+              (isInviter ? pair.partner?.username : pair.inviter?.username) ??
+              t("results.comparePartnerFallback", lang),
+            sim: buildPairSimulation(
+              scores.dimensions,
+              otherScores.dimensions,
+              lang,
+            ),
+          };
+        }
+      }
+    }
+  }
+
   return (
     <PlatformPageShell
       surface="self"
@@ -79,17 +198,32 @@ export default async function InteractionPage() {
         <h1 className="font-fraunces text-title text-[var(--color-text-primary)]">
           {t("results.sectionInteraction", lang)}
         </h1>
+        {/* UX-B13: a saját, erre az oldalra írt intro — nem a CTA-kártya
+            szövegének ismétlése. */}
         <p className="mt-2 max-w-prose text-body leading-relaxed text-[var(--color-text-secondary)]">
-          {t("results.ctaInteractionBody", lang)}
+          {t("results.interactionIntro", lang)}
         </p>
       </header>
 
-      <InteractionSection
-        simulations={simulations}
-        selfLabel={personalityType ?? undefined}
-        selfGlyph={selfGlyph ?? undefined}
-        hideHeader
-      />
+      {pairView ? (
+        <PairInteractionView
+          self={pairView.self}
+          other={pairView.other}
+          otherName={pairView.otherName}
+          sim={pairView.sim}
+        />
+      ) : (
+        <>
+          <CompareInviteCard invites={compareInvites} />
+
+          <InteractionSection
+            simulations={simulations}
+            selfLabel={personalityType ?? undefined}
+            selfGlyph={selfGlyph ?? undefined}
+            hideHeader
+          />
+        </>
+      )}
     </PlatformPageShell>
   );
 }

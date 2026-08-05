@@ -15,9 +15,12 @@ import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { POST as observerSubmitPOST } from "@/app/api/observer/submit/route";
 import { linkObserverTokenToProfile } from "@/lib/observer/link-service";
+import { __setObserverSubmitViewerResolverForTests } from "@/lib/observer/submit-auth";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-04-15T10:00:00.000Z");
+// Lejárathoz a VALÓS órához képesti jövő kell: a submit API a szerver-oldali
+// Date.now()-val ellenőriz, fix dátum idővel a múltba csúszna (teszt-rothadás).
+const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 const PAST = new Date("2026-03-01T10:00:00.000Z");
 
 function makeId(prefix: string): string {
@@ -193,7 +196,7 @@ test("C5.2 Observer token link + acceptance", async (t) => {
     assert.equal(body.success, true);
   });
 
-  await t.test("linked observer flow: token linked first, then submit still succeeds", async () => {
+  await t.test("linked observer flow: token linked first, then addressee submit succeeds", async () => {
     const inviter = await createProfile("inviter");
     const observer = await createProfile("observer");
     const invitation = await createInvitation(inviter.id, {
@@ -207,11 +210,30 @@ test("C5.2 Observer token link + acceptance", async (t) => {
     });
     assert.equal(linked.ok, true);
 
-    const res = await submitObserverToken(invitation.token);
-    const body = await res.json();
+    // Mai viselkedés: a nevesített (linkelt) meghívót csak a bejelentkezett
+    // címzett adhatja be — bejelentkezés nélkül NOT_ADDRESSEE.
+    const restoreAnon = __setObserverSubmitViewerResolverForTests(async () => null);
+    try {
+      const anonRes = await submitObserverToken(invitation.token);
+      assert.equal(anonRes.status, 403);
+      assert.equal((await anonRes.json()).error, "NOT_ADDRESSEE");
+    } finally {
+      restoreAnon();
+    }
 
-    assert.equal(res.status, 200);
-    assert.equal(body.success, true);
+    // A címzettként bejelentkezett néző submitja sikeres.
+    const restore = __setObserverSubmitViewerResolverForTests(
+      async () => observer.clerkId,
+    );
+    try {
+      const res = await submitObserverToken(invitation.token);
+      const body = await res.json();
+
+      assert.equal(res.status, 200);
+      assert.equal(body.success, true);
+    } finally {
+      restore();
+    }
   });
 });
 

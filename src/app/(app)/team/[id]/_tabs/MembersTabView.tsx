@@ -93,7 +93,6 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
         members={membersForTab}
         pendingInvites={pendingForTab}
         teamId={teamId}
-        teamName={teamData.teamName}
         profileId={profile.id}
         isOrgManager={isOrgManager}
         canEmailInvite={canEmailInvite}

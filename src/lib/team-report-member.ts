@@ -170,7 +170,7 @@ export function buildMemberReportViewModel(
   } else if (primaryRole && roleFit === "shared") {
     tips.push(
       loc === "hu"
-        ? `A(z) ${primaryRole.label} szerepet többen is viszitek — osszátok meg a tudást és a terhet, támogassátok egymást.`
+        ? `${withHuArticle(primaryRole.label, { capitalize: true })} szerepet többen is viszitek — osszátok meg a tudást és a terhet, támogassátok egymást.`
         : `Several of you carry the ${primaryRole.label} role — share the knowledge and the load, support each other.`,
     );
   }

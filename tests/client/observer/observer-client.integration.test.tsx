@@ -261,24 +261,37 @@ describe("C5.5 ObserverClient integration", () => {
       }
     });
 
-    it("start button is disabled until both relationship and duration selected", async () => {
+    it("start without selections is blocked with a warning, not a disabled button (UX-B20)", async () => {
       const user = userEvent.setup();
       renderObserver();
       const startBtn = screen.getByText(START_CTA);
-      expect(startBtn).toBeDisabled();
-
-      // Select only relationship
-      await user.click(screen.getByText(t("observer.relationFriend", "en")));
-      expect(startBtn).toBeDisabled();
-
-      // Select duration too
-      await user.click(screen.getByText(t("observer.durationLt1", "en")));
       expect(startBtn).not.toBeDisabled();
+
+      // Üres indítási kísérlet: figyelmeztetés, marad az intro
+      await user.click(startBtn);
+      expect(screen.getByText(t("observer.selectBothFields", "en"))).toBeInTheDocument();
+      expect(screen.queryByText(/Observer Q1/)).not.toBeInTheDocument();
+
+      // Csak kapcsolat kiválasztva → továbbra is blokkolt
+      await user.click(screen.getByText(t("observer.relationFriend", "en")));
+      await user.click(startBtn);
+      expect(screen.queryByText(/Observer Q1/)).not.toBeInTheDocument();
+
+      // Időtartam is kiválasztva → az indítás továbbenged
+      await user.click(screen.getByText(t("observer.durationLt1", "en")));
+      await user.click(startBtn);
+      await waitFor(() => {
+        expect(screen.getByText(/Observer Q1/)).toBeInTheDocument();
+      });
     });
 
-    it("shows hint text when fields not yet selected", () => {
+    it("shows the hint only after a blocked start attempt (UX-B20)", async () => {
+      const user = userEvent.setup();
       renderObserver();
       const selectBothText = t("observer.selectBothFields", "en");
+      expect(screen.queryByText(selectBothText)).not.toBeInTheDocument();
+
+      await user.click(screen.getByText(START_CTA));
       expect(screen.getByText(selectBothText)).toBeInTheDocument();
     });
 

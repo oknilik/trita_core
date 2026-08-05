@@ -11,7 +11,9 @@ import { GET as candidateLookupGET } from "@/app/api/candidate/[token]/route";
 import { PATCH as candidateProgressPATCH } from "@/app/api/candidate/[token]/progress/route";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-04-15T10:00:00.000Z");
+// Lejárathoz a VALÓS órához képesti jövő kell: az expiry-ellenőrzés
+// szerver-oldali Date.now()-val fut, fix dátum idővel a múltba csúszna.
+const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 const PAST = new Date("2026-03-01T10:00:00.000Z");
 
 function makeId(prefix: string): string {
@@ -327,25 +329,32 @@ test("api.team.join already member: invite resolves as accepted without duplicat
   });
   assert.equal(resolution.acceptanceState, "INVITE_ACCEPTED");
 
+  // Mai viselkedés: a már-tag címzett lógva maradt meghívó-sorát a feloldás
+  // eltakarítja (különben a journey pending-join prioritása redirect-hurkot
+  // okozna: join-oldal → journey → join-oldal).
+  const cleanedInvite = await prisma.teamPendingInvite.findUnique({
+    where: { id: invite.id },
+  });
+  assert.equal(
+    cleanedInvite,
+    null,
+    "dangling invite of an already-member recipient is cleaned up on resolution",
+  );
+
+  // A join-mutáció már-tag esetben is ok-t ad (friss meghívóval), és nem
+  // duplikálja a tagságot.
+  const secondInvite = await createTeamInvite(team.id, user.email ?? undefined);
   const result = await joinMembershipFromInvite({
     clerkId: user.clerkId!,
     kind: "team",
-    inviteId: invite.token,
+    inviteId: secondInvite.token,
   });
   assert.equal(result.ok, true);
 
   const teamMemberCount = await prisma.teamMember.count({
     where: { teamId: team.id, userId: user.id },
   });
-  const pendingInvite = await prisma.teamPendingInvite.findUnique({
-    where: { id: invite.id },
-  });
-
   assert.equal(teamMemberCount, 1, "already-member flow must not duplicate team membership");
-  assert.ok(
-    pendingInvite,
-    "already-accepted invite should remain untouched because no mutation transaction runs",
-  );
 });
 
 test("pending assessment + join: journey handoff keeps destination on /assessment", async () => {

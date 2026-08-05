@@ -24,7 +24,7 @@ const POLES: Record<string, { low: string; high: string }> = {
   "Change frequency": { low: "stable", high: "dynamic" },
   "Döntési sebesség": { low: "lassú", high: "gyors" },
   "Decision pace": { low: "slow", high: "fast" },
-  Stressztűrés: { low: "alacsony", high: "magas" },
+  "Terhelés-kezelés": { low: "alacsony", high: "magas" },
   "Stress tolerance": { low: "low", high: "high" },
   Projektciklus: { low: "rövid", high: "hosszú" },
   "Project cycle": { low: "short", high: "long" },
@@ -56,10 +56,6 @@ function getPosition(value: string): number {
   return 50;
 }
 
-function getMarkerColor(pos: number): string {
-  return pos >= 65 ? "bg-[var(--color-action-primary-bg)]" : pos <= 35 ? "bg-[var(--color-text-muted)]" : "bg-[var(--color-accent-primary)]";
-}
-
 function getDescription(value: string): string {
   const dashIdx = value.indexOf(" – ");
   const dashIdx2 = value.indexOf(" — ");
@@ -85,7 +81,6 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
         {items.map((item) => {
           const poles = POLES[item.label] ?? { low: "", high: "" };
           const pos = getPosition(item.value);
-          const markerColor = getMarkerColor(pos);
           const desc = getDescription(item.value);
 
           return (

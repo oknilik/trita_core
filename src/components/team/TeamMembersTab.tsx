@@ -38,7 +38,6 @@ interface TeamMembersTabProps {
   members: SerializedMemberRow[];
   pendingInvites: SerializedPendingInvite[];
   teamId: string;
-  teamName: string;
   profileId: string;
   isOrgManager: boolean;
   /** teamInviteEmail capability: e-mailes meghívó — csak admin-paritás. */
@@ -57,7 +56,6 @@ export function TeamMembersTab({
   members,
   pendingInvites,
   teamId,
-  teamName,
   profileId,
   isOrgManager,
   canEmailInvite,

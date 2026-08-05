@@ -4,6 +4,15 @@ import { prisma } from "../../../src/lib/prisma";
 
 const E2E_AUTH_COOKIE_NAME = "trita_e2e_user_id";
 
+// A felső nav MAI modellje (2026-07-17 felület-diéta, lib/navigation/config.ts):
+//   · admin (ORG_ADMIN): Vezérlő · Feladataim · Csapatok · Szervezet — NINCS
+//     Analitika (kivezetve) és NINCS Jelöltek (a hiring 2026-07-23 óta a
+//     tanácsadói köré: ORG_CONSULTANT / isConsultant / trita-admin);
+//   · manager (ORG_MANAGER): Vezérlő · Feladataim · Csapatom — se Szervezet,
+//     se Analitika, se Jelöltek.
+// A /dashboard tiszta elosztó: admin → /org/[id] (org cockpit), manager →
+// /manager, ami EGY kezelt csapatnál a /team/[id]-re továbbít (UX-audit #10).
+
 interface CriticalIaFixture {
   orgId: string;
   teamId: string;
@@ -49,7 +58,10 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
   const managerClerkId = makeId("ia_manager_clerk");
   const managerUsername = `IA Manager ${managerProfileId.slice(-4)}`;
 
-  const now = new Date("2026-04-02T09:00:00.000Z");
+  // Relatív dátumok: a fixture ne évüljön el (a lejárt subscription más
+  // policy-állapotot adna).
+  const now = new Date();
+  const subscriptionPeriodEnd = new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
 
   await prisma.userProfile.createMany({
     data: [
@@ -130,7 +142,7 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
     data: {
       orgId,
       status: "active",
-      currentPeriodEnd: new Date("2026-06-30T00:00:00.000Z"),
+      currentPeriodEnd: subscriptionPeriodEnd,
       trialEndsAt: null,
       cancelAtPeriodEnd: false,
     },
@@ -155,20 +167,6 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
     ],
   });
 
-  await prisma.candidateInvite.create({
-    data: {
-      id: makeId("ia_candidate_invite"),
-      managerId: managerProfileId,
-      teamId,
-      email: `candidate-${teamId.slice(-4)}@example.com`,
-      name: "IA Candidate",
-      position: "Frontend Engineer",
-      status: "PENDING",
-      testType: "TRITAN",
-      expiresAt: new Date("2026-05-15T00:00:00.000Z"),
-    },
-  });
-
   await prisma.userProfile.updateMany({
     where: { id: { in: [adminProfileId, managerProfileId] } },
     data: { activeOrgId: orgId },
@@ -191,12 +189,6 @@ async function createCriticalIaFixture(): Promise<CriticalIaFixture> {
 }
 
 async function cleanupCriticalIaFixture(fixture: CriticalIaFixture): Promise<void> {
-  await prisma.candidateResult.deleteMany({
-    where: { invite: { teamId: fixture.teamId } },
-  });
-  await prisma.candidateInvite.deleteMany({
-    where: { teamId: fixture.teamId },
-  });
   await prisma.assessmentResult.deleteMany({
     where: { userProfileId: { in: [fixture.admin.profileId, fixture.manager.profileId] } },
   });
@@ -254,13 +246,16 @@ async function expectPathname(page: Page, pathname: string) {
 }
 
 test.describe("WORKSTREAM G — critical IA smoke", () => {
-  let fixture: CriticalIaFixture;
+  let fixture: CriticalIaFixture | undefined;
 
   test.beforeAll(async () => {
     fixture = await createCriticalIaFixture();
   });
 
   test.afterAll(async () => {
+    // Ha a beforeAll dobott, nincs mit takarítani — a guard nélkül a cleanup
+    // maga is TypeError-ral halna el, és elfedné az eredeti hibát.
+    if (!fixture) return;
     await cleanupCriticalIaFixture(fixture);
   });
 
@@ -269,46 +264,62 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
     context,
     baseURL,
   }) => {
+    if (!fixture) throw new Error("fixture setup failed");
     await setSessionCookies(context, baseURL, fixture.admin.clerkId);
 
+    // /dashboard = elosztó: org admin a szervezeti cockpiton landol.
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
-    await expectPathname(page, "/dashboard");
+    await expectPathname(page, `/org/${fixture.orgId}`);
 
     await expect(page.getByTestId("nav-item-home")).toBeVisible();
+    await expect(page.getByTestId("nav-item-teams")).toBeVisible();
     await expect(page.getByTestId("nav-item-org")).toBeVisible();
-    await expect(page.getByTestId("nav-item-analytics")).toBeVisible();
+    // Kivezetett / tanácsadói-körre szűkített menüpontok nem jelenhetnek meg.
+    await expect(page.getByTestId("nav-item-analytics")).toHaveCount(0);
+    await expect(page.getByTestId("nav-item-hiring")).toHaveCount(0);
 
     await page.goto(`/team/${fixture.teamId}`, { waitUntil: "domcontentloaded" });
     await expectPathname(page, `/team/${fixture.teamId}`);
     await expect(
       page.getByRole("heading", { name: new RegExp(`IA Team ${fixture.teamId.slice(-4)}`) }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15_000 });
 
     await page.goto(`/org/${fixture.orgId}/settings`, { waitUntil: "domcontentloaded" });
     await expectPathname(page, `/org/${fixture.orgId}/settings`);
     await expect(
       page.getByRole("heading", { name: new RegExp(`IA Org ${fixture.orgId.slice(-4)}`) }),
-    ).toBeVisible();
-
-    await page.goto(`/hiring/${fixture.orgId}`, { waitUntil: "domcontentloaded" });
-    await expectPathname(page, `/hiring/${fixture.orgId}`);
-    await expect(
-      page.getByRole("heading", { name: /trita Hiring/i }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15_000 });
 
     await page.goto("/assessment-layers", { waitUntil: "domcontentloaded" });
     await expectPathname(page, "/assessment-layers");
     await expect(
       page.locator('a[href^="/assessment-layers/"]').first(),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15_000 });
 
-    await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
-    await page.getByTestId("nav-user-menu-trigger").click();
+    await page.goto(`/org/${fixture.orgId}`, { waitUntil: "domcontentloaded" });
+    // A menü kliens-oldali — hydration előtt a kattintás elveszhet, ezért
+    // addig próbálkozunk, amíg a menüelem tényleg megjelenik.
+    await expect
+      .poll(
+        async () => {
+          const profileItem = page.getByTestId("nav-user-menu-profile");
+          if (await profileItem.isVisible().catch(() => false)) return "open";
+          await page
+            .getByTestId("nav-user-menu-trigger")
+            .click({ timeout: 5_000 })
+            .catch(() => undefined);
+          return "pending";
+        },
+        { timeout: 15_000 },
+      )
+      .toBe("open");
     await page.getByTestId("nav-user-menu-profile").click();
     await expectPathname(page, "/profile");
+    // A profil-fejléc kliens-oldali API-ból tölt — dev-fordítással együtt is
+    // beférő türelmi idő.
     await expect(
       page.getByRole("heading", { name: /IA Admin/i }),
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 15_000 });
   });
 
   test("manager dashboard keeps simplified role navigation", async ({
@@ -316,16 +327,17 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
     context,
     baseURL,
   }) => {
+    if (!fixture) throw new Error("fixture setup failed");
     await setSessionCookies(context, baseURL, fixture.manager.clerkId);
 
+    // /dashboard → /manager → egyetlen kezelt csapatnál egyből a csapatoldal.
     await page.goto("/dashboard", { waitUntil: "domcontentloaded" });
-    await expectPathname(page, "/dashboard");
+    await expectPathname(page, `/team/${fixture.teamId}`);
 
     await expect(page.getByTestId("nav-item-home")).toBeVisible();
     await expect(page.getByTestId("nav-item-teams")).toBeVisible();
-    await expect(page.getByTestId("nav-item-hiring")).toBeVisible();
-    await expect(page.getByTestId("nav-item-analytics")).toBeVisible();
     await expect(page.getByTestId("nav-item-org")).toHaveCount(0);
+    await expect(page.getByTestId("nav-item-analytics")).toHaveCount(0);
+    await expect(page.getByTestId("nav-item-hiring")).toHaveCount(0);
   });
 });
-

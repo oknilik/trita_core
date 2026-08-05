@@ -9,7 +9,6 @@ import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { ShareModal } from "@/components/results/ShareModal";
 import { ProgressBar } from "@/components/results/ProgressBar";
-import { InsightPair } from "@/components/results/InsightPair";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
 import {
@@ -23,12 +22,9 @@ import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
-import { isConsultingLed } from "@/lib/operating-mode";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
-import { CareerCompass } from "@/components/results/CareerCompass";
 import type { CareerResultView } from "@/lib/career/service";
-import { type CareerBackground } from "@/lib/industry-fit";
 import { LockedPreview } from "@/components/results/LockedPreview";
 import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
@@ -42,6 +38,7 @@ import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { Card } from "@/components/ui/primitives/Card";
+import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -116,7 +113,6 @@ export interface ProfileTabsProps {
   assessmentDate: string;
   accessLevel: ProfileLevel;
   initialTab: TabId;
-  assessmentResultId: string;
   dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
@@ -136,15 +132,10 @@ export interface ProfileTabsProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   feedbackSubmitted: boolean;
-  hasDraft: boolean;
-  draftAnsweredCount: number;
-  draftTotalQuestions: number;
-  pendingInvitesCount: number;
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
-  percentile?: string;
   heroInsight?: string;
-  /** InsightPair props */
+  /** PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája) */
   strengths?: string;
   watchAreas?: string;
   /** Plus content sections */
@@ -171,17 +162,14 @@ export interface ProfileTabsProps {
     closingText: string;
   };
   bridgeNextStep?: BridgeNextStep;
-  hasTeamOrOrgMembership?: boolean;
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
   careerModuleHidden?: boolean;
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
-  careerBackground?: CareerBackground | null;
   /** Szerver-oldalon számolt karrier-illeszkedés (motor v2) */
   careerResult?: CareerResultView | null;
   /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
-  assessmentForm?: "short" | "full";
   /** Kitöltött csapatszerep-kérdőív eredménye (mért) — ha van. */
   teamRoleMeasuredScores?: Record<string, number> | null;
   /** Csapattársi szerep-visszajelzés aggregátuma (kampányból). */
@@ -241,6 +229,8 @@ interface ResultsTabProps {
   hasObserverData: boolean;
   locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
+  /** Observer-folyamat állapota — "locked"-nál a CTA zsákutca lenne (B5). */
+  observerFlow?: ProfileTabsProps["observerFlow"];
   /** Observer-CTA: átvált a meghívások tabra */
   onOpenInvites: () => void;
 }
@@ -252,6 +242,7 @@ function ResultsTab({
   hasObserverData,
   locale,
   plusContent,
+  observerFlow = null,
   onOpenInvites,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
@@ -378,8 +369,10 @@ function ResultsTab({
         />
       )}
 
-      {/* Observer kontextus-CTA — ha még nincs külső visszajelzés */}
-      {!hasObserverData && (
+      {/* Observer kontextus-CTA — ha még nincs külső visszajelzés. Zárolt
+          observer-folyamatnál (org-tag, kampány előtt) rejtve: a cél-tab ott
+          csak állapot-kártyát mutat, a CTA zsákutcába vinne (B5). */}
+      {!hasObserverData && observerFlow?.state !== "locked" && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[14px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-5">
           <div className="max-w-xl">
             <p className="text-sm font-semibold text-[var(--color-text-primary)]">
@@ -412,6 +405,7 @@ function ResultsTab({
 // csapatszerep-hajlamok.
 function WorkStyleTab({
   dimensions,
+  growthFocusItems,
   isPlus,
   locale,
   plusContent,
@@ -419,6 +413,7 @@ function WorkStyleTab({
   teamRolePeer = null,
 }: {
   dimensions: SerializedDimension[];
+  growthFocusItems: SerializedGrowthItem[];
   isPlus: boolean;
   locale: Locale;
   plusContent?: ProfileTabsProps["plusContent"];
@@ -463,6 +458,47 @@ function WorkStyleTab({
           peer={teamRolePeer}
         />
       </section>
+
+      {/* Fejlődési fókusz (UX-audit B2) — a három legalacsonyabb alskála,
+          plusz a háromlépcsős fejlődési ív; eddig csak a PDF-ben élt. */}
+      {growthFocusItems.length > 0 && (
+        <section>
+          <DashboardSectionHeader
+            label={t("results.sectionGrowth", locale)}
+            className="mb-4"
+          />
+          <p className="mb-4 text-caption leading-relaxed text-[var(--color-text-secondary)]">
+            {t("results.growthIntro", locale)}
+          </p>
+          <GrowthFocus items={growthFocusItems} locale={locale} />
+          {plusContent?.growthPlan && (
+            <div
+              className="mt-4 rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]"
+              style={{ borderLeft: "4px solid var(--color-action-primary-bg)" }}
+            >
+              {plusContent.growthPlan.source && (
+                <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+                  {plusContent.growthPlan.source}
+                </p>
+              )}
+              {([
+                ["results.growthPlanBehavior", plusContent.growthPlan.behavior],
+                ["results.growthPlanReflection", plusContent.growthPlan.reflection],
+                ["results.growthPlanChallenge", plusContent.growthPlan.challenge],
+              ] as const).map(([labelKey, text]) => (
+                <div key={labelKey} className="mt-1.5 first:mt-0">
+                  <span className="text-micro font-semibold uppercase tracking-wide text-[var(--color-accent-self-deep)]">
+                    {t(labelKey, locale)}:{" "}
+                  </span>
+                  <span className="text-caption leading-relaxed text-[var(--color-text-secondary)]">
+                    {text}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
     </div>
   );
 }
@@ -474,7 +510,6 @@ export function ProfileTabs({
   assessmentDate,
   accessLevel,
   initialTab,
-  assessmentResultId,
   dimensions,
   growthFocusItems,
   hasObserverData,
@@ -483,24 +518,16 @@ export function ProfileTabs({
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
-  hasDraft,
-  draftAnsweredCount,
-  draftTotalQuestions,
-  pendingInvitesCount,
   personalityType,
-  percentile,
   heroInsight,
   strengths,
   watchAreas,
   plusContent,
   bridgeNextStep,
-  hasTeamOrOrgMembership = false,
   careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
-  careerBackground = null,
   careerResult = null,
-  assessmentForm = "short",
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
 }: ProfileTabsProps) {
@@ -594,21 +621,7 @@ export function ProfileTabs({
         ? t(stageKeyMap[bridgeNextStep.stage], locale)
         : t("content.bridgeFallbackStage", locale))
     : null;
-  // Consulting-led módban a „Csapat/szervezet indítása" gyorslink
-  // (self-serve onboarding) rejtve — a terelést az érdeklődés-banner végzi.
-  const shouldShowTeamShortcut = bridgeNextStep
-    ? !isConsultingLed() &&
-      !hasTeamOrOrgMembership &&
-      (bridgeNextStep.stage === "SELF_COMPLETED" || bridgeNextStep.stage === "OBSERVER_PENDING")
-    : false;
   const shouldShowOrgExpansionPrompt = Boolean(experienceHints?.showOrgExpansionPrompt);
-  // Consulting-led módban a self-serve csapat-létrehozó banner nem jelenik
-  // meg — helyette az eredmény-oldal alján lévő érdeklődés-banner terel.
-  const shouldShowTeamCreationBanner = Boolean(
-    !isConsultingLed() &&
-      experienceHints?.showTeamCreationBanner &&
-      !hasTeamOrOrgMembership,
-  );
   const shouldShowAssessmentContinuation = Boolean(experienceHints?.showAssessmentContinuation);
 
   const handleTabChange = useCallback(
@@ -677,7 +690,6 @@ export function ProfileTabs({
         glyphDimensions={dimensions
           .filter((d) => d.code !== "I")
           .map((d) => ({ code: d.code, score: d.score }))}
-        percentile={percentile ?? ""}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
         topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
@@ -784,7 +796,6 @@ export function ProfileTabs({
                 { year: "numeric", month: "long", day: "numeric" },
               ),
               personalityType: personalityType ?? "",
-              percentile: percentile ?? "",
               heroInsight: heroInsight ?? "",
               // P5.6: storytelling-felütés a summary-oldalra
               archetypeStory:
@@ -950,27 +961,6 @@ export function ProfileTabs({
         />
       )}
 
-      {/* Insight pair */}
-      {strengths && watchAreas && (
-        <InsightPair
-          strengths={(() => {
-            const mainDims = dimensions.filter((d) => d.code !== "I");
-            const high = mainDims.filter((d) => d.score >= 70);
-            if (high.length === 0) {
-              const top2 = [...mainDims].sort((a, b) => b.score - a.score).slice(0, 2);
-              return top2.map((d) => ({ dimension: d.label, text: d.insight }));
-            }
-            return high.map((d) => ({ dimension: d.label, text: d.insight }));
-          })()}
-          watchAreas={(() => {
-            const mainDims = dimensions.filter((d) => d.code !== "I");
-            const low = mainDims.filter((d) => d.score < 40);
-            if (low.length === 0) return [{ text: t("content.noLowDimension", locale) }];
-            return low.map((d) => ({ dimension: d.label, text: d.insight }));
-          })()}
-        />
-      )}
-
       {/* Tab bar — pill style */}
       <div
         ref={tabBarRef}
@@ -1036,9 +1026,11 @@ export function ProfileTabs({
               hasObserverData={hasObserverData}
               locale={locale}
               plusContent={plusContent}
+              observerFlow={observerFlow}
             />
             <WorkStyleTab
               dimensions={dimensions}
+              growthFocusItems={growthFocusItems}
               isPlus={isPlus}
               locale={locale}
               plusContent={plusContent}
@@ -1119,11 +1111,14 @@ export function ProfileTabs({
                 />
               </div>
               <div id="invitations" className="scroll-mt-24">
+                {/* B14: ebben az ágban state === "in_progress" → org-kontextus,
+                    a meghívó-form címe a „külső meghívó" változatot kapja. */}
                 <InvitationsTab
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
                   minForReveal={observerFlow.minForReveal}
+                  hasColleagueDirectory
                 />
               </div>
             </>
@@ -1139,6 +1134,9 @@ export function ProfileTabs({
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
+                  hasColleagueDirectory={Boolean(
+                    observerFlow && observerFlow.state !== "self_serve",
+                  )}
                 />
               </div>
             </>
@@ -1154,37 +1152,21 @@ export function ProfileTabs({
         )}
       </div>
 
-      {/* Journey bridge CTA — csak self-serve módban; consulting-led alatt az
-          eredményoldal kontextuális CTA-i (observer-CTA, érdeklődés-banner)
-          terelnek, a generikus journey-kártya duplikáció lenne. A hasznos
-          jelzés-kártyák (függő org-meghívó, félbehagyott teszt) maradnak. */}
+      {/* Journey bridge CTA — a következő lépés kártyája (UX-audit B3):
+          minden módban renderel. A journey-engine consulting-led alatt már
+          consulting-tudatos CTA-t ad (a self-serve CREATE_TEAM observer-
+          irányra átképezve), upgrade/checkout felületre nem mutat. */}
       {bridgeNextStep ? (
         <div className="space-y-3">
-          {!isConsultingLed() ? (
-            <JourneyNextStepCard
-              eyebrow={t("content.bridgeEyebrow", locale)}
-              title={bridgeStageLabel
-                ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-                : t("content.bridgeJourney", locale)}
-              description={bridgeNextStep.explanation}
-              primary={bridgeNextStep.primary}
-              secondary={bridgeNextStep.secondary}
-            />
-          ) : null}
-
-          {shouldShowTeamShortcut ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {t("content.bridgeOptionalTeamHint", locale)}{" "}
-                <Link
-                  href="/onboarding?intent=team"
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {t("content.bridgeOptionalTeamCta", locale)} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
+          <JourneyNextStepCard
+            eyebrow={t("content.bridgeEyebrow", locale)}
+            title={bridgeStageLabel
+              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
+              : t("content.bridgeJourney", locale)}
+            description={bridgeNextStep.explanation}
+            primary={bridgeNextStep.primary}
+            secondary={bridgeNextStep.secondary}
+          />
 
           {shouldShowOrgExpansionPrompt ? (
             <Card spacing="sm" className="rounded-xl px-4 py-3">
@@ -1197,22 +1179,6 @@ export function ProfileTabs({
                   className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
                 >
                   {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-
-          {shouldShowTeamCreationBanner ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "Team fókuszt választottál. Ha szeretnéd, indítsd el most az első csapatod."
-                  : "You selected a team-focused path. If you want, start your first team now."}{" "}
-                <Link
-                  href="/onboarding?intent=team"
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Csapat létrehozása" : "Create a team"} →
                 </Link>
               </p>
             </Card>

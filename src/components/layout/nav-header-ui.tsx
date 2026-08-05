@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   buildWorkspaceNavigation,
@@ -288,9 +289,9 @@ function NavHeaderContent({
     careerModuleHidden,
     activeCampaignCount,
     openTaskCount,
-  });
+  }, locale);
   const homeItem = navItems.find((item) => item.id === "home");
-  const homeLabel = homeItem?.label ?? "Vezérlő";
+  const homeLabel = homeItem?.label ?? t("nav.home", locale);
   const homeDestination = homeItem?.primaryHref ?? homeHref;
   const onHome =
     homePath === "/dashboard"
@@ -390,7 +391,7 @@ function NavHeaderContent({
             className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
           >
             <span aria-hidden="true">←</span>
-            {locale === "hu" ? "Vissza a vezérlőre" : "Back to dashboard"}
+            {t("nav.backToHome", locale)}
           </Link>
         </div>
       </header>
@@ -568,7 +569,7 @@ function NavHeaderContent({
                   <rect x="9" y="9" width="5" height="5" rx="1" />
                 </svg>
               </span>
-              <span>Admin vezérlő</span>
+              <span>{t("nav.adminConsole", locale)}</span>
             </Link>
           ) : null}
 
@@ -983,7 +984,7 @@ function NavHeaderContent({
                             <rect x="9" y="9" width="5" height="5" rx="1" />
                           </svg>
                         </span>
-                        <span>Admin vezérlő</span>
+                        <span>{t("nav.adminConsole", locale)}</span>
                       </Link>
                     ) : null}
 

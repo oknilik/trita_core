@@ -72,6 +72,10 @@ export function buildIntelligenceViewData(params: {
       name: m.displayName,
       initials: getAvatarMonogram(m.displayName, { length: 2 }),
       tritan,
+      measuredRoleScores:
+        m.teamRoleSource === "questionnaire" && m.teamRoleScores
+          ? m.teamRoleScores
+          : null,
       hasAssessmentData: !!m.scores,
       skillLevel: placement.skillLevel,
       growthPotential: placement.growthPotential,

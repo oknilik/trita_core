@@ -24,7 +24,7 @@ export const authTranslations = {
     noAccount: { hu: "Nincs még fiókod?", en: "No account yet?" },
     hasAccount: { hu: "Van már fiókod?", en: "Already have an account?" },
     verifyTitle: { hu: "Email megerősítése", en: "Verify email" },
-    verifySent: { hu: "Küldtünk egy kódot a(z) {email} címre", en: "We sent a code to {email}" },
+    verifySent: { hu: "Küldtünk egy kódot erre a címre: {email}", en: "We sent a code to {email}" },
     verifyCodeLabel: { hu: "Megerősítő kód", en: "Verification code" },
     errorSignInFailed: { hu: "A bejelentkezés nem sikerült. Próbáld újra.", en: "Sign in failed. Please try again." },
     errorNoAccount: { hu: "Nem található fiók ezzel az email címmel.", en: "No account found with this email." },
@@ -58,13 +58,13 @@ export const authTranslations = {
     submitSendCodeLoading: { hu: "Küldés...", en: "Sending..." },
     magicLinkSentTitle: { hu: "Ellenőrizd az emailedet!", en: "Check your email!" },
     magicLinkSentBody: {
-      hu: "Küldtünk egy bejelentkezési linket a(z) {email} címre. Kattints a levélben lévő gombra a belépéshez.",
+      hu: "Küldtünk egy bejelentkezési linket erre a címre: {email}. Kattints a levélben lévő gombra a belépéshez.",
       en: "We sent a sign-in link to {email}. Click the button in the email to continue.",
     },
     magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email" },
-    intentQuestion: { hu: "Mire használnád a Tritát?", en: "What will you use trita for?" },
+    intentQuestion: { hu: "Mire használnád a Tritát?", en: "What will you use Trita for?" },
     errorBoundaryMessage: {
-      hu: "Valami hiba történt. Kérjük, frissítsd az oldalt.",
+      hu: "Hiba történt. Frissítsd az oldalt.",
       en: "Something went wrong. Please refresh the page.",
     },
     errorBoundaryReload: { hu: "Újratöltés", en: "Reload" },
@@ -357,9 +357,6 @@ export const authTranslations = {
       en: "You can update these details at any time from your profile.",
       de: "Diese Angaben können jederzeit in deinem Profil geändert werden.",
     },
-    step1Label: { hu: "Alapadatok", en: "Basic info" },
-    step2Label: { hu: "Hozzájárulás", en: "Consent" },
-    step2Title: { hu: "Egy utolsó lépés", en: "One last step" },
   },
   privacy: {
     title: {
@@ -409,6 +406,27 @@ export const authTranslations = {
     purposeService: {
       hu: "Szolgáltatás működtetése: a teszt kitöltése, eredmények megjelenítése, ismerősi meghívók kezelése.",
       en: "Service operation: delivering the assessment, displaying results, managing invitations.",
+    },
+    // TR360-LEGAL — csapatszintű visszajelzések és pulzus-mérések szakasz
+    teamFeedbackTitle: {
+      hu: "Csapatszintű visszajelzések és pulzus-mérések",
+      en: "Team-level feedback and pulse measurements",
+    },
+    teamFeedbackCollected: {
+      hu: "Mit gyűjtünk: csapattársi szerep-visszajelzéseket (a csapatszerep-kérdőív társértékelései), bizalmi kör válaszokat (rövid értékelések az együttműködési kapcsolatokról), valamint pszichológiai biztonság pulzus-válaszokat. A pulzus-válaszok rögzítése eleve felhasználói azonosító nélkül történik.",
+      en: "What we collect: teammate role feedback (peer ratings from the team-role questionnaire), trust-circle responses (short ratings about working relationships), and psychological-safety pulse responses. Pulse responses are recorded without any user identifier from the outset.",
+    },
+    teamFeedbackAnonymity: {
+      hu: "Anonimitás-szabály: egyéni válasz soha nem jelenik meg. A társértékelések és a pulzus-eredmények kizárólag összesített (aggregált) formában láthatók, és csak akkor, ha legalább 3 értékelő, illetve kitöltő válasza áll rendelkezésre — a küszöb alatt eredmény nem jelenik meg.",
+      en: "Anonymity rule: individual answers are never displayed. Peer ratings and pulse results are shown only in aggregated form, and only once responses from at least 3 raters or respondents exist — below this threshold no result is displayed.",
+    },
+    teamFeedbackAccess: {
+      hu: "Ki látja: az összesített csapatképet a csapat vezetője, a szervezeti adminisztrátor és a szervezethez rendelt Trita-tanácsadó láthatja; az értékelt személy a saját, összesített társ-visszajelzését látja. A bizalmi kör esetén a kapcsolati (páronkénti, két irány átlagából képzett) kép a vezetői/tanácsadói dinamika-nézetben jelenik meg — egyéni irányított válasz ott sem látható.",
+      en: "Who can see it: the aggregated team picture is visible to the team's manager, the organization admin, and the Trita consultant assigned to the organization; the person being rated sees their own aggregated peer feedback. For the trust circle, the relationship-level view (pairwise, averaged across both directions) appears in the manager/consultant dynamics view — individual directed answers are never shown there either.",
+    },
+    teamFeedbackRetention: {
+      hu: "Meddig: ezek a válaszok a csapat- és mérési adatokkal együtt, a szolgáltatás nyújtásához szükséges ideig tárolódnak. A profilod törlésével a hozzád köthető válaszok is törlődnek; a már anonimizált, összesített eredmények személyhez nem visszavezethetők, és nem törölhetők.",
+      en: "How long: these responses are stored together with the team and measurement data for as long as needed to provide the service. Deleting your profile also deletes the responses linked to you; already anonymized, aggregated results cannot be traced back to a person and cannot be deleted.",
     },
     cookiesTitle: {
       hu: "Cookie-k",

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
+import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
@@ -17,7 +18,6 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
     assessedCount,
     totalCount,
     teamDynamicsEdges,
-    hasDynamicsData,
     intelligenceEvidenceBySub,
     intelligencePriorities,
     missingForStableIntelligence,
@@ -193,21 +193,21 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         </div>
       </section>
 
+      {/* A számított 16-os csapatminta teljes nézete: tengelysávok, stabilitás-
+          jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja —
+          a részletes kártya eddig árva komponens volt (nem volt importálója). */}
+      <TeamPatternCard
+        patternResult={teamData.patternResult}
+        totalMembers={totalCount}
+        isHu={isHu}
+      />
+
       <TeamIntelligence
         members={intelligenceMembers}
         edges={teamDynamicsEdges}
         evidenceBySub={intelligenceEvidenceBySub}
         presentation="blocks"
         isHu={isHu}
-        hasDynamicsData={hasDynamicsData}
-        dynamicsSummary={
-          teamData.activeCampaign
-            ? {
-                participantCount: teamData.activeCampaign.teamParticipantCount,
-                observerDoneCount: teamData.activeCampaign.teamObserverDoneCount,
-              }
-            : undefined
-        }
         noDataCtaHref={`/team/${teamId}?tab=members`}
         noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
         deepDiveHref={`/team/${teamId}?tab=teamRole`}

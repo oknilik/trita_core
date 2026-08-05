@@ -11,6 +11,7 @@
     "check": "pnpm type-check && pnpm lint",
     "test": "pnpm test:unit",
     "test:unit": "node scripts/run-tests.mjs unit",
+    "manual-tests": "node scripts/generate-manual-tests.mjs",
     "test:integration": "node scripts/run-tests.mjs integration",
     "test:integration:bootstrap": "node scripts/test-integration-bootstrap.mjs",
     "test:integration:cleanup": "node scripts/test-integration-cleanup.mjs",
@@ -66,6 +67,7 @@
     "gray-matter": "^4.0.3",
     "next": "16.1.6",
     "next-mdx-remote": "^6.0.0",
+    "qrcode": "^1.5.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "reading-time": "^1.5.0",
@@ -83,15 +85,23 @@
     "@types/file-saver": "^2.0.7",
     "@types/mdx": "^2.0.13",
     "@types/node": "^20",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "exceljs": "^4.4.0",
     "jsdom": "^29.0.1",
     "msw": "^2.12.14",
     "prisma": "6.6.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.2"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }

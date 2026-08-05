@@ -27,7 +27,6 @@ interface ProfileHeroProps {
   personalityType: string;
   /** A típus-ábrához: pontozott dimenziók (TRITAN-kódok). Enélkül nincs ábra. */
   glyphDimensions?: Array<{ code: string; score: number }>;
-  percentile: string;
   insight: string;
   accessLevel?: AccessLevel;
   onDownloadPdf?: () => void;
@@ -43,7 +42,6 @@ export function ProfileHero({
   completedAt,
   personalityType,
   glyphDimensions,
-  percentile,
   insight,
   accessLevel = "start",
   onDownloadPdf,
@@ -138,23 +136,13 @@ export function ProfileHero({
       )}
       body={(
         <div>
-          <div className="flex items-start justify-between gap-3">
-            {/* A típusnév mellől az ábra kikerült — a fejlécben egy ábra van,
-                a név mellett. A jelentését a hero alatti tábla adja. */}
-            <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
-              {personalityType}
-            </span>
-            {percentile ? (
-              <span className="shrink-0 rounded-md bg-white/10 px-2.5 py-1 text-micro text-white/[0.8]">
-                {percentile}
-              </span>
-            ) : null}
-          </div>
-          {percentile ? (
-            <p className="mt-1 text-right text-micro text-white/[0.6]">
-              {t("results.percentileNote", locale)}
-            </p>
-          ) : null}
+          {/* A típusnév mellől az ábra kikerült — a fejlécben egy ábra van,
+              a név mellett. A jelentését a hero alatti tábla adja. Az
+              ál-percentilis badge végleg kivezetve (B17) — valós norma-
+              adattal térhet vissza (terv P4.3). */}
+          <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
+            {personalityType}
+          </span>
         </div>
       )}
       summary={insight}

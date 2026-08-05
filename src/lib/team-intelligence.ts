@@ -1,6 +1,8 @@
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
 import type { SerializedTeamMember } from "@/lib/team-stats";
+import { withHuArticle } from "@/lib/hu-grammar";
+import { TRITAN_DIMENSIONS, TRITAN_DIMENSIONS_LOWER } from "@/lib/tritan";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
 export type TeamIntelligenceSubTab = "map" | "dynamics" | "roles";
@@ -278,7 +280,7 @@ export function buildTeamIntelligencePriorities({
     priorities.push({
       id: "missing_assessments",
       tone: "amber",
-      title: tr(locale, "Hiányzó assessment kitöltések", "Missing assessment completions"),
+      title: tr(locale, "Hiányzó kitöltések", "Missing completions"),
       reason: tr(
         locale,
         `A stabil csapatképhez legalább ${MIN_INTELLIGENCE_ASSESSMENTS} kitöltés kell. Jelenleg még ${Math.max(MIN_INTELLIGENCE_ASSESSMENTS - completedCount, 0)} hiányzik.`,
@@ -298,7 +300,7 @@ export function buildTeamIntelligencePriorities({
     priorities.push({
       id: "missing_observer_round",
       tone: "violet",
-      title: tr(locale, "Observer kör indítása", "Start observer round"),
+      title: tr(locale, "Visszajelzési kör indítása", "Start feedback round"),
       reason: tr(
         locale,
         "A csapatdinamikához observer visszajelzés kell, ez még nem aktív.",
@@ -371,12 +373,12 @@ export function buildTeamIntelligencePriorities({
         title: tr(locale, "Kohéziós kockázat", "Cohesion risk"),
         reason: tr(
           locale,
-          `A kohézió átlag ${Math.round(clamp(cohesionAverage, 0, 100))}% (szórás: ±${Math.round(
+          `A kohézió-közelítő jelző átlaga ${Math.round(clamp(cohesionAverage, 0, 100))}% (szórás ±${Math.round(
             clamp(cohesionSpread, 0, 100),
-          )}).`,
-          `Cohesion average is ${Math.round(clamp(cohesionAverage, 0, 100))}% (spread: ±${Math.round(
+          )}) — a barátságosság és a becsületesség-alázat átlagából számolt becslés.`,
+          `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% (spread ±${Math.round(
             clamp(cohesionSpread, 0, 100),
-          )}).`,
+          )}) — an estimate computed from the agreeableness and honesty-humility averages.`,
         ),
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
         ctaHref: `/team/${teamId}?tab=profile`,
@@ -408,8 +410,8 @@ export function buildTeamIntelligencePriorities({
         title: tr(locale, "Magas dimenzió-szórás", "High dimension spread"),
         reason: tr(
           locale,
-          `A(z) ${maxSpread.dim} tengelyen szélsőséges a szórás (${Math.round(maxSpread.range)} pont), ami együttműködési feszültséget jelezhet.`,
-          `${maxSpread.dim} shows a wide spread (${Math.round(maxSpread.range)} points), which may create collaboration friction.`,
+          `${withHuArticle(TRITAN_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés (${Math.round(maxSpread.range)} pont), ami eltérő munkastílusokra utalhat.`,
+          `${TRITAN_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team (${Math.round(maxSpread.range)} points), which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
         ctaHref: `/team/${teamId}?tab=profile`,
@@ -444,12 +446,12 @@ export function buildTeamIntelligencePriorities({
           ),
           reason: tr(
             locale,
-            `A vezető H/A profilja szignifikánsan eltér a csapatátlagtól (ΔH: ${Math.round(
+            `A vezető becsületesség-alázat és barátságosság értéke láthatóan eltér a csapatátlagtól (${Math.round(
               leaderDeltaH,
-            )}, ΔA: ${Math.round(leaderDeltaA)}).`,
-            `Leader H/A profile deviates from team average (ΔH: ${Math.round(
+            )}, illetve ${Math.round(leaderDeltaA)} pont). Ez becslés — érdemes beszélgetéssel validálni.`,
+            `The leader's honesty-humility and agreeableness scores visibly differ from the team average (${Math.round(
               leaderDeltaH,
-            )}, ΔA: ${Math.round(leaderDeltaA)}).`,
+            )} and ${Math.round(leaderDeltaA)} points). This is an estimate — worth validating in conversation.`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
           ctaHref: `/team/${teamId}?tab=teamRole`,
@@ -465,7 +467,7 @@ export function buildTeamIntelligencePriorities({
       title: tr(locale, "Jó állapot", "Healthy baseline"),
       reason: tr(
         locale,
-        "A jelenlegi adatok alapján nincs kritikus teendő; érdemes a következő observer körre készülni.",
+        "A jelenlegi adatok alapján nincs kritikus teendő; érdemes a következő visszajelzési körre készülni.",
         "No critical action detected from current data; plan the next observer round.",
       ),
       ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),

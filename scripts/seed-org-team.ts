@@ -335,7 +335,6 @@ Opciók:
     }
 
     // ── Create active subscription ─────────────────────────────────────────────
-    const seedPriceId = process.env.STRIPE_PRICE_TEAM_MONTHLY ?? null;
     await prisma.subscription.upsert({
       where: { orgId: org.id },
       create: {

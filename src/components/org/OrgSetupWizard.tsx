@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { t, tf } from "@/lib/i18n";
+import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";

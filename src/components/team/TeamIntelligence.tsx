@@ -4,7 +4,7 @@ import Link from "next/link";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -18,6 +18,8 @@ export interface IntelligenceMember {
   name: string;
   initials: string;
   tritan: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number };
+  /** Kitöltött csapatszerep-kérdőív pontszámai — ha van, ez élvez elsőbbséget a becsléssel szemben. */
+  measuredRoleScores: Record<string, number> | null;
   hasAssessmentData: boolean;
   skillLevel: 1 | 2 | 3;
   growthPotential: 1 | 2 | 3;
@@ -44,11 +46,6 @@ interface TeamIntelligenceProps {
   evidenceBySub?: Partial<Record<SubTab, TeamIntelligenceEvidence>>;
   presentation?: "tabs" | "blocks";
   isHu?: boolean;
-  hasDynamicsData?: boolean;
-  dynamicsSummary?: {
-    participantCount: number;
-    observerDoneCount: number;
-  };
   noDataCtaHref?: string;
   noDataCtaLabel?: string;
   deepDiveHref?: string;
@@ -138,8 +135,6 @@ export function TeamIntelligence({
   edges,
   evidenceBySub,
   isHu = true,
-  hasDynamicsData = false,
-  dynamicsSummary,
   noDataCtaHref,
   noDataCtaLabel,
   deepDiveHref,
@@ -174,8 +169,14 @@ export function TeamIntelligence({
         <EvidenceSummary evidence={evidenceByTab.roles} loc={loc} />
         <div className="mt-3 grid grid-cols-1 gap-3 lg:grid-cols-2">
           {membersWithData.map((member) => {
-            const roleScores = estimateTeamRolesFromTritan(member.tritan);
-            const topRoles = getTopRoles(roleScores, 3);
+            // Precedencia-szabály (mint a team-stats / team-report / TeamRoleSection
+            // felületeken): kitöltött kérdőív > TRITAN-becslés.
+            const resolved = resolveDisplayRoleScores(
+              member.measuredRoleScores,
+              member.tritan,
+            );
+            const hasMeasuredRoles = resolved.source === "questionnaire";
+            const topRoles = getTopRoles(resolved.scores, 3);
             const topDims = Object.entries(member.tritan)
               .sort(([, a], [, b]) => b - a)
               .slice(0, 2);
@@ -194,9 +195,23 @@ export function TeamIntelligence({
                   <div>
                     <p className="text-caption font-semibold text-ink">{member.name}</p>
                     <p className="text-[11px] text-muted">
-                      {isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
+                      {hasMeasuredRoles
+                        ? isHu ? "Csapatszerep profil" : "Team-role profile"
+                        : isHu ? "Becsült csapatszerep profil" : "Estimated team-role profile"}
                     </p>
                   </div>
+                  {/* Forrás-jelölés a mért/becsült konvencióval (sage = mért, amber = becsült) */}
+                  <span
+                    className={`ml-auto rounded-full px-2 py-0.5 text-micro font-semibold ${
+                      hasMeasuredRoles
+                        ? "bg-sage/15 text-sage-dark"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    {hasMeasuredRoles
+                      ? isHu ? "kitöltött" : "measured"
+                      : isHu ? "becslés" : "estimate"}
+                  </span>
                 </div>
 
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
@@ -227,7 +242,7 @@ export function TeamIntelligence({
           {membersWithData.length === 0 ? (
             <div className="rounded-xl border border-dashed border-sand bg-cream/45 p-4 text-[12px] text-ink-body">
               {isHu
-                ? "Még nincs kitöltött assessment adat az erőforrás-térképhez."
+                ? "Még nincs elég kitöltött felmérés az erőforrás-térképhez."
                 : "No completed assessment data yet for the resource map."}
             </div>
           ) : null}
@@ -321,8 +336,8 @@ export function TeamIntelligence({
         </div>
         <p className="text-[12px] leading-relaxed text-ink-body">
           {isHu
-            ? "Az intelligence nézet summary jellegű. A részletes chartok és szerep-eloszlás a Csapatszerepek deep-dive felületen érhető el."
-            : "The intelligence view stays summary-first. Detailed charts and role distribution are owned by the Team roles deep-dive surface."}
+            ? "Ez az áttekintő nézet. A részletes ábrák és a szerep-eloszlás a Csapatszerepek felületen érhető el."
+            : "This is the overview. Detailed charts and the role distribution live on the Team roles surface."}
         </p>
         {deepDiveHref ? (
           <div className="mt-3">

@@ -5,6 +5,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
+import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { t, tf } from "@/lib/i18n";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
@@ -15,6 +16,10 @@ interface InvitationsTabProps {
   // Az összevetés-küszöb: self-serve 2, kampány-vezérelt (org) 3
   // (OBSERVER_MIN_FOR_REVEAL) — az info-banner ehhez igazodik.
   minForReveal?: number;
+  /** B14: szerver-oldalon ismert org-kontextus (observerFlow-ból) — a form
+   *  címe és a picker-slot ettől függ, nem a kliens-fetch kimenetelétől,
+   *  így a szekció nem címkézi át magát menet közben. */
+  hasColleagueDirectory?: boolean;
 }
 
 // ─── Clipboard helper ────────────────────────────────────────────────────────
@@ -55,12 +60,14 @@ function LockedInvitations() {
       <p className="mx-auto mb-4 max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
         {t("invitations.lockedSub", locale)}
       </p>
-      <button
-        type="button"
-        className="min-h-[44px] rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
+      {/* UX-B8: eddig onClick nélküli halott gomb volt — consulting-led
+          konvenció szerint a /contact-ra visz. */}
+      <a
+        href="/contact"
+        className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
       >
         {t("invitations.lockedCta", locale)}
-      </button>
+      </a>
     </div>
   );
 }
@@ -72,6 +79,7 @@ export function InvitationsTab({
   receivedInvitations,
   isPlus,
   minForReveal = 2,
+  hasColleagueDirectory = false,
 }: InvitationsTabProps) {
   const { locale } = useLocale();
   const { showToast } = useToast();
@@ -83,11 +91,16 @@ export function InvitationsTab({
   const [createError, setCreateError] = useState<string | null>(null);
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  // QR-nézet (workshop-helyzet): melyik függő meghívó linkjéhez mutatunk kódot.
+  const [qrToken, setQrToken] = useState<string | null>(null);
 
   // Kollégalista (org-tagoknál) — csapattársak elöl, a szerver rendezi.
+  // B14: a betöltés explicit állapot, hogy a felület ne „ugorjon össze"
+  // menet közben — amíg tölt, skeleton tartja a picker helyét.
   const [colleagues, setColleagues] = useState<
     { userId: string; name: string; isTeammate: boolean; alreadyInvited: boolean }[]
   >([]);
+  const [colleaguesLoading, setColleaguesLoading] = useState(true);
   const [colleagueSearch, setColleagueSearch] = useState("");
   const [invitingColleagueId, setInvitingColleagueId] = useState<string | null>(null);
 
@@ -98,7 +111,10 @@ export function InvitationsTab({
       .then((data) => {
         if (!cancelled) setColleagues(data.colleagues ?? []);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setColleaguesLoading(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -285,8 +301,22 @@ export function InvitationsTab({
         </p>
       </div>
 
-      {/* 4a. Kolléga-picker (org-tagoknál) */}
-      {colleagues.length > 0 && canCreate ? (
+      {/* 4a. Kolléga-picker (org-tagoknál) — B14: org-kontextusban a fetch
+          alatt skeleton tartja a helyét, hogy a lenti form ne ugorjon el;
+          nem org-tagnál (hasColleagueDirectory=false) skeleton sincs. */}
+      {hasColleagueDirectory && colleaguesLoading && canCreate ? (
+        <div
+          aria-hidden="true"
+          className="animate-pulse rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5"
+        >
+          <div className="h-4 w-48 max-w-full rounded bg-[var(--color-surface-subtle)]" />
+          <div className="mt-2 h-3 w-72 max-w-full rounded bg-[var(--color-surface-subtle)]" />
+          <div className="mt-3 flex flex-col gap-1.5">
+            <div className="h-12 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)]" />
+            <div className="h-12 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)]" />
+          </div>
+        </div>
+      ) : colleagues.length > 0 && canCreate ? (
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
           <p className="text-caption font-semibold text-[var(--color-text-primary)]">
             + {t("invitations.colleagueSectionTitle", locale)}
@@ -346,14 +376,16 @@ export function InvitationsTab({
         </div>
       ) : null}
 
-      {/* 4. Create form */}
+      {/* 4. Create form — B14: a cím a szerver-oldalon ismert org-kontextusból
+          jön (hasColleagueDirectory prop), nem a kolléga-fetch kimenetelétől,
+          így a szekció nem címkézi át magát menet közben. */}
       <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
         <p className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
-          + {colleagues.length > 0
+          + {hasColleagueDirectory
             ? t("invitations.externalSectionTitle", locale)
             : t("invitations.formTitle", locale)}
         </p>
-        {colleagues.length > 0 ? (
+        {hasColleagueDirectory ? (
           <p className="-mt-1 mb-3 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
             {t("invitations.externalApprovalHint", locale)}
           </p>
@@ -461,43 +493,64 @@ export function InvitationsTab({
                 {`${t("invitations.groupPending", locale)} (${pending.length})`}
               </p>
               {pending.map((inv) => (
-                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
-                  <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
-                    {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
+                <div key={inv.id} className="mb-2">
+                  <div className="flex flex-wrap items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
+                    <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
+                      {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
+                        {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
+                      </p>
+                      <p className="text-[11px] text-[var(--color-text-muted)]">
+                        {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
+                        {typeBadge(inv.observerType)
+                          ? <>{" · "}{typeBadge(inv.observerType)}</>
+                          : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
+                      </p>
+                    </div>
+                    <div className="flex shrink-0 items-center gap-2">
+                      <span className="rounded px-2 py-0.5 text-micro font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
+                        {inv.status === "AWAITING_APPROVAL"
+                          ? t("invitations.statusAwaitingApproval", locale)
+                          : t("invitations.statusPending", locale)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(inv.token)}
+                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
+                      </button>
+                      {/* QR — workshop-helyzet: a meghívott a teremben, a
+                          telefonjával olvassa be a linket. */}
+                      <button
+                        type="button"
+                        onClick={() => setQrToken((prev) => (prev === inv.token ? null : inv.token))}
+                        aria-expanded={qrToken === inv.token}
+                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
+                      >
+                        QR
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(inv.id)}
+                        disabled={deletingId === inv.id}
+                        className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
+                      >
+                        {deletingId === inv.id ? "..." : "✕"}
+                      </button>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
-                      {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
-                    </p>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
-                      {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
-                      {typeBadge(inv.observerType)
-                        ? <>{" · "}{typeBadge(inv.observerType)}</>
-                        : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-2">
-                    <span className="rounded px-2 py-0.5 text-micro font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
-                      {inv.status === "AWAITING_APPROVAL"
-                        ? t("invitations.statusAwaitingApproval", locale)
-                        : t("invitations.statusPending", locale)}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy(inv.token)}
-                      className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)]"
-                    >
-                      {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(inv.id)}
-                      disabled={deletingId === inv.id}
-                      className="min-h-[32px] rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50"
-                    >
-                      {deletingId === inv.id ? "..." : "✕"}
-                    </button>
-                  </div>
+                  {qrToken === inv.token ? (
+                    <QrCodeBadge
+                      value={`/observe/${inv.token}`}
+                      alt={t("invitations.qrAlt", locale)}
+                      hint={t("invitations.qrHint", locale)}
+                      onError={() => showToast(t("invitations.errorGeneric", locale), "error")}
+                      className="mt-2"
+                    />
+                  ) : null}
                 </div>
               ))}
             </div>

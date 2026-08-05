@@ -17,7 +17,9 @@ import { POST as observerSubmitPOST } from "@/app/api/observer/submit/route";
 // ── Constants ──────────────────────────────────────────────────────────────────
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
-const FUTURE = new Date("2026-04-15T10:00:00.000Z");
+// Lejárathoz a VALÓS órához képesti jövő kell: a submit API a szerver-oldali
+// Date.now()-val ellenőriz, fix dátum idővel a múltba csúszna (teszt-rothadás).
+const FUTURE = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
 const PAST = new Date("2026-03-01T10:00:00.000Z");
 
 function makeId(prefix: string): string {
@@ -328,14 +330,11 @@ test("C5.2 Observer token acceptance", async (t) => {
 
     assert.equal(res.status, 200);
 
-    // Draft should be gone
+    // A draft a submit-tranzakcióban törlődik — nem maradhat árva sor.
     const draft = await prisma.observerDraft.findUnique({
       where: { invitationId: invitation.id },
     });
-    // Draft deletion is in the transaction — should be null
-    // Note: the current submit route does NOT explicitly delete draft in transaction
-    // This test documents current behavior
-    // If draft exists, it's not a blocking issue but worth noting
+    assert.equal(draft, null);
   });
 
   await t.test("second submit to same token → 400 ALREADY_USED", async () => {

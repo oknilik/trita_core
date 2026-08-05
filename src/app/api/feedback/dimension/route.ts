@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     payload = DimensionFeedbackSchema.parse(body);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
   }
 
