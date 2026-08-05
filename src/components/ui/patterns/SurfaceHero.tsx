@@ -79,20 +79,25 @@ export function SurfaceHero({
 
   return (
     <section
-      className={cn("relative overflow-hidden rounded-[28px]", className)}
+      // overflow-x-clip (nem hidden): a vízszintes kifutás továbbra is le van
+      // vágva, de a heroból LEFELÉ nyíló panelek (pl. csapatváltó lenyíló)
+      // nem csonkolódnak. A dekor-elemek saját clip-rétegben maradnak.
+      className={cn("relative overflow-x-clip rounded-[28px]", className)}
       style={{ background: theme.background }}
     >
-      <div
-        className={cn(
-          "pointer-events-none absolute rounded-full bg-white/[0.02]",
-          variant === "team"
-            ? "-right-16 -top-16 h-[240px] w-[240px]"
-            : "-right-20 -top-20 h-[280px] w-[280px]",
-        )}
-      />
-      {variant === "team" ? (
-        <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[var(--color-layer-team-glow)]/12" />
-      ) : null}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
+        <div
+          className={cn(
+            "absolute rounded-full bg-white/[0.02]",
+            variant === "team"
+              ? "-right-16 -top-16 h-[240px] w-[240px]"
+              : "-right-20 -top-20 h-[280px] w-[280px]",
+          )}
+        />
+        {variant === "team" ? (
+          <div className="absolute bottom-0 left-0 h-24 w-24 rounded-tr-full bg-[var(--color-layer-team-glow)]/12" />
+        ) : null}
+      </div>
 
       {/* Mobil-karcsúsítás (UX-audit #9): kisebb padding és térközök < md —
           a hero ne egye meg az első képernyőt; a fülek/tartalom a hajtás

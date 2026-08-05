@@ -91,9 +91,6 @@ function AxisSlider({
           value={value}
           onChange={(e) => onChange(parseInt(e.target.value, 10))}
           className="pattern-range w-full"
-          /* 44px érintőfelület (a vizuális track 8px marad, a thumb a track
-             közepére igazítva) — a globals.css 20px-es magasságát írja felül */
-          style={{ height: 44 }}
           aria-label={axis.name}
         />
       </div>

@@ -531,7 +531,10 @@ input[type="range"].pattern-range {
   appearance: none;
   background: transparent;
   cursor: pointer;
-  height: 20px;
+  /* 44px érintőfelület (mobil): a vizuális track 8px marad, a thumb a
+     track közepére igazítva. A komponens negatív margóval nyeli el a
+     többletmagasságot, így a vizuális ritmus változatlan. */
+  height: 44px;
 }
 
 input[type="range"].pattern-range::-webkit-slider-thumb {
