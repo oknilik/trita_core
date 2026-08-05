@@ -14,6 +14,11 @@ interface FacetEntry {
   score: number;
 }
 
+// LR-FACET: a „Szorongás" facet mellé nem-klinikai glossza kerül. A feltétel
+// a kérdésbank facet-KÓDJÁRA megy (nem a megjelenített névre) — a név a
+// tritan.ts-ből jön és lokalizált.
+const ANXIETY_FACET_CODE = "anxiety";
+
 interface DimensionEntry {
   code: string;
   name: string;
@@ -140,8 +145,15 @@ function AccordionItem({
                             key={f.code}
                             className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-3.5 py-3"
                           >
-                            <span className="flex-1 text-xs font-medium text-[var(--color-text-primary)]">
-                              {f.label}
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-xs font-medium text-[var(--color-text-primary)]">
+                                {f.label}
+                              </span>
+                              {f.code === ANXIETY_FACET_CODE && (
+                                <span className="mt-0.5 block text-micro leading-snug text-[var(--color-text-muted)]">
+                                  {t("results.facetAnxietyGloss", locale)}
+                                </span>
+                              )}
                             </span>
                             <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                               <div

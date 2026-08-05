@@ -366,6 +366,18 @@ export const orgTranslations = {
       upgradeLink: { hu: "Upgrade →", en: "Upgrade →" },
       rolesEyebrow: { hu: "// szerepkörök", en: "// roles" },
       rolesTitle: { hu: "Tagok szerepkörei", en: "Member roles" },
+      // CJ-CREDITS — jelöltkeret-blokk (consulting-led: a tanácsadó kezeli)
+      creditsEyebrow: { hu: "// jelöltkeretek", en: "// candidate credits" },
+      creditsTitle: { hu: "Jelöltkeretek", en: "Candidate credits" },
+      creditsUsage: {
+        hu: "{used} felhasznált · {total} összesen jóváírt",
+        en: "{used} used · {total} granted in total",
+      },
+      creditsConsultantNote: {
+        hu: "A jelölt-felmérési kereteket a Trita tanácsadód kezeli: a consulting-együttműködés részeként állítja be és tölti fel őket. Ha új keretre van szükségetek, vagy kérdésed van az egyenlegről, jelezd nekünk.",
+        en: "Candidate assessment credits are managed by your Trita consultant — they are set up and topped up as part of the consulting engagement. If you need more credits or have a question about the balance, get in touch.",
+      },
+      creditsContactCta: { hu: "Kapcsolatfelvétel →", en: "Contact us →" },
       dangerEyebrow: { hu: "// veszélyes zóna", en: "// danger zone" },
       dangerTitle: { hu: "Veszélyes zóna", en: "Danger zone" },
       dangerDescription: { hu: "A szervezet deaktiválása után tagjai nem tudnak bejelentkezni az org-hoz kötött felületekre.", en: "Deactivating the organization will block members from accessing org-scoped pages." },
@@ -2085,6 +2097,11 @@ export const orgTranslations = {
     copiedBtn: { hu: "✓ Másolva!", en: "✓ Copied!" },
     copyBtn: { hu: "Másolás", en: "Copy" },
     inviteLinkDescription: { hu: "Küldd el ezt a linket a csapattagjaidnak. Regisztráció után automatikusan csatlakoznak a csapathoz és elkezdhetik a felmérést.", en: "Share this link with your teammates. After registration they will join the team automatically and can start the assessment." },
+    inviteQrAlt: { hu: "QR-kód a csapat-meghívó linkhez", en: "QR code for the team invite link" },
+    inviteQrHint: {
+      hu: "Ha egy teremben ültök: a csapattársad a telefonjával beolvasva egyből a csatlakozási oldalra jut.",
+      en: "If you're in the same room: your teammate scans it with their phone and lands straight on the join page.",
+    },
     goToDashboard: { hu: "Tovább a vezérlőre →", en: "Go to dashboard →" },
 
     // Step 4

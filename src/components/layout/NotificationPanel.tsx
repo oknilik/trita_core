@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -11,6 +11,9 @@ import { useNotifications } from "./NotificationsProvider";
 interface NotificationPanelProps {
   onClose: () => void;
 }
+
+/** B16u: ennyi ideig vonható vissza az elvetés, mielőtt az API-törlés elindul. */
+const DISMISS_UNDO_MS = 5000;
 
 // ── Category → icon color mapping ────────────────────────────────────────────
 
@@ -105,21 +108,172 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
   const { markRead, items: cached, loading, markAllRead, dismiss } = useNotifications();
   const items = cached ?? [];
 
-  // Escape key closes panel
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  // A prop/context callbackok friss példányai ref-ben — a fókusz-csapda és az
+  // undo-timerek effectjei mount-onként egyszer futnak, de mindig az aktuális
+  // függvényt hívják.
+  const onCloseRef = useRef(onClose);
+  const dismissRef = useRef(dismiss);
   useEffect(() => {
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+    onCloseRef.current = onClose;
+    dismissRef.current = dismiss;
+  });
+
+  // ── B16u: elvetés visszavonási ablakkal ───────────────────────────────────
+  // Elvetéskor a sor „Elvetve — Visszavonás" állapotba vált; a tényleges
+  // API-törlést (provider.dismiss) csak a DISMISS_UNDO_MS lejárta indítja.
+  // Visszavonásra a timer törlődik, és a sor változatlanul visszaáll.
+  const [pendingDismiss, setPendingDismiss] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
+  const undoTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  const focusInPanel = useCallback((selector: string) => {
+    requestAnimationFrame(() => {
+      panelRef.current?.querySelector<HTMLElement>(selector)?.focus();
+    });
+  }, []);
+
+  const startDismiss = useCallback(
+    (id: string) => {
+      setPendingDismiss((prev) => new Set(prev).add(id));
+      undoTimers.current.set(
+        id,
+        setTimeout(() => {
+          undoTimers.current.delete(id);
+          setPendingDismiss((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+          void dismissRef.current(id);
+        }, DISMISS_UNDO_MS),
+      );
+      // A lecserélt sorról ne vesszen el a billentyű-fókusz: átkerül a
+      // Visszavonás gombra, így Enterrel azonnal visszavonható.
+      focusInPanel(`[data-undo-for="${id}"]`);
+    },
+    [focusInPanel],
+  );
+
+  const undoDismiss = useCallback(
+    (id: string) => {
+      const timer = undoTimers.current.get(id);
+      if (timer) clearTimeout(timer);
+      undoTimers.current.delete(id);
+      setPendingDismiss((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+      focusInPanel(`[data-notif-id="${id}"]`);
+    },
+    [focusInPanel],
+  );
+
+  // Panelzáráskor (unmount) a még függő elvetések azonnal véglegesednek —
+  // a visszavonási ablak a nyitott panelhez kötött, zárás után az elvetett
+  // értesítés nem „ragadhat vissza".
+  useEffect(() => {
+    const timers = undoTimers.current;
+    return () => {
+      for (const [id, timer] of timers) {
+        clearTimeout(timer);
+        void dismissRef.current(id);
+      }
+      timers.clear();
+    };
+  }, []);
+
+  // ── NH-F4PLUS: fókusz-csapda + billentyű-navigáció ────────────────────────
+  // A Modal primitívben nincs kész csapda-minta (csak Esc-kezelés), ezért itt
+  // a teljes dialog-viselkedést adjuk: Tab/Shift+Tab körbejár a panelen belül,
+  // Esc zár, ↑/↓ az értesítés-sorok közt lép, záráskor a fókusz visszatér a
+  // megnyitó elemre (harang). A panel a desktop+mobil ágban egyszerre
+  // mountolódik — a CSS-sel rejtett példány (offsetParent === null) nem
+  // fókuszál és nem kezel billentyűt.
+  useEffect(() => {
+    const panel = panelRef.current;
+    if (!panel || panel.offsetParent === null) return;
+    // Szűkített alias: a hoistolt handleKeyDown-ban a TS nem viszi tovább a
+    // fenti null-guardot.
+    const panelEl: HTMLDivElement = panel;
+
+    const previousFocus =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    panelEl.focus();
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        onCloseRef.current();
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusables = Array.from(
+          panelEl.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        );
+        if (focusables.length === 0) {
+          e.preventDefault();
+          return;
+        }
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey) {
+          if (active === first || active === panelEl || !panelEl.contains(active)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else if (active === last || !panelEl.contains(active)) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        const rows = Array.from(
+          panelEl.querySelectorAll<HTMLElement>("[data-notif-row]"),
+        );
+        if (rows.length === 0) return;
+        e.preventDefault();
+        const active = document.activeElement as HTMLElement | null;
+        const current = rows.findIndex(
+          (row) => row === active || row.contains(active),
+        );
+        const next =
+          e.key === "ArrowDown"
+            ? Math.min(current + 1, rows.length - 1)
+            : current <= 0
+              ? 0
+              : current - 1;
+        rows[next]?.focus();
+      }
     }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      previousFocus?.focus();
+    };
+  }, []);
 
   const showLoader = cached === null && loading;
   const hasUnread = items.some((n) => !n.read);
 
+  const rowFocusCls =
+    "focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-accent-primary)]/40";
+
   return (
     <div
-      className="absolute right-0 top-[calc(100%+6px)] z-50 w-[340px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.06] sm:w-[380px]"
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("notifications.bellLabel", loc)}
+      tabIndex={-1}
+      className="absolute right-0 top-[calc(100%+6px)] z-50 w-[340px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-lg shadow-black/[0.06] focus:outline-none sm:w-[380px]"
       style={{ animation: "fade-in 150ms ease-out" }}
     >
       {/* Header */}
@@ -157,6 +311,32 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           </div>
         ) : (
           items.map((item) => {
+            // B16u: függő elvetés — a sor helyén visszavonási állapot, amíg
+            // a timer le nem jár. role="status": a felolvasó bejelenti.
+            if (pendingDismiss.has(item.id)) {
+              return (
+                <div
+                  key={item.id}
+                  role="status"
+                  data-notif-row
+                  tabIndex={-1}
+                  className={`flex items-center justify-between gap-3 border-b border-[var(--color-border-default)]/50 px-4 py-1.5 last:border-b-0 ${rowFocusCls}`}
+                >
+                  <p className="text-[12px] text-[var(--color-text-muted)]">
+                    {t("notifications.dismissedLabel", loc)}
+                  </p>
+                  <button
+                    type="button"
+                    data-undo-for={item.id}
+                    onClick={() => undoDismiss(item.id)}
+                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                  >
+                    {t("notifications.undo", loc)}
+                  </button>
+                </div>
+              );
+            }
+
             const title = item.vars
               ? tf(item.titleKey, loc, item.vars as Record<string, string | number>)
               : t(item.titleKey, loc);
@@ -202,10 +382,10 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    void dismiss(item.id);
+                    startDismiss(item.id);
                   }}
                   className="mt-1 shrink-0 rounded p-0.5 text-[var(--color-text-faint)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-muted)]"
-                  aria-label="Dismiss"
+                  aria-label={t("notifications.dismiss", loc)}
                 >
                   <svg className="h-3.5 w-3.5" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                     <path d="M3 3l8 8M11 3l-8 8" />
@@ -218,6 +398,8 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
               <Link
                 key={item.id}
                 href={item.link}
+                data-notif-row
+                data-notif-id={item.id}
                 onClick={(e) => {
                   // Kattintás + navigáció = olvasott. A mark-read a navigáció
                   // ELŐTT fut le, különben az új oldal SSR-je még olvasatlan
@@ -230,7 +412,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                     router.push(target);
                   })();
                 }}
-                className={`block border-b border-[var(--color-border-default)]/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[var(--color-surface-subtle)] ${
+                className={`block border-b border-[var(--color-border-default)]/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[var(--color-surface-subtle)] ${rowFocusCls} ${
                   !item.read ? "bg-white" : ""
                 }`}
               >
@@ -239,7 +421,10 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
             ) : (
               <div
                 key={item.id}
-                className={`border-b border-[var(--color-border-default)]/50 px-4 py-3 last:border-b-0 ${
+                data-notif-row
+                data-notif-id={item.id}
+                tabIndex={-1}
+                className={`border-b border-[var(--color-border-default)]/50 px-4 py-3 last:border-b-0 ${rowFocusCls} ${
                   !item.read ? "bg-white" : ""
                 }`}
               >

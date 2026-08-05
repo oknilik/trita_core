@@ -81,15 +81,16 @@ export const assessmentTranslations = {
     },
     checkpointReached: { hu: "{percent}% kész — szuper tempó!", en: "{percent}% done - great pace!" },
     journeyMilestone: { hu: "Mérföldkő", en: "Milestone" },
+    // A 25/75-ös cím+hint kulcsokat az observer-kitöltés használja; a saját
+    // felmérésben (UX-A8) egyetlen milestone van, félútnál.
     journeyMilestone25: { hu: "Jó kezdés — már negyedénél tartasz!", en: "Good start — you're a quarter through!" },
-    journeyMilestone25Sub: { hu: "Az első válaszaid alapján már alakul a profilod. Tartsd a tempót!", en: "Your first answers are already shaping your profile. Keep it up!" },
     journeyMilestone25Hint: { hu: "Az első benyomásod a legértékesebb válasz — ne gondold túl a kérdéseket.", en: "Your first instinct is the most valuable answer — don't overthink the questions." },
     journeyMilestone50: { hu: "Félúton vagy — szép haladás!", en: "Halfway there — great progress!" },
     journeyMilestone50Sub: { hu: "Az eddigi válaszaid alapján már kezd kirajzolódni a profilod. Tartsd a lendületet!", en: "Your profile is starting to take shape. Keep the momentum going!" },
     journeyMilestone50Hint: { hu: "A válaszaid folyamatosan mentődnek — bármikor félbehagyhatod és onnan folytathatod, ahol abbahagytad.", en: "Your answers are continuously saved — you can stop anytime and continue where you left off." },
     journeyMilestone75: { hu: "Már az utolsó negyedben jársz!", en: "You're in the final stretch!" },
-    journeyMilestone75Sub: { hu: "Még néhány kérdés, és kész az eredményed. A célegyenesben vagy!", en: "Just a few more questions and your results will be ready!" },
     journeyMilestone75Hint: { hu: "A profil annál pontosabb, minél természetesebben válaszolsz — az utolsó kérdéseknél is bízz az ösztöneidben.", en: "The more naturally you answer, the more accurate your profile — trust your instincts on these last questions too." },
+    milestoneContinue: { hu: "Folytatom", en: "Continue" },
   },
   teamRole: {
     eyebrow: { hu: "// csapatszerep kérdőív", en: "// team role questionnaire" },

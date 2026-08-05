@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { requireOrgRole } from "@/lib/auth";
+import { getCreditBalance } from "@/lib/candidate-credits";
 import {
   resolveOrgPolicySnapshot,
   toOrgSubscriptionBannerState,
@@ -36,15 +37,20 @@ export default async function OrgSettingsPage({
     orgRole: role,
   });
 
-  const members = await prisma.organizationMember.findMany({
-    where: { orgId },
-    orderBy: { joinedAt: "asc" },
-    select: {
-      userId: true,
-      role: true,
-      user: { select: { id: true, email: true, username: true } },
-    },
-  });
+  const [members, creditBalance] = await Promise.all([
+    prisma.organizationMember.findMany({
+      where: { orgId },
+      orderBy: { joinedAt: "asc" },
+      select: {
+        userId: true,
+        role: true,
+        user: { select: { id: true, email: true, username: true } },
+      },
+    }),
+    // CJ-CREDITS: read-only egyenleg — a kereteket a Trita tanácsadó kezeli,
+    // a felület csak mutatja őket (consulting-led modell).
+    getCreditBalance(orgId),
+  ]);
 
   // Az előfizetés-adatok (státusz, csomag, férőhelyek) nem jelennek meg itt —
   // az előfizetést a platform-admin kezeli (konzultáció-vezérelt működés).
@@ -138,6 +144,39 @@ export default async function OrgSettingsPage({
               </div>
             ))}
           </div>
+        </Card>
+
+        {/* Candidate credits — CJ-CREDITS: a hiring-felület „Kreditek
+            kezelése" linkjének célja. Read-only blokk: a kereteket a
+            tanácsadó állítja be, a CTA a /contact-ra visz (consulting-led
+            modell); read-only org-state-ben is változatlanul működik. */}
+        <Card as="section" spacing="lg" className="md:p-8">
+          <SectionEyebrow className="mb-1">
+            {t("org.settings.creditsEyebrow", locale)}
+          </SectionEyebrow>
+          <h2 className="font-fraunces text-xl text-ink mb-5">
+            {t("org.settings.creditsTitle", locale)}
+          </h2>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-micro font-semibold uppercase tracking-widest text-sage-dark">
+              {creditBalance.available} {t("hiring.creditsAvailable", locale)}
+            </span>
+            <span className="text-xs text-muted">
+              {tf("org.settings.creditsUsage", locale, {
+                used: creditBalance.totalUsed,
+                total: creditBalance.totalPurchased,
+              })}
+            </span>
+          </div>
+          <p className="mt-4 max-w-prose text-sm leading-relaxed text-ink-body">
+            {t("org.settings.creditsConsultantNote", locale)}
+          </p>
+          <Link
+            href="/contact"
+            className="mt-4 inline-flex min-h-[44px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+          >
+            {t("org.settings.creditsContactCta", locale)}
+          </Link>
         </Card>
 
         {/* Danger zone */}

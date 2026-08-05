@@ -28,10 +28,10 @@ ennek a láthatatlan súlynak a nagyját eltávolítja vagy megmutatja.
 | A5 | Vendégnél „✓ Mentve" badge, miközben csak localStorage-ba ment (`:635-637`) | vendégnél „Mentve ebben a böngészőben" | ✅ KÉSZ |
 | A6 | 3–4,6 mp SZÁNDÉKOS kamu „kiértékelés" várakozás (`:358-361`, `:391-394`) — a sallang definíciója | ~700 ms-ra vágva | ✅ KÉSZ |
 | A7 | A fő „Tovább" gomb random kiszürkül autosave alatt (`:811`) | `isSavingDraft` ki a disabled-ből (fire-and-forget) | ✅ KÉSZ |
-| A8 | 3 kényszer-interstitial (25/50/75%) saját gomb nélkül | 1 milestone + saját „Folytatom" gomb | ⏳ BACKLOG (S — dramaturgia-döntés) |
+| A8 | 3 kényszer-interstitial (25/50/75%) saját gomb nélkül | 1 milestone (50%) + saját „Folytatom" gomb (Button primitív); az observer-flow checkpointjai változatlanok | ✅ KÉSZ |
 | A9 | „Kiértékelés" némán visszateleportál az első kihagyott kérdéshez (`:331-335`) | highlightMissing + jelzés | ✅ KÉSZ |
-| A10 | Minden self-serve user átpattan a team-roles oldalon, ami csak visszadobja | handoff-path közvetlenül | ⏳ BACKLOG (S — journey-mellékhatás tesztelendő) |
-| A11 | Kétlépéses onboarding, ahol a 2. lépés EGY checkbox (`:422-485`) | egy képernyő, consent a submit felett | ⏳ BACKLOG (M — auth-flow teszt kell) |
+| A10 | Minden self-serve user átpattan a team-roles oldalon, ami csak visszadobja | szerver-prop (`hasTeamContext`, a team-roles kapu feltételével azonos): tagnál team-roles, self-serve-nél közvetlenül a journey-elosztó | ✅ KÉSZ |
+| A11 | Kétlépéses onboarding, ahol a 2. lépés EGY checkbox (`:422-485`) | egy képernyő: consent a submit felett, step-jelző ki; submit-logika és Clerk-szinkron változatlan | ✅ KÉSZ |
 | A12 | Billentyű-gyorsítók (1–5, Enter) és auto-advance léteznek, de sehol nincsenek elmagyarázva (kulcsok megírva, nem renderelve) | hint-ek renderelése | ✅ KÉSZ |
 | A13 | Kész-de-nem-regisztrált vendég a 60. kérdésre esik vissza a „Folytasd" CTA-ról | teljes draftnál /try → /try/complete átirányítás | ✅ KÉSZ |
 | A14 | /try/complete félkész draftnál is ünnepel, teaser némán tűnik el | ünneplés csak teljes draftnál; félkésznél „folytatom" állapot + válasz-átnézés link | ✅ KÉSZ |

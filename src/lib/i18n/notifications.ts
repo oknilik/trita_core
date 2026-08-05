@@ -158,5 +158,9 @@ export const notificationTranslations = {
       en: "For fresh feedback, invite someone as an observer or start a pair comparison.",
     },
     bellLabel: { hu: "Értesítések", en: "Notifications" },
+    // B16u — elvetés visszavonási ablakkal
+    dismiss: { hu: "Értesítés elvetése", en: "Dismiss notification" },
+    dismissedLabel: { hu: "Elvetve", en: "Dismissed" },
+    undo: { hu: "Visszavonás", en: "Undo" },
   },
 };

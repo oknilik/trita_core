@@ -36,9 +36,17 @@ export default async function AssessmentPage({
   if (!user) redirect("/sign-in");
 
   // Get or create user profile
+  // UX-A10: a tagságokat is lekérjük — a submit utáni cél (team-roles lépés
+  // vs. journey-elosztó) szerver-oldali döntés, a team-roles oldal kapujával
+  // azonos feltétellel.
+  const profileInclude = {
+    assessmentResults: { select: { id: true }, take: 1 },
+    orgMemberships: { select: { id: true }, take: 1 },
+    teamMemberships: { select: { id: true }, take: 1 },
+  } as const;
   let profile = await prisma.userProfile.findUnique({
     where: { clerkId: user.id },
-    include: { assessmentResults: { select: { id: true }, take: 1 } },
+    include: profileInclude,
   });
 
   if (!profile) {
@@ -49,7 +57,7 @@ export default async function AssessmentPage({
         email: user.primaryEmailAddress?.emailAddress,
       },
       update: {},
-      include: { assessmentResults: { select: { id: true }, take: 1 } },
+      include: profileInclude,
     });
   }
 
@@ -92,6 +100,10 @@ export default async function AssessmentPage({
 
   const questions = config.questions.map((q) => ({ id: q.id, text: q.text }));
 
+  // UX-A10: ugyanaz a feltétel, mint a team-roles oldal kapujában (isTeamUser).
+  const hasTeamContext =
+    profile.orgMemberships.length > 0 || profile.teamMemberships.length > 0;
+
   return (
     <AssessmentClient
       testType={testType}
@@ -101,6 +113,7 @@ export default async function AssessmentPage({
       questions={questions}
       initialDraft={initialDraft}
       clearDraft={clearDraft}
+      hasTeamContext={hasTeamContext}
     />
   );
 }

@@ -386,6 +386,12 @@ export const resultsTranslations = {
     dimSectionDesc: { hu: "A dimenziók nem skatulyák, hanem mintázatok: megmutatják, mi mozgat, mi ad stabilitást, és hol jöhet feszültség.", en: "Dimensions aren't boxes — they're patterns that show what drives you, what keeps you steady, and where tension may arise." },
     facetLabel: { hu: "alskála részletesen", en: "facets in detail" },
     facetUnlock: { hu: "Plus feloldása — €9", en: "Unlock Plus — €9" },
+    // LR-FACET — nem-klinikai glossza a „Szorongás" facethez (kulcs-alapú
+    // feltétellel jelenik meg, csak az `anxiety` facet-kódnál).
+    facetAnxietyGloss: {
+      hu: "Normál személyiségvonás: azt mutatja, mennyire jellemző rád a hétköznapi aggodalmaskodás — nem klinikai állapotot jelez.",
+      en: "A normal personality trait: how prone you are to everyday worry — it does not indicate a clinical condition.",
+    },
     teamRoleEyebrow: { hu: "Csapatszerepek", en: "Team roles" },
     teamRoleTitle: { hu: "Így jelenhetsz meg csapatban", en: "How you show up in teams" },
     teamRoleSourceMeasured: { hu: "Kitöltött kérdőív", en: "Completed questionnaire" },
@@ -1510,6 +1516,13 @@ export const resultsTranslations = {
     shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
+    shareShowQr: { hu: "QR-kód mutatása", en: "Show QR code" },
+    shareHideQr: { hu: "QR-kód elrejtése", en: "Hide QR code" },
+    shareQrAlt: { hu: "QR-kód a megosztható linkhez", en: "QR code for the share link" },
+    shareQrHint: {
+      hu: "Beolvasva ugyanarra a megosztott profil-nézetre visz, mint a link — a kollégád egyből a telefonján nézheti.",
+      en: "Scanning it opens the same shared profile view as the link — your colleague can view it right on their phone.",
+    },
     shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
     shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
@@ -1614,6 +1627,11 @@ export const resultsTranslations = {
     deleteFailed: { hu: "Törlés sikertelen", en: "Delete failed" },
     copied: { hu: "Másolva!", en: "Copied!" },
     linkButton: { hu: "Link", en: "Link" },
+    qrAlt: { hu: "QR-kód az observer-meghívó linkhez", en: "QR code for the observer invite link" },
+    qrHint: {
+      hu: "Mutasd meg a meghívottnak — a telefonjával beolvasva egyből a kitöltő oldalra jut.",
+      en: "Show it to your invitee — scanning it takes them straight to the questionnaire.",
+    },
     sentLabel: { hu: "Elküldve", en: "Sent" },
     receivedLabel: { hu: "Beérkezett", en: "Received" },
     anonymous: { hu: "Névtelen", en: "Anonymous" },

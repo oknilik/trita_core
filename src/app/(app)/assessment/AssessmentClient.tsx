@@ -7,9 +7,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
+import { Button } from '@/components/ui/primitives/Button'
 import { useToast } from '@/components/ui/Toast'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
+import { JOURNEY_HOME_HANDOFF_PATH } from '@/lib/journey/routes'
 import {
   clearAssessmentDraftFromStorage,
   getAssessmentDraftKey,
@@ -24,6 +26,10 @@ import { createClientLogger } from "@/lib/client-logger";
 const log = createClientLogger("assessment");
 type AssessmentQuestion = { id: number; text: string }
 
+// UX-A8: egyetlen milestone-képernyő félútnál (a korábbi 25/50/75%-os
+// kényszer-interstitial hármas helyett), saját „Folytatom" gombbal.
+const MILESTONE_PERCENT = 50
+
 
 interface AssessmentClientProps {
   testType: TestType
@@ -35,6 +41,13 @@ interface AssessmentClientProps {
   guestMode?: boolean
   /** Bejelentkezett user profil-id-ja — a localStorage-draft userhez kötéséhez */
   draftScope?: string
+  /**
+   * UX-A10: szerver-oldalról (page.tsx) jövő döntés — van-e a usernek org-
+   * vagy csapat-tagsága. Csak tagoknál van értelme a team-roles lépésnek;
+   * self-serve usernél a submit közvetlenül a journey-elosztóra megy (oda,
+   * ahova a team-roles oldal kapuja amúgy is visszadobná).
+   */
+  hasTeamContext?: boolean
 }
 
 export function AssessmentClient({
@@ -46,6 +59,7 @@ export function AssessmentClient({
   clearDraft = false,
   guestMode = false,
   draftScope,
+  hasTeamContext = false,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
@@ -78,7 +92,7 @@ export function AssessmentClient({
   const [evaluationProgress, setEvaluationProgress] = useState(0)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
   const [autoAdvance, setAutoAdvance] = useState(true)
-  const [checkpoint, setCheckpoint] = useState<number | null>(null)
+  const [milestoneOpen, setMilestoneOpen] = useState(false)
   // null = not yet determined (avoid flash), true = show intro, false = skip
   const [showIntro, setShowIntro] = useState<boolean | null>(() => {
     const hasServerDraft = initialDraft && Object.keys(initialDraft.answers ?? {}).length > 0
@@ -87,7 +101,7 @@ export function AssessmentClient({
   })
   const answersRef = useRef(answers)
   const questionIndexRef = useRef(questionIndex)
-  const checkpointRef = useRef<number | null>(checkpoint)
+  const milestoneOpenRef = useRef(milestoneOpen)
   const isSubmittingRef = useRef(isSubmitting)
   const localDraftRevisionRef = useRef(0)
   const autoAdvanceTimerRef = useRef<number | null>(null)
@@ -102,13 +116,13 @@ export function AssessmentClient({
     }
     setShowIntro(true)
   }, [showIntro, testType, draftScope])
-  const reachedCheckpoints = useRef<Set<number>>(new Set(
-    initialDraft?.answers && Object.keys(initialDraft.answers).length > 0
-      ? ([25, 50, 75] as const).filter(
-        (m) => (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >= m,
-        )
-      : [],
-  ))
+  // UX-A8: már látott-e milestone-t (folytatott draftnál félút felett nem
+  // mutatjuk újra).
+  const milestoneSeenRef = useRef<boolean>(
+    !!initialDraft?.answers &&
+      (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >=
+        MILESTONE_PERCENT,
+  )
 
   const answeredCount = Object.keys(answers).length
   const isFullyCompleted = answeredCount >= totalQuestions
@@ -138,9 +152,8 @@ export function AssessmentClient({
   const activeQuestion = questions[questionIndex] ?? null
   const canGoPrev = questionIndex > 0
   const currentQuestionAnswered = !activeQuestion || answers[activeQuestion.id] !== undefined
-  const checkpointActive = checkpoint !== null
-  const canProceed = checkpointActive || currentQuestionAnswered
-  const showEvaluateButton = !checkpointActive && isFullyCompleted
+  const canProceed = milestoneOpen || currentQuestionAnswered
+  const showEvaluateButton = !milestoneOpen && isFullyCompleted
 
   // Refs to always have the latest values in async callbacks
   const latestAnswersRef = useRef(answers)
@@ -152,8 +165,8 @@ export function AssessmentClient({
     questionIndexRef.current = questionIndex
   }, [questionIndex])
   useEffect(() => {
-    checkpointRef.current = checkpoint
-  }, [checkpoint])
+    milestoneOpenRef.current = milestoneOpen
+  }, [milestoneOpen])
   useEffect(() => {
     isSubmittingRef.current = isSubmitting
   }, [isSubmitting])
@@ -206,9 +219,7 @@ export function AssessmentClient({
     const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, localDraft.answers)
     setQuestionIndexSafe(resumeIndex)
     const pct = (Object.keys(localDraft.answers).length / totalQuestions) * 100
-    for (const checkpointMark of [25, 50, 75] as const) {
-      if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
-    }
+    if (pct >= MILESTONE_PERCENT) milestoneSeenRef.current = true
   }, [
     clearDraft,
     draftScope,
@@ -243,9 +254,7 @@ export function AssessmentClient({
       setShowIntro(false)
 
       const pct = (Object.keys(nextSnapshot.answers).length / totalQuestions) * 100
-      for (const checkpointMark of [25, 50, 75] as const) {
-        if (pct >= checkpointMark) reachedCheckpoints.current.add(checkpointMark)
-      }
+      if (pct >= MILESTONE_PERCENT) milestoneSeenRef.current = true
     }
 
     window.addEventListener('storage', onStorage)
@@ -318,15 +327,12 @@ export function AssessmentClient({
     }
   }, [])
 
+  // UX-A8: egyetlen milestone-képernyő félútnál.
   useEffect(() => {
-    const marks = [25, 50, 75]
     const percentage = (answeredCount / totalQuestions) * 100
-    const nextMark = marks.find(
-      (mark) => percentage >= mark && !reachedCheckpoints.current.has(mark),
-    )
-    if (!nextMark) return
-    reachedCheckpoints.current.add(nextMark)
-    setCheckpoint(nextMark)
+    if (percentage < MILESTONE_PERCENT || milestoneSeenRef.current) return
+    milestoneSeenRef.current = true
+    setMilestoneOpen(true)
   }, [answeredCount, totalQuestions])
 
   const highlightMissing = useCallback(
@@ -403,7 +409,11 @@ export function AssessmentClient({
       // helyett rövid lezáró ramp, és megyünk tovább.
       setEvaluationProgress(100)
       await new Promise((resolve) => setTimeout(resolve, 700))
-      router.push('/assessment/team-roles')
+      // UX-A10: a team-roles lépés csak org-/csapat-tagnak szól — self-serve
+      // usernél a team-roles oldal kapuja úgyis a journey-fallbackra dobna,
+      // ezért közvetlenül a journey-elosztóra megyünk (friss, submit utáni
+      // állapotból dönt).
+      router.push(hasTeamContext ? '/assessment/team-roles' : JOURNEY_HOME_HANDOFF_PATH)
     } catch (error) {
       clearInterval(progressInterval)
       isSubmittingRef.current = false
@@ -412,7 +422,7 @@ export function AssessmentClient({
       log.warn({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope])
+  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope, hasTeamContext])
 
   const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
     if (autoAdvanceTimerRef.current) {
@@ -424,10 +434,9 @@ export function AssessmentClient({
       if (!liveQuestion || liveQuestion.id !== questionId) return
 
       const nextProgress = (nextAnsweredCount / totalQuestions) * 100
-      const willTriggerCheckpoint = [25, 50, 75].some(
-        (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
-      )
-      if (willTriggerCheckpoint || checkpointRef.current !== null) return
+      const willTriggerMilestone =
+        nextProgress >= MILESTONE_PERCENT && !milestoneSeenRef.current
+      if (willTriggerMilestone || milestoneOpenRef.current) return
 
       if (questionIndexRef.current < totalQuestions - 1) {
         setQuestionIndexSafe((current) => current + 1)
@@ -464,8 +473,8 @@ export function AssessmentClient({
   }, [])
 
   const handlePrevStep = useCallback(() => {
-    if (checkpointRef.current !== null) {
-      setCheckpoint(null)
+    if (milestoneOpenRef.current) {
+      setMilestoneOpen(false)
       return
     }
     if (questionIndexRef.current > 0) {
@@ -476,8 +485,8 @@ export function AssessmentClient({
   }, [runStepTransition, setQuestionIndexSafe])
 
   const handleNextStep = useCallback(async () => {
-    if (checkpointRef.current !== null) {
-      setCheckpoint(null)
+    if (milestoneOpenRef.current) {
+      setMilestoneOpen(false)
       if (questionIndexRef.current < totalQuestions - 1) {
         runStepTransition(() => {
           setQuestionIndexSafe((current) => current + 1)
@@ -510,7 +519,7 @@ export function AssessmentClient({
       const tag = target?.tagName
       if (tag === 'INPUT' || tag === 'TEXTAREA' || target?.isContentEditable) return
 
-      if (!checkpointActive && activeQuestion && ['1', '2', '3', '4', '5'].includes(event.key)) {
+      if (!milestoneOpen && activeQuestion && ['1', '2', '3', '4', '5'].includes(event.key)) {
         event.preventDefault()
         handleAnswer(activeQuestion.id, Number(event.key))
         return
@@ -522,7 +531,7 @@ export function AssessmentClient({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [checkpointActive, activeQuestion, isSubmitting, handleNextStep, handleAnswer])
+  }, [milestoneOpen, activeQuestion, isSubmitting, handleNextStep, handleAnswer])
 
   if (isSubmitting) {
     return <EvaluatingScreen progress={evaluationProgress} />
@@ -700,18 +709,14 @@ export function AssessmentClient({
         <div ref={questionAreaRef} className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div
-              key={
-                checkpointActive
-                  ? `checkpoint-${checkpoint}`
-                  : `q-${activeQuestion?.id ?? 'none'}`
-              }
+              key={milestoneOpen ? 'milestone' : `q-${activeQuestion?.id ?? 'none'}`}
               initial={{ opacity: 0, x: 40 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 }}
               transition={{ duration: 0.25 }}
               className="flex flex-col items-center"
             >
-              {checkpointActive ? (
+              {milestoneOpen ? (
                 <div className="flex flex-col items-center text-center">
                   {/* Sage pill badge */}
                   <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-action-primary-bg)]">
@@ -721,22 +726,12 @@ export function AssessmentClient({
 
                   {/* Title */}
                   <h2 className="mb-3 font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] lg:text-[26px]">
-                    {t(
-                      checkpoint === 25 ? 'assessment.journeyMilestone25'
-                      : checkpoint === 50 ? 'assessment.journeyMilestone50'
-                      : 'assessment.journeyMilestone75',
-                      locale
-                    )}
+                    {t('assessment.journeyMilestone50', locale)}
                   </h2>
 
                   {/* Subtitle */}
                   <p className="mb-5 max-w-[400px] text-[14px] leading-relaxed text-[var(--color-text-muted)]">
-                    {t(
-                      checkpoint === 25 ? 'assessment.journeyMilestone25Sub'
-                      : checkpoint === 50 ? 'assessment.journeyMilestone50Sub'
-                      : 'assessment.journeyMilestone75Sub',
-                      locale
-                    )}
+                    {t('assessment.journeyMilestone50Sub', locale)}
                   </p>
 
                   {/* Segmented progress — 10 segments */}
@@ -762,14 +757,19 @@ export function AssessmentClient({
                   <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
                     <p className="text-caption leading-[1.45] text-[var(--color-accent-self-deep)]">
-                      {t(
-                        checkpoint === 25 ? 'assessment.journeyMilestone25Hint'
-                        : checkpoint === 50 ? 'assessment.journeyMilestone50Hint'
-                        : 'assessment.journeyMilestone75Hint',
-                        locale
-                      )}
+                      {t('assessment.journeyMilestone50Hint', locale)}
                     </p>
                   </div>
+
+                  {/* UX-A8: saját továbblépő gomb — a milestone nem függ a
+                      lábléc „Tovább" gombjától. */}
+                  <Button
+                    type="button"
+                    onClick={() => void handleNextStep()}
+                    className="mt-6 w-full max-w-[280px]"
+                  >
+                    {t('assessment.milestoneContinue', locale)} →
+                  </Button>
                 </div>
               ) : activeQuestion ? (
                 <QuestionCard

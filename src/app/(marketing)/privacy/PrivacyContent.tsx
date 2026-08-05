@@ -22,12 +22,25 @@ const sections = [
     title: "privacy.purposeTitle",
     items: ["privacy.purposeResearch", "privacy.purposeService"],
   },
-  { id: "cookies", index: "04", title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
-  { id: "storage", index: "05", title: "privacy.storageTitle", body: "privacy.storageBody" },
-  { id: "analytics", index: "06", title: "privacy.analyticsTitle", body: "privacy.analyticsBody" },
+  // TR360-LEGAL: csapatszintű visszajelzések (csapatszerep-peer, bizalmi kör,
+  // pszichológiai biztonság pulzus) adatkezelése.
+  {
+    id: "team-feedback",
+    index: "04",
+    title: "privacy.teamFeedbackTitle",
+    items: [
+      "privacy.teamFeedbackCollected",
+      "privacy.teamFeedbackAnonymity",
+      "privacy.teamFeedbackAccess",
+      "privacy.teamFeedbackRetention",
+    ],
+  },
+  { id: "cookies", index: "05", title: "privacy.cookiesTitle", body: "privacy.cookiesBody" },
+  { id: "storage", index: "06", title: "privacy.storageTitle", body: "privacy.storageBody" },
+  { id: "analytics", index: "07", title: "privacy.analyticsTitle", body: "privacy.analyticsBody" },
   {
     id: "processors",
-    index: "07",
+    index: "08",
     title: "privacy.processorsTitle",
     items: [
       "privacy.processorsClerk",
@@ -38,7 +51,7 @@ const sections = [
   },
   {
     id: "rights",
-    index: "08",
+    index: "09",
     title: "privacy.rightsTitle",
     items: [
       "privacy.rightsAccess",
@@ -46,7 +59,7 @@ const sections = [
       "privacy.rightsWithdraw",
     ],
   },
-  { id: "contact", index: "09", title: "privacy.contactTitle", body: "privacy.contactBody" },
+  { id: "contact", index: "10", title: "privacy.contactTitle", body: "privacy.contactBody" },
 ] as const;
 
 export function PrivacyContent() {

@@ -226,9 +226,14 @@ baseline) · unit 455/455 · client 92/92 · production build zöld
 
 ## Nyitott maradványok (tudatosan)
 
-- **„Szorongás" facet nem-klinikai glosszája**: a `TRITAN_FACETS`-nek
+- ~~**„Szorongás" facet nem-klinikai glosszája**: a `TRITAN_FACETS`-nek
   nincs leíró mezője — a glossza a facet-megjelenítési pontokon
-  (komponens/i18n) helyezhető el egy következő körben.
+  (komponens/i18n) helyezhető el egy következő körben.~~ **MEGVALÓSULT
+  (2026-08-04, LR-FACET)**: kulcs-alapú feltétellel (facet-kód `anxiety`,
+  nem szöveg-egyezés) nem-klinikai alszöveg került a facet-megjelenítési
+  pontokra (`DimensionAccordion` alskála-bontás + `GrowthFocus`
+  fejlődési kártya), az i18n `results.facetAnxietyGloss` kulcsból (HU+EN);
+  a `TRITAN_FACETS` nevei változatlanok.
 - **`src/lib/questions/tritan.ts`** 57/60/82: a régi „Mohóságkerülés"
   alak és H-leírás — validált instrumentum-fájl, mérési okból nem nyúlunk
   hozzá; a megjelenítési réteg már az új nevet mutatja.

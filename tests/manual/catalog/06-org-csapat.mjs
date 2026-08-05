@@ -18,7 +18,7 @@ export const cases = [
     steps:
       "1. Adminként küldj org-meghívót a meghívott címre (/org/[id]?tab=members, szerep: ORG_MEMBER). 2. A levélbeli /join/org/[token] linket nyisd meg kijelentkezett (inkognitó) böngészőben. 3. Kövesd a sign-up átirányítást, regisztrálj a meghívott címmel. 4. Visszairányítás után a join-oldalon töltsd ki a hiányzó profil-mezőket, és fogadd el a meghívót.",
     expected:
-      "Kijelentkezve a /sign-up-ra kerülsz redirect_url=/join/org/[token] paraméterrel; regisztráció után a join-oldal a szervezet nevét mutatja és profil-kiegészítést kér; elfogadás után ORG_MEMBER tagság jön létre, az org lesz az aktív kontextus, a journey a szerep szerinti home-ra visz, és az org adminja „meghívó elfogadva" értesítést kap.",
+      "Kijelentkezve a /sign-up-ra kerülsz redirect_url=/join/org/[token] paraméterrel; regisztráció után a join-oldal a szervezet nevét mutatja és profil-kiegészítést kér; elfogadás után ORG_MEMBER tagság jön létre, az org lesz az aktív kontextus, a journey a szerep szerinti home-ra visz, és az org adminja »meghívó elfogadva« értesítést kap.",
     automated: "partial",
     coveredBy:
       "tests/integration/join/join-acceptance-matrix.integration.test.ts · tests/integration/acceptance/service.integration.test.ts",
@@ -52,7 +52,7 @@ export const cases = [
     steps:
       "1. Nyiss meg egy kitalált tokenű /join/org/... linket. 2. Nyisd meg egy már elfogadott meghívó linkjét egy HARMADIK fiókkal. 3. Adminként vonj vissza (törölj) egy függő meghívót, majd nyisd meg a linkjét.",
     expected:
-      "Mindhárom ágon a 404 not-found oldal jelenik meg, fél-kész join-nézet nélkül. Megjegyzés: az org-meghívónak NINCS idő-alapú lejárata — a link a felhasználásig/visszavonásig él; „lejárt" állapot = törölt sor = 404.",
+      "Mindhárom ágon a 404 not-found oldal jelenik meg, fél-kész join-nézet nélkül. Megjegyzés: az org-meghívónak NINCS idő-alapú lejárata — a link a felhasználásig/visszavonásig él; a lejárt-analóg állapot = törölt sor = 404.",
     automated: "partial",
     coveredBy:
       "tests/e2e/journey/journey-entrypoints-smoke.test.ts (invalid token 404) · tests/integration/join/join-acceptance-matrix.integration.test.ts (INVITE_NOT_FOUND)",
@@ -146,7 +146,7 @@ export const cases = [
   {
     id: "ORG-09",
     area: "Szerepek és navigáció",
-    name: "ORG_CONSULTANT: admin-paritás + „Tanácsadó" badge, tag-számokba nem számít",
+    name: "ORG_CONSULTANT: admin-paritás + Tanácsadó-badge, tag-számokba nem számít",
     persona: "tanácsadó",
     emails: { "tanácsadó": "AUTO", admin: "AUTO" },
     preconditions:
@@ -154,7 +154,7 @@ export const cases = [
     steps:
       "1. Jegyezd fel az org tag-számát és HEXACO-átlagát a tanácsadó nélkül (admin nézet). 2. Lépj be tanácsadóként — figyeld a home-ot és a navot. 3. Nyisd meg a Tagok fület, keresd meg a tanácsadót. 4. Töltse ki a tanácsadó a self-tesztet, majd nézd meg újra az org-átlagot és tag-számot. 5. Adminként nyisd meg az org-meghívó szerep-választóját.",
     expected:
-      "A tanácsadó home-ja az org-cockpit, navja admin-paritású (Csapatok · Szervezet · Jelöltek — a tanácsadói kör hiring-menüt is kap); a tag-listában „Tanácsadó" badge-dzsel jelenik meg; a tag-szám és az org HEXACO-átlag NEM változik a kitöltésétől; a meghívó szerep-választójában az ORG_CONSULTANT nem osztható ki.",
+      "A tanácsadó home-ja az org-cockpit, navja admin-paritású (Csapatok · Szervezet · Jelöltek — a tanácsadói kör hiring-menüt is kap); a tag-listában »Tanácsadó« badge-dzsel jelenik meg; a tag-szám és az org HEXACO-átlag NEM változik a kitöltésétől; a meghívó szerep-választójában az ORG_CONSULTANT nem osztható ki.",
     automated: "partial",
     coveredBy:
       "tests/unit/policy/policy-engine.test.ts (consultant admin-paritás) · tests/unit/journey/context.test.ts (szerep→kontextus) · tests/unit/policy/org-member-patch-authz.test.ts (PATCH-enum consultant nélkül)",
@@ -238,7 +238,7 @@ export const cases = [
     steps:
       "1. Managerként küldj csapat-meghívót a Tagok fülről a meghívott címére. 2. A meghívott bejelentkezve nyissa meg a /join/[token] linket. 3. Ellenőrizd a felkínált nézetet (csapat + org név). 4. Fogadd el. 5. Nyisd meg újra a linket.",
     expected:
-      "A join-oldal „csatlakozás a csapathoz" nézetet ad a csapat- és org-névvel; elfogadás után TeamMember-sor jön létre (az org-tagság NEM duplikálódik), az org az aktív kontextus, a journey a home-ra visz; a névre szóló meghívó-sor törlődik — a link újra 404.",
+      "A join-oldal csapat-csatlakozás nézetet ad a csapat- és org-névvel; elfogadás után TeamMember-sor jön létre (az org-tagság NEM duplikálódik), az org az aktív kontextus, a journey a home-ra visz; a névre szóló meghívó-sor törlődik — a link újra 404.",
     automated: "partial",
     coveredBy:
       "tests/integration/join/join-acceptance-matrix.integration.test.ts (api.team.join valid token)",
@@ -283,7 +283,7 @@ export const cases = [
     area: "Csapat-meghívó",
     name: "Nyílt (többször használható) csapat-link — nem fogy el, email-kötés nélkül",
     persona: "két külön user",
-    emails: { admin: "AUTO", "user1": "AUTO", "user2": "AUTO" },
+    emails: { admin: "AUTO", user1: "AUTO", user2: "AUTO" },
     preconditions:
       "Admin-paritású fiók, amely nyílt meghívó-linket tud generálni a csapathoz (link-megosztó funkció).",
     steps:
@@ -307,7 +307,7 @@ export const cases = [
     steps:
       "1. Tanácsadóként nyisd meg a /team/[id]?tab=intelligence fület. 2. Nézd meg a prioritás-kártyákat és az evidencia-jelzést. 3. Nyisd meg a ?tab=profile fület (csapat-mintázat).",
     expected:
-      "Gyűjtés-először állapot: „hiányzó kitöltések" prioritás-kártya a hiányzók számával és meghívó/emlékeztető CTA-val; az evidencia-minőség jelölése „részleges" (nem sufficient); a csapat-mintázat (pattern-kód) 3 kitöltés alatt NEM áll össze — a felület a küszöböt kommunikálja, nem üres/hibás nézetet ad.",
+      "Gyűjtés-először állapot: hiányzó-kitöltések prioritás-kártya a hiányzók számával és meghívó/emlékeztető CTA-val; az evidencia-minőség jelölése részleges (nem sufficient); a csapat-mintázat (pattern-kód) 3 kitöltés alatt NEM áll össze — a felület a küszöböt kommunikálja, nem üres/hibás nézetet ad.",
     automated: "partial",
     coveredBy:
       "tests/unit/team/team-pattern.test.ts (3 alatt null) · tests/unit/platform/team-intelligence.test.ts (küszöb + prioritás) · tests/e2e/team/team-intelligence-visual.test.ts (low-data layout)",
@@ -324,7 +324,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a csapat heatmap-nézetét (intelligence/profil réteg). 2. Nézd meg a kitöltés nélküli tag sorát. 3. Vesd össze a kitöltött tagok celláit a zóna-címkékkel (magas/közepes/alacsony). 4. Nézd meg az org-oldali HEXACO-átlagot is.",
     expected:
-      "A heatmap 3 kitöltésnél már él; a kitöltés nélküli tag cellái üres jelölést („–") mutatnak, NEM 0 értéket; a kitöltött celláknál a szín-intenzitás és a zóna-címke a pontszámot követi (H/E/X/A/C/O betűkkel); az org-szintű HEXACO-átlag csak 3+ kitöltött tagnál jelenik meg.",
+      "A heatmap 3 kitöltésnél már él; a kitöltés nélküli tag cellái üres jelölést (–) mutatnak, NEM 0 értéket; a kitöltött celláknál a szín-intenzitás és a zóna-címke a pontszámot követi (H/E/X/A/C/O betűkkel); az org-szintű HEXACO-átlag csak 3+ kitöltött tagnál jelenik meg.",
     automated: "partial",
     coveredBy:
       "tests/e2e/team/team-intelligence-visual.test.ts (sufficient-data snapshot)",
@@ -374,9 +374,9 @@ export const cases = [
     preconditions:
       "Manager 2 kezelt csapattal, amelyből az egyik 3-nál kevesebb tagú; a másikban van kitöltetlen self-teszt.",
     steps:
-      "1. Nyisd meg a /manager cockpitot és nézd a „Javasolt következő lépés" kártyát. 2. Hívj meg tagokat, hogy minden csapat 3+ tagú legyen (kitöltetlen self maradjon). 3. Nézd meg újra a kártyát.",
+      "1. Nyisd meg a /manager cockpitot és nézd a javasolt-következő-lépés kártyát. 2. Hívj meg tagokat, hogy minden csapat 3+ tagú legyen (kitöltetlen self maradjon). 3. Nézd meg újra a kártyát.",
     expected:
-      "Amíg van 3 tag alatti csapat, a next-step „Csapat bővítése" (a 3-as küszöb indoklásával, tag-meghívó CTA a members fülre) — ez megelőzi a kitöltés-hiányt; utána „Kitöltések lezárása" a hiányzó kitöltők számával és a tag-státusz CTA-val.",
+      "Amíg van 3 tag alatti csapat, a next-step »Csapat bővítése« (a 3-as küszöb indoklásával, tag-meghívó CTA a members fülre) — ez megelőzi a kitöltés-hiányt; utána »Kitöltések lezárása« a hiányzó kitöltők számával és a tag-státusz CTA-val.",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -384,7 +384,7 @@ export const cases = [
   {
     id: "TEAM-10",
     area: "Manager cockpit",
-    name: "Next-step ágak II.: futó kör követése, majd „minden rendben"",
+    name: "Next-step ágak II.: futó kör követése, majd minden-rendben állapot",
     persona: "org manager",
     emails: { fő: "AUTO" },
     preconditions:
@@ -392,7 +392,7 @@ export const cases = [
     steps:
       "1. Aktív kampány mellett nyisd meg a cockpitot, nézd a next-step kártyát. 2. Zárasd le a kört a tanácsadóval. 3. Nézd meg újra a kártyát.",
     expected:
-      "Futó körnél „Feedback kör nyomon követése" X/Y observer-visszajelzés számmal és a kampány-fülre mutató CTA-val (/org/[id]?tab=campaigns); teendő nélkül „Minden rendben" nézet a csapatkép CTA-val.",
+      "Futó körnél »Feedback kör nyomon követése« X/Y observer-visszajelzés számmal és a kampány-fülre mutató CTA-val (/org/[id]?tab=campaigns); teendő nélkül »Minden rendben« nézet a csapatkép CTA-val.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
