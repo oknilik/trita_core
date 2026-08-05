@@ -129,8 +129,14 @@ async function runClientTests(files) {
 // Csak a HIÁNYZÓ változókat pótoljuk — explicit env mindig nyer.
 const E2E_RUNTIME_ENV_FALLBACKS = {
   // "clerk.example.com$" base64-ben — sosem old fel élő Clerk-instance-t.
-  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_Y2xlcmsuZXhhbXBsZS5jb20k",
-  CLERK_SECRET_KEY: "sk_test_dummy_e2e_only",
+  // FONTOS: pk_live_/sk_live_ formátum, NEM pk_test_: a dev-instance kulcs
+  // hatására a clerkMiddleware minden cookie-mentes document-kérést a
+  // Frontend API-ra (clerk.example.com) 307-elne handshake-re
+  // (__clerk_hs_reason=dev-browser-missing) — a böngésző ott
+  // ERR_NAME_NOT_RESOLVED-del hal el. Prod-instance kulcsnál nincs
+  // dev-handshake: a vendég-kérés sima signed-out kérésként fut.
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_live_Y2xlcmsuZXhhbXBsZS5jb20k",
+  CLERK_SECRET_KEY: "sk_live_dummy_e2e_only",
   RESEND_API_KEY: "re_dummy_e2e_only",
 };
 
