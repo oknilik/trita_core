@@ -17,14 +17,31 @@ import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
 import { sendReflectionPromptEmail } from "@/lib/emails";
-import { checkTrialNotifications } from "./orchestrator";
+import { OPEN_DEAL_STAGES, QUOTE_EXPIRING_WINDOW_DAYS } from "@/lib/crm/constants";
+import { formatQuoteNo, resolveCrmDueWindow } from "@/lib/crm/guards";
+import { expireQuote } from "@/lib/crm/quotes";
+import {
+  checkTrialNotifications,
+  handleCrmNextActionDue,
+  handleCrmQuoteExpiring,
+} from "./orchestrator";
 import { persistNotification } from "./repository";
+
+export interface CrmSweepStats {
+  /** Lejárt SENT ajánlatok, amelyeket a sweep EXPIRED-re zárt. */
+  autoExpiredQuotes: number;
+  /** Esedékes next actionű dealek, amelyekre értesítés-kísérlet ment. */
+  nextActionDeals: number;
+  /** Hamarosan lejáró SENT ajánlatok, amelyekre értesítés-kísérlet ment. */
+  expiringQuotes: number;
+}
 
 export interface SweepResult {
   orgsChecked: number;
   notificationsCreated: number;
   emailsSent: number;
   errors: string[];
+  crm?: CrmSweepStats;
 }
 
 // ── Reflexiós utókövetés (D1) ───────────────────────────────────────────────
@@ -163,6 +180,119 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
   }
 }
 
+// ── CRM napi sweep ──────────────────────────────────────────────────────────
+// A meglévő napi cron (release-steps → runNotificationSweep) viszi, ÚJ
+// endpoint nélkül. Három feladat: (c) lejárt SENT ajánlat auto-EXPIRED +
+// SYSTEM-activity; (a) esedékes (lejárt/mai) next action → admin-notif
+// (napi dedupe dealenként); (b) 3 napon belül lejáró SENT ajánlat →
+// admin-notif (ajánlatonként egyszer). A létrejött értesítés-sorok számát
+// a repository dedupe-ja határozza meg — a CrmSweepStats a feldolgozott
+// tételeket számolja, nem a sorokat.
+
+// Az ADMIN_EMAILS feloldása helyben, hívás-időben (a lib/auth getAdminEmails
+// szemantikájával azonosan). Szándékosan NEM a lib/auth-ból importálunk: az
+// auth import-lánca (next/navigation, server-only) a sweep pure exportjait
+// (selectReflectionCandidates) unit-tesztelhetetlenné tenné.
+function resolveAdminEmails(): string[] {
+  return (process.env.ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+async function runCrmSweep(result: SweepResult): Promise<void> {
+  const crm: CrmSweepStats = { autoExpiredQuotes: 0, nextActionDeals: 0, expiringQuotes: 0 };
+  result.crm = crm;
+  const now = new Date();
+
+  // (c) Auto-expire ELŐBB — ami már lejárt, arról nem szólunk „hamarosan
+  // lejár”-t, és a kint lévő összeg-metrikából is kikerül.
+  const expiredQuotes = await prisma.quote.findMany({
+    where: { status: "SENT", validUntil: { lt: now } },
+    select: { id: true },
+  });
+  for (const quote of expiredQuotes) {
+    try {
+      await expireQuote(quote.id);
+      crm.autoExpiredQuotes++;
+    } catch (err) {
+      result.errors.push(
+        `crm expire ${quote.id}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
+  // Címzettek: platform-adminok (ADMIN_EMAILS) — a submitInquiry mintája.
+  const adminEmails = resolveAdminEmails();
+  const adminProfiles = adminEmails.length
+    ? await prisma.userProfile.findMany({
+        where: { deleted: false, email: { in: adminEmails, mode: "insensitive" } },
+        select: { id: true },
+      })
+    : [];
+  const adminUserIds = adminProfiles.map((p) => p.id);
+  if (adminUserIds.length === 0) return;
+
+  // (a) Esedékes next actionök: lejárt + ma esedékes, nyitott dealeken.
+  const { dueBefore, isoDay } = resolveCrmDueWindow(now);
+  const dueDeals = await prisma.deal.findMany({
+    where: { stage: { in: [...OPEN_DEAL_STAGES] }, nextActionAt: { lt: dueBefore } },
+    select: { id: true, title: true, nextActionAt: true },
+  });
+  for (const deal of dueDeals) {
+    try {
+      await handleCrmNextActionDue({
+        dealId: deal.id,
+        dealTitle: deal.title,
+        dueDateIso: deal.nextActionAt?.toISOString().slice(0, 10) ?? isoDay,
+        dedupeDay: isoDay,
+        adminUserIds,
+      });
+      crm.nextActionDeals++;
+    } catch (err) {
+      result.errors.push(
+        `crm next-action ${deal.id}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
+  // (b) Hamarosan lejáró SENT ajánlatok (3 napos ablak).
+  const expiringSoon = await prisma.quote.findMany({
+    where: {
+      status: "SENT",
+      validUntil: {
+        gte: now,
+        lt: new Date(now.getTime() + QUOTE_EXPIRING_WINDOW_DAYS * 24 * 60 * 60 * 1000),
+      },
+    },
+    select: {
+      id: true,
+      quoteNo: true,
+      createdAt: true,
+      dealId: true,
+      validUntil: true,
+      deal: { select: { title: true } },
+    },
+  });
+  for (const quote of expiringSoon) {
+    try {
+      await handleCrmQuoteExpiring({
+        quoteId: quote.id,
+        quoteLabel: formatQuoteNo(quote.quoteNo, quote.createdAt),
+        dealId: quote.dealId,
+        dealTitle: quote.deal.title,
+        validUntilIso: quote.validUntil?.toISOString().slice(0, 10) ?? isoDay,
+        adminUserIds,
+      });
+      crm.expiringQuotes++;
+    } catch (err) {
+      result.errors.push(
+        `crm quote-expiring ${quote.id}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+}
+
 /**
  * Run all scheduled notification checks.
  *
@@ -194,6 +324,16 @@ export async function runNotificationSweep(): Promise<SweepResult> {
   } catch (err) {
     result.errors.push(
       `reflection sweep: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+
+  // CRM napi kör (next-action esedékesség, ajánlat-lejárat) — szintén
+  // hibatűrő: a CRM hibája a többi sweep-feladatot nem boríthatja.
+  try {
+    await runCrmSweep(result);
+  } catch (err) {
+    result.errors.push(
+      `crm sweep: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 

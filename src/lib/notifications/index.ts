@@ -22,6 +22,8 @@ export {
   handleObserverApprovalRequested,
   handleObserverInviteDecision,
   handleInquiryReceived,
+  handleCrmNextActionDue,
+  handleCrmQuoteExpiring,
   handlePeerKudosReceived,
   handlePeerFeedbackRequested,
   handlePeerFeedbackResponse,

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getAdminEmails } from "@/lib/auth";
+import { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
 import { attachInquiryToOpenDeal } from "@/lib/crm/auto-attach";
 import { handleInquiryReceived } from "@/lib/notifications";
 import { resend, EMAIL_FROM } from "@/lib/resend";
@@ -12,14 +13,9 @@ const log = createLogger("inquiries");
 // (email → user → aktív org), notifot küld az adminoknak + a linkelt org
 // tanácsadóinak, és best-effort admin-emailt küld.
 
-export const INQUIRY_TOPIC_LABELS: Record<string, string> = {
-  demo: "Demó igény",
-  pricing: "Árazás",
-  support: "Terméktámogatás",
-  partnership: "Partnerség",
-  question: "Felhasználói kérdés",
-  other: "Egyéb",
-};
+// A téma-címkék függőség-mentes modulba költöztek (a CRM is használja) —
+// az eddigi import-útvonal változatlanul él.
+export { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
 
 export interface SubmitInquiryParams {
   name: string;

@@ -7,6 +7,10 @@
 
 import { prisma } from "@/lib/prisma";
 import { CAMPAIGN_STEP_LINKS } from "@/lib/campaign-steps-core";
+import {
+  buildNextActionDueDedupeKey,
+  buildQuoteExpiringDedupeKey,
+} from "@/lib/crm/guards";
 import { NOTIFICATION_TYPE_META } from "./types";
 import { persistNotification, persistNotificationBatch } from "./repository";
 import { resolveOrgRecipients } from "./policy";
@@ -590,6 +594,69 @@ export async function handleInquiryReceived(params: {
       sourceType: "inquiry" as const,
       sourceId: params.inquiryId,
       dedupeKey: `INQUIRY_RECEIVED:${params.inquiryId}:${userId}`,
+    })),
+  );
+}
+
+// ── CRM events (admin-only) ─────────────────────────────────────────────────
+
+/**
+ * Esedékes (lejárt vagy mai) next action egy nyitott dealen — a napi
+ * CRM-sweep hívja, címzettek a platform-adminok (a handleInquiryReceived
+ * admin-címzési mintája szerint). A dedupeDay-alapú kulcs miatt dealenként
+ * naponta legfeljebb egyszer szól, amíg a lépés nincs elintézve.
+ */
+export async function handleCrmNextActionDue(params: {
+  dealId: string;
+  dealTitle: string;
+  /** A next action dátuma (YYYY-MM-DD) — a szövegben jelenik meg. */
+  dueDateIso: string;
+  /** A sweep-futás napja (YYYY-MM-DD) — a napi dedupe-kulcs része. */
+  dedupeDay: string;
+  adminUserIds: string[];
+}) {
+  const meta = NOTIFICATION_TYPE_META.CRM_NEXT_ACTION_DUE;
+  await persistNotificationBatch(
+    params.adminUserIds.map((userId) => ({
+      userId,
+      type: "CRM_NEXT_ACTION_DUE" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { deal: params.dealTitle, date: params.dueDateIso },
+      link: `/admin/crm/${params.dealId}`,
+      sourceType: "crm_deal" as const,
+      sourceId: params.dealId,
+      dedupeKey: buildNextActionDueDedupeKey(params.dealId, params.dedupeDay),
+    })),
+  );
+}
+
+/**
+ * Kiküldött ajánlat érvényessége hamarosan lejár — a napi CRM-sweep hívja.
+ * Ajánlatonként egyszer szól (quoteId-alapú dedupe).
+ */
+export async function handleCrmQuoteExpiring(params: {
+  quoteId: string;
+  /** Formázott sorszám, pl. "TRT-2026-0007". */
+  quoteLabel: string;
+  dealId: string;
+  dealTitle: string;
+  /** Az érvényesség vége (YYYY-MM-DD) — a szövegben jelenik meg. */
+  validUntilIso: string;
+  adminUserIds: string[];
+}) {
+  const meta = NOTIFICATION_TYPE_META.CRM_QUOTE_EXPIRING;
+  await persistNotificationBatch(
+    params.adminUserIds.map((userId) => ({
+      userId,
+      type: "CRM_QUOTE_EXPIRING" as const,
+      category: meta.category,
+      priority: meta.defaultPriority,
+      vars: { quoteNo: params.quoteLabel, deal: params.dealTitle, date: params.validUntilIso },
+      link: `/admin/crm/${params.dealId}`,
+      sourceType: "crm_quote" as const,
+      sourceId: params.quoteId,
+      dedupeKey: buildQuoteExpiringDedupeKey(params.quoteId),
     })),
   );
 }
