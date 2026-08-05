@@ -1,6 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:4100";
+// 127.0.0.1, nem localhost: a böngésző-oldali névfeloldás így teljesen
+// kimarad — CI-runneren előfordult, hogy a chromium a "localhost"-ra
+// ERR_NAME_NOT_RESOLVED-et adott, miközben a Node-oldali health-check
+// ugyanoda gond nélkül elért.
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4100";
 
 export default defineConfig({
   testDir: "./tests/e2e",
