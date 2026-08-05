@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
@@ -10,6 +9,7 @@ import {
   compareInviteExpiry,
   resolveCompareInviteState,
 } from "@/lib/compare-invite";
+import { resolveCompareInviteViewerClerkId } from "@/lib/compare-invite-auth";
 
 const createSchema = z.object({
   // Opcionális: a linket emailben is kiküldjük a címzettnek.
@@ -41,7 +41,7 @@ async function requireProfileWithResult(clerkId: string) {
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const userId = await resolveCompareInviteViewerClerkId();
   if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 401 });
 
   // Üres body megengedett (csak link-készítés) — az email opcionális extra.
@@ -111,7 +111,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  const { userId } = await auth();
+  const userId = await resolveCompareInviteViewerClerkId();
   if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 401 });
 
   const profile = await prisma.userProfile.findUnique({
@@ -162,7 +162,7 @@ export async function GET() {
 const deleteSchema = z.object({ id: z.string().min(1) });
 
 export async function DELETE(req: Request) {
-  const { userId } = await auth();
+  const userId = await resolveCompareInviteViewerClerkId();
   if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 401 });
 
   const parsed = deleteSchema.safeParse(await req.json().catch(() => null));

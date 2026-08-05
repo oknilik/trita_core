@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
+import { resolveCompareInviteViewerClerkId } from "@/lib/compare-invite-auth";
 import { persistNotification } from "@/lib/notifications/repository";
 
 // Kölcsönös consent: a partner elfogadja az összehasonlítást. Feltételek:
@@ -13,7 +13,7 @@ export async function POST(
   _req: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
-  const { userId } = await auth();
+  const userId = await resolveCompareInviteViewerClerkId();
   if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 401 });
 
   const { token } = await params;
