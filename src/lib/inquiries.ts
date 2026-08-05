@@ -118,7 +118,7 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
       "Üzenet:",
       params.message,
       "",
-      "Kezelés: /admin?tab=inquiries",
+      "Kezelés: /admin?tab=crm (Beérkező)",
     ].join("\n");
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,
