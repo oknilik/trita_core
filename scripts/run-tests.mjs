@@ -129,6 +129,26 @@ async function runE2eTests(files) {
     throw new Error("E2E tests found but playwright is not installed");
   }
 
+  // CI-ben (és dedikált teszt-DB-vel helyben) csak TEST_DATABASE_URL érkezik:
+  // a fixture-öket seedelő playwright-process és a webServer (next dev) is a
+  // DATABASE_URL-t olvassa, a nyers Postgresen pedig séma sincs. Ha van
+  // feloldható teszt-DB env, képezzük le és bootstrapoljuk (migrate+reset+
+  // seed) — enélkül az e2e fázis CI-ben mindig „Environment variable not
+  // found: DATABASE_URL" hibával halt el. Teszt-DB env híján a korábbi
+  // viselkedés él: a meglévő (dev) környezet öröklődik változatlanul.
+  let e2eDbEnv = null;
+  try {
+    e2eDbEnv = resolveIntegrationTestDbEnv();
+  } catch {
+    // nincs teszt-DB konfigurálva — helyi dev-DB elleni futás
+  }
+  if (e2eDbEnv) {
+    const bootstrapEnv = { ...process.env, ...e2eDbEnv };
+    await run("node", ["scripts/test-integration-bootstrap.mjs"], {
+      env: bootstrapEnv,
+    });
+  }
+
   const args = ["playwright", "test"];
   if (isUi) {
     args.push("--ui");
@@ -136,7 +156,7 @@ async function runE2eTests(files) {
   if (isWatch) {
     args.push("--headed");
   }
-  await run("npx", args);
+  await run("npx", args, e2eDbEnv ? { env: { ...process.env, ...e2eDbEnv } } : {});
 }
 
 async function main() {
