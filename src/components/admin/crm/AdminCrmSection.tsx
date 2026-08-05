@@ -11,6 +11,7 @@ import type {
   CrmOpenDealOption,
   CrmPipelineMetrics,
   CrmStageGroup,
+  CrmView,
 } from "@/components/admin/crm/types";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -19,12 +20,6 @@ import type {
 // render-ben jön), az induló nézet a ?view= paraméterből jöhet (pl. az
 // INQUIRY_RECEIVED notif a Beérkezőre mélylinkel).
 // ─────────────────────────────────────────────────────────────────────
-
-export type CrmView = "today" | "inbox" | "pipeline" | "closed";
-
-export function isCrmView(value: string | undefined): value is CrmView {
-  return value === "today" || value === "inbox" || value === "pipeline" || value === "closed";
-}
 
 export function AdminCrmSection({
   initialView = "today",

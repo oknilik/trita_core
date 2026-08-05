@@ -5,6 +5,17 @@
 // forrás-igazság a lib/crm/constants — itt csak adatalak van.
 // ─────────────────────────────────────────────────────────────────────
 
+/**
+ * CRM alnézetek. Itt él, nem az AdminCrmSection-ben: a `"use client"`
+ * modul minden exportja kliens-referenciává válik, így a szerver-oldali
+ * CrmTab nem tudná meghívni az isCrmView guardot.
+ */
+export type CrmView = "today" | "inbox" | "pipeline" | "closed";
+
+export function isCrmView(value: string | undefined): value is CrmView {
+  return value === "today" || value === "inbox" || value === "pipeline" || value === "closed";
+}
+
 /** Ajánlat-kivonat a deal-listákhoz (a listDeals quote-select alakja). */
 export interface CrmQuoteSummary {
   id: string;

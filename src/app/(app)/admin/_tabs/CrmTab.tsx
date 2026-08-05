@@ -4,11 +4,9 @@ import {
   getPipelineSnapshot,
 } from "@/lib/crm/service";
 import { schemaOutOfSyncDetail } from "@/lib/crm/errors";
-import {
-  AdminCrmSection,
-  isCrmView,
-} from "@/components/admin/crm/AdminCrmSection";
+import { AdminCrmSection } from "@/components/admin/crm/AdminCrmSection";
 import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
+import { isCrmView } from "@/components/admin/crm/types";
 import type {
   CrmDealRow,
   CrmIntakeRow,
