@@ -2,9 +2,11 @@ import { randomUUID } from "node:crypto";
 import { expect, test, type Page } from "@playwright/test";
 import { prisma } from "../../../src/lib/prisma";
 import { getTestConfig } from "../../../src/lib/questions";
+import { DEFAULT_ASSESSMENT_FORM } from "../../../src/lib/operating-mode";
 import { calculateScores } from "../../../src/lib/scoring";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
+const DAY_MS = 24 * 60 * 60 * 1000;
 const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
 
 function makeId(prefix: string): string {
@@ -25,7 +27,11 @@ async function createObserverFixture(options: {
 } = {}): Promise<ObserverFixture> {
   const inviterId = makeId("obs_inviter");
   const invitationCount = options.invitationCount ?? 1;
-  const config = getTestConfig("TRITAN");
+  // A /observe/[token] a mindenkori alapértelmezett formát szolgálja ki
+  // (TSFI-S, 60 item) — a fixture UGYANAZT a kérdéslistát használja, hogy az
+  // "utolsó kérdés kivételével kitöltött draft" tényleg egyetlen kattintásra
+  // hagyja a kitöltőt.
+  const config = getTestConfig("TRITAN", "en", DEFAULT_ASSESSMENT_FORM);
   const selfAnswers = config.questions.map((q) => ({
     questionId: q.id,
     value: 3,
@@ -58,6 +64,8 @@ async function createObserverFixture(options: {
     },
   });
 
+  // Relatív lejárat: a token-életciklus a VALÓS órához mérten dől el
+  // (resolveObserverTokenLifecycle) — fix dátummal a fixture elévülne.
   const invitations = await Promise.all(
     Array.from({ length: invitationCount }).map(() =>
       prisma.observerInvitation.create({
@@ -66,7 +74,7 @@ async function createObserverFixture(options: {
           inviterId,
           testType: "TRITAN",
           status: options.status ?? "PENDING",
-          expiresAt: options.expiresAt ?? new Date("2026-04-20T10:00:00.000Z"),
+          expiresAt: options.expiresAt ?? new Date(Date.now() + 30 * DAY_MS),
           observerType: "EXTERNAL",
         },
       }),
@@ -212,7 +220,7 @@ test.describe("C5.6 Observer E2E happy path", () => {
   test("expired token shows expired state and cannot proceed", async ({ page }) => {
     const fixture = await createObserverFixture({
       invitationCount: 1,
-      expiresAt: new Date("2026-03-01T10:00:00.000Z"),
+      expiresAt: new Date(Date.now() - DAY_MS),
     });
     try {
       await page.goto(`/observe/${fixture.invitationTokens[0]}`, { waitUntil: "domcontentloaded" });

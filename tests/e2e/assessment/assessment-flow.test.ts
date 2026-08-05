@@ -1,21 +1,30 @@
 import { expect, test, type Page } from "@playwright/test";
+import { getTestConfig } from "../../../src/lib/questions";
+import { DEFAULT_ASSESSMENT_FORM } from "../../../src/lib/operating-mode";
 
 const DRAFT_KEY = "trita_draft_TRITAN";
 const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
 
-function buildAnswers(answeredUntil: number): Record<number, number> {
+// A /try a mindenkori alapértelmezett formát szolgálja ki (TSFI-S, 60 item,
+// nem-folytonos item-id-kkal) — a fixture a VALÓDI kérdés-id-kból építkezik,
+// nem feltételez 1..N sorszámozást.
+const ASSESSMENT_CONFIG = getTestConfig("TRITAN", "en", DEFAULT_ASSESSMENT_FORM);
+const QUESTION_IDS = ASSESSMENT_CONFIG.questions.map((question) => question.id);
+const TOTAL_QUESTIONS = QUESTION_IDS.length;
+
+function buildAnswers(answeredCount: number): Record<number, number> {
   const answers: Record<number, number> = {};
-  for (let i = 1; i <= answeredUntil; i += 1) {
-    answers[i] = ((i - 1) % 5) + 1;
-  }
+  QUESTION_IDS.slice(0, answeredCount).forEach((questionId, index) => {
+    answers[questionId] = (index % 5) + 1;
+  });
   return answers;
 }
 
-async function setDraft(page: Page, options: { answeredUntil: number; revision: number }) {
+async function setDraft(page: Page, options: { answeredCount: number; revision: number }) {
   const payload = {
     version: 2,
-    answers: buildAnswers(options.answeredUntil),
-    questionIndex: Math.max(options.answeredUntil - 1, 0),
+    answers: buildAnswers(options.answeredCount),
+    questionIndex: Math.max(options.answeredCount - 1, 0),
     revision: options.revision,
     updatedAt: Date.now(),
   };
@@ -97,9 +106,13 @@ test.beforeEach(async ({ page }) => {
 test("self assessment happy path reaches results gate", async ({ page }) => {
   await startAssessment(page);
 
-  await setDraft(page, { answeredUntil: 99, revision: 50 });
-  await expectCurrentQuestion(page, 100);
+  // Minden kérdés megválaszolva az utolsó kivételével → az UI az utolsó
+  // (60.) kérdésre áll; az 50%-os milestone már "látottnak" számít.
+  await setDraft(page, { answeredCount: TOTAL_QUESTIONS - 1, revision: 50 });
+  await expectCurrentQuestion(page, TOTAL_QUESTIONS);
 
+  // Az utolsó válasz auto-advance mellett a kiértékelésre és a vendég
+  // eredmény-kapura visz (guest mód: /try/complete).
   await page.getByRole("button", { name: /^4 - / }).click();
   await page.waitForURL("**/try/complete", { timeout: 20_000 });
 
@@ -109,7 +122,7 @@ test("self assessment happy path reaches results gate", async ({ page }) => {
 test("draft interruption resumes correctly then reaches results gate", async ({ page }) => {
   await startAssessment(page);
 
-  await page.getByText(/auto-advance|auto-tov/i).click();
+  await page.getByText(/auto-advance|automatikus/i).click();
 
   await page.getByRole("button", { name: /^2 - / }).click();
   await page.getByRole("button", { name: NEXT_BUTTON_LABEL }).click();
@@ -141,8 +154,8 @@ test("draft interruption resumes correctly then reaches results gate", async ({ 
   await openAssessmentUi(page);
   await expectCurrentQuestion(page, 3);
 
-  await setDraft(page, { answeredUntil: 99, revision: 90 });
-  await expectCurrentQuestion(page, 100);
+  await setDraft(page, { answeredCount: TOTAL_QUESTIONS - 1, revision: 90 });
+  await expectCurrentQuestion(page, TOTAL_QUESTIONS);
 
   await page.getByRole("button", { name: /^5 - / }).click();
   await page.waitForURL("**/try/complete", { timeout: 20_000 });

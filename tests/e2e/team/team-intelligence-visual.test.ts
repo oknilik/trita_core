@@ -1,5 +1,13 @@
-import { expect, test, type BrowserContext, type Locator, type Page } from "@playwright/test";
+import { expect, test, type BrowserContext, type Page } from "@playwright/test";
 import { prisma } from "../../../src/lib/prisma";
+
+// A pixel-szintű (toHaveScreenshot) asszerciók strukturális assertekre
+// cserélve (láthatóság + kulcs-szövegek): a korábbi baseline-ok macOS-en
+// készültek (*-darwin.png), a CI Linuxa alatt eleve nem léteztek, és a
+// nyelvi/spacing körök után stale-ek voltak — a fájlok törölve.
+// TODO(visual-regression): a vizuális háló újraélesztése tudatos külön kör —
+// Linux-baseline-okat CI-ben kell generálni (--update-snapshots), és a
+// baseline-frissítés folyamatát is rögzíteni kell.
 
 const E2E_AUTH_COOKIE_NAME = "trita_e2e_user_id";
 
@@ -130,9 +138,13 @@ async function createFixture() {
   await prisma.organizationMember.createMany({
     data: [
       {
+        // Tanácsadói szerep: a nyers csapat-adat fülek (intelligence/profile/
+        // teamRole) a riport-kapuzás óta CSAK a tanácsadói körnek élnek — a
+        // sima ORG_ADMIN a ?tab=overview-ra kerül vissza (team/[id]/page.tsx,
+        // canViewRawTeamResults).
         orgId: FIXTURE.orgId,
         userId: FIXTURE.admin.profileId,
-        role: "ORG_ADMIN",
+        role: "ORG_CONSULTANT",
       },
       ...FIXTURE.lowMembers.map((member) => ({
         orgId: FIXTURE.orgId,
@@ -260,16 +272,7 @@ async function expectPathname(page: Page, pathname: string) {
     .toBe(pathname);
 }
 
-async function expectSectionScreenshot(locator: Locator, name: string) {
-  await expect(locator).toBeVisible();
-  await expect(locator).toHaveScreenshot(name, {
-    animations: "disabled",
-    caret: "hide",
-    maxDiffPixelRatio: 0.01,
-  });
-}
-
-test.describe("Team intelligence visual regression snapshots", () => {
+test.describe("Team intelligence structural snapshots", () => {
   test.describe.configure({ mode: "serial" });
 
   test.beforeAll(async () => {
@@ -288,25 +291,46 @@ test.describe("Team intelligence visual regression snapshots", () => {
     await page.goto(`/team/${FIXTURE.lowTeamId}?tab=intelligence`, { waitUntil: "domcontentloaded" });
     await expectPathname(page, `/team/${FIXTURE.lowTeamId}`);
 
+    // Gyűjtés-fókuszú layout (IntelligenceTabView, !hasSufficientIntelligenceData ág).
     const lowDataSection = page.locator("section").filter({
       has: page.getByRole("heading", { name: "Még nincs elég adat a csapatintelligenciához" }),
     });
+    await expect(lowDataSection).toBeVisible({ timeout: 15_000 });
 
-    await expectSectionScreenshot(lowDataSection, "team-intelligence-low-data-hu.png");
+    // Kitöltöttség-chip: 5 tagból 2-nek van önértékelése (admin + Low One).
+    await expect(lowDataSection.getByText(/Kitöltött assessmentek/)).toBeVisible();
+    await expect(lowDataSection.getByText("2/5")).toBeVisible();
+    await expect(
+      lowDataSection.getByRole("link", { name: "Tagok és kitöltések kezelése" }),
+    ).toBeVisible();
+
+    // Hiányzó-adat blokk a kitöltés nélküli tagokkal.
+    const missingSection = page.locator("section").filter({
+      has: page.getByText("Kiknél hiányzik még adat"),
+    });
+    await expect(missingSection).toBeVisible();
+    await expect(missingSection.getByText("Low Data Two")).toBeVisible();
   });
 
-  test("sufficient-data state resource map and deep-dive CTA remain visually stable", async ({ page }) => {
+  test("sufficient-data state resource map and deep-dive CTA remain visible", async ({ page }) => {
     await page.goto(`/team/${FIXTURE.sufficientTeamId}?tab=intelligence`, { waitUntil: "domcontentloaded" });
     await expectPathname(page, `/team/${FIXTURE.sufficientTeamId}`);
 
+    // Erőforrás-térkép: tagkártyák a kitöltött (4/4) tagokkal.
     const resourceSection = page.locator("section").filter({
       has: page.locator("p").filter({ hasText: /^Ki mit hoz a csapatba$/ }),
     });
-    await expectSectionScreenshot(resourceSection, "team-intelligence-resource-map-hu.png");
+    await expect(resourceSection).toBeVisible({ timeout: 15_000 });
+    await expect(resourceSection.getByText("4/4")).toBeVisible();
+    await expect(resourceSection.getByText("Sufficient One")).toBeVisible();
 
+    // Deep-dive CTA szekció — a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({
-      has: page.locator("p").filter({ hasText: /^Részletes csapatszerep-elemzés$/ }),
+      has: page.locator("p").filter({ hasText: /^Részletes csapatszerep elemzés$/ }),
     });
-    await expectSectionScreenshot(deepDiveSection, "team-intelligence-deep-dive-cta-hu.png");
+    await expect(deepDiveSection).toBeVisible();
+    await expect(
+      deepDiveSection.getByRole("link", { name: "Részletes csapatszerep elemzés" }),
+    ).toBeVisible();
   });
 });

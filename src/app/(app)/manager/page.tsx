@@ -1,6 +1,6 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { withHuArticle } from "@/lib/hu-grammar";
-import { auth } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -51,7 +51,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ManagerCockpitPage() {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  // getServerAuth (nem nyers Clerk auth()): a /dashboard elosztóval és a
+  // requireOrgContext-tel azonos auth-út — az e2e bypass is így működik itt.
+  const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) redirect("/sign-in");
 
   await requireOnboardedByClerkId(userId);

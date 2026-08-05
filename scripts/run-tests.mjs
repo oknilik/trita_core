@@ -120,6 +120,28 @@ async function runClientTests(files) {
   await run("npx", args);
 }
 
+// Az e2e webServer (next dev) render-elési minimum-env-je. CI-ben csak a
+// teszt-DB env érkezik: Clerk-kulcs nélkül a ClerkProvider-es (app) oldalak
+// SSR-je kivételt dob (500), a middleware auth-redirectjei pedig nem futnak
+// le — a 2026-08-05-i első teljes futásban ez vitte el a suite nagy részét.
+// A dummy kulcsokkal az SSR és a middleware determinisztikusan "signed-out"
+// módban fut; az auth-t az e2e a TRITA_E2E_AUTH_BYPASS cookie-val adja.
+// Csak a HIÁNYZÓ változókat pótoljuk — explicit env mindig nyer.
+const E2E_RUNTIME_ENV_FALLBACKS = {
+  // "clerk.example.com$" base64-ben — sosem old fel élő Clerk-instance-t.
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: "pk_test_Y2xlcmsuZXhhbXBsZS5jb20k",
+  CLERK_SECRET_KEY: "sk_test_dummy_e2e_only",
+  RESEND_API_KEY: "re_dummy_e2e_only",
+};
+
+function resolveE2eRuntimeEnv() {
+  const env = {};
+  for (const [key, fallback] of Object.entries(E2E_RUNTIME_ENV_FALLBACKS)) {
+    if (!process.env[key]) env[key] = fallback;
+  }
+  return env;
+}
+
 async function runE2eTests(files) {
   if (files.length === 0) {
     printSkip("e2e");
@@ -156,7 +178,12 @@ async function runE2eTests(files) {
   if (isWatch) {
     args.push("--headed");
   }
-  await run("npx", args, e2eDbEnv ? { env: { ...process.env, ...e2eDbEnv } } : {});
+  // A playwright-process env-je öröklődik a webServer-parancsra (next dev) —
+  // a runtime-fallbackok így CI-ben és helyben is ugyanazt a hermetikus
+  // környezetet adják.
+  await run("npx", args, {
+    env: { ...process.env, ...resolveE2eRuntimeEnv(), ...(e2eDbEnv ?? {}) },
+  });
 }
 
 async function main() {
