@@ -11,7 +11,6 @@
     "check": "pnpm type-check && pnpm lint",
     "test": "pnpm test:unit",
     "test:unit": "node scripts/run-tests.mjs unit",
-
     "manual-tests": "node scripts/generate-manual-tests.mjs",
     "test:integration": "node scripts/run-tests.mjs integration",
     "test:integration:bootstrap": "node scripts/test-integration-bootstrap.mjs",
@@ -98,5 +97,11 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.2"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
