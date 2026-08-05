@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getDealDetail } from "@/lib/crm/service";
+import { schemaOutOfSyncDetail } from "@/lib/crm/errors";
 import { DealDetail } from "@/components/admin/crm/DealDetail";
+import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
 import type { CrmDealDetailData } from "@/components/admin/crm/types";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -27,7 +29,22 @@ export default async function DealDetailPage({
   await requireAdmin();
   const { dealId } = await params;
 
-  const deal = await getDealDetail(dealId);
+  let deal: Awaited<ReturnType<typeof getDealDetail>>;
+  try {
+    deal = await getDealDetail(dealId);
+  } catch (error) {
+    const outOfSync = schemaOutOfSyncDetail(error);
+    if (outOfSync) {
+      return (
+        <main className="min-h-dvh bg-cream px-4 pt-6 pb-24 md:px-6 md:pt-8">
+          <div className="mx-auto max-w-3xl">
+            <CrmMigrationPendingCard detail={outOfSync} />
+          </div>
+        </main>
+      );
+    }
+    throw error;
+  }
   if (!deal) notFound();
 
   const [orgs, suggestedProfile] = await Promise.all([

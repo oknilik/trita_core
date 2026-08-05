@@ -3,10 +3,12 @@ import {
   getIntakeInquiries,
   getPipelineSnapshot,
 } from "@/lib/crm/service";
+import { schemaOutOfSyncDetail } from "@/lib/crm/errors";
 import {
   AdminCrmSection,
   isCrmView,
 } from "@/components/admin/crm/AdminCrmSection";
+import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
 import type {
   CrmDealRow,
   CrmIntakeRow,
@@ -53,11 +55,22 @@ function toDealRow(deal: DealWithIncludes): CrmDealRow {
 }
 
 export async function CrmTab({ view }: { view?: string }) {
-  const [dueDeals, intakeInquiries, snapshot] = await Promise.all([
-    getDueDeals(),
-    getIntakeInquiries(),
-    getPipelineSnapshot(),
-  ]);
+  let dueDeals: Awaited<ReturnType<typeof getDueDeals>>;
+  let intakeInquiries: Awaited<ReturnType<typeof getIntakeInquiries>>;
+  let snapshot: Awaited<ReturnType<typeof getPipelineSnapshot>>;
+  try {
+    [dueDeals, intakeInquiries, snapshot] = await Promise.all([
+      getDueDeals(),
+      getIntakeInquiries(),
+      getPipelineSnapshot(),
+    ]);
+  } catch (error) {
+    // Migráció-lemaradás (P2021/P2022): ne az általános hibaoldal jöjjön,
+    // hanem a pontos teendő. Minden más hiba továbbra is felfut.
+    const outOfSync = schemaOutOfSyncDetail(error);
+    if (outOfSync) return <CrmMigrationPendingCard detail={outOfSync} />;
+    throw error;
+  }
 
   const openDealsFlat = snapshot.byStage.flatMap((group) => group.deals);
 

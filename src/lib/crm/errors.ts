@@ -32,3 +32,28 @@ export class CrmServiceError extends Error {
 export function isCrmNotFoundCode(code: CrmErrorCode): boolean {
   return code.endsWith("_NOT_FOUND");
 }
+
+export interface SchemaOutOfSyncDetail {
+  code: string;
+  target: string | null; // hiányzó tábla vagy oszlop neve, ha a hibából kiderül
+}
+
+/**
+ * Migráció-lemaradás felismerése (az org-context activeOrgId-guard mintája):
+ * a futó DB-ből hiányzik a CRM-séma egy táblája/oszlopa — P2021 (tábla) vagy
+ * P2022 (oszlop). Ilyenkor az admin-felület nem az általános hibaoldalra
+ * fut, hanem megmondja a teendőt (prisma migrate deploy ezen a környezeten).
+ */
+export function schemaOutOfSyncDetail(error: unknown): SchemaOutOfSyncDetail | null {
+  if (!(error instanceof Error)) return null;
+  const maybePrisma = error as Error & {
+    code?: string;
+    meta?: { table?: string; column?: string; modelName?: string };
+  };
+  if (maybePrisma.name !== "PrismaClientKnownRequestError") return null;
+  if (maybePrisma.code !== "P2021" && maybePrisma.code !== "P2022") return null;
+  return {
+    code: maybePrisma.code,
+    target: maybePrisma.meta?.table ?? maybePrisma.meta?.column ?? maybePrisma.meta?.modelName ?? null,
+  };
+}
