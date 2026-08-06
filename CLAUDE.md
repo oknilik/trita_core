@@ -81,9 +81,19 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 - **HEXACO névtér (2026-07-29 — a TRITAN-branding KIVEZETVE)**: a
   megjelenítés mindenhol a HEXACO-jelöléseket követi (H Becsületesség-Alázat
   · E Emocionalitás · X Extraverzió · A Barátságosság · C Lelkiismeretesség
-  · O Nyitottság; facetek a HEXACO-PI-R terminológiával). A user-facing
-  szöveg NEVESÍTHETI a HEXACO-t és az IPIP-eredetet — ez a hitelesség
-  forrása. Kanonikus térkép: `src/lib/tritan.ts` (a fájlnév és a TRITAN_*
+  · O Nyitottság; facetek a HEXACO-PI-R terminológiával).
+  **Kommunikáció (2026-08-06 — MÓDOSULT):** a user-facing szöveg NEM
+  nevezi a modellt „HEXACO-nak" („HEXACO-alapú teszt" tilos). Helyette a
+  legegyszerűbb megfogalmazás: „hat személyiségdimenzió" / „hat dimenzió
+  mentén"; ahol tényleg modellnevet kell mondani, ott „hatfaktoros
+  személyiségmodell". A HEXACO név CSAK a módszertani-irodalmi
+  hivatkozásokban marad (results.ts hivatkozás-jegyzet, `/llms.txt`
+  módszertani sora, `docs/product/tsfi-item-provenance.md`) — ott
+  hitelesít; marketing-szövegben zaj. Ugyanez az IPIP-eredetre: a
+  felületen „szabadon felhasználható, kutatásban használt kérdésbank".
+  A DIMENZIÓ-CÍMKÉK (Becsületesség-Alázat, Emocionalitás, …) változatlanul
+  a HEXACO terminológiát követik — ez nem márkanév, hanem a skálák neve.
+  Kanonikus térkép: `src/lib/tritan.ts` (a fájlnév és a TRITAN_*
   export-azonosítók history-okból maradtak — az ÉRTÉKEK HEXACO-k). Új
   felületen NE vezess be saját dimenzió-címkét — a tritan.ts-ből dolgozz.
   A kérdőív-név TSFI maradt.

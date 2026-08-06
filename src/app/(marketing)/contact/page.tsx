@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { buildPageMetadata } from "@/lib/seo";
+import { buildBreadcrumbJsonLd, buildContactPageJsonLd } from "@/lib/structured-data";
 import { ContactContent } from "./ContactContent";
 
 // Statikus metadata a DEFAULT_LOCALE-lal — cookie-olvasás nélkül az oldal
@@ -13,5 +15,22 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default function ContactPage() {
-  return <ContactContent />;
+  return (
+    <>
+      <JsonLd
+        data={[
+          buildContactPageJsonLd({
+            path: "/contact",
+            title: t("contact.metaTitle", DEFAULT_LOCALE),
+            description: t("contact.metaDescription", DEFAULT_LOCALE),
+          }),
+          buildBreadcrumbJsonLd([
+            { name: "Főoldal", path: "/" },
+            { name: "Kapcsolat", path: "/contact" },
+          ]),
+        ]}
+      />
+      <ContactContent />
+    </>
+  );
 }
