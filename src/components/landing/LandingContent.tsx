@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { TrustBar } from "@/components/landing/TrustBar";
 import { HowItWorks } from "@/components/landing/HowItWorks";
@@ -8,14 +7,16 @@ import { Features } from "@/components/landing/Features";
 import { ProofSection } from "@/components/landing/ProofSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CtaSection } from "@/components/landing/CtaSection";
-import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import { useSiteMode } from "@/components/landing/site-mode";
 
-// A ?mode= paramétert kliens-oldalon olvassuk (useSearchParams), így a
-// landing page szerver-oldala statikus maradhat — a prerender a "self"
-// móddal készül, a "team" mód hydration után vált.
+// A ?mode= paramétert az URL-ből olvassuk, de NEM useSearchParams-szal:
+// az a statikus prerendert CSR-re bájtolta (BAILOUT_TO_CLIENT_SIDE_RENDERING),
+// ezért a build-elt HTML <main>-je üres volt és a hero H1 (LCP-elem) csak
+// hidratálás után jelent meg. A useSiteMode() szerver-snapshotja "self", így
+// a teljes landing bekerül a statikus HTML-be; a "team" mód a switcherre /
+// mélylinkre vált (részletek: site-mode.ts).
 export function LandingContent() {
-  const params = useSearchParams();
-  const mode: SiteMode = params.get("mode") === "team" ? "team" : "self";
+  const mode = useSiteMode();
 
   return (
     <>

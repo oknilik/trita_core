@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
@@ -11,15 +10,12 @@ import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
-};
-
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+// A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
+// ugyanaz a 0.5s / y:20px / cubic-bezier(0.16,1,0.3,1) mozgás, mint a korábbi
+// framer-motion `fadeUp`, de már az ELSŐ festéskor fut — nem a hidratálás
+// után. A hero szövegoszlopa (benne az LCP-elem H1) ezért 0 késleltetést kap;
+// a stagger csak a H1 ALATTI blokkban marad, ahol nem az LCP-t késlelteti.
+const riseIn = "animate-rise-in";
 
 // ─── Self panel — a valódi eredménynézet kicsinyített mása ──────────────────
 
@@ -262,6 +258,18 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
   const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+  // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 — nagy szövegnek épp
+  // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
+  // sötétebb fokait használjuk (a zsálya team-módban 5.5:1, marad):
+  //   eyebrow (11px)  → accent-primary-strong (bronze-700) — 5.5:1
+  //   H1 em (nagy)    → accent-primary-mid                 — 3.9:1
+  const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
+  const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
+  // Tömör CTA-felület fehér szöveggel: bronze-dark (4.89:1) — ugyanaz a fok,
+  // amire a NavBar sticky CTA-ja és a CtaSection gombja is beállt. A sticky
+  // fejléc miatt a nav-CTA és a hero-CTA EGYSZERRE látszik: két különböző
+  // bronz ugyanarra a gombszerepre elszíneződésnek olvasódna.
+  const ctaBackground = isSelf ? "var(--color-bronze-dark)" : accentColor;
 
   // Detect existing localStorage draft for guest users.
   // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
@@ -274,37 +282,33 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
         <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
 
-          {/* 1. Switcher + Eyebrow + Headline */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="visible"
-            className="order-1 flex flex-col"
-          >
-            <motion.div variants={fadeUp} className="mb-4 lg:mb-5">
+          {/* 1. Switcher + Eyebrow + Headline — 0 késleltetés: itt van az
+              LCP-elem (H1), ezért semmi nem várhat rá JS-re. */}
+          <div className="order-1 flex flex-col">
+            <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher />
-            </motion.div>
+            </div>
 
-            <motion.div variants={fadeUp} className="mb-4 flex items-center gap-3">
-              <div className="h-[1.5px] w-5 shrink-0" style={{ background: accentColor }} />
+            <div className={`${riseIn} mb-4 flex items-center gap-3`}>
+              {/* A vonalka és a felirat EGY tipográfiai egység — ugyanabból a
+                  bronz-fokból kell jönniük, különben a sötétebb szöveg mellett
+                  a világosabb vonal elszíneződésnek látszik. */}
+              <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
               <span
                 className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest"
-                style={{ color: accentColor }}
+                style={{ color: eyebrowColor }}
               >
                 {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
               </span>
-            </motion.div>
+            </div>
 
-            <motion.h1
-              variants={fadeUp}
-              className="font-fraunces text-fluid-display font-medium tracking-tight text-ink"
-            >
+            <h1 className={`${riseIn} font-fraunces text-fluid-display font-medium tracking-tight text-ink`}>
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
-              <em className="italic" style={{ color: accentColor }}>
+              <em className="italic" style={{ color: headlineAccentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
               </em>
-            </motion.h1>
-          </motion.div>
+            </h1>
+          </div>
 
           {/* 2. Preview panel */}
           {isSelf ? (
@@ -319,37 +323,30 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             </div>
           )}
 
-          {/* 3. Sub + CTA + Microcopy */}
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            animate="visible"
-            className="order-3 flex flex-col md:col-start-1 md:row-start-2"
-          >
-            <motion.p
-              variants={fadeUp}
-              className="mb-7 text-[16px] font-light leading-relaxed text-ink-body"
-            >
+          {/* 3. Sub + CTA + Microcopy — a H1 alatt, itt megmarad a 0.1s-os
+              lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
+          <div className="order-3 flex flex-col md:col-start-1 md:row-start-2">
+            <p className={`${riseIn} mb-7 text-[16px] font-light leading-relaxed text-ink-body`}>
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
-            </motion.p>
+            </p>
 
-            <motion.div variants={fadeUp} className="mb-4">
+            <div className={`${riseIn} mb-4`} style={{ animationDelay: "0.1s" }}>
               <Link
                 href={isSelf ? "/try" : "/contact"}
                 className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto"
                 style={{
-                  background: accentColor,
-                  boxShadow: `0 4px 14px ${isSelf ? "rgba(193,127,74,0.25)" : "rgba(61,107,94,0.25)"}`,
+                  background: ctaBackground,
+                  boxShadow: `0 4px 14px ${isSelf ? "rgba(154,101,56,0.25)" : "rgba(61,107,94,0.25)"}`,
                 }}
               >
                 {isSelf
                   ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
                   : t("landing.teamCta", locale)}
               </Link>
-            </motion.div>
+            </div>
 
             {isSelf ? (
-              <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-2">
+              <div className={`${riseIn} flex flex-wrap items-center gap-2`} style={{ animationDelay: "0.2s" }}>
                 {[
                   { Icon: ClockIcon, text: t("landing.selfMetaTime", locale) },
                   { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
@@ -361,13 +358,13 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     {m.text}
                   </span>
                 ))}
-              </motion.div>
+              </div>
             ) : (
-              <motion.p variants={fadeUp} className="text-center text-caption text-[var(--color-text-muted)] sm:text-left">
+              <p className={`${riseIn} text-center text-caption text-[var(--color-text-muted)] sm:text-left`} style={{ animationDelay: "0.2s" }}>
                 {t("landing.teamMicrocopy", locale)}
-              </motion.p>
+              </p>
             )}
-          </motion.div>
+          </div>
 
         </div>
       </div>

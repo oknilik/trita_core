@@ -400,7 +400,9 @@ function NavHeaderContent({
 
   const navItemBase =
     "inline-flex items-center gap-1.5 px-3 py-1.5 text-caption font-medium transition-all cursor-pointer select-none rounded-lg";
-  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary)] font-semibold`;
+  // Aktív nav-elem: accent-primary-STRONG — a világosabb accent-primary a
+  // surface-subtle chipen csak 2.82:1 (13px szöveg, AA-bukó); a strong 5.27:1.
+  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary-strong)] font-semibold`;
   const navItemInactive =
     `${navItemBase} text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-canvas)]`;
 

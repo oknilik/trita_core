@@ -51,7 +51,11 @@ export const metadata: Metadata = {
     title: t("landing.heroTitle", DEFAULT_LOCALE),
     description: t("meta.description", DEFAULT_LOCALE),
     url: "/",
+    // A marketing-fa minden lapja EGY URL-en szolgálja ki a HU és az EN
+    // tartalmat (LocaleProvider) — a második nyelvet OG-oldalon az
+    // alternateLocale közli; hreflang-párt ezért nem képzünk (ld. seo.ts).
     locale: "hu_HU",
+    alternateLocale: ["en_US"],
   },
   twitter: {
     card: "summary_large_image",

@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
 import { getAllPosts } from "@/lib/blog";
+import { buildPageMetadata } from "@/lib/seo";
 import { BlogListContent } from "./BlogListContent";
 
-export const metadata: Metadata = {
-  title: "Blog | trita",
+export const metadata: Metadata = buildPageMetadata({
+  path: "/blog",
+  title: "Blog — csapatdinamika, személyiség, tudatos HR | trita",
   description:
+    "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről: hogyan olvasd a csapatod működését, mit mér a HEXACO, és mikor téved az önértékelés.",
+  ogTitle: "trita blog — csapatdinamika és személyiség",
+  ogDescription:
     "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
-  alternates: { canonical: "/blog" },
-  openGraph: {
-    title: "Blog | trita",
-    description:
-      "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.",
-    url: "/blog",
-    type: "website",
-    siteName: "trita",
-  },
-};
+});
 
 // Statikus oldal: a posztlista mindkét nyelven build-time készül, a nyelvet
 // a kliens-oldali LocaleProvider választja.

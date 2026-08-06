@@ -390,8 +390,62 @@ body {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.5s ease-out;
+  /* fill-mode: backwards — a kezdőállapot (opacity: 0) a KEYFRAME-ből jön,
+     nem inline style-ból, és a késleltetés alatt is tart. Így ha a CSS
+     bármiért nem érvényesül, a tartalom látható marad (a FadeIn primitív
+     korábban inline opacity:0-t írt a szerver-HTML-be → CSS nélkül
+     láthatatlan tartalom). A végállapot = az elem természetes állapota,
+     ezért `forwards` nem kell — és így nem fagyasztja be a transformot
+     (hover-emelés, sticky stb. utána is működik). */
+  animation: fade-in 0.5s ease-out backwards;
   will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in {
+    animation: none;
+  }
+}
+
+/* ─── Landing beúszás (framer-motion helyett tiszta CSS) ──────────────────
+   Miért: a hero H1 az LCP-elem. A framer-motion `hidden: { opacity: 0 }`
+   → `visible` mintája a hidratálásig átlátszón tartotta, ami 4x CPU-
+   throttling mellett 6.5 s render-delay volt. A CSS-keyframe már az ELSŐ
+   festéskor fut, a mozgás jellege (0.5s, y:20px, ugyanaz az easing)
+   változatlan. Csak opacity + transform mozog → nincs layout-shift. */
+@keyframes trita-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rise-in {
+  /* backwards: a késleltetés alatt is a rejtett kezdőállapot él, a lefutás
+     UTÁN viszont az elem saját stílusa (így a hover-transform működik). */
+  animation: trita-rise-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* Hajtás alatti reveal: a kiindulási (rejtett) állapotot JS teszi rá, így
+   JS/IntersectionObserver nélkül a tartalom LÁTHATÓ marad. */
+.reveal-armed {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise-in {
+    animation: none;
+  }
+
+  .reveal-armed {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Karrier-iránytű wizard: lépés-belépés + kijelölés-pop. A korábbi inline

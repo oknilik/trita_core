@@ -88,8 +88,11 @@ function NavLink({
       href={href}
       className={[
         "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-caption transition-all",
+        // Aktív állapot: accent-primary-STRONG a bronzon — a világosabb
+        // accent-primary a surface-subtle chipen csak 2.82:1 (13px szöveg,
+        // AA-bukó); a strong 5.27:1, ugyanabból a bronz-családból.
         active
-          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary)]"
+          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary-strong)]"
           : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]",
       ].join(" ")}
     >
@@ -221,10 +224,15 @@ export function NavBar({
                 >
                   {t("nav.signIn", locale)}
                 </Link>
-                {/* CTA — always visible */}
+                {/* CTA — always visible.
+                    Háttér: bronze-dark, NEM a világosabb accent-primary —
+                    fehér szöveggel az utóbbi csak 3.28:1 (12–13px normál
+                    szöveg → AA-bukó, Lighthouse color-contrast). A
+                    bronze-dark 4.89:1, és a bronz-család része (ugyanez a
+                    CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
                   href="/try"
-                  className="rounded-lg bg-[var(--color-accent-primary)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
@@ -317,7 +325,7 @@ export function NavBar({
               <Link
                 href="/try"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-accent-primary)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
               >
                 {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
               </Link>

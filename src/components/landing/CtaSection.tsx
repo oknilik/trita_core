@@ -44,7 +44,10 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
           href={ctaHref}
           className={[
             "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
-            isSelf ? "bg-[var(--color-accent-primary)] hover:bg-[var(--color-bronze-dark)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
+            // Self CTA: bronze-dark (fehér szöveg mellett 4.89:1) — azonos a
+            // NavBar sticky CTA-jával és a hero gombjával; hover egy fokkal
+            // sötétebb (bronze-700), hogy a hover-visszajelzés megmaradjon.
+            isSelf ? "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
           ].join(" ")}
         >
           {cta}

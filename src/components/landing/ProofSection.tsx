@@ -1,7 +1,7 @@
 "use client";
-import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { Reveal } from "@/components/landing/Reveal";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 import {
   FlaskIcon,
@@ -11,11 +11,6 @@ import {
   EyeIcon,
   SearchIcon,
 } from "@/components/landing/icons";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
-};
 
 export function ProofSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
@@ -48,13 +43,9 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {cards.map((card, i) => (
-            <motion.div
+            <Reveal
               key={card.title}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeUp}
-              transition={{ delay: i * 0.1 } as Parameters<typeof motion.div>[0]["transition"]}
+              delay={i * 0.1}
               className="rounded-2xl border border-[var(--color-border-default)] bg-white p-7 text-center"
             >
               <div className="mb-4 flex justify-center" style={{ color: accentColor }}>
@@ -62,7 +53,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
               </div>
               <h3 className="font-fraunces mb-2 text-lg text-ink">{card.title}</h3>
               <p className="text-caption leading-relaxed text-ink-body">{card.desc}</p>
-            </motion.div>
+            </Reveal>
           ))}
         </div>
 
