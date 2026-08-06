@@ -76,7 +76,7 @@ nem tudja őrizni semmi, csak a fegyelem.
 | `src/app/api/e/route.ts` | A beérkeztető végpont. |
 | `src/app/api/cron/analytics-retention/route.ts` | Heti takarítás. |
 | `src/app/(app)/admin/_tabs/AnalyticsTab.tsx` | Az admin „Analitika" fül. |
-| `src/components/analytics/AnalyticsPageView.tsx` | Oldalletöltés-mérés a layoutban. |
+| `src/components/analytics/AnalyticsPageView.tsx` | Oldalletöltés-mérés — CSAK a marketing layoutban. A bejelentkezett fán szándékosan nincs: ott a `surface.tab_view` és a folyamat-események mondják meg, mit használnak; a nyers oldalletöltés-szám nem adna hozzá semmit. |
 | `src/components/analytics/TabViewTracker.tsx` | Fül-megtekintés — EGY komponens mind a három fülrendszerhez. |
 
 ---
