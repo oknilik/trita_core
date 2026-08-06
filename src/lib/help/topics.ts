@@ -67,8 +67,8 @@ const TOPICS: HelpTopic[] = [
           en: "How does the assessment work?",
         },
         answer: {
-          hu: "A felmérés a HEXACO hatfaktoros személyiségmodellre épül (public domain IPIP-itemekkel), és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
-          en: "The assessment is based on the HEXACO six-factor personality model (using public domain IPIP items) and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
+          hu: "A felmérés hat személyiségdimenziót mér — szabadon felhasználható, kutatásban használt kérdésekkel —, és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
+          en: "The assessment measures six personality dimensions — using freely available, research-grade items — and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
         },
         audiences: ["public"],
       },

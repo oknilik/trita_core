@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 import { track } from "@/lib/analytics/client";
+import { PRICING_FAQ_INDEXES } from "./faq";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
@@ -121,7 +122,7 @@ export function PricingContent() {
           {t("pricing.faqHeading", locale)}
         </h2>
         <div className="mt-6 space-y-3">
-          {([1, 2, 3, 4] as const).map((i) => (
+          {PRICING_FAQ_INDEXES.map((i) => (
             <details
               key={i}
               // P4: melyik GYIK-tételt nyitják ki — ez mondja meg, mi a

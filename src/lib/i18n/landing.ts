@@ -163,10 +163,18 @@ export const landingTranslations = {
     ctaTeamMicrocopy: { hu: "Egyedi ajánlat · személyes onboarding", en: "Custom offer · personal onboarding" },
   },
   pricing: {
-    metaTitle: { hu: "Együttműködés | Trita", en: "How we work | Trita" },
+    // SEO: a cím a KERESETT szolgáltatás-megnevezéssel kezdődik
+    // („csapatfejlesztés", „csapatdiagnosztika"), nem a belső
+    // „Együttműködés" fejezetcímmel — utóbbira nincs keresés. A description
+    // kihasználja a snippet-hosszt (~155 kar.), és előre hozza a két
+    // döntési tényt: az egyéni rész ingyenes, listaár nincs.
+    metaTitle: {
+      hu: "Csapatfejlesztés és csapatdiagnosztika | Trita",
+      en: "Team development and diagnostics | Trita",
+    },
     metaDescription: {
-      hu: "Ingyenes egyéni felmérés, tanácsadó-vezérelt csapatprogramok — egyedi ajánlattal.",
-      en: "Free individual assessment, consultant-led team programs — with individual quotes.",
+      hu: "Az egyéni személyiségfelmérés ingyenes; a csapat- és szervezeti programok ára a létszámtól és a program mélységétől függ — listaár helyett egyedi ajánlat.",
+      en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth — an individual quote instead of list prices.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
     heroHeading: { hu: "Így dolgozunk ", en: "This is how we " },

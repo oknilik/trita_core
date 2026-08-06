@@ -65,7 +65,7 @@ export const fakeDoorTranslations = {
 
     // ── Bizalom (T8) ──────────────────────────────────────────────────
     trustTitle: { hu: "Mire épül", en: "What it's built on" },
-    trustItem1: { hu: "HEXACO személyiségmodell", en: "The HEXACO personality model" },
+    trustItem1: { hu: "hatfaktoros személyiségmodell", en: "a six-factor personality model" },
     trustItem2: { hu: "munkahelyi illeszkedés-kutatások", en: "workplace fit research" },
     trustItem3: { hu: "csapatszerep-modellek", en: "team role models" },
     trustItem4: {

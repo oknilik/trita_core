@@ -1,16 +1,20 @@
 import type { Metadata } from "next";
-import { DEFAULT_LOCALE, t } from "@/lib/i18n";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { buildPageMetadata, clampMetaDescription } from "@/lib/seo";
+import { getPrivacyPolicy } from "@/lib/legal/privacy-policy";
 import { PrivacyContent } from "./PrivacyContent";
 
 // Statikus metadata a DEFAULT_LOCALE-lal — cookie-olvasás nélkül az oldal
 // build-time prerenderelhető; a nyelvváltást a kliens-oldali LocaleProvider
-// kezeli. A description forrása a felületen is látszó bevezető bekezdés,
-// ezért mondathatáron vágjuk a snippet-hosszra.
+// kezeli. A cím és a leírás a tájékoztató DOKUMENTUMÁBÓL jön (nem külön
+// SEO-szövegből), így nem tud elcsúszni attól, ami a lapon látszik; a
+// bevezetőt mondathatáron vágjuk a snippet-hosszra.
+const doc = getPrivacyPolicy(DEFAULT_LOCALE);
+
 export const metadata: Metadata = buildPageMetadata({
   path: "/privacy",
-  title: `${t("privacy.title", DEFAULT_LOCALE)} | trita`,
-  description: clampMetaDescription(t("privacy.introBody", DEFAULT_LOCALE)),
+  title: `${doc.title} | trita`,
+  description: clampMetaDescription(doc.lead),
   type: "article",
 });
 

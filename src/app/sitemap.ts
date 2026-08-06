@@ -11,7 +11,7 @@ import { getAllPosts, getPostBySlug } from "@/lib/blog";
  * tekinti és figyelmen kívül hagyja. Ezt a konstanst akkor bumpold, amikor a
  * marketing-oldalak tartalma érdemben változik.
  */
-const CONTENT_REVIEWED_AT = new Date("2026-08-05T00:00:00.000Z");
+const CONTENT_REVIEWED_AT = new Date("2026-08-06T00:00:00.000Z");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();

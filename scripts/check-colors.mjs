@@ -53,7 +53,7 @@ const BANNED_HEXES = [
 ];
 
 /** Nyers-hex költségkeret a UI-scope-ban (b ellenőrzés). */
-const RAW_HEX_BUDGET = 23;
+const RAW_HEX_BUDGET = 22;
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".css"]);
 

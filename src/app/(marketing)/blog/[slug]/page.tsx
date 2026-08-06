@@ -9,10 +9,10 @@ import {
   appendSiteSuffix,
   buildPageMetadata,
   clampMetaDescription,
-  DEFAULT_OG_IMAGE_PATH,
-  getSiteUrl,
   getTranslatedLanguageAlternates,
 } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildArticleJsonLd, buildBreadcrumbJsonLd } from "@/lib/structured-data";
 import { TranslationRedirect } from "../TranslationRedirect";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ReadingProgress } from "@/components/blog/ReadingProgress";
@@ -270,12 +270,21 @@ export default async function BlogPostPage({
   // TranslationRedirect kliens-oldalon visz a fordítás-párra.
   const locale = post.locale;
 
-  // Article JSON-LD (SEO 2. kör) — a landing Organization/WebSite sémáinak
-  // mintájára.
-  const baseUrl = getSiteUrl();
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
+  // Article JSON-LD — a `structured-data.ts` építőjével, hogy az `author` és a
+  // `publisher` a landing Organization-entitására MUTASSON (`@id`), ne egy
+  // névazonos másolatot hirdessen minden cikk.
+  //
+  // A per-cikk `opengraph-image.tsx` VALÓS route-ja build-generált utótagot kap
+  // (`…/opengraph-image-<hash>`), amit oldalkódból nem lehet kiolvasni — az
+  // utótag nélküli `/blog/<slug>/opengraph-image` 404. Ezért a JSON-LD a gyökér
+  // `/opengraph-image` route stabil márka-képére mutat (ez az építő
+  // alapértelmezése); a cikk-specifikus vizuált a fájl-konvenciós `og:image`
+  // meta viszi.
+  //
+  // `wordCount` + `timeRequired` + `keywords`: az AI-válaszmotorok ezekből
+  // becslik a tartalom mélységét és témáját, mielőtt idéznének.
+  const articleJsonLd = buildArticleJsonLd({
+    path: `/blog/${post.slug}`,
     headline: post.title,
     description: post.description,
     datePublished: post.publishedAt,
@@ -283,25 +292,18 @@ export default async function BlogPostPage({
     // szerkesztünk, a módosítás dátuma megegyezik a megjelenéssel. (Ha lesz
     // `updatedAt` mező, ide kell bekötni — ld. src/lib/blog.ts.)
     dateModified: post.publishedAt,
-    inLanguage: post.locale,
-    // A per-cikk `opengraph-image.tsx` VALÓS route-ja build-generált utótagot
-    // kap (`…/opengraph-image-<hash>`), amit oldalkódból nem lehet kiolvasni —
-    // az utótag nélküli `/blog/<slug>/opengraph-image` 404. Ezért a JSON-LD a
-    // gyökér `/opengraph-image` route stabil, létező márka-képére mutat; a
-    // cikk-specifikus vizuált a fájl-konvenciós `og:image` meta viszi.
-    image: [`${baseUrl}${DEFAULT_OG_IMAGE_PATH}`],
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `${baseUrl}/blog/${post.slug}`,
-    },
-    author: { "@type": "Organization", name: "trita", url: baseUrl },
-    publisher: {
-      "@type": "Organization",
-      name: "trita",
-      url: baseUrl,
-      logo: { "@type": "ImageObject", url: `${baseUrl}/favicon.svg` },
-    },
-  };
+    locale: post.locale,
+    keywords: post.tags,
+    section: post.tags[0],
+    readingMinutes: post.readingMinutes,
+    wordCount: post.content.trim().split(/\s+/).length,
+  });
+
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd([
+    { name: post.locale === "hu" ? "Főoldal" : "Home", path: "/" },
+    { name: "Blog", path: "/blog" },
+    { name: post.title, path: `/blog/${post.slug}` },
+  ]);
 
   // Related posts (same tags, excluding current)
   const allPosts = getAllPosts(locale as "hu" | "en");
@@ -324,10 +326,7 @@ export default async function BlogPostPage({
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
+      <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
       <ReadingProgress slug={post.slug} />
       <TranslationRedirect
         postLocale={post.locale}
