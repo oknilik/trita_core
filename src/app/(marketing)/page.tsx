@@ -1,13 +1,27 @@
 import type { Metadata } from "next";
 import { LandingContent } from "@/components/landing/LandingContent";
-import { getSiteUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { buildPageMetadata } from "@/lib/seo";
+import {
+  buildOrganizationJsonLd,
+  buildWebPageJsonLd,
+  buildWebSiteJsonLd,
+} from "@/lib/structured-data";
 
-export const metadata: Metadata = {
-  title: "trita — személyiség- és csapatintelligencia platform",
+// A `<title>` KULCSSZÓ-ELSŐ, márka-utolsó sorrendben: a magyar keresésekben a
+// „személyiségteszt" és a „csapatdiagnosztika" a kereslet, a „trita" nem —
+// márkanévre amúgy is első találat vagyunk. A korábbi, márkával kezdődő cím
+// („trita — személyiség- és csapatintelligencia platform") a saját kategória-
+// megnevezésünkre optimalizált, amit senki nem keres.
+export const metadata: Metadata = buildPageMetadata({
+  path: "/",
+  title: "Személyiségteszt és csapatdiagnosztika | Trita",
   description:
-    "A trita validált módszertanra épülő személyiség- és csapatintelligencia platform: mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
-  alternates: { canonical: "/" },
-};
+    "HEXACO-alapú személyiségteszt magyarul, 360°-os visszajelzés és csapatdiagnosztika: mérhető csapatdinamika, tanácsadói értelmezéssel. Az egyéni felmérés ingyenes.",
+  ogTitle: "Trita — személyiség- és csapatintelligencia",
+  ogDescription:
+    "Mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
+});
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
 // handoffra, a ?mode= paramétert a LandingContent kezeli kliens-oldalon.
@@ -15,30 +29,22 @@ export const metadata: Metadata = {
 // nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az LCP-elem —
 // bekerül a prerenderelt HTML-be.
 export default function Home() {
-  const siteUrl = getSiteUrl();
-  const organizationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: "trita",
-    url: siteUrl,
-    logo: `${siteUrl}/favicon.svg`,
-  };
-  const websiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "trita",
-    url: siteUrl,
-  };
-
+  // A gyökér-lapon él a márka- és site-entitás (`@id` horgonyokkal); az összes
+  // többi lap ezekre HIVATKOZIK ahelyett, hogy újra kihirdetné őket.
   return (
     <main className="min-h-screen bg-cream">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      <JsonLd
+        data={[
+          buildOrganizationJsonLd("hu"),
+          buildWebSiteJsonLd("hu"),
+          buildWebPageJsonLd({
+            path: "/",
+            title: "Személyiségteszt és csapatdiagnosztika | Trita",
+            description:
+              "HEXACO-alapú személyiségteszt magyarul, 360°-os visszajelzés és csapatdiagnosztika: mérhető csapatdinamika, tanácsadói értelmezéssel.",
+            about: ["Személyiségteszt", "Csapatdiagnosztika", "HEXACO személyiségmodell"],
+          }),
+        ]}
       />
       <LandingContent />
     </main>

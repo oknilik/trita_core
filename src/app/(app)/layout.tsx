@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NavBar } from "@/components/NavBar";
 import { Footer } from "@/components/Footer";
@@ -15,6 +16,27 @@ import { HelpWidget } from "@/components/help/HelpWidget";
 // group statikus shelljét kapják; a belépett marketing-fejléc ugyanezt a
 // nav-kontextust kliens-oldalon kéri le (/api/nav/context).
 export const dynamic = "force-dynamic";
+
+// Az EGÉSZ bejelentkezés mögötti zóna alapból NEM indexelhető.
+//
+// MIÉRT KELL a robots.txt tiltás MELLÉ is: a robots.txt csak a BEJÁRÁST
+// tiltja, az indexelést nem. Ha egy ilyen URL-re máshonnan link mutat (kimásolt
+// observer-link, megosztott riport, hírlevél), a Google felveheti az indexbe
+// „nincs elérhető információ" snippettel — a tiltás miatt épp a noindex metát
+// nem tudja elolvasni. A meta-szintű noindex ezt zárja ki, mert a botok ezt a
+// zónát tényleg letöltik (a token-alapú /observe, /join, /share NINCS auth
+// mögött).
+//
+// KIVÉTEL: a `/try` (publikus lead magnet) saját `robots: { index: true }`
+// értéket ad — a metadata-mezők szegmensenként felülíródnak.
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: { index: false, follow: false, noimageindex: true },
+  },
+};
 
 export default async function AppLayout({
   children,

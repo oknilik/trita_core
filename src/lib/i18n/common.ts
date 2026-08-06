@@ -4,9 +4,12 @@ export const commonTranslations = {
       hu: "Trita - Személyiség- és csapatintelligencia",
       en: "Trita - Personality and Team Intelligence",
     },
+    // SEO: a leírás a KERESETT kifejezéssel indul („személyiségteszt
+    // magyarul" / „HEXACO"), nem a felszólítással — a snippet első
+    // szavai döntik el, hogy a találat relevánsnak látszik-e.
     description: {
-      hu: "Töltsd ki a személyiségtesztet, vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
-      en: "Take a personality assessment, compare your self-image with feedback from people who know you, and see how your team really works.",
+      hu: "HEXACO-alapú személyiségteszt magyarul: vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
+      en: "HEXACO-based personality assessment: compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
       hu: "Teszt kitöltése | Trita",
@@ -63,6 +66,12 @@ export const commonTranslations = {
     blog: { hu: "Blog", en: "Blog" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
+    // A két fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
+    // hivatkozásokban élt — a láblécből minden oldalról linkelve viszont
+    // valódi belső linkerőt kapnak, és a crawler is minden bejáráskor látja
+    // őket. (A /patterns és a /holland-kod a keresésre való tartalmunk.)
+    patterns: { hu: "Csapatmintázatok", en: "Team patterns" },
+    hollandCode: { hu: "Holland-kód (RIASEC)", en: "Holland code (RIASEC)" },
     navFounding: { hu: "Alapítói program", en: "Founding" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signUp: { hu: "Regisztráció", en: "Sign up" },
