@@ -343,10 +343,17 @@ function NavHeaderContent({
     [ensureOrgMemberships],
   );
 
+  // A nyitott menüt CSAK valódi navigációra zárjuk. A useSearchParams()
+  // minden router-frissítéskor ÚJ objektum-identitást ad (akkor is, ha a
+  // query változatlan), így a puszta referencia-figyelés egy háttérben
+  // befutó re-render miatt is becsukta a lenyílót — a felhasználó keze
+  // alól tűnt el a menüpont (CI-ben E2E-bukásként jelent meg). A query
+  // szöveges alakja stabil: csak tényleges változásra fut le.
+  const searchParamsKey = searchParams.toString();
   useEffect(() => {
     setMobileMenu("closed");
     setOpenDropdown(null);
-  }, [pathname, searchParams]);
+  }, [pathname, searchParamsKey]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
