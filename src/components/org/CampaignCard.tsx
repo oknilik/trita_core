@@ -115,8 +115,10 @@ export function CampaignCard({
         ? Math.round((campaign.fullyDoneCount / campaign.totalCount) * 100)
         : 0;
     return (
-      <div className="flex items-center justify-between gap-3 py-3 border-b border-sand last:border-0">
-        <div className="min-w-0 flex items-center gap-2 flex-1">
+      // Mobilon két sor: a chip + kampánynév kap teljes szélességet, a
+      // kitöltöttség és az összesítő-link alá kerül. md-től egysoros.
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3 border-b border-sand last:border-0">
+        <div className="flex w-full min-w-0 items-center gap-2 md:w-auto md:flex-1">
           <StatusChip variant="neutral" className="shrink-0">
             {t("org.card.closed", loc)}
           </StatusChip>
@@ -124,13 +126,13 @@ export function CampaignCard({
             {campaign.name}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="flex items-center gap-3 md:shrink-0">
           <span className="text-xs text-muted tabular-nums">
             {completionPct}% {t("org.card.complete", loc)}
           </span>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}
-            className="text-xs font-semibold text-bronze hover:underline whitespace-nowrap"
+            className="inline-flex min-h-[44px] items-center text-xs font-semibold text-bronze hover:underline whitespace-nowrap md:min-h-0"
           >
             {t("org.card.summaryLink", loc)}
           </Link>
@@ -187,11 +189,11 @@ export function CampaignCard({
   ).length;
   const stepColors = [
     "var(--color-action-primary-bg)",
-    "#059669",
-    "var(--color-visual-gradient-indigo)",
-    "#d8a253",
-    "#06B6D4",
-    "var(--color-visual-gradient-violet)",
+    "var(--color-layer-org-bright)",
+    "var(--color-layer-org-glow)",
+    "var(--color-bronze)",
+    "var(--color-layer-org-accent)",
+    "var(--color-sage-300)",
   ];
 
   return (
@@ -200,7 +202,7 @@ export function CampaignCard({
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span className="inline-block h-2 w-2 rounded-full bg-[var(--color-state-success-solid)] animate-pulse shrink-0" />
             <StatusChip variant="success">
               {t("org.card.active", loc)}
             </StatusChip>
@@ -253,7 +255,7 @@ export function CampaignCard({
               <div className="rounded-full bg-sage" style={{ flex: fullyDoneCount }} />
             )}
             {inProgressCount > 0 && (
-              <div className="rounded-full bg-[#d8a253]" style={{ flex: inProgressCount }} />
+              <div className="rounded-full bg-[var(--color-layer-org-glow)]" style={{ flex: inProgressCount }} />
             )}
             {notStartedCount > 0 && (
               <div className="rounded-full bg-sand" style={{ flex: notStartedCount }} />
@@ -285,7 +287,7 @@ export function CampaignCard({
                   label={t("org.card.observerDone", loc)}
                   count={campaign.observerDoneCount}
                   total={campaign.totalCount}
-                  fillColor="#059669"
+                  fillColor="var(--color-bronze)"
                 />
               )}
               {campaign.participants.length > 0 && (
@@ -296,7 +298,7 @@ export function CampaignCard({
                       title={p.username ?? p.email ?? "?"}
                       className={[
                         "inline-block h-8 w-8 rounded-full border-2 overflow-hidden",
-                        p.doneAll ? "border-emerald-200" : "border-white",
+                        p.doneAll ? "border-[var(--color-state-success-border)]" : "border-white",
                       ].join(" ")}
                     >
                       <span className="flex h-full w-full items-center justify-center bg-sand text-micro font-bold text-ink-body">

@@ -31,6 +31,7 @@ function scoreToAlpha(score: number | null): number {
 
 import { t, type Locale } from "@/lib/i18n";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { dimColors } from "@/lib/color-system";
 
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
 function hexLetter(code: string): string {
@@ -95,7 +96,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                   <div className="flex flex-col items-center gap-1.5">
                     <span
                       className="inline-flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white shadow-sm"
-                      style={{ backgroundColor: dim.color }}
+                      style={{ backgroundColor: dimColors(dim.code).strong }}
                     >
                       {hexLetter(dim.code)}
                     </span>
@@ -135,10 +136,13 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                         style={
                           score != null
                             ? {
-                                backgroundColor: hexToRgba(dim.color, alpha),
-                                borderColor: hexToRgba(dim.color, Math.min(alpha + 0.15, 0.4)),
+                                backgroundColor: hexToRgba(dimColors(dim.code).base, alpha),
+                                borderColor: hexToRgba(dimColors(dim.code).base, Math.min(alpha + 0.15, 0.4)),
                               }
-                            : { backgroundColor: "#f9fafb", borderColor: "#f3f4f6" }
+                            : {
+                                backgroundColor: "var(--color-warm-mid)",
+                                borderColor: "var(--color-sand)",
+                              }
                         }
                         title={
                           score != null
@@ -172,10 +176,20 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
       {/* Legend */}
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted">
         <div className="flex items-center gap-2">
+          {/* A valódi cella-rámpából generált fokozatok (H-hue, alfa-lépcső) */}
           <div className="flex items-center gap-1">
-            <div className="h-4 w-10 rounded-md bg-indigo-100" />
-            <div className="h-4 w-10 rounded-md bg-indigo-300" />
-            <div className="h-4 w-10 rounded-md bg-indigo-500" />
+            {[30, 60, 95].map((v) => (
+              <div
+                key={v}
+                className="h-4 w-10 rounded-md"
+                style={{
+                  backgroundColor: hexToRgba(
+                    dimColors(dims[0]?.code ?? "INTE").base,
+                    scoreToAlpha(v),
+                  ),
+                }}
+              />
+            ))}
           </div>
           <span>{t("manager.teamHeatmap.legendRange", locale)}</span>
         </div>
@@ -200,7 +214,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
               >
                 <span
                   className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
-                  style={{ backgroundColor: dim.color }}
+                  style={{ backgroundColor: dimColors(dim.code).strong }}
                 >
                   {hexLetter(dim.code)}
                 </span>

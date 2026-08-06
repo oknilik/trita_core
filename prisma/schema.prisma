@@ -152,6 +152,9 @@ model UserProfile {
   // Beérkezett kérdések/érdeklődések (contact form), email-alapú auto-linkkel
   inquiries Inquiry[]
 
+  // CRM (admin-only): a profilhoz kézzel linkelt értékesítési folyamatok
+  deals Deal[]
+
   @@index([activeOrgId])
   @@index([activeTeamId])
 }
@@ -449,6 +452,8 @@ model Organization {
   subscription     Subscription?
   candidateCredits CandidateCredit[]
   inquiries        Inquiry[]
+  // CRM (admin-only): az org-hoz linkelt értékesítési folyamatok
+  deals            Deal[]
 
   @@index([ownerId])
 }
@@ -839,6 +844,8 @@ enum NotificationType {
   PEER_FEEDBACK_RESPONSE
   REFLECTION_PROMPT
   COMPARE_ACCEPTED
+  CRM_NEXT_ACTION_DUE
+  CRM_QUOTE_EXPIRING
 }
 
 // Beérkező kérdés / érdeklődés (contact form és későbbi in-app csatornák).
@@ -857,15 +864,20 @@ model Inquiry {
   adminNote      String?
   userProfileId  String?
   organizationId String?
+  // CRM: több inquiry köthető egy dealhez — az Inquiry maga intake-esemény
+  // marad (státusz-értékkészlete változatlan), a pipeline-folyamat a Deal.
+  dealId         String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   userProfile  UserProfile?  @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  deal         Deal?         @relation(fields: [dealId], references: [id], onDelete: SetNull)
 
   @@index([status, createdAt])
   @@index([organizationId])
   @@index([email])
+  @@index([dealId])
 }
 
 model Notification {
@@ -971,4 +983,88 @@ model QuoteRateCard {
   data        Json
   updatedAt   DateTime @updatedAt
   updatedById String?
+}
+
+// ============================================
+// CRM (belső, admin-only)
+// ============================================
+// Deal = egy értékesítési folyamat. Stage: NEW | DISCOVERY | QUOTED |
+// WON | LOST | DORMANT (String, a szerep-mintát követve — nem enum).
+// Az Inquiry érintetlen intake marad; több inquiry köthető egy dealhez.
+// Pipeline-fegyelem: nextActionAt/-Note — enélkül a nyitott deal warning.
+
+model Deal {
+  id             String    @id @default(cuid())
+  title          String // pl. "Acme Kft. — 2 csapat + Observer 360"
+  contactName    String
+  contactEmail   String
+  contactPhone   String? // telefonos follow-uphoz (tel: link)
+  company        String?
+  stage          String    @default("NEW")
+  source         String    @default("inquiry") // inquiry|referral|outbound|event|other
+  expectedValue  Int? // becsült nettó Ft — pipeline-összesítéshez
+  nextActionAt   DateTime?
+  nextActionNote String?
+  adminNote      String? // háttér: döntéshozó, motiváció, kontextus
+  outcomeKind    String? // strukturáltan: price|timing|no_response|competitor|budget|other
+  outcomeNote    String? // win/loss tanulság szövegesen
+  closedAt       DateTime?
+  lastActivityAt DateTime? // denormalizált: activity-create frissíti
+  organizationId String?
+  userProfileId  String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  userProfile  UserProfile?  @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+  inquiries    Inquiry[]
+  activities   CrmActivity[]
+  quotes       Quote[]
+
+  @@index([stage, nextActionAt])
+  @@index([contactEmail])
+  @@index([organizationId])
+}
+
+// Kézi bejegyzés (hívás/email/meeting/jegyzet) és rendszer-esemény
+// (SYSTEM: ajánlat kiküldve, stage-váltás, org aktiválva) EGY idővonalon.
+model CrmActivity {
+  id         String   @id @default(cuid())
+  dealId     String
+  kind       String // CALL | EMAIL_OUT | EMAIL_IN | MEETING | NOTE | SYSTEM
+  summary    String // egysoros — a lista ebből él
+  body       String?
+  occurredAt DateTime @default(now()) // visszadátumozható
+  createdAt  DateTime @default(now())
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, occurredAt])
+}
+
+// Mentett ajánlat: kalkulátor-input + kimenet + az AKKORI rate card
+// pillanatképe. SENT-től immutábilis; módosítás = másolat új DRAFT-ként.
+// Belső számok (óradíj, padló, warningok) admin-only maradnak.
+model Quote {
+  id               String    @id @default(cuid())
+  quoteNo          Int       @unique @default(autoincrement()) // formatQuoteNo() → "TRT-2026-0007"
+  dealId           String
+  title            String? // default: "{company ?? contactName} — {YYYY-MM-DD}"
+  status           String    @default("DRAFT") // DRAFT|SENT|ACCEPTED|DECLINED|EXPIRED
+  input            Json // QuoteInput (íráskor zod-validált)
+  result           Json // calculateQuote() teljes kimenete
+  rateCardSnapshot Json // az érvényes RateCard mentéskor
+  netTotal         Int // result.netTotal kiemelve — lista + pipeline-érték SQL-ből
+  discountPct      Int       @default(0)
+  validUntil       DateTime? // create-kor opcionális; mark_sent default +30 nap
+  sentAt           DateTime?
+  decidedAt        DateTime?
+  declineReason    String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  deal Deal @relation(fields: [dealId], references: [id], onDelete: Cascade)
+
+  @@index([dealId, createdAt])
+  @@index([status, validUntil])
 }

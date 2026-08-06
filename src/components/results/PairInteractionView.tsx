@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import type {
   InteractionTextLine,
@@ -80,10 +81,9 @@ export function PairInteractionView({
 
   return (
     <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-6">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
-        {"// "}
+      <SectionEyebrow tone="muted">
         {t("results.comparePairTitle", locale)}
-      </p>
+      </SectionEyebrow>
       <p className="mt-1 text-caption text-ink-body">
         {tf("results.comparePairWith", locale, { name: otherName })}
       </p>
@@ -151,15 +151,13 @@ export function PairInteractionView({
         <>
           <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-sand bg-cream/45 p-4">
-              <p className="mb-3 font-mono text-micro uppercase tracking-widest text-sage-dark">
-                {"// "}
+              <p className="mb-3 text-label uppercase text-sage-dark">
                 {t("results.interactionEasy", locale)}
               </p>
               <LineList lines={sim.easy} />
             </div>
             <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4">
-              <p className="mb-3 font-mono text-micro uppercase tracking-widest text-amber-700">
-                {"// "}
+              <p className="mb-3 text-label uppercase text-amber-700">
                 {t("results.interactionFriction", locale)}
               </p>
               <LineList lines={sim.friction} />
@@ -167,10 +165,9 @@ export function PairInteractionView({
           </div>
 
           <div className="mt-4 rounded-xl border border-sand bg-white p-4">
-            <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
-              {"// "}
+            <SectionEyebrow tone="muted" dot={false} className="mb-3">
               {t("results.interactionDiscuss", locale)}
-            </p>
+            </SectionEyebrow>
             <LineList lines={sim.discuss} />
           </div>
         </>
@@ -178,10 +175,9 @@ export function PairInteractionView({
 
       {leaderNotes.length > 0 ? (
         <div className="mt-4 rounded-xl border border-sand bg-cream/45 p-4">
-          <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
-            {"// "}
+          <SectionEyebrow tone="muted" dot={false} className="mb-3">
             {t("results.interactionLeaderTitle", locale)}
-          </p>
+          </SectionEyebrow>
           <ul className="flex flex-col gap-2">
             {leaderNotes.map((note) => (
               <li key={note.dim} className="text-caption leading-relaxed text-ink-body">

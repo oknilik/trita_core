@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
+import { COLORS } from "@/lib/design-tokens";
 
 export const alt = "trita — személyiség- és csapatintelligencia platform";
 export const size = { width: 1200, height: 630 };
@@ -22,7 +23,7 @@ export default async function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#f7f4ef",
+          backgroundColor: COLORS.cream,
           padding: "72px 80px",
         }}
       >
@@ -32,7 +33,7 @@ export default async function OpengraphImage() {
               width: 14,
               height: 14,
               borderRadius: 9999,
-              backgroundColor: "#c17f4a",
+              backgroundColor: COLORS.bronze,
             }}
           />
           <div
@@ -41,7 +42,7 @@ export default async function OpengraphImage() {
               fontSize: 26,
               letterSpacing: 4,
               textTransform: "uppercase",
-              color: "#3d6b5e",
+              color: COLORS.sage,
             }}
           >
             trita
@@ -52,7 +53,7 @@ export default async function OpengraphImage() {
             fontFamily: "Fraunces",
             fontSize: 74,
             lineHeight: 1.15,
-            color: "#1a1a2e",
+            color: COLORS.ink,
             maxWidth: 980,
           }}
         >
@@ -69,7 +70,7 @@ export default async function OpengraphImage() {
             style={{
               fontFamily: "DM Sans",
               fontSize: 28,
-              color: "#5a5a6e",
+              color: COLORS.inkBody,
             }}
           >
             Mérhető csapatdinamika · 360° visszajelzés
@@ -79,7 +80,7 @@ export default async function OpengraphImage() {
               width: 120,
               height: 6,
               borderRadius: 9999,
-              backgroundColor: "#c17f4a",
+              backgroundColor: COLORS.bronze,
             }}
           />
         </div>

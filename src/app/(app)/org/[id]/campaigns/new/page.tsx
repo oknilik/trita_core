@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -159,9 +160,9 @@ export default async function NewCampaignPage({
 
         {/* Header */}
         <div className="mb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow>
             {t("org.campaign.newEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-3xl text-ink">
             {t("org.campaign.newTitle", locale)}
           </h1>

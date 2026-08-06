@@ -343,10 +343,17 @@ function NavHeaderContent({
     [ensureOrgMemberships],
   );
 
+  // A nyitott menüt CSAK valódi navigációra zárjuk. A useSearchParams()
+  // minden router-frissítéskor ÚJ objektum-identitást ad (akkor is, ha a
+  // query változatlan), így a puszta referencia-figyelés egy háttérben
+  // befutó re-render miatt is becsukta a lenyílót — a felhasználó keze
+  // alól tűnt el a menüpont (CI-ben E2E-bukásként jelent meg). A query
+  // szöveges alakja stabil: csak tényleges változásra fut le.
+  const searchParamsKey = searchParams.toString();
   useEffect(() => {
     setMobileMenu("closed");
     setOpenDropdown(null);
-  }, [pathname, searchParams]);
+  }, [pathname, searchParamsKey]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -388,7 +395,7 @@ function NavHeaderContent({
           </Link>
           <Link
             href={homeHref}
-            className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
           >
             <span aria-hidden="true">←</span>
             {t("nav.backToHome", locale)}
@@ -400,7 +407,9 @@ function NavHeaderContent({
 
   const navItemBase =
     "inline-flex items-center gap-1.5 px-3 py-1.5 text-caption font-medium transition-all cursor-pointer select-none rounded-lg";
-  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary)] font-semibold`;
+  // Aktív nav-elem: accent-primary-STRONG — a világosabb accent-primary a
+  // surface-subtle chipen csak 2.82:1 (13px szöveg, AA-bukó); a strong 5.27:1.
+  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary-strong)] font-semibold`;
   const navItemInactive =
     `${navItemBase} text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-canvas)]`;
 
@@ -807,7 +816,7 @@ function NavHeaderContent({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("closed")}
-                    className="flex items-center gap-1.5 text-caption text-[var(--color-text-muted)]"
+                    className="flex min-h-[44px] items-center gap-1.5 px-2 text-caption text-[var(--color-text-muted)]"
                   >
                     Bezárás
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">

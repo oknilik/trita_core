@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { resolveCandidateApplyPageModel } from "@/lib/acceptance/service";
 import { CandidateClient } from "./CandidateClient";
+import { CandidateStateCard } from "./CandidateStateCard";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -37,55 +38,31 @@ export default async function ApplyPage({ params }: ApplyPageProps) {
 
   if (model.state === "already_accepted") {
     return (
-      <div className="min-h-dvh bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-emerald-100 bg-white p-8 shadow-sm">
-            <div className="text-5xl leading-none">🎉</div>
-            <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {t("candidate.pageCompletedTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("candidate.pageCompletedBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CandidateStateCard
+        icon="🎉"
+        title={t("candidate.pageCompletedTitle", locale)}
+        body={t("candidate.pageCompletedBody", locale)}
+      />
     );
   }
 
   if (model.state === "policy_restricted") {
     return (
-      <div className="min-h-dvh bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
-            <div className="text-5xl leading-none">🔒</div>
-            <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {t("candidate.pageCanceledTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("candidate.pageCanceledBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CandidateStateCard
+        icon="🔒"
+        title={t("candidate.pageCanceledTitle", locale)}
+        body={t("candidate.pageCanceledBody", locale)}
+      />
     );
   }
 
   if (model.state === "expired_token") {
     return (
-      <div className="min-h-dvh bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
-            <div className="text-5xl leading-none">⏰</div>
-            <h1 className="mt-4 font-fraunces text-2xl text-ink">
-              {t("candidate.pageExpiredTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("candidate.pageExpiredBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CandidateStateCard
+        icon="⏰"
+        title={t("candidate.pageExpiredTitle", locale)}
+        body={t("candidate.pageExpiredBody", locale)}
+      />
     );
   }
 

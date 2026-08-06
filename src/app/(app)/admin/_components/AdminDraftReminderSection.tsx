@@ -157,10 +157,10 @@ export function AdminDraftReminderSection({ drafts }: Props) {
             1+ napja félbehagyott kitöltők ({drafts.length} db · {activeCount} kiküldendő)
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => { setOnlyActive((v) => !v); setSelectAll(false); setPage(0); }}
-            className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
+            className={`inline-flex min-h-[44px] items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
               onlyActive
                 ? "border-indigo-200 bg-indigo-50 text-indigo-700"
                 : "border-sand bg-white text-ink-body hover:bg-surface-subtle"
@@ -174,7 +174,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
           <button
             onClick={sendChecked}
             disabled={bulkRunning || checkedCount === 0}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {bulkRunning ? "Küldés…" : `Kijelöltek küldése (${checkedCount})`}
           </button>
@@ -276,7 +276,7 @@ export function AdminDraftReminderSection({ drafts }: Props) {
                     <button
                       onClick={() => sendReminder(draft.id)}
                       disabled={s.sending || sent || s.completed}
-                      className={`rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
+                      className={`inline-flex min-h-[40px] items-center rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ${
                         s.completed
                           ? "bg-sand/50 text-muted cursor-default"
                           : sent
@@ -305,14 +305,14 @@ export function AdminDraftReminderSection({ drafts }: Props) {
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage === 0}
-              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex min-h-[40px] items-center rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               ← Előző
             </button>
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages - 1}
-              className="rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex min-h-[40px] items-center rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Következő →
             </button>

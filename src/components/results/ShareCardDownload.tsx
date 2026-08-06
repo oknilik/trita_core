@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
-import { Button } from "@/components/ui/primitives/Button";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { COLORS } from "@/lib/design-tokens";
 
@@ -88,7 +87,7 @@ export function ShareCardDownload({
       ctx.fillText(personalityType, CARD_SIZE / 2, 874, CARD_SIZE - 120);
 
       if (topDims.length > 0) {
-        ctx.fillStyle = "#5a5a6e";
+        ctx.fillStyle = COLORS.inkBody;
         ctx.font = '400 28px "DM Sans", sans-serif';
         ctx.fillText(
           topDims.map((d) => d.label).join("  ·  "),
@@ -102,7 +101,7 @@ export function ShareCardDownload({
       ctx.fillStyle = COLORS.ink;
       ctx.font = '700 34px "Fraunces", serif';
       ctx.fillText("trita", CARD_SIZE / 2, 1006);
-      ctx.fillStyle = "#8a8a98";
+      ctx.fillStyle = COLORS.ink300;
       ctx.font = '400 22px "DM Sans", sans-serif';
       ctx.fillText(window.location.origin.replace(/^https?:\/\//, ""), CARD_SIZE / 2, 1040);
 
@@ -166,18 +165,20 @@ export function ShareCardDownload({
         />
       </div>
 
-      <Button
-        variant="secondary"
+      {/* Halk, másodlagos szöveg-link (nem kártya-blokk): a modal fő akciói
+          a link-másolás és az email-küldés — a kép-letöltés kiegészítő út. */}
+      <button
+        type="button"
         onClick={() => void handleClick()}
         disabled={busy}
-        className="w-full"
+        className="inline-flex min-h-[44px] items-center gap-1.5 text-caption font-medium text-muted underline decoration-sand underline-offset-4 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
       >
         {busy
           ? t("results.shareCardWorking", locale)
           : t("results.shareCardDownload", locale)}
-      </Button>
+      </button>
       {error ? (
-        <p className="mt-2 text-xs text-rose-700">
+        <p className="mt-1 text-xs text-rose-700">
           {t("results.compareError", locale)}
         </p>
       ) : null}

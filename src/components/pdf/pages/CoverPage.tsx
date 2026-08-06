@@ -1,6 +1,7 @@
 import { Page, View, Text, Svg, Defs, LinearGradient, Stop, Rect, Circle } from "@react-pdf/renderer";
 import { StyleSheet } from "@react-pdf/renderer";
 import { colors } from "../styles";
+import { LAYER_THEMES } from "@/lib/color-system";
 import type { PdfData } from "../TritaPdf";
 
 // A react-pdf Bookmark-típusa (a @react-pdf/types csak transitive dep, ezért
@@ -52,7 +53,7 @@ const c = StyleSheet.create({
     fontFamily: "Fraunces",
     fontStyle: "italic",
     fontSize: 19,
-    color: "#e8a96a",
+    color: LAYER_THEMES.self.badgeText,
     marginBottom: 22,
   },
   chipRow: {
@@ -102,15 +103,15 @@ export function CoverPage({ data, bookmark }: { data: PdfData; bookmark?: Bookma
         <Svg style={{ width: 595, height: 842 }} width={595} height={842} viewBox="0 0 595 842">
         <Defs>
           <LinearGradient id="cover-bg" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor="#2a5244" />
+            <Stop offset="0" stopColor={LAYER_THEMES.self.heroFrom} />
             <Stop offset="0.55" stopColor={colors.sageDark} />
-            <Stop offset="1" stopColor="#152b24" />
+            <Stop offset="1" stopColor={LAYER_THEMES.self.heroTo} />
           </LinearGradient>
         </Defs>
         <Rect x="0" y="0" width="595" height="842" fill="url(#cover-bg)" />
         <Circle cx="520" cy="90" r="170" fill="#ffffff" fillOpacity="0.025" />
         <Circle cx="80" cy="760" r="220" fill="#ffffff" fillOpacity="0.02" />
-        <Circle cx="540" cy="700" r="90" fill="#e8a96a" fillOpacity="0.04" />
+        <Circle cx="540" cy="700" r="90" fill={LAYER_THEMES.self.badgeText} fillOpacity="0.04" />
         </Svg>
       </View>
 

@@ -149,6 +149,21 @@ export const notificationTranslations = {
       title: { hu: "Mérés mérföldkő", en: "Measurement milestone" },
       body: { hu: "Elérte a {percent}%-os kitöltöttséget a kampány: „{campaignName}”.", en: "Campaign \"{campaignName}\" reached {percent}% completion." },
     },
+    // CRM (admin-only felület, de a kulcskészlet HU+EN a hub-konvenció szerint)
+    crmNextActionDue: {
+      title: { hu: "Esedékes következő lépés", en: "Next action due" },
+      body: {
+        hu: "„{deal}” — a kitűzött következő lépés esedékes ({date}). Nézz rá a CRM-ben.",
+        en: "\"{deal}\" — the scheduled next action is due ({date}). Review it in the CRM.",
+      },
+    },
+    crmQuoteExpiring: {
+      title: { hu: "Ajánlat hamarosan lejár", en: "Quote expiring soon" },
+      body: {
+        hu: "{quoteNo} — „{deal}”: az ajánlat érvényessége {date}-ig tart. Érdemes követni.",
+        en: "{quoteNo} — \"{deal}\": the quote is valid until {date}. Time to follow up.",
+      },
+    },
 
     // UI labels
     markAllRead: { hu: "Összes olvasottnak jelölése", en: "Mark all as read" },

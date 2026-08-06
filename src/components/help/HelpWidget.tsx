@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   getHelpTopics,
   type HelpAudience,
@@ -90,7 +91,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                 type="button"
                 onClick={goBack}
                 aria-label={isHu ? "Vissza" : "Back"}
-                className="flex h-8 w-8 items-center justify-center rounded-full text-ink-body transition hover:bg-sand/60 hover:text-ink"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-body transition hover:bg-sand/60 hover:text-ink"
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
                   <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -98,9 +99,9 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               </button>
             )}
             <div className="min-w-0 flex-1">
-              <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                {isHu ? "// segítség" : "// help"}
-              </p>
+              <SectionEyebrow>
+                {isHu ? "segítség" : "help"}
+              </SectionEyebrow>
               <p className="truncate font-fraunces text-base text-ink">
                 {askOpen
                   ? isHu ? "Kérdésem van" : "Ask a question"
@@ -115,7 +116,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               type="button"
               onClick={close}
               aria-label={isHu ? "Bezárás" : "Close"}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-ink-body transition hover:bg-sand/60 hover:text-ink"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-body transition hover:bg-sand/60 hover:text-ink"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
                 <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />

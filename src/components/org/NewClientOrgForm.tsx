@@ -103,16 +103,19 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
                         placeholder={field.placeholder}
                         rows={2}
                         disabled={loading}
-                        className="rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink outline-none transition focus:border-sage"
+                        className="min-h-[44px] rounded-lg border border-sand bg-white px-3 py-2 text-base text-ink outline-none transition focus:border-sage md:text-xs"
                       />
                     ) : (
+                      // Mobilon 16px-es input-font: az iOS Safari 16px alatt
+                      // fókuszkor rázoomol és elugrik a layout. md-től marad
+                      // az eredeti, kompakt 12px.
                       <input
                         type={field.type ?? "text"}
                         value={value}
                         onChange={(e) => onChange(e.target.value)}
                         placeholder={field.placeholder}
                         disabled={loading}
-                        className="min-h-[38px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+                        className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-base text-ink outline-none transition focus:border-sage md:text-xs"
                       />
                     )}
                   </label>

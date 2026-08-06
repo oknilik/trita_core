@@ -48,15 +48,18 @@ export function TeamSwitcher({
     }
   };
 
+  // Mobilon a váltó saját (teljes szélességű) sorba kerül az eyebrow-ban:
+  // így a `left-0`-hoz igazított lenyíló a hero tartalmi szélességén belül
+  // marad, nem fut ki a jobb szélen (ahol az overflow-hidden levágná).
   return (
-    <div className="relative">
+    <div className="relative w-full md:w-auto">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         disabled={busy}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex min-h-[36px] items-center gap-2 rounded-[10px] bg-white/[0.08] px-3 py-1.5 text-[12px] font-medium text-white/[0.82] transition hover:bg-white/[0.14] disabled:opacity-60"
+        className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-white/[0.08] px-3 py-1.5 text-[12px] font-medium text-white/[0.82] transition hover:bg-white/[0.14] disabled:opacity-60 md:min-h-[36px]"
       >
         <span className="text-micro uppercase tracking-widest text-white/[0.45]">
           {isHu ? "Csapat" : "Team"}
@@ -79,7 +82,7 @@ export function TeamSwitcher({
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 z-30 mt-2 w-[240px] overflow-hidden rounded-xl border border-sand bg-white py-1 shadow-[0_18px_40px_rgba(26,26,46,0.18)]"
+          className="absolute left-0 z-30 mt-2 max-h-[60vh] w-[240px] max-w-full overflow-y-auto overflow-x-hidden rounded-xl border border-sand bg-white py-1 shadow-[0_18px_40px_rgba(26,26,46,0.18)] md:max-h-none md:max-w-none md:overflow-y-visible"
         >
           {teams.map((team) => {
             const isActive = team.id === activeTeamId;
@@ -92,7 +95,7 @@ export function TeamSwitcher({
                 onClick={() => pick(team.id)}
                 disabled={busy}
                 className={[
-                  "flex w-full items-center justify-between gap-2 px-3.5 py-2.5 text-left text-caption transition-colors",
+                  "flex min-h-[44px] w-full items-center justify-between gap-2 px-3.5 py-2.5 text-left text-caption transition-colors md:min-h-0",
                   isActive
                     ? "bg-sage/10 font-semibold text-ink"
                     : "text-ink-body hover:bg-cream hover:text-ink",

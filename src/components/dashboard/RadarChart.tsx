@@ -4,13 +4,14 @@ import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { TRITAN_ORDER, TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { dimColors } from "@/lib/color-system";
 
 const CX = 150;
 const CY = 150;
 const MAX_R = 100;
 const LABEL_R = 114;
 const RINGS = [0.25, 0.5, 0.75, 1.0];
-const OBSERVER_POINT_COLOR = "var(--color-state-success-strong)";
+const OBSERVER_POINT_COLOR = "var(--color-bronze)";
 
 interface RadarDimension {
   code: string;
@@ -129,47 +130,49 @@ export const RadarChart = memo(function RadarChart({
     >
       <defs>
         <radialGradient id={auraId} cx="50%" cy="50%">
-          <stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.95" />
-          <stop offset="75%" stopColor="#EDE9FE" stopOpacity="0.45" />
+          <stop offset="0%" stopColor="var(--color-dim-h-soft)" stopOpacity="0.95" />
+          <stop offset="75%" stopColor="var(--color-warm)" stopOpacity="0.45" />
           <stop offset="100%" stopColor="var(--color-neutral-white)" stopOpacity="0" />
         </radialGradient>
 
         <radialGradient id={surfaceId} cx="50%" cy="45%">
           <stop offset="0%" stopColor="var(--color-neutral-white)" stopOpacity="0.92" />
-          <stop offset="100%" stopColor="#EEF2FF" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="var(--color-dim-h-soft)" stopOpacity="0.5" />
         </radialGradient>
 
         <linearGradient id={gridFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#F5F3FF" stopOpacity="0.18" />
+          <stop offset="0%" stopColor="var(--color-dim-h-soft)" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="var(--color-warm)" stopOpacity="0.18" />
         </linearGradient>
         <linearGradient id={gridStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#C7D2FE" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="#DDD6FE" stopOpacity="0.75" />
+          <stop offset="0%" stopColor="var(--color-warm-dark)" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="var(--color-sand)" stopOpacity="0.85" />
         </linearGradient>
 
         <linearGradient id={radarGlowFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
+          <stop offset="0%" stopColor="var(--color-dim-h-base)" stopOpacity="0.25" />
+          <stop offset="100%" stopColor="var(--color-dim-o-base)" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" stopOpacity="0.32" />
-          <stop offset="55%" stopColor="var(--color-visual-gradient-violet)" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="#D946EF" stopOpacity="0.16" />
+          <stop offset="0%" stopColor="var(--color-dim-h-base)" stopOpacity="0.32" />
+          <stop offset="55%" stopColor="var(--color-dim-e-base)" stopOpacity="0.24" />
+          <stop offset="100%" stopColor="var(--color-dim-o-base)" stopOpacity="0.16" />
         </linearGradient>
         <linearGradient id={radarStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-visual-gradient-indigo)" />
-          <stop offset="50%" stopColor="var(--color-visual-gradient-violet)" />
-          <stop offset="100%" stopColor="#D946EF" />
+          <stop offset="0%" stopColor="var(--color-dim-h-base)" />
+          <stop offset="50%" stopColor="var(--color-dim-e-base)" />
+          <stop offset="100%" stopColor="var(--color-dim-o-base)" />
         </linearGradient>
 
+        {/* Observer: bronz — a külső perspektíva a brand meleg akcentusa,
+            nem siker-zöld (a visszajelzés nem osztályzat). */}
         <linearGradient id={observerFillId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-state-success-strong)" stopOpacity="0.24" />
-          <stop offset="100%" stopColor="#14B8A6" stopOpacity="0.14" />
+          <stop offset="0%" stopColor="var(--color-bronze)" stopOpacity="0.24" />
+          <stop offset="100%" stopColor="var(--color-bronze-300)" stopOpacity="0.14" />
         </linearGradient>
         <linearGradient id={observerStrokeId} x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="var(--color-state-success-strong)" />
-          <stop offset="100%" stopColor="#14B8A6" />
+          <stop offset="0%" stopColor="var(--color-bronze)" />
+          <stop offset="100%" stopColor="var(--color-bronze-300)" />
         </linearGradient>
 
         <filter id={glowId}>
@@ -229,7 +232,7 @@ export const RadarChart = memo(function RadarChart({
               y1={CY}
               x2={p.x}
               y2={p.y}
-              stroke="#A5B4FC"
+              stroke="var(--color-warm-dark)"
               strokeWidth="1"
               strokeDasharray="2 5"
               opacity="0.5"
@@ -361,7 +364,7 @@ export const RadarChart = memo(function RadarChart({
               y={p.y + offset.dy}
               textAnchor={getTextAnchor(i, n)}
               dominantBaseline="middle"
-              fill={dim.color}
+              fill={dimColors(dim.code).strong}
               fontSize="10.5"
               fontWeight="700"
               stroke="rgba(255, 255, 255, 0.95)"
@@ -388,14 +391,14 @@ export const RadarChart = memo(function RadarChart({
             x2={CX + 5}
             y1={CY - MAX_R * (pct / 100)}
             y2={CY - MAX_R * (pct / 100)}
-            stroke="#94A3B8"
+            stroke="var(--color-muted)"
             strokeWidth="1"
             opacity="0.6"
           />
           <text
             x={CX + 10}
             y={CY - MAX_R * (pct / 100)}
-            fill="#94A3B8"
+            fill="var(--color-muted)"
             fontSize="8"
             dominantBaseline="middle"
             opacity="0.75"

@@ -59,7 +59,7 @@ export function PdfHeader({
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
           <View style={{ maxWidth: 380 }}>
             <Text style={{ fontSize: 6.5, letterSpacing: 2, textTransform: "uppercase", color: colors.bronze, marginBottom: 4, fontWeight: 600 }}>
-              {"// "}{t("pdf.personalityProfile", locale)}
+              {t("pdf.personalityProfile", locale)}
             </Text>
             <Text style={{ fontFamily: "Fraunces", fontSize: 21, color: colors.ink, marginBottom: 2 }}>
               {name}

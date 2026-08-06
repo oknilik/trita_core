@@ -400,13 +400,13 @@ export default async function TeamDetailPage({
           <h1 className="mt-2 font-fraunces text-3xl text-ink">{team.name}</h1>
           <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <DashboardMetricCard
-              accent="#66455d"
+              accent="var(--color-layer-team-accent)"
               title={isHu ? "Tagok" : "Members"}
               value={String(memberCount)}
               sub={isHu ? "Aktív csapattagok" : "Active team members"}
             />
             <DashboardMetricCard
-              accent="#a66a8c"
+              accent="var(--color-layer-team-bright)"
               title={isHu ? "Függő meghívók" : "Pending invites"}
               value={String(pendingInviteCount)}
               sub={isHu ? "Még el nem fogadott meghívások" : "Invites waiting for acceptance"}

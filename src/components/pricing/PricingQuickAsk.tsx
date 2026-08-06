@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { t, type Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n/public";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 /**
  * Villámkérdés-űrlap az Együttműködés oldalon — a /contact API-ra küld
@@ -59,9 +60,9 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
 
   return (
     <div className="mx-auto max-w-xl">
-      <p className="text-center font-mono text-[11px] uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
-        {"// "}{t("pricing.quickAskEyebrow", locale)}
-      </p>
+      <div className="text-center">
+        <SectionEyebrow tone="onDark">{t("pricing.quickAskEyebrow", locale)}</SectionEyebrow>
+      </div>
       <h2 className="mt-2 text-center font-fraunces text-2xl text-white lg:text-3xl">
         {t("pricing.quickAskTitle", locale)}
       </h2>

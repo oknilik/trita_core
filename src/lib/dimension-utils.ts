@@ -16,37 +16,40 @@ export function getDimensionLabel(value: number, locale: string = "hu"): string 
   return labels[tier]?.[locale] ?? labels[tier]?.hu ?? "";
 }
 
-// Tailwind classok tier-enként
+// Tailwind classok tier-enként — az értékelő ramp tokenjein (globals.css
+// --color-eval-*, tükör: color-system.ts EVAL_RAMP): zsálya→bronz→neutrális,
+// piros nélkül. A text-változatok AA-biztos fg-fokozatok (a korábbi bronz-
+// és ink300-szöveg kis méretben bukott fehéren).
 export const tierColors = {
   high: {
-    dot: "bg-[#3d6b5e]",
-    text: "text-[#3d6b5e]",
-    fill: "bg-[#3d6b5e]",
-    tagBg: "bg-[#e8f2f0]",
-    tagText: "text-[#1e3d34]",
-    border: "border-[#3d6b5e]/20",
-    cardBg: "bg-[#e8f2f0]",
+    dot: "bg-[var(--color-eval-high-accent)]",
+    text: "text-[var(--color-eval-high-accent)]",
+    fill: "bg-[var(--color-eval-high-accent)]",
+    tagBg: "bg-[var(--color-eval-high-bg)]",
+    tagText: "text-[var(--color-eval-high-fg)]",
+    border: "border-[var(--color-eval-high-accent)]/20",
+    cardBg: "bg-[var(--color-eval-high-bg)]",
     cardHover: "hover:bg-[#dbeee8]",
   },
   mid: {
-    dot: "bg-[#c17f4a]",
-    text: "text-[#c17f4a]",
-    fill: "bg-[#c17f4a]",
-    tagBg: "bg-[#fdf5ee]",
-    tagText: "text-[#8a5530]",
-    border: "border-[#c17f4a]/20",
-    cardBg: "bg-[#fdf5ee]",
+    dot: "bg-[var(--color-eval-mid-accent)]",
+    text: "text-[var(--color-eval-mid-fg)]",
+    fill: "bg-[var(--color-eval-mid-accent)]",
+    tagBg: "bg-[var(--color-eval-mid-bg)]",
+    tagText: "text-[var(--color-eval-mid-fg)]",
+    border: "border-[var(--color-eval-mid-accent)]/20",
+    cardBg: "bg-[var(--color-eval-mid-bg)]",
     cardHover: "hover:bg-[#f7ede1]",
   },
   low: {
-    dot: "border border-[#8a8a9a] bg-[#e8e0d3]",
-    text: "text-[#8a8a9a]",
-    fill: "bg-[#e8e0d3]",
-    tagBg: "bg-[#f2ede6]",
-    tagText: "text-[#8a8a9a]",
-    border: "border-[#e8e0d3]",
+    dot: "border border-[var(--color-eval-low-accent)] bg-[var(--color-sand)]",
+    text: "text-[var(--color-eval-low-fg)]",
+    fill: "bg-[var(--color-sand)]",
+    tagBg: "bg-[var(--color-eval-low-bg)]",
+    tagText: "text-[var(--color-eval-low-fg)]",
+    border: "border-[var(--color-sand)]",
     cardBg: "bg-white",
-    cardHover: "hover:bg-[#f2ede6]",
+    cardHover: "hover:bg-[var(--color-eval-low-bg)]",
   },
 } as const;
 

@@ -3,9 +3,18 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts, extractHeadings, slugifyHeading } from "@/lib/blog";
+import { DIMENSION_COLORS } from "@/lib/color-system";
 import { t } from "@/lib/i18n";
-import { getSiteUrl } from "@/lib/seo";
+import {
+  appendSiteSuffix,
+  buildPageMetadata,
+  clampMetaDescription,
+  DEFAULT_OG_IMAGE_PATH,
+  getSiteUrl,
+  getTranslatedLanguageAlternates,
+} from "@/lib/seo";
 import { TranslationRedirect } from "../TranslationRedirect";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ReadingProgress } from "@/components/blog/ReadingProgress";
 import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
@@ -26,32 +35,34 @@ export async function generateMetadata({
   if (!post) return {};
   if (post.status === "draft" && process.env.NODE_ENV !== "development") return {};
 
-  const baseUrl = getSiteUrl();
+  // A cikkeknek nyelvenként KÜLÖN URL-jük van (slug + translationSlug), így
+  // itt — a többi marketing-oldallal ellentétben — valódi reciprok hreflang
+  // pár képezhető, x-default-tal a HU változatra.
   const languages = post.translationSlug
-    ? {
+    ? getTranslatedLanguageAlternates({
         [post.locale]: `/blog/${slug}`,
         [post.locale === "hu" ? "en" : "hu"]: `/blog/${post.translationSlug}`,
-      }
+      })
     : undefined;
 
-  return {
-    title: `${post.title} | trita blog`,
-    description: post.description,
-    alternates: { canonical: `/blog/${slug}`, languages },
-    openGraph: {
-      title: post.title,
-      description: post.description,
-      url: `${baseUrl}/blog/${slug}`,
-      type: "article",
-      publishedTime: post.publishedAt,
-      siteName: "trita",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: post.title,
-      description: post.description,
-    },
-  };
+  return buildPageMetadata({
+    path: `/blog/${slug}`,
+    title: appendSiteSuffix(post.title, "trita blog"),
+    // A frontmatter description a felületen is megjelenik (lead bekezdés),
+    // ezért ott hosszabb lehet — a meta-snippetbe mondathatáron vágjuk.
+    description: clampMetaDescription(post.description),
+    ogTitle: post.title,
+    ogDescription: post.description,
+    type: "article",
+    publishedTime: post.publishedAt,
+    modifiedTime: post.publishedAt,
+    locale: post.locale,
+    languages,
+    // A cikknek SAJÁT `opengraph-image.tsx`-e van ebben a mappában — azt a
+    // Next a fájl-konvencióból teszi a fejlécbe. Kézzel is beállítva két
+    // og:image kerülne ki, ezért itt kifejezetten nem adunk képet.
+    ogImage: null,
+  });
 }
 
 // ─── Tag color helper ─────────────────────────────────────────────────────────
@@ -88,15 +99,14 @@ function StatRow({ children }: { children: React.ReactNode }) {
   return <div className="my-7 grid grid-cols-1 gap-2 sm:grid-cols-3">{children}</div>;
 }
 
-const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> = {
-  INTE: { bg: "var(--color-surface-self-accent-soft)", text: "var(--color-accent-self-deep)", border: "var(--color-action-primary-bg)" },
-  RESO: { bg: "#f5f3ff", text: "#5b21b6", border: "#ddd6fe" },
-  TEMP: { bg: "#eff6ff", text: "#1d4ed8", border: "#bfdbfe" },
-  ADAP: { bg: "#f0fdf4", text: "#166534", border: "#bbf7d0" },
-  THOR: { bg: "var(--color-surface-highlight-warm)", text: "var(--color-accent-primary-strong)", border: "var(--color-accent-primary)" },
-  OPEN: { bg: "#fdf2f8", text: "#86198f", border: "#f5d0fe" },
-  N: { bg: "#fff1f2", text: "#9f1239", border: "#fecdd3" },
-};
+// Kanonikus HEXACO-paletta (color-system.ts): chip = strong szöveg soft
+// háttéren, base border. A korábbi negyedik (kevert) helyi paletta és a
+// hiba-piros N-badge kivezetve — az N (örökség-kód) neutrális.
+const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> =
+  Object.fromEntries(
+    (Object.entries(DIMENSION_COLORS) as [string, { base: string; strong: string; soft: string }][])
+      .map(([code, c]) => [code, { bg: c.soft, text: c.strong, border: c.base }]),
+  );
 
 function DimBadge({ code, label }: { code: string; label: string }) {
   const colors = DIM_COLORS[code] ?? { bg: "var(--color-surface-subtle)", text: "var(--color-text-secondary)", border: "var(--color-border-default)" };
@@ -120,9 +130,12 @@ function CompareTable({
   rightLabel: string;
   rows?: [string, string][];
 }) {
+  // Mobilon a két hasáb egymás alá kerül, cellánként megismételt
+  // oszlopcímkével (a fejléc-sáv csak md:-től látszik) — 320px-en a
+  // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
-      <div className="grid grid-cols-2">
+      <div className="hidden grid-cols-2 md:grid">
         <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
@@ -131,9 +144,19 @@ function CompareTable({
         </div>
       </div>
       {rows.map(([left, right], i) => (
-        <div key={i} className="grid grid-cols-2 border-t border-[var(--color-border-default)]">
-          <div className="bg-white px-5 py-3 text-caption text-[var(--color-text-secondary)]">{left}</div>
-          <div className="bg-[var(--color-text-primary)] px-5 py-3 text-caption text-white/80">{right}</div>
+        <div key={i} className="grid grid-cols-1 border-t border-[var(--color-border-default)] md:grid-cols-2">
+          <div className="bg-white px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
+            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
+              {leftLabel}
+            </span>
+            {left}
+          </div>
+          <div className="bg-[var(--color-text-primary)] px-4 py-3 text-caption text-white/80 md:px-5">
+            <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-white/60 md:hidden">
+              {rightLabel}
+            </span>
+            {right}
+          </div>
         </div>
       ))}
     </div>
@@ -158,9 +181,9 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
     <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
-      <div className="font-dm-sans mb-2 text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
-        {"//"} {isHu ? "kulcsgondolat" : "key insight"}
-      </div>
+      <SectionEyebrow as="div" tone="onDark" className="mb-2">
+        {isHu ? "kulcsgondolat" : "key insight"}
+      </SectionEyebrow>
       <div className="text-[16px] leading-[1.75] text-white/85">{children}</div>
     </div>
   );
@@ -248,7 +271,7 @@ export default async function BlogPostPage({
   const locale = post.locale;
 
   // Article JSON-LD (SEO 2. kör) — a landing Organization/WebSite sémáinak
-  // mintájára; az image a per-cikk opengraph-image route-ra mutat.
+  // mintájára.
   const baseUrl = getSiteUrl();
   const articleJsonLd = {
     "@context": "https://schema.org",
@@ -256,8 +279,17 @@ export default async function BlogPostPage({
     headline: post.title,
     description: post.description,
     datePublished: post.publishedAt,
+    // A frontmatterben nincs külön `updatedAt`; amíg egy cikket nem
+    // szerkesztünk, a módosítás dátuma megegyezik a megjelenéssel. (Ha lesz
+    // `updatedAt` mező, ide kell bekötni — ld. src/lib/blog.ts.)
+    dateModified: post.publishedAt,
     inLanguage: post.locale,
-    image: [`${baseUrl}/blog/${post.slug}/opengraph-image`],
+    // A per-cikk `opengraph-image.tsx` VALÓS route-ja build-generált utótagot
+    // kap (`…/opengraph-image-<hash>`), amit oldalkódból nem lehet kiolvasni —
+    // az utótag nélküli `/blog/<slug>/opengraph-image` 404. Ezért a JSON-LD a
+    // gyökér `/opengraph-image` route stabil, létező márka-képére mutat; a
+    // cikk-specifikus vizuált a fájl-konvenciós `og:image` meta viszi.
+    image: [`${baseUrl}${DEFAULT_OG_IMAGE_PATH}`],
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": `${baseUrl}/blog/${post.slug}`,

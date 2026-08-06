@@ -14,6 +14,7 @@ import {
 } from "@/lib/trust-network";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface Teammate {
   userId: string;
@@ -93,9 +94,9 @@ export function TrustPeersClient({
   if (phase === "intro") {
     return (
       <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("trustPeers.eyebrow", locale)}
-        </p>
+        </SectionEyebrow>
         <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
           {t("trustPeers.introTitle", locale)}
         </h1>
@@ -181,9 +182,9 @@ export function TrustPeersClient({
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col px-4 pt-8 pb-20">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("trustPeers.eyebrow", locale)}
-        </p>
+        </SectionEyebrow>
         <p className="font-mono text-[11px] text-muted">
           {tf("trustPeers.progress", locale, {
             done: doneCount,

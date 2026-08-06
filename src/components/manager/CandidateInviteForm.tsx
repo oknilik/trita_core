@@ -98,23 +98,17 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
 
   const labelClass =
     "font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted";
+  // Terrakotta (jelölt-felület) fókusz-akcent — 2026-08-05 vizuális frissítés.
   const inputClass =
-    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-caption text-ink outline-none transition focus:border-sage/55 focus:bg-white focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]";
+    // Mobilon 16px-es mező-font: az iOS Safari 16px alatt fókuszkor
+    // rázoomol és elugrik a layout. md-től marad az eredeti 13px.
+    "min-h-[46px] rounded-xl border border-sand bg-cream px-3.5 text-base text-ink outline-none transition focus:border-accent-candidate/60 focus:bg-white focus:shadow-[0_0_0_3px_rgba(138,74,50,0.10)] md:text-caption";
 
   return (
     <div className="flex flex-col gap-5">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div className="rounded-2xl border border-sand bg-warm p-4 sm:p-5">
-          <p className="font-fraunces text-[22px] leading-none text-ink">
-            {t("manager.candidateInvite.createInvite", loc)}
-          </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
-            {isHu
-              ? "Töltsd ki a jelölt alapadatait, és azonnal létrejön az egyedi jelentkezési link."
-              : "Fill in the candidate basics and create a unique application link instantly."}
-          </p>
-        </div>
-
+        {/* A cím/leírás a HiringDashboard panel-fejlécében él — itt nem
+            duplikáljuk. */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <label className="flex flex-col gap-2">
             <span className={labelClass}>{t("manager.candidateInvite.nameLabel", loc)}</span>
@@ -167,12 +161,12 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
           )}
         </div>
         {/* Opcionális 2. lépés: csapatszerep-kérdőív a TRITAN után */}
-        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-white px-4 py-3 transition hover:border-sage/40">
+        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-white px-4 py-3 transition hover:border-accent-candidate-border">
           <input
             type="checkbox"
             checked={includeTeamRole}
             onChange={(e) => setIncludeTeamRole(e.target.checked)}
-            className="mt-0.5 h-4 w-4 accent-[var(--color-sage)]"
+            className="mt-0.5 h-4 w-4 accent-[var(--color-accent-candidate)]"
           />
           <span>
             <span className="block text-caption font-semibold text-ink">
@@ -193,10 +187,10 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
               type="button"
               onClick={() => setInviteLocale("hu")}
               className={[
-                "min-h-[40px] rounded-lg border text-[12px] font-semibold transition",
+                "min-h-[44px] rounded-lg border text-[12px] font-semibold transition",
                 inviteLocale === "hu"
-                  ? "border-sage/40 bg-sage-soft text-sage-dark"
-                  : "border-sand bg-cream text-ink-body hover:border-sage/30 hover:bg-white",
+                  ? "border-accent-candidate-border bg-accent-candidate-soft text-accent-candidate-strong"
+                  : "border-sand bg-cream text-ink-body hover:border-accent-candidate-border hover:bg-white",
               ].join(" ")}
             >
               Magyar
@@ -205,10 +199,10 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
               type="button"
               onClick={() => setInviteLocale("en")}
               className={[
-                "min-h-[40px] rounded-lg border text-[12px] font-semibold transition",
+                "min-h-[44px] rounded-lg border text-[12px] font-semibold transition",
                 inviteLocale === "en"
-                  ? "border-sage/40 bg-sage-soft text-sage-dark"
-                  : "border-sand bg-cream text-ink-body hover:border-sage/30 hover:bg-white",
+                  ? "border-accent-candidate-border bg-accent-candidate-soft text-accent-candidate-strong"
+                  : "border-sand bg-cream text-ink-body hover:border-accent-candidate-border hover:bg-white",
               ].join(" ")}
             >
               English
@@ -229,7 +223,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
           <button
             type="submit"
             disabled={loading}
-            className="min-h-[44px] rounded-[10px] bg-sage px-6 text-[12px] font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-6 text-[12px] font-semibold text-white transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
           >
             {loading
               ? t("manager.candidateInvite.creating", loc)
@@ -239,7 +233,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
       </form>
 
       {createdInvite && (
-        <div className="rounded-2xl border border-sage/20 bg-[#eef6f2] p-4 sm:p-5">
+        <div className="rounded-2xl border border-sage/20 bg-[var(--color-sage-ghost)] p-4 sm:p-5">
           <p className="mb-1 text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
             {isHu ? "Sikeres meghívó" : "Invite created"}
           </p>

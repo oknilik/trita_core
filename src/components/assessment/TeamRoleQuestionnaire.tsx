@@ -21,6 +21,7 @@ import {
 } from "@/lib/team-role-questions";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface TeamRoleQuestionnaireProps {
   locale: Locale;
@@ -111,9 +112,9 @@ export function TeamRoleQuestionnaire({
   if (showIntro) {
     return (
       <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("teamRole.eyebrow", resolvedLocale)}
-        </p>
+        </SectionEyebrow>
         <div>
           <h2 className="font-fraunces text-2xl text-ink">
             {t("teamRole.introTitle", resolvedLocale)}
@@ -160,10 +161,12 @@ export function TeamRoleQuestionnaire({
     <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-white p-6 md:p-10">
       {/* Fejléc + állapot */}
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <SectionEyebrow>
           {t("teamRole.eyebrow", resolvedLocale)}
-        </p>
-        <h3 className="mt-1 font-fraunces text-xl text-ink">
+        </SectionEyebrow>
+        {/* A peer-változat interpolált nevet kap (email-fallback is lehet) —
+            a törhetetlen token ne folyjon ki a kártyából. */}
+        <h3 className="mt-1 font-fraunces text-xl text-ink [overflow-wrap:anywhere]">
           {phase === "select"
             ? perspective === "peer"
               ? tf("teamRole.selectHintPeer", resolvedLocale, {

@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   calculateQuote,
   emptyQuoteInput,
@@ -12,16 +14,29 @@ import {
   DISCOUNT_LABELS,
   QUOTE_STEPS,
   QUOTE_STEP_LABELS,
+  quoteInputSchema,
   type DiscountKind,
   type QuoteStep,
   type RateCard,
 } from "@/lib/quote/rate-card";
+import { formatQuoteNo } from "@/lib/crm/guards";
+import {
+  crmRequest,
+  dayInputToIso,
+  formatDay,
+  isoToDayInput,
+} from "@/components/admin/crm/crm-ui";
 
 // Belső ajánlat-kalkulátor.
 //
 // Nem árlista: azt mutatja meg, mennyi marad a munkán. A legfontosabb szám
 // az EFFEKTÍV ÓRADÍJ — ezen dől el az alku, ezért az van kiemelve, nem a
 // végösszeg.
+//
+// CRM-integráció (2026-08): `deal` prop mellett a kalkulátor perzisztálni
+// tud — „Mentés ajánlatként" → DRAFT Quote a dealen (a szerver újraszámol,
+// a kliens sosem küld összeget). ?from= forrás-quote-tal DRAFT-szerkesztés
+// (update_input) vagy másolat-alap. Deal nélkül sandbox marad.
 
 const huf = (value: number) =>
   new Intl.NumberFormat("hu-HU", {
@@ -72,15 +87,41 @@ function NumberField({
   );
 }
 
+interface CalculatorDeal {
+  id: string;
+  title: string;
+  company: string | null;
+  contactName: string;
+}
+
+interface CalculatorSourceQuote {
+  id: string;
+  status: string;
+  title: string | null;
+  /** Formázott sorszám, pl. "TRT-2026-0007". */
+  label: string;
+  validUntil: string | null;
+}
+
 export function QuoteCalculator({
   initialRate,
   storedRate,
+  deal,
+  initialInput,
+  sourceQuote,
 }: {
   initialRate: RateCard;
   /** Hamis, ha még az alapértelmezett (placeholder) díjtételek vannak érvényben. */
   storedRate: boolean;
+  /** CRM-deal, amihez a kalkulátor menteni tud (nélküle sandbox). */
+  deal?: CalculatorDeal;
+  /** Betöltött bemenet (?from= forrás-quote-ból). */
+  initialInput?: QuoteInput;
+  /** A ?from= forrás-quote: DRAFT → szerkesztés; egyébként másolat-alap. */
+  sourceQuote?: CalculatorSourceQuote;
 }) {
-  const [input, setInput] = useState<QuoteInput>(emptyQuoteInput());
+  const router = useRouter();
+  const [input, setInput] = useState<QuoteInput>(initialInput ?? emptyQuoteInput());
   const [rate, setRate] = useState<RateCard>(initialRate);
   const [saved, setSaved] = useState(storedRate);
   const [saving, setSaving] = useState(false);
@@ -88,10 +129,113 @@ export function QuoteCalculator({
   const [showRates, setShowRates] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // ── CRM-mentés állapota ──────────────────────────────────────────
+  const draftMode = sourceQuote?.status === "DRAFT";
+  const today = new Date().toISOString().slice(0, 10);
+  const [quoteTitle, setQuoteTitle] = useState(
+    sourceQuote?.title ??
+      (deal ? `${deal.company ?? deal.contactName} — ${today}` : ""),
+  );
+  const [validUntilDay, setValidUntilDay] = useState(
+    sourceQuote?.validUntil ? isoToDayInput(sourceQuote.validUntil) : "",
+  );
+  const [quoteSaving, setQuoteSaving] = useState(false);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
+  const [savedQuote, setSavedQuote] = useState<{ id: string; label: string } | null>(null);
+  const [markingSent, setMarkingSent] = useState(false);
+
   const result = useMemo(() => calculateQuote(input, rate), [input, rate]);
 
-  const patch = (changes: Partial<QuoteInput>) =>
+  const patch = (changes: Partial<QuoteInput>) => {
+    // Bemenet-változás után a „mentve" állapot már nem igaz erre a számításra.
+    setSavedQuote(null);
     setInput((current) => ({ ...current, ...changes }));
+  };
+
+  async function saveQuote() {
+    if (!deal || quoteSaving) return;
+    // Kliens-oldali előszűrés a szerver zod-sémájával — pl. a fél workshop-nap
+    // a sandboxban számolható, de menteni csak egész napokat lehet.
+    const parsed = quoteInputSchema.safeParse(input);
+    if (!parsed.success) {
+      const fields = [...new Set(parsed.error.issues.map((issue) => issue.path.join(".")))];
+      setQuoteError(
+        `A mentéshez érvényes (egész számú) bemenet kell — ellenőrizd: ${fields.join(", ")}`,
+      );
+      return;
+    }
+    setQuoteSaving(true);
+    setQuoteError(null);
+
+    if (draftMode && sourceQuote) {
+      // DRAFT-szerkesztés: input-frissítés (a szerver friss díjtételekkel
+      // újraszámol), plusz érvényesség-állítás, ha változott.
+      const updated = await crmRequest(
+        `/api/admin/crm/quotes/${sourceQuote.id}`,
+        { method: "PATCH", body: { action: "update_input", input: parsed.data } },
+      );
+      if (!updated.ok) {
+        setQuoteSaving(false);
+        setQuoteError(updated.error);
+        return;
+      }
+      const originalDay = sourceQuote.validUntil ? isoToDayInput(sourceQuote.validUntil) : "";
+      if (validUntilDay !== originalDay) {
+        await crmRequest(`/api/admin/crm/quotes/${sourceQuote.id}`, {
+          method: "PATCH",
+          body: {
+            action: "set_valid_until",
+            validUntil: validUntilDay ? dayInputToIso(validUntilDay) : null,
+          },
+        });
+      }
+      setQuoteSaving(false);
+      setSavedQuote({ id: sourceQuote.id, label: sourceQuote.label });
+      router.refresh();
+      return;
+    }
+
+    const created = await crmRequest<{
+      quote: { id: string; quoteNo: number; createdAt: string };
+    }>("/api/admin/crm/quotes", {
+      method: "POST",
+      body: {
+        dealId: deal.id,
+        ...(quoteTitle.trim() ? { title: quoteTitle.trim() } : {}),
+        ...(validUntilDay ? { validUntil: dayInputToIso(validUntilDay) } : {}),
+        input: parsed.data,
+      },
+    });
+    setQuoteSaving(false);
+    if (!created.ok) {
+      setQuoteError(created.error);
+      return;
+    }
+    setSavedQuote({
+      id: created.data.quote.id,
+      label: formatQuoteNo(created.data.quote.quoteNo, new Date(created.data.quote.createdAt)),
+    });
+    router.refresh();
+  }
+
+  async function markSavedQuoteSent() {
+    if (!deal || !savedQuote || markingSent) return;
+    setMarkingSent(true);
+    setQuoteError(null);
+    const response = await crmRequest(`/api/admin/crm/quotes/${savedQuote.id}`, {
+      method: "PATCH",
+      body: {
+        action: "mark_sent",
+        ...(validUntilDay ? { validUntil: dayInputToIso(validUntilDay) } : {}),
+      },
+    });
+    setMarkingSent(false);
+    if (!response.ok) {
+      setQuoteError(response.error);
+      return;
+    }
+    router.push(`/admin/crm/${deal.id}`);
+  }
 
   const toggleStep = (step: QuoteStep) =>
     patch({
@@ -120,13 +264,14 @@ export function QuoteCalculator({
   }
 
   // Ajánlat-szöveg: a vevőnek szánt összefoglaló. SZÁNDÉKOSAN nincs benne
-  // óradíj, fedezet és kedvezmény-százalék — azok belső számok.
+  // óradíj, fedezet és kedvezmény-százalék — azok belső számok. Mentés után
+  // a sorszám (quoteNo) és az érvényesség is bekerül.
   const quoteText = useMemo(() => {
     const rows = result.lines
       .filter((line) => line.key !== "travel")
       .map((line) => `· ${line.label}: ${huf(line.amount)}`);
     const parts = [
-      `Ajánlat — ${input.headcount} fő, ${input.teams} csapat`,
+      `Ajánlat${savedQuote ? ` (${savedQuote.label})` : ""} — ${input.headcount} fő, ${input.teams} csapat`,
       "",
       ...rows,
       result.passThroughSubtotal > 0
@@ -141,10 +286,11 @@ export function QuoteCalculator({
         ? `Havi kísérés: ${huf(rate.retainerMonthlyFee)} / hó, ${input.retainerMonths} hónap`
         : null,
       "",
+      validUntilDay ? `Az ajánlat érvényes: ${formatDay(dayInputToIso(validUntilDay))}-ig.` : null,
       "A díjak nettó összegek. A számlázás átutalással történik.",
     ].filter((row): row is string => row !== null);
     return parts.join("\n");
-  }, [input, rate.retainerMonthlyFee, result]);
+  }, [input, rate.retainerMonthlyFee, result, savedQuote, validUntilDay]);
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
@@ -152,7 +298,7 @@ export function QuoteCalculator({
       <div className="flex flex-col gap-6">
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Terjedelem</h2>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
               label="Létszám"
               value={input.headcount}
@@ -211,7 +357,7 @@ export function QuoteCalculator({
             Az ismételt hullám a mérési díj {rate.waveRatePct}%-áért megy: a setup és a
             csapat megismerése egyszeri munka. A havi kísérés ettől független tétel.
           </p>
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
               label="Hullámok"
               value={input.waves}
@@ -280,7 +426,7 @@ export function QuoteCalculator({
             <button
               type="button"
               onClick={() => setShowRates((open) => !open)}
-              className="min-h-[40px] text-sm text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] items-center text-sm text-bronze underline underline-offset-2"
             >
               {showRates ? "Elrejtem" : "Szerkesztem"}
             </button>
@@ -294,7 +440,7 @@ export function QuoteCalculator({
 
           {showRates && (
             <div className="mt-4 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <NumberField
                   label="Programdíj"
                   value={rate.baseFee}
@@ -357,7 +503,7 @@ export function QuoteCalculator({
                 </p>
                 <div className="mt-2 flex flex-col gap-2">
                   {rate.headBands.map((band, index) => (
-                    <div key={index} className="flex items-center gap-2">
+                    <div key={index} className="flex flex-wrap items-center gap-2">
                       <span className="w-24 shrink-0 text-xs text-muted">
                         {band.upTo == null ? "afölött" : `${band.upTo} főig`}
                       </span>
@@ -373,9 +519,9 @@ export function QuoteCalculator({
                           };
                           setRate({ ...rate, headBands });
                         }}
-                        className="min-h-[40px] w-32 rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
+                        className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-32 md:flex-none md:basis-auto"
                       />
-                      <span className="text-xs text-muted">Ft / fő</span>
+                      <span className="shrink-0 text-xs text-muted">Ft / fő</span>
                     </div>
                   ))}
                 </div>
@@ -390,8 +536,8 @@ export function QuoteCalculator({
                     const stepRate = rate.stepRates[step];
                     if (!stepRate) return null;
                     return (
-                      <div key={step} className="flex items-center gap-2">
-                        <span className="w-44 shrink-0 text-xs text-muted">
+                      <div key={step} className="flex flex-wrap items-center gap-2">
+                        <span className="w-full text-xs text-muted md:w-44 md:shrink-0">
                           {QUOTE_STEP_LABELS[step]}
                         </span>
                         {(["perHead", "fixed"] as const).map((field) => (
@@ -409,7 +555,7 @@ export function QuoteCalculator({
                                 },
                               })
                             }
-                            className="min-h-[40px] w-28 rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
+                            className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-28 md:flex-none md:basis-auto"
                           />
                         ))}
                       </div>
@@ -422,7 +568,7 @@ export function QuoteCalculator({
                 <p className="font-mono text-xs uppercase tracking-widest text-muted">
                   Óra-becslés (a fedezet-számításhoz)
                 </p>
-                <div className="mt-2 grid grid-cols-2 gap-4 md:grid-cols-3">
+                <div className="mt-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                   {(
                     [
                       ["setup", "Setup"],
@@ -467,9 +613,7 @@ export function QuoteCalculator({
       {/* ── Összegzés ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {"// ajánlat"}
-          </p>
+          <SectionEyebrow>ajánlat</SectionEyebrow>
 
           <ul className="mt-3 flex flex-col gap-1.5 text-sm">
             {result.lines.map((line) => (
@@ -507,6 +651,95 @@ export function QuoteCalculator({
             </p>
           )}
         </section>
+
+        {/* ── CRM-mentés (csak deal-kontextusban; nélküle sandbox) ── */}
+        {deal && (
+          <section className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+            <SectionEyebrow>mentés a dealhez</SectionEyebrow>
+            <p className="mt-2 text-xs leading-relaxed text-ink-body">
+              {draftMode && sourceQuote
+                ? `Piszkozat szerkesztése: ${sourceQuote.label} — a mentés a friss díjtételekkel újraszámolva frissíti.`
+                : sourceQuote
+                  ? `Másolat-alap: ${sourceQuote.label} — a mentés ÚJ piszkozatot hoz létre friss díjtételekkel.`
+                  : `Új piszkozat a dealhez: ${deal.title}.`}
+            </p>
+
+            {savedQuote ? (
+              <div className="mt-3 rounded-xl border border-state-success-border bg-state-success-bg p-3">
+                <p className="text-sm font-semibold text-state-success-fg">
+                  Mentve: {savedQuote.label}
+                </p>
+                <p className="mt-1 text-xs text-ink-body">
+                  A vevő-szöveg lentről másolható (sorszámmal, belső számok
+                  nélkül). Kiküldés után jelöld kiküldöttnek — onnantól az
+                  ajánlat nem módosítható, csak másolható.
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    disabled={markingSent}
+                    onClick={() => void markSavedQuoteSent()}
+                    className="min-h-[44px] rounded-lg bg-action-primary-bg px-4 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover disabled:opacity-60"
+                  >
+                    Megjelölés kiküldöttnek
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => router.push(`/admin/crm/${deal.id}`)}
+                    className="min-h-[44px] rounded-lg border border-sand bg-white px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                  >
+                    Deal megnyitása
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-3 flex flex-col gap-3">
+                {!draftMode && (
+                  <label className="flex flex-col gap-1">
+                    <span className="font-mono text-xs uppercase tracking-widest text-muted">
+                      Ajánlat címe
+                    </span>
+                    <input
+                      type="text"
+                      value={quoteTitle}
+                      onChange={(event) => setQuoteTitle(event.target.value)}
+                      maxLength={200}
+                      className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-bronze"
+                    />
+                  </label>
+                )}
+                <label className="flex flex-col gap-1 sm:max-w-[220px]">
+                  <span className="font-mono text-xs uppercase tracking-widest text-muted">
+                    Érvényes eddig
+                  </span>
+                  <input
+                    type="date"
+                    value={validUntilDay}
+                    onChange={(event) => setValidUntilDay(event.target.value)}
+                    className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-bronze"
+                  />
+                  <span className="text-xs text-muted">
+                    Üresen: kiküldéskor automatikusan +30 nap.
+                  </span>
+                </label>
+                <button
+                  type="button"
+                  disabled={quoteSaving}
+                  onClick={() => void saveQuote()}
+                  className="min-h-[44px] self-start rounded-lg bg-action-primary-bg px-5 text-sm font-semibold text-action-primary-fg transition hover:bg-action-primary-bg-hover disabled:opacity-60"
+                >
+                  {draftMode ? "Piszkozat frissítése" : "Mentés ajánlatként"}
+                </button>
+              </div>
+            )}
+
+            {quoteError && (
+              <p role="alert" className="mt-3 rounded-lg bg-state-error-bg px-3 py-2 text-sm text-state-error-fg">
+                {quoteError}
+              </p>
+            )}
+          </section>
+        )}
 
         {/* A DÖNTŐ szám: nem a végösszeg, hanem ami a munkán marad. */}
         <section className="rounded-2xl border border-sand bg-cream p-6">
@@ -551,7 +784,7 @@ export function QuoteCalculator({
                 setCopied(true);
                 window.setTimeout(() => setCopied(false), 2000);
               }}
-              className="min-h-[36px] text-xs text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] shrink-0 items-center text-xs text-bronze underline underline-offset-2"
             >
               {copied ? "Másolva" : "Másolás"}
             </button>

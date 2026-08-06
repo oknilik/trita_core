@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Csapat-érdeklődés banner — az eredmény-oldal alján. Inline expand
 // (nincs kontextus-váltás): a user emailje a fiókjából megy, csak egy
@@ -61,9 +62,9 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
 
   return (
     <DashboardPanel className="p-6">
-      <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+      <SectionEyebrow>
         {t("results.teamInterestEyebrow", locale)}
-      </p>
+      </SectionEyebrow>
       <h3 className="mt-1 font-fraunces text-xl text-ink">
         {t("results.teamInterestTitle", locale)}
       </h3>
@@ -91,7 +92,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               rows={3}
               maxLength={2000}
               placeholder={t("results.teamInterestMessagePlaceholder", locale)}
-              className="rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink"
+              className="rounded-lg border border-sand bg-white px-3 py-2 text-base text-ink md:text-sm"
             />
           </label>
           {error && <p className="text-xs text-rose-600">{error}</p>}

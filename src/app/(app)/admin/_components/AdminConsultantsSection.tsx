@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminListControls } from "@/app/(app)/admin/_components/AdminListControls";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -149,9 +150,9 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
     <div className="flex flex-col gap-6">
       {/* Meghívás */}
       <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// tanácsadó meghívása"}
-        </p>
+        <SectionEyebrow>
+          tanácsadó meghívása
+        </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">Onboardolás a tritára</h2>
         <p className="mt-1 max-w-2xl text-sm text-ink-body">
           Add meg az emailt — ha a fiók már létezik, azonnal tanácsadó lesz; ha még
@@ -335,13 +336,13 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
 
                     {/* Új kiosztás */}
                     {assignable.length > 0 && (
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <select
                           value={selection}
                           onChange={(e) =>
                             setAssignSelection((prev) => ({ ...prev, [c.id]: e.target.value }))
                           }
-                          className="min-h-[38px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none"
+                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none md:w-auto md:flex-none"
                         >
                           <option value="">Szervezet kiválasztása…</option>
                           {assignable.map((o) => (
@@ -359,7 +360,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                               `assign-${c.id}`,
                             )
                           }
-                          className="min-h-[38px] rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="min-h-[40px] rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Kiosztás
                         </button>

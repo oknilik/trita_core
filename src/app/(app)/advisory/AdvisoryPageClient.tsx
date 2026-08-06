@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { PATTERN_NAMES } from "@/lib/team-pattern";
 import { t, tf, type Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Tier mapping from getPlanTier() in src/lib/subscription.ts:
 //   nincs / lejárt → "none" · próbaidő → "trial" · aktív → "advisory"
@@ -118,9 +119,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
     <div>
       {/* ── Header ─────────────────────────────────────────── */}
       <div className="mb-10">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// "}{t("advisory.eyebrow", locale)}
-        </p>
+        <SectionEyebrow>{t("advisory.eyebrow", locale)}</SectionEyebrow>
         <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
           {isAdvisory
             ? `${firstName}${t("advisory.headingAdvisory", locale)}`
@@ -261,9 +260,9 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
       {/* ── CTA — tanácsadói konzultáció ──────────────────── */}
       {isAdvisory && !requestSent && (
         <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
-          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
-            {"// "}{t("advisory.ctaAdvisoryEyebrow", locale)}
-          </p>
+          <SectionEyebrow className="mb-2">
+            {t("advisory.ctaAdvisoryEyebrow", locale)}
+          </SectionEyebrow>
           <h2 className="mb-3 font-fraunces text-2xl text-ink">
             {t("advisory.ctaAdvisoryHeading", locale)}
           </h2>
@@ -299,9 +298,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
         <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-white p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
             <div>
-              <p className="mb-1 font-mono text-micro uppercase tracking-widest text-bronze">
-                {"// advisory"}
-              </p>
+              <SectionEyebrow className="mb-1">advisory</SectionEyebrow>
               <h2 className="mb-3 font-fraunces text-2xl text-ink">
                 Trita Advisory
               </h2>

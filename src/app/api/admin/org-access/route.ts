@@ -4,9 +4,24 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TRIAL_DAYS } from "@/lib/subscription";
 import { sanitizeOrgBillingProfile } from "@/lib/org-billing";
+import { handleOrgAccessGranted, type OrgAccessAction } from "@/lib/crm/service";
+import { createLogger } from "@/lib/logger";
 
 // Consulting mode: subscriptions are provisioned manually by the platform
 // admin instead of Stripe. This endpoint is the single write path for that.
+
+const log = createLogger("org-access");
+
+// CRM-hook: activate/trial a linkelt nyitott dealt WON-ra zárja, extend/
+// set_credits csak activityt ír az idővonalra. Best effort — a hibája nem
+// akadályozhatja az org-hozzáférés kiosztását.
+async function notifyCrm(orgId: string, action: OrgAccessAction, months?: number) {
+  try {
+    await handleOrgAccessGranted(orgId, action, months);
+  } catch (error) {
+    log.error({ event: "org_access.crm_hook_failed", err: error }, "CRM hook failed");
+  }
+}
 
 const postSchema = z.object({
   orgId: z.string().min(1),
@@ -178,6 +193,7 @@ export async function POST(req: NextRequest) {
         ...(candidateCredits !== undefined ? { candidateCredits } : {}),
       },
     });
+    await notifyCrm(orgId, action, monthsToAdd);
     return NextResponse.json({ ok: true, subscription: serialize(subscription) });
   }
 
@@ -200,6 +216,7 @@ export async function POST(req: NextRequest) {
         cancelAtPeriodEnd: false,
       },
     });
+    await notifyCrm(orgId, "trial");
     return NextResponse.json({ ok: true, subscription: serialize(subscription) });
   }
 
@@ -273,6 +290,7 @@ export async function POST(req: NextRequest) {
     },
     update: { candidateCredits },
   });
+  await notifyCrm(orgId, "set_credits");
   return NextResponse.json({ ok: true, subscription: serialize(subscription) });
 }
 

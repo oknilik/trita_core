@@ -6,6 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
@@ -33,6 +34,7 @@ import {
   isCampaignStepDone,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
+import { DIMENSION_BASE } from "@/lib/color-system";
 
 export const dynamic = "force-dynamic";
 
@@ -48,14 +50,9 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
 
 const TRITAN_DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 
-const TRITAN_COLORS: Record<string, string> = {
-  INTE: "var(--color-visual-gradient-indigo)",
-  RESO: "var(--color-visual-gradient-violet)",
-  TEMP: "#06B6D4",
-  ADAP: "var(--color-state-success-strong)",
-  THOR: "var(--color-state-warning-strong)",
-  OPEN: "#EF4444",
-};
+// Kanonikus HEXACO-paletta (color-system.ts) — a korábbi kevert (státusz-
+// színeket kölcsönző, O=hiba-piros) helyi térkép kivezetve.
+const TRITAN_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const TRITAN_LABEL_KEYS: Record<string, string> = {
   INTE: "org.campaign.tritanINTE",
@@ -486,9 +483,9 @@ export default async function CampaignDetailPage({
 
         {/* Header */}
         <div>
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow>
             {eyebrowLabel(campaign.status, locale)}
-          </p>
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
             {campaign.name}
           </h1>
@@ -554,25 +551,29 @@ export default async function CampaignDetailPage({
                 ).length;
                 const pct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
                 return (
-                  <div key={stepType} className="flex items-center gap-3">
+                  // Mobilon két sorba törik (címke fent, sáv + számláló lent),
+                  // md-től az eredeti egysoros elrendezés.
+                  <div key={stepType} className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage/15 font-mono text-[11px] font-bold text-sage-dark">
                       {idx + 1}
                     </span>
-                    <span className="w-56 shrink-0 text-caption font-medium text-ink md:w-72">
+                    <span className="min-w-0 flex-1 text-caption font-medium text-ink md:w-72 md:flex-none">
                       {label}
                     </span>
-                    <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
-                      <div
-                        className="h-full rounded-full bg-sage transition-all duration-700"
-                        style={{ width: `${pct}%` }}
-                      />
+                    <div className="flex w-full min-w-0 items-center gap-3 md:w-auto md:flex-1">
+                      <div className="h-[6px] min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
+                        <div
+                          className="h-full rounded-full bg-sage transition-all duration-700"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <span className="shrink-0 text-right text-xs tabular-nums text-muted md:w-24">
+                        {doneCount}/{totalCount} {isHu ? "kész" : "done"}
+                        {hereCount > 0 ? (
+                          <span className="text-bronze"> · {hereCount} {isHu ? "itt tart" : "here"}</span>
+                        ) : null}
+                      </span>
                     </div>
-                    <span className="w-24 shrink-0 text-right text-xs tabular-nums text-muted">
-                      {doneCount}/{totalCount} {isHu ? "kész" : "done"}
-                      {hereCount > 0 ? (
-                        <span className="text-bronze"> · {hereCount} {isHu ? "itt tart" : "here"}</span>
-                      ) : null}
-                    </span>
                   </div>
                 );
               })}
@@ -612,7 +613,7 @@ export default async function CampaignDetailPage({
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "#059669" }}
+                style={{ backgroundColor: "var(--color-state-success-solid)" }}
               />
               <p
                 className="font-mono text-micro uppercase tracking-widest"
@@ -636,7 +637,7 @@ export default async function CampaignDetailPage({
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "var(--color-visual-gradient-indigo)" }}
+                style={{ backgroundColor: "var(--color-layer-org-bright)" }}
               />
               <p
                 className="font-mono text-micro uppercase tracking-widest"
@@ -710,17 +711,19 @@ export default async function CampaignDetailPage({
                       const mean = psAggregate.itemMeans[item.id] ?? 0;
                       const pct = ((mean - 1) / 4) * 100;
                       return (
-                        <div key={item.id} className="flex items-center gap-3">
-                          <span className="w-64 shrink-0 text-xs leading-snug text-ink-body md:w-80">
+                        // Mobilon az item-szöveg saját sorba kerül, a sáv +
+                        // átlag alá; md-től marad az egysoros elrendezés.
+                        <div key={item.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+                          <span className="w-full text-xs leading-snug text-ink-body md:w-80 md:shrink-0">
                             {item.text[isHu ? "hu" : "en"]}
                           </span>
-                          <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
+                          <div className="h-[6px] min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
                             <div
                               className="h-full rounded-full bg-sage transition-all duration-700"
                               style={{ width: `${Math.max(0, Math.min(100, pct))}%` }}
                             />
                           </div>
-                          <span className="w-10 text-right text-xs tabular-nums text-muted">
+                          <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted">
                             {mean.toFixed(1)}
                           </span>
                         </div>
@@ -748,9 +751,9 @@ export default async function CampaignDetailPage({
           previousAvgScores &&
           previousCampaignName && (
             <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-              <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+              <SectionEyebrow className="mb-1">
                 {t("org.campaign.devArcEyebrow", locale)}
-              </p>
+              </SectionEyebrow>
               <h2 className="mb-1 font-fraunces text-xl text-ink">
                 {t("org.campaign.devArcTitle", locale)}
               </h2>
@@ -764,11 +767,11 @@ export default async function CampaignDetailPage({
                   const delta = curr - prev;
                   const label = t(TRITAN_LABEL_KEYS[d], locale);
                   return (
-                    <div key={d} className="flex items-center gap-3">
-                      <span className="w-36 shrink-0 text-xs text-ink-body truncate">
+                    <div key={d} className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="w-full truncate text-xs text-ink-body md:w-36 md:shrink-0">
                         {label}
                       </span>
-                      <div className="flex-1 h-[6px] rounded-full overflow-hidden bg-sand">
+                      <div className="flex-1 min-w-0 h-[6px] rounded-full overflow-hidden bg-sand">
                         <div
                           className="h-full rounded-full transition-all duration-700"
                           style={{
@@ -777,18 +780,21 @@ export default async function CampaignDetailPage({
                           }}
                         />
                       </div>
+                      {/* Irány-jelzés moralizáló zöld/piros nélkül (a
+                          személyiség-pontszám változása nem jó/rossz) —
+                          zsálya/bronz + előjel hordozza az irányt. */}
                       <span
-                        className={`w-14 text-right text-xs tabular-nums font-semibold ${
+                        className={`w-14 shrink-0 text-right text-xs tabular-nums font-semibold ${
                           delta > 0
-                            ? "text-emerald-600"
+                            ? "text-sage-dark"
                             : delta < 0
-                              ? "text-rose-600"
+                              ? "text-bronze-700"
                               : "text-muted"
                         }`}
                       >
                         {delta > 0 ? `+${delta}` : delta === 0 ? "=" : delta}
                       </span>
-                      <span className="w-8 text-right text-xs tabular-nums text-muted">
+                      <span className="w-8 shrink-0 text-right text-xs tabular-nums text-muted">
                         {curr}
                       </span>
                     </div>
@@ -800,9 +806,9 @@ export default async function CampaignDetailPage({
 
         {/* Participants */}
         <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+          <SectionEyebrow className="mb-1">
             {t("org.campaign.participantsEyebrow", locale)}
-          </p>
+          </SectionEyebrow>
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("org.campaign.participantsTitle", locale)}{" "}
             <span className="font-sans text-sm font-normal text-ink-body/50">
@@ -833,7 +839,10 @@ export default async function CampaignDetailPage({
                     : currentType;
 
                 return (
-                  <div key={p.id} className="flex items-center justify-between gap-3 py-3">
+                  <div
+                    key={p.id}
+                    className="flex flex-col gap-1.5 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
+                  >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-ink">
                         {p.user.username ?? p.user.email ?? "—"}
@@ -842,7 +851,7 @@ export default async function CampaignDetailPage({
                         <p className="truncate text-xs text-ink-body/60">{p.user.email}</p>
                       )}
                     </div>
-                    <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2 md:shrink-0">
                       {isPsychOnly ? null : isAllDone ? (
                         <StatusChip variant="success">
                           {t("org.campaign.participantDone", locale)}
@@ -938,9 +947,9 @@ export default async function CampaignDetailPage({
             const atLeastThree = receivedCounts.filter((r) => r._count._all >= 3).length;
             return (
               <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+                <SectionEyebrow className="mb-1">
                   {t("org.campaign.peerFbStatsEyebrow", locale)}
-                </p>
+                </SectionEyebrow>
                 <h2 className="mb-3 text-sm font-semibold text-ink">
                   {t("org.campaign.peerFbStatsTitle", locale)}
                 </h2>
@@ -987,9 +996,9 @@ export default async function CampaignDetailPage({
         {/* Status transition */}
         {canManageCampaign && nextStatus && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="mb-3 text-sm font-semibold text-ink">
               {t("org.campaign.managementTitle", locale)}
             </h2>
@@ -1021,9 +1030,9 @@ export default async function CampaignDetailPage({
         {/* Lezárt mérésnél nincs státusz-átmenet — a törlés külön kártyán */}
         {canManageCampaign && campaign.status === "CLOSED" && (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="text-sm font-semibold text-ink">
               {t("org.campaign.managementTitle", locale)}
             </h2>
@@ -1051,9 +1060,9 @@ export default async function CampaignDetailPage({
         ) : null}
         {!canManageCampaign && isManagerRole && manageGateCopy ? (
           <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <h2 className="mb-2 text-sm font-semibold text-ink">{manageGateCopy.title}</h2>
             <p className="text-xs text-ink-body/70">{manageGateCopy.description}</p>
           </section>

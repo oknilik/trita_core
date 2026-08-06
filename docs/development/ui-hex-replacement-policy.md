@@ -1,5 +1,14 @@
 # UI Hardcoded Hex Replacement Policy
 
+> **2026-08-05 óta a kanonikus szín-rendszer és a jelentés-alapú szabályok:
+> `docs/development/color-system-2026-08.md`.** Ez a doksi a 2026-04-es
+> érték-alapú (hex→token) csere történeti leírása; a szabályt ma a
+> `scripts/check-colors.mjs` guardrail (kivezetett hexek tiltólistája +
+> nyers-hex keret, `pnpm check:colors` a `pnpm check` részeként) és a
+> `design-tokens-sync` teszt kényszeríti ki. TS-oldali szemantikus térképek:
+> `src/lib/color-system.ts` (DIMENSION_COLORS · TEAM_ROLE_FAMILIES ·
+> LAYER_THEMES · EVAL_RAMP).
+
 ## Cél
 
 Megszüntetni a komponensszintű hardcoded hex színezést, és a színhasználatot központi tokenekre terelni.

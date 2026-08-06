@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { LandingContent } from "@/components/landing/LandingContent";
 import { getSiteUrl } from "@/lib/seo";
@@ -12,6 +11,9 @@ export const metadata: Metadata = {
 
 // Statikus oldal: a bejelentkezett látogatót a proxy irányítja a journey
 // handoffra, a ?mode= paramétert a LandingContent kezeli kliens-oldalon.
+// A LandingContent már NEM használ useSearchParams-t (ld. site-mode.ts), ezért
+// nem kell Suspense-határ: a teljes landing — a hero H1-gyel, ami az LCP-elem —
+// bekerül a prerenderelt HTML-be.
 export default function Home() {
   const siteUrl = getSiteUrl();
   const organizationJsonLd = {
@@ -38,9 +40,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
       />
-      <Suspense>
-        <LandingContent />
-      </Suspense>
+      <LandingContent />
     </main>
   );
 }

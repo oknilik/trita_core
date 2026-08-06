@@ -71,20 +71,22 @@ export function CurrentRolePicker({
           <button
             type="button"
             onClick={() => void onClear()}
-            className="text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-ink"
+            className="inline-flex min-h-[44px] items-center text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-ink"
           >
             {t("results.cfCurrentRoleClear", locale)}
           </button>
         </div>
       ) : (
         <div className="mt-2.5">
+          {/* iOS Safari 16px alatti betűméretnél fókuszkor rázoomol az inputra —
+              mobilon text-base, md:-től az eredeti 12px. */}
           <input
             type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             maxLength={60}
             placeholder={t("results.cfCurrentRolePlaceholder", locale)}
-            className="min-h-[38px] w-full max-w-md rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-[12px] text-[var(--color-text-primary)]"
+            className="min-h-[44px] w-full max-w-md rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-base text-[var(--color-text-primary)] md:min-h-[38px] md:text-[12px]"
           />
           {busy && (
             <p className="mt-1.5 text-micro text-[var(--color-text-muted)]">
@@ -102,7 +104,7 @@ export function CurrentRolePicker({
                       setItems([]);
                       void onSelect(item);
                     }}
-                    className="w-full rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-2 text-left text-[12px] text-[var(--color-text-primary)] transition hover:border-sage/50 hover:bg-sage/5"
+                    className="flex min-h-[44px] w-full items-center rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-2 text-left text-[12px] text-[var(--color-text-primary)] transition hover:border-sage/50 hover:bg-sage/5 md:min-h-0"
                   >
                     {item.hu}
                   </button>

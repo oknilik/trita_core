@@ -373,7 +373,7 @@ export function OrgOnboardingWizard() {
                 : layer.status === "IN_PROGRESS"
                   ? "bg-bronze/20 text-bronze-dark"
                   : layer.status === "AVAILABLE"
-                    ? "bg-[#d4a15a]/20 text-[#8f602f]"
+                    ? "bg-[var(--color-layer-org-glow)]/20 text-[var(--color-bronze-700)]"
                     : "bg-sand text-muted";
 
               return (
@@ -659,7 +659,7 @@ export function OrgOnboardingWizard() {
                   <button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="text-center text-xs text-muted underline underline-offset-2 transition-colors hover:text-ink-body"
+                    className="inline-flex min-h-[44px] items-center justify-center text-center text-xs text-muted underline underline-offset-2 transition-colors hover:text-ink-body"
                   >
                     {t("orgOnboarding.skipForNow", locale)}
                   </button>
@@ -678,7 +678,7 @@ export function OrgOnboardingWizard() {
                       <button
                         type="button"
                         onClick={handleCopyLink}
-                        className={`min-h-[36px] rounded-lg px-4 text-sm font-semibold transition-all ${
+                        className={`min-h-[44px] rounded-lg px-4 text-sm font-semibold transition-all ${
                           copied
                             ? "bg-sage text-white"
                             : "bg-sage text-white hover:bg-sage-dark"
@@ -694,7 +694,7 @@ export function OrgOnboardingWizard() {
                         type="button"
                         onClick={() => setInviteQrOpen((v) => !v)}
                         aria-expanded={inviteQrOpen}
-                        className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-sm font-semibold text-ink transition-colors hover:bg-cream"
+                        className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm font-semibold text-ink transition-colors hover:bg-cream"
                       >
                         QR
                       </button>

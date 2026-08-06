@@ -11,9 +11,11 @@ import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
+import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
@@ -375,13 +377,13 @@ export default async function OrgDetailPage({
       <SurfaceHero
         variant="org"
         eyebrow={(
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
+          <SectionEyebrow tone="onDark">
             {isConsultantView
               ? isHu
                 ? "Szervezet · tanácsadói nézet"
                 : "Organization · consultant view"
               : t("org.eyebrow", locale)}
-          </p>
+          </SectionEyebrow>
         )}
         title={(
           <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
@@ -475,7 +477,7 @@ export default async function OrgDetailPage({
                 látványa húz a 100% felé. */}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <CompletionIndicator percent={orgCompletionPct} size={76} color="#8ad0b4" />
+                <CompletionIndicator percent={orgCompletionPct} size={76} color="var(--color-sage-300)" />
                 <p className="text-micro leading-tight text-white/[0.52]">
                   {t("orgHero.orgCompletion", locale)}
                 </p>
@@ -496,6 +498,63 @@ export default async function OrgDetailPage({
           </>
         )}
       />
+
+      {/* Élő pillanatkép mobilra/tabletre: a hero aside-ja csak lg-től
+          renderel, így 1024px alatt sehol nem látszott az org-szintű és az
+          aktív mérés kitöltöttsége. Ugyanaz a tartalom, világos témán. */}
+      <section className="rounded-2xl border border-sand bg-white p-4 shadow-sm lg:hidden">
+        <p className="text-micro uppercase tracking-widest text-muted">
+          {t("orgHero.liveSnapshot", locale)}
+        </p>
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.memberCount}</p>
+          </div>
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.teamCount}</p>
+          </div>
+          <div className="rounded-xl bg-cream px-3 py-2">
+            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
+            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
+          </div>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
+            <ProgressRing
+              percent={orgCompletionPct}
+              size={68}
+              label={`${orgCompletionPct}%`}
+              color="var(--color-sage)"
+              trackColor="var(--color-sand)"
+              labelClassName="fill-ink"
+            />
+            <p className="text-micro leading-tight text-ink-body">
+              {t("orgHero.orgCompletion", locale)}
+            </p>
+            <p className="text-micro text-muted">
+              {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
+            </p>
+          </div>
+          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
+            <ProgressRing
+              percent={completionPct}
+              size={68}
+              label={`${completionPct}%`}
+              color="var(--color-bronze)"
+              trackColor="var(--color-sand)"
+              labelClassName="fill-ink"
+            />
+            <p className="text-micro leading-tight text-ink-body">
+              {t("orgHero.activeCampaignCompletion", locale)}
+            </p>
+            <p className="text-micro text-muted">
+              {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
+            </p>
+          </div>
+        </div>
+      </section>
 
       {pacingTile ? (
         <CampaignPacingTile

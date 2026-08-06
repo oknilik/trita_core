@@ -12,7 +12,7 @@ export default function TeamError({
   return (
     <div className="min-h-dvh bg-cream flex items-center justify-center">
       <div className="text-center px-6">
-        <SectionEyebrow className="mb-2">{"// csapat hiba"}</SectionEyebrow>
+        <SectionEyebrow className="mb-2">csapat hiba</SectionEyebrow>
         <h2 className="font-fraunces text-xl text-ink mb-3">
           Nem sikerült betölteni a csapat adatait
         </h2>

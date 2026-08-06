@@ -73,12 +73,14 @@ export function ObserverApprovalCard({
               className="flex flex-col gap-2 rounded-xl border border-sand bg-cream/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0">
-                <p className="text-caption text-ink">
+                {/* A címkék gyakran nyers e-mail címek — törés nélkül
+                    kifutnának a kártyából (oldal-szintű vízszintes scroll). */}
+                <p className="break-words text-caption text-ink">
                   <span className="font-semibold">{a.inviterName}</span>
                   {" → "}
                   <span className="font-semibold">{a.targetLabel}</span>
                 </p>
-                <p className="text-[11px] text-muted">
+                <p className="break-words text-[11px] text-muted">
                   {a.campaignName} ·{" "}
                   {new Date(a.createdAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB", {
                     month: "short",
@@ -86,7 +88,7 @@ export function ObserverApprovalCard({
                   })}
                 </p>
               </div>
-              <div className="flex shrink-0 items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:flex-nowrap">
                 <button
                   type="button"
                   disabled={decidingId !== null}

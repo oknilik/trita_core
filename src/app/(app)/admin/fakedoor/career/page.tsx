@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { CAREER_FAKE_DOOR_MODULE, formatPrice } from "@/lib/fakedoor/career";
 import { buildFakeDoorReport, type FakeDoorCell } from "@/lib/fakedoor/report";
 
@@ -130,9 +131,9 @@ export default async function CareerFakeDoorReportPage() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <header>
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {"// kereslet-mérés"}
-        </p>
+        <SectionEyebrow>
+          kereslet-mérés
+        </SectionEyebrow>
         <h1 className="mt-1 font-fraunces text-2xl text-ink">
           Karrier-iránytű — fake door
         </h1>
@@ -227,12 +228,12 @@ export default async function CareerFakeDoorReportPage() {
           <h2 className="font-fraunces text-lg text-ink">
             Mennyit adnának érte — akiknek drága ({report.willingness.count})
           </h2>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="rounded-lg border border-sand bg-cream p-4">
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Medián
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.median == null
                   ? "—"
                   : formatPrice(report.willingness.median, "hu")}
@@ -242,7 +243,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Átlag
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.average == null
                   ? "—"
                   : formatPrice(report.willingness.average, "hu")}
@@ -252,7 +253,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 A látott ár hányada
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.medianShareOfShownPrice == null
                   ? "—"
                   : `${report.willingness.medianShareOfShownPrice}%`}
@@ -262,7 +263,7 @@ export default async function CareerFakeDoorReportPage() {
               <p className="font-mono text-xs uppercase tracking-widest text-muted">
                 Semennyit
               </p>
-              <p className="mt-2 text-2xl font-bold tabular-nums text-ink">
+              <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
                 {report.willingness.zero}
               </p>
             </div>

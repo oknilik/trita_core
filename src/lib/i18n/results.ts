@@ -424,7 +424,7 @@ export const resultsTranslations = {
     heroAssessment: { hu: "Felmérés:", en: "Assessment:" },
 
     // Csapat-érdeklődés banner (results oldal alja)
-    teamInterestEyebrow: { hu: "// csapatszint", en: "// team level" },
+    teamInterestEyebrow: { hu: "csapatszint", en: "team level" },
     teamInterestTitle: {
       hu: "Kíváncsi vagy, hogyan néz ki ez csapatszinten?",
       en: "Curious what this looks like at team level?",
@@ -485,9 +485,8 @@ export const resultsTranslations = {
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
     howYouWorkContext: { hu: "Kontextus", en: "Context" },
     envEyebrow: { hu: "Ideális környezet", en: "Ideal environment" },
-    // UX-B12: a szomszédos „Csapatszerep-hajlamok" szekcióval ütközött a
-    // „szerep" — ez itt munkakör-típusok illeszkedése, nem csapatszerep.
-    roleFitEyebrow: { hu: "Munkakör-illeszkedés", en: "Work-role fit" },
+    // A `results.roleFitEyebrow` a shared-labels.ts-ben él: a publikus
+    // landing-hero is használja, és így nem húzza be ezt a 137 KB-os fájlt.
     roleFitStrong: { hu: "Erős illeszkedés", en: "Strong fit" },
     roleFitMight: { hu: "Működhet, ha felkészülsz", en: "May work with preparation" },
     roleFitPrep: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" },
@@ -1453,7 +1452,7 @@ export const resultsTranslations = {
     accFacetDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
     howYouWorkSub: { hu: "Milyen környezetben működsz jól — és hol jöhetnek súrlódások", en: "Where you thrive — and where friction may arise" },
     profileSummary: { hu: "Profil összefoglaló", en: "Profile summary" },
-    roleFitStrong: { hu: "Jól illeszkedsz ide", en: "You fit well here" },
+    // A `content.roleFitStrong` a shared-labels.ts-ben él (publikus hero is).
     roleFitMaybe: { hu: "Működhet, ha felkészülsz", en: "May work with preparation" },
     roleFitPrep: { hu: "Felkészüléssel működhet", en: "Works with preparation" },
     teamRoleSub: { hu: "A személyiségmintázataid alapján ezek a csapatszerepek illenek hozzád.", en: "Based on your personality patterns, these team roles suit you." },
@@ -1516,14 +1515,11 @@ export const resultsTranslations = {
     shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
-    shareShowQr: { hu: "QR-kód mutatása", en: "Show QR code" },
-    shareHideQr: { hu: "QR-kód elrejtése", en: "Hide QR code" },
-    shareQrAlt: { hu: "QR-kód a megosztható linkhez", en: "QR code for the share link" },
-    shareQrHint: {
-      hu: "Beolvasva ugyanarra a megosztott profil-nézetre visz, mint a link — a kollégád egyből a telefonján nézheti.",
-      en: "Scanning it opens the same shared profile view as the link — your colleague can view it right on their phone.",
-    },
     shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
+    shareEmailQrHint: {
+      hu: "Az email QR-kódot is tartalmaz — telefonnal beolvasva azonnal nyílik a profil.",
+      en: "The email also includes a QR code — scan it with a phone and the profile opens instantly.",
+    },
     shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
     shareEmailSending: { hu: "Küldés…", en: "Sending…" },
@@ -1554,7 +1550,7 @@ export const resultsTranslations = {
     personalityProfileFallback: { hu: "Személyiségprofil", en: "Personality profile" },
     noLowDimension: { hu: "nincs kritikusan alacsony dimenzió", en: "no critically low dimension" },
     // TeamRoleTeaser
-    teamRoleTeaserEyebrow: { hu: "// csapatszerepek", en: "// team roles" },
+    teamRoleTeaserEyebrow: { hu: "csapatszerepek", en: "team roles" },
     teamRoleTeaserEstimate: { hu: "becslés", en: "estimate" },
     teamRoleTeaserTitle: { hu: "Valószínű csapatszerepeid", en: "Your likely team roles" },
     teamRoleTeaserDesc: {
@@ -1570,10 +1566,10 @@ export const resultsTranslations = {
     },
     teamRoleTeaserJoinTeam: { hu: "Csapatba lépés →", en: "Join a team →" },
     // DimensionOverview
-    overviewEyebrow: { hu: "// áttekintés", en: "// overview" },
+    overviewEyebrow: { hu: "áttekintés", en: "overview" },
     overviewTitle: { hu: "Személyiségprofilod", en: "Your personality profile" },
     // DimensionDetail
-    detailEyebrow: { hu: "// dimenziók", en: "// dimensions" },
+    detailEyebrow: { hu: "dimenziók", en: "dimensions" },
     detailTitle: { hu: "A 6 dimenzió részletesen", en: "6 dimensions in detail" },
     // ObserverComparison
     observerInviteTitle: { hu: "Hívj meg 2–5 embert observernek", en: "Invite 2–5 people as observers" },

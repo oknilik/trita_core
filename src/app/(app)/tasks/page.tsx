@@ -242,7 +242,7 @@ export default async function MyMeasurementsPage() {
                   </span>
                   <Link
                     href={`/observe/${req.token}`}
-                    className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                    className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
                   >
                     {req.answered > 0
                       ? t("myTasks.stepOpen", loc)
@@ -392,7 +392,7 @@ export default async function MyMeasurementsPage() {
                             {observerGathering ? (
                               <Link
                                 href="/profile/results?tab=comparison#observer-flow"
-                                className="inline-flex min-h-[36px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
                               >
                                 {observerGathering.sent < observerGathering.min
                                   ? tf("myTasks.observerAskCta", loc, {
@@ -407,7 +407,7 @@ export default async function MyMeasurementsPage() {
                             ) : isCurrent && card.gateOpen ? (
                               <Link
                                 href={link}
-                                className="inline-flex min-h-[36px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
                               >
                                 {started
                                   ? t("myTasks.stepOpen", loc)

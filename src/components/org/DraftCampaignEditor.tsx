@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // DRAFT-kampány szerkesztő: amíg a kampány nincs aktiválva, a mérés-lépések,
 // a cél-csapat és a lépés-ütem szabadon módosítható. Aktiválás után a
@@ -140,9 +141,9 @@ export function DraftCampaignEditor({
 
   return (
     <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-      <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      <SectionEyebrow className="mb-1">
         {t("org.campaign.editDraftEyebrow", locale)}
-      </p>
+      </SectionEyebrow>
       <h2 className="mb-1 text-sm font-semibold text-ink">
         {t("org.campaign.editDraftTitle", locale)}
       </h2>

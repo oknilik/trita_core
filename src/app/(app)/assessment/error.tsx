@@ -8,7 +8,7 @@ export default function AssessmentError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
       <div className="text-center px-6">
         <h2 className="text-xl font-semibold text-ink mb-3">
           Hiba a teszt betöltésekor

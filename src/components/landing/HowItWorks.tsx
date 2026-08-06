@@ -1,13 +1,8 @@
 "use client";
-import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
+import { Reveal } from "@/components/landing/Reveal";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] as const } },
-};
 
 export function HowItWorks({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
@@ -40,15 +35,7 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           {steps.map((step, i) => (
-            <motion.div
-              key={step.num}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-50px" }}
-              variants={fadeUp}
-              transition={{ delay: i * 0.1 } as Parameters<typeof motion.div>[0]["transition"]}
-              className="flex flex-col"
-            >
+            <Reveal key={step.num} delay={i * 0.1} className="flex flex-col">
               <div className="relative mb-4 -mx-2 self-start px-2 py-1">
                 <svg
                   viewBox="0 0 100 100"
@@ -68,7 +55,7 @@ export function HowItWorks({ mode }: { mode: SiteMode }) {
               </div>
               <h3 className="font-dm-sans mb-2 text-base font-semibold text-ink">{step.title}</h3>
               <p className="max-w-[280px] text-sm leading-relaxed text-ink-body">{step.desc}</p>
-            </motion.div>
+            </Reveal>
           ))}
         </div>
       </div>

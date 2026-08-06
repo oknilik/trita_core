@@ -10,8 +10,8 @@ import {
   useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
-import type { Locale } from "@/lib/i18n";
-import { DEFAULT_LOCALE, normalizeLocale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/public";
+import { DEFAULT_LOCALE, normalizeLocale } from "@/lib/i18n/public";
 import { SkeletonLoader } from "@/components/SkeletonLoader";
 
 interface LocaleContextValue {

@@ -80,7 +80,7 @@ export function DashboardMetricCard({
       </p>
       <p
         className="font-fraunces text-[30px] leading-none tracking-tight"
-        style={{ color: valueColor ?? "#1a2e22" }}
+        style={{ color: valueColor ?? "var(--color-sage-deep)" }}
       >
         {value}
         {suffix ? (
@@ -123,7 +123,7 @@ export function DashboardStatusChip({
     sage: { variant: "info", className: "bg-sage-soft text-sage-dark" },
     bronze: { variant: "warning", className: "bg-bronze/10 text-bronze-dark" },
     warm: { variant: "warning", className: "bg-[var(--color-surface-chip-warm-soft)] text-[var(--color-accent-primary-strong)]" },
-    rose: { variant: "error", className: "bg-[#f3e4dd] text-[#8c4a31]" },
+    rose: { variant: "error", className: "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" },
     muted: { variant: "neutral", className: "bg-cream text-ink-body" },
   } as const;
   const config = toneConfig[tone];

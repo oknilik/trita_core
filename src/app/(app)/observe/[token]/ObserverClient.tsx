@@ -841,12 +841,14 @@ export function ObserverClient({
       </div>
 
       {/* ═══ FOOTER BAR — a self-kitöltéssel azonos ═══ */}
-      <div className="flex shrink-0 items-center justify-between border-t border-[var(--color-border-default)] bg-white px-7 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)]">
+      {/* Mobilon a vezérlősor a viewport aljára tapad (az (app)-shell fejléce
+          alatt egyébként a hajtás alá csúszna); md-től a korábbi in-flow sáv. */}
+      <div className="sticky bottom-0 z-20 flex shrink-0 items-center justify-between gap-2 border-t border-[var(--color-border-default)] bg-white px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:static md:z-auto md:px-7">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] rounded-lg border px-5 py-2.5 text-caption transition-all ${
+          className={`min-h-[44px] whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -855,7 +857,7 @@ export function ObserverClient({
           ← {t("assessment.prevCta", locale)}
         </button>
 
-        <label className="flex cursor-pointer items-center gap-2">
+        <label className="flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 px-1">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
@@ -869,7 +871,12 @@ export function ObserverClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          <span className="text-[11px] text-[var(--color-text-muted)]">{t("assessment.autoAdvance", locale)}</span>
+          {/* Mobilon csak a jelölőnégyzet látszik (a felirat elférne, de a
+              három vezérlőt szétnyomná) — a szöveg sr-only marad, hogy a
+              kapcsolónak legyen elérhető neve. */}
+          <span className="sr-only whitespace-nowrap text-[11px] text-[var(--color-text-muted)] md:not-sr-only">
+            {t("assessment.autoAdvance", locale)}
+          </span>
         </label>
 
         {phase === "confidence" ? (
@@ -877,7 +884,7 @@ export function ObserverClient({
             type="button"
             onClick={handleFinish}
             disabled={isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
+            className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               !isSubmitting && confidence !== null
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -891,7 +898,7 @@ export function ObserverClient({
             onClick={handleNextStep}
             disabled={isSubmitting}
             aria-disabled={!canProceed || isSubmitting}
-            className={`min-h-[44px] rounded-lg px-6 py-2.5 text-caption font-semibold transition-all ${
+            className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               canProceed && !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

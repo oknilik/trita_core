@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import type { SerializedTeamReport } from "@/lib/team-report";
@@ -18,23 +19,24 @@ import {
 // Terv: docs/product/feature-ideas.md #4. A menedzser/admin a teljes
 // TeamReportView-t látja; a szerep-elágazás a team oldalon (report tab) dől el.
 
-// Dimenzió-színek — a team oldal / TeamReportView palettájával azonos
-// (CVD-validálva, dataviz validator PASS — ld. TeamReportView kommentje).
-const DIM_COLORS: Record<string, string> = {
-  INTE: "#6366F1",
-  RESO: "#EC4899",
-  TEMP: "#F59E0B",
-  ADAP: "#10B981",
-  THOR: "#8B5CF6",
-  OPEN: "#06B6D4",
-};
+// Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts), a team
+// oldal / TeamReportView palettájával azonos forrásból (mark = base).
+import { DIMENSION_BASE } from "@/lib/color-system";
 
-// A tipp-sorszámok akcentus-színei — sorban, nem ciklizálva.
-const TIP_ACCENTS = ["bg-sage", "bg-sky-500", "bg-amber-500"] as const;
+const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
+
+// A tipp-sorszámok akcentus-színei — sorban, nem ciklizálva. Brand-akcentek
+// (zsálya/bronz/szilva): a sky/amber adat- és státusz-hue-k itt dekoratívan
+// éltek — kivezetve (2026-08 szín-rendszer).
+const TIP_ACCENTS = [
+  "bg-sage",
+  "bg-bronze",
+  "bg-[var(--color-layer-team-accent)]",
+] as const;
 const TIP_BORDERS = [
   "border-l-sage/60",
-  "border-l-sky-400/60",
-  "border-l-amber-400/60",
+  "border-l-bronze/60",
+  "border-l-[var(--color-layer-team-bright)]/60",
 ] as const;
 
 function initialsOf(name: string): string {
@@ -83,9 +85,9 @@ export function TeamReportMemberView({
                 {initialsOf(vm.memberName)}
               </div>
               <div>
-                <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                  {isHu ? "// a te nézeted" : "// your view"}
-                </p>
+                <SectionEyebrow>
+                  {isHu ? "a te nézeted" : "your view"}
+                </SectionEyebrow>
                 <h2 className="mt-0.5 font-fraunces text-2xl text-ink">
                   {isHu ? `${title} — a te szemszögedből` : `${title} — from your perspective`}
                 </h2>
@@ -139,39 +141,44 @@ export function TeamReportMemberView({
                   const bandEnd = Math.min(100, d.teamAvg + d.teamSpread);
                   const delta = d.self - d.teamAvg;
                   return (
-                    <div key={d.code} className="flex items-center gap-3">
-                      <span className="flex w-32 shrink-0 items-center gap-1.5 text-xs text-ink-body">
+                    <div
+                      key={d.code}
+                      className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                    >
+                      <span className="flex items-center gap-1.5 text-xs text-ink-body md:w-32 md:shrink-0">
                         <span
                           className="h-2 w-2 flex-shrink-0 rounded-full"
                           style={{ backgroundColor: color }}
                         />
                         {d.label}
                       </span>
-                      <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
-                        <div
-                          className="absolute inset-y-0 rounded-full opacity-25"
-                          style={{
-                            left: `${bandStart}%`,
-                            width: `${Math.max(0, bandEnd - bandStart)}%`,
-                            backgroundColor: color,
-                          }}
-                        />
-                        <div
-                          className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
-                          style={{ left: `${d.self}%`, backgroundColor: color }}
-                        />
+                      <div className="flex min-w-0 flex-1 items-center gap-2 md:gap-3">
+                        <div className="relative h-3 flex-1 overflow-hidden rounded-full bg-sand">
+                          <div
+                            className="absolute inset-y-0 rounded-full opacity-25"
+                            style={{
+                              left: `${bandStart}%`,
+                              width: `${Math.max(0, bandEnd - bandStart)}%`,
+                              backgroundColor: color,
+                            }}
+                          />
+                          <div
+                            className="absolute top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-sm"
+                            style={{ left: `${d.self}%`, backgroundColor: color }}
+                          />
+                        </div>
+                        <span className="w-20 shrink-0 text-right font-mono text-xs text-ink md:w-24">
+                          <b>{d.self}</b>
+                          <span className="text-muted"> · {d.teamAvg}</span>
+                        </span>
+                        <span className="w-10 shrink-0 text-right md:w-12">
+                          {d.aboveTeam ? (
+                            <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-sage-dark">
+                              +{delta}
+                            </span>
+                          ) : null}
+                        </span>
                       </div>
-                      <span className="w-24 shrink-0 text-right font-mono text-xs text-ink">
-                        <b>{d.self}</b>
-                        <span className="text-muted"> · {d.teamAvg}</span>
-                      </span>
-                      <span className="w-12 shrink-0 text-right">
-                        {d.aboveTeam ? (
-                          <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro font-semibold text-sage-dark">
-                            +{delta}
-                          </span>
-                        ) : null}
-                      </span>
                     </div>
                   );
                 })}

@@ -257,7 +257,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             onChange={(e) =>
                               setPlanChoice((s) => ({ ...s, [org.id]: e.target.value }))
                             }
-                            className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                            className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
                             aria-label="Csomag"
                           >
                             {PLAN_OPTIONS.map((p) => (
@@ -274,7 +274,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 [org.id]: Number(e.target.value),
                               }))
                             }
-                            className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                            className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
                             aria-label="Időtartam"
                           >
                             {[1, 3, 6, 12].map((m) => (
@@ -287,7 +287,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             type="button"
                             disabled={state.loading}
                             onClick={() => callAction(org.id, "activate")}
-                            className="min-h-[36px] rounded-lg bg-sage px-3 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                            className="min-h-[40px] rounded-lg bg-sage px-3 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
                           >
                             Aktiválás
                           </button>
@@ -295,7 +295,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             type="button"
                             disabled={state.loading}
                             onClick={() => callAction(org.id, "trial")}
-                            className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                            className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                           >
                             Trial
                           </button>
@@ -304,7 +304,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               type="button"
                               disabled={state.loading}
                               onClick={() => callAction(org.id, "deactivate")}
-                              className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
+                              className="min-h-[40px] rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
                             >
                               Lezárás
                             </button>
@@ -343,7 +343,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             setConsultantEmail((s) => ({ ...s, [org.id]: e.target.value }))
                           }
                           placeholder="tanacsado@email.hu"
-                          className="min-h-[36px] w-52 rounded-lg border border-sand bg-white px-2.5 text-xs text-ink"
+                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-2.5 text-xs text-ink md:w-52 md:flex-none"
                         />
                         <button
                           type="button"
@@ -354,7 +354,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             callAction(org.id, "assign_consultant", { consultantEmail: email });
                             setConsultantEmail((s) => ({ ...s, [org.id]: "" }));
                           }}
-                          className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                          className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                         >
                           Hozzárendelés
                         </button>
@@ -447,7 +447,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                       value={value}
                                       onChange={(e) => onChange(e.target.value)}
                                       placeholder={field.placeholder}
-                                      className="min-h-[36px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+                                      className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
                                     />
                                   )}
                                 </label>
@@ -459,7 +459,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               type="button"
                               disabled={billingState[org.id]?.saving}
                               onClick={() => saveBilling(org.id)}
-                              className="min-h-[38px] rounded-lg bg-action-primary-bg px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                              className="min-h-[40px] rounded-lg bg-action-primary-bg px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
                             >
                               {billingState[org.id]?.saving ? "Mentés…" : "Cégadatok mentése"}
                             </button>

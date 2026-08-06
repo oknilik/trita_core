@@ -107,7 +107,7 @@ export function ComparisonTab({
         <p className="mx-auto max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.noDataBody", locale)}
         </p>
-        <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-relaxed text-[#7a6f63]">
+        <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-relaxed text-[var(--color-ink-warm)]">
           {locale === "hu"
             ? "Következő lépés: kérj observer visszajelzést, vagy kapcsolódj csapathoz a közös kép felépítéséhez."
             : "Next step: request observer feedback or connect to a team to build a shared picture."}

@@ -18,6 +18,11 @@ import { RadarChart } from "@/components/dashboard/RadarChart";
 import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
 import { calculateTeamRoleScores, getTopRoles, TEAM_ROLES } from "@/lib/team-role-scoring";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { DIMENSION_STRONG, EVAL_RAMP, dimColors } from "@/lib/color-system";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 
 export const dynamic = "force-dynamic";
 
@@ -25,14 +30,10 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: "Jelölt eredménye | trita", robots: { index: false } };
 }
 
-const DIM_COLORS: Record<string, string> = {
-  INTE: "var(--color-visual-gradient-indigo)",
-  RESO: "var(--color-visual-gradient-violet)",
-  TEMP: "#06B6D4",
-  ADAP: "var(--color-state-success-strong)",
-  THOR: "var(--color-state-warning-strong)",
-  OPEN: "#EF4444",
-};
+// Kanonikus HEXACO-paletta (color-system.ts). A korábbi helyi térkép a
+// státusz-színeket keverte az adat-térbe (O = hiba-piros!) — kivezetve.
+// A fehér betűs kitöltött badge-ek STRONG-on ülnek (AA), a sáv/radar BASE-en.
+const DIM_COLORS: Record<string, string> = DIMENSION_STRONG;
 
 function getDimensionInsight(
   dim: string,
@@ -267,85 +268,112 @@ export default async function CandidateResultPage({
 
   const displayName =
     invite.name ?? invite.email ?? t("hiring.unnamedCandidateFull", locale);
+  const heroTheme = SURFACE_HERO_THEME.candidate;
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-5xl px-4 pt-10 pb-20">
+    <PlatformPageShell surface="team" contentClassName="max-w-5xl gap-6 px-4 py-10">
+      <div>
         {/* Back */}
         <Link
           href={`/hiring/${orgId}`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
+          className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-accent-candidate"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />
           </svg>
           {t("hiring.backHiring", locale)}
         </Link>
+      </div>
 
-        {/* Header */}
-        <div className="mb-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+      {/* ═══ HERO — candidate (terrakotta) variáns ═══ */}
+      <SurfaceHero
+        variant="candidate"
+        eyebrow={(
+          <SectionEyebrow tone="candidateOnDark">
             {t("hiring.candidateResultEyebrow", locale)}
-          </p>
-          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
+          </SectionEyebrow>
+        )}
+        badge={(
+          <span
+            className="inline-flex items-center gap-1.5 rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
+            style={{ backgroundColor: heroTheme.badgeBg, color: heroTheme.badgeText }}
+          >
+            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
+            {t("hiring.statusCompleted", locale)}
+          </span>
+        )}
+        title={(
+          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[36px]">
             {displayName}
           </h1>
-          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-            {invite.position && (
-              <span className="text-sm text-ink-body">{invite.position}</span>
-            )}
-            {invite.team && (
-              <span className="text-xs text-muted">
-                {t("hiring.assignedTeam", locale)}{invite.team.name}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Team selector */}
-        {orgTeams.length > 0 && (
-          <div className="mb-8">
-            <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
-              {t("hiring.compareWithTeam", locale)}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {orgTeams.map((team) => {
-                const isSelected = team.id === selectedTeamId;
-                return (
-                  <Link
-                    key={team.id}
-                    href={`?team=${team.id}`}
-                    className={[
-                      "inline-flex min-h-[36px] items-center rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
-                      isSelected
-                        ? "border-sage bg-sage text-white"
-                        : "border-sand bg-white text-ink-body hover:border-sage/40 hover:text-bronze",
-                    ].join(" ")}
-                  >
-                    {team.name}
-                    {team.id === invite.teamId && (
-                      <span className={`ml-1.5 text-micro ${isSelected ? "opacity-70" : "text-muted"}`}>
-                        ★
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </div>
-            {selectedTeam && !teamAvg && (
-              <p className="mt-2 text-xs text-muted">
-                {t("hiring.noAssessments", locale).replace("{name}", selectedTeam.name)}
-              </p>
-            )}
-          </div>
         )}
+        meta={
+          invite.position || invite.team ? (
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              {invite.position && (
+                <span className="text-caption text-white/[0.75]">{invite.position}</span>
+              )}
+              {invite.team && (
+                <span className="text-[11px] text-white/[0.5]">
+                  {t("hiring.assignedTeam", locale)}{invite.team.name}
+                </span>
+              )}
+            </div>
+          ) : undefined
+        }
+        chips={
+          measuredRoles && measuredRoles.length > 0 ? (
+            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+              {t("hiring.teamRolesTitle", locale)} · {t("hiring.measuredBadge", locale)}
+            </span>
+          ) : undefined
+        }
+      />
 
-        {/* ① VEZETŐI ÖSSZEFOGLALÓ */}
-        <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      {/* Team selector */}
+      {orgTeams.length > 0 && (
+        <div>
+          <SectionEyebrow tone="muted" className="mb-2">
+            {t("hiring.compareWithTeam", locale)}
+          </SectionEyebrow>
+          <div className="flex flex-wrap gap-2">
+            {orgTeams.map((team) => {
+              const isSelected = team.id === selectedTeamId;
+              return (
+                <Link
+                  key={team.id}
+                  href={`?team=${team.id}`}
+                  className={[
+                    "inline-flex min-h-[44px] items-center rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
+                    isSelected
+                      ? "border-accent-candidate bg-accent-candidate text-white"
+                      : "border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate",
+                  ].join(" ")}
+                >
+                  {team.name}
+                  {team.id === invite.teamId && (
+                    <span className={`ml-1.5 text-micro ${isSelected ? "opacity-70" : "text-muted"}`}>
+                      ★
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+          {selectedTeam && !teamAvg && (
+            <p className="mt-2 text-xs text-muted">
+              {t("hiring.noAssessments", locale).replace("{name}", selectedTeam.name)}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* ① VEZETŐI ÖSSZEFOGLALÓ */}
+      <DashboardPanel className="p-6 md:p-8">
+          <SectionEyebrow tone="bronze" className="mb-1.5">
             {t("hiring.managerSummaryEyebrow", locale)}
-          </p>
-          <h2 className="mb-4 font-fraunces text-xl text-ink">
+          </SectionEyebrow>
+          <h2 className="mb-4 font-fraunces text-heading text-ink">
             {t("hiring.quickOverview", locale)}
           </h2>
 
@@ -397,8 +425,8 @@ export default async function CandidateResultPage({
             </div>
 
             {/* Team Fit */}
-            <div className="rounded-xl bg-[rgba(99,102,241,0.06)] p-4">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-visual-gradient-indigo)]">
+            <div className="rounded-xl bg-accent-candidate-soft/45 p-4">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-accent-candidate">
                 {t("hiring.teamFitEyebrow", locale)}
               </p>
               {gapAnalysis ? (() => {
@@ -407,10 +435,11 @@ export default async function CandidateResultPage({
                 );
                 const fitLevel =
                   avgAbsGap < 10 ? "excellent" : avgAbsGap < 20 ? "good" : "divergent";
+                // Értékelő ramp (color-system EVAL_RAMP): zsálya→bronz→neutrális
                 const fitLabels = {
-                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: "var(--color-sage)" },
-                  good: { hu: "Jó illeszkedés", en: "Good fit", color: "#92400e" },
-                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: "var(--color-bronze)" },
+                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: EVAL_RAMP.high.accent },
+                  good: { hu: "Jó illeszkedés", en: "Good fit", color: EVAL_RAMP.mid.fg },
+                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: EVAL_RAMP.low.fg },
                 };
                 const fit = fitLabels[fitLevel];
                 const topGap = gapAnalysis[0];
@@ -438,14 +467,14 @@ export default async function CandidateResultPage({
               )}
             </div>
           </div>
-        </section>
+      </DashboardPanel>
 
-        {/* ② SZEMÉLYISÉGPROFIL + ÉRTELMEZÉS */}
-        <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-          <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      {/* ② SZEMÉLYISÉGPROFIL + ÉRTELMEZÉS */}
+      <DashboardPanel className="p-6 md:p-8">
+          <SectionEyebrow tone="bronze" className="mb-1.5">
             {t("hiring.tritanProfileEyebrow", locale)}
-          </p>
-          <h2 className="mb-6 font-fraunces text-xl text-ink">
+          </SectionEyebrow>
+          <h2 className="mb-6 font-fraunces text-heading text-ink">
             {t("hiring.personalityProfile", locale)}
           </h2>
 
@@ -489,7 +518,7 @@ export default async function CandidateResultPage({
                   <div className="relative mb-2 h-3 overflow-hidden rounded-full bg-warm-mid">
                     <div
                       className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${score}%`, background: color, opacity: 0.85 }}
+                      style={{ width: `${score}%`, background: dimColors(d).base, opacity: 0.85 }}
                     />
                     {teamVal !== null && (
                       <div
@@ -508,15 +537,15 @@ export default async function CandidateResultPage({
             })}
           </div>
 
-        </section>
+      </DashboardPanel>
 
-        {/* ③ TEAM FIT VIZUALIZÁCIÓ */}
-        {teamAvg && gapAnalysis && (
-          <section className="mb-6 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      {/* ③ TEAM FIT VIZUALIZÁCIÓ */}
+      {teamAvg && gapAnalysis && (
+        <DashboardPanel className="p-6 md:p-8">
+            <SectionEyebrow tone="bronze" className="mb-1.5">
               {t("hiring.teamFitEyebrow", locale)}
-            </p>
-            <h2 className="mb-6 font-fraunces text-xl text-ink">
+            </SectionEyebrow>
+            <h2 className="mb-6 font-fraunces text-heading text-ink">
               {t("hiring.candidateInTeam", locale)}
             </h2>
 
@@ -528,7 +557,7 @@ export default async function CandidateResultPage({
                     uid="candidate-vs-team"
                     dimensions={dims.map((d) => ({
                       code: d,
-                      color: DIM_COLORS[d],
+                      color: dimColors(d).base,
                       score: candidateScores[d] ?? 0,
                       observerScore: teamAvg![d],
                     }))}
@@ -573,14 +602,16 @@ export default async function CandidateResultPage({
                         </div>
                       </div>
 
+                      {/* Bronz-magnitúdó (eval-ramp): nagyobb eltérés = mélyebb
+                          bronz; kis szöveghez AA-biztos árnyalatok. */}
                       <span
                         className={[
                           "w-12 text-right font-mono text-xs font-semibold",
                           Math.abs(g.gap) > 20
-                            ? "text-bronze"
+                            ? "text-bronze-700"
                             : Math.abs(g.gap) > 10
-                              ? "text-[#92400e]"
-                              : "text-sage",
+                              ? "text-bronze-dark"
+                              : "text-sage-dark",
                         ].join(" ")}
                       >
                         {g.gap > 0 ? "+" : ""}{g.gap}
@@ -594,23 +625,24 @@ export default async function CandidateResultPage({
                 </p>
               </div>
             </div>
-          </section>
-        )}
+        </DashboardPanel>
+      )}
 
-        {/* Mért csapatszerepek — opcionális 2. lépés eredménye */}
-        {measuredRoles && measuredRoles.length > 0 && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      {/* Mért csapatszerepek — opcionális 2. lépés eredménye */}
+      {measuredRoles && measuredRoles.length > 0 && (
+        <DashboardPanel className="p-6 md:p-8">
             <div className="mb-5 flex flex-wrap items-center gap-2">
               <div>
-                <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
-                  {isHu ? "// csapatszerepek" : "// team roles"}
-                </p>
-                <h2 className="font-fraunces text-xl text-ink">
-                  {isHu ? "Csapatszerep-kérdőív eredménye" : "Team-role questionnaire result"}
+                <SectionEyebrow tone="bronze" className="mb-1.5">
+                  {t("hiring.teamRolesEyebrow", locale)}
+                </SectionEyebrow>
+                <h2 className="font-fraunces text-heading text-ink">
+                  {t("hiring.teamRolesTitle", locale)}
                 </h2>
               </div>
+              {/* Forrás-jelölés (mért vs. becsült) — termék-hitelességi elv */}
               <span className="ml-auto rounded-full bg-sage/10 px-2.5 py-1 text-micro font-semibold uppercase tracking-wide text-sage-dark">
-                {isHu ? "Mért" : "Measured"}
+                {t("hiring.measuredBadge", locale)}
               </span>
             </div>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
@@ -642,16 +674,16 @@ export default async function CandidateResultPage({
                 );
               })}
             </div>
-          </section>
-        )}
+        </DashboardPanel>
+      )}
 
-        {/* ④ MŰKÖDÉSI MINTÁK */}
-        {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+      {/* ④ MŰKÖDÉSI MINTÁK */}
+      {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
+        <DashboardPanel className="p-6 md:p-8">
+            <SectionEyebrow tone="bronze" className="mb-1.5">
               {t("hiring.behavioralPatternsEyebrow", locale)}
-            </p>
-            <h2 className="mb-5 font-fraunces text-xl text-ink">
+            </SectionEyebrow>
+            <h2 className="mb-5 font-fraunces text-heading text-ink">
               {t("hiring.characteristicDynamics", locale)}
             </h2>
 
@@ -726,9 +758,8 @@ export default async function CandidateResultPage({
                 );
               })}
             </div>
-          </section>
-        )}
-      </main>
-    </div>
+        </DashboardPanel>
+      )}
+    </PlatformPageShell>
   );
 }

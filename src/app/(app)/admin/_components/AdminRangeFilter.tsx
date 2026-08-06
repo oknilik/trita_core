@@ -42,7 +42,7 @@ function Pills<T extends string>({
   makeHref: (id: T) => string;
 }) {
   return (
-    <div className="flex flex-wrap gap-1 rounded-xl border border-sand bg-white p-1">
+    <div className="flex flex-wrap gap-1.5 rounded-xl border border-sand bg-white p-1">
       {items.map((r) => (
         <Link
           key={r.id}
@@ -51,7 +51,7 @@ function Pills<T extends string>({
           // pozíció marad, csak a chart-adat frissül.
           scroll={false}
           aria-current={active === r.id ? "true" : undefined}
-          className={`min-h-[34px] rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+          className={`inline-flex min-h-[40px] items-center rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
             active === r.id
               ? "bg-ink text-white shadow-sm"
               : "text-muted hover:bg-cream hover:text-ink"

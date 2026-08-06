@@ -25,6 +25,40 @@ const CSP_REPORT_ONLY = [
   "object-src 'none'",
 ].join("; ");
 
+// ---------------------------------------------------------------------------
+// BUILD-CÉL (browserslist) — SZÁNDÉKOSAN NINCS BEÁLLÍTVA. Ne vezess be
+// `.browserslistrc`-t és `browserslist` mezőt a package.json-be sem, amíg ezt
+// az érvelést nem cáfolod méréssel.
+//
+// Next 16 alapértelmezett kliens-célja (`MODERN_BROWSERSLIST_TARGET`,
+// `next/dist/shared/lib/modern-browserslist-target.js`):
+//     chrome 111 · edge 111 · firefox 111 · safari 16.4
+// azaz a „baseline widely available" pillanatkép. Ez modernebb, mint amit egy
+// kézzel írt, piaci részesedés alapú lekérdezés adna: a `> 0.5%, last 2 years,
+// not dead` a mi caniuse-lite adatunkon `chrome 109`-et ÉS `op_mob 80`-at
+// (= Chromium 80, 2020) hoz be — utóbbi visszakényszerítené az SWC-t az egész
+// ES2021+ downlevelre, tehát NÖVELNÉ a bundle-t.
+//
+// Mérés a legutóbbi prod buildből (.next/static/chunks): egyetlen SWC
+// downlevel-helper sincs a kliens-bundle-ben (`_async_to_generator`,
+// `_ts_generator`, `_object_spread`, `_sliced_to_array`, `_create_class`,
+// `regeneratorRuntime` → 0 találat), a modern szintaxis (`?.`, `??`, `async`,
+// spread) natívan marad. Nincs mit lefaragni: a build-cél már maximálisan
+// modern, egy saját browserslist legfeljebb 0 bájtot nyerne, rontani viszont
+// tudna (a browserslist a CSS-transzformok célját is megszabná).
+//
+// A Lighthouse `legacy-javascript` audit által jelzett polyfillek
+// (Array.prototype.at/flat/flatMap, Object.fromEntries, Object.hasOwn,
+// String.prototype.trimEnd) NEM a mi kódunk transzpilálásából jönnek, hanem a
+// Next saját `@next/polyfill-module` fájljából, amit a framework fixen
+// beköt (`require("../build/polyfills/polyfill-module")` a
+// `next/dist/client/app-globals.js` 6. sorában). Ez browserslist-től
+// FÜGGETLEN, config-ból nem kapcsolható ki; nyers mérete 1 380 bájt (a
+// Lighthouse 13,4 kB-os „wasted bytes" száma becslés). Kivezetése csak
+// upstream Next-változással vagy egy Next-belső útvonalra tett
+// resolve-alias-szal lenne lehetséges — utóbbi nem támogatott, törékeny,
+// ezért nem csináljuk.
+// ---------------------------------------------------------------------------
 const nextConfig: NextConfig = {
   // 127.0.0.1: az e2e (Playwright) böngészője IP-n éri el a dev-szervert
   // (a CI-runneren a "localhost" névfeloldás megbízhatatlan volt). Enélkül
@@ -38,6 +72,25 @@ const nextConfig: NextConfig = {
   ],
 
   experimental: {
+    // `optimizePackageImports` — SZÁNDÉKOSAN nem bővítjük. Next 16 magától
+    // alkalmaz egy ~80 elemű alaplistát (lucide-react, date-fns, recharts,
+    // @mui/*, react-icons/*, …, ld. `next/dist/server/config.js`); a mi
+    // függőségeink közül egyik sincs benne, és a két kézenfekvő jelölt sem
+    // hozna nyereséget:
+    //
+    // • framer-motion — a belépője (`dist/es/index.mjs`, 78 sor) tiszta
+    //   re-export barrel ÉS `"sideEffects": false`, tehát a Turbopack
+    //   tree-shakingje már most kidobja a nem használt exportokat. A kódbázis
+    //   19 helyen kizárólag `motion`-t és `AnimatePresence`-t importál — a
+    //   ~42 kB-os chunk maga a `motion` animációs runtime, amit a barrel-
+    //   optimalizálás nem tud kisebbre vágni. (Az itteni valódi lever a
+    //   `framer-motion/m` + `LazyMotion` átállás, az viszont forráskód-
+    //   változás, nem build-config.)
+    // • @clerk/nextjs — a belépője (`dist/esm/index.js`) egy csupasz
+    //   side-effect importtal kezdődik (`import "./chunk-BUSYA2B4.js"`),
+    //   ezért nem tiszta barrel: a transzformáció vagy elhasal, vagy —
+    //   rosszabb esetben — leejtené ezt az importot és eltörné a Clerket.
+    //
     // Kliens-oldali Router Cache élettartam.
     //
     // Miért: az (app) layout `force-dynamic`, ezért MINDEN kliens-oldali

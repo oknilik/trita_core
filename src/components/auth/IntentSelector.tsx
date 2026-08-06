@@ -41,7 +41,7 @@ const ICONS: Record<AuthIntent, (active: boolean) => React.ReactNode> = {
 
 export default function IntentSelector({ value, onChange }: IntentSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
       {OPTIONS.map((opt) => {
         const active = value === opt.value;
         return (

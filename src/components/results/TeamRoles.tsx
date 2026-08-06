@@ -122,7 +122,7 @@ export function TeamRoles({
           className={`mb-6 flex items-start gap-2.5 rounded-xl border-[1.5px] px-4 py-3 ${
             personalityOverlap >= 2
               ? "border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)]"
-              : "border-[#e8c7b8] bg-[#fdf6ee]"
+              : "border-[var(--color-bronze-edge)] bg-[var(--color-bronze-100)]"
           }`}
         >
           <span className="mt-0.5 text-sm">{personalityOverlap >= 2 ? "✓" : "↔"}</span>
@@ -226,7 +226,7 @@ export function TeamRoles({
                   </p>
                 </div>
               ) : (
-                <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[#e8c7b8] bg-[#fdf6ee] px-4 py-3">
+                <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-bronze-edge)] bg-[var(--color-bronze-100)] px-4 py-3">
                   <span className="mt-0.5 text-sm">↔</span>
                   <div className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
                     <p className="font-semibold text-[var(--color-text-primary)]">

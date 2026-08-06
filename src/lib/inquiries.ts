@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAdminEmails } from "@/lib/auth";
+import { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
+import { attachInquiryToOpenDeal } from "@/lib/crm/auto-attach";
 import { handleInquiryReceived } from "@/lib/notifications";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { createLogger } from "@/lib/logger";
@@ -11,14 +13,9 @@ const log = createLogger("inquiries");
 // (email → user → aktív org), notifot küld az adminoknak + a linkelt org
 // tanácsadóinak, és best-effort admin-emailt küld.
 
-export const INQUIRY_TOPIC_LABELS: Record<string, string> = {
-  demo: "Demó igény",
-  pricing: "Árazás",
-  support: "Terméktámogatás",
-  partnership: "Partnerség",
-  question: "Felhasználói kérdés",
-  other: "Egyéb",
-};
+// A téma-címkék függőség-mentes modulba költöztek (a CRM is használja) —
+// az eddigi import-útvonal változatlanul él.
+export { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
 
 export interface SubmitInquiryParams {
   name: string;
@@ -74,6 +71,19 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
     select: { id: true },
   });
 
+  // CRM auto-attach: ha a beküldő emailjéhez tartozik nyitott deal, az
+  // inquiry rálinkelődik (SYSTEM-activityvel). Best effort — a hibája nem
+  // törheti a contact-flow-t. Auto-deal-létrehozás szándékosan NINCS: a
+  // pipeline-ba kerülés kvalifikációs döntés az admin Beérkező nézetében.
+  try {
+    await attachInquiryToOpenDeal(inquiry.id, senderEmail);
+  } catch (error) {
+    log.error(
+      { event: "inquiries.crm_auto_attach_failed", err: error },
+      "CRM auto-attach failed",
+    );
+  }
+
   // In-app notif: adminok + (org-link esetén) tanácsadók
   const adminEmails = getAdminEmails();
   const adminProfiles = adminEmails.length
@@ -108,7 +118,7 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
       "Üzenet:",
       params.message,
       "",
-      "Kezelés: /admin?tab=inquiries",
+      "Kezelés: /admin?tab=crm (Beérkező)",
     ].join("\n");
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,

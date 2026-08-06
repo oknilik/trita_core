@@ -32,7 +32,7 @@ export interface PdfData {
   topDimensions?: string[];
   watchDimensions?: string[];
   // Dimensions
-  dimensions: { name: string; shortName: string; value: number; description: string }[];
+  dimensions: { name: string; shortName: string; value: number; description: string; code?: string }[];
   teamRoleRoles: { name: string; subtitle: string; score: number; rank: number; why?: string }[];
   /** true = profil-alapú becslés (pontszám rejtve, csak sáv-címke); false = mért kérdőíves eredmény. */
   teamRoleEstimated?: boolean;

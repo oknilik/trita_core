@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Tanácsadói Kérdések fül — a szervezethez kötött beérkezett kérdések
 // (contact form + in-app csatorna). Státusz-kezelés + jegyzet; a user/org
@@ -73,9 +74,9 @@ export function OrgInquiriesTab({
 
   return (
     <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
-      <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-        {isHu ? "// kérdések" : "// inquiries"}
-      </p>
+      <SectionEyebrow>
+        {isHu ? "kérdések" : "inquiries"}
+      </SectionEyebrow>
       <h2 className="mt-1 font-fraunces text-xl text-ink">
         {isHu ? "Beérkezett kérdések" : "Incoming inquiries"} ({inquiries.length})
       </h2>
@@ -114,7 +115,12 @@ export function OrgInquiriesTab({
                     {TOPIC_LABELS[row.topic] ?? row.topic}
                   </span>
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
-                  <a href={`mailto:${row.email}`} className="text-xs text-bronze hover:underline">
+                  {/* Az e-mail egyetlen törhetetlen token — break-all nélkül
+                      320px-en kilógott a kártyából. */}
+                  <a
+                    href={`mailto:${row.email}`}
+                    className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                  >
                     {row.email}
                   </a>
                   <span className="ml-auto text-xs text-muted">

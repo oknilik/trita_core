@@ -93,7 +93,7 @@ export const assessmentTranslations = {
     milestoneContinue: { hu: "Folytatom", en: "Continue" },
   },
   teamRole: {
-    eyebrow: { hu: "// csapatszerep kérdőív", en: "// team role questionnaire" },
+    eyebrow: { hu: "csapatszerep kérdőív", en: "team role questionnaire" },
     introTitle: { hu: "Ismerd meg csapatszerepeidet", en: "Discover your team roles" },
     introBody1: { hu: "{count} rövid állítást fogsz látni a csapatmunkáról. Jelöld ki közülük azt a {min}–{max} állítást, ami a leginkább jellemez téged.", en: "You'll see {count} short statements about team work. Select the {min}–{max} statements that describe you best." },
     introBody2: { hu: "A végén a kijelöltek közül kiválasztod a {top} legjellemzőbbet. Az egész kb. 4 perc.", en: "At the end you'll pick the {top} that fit you most. Takes about 4 minutes." },
@@ -111,7 +111,7 @@ export const assessmentTranslations = {
     submitting: { hu: "Mentés…", en: "Saving…" },
   },
   teamRolePeers: {
-    eyebrow: { hu: "// csapattársi visszajelzés", en: "// peer feedback" },
+    eyebrow: { hu: "csapattársi visszajelzés", en: "peer feedback" },
     introTitle: { hu: "Hogyan látod a csapattársaidat?", en: "How do you see your teammates?" },
     introBody: { hu: "Csapattársanként {count} rövid állítás közül jelölöd ki azokat, amik a leginkább jellemzik őt — kb. 3-4 perc fejenként.", en: "For each teammate you'll pick the statements that describe them best from {count} short items — about 3-4 minutes each." },
     anonTitle: { hu: "Összesített kép.", en: "Aggregated view." },
@@ -128,7 +128,7 @@ export const assessmentTranslations = {
     retry: { hu: "Újrapróbálom", en: "Retry" },
   },
   trustPeers: {
-    eyebrow: { hu: "// bizalmi háló", en: "// trust network" },
+    eyebrow: { hu: "bizalmi háló", en: "trust network" },
     introTitle: { hu: "Hogyan működtök együtt a gyakorlatban?", en: "How do you actually work together?" },
     introBody: { hu: "Csapattársanként {count} rövid kérdés az együttműködésetekről — kb. fél perc fejenként. Nincs jó vagy rossz válasz: a tényleges tapasztalatodra vagyunk kíváncsiak.", en: "For each teammate, {count} short questions about how you work together — about half a minute each. There are no right answers: we ask about your actual experience." },
     consentTitle: { hu: "Ki látja és hogyan?", en: "Who sees this and how?" },

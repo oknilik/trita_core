@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -123,12 +123,14 @@ export function PricingContent() {
           {([1, 2, 3, 4] as const).map((i) => (
             <details
               key={i}
-              className="group rounded-xl border border-[var(--color-border-soft)] bg-white px-5 py-4"
+              className="group rounded-xl border border-[var(--color-border-soft)] bg-white"
             >
-              <summary className="cursor-pointer list-none text-[14px] font-semibold text-[var(--color-text-primary)]">
+              {/* A padding a summary-n van (AdvisoryPageClient FaqItem minta):
+                  a teljes kártyafelület a toggle érintőcélja, min. 44px */}
+              <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-5 py-4 text-[14px] font-semibold text-[var(--color-text-primary)]">
                 {t(`pricing.faqQ${i}`, locale)}
               </summary>
-              <p className="mt-2 text-caption leading-relaxed text-[var(--color-text-muted)]">
+              <p className="px-5 pb-4 text-caption leading-relaxed text-[var(--color-text-muted)]">
                 {t(`pricing.faqA${i}`, locale)}
               </p>
             </details>

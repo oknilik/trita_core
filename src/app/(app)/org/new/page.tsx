@@ -6,6 +6,7 @@ import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { NewClientOrgForm } from "@/components/org/NewClientOrgForm";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 
 export const dynamic = "force-dynamic";
@@ -56,9 +57,9 @@ export default async function NewClientOrgPage() {
         </Link>
 
         <div className="mb-8">
-          <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-            {isHu ? "// tanácsadói felület" : "// consultant workspace"}
-          </p>
+          <SectionEyebrow>
+            {isHu ? "tanácsadói felület" : "consultant workspace"}
+          </SectionEyebrow>
           <h1 className="mt-1 font-fraunces text-3xl text-ink">
             {isHu ? "Új ügyfél-szervezet" : "New client organization"}
           </h1>

@@ -5,9 +5,11 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
+  useMemo,
+  useRef,
   ReactNode,
 } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 
 type ToastType = "success" | "error" | "info";
 
@@ -15,7 +17,14 @@ interface Toast {
   id: string;
   message: string;
   type: ToastType;
+  /** Kilépő animáció fut — a DOM-ban marad, amíg le nem jár. */
+  exiting: boolean;
 }
+
+/** Automatikus eltűnés ennyi láthatóság után (változatlan). */
+const TOAST_VISIBLE_MS = 4000;
+/** A kilépő átmenet hossza — addig NEM töröljük a DOM-ból a toastot. */
+const TOAST_EXIT_MS = 200;
 
 interface ToastContextType {
   showToast: (message: string, type?: ToastType) => void;
@@ -37,33 +46,86 @@ interface ToastProviderProps {
 
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  // Élő időzítők — unmountkor takarítunk, hogy ne írjunk halott fába.
+  const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  // Amelyik toast már kilépőben van, azt ne indítsuk el másodszor
+  // (auto-eltűnés + kézi bezárás egyszerre).
+  const exitingRef = useRef<Set<string>>(new Set());
+  // Toastonkénti auto-eltűnés időzítő. Kézi bezáráskor le KELL állítani:
+  // különben a már eltávolított toast 4 mp-nél újra végigfutna a kilépő
+  // ágon (fölösleges állapotfrissítés + 200 ms-ig fantom bejegyzés az
+  // `exitingRef`-ben).
+  const autoTimersRef = useRef<Map<string, ReturnType<typeof setTimeout>>>(
+    new Map(),
+  );
 
-  const showToast = useCallback((message: string, type: ToastType = "info") => {
-    const id = crypto.randomUUID();
-    setToasts((prev) => [...prev, { id, message, type }]);
+  useEffect(() => {
+    const timers = timersRef.current;
+    const autoTimers = autoTimersRef.current;
+    return () => {
+      timers.forEach(clearTimeout);
+      timers.clear();
+      autoTimers.clear();
+    };
+  }, []);
 
-    setTimeout(() => {
+  const dismissToast = useCallback((id: string) => {
+    if (exitingRef.current.has(id)) return;
+    exitingRef.current.add(id);
+
+    // A még függő auto-eltűnés ehhez a toasthoz már okafogyott.
+    const autoTimer = autoTimersRef.current.get(id);
+    if (autoTimer !== undefined) {
+      clearTimeout(autoTimer);
+      autoTimersRef.current.delete(id);
+      timersRef.current.delete(autoTimer);
+    }
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, exiting: true } : toast)),
+    );
+
+    // A tényleges törlés CSAK a kilépő átmenet után — enélkül a toast
+    // félbevágva tűnne el (ezt adta korábban az AnimatePresence).
+    const timer = setTimeout(() => {
+      timersRef.current.delete(timer);
+      exitingRef.current.delete(id);
       setToasts((prev) => prev.filter((toast) => toast.id !== id));
-    }, 4000);
+    }, TOAST_EXIT_MS);
+    timersRef.current.add(timer);
   }, []);
 
-  const removeToast = useCallback((id: string) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  }, []);
+  const showToast = useCallback(
+    (message: string, type: ToastType = "info") => {
+      const id = crypto.randomUUID();
+      setToasts((prev) => [...prev, { id, message, type, exiting: false }]);
+
+      const timer = setTimeout(() => {
+        timersRef.current.delete(timer);
+        autoTimersRef.current.delete(id);
+        dismissToast(id);
+      }, TOAST_VISIBLE_MS);
+      timersRef.current.add(timer);
+      autoTimersRef.current.set(id, timer);
+    },
+    [dismissToast],
+  );
+
+  const contextValue = useMemo(() => ({ showToast }), [showToast]);
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={contextValue}>
       {children}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
-        <AnimatePresence mode="popLayout">
-          {toasts.map((toast) => (
-            <ToastItem
-              key={toast.id}
-              toast={toast}
-              onClose={() => removeToast(toast.id)}
-            />
-          ))}
-        </AnimatePresence>
+      {/* Mobilon a jobb szélhez kötött, fix szélességű toast a bal viewport-
+          szélen túllógna — <md-en két oldalt 16px margóval feszül ki,
+          md-től marad a jobb alsó sarok. */}
+      <div className="fixed inset-x-4 bottom-4 z-50 flex flex-col gap-2 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-4">
+        {toasts.map((toast) => (
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            onClose={() => dismissToast(toast.id)}
+          />
+        ))}
       </div>
     </ToastContext.Provider>
   );
@@ -75,34 +137,55 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onClose }: ToastItemProps) {
+  // Státusz-egykapu (2026-08): a state-* tokenek beszélnek — a korábbi
+  // green/rose/indigo Tailwind-készlet (harmadik zöld-család, token-idegen
+  // info-indigó) kivezetve.
   const styles = {
     success: {
-      container: "border-green-200 bg-green-50",
-      icon: "text-green-600",
-      text: "text-green-800",
+      container:
+        "border-[var(--color-state-success-border)] bg-[var(--color-state-success-bg)]",
+      icon: "text-[var(--color-state-success-fg)]",
+      text: "text-[var(--color-state-success-fg)]",
     },
     error: {
-      container: "border-rose-200 bg-rose-50",
-      icon: "text-rose-600",
-      text: "text-rose-800",
+      container:
+        "border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)]",
+      icon: "text-[var(--color-state-error-fg)]",
+      text: "text-[var(--color-state-error-fg)]",
     },
     info: {
-      container: "border-indigo-200 bg-indigo-50",
-      icon: "text-indigo-600",
-      text: "text-indigo-800",
+      container:
+        "border-[var(--color-state-info-border)] bg-[var(--color-state-info-bg)]",
+      icon: "text-[var(--color-state-info-fg)]",
+      text: "text-[var(--color-state-info-fg)]",
     },
   };
 
   const style = styles[toast.type];
 
+  // Be-/kilépés CSS-átmenettel (framer-motion helyett). A kiinduló állapotot
+  // az első festés után váltjuk „belépettre" — enélkül nem indulna átmenet.
+  const [isEntered, setIsEntered] = useState(false);
+  useEffect(() => {
+    let secondFrame = 0;
+    const firstFrame = requestAnimationFrame(() => {
+      secondFrame = requestAnimationFrame(() => setIsEntered(true));
+    });
+    return () => {
+      cancelAnimationFrame(firstFrame);
+      cancelAnimationFrame(secondFrame);
+    };
+  }, []);
+
+  const motionClass = toast.exiting
+    ? "translate-x-[100px] scale-95 opacity-0"
+    : isEntered
+      ? "translate-x-0 translate-y-0 scale-100 opacity-100"
+      : "translate-y-5 scale-95 opacity-0";
+
   return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 100, scale: 0.95 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
-      className={`flex min-w-[280px] max-w-sm items-start gap-3 rounded-xl border p-4 shadow-lg ${style.container}`}
+    <div
+      className={`flex min-w-0 max-w-full items-start gap-3 rounded-xl border p-4 shadow-lg transition-all duration-200 ease-out motion-reduce:transition-none md:min-w-[280px] md:max-w-sm ${motionClass} ${style.container}`}
     >
       {/* Icon */}
       <div className={`shrink-0 ${style.icon}`}>
@@ -151,7 +234,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
       </div>
 
       {/* Message */}
-      <p className={`flex-1 text-sm font-medium ${style.text}`}>
+      <p className={`min-w-0 flex-1 break-words text-sm font-medium ${style.text}`}>
         {toast.message}
       </p>
 
@@ -170,6 +253,6 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
           <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
         </svg>
       </button>
-    </motion.div>
+    </div>
   );
 }

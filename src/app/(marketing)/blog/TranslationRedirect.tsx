@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
-import type { Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/public";
 
 // Statikus cikk-oldalon a nyelvváltást kliens-oldalon követjük: ha a
 // felület nyelve eltér a cikk nyelvétől és van fordítás-pár, átirányítunk

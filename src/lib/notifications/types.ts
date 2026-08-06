@@ -31,7 +31,9 @@ export type NotificationSourceType =
   | "inquiry"
   | "peer_feedback"
   | "candidate_invite"
-  | "compare_invite";
+  | "compare_invite"
+  | "crm_deal"
+  | "crm_quote";
 
 // ── Notification intent (orchestrator output → repository input) ────────────
 
@@ -87,4 +89,6 @@ export const NOTIFICATION_TYPE_META: Record<NotificationType, NotificationTypeMe
   CANDIDATE_COMPLETED:         { titleKey: "notifications.candidateCompleted.title",         bodyKey: "notifications.candidateCompleted.body",         category: "org",         defaultPriority: "normal" },
   REFLECTION_PROMPT:           { titleKey: "notifications.reflectionPrompt.title",           bodyKey: "notifications.reflectionPrompt.body",           category: "assessment",  defaultPriority: "low"    },
   COMPARE_ACCEPTED:            { titleKey: "notifications.compareAccepted.title",            bodyKey: "notifications.compareAccepted.body",            category: "assessment",  defaultPriority: "normal" },
+  CRM_NEXT_ACTION_DUE:         { titleKey: "notifications.crmNextActionDue.title",           bodyKey: "notifications.crmNextActionDue.body",           category: "system",      defaultPriority: "high"   },
+  CRM_QUOTE_EXPIRING:          { titleKey: "notifications.crmQuoteExpiring.title",           bodyKey: "notifications.crmQuoteExpiring.body",           category: "system",      defaultPriority: "normal" },
 };

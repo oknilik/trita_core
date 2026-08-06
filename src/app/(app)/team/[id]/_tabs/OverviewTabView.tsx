@@ -12,6 +12,7 @@ import {
   DashboardSectionHeader,
 } from "@/components/dashboard/DashboardPrimitives";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -226,7 +227,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             >
               <div className="flex gap-1.5">
                 {completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: completedCount }} />}
-                {inProgressCount > 0 && <div className="h-1.5 rounded-full bg-[#d8a253]" style={{ flex: inProgressCount }} />}
+                {inProgressCount > 0 && <div className="h-1.5 rounded-full bg-[var(--color-layer-org-glow)]" style={{ flex: inProgressCount }} />}
                 {waitingCount > 0 && <div className="h-1.5 rounded-full bg-bronze/65" style={{ flex: waitingCount }} />}
               </div>
             </DashboardMetricCard>
@@ -282,22 +283,27 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     : step.type;
                   const pct = step.total > 0 ? Math.round((step.done / step.total) * 100) : 0;
                   return (
-                    <div key={step.type} className="flex items-center gap-3">
-                      <span className="w-44 shrink-0 truncate text-[12px] text-ink-body md:w-56">
+                    <div
+                      key={step.type}
+                      className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
+                    >
+                      <span className="truncate text-[12px] text-ink-body md:w-56 md:shrink-0">
                         {label}
                       </span>
-                      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
-                        <div
-                          className="h-full rounded-full bg-sage transition-all duration-700"
-                          style={{ width: `${pct}%` }}
-                        />
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-sand">
+                          <div
+                            className="h-full rounded-full bg-sage transition-all duration-700"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="w-16 shrink-0 text-right text-[11px] tabular-nums text-muted">
+                          {tf("teamDetail.measurementBreakdownDone", locale, {
+                            done: step.done,
+                            total: step.total,
+                          })}
+                        </span>
                       </div>
-                      <span className="w-16 shrink-0 text-right text-[11px] tabular-nums text-muted">
-                        {tf("teamDetail.measurementBreakdownDone", locale, {
-                          done: step.done,
-                          total: step.total,
-                        })}
-                      </span>
                     </div>
                   );
                 })}
@@ -339,9 +345,9 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       />
                     </div>
                     <div>
-                      <p className="font-mono text-micro uppercase tracking-widest text-bronze">
-                        {isHu ? "// validált csapatkép" : "// validated team picture"}
-                      </p>
+                      <SectionEyebrow>
+                        {isHu ? "validált csapatkép" : "validated team picture"}
+                      </SectionEyebrow>
                       {publishedPattern?.label ? (
                         <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
                           {publishedPattern.label}

@@ -1,6 +1,7 @@
 import { View, Text, Svg, Polygon, Line, Circle, Text as SvgText } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { getDimensionTier } from "@/lib/dimension-utils";
+import { DIMENSION_COLORS, type DimCode } from "@/lib/color-system";
 
 // Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a
 // TRITAN-dimenziókkal + kompakt sávok. A dims tömb a kanonikus
@@ -10,10 +11,18 @@ interface Dim {
   name: string;
   shortName: string;
   value: number;
+  /** Belső dimenziókód (INTE/RESO/…) — a kanonikus hue lookupjához. */
+  code?: string;
 }
 
 const tierColor = (tier: string) =>
   tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
+
+// A sáv a dimenzió kanonikus STRONG színét kapja (print-en is ≥4.5 fehéren);
+// kód híján (örökség-hívó) a tier-szín a fallback. A tier-jelölés (érték-
+// szám színe) változatlanul sage/bronz/ink300.
+const barColor = (code: string | undefined, tier: string) =>
+  (code && DIMENSION_COLORS[code as DimCode]?.strong) || tierColor(tier);
 
 function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
   const n = dims.length || 6;
@@ -91,7 +100,7 @@ export function PdfDimensionChart({ dims }: { dims: Dim[] }) {
             <View key={d.name} style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 5 }}>
               <Text style={{ width: 62, fontSize: 6.5, color: colors.ink500 }}>{d.name}</Text>
               <View style={{ flex: 1, height: 3, backgroundColor: colors.cream300, borderRadius: 1.5 }}>
-                <View style={{ width: `${Math.max(0, Math.min(100, d.value))}%`, height: 3, backgroundColor: tc, borderRadius: 1.5 }} />
+                <View style={{ width: `${Math.max(0, Math.min(100, d.value))}%`, height: 3, backgroundColor: barColor(d.code, tier), borderRadius: 1.5 }} />
               </View>
               <Text style={{ width: 16, fontFamily: "Fraunces", fontSize: 8, color: tc, textAlign: "right" }}>
                 {d.value}

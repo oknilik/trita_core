@@ -132,7 +132,7 @@ export function TeamMembersTab({
             {members.map((m) => (
               <div
                 key={m.id}
-                className={`flex items-center justify-between gap-3 py-3 ${!m.hasAssessment ? "opacity-60" : ""}`}
+                className={`flex flex-col gap-2 py-3 md:flex-row md:items-center md:justify-between md:gap-3 ${!m.hasAssessment ? "opacity-60" : ""}`}
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-ink">
@@ -144,7 +144,7 @@ export function TeamMembersTab({
                     </p>
                   )}
                 </div>
-                <div className="flex shrink-0 items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 md:shrink-0 md:flex-nowrap">
                   <TeamMemberRoleEditor
                     teamId={teamId}
                     userId={m.userId}
@@ -201,7 +201,7 @@ export function TeamMembersTab({
               {pendingInvites.map((inv) => (
                 <div
                   key={inv.id}
-                  className="flex items-center justify-between gap-3 py-3"
+                  className="flex flex-col gap-2 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
                 >
                   <div className="min-w-0 opacity-60">
                     <p className="truncate text-sm font-semibold text-ink">
@@ -211,7 +211,7 @@ export function TeamMembersTab({
                       {t("teamComp.inviteSent", loc)}
                     </p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2 md:shrink-0 md:flex-nowrap">
                     <StatusChip variant="warning">
                       {t("teamComp.pendingStatus", loc)}
                     </StatusChip>

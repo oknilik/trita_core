@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { EmailPreferencesClient } from "./EmailPreferencesClient";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Életciklus-email beállítások — a reflexiós (és jövőbeni hasonló) emailek
 // leiratkozó-linkje ide hoz. Auth-oldal: a címzett a termék belépett usere.
@@ -32,10 +33,9 @@ export default async function EmailPreferencesPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 md:p-10">
-        <p className="font-mono text-micro uppercase tracking-widest text-muted">
-          {"// "}
+        <SectionEyebrow tone="muted">
           {t("results.emailPrefsEyebrow", locale)}
-        </p>
+        </SectionEyebrow>
         <h1 className="mt-2 font-fraunces text-[26px] leading-tight tracking-tight text-ink">
           {t("results.emailPrefsTitle", locale)}
         </h1>

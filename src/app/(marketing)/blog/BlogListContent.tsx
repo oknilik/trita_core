@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n/public";
 import type { BlogPost } from "@/lib/blog";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 
@@ -118,7 +118,7 @@ export function BlogListContent({
   );
 
   const chipClass = (active: boolean) =>
-    `rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
+    `inline-flex min-h-[44px] items-center gap-1 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
       active
         ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white"
         : "border-sand bg-white text-[var(--color-text-secondary)] hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]"

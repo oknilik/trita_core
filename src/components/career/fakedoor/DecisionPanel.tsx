@@ -254,7 +254,7 @@ export function DecisionPanel({
             maxLength={FAKE_DOOR_OTHER_MAX}
             onChange={(event) => setOtherText(event.target.value)}
             placeholder={t("fakeDoor.otherPlaceholder", locale)}
-            className="mt-2 min-h-[44px] w-full rounded-xl border border-sand px-4 text-body text-ink outline-none focus:border-sage"
+            className="mt-2 min-h-[44px] w-full rounded-xl border border-sand px-4 text-base text-ink outline-none focus:border-sage md:text-body"
           />
         )}
 
@@ -282,7 +282,7 @@ export function DecisionPanel({
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder={t("fakeDoor.emailPlaceholder", locale)}
-                  className="mt-2 min-h-[44px] w-full rounded-xl border border-sand bg-white px-4 text-body text-ink outline-none focus:border-sage"
+                  className="mt-2 min-h-[44px] w-full rounded-xl border border-sand bg-white px-4 text-base text-ink outline-none focus:border-sage md:text-body"
                 />
                 <p className="mt-1.5 text-caption text-ink-body">
                   {t("fakeDoor.notifyNote", locale)}

@@ -87,7 +87,7 @@ export function OrgMemberRoleEditor({
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as OrgRole)}
-        className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
+        className="min-h-[44px] rounded-lg border border-sand bg-white px-2 text-base font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50 md:min-h-[36px] md:text-xs"
       >
         {ROLES.map((r) => (
           <option key={r} value={r}>{roleLabel(r, loc)}</option>

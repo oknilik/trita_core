@@ -811,7 +811,7 @@ export function AdminBlogSection({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Keresés címre, slugra, tagre…"
             aria-label="Keresés a cikkek között"
-            className="min-h-[36px] min-w-[220px] flex-1 rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+            className="min-h-[40px] min-w-[220px] flex-1 rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
           />
           <div className="flex flex-wrap items-center gap-1.5">
             {STATUS_FILTERS.filter(
@@ -832,7 +832,7 @@ export function AdminBlogSection({
                   type="button"
                   onClick={() => setStatusFilter(filter.key)}
                   aria-pressed={active}
-                  className={`min-h-[32px] rounded-full border px-3 text-xs font-semibold transition ${
+                  className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold transition ${
                     active
                       ? "border-sage bg-sage text-white"
                       : "border-sand bg-white text-ink-body hover:border-sage-ring"
@@ -850,7 +850,7 @@ export function AdminBlogSection({
                 type="button"
                 onClick={() => setLocaleFilter(loc)}
                 aria-pressed={localeFilter === loc}
-                className={`min-h-[32px] rounded-full border px-3 text-xs font-semibold uppercase transition ${
+                className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold uppercase transition ${
                   localeFilter === loc
                     ? "border-bronze bg-bronze text-white"
                     : "border-sand bg-white text-ink-body hover:border-bronze/50"

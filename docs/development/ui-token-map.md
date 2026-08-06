@@ -1,5 +1,12 @@
 # UI Token Map (globals.css audit)
 
+> **Frissebb és teljesebb kép (2026-08-05): `docs/development/
+> color-system-2026-08.md`** — jelentés-alapú szín-rendszer (dimenzió-,
+> szerep-, réteg- és értékelő tokenek), végrehajtott migrációval. Az alábbi
+> 2026-04-es audit történeti kiindulópont; a state-tokenek és a szemantikus
+> aliasok azóta léteznek, és a `--color-dim/layer/role/eval/state-*-solid`
+> készlettel bővültek.
+
 ## Cél
 
 A jelenlegi `src/app/globals.css` `@theme` blokk auditja, és a hiányzó tokenkészlet megnevezése, hogy a token-architektúra normalizálása tervezhető legyen.

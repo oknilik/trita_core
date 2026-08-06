@@ -12,16 +12,18 @@ import {
   isBalanced,
 } from "@/lib/pattern-data";
 
-// ── Design tokens (pilot page palette) ──────────────────
+// ── Design tokens — a közös paper-téma (globals.css --color-paper-*) ────
+// A hover-bug javítva: az égetett narancs hover nem az alapszín
+// családja volt — az akcent zsálya, a hover sage-dark.
 const T = {
-  bg: "#FAF7F2",
-  card: "#F3EDE4",
-  text: "#2C2420",
-  muted: "#5C4F45",
-  heading: "#1a1410",
-  border: "#E8E0D4",
+  bg: "var(--color-paper-bg)",
+  card: "var(--color-paper-card)",
+  text: "var(--color-paper-text)",
+  muted: "var(--color-paper-muted)",
+  heading: "var(--color-paper-heading)",
+  border: "var(--color-paper-border)",
   accent: "var(--color-action-primary-bg)",
-  accentHover: "#a83508",
+  accentHover: "var(--color-sage-dark)",
 };
 
 // ── Axis Slider ─────────────────────────────────────────────
@@ -68,11 +70,12 @@ function AxisSlider({
         <span>{axis.high}</span>
       </div>
 
-      {/* Track + input */}
-      <div className="relative flex items-center">
+      {/* Track + input — a 44px-es input negatív margóval ül a 20px-es
+          layout-sávban: az érintőfelület nő, a vizuális ritmus marad */}
+      <div className="relative -my-3 flex items-center">
         {/* Visual track — shows balanced zone */}
         <div
-          className="pointer-events-none absolute inset-0 h-2 self-center rounded-full"
+          className="pointer-events-none absolute inset-x-0 top-1/2 h-2 -translate-y-1/2 rounded-full"
           style={{
             background: `linear-gradient(to right,
               rgba(44,36,32,0.09) 35%,
@@ -149,21 +152,21 @@ function PatternCard({
         </p>
 
         {/* Strengths + Risks */}
-        <div className="mt-4 grid grid-cols-2 gap-3">
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
           <div
             className="rounded-xl p-3"
             style={{ backgroundColor: "rgba(46,107,80,0.07)", border: "1px solid rgba(46,107,80,0.15)" }}
           >
             <p
-              className="mb-2 font-mono text-micro uppercase tracking-widest"
-              style={{ color: "#2e6b50" }}
+              className="mb-2 text-label uppercase"
+              style={{ color: "var(--color-sage)" }}
             >
-              {"// erősségek"}
+              erősségek
             </p>
             <ul className="space-y-1">
               {pattern.strengths.map((s) => (
                 <li key={s} className="flex items-start gap-1.5 text-xs" style={{ color: T.text }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: "#2e6b50" }}>✓</span>
+                  <span className="mt-0.5 shrink-0" style={{ color: "var(--color-sage)" }}>✓</span>
                   {s}
                 </li>
               ))}
@@ -174,15 +177,15 @@ function PatternCard({
             style={{ backgroundColor: "rgba(181,101,29,0.07)", border: "1px solid rgba(181,101,29,0.15)" }}
           >
             <p
-              className="mb-2 font-mono text-micro uppercase tracking-widest"
-              style={{ color: "#b5651d" }}
+              className="mb-2 text-label uppercase"
+              style={{ color: "var(--color-eval-mid-fg)" }}
             >
-              {"// vakfoltok"}
+              vakfoltok
             </p>
             <ul className="space-y-1">
               {pattern.risks.map((r) => (
                 <li key={r} className="flex items-start gap-1.5 text-xs" style={{ color: T.text }}>
-                  <span className="mt-0.5 shrink-0" style={{ color: "#b5651d" }}>△</span>
+                  <span className="mt-0.5 shrink-0" style={{ color: "var(--color-eval-mid-fg)" }}>△</span>
                   {r}
                 </li>
               ))}
@@ -230,7 +233,7 @@ function HybridCard({
       <div className="p-6">
         <span
           className="mb-3 inline-block rounded-full px-2.5 py-0.5 font-mono text-micro uppercase tracking-wider"
-          style={{ backgroundColor: "rgba(107,107,107,0.08)", color: "#6b6b6b" }}
+          style={{ backgroundColor: "rgba(110,110,128,0.08)", color: "var(--color-muted)" }}
         >
           Kontextusfüggő működés
         </span>
@@ -293,7 +296,7 @@ const QUADRANTS = [
     label: "Visszafogott + Összetartó",
     desc: "Csendes energia, erős csapatkötés",
     codes: ["0111", "0110", "0101", "0100"],
-    accent: "#2e6b50",
+    accent: "var(--color-sage)",
   },
   {
     label: "Visszafogott + Versengő",
@@ -306,8 +309,8 @@ const QUADRANTS = [
 function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
   return (
     <div className="mt-10 border-t pt-10" style={{ borderColor: T.border }}>
-      <p className="mb-1 font-mono text-micro uppercase tracking-widest" style={{ color: T.muted }}>
-        {"// mind a 16 mintázat"}
+      <p className="mb-1 text-label uppercase" style={{ color: T.muted }}>
+        mind a 16 mintázat
       </p>
       <h3 className="mb-8 font-fraunces text-xl" style={{ color: T.heading }}>
         Összes csapatmintázat
@@ -330,7 +333,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
             </div>
 
             {/* 4 pattern cards */}
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
               {q.codes.map((code) => {
                 const pattern = PATTERNS[code];
                 if (!pattern) return null;
@@ -385,10 +388,10 @@ function AlternativeSection({
       style={{ backgroundColor: T.bg, borderColor: T.border }}
     >
       <p
-        className="mb-2 font-mono text-micro uppercase tracking-widest"
+        className="mb-2 text-label uppercase"
         style={{ color: T.muted }}
       >
-        {"// közeli alternatív mintázat"}
+        közeli alternatív mintázat
       </p>
       <div className="flex items-start justify-between gap-3">
         <div>
@@ -472,10 +475,10 @@ export function PatternExplorer() {
       {/* ── Hero ─────────────────────────────────────── */}
       <section className="mx-auto max-w-5xl px-4 pb-10 pt-12 md:px-6">
         <p
-          className="font-mono text-xs uppercase tracking-widest"
+          className="text-label uppercase"
           style={{ color: T.accent }}
         >
-          {"// csapatminta felfedező"}
+          csapatminta felfedező
         </p>
         <h1
           className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
@@ -502,10 +505,10 @@ export function PatternExplorer() {
               style={{ backgroundColor: "white", borderColor: T.border }}
             >
               <p
-                className="mb-6 font-mono text-micro uppercase tracking-widest"
+                className="mb-6 text-label uppercase"
                 style={{ color: T.muted }}
               >
-                {"// 4 tengelyen beállítható"}
+                4 tengelyen beállítható
               </p>
               <div className="flex flex-col gap-7">
                 {AXIS_META.map((axis, i) => (
@@ -531,10 +534,10 @@ export function PatternExplorer() {
               }}
             >
               <span
-                className="mr-1 font-mono text-micro uppercase tracking-wider"
+                className="mr-1 text-label uppercase"
                 style={{ color: T.accent }}
               >
-                {"// tipp"}
+                tipp
               </span>
               A narancssárga sáv jelzi a{" "}
               <span style={{ color: T.text, fontWeight: 600 }}>kiegyensúlyozott zónát</span>{" "}
@@ -556,7 +559,7 @@ export function PatternExplorer() {
                 {isHybridState && activeCode && (
                   <button
                     onClick={() => setSelectedHybridCode(null)}
-                    className="flex items-center gap-1 text-xs font-semibold"
+                    className="flex min-h-[44px] items-center gap-1 self-start text-xs font-semibold"
                     style={{ color: T.muted }}
                   >
                     ← Vissza a határesethez
@@ -589,7 +592,7 @@ export function PatternExplorer() {
             {/* Show all toggle */}
             <button
               onClick={() => setShowAll((v) => !v)}
-              className="mt-1 text-xs font-semibold underline-offset-2 hover:underline"
+              className="mt-1 inline-flex min-h-[44px] items-center self-start text-xs font-semibold underline-offset-2 hover:underline"
               style={{ color: T.muted }}
             >
               {showAll ? "Elrejtem az összes mintázatot" : "Mutasd az összes 16 mintázatot"}
@@ -615,10 +618,10 @@ export function PatternExplorer() {
       >
         <div className="mx-auto max-w-xl px-6 py-16 text-center">
           <p
-            className="font-mono text-xs uppercase tracking-widest"
+            className="text-label uppercase"
             style={{ color: T.accent }}
           >
-            {"// tudományos személyiségmérés"}
+            tudományos személyiségmérés
           </p>
           <h2
             className="mt-2 font-fraunces text-2xl leading-snug"

@@ -86,36 +86,63 @@ export function PlatformPageShell({
               className="absolute inset-x-0 top-0 h-0.5 bg-[var(--platform-surface-accent)]"
             />
 
+            {/* Morzsasáv (2026-08-05 modernizálás): lista-szemantika (ol/li),
+                finom chevron-szeparátor a nyers „/" helyett, text-caption/muted
+                tipográfia, az utolsó (aktuális) elem text-primary/medium +
+                aria-current="page". A linkek 44px-es érintő-célt kapnak — a
+                negatív függőleges margó tartja kompaktan a sávot —, a hosszú
+                címkék truncate-elnek (mobile-first). */}
             {chrome.breadcrumb && chrome.breadcrumb.length > 0 ? (
-              <nav
-                aria-label="Breadcrumb"
-                className="mb-2 flex flex-wrap items-center gap-1.5 text-[12px]"
-              >
-                {chrome.breadcrumb.map((crumb, index) => {
-                  const isLast = index === chrome.breadcrumb!.length - 1;
-                  return (
-                    <span key={`crumb-${index}`} className="inline-flex items-center gap-1.5">
-                      {index > 0 ? (
-                        <span className="text-text-muted/60">/</span>
-                      ) : null}
-                      {crumb.href && !isLast ? (
-                        <Link
-                          href={crumb.href}
-                          className="text-text-secondary transition-colors hover:text-text-primary"
-                        >
-                          {crumb.label}
-                        </Link>
-                      ) : (
-                        <span className="font-medium text-text-primary">{crumb.label}</span>
-                      )}
-                    </span>
-                  );
-                })}
+              <nav aria-label="Breadcrumb" className="-my-2.5 mb-0.5">
+                <ol className="flex flex-wrap items-center gap-0.5 text-caption text-text-muted">
+                  {chrome.breadcrumb.map((crumb, index) => {
+                    const isLast = index === chrome.breadcrumb!.length - 1;
+                    return (
+                      <li key={`crumb-${index}`} className="flex min-w-0 items-center gap-0.5">
+                        {index > 0 ? (
+                          <svg
+                            aria-hidden
+                            viewBox="0 0 12 12"
+                            className="h-3 w-3 shrink-0 text-text-muted/60"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.4"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path d="M4.5 2.5 8 6l-3.5 3.5" />
+                          </svg>
+                        ) : null}
+                        {crumb.href && !isLast ? (
+                          <Link
+                            href={crumb.href}
+                            className="inline-flex min-h-[44px] items-center rounded-md px-1 transition-colors hover:text-text-primary"
+                          >
+                            <span className="max-w-[9rem] truncate md:max-w-[18rem]">
+                              {crumb.label}
+                            </span>
+                          </Link>
+                        ) : (
+                          <span
+                            aria-current={isLast ? "page" : undefined}
+                            className="inline-flex min-h-[44px] items-center px-1 font-medium text-text-primary"
+                          >
+                            <span className="max-w-[13rem] truncate md:max-w-[24rem]">
+                              {crumb.label}
+                            </span>
+                          </span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
               </nav>
             ) : null}
 
+            {/* Shell-eyebrow: az egységes pötty+label alak (ld. SectionEyebrow),
+                a pötty a felület akcent-színét hordozza. */}
             {chromeEyebrow ? (
-              <div className="mb-2 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-widest text-text-secondary">
+              <div className="mb-2 inline-flex items-center gap-2 text-label uppercase text-text-secondary">
                 <span
                   aria-hidden
                   className="h-1.5 w-1.5 rounded-full bg-[var(--platform-surface-accent)]"

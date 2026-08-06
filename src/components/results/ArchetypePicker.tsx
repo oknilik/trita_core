@@ -25,8 +25,11 @@ interface ArchetypePickerProps {
   onSecondaryChange: (dim: TritanDimCode) => void;
 }
 
+// min-w-0 + a címkéken break-words: 320-360px-en a 3 oszlopos rács cellája
+// ~70-85px, a hosszú magyar dimenzió-nevek („Lelkiismeretesség") különben
+// kilógnának a csempe keretéből a szomszéd sávjába.
 const TILE_BASE =
-  "flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border-[1.5px] p-2.5 text-center transition";
+  "flex min-w-0 cursor-pointer flex-col items-center gap-1.5 rounded-xl border-[1.5px] p-2.5 text-center transition";
 const TILE_IDLE =
   "border-[var(--color-border-soft)] bg-white hover:border-[var(--color-border-default)]";
 const TILE_ACTIVE =
@@ -78,10 +81,10 @@ export function ArchetypePicker({
                   variant="badge"
                   className="h-12 w-12 md:h-14 md:w-14"
                 />
-                <span className="text-caption font-semibold leading-tight text-[var(--color-text-primary)]">
+                <span className="max-w-full break-words text-caption font-semibold leading-tight text-[var(--color-text-primary)]">
                   {personalityNoun(dim, locale) ?? dimName(dim)}
                 </span>
-                <span className="text-micro leading-tight text-[var(--color-text-muted)]">
+                <span className="max-w-full break-words text-micro leading-tight text-[var(--color-text-muted)]">
                   {dimName(dim)}
                 </span>
               </label>
@@ -121,10 +124,10 @@ export function ArchetypePicker({
                   }`}
                   title={DIMENSION_GLYPHS[dim]?.motifName[lang]}
                 />
-                <span className="text-caption font-semibold leading-tight text-[var(--color-text-primary)]">
+                <span className="max-w-full break-words text-caption font-semibold leading-tight text-[var(--color-text-primary)]">
                   {personalityAdjective(dim, locale) ?? dimName(dim)}
                 </span>
-                <span className="text-micro leading-tight text-[var(--color-text-muted)]">
+                <span className="max-w-full break-words text-micro leading-tight text-[var(--color-text-muted)]">
                   {dimName(dim)}
                 </span>
               </label>

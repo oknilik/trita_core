@@ -153,11 +153,11 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
             <defs>
               <linearGradient id="evalFill" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="var(--color-accent-primary)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#8b2f09" stopOpacity="0.1" />
+                <stop offset="100%" stopColor="var(--color-bronze-700)" stopOpacity="0.1" />
               </linearGradient>
               <linearGradient id="evalStroke" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="var(--color-accent-primary)" />
-                <stop offset="100%" stopColor="#8b2f09" />
+                <stop offset="100%" stopColor="var(--color-bronze-700)" />
               </linearGradient>
             </defs>
 

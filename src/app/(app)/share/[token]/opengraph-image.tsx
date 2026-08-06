@@ -7,6 +7,7 @@ import {
   FORM_GEOMETRY,
   GLYPH_COLORS,
 } from "@/lib/type-glyph";
+import { COLORS } from "@/lib/design-tokens";
 
 // A megosztott profil link-előnézete (Slack/LinkedIn/iMessage): a felhasználó
 // archetípus-kártyája a generikus site-kártya helyett. A robots noindex a
@@ -83,7 +84,7 @@ export default async function ShareOpengraphImage({
           width: "100%",
           height: "100%",
           display: "flex",
-          backgroundColor: "#f7f4ef",
+          backgroundColor: COLORS.cream,
         }}
       >
         {/* Bal: glyph-sziluett vagy generikus brand-jel */}
@@ -104,7 +105,7 @@ export default async function ShareOpengraphImage({
                 width: 240,
                 height: 240,
                 borderRadius: 9999,
-                backgroundColor: "#c17f4a",
+                backgroundColor: COLORS.bronze,
                 display: "flex",
               }}
             />
@@ -127,7 +128,7 @@ export default async function ShareOpengraphImage({
                 width: 14,
                 height: 14,
                 borderRadius: 9999,
-                backgroundColor: "#c17f4a",
+                backgroundColor: COLORS.bronze,
               }}
             />
             <div
@@ -136,7 +137,7 @@ export default async function ShareOpengraphImage({
                 fontSize: 26,
                 letterSpacing: 4,
                 textTransform: "uppercase",
-                color: "#3d6b5e",
+                color: COLORS.sage,
               }}
             >
               trita · személyiségprofil
@@ -149,7 +150,7 @@ export default async function ShareOpengraphImage({
                 style={{
                   fontFamily: "DM Sans",
                   fontSize: 30,
-                  color: "#5a5a6e",
+                  color: COLORS.inkBody,
                 }}
               >
                 {model.displayName}
@@ -160,7 +161,7 @@ export default async function ShareOpengraphImage({
                 fontFamily: "Fraunces",
                 fontSize,
                 lineHeight: 1.12,
-                color: "#1a1a2e",
+                color: COLORS.ink,
                 maxWidth: 620,
               }}
             >
@@ -175,7 +176,7 @@ export default async function ShareOpengraphImage({
               alignItems: "center",
             }}
           >
-            <div style={{ fontFamily: "DM Sans", fontSize: 24, color: "#5a5a6e" }}>
+            <div style={{ fontFamily: "DM Sans", fontSize: 24, color: COLORS.inkBody }}>
               Önértékelés + külső visszajelzés, tudományos alapon
             </div>
             <div
@@ -183,7 +184,7 @@ export default async function ShareOpengraphImage({
                 width: 120,
                 height: 6,
                 borderRadius: 9999,
-                backgroundColor: "#c17f4a",
+                backgroundColor: COLORS.bronze,
               }}
             />
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { dimColors } from "@/lib/color-system";
 import { t, tf } from "@/lib/i18n";
 import { TRITAN_DIMENSIONS } from "@/lib/tritan";
 import { GROWTH_BY_POLE, type Pole } from "@/lib/career/growth-content";
@@ -124,8 +125,12 @@ export function CareerGrowthPlan({
             .map((item) => (
               <span
                 key={item.code}
-                className="rounded-full px-2.5 py-1 text-micro font-medium"
-                style={{ backgroundColor: `${item.dimColor}1a`, color: item.dimColor }}
+                className="rounded-full border px-2.5 py-1 text-micro font-medium"
+                style={{
+                  backgroundColor: dimColors(item.dimCode).soft,
+                  color: dimColors(item.dimCode).strong,
+                  borderColor: dimColors(item.dimCode).base,
+                }}
               >
                 {item.label} · {item.score}
               </span>

@@ -232,7 +232,7 @@ export default function ProfilePage() {
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
-    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-caption text-[var(--color-text-primary)] outline-none transition-all ${
+    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] outline-none transition-all md:text-caption ${
       touched && value !== "" && !valid
         ? "border-rose-300 bg-rose-50/50"
         : "border-[var(--color-border-default)] bg-white focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
@@ -262,7 +262,7 @@ export default function ProfilePage() {
             </div>
             <div className="min-w-0">
               <h1 className="truncate font-fraunces text-xl text-[var(--color-text-primary)]">{displayName}</h1>
-              <p className="text-xs text-[var(--color-text-muted)]">{email}</p>
+              <p className="break-all text-xs text-[var(--color-text-muted)]">{email}</p>
             </div>
           </div>
           <p className="text-xs leading-relaxed text-[var(--color-text-muted)]">
@@ -415,17 +415,17 @@ export default function ProfilePage() {
           </div>
           <button
             type="button" onClick={handleSave} disabled={!canSubmitDemo}
-            className={`rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-caption font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
+            className={`inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-caption font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </button>
         </div>
 
         {/* ═══ DANGER BOX ═══ */}
-        <div className="mt-6 overflow-hidden rounded-xl border border-[#e8cece]">
-          <div className="flex items-center gap-1.5 border-b border-[#e8cece] bg-[#fdf6f6] px-[18px] py-3">
-            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#f5dede] text-micro text-[#c0392b]">!</div>
-            <span className="text-xs font-semibold text-[#a93226]">{t("profile.sectionAccount", locale)}</span>
+        <div className="mt-6 overflow-hidden rounded-xl border border-[var(--color-state-error-border)]">
+          <div className="flex items-center gap-1.5 border-b border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)] px-[18px] py-3">
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-state-error-border)] text-micro text-[var(--color-state-error-fg)]">!</div>
+            <span className="text-xs font-semibold text-[var(--color-state-error-fg)]">{t("profile.sectionAccount", locale)}</span>
           </div>
           <div className="bg-white p-[18px]">
             {/* Sign out */}
@@ -434,19 +434,19 @@ export default function ProfilePage() {
                 <p className="text-caption text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
                 <p className="text-micro text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
               </div>
-              <button type="button" onClick={() => { clearLocaleSyncFlag(); void signOut(); }} className="shrink-0 rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
+              <button type="button" onClick={() => { clearLocaleSyncFlag(); void signOut(); }} className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
                 {t("profile.logoutButton", locale)}
               </button>
             </div>
-            <div className="my-2.5 h-px bg-[#f0e0e0]" />
+            <div className="my-2.5 h-px bg-[var(--color-state-error-bg)]" />
             {/* Delete */}
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-caption text-[#a93226]">{t("profile.deleteTitle", locale)}</p>
+                <p className="text-caption text-[var(--color-state-error-fg)]">{t("profile.deleteTitle", locale)}</p>
                 <p className="text-micro text-[var(--color-text-muted)]">{t("profile.deleteBody", locale)}</p>
               </div>
               <button type="button" onClick={() => setShowDeleteModal(true)} disabled={isDeleting}
-                className="shrink-0 rounded-lg border border-[#e8b4b4] bg-[#fdf0f0] px-[18px] py-[7px] text-xs text-[#c0392b] transition-all hover:border-[#d4a0a0] hover:bg-[#f5dede] disabled:opacity-50"
+                className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg border border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)] px-[18px] py-[7px] text-xs text-[var(--color-state-error-fg)] transition-all hover:border-[var(--color-state-error-fg)]/40 hover:bg-[var(--color-state-error-border)]/60 disabled:opacity-50"
               >
                 {isDeleting ? t("actions.deleting", locale) : t("actions.deleteProfile", locale)}
               </button>

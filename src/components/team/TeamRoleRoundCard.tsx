@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { DashboardStatusChip } from "@/components/dashboard/DashboardPrimitives";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface TeamRoleMemberStatus {
   userId: string;
@@ -56,9 +57,9 @@ export function TeamRoleRoundCard({
     <div className="rounded-2xl border border-sand bg-white p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-muted">
-            {isHu ? "// csapat szerep teszt" : "// team role assessment"}
-          </p>
+          <SectionEyebrow tone="muted">
+            {isHu ? "csapat szerep teszt" : "team role assessment"}
+          </SectionEyebrow>
           <h3 className="mt-1 font-fraunces text-[18px] text-ink">
             {isHu ? "Csapatszerep kör" : "Team role round"}
           </h3>
@@ -85,21 +86,21 @@ export function TeamRoleRoundCard({
 
       {/* Progress */}
       <div className="mt-4 grid grid-cols-3 gap-2">
-        <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
+        <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
           <p className="font-fraunces text-[20px] leading-none text-sage-dark">{completedCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
+          <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "kitöltötte" : "completed"}
           </p>
         </div>
-        <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
+        <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
           <p className="font-fraunces text-[20px] leading-none text-bronze">{estimateCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
+          <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "becslésből" : "estimated"}
           </p>
         </div>
-        <div className="rounded-xl border border-sand bg-cream px-3 py-2.5 text-center">
+        <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
           <p className="font-fraunces text-[20px] leading-none text-ink">{totalMembers - completedCount - estimateCount}</p>
-          <p className="mt-1 text-micro uppercase tracking-widest text-muted">
+          <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "hiányzik" : "missing"}
           </p>
         </div>
@@ -125,7 +126,7 @@ export function TeamRoleRoundCard({
 
       {/* Actions */}
       {canManage && (
-        <div className="mt-4 flex items-center gap-3">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="button"
             onClick={() => void toggleRound()}

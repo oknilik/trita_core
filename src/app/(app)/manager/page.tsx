@@ -9,6 +9,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { getManagerCockpitData } from "@/lib/manager-cockpit";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   DashboardMetricCard,
   DashboardPanel,
@@ -165,9 +166,9 @@ export default async function ManagerCockpitPage() {
       <SurfaceHero
         variant="team"
         eyebrow={
-          <p className="text-micro uppercase tracking-widest text-white/[0.28]">
-            {isHu ? "// csapatvezető cockpit" : "// manager cockpit"}
-          </p>
+          <SectionEyebrow tone="onDark">
+            {isHu ? "csapatvezető cockpit" : "manager cockpit"}
+          </SectionEyebrow>
         }
         title={
           <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
@@ -232,7 +233,7 @@ export default async function ManagerCockpitPage() {
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                 <div
                   className="h-full rounded-full"
-                  style={{ width: `${totalCompletionPct}%`, backgroundColor: "#8ad0b4" }}
+                  style={{ width: `${totalCompletionPct}%`, backgroundColor: "var(--color-sage-300)" }}
                 />
               </div>
             </div>
@@ -328,19 +329,19 @@ export default async function ManagerCockpitPage() {
           <DashboardSectionHeader label={isHu ? "Csapatdinamika" : "Team dynamics"} className="mb-4" />
           <div className="grid gap-3 sm:grid-cols-3">
             <DashboardMetricCard
-              accent="var(--color-state-success-strong)"
+              accent="var(--color-state-success-solid)"
               title={isHu ? "Hasonló profil" : "Aligned"}
               value={String(data.teams[0]?.alignedCount ?? 0)}
               sub={isHu ? "Hasonló személyiségprofilú párok" : "Pairs with similar personality profiles"}
             />
             <DashboardMetricCard
-              accent="#d3cfc6"
+              accent="var(--color-state-info-solid)"
               title={isHu ? "Kiegészítő" : "Complementary"}
               value={String(data.teams[0]?.complementaryCount ?? 0)}
               sub={isHu ? "Eltérő de kezelhető profilok" : "Different but manageable profiles"}
             />
             <DashboardMetricCard
-              accent="#f59e0b"
+              accent="var(--color-state-warning-solid)"
               title={isHu ? "Potenciális súrlódás" : "Potential friction"}
               value={String(data.teams[0]?.frictionCount ?? 0)}
               sub={isHu ? "Tudatos kommunikáció szükséges" : "Conscious communication needed"}

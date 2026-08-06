@@ -243,7 +243,7 @@ export function TeamHeroBlock({
             {/* Haladás-gyűrűk — az org-hero élő pillanatképével azonos nyelv */}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <CompletionIndicator percent={completionPct} size={76} color="#8ad0b4" />
+                <CompletionIndicator percent={completionPct} size={76} color="var(--color-sage-300)" />
                 <p className="text-micro leading-tight text-white/[0.72]">
                   {t("teamDetail.snapshotCompletionRate", locale)}
                 </p>

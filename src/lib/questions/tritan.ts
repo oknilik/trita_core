@@ -1,4 +1,5 @@
 import type { TestConfig } from "./types";
+import { DIMENSION_COLORS } from "@/lib/color-system";
 
 /**
  * TSFI kérdésbank v2 (2026-07-16)
@@ -53,7 +54,7 @@ export const tritanConfig: TestConfig = {
         en: "Honesty-Humility",
         hu: "Becsületesség-Alázat",
       },
-      color: "#818CF8",
+      color: DIMENSION_COLORS.INTE.base,
       description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy facetje az Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és korrupció kerülése), a Mohóságkerülés (az anyagi javak és státusz iránti közömbösség) és a Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
       descriptionByLocale: {
         en: "The Honesty-Humility (H) dimension reflects the extent to which a person avoids manipulating others for personal gain, feels little temptation to break rules, is uninterested in lavish wealth and luxury, and feels no special sense of entitlement. Its four facets are Sincerity (genuine, non-manipulative engagement with others), Fairness (avoidance of fraud and exploitation), Greed Avoidance (indifference to material wealth and social status), and Modesty (not viewing oneself as superior or deserving of special treatment).",
@@ -90,7 +91,7 @@ export const tritanConfig: TestConfig = {
         en: "Emotionality",
         hu: "Emocionalitás",
       },
-      color: "#FB7185",
+      color: DIMENSION_COLORS.RESO.base,
       description: "Az emocionalitás (E) dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Dependencia (mások érzelmi támogatásának igénye) és a Szentimentalitás (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
       descriptionByLocale: {
         en: "The Emotionality (E) dimension measures sensitivity to physical danger and life stresses, the need for emotional support from others, and the strength of emotional bonds and empathic sensitivity. Its four facets are Fearfulness (tendency to avoid physical harm), Anxiety (tendency to worry in response to difficulties), Dependence (need for emotional support from others), and Sentimentality (strong emotional attachments and empathic sensitivity to others' feelings).",
@@ -127,7 +128,7 @@ export const tritanConfig: TestConfig = {
         en: "Extraversion",
         hu: "Extraverzió",
       },
-      color: "#F59E0B",
+      color: DIMENSION_COLORS.TEMP.base,
       description: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       descriptionByLocale: {
         en: "The Extraversion (X) dimension reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
@@ -164,7 +165,7 @@ export const tritanConfig: TestConfig = {
         en: "Agreeableness",
         hu: "Barátságosság",
       },
-      color: "#34D399",
+      color: DIMENSION_COLORS.ADAP.base,
       description: "A barátságosság (A) dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Gyengédség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       descriptionByLocale: {
         en: "The Agreeableness (A) dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
@@ -201,7 +202,7 @@ export const tritanConfig: TestConfig = {
         en: "Conscientiousness",
         hu: "Lelkiismeretesség",
       },
-      color: "#A78BFA",
+      color: DIMENSION_COLORS.THOR.base,
       description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolja át alaposan a döntéseit. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Körültekintés (impulzusok kontrollja, a döntések átgondolása).",
       descriptionByLocale: {
         en: "The Conscientiousness (C) dimension measures how organized and structured a person is, how persistently and disciplinedly they work toward goals, their drive for accuracy and thoroughness, and how carefully they deliberate before making decisions. Its four facets are Organization (preference for tidy surroundings and structured schedules), Diligence (strong work ethic and motivation to achieve), Perfectionism (thoroughness and attention to detail), and Prudence (impulse control and careful deliberation).",
@@ -238,7 +239,7 @@ export const tritanConfig: TestConfig = {
         en: "Openness",
         hu: "Nyitottság",
       },
-      color: "#38BDF8",
+      color: DIMENSION_COLORS.OPEN.base,
       description: "A nyitottság (O) dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadóképességet méri. Négy facetje az Esztétikai fogékonyság (elmerülés a természet és a művészet szépségében), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (az innováció és a kísérletezés iránti preferencia, eredeti megoldások keresése) és a Konvenciómentesség (nyitottság a szokatlan, esetleg radikális ötletekre).",
       descriptionByLocale: {
         en: "The Openness to Experience (O) dimension measures aesthetic appreciation, intellectual curiosity, creativity, and receptiveness to unusual ideas and perspectives. Its four facets are Aesthetic Appreciation (absorption in the beauty of art and nature), Inquisitiveness (active seeking of knowledge and experience), Creativity (preference for innovation and experimentation, seeking original solutions), and Unconventionality (openness to ideas that may seem strange or radical).",
@@ -275,7 +276,7 @@ export const tritanConfig: TestConfig = {
         en: "Altruism",
         hu: "Altruizmus",
       },
-      color: "#34D399",
+      color: DIMENSION_COLORS.ADAP.strong,
       description: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
       descriptionByLocale: {
         en: "The Altruism (Interstitial) scale measures the extent to which a person feels genuine sympathy for the less fortunate and is motivated to give generously to those in need. Low scorers are relatively unmoved by others' hardship, while high scorers feel a strong inner drive to help and support those who are weak or in difficulty.",

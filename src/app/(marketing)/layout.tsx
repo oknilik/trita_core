@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Footer } from "@/components/Footer";
-import { HelpWidget } from "@/components/help/HelpWidget";
+import { HelpWidgetLazy } from "./HelpWidgetLazy";
 import { FetchAuthStateProvider } from "@/components/auth/auth-state";
 import { MarketingHeader } from "@/components/layout/MarketingHeader";
 
@@ -10,6 +10,8 @@ import { MarketingHeader } from "@/components/layout/MarketingHeader";
 // egyetlen könnyű /api hívással; a MarketingHeader kijelentkezve a könnyű
 // navot, belépve a teljes app-fejlécet (NavHeaderUI) rendereli — így a
 // belépett látogató a nem védett oldalakon is a megszokott headert látja.
+// A lebegő segítő (HelpWidgetLazy) a tudásbázisával együtt külön, hidratálás
+// utáni chunkba kerül — a kezdő bundle-t nem terheli.
 export default function MarketingLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -21,7 +23,7 @@ export default function MarketingLayout({
         <Footer />
       </Suspense>
       <Suspense>
-        <HelpWidget audience="public" />
+        <HelpWidgetLazy audience="public" />
       </Suspense>
     </FetchAuthStateProvider>
   );

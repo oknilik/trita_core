@@ -1,4 +1,5 @@
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TeamKudos } from "@/components/team/TeamKudos";
 import { TeamFeedbackRequests } from "@/components/team/TeamFeedbackRequests";
 import { TeamHeroBlock } from "./TeamHeroBlock";
@@ -19,9 +20,9 @@ export function FeedbackTabView({ ctx }: { ctx: TeamTabContext }) {
     >
       <TeamHeroBlock ctx={ctx} active="feedback" />
       <div>
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
-          {isHu ? "// visszajelzés" : "// feedback"}
-        </p>
+        <SectionEyebrow>
+          {isHu ? "visszajelzés" : "feedback"}
+        </SectionEyebrow>
         <h1 className="mt-1 font-fraunces text-3xl text-ink">
           {isHu ? "Visszajelzések" : "Feedback"}
         </h1>

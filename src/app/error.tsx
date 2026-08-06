@@ -1,5 +1,7 @@
 "use client";
 
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+
 export default function GlobalError({
   error,
   reset,
@@ -10,9 +12,7 @@ export default function GlobalError({
   return (
     <div className="flex min-h-dvh items-center justify-center bg-cream">
       <div className="max-w-md px-6 text-center">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze mb-2">
-          {"// hiba történt"}
-        </p>
+        <SectionEyebrow className="mb-2">hiba történt</SectionEyebrow>
         <h1 className="font-fraunces text-2xl text-ink mb-4">
           Valami félrement
         </h1>

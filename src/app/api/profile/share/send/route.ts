@@ -4,7 +4,8 @@ import { z } from "zod";
 import crypto from "crypto";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/prisma";
-import { sendProfileShareEmail } from "@/lib/emails";
+import { profileShareUrl, sendProfileShareEmail } from "@/lib/emails";
+import { generateShareQrPng } from "@/lib/share-qr";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
@@ -53,6 +54,11 @@ export async function POST(request: Request) {
     });
   }
 
+  // QR a levélbe: a modal-beli QR-blokk kiváltása — a címzett telefonnal
+  // beolvasva azonnal a megosztott profilra jut. Best-effort (a helper hibán
+  // null-t ad): a levél QR nélkül is kimegy, a küldést a QR sosem buktatja.
+  const qrPng = await generateShareQrPng(profileShareUrl(token));
+
   const locale = await getServerLocale();
   try {
     await sendProfileShareEmail({
@@ -60,6 +66,7 @@ export async function POST(request: Request) {
       senderName: profile.username ?? t("common.userFallback", locale),
       token,
       locale,
+      qrPng,
     });
   } catch {
     return NextResponse.json({ error: "SEND_FAILED" }, { status: 500 });

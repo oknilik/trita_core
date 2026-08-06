@@ -135,3 +135,27 @@ export const DEFAULT_RATE_CARD: RateCard = {
 };
 
 export const RATE_CARD_KEY = "default";
+
+/**
+ * A kalkulátor-bemenet (QuoteInput, ld. calculate.ts) 1:1 zod-tükre —
+ * a CRM Quote-perzisztencia íráskor ezzel validál, az összegeket pedig
+ * SOHA nem a klienstől veszi: a szerver újraszámol (calculateQuote).
+ */
+export const quoteInputSchema = z.object({
+  headcount: z.number().int().min(0).max(10_000),
+  teams: z.number().int().min(1).max(500),
+  steps: z
+    .array(z.enum(QUOTE_STEPS))
+    .refine((steps) => new Set(steps).size === steps.length, {
+      message: "duplicate steps",
+    }),
+  workshopDays: z.number().int().min(0).max(100),
+  travelDays: z.number().int().min(0).max(100),
+  waves: z.number().int().min(0).max(50),
+  retainerMonths: z.number().int().min(0).max(60),
+  discountPct: z.number().int().min(0).max(100),
+  discountKind: z.enum(DISCOUNT_KINDS).nullable(),
+  discountReason: z.string().max(1000),
+});
+
+export type QuoteInputParsed = z.infer<typeof quoteInputSchema>;

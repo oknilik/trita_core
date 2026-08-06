@@ -4,9 +4,13 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { FadeIn } from "@/components/landing/FadeIn";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminNav, type AdminTabId } from "@/app/(app)/admin/_components/AdminNav";
 import { isAdminRange, isAdminSegment, type AdminRange, type AdminSegment } from "@/app/(app)/admin/_components/AdminRangeFilter";
+import { OPEN_DEAL_STAGES } from "@/lib/crm/constants";
+import { resolveCrmDueWindow } from "@/lib/crm/guards";
 import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
+import { CrmTab } from "@/app/(app)/admin/_tabs/CrmTab";
 import { InquiriesTab } from "@/app/(app)/admin/_tabs/InquiriesTab";
 import { OrgsTab } from "@/app/(app)/admin/_tabs/OrgsTab";
 import { ConsultantsTab } from "@/app/(app)/admin/_tabs/ConsultantsTab";
@@ -41,10 +45,11 @@ export async function generateMetadata(): Promise<Metadata> {
 //     kilógott és eltörte a UI-t).
 // A fülök tartalma és lekérdezései változatlanul a _tabs/ könyvtárban.
 // ─────────────────────────────────────────────────────────────────────
-const TAB_IDS = ["overview", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
+const TAB_IDS = ["overview", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
 
 const TAB_TITLES: Record<AdminTabId, string> = {
   overview: "Vezérlő",
+  crm: "CRM",
   inquiries: "Kérdések",
   orgs: "Szervezetek",
   consultants: "Tanácsadók",
@@ -57,28 +62,35 @@ const TAB_TITLES: Record<AdminTabId, string> = {
 export default async function AdminPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; range?: string; seg?: string }>;
+  searchParams: Promise<{ tab?: string; range?: string; seg?: string; view?: string }>;
 }) {
   await requireAdmin();
   const locale = await getServerLocale();
-  const { tab, range: rangeParam, seg: segParam } = await searchParams;
+  const { tab, range: rangeParam, seg: segParam, view } = await searchParams;
   const range: AdminRange = isAdminRange(rangeParam) ? rangeParam : "30d";
   const segment: AdminSegment = isAdminSegment(segParam) ? segParam : "all";
   const activeTab: AdminTabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
     ? (tab as AdminTabId)
     : "overview";
 
-  // Új megkeresések száma a nav-badge-hez (olcsó indexelt count).
-  const newInquiryCount = await prisma.inquiry
-    .count({ where: { status: "NEW" } })
-    .catch(() => 0);
+  // Nav-badge-ek (olcsó indexelt countok): új megkeresések + esedékes
+  // (lejárt vagy mai) CRM next actionök nyitott dealeken.
+  const { dueBefore } = resolveCrmDueWindow();
+  const [newInquiryCount, crmDueCount] = await Promise.all([
+    prisma.inquiry.count({ where: { status: "NEW" } }).catch(() => 0),
+    prisma.deal
+      .count({
+        where: { stage: { in: [...OPEN_DEAL_STAGES] }, nextActionAt: { lt: dueBefore } },
+      })
+      .catch(() => 0),
+  ]);
 
   return (
     <main className="min-h-dvh bg-cream px-4 pt-6 pb-24 md:px-6 md:pt-8">
       <div className="mx-auto max-w-7xl">
         <FadeIn>
           <div className="mb-4 flex flex-wrap items-baseline gap-x-3 gap-y-1 lg:mb-6">
-            <p className="font-mono text-xs uppercase tracking-widest text-bronze">{"// admin"}</p>
+            <SectionEyebrow>admin</SectionEyebrow>
             <h1 className="font-fraunces text-2xl text-ink md:text-3xl">
               {TAB_TITLES[activeTab]}
             </h1>
@@ -88,12 +100,17 @@ export default async function AdminPage({
 
         <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[230px_minmax(0,1fr)] lg:items-start lg:gap-6">
           <FadeIn delay={0.05}>
-            <AdminNav active={activeTab} newInquiryCount={newInquiryCount} />
+            <AdminNav
+              active={activeTab}
+              newInquiryCount={newInquiryCount}
+              crmDueCount={crmDueCount}
+            />
           </FadeIn>
 
           <FadeIn delay={0.1}>
             <div className="min-w-0">
               {activeTab === "overview" && <OverviewTab locale={locale} range={range} segment={segment} />}
+              {activeTab === "crm" && <CrmTab view={view} />}
               {activeTab === "inquiries" && <InquiriesTab />}
               {activeTab === "orgs" && <OrgsTab />}
               {activeTab === "consultants" && <ConsultantsTab />}

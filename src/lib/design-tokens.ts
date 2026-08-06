@@ -29,6 +29,7 @@ export const COLORS = {
   inkWarm:     "#7a756e",
   muted:       "#6e6e80", // 3.4:1→5.0:1 fehéren — globals.css-szinkron (tipó-audit #8)
   mutedWarm:   "#7c786f", // 2.7:1→4.4:1 fehéren — globals.css-szinkron (tipó-audit #8)
+  ink300:      "#8a8a9a", // halvány metaadat/grafikai szürke (= --color-ink-300)
 
   // Surface
   cream:       "#f7f4ef",
@@ -75,6 +76,7 @@ export const PDF_COLORS = {
   bronzeLight: "#d4a67a",
   bronze100: "#faf0e6",
   bronzeDark: "#a0623a",
+  bronze700: "#8a5530", // gap/magnitúdó-rámpa legmélyebb foka (= --color-bronze-700)
   ink: COLORS.ink,
   ink500: COLORS.inkBody,
   ink300: COLORS.muted,

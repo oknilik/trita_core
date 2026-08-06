@@ -90,11 +90,13 @@ export function ArticleToc({
 
   if (variant === "mobile") {
     return (
-      <details className="mb-6 rounded-xl border border-sand bg-white px-5 py-3.5 md:hidden">
-        <summary className="cursor-pointer list-none text-label uppercase tracking-widest text-[var(--color-text-muted)]">
+      <details className="mb-6 rounded-xl border border-sand bg-white md:hidden">
+        {/* A padding a summary-n van, hogy a teljes kártyafelület legyen a
+            toggle érintőcélja (min. 44px) — nem csak a szövegsor */}
+        <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-5 py-3.5 text-label uppercase tracking-widest text-[var(--color-text-muted)]">
           {labels.inThisArticle}
         </summary>
-        <div className="pt-3">{list}</div>
+        <div className="px-5 pb-3.5">{list}</div>
       </details>
     );
   }

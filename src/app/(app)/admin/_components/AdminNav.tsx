@@ -13,6 +13,7 @@ import Link from "next/link";
 
 export type AdminTabId =
   | "overview"
+  | "crm"
   | "inquiries"
   | "orgs"
   | "consultants"
@@ -35,7 +36,7 @@ interface NavGroup {
 
 const ICON = "h-4 w-4 shrink-0";
 
-function buildGroups(newInquiryCount: number): NavGroup[] {
+function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
   return [
     {
       label: null,
@@ -57,6 +58,18 @@ function buildGroups(newInquiryCount: number): NavGroup[] {
     {
       label: "Ügyfelek",
       items: [
+        {
+          // CRM — a napi értékesítési hurok (Ma/Beérkező/Pipeline/Lezártak);
+          // a badge az esedékes (lejárt + mai) next actionök száma.
+          id: "crm",
+          label: "CRM",
+          badge: crmDueCount > 0 ? crmDueCount : undefined,
+          icon: (
+            <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1.5 2h13L10 7.5V13l-4 1.5V7.5L1.5 2Z" />
+            </svg>
+          ),
+        },
         {
           id: "inquiries",
           label: "Kérdések",
@@ -157,11 +170,13 @@ function Badge({ value, active }: { value: number; active: boolean }) {
 export function AdminNav({
   active,
   newInquiryCount = 0,
+  crmDueCount = 0,
 }: {
   active: AdminTabId;
   newInquiryCount?: number;
+  crmDueCount?: number;
 }) {
-  const groups = buildGroups(newInquiryCount);
+  const groups = buildGroups(newInquiryCount, crmDueCount);
   const flat = groups.flatMap((g) => g.items);
 
   return (
