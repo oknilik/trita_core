@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics/client";
 
 // Olvasási progress-bar a cikk tetején — halk, 3px, bronz gradiens.
 // rAF-fal fojtott scroll-listener; a dokumentum teljes görgethető
 // magasságához mér.
-export function ReadingProgress() {
+export function ReadingProgress({ slug }: { slug?: string }) {
   const [progress, setProgress] = useState(0);
+  // P6: olvasási mélység — mérföldkövenként EGYSZER. A progress-bar úgyis
+  // folyamatosan számol, ezért a mérés ingyen jár: nincs külön listener.
+  const reachedRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     let raf = 0;
@@ -14,7 +18,15 @@ export function ReadingProgress() {
       raf = 0;
       const doc = document.documentElement;
       const max = doc.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0);
+      const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      setProgress(ratio);
+
+      if (!slug) return;
+      for (const milestone of [25, 50, 75, 100] as const) {
+        if (ratio * 100 < milestone || reachedRef.current.has(milestone)) continue;
+        reachedRef.current.add(milestone);
+        track("blog.read_progress", { slug, milestone });
+      }
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -27,7 +39,7 @@ export function ReadingProgress() {
       window.removeEventListener("resize", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [slug]);
 
   return (
     <div

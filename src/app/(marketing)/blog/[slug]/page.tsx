@@ -328,7 +328,7 @@ export default async function BlogPostPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <ReadingProgress />
+      <ReadingProgress slug={post.slug} />
       <TranslationRedirect
         postLocale={post.locale}
         translationSlug={post.translationSlug}

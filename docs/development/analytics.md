@@ -72,6 +72,7 @@ megőrzési idő vagy a jogalap változik, OTT IS át kell vezetni.
 | `src/app/api/cron/analytics-retention/route.ts` | Heti takarítás. |
 | `src/app/(app)/admin/_tabs/AnalyticsTab.tsx` | Az admin „Analitika" fül. |
 | `src/components/analytics/AnalyticsPageView.tsx` | Oldalletöltés-mérés a layoutban. |
+| `src/components/analytics/TabViewTracker.tsx` | Fül-megtekintés — EGY komponens mind a három fülrendszerhez. |
 
 ---
 
@@ -105,6 +106,36 @@ megőrzési idő vagy a jogalap változik, OTT IS át kell vezetni.
 **Amit soha ne tegyél eseménybe:** e-mail, név, szabad szöveg, kérdőív-válasz,
 dimenzió-pontszám, meghívó-token, szervezet- vagy csapatnév. Ha egy szám
 érdekel (pl. csapatméret), tedd SÁVBA (`"6-10"`), ne pontos értékbe.
+
+### Fül-mérés: miért komponens, és nem a váltás-kezelő
+
+A `TabViewTracker` prop-változásra tüzel, nem kattintásra. Három ok:
+
+1. **A kezdő fül is fül-megtekintés.** A váltás-kezelő csak a kattintást
+   látná; a „melyik fülre érkezik, és ott meg is áll" — a használat-kérdés
+   érdemi fele — kimaradna.
+2. **A négy fülrendszer másképp működik.** A `/team/[id]` SZERVER-oldalon
+   oldja fel a `?tab=`-ot (nincs kliens-oldali kezelő, amibe be lehetne
+   kötni); a `ProfileTabs` és az `OrgPageShell` kliens-állapotban tartja; a
+   mélylinkelt `?tab=` pedig mindkettőnél kezelő nélkül vált.
+3. Egy helyen dől el, mi számít duplikátumnak (ugyanaz a felület+fül pár egy
+   szerelés alatt egyszer megy ki).
+
+Bekötve: `results` (ProfileTabs), `team` (`/team/[id]`), `org`
+(OrgPageShell). A **manager cockpitnak nincs fülrendszere** — ott a
+`page.view` fedi le a használatot. Az **admin-felület szándékosan
+méretlen**: a saját belső használatunk zaj a termék-kérdésekhez.
+
+### Lefedettség-őrzés
+
+`tests/unit/analytics/instrumentation-coverage.test.ts` a FORRÁSKÓDOT
+pásztázza, és elbukik, ha:
+
+- egy katalógusban deklarált eseménynek nincs hívóhelye („deklarált, de
+  sosem érkezik" — rosszabb, mintha nem is lenne: az admin-felületen üres
+  sorként ül, és senki nem tudja, hiba-e vagy tényleg nem történt meg),
+- valaki nem létező esemény-névre hív,
+- szerver-only eseményt kliens-oldali `track()` küld (vagy fordítva).
 
 ---
 

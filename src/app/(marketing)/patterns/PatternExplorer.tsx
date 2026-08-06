@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
+import { track } from "@/lib/analytics/client";
 import {
   AXIS_META,
   PATTERNS,
@@ -466,6 +467,17 @@ export function PatternExplorer() {
       break;
     }
   }
+
+  // P6: melyik mintázatot dobja ki a felfedező — ebből derül ki, mi hozza
+  // vissza a látogatót, és melyik minta a beszélgetés-indító. Mintánként
+  // egyszer, a csúszka-mozgatás közben ne szórjunk eseményt.
+  const trackedPatternsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    const code = activeCode ?? bestCode;
+    if (!code || trackedPatternsRef.current.has(code)) return;
+    trackedPatternsRef.current.add(code);
+    track("patterns.explore", { pattern_code: code });
+  }, [activeCode, bestCode]);
 
   const setAxisValue = (idx: number, val: number) =>
     setValues((prev) => prev.map((v, i) => (i === idx ? val : v)));

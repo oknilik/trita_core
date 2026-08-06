@@ -28,7 +28,7 @@ termék-adatokkal; profil-törléskor NULL-ra áll.
 
 **Könyvtár** (`src/lib/analytics/`):
 
-- `events.ts` — **zárt esemény-katalógus**: 17 esemény, mindegyik zod
+- `events.ts` — **zárt esemény-katalógus**: 19 esemény, mindegyik zod
   `.strict()` sémával, iránnyal (`client`/`server`/`both`), leírással és a
   mérési kérdés azonosítójával (P1-P7 / A1-A7). Ez a PII-védelem szerkezeti
   garanciája: ismeretlen kulcs = eldobás.
@@ -66,6 +66,10 @@ a régi hívások változatlanok).
 | `/api/contact` | `inquiry.submit` (szerver) |
 | `/api/observer/invite`, `/api/observer/submit` | `observer.invite_created`, `observer.assessment_complete` (szerver) |
 | kampány-aktiválás | `campaign.step_launch` (szerver) |
+| `ProfileTabs`, `/team/[id]`, `OrgPageShell` | `surface.tab_view` (közös `TabViewTracker`) |
+| PDF-letöltés, megosztó-link, megosztó-kép | `results.export` |
+| `ReadingProgress` | `blog.read_progress` (25/50/75/100%) |
+| `PatternExplorer` | `patterns.explore` |
 
 **Adatvédelmi átvezetés** (`src/lib/i18n/auth.ts`, `privacy.*`): a technikai
 adatkör bővült a használati eseményekkel; a süti-szakasz kimondja, hogy a
@@ -76,7 +80,7 @@ jogalapot és a 12 hónapos megőrzést; a jogok közé bekerült a **tiltakozá
 
 ## Őrzés
 
-Új `tests/unit/analytics/` réteg (23 teszt):
+Új `tests/unit/analytics/` réteg (27 teszt) + egy client-teszt:
 
 - **katalógus-teszt** — minden séma zárt; nincs tiltott nevű tulajdonság
   (email, name, token, message, answer, score…); minden eseményhez tartozik
@@ -85,23 +89,40 @@ jogalapot és a 12 hónapos megőrzést; a jogok közé bekerült a **tiltakozá
 - **kontextus-teszt** — a token-útvonalak sablonra cserélődnek; a query
   string sosem tárolódik; a látogató-azonosító naponta rotál és nem
   tartalmazza az IP-t; bot-szűrés; UTM; megőrzési határ.
+- **lefedettség-teszt** — minden deklarált eseménynek van hívóhelye, nincs
+  hívás nem létező névre, és a szerver/kliens irány betartva.
 
-Verifikáció: `pnpm check` 0 hiba · unit 528 · client 110 · dummy-env prod
-build zöld, a `/` továbbra is statikusan prerenderelt (a mérés nem törte el
-a marketing-fa statikus renderét).
+## Ugyanebben a körben: a maradék négy esemény bekötve
+
+Az első vágásban négy esemény deklarálva volt, de hívóhely nélkül. Mind
+bekerült:
+
+- **`surface.tab_view`** — új, közös `TabViewTracker` komponens mind a
+  három fülrendszerre (`results`, `team`, `org`). Prop-változásra tüzel, nem
+  kattintásra: így a KEZDŐ fül is mérve van, és a szerver-oldalon feloldott
+  `/team/[id]?tab=` is (ott nincs kliens-oldali váltás-kezelő). A manager
+  cockpitnak nincs fülrendszere (a `page.view` fedi); az admin-felület
+  szándékosan méretlen.
+- **`results.export`** — PDF-letöltés, megosztó-link és megosztó-kép. A
+  letöltés SZÁNDÉKÁT mérjük (kattintás), nem a fájl elkészültét.
+- **`blog.read_progress`** — a meglévő `ReadingProgress` scroll-számításába
+  kötve (nincs új listener), mérföldkövenként egyszer.
+- **`patterns.explore`** — a felfedező által kidobott mintázat, mintánként
+  egyszer (a csúszka-mozgatás nem szór eseményt).
+
+**Új guardrail**: `instrumentation-coverage.test.ts` a forráskódot pásztázza,
+és elbukik, ha egy deklarált eseménynek nincs hívóhelye, ha nem létező névre
+hívnak, vagy ha szerver-only eseményt kliens-oldali `track()` küldene. Ez a
+teszt pont ezt a rést fogta volna meg az első körben.
+
+Új client-teszt: `tab-view-tracker.test.tsx` (kezdő fül mérve, azonos fül nem
+duplikál, váltásra új esemény, nem renderel DOM-ot).
 
 ## Nyitott / következő kör
 
 1. **`ANALYTICS_SALT` beállítása élesben** — enélkül a látogató-azonosító
    kitalálható egy ismert IP+UA párból. A kód figyelmeztet, ha hiányzik.
-2. Auth-mögötti fül-mérés (`surface.tab_view`) és export (`results.export`)
-   a katalógusban DEKLARÁLVA van, de a hívások még nincsenek beépítve —
-   ez a következő kör (a fülrendszerek külön-külön kezelik az aktív fület,
-   nincs közös Tabs primitív).
-3. Blog olvasási mélység (`blog.read_progress`) szintén deklarált, de a
-   `ReadingProgress` komponensbe még nincs bekötve.
-4. A `/patterns` `patterns.explore` eseménye deklarált, bekötetlen.
-5. Az adatvédelmi tájékoztató a `claude/privacy-page-refresh` branchen
+2. Az adatvédelmi tájékoztató a `claude/privacy-page-refresh` branchen
    újraírt (17 szakaszos) változatba is átvezetendő — ott a `purposes`
    táblába kell egy sor a használat-mérésről, és a `recipients` szakasz
    ÉRINTETLEN maradhat, mert nincs új adatfeldolgozó.
