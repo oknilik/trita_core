@@ -17,7 +17,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
   title: "Személyiségteszt és csapatdiagnosztika | Trita",
   description:
-    "HEXACO-alapú személyiségteszt magyarul, 360°-os visszajelzés és csapatdiagnosztika: mérhető csapatdinamika, tanácsadói értelmezéssel. Az egyéni felmérés ingyenes.",
+    "Személyiségteszt hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika magyarul: mérhető csapatdinamika, tanácsadói értelmezéssel. Az egyéni felmérés ingyenes.",
   ogTitle: "Trita — személyiség- és csapatintelligencia",
   ogDescription:
     "Mérhető személyiség- és csapatdinamika insightok felvételhez, fejlesztéshez és döntéstámogatáshoz.",
@@ -41,8 +41,8 @@ export default function Home() {
             path: "/",
             title: "Személyiségteszt és csapatdiagnosztika | Trita",
             description:
-              "HEXACO-alapú személyiségteszt magyarul, 360°-os visszajelzés és csapatdiagnosztika: mérhető csapatdinamika, tanácsadói értelmezéssel.",
-            about: ["Személyiségteszt", "Csapatdiagnosztika", "HEXACO személyiségmodell"],
+              "Személyiségteszt hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika magyarul: mérhető csapatdinamika, tanácsadói értelmezéssel.",
+            about: ["Személyiségteszt", "Csapatdiagnosztika", "Hatfaktoros személyiségmodell"],
           }),
         ]}
       />

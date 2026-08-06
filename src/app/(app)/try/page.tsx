@@ -63,15 +63,15 @@ export default async function TryPage() {
           buildAssessmentAppJsonLd({
             name: "Trita személyiségteszt (TSFI)",
             description:
-              "Ingyenes, HEXACO-alapú online személyiségteszt magyarul: 60 kérdés, kb. 10 perc, azonnali dimenziószintű visszajelzés. Regisztráció nélkül indítható.",
+              "Ingyenes online személyiségteszt magyarul: 60 kérdés, kb. 10 perc, azonnali visszajelzés hat személyiségdimenzió mentén. Regisztráció nélkül indítható.",
             path: "/try",
             featureList: [
               "60 kérdéses rövid forma (TSFI-S)",
               "Kitöltés kb. 10 perc",
               "Regisztráció nélkül indítható",
-              "HEXACO hat dimenzió: Becsületesség-Alázat, Emocionalitás, Extraverzió, Barátságosság, Lelkiismeretesség, Nyitottság",
+              "Hat személyiségdimenzió: Becsületesség-Alázat, Emocionalitás, Extraverzió, Barátságosság, Lelkiismeretesség, Nyitottság",
               "Azonnali, dimenziószintű visszajelzés",
-              "IPIP közkincs itemekből épített kérdésbank",
+              "Szabadon felhasználható, kutatásban használt kérdésbank (IPIP)",
             ],
           }),
           buildBreadcrumbJsonLd([

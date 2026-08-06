@@ -66,9 +66,17 @@ export function webPageId(path: string): string {
 
 // ── Alap-entitások ──────────────────────────────────────────────────────────
 
+/**
+ * NYELVEZET: a modellt NEM márkanévvel („HEXACO-alapú") kommunikáljuk, hanem
+ * azzal, amit a látogató megért: hat személyiségdimenzió. Ahol modellnevet
+ * kell mondani, ott „hatfaktoros személyiségmodell". A HEXACO megnevezés a
+ * módszertani/irodalmi hivatkozásokban marad (results.ts hivatkozás-jegyzet,
+ * `docs/product/tsfi-item-provenance.md`, `/llms.txt` módszertani sora) — ott
+ * hitelesít, a marketing-szövegben viszont csak zajt visz.
+ */
 const ORG_DESCRIPTION: Record<Locale, string> = {
-  hu: "A Trita személyiség- és csapatintelligencia platform: HEXACO-alapú személyiségfelmérés, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
-  en: "Trita is a personality and team intelligence platform: HEXACO-based personality assessment, 360° feedback and team diagnostics with consultant-led interpretation.",
+  hu: "A Trita személyiség- és csapatintelligencia platform: személyiségfelmérés hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
+  en: "Trita is a personality and team intelligence platform: personality assessment across six dimensions, 360° feedback and team diagnostics with consultant-led interpretation.",
 };
 
 /**
@@ -81,7 +89,7 @@ const ORG_DESCRIPTION: Record<Locale, string> = {
  */
 const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
   hu: [
-    "HEXACO személyiségmodell",
+    "hatfaktoros személyiségmodell",
     "személyiségteszt",
     "munkahelyi személyiségfelmérés",
     "csapatdiagnosztika",
@@ -95,7 +103,7 @@ const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
     "pszichometria",
   ],
   en: [
-    "HEXACO personality model",
+    "six-factor personality model",
     "personality assessment",
     "workplace psychometrics",
     "team diagnostics",

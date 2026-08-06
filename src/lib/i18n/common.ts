@@ -5,11 +5,11 @@ export const commonTranslations = {
       en: "Trita - Personality and Team Intelligence",
     },
     // SEO: a leírás a KERESETT kifejezéssel indul („személyiségteszt
-    // magyarul" / „HEXACO"), nem a felszólítással — a snippet első
+    // magyarul"), nem a felszólítással — a snippet első
     // szavai döntik el, hogy a találat relevánsnak látszik-e.
     description: {
-      hu: "HEXACO-alapú személyiségteszt magyarul: vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
-      en: "HEXACO-based personality assessment: compare your self-image with feedback from people who know you, and see how your team really works.",
+      hu: "Személyiségteszt magyarul, hat dimenzió mentén: vesd össze az önértékelésed a környezeted visszajelzésével, és lásd tisztán a csapatod működését.",
+      en: "A personality test across six dimensions: compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
       hu: "Teszt kitöltése | Trita",

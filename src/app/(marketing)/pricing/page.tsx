@@ -55,7 +55,7 @@ export default function PricingPage() {
               {
                 name: "Egyéni személyiségfelmérés",
                 description:
-                  "HEXACO-alapú, kb. 10 perces felmérés dimenziószintű riporttal, munkastílus- és karrierképpel. Ingyenes.",
+                  "Kb. 10 perces személyiségfelmérés hat dimenzió mentén, dimenziószintű riporttal, munkastílus- és karrierképpel. Ingyenes.",
               },
               {
                 name: "360°-os observer-visszajelzés",

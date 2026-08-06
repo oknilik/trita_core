@@ -72,8 +72,9 @@ const PRIVATE_PATHS = [
  *   Perplexity-User, Claude-User, Claude-SearchBot, Google-Extended,
  *   Applebot-Extended, Bingbot, DuckDuckBot) — ezek egy KONKRÉT felhasználói
  *   kérdésre keresnek forrást, és HIVATKOZNAK ránk. Ez az AI-keresőoptimalizálás
- *   értelme: a magyar nyelvű „mi az a HEXACO?" / „csapatdiagnosztika" típusú
- *   kérdéseknél mi legyünk az idézett forrás. Ezeket ENGEDJÜK.
+ *   értelme: a magyar nyelvű „milyen személyiségteszt van magyarul?" /
+ *   „csapatdiagnosztika" típusú kérdéseknél mi legyünk az idézett forrás.
+ *   Ezeket ENGEDJÜK.
  *
  * • TANÍTÓADAT-GYŰJTÉS (GPTBot, ClaudeBot, CCBot, meta-externalagent,
  *   Bytespider) — modell-tréninghez másolják le a tartalmat, hivatkozás és

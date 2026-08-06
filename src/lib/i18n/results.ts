@@ -714,8 +714,8 @@ export const resultsTranslations = {
       en: "Whoever opens the link sees: all six of your dimensions with scores and interpretation, your work-style narrative, your ideal environment and role fit, and your team-role tendencies.",
     },
     radarNote: {
-      hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a HEXACO-dimenziók: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
-      en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the HEXACO dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
+      hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a hat személyiségdimenzió: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
+      en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the six personality dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
     },
     growthIntro: {
       hu: "Ezeken a területeken adtad magadnak a legalacsonyabb értékeket — nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
@@ -1022,8 +1022,8 @@ export const resultsTranslations = {
     ccIntroHowLabel: { hu: "Hogyan áll össze", en: "How it comes together" },
     ccIntroStep1Title: { hu: "A profilod", en: "Your profile" },
     ccIntroStep1Body: {
-      hu: "A kitöltött kérdőívből származó HEXACO-dimenziók és alskálák — ez az alap.",
-      en: "The HEXACO dimensions and facets from the questionnaire you completed — that's the base.",
+      hu: "A kitöltött kérdőívből származó személyiségdimenziók és alskálák — ez az alap.",
+      en: "The personality dimensions and facets from the questionnaire you completed — that's the base.",
     },
     ccIntroStep2Title: { hu: "A válaszaid", en: "Your answers" },
     ccIntroStep2Body: {
@@ -1367,8 +1367,8 @@ export const resultsTranslations = {
     },
     ccMethodTitle: { hu: "Mire épül ez a becslés?", en: "What is this estimate based on?" },
     ccMethodBody1: {
-      hu: "Az illeszkedés a HEXACO hatfaktoros személyiségmodellre épül: minden szerephez a szakirodalom alapján kulcs-dimenziók és alskálák tartoznak iránnyal és súllyal, az illeszkedés ezek súlyozott átlaga (0–100).",
-      en: "Fit is based on the HEXACO six-factor personality model: each role has key dimensions and facets with direction and weight, and fit is their weighted average (0–100).",
+      hu: "Az illeszkedés hatfaktoros személyiségmodellre épül: minden szerephez a szakirodalom alapján kulcs-dimenziók és alskálák tartoznak iránnyal és súllyal, az illeszkedés ezek súlyozott átlaga (0–100).",
+      en: "Fit is based on a six-factor personality model: each role has key dimensions and facets with direction and weight, and fit is their weighted average (0–100).",
     },
     ccMethodBody2: {
       hu: "A meta-analízisek szerint a lelkiismeretesség és a becsületesség-alázat a legerősebb általános munkahelyi prediktorok; a többi dimenzió szereptől függően számít. A preferenciáid (ember/adat, változatosság, önállóság, alkotás) a rangsort árnyalják, a Holland-kód becslés döntetlen-bontó.",
