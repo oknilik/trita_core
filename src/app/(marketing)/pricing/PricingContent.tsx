@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {

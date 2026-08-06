@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 const sections = [

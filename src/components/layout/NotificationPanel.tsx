@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, tf } from "@/lib/i18n";
-import type { Locale } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n/public";
+import type { Locale } from "@/lib/i18n/public";
 import { useNotifications } from "./NotificationsProvider";
 
 interface NotificationPanelProps {

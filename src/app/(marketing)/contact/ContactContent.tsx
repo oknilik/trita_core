@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { ContactForm } from "./ContactForm";
 
 export function ContactContent() {

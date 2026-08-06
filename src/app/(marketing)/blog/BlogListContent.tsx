@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
-import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n/public";
 import type { BlogPost } from "@/lib/blog";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 

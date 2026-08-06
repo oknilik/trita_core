@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import type { Locale } from "@/lib/i18n";
-import { t } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n/public";
+import { t } from "@/lib/i18n/public";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
 

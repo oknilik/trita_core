@@ -485,9 +485,8 @@ export const resultsTranslations = {
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
     howYouWorkContext: { hu: "Kontextus", en: "Context" },
     envEyebrow: { hu: "Ideális környezet", en: "Ideal environment" },
-    // UX-B12: a szomszédos „Csapatszerep-hajlamok" szekcióval ütközött a
-    // „szerep" — ez itt munkakör-típusok illeszkedése, nem csapatszerep.
-    roleFitEyebrow: { hu: "Munkakör-illeszkedés", en: "Work-role fit" },
+    // A `results.roleFitEyebrow` a shared-labels.ts-ben él: a publikus
+    // landing-hero is használja, és így nem húzza be ezt a 137 KB-os fájlt.
     roleFitStrong: { hu: "Erős illeszkedés", en: "Strong fit" },
     roleFitMight: { hu: "Működhet, ha felkészülsz", en: "May work with preparation" },
     roleFitPrep: { hu: "Ahol segít a felkészülés", en: "Where preparation helps" },
@@ -1453,7 +1452,7 @@ export const resultsTranslations = {
     accFacetDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
     howYouWorkSub: { hu: "Milyen környezetben működsz jól — és hol jöhetnek súrlódások", en: "Where you thrive — and where friction may arise" },
     profileSummary: { hu: "Profil összefoglaló", en: "Profile summary" },
-    roleFitStrong: { hu: "Jól illeszkedsz ide", en: "You fit well here" },
+    // A `content.roleFitStrong` a shared-labels.ts-ben él (publikus hero is).
     roleFitMaybe: { hu: "Működhet, ha felkészülsz", en: "May work with preparation" },
     roleFitPrep: { hu: "Felkészüléssel működhet", en: "Works with preparation" },
     teamRoleSub: { hu: "A személyiségmintázataid alapján ezek a csapatszerepek illenek hozzád.", en: "Based on your personality patterns, these team roles suit you." },

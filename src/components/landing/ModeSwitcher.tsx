@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { setSiteMode, useSiteMode, type SiteMode } from "@/components/landing/site-mode";
 
 export type { SiteMode };

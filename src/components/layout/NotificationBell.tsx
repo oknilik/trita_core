@@ -1,8 +1,8 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
-import type { Locale } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
+import type { Locale } from "@/lib/i18n/public";
 import { useNotifications } from "./NotificationsProvider";
 
 interface NotificationBellProps {

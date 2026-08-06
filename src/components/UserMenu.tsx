@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 
 // A publikus/nav UserMenu — a belépett látogató identitása a nav auth-context-

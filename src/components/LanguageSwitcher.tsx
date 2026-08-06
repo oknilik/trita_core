@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
+import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/public";
 
 export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" }) {
   const { locale, setLocale } = useLocale();

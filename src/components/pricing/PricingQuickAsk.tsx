@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { t, type Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n/public";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 /**

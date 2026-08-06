@@ -8,7 +8,7 @@ import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
-import { t } from "@/lib/i18n";
+import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
