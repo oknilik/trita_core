@@ -9,6 +9,7 @@ import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
 import { useToast } from '@/components/ui/Toast'
+import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
@@ -181,6 +182,15 @@ export function AssessmentClient({
 
   const questionAreaRef = useRef<HTMLDivElement>(null)
 
+  // ── Analitika: kitöltési tölcsér (P3 / A2) ──────────────────────────
+  // A LEGFONTOSABB mérésünk: a kérdés-index hisztogramból rajzolódik ki a
+  // lemorzsolódás-görbe (hol veszítjük el a kitöltőt). Csak a SORSZÁM megy
+  // ki — a kérdés szövege és a válasz soha.
+  const analyticsMode = guestMode ? ('guest' as const) : ('user' as const)
+  const startedAtRef = useRef<number>(Date.now())
+  const trackedIndexesRef = useRef<Set<number>>(new Set())
+  const lastSeenIndexRef = useRef(0)
+
   const setQuestionIndexSafe = useCallback(
     (updater: number | ((current: number) => number)) => {
       setQuestionIndex((current) => {
@@ -190,6 +200,42 @@ export function AssessmentClient({
     },
     [clampQuestionIndex],
   )
+
+  // Kérdés-megjelenés: kérdésenként EGYSZER (a vissza-előre lépkedés nem
+  // hígíthatja a görbét). Az `assessment.start` az első kérdés első
+  // megjelenése — így nem számoljuk azokat, akik a bevezetőn megálltak.
+  useEffect(() => {
+    if (showIntro !== false) return
+    if (trackedIndexesRef.current.has(questionIndex)) {
+      lastSeenIndexRef.current = Math.max(lastSeenIndexRef.current, questionIndex)
+      return
+    }
+    trackedIndexesRef.current.add(questionIndex)
+    lastSeenIndexRef.current = Math.max(lastSeenIndexRef.current, questionIndex)
+    if (trackedIndexesRef.current.size === 1) {
+      startedAtRef.current = Date.now()
+      track('assessment.start', { mode: analyticsMode })
+    }
+    track('assessment.question_view', { mode: analyticsMode, index: questionIndex })
+  }, [questionIndex, showIntro, analyticsMode])
+
+  // Elhagyás: a lap bezárásakor/elrejtésekor, ha még nem küldtük be. A
+  // `visibilitychange` az egyetlen megbízhatóan tüzelő esemény mobilon; a
+  // kliens-könyvtár ugyanitt üríti a sort is (sendBeacon).
+  const submittedRef = useRef(false)
+  useEffect(() => {
+    if (showIntro !== false) return
+    const onHide = () => {
+      if (document.visibilityState !== 'hidden') return
+      if (submittedRef.current || trackedIndexesRef.current.size === 0) return
+      track('assessment.abandon', {
+        mode: analyticsMode,
+        last_index: lastSeenIndexRef.current,
+      })
+    }
+    document.addEventListener('visibilitychange', onHide)
+    return () => document.removeEventListener('visibilitychange', onHide)
+  }, [showIntro, analyticsMode])
 
   // Load localStorage draft after hydration (only if no server draft and not a fresh retake)
   useEffect(() => {
@@ -411,6 +457,9 @@ export function AssessmentClient({
       }
 
       clearInterval(progressInterval)
+      // Innentől a lapelhagyás NEM lemorzsolódás — a `assessment.complete`
+      // eseményt amúgy is a szerver írja (hamisíthatatlan).
+      submittedRef.current = true
       clearAssessmentDraftFromStorage(testType, draftScope)
 
       // UX-A6: az API már válaszolt — a korábbi 4,6 mp kamu „kiértékelés"

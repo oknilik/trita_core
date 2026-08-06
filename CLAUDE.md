@@ -45,6 +45,7 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
 | **Team intelligence** | `src/lib/team-intelligence.ts`, `team-pattern.ts`, `components/team/` | Súlyozott modellek confidence-szel: `resolveContributionPlacement()` (TeamMap), profil-alapú dinamika-becslés (`team-stats.ts` friction), csapatszerepek (valódi kitöltés > HEXACO-becslés, forrás-badge kötelező). |
 | **Observer flow** | `/observe/[token]`, `src/lib/observer/` | Publikus (auth nélkül), token-alapú, 30 nap lejárat, max 5 aktív meghívó, confidence rating, szerver-oldali draft. |
 | **Notification hub** | `src/lib/notifications/` | Orchestrator + repository + policy rétegek, dedupe kulcs, role-aware címzés. |
+| **Analitika** | `src/lib/analytics/`, `/api/e`, `/admin?tab=analytics` | Saját, first-party esemény-követés. ZÁRT katalógus (`events.ts`) zod `.strict()` sémákkal — PII szerkezetileg nem kerülhet bele. Nincs süti és semmilyen eszköz-tárolás: napi rotáló látogató-álnév. Üzleti szám mindig DB-ből, esemény csak mintázatra. Doksi: `docs/development/analytics.md` |
 | **Admin** | `/admin` (+ `/api/admin/*`) | Csak `ADMIN_EMAILS` env-ben listázott emailek (nincs nav-link, beírt URL). Tabok: Áttekintés/Kutatás/Emlékeztetők/Szervezetek. |
 
 ## Szerepek

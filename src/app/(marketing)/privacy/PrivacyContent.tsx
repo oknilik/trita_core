@@ -57,6 +57,9 @@ const sections = [
     items: [
       "privacy.rightsAccess",
       "privacy.rightsDeletion",
+      // A tiltakozás joga a használat-méréssel lett aktuális (jogos érdek
+      // jogalap) — GDPR 21. cikk.
+      "privacy.rightsObject",
       "privacy.rightsWithdraw",
     ],
   },

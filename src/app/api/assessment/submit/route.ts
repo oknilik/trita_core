@@ -8,6 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -117,6 +118,15 @@ export async function POST(req: Request) {
       where: { userProfileId: profile.id },
     }),
   ]);
+
+  // Analitika: a kitöltés BEFEJEZÉSE szerver-oldali igazság — a kliens
+  // oldali „kész" esemény ad-blockolható és hamisítható lenne, ez pedig a
+  // tölcsér legfontosabb lépése.
+  trackServerEvent(
+    "assessment.complete",
+    { mode: "user" },
+    { userProfileId: profile.id },
+  );
 
   // Több-lépéses kampány: a self teljesítése lépteti az OBSERVER_360 lépést
   import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>

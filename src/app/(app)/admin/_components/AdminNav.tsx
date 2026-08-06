@@ -13,6 +13,7 @@ import Link from "next/link";
 
 export type AdminTabId =
   | "overview"
+  | "analytics"
   | "crm"
   | "inquiries"
   | "orgs"
@@ -50,6 +51,20 @@ function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
               <rect x="9" y="1" width="6" height="6" rx="1.5" />
               <rect x="1" y="9" width="6" height="6" rx="1.5" />
               <rect x="9" y="9" width="6" height="6" rx="1.5" />
+            </svg>
+          ),
+        },
+        {
+          // Analitika — a saját, first-party eseményrendszer kiértékelése
+          // (forgalom, akvizíciós tölcsér, kitöltési lemorzsolódás).
+          // A Vezérlő MELLÉ került, nem a Működés alá: ez terméki döntés-
+          // támogatás, nem üzemeltetés.
+          id: "analytics",
+          label: "Analitika",
+          icon: (
+            <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M1.5 14.5h13" />
+              <path d="M3.5 11.5v-3M7 11.5v-6M10.5 11.5v-4M14 11.5v-8" />
             </svg>
           ),
         },

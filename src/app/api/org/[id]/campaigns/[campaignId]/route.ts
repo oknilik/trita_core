@@ -6,6 +6,7 @@ import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/po
 import { canManageMeasurements } from "@/lib/measurement-auth";
 import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
 import { getRequestLogger } from "@/lib/logger.server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const patchSchema = z.union([
   z.object({
@@ -260,6 +261,12 @@ export async function PATCH(
         data: { teamRoleRoundActive: false },
       });
     }
+  }
+
+  // Analitika: a kampány élesítése az ügyfélsiker-tölcsér mérföldköve (A7).
+  // Sem a szervezet, sem a kampány neve nem kerül eseménybe.
+  if (body.data.status === "ACTIVE") {
+    trackServerEvent("campaign.step_launch", { step_type: "campaign_activated" });
   }
 
   // Több-lépéses kampány: résztvevők haladásának inicializálása +

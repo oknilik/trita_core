@@ -392,16 +392,16 @@ export const authTranslations = {
       en: "Assessment data: personality test answers, calculated scores, ratings from others, and the post-results feedback survey (prior test experience, work context, motivation, etc.).",
     },
     dataTechnical: {
-      hu: "Technikai adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, anonimizált látogatottsági statisztikák (Vercel Analytics, süti nélküli).",
-      en: "Technical data: language preference (cookie), session identifiers, anonymized usage statistics (Vercel Analytics, without cookies).",
+      hu: "Technikai és használati adatok: nyelvi beállítás (cookie), munkamenet-azonosítók, valamint felületi események (megnyitott oldal, gombkattintás, űrlap elkezdése, a kitöltés hányadik kérdésénél tartasz). Az események nem tartalmaznak nevet, e-mail-címet, szabad szöveget, kérdőív-választ vagy pontszámot.",
+      en: "Technical and usage data: language preference (cookie), session identifiers, and interface events (page opened, button clicked, form started, which question of the assessment you are on). Events contain no name, email address, free text, questionnaire answer or score.",
     },
     purposeTitle: {
       hu: "Mire használjuk az adatokat?",
       en: "How do we use your data?",
     },
     purposeResearch: {
-      hu: "A szolgáltatás fejlesztése: a módszertan pontosítása és a felmérések minőségének javítása kizárólag anonimizált, aggregált adatok alapján.",
-      en: "Service improvement: refining the methodology and the quality of the assessments, based exclusively on anonymized, aggregated data.",
+      hu: "A szolgáltatás fejlesztése: a módszertan pontosítása, a felmérések minőségének javítása és a felület használhatóságának mérése — aggregált adatok alapján, jogos érdek jogalapon (GDPR 6. cikk (1) f)). A profilod törlésével a hozzád köthető használati események is elveszítik a kapcsolatot veled.",
+      en: "Service improvement: refining the methodology, improving assessment quality and measuring interface usability — based on aggregated data, on the legal basis of legitimate interest (Art. 6(1)(f) GDPR). Deleting your profile also severs the link between you and the usage events recorded about you.",
     },
     purposeService: {
       hu: "Szolgáltatás működtetése: a teszt kitöltése, eredmények megjelenítése, ismerősi meghívók kezelése.",
@@ -433,8 +433,8 @@ export const authTranslations = {
       en: "Cookies",
     },
     cookiesBody: {
-      hu: "Kizárólag technikailag szükséges cookie-kat használunk: munkamenet-kezeléshez (Clerk hitelesítés) és nyelvi beállításhoz. Nem használunk marketing vagy nyomkövető sütiket. A Vercel Analytics sütiket nem alkalmaz.",
-      en: "We only use technically necessary cookies: for session management (Clerk authentication) and language preference. We do not use marketing or tracking cookies. Vercel Analytics operates without cookies.",
+      hu: "Kizárólag technikailag szükséges cookie-kat használunk: munkamenet-kezeléshez (Clerk hitelesítés) és nyelvi beállításhoz. Nem használunk marketing vagy nyomkövető sütiket, és a használat-mérésünk sem tesz le sütit, sem semmilyen más azonosítót az eszközödön — ezért nincs süti-elfogadó felugró sem.",
+      en: "We only use technically necessary cookies: for session management (Clerk authentication) and language preference. We use no marketing or tracking cookies, and our usage measurement stores no cookie or any other identifier on your device — which is why there is no cookie consent banner either.",
     },
     storageTitle: {
       hu: "Adattárolás",
@@ -449,8 +449,8 @@ export const authTranslations = {
       en: "Usage analytics",
     },
     analyticsBody: {
-      hu: "A Trita a Vercel Analytics és a Vercel Speed Insights szolgáltatásokat használja a látogatottság és a betöltési teljesítmény méréséhez. Ezek a szolgáltatások sütiket nem alkalmaznak. Az IP-cím rövid idejű, anonimizált hash formájában kerül feldolgozásra az egyedi látogatók megkülönböztetéséhez, és személyes adatként nem kerül hosszú távon tárolásra. A mért adatok kizárólag aggregált forgalmi statisztikákra és Core Web Vitals mutatókra korlátozódnak.",
-      en: "Trita uses Vercel Analytics and Vercel Speed Insights to measure site traffic and loading performance. These services do not use cookies. IP addresses are processed briefly in anonymized, hashed form to distinguish unique visitors and are not stored as personal data long-term. The collected data is limited to aggregated traffic statistics and Core Web Vitals metrics.",
+      hu: "A használatot SAJÁT, first-party rendszerrel mérjük: az események a mi szervereinkre érkeznek és a mi adatbázisunkban maradnak — nincs mögötte külső analitikai szolgáltató, és semmilyen adat nem megy ki reklámhálózathoz. A látogató azonosítója NAPONTA ROTÁLÓ álnév, amit az IP-címből és a böngésző-azonosítóból számolt visszafejthetetlen kivonat ad; magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Ha a böngésződ nyomkövetés-tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Az adatkezelés jogalapja a jogos érdek (GDPR 6. cikk (1) f)): a szolgáltatás fejlesztése és hibakeresés; ez ellen bármikor tiltakozhatsz. Megőrzés: 12 hónap, utána automatikus törlés. Emellett a Vercel Analytics és Speed Insights méri a forgalmat és a betöltési teljesítményt — ezek sem használnak sütit, és kizárólag aggregált statisztikát adnak.",
+      en: "We measure usage with our OWN, first-party system: events arrive at our servers and stay in our database — there is no third-party analytics provider behind it, and no data goes to advertising networks. The visitor identifier is a DAILY ROTATING pseudonym derived as an irreversible digest of the IP address and browser identifier; we do not store the IP address itself, and the next day the same visitor appears under a different pseudonym. If your browser signals a tracking opt-out (Global Privacy Control or Do Not Track), we measure nothing. The legal basis is legitimate interest (Art. 6(1)(f) GDPR): improving the service and debugging; you may object at any time. Retention: 12 months, then automatic deletion. In addition, Vercel Analytics and Speed Insights measure traffic and loading performance — these use no cookies either and provide only aggregated statistics.",
     },
     processorsTitle: {
       hu: "Adatfeldolgozók",
@@ -483,6 +483,10 @@ export const authTranslations = {
     rightsDeletion: {
       hu: "Törlés: bármikor törölheted a profilodat és az összes hozzárendelt adatot a profiloldaladon.",
       en: "Deletion: you can delete your profile and all associated data at any time from your profile page.",
+    },
+    rightsObject: {
+      hu: "Tiltakozás: tiltakozhatsz a jogos érdeken alapuló adatkezelés — így a használat-mérés — ellen; ilyenkor a rád vonatkozó mérést leállítjuk.",
+      en: "Objection: you may object to processing based on legitimate interest — including usage measurement; we will then stop measuring in relation to you.",
     },
     rightsWithdraw: {
       hu: "Hozzájárulás visszavonása: a profil törlésével visszavonod a hozzájárulásodat. A már anonimizált, aggregált adatok nem törölhetők.",

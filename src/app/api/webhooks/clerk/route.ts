@@ -7,6 +7,7 @@ import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 import { getRequestLogger } from "@/lib/logger.server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -106,6 +107,13 @@ export async function POST(req: Request) {
     // Note: org invites are fulfilled via the /join/org/[inviteId] page, not here,
     // so that profile data (username, gender, etc.) gets collected first.
     // Note: team invites are fulfilled via the /join/[token] page, not here.
+
+    // Analitika: az új profil létrejötte a tölcsér utolsó, ÜZLETI lépése —
+    // szerver-oldalról rögzítjük, mert a kliens-oldali „regisztráltam"
+    // esemény hamisítható és ad-blockolható lenne.
+    if (event.type === "user.created") {
+      trackServerEvent("auth.signup", {}, { userProfileId: upsertedProfile.id });
+    }
 
     // Back-link any observer invitations sent to this email before registration
     if (event.type === "user.created" && email) {

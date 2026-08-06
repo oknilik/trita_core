@@ -8,6 +8,7 @@ import { sendObserverInviteEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
+import { trackServerEvent } from "@/lib/analytics/server";
 import {
   observerInviteRequiresApproval,
   resolveColleagueObserverType,
@@ -208,6 +209,14 @@ export async function POST(req: Request) {
       campaignId: campaign?.id ?? null,
     },
   });
+
+  // Analitika: a meghívó-lánc első lépése (A3 kérdés). A címzett e-mail
+  // címe SOHA nem kerül eseménybe — csak a csatorna típusa.
+  trackServerEvent(
+    "observer.invite_created",
+    { channel: targetEmail ? "email" : "link" },
+    { userProfileId: profile.id },
+  );
 
   const inviterName = profile.username ?? profile.email ?? "Trita";
   const emailLocale = normalizeLocale(profile.locale);

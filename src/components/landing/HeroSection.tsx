@@ -9,6 +9,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
+import { track } from "@/lib/analytics/client";
 
 // A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
 // ugyanaz a 0.5s / y:20px / cubic-bezier(0.16,1,0.3,1) mozgás, mint a korábbi
@@ -333,6 +334,15 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
             <div className={`${riseIn} mb-4`} style={{ animationDelay: "0.1s" }}>
               <Link
                 href={isSelf ? "/try" : "/contact"}
+                // P2: a hero elsődleges CTA-ja módonként külön mérve — ebből
+                // derül ki, melyik ígéret működik.
+                onClick={() =>
+                  track("cta.click", {
+                    cta_id: "hero_primary",
+                    surface: "landing",
+                    mode: isSelf ? "self" : "team",
+                  })
+                }
                 className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto"
                 style={{
                   background: ctaBackground,

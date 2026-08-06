@@ -3,6 +3,7 @@ import { Footer } from "@/components/Footer";
 import { HelpWidgetLazy } from "./HelpWidgetLazy";
 import { FetchAuthStateProvider } from "@/components/auth/auth-state";
 import { MarketingHeader } from "@/components/layout/MarketingHeader";
+import { AnalyticsPageView } from "@/components/analytics/AnalyticsPageView";
 
 // Statikus marketing-shell: se auth(), se DB, se cookie — az oldalak
 // build-time prerenderelhetők, és az ANONIM látogatónak NEM szállítanak
@@ -25,6 +26,10 @@ export default function MarketingLayout({
       <Suspense>
         <HelpWidgetLazy audience="public" />
       </Suspense>
+      {/* Oldalletöltés-mérés — saját, süti nélküli rendszer (/api/e).
+          Nem renderel semmit, és `usePathname`-t használ, ezért a lapok
+          statikus prerenderét nem töri el. */}
+      <AnalyticsPageView />
     </FetchAuthStateProvider>
   );
 }

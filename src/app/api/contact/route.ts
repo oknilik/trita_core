@@ -3,6 +3,7 @@ import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { submitInquiry } from "@/lib/inquiries";
 import { getRequestLogger } from "@/lib/logger.server";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 export const runtime = "nodejs";
 
@@ -49,6 +50,10 @@ export async function POST(req: Request) {
     log.error({ event: "inquiries.failed_to_submit_inquiry", err: error }, "Failed to submit inquiry");
     return NextResponse.json({ error: "Send failed" }, { status: 502 });
   }
+
+  // Analitika: a megkeresés BEÉRKEZÉSE a perzisztálás után igaz — a
+  // tartalma nem kerül eseménybe, csak a téma (zárt értékkészlet).
+  trackServerEvent("inquiry.submit", { topic: parsed.data.topic, source: "contact_form" });
 
   return NextResponse.json({ ok: true });
 }
