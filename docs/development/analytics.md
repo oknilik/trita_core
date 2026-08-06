@@ -51,10 +51,15 @@ adatbázisunkban maradnak. Nincs mögötte külső analitikai szolgáltató.
 | Megőrzés 12 hónap | Heti cron törli a régebbit | `retention.ts` + `/api/cron/analytics-retention` |
 | Törlési jog | Profil-törléskor az események `userProfileId`-ja NULL-ra áll | `/api/profile/delete` tranzakciója |
 
-**Az adatvédelmi tájékoztató érintett szakaszai** (`src/lib/i18n/auth.ts`,
-`privacy.*`): `dataTechnical`, `cookiesBody`, `analyticsBody`,
-`purposeResearch`, valamint az új `rightsObject` (tiltakozás joga). Ha a
-megőrzési idő vagy a jogalap változik, OTT IS át kell vezetni.
+**Az adatvédelmi tájékoztató érintett szakaszai**
+(`src/lib/legal/privacy-policy.ts`, HU és EN egyaránt): a `purposes`
+jogalap-táblában a használat-mérés sora, a `retention` táblában az
+esemény-megőrzés, és a `cookies` szakasz bekezdése a napi rotáló álnévről,
+a GPC/DNT-tiszteletről és arról, hogy nincs külső szolgáltató. A
+tiltakozási jog a `rights` szakaszban már benne van. **Ha a megőrzési idő
+vagy a jogalap változik, OTT IS át kell vezetni** — a szerkezeti egyezést
+`tests/unit/legal/privacy-policy.test.ts` őrzi, a tartalmi frissességet
+nem tudja őrizni semmi, csak a fegyelem.
 
 ---
 

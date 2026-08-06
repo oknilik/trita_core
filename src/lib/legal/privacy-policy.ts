@@ -223,6 +223,11 @@ const HU: PolicyDocument = {
               "Jogos érdek — 6. cikk (1) f)",
             ],
             [
+              "A felület használatának mérése (mely oldalak, hol akad el a folyamat)",
+              "Felületi események: megnyitott oldal, gombkattintás, a kitöltés hányadik kérdésénél tart",
+              "Jogos érdek — 6. cikk (1) f); saját, first-party mérés, külső szolgáltató nélkül",
+            ],
+            [
               "Számviteli kötelezettségek teljesítése",
               "Számlázási és kapcsolattartói adatok",
               "Jogi kötelezettség — 6. cikk (1) c), a számvitelről szóló 2000. évi C. törvény alapján",
@@ -361,6 +366,10 @@ const HU: PolicyDocument = {
               "Legfeljebb 12 hónap.",
             ],
             [
+              "Felületi használati események",
+              "12 hónap, utána automatikus törlés. A profilod törlésekor az események azonnal elveszítik a kapcsolatot veled.",
+            ],
+            [
               "Anonimizált, összesített statisztikák",
               "Időbeli korlát nélkül — ezek már nem személyes adatok.",
             ],
@@ -388,6 +397,10 @@ const HU: PolicyDocument = {
         {
           kind: "p",
           text: "A látogatottság- és teljesítménymérés (Vercel Analytics, Speed Insights) sütit nem használ; az IP-címet rövid ideig, hasított (anonimizált) formában dolgozza fel az egyedi látogatók megkülönböztetéséhez, és nem tárolja személyes adatként. A kimenet összesített forgalmi statisztika és Core Web Vitals mutató.",
+        },
+        {
+          kind: "p",
+          text: "A saját használat-mérésünk sem tesz le sütit, és semmilyen más azonosítót nem tárol az eszközödön: a látogató azonosítója NAPONTA ROTÁLÓ álnév, amit az IP-címből és a böngésző-azonosítóból számolt visszafejthetetlen kivonat ad — magát az IP-címet nem tároljuk, és másnap ugyanaz a látogató már más álnév alatt jelenik meg. Az események a mi szervereinkre érkeznek és a mi adatbázisunkban maradnak; nincs mögötte külső analitikai szolgáltató, és semmilyen adat nem megy ki reklámhálózathoz. Ha a böngésződ nyomkövetés-tiltást jelez (Global Privacy Control vagy Do Not Track), semmit nem mérünk. Esemény-tulajdonságban nincs név, e-mail-cím, szabad szöveg, kérdőív-válasz, pontszám vagy meghívó-token. Ezért nincs süti-elfogadó felugró sem.",
         },
       ],
     },
@@ -674,6 +687,11 @@ const EN: PolicyDocument = {
               "Legitimate interest — Art. 6(1)(f)",
             ],
             [
+              "Measuring interface usage (which pages, where the flow stalls)",
+              "Interface events: page opened, button clicked, which question of the assessment you are on",
+              "Legitimate interest — Art. 6(1)(f); our own first-party measurement, with no third-party provider",
+            ],
+            [
               "Meeting accounting obligations",
               "Invoicing and contact data",
               "Legal obligation — Art. 6(1)(c), under Hungarian Act C of 2000 on Accounting",
@@ -803,6 +821,10 @@ const EN: PolicyDocument = {
             ],
             ["Operational logs", "Up to 12 months."],
             [
+              "Interface usage events",
+              "12 months, then automatic deletion. Deleting your profile immediately severs the link between the events and you.",
+            ],
+            [
               "Anonymized, aggregated statistics",
               "No time limit — these are no longer personal data.",
             ],
@@ -830,6 +852,10 @@ const EN: PolicyDocument = {
         {
           kind: "p",
           text: "Traffic and performance measurement (Vercel Analytics, Speed Insights) uses no cookies; IP addresses are processed briefly in hashed (anonymized) form to distinguish unique visitors and are not stored as personal data. The output is aggregated traffic statistics and Core Web Vitals metrics.",
+        },
+        {
+          kind: "p",
+          text: "Our own usage measurement also sets no cookie and stores no other identifier on your device: the visitor identifier is a DAILY ROTATING pseudonym derived as an irreversible digest of the IP address and browser identifier — we do not store the IP address itself, and the next day the same visitor appears under a different pseudonym. Events arrive at our servers and stay in our database; there is no third-party analytics provider behind it, and no data goes to advertising networks. If your browser signals a tracking opt-out (Global Privacy Control or Do Not Track), we measure nothing. Event properties contain no name, email address, free text, questionnaire answer, score or invitation token. This is why there is no cookie consent banner either.",
         },
       ],
     },

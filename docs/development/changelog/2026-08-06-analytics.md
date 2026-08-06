@@ -71,12 +71,14 @@ a régi hívások változatlanok).
 | `ReadingProgress` | `blog.read_progress` (25/50/75/100%) |
 | `PatternExplorer` | `patterns.explore` |
 
-**Adatvédelmi átvezetés** (`src/lib/i18n/auth.ts`, `privacy.*`): a technikai
-adatkör bővült a használati eseményekkel; a süti-szakasz kimondja, hogy a
-mérés sem tesz le semmit az eszközön; a látogatottság-szakasz leírja a saját
-rendszert, a napi rotáló álnevet, a GPC/DNT-tiszteletet, a jogos érdek
-jogalapot és a 12 hónapos megőrzést; a jogok közé bekerült a **tiltakozás**
-(GDPR 21. cikk), ami eddig hiányzott.
+**Adatvédelmi átvezetés** — a #14 (új, tipizált adatvédelmi dokumentum)
+mergelése után a `src/lib/legal/privacy-policy.ts`-be, HU és EN egyaránt:
+a `purposes` jogalap-táblába új sor a használat-mérésről (jogos érdek,
+first-party, külső szolgáltató nélkül); a `retention` táblába az
+esemény-megőrzés (12 hónap, profil-törléskor azonnali elvágás); a `cookies`
+szakaszba bekezdés a napi rotáló álnévről, a GPC/DNT-tiszteletről és arról,
+hogy esemény-tulajdonságban nincs PII. A tiltakozási jog (GDPR 21. cikk) az
+új dokumentumban már szerepelt.
 
 ## Őrzés
 
@@ -122,7 +124,6 @@ duplikál, váltásra új esemény, nem renderel DOM-ot).
 
 1. **`ANALYTICS_SALT` beállítása élesben** — enélkül a látogató-azonosító
    kitalálható egy ismert IP+UA párból. A kód figyelmeztet, ha hiányzik.
-2. Az adatvédelmi tájékoztató a `claude/privacy-page-refresh` branchen
-   újraírt (17 szakaszos) változatba is átvezetendő — ott a `purposes`
-   táblába kell egy sor a használat-mérésről, és a `recipients` szakasz
-   ÉRINTETLEN maradhat, mert nincs új adatfeldolgozó.
+2. ~~Az adatvédelmi tájékoztató átvezetése az új dokumentumba~~ — **kész**
+   (ld. fent). A `recipients` szakasz szándékosan ÉRINTETLEN: nincs új
+   adatfeldolgozó, mert a mérés first-party.
