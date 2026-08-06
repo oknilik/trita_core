@@ -13,6 +13,7 @@ import {
   classifyDevice,
   clientIpFromHeaders,
   computeVisitorRef,
+  DEV_FALLBACK_SALT,
   extractUtm,
   isBotUserAgent,
   normalizePath,
@@ -43,6 +44,9 @@ export function isAnalyticsEnabled(): boolean {
   return process.env.ANALYTICS_ENABLED !== "0";
 }
 
+/** Egyszeri figyelmeztetés folyamatonként — különben eseményenként szólna. */
+let saltWarningLogged = false;
+
 /**
  * A napi rotáló hash sója. Élesben KÖTELEZŐ beállítani (`ANALYTICS_SALT`) —
  * enélkül a látogató-azonosító kitalálható lenne egy ismert IP+UA párból.
@@ -50,13 +54,15 @@ export function isAnalyticsEnabled(): boolean {
 export function resolveSalt(): string {
   const fromEnv = process.env.ANALYTICS_SALT?.trim();
   if (fromEnv) return fromEnv;
-  if (process.env.NODE_ENV === "production") {
+
+  if (process.env.NODE_ENV === "production" && !saltWarningLogged) {
+    saltWarningLogged = true;
     log.warn(
       { event: "analytics.salt_missing" },
-      "ANALYTICS_SALT nincs beállítva — a látogató-azonosító kitalálható",
+      "ANALYTICS_SALT nincs beállítva — a napi látogató-álnév publikus sóval képződik, tehát kitalálható. Beállítás: openssl rand -hex 32 (ld. docs/development/launch-checklist.md)",
     );
   }
-  return "trita-dev-analytics-salt";
+  return DEV_FALLBACK_SALT;
 }
 
 export interface ServerEventContext {

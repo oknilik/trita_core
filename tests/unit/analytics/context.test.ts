@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   classifyDevice,
+  DEV_FALLBACK_SALT,
   clientIpFromHeaders,
   computeVisitorRef,
   extractUtm,
+  isAnalyticsSaltConfigured,
   isBotUserAgent,
   normalizePath,
   referrerHost,
@@ -128,4 +130,41 @@ test("a megőrzési határ a dokumentált hónapszámot követi", () => {
   const months =
     (now.getFullYear() - cutoff.getFullYear()) * 12 + (now.getMonth() - cutoff.getMonth());
   assert.equal(months, ANALYTICS_RETENTION_MONTHS);
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// Só-konfiguráció: a rendszer só NÉLKÜL is működik (a mérés soha nem áll
+// az üzemeltetés útjába), de ilyenkor a pszeudonimitás ígérete nem
+// tartható — ezért kell látható figyelmeztetés. Ez a teszt azt őrzi, hogy
+// a felület egyáltalán MEG TUDJA mondani, hiányzik-e a só.
+// ─────────────────────────────────────────────────────────────────────
+
+test("a hiányzó ANALYTICS_SALT felismerhető (ebből jön az admin-figyelmeztetés)", () => {
+  const previous = process.env.ANALYTICS_SALT;
+
+  try {
+    delete process.env.ANALYTICS_SALT;
+    assert.equal(isAnalyticsSaltConfigured(), false, "hiányzó sót nem ismer fel");
+
+    process.env.ANALYTICS_SALT = "   ";
+    assert.equal(isAnalyticsSaltConfigured(), false, "a csupa szóköz só is hiányzónak számít");
+
+    process.env.ANALYTICS_SALT = "a3f9c1";
+    assert.equal(isAnalyticsSaltConfigured(), true);
+  } finally {
+    if (previous === undefined) delete process.env.ANALYTICS_SALT;
+    else process.env.ANALYTICS_SALT = previous;
+  }
+});
+
+test("só nélkül is képződik látogató-azonosító (a mérés nem áll le)", () => {
+  // A dev-fallback só publikus, tehát a ref kitalálható — de LÉTEZIK.
+  // A rendszer nem hal el tőle, csak figyelmeztet.
+  const ref = computeVisitorRef({
+    salt: DEV_FALLBACK_SALT,
+    day: "2026-08-06",
+    ip: "203.0.113.7",
+    userAgent: "UA",
+  });
+  assert.match(ref, /^[0-9a-f]{32}$/);
 });

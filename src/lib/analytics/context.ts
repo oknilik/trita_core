@@ -101,6 +101,29 @@ export function normalizePath(rawPath: string | null | undefined): string | null
 // Látogató-azonosító
 // ─────────────────────────────────────────────────────────────────────
 
+/** Dev-fallback só. Élesben SOHA nem ez a helyes érték. */
+export const DEV_FALLBACK_SALT = "trita-dev-analytics-salt";
+
+/**
+ * Be van-e állítva a valódi só (`ANALYTICS_SALT`)?
+ *
+ * A rendszer só nélkül is MŰKÖDIK — szándékosan: a mérés soha nem áll az
+ * üzemeltetés útjába. De ilyenkor a fallback só publikus, tehát a napi
+ * látogató-álnév KITALÁLHATÓ egy ismert IP + böngésző párból, és az
+ * adatvédelmi tájékoztatóban vállalt pszeudonimitás nem tartható.
+ *
+ * Ezért kell látnia valakinek:
+ *   · szerver-log: egyszeri figyelmeztetés indulásonként (`server.ts`),
+ *   · admin-felület: állandó, látható sáv az Analitika fülön.
+ * A második a lényegesebb — egy logsort senki nem olvas el.
+ *
+ * Itt él, és nem a `server.ts`-ben, mert az `import "server-only"`-t hordoz,
+ * amit unit-tesztből nem lehet betölteni; ez viszont tiszta env-olvasás.
+ */
+export function isAnalyticsSaltConfigured(): boolean {
+  return Boolean(process.env.ANALYTICS_SALT?.trim());
+}
+
 /**
  * Napi rotáló pszeudonim látogató-azonosító.
  *

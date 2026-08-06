@@ -122,8 +122,14 @@ duplikál, váltásra új esemény, nem renderel DOM-ot).
 
 ## Nyitott / következő kör
 
-1. **`ANALYTICS_SALT` beállítása élesben** — enélkül a látogató-azonosító
-   kitalálható egy ismert IP+UA párból. A kód figyelmeztet, ha hiányzik.
+1. **`ANALYTICS_SALT` beállítása élesben.** A rendszer só nélkül is működik
+   (a mérés soha nem áll az üzemeltetés útjába), de ilyenkor a fallback só
+   publikus, tehát a napi látogató-álnév kitalálható egy ismert IP + böngésző
+   párból — az adatvédelmi tájékoztatóban vállalt pszeudonimitás nem tartható.
+   Ezért két helyen figyelmeztet: egyszeri `analytics.salt_missing` warn a
+   szerver-logban (folyamatonként egyszer, nem eseményenként), és **állandó,
+   látható sáv az `/admin?tab=analytics` fül tetején** — ez utóbbi a
+   lényegesebb, mert logsort senki nem olvas el.
 2. ~~Az adatvédelmi tájékoztató átvezetése az új dokumentumba~~ — **kész**
    (ld. fent). A `recipients` szakasz szándékosan ÉRINTETLEN: nincs új
    adatfeldolgozó, mert a mérés first-party.

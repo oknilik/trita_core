@@ -4,6 +4,7 @@ import { AdminTableSection } from "@/app/(app)/admin/_components/AdminTableSecti
 import { AdminTrendChart } from "@/app/(app)/admin/_components/AdminTrendChart";
 import { AdminRangeFilter, type AdminRange } from "@/app/(app)/admin/_components/AdminRangeFilter";
 import { ANALYTICS_RETENTION_MONTHS } from "@/lib/analytics/retention";
+import { isAnalyticsSaltConfigured } from "@/lib/analytics/context";
 import {
   buildDailyWindow,
   getAcquisitionFunnel,
@@ -91,8 +92,47 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
 
   const firstFunnelValue = funnel[0]?.eventValue ?? null;
 
+  // A mérés só nélkül is működik, de a pszeudonimitás ígérete ilyenkor nem
+  // tartható: a fallback só publikus, tehát a napi látogató-álnév kitalálható
+  // egy ismert IP + böngésző párból. Ezt itt mondjuk ki — a szerver-logban
+  // lévő figyelmeztetést senki nem olvassa el.
+  const saltMissing = !isAnalyticsSaltConfigured();
+
   return (
     <div className="space-y-6">
+      {saltMissing && (
+        <div
+          className="rounded-xl border p-6"
+          style={{
+            backgroundColor: "var(--color-state-warning-bg)",
+            borderColor: "var(--color-state-warning-border)",
+          }}
+        >
+          <p
+            className="font-mono text-xs uppercase tracking-widest"
+            style={{ color: "var(--color-state-warning-fg)" }}
+          >
+            Beállítás hiányzik — ANALYTICS_SALT
+          </p>
+          <p className="mt-2 text-sm font-semibold text-ink">
+            A látogató-azonosító jelenleg PUBLIKUS sóval képződik.
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-ink-body">
+            A mérés működik, és az adat gyűlik — de a napi látogató-álnév egy
+            ismert IP + böngésző párból kitalálható, tehát az adatvédelmi
+            tájékoztatóban vállalt pszeudonimitás jelenleg nem tartható.
+            Beállítás:{" "}
+            <code className="rounded bg-cream px-1 py-0.5 text-xs">openssl rand -hex 32</code>{" "}
+            → Vercel env <code className="rounded bg-cream px-1 py-0.5 text-xs">ANALYTICS_SALT</code>.
+          </p>
+          <p className="mt-2 text-xs text-muted">
+            A beállítás napján a látogató-álnevek megváltoznak, ezért az aznapi
+            egyedi látogató szám felfelé torzul. Részletek:
+            docs/development/launch-checklist.md
+          </p>
+        </div>
+      )}
+
       <AdminRangeFilter active={range} tab="analytics" />
 
       {!traffic.hasData && (

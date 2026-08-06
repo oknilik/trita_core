@@ -148,7 +148,7 @@ pásztázza, és elbukik, ha:
 
 | Változó | Kötelező? | Mit csinál |
 |---|---|---|
-| `ANALYTICS_SALT` | **Élesben igen** | A napi rotáló látogató-azonosító sója. Enélkül a hash kitalálható egy ismert IP+UA párból. Legyen hosszú, véletlen, és ne oszd meg más célra. |
+| `ANALYTICS_SALT` | **Élesben igen** | A napi rotáló látogató-azonosító sója. Enélkül a hash kitalálható egy ismert IP+UA párból, és a pszeudonimitás ígérete nem tartható. A rendszer só nélkül is MŰKÖDIK (a mérés soha nem áll az üzemeltetés útjába), de figyelmeztet: egyszeri `analytics.salt_missing` warn a logban, és **állandó, látható sáv az `/admin?tab=analytics` fül tetején**. Generálás: `openssl rand -hex 32`. |
 | `ANALYTICS_ENABLED` | nem | `0` esetén a teljes mérés némán kikapcsol (a `/api/e` 204-et ad, a szerver-oldali hívások no-opok). Vészkapcsoló. |
 | `CRON_SECRET` | élesben igen | A megőrzési cron `Bearer` tokenje (a `release-steps` cronnal közös). |
 
