@@ -2,7 +2,14 @@
 
 import { useEffect, useCallback, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useOverlayTransition } from "./useOverlayTransition";
+
+/**
+ * A be-/kilépő átmenet hossza. Amíg tart, a modal a DOM-ban marad — ezt
+ * adta korábban az `AnimatePresence`; a framer-motion azért került ki, mert
+ * modul-szintű importként a publikus oldalak JS-chunkjába is beszivárgott.
+ */
+const MODAL_TRANSITION_MS = 200;
 
 interface ModalProps {
   isOpen: boolean;
@@ -30,6 +37,10 @@ export function Modal({
   hideHeader = false,
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
+  const { shouldRender, isEntered } = useOverlayTransition(
+    isOpen,
+    MODAL_TRANSITION_MS,
+  );
   const isBrand = design === "brand";
 
   const handleKeyDown = useCallback(
@@ -57,164 +68,159 @@ export function Modal({
     };
   }, [isOpen, handleKeyDown]);
 
-  if (!mounted) return null;
+  if (!mounted || !shouldRender) return null;
 
   return createPortal(
-    <AnimatePresence>
-      {isOpen && (
+    <div
+      className={[
+        "fixed inset-0 z-50 flex justify-center",
+        isBrand ? "items-end p-0 sm:items-center sm:p-4" : "items-center p-4",
+      ].join(" ")}
+    >
+      {/* Backdrop */}
+      <div
+        onClick={onClose}
+        className={[
+          "absolute inset-0 transition-opacity duration-200 motion-reduce:transition-none",
+          isEntered ? "opacity-100" : "opacity-0",
+          isBrand ? "bg-black/35" : "bg-black/40 backdrop-blur-sm",
+        ].join(" ")}
+      />
+
+      {/* Modal */}
+      <div
+        className={[
+          "transition-all duration-200 ease-out motion-reduce:transition-none",
+          isEntered
+            ? "translate-y-0 scale-100 opacity-100"
+            : isBrand
+              ? "translate-y-3 scale-[0.985] opacity-0"
+              : "translate-y-2.5 scale-95 opacity-0",
+          // max-h + görgethető törzs: nyitáskor a body scroll zárolva van,
+          // ezért magas tartalomnál a panel különben kilógna a viewportból
+          // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
+          "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
+          isBrand
+            ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+            : "max-w-md rounded-2xl bg-white shadow-2xl",
+          variant === "danger"
+            ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
+            : (isBrand ? "border-sand" : "border-sand/70"),
+        ].join(" ")}
+      >
         <div
           className={[
-            "fixed inset-0 z-50 flex justify-center",
-            isBrand ? "items-end p-0 sm:items-center sm:p-4" : "items-center p-4",
+            "h-1 w-full shrink-0",
+            variant === "danger"
+              ? (isBrand
+                ? "bg-[var(--color-action-destructive-bg)]"
+                : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
+              : (isBrand
+                ? "bg-sage"
+                : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"),
           ].join(" ")}
-        >
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+        />
+
+        {!hideCloseButton && (
+          <button
+            type="button"
             onClick={onClose}
             className={[
-              "absolute inset-0",
-              isBrand ? "bg-black/35" : "bg-black/40 backdrop-blur-sm",
-            ].join(" ")}
-          />
-
-          {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: isBrand ? 0.985 : 0.95, y: isBrand ? 12 : 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: isBrand ? 0.985 : 0.95, y: isBrand ? 12 : 10 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            className={[
-              // max-h + görgethető törzs: nyitáskor a body scroll zárolva van,
-              // ezért magas tartalomnál a panel különben kilógna a viewportból
-              // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
-              "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
+              // 44px érintőcél az ikon optikai közepének megtartásával
+              // (a korábbi p-1 + 20px ikon ≈ 28px volt).
+              "absolute right-2 top-3 flex h-11 w-11 items-center justify-center rounded-lg transition",
               isBrand
-                ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
-                : "max-w-md rounded-2xl bg-white shadow-2xl",
-              variant === "danger"
-                ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
-                : (isBrand ? "border-sand" : "border-sand/70"),
+                ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
+                : "text-muted hover:bg-sand/50 hover:text-ink-body",
             ].join(" ")}
           >
-            <div
-              className={[
-                "h-1 w-full shrink-0",
-                variant === "danger"
-                  ? (isBrand
-                    ? "bg-[var(--color-action-destructive-bg)]"
-                    : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
-                  : (isBrand
-                    ? "bg-sage"
-                    : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"),
-              ].join(" ")}
-            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              className="h-5 w-5"
+            >
+              <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+            </svg>
+          </button>
+        )}
 
-            {!hideCloseButton && (
-              <button
-                type="button"
-                onClick={onClose}
+        <div
+          className={hideCloseButton
+            ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
+            : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
+        >
+          {!hideHeader && (
+            <div
+              className={
+                isBrand
+                  ? "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
+                  : "flex items-start gap-3"
+              }
+            >
+              <div
                 className={[
-                  // 44px érintőcél az ikon optikai közepének megtartásával
-                  // (a korábbi p-1 + 20px ikon ≈ 28px volt).
-                  "absolute right-2 top-3 flex h-11 w-11 items-center justify-center rounded-lg transition",
-                  isBrand
-                    ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
-                    : "text-muted hover:bg-sand/50 hover:text-ink-body",
+                  "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
+                  !isBrand ? "mt-0.5" : "",
+                  variant === "danger"
+                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-rose-700")
+                    : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
                 ].join(" ")}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  className="h-5 w-5"
+                {variant === "danger" ? (
+                  <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M8 3h4m-7 3h10m-1 0-.7 9.1a1.2 1.2 0 0 1-1.2 1.1H8a1.2 1.2 0 0 1-1.2-1.1L6 6m2 0v8m4-8v8" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M10 6.5v4.5m0 3h.01M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Z" />
+                  </svg>
+                )}
+              </div>
+              <div className={isBrand ? "text-center" : undefined}>
+                {eyebrow && (
+                  <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze/80">
+                    {eyebrow}
+                  </p>
+                )}
+                <h2
+                  className={[
+                    "text-lg font-semibold",
+                    isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
+                    variant === "danger"
+                      ? (isBrand ? "text-ink" : "text-rose-900")
+                      : (isBrand ? "text-ink" : "text-ink"),
+                  ].join(" ")}
                 >
-                  <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
-                </svg>
-              </button>
-            )}
-
-            <div
-              className={hideCloseButton
-                ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
-                : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
-            >
-              {!hideHeader && (
-                <div
-                  className={
-                    isBrand
-                      ? "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
-                      : "flex items-start gap-3"
-                  }
-                >
-                  <div
-                    className={[
-                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
-                      !isBrand ? "mt-0.5" : "",
-                      variant === "danger"
-                        ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-rose-700")
-                        : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
-                    ].join(" ")}
-                  >
-                    {variant === "danger" ? (
-                      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M8 3h4m-7 3h10m-1 0-.7 9.1a1.2 1.2 0 0 1-1.2 1.1H8a1.2 1.2 0 0 1-1.2-1.1L6 6m2 0v8m4-8v8" />
-                      </svg>
-                    ) : (
-                      <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M10 6.5v4.5m0 3h.01M10 2.5a7.5 7.5 0 1 1 0 15 7.5 7.5 0 0 1 0-15Z" />
-                      </svg>
-                    )}
-                  </div>
-                  <div className={isBrand ? "text-center" : undefined}>
-                    {eyebrow && (
-                      <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze/80">
-                        {eyebrow}
-                      </p>
-                    )}
-                    <h2
+                  {title}
+                </h2>
+                {description && (
+                  isBrand && variant === "danger" ? (
+                    <div className="mt-3 rounded-xl border border-sand bg-cream px-3 py-2.5">
+                      <p className="text-sm leading-relaxed text-ink-body">{description}</p>
+                    </div>
+                  ) : (
+                    <p
                       className={[
-                        "text-lg font-semibold",
-                        isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
+                        "mt-2 text-sm leading-relaxed",
                         variant === "danger"
-                          ? (isBrand ? "text-ink" : "text-rose-900")
-                          : (isBrand ? "text-ink" : "text-ink"),
+                          ? (isBrand ? "text-ink-body" : "text-rose-700")
+                          : (isBrand ? "text-ink-body" : "text-ink-body"),
                       ].join(" ")}
                     >
-                      {title}
-                    </h2>
-                    {description && (
-                      isBrand && variant === "danger" ? (
-                        <div className="mt-3 rounded-xl border border-sand bg-cream px-3 py-2.5">
-                          <p className="text-sm leading-relaxed text-ink-body">{description}</p>
-                        </div>
-                      ) : (
-                        <p
-                          className={[
-                            "mt-2 text-sm leading-relaxed",
-                            variant === "danger"
-                              ? (isBrand ? "text-ink-body" : "text-rose-700")
-                              : (isBrand ? "text-ink-body" : "text-ink-body"),
-                          ].join(" ")}
-                        >
-                          {description}
-                        </p>
-                      )
-                    )}
-                  </div>
-                  {isBrand ? <div aria-hidden className="hidden h-9 w-9 sm:block" /> : null}
-                </div>
-              )}
-
-              {children && <div className={hideHeader ? undefined : "mt-6"}>{children}</div>}
+                      {description}
+                    </p>
+                  )
+                )}
+              </div>
+              {isBrand ? <div aria-hidden className="hidden h-9 w-9 sm:block" /> : null}
             </div>
-          </motion.div>
+          )}
+
+          {children && <div className={hideHeader ? undefined : "mt-6"}>{children}</div>}
         </div>
-      )}
-    </AnimatePresence>,
+      </div>
+    </div>,
     document.body
   );
 }
@@ -263,11 +269,13 @@ export function ConfirmModal({
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-sand border-t-sage" />
           <p className="mt-4 text-base font-semibold text-ink">{loadingNote}</p>
           <div className="mt-5 h-2 w-64 overflow-hidden rounded-full bg-cream md:w-80">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "100%" }}
-              transition={{ duration: loadingDurationMs / 1000, ease: "linear" }}
-              className="h-full rounded-full bg-sage"
+            {/* Lineáris telítődés a globals.css `trita-grow-x` keyframe-jével
+                (scaleX 0→1) — a korábbi framer-motion width-tween helyett. */}
+            <div
+              style={{
+                animation: `trita-grow-x ${loadingDurationMs}ms linear both`,
+              }}
+              className="h-full w-full origin-left rounded-full bg-sage"
             />
           </div>
         </div>
