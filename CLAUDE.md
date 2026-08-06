@@ -147,9 +147,12 @@ Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
 
 ## Konvenciók és szabályok
 
-- `.env`-hez SOHA ne nyúlj, secretet ne commitolj. Kötelező env-k:
-  Clerk kulcsok, DATABASE_URL, RESEND_API_KEY, `ADMIN_EMAILS` (admin
-  felület!), NEXT_PUBLIC_APP_URL.
+- `.env`-hez SOHA ne nyúlj, secretet ne commitolj. A teljes, magyarázatos
+  env-lista: **`.env.example`** (kötelező/éles/opcionális jelöléssel).
+  Kötelező: Clerk kulcsok, DATABASE_URL + DIRECT_URL, RESEND_API_KEY,
+  `ADMIN_EMAILS` (admin felület!), NEXT_PUBLIC_APP_URL; élesben ezeken felül
+  `ANALYTICS_SALT`, `CRON_SECRET`, Upstash. Kódból nem intézhető élesítési
+  teendők (DNS, Search Console, cégadatok): `docs/development/launch-checklist.md`.
 - Minden user-facing szöveg i18n kulcson át (`t`/`tf`), HU+EN.
 - API route-okon Zod-validáció; hibakód-minta: rövid kód a szerverről
   (pl. `INVITE_LIMIT_REACHED`), kliens lokalizálja.
