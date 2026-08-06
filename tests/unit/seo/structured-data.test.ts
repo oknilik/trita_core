@@ -20,6 +20,22 @@ import { getSiteUrl } from "@/lib/seo";
 // észrevétlenül: (1) EGY márka-entitás létezik a gráfban, amire minden lap
 // hivatkozik, (2) nincs benne kitalált állítás. Ez a teszt mindkettőt őrzi.
 
+test("a kanonikus fallback a valódi éles domain", () => {
+  // Env nélkül ez a host képzi az összes canonicalt, hreflanget, OG-URL-t,
+  // sitemap-bejegyzést és JSON-LD @id horgonyt — rossz domain esetén a saját
+  // tartalmunkat egy idegen hostra attribuálná a kereső.
+  const previousApp = process.env.NEXT_PUBLIC_APP_URL;
+  const previousVercel = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  delete process.env.NEXT_PUBLIC_APP_URL;
+  delete process.env.VERCEL_PROJECT_PRODUCTION_URL;
+  try {
+    assert.equal(getSiteUrl(), "https://trita.io");
+  } finally {
+    if (previousApp !== undefined) process.env.NEXT_PUBLIC_APP_URL = previousApp;
+    if (previousVercel !== undefined) process.env.VERCEL_PROJECT_PRODUCTION_URL = previousVercel;
+  }
+});
+
 test("az Organization és a WebSite stabil @id horgonyt kap", () => {
   const org = buildOrganizationJsonLd("hu");
   const site = buildWebSiteJsonLd("hu");

@@ -20,6 +20,21 @@ function trimTrailingSlash(url: string): string {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 }
 
+/**
+ * A kanonikus éles domain — a `NEXT_PUBLIC_APP_URL` hiányában ez az utolsó
+ * mentsvár.
+ *
+ * FONTOS, hogy ez a HELYES host legyen: ebből képződik minden canonical,
+ * hreflang, OG-URL, sitemap-bejegyzés és a JSON-LD összes `@id` horgonya. Ha
+ * rossz domainre mutat, a kereső a saját tartalmunkat egy másik (nem is a
+ * miénk alatt futó) hostra attribuálja — ez rosszabb, mint ha hiányozna.
+ *
+ * 2026-08-06: `trita.hu` → `trita.io`. Az éles oldal a `.io`-n fut (az
+ * email-feladó már 2026-07-24 óta ott van, ld. `src/lib/resend.ts`); a `.hu`
+ * fallback egy nem használt domainre mutatott.
+ */
+const CANONICAL_SITE_URL = "https://trita.io";
+
 export function getSiteUrl(): string {
   const fromEnv =
     process.env.NEXT_PUBLIC_APP_URL ??
@@ -27,7 +42,7 @@ export function getSiteUrl(): string {
       ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
       : undefined);
 
-  return trimTrailingSlash(fromEnv ?? "https://trita.hu");
+  return trimTrailingSlash(fromEnv ?? CANONICAL_SITE_URL);
 }
 
 export function getMetadataBase(): URL {
