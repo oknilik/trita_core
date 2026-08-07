@@ -1,0 +1,285 @@
+# Sötét mód — megvalósíthatósági vizsgálat
+
+> Készült: 2026-08-07 · Kiindulás: `main` (df29acc) · Branch:
+> `claude/dark-mode-feasibility`
+>
+> Ez **vizsgálat, nem megvalósítás**. A technikai állításokat fordítással
+> igazoltam (Tailwind v4 CLI, valódi `globals.css`), nem dokumentációból
+> idézem — ahol „igazolva" szerepel, ott lefutott build a bizonyíték.
+
+---
+
+## 1. Összefoglaló
+
+A jelenlegi állapot **jobb, mint amire számítani lehetne**: a színrendszer
+egyetlen forrásigazságból (`globals.css` `@theme` blokk) dolgozik, a kódban
+gyakorlatilag nincs szétszórt hardkódolt szín, és **egyetlen `dark:` variáns
+sincs** a JSX-ben, amit ki kellene bogozni.
+
+A jó hír, hogy a mechanikus rész egyetlen fájl átstrukturálásával megoldható,
+**nulla komponens-módosítással**. A rossz hír, hogy ez a munka kisebbik fele:
+a nagyobbik a **jelentés-újraszármaztatás** (a réteg-akcentek, az értékelő
+rampa és a dimenzió-színek nem invertálhatók, újra kell vezetni őket sötét
+alapra), plusz az, hogy **jelenleg nincs képi regressziós háló**, ami
+megvédené a „nem törhet el" ígéretet.
+
+**Javaslat: a pilot (2026-09-08) előtt ne induljon el.** A 3. opció
+(rendszerkövetés az app-fán, kapcsolóval) a pilot után egy jól körülhatárolt,
+~3-4 hetes kör. Az 1. fázis (a témázható alapréteg) viszont **most, önállóan
+is megéri** — kockázatmentes, nem változtat semmit vizuálisan, és minden
+későbbi opciót kinyit.
+
+---
+
+## 2. Mit találtam — a jelenlegi állapot mérve
+
+| Mit | Mennyi | Jelentés |
+|---|---|---|
+| `dark:` variáns a JSX-ben | **0** | Nincs örökség, amit ki kellene bogozni |
+| Szín-használat összesen | ~5 900 osztály | Ebből ~4 100 nevesített paletta-utility (`bg-sage`, `text-ink`, `border-sand`…), ~1 470 `bg-[var(--color-…)]` arbitrary, ~320 nevesített szemantikus |
+| Hardkódolt hex TS/TSX-ben | 189 db / 30 fájl | Túlnyomó részt **jogosan** fix: `color-system.ts` (80), `design-tokens.ts` (34), PDF, email, OG-képek, favicon |
+| TS-oldali szín nem-PDF komponensben | 30 előfordulás | SVG-fill és inline style — **ezt a CSS-változó nem éri el** |
+| Clerk beépített komponens | **0** | Saját sign-in/up flow → nincs Clerk-téma teendő |
+| `color-scheme` | `light` fixen | `globals.css:369` |
+| Képi regressziós teszt | **0** | A baseline-ok törölve (macOS-only, stale) — explicit TODO |
+
+**Konklúzió:** a kódbázis nincs elrontva. Egy jól karbantartott token-rendszer
+áll rendelkezésre, ami eddig egyszerűen nem volt témázhatóra tervezve.
+
+---
+
+## 3. A döntő technikai tény — a `@theme inline`
+
+A `globals.css` minden tokent a **`@theme inline`** blokkban deklarál. Ez nem
+mindegy: a Tailwind v4 az `inline` opció mellett a *deklarált értéket* fordítja
+be az utilitybe, nem a változó-hivatkozást.
+
+Fordítással igazolva (`@tailwindcss/cli` v4, valódi `globals.css`):
+
+| Deklaráció a `@theme inline`-ban | Generált utility | Futásidőben felülírható? |
+|---|---|---|
+| `--color-sage: #3d6b5e` (literál) | `.bg-sage { background-color: #3d6b5e }` | **NEM** — beégett |
+| `--color-surface-canvas: var(--color-cream)` | `.bg-surface-canvas { background-color: var(--color-cream) }` | IGEN |
+| `bg-[var(--color-sage)]` (arbitrary) | `background-color: var(--color-sage)` | IGEN |
+
+Két további tény, amit külön ellenőriztem, mert intuitíven mást sugallna:
+
+- **Minden token bekerül a `:root`-ba**, a `@layer theme { :root, :host }`
+  blokkba — tehát az ~1 470 `bg-[var(--color-…)]` arbitrary használat
+  **már ma is futásidejű változóra hivatkozik**, azaz eleve témázható.
+- A beágyazott hivatkozás (`--color-surface-canvas: var(--color-cream)`) NEM
+  laposodik ki literálra: a `var(--color-cream)` láncot megtartja.
+
+Vagyis a probléma pontosan körülhatárolható: **a nyers paletta literál
+deklarációi** (sage, bronze, ink, cream, sand, muted, a `dim-*`, `layer-*`,
+`eval-*`, `paper-*` készletek és a számozott aliasok) égnek be az utilitykbe.
+A szerep-tokenek (`surface-*`, `text-*`, `border-*`, `action-*`) már ma is
+hivatkozások.
+
+---
+
+## 4. A megoldás az 1. fázisra — igazolva
+
+Egyetlen szerkezeti változtatás `globals.css`-ben: **a nyers paletta kikerül a
+`@theme`-ből egy sima `:root`-ba, a `@theme inline` pedig már csak hivatkozik
+rá.**
+
+```css
+/* 1. A nyers paletta sima :root-ban — EZ lesz a témázható réteg */
+:root {
+  --palette-sage:  #3d6b5e;
+  --palette-cream: #f7f4ef;
+  --palette-ink:   #1a1a2e;
+  /* … a teljes nyers készlet */
+}
+
+/* 2. A @theme inline CSAK hivatkozik — a szerep-tokenek változatlanok */
+@theme inline {
+  --color-sage:  var(--palette-sage);
+  --color-cream: var(--palette-cream);
+  --color-ink:   var(--palette-ink);
+  --color-surface-canvas: var(--color-cream);   /* változatlan */
+  --color-text-primary:   var(--color-ink);     /* változatlan */
+}
+
+/* 3. A sötét készlet ugyanazokat a nyers változókat írja felül */
+:root[data-theme="dark"] {
+  --palette-sage:  #74ab97;
+  --palette-cream: #17171b;
+  --palette-ink:   #f2eee7;
+}
+```
+
+A prototípust lefordítottam. A kimenet:
+
+```css
+.bg-sage           { background-color: var(--palette-sage); }   /* ✓ témázható */
+.bg-cream          { background-color: var(--palette-cream); }  /* ✓ */
+.bg-surface-canvas { background-color: var(--color-cream); }    /* ✓ láncon át */
+.text-text-primary { color: var(--color-ink); }                 /* ✓ */
+```
+
+**Minden nevesített utility `var()`-ra fordul.** Ez azt jelenti:
+
+- ~5 900 szín-használat válik témázhatóvá,
+- **egyetlen komponenst sem kell módosítani**,
+- világos módban a kimenet **bitre azonos** marad (ugyanaz az érték, csak egy
+  indirekcióval), tehát ez a lépés **önmagában nem tud vizuálisan törni**.
+
+Ez a fázis kb. **fél-egy nap**, és a sötét készlet nélkül is szállítható.
+
+### Amit az 1. fázis érint még
+
+- `tests/unit/design/design-tokens-sync.test.ts` — a feloldó regexe ma csak
+  `--color-*` láncot követ (`/--color-([a-z0-9-]+):\s*([^;]+);/`). A
+  `--palette-*` réteget is követnie kell: egysoros bővítés.
+- `docs/development/ui-token-map.md` és `color-system-2026-08.md` — a
+  réteg-szerkezet átvezetése.
+
+---
+
+## 5. Amit az 1. fázis NEM old meg — ez a tényleges munka
+
+### 5.1 Jelentés-újraszármaztatás (a legnagyobb tétel)
+
+A Trita token-rendszere **négy jelentés-osztályt** különböztet meg
+(`color-system-2026-08.md`): neutrális alap · réteg-akcent · adat-identitás ·
+státusz/értékelés. Ezek **nem invertálhatók** — a viszonyaikat kell újra
+levezetni sötét alapra:
+
+- **Réteg-akcentek** (self/team/org/candidate). A `globals.css` maga rögzíti,
+  hogy a glow-színek „CSAK sötét herón" használhatók, mert fehéren AA-bukók.
+  Sötét módban ez a viszony **megfordul**: a hero eddigi sötét gradiense
+  elveszti a figura-háttér elválást a sötét oldalalaptól. A négy hero-készletet
+  (from/mid/to/glow/badge/soft) újra kell hangolni — ez nem színcsere, hanem
+  tervezői döntés.
+- **Dimenzió-hármasok** (H/E/X/A/C/O). 18 érték, világos felületre hangolva; a
+  `-soft` tintek (`#eef0f8` stb.) sötéten használhatatlanok. Az egész készletet
+  újra kell lépcsőzni és **kontraszt-validálni**.
+- **Értékelő rampa** (`eval-high/mid/low`). Kimondott elv: „hangosabb→halkabb",
+  a piros tilos. Sötéten a „halkabb" fok könnyen a háttérbe olvad — a rampa
+  iránya megmarad, de a lépcsők nem.
+- **Paper marketing-téma** (founding / patterns / fakedoor). Ez tudatosan
+  egyetlen vizuális világ. **Döntés kell:** részt vesz-e a sötét módban, vagy
+  szándékosan világos marad. Javaslat: maradjon világos, mert a „papír"
+  metafora sötéten értelmét veszti.
+
+### 5.2 Árnyékok
+
+A `--ui-shadow-*` skála öt fokozata ink-alapú (`rgba(26,26,46,…)`), plusz
+**66 arbitrary `shadow-[…]`** osztály a komponensekben. Sötét alapon a sötét
+árnyék láthatatlan — a mélység-jelzést keretre vagy világosság-lépcsőre kell
+cserélni. Ez nem token-csere: a skála egészét újra kell gondolni.
+
+### 5.3 TS-oldali színek (30 előfordulás)
+
+`CelebrationBurst`, `QrCodeBadge`, `DynamicsMap`, `TeamReportView`,
+`ShareCardDownload`, `TypeGlyph` — ezek `design-tokens.ts`-ből vesznek hexet
+inline style-ba vagy SVG-attribútumba. **A CSS-változó ide nem ér el.**
+Kezelés: ahol SVG-ről van szó, `currentColor`-ra vagy `var(--…)`-ra váltás
+(SVG-ben működik); ahol canvas/generált kép, ott a témát propként kell
+levinni.
+
+### 5.4 Fix médiumok — ezeket ki kell zárni
+
+| Felület | Teendő |
+|---|---|
+| **PDF** (`components/pdf/`) | Szerver-oldalon renderel, CSS nem éri el → magától védett. Ellenőrizni, hogy a `PDF_COLORS` ne a témázott rétegre mutasson. |
+| **Email** (`email-layout.ts`) | **Már védett**: `color-scheme: light only` + `meta supported-color-schemes` + `!important`. Példásan megoldva, nem kell hozzányúlni. |
+| **OG-képek, favicon** | Szerver-oldali render (`opengraph-image.tsx`, `icon.tsx`) → magától védett. |
+
+### 5.5 Platform-részletek
+
+- `color-scheme: light` (`globals.css:369`) → dinamikussá kell tenni, különben
+  a natív form-vezérlők, a görgetősáv és az iOS-autofill világos marad egy
+  sötét lapon.
+- **Téma-villanás (FOUC).** Next.js App Routerben szerver-oldali render mellett
+  a mentett témát a festés ELŐTT kell alkalmazni — blokkoló inline script a
+  `<head>`-ben, ami a `localStorage`-ból ráteszi a `data-theme`-et a `<html>`-re.
+  Enélkül minden oldalbetöltésnél felvillan a világos téma.
+- **ThemeProvider.** A `LocaleProvider.tsx` mintája közvetlenül követhető
+  (context + `useState` + `localStorage`), a beállítás a `UserProfile`-ba is
+  menthető, ha eszközök közt kell vinni.
+- **Doodle SVG-k** (`public/doodles/`, 26 db, `#000000` fill): jelenleg
+  **sehol nincsenek használatban** a `src`-ben — halott asset, nem teendő.
+
+---
+
+## 6. A legnagyobb kockázat: nincs háló
+
+`tests/e2e/team/team-intelligence-visual.test.ts` fejlécében rögzítve: a
+pixel-szintű `toHaveScreenshot` asszerciók strukturális assertekre lettek
+cserélve, a baseline-ok törölve (macOS-en készültek, a CI Linuxán nem
+léteztek). A visszaélesztés explicit TODO.
+
+**Ez azt jelenti, hogy a „vizuális élmény nem törhet" ígéretet ma semmi nem
+őrzi.** Egy sötét mód bevezetése két felület-készletet hoz létre ugyanazon a
+kódon — kézi ellenőrzéssel ez nem tartható.
+
+Van viszont mire építeni: a `tests/unit/design/surface-hero-theme.test.ts` már
+tartalmaz WCAG-kontraszt függvényt és AA-küszöb assertet. Ez a **token-szintű
+kontraszt-teszt** magja: minden szerep-token párra (szöveg × felület)
+mindkét témában futtatható, és sokkal olcsóbb, mint a képi baseline.
+
+**Sorrend-javaslat:** előbb a token-szintű kontraszt-teszt, csak utána a
+sötét készlet. Így a paletta tervezése közben azonnal látszik, mi bukik.
+
+---
+
+## 7. Opciók
+
+| | Mit jelent | Munka | Kockázat | Mikor |
+|---|---|---|---|---|
+| **A — Nem csinálunk** | Marad világos. A `color-scheme: light` szándékos döntés. | 0 | 0 | — |
+| **B — Csak alapréteg** | Az 1. fázis (témázható tokenek), sötét készlet nélkül. Vizuálisan nem változik semmi. | 0,5–1 nap | ~0 | **Most** |
+| **C — Rendszerkövetés az app-fán** | Sötét készlet a belépett felületekre; marketing + paper téma világos marad. Kapcsoló: rendszer/világos/sötét. | 3–4 hét | Közepes | Pilot után |
+| **D — Teljes felület** | Minden publikus oldal is, hero-gradiensek újratervezve. | 6–8 hét | Magas | 2027 |
+
+### Javaslat
+
+**Most: B.** Kockázatmentes, fél-egy nap, és minden későbbi opciót kinyit
+anélkül, hogy bármit eldöntene. A pilot előtt egy hónappal ez az egyetlen
+felelős lépés.
+
+**Pilot után: C.** Az app-fa (dashboard, csapat, org, riportok) a tényleges
+napi használati felület — ott van értelme a sötét módnak. A marketing-fa és a
+paper-téma maradjon világos: ez nem hiányosság, hanem a márka döntése, és
+felére vágja a felületet.
+
+**D-t nem javaslom** addig, amíg nincs képi regressziós háló és a pilot nem
+adott visszajelzést arról, hogy egyáltalán kéri-e valaki.
+
+---
+
+## 8. Ha a C indul — végrehajtási sorrend
+
+1. **Alapréteg** (= B fázis): nyers paletta kiemelése, `@theme inline`
+   hivatkozásokra, sync-teszt regex bővítése. *Vizuálisan nulla változás.*
+2. **Kontraszt-háló**: token-szintű WCAG-teszt minden szöveg × felület párra,
+   a `surface-hero-theme.test.ts` mintájára. Világos témán is le kell futnia
+   zölden, mielőtt a sötét készlet elkészül.
+3. **Neutrális sötét készlet**: alap, felület, keret, szöveg-fokozatok. A
+   semleges szín ne tiszta szürke legyen, hanem a bronz felé hajló meleg —
+   különben elveszik a Trita karaktere.
+4. **Szerep-tokenek** sötét megfelelői (sage/bronze világosítva), kontraszt-
+   teszttel validálva.
+5. **Jelentés-osztályok** újraszármaztatása: dimenzió-hármasok → értékelő
+   rampa → réteg-akcentek. Ez a leghosszabb tétel, tervezői döntésekkel.
+6. **Árnyék-skála** átgondolása (keret/világosság alapra).
+7. **Platform**: `ThemeProvider`, FOUC-elhárító inline script, dinamikus
+   `color-scheme`, kapcsoló a fejléc-navba.
+8. **TS-oldali színek** (30 hely) témafüggővé tétele.
+9. **Kizárások ellenőrzése**: PDF, email, OG — mindegyik maradjon világos.
+10. **Képi baseline** generálása CI-ben (Linux), a folyamat rögzítésével — a
+    `visual-regression` TODO lezárása.
+
+---
+
+## 9. Egy mondatban
+
+A kódbázis nincs elrontva, és a mechanikus rész meglepően olcsó: **egyetlen
+fájl átstrukturálása témázhatóvá tesz ~5 900 szín-használatot, komponens-
+módosítás nélkül** — ezt érdemes most megcsinálni. A tényleges munka viszont
+nem a színcsere, hanem a **jelentés újraszármaztatása** sötét alapra és a
+**hiányzó regressziós háló pótlása**; ez a pilot utánra való, és az app-fára
+szűkítve fele akkora, mint a teljes felületre.
