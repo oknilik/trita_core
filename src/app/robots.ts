@@ -17,6 +17,10 @@ const PUBLIC_PATHS = [
   "/patterns",
   "/pilot",
   "/pricing",
+  // A /privacy tervezet-állapotban is BEJÁRHATÓ marad (nem tesszük a
+  // disallow-listára): a `noindex` meta csak akkor tud érvényesülni, ha a
+  // robot le tudja tölteni a lapot. A sitemapból viszont kimarad, amíg
+  // tervezet — ld. `sitemap.ts` és `privacy/page.tsx`.
   "/privacy",
   "/try",
 ];

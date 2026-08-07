@@ -1,0 +1,113 @@
+# Élesítési checklist
+
+> Azok a tételek, amiket **kódból nem lehet elintézni** — env-beállítás, DNS,
+> külső fiók, üzleti adat. Ezek nélkül a kód működik, de valamit rosszul
+> vagy hiányosan csinál, és erre semmilyen teszt nem fog figyelmeztetni.
+>
+> Utolsó frissítés: 2026-08-06.
+
+---
+
+## 1. Kanonikus domain — `NEXT_PUBLIC_APP_URL`
+
+**Állapot: ellenőrizendő.**
+
+Ebből képződik minden canonical, hreflang, OG-URL, sitemap-bejegyzés és a
+JSON-LD összes `@id` horgonya. Ha rossz, a kereső a saját tartalmunkat egy
+másik hostra attribuálja — ez rosszabb, mintha hiányozna.
+
+- [ ] A Vercelen `NEXT_PUBLIC_APP_URL=https://trita.io` (záró perjel nélkül).
+- [ ] Ellenőrzés élesítés után: `curl -s https://trita.io/robots.txt` — a
+      `Host:` és a `Sitemap:` sor a `.io`-ra mutasson.
+- [ ] `curl -s https://trita.io/sitemap.xml | head` — az URL-ek is.
+
+Kódbeli fallback: `https://trita.io` (`src/lib/seo.ts`, unit-teszt őrzi).
+A fallback csak háló — élesben az env dönt.
+
+## 2. A `.hu` domain átirányítása
+
+**Állapot: nyitott, ops-feladat.**
+
+A `trita.hu` korábban a kanonikus domain volt (a kódbeli fallback is az volt
+2026-08-06-ig). Ha a domain regisztrálva van és felel HTTP-re, két domain
+szolgálná ki ugyanazt a tartalmat — a linkerő megoszlik, és a kereső
+duplikátumot lát.
+
+- [ ] **301** a `trita.hu` (és `www.trita.hu`) minden útvonaláról a `.io`
+      megfelelőjére — nem csak a főoldalra, útvonal-megtartással.
+- [ ] Ha a domain nem a miénk / nem felel: ezt a tételt zárd le, nincs teendő.
+
+## 3. Google Search Console
+
+**Állapot: nyitott.**
+
+- [ ] A `https://trita.io` property bejelentése (domain-property, ha a DNS
+      elérhető — az minden aldomaint fed).
+- [ ] `https://trita.io/sitemap.xml` beküldése.
+- [ ] Ha volt `.hu` property: a **címváltoztatás (Change of Address)**
+      eszközzel jelezni az átköltözést — a 301 mellé ez gyorsítja az
+      átindexelést.
+- [ ] Beállítás után 1-2 héttel: lefedettségi jelentés átnézése (mi
+      indexelődött, mi nem, és miért).
+
+Meglévő doksi: `docs/development/search-console-setup.md`
+
+## 4. Analitika só — `ANALYTICS_SALT`
+
+**Állapot: KÖTELEZŐ a `claude/analytics-tracking` mergelése előtt.**
+
+A napi rotáló látogató-álnév sója. Enélkül a látogató-azonosító kitalálható
+egy ismert IP + böngésző párból — a pszeudonimitás ígérete (amit az
+adatvédelmi tájékoztató is kimond) nem tartható.
+
+- [ ] `openssl rand -hex 32` → Vercel env: `ANALYTICS_SALT`
+- [ ] A kód figyelmeztet, ha élesben hiányzik (`analytics.salt_missing`
+      warn a logban) — de nem áll le, tehát a hiány csendben megmarad.
+- [ ] Ellenőrzés: `/admin?tab=analytics` → *Legutóbbi események* táblában
+      érkezik-e adat. (A saját böngésződ GPC/DNT-jelzése elnyeli a saját
+      látogatásaidat — ez szándékos.)
+
+Doksi: `docs/development/analytics.md`, 5. fejezet.
+
+## 5. Valós cégadatok a jogi oldalakra
+
+**Állapot: BLOKKOLT — üzleti adat kell hozzá.**
+
+Az adatvédelmi tájékoztató tartalmilag kész, de az adatkezelő azonosító
+adatai helykitöltők (`src/lib/legal/company.ts`). Emiatt a lap látható
+„Tervezet" jelölést kap, **és `noindex`-et is** (a sitemapből is kimarad) —
+egy indexelt jogi oldal kitalált cégjegyzékszámmal akkor is félrevezet, ha a
+lap tetején ott a figyelmeztetés, mert a találati lista snippetjében az nem
+látszik.
+
+Ami kell:
+
+- [ ] Teljes cégnév
+- [ ] Székhely (pontos, ahogy a cégkivonatban áll)
+- [ ] Cégjegyzékszám
+- [ ] Adószám
+- [ ] Képviselő neve és tisztsége
+- [ ] Döntés: kell-e dedikált adatvédelmi postafiók? (jelenleg a
+      `privacyEmail` a `hello@trita.io`-ra fut)
+
+Élesítés ezután **egy lépés**: `LEGAL_DOCS_ARE_DRAFT = false`
+(`src/lib/legal/company.ts`). Ettől egyszerre tűnik el a tervezet-jelölés,
+kerül vissza a lap a sitemapbe, és szűnik meg a `noindex`.
+
+Két további jogi tétel, ami nem kódfüggő:
+
+- [ ] **Adatfeldolgozói szerződés (DPA)** a szervezeti ügyfelekkel — a
+      tájékoztató hivatkozik rá („a megrendelő az adatkezelő, mi
+      adatfeldolgozók vagyunk").
+- [ ] **Jogi átnézés.** A dokumentum szakmailag felépített és a termék valós
+      működését írja le, de nem ügyvédi munka.
+
+---
+
+## Ami kódból már meg van oldva (nem checklist-tétel)
+
+- Kanonikus fallback, robots.txt AI-crawler szabályok, sitemap, strukturált
+  adat, `/llms.txt` — `docs/development/changelog/2026-08-06.md`
+- A bejelentkezés mögötti zóna meta-szintű `noindex`-e (a `/try` kivételével)
+- A tervezet-állapotú `/privacy` `noindex` + sitemap-kihagyás
+- Analitika megőrzési takarítás (heti cron), profil-törléskori anonimizálás
