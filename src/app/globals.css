@@ -121,6 +121,23 @@
      is fordul — a fix fehér sötéten 2,2:1 volt. */
   --palette-text-on-candidate: #ffffff;
   --palette-layer-self-hero-from: #2a5244;
+  /* Réteg-„szoba-tónus": a lap háttere a csapat/szervezet felületeken.
+     Külön token a `-soft`-tól: az a chipek/tintek tónusa, ezt pedig CSAK a
+     PlatformPageShell festi. Azért kell külön, mert sötéten a kettő
+     ellentétes irányba mozdul — a wash a vászonhoz simul, a chip nem. */
+  --palette-layer-self-wash: #e8f2f0;
+  --palette-layer-team-wash: #f6e8dc;
+  --palette-layer-org-wash: #e8eff7;
+  --palette-layer-candidate-wash: #f6e5da;
+  /* A jelölt-hero stopjai SAJÁT tokenek (eddig az akcentekből kölcsönöztek).
+     Sötéten a terrakotta akcent VILÁGOSSÁ fordul — a hero így világos
+     peach-gradiens lett volna fehér felirattal. */
+  --palette-layer-candidate-hero-from: #8a4a32;
+  --palette-layer-candidate-hero-mid: #6d3826;
+  /* A hero halk másodlagos szövege. Eddig `text-white/[0.42]` volt, ami a
+     legvilágosabb stopon 2,5–3,0:1 — a mondat gyakorlatilag eltűnt. Fix
+     érték mindkét sémán (a hero mindkettőben sötét panel): ≥ 4,6:1. */
+  --palette-text-on-inverse-muted: #dad5ce;
   --palette-layer-self-hero-mid: #1e3d34;
   --palette-layer-self-hero-to: #1a2e28;
   /* Fejléc-sáv: eddig hardkódolt rgba volt a nav-ban. */
@@ -237,27 +254,37 @@
   --palette-ink-body: #cac5bb;
   --palette-ink-warm: #9b9487;
   --palette-layer-candidate-badge: #f6cfa8;
-  --palette-layer-candidate-hero-to: #3a1f16;
+  --palette-layer-candidate-hero-to: #562d1f;
   --palette-layer-org-accent: #6f9bc4;
   --palette-layer-org-border: #33475c;
   --palette-layer-org-bright: #85aed4;
-  --palette-layer-org-hero-from: #2b4460;
-  --palette-layer-org-hero-mid: #22374d;
-  --palette-layer-org-hero-to: #1a2a3b;
+  --palette-layer-org-hero-from: #385677;
+  --palette-layer-org-hero-mid: #2d4865;
+  --palette-layer-org-hero-to: #21384f;
   --palette-layer-org-soft: #1a2634;
+  /* A wash a VÁSZONHOZ simul (1,06–1,09), nem a heróhoz: sötéten a hero a
+     kiemelt panel, a lap a háttér. Eddig fordítva volt — a wash a hero
+     sötét végével esett egybe (1,01:1), ezért a hero alsó fele eltűnt. */
+  --palette-layer-self-wash: #191e20;
+  --palette-layer-team-wash: #1e1a20;
+  --palette-layer-org-wash: #171a21;
+  --palette-layer-candidate-wash: #221a1b;
+  --palette-layer-candidate-hero-from: #81452f;
+  --palette-layer-candidate-hero-mid: #6e3927;
+  --palette-text-on-inverse-muted: #dad5ce;
   --palette-surface-inverse: #2b2b34;
   --palette-surface-inverse-soft: #3b3b46;
   --palette-text-on-inverse: #f3efe8;
   --palette-text-on-accent: #17171c;
-  --palette-layer-self-hero-from: #1f4a3c;
-  --palette-layer-self-hero-mid: #163529;
-  --palette-layer-self-hero-to: #102721;
+  --palette-layer-self-hero-from: #315f4f;
+  --palette-layer-self-hero-mid: #275044;
+  --palette-layer-self-hero-to: #233e36;
   --palette-surface-header: #191920;
   --palette-layer-team-accent: #b98aa8;
   --palette-layer-team-bright: #cb9fbb;
-  --palette-layer-team-hero-from: #4a3247;
-  --palette-layer-team-hero-mid: #3a2739;
-  --palette-layer-team-hero-to: #2b1e2c;
+  --palette-layer-team-hero-from: #6d4a64;
+  --palette-layer-team-hero-mid: #5c3d5c;
+  --palette-layer-team-hero-to: #452f4e;
   --palette-layer-team-soft: #2e2029;
   --palette-muted: #a49e92;
   --palette-muted-warm: #9b9487;
@@ -345,6 +372,7 @@
   --color-surface-inverse: var(--palette-surface-inverse);
   --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
   --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
   --color-text-on-accent: var(--palette-text-on-accent);
   --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
@@ -467,10 +495,14 @@
   --color-layer-org-glow: var(--palette-layer-org-glow);
   --color-layer-org-badge: var(--palette-layer-org-badge);
   --color-layer-org-soft: var(--palette-layer-org-soft);
+  --color-layer-self-wash: var(--palette-layer-self-wash);
+  --color-layer-team-wash: var(--palette-layer-team-wash);
+  --color-layer-org-wash: var(--palette-layer-org-wash);
+  --color-layer-candidate-wash: var(--palette-layer-candidate-wash);
   --color-layer-org-border: var(--palette-layer-org-border);
   --color-layer-candidate-accent:    var(--color-accent-candidate);
-  --color-layer-candidate-hero-from: var(--color-accent-candidate);
-  --color-layer-candidate-hero-mid:  var(--color-accent-candidate-strong);
+  --color-layer-candidate-hero-from: var(--palette-layer-candidate-hero-from);
+  --color-layer-candidate-hero-mid:  var(--palette-layer-candidate-hero-mid);
   --color-layer-candidate-hero-to: var(--palette-layer-candidate-hero-to);
   --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
   --color-layer-candidate-badge: var(--palette-layer-candidate-badge);
@@ -591,6 +623,7 @@
   --color-surface-inverse: var(--palette-surface-inverse);
   --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
   --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
   --color-text-on-accent: var(--palette-text-on-accent);
   --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
@@ -755,10 +788,14 @@
   --color-layer-org-glow: var(--palette-layer-org-glow);
   --color-layer-org-badge: var(--palette-layer-org-badge);
   --color-layer-org-soft: var(--palette-layer-org-soft);
+  --color-layer-self-wash: var(--palette-layer-self-wash);
+  --color-layer-team-wash: var(--palette-layer-team-wash);
+  --color-layer-org-wash: var(--palette-layer-org-wash);
+  --color-layer-candidate-wash: var(--palette-layer-candidate-wash);
   --color-layer-org-border: var(--palette-layer-org-border);
   --color-layer-candidate-accent:    var(--color-accent-candidate);
-  --color-layer-candidate-hero-from: var(--color-accent-candidate);
-  --color-layer-candidate-hero-mid:  var(--color-accent-candidate-strong);
+  --color-layer-candidate-hero-from: var(--palette-layer-candidate-hero-from);
+  --color-layer-candidate-hero-mid:  var(--palette-layer-candidate-hero-mid);
   --color-layer-candidate-hero-to: var(--palette-layer-candidate-hero-to);
   --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
   --color-layer-candidate-badge: var(--palette-layer-candidate-badge);

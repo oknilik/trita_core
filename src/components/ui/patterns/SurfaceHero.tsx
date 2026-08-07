@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/ui/cn";
-import { LAYER_THEMES, layerHeroGradient, type LayerKey } from "@/lib/color-system";
+import { LAYER_THEMES, layerHeroGradientCss, type LayerKey } from "@/lib/color-system";
 
 export type SurfaceHeroVariant = LayerKey;
 
@@ -17,25 +17,25 @@ interface SurfaceHeroTheme {
 // jól elkülönül a self (zsálya) / team (szilva) / org (éjkék) hármastól.
 export const SURFACE_HERO_THEME: Record<SurfaceHeroVariant, SurfaceHeroTheme> = {
   self: {
-    background: layerHeroGradient("self"),
+    background: layerHeroGradientCss("self"),
     primary: LAYER_THEMES.self.glow,
     badgeBg: LAYER_THEMES.self.badgeBg,
     badgeText: LAYER_THEMES.self.badgeText,
   },
   team: {
-    background: layerHeroGradient("team"),
+    background: layerHeroGradientCss("team"),
     primary: LAYER_THEMES.team.glow,
     badgeBg: LAYER_THEMES.team.badgeBg,
     badgeText: LAYER_THEMES.team.badgeText,
   },
   org: {
-    background: layerHeroGradient("org"),
+    background: layerHeroGradientCss("org"),
     primary: LAYER_THEMES.org.glow,
     badgeBg: LAYER_THEMES.org.badgeBg,
     badgeText: LAYER_THEMES.org.badgeText,
   },
   candidate: {
-    background: layerHeroGradient("candidate"),
+    background: layerHeroGradientCss("candidate"),
     primary: LAYER_THEMES.candidate.glow,
     badgeBg: LAYER_THEMES.candidate.badgeBg,
     badgeText: LAYER_THEMES.candidate.badgeText,
@@ -123,7 +123,11 @@ export function SurfaceHero({
             {summary ? (
               <p
                 className={cn(
-                  "mt-2 max-w-[620px] text-[14px] leading-relaxed text-white/[0.42] md:mt-3",
+                  // Halk, de OLVASHATÓ: a korábbi `text-[var(--color-text-on-inverse-muted)]` a
+                  // legvilágosabb gradiens-stopon 2,5–3,0:1-et adott, vagyis a
+                  // mondat gyakorlatilag eltűnt a panelen. A saját token
+                  // mindkét sémán ≥ 4,6:1, és halkabb marad a főcímnél.
+                  "mt-2 max-w-[620px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)] md:mt-3",
                   summaryClassName,
                 )}
               >

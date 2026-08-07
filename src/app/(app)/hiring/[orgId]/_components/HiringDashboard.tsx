@@ -285,19 +285,19 @@ export function HiringDashboard({
           </span>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
             trita {t("hiring.title", locale)}
           </h1>
         )}
         summary={t("hiring.heroSummary", locale)}
         chips={[
-          <span key="total" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+          <span key="total" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {invites.length} {t("hiring.candidatesTotal", locale).toLowerCase()}
           </span>,
-          <span key="progress" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+          <span key="progress" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {inProgressInvites.length} {t("hiring.inProgressLabel", locale).toLowerCase()}
           </span>,
-          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {completed.length} {t("hiring.completedLabel", locale).toLowerCase()}
           </span>,
         ]}
@@ -324,13 +324,13 @@ export function HiringDashboard({
                 type="button"
                 disabled
                 variant="ghost"
-                className="rounded-[10px] border border-white/20 bg-white/10 px-5 text-[12px] text-white/60 hover:bg-white/10 hover:text-white/60"
+                className="rounded-[10px] border border-white/20 bg-white/10 px-5 text-[12px] text-[var(--color-text-on-inverse-muted)] hover:bg-white/10 hover:text-white/60"
               >
                 {t("hiring.inviteCandidate", locale)}
               </Button>
             )}
             {!canInviteNew && (
-              <span className="inline-flex items-center text-[11px] text-white/70">
+              <span className="inline-flex items-center text-[11px] text-[var(--color-text-on-inverse-muted)]">
                 {isHu ? "Nincs elérhető credit új meghívóhoz." : "No credits available for new invites."}
               </span>
             )}
@@ -338,41 +338,41 @@ export function HiringDashboard({
         )}
         aside={(
           <>
-            <p className="text-micro uppercase tracking-widest text-white/[0.34]">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {t("hiring.snapshotLabel", locale)}
             </p>
 
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionInProgress", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {inProgressInvites.length}
                 </p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionSent", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {sentInvites.length}
                 </p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionCompleted", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {completed.length}
                 </p>
               </div>
             </div>
 
             <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-micro text-white/[0.52]">
+              <div className="mb-1.5 flex items-center justify-between text-micro text-[var(--color-text-on-inverse-muted)]">
                 <span>{t("hiring.completionRate", locale)}</span>
-                <span className="font-semibold text-white/[0.7]">{completionPct}%</span>
+                <span className="font-semibold text-[var(--color-text-on-inverse-muted)]">{completionPct}%</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                 <div

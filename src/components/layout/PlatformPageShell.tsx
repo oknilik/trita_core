@@ -34,10 +34,14 @@ const SURFACE_ACCENT: Record<PlatformSurface, string> = {
   org: "var(--color-surface-org-accent)",
 };
 
+// A lap „szoba-tónusa". SAJÁT token, nem a `-soft` chip-tint: sötéten a
+// kettő ellentétes irányba mozdul. A wash a vászonhoz simul (1,06–1,09),
+// hogy a hero legyen a kiemelt panel — korábban a `-soft` épp a hero sötét
+// végével esett egybe (1,01:1), ezért a hero alsó fele beleolvadt a lapba.
 const SURFACE_ROOT_CLASS: Record<PlatformSurface, string> = {
   self: "bg-surface-canvas",
-  team: "bg-surface-team-accent-soft",
-  org: "bg-surface-org-accent-soft",
+  team: "bg-[var(--color-layer-team-wash)]",
+  org: "bg-[var(--color-layer-org-wash)]",
 };
 
 const DEFAULT_CONTENT_CLASS: Record<PlatformSurface, string> = {

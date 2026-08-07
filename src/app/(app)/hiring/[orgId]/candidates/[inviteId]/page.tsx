@@ -303,7 +303,7 @@ export default async function CandidateResultPage({
           </span>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[36px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[36px]">
             {displayName}
           </h1>
         )}
@@ -311,10 +311,10 @@ export default async function CandidateResultPage({
           invite.position || invite.team ? (
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               {invite.position && (
-                <span className="text-caption text-white/[0.75]">{invite.position}</span>
+                <span className="text-caption text-[var(--color-text-on-inverse-muted)]">{invite.position}</span>
               )}
               {invite.team && (
-                <span className="text-[11px] text-white/[0.5]">
+                <span className="text-[11px] text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.assignedTeam", locale)}{invite.team.name}
                 </span>
               )}
@@ -323,7 +323,7 @@ export default async function CandidateResultPage({
         }
         chips={
           measuredRoles && measuredRoles.length > 0 ? (
-            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
               {t("hiring.teamRolesTitle", locale)} · {t("hiring.measuredBadge", locale)}
             </span>
           ) : undefined

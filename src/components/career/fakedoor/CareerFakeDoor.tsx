@@ -275,10 +275,10 @@ export function CareerFakeDoor({
             </p>
             {/* Nincs count-up: egy nem létező termék oldalán a numerikus
                 teátralitás pont a hitelességet vinné el. */}
-            <p className="mt-2 font-fraunces text-[40px] leading-none text-white md:text-[52px]">
+            <p className="mt-2 font-fraunces text-[40px] leading-none text-[var(--color-text-on-inverse)] md:text-[52px]">
               {price}
             </p>
-            <p className="mt-3 max-w-prose text-caption leading-relaxed text-white/[0.72]">
+            <p className="mt-3 max-w-prose text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
               {t("fakeDoor.priceFraming", locale)}
             </p>
             {/* A „most nem fizetsz" nem lábjegyzet: ez az oldal legfontosabb

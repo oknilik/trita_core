@@ -766,3 +766,85 @@ A `check-colors` három új szabállyal bővült: (e)-be a
   `KNOWN_DEBT` racsniban vannak, a sötét mód előttről; a padlójuk alá nem
   mehetnek.
 - **Képi CI-baseline.** Továbbra is a CI platformján kell legenerálni.
+
+---
+
+## 15. A réteg-herók (2026-08-07, 7. kör)
+
+A kérdés az volt, hogy a herók színe nem vész-e a háttérbe, vagy nem
+túl erős-e. A mérés mindkettőre választ adott — és kihozott egy olyan
+hibát, amit a mérőeszköz addig NEM látott.
+
+### 15.1 A hero sötéten nem létezett
+
+A `SurfaceHero` a `LAYER_THEMES` LITERÁL hexeiből dolgozott, tehát a
+gradiens mindkét sémán UGYANAZ volt. Világosban ez helyes: a sötét panel a
+krém vászon fölött 7–8:1-gyel elválik. Sötéten viszont a lap saját
+réteg-tónusa (`bg-surface-*-accent-soft`) épp a hero sötét végével esett
+egybe:
+
+| réteg | lap-tónus | hero `-to` | elválás |
+|---|---|---|---|
+| self | `#17302a` | `#1a2e28` | **1,02** |
+| team | `#2e2029` | `#2f2035` | **1,02** |
+| org | `#1a2634` | `#172737` | **1,01** |
+| candidate | `#33231a` | `#47251a` | 1,11 |
+
+1,0 azt jelenti: a panel alsó fele NEM LÉTEZETT. A hero felső sarka még
+derengett, a többi beleolvadt a lapba.
+
+Miért nem fogta meg a háló: a felület-elválás teszt küszöbe 1,05 volt (a
+világos téma saját padlójából származtatva), és ezek a párok nem is
+szerepeltek a listán. Új, szigorúbb ellenőrzés került be (`HERO_MIN = 1.35`,
+külön teszt), mert egy teljes szélességű panel más ügy, mint egy chip.
+
+### 15.2 A megoldás — a figura-háttér viszony megfordítása
+
+Világosban a hero SÖTÉTEBB a lapnál. Sötéten fordítva kell: a hero a
+kiemelt panel, a lap a háttér. Két mozdulat:
+
+1. **A lap-tónus a vászonhoz simul** (1,06–1,09), nem a heróhoz. Saját
+   token (`--color-layer-*-wash`), mert a `-soft` a chipek tintje — a kettő
+   sötéten ellentétes irányba mozdul. Világos értékei változatlanok.
+2. **A hero stopjai megemelve**: 2,30 / 1,85 / 1,45 a lap-tónushoz mérve.
+   A hue és a telítettség marad, csak a világosság nő. Fehér felirat
+   7,3–7,6:1.
+
+Ehhez a `SurfaceHero` átállt a szerep-tokenekre (`layerHeroGradientCss`);
+a literál `layerHeroGradient` marad a FIX médiumoknak (react-pdf borító).
+A jelölt-hero stopjai saját palettát kaptak: eddig az akcentekből
+kölcsönöztek, azok viszont sötéten VILÁGOSSÁ fordulnak — a hero világos
+peach-gradiens lett volna fehér felirattal.
+
+### 15.3 A halk fehér-létra — a „túl erős" ellentéte
+
+A herókon egy egész létra élt: `text-white/[0.28]`, `/0.34`, `/0.35`,
+`/0.4`, `/0.45`, `/0.5`, `/0.52`, `/0.65`, `/0.72`, `/0.75`. A
+legvilágosabb stopon ezek **2,5–3,4:1**-et adtak — a másodlagos mondat
+gyakorlatilag eltűnt, MINDKÉT sémán. (A gradiens miatt a mérőeszköz ezeket
+külön kosárba tette, ezért nem szerepeltek a kontraszt-listán.)
+
+A létra két fokra egyszerűsödött, tokenekkel:
+
+- **`--color-text-on-inverse`** — cím, statisztika-szám (közel fehér).
+- **`--color-text-on-inverse-muted`** (`#dad5ce`, fix mindkét sémán) —
+  minden másodlagos sor, címke, chip-felirat. A legvilágosabb hero-stopon
+  4,6–5,0:1.
+
+74 hely (55 alfás + 19 átlátszatlan hero-tipó). A `SectionEyebrow`
+`onDark` tónusa ugyanide került.
+
+**A „túl erős" kérdésre a válasz: nem az.** A világos hero 6–8:1-gyel
+válik el a lap tónusától — ez a szándékos, drámai brand-idióma, és a
+felirat-kontraszt is rendben van rajta. Amit rontani lehetett rajta, az a
+halk alszöveg volt; az most olvasható. A hero HÁTTÉRSZÍNE világosban
+változatlan.
+
+### 15.4 Mérleg
+
+| | előtte | utána |
+|---|---|---|
+| hero `-to` elválása a laptól (sötét) | 1,01–1,11 | **1,45** |
+| hero `-from` elválása a laptól (sötét) | 1,60–2,22 | **2,30** |
+| hero másodlagos szöveg | 2,5–3,4:1 | **4,6–5,0:1** |
+| világos hero háttér | — | változatlan |

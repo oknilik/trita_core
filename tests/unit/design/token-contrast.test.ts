@@ -94,6 +94,14 @@ add("akcent-háttér", "text", "text-on-accent", "bronze");
 add("akcent-háttér", "text", "text-on-accent", "accent-primary");
 add("akcent-háttér", "text", "text-on-inverse", "surface-inverse");
 
+// Réteg-herók. A panel mindkét sémán SÖTÉT, de nem ugyanaz a sötét — a
+// felirat és a halk másodlagos sor a legVILÁGOSABB stopon a legszorosabb,
+// ezért arra mérünk.
+for (const layer of ["self", "team", "org", "candidate"]) {
+  add("hero-felirat", "text", "text-on-inverse", `layer-${layer}-hero-from`);
+  add("hero-felirat", "text", "text-on-inverse-muted", `layer-${layer}-hero-from`);
+}
+
 const key = (p: Pair) => `${p.fg}|${p.bg}`;
 
 /**
@@ -205,6 +213,38 @@ const SURFACE_DEBT: Record<ThemeName, Record<string, number>> = {
   dark: {},
 };
 
+/**
+ * A hero KÜLÖN, szigorúbb küszöbbel: teljes szélességű panel a lap saját
+ * réteg-tónusa fölött. Az 1.05-ös általános padló itt nem elég — 2026-08-07
+ * előtt a sötét hero legsötétebb stopja 1,01:1-et adott a lap-tónushoz
+ * képest, vagyis a panel alsó fele NEM LÉTEZETT, miközben a felület-teszt
+ * ezt átengedte volna.
+ *
+ * A küszöb a legsötétebb (`-to`) stopra van szabva; a `-from` ennél
+ * lényegesen erősebb, azt a gradiens iránya adja.
+ */
+const HERO_MIN = 1.35;
+
+function checkHeroes(theme: ThemeName) {
+  const failures: string[] = [];
+  for (const layer of ["self", "team", "org", "candidate"]) {
+    const wash = resolveToken(`layer-${layer}-wash`, theme);
+    assert.ok(wash, `[${theme}] layer-${layer}-wash nem oldható fel`);
+    for (const stop of ["from", "mid", "to"]) {
+      const hero = resolveToken(`layer-${layer}-hero-${stop}`, theme);
+      assert.ok(hero, `[${theme}] layer-${layer}-hero-${stop} nem oldható fel`);
+      const ratio = contrast(hero, wash);
+      if (ratio + 0.001 < HERO_MIN) {
+        failures.push(
+          `  ${layer} hero-${stop} / lap-tónus — ${ratio.toFixed(2)} ` +
+            `(elvárt ${HERO_MIN}) — a panel beleolvad a lapba`,
+        );
+      }
+    }
+  }
+  assert.equal(failures.length, 0, `[${theme}] réteg-hero elválás:\n${failures.join("\n")}`);
+}
+
 function checkSurfaces(theme: ThemeName) {
   const failures: string[] = [];
   for (const [panel, parent] of SURFACE_PAIRS) {
@@ -256,4 +296,16 @@ test("a nyilvántartott adósság nem nő észrevétlenül", () => {
   for (const [pair, entry] of Object.entries(KNOWN_DEBT.light)) {
     assert.ok(entry.note.length > 0, `${pair}: indoklás nélkül nem vehető nyilvántartásba`);
   }
+});
+
+test("világos téma — a réteg-hero elválik a lap tónusától", () => {
+  checkHeroes("light");
+});
+
+test("sötét téma — a réteg-hero elválik a lap tónusától", (t) => {
+  if (!hasTheme("dark")) {
+    t.skip("nincs sötét készlet a globals.css-ben");
+    return;
+  }
+  checkHeroes("dark");
 });

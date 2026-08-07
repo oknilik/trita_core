@@ -32,7 +32,7 @@ const TONE_TEXT: Record<SectionEyebrowTone, string> = {
   org: "text-surface-org-accent",
   candidate: "text-accent-candidate",
   candidateOnDark: "text-accent-candidate-primary",
-  onDark: "text-white/[0.45]",
+  onDark: "text-[var(--color-text-on-inverse-muted)]",
 };
 
 const TONE_DOT: Record<SectionEyebrowTone, string> = {
@@ -43,7 +43,7 @@ const TONE_DOT: Record<SectionEyebrowTone, string> = {
   org: "bg-surface-org-accent",
   candidate: "bg-accent-candidate",
   candidateOnDark: "bg-accent-candidate-primary",
-  onDark: "bg-white/[0.45]",
+  onDark: "bg-[var(--color-text-on-inverse-muted)]",
 };
 
 interface SectionEyebrowProps {

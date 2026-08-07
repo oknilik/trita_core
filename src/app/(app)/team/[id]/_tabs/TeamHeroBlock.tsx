@@ -124,7 +124,7 @@ export function TeamHeroBlock({
         variant="team"
         eyebrow={(
           <div className="flex flex-wrap items-center gap-3">
-            <p className="text-micro uppercase tracking-widest text-white/[0.28]">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {t("teamDetail.heroEyebrow", locale)}
             </p>
             {/* Csapat-váltó: több csapatnál a kijelölés a Vezérlő célja is */}
@@ -143,12 +143,12 @@ export function TeamHeroBlock({
             </span>
           ) : undefined
         }
-        title={<h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">{teamData.teamName}</h1>}
+        title={<h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">{teamData.teamName}</h1>}
         summary={statusLine}
         chips={heroChips.map((chip) => (
           <span
             key={chip}
-            className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]"
+            className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]"
           >
             {chip}
           </span>
@@ -198,7 +198,7 @@ export function TeamHeroBlock({
                     ? `/org/${teamData.orgId}?tab=campaigns`
                     : `/org/${teamData.orgId}/campaigns/new?team=${teamId}`
                 }
-                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.78] transition hover:bg-white/[0.12]"
+                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]"
               >
                 {hasObserver
                   ? t("teamDetail.heroManageRound", locale)
@@ -206,7 +206,7 @@ export function TeamHeroBlock({
               </Link>
             ) : null}
             {canViewRaw && !canManageTeamActions && isOrgManager && teamData.orgId ? (
-              <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-white/[0.65]">
+              <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)]">
                 {hasObserver
                   ? t("teamDetail.heroManageRound", locale)
                   : t("teamDetail.heroStartRound", locale)}
@@ -216,29 +216,29 @@ export function TeamHeroBlock({
         )}
         footer={
           manageGateCopy ? (
-            <p className="text-[12px] text-white/[0.5]">
+            <p className="text-[12px] text-[var(--color-text-on-inverse-muted)]">
               {manageGateCopy.description}
             </p>
           ) : undefined
         }
         aside={(
           <>
-            <p className="text-micro uppercase tracking-widest text-white/[0.34]">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {t("teamDetail.snapshotLabel", locale)}
             </p>
 
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotMembers", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{teamData.memberCount}</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotMembers", locale)}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{teamData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotDone", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{completedCount}</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotDone", locale)}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{completedCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{t("teamDetail.snapshotWait", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-white">{waitingCount}</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotWait", locale)}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{waitingCount}</p>
               </div>
             </div>
 
@@ -246,19 +246,19 @@ export function TeamHeroBlock({
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
                 <CompletionIndicator percent={completionPct} size={76} color="var(--color-sage-300)" />
-                <p className="text-micro leading-tight text-white/[0.72]">
+                <p className="text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
                   {t("teamDetail.snapshotCompletionRate", locale)}
                 </p>
-                <p className="text-micro text-white/[0.65]">
+                <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
                   {tf("teamDetail.snapshotDoneInProgress", locale, { done: completedCount, inProgress: inProgressCount })}
                 </p>
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
                 <CompletionIndicator percent={secondaryPct} size={76} color={teamHeroTheme.primary} />
-                <p className="text-micro leading-tight text-white/[0.72]">
+                <p className="text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
                   {secondaryLabel}
                 </p>
-                <p className="text-micro text-white/[0.65]">
+                <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
                   {secondaryText}
                 </p>
               </div>
