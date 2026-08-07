@@ -212,7 +212,164 @@ lehet. Ezt könyvelővel kell lezárni, még az első számla előtt.
 
 ---
 
-## 9. Egy mondatban
+## 9. Mi változik alkalmazottal vagy tanácsadóval?
+
+A 4–8. szakasz egyszemélyes keretre szól. Ez a szakasz azt nézi meg, mi
+történik, ha valakit bevonsz — és a válasz nem az, hogy „arányosan több
+bevétel".
+
+### 9.1 A kiindulópont: melyik korlátot oldja fel?
+
+A becslés szerint az 1–2. évben a szűk keresztmetszet **a lead-generálás,
+nem a teljesítési kapacitás**. Egy teljesítő ember (alkalmazott vagy
+alvállalkozó) a *nem szűk* keresztmetszetet bővíti: attól, hogy több
+programot tudsz leszállítani, még nem lesz több programod. Ez a szakasz
+minden számának a mögöttes logikája.
+
+Fordítva viszont igaz: ha valaki átveszi a teljesítés alacsony értékű
+részét, **felszabadul a te időd értékesítésre** — a hatás tehát közvetett,
+és csak akkor jelentkezik, ha a felszabadult órát tényleg sales-re fordítod.
+
+### 9.2 Alapszámok
+
+| Mérőszám | Érték | Honnan |
+|---|---|---|
+| Egy kis program valós teljesítési ideje | ~49 óra | 29 kalkulátor-óra × 1,7 valós szorzó |
+| **A te valós óradíjad teljesítéskor** | **28 252 Ft/h** | 1 392 800 Ft / 49 óra |
+| Cél-óradíj a rate cardban | 25 000 Ft/h | `targetHourlyRate` |
+
+**Ez a becslés kulcsszáma.** A 48 000 Ft-os „effektív óradíj" a
+kalkulátorban optimista könyvelés — a valós ráfordítással 28 000 Ft körül
+vagy. Ez pedig **veszélyesen közel van a piaci alvállalkozói óradíjhoz**, és
+ebből következik minden alábbi eredmény.
+
+Munkáltatói teljes költség (13% szocho + ~10% eszköz/licenc/képzés — a
+pontos kulcsokat könyvelővel ellenőrizd):
+
+| Pozíció | Bruttó bér | Teljes éves költség |
+|---|---|---|
+| Junior koordinátor / ops | 450 000 Ft/hó | **6,7 M Ft/év** |
+| Medior tanácsadó | 900 000 Ft/hó | **13,4 M Ft/év** |
+| Senior tanácsadó | 1 300 000 Ft/hó | **19,4 M Ft/év** |
+
+### 9.3 A négy modell a 3. évben, egymás mellett
+
+| | Árbevétel | Munkaerő-költség | Egyéb | **Adózás előtti eredmény** | Fix kötelezettség |
+|---|---|---|---|---|---|
+| **Szóló (bázis)** | 21,8 M | 0 | 1,2 M | **20,6 M** | nincs |
+| **+ ops-alvállalkozó** | 28,2 M | 2,4 M | 1,4 M | **24,4 M** | nincs |
+| **+ senior alvállalkozó** | 31,0 M | 9,4 M | 1,6 M | **20,0 M** | nincs |
+| **+ medior alkalmazott** | 30,0 M | 13,4 M | 1,5 M | **15,1 M** | 13,4 M/év |
+| **Ajánlott hibrid** | 29,7 M | 3,4 M | 1,8 M | **24,5 M** | nincs |
+
+Három ellentmondásos, de a számokból következő megállapítás:
+
+1. **Az alkalmazott a 3. évben rontja az eredményt** (20,6 → 15,1 M), pedig
+   az árbevételt 38%-kal növeli. A fix bér gyorsabban nő, mint a fedezet.
+2. **A senior alvállalkozó szinte semmit nem hoz** (20,6 → 20,0 M). Ha a te
+   valós óradíjad 28 000 Ft, és a szabadúszó tanácsadó 20 000 Ft-ot kér, a
+   rés 8 000 Ft/óra — ebből a szervezési többletmunka is elmegy.
+3. **Az olcsó ops-alvállalkozó viszont működik** (20,6 → 24,4 M): 10 000
+   Ft/órás koordinációs munkára adod ki a kampány-ops, emlékeztető,
+   riport-előkészítés részt, ami programonként ~17 óra. A rés itt 18 000
+   Ft/óra, és a felszabadult idő sales-be megy.
+
+### 9.4 Mikor éri meg alkalmazott?
+
+**Medior tanácsadó.** A megtérülési küszöb 475 valós teljesítési óra ≈ **43%
+kihasználtság**. Ez papíron elérhető — de a megtérülés nem elég: ahhoz, hogy
+az alkalmazott ne rontsa a szóló eredményt, **~36 M Ft árbevétel kell**
+(20,6 M szóló eredmény + 13,4 M bér + 1,5 M egyéb). Az 22 program/év. A
+3. évben ez nem reális.
+
+> **Az első teljesítő alkalmazott ~35–40 M Ft éves árbevételnél indokolt —
+> ez a 4. év, nem a 3.**
+
+**Junior ops alkalmazott.** A fordulópont a szabadúszóhoz képest **671
+ops-óra/év ≈ 39 program/év**. Ez alatt a szabadúszó olcsóbb, mert nem
+fizetsz üresjáratot. Ugyanaz a következtetés: 4. év.
+
+**Általános szabály ebben a fázisban: változó költség a fix előtt.** Egy
+±40%-os árazási bizonytalanságú vállalkozásban (a rate card kódban is
+PLACEHOLDER) a fix bér a rossz eszköz — az alvállalkozó azonnal
+visszafordítható, a munkaviszony nem.
+
+### 9.5 Partner-tanácsadói csatorna (ORG_CONSULTANT)
+
+Ez a modell más jellegű: a partner a **saját ügyfelét** hozza, te a
+platformot, a módszertant, a riport-sablonokat és a minőségbiztosítást adod.
+A kód ezt már támogatja (`assign_consultant`, admin-paritású hozzáférés,
+„Tanácsadó" badge, kizárva a létszám/seat/átlagszámításokból).
+
+Árazás-javaslat: **hibrid** — 400 000 Ft/év platform-licenc + 15%
+bevétel-részesedés.
+
+| | Bevétel | A te időd | Ft/óra |
+|---|---|---|---|
+| 2. év — 2 pilot partner | 2,1 M | ~400 h (onboarding + 250 h fejlesztés) | 5 200 |
+| 3. év — 6 partner, 30 program | 9,2 M | ~470 h | 19 600 |
+| 4–5. év — 15 partner, 90 program | ~27,6 M | ~700 h | 39 400 |
+
+**A 3. évben ez nagyjából nullszaldós** a saját teljesítéshez képest: a 470
+órát ha a teljesítésből veszed el, ~13,3 M Ft saját árbevételt adsz fel 9,2
+M Ft partner-bevételért. A csatorna értéke **nem a 3. évi szám, hanem az,
+hogy ez az egyetlen modell, aminek nincs személyes órakorlátja** — a 4–5.
+évtől veri a saját teljesítést, és nem lineárisan nő tovább.
+
+Ezért: **a 3. évben magvetés (2–3 partner), nem növekedési motor.** A
+fejlesztési időt viszont már a 2. évtől ide kell allokálni, mert a
+partner-onboarding, a módszertani képzés és a riport-QA folyamat nem
+készül el magától.
+
+### 9.6 A leggyorsabb megtérülés: ajánlói hálózat (nem alkalmazott)
+
+Ha a valódi korlát a lead-generálás, a legjobb ár-érték arányú „bevont
+ember" nem teljesít, hanem **ajánl**: HR-tanácsadók, coachok, könyvelők,
+szervezetfejlesztők, akik a te célközönségedhez férnek hozzá.
+
+- Ajánlói díj: a megkötött szerződés **10–15%-a**, csak sikerdíj.
+- 4 extra program a 3. évben: +6,4 M Ft árbevétel, −0,9 M Ft díj →
+  **+5,5 M Ft**, nulla fix költséggel és nulla kockázattal.
+
+Ez az egyetlen tétel ebben a szakaszban, ami a tényleges szűk
+keresztmetszetet támadja. **Ezzel kell kezdeni, nem a teljesítő emberrel.**
+
+Fizetett értékesítő (part-time BD, bruttó 600 e Ft ≈ 8,9 M Ft/év) 6 extra
+programnál térül meg — de konzultatív, még validálatlan módszertant
+eladni képes embert jutalék-alapon felvenni nagyon nehéz. Ez is 4. év.
+
+### 9.7 Két nem pénzügyi előfeltétel — ezek nélkül a fenti számok nem élnek
+
+1. **A módszertan legyen átadható.** Amíg a riport-értelmezés és a vezetői
+   debrief a fejedben van, nincs kit bevonni. A `docs/pilot/pilot-playbook.md`
+   és a `riport-ertelmezesi-sablonok.md` ennek a magja — a pilot után ezt
+   kell teljes, betanítható folyamattá zárni. **Ez a kemény kapu bármilyen
+   bevonás előtt.**
+2. **A hitelességi alapelv kockázatot is jelent.** A termék ígérete, hogy a
+   becsült és a mért adat mindig meg van különböztetve; egy betanulatlan
+   ember validált csapatriportot publikál vagy vezetői debriefet tart — ez
+   márkakockázat, nem csak minőségi kérdés. A riport-QA (te írod alá) az
+   első 1–2 évben nem delegálható.
+
+### 9.8 Ajánlott sorrend
+
+| Év | Lépés | Fix költség |
+|---|---|---|
+| **1.** | Szóló. Minden felszabaduló óra lead-generálásra. | 0 |
+| **2.** | Ajánlói hálózat (sikerdíj) + olcsó ops-alvállalkozó ~150–250 órára. Módszertan dokumentálása. | 0 |
+| **3.** | Ops-alvállalkozó felskálázva + 2–3 partner-tanácsadó magvetése. | 0 |
+| **4.** | ~35–40 M Ft árbevételnél: első alkalmazott — **ops/koordinátor, nem tanácsadó**. | 6,7 M/év |
+| **5.** | Partner-csatorna a fő növekedési motor; medior tanácsadó, ha a pipeline tartósan telített. | 13,4 M/év |
+
+**Nettó hatás a 3 éves becslésre:** a bázis-eset 3. éve 20,6 M Ft adózás
+előtti eredményről **~24,5 M Ft-ra** javul (+19%) a hibrid modellel — nulla
+fix kötelezettség mellett. Alkalmazottal ugyanez **15,1 M Ft** lenne.
+Az igazi nyereség nem a 3. évben látszik, hanem abban, hogy a 4. évet
+tehermentesen és felépített partner-maggal kezded.
+
+---
+
+## 10. Egy mondatban
 
 **A termék kész; a következő három év számát nem a kód, hanem az fogja
 eldönteni, hány érdemi értékesítési beszélgetést tudsz elindítani.** Bázis-
