@@ -31,6 +31,23 @@ export const GLYPH_COLORS = {
   captionAccent: COLORS.bronzeDark,
 } as const;
 
+/**
+ * Ugyanaz DOM-SVG-hez: CSS-változóként, hogy kövesse a színsémát.
+ *
+ * A fenti literál NEM váltható ki: az OG-kép (satori) nem tud CSS-változót
+ * feloldani, ott hex kell. A kettő szinkronját unit-teszt őrzi
+ * (tests/unit/design/ts-color-maps.test.ts).
+ */
+export const GLYPH_COLORS_CSS: Record<keyof typeof GLYPH_COLORS, string> = {
+  canvas: "var(--color-cream)",
+  form: "var(--color-bronze)",
+  line: "var(--color-ink)",
+  sun: "var(--color-bronze-soft)",
+  counterweight: "var(--color-sage)",
+  caption: "var(--color-ink)",
+  captionAccent: "var(--color-bronze-dark)",
+};
+
 export type GlyphFormId = "arch" | "drop" | "comet" | "discs" | "block" | "eye";
 export type GlyphMotifId =
   | "scales"

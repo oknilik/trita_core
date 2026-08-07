@@ -5,16 +5,16 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { FRICTION_WEIGHTS } from "@/lib/friction-model";
-import { DYNAMICS_COLORS } from "@/lib/color-system";
+import { DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
-// Dinamika-trió — dokumentált státusz-kivétel (color-system DYNAMICS_COLORS),
+// Dinamika-trió — dokumentált státusz-kivétel (color-system DYNAMICS_COLORS_CSS),
 // mindig felirattal. A korábbi bézs „complementary" megszűnt: egy fogalom,
 // egy szín (a TeamReportView-val azonos hármas).
 const EDGE_COLORS: Record<DynamicsEdge["type"], string> = {
-  aligned: DYNAMICS_COLORS.aligned,
-  complementary: DYNAMICS_COLORS.complementary,
-  friction: DYNAMICS_COLORS.friction,
+  aligned: DYNAMICS_COLORS_CSS.aligned,
+  complementary: DYNAMICS_COLORS_CSS.complementary,
+  friction: DYNAMICS_COLORS_CSS.friction,
 };
 
 const EDGE_WIDTHS: Record<DynamicsEdge["type"], number> = {
@@ -221,7 +221,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                                   className="h-full rounded-full"
                                   style={{
                                     width: `${Math.min(g.gap, 100)}%`,
-                                    backgroundColor: g.gap < 15 ? DYNAMICS_COLORS.aligned : g.gap < 30 ? DYNAMICS_COLORS.complementary : DYNAMICS_COLORS.friction,
+                                    backgroundColor: g.gap < 15 ? DYNAMICS_COLORS_CSS.aligned : g.gap < 30 ? DYNAMICS_COLORS_CSS.complementary : DYNAMICS_COLORS_CSS.friction,
                                   }}
                                 />
                               </div>

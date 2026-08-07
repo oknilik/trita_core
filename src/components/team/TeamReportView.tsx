@@ -28,7 +28,7 @@ const DIM_LABELS: Record<string, { hu: string; en: string }> = {
 
 // Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts); mark-
 // (base) forma, a team oldal dimConfigs palettájával azonos forrásból.
-import { DIMENSION_BASE, DYNAMICS_COLORS } from "@/lib/color-system";
+import { DIMENSION_BASE, DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
@@ -61,12 +61,12 @@ const QUALITY_LABELS: Record<string, { hu: string; en: string }> = {
 };
 
 // Dinamika-kategóriák — dokumentált KIVÉTEL: státusz-jellegű színkódolás
-// adat-kontextusban (color-system DYNAMICS_COLORS), mindig felirattal
+// adat-kontextusban (color-system DYNAMICS_COLORS_CSS), mindig felirattal
 // (sosem csak színnel) jelölve. Paletta CVD-validálva (dataviz validator).
 const DYNAMICS_SEGMENTS = [
   {
     key: "alignedCount",
-    color: DYNAMICS_COLORS.aligned,
+    color: DYNAMICS_COLORS_CSS.aligned,
     chip: "bg-[var(--color-state-success-bg)] text-[var(--color-state-success-fg)]",
     hu: "Összehangolt",
     en: "Aligned",
@@ -75,7 +75,7 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "complementaryCount",
-    color: DYNAMICS_COLORS.complementary,
+    color: DYNAMICS_COLORS_CSS.complementary,
     chip: "bg-[var(--color-state-info-bg)] text-[var(--color-state-info-fg)]",
     hu: "Kiegészítő",
     en: "Complementary",
@@ -84,7 +84,7 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "frictionCount",
-    color: DYNAMICS_COLORS.friction,
+    color: DYNAMICS_COLORS_CSS.friction,
     chip: "bg-[var(--color-state-warning-bg)] text-[var(--color-state-warning-fg)]",
     hu: "Súrlódási potenciál",
     en: "Friction potential",

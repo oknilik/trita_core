@@ -4,6 +4,10 @@ import { useRef, useState } from "react";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
+// SZÁNDÉKOSAN nem témázott: ez canvas → letölthető PNG, azaz FIX MÉDIUM —
+// ugyanúgy, mint a PDF, az email és az OG-kép. A megosztott kártya bárhol
+// megjelenhet (chat, prezentáció, nyomtatás), ezért mindig a világos
+// márkaképet viszi. A canvas amúgy sem tud CSS-változót feloldani.
 import { COLORS } from "@/lib/design-tokens";
 import { track } from "@/lib/analytics/client";
 

@@ -302,6 +302,20 @@ export const DYNAMICS_COLORS = {
   friction: STATE_SOLID.warning,
 } as const;
 
+/**
+ * Ugyanaz DOM-hoz: CSS-változóként, hogy kövesse a színsémát.
+ *
+ * Miért két térkép: a fenti literál kell a fix médiumoknak (PDF, email,
+ * OG-kép — ott nincs CSS-változó), ez pedig az inline style-hoz és az
+ * SVG-attribútumokhoz a felületen. A kettő szinkronját unit-teszt őrzi
+ * (tests/unit/design/ts-color-maps.test.ts).
+ */
+export const DYNAMICS_COLORS_CSS = {
+  aligned: "var(--color-state-success-solid)",
+  complementary: "var(--color-state-info-solid)",
+  friction: "var(--color-state-warning-solid)",
+} as const;
+
 // ─── Avatar-paletta ──────────────────────────────────────────────────────────
 // Determinisztikus, nyugodt, státusz-mentes identitás-színek — a hat
 // dimenzió-base (a korábbi success/warning „identitás-színek" kivezetve).

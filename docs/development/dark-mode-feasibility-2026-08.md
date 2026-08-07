@@ -548,3 +548,77 @@ auth-bypass) mindkét témában átnézve.
 | **Kampány-, jelölt-, riport-nézetek** | A seed nem fedte le őket; futó appon még nincsenek átnézve |
 | **Képi CI-baseline** | A `visual-regression` TODO nyitva, most már két témára |
 | **8 kontraszt- + 1 felület-adósság** (világos téma) | Nyilvántartva, racsnival védve; javításuk külön döntés |
+
+---
+
+## 13. TS-oldali színek és a képi háló (2026-08-07, 5. kör)
+
+### 13.1 TS-oldali színek — a CSS-változó által nem elért réteg
+
+A 30 előfordulás átvizsgálva; **két csoportra bomlik**.
+
+**Témázható lett (DOM):**
+
+| Hol | Mit |
+|---|---|
+| `DynamicsMap`, `TeamReportView` | `DYNAMICS_COLORS` → új `DYNAMICS_COLORS_CSS` (var-alapú) |
+| `TypeGlyph` | `GLYPH_COLORS` → új `GLYPH_COLORS_CSS` (var-alapú) |
+| `CelebrationBurst` | már eleve `var(--color-*)` volt — nem kellett hozzányúlni |
+
+A literál térképek **megmaradtak**, mert az OG-kép (satori) és a PDF nem tud
+CSS-változót feloldani. A kettő elcsúszása néma hiba lenne (a felület és az
+exportált kép más színt mutatna ugyanarra a fogalomra), ezért új teszt köti
+össze őket: `tests/unit/design/ts-color-maps.test.ts` feloldja a CSS-alakot a
+világos értékkészleten, és a literálhoz méri.
+
+**Szándékosan NEM témázható (a kódban indokolva):**
+
+| Hol | Miért |
+|---|---|
+| `QrCodeBadge` | A QR mindig sötét modul / világos alap. Az invertált QR-t a szkennerek jelentős része nem olvassa — a sötét mód kedvéért nem kockáztatjuk a működését. A kód a saját világos lapján ül. |
+| `ShareCardDownload` | Canvas → letölthető PNG, azaz **fix médium** (mint a PDF, az email, az OG). A megosztott kártya bárhol megjelenhet, ezért mindig a világos márkaképet viszi. |
+
+### 13.2 Képi regressziós háló
+
+Új: **token-galéria** (`/dev/tokens`, élesben `notFound()`) + Playwright
+spec (`tests/e2e/visual/theme-gallery.spec.ts`), ami mindkét színsémán
+fotózza.
+
+**Miért nem valódi app-oldal a célpont.** A korábbi baseline-ok azért
+avultak el, mert adatfüggő oldalakat fotóztak. A galérián nincs adat, dátum,
+animáció és véletlen — ami eltér, az tényleg a design-rendszer változása.
+Ez a design-rendszert őrzi, **nem az elrendezést**: a komponens-szintű
+vizuális háló továbbra is nyitott tétel.
+
+Két tervezési részlet, amit a mérés kényszerített ki:
+
+- **A galéria inline stílust használ, nem Tailwind arbitrary osztályt.** A
+  Tailwind statikusan pásztáz, tehát a `bg-[var(--color-${x})]` interpolált
+  alakot nem látja. Az első változatban a minták csak azért voltak
+  színesek, mert *más fájlok* használták ugyanazokat az osztályokat
+  literálisan — ha egy token sehol máshol nem szerepel, a minta némán
+  színtelen maradt volna. Pontosan ott, ahol a galéria dolga a hiány
+  kimutatása.
+- **Baseline nélkül a teszt kihagyja magát**, és a skip a teszt törzsén
+  KÍVÜL van (különben a böngésző-indítás előbb elhasalna). Így hiányzó
+  baseline nem buktat CI-t, és a háló attól a pillanattól őriz, hogy valaki
+  commitolt egyet.
+
+**Baseline létrehozása** — azon a platformon, amin a CI fut:
+
+```
+UPDATE_VISUAL_BASELINE=1 pnpm exec playwright test tests/e2e/visual --update-snapshots
+```
+
+Az env-kapcsoló azért kell, mert a Playwright külön worker-processzben
+futtat, oda a `--update-snapshots` CLI-argumentum nem jut el.
+
+> **Baseline ebben a körben NEM készült.** A konténerben chromium 1194 van, a
+> projekt Playwrightja 1217-et vár, és a fejlesztői proxy nem engedi a
+> böngészőt a 4100-as e2e portra. Más böngészőbuilddel készült baseline
+> garantáltan hamis riasztást adna — ezért nem commitoltunk egyet sem. Az
+> első CI-futásnak a fenti paranccsal kell létrehoznia.
+>
+> A `playwright.config.ts` kapott egy `PLAYWRIGHT_CHROMIUM_PATH` felülírást
+> (a meglévő `PLAYWRIGHT_BASE_URL` mintájára) zárt környezetekhez; üresen
+> hagyva a Playwright a saját letöltését használja — CI-ben ez a helyes.
