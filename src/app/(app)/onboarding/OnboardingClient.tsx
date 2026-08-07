@@ -290,7 +290,7 @@ export function OnboardingClient() {
                 <div
                   ref={genderFieldRef}
                   className={`flex flex-col gap-2 rounded-lg p-1 transition ${
-                    invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-orange-50/40" : ""
+                    invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-bronze-100/40" : ""
                   }`}
                 >
                   <span className="text-sm font-semibold text-ink">
@@ -315,7 +315,7 @@ export function OnboardingClient() {
                 <div
                   ref={countryFieldRef}
                   className={`rounded-lg transition ${
-                    invalidFieldFlash === "country" ? "ring-2 ring-sage/30 bg-orange-50/40 p-1" : ""
+                    invalidFieldFlash === "country" ? "ring-2 ring-sage/30 bg-bronze-100/40 p-1" : ""
                   }`}
                 >
                   <PickerTrigger

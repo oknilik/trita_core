@@ -284,7 +284,7 @@ export function JoinOrgClient({
             )}
 
             {errors.submit && (
-              <p className="text-center text-sm text-red-600">{errors.submit}</p>
+              <p className="text-center text-sm text-state-error-solid">{errors.submit}</p>
             )}
 
             {/* Submit */}

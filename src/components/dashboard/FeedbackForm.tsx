@@ -207,7 +207,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
 
       <form onSubmit={handleNext} className="mt-6 flex flex-col gap-5">
         {error && (
-          <div className="rounded-lg border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+          <div className="rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
             {error}
           </div>
         )}
@@ -293,7 +293,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }
-          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-gray-200 disabled:to-gray-200 disabled:hover:scale-100"
+          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-cream-300 disabled:to-cream-300 disabled:hover:scale-100"
         >
           {isSubmitting
             ? t("dashboard.feedbackSubmitLoading", locale)

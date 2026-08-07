@@ -818,13 +818,13 @@ export function CampaignWizard({
             </label>
 
             <div className="flex items-start gap-2 rounded-lg bg-state-warning-bg px-3 py-2.5">
-              <span className="mt-0.5 text-amber-600">
+              <span className="mt-0.5 text-state-warning-solid">
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="8" cy="8" r="6.5" />
                   <path d="M8 5v3.5M8 11v.5" />
                 </svg>
               </span>
-              <p className="text-[11px] text-amber-800">
+              <p className="text-[11px] text-bronze-700">
                 {activateNow
                   ? t("campaignWiz.activateNowNote", locale)
                   : t("campaignWiz.draftNote", locale)}
@@ -833,7 +833,7 @@ export function CampaignWizard({
           </div>
 
           {error && (
-            <div className="mt-4 rounded-lg border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+            <div className="mt-4 rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
               {error}
             </div>
           )}

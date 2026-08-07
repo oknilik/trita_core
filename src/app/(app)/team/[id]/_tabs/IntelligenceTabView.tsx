@@ -226,7 +226,7 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
                 : priority.tone === "amber"
                   ? "border-state-warning-border bg-state-warning-bg"
                   : priority.tone === "violet"
-                    ? "border-violet-200 bg-violet-50"
+                    ? "border-sage-soft bg-sage-ghost"
                     : "border-state-success-border bg-state-success-bg";
             return (
               <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>

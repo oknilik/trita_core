@@ -184,20 +184,20 @@ export default async function OrgSettingsPage({
           <p className="mb-1 text-label uppercase text-state-error-solid">
             {t("org.settings.dangerEyebrow", locale)}
           </p>
-          <h2 className="font-fraunces text-xl text-rose-900 mb-4">
+          <h2 className="font-fraunces text-xl text-text-error-strong mb-4">
             {t("org.settings.dangerTitle", locale)}
           </h2>
           <p className="mb-4 text-sm text-state-error-fg">
             {t("org.settings.dangerDescription", locale)}
           </p>
           {isReadOnly ? (
-            <p className="text-sm font-semibold text-rose-800">
+            <p className="text-sm font-semibold text-text-error-strong">
               {isHu
                 ? "Read-only módban a szervezet státusza nem módosítható."
                 : "Organization status changes are disabled in read-only mode."}
             </p>
           ) : org.status === "INACTIVE" ? (
-            <p className="text-sm font-semibold text-rose-800">
+            <p className="text-sm font-semibold text-text-error-strong">
               {t("org.settings.alreadyInactive", locale)}
             </p>
           ) : (

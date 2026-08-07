@@ -98,7 +98,7 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
           <p className="text-xs text-white/65">{t("pricing.quickAskMinHint", locale)}</p>
         )}
         {state === "error" && (
-          <p className="text-xs text-rose-300">{t("pricing.quickAskError", locale)}</p>
+          <p className="text-xs text-state-error-border">{t("pricing.quickAskError", locale)}</p>
         )}
         <button
           type="submit"

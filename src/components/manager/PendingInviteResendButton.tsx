@@ -28,7 +28,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
 
   if (state === "sent") {
     return (
-      <span className="text-xs font-semibold text-emerald-600">
+      <span className="text-xs font-semibold text-state-success-solid">
         {t("manager.pendingInviteResend.sent", locale)}
       </span>
     );

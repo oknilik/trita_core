@@ -18,10 +18,10 @@ const DISMISS_UNDO_MS = 5000;
 // ── Category → icon color mapping ────────────────────────────────────────────
 
 const CATEGORY_ICON_STYLES: Record<string, string> = {
-  assessment: "bg-indigo-50 text-indigo-600",
-  observer:   "bg-purple-50 text-purple-600",
-  org:        "bg-sky-50 text-sky-600",
-  campaign:   "bg-state-success-bg text-emerald-600",
+  assessment: "bg-sage-ghost text-sage",
+  observer:   "bg-sage-ghost text-sage",
+  org:        "bg-state-info-bg text-state-info-solid",
+  campaign:   "bg-state-success-bg text-state-success-solid",
   billing:    "bg-state-warning-bg text-state-warning-fg",
   system:     "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]",
 };
@@ -373,7 +373,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                       {title}
                     </p>
                     {item.priority === "high" && !item.read && (
-                      <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-state-error-solid" />
                     )}
                   </div>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">

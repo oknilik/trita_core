@@ -231,7 +231,7 @@ export function PickerTrigger({
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-indigo-300 focus:outline-none"
+        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-sage-ring focus:outline-none"
       >
         <span className={value ? "text-ink" : "text-muted"}>
           {value || placeholder}

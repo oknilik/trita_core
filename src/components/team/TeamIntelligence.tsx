@@ -298,13 +298,13 @@ export function TeamIntelligence({
           {edges.length > 0 ? (
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
-                <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-[11px] text-emerald-800">
+                <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-[11px] text-sage">
                   {isHu ? "Hasonló profil" : "Aligned"}: {dynamicsCounts.aligned}
                 </span>
                 <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
                 </span>
-                <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-[11px] text-amber-800">
+                <span className="rounded-full border border-state-warning-border bg-state-warning-bg px-2 py-0.5 text-[11px] text-bronze-700">
                   {isHu ? "Potenciális súrlódás" : "Potential friction"}: {dynamicsCounts.friction}
                 </span>
               </div>

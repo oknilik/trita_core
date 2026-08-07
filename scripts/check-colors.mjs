@@ -219,12 +219,14 @@ const untokenizedSurfaces = [];
 // (f) Tailwind ALAP-PALETTA költségkeret. A `bg-amber-50`, `text-rose-700`
 //     stb. a Tailwind saját palettája — nem a mi tokenünk, ezért kimarad a
 //     témázásból, és sötét módban világos marad.
-//     Az egyértelmű megfeleltetéseket (státusz-család) már migráltuk; a
-//     maradék szemantikai döntést igényel (pl. a hideg `slate-50` helyett
-//     melyik meleg felület-token a helyes), és minden csere látható
-//     változás a VILÁGOS témán is. Ezért keret, nem hard fail: a cél a
-//     csökkenés. Új előfordulás csak a keret tudatos emelésével kerülhet be.
-const TW_PALETTE_BUDGET = 189;
+//     A migráció LEZÁRVA (2026-08-07): mind a 677 előfordulás tokenre került.
+//     A leképezés adatvezérelt volt — minden osztály a szemantikailag helyes
+//     családon belül a perceptuálisan (OKLab) legközelebbi tokenre ment, hogy
+//     a világos téma elmozdulása minimális legyen. Az `indigo` volt az egyetlen
+//     nagy váltás: annak nincs Trita-jelentése (admin-felületi „kijelölt /
+//     elsődleges akció"), ezért a zsálya-családra került.
+//     A keret innentől 0: új Tailwind-paletta osztály nem kerülhet be.
+const TW_PALETTE_BUDGET = 0;
 let twPaletteCount = 0;
 const twPaletteByFile = new Map();
 {

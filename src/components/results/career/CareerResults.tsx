@@ -163,7 +163,7 @@ function OccupationCard({
               ? "bg-state-success-bg text-state-success-fg"
               : fit.feasibility.state === "level-only"
                 ? "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]"
-                : "bg-state-warning-bg text-amber-800"
+                : "bg-state-warning-bg text-bronze-700"
           }`}
           title={
             fit.feasibility.state === "training-needed"
@@ -194,12 +194,12 @@ function OccupationCard({
           </span>
         )}
         {fit.interest !== null && fit.interest < 55 && (
-          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-amber-800">
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
             {tf("results.cfInterestDiverges", locale, { value: fit.interest })}
           </span>
         )}
         {fit.demandFit < 55 && (
-          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-amber-800">
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
             {t("results.cfPersonalityTension", locale)}
           </span>
         )}
@@ -481,8 +481,8 @@ export function CareerResults({
 
       {/* Teljes visszaállítás — kétlépcsős, mert minden mentett választ töröl */}
       {onReset && confirmReset && (
-        <div className="mt-3 rounded-[12px] border border-amber-300 bg-state-warning-bg/70 p-3.5">
-          <p className="text-[12px] leading-relaxed text-amber-900">
+        <div className="mt-3 rounded-[12px] border border-state-warning-border bg-state-warning-bg/70 p-3.5">
+          <p className="text-[12px] leading-relaxed text-accent-earth-strong">
             {t("results.cfResetConfirm", locale)}
           </p>
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
@@ -498,7 +498,7 @@ export function CareerResults({
                   setConfirmReset(false);
                 }
               }}
-              className="min-h-[36px] rounded-lg bg-state-warning-fg px-3.5 text-[12px] font-semibold text-white transition hover:bg-amber-800 disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-state-warning-fg px-3.5 text-[12px] font-semibold text-white transition hover:bg-bronze-700 disabled:opacity-50"
             >
               {t(resetting ? "results.cfResetBusy" : "results.cfResetYes", locale)}
             </button>
@@ -570,7 +570,7 @@ export function CareerResults({
             href="/holland-kod"
           />
           {result.industryMismatch && (
-            <p className="mt-2 text-micro leading-relaxed text-amber-800">
+            <p className="mt-2 text-micro leading-relaxed text-bronze-700">
               {t("results.cfIndustryMismatch", locale)}
             </p>
           )}
@@ -597,7 +597,7 @@ export function CareerResults({
               )}
         </p>
         {result.scope.widened && (
-          <p className="mt-1 text-micro leading-relaxed text-amber-800">
+          <p className="mt-1 text-micro leading-relaxed text-bronze-700">
             {t("results.cfScopeWidened", locale)}
           </p>
         )}
@@ -633,7 +633,7 @@ export function CareerResults({
       )}
 
       {result.interestDifferentiation === "low" && (
-        <p className="mt-2 rounded-[10px] bg-state-warning-bg/70 p-2.5 text-micro leading-relaxed text-amber-900">
+        <p className="mt-2 rounded-[10px] bg-state-warning-bg/70 p-2.5 text-micro leading-relaxed text-accent-earth-strong">
           {t("results.cfLowDifferentiation", locale)}
         </p>
       )}

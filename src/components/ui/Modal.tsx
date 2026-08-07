@@ -114,10 +114,10 @@ export function Modal({
             variant === "danger"
               ? (isBrand
                 ? "bg-[var(--color-action-destructive-bg)]"
-                : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
+                : "bg-gradient-to-r from-state-error-solid via-state-error-solid to-bronze-300")
               : (isBrand
                 ? "bg-sage"
-                : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"),
+                : "bg-gradient-to-r from-sage-500 via-sage-500 to-state-info-solid"),
           ].join(" ")}
         />
 
@@ -163,8 +163,8 @@ export function Modal({
                   "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                   !isBrand ? "mt-0.5" : "",
                   variant === "danger"
-                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-state-error-fg")
-                    : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
+                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-state-error-bg text-state-error-fg")
+                    : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-sage-soft text-sage-dark"),
                 ].join(" ")}
               >
                 {variant === "danger" ? (
@@ -188,7 +188,7 @@ export function Modal({
                     "text-lg font-semibold",
                     isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
                     variant === "danger"
-                      ? (isBrand ? "text-ink" : "text-rose-900")
+                      ? (isBrand ? "text-ink" : "text-text-error-strong")
                       : (isBrand ? "text-ink" : "text-ink"),
                   ].join(" ")}
                 >

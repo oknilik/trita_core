@@ -126,7 +126,7 @@ const NARRATIVE_TONES = {
     path: "M3 8h10M9 4l4 4-4 4",
   },
   sky: {
-    circle: "bg-sky-100 text-sky-700",
+    circle: "bg-layer-org-soft text-layer-org-bright",
     path: "M4 13.5V3h7.5L10 5.5 11.5 8H4",
   },
   bronze: {
@@ -134,11 +134,11 @@ const NARRATIVE_TONES = {
     path: "M3 4h10v7H8.5L5.5 13.5V11H3z",
   },
   emerald: {
-    circle: "bg-emerald-100 text-state-success-fg",
+    circle: "bg-sage-soft text-state-success-fg",
     path: "M3 8.5l3 3 7-7",
   },
   amber: {
-    circle: "bg-amber-100 text-state-warning-fg",
+    circle: "bg-state-warning-bg text-state-warning-fg",
     path: "M8 3v6M8 12.5v.5",
   },
 } as const;
@@ -275,7 +275,7 @@ const TIMEFRAME_TONES: Record<
   { dot: string; text: string; edge: string }
 > = {
   "30": { dot: "bg-sage", text: "text-sage-dark", edge: "border-l-sage/50" },
-  "60": { dot: "bg-sky-500", text: "text-sky-700", edge: "border-l-sky-400/50" },
+  "60": { dot: "bg-state-info-solid", text: "text-layer-org-bright", edge: "border-l-sky-400/50" },
   "90": { dot: "bg-bronze", text: "text-bronze", edge: "border-l-bronze/50" },
 };
 
@@ -326,7 +326,7 @@ export function TeamReportView({
         <div
           className={`p-6 ${
             isDraft
-              ? "bg-gradient-to-r from-amber-100/50 via-cream/70 to-white"
+              ? "bg-gradient-to-r from-state-warning-bg/50 via-cream/70 to-white"
               : "bg-gradient-to-r from-sage/15 via-cream/70 to-white"
           }`}
         >
@@ -430,7 +430,7 @@ export function TeamReportView({
                     a mintázat kontextusfüggő — a tanácsadói debrifen ezt ki kell
                     mondani, ezért a riportban is látszania kell. */}
                 {agg.pattern.stability && agg.pattern.stability !== "stabil" && agg.pattern.stabilityNote ? (
-                  <div className="mt-3 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-amber-800">
+                  <div className="mt-3 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
                     {agg.pattern.stabilityNote}
                     {agg.pattern.unstableAxes && agg.pattern.unstableAxes.length > 0 ? (
                       <span>
@@ -546,7 +546,7 @@ export function TeamReportView({
                           state === "primary"
                             ? "border border-sage/35 bg-sage/10"
                             : state === "secondary"
-                              ? "border border-sky-200 bg-sky-50/60"
+                              ? "border border-state-info-border bg-state-info-bg/60"
                               : "border border-dashed border-sand bg-surface-card"
                         }`}
                       >
@@ -567,13 +567,13 @@ export function TeamReportView({
                               {primaryCount}
                             </span>
                             {secondaryCount > 0 && (
-                              <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-sky-700">
+                              <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
                                 +{secondaryCount}
                               </span>
                             )}
                           </span>
                         ) : state === "secondary" ? (
-                          <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-sky-700">
+                          <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
                             +{secondaryCount}
                           </span>
                         ) : (
@@ -594,7 +594,7 @@ export function TeamReportView({
                 {isHu ? "Elsődleges szerep a csapatban" : "Primary role in the team"}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-[4px] border border-sky-200 bg-sky-50" />
+                <span className="h-3 w-3 rounded-[4px] border border-state-info-border bg-state-info-bg" />
                 {isHu ? "Csak tartalék (2-3. legerősebb szerepként)" : "Backup only (2nd–3rd strongest role)"}
               </span>
               <span className="flex items-center gap-1.5">
@@ -964,7 +964,7 @@ export function TeamReportView({
                           ? isHu ? "magas pólus" : "high pole"
                           : isHu ? "alacsony pólus" : "low pole"}
                       </p>
-                      <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-micro font-medium text-amber-800">
+                      <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-micro font-medium text-bronze-700">
                         {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}
                       </span>
                     </div>
@@ -1033,7 +1033,7 @@ export function TeamReportView({
                   >
                     <span
                       className={`text-xs leading-snug md:w-64 md:shrink-0 ${
-                        isWeak ? "font-semibold text-amber-800" : "text-ink-body"
+                        isWeak ? "font-semibold text-bronze-700" : "text-ink-body"
                       }`}
                     >
                       {isHu ? item.area.hu : item.area.en}
@@ -1042,7 +1042,7 @@ export function TeamReportView({
                       <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
                         <div
                           className={`h-full rounded-full transition-all duration-700 ${
-                            isWeak ? "bg-amber-500" : "bg-sage"
+                            isWeak ? "bg-bronze-300" : "bg-sage"
                           }`}
                           style={{ width: `${pct}%` }}
                         />
@@ -1156,7 +1156,7 @@ export function TeamReportView({
         {/* EN lekérés jóváhagyott fordítás nélkül: explicit jelzés, hogy a
             tanácsadói szövegek magyar eredetiben jelennek meg. */}
         {!isHu && !hasApprovedEnTranslation(reportInput) && report.summary ? (
-          <p className="mb-3 rounded-[10px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2 text-xs text-amber-800">
+          <p className="mb-3 rounded-[10px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2 text-xs text-bronze-700">
             Consultant-written sections below appear in the Hungarian original — the
             English translation hasn&apos;t been approved yet.
           </p>

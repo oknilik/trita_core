@@ -45,7 +45,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
     return (
       <DashboardPanel className="p-5">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-emerald-600">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-solid">
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8.5l3 3 7-7" />
             </svg>

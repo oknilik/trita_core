@@ -179,7 +179,7 @@ export function OrgMembersTab({
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 md:shrink-0">
-                    <StatusChip variant="warning" className="text-amber-600">
+                    <StatusChip variant="warning" className="text-state-warning-solid">
                       {t("org.members.pendingBadge", loc)}
                     </StatusChip>
                     {isManager && canInviteMembers && (

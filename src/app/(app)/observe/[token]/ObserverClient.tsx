@@ -599,7 +599,7 @@ export function ObserverClient({
             </div>
 
             {startAttempted && !canStart && (
-              <p className="mt-4 text-center text-xs text-amber-600">
+              <p className="mt-4 text-center text-xs text-state-warning-solid">
                 {t("observer.selectBothFields", locale)}
               </p>
             )}

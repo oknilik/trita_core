@@ -250,7 +250,7 @@ export function TeamReportMemberView({
                     {isHu ? "kulcsszerep" : "key role"}
                   </span>
                 ) : vm.roleFit === "shared" ? (
-                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-sky-700 ring-1 ring-sky-200">
+                  <span className="rounded-full bg-state-info-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-layer-org-bright ring-1 ring-state-info-border">
                     {isHu ? "közös erő" : "shared strength"}
                   </span>
                 ) : null}

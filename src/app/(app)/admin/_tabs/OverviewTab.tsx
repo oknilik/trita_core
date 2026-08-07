@@ -343,7 +343,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
           href="/admin?tab=inquiries"
           className={`group rounded-2xl border p-5 transition hover:-translate-y-0.5 ${
             newInquiryCount > 0
-              ? "border-amber-300 bg-state-warning-bg/60 hover:border-amber-400"
+              ? "border-state-warning-border bg-state-warning-bg/60 hover:border-bronze-300"
               : "border-sand bg-surface-card hover:border-sage/40"
           }`}
         >

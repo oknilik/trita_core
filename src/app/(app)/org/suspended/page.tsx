@@ -12,10 +12,10 @@ export default function OrgSuspendedPage() {
     <div className="min-h-dvh bg-cream flex items-center justify-center px-4">
       <div className="mx-auto w-full max-w-md text-center">
         <div className="mb-6 flex justify-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-state-warning-bg">
             <svg
               viewBox="0 0 24 24"
-              className="h-8 w-8 text-amber-600"
+              className="h-8 w-8 text-state-warning-solid"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

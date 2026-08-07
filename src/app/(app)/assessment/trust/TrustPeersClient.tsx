@@ -216,7 +216,7 @@ export function TrustPeersClient({
             <div
               key={q.id}
               className={`rounded-2xl border bg-surface-card px-5 py-4 ${
-                missing ? "border-amber-300" : "border-sand"
+                missing ? "border-state-warning-border" : "border-sand"
               }`}
             >
               <p className="text-[14px] font-semibold leading-snug text-ink">

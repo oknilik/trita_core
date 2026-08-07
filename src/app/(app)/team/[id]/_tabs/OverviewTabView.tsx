@@ -392,7 +392,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </div>
                 ) : (
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-emerald-600">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-solid">
                       <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 8.5l3 3 7-7" />
                       </svg>
@@ -417,7 +417,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 )
               ) : (
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-warning-bg text-amber-600">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-warning-bg text-state-warning-solid">
                   <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3.5" y="7" width="9" height="6" rx="1.5" />
                     <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />

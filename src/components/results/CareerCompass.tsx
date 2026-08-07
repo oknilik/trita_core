@@ -718,7 +718,7 @@ export function CareerCompass({
 
           {/* Őszinte keretezés — a becslés határai előre, nem az eredmény után */}
           <div className="mt-4 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 p-4">
-            <p className="text-caption font-semibold text-amber-900">
+            <p className="text-caption font-semibold text-accent-earth-strong">
               ⚖️ {t("results.ccIntroCaveatTitle", locale)}
             </p>
             <ul className="mt-2 flex flex-col gap-1.5">
@@ -730,7 +730,7 @@ export function CareerCompass({
               ].map((key) => (
                 <li
                   key={key}
-                  className="flex gap-2 text-[12px] leading-relaxed text-amber-900/85"
+                  className="flex gap-2 text-[12px] leading-relaxed text-accent-earth-strong/85"
                 >
                   <span aria-hidden>·</span>
                   <span>{t(key, locale)}</span>
@@ -1080,11 +1080,11 @@ export function CareerCompass({
           )}
           {fitState === "error" && (
             <div className="rounded-[12px] border border-state-error-border bg-state-error-bg/60 p-4">
-              <p className="text-caption text-rose-800">{t("results.cfError", locale)}</p>
+              <p className="text-caption text-text-error-strong">{t("results.cfError", locale)}</p>
               <button
                 type="button"
                 onClick={() => fetchFit(background, prefs, leadIntent)}
-                className="mt-2 rounded-lg border border-rose-300 bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-state-error-fg"
+                className="mt-2 rounded-lg border border-state-error-border bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-state-error-fg"
               >
                 {t("results.cfRetry", locale)}
               </button>

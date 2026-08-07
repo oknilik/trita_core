@@ -50,8 +50,8 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
       : "var(--color-text-secondary)";
 
   const diversityColors = {
-    homogén: "text-emerald-600",
-    vegyes:  "text-amber-600",
+    homogén: "text-state-success-solid",
+    vegyes:  "text-state-warning-solid",
     diverz:  "text-state-error-solid",
   };
 
@@ -159,7 +159,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       <div className="p-6">
         {/* Stability warning */}
         {data.stability !== "stabil" && (
-          <div className="mb-4 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-amber-800">
+          <div className="mb-4 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
             {data.stabilityNote}
           </div>
         )}

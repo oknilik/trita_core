@@ -8,7 +8,7 @@ export default function AssessmentError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+    <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-sage-ghost via-sage-ghost to-state-error-bg">
       <div className="text-center px-6">
         <h2 className="text-xl font-semibold text-ink mb-3">
           Hiba a teszt betöltésekor
@@ -16,7 +16,7 @@ export default function AssessmentError({
         <p className="text-sm text-ink-body mb-6">{error.message}</p>
         <button
           onClick={reset}
-          className="min-h-[44px] rounded-xl bg-indigo-600 px-6 text-sm font-medium text-white hover:bg-indigo-700 transition"
+          className="min-h-[44px] rounded-xl bg-sage px-6 text-sm font-medium text-white hover:bg-sage-dark transition"
         >
           Újrapróbálás
         </button>

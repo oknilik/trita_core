@@ -46,7 +46,7 @@ export function CampaignDeleteButton({
     <div className="mt-4 border-t border-sand pt-4">
       {confirming ? (
         <div className="rounded-xl border border-state-error-border bg-state-error-bg p-4">
-          <p className="text-xs font-semibold text-rose-800">
+          <p className="text-xs font-semibold text-text-error-strong">
             {t("org.campaign.deleteConfirm", locale)}
           </p>
           <div className="mt-3 flex flex-wrap items-center gap-2">

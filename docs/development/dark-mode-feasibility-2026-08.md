@@ -494,3 +494,57 @@ változás, nem azonosság — ezért van itt leírva.
 | **TS-oldali színek** (30 hely) | SVG-fill és inline style — a CSS-változó nem éri el |
 | **Képi CI-baseline** | A `visual-regression` TODO nyitva, most már két témára |
 | **Több app-felület** | A kampány-, jelölt- és riport-nézetek még nincsenek átnézve |
+
+---
+
+## 12. A Tailwind-paletta migráció lezárása (2026-08-07, 4. kör)
+
+Döntés született: a maradék 189 osztály is a **saját tokenek felé** mozdul, a
+világos téma kis elmozdulását vállalva. A migráció ezzel **lezárult** — a
+`check-colors` (f) kerete **0**, új Tailwind-paletta osztály nem kerülhet be.
+
+### 12.1 Hogyan készült a leképezés
+
+Nem kézzel: **adatvezérelten**, hogy az elmozdulás bizonyíthatóan minimális
+legyen.
+
+1. A Tailwind v4 alap-palettája **oklch**-ban van a fordított CSS-ben — ezt
+   sRGB-re konvertáltuk (ugyanúgy, ahogy a böngésző teszi).
+2. Minden osztályhoz kijelöltük a **szemantikailag helyes token-családot**
+   (amber→warning, rose/red/pink→error, emerald/green→success,
+   sky/blue→info, slate/gray→meleg neutrális).
+3. A családon belül a **perceptuálisan (OKLab) legközelebbi** tokent
+   választottuk.
+
+Eredmény: **78 különböző osztály, 189 előfordulás, 45 fájl**. Az elmozdulás
+zöme ΔE < 6 (érzékelhetetlen–finom); a legkisebbek 0,0–1,0 (pl.
+`bg-red-50` → `bg-state-error-soft` **azonos**).
+
+### 12.2 Az egyetlen nagy váltás: indigo → zsálya
+
+Az `indigo` család (42 előfordulás) volt a kivétel, ΔE 21–28 — ez valódi
+hue-váltás (kék-ibolya → zöld). Indokolt: **az indigónak nincs Trita-
+jelentése**. A kontextus-vizsgálat szerint admin-felületeken „kijelölt
+állapot" és „elsődleges akció" szerepben állt (`AdminReminderSection`,
+`AdminDraftReminderSection`, `Modal`, `NotificationPanel`, `TeamInsights`) —
+vagyis pontosan azt csinálta, amire a platformnak már van színe: a zsálya.
+A `bg-indigo-600` → `bg-sage` váltás a fehér feliratot is olvashatóan hagyja
+(6,06:1).
+
+Ugyanezen az alapon ment a `purple`/`violet` (4 előfordulás) is a
+zsálya-családra.
+
+### 12.3 Ellenőrzés
+
+`type-check` + `lint` + `check:colors` tiszta, **565 unit + 120 client** zöld.
+A `/admin`, `/team/[id]` felületek a futó appon (helyi PostgreSQL + e2e
+auth-bypass) mindkét témában átnézve.
+
+### 12.4 Ami a sötét módból még hátravan
+
+| Tétel | Miért |
+|---|---|
+| **TS-oldali színek** (30 hely) | SVG-fill és inline style — a CSS-változó nem éri el |
+| **Kampány-, jelölt-, riport-nézetek** | A seed nem fedte le őket; futó appon még nincsenek átnézve |
+| **Képi CI-baseline** | A `visual-regression` TODO nyitva, most már két témára |
+| **8 kontraszt- + 1 felület-adósság** (világos téma) | Nyilvántartva, racsnival védve; javításuk külön döntés |

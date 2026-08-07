@@ -319,7 +319,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         {org.consultants.map((c) => (
                           <span
                             key={c.userId}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-state-warning-bg px-2.5 py-1 text-xs font-medium text-amber-800"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-state-warning-bg px-2.5 py-1 text-xs font-medium text-bronze-700"
                           >
                             {c.username ?? c.email ?? c.userId}
                             <button
@@ -329,7 +329,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 c.email &&
                                 callAction(org.id, "remove_consultant", { consultantEmail: c.email })
                               }
-                              className="text-amber-600 transition hover:text-state-error-solid disabled:opacity-50"
+                              className="text-state-warning-solid transition hover:text-state-error-solid disabled:opacity-50"
                               aria-label="Tanácsadó eltávolítása"
                             >
                               ×

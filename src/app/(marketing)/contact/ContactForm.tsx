@@ -190,7 +190,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       />
 
       {error ? (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg">
           {error}
         </p>
       ) : null}

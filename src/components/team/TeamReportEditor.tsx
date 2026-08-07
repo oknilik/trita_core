@@ -433,14 +433,14 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
         <div className="flex flex-col gap-4">
           {orgId && (draft.aggregates?.evidence?.measuredEdgeCount ?? 0) === 0 && (
             <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
-              <p className="text-xs text-amber-800">
+              <p className="text-xs text-bronze-700">
                 {isHu
                   ? "A riport kapcsolati adatalapja most csak becslés — nincs mért bizalmi kör."
                   : "The report's relationship data basis is estimate-only — no measured trust round yet."}
               </p>
               <Link
                 href={`/org/${orgId}/campaigns/new?team=${teamId}`}
-                className="text-xs font-semibold text-amber-800 underline transition hover:text-amber-900"
+                className="text-xs font-semibold text-bronze-700 underline transition hover:text-accent-earth-strong"
               >
                 {isHu ? "Bizalmi kör indítása →" : "Start a trust round →"}
               </Link>
@@ -759,7 +759,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 : undefined
             }
             onClick={() => unpublish(latestPublished.id)}
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-amber-300 bg-surface-card px-4 text-sm font-semibold text-state-warning-fg transition hover:bg-state-warning-bg disabled:opacity-40"
+            className="inline-flex min-h-[44px] items-center rounded-lg border border-state-warning-border bg-surface-card px-4 text-sm font-semibold text-state-warning-fg transition hover:bg-state-warning-bg disabled:opacity-40"
           >
             {isHu ? "Visszavonás szerkesztésre" : "Unpublish for editing"}
           </button>

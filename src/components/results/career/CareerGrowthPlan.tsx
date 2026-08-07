@@ -76,10 +76,10 @@ export function CareerGrowthPlan({
 
   return (
     <div className="mt-5 rounded-[12px] border border-state-warning-border bg-state-warning-bg/50 p-4">
-      <p className="text-caption font-semibold text-amber-900">
+      <p className="text-caption font-semibold text-accent-earth-strong">
         {t("results.cfGrowthTitle", locale)}
       </p>
-      <p className="mt-1 text-[12px] leading-relaxed text-amber-900/80">
+      <p className="mt-1 text-[12px] leading-relaxed text-accent-earth-strong/80">
         {t("results.cfGrowthIntro", locale)}
       </p>
 
@@ -96,7 +96,7 @@ export function CareerGrowthPlan({
                 <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-secondary)]">
                   {dim.letter} {isHu ? dim.hu : dim.en}
                 </span>
-                <span className="rounded-full bg-amber-100 px-2 py-0.5 text-micro font-medium text-amber-900">
+                <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-accent-earth-strong">
                   {t(
                     gap.pole === "under" ? "results.cfGapUnder" : "results.cfGapOver",
                     locale,
