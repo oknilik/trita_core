@@ -20,4 +20,10 @@ export const navigationTranslations = {
     adminConsole: { hu: "Admin vezérlő", en: "Admin console" },
     backToHome: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
   },
+  theme: {
+    label: { hu: "Színséma", en: "Appearance" },
+    system: { hu: "Rendszer", en: "System" },
+    light: { hu: "Világos", en: "Light" },
+    dark: { hu: "Sötét", en: "Dark" },
+  },
 };

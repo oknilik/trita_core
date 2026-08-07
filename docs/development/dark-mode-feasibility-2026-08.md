@@ -276,7 +276,7 @@ sötét készlet. Így a paletta tervezése közben azonnal látszik, mi bukik.
 |---|---|---|---|---|
 | **A — Nem csinálunk** | Marad világos. A `color-scheme: light` szándékos döntés. | 0 | 0 | — |
 | **B — Csak alapréteg** | Az 1. fázis (témázható tokenek), sötét készlet nélkül. Vizuálisan nem változik semmi. | — | — | **✅ KÉSZ (2026-08-07)** |
-| **C — Rendszerkövetés az app-fán** | Sötét készlet a belépett felületekre; marketing + paper téma világos marad. Kapcsoló: rendszer/világos/sötét. | 3–4 hét | Közepes | Pilot után |
+| **C — Rendszerkövetés** | Sötét készlet + kapcsoló (rendszer/világos/sötét). | — | — | **✅ ALAP KÉSZ (2026-08-07), ld. 10.** |
 | **D — Teljes felület** | Minden publikus oldal is, hero-gradiensek újratervezve. | 6–8 hét | Magas | 2027 |
 
 ### Javaslat
@@ -327,3 +327,69 @@ módosítás nélkül** — ezt érdemes most megcsinálni. A tényleges munka v
 nem a színcsere, hanem a **jelentés újraszármaztatása** sötét alapra és a
 **hiányzó regressziós háló pótlása**; ez a pilot utánra való, és az app-fára
 szűkítve fele akkora, mint a teljes felületre.
+
+---
+
+## 10. C fázis — megvalósítva (2026-08-07)
+
+### 10.1 A hatókör-tanulság — ezért NEM csak az app-fa sötét
+
+A terv az volt, hogy a sötét mód csak a bejelentkezett app-fára vonatkozik, a
+marketing világos marad. Ezt megépítettük (`.theme-scope` burkoló, a sötét
+blokk szelektora `[data-theme="dark"] .theme-scope`), és **méréssel derült ki,
+hogy CSS-szemantikailag nem működhet**:
+
+```
+scope --palette-cream    #141418   ← a felülírás MEGÉRKEZIK
+scope --color-cream      #f7f4ef   ← de az alias VILÁGOS marad
+kártya tényleges háttér  #ffffff
+```
+
+Az ok: a `--color-x: var(--palette-x)` aliasok a `:root`-on vannak
+**deklarálva**, és a `var()` a *deklaráló* elemen helyettesítődik be. A
+gyerekelem a már behelyettesített (világos) értéket örökli — egy
+leszármazottra tett `--palette-*` felülírás tehát az alias-réteget nem éri el.
+Ezért a felület felében (ami `--palette-*`-ra fordul) átfordult a szín, a
+másik felében (ami `--color-*`-ra) nem — vegyes, törött állapot.
+
+Leszármazott-hatókörhöz **mindkét réteget** újra kellene deklarálni (~120
+palette + ~150 alias token), ami garantáltan elcsúszna. Ezért a sötét blokk a
+`:root[data-theme="dark"]`-on ül: **a hatókör az egész dokumentum**, a
+marketing-fa is átfordul, és a paper-téma (founding / patterns) is kapott
+sötét készletet — meleg, sötét papír.
+
+### 10.2 Mi készült el
+
+| Tétel | Állapot |
+|---|---|
+| **Kontraszt-háló** (`tests/unit/design/token-contrast.test.ts`) | 5 teszt, mindkét témára. Szöveg×felület párok AA-küszöbbel + **felület-elválás** (panel ne olvadjon a szülőbe). |
+| **Sötét készlet** | 115 token: neutrálisok, zsálya, bronz, jelölt-réteg, státusz, 18 dimenzió-érték, réteg-akcentek, hero-gradiensek, paper-téma, árnyék-skála. |
+| **Platform** | `ThemeProvider` (`useSyncExternalStore`), festés előtti inline script (nincs villanás), `trita_theme` preferencia-süti a `trita_locale` mintájára, dinamikus `color-scheme`. |
+| **Kapcsoló** | `ThemeToggle` — három állapot (rendszer/világos/sötét), i18n HU+EN, asztali és mobil menüben. |
+| **Közös token-feloldó** | `tests/unit/design/css-tokens.ts` — a szinkron-teszt is erre állt át (a saját feloldója „utolsó nyer" alapon a sötét értékeket olvasta volna). |
+
+### 10.3 Tervezői döntések, amiket a háló kényszerített ki
+
+- **Két szerep megfordul.** A világos zsálya-gombra sötét felirat kerül
+  (`action-primary-fg`), és a `text-inverse` is sötétre vált. Ugyanaz a token
+  szolgálja a gomb-kitöltést és az akcentet — sötéten csak így marad mindkettő
+  olvasható.
+- **A mélységet a felület-világosság viszi**, nem az árnyék (canvas #141418 →
+  kártya #1d1d23 → muted #23232a). Az ink-alapú árnyék sötéten láthatatlan.
+- **A neutrális nem tiszta szürke**, hanem a bronz felé hajlik — enélkül
+  elveszne a Trita meleg karaktere.
+
+A háló futás közben **három valódi hibát** fogott meg: két sötét státusz-háttér
+beleolvadt a kártyába, és kiderült, hogy a `state-warning-bg` **a világos
+témában is** alig válik el a fehér kártyától (1.037) — ez utóbbi meglévő
+adósságként nyilvántartásba került, nem írtuk át csendben a világos témát.
+
+### 10.4 Ami még hátravan
+
+| Tétel | Miért nem most |
+|---|---|
+| **TS-oldali színek** (30 hely: `DynamicsMap`, `TeamReportView`, `TypeGlyph`, `CelebrationBurst`, `QrCodeBadge`, `ShareCardDownload`) | SVG-fill és inline style — a CSS-változó nem éri el. Komponensenkénti döntés kell (`currentColor` vs. téma-prop). |
+| **Hero-gradiensek valós oldalon** | A token-szintű ellenőrzés zöld, de a gradiensek figura-háttér viszonyát futó appon kell megnézni. |
+| **Marketing-fa átnézése** | A hatókör-döntés miatt a landing/blog/founding is sötétre vált — ezt végig kell nézni. |
+| **Képi CI-baseline** | A `visual-regression` TODO továbbra is nyitott; most már két témára kellene. |
+| **8 világos kontraszt-adósság + 1 felület-adósság** | Nyilvántartva, racsnival védve. Javításuk vizuális változás — külön döntés. |

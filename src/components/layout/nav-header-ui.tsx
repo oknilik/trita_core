@@ -7,6 +7,7 @@ import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   buildWorkspaceNavigation,
   resolveWorkspaceNavRole,
@@ -609,6 +610,13 @@ function NavHeaderContent({
             </div>
           ) : null}
 
+          <div className="mt-1 rounded-lg px-2.5 py-2.5">
+            <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+              {t("theme.label", locale)}
+            </p>
+            <ThemeToggle />
+          </div>
+
           {showSignOutMenuItem ? (
             <div className="mt-1 border-t border-[var(--color-border-soft)] pt-1">
               <button
@@ -1024,6 +1032,13 @@ function NavHeaderContent({
                         <LanguageSwitcher variant="pills" />
                       </div>
                     ) : null}
+
+                    <div className="rounded-lg px-3 py-3">
+                      <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+                        {t("theme.label", locale)}
+                      </p>
+                      <ThemeToggle />
+                    </div>
                   </div>
                 ) : null}
         </>

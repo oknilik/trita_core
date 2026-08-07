@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f7f4ef;
-  --foreground: #1a1a2e;
+  /* A <body> alapszínei a témázott tokenekre mutatnak, hogy a sötét
+     készlet a törzsre is érvényes legyen. */
+  --background: var(--palette-cream);
+  --foreground: var(--palette-ink);
 }
 
 /* ─── Nyers paletta — a TÉMÁZHATÓ réteg ──────────────────────────────
@@ -139,6 +141,152 @@
   --palette-cream-300: #f2ede6;
   --palette-cream-warm: #ede8e1;
   --palette-founding-accent-hover: #a8693c;
+}
+
+/* ─── Sötét készlet ─────────────────────────────────────────────────
+   Ugyanazokat a --palette-* neveket írja felül, amiket a fenti nyers
+   réteg definiál — ettől az EGÉSZ utility-készlet átfordul.
+
+   MIÉRT A :root ÉS NEM EGY LESZÁRMAZOTT: a `--color-x: var(--palette-x)`
+   aliasok a :root-on vannak deklarálva, és a var() a DEKLARÁLÓ elemen
+   helyettesítődik be. Egy leszármazottra tett --palette-* felülírás ezért
+   a --color-* réteget nem éri el (a gyerek a már behelyettesített világos
+   értéket örökli) — méréssel igazolva. A hatókör tehát az egész dokumentum;
+   a téma-választás a <html data-theme> attribútumon dől el.
+
+   NEM invertálás: a jelentés-osztályok viszonyait kellett újravezetni.
+   Két szerep meg is fordul — a világos zsálya-gombra sötét felirat kerül
+   (action-primary-fg), és a text-inverse is sötétre vált.
+
+   A paper-* (founding / patterns marketing-téma) SZÁNDÉKOSAN kimarad:
+   a „papír" metafora sötéten értelmét veszti — a marketing-fa világos.
+   Kontraszt-őr: tests/unit/design/token-contrast.test.ts ── */
+:root[data-theme="dark"] {
+  --palette-accent-candidate: #e2a17f;
+  --palette-accent-candidate-border: #4a3325;
+  --palette-accent-candidate-mid: #c2764c;
+  --palette-accent-candidate-primary: #e0a878;
+  --palette-accent-candidate-soft: #33231a;
+  --palette-accent-candidate-strong: #eeb493;
+  --palette-accent-earth-strong: #d9a273;
+  --palette-accent-primary-mid: #cf9660;
+  --palette-accent-self-deeper: #b6ddcb;
+  --palette-accent-self-strong: #8ec8b0;
+  --palette-action-destructive-bg: #b3283f;
+  --palette-action-destructive-bg-hover: #c73450;
+  --palette-action-primary-fg: #10241d;
+  --palette-border-neutral: #2d2d35;
+  --palette-border-soft: #2d2d35;
+  --palette-bronze: #d9a06b;
+  --palette-bronze-100: #2a2117;
+  --palette-bronze-300: #e8b880;
+  --palette-bronze-700: #e0ad74;
+  --palette-bronze-dark: #e3b184;
+  --palette-bronze-edge: #4a3626;
+  --palette-bronze-soft: #3a2a1d;
+  --palette-cream: #141418;
+  --palette-cream-300: #26262f;
+  --palette-cream-warm: #24242c;
+  --palette-dim-a-base: #a3c274;
+  --palette-dim-a-soft: #232f19;
+  --palette-dim-a-strong: #bad494;
+  --palette-dim-c-base: #61b0c9;
+  --palette-dim-c-soft: #172f3a;
+  --palette-dim-c-strong: #8ac9dd;
+  --palette-dim-e-base: #a98ede;
+  --palette-dim-e-soft: #2a2142;
+  --palette-dim-e-strong: #c0abe9;
+  --palette-dim-h-base: #8891e0;
+  --palette-dim-h-soft: #212642;
+  --palette-dim-h-strong: #a9b0ee;
+  --palette-dim-o-base: #dd8fb0;
+  --palette-dim-o-soft: #382231;
+  --palette-dim-o-strong: #eaadc5;
+  --palette-dim-x-base: #d9a83f;
+  --palette-dim-x-soft: #352a13;
+  --palette-dim-x-strong: #e6bf6b;
+  --palette-eval-high-fg: #a8d7c2;
+  --palette-ink: #f3efe8;
+  --palette-ink-300: #6f6a60;
+  --palette-ink-body: #cac5bb;
+  --palette-ink-warm: #9b9487;
+  --palette-layer-candidate-badge: #f6cfa8;
+  --palette-layer-candidate-hero-to: #3a1f16;
+  --palette-layer-org-accent: #6f9bc4;
+  --palette-layer-org-border: #33475c;
+  --palette-layer-org-bright: #85aed4;
+  --palette-layer-org-hero-from: #2b4460;
+  --palette-layer-org-hero-mid: #22374d;
+  --palette-layer-org-hero-to: #1a2a3b;
+  --palette-layer-org-soft: #1a2634;
+  --palette-layer-team-accent: #b98aa8;
+  --palette-layer-team-bright: #cb9fbb;
+  --palette-layer-team-hero-from: #4a3247;
+  --palette-layer-team-hero-mid: #3a2739;
+  --palette-layer-team-hero-to: #2b1e2c;
+  --palette-layer-team-soft: #2e2029;
+  --palette-muted: #a49e92;
+  --palette-muted-warm: #9b9487;
+  --palette-neutral-white: #1d1d23;
+  --palette-sage: #7fbfa6;
+  --palette-sage-300: #5aa88c;
+  --palette-sage-500: #74b49c;
+  --palette-sage-dark: #93cbb4;
+  --palette-sage-deep: #a8d7c2;
+  --palette-sage-ghost: #142924;
+  --palette-sage-ring: #4d7f6e;
+  --palette-sage-soft: #17302a;
+  --palette-sand: #34343d;
+  --palette-state-error-bg: #381b21;
+  --palette-state-error-border: #4d2b30;
+  --palette-state-error-fg: #f08a92;
+  --palette-state-error-soft: #271a1c;
+  --palette-state-error-solid: #e0576e;
+  --palette-state-info-bg: #17253a;
+  --palette-state-info-border: #2b3f5c;
+  --palette-state-info-fg: #8ab4f8;
+  --palette-state-info-solid: #5b8fe0;
+  --palette-state-success-bg: #12261f;
+  --palette-state-success-border: #24463a;
+  --palette-state-success-fg: #6fc79b;
+  --palette-state-success-solid: #34a06f;
+  --palette-state-warning-bg: #2a2113;
+  --palette-state-warning-border: #4a3a1e;
+  --palette-state-warning-fg: #e0b062;
+  --palette-state-warning-solid: #d9963a;
+  --palette-surface-card: #1d1d23;
+  --palette-surface-card-soft: #22222a;
+  --palette-surface-chip-neutral: #26262c;
+  --palette-surface-chip-warm: #2e2820;
+  --palette-surface-chip-warm-soft: #2b261f;
+  --palette-surface-soft-warm: #262029;
+  --palette-surface-toast: #272029;
+  --palette-surface-warm-tint: #2a221c;
+  --palette-text-error-strong: #f0929a;
+  --palette-text-inverse: #1a1a2e;
+  --palette-text-strong-alt: #dcd8e4;
+  --palette-text-strong-deep: #e3dfe9;
+  --palette-text-success-soft: #2f5a4a;
+  --palette-warm: #23232a;
+  --palette-warm-dark: #474751;
+  --palette-warm-mid: #202027;
+  /* Sötéten a MÉLYSÉGET a felület-világosság lépcsője viszi (canvas →
+     kártya → muted), nem az árnyék: az ink-alapú árnyék sötét alapon
+     láthatatlan. Ami marad, az kontúr, nem vetett árnyék. */
+  --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ui-shadow-md: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --ui-shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.55);
+  --ui-shadow-xl: 0 22px 52px rgba(0, 0, 0, 0.6);
+  --ui-shadow-focus: 0 0 0 3px rgba(127, 191, 166, 0.35);
+  /* Paper marketing-téma (founding / patterns) — meleg, sötét papír.
+     A hatókör globális, ezért ez sem maradhat ki. */
+  --palette-paper-bg: #141210;
+  --palette-paper-card: #1e1b17;
+  --palette-paper-text: #eee8df;
+  --palette-paper-muted: #b3a99b;
+  --palette-paper-heading: #f5f0e8;
+  --palette-paper-border: #302b24;
+  --palette-founding-accent-hover: #e3b184;
 }
 
 @theme inline {
@@ -502,7 +650,16 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
+}
+
+/* A színséma követi a témát — enélkül a natív form-vezérlők, a
+   görgetősáv és az iOS-autofill világos maradna a sötét lapon. */
+:root {
   color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 /* Prevent iOS Safari auto-zoom on focused form controls. */

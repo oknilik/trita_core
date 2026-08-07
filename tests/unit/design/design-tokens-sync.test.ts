@@ -1,8 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { COLORS, PDF_COLORS } from "@/lib/design-tokens";
+import { RAW_CSS, resolveToken } from "./css-tokens";
 import {
   DIMENSION_COLORS,
   EVAL_RAMP,
@@ -18,35 +17,12 @@ import {
 // is átvezetendő — és fordítva. (2026-08 szín-rendszer: a dim/layer/eval/
 // state-solid tokenek is ide tartoznak.)
 
-const css = readFileSync(
-  join(process.cwd(), "src/app/globals.css"),
-  "utf8",
-);
-
-// A színek KÉT rétegben élnek (2026-08, témázható alapréteg):
-//   --palette-*  → a nyers értékek, sima :root-ban (ez a felülírható réteg),
-//   --color-*    → a @theme szerep-tokenek, amik ide hivatkoznak.
-// A feloldás ezért a TELJES változónevet kulcsolja, és bármelyik réteg
-// hivatkozását követi — így a lánc (--color-surface-canvas → --color-cream
-// → --palette-cream → #f7f4ef) a végén hexet ad.
-const DEFINITIONS = new Map<string, string>();
-for (const match of css.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/g)) {
-  DEFINITIONS.set(match[1], match[2].trim());
-}
-
-/** `name` a teljes változónév, pl. `--color-sage`. */
-function resolveCssVar(name: string, depth = 0): string | null {
-  if (depth > 8) return null;
-  const value = DEFINITIONS.get(name);
-  if (!value) return null;
-  const ref = value.match(/^var\((--[a-z0-9-]+)\)$/);
-  if (ref) return resolveCssVar(ref[1], depth + 1);
-  const hex = value.match(/^#[0-9a-fA-F]{6}$/);
-  return hex ? value.toLowerCase() : value;
-}
-
+// A feloldás a KÖZÖS resolveren megy, és mindig a VILÁGOS témán: a
+// TS-tükrök a PDF-et, az emailt és az OG-képeket szolgálják ki, azok pedig
+// fix világos médiumok. A sötét készlet szándékosan nem tükröződik ide.
+// (Enélkül a naiv „utolsó definíció nyer" olvasás a sötét értékeket adná.)
 function cssVar(name: string): string | null {
-  return resolveCssVar(`--color-${name}`);
+  return resolveToken(name, "light");
 }
 
 function assertPair(tsValue: string, cssName: string, label: string) {
@@ -95,7 +71,7 @@ test("a típus-skála tokenek jelen vannak a globals.css-ben", () => {
     "--text-display", "--text-title", "--text-heading",
     "--text-body", "--text-caption", "--text-label", "--text-micro",
   ]) {
-    assert.ok(css.includes(`${token}:`), `${token} hiányzik a globals.css-ből`);
+    assert.ok(RAW_CSS.includes(`${token}:`), `${token} hiányzik a globals.css-ből`);
   }
 });
 
@@ -172,7 +148,7 @@ test("a kivezetett tokenek nem térnek vissza a globals.css-be", () => {
     "--color-state-warning-strong",
   ]) {
     assert.ok(
-      !css.includes(`${legacy}:`),
+      !RAW_CSS.includes(`${legacy}:`),
       `${legacy} kivezetett token — ne definiáld újra (color-system-2026-08.md)`,
     );
   }

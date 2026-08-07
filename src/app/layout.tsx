@@ -3,6 +3,8 @@ import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
 import { getMetadataBase } from "@/lib/seo";
@@ -78,13 +80,24 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang={DEFAULT_LOCALE}>
-      <body className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}>
+      <head>
+        {/* Színséma a festés ELŐTT — enélkül minden oldalbetöltésnél
+            felvillanna a világos téma. Szerver-oldalon szándékosan NEM
+            olvasunk sütit: az az egész marketing-fát dinamikussá tenné.
+            A marketing-oldalakon nincs hatása (nincs ott .theme-scope). */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body
+        className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}
+      >
         {/* ClerkProvider NEM itt van: a marketing-fa (landing/blog/…) így nem
             szállít clerk-js bundle-t. A Clerk a (app) és (auth) zóna
             layoutjában él; a publikus nav auth-állapotát a nav-context adja. */}
-        <LocaleProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </LocaleProvider>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>
