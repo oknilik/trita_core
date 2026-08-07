@@ -848,3 +848,41 @@ változatlan.
 | hero `-from` elválása a laptól (sötét) | 1,60–2,22 | **2,30** |
 | hero másodlagos szöveg | 2,5–3,4:1 | **4,6–5,0:1** |
 | világos hero háttér | — | változatlan |
+
+---
+
+## 16. A hatókör lezárása (2026-08-07, 8. kör)
+
+A hatókör kétszer maradt hiányos, ugyanabból az okból: **a kimaradt fa
+nem néz ki hibásan**. Világos marad, ami magában rendben van — csak épp
+nem az, amit a látogató kért. Előbb a marketing-fa (6. kör), most a
+belépő-fa.
+
+Ami hiányzott:
+
+- **`(auth)`** — `/sign-in`, `/sign-up`, SSO-callback, `/sign-out`. Ezek
+  definíció szerint auth NÉLKÜLI lapok, és jellemzően a marketing-oldalról
+  érkezik rájuk a látogató — aki ott már sötétre váltott.
+- **`src/app/error.tsx`** — a gyökér-hibahatár. Egyetlen csoport-layout sem
+  fut körülötte, csak a root, tehát a hatókört magának kell felvennie.
+
+Az `(auth)` lapok osztályai már mind tokenizáltak voltak (`bg-cream`,
+`bg-surface-card`, `border-sand`, `--color-border-default`) — csak a
+hatókör hiányzott. A Google-logó hexei szándékosan literálok (harmadik fél
+brandje, `check-colors` alól kivéve).
+
+**Guard: `check-colors` (h)** — minden `src/app/(*)/layout.tsx`-nek
+tartalmaznia kell a `theme-scope` wrappert. Egy új route-csoport így nem
+tud némán kimaradni. (Regresszióval ellenőrizve: a wrapper eltávolítása
+exit 1.)
+
+**Mérés** — 12 publikus útvonalon (landing, árazás, blog, minták,
+founding, kapcsolat, adatvédelem, holland-kód, pilot, sign-in, sign-up,
+try): mindenhol megvan a hatókör, és sötéten `--color-surface-canvas` =
+`#141418`, `--color-text-primary` = `#f3efe8`.
+
+> **Amit NEM tudtam itt megnézni:** a Clerk-es űrlap maga. A konténerben
+> nincs valódi Clerk-kulcs, ezért a `useSignIn` sosem tölt be, és a lap a
+> Suspense-fallbackon marad. A hatókör és a tokenek bizonyítottan
+> működnek, de a belépő-űrlap vizuális átnézése egy valódi previewn még
+> hátravan.

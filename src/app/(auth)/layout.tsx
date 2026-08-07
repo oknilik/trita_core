@@ -27,7 +27,10 @@ export default function AuthLayout({
       signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
       signUpFallbackRedirectUrl="/onboarding"
     >
-      {children}
+      {/* A sötét mód hatóköre — a belépő-fa is megkapja. Enélkül a
+          bejelentkezés/regisztráció világos maradna, miközben a látogató
+          épp a marketing-oldalról érkezik, ahol már sötétre váltott. */}
+      <div className="theme-scope">{children}</div>
     </ClerkProvider>
   );
 }

@@ -2,7 +2,7 @@
 
 // Szín-guardrail (2026-08 szín-rendszer — docs/development/color-system-2026-08.md)
 //
-// Ellenőrzések (a)–(g):
+// Ellenőrzések (a)–(h):
 //  (a) KIVEZETETT hexek tiltólistája — a migrációban megszüntetett színek
 //      (kevert dimenzió-paletták, státusz-kölcsönzések, destruktív-terrakotta,
 //      hideg slate/indigó ködök) nem szivároghatnak vissza. Hard fail.
@@ -187,6 +187,31 @@ const missingInDark = [];
   }
 }
 
+// (h) Minden route-csoport shellje felveszi a `.theme-scope`-ot. A sötét
+//     készlet hatóköre ez az osztály; ami kimarad belőle, az VILÁGOS marad
+//     akkor is, ha a látogató sötétre váltott — és ez némán történik, mert
+//     a lap magától jól néz ki, csak épp a másik sémán.
+//     Így maradt ki elsőre a marketing-fa, majd a belépő-fa (2026-08-07).
+const scopelessLayouts = [];
+{
+  const groups = readdirSync(path.join(ROOT, "src/app"), { withFileTypes: true })
+    .filter((e) => e.isDirectory() && e.name.startsWith("(") && e.name.endsWith(")"));
+  for (const group of groups) {
+    const rel = `src/app/${group.name}/layout.tsx`;
+    const abs = path.join(ROOT, rel);
+    let content;
+    try {
+      content = readFileSync(abs, "utf8");
+    } catch {
+      scopelessLayouts.push(`${rel}  nincs layout — a csoport nem kap hatókört`);
+      continue;
+    }
+    if (!content.includes("theme-scope")) {
+      scopelessLayouts.push(`${rel}  hiányzik a .theme-scope wrapper`);
+    }
+  }
+}
+
 // (g) A @theme blokk `static`. A Tailwind v4 alapból KIGYOMLÁLJA azokat a
 //     @theme-változókat, amelyekre egyetlen generált utility sem hivatkozik —
 //     tehát a `--color-x` custom property ki sem kerül a :root-ba. A sötét
@@ -322,6 +347,18 @@ if (missingInDark.length > 0) {
   );
 }
 
+if (scopelessLayouts.length > 0) {
+  failed = true;
+  console.error(
+    "check-colors: route-csoport a sötét mód hatókörén KÍVÜL — ott a világos " +
+      "téma marad, akkor is, ha a látogató sötétre váltott:\n",
+  );
+  for (const v of scopelessLayouts) console.error("  " + v);
+  console.error(
+    '\nCsomagold a shell tartalmát: <div className="theme-scope">{children}</div>.',
+  );
+}
+
 if (themeNotStatic.length > 0) {
   failed = true;
   console.error(
@@ -374,7 +411,7 @@ if (failed) process.exit(1);
 
 console.log(
   `check-colors OK — tiltólista tiszta, @theme static + témázható (0 literál), ` +
-    `sötét alias-réteg teljes, felületek tokenizálva, ` +
+    `sötét alias-réteg teljes, minden route-csoport hatókörben, felületek tokenizálva, ` +
     `TW-paletta ${twPaletteCount}/${TW_PALETTE_BUDGET}, ` +
     `nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,
 );
