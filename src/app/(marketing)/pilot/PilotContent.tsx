@@ -86,7 +86,7 @@ export function PilotContent() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
                   href="#jelentkezes"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
                 >
                   {t("pilot.heroCta", locale)}
                 </a>
@@ -295,7 +295,7 @@ export function PilotContent() {
                     <button
                       type="submit"
                       disabled={status === "sending"}
-                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-8 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-8 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>

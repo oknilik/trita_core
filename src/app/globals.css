@@ -116,6 +116,11 @@
   /* Akcent-háttéren ülő szöveg (bronz gomb, glow-sáv): az akcentek MINDKÉT
      témában világosak, ezért ott sötét felirat kell — a fehér ma AA-bukó. */
   --palette-text-on-accent: #1a1a2e;
+  /* MÉLY akcent felirata. A bronze-dark / accent-primary-strong nem úgy
+     viselkedik, mint a brand-bronz: az világosban SÖTÉT, sötéten VILÁGOS,
+     tehát a felirat is fordul. A fix `text-on-accent` világosban 3,5:1-et
+     adott rajta (2026-08-07 regresszió) — ez a token 4,9:1-et. */
+  --palette-text-on-accent-deep: #ffffff;
   /* Jelölt-akcent felirata. Külön token, mert a terrakotta MEGFORDUL a két
      sémán (világosban mély barna, sötéten világos agyag), tehát a felirat
      is fordul — a fix fehér sötéten 2,2:1 volt. */
@@ -276,6 +281,7 @@
   --palette-surface-inverse-soft: #3b3b46;
   --palette-text-on-inverse: #f3efe8;
   --palette-text-on-accent: #17171c;
+  --palette-text-on-accent-deep: #17171c;
   --palette-layer-self-hero-from: #315f4f;
   --palette-layer-self-hero-mid: #275044;
   --palette-layer-self-hero-to: #233e36;
@@ -374,6 +380,7 @@
   --color-text-on-inverse: var(--palette-text-on-inverse);
   --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
   --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-accent-deep: var(--palette-text-on-accent-deep);
   --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);
@@ -625,6 +632,7 @@
   --color-text-on-inverse: var(--palette-text-on-inverse);
   --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
   --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-accent-deep: var(--palette-text-on-accent-deep);
   --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);

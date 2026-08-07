@@ -145,7 +145,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   // Köszönő állapot — csak közvetlenül a beküldés után, majd pár mp múlva eltűnik
   if (submitted && !thanksHidden) {
     return (
-      <div className="animate-fade-in rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-white p-6 md:p-8">
+      <div className="animate-fade-in rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-[var(--color-surface-card)] p-6 md:p-8">
         <div className="flex items-center justify-center gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)] shadow-sm">
             <svg
@@ -172,7 +172,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   }
 
   return (
-    <div className="rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-white p-6 md:p-8">
+    <div className="rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-[var(--color-surface-card)] p-6 md:p-8">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-ink">

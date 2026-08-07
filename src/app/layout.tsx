@@ -79,7 +79,13 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang={DEFAULT_LOCALE}>
+    // suppressHydrationWarning: a festés előtti script a `data-theme`-et a
+    // <html>-re teszi, a szerver-HTML-ben viszont NINCS ilyen attribútum
+    // (a gyökér-layout szándékosan nem olvas sütit — az az egész
+    // marketing-fát dinamikussá tenné). A React ezt attribútum-eltérésként
+    // jelentette minden oldalon. A kapcsoló CSAK ennek az elemnek a saját
+    // attribútumaira hat, a gyerekek hidratálását nem némítja el.
+    <html lang={DEFAULT_LOCALE} suppressHydrationWarning>
       <head>
         {/* Színséma a festés ELŐTT — enélkül minden oldalbetöltésnél
             felvillanna a világos téma. Szerver-oldalon szándékosan NEM

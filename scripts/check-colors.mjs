@@ -241,6 +241,10 @@ const untokenizedSurfaces = [];
 {
   const PATTERNS = [
     [/\bbg-white\b(?!\/)/g, "bg-white → bg-surface-card"],
+    // Gradiens-stopként ugyanaz a hiba, csak észrevétlenebb: a landing
+    // hero-kártyája alatt egy `from-white` elhalványuló sáv világított
+    // sötéten (2026-08-07). Az áttetsző alak (from-white/40) itt is szabad.
+    [/\b(?:from|via|to)-white\b(?!\/)/g, "from/via/to-white → …-[var(--color-surface-card)]"],
     // A `-solid` a státusz GRAFIKAI változata (pötty, donut, él): a küszöbe
     // 3:1. Szövegként 4,5:1 kellene, amit a success/warning/info nem hoz
     // (3,77 / 3,19 / 3,68 fehér lapon — UX-audit 2026-08-07). A szöveg

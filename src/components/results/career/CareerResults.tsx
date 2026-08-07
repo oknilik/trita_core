@@ -113,7 +113,7 @@ function OccupationCard({
     <div
       className={
         hero
-          ? "rounded-[16px] border-2 border-sage/50 bg-gradient-to-br from-sage/10 to-white p-5"
+          ? "rounded-[16px] border-2 border-sage/50 bg-gradient-to-br from-sage/10 to-[var(--color-surface-card)] p-5"
           : "rounded-[12px] border border-[var(--color-border-soft)] bg-surface-card p-4"
       }
       style={{ animation: "cc-step-in 0.35s ease-out both", animationDelay: `${delayMs}ms` }}
@@ -498,7 +498,7 @@ export function CareerResults({
                   setConfirmReset(false);
                 }
               }}
-              className="min-h-[36px] rounded-lg bg-[var(--color-accent-primary)] px-3.5 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:bg-[var(--color-accent-primary-strong)] disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-[var(--color-accent-primary)] px-3.5 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110 disabled:opacity-50"
             >
               {t(resetting ? "results.cfResetBusy" : "results.cfResetYes", locale)}
             </button>

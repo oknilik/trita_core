@@ -1,9 +1,11 @@
 // Színséma — közös típusok és a festés előtt futó script.
 //
-// HATÓKÖR: a bejelentkezett app-fa (`.theme-scope`, az (app) layout shellje).
-// A marketing-fa és a paper-téma (founding / patterns) szándokosan világos
-// marad — a globális hatókört kipróbáltuk, és a futó appon lefotózva a
-// marketing törött volt sötéten.
+// HATÓKÖR: a `.theme-scope` osztály, amit MINDEN route-csoport shellje
+// felvesz — (app), (marketing) és (auth) —, plusz a gyökér-hibahatár. Így a
+// landing, a blog, az árazás és a belépő is követi a színsémát.
+// (Az első körben csak az app-fa kapta meg; a marketing akkor törött volt
+// sötéten. A 2026-08-07-i UX-audit tokenizálta a maradékot, azóta él a
+// teljes hatókör. Guard: scripts/check-colors.mjs (h).)
 //
 // A leszármazott-hatókörnek ára van: a `--color-x: var(--palette-x)` aliasok
 // a :root-on vannak deklarálva, és a var() a DEKLARÁLÓ elemen
@@ -38,8 +40,10 @@ export function normalizeTheme(value: string | undefined | null): ThemePreferenc
  * Miért nem szerver-oldalon: a gyökér-layout süti-olvasása az EGÉSZ
  * marketing-fát dinamikussá tenné (a statikus render elveszne). Ez a
  * ~400 bájt viszont még az első festés előtt lefut, tehát nincs
- * téma-villanás — és a marketing-oldalakon nincs hatása, mert ott nincs
- * `.theme-scope`.
+ * téma-villanás.
+ *
+ * Ennek AZ ÁRA, hogy a szerver-HTML-ben nincs `data-theme`, a kliensen meg
+ * van — a gyökér-layout `<html>` eleme ezért kap `suppressHydrationWarning`-ot.
  *
  * Hibatűrés: bármi hiba esetén némán világos marad (try/catch).
  */

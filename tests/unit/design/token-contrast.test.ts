@@ -93,6 +93,12 @@ add("paper", "text", "paper-muted", "paper-elevated");
 add("akcent-háttér", "text", "text-on-accent", "bronze");
 add("akcent-háttér", "text", "text-on-accent", "accent-primary");
 add("akcent-háttér", "text", "text-on-inverse", "surface-inverse");
+// MÉLY akcent: a bronze-dark / accent-primary-strong világosban SÖTÉT,
+// sötéten VILÁGOS — a felirat is fordul. A fix `text-on-accent` itt
+// világosban 3,5:1-et adott (2026-08-07 regresszió).
+add("mély akcent", "text", "text-on-accent-deep", "bronze-dark");
+add("mély akcent", "text", "text-on-accent-deep", "accent-primary-strong");
+add("mély akcent", "text", "text-on-accent-deep", "action-primary-bg");
 
 // Réteg-herók. A panel mindkét sémán SÖTÉT, de nem ugyanaz a sötét — a
 // felirat és a halk másodlagos sor a legVILÁGOSABB stopon a legszorosabb,

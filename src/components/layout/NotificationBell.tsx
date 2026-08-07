@@ -48,7 +48,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
       {/* Badge háttere: bronze-dark — a világosabb accent-primary fehér
           10px-es számmal csak 3.28:1 (AA-bukó); a bronze-dark 4.89:1. */}
       {count > 0 && (
-        <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center lg:-right-0.5 lg:-top-0.5 rounded-full bg-[var(--color-bronze-dark)] px-1 text-micro font-bold leading-none text-[var(--color-text-on-accent)]">
+        <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center lg:-right-0.5 lg:-top-0.5 rounded-full bg-[var(--color-bronze-dark)] px-1 text-micro font-bold leading-none text-[var(--color-text-on-accent-deep)]">
           {count > 99 ? "99+" : count}
         </span>
       )}

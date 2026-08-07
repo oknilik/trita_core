@@ -140,9 +140,17 @@ export function PrivacyContent() {
             </div>
           )}
 
-          <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
+          {/* min-w-0 a rács-elemeken: a grid-item alapértelmezett
+              `min-width: auto` a TARTALOM min-content méretét veszi, és a
+              jogalap-táblázat `min-w-[520px]`-je így 520px-re feszítette a
+              sávot — 390px-es kijelzőn az egész lap 586px széles lett és
+              oldalra csúszott. A táblázat saját vízszintes görgetője csak
+              akkor tud dolgozni, ha a sáv szűkebb lehet nála.
+              (A `lg:grid-cols-[240px_minmax(0,1fr)]` ugyanezt teszi a
+              kétsávos elrendezésben.) */}
+          <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
             {/* ── Tartalomjegyzék ── */}
-            <aside className="h-fit rounded-lg border border-sand bg-surface-card p-4 lg:sticky lg:top-28">
+            <aside className="h-fit min-w-0 rounded-lg border border-sand bg-surface-card p-4 lg:sticky lg:top-28">
               <p className="mb-3 text-label uppercase text-ink-body">{doc.tocLabel}</p>
               <nav className="space-y-1">
                 {doc.sections.map((section, index) => (
@@ -163,7 +171,7 @@ export function PrivacyContent() {
             </aside>
 
             {/* ── Szakaszok ── */}
-            <div className="space-y-4">
+            <div className="min-w-0 space-y-4">
               {doc.sections.map((section, index) => (
                 <section
                   key={section.id}

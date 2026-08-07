@@ -31,7 +31,7 @@ export function ContactContent() {
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
               href="#contact-form"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
             >
               {t("contact.heroCta", locale)}
             </a>

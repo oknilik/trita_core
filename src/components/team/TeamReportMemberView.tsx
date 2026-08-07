@@ -78,7 +78,7 @@ export function TeamReportMemberView({
     <div className="flex flex-col gap-6">
       {/* Fejléc — gradiens sáv + avatár */}
       <DashboardPanel className="overflow-hidden p-0">
-        <div className="bg-gradient-to-r from-sage/15 via-cream/70 to-white p-6">
+        <div className="bg-gradient-to-r from-sage/15 via-cream/70 to-[var(--color-surface-card)] p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-sage font-fraunces text-lg font-semibold text-[var(--color-action-primary-fg)] shadow-[0_6px_16px_rgba(107,138,99,0.35)]">

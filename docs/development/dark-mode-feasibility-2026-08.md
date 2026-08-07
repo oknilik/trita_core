@@ -886,3 +886,88 @@ try): mindenhol megvan a hatókör, és sötéten `--color-surface-canvas` =
 > Suspense-fallbackon marad. A hatókör és a tokenek bizonyítottan
 > működnek, de a belépő-űrlap vizuális átnézése egy valódi previewn még
 > hátravan.
+
+---
+
+## 17. Amit a mérőeszköz nem látott (2026-08-07, 9. kör)
+
+Két konkrét bejelentés érkezett — „a főoldalon vannak hibák sötét módban" és
+„az adatvédelem oldal szétcsúszik" —, és mindkettő olyasmit hozott fel, amit
+az addigi mérés SZERKEZETILEG nem tudott megfogni.
+
+### 17.1 A mérés vakfoltja: a hajtás alatti tartalom
+
+A marketing-lapok `whileInView` revealeket használnak: a hajtás alatti
+blokkok `opacity: 0`-val indulnak, és csak görgetésre jelennek meg. A
+mérőszkript viszont kihagyja a `opacity === "0"` elemeket (helyesen — a
+rejtett elem kontrasztja értelmetlen).
+
+**Következmény: a landing/blog/founding fele SOSEM került mérésre.** Az
+addigi „0 találat a marketingen" ezért túl szép volt. A szkript most
+végiggörget a lapon, mielőtt mér. Ez azonnal kihozta az alábbiakat.
+
+### 17.2 Hidratálási hiba MINDEN oldalon
+
+A festés előtti script a `data-theme`-et a `<html>`-re teszi; a
+szerver-HTML-ben viszont nincs ilyen attribútum (a gyökér-layout
+szándékosan nem olvas sütit — az az egész marketing-fát dinamikussá
+tenné). A React ezt attribútum-eltérésként jelentette, minden
+oldalbetöltésnél:
+
+```
+<html lang="hu"
+-     data-theme="dark"
+```
+
+Javítás: `suppressHydrationWarning` a `<html>`-en. Ez CSAK ennek az elemnek
+a saját attribútumaira hat, a gyerekek hidratálását nem némítja el. (Ez a
+`next-themes` és társai bevett megoldása is.)
+
+### 17.3 Világító sáv a landing hero-kártyája alatt
+
+`bg-gradient-to-b from-white to-[var(--color-surface-subtle)]` — a
+gradiens-stop a Tailwind BEÉPÍTETT fehérje, nem a mi tokenünk. A
+`check-colors` (e) tiltotta a `bg-white`-ot, de a `from/via/to-white`
+alakot nem: a hero alatti elhalványuló CTA-sáv így vakítóan világos maradt
+sötéten. 10 hely javítva, a szabály kiterjesztve.
+
+### 17.4 Az adatvédelem-oldal 390px-en 586px széles volt
+
+Nem szín, hanem elrendezés: a jogalap-táblázat `min-w-[520px]`-et kap
+(szándékosan, saját vízszintes görgetővel), a rács-elem viszont
+alapértelmezésben `min-width: auto` — vagyis a TARTALOM min-content
+méretére feszül. A sáv így 520px alá nem mehetett, és mivel mobilon
+egysávos a rács, a tartalomjegyzék is 562px széles lett.
+
+Javítás: `min-w-0` a rács-elemeken (+ `minmax(0,1fr)` a kétsávos
+elrendezésben). A táblázat saját görgetője csak akkor tud dolgozni, ha a
+sáv szűkebb lehet nála. Mérve: 390/430/768/1280px-en a dokumentum
+szélessége = a viewporté.
+
+### 17.5 Regresszió a 6. körből: a MÉLY akcent
+
+A bronz-sweep egy kalap alá vette az összes bronz hátteret. Pedig kétféle
+van, és ez a különbség a színséma-váltás lényege:
+
+| | világos | sötét | felirat |
+|---|---|---|---|
+| `bronze`, `accent-primary` | világos | világos | **fix sötét tinta** |
+| `bronze-dark`, `accent-primary-strong` | SÖTÉT | VILÁGOS | **forduló** |
+
+A fejléc „Try it →" gombja (`bg-bronze-dark`) így fix sötét tintát kapott,
+és világosban **4,89 → 3,49:1**-re romlott — miközben a fölötte lévő
+komment épp azt magyarázta, miért 4,89. Új token:
+`--color-text-on-accent-deep` (fehér / `#17171c`), és három új pár a
+kontraszt-hálóban, hogy ez ne fordulhasson elő újra.
+
+### 17.6 Mellékesen: a blog-vizuál hidratálási hibája
+
+A generatív SVG a szülőben létrehozott PRNG-t adta le propként, és a
+motívum a SAJÁT renderjében fogyasztotta. A PRNG állapotot hordoz, tehát
+egy különálló újrarender (dev StrictMode dupla render) elcsúsztatta a
+sorozatot — a szerver és a kliens más geometriát rajzolt, és a React
+hidratálási HIBÁVAL (nem figyelmeztetéssel) újraépítette a fát. Most a
+motívum a magot kapja és maga hozza létre a generátort: minden render
+ugyanonnan indul. A kirajzolt kép nem változik.
+
+Ez nem a sötét módból jött — csak ugyanaz a konzol-ellenőrzés hozta ki.

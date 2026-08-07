@@ -606,7 +606,7 @@ export function CareerCompass({
       {step === "intro" && (
         <div style={{ animation: "cc-step-in 0.35s ease-out both" }}>
           {/* Hero — mit ígér a modul és mit nem */}
-          <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-white to-[var(--color-surface-subtle)] p-5 sm:p-6">
+          <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-[var(--color-surface-card)] to-[var(--color-surface-subtle)] p-5 sm:p-6">
             <span
               className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-card text-2xl shadow-sm ring-1 ring-sage/30"
               aria-hidden

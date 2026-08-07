@@ -137,7 +137,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ FADE-OUT CTA ═══ */}
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-white to-[var(--color-surface-subtle)]">
+      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
         <span className="text-[11px] font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>

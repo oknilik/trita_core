@@ -326,8 +326,8 @@ export function TeamReportView({
         <div
           className={`p-6 ${
             isDraft
-              ? "bg-gradient-to-r from-state-warning-bg/50 via-cream/70 to-white"
-              : "bg-gradient-to-r from-sage/15 via-cream/70 to-white"
+              ? "bg-gradient-to-r from-state-warning-bg/50 via-cream/70 to-[var(--color-surface-card)]"
+              : "bg-gradient-to-r from-sage/15 via-cream/70 to-[var(--color-surface-card)]"
           }`}
         >
           <div className="flex flex-wrap items-center justify-between gap-3">

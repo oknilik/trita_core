@@ -979,10 +979,10 @@ export function ProfileTabs({
       >
         {/* Él-fade jelzők — csak ott, ahol még van elgörgetett tartalom */}
         {tabFade.left && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-[var(--color-surface-card)] to-transparent" />
         )}
         {tabFade.right && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-[var(--color-surface-card)] to-transparent" />
         )}
         <div
           ref={tabScrollRef}
