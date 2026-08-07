@@ -166,7 +166,7 @@ export interface PageSeoInput {
  * fájl-konvenciós képet a saját szegmense metadata-jába teszi. Ezért a gyökér
  * `src/app/opengraph-image.tsx` képe kimaradt minden olyan lapról, amelyik
  * `openGraph`-ot ad meg (/pricing, /blog, /privacy, /contact, /pilot,
- * /holland-kod, /patterns) — a `summary_large_image` twitter-kártya kép
+ * /patterns) — a `summary_large_image` twitter-kártya kép
  * nélkül maradt. Itt ezért explicit beállítjuk a gyökér-képet; ahol a
  * szegmensnek SAJÁT `opengraph-image.tsx`-e van (blogcikkek), a hívó
  * `ogImage: null`-t ad, és a fájl-konvenció marad az egyetlen forrás.

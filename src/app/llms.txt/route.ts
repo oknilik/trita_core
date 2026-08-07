@@ -73,7 +73,6 @@ ${line("/", "Főoldal", "Mit mér a Trita, kinek szól, hogyan épül fel az egy
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
 ${line("/pricing", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
 ${line("/patterns", "16 csapatműködési mintázat", "Négy tengely (hajtóerő, kohézió, fegyelem, nyitottság) mentén leírt 16 csapatminta erősségekkel és kockázatokkal.", baseUrl)}
-${line("/holland-kod", "Holland-kód (RIASEC) magyarázat", "A hat érdeklődés-típus közérthetően: Megvalósító, Elemző, Alkotó, Segítő, Meggyőző, Rendszerező.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}
 ${line("/blog", "Blog", "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.", baseUrl)}
 ${line("/contact", "Kapcsolat", "Kapcsolatfelvétel; egy munkanapon belüli válasz.", baseUrl)}

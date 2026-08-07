@@ -73,9 +73,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/pricing`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/try`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/patterns`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.7 },
-    // Fogalom-magyarázó oldal: a karrier-folyamatból hivatkozunk rá, és
-    // önmagában is keresésre való tartalom (RIASEC / Holland-kód).
-    { url: `${baseUrl}/holland-kod`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/pilot`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/blog`, lastModified: newestPostAt, changeFrequency: "weekly", priority: 0.8 },
     ...blogUrls,

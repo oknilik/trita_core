@@ -7,7 +7,6 @@ import { withHuArticle } from "@/lib/hu-grammar";
 import { TRITAN_DIMENSIONS } from "@/lib/tritan";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { INDUSTRIES } from "@/lib/industry-fit";
-import { ExplainerLink } from "@/components/results/ExplainerLink";
 import type { CareerFitView, CareerResultView } from "@/lib/career/service";
 
 // Klaszteres eredmény-nézet. A legfontosabb elvi különbség a v1-hez képest:
@@ -563,12 +562,6 @@ export function CareerResults({
               </span>
             ))}
           </div>
-          <ExplainerLink
-            className="mt-3"
-            label={t("results.hollandExplainerLabel", locale)}
-            hint={t("results.hollandExplainerHint", locale)}
-            href="/holland-kod"
-          />
           {result.industryMismatch && (
             <p className="mt-2 text-micro leading-relaxed text-bronze-700">
               {t("results.cfIndustryMismatch", locale)}

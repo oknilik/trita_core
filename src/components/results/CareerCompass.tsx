@@ -17,7 +17,6 @@ import {
 import { RIASEC_ITEMS, scoreRiasec } from "@/lib/questions/riasec";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { CareerResults } from "@/components/results/career/CareerResults";
-import { ExplainerLink } from "@/components/results/ExplainerLink";
 import { CareerGrowthPlan } from "@/components/results/career/CareerGrowthPlan";
 import { CurrentRolePicker } from "@/components/results/career/CurrentRolePicker";
 import type { CareerResultView } from "@/lib/career/service";
@@ -645,12 +644,6 @@ export function CareerCompass({
                       count: RIASEC_ITEMS.length,
                     })}
               </p>
-              <ExplainerLink
-                className="mt-2.5"
-                label={t("results.hollandExplainerLabel", locale)}
-                hint={t("results.hollandExplainerHint", locale)}
-                href="/holland-kod"
-              />
             </div>
             {/* Profil nélkül a modul nem tud illeszkedést számolni, ezért a
                 belépő gomb a kitöltésre visz — nem külön üzenőképernyő, csak

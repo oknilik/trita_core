@@ -57,7 +57,7 @@ test("a blog-slug megmarad — az tartalom-azonosító, nem személyes adat", ()
 });
 
 test("a publikus útvonalak érintetlenül maradnak", () => {
-  for (const path of ["/", "/pricing", "/try", "/patterns", "/holland-kod", "/contact"]) {
+  for (const path of ["/", "/pricing", "/try", "/patterns", "/founding", "/contact"]) {
     assert.equal(normalizePath(path), path);
   }
 });

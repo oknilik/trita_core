@@ -99,7 +99,6 @@ const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
     "pszichológiai biztonság",
     "szervezetfejlesztés",
     "vezetőfejlesztés",
-    "Holland-kód (RIASEC)",
     "pszichometria",
   ],
   en: [
@@ -113,7 +112,6 @@ const ORG_KNOWS_ABOUT: Record<Locale, string[]> = {
     "psychological safety",
     "organizational development",
     "leadership development",
-    "Holland code (RIASEC)",
     "psychometrics",
   ],
 };
@@ -214,7 +212,7 @@ export interface WebPageInput {
   description: string;
   locale?: Locale;
   breadcrumb?: BreadcrumbItem[];
-  /** A lap fő témája — entitás-kapcsolat az AI-nak (pl. „Holland-kód"). */
+  /** A lap fő témája — entitás-kapcsolat az AI-nak (pl. „csapatmintázat"). */
   about?: string | string[];
   /** ISO dátum, ha a laphoz értelmezhető tartalmi frissítés tartozik. */
   dateModified?: string;
@@ -428,9 +426,13 @@ export interface DefinedTermInput {
 }
 
 /**
- * DefinedTermSet — fogalom-magyarázó oldalak (pl. Holland-kód / RIASEC).
+ * DefinedTermSet — fogalom-magyarázó oldalak.
  *
- * Definíció-kérdésekre („mi az a Holland-kód?") a válaszmotorok azt a forrást
+ * FIGYELEM: jelenleg NINCS fogyasztója. Az egyetlen ilyen lap (/holland-kod)
+ * 2026-08-07-én kikerült, mert a karrier-réteg fagyasztva van. A builder
+ * szándékosan marad: általános SEO-segéd, teszttel együtt.
+ *
+ * Definíció-kérdésekre a válaszmotorok azt a forrást
  * idézik, amelyik a definíciót GÉPILEG olvasható formában adja. A prózában
  * elrejtett magyarázatot ki kell nyerni; ezt nem.
  */
