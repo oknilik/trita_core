@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -623,6 +624,9 @@ export function AssessmentClient({
             <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
               <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
             </Link>
+            {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
+                ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
+            <ThemeToggle />
           </nav>
         )}
 
@@ -723,6 +727,9 @@ export function AssessmentClient({
           </Link>
         )}
         <div className="flex items-center gap-3">
+          {/* A kitöltés közben is elérhető: aki világosban indult és
+              zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
+          <ThemeToggle />
           {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
           <span className="text-micro text-[var(--color-action-primary-bg)]">
             ✓ {guestMode

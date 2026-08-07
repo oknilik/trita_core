@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
@@ -107,11 +108,21 @@ function NavLink({
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
+  /**
+   * Látszik-e a séma-választó. Alapból NEM: ezt a navot a marketing-fa is
+   * használja, ahol a sötét mód szándékosan nincs hatókörben — ott egy
+   * kapcsoló, ami láthatóan nem csinál semmit, hibának tűnne.
+   * Az (app) zóna kijelentkezett ága (`/try`, `/observe/[token]`,
+   * `/join/[token]`, `/share/[token]`) viszont `.theme-scope`-on belül van,
+   * ezért ott bekapcsoljuk.
+   */
+  showThemeToggle?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
+  showThemeToggle = false,
 }: NavBarProps) {
   const { locale } = useLocale();
   // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
@@ -244,6 +255,11 @@ export function NavBar({
             {/* Separator + Language — always visible */}
             <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
             <LanguageSwitcher />
+            {showThemeToggle ? (
+              <div className="hidden lg:block">
+                <ThemeToggle />
+              </div>
+            ) : null}
 
             {/* Hamburger — mobile */}
             <button
@@ -338,6 +354,15 @@ export function NavBar({
           <div className="px-3 pb-1">
             <LanguageSwitcher variant="pills" />
           </div>
+
+          {showThemeToggle ? (
+            <>
+              <MobileMenuSectionLabel>{t("theme.label", locale)}</MobileMenuSectionLabel>
+              <div className="px-3 pb-1">
+                <ThemeToggle />
+              </div>
+            </>
+          ) : null}
 
         </div>
       </MobileMenuShell>

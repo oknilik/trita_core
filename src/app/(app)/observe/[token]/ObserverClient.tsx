@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
 
@@ -705,9 +706,13 @@ export function ObserverClient({
         <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
-        <span className="text-micro text-[var(--color-action-primary-bg)]">
-          ✓ {t("assessment.savedState", locale)}
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-micro text-[var(--color-action-primary-bg)]">
+            ✓ {t("assessment.savedState", locale)}
+          </span>
+          {/* Az observer sosem lép be — a séma-választó csak itt érhető el. */}
+          <ThemeToggle />
+        </div>
       </nav>
 
       {/* ═══ PROGRESS BAR — single row ═══ */}

@@ -11,6 +11,7 @@ import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import userEvent from "@testing-library/user-event";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import { ObserverClient } from "@/app/(app)/observe/[token]/ObserverClient";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { t } from "@/lib/i18n";
 import { createLocalStorageMock } from "../../helpers/local-storage-mock";
 
@@ -171,14 +172,19 @@ function installLsMock(initialValues?: Record<string, string>) {
 function renderObserver(
   overrides: Partial<ComponentProps<typeof ObserverClient>> = {},
 ) {
+  // A ThemeProvider a gyökér-layoutban él; itt izoláltan renderelünk,
+  // ezért a héjnak ezt a darabját kézzel adjuk hozzá — a nav
+  // séma-választója enélkül provider nélkül hívná a useTheme-et.
   return render(
-    <ObserverClient
-      token={TOKEN}
-      inviterName={INVITER}
-      testName="TRITAN"
-      questions={QUESTIONS}
-      {...overrides}
-    />,
+    <ThemeProvider>
+      <ObserverClient
+        token={TOKEN}
+        inviterName={INVITER}
+        testName="TRITAN"
+        questions={QUESTIONS}
+        {...overrides}
+      />
+    </ThemeProvider>,
   );
 }
 
