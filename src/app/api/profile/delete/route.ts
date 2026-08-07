@@ -42,6 +42,15 @@ export async function POST(req: Request) {
         },
         data: { status: "REVOKED" },
       }),
+      // Analitika: az eseményeket NEM töröljük, hanem elvágjuk a személytől.
+      // Így az aggregált tölcsér-számok (amelyekben a törlő felhasználó
+      // annak idején benne volt) nem esnek szét visszamenőleg, de az
+      // eseményei többé nem köthetők hozzá — ez a GDPR törlési jog
+      // teljesítése az analitikai adaton.
+      prisma.analyticsEvent.updateMany({
+        where: { userProfileId: profile.id },
+        data: { userProfileId: null, isAuthed: false },
+      }),
       prisma.userProfile.update({
         where: { id: profile.id },
         data: { clerkId: null, email: null, deleted: true },

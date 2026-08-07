@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
+import { track } from "@/lib/analytics/client";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -124,6 +125,13 @@ export function PricingContent() {
           {PRICING_FAQ_INDEXES.map((i) => (
             <details
               key={i}
+              // P4: melyik GYIK-tételt nyitják ki — ez mondja meg, mi a
+              // valódi vásárlói kétely. Csak a NYITÁS érdekes, a csukás nem.
+              onToggle={(event) => {
+                if (event.currentTarget.open) {
+                  track("faq.open", { faq_id: `pricing_q${i}`, surface: "pricing" });
+                }
+              }}
               className="group rounded-xl border border-[var(--color-border-soft)] bg-white"
             >
               {/* A padding a summary-n van (AdvisoryPageClient FaqItem minta):

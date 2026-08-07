@@ -50,6 +50,7 @@ import { MembersTabView } from "./_tabs/MembersTabView";
 import { TeamRoleTabView } from "./_tabs/TeamRoleTabView";
 import { ReportTabView } from "./_tabs/ReportTabView";
 import { FeedbackTabView } from "./_tabs/FeedbackTabView";
+import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 
 export const dynamic = "force-dynamic";
 
@@ -451,20 +452,60 @@ export default async function TeamDetailPage({
     memberTeams,
   };
 
+  // A4: a csapat-fülek a szerveren oldódnak fel (`?tab=`), ezért nincs
+  // kliens-oldali váltás-kezelő, amibe be lehetne kötni — a mérőt a
+  // fül-nézet MELLÉ rendereljük.
+  const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
+
   switch (activeTab) {
     case "profile":
-      return <ProfileTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <ProfileTabView ctx={ctx} />
+        </>
+      );
     case "members":
-      return <MembersTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <MembersTabView ctx={ctx} />
+        </>
+      );
     case "feedback":
-      return <FeedbackTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <FeedbackTabView ctx={ctx} />
+        </>
+      );
     case "intelligence":
-      return <IntelligenceTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <IntelligenceTabView ctx={ctx} />
+        </>
+      );
     case "teamRole":
-      return <TeamRoleTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <TeamRoleTabView ctx={ctx} />
+        </>
+      );
     case "report":
-      return <ReportTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <ReportTabView ctx={ctx} />
+        </>
+      );
     case "overview":
-      return <OverviewTabView ctx={ctx} />;
+      return (
+        <>
+          {tabTracker}
+          <OverviewTabView ctx={ctx} />
+        </>
+      );
   }
 }

@@ -43,6 +43,8 @@ import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { TabViewTracker } from "@/components/analytics/TabViewTracker";
+import { track } from "@/lib/analytics/client";
 
 type ProfileLevel = "start" | "plus";
 type TabId = "results" | "workstyle" | "comparison" | "invites";
@@ -695,8 +697,15 @@ export function ProfileTabs({
         accessLevel={accessLevel}
         topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
         watchDimensions={dimensions.filter((d) => d.code !== "I" && d.score < 40).map((d) => d.label)}
-        onShare={() => setShareOpen(true)}
+        onShare={() => {
+          track("results.export", { format: "link" });
+          setShareOpen(true);
+        }}
         onDownloadPdf={async () => {
+          // A6: melyik riport-kimenetet viszik el magukkal. A letöltés
+          // SZÁNDÉKÁT mérjük (a kattintást), nem a fájl elkészültét — a
+          // generálás megszakadása is a szándékról szól.
+          track("results.export", { format: "pdf" });
           setPdfLoading(true);
           try {
             const { downloadPdf } = await import("@/components/pdf/TritaPdf");
@@ -1010,6 +1019,10 @@ export function ProfileTabs({
         ))}
         </div>
       </div>
+
+      {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
+          (a váltás-kezelő azt nem látná). */}
+      <TabViewTracker surface="results" tab={activeTab} />
 
       {/* Tab content */}
       <div

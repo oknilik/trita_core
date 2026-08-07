@@ -10,6 +10,7 @@ import { OrgTeamsTab } from "./OrgTeamsTab";
 import { OrgMembersTab } from "./OrgMembersTab";
 import { OrgInquiriesTab, type OrgInquiryRow } from "./OrgInquiriesTab";
 import { OrgCandidatesTab, type OrgCandidateRow } from "./OrgCandidatesTab";
+import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import type {
   OrgPageData,
   SerializedMember,
@@ -150,6 +151,9 @@ export function OrgPageShell({
 
   return (
     <div className="flex flex-col gap-6">
+      {/* A4: a szervezeti cockpit fül-használata — mit néznek valójában. */}
+      <TabViewTracker surface="org" tab={activeTab} />
+
       <PrimaryTabs tabs={tabs} activeTab={activeTab} onTabChange={handleTabChange} />
 
       <div>

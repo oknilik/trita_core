@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
+import { track } from "@/lib/analytics/client";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 
 export function CtaSection({ mode }: { mode: SiteMode }) {
@@ -42,6 +43,13 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
         <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
         <Link
           href={ctaHref}
+          onClick={() =>
+            track("cta.click", {
+              cta_id: "closing",
+              surface: "landing",
+              mode: isSelf ? "self" : "team",
+            })
+          }
           className={[
             "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
             // Self CTA: bronze-dark (fehér szöveg mellett 4.89:1) — azonos a

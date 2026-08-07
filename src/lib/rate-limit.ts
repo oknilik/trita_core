@@ -40,13 +40,17 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     billing: { requests: 5,  window: "60 s", prefix: "rl:billing" },
     auth:    { requests: 10, window: "60 s", prefix: "rl:auth" },
     contact: { requests: 3,  window: "60 s", prefix: "rl:contact" },
+    // Analitika: egy valódi munkamenet legitim módon küld sok KÖTEGELT
+    // eseményt (lapváltás, tölcsér-lépések), ezért bőkezűbb keret. A cél
+    // nem a felhasználó fékezése, hanem a szemét-forgalom kizárása.
+    analytics: { requests: 60, window: "60 s", prefix: "rl:analytics" },
   };
   const cfg = configs[tier];
   limiters[tier] = makeRatelimit(cfg.requests, cfg.window, cfg.prefix);
   return limiters[tier];
 }
 
-export type RateLimitTier = "api" | "billing" | "auth" | "contact";
+export type RateLimitTier = "api" | "billing" | "auth" | "contact" | "analytics";
 
 export async function checkRateLimit(
   tier: RateLimitTier,

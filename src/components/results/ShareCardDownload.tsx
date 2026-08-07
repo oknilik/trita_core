@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { COLORS } from "@/lib/design-tokens";
+import { track } from "@/lib/analytics/client";
 
 interface ShareCardDownloadProps {
   userName: string;
@@ -169,7 +170,11 @@ export function ShareCardDownload({
           a link-másolás és az email-küldés — a kép-letöltés kiegészítő út. */}
       <button
         type="button"
-        onClick={() => void handleClick()}
+        onClick={() => {
+          // A6: a megosztó-kép mint kimenet.
+          track("results.export", { format: "image" });
+          void handleClick();
+        }}
         disabled={busy}
         className="inline-flex min-h-[44px] items-center gap-1.5 text-caption font-medium text-muted underline decoration-sand underline-offset-4 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
       >

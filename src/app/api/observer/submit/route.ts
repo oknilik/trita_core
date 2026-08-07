@@ -11,6 +11,7 @@ import {
   toObserverTokenErrorCode,
 } from "@/lib/observer/token-validation";
 import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -126,6 +127,10 @@ export async function POST(req: Request) {
       where: { invitationId: invitation.id },
     }),
   ]);
+
+  // Analitika: a meghívó-lánc utolsó lépése (A3). A kitöltő ANONIM marad —
+  // az esemény nem hordoz sem meghívó-tokent, sem személy-azonosítót.
+  trackServerEvent("observer.assessment_complete", {});
 
   // In-app notification — notify inviter that observer completed (fire-and-forget)
   import("@/lib/notifications").then(({ handleObserverCompleted }) =>

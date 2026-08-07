@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { AdminTabId } from "@/app/(app)/admin/_components/AdminNav";
 
 // Időszak- és szegmens-szűrő a Vezérlőhöz — link-alapú (szerver-render):
 // ?tab=overview&range=…&seg=…  A szűrők a trend-chartot és az időszak-
@@ -28,8 +29,11 @@ export function isAdminSegment(v: string | undefined): v is AdminSegment {
   return v === "all" || v === "self" || v === "org";
 }
 
-function href(range: AdminRange, seg: AdminSegment) {
-  return `/admin?tab=overview&range=${range}&seg=${seg}`;
+// A szűrő eredetileg csak a Vezérlőt szolgálta ki; az Analitika fül óta a
+// cél-fül paraméter (a default marad "overview", tehát a régi hívások
+// viselkedése változatlan).
+function href(range: AdminRange, seg: AdminSegment, tab: AdminTabId = "overview") {
+  return `/admin?tab=${tab}&range=${range}&seg=${seg}`;
 }
 
 function Pills<T extends string>({
@@ -66,13 +70,16 @@ function Pills<T extends string>({
 
 export function AdminRangeFilter({
   active,
-  segment,
+  segment = "all",
+  tab = "overview",
 }: {
   active: AdminRange;
-  segment: AdminSegment;
+  /** A Vezérlőn kívül nincs szegmens-bontás — ott az alapérték marad. */
+  segment?: AdminSegment;
+  tab?: AdminTabId;
 }) {
   return (
-    <Pills items={ADMIN_RANGES} active={active} makeHref={(id) => href(id, segment)} />
+    <Pills items={ADMIN_RANGES} active={active} makeHref={(id) => href(id, segment, tab)} />
   );
 }
 

@@ -3,6 +3,7 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { setSiteMode, useSiteMode, type SiteMode } from "@/components/landing/site-mode";
+import { track } from "@/lib/analytics/client";
 
 export type { SiteMode };
 
@@ -22,7 +23,11 @@ export function ModeSwitcher() {
           <button
             key={m}
             type="button"
-            onClick={() => setSiteMode(m)}
+            onClick={() => {
+              // P2: melyik módot választják, és váltanak-e egyáltalán.
+              track("landing.mode_switch", { to: m });
+              setSiteMode(m);
+            }}
             aria-pressed={isActive}
             className={[
               "flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium transition-all duration-200",

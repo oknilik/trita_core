@@ -1068,3 +1068,61 @@ model Quote {
   @@index([dealId, createdAt])
   @@index([status, validUntil])
 }
+
+// ============================================
+// ANALITIKA (first-party esemény-követés)
+// ============================================
+//
+// Egyetlen, széles esemény-tábla. Nincs külön session/visitor tábla: a
+// munkamenet-azonosító NAPI ROTÁLÓ pszeudonim (visitorRef), amit a szerver
+// számol IP+UA hashből — eszközön SEMMIT nem tárolunk, ezért nincs
+// süti-elfogadó sáv. Részletek: docs/development/analytics.md
+//
+// Amit SOHA nem tárolunk itt: IP-cím, e-mail, név, szabad szöveg,
+// kérdőív-válasz, dimenzió-pontszám, meghívó-token. A `props` mezőbe csak a
+// katalógusban (src/lib/analytics/events.ts) deklarált, zod-dal validált
+// skalár kulcsok kerülhetnek — a séma zárt (`.strict()`).
+//
+// userProfileId: SZÁNDÉKOSAN valódi id (nem hash) — az események így
+// JOIN-olhatók a termék-adatokkal (pl. „a 37. kérdésnél lemorzsolódók közül
+// hányan tértek vissza"). Profil-törléskor NULL-ra állítjuk (ld.
+// /api/profile/delete): az esemény megmarad aggregátumnak, de személyhez
+// többé nem köthető.
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  // Katalógus-név, pl. "cta.click" (src/lib/analytics/events.ts)
+  name       String
+  occurredAt DateTime @default(now())
+
+  // ── Identitás ────────────────────────────────────────────────────
+  // Napi rotáló pszeudonim (sha256(salt + nap + ip + ua)) — 24 óra után
+  // ugyanaz a látogató MÁS refet kap. Nincs eszköz-oldali tárolás.
+  visitorRef    String
+  // Bejelentkezett esemény esetén a UserProfile id-ja; törléskor NULL.
+  userProfileId String?
+  isAuthed      Boolean @default(false)
+  // anon | member | manager | admin | consultant | candidate — csak ott,
+  // ahol a szerver amúgy is ismerte (nem járunk érte DB-hez eseményenként).
+  roleClass     String?
+
+  // ── Kontextus ────────────────────────────────────────────────────
+  // NORMALIZÁLT útvonal (token/id kiszűrve): "/observe/[token]", "/org/[id]"
+  path         String?
+  locale       String?
+  deviceClass  String? // mobile | tablet | desktop
+  referrerHost String? // csak a host, teljes URL soha
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  // "client" (böngészőből, /api/e) vagy "server" (route handlerből)
+  origin       String  @default("client")
+  appVersion   String?
+
+  // Katalógusban deklarált, validált skalár tulajdonságok
+  props Json?
+
+  @@index([name, occurredAt])
+  @@index([occurredAt])
+  @@index([visitorRef, occurredAt])
+  @@index([userProfileId, occurredAt])
+}

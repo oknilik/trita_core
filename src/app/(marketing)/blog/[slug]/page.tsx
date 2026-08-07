@@ -327,7 +327,7 @@ export default async function BlogPostPage({
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       <JsonLd data={[articleJsonLd, breadcrumbJsonLd]} />
-      <ReadingProgress />
+      <ReadingProgress slug={post.slug} />
       <TranslationRedirect
         postLocale={post.locale}
         translationSlug={post.translationSlug}

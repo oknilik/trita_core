@@ -10,6 +10,7 @@ import { isAdminRange, isAdminSegment, type AdminRange, type AdminSegment } from
 import { OPEN_DEAL_STAGES } from "@/lib/crm/constants";
 import { resolveCrmDueWindow } from "@/lib/crm/guards";
 import { OverviewTab } from "@/app/(app)/admin/_tabs/OverviewTab";
+import { AnalyticsTab } from "@/app/(app)/admin/_tabs/AnalyticsTab";
 import { CrmTab } from "@/app/(app)/admin/_tabs/CrmTab";
 import { InquiriesTab } from "@/app/(app)/admin/_tabs/InquiriesTab";
 import { OrgsTab } from "@/app/(app)/admin/_tabs/OrgsTab";
@@ -45,10 +46,11 @@ export async function generateMetadata(): Promise<Metadata> {
 //     kilógott és eltörte a UI-t).
 // A fülök tartalma és lekérdezései változatlanul a _tabs/ könyvtárban.
 // ─────────────────────────────────────────────────────────────────────
-const TAB_IDS = ["overview", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
+const TAB_IDS = ["overview", "analytics", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
 
 const TAB_TITLES: Record<AdminTabId, string> = {
   overview: "Vezérlő",
+  analytics: "Analitika",
   crm: "CRM",
   inquiries: "Kérdések",
   orgs: "Szervezetek",
@@ -110,6 +112,7 @@ export default async function AdminPage({
           <FadeIn delay={0.1}>
             <div className="min-w-0">
               {activeTab === "overview" && <OverviewTab locale={locale} range={range} segment={segment} />}
+              {activeTab === "analytics" && <AnalyticsTab range={range} />}
               {activeTab === "crm" && <CrmTab view={view} />}
               {activeTab === "inquiries" && <InquiriesTab />}
               {activeTab === "orgs" && <OrgsTab />}

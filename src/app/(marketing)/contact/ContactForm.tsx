@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/public";
 import { t } from "@/lib/i18n/public";
+import { track } from "@/lib/analytics/client";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
 
@@ -28,6 +29,15 @@ export function ContactForm({ locale }: { locale: Locale }) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // P5: az űrlap ELKEZDÉSE (első fókusz) — az elkezdett/beküldött arány
+  // mutatja meg, hogy az űrlap maga tántorít-e el. Csak egyszer tüzel.
+  const startTracked = useRef(false);
+  function handleFormStart() {
+    if (startTracked.current) return;
+    startTracked.current = true;
+    track("form.start", { form_id: "contact" });
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -49,6 +59,9 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       if (!res.ok) throw new Error("request_failed");
 
+      // A beküldés TARTALMA sosem kerül eseménybe — csak a kimenet.
+      track("form.submit", { form_id: "contact", outcome: "success" });
+
       setSuccess(true);
       setName("");
       setEmail("");
@@ -57,6 +70,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       setMessage("");
       setWebsite("");
     } catch {
+      track("form.submit", { form_id: "contact", outcome: "error" });
       setError(t("contact.errorGeneric", locale));
     } finally {
       setLoading(false);
@@ -88,7 +102,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   const labelClass = "block text-sm font-medium text-ink";
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-5">
+    <form onSubmit={handleSubmit} onFocusCapture={handleFormStart} className="grid gap-5">
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
           <span className="mb-2 block">
