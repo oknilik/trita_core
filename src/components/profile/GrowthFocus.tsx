@@ -73,7 +73,7 @@ export function GrowthFocus({ items, locale }: GrowthFocusProps) {
         return (
           <div
             key={item.code}
-            className="flex gap-4 rounded-2xl border border-sand bg-white p-5"
+            className="flex gap-4 rounded-2xl border border-sand bg-surface-card p-5"
           >
             {/* Number badge */}
             <div

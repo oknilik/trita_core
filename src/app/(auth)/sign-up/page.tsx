@@ -29,7 +29,7 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
     if (this.state.hasError) {
       return (
         <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
-          <div className="w-full max-w-md rounded border border-sand bg-white p-8 text-center">
+          <div className="w-full max-w-md rounded border border-sand bg-surface-card p-8 text-center">
             <p className="text-sm text-ink-body">Hiba történt. Frissítsd az oldalt.</p>
             <button
               type="button"
@@ -216,7 +216,7 @@ function SignUpContent() {
                 maxLength={6}
                 placeholder="000000"
                 autoFocus
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
               />
 
               <button
@@ -310,7 +310,7 @@ function SignUpContent() {
               type="button"
               onClick={handleGoogleSignUp}
               disabled={isGoogleLoading || !intent}
-              className="mb-3 flex min-h-[48px] w-full items-center justify-center gap-3 rounded-lg border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm transition-all hover:border-[var(--color-text-muted)] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+              className="mb-3 flex min-h-[48px] w-full items-center justify-center gap-3 rounded-lg border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm transition-all hover:border-[var(--color-text-muted)] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
             >
               {isGoogleLoading ? (
                 <svg className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -340,7 +340,7 @@ function SignUpContent() {
                 disabled={!intent}
                 autoComplete="email"
                 placeholder={t("auth.emailLabel", locale)}
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3.5 text-sm text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3.5 text-sm text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
               />
 
               <button

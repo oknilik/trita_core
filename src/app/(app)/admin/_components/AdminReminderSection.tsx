@@ -137,7 +137,7 @@ export function AdminReminderSection({ invitations }: Props) {
 
   if (invitations.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+      <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
         <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
         <p className="mt-4 text-sm text-muted">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
       </div>
@@ -145,7 +145,7 @@ export function AdminReminderSection({ invitations }: Props) {
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+    <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
@@ -159,7 +159,7 @@ export function AdminReminderSection({ invitations }: Props) {
             className={`inline-flex min-h-[44px] items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
               onlyActive
                 ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                : "border-sand bg-white text-ink-body hover:bg-surface-subtle"
+                : "border-sand bg-surface-card text-ink-body hover:bg-surface-subtle"
             }`}
           >
             {onlyActive ? "Csak kiküldendők" : "Összes"}

@@ -28,7 +28,7 @@ export function ExplainerLink({ label, hint, href, className }: ExplainerLinkPro
       href={href}
       target="_blank"
       rel="noopener"
-      className={`group flex items-center justify-between gap-3 rounded-xl border border-[var(--color-border-soft)] bg-white px-4 py-3 transition hover:border-[var(--color-action-primary-bg)]/40 hover:bg-[var(--color-surface-self-accent-soft)] ${className ?? ""}`}
+      className={`group flex items-center justify-between gap-3 rounded-xl border border-[var(--color-border-soft)] bg-surface-card px-4 py-3 transition hover:border-[var(--color-action-primary-bg)]/40 hover:bg-[var(--color-surface-self-accent-soft)] ${className ?? ""}`}
     >
       <span className="min-w-0">
         <span className="block text-caption font-semibold text-[var(--color-text-primary)]">

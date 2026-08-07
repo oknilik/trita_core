@@ -43,7 +43,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 md:p-10">
+    <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 md:p-10">
       <SectionEyebrow tone="muted">
         {t("results.compareConsentTitle", locale)}
       </SectionEyebrow>
@@ -71,7 +71,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
         </button>
         <Link
           href="/dashboard"
-          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border border-sand bg-white px-5 text-caption font-medium text-ink-body transition-colors hover:bg-cream"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border border-sand bg-surface-card px-5 text-caption font-medium text-ink-body transition-colors hover:bg-cream"
         >
           {t("results.compareConsentDecline", locale)}
         </Link>

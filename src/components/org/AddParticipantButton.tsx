@@ -74,7 +74,7 @@ export function AddParticipantButton({
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+          className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
         >
           {t("org.actions.addParticipants", loc)}
         </button>

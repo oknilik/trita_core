@@ -42,7 +42,7 @@ function StatePage({
 }) {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
-      <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+      <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center md:p-10">
         <h1 className="font-fraunces text-[26px] leading-tight tracking-tight text-ink">
           {title}
         </h1>

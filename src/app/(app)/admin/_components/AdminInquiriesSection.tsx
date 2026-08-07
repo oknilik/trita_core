@@ -75,7 +75,7 @@ export function AdminInquiriesSection({
 
   return (
     <div className="mt-8 flex flex-col gap-6">
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           kérdések
         </SectionEyebrow>
@@ -105,7 +105,7 @@ export function AdminInquiriesSection({
                 <div
                   key={row.id}
                   className={`rounded-xl border p-4 transition ${
-                    row.status === "NEW" ? "border-amber-200 bg-amber-50/40" : "border-sand bg-white"
+                    row.status === "NEW" ? "border-amber-200 bg-amber-50/40" : "border-sand bg-surface-card"
                   }`}
                 >
                   {/* Fejléc-sor */}
@@ -171,7 +171,7 @@ export function AdminInquiriesSection({
                             void patch({ inquiryId: row.id, action: "link_org", organizationId: e.target.value });
                           }
                         }}
-                        className="rounded-lg border border-sand bg-white px-2 py-1 text-xs text-ink-body"
+                        className="rounded-lg border border-sand bg-surface-card px-2 py-1 text-xs text-ink-body"
                       >
                         <option value="">Org hozzákötése…</option>
                         {orgs.map((o) => (

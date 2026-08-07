@@ -55,7 +55,7 @@ export function CampaignStatusButton({
         disabled={loading}
         className={`min-h-[44px] rounded-lg px-5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isDanger
-            ? "border border-rose-200 bg-white text-rose-700 hover:bg-rose-50"
+            ? "border border-rose-200 bg-surface-card text-rose-700 hover:bg-rose-50"
             : "bg-sage text-white hover:bg-sage-dark"
         }`}
       >

@@ -149,7 +149,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
   return (
     <div className="flex flex-col gap-6">
       {/* Meghívás */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           tanácsadó meghívása
         </SectionEyebrow>
@@ -166,14 +166,14 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="tanacsado@email.hu"
-            className="min-h-[44px] flex-1 rounded-lg border border-sand bg-white px-4 text-sm text-ink outline-none transition focus:border-sage"
+            className="min-h-[44px] flex-1 rounded-lg border border-sand bg-surface-card px-4 text-sm text-ink outline-none transition focus:border-sage"
           />
           <input
             type="text"
             value={inviteNote}
             onChange={(e) => setInviteNote(e.target.value)}
             placeholder="Megjegyzés (opcionális)"
-            className="min-h-[44px] flex-1 rounded-lg border border-sand bg-white px-4 text-sm text-ink outline-none transition focus:border-sage"
+            className="min-h-[44px] flex-1 rounded-lg border border-sand bg-surface-card px-4 text-sm text-ink outline-none transition focus:border-sage"
           />
           <button
             type="submit"
@@ -196,7 +196,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
 
       {/* Nyitott meghívók */}
       {invites.length > 0 && (
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
             Nyitott meghívók ({invites.length})
           </p>
@@ -211,7 +211,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                   type="button"
                   disabled={busyKey === `revoke-${inv.id}`}
                   onClick={() => action({ action: "revoke_invite", inviteId: inv.id }, `revoke-${inv.id}`)}
-                  className="shrink-0 rounded-lg border border-sand bg-white px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
+                  className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
                 >
                   Visszavonás
                 </button>
@@ -222,7 +222,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       )}
 
       {/* Tanácsadók */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <p className="mb-3 font-mono text-xs uppercase tracking-widest text-muted">
           Tanácsadók ({consultants.length})
         </p>
@@ -299,7 +299,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                         onClick={() =>
                           action({ action: "remove_consultant", profileId: c.id }, `remove-${c.id}`)
                         }
-                        className="shrink-0 rounded-lg border border-sand bg-white px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
+                        className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
                       >
                         Eltávolítás
                       </button>
@@ -342,7 +342,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                           onChange={(e) =>
                             setAssignSelection((prev) => ({ ...prev, [c.id]: e.target.value }))
                           }
-                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none md:w-auto md:flex-none"
+                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-surface-card px-3 text-xs text-ink outline-none md:w-auto md:flex-none"
                         >
                           <option value="">Szervezet kiválasztása…</option>
                           {assignable.map((o) => (

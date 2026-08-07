@@ -221,7 +221,7 @@ function KpiTile({
   progressPct?: number;
 }) {
   return (
-    <div className="min-w-0 rounded-[14px] border border-sand bg-white p-3.5">
+    <div className="min-w-0 rounded-[14px] border border-sand bg-surface-card p-3.5">
       <p className="break-words font-mono text-micro uppercase tracking-wide text-muted md:tracking-widest">
         {label}
       </p>
@@ -256,7 +256,7 @@ function SectionHead({
 }) {
   return (
     <div className="mb-4 flex items-start gap-3">
-      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-white font-mono text-[11px] font-bold text-bronze shadow-sm ring-1 ring-sand">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-[11px] font-bold text-bronze shadow-sm ring-1 ring-sand">
         {no}
       </span>
       <div className="min-w-0 pt-0.5">
@@ -420,7 +420,7 @@ export function TeamReportView({
                     </p>
                   </div>
                   {agg.pattern.confidence ? (
-                    <span className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-micro font-semibold text-ink-body">
+                    <span className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-micro font-semibold text-ink-body">
                       {agg.pattern.confidence}{" "}
                       {isHu ? "konfidencia" : "confidence"}
                     </span>
@@ -547,7 +547,7 @@ export function TeamReportView({
                             ? "border border-sage/35 bg-sage/10"
                             : state === "secondary"
                               ? "border border-sky-200 bg-sky-50/60"
-                              : "border border-dashed border-sand bg-white"
+                              : "border border-dashed border-sand bg-surface-card"
                         }`}
                       >
                         <span
@@ -598,7 +598,7 @@ export function TeamReportView({
                 {isHu ? "Csak tartalék (2-3. legerősebb szerepként)" : "Backup only (2nd–3rd strongest role)"}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-[4px] border border-dashed border-sand bg-white" />
+                <span className="h-3 w-3 rounded-[4px] border border-dashed border-sand bg-surface-card" />
                 {isHu ? "Senki nem fedi le" : "Covered by no one"}
               </span>
             </div>
@@ -847,7 +847,7 @@ export function TeamReportView({
                       {agg.trustHighlights.hubs.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
+                          className="rounded-full bg-surface-card px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -880,7 +880,7 @@ export function TeamReportView({
                       {agg.trustHighlights.isolated.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
+                          className="rounded-full bg-surface-card px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -964,7 +964,7 @@ export function TeamReportView({
                           ? isHu ? "magas pólus" : "high pole"
                           : isHu ? "alacsony pólus" : "low pole"}
                       </p>
-                      <span className="ml-auto rounded-full border border-amber-200 bg-white px-2 py-0.5 text-micro font-medium text-amber-800">
+                      <span className="ml-auto rounded-full border border-amber-200 bg-surface-card px-2 py-0.5 text-micro font-medium text-amber-800">
                         {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}
                       </span>
                     </div>
@@ -1091,7 +1091,7 @@ export function TeamReportView({
                   const traps = leaderTrapsForWeakItems(agg.psychSafety!.weakItemIds);
                   if (traps.length === 0) return null;
                   return (
-                    <details className="mt-1 rounded-[12px] border border-sand bg-white">
+                    <details className="mt-1 rounded-[12px] border border-sand bg-surface-card">
                       <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
                         {isHu
                           ? `Vezetői akciókártyák (${traps.length})`

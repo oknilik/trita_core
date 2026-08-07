@@ -432,7 +432,7 @@ export function AdminBlogSection({
   return (
     <div className="space-y-8">
       {/* Mód-jelző */}
-      <div className="rounded-xl border border-sand bg-white p-4 text-sm text-ink-body">
+      <div className="rounded-xl border border-sand bg-surface-card p-4 text-sm text-ink-body">
         <span className="font-semibold text-ink">Mentési mód: </span>
         {storeMode === "github" ? (
           <>GitHub-commit → automatikus Vercel deploy (~pár perc a megjelenésig).</>
@@ -480,7 +480,7 @@ export function AdminBlogSection({
             role="dialog"
             aria-modal="true"
             aria-label={editingSlug ? `Cikk szerkesztése: ${editingSlug}` : "Új cikk"}
-            className="relative flex h-dvh max-h-dvh w-full flex-col overflow-hidden border-l border-sand bg-white shadow-2xl md:max-w-4xl"
+            className="relative flex h-dvh max-h-dvh w-full flex-col overflow-hidden border-l border-sand bg-surface-card shadow-2xl md:max-w-4xl"
           >
             <div className="flex shrink-0 items-center justify-between gap-3 border-b border-sand px-6 py-4">
               <h2 className="min-w-0 truncate font-fraunces text-xl text-ink">
@@ -532,7 +532,7 @@ export function AdminBlogSection({
                         className={`min-h-[40px] flex-1 rounded-lg border px-4 text-sm font-semibold transition ${
                           form.locale === loc
                             ? "border-sage bg-sage text-white"
-                            : "border-sand bg-white text-ink-body hover:border-sage-ring"
+                            : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                         }`}
                       >
                         {loc.toUpperCase()}
@@ -628,7 +628,7 @@ export function AdminBlogSection({
                           className={`rounded-full border px-3 py-1 text-xs transition ${
                             form.artMotif === value
                               ? "border-sage bg-sage text-white"
-                              : "border-sand bg-white text-ink-body hover:border-sage-ring"
+                              : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                           }`}
                         >
                           {label}
@@ -681,7 +681,7 @@ export function AdminBlogSection({
                   onChange={(e) => set({ body: e.target.value })}
                   rows={18}
                   placeholder={"Markdown + komponensek: ## fejezetcímek adják a tartalomjegyzéket.\n\nA sablon-gombokkal Callout / StatRow / KeyInsight / PullQuote / CompareTable szúrható be."}
-                  className="w-full rounded-xl border border-sand bg-white p-4 font-mono text-caption leading-relaxed text-ink outline-none transition focus:border-sage-ring focus:ring-2 focus:ring-sage-ring/40"
+                  className="w-full rounded-xl border border-sand bg-surface-card p-4 font-mono text-caption leading-relaxed text-ink outline-none transition focus:border-sage-ring focus:ring-2 focus:ring-sage-ring/40"
                 />
               </div>
             </div>
@@ -762,7 +762,7 @@ export function AdminBlogSection({
       )}
 
       {/* Cikk-lista — ez a fő nézet */}
-      <section className="rounded-2xl border border-sand bg-white">
+      <section className="rounded-2xl border border-sand bg-surface-card">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sand px-6 py-4">
           <h2 className="font-fraunces text-xl text-ink">
             Cikkek{" "}
@@ -811,7 +811,7 @@ export function AdminBlogSection({
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Keresés címre, slugra, tagre…"
             aria-label="Keresés a cikkek között"
-            className="min-h-[40px] min-w-[220px] flex-1 rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+            className="min-h-[40px] min-w-[220px] flex-1 rounded-lg border border-sand bg-surface-card px-3 text-xs text-ink outline-none transition focus:border-sage"
           />
           <div className="flex flex-wrap items-center gap-1.5">
             {STATUS_FILTERS.filter(
@@ -835,7 +835,7 @@ export function AdminBlogSection({
                   className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold transition ${
                     active
                       ? "border-sage bg-sage text-white"
-                      : "border-sand bg-white text-ink-body hover:border-sage-ring"
+                      : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                   }`}
                 >
                   {filter.label} ({count})
@@ -853,7 +853,7 @@ export function AdminBlogSection({
                 className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold uppercase transition ${
                   localeFilter === loc
                     ? "border-bronze bg-bronze text-white"
-                    : "border-sand bg-white text-ink-body hover:border-bronze/50"
+                    : "border-sand bg-surface-card text-ink-body hover:border-bronze/50"
                 }`}
               >
                 {loc === "all" ? "HU+EN" : loc}

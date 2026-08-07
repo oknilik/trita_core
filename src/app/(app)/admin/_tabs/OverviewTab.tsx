@@ -293,7 +293,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
           <AdminRangeFilter active={range} segment={segment} />
         </div>
       </div>
-      <div className="mb-6 rounded-2xl border border-sand bg-white p-5">
+      <div className="mb-6 rounded-2xl border border-sand bg-surface-card p-5">
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
           <p className="text-body font-semibold text-ink">
             Regisztrációk és kitöltések
@@ -344,7 +344,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
           className={`group rounded-2xl border p-5 transition hover:-translate-y-0.5 ${
             newInquiryCount > 0
               ? "border-amber-300 bg-amber-50/60 hover:border-amber-400"
-              : "border-sand bg-white hover:border-sage/40"
+              : "border-sand bg-surface-card hover:border-sage/40"
           }`}
         >
           <p className="text-body font-semibold text-ink group-hover:text-bronze">
@@ -356,7 +356,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         </Link>
         <Link
           href="/admin?tab=orgs"
-          className="group rounded-2xl border border-sand bg-white p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
+          className="group rounded-2xl border border-sand bg-surface-card p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
         >
           <p className="text-body font-semibold text-ink group-hover:text-bronze">
             Szervezetek kezelése
@@ -367,7 +367,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
         </Link>
       </div>
       {!adminHasSelfResult && (
-        <div className="flex flex-col gap-3 rounded-2xl border border-sand bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-2xl border border-sand bg-surface-card p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-body font-semibold text-ink">
               A saját HEXACO-profilod még nincs kitöltve
@@ -378,7 +378,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
           </div>
           <Link
             href="/assessment"
-            className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-white px-4 text-caption font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
+            className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-surface-card px-4 text-caption font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
           >
             Teszt indítása →
           </Link>

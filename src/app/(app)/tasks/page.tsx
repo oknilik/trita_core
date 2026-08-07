@@ -211,7 +211,7 @@ export default async function MyMeasurementsPage() {
 
         {/* Tőlem kért visszajelzések (belsős observer-meghívók) */}
         {feedbackRequests.length > 0 && (
-          <section className="mt-8 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7">
+          <section className="mt-8 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7">
             <p className="font-mono text-micro uppercase tracking-widest text-bronze">
               {t("myTasks.feedbackRequestsEyebrow", loc)}
             </p>
@@ -255,7 +255,7 @@ export default async function MyMeasurementsPage() {
         )}
 
         {cards.length === 0 && feedbackRequests.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+          <div className="mt-8 rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
             <h2 className="font-fraunces text-xl text-ink">
               {t("myTasks.noneTitle", loc)}
             </h2>
@@ -279,7 +279,7 @@ export default async function MyMeasurementsPage() {
               return (
                 <section
                   key={card.id}
-                  className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7"
+                  className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -348,7 +348,7 @@ export default async function MyMeasurementsPage() {
                               ? "border-sage/30 bg-sage/5"
                               : isCurrent
                                 ? "border-bronze/40 bg-cream"
-                                : "border-sand bg-white opacity-80",
+                                : "border-sand bg-surface-card opacity-80",
                           ].join(" ")}
                         >
                           <span className="flex min-w-0 items-center gap-2.5">

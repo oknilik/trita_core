@@ -226,7 +226,7 @@ export function PeerFeedbackClient({
   if (done || teammates.length === 0) {
     return (
       <div className="flex min-h-dvh items-center justify-center px-4">
-        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
           <h1 className="font-fraunces text-2xl text-ink">{t("peerFb.doneTitle", locale)}</h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-body">
             {t("peerFb.doneBody", locale)}
@@ -252,7 +252,7 @@ export function PeerFeedbackClient({
 
   const textareaClass = (missing: boolean) =>
     [
-      "w-full rounded-lg border bg-white p-3 text-sm text-ink outline-none focus:border-sage-ring",
+      "w-full rounded-lg border bg-surface-card p-3 text-sm text-ink outline-none focus:border-sage-ring",
       attempted && missing
         ? "border-[var(--color-state-error-fg)]/60"
         : "border-sand",
@@ -339,7 +339,7 @@ export function PeerFeedbackClient({
       <section
         ref={cardRef}
         key={current.userId}
-        className="mt-5 scroll-mt-36 rounded-2xl border border-sand bg-white p-5 shadow-sm"
+        className="mt-5 scroll-mt-36 rounded-2xl border border-sand bg-surface-card p-5 shadow-sm"
       >
         <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="min-w-0 truncate text-body font-semibold text-ink" title={current.name}>

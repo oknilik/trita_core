@@ -45,7 +45,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
                   ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered
                     ? "border-[var(--color-accent-self)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
-                    : "border-[var(--color-border-default)] bg-white text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]",
+                    : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]",
               ].join(" ")}
               animate={{ scale: isSelected ? 1.08 : 1 }}
               transition={{ duration: 0.15 }}

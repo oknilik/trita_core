@@ -146,7 +146,7 @@ export function CampaignCard({
   // ──────────────────────────────────────────────────────────────────────────
   if (variant === "draft") {
     return (
-      <div className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -197,7 +197,7 @@ export function CampaignCard({
   ];
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="min-w-0">
@@ -332,7 +332,7 @@ export function CampaignCard({
             type="button"
             onClick={handleRemind}
             disabled={reminding}
-            className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
+            className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
           >
             {reminding
               ? t("org.card.sending", loc)

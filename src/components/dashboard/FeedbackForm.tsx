@@ -114,7 +114,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     `flex min-h-[44px] items-center justify-center rounded-lg border transition-all duration-200 ${
       selected
         ? "border-sage bg-sage text-white shadow-md"
-        : "border-sand bg-white text-ink hover:-translate-y-0.5 hover:border-sage-ring hover:bg-sage-ghost hover:shadow-sm"
+        : "border-sand bg-surface-card text-ink hover:-translate-y-0.5 hover:border-sage-ring hover:bg-sage-ghost hover:shadow-sm"
     }`;
 
   const renderScale = (
@@ -278,7 +278,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               onChange={(e) => setFreeform(e.target.value)}
               rows={4}
               placeholder={t("dashboard.feedbackFreeformPlaceholder", locale)}
-              className="mt-3 w-full resize-none rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink transition-colors focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage-ring/60"
+              className="mt-3 w-full resize-none rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink transition-colors focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage-ring/60"
             />
           </div>
         )}

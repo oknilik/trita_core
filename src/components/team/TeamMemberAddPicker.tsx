@@ -76,7 +76,7 @@ export function TeamMemberAddPicker({
         <select
           value={selected}
           onChange={(e) => setSelected(e.target.value)}
-          className="min-h-[40px] flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink focus:border-sage focus:outline-none"
+          className="min-h-[40px] flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink focus:border-sage focus:outline-none"
         >
           <option value="">
             {isHu ? "Válassz szervezeti tagot…" : "Pick an organization member…"}

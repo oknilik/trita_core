@@ -54,7 +54,7 @@ export function TeamRoleRoundCard({
   }
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
+    <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
       <div className="flex items-center justify-between gap-3">
         <div>
           <SectionEyebrow tone="muted">
@@ -108,7 +108,7 @@ export function TeamRoleRoundCard({
 
       {/* Member list */}
       {isRoundActive && members.length > 0 && (
-        <div className="mt-4 divide-y divide-sand rounded-xl border border-sand bg-white">
+        <div className="mt-4 divide-y divide-sand rounded-xl border border-sand bg-surface-card">
           {members.map((m) => (
             <div key={m.userId} className="flex items-center justify-between px-3 py-2">
               <span className="text-[12px] text-ink">{m.name}</span>
@@ -133,7 +133,7 @@ export function TeamRoleRoundCard({
             disabled={loading}
             className={`min-h-[44px] rounded-lg px-5 text-[12px] font-semibold transition disabled:opacity-50 ${
               isRoundActive
-                ? "border border-sand bg-white text-ink-body hover:border-rose-200 hover:text-rose-700"
+                ? "border border-sand bg-surface-card text-ink-body hover:border-rose-200 hover:text-rose-700"
                 : "bg-sage text-white hover:bg-sage-dark"
             }`}
           >

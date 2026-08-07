@@ -530,7 +530,7 @@ export function ObserverClient({
       <div className="relative min-h-dvh bg-cream">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto max-w-2xl px-4 pt-8 pb-20 md:pt-12">
-          <div className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+          <div className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
             <h1 className="text-2xl font-bold text-ink">
               👋 {t("observer.introWelcome", locale)}
             </h1>
@@ -562,7 +562,7 @@ export function ObserverClient({
                             ? "border-sage-ring bg-sage-soft text-bronze-dark"
                             : lockedOut
                               ? "cursor-not-allowed border-sand bg-cream/50 text-muted opacity-60"
-                              : "border-sand bg-white text-ink-body hover:border-warm-dark"
+                              : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
                         }`}
                       >
                         {t(opt.labelKey, locale)}
@@ -588,7 +588,7 @@ export function ObserverClient({
                       className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
                         knownDuration === opt.value
                           ? "border-sage-ring bg-sage-soft text-bronze-dark"
-                          : "border-sand bg-white text-ink-body hover:border-warm-dark"
+                          : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
@@ -627,7 +627,7 @@ export function ObserverClient({
       <div className="relative min-h-dvh bg-cream">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
             <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.inactiveTitle", locale)}
@@ -646,7 +646,7 @@ export function ObserverClient({
       <div className="relative min-h-dvh bg-cream">
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
         <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-surface-card p-8 shadow-sm">
             <div className="text-5xl leading-none">🙏</div>
             <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.doneTitle", locale)}
@@ -701,7 +701,7 @@ export function ObserverClient({
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
       {/* ═══ MINIMAL NAV — a self-kitöltéssel azonos héj ═══ */}
-      <nav className="flex shrink-0 items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+      <nav className="flex shrink-0 items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
         <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
           <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
         </Link>
@@ -843,14 +843,14 @@ export function ObserverClient({
       {/* ═══ FOOTER BAR — a self-kitöltéssel azonos ═══ */}
       {/* Mobilon a vezérlősor a viewport aljára tapad (az (app)-shell fejléce
           alatt egyébként a hajtás alá csúszna); md-től a korábbi in-flow sáv. */}
-      <div className="sticky bottom-0 z-20 flex shrink-0 items-center justify-between gap-2 border-t border-[var(--color-border-default)] bg-white px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:static md:z-auto md:px-7">
+      <div className="sticky bottom-0 z-20 flex shrink-0 items-center justify-between gap-2 border-t border-[var(--color-border-default)] bg-surface-card px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:static md:z-auto md:px-7">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
           className={`min-h-[44px] whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
             canGoPrev
-              ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+              ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
           }`}
         >
@@ -860,7 +860,7 @@ export function ObserverClient({
         <label className="flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 px-1">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
-              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
+              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
             }`}
           >
             {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}

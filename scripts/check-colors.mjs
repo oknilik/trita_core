@@ -148,7 +148,100 @@ const themeLiterals = [];
   }
 }
 
+// (d) A sötét blokk alias-rétegének teljessége. A sötét mód hatóköre egy
+//     leszármazott elem (.theme-scope), a var() viszont a DEKLARÁLÓ elemen
+//     helyettesítődik be — ezért a @theme minden --color-* tokenjét ott újra
+//     kell deklarálni. Ha a @theme-be új token kerül és ez kimarad, az a
+//     token sötéten csendben a világos értékén ragad.
+const missingInDark = [];
+{
+  const css = readFileSync(path.join(ROOT, "src/app/globals.css"), "utf8");
+  const darkAt = css.search(/\[data-theme="dark"\]\s+\.theme-scope\s*\{/);
+  const themeAt = css.search(/^@theme\b/m);
+  if (darkAt !== -1 && themeAt !== -1) {
+    const names = (source) =>
+      new Set([...source.matchAll(/(--color-[a-z0-9-]+):/g)].map((m) => m[1]));
+    const body = (from) => {
+      const open = css.indexOf("{", from);
+      let depth = 0;
+      let i = open;
+      for (; i < css.length; i += 1) {
+        if (css[i] === "{") depth += 1;
+        else if (css[i] === "}") {
+          depth -= 1;
+          if (depth === 0) break;
+        }
+      }
+      return css.slice(open + 1, i);
+    };
+    const inDark = names(body(darkAt));
+    const inTheme = names(body(themeAt));
+    for (const token of inTheme) {
+      if (!inDark.has(token)) missingInDark.push(`${token}  (hiányzik a sötét blokkból)`);
+    }
+    // Fordítva is: ha csak a sötétben van, az a @theme-ből maradt ki — a
+    // token világosban feloldatlan lenne.
+    for (const token of inDark) {
+      if (!inTheme.has(token)) missingInDark.push(`${token}  (hiányzik a @theme-ből)`);
+    }
+  }
+}
+
+// (e) Témázhatatlan felület-osztályok. A `bg-white` a Tailwind BEÉPÍTETT
+//     fehérje — nem a mi tokenünk, ezért kimarad a témázásból és sötéten
+//     fehér marad. Ugyanez a hardkódolt `bg-[rgba(...)]`.
+//     Az ÁTTETSZŐ fehér (bg-white/15, bg-white/[0.06]) viszont SZABAD: az
+//     szándékos fátyol sötét herón, nem felület.
+const untokenizedSurfaces = [];
+{
+  const PATTERNS = [
+    [/\bbg-white\b(?!\/)/g, "bg-white → bg-surface-card"],
+    // Csak az ÁTLÁTSZATLAN (alfa >= 0.9 vagy hiányzó) hardkódolt rgba a hiba.
+    // Az áttetsző színezetek (alfa 0.04–0.22) szándékos fátylak — ugyanaz az
+    // elv, mint a bg-white/15-nél: nem felület, hanem réteg.
+    [/\bbg-\[rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*(?:,\s*(?:0?\.9\d*|1(?:\.0+)?)\s*)?\)\]/g,
+     "átlátszatlan bg-[rgba(...)] → tokenizáld"],
+  ];
+  for (const abs of walk(path.join(ROOT, "src"))) {
+    const rel = path.relative(ROOT, abs).split(path.sep).join("/");
+    if (!rel.endsWith(".tsx") && !rel.endsWith(".ts")) continue;
+    if (rel.startsWith("src/components/pdf/")) continue; // react-pdf, nem Tailwind
+    const content = readFileSync(abs, "utf8");
+    content.split("\n").forEach((line, i) => {
+      for (const [re, hint] of PATTERNS) {
+        re.lastIndex = 0;
+        if (re.test(line)) untokenizedSurfaces.push(`${rel}:${i + 1}  ${hint}`);
+      }
+    });
+  }
+}
+
 let failed = false;
+
+if (untokenizedSurfaces.length > 0) {
+  failed = true;
+  console.error(
+    "check-colors: témázhatatlan felület-osztály — sötét módban világos marad:\n",
+  );
+  for (const v of untokenizedSurfaces.slice(0, 25)) console.error("  " + v);
+  if (untokenizedSurfaces.length > 25) {
+    console.error(`  … és még ${untokenizedSurfaces.length - 25} hely`);
+  }
+}
+
+
+if (missingInDark.length > 0) {
+  failed = true;
+  console.error(
+    "check-colors: a sötét blokkból hiányzó szerep-token — sötéten a világos " +
+      "értékén ragadna:\n",
+  );
+  for (const v of missingInDark) console.error("  " + v);
+  console.error(
+    "\nMásold be a @theme-ből a teljes sort a `[data-theme=\"dark\"] .theme-scope` " +
+      "blokk alias-rétegébe (a var() a deklaráló elemen oldódik fel).",
+  );
+}
 
 if (themeLiterals.length > 0) {
   failed = true;
@@ -192,5 +285,6 @@ if (failed) process.exit(1);
 
 console.log(
   `check-colors OK — tiltólista tiszta, @theme témázható (0 literál), ` +
+    `sötét alias-réteg teljes, felületek tokenizálva, ` +
     `nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,
 );

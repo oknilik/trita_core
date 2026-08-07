@@ -21,7 +21,7 @@ export function OpsTab() {
         <Link
           key={card.href}
           href={card.href}
-          className="group rounded-2xl border border-sand bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sage/40"
+          className="group rounded-2xl border border-sand bg-surface-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sage/40"
         >
           <p className="text-body font-semibold text-ink group-hover:text-bronze">
             {card.title} →

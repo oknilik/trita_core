@@ -43,7 +43,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
           type="button"
           onClick={() => setConfirm(false)}
           disabled={loading}
-          className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:border-sage/30"
+          className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:border-sage/30"
         >
           {t("manager.teamMemberRemove.confirmNo", locale)}
         </button>

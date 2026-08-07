@@ -153,7 +153,7 @@ export function ComparisonTab({
       </div>
 
       {/* 2. Overview card */}
-      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-5">
+      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-5">
         <div className="mb-4 flex items-center gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg"
@@ -216,7 +216,7 @@ export function ComparisonTab({
               <div
                 key={dim.code}
                 className={`rounded-xl border-[1.5px] p-4 px-[18px] ${
-                  hasGap ? "border-[var(--color-accent-primary)]/30 bg-[var(--color-surface-highlight-warm)]" : "border-[var(--color-action-primary-bg)]/20 bg-white"
+                  hasGap ? "border-[var(--color-accent-primary)]/30 bg-[var(--color-surface-highlight-warm)]" : "border-[var(--color-action-primary-bg)]/20 bg-surface-card"
                 }`}
               >
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">

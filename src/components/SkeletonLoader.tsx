@@ -29,8 +29,8 @@ export function SkeletonLoader() {
 
           {/* Cards */}
           <div className="mt-8 space-y-4">
-            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-white" />
-            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-white" />
+            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-surface-card" />
+            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-surface-card" />
           </div>
         </div>
       </div>

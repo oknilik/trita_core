@@ -51,7 +51,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
       type="button"
       onClick={handleResend}
       disabled={state === "loading"}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-50"
+      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-50"
     >
       {state === "loading"
         ? t("manager.pendingInviteResend.sending", locale)

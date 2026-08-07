@@ -72,7 +72,7 @@ export default async function NewCampaignPage({
             state={bannerState ?? "restricted"}
             locale={locale}
           />
-          <div className="mt-6 rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <div className="mt-6 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
             <h1 className="font-fraunces text-2xl text-ink">{gateCopy.title}</h1>
             <p className="mt-2 text-sm text-ink-body">
               {gateCopy.description}

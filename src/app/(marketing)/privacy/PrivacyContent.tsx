@@ -134,7 +134,7 @@ export function PrivacyContent() {
             // látszó, de kitalált azonosítókat közlő lap félrevezeti az
             // érintettet. A jelölés a `company.ts` egyetlen konstansával
             // tűnik el, amikor a valós adatok bekerülnek.
-            <div className="mb-8 rounded-lg border border-bronze/40 bg-white px-5 py-4">
+            <div className="mb-8 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
               <p className="text-label uppercase text-bronze">{doc.draftBadge}</p>
               <p className="mt-2 text-caption leading-relaxed text-ink-body">{doc.draftNote}</p>
             </div>
@@ -142,7 +142,7 @@ export function PrivacyContent() {
 
           <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:gap-10">
             {/* ── Tartalomjegyzék ── */}
-            <aside className="h-fit rounded-lg border border-sand bg-white p-4 lg:sticky lg:top-28">
+            <aside className="h-fit rounded-lg border border-sand bg-surface-card p-4 lg:sticky lg:top-28">
               <p className="mb-3 text-label uppercase text-ink-body">{doc.tocLabel}</p>
               <nav className="space-y-1">
                 {doc.sections.map((section, index) => (
@@ -168,7 +168,7 @@ export function PrivacyContent() {
                 <section
                   key={section.id}
                   id={section.id}
-                  className="scroll-mt-28 rounded-lg border border-sand bg-white p-5 md:p-7"
+                  className="scroll-mt-28 rounded-lg border border-sand bg-surface-card p-5 md:p-7"
                 >
                   <p className="mb-3 text-label uppercase text-bronze">
                     {String(index + 1).padStart(2, "0")}

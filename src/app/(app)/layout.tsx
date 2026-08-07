@@ -57,6 +57,10 @@ export default async function AppLayout({
       signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
       signUpFallbackRedirectUrl="/onboarding"
     >
+      {/* A sötét mód HATÓKÖRE ez az elem (globals.css:
+          `[data-theme="dark"] .theme-scope`). A marketing-fa nem kapja meg,
+          ezért ott a világos téma marad — szándékosan. */}
+      <div className="theme-scope">
           <ServerAuthStateProvider
             isSignedIn={Boolean(userId)}
             username={navData?.user?.username ?? null}
@@ -82,6 +86,7 @@ export default async function AppLayout({
               <HelpWidget audience={helpAudience} />
             </Suspense>
           </ServerAuthStateProvider>
+      </div>
     </ClerkProvider>
   );
 }

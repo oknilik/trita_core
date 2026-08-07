@@ -114,7 +114,7 @@ function OccupationCard({
       className={
         hero
           ? "rounded-[16px] border-2 border-sage/50 bg-gradient-to-br from-sage/10 to-white p-5"
-          : "rounded-[12px] border border-[var(--color-border-soft)] bg-white p-4"
+          : "rounded-[12px] border border-[var(--color-border-soft)] bg-surface-card p-4"
       }
       style={{ animation: "cc-step-in 0.35s ease-out both", animationDelay: `${delayMs}ms` }}
     >
@@ -296,14 +296,14 @@ function OccupationCard({
                   <button
                     type="button"
                     onClick={() => sendFeedback("accurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-medium text-emerald-700 transition hover:bg-emerald-50"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-emerald-200 bg-surface-card px-3 py-1 text-[11px] font-medium text-emerald-700 transition hover:bg-emerald-50"
                   >
                     👍 {t("results.industryFitFeedbackYes", locale)}
                   </button>
                   <button
                     type="button"
                     onClick={() => sendFeedback("inaccurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-rose-200 bg-white px-3 py-1 text-[11px] font-medium text-rose-600 transition hover:bg-rose-50"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-rose-200 bg-surface-card px-3 py-1 text-[11px] font-medium text-rose-600 transition hover:bg-rose-50"
                   >
                     👎 {t("results.industryFitFeedbackNo", locale)}
                   </button>
@@ -506,7 +506,7 @@ export function CareerResults({
               type="button"
               disabled={resetting}
               onClick={() => setConfirmReset(false)}
-              className="min-h-[36px] rounded-lg border border-[var(--color-border-default)] bg-white px-3.5 text-[12px] font-semibold text-[var(--color-text-secondary)] transition hover:text-ink"
+              className="min-h-[36px] rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3.5 text-[12px] font-semibold text-[var(--color-text-secondary)] transition hover:text-ink"
             >
               {t("results.cfResetCancel", locale)}
             </button>
@@ -555,7 +555,7 @@ export function CareerResults({
             {(["R", "I", "A", "S", "E", "C"] as const).map((letter) => (
               <span
                 key={letter}
-                className="flex items-center gap-1.5 rounded-full bg-white px-2 py-0.5 text-micro text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border-soft)]"
+                className="flex items-center gap-1.5 rounded-full bg-surface-card px-2 py-0.5 text-micro text-[var(--color-text-secondary)] ring-1 ring-[var(--color-border-soft)]"
                 title={t(`results.cfHolland${letter}`, locale)}
               >
                 <span className="font-mono font-semibold">{letter}</span>

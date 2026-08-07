@@ -35,7 +35,7 @@ export function DashboardPanel({
     <div
       className={cn(
         "rounded-[24px] border border-sand shadow-[0_16px_40px_rgba(26,26,46,0.04)]",
-        tone === "white" && "bg-white",
+        tone === "white" && "bg-surface-card",
         tone === "warm" && "bg-warm",
         tone === "cream" && "bg-cream",
         className,

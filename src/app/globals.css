@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  /* A <body> alapszínei a témázott tokenekre mutatnak, hogy a sötét
-     készlet a törzsre is érvényes legyen. */
-  --background: var(--palette-cream);
-  --foreground: var(--palette-ink);
+  /* A <body> a marketing-fa alapja — mindig világos. A témázott felület
+     a .theme-scope, az fest saját alapot. */
+  --background: #f7f4ef;
+  --foreground: #1a1a2e;
 }
 
 /* ─── Nyers paletta — a TÉMÁZHATÓ réteg ──────────────────────────────
@@ -102,6 +102,11 @@
   --palette-dim-o-base: #b4688a;
   --palette-dim-o-strong: #8e4263;
   --palette-dim-o-soft: #f9eef3;
+  --palette-layer-self-hero-from: #2a5244;
+  --palette-layer-self-hero-mid: #1e3d34;
+  --palette-layer-self-hero-to: #1a2e28;
+  /* Fejléc-sáv: eddig hardkódolt rgba volt a nav-ban. */
+  --palette-surface-header: #faf9f6;
   --palette-layer-team-accent: #66455d;
   --palette-layer-team-bright: #a66a8c;
   --palette-layer-team-hero-from: #66455d;
@@ -144,24 +149,22 @@
 }
 
 /* ─── Sötét készlet ─────────────────────────────────────────────────
-   Ugyanazokat a --palette-* neveket írja felül, amiket a fenti nyers
-   réteg definiál — ettől az EGÉSZ utility-készlet átfordul.
+   HATÓKÖR: a `.theme-scope` elem (az (app) layout shellje). A marketing-fa
+   NEM kapja meg — ott a világos téma marad, szándékosan.
 
-   MIÉRT A :root ÉS NEM EGY LESZÁRMAZOTT: a `--color-x: var(--palette-x)`
-   aliasok a :root-on vannak deklarálva, és a var() a DEKLARÁLÓ elemen
-   helyettesítődik be. Egy leszármazottra tett --palette-* felülírás ezért
-   a --color-* réteget nem éri el (a gyerek a már behelyettesített világos
-   értéket örökli) — méréssel igazolva. A hatókör tehát az egész dokumentum;
-   a téma-választás a <html data-theme> attribútumon dől el.
+   MIÉRT VAN ITT A --color-* RÉTEG IS, ha a fenti @theme már definiálja:
+   a var() a DEKLARÁLÓ elemen helyettesítődik be. A :root-on kiszámított
+   `--color-cream: var(--palette-cream)` értéke a VILÁGOS hex, és a
+   gyerekek EZT öröklik — egy leszármazottra tett --palette-* felülírás
+   önmagában nem érné el az alias-réteget (méréssel igazolva). Ezért a
+   scope-elemen mindkét réteget újra deklaráljuk.
 
-   NEM invertálás: a jelentés-osztályok viszonyait kellett újravezetni.
-   Két szerep meg is fordul — a világos zsálya-gombra sötét felirat kerül
-   (action-primary-fg), és a text-inverse is sötétre vált.
-
-   A paper-* (founding / patterns marketing-téma) SZÁNDÉKOSAN kimarad:
-   a „papír" metafora sötéten értelmét veszti — a marketing-fa világos.
-   Kontraszt-őr: tests/unit/design/token-contrast.test.ts ── */
-:root[data-theme="dark"] {
+   A --color-* sorok a @theme blokk MÁSOLATAI — a szinkront a
+   scripts/check-colors.mjs (d) ellenőrzése őrzi. Ha a @theme-be új
+   --color-* token kerül, ide is fel kell venni.
+   Vizsgálat: docs/development/dark-mode-feasibility-2026-08.md ── */
+[data-theme="dark"] .theme-scope {
+  /* 1. réteg — a nyers értékek sötét készlete */
   --palette-accent-candidate: #e2a17f;
   --palette-accent-candidate-border: #4a3325;
   --palette-accent-candidate-mid: #c2764c;
@@ -219,6 +222,10 @@
   --palette-layer-org-hero-mid: #22374d;
   --palette-layer-org-hero-to: #1a2a3b;
   --palette-layer-org-soft: #1a2634;
+  --palette-layer-self-hero-from: #1f4a3c;
+  --palette-layer-self-hero-mid: #163529;
+  --palette-layer-self-hero-to: #102721;
+  --palette-surface-header: #191920;
   --palette-layer-team-accent: #b98aa8;
   --palette-layer-team-bright: #cb9fbb;
   --palette-layer-team-hero-from: #4a3247;
@@ -270,16 +277,11 @@
   --palette-warm: #23232a;
   --palette-warm-dark: #474751;
   --palette-warm-mid: #202027;
-  /* Sötéten a MÉLYSÉGET a felület-világosság lépcsője viszi (canvas →
-     kártya → muted), nem az árnyék: az ink-alapú árnyék sötét alapon
-     láthatatlan. Ami marad, az kontúr, nem vetett árnyék. */
   --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
   --ui-shadow-md: 0 6px 16px rgba(0, 0, 0, 0.5);
   --ui-shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.55);
   --ui-shadow-xl: 0 22px 52px rgba(0, 0, 0, 0.6);
   --ui-shadow-focus: 0 0 0 3px rgba(127, 191, 166, 0.35);
-  /* Paper marketing-téma (founding / patterns) — meleg, sötét papír.
-     A hatókör globális, ezért ez sem maradhat ki. */
   --palette-paper-bg: #141210;
   --palette-paper-card: #1e1b17;
   --palette-paper-text: #eee8df;
@@ -287,6 +289,209 @@
   --palette-paper-heading: #f5f0e8;
   --palette-paper-border: #302b24;
   --palette-founding-accent-hover: #e3b184;
+
+  /* 2. réteg — a szerep-aliasok újradeklarálva (ld. a fenti indoklást) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sage: var(--palette-sage);
+  --color-sage-dark: var(--palette-sage-dark);
+  --color-sage-deep: var(--palette-sage-deep);
+  --color-sage-soft: var(--palette-sage-soft);
+  --color-sage-ghost: var(--palette-sage-ghost);
+  --color-sage-ring: var(--palette-sage-ring);
+  --color-bronze: var(--palette-bronze);
+  --color-bronze-dark: var(--palette-bronze-dark);
+  --color-bronze-soft: var(--palette-bronze-soft);
+  --color-bronze-edge: var(--palette-bronze-edge);
+  --color-ink: var(--palette-ink);
+  --color-ink-body: var(--palette-ink-body);
+  --color-ink-warm: var(--palette-ink-warm);
+  --color-cream: var(--palette-cream);
+  --color-sand: var(--palette-sand);
+  --color-warm: var(--palette-warm);
+  --color-warm-mid: var(--palette-warm-mid);
+  --color-warm-dark: var(--palette-warm-dark);
+  --color-surface-canvas: var(--color-cream);
+  --color-surface-card: var(--palette-surface-card);
+  --color-surface-muted:  var(--color-warm);
+  --color-surface-header: var(--palette-surface-header);
+  --color-surface-self-accent:      var(--color-sage);
+  --color-surface-self-accent-soft: var(--color-sage-soft);
+  --color-surface-self-border:      var(--color-sage-ring);
+  --color-surface-team-accent:      var(--color-layer-team-accent);
+  --color-surface-team-accent-soft: var(--color-layer-team-soft);
+  --color-surface-team-border:      var(--color-bronze-edge);
+  --color-surface-org-accent:       var(--color-layer-org-bright);
+  --color-surface-org-accent-soft:  var(--color-layer-org-soft);
+  --color-surface-org-border:       var(--color-layer-org-border);
+  --color-text-primary:   var(--color-ink);
+  --color-text-secondary: var(--color-ink-body);
+  --color-text-muted:     var(--color-muted);
+  --color-text-faint:     var(--color-muted-warm);
+  --color-text-inverse: var(--palette-text-inverse);
+  --color-border-default: var(--color-sand);
+  --color-border-strong:  var(--color-warm-dark);
+  --color-action-primary-bg:       var(--color-sage);
+  --color-action-primary-bg-hover: var(--color-sage-dark);
+  --color-action-primary-fg: var(--palette-action-primary-fg);
+  --color-action-secondary-bg:     var(--color-surface-card);
+  --color-action-secondary-fg:     var(--color-text-secondary);
+  --color-action-secondary-border: var(--color-border-default);
+  --color-action-destructive-bg: var(--palette-action-destructive-bg);
+  --color-action-destructive-bg-hover: var(--palette-action-destructive-bg-hover);
+  --color-action-destructive-fg: var(--palette-action-destructive-fg);
+  --color-focus-ring: var(--color-sage-ring);
+  --color-state-focus-ring: var(--color-focus-ring);
+  --color-state-info-bg: var(--palette-state-info-bg);
+  --color-state-info-fg: var(--palette-state-info-fg);
+  --color-state-info-border: var(--palette-state-info-border);
+  --color-state-success-bg: var(--palette-state-success-bg);
+  --color-state-success-fg: var(--palette-state-success-fg);
+  --color-state-success-border: var(--palette-state-success-border);
+  --color-state-warning-bg: var(--palette-state-warning-bg);
+  --color-state-warning-fg: var(--palette-state-warning-fg);
+  --color-state-warning-border: var(--palette-state-warning-border);
+  --color-state-error-bg: var(--palette-state-error-bg);
+  --color-state-error-fg: var(--palette-state-error-fg);
+  --color-state-error-border: var(--palette-state-error-border);
+  --color-state-disabled-bg:  var(--color-warm-mid);
+  --color-state-disabled-fg:  var(--color-muted-warm);
+  --color-state-disabled-border: var(--color-sand);
+  --color-state-hover-bg:     var(--color-cream-300);
+  --color-state-hover-fg:     var(--color-text-primary);
+  --color-state-hover-border: var(--color-border-strong);
+  --color-accent-primary: var(--color-bronze);
+  --color-accent-primary-strong: var(--color-bronze-700);
+  --color-accent-primary-soft: var(--color-bronze-300);
+  --color-accent-self: var(--color-sage-500);
+  --color-accent-self-strong: var(--palette-accent-self-strong);
+  --color-accent-self-deep: var(--color-sage-deep);
+  --color-accent-earth-strong: var(--palette-accent-earth-strong);
+  --color-border-soft: var(--palette-border-soft);
+  --color-border-neutral: var(--palette-border-neutral);
+  --color-neutral-white: var(--palette-neutral-white);
+  --color-surface-subtle: var(--color-cream-300);
+  --color-surface-soft-warm: var(--palette-surface-soft-warm);
+  --color-surface-warm-tint: var(--palette-surface-warm-tint);
+  --color-surface-highlight-warm: var(--color-bronze-100);
+  --color-text-strong-alt: var(--palette-text-strong-alt);
+  --color-text-strong-deep: var(--palette-text-strong-deep);
+  --color-text-success-soft: var(--palette-text-success-soft);
+  --color-text-error-strong: var(--palette-text-error-strong);
+  --color-accent-self-deeper: var(--palette-accent-self-deeper);
+  --color-accent-primary-mid: var(--palette-accent-primary-mid);
+  --color-surface-toast: var(--palette-surface-toast);
+  --color-surface-card-soft: var(--palette-surface-card-soft);
+  --color-surface-chip-warm: var(--palette-surface-chip-warm);
+  --color-surface-chip-warm-soft: var(--palette-surface-chip-warm-soft);
+  --color-surface-chip-neutral: var(--palette-surface-chip-neutral);
+  --color-state-error-soft: var(--palette-state-error-soft);
+  --color-dim-h-base: var(--palette-dim-h-base);
+  --color-dim-h-strong: var(--palette-dim-h-strong);
+  --color-dim-h-soft: var(--palette-dim-h-soft);
+  --color-dim-e-base: var(--palette-dim-e-base);
+  --color-dim-e-strong: var(--palette-dim-e-strong);
+  --color-dim-e-soft: var(--palette-dim-e-soft);
+  --color-dim-x-base: var(--palette-dim-x-base);
+  --color-dim-x-strong: var(--palette-dim-x-strong);
+  --color-dim-x-soft: var(--palette-dim-x-soft);
+  --color-dim-a-base: var(--palette-dim-a-base);
+  --color-dim-a-strong: var(--palette-dim-a-strong);
+  --color-dim-a-soft: var(--palette-dim-a-soft);
+  --color-dim-c-base: var(--palette-dim-c-base);
+  --color-dim-c-strong: var(--palette-dim-c-strong);
+  --color-dim-c-soft: var(--palette-dim-c-soft);
+  --color-dim-o-base: var(--palette-dim-o-base);
+  --color-dim-o-strong: var(--palette-dim-o-strong);
+  --color-dim-o-soft: var(--palette-dim-o-soft);
+  --color-role-thinking-fg: var(--color-dim-h-strong);
+  --color-role-thinking-bg: var(--color-dim-h-soft);
+  --color-role-action-fg:   var(--color-dim-x-strong);
+  --color-role-action-bg:   var(--color-dim-x-soft);
+  --color-role-people-fg:   var(--color-dim-a-strong);
+  --color-role-people-bg:   var(--color-dim-a-soft);
+  --color-layer-self-accent:    var(--color-sage);
+  /* Saját tokenek (nem az akcentekből kölcsönözve): a hero sötéten is
+     sötét panel marad — ott a figura-háttér viszony megfordul. */
+  --color-layer-self-hero-from: var(--palette-layer-self-hero-from);
+  --color-layer-self-hero-mid:  var(--palette-layer-self-hero-mid);
+  --color-layer-self-hero-to:   var(--palette-layer-self-hero-to);
+  --color-layer-self-glow:      var(--color-bronze);
+  --color-layer-self-soft:      var(--color-sage-soft);
+  --color-layer-team-accent: var(--palette-layer-team-accent);
+  --color-layer-team-bright: var(--palette-layer-team-bright);
+  --color-layer-team-hero-from: var(--palette-layer-team-hero-from);
+  --color-layer-team-hero-mid: var(--palette-layer-team-hero-mid);
+  --color-layer-team-hero-to: var(--palette-layer-team-hero-to);
+  --color-layer-team-glow: var(--palette-layer-team-glow);
+  --color-layer-team-badge: var(--palette-layer-team-badge);
+  --color-layer-team-soft: var(--palette-layer-team-soft);
+  --color-layer-org-accent: var(--palette-layer-org-accent);
+  --color-layer-org-bright: var(--palette-layer-org-bright);
+  --color-layer-org-hero-from: var(--palette-layer-org-hero-from);
+  --color-layer-org-hero-mid: var(--palette-layer-org-hero-mid);
+  --color-layer-org-hero-to: var(--palette-layer-org-hero-to);
+  --color-layer-org-glow: var(--palette-layer-org-glow);
+  --color-layer-org-badge: var(--palette-layer-org-badge);
+  --color-layer-org-soft: var(--palette-layer-org-soft);
+  --color-layer-org-border: var(--palette-layer-org-border);
+  --color-layer-candidate-accent:    var(--color-accent-candidate);
+  --color-layer-candidate-hero-from: var(--color-accent-candidate);
+  --color-layer-candidate-hero-mid:  var(--color-accent-candidate-strong);
+  --color-layer-candidate-hero-to: var(--palette-layer-candidate-hero-to);
+  --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
+  --color-layer-candidate-badge: var(--palette-layer-candidate-badge);
+  --color-layer-candidate-soft:      var(--color-accent-candidate-soft);
+  --color-eval-high-fg: var(--palette-eval-high-fg);
+  --color-eval-high-accent: var(--color-sage);
+  --color-eval-high-bg:     var(--color-sage-soft);
+  --color-eval-mid-fg:      var(--color-bronze-700);
+  --color-eval-mid-accent:  var(--color-bronze);
+  --color-eval-mid-bg:      var(--color-bronze-100);
+  --color-eval-low-fg:      var(--color-muted);
+  --color-eval-low-accent:  var(--color-ink-300);
+  --color-eval-low-bg:      var(--color-cream-300);
+  --color-state-success-solid: var(--palette-state-success-solid);
+  --color-state-warning-solid: var(--palette-state-warning-solid);
+  --color-state-error-solid: var(--palette-state-error-solid);
+  --color-state-info-solid: var(--palette-state-info-solid);
+  --color-sage-300: var(--palette-sage-300);
+  --color-paper-bg: var(--palette-paper-bg);
+  --color-paper-card: var(--palette-paper-card);
+  --color-paper-text: var(--palette-paper-text);
+  --color-paper-muted: var(--palette-paper-muted);
+  --color-paper-heading: var(--palette-paper-heading);
+  --color-paper-border: var(--palette-paper-border);
+  --color-sage-700:    var(--color-sage);
+  --color-sage-900:    var(--color-sage-deep);
+  --color-sage-500: var(--palette-sage-500);
+  --color-sage-100:    var(--color-sage-soft);
+  --color-bronze-500:  var(--color-bronze);
+  --color-bronze-300: var(--palette-bronze-300);
+  --color-bronze-100: var(--palette-bronze-100);
+  --color-bronze-700: var(--palette-bronze-700);
+  --color-ink-800:     var(--color-ink);
+  --color-ink-500:     var(--color-ink-body);
+  --color-ink-300: var(--palette-ink-300);
+  --color-cream-100:   var(--color-cream);
+  --color-cream-500:   var(--color-sand);
+  --color-cream-300: var(--palette-cream-300);
+  --color-cream-warm: var(--palette-cream-warm);
+  --color-founding-bg:           var(--color-paper-bg);
+  --color-founding-text:         var(--color-paper-text);
+  --color-founding-muted:        var(--color-paper-muted);
+  --color-founding-heading:      var(--color-paper-heading);
+  --color-founding-card:         var(--color-paper-card);
+  --color-founding-accent:       var(--color-bronze);
+  --color-founding-accent-hover: var(--palette-founding-accent-hover);
+  --color-muted: var(--palette-muted);
+  --color-muted-warm: var(--palette-muted-warm);
+  --color-accent-candidate: var(--palette-accent-candidate);
+  --color-accent-candidate-strong: var(--palette-accent-candidate-strong);
+  --color-accent-candidate-mid: var(--palette-accent-candidate-mid);
+  --color-accent-candidate-primary: var(--palette-accent-candidate-primary);
+  --color-accent-candidate-soft: var(--palette-accent-candidate-soft);
+  --color-accent-candidate-border: var(--palette-accent-candidate-border);
 }
 
 @theme inline {
@@ -342,6 +547,7 @@
   --color-surface-canvas: var(--color-cream);
   --color-surface-card: var(--palette-surface-card);
   --color-surface-muted:  var(--color-warm);
+  --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
   --color-surface-self-border:      var(--color-sage-ring);
@@ -480,9 +686,11 @@
   /* Réteg-akcentek — hero-gradiens + világos felületi akcent rétegenként.
      A glow-színek CSAK sötét herón (fehéren AA-bukók szövegként). */
   --color-layer-self-accent:    var(--color-sage);
-  --color-layer-self-hero-from: var(--color-accent-self-strong);
-  --color-layer-self-hero-mid:  var(--color-sage-deep);
-  --color-layer-self-hero-to:   var(--color-accent-self-deeper);
+  /* Saját tokenek (nem az akcentekből kölcsönözve): a hero sötéten is
+     sötét panel marad — ott a figura-háttér viszony megfordul. */
+  --color-layer-self-hero-from: var(--palette-layer-self-hero-from);
+  --color-layer-self-hero-mid:  var(--palette-layer-self-hero-mid);
+  --color-layer-self-hero-to:   var(--palette-layer-self-hero-to);
   --color-layer-self-glow:      var(--color-bronze);
   --color-layer-self-soft:      var(--color-sage-soft);
   --color-layer-team-accent: var(--palette-layer-team-accent);
@@ -652,14 +860,23 @@ body {
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
 }
 
-/* A színséma követi a témát — enélkül a natív form-vezérlők, a
-   görgetősáv és az iOS-autofill világos maradna a sötét lapon. */
-:root {
+/* A színséma a HATÓKÖRT követi — enélkül a natív form-vezérlők, a
+   görgetősáv és az iOS-autofill világos maradna a sötét felületen. */
+:root,
+.theme-scope {
   color-scheme: light;
 }
 
-:root[data-theme="dark"] {
+[data-theme="dark"] .theme-scope {
   color-scheme: dark;
+}
+
+/* A hatókör saját alapot fest: a <body> a marketing-fáé, azt nem írjuk
+   felül. A .theme-scope a bejelentkezett zóna shellje. */
+.theme-scope {
+  background: var(--color-surface-canvas);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
 }
 
 /* Prevent iOS Safari auto-zoom on focused form controls. */

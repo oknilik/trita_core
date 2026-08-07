@@ -72,7 +72,7 @@ export function QrCodeBadge({ value, alt, hint, onError, className }: QrCodeBadg
         width={240}
         height={240}
         unoptimized
-        className="h-[200px] w-[200px] rounded-lg border border-sand bg-white p-2"
+        className="h-[200px] w-[200px] rounded-lg border border-sand bg-surface-card p-2"
       />
       {hint ? <p className="max-w-sm text-center text-micro text-muted">{hint}</p> : null}
     </div>

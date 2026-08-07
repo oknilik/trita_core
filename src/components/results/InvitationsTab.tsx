@@ -271,19 +271,19 @@ export function InvitationsTab({
 
       {/* 2. Stat cells */}
       <div className="grid grid-cols-3 gap-2">
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "var(--color-action-primary-bg)" : "var(--color-text-primary)" }}>
             {completed.length}
           </p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statReceived", locale)}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "var(--color-accent-primary)" : "var(--color-text-primary)" }}>
             {pending.length}
           </p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-3.5 text-center">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
           <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}/5</p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
         </div>
@@ -307,7 +307,7 @@ export function InvitationsTab({
       {hasColleagueDirectory && colleaguesLoading && canCreate ? (
         <div
           aria-hidden="true"
-          className="animate-pulse rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5"
+          className="animate-pulse rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5"
         >
           <div className="h-4 w-48 max-w-full rounded bg-[var(--color-surface-subtle)]" />
           <div className="mt-2 h-3 w-72 max-w-full rounded bg-[var(--color-surface-subtle)]" />
@@ -317,7 +317,7 @@ export function InvitationsTab({
           </div>
         </div>
       ) : colleagues.length > 0 && canCreate ? (
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
+        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5">
           <p className="text-caption font-semibold text-[var(--color-text-primary)]">
             + {t("invitations.colleagueSectionTitle", locale)}
           </p>
@@ -379,7 +379,7 @@ export function InvitationsTab({
       {/* 4. Create form — B14: a cím a szerver-oldalon ismert org-kontextusból
           jön (hasColleagueDirectory prop), nem a kolléga-fetch kimenetelétől,
           így a szekció nem címkézi át magát menet közben. */}
-      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px] px-5">
+      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5">
         <p className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
           + {hasColleagueDirectory
             ? t("invitations.externalSectionTitle", locale)
@@ -448,7 +448,7 @@ export function InvitationsTab({
           <div className="mt-3">
             <Link
               href={isConsultingLed() ? "/contact" : "/onboarding?intent=team"}
-              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-white px-4 text-[11px] font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
+              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-surface-card px-4 text-[11px] font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
             >
               {isConsultingLed()
                 ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")
@@ -465,7 +465,7 @@ export function InvitationsTab({
                 {`${t("invitations.groupReceived", locale)} (${completed.length})`}
               </p>
               {completed.map((inv) => (
-                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-action-primary-bg)" }}>✓</div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
@@ -494,7 +494,7 @@ export function InvitationsTab({
               </p>
               {pending.map((inv) => (
                 <div key={inv.id} className="mb-2">
-                  <div className="flex flex-wrap items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
+                  <div className="flex flex-wrap items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
                     <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
                       {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
                     </div>
@@ -518,7 +518,7 @@ export function InvitationsTab({
                       <button
                         type="button"
                         onClick={() => handleCopy(inv.token)}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                       </button>
@@ -528,7 +528,7 @@ export function InvitationsTab({
                         type="button"
                         onClick={() => setQrToken((prev) => (prev === inv.token ? null : inv.token))}
                         aria-expanded={qrToken === inv.token}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-white px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         QR
                       </button>
@@ -537,7 +537,7 @@ export function InvitationsTab({
                         onClick={() => handleDelete(inv.id)}
                         disabled={deletingId === inv.id}
                         aria-label={t("actions.delete", locale)}
-                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-white px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
+                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
                       >
                         {deletingId === inv.id ? "..." : "✕"}
                       </button>
@@ -572,7 +572,7 @@ export function InvitationsTab({
             const isDone = inv.status === "COMPLETED";
 
             return (
-              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 py-3.5">
+              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5">
                 <div
                   className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm"
                   style={{ backgroundColor: isDone ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-subtle)", color: isDone ? "var(--color-action-primary-bg)" : "var(--color-text-muted)" }}

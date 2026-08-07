@@ -97,7 +97,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       </div>
 
       {step === "name" && (
-        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
           <SectionEyebrow className="mb-1">
             {t("org.setup.step1Eyebrow", loc)}
           </SectionEyebrow>
@@ -130,7 +130,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       )}
 
       {step === "invite" && (
-        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
           <SectionEyebrow className="mb-1">
             {t("org.setup.step3Eyebrow", loc)}
           </SectionEyebrow>

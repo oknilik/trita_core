@@ -82,7 +82,7 @@ export function TeamSwitcher({
       {open ? (
         <div
           role="listbox"
-          className="absolute left-0 z-30 mt-2 max-h-[60vh] w-[240px] max-w-full overflow-y-auto overflow-x-hidden rounded-xl border border-sand bg-white py-1 shadow-[0_18px_40px_rgba(26,26,46,0.18)] md:max-h-none md:max-w-none md:overflow-y-visible"
+          className="absolute left-0 z-30 mt-2 max-h-[60vh] w-[240px] max-w-full overflow-y-auto overflow-x-hidden rounded-xl border border-sand bg-surface-card py-1 shadow-[0_18px_40px_rgba(26,26,46,0.18)] md:max-h-none md:max-w-none md:overflow-y-visible"
         >
           {teams.map((team) => {
             const isActive = team.id === activeTeamId;

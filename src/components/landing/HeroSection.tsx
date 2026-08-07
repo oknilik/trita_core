@@ -40,7 +40,7 @@ function SelfPanel() {
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
-      <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
+      <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <div className="flex items-center justify-between gap-2">
           <p className="text-micro uppercase tracking-widest text-white/70">
             {t("landing.selfPanelEyebrow", locale)}
@@ -69,7 +69,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-white px-5 pt-5 md:flex-1">
+      <div className="bg-surface-card px-5 pt-5 md:flex-1">
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
@@ -162,7 +162,7 @@ function TeamPanel() {
   return (
     <>
       {/* Publikált riport kártya */}
-      <div className="rounded-2xl border border-sand bg-white p-5 shadow-lg shadow-black/[0.06] md:p-6">
+      <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-lg shadow-black/[0.06] md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <SectionEyebrow>

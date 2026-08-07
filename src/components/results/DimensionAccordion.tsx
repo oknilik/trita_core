@@ -143,7 +143,7 @@ function AccordionItem({
                         return (
                           <div
                             key={f.code}
-                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-3.5 py-3"
+                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-surface-card px-3.5 py-3"
                           >
                             <span className="min-w-0 flex-1">
                               <span className="block text-xs font-medium text-[var(--color-text-primary)]">

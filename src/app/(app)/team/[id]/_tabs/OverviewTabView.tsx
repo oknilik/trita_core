@@ -93,7 +93,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 </p>
               </div>
               {pendingMeasurement.opensAt ? (
-                <div className="shrink-0 rounded-[10px] border border-sand bg-white px-4 py-2.5 text-center">
+                <div className="shrink-0 rounded-[10px] border border-sand bg-surface-card px-4 py-2.5 text-center">
                   <p className="font-mono text-micro uppercase tracking-wide text-muted">
                     {isHu ? "Érkezik" : "Arriving"}
                   </p>
@@ -178,7 +178,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 {receivedFeedbackRequests.map((req) => (
                   <div
                     key={req.token}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-white px-3.5 py-2.5"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-surface-card px-3.5 py-2.5"
                   >
                     <span className="flex min-w-0 items-center gap-2.5">
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
@@ -237,7 +237,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 mennyiség, hanem státusz, ezért chip hordozza, nem nagy szám.
                 CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
             {canViewRaw ? (
-              <div className="rounded-[24px] border border-sand bg-white p-5">
+              <div className="rounded-[24px] border border-sand bg-surface-card p-5">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                     {t("teamDetail.teamPatternTitle", locale)}
@@ -267,7 +267,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               futó kampánynál mérésenként is megmutatjuk, hol tart a csapat.
               A számok a kampány-részletezővel azonos lépés-logikából jönnek. */}
           {teamData.activeCampaign && teamData.activeCampaign.stepProgress.length > 0 ? (
-            <div className="mt-3 rounded-[24px] border border-sand bg-white p-5">
+            <div className="mt-3 rounded-[24px] border border-sand bg-surface-card p-5">
               <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                 {t("teamDetail.measurementBreakdownTitle", locale)}
               </p>
@@ -361,11 +361,11 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                           befagyasztott aggregátumot mutatják — az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
-                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.memberCount}{" "}
                           {isHu ? "tag a validált képben" : "members in the validated picture"}
                         </span>
-                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.completionPct}%{" "}
                           {isHu ? "kitöltöttség" : "completion"}
                         </span>

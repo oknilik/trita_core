@@ -101,8 +101,8 @@ export function Modal({
           // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
           "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
           isBrand
-            ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
-            : "max-w-md rounded-2xl bg-white shadow-2xl",
+            ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+            : "max-w-md rounded-2xl bg-surface-card shadow-2xl",
           variant === "danger"
             ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
             : (isBrand ? "border-sand" : "border-sand/70"),
@@ -297,7 +297,7 @@ export function ConfirmModal({
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="min-h-[44px] rounded-[10px] border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[44px] rounded-[10px] border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
         >
           {cancelText}
         </button>

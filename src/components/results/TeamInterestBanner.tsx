@@ -92,7 +92,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               rows={3}
               maxLength={2000}
               placeholder={t("results.teamInterestMessagePlaceholder", locale)}
-              className="rounded-lg border border-sand bg-white px-3 py-2 text-base text-ink md:text-sm"
+              className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-base text-ink md:text-sm"
             />
           </label>
           {error && <p className="text-xs text-rose-600">{error}</p>}
@@ -111,7 +111,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               type="button"
               disabled={busy}
               onClick={() => setPhase("collapsed")}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
             >
               {t("results.teamInterestCancel", locale)}
             </button>

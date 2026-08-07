@@ -71,7 +71,7 @@ function ComparisonSide({
       className={`flex flex-1 items-center gap-3.5 rounded-xl border-[1.5px] p-4 ${
         highlight
           ? "border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)]"
-          : "border-[var(--color-border-soft)] bg-white"
+          : "border-[var(--color-border-soft)] bg-surface-card"
       }`}
     >
       {glyph && (
@@ -82,7 +82,7 @@ function ComparisonSide({
           locale={locale}
           intensity={glyph.intensity}
           variant="badge"
-          className="h-14 w-14 shrink-0 rounded-xl border border-[var(--color-border-soft)] bg-white md:h-16 md:w-16"
+          className="h-14 w-14 shrink-0 rounded-xl border border-[var(--color-border-soft)] bg-surface-card md:h-16 md:w-16"
         />
       )}
       <div className="min-w-0">
@@ -128,7 +128,7 @@ function Block({
       body: "text-[var(--color-text-secondary)]",
     },
     discuss: {
-      wrapper: "border-[var(--color-border-soft)] bg-white",
+      wrapper: "border-[var(--color-border-soft)] bg-surface-card",
       label: "text-[var(--color-text-muted)]",
       body: "text-[var(--color-text-secondary)]",
     },
@@ -302,7 +302,7 @@ export function InteractionSection({
               <div
                 role="group"
                 aria-label={t("results.interactionRelationQuestion", locale)}
-                className="flex shrink-0 rounded-full border border-[var(--color-border-soft)] bg-white p-0.5"
+                className="flex shrink-0 rounded-full border border-[var(--color-border-soft)] bg-surface-card p-0.5"
               >
                 {[false, true].map((mode) => (
                   <button
@@ -329,7 +329,7 @@ export function InteractionSection({
           </div>
 
           {current.sparse ? (
-            <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]">
+            <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px]">
               <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
                 {t("results.interactionSparse", locale)}
               </p>

@@ -19,7 +19,7 @@ export default function TeamError({
         <p className="text-sm text-ink-body/60 mb-6">{error.message}</p>
         <button
           onClick={reset}
-          className="min-h-[44px] rounded-lg border border-sand bg-white px-5 text-sm font-medium text-ink-body hover:border-sage/40"
+          className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-5 text-sm font-medium text-ink-body hover:border-sage/40"
         >
           Újrapróbálás
         </button>

@@ -171,7 +171,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
 
               <Link
                 href="/sign-in?redirect_url=/try/claim"
-                className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-white px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
+                className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
               >
                 {t("tryComplete.loginCta", locale)}
               </Link>

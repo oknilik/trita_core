@@ -39,7 +39,7 @@ export function PricingContent() {
 
       {/* ── Egyéni: ingyenes ── */}
       <section className="px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-white p-7 lg:p-9">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-7 lg:p-9">
           <Eyebrow>{t("pricing.selfEyebrow", locale)}</Eyebrow>
           <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
             {t("pricing.selfTitle", locale)}
@@ -49,7 +49,7 @@ export function PricingContent() {
           </p>
           <Link
             href="/try"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-surface-card px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
           >
             {t("pricing.selfCta", locale)}
           </Link>
@@ -58,7 +58,7 @@ export function PricingContent() {
 
       {/* ── Csapat & szervezet: program ── */}
       <section className="mt-6 px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-white p-7 lg:p-9">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-7 lg:p-9">
           <Eyebrow>{t("pricing.teamEyebrow", locale)}</Eyebrow>
           <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
             {t("pricing.teamTitle", locale)}
@@ -109,7 +109,7 @@ export function PricingContent() {
           </p>
           <Link
             href="/pilot"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-white px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-surface-card px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
           >
             {t("pricing.pilotCta", locale)}
           </Link>
@@ -132,7 +132,7 @@ export function PricingContent() {
                   track("faq.open", { faq_id: `pricing_q${i}`, surface: "pricing" });
                 }
               }}
-              className="group rounded-xl border border-[var(--color-border-soft)] bg-white"
+              className="group rounded-xl border border-[var(--color-border-soft)] bg-surface-card"
             >
               {/* A padding a summary-n van (AdvisoryPageClient FaqItem minta):
                   a teljes kártyafelület a toggle érintőcélja, min. 44px */}

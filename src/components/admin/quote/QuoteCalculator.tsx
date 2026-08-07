@@ -79,7 +79,7 @@ function NumberField({
           min={min}
           step={step}
           onChange={(event) => onChange(Number(event.target.value))}
-          className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
+          className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze"
         />
         {suffix && <span className="shrink-0 text-xs text-muted">{suffix}</span>}
       </span>
@@ -296,7 +296,7 @@ export function QuoteCalculator({
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
       {/* ── Bemenetek ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-6">
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Terjedelem</h2>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
             <NumberField
@@ -341,7 +341,7 @@ export function QuoteCalculator({
                   className={`min-h-[40px] rounded-full border px-3.5 text-sm transition ${
                     active
                       ? "border-sage bg-sage-soft text-ink"
-                      : "border-sand bg-white text-muted hover:border-bronze-edge"
+                      : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
                   }`}
                 >
                   {QUOTE_STEP_LABELS[step]}
@@ -351,7 +351,7 @@ export function QuoteCalculator({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Utánkövetés</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
             Az ismételt hullám a mérési díj {rate.waveRatePct}%-áért megy: a setup és a
@@ -373,7 +373,7 @@ export function QuoteCalculator({
           </div>
         </section>
 
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Kedvezmény</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
             Nevesített, lejáró kedvezmény — ad-hoc alku helyett. Keret:{" "}
@@ -390,7 +390,7 @@ export function QuoteCalculator({
                 className={`min-h-[40px] rounded-full border px-3.5 text-sm transition ${
                   input.discountKind === kind
                     ? "border-sage bg-sage-soft text-ink"
-                    : "border-sand bg-white text-muted hover:border-bronze-edge"
+                    : "border-sand bg-surface-card text-muted hover:border-bronze-edge"
                 }`}
               >
                 {DISCOUNT_LABELS[kind]}
@@ -413,14 +413,14 @@ export function QuoteCalculator({
                 value={input.discountReason}
                 onChange={(event) => patch({ discountReason: event.target.value })}
                 placeholder="Miért adjuk? (belső feljegyzés)"
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-bronze"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-bronze"
               />
             </label>
           </div>
         </section>
 
         {/* ── Díjtételek ─────────────────────────────────────────── */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="font-fraunces text-lg text-ink">Díjtételek</h2>
             <button
@@ -519,7 +519,7 @@ export function QuoteCalculator({
                           };
                           setRate({ ...rate, headBands });
                         }}
-                        className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-32 md:flex-none md:basis-auto"
+                        className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-32 md:flex-none md:basis-auto"
                       />
                       <span className="shrink-0 text-xs text-muted">Ft / fő</span>
                     </div>
@@ -555,7 +555,7 @@ export function QuoteCalculator({
                                 },
                               })
                             }
-                            className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-28 md:flex-none md:basis-auto"
+                            className="min-h-[40px] w-full min-w-0 flex-1 basis-[104px] rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none focus:border-bronze md:w-28 md:flex-none md:basis-auto"
                           />
                         ))}
                       </div>
@@ -612,7 +612,7 @@ export function QuoteCalculator({
 
       {/* ── Összegzés ─────────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <SectionEyebrow>ajánlat</SectionEyebrow>
 
           <ul className="mt-3 flex flex-col gap-1.5 text-sm">
@@ -654,7 +654,7 @@ export function QuoteCalculator({
 
         {/* ── CRM-mentés (csak deal-kontextusban; nélküle sandbox) ── */}
         {deal && (
-          <section className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+          <section className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
             <SectionEyebrow>mentés a dealhez</SectionEyebrow>
             <p className="mt-2 text-xs leading-relaxed text-ink-body">
               {draftMode && sourceQuote
@@ -686,7 +686,7 @@ export function QuoteCalculator({
                   <button
                     type="button"
                     onClick={() => router.push(`/admin/crm/${deal.id}`)}
-                    className="min-h-[44px] rounded-lg border border-sand bg-white px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-4 text-sm font-semibold text-ink-body transition hover:bg-cream"
                   >
                     Deal megnyitása
                   </button>
@@ -704,7 +704,7 @@ export function QuoteCalculator({
                       value={quoteTitle}
                       onChange={(event) => setQuoteTitle(event.target.value)}
                       maxLength={200}
-                      className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-bronze"
+                      className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-bronze"
                     />
                   </label>
                 )}
@@ -716,7 +716,7 @@ export function QuoteCalculator({
                     type="date"
                     value={validUntilDay}
                     onChange={(event) => setValidUntilDay(event.target.value)}
-                    className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-bronze"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-bronze"
                   />
                   <span className="text-xs text-muted">
                     Üresen: kiküldéskor automatikusan +30 nap.
@@ -772,7 +772,7 @@ export function QuoteCalculator({
           </section>
         )}
 
-        <section className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
               Ajánlat-szöveg

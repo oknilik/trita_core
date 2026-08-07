@@ -83,7 +83,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
   return (
     <>
       {open && (
-        <div className="fixed bottom-20 left-4 right-4 z-40 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl border border-sand bg-white shadow-xl md:left-auto md:w-[380px]">
+        <div className="fixed bottom-20 left-4 right-4 z-40 flex max-h-[70vh] flex-col overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-xl md:left-auto md:w-[380px]">
           {/* Fejléc */}
           <div className="flex items-center gap-2 border-b border-sand bg-cream px-4 py-3">
             {(topic || entry || askOpen) && (

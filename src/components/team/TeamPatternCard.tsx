@@ -108,7 +108,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   // Not enough data
   if (!data) {
     return (
-      <div className="rounded-2xl border border-sand bg-white shadow-sm">
+      <div className="rounded-2xl border border-sand bg-surface-card shadow-sm">
         <div className="border-b border-warm-mid px-6 py-4">
           <SectionEyebrow className="text-micro">
             {t("teamComp.teamPatternEyebrow", loc)}
@@ -130,7 +130,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   const confColors = CONFIDENCE_COLORS[data.confidence];
 
   return (
-    <div className="rounded-2xl border border-sand bg-white shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card shadow-sm">
       {/* Header */}
       <div className="border-b border-warm-mid px-6 py-4">
         <SectionEyebrow className="text-micro">
@@ -239,7 +239,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </div>
             <a
               href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-white px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
             >
               {t("teamComp.explorePattern", loc)}
             </a>

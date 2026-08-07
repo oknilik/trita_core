@@ -13,8 +13,8 @@ export default function ProfileLoading() {
           <div className="border-t border-[var(--color-border-default)] py-6">
             <div className="h-4 w-16 rounded bg-[var(--color-border-default)]" />
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="h-11 rounded-lg border border-[var(--color-border-default)] bg-white" />
-              <div className="h-11 rounded-lg border border-[var(--color-border-default)] bg-white" />
+              <div className="h-11 rounded-lg border border-[var(--color-border-default)] bg-surface-card" />
+              <div className="h-11 rounded-lg border border-[var(--color-border-default)] bg-surface-card" />
             </div>
             <div className="mt-4 flex gap-2">
               <div className="h-10 w-20 rounded-full bg-[var(--color-border-default)]" />

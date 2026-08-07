@@ -41,7 +41,7 @@ export default async function OrgSetupPage({
       <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-10">
         <div className="w-full max-w-2xl space-y-5">
           <OrgSubscriptionBanner state={bannerState} locale={locale} />
-          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
             <h1 className="font-fraunces text-2xl text-ink">
               {isHu ? "A setup ideiglenesen szünetel" : "Setup is temporarily paused"}
             </h1>

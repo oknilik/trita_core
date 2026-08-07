@@ -121,7 +121,7 @@ export function BlogListContent({
     `inline-flex min-h-[44px] items-center gap-1 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
       active
         ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white"
-        : "border-sand bg-white text-[var(--color-text-secondary)] hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]"
+        : "border-sand bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]"
     }`;
 
   return (
@@ -186,7 +186,7 @@ export function BlogListContent({
               {featured && (
                 <Link
                   href={`/blog/${featured.slug}`}
-                  className="group mb-8 grid grid-cols-1 overflow-hidden rounded-2xl border border-sand bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.05] md:grid-cols-[1fr_1.3fr]"
+                  className="group mb-8 grid grid-cols-1 overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.05] md:grid-cols-[1fr_1.3fr]"
                 >
                   {/* Bal: generatív vizuál + kulcs-állítás (a nagy percszám helyett) */}
                   <div className="relative flex min-h-[220px] flex-col justify-end overflow-hidden p-6 md:min-h-[250px]">
@@ -233,7 +233,7 @@ export function BlogListContent({
                       <Link
                         key={post.slug}
                         href={`/blog/${post.slug}`}
-                        className="flex items-start gap-3 rounded-xl border border-sand bg-white px-4 py-3 transition-colors hover:border-[var(--color-surface-self-border)]"
+                        className="flex items-start gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3 transition-colors hover:border-[var(--color-surface-self-border)]"
                       >
                         <span className="text-fluid-title font-fraunces text-[22px] italic leading-none text-[var(--color-accent-primary)]">
                           {i + 1}
@@ -259,7 +259,7 @@ export function BlogListContent({
                     <Link
                       key={post.slug}
                       href={`/blog/${post.slug}`}
-                      className="group overflow-hidden rounded-2xl border border-sand bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/[0.05]"
+                      className="group overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/[0.05]"
                     >
                       <div className="h-[120px] overflow-hidden">
                         <BlogArtVisual slug={post.slug} tags={post.tags} seed={post.artSeed} motif={post.artMotif} variant="card" />

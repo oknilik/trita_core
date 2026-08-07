@@ -178,7 +178,7 @@ export function CampaignPacingTile({
                     "min-h-[44px] min-w-[44px] rounded-lg border px-3 text-label font-semibold tracking-normal transition disabled:opacity-50 md:min-h-[30px] md:min-w-0 md:px-2",
                     data.stepIntervalHours === h
                       ? "border-ink bg-ink text-white"
-                      : "border-sand bg-white text-ink-body hover:border-ink/40",
+                      : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                   ].join(" ")}
                 >
                   {h === 0 ? (isHu ? "azonnal" : "now") : `${h}h`}

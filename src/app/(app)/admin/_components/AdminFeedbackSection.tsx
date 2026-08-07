@@ -61,7 +61,7 @@ export function AdminFeedbackSection({
           /admin/fakedoor/career — ott szegmentálva látszik, amit itt egy
           számba mosva félrevezető lenne (tanácsadó vs. egyéni, ársávok). */}
       {/* Elégedettség + dimenzió-pontosság (a megszűnt Kutatás fülről) */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           elégedettség
         </SectionEyebrow>
@@ -120,7 +120,7 @@ export function AdminFeedbackSection({
         </div>
       </section>
       {/* Szerep-kalibráció */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           szerep-kalibráció
         </SectionEyebrow>
@@ -179,7 +179,7 @@ export function AdminFeedbackSection({
       </section>
 
       {/* Érdeklődés-jelzések */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           érdeklődés-jelzések
         </SectionEyebrow>

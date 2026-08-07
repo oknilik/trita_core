@@ -127,7 +127,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           : t("results.compareStateRevoked", locale);
 
   return (
-    <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+    <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
       <SectionEyebrow tone="muted">
         {t("results.compareCardTitle", locale)}
       </SectionEyebrow>
@@ -198,7 +198,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
               {inv.state === "ACCEPTED" ? (
                 <Link
                   href={`/interaction?pair=${inv.id}`}
-                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                 >
                   {t("results.compareOpenPair", locale)}
                 </Link>
@@ -208,7 +208,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                   <button
                     type="button"
                     onClick={() => handleCopy(inv)}
-                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                   >
                     {copiedId === inv.id
                       ? t("results.compareCopied", locale)
@@ -218,7 +218,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                     type="button"
                     onClick={() => setQrForId(qrForId === inv.id ? null : inv.id)}
                     aria-expanded={qrForId === inv.id}
-                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                   >
                     QR
                   </button>

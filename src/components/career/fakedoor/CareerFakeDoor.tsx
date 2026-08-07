@@ -214,7 +214,7 @@ export function CareerFakeDoor({
           {CARDS.map((card, index) => (
             <div
               key={card.lead}
-              className={`relative overflow-hidden rounded-2xl border border-sand bg-white p-5 md:p-6 ${
+              className={`relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 md:p-6 ${
                 index === 0 || index === CARDS.length - 1 ? "md:col-span-2" : ""
               }`}
             >
@@ -302,7 +302,7 @@ export function CareerFakeDoor({
           </div>
         </div>
 
-        <div className="bg-white p-6 md:p-8">
+        <div className="bg-surface-card p-6 md:p-8">
           <DecisionPanel
             sessionId={sessionId}
             source={source}

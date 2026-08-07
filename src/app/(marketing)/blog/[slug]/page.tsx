@@ -88,7 +88,7 @@ function Callout({ children }: { children: React.ReactNode }) {
 
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-white px-6 py-5 text-center">
+    <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center">
       <span className="font-fraunces text-[22px] leading-none text-[var(--color-action-primary-bg)]">{value}</span>
       <span className="mt-1.5 text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
     </div>
@@ -136,7 +136,7 @@ function CompareTable({
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
       <div className="hidden grid-cols-2 md:grid">
-        <div className="bg-white px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
+        <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
         <div className="bg-[var(--color-text-primary)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
@@ -145,7 +145,7 @@ function CompareTable({
       </div>
       {rows.map(([left, right], i) => (
         <div key={i} className="grid grid-cols-1 border-t border-[var(--color-border-default)] md:grid-cols-2">
-          <div className="bg-white px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
+          <div className="bg-surface-card px-4 py-3 text-caption text-[var(--color-text-secondary)] md:px-5">
             <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-[var(--color-text-muted)] md:hidden">
               {leftLabel}
             </span>
@@ -424,7 +424,7 @@ export default async function BlogPostPage({
             {olderPost ? (
               <Link
                 href={`/blog/${olderPost.slug}`}
-                className="rounded-xl border border-sand bg-white px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className="rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
                 <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
                   {t("blog.prevArticle", locale)}
@@ -439,7 +439,7 @@ export default async function BlogPostPage({
             {newerPost && (
               <Link
                 href={`/blog/${newerPost.slug}`}
-                className="rounded-xl border border-sand bg-white px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className="rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
                 <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
                   {t("blog.nextArticle", locale)}
@@ -466,7 +466,7 @@ export default async function BlogPostPage({
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="rounded-2xl border border-sand bg-white p-5 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.04]"
+                  className="rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:-translate-y-px hover:shadow-md hover:shadow-black/[0.04]"
                 >
                   {rel.tags.length > 0 && (
                     <div className="mb-1.5 flex flex-wrap gap-1">

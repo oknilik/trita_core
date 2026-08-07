@@ -98,7 +98,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-white focus:ring-2 focus:ring-bronze/12";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-surface-card focus:ring-2 focus:ring-bronze/12";
   const labelClass = "block text-sm font-medium text-ink";
 
   return (

@@ -46,7 +46,7 @@ function Pills<T extends string>({
   makeHref: (id: T) => string;
 }) {
   return (
-    <div className="flex flex-wrap gap-1.5 rounded-xl border border-sand bg-white p-1">
+    <div className="flex flex-wrap gap-1.5 rounded-xl border border-sand bg-surface-card p-1">
       {items.map((r) => (
         <Link
           key={r.id}

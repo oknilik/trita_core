@@ -227,7 +227,7 @@ export function DealDetail({
                     }
                   }}
                   aria-label="Stage váltása"
-                  className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-sm text-ink"
+                  className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
                 >
                   {OPEN_DEAL_STAGES.map((stage) => (
                     <option key={stage} value={stage}>
@@ -274,7 +274,7 @@ export function DealDetail({
                 disabled={busy}
                 onChange={(event) => setReopenStage(event.target.value)}
                 aria-label="Újranyitás stage-e"
-                className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-sm text-ink"
+                className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
               >
                 {OPEN_DEAL_STAGES.map((stage) => (
                   <option key={stage} value={stage}>
@@ -344,7 +344,7 @@ export function DealDetail({
                 value={details.title}
                 onChange={(event) => setDetails({ ...details, title: event.target.value })}
                 maxLength={200}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
               />
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -355,7 +355,7 @@ export function DealDetail({
                   value={details.contactName}
                   onChange={(event) => setDetails({ ...details, contactName: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -364,7 +364,7 @@ export function DealDetail({
                   type="email"
                   value={details.contactEmail}
                   onChange={(event) => setDetails({ ...details, contactEmail: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -375,7 +375,7 @@ export function DealDetail({
                   onChange={(event) => setDetails({ ...details, contactPhone: event.target.value })}
                   maxLength={50}
                   placeholder="+36 …"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -385,7 +385,7 @@ export function DealDetail({
                   value={details.company}
                   onChange={(event) => setDetails({ ...details, company: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -393,7 +393,7 @@ export function DealDetail({
                 <select
                   value={details.source}
                   onChange={(event) => setDetails({ ...details, source: event.target.value })}
-                  className="min-h-[44px] rounded-lg border border-sand bg-white px-2 text-sm text-ink"
+                  className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
                 >
                   {DEAL_SOURCES.map((source) => (
                     <option key={source} value={source}>
@@ -410,7 +410,7 @@ export function DealDetail({
                   step={50_000}
                   value={details.expectedValue}
                   onChange={(event) => setDetails({ ...details, expectedValue: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
                 />
               </label>
             </div>
@@ -453,7 +453,7 @@ export function DealDetail({
               value={outcomeKind}
               onChange={(event) => setOutcomeKind(event.target.value)}
               data-testid="crm-close-outcome-kind"
-              className="min-h-[44px] rounded-lg border border-sand bg-white px-2 text-sm text-ink"
+              className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
             >
               <option value="">Válassz…</option>
               {OUTCOME_KINDS.map((kind) => (
@@ -471,7 +471,7 @@ export function DealDetail({
               rows={3}
               maxLength={2000}
               placeholder="Mit tanultunk ebből az ügyből?"
-              className="w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
+              className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
           </label>
           {closeError && (

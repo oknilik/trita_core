@@ -41,7 +41,7 @@ export function HollandContent() {
           {RIASEC_CONTENT.map((entry) => (
             <div
               key={entry.letter}
-              className="rounded-2xl border border-sand bg-white p-6"
+              className="rounded-2xl border border-sand bg-surface-card p-6"
               style={{ borderTopWidth: 3, borderTopColor: entry.color }}
             >
               <div className="flex items-center gap-3">
@@ -89,7 +89,7 @@ export function HollandContent() {
 
       {/* Hogyan olvasd a kódot */}
       <section className="px-7 pb-10">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-sand bg-white p-6 md:p-8">
+        <div className="mx-auto max-w-5xl rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
           <h2 className="font-fraunces text-xl text-ink">
             {isHu ? "Hogyan olvasd a kódodat?" : "How to read your code"}
           </h2>

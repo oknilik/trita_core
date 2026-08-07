@@ -162,7 +162,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
   }
 
   return (
-    <section className="rounded-xl border border-sand bg-white p-6">
+    <section className="rounded-xl border border-sand bg-surface-card p-6">
       <div className="mb-5 flex items-center justify-between">
         <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
           Szervezeti hozzáférések
@@ -257,7 +257,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             onChange={(e) =>
                               setPlanChoice((s) => ({ ...s, [org.id]: e.target.value }))
                             }
-                            className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                            className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-xs text-ink"
                             aria-label="Csomag"
                           >
                             {PLAN_OPTIONS.map((p) => (
@@ -274,7 +274,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 [org.id]: Number(e.target.value),
                               }))
                             }
-                            className="min-h-[40px] rounded-lg border border-sand bg-white px-2 text-xs text-ink"
+                            className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-2 text-xs text-ink"
                             aria-label="Időtartam"
                           >
                             {[1, 3, 6, 12].map((m) => (
@@ -295,7 +295,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             type="button"
                             disabled={state.loading}
                             onClick={() => callAction(org.id, "trial")}
-                            className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                            className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                           >
                             Trial
                           </button>
@@ -304,7 +304,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               type="button"
                               disabled={state.loading}
                               onClick={() => callAction(org.id, "deactivate")}
-                              className="min-h-[40px] rounded-lg border border-rose-200 bg-white px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
+                              className="min-h-[40px] rounded-lg border border-rose-200 bg-surface-card px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
                             >
                               Lezárás
                             </button>
@@ -343,7 +343,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             setConsultantEmail((s) => ({ ...s, [org.id]: e.target.value }))
                           }
                           placeholder="tanacsado@email.hu"
-                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-2.5 text-xs text-ink md:w-52 md:flex-none"
+                          className="min-h-[40px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-surface-card px-2.5 text-xs text-ink md:w-52 md:flex-none"
                         />
                         <button
                           type="button"
@@ -354,7 +354,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             callAction(org.id, "assign_consultant", { consultantEmail: email });
                             setConsultantEmail((s) => ({ ...s, [org.id]: "" }));
                           }}
-                          className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                          className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                         >
                           Hozzárendelés
                         </button>
@@ -439,7 +439,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                       onChange={(e) => onChange(e.target.value)}
                                       placeholder={field.placeholder}
                                       rows={2}
-                                      className="rounded-lg border border-sand bg-white px-3 py-2 text-xs text-ink outline-none transition focus:border-sage"
+                                      className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-xs text-ink outline-none transition focus:border-sage"
                                     />
                                   ) : (
                                     <input
@@ -447,7 +447,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                       value={value}
                                       onChange={(e) => onChange(e.target.value)}
                                       placeholder={field.placeholder}
-                                      className="min-h-[40px] rounded-lg border border-sand bg-white px-3 text-xs text-ink outline-none transition focus:border-sage"
+                                      className="min-h-[40px] rounded-lg border border-sand bg-surface-card px-3 text-xs text-ink outline-none transition focus:border-sage"
                                     />
                                   )}
                                 </label>

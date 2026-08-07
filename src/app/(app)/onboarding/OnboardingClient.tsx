@@ -212,7 +212,7 @@ export function OnboardingClient() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
+        <div className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
 
           <div className="flex flex-col gap-6">
               <div>

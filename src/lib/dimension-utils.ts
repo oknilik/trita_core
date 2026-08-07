@@ -48,7 +48,7 @@ export const tierColors = {
     tagBg: "bg-[var(--color-eval-low-bg)]",
     tagText: "text-[var(--color-eval-low-fg)]",
     border: "border-[var(--color-sand)]",
-    cardBg: "bg-white",
+    cardBg: "bg-surface-card",
     cardHover: "hover:bg-[var(--color-eval-low-bg)]",
   },
 } as const;

@@ -110,15 +110,15 @@ function EvidenceSummary({ evidence, loc }: EvidenceSummaryProps) {
         {t("teamComp.evidenceEyebrow", loc)}
       </p>
       <div className="mt-1.5 flex flex-wrap gap-1.5">
-        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-[11px] text-ink-body">
           {t("teamComp.evidenceSource", loc)}:{" "}
           <span className="font-semibold text-ink">{t(SOURCE_KEY[evidence.source], loc)}</span>
         </span>
-        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-[11px] text-ink-body">
           {t("teamComp.evidenceQuality", loc)}:{" "}
           <span className="font-semibold text-ink">{t(QUALITY_KEY[evidence.quality], loc)}</span>
         </span>
-        <span className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body">
+        <span className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-[11px] text-ink-body">
           {t("teamComp.evidenceConfidence", loc)}:{" "}
           <span className="font-semibold text-ink">{t(CONFIDENCE_KEY[evidence.confidence], loc)}</span>
         </span>
@@ -156,7 +156,7 @@ export function TeamIntelligence({
 
   return (
     <div className="flex flex-col gap-6 pt-2">
-      <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+      <section className="rounded-[24px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-dm-sans text-[14px] font-semibold text-ink">
             {isHu ? "Ki mit hoz a csapatba" : "Who brings what to the team"}
@@ -218,7 +218,7 @@ export function TeamIntelligence({
                   {topRoles.map((role) => (
                     <span
                       key={`${member.id}-${role.role}`}
-                      className="rounded-full border border-sand bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                      className="rounded-full border border-sand bg-surface-card px-2 py-0.5 text-[11px] text-ink-body"
                     >
                       {isHu ? TEAM_ROLES[role.role].hu : TEAM_ROLES[role.role].en}
                     </span>
@@ -229,7 +229,7 @@ export function TeamIntelligence({
                   {topDims.map(([dim, value]) => (
                     <span
                       key={`${member.id}-${dim}`}
-                      className="rounded-full bg-white px-2 py-0.5 text-[11px] text-ink-body"
+                      className="rounded-full bg-surface-card px-2 py-0.5 text-[11px] text-ink-body"
                     >
                       <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
                     </span>
@@ -249,7 +249,7 @@ export function TeamIntelligence({
         </div>
 
         {membersWithoutData.length > 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed border-sand bg-white p-3">
+          <div className="mt-3 rounded-xl border border-dashed border-sand bg-surface-card p-3">
             <p className="text-[12px] font-medium text-ink">
               {isHu ? "Még hiányzó adatok" : "Missing data members"}
             </p>
@@ -277,7 +277,7 @@ export function TeamIntelligence({
             {noDataCtaHref && noDataCtaLabel ? (
               <Link
                 href={noDataCtaHref}
-                className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                className="mt-3 inline-flex min-h-[36px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
               >
                 {noDataCtaLabel}
               </Link>
@@ -285,7 +285,7 @@ export function TeamIntelligence({
           </div>
         ) : null}
 
-        <div className="mt-3 rounded-xl border border-sand bg-white p-3">
+        <div className="mt-3 rounded-xl border border-sand bg-surface-card p-3">
           <div className="mb-2 flex items-center justify-between gap-3">
             <p className="font-dm-sans text-caption font-semibold text-ink">
               {t("teamComp.subDynamics", loc)}
@@ -325,7 +325,7 @@ export function TeamIntelligence({
         </div>
       </section>
 
-      <section className="rounded-[24px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+      <section className="rounded-[24px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <div className="mb-3 flex items-center justify-between gap-3">
           <p className="font-dm-sans text-[14px] font-semibold text-ink">
             {isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
@@ -343,7 +343,7 @@ export function TeamIntelligence({
           <div className="mt-3">
             <Link
               href={deepDiveHref}
-              className="inline-flex min-h-[36px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+              className="inline-flex min-h-[36px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
             >
               {deepDiveLabel ?? (isHu ? "Részletes csapatszerep elemzés megnyitása" : "Open detailed team-role analysis")}
             </Link>

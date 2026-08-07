@@ -8,7 +8,7 @@ interface AdminStatCardProps {
 export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardProps) {
   return (
     <div
-      className="rounded-xl border border-sand bg-white p-6"
+      className="rounded-xl border border-sand bg-surface-card p-6"
       style={{ borderTopWidth: "3px", borderTopColor: "var(--color-sage)" }}
     >
       <p className="font-mono text-xs uppercase tracking-widest text-muted">

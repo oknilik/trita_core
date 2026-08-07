@@ -208,7 +208,7 @@ export default async function CampaignDetailPage({
       <div className="min-h-dvh bg-cream">
         <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-10 pb-20">
           <OrgSubscriptionBanner state="frozen" locale={locale} />
-          <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
             <p className="font-mono text-xs uppercase tracking-widest text-muted">
               {isHu ? "Mérés összegző" : "Measurement summary"}
             </p>
@@ -527,7 +527,7 @@ export default async function CampaignDetailPage({
 
         {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
         {showStepSection && totalCount > 0 && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {isHu ? "Mérés-lépések" : "Measurement steps"}
             </p>
@@ -586,7 +586,7 @@ export default async function CampaignDetailPage({
         {hasObserverStep && totalCount > 0 && (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {/* Self-assessment */}
-            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "var(--color-sage)" }}
@@ -610,7 +610,7 @@ export default async function CampaignDetailPage({
             </div>
 
             {/* Observer */}
-            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "var(--color-state-success-solid)" }}
@@ -634,7 +634,7 @@ export default async function CampaignDetailPage({
             </div>
 
             {/* Fully done */}
-            <div className="relative overflow-hidden rounded-2xl border border-sand bg-white p-5 shadow-sm">
+            <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
               <div
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "var(--color-layer-org-bright)" }}
@@ -661,7 +661,7 @@ export default async function CampaignDetailPage({
 
         {/* Pszich. biztonság: anonim csapatszintű összkép */}
         {hasPsychStep && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
               {t("org.campaign.psEyebrow", locale)}
             </p>
@@ -750,7 +750,7 @@ export default async function CampaignDetailPage({
           currentAvgScores &&
           previousAvgScores &&
           previousCampaignName && (
-            <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+            <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
               <SectionEyebrow className="mb-1">
                 {t("org.campaign.devArcEyebrow", locale)}
               </SectionEyebrow>
@@ -805,7 +805,7 @@ export default async function CampaignDetailPage({
           )}
 
         {/* Participants */}
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
           <SectionEyebrow className="mb-1">
             {t("org.campaign.participantsEyebrow", locale)}
           </SectionEyebrow>
@@ -917,7 +917,7 @@ export default async function CampaignDetailPage({
                 <p className="mt-1 text-xs text-ink-body">{manageGateCopy.description}</p>
                 <a
                   href={manageGateCopy.ctaHref}
-                  className="mt-3 inline-flex min-h-[36px] items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
+                  className="mt-3 inline-flex min-h-[36px] items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
                 >
                   {manageGateCopy.ctaLabel}
                 </a>
@@ -946,7 +946,7 @@ export default async function CampaignDetailPage({
             const totalItems = givers.reduce((sum, g) => sum + g._count._all, 0);
             const atLeastThree = receivedCounts.filter((r) => r._count._all >= 3).length;
             return (
-              <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+              <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
                 <SectionEyebrow className="mb-1">
                   {t("org.campaign.peerFbStatsEyebrow", locale)}
                 </SectionEyebrow>
@@ -995,7 +995,7 @@ export default async function CampaignDetailPage({
 
         {/* Status transition */}
         {canManageCampaign && nextStatus && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
             </SectionEyebrow>
@@ -1029,7 +1029,7 @@ export default async function CampaignDetailPage({
 
         {/* Lezárt mérésnél nincs státusz-átmenet — a törlés külön kártyán */}
         {canManageCampaign && campaign.status === "CLOSED" && (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
             </SectionEyebrow>
@@ -1059,7 +1059,7 @@ export default async function CampaignDetailPage({
           </section>
         ) : null}
         {!canManageCampaign && isManagerRole && manageGateCopy ? (
-          <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+          <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
               {t("org.campaign.statusEyebrow", locale)}
             </SectionEyebrow>

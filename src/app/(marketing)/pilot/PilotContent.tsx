@@ -92,7 +92,7 @@ export function PilotContent() {
                 </a>
                 <a
                   href="#mit-kapsz"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl border border-sand bg-white px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
                 >
                   {t("pilot.heroCtaSecondary", locale)}
                 </a>
@@ -105,7 +105,7 @@ export function PilotContent() {
               </div>
             </div>
 
-            <aside className="overflow-hidden rounded-[24px] border border-sand bg-white shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
+            <aside className="overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
               <div className="border-b border-sand bg-warm px-6 py-6">
                 <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
                   {t("pilot.asideEyebrow", locale)}
@@ -205,7 +205,7 @@ export function PilotContent() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-sand bg-white p-6 shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:p-8">
+          <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:p-8">
             {status === "sent" ? (
               <div className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center">
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
@@ -239,7 +239,7 @@ export function PilotContent() {
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         placeholder={t("pilot.placeholderName", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                       />
                     </FormField>
 
@@ -250,7 +250,7 @@ export function PilotContent() {
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         placeholder={t("pilot.placeholderEmail", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                       />
                     </FormField>
                   </div>
@@ -262,7 +262,7 @@ export function PilotContent() {
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
                       placeholder={t("pilot.placeholderCompany", locale)}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     />
                   </FormField>
 
@@ -270,7 +270,7 @@ export function PilotContent() {
                     <select
                       value={form.size}
                       onChange={(e) => setForm({ ...form, size: e.target.value })}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     >
                       <option value="">{t("pilot.sizeOption0", locale)}</option>
                       <option value="5-10">{t("pilot.sizeOption1", locale)}</option>
@@ -287,7 +287,7 @@ export function PilotContent() {
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       rows={4}
                       placeholder={t("pilot.placeholderQuestion", locale)}
-                      className="w-full resize-none rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full resize-none rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     />
                   </FormField>
 
@@ -354,7 +354,7 @@ function EditorialSection({
 
 function MetaChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-white px-3 py-1.5 text-sm text-ink-body">
+    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-sm text-ink-body">
       {children}
     </span>
   );
@@ -382,7 +382,7 @@ function FormField({
 
 function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {
   return (
-    <article className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
+    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
       <div className="mb-4 flex items-center gap-3">
         <span className="font-dm-sans text-xs font-semibold uppercase tracking-widest text-bronze/70">
           {number}
@@ -397,7 +397,7 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
 
 function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
   return (
-    <article className="grid gap-5 rounded-[24px] border border-sand bg-white p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
+    <article className="grid gap-5 rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-bronze/10 font-fraunces text-2xl text-bronze">
         {step}
       </div>

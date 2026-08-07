@@ -408,7 +408,7 @@ export function CandidateClient({
                 return (
                   <div
                     key={step.title}
-                    className="flex items-start gap-2.5 rounded-[10px] border border-sand bg-white p-3 px-3.5"
+                    className="flex items-start gap-2.5 rounded-[10px] border border-sand bg-surface-card p-3 px-3.5"
                   >
                     <div
                       className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${tileClass}`}
@@ -559,7 +559,7 @@ export function CandidateClient({
               className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
                 autoAdvance
                   ? "border-accent-candidate bg-accent-candidate"
-                  : "border-warm-dark bg-white"
+                  : "border-warm-dark bg-surface-card"
               }`}
             >
               {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
@@ -610,7 +610,7 @@ export function CandidateClient({
             className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
               !canGoPrev
                 ? "cursor-not-allowed bg-sand/70 text-muted"
-                : "border border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
+                : "border border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
             }`}
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}

@@ -408,7 +408,7 @@ export function CampaignWizard({
                       ? "border-dashed border-sand bg-cream/40 opacity-70"
                       : isSelected
                       ? "border-sage bg-sage/5"
-                      : "border-sand bg-white hover:border-sage/50",
+                      : "border-sand bg-surface-card hover:border-sage/50",
                   ].join(" ")}
                 >
                   <label
@@ -553,7 +553,7 @@ export function CampaignWizard({
                         "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
                         stepIntervalHours === opt.value
                           ? "border-ink bg-ink text-white"
-                          : "border-sand bg-white text-ink-body hover:border-ink/40",
+                          : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                       ].join(" ")}
                     >
                       {t(opt.key, locale)}
@@ -666,7 +666,7 @@ export function CampaignWizard({
                       key={team.id}
                       className={[
                         "flex cursor-pointer items-center justify-between gap-3 rounded-[12px] border px-3.5 py-2.5 transition",
-                        checked ? "border-sage bg-sage/5" : "border-sand bg-white hover:bg-cream",
+                        checked ? "border-sage bg-sage/5" : "border-sand bg-surface-card hover:bg-cream",
                       ].join(" ")}
                     >
                       <span className="flex items-center gap-3">
@@ -782,7 +782,7 @@ export function CampaignWizard({
                   {selectedMembers.map((m) => (
                     <span
                       key={m.userId}
-                      className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-[12px] text-ink-body"
+                      className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-[12px] text-ink-body"
                     >
                       {m.displayName}
                     </span>

@@ -14,7 +14,7 @@ import {
 } from "@/lib/campaign-steps-core";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
-const CARD = "rounded-[22px] border border-sand bg-white p-5 shadow-sm md:p-6";
+const CARD = "rounded-[22px] border border-sand bg-surface-card p-5 shadow-sm md:p-6";
 
 const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string }> = {
   self: { hu: "Önfelmérés", en: "Self-assessment" },
@@ -99,7 +99,7 @@ export function MemberDossierView({
               <Link
                 key={t.id}
                 href={`/team/${t.id}`}
-                className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
+                className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
               >
                 {t.name}
               </Link>

@@ -144,7 +144,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
               return (
                 <div
                   key={p.teamId}
-                  className="flex flex-col justify-between gap-3 rounded-2xl border border-sand bg-white p-5 shadow-sm sm:flex-row sm:items-center"
+                  className="flex flex-col justify-between gap-3 rounded-2xl border border-sand bg-surface-card p-5 shadow-sm sm:flex-row sm:items-center"
                 >
                   <div>
                     <p className="font-semibold text-ink">{team?.name}</p>
@@ -219,7 +219,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
       </div>
 
       {/* ── Hogyan működik a negyedéves konzultáció ──────── */}
-      <div className="mb-10 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      <div className="mb-10 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
         <h2 className="mb-6 font-fraunces text-xl text-ink">
           {t("advisory.howItWorks", locale)}
         </h2>
@@ -259,7 +259,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
 
       {/* ── CTA — tanácsadói konzultáció ──────────────────── */}
       {isAdvisory && !requestSent && (
-        <div className="mb-10 rounded-2xl border border-sage/20 bg-white p-8 text-center shadow-sm">
+        <div className="mb-10 rounded-2xl border border-sage/20 bg-surface-card p-8 text-center shadow-sm">
           <SectionEyebrow className="mb-2">
             {t("advisory.ctaAdvisoryEyebrow", locale)}
           </SectionEyebrow>
@@ -282,7 +282,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
       )}
 
       {isAdvisory && requestSent && (
-        <div className="mb-10 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+        <div className="mb-10 rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
           <p className="mb-3 font-fraunces text-3xl text-bronze">✦</p>
           <h2 className="mb-2 font-fraunces text-2xl text-ink">
             {t("advisory.requestReceived", locale)}
@@ -295,7 +295,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
 
       {/* ── CTA — upgrade ────────────────────────────────── */}
       {isUpgrade && (
-        <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-white p-8 shadow-sm">
+        <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-surface-card p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">
             <div>
               <SectionEyebrow className="mb-1">advisory</SectionEyebrow>
@@ -373,7 +373,7 @@ function ConsultationFeature({
   example?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
       <div className="mb-2 flex items-baseline gap-2">
         <span className="font-mono text-sm text-bronze/50">{number}</span>
         <h3 className="font-semibold text-ink">{title}</h3>
@@ -388,7 +388,7 @@ function ConsultationFeature({
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   return (
-    <details className="group rounded-xl border border-sand bg-white">
+    <details className="group rounded-xl border border-sand bg-surface-card">
       <summary className="flex cursor-pointer list-none items-center gap-3 px-5 py-4 text-sm font-semibold text-ink transition-colors hover:text-bronze">
         <span className="shrink-0 font-mono text-bronze/50 transition-transform group-open:rotate-90">
           ›

@@ -156,7 +156,7 @@ export function Picker({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
+              className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
             />
           </div>
         )}

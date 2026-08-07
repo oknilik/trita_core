@@ -20,7 +20,7 @@ export function AdminTableSection({
   const total = rows.reduce((sum, row) => sum + row.value, 0);
 
   return (
-    <div className="rounded-xl border border-sand bg-white p-6">
+    <div className="rounded-xl border border-sand bg-surface-card p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="font-mono text-xs uppercase tracking-widest text-muted">

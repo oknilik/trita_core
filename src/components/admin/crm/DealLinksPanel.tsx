@@ -82,7 +82,7 @@ export function DealLinksPanel({
               }
             }}
             aria-label="Szervezet hozzákötése"
-            className="mt-1 min-h-[44px] w-full rounded-lg border border-sand bg-white px-2 text-sm text-ink-body"
+            className="mt-1 min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink-body"
           >
             <option value="">Org hozzákötése…</option>
             {orgs.map((org) => (

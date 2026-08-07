@@ -161,11 +161,11 @@ export function TeamFeedbackRequests({
 
   const targets = members.filter((m) => m.userId !== meId);
   const textareaClass =
-    "w-full rounded-lg border border-sand bg-white p-3 text-sm text-ink outline-none focus:border-sage-ring";
+    "w-full rounded-lg border border-sand bg-surface-card p-3 text-sm text-ink outline-none focus:border-sage-ring";
   const judgy = hasJudgmentTone(continueText) || hasJudgmentTone(tryText) || hasJudgmentTone(comment);
 
   return (
-    <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
       <SectionEyebrow className="mb-1">
         {t("team.fb.eyebrow", locale)}
       </SectionEyebrow>
@@ -263,7 +263,7 @@ export function TeamFeedbackRequests({
           onChange={(e) => setTopic(e.target.value)}
           maxLength={200}
           placeholder={t("team.fb.topicPlaceholder", locale)}
-          className="mb-2.5 min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-sage-ring"
+          className="mb-2.5 min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-sage-ring"
         />
         <div className="mb-2.5 flex flex-wrap gap-1.5">
           {targets.map((m) => (
@@ -274,7 +274,7 @@ export function TeamFeedbackRequests({
               className={`rounded-full border px-3 py-1.5 text-xs transition ${
                 audience.has(m.userId)
                   ? "border-sage bg-sage text-white"
-                  : "border-sand bg-white text-ink-body hover:border-sage-ring"
+                  : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
               }`}
             >
               {m.displayName}

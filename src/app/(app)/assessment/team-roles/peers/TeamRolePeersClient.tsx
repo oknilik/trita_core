@@ -186,7 +186,7 @@ export function TeamRolePeersClient({
         </p>
       </div>
 
-      <div className="mt-4 flex items-center gap-3 rounded-2xl border border-sand bg-white px-5 py-4">
+      <div className="mt-4 flex items-center gap-3 rounded-2xl border border-sand bg-surface-card px-5 py-4">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage/15 font-fraunces text-lg text-sage">
           {current.name.slice(0, 1).toUpperCase()}
         </div>

@@ -122,7 +122,7 @@ export function QuickLogForm({
               className={`min-h-[40px] rounded-full border px-3.5 text-sm transition ${
                 active
                   ? "border-sage bg-sage-soft font-semibold text-ink"
-                  : "border-sand bg-white text-muted hover:border-bronze-edge hover:text-ink-body"
+                  : "border-sand bg-surface-card text-muted hover:border-bronze-edge hover:text-ink-body"
               }`}
             >
               {ACTIVITY_KIND_LABELS[item]}
@@ -141,7 +141,7 @@ export function QuickLogForm({
           aria-label="Összefoglaló"
           maxLength={300}
           data-testid="quick-log-summary"
-          className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+          className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
         />
         <Button
           type="submit"
@@ -173,7 +173,7 @@ export function QuickLogForm({
               maxLength={4000}
               placeholder="Hosszabb jegyzet, megállapodások, kontextus…"
               data-testid="quick-log-body"
-              className="w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
+              className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
             />
           </label>
 
@@ -184,7 +184,7 @@ export function QuickLogForm({
               value={occurredOn}
               onChange={(event) => setOccurredOn(event.target.value)}
               aria-label="Visszadátumozás"
-              className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+              className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
             />
             <span className="text-xs text-muted">Üresen hagyva: most.</span>
           </label>
@@ -198,7 +198,7 @@ export function QuickLogForm({
                 onChange={(event) => setNextDate(event.target.value)}
                 aria-label="Következő lépés dátuma"
                 data-testid="quick-log-next-date"
-                className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
               />
               <input
                 type="text"
@@ -208,7 +208,7 @@ export function QuickLogForm({
                 placeholder="Mi a következő lépés? (pl. ajánlat-follow-up hívás)"
                 aria-label="Következő lépés jegyzete"
                 data-testid="quick-log-next-note"
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
               />
             </div>
             <p className="mt-1.5 text-xs text-muted">

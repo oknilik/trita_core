@@ -111,7 +111,7 @@ export function TeamRoleQuestionnaire({
 
   if (showIntro) {
     return (
-      <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
+      <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-surface-card p-6 md:p-10">
         <SectionEyebrow>
           {t("teamRole.eyebrow", resolvedLocale)}
         </SectionEyebrow>
@@ -158,7 +158,7 @@ export function TeamRoleQuestionnaire({
       : orderedItems.filter((item) => selected.has(item.id));
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-white p-6 md:p-10">
+    <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-surface-card p-6 md:p-10">
       {/* Fejléc + állapot */}
       <div>
         <SectionEyebrow>
@@ -226,7 +226,7 @@ export function TeamRoleQuestionnaire({
                   ? "border-bronze bg-bronze/10 font-semibold text-ink"
                   : active
                     ? "border-sage bg-sage/10 font-medium text-ink"
-                    : "border-sand bg-white text-ink-body hover:border-sage/40"
+                    : "border-sand bg-surface-card text-ink-body hover:border-sage/40"
               }`}
             >
               {phase === "highlight" && (

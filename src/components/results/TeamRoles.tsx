@@ -150,7 +150,7 @@ export function TeamRoles({
               className={`flex cursor-pointer flex-col rounded-xl transition-all hover:-translate-y-0.5 hover:shadow-md ${
                 isPrimary
                   ? "border-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] p-[22px]"
-                  : "border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]"
+                  : "border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px]"
               }`}
             >
               {/* Badge */}
@@ -191,7 +191,7 @@ export function TeamRoles({
 
       {/* ── „A csapatod így lát" — kampányból érkező társ-visszajelzés ── */}
       {peer && peer.raterCount > 0 ? (
-        <div className="mt-6 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white p-5">
+        <div className="mt-6 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-5">
           <div className="flex flex-wrap items-center gap-2">
             <p className="text-caption font-semibold text-[var(--color-text-primary)]">
               {t("results.teamRolePeerTitle", locale)}

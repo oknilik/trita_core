@@ -347,7 +347,7 @@ export default async function CandidateResultPage({
                     "inline-flex min-h-[44px] items-center rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
                     isSelected
                       ? "border-accent-candidate bg-accent-candidate text-white"
-                      : "border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate",
+                      : "border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate",
                   ].join(" ")}
                 >
                   {team.name}
@@ -655,7 +655,7 @@ export default async function CandidateResultPage({
                     className={`flex flex-col rounded-xl p-[18px] ${
                       isPrimary
                         ? "border-2 border-sage bg-sage-soft"
-                        : "border border-sand bg-white"
+                        : "border border-sand bg-surface-card"
                     }`}
                   >
                     <span

@@ -102,7 +102,7 @@ function OptionCard({
       className={`flex min-h-[64px] min-w-[150px] flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition sm:min-w-[170px] ${
         active
           ? "border-sage bg-sage/10 shadow-sm"
-          : "border-[var(--color-border-soft)] bg-white hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
+          : "border-[var(--color-border-soft)] bg-surface-card hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
       }`}
       style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
     >
@@ -166,7 +166,7 @@ function RiasecProfiler({
   ];
 
   return (
-    <div className="rounded-[12px] border border-sage/40 bg-white p-4">
+    <div className="rounded-[12px] border border-sage/40 bg-surface-card p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {tf("results.ccRiasecProgress", locale, {
@@ -205,7 +205,7 @@ function RiasecProfiler({
             className={`flex h-11 flex-1 items-center justify-center rounded-xl border-2 text-sm font-semibold transition ${
               picked === value
                 ? "border-sage bg-sage text-white"
-                : "border-[var(--color-border-soft)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50"
+                : "border-[var(--color-border-soft)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50"
             }`}
             style={picked === value ? { animation: "cc-pop 0.25s ease-out" } : undefined}
           >
@@ -247,7 +247,7 @@ function Chip({
       className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition ${
         active
           ? "border-sage bg-sage text-white"
-          : "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
+          : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
       }`}
       style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
     >
@@ -590,7 +590,7 @@ export function CareerCompass({
   );
 
   return (
-    <div className="rounded-[14px] border border-[var(--color-border-soft)] bg-white p-5">
+    <div className="rounded-[14px] border border-[var(--color-border-soft)] bg-surface-card p-5">
       {/* Forrás-badge */}
       <div className="mb-3 flex justify-end">
         <span className="rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-1 text-micro text-[var(--color-text-muted)]">
@@ -608,7 +608,7 @@ export function CareerCompass({
           {/* Hero — mit ígér a modul és mit nem */}
           <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-white to-[var(--color-surface-subtle)] p-5 sm:p-6">
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl shadow-sm ring-1 ring-sage/30"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-card text-2xl shadow-sm ring-1 ring-sage/30"
               aria-hidden
             >
               🧭
@@ -978,7 +978,7 @@ export function CareerCompass({
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
                       ? "bg-sage text-white shadow-sm"
-                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
+                      : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
@@ -1015,7 +1015,7 @@ export function CareerCompass({
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
                       ? "bg-sage text-white shadow-sm"
-                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
+                      : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
@@ -1084,7 +1084,7 @@ export function CareerCompass({
               <button
                 type="button"
                 onClick={() => fetchFit(background, prefs, leadIntent)}
-                className="mt-2 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-[12px] font-semibold text-rose-700"
+                className="mt-2 rounded-lg border border-rose-300 bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-rose-700"
               >
                 {t("results.cfRetry", locale)}
               </button>
@@ -1152,7 +1152,7 @@ export function CareerCompass({
                       <button
                         type="button"
                         onClick={onRequestObserver}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-white px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-surface-card px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10"
                       >
                         {t("results.ccObserverRefineCta", locale)}
                       </button>
@@ -1201,13 +1201,13 @@ export function CareerCompass({
                   onChange={(e) => setMissingText(e.target.value)}
                   maxLength={200}
                   placeholder={t("results.industryFitMissingPlaceholder", locale)}
-                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
+                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
                 />
                 <button
                   type="button"
                   disabled={missingState === "busy" || !missingText.trim()}
                   onClick={sendMissing}
-                  className="min-h-[36px] rounded-lg border border-sage/50 bg-white px-3.5 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
+                  className="min-h-[36px] rounded-lg border border-sage/50 bg-surface-card px-3.5 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
                 >
                   {t("results.industryFitMissingSend", locale)}
                 </button>

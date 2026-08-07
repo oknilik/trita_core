@@ -100,7 +100,7 @@ function Distribution({
   total: number;
 }) {
   return (
-    <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
       <h2 className="font-fraunces text-lg text-ink">{title}</h2>
       <ul className="mt-3 flex flex-col gap-1.5">
         {rows.map((row) => (
@@ -156,7 +156,7 @@ export default async function CareerFakeDoorReportPage() {
         </div>
       </header>
 
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <h2 className="font-fraunces text-lg text-ink">Közönség szerint</h2>
         <p className="mt-1 text-xs text-muted">
           A tanácsadói válasz más terméket értékel (ügyfélnek venné, nem
@@ -178,7 +178,7 @@ export default async function CareerFakeDoorReportPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <h2 className="font-fraunces text-lg text-ink">Ársávok</h2>
         <p className="mt-1 text-xs text-muted">
           A sáv munkamenetenként sorsolódik, és visszatéréskor sem változik.
@@ -224,7 +224,7 @@ export default async function CareerFakeDoorReportPage() {
           összeg az. A csúszka mindig a LÁTOTT árról indul, ezért a „hányad
           része" oszlop az, ami az ársávok között összemérhető. */}
       {report.willingness.count > 0 && (
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">
             Mennyit adnának érte — akiknek drága ({report.willingness.count})
           </h2>
@@ -295,7 +295,7 @@ export default async function CareerFakeDoorReportPage() {
       )}
 
       {report.otherTexts.length > 0 && (
-        <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">
             Szabad szöveges válaszok ({report.otherTexts.length})
           </h2>

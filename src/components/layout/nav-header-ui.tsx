@@ -385,7 +385,7 @@ function NavHeaderContent({
   // logó + „Vissza a vezérlőre" link.
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
         <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5 lg:px-8">
           <Link
             href={homeHref}
@@ -484,7 +484,7 @@ function NavHeaderContent({
           <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
         </div>
 
-        <div className="mt-1 rounded-xl bg-white px-2 py-2">
+        <div className="mt-1 rounded-xl bg-surface-card px-2 py-2">
           {showProfileMenuItem ? (
             <>
               <Link
@@ -645,7 +645,7 @@ function NavHeaderContent({
     <>
       {openDropdown && <div className="fixed inset-0 z-30" onClick={closeAll} />}
 
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto grid h-14 max-w-6xl grid-cols-[auto_1fr_auto] items-center px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8">
           <Link
             href={homeHref}
@@ -749,7 +749,7 @@ function NavHeaderContent({
                 type="button"
                 onClick={() => toggle("user")}
                 data-testid="nav-user-menu-trigger"
-                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
+                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
               >
                 {showIdentityLoader ? (
                   <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
@@ -1017,7 +1017,7 @@ function NavHeaderContent({
                             signOut({ redirectUrl: "/" });
                             setMobileMenu("closed");
                           }}
-                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                         >
                           Kijelentkezés
                         </button>

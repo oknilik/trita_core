@@ -384,7 +384,7 @@ beleolvadt a kártyába, és kiderült, hogy a `state-warning-bg` **a világos
 témában is** alig válik el a fehér kártyától (1.037) — ez utóbbi meglévő
 adósságként nyilvántartásba került, nem írtuk át csendben a világos témát.
 
-### 10.4 Ami még hátravan
+### 10.5 Ami még hátravan
 
 | Tétel | Miért nem most |
 |---|---|
@@ -393,3 +393,47 @@ adósságként nyilvántartásba került, nem írtuk át csendben a világos té
 | **Marketing-fa átnézése** | A hatókör-döntés miatt a landing/blog/founding is sötétre vált — ezt végig kell nézni. |
 | **Képi CI-baseline** | A `visual-regression` TODO továbbra is nyitott; most már két témára kellene. |
 | **8 világos kontraszt-adósság + 1 felület-adósság** | Nyilvántartva, racsnival védve. Javításuk vizuális változás — külön döntés. |
+
+
+### 10.4 A hatókör visszavétele — és az utolsó mérföld (2026-08-07, 2. kör)
+
+A 10.1-ben leírt CSS-akadály miatt a sötét mód először **globális** lett. A
+futó appon lefotózva kiderült, hogy ennek ára van: a **marketing-fa törött**
+volt sötéten — a wordmark eltűnt, a minta-kártya hero-ja világos zöld lett
+fehér szöveggel, a chipek olvashatatlanok.
+
+Ezért visszavettük az app-fás hatókört. Az akadály megkerülhető, csak
+drágábban: a scope-elemen **mindkét réteget** deklarálni kell (120
+`--palette-*` + 198 `--color-*` alias). Ez generált, és **kétirányú őr**
+tartja szinkronban (`check-colors` (d)): ha a `@theme`-be új token kerül és a
+sötét blokkból kimarad, sötéten a világos értékén ragadna; ha fordítva, akkor
+világosban lenne feloldatlan. Az őr azonnal fogott is 8 hiányzó tokent, amit a
+generálásom kihagyott (sorvégi kommentes deklarációk), és egy saját hibámat,
+ahol egy tokent a rossz blokkba szúrtam be.
+
+**Az utolsó mérföld: 542 témázhatatlan osztály.** A hatókör helyes volt, de a
+felületek fele mégsem fordult át — mert `bg-white`-ot használtak, ami a
+Tailwind BEÉPÍTETT fehérje, nem a mi tokenünk. Migrálva:
+
+| Mit | Mennyi |
+|---|---|
+| `bg-white` → `bg-surface-card` | 539 hely, 173 fájlban |
+| `bg-[rgba(250,249,246,0.95)]` (fejléc) → `--color-surface-header` | 6 hely, 4 fájlban |
+| self hero-gradiens → saját `layer-self-hero-*` tokenek | 2 hely |
+
+Az **áttetsző** fehérek (`bg-white/15`, `bg-white/[0.06]` — 109 hely) és a
+színezetek (`bg-[rgba(26,92,58,0.08)]` — 10 hely) **szándékosan maradtak**:
+azok fátylak sötét herón, nem felületek. A `check-colors` (e) ellenőrzése
+ugyanezt a határt húzza meg — az átlátszatlan felület hiba, az áttetsző réteg
+nem.
+
+A self hero azért kapott saját tokeneket, mert eddig az akcent-tokenekből
+kölcsönzött (`accent-self-strong/deep/deeper`), amiket sötéten világosra
+kellett vinni — ettől a sötét hero világos zöld lett fehér szöveggel. A többi
+réteg (team/org/candidate) már eleve saját hero-tokent használt.
+
+**Bizonyítás.** A világos mód a teljes migráció után is **pixelre azonos**: a
+futó appon (`/try`, `/`, `/pricing`) teljes lapos képernyőkép a migráció előtt
+és után — 0 eltérő pixel mindhárom oldalon, 7,1 millióból. A hatókör
+ellenőrizve: sötét sütivel a landing `body`-ja `rgb(247,244,239)` és nincs
+rajta `.theme-scope`; a `/try` `.theme-scope`-ja `rgb(20,20,24)`.

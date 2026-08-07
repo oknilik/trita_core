@@ -421,7 +421,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   })();
                 }}
                 className={`block border-b border-[var(--color-border-default)]/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[var(--color-surface-subtle)] ${rowFocusCls} ${
-                  !item.read ? "bg-white" : ""
+                  !item.read ? "bg-surface-card" : ""
                 }`}
               >
                 {content}
@@ -433,7 +433,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                 data-notif-id={item.id}
                 tabIndex={-1}
                 className={`border-b border-[var(--color-border-default)]/50 px-4 py-3 last:border-b-0 ${rowFocusCls} ${
-                  !item.read ? "bg-white" : ""
+                  !item.read ? "bg-surface-card" : ""
                 }`}
               >
                 {content}

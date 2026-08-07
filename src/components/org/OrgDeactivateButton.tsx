@@ -43,7 +43,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
       <button
         type="button"
         onClick={() => setConfirm(true)}
-        className="min-h-[44px] rounded-lg border border-rose-300 bg-white px-5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
+        className="min-h-[44px] rounded-lg border border-rose-300 bg-surface-card px-5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
       >
         {t("org.actions.deactivateButton", loc)}
       </button>

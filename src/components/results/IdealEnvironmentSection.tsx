@@ -86,7 +86,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
           return (
             <div
               key={item.label}
-              className="flex flex-col gap-2 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
+              className="flex flex-col gap-2 rounded-[10px] border border-[var(--color-border-soft)] bg-surface-card px-4 py-3 sm:flex-row sm:items-center sm:gap-4"
             >
               <span className="text-xs font-medium text-[var(--color-text-primary)] sm:w-[130px] sm:shrink-0">
                 {item.label}

@@ -55,7 +55,7 @@ export function OrgTeamsTab({
       ) : null}
 
       {isManager && canCreateTeam && createOpen && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
           <h3 className="mb-4 text-sm font-semibold text-ink">
             {t("org.teams.newTitle", loc)}
           </h3>
@@ -76,7 +76,7 @@ export function OrgTeamsTab({
             <Link
               key={team.id}
               href={`/team/${team.id}`}
-              className="group flex items-center justify-between rounded-xl border border-sand bg-white p-4 shadow-sm transition-all hover:border-sage/30 hover:bg-cream"
+              className="group flex items-center justify-between rounded-xl border border-sand bg-surface-card p-4 shadow-sm transition-all hover:border-sage/30 hover:bg-cream"
             >
               <div>
                 <p className="font-semibold text-ink transition-colors group-hover:text-bronze">
@@ -96,7 +96,7 @@ export function OrgTeamsTab({
       )}
 
       {isManager && !canCreateTeam && actionGateCopy && (
-        <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+        <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
           <SectionEyebrow className="mb-1">
             {t("org.teams.newEyebrow", loc)}
           </SectionEyebrow>
@@ -110,7 +110,7 @@ export function OrgTeamsTab({
             </span>
             <a
               href={actionGateCopy.ctaHref}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
               {actionGateCopy.ctaLabel}
             </a>

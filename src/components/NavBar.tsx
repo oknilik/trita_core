@@ -185,7 +185,7 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
           {/* ═══ LOGO ═══ */}
@@ -220,7 +220,7 @@ export function NavBar({
                 {/* Sign in — desktop only */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-surface-card px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
                 >
                   {t("nav.signIn", locale)}
                 </Link>
@@ -272,7 +272,7 @@ export function NavBar({
             <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
-              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-white px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               {signedInHint.ctaLabel}
             </Link>
@@ -306,7 +306,7 @@ export function NavBar({
               <Link
                 href="/sign-out"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 {t("nav.signOut", locale)}
               </Link>
@@ -318,7 +318,7 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 {t("nav.signIn", locale)}
               </Link>

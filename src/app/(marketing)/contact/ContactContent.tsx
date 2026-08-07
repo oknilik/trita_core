@@ -37,7 +37,7 @@ export function ContactContent() {
             </a>
             <a
               href="mailto:hello@trita.io"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-white px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
             >
               hello@trita.io
             </a>
@@ -68,7 +68,7 @@ export function ContactContent() {
 
           {/* Right: form + cards */}
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_24px_60px_rgba(26,26,46,0.04)] md:p-8">
+            <div className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_24px_60px_rgba(26,26,46,0.04)] md:p-8">
               <ContactForm locale={locale} />
             </div>
 
@@ -99,7 +99,7 @@ export function ContactContent() {
 
 function MetaChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-white px-3 py-1.5 text-sm text-ink-body">
+    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-sm text-ink-body">
       {children}
     </span>
   );
@@ -117,7 +117,7 @@ function InfoCard({
   tone?: "default" | "warm";
 }) {
   return (
-    <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-white"}`}>
+    <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-surface-card"}`}>
       <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-bronze/80">
         {number}
       </p>

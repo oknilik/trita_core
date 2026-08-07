@@ -19,7 +19,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           ${
             value === 'A'
               ? 'border-sage bg-sage-soft text-ink shadow-md'
-              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
+              : 'border-sand bg-surface-card text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -30,14 +30,14 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'A'
                 ? 'border-sage bg-sage'
-                : 'border-sand bg-white'
+                : 'border-sand bg-surface-card'
             }`}
           >
             {value === 'A' && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="h-2 w-2 rounded-full bg-white"
+                className="h-2 w-2 rounded-full bg-surface-card"
               />
             )}
           </div>
@@ -55,7 +55,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
           ${
             value === 'B'
               ? 'border-sage bg-[var(--color-sage-ghost)] text-ink shadow-md'
-              : 'border-sand bg-white text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
+              : 'border-sand bg-surface-card text-ink-body hover:border-warm-dark hover:bg-[#faf5ef]'
           }
         `}
         whileHover={{ scale: 1.01 }}
@@ -66,14 +66,14 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
             className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 transition-all ${
               value === 'B'
                 ? 'border-sage bg-sage'
-                : 'border-sand bg-white'
+                : 'border-sand bg-surface-card'
             }`}
           >
             {value === 'B' && (
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="h-2 w-2 rounded-full bg-white"
+                className="h-2 w-2 rounded-full bg-surface-card"
               />
             )}
           </div>

@@ -145,7 +145,7 @@ export function DealTimeline({
                 className={
                   isSystem
                     ? "rounded-lg border border-sand/60 bg-cream/50 px-3.5 py-2.5"
-                    : "rounded-xl border border-sand bg-white p-3.5"
+                    : "rounded-xl border border-sand bg-surface-card p-3.5"
                 }
               >
                 <div
@@ -176,7 +176,7 @@ export function DealTimeline({
                       onChange={(event) => setSummaryDraft(event.target.value)}
                       maxLength={300}
                       aria-label="Összefoglaló szerkesztése"
-                      className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                      className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                     />
                     <textarea
                       value={bodyDraft}
@@ -185,7 +185,7 @@ export function DealTimeline({
                       maxLength={4000}
                       placeholder="Törzs (opcionális)"
                       aria-label="Törzs szerkesztése"
-                      className="w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
+                      className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
                     />
                     <div className="flex gap-2">
                       <Button type="button" size="sm" loading={busy} onClick={() => void saveEdit(activity.id)}>

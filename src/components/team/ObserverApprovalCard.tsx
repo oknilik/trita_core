@@ -101,7 +101,7 @@ export function ObserverApprovalCard({
                   type="button"
                   disabled={decidingId !== null}
                   onClick={() => decide(a.id, "decline")}
-                  className="inline-flex min-h-[36px] items-center rounded-[10px] border border-sand bg-white px-4 text-[12px] font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
+                  className="inline-flex min-h-[36px] items-center rounded-[10px] border border-sand bg-surface-card px-4 text-[12px] font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
                 >
                   {isHu ? "Elutasítom" : "Decline"}
                 </button>

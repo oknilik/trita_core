@@ -46,7 +46,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
             <Reveal
               key={card.title}
               delay={i * 0.1}
-              className="rounded-2xl border border-[var(--color-border-default)] bg-white p-7 text-center"
+              className="rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-7 text-center"
             >
               <div className="mb-4 flex justify-center" style={{ color: accentColor }}>
                 <card.Icon className="h-8 w-8" />

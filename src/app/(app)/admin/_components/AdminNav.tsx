@@ -174,7 +174,7 @@ function Badge({ value, active }: { value: number; active: boolean }) {
   return (
     <span
       className={`ml-auto rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-        active ? "bg-white text-bronze" : "bg-amber-100 text-amber-700"
+        active ? "bg-surface-card text-bronze" : "bg-amber-100 text-amber-700"
       }`}
     >
       {value}
@@ -201,7 +201,7 @@ export function AdminNav({
         aria-label="Admin navigáció"
         className="lg:hidden -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex w-max gap-1.5 rounded-xl border border-sand bg-white p-1.5">
+        <div className="flex w-max gap-1.5 rounded-xl border border-sand bg-surface-card p-1.5">
           {flat.map((item) => {
             const isActive = active === item.id;
             return (
@@ -230,7 +230,7 @@ export function AdminNav({
         aria-label="Admin navigáció"
         className="hidden lg:block lg:sticky lg:top-20 lg:self-start"
       >
-        <div className="flex flex-col gap-4 rounded-2xl border border-sand bg-white p-3">
+        <div className="flex flex-col gap-4 rounded-2xl border border-sand bg-surface-card p-3">
           {groups.map((group, gi) => (
             <div key={group.label ?? gi}>
               {group.label ? (

@@ -114,7 +114,7 @@ function CandidateRow({
   }
 
   return (
-    <div className="rounded-2xl border border-sand bg-white px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.03)] transition-shadow hover:shadow-[0_12px_30px_rgba(26,26,46,0.06)]">
+    <div className="rounded-2xl border border-sand bg-surface-card px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.03)] transition-shadow hover:shadow-[0_12px_30px_rgba(26,26,46,0.06)]">
       <div className="flex items-start gap-3">
         <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-candidate-soft text-[11px] font-bold text-accent-candidate-strong">
           {initial}
@@ -176,7 +176,7 @@ function CandidateRow({
               className={`min-h-[36px] inline-flex items-center rounded-lg border px-3 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                 resendState === "sent"
                   ? "border-state-success-border bg-state-success-bg text-state-success-fg"
-                  : "border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
+                  : "border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
               }`}
             >
               {resendState === "loading"
@@ -311,7 +311,7 @@ export function HiringDashboard({
                 className={[
                   "rounded-[10px] px-5 text-[12px] font-semibold",
                   showForm
-                    ? "bg-white text-ink hover:bg-white/90 hover:text-ink"
+                    ? "bg-surface-card text-ink hover:bg-white/90 hover:text-ink"
                     : "bg-[var(--color-accent-candidate-primary)] text-[var(--color-layer-candidate-hero-to)] hover:bg-[var(--color-accent-candidate-primary)] hover:text-[var(--color-layer-candidate-hero-to)] hover:brightness-110",
                 ].join(" ")}
               >
@@ -542,7 +542,7 @@ export function HiringDashboard({
       {/* Üres állapot */}
       {invites.length === 0 && !showForm && (
         <EmptyState
-          className="border-dashed bg-white py-16"
+          className="border-dashed bg-surface-card py-16"
           title={t("hiring.noCandidatesTitle", locale)}
           description={t("hiring.noCandidatesDesc", locale)}
           cta={

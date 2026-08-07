@@ -189,7 +189,7 @@ export function ProgressBar({
   ];
 
   return (
-    <div className="overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-white">
+    <div className="overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card">
       {/* Header */}
       <button
         type="button"

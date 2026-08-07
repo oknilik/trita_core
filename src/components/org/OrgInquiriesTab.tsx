@@ -73,7 +73,7 @@ export function OrgInquiriesTab({
   }
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
       <SectionEyebrow>
         {isHu ? "kérdések" : "inquiries"}
       </SectionEyebrow>
@@ -104,7 +104,7 @@ export function OrgInquiriesTab({
               <div
                 key={row.id}
                 className={`rounded-xl border p-4 ${
-                  row.status === "NEW" ? "border-amber-200 bg-amber-50/40" : "border-sand bg-white"
+                  row.status === "NEW" ? "border-amber-200 bg-amber-50/40" : "border-sand bg-surface-card"
                 }`}
               >
                 <div className="flex flex-wrap items-center gap-2">

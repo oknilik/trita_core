@@ -11,7 +11,7 @@ import { join } from "node:path";
 //
 // A `theme` paraméter azt választja meg, MELYIK értékkészlet érvényes: a
 // sötét téma ugyanazokat a --palette-* neveket írja felül egy
-// :root[data-theme="dark"] blokkban. Ha az még nem létezik, a
+// [data-theme="dark"] .theme-scope blokkban. Ha az még nem létezik, a
 // `hasTheme("dark")` hamis — a hívó teszt ilyenkor kihagyja magát.
 
 export type ThemeName = "light" | "dark";
@@ -22,9 +22,10 @@ const CSS = readFileSync(CSS_PATH, "utf8");
 /** A nyers fájl — a jelenlét-ellenőrzésekhez (nem érték-feloldáshoz). */
 export const RAW_CSS = CSS;
 
-// A sötét blokk a :root-on ül: csak ott számítódnak ki helyesen a
-// --color-* aliasok (a var() a deklaráló elemen helyettesítődik be).
-const DARK_SELECTOR = /:root\[data-theme="dark"\]\s*\{/;
+// A sötét blokk hatóköre az app-fa (.theme-scope): a marketing világos marad.
+// A blokk MINDKÉT réteget tartalmazza (--palette-* és --color-*), mert a
+// var() a deklaráló elemen helyettesítődik be.
+const DARK_SELECTOR = /\[data-theme="dark"\]\s+\.theme-scope\s*\{/;
 
 /** Egy `{`-tól a párját záró `}`-ig — beágyazott blokkokat is átugorva. */
 function blockEnd(source: string, open: number): number {

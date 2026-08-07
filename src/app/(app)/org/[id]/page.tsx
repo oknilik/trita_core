@@ -502,7 +502,7 @@ export default async function OrgDetailPage({
       {/* Élő pillanatkép mobilra/tabletre: a hero aside-ja csak lg-től
           renderel, így 1024px alatt sehol nem látszott az org-szintű és az
           aktív mérés kitöltöttsége. Ugyanaz a tartalom, világos témán. */}
-      <section className="rounded-2xl border border-sand bg-white p-4 shadow-sm lg:hidden">
+      <section className="rounded-2xl border border-sand bg-surface-card p-4 shadow-sm lg:hidden">
         <p className="text-micro uppercase tracking-widest text-muted">
           {t("orgHero.liveSnapshot", locale)}
         </p>

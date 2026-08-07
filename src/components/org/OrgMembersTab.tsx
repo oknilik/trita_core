@@ -208,7 +208,7 @@ export function OrgMembersTab({
             </span>
             <a
               href={actionGateCopy.ctaHref}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
             >
               {actionGateCopy.ctaLabel}
             </a>

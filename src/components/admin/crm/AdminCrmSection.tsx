@@ -55,7 +55,7 @@ export function AdminCrmSection({
       <div
         role="tablist"
         aria-label="CRM nézetek"
-        className="flex w-max max-w-full gap-1.5 overflow-x-auto rounded-xl border border-sand bg-white p-1.5"
+        className="flex w-max max-w-full gap-1.5 overflow-x-auto rounded-xl border border-sand bg-surface-card p-1.5"
       >
         {tabs.map((tab) => {
           const active = view === tab.id;
@@ -74,7 +74,7 @@ export function AdminCrmSection({
               {tab.count !== undefined && tab.count > 0 && (
                 <span
                   className={`rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-                    active ? "bg-white text-bronze" : "bg-state-warning-bg text-state-warning-fg"
+                    active ? "bg-surface-card text-bronze" : "bg-state-warning-bg text-state-warning-fg"
                   }`}
                 >
                   {tab.count}

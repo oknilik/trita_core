@@ -83,7 +83,7 @@ export default async function SharedProfilePage({
   if (!result) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
-        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center md:p-10">
           <SectionEyebrow variant="clean" tone="muted" className="mb-3">
             {t("content.shareExpiredEyebrow", locale)}
           </SectionEyebrow>
@@ -217,7 +217,7 @@ export default async function SharedProfilePage({
         </div>
 
         {/* Dimension strip */}
-        <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white">
+        <div className="w-full overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-surface-card">
           {/* Mobil-first: 2 oszlop 320-767px között (a 6 oszlopos strip cellái
               ott ~40px szélesek lennének, a címke/pontszám/badge átfolyna a
               szomszédba), md:-től marad az eredeti 6 oszlopos sáv. A cellák
@@ -230,7 +230,7 @@ export default async function SharedProfilePage({
               return (
                 <div
                   key={dim.code}
-                  className="min-w-0 bg-white px-2.5 py-4 text-center"
+                  className="min-w-0 bg-surface-card px-2.5 py-4 text-center"
                 >
                   <p className="mb-1.5 break-words text-micro text-[var(--color-text-muted)]">
                     <span className="md:hidden">{dim.label}</span>
@@ -310,7 +310,7 @@ export default async function SharedProfilePage({
                     className={`flex flex-col rounded-xl ${
                       isPrimary
                         ? "border-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] p-[22px]"
-                        : "border-[1.5px] border-[var(--color-border-default)] bg-white p-[18px]"
+                        : "border-[1.5px] border-[var(--color-border-default)] bg-surface-card p-[18px]"
                     }`}
                   >
                     <span
@@ -337,7 +337,7 @@ export default async function SharedProfilePage({
         {/* Footer CTA — csak kijelentkezett látogatónak (bejelentkezett
             usernek nincs értelme a "készíts profilt" felhívásnak) */}
         {!userId && (
-          <div className="rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+          <div className="rounded-2xl border border-sand bg-surface-card p-8 text-center md:p-10">
             <p aria-hidden="true" className="text-3xl leading-none">
               🧭
             </p>

@@ -49,7 +49,7 @@ export default function OrgSuspendedPage() {
           </Link>
           <Link
             href="/org"
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-sand px-6 text-sm font-semibold text-ink-body transition hover:bg-white"
+            className="inline-flex min-h-[44px] items-center rounded-lg border border-sand px-6 text-sm font-semibold text-ink-body transition hover:bg-surface-card"
           >
             Szervezetek
           </Link>

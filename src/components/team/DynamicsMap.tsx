@@ -146,7 +146,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-sand bg-white p-4">
+    <div className="flex flex-col gap-3 rounded-xl border border-sand bg-surface-card p-4">
       <div className="flex items-center gap-3">
         <div
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-white text-[12px] font-bold"
@@ -282,7 +282,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
       <div className="min-w-0 flex-1 overflow-x-auto">
         <svg
           viewBox="0 0 360 360"
-          className="w-full min-w-[340px] rounded-xl border border-sand bg-white"
+          className="w-full min-w-[340px] rounded-xl border border-sand bg-surface-card"
         >
           {/* Edges */}
           {edges.map((e, i) => {
@@ -408,7 +408,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             loc={loc}
           />
         ) : (
-          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-white p-6 text-center">
+          <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-surface-card p-6 text-center">
             <p className="text-[12px] text-muted">
               {t("teamComp.clickPerson", loc)}
               <br />{t("teamComp.clickPersonConnections", loc)}

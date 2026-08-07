@@ -60,7 +60,7 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-sand bg-white p-6">
+    <div className="rounded-xl border border-sand bg-surface-card p-6">
       <div className="mb-4">
         <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{title}</h2>
         {description && <p className="mt-1 text-xs text-ink-body">{description}</p>}
@@ -136,7 +136,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       <AdminRangeFilter active={range} tab="analytics" />
 
       {!traffic.hasData && (
-        <div className="rounded-xl border border-bronze/40 bg-white p-6">
+        <div className="rounded-xl border border-bronze/40 bg-surface-card p-6">
           <p className="text-sm font-semibold text-ink">Még nincs mérési adat</p>
           <p className="mt-2 text-sm leading-relaxed text-ink-body">
             A rendszer él, de erre az időszakra nem érkezett esemény. Ellenőrizd, hogy az

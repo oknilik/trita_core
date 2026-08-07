@@ -64,7 +64,7 @@ export function CampaignDeleteButton({
               type="button"
               disabled={deleting}
               onClick={() => setConfirming(false)}
-              className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
             >
               {t("org.campaign.discardCancel", locale)}
             </button>
@@ -80,7 +80,7 @@ export function CampaignDeleteButton({
           <button
             type="button"
             onClick={() => setConfirming(true)}
-            className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+            className="min-h-[36px] rounded-lg border border-rose-200 bg-surface-card px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
           >
             {t("org.campaign.deleteCampaign", locale)}
           </button>

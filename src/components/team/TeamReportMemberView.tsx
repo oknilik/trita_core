@@ -342,7 +342,7 @@ export function TeamReportMemberView({
               {vm.tips.map((tip, i) => (
                 <li
                   key={i}
-                  className={`relative rounded-[12px] border border-sand border-l-4 bg-white py-3.5 pl-14 pr-4 text-sm leading-relaxed text-ink-body shadow-[0_4px_12px_rgba(26,26,46,0.03)] ${TIP_BORDERS[i] ?? TIP_BORDERS[0]}`}
+                  className={`relative rounded-[12px] border border-sand border-l-4 bg-surface-card py-3.5 pl-14 pr-4 text-sm leading-relaxed text-ink-body shadow-[0_4px_12px_rgba(26,26,46,0.03)] ${TIP_BORDERS[i] ?? TIP_BORDERS[0]}`}
                 >
                   <span
                     className={`absolute left-4 top-3 flex h-7 w-7 items-center justify-center rounded-full font-mono text-xs font-bold text-white ${TIP_ACCENTS[i] ?? TIP_ACCENTS[0]}`}
@@ -360,7 +360,7 @@ export function TeamReportMemberView({
       {/* Lábléc — módszertan + átláthatóság */}
       <DashboardPanel tone="cream" className="p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-body">
-          <span className="rounded-full bg-white px-2.5 py-1 font-mono text-[11px] text-muted ring-1 ring-sand">
+          <span className="rounded-full bg-surface-card px-2.5 py-1 font-mono text-[11px] text-muted ring-1 ring-sand">
             {isHu ? "min. 3 kitöltés" : "min. 3 responses"}
           </span>
           <span>

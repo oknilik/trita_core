@@ -235,7 +235,7 @@ export default function ProfilePage() {
     `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] outline-none transition-all md:text-caption ${
       touched && value !== "" && !valid
         ? "border-rose-300 bg-rose-50/50"
-        : "border-[var(--color-border-default)] bg-white focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+        : "border-[var(--color-border-default)] bg-surface-card focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
     } ${invalidFieldFlash === field ? "ring-2 ring-rose-300" : ""}`;
 
   const pillClass = (active: boolean) =>
@@ -282,7 +282,7 @@ export default function ProfilePage() {
           </div>
           <Link
             href="/profile/results"
-            className="mt-4 inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-default)] bg-white px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+            className="mt-4 inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
           >
             {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"}
           </Link>
@@ -306,7 +306,7 @@ export default function ProfilePage() {
                 const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
                 const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
                 return (
-                  <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-white p-4">
+                  <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-surface-card p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       {canOpenOrg ? (
                         <Link href={`/org/${m.orgId}`} className="text-caption font-semibold text-[var(--color-text-primary)] hover:underline">
@@ -427,14 +427,14 @@ export default function ProfilePage() {
             <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-state-error-border)] text-micro text-[var(--color-state-error-fg)]">!</div>
             <span className="text-xs font-semibold text-[var(--color-state-error-fg)]">{t("profile.sectionAccount", locale)}</span>
           </div>
-          <div className="bg-white p-[18px]">
+          <div className="bg-surface-card p-[18px]">
             {/* Sign out */}
             <div className="flex items-center justify-between gap-3">
               <div>
                 <p className="text-caption text-[var(--color-text-secondary)]">{t("profile.logoutTitle", locale)}</p>
                 <p className="text-micro text-[var(--color-text-muted)]">{t("profile.logoutSub", locale)}</p>
               </div>
-              <button type="button" onClick={() => { clearLocaleSyncFlag(); void signOut(); }} className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg border border-[var(--color-border-default)] bg-white px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
+              <button type="button" onClick={() => { clearLocaleSyncFlag(); void signOut(); }} className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg border border-[var(--color-border-default)] bg-surface-card px-[18px] py-[7px] text-xs text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]">
                 {t("profile.logoutButton", locale)}
               </button>
             </div>

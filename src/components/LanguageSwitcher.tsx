@@ -65,7 +65,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         <span className="font-semibold uppercase tracking-wide">{locale.toUpperCase()}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white py-1 shadow-lg shadow-black/[0.04]">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-surface-card py-1 shadow-lg shadow-black/[0.04]">
           {SUPPORTED_LOCALES.map((loc) => {
             const isActive = loc === locale;
             return (
