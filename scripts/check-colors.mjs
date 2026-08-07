@@ -110,7 +110,57 @@ for (const abs of walk(path.join(ROOT, "src"))) {
   });
 }
 
+// (c) Témázható alapréteg (2026-08). A @theme blokkban MINDEN --color-* token
+//     var() hivatkozás kell legyen. A Tailwind v4 az itt literálként megadott
+//     értéket BEÉGETI az utilitybe (.bg-sage { background-color: #3d6b5e }),
+//     és onnantól futásidőben nem felülírható — vagyis a token kiesik a
+//     témázásból. A nyers értékek helye a --palette-* réteg, egy sima :root
+//     blokkban a @theme felett.
+//     Vizsgálat: docs/development/dark-mode-feasibility-2026-08.md
+const themeLiterals = [];
+{
+  const cssPath = "src/app/globals.css";
+  const css = readFileSync(path.join(ROOT, cssPath), "utf8");
+  // Sorkezdő @theme at-rule — a fenti magyarázó komment is említi a nevet,
+  // sima indexOf azt találná meg előbb.
+  const themeAt = css.search(/^@theme\b/m);
+  if (themeAt === -1) {
+    themeLiterals.push(`${cssPath}  nincs @theme blokk`);
+  } else {
+    const open = css.indexOf("{", themeAt);
+    let depth = 0;
+    let i = open;
+    for (; i < css.length; i += 1) {
+      if (css[i] === "{") depth += 1;
+      else if (css[i] === "}") {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+    const firstLine = css.slice(0, open).split("\n").length;
+    css
+      .slice(open, i)
+      .split("\n")
+      .forEach((line, n) => {
+        const m = line.match(/(--color-[a-z0-9-]+):\s*(#[0-9a-fA-F]{3,8})\s*;/);
+        if (m) themeLiterals.push(`${cssPath}:${firstLine + n}  ${m[1]}: ${m[2]}`);
+      });
+  }
+}
+
 let failed = false;
+
+if (themeLiterals.length > 0) {
+  failed = true;
+  console.error(
+    "check-colors: literál hex a @theme blokkban — ezek a tokenek NEM témázhatók:\n",
+  );
+  for (const v of themeLiterals) console.error("  " + v);
+  console.error(
+    "\nA nyers érték helye a --palette-* réteg (sima :root a @theme felett), " +
+      "a @theme tokenje pedig hivatkozzon rá: --color-x: var(--palette-x).",
+  );
+}
 
 if (bannedViolations.length > 0) {
   failed = true;
@@ -141,5 +191,6 @@ if (rawHexCount > RAW_HEX_BUDGET) {
 if (failed) process.exit(1);
 
 console.log(
-  `check-colors OK — tiltólista tiszta, nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,
+  `check-colors OK — tiltólista tiszta, @theme témázható (0 literál), ` +
+    `nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,
 );

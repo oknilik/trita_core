@@ -23,25 +23,30 @@ const css = readFileSync(
   "utf8",
 );
 
-// A tokenek egy része var(--color-…) referenciával van definiálva —
-// a feloldáshoz beolvassuk az összes definíciót, és követjük a láncot.
+// A színek KÉT rétegben élnek (2026-08, témázható alapréteg):
+//   --palette-*  → a nyers értékek, sima :root-ban (ez a felülírható réteg),
+//   --color-*    → a @theme szerep-tokenek, amik ide hivatkoznak.
+// A feloldás ezért a TELJES változónevet kulcsolja, és bármelyik réteg
+// hivatkozását követi — így a lánc (--color-surface-canvas → --color-cream
+// → --palette-cream → #f7f4ef) a végén hexet ad.
 const DEFINITIONS = new Map<string, string>();
-for (const match of css.matchAll(/--color-([a-z0-9-]+):\s*([^;]+);/g)) {
+for (const match of css.matchAll(/(--[a-z0-9-]+):\s*([^;]+);/g)) {
   DEFINITIONS.set(match[1], match[2].trim());
 }
 
+/** `name` a teljes változónév, pl. `--color-sage`. */
 function resolveCssVar(name: string, depth = 0): string | null {
   if (depth > 8) return null;
   const value = DEFINITIONS.get(name);
   if (!value) return null;
-  const ref = value.match(/^var\(--color-([a-z0-9-]+)\)$/);
+  const ref = value.match(/^var\((--[a-z0-9-]+)\)$/);
   if (ref) return resolveCssVar(ref[1], depth + 1);
   const hex = value.match(/^#[0-9a-fA-F]{6}$/);
   return hex ? value.toLowerCase() : value;
 }
 
 function cssVar(name: string): string | null {
-  return resolveCssVar(name);
+  return resolveCssVar(`--color-${name}`);
 }
 
 function assertPair(tsValue: string, cssName: string, label: string) {

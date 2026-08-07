@@ -78,7 +78,13 @@ hivatkozások.
 
 ---
 
-## 4. A megoldás az 1. fázisra — igazolva
+## 4. A megoldás az 1. fázisra — MEGVALÓSÍTVA (2026-08-07)
+
+> **Állapot: kész, ezen a branchen.** 120 literál token átemelve a
+> `--palette-*` rétegbe. Ellenőrzés: type-check + lint + `check:colors`
+> tiszta, 560 unit + 120 client teszt zöld, és a generált CSS
+> **pixelre azonos** (ld. 4.1). Vizuálisan semmi nem változott.
+
 
 Egyetlen szerkezeti változtatás `globals.css`-ben: **a nyers paletta kikerül a
 `@theme`-ből egy sima `:root`-ba, a `@theme inline` pedig már csak hivatkozik
@@ -126,15 +132,53 @@ A prototípust lefordítottam. A kimenet:
 - világos módban a kimenet **bitre azonos** marad (ugyanaz az érték, csak egy
   indirekcióval), tehát ez a lépés **önmagában nem tud vizuálisan törni**.
 
-Ez a fázis kb. **fél-egy nap**, és a sötét készlet nélkül is szállítható.
+### 4.1 Hogyan igazoltuk, hogy nem tört el
 
-### Amit az 1. fázis érint még
+Négy egymást kiegészítő ellenőrzés futott:
 
-- `tests/unit/design/design-tokens-sync.test.ts` — a feloldó regexe ma csak
-  `--color-*` láncot követ (`/--color-([a-z0-9-]+):\s*([^;]+);/`). A
-  `--palette-*` réteget is követnie kell: egysoros bővítés.
-- `docs/development/ui-token-map.md` és `color-system-2026-08.md` — a
-  réteg-szerkezet átvezetése.
+1. **Feloldott CSS-érték összevetés.** A `main` és az átalakított
+   `globals.css` fordítása a valódi `src` fa ellen, majd minden generált
+   utility `var()` láncának visszafejtése literálig. Eredmény: **1 896
+   utility szabály mindkét oldalon, 0 hiányzó, 0 új, 0 megváltozott
+   feloldott érték.**
+2. **Pixel-összevetés.** Próbalap mind az **1 281 utility-osztállyal**
+   (`bg-*`, `text-*`, `border-*`, `ring-*`, gradiensek, árnyékok…), a két
+   stíluslappal rendereltetve, teljes lapos képernyőkép. Eredmény:
+   **0 eltérő pixel** 7,3 millióból. (Első futásra az `animate-pulse` és
+   `animate-spin` cellák eltértek — a két felvétel más animációs fázisban
+   készült; animáció-kikapcsolással a lap teljesen azonos.)
+3. **Teszt- és típus-ellenőrzés.** `pnpm check` (type-check + lint +
+   check:colors) tiszta, `pnpm test:unit` **560/560**, `pnpm test:client`
+   **120/120** zöld.
+4. **Az őr saját tesztje.** Az új `check-colors` (c) ellenőrzést szándékos
+   rontással próbáltam ki (egy token visszaírása literálra) — helyes
+   sorszámmal elbukik, visszaállítva zöld.
+
+**Az egyetlen valós különbség** az opacity-módosítós osztályok
+(`bg-bronze/10`, `bg-[var(--color-…)]/20` — 155 db) fallback-sora:
+
+| | Alap-deklaráció | `@supports (color-mix)` alatt |
+|---|---|---|
+| Előtte | `color-mix(in oklab, #c17f4a 10%, transparent)` | — |
+| Utána | `var(--palette-bronze)` (teljes fedés) | `color-mix(in oklab, var(--palette-bronze) 10%, transparent)` |
+
+`color-mix`-et támogató böngészőben a végeredmény **azonos** (a
+`color-mix(in oklab` előfordulások száma is változatlan: 250). Csak
+`color-mix` nélküli böngészőben térne el — de a generált CSS **mindkét
+változatban** használ `@property`-t és `color-mix`-et, vagyis az a böngésző
+eleve nem tudja megjeleníteni az oldalt. **A különbség a gyakorlatban
+elérhetetlen.**
+
+### Amit az 1. fázis még érintett
+
+- `tests/unit/design/design-tokens-sync.test.ts` — a feloldó a teljes
+  változónevet kulcsolja, és bármelyik réteg `var()` hivatkozását követi
+  (`--color-surface-canvas` → `--color-cream` → `--palette-cream` → hex).
+  10/10 zöld.
+- `scripts/check-colors.mjs` — **új (c) ellenőrzés**: literál hex a `@theme`
+  blokkban hard fail. Ez tartja meg az architektúrát a jövőben.
+- `docs/development/color-system-2026-08.md` — új 0/a. fejezet a
+  réteg-szerkezetről és az új token felvételének szabályáról.
 
 ---
 
@@ -231,7 +275,7 @@ sötét készlet. Így a paletta tervezése közben azonnal látszik, mi bukik.
 | | Mit jelent | Munka | Kockázat | Mikor |
 |---|---|---|---|---|
 | **A — Nem csinálunk** | Marad világos. A `color-scheme: light` szándékos döntés. | 0 | 0 | — |
-| **B — Csak alapréteg** | Az 1. fázis (témázható tokenek), sötét készlet nélkül. Vizuálisan nem változik semmi. | 0,5–1 nap | ~0 | **Most** |
+| **B — Csak alapréteg** | Az 1. fázis (témázható tokenek), sötét készlet nélkül. Vizuálisan nem változik semmi. | — | — | **✅ KÉSZ (2026-08-07)** |
 | **C — Rendszerkövetés az app-fán** | Sötét készlet a belépett felületekre; marketing + paper téma világos marad. Kapcsoló: rendszer/világos/sötét. | 3–4 hét | Közepes | Pilot után |
 | **D — Teljes felület** | Minden publikus oldal is, hero-gradiensek újratervezve. | 6–8 hét | Magas | 2027 |
 

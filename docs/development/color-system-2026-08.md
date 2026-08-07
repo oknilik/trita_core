@@ -9,6 +9,37 @@
 
 ---
 
+## 0/a. Rétegek — a témázható alapréteg (2026-08-07 kiegészítés)
+
+A szín-rendszer azóta **két rétegben** él a `globals.css`-ben. Ez nem
+átszínezés volt: az értékek változatlanok, csak a hely változott, hogy a
+paletta futásidőben felülírható legyen.
+
+```
+:root { --palette-*: #hex }     ← 1. NYERS réteg (sima :root, @theme-en KÍVÜL)
+        ↓ var()                    Az ÉRTÉKEK forrásigazsága. Ez a felülírható.
+@theme inline { --color-*: var(--palette-*) }   ← 2. SZEREP réteg
+        ↓                                          Ez nevezi meg a jelentést.
+.bg-sage { background-color: var(--palette-sage) }   ← generált utility
+```
+
+**Miért.** A Tailwind v4 az `@theme inline`-ban **literálként** megadott
+értéket beégeti az utilitybe (`.bg-sage { background-color: #3d6b5e }`), és
+onnantól futásidőben nem felülírható. A `var()` hivatkozást viszont
+megtartja. A nyers értékek kiemelésével mind a ~5 900 szín-használat
+témázhatóvá vált, komponens-módosítás nélkül.
+
+**Szabály új token felvételekor.** A nyers hex a `--palette-*` blokkba megy,
+a `@theme` tokenje pedig **csak hivatkozzon rá**. Ezt a
+`scripts/check-colors.mjs` (c) ellenőrzése kényszeríti ki — literál hex a
+`@theme`-ben hard fail. Szerep-tokent, ami másik szerep-tokenre mutat
+(`--color-surface-canvas: var(--color-cream)`), változatlanul így kell írni.
+
+Részletek és a sötét mód további lépései:
+`docs/development/dark-mode-feasibility-2026-08.md`.
+
+---
+
 ## 0. Vezetői összefoglaló
 
 **Leltár-számok (2026-08-05):**
