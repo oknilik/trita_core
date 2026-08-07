@@ -28,7 +28,7 @@ export function ObserverFlowStatusCard({
     return (
       <section className="rounded-2xl border border-sage-ring bg-sage-ghost p-6 md:p-8">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sage text-white">
+          <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)]">
             <svg viewBox="0 0 16 16" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8.5l3 3 7-7" />
             </svg>
@@ -46,7 +46,7 @@ export function ObserverFlowStatusCard({
               <button
                 type="button"
                 onClick={onOpenComparison}
-                className="mt-3 inline-flex min-h-[42px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className="mt-3 inline-flex min-h-[42px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
                 {isHu ? "Összevetés megnyitása →" : "Open comparison →"}
               </button>
@@ -181,7 +181,7 @@ export function ObserverFlowStrip({
       <button
         type="button"
         onClick={onOpenComparison}
-        className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sage-dark"
+        className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
       >
         {isHu
           ? `Külső visszajelzés megérkezett (${flow.receivedCount}) — összevetés →`

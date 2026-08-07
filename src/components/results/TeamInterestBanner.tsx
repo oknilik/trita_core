@@ -45,7 +45,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
     return (
       <DashboardPanel className="p-5">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-solid">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-fg">
             <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8.5l3 3 7-7" />
             </svg>
@@ -76,7 +76,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
         <button
           type="button"
           onClick={() => setPhase("expanded")}
-          className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+          className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
         >
           {t("results.teamInterestCta", locale)}
         </button>
@@ -95,13 +95,13 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
               className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-base text-ink md:text-sm"
             />
           </label>
-          {error && <p className="text-xs text-state-error-solid">{error}</p>}
+          {error && <p className="text-xs text-state-error-fg">{error}</p>}
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               disabled={busy}
               onClick={submit}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
               {busy
                 ? t("results.teamInterestSending", locale)

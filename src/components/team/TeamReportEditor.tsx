@@ -379,7 +379,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("publish")}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
               {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
             </button>
@@ -424,7 +424,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             type="button"
             disabled={busy}
             onClick={createDraft}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
           >
             {isHu ? "Riport-vázlat létrehozása" : "Create report draft"}
           </button>
@@ -548,7 +548,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     onClick={() =>
                       setActionItems((items) => items.filter((_, i) => i !== index))
                     }
-                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:text-state-error-solid"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:text-state-error-fg"
                   >
                     ✕
                   </button>
@@ -691,7 +691,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     type="button"
                     disabled={busy || translating}
                     onClick={() => saveTranslation(true)}
-                    className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                    className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
                   >
                     {isHu ? "Jóváhagyás és mentés" : "Approve and save"}
                   </button>
@@ -700,7 +700,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             ) : null}
           </div>
 
-          {error && <p className="text-xs text-state-error-solid">{error}</p>}
+          {error && <p className="text-xs text-state-error-fg">{error}</p>}
 
           <div className="flex flex-wrap gap-2 border-t border-sand pt-4">
             <button
@@ -723,7 +723,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("publish")}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
               {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
             </button>
@@ -731,7 +731,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => draft && deleteReport(draft)}
-              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-state-error-border bg-surface-card px-4 text-sm font-semibold text-state-error-solid transition hover:bg-state-error-bg disabled:opacity-50"
+              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-state-error-border bg-surface-card px-4 text-sm font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
             >
               {isHu ? "Vázlat törlése" : "Delete draft"}
             </button>
@@ -796,7 +796,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     e.stopPropagation();
                     deleteReport(r);
                   }}
-                  className="inline-flex min-h-[36px] items-center rounded-lg border border-state-error-border bg-surface-card px-2.5 text-xs font-semibold text-state-error-solid transition hover:bg-state-error-bg disabled:opacity-40"
+                  className="inline-flex min-h-[36px] items-center rounded-lg border border-state-error-border bg-surface-card px-2.5 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-40"
                 >
                   {isHu ? "Törlés" : "Delete"}
                 </button>

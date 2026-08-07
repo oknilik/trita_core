@@ -39,7 +39,6 @@ function pickMotif(slug: string, tags: string[]): Motif {
 }
 
 const SAGE = "var(--color-sage)";
-const SAGE_DARK = "var(--color-sage-dark)";
 const BRONZE = "var(--color-accent-primary)";
 const BRONZE_SOFT = "var(--color-accent-primary-soft)";
 
@@ -190,7 +189,11 @@ export function BlogArtVisual({
   const dark = variant === "featured";
   const bg =
     dark
-      ? `linear-gradient(135deg, var(--color-sage-deep), ${SAGE_DARK})`
+      // A kiemelt vizuál SZÁNDÉKOSAN sötét alap (fehér felirat ül rajta),
+      // ezért a réteg-hero tokenekből dolgozik: azok mindkét színsémán
+      // sötétek. A sage-deep/-dark sötét sémán VILÁGOSSÁ fordul, ott a
+      // fehér idézet olvashatatlan lett volna (UX-audit 2026-08-07).
+      ? "linear-gradient(135deg, var(--color-layer-self-hero-from), var(--color-layer-self-hero-to))"
       : hashString(seededKey) % 2 === 0
         ? "var(--color-surface-muted)"
         : "var(--color-surface-self-accent-soft)";

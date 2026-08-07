@@ -176,7 +176,7 @@ export function CrmInboxPanel({
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
                   <a
                     href={`mailto:${row.email}`}
-                    className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                    className="min-w-0 max-w-full break-all text-xs text-[var(--color-accent-primary-strong)] hover:underline"
                   >
                     {row.email}
                   </a>
@@ -353,7 +353,7 @@ export function CrmInboxPanel({
               />
             </label>
             <div className="rounded-xl border border-sand bg-cream/60 p-3">
-              <p className="text-label uppercase text-bronze">Első következő lépés</p>
+              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Első következő lépés</p>
               <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
                 <input
                   type="date"

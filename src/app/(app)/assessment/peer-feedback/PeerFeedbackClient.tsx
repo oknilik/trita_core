@@ -233,7 +233,7 @@ export function PeerFeedbackClient({
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {t("peerFb.backToDashboard", locale)}
           </Link>
@@ -260,7 +260,7 @@ export function PeerFeedbackClient({
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
-      <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+      <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {campaignName}
       </p>
       <h1 className="mt-1 font-fraunces text-2xl text-ink md:text-3xl">
@@ -327,7 +327,7 @@ export function PeerFeedbackClient({
                   // a sor magassága nem nő.
                   "relative h-2 rounded-full transition-all duration-200",
                   "before:absolute before:-inset-x-1.5 before:-inset-y-[18px] before:content-['']",
-                  isCurrent ? "w-5 bg-ink" : isDone ? "w-2 bg-sage" : "w-2 bg-sand",
+                  isCurrent ? "w-5 bg-[var(--color-surface-inverse)]" : isDone ? "w-2 bg-sage" : "w-2 bg-sand",
                 ].join(" ")}
               />
             );

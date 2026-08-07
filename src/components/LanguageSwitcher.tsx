@@ -29,7 +29,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
               loc === locale
-                ? "bg-[var(--color-action-primary-bg)] text-white"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
                 : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:bg-[var(--color-border-default)]",
             ].join(" ")}
           >

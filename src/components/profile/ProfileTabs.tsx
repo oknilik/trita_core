@@ -388,7 +388,7 @@ function ResultsTab({
           <button
             type="button"
             onClick={onOpenInvites}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
             {t("results.observerCtaButton", locale)}
           </button>
@@ -1004,7 +1004,7 @@ export function ProfileTabs({
               "flex min-h-[48px] flex-none shrink-0 snap-start items-center justify-center gap-1.5 whitespace-nowrap px-4 py-3 text-center text-xs font-medium transition-all md:flex-1 md:px-3",
               i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
               activeTab === tab.id
-                ? "bg-[var(--color-action-primary-bg)] text-white"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
                 : "bg-surface-card text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
             ].filter(Boolean).join(" ")}
           >
@@ -1191,7 +1191,7 @@ export function ProfileTabs({
                   : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
                 <Link
                   href={experienceHintDestination ?? "/profile/results"}
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
                 >
                   {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
                 </Link>
@@ -1207,7 +1207,7 @@ export function ProfileTabs({
                   : "Your self assessment is still in progress. Continue where you left off."}{" "}
                 <Link
                   href="/assessment"
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
                 >
                   {locale === "hu" ? "Folytatás" : "Continue"} →
                 </Link>

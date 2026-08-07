@@ -426,7 +426,7 @@ export function QuoteCalculator({
             <button
               type="button"
               onClick={() => setShowRates((open) => !open)}
-              className="inline-flex min-h-[44px] items-center text-sm text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
             >
               {showRates ? "Elrejtem" : "Szerkesztem"}
             </button>
@@ -784,7 +784,7 @@ export function QuoteCalculator({
                 setCopied(true);
                 window.setTimeout(() => setCopied(false), 2000);
               }}
-              className="inline-flex min-h-[44px] shrink-0 items-center text-xs text-bronze underline underline-offset-2"
+              className="inline-flex min-h-[44px] shrink-0 items-center text-xs text-[var(--color-accent-primary-strong)] underline underline-offset-2"
             >
               {copied ? "Másolva" : "Másolás"}
             </button>

@@ -15,7 +15,7 @@ export function DashboardSectionHeader({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className="h-px w-4 bg-bronze/70" />
-      <p className="text-micro font-semibold uppercase tracking-widest text-bronze/90">
+      <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {label}
       </p>
     </div>
@@ -155,7 +155,7 @@ export function DashboardActionCard({
 }) {
   return (
     <DashboardPanel tone={tone} className={cn("p-5", className)}>
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-bronze/80">
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {eyebrow}
       </p>
       <h2 className="mt-2 font-fraunces text-[24px] leading-none tracking-tight text-ink">
@@ -167,8 +167,8 @@ export function DashboardActionCard({
           href={cta.href}
           className={cn(
             "mt-4 inline-flex min-h-[42px] items-center rounded-[10px] px-4 py-2 text-[12px] font-semibold no-underline transition",
-            cta.tone === "solid" && "bg-[var(--color-accent-primary)] text-white hover:brightness-110",
-            cta.tone === "link" && "px-0 py-0 text-bronze hover:text-bronze-dark",
+            cta.tone === "solid" && "bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:brightness-110",
+            cta.tone === "link" && "px-0 py-0 text-[var(--color-accent-primary-strong)] hover:text-bronze-dark",
             (!cta.tone || cta.tone === "soft") &&
               "bg-sage-soft text-sage-dark hover:bg-[#dfeae5]",
           )}

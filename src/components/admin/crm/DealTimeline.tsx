@@ -158,7 +158,7 @@ export function DealTimeline({
                     className={
                       isSystem
                         ? "font-mono text-micro uppercase tracking-widest text-muted"
-                        : "text-label uppercase text-bronze"
+                        : "text-label uppercase text-[var(--color-accent-primary-strong)]"
                     }
                   >
                     {ACTIVITY_KIND_LABELS[activity.kind as ActivityKind] ?? activity.kind}
@@ -225,7 +225,7 @@ export function DealTimeline({
                             setBodyDraft(activity.body ?? "");
                             setConfirmDeleteId(null);
                           }}
-                          className="inline-flex min-h-[44px] items-center text-bronze underline underline-offset-2"
+                          className="inline-flex min-h-[44px] items-center text-[var(--color-accent-primary-strong)] underline underline-offset-2"
                         >
                           Szerkesztés
                         </button>

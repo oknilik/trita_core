@@ -119,7 +119,7 @@ export function AdminInquiriesSection({
                     <span className="text-sm font-semibold text-ink">{row.name}</span>
                     <a
                       href={`mailto:${row.email}`}
-                      className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                      className="min-w-0 max-w-full break-all text-xs text-[var(--color-accent-primary-strong)] hover:underline"
                     >
                       {row.email}
                     </a>

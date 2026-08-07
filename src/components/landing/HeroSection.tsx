@@ -239,13 +239,13 @@ function TeamPanel() {
         className="flex items-center justify-between gap-3 rounded-xl border border-bronze/20 bg-bronze/8 p-3.5 transition-colors hover:bg-bronze/15"
       >
         <div>
-          <p className="font-dm-sans text-micro uppercase tracking-wide text-bronze">
+          <p className="font-dm-sans text-micro uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
             {t("landing.teamPilotLabel", locale)}
           </p>
           <p className="text-caption font-semibold text-ink">{t("landing.teamPilotTitle", locale)}</p>
           <p className="text-[11px] text-muted">{t("landing.teamPilotDesc", locale)}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-white">
+        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-[var(--color-text-on-accent)]">
           {t("landing.teamPilotCta", locale)}
         </span>
       </Link>

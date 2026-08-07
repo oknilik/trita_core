@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  /* A <body> a marketing-fa alapja — mindig világos. A témázott felület
-     a .theme-scope, az fest saját alapot. */
+  /* A <body> alapja. A témázott felület a .theme-scope (mindkét fa
+     megkapja: (app) és (marketing) layout), az fest saját alapot. */
   --background: #f7f4ef;
   --foreground: #1a1a2e;
 }
@@ -34,7 +34,10 @@
   --palette-ink: #1a1a2e;
   --palette-ink-body: #4a4a5e;
   --palette-ink-warm: #7a756e;
-  --palette-muted: #6e6e80;
+  /* 2026-08-07: #6e6e80 → #6a6a7b. A régi érték a meleg felületeken
+     (cream-300, surface-muted) 4,29:1-et adott — épphogy AA alatt. A 2%-os
+     sötétítés minden felületen 4,5 fölé viszi, és szemmel nem látszik. */
+  --palette-muted: #6a6a7b;
   --palette-muted-warm: #7c786f;
   --palette-cream: #f7f4ef;
   --palette-sand: #e8e0d3;
@@ -102,6 +105,21 @@
   --palette-dim-o-base: #b4688a;
   --palette-dim-o-strong: #8e4263;
   --palette-dim-o-soft: #f9eef3;
+  /* Invertált felület: szándékosan SÖTÉT panel világos szöveggel (footer,
+     súgó-gomb, kiemelt chipek). Eddig az `ink`-et használtuk háttérként és a
+     `cream`-et szövegként — sötét módban ez MEGFORDULT, mert azok a tokenek
+     a szöveg/felület szerepüket követik. Az invertált felületnek saját
+     tokenre van szüksége, ami sötéten is sötét marad, csak megemelve. */
+  --palette-surface-inverse: #1a1a2e;
+  --palette-surface-inverse-soft: #4a4a5e;
+  --palette-text-on-inverse: #f7f4ef;
+  /* Akcent-háttéren ülő szöveg (bronz gomb, glow-sáv): az akcentek MINDKÉT
+     témában világosak, ezért ott sötét felirat kell — a fehér ma AA-bukó. */
+  --palette-text-on-accent: #1a1a2e;
+  /* Jelölt-akcent felirata. Külön token, mert a terrakotta MEGFORDUL a két
+     sémán (világosban mély barna, sötéten világos agyag), tehát a felirat
+     is fordul — a fix fehér sötéten 2,2:1 volt. */
+  --palette-text-on-candidate: #ffffff;
   --palette-layer-self-hero-from: #2a5244;
   --palette-layer-self-hero-mid: #1e3d34;
   --palette-layer-self-hero-to: #1a2e28;
@@ -134,6 +152,9 @@
   --palette-sage-300: #8ad0b4;
   --palette-paper-bg: #FAF7F2;
   --palette-paper-card: #F3EDE4;
+  /* Kiemelt (elevated) paper-lap: a paper-card FÖLÖTT ül — a mintakártyák
+     korábban literál `white`-ot kaptak, ami sötét sémán olvashatatlan volt. */
+  --palette-paper-elevated: #ffffff;
   --palette-paper-text: #2C2420;
   --palette-paper-muted: #5C4F45;
   --palette-paper-heading: #1a1410;
@@ -149,8 +170,9 @@
 }
 
 /* ─── Sötét készlet ─────────────────────────────────────────────────
-   HATÓKÖR: a `.theme-scope` elem (az (app) layout shellje). A marketing-fa
-   NEM kapja meg — ott a világos téma marad, szándékosan.
+   HATÓKÖR: a `.theme-scope` elem. Ezt MINDKÉT fa shellje felteszi — az
+   (app) és a (marketing) layout is —, tehát a landing/blog/árazás is
+   követi a színsémát.
 
    MIÉRT VAN ITT A --color-* RÉTEG IS, ha a fenti @theme már definiálja:
    a var() a DEKLARÁLÓ elemen helyettesítődik be. A :root-on kiszámított
@@ -170,6 +192,7 @@
   --palette-accent-candidate-mid: #c2764c;
   --palette-accent-candidate-primary: #e0a878;
   --palette-accent-candidate-soft: #33231a;
+  --palette-text-on-candidate: #2a1a12;
   --palette-accent-candidate-strong: #eeb493;
   --palette-accent-earth-strong: #d9a273;
   --palette-accent-primary-mid: #cf9660;
@@ -222,6 +245,10 @@
   --palette-layer-org-hero-mid: #22374d;
   --palette-layer-org-hero-to: #1a2a3b;
   --palette-layer-org-soft: #1a2634;
+  --palette-surface-inverse: #2b2b34;
+  --palette-surface-inverse-soft: #3b3b46;
+  --palette-text-on-inverse: #f3efe8;
+  --palette-text-on-accent: #17171c;
   --palette-layer-self-hero-from: #1f4a3c;
   --palette-layer-self-hero-mid: #163529;
   --palette-layer-self-hero-to: #102721;
@@ -284,6 +311,7 @@
   --ui-shadow-focus: 0 0 0 3px rgba(127, 191, 166, 0.35);
   --palette-paper-bg: #141210;
   --palette-paper-card: #1e1b17;
+  --palette-paper-elevated: #232019;
   --palette-paper-text: #eee8df;
   --palette-paper-muted: #b3a99b;
   --palette-paper-heading: #f5f0e8;
@@ -314,6 +342,11 @@
   --color-surface-canvas: var(--color-cream);
   --color-surface-card: var(--palette-surface-card);
   --color-surface-muted:  var(--color-warm);
+  --color-surface-inverse: var(--palette-surface-inverse);
+  --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
+  --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
@@ -458,6 +491,7 @@
   --color-sage-300: var(--palette-sage-300);
   --color-paper-bg: var(--palette-paper-bg);
   --color-paper-card: var(--palette-paper-card);
+  --color-paper-elevated: var(--palette-paper-elevated);
   --color-paper-text: var(--palette-paper-text);
   --color-paper-muted: var(--palette-paper-muted);
   --color-paper-heading: var(--palette-paper-heading);
@@ -494,7 +528,14 @@
   --color-accent-candidate-border: var(--palette-accent-candidate-border);
 }
 
-@theme inline {
+/* `static`: a Tailwind alapból KIGYOMLÁLJA azokat a @theme-változókat,
+   amelyekre egyetlen generált utility sem hivatkozik. A sötét blokkot
+   viszont kézzel írjuk — ott mind a 204 token szerepel. Enélkül egy
+   futásidőben összerakott `var(--color-…)` (inline style, SVG-attribútum)
+   VILÁGOSBAN üresen jönne vissza, sötéten pedig működne; 50 tokennél
+   pontosan ez történt (méréssel igazolva, ld. a színséma-doksit).
+   A `static` mindet kiírja, így a két séma szimmetrikus. */
+@theme static inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -547,6 +588,11 @@
   --color-surface-canvas: var(--color-cream);
   --color-surface-card: var(--palette-surface-card);
   --color-surface-muted:  var(--color-warm);
+  --color-surface-inverse: var(--palette-surface-inverse);
+  --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
+  --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-candidate: var(--palette-text-on-candidate);
   --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
@@ -743,6 +789,7 @@
   /* Paper marketing-téma (founding / patterns / career fakedoor közös) */
   --color-paper-bg: var(--palette-paper-bg);
   --color-paper-card: var(--palette-paper-card);
+  --color-paper-elevated: var(--palette-paper-elevated);
   --color-paper-text: var(--palette-paper-text);
   --color-paper-muted: var(--palette-paper-muted);
   --color-paper-heading: var(--palette-paper-heading);

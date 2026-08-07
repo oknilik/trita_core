@@ -57,7 +57,7 @@ function Pills<T extends string>({
           aria-current={active === r.id ? "true" : undefined}
           className={`inline-flex min-h-[40px] items-center rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
             active === r.id
-              ? "bg-ink text-white shadow-sm"
+              ? "bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] shadow-sm"
               : "text-muted hover:bg-cream hover:text-ink"
           }`}
         >

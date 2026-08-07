@@ -206,7 +206,7 @@ export function ProfileHero({
             onClick={onDownloadPdf}
             disabled={pdfLoading}
             variant="primary"
-            className="rounded-[9px] px-[18px] text-[11px] font-medium text-white transition-all duration-300 hover:brightness-110"
+            className="rounded-[9px] px-[18px] text-[11px] font-medium text-[var(--color-text-on-accent)] transition-all duration-300 hover:brightness-110"
             style={{ backgroundColor: selfTheme.primary }}
           >
             {pdfLoading ? (

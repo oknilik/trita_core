@@ -42,7 +42,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               className={[
                 "flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-body font-medium transition-all md:h-14 md:w-14",
                 isSelected
-                  ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/25"
+                  ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered
                     ? "border-[var(--color-accent-self)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
                     : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]",

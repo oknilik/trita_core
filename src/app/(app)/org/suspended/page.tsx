@@ -15,7 +15,7 @@ export default function OrgSuspendedPage() {
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-state-warning-bg">
             <svg
               viewBox="0 0 24 24"
-              className="h-8 w-8 text-state-warning-solid"
+              className="h-8 w-8 text-state-warning-fg"
               fill="none"
               stroke="currentColor"
               strokeWidth="2"
@@ -43,7 +43,7 @@ export default function OrgSuspendedPage() {
         <div className="flex flex-col gap-3 items-center">
           <Link
             href="/profile/results"
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
             Vissza az irányítópulthoz
           </Link>

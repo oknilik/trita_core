@@ -139,7 +139,7 @@ function CompareTable({
         <div className="bg-surface-card px-5 py-3 text-micro font-semibold uppercase tracking-wider text-[var(--color-text-secondary)]">
           {leftLabel}
         </div>
-        <div className="bg-[var(--color-text-primary)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
+        <div className="bg-[var(--color-surface-inverse)] px-5 py-3 text-micro font-semibold uppercase tracking-wider text-white/60">
           {rightLabel}
         </div>
       </div>
@@ -151,7 +151,7 @@ function CompareTable({
             </span>
             {left}
           </div>
-          <div className="bg-[var(--color-text-primary)] px-4 py-3 text-caption text-white/80 md:px-5">
+          <div className="bg-[var(--color-surface-inverse)] px-4 py-3 text-caption text-white/80 md:px-5">
             <span className="mb-1 block text-micro font-semibold uppercase tracking-wider text-white/60 md:hidden">
               {rightLabel}
             </span>
@@ -170,7 +170,7 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
     <div className="my-8 border-l-[2.5px] border-[var(--color-accent-primary)] py-1.5 pl-6">
       <p className="font-fraunces text-[22px] italic leading-[1.45] text-ink">{children}</p>
       {source && (
-        <span className="mt-2 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+        <span className="mt-2 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {source}
         </span>
       )}
@@ -180,7 +180,7 @@ function PullQuote({ children, source }: { children: React.ReactNode; source?: s
 
 function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu?: boolean }) {
   return (
-    <div className="my-8 rounded-[10px] bg-[var(--color-text-primary)] px-6 py-5">
+    <div className="my-8 rounded-[10px] bg-[var(--color-surface-inverse)] px-6 py-5">
       <SectionEyebrow as="div" tone="onDark" className="mb-2">
         {isHu ? "kulcsgondolat" : "key insight"}
       </SectionEyebrow>
@@ -377,7 +377,7 @@ export default async function BlogPostPage({
         <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
           <span
             aria-hidden
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-body text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] font-fraunces text-body text-[var(--color-action-primary-fg)]"
           >
             t
           </span>
@@ -426,7 +426,7 @@ export default async function BlogPostPage({
                 href={`/blog/${olderPost.slug}`}
                 className="rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("blog.prevArticle", locale)}
                 </span>
                 <span className="font-fraunces text-body leading-[1.3] text-ink">
@@ -441,7 +441,7 @@ export default async function BlogPostPage({
                 href={`/blog/${newerPost.slug}`}
                 className="rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary)]">
+                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
                 </span>
                 <span className="font-fraunces text-body leading-[1.3] text-ink">
@@ -457,7 +457,7 @@ export default async function BlogPostPage({
           <div className="mt-10 border-t border-[var(--color-border-default)] pt-7">
             <div className="mb-4 flex items-center gap-3">
               <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary)]">
+              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                 {t("blog.readNext", locale)}
               </span>
             </div>
@@ -494,7 +494,7 @@ export default async function BlogPostPage({
         )}
 
         {/* CTA block */}
-        <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+        <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
           <div className="flex-1 text-center sm:text-left">
             <p className="mb-1.5 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
               {t("blog.tryEyebrow", locale)}
@@ -508,7 +508,7 @@ export default async function BlogPostPage({
           </div>
           <Link
             href="/try"
-            className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-7 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-7 py-3.5 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
             {t("blog.tryCta", locale)}
           </Link>
@@ -533,7 +533,7 @@ export default async function BlogPostPage({
             </p>
             <Link
               href="/try"
-              className="inline-block rounded-lg bg-[var(--color-action-primary-bg)] px-4 py-2 text-caption font-semibold text-white transition-colors hover:bg-[var(--color-action-primary-bg-hover)]"
+              className="inline-block rounded-lg bg-[var(--color-action-primary-bg)] px-4 py-2 text-caption font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-[var(--color-action-primary-bg-hover)]"
             >
               {t("blog.tryCta", locale)}
             </Link>

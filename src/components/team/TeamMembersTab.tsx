@@ -88,7 +88,7 @@ export function TeamMembersTab({
               type="button"
               onClick={() => setAddOpen((v) => !v)}
               aria-expanded={addOpen}
-              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
             >
               <span aria-hidden>{addOpen ? "×" : "+"}</span>
               {t("teamComp.addMember", loc)}

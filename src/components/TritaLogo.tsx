@@ -19,7 +19,7 @@ export function TritaLogo({
         style={{ fontSize }}
         aria-label="trita"
       >
-        {"trit"}<span className="text-bronze">a</span>
+        {"trit"}<span className="text-[var(--color-accent-primary-strong)]">a</span>
       </span>
       {showText ? (
         <span

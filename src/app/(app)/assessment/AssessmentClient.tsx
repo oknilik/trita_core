@@ -607,7 +607,7 @@ export function AssessmentClient({
 
   if (showIntro) {
     const steps = [
-      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
+      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
       { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
       { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
     ]
@@ -638,7 +638,7 @@ export function AssessmentClient({
             <div>
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary)]">
+                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
@@ -657,7 +657,7 @@ export function AssessmentClient({
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -912,7 +912,7 @@ export function AssessmentClient({
             disabled={!canProceed}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               canProceed
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >
@@ -925,7 +925,7 @@ export function AssessmentClient({
             disabled={isSubmitting}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               !isSubmitting
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >

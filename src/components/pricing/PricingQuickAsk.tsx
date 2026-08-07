@@ -105,7 +105,7 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
           disabled={!canSend}
           className={`min-h-[48px] rounded-[10px] px-8 text-sm font-semibold transition-all ${
             canSend
-              ? "bg-[var(--color-accent-primary)] text-white hover:-translate-y-px hover:brightness-[1.06]"
+              ? "bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:-translate-y-px hover:brightness-[1.06]"
               : "cursor-not-allowed border border-white/25 bg-white/10 text-white/70"
           }`}
         >

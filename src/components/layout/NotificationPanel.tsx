@@ -20,8 +20,8 @@ const DISMISS_UNDO_MS = 5000;
 const CATEGORY_ICON_STYLES: Record<string, string> = {
   assessment: "bg-sage-ghost text-sage",
   observer:   "bg-sage-ghost text-sage",
-  org:        "bg-state-info-bg text-state-info-solid",
-  campaign:   "bg-state-success-bg text-state-success-solid",
+  org:        "bg-state-info-bg text-state-info-fg",
+  campaign:   "bg-state-success-bg text-state-success-fg",
   billing:    "bg-state-warning-bg text-state-warning-fg",
   system:     "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]",
 };
@@ -291,7 +291,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           <button
             type="button"
             onClick={() => void markAllRead()}
-            className="text-[11px] font-medium text-[var(--color-accent-primary)] transition-colors hover:underline"
+            className="text-[11px] font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:underline"
           >
             {t("notifications.markAllRead", loc)}
           </button>
@@ -335,7 +335,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                     type="button"
                     data-undo-for={item.id}
                     onClick={() => undoDismiss(item.id)}
-                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                   >
                     {t("notifications.undo", loc)}
                   </button>

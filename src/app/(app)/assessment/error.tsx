@@ -16,7 +16,7 @@ export default function AssessmentError({
         <p className="text-sm text-ink-body mb-6">{error.message}</p>
         <button
           onClick={reset}
-          className="min-h-[44px] rounded-xl bg-sage px-6 text-sm font-medium text-white hover:bg-sage-dark transition"
+          className="min-h-[44px] rounded-xl bg-sage px-6 text-sm font-medium text-[var(--color-action-primary-fg)] hover:bg-sage-dark transition"
         >
           Újrapróbálás
         </button>

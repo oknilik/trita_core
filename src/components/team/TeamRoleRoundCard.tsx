@@ -93,7 +93,7 @@ export function TeamRoleRoundCard({
           </p>
         </div>
         <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
-          <p className="font-fraunces text-[20px] leading-none text-bronze">{estimateCount}</p>
+          <p className="font-fraunces text-[20px] leading-none text-[var(--color-accent-primary-strong)]">{estimateCount}</p>
           <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "becslésből" : "estimated"}
           </p>
@@ -134,7 +134,7 @@ export function TeamRoleRoundCard({
             className={`min-h-[44px] rounded-lg px-5 text-[12px] font-semibold transition disabled:opacity-50 ${
               isRoundActive
                 ? "border border-sand bg-surface-card text-ink-body hover:border-state-error-border hover:text-state-error-fg"
-                : "bg-sage text-white hover:bg-sage-dark"
+                : "bg-sage text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
             }`}
           >
             {loading

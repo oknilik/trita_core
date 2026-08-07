@@ -50,9 +50,9 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
       : "var(--color-text-secondary)";
 
   const diversityColors = {
-    homogén: "text-state-success-solid",
-    vegyes:  "text-state-warning-solid",
-    diverz:  "text-state-error-solid",
+    homogén: "text-state-success-fg",
+    vegyes:  "text-state-warning-fg",
+    diverz:  "text-state-error-fg",
   };
 
   return (
@@ -239,7 +239,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </div>
             <a
               href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage hover:text-[var(--color-action-primary-fg)]"
             >
               {t("teamComp.explorePattern", loc)}
             </a>

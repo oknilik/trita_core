@@ -174,7 +174,9 @@ function Badge({ value, active }: { value: number; active: boolean }) {
   return (
     <span
       className={`ml-auto rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-        active ? "bg-surface-card text-bronze" : "bg-state-warning-bg text-state-warning-fg"
+        // bronze-dark, nem bronze: a 10 px-es szám a kártyalapon 2,9:1-et
+        // adott, a mélyebb árnyalat 4,9:1-re hozza (mindkét színsémán).
+        active ? "bg-surface-card text-bronze-dark" : "bg-state-warning-bg text-state-warning-fg"
       }`}
     >
       {value}
@@ -211,7 +213,7 @@ export function AdminNav({
                 aria-current={isActive ? "page" : undefined}
                 className={`flex min-h-[42px] snap-start items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-sm font-semibold transition ${
                   isActive
-                    ? "bg-bronze text-white shadow-sm"
+                    ? "bg-bronze text-[var(--color-text-on-accent)] shadow-sm"
                     : "text-muted hover:bg-cream hover:text-ink"
                 }`}
               >
@@ -248,7 +250,7 @@ export function AdminNav({
                       aria-current={isActive ? "page" : undefined}
                       className={`flex min-h-[40px] items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition ${
                         isActive
-                          ? "bg-bronze text-white shadow-sm"
+                          ? "bg-bronze text-[var(--color-text-on-accent)] shadow-sm"
                           : "text-ink-body hover:bg-cream hover:text-ink"
                       }`}
                     >

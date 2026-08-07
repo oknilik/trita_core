@@ -109,7 +109,7 @@ export function TeamRolePeersClient({
         <button
           type="button"
           onClick={() => setPhase("rating")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-white transition hover:brightness-110"
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("teamRolePeers.start", locale)}
         </button>
@@ -136,7 +136,7 @@ export function TeamRolePeersClient({
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("teamRolePeers.backToDashboard", locale)}
         </button>
@@ -161,7 +161,7 @@ export function TeamRolePeersClient({
               void submitOne(lastFailed.aboutUserId, lastFailed.selections);
             }
           }}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("teamRolePeers.retry", locale)}
         </button>

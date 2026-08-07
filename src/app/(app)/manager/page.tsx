@@ -198,7 +198,7 @@ export default async function ManagerCockpitPage() {
         actions={
           <Link
             href={`/team/${data.teams[0].teamId}`}
-            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
             style={{ backgroundColor: heroTheme.primary }}
           >
             {isSingleTeam

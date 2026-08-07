@@ -48,7 +48,7 @@ export default async function NewClientOrgPage() {
       <main className="mx-auto w-full max-w-xl px-4 pt-10 pb-20">
         <Link
           href="/dashboard"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
         >
           <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M10 3L5 8l5 5" />

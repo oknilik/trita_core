@@ -83,7 +83,7 @@ export default async function InteractionPage({
           </p>
           <a
             href="/assessment"
-            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
             {t("results.compareNeedResultCta", locale)}
           </a>

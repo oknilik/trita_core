@@ -160,7 +160,9 @@ export function TeamHeroBlock({
               <Link
                 href={`/team/${teamId}?tab=feedback`}
                 scroll={false}
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
+                // 2,7:1-et adott, ami AA alatt van mindkét színsémán.
+                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: teamHeroTheme.primary }}
               >
                 <svg
@@ -183,7 +185,7 @@ export function TeamHeroBlock({
               <Link
                 href={`/team/${teamId}?tab=profile`}
                 scroll={false}
-                className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: teamHeroTheme.primary }}
               >
                 {t("teamDetail.heroViewPattern", locale)}

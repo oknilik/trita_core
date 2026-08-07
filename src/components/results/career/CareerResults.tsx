@@ -213,7 +213,7 @@ function OccupationCard({
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className={`mt-2.5 text-[12px] font-semibold text-bronze transition-colors hover:text-ink ${TEXT_TAP_TARGET}`}
+        className={`mt-2.5 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-ink ${TEXT_TAP_TARGET}`}
       >
         {t("results.cfWhy", locale)} {open ? "▴" : "▾"}
       </button>
@@ -303,7 +303,7 @@ function OccupationCard({
                   <button
                     type="button"
                     onClick={() => sendFeedback("inaccurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-error-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-error-solid transition hover:bg-state-error-bg"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-error-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-error-fg transition hover:bg-state-error-bg"
                   >
                     👎 {t("results.industryFitFeedbackNo", locale)}
                   </button>
@@ -341,7 +341,7 @@ function ClusterCards({ cluster, hero }: { cluster: CareerFitView[]; hero: boole
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className={`self-start text-[12px] font-semibold text-bronze transition hover:text-ink ${TEXT_TAP_TARGET}`}
+          className={`self-start text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
         >
           {tf("results.cfClusterMore", locale, { count: hidden })} ▾
         </button>
@@ -392,7 +392,7 @@ function CareerSection({
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className={`text-[12px] font-semibold text-bronze transition hover:text-ink ${TEXT_TAP_TARGET}`}
+            className={`text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
           >
             {open ? `${t("results.ccLessOptions", locale)} ▴` : `${t("results.cfSectionShow", locale)} ▾`}
           </button>
@@ -462,7 +462,7 @@ export function CareerResults({
             <button
               type="button"
               onClick={onEditAnswers}
-              className={`text-[12px] font-semibold text-bronze transition hover:text-ink ${TEXT_TAP_TARGET}`}
+              className={`text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
             >
               {t("results.ccEditAnswers", locale)}
             </button>
@@ -498,7 +498,7 @@ export function CareerResults({
                   setConfirmReset(false);
                 }
               }}
-              className="min-h-[36px] rounded-lg bg-state-warning-fg px-3.5 text-[12px] font-semibold text-white transition hover:bg-bronze-700 disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-[var(--color-accent-primary)] px-3.5 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:bg-[var(--color-accent-primary-strong)] disabled:opacity-50"
             >
               {t(resetting ? "results.cfResetBusy" : "results.cfResetYes", locale)}
             </button>
@@ -605,7 +605,7 @@ export function CareerResults({
           <button
             type="button"
             onClick={onToggleScope}
-            className={`mt-1.5 text-[12px] font-semibold text-bronze transition hover:text-ink ${TEXT_TAP_TARGET}`}
+            className={`mt-1.5 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
           >
             {t(
               result.scope.ignored

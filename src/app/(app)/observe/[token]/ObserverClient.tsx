@@ -535,7 +535,7 @@ export function ObserverClient({
             <h1 className="text-2xl font-bold text-ink">
               👋 {t("observer.introWelcome", locale)}
             </h1>
-            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-white shadow-sm">
+            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-[var(--color-action-primary-fg)] shadow-sm">
               {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
             </div>
             <p className="mt-4 text-sm leading-relaxed text-ink-body">
@@ -600,7 +600,7 @@ export function ObserverClient({
             </div>
 
             {startAttempted && !canStart && (
-              <p className="mt-4 text-center text-xs text-state-warning-solid">
+              <p className="mt-4 text-center text-xs text-state-warning-fg">
                 {t("observer.selectBothFields", locale)}
               </p>
             )}
@@ -613,7 +613,7 @@ export function ObserverClient({
                 }
                 setPhase("assessment");
               }}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
             >
               {t("observer.start", locale)}
             </button>
@@ -662,7 +662,7 @@ export function ObserverClient({
                 </p>
                 <a
                   href="/profile/results"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
@@ -675,13 +675,13 @@ export function ObserverClient({
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
                   <a
                     href={`/sign-up?observeToken=${token}`}
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
                   >
                     {t("observer.signUpCta", locale)}
                   </a>
                   <a
                     href={`/sign-in?observeToken=${token}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-bronze transition hover:bg-sage-soft"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage-soft"
                   >
                     {t("observer.signInCta", locale)}
                   </a>
@@ -891,7 +891,7 @@ export function ObserverClient({
             disabled={isSubmitting}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               !isSubmitting && confidence !== null
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >
@@ -905,7 +905,7 @@ export function ObserverClient({
             aria-disabled={!canProceed || isSubmitting}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               canProceed && !isSubmitting
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >

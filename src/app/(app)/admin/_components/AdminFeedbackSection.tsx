@@ -157,7 +157,7 @@ export function AdminFeedbackSection({
                     <tr key={row.occupationId} className="border-b border-sand/60">
                       <td className="py-2 pr-4 text-ink">{row.label}</td>
                       <td className="py-2 pr-4 text-state-success-fg">{row.accurate}</td>
-                      <td className="py-2 pr-4 text-state-error-solid">{row.inaccurate}</td>
+                      <td className="py-2 pr-4 text-state-error-fg">{row.inaccurate}</td>
                       <td className={`py-2 pr-4 font-mono ${row.belowChance ? "font-semibold text-state-warning-fg" : "text-ink"}`}>
                         {accuracy}%
                         {row.belowChance && " ⚠"}

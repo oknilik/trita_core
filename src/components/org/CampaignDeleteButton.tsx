@@ -54,7 +54,7 @@ export function CampaignDeleteButton({
               type="button"
               disabled={deleting}
               onClick={remove}
-              className="min-h-[36px] rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-[var(--color-action-destructive-bg)] px-4 text-xs font-semibold text-[var(--color-action-destructive-fg)] transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:opacity-50"
             >
               {deleting
                 ? t("org.campaign.deleting", locale)

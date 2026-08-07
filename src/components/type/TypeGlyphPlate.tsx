@@ -243,7 +243,7 @@ export function TypeGlyphPlate({
             className="h-8 w-8 shrink-0 rounded-lg border border-[var(--color-border-soft)]"
           />
           <span className="flex min-w-0 flex-col">
-            <span className="font-mono text-micro uppercase tracking-widest text-bronze">
+            <span className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("results.glyphEyebrow", locale)}
             </span>
             <span className="truncate text-body text-ink">

@@ -2,7 +2,7 @@
 
 // Szín-guardrail (2026-08 szín-rendszer — docs/development/color-system-2026-08.md)
 //
-// Két ellenőrzés:
+// Ellenőrzések (a)–(g):
 //  (a) KIVEZETETT hexek tiltólistája — a migrációban megszüntetett színek
 //      (kevert dimenzió-paletták, státusz-kölcsönzések, destruktív-terrakotta,
 //      hideg slate/indigó ködök) nem szivároghatnak vissza. Hard fail.
@@ -187,6 +187,26 @@ const missingInDark = [];
   }
 }
 
+// (g) A @theme blokk `static`. A Tailwind v4 alapból KIGYOMLÁLJA azokat a
+//     @theme-változókat, amelyekre egyetlen generált utility sem hivatkozik —
+//     tehát a `--color-x` custom property ki sem kerül a :root-ba. A sötét
+//     blokkot viszont kézzel írjuk, ott MINDEN token szerepel. Enélkül egy
+//     futásidőben összerakott `var(--color-…)` (inline style, SVG-attribútum,
+//     template-literál gradiens) VILÁGOSBAN üresen jön vissza, SÖTÉTEN pedig
+//     működik — 2026-08-07-én 204-ből 50 token volt ilyen (böngészőben mérve).
+//     A `static` mindet kiírja; a (d) ellenőrzés csak ezzel együtt jelent
+//     tényleges szimmetriát a két séma között.
+const themeNotStatic = [];
+{
+  const cssPath = "src/app/globals.css";
+  const css = readFileSync(path.join(ROOT, cssPath), "utf8");
+  const m = css.match(/^@theme([^{]*)\{/m);
+  if (!m) themeNotStatic.push(`${cssPath}  nincs @theme blokk`);
+  else if (!/\bstatic\b/.test(m[1])) {
+    themeNotStatic.push(`${cssPath}  @theme${m[1].trimEnd()} — hiányzik a \`static\``);
+  }
+}
+
 // (e) Témázhatatlan felület-osztályok. A `bg-white` a Tailwind BEÉPÍTETT
 //     fehérje — nem a mi tokenünk, ezért kimarad a témázásból és sötéten
 //     fehér marad. Ugyanez a hardkódolt `bg-[rgba(...)]`.
@@ -196,6 +216,22 @@ const untokenizedSurfaces = [];
 {
   const PATTERNS = [
     [/\bbg-white\b(?!\/)/g, "bg-white → bg-surface-card"],
+    // A `-solid` a státusz GRAFIKAI változata (pötty, donut, él): a küszöbe
+    // 3:1. Szövegként 4,5:1 kellene, amit a success/warning/info nem hoz
+    // (3,77 / 3,19 / 3,68 fehér lapon — UX-audit 2026-08-07). A szöveg
+    // szerep-tokenje a `-fg`.
+    [/\btext-state-(?:success|warning|error|info)-solid\b/g,
+     "text-state-*-solid → text-state-*-fg (a -solid grafikai token)"],
+    // SZÖVEG-token HÁTTÉRKÉNT. A `text-primary` / `ink` sötéten VILÁGOSSÁ
+    // fordul (ez a dolga), tehát a belőle épített „szándékosan sötét panel"
+    // sötét sémán kivilágosodik, a fehér felirata olvashatatlan lesz. Az
+    // invertált felület saját tokene: --color-surface-inverse(-soft), a
+    // réteg-heróké a --color-layer-*-hero-*.
+    // Az ÁTTETSZŐ változat (bg-ink/10) szabad: az fátyol, nem felület.
+    [/\b(?:bg|from|via|to)-\[var\(--color-(?:text-primary|text-strong-[a-z]+|ink[a-z-]*)\)\](?!\/)/g,
+     "szöveg-token háttérként → --color-surface-inverse / --color-layer-*-hero-*"],
+    [/\b(?:bg|from|via|to)-ink(?:-body)?\b(?!\/)/g,
+     "ink háttérként → --color-surface-inverse (sötéten megfordul)"],
     // Csak az ÁTLÁTSZATLAN (alfa >= 0.9 vagy hiányzó) hardkódolt rgba a hiba.
     // Az áttetsző színezetek (alfa 0.04–0.22) szándékos fátylak — ugyanaz az
     // elv, mint a bg-white/15-nél: nem felület, hanem réteg.
@@ -286,6 +322,16 @@ if (missingInDark.length > 0) {
   );
 }
 
+if (themeNotStatic.length > 0) {
+  failed = true;
+  console.error(
+    "check-colors: a @theme blokk nem `static` — a nem hivatkozott szerep-tokenek " +
+      "kimaradnak a VILÁGOS kimenetből, miközben sötéten (kézzel írt blokk) megvannak:\n",
+  );
+  for (const v of themeNotStatic) console.error("  " + v);
+  console.error("\nÍrd `@theme static inline { … }` alakra.");
+}
+
 if (themeLiterals.length > 0) {
   failed = true;
   console.error(
@@ -327,7 +373,7 @@ if (rawHexCount > RAW_HEX_BUDGET) {
 if (failed) process.exit(1);
 
 console.log(
-  `check-colors OK — tiltólista tiszta, @theme témázható (0 literál), ` +
+  `check-colors OK — tiltólista tiszta, @theme static + témázható (0 literál), ` +
     `sötét alias-réteg teljes, felületek tokenizálva, ` +
     `TW-paletta ${twPaletteCount}/${TW_PALETTE_BUDGET}, ` +
     `nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,

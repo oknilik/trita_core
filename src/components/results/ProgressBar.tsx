@@ -58,12 +58,12 @@ function PackageCard({
         .join(" ")}
     >
       {owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-action-primary-bg)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-[var(--color-action-primary-fg)]">
           {t("progress.active", locale)}
         </span>
       )}
       {recommended && !owned && (
-        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-white">
+        <span className="mb-1.5 inline-flex self-start rounded bg-[var(--color-accent-primary)] px-[7px] py-[2px] text-micro font-bold uppercase tracking-wide text-[var(--color-text-on-accent)]">
           {t("progress.recommended", locale)}
         </span>
       )}
@@ -108,7 +108,7 @@ function PackageCard({
         className={[
           "mt-3 min-h-[44px] w-full rounded-lg py-2 text-center text-[11px] font-semibold transition",
           buttonStyle === "bronze" &&
-            "bg-[var(--color-accent-primary)] text-white hover:brightness-110",
+            "bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:brightness-110",
           buttonStyle === "ghost" &&
             "border border-[var(--color-border-soft)] bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
           buttonStyle === "done" &&
@@ -248,7 +248,7 @@ export function ProgressBar({
                   key={step.name}
                   className="flex items-center gap-3 border-b border-[var(--color-border-soft)] px-5 py-3 opacity-65"
                 >
-                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] text-micro text-white">
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--color-action-primary-bg)] text-micro text-[var(--color-action-primary-fg)]">
                     ✓
                   </div>
                   <div className="flex-1">
@@ -304,7 +304,7 @@ export function ProgressBar({
                   className={[
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     observersSent
-                      ? "bg-[var(--color-action-primary-bg)] text-micro text-white"
+                      ? "bg-[var(--color-action-primary-bg)] text-micro text-[var(--color-action-primary-fg)]"
                       : hasSelfPlus
                         ? "border-2 border-[var(--color-accent-primary)]"
                         : "border-[1.5px] border-dashed border-[var(--color-border-soft)]",
@@ -328,7 +328,7 @@ export function ProgressBar({
                   <button
                     type="button"
                     onClick={onNavigateToInvites}
-                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-white"
+                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-[var(--color-action-primary-fg)]"
                   >
                     {t("progress.sendInvitationCta", locale)}
                   </button>
@@ -352,7 +352,7 @@ export function ProgressBar({
                   className={[
                     "flex h-5 w-5 shrink-0 items-center justify-center rounded-full",
                     observersCompleted
-                      ? "bg-[var(--color-action-primary-bg)] text-micro text-white"
+                      ? "bg-[var(--color-action-primary-bg)] text-micro text-[var(--color-action-primary-fg)]"
                       : observersSent
                         ? "border-2 border-[var(--color-accent-primary)]"
                         : "border-[1.5px] border-dashed border-[var(--color-border-soft)]",
@@ -373,7 +373,7 @@ export function ProgressBar({
                   </p>
                 </div>
                 {observersSent && !observersCompleted && (
-                  <span className="text-[11px] font-medium text-[var(--color-accent-primary)]">
+                  <span className="text-[11px] font-medium text-[var(--color-accent-primary-strong)]">
                     {t("progress.waiting", locale)}
                   </span>
                 )}
@@ -381,7 +381,7 @@ export function ProgressBar({
                   <button
                     type="button"
                     onClick={onNavigateToComparison}
-                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-white"
+                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-[var(--color-action-primary-fg)]"
                   >
                     {t("progress.viewResults", locale)}
                   </button>

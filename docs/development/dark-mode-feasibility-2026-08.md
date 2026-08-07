@@ -622,3 +622,147 @@ futtat, oda a `--update-snapshots` CLI-argumentum nem jut el.
 > A `playwright.config.ts` kapott egy `PLAYWRIGHT_CHROMIUM_PATH` felülírást
 > (a meglévő `PLAYWRIGHT_BASE_URL` mintájára) zárt környezetekhez; üresen
 > hagyva a Playwright a saját letöltését használja — CI-ben ez a helyes.
+
+---
+
+## 14. UX-audit: a színséma-váltás második rétege (2026-08-07, 6. kör)
+
+A visszajelzés az volt, hogy **„rengeteg helyen maradt világos vagy nem elég
+kontrasztos nézet vagy elem — akár a footer színe is"**. Ehhez a körhöz nem
+szemre néztük végig a felületet, hanem **mérőeszközt írtunk**: egy Playwright-
+szkript végigjárja a route-okat, és MINDEN látható elemre kiszámolja
+
+1. a saját hátterének világosságát (sötét sémán világos felület = hiba),
+2. a szövege kontrasztját a *tényleges* háttéren (az áttetsző rétegeket
+   komponálva, felfelé az első átlátszatlan ősig).
+
+Ami gradiens/kép alatt ül, az külön kosárba megy — ott a számított érték
+hamis lenne, azt kézzel kell nézni.
+
+### 14.1 A négy hibaosztály, amit a mérés kihozott
+
+**(1) A marketing-fa nem követte a színsémát.** Az 1. fázisban a
+`.theme-scope` szándékosan csak az `(app)` shellre került. A felhasználó
+viszont a fejlécben kapott egy választót — és a landing/árazás/blog attól
+világos maradt. Ez a kapcsoló hazudott. A marketing layout is megkapta a
+hatókört; a statikus prerendert nem töri (puszta osztály, nem olvas sütit).
+
+> **A mérés:** marketing-fa sötéten **125 világos felület → 0**.
+
+**(2) A Tailwind kigyomlálta a szerep-tokenek negyedét — csak világosban.**
+Ez a kör legfontosabb felfedezése. A Tailwind v4 alapból **csak azokat** a
+`@theme`-változókat írja ki, amelyekre generált utility hivatkozik. A sötét
+blokkot viszont KÉZZEL írjuk, ott mind a 204 token szerepel. Következmény:
+egy futásidőben összerakott `var(--color-…)` (inline stílus, SVG-attribútum,
+template-literál gradiens) **világosban üresen jött vissza, sötéten működött**.
+
+Böngészőben mérve: **204-ből 50 token** hiányzott a világos kimenetből — köztük
+a teljes `--color-role-*` és `--color-founding-*` család. A token-galéria négy
+réteg-heró gradienséből három emiatt volt színtelen; a fehér feliratuk krémen
+ült (1,10:1).
+
+A javítás egy szó: `@theme static inline`. A `static` mindet kiírja. Guard:
+`check-colors` (g) — enélkül a (d) ellenőrzés (alias-teljesség) egy olyan
+készlethez mér, ami valójában ki sem kerül.
+
+**(3) Fordított akcent, rögzített felirat.** A rendszer akcentjei
+MEGFORDULNAK a két sémán: a zsálya világosban sötét (`#3d6b5e`), sötéten
+világos (`#7fbfa6`). A `bg-sage text-white` gomb ezért világosban 5,9:1,
+sötéten **2,1:1**. Ugyanez a bronzzal, a jelölt-terrakottával és a
+státusz-`fg` tokenekkel háttérként.
+
+A megoldás nem új mechanizmus, hanem a MÁR MEGLÉVŐ „on-surface" tokenek
+következetes használata — ezek szintén fordulnak, tehát a világos téma
+**nem változik**:
+
+| Háttér | Felirat | Világos | Sötét |
+|---|---|---|---|
+| `bg-sage` / `action-primary-bg` | `--color-action-primary-fg` | fehér | `#10241d` |
+| `bg-bronze` / `accent-primary` | `--color-text-on-accent` | `#1a1a2e` | `#17171c` |
+| `bg-accent-candidate` | `--color-text-on-candidate` (ÚJ) | fehér | `#2a1a12` |
+| destruktív gomb | `--color-action-destructive-fg` | fehér | fehér |
+
+A destruktív a kivétel: a mély piros mindkét sémán sötét marad, ott a fehér
+helyes. Ezért kaptak a `bg-state-error-solid` gombok a szemantikailag pontos
+`action-destructive-*` párost.
+
+**80 `bg-sage`-gomb + 9 jelölt-gomb + 7 destruktív gomb + 5 bronz-CTA.**
+
+**(4) Grafikai token szövegként.** A `--color-state-*-solid` a státusz
+GRAFIKAI változata (pötty, donut, él) — küszöbe 3:1. Szövegként 4,5:1 kellene,
+amit a success/warning/info nem hoz (3,77 / 3,19 / 3,68 fehér lapon). **44
+előfordulás** ment át a `-fg` szerep-tokenre; guard: `check-colors` (e).
+
+Ugyanez a bronz-eyebrow: 11 px-es nagybetűs szöveg brand-bronzzal krémen
+**2,99:1**. A `SectionEyebrow` és 40 kézzel írt eyebrow a mélyebb
+`--color-accent-primary-strong`-ra került (5,7:1). **Ez a világos témát is
+javítja** — a hiba a sötét mód előtt is fennállt.
+
+### 14.2 Két eset, ahol adat és nem token a szín
+
+- **A 15 mintázat-akcent** (`pattern-data.ts`) `light-dark(világos, sötét)`
+  párrá vált. Miért nem token: ez ADAT, nem szerep — 15 hue, amit egyetlen
+  marketing-lap használ; tokenpárként 30 sorral hizlalná a globals.css-t.
+  Miért `light-dark()`: az érték inline stílusként megy a DOM-ba, a függvény
+  pedig a `color-scheme`-ből dolgozik, amit a `.theme-scope` már beállít. A
+  sötét párokat kontrasztra hangoltuk (mind ≥ 4,6:1 a sötét paper-lapon),
+  hue és telítettség marad.
+- **A kiemelt blog-vizuál** (`BlogArtVisual`, `variant="featured"`)
+  szándékosan sötét alap fehér idézettel — de `var(--color-sage-deep)`-ből
+  épült, ami sötéten világos mentává fordul. A réteg-heró tokenekre került:
+  azok mindkét sémán sötétek. Ugyanez a hiba a `/privacy` fejlécsávjában és
+  a `/holland-kod` CTA-sávjában.
+
+Ez a visszatérő minta érdemel egy nevet: **„szándékosan sötét panel, amit
+témakövető tokenből építettek"**. A helyes forrás vagy a
+`--color-surface-inverse`, vagy a `--color-layer-*-hero-*` — ezek sötéten is
+sötétek maradnak. Ugyanez a hiba volt az árazás-, blog- és auth-oldal
+`from-[var(--color-text-primary)]` gradiensében: SZÖVEG-tokenből épült
+felület. Erre már statikus szabály is figyel (`check-colors` (e)) —
+azért ez, mert a mérőeszköz sem látja: gradiens alatt nem tud kontrasztot
+számolni, tehát ez az egy osztály csak kódból fogható meg.
+
+### 14.3 Új felület-token
+
+`--color-paper-elevated` (fehér / `#232019`): a mintázat-kártyák literál
+`"white"` hátteret kaptak. A `paper-card` nem volt jó rá — az a chipek
+tónusa; ez a lap FÖLÖTT ülő réteg.
+
+### 14.4 Mérleg
+
+21 route mérve mindkét sémán (marketing + app együtt):
+
+| | előtte | utána |
+|---|---|---|
+| SÖTÉT — világos felület | 141 | **0** |
+| SÖTÉT — kontraszt-bukás | 53 | **0** |
+| VILÁGOS — kontraszt-bukás | 54 | 11 |
+| `--color-*` token hiányzik a világos kimenetből | 50 / 204 | **0** |
+
+A világosban maradt 11 tétel: **5** nagy bronz kiemelés (2,99:1 a 3:1-es
+küszöb mellett — 0,3%), **5** `text-faint` a token-galérián (a racsniban
+nyilvántartott adósság), és **1 mérési műtermék** (a kiemelt blog-idézet
+fölött a vizuál TESTVÉR elem, nem ős, ezért a szkript a kártya fehérét látja
+alatta). Egyik sem új, és egyik sem a sötét módból jön — mind a 14.5-ben
+felsorolt, tudatos tétel.
+
+A `--palette-muted` 2%-os sötétítése (`#6e6e80` → `#6a6a7b`) egy lépésben
+20 találatot vitt AA fölé, és három tételt kivett a `KNOWN_DEBT` racsniból.
+A `design-tokens-sync` teszt azonnal elkapta, hogy a TS-oldali literált is
+frissíteni kell — pontosan ezért van.
+
+A `check-colors` három új szabállyal bővült: (e)-be a
+`text-state-*-solid` tiltás és a „szöveg-token háttérként" minta
+(`bg-ink`, `from-[var(--color-text-primary)]`), plusz az új (g) a
+`@theme static`-ra. A token-kontraszt háló megkapta az `on-accent` /
+`on-candidate` / `on-inverse` párokat és a `paper-elevated` felületet.
+
+### 14.5 Ami tudatosan MARADT
+
+- **A nagy `em` kiemelések brand-bronzzal (2,99:1).** A küszöb ott 3:1
+  (nagy szöveg), tehát 0,3%-kal marad alatta. A landing-főcím kiemelésének
+  átszínezése brand-döntés, nem hozzáférhetőségi kényszer — külön kérdés.
+- **A `text-faint` / `text-muted` meleg felületeken (4,0–4,3:1).** Ezek a
+  `KNOWN_DEBT` racsniban vannak, a sötét mód előttről; a padlójuk alá nem
+  mehetnek.
+- **Képi CI-baseline.** Továbbra is a CI platformján kell legenerálni.

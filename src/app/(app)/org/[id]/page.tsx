@@ -420,7 +420,10 @@ export default async function OrgDetailPage({
             {isConsultantView ? (
               <Link
                 href={`/org/${orgId}/campaigns/new`}
-                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                // Sötét tinta a glow-hátterén: a fehér itt 2,3:1 volt (AA-bukás
+                // mindkét színsémán), a hero-gradiens viszont fix, ezért a
+                // kontrasztot a szövegszín fordításával nyerjük vissza.
+                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: orgHeroTheme.primary }}
               >
                 {isHu ? "Új mérés indítása" : "Start a measurement"}
@@ -428,7 +431,7 @@ export default async function OrgDetailPage({
             ) : (
               <Link
                 href={`/org/${orgId}?tab=teams`}
-                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: orgHeroTheme.primary }}
               >
                 {isHu ? "Csapatok" : "Teams"}

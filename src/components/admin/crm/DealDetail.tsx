@@ -139,7 +139,7 @@ export function DealDetail({
       <DashboardPanel className="p-5 md:p-6">
         <Link
           href="/admin?tab=crm"
-          className="inline-flex min-h-[44px] items-center text-sm text-bronze underline underline-offset-2"
+          className="inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
         >
           ← CRM
         </Link>
@@ -177,7 +177,7 @@ export function DealDetail({
                 expectedValue: deal.expectedValue != null ? String(deal.expectedValue) : "",
               })
             }
-            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-sm text-bronze underline underline-offset-2"
+            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
           >
             Szerkesztés
           </button>
@@ -188,12 +188,12 @@ export function DealDetail({
           {deal.company && <span>{deal.company}</span>}
           <a
             href={`mailto:${deal.contactEmail}`}
-            className="min-w-0 max-w-full break-all text-bronze hover:underline"
+            className="min-w-0 max-w-full break-all text-[var(--color-accent-primary-strong)] hover:underline"
           >
             {deal.contactEmail}
           </a>
           {deal.contactPhone && (
-            <a href={`tel:${deal.contactPhone.replaceAll(" ", "")}`} className="whitespace-nowrap text-bronze hover:underline">
+            <a href={`tel:${deal.contactPhone.replaceAll(" ", "")}`} className="whitespace-nowrap text-[var(--color-accent-primary-strong)] hover:underline">
               {deal.contactPhone}
             </a>
           )}

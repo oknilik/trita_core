@@ -176,7 +176,7 @@ function AccordionItem({
 
               {/* Upsell teaser — Self Start only */}
               {showUpsell && facetNames.length > 0 && (
-                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-text-primary)] px-4 py-3">
+                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-surface-inverse)] px-4 py-3">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent-primary)]/[0.12] font-fraunces text-sm font-medium text-[var(--color-accent-primary-soft)]">
                     +{facetNames.length}
                   </div>

@@ -65,7 +65,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
           type="button"
           onClick={handleAccept}
           disabled={busy}
-          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t("results.compareConsentAccept", locale)}
         </button>

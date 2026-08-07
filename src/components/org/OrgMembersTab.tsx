@@ -14,7 +14,7 @@ import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
-  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-bronze" };
+  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-[var(--color-accent-primary-strong)]" };
   if (role === "ORG_CONSULTANT") return { variant: "info", className: "bg-state-warning-bg text-state-warning-fg" };
   if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
   return { variant: "neutral" };
@@ -87,7 +87,7 @@ export function OrgMembersTab({
               type="button"
               onClick={() => setInviteOpen((v) => !v)}
               aria-expanded={inviteOpen}
-              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
             >
               <span aria-hidden>{inviteOpen ? "×" : "+"}</span>
               {t("org.members.inviteTitle", loc)}
@@ -179,7 +179,7 @@ export function OrgMembersTab({
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 md:shrink-0">
-                    <StatusChip variant="warning" className="text-state-warning-solid">
+                    <StatusChip variant="warning" className="text-state-warning-fg">
                       {t("org.members.pendingBadge", loc)}
                     </StatusChip>
                     {isManager && canInviteMembers && (
@@ -208,7 +208,7 @@ export function OrgMembersTab({
             </span>
             <a
               href={actionGateCopy.ctaHref}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
             >
               {actionGateCopy.ctaLabel}
             </a>

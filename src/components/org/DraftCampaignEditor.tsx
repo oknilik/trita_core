@@ -183,7 +183,7 @@ export function DraftCampaignEditor({
                 </span>
               </span>
               {checked && (
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sage text-micro font-bold text-white">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sage text-micro font-bold text-[var(--color-action-primary-fg)]">
                   {orderIndex + 1}
                 </span>
               )}
@@ -258,7 +258,7 @@ export function DraftCampaignEditor({
                 className={[
                   "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
                   intervalHours === opt.value
-                    ? "border-ink bg-ink text-white"
+                    ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                     : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                 ].join(" ")}
               >
@@ -309,7 +309,7 @@ export function DraftCampaignEditor({
                 type="button"
                 disabled={discarding}
                 onClick={discard}
-                className="min-h-[36px] rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
+                className="min-h-[36px] rounded-lg bg-[var(--color-action-destructive-bg)] px-4 text-xs font-semibold text-[var(--color-action-destructive-fg)] transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:opacity-50"
               >
                 {discarding
                   ? t("org.campaign.discarding", locale)

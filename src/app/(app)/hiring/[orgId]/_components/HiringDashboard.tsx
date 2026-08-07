@@ -550,7 +550,7 @@ export function HiringDashboard({
               <Button
                 type="button"
                 onClick={() => setShowForm(true)}
-                className="bg-accent-candidate px-5 text-caption text-white hover:bg-accent-candidate-strong hover:text-white"
+                className="bg-accent-candidate px-5 text-caption text-[var(--color-text-on-candidate)] hover:bg-accent-candidate-strong hover:text-[var(--color-text-on-candidate)]"
               >
                 {t("hiring.inviteCandidate", locale)}
               </Button>

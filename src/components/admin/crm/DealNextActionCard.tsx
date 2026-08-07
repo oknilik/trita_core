@@ -157,7 +157,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
               type="button"
               disabled={busy}
               onClick={openEditor}
-              className="min-h-[40px] text-sm text-bronze underline underline-offset-2"
+              className="min-h-[40px] text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
             >
               Szerkesztés
             </button>

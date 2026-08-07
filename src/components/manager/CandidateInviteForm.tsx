@@ -223,7 +223,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
           <button
             type="submit"
             disabled={loading}
-            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-6 text-[12px] font-semibold text-white transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-6 text-[12px] font-semibold text-[var(--color-text-on-candidate)] transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
           >
             {loading
               ? t("manager.candidateInvite.creating", loc)

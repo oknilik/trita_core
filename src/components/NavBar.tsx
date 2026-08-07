@@ -243,7 +243,7 @@ export function NavBar({
                     CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
                   href="/try"
-                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-[var(--color-text-on-accent)] transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
@@ -341,7 +341,7 @@ export function NavBar({
               <Link
                 href="/try"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-[var(--color-text-on-accent)] transition-all hover:brightness-[1.06]"
               >
                 {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
               </Link>

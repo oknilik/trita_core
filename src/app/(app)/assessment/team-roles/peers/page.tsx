@@ -68,7 +68,7 @@ export default async function TeamRolePeersPage() {
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {t("teamRolePeers.backToDashboard", locale as Locale)}
           </Link>

@@ -89,7 +89,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
+          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -106,7 +106,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.name", locale)} <span className="text-bronze">*</span>
+            {t("contact.name", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <input
             required
@@ -121,7 +121,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.email", locale)} <span className="text-bronze">*</span>
+            {t("contact.email", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <input
             required
@@ -147,7 +147,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.topic", locale)} <span className="text-bronze">*</span>
+            {t("contact.topic", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <select
             required
@@ -166,7 +166,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       <label className={labelClass}>
         <span className="mb-2 block">
-          {t("contact.message", locale)} <span className="text-bronze">*</span>
+          {t("contact.message", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
         </span>
         <textarea
           required
@@ -202,7 +202,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>

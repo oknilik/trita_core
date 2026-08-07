@@ -216,7 +216,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
                     <span className="ml-1.5 text-xs font-normal text-muted">DB</span>
                   </span>
                   {share !== null && (
-                    <span className="text-xs font-semibold text-bronze">{share}% a belépéstől</span>
+                    <span className="text-xs font-semibold text-[var(--color-accent-primary-strong)]">{share}% a belépéstől</span>
                   )}
                 </div>
               </div>

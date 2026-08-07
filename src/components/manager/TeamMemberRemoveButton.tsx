@@ -35,7 +35,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
           type="button"
           onClick={handleRemove}
           disabled={loading}
-          className="min-h-[44px] inline-flex items-center rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
+          className="min-h-[44px] inline-flex items-center rounded-lg bg-[var(--color-action-destructive-bg)] px-4 text-xs font-semibold text-[var(--color-action-destructive-fg)] transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:opacity-50"
         >
           {loading ? "…" : t("manager.teamMemberRemove.confirmYes", locale)}
         </button>
@@ -58,7 +58,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
     <button
       type="button"
       onClick={() => setConfirm(true)}
-      className="relative min-h-[36px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition before:absolute before:inset-x-0 before:-inset-y-1 before:content-[''] hover:bg-state-error-bg hover:text-state-error-solid"
+      className="relative min-h-[36px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition before:absolute before:inset-x-0 before:-inset-y-1 before:content-[''] hover:bg-state-error-bg hover:text-state-error-fg"
     >
       {t("manager.teamMemberRemove.remove", locale)}
     </button>

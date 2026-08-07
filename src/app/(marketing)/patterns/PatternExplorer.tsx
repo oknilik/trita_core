@@ -19,6 +19,7 @@ import {
 const T = {
   bg: "var(--color-paper-bg)",
   card: "var(--color-paper-card)",
+  elevated: "var(--color-paper-elevated)",
   text: "var(--color-paper-text)",
   muted: "var(--color-paper-muted)",
   heading: "var(--color-paper-heading)",
@@ -122,7 +123,7 @@ function PatternCard({
   return (
     <div
       className="overflow-hidden rounded-2xl border shadow-sm"
-      style={{ backgroundColor: "white", borderColor: T.border }}
+      style={{ backgroundColor: T.elevated, borderColor: T.border }}
     >
       {/* Accent top bar */}
       <div className="h-1" style={{ backgroundColor: pattern.color }} />
@@ -228,7 +229,7 @@ function HybridCard({
   return (
     <div
       className="overflow-hidden rounded-2xl border shadow-sm"
-      style={{ backgroundColor: "white", borderColor: T.border }}
+      style={{ backgroundColor: T.elevated, borderColor: T.border }}
     >
       <div className="h-1" style={{ background: `linear-gradient(to right, ${best.color}, ${second.color})` }} />
       <div className="p-6">
@@ -343,7 +344,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
                     key={code}
                     onClick={() => onSelect(code)}
                     className="rounded-xl border p-3 text-left transition-shadow hover:shadow-md"
-                    style={{ backgroundColor: "white", borderColor: T.border }}
+                    style={{ backgroundColor: T.elevated, borderColor: T.border }}
                   >
                     <div className="mb-2 h-0.5 rounded-full" style={{ backgroundColor: pattern.color }} />
                     <p className="text-xs font-semibold leading-snug" style={{ color: T.heading }}>
@@ -514,7 +515,7 @@ export function PatternExplorer() {
           <div className="flex flex-col gap-8">
             <div
               className="rounded-2xl border p-6 shadow-sm"
-              style={{ backgroundColor: "white", borderColor: T.border }}
+              style={{ backgroundColor: T.elevated, borderColor: T.border }}
             >
               <p
                 className="mb-6 text-label uppercase"
@@ -650,7 +651,7 @@ export function PatternExplorer() {
             </p>
             <a
               href="/pilot"
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-lg px-8 text-sm font-semibold text-white transition-colors"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-lg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors"
               style={{ backgroundColor: T.accent }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = T.accentHover)
@@ -675,7 +676,7 @@ export function PatternExplorer() {
             </p>
             <a
               href="/advisory"
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-lg px-8 text-sm font-semibold text-white transition-colors"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-lg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors"
               style={{ backgroundColor: T.accent }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = T.accentHover)

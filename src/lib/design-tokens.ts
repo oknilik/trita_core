@@ -27,7 +27,7 @@ export const COLORS = {
   ink:         "#1a1a2e",
   inkBody:     "#4a4a5e",
   inkWarm:     "#7a756e",
-  muted:       "#6e6e80", // 3.4:1→5.0:1 fehéren — globals.css-szinkron (tipó-audit #8)
+  muted:       "#6a6a7b", // 5.3:1 fehéren, 4,55:1 a meleg lapokon (UX-audit 2026-08-07)
   mutedWarm:   "#7c786f", // 2.7:1→4.4:1 fehéren — globals.css-szinkron (tipó-audit #8)
   ink300:      "#8a8a9a", // halvány metaadat/grafikai szürke (= --color-ink-300)
 

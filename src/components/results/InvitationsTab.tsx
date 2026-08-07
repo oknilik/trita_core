@@ -64,7 +64,7 @@ function LockedInvitations() {
           konvenció szerint a /contact-ra visz. */}
       <a
         href="/contact"
-        className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-white transition hover:brightness-110"
+        className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
       >
         {t("invitations.lockedCta", locale)}
       </a>
@@ -364,7 +364,7 @@ export function InvitationsTab({
                       type="button"
                       onClick={() => handleInviteColleague(c.userId)}
                       disabled={invitingColleagueId !== null}
-                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-[11px] font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
+                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-[11px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
                     >
                       {invitingColleagueId === c.userId ? "…" : t("invitations.colleagueInviteButton", locale)}
                     </button>
@@ -406,13 +406,13 @@ export function InvitationsTab({
                 type="button"
                 onClick={handleCreate}
                 disabled={isCreating}
-                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-caption font-semibold text-white transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
               >
                 {isCreating ? "..." : t("invitations.formSubmit", locale)}
               </button>
             </div>
             {createError && (
-              <p className="mt-2 text-xs text-[var(--color-accent-primary)]">{createError}</p>
+              <p className="mt-2 text-xs text-[var(--color-accent-primary-strong)]">{createError}</p>
             )}
             <div className="mt-2.5 flex flex-col gap-1">
               <span className="text-[11px] text-[var(--color-text-muted)]">
@@ -592,7 +592,7 @@ export function InvitationsTab({
                   </p>
                 </div>
                 {isPending && !isExpired && (
-                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-[11px] font-semibold text-white">
+                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-[11px] font-semibold text-[var(--color-action-primary-fg)]">
                     {t("invitations.fillIn", locale)}
                   </Link>
                 )}

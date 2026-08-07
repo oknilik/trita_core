@@ -17,7 +17,7 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
   return (
     <div
       className="mt-6 rounded-2xl p-6 px-7"
-      style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
+      style={{ background: "linear-gradient(135deg, var(--color-surface-inverse), var(--color-surface-inverse-soft))" }}
     >
       <p className="mb-3 text-micro uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
         {t("results.takeawaysEyebrow", locale)}

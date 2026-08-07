@@ -85,6 +85,14 @@ add("paper", "text", "paper-text", "paper-card");
 add("paper", "text", "paper-muted", "paper-bg");
 add("paper", "text", "paper-muted", "paper-card");
 add("paper", "text", "paper-heading", "paper-bg");
+add("paper", "text", "paper-text", "paper-elevated");
+add("paper", "text", "paper-muted", "paper-elevated");
+
+// Akcent-háttéren ülő felirat. A bronz és a zsálya MINDKÉT sémán világos,
+// ezért ott sötét tinta kell — a fehér AA alatt volt (UX-audit 2026-08-07).
+add("akcent-háttér", "text", "text-on-accent", "bronze");
+add("akcent-háttér", "text", "text-on-accent", "accent-primary");
+add("akcent-háttér", "text", "text-on-inverse", "surface-inverse");
 
 const key = (p: Pair) => `${p.fg}|${p.bg}`;
 
@@ -92,6 +100,13 @@ const key = (p: Pair) => `${p.fg}|${p.bg}`;
  * Nyilvántartott adósság — a 2026-08-07-i mérés a világos témán. Ezek a
  * párok a sötét mód ELŐTT is AA alatt voltak; a háló bevezetése hozta őket
  * felszínre. A szám a PADLÓ: alá menni hiba, fölé menni szabad (és cél).
+ *
+ * A 6. körben (UX-audit) három tétel KIKERÜLT: a --palette-muted 2%-os
+ * sötétítése (#6e6e80 → #6a6a7b) a text-muted két meleg felületét és az
+ * eval-low-fg-t is a küszöb fölé vitte. Maradt a `text-faint` négyese: az
+ * a leghalkabb szöveg-fokozat, AA-ra emelése a tipográfiai hierarchiát
+ * lapítaná össze a `muted`-del — ez design-döntés, nem hozzáférhetőségi
+ * kényszer. Az `dim-x-base` grafikus mark szintén nyitva.
  *
  * Rendezés: ami a legmesszebb van a küszöbtől, az a legsürgősebb.
  */
@@ -104,9 +119,6 @@ const KNOWN_DEBT: Record<ThemeName, Record<string, { floor: number; note: string
     "text-faint|cream-300": { floor: 3.78, note: "leghalkabb metaadat meleg felületen" },
     "text-faint|surface-muted": { floor: 3.8, note: "leghalkabb metaadat meleg felületen" },
     "text-faint|surface-canvas": { floor: 4.01, note: "leghalkabb metaadat a vásznon" },
-    "text-muted|cream-300": { floor: 4.29, note: "épphogy AA alatt" },
-    "eval-low-fg|eval-low-bg": { floor: 4.29, note: "a rampa halk fokozata — épphogy AA alatt" },
-    "text-muted|surface-muted": { floor: 4.32, note: "épphogy AA alatt" },
     "text-faint|surface-card": { floor: 4.4, note: "épphogy AA alatt" },
   },
   dark: {},
@@ -178,6 +190,7 @@ const SURFACE_PAIRS: Array<[string, string]> = [
   ["state-error-bg", "surface-card"],
   ["state-info-bg", "surface-card"],
   ["paper-card", "paper-bg"],
+  ["paper-elevated", "paper-bg"],
   ...(["h", "e", "x", "a", "c", "o"].map((d) => [`dim-${d}-soft`, "surface-card"]) as Array<
     [string, string]
   >),
@@ -237,7 +250,7 @@ test("a nyilvántartott adósság nem nő észrevétlenül", () => {
   // A lista hossza szándékos korlát: új adósságot csak tudatosan, a szám
   // emelésével lehet felvenni — különben a háló magát üresíti ki.
   assert.ok(
-    Object.keys(KNOWN_DEBT.light).length <= 8,
+    Object.keys(KNOWN_DEBT.light).length <= 5,
     "több nyilvántartott adósság van, mint amennyit a háló bevezetésekor rögzítettünk",
   );
   for (const [pair, entry] of Object.entries(KNOWN_DEBT.light)) {

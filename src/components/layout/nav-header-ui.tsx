@@ -660,7 +660,7 @@ function NavHeaderContent({
               const isActive = isNavItemActive(item);
               const itemClass =
                 item.id === "home"
-                  ? `${isActive ? "rounded-lg bg-[var(--color-text-primary)] text-white px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
+                  ? `${isActive ? "rounded-lg bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
                   : isActive || openDropdown === item.id
                     ? navItemActive
                     : navItemInactive;
@@ -680,7 +680,7 @@ function NavHeaderContent({
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                       {item.badge ? (
-                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
+                        <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
                           {item.badge}
                         </span>
                       ) : null}
@@ -696,7 +696,7 @@ function NavHeaderContent({
                         {getItemIcon(item.id, "h-3.5 w-3.5")}
                         {item.label}
                         {item.badge ? (
-                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
+                          <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
                             {item.badge}
                           </span>
                         ) : null}
@@ -816,7 +816,7 @@ function NavHeaderContent({
                   <Link
                     href={homeDestination}
                     onClick={() => setMobileMenu("closed")}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-caption font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-surface-inverse)] px-4 py-2 text-caption font-medium text-[var(--color-text-on-inverse)]"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
                     {homeLabel}

@@ -355,9 +355,9 @@ export function CampaignWizard({
                 className={[
                   "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors",
                   step === s
-                    ? "bg-sage text-white"
+                    ? "bg-sage text-[var(--color-action-primary-fg)]"
                     : step > s
-                    ? "bg-sage/20 text-bronze"
+                    ? "bg-sage/20 text-[var(--color-accent-primary-strong)]"
                     : "bg-sand text-muted",
                 ].join(" ")}
               >
@@ -433,7 +433,7 @@ export function CampaignWizard({
                       )}
                     </div>
                     {isSelected ? (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
                         {orderIndex + 1}
                       </span>
                     ) : card.comingSoon ? (
@@ -450,7 +450,7 @@ export function CampaignWizard({
                       {t(card.descKey, locale)}
                     </p>
                     {card.outKey && (
-                      <p className="mt-1 text-[11px] text-bronze">{t(card.outKey, locale)}</p>
+                      <p className="mt-1 text-[11px] text-[var(--color-accent-primary-strong)]">{t(card.outKey, locale)}</p>
                     )}
                   </details>
                 </div>
@@ -552,7 +552,7 @@ export function CampaignWizard({
                       className={[
                         "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
                         stepIntervalHours === opt.value
-                          ? "border-ink bg-ink text-white"
+                          ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                           : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                       ].join(" ")}
                     >
@@ -638,7 +638,7 @@ export function CampaignWizard({
                 onClick={toggleAll}
                 variant="ghost"
                 size="sm"
-                className="min-h-0 px-0 text-[12px] text-bronze hover:bg-transparent hover:underline"
+                className="min-h-0 px-0 text-[12px] text-[var(--color-accent-primary-strong)] hover:bg-transparent hover:underline"
               >
                 {selectedIds.size === members.length
                   ? t("campaignWiz.deselectAll", locale)
@@ -818,7 +818,7 @@ export function CampaignWizard({
             </label>
 
             <div className="flex items-start gap-2 rounded-lg bg-state-warning-bg px-3 py-2.5">
-              <span className="mt-0.5 text-state-warning-solid">
+              <span className="mt-0.5 text-state-warning-fg">
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="8" cy="8" r="6.5" />
                   <path d="M8 5v3.5M8 11v.5" />

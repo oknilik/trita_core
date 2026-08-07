@@ -157,7 +157,7 @@ export function QuickLogForm({
       <button
         type="button"
         onClick={() => setExpanded((open) => !open)}
-        className="inline-flex min-h-[44px] items-center self-start text-xs text-bronze underline underline-offset-2"
+        className="inline-flex min-h-[44px] items-center self-start text-xs text-[var(--color-accent-primary-strong)] underline underline-offset-2"
       >
         {expanded ? "Kevesebb mező" : "Részletek + következő lépés"}
       </button>
@@ -190,7 +190,7 @@ export function QuickLogForm({
           </label>
 
           <div className="border-t border-sand pt-3">
-            <p className="text-label uppercase text-bronze">Következő lépés ezután</p>
+            <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Következő lépés ezután</p>
             <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
               <input
                 type="date"

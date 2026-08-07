@@ -21,7 +21,7 @@ export default function GlobalError({
         </p>
         <button
           onClick={reset}
-          className="rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-white hover:bg-sage-dark transition min-h-[44px]"
+          className="rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-[var(--color-action-primary-fg)] hover:bg-sage-dark transition min-h-[44px]"
         >
           Újrapróbálás
         </button>

@@ -179,7 +179,7 @@ export function Modal({
               </div>
               <div className={isBrand ? "text-center" : undefined}>
                 {eyebrow && (
-                  <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze/80">
+                  <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                     {eyebrow}
                   </p>
                 )}

@@ -170,7 +170,7 @@ export function AdminReminderSection({ invitations }: Props) {
           <button
             onClick={sendChecked}
             disabled={bulkRunning || checkedCount === 0}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 py-2 text-sm font-semibold text-white hover:bg-sage-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 py-2 text-sm font-semibold text-[var(--color-action-primary-fg)] hover:bg-sage-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {bulkRunning ? "Küldés…" : `Kijelöltek küldése (${checkedCount})`}
           </button>
@@ -255,7 +255,7 @@ export function AdminReminderSection({ invitations }: Props) {
                     {inv.reminderCount + (sent ? 1 : 0)}
                   </td>
                   <td className="py-3">
-                    {s.error && <p className="text-xs text-state-error-solid mb-1">{s.error}</p>}
+                    {s.error && <p className="text-xs text-state-error-fg mb-1">{s.error}</p>}
                     <button
                       onClick={() => sendReminder(inv.id)}
                       disabled={s.sending || sent || s.completed}

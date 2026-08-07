@@ -144,12 +144,12 @@ export default async function CareerFakeDoorReportPage() {
           nem bevételt.
         </p>
         <div className="mt-3 flex gap-4 text-sm">
-          <Link href="/admin?tab=feedback" className="text-bronze underline underline-offset-2">
+          <Link href="/admin?tab=feedback" className="text-[var(--color-accent-primary-strong)] underline underline-offset-2">
             ← Admin
           </Link>
           <a
             href="/api/admin/fakedoor/career/export"
-            className="text-bronze underline underline-offset-2"
+            className="text-[var(--color-accent-primary-strong)] underline underline-offset-2"
           >
             Nyers export (CSV)
           </a>

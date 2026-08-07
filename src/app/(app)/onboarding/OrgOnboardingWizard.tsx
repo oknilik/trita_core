@@ -329,9 +329,9 @@ export function OrgOnboardingWizard() {
                 <div
                   className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
                     i + 1 < step
-                      ? "bg-sage text-white"
+                      ? "bg-sage text-[var(--color-action-primary-fg)]"
                       : i + 1 === step
-                      ? "bg-ink text-white"
+                      ? "bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                       : "bg-sand text-muted"
                   }`}
                 >
@@ -419,7 +419,7 @@ export function OrgOnboardingWizard() {
                 placeholder={t("orgOnboarding.displayNamePlaceholder", locale)}
                 maxLength={20}
                 error={errors.username}
-                errorClassName="pl-1 text-xs text-bronze"
+                errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                 autoFocus
               />
 
@@ -436,7 +436,7 @@ export function OrgOnboardingWizard() {
                 min={minBirthYear}
                 max={maxBirthYear}
                 error={errors.birthYear}
-                errorClassName="pl-1 text-xs text-bronze"
+                errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                 helpText={
                   errors.birthYear
                     ? undefined
@@ -462,7 +462,7 @@ export function OrgOnboardingWizard() {
                   ))}
                 </div>
                 {errors.gender && (
-                  <span className="pl-1 text-xs text-bronze">{errors.gender}</span>
+                  <span className="pl-1 text-xs text-[var(--color-accent-primary-strong)]">{errors.gender}</span>
                 )}
               </div>
 
@@ -475,14 +475,14 @@ export function OrgOnboardingWizard() {
                   onClick={() => setCountryPickerOpen(true)}
                 />
                 {errors.country && (
-                  <span className="pl-1 text-xs text-bronze">{errors.country}</span>
+                  <span className="pl-1 text-xs text-[var(--color-accent-primary-strong)]">{errors.country}</span>
                 )}
               </div>
 
               <button
                 type="button"
                 onClick={handleStep1Next}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {t("orgOnboarding.continueBtn", locale)}
               </button>
@@ -535,7 +535,7 @@ export function OrgOnboardingWizard() {
                 placeholder={t("orgOnboarding.companyNamePlaceholder", locale)}
                 maxLength={100}
                 error={errors.orgName}
-                errorClassName="pl-1 text-xs text-bronze"
+                errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                 autoFocus
               />
 
@@ -595,7 +595,7 @@ export function OrgOnboardingWizard() {
                   type="button"
                   onClick={handleStep2Next}
                   disabled={isSubmitting}
-                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting
                     ? t("orgOnboarding.creatingBtn", locale)
@@ -632,7 +632,7 @@ export function OrgOnboardingWizard() {
                     placeholder={t("orgOnboarding.teamNamePlaceholder", locale)}
                     maxLength={60}
                     error={errors.teamName}
-                    errorClassName="pl-1 text-xs text-bronze"
+                    errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                     autoFocus
                   />
 
@@ -648,7 +648,7 @@ export function OrgOnboardingWizard() {
                       type="button"
                       onClick={() => handleStep3Finish(false)}
                       disabled={isSubmitting}
-                      className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                      className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
                     >
                       {isSubmitting
                         ? t("orgOnboarding.creatingBtn", locale)
@@ -680,8 +680,8 @@ export function OrgOnboardingWizard() {
                         onClick={handleCopyLink}
                         className={`min-h-[44px] rounded-lg px-4 text-sm font-semibold transition-all ${
                           copied
-                            ? "bg-sage text-white"
-                            : "bg-sage text-white hover:bg-sage-dark"
+                            ? "bg-sage text-[var(--color-action-primary-fg)]"
+                            : "bg-sage text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
                         }`}
                       >
                         {copied
@@ -716,7 +716,7 @@ export function OrgOnboardingWizard() {
                   <button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="min-h-[48px] w-full rounded-lg bg-ink text-sm font-semibold text-white transition-colors hover:bg-ink-body"
+                    className="min-h-[48px] w-full rounded-lg bg-[var(--color-surface-inverse)] text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
                   >
                     {t("orgOnboarding.goToDashboard", locale)}
                   </button>
@@ -753,7 +753,7 @@ export function OrgOnboardingWizard() {
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-bronze underline hover:text-bronze-dark"
+                    className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                   >
                     {t("orgOnboarding.privacyPolicy", locale)}
                   </a>{" "}
@@ -762,14 +762,14 @@ export function OrgOnboardingWizard() {
               </label>
 
               {errors.consent && (
-                <span className="text-sm text-bronze">{errors.consent}</span>
+                <span className="text-sm text-[var(--color-accent-primary-strong)]">{errors.consent}</span>
               )}
 
               <button
                 type="button"
                 onClick={handleStep4Finish}
                 disabled={isSubmitting || !state.consent}
-                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting
                   ? t("orgOnboarding.savingBtn", locale)

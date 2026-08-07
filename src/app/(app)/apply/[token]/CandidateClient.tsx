@@ -347,7 +347,7 @@ export function CandidateClient({
       },
     ];
     const stepTileStyles = [
-      "bg-accent-candidate text-white",
+      "bg-accent-candidate text-[var(--color-text-on-candidate)]",
       "bg-accent-candidate-soft text-accent-candidate-strong",
       "bg-warm-mid text-muted",
     ];
@@ -387,7 +387,7 @@ export function CandidateClient({
               <button
                 type="button"
                 onClick={() => setPhase("assessment")}
-                className="min-h-[48px] w-full rounded-[10px] bg-accent-candidate px-8 text-body font-semibold text-white shadow-md shadow-accent-candidate/20 transition-all hover:-translate-y-px hover:bg-accent-candidate-strong hover:shadow-lg lg:w-auto"
+                className="min-h-[48px] w-full rounded-[10px] bg-accent-candidate px-8 text-body font-semibold text-[var(--color-text-on-candidate)] shadow-md shadow-accent-candidate/20 transition-all hover:-translate-y-px hover:bg-accent-candidate-strong hover:shadow-lg lg:w-auto"
               >
                 {t("candidate.introStartCta", locale)}
               </button>
@@ -624,7 +624,7 @@ export function CandidateClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 !isSubmitting
-                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
+                  ? "bg-accent-candidate text-[var(--color-text-on-candidate)] shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "bg-sand text-muted"
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
@@ -641,7 +641,7 @@ export function CandidateClient({
               aria-disabled={!currentQuestionAnswered || isSubmitting}
               className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 currentQuestionAnswered && !isSubmitting
-                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
+                  ? "bg-accent-candidate text-[var(--color-text-on-candidate)] shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "cursor-not-allowed bg-sand text-muted"
               }`}
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}

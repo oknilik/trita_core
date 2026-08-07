@@ -15,7 +15,7 @@ function roleLabel(role: string, loc: Locale): string {
 }
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
-  if (role === "manager") return { variant: "info", className: "bg-sage/10 text-bronze border border-sage/20" };
+  if (role === "manager") return { variant: "info", className: "bg-sage/10 text-[var(--color-accent-primary-strong)] border border-sage/20" };
   return { variant: "neutral", className: "border border-sand" };
 }
 
@@ -95,7 +95,7 @@ export function TeamMemberRoleEditor({
           </option>
         ))}
       </select>
-      {error && <p className="text-xs text-state-error-solid">{error}</p>}
+      {error && <p className="text-xs text-state-error-fg">{error}</p>}
     </div>
   );
 }

@@ -134,7 +134,7 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
             </p>
             <Link
               href="/try"
-              className="mt-4 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md transition-all hover:-translate-y-px hover:brightness-[1.06]"
+              className="mt-4 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-[var(--color-text-on-accent)] shadow-md transition-all hover:-translate-y-px hover:brightness-[1.06]"
             >
               {t("tryComplete.partialCta", locale)}
             </Link>
@@ -164,14 +164,14 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
             <div className="flex flex-col gap-3">
               <Link
                 href="/sign-up?redirect_url=/try/claim"
-                className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-white shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
+                className="flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-body font-bold text-[var(--color-text-on-accent)] shadow-md shadow-[var(--color-accent-primary)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06]"
               >
                 {t("tryComplete.registerCta", locale)}
               </Link>
 
               <Link
                 href="/sign-in?redirect_url=/try/claim"
-                className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary)]"
+                className="flex min-h-[52px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-6 text-body font-medium text-ink-body transition-colors hover:border-[var(--color-accent-primary)]/40 hover:text-[var(--color-accent-primary-strong)]"
               >
                 {t("tryComplete.loginCta", locale)}
               </Link>

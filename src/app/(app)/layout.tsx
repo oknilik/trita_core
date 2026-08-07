@@ -58,8 +58,8 @@ export default async function AppLayout({
       signUpFallbackRedirectUrl="/onboarding"
     >
       {/* A sötét mód HATÓKÖRE ez az elem (globals.css:
-          `[data-theme="dark"] .theme-scope`). A marketing-fa nem kapja meg,
-          ezért ott a világos téma marad — szándékosan. */}
+          `[data-theme="dark"] .theme-scope`). A marketing-fa a saját
+          layoutjában kapja meg ugyanezt — a két fa nem oszt közös wrappert. */}
       <div className="theme-scope">
           <ServerAuthStateProvider
             isSignedIn={Boolean(userId)}

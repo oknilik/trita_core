@@ -87,7 +87,7 @@ export function PricingContent() {
 
           <Link
             href="/contact"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
+            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
           >
             {t("pricing.teamCta", locale)}
           </Link>
@@ -149,7 +149,7 @@ export function PricingContent() {
 
       {/* ── Villámkérdés — súrlódásmentes kapcsolatfelvétel ── */}
       <section className="mx-5 mb-8 mt-14 lg:mx-14">
-        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] px-6 py-10 lg:px-10 lg:py-12">
+        <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-10 lg:px-10 lg:py-12">
           <PricingQuickAsk locale={locale} />
         </div>
       </section>

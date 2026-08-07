@@ -465,7 +465,7 @@ export default async function CampaignDetailPage({
         {/* Back link */}
         <Link
           href={`/org/${orgId}?tab=campaigns`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
         >
           <svg
             viewBox="0 0 16 16"
@@ -528,7 +528,7 @@ export default async function CampaignDetailPage({
         {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
         {showStepSection && totalCount > 0 && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {isHu ? "Mérés-lépések" : "Measurement steps"}
             </p>
             <p className="mb-5 text-xs text-ink-body/70">
@@ -570,7 +570,7 @@ export default async function CampaignDetailPage({
                       <span className="shrink-0 text-right text-xs tabular-nums text-muted md:w-24">
                         {doneCount}/{totalCount} {isHu ? "kész" : "done"}
                         {hereCount > 0 ? (
-                          <span className="text-bronze"> · {hereCount} {isHu ? "itt tart" : "here"}</span>
+                          <span className="text-[var(--color-accent-primary-strong)]"> · {hereCount} {isHu ? "itt tart" : "here"}</span>
                         ) : null}
                       </span>
                     </div>
@@ -662,7 +662,7 @@ export default async function CampaignDetailPage({
         {/* Pszich. biztonság: anonim csapatszintű összkép */}
         {hasPsychStep && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-bronze">
+            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("org.campaign.psEyebrow", locale)}
             </p>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
@@ -878,7 +878,7 @@ export default async function CampaignDetailPage({
                             const done = currentType ? partialCountFor(p.userId, currentType) : 0;
                             const total = peerTotalFor(p.userId);
                             return done > 0 && total > 0 ? (
-                              <span className="ml-1 font-semibold text-bronze">
+                              <span className="ml-1 font-semibold text-[var(--color-accent-primary-strong)]">
                                 · {Math.min(done, total)}/{total}
                               </span>
                             ) : null;
@@ -917,7 +917,7 @@ export default async function CampaignDetailPage({
                 <p className="mt-1 text-xs text-ink-body">{manageGateCopy.description}</p>
                 <a
                   href={manageGateCopy.ctaHref}
-                  className="mt-3 inline-flex min-h-[36px] items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze"
+                  className="mt-3 inline-flex min-h-[36px] items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-[var(--color-accent-primary-strong)]"
                 >
                   {manageGateCopy.ctaLabel}
                 </a>

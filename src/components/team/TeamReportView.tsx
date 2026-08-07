@@ -256,11 +256,11 @@ function SectionHead({
 }) {
   return (
     <div className="mb-4 flex items-start gap-3">
-      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-[11px] font-bold text-bronze shadow-sm ring-1 ring-sand">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-[11px] font-bold text-[var(--color-accent-primary-strong)] shadow-sm ring-1 ring-sand">
         {no}
       </span>
       <div className="min-w-0 pt-0.5">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-bronze">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {label}
         </p>
         {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
@@ -276,7 +276,7 @@ const TIMEFRAME_TONES: Record<
 > = {
   "30": { dot: "bg-sage", text: "text-sage-dark", edge: "border-l-sage/50" },
   "60": { dot: "bg-state-info-solid", text: "text-layer-org-bright", edge: "border-l-sky-400/50" },
-  "90": { dot: "bg-bronze", text: "text-bronze", edge: "border-l-bronze/50" },
+  "90": { dot: "bg-bronze", text: "text-[var(--color-accent-primary-strong)]", edge: "border-l-bronze/50" },
 };
 
 export function TeamReportView({
@@ -563,7 +563,7 @@ export function TeamReportView({
                         </span>
                         {state === "primary" ? (
                           <span className="flex items-center gap-1">
-                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-[11px] font-semibold text-white">
+                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-[11px] font-semibold text-[var(--color-action-primary-fg)]">
                               {primaryCount}
                             </span>
                             {secondaryCount > 0 && (
@@ -1092,7 +1092,7 @@ export function TeamReportView({
                   if (traps.length === 0) return null;
                   return (
                     <details className="mt-1 rounded-[12px] border border-sand bg-surface-card">
-                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
+                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark">
                         {isHu
                           ? `Vezetői akciókártyák (${traps.length})`
                           : `Leader action cards (${traps.length})`}
@@ -1164,7 +1164,7 @@ export function TeamReportView({
         <div className="flex flex-col gap-4">
           {report.summary && (
             <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                 {isHu ? "Összefoglaló" : "Summary"}
               </p>
               {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}

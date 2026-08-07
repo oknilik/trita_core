@@ -23,7 +23,7 @@ export function OpsTab() {
           href={card.href}
           className="group rounded-2xl border border-sand bg-surface-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sage/40"
         >
-          <p className="text-body font-semibold text-ink group-hover:text-bronze">
+          <p className="text-body font-semibold text-ink group-hover:text-[var(--color-accent-primary-strong)]">
             {card.title} →
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-body">{card.desc}</p>

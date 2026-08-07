@@ -76,7 +76,7 @@ export function PsychSafetyClient({
   if (phase === "intro") {
     return (
       <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {t("psafety.eyebrow", locale)}
         </p>
         <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
@@ -97,7 +97,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => setPhase("answering")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-white transition hover:brightness-110"
+          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("psafety.start", locale)}
         </button>
@@ -121,7 +121,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("psafety.backToDashboard", locale)}
         </button>
@@ -141,7 +141,7 @@ export function PsychSafetyClient({
         <button
           type="button"
           onClick={() => submit(answersRef.current)}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
         >
           {t("psafety.retry", locale)}
         </button>
@@ -153,7 +153,7 @@ export function PsychSafetyClient({
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4 pt-8 pb-20">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-bronze">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {t("psafety.eyebrow", locale)}
         </p>
         <p className="font-mono text-[11px] text-muted">

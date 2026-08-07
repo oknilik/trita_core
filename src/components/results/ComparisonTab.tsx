@@ -122,7 +122,7 @@ export function ComparisonTab({
                 .getElementById("invitations")
                 ?.scrollIntoView({ behavior: "smooth", block: "start" })
             }
-            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-[12px] font-semibold text-white transition hover:brightness-110"
+            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {locale === "hu" ? "Observer meghívása" : "Invite observers"}
           </button>
@@ -326,7 +326,7 @@ export function ComparisonTab({
       {/* 5. Dark summary card */}
       <div
         className="rounded-2xl p-6 px-7"
-        style={{ background: "linear-gradient(135deg, var(--color-text-primary), var(--color-text-strong-deep))" }}
+        style={{ background: "linear-gradient(135deg, var(--color-surface-inverse), var(--color-surface-inverse-soft))" }}
       >
         <p className="mb-2 text-micro uppercase tracking-widest" style={{ color: "var(--color-accent-primary-soft)" }}>
           {t("comparison.summaryEyebrow", locale)}

@@ -204,7 +204,7 @@ function RiasecProfiler({
             aria-label={`${value}/5`}
             className={`flex h-11 flex-1 items-center justify-center rounded-xl border-2 text-sm font-semibold transition ${
               picked === value
-                ? "border-sage bg-sage text-white"
+                ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
                 : "border-[var(--color-border-soft)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50"
             }`}
             style={picked === value ? { animation: "cc-pop 0.25s ease-out" } : undefined}
@@ -246,7 +246,7 @@ function Chip({
       onClick={onClick}
       className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition ${
         active
-          ? "border-sage bg-sage text-white"
+          ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
           : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
       }`}
       style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
@@ -579,7 +579,7 @@ export function CareerCompass({
           type="button"
           disabled={nextDisabled}
           onClick={() => goNext(from)}
-          className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-40"
+          className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-40"
         >
           {flow.indexOf(from) === flow.length - 1
             ? t("results.ccFinish", locale)
@@ -659,7 +659,7 @@ export function CareerCompass({
               <button
                 type="button"
                 onClick={() => setStep("status")}
-                className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
                 {t("results.ccStart", locale)}
               </button>
@@ -667,7 +667,7 @@ export function CareerCompass({
               <div className="mt-5">
                 <Link
                   href="/assessment"
-                  className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                  className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                 >
                   {t("results.ccNeedsProfileCta", locale)}
                 </Link>
@@ -977,7 +977,7 @@ export function CareerCompass({
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white shadow-sm"
+                      ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
@@ -1014,7 +1014,7 @@ export function CareerCompass({
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white shadow-sm"
+                      ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
@@ -1135,7 +1135,7 @@ export function CareerCompass({
                         <button
                           type="button"
                           onClick={() => setProfilerOpen(true)}
-                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark"
+                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                         >
                           {t("results.ccRiasecCtaBtn", locale)}
                         </button>

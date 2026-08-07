@@ -249,7 +249,7 @@ export function OnboardingClient() {
                         : t("onboarding.usernameHint", locale)
                     }
                     helpTextClassName="pl-1 italic text-xs text-muted"
-                    errorClassName="pl-1 italic text-xs text-bronze"
+                    errorClassName="pl-1 italic text-xs text-[var(--color-accent-primary-strong)]"
                     inputClassName={invalidFieldFlash === "username" ? "ring-2 ring-sage/30" : undefined}
                   />
                 </div>
@@ -277,7 +277,7 @@ export function OnboardingClient() {
                     helpText={`${t("onboarding.validRangeLabel", locale)}: ${minBirthYear} – ${maxBirthYear}`}
                     helpTextClassName={`pl-1 italic text-xs ${
                       birthYearTouched && birthYear !== "" && !birthYearValid
-                        ? "text-bronze"
+                        ? "text-[var(--color-accent-primary-strong)]"
                         : "text-muted"
                     }`}
                     inputClassName={`[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none${
@@ -381,7 +381,7 @@ export function OnboardingClient() {
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-bronze underline hover:text-bronze-dark"
+                            className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                           >
                             {t("onboarding.consentLinkText", locale)}
                           </a>
@@ -397,7 +397,7 @@ export function OnboardingClient() {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !consent}
-                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting
                   ? t("onboarding.saving", locale)

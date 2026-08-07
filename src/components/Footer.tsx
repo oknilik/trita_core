@@ -77,7 +77,7 @@ export function Footer() {
         />
       </svg>
 
-      <div className="pointer-events-auto w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
+      <div className="pointer-events-auto w-full bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
       <div className="mx-auto w-full max-w-[1120px] px-7">
         <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
 
@@ -86,12 +86,12 @@ export function Footer() {
             <Link
               href="/"
               aria-label="trita"
-              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-cream"
+              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-[var(--color-text-on-inverse)]"
             >
               <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
               <span style={{ color: "var(--color-accent-primary)" }}>a</span>
             </Link>
-            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-cream/70">
+            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-[var(--color-text-on-inverse)]/70">
               {t("footer.tagline", locale)}
             </p>
           </div>
@@ -99,7 +99,7 @@ export function Footer() {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-cream/55">
+              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse)]/55">
                 {col.heading}
               </p>
               <ul className="flex flex-col gap-2">
@@ -107,7 +107,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-caption text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
+                      className="text-caption text-[var(--color-text-on-inverse)]/75 underline-offset-4 transition-colors hover:text-[var(--color-accent-primary-strong)] hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -119,8 +119,8 @@ export function Footer() {
 
         </div>
 
-        <div className="mt-10 border-t border-cream/10 pt-5">
-          <p className="text-[12px] text-cream/70">{t("footer.copyright", locale)}</p>
+        <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-5">
+          <p className="text-[12px] text-[var(--color-text-on-inverse)]/70">{t("footer.copyright", locale)}</p>
         </div>
       </div>
       </div>

@@ -13,7 +13,7 @@ export function UpgradeButton({ label }: UpgradeButtonProps) {
   return (
     <Link
       href="/contact"
-      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
     >
       {label}
     </Link>

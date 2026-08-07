@@ -60,7 +60,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
           type="button"
           onClick={handleDeactivate}
           disabled={loading}
-          className="min-h-[44px] rounded-lg bg-state-error-solid px-5 text-sm font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
+          className="min-h-[44px] rounded-lg bg-[var(--color-action-destructive-bg)] px-5 text-sm font-semibold text-[var(--color-action-destructive-fg)] transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:opacity-50"
         >
           {loading ? "..." : t("org.actions.deactivateYes", loc)}
         </button>
@@ -72,7 +72,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
           {t("org.actions.deactivateCancel", loc)}
         </button>
       </div>
-      {error && <p className="text-xs text-state-error-solid">{error}</p>}
+      {error && <p className="text-xs text-state-error-fg">{error}</p>}
     </div>
   );
 }

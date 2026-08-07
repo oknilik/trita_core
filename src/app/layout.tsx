@@ -83,8 +83,7 @@ export default function RootLayout({
       <head>
         {/* Színséma a festés ELŐTT — enélkül minden oldalbetöltésnél
             felvillanna a világos téma. Szerver-oldalon szándékosan NEM
-            olvasunk sütit: az az egész marketing-fát dinamikussá tenné.
-            A marketing-oldalakon nincs hatása (nincs ott .theme-scope). */}
+            olvasunk sütit: az az egész marketing-fát dinamikussá tenné. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body

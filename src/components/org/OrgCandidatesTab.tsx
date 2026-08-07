@@ -111,7 +111,7 @@ export function OrgCandidatesTab({
                 {c.hasResult && (
                   <Link
                     href={`/hiring/${orgId}/candidates/${c.id}`}
-                    className="text-xs font-semibold text-bronze hover:underline"
+                    className="text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
                   >
                     {isHu ? "Eredmény →" : "Result →"}
                   </Link>
@@ -125,7 +125,7 @@ export function OrgCandidatesTab({
       {/* A kanonikus jelölt-munkafelület a /hiring — innen mindig egy link visz oda. */}
       <Link
         href={`/hiring/${orgId}`}
-        className="mt-3 inline-flex text-xs font-semibold text-bronze hover:underline"
+        className="mt-3 inline-flex text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
       >
         {isHu
           ? `Jelölt-felület megnyitása (${candidates.length}) →`

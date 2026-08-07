@@ -81,7 +81,7 @@ export default function TryClaimPage() {
             claimed.current = false;
             setRetryNonce((n) => n + 1);
           }}
-          className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-white"
+          className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-[var(--color-text-on-accent)]"
         >
           {t("tryClaim.retryCta", locale)}
         </button>

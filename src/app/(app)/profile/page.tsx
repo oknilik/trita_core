@@ -241,7 +241,7 @@ export default function ProfilePage() {
   const pillClass = (active: boolean) =>
     `min-h-[44px] rounded-full border-[1.5px] px-[18px] py-2 text-xs transition-all ${
       active
-        ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-white shadow-md shadow-[var(--color-action-primary-bg)]/15"
+        ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/15"
         : "border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]"
     }`;
 
@@ -415,7 +415,7 @@ export default function ProfilePage() {
           </div>
           <button
             type="button" onClick={handleSave} disabled={!canSubmitDemo}
-            className={`inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-caption font-semibold text-white transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
+            className={`inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 py-2.5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition-all ${canSubmitDemo ? "hover:brightness-[1.06]" : "cursor-default opacity-35"}`}
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </button>

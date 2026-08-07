@@ -74,7 +74,7 @@ export function AddParticipantButton({
       {!open ? (
         <button
           onClick={() => setOpen(true)}
-          className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+          className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
         >
           {t("org.actions.addParticipants", loc)}
         </button>
@@ -109,12 +109,12 @@ export function AddParticipantButton({
               </label>
             ))}
           </div>
-          {error && <p className="mb-3 text-xs text-state-error-solid">{error}</p>}
+          {error && <p className="mb-3 text-xs text-state-error-fg">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={loading || selected.size === 0}
-              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-[44px] rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading
                 ? t("org.actions.addingParticipants", loc)

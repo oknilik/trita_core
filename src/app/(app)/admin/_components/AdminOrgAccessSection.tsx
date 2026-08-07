@@ -287,7 +287,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             type="button"
                             disabled={state.loading}
                             onClick={() => callAction(org.id, "activate")}
-                            className="min-h-[40px] rounded-lg bg-sage px-3 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                            className="min-h-[40px] rounded-lg bg-sage px-3 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
                           >
                             Aktiválás
                           </button>
@@ -329,7 +329,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 c.email &&
                                 callAction(org.id, "remove_consultant", { consultantEmail: c.email })
                               }
-                              className="text-state-warning-solid transition hover:text-state-error-solid disabled:opacity-50"
+                              className="text-state-warning-fg transition hover:text-state-error-fg disabled:opacity-50"
                               aria-label="Tanácsadó eltávolítása"
                             >
                               ×
@@ -389,7 +389,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                       </label>
                     </div>
                     {state.error && (
-                      <p className="mt-2 text-xs text-state-error-solid">{state.error}</p>
+                      <p className="mt-2 text-xs text-state-error-fg">{state.error}</p>
                     )}
 
                     {/* ── Cégadatok (számlázás) — csak itt, az admin nézetben ── */}
@@ -402,7 +402,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             d[org.id] ? d : { ...d, [org.id]: { ...org.billingProfile } },
                           );
                         }}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-body transition hover:text-bronze"
+                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-ink-body transition hover:text-[var(--color-accent-primary-strong)]"
                       >
                         <span>{billingOpen[org.id] ? "▾" : "▸"}</span>
                         Cégadatok (számlázás)
@@ -459,14 +459,14 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               type="button"
                               disabled={billingState[org.id]?.saving}
                               onClick={() => saveBilling(org.id)}
-                              className="min-h-[40px] rounded-lg bg-action-primary-bg px-5 text-xs font-semibold text-white transition hover:brightness-110 disabled:opacity-50"
+                              className="min-h-[40px] rounded-lg bg-action-primary-bg px-5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:opacity-50"
                             >
                               {billingState[org.id]?.saving ? "Mentés…" : "Cégadatok mentése"}
                             </button>
                             {billingState[org.id]?.message && (
                               <p
                                 className={`text-xs font-medium ${
-                                  billingState[org.id]?.error ? "text-state-error-solid" : "text-sage-dark"
+                                  billingState[org.id]?.error ? "text-state-error-fg" : "text-sage-dark"
                                 }`}
                               >
                                 {billingState[org.id]?.message}

@@ -225,7 +225,7 @@ export function CareerFakeDoor({
                 className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 stroke-bronze opacity-[0.09] [&>g]:stroke-bronze"
               />
               <div className="relative">
-                <span className="font-fraunces text-[15px] text-bronze">
+                <span className="font-fraunces text-[15px] text-[var(--color-accent-primary-strong)]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="mt-1 font-fraunces text-[19px] leading-snug text-ink md:text-[22px]">
@@ -264,7 +264,7 @@ export function CareerFakeDoor({
             hero mostantól zsálya tervlap, mellette az agyag két külön
             akcentus-családot vitt volna egy oldalra. Az ink egyikkel sem
             versenyez. */}
-        <div className="relative overflow-hidden bg-gradient-to-b from-ink to-ink-body px-6 py-7 md:px-8 md:py-8">
+        <div className="relative overflow-hidden bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-7 md:px-8 md:py-8">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-16 h-[220px] w-[220px] rounded-full bg-white/[0.03]"

@@ -113,7 +113,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   const optionButtonClass = (selected: boolean) =>
     `flex min-h-[44px] items-center justify-center rounded-lg border transition-all duration-200 ${
       selected
-        ? "border-sage bg-sage text-white shadow-md"
+        ? "border-sage bg-sage text-[var(--color-action-primary-fg)] shadow-md"
         : "border-sand bg-surface-card text-ink hover:-translate-y-0.5 hover:border-sage-ring hover:bg-sage-ghost hover:shadow-sm"
     }`;
 
@@ -147,7 +147,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     return (
       <div className="animate-fade-in rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-white p-6 md:p-8">
         <div className="flex items-center justify-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-white shadow-sm">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)] shadow-sm">
             <svg
               viewBox="0 0 20 20"
               fill="none"
@@ -293,7 +293,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }
-          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-cream-300 disabled:to-cream-300 disabled:hover:scale-100"
+          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-cream-300 disabled:to-cream-300 disabled:hover:scale-100"
         >
           {isSubmitting
             ? t("dashboard.feedbackSubmitLoading", locale)

@@ -148,7 +148,7 @@ export function CampaignPacingTile({
                     isHu ? "Kiküldve — a nyitott lépés mindenkinél elérhető." : "Sent — the open step is now available to everyone.",
                   )
                 }
-                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110 disabled:opacity-50 md:min-h-[38px]"
+                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:opacity-50 md:min-h-[38px]"
               >
                 {busy === "release" ? "…" : isHu ? "Küldés most" : "Send now"}
               </button>
@@ -177,7 +177,7 @@ export function CampaignPacingTile({
                     // Mobilon 44px-es érintési cél, md-től az eredeti kompakt méret.
                     "min-h-[44px] min-w-[44px] rounded-lg border px-3 text-label font-semibold tracking-normal transition disabled:opacity-50 md:min-h-[30px] md:min-w-0 md:px-2",
                     data.stepIntervalHours === h
-                      ? "border-ink bg-ink text-white"
+                      ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                       : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                   ].join(" ")}
                 >

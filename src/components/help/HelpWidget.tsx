@@ -130,7 +130,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
               <div className="px-1 py-1">
                 {askState === "sent" ? (
                   <div className="flex flex-col items-center gap-3 py-6 text-center">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sage text-lg font-bold text-white">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sage text-lg font-bold text-[var(--color-action-primary-fg)]">
                       ✓
                     </span>
                     <p className="text-sm leading-relaxed text-ink-body">
@@ -157,7 +157,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                       className="w-full rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none focus:border-sage/50"
                     />
                     {askState === "error" && (
-                      <p className="mt-2 text-xs text-state-error-solid">
+                      <p className="mt-2 text-xs text-state-error-fg">
                         {isHu ? "A küldés nem sikerült — próbáld újra." : "Sending failed — please try again."}
                       </p>
                     )}
@@ -165,7 +165,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                       type="button"
                       onClick={() => void sendQuestion()}
                       disabled={askMessage.trim().length < 10 || askState === "sending"}
-                      className="mt-3 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+                      className="mt-3 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {askState === "sending"
                         ? isHu ? "Küldés…" : "Sending…"
@@ -183,7 +183,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                   <Link
                     href={entry.link.href}
                     onClick={close}
-                    className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                    className="mt-4 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                   >
                     {isHu ? entry.link.label.hu : entry.link.label.en}
                   </Link>
@@ -235,7 +235,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                   <button
                     type="button"
                     onClick={() => setAskOpen(true)}
-                    className="font-semibold text-bronze underline-offset-2 hover:underline"
+                    className="font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline"
                   >
                     {isHu ? "Kérdésem van" : "Ask a question"}
                   </button>
@@ -243,7 +243,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                   <Link
                     href="/contact"
                     onClick={close}
-                    className="font-semibold text-bronze underline-offset-2 hover:underline"
+                    className="font-semibold text-[var(--color-accent-primary-strong)] underline-offset-2 hover:underline"
                   >
                     {isHu ? "Írj nekünk" : "Contact us"}
                   </Link>
@@ -260,7 +260,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
         onClick={() => (open ? close() : setOpen(true))}
         aria-expanded={open}
         aria-label={isHu ? "Segítség" : "Help"}
-        className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-cream shadow-lg transition hover:bg-ink/85"
+        className="fixed bottom-4 right-4 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] shadow-lg transition hover:bg-[var(--color-surface-inverse)]/85"
       >
         {open ? (
           <svg width="16" height="16" viewBox="0 0 14 14" fill="none" aria-hidden="true">

@@ -72,7 +72,7 @@ export function TryTeaserCard({
             >
               <span className="font-semibold text-ink">{dim.letter}</span>
               {dim.label}
-              <span className="font-semibold text-bronze">{dim.score}%</span>
+              <span className="font-semibold text-[var(--color-accent-primary-strong)]">{dim.score}%</span>
             </span>
           ))}
         </div>

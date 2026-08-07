@@ -531,7 +531,7 @@ export function AdminBlogSection({
                         onClick={() => set({ locale: loc })}
                         className={`min-h-[40px] flex-1 rounded-lg border px-4 text-sm font-semibold transition ${
                           form.locale === loc
-                            ? "border-sage bg-sage text-white"
+                            ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
                             : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                         }`}
                       >
@@ -627,7 +627,7 @@ export function AdminBlogSection({
                           onClick={() => set({ artMotif: value })}
                           className={`rounded-full border px-3 py-1 text-xs transition ${
                             form.artMotif === value
-                              ? "border-sage bg-sage text-white"
+                              ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
                               : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                           }`}
                         >
@@ -834,7 +834,7 @@ export function AdminBlogSection({
                   aria-pressed={active}
                   className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold transition ${
                     active
-                      ? "border-sage bg-sage text-white"
+                      ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
                       : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
                   }`}
                 >
@@ -852,7 +852,7 @@ export function AdminBlogSection({
                 aria-pressed={localeFilter === loc}
                 className={`min-h-[40px] rounded-full border px-3 text-xs font-semibold uppercase transition ${
                   localeFilter === loc
-                    ? "border-bronze bg-bronze text-white"
+                    ? "border-bronze bg-bronze text-[var(--color-text-on-accent)]"
                     : "border-sand bg-surface-card text-ink-body hover:border-bronze/50"
                 }`}
               >

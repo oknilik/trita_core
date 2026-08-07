@@ -34,7 +34,7 @@ class SignUpErrorBoundary extends Component<{ children: ReactNode }, { hasError:
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-white hover:bg-sage-dark"
+              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
             >
               Újratöltés
             </button>
@@ -222,7 +222,7 @@ function SignUpContent() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
                 {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
               </button>
@@ -346,7 +346,7 @@ function SignUpContent() {
               <button
                 type="submit"
                 disabled={isSubmitting || !intent}
-                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
                 {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
               </button>

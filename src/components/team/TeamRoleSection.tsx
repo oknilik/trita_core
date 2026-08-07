@@ -508,7 +508,7 @@ function PeerComparison({
                           <RoleChip role={r.role} isHu={isHu} size="xs" />
                           {selfTop.length > 0 && !selfSet.has(r.role) && (
                             <span
-                              className="font-mono text-micro text-bronze"
+                              className="font-mono text-micro text-[var(--color-accent-primary-strong)]"
                               title={t("teamComp.peerDiff", loc)}
                             >
                               •

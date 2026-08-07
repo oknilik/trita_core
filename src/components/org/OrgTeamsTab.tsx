@@ -46,7 +46,7 @@ export function OrgTeamsTab({
             type="button"
             onClick={() => setCreateOpen((v) => !v)}
             aria-expanded={createOpen}
-            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white transition hover:brightness-110"
+            className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             <span aria-hidden>{createOpen ? "×" : "+"}</span>
             {t("org.teams.newTitle", loc)}
@@ -79,7 +79,7 @@ export function OrgTeamsTab({
               className="group flex items-center justify-between rounded-xl border border-sand bg-surface-card p-4 shadow-sm transition-all hover:border-sage/30 hover:bg-cream"
             >
               <div>
-                <p className="font-semibold text-ink transition-colors group-hover:text-bronze">
+                <p className="font-semibold text-ink transition-colors group-hover:text-[var(--color-accent-primary-strong)]">
                   {team.name}
                 </p>
                 <p className="text-xs text-ink-body/60">
@@ -87,7 +87,7 @@ export function OrgTeamsTab({
                   {t(team._count.members === 1 ? "org.teams.memberCount" : "org.teams.membersCount", loc)}
                 </p>
               </div>
-              <span className="font-mono text-xs text-bronze opacity-0 transition-opacity group-hover:opacity-100">
+              <span className="font-mono text-xs text-[var(--color-accent-primary-strong)] opacity-0 transition-opacity group-hover:opacity-100">
                 →
               </span>
             </Link>
@@ -110,7 +110,7 @@ export function OrgTeamsTab({
             </span>
             <a
               href={actionGateCopy.ctaHref}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-6 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
             >
               {actionGateCopy.ctaLabel}
             </a>

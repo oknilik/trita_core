@@ -89,7 +89,7 @@ export function OrgSubscriptionBanner({
           className={cn(
             "inline-flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold text-white transition",
             isNone
-              ? "bg-ink-body hover:bg-ink"
+              ? "bg-[var(--color-surface-inverse-soft)] hover:bg-[var(--color-surface-inverse)]"
               : isFrozen
               ? "bg-state-warning-fg hover:bg-bronze-700"
               : "bg-layer-org-bright hover:bg-layer-org-accent",

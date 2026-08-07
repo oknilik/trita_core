@@ -81,7 +81,7 @@ export function TeamReportMemberView({
         <div className="bg-gradient-to-r from-sage/15 via-cream/70 to-white p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-sage font-fraunces text-lg font-semibold text-white shadow-[0_6px_16px_rgba(107,138,99,0.35)]">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-sage font-fraunces text-lg font-semibold text-[var(--color-action-primary-fg)] shadow-[0_6px_16px_rgba(107,138,99,0.35)]">
                 {initialsOf(vm.memberName)}
               </div>
               <div>
@@ -192,7 +192,7 @@ export function TeamReportMemberView({
 
             {vm.complementLabels.length > 0 && (
               <div className="mt-5 flex items-start gap-3 rounded-[14px] border border-sage/30 bg-sage/10 px-4 py-3.5">
-                <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-sage text-white">
+                <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)]">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M8 2v5M8 2l3 3M8 2L5 5M3 10.5C3 12 5 14 8 14s5-2 5-3.5" />
                   </svg>
@@ -224,7 +224,7 @@ export function TeamReportMemberView({
             </p>
             <Link
               href="/assessment"
-              className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
             >
               {isHu ? "A felmérésem kitöltése →" : "Complete my assessment →"}
             </Link>
@@ -242,7 +242,7 @@ export function TeamReportMemberView({
           <DashboardPanel className="p-6">
             <div className="flex flex-wrap items-center gap-5">
               <div className="flex flex-shrink-0 flex-col items-center gap-1.5">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-dark font-mono text-lg font-bold text-white shadow-[0_8px_20px_rgba(107,138,99,0.35)]">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-dark font-mono text-lg font-bold text-[var(--color-action-primary-fg)] shadow-[0_8px_20px_rgba(107,138,99,0.35)]">
                   {vm.primaryRole.code}
                 </div>
                 {vm.roleFit === "rare" ? (

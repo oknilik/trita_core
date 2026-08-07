@@ -28,7 +28,7 @@ export function SectionCta({ eyebrow, title, body, cta, href, motif }: SectionCt
   return (
     <Link
       href={href}
-      className="group relative block overflow-hidden rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-text-primary)] p-6 transition duration-300 hover:border-[var(--color-action-primary-bg)]/50 hover:shadow-[0_10px_30px_rgba(0,0,0,0.14)] md:p-8"
+      className="group relative block overflow-hidden rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-inverse)] p-6 transition duration-300 hover:border-[var(--color-action-primary-bg)]/50 hover:shadow-[0_10px_30px_rgba(0,0,0,0.14)] md:p-8"
     >
       {/* Motívum: a kártya jobb oldalán, a szövegtől elhúzva. Mobilon
           halványabb, hogy a szöveg maradjon az elsődleges. */}

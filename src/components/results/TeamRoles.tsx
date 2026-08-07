@@ -157,7 +157,7 @@ export function TeamRoles({
               <span
                 className={`mb-2 self-start rounded px-[9px] py-[3px] text-micro font-bold uppercase tracking-wide ${
                   isPrimary
-                    ? "bg-[var(--color-action-primary-bg)] text-white"
+                    ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
                     : idx === 1
                       ? "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
                       : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"

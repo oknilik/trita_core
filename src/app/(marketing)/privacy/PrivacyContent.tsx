@@ -15,7 +15,7 @@ import { getPrivacyPolicy, type PolicyBlock } from "@/lib/legal/privacy-policy";
  *
  * DESIGN: a lap a token-rendszerből dolgozik — szerep-tipográfia
  * (text-display/title/heading/body/caption/label/micro), `border-sand`,
- * `bg-cream`, `text-ink`/`text-ink-body`, `text-bronze`; nyers hex és
+ * `bg-cream`, `text-ink`/`text-ink-body`, `text-[var(--color-accent-primary-strong)]`; nyers hex és
  * arbitrary `text-[Npx]` nincs benne (ui-contribution-guide).
  */
 
@@ -64,7 +64,7 @@ function BlockView({ block }: { block: PolicyBlock }) {
                   <th
                     key={column}
                     scope="col"
-                    className="pb-2 pr-4 text-label uppercase text-bronze last:pr-0"
+                    className="pb-2 pr-4 text-label uppercase text-[var(--color-accent-primary-strong)] last:pr-0"
                   >
                     {column}
                   </th>
@@ -107,21 +107,21 @@ export function PrivacyContent() {
   return (
     <main id="top" className="min-h-dvh bg-cream">
       {/* ── Fejléc ── */}
-      <section className="border-b border-sand bg-action-primary-bg px-6 py-14 lg:px-16 lg:py-16">
+      <section className="border-b border-sand bg-[var(--color-layer-self-hero-from)] px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
           <SectionEyebrow tone="onDark" className="mb-4">
             {doc.eyebrow}
           </SectionEyebrow>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-fraunces text-fluid-title tracking-tight text-cream">{doc.title}</h1>
+            <h1 className="font-fraunces text-fluid-title tracking-tight text-[var(--color-text-on-inverse)]">{doc.title}</h1>
             {LEGAL_DOCS_ARE_DRAFT && (
-              <span className="rounded-full border border-cream/30 px-2.5 py-1 text-label uppercase text-cream/70">
+              <span className="rounded-full border border-[var(--color-text-on-inverse)]/30 px-2.5 py-1 text-label uppercase text-[var(--color-text-on-inverse)]/70">
                 {doc.draftBadge}
               </span>
             )}
           </div>
-          <p className="mt-4 max-w-3xl text-body leading-relaxed text-cream/80">{doc.lead}</p>
-          <p className="mt-5 text-label uppercase text-cream/55">
+          <p className="mt-4 max-w-3xl text-body leading-relaxed text-[var(--color-text-on-inverse)]/80">{doc.lead}</p>
+          <p className="mt-5 text-label uppercase text-[var(--color-text-on-inverse)]/55">
             {doc.lastUpdated} · {doc.effectiveFrom}
           </p>
         </div>
@@ -135,7 +135,7 @@ export function PrivacyContent() {
             // érintettet. A jelölés a `company.ts` egyetlen konstansával
             // tűnik el, amikor a valós adatok bekerülnek.
             <div className="mb-8 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
-              <p className="text-label uppercase text-bronze">{doc.draftBadge}</p>
+              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">{doc.draftBadge}</p>
               <p className="mt-2 text-caption leading-relaxed text-ink-body">{doc.draftNote}</p>
             </div>
           )}
@@ -151,7 +151,7 @@ export function PrivacyContent() {
                     href={`#${section.id}`}
                     className="group flex min-h-[44px] items-baseline gap-2 rounded px-2 py-1.5 transition-colors hover:bg-surface-highlight-warm lg:min-h-0"
                   >
-                    <span className="text-micro text-bronze">
+                    <span className="text-micro text-[var(--color-accent-primary-strong)]">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                     <span className="text-caption text-ink-body transition-colors group-hover:text-ink">
@@ -170,7 +170,7 @@ export function PrivacyContent() {
                   id={section.id}
                   className="scroll-mt-28 rounded-lg border border-sand bg-surface-card p-5 md:p-7"
                 >
-                  <p className="mb-3 text-label uppercase text-bronze">
+                  <p className="mb-3 text-label uppercase text-[var(--color-accent-primary-strong)]">
                     {String(index + 1).padStart(2, "0")}
                   </p>
                   <h2 className="mb-4 font-fraunces text-title text-ink">{section.title}</h2>
@@ -185,7 +185,7 @@ export function PrivacyContent() {
               <p className="pt-2 text-right">
                 <a
                   href="#top"
-                  className="text-caption text-bronze underline-offset-4 hover:underline"
+                  className="text-caption text-[var(--color-accent-primary-strong)] underline-offset-4 hover:underline"
                 >
                   ↑ {doc.backToTop}
                 </a>

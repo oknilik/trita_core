@@ -20,7 +20,7 @@ export function HollandContent() {
         <div className="mx-auto max-w-5xl">
           <div className="mb-4 flex items-center gap-3">
             <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary)]">
+            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {isHu ? "Karrier-iránytű" : "Career compass"}
             </span>
           </div>
@@ -132,7 +132,7 @@ export function HollandContent() {
           A korábbi egyetlen CTA a fake door-ba futott ("a funkció még nem
           létezik") — indexelt SEO-oldalról ez zsákutca volt. */}
       <section className="px-7 pb-16">
-        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 rounded-2xl bg-[var(--color-sage-deep,#2f4f44)] p-6 md:p-8">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 rounded-2xl bg-[var(--color-layer-self-hero-mid)] p-6 md:p-8">
           <div>
             <p className="font-fraunces text-lg text-white">
               {isHu ? "Kíváncsi vagy, hogyan működsz?" : "Curious how you operate?"}
@@ -146,7 +146,7 @@ export function HollandContent() {
           <div className="flex flex-wrap items-center gap-3">
             <Link
               href="/try"
-              className="inline-flex min-h-[44px] items-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-sm font-semibold text-white transition hover:brightness-110"
+              className="inline-flex min-h-[44px] items-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-sm font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
             >
               {isHu ? "Ingyenes teszt indítása →" : "Start the free test →"}
             </Link>

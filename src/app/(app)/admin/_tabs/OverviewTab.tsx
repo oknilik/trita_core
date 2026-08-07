@@ -347,7 +347,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
               : "border-sand bg-surface-card hover:border-sage/40"
           }`}
         >
-          <p className="text-body font-semibold text-ink group-hover:text-bronze">
+          <p className="text-body font-semibold text-ink group-hover:text-[var(--color-accent-primary-strong)]">
             Kérdések{newInquiryCount > 0 ? ` (${newInquiryCount} új)` : ""}
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">
@@ -358,7 +358,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
           href="/admin?tab=orgs"
           className="group rounded-2xl border border-sand bg-surface-card p-5 transition hover:-translate-y-0.5 hover:border-sage/40"
         >
-          <p className="text-body font-semibold text-ink group-hover:text-bronze">
+          <p className="text-body font-semibold text-ink group-hover:text-[var(--color-accent-primary-strong)]">
             Szervezetek kezelése
           </p>
           <p className="mt-1 text-xs leading-relaxed text-ink-body">

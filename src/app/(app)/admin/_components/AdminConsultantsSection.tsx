@@ -178,7 +178,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
           <button
             type="submit"
             disabled={inviteBusy || !inviteEmail.trim()}
-            className="min-h-[44px] rounded-lg bg-action-primary-bg px-6 text-sm font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+            className="min-h-[44px] rounded-lg bg-action-primary-bg px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {inviteBusy ? "Meghívás…" : "Meghívás"}
           </button>
@@ -211,7 +211,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                   type="button"
                   disabled={busyKey === `revoke-${inv.id}`}
                   onClick={() => action({ action: "revoke_invite", inviteId: inv.id }, `revoke-${inv.id}`)}
-                  className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-solid"
+                  className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-fg"
                 >
                   Visszavonás
                 </button>
@@ -299,7 +299,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                         onClick={() =>
                           action({ action: "remove_consultant", profileId: c.id }, `remove-${c.id}`)
                         }
-                        className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-solid"
+                        className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-fg"
                       >
                         Eltávolítás
                       </button>
@@ -326,7 +326,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                                 `unassign-${c.id}-${o.id}`,
                               )
                             }
-                            className="text-sage-dark/60 transition hover:text-state-error-solid"
+                            className="text-sage-dark/60 transition hover:text-state-error-fg"
                           >
                             ×
                           </button>
@@ -360,7 +360,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                               `assign-${c.id}`,
                             )
                           }
-                          className="min-h-[40px] rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                          className="min-h-[40px] rounded-lg bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                           Kiosztás
                         </button>

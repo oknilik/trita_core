@@ -99,7 +99,7 @@ export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
   const c = context ? CONTENT[context] : null;
 
   return (
-    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-text-primary)] to-[var(--color-text-strong-deep)] px-8 py-10 lg:flex">
+    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-8 py-10 lg:flex">
       <div>
         {c ? (
           <>

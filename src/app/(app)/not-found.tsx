@@ -21,7 +21,7 @@ export default async function AppNotFound() {
         </p>
         <Link
           href="/dashboard"
-          className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-bronze px-6 text-label font-medium text-white transition-opacity hover:opacity-90"
+          className="mt-6 inline-flex min-h-[44px] items-center justify-center rounded-xl bg-bronze px-6 text-label font-medium text-[var(--color-text-on-accent)] transition-opacity hover:opacity-90"
         >
           {isHu ? "Vissza a vezérlőre" : "Back to the dashboard"}
         </Link>

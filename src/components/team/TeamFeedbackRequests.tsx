@@ -273,7 +273,7 @@ export function TeamFeedbackRequests({
               onClick={() => toggleAudience(m.userId)}
               className={`rounded-full border px-3 py-1.5 text-xs transition ${
                 audience.has(m.userId)
-                  ? "border-sage bg-sage text-white"
+                  ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
                   : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
               }`}
             >

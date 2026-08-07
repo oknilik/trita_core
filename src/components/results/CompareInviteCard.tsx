@@ -147,7 +147,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           type="button"
           onClick={handleCreate}
           disabled={busy}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t("results.compareCreateCta", locale)}
         </button>

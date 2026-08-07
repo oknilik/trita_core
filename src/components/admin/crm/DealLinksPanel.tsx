@@ -175,7 +175,7 @@ export function DealLinksPanel({
               setNoteDraft(deal.adminNote ?? "");
               setNoteOpen((open) => !open);
             }}
-            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-xs text-bronze underline underline-offset-2"
+            className="-my-2 inline-flex min-h-[44px] shrink-0 items-center text-xs text-[var(--color-accent-primary-strong)] underline underline-offset-2"
           >
             {noteOpen ? "Bezárás" : deal.adminNote ? "Szerkesztés" : "Jegyzet"}
           </button>
