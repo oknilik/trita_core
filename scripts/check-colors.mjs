@@ -261,6 +261,14 @@ const untokenizedSurfaces = [];
      "szöveg-token háttérként → --color-surface-inverse / --color-layer-*-hero-*"],
     [/\b(?:bg|from|via|to)-ink(?:-body)?\b(?!\/)/g,
      "ink háttérként → --color-surface-inverse (sötéten megfordul)"],
+    // Ugyanez SVG-attribútumban. A footer hullám-éle `fill="var(--color-ink)"`
+    // volt: sötét sémán az ink VILÁGOS, tehát a hullám krém sávként világított
+    // az oldal és a footer között (2026-08-07). Az SVG-ben lévő SZÖVEG a
+    // finomabb `text-secondary` / `ink-body` fokozatokat használja, azokat
+    // nem bántjuk — ez a szabály a két legerősebb tintára szól, ami a
+    // gyakorlatban mindig kitöltés.
+    [/\bfill=\{?"var\(--color-(?:ink|text-primary)\)"/g,
+     "ink/text-primary SVG-kitöltésként → --color-surface-inverse"],
     // Csak az ÁTLÁTSZATLAN (alfa >= 0.9 vagy hiányzó) hardkódolt rgba a hiba.
     // Az áttetsző színezetek (alfa 0.04–0.22) szándékos fátylak — ugyanaz az
     // elv, mint a bg-white/15-nél: nem felület, hanem réteg.

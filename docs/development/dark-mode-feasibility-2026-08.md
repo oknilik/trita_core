@@ -971,3 +971,21 @@ motívum a magot kapja és maga hozza létre a generátort: minden render
 ugyanonnan indul. A kirajzolt kép nem változik.
 
 Ez nem a sötét módból jött — csak ugyanaz a konzol-ellenőrzés hozta ki.
+
+### 17.7 A footer hullám-éle
+
+`fill="var(--color-ink)"` — SZÖVEG-token egy nagy SVG-kitöltésen. Sötét
+sémán az ink világos, tehát a footer fölötti hullám **krém sávként
+világított** az oldal és a footer között. A törzs gradiense addigra már a
+`--color-surface-inverse`-re volt átállítva, a hullám viszont nem: a két
+felület elvált egymástól.
+
+Most ugyanaz a token tölti ki, mint a gradiens `from-` stopját — a varrat
+így nem tud elcsúszni. Világosban ez pixelre azonos a korábbival
+(`surface-inverse` = `#1a1a2e` = a régi ink).
+
+Ezt a `check-colors` (e) sem fogta meg: a szabályai osztály-neveket
+néznek (`bg-ink`, `from-[var(--color-text-primary)]`), az SVG-attribútumot
+nem. Kiterjesztve a `fill="var(--color-ink | --color-text-primary)"`
+alakra is — az SVG-ben lévő SZÖVEG a finomabb `text-secondary` /
+`ink-body` fokozatokat használja, azokat nem érinti.

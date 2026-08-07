@@ -71,9 +71,14 @@ export function Footer() {
         aria-hidden="true"
         className="pointer-events-none block h-10 w-full md:h-14"
       >
+        {/* A kitöltés UGYANAZ a token, mint a törzs gradiensének `from-`
+            stopja — így a varrat nem tud elcsúszni. Korábban `--color-ink`
+            volt: az SZÖVEG-token, tehát sötét sémán VILÁGOSSÁ fordul, és a
+            hullám krém sávként világított az oldal és a footer között
+            (2026-08-07). */}
         <path
           d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"
-          fill="var(--color-ink)"
+          fill="var(--color-surface-inverse)"
         />
       </svg>
 
