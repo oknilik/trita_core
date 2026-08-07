@@ -1040,3 +1040,63 @@ oklab-színek. Mindkétszer a felhasználó szeme találta meg, amit a szám nem
 A „0 találat" ezért önmagában nem bizonyíték — csak akkor ér valamit, ha a
 tool lefedettségét is ellenőrizzük. A konkrét ellenőrzés, ami ezt kihozta:
 a javítás VISSZAVÉTELE és újramérés. Ha a szám nem mozdul, a háló nem lát.
+
+---
+
+## 19. Az OS-felületek: billentyűzet, címsáv, vászon (2026-08-07, 11. kör)
+
+Kérdés: sötét módban a mobil billentyűzet is legyen sötét?
+
+Igen — a `color-scheme` pontosan erre való, de **a gyökéren kell állnia**.
+Eddig csak a `.theme-scope`-on volt, ami egy leszármazott div. A böngésző
+néhány felületet nem a fókuszált elemből, hanem a DOKUMENTUM sémájából
+vezet le:
+
+- a **mobil billentyűzet** (iOS Safari, Android Chrome),
+- a lap-szintű **görgetősáv**,
+- a rugalmas görgetésnél (overscroll) felvillanó **vászon**.
+
+Ezért a `:root[data-theme="dark"]` is megkapta a `color-scheme: dark`-ot.
+A `data-theme` a festés előtti scriptből kerül a `<html>`-re, tehát a
+szabály már az első festéskor érvényes.
+
+### 19.1 A vászon is fordul
+
+A `--background` (a `<body>` alapja) eddig FIX krém volt — az architektúra
+a sötétet a `.theme-scope`-ra korlátozta. iOS-en a rugalmas görgetés viszont
+felvillantotta volna a krémet a sötét lap fölött. Most a
+`:root[data-theme="dark"]` a vásznat is sötétre állítja.
+
+Ez azért biztonságos, mert MINDEN route-csoport shellje felteszi a
+`.theme-scope`-ot (`check-colors` (h)) — a tartalom sosem ül közvetlenül a
+vászonra.
+
+### 19.2 `theme-color` — a mobil címsáv
+
+A böngésző-króm (címsáv / státuszsáv) színe a `theme-color` metából jön. A
+Next `viewport.themeColor` exportja csak `prefers-color-scheme`-mel tud
+médiát adni — a mi témánk viszont SÜTI-vezérelt, tehát az a rendszertől
+eltérő választásnál hazudna (rendszer-világos + user-sötét → világos
+címsáv sötét lapon).
+
+Ezért a metát a festés előtti script teszi ki (első festéskor helyes), a
+`ThemeProvider` pedig váltáskor frissíti. Egy forrás:
+`THEME_BROWSER_CHROME` a `theme.ts`-ben — ugyanaz a két érték, mint a
+`--background`, mert a vászonnak és a böngésző felületének egyeznie kell.
+
+### 19.3 Mérés
+
+| | világos | sötét |
+|---|---|---|
+| `<html>` `color-scheme` | `light` | **`dark`** |
+| `.theme-scope` `color-scheme` | `light` | `dark` |
+| `<body>` háttér | `#f7f4ef` | **`#141418`** |
+| `theme-color` meta | `#f7f4ef` | **`#141418`** |
+
+Váltáskor (a fejléc-választóval) mindhárom élőben követi.
+
+> **Amit itt NEM tudtam ellenőrizni:** magát a mobil billentyűzetet. A
+> konténerben headless Chromium fut, nincs iOS/Android. A `color-scheme`
+> a gyökéren bizonyítottan `dark` — ez az a bemenet, amiből a platform a
+> billentyűzet megjelenését származtatja —, de a végső képet valódi
+> eszközön kell megnézni.

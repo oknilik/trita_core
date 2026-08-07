@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExte
 import {
   DEFAULT_THEME,
   normalizeTheme,
+  THEME_BROWSER_CHROME,
   THEME_COOKIE,
   THEME_COOKIE_MAX_AGE,
   type ResolvedTheme,
@@ -67,8 +68,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     preference === "system" ? (rawSystem === "dark" ? "dark" : "light") : preference;
 
   // A <html data-theme> a forrásigazság a CSS felé. Ez valódi DOM-mellékhatás.
+  //
+  // A `theme-color` metát is itt tartjuk szinkronban: a festés előtti script
+  // az ELSŐ értéket teszi ki, váltáskor viszont a mobil címsáv addig a régi
+  // színen maradna. Ha a meta hiányzik (pl. a script hibázott), pótoljuk.
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", resolved);
+
+    let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+    }
+    meta.content = THEME_BROWSER_CHROME[resolved];
   }, [resolved]);
 
   const setPreference = useCallback((next: ThemePreference) => {

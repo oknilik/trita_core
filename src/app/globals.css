@@ -963,6 +963,24 @@ body {
   color-scheme: dark;
 }
 
+/* …ÉS a GYÖKÉREN is. Ez nem duplikáció: a böngésző néhány felületet nem a
+   fókuszált elem, hanem a DOKUMENTUM színsémájából vezet le —
+   mindenekelőtt a MOBIL BILLENTYŰZETET (iOS Safari / Android Chrome), de
+   a lap-szintű görgetősávot és a rugalmas görgetésnél (overscroll)
+   felvillanó vásznat is. A hatókör egy leszármazott div, oda ez nem ér el.
+
+   A `data-theme` a festés előtti scriptből kerül a <html>-re (theme.ts),
+   tehát ez a szabály az első festéskor már érvényes. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* A <body> vászna is forduljon: enélkül iOS-en a rugalmas görgetés
+     (rubber band) krém sávot villantana a sötét lap fölött/alatt. Ez
+     biztonságos, mert MINDEN route-csoport shellje felteszi a
+     `.theme-scope`-ot (check-colors (h)) — a tartalom sosem a vászonra ül. */
+  --background: #141418;
+  --foreground: #f3efe8;
+}
+
 /* A hatókör saját alapot fest: a <body> a marketing-fáé, azt nem írjuk
    felül. A .theme-scope a bejelentkezett zóna shellje. */
 .theme-scope {

@@ -35,6 +35,16 @@ export function normalizeTheme(value: string | undefined | null): ThemePreferenc
 }
 
 /**
+ * A böngésző-króm (mobil címsáv / státuszsáv) színe sémánként. Ugyanaz a két
+ * érték, mint a `--background` a globals.css-ben — ott a vászon, itt a
+ * böngésző felülete; a kettőnek egyeznie kell, különben látszik a varrat.
+ */
+export const THEME_BROWSER_CHROME: Record<ResolvedTheme, string> = {
+  light: "#f7f4ef",
+  dark: "#141418",
+};
+
+/**
  * A festés ELŐTT futó, blokkoló script a <head>-ben.
  *
  * Miért nem szerver-oldalon: a gyökér-layout süti-olvasása az EGÉSZ
@@ -45,6 +55,11 @@ export function normalizeTheme(value: string | undefined | null): ThemePreferenc
  * Ennek AZ ÁRA, hogy a szerver-HTML-ben nincs `data-theme`, a kliensen meg
  * van — a gyökér-layout `<html>` eleme ezért kap `suppressHydrationWarning`-ot.
  *
+ * A `theme-color` metát is INNEN tesszük ki: a mobil címsáv színét a
+ * böngésző az első festéskor olvassa. A Next `viewport.themeColor` exportja
+ * csak `prefers-color-scheme`-mel tud médiát adni — a mi témánk viszont
+ * SÜTI-vezérelt, tehát az a rendszertől eltérő választásnál hazudna.
+ *
  * Hibatűrés: bármi hiba esetén némán világos marad (try/catch).
  */
 export const THEME_INIT_SCRIPT = `(function(){try{
@@ -52,4 +67,7 @@ var m=document.cookie.match(/(?:^|;\\s*)${THEME_COOKIE}=([^;]*)/);
 var p=m?decodeURIComponent(m[1]):"${DEFAULT_THEME}";
 if(p!=="light"&&p!=="dark"){p=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}
 document.documentElement.setAttribute("data-theme",p);
+var t=document.createElement("meta");
+t.name="theme-color";t.content=p==="dark"?"${THEME_BROWSER_CHROME.dark}":"${THEME_BROWSER_CHROME.light}";
+document.head.appendChild(t);
 }catch(e){}})();`;
