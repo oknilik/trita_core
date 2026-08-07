@@ -156,8 +156,8 @@ export function PairInteractionView({
               </p>
               <LineList lines={sim.easy} />
             </div>
-            <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4">
-              <p className="mb-3 text-label uppercase text-amber-700">
+            <div className="rounded-xl border border-state-warning-border bg-state-warning-bg/60 p-4">
+              <p className="mb-3 text-label uppercase text-state-warning-fg">
                 {t("results.interactionFriction", locale)}
               </p>
               <LineList lines={sim.friction} />

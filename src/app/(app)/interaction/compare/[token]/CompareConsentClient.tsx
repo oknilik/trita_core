@@ -55,7 +55,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
       </p>
 
       {error ? (
-        <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+        <p className="mt-3 rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
           {error}
         </p>
       ) : null}

@@ -195,7 +195,7 @@ export function CampaignPacingTile({
               <p className="text-label font-semibold tracking-normal text-sage-dark">{saved}</p>
             ) : null}
             {error ? (
-              <p className="text-label font-semibold tracking-normal text-amber-700">
+              <p className="text-label font-semibold tracking-normal text-state-warning-fg">
                 {isHu ? "Nem sikerült — próbáld újra." : "Failed — please retry."}
               </p>
             ) : null}

@@ -109,7 +109,7 @@ export function ObserverApprovalCard({
             </div>
           ))}
         </div>
-        {error ? <p className="mt-2 text-[12px] font-semibold text-amber-700">{error}</p> : null}
+        {error ? <p className="mt-2 text-[12px] font-semibold text-state-warning-fg">{error}</p> : null}
       </DashboardPanel>
     </section>
   );

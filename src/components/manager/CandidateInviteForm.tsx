@@ -211,7 +211,7 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
         </div>
 
         {error && (
-          <p className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-caption text-rose-700">
+          <p className="rounded-xl border border-state-error-border bg-state-error-bg px-4 py-2.5 text-caption text-state-error-fg">
             {error}
           </p>
         )}

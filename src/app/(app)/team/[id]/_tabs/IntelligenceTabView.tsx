@@ -176,7 +176,7 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
               <p className="text-[11px] text-ink-body">{isHu ? "Csapatminta státusz" : "Pattern status"}</p>
               <span
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
-                  teamData.patternResult ? "bg-sage/15 text-sage-dark" : "bg-amber-50 text-amber-700"
+                  teamData.patternResult ? "bg-sage/15 text-sage-dark" : "bg-state-warning-bg text-state-warning-fg"
                 }`}
               >
                 {teamData.patternResult ? (isHu ? "Elérhető" : "Ready") : (isHu ? "Folyamatban" : "In progress")}
@@ -222,12 +222,12 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           {intelligencePriorities.map((priority) => {
             const toneClass =
               priority.tone === "rose"
-                ? "border-rose-200 bg-rose-50"
+                ? "border-state-error-border bg-state-error-bg"
                 : priority.tone === "amber"
-                  ? "border-amber-200 bg-amber-50"
+                  ? "border-state-warning-border bg-state-warning-bg"
                   : priority.tone === "violet"
                     ? "border-violet-200 bg-violet-50"
-                    : "border-emerald-200 bg-emerald-50";
+                    : "border-state-success-border bg-state-success-bg";
             return (
               <div key={priority.id} className={`rounded-xl border p-3 ${toneClass}`}>
                 <p className="text-caption font-semibold text-ink">{priority.title}</p>

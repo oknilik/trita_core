@@ -817,7 +817,7 @@ export function CampaignWizard({
               </span>
             </label>
 
-            <div className="flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2.5">
+            <div className="flex items-start gap-2 rounded-lg bg-state-warning-bg px-3 py-2.5">
               <span className="mt-0.5 text-amber-600">
                 <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="8" cy="8" r="6.5" />
@@ -833,7 +833,7 @@ export function CampaignWizard({
           </div>
 
           {error && (
-            <div className="mt-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mt-4 rounded-lg border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
               {error}
             </div>
           )}

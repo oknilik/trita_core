@@ -116,7 +116,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               maxLength={100}
               required
             />
-            {error && <p className="text-xs text-rose-600">{error}</p>}
+            {error && <p className="text-xs text-state-error-solid">{error}</p>}
             <Button
               type="submit"
               disabled={!name.trim()}
@@ -155,7 +155,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               />
             ))}
           </div>
-          {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
+          {error && <p className="mb-3 text-xs text-state-error-solid">{error}</p>}
           <div className="flex gap-3">
             <Button
               type="button"

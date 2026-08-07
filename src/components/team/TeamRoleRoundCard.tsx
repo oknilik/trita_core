@@ -133,7 +133,7 @@ export function TeamRoleRoundCard({
             disabled={loading}
             className={`min-h-[44px] rounded-lg px-5 text-[12px] font-semibold transition disabled:opacity-50 ${
               isRoundActive
-                ? "border border-sand bg-surface-card text-ink-body hover:border-rose-200 hover:text-rose-700"
+                ? "border border-sand bg-surface-card text-ink-body hover:border-state-error-border hover:text-state-error-fg"
                 : "bg-sage text-white hover:bg-sage-dark"
             }`}
           >

@@ -192,7 +192,7 @@ export function TeamRoleQuestionnaire({
       <div
         className={`inline-flex w-fit items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold ${
           (phase === "select" ? selectValid : highlightValid)
-            ? "bg-emerald-50 text-emerald-700"
+            ? "bg-state-success-bg text-state-success-fg"
             : "bg-cream text-ink-body"
         }`}
       >

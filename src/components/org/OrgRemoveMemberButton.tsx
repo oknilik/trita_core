@@ -54,7 +54,7 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
             type="button"
             onClick={handleRemove}
             disabled={loading}
-            className="min-h-[44px] inline-flex items-center rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+            className="min-h-[44px] inline-flex items-center rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
           >
             {loading ? "…" : isHu ? "Eltávolítás" : "Remove"}
           </button>
@@ -67,7 +67,7 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
             {isHu ? "Mégse" : "Cancel"}
           </button>
         </div>
-        {error && <p className="text-xs text-rose-600">{error}</p>}
+        {error && <p className="text-xs text-state-error-solid">{error}</p>}
       </div>
     );
   }
@@ -79,12 +79,12 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
       <button
         type="button"
         onClick={() => setConfirm(true)}
-        className="relative min-h-[32px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] hover:bg-rose-50 hover:text-rose-600"
+        className="relative min-h-[32px] inline-flex items-center rounded-lg px-2 text-xs font-medium text-ink-body/60 transition before:absolute before:inset-x-0 before:-inset-y-1.5 before:content-[''] hover:bg-state-error-bg hover:text-state-error-solid"
       >
         {t("org.actions.removeButton", loc)}
       </button>
       {error && (
-        <p className="text-xs text-rose-600">{error}</p>
+        <p className="text-xs text-state-error-solid">{error}</p>
       )}
     </div>
   );

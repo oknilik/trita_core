@@ -189,7 +189,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       </section>
 
       {error && (
-        <div className="rounded-xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div className="rounded-xl border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
           {error}
         </div>
       )}
@@ -211,7 +211,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                   type="button"
                   disabled={busyKey === `revoke-${inv.id}`}
                   onClick={() => action({ action: "revoke_invite", inviteId: inv.id }, `revoke-${inv.id}`)}
-                  className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
+                  className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-solid"
                 >
                   Visszavonás
                 </button>
@@ -299,7 +299,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                         onClick={() =>
                           action({ action: "remove_consultant", profileId: c.id }, `remove-${c.id}`)
                         }
-                        className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-rose-200 hover:text-rose-600"
+                        className="shrink-0 rounded-lg border border-sand bg-surface-card px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-state-error-border hover:text-state-error-solid"
                       >
                         Eltávolítás
                       </button>
@@ -326,7 +326,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
                                 `unassign-${c.id}-${o.id}`,
                               )
                             }
-                            className="text-sage-dark/60 transition hover:text-rose-600"
+                            className="text-sage-dark/60 transition hover:text-state-error-solid"
                           >
                             ×
                           </button>

@@ -156,9 +156,9 @@ export function AdminFeedbackSection({
                   return (
                     <tr key={row.occupationId} className="border-b border-sand/60">
                       <td className="py-2 pr-4 text-ink">{row.label}</td>
-                      <td className="py-2 pr-4 text-emerald-700">{row.accurate}</td>
-                      <td className="py-2 pr-4 text-rose-600">{row.inaccurate}</td>
-                      <td className={`py-2 pr-4 font-mono ${row.belowChance ? "font-semibold text-amber-700" : "text-ink"}`}>
+                      <td className="py-2 pr-4 text-state-success-fg">{row.accurate}</td>
+                      <td className="py-2 pr-4 text-state-error-solid">{row.inaccurate}</td>
+                      <td className={`py-2 pr-4 font-mono ${row.belowChance ? "font-semibold text-state-warning-fg" : "text-ink"}`}>
                         {accuracy}%
                         {row.belowChance && " ⚠"}
                       </td>
@@ -211,7 +211,7 @@ export function AdminFeedbackSection({
                         className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
                           row.featureKey === "team"
                             ? "bg-sage/10 text-sage-dark"
-                            : "bg-amber-50 text-amber-700"
+                            : "bg-state-warning-bg text-state-warning-fg"
                         }`}
                       >
                         {featureInterestLabel(row.featureKey)}

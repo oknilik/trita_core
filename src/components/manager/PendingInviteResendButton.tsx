@@ -39,7 +39,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
       <button
         type="button"
         onClick={handleResend}
-        className="text-xs font-semibold text-rose-600 hover:text-rose-700"
+        className="text-xs font-semibold text-state-error-solid hover:text-state-error-fg"
       >
         {t("manager.pendingInviteResend.errorRetry", locale)}
       </button>

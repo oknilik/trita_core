@@ -43,7 +43,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
       <button
         type="button"
         onClick={() => setConfirm(true)}
-        className="min-h-[44px] rounded-lg border border-rose-300 bg-surface-card px-5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100"
+        className="min-h-[44px] rounded-lg border border-rose-300 bg-surface-card px-5 text-sm font-semibold text-state-error-fg transition hover:bg-rose-100"
       >
         {t("org.actions.deactivateButton", loc)}
       </button>
@@ -60,7 +60,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
           type="button"
           onClick={handleDeactivate}
           disabled={loading}
-          className="min-h-[44px] rounded-lg bg-rose-600 px-5 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+          className="min-h-[44px] rounded-lg bg-state-error-solid px-5 text-sm font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
         >
           {loading ? "..." : t("org.actions.deactivateYes", loc)}
         </button>
@@ -72,7 +72,7 @@ export function OrgDeactivateButton({ orgId, locale }: OrgDeactivateButtonProps)
           {t("org.actions.deactivateCancel", loc)}
         </button>
       </div>
-      {error && <p className="text-xs text-rose-600">{error}</p>}
+      {error && <p className="text-xs text-state-error-solid">{error}</p>}
     </div>
   );
 }

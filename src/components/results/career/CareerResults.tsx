@@ -160,10 +160,10 @@ function OccupationCard({
         <span
           className={`rounded-full px-2 py-0.5 text-micro font-medium ${
             fit.feasibility.state === "field-match"
-              ? "bg-emerald-50 text-emerald-700"
+              ? "bg-state-success-bg text-state-success-fg"
               : fit.feasibility.state === "level-only"
                 ? "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]"
-                : "bg-amber-50 text-amber-800"
+                : "bg-state-warning-bg text-amber-800"
           }`}
           title={
             fit.feasibility.state === "training-needed"
@@ -194,12 +194,12 @@ function OccupationCard({
           </span>
         )}
         {fit.interest !== null && fit.interest < 55 && (
-          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-800">
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-amber-800">
             {tf("results.cfInterestDiverges", locale, { value: fit.interest })}
           </span>
         )}
         {fit.demandFit < 55 && (
-          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-800">
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-amber-800">
             {t("results.cfPersonalityTension", locale)}
           </span>
         )}
@@ -284,7 +284,7 @@ function OccupationCard({
 
           <div className="mt-1 border-t border-[var(--color-border-soft)] pt-2.5">
             {feedback === "sent" ? (
-              <p className="text-[11px] text-emerald-700">
+              <p className="text-[11px] text-state-success-fg">
                 {t("results.industryFitFeedbackThanks", locale)}
               </p>
             ) : (
@@ -296,14 +296,14 @@ function OccupationCard({
                   <button
                     type="button"
                     onClick={() => sendFeedback("accurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-emerald-200 bg-surface-card px-3 py-1 text-[11px] font-medium text-emerald-700 transition hover:bg-emerald-50"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-success-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-success-fg transition hover:bg-state-success-bg"
                   >
                     👍 {t("results.industryFitFeedbackYes", locale)}
                   </button>
                   <button
                     type="button"
                     onClick={() => sendFeedback("inaccurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-rose-200 bg-surface-card px-3 py-1 text-[11px] font-medium text-rose-600 transition hover:bg-rose-50"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-error-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-error-solid transition hover:bg-state-error-bg"
                   >
                     👎 {t("results.industryFitFeedbackNo", locale)}
                   </button>
@@ -481,7 +481,7 @@ export function CareerResults({
 
       {/* Teljes visszaállítás — kétlépcsős, mert minden mentett választ töröl */}
       {onReset && confirmReset && (
-        <div className="mt-3 rounded-[12px] border border-amber-300 bg-amber-50/70 p-3.5">
+        <div className="mt-3 rounded-[12px] border border-amber-300 bg-state-warning-bg/70 p-3.5">
           <p className="text-[12px] leading-relaxed text-amber-900">
             {t("results.cfResetConfirm", locale)}
           </p>
@@ -498,7 +498,7 @@ export function CareerResults({
                   setConfirmReset(false);
                 }
               }}
-              className="min-h-[36px] rounded-lg bg-amber-700 px-3.5 text-[12px] font-semibold text-white transition hover:bg-amber-800 disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-state-warning-fg px-3.5 text-[12px] font-semibold text-white transition hover:bg-amber-800 disabled:opacity-50"
             >
               {t(resetting ? "results.cfResetBusy" : "results.cfResetYes", locale)}
             </button>
@@ -633,7 +633,7 @@ export function CareerResults({
       )}
 
       {result.interestDifferentiation === "low" && (
-        <p className="mt-2 rounded-[10px] bg-amber-50/70 p-2.5 text-micro leading-relaxed text-amber-900">
+        <p className="mt-2 rounded-[10px] bg-state-warning-bg/70 p-2.5 text-micro leading-relaxed text-amber-900">
           {t("results.cfLowDifferentiation", locale)}
         </p>
       )}

@@ -174,7 +174,7 @@ function Badge({ value, active }: { value: number; active: boolean }) {
   return (
     <span
       className={`ml-auto rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-        active ? "bg-surface-card text-bronze" : "bg-amber-100 text-amber-700"
+        active ? "bg-surface-card text-bronze" : "bg-amber-100 text-state-warning-fg"
       }`}
     >
       {value}

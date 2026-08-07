@@ -1,12 +1,15 @@
 // Színséma — közös típusok és a festés előtt futó script.
 //
-// HATÓKÖR: az egész dokumentum. Részleges (csak app-fa) hatókört
-// megpróbáltunk — CSS-szemantikailag nem működik: a `--color-x:
-// var(--palette-x)` aliasok a :root-on vannak deklarálva, és a var() a
-// DEKLARÁLÓ elemen helyettesítődik be, tehát egy leszármazottra tett
-// --palette-* felülírás az alias-réteget nem éri el (méréssel igazolva).
-// Ezért a sötét blokk a :root[data-theme="dark"]-on ül, és a
-// marketing-fa is átfordul — a paper-téma is kapott sötét készletet.
+// HATÓKÖR: a bejelentkezett app-fa (`.theme-scope`, az (app) layout shellje).
+// A marketing-fa és a paper-téma (founding / patterns) szándokosan világos
+// marad — a globális hatókört kipróbáltuk, és a futó appon lefotózva a
+// marketing törött volt sötéten.
+//
+// A leszármazott-hatókörnek ára van: a `--color-x: var(--palette-x)` aliasok
+// a :root-on vannak deklarálva, és a var() a DEKLARÁLÓ elemen
+// helyettesítődik be — ezért a scope-elemen MINDKÉT réteget újra kell
+// deklarálni (globals.css sötét blokkja). A szinkront a
+// scripts/check-colors.mjs (d) ellenőrzése őrzi, kétirányban.
 //
 // Indoklás és a hátralévő lépések:
 // docs/development/dark-mode-feasibility-2026-08.md

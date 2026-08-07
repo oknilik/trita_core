@@ -45,7 +45,7 @@ export function CampaignDeleteButton({
   return (
     <div className="mt-4 border-t border-sand pt-4">
       {confirming ? (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
+        <div className="rounded-xl border border-state-error-border bg-state-error-bg p-4">
           <p className="text-xs font-semibold text-rose-800">
             {t("org.campaign.deleteConfirm", locale)}
           </p>
@@ -54,7 +54,7 @@ export function CampaignDeleteButton({
               type="button"
               disabled={deleting}
               onClick={remove}
-              className="min-h-[36px] rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
             >
               {deleting
                 ? t("org.campaign.deleting", locale)
@@ -70,7 +70,7 @@ export function CampaignDeleteButton({
             </button>
           </div>
           {error && (
-            <p className="mt-2 text-xs text-rose-700">
+            <p className="mt-2 text-xs text-state-error-fg">
               {t("org.campaign.deleteFailed", locale)}
             </p>
           )}
@@ -80,7 +80,7 @@ export function CampaignDeleteButton({
           <button
             type="button"
             onClick={() => setConfirming(true)}
-            className="min-h-[36px] rounded-lg border border-rose-200 bg-surface-card px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+            className="min-h-[36px] rounded-lg border border-state-error-border bg-surface-card px-4 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg"
           >
             {t("org.campaign.deleteCampaign", locale)}
           </button>

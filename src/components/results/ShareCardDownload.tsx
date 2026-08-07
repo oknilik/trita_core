@@ -183,7 +183,7 @@ export function ShareCardDownload({
           : t("results.shareCardDownload", locale)}
       </button>
       {error ? (
-        <p className="mt-1 text-xs text-rose-700">
+        <p className="mt-1 text-xs text-state-error-fg">
           {t("results.compareError", locale)}
         </p>
       ) : null}

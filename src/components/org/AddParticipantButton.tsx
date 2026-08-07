@@ -109,7 +109,7 @@ export function AddParticipantButton({
               </label>
             ))}
           </div>
-          {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
+          {error && <p className="mb-3 text-xs text-state-error-solid">{error}</p>}
           <div className="flex gap-2">
             <button
               type="submit"

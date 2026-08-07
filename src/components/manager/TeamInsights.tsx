@@ -308,8 +308,8 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
 
             {/* Gap */}
             {topGap && topGap.code !== topStrength?.code && teamAvg[topGap.code] !== null && (
-              <div className="flex flex-col gap-2 rounded-xl border border-amber-100 bg-amber-50/60 p-4">
-                <div className="flex items-center gap-2 text-amber-700">
+              <div className="flex flex-col gap-2 rounded-xl border border-amber-100 bg-state-warning-bg/60 p-4">
+                <div className="flex items-center gap-2 text-state-warning-fg">
                   <GapIcon />
                   <span className="text-xs font-semibold uppercase tracking-widest">
                     {t("manager.teamInsights.growthArea", locale)}

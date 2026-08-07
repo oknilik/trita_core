@@ -175,7 +175,7 @@ function TeamPanel() {
             <span className="rounded border border-sand px-1.5 py-[2px] text-micro uppercase tracking-wide text-muted">
               {t("landing.sampleBadge", locale)}
             </span>
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-micro font-semibold text-emerald-700">
+            <span className="rounded-full bg-state-success-bg px-2.5 py-1 text-micro font-semibold text-state-success-fg">
               {t("landing.teamPanelPublished", locale)}
             </span>
           </div>

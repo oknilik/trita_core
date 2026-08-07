@@ -27,9 +27,9 @@ interface TeamPatternCardProps {
 // ── Helpers ────────────────────────────────────────────────
 
 const CONFIDENCE_COLORS = {
-  magas:    { bg: "bg-emerald-50",  text: "text-emerald-700",  border: "border-emerald-200" },
-  közepes:  { bg: "bg-amber-50",    text: "text-amber-700",    border: "border-amber-200"   },
-  alacsony: { bg: "bg-rose-50",     text: "text-rose-700",     border: "border-rose-200"    },
+  magas:    { bg: "bg-state-success-bg",  text: "text-state-success-fg",  border: "border-state-success-border" },
+  közepes:  { bg: "bg-state-warning-bg",    text: "text-state-warning-fg",    border: "border-state-warning-border"   },
+  alacsony: { bg: "bg-state-error-bg",     text: "text-state-error-fg",     border: "border-state-error-border"    },
 };
 
 /**
@@ -52,7 +52,7 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
   const diversityColors = {
     homogén: "text-emerald-600",
     vegyes:  "text-amber-600",
-    diverz:  "text-rose-600",
+    diverz:  "text-state-error-solid",
   };
 
   return (
@@ -159,7 +159,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       <div className="p-6">
         {/* Stability warning */}
         {data.stability !== "stabil" && (
-          <div className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          <div className="mb-4 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-amber-800">
             {data.stabilityNote}
           </div>
         )}

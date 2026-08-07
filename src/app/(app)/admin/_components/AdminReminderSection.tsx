@@ -229,12 +229,12 @@ export function AdminReminderSection({ invitations }: Props) {
                         )}
                       </div>
                       {s.completed && (
-                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-state-success-fg">
                           Kész ✓
                         </span>
                       )}
                       {!s.completed && recent && (
-                        <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                        <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-state-warning-fg">
                           Friss
                         </span>
                       )}
@@ -263,7 +263,7 @@ export function AdminReminderSection({ invitations }: Props) {
                         s.completed
                           ? "bg-sand/50 text-muted cursor-default"
                           : sent
-                            ? "bg-emerald-100 text-emerald-700 cursor-default"
+                            ? "bg-emerald-100 text-state-success-fg cursor-default"
                             : s.sending
                               ? "bg-sand/50 text-muted cursor-not-allowed"
                               : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"

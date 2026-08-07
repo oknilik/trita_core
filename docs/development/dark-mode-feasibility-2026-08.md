@@ -437,3 +437,60 @@ futó appon (`/try`, `/`, `/pricing`) teljes lapos képernyőkép a migráció e
 és után — 0 eltérő pixel mindhárom oldalon, 7,1 millióból. A hatókör
 ellenőrizve: sötét sütivel a landing `body`-ja `rgb(247,244,239)` és nincs
 rajta `.theme-scope`; a `/try` `.theme-scope`-ja `rgb(20,20,24)`.
+
+---
+
+## 11. Belépett felületek — valódi appon ellenőrizve (2026-08-07, 3. kör)
+
+Az előző kör csak a `/try`-t látta futni (az az egyetlen auth nélkül elérhető
+app-oldal). Ehhez a körhöz felhúztunk egy helyi PostgreSQL-t, feltoltuk a
+sémát, seedeltünk egy org + csapat + 6 profilt, és a repóban meglévő e2e
+auth-bypasst (`TRITA_E2E_AUTH_BYPASS=1`) használva **végignéztük a
+`/dashboard`, `/profile/results`, `/team/[id]` és `/org/[id]` felületeket
+mindkét témában**.
+
+### 11.1 Amit talált
+
+A hatókör és a token-réteg helyesen működött, de előkerült a következő
+réteg: **Tailwind ALAP-PALETTA osztályok** (`bg-amber-50`, `text-rose-700`,
+`bg-slate-50`…), 488 előfordulás. Ezek a Tailwind saját palettájából jönnek,
+nem a mi tokenjeinkből — tehát kimaradnak a témázásból.
+
+**299-et migráltunk** — azokat, ahol a státusz-család egyértelmű:
+`amber-*` → `state-warning-*`, `rose-*` → `state-error-*`,
+`emerald-*` → `state-success-*`, `blue-*` → `state-info-*`.
+
+**189 maradt**, és ez tudatos megállás: nekik nincs egyértelmű
+token-megfelelőjük (pl. a hideg `slate-50` helyett melyik meleg
+felület-token a helyes?), tehát szemantikai döntést igényelnek, és minden
+csere **látható változás a világos témán is**. Költségkeret őrzi őket
+(`check-colors` (f)): nem nőhetnek, a cél a csökkenés.
+
+### 11.2 Egy korrekció a mérésről
+
+A migrációt először „pixel-azonosnak" hittük, mert a token-hexek megegyeztek
+a Tailwind v3-as hex-értékeivel. A pixel-teszt megfogta, hogy ez **nem
+igaz**: a Tailwind v4 a palettáját **oklch**-ban tárolja, és a telített
+színek renderelve eltérnek a v3 hexektől.
+
+| | Tailwind v4 renderelve | Trita token |
+|---|---|---|
+| `amber-50` | `#fffbeb` | `#fffbeb` — azonos |
+| `rose-700` | `#c70036` | `#be123c` |
+| `emerald-700` | `#007a55` | `#047857` |
+
+A migráció tehát **elmozdítja** ezeket a színeket a saját tokenjeink felé.
+A mért hatás: a négy vizsgált oldalból hármon **0 eltérő pixel**, a
+csapatoldalon **204 pixel** (egy státusz-badge), **max 9/255 csatorna-
+eltéréssel** — érzékelhetetlen. Ez a `color-system-2026-08.md` kimondott
+iránya (a Tailwind-defaultoktól a saját rendszer felé), de vizuális
+változás, nem azonosság — ezért van itt leírva.
+
+### 11.3 Ami továbbra is hátravan
+
+| Tétel | Miért |
+|---|---|
+| **189 Tailwind-paletta osztály** | Szemantikai döntés kell darabonként; keret őrzi |
+| **TS-oldali színek** (30 hely) | SVG-fill és inline style — a CSS-változó nem éri el |
+| **Képi CI-baseline** | A `visual-regression` TODO nyitva, most már két témára |
+| **Több app-felület** | A kampány-, jelölt- és riport-nézetek még nincsenek átnézve |

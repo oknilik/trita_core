@@ -42,7 +42,7 @@ export function OrgSubscriptionBanner({
         isNone
           ? "border-slate-200 bg-slate-50"
           : isFrozen
-          ? "border-amber-200 bg-amber-50"
+          ? "border-state-warning-border bg-state-warning-bg"
           : "border-sky-200 bg-sky-50",
         className,
       )}
@@ -53,7 +53,7 @@ export function OrgSubscriptionBanner({
           isNone
             ? "text-slate-700"
             : isFrozen
-              ? "text-amber-700"
+              ? "text-state-warning-fg"
               : "text-sky-700",
         )}
       >
@@ -91,7 +91,7 @@ export function OrgSubscriptionBanner({
             isNone
               ? "bg-slate-700 hover:bg-slate-800"
               : isFrozen
-              ? "bg-amber-700 hover:bg-amber-800"
+              ? "bg-state-warning-fg hover:bg-amber-800"
               : "bg-sky-700 hover:bg-sky-800",
           )}
         >

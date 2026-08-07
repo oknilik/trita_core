@@ -717,7 +717,7 @@ export function CareerCompass({
           </div>
 
           {/* Őszinte keretezés — a becslés határai előre, nem az eredmény után */}
-          <div className="mt-4 rounded-[12px] border border-amber-200 bg-amber-50/60 p-4">
+          <div className="mt-4 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 p-4">
             <p className="text-caption font-semibold text-amber-900">
               ⚖️ {t("results.ccIntroCaveatTitle", locale)}
             </p>
@@ -1079,12 +1079,12 @@ export function CareerCompass({
             </p>
           )}
           {fitState === "error" && (
-            <div className="rounded-[12px] border border-rose-200 bg-rose-50/60 p-4">
+            <div className="rounded-[12px] border border-state-error-border bg-state-error-bg/60 p-4">
               <p className="text-caption text-rose-800">{t("results.cfError", locale)}</p>
               <button
                 type="button"
                 onClick={() => fetchFit(background, prefs, leadIntent)}
-                className="mt-2 rounded-lg border border-rose-300 bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-rose-700"
+                className="mt-2 rounded-lg border border-rose-300 bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-state-error-fg"
               >
                 {t("results.cfRetry", locale)}
               </button>
@@ -1186,7 +1186,7 @@ export function CareerCompass({
           {/* Hiányzó szakma */}
           <div className="mt-5 border-t border-[var(--color-border-soft)] pt-3">
             {missingState === "sent" ? (
-              <p className="text-[12px] text-emerald-700">
+              <p className="text-[12px] text-state-success-fg">
                 {t("results.industryFitMissingThanks", locale)}
               </p>
             ) : (

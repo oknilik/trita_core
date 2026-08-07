@@ -40,7 +40,7 @@ export function OrgCandidatesTab({
       return { label: isHu ? "Kész" : "Done", className: "bg-sage/10 text-sage-dark" };
     if (status === "CANCELED")
       return { label: isHu ? "Visszavonva" : "Revoked", className: "bg-cream text-muted" };
-    return { label: isHu ? "Folyamatban" : "Pending", className: "bg-amber-50 text-amber-700" };
+    return { label: isHu ? "Folyamatban" : "Pending", className: "bg-state-warning-bg text-state-warning-fg" };
   };
 
   return (

@@ -227,9 +227,9 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         <span
                           className={
                             sub.tone === "active"
-                              ? "font-semibold text-emerald-700"
+                              ? "font-semibold text-state-success-fg"
                               : sub.tone === "trial"
-                                ? "font-semibold text-amber-700"
+                                ? "font-semibold text-state-warning-fg"
                                 : "text-muted"
                           }
                         >
@@ -304,7 +304,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               type="button"
                               disabled={state.loading}
                               onClick={() => callAction(org.id, "deactivate")}
-                              className="min-h-[40px] rounded-lg border border-rose-200 bg-surface-card px-3 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 disabled:opacity-50"
+                              className="min-h-[40px] rounded-lg border border-state-error-border bg-surface-card px-3 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
                             >
                               Lezárás
                             </button>
@@ -319,7 +319,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         {org.consultants.map((c) => (
                           <span
                             key={c.userId}
-                            className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-800"
+                            className="inline-flex items-center gap-1.5 rounded-full bg-state-warning-bg px-2.5 py-1 text-xs font-medium text-amber-800"
                           >
                             {c.username ?? c.email ?? c.userId}
                             <button
@@ -329,7 +329,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 c.email &&
                                 callAction(org.id, "remove_consultant", { consultantEmail: c.email })
                               }
-                              className="text-amber-600 transition hover:text-rose-600 disabled:opacity-50"
+                              className="text-amber-600 transition hover:text-state-error-solid disabled:opacity-50"
                               aria-label="Tanácsadó eltávolítása"
                             >
                               ×
@@ -382,14 +382,14 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                           <span className="ml-1 text-muted">(fül + PDF-blokk)</span>
                         </span>
                         {org.hideCareerModule && (
-                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold text-amber-700">
+                          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold text-state-warning-fg">
                             rejtve
                           </span>
                         )}
                       </label>
                     </div>
                     {state.error && (
-                      <p className="mt-2 text-xs text-rose-600">{state.error}</p>
+                      <p className="mt-2 text-xs text-state-error-solid">{state.error}</p>
                     )}
 
                     {/* ── Cégadatok (számlázás) — csak itt, az admin nézetben ── */}
@@ -407,11 +407,11 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                         <span>{billingOpen[org.id] ? "▾" : "▸"}</span>
                         Cégadatok (számlázás)
                         {Object.keys(org.billingProfile).length > 0 ? (
-                          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-semibold text-emerald-700">
+                          <span className="rounded-full bg-state-success-bg px-2 py-0.5 text-micro font-semibold text-state-success-fg">
                             kitöltve
                           </span>
                         ) : (
-                          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold text-amber-700">
+                          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold text-state-warning-fg">
                             hiányzik
                           </span>
                         )}
@@ -466,7 +466,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                             {billingState[org.id]?.message && (
                               <p
                                 className={`text-xs font-medium ${
-                                  billingState[org.id]?.error ? "text-rose-600" : "text-sage-dark"
+                                  billingState[org.id]?.error ? "text-state-error-solid" : "text-sage-dark"
                                 }`}
                               >
                                 {billingState[org.id]?.message}

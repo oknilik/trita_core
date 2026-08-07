@@ -246,7 +246,7 @@ export function TeamReportMemberView({
                   {vm.primaryRole.code}
                 </div>
                 {vm.roleFit === "rare" ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
                     {isHu ? "kulcsszerep" : "key role"}
                   </span>
                 ) : vm.roleFit === "shared" ? (
@@ -308,8 +308,8 @@ export function TeamReportMemberView({
               </div>
             )}
             {vm.strengths && (
-              <div className="rounded-[14px] border-l-4 border-l-emerald-500/60 bg-emerald-50/40 p-4">
-                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-emerald-700">
+              <div className="rounded-[14px] border-l-4 border-l-emerald-500/60 bg-state-success-bg/40 p-4">
+                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 8.5l3 3 7-7" />
                   </svg>
@@ -318,7 +318,7 @@ export function TeamReportMemberView({
                 {/* EN lekérés jóváhagyott fordítás nélkül: jelezzük, hogy az
                     eredeti magyar szöveg látszik. */}
                 {!isHu && !hasApprovedEnTranslation(reportInput) ? (
-                  <p className="mb-2 text-micro text-amber-700">
+                  <p className="mb-2 text-micro text-state-warning-fg">
                     Shown in the Hungarian original — English translation pending
                     consultant approval.
                   </p>

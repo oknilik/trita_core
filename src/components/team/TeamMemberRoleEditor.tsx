@@ -95,7 +95,7 @@ export function TeamMemberRoleEditor({
           </option>
         ))}
       </select>
-      {error && <p className="text-xs text-rose-600">{error}</p>}
+      {error && <p className="text-xs text-state-error-solid">{error}</p>}
     </div>
   );
 }

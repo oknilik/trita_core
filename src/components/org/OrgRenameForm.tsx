@@ -71,7 +71,7 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
         <p className="text-xs text-green-600">{t("org.forms.saved", loc)}</p>
       )}
       {error && (
-        <p className="text-xs text-rose-600">{error}</p>
+        <p className="text-xs text-state-error-solid">{error}</p>
       )}
     </form>
   );

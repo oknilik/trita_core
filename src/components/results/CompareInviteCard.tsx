@@ -163,7 +163,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         </p>
       ) : null}
       {error ? (
-        <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+        <p className="mt-3 rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
           {error}
         </p>
       ) : null}
@@ -183,7 +183,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   inv.state === "ACCEPTED"
                     ? "bg-sage/15 text-sage-dark"
-                    : "bg-amber-50 text-amber-700"
+                    : "bg-state-warning-bg text-state-warning-fg"
                 }`}
               >
                 {stateLabel(inv.state)}
@@ -228,7 +228,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 type="button"
                 onClick={() => handleRevoke(inv.id)}
                 disabled={busy}
-                className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-[12px] font-medium text-muted transition-colors hover:text-rose-700 disabled:opacity-50"
+                className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-[12px] font-medium text-muted transition-colors hover:text-state-error-fg disabled:opacity-50"
               >
                 {t("results.compareRevoke", locale)}
               </button>

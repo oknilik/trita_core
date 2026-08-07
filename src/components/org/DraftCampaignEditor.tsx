@@ -300,7 +300,7 @@ export function DraftCampaignEditor({
           megerősítés inline (nincs natív browser-dialog) */}
       <div className="mt-5 border-t border-sand pt-4">
         {confirmingDiscard ? (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
+          <div className="rounded-xl border border-state-error-border bg-state-error-bg p-4">
             <p className="text-xs font-semibold text-rose-800">
               {t("org.campaign.discardConfirm", locale)}
             </p>
@@ -309,7 +309,7 @@ export function DraftCampaignEditor({
                 type="button"
                 disabled={discarding}
                 onClick={discard}
-                className="min-h-[36px] rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+                className="min-h-[36px] rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
               >
                 {discarding
                   ? t("org.campaign.discarding", locale)
@@ -330,7 +330,7 @@ export function DraftCampaignEditor({
             <button
               type="button"
               onClick={() => setConfirmingDiscard(true)}
-              className="min-h-[36px] rounded-lg border border-rose-200 bg-surface-card px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+              className="min-h-[36px] rounded-lg border border-state-error-border bg-surface-card px-4 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg"
             >
               {t("org.campaign.discardDraft", locale)}
             </button>

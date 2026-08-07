@@ -201,7 +201,7 @@ function SignUpContent() {
             </p>
 
             {error && (
-              <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div className="mb-4 rounded-lg border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
                 {error}
               </div>
             )}
@@ -298,7 +298,7 @@ function SignUpContent() {
           )}
 
           {error && (
-            <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mb-4 rounded-lg border border-rose-100 bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
               {error}
             </div>
           )}

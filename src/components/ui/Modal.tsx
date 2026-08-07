@@ -104,7 +104,7 @@ export function Modal({
             ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
             : "max-w-md rounded-2xl bg-surface-card shadow-2xl",
           variant === "danger"
-            ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
+            ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-state-error-border/70")
             : (isBrand ? "border-sand" : "border-sand/70"),
         ].join(" ")}
       >
@@ -163,7 +163,7 @@ export function Modal({
                   "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                   !isBrand ? "mt-0.5" : "",
                   variant === "danger"
-                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-rose-700")
+                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-state-error-fg")
                     : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
                 ].join(" ")}
               >
@@ -204,7 +204,7 @@ export function Modal({
                       className={[
                         "mt-2 text-sm leading-relaxed",
                         variant === "danger"
-                          ? (isBrand ? "text-ink-body" : "text-rose-700")
+                          ? (isBrand ? "text-ink-body" : "text-state-error-fg")
                           : (isBrand ? "text-ink-body" : "text-ink-body"),
                       ].join(" ")}
                     >

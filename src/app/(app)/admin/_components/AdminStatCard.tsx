@@ -21,7 +21,7 @@ export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardPr
       {trend && (
         <div
           className={`mt-3 text-xs font-semibold ${
-            trend.value >= 0 ? "text-emerald-600" : "text-rose-600"
+            trend.value >= 0 ? "text-emerald-600" : "text-state-error-solid"
           }`}
         >
           {trend.value >= 0 ? "↑" : "↓"} {Math.abs(trend.value)}% {trend.period}

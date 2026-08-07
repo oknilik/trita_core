@@ -432,7 +432,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       ) : (
         <div className="flex flex-col gap-4">
           {orgId && (draft.aggregates?.evidence?.measuredEdgeCount ?? 0) === 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-amber-200 bg-amber-50/60 px-3.5 py-2.5">
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
               <p className="text-xs text-amber-800">
                 {isHu
                   ? "A riport kapcsolati adatalapja most csak becslés — nincs mért bizalmi kör."
@@ -455,7 +455,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             <label key={field.key} className="flex flex-col gap-1">
               <span
                 className={`text-[11px] font-medium ${
-                  field.internal ? "text-amber-700" : "text-ink-body"
+                  field.internal ? "text-state-warning-fg" : "text-ink-body"
                 }`}
               >
                 {isHu ? field.hu : field.en}
@@ -477,7 +477,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   }
                   rows={field.rows}
                   className={`rounded-lg border bg-surface-card px-3 py-2 text-sm text-ink ${
-                    field.internal ? "border-amber-200 bg-amber-50/40" : "border-sand"
+                    field.internal ? "border-state-warning-border bg-state-warning-bg/40" : "border-sand"
                   }`}
                 />
               )}
@@ -548,7 +548,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     onClick={() =>
                       setActionItems((items) => items.filter((_, i) => i !== index))
                     }
-                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:text-rose-600"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:text-state-error-solid"
                   >
                     ✕
                   </button>
@@ -578,11 +578,11 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   {isHu ? "Angol fordítás (EN)" : "English translation (EN)"}
                 </p>
                 {translation?.status === "approved" ? (
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-200">
+                  <span className="rounded-full bg-state-success-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-success-fg ring-1 ring-state-success-border">
                     {isHu ? "jóváhagyva" : "approved"}
                   </span>
                 ) : translation ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
                     {isHu ? "vázlat — jóváhagyásra vár" : "draft — awaiting approval"}
                   </span>
                 ) : (
@@ -700,7 +700,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             ) : null}
           </div>
 
-          {error && <p className="text-xs text-rose-600">{error}</p>}
+          {error && <p className="text-xs text-state-error-solid">{error}</p>}
 
           <div className="flex flex-wrap gap-2 border-t border-sand pt-4">
             <button
@@ -731,7 +731,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => draft && deleteReport(draft)}
-              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-rose-200 bg-surface-card px-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
+              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-state-error-border bg-surface-card px-4 text-sm font-semibold text-state-error-solid transition hover:bg-state-error-bg disabled:opacity-50"
             >
               {isHu ? "Vázlat törlése" : "Delete draft"}
             </button>
@@ -759,7 +759,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 : undefined
             }
             onClick={() => unpublish(latestPublished.id)}
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-amber-300 bg-surface-card px-4 text-sm font-semibold text-amber-700 transition hover:bg-amber-50 disabled:opacity-40"
+            className="inline-flex min-h-[44px] items-center rounded-lg border border-amber-300 bg-surface-card px-4 text-sm font-semibold text-state-warning-fg transition hover:bg-state-warning-bg disabled:opacity-40"
           >
             {isHu ? "Visszavonás szerkesztésre" : "Unpublish for editing"}
           </button>
@@ -796,7 +796,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     e.stopPropagation();
                     deleteReport(r);
                   }}
-                  className="inline-flex min-h-[36px] items-center rounded-lg border border-rose-200 bg-surface-card px-2.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-40"
+                  className="inline-flex min-h-[36px] items-center rounded-lg border border-state-error-border bg-surface-card px-2.5 text-xs font-semibold text-state-error-solid transition hover:bg-state-error-bg disabled:opacity-40"
                 >
                   {isHu ? "Törlés" : "Delete"}
                 </button>

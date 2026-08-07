@@ -234,7 +234,7 @@ export default function ProfilePage() {
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
     `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] outline-none transition-all md:text-caption ${
       touched && value !== "" && !valid
-        ? "border-rose-300 bg-rose-50/50"
+        ? "border-rose-300 bg-state-error-bg/50"
         : "border-[var(--color-border-default)] bg-surface-card focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
     } ${invalidFieldFlash === field ? "ring-2 ring-rose-300" : ""}`;
 
@@ -374,7 +374,7 @@ export default function ProfilePage() {
             </label>
           </div>
 
-          <div className={`mt-5 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-rose-50/60 ring-2 ring-rose-300" : ""}`}>
+          <div className={`mt-5 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-state-error-bg/60 ring-2 ring-rose-300" : ""}`}>
             <span className="text-[11px] font-medium text-[var(--color-text-secondary)]">{t("onboarding.genderLabel", locale)}</span>
             <div className="mt-1 flex flex-wrap gap-[5px]">
               {GENDER_OPTIONS.map((opt, idx) => (
@@ -385,7 +385,7 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div ref={countryFieldRef} className={`mt-5 rounded-lg transition ${invalidFieldFlash === "country" ? "bg-rose-50/60 p-1 ring-2 ring-rose-300" : ""}`}>
+          <div ref={countryFieldRef} className={`mt-5 rounded-lg transition ${invalidFieldFlash === "country" ? "bg-state-error-bg/60 p-1 ring-2 ring-rose-300" : ""}`}>
             <PickerTrigger label={t("onboarding.countryLabel", locale)} value={countryLabel} placeholder={t("onboarding.countryPlaceholder", locale)} onClick={() => setCountryPickerOpen(true)} />
           </div>
         </div>

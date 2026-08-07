@@ -75,7 +75,7 @@ export function CareerGrowthPlan({
   }
 
   return (
-    <div className="mt-5 rounded-[12px] border border-amber-200 bg-amber-50/50 p-4">
+    <div className="mt-5 rounded-[12px] border border-state-warning-border bg-state-warning-bg/50 p-4">
       <p className="text-caption font-semibold text-amber-900">
         {t("results.cfGrowthTitle", locale)}
       </p>
@@ -90,7 +90,7 @@ export function CareerGrowthPlan({
           return (
             <div
               key={`${gap.dim}-${gap.pole}`}
-              className="rounded-[12px] border border-amber-200/70 bg-surface-card p-3.5"
+              className="rounded-[12px] border border-state-warning-border/70 bg-surface-card p-3.5"
             >
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-secondary)]">

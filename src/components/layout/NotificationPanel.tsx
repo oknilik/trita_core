@@ -21,8 +21,8 @@ const CATEGORY_ICON_STYLES: Record<string, string> = {
   assessment: "bg-indigo-50 text-indigo-600",
   observer:   "bg-purple-50 text-purple-600",
   org:        "bg-sky-50 text-sky-600",
-  campaign:   "bg-emerald-50 text-emerald-600",
-  billing:    "bg-amber-50 text-amber-700",
+  campaign:   "bg-state-success-bg text-emerald-600",
+  billing:    "bg-state-warning-bg text-state-warning-fg",
   system:     "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]",
 };
 

@@ -276,7 +276,7 @@ export function TrustPeersClient({
       </div>
 
       {showMissing && !complete ? (
-        <p className="mt-3 text-center text-[12px] font-semibold text-amber-700">
+        <p className="mt-3 text-center text-[12px] font-semibold text-state-warning-fg">
           {t("trustPeers.missingAnswers", locale)}
         </p>
       ) : null}

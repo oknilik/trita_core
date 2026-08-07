@@ -180,14 +180,14 @@ export default async function OrgSettingsPage({
         </Card>
 
         {/* Danger zone */}
-        <section className="rounded-2xl border border-rose-200 bg-rose-50 p-6 md:p-8">
-          <p className="mb-1 text-label uppercase text-rose-600">
+        <section className="rounded-2xl border border-state-error-border bg-state-error-bg p-6 md:p-8">
+          <p className="mb-1 text-label uppercase text-state-error-solid">
             {t("org.settings.dangerEyebrow", locale)}
           </p>
           <h2 className="font-fraunces text-xl text-rose-900 mb-4">
             {t("org.settings.dangerTitle", locale)}
           </h2>
-          <p className="mb-4 text-sm text-rose-700">
+          <p className="mb-4 text-sm text-state-error-fg">
             {t("org.settings.dangerDescription", locale)}
           </p>
           {isReadOnly ? (

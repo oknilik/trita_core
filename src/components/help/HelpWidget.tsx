@@ -157,7 +157,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                       className="w-full rounded-lg border border-sand bg-cream px-3 py-2 text-sm text-ink-body outline-none focus:border-sage/50"
                     />
                     {askState === "error" && (
-                      <p className="mt-2 text-xs text-rose-600">
+                      <p className="mt-2 text-xs text-state-error-solid">
                         {isHu ? "A küldés nem sikerült — próbáld újra." : "Sending failed — please try again."}
                       </p>
                     )}

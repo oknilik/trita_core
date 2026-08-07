@@ -34,7 +34,7 @@ export function PendingInviteCancelButton({ inviteId, isHu }: Props) {
           type="button"
           onClick={handleCancel}
           disabled={loading}
-          className="min-h-[44px] inline-flex items-center rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+          className="min-h-[44px] inline-flex items-center rounded-lg bg-state-error-solid px-4 text-xs font-semibold text-white transition hover:bg-state-error-fg disabled:opacity-50"
         >
           {loading ? "…" : t("manager.pendingInviteCancel.confirmYes", locale)}
         </button>
@@ -54,7 +54,7 @@ export function PendingInviteCancelButton({ inviteId, isHu }: Props) {
     <button
       type="button"
       onClick={() => setConfirm(true)}
-      className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-rose-600 transition hover:border-rose-200 hover:bg-rose-50"
+      className="min-h-[44px] inline-flex items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-state-error-solid transition hover:border-state-error-border hover:bg-state-error-bg"
     >
       {t("manager.pendingInviteCancel.cancelInvite", locale)}
     </button>

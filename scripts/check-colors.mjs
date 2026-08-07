@@ -216,7 +216,48 @@ const untokenizedSurfaces = [];
   }
 }
 
+// (f) Tailwind ALAP-PALETTA költségkeret. A `bg-amber-50`, `text-rose-700`
+//     stb. a Tailwind saját palettája — nem a mi tokenünk, ezért kimarad a
+//     témázásból, és sötét módban világos marad.
+//     Az egyértelmű megfeleltetéseket (státusz-család) már migráltuk; a
+//     maradék szemantikai döntést igényel (pl. a hideg `slate-50` helyett
+//     melyik meleg felület-token a helyes), és minden csere látható
+//     változás a VILÁGOS témán is. Ezért keret, nem hard fail: a cél a
+//     csökkenés. Új előfordulás csak a keret tudatos emelésével kerülhet be.
+const TW_PALETTE_BUDGET = 189;
+let twPaletteCount = 0;
+const twPaletteByFile = new Map();
+{
+  const RE =
+    /\b(bg|text|border|ring|from|to|via|divide|outline|decoration|fill|stroke|accent|placeholder)-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)\b/g;
+  for (const abs of walk(path.join(ROOT, "src"))) {
+    const rel = path.relative(ROOT, abs).split(path.sep).join("/");
+    if (!rel.endsWith(".tsx")) continue;
+    const hits = readFileSync(abs, "utf8").match(RE);
+    if (hits) {
+      twPaletteCount += hits.length;
+      twPaletteByFile.set(rel, hits.length);
+    }
+  }
+}
+
 let failed = false;
+
+if (twPaletteCount > TW_PALETTE_BUDGET) {
+  failed = true;
+  console.error(
+    `\ncheck-colors: Tailwind alap-paletta osztály: ${twPaletteCount} > keret ` +
+      `(${TW_PALETTE_BUDGET}). Ezek sötét módban világosak maradnak.`,
+  );
+  for (const [file, n] of [...twPaletteByFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)) {
+    console.error(`  ${String(n).padStart(3)}  ${file}`);
+  }
+  console.error(
+    "\nHasználd a --color-state-* / --color-surface-* tokeneket; ha tudatos " +
+      "kivétel, emeld a keretet indoklással ebben a scriptben.",
+  );
+}
+
 
 if (untokenizedSurfaces.length > 0) {
   failed = true;
@@ -286,5 +327,6 @@ if (failed) process.exit(1);
 console.log(
   `check-colors OK — tiltólista tiszta, @theme témázható (0 literál), ` +
     `sötét alias-réteg teljes, felületek tokenizálva, ` +
+    `TW-paletta ${twPaletteCount}/${TW_PALETTE_BUDGET}, ` +
     `nyers hex a UI-scope-ban: ${rawHexCount}/${RAW_HEX_BUDGET}.`,
 );
