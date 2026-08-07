@@ -98,7 +98,7 @@ export function TeamReportMemberView({
                 </p>
               </div>
             </div>
-            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
+            <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
               {isHu ? "Tag-nézet" : "Member view"}
             </span>
           </div>

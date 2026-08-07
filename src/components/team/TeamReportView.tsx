@@ -348,11 +348,11 @@ export function TeamReportView({
               )}
             </div>
             {isDraft ? (
-              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-state-warning-fg shadow-sm ring-1 ring-state-warning-border">
+              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-warning-fg shadow-sm ring-1 ring-state-warning-border">
                 {isHu ? "Vázlat-előnézet" : "Draft preview"}
               </span>
             ) : (
-              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
+              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
                 {isHu ? "Publikált" : "Published"}
               </span>
             )}

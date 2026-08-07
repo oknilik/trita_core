@@ -16,7 +16,7 @@ export function ModeSwitcher() {
   const mode = useSiteMode();
 
   return (
-    <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-white/80 p-1 backdrop-blur-sm">
+    <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/80 p-1 backdrop-blur-sm">
       {(["self", "team"] as SiteMode[]).map((m) => {
         const isActive = mode === m;
         return (

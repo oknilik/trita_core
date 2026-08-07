@@ -148,7 +148,7 @@ export function CareerFakeDoor({
 
         {/* Bélyegző: ez az első, amit a szem elkap. */}
         <span
-          className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 bg-white/40 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
+          className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 bg-[var(--color-surface-card)]/40 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
           style={{ borderColor: SHEET.stamp, color: SHEET.stamp }}
         >
           {t("fakeDoor.badge", locale)}

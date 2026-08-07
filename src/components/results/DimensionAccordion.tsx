@@ -134,7 +134,7 @@ function AccordionItem({
                   <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accFacetDetail", locale)}
                   </p>
-                  <div className="rounded-lg bg-white/60 p-3">
+                  <div className="rounded-lg bg-[var(--color-surface-card)]/60 p-3">
                     {/* Mobilon egy oszlop — két oszlopban a skála+szám összecsúszna */}
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {facets.map((f) => {

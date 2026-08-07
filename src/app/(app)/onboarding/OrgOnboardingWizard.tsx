@@ -355,7 +355,7 @@ export function OrgOnboardingWizard() {
           </div>
         </div>
 
-        <div className="mb-6 rounded-xl border border-sand bg-white/70 p-4">
+        <div className="mb-6 rounded-xl border border-sand bg-[var(--color-surface-card)]/70 p-4">
           <p className="text-micro font-semibold uppercase tracking-widest text-muted">
             {t("orgOnboarding.layerRoadmap", locale)}
           </p>

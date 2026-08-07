@@ -311,7 +311,7 @@ export function HiringDashboard({
                 className={[
                   "rounded-[10px] px-5 text-[12px] font-semibold",
                   showForm
-                    ? "bg-surface-card text-ink hover:bg-white/90 hover:text-ink"
+                    ? "bg-surface-card text-ink hover:bg-[var(--color-surface-card)]/90 hover:text-ink"
                     : "bg-[var(--color-accent-candidate-primary)] text-[var(--color-layer-candidate-hero-to)] hover:bg-[var(--color-accent-candidate-primary)] hover:text-[var(--color-layer-candidate-hero-to)] hover:brightness-110",
                 ].join(" ")}
               >

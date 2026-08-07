@@ -515,7 +515,7 @@ export function CandidateClient({
         {/* Sticky progress — számláló + terrakotta sáv + ETA */}
         {/* Az /apply nincs a nav rejtő-/fókusz-listáin: fölötte mindig egy
             sticky fejléc ül (h-14 = 56px) — a kártya ez alá tapad. */}
-        <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-white/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
+        <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-[var(--color-surface-card)]/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
           <div className="flex items-center gap-3">
             <div className="flex items-baseline gap-1 whitespace-nowrap">
               <span className="font-fraunces text-[17px] font-medium leading-none text-ink">

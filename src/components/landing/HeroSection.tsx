@@ -363,7 +363,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
                 ].map((m) => (
-                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
+                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
                     {m.text}
                   </span>

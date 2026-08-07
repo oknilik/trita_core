@@ -628,7 +628,7 @@ export function CareerCompass({
               ].map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full bg-white/80 px-2.5 py-1 text-micro font-medium text-[var(--color-text-muted)] ring-1 ring-[var(--color-border-soft)]"
+                  className="rounded-full bg-[var(--color-surface-card)]/80 px-2.5 py-1 text-micro font-medium text-[var(--color-text-muted)] ring-1 ring-[var(--color-border-soft)]"
                 >
                   {chip}
                 </span>
@@ -637,7 +637,7 @@ export function CareerCompass({
             {/* Opcionális érdeklődés-teszt (Holland-kód) — a pontosítás útja.
                 A magyarázó-link külön sávot kap: korábban egy aláhúzott szó
                 volt a bekezdés végén, és észrevétlen maradt. */}
-            <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-white/70 px-4 py-3">
+            <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-[var(--color-surface-card)]/70 px-4 py-3">
               <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
                 {hasMeasuredRiasec
                   ? t("results.ccIntroRiasecDone", locale)

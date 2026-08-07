@@ -477,7 +477,7 @@ function NavHeaderContent({
         className="absolute right-0 top-[calc(100%+6px)] z-50 w-[280px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
         style={{ animation: "fade-in 150ms ease-out" }}
       >
-        <div className="rounded-xl bg-white/80 px-3.5 py-3">
+        <div className="rounded-xl bg-[var(--color-surface-card)]/80 px-3.5 py-3">
           <p className="truncate text-caption font-semibold text-[var(--color-text-primary)]">
             {displayName ?? "Saját profil"}
           </p>
@@ -835,7 +835,7 @@ function NavHeaderContent({
 
                 <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3">
                   {showIdentityLoader ? (
-                    <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-white/70" />
+                    <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
                   ) : (
                     <div
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-body font-medium text-white"
@@ -846,8 +846,8 @@ function NavHeaderContent({
                   )}
                   {showIdentityLoader ? (
                     <div className="space-y-1.5">
-                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-white/70" />
-                      <div className="h-2 w-14 animate-pulse rounded-full bg-white/70" />
+                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
+                      <div className="h-2 w-14 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
                     </div>
                   ) : (
                     <div>

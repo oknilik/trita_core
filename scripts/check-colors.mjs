@@ -241,6 +241,13 @@ const untokenizedSurfaces = [];
 {
   const PATTERNS = [
     [/\bbg-white\b(?!\/)/g, "bg-white → bg-surface-card"],
+    // MAGAS alfájú fehér: az nem fátyol, hanem FELÜLET. A hero-fátylak
+    // 2–22% között élnek (sötét herón, szándékosan); a 40% fölötti fehér
+    // viszont a lapon ülő kártya/pirula — sötéten majdnem fehér blokk lesz,
+    // a rajta lévő (témakövető) szöveg pedig olvashatatlan. Így buktak a
+    // landing hero-chipjei és az egyén/csapat váltó (2026-08-07).
+    [/\bbg-white\/(?:4[0-9]|[5-9][0-9]|100)\b/g,
+     "bg-white/40+ felület → bg-[var(--color-surface-card)]/N"],
     // Gradiens-stopként ugyanaz a hiba, csak észrevétlenebb: a landing
     // hero-kártyája alatt egy `from-white` elhalványuló sáv világított
     // sötéten (2026-08-07). Az áttetsző alak (from-white/40) itt is szabad.

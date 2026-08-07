@@ -115,13 +115,13 @@ export function PrivacyContent() {
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="font-fraunces text-fluid-title tracking-tight text-[var(--color-text-on-inverse)]">{doc.title}</h1>
             {LEGAL_DOCS_ARE_DRAFT && (
-              <span className="rounded-full border border-[var(--color-text-on-inverse)]/30 px-2.5 py-1 text-label uppercase text-[var(--color-text-on-inverse)]/70">
+              <span className="rounded-full border border-[var(--color-text-on-inverse)]/30 px-2.5 py-1 text-label uppercase text-[var(--color-text-on-inverse-muted)]">
                 {doc.draftBadge}
               </span>
             )}
           </div>
-          <p className="mt-4 max-w-3xl text-body leading-relaxed text-[var(--color-text-on-inverse)]/80">{doc.lead}</p>
-          <p className="mt-5 text-label uppercase text-[var(--color-text-on-inverse)]/55">
+          <p className="mt-4 max-w-3xl text-body leading-relaxed text-[var(--color-text-on-inverse-muted)]">{doc.lead}</p>
+          <p className="mt-5 text-label uppercase text-[var(--color-text-on-inverse-muted)]">
             {doc.lastUpdated} · {doc.effectiveFrom}
           </p>
         </div>

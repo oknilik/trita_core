@@ -989,3 +989,54 @@ néznek (`bg-ink`, `from-[var(--color-text-primary)]`), az SVG-attribútumot
 nem. Kiterjesztve a `fill="var(--color-ink | --color-text-primary)"`
 alakra is — az SVG-ben lévő SZÖVEG a finomabb `text-secondary` /
 `ink-body` fokozatokat használja, azokat nem érinti.
+
+---
+
+## 18. A mérőeszköz vak volt az oklab-színekre (2026-08-07, 10. kör)
+
+A bejelentés — „a hero alatti chipek és az egyén/csapat váltó szövegei nem
+olvashatóak sötét módban" — olyan hibát írt le, amire a mérés **0 találatot**
+adott. A tool hibázott, nem a szem.
+
+### 18.1 A vakfolt
+
+A szkript a `getComputedStyle(el).backgroundColor` sztringjét egy
+`rgba?(…)` regexszel bontotta fel. A Tailwind v4 viszont az
+opacity-modifikátoroknál **`oklab(0.99 … / 0.6)`** alakot ad vissza. A
+regex ezt nem ismerte fel, `null`-t adott — és a mérés ilyenkor „nincs
+háttér"-nek vette az elemet, és FELFELÉ lépett a szülőhöz.
+
+Vagyis **minden `bg-white/60`-szerű felület átlátszó volt a háló számára**.
+A landing hero-chipjei és a mód-váltó pontosan ilyenek.
+
+Javítás: a színt a BÖNGÉSZŐVEL oldatjuk fel — 1×1-es canvasra festve,
+`getImageData`-val visszaolvasva. Ez minden CSS-színformát sRGB-re hoz.
+A hatás azonnal látszott: a marketing-fán a mért találatok száma
+**18 → 135**-re nőtt (a többségük a gradiens-kosárba, kézi nézésre).
+
+### 18.2 Amit ez kihozott
+
+**A magas alfájú fehér FELÜLET, nem fátyol.** A `check-colors` szándékosan
+engedi az áttetsző fehéret: a sötét herókon az 2–22%-os fátyol. A 40% fölötti
+fehér viszont a lapon ülő kártya/pirula — sötéten majdnem fehér blokk lesz,
+a rajta lévő (témakövető) szöveg pedig olvashatatlan.
+
+16 hely: a landing hero-chipjei, az egyén/csapat váltó, a nav
+user-blokkja, riport-chipek, onboarding-panelek. Mind
+`bg-[var(--color-surface-card)]/N`-re. Világosban pixelre azonos
+(`surface-card` = `#ffffff`). A szabály kiterjesztve: 40% fölött hiba.
+
+**A footer halk létrája.** A `text-[var(--color-text-on-inverse)]/55`
+oszlop-címkék (PRODUCT / ACCOUNT / LEGAL) 3,5:1-et adtak a footer alján —
+ugyanaz a minta, mint a heróknál. A `-muted` tokenre kerültek (7 hely,
+footer + az adatvédelem fejlécsávja).
+
+### 18.3 Tanulság a hálóról
+
+Két kör alatt kétszer derült ki, hogy a mérés **kevesebbet lát, mint amit
+állít**: előbb a hajtás alatti (opacity:0) tartalom maradt ki, most az
+oklab-színek. Mindkétszer a felhasználó szeme találta meg, amit a szám nem.
+
+A „0 találat" ezért önmagában nem bizonyíték — csak akkor ér valamit, ha a
+tool lefedettségét is ellenőrizzük. A konkrét ellenőrzés, ami ezt kihozta:
+a javítás VISSZAVÉTELE és újramérés. Ha a szám nem mozdul, a háló nem lát.
