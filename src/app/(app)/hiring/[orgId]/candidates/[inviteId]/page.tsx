@@ -303,7 +303,7 @@ export default async function CandidateResultPage({
           </span>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[36px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[36px]">
             {displayName}
           </h1>
         )}
@@ -311,10 +311,10 @@ export default async function CandidateResultPage({
           invite.position || invite.team ? (
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
               {invite.position && (
-                <span className="text-caption text-white/[0.75]">{invite.position}</span>
+                <span className="text-caption text-[var(--color-text-on-inverse-muted)]">{invite.position}</span>
               )}
               {invite.team && (
-                <span className="text-[11px] text-white/[0.5]">
+                <span className="text-[11px] text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.assignedTeam", locale)}{invite.team.name}
                 </span>
               )}
@@ -323,7 +323,7 @@ export default async function CandidateResultPage({
         }
         chips={
           measuredRoles && measuredRoles.length > 0 ? (
-            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.78]">
+            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
               {t("hiring.teamRolesTitle", locale)} · {t("hiring.measuredBadge", locale)}
             </span>
           ) : undefined
@@ -346,8 +346,8 @@ export default async function CandidateResultPage({
                   className={[
                     "inline-flex min-h-[44px] items-center rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors",
                     isSelected
-                      ? "border-accent-candidate bg-accent-candidate text-white"
-                      : "border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate",
+                      ? "border-accent-candidate bg-accent-candidate text-[var(--color-text-on-candidate)]"
+                      : "border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate",
                   ].join(" ")}
                 >
                   {team.name}
@@ -403,7 +403,7 @@ export default async function CandidateResultPage({
 
             {/* Figyelendő területek */}
             <div className="rounded-xl bg-[rgba(200,65,10,0.06)] p-4">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                 {t("hiring.watchAreasEyebrow", locale)}
               </p>
               <div className="space-y-1.5">
@@ -506,7 +506,7 @@ export default async function CandidateResultPage({
                         category === "high"
                           ? "bg-[rgba(26,92,58,0.08)] text-sage"
                           : category === "low"
-                            ? "bg-[rgba(200,65,10,0.08)] text-bronze"
+                            ? "bg-[rgba(200,65,10,0.08)] text-[var(--color-accent-primary-strong)]"
                             : "bg-warm text-ink-body",
                       ].join(" ")}
                     >
@@ -522,7 +522,7 @@ export default async function CandidateResultPage({
                     />
                     {teamVal !== null && (
                       <div
-                        className="absolute top-0 h-3 w-0.5 rounded-full bg-ink-body/40"
+                        className="absolute top-0 h-3 w-0.5 rounded-full bg-[var(--color-surface-inverse)]-body/40"
                         style={{ left: `${teamVal}%` }}
                         title={`${t("hiring.teamAvgTooltip", locale)}: ${teamVal}%`}
                       />
@@ -655,13 +655,13 @@ export default async function CandidateResultPage({
                     className={`flex flex-col rounded-xl p-[18px] ${
                       isPrimary
                         ? "border-2 border-sage bg-sage-soft"
-                        : "border border-sand bg-white"
+                        : "border border-sand bg-surface-card"
                     }`}
                   >
                     <span
                       className={`mb-2 self-start rounded px-2 py-[3px] text-micro font-bold uppercase tracking-wide ${
                         isPrimary
-                          ? "bg-sage text-white"
+                          ? "bg-sage text-[var(--color-action-primary-fg)]"
                           : "bg-cream text-muted"
                       }`}
                     >
@@ -747,7 +747,7 @@ export default async function CandidateResultPage({
                           {pair.dimB}
                         </span>
                       </div>
-                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-micro font-semibold text-bronze">
+                      <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">
                         {t("hiring.watchAreaBadge", locale)}
                       </span>
                     </div>

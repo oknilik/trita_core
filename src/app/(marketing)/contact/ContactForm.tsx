@@ -89,7 +89,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-white transition-colors hover:bg-ink-body"
+          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -98,7 +98,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-white focus:ring-2 focus:ring-bronze/12";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-surface-card focus:ring-2 focus:ring-bronze/12";
   const labelClass = "block text-sm font-medium text-ink";
 
   return (
@@ -106,7 +106,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.name", locale)} <span className="text-bronze">*</span>
+            {t("contact.name", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <input
             required
@@ -121,7 +121,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.email", locale)} <span className="text-bronze">*</span>
+            {t("contact.email", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <input
             required
@@ -147,7 +147,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
         <label className={labelClass}>
           <span className="mb-2 block">
-            {t("contact.topic", locale)} <span className="text-bronze">*</span>
+            {t("contact.topic", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
           </span>
           <select
             required
@@ -166,7 +166,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
       <label className={labelClass}>
         <span className="mb-2 block">
-          {t("contact.message", locale)} <span className="text-bronze">*</span>
+          {t("contact.message", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
         </span>
         <textarea
           required
@@ -190,7 +190,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       />
 
       {error ? (
-        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <p className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg">
           {error}
         </p>
       ) : null}
@@ -202,7 +202,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>

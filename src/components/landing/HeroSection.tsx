@@ -40,7 +40,7 @@ function SelfPanel() {
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
-      <div className="relative bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-6 pb-6 pt-6">
+      <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <div className="flex items-center justify-between gap-2">
           <p className="text-micro uppercase tracking-widest text-white/70">
             {t("landing.selfPanelEyebrow", locale)}
@@ -69,7 +69,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ DIMENZIÓ-SÁV ═══ */}
-      <div className="bg-white px-5 pt-5 md:flex-1">
+      <div className="bg-surface-card px-5 pt-5 md:flex-1">
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
@@ -137,7 +137,7 @@ function SelfPanel() {
       </div>
 
       {/* ═══ FADE-OUT CTA ═══ */}
-      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-white to-[var(--color-surface-subtle)]">
+      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
         <span className="text-[11px] font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
@@ -162,7 +162,7 @@ function TeamPanel() {
   return (
     <>
       {/* Publikált riport kártya */}
-      <div className="rounded-2xl border border-sand bg-white p-5 shadow-lg shadow-black/[0.06] md:p-6">
+      <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-lg shadow-black/[0.06] md:p-6">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
             <SectionEyebrow>
@@ -175,7 +175,7 @@ function TeamPanel() {
             <span className="rounded border border-sand px-1.5 py-[2px] text-micro uppercase tracking-wide text-muted">
               {t("landing.sampleBadge", locale)}
             </span>
-            <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-micro font-semibold text-emerald-700">
+            <span className="rounded-full bg-state-success-bg px-2.5 py-1 text-micro font-semibold text-state-success-fg">
               {t("landing.teamPanelPublished", locale)}
             </span>
           </div>
@@ -239,13 +239,13 @@ function TeamPanel() {
         className="flex items-center justify-between gap-3 rounded-xl border border-bronze/20 bg-bronze/8 p-3.5 transition-colors hover:bg-bronze/15"
       >
         <div>
-          <p className="font-dm-sans text-micro uppercase tracking-wide text-bronze">
+          <p className="font-dm-sans text-micro uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
             {t("landing.teamPilotLabel", locale)}
           </p>
           <p className="text-caption font-semibold text-ink">{t("landing.teamPilotTitle", locale)}</p>
           <p className="text-[11px] text-muted">{t("landing.teamPilotDesc", locale)}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-white">
+        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-[var(--color-text-on-accent)]">
           {t("landing.teamPilotCta", locale)}
         </span>
       </Link>
@@ -363,7 +363,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
                 ].map((m) => (
-                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
+                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
                     {m.text}
                   </span>

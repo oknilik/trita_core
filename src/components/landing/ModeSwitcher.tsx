@@ -16,7 +16,7 @@ export function ModeSwitcher() {
   const mode = useSiteMode();
 
   return (
-    <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-white/80 p-1 backdrop-blur-sm">
+    <div className="inline-flex items-center gap-1 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/80 p-1 backdrop-blur-sm">
       {(["self", "team"] as SiteMode[]).map((m) => {
         const isActive = mode === m;
         return (
@@ -33,7 +33,7 @@ export function ModeSwitcher() {
               "flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium transition-all duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action-primary-bg)] focus-visible:ring-offset-2",
               isActive
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
             ].join(" ")}
           >

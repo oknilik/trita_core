@@ -24,7 +24,7 @@ function roleLabel(role: string, loc: Locale): string {
 }
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
-  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-bronze" };
+  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-[var(--color-accent-primary-strong)]" };
   if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
   return { variant: "neutral" };
 }
@@ -87,7 +87,7 @@ export function OrgMemberRoleEditor({
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as OrgRole)}
-        className="min-h-[44px] rounded-lg border border-sand bg-white px-2 text-base font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50 md:min-h-[36px] md:text-xs"
+        className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-2 text-base font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50 md:min-h-[36px] md:text-xs"
       >
         {ROLES.map((r) => (
           <option key={r} value={r}>{roleLabel(r, loc)}</option>
@@ -98,7 +98,7 @@ export function OrgMemberRoleEditor({
           {t("org.forms.teamPermissionsHint", loc)}
         </p>
       )}
-      {error && <p className="text-xs text-rose-600">{error}</p>}
+      {error && <p className="text-xs text-state-error-fg">{error}</p>}
     </div>
   );
 }

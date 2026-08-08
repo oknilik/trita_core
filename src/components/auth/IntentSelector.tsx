@@ -53,7 +53,7 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
               "flex flex-col items-start rounded-xl border-[1.5px] px-4 py-3 text-left transition-all",
               active
                 ? "border-[var(--color-action-primary-bg)]/30 bg-[var(--color-surface-self-accent-soft)]/40 shadow-sm"
-                : "border-[var(--color-border-default)] bg-white hover:border-[var(--color-border-soft)] hover:bg-[var(--color-surface-subtle)]",
+                : "border-[var(--color-border-default)] bg-surface-card hover:border-[var(--color-border-soft)] hover:bg-[var(--color-surface-subtle)]",
             ].join(" ")}
           >
             <span className="mb-1.5">{ICONS[opt.value](active)}</span>

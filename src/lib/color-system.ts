@@ -248,10 +248,33 @@ export const LAYER_THEMES: Record<LayerKey, LayerTheme> = {
   },
 };
 
-/** SurfaceHero-kompatibilis gradient string egy réteg-témából. */
+/**
+ * Réteg-hero gradiens LITERÁL hexekkel — a FIX médiumoknak (react-pdf
+ * borító, OG-kép): ott nincs CSS-változó, amit fel lehetne oldani.
+ *
+ * A FELÜLETRE a `layerHeroGradientCss` való — az követi a színsémát.
+ */
 export function layerHeroGradient(layer: LayerKey): string {
   const t = LAYER_THEMES[layer];
   return `linear-gradient(135deg, ${t.heroFrom} 0%, ${t.heroMid} 60%, ${t.heroTo} 100%)`;
+}
+
+/**
+ * Ugyanaz a DOM-nak: szerep-tokenekből, tehát színsémát vált.
+ *
+ * MIÉRT KELL KÜLÖN: a hero mindkét sémán sötét panel, de NEM ugyanaz a
+ * sötét. Világosban a krém vászon fölött ül (7–8:1 elválás), sötéten a
+ * majdnem-fekete vászon fölött — ott ugyanaz a hex 1,0–1,3:1-et adna a
+ * lap saját réteg-tónusához képest, vagyis a hero alsó fele eltűnne. A
+ * sötét készlet ezért MEGEMELT stopokat kap (2,3 / 1,85 / 1,45 a
+ * lap-tónushoz mérve) — a figura-háttér viszony így mindkét sémán él.
+ */
+export function layerHeroGradientCss(layer: LayerKey): string {
+  return (
+    `linear-gradient(135deg, var(--color-layer-${layer}-hero-from) 0%, ` +
+    `var(--color-layer-${layer}-hero-mid) 60%, ` +
+    `var(--color-layer-${layer}-hero-to) 100%)`
+  );
 }
 
 // ─── Értékelő ramp (tier / fit / verdict / confidence / adat-minőség) ────────
@@ -300,6 +323,20 @@ export const DYNAMICS_COLORS = {
   aligned: STATE_SOLID.success,
   complementary: STATE_SOLID.info,
   friction: STATE_SOLID.warning,
+} as const;
+
+/**
+ * Ugyanaz DOM-hoz: CSS-változóként, hogy kövesse a színsémát.
+ *
+ * Miért két térkép: a fenti literál kell a fix médiumoknak (PDF, email,
+ * OG-kép — ott nincs CSS-változó), ez pedig az inline style-hoz és az
+ * SVG-attribútumokhoz a felületen. A kettő szinkronját unit-teszt őrzi
+ * (tests/unit/design/ts-color-maps.test.ts).
+ */
+export const DYNAMICS_COLORS_CSS = {
+  aligned: "var(--color-state-success-solid)",
+  complementary: "var(--color-state-info-solid)",
+  friction: "var(--color-state-warning-solid)",
 } as const;
 
 // ─── Avatar-paletta ──────────────────────────────────────────────────────────

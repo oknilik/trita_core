@@ -102,14 +102,14 @@ export default async function QuoteCalculatorPage({
         <div className="mt-3 flex flex-wrap gap-4">
           <Link
             href="/admin"
-            className="inline-block text-sm text-bronze underline underline-offset-2"
+            className="inline-block text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
           >
             ← Admin
           </Link>
           {deal && (
             <Link
               href={`/admin/crm/${deal.id}`}
-              className="inline-block text-sm text-bronze underline underline-offset-2"
+              className="inline-block text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
             >
               ← Vissza a dealhez: {deal.title}
             </Link>

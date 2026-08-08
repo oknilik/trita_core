@@ -80,7 +80,7 @@ export function PairInteractionView({
   ];
 
   return (
-    <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-6">
+    <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-6">
       <SectionEyebrow tone="muted">
         {t("results.comparePairTitle", locale)}
       </SectionEyebrow>
@@ -134,7 +134,7 @@ export function PairInteractionView({
               className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-caption font-semibold transition-colors ${
                 mode === opt.value
                   ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10 text-ink"
-                  : "border-sand bg-white text-ink-body hover:bg-cream"
+                  : "border-sand bg-surface-card text-ink-body hover:bg-cream"
               }`}
             >
               {opt.label}
@@ -156,15 +156,15 @@ export function PairInteractionView({
               </p>
               <LineList lines={sim.easy} />
             </div>
-            <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-4">
-              <p className="mb-3 text-label uppercase text-amber-700">
+            <div className="rounded-xl border border-state-warning-border bg-state-warning-bg/60 p-4">
+              <p className="mb-3 text-label uppercase text-state-warning-fg">
                 {t("results.interactionFriction", locale)}
               </p>
               <LineList lines={sim.friction} />
             </div>
           </div>
 
-          <div className="mt-4 rounded-xl border border-sand bg-white p-4">
+          <div className="mt-4 rounded-xl border border-sand bg-surface-card p-4">
             <SectionEyebrow tone="muted" dot={false} className="mb-3">
               {t("results.interactionDiscuss", locale)}
             </SectionEyebrow>

@@ -94,7 +94,7 @@ export function DealQuotesPanel({
             const busy = busyId === quote.id;
             const status = quote.status as QuoteStatus;
             return (
-              <div key={quote.id} className="rounded-xl border border-sand bg-white p-3.5">
+              <div key={quote.id} className="rounded-xl border border-sand bg-surface-card p-3.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-mono text-xs font-semibold text-ink">
                     {formatQuoteNo(quote.quoteNo, new Date(quote.createdAt))}
@@ -132,7 +132,7 @@ export function DealQuotesPanel({
                       maxLength={1000}
                       placeholder="Elutasítás oka (opcionális)"
                       aria-label="Elutasítás oka"
-                      className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                      className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                     />
                     <div className="flex gap-2">
                       <Button
@@ -163,7 +163,7 @@ export function DealQuotesPanel({
                       <>
                         <Link
                           href={`/admin/quote?dealId=${dealId}&from=${quote.id}`}
-                          className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-white px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
+                          className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm font-semibold text-ink-body transition hover:bg-cream"
                         >
                           Szerkesztés
                         </Link>

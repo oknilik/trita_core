@@ -39,7 +39,6 @@ function pickMotif(slug: string, tags: string[]): Motif {
 }
 
 const SAGE = "var(--color-sage)";
-const SAGE_DARK = "var(--color-sage-dark)";
 const BRONZE = "var(--color-accent-primary)";
 const BRONZE_SOFT = "var(--color-accent-primary-soft)";
 
@@ -62,7 +61,8 @@ function palette(dark: boolean) {
       };
 }
 
-function RadarMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
+function RadarMotif({ seed, dark }: { seed: number; dark: boolean }) {
+  const rnd = mulberry32(seed);
   const p = palette(dark);
   const cx = 200, cy = 100, spokes = 5 + Math.floor(rnd() * 2);
   const outer = 78;
@@ -89,7 +89,8 @@ function RadarMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
   );
 }
 
-function NetworkMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
+function NetworkMotif({ seed, dark }: { seed: number; dark: boolean }) {
+  const rnd = mulberry32(seed);
   const p = palette(dark);
   const n = 5 + Math.floor(rnd() * 2);
   const nodes = Array.from({ length: n }, (_, i) => ({
@@ -118,7 +119,8 @@ function NetworkMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
   );
 }
 
-function BarsMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
+function BarsMotif({ seed, dark }: { seed: number; dark: boolean }) {
+  const rnd = mulberry32(seed);
   const p = palette(dark);
   const n = 6 + Math.floor(rnd() * 3);
   const bw = 16;
@@ -142,7 +144,8 @@ function BarsMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
   );
 }
 
-function WavesMotif({ rnd, dark }: { rnd: () => number; dark: boolean }) {
+function WavesMotif({ seed, dark }: { seed: number; dark: boolean }) {
+  const rnd = mulberry32(seed);
   const p = palette(dark);
   const wave = (baseY: number, amp: number) => {
     let d = `M -10 ${baseY}`;
@@ -186,20 +189,31 @@ export function BlogArtVisual({
 }) {
   const seededKey = seed ? `${slug}#${seed}` : slug;
   const motif = motifOverride ?? pickMotif(slug, tags);
-  const rnd = mulberry32(hashString(seededKey));
+  // SEEDET adunk át, nem generátort. A PRNG állapotot hordoz: ha a motívum
+  // a SZÜLŐBEN létrehozott generátort fogyasztja a saját renderjében, akkor
+  // egy különálló újrarender (dev StrictMode dupla render, memoizáció)
+  // elcsúsztatja a sorozatot — a szerver és a kliens más geometriát rajzol,
+  // és a React hidratálási hibával újraépíti a fát (2026-08-07). Seedből
+  // minden render ugyanonnan indul, tehát a render tiszta marad. A kirajzolt
+  // kép változatlan: a sorozat ugyanabból a magból ugyanaz.
+  const artSeed = hashString(seededKey);
   const dark = variant === "featured";
   const bg =
     dark
-      ? `linear-gradient(135deg, var(--color-sage-deep), ${SAGE_DARK})`
+      // A kiemelt vizuál SZÁNDÉKOSAN sötét alap (fehér felirat ül rajta),
+      // ezért a réteg-hero tokenekből dolgozik: azok mindkét színsémán
+      // sötétek. A sage-deep/-dark sötét sémán VILÁGOSSÁ fordul, ott a
+      // fehér idézet olvashatatlan lett volna (UX-audit 2026-08-07).
+      ? "linear-gradient(135deg, var(--color-layer-self-hero-from), var(--color-layer-self-hero-to))"
       : hashString(seededKey) % 2 === 0
         ? "var(--color-surface-muted)"
         : "var(--color-surface-self-accent-soft)";
 
   const motifEl =
-    motif === "radar" ? <RadarMotif rnd={rnd} dark={dark} />
-    : motif === "network" ? <NetworkMotif rnd={rnd} dark={dark} />
-    : motif === "bars" ? <BarsMotif rnd={rnd} dark={dark} />
-    : <WavesMotif rnd={rnd} dark={dark} />;
+    motif === "radar" ? <RadarMotif seed={artSeed} dark={dark} />
+    : motif === "network" ? <NetworkMotif seed={artSeed} dark={dark} />
+    : motif === "bars" ? <BarsMotif seed={artSeed} dark={dark} />
+    : <WavesMotif seed={artSeed} dark={dark} />;
 
   return (
     <svg

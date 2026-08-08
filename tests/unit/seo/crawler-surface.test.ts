@@ -106,7 +106,7 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
 test("az llms.txt a fő publikus lapokat és a kapcsolati címet tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/pricing", "/patterns", "/holland-kod", "/blog"]) {
+  for (const path of ["/try", "/pricing", "/patterns", "/pilot", "/blog"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
   assert.ok(body.includes("hello@trita.io"));

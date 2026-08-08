@@ -40,11 +40,11 @@ export function OrgCandidatesTab({
       return { label: isHu ? "Kész" : "Done", className: "bg-sage/10 text-sage-dark" };
     if (status === "CANCELED")
       return { label: isHu ? "Visszavonva" : "Revoked", className: "bg-cream text-muted" };
-    return { label: isHu ? "Folyamatban" : "Pending", className: "bg-amber-50 text-amber-700" };
+    return { label: isHu ? "Folyamatban" : "Pending", className: "bg-state-warning-bg text-state-warning-fg" };
   };
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <SectionEyebrow tone="bronze">
@@ -97,7 +97,7 @@ export function OrgCandidatesTab({
             return (
               <div
                 key={c.id}
-                className="flex flex-wrap items-center gap-2 rounded-xl border border-sand bg-white px-4 py-3"
+                className="flex flex-wrap items-center gap-2 rounded-xl border border-sand bg-surface-card px-4 py-3"
               >
                 <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${meta.className}`}>
                   {meta.label}
@@ -111,7 +111,7 @@ export function OrgCandidatesTab({
                 {c.hasResult && (
                   <Link
                     href={`/hiring/${orgId}/candidates/${c.id}`}
-                    className="text-xs font-semibold text-bronze hover:underline"
+                    className="text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
                   >
                     {isHu ? "Eredmény →" : "Result →"}
                   </Link>
@@ -125,7 +125,7 @@ export function OrgCandidatesTab({
       {/* A kanonikus jelölt-munkafelület a /hiring — innen mindig egy link visz oda. */}
       <Link
         href={`/hiring/${orgId}`}
-        className="mt-3 inline-flex text-xs font-semibold text-bronze hover:underline"
+        className="mt-3 inline-flex text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
       >
         {isHu
           ? `Jelölt-felület megnyitása (${candidates.length}) →`

@@ -202,7 +202,7 @@ function TabPaywall({ tier, tierLabel, price, teaser, locale }: {
   locale: Locale;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-sand bg-white px-6 py-20 text-center">
+    <div className="flex flex-col items-center justify-center gap-5 rounded-2xl border border-sand bg-surface-card px-6 py-20 text-center">
       <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-sand bg-cream">
         <LockIcon />
       </div>
@@ -289,7 +289,7 @@ function ResultsTab({
             </p>
             {/* Soros lista a radar mellett — a hosszú dimenziónevek nem
                 törnek, a sáv + szint-címke egy pillantásra olvasható. */}
-            <div className="flex flex-col gap-2.5 rounded-xl border border-[var(--color-border-soft)] bg-white p-4">
+            <div className="flex flex-col gap-2.5 rounded-xl border border-[var(--color-border-soft)] bg-surface-card p-4">
               {/* Sorrend = a radar HEXACO-rendje (H·E·X·A·C·O), a színek és
                   az értékek a dimenzió-színt viselik — alacsony szintnél is
                   jól láthatóan. */}
@@ -388,7 +388,7 @@ function ResultsTab({
           <button
             type="button"
             onClick={onOpenInvites}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
             {t("results.observerCtaButton", locale)}
           </button>
@@ -975,14 +975,14 @@ export function ProfileTabs({
       {/* Tab bar — pill style */}
       <div
         ref={tabBarRef}
-        className="relative scroll-mt-24 rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-white"
+        className="relative scroll-mt-24 rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
       >
         {/* Él-fade jelzők — csak ott, ahol még van elgörgetett tartalom */}
         {tabFade.left && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-[var(--color-surface-card)] to-transparent" />
         )}
         {tabFade.right && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-[var(--color-surface-card)] to-transparent" />
         )}
         <div
           ref={tabScrollRef}
@@ -1004,8 +1004,8 @@ export function ProfileTabs({
               "flex min-h-[48px] flex-none shrink-0 snap-start items-center justify-center gap-1.5 whitespace-nowrap px-4 py-3 text-center text-xs font-medium transition-all md:flex-1 md:px-3",
               i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
               activeTab === tab.id
-                ? "bg-[var(--color-action-primary-bg)] text-white"
-                : "bg-white text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
+                : "bg-surface-card text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
             ].filter(Boolean).join(" ")}
           >
             {tab.locked ? (
@@ -1191,7 +1191,7 @@ export function ProfileTabs({
                   : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
                 <Link
                   href={experienceHintDestination ?? "/profile/results"}
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
                 >
                   {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
                 </Link>
@@ -1207,7 +1207,7 @@ export function ProfileTabs({
                   : "Your self assessment is still in progress. Continue where you left off."}{" "}
                 <Link
                   href="/assessment"
-                  className="font-semibold text-bronze no-underline transition-colors hover:text-bronze-dark"
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
                 >
                   {locale === "hu" ? "Folytatás" : "Continue"} →
                 </Link>

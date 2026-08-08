@@ -54,7 +54,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-surface-card p-8 shadow-sm">
             <div className="text-5xl leading-none">🎉</div>
             <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.completeTitle", locale)}
@@ -72,7 +72,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
             <div className="text-5xl leading-none">😕</div>
             <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.inactiveTitle", locale)}
@@ -90,7 +90,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
     return (
       <div className="min-h-screen bg-cream">
         <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sage-ring bg-white p-8 shadow-sm">
+          <div className="w-full rounded-2xl border border-sage-ring bg-surface-card p-8 shadow-sm">
             <div className="text-5xl leading-none">⏰</div>
             <h1 className="mt-4 text-2xl font-bold text-ink">
               {t("observer.expiredTitle", locale)}
@@ -121,7 +121,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
       return (
         <div className="min-h-screen bg-cream">
           <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-            <div className="w-full rounded-2xl border border-sand bg-white p-8 shadow-sm">
+            <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
               <div className="text-5xl leading-none">🔒</div>
               <h1 className="mt-4 text-2xl font-bold text-ink">
                 {t("observer.notAddresseeTitle", locale)}

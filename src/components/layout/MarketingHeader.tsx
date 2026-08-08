@@ -58,5 +58,7 @@ export function MarketingHeader() {
   }
 
   // Kijelentkezve, vagy amíg a nav-adat betölt → könnyű marketing-nav.
-  return <NavBar signedInHomeHref={JOURNEY_HOME_HANDOFF_PATH} />;
+  // A színséma-választó a marketing-fejlécben is kell: a látogató a belépés
+  // előtt dönt, és a marketing-fa a `.theme-scope`-on belül van.
+  return <NavBar signedInHomeHref={JOURNEY_HOME_HANDOFF_PATH} showThemeToggle />;
 }

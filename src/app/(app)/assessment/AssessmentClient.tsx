@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -606,7 +607,7 @@ export function AssessmentClient({
 
   if (showIntro) {
     const steps = [
-      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-white", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
+      { num: 1, style: "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]", title: t("assessment.introStep1", locale), sub: tf("assessment.introStep1Sub", locale, { count: totalQuestions }) },
       { num: 2, style: "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]", title: t("assessment.introStep2", locale), sub: t("assessment.introStep2Sub", locale) },
       { num: 3, style: "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]", title: t("assessment.introStep3", locale), sub: t("assessment.introStep3Sub", locale) },
     ]
@@ -619,10 +620,13 @@ export function AssessmentClient({
       <div className={`${shellMinHeight} bg-[var(--color-surface-canvas)]`}>
         {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
         {!hasShellHeader && (
-          <nav className="flex items-center justify-between bg-[rgba(250,249,246,0.95)] px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
+          <nav className="flex items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
             <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
               <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
             </Link>
+            {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
+                ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
+            <ThemeToggle />
           </nav>
         )}
 
@@ -634,7 +638,7 @@ export function AssessmentClient({
             <div>
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="h-px w-4 bg-[var(--color-accent-primary)]" />
-                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary)]">
+                <span className="text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
@@ -653,7 +657,7 @@ export function AssessmentClient({
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-white shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -665,7 +669,7 @@ export function AssessmentClient({
             {/* Right column */}
             <div className="flex flex-col gap-2.5">
               {steps.map((s) => (
-                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-white p-3 px-3.5">
+                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-surface-card p-3 px-3.5">
                   <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${s.style}`}>
                     {s.num}
                   </div>
@@ -678,7 +682,7 @@ export function AssessmentClient({
               {/* Dekoratív miniatűr eredmény-teaser — a törpe, halvány szöveg
                   szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
                   ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
-              <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-accent-self-strong)] via-[var(--color-accent-self-deep)] to-[var(--color-accent-self-deeper)] px-4 py-3.5">
+              <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5">
                 {/* eslint-disable-next-line no-restricted-syntax */}
                 <p className="text-[6px] uppercase tracking-widest text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
@@ -713,7 +717,7 @@ export function AssessmentClient({
       {/* ═══ MINIMAL NAV ═══ — a logó csak akkor, ha a shell fejléce nem
           renderel fölötte (különben két azonos márkasáv ülne egymáson). */}
       <nav
-        className={`flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-[rgba(250,249,246,0.95)] px-4 backdrop-blur-[12px] sm:px-10 lg:px-16 ${
+        className={`flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--color-surface-header)]/95 px-4 backdrop-blur-[12px] sm:px-10 lg:px-16 ${
           hasShellHeader ? "justify-end py-1.5" : "justify-between py-3"
         }`}
       >
@@ -723,6 +727,9 @@ export function AssessmentClient({
           </Link>
         )}
         <div className="flex items-center gap-3">
+          {/* A kitöltés közben is elérhető: aki világosban indult és
+              zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
+          <ThemeToggle />
           {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
           <span className="text-micro text-[var(--color-action-primary-bg)]">
             ✓ {guestMode
@@ -731,7 +738,7 @@ export function AssessmentClient({
           </span>
           <a
             href={guestMode ? "/" : "/profile/results"}
-            className="rounded-md border border-[var(--color-border-default)] bg-white px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
+            className="rounded-md border border-[var(--color-border-default)] bg-surface-card px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
           >
             {t('assessment.continueLater', locale)}
           </a>
@@ -863,14 +870,14 @@ export function AssessmentClient({
       </div>
 
       {/* ═══ FOOTER BAR ═══ */}
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-[var(--color-border-default)] bg-white px-4 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:flex-nowrap md:px-7">
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-[var(--color-border-default)] bg-surface-card px-4 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:flex-nowrap md:px-7">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
           className={`min-h-[44px] whitespace-nowrap rounded-lg border px-4 py-2.5 text-caption transition-all md:px-5 ${
             canGoPrev
-              ? "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
+              ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
           }`}
         >
@@ -882,7 +889,7 @@ export function AssessmentClient({
         <label className="order-last flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 md:order-none md:w-auto md:justify-start">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
-              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-white"
+              autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
             }`}
           >
             {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
@@ -905,7 +912,7 @@ export function AssessmentClient({
             disabled={!canProceed}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               canProceed
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >
@@ -918,7 +925,7 @@ export function AssessmentClient({
             disabled={isSubmitting}
             className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
               !isSubmitting
-                ? "bg-[var(--color-action-primary-bg)] text-white shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
             }`}
           >

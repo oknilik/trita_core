@@ -199,7 +199,7 @@ export default async function MyMeasurementsPage() {
   return (
     <main className="min-h-dvh bg-cream">
       <div className="mx-auto w-full max-w-3xl px-4 pt-10 pb-20">
-        <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+        <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {t("myTasks.eyebrow", loc)}
         </p>
         <h1 className="mt-1 font-fraunces text-3xl text-ink">
@@ -211,8 +211,8 @@ export default async function MyMeasurementsPage() {
 
         {/* Tőlem kért visszajelzések (belsős observer-meghívók) */}
         {feedbackRequests.length > 0 && (
-          <section className="mt-8 rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7">
-            <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+          <section className="mt-8 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7">
+            <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("myTasks.feedbackRequestsEyebrow", loc)}
             </p>
             <h2 className="mt-1 font-fraunces text-xl text-ink">
@@ -225,14 +225,14 @@ export default async function MyMeasurementsPage() {
                   className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bronze/40 bg-cream px-3.5 py-2.5"
                 >
                   <span className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bronze text-[11px] font-bold text-white">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bronze text-[11px] font-bold text-[var(--color-text-on-accent)]">
                       ★
                     </span>
                     <span className="text-caption font-medium text-ink">
                       {tf("myTasks.feedbackRequestFrom", loc, { name: req.inviterName })}
                     </span>
                     {req.answered > 0 && (
-                      <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                      <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">
                         {tf("myTasks.feedbackRequestProgress", loc, {
                           done: req.answered,
                           total: req.total,
@@ -242,7 +242,7 @@ export default async function MyMeasurementsPage() {
                   </span>
                   <Link
                     href={`/observe/${req.token}`}
-                    className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                    className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
                   >
                     {req.answered > 0
                       ? t("myTasks.stepOpen", loc)
@@ -255,7 +255,7 @@ export default async function MyMeasurementsPage() {
         )}
 
         {cards.length === 0 && feedbackRequests.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+          <div className="mt-8 rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
             <h2 className="font-fraunces text-xl text-ink">
               {t("myTasks.noneTitle", loc)}
             </h2>
@@ -264,7 +264,7 @@ export default async function MyMeasurementsPage() {
             </p>
             <Link
               href="/dashboard"
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+              className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
             >
               {t("myTasks.backToDashboard", loc)}
             </Link>
@@ -279,7 +279,7 @@ export default async function MyMeasurementsPage() {
               return (
                 <section
                   key={card.id}
-                  className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-7"
+                  className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -294,7 +294,7 @@ export default async function MyMeasurementsPage() {
                         allDone && !gathering
                           ? "bg-sage/15 text-sage-dark"
                           : allDone
-                            ? "bg-bronze/10 text-bronze"
+                            ? "bg-bronze/10 text-[var(--color-accent-primary-strong)]"
                             : "bg-sand text-ink-body",
                       ].join(" ")}
                     >
@@ -348,7 +348,7 @@ export default async function MyMeasurementsPage() {
                               ? "border-sage/30 bg-sage/5"
                               : isCurrent
                                 ? "border-bronze/40 bg-cream"
-                                : "border-sand bg-white opacity-80",
+                                : "border-sand bg-surface-card opacity-80",
                           ].join(" ")}
                         >
                           <span className="flex min-w-0 items-center gap-2.5">
@@ -356,9 +356,9 @@ export default async function MyMeasurementsPage() {
                               className={[
                                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
                                 isDone
-                                  ? "bg-sage text-white"
+                                  ? "bg-sage text-[var(--color-action-primary-fg)]"
                                   : isCurrent
-                                    ? "bg-bronze text-white"
+                                    ? "bg-bronze text-[var(--color-text-on-accent)]"
                                     : "bg-sand text-muted",
                               ].join(" ")}
                             >
@@ -368,7 +368,7 @@ export default async function MyMeasurementsPage() {
                               {label}
                             </span>
                             {isCurrent && card.partial && (
-                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">
                                 {tf("myTasks.partialProgress", loc, {
                                   done: card.partial.done,
                                   total: card.partial.total,
@@ -376,7 +376,7 @@ export default async function MyMeasurementsPage() {
                               </span>
                             )}
                             {observerGathering && (
-                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-bronze">
+                              <span className="rounded-full bg-bronze/10 px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">
                                 {tf("myTasks.observerProgress", loc, {
                                   received: observerGathering.received,
                                   min: observerGathering.min,
@@ -392,7 +392,7 @@ export default async function MyMeasurementsPage() {
                             {observerGathering ? (
                               <Link
                                 href="/profile/results?tab=comparison#observer-flow"
-                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
                               >
                                 {observerGathering.sent < observerGathering.min
                                   ? tf("myTasks.observerAskCta", loc, {
@@ -407,7 +407,7 @@ export default async function MyMeasurementsPage() {
                             ) : isCurrent && card.gateOpen ? (
                               <Link
                                 href={link}
-                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
                               >
                                 {started
                                   ? t("myTasks.stepOpen", loc)

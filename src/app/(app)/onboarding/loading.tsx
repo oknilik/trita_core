@@ -24,7 +24,7 @@ export default function OnboardingLoading() {
           </div>
           <div className="h-1 w-full rounded-full bg-sand" />
         </div>
-        <div className="animate-pulse rounded-2xl border border-sand bg-white p-6 md:p-8">
+        <div className="animate-pulse rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
           <div className="flex flex-col gap-5">
             <div className="h-4 w-12 rounded bg-bronze-soft" />
             <div className="h-7 w-48 rounded bg-sand" />

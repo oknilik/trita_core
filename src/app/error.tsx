@@ -10,7 +10,9 @@ export default function GlobalError({
   reset: () => void;
 }) {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-cream">
+    // Gyökér-hibahatár: EGYETLEN layout sem fut körülötte, csak a root —
+    // a hatókört ezért magának kell felvennie.
+    <div className="theme-scope flex min-h-dvh items-center justify-center bg-cream">
       <div className="max-w-md px-6 text-center">
         <SectionEyebrow className="mb-2">hiba történt</SectionEyebrow>
         <h1 className="font-fraunces text-2xl text-ink mb-4">
@@ -21,7 +23,7 @@ export default function GlobalError({
         </p>
         <button
           onClick={reset}
-          className="rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-white hover:bg-sage-dark transition min-h-[44px]"
+          className="rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-[var(--color-action-primary-fg)] hover:bg-sage-dark transition min-h-[44px]"
         >
           Újrapróbálás
         </button>

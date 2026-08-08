@@ -40,10 +40,10 @@ export function OrgSubscriptionBanner({
       className={cn(
         "rounded-2xl border px-5 py-4 md:px-6",
         isNone
-          ? "border-slate-200 bg-slate-50"
+          ? "border-cream-300 bg-cream"
           : isFrozen
-          ? "border-amber-200 bg-amber-50"
-          : "border-sky-200 bg-sky-50",
+          ? "border-state-warning-border bg-state-warning-bg"
+          : "border-state-info-border bg-state-info-bg",
         className,
       )}
     >
@@ -51,10 +51,10 @@ export function OrgSubscriptionBanner({
         className={cn(
           "font-mono text-micro uppercase tracking-widest",
           isNone
-            ? "text-slate-700"
+            ? "text-ink-body"
             : isFrozen
-              ? "text-amber-700"
-              : "text-sky-700",
+              ? "text-state-warning-fg"
+              : "text-layer-org-bright",
         )}
       >
         {eyebrow}
@@ -63,10 +63,10 @@ export function OrgSubscriptionBanner({
         className={cn(
           "mt-1 font-fraunces text-xl",
           isNone
-            ? "text-slate-900"
+            ? "text-ink"
             : isFrozen
-              ? "text-amber-900"
-              : "text-sky-900",
+              ? "text-accent-earth-strong"
+              : "text-layer-org-accent",
         )}
       >
         {title}
@@ -75,10 +75,10 @@ export function OrgSubscriptionBanner({
         className={cn(
           "mt-2 text-sm",
           isNone
-            ? "text-slate-800"
+            ? "text-ink"
             : isFrozen
-              ? "text-amber-800"
-              : "text-sky-800",
+              ? "text-bronze-700"
+              : "text-layer-org-accent",
         )}
       >
         {description}
@@ -89,10 +89,10 @@ export function OrgSubscriptionBanner({
           className={cn(
             "inline-flex min-h-[40px] items-center rounded-lg px-4 text-sm font-semibold text-white transition",
             isNone
-              ? "bg-slate-700 hover:bg-slate-800"
+              ? "bg-[var(--color-surface-inverse-soft)] hover:bg-[var(--color-surface-inverse)]"
               : isFrozen
-              ? "bg-amber-700 hover:bg-amber-800"
-              : "bg-sky-700 hover:bg-sky-800",
+              ? "bg-state-warning-fg hover:bg-bronze-700"
+              : "bg-layer-org-bright hover:bg-layer-org-accent",
           )}
         >
           {isHu ? (isNone ? "Előfizetés aktiválása" : "Reaktiválás") : (isNone ? "Activate subscription" : "Reactivate")}

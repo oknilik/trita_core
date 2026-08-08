@@ -148,7 +148,7 @@ export function CareerFakeDoor({
 
         {/* Bélyegző: ez az első, amit a szem elkap. */}
         <span
-          className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 bg-white/40 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
+          className="absolute right-5 top-6 rotate-[-7deg] rounded-md border-2 bg-[var(--color-surface-card)]/40 px-3 py-1.5 text-micro font-bold uppercase tracking-widest md:right-10"
           style={{ borderColor: SHEET.stamp, color: SHEET.stamp }}
         >
           {t("fakeDoor.badge", locale)}
@@ -214,7 +214,7 @@ export function CareerFakeDoor({
           {CARDS.map((card, index) => (
             <div
               key={card.lead}
-              className={`relative overflow-hidden rounded-2xl border border-sand bg-white p-5 md:p-6 ${
+              className={`relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 md:p-6 ${
                 index === 0 || index === CARDS.length - 1 ? "md:col-span-2" : ""
               }`}
             >
@@ -225,7 +225,7 @@ export function CareerFakeDoor({
                 className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 stroke-bronze opacity-[0.09] [&>g]:stroke-bronze"
               />
               <div className="relative">
-                <span className="font-fraunces text-[15px] text-bronze">
+                <span className="font-fraunces text-[15px] text-[var(--color-accent-primary-strong)]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="mt-1 font-fraunces text-[19px] leading-snug text-ink md:text-[22px]">
@@ -264,7 +264,7 @@ export function CareerFakeDoor({
             hero mostantól zsálya tervlap, mellette az agyag két külön
             akcentus-családot vitt volna egy oldalra. Az ink egyikkel sem
             versenyez. */}
-        <div className="relative overflow-hidden bg-gradient-to-b from-ink to-ink-body px-6 py-7 md:px-8 md:py-8">
+        <div className="relative overflow-hidden bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-7 md:px-8 md:py-8">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-16 h-[220px] w-[220px] rounded-full bg-white/[0.03]"
@@ -275,10 +275,10 @@ export function CareerFakeDoor({
             </p>
             {/* Nincs count-up: egy nem létező termék oldalán a numerikus
                 teátralitás pont a hitelességet vinné el. */}
-            <p className="mt-2 font-fraunces text-[40px] leading-none text-white md:text-[52px]">
+            <p className="mt-2 font-fraunces text-[40px] leading-none text-[var(--color-text-on-inverse)] md:text-[52px]">
               {price}
             </p>
-            <p className="mt-3 max-w-prose text-caption leading-relaxed text-white/[0.72]">
+            <p className="mt-3 max-w-prose text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
               {t("fakeDoor.priceFraming", locale)}
             </p>
             {/* A „most nem fizetsz" nem lábjegyzet: ez az oldal legfontosabb
@@ -302,7 +302,7 @@ export function CareerFakeDoor({
           </div>
         </div>
 
-        <div className="bg-white p-6 md:p-8">
+        <div className="bg-surface-card p-6 md:p-8">
           <DecisionPanel
             sessionId={sessionId}
             source={source}

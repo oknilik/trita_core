@@ -101,10 +101,10 @@ export function Modal({
           // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
           "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
           isBrand
-            ? "max-w-none rounded-t-2xl bg-white shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
-            : "max-w-md rounded-2xl bg-white shadow-2xl",
+            ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+            : "max-w-md rounded-2xl bg-surface-card shadow-2xl",
           variant === "danger"
-            ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-rose-200/70")
+            ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-state-error-border/70")
             : (isBrand ? "border-sand" : "border-sand/70"),
         ].join(" ")}
       >
@@ -114,10 +114,10 @@ export function Modal({
             variant === "danger"
               ? (isBrand
                 ? "bg-[var(--color-action-destructive-bg)]"
-                : "bg-gradient-to-r from-rose-400 via-rose-500 to-orange-400")
+                : "bg-gradient-to-r from-state-error-solid via-state-error-solid to-bronze-300")
               : (isBrand
                 ? "bg-sage"
-                : "bg-gradient-to-r from-indigo-400 via-indigo-500 to-sky-400"),
+                : "bg-gradient-to-r from-sage-500 via-sage-500 to-state-info-solid"),
           ].join(" ")}
         />
 
@@ -163,8 +163,8 @@ export function Modal({
                   "flex h-9 w-9 shrink-0 items-center justify-center rounded-full",
                   !isBrand ? "mt-0.5" : "",
                   variant === "danger"
-                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-rose-100 text-rose-700")
-                    : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-indigo-100 text-indigo-700"),
+                    ? (isBrand ? "bg-[var(--color-state-error-bg)] text-[var(--color-state-error-fg)]" : "bg-state-error-bg text-state-error-fg")
+                    : (isBrand ? "bg-sage-soft text-sage-dark" : "bg-sage-soft text-sage-dark"),
                 ].join(" ")}
               >
                 {variant === "danger" ? (
@@ -179,7 +179,7 @@ export function Modal({
               </div>
               <div className={isBrand ? "text-center" : undefined}>
                 {eyebrow && (
-                  <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze/80">
+                  <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                     {eyebrow}
                   </p>
                 )}
@@ -188,7 +188,7 @@ export function Modal({
                     "text-lg font-semibold",
                     isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
                     variant === "danger"
-                      ? (isBrand ? "text-ink" : "text-rose-900")
+                      ? (isBrand ? "text-ink" : "text-text-error-strong")
                       : (isBrand ? "text-ink" : "text-ink"),
                   ].join(" ")}
                 >
@@ -204,7 +204,7 @@ export function Modal({
                       className={[
                         "mt-2 text-sm leading-relaxed",
                         variant === "danger"
-                          ? (isBrand ? "text-ink-body" : "text-rose-700")
+                          ? (isBrand ? "text-ink-body" : "text-state-error-fg")
                           : (isBrand ? "text-ink-body" : "text-ink-body"),
                       ].join(" ")}
                     >
@@ -297,7 +297,7 @@ export function ConfirmModal({
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="min-h-[44px] rounded-[10px] border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-[44px] rounded-[10px] border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
         >
           {cancelText}
         </button>

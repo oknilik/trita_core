@@ -33,7 +33,7 @@ export function ShareRow({
   };
 
   const btn =
-    "inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-sand bg-white px-2 text-caption text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]";
+    "inline-flex min-h-[44px] min-w-[44px] items-center justify-center gap-1.5 rounded-lg border border-sand bg-surface-card px-2 text-caption text-[var(--color-text-secondary)] transition-colors hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]";
 
   return (
     <div className="flex items-center gap-2" aria-label={labels.share}>

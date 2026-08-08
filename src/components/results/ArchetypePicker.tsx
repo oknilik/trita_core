@@ -31,7 +31,7 @@ interface ArchetypePickerProps {
 const TILE_BASE =
   "flex min-w-0 cursor-pointer flex-col items-center gap-1.5 rounded-xl border-[1.5px] p-2.5 text-center transition";
 const TILE_IDLE =
-  "border-[var(--color-border-soft)] bg-white hover:border-[var(--color-border-default)]";
+  "border-[var(--color-border-soft)] bg-surface-card hover:border-[var(--color-border-default)]";
 const TILE_ACTIVE =
   "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] shadow-[0_2px_10px_rgba(0,0,0,0.05)]";
 

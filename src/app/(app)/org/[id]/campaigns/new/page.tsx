@@ -72,7 +72,7 @@ export default async function NewCampaignPage({
             state={bannerState ?? "restricted"}
             locale={locale}
           />
-          <div className="mt-6 rounded-2xl border border-sand bg-white p-6 shadow-sm">
+          <div className="mt-6 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
             <h1 className="font-fraunces text-2xl text-ink">{gateCopy.title}</h1>
             <p className="mt-2 text-sm text-ink-body">
               {gateCopy.description}
@@ -80,7 +80,7 @@ export default async function NewCampaignPage({
             <div className="mt-4 flex flex-wrap gap-2">
               <a
                 href={gateCopy.ctaHref}
-                className="inline-flex min-h-[42px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className="inline-flex min-h-[42px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
                 {gateCopy.ctaLabel}
               </a>
@@ -142,7 +142,7 @@ export default async function NewCampaignPage({
         {/* Back link */}
         <Link
           href={`/org/${orgId}?tab=campaigns`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-bronze"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
         >
           <svg
             viewBox="0 0 16 16"

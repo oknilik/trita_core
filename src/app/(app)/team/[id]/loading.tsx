@@ -50,15 +50,15 @@ export default function TeamLoading() {
           <div className="mb-4 h-3 w-28 rounded bg-sand/70" />
           <div className="mb-3 h-3 w-24 rounded bg-sand/60" />
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="h-[170px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[170px] rounded-[24px] border border-sand bg-white" />
+            <div className="h-[170px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[170px] rounded-[24px] border border-sand bg-surface-card" />
           </div>
         </section>
 
         <section className="animate-pulse">
           <div className="mb-4 h-3 w-24 rounded bg-sand/70" />
           <div className="mb-2 h-3 w-20 rounded bg-sand/60" />
-          <div className="overflow-hidden rounded-[24px] border border-sand bg-white">
+          <div className="overflow-hidden rounded-[24px] border border-sand bg-surface-card">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
@@ -81,7 +81,7 @@ export default function TeamLoading() {
 
         <section className="animate-pulse">
           <div className="mb-4 h-3 w-32 rounded bg-sand/70" />
-          <div className="h-[168px] rounded-[24px] border border-sand bg-white" />
+          <div className="h-[168px] rounded-[24px] border border-sand bg-surface-card" />
         </section>
     </PlatformPageShell>
   );

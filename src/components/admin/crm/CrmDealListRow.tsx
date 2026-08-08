@@ -56,7 +56,7 @@ export function CrmDealListRow({
   return (
     <div
       data-testid="crm-deal-row"
-      className="flex flex-col gap-2 rounded-xl border border-sand bg-white p-4 sm:flex-row sm:items-center sm:justify-between"
+      className="flex flex-col gap-2 rounded-xl border border-sand bg-surface-card p-4 sm:flex-row sm:items-center sm:justify-between"
     >
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">

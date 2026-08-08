@@ -132,7 +132,7 @@ export function CampaignCard({
           </span>
           <Link
             href={`/org/${orgId}/campaigns/${campaign.id}`}
-            className="inline-flex min-h-[44px] items-center text-xs font-semibold text-bronze hover:underline whitespace-nowrap md:min-h-0"
+            className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline whitespace-nowrap md:min-h-0"
           >
             {t("org.card.summaryLink", loc)}
           </Link>
@@ -146,7 +146,7 @@ export function CampaignCard({
   // ──────────────────────────────────────────────────────────────────────────
   if (variant === "draft") {
     return (
-      <div className="rounded-2xl border border-sand bg-white p-5 shadow-sm">
+      <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
@@ -173,7 +173,7 @@ export function CampaignCard({
         </p>
         <Link
           href={`/org/${orgId}/campaigns/${campaign.id}`}
-          className="text-xs font-semibold text-bronze hover:underline"
+          className="text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
         >
           {t("org.card.editLink", loc)}
         </Link>
@@ -197,7 +197,7 @@ export function CampaignCard({
   ];
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="min-w-0">
@@ -216,7 +216,7 @@ export function CampaignCard({
             href={`/org/${orgId}/campaigns/${campaign.id}`}
             className="group block"
           >
-            <h3 className="font-fraunces text-xl text-ink group-hover:text-bronze transition-colors leading-tight">
+            <h3 className="font-fraunces text-xl text-ink group-hover:text-[var(--color-accent-primary-strong)] transition-colors leading-tight">
               {campaign.name}
             </h3>
           </Link>
@@ -322,7 +322,7 @@ export function CampaignCard({
       <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-sand">
         <Link
           href={`/org/${orgId}/campaigns/${campaign.id}`}
-          className="text-sm font-semibold text-bronze hover:underline"
+          className="text-sm font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
         >
           {t("org.card.viewLink", loc)}
         </Link>
@@ -332,7 +332,7 @@ export function CampaignCard({
             type="button"
             onClick={handleRemind}
             disabled={reminding}
-            className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze disabled:opacity-50"
+            className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)] disabled:opacity-50"
           >
             {reminding
               ? t("org.card.sending", loc)

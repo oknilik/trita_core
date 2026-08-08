@@ -68,10 +68,10 @@ export function OrgRenameForm({ orgId, currentName, locale }: OrgRenameFormProps
         {t("org.forms.save", loc)}
       </Button>
       {saved && (
-        <p className="text-xs text-green-600">{t("org.forms.saved", loc)}</p>
+        <p className="text-xs text-state-success-fg">{t("org.forms.saved", loc)}</p>
       )}
       {error && (
-        <p className="text-xs text-rose-600">{error}</p>
+        <p className="text-xs text-state-error-fg">{error}</p>
       )}
     </form>
   );

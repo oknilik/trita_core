@@ -41,7 +41,7 @@ export function TryTeaserCard({
   return (
     <section
       data-testid="try-teaser-card"
-      className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5"
+      className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5"
     >
       <SectionEyebrow tone="muted">
         {t("tryComplete.teaserEyebrow", locale)}
@@ -72,7 +72,7 @@ export function TryTeaserCard({
             >
               <span className="font-semibold text-ink">{dim.letter}</span>
               {dim.label}
-              <span className="font-semibold text-bronze">{dim.score}%</span>
+              <span className="font-semibold text-[var(--color-accent-primary-strong)]">{dim.score}%</span>
             </span>
           ))}
         </div>

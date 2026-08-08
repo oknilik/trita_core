@@ -347,7 +347,7 @@ export function CandidateClient({
       },
     ];
     const stepTileStyles = [
-      "bg-accent-candidate text-white",
+      "bg-accent-candidate text-[var(--color-text-on-candidate)]",
       "bg-accent-candidate-soft text-accent-candidate-strong",
       "bg-warm-mid text-muted",
     ];
@@ -387,7 +387,7 @@ export function CandidateClient({
               <button
                 type="button"
                 onClick={() => setPhase("assessment")}
-                className="min-h-[48px] w-full rounded-[10px] bg-accent-candidate px-8 text-body font-semibold text-white shadow-md shadow-accent-candidate/20 transition-all hover:-translate-y-px hover:bg-accent-candidate-strong hover:shadow-lg lg:w-auto"
+                className="min-h-[48px] w-full rounded-[10px] bg-accent-candidate px-8 text-body font-semibold text-[var(--color-text-on-candidate)] shadow-md shadow-accent-candidate/20 transition-all hover:-translate-y-px hover:bg-accent-candidate-strong hover:shadow-lg lg:w-auto"
               >
                 {t("candidate.introStartCta", locale)}
               </button>
@@ -408,7 +408,7 @@ export function CandidateClient({
                 return (
                   <div
                     key={step.title}
-                    className="flex items-start gap-2.5 rounded-[10px] border border-sand bg-white p-3 px-3.5"
+                    className="flex items-start gap-2.5 rounded-[10px] border border-sand bg-surface-card p-3 px-3.5"
                   >
                     <div
                       className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${tileClass}`}
@@ -515,7 +515,7 @@ export function CandidateClient({
         {/* Sticky progress — számláló + terrakotta sáv + ETA */}
         {/* Az /apply nincs a nav rejtő-/fókusz-listáin: fölötte mindig egy
             sticky fejléc ül (h-14 = 56px) — a kártya ez alá tapad. */}
-        <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-white/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
+        <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-[var(--color-surface-card)]/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
           <div className="flex items-center gap-3">
             <div className="flex items-baseline gap-1 whitespace-nowrap">
               <span className="font-fraunces text-[17px] font-medium leading-none text-ink">
@@ -559,7 +559,7 @@ export function CandidateClient({
               className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
                 autoAdvance
                   ? "border-accent-candidate bg-accent-candidate"
-                  : "border-warm-dark bg-white"
+                  : "border-warm-dark bg-surface-card"
               }`}
             >
               {autoAdvance && <span className="text-micro leading-none text-white">✓</span>}
@@ -610,7 +610,7 @@ export function CandidateClient({
             className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
               !canGoPrev
                 ? "cursor-not-allowed bg-sand/70 text-muted"
-                : "border border-sand bg-white text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
+                : "border border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
             }`}
             whileHover={canGoPrev ? { scale: 1.02 } : {}}
             whileTap={canGoPrev ? { scale: 0.98 } : {}}
@@ -624,7 +624,7 @@ export function CandidateClient({
               disabled={isSubmitting}
               className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 !isSubmitting
-                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
+                  ? "bg-accent-candidate text-[var(--color-text-on-candidate)] shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "bg-sand text-muted"
               }`}
               whileHover={!isSubmitting ? { scale: 1.02 } : {}}
@@ -641,7 +641,7 @@ export function CandidateClient({
               aria-disabled={!currentQuestionAnswered || isSubmitting}
               className={`min-h-[48px] rounded-[10px] px-6 text-caption font-semibold transition-all ${
                 currentQuestionAnswered && !isSubmitting
-                  ? "bg-accent-candidate text-white shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
+                  ? "bg-accent-candidate text-[var(--color-text-on-candidate)] shadow-sm shadow-accent-candidate/20 hover:bg-accent-candidate-strong"
                   : "cursor-not-allowed bg-sand text-muted"
               }`}
               whileHover={currentQuestionAnswered && !isSubmitting ? { scale: 1.02 } : {}}

@@ -138,7 +138,7 @@ export default async function TeamListPage() {
               <Link
                 key={team.id}
                 href={`/team/${team.id}`}
-                className="group rounded-2xl border border-sand bg-white p-5 transition-all hover:border-sage/40 hover:shadow-md hover:shadow-sage/5"
+                className="group rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:border-sage/40 hover:shadow-md hover:shadow-sage/5"
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="truncate font-semibold text-ink transition-colors group-hover:text-sage">

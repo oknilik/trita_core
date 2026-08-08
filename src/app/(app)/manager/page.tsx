@@ -171,7 +171,7 @@ export default async function ManagerCockpitPage() {
           </SectionEyebrow>
         }
         title={
-          <h1 className="font-fraunces text-[27px] tracking-tight text-white md:text-[40px]">
+          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
             {isHu ? `Szia, ${profile.username?.split(" ")[0] ?? "Menedzser"}!` : `Hi, ${profile.username?.split(" ")[0] ?? "Manager"}!`}
           </h1>
         }
@@ -185,20 +185,20 @@ export default async function ManagerCockpitPage() {
                 : `You manage ${teamCount} teams with ${data.totalMembers} members total.`)
         }
         chips={[
-          <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+          <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalMembers} {isHu ? "tag" : "members"}
           </span>,
-          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalCompleted} {isHu ? "kitöltve" : "completed"}
           </span>,
-          <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-white/[0.62]">
+          <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
             {teamCount} {isHu ? "csapat" : "teams"}
           </span>,
         ]}
         actions={
           <Link
             href={`/team/${data.teams[0].teamId}`}
-            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-white transition hover:brightness-110"
+            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
             style={{ backgroundColor: heroTheme.primary }}
           >
             {isSingleTeam
@@ -208,27 +208,27 @@ export default async function ManagerCockpitPage() {
         }
         aside={
           <>
-            <p className="text-micro uppercase tracking-widest text-white/[0.34]">
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
               {isHu ? "Összesítés" : "Summary"}
             </p>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Kitöltöttség" : "Completion"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{totalCompletionPct}%</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Kitöltöttség" : "Completion"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{totalCompletionPct}%</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Függő" : "Pending"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalMembers - data.totalCompleted}</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Függő" : "Pending"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{data.totalMembers - data.totalCompleted}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-white/[0.35]">{isHu ? "Meghívók" : "Invites"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-white">{data.totalPendingInvites}</p>
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Meghívók" : "Invites"}</p>
+                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{data.totalPendingInvites}</p>
               </div>
             </div>
             <div className="mt-4">
-              <div className="mb-1.5 flex items-center justify-between text-micro text-white/[0.52]">
+              <div className="mb-1.5 flex items-center justify-between text-micro text-[var(--color-text-on-inverse-muted)]">
                 <span>{isHu ? "Összesített kitöltöttség" : "Overall completion"}</span>
-                <span className="font-semibold text-white/[0.7]">{totalCompletionPct}%</span>
+                <span className="font-semibold text-[var(--color-text-on-inverse-muted)]">{totalCompletionPct}%</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-white/[0.12]">
                 <div

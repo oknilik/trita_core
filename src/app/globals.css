@@ -1,11 +1,580 @@
 @import "tailwindcss";
 
 :root {
+  /* A <body> alapja. A témázott felület a .theme-scope (mindkét fa
+     megkapja: (app) és (marketing) layout), az fest saját alapot. */
   --background: #f7f4ef;
   --foreground: #1a1a2e;
 }
 
-@theme inline {
+/* ─── Nyers paletta — a TÉMÁZHATÓ réteg ──────────────────────────────
+   Ez a blokk szándékosan a @theme-en KÍVÜL van. A Tailwind v4 az
+   `@theme inline`-ban literálként megadott értéket beégeti az
+   utilitybe (.bg-sage { background-color: #3d6b5e }), a var()
+   hivatkozást viszont megtartja (.bg-sage { …: var(--palette-sage) }).
+   Így minden nevesített utility futásidőben felülírható: egy
+   :root[data-theme="…"] blokk, ami ezeket a --palette-* értékeket
+   újradefiniálja, az EGÉSZ felületet átszínezi — komponens-
+   módosítás nélkül.
+
+   Az ÉRTÉKEK forrásigazsága ez a blokk. A @theme alatti --color-*
+   tokenek a SZEREPEKET nevezik meg, és ide hivatkoznak.
+   Vizsgálat: docs/development/dark-mode-feasibility-2026-08.md ── */
+:root {
+  --palette-sage: #3d6b5e;
+  --palette-sage-dark: #2d5a4e;
+  --palette-sage-deep: #1e3d34;
+  --palette-sage-soft: #e8f2f0;
+  --palette-sage-ghost: #f0f7f5;
+  --palette-sage-ring: #b8d0cb;
+  --palette-bronze: #c17f4a;
+  --palette-bronze-dark: #9a6538;
+  --palette-bronze-soft: #f3d4c8;
+  --palette-bronze-edge: #e8c7b8;
+  --palette-ink: #1a1a2e;
+  --palette-ink-body: #4a4a5e;
+  --palette-ink-warm: #7a756e;
+  /* 2026-08-07: #6e6e80 → #6a6a7b. A régi érték a meleg felületeken
+     (cream-300, surface-muted) 4,29:1-et adott — épphogy AA alatt. A 2%-os
+     sötétítés minden felületen 4,5 fölé viszi, és szemmel nem látszik. */
+  --palette-muted: #6a6a7b;
+  --palette-muted-warm: #7c786f;
+  --palette-cream: #f7f4ef;
+  --palette-sand: #e8e0d3;
+  --palette-warm: #f3eee4;
+  --palette-warm-mid: #f0ede6;
+  --palette-warm-dark: #d9cfc1;
+  --palette-surface-card: #ffffff;
+  --palette-accent-candidate: #8a4a32;
+  --palette-accent-candidate-strong: #6d3826;
+  --palette-accent-candidate-mid: #c2764c;
+  --palette-accent-candidate-primary: #e0a878;
+  --palette-accent-candidate-soft: #f6e5da;
+  --palette-accent-candidate-border: #e8cbb8;
+  --palette-text-inverse: #ffffff;
+  --palette-action-primary-fg: #ffffff;
+  --palette-action-destructive-bg: #e11d48;
+  --palette-action-destructive-bg-hover: #be123c;
+  --palette-action-destructive-fg: #ffffff;
+  --palette-state-info-bg: #eff6ff;
+  --palette-state-info-fg: #1d4ed8;
+  --palette-state-info-border: #bfdbfe;
+  --palette-state-success-bg: #ecfdf5;
+  --palette-state-success-fg: #047857;
+  --palette-state-success-border: #a7f3d0;
+  --palette-state-warning-bg: #fffbeb;
+  --palette-state-warning-fg: #b45309;
+  --palette-state-warning-border: #fde68a;
+  --palette-state-error-bg: #fff1f2;
+  --palette-state-error-fg: #be123c;
+  --palette-state-error-border: #fecdd3;
+  --palette-accent-self-strong: #2a5244;
+  --palette-accent-earth-strong: #6b3f22;
+  --palette-border-soft: #ddd5c8;
+  --palette-border-neutral: #eee;
+  --palette-neutral-white: #ffffff;
+  --palette-surface-soft-warm: #f8f1e8;
+  --palette-surface-warm-tint: #fff1e7;
+  --palette-text-strong-alt: #33334a;
+  --palette-text-strong-deep: #2a2740;
+  --palette-text-success-soft: #c8e8de;
+  --palette-text-error-strong: #991b1b;
+  --palette-accent-self-deeper: #1a2e28;
+  --palette-accent-primary-mid: #a86b3d;
+  --palette-surface-toast: #fdf5f0;
+  --palette-surface-card-soft: #fdfcfa;
+  --palette-surface-chip-warm: #f3e7d5;
+  --palette-surface-chip-warm-soft: #f6ead6;
+  --palette-surface-chip-neutral: #f5f3ef;
+  --palette-state-error-soft: #fef2f2;
+  --palette-dim-h-base: #4f5aa8;
+  --palette-dim-h-strong: #3e4785;
+  --palette-dim-h-soft: #eef0f8;
+  --palette-dim-e-base: #7b5fae;
+  --palette-dim-e-strong: #5f4693;
+  --palette-dim-e-soft: #f1ecf9;
+  --palette-dim-x-base: #c08d2e;
+  --palette-dim-x-strong: #8a6215;
+  --palette-dim-x-soft: #f8efdc;
+  --palette-dim-a-base: #78924f;
+  --palette-dim-a-strong: #556b35;
+  --palette-dim-a-soft: #eff3e4;
+  --palette-dim-c-base: #3d7f95;
+  --palette-dim-c-strong: #2c5f72;
+  --palette-dim-c-soft: #e6f1f5;
+  --palette-dim-o-base: #b4688a;
+  --palette-dim-o-strong: #8e4263;
+  --palette-dim-o-soft: #f9eef3;
+  /* Invertált felület: szándékosan SÖTÉT panel világos szöveggel (footer,
+     súgó-gomb, kiemelt chipek). Eddig az `ink`-et használtuk háttérként és a
+     `cream`-et szövegként — sötét módban ez MEGFORDULT, mert azok a tokenek
+     a szöveg/felület szerepüket követik. Az invertált felületnek saját
+     tokenre van szüksége, ami sötéten is sötét marad, csak megemelve. */
+  --palette-surface-inverse: #1a1a2e;
+  --palette-surface-inverse-soft: #4a4a5e;
+  --palette-text-on-inverse: #f7f4ef;
+  /* Akcent-háttéren ülő szöveg (bronz gomb, glow-sáv): az akcentek MINDKÉT
+     témában világosak, ezért ott sötét felirat kell — a fehér ma AA-bukó. */
+  --palette-text-on-accent: #1a1a2e;
+  /* MÉLY akcent felirata. A bronze-dark / accent-primary-strong nem úgy
+     viselkedik, mint a brand-bronz: az világosban SÖTÉT, sötéten VILÁGOS,
+     tehát a felirat is fordul. A fix `text-on-accent` világosban 3,5:1-et
+     adott rajta (2026-08-07 regresszió) — ez a token 4,9:1-et. */
+  --palette-text-on-accent-deep: #ffffff;
+  /* Jelölt-akcent felirata. Külön token, mert a terrakotta MEGFORDUL a két
+     sémán (világosban mély barna, sötéten világos agyag), tehát a felirat
+     is fordul — a fix fehér sötéten 2,2:1 volt. */
+  --palette-text-on-candidate: #ffffff;
+  --palette-layer-self-hero-from: #2a5244;
+  /* Réteg-„szoba-tónus": a lap háttere a csapat/szervezet felületeken.
+     Külön token a `-soft`-tól: az a chipek/tintek tónusa, ezt pedig CSAK a
+     PlatformPageShell festi. Azért kell külön, mert sötéten a kettő
+     ellentétes irányba mozdul — a wash a vászonhoz simul, a chip nem. */
+  --palette-layer-self-wash: #e8f2f0;
+  --palette-layer-team-wash: #f6e8dc;
+  --palette-layer-org-wash: #e8eff7;
+  --palette-layer-candidate-wash: #f6e5da;
+  /* A jelölt-hero stopjai SAJÁT tokenek (eddig az akcentekből kölcsönöztek).
+     Sötéten a terrakotta akcent VILÁGOSSÁ fordul — a hero így világos
+     peach-gradiens lett volna fehér felirattal. */
+  --palette-layer-candidate-hero-from: #8a4a32;
+  --palette-layer-candidate-hero-mid: #6d3826;
+  /* A hero halk másodlagos szövege. Eddig `text-white/[0.42]` volt, ami a
+     legvilágosabb stopon 2,5–3,0:1 — a mondat gyakorlatilag eltűnt. Fix
+     érték mindkét sémán (a hero mindkettőben sötét panel): ≥ 4,6:1. */
+  --palette-text-on-inverse-muted: #dad5ce;
+  --palette-layer-self-hero-mid: #1e3d34;
+  --palette-layer-self-hero-to: #1a2e28;
+  /* Fejléc-sáv: eddig hardkódolt rgba volt a nav-ban. */
+  --palette-surface-header: #faf9f6;
+  --palette-layer-team-accent: #66455d;
+  --palette-layer-team-bright: #a66a8c;
+  --palette-layer-team-hero-from: #66455d;
+  --palette-layer-team-hero-mid: #4a314a;
+  --palette-layer-team-hero-to: #2f2035;
+  --palette-layer-team-glow: #d48e62;
+  --palette-layer-team-badge: #f3c39d;
+  --palette-layer-team-soft: #f6e8dc;
+  --palette-layer-org-accent: #2f4863;
+  --palette-layer-org-bright: #3f6d9a;
+  --palette-layer-org-hero-from: #2f4863;
+  --palette-layer-org-hero-mid: #22374d;
+  --palette-layer-org-hero-to: #172737;
+  --palette-layer-org-glow: #d2a36a;
+  --palette-layer-org-badge: #f4c792;
+  --palette-layer-org-soft: #e8eff7;
+  --palette-layer-org-border: #bfd0e2;
+  --palette-layer-candidate-hero-to: #47251a;
+  --palette-layer-candidate-badge: #f6cfa8;
+  --palette-eval-high-fg: #1e3d34;
+  --palette-state-success-solid: #059669;
+  --palette-state-warning-solid: #d97706;
+  --palette-state-error-solid: #e11d48;
+  --palette-state-info-solid: #3b82f6;
+  --palette-sage-300: #8ad0b4;
+  --palette-paper-bg: #FAF7F2;
+  --palette-paper-card: #F3EDE4;
+  /* Kiemelt (elevated) paper-lap: a paper-card FÖLÖTT ül — a mintakártyák
+     korábban literál `white`-ot kaptak, ami sötét sémán olvashatatlan volt. */
+  --palette-paper-elevated: #ffffff;
+  --palette-paper-text: #2C2420;
+  --palette-paper-muted: #5C4F45;
+  --palette-paper-heading: #1a1410;
+  --palette-paper-border: #E8E0D4;
+  --palette-sage-500: #5a8f7f;
+  --palette-bronze-300: #e8a96a;
+  --palette-bronze-100: #fdf5ee;
+  --palette-bronze-700: #8a5530;
+  --palette-ink-300: #8a8a9a;
+  --palette-cream-300: #f2ede6;
+  --palette-cream-warm: #ede8e1;
+  --palette-founding-accent-hover: #a8693c;
+}
+
+/* ─── Sötét készlet ─────────────────────────────────────────────────
+   HATÓKÖR: a `.theme-scope` elem. Ezt MINDKÉT fa shellje felteszi — az
+   (app) és a (marketing) layout is —, tehát a landing/blog/árazás is
+   követi a színsémát.
+
+   MIÉRT VAN ITT A --color-* RÉTEG IS, ha a fenti @theme már definiálja:
+   a var() a DEKLARÁLÓ elemen helyettesítődik be. A :root-on kiszámított
+   `--color-cream: var(--palette-cream)` értéke a VILÁGOS hex, és a
+   gyerekek EZT öröklik — egy leszármazottra tett --palette-* felülírás
+   önmagában nem érné el az alias-réteget (méréssel igazolva). Ezért a
+   scope-elemen mindkét réteget újra deklaráljuk.
+
+   A --color-* sorok a @theme blokk MÁSOLATAI — a szinkront a
+   scripts/check-colors.mjs (d) ellenőrzése őrzi. Ha a @theme-be új
+   --color-* token kerül, ide is fel kell venni.
+   Vizsgálat: docs/development/dark-mode-feasibility-2026-08.md ── */
+[data-theme="dark"] .theme-scope {
+  /* 1. réteg — a nyers értékek sötét készlete */
+  --palette-accent-candidate: #e2a17f;
+  --palette-accent-candidate-border: #4a3325;
+  --palette-accent-candidate-mid: #c2764c;
+  --palette-accent-candidate-primary: #e0a878;
+  --palette-accent-candidate-soft: #33231a;
+  --palette-text-on-candidate: #2a1a12;
+  --palette-accent-candidate-strong: #eeb493;
+  --palette-accent-earth-strong: #d9a273;
+  --palette-accent-primary-mid: #cf9660;
+  --palette-accent-self-deeper: #b6ddcb;
+  --palette-accent-self-strong: #8ec8b0;
+  --palette-action-destructive-bg: #b3283f;
+  --palette-action-destructive-bg-hover: #c73450;
+  --palette-action-primary-fg: #10241d;
+  --palette-border-neutral: #2d2d35;
+  --palette-border-soft: #2d2d35;
+  --palette-bronze: #d9a06b;
+  --palette-bronze-100: #2a2117;
+  --palette-bronze-300: #e8b880;
+  --palette-bronze-700: #e0ad74;
+  --palette-bronze-dark: #e3b184;
+  --palette-bronze-edge: #4a3626;
+  --palette-bronze-soft: #3a2a1d;
+  --palette-cream: #141418;
+  --palette-cream-300: #26262f;
+  --palette-cream-warm: #24242c;
+  --palette-dim-a-base: #a3c274;
+  --palette-dim-a-soft: #232f19;
+  --palette-dim-a-strong: #bad494;
+  --palette-dim-c-base: #61b0c9;
+  --palette-dim-c-soft: #172f3a;
+  --palette-dim-c-strong: #8ac9dd;
+  --palette-dim-e-base: #a98ede;
+  --palette-dim-e-soft: #2a2142;
+  --palette-dim-e-strong: #c0abe9;
+  --palette-dim-h-base: #8891e0;
+  --palette-dim-h-soft: #212642;
+  --palette-dim-h-strong: #a9b0ee;
+  --palette-dim-o-base: #dd8fb0;
+  --palette-dim-o-soft: #382231;
+  --palette-dim-o-strong: #eaadc5;
+  --palette-dim-x-base: #d9a83f;
+  --palette-dim-x-soft: #352a13;
+  --palette-dim-x-strong: #e6bf6b;
+  --palette-eval-high-fg: #a8d7c2;
+  --palette-ink: #f3efe8;
+  --palette-ink-300: #6f6a60;
+  --palette-ink-body: #cac5bb;
+  --palette-ink-warm: #9b9487;
+  --palette-layer-candidate-badge: #f6cfa8;
+  --palette-layer-candidate-hero-to: #562d1f;
+  --palette-layer-org-accent: #6f9bc4;
+  --palette-layer-org-border: #33475c;
+  --palette-layer-org-bright: #85aed4;
+  --palette-layer-org-hero-from: #385677;
+  --palette-layer-org-hero-mid: #2d4865;
+  --palette-layer-org-hero-to: #21384f;
+  --palette-layer-org-soft: #1a2634;
+  /* A wash a VÁSZONHOZ simul (1,06–1,09), nem a heróhoz: sötéten a hero a
+     kiemelt panel, a lap a háttér. Eddig fordítva volt — a wash a hero
+     sötét végével esett egybe (1,01:1), ezért a hero alsó fele eltűnt. */
+  --palette-layer-self-wash: #191e20;
+  --palette-layer-team-wash: #1e1a20;
+  --palette-layer-org-wash: #171a21;
+  --palette-layer-candidate-wash: #221a1b;
+  --palette-layer-candidate-hero-from: #81452f;
+  --palette-layer-candidate-hero-mid: #6e3927;
+  --palette-text-on-inverse-muted: #dad5ce;
+  --palette-surface-inverse: #2b2b34;
+  --palette-surface-inverse-soft: #3b3b46;
+  --palette-text-on-inverse: #f3efe8;
+  --palette-text-on-accent: #17171c;
+  --palette-text-on-accent-deep: #17171c;
+  --palette-layer-self-hero-from: #315f4f;
+  --palette-layer-self-hero-mid: #275044;
+  --palette-layer-self-hero-to: #233e36;
+  --palette-surface-header: #191920;
+  --palette-layer-team-accent: #b98aa8;
+  --palette-layer-team-bright: #cb9fbb;
+  --palette-layer-team-hero-from: #6d4a64;
+  --palette-layer-team-hero-mid: #5c3d5c;
+  --palette-layer-team-hero-to: #452f4e;
+  --palette-layer-team-soft: #2e2029;
+  --palette-muted: #a49e92;
+  --palette-muted-warm: #9b9487;
+  --palette-neutral-white: #1d1d23;
+  --palette-sage: #7fbfa6;
+  --palette-sage-300: #5aa88c;
+  --palette-sage-500: #74b49c;
+  --palette-sage-dark: #93cbb4;
+  --palette-sage-deep: #a8d7c2;
+  --palette-sage-ghost: #142924;
+  --palette-sage-ring: #4d7f6e;
+  --palette-sage-soft: #17302a;
+  --palette-sand: #34343d;
+  --palette-state-error-bg: #381b21;
+  --palette-state-error-border: #4d2b30;
+  --palette-state-error-fg: #f08a92;
+  --palette-state-error-soft: #271a1c;
+  --palette-state-error-solid: #e0576e;
+  --palette-state-info-bg: #17253a;
+  --palette-state-info-border: #2b3f5c;
+  --palette-state-info-fg: #8ab4f8;
+  --palette-state-info-solid: #5b8fe0;
+  --palette-state-success-bg: #12261f;
+  --palette-state-success-border: #24463a;
+  --palette-state-success-fg: #6fc79b;
+  --palette-state-success-solid: #34a06f;
+  --palette-state-warning-bg: #2a2113;
+  --palette-state-warning-border: #4a3a1e;
+  --palette-state-warning-fg: #e0b062;
+  --palette-state-warning-solid: #d9963a;
+  --palette-surface-card: #1d1d23;
+  --palette-surface-card-soft: #22222a;
+  --palette-surface-chip-neutral: #26262c;
+  --palette-surface-chip-warm: #2e2820;
+  --palette-surface-chip-warm-soft: #2b261f;
+  --palette-surface-soft-warm: #262029;
+  --palette-surface-toast: #272029;
+  --palette-surface-warm-tint: #2a221c;
+  --palette-text-error-strong: #f0929a;
+  --palette-text-inverse: #1a1a2e;
+  --palette-text-strong-alt: #dcd8e4;
+  --palette-text-strong-deep: #e3dfe9;
+  --palette-text-success-soft: #2f5a4a;
+  --palette-warm: #23232a;
+  --palette-warm-dark: #474751;
+  --palette-warm-mid: #202027;
+  --ui-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --ui-shadow-md: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --ui-shadow-lg: 0 14px 34px rgba(0, 0, 0, 0.55);
+  --ui-shadow-xl: 0 22px 52px rgba(0, 0, 0, 0.6);
+  --ui-shadow-focus: 0 0 0 3px rgba(127, 191, 166, 0.35);
+  --palette-paper-bg: #141210;
+  --palette-paper-card: #1e1b17;
+  --palette-paper-elevated: #232019;
+  --palette-paper-text: #eee8df;
+  --palette-paper-muted: #b3a99b;
+  --palette-paper-heading: #f5f0e8;
+  --palette-paper-border: #302b24;
+  --palette-founding-accent-hover: #e3b184;
+
+  /* 2. réteg — a szerep-aliasok újradeklarálva (ld. a fenti indoklást) */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-sage: var(--palette-sage);
+  --color-sage-dark: var(--palette-sage-dark);
+  --color-sage-deep: var(--palette-sage-deep);
+  --color-sage-soft: var(--palette-sage-soft);
+  --color-sage-ghost: var(--palette-sage-ghost);
+  --color-sage-ring: var(--palette-sage-ring);
+  --color-bronze: var(--palette-bronze);
+  --color-bronze-dark: var(--palette-bronze-dark);
+  --color-bronze-soft: var(--palette-bronze-soft);
+  --color-bronze-edge: var(--palette-bronze-edge);
+  --color-ink: var(--palette-ink);
+  --color-ink-body: var(--palette-ink-body);
+  --color-ink-warm: var(--palette-ink-warm);
+  --color-cream: var(--palette-cream);
+  --color-sand: var(--palette-sand);
+  --color-warm: var(--palette-warm);
+  --color-warm-mid: var(--palette-warm-mid);
+  --color-warm-dark: var(--palette-warm-dark);
+  --color-surface-canvas: var(--color-cream);
+  --color-surface-card: var(--palette-surface-card);
+  --color-surface-muted:  var(--color-warm);
+  --color-surface-inverse: var(--palette-surface-inverse);
+  --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
+  --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
+  --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-accent-deep: var(--palette-text-on-accent-deep);
+  --color-text-on-candidate: var(--palette-text-on-candidate);
+  --color-surface-header: var(--palette-surface-header);
+  --color-surface-self-accent:      var(--color-sage);
+  --color-surface-self-accent-soft: var(--color-sage-soft);
+  --color-surface-self-border:      var(--color-sage-ring);
+  --color-surface-team-accent:      var(--color-layer-team-accent);
+  --color-surface-team-accent-soft: var(--color-layer-team-soft);
+  --color-surface-team-border:      var(--color-bronze-edge);
+  --color-surface-org-accent:       var(--color-layer-org-bright);
+  --color-surface-org-accent-soft:  var(--color-layer-org-soft);
+  --color-surface-org-border:       var(--color-layer-org-border);
+  --color-text-primary:   var(--color-ink);
+  --color-text-secondary: var(--color-ink-body);
+  --color-text-muted:     var(--color-muted);
+  --color-text-faint:     var(--color-muted-warm);
+  --color-text-inverse: var(--palette-text-inverse);
+  --color-border-default: var(--color-sand);
+  --color-border-strong:  var(--color-warm-dark);
+  --color-action-primary-bg:       var(--color-sage);
+  --color-action-primary-bg-hover: var(--color-sage-dark);
+  --color-action-primary-fg: var(--palette-action-primary-fg);
+  --color-action-secondary-bg:     var(--color-surface-card);
+  --color-action-secondary-fg:     var(--color-text-secondary);
+  --color-action-secondary-border: var(--color-border-default);
+  --color-action-destructive-bg: var(--palette-action-destructive-bg);
+  --color-action-destructive-bg-hover: var(--palette-action-destructive-bg-hover);
+  --color-action-destructive-fg: var(--palette-action-destructive-fg);
+  --color-focus-ring: var(--color-sage-ring);
+  --color-state-focus-ring: var(--color-focus-ring);
+  --color-state-info-bg: var(--palette-state-info-bg);
+  --color-state-info-fg: var(--palette-state-info-fg);
+  --color-state-info-border: var(--palette-state-info-border);
+  --color-state-success-bg: var(--palette-state-success-bg);
+  --color-state-success-fg: var(--palette-state-success-fg);
+  --color-state-success-border: var(--palette-state-success-border);
+  --color-state-warning-bg: var(--palette-state-warning-bg);
+  --color-state-warning-fg: var(--palette-state-warning-fg);
+  --color-state-warning-border: var(--palette-state-warning-border);
+  --color-state-error-bg: var(--palette-state-error-bg);
+  --color-state-error-fg: var(--palette-state-error-fg);
+  --color-state-error-border: var(--palette-state-error-border);
+  --color-state-disabled-bg:  var(--color-warm-mid);
+  --color-state-disabled-fg:  var(--color-muted-warm);
+  --color-state-disabled-border: var(--color-sand);
+  --color-state-hover-bg:     var(--color-cream-300);
+  --color-state-hover-fg:     var(--color-text-primary);
+  --color-state-hover-border: var(--color-border-strong);
+  --color-accent-primary: var(--color-bronze);
+  --color-accent-primary-strong: var(--color-bronze-700);
+  --color-accent-primary-soft: var(--color-bronze-300);
+  --color-accent-self: var(--color-sage-500);
+  --color-accent-self-strong: var(--palette-accent-self-strong);
+  --color-accent-self-deep: var(--color-sage-deep);
+  --color-accent-earth-strong: var(--palette-accent-earth-strong);
+  --color-border-soft: var(--palette-border-soft);
+  --color-border-neutral: var(--palette-border-neutral);
+  --color-neutral-white: var(--palette-neutral-white);
+  --color-surface-subtle: var(--color-cream-300);
+  --color-surface-soft-warm: var(--palette-surface-soft-warm);
+  --color-surface-warm-tint: var(--palette-surface-warm-tint);
+  --color-surface-highlight-warm: var(--color-bronze-100);
+  --color-text-strong-alt: var(--palette-text-strong-alt);
+  --color-text-strong-deep: var(--palette-text-strong-deep);
+  --color-text-success-soft: var(--palette-text-success-soft);
+  --color-text-error-strong: var(--palette-text-error-strong);
+  --color-accent-self-deeper: var(--palette-accent-self-deeper);
+  --color-accent-primary-mid: var(--palette-accent-primary-mid);
+  --color-surface-toast: var(--palette-surface-toast);
+  --color-surface-card-soft: var(--palette-surface-card-soft);
+  --color-surface-chip-warm: var(--palette-surface-chip-warm);
+  --color-surface-chip-warm-soft: var(--palette-surface-chip-warm-soft);
+  --color-surface-chip-neutral: var(--palette-surface-chip-neutral);
+  --color-state-error-soft: var(--palette-state-error-soft);
+  --color-dim-h-base: var(--palette-dim-h-base);
+  --color-dim-h-strong: var(--palette-dim-h-strong);
+  --color-dim-h-soft: var(--palette-dim-h-soft);
+  --color-dim-e-base: var(--palette-dim-e-base);
+  --color-dim-e-strong: var(--palette-dim-e-strong);
+  --color-dim-e-soft: var(--palette-dim-e-soft);
+  --color-dim-x-base: var(--palette-dim-x-base);
+  --color-dim-x-strong: var(--palette-dim-x-strong);
+  --color-dim-x-soft: var(--palette-dim-x-soft);
+  --color-dim-a-base: var(--palette-dim-a-base);
+  --color-dim-a-strong: var(--palette-dim-a-strong);
+  --color-dim-a-soft: var(--palette-dim-a-soft);
+  --color-dim-c-base: var(--palette-dim-c-base);
+  --color-dim-c-strong: var(--palette-dim-c-strong);
+  --color-dim-c-soft: var(--palette-dim-c-soft);
+  --color-dim-o-base: var(--palette-dim-o-base);
+  --color-dim-o-strong: var(--palette-dim-o-strong);
+  --color-dim-o-soft: var(--palette-dim-o-soft);
+  --color-role-thinking-fg: var(--color-dim-h-strong);
+  --color-role-thinking-bg: var(--color-dim-h-soft);
+  --color-role-action-fg:   var(--color-dim-x-strong);
+  --color-role-action-bg:   var(--color-dim-x-soft);
+  --color-role-people-fg:   var(--color-dim-a-strong);
+  --color-role-people-bg:   var(--color-dim-a-soft);
+  --color-layer-self-accent:    var(--color-sage);
+  /* Saját tokenek (nem az akcentekből kölcsönözve): a hero sötéten is
+     sötét panel marad — ott a figura-háttér viszony megfordul. */
+  --color-layer-self-hero-from: var(--palette-layer-self-hero-from);
+  --color-layer-self-hero-mid:  var(--palette-layer-self-hero-mid);
+  --color-layer-self-hero-to:   var(--palette-layer-self-hero-to);
+  --color-layer-self-glow:      var(--color-bronze);
+  --color-layer-self-soft:      var(--color-sage-soft);
+  --color-layer-team-accent: var(--palette-layer-team-accent);
+  --color-layer-team-bright: var(--palette-layer-team-bright);
+  --color-layer-team-hero-from: var(--palette-layer-team-hero-from);
+  --color-layer-team-hero-mid: var(--palette-layer-team-hero-mid);
+  --color-layer-team-hero-to: var(--palette-layer-team-hero-to);
+  --color-layer-team-glow: var(--palette-layer-team-glow);
+  --color-layer-team-badge: var(--palette-layer-team-badge);
+  --color-layer-team-soft: var(--palette-layer-team-soft);
+  --color-layer-org-accent: var(--palette-layer-org-accent);
+  --color-layer-org-bright: var(--palette-layer-org-bright);
+  --color-layer-org-hero-from: var(--palette-layer-org-hero-from);
+  --color-layer-org-hero-mid: var(--palette-layer-org-hero-mid);
+  --color-layer-org-hero-to: var(--palette-layer-org-hero-to);
+  --color-layer-org-glow: var(--palette-layer-org-glow);
+  --color-layer-org-badge: var(--palette-layer-org-badge);
+  --color-layer-org-soft: var(--palette-layer-org-soft);
+  --color-layer-self-wash: var(--palette-layer-self-wash);
+  --color-layer-team-wash: var(--palette-layer-team-wash);
+  --color-layer-org-wash: var(--palette-layer-org-wash);
+  --color-layer-candidate-wash: var(--palette-layer-candidate-wash);
+  --color-layer-org-border: var(--palette-layer-org-border);
+  --color-layer-candidate-accent:    var(--color-accent-candidate);
+  --color-layer-candidate-hero-from: var(--palette-layer-candidate-hero-from);
+  --color-layer-candidate-hero-mid:  var(--palette-layer-candidate-hero-mid);
+  --color-layer-candidate-hero-to: var(--palette-layer-candidate-hero-to);
+  --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
+  --color-layer-candidate-badge: var(--palette-layer-candidate-badge);
+  --color-layer-candidate-soft:      var(--color-accent-candidate-soft);
+  --color-eval-high-fg: var(--palette-eval-high-fg);
+  --color-eval-high-accent: var(--color-sage);
+  --color-eval-high-bg:     var(--color-sage-soft);
+  --color-eval-mid-fg:      var(--color-bronze-700);
+  --color-eval-mid-accent:  var(--color-bronze);
+  --color-eval-mid-bg:      var(--color-bronze-100);
+  --color-eval-low-fg:      var(--color-muted);
+  --color-eval-low-accent:  var(--color-ink-300);
+  --color-eval-low-bg:      var(--color-cream-300);
+  --color-state-success-solid: var(--palette-state-success-solid);
+  --color-state-warning-solid: var(--palette-state-warning-solid);
+  --color-state-error-solid: var(--palette-state-error-solid);
+  --color-state-info-solid: var(--palette-state-info-solid);
+  --color-sage-300: var(--palette-sage-300);
+  --color-paper-bg: var(--palette-paper-bg);
+  --color-paper-card: var(--palette-paper-card);
+  --color-paper-elevated: var(--palette-paper-elevated);
+  --color-paper-text: var(--palette-paper-text);
+  --color-paper-muted: var(--palette-paper-muted);
+  --color-paper-heading: var(--palette-paper-heading);
+  --color-paper-border: var(--palette-paper-border);
+  --color-sage-700:    var(--color-sage);
+  --color-sage-900:    var(--color-sage-deep);
+  --color-sage-500: var(--palette-sage-500);
+  --color-sage-100:    var(--color-sage-soft);
+  --color-bronze-500:  var(--color-bronze);
+  --color-bronze-300: var(--palette-bronze-300);
+  --color-bronze-100: var(--palette-bronze-100);
+  --color-bronze-700: var(--palette-bronze-700);
+  --color-ink-800:     var(--color-ink);
+  --color-ink-500:     var(--color-ink-body);
+  --color-ink-300: var(--palette-ink-300);
+  --color-cream-100:   var(--color-cream);
+  --color-cream-500:   var(--color-sand);
+  --color-cream-300: var(--palette-cream-300);
+  --color-cream-warm: var(--palette-cream-warm);
+  --color-founding-bg:           var(--color-paper-bg);
+  --color-founding-text:         var(--color-paper-text);
+  --color-founding-muted:        var(--color-paper-muted);
+  --color-founding-heading:      var(--color-paper-heading);
+  --color-founding-card:         var(--color-paper-card);
+  --color-founding-accent:       var(--color-bronze);
+  --color-founding-accent-hover: var(--palette-founding-accent-hover);
+  --color-muted: var(--palette-muted);
+  --color-muted-warm: var(--palette-muted-warm);
+  --color-accent-candidate: var(--palette-accent-candidate);
+  --color-accent-candidate-strong: var(--palette-accent-candidate-strong);
+  --color-accent-candidate-mid: var(--palette-accent-candidate-mid);
+  --color-accent-candidate-primary: var(--palette-accent-candidate-primary);
+  --color-accent-candidate-soft: var(--palette-accent-candidate-soft);
+  --color-accent-candidate-border: var(--palette-accent-candidate-border);
+}
+
+/* `static`: a Tailwind alapból KIGYOMLÁLJA azokat a @theme-változókat,
+   amelyekre egyetlen generált utility sem hivatkozik. A sötét blokkot
+   viszont kézzel írjuk — ott mind a 204 token szerepel. Enélkül egy
+   futásidőben összerakott `var(--color-…)` (inline style, SVG-attribútum)
+   VILÁGOSBAN üresen jönne vissza, sötéten pedig működne; 50 tokennél
+   pontosan ez történt (méréssel igazolva, ld. a színséma-doksit).
+   A `static` mindet kiírja, így a két séma szimmetrikus. */
+@theme static inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
@@ -26,38 +595,46 @@
    */
 
   /* Sage – primary action & structure */
-  --color-sage:        #3d6b5e;
-  --color-sage-dark:   #2d5a4e;
-  --color-sage-deep:   #1e3d34;
-  --color-sage-soft:   #e8f2f0;
-  --color-sage-ghost:  #f0f7f5;
-  --color-sage-ring:   #b8d0cb;
+  --color-sage: var(--palette-sage);
+  --color-sage-dark: var(--palette-sage-dark);
+  --color-sage-deep: var(--palette-sage-deep);
+  --color-sage-soft: var(--palette-sage-soft);
+  --color-sage-ghost: var(--palette-sage-ghost);
+  --color-sage-ring: var(--palette-sage-ring);
 
   /* Bronze – accent text & icons */
-  --color-bronze:       #c17f4a;
-  --color-bronze-dark:  #9a6538;
-  --color-bronze-soft:  #f3d4c8;
-  --color-bronze-edge:  #e8c7b8;
+  --color-bronze: var(--palette-bronze);
+  --color-bronze-dark: var(--palette-bronze-dark);
+  --color-bronze-soft: var(--palette-bronze-soft);
+  --color-bronze-edge: var(--palette-bronze-edge);
 
   /* Ink – typography scale */
-  --color-ink:          #1a1a2e;
-  --color-ink-body:     #4a4a5e;
-  --color-ink-warm:     #7a756e;
-  --color-muted:        #6e6e80; /* volt: #8a8a9a — 3.2:1, AA bukó (akciólista #8) */
-  --color-muted-warm:   #7c786f; /* volt: #a09c96 — 2.6:1 (akciólista #8) */
+  --color-ink: var(--palette-ink);
+  --color-ink-body: var(--palette-ink-body);
+  --color-ink-warm: var(--palette-ink-warm);
+  --color-muted: var(--palette-muted); /* volt: #8a8a9a — 3.2:1, AA bukó (akciólista #8) */
+  --color-muted-warm: var(--palette-muted-warm); /* volt: #a09c96 — 2.6:1 (akciólista #8) */
 
   /* Surface */
-  --color-cream:        #f7f4ef;
-  --color-sand:         #e8e0d3;
-  --color-warm:         #f3eee4;
-  --color-warm-mid:     #f0ede6;
-  --color-warm-dark:    #d9cfc1;
+  --color-cream: var(--palette-cream);
+  --color-sand: var(--palette-sand);
+  --color-warm: var(--palette-warm);
+  --color-warm-mid: var(--palette-warm-mid);
+  --color-warm-dark: var(--palette-warm-dark);
 
   /* ─── Semantic tokens ──────────────────────────────────────────────── */
   /* Surface roles */
   --color-surface-canvas: var(--color-cream);
-  --color-surface-card:   #ffffff;
+  --color-surface-card: var(--palette-surface-card);
   --color-surface-muted:  var(--color-warm);
+  --color-surface-inverse: var(--palette-surface-inverse);
+  --color-surface-inverse-soft: var(--palette-surface-inverse-soft);
+  --color-text-on-inverse: var(--palette-text-on-inverse);
+  --color-text-on-inverse-muted: var(--palette-text-on-inverse-muted);
+  --color-text-on-accent: var(--palette-text-on-accent);
+  --color-text-on-accent-deep: var(--palette-text-on-accent-deep);
+  --color-text-on-candidate: var(--palette-text-on-candidate);
+  --color-surface-header: var(--palette-surface-header);
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
   --color-surface-self-border:      var(--color-sage-ring);
@@ -74,12 +651,12 @@
   /* Jelölt-felület (2026-08-05): terrakotta akcent — a SurfaceHero
      "candidate" variánsával (#8a4a32 → #47251a, primary #e0a878)
      összehangolt világos-felületi készlet. */
-  --color-accent-candidate:         #8a4a32; /* szöveg/akcent világos alapon (AA) */
-  --color-accent-candidate-strong:  #6d3826; /* hover/emfázis */
-  --color-accent-candidate-mid:     #c2764c; /* sávok, grafikus akcent (nem szöveg) */
-  --color-accent-candidate-primary: #e0a878; /* sötét (hero) alapon CTA/jelölés */
-  --color-accent-candidate-soft:    #f6e5da; /* chip/panel háttér */
-  --color-accent-candidate-border:  #e8cbb8; /* keret világos panelen */
+  --color-accent-candidate: var(--palette-accent-candidate); /* szöveg/akcent világos alapon (AA) */
+  --color-accent-candidate-strong: var(--palette-accent-candidate-strong); /* hover/emfázis */
+  --color-accent-candidate-mid: var(--palette-accent-candidate-mid); /* sávok, grafikus akcent (nem szöveg) */
+  --color-accent-candidate-primary: var(--palette-accent-candidate-primary); /* sötét (hero) alapon CTA/jelölés */
+  --color-accent-candidate-soft: var(--palette-accent-candidate-soft); /* chip/panel háttér */
+  --color-accent-candidate-border: var(--palette-accent-candidate-border); /* keret világos panelen */
 
   /* Text roles */
   --color-text-primary:   var(--color-ink);
@@ -88,7 +665,7 @@
   /* Leghalkabb metaadat (NotificationPanel használta definíció nélkül —
      2026-08 audit pótolta). */
   --color-text-faint:     var(--color-muted-warm);
-  --color-text-inverse:   #ffffff;
+  --color-text-inverse: var(--palette-text-inverse);
 
   /* Border roles */
   --color-border-default: var(--color-sand);
@@ -97,31 +674,31 @@
   /* Action roles */
   --color-action-primary-bg:       var(--color-sage);
   --color-action-primary-bg-hover: var(--color-sage-dark);
-  --color-action-primary-fg:       #ffffff;
+  --color-action-primary-fg: var(--palette-action-primary-fg);
   --color-action-secondary-bg:     var(--color-surface-card);
   --color-action-secondary-fg:     var(--color-text-secondary);
   --color-action-secondary-border: var(--color-border-default);
-  --color-action-destructive-bg:   #e11d48;
-  --color-action-destructive-bg-hover: #be123c;
-  --color-action-destructive-fg:   #ffffff;
+  --color-action-destructive-bg: var(--palette-action-destructive-bg);
+  --color-action-destructive-bg-hover: var(--palette-action-destructive-bg-hover);
+  --color-action-destructive-fg: var(--palette-action-destructive-fg);
 
   /* Focus role */
   --color-focus-ring: var(--color-sage-ring);
   --color-state-focus-ring: var(--color-focus-ring);
 
   /* State roles */
-  --color-state-info-bg:      #eff6ff;
-  --color-state-info-fg:      #1d4ed8;
-  --color-state-info-border:  #bfdbfe;
-  --color-state-success-bg:   #ecfdf5;
-  --color-state-success-fg:   #047857;
-  --color-state-success-border: #a7f3d0;
-  --color-state-warning-bg:   #fffbeb;
-  --color-state-warning-fg:   #b45309;
-  --color-state-warning-border: #fde68a;
-  --color-state-error-bg:     #fff1f2;
-  --color-state-error-fg:     #be123c;
-  --color-state-error-border: #fecdd3;
+  --color-state-info-bg: var(--palette-state-info-bg);
+  --color-state-info-fg: var(--palette-state-info-fg);
+  --color-state-info-border: var(--palette-state-info-border);
+  --color-state-success-bg: var(--palette-state-success-bg);
+  --color-state-success-fg: var(--palette-state-success-fg);
+  --color-state-success-border: var(--palette-state-success-border);
+  --color-state-warning-bg: var(--palette-state-warning-bg);
+  --color-state-warning-fg: var(--palette-state-warning-fg);
+  --color-state-warning-border: var(--palette-state-warning-border);
+  --color-state-error-bg: var(--palette-state-error-bg);
+  --color-state-error-fg: var(--palette-state-error-fg);
+  --color-state-error-border: var(--palette-state-error-border);
   --color-state-disabled-bg:  var(--color-warm-mid);
   --color-state-disabled-fg:  var(--color-muted-warm);
   --color-state-disabled-border: var(--color-sand);
@@ -134,28 +711,28 @@
   --color-accent-primary-strong: var(--color-bronze-700);
   --color-accent-primary-soft: var(--color-bronze-300);
   --color-accent-self: var(--color-sage-500);
-  --color-accent-self-strong: #2a5244;
+  --color-accent-self-strong: var(--palette-accent-self-strong);
   --color-accent-self-deep: var(--color-sage-deep);
-  --color-accent-earth-strong: #6b3f22;
-  --color-border-soft: #ddd5c8;
-  --color-border-neutral: #eee;
-  --color-neutral-white: #ffffff;
+  --color-accent-earth-strong: var(--palette-accent-earth-strong);
+  --color-border-soft: var(--palette-border-soft);
+  --color-border-neutral: var(--palette-border-neutral);
+  --color-neutral-white: var(--palette-neutral-white);
   --color-surface-subtle: var(--color-cream-300);
-  --color-surface-soft-warm: #f8f1e8;
-  --color-surface-warm-tint: #fff1e7;
+  --color-surface-soft-warm: var(--palette-surface-soft-warm);
+  --color-surface-warm-tint: var(--palette-surface-warm-tint);
   --color-surface-highlight-warm: var(--color-bronze-100);
-  --color-text-strong-alt: #33334a;
-  --color-text-strong-deep: #2a2740;
-  --color-text-success-soft: #c8e8de;
-  --color-text-error-strong: #991b1b;
-  --color-accent-self-deeper: #1a2e28;
-  --color-accent-primary-mid: #a86b3d;
-  --color-surface-toast: #fdf5f0;
-  --color-surface-card-soft: #fdfcfa;
-  --color-surface-chip-warm: #f3e7d5;
-  --color-surface-chip-warm-soft: #f6ead6;
-  --color-surface-chip-neutral: #f5f3ef;
-  --color-state-error-soft: #fef2f2;
+  --color-text-strong-alt: var(--palette-text-strong-alt);
+  --color-text-strong-deep: var(--palette-text-strong-deep);
+  --color-text-success-soft: var(--palette-text-success-soft);
+  --color-text-error-strong: var(--palette-text-error-strong);
+  --color-accent-self-deeper: var(--palette-accent-self-deeper);
+  --color-accent-primary-mid: var(--palette-accent-primary-mid);
+  --color-surface-toast: var(--palette-surface-toast);
+  --color-surface-card-soft: var(--palette-surface-card-soft);
+  --color-surface-chip-warm: var(--palette-surface-chip-warm);
+  --color-surface-chip-warm-soft: var(--palette-surface-chip-warm-soft);
+  --color-surface-chip-neutral: var(--palette-surface-chip-neutral);
+  --color-state-error-soft: var(--palette-state-error-soft);
 
   /* ─── Szín-rendszer 2026-08 (tükör: src/lib/color-system.ts) ────────── */
   /* Terv: docs/development/color-system-2026-08.md. Négy jelentés-osztály:
@@ -165,24 +742,24 @@
 
   /* Dimenzió-hármasok (HEXACO): base=mark, strong=szöveg/fehér betűs badge,
      soft=tint. E=viola, O=mályva (E/O hue-csere, doksi 5. fejezet). */
-  --color-dim-h-base:   #4f5aa8;
-  --color-dim-h-strong: #3e4785;
-  --color-dim-h-soft:   #eef0f8;
-  --color-dim-e-base:   #7b5fae;
-  --color-dim-e-strong: #5f4693;
-  --color-dim-e-soft:   #f1ecf9;
-  --color-dim-x-base:   #c08d2e;
-  --color-dim-x-strong: #8a6215;
-  --color-dim-x-soft:   #f8efdc;
-  --color-dim-a-base:   #78924f;
-  --color-dim-a-strong: #556b35;
-  --color-dim-a-soft:   #eff3e4;
-  --color-dim-c-base:   #3d7f95;
-  --color-dim-c-strong: #2c5f72;
-  --color-dim-c-soft:   #e6f1f5;
-  --color-dim-o-base:   #b4688a;
-  --color-dim-o-strong: #8e4263;
-  --color-dim-o-soft:   #f9eef3;
+  --color-dim-h-base: var(--palette-dim-h-base);
+  --color-dim-h-strong: var(--palette-dim-h-strong);
+  --color-dim-h-soft: var(--palette-dim-h-soft);
+  --color-dim-e-base: var(--palette-dim-e-base);
+  --color-dim-e-strong: var(--palette-dim-e-strong);
+  --color-dim-e-soft: var(--palette-dim-e-soft);
+  --color-dim-x-base: var(--palette-dim-x-base);
+  --color-dim-x-strong: var(--palette-dim-x-strong);
+  --color-dim-x-soft: var(--palette-dim-x-soft);
+  --color-dim-a-base: var(--palette-dim-a-base);
+  --color-dim-a-strong: var(--palette-dim-a-strong);
+  --color-dim-a-soft: var(--palette-dim-a-soft);
+  --color-dim-c-base: var(--palette-dim-c-base);
+  --color-dim-c-strong: var(--palette-dim-c-strong);
+  --color-dim-c-soft: var(--palette-dim-c-soft);
+  --color-dim-o-base: var(--palette-dim-o-base);
+  --color-dim-o-strong: var(--palette-dim-o-strong);
+  --color-dim-o-soft: var(--palette-dim-o-soft);
 
   /* Csapatszerep-családok (gondolkodó=indigó · cselekvő=okker ·
      emberközpontú=moha) — chip: fg szöveg bg-n, mindig felirattal. */
@@ -196,39 +773,45 @@
   /* Réteg-akcentek — hero-gradiens + világos felületi akcent rétegenként.
      A glow-színek CSAK sötét herón (fehéren AA-bukók szövegként). */
   --color-layer-self-accent:    var(--color-sage);
-  --color-layer-self-hero-from: var(--color-accent-self-strong);
-  --color-layer-self-hero-mid:  var(--color-sage-deep);
-  --color-layer-self-hero-to:   var(--color-accent-self-deeper);
+  /* Saját tokenek (nem az akcentekből kölcsönözve): a hero sötéten is
+     sötét panel marad — ott a figura-háttér viszony megfordul. */
+  --color-layer-self-hero-from: var(--palette-layer-self-hero-from);
+  --color-layer-self-hero-mid:  var(--palette-layer-self-hero-mid);
+  --color-layer-self-hero-to:   var(--palette-layer-self-hero-to);
   --color-layer-self-glow:      var(--color-bronze);
   --color-layer-self-soft:      var(--color-sage-soft);
-  --color-layer-team-accent:    #66455d;
-  --color-layer-team-bright:    #a66a8c;
-  --color-layer-team-hero-from: #66455d;
-  --color-layer-team-hero-mid:  #4a314a;
-  --color-layer-team-hero-to:   #2f2035;
-  --color-layer-team-glow:      #d48e62;
-  --color-layer-team-badge:     #f3c39d;
-  --color-layer-team-soft:      #f6e8dc;
-  --color-layer-org-accent:     #2f4863;
-  --color-layer-org-bright:     #3f6d9a;
-  --color-layer-org-hero-from:  #2f4863;
-  --color-layer-org-hero-mid:   #22374d;
-  --color-layer-org-hero-to:    #172737;
-  --color-layer-org-glow:       #d2a36a;
-  --color-layer-org-badge:      #f4c792;
-  --color-layer-org-soft:       #e8eff7;
-  --color-layer-org-border:     #bfd0e2;
+  --color-layer-team-accent: var(--palette-layer-team-accent);
+  --color-layer-team-bright: var(--palette-layer-team-bright);
+  --color-layer-team-hero-from: var(--palette-layer-team-hero-from);
+  --color-layer-team-hero-mid: var(--palette-layer-team-hero-mid);
+  --color-layer-team-hero-to: var(--palette-layer-team-hero-to);
+  --color-layer-team-glow: var(--palette-layer-team-glow);
+  --color-layer-team-badge: var(--palette-layer-team-badge);
+  --color-layer-team-soft: var(--palette-layer-team-soft);
+  --color-layer-org-accent: var(--palette-layer-org-accent);
+  --color-layer-org-bright: var(--palette-layer-org-bright);
+  --color-layer-org-hero-from: var(--palette-layer-org-hero-from);
+  --color-layer-org-hero-mid: var(--palette-layer-org-hero-mid);
+  --color-layer-org-hero-to: var(--palette-layer-org-hero-to);
+  --color-layer-org-glow: var(--palette-layer-org-glow);
+  --color-layer-org-badge: var(--palette-layer-org-badge);
+  --color-layer-org-soft: var(--palette-layer-org-soft);
+  --color-layer-self-wash: var(--palette-layer-self-wash);
+  --color-layer-team-wash: var(--palette-layer-team-wash);
+  --color-layer-org-wash: var(--palette-layer-org-wash);
+  --color-layer-candidate-wash: var(--palette-layer-candidate-wash);
+  --color-layer-org-border: var(--palette-layer-org-border);
   --color-layer-candidate-accent:    var(--color-accent-candidate);
-  --color-layer-candidate-hero-from: var(--color-accent-candidate);
-  --color-layer-candidate-hero-mid:  var(--color-accent-candidate-strong);
-  --color-layer-candidate-hero-to:   #47251a;
+  --color-layer-candidate-hero-from: var(--palette-layer-candidate-hero-from);
+  --color-layer-candidate-hero-mid:  var(--palette-layer-candidate-hero-mid);
+  --color-layer-candidate-hero-to: var(--palette-layer-candidate-hero-to);
   --color-layer-candidate-glow:      var(--color-accent-candidate-primary);
-  --color-layer-candidate-badge:     #f6cfa8;
+  --color-layer-candidate-badge: var(--palette-layer-candidate-badge);
   --color-layer-candidate-soft:      var(--color-accent-candidate-soft);
 
   /* Értékelő ramp (tier/fit/verdict/confidence): zsálya→bronz→neutrális —
      „hangosabb→halkabb", sosem „jó→rossz-piros". Piros ezen a skálán TILOS. */
-  --color-eval-high-fg:     #1e3d34;
+  --color-eval-high-fg: var(--palette-eval-high-fg);
   --color-eval-high-accent: var(--color-sage);
   --color-eval-high-bg:     var(--color-sage-soft);
   --color-eval-mid-fg:      var(--color-bronze-700);
@@ -240,21 +823,22 @@
 
   /* Státusz-solid (grafikai, ≥3:1) — a korábbi state-success-strong
      (#10b981) és state-warning-strong (#f59e0b) kivezetve. */
-  --color-state-success-solid: #059669;
-  --color-state-warning-solid: #d97706;
-  --color-state-error-solid:   #e11d48;
-  --color-state-info-solid:    #3b82f6;
+  --color-state-success-solid: var(--palette-state-success-solid);
+  --color-state-warning-solid: var(--palette-state-warning-solid);
+  --color-state-error-solid: var(--palette-state-error-solid);
+  --color-state-info-solid: var(--palette-state-info-solid);
 
   /* Sage-300 — progress/vastag grafikai elem, csak felirattal (1.79:1). */
-  --color-sage-300: #8ad0b4;
+  --color-sage-300: var(--palette-sage-300);
 
   /* Paper marketing-téma (founding / patterns / career fakedoor közös) */
-  --color-paper-bg:      #FAF7F2;
-  --color-paper-card:    #F3EDE4;
-  --color-paper-text:    #2C2420;
-  --color-paper-muted:   #5C4F45;
-  --color-paper-heading: #1a1410;
-  --color-paper-border:  #E8E0D4;
+  --color-paper-bg: var(--palette-paper-bg);
+  --color-paper-card: var(--palette-paper-card);
+  --color-paper-elevated: var(--palette-paper-elevated);
+  --color-paper-text: var(--palette-paper-text);
+  --color-paper-muted: var(--palette-paper-muted);
+  --color-paper-heading: var(--palette-paper-heading);
+  --color-paper-border: var(--palette-paper-border);
 
   /* ─── Typography scale (2026-07-22 UI-egységesítés, F1) ────────────── */
   /*
@@ -334,19 +918,19 @@
      számozott aliasok referenciák, nem másod-definíciók. */
   --color-sage-700:    var(--color-sage);
   --color-sage-900:    var(--color-sage-deep);
-  --color-sage-500:    #5a8f7f;
+  --color-sage-500: var(--palette-sage-500);
   --color-sage-100:    var(--color-sage-soft);
   --color-bronze-500:  var(--color-bronze);
-  --color-bronze-300:  #e8a96a;
-  --color-bronze-100:  #fdf5ee;
-  --color-bronze-700:  #8a5530;
+  --color-bronze-300: var(--palette-bronze-300);
+  --color-bronze-100: var(--palette-bronze-100);
+  --color-bronze-700: var(--palette-bronze-700);
   --color-ink-800:     var(--color-ink);
   --color-ink-500:     var(--color-ink-body);
-  --color-ink-300:     #8a8a9a;
+  --color-ink-300: var(--palette-ink-300);
   --color-cream-100:   var(--color-cream);
   --color-cream-500:   var(--color-sand);
-  --color-cream-300:   #f2ede6;
-  --color-cream-warm:  #ede8e1;
+  --color-cream-300: var(--palette-cream-300);
+  --color-cream-warm: var(--palette-cream-warm);
 
   /* ─── Founding page — a közös paper-témára mutat (2026-08 rendezés) ─── */
   --color-founding-bg:           var(--color-paper-bg);
@@ -355,7 +939,7 @@
   --color-founding-heading:      var(--color-paper-heading);
   --color-founding-card:         var(--color-paper-card);
   --color-founding-accent:       var(--color-bronze);
-  --color-founding-accent-hover: #a8693c;
+  --color-founding-accent-hover: var(--palette-founding-accent-hover);
 }
 
 html {
@@ -366,7 +950,43 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-dm-sans), Arial, Helvetica, sans-serif;
+}
+
+/* A színséma a HATÓKÖRT követi — enélkül a natív form-vezérlők, a
+   görgetősáv és az iOS-autofill világos maradna a sötét felületen. */
+:root,
+.theme-scope {
   color-scheme: light;
+}
+
+[data-theme="dark"] .theme-scope {
+  color-scheme: dark;
+}
+
+/* …ÉS a GYÖKÉREN is. Ez nem duplikáció: a böngésző néhány felületet nem a
+   fókuszált elem, hanem a DOKUMENTUM színsémájából vezet le —
+   mindenekelőtt a MOBIL BILLENTYŰZETET (iOS Safari / Android Chrome), de
+   a lap-szintű görgetősávot és a rugalmas görgetésnél (overscroll)
+   felvillanó vásznat is. A hatókör egy leszármazott div, oda ez nem ér el.
+
+   A `data-theme` a festés előtti scriptből kerül a <html>-re (theme.ts),
+   tehát ez a szabály az első festéskor már érvényes. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* A <body> vászna is forduljon: enélkül iOS-en a rugalmas görgetés
+     (rubber band) krém sávot villantana a sötét lap fölött/alatt. Ez
+     biztonságos, mert MINDEN route-csoport shellje felteszi a
+     `.theme-scope`-ot (check-colors (h)) — a tartalom sosem a vászonra ül. */
+  --background: #141418;
+  --foreground: #f3efe8;
+}
+
+/* A hatókör saját alapot fest: a <body> a marketing-fáé, azt nem írjuk
+   felül. A .theme-scope a bejelentkezett zóna shellje. */
+.theme-scope {
+  background: var(--color-surface-canvas);
+  color: var(--color-text-primary);
+  min-height: 100dvh;
 }
 
 /* Prevent iOS Safari auto-zoom on focused form controls. */

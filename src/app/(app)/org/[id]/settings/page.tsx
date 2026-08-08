@@ -65,7 +65,7 @@ export default async function OrgSettingsPage({
         <div>
           <Link
             href={`/org/${orgId}`}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body hover:text-bronze mb-6 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body hover:text-[var(--color-accent-primary-strong)] mb-6 transition-colors"
           >
             <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 3L5 8l5 5" />
@@ -173,31 +173,31 @@ export default async function OrgSettingsPage({
           </p>
           <Link
             href="/contact"
-            className="mt-4 inline-flex min-h-[44px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className="mt-4 inline-flex min-h-[44px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
             {t("org.settings.creditsContactCta", locale)}
           </Link>
         </Card>
 
         {/* Danger zone */}
-        <section className="rounded-2xl border border-rose-200 bg-rose-50 p-6 md:p-8">
-          <p className="mb-1 text-label uppercase text-rose-600">
+        <section className="rounded-2xl border border-state-error-border bg-state-error-bg p-6 md:p-8">
+          <p className="mb-1 text-label uppercase text-state-error-fg">
             {t("org.settings.dangerEyebrow", locale)}
           </p>
-          <h2 className="font-fraunces text-xl text-rose-900 mb-4">
+          <h2 className="font-fraunces text-xl text-text-error-strong mb-4">
             {t("org.settings.dangerTitle", locale)}
           </h2>
-          <p className="mb-4 text-sm text-rose-700">
+          <p className="mb-4 text-sm text-state-error-fg">
             {t("org.settings.dangerDescription", locale)}
           </p>
           {isReadOnly ? (
-            <p className="text-sm font-semibold text-rose-800">
+            <p className="text-sm font-semibold text-text-error-strong">
               {isHu
                 ? "Read-only módban a szervezet státusza nem módosítható."
                 : "Organization status changes are disabled in read-only mode."}
             </p>
           ) : org.status === "INACTIVE" ? (
-            <p className="text-sm font-semibold text-rose-800">
+            <p className="text-sm font-semibold text-text-error-strong">
               {t("org.settings.alreadyInactive", locale)}
             </p>
           ) : (

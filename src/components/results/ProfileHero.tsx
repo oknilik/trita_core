@@ -82,7 +82,7 @@ export function ProfileHero({
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
-          <p className="text-micro uppercase tracking-widest text-white/[0.65]">
+          <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined
@@ -125,10 +125,10 @@ export function ProfileHero({
             />
           )}
           <div className="min-w-0">
-            <h1 className="break-words font-fraunces text-[26px] tracking-tight text-white md:text-[34px]">
+            <h1 className="break-words font-fraunces text-[26px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[34px]">
               {userName}
             </h1>
-            <p className="mt-1 text-[11px] text-white/[0.65]">
+            <p className="mt-1 text-[11px] text-[var(--color-text-on-inverse-muted)]">
               {t("results.heroAssessment", locale)} {completedAt}
             </p>
           </div>
@@ -146,14 +146,14 @@ export function ProfileHero({
         </div>
       )}
       summary={insight}
-      summaryClassName="max-w-[480px] text-white/[0.75]"
+      summaryClassName="max-w-[480px] text-[var(--color-text-on-inverse-muted)]"
       chips={(
         <>
           {(topDimensions.length > 0 || watchDimensions.length > 0) ? (
             <div className="flex flex-wrap items-center gap-2">
               {topDimensions.length > 0 ? (
                 <>
-                  <span className="text-micro uppercase tracking-wide text-white/[0.65]">
+                  <span className="text-micro uppercase tracking-wide text-[var(--color-text-on-inverse-muted)]">
                     {t("content.heroTopDims", locale)}:
                   </span>
                   {topDimensions.map((d) => (
@@ -169,7 +169,7 @@ export function ProfileHero({
               ) : null}
               {watchDimensions.length > 0 ? (
                 <>
-                  <span className="ml-2 text-micro uppercase tracking-wide text-white/[0.65]">
+                  <span className="ml-2 text-micro uppercase tracking-wide text-[var(--color-text-on-inverse-muted)]">
                     {t("content.heroWatchDims", locale)}:
                   </span>
                   {watchDimensions.map((d) => (
@@ -194,7 +194,7 @@ export function ProfileHero({
             onClick={onShare}
             disabled={shareLoading}
             variant="ghost"
-            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-white/[0.75] hover:bg-white/[0.12] hover:text-white"
+            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-[var(--color-text-on-inverse-muted)] hover:bg-white/[0.12] hover:text-white"
           >
             <span className="inline-flex items-center gap-2">
               <ShareIcon />
@@ -206,7 +206,7 @@ export function ProfileHero({
             onClick={onDownloadPdf}
             disabled={pdfLoading}
             variant="primary"
-            className="rounded-[9px] px-[18px] text-[11px] font-medium text-white transition-all duration-300 hover:brightness-110"
+            className="rounded-[9px] px-[18px] text-[11px] font-medium text-[var(--color-text-on-accent)] transition-all duration-300 hover:brightness-110"
             style={{ backgroundColor: selfTheme.primary }}
           >
             {pdfLoading ? (

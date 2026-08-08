@@ -371,7 +371,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => setPreview(null)}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
             >
               {isHu ? "Vissza a szerkesztéshez" : "Back to editing"}
             </button>
@@ -379,7 +379,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("publish")}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
               {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
             </button>
@@ -424,7 +424,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             type="button"
             disabled={busy}
             onClick={createDraft}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
           >
             {isHu ? "Riport-vázlat létrehozása" : "Create report draft"}
           </button>
@@ -432,15 +432,15 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       ) : (
         <div className="flex flex-col gap-4">
           {orgId && (draft.aggregates?.evidence?.measuredEdgeCount ?? 0) === 0 && (
-            <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-amber-200 bg-amber-50/60 px-3.5 py-2.5">
-              <p className="text-xs text-amber-800">
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2.5">
+              <p className="text-xs text-bronze-700">
                 {isHu
                   ? "A riport kapcsolati adatalapja most csak becslés — nincs mért bizalmi kör."
                   : "The report's relationship data basis is estimate-only — no measured trust round yet."}
               </p>
               <Link
                 href={`/org/${orgId}/campaigns/new?team=${teamId}`}
-                className="text-xs font-semibold text-amber-800 underline transition hover:text-amber-900"
+                className="text-xs font-semibold text-bronze-700 underline transition hover:text-accent-earth-strong"
               >
                 {isHu ? "Bizalmi kör indítása →" : "Start a trust round →"}
               </Link>
@@ -455,7 +455,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             <label key={field.key} className="flex flex-col gap-1">
               <span
                 className={`text-[11px] font-medium ${
-                  field.internal ? "text-amber-700" : "text-ink-body"
+                  field.internal ? "text-state-warning-fg" : "text-ink-body"
                 }`}
               >
                 {isHu ? field.hu : field.en}
@@ -467,7 +467,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   onChange={(e) =>
                     setValues((v) => ({ ...v, [field.key]: e.target.value }))
                   }
-                  className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink"
+                  className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
                 />
               ) : (
                 <textarea
@@ -476,8 +476,8 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     setValues((v) => ({ ...v, [field.key]: e.target.value }))
                   }
                   rows={field.rows}
-                  className={`rounded-lg border bg-white px-3 py-2 text-sm text-ink ${
-                    field.internal ? "border-amber-200 bg-amber-50/40" : "border-sand"
+                  className={`rounded-lg border bg-surface-card px-3 py-2 text-sm text-ink ${
+                    field.internal ? "border-state-warning-border bg-state-warning-bg/40" : "border-sand"
                   }`}
                 />
               )}
@@ -521,7 +521,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                         items.map((it, i) => (i === index ? { ...it, title: e.target.value } : it)),
                       )
                     }
-                    className="min-h-[44px] min-w-[160px] flex-1 rounded-lg border border-sand bg-white px-3 text-sm text-ink"
+                    className="min-h-[44px] min-w-[160px] flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
                   />
                   <select
                     value={item.timeframe}
@@ -534,7 +534,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                         ),
                       )
                     }
-                    className="min-h-[44px] rounded-lg border border-sand bg-white px-2 text-sm text-ink"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink"
                   >
                     {TIMEFRAMES.map((tf) => (
                       <option key={tf} value={tf}>
@@ -548,7 +548,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     onClick={() =>
                       setActionItems((items) => items.filter((_, i) => i !== index))
                     }
-                    className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink-body transition hover:text-rose-600"
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:text-state-error-fg"
                   >
                     ✕
                   </button>
@@ -564,7 +564,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                       ),
                     )
                   }
-                  className="rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink"
+                  className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink"
                 />
               </div>
             ))}
@@ -578,11 +578,11 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   {isHu ? "Angol fordítás (EN)" : "English translation (EN)"}
                 </p>
                 {translation?.status === "approved" ? (
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-emerald-700 ring-1 ring-emerald-200">
+                  <span className="rounded-full bg-state-success-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-success-fg ring-1 ring-state-success-border">
                     {isHu ? "jóváhagyva" : "approved"}
                   </span>
                 ) : translation ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
                     {isHu ? "vázlat — jóváhagyásra vár" : "draft — awaiting approval"}
                   </span>
                 ) : (
@@ -595,7 +595,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 type="button"
                 disabled={translating || busy}
                 onClick={generateTranslation}
-                className="inline-flex min-h-[38px] items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                className="inline-flex min-h-[38px] items-center rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
               >
                 {translating
                   ? isHu ? "Fordítás folyamatban…" : "Translating…"
@@ -623,7 +623,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                           tr ? { ...tr, status: "draft", [field.key]: e.target.value } : tr,
                         )
                       }
-                      className="rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink"
+                      className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink"
                     />
                   </label>
                 ))}
@@ -632,7 +632,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   <div className="flex flex-col gap-2">
                     <span className="text-xs font-semibold text-ink-body">Action plan</span>
                     {translation.actionItems.map((item, index) => (
-                      <div key={index} className="flex flex-col gap-1.5 rounded-lg border border-sand bg-white p-3">
+                      <div key={index} className="flex flex-col gap-1.5 rounded-lg border border-sand bg-surface-card p-3">
                         <div className="flex items-center gap-2">
                           <span className="rounded-full bg-cream px-2 py-0.5 font-mono text-micro text-muted">
                             {item.timeframe}d
@@ -652,7 +652,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                                   : tr,
                               )
                             }
-                            className="flex-1 rounded-lg border border-sand bg-white px-2 py-1 text-sm font-semibold text-ink"
+                            className="flex-1 rounded-lg border border-sand bg-surface-card px-2 py-1 text-sm font-semibold text-ink"
                           />
                         </div>
                         <textarea
@@ -671,7 +671,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                                 : tr,
                             )
                           }
-                          className="rounded-lg border border-sand bg-white px-2 py-1 text-sm text-ink"
+                          className="rounded-lg border border-sand bg-surface-card px-2 py-1 text-sm text-ink"
                         />
                       </div>
                     ))}
@@ -683,7 +683,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     type="button"
                     disabled={busy || translating}
                     onClick={() => saveTranslation(false)}
-                    className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                    className="inline-flex min-h-[40px] items-center rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
                   >
                     {isHu ? "Mentés vázlatként" : "Save as draft"}
                   </button>
@@ -691,7 +691,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     type="button"
                     disabled={busy || translating}
                     onClick={() => saveTranslation(true)}
-                    className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                    className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
                   >
                     {isHu ? "Jóváhagyás és mentés" : "Approve and save"}
                   </button>
@@ -700,14 +700,14 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             ) : null}
           </div>
 
-          {error && <p className="text-xs text-rose-600">{error}</p>}
+          {error && <p className="text-xs text-state-error-fg">{error}</p>}
 
           <div className="flex flex-wrap gap-2 border-t border-sand pt-4">
             <button
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("save")}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
             >
               {isHu ? "Mentés" : "Save"}
             </button>
@@ -715,7 +715,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("preview")}
-              className="inline-flex min-h-[44px] items-center rounded-lg border border-sage bg-white px-5 text-sm font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg border border-sage bg-surface-card px-5 text-sm font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
             >
               {isHu ? "Előnézet" : "Preview"}
             </button>
@@ -723,7 +723,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => saveOrPublish("publish")}
-              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
             >
               {isHu ? "Publikálás (validálás)" : "Publish (validate)"}
             </button>
@@ -731,7 +731,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               type="button"
               disabled={busy}
               onClick={() => draft && deleteReport(draft)}
-              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-rose-200 bg-white px-4 text-sm font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-50"
+              className="ml-auto inline-flex min-h-[44px] items-center rounded-lg border border-state-error-border bg-surface-card px-4 text-sm font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
             >
               {isHu ? "Vázlat törlése" : "Delete draft"}
             </button>
@@ -759,7 +759,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 : undefined
             }
             onClick={() => unpublish(latestPublished.id)}
-            className="inline-flex min-h-[44px] items-center rounded-lg border border-amber-300 bg-white px-4 text-sm font-semibold text-amber-700 transition hover:bg-amber-50 disabled:opacity-40"
+            className="inline-flex min-h-[44px] items-center rounded-lg border border-state-warning-border bg-surface-card px-4 text-sm font-semibold text-state-warning-fg transition hover:bg-state-warning-bg disabled:opacity-40"
           >
             {isHu ? "Visszavonás szerkesztésre" : "Unpublish for editing"}
           </button>
@@ -776,7 +776,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             : "earlier reports — consultant view only"}
         </SectionEyebrow>
         {olderPublished.map((r) => (
-          <details key={r.id} className="rounded-[14px] border border-sand bg-white">
+          <details key={r.id} className="rounded-[14px] border border-sand bg-surface-card">
             <summary className="flex min-h-[44px] cursor-pointer list-none items-center justify-between gap-3 px-4 py-2.5 text-sm text-ink-body [&::-webkit-details-marker]:hidden">
               <span className="font-medium text-ink">
                 {r.title ?? (isHu ? "Csapatkép" : "Team picture")}
@@ -796,7 +796,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     e.stopPropagation();
                     deleteReport(r);
                   }}
-                  className="inline-flex min-h-[36px] items-center rounded-lg border border-rose-200 bg-white px-2.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 disabled:opacity-40"
+                  className="inline-flex min-h-[36px] items-center rounded-lg border border-state-error-border bg-surface-card px-2.5 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-40"
                 >
                   {isHu ? "Törlés" : "Delete"}
                 </button>

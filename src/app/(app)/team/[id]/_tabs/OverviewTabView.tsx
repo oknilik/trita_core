@@ -93,7 +93,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 </p>
               </div>
               {pendingMeasurement.opensAt ? (
-                <div className="shrink-0 rounded-[10px] border border-sand bg-white px-4 py-2.5 text-center">
+                <div className="shrink-0 rounded-[10px] border border-sand bg-surface-card px-4 py-2.5 text-center">
                   <p className="font-mono text-micro uppercase tracking-wide text-muted">
                     {isHu ? "Érkezik" : "Arriving"}
                   </p>
@@ -109,7 +109,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               ) : (
                 <Link
                   href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
-                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
+                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
                 >
                   {pendingMeasurement.started
                     ? isHu ? "Folytatom a kitöltést" : "Continue filling in"
@@ -137,7 +137,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           <section>
             <div className="flex flex-col gap-3 rounded-[18px] border border-bronze/35 bg-bronze/5 p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="font-mono text-micro uppercase tracking-widest text-bronze">
+                <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {isHu ? "Külső visszajelzés — gyűjtés alatt" : "Outside feedback — collecting"}
                 </p>
                 <p className="mt-1 text-sm font-semibold text-ink">
@@ -148,7 +148,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     ? `Te kéred fel az értékelőidet: küldj meghívót legalább ${observerGathering.min} kollégának vagy külső partnernek — az önkép–külső kép összevetésed ${observerGathering.min} beérkezett visszajelzésnél nyílik meg.`
                     : `You choose your raters: invite at least ${observerGathering.min} colleagues or external partners — your self vs. outside view comparison opens at ${observerGathering.min} received responses.`}
                 </p>
-                <p className="mt-2 font-mono text-xs tabular-nums text-bronze">
+                <p className="mt-2 font-mono text-xs tabular-nums text-[var(--color-accent-primary-strong)]">
                   {isHu
                     ? `${observerGathering.received}/${observerGathering.min} beérkezett · ${observerGathering.sent} meghívó elküldve`
                     : `${observerGathering.received}/${observerGathering.min} received · ${observerGathering.sent} invites sent`}
@@ -156,7 +156,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </div>
               <Link
                 href="/profile/results?tab=comparison#observer-flow"
-                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-white transition hover:brightness-110"
+                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
               >
                 {observerGathering.sent < observerGathering.min
                   ? isHu ? "Kérek visszajelzést" : "Request feedback"
@@ -178,10 +178,10 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 {receivedFeedbackRequests.map((req) => (
                   <div
                     key={req.token}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-white px-3.5 py-2.5"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-surface-card px-3.5 py-2.5"
                   >
                     <span className="flex min-w-0 items-center gap-2.5">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-white">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
                         ★
                       </span>
                       <span className="text-caption font-medium text-ink">
@@ -198,7 +198,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     </span>
                     <Link
                       href={`/observe/${req.token}`}
-                      className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-white transition hover:brightness-110"
+                      className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
                     >
                       {req.answered > 0
                         ? isHu ? "Folytatom" : "Continue"
@@ -237,7 +237,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 mennyiség, hanem státusz, ezért chip hordozza, nem nagy szám.
                 CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
             {canViewRaw ? (
-              <div className="rounded-[24px] border border-sand bg-white p-5">
+              <div className="rounded-[24px] border border-sand bg-surface-card p-5">
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                     {t("teamDetail.teamPatternTitle", locale)}
@@ -246,7 +246,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     className={`rounded-full px-2.5 py-0.5 text-micro font-semibold ${
                       hasPattern
                         ? "bg-sage/15 text-sage-dark"
-                        : "bg-amber-50 text-amber-700"
+                        : "bg-state-warning-bg text-state-warning-fg"
                     }`}
                   >
                     {hasPattern
@@ -267,7 +267,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               futó kampánynál mérésenként is megmutatjuk, hol tart a csapat.
               A számok a kampány-részletezővel azonos lépés-logikából jönnek. */}
           {teamData.activeCampaign && teamData.activeCampaign.stepProgress.length > 0 ? (
-            <div className="mt-3 rounded-[24px] border border-sand bg-white p-5">
+            <div className="mt-3 rounded-[24px] border border-sand bg-surface-card p-5">
               <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                 {t("teamDetail.measurementBreakdownTitle", locale)}
               </p>
@@ -361,11 +361,11 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                           befagyasztott aggregátumot mutatják — az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
-                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.memberCount}{" "}
                           {isHu ? "tag a validált képben" : "members in the validated picture"}
                         </span>
-                        <span className="rounded-full border border-sand bg-white px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.completionPct}%{" "}
                           {isHu ? "kitöltöttség" : "completion"}
                         </span>
@@ -384,7 +384,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}
-                        className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark"
+                        className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                       >
                         {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
                       </Link>
@@ -392,7 +392,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </div>
                 ) : (
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-success-bg text-state-success-fg">
                       <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M3 8.5l3 3 7-7" />
                       </svg>
@@ -417,7 +417,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 )
               ) : (
               <div className="flex items-start gap-3">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-state-warning-bg text-state-warning-fg">
                   <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <rect x="3.5" y="7" width="9" height="6" rx="1.5" />
                     <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />

@@ -140,7 +140,7 @@ export function DraftCampaignEditor({
   };
 
   return (
-    <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
       <SectionEyebrow className="mb-1">
         {t("org.campaign.editDraftEyebrow", locale)}
       </SectionEyebrow>
@@ -167,7 +167,7 @@ export function DraftCampaignEditor({
                   ? "cursor-not-allowed border-sand bg-cream/40 opacity-60"
                   : checked
                     ? "cursor-pointer border-sage bg-sage/5"
-                    : "cursor-pointer border-sand bg-white hover:bg-cream",
+                    : "cursor-pointer border-sand bg-surface-card hover:bg-cream",
               ].join(" ")}
             >
               <span className="flex items-center gap-3">
@@ -183,7 +183,7 @@ export function DraftCampaignEditor({
                 </span>
               </span>
               {checked && (
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sage text-micro font-bold text-white">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sage text-micro font-bold text-[var(--color-action-primary-fg)]">
                   {orderIndex + 1}
                 </span>
               )}
@@ -198,7 +198,7 @@ export function DraftCampaignEditor({
       </p>
       <div className="mb-2 flex flex-col gap-2">
         {!needsTeam && (
-          <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-sand bg-white px-3.5 py-2.5 transition hover:bg-cream">
+          <label className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-sand bg-surface-card px-3.5 py-2.5 transition hover:bg-cream">
             <input
               type="checkbox"
               checked={teamIds.size === 0}
@@ -213,7 +213,7 @@ export function DraftCampaignEditor({
             key={team.id}
             className={[
               "flex cursor-pointer items-center justify-between gap-3 rounded-[12px] border px-3.5 py-2.5 transition",
-              teamIds.has(team.id) ? "border-sage bg-sage/5" : "border-sand bg-white hover:bg-cream",
+              teamIds.has(team.id) ? "border-sage bg-sage/5" : "border-sand bg-surface-card hover:bg-cream",
             ].join(" ")}
           >
             <span className="flex items-center gap-3">
@@ -258,8 +258,8 @@ export function DraftCampaignEditor({
                 className={[
                   "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
                   intervalHours === opt.value
-                    ? "border-ink bg-ink text-white"
-                    : "border-sand bg-white text-ink-body hover:border-ink/40",
+                    ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
+                    : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
                 ].join(" ")}
               >
                 {t(opt.key, locale)}
@@ -300,8 +300,8 @@ export function DraftCampaignEditor({
           megerősítés inline (nincs natív browser-dialog) */}
       <div className="mt-5 border-t border-sand pt-4">
         {confirmingDiscard ? (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-4">
-            <p className="text-xs font-semibold text-rose-800">
+          <div className="rounded-xl border border-state-error-border bg-state-error-bg p-4">
+            <p className="text-xs font-semibold text-text-error-strong">
               {t("org.campaign.discardConfirm", locale)}
             </p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -309,7 +309,7 @@ export function DraftCampaignEditor({
                 type="button"
                 disabled={discarding}
                 onClick={discard}
-                className="min-h-[36px] rounded-lg bg-rose-600 px-4 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+                className="min-h-[36px] rounded-lg bg-[var(--color-action-destructive-bg)] px-4 text-xs font-semibold text-[var(--color-action-destructive-fg)] transition hover:bg-[var(--color-action-destructive-bg-hover)] disabled:opacity-50"
               >
                 {discarding
                   ? t("org.campaign.discarding", locale)
@@ -319,7 +319,7 @@ export function DraftCampaignEditor({
                 type="button"
                 disabled={discarding}
                 onClick={() => setConfirmingDiscard(false)}
-                className="min-h-[36px] rounded-lg border border-sand bg-white px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
+                className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-4 text-xs font-semibold text-ink-body transition hover:text-ink disabled:opacity-50"
               >
                 {t("org.campaign.discardCancel", locale)}
               </button>
@@ -330,7 +330,7 @@ export function DraftCampaignEditor({
             <button
               type="button"
               onClick={() => setConfirmingDiscard(true)}
-              className="min-h-[36px] rounded-lg border border-rose-200 bg-white px-4 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
+              className="min-h-[36px] rounded-lg border border-state-error-border bg-surface-card px-4 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg"
             >
               {t("org.campaign.discardDraft", locale)}
             </button>

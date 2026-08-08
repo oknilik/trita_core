@@ -17,7 +17,7 @@ export function InlineUpsell() {
   return (
     <div
       className="mt-8 flex flex-col items-center gap-6 rounded-2xl px-8 py-7 sm:flex-row"
-      style={{ background: "linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-text-strong-deep) 100%)" }}
+      style={{ background: "linear-gradient(135deg, var(--color-surface-inverse) 0%, var(--color-surface-inverse-soft) 100%)" }}
     >
       <div className="flex-1">
         <p className="mb-1.5 text-micro uppercase tracking-widest text-[var(--color-accent-primary-soft)]">

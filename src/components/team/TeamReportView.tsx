@@ -28,7 +28,7 @@ const DIM_LABELS: Record<string, { hu: string; en: string }> = {
 
 // Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts); mark-
 // (base) forma, a team oldal dimConfigs palettájával azonos forrásból.
-import { DIMENSION_BASE, DYNAMICS_COLORS } from "@/lib/color-system";
+import { DIMENSION_BASE, DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
@@ -61,12 +61,12 @@ const QUALITY_LABELS: Record<string, { hu: string; en: string }> = {
 };
 
 // Dinamika-kategóriák — dokumentált KIVÉTEL: státusz-jellegű színkódolás
-// adat-kontextusban (color-system DYNAMICS_COLORS), mindig felirattal
+// adat-kontextusban (color-system DYNAMICS_COLORS_CSS), mindig felirattal
 // (sosem csak színnel) jelölve. Paletta CVD-validálva (dataviz validator).
 const DYNAMICS_SEGMENTS = [
   {
     key: "alignedCount",
-    color: DYNAMICS_COLORS.aligned,
+    color: DYNAMICS_COLORS_CSS.aligned,
     chip: "bg-[var(--color-state-success-bg)] text-[var(--color-state-success-fg)]",
     hu: "Összehangolt",
     en: "Aligned",
@@ -75,7 +75,7 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "complementaryCount",
-    color: DYNAMICS_COLORS.complementary,
+    color: DYNAMICS_COLORS_CSS.complementary,
     chip: "bg-[var(--color-state-info-bg)] text-[var(--color-state-info-fg)]",
     hu: "Kiegészítő",
     en: "Complementary",
@@ -84,7 +84,7 @@ const DYNAMICS_SEGMENTS = [
   },
   {
     key: "frictionCount",
-    color: DYNAMICS_COLORS.friction,
+    color: DYNAMICS_COLORS_CSS.friction,
     chip: "bg-[var(--color-state-warning-bg)] text-[var(--color-state-warning-fg)]",
     hu: "Súrlódási potenciál",
     en: "Friction potential",
@@ -126,7 +126,7 @@ const NARRATIVE_TONES = {
     path: "M3 8h10M9 4l4 4-4 4",
   },
   sky: {
-    circle: "bg-sky-100 text-sky-700",
+    circle: "bg-layer-org-soft text-layer-org-bright",
     path: "M4 13.5V3h7.5L10 5.5 11.5 8H4",
   },
   bronze: {
@@ -134,11 +134,11 @@ const NARRATIVE_TONES = {
     path: "M3 4h10v7H8.5L5.5 13.5V11H3z",
   },
   emerald: {
-    circle: "bg-emerald-100 text-emerald-700",
+    circle: "bg-sage-soft text-state-success-fg",
     path: "M3 8.5l3 3 7-7",
   },
   amber: {
-    circle: "bg-amber-100 text-amber-700",
+    circle: "bg-state-warning-bg text-state-warning-fg",
     path: "M8 3v6M8 12.5v.5",
   },
 } as const;
@@ -221,7 +221,7 @@ function KpiTile({
   progressPct?: number;
 }) {
   return (
-    <div className="min-w-0 rounded-[14px] border border-sand bg-white p-3.5">
+    <div className="min-w-0 rounded-[14px] border border-sand bg-surface-card p-3.5">
       <p className="break-words font-mono text-micro uppercase tracking-wide text-muted md:tracking-widest">
         {label}
       </p>
@@ -256,11 +256,11 @@ function SectionHead({
 }) {
   return (
     <div className="mb-4 flex items-start gap-3">
-      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-white font-mono text-[11px] font-bold text-bronze shadow-sm ring-1 ring-sand">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-[11px] font-bold text-[var(--color-accent-primary-strong)] shadow-sm ring-1 ring-sand">
         {no}
       </span>
       <div className="min-w-0 pt-0.5">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-bronze">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {label}
         </p>
         {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
@@ -275,8 +275,8 @@ const TIMEFRAME_TONES: Record<
   { dot: string; text: string; edge: string }
 > = {
   "30": { dot: "bg-sage", text: "text-sage-dark", edge: "border-l-sage/50" },
-  "60": { dot: "bg-sky-500", text: "text-sky-700", edge: "border-l-sky-400/50" },
-  "90": { dot: "bg-bronze", text: "text-bronze", edge: "border-l-bronze/50" },
+  "60": { dot: "bg-state-info-solid", text: "text-layer-org-bright", edge: "border-l-sky-400/50" },
+  "90": { dot: "bg-bronze", text: "text-[var(--color-accent-primary-strong)]", edge: "border-l-bronze/50" },
 };
 
 export function TeamReportView({
@@ -326,8 +326,8 @@ export function TeamReportView({
         <div
           className={`p-6 ${
             isDraft
-              ? "bg-gradient-to-r from-amber-100/50 via-cream/70 to-white"
-              : "bg-gradient-to-r from-sage/15 via-cream/70 to-white"
+              ? "bg-gradient-to-r from-state-warning-bg/50 via-cream/70 to-[var(--color-surface-card)]"
+              : "bg-gradient-to-r from-sage/15 via-cream/70 to-[var(--color-surface-card)]"
           }`}
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -348,11 +348,11 @@ export function TeamReportView({
               )}
             </div>
             {isDraft ? (
-              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-amber-700 shadow-sm ring-1 ring-amber-200">
+              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-warning-fg shadow-sm ring-1 ring-state-warning-border">
                 {isHu ? "Vázlat-előnézet" : "Draft preview"}
               </span>
             ) : (
-              <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-700 shadow-sm ring-1 ring-emerald-200">
+              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
                 {isHu ? "Publikált" : "Published"}
               </span>
             )}
@@ -379,10 +379,10 @@ export function TeamReportView({
                 }
                 accent={
                   agg.evidence.quality === "sufficient"
-                    ? "text-emerald-700"
+                    ? "text-state-success-fg"
                     : agg.evidence.quality === "partial"
-                      ? "text-amber-700"
-                      : "text-rose-700"
+                      ? "text-state-warning-fg"
+                      : "text-state-error-fg"
                 }
               />
             )}
@@ -390,7 +390,7 @@ export function TeamReportView({
               <KpiTile
                 label={isHu ? "Súrlódási arány" : "Friction ratio"}
                 value={`${frictionPct}%`}
-                accent={frictionPct >= 40 ? "text-amber-700" : "text-ink"}
+                accent={frictionPct >= 40 ? "text-state-warning-fg" : "text-ink"}
               />
             )}
           </div>
@@ -420,7 +420,7 @@ export function TeamReportView({
                     </p>
                   </div>
                   {agg.pattern.confidence ? (
-                    <span className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-micro font-semibold text-ink-body">
+                    <span className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-micro font-semibold text-ink-body">
                       {agg.pattern.confidence}{" "}
                       {isHu ? "konfidencia" : "confidence"}
                     </span>
@@ -430,7 +430,7 @@ export function TeamReportView({
                     a mintázat kontextusfüggő — a tanácsadói debrifen ezt ki kell
                     mondani, ezért a riportban is látszania kell. */}
                 {agg.pattern.stability && agg.pattern.stability !== "stabil" && agg.pattern.stabilityNote ? (
-                  <div className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                  <div className="mt-3 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
                     {agg.pattern.stabilityNote}
                     {agg.pattern.unstableAxes && agg.pattern.unstableAxes.length > 0 ? (
                       <span>
@@ -546,8 +546,8 @@ export function TeamReportView({
                           state === "primary"
                             ? "border border-sage/35 bg-sage/10"
                             : state === "secondary"
-                              ? "border border-sky-200 bg-sky-50/60"
-                              : "border border-dashed border-sand bg-white"
+                              ? "border border-state-info-border bg-state-info-bg/60"
+                              : "border border-dashed border-sand bg-surface-card"
                         }`}
                       >
                         <span
@@ -563,17 +563,17 @@ export function TeamReportView({
                         </span>
                         {state === "primary" ? (
                           <span className="flex items-center gap-1">
-                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-[11px] font-semibold text-white">
+                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-[11px] font-semibold text-[var(--color-action-primary-fg)]">
                               {primaryCount}
                             </span>
                             {secondaryCount > 0 && (
-                              <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-sky-700">
+                              <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
                                 +{secondaryCount}
                               </span>
                             )}
                           </span>
                         ) : state === "secondary" ? (
-                          <span className="rounded-full bg-sky-100 px-2 py-0.5 font-mono text-[11px] font-semibold text-sky-700">
+                          <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
                             +{secondaryCount}
                           </span>
                         ) : (
@@ -594,11 +594,11 @@ export function TeamReportView({
                 {isHu ? "Elsődleges szerep a csapatban" : "Primary role in the team"}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-[4px] border border-sky-200 bg-sky-50" />
+                <span className="h-3 w-3 rounded-[4px] border border-state-info-border bg-state-info-bg" />
                 {isHu ? "Csak tartalék (2-3. legerősebb szerepként)" : "Backup only (2nd–3rd strongest role)"}
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded-[4px] border border-dashed border-sand bg-white" />
+                <span className="h-3 w-3 rounded-[4px] border border-dashed border-sand bg-surface-card" />
                 {isHu ? "Senki nem fedi le" : "Covered by no one"}
               </span>
             </div>
@@ -825,7 +825,7 @@ export function TeamReportView({
                     {isHu ? "mért" : "measured"}
                   </span>
                 ) : (
-                  <span className="rounded-full bg-amber-50 px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-amber-700">
+                  <span className="rounded-full bg-state-warning-bg px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-state-warning-fg">
                     {isHu ? "becsült" : "estimated"}
                   </span>
                 )}
@@ -847,7 +847,7 @@ export function TeamReportView({
                       {agg.trustHighlights.hubs.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
+                          className="rounded-full bg-surface-card px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -866,8 +866,8 @@ export function TeamReportView({
                 )}
 
                 {agg.trustHighlights.isolated.length > 0 && (
-                  <div className="rounded-[14px] border border-amber-200 bg-amber-50/60 p-4">
-                    <p className="font-mono text-micro uppercase tracking-widest text-amber-700">
+                  <div className="rounded-[14px] border border-state-warning-border bg-state-warning-bg/60 p-4">
+                    <p className="font-mono text-micro uppercase tracking-widest text-state-warning-fg">
                       {isHu
                         ? agg.trustHighlights.isolated.length > 1
                           ? "Beágyazatlan tagok"
@@ -880,7 +880,7 @@ export function TeamReportView({
                       {agg.trustHighlights.isolated.map((name) => (
                         <span
                           key={name}
-                          className="rounded-full bg-white px-2.5 py-1 text-caption font-semibold text-ink"
+                          className="rounded-full bg-surface-card px-2.5 py-1 text-caption font-semibold text-ink"
                         >
                           {name}
                         </span>
@@ -951,7 +951,7 @@ export function TeamReportView({
                 return (
                   <div
                     key={`${c.dim}-${c.pole}`}
-                    className="rounded-[14px] border border-amber-200 bg-amber-50 p-4"
+                    className="rounded-[14px] border border-state-warning-border bg-state-warning-bg p-4"
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <span
@@ -964,7 +964,7 @@ export function TeamReportView({
                           ? isHu ? "magas pólus" : "high pole"
                           : isHu ? "alacsony pólus" : "low pole"}
                       </p>
-                      <span className="ml-auto rounded-full border border-amber-200 bg-white px-2 py-0.5 text-micro font-medium text-amber-800">
+                      <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-micro font-medium text-bronze-700">
                         {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}
                       </span>
                     </div>
@@ -1033,7 +1033,7 @@ export function TeamReportView({
                   >
                     <span
                       className={`text-xs leading-snug md:w-64 md:shrink-0 ${
-                        isWeak ? "font-semibold text-amber-800" : "text-ink-body"
+                        isWeak ? "font-semibold text-bronze-700" : "text-ink-body"
                       }`}
                     >
                       {isHu ? item.area.hu : item.area.en}
@@ -1042,7 +1042,7 @@ export function TeamReportView({
                       <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-sand">
                         <div
                           className={`h-full rounded-full transition-all duration-700 ${
-                            isWeak ? "bg-amber-500" : "bg-sage"
+                            isWeak ? "bg-bronze-300" : "bg-sage"
                           }`}
                           style={{ width: `${pct}%` }}
                         />
@@ -1058,7 +1058,7 @@ export function TeamReportView({
 
             {agg.psychSafety.weakItemIds.length > 0 ? (
               <div className="mt-5 flex flex-col gap-3">
-                <p className="font-mono text-micro uppercase tracking-widest text-amber-700">
+                <p className="font-mono text-micro uppercase tracking-widest text-state-warning-fg">
                   {isHu ? "Gyenge területek — javasolt lépések" : "Weak areas — suggested steps"}
                 </p>
                 {agg.psychSafety.weakItemIds.map((id) => {
@@ -1068,11 +1068,11 @@ export function TeamReportView({
                   return (
                     <div
                       key={id}
-                      className="rounded-xl border border-amber-200 bg-amber-50/60 px-4 py-3"
+                      className="rounded-xl border border-state-warning-border bg-state-warning-bg/60 px-4 py-3"
                     >
                       <p className="text-caption font-semibold text-ink">
                         {isHu ? item.area.hu : item.area.en}
-                        <span className="ml-2 font-normal tabular-nums text-amber-700">
+                        <span className="ml-2 font-normal tabular-nums text-state-warning-fg">
                           {agg.psychSafety!.itemMeans[id]?.toFixed(1)} / 5
                         </span>
                       </p>
@@ -1091,8 +1091,8 @@ export function TeamReportView({
                   const traps = leaderTrapsForWeakItems(agg.psychSafety!.weakItemIds);
                   if (traps.length === 0) return null;
                   return (
-                    <details className="mt-1 rounded-[12px] border border-sand bg-white">
-                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-bronze transition-colors hover:text-bronze-dark">
+                    <details className="mt-1 rounded-[12px] border border-sand bg-surface-card">
+                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark">
                         {isHu
                           ? `Vezetői akciókártyák (${traps.length})`
                           : `Leader action cards (${traps.length})`}
@@ -1156,7 +1156,7 @@ export function TeamReportView({
         {/* EN lekérés jóváhagyott fordítás nélkül: explicit jelzés, hogy a
             tanácsadói szövegek magyar eredetiben jelennek meg. */}
         {!isHu && !hasApprovedEnTranslation(reportInput) && report.summary ? (
-          <p className="mb-3 rounded-[10px] border border-amber-200 bg-amber-50/60 px-3.5 py-2 text-xs text-amber-800">
+          <p className="mb-3 rounded-[10px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2 text-xs text-bronze-700">
             Consultant-written sections below appear in the Hungarian original — the
             English translation hasn&apos;t been approved yet.
           </p>
@@ -1164,7 +1164,7 @@ export function TeamReportView({
         <div className="flex flex-col gap-4">
           {report.summary && (
             <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-bronze">
+              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                 {isHu ? "Összefoglaló" : "Summary"}
               </p>
               {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}
@@ -1177,7 +1177,7 @@ export function TeamReportView({
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {report.strengths && (
                 <DashboardPanel className="border-l-4 border-l-emerald-500/60 p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-emerald-700">
+                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 8.5l3 3 7-7" />
                     </svg>
@@ -1188,7 +1188,7 @@ export function TeamReportView({
               )}
               {report.risks && (
                 <DashboardPanel className="border-l-4 border-l-amber-500/60 p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-amber-700">
+                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-warning-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M8 3v6M8 12.5v.5" />
                     </svg>
@@ -1285,10 +1285,10 @@ export function TeamReportView({
             <span
               className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                 agg.evidence.quality === "sufficient"
-                  ? "bg-emerald-50 text-emerald-700"
+                  ? "bg-state-success-bg text-state-success-fg"
                   : agg.evidence.quality === "partial"
-                    ? "bg-amber-50 text-amber-700"
-                    : "bg-rose-50 text-rose-700"
+                    ? "bg-state-warning-bg text-state-warning-fg"
+                    : "bg-state-error-bg text-state-error-fg"
               }`}
             >
               {QUALITY_LABELS[agg.evidence.quality]

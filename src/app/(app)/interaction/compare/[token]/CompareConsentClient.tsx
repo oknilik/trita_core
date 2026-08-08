@@ -43,7 +43,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
   };
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 md:p-10">
+    <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 md:p-10">
       <SectionEyebrow tone="muted">
         {t("results.compareConsentTitle", locale)}
       </SectionEyebrow>
@@ -55,7 +55,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
       </p>
 
       {error ? (
-        <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+        <p className="mt-3 rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
           {error}
         </p>
       ) : null}
@@ -65,13 +65,13 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
           type="button"
           onClick={handleAccept}
           disabled={busy}
-          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t("results.compareConsentAccept", locale)}
         </button>
         <Link
           href="/dashboard"
-          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border border-sand bg-white px-5 text-caption font-medium text-ink-body transition-colors hover:bg-cream"
+          className="inline-flex min-h-[48px] flex-1 items-center justify-center rounded-xl border border-sand bg-surface-card px-5 text-caption font-medium text-ink-body transition-colors hover:bg-cream"
         >
           {t("results.compareConsentDecline", locale)}
         </Link>

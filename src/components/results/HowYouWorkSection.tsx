@@ -51,7 +51,7 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
         )}
 
         {context && (
-          <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[var(--color-border-soft)] bg-white p-[18px]">
+          <div className="col-span-1 rounded-xl md:col-span-2 border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px]">
             <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
               {t("results.howYouWorkContext", locale)}
             </p>

@@ -15,7 +15,7 @@ function roleLabel(role: string, loc: Locale): string {
 }
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
-  if (role === "manager") return { variant: "info", className: "bg-sage/10 text-bronze border border-sage/20" };
+  if (role === "manager") return { variant: "info", className: "bg-sage/10 text-[var(--color-accent-primary-strong)] border border-sage/20" };
   return { variant: "neutral", className: "border border-sand" };
 }
 
@@ -87,7 +87,7 @@ export function TeamMemberRoleEditor({
         value={role}
         disabled={loading}
         onChange={(e) => handleChange(e.target.value as TeamRole)}
-        className="min-h-[36px] rounded-lg border border-sand bg-white px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
+        className="min-h-[36px] rounded-lg border border-sand bg-surface-card px-2 text-xs font-semibold text-ink focus:border-sage focus:outline-none disabled:opacity-50"
       >
         {TEAM_ROLES.map((r) => (
           <option key={r} value={r}>
@@ -95,7 +95,7 @@ export function TeamMemberRoleEditor({
           </option>
         ))}
       </select>
-      {error && <p className="text-xs text-rose-600">{error}</p>}
+      {error && <p className="text-xs text-state-error-fg">{error}</p>}
     </div>
   );
 }

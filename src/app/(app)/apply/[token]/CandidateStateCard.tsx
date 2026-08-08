@@ -18,7 +18,7 @@ export function CandidateStateCard({
   return (
     <div className="min-h-dvh bg-cream">
       <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col items-center justify-center px-4 py-16">
-        <div className="relative w-full overflow-hidden rounded-[24px] border border-sand bg-white px-6 py-9 text-center shadow-[0_16px_40px_rgba(26,26,46,0.05)] md:px-10">
+        <div className="relative w-full overflow-hidden rounded-[24px] border border-sand bg-surface-card px-6 py-9 text-center shadow-[0_16px_40px_rgba(26,26,46,0.05)] md:px-10">
           <span
             aria-hidden
             className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent-candidate via-accent-candidate-mid to-accent-candidate-primary"

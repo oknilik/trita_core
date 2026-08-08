@@ -137,7 +137,7 @@ export function AdminReminderSection({ invitations }: Props) {
 
   if (invitations.length === 0) {
     return (
-      <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+      <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
         <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
         <p className="mt-4 text-sm text-muted">Nincs 3+ napja kitöltetlen emailes meghívó.</p>
       </div>
@@ -145,7 +145,7 @@ export function AdminReminderSection({ invitations }: Props) {
   }
 
   return (
-    <div className="mt-8 rounded-xl border border-sand/70 bg-white p-6 md:p-8">
+    <div className="mt-8 rounded-xl border border-sand/70 bg-surface-card p-6 md:p-8">
       <div className="flex flex-col gap-4 mb-6 md:flex-row md:items-start md:justify-between">
         <div>
           <h2 className="font-fraunces text-heading text-ink">Emlékeztető küldés</h2>
@@ -158,19 +158,19 @@ export function AdminReminderSection({ invitations }: Props) {
             onClick={() => { setOnlyActive((v) => !v); setSelectAll(false); setPage(0); }}
             className={`inline-flex min-h-[44px] items-center gap-2 rounded-lg border px-3 py-2 text-xs font-semibold transition-colors ${
               onlyActive
-                ? "border-indigo-200 bg-indigo-50 text-indigo-700"
-                : "border-sand bg-white text-ink-body hover:bg-surface-subtle"
+                ? "border-sage-ring bg-sage-ghost text-sage-dark"
+                : "border-sand bg-surface-card text-ink-body hover:bg-surface-subtle"
             }`}
           >
             {onlyActive ? "Csak kiküldendők" : "Összes"}
-            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-indigo-200 text-indigo-800" : "bg-sand/50 text-muted"}`}>
+            <span className={`rounded-full px-1.5 py-0.5 text-xs ${onlyActive ? "bg-sage-ring text-sage-dark" : "bg-sand/50 text-muted"}`}>
               {onlyActive ? activeCount : invitations.length}
             </span>
           </button>
           <button
             onClick={sendChecked}
             disabled={bulkRunning || checkedCount === 0}
-            className="inline-flex min-h-[44px] items-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-4 py-2 text-sm font-semibold text-[var(--color-action-primary-fg)] hover:bg-sage-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {bulkRunning ? "Küldés…" : `Kijelöltek küldése (${checkedCount})`}
           </button>
@@ -186,7 +186,7 @@ export function AdminReminderSection({ invitations }: Props) {
                   type="checkbox"
                   checked={selectAll}
                   onChange={(e) => handleSelectAll(e.target.checked)}
-                  className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                  className="h-4 w-4 rounded border-sand text-sage focus:ring-sage-500 cursor-pointer"
                 />
               </th>
               <th className="pb-3 pr-4">Observer</th>
@@ -215,7 +215,7 @@ export function AdminReminderSection({ invitations }: Props) {
                       checked={isChecked && !s.completed}
                       disabled={s.completed}
                       onChange={() => !s.completed && toggleRow(inv.id)}
-                      className="h-4 w-4 rounded border-sand text-indigo-600 focus:ring-indigo-500 cursor-pointer disabled:cursor-default"
+                      className="h-4 w-4 rounded border-sand text-sage focus:ring-sage-500 cursor-pointer disabled:cursor-default"
                     />
                   </td>
                   <td className="py-3 pr-4">
@@ -229,12 +229,12 @@ export function AdminReminderSection({ invitations }: Props) {
                         )}
                       </div>
                       {s.completed && (
-                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                        <span className="shrink-0 rounded-full bg-sage-soft px-2 py-0.5 text-xs font-medium text-state-success-fg">
                           Kész ✓
                         </span>
                       )}
                       {!s.completed && recent && (
-                        <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">
+                        <span className="shrink-0 rounded-full bg-state-warning-bg px-2 py-0.5 text-xs font-medium text-state-warning-fg">
                           Friss
                         </span>
                       )}
@@ -255,7 +255,7 @@ export function AdminReminderSection({ invitations }: Props) {
                     {inv.reminderCount + (sent ? 1 : 0)}
                   </td>
                   <td className="py-3">
-                    {s.error && <p className="text-xs text-red-500 mb-1">{s.error}</p>}
+                    {s.error && <p className="text-xs text-state-error-fg mb-1">{s.error}</p>}
                     <button
                       onClick={() => sendReminder(inv.id)}
                       disabled={s.sending || sent || s.completed}
@@ -263,10 +263,10 @@ export function AdminReminderSection({ invitations }: Props) {
                         s.completed
                           ? "bg-sand/50 text-muted cursor-default"
                           : sent
-                            ? "bg-emerald-100 text-emerald-700 cursor-default"
+                            ? "bg-sage-soft text-state-success-fg cursor-default"
                             : s.sending
                               ? "bg-sand/50 text-muted cursor-not-allowed"
-                              : "bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                              : "bg-sage-ghost text-sage-dark hover:bg-sage-soft"
                       }`}
                     >
                       {s.completed ? "Már kész" : sent ? "Elküldve ✓" : s.sending ? "Küldés…" : "Küldés"}

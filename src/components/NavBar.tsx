@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
@@ -107,11 +108,21 @@ function NavLink({
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
+  /**
+   * Látszik-e a séma-választó. Alapból NEM: ezt a navot a marketing-fa is
+   * használja, ahol a sötét mód szándékosan nincs hatókörben — ott egy
+   * kapcsoló, ami láthatóan nem csinál semmit, hibának tűnne.
+   * Az (app) zóna kijelentkezett ága (`/try`, `/observe/[token]`,
+   * `/join/[token]`, `/share/[token]`) viszont `.theme-scope`-on belül van,
+   * ezért ott bekapcsoljuk.
+   */
+  showThemeToggle?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
+  showThemeToggle = false,
 }: NavBarProps) {
   const { locale } = useLocale();
   // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
@@ -185,7 +196,7 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
 
           {/* ═══ LOGO ═══ */}
@@ -220,7 +231,7 @@ export function NavBar({
                 {/* Sign in — desktop only */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-white px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-surface-card px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
                 >
                   {t("nav.signIn", locale)}
                 </Link>
@@ -232,7 +243,7 @@ export function NavBar({
                     CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
                   href="/try"
-                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-white transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
                 >
                   {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
                 </Link>
@@ -244,6 +255,11 @@ export function NavBar({
             {/* Separator + Language — always visible */}
             <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
             <LanguageSwitcher />
+            {showThemeToggle ? (
+              <div className="hidden lg:block">
+                <ThemeToggle />
+              </div>
+            ) : null}
 
             {/* Hamburger — mobile */}
             <button
@@ -272,7 +288,7 @@ export function NavBar({
             <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
-              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-white px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
             >
               {signedInHint.ctaLabel}
             </Link>
@@ -306,7 +322,7 @@ export function NavBar({
               <Link
                 href="/sign-out"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 {t("nav.signOut", locale)}
               </Link>
@@ -318,14 +334,14 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
                 {t("nav.signIn", locale)}
               </Link>
               <Link
                 href="/try"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-white transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
               >
                 {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
               </Link>
@@ -338,6 +354,15 @@ export function NavBar({
           <div className="px-3 pb-1">
             <LanguageSwitcher variant="pills" />
           </div>
+
+          {showThemeToggle ? (
+            <>
+              <MobileMenuSectionLabel>{t("theme.label", locale)}</MobileMenuSectionLabel>
+              <div className="px-3 pb-1">
+                <ThemeToggle />
+              </div>
+            </>
+          ) : null}
 
         </div>
       </MobileMenuShell>

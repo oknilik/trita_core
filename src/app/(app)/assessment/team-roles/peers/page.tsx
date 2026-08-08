@@ -59,7 +59,7 @@ export default async function TeamRolePeersPage() {
   if (!pending || !memberTeamId) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
-        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
           <h1 className="font-fraunces text-2xl text-ink">
             {t("teamRolePeers.nonePendingTitle", locale as Locale)}
           </h1>
@@ -68,7 +68,7 @@ export default async function TeamRolePeersPage() {
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {t("teamRolePeers.backToDashboard", locale as Locale)}
           </Link>

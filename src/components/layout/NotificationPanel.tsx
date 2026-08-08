@@ -18,11 +18,11 @@ const DISMISS_UNDO_MS = 5000;
 // ── Category → icon color mapping ────────────────────────────────────────────
 
 const CATEGORY_ICON_STYLES: Record<string, string> = {
-  assessment: "bg-indigo-50 text-indigo-600",
-  observer:   "bg-purple-50 text-purple-600",
-  org:        "bg-sky-50 text-sky-600",
-  campaign:   "bg-emerald-50 text-emerald-600",
-  billing:    "bg-amber-50 text-amber-700",
+  assessment: "bg-sage-ghost text-sage",
+  observer:   "bg-sage-ghost text-sage",
+  org:        "bg-state-info-bg text-state-info-fg",
+  campaign:   "bg-state-success-bg text-state-success-fg",
+  billing:    "bg-state-warning-bg text-state-warning-fg",
   system:     "bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]",
 };
 
@@ -291,7 +291,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           <button
             type="button"
             onClick={() => void markAllRead()}
-            className="text-[11px] font-medium text-[var(--color-accent-primary)] transition-colors hover:underline"
+            className="text-[11px] font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:underline"
           >
             {t("notifications.markAllRead", loc)}
           </button>
@@ -335,7 +335,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                     type="button"
                     data-undo-for={item.id}
                     onClick={() => undoDismiss(item.id)}
-                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                   >
                     {t("notifications.undo", loc)}
                   </button>
@@ -373,7 +373,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                       {title}
                     </p>
                     {item.priority === "high" && !item.read && (
-                      <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
+                      <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-state-error-solid" />
                     )}
                   </div>
                   <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
@@ -421,7 +421,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   })();
                 }}
                 className={`block border-b border-[var(--color-border-default)]/50 px-4 py-3 transition-colors last:border-b-0 hover:bg-[var(--color-surface-subtle)] ${rowFocusCls} ${
-                  !item.read ? "bg-white" : ""
+                  !item.read ? "bg-surface-card" : ""
                 }`}
               >
                 {content}
@@ -433,7 +433,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                 data-notif-id={item.id}
                 tabIndex={-1}
                 className={`border-b border-[var(--color-border-default)]/50 px-4 py-3 last:border-b-0 ${rowFocusCls} ${
-                  !item.read ? "bg-white" : ""
+                  !item.read ? "bg-surface-card" : ""
                 }`}
               >
                 {content}

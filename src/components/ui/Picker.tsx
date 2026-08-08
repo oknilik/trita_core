@@ -156,7 +156,7 @@ export function Picker({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
+              className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
             />
           </div>
         )}
@@ -231,7 +231,7 @@ export function PickerTrigger({
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-indigo-300 focus:outline-none"
+        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-sage-ring focus:outline-none"
       >
         <span className={value ? "text-ink" : "text-muted"}>
           {value || placeholder}

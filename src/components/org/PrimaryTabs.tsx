@@ -16,7 +16,7 @@ interface PrimaryTabsProps {
 export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) {
   return (
     <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-white p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
+      <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
       {tabs.map((tab) => {
         const isActive = tab.key === activeTab;
         return (
@@ -44,7 +44,7 @@ export function PrimaryTabs({ tabs, activeTab, onTabChange }: PrimaryTabsProps) 
                 className={[
                   "rounded-full px-2 py-0.5 text-micro font-semibold leading-none",
                   isActive
-                    ? "bg-white text-sage-dark shadow-[0_1px_2px_rgba(26,26,46,0.06)]"
+                    ? "bg-surface-card text-sage-dark shadow-[0_1px_2px_rgba(26,26,46,0.06)]"
                     : "bg-warm text-bronze-dark",
                 ].join(" ")}
               >

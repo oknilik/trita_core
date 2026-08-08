@@ -28,12 +28,12 @@ class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError:
     if (this.state.hasError) {
       return (
         <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
-          <div className="w-full max-w-md rounded border border-sand bg-white p-8 text-center">
+          <div className="w-full max-w-md rounded border border-sand bg-surface-card p-8 text-center">
             <p className="text-sm text-ink-body">Hiba történt. Frissítsd az oldalt.</p>
             <button
               type="button"
               onClick={() => window.location.reload()}
-              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-white hover:bg-sage-dark"
+              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
             >
               Újratöltés
             </button>
@@ -203,7 +203,7 @@ function SignInContent() {
             </p>
 
             {error && (
-              <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+              <div className="mb-4 rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
                 {error}
               </div>
             )}
@@ -218,13 +218,13 @@ function SignInContent() {
                 maxLength={6}
                 placeholder="000000"
                 autoFocus
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
               />
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
               >
                 {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
               </button>
@@ -286,7 +286,7 @@ function SignInContent() {
           )}
 
           {error && (
-            <div className="mb-4 rounded-lg border border-rose-100 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            <div className="mb-4 rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
               {error}
             </div>
           )}
@@ -296,7 +296,7 @@ function SignInContent() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
-            className="mb-3 flex min-h-[48px] w-full items-center justify-center gap-3 rounded-lg border-[1.5px] border-[var(--color-border-soft)] bg-white px-4 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm transition-all hover:border-[var(--color-text-muted)] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+            className="mb-3 flex min-h-[48px] w-full items-center justify-center gap-3 rounded-lg border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm transition-all hover:border-[var(--color-text-muted)] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isGoogleLoading ? (
               <svg className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -325,13 +325,13 @@ function SignInContent() {
               required
               autoComplete="email"
               placeholder={t("auth.emailLabel", locale)}
-              className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-white px-3.5 text-sm text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+              className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3.5 text-sm text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
             />
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+              className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
             >
               {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
             </button>

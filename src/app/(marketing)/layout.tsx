@@ -18,14 +18,22 @@ export default function MarketingLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <FetchAuthStateProvider>
-      <Suspense>
-        <MarketingHeader />
-        <div>{children}</div>
-        <Footer />
-      </Suspense>
-      <Suspense>
-        <HelpWidgetLazy audience="public" />
-      </Suspense>
+      {/* A sötét mód hatóköre (globals.css: `[data-theme="dark"] .theme-scope`).
+          A marketing-fa is megkapja: a látogató a belépés ELŐTT dönt a
+          színsémáról, és a fejlécben ott a választó — ha a landing/blog/árazás
+          világos maradna, a kapcsoló hazudna. A statikus prerendert ez nem
+          töri: puszta osztály, nem olvas sütit; a `data-theme`-et a festés
+          előtti script teszi a <html>-re. */}
+      <div className="theme-scope">
+        <Suspense>
+          <MarketingHeader />
+          <div>{children}</div>
+          <Footer />
+        </Suspense>
+        <Suspense>
+          <HelpWidgetLazy audience="public" />
+        </Suspense>
+      </div>
       {/* Oldalletöltés-mérés — saját, süti nélküli rendszer (/api/e).
           Nem renderel semmit, és `usePathname`-t használ, ezért a lapok
           statikus prerenderét nem töri el. */}

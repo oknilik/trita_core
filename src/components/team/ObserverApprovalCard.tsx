@@ -93,7 +93,7 @@ export function ObserverApprovalCard({
                   type="button"
                   disabled={decidingId !== null}
                   onClick={() => decide(a.id, "approve")}
-                  className="inline-flex min-h-[36px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark disabled:opacity-50"
+                  className="inline-flex min-h-[36px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
                 >
                   {decidingId === a.id ? "…" : isHu ? "Jóváhagyom" : "Approve"}
                 </button>
@@ -101,7 +101,7 @@ export function ObserverApprovalCard({
                   type="button"
                   disabled={decidingId !== null}
                   onClick={() => decide(a.id, "decline")}
-                  className="inline-flex min-h-[36px] items-center rounded-[10px] border border-sand bg-white px-4 text-[12px] font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
+                  className="inline-flex min-h-[36px] items-center rounded-[10px] border border-sand bg-surface-card px-4 text-[12px] font-semibold text-ink-body transition hover:bg-cream disabled:opacity-50"
                 >
                   {isHu ? "Elutasítom" : "Decline"}
                 </button>
@@ -109,7 +109,7 @@ export function ObserverApprovalCard({
             </div>
           ))}
         </div>
-        {error ? <p className="mt-2 text-[12px] font-semibold text-amber-700">{error}</p> : null}
+        {error ? <p className="mt-2 text-[12px] font-semibold text-state-warning-fg">{error}</p> : null}
       </DashboardPanel>
     </section>
   );

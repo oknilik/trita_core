@@ -85,19 +85,19 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
     <div className="mx-auto w-full max-w-lg">
       {/* Progress indicator */}
       <div className="mb-8 flex items-center gap-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-bold text-white">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sage text-sm font-bold text-[var(--color-action-primary-fg)]">
           {step === "name" ? "1" : "✓"}
         </div>
         <div className="h-0.5 flex-1 bg-sand">
           <div className={`h-full bg-sage transition-all ${step === "invite" ? "w-full" : "w-0"}`} />
         </div>
-        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-sage text-white" : "bg-sand text-ink-body"}`}>
+        <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${step === "invite" ? "bg-sage text-[var(--color-action-primary-fg)]" : "bg-sand text-ink-body"}`}>
           2
         </div>
       </div>
 
       {step === "name" && (
-        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
           <SectionEyebrow className="mb-1">
             {t("org.setup.step1Eyebrow", loc)}
           </SectionEyebrow>
@@ -116,7 +116,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               maxLength={100}
               required
             />
-            {error && <p className="text-xs text-rose-600">{error}</p>}
+            {error && <p className="text-xs text-state-error-fg">{error}</p>}
             <Button
               type="submit"
               disabled={!name.trim()}
@@ -130,7 +130,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
       )}
 
       {step === "invite" && (
-        <div className="rounded-2xl border border-sand bg-white p-8 shadow-sm">
+        <div className="rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
           <SectionEyebrow className="mb-1">
             {t("org.setup.step3Eyebrow", loc)}
           </SectionEyebrow>
@@ -155,7 +155,7 @@ export function OrgSetupWizard({ orgId, orgName, locale }: OrgSetupWizardProps) 
               />
             ))}
           </div>
-          {error && <p className="mb-3 text-xs text-rose-600">{error}</p>}
+          {error && <p className="mb-3 text-xs text-state-error-fg">{error}</p>}
           <div className="flex gap-3">
             <Button
               type="button"

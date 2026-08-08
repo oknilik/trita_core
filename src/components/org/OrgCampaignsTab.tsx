@@ -106,10 +106,10 @@ export function OrgCampaignsTab({
         <section>
           <Link
             href={`/org/${orgId}/campaigns/new`}
-            className="group block w-full rounded-2xl border-2 border-dashed border-sand bg-white p-8 text-center transition hover:border-sage/40 hover:bg-cream"
+            className="group block w-full rounded-2xl border-2 border-dashed border-sand bg-surface-card p-8 text-center transition hover:border-sage/40 hover:bg-cream"
           >
             <div className="flex flex-col items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cream text-bronze transition group-hover:bg-sage/10">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cream text-[var(--color-accent-primary-strong)] transition group-hover:bg-sage/10">
                 <svg
                   viewBox="0 0 16 16"
                   className="h-5 w-5"
@@ -130,7 +130,7 @@ export function OrgCampaignsTab({
                   {t("org.campaigns.newCtaDesc", loc)}
                 </p>
               </div>
-              <span className="text-xs font-semibold text-bronze">
+              <span className="text-xs font-semibold text-[var(--color-accent-primary-strong)]">
                 {t("org.campaigns.createLink", loc)}
               </span>
             </div>
@@ -152,7 +152,7 @@ export function OrgCampaignsTab({
               </span>
               <a
                 href={actionGateCopy.ctaHref}
-                className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-white px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+                className="inline-flex min-h-[44px] items-center rounded-lg border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
               >
                 {actionGateCopy.ctaLabel}
               </a>
@@ -171,7 +171,7 @@ export function OrgCampaignsTab({
             </SectionEyebrow>
             <div className="flex-1 border-t border-sand" />
           </div>
-          <div className="rounded-2xl border border-sand bg-white shadow-sm overflow-hidden">
+          <div className="rounded-2xl border border-sand bg-surface-card shadow-sm overflow-hidden">
             <div className="px-6 py-4 divide-y divide-transparent">
               {closedCampaigns.map((c) => (
                 <CampaignCard

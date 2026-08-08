@@ -1293,15 +1293,6 @@ export const resultsTranslations = {
       en: "A career compass is in the works for your profile: fitting areas, concrete roles and steps you can try. See what it would do — and tell us if it interests you.",
     },
     careerPlusCtaButton: { hu: "Megnézem, mit tudna", en: "See what it would do" },
-    // Magyarázó-link a Holland-kód értelmező oldalra (ExplainerLink).
-    hollandExplainerLabel: {
-      hu: "Mi az a Holland-kód?",
-      en: "What is the Holland code?",
-    },
-    hollandExplainerHint: {
-      hu: "A hat érdeklődés-típus érthetően, példa-szerepekkel — új lapon nyílik.",
-      en: "The six interest types explained, with example roles — opens in a new tab.",
-    },
     ccRiasecWhatIs: { hu: "Mit jelentenek a betűk?", en: "What do the letters mean?" },
     ccRiasecUserLabelMeasured: { hu: "Mért érdeklődés-kódod:", en: "Your measured interest code:" },
     ccRiasecTagsNote: {

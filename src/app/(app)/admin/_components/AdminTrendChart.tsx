@@ -208,7 +208,7 @@ export function AdminTrendChart({
       {/* Tooltip */}
       {hover !== null ? (
         <div
-          className="pointer-events-none absolute top-1 z-10 rounded-lg border border-sand bg-white px-3 py-2 shadow-md"
+          className="pointer-events-none absolute top-1 z-10 rounded-lg border border-sand bg-surface-card px-3 py-2 shadow-md"
           style={
             tooltipOnLeft
               ? { right: `${100 - (x(hover) / W) * 100 + 2}%` }

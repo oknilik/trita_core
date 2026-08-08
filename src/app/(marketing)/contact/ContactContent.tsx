@@ -15,7 +15,7 @@ export function ContactContent() {
         <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-8 bg-bronze" />
-            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("contact.eyebrow", locale)}
             </span>
           </div>
@@ -31,13 +31,13 @@ export function ContactContent() {
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <a
               href="#contact-form"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
             >
               {t("contact.heroCta", locale)}
             </a>
             <a
               href="mailto:hello@trita.io"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-white px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
+              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
             >
               hello@trita.io
             </a>
@@ -55,7 +55,7 @@ export function ContactContent() {
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
           {/* Left label */}
           <div>
-            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("contact.sectionEyebrow", locale)}
             </p>
             <h2 className="mt-3 max-w-[12ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
@@ -68,7 +68,7 @@ export function ContactContent() {
 
           {/* Right: form + cards */}
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_260px]">
-            <div className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_24px_60px_rgba(26,26,46,0.04)] md:p-8">
+            <div className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_24px_60px_rgba(26,26,46,0.04)] md:p-8">
               <ContactForm locale={locale} />
             </div>
 
@@ -99,7 +99,7 @@ export function ContactContent() {
 
 function MetaChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-white px-3 py-1.5 text-sm text-ink-body">
+    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-sm text-ink-body">
       {children}
     </span>
   );
@@ -117,8 +117,8 @@ function InfoCard({
   tone?: "default" | "warm";
 }) {
   return (
-    <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-white"}`}>
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-bronze/80">
+    <article className={`rounded-2xl border border-sand px-5 py-5 ${tone === "warm" ? "bg-warm" : "bg-surface-card"}`}>
+      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {number}
       </p>
       <h3 className="mt-2 font-fraunces text-xl leading-tight text-ink">{title}</h3>

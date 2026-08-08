@@ -32,7 +32,7 @@ export default async function EmailPreferencesPage() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
-      <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 md:p-10">
+      <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 md:p-10">
         <SectionEyebrow tone="muted">
           {t("results.emailPrefsEyebrow", locale)}
         </SectionEyebrow>

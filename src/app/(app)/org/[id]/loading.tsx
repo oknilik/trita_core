@@ -46,27 +46,27 @@ export default function OrgLoading() {
         <section className="animate-pulse">
           <div className="mb-5 h-3 w-36 rounded bg-sand/70" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="h-[126px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[126px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[126px] rounded-[24px] border border-sand bg-white" />
+            <div className="h-[126px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[126px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[126px] rounded-[24px] border border-sand bg-surface-card" />
           </div>
         </section>
 
         <section className="animate-pulse">
           <div className="mb-5 h-3 w-28 rounded bg-sand/70" />
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="h-[146px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[146px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[146px] rounded-[24px] border border-sand bg-white" />
-            <div className="h-[146px] rounded-[24px] border border-sand bg-white" />
+            <div className="h-[146px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[146px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[146px] rounded-[24px] border border-sand bg-surface-card" />
+            <div className="h-[146px] rounded-[24px] border border-sand bg-surface-card" />
           </div>
         </section>
 
         <section className="animate-pulse">
           <div className="mb-5 h-3 w-32 rounded bg-sand/70" />
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="h-[92px] rounded-2xl border border-sand bg-white" />
-            <div className="h-[92px] rounded-2xl border border-sand bg-white" />
+            <div className="h-[92px] rounded-2xl border border-sand bg-surface-card" />
+            <div className="h-[92px] rounded-2xl border border-sand bg-surface-card" />
           </div>
         </section>
 

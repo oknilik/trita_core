@@ -21,7 +21,7 @@ const TYPE_LABELS: Record<string, { hu: string; en: string }> = CAMPAIGN_STEP_LA
 
 const STATUS_CHIPS: Record<string, { hu: string; en: string; cls: string }> = {
   DRAFT: { hu: "Vázlat", en: "Draft", cls: "bg-sand text-ink-body" },
-  ACTIVE: { hu: "Aktív", en: "Active", cls: "bg-emerald-50 text-emerald-700" },
+  ACTIVE: { hu: "Aktív", en: "Active", cls: "bg-state-success-bg text-state-success-fg" },
   CLOSED: { hu: "Lezárt", en: "Closed", cls: "bg-cream text-muted border border-sand" },
 };
 

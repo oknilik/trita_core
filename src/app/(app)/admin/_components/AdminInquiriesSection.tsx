@@ -33,7 +33,7 @@ const TOPIC_LABELS: Record<string, string> = {
 };
 
 const STATUS_META: Record<string, { label: string; className: string }> = {
-  NEW: { label: "Új", className: "bg-amber-50 text-amber-700" },
+  NEW: { label: "Új", className: "bg-state-warning-bg text-state-warning-fg" },
   IN_PROGRESS: { label: "Folyamatban", className: "bg-sage/10 text-sage-dark" },
   CLOSED: { label: "Lezárva", className: "bg-cream text-muted" },
 };
@@ -75,7 +75,7 @@ export function AdminInquiriesSection({
 
   return (
     <div className="mt-8 flex flex-col gap-6">
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
         <SectionEyebrow>
           kérdések
         </SectionEyebrow>
@@ -90,7 +90,7 @@ export function AdminInquiriesSection({
         </p>
 
         {error && (
-          <p className="mt-3 rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p>
+          <p className="mt-3 rounded-lg bg-state-error-bg px-3 py-2 text-sm text-state-error-fg">{error}</p>
         )}
 
         {inquiries.length === 0 ? (
@@ -105,7 +105,7 @@ export function AdminInquiriesSection({
                 <div
                   key={row.id}
                   className={`rounded-xl border p-4 transition ${
-                    row.status === "NEW" ? "border-amber-200 bg-amber-50/40" : "border-sand bg-white"
+                    row.status === "NEW" ? "border-state-warning-border bg-state-warning-bg/40" : "border-sand bg-surface-card"
                   }`}
                 >
                   {/* Fejléc-sor */}
@@ -119,7 +119,7 @@ export function AdminInquiriesSection({
                     <span className="text-sm font-semibold text-ink">{row.name}</span>
                     <a
                       href={`mailto:${row.email}`}
-                      className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                      className="min-w-0 max-w-full break-all text-xs text-[var(--color-accent-primary-strong)] hover:underline"
                     >
                       {row.email}
                     </a>
@@ -171,7 +171,7 @@ export function AdminInquiriesSection({
                             void patch({ inquiryId: row.id, action: "link_org", organizationId: e.target.value });
                           }
                         }}
-                        className="rounded-lg border border-sand bg-white px-2 py-1 text-xs text-ink-body"
+                        className="rounded-lg border border-sand bg-surface-card px-2 py-1 text-xs text-ink-body"
                       >
                         <option value="">Org hozzákötése…</option>
                         {orgs.map((o) => (

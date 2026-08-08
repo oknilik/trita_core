@@ -66,12 +66,12 @@ export const commonTranslations = {
     blog: { hu: "Blog", en: "Blog" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
-    // A két fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
+    // A fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
     // hivatkozásokban élt — a láblécből minden oldalról linkelve viszont
-    // valódi belső linkerőt kapnak, és a crawler is minden bejáráskor látja
-    // őket. (A /patterns és a /holland-kod a keresésre való tartalmunk.)
+    // valódi belső linkerőt kap, és a crawler is minden bejáráskor látja.
+    // (A /holland-kod 2026-08-07-én kikerült: a karrier-réteg fagyasztva
+    // van, fake door mögött — nem hivatkozunk rá.)
     patterns: { hu: "Csapatmintázatok", en: "Team patterns" },
-    hollandCode: { hu: "Holland-kód (RIASEC)", en: "Holland code (RIASEC)" },
     navFounding: { hu: "Alapítói program", en: "Founding" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signUp: { hu: "Regisztráció", en: "Sign up" },

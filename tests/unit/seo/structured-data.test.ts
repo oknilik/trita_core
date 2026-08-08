@@ -142,7 +142,7 @@ test("a DefinedTermSet minden fogalmat a saját készletéhez köt", () => {
   const set = buildDefinedTermSetJsonLd({
     name: "RIASEC",
     description: "Leírás",
-    path: "/holland-kod",
+    path: "/patterns",
     terms: [{ name: "Megvalósító", description: "Leírás", termCode: "R" }],
   });
   const terms = set.hasDefinedTerm as { inDefinedTermSet: { "@id": string } }[];

@@ -29,7 +29,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
               loc === locale
-                ? "bg-[var(--color-action-primary-bg)] text-white"
+                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
                 : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:bg-[var(--color-border-default)]",
             ].join(" ")}
           >
@@ -65,7 +65,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         <span className="font-semibold uppercase tracking-wide">{locale.toUpperCase()}</span>
       </button>
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-white py-1 shadow-lg shadow-black/[0.04]">
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-36 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-surface-card py-1 shadow-lg shadow-black/[0.04]">
           {SUPPORTED_LOCALES.map((loc) => {
             const isActive = loc === locale;
             return (

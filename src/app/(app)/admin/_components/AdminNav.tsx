@@ -174,7 +174,9 @@ function Badge({ value, active }: { value: number; active: boolean }) {
   return (
     <span
       className={`ml-auto rounded-full px-1.5 py-0.5 text-micro font-semibold leading-none ${
-        active ? "bg-white text-bronze" : "bg-amber-100 text-amber-700"
+        // bronze-dark, nem bronze: a 10 px-es szám a kártyalapon 2,9:1-et
+        // adott, a mélyebb árnyalat 4,9:1-re hozza (mindkét színsémán).
+        active ? "bg-surface-card text-bronze-dark" : "bg-state-warning-bg text-state-warning-fg"
       }`}
     >
       {value}
@@ -201,7 +203,7 @@ export function AdminNav({
         aria-label="Admin navigáció"
         className="lg:hidden -mx-4 overflow-x-auto px-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       >
-        <div className="flex w-max gap-1.5 rounded-xl border border-sand bg-white p-1.5">
+        <div className="flex w-max gap-1.5 rounded-xl border border-sand bg-surface-card p-1.5">
           {flat.map((item) => {
             const isActive = active === item.id;
             return (
@@ -211,7 +213,7 @@ export function AdminNav({
                 aria-current={isActive ? "page" : undefined}
                 className={`flex min-h-[42px] snap-start items-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-sm font-semibold transition ${
                   isActive
-                    ? "bg-bronze text-white shadow-sm"
+                    ? "bg-bronze text-[var(--color-text-on-accent)] shadow-sm"
                     : "text-muted hover:bg-cream hover:text-ink"
                 }`}
               >
@@ -230,7 +232,7 @@ export function AdminNav({
         aria-label="Admin navigáció"
         className="hidden lg:block lg:sticky lg:top-20 lg:self-start"
       >
-        <div className="flex flex-col gap-4 rounded-2xl border border-sand bg-white p-3">
+        <div className="flex flex-col gap-4 rounded-2xl border border-sand bg-surface-card p-3">
           {groups.map((group, gi) => (
             <div key={group.label ?? gi}>
               {group.label ? (
@@ -248,7 +250,7 @@ export function AdminNav({
                       aria-current={isActive ? "page" : undefined}
                       className={`flex min-h-[40px] items-center gap-2.5 rounded-lg px-2.5 text-sm font-medium transition ${
                         isActive
-                          ? "bg-bronze text-white shadow-sm"
+                          ? "bg-bronze text-[var(--color-text-on-accent)] shadow-sm"
                           : "text-ink-body hover:bg-cream hover:text-ink"
                       }`}
                     >

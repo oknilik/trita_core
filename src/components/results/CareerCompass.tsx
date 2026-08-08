@@ -17,7 +17,6 @@ import {
 import { RIASEC_ITEMS, scoreRiasec } from "@/lib/questions/riasec";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { CareerResults } from "@/components/results/career/CareerResults";
-import { ExplainerLink } from "@/components/results/ExplainerLink";
 import { CareerGrowthPlan } from "@/components/results/career/CareerGrowthPlan";
 import { CurrentRolePicker } from "@/components/results/career/CurrentRolePicker";
 import type { CareerResultView } from "@/lib/career/service";
@@ -102,7 +101,7 @@ function OptionCard({
       className={`flex min-h-[64px] min-w-[150px] flex-1 items-center gap-3 rounded-xl border-2 px-4 py-3 text-left transition sm:min-w-[170px] ${
         active
           ? "border-sage bg-sage/10 shadow-sm"
-          : "border-[var(--color-border-soft)] bg-white hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
+          : "border-[var(--color-border-soft)] bg-surface-card hover:border-sage/40 hover:bg-[var(--color-surface-subtle)]"
       }`}
       style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
     >
@@ -166,7 +165,7 @@ function RiasecProfiler({
   ];
 
   return (
-    <div className="rounded-[12px] border border-sage/40 bg-white p-4">
+    <div className="rounded-[12px] border border-sage/40 bg-surface-card p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
           {tf("results.ccRiasecProgress", locale, {
@@ -204,8 +203,8 @@ function RiasecProfiler({
             aria-label={`${value}/5`}
             className={`flex h-11 flex-1 items-center justify-center rounded-xl border-2 text-sm font-semibold transition ${
               picked === value
-                ? "border-sage bg-sage text-white"
-                : "border-[var(--color-border-soft)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50"
+                ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+                : "border-[var(--color-border-soft)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50"
             }`}
             style={picked === value ? { animation: "cc-pop 0.25s ease-out" } : undefined}
           >
@@ -246,8 +245,8 @@ function Chip({
       onClick={onClick}
       className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition ${
         active
-          ? "border-sage bg-sage text-white"
-          : "border-[var(--color-border-default)] bg-white text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
+          ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+          : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
       }`}
       style={active ? { animation: "cc-pop 0.3s ease-out" } : undefined}
     >
@@ -579,7 +578,7 @@ export function CareerCompass({
           type="button"
           disabled={nextDisabled}
           onClick={() => goNext(from)}
-          className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:opacity-40"
+          className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-40"
         >
           {flow.indexOf(from) === flow.length - 1
             ? t("results.ccFinish", locale)
@@ -590,7 +589,7 @@ export function CareerCompass({
   );
 
   return (
-    <div className="rounded-[14px] border border-[var(--color-border-soft)] bg-white p-5">
+    <div className="rounded-[14px] border border-[var(--color-border-soft)] bg-surface-card p-5">
       {/* Forrás-badge */}
       <div className="mb-3 flex justify-end">
         <span className="rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-1 text-micro text-[var(--color-text-muted)]">
@@ -606,9 +605,9 @@ export function CareerCompass({
       {step === "intro" && (
         <div style={{ animation: "cc-step-in 0.35s ease-out both" }}>
           {/* Hero — mit ígér a modul és mit nem */}
-          <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-white to-[var(--color-surface-subtle)] p-5 sm:p-6">
+          <div className="overflow-hidden rounded-[16px] border border-sage/40 bg-gradient-to-br from-sage/12 via-[var(--color-surface-card)] to-[var(--color-surface-subtle)] p-5 sm:p-6">
             <span
-              className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl shadow-sm ring-1 ring-sage/30"
+              className="flex h-12 w-12 items-center justify-center rounded-full bg-surface-card text-2xl shadow-sm ring-1 ring-sage/30"
               aria-hidden
             >
               🧭
@@ -628,7 +627,7 @@ export function CareerCompass({
               ].map((chip) => (
                 <span
                   key={chip}
-                  className="rounded-full bg-white/80 px-2.5 py-1 text-micro font-medium text-[var(--color-text-muted)] ring-1 ring-[var(--color-border-soft)]"
+                  className="rounded-full bg-[var(--color-surface-card)]/80 px-2.5 py-1 text-micro font-medium text-[var(--color-text-muted)] ring-1 ring-[var(--color-border-soft)]"
                 >
                   {chip}
                 </span>
@@ -637,7 +636,7 @@ export function CareerCompass({
             {/* Opcionális érdeklődés-teszt (Holland-kód) — a pontosítás útja.
                 A magyarázó-link külön sávot kap: korábban egy aláhúzott szó
                 volt a bekezdés végén, és észrevétlen maradt. */}
-            <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-white/70 px-4 py-3">
+            <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-[var(--color-surface-card)]/70 px-4 py-3">
               <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
                 {hasMeasuredRiasec
                   ? t("results.ccIntroRiasecDone", locale)
@@ -645,12 +644,6 @@ export function CareerCompass({
                       count: RIASEC_ITEMS.length,
                     })}
               </p>
-              <ExplainerLink
-                className="mt-2.5"
-                label={t("results.hollandExplainerLabel", locale)}
-                hint={t("results.hollandExplainerHint", locale)}
-                href="/holland-kod"
-              />
             </div>
             {/* Profil nélkül a modul nem tud illeszkedést számolni, ezért a
                 belépő gomb a kitöltésre visz — nem külön üzenőképernyő, csak
@@ -659,7 +652,7 @@ export function CareerCompass({
               <button
                 type="button"
                 onClick={() => setStep("status")}
-                className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
                 {t("results.ccStart", locale)}
               </button>
@@ -667,7 +660,7 @@ export function CareerCompass({
               <div className="mt-5">
                 <Link
                   href="/assessment"
-                  className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                  className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                 >
                   {t("results.ccNeedsProfileCta", locale)}
                 </Link>
@@ -717,8 +710,8 @@ export function CareerCompass({
           </div>
 
           {/* Őszinte keretezés — a becslés határai előre, nem az eredmény után */}
-          <div className="mt-4 rounded-[12px] border border-amber-200 bg-amber-50/60 p-4">
-            <p className="text-caption font-semibold text-amber-900">
+          <div className="mt-4 rounded-[12px] border border-state-warning-border bg-state-warning-bg/60 p-4">
+            <p className="text-caption font-semibold text-accent-earth-strong">
               ⚖️ {t("results.ccIntroCaveatTitle", locale)}
             </p>
             <ul className="mt-2 flex flex-col gap-1.5">
@@ -730,7 +723,7 @@ export function CareerCompass({
               ].map((key) => (
                 <li
                   key={key}
-                  className="flex gap-2 text-[12px] leading-relaxed text-amber-900/85"
+                  className="flex gap-2 text-[12px] leading-relaxed text-accent-earth-strong/85"
                 >
                   <span aria-hidden>·</span>
                   <span>{t(key, locale)}</span>
@@ -977,8 +970,8 @@ export function CareerCompass({
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white shadow-sm"
-                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
+                      ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
+                      : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
@@ -1014,8 +1007,8 @@ export function CareerCompass({
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
                   className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
                     value === v
-                      ? "bg-sage text-white shadow-sm"
-                      : "text-[var(--color-text-secondary)] hover:bg-white hover:text-[var(--color-text-primary)]"
+                      ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
+                      : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
                   }`}
                   style={value === v ? { animation: "cc-pop 0.3s ease-out" } : undefined}
                 >
@@ -1079,12 +1072,12 @@ export function CareerCompass({
             </p>
           )}
           {fitState === "error" && (
-            <div className="rounded-[12px] border border-rose-200 bg-rose-50/60 p-4">
-              <p className="text-caption text-rose-800">{t("results.cfError", locale)}</p>
+            <div className="rounded-[12px] border border-state-error-border bg-state-error-bg/60 p-4">
+              <p className="text-caption text-text-error-strong">{t("results.cfError", locale)}</p>
               <button
                 type="button"
                 onClick={() => fetchFit(background, prefs, leadIntent)}
-                className="mt-2 rounded-lg border border-rose-300 bg-white px-3 py-1.5 text-[12px] font-semibold text-rose-700"
+                className="mt-2 rounded-lg border border-state-error-border bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-state-error-fg"
               >
                 {t("results.cfRetry", locale)}
               </button>
@@ -1135,7 +1128,7 @@ export function CareerCompass({
                         <button
                           type="button"
                           onClick={() => setProfilerOpen(true)}
-                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-white transition hover:bg-sage-dark"
+                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                         >
                           {t("results.ccRiasecCtaBtn", locale)}
                         </button>
@@ -1152,7 +1145,7 @@ export function CareerCompass({
                       <button
                         type="button"
                         onClick={onRequestObserver}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-white px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-surface-card px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10"
                       >
                         {t("results.ccObserverRefineCta", locale)}
                       </button>
@@ -1186,7 +1179,7 @@ export function CareerCompass({
           {/* Hiányzó szakma */}
           <div className="mt-5 border-t border-[var(--color-border-soft)] pt-3">
             {missingState === "sent" ? (
-              <p className="text-[12px] text-emerald-700">
+              <p className="text-[12px] text-state-success-fg">
                 {t("results.industryFitMissingThanks", locale)}
               </p>
             ) : (
@@ -1201,13 +1194,13 @@ export function CareerCompass({
                   onChange={(e) => setMissingText(e.target.value)}
                   maxLength={200}
                   placeholder={t("results.industryFitMissingPlaceholder", locale)}
-                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-white px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
+                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
                 />
                 <button
                   type="button"
                   disabled={missingState === "busy" || !missingText.trim()}
                   onClick={sendMissing}
-                  className="min-h-[36px] rounded-lg border border-sage/50 bg-white px-3.5 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
+                  className="min-h-[36px] rounded-lg border border-sage/50 bg-surface-card px-3.5 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
                 >
                   {t("results.industryFitMissingSend", locale)}
                 </button>

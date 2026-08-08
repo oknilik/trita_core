@@ -7,6 +7,7 @@ import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   buildWorkspaceNavigation,
   resolveWorkspaceNavRole,
@@ -384,7 +385,7 @@ function NavHeaderContent({
   // logó + „Vissza a vezérlőre" link.
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
         <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5 lg:px-8">
           <Link
             href={homeHref}
@@ -476,14 +477,14 @@ function NavHeaderContent({
         className="absolute right-0 top-[calc(100%+6px)] z-50 w-[280px] overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] p-1.5 shadow-lg shadow-black/[0.04]"
         style={{ animation: "fade-in 150ms ease-out" }}
       >
-        <div className="rounded-xl bg-white/80 px-3.5 py-3">
+        <div className="rounded-xl bg-[var(--color-surface-card)]/80 px-3.5 py-3">
           <p className="truncate text-caption font-semibold text-[var(--color-text-primary)]">
             {displayName ?? "Saját profil"}
           </p>
           <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
         </div>
 
-        <div className="mt-1 rounded-xl bg-white px-2 py-2">
+        <div className="mt-1 rounded-xl bg-surface-card px-2 py-2">
           {showProfileMenuItem ? (
             <>
               <Link
@@ -609,6 +610,13 @@ function NavHeaderContent({
             </div>
           ) : null}
 
+          <div className="mt-1 rounded-lg px-2.5 py-2.5">
+            <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+              {t("theme.label", locale)}
+            </p>
+            <ThemeToggle />
+          </div>
+
           {showSignOutMenuItem ? (
             <div className="mt-1 border-t border-[var(--color-border-soft)] pt-1">
               <button
@@ -637,7 +645,7 @@ function NavHeaderContent({
     <>
       {openDropdown && <div className="fixed inset-0 z-30" onClick={closeAll} />}
 
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[rgba(250,249,246,0.95)] shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
         <div className="mx-auto grid h-14 max-w-6xl grid-cols-[auto_1fr_auto] items-center px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8">
           <Link
             href={homeHref}
@@ -652,7 +660,7 @@ function NavHeaderContent({
               const isActive = isNavItemActive(item);
               const itemClass =
                 item.id === "home"
-                  ? `${isActive ? "rounded-lg bg-[var(--color-text-primary)] text-white px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
+                  ? `${isActive ? "rounded-lg bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
                   : isActive || openDropdown === item.id
                     ? navItemActive
                     : navItemInactive;
@@ -672,7 +680,7 @@ function NavHeaderContent({
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                       {item.badge ? (
-                        <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
+                        <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
                           {item.badge}
                         </span>
                       ) : null}
@@ -688,7 +696,7 @@ function NavHeaderContent({
                         {getItemIcon(item.id, "h-3.5 w-3.5")}
                         {item.label}
                         {item.badge ? (
-                          <span className="ml-0.5 rounded-full bg-[var(--color-text-primary)] px-1.5 py-[1px] font-mono text-micro text-white">
+                          <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
                             {item.badge}
                           </span>
                         ) : null}
@@ -741,7 +749,7 @@ function NavHeaderContent({
                 type="button"
                 onClick={() => toggle("user")}
                 data-testid="nav-user-menu-trigger"
-                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-white py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
+                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
               >
                 {showIdentityLoader ? (
                   <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
@@ -808,7 +816,7 @@ function NavHeaderContent({
                   <Link
                     href={homeDestination}
                     onClick={() => setMobileMenu("closed")}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-text-primary)] px-4 py-2 text-caption font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-surface-inverse)] px-4 py-2 text-caption font-medium text-[var(--color-text-on-inverse)]"
                   >
                     <GridIcon className="h-3.5 w-3.5" />
                     {homeLabel}
@@ -827,7 +835,7 @@ function NavHeaderContent({
 
                 <div className="mx-4 mt-3 flex items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3">
                   {showIdentityLoader ? (
-                    <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-white/70" />
+                    <div className="h-10 w-10 shrink-0 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
                   ) : (
                     <div
                       className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[var(--color-border-soft)] text-body font-medium text-white"
@@ -838,8 +846,8 @@ function NavHeaderContent({
                   )}
                   {showIdentityLoader ? (
                     <div className="space-y-1.5">
-                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-white/70" />
-                      <div className="h-2 w-14 animate-pulse rounded-full bg-white/70" />
+                      <div className="h-2.5 w-24 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
+                      <div className="h-2 w-14 animate-pulse rounded-full bg-[var(--color-surface-card)]/70" />
                     </div>
                   ) : (
                     <div>
@@ -1009,7 +1017,7 @@ function NavHeaderContent({
                             signOut({ redirectUrl: "/" });
                             setMobileMenu("closed");
                           }}
-                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-white text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                         >
                           Kijelentkezés
                         </button>
@@ -1024,6 +1032,13 @@ function NavHeaderContent({
                         <LanguageSwitcher variant="pills" />
                       </div>
                     ) : null}
+
+                    <div className="rounded-lg px-3 py-3">
+                      <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+                        {t("theme.label", locale)}
+                      </p>
+                      <ThemeToggle />
+                    </div>
                   </div>
                 ) : null}
         </>

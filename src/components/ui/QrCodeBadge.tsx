@@ -44,6 +44,10 @@ export function QrCodeBadge({ value, alt, hint, onError, className }: QrCodeBadg
     QRCode.toDataURL(url, {
       width: 240,
       margin: 1,
+      // SZÁNDÉKOSAN nem témázott: a QR mindig sötét modul / világos alap.
+      // Az invertált (világos modul sötét alapon) QR-t a szkennerek jelentős
+      // része nem olvassa — a sötét mód kedvéért nem kockáztatjuk a
+      // működését. A kód a saját világos lapján ül a sötét felületen is.
       color: { dark: COLORS.ink, light: COLORS.cream },
     })
       .then((result) => {
@@ -72,7 +76,7 @@ export function QrCodeBadge({ value, alt, hint, onError, className }: QrCodeBadg
         width={240}
         height={240}
         unoptimized
-        className="h-[200px] w-[200px] rounded-lg border border-sand bg-white p-2"
+        className="h-[200px] w-[200px] rounded-lg border border-sand bg-surface-card p-2"
       />
       {hint ? <p className="max-w-sm text-center text-micro text-muted">{hint}</p> : null}
     </div>

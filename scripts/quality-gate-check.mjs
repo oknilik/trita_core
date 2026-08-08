@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { isPresentationOnlyChange } from "./lib/presentation-diff.mjs";
 
 const TEST_FILE_RE = /\.(?:test|spec)\.(?:ts|tsx)$/;
 
@@ -111,6 +113,42 @@ function isProtectedModuleFile(filePath) {
   );
 }
 
+/** Egy blob tartalma, vagy null (nem létezik az adott revízióban). */
+function readBlob(rev, filePath) {
+  try {
+    if (rev === null) return readFileSync(filePath, "utf8");
+    return execFileSync("git", ["show", `${rev}:${filePath}`], {
+      encoding: "utf8",
+      maxBuffer: 32 * 1024 * 1024,
+    });
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * PREZENTÁCIÓS KIVÉTEL. A „védett modul → kötelező teszt" szabály
+ * VISELKEDÉS-változásra való. Egy design-token migráció viszont csak
+ * className-eket ír át; olyan integrációs tesztet követelni, aminek nincs
+ * mit lefednie, kimódolt tesztet szül — az rosszabb, mint a hiánya.
+ *
+ * Ezért kiesik a listából az a védett fájl, amelyben KIZÁRÓLAG a
+ * className-attribútumok értéke változott. Bármi más (logika, prop, inline
+ * style, szöveg) esetén a követelmény marad. Bizonytalan elemzésnél is:
+ * a `isPresentationOnlyChange` alapértelmezése a szigorúbb válasz.
+ */
+function partitionPresentationOnly(protectedFiles, baseRev, headRev) {
+  const behavioural = [];
+  const presentational = [];
+  for (const filePath of protectedFiles) {
+    const before = readBlob(baseRev, filePath);
+    const after = readBlob(headRev, filePath);
+    if (isPresentationOnlyChange(filePath, before, after)) presentational.push(filePath);
+    else behavioural.push(filePath);
+  }
+  return { behavioural, presentational };
+}
+
 function listTouchedProtectedModules(files) {
   return Object.entries(PROTECTED_MODULE_PATTERNS)
     .filter(([, patterns]) => files.some((file) => patterns.some((pattern) => pattern.test(file))))
@@ -137,8 +175,14 @@ function main() {
     process.exit(0);
   }
 
-  const protectedModuleFiles = changedFiles.filter(isProtectedModuleFile);
-  const touchedModules = listTouchedProtectedModules(changedFiles);
+  // A prezentációs (csak-className) módosítások nem számítanak védett
+  // változásnak — ld. partitionPresentationOnly.
+  const staged = hasFlag("--staged");
+  const baseRev = readArg("--base") ?? (staged ? "HEAD" : "HEAD~1");
+  const headRev = staged ? null : (readArg("--head") ?? "HEAD");
+  const { behavioural: protectedModuleFiles, presentational: presentationOnlyFiles } =
+    partitionPresentationOnly(changedFiles.filter(isProtectedModuleFile), baseRev, headRev);
+  const touchedModules = listTouchedProtectedModules(protectedModuleFiles);
   const criticalFlowChanged = changedFiles.some(isCriticalFlowChange);
 
   const hasUnit = hasTestChange(changedFiles, "tests/unit/");
@@ -172,6 +216,12 @@ function main() {
     console.log(`Touched protected modules: ${touchedModules.join(", ")}`);
   } else {
     console.log("Touched protected modules: none");
+  }
+  if (presentationOnlyFiles.length > 0) {
+    console.log(
+      `Presentation-only protected files (className-változás, teszt nem kötelező): ${presentationOnlyFiles.length}`,
+    );
+    for (const file of presentationOnlyFiles) console.log(`  - ${file}`);
   }
   console.log(`Critical flow changed: ${criticalFlowChanged ? "yes" : "no"}`);
   console.log(`Unit test changes: ${hasUnit ? "yes" : "no"}`);

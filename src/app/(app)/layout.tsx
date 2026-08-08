@@ -41,7 +41,10 @@ export const metadata: Metadata = {
 export default async function AppLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const [{ userId }, locale] = await Promise.all([getServerAuth(), getServerLocale()]);
+  const [{ userId }, locale] = await Promise.all([
+    getServerAuth(),
+    getServerLocale(),
+  ]);
   const { navData, signedInHomeHref, signedInExperienceHints, helpAudience } =
     await resolveWorkspaceNavContext(userId, locale);
 
@@ -54,31 +57,41 @@ export default async function AppLayout({
       signInFallbackRedirectUrl={JOURNEY_HOME_HANDOFF_PATH}
       signUpFallbackRedirectUrl="/onboarding"
     >
-      <ServerAuthStateProvider
-        isSignedIn={Boolean(userId)}
-        username={navData?.user?.username ?? null}
-        email={navData?.user?.email ?? null}
-      >
-        {userId && navData ? (
-          <>
-            <NavHeaderUI {...navData} />
-            <div>{children}</div>
-            <Footer />
-          </>
-        ) : (
-          <Suspense>
-            <NavBar
-              signedInHomeHref={signedInHomeHref}
-              signedInExperienceHints={signedInExperienceHints}
-            />
-            <div>{children}</div>
-            <Footer />
-          </Suspense>
-        )}
-        <Suspense>
-          <HelpWidget audience={helpAudience} />
-        </Suspense>
-      </ServerAuthStateProvider>
+      {/* A sötét mód HATÓKÖRE ez az elem (globals.css:
+          `[data-theme="dark"] .theme-scope`). A marketing-fa a saját
+          layoutjában kapja meg ugyanezt — a két fa nem oszt közös wrappert. */}
+      <div className="theme-scope">
+          <ServerAuthStateProvider
+            isSignedIn={Boolean(userId)}
+            username={navData?.user?.username ?? null}
+            email={navData?.user?.email ?? null}
+          >
+            {userId && navData ? (
+              <>
+                <NavHeaderUI {...navData} />
+                <div>{children}</div>
+                <Footer />
+              </>
+            ) : (
+              <Suspense>
+                <NavBar
+                  signedInHomeHref={signedInHomeHref}
+                  signedInExperienceHints={signedInExperienceHints}
+                  // Ez az ág a `.theme-scope`-on BELÜL van (publikus
+                  // app-oldalak: /try, /observe, /join, /share), tehát a sötét
+                  // mód itt hat — a választó kell. A marketing-fa NavBarja
+                  // nem kapja meg.
+                  showThemeToggle
+                />
+                <div>{children}</div>
+                <Footer />
+              </Suspense>
+            )}
+            <Suspense>
+              <HelpWidget audience={helpAudience} />
+            </Suspense>
+          </ServerAuthStateProvider>
+      </div>
     </ClerkProvider>
   );
 }

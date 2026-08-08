@@ -1,4 +1,3 @@
-import { EVAL_RAMP } from "@/lib/color-system";
 // src/lib/pattern-data.ts
 // Single source of truth for the 16 team operating patterns.
 // Used by: PatternExplorer (public /patterns page) + team-pattern engine.
@@ -74,6 +73,21 @@ export interface PatternContent {
   risks: string[];
   people: string;     // "Kik érzik itt jól magukat?"
   contexts: string;   // "Hol jelenik meg ez a működés?"
+  /**
+   * A mintázat saját akcent-színe — `light-dark(világos, sötét)` párként.
+   *
+   * MIÉRT NEM design-token: ez ADAT, nem szerep. 15 mintázatnak 15 hue-ja
+   * van; ha mindegyik tokenpárt kapna, a globals.css 30 sorral nőne olyan
+   * értékekkel, amiket egyetlen marketing-lap használ.
+   *
+   * MIÉRT `light-dark()` és nem CSS-változó: az érték a DOM-ba inline
+   * stílusként kerül, a `light-dark()` pedig a `color-scheme`-ből dolgozik
+   * — azt a `.theme-scope` már beállítja (globals.css). Így a színséma-
+   * váltás komponens-módosítás nélkül működik.
+   *
+   * A sötét párokat kontrasztra hangoltuk: mindegyik ≥ 4,6:1 a sötét
+   * paper-lapon (--color-paper-elevated), a hue és a telítettség marad.
+   */
   color: string;
 }
 
@@ -100,7 +114,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Innovációs deficit", "Változás-ellenállás", "Elfojtott feszültségek", "Lassú adaptáció"],
     people: "Megbízható, lojális, feladatorientált emberek, akik szeretik a tiszta struktúrát.",
     contexts: "Üzemeltetés, ügyfélkiszolgálás, projektmenedzsment, compliance csapatok",
-    color: "#b5651d",
+    color: "light-dark(#b5651d, #cc7221)",
   },
   "1101": {
     name: "Szabadon Alkotó Közösség",
@@ -111,7 +125,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Kaotikus végrehajtás", "Priorizálási nehézség", "Határidő-lazaság", "Nehéz visszajelzés"],
     people: "Kreatív, empatikus, nyitott emberek, akik a közösséget és a szabadságot keresik.",
     contexts: "Design, márkastratégia, tartalomkészítés, UX-kutatás, kreatív ügynökségek",
-    color: "#d4763a",
+    color: "light-dark(#d4763a, #d4763a)",
   },
   "1100": {
     name: "Lojális Magcsapat",
@@ -122,7 +136,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Nehéz változtatni", "Rövidtávú gondolkodás", "Zárt közösség", "Tervezetlenség"],
     people: "Lojális, gyakorlatias, kapcsolatorientált emberek.",
     contexts: "Sales, ügyfélmenedzsment, családi cégek, helyi szolgáltatók",
-    color: "#c9915e",
+    color: "light-dark(#c9915e, #c9915e)",
   },
   "1011": {
     name: "Teljesítményhajtott Innovátorok",
@@ -133,7 +147,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Együttműködés hiánya", "Magas stressz", "Nyertes–vesztes dinamika", "Egyéni > csapatcél"],
     people: "Ambiciózus, versenyző, innovatív egyéniségek, akik keretet is szeretnek.",
     contexts: "Fintech, stratégiai tanácsadás, versenysport-háttér csapatok",
-    color: "#8b3a2a",
+    color: "light-dark(#8b3a2a, #cd6e5b)",
   },
   "1010": {
     name: "Fegyelmezett Operatív Csapat",
@@ -144,7 +158,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Alacsony pszichológiai biztonság", "Elfojtott ötletek", "Rövid távú fókusz", "Magas fluktuáció"],
     people: "Fegyelmezett, célratörő, nyomásálló emberek.",
     contexts: "Turnaround, válságkezelés, logisztika, operatív vezetés",
-    color: "#6b4226",
+    color: "light-dark(#6b4226, #be7848)",
   },
   "1001": {
     name: "Nagy Energiájú Kreatív Minta",
@@ -155,7 +169,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Lehetetlen priorizálni", "Kaotikus végrehajtás", "Egyéni ambíciók dominálnak", "Döntések nem tartanak"],
     people: "Energikus, versenyző, kreatív nonkonformisták.",
     contexts: "Hackathon, startup ötletfázis, reklámügynökségek, produkció",
-    color: "#a63d1f",
+    color: "light-dark(#a63d1f, #dc6644)",
   },
   "1000": {
     name: "Autonóm Operatív Háló",
@@ -166,7 +180,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Gyenge csapatidentitás", "Nulla tudásmegosztás", "Alacsony lojalitás", "Nehéz onboarding"],
     people: "Önálló, pragmatikus, versenyző típusok.",
     contexts: "Ingatlan, biztosítás, freelancer-hálózatok, üzletfejlesztés",
-    color: "#7a4b2e",
+    color: "light-dark(#7a4b2e, #bd794f)",
   },
   "0111": {
     name: "Felfedező Labor",
@@ -177,7 +191,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Lassú döntéshozatal", "Kifelé láthatatlan", "Konfrontáció-kerülés", "Passzivitás látszata"],
     people: "Introvertált, kíváncsi, alapos, együttműködő kutatói típusok.",
     contexts: "R&D, akadémia, adatelemzés, minőségbiztosítás, farmakológia",
-    color: "#3d6b5e", // sage — a korábbi közeli-de-más zöld a brand-zsályába olvadt
+    color: "light-dark(#3d6b5e, #559482)", // sage — a korábbi közeli-de-más zöld a brand-zsályába olvadt
   },
   "0110": {
     name: "Stabil Magcsapat",
@@ -188,7 +202,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Változás-ellenállás", "Láthatatlanság", "Zárt közösség", "Innováció hiánya"],
     people: "Csendes, megbízható, lojális, strukturált gondolkodású emberek.",
     contexts: "Könyvelés, IT üzemeltetés, back-office, közigazgatás",
-    color: "#4a7c5e",
+    color: "light-dark(#4a7c5e, #599571)",
   },
   "0101": {
     name: "Alkotó Közeg",
@@ -199,7 +213,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Külvilággal nehéz kommunikáció", "Lassú végrehajtás", "Harmónia > eredmény", "Külső nyomás kezelése"],
     people: "Introvertált kreativitás, mély gondolkodók, értékvezérelt alkotók.",
     contexts: "UX-kutatás, stratégiai tervezés, tartalomkészítés, indie játékfejlesztés",
-    color: "#3a8066",
+    color: "light-dark(#3a8066, #45997a)",
   },
   "0100": {
     name: "Támogató Közeg",
@@ -210,7 +224,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Alacsony ambíció", "Nehéz döntések kerülése", "Láthatatlanság", "Konzervativizmus"],
     people: "Empatikus, gyakorlatias, támogató csapatjátékosok.",
     contexts: "HR, szociális munka, ügyfélszolgálat, egészségügy, mentoring",
-    color: "#6b9b7d",
+    color: "light-dark(#6b9b7d, #6b9b7d)",
   },
   "0011": {
     name: "Stratégiai Szakértői Csapat",
@@ -221,7 +235,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Silók", "Rejtett rivalizálás", "Nehéz közös döntés", "Kívülről hideg"],
     people: "Analitikus, versenyszellemű, mély szakértők.",
     contexts: "Data science, jog, pénzügyi elemzés, mérnöki tervezés, stratégia",
-    color: "#3d4f6b",
+    color: "light-dark(#3d4f6b, #748bb0)",
   },
   "0010": {
     name: "Precíz Szakmai Műhely",
@@ -232,7 +246,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Alacsony érzelmi kapcsolódás", "Kiégés veszélye", "Újítás nehezen kap teret", "Inkább egyéni hozzájárulók"],
     people: "Precíz, önálló, technikai beállítottságú szakemberek.",
     contexts: "Szoftverfejlesztés, audit, pénzügy, DevOps, mérnöki irodák",
-    color: "#556b8a",
+    color: "light-dark(#556b8a, #748baa)",
   },
   "0001": {
     name: "Autonóm Felfedezők",
@@ -243,7 +257,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Nincs csapatidentitás", "Minimális koordináció", "Izoláció", "Nehéz közös irány"],
     people: "Autonóm, kíváncsi, nonkonformista gondolkodók.",
     contexts: "Kutatás, korai innováció, művészet, filozófia, indie fejlesztés",
-    color: "#4a6b7a",
+    color: "light-dark(#4a6b7a, #6790a3)",
   },
   "0000": {
     name: "Erősen Független Egyéni Minta",
@@ -254,7 +268,7 @@ export const PATTERNS: Record<string, PatternContent> = {
     risks: ["Csapat nem létezik", "Nulla tudásmegosztás", "Alacsony lojalitás", "Visszajelzésre nem reagálnak"],
     people: "Önálló, pragmatikus, tranzakció-orientált egyének.",
     contexts: "Freelancer poolok, értékesítési hálózatok, befektetési csapatok",
-    color: "#6b6b6b",
+    color: "light-dark(#6b6b6b, #898989)",
   },
 };
 
@@ -310,13 +324,18 @@ export function getMatchLabel(distance: number): {
   color: string;
   bg: string;
 } {
-  // Verdict-trió az értékelő rampon (color-system EVAL_RAMP): a sage-közeli
-  // sage-közeli zöld a zsálya-családba olvadt, a neutrális fok a meleg muted.
+  // Verdict-trió az értékelő rampon: a sage-közeli zöld a zsálya-családba
+  // olvadt, a neutrális fok a meleg muted.
+  //
+  // CSS-VÁLTOZÓ, nem az EVAL_RAMP literálja: ez az érték kizárólag a DOM-ba
+  // megy (inline style a mintázat-lapon), tehát követnie kell a színsémát —
+  // a literál bronz (#8a5530) sötét lapon 2,4:1-et adott. A fix médiumok
+  // (PDF/OG) továbbra is az EVAL_RAMP literáljából dolgoznak.
   if (distance < 0.25)
-    return { label: "Jól kirajzolódó minta", color: EVAL_RAMP.high.fg, bg: "rgba(61,107,94,0.08)" };
+    return { label: "Jól kirajzolódó minta", color: "var(--color-eval-high-fg)", bg: "rgba(61,107,94,0.08)" };
   if (distance < 0.45)
-    return { label: "Vegyes mintázat", color: EVAL_RAMP.mid.fg, bg: "rgba(193,127,74,0.08)" };
-  return { label: "Átmeneti működés", color: EVAL_RAMP.low.fg, bg: "rgba(110,110,128,0.08)" };
+    return { label: "Vegyes mintázat", color: "var(--color-eval-mid-fg)", bg: "rgba(193,127,74,0.08)" };
+  return { label: "Átmeneti működés", color: "var(--color-eval-low-fg)", bg: "rgba(110,110,128,0.08)" };
 }
 
 /** A value (0–1) is "balanced" when it falls in the 35–65% zone. */

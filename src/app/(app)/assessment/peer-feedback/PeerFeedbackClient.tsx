@@ -226,14 +226,14 @@ export function PeerFeedbackClient({
   if (done || teammates.length === 0) {
     return (
       <div className="flex min-h-dvh items-center justify-center px-4">
-        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
           <h1 className="font-fraunces text-2xl text-ink">{t("peerFb.doneTitle", locale)}</h1>
           <p className="mt-3 text-sm leading-relaxed text-ink-body">
             {t("peerFb.doneBody", locale)}
           </p>
           <Link
             href="/dashboard"
-            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-white transition hover:brightness-110"
+            className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {t("peerFb.backToDashboard", locale)}
           </Link>
@@ -252,7 +252,7 @@ export function PeerFeedbackClient({
 
   const textareaClass = (missing: boolean) =>
     [
-      "w-full rounded-lg border bg-white p-3 text-sm text-ink outline-none focus:border-sage-ring",
+      "w-full rounded-lg border bg-surface-card p-3 text-sm text-ink outline-none focus:border-sage-ring",
       attempted && missing
         ? "border-[var(--color-state-error-fg)]/60"
         : "border-sand",
@@ -260,7 +260,7 @@ export function PeerFeedbackClient({
 
   return (
     <div className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
-      <p className="font-mono text-xs uppercase tracking-widest text-bronze">
+      <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {campaignName}
       </p>
       <h1 className="mt-1 font-fraunces text-2xl text-ink md:text-3xl">
@@ -327,7 +327,7 @@ export function PeerFeedbackClient({
                   // a sor magassága nem nő.
                   "relative h-2 rounded-full transition-all duration-200",
                   "before:absolute before:-inset-x-1.5 before:-inset-y-[18px] before:content-['']",
-                  isCurrent ? "w-5 bg-ink" : isDone ? "w-2 bg-sage" : "w-2 bg-sand",
+                  isCurrent ? "w-5 bg-[var(--color-surface-inverse)]" : isDone ? "w-2 bg-sage" : "w-2 bg-sand",
                 ].join(" ")}
               />
             );
@@ -339,7 +339,7 @@ export function PeerFeedbackClient({
       <section
         ref={cardRef}
         key={current.userId}
-        className="mt-5 scroll-mt-36 rounded-2xl border border-sand bg-white p-5 shadow-sm"
+        className="mt-5 scroll-mt-36 rounded-2xl border border-sand bg-surface-card p-5 shadow-sm"
       >
         <div className="mb-3 flex items-center justify-between gap-2">
           <h2 className="min-w-0 truncate text-body font-semibold text-ink" title={current.name}>

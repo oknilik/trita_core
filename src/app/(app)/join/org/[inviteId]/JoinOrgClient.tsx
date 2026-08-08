@@ -190,7 +190,7 @@ export function JoinOrgClient({
                   placeholder={copy.usernamePlaceholder}
                   maxLength={20}
                   error={errors.username}
-                  errorClassName="pl-1 text-xs text-bronze"
+                  errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                   autoFocus
                 />
 
@@ -213,7 +213,7 @@ export function JoinOrgClient({
                     ))}
                   </div>
                   {errors.gender && (
-                    <span className="pl-1 text-xs text-bronze">{errors.gender}</span>
+                    <span className="pl-1 text-xs text-[var(--color-accent-primary-strong)]">{errors.gender}</span>
                   )}
                 </div>
 
@@ -231,7 +231,7 @@ export function JoinOrgClient({
                   }}
                   placeholder={copy.birthYearPlaceholder}
                   error={errors.birthYear}
-                  errorClassName="pl-1 text-xs text-bronze"
+                  errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                   helpText={errors.birthYear ? undefined : copy.birthYearHint}
                   helpTextClassName="pl-1 text-xs text-muted"
                   inputClassName="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -257,7 +257,7 @@ export function JoinOrgClient({
                       href="/privacy"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-bronze underline hover:text-bronze-dark"
+                      className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                     >
                       {copy.privacyLabel}
                     </a>{" "}
@@ -265,7 +265,7 @@ export function JoinOrgClient({
                   </span>
                 </label>
                 {errors.consent && (
-                  <span className="-mt-4 pl-8 text-xs text-bronze">{errors.consent}</span>
+                  <span className="-mt-4 pl-8 text-xs text-[var(--color-accent-primary-strong)]">{errors.consent}</span>
                 )}
               </>
             ) : (
@@ -284,7 +284,7 @@ export function JoinOrgClient({
             )}
 
             {errors.submit && (
-              <p className="text-center text-sm text-red-600">{errors.submit}</p>
+              <p className="text-center text-sm text-state-error-fg">{errors.submit}</p>
             )}
 
             {/* Submit */}
@@ -292,7 +292,7 @@ export function JoinOrgClient({
               type="button"
               onClick={requiresProfileOnboarding ? handleSubmitWithProfile : handleSubmitExisting}
               disabled={isSubmitting}
-              className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted"
+              className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:cursor-not-allowed disabled:bg-sand disabled:text-muted"
             >
               {isSubmitting
                 ? copy.submitting

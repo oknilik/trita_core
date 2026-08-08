@@ -111,7 +111,7 @@ export function TeamRoleQuestionnaire({
 
   if (showIntro) {
     return (
-      <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-white p-6 md:p-10">
+      <div className="flex flex-col gap-6 rounded-2xl border border-sand bg-surface-card p-6 md:p-10">
         <SectionEyebrow>
           {t("teamRole.eyebrow", resolvedLocale)}
         </SectionEyebrow>
@@ -134,7 +134,7 @@ export function TeamRoleQuestionnaire({
           <button
             type="button"
             onClick={() => setShowIntro(false)}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark"
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
             {t("teamRole.start", resolvedLocale)}
           </button>
@@ -142,7 +142,7 @@ export function TeamRoleQuestionnaire({
             <button
               type="button"
               onClick={onSkip}
-              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+              className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sand px-5 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
             >
               {t("teamRole.skip", resolvedLocale)}
             </button>
@@ -158,7 +158,7 @@ export function TeamRoleQuestionnaire({
       : orderedItems.filter((item) => selected.has(item.id));
 
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-white p-6 md:p-10">
+    <div className="flex flex-col gap-5 rounded-2xl border border-sand bg-surface-card p-6 md:p-10">
       {/* Fejléc + állapot */}
       <div>
         <SectionEyebrow>
@@ -192,7 +192,7 @@ export function TeamRoleQuestionnaire({
       <div
         className={`inline-flex w-fit items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold ${
           (phase === "select" ? selectValid : highlightValid)
-            ? "bg-emerald-50 text-emerald-700"
+            ? "bg-state-success-bg text-state-success-fg"
             : "bg-cream text-ink-body"
         }`}
       >
@@ -226,11 +226,11 @@ export function TeamRoleQuestionnaire({
                   ? "border-bronze bg-bronze/10 font-semibold text-ink"
                   : active
                     ? "border-sage bg-sage/10 font-medium text-ink"
-                    : "border-sand bg-white text-ink-body hover:border-sage/40"
+                    : "border-sand bg-surface-card text-ink-body hover:border-sage/40"
               }`}
             >
               {phase === "highlight" && (
-                <span className="mr-1.5 font-mono text-[11px] text-bronze">
+                <span className="mr-1.5 font-mono text-[11px] text-[var(--color-accent-primary-strong)]">
                   {isTop ? "★" : "☆"}
                 </span>
               )}
@@ -246,7 +246,7 @@ export function TeamRoleQuestionnaire({
           <button
             type="button"
             onClick={() => setPhase("select")}
-            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-sand px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-bronze"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-sand px-4 text-sm font-semibold text-ink-body transition hover:border-sage/40 hover:text-[var(--color-accent-primary-strong)]"
           >
             {t("teamRole.back", resolvedLocale)}
           </button>
@@ -259,7 +259,7 @@ export function TeamRoleQuestionnaire({
             type="button"
             onClick={() => setPhase("highlight")}
             disabled={!selectValid}
-            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("teamRole.toHighlight", resolvedLocale)}
           </button>
@@ -268,7 +268,7 @@ export function TeamRoleQuestionnaire({
             type="button"
             onClick={handleFinish}
             disabled={!highlightValid || submitting}
-            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-white transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
             {submitting
               ? t("teamRole.submitting", resolvedLocale)

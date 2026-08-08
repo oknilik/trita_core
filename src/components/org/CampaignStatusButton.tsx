@@ -55,13 +55,13 @@ export function CampaignStatusButton({
         disabled={loading}
         className={`min-h-[44px] rounded-lg px-5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isDanger
-            ? "border border-rose-200 bg-white text-rose-700 hover:bg-rose-50"
-            : "bg-sage text-white hover:bg-sage-dark"
+            ? "border border-state-error-border bg-surface-card text-state-error-fg hover:bg-state-error-bg"
+            : "bg-sage text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
         }`}
       >
         {loading ? "…" : label}
       </button>
-      {error && <p className="mt-2 text-xs text-rose-600">{error}</p>}
+      {error && <p className="mt-2 text-xs text-state-error-fg">{error}</p>}
     </div>
   );
 }

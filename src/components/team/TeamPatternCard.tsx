@@ -27,9 +27,9 @@ interface TeamPatternCardProps {
 // ── Helpers ────────────────────────────────────────────────
 
 const CONFIDENCE_COLORS = {
-  magas:    { bg: "bg-emerald-50",  text: "text-emerald-700",  border: "border-emerald-200" },
-  közepes:  { bg: "bg-amber-50",    text: "text-amber-700",    border: "border-amber-200"   },
-  alacsony: { bg: "bg-rose-50",     text: "text-rose-700",     border: "border-rose-200"    },
+  magas:    { bg: "bg-state-success-bg",  text: "text-state-success-fg",  border: "border-state-success-border" },
+  közepes:  { bg: "bg-state-warning-bg",    text: "text-state-warning-fg",    border: "border-state-warning-border"   },
+  alacsony: { bg: "bg-state-error-bg",     text: "text-state-error-fg",     border: "border-state-error-border"    },
 };
 
 /**
@@ -50,9 +50,9 @@ function AxisBar({ axis, label }: { axis: AxisDetail; label: typeof AXIS_LABELS[
       : "var(--color-text-secondary)";
 
   const diversityColors = {
-    homogén: "text-emerald-600",
-    vegyes:  "text-amber-600",
-    diverz:  "text-rose-600",
+    homogén: "text-state-success-fg",
+    vegyes:  "text-state-warning-fg",
+    diverz:  "text-state-error-fg",
   };
 
   return (
@@ -108,7 +108,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   // Not enough data
   if (!data) {
     return (
-      <div className="rounded-2xl border border-sand bg-white shadow-sm">
+      <div className="rounded-2xl border border-sand bg-surface-card shadow-sm">
         <div className="border-b border-warm-mid px-6 py-4">
           <SectionEyebrow className="text-micro">
             {t("teamComp.teamPatternEyebrow", loc)}
@@ -130,7 +130,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
   const confColors = CONFIDENCE_COLORS[data.confidence];
 
   return (
-    <div className="rounded-2xl border border-sand bg-white shadow-sm">
+    <div className="rounded-2xl border border-sand bg-surface-card shadow-sm">
       {/* Header */}
       <div className="border-b border-warm-mid px-6 py-4">
         <SectionEyebrow className="text-micro">
@@ -159,7 +159,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
       <div className="p-6">
         {/* Stability warning */}
         {data.stability !== "stabil" && (
-          <div className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          <div className="mb-4 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
             {data.stabilityNote}
           </div>
         )}
@@ -239,7 +239,7 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
             </div>
             <a
               href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-white px-5 text-sm font-semibold text-bronze transition hover:bg-sage hover:text-white"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage hover:text-[var(--color-action-primary-fg)]"
             >
               {t("teamComp.explorePattern", loc)}
             </a>

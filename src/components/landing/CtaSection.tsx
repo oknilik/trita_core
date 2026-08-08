@@ -51,7 +51,9 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             })
           }
           className={[
-            "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg",
+            // A felirat FORDUL: a bronze-dark és a zsálya világosban sötét,
+            // sötéten világos — a fix fehér ott 2,0–2,1:1 lett volna.
+            "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
             // Self CTA: bronze-dark (fehér szöveg mellett 4.89:1) — azonos a
             // NavBar sticky CTA-jával és a hero gombjával; hover egy fokkal
             // sötétebb (bronze-700), hogy a hover-visszajelzés megmaradjon.

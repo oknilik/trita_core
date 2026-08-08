@@ -14,7 +14,7 @@ import {
 } from "@/lib/campaign-steps-core";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
-const CARD = "rounded-[22px] border border-sand bg-white p-5 shadow-sm md:p-6";
+const CARD = "rounded-[22px] border border-sand bg-surface-card p-5 shadow-sm md:p-6";
 
 const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string }> = {
   self: { hu: "Önfelmérés", en: "Self-assessment" },
@@ -31,9 +31,9 @@ const FEEDBACK_KIND_LABELS: Record<string, { hu: string; en: string }> = {
 };
 
 const EDGE_STYLES: Record<DossierEdgeType, string> = {
-  aligned: "border-emerald-200 bg-emerald-50 text-emerald-700",
+  aligned: "border-state-success-border bg-state-success-bg text-state-success-fg",
   complementary: "border-sand bg-cream text-ink-body",
-  friction: "border-amber-200 bg-amber-50 text-amber-700",
+  friction: "border-state-warning-border bg-state-warning-bg text-state-warning-fg",
 };
 
 const EDGE_LABELS: Record<DossierEdgeType, { hu: string; en: string }> = {
@@ -99,7 +99,7 @@ export function MemberDossierView({
               <Link
                 key={t.id}
                 href={`/team/${t.id}`}
-                className="rounded-full border border-sand bg-white px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
+                className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-xs text-ink-body transition-colors hover:border-sage-ring hover:text-ink"
               >
                 {t.name}
               </Link>
@@ -191,7 +191,7 @@ export function MemberDossierView({
                 {sx.dims.map((d) => {
                   const big = d.delta !== null && Math.abs(d.delta) >= 10;
                   return (
-                    <tr key={d.code} className={big ? "bg-amber-50/60" : undefined}>
+                    <tr key={d.code} className={big ? "bg-state-warning-bg/60" : undefined}>
                       <td className="py-1.5 text-ink-body">
                         {isHu ? TRITAN_DIMENSIONS[d.code].hu : TRITAN_DIMENSIONS[d.code].en}
                       </td>
@@ -201,7 +201,7 @@ export function MemberDossierView({
                       </td>
                       <td
                         className={`py-1.5 text-right tabular-nums font-medium ${
-                          big ? "text-amber-700" : "text-ink-body"
+                          big ? "text-state-warning-fg" : "text-ink-body"
                         }`}
                       >
                         {d.delta === null ? "—" : d.delta > 0 ? `+${d.delta}` : d.delta}
@@ -223,8 +223,8 @@ export function MemberDossierView({
             </p>
 
             {sx.topGaps.length > 0 ? (
-              <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3.5">
-                <p className="text-micro font-semibold uppercase tracking-wide text-amber-700">
+              <div className="mt-4 rounded-xl border border-state-warning-border bg-state-warning-bg p-3.5">
+                <p className="text-micro font-semibold uppercase tracking-wide text-state-warning-fg">
                   {isHu ? "Debrief-belépőpontok" : "Debrief entry points"}
                 </p>
                 <ul className="mt-1.5 flex flex-col gap-1">
@@ -317,12 +317,12 @@ export function MemberDossierView({
                       {t.teamName}
                     </Link>
                     {t.isHub ? (
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-micro font-medium text-emerald-700">
+                      <span className="rounded-full bg-state-success-bg px-2 py-0.5 text-micro font-medium text-state-success-fg">
                         {isHu ? "összekötő" : "hub"}
                       </span>
                     ) : null}
                     {t.isIsolated ? (
-                      <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-medium text-amber-700">
+                      <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-state-warning-fg">
                         {isHu ? "beágyazatlan" : "isolated"}
                       </span>
                     ) : null}

@@ -134,7 +134,7 @@ function AccordionItem({
                   <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
                     {t("content.accFacetDetail", locale)}
                   </p>
-                  <div className="rounded-lg bg-white/60 p-3">
+                  <div className="rounded-lg bg-[var(--color-surface-card)]/60 p-3">
                     {/* Mobilon egy oszlop — két oszlopban a skála+szám összecsúszna */}
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                       {facets.map((f) => {
@@ -143,7 +143,7 @@ function AccordionItem({
                         return (
                           <div
                             key={f.code}
-                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-white px-3.5 py-3"
+                            className="flex items-center gap-2.5 rounded-[10px] border border-[var(--color-border-soft)] bg-surface-card px-3.5 py-3"
                           >
                             <span className="min-w-0 flex-1">
                               <span className="block text-xs font-medium text-[var(--color-text-primary)]">
@@ -176,7 +176,7 @@ function AccordionItem({
 
               {/* Upsell teaser — Self Start only */}
               {showUpsell && facetNames.length > 0 && (
-                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-text-primary)] px-4 py-3">
+                <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-surface-inverse)] px-4 py-3">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[var(--color-accent-primary)]/[0.12] font-fraunces text-sm font-medium text-[var(--color-accent-primary-soft)]">
                     +{facetNames.length}
                   </div>

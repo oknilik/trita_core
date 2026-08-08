@@ -211,7 +211,7 @@ export function TypeGlyphPlate({
               ref={panelRef}
               // Mobilon a panel a képernyőbe fér (a nyitás után oda is
               // görgetünk), így a lenyitás után ez van a kijelzőn.
-              className={`mt-2 max-h-[86svh] overflow-y-auto rounded-2xl border border-[var(--color-border-soft)] bg-white shadow-[0_18px_44px_rgba(26,26,46,0.16)] transition-[opacity,transform] duration-[var(--motion-duration-base)] motion-reduce:transition-none ${
+              className={`mt-2 max-h-[86svh] overflow-y-auto rounded-2xl border border-[var(--color-border-soft)] bg-surface-card shadow-[0_18px_44px_rgba(26,26,46,0.16)] transition-[opacity,transform] duration-[var(--motion-duration-base)] motion-reduce:transition-none ${
                 open ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
               }`}
               aria-hidden={!open}
@@ -225,7 +225,7 @@ export function TypeGlyphPlate({
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-[var(--color-border-soft)] bg-white">
+    <section className="overflow-hidden rounded-2xl border border-[var(--color-border-soft)] bg-surface-card">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -243,7 +243,7 @@ export function TypeGlyphPlate({
             className="h-8 w-8 shrink-0 rounded-lg border border-[var(--color-border-soft)]"
           />
           <span className="flex min-w-0 flex-col">
-            <span className="font-mono text-micro uppercase tracking-widest text-bronze">
+            <span className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("results.glyphEyebrow", locale)}
             </span>
             <span className="truncate text-body text-ink">

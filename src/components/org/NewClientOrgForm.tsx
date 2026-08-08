@@ -74,7 +74,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
           <button
             type="button"
             onClick={() => setBillingOpen((v) => !v)}
-            className="inline-flex items-center gap-1.5 text-caption font-semibold text-ink-body transition hover:text-bronze"
+            className="inline-flex items-center gap-1.5 text-caption font-semibold text-ink-body transition hover:text-[var(--color-accent-primary-strong)]"
           >
             <span>{billingOpen ? "▾" : "▸"}</span>
             {isHu ? "Cégadatok — opcionális" : "Company details — optional"}
@@ -103,7 +103,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
                         placeholder={field.placeholder}
                         rows={2}
                         disabled={loading}
-                        className="min-h-[44px] rounded-lg border border-sand bg-white px-3 py-2 text-base text-ink outline-none transition focus:border-sage md:text-xs"
+                        className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 py-2 text-base text-ink outline-none transition focus:border-sage md:text-xs"
                       />
                     ) : (
                       // Mobilon 16px-es input-font: az iOS Safari 16px alatt
@@ -115,7 +115,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
                         onChange={(e) => onChange(e.target.value)}
                         placeholder={field.placeholder}
                         disabled={loading}
-                        className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-base text-ink outline-none transition focus:border-sage md:text-xs"
+                        className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-base text-ink outline-none transition focus:border-sage md:text-xs"
                       />
                     )}
                   </label>

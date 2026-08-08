@@ -168,7 +168,7 @@ export function CrmInboxPanel({
             const busy = busyId === row.id;
             const attaching = attachId === row.id;
             return (
-              <div key={row.id} className="rounded-xl border border-sand bg-white p-4">
+              <div key={row.id} className="rounded-xl border border-sand bg-surface-card p-4">
                 <div className="flex flex-wrap items-center gap-2">
                   <StatusChip variant="info">
                     {INQUIRY_TOPIC_LABELS[row.topic] ?? row.topic}
@@ -176,7 +176,7 @@ export function CrmInboxPanel({
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
                   <a
                     href={`mailto:${row.email}`}
-                    className="min-w-0 max-w-full break-all text-xs text-bronze hover:underline"
+                    className="min-w-0 max-w-full break-all text-xs text-[var(--color-accent-primary-strong)] hover:underline"
                   >
                     {row.email}
                   </a>
@@ -235,7 +235,7 @@ export function CrmInboxPanel({
                         }}
                         onBlur={() => setAttachId(null)}
                         aria-label="Deal kiválasztása csatoláshoz"
-                        className="min-h-[44px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-white px-2 text-sm text-ink-body md:w-auto md:flex-none"
+                        className="min-h-[44px] w-full min-w-0 max-w-full flex-1 rounded-lg border border-sand bg-surface-card px-2 text-sm text-ink-body md:w-auto md:flex-none"
                       >
                         <option value="">Melyik dealhez?</option>
                         {openDeals.map((deal) => (
@@ -296,7 +296,7 @@ export function CrmInboxPanel({
                 value={draft.title}
                 onChange={(event) => patchDraft({ title: event.target.value })}
                 maxLength={200}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
               />
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -307,7 +307,7 @@ export function CrmInboxPanel({
                   value={draft.contactName}
                   onChange={(event) => patchDraft({ contactName: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -316,7 +316,7 @@ export function CrmInboxPanel({
                   type="email"
                   value={draft.contactEmail}
                   onChange={(event) => patchDraft({ contactEmail: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -327,7 +327,7 @@ export function CrmInboxPanel({
                   onChange={(event) => patchDraft({ contactPhone: event.target.value })}
                   maxLength={50}
                   placeholder="+36 …"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
               <label className="flex flex-col gap-1">
@@ -337,7 +337,7 @@ export function CrmInboxPanel({
                   value={draft.company}
                   onChange={(event) => patchDraft({ company: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </label>
             </div>
@@ -349,18 +349,18 @@ export function CrmInboxPanel({
                 step={50_000}
                 value={draft.expectedValue}
                 onChange={(event) => patchDraft({ expectedValue: event.target.value })}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
+                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
               />
             </label>
             <div className="rounded-xl border border-sand bg-cream/60 p-3">
-              <p className="text-label uppercase text-bronze">Első következő lépés</p>
+              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">Első következő lépés</p>
               <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-[180px_minmax(0,1fr)]">
                 <input
                   type="date"
                   value={draft.nextDate}
                   onChange={(event) => patchDraft({ nextDate: event.target.value })}
                   aria-label="Következő lépés dátuma"
-                  className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
                 <input
                   type="text"
@@ -369,7 +369,7 @@ export function CrmInboxPanel({
                   maxLength={1000}
                   placeholder="pl. válasz-email + hívás egyeztetése"
                   aria-label="Következő lépés jegyzete"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                 />
               </div>
             </div>

@@ -43,7 +43,7 @@ export function Features({ mode }: { mode: SiteMode }) {
                 // is `translate`-nek kell szerepelnie — `transform`-mal az emelés
                 // átmenet nélkül, ugrásszerűen történne.
                 "flex flex-col rounded-2xl border border-[var(--color-border-default)] p-7 shadow-sm transition-[translate,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(26,26,46,0.06)]",
-                f.featured ? "bg-[var(--color-surface-subtle)]" : "bg-white",
+                f.featured ? "bg-[var(--color-surface-subtle)]" : "bg-surface-card",
                 i === 0 ? "lg:col-span-1" : "",
               ].join(" ")}
             >

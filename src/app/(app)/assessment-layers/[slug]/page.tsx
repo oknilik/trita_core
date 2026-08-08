@@ -41,7 +41,7 @@ export default async function AssessmentLayerDetailPage({
         subtitle: layer.description[langKey],
       }}
     >
-      <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-sand bg-cream p-4">
             <p className="text-micro uppercase tracking-widest text-muted">
@@ -85,7 +85,7 @@ export default async function AssessmentLayerDetailPage({
         <div className="mt-6">
           <Link
             href="/assessment-layers"
-            className="inline-flex min-h-[42px] items-center rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-white"
+            className="inline-flex min-h-[42px] items-center rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)]"
           >
             {t("assessmentLayers.backToLayers", locale)}
           </Link>

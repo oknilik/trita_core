@@ -29,8 +29,8 @@ export function SkeletonLoader() {
 
           {/* Cards */}
           <div className="mt-8 space-y-4">
-            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-white" />
-            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-white" />
+            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-surface-card" />
+            <div className="h-28 w-full animate-pulse rounded-xl border border-[var(--color-border-default)] bg-surface-card" />
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@ export function SkeletonLoader() {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-action-primary-bg)] border-t-transparent" />
-          <span className="font-fraunces text-sm text-[var(--color-text-muted)]">trit<span className="text-[var(--color-accent-primary)]">a</span></span>
+          <span className="font-fraunces text-sm text-[var(--color-text-muted)]">trit<span className="text-[var(--color-accent-primary-strong)]">a</span></span>
         </div>
       </div>
     </div>

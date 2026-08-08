@@ -28,7 +28,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
 
   if (state === "sent") {
     return (
-      <span className="text-xs font-semibold text-emerald-600">
+      <span className="text-xs font-semibold text-state-success-fg">
         {t("manager.pendingInviteResend.sent", locale)}
       </span>
     );
@@ -39,7 +39,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
       <button
         type="button"
         onClick={handleResend}
-        className="text-xs font-semibold text-rose-600 hover:text-rose-700"
+        className="text-xs font-semibold text-state-error-fg hover:text-state-error-fg"
       >
         {t("manager.pendingInviteResend.errorRetry", locale)}
       </button>
@@ -51,7 +51,7 @@ export function PendingInviteResendButton({ inviteId, isHu }: Props) {
       type="button"
       onClick={handleResend}
       disabled={state === "loading"}
-      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-white px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-bronze disabled:cursor-not-allowed disabled:opacity-50"
+      className="min-h-[36px] inline-flex items-center rounded-lg border border-sand bg-surface-card px-3 text-xs font-semibold text-ink-body transition hover:border-sage/30 hover:text-[var(--color-accent-primary-strong)] disabled:cursor-not-allowed disabled:opacity-50"
     >
       {state === "loading"
         ? t("manager.pendingInviteResend.sending", locale)

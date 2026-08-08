@@ -19,26 +19,31 @@ type SectionEyebrowTone =
 // adják át. A pötty `aria-hidden`, a szöveg hordozza a jelentést.
 type SectionEyebrowVariant = "mono" | "clean";
 
+// A bronz tónus a MÉLYEBB bronzot (accent-primary-strong = bronze-700)
+// használja, nem a brand-bronzot: az eyebrow 11 px-es nagybetűs szöveg, ott
+// 4,5:1 a küszöb, a brand-bronz viszont krémen csak 2,99:1-et ad (UX-audit
+// 2026-08-07). A mélyebb árnyalat 5,7:1 — a hue és a karakter marad.
+// Sötét sémán a bronze-700 világos árnyalat, tehát ott is helyes.
 const TONE_TEXT: Record<SectionEyebrowTone, string> = {
-  bronze: "text-bronze",
+  bronze: "text-[var(--color-accent-primary-strong)]",
   muted: "text-muted",
   self: "text-surface-self-accent",
   team: "text-surface-team-accent",
   org: "text-surface-org-accent",
   candidate: "text-accent-candidate",
   candidateOnDark: "text-accent-candidate-primary",
-  onDark: "text-white/[0.45]",
+  onDark: "text-[var(--color-text-on-inverse-muted)]",
 };
 
 const TONE_DOT: Record<SectionEyebrowTone, string> = {
-  bronze: "bg-bronze",
+  bronze: "bg-[var(--color-accent-primary-strong)]",
   muted: "bg-[var(--color-text-muted)]",
   self: "bg-surface-self-accent",
   team: "bg-surface-team-accent",
   org: "bg-surface-org-accent",
   candidate: "bg-accent-candidate",
   candidateOnDark: "bg-accent-candidate-primary",
-  onDark: "bg-white/[0.45]",
+  onDark: "bg-[var(--color-text-on-inverse-muted)]",
 };
 
 interface SectionEyebrowProps {

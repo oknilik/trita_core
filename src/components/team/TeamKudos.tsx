@@ -84,7 +84,7 @@ export function TeamKudos({
   };
 
   return (
-    <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm">
+    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
       <SectionEyebrow className="mb-1">
         {t("team.kudos.eyebrow", locale)}
       </SectionEyebrow>
@@ -98,7 +98,7 @@ export function TeamKudos({
         <select
           value={toUserId}
           onChange={(e) => setToUserId(e.target.value)}
-          className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none focus:border-sage-ring"
+          className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none focus:border-sage-ring"
         >
           <option value="">{t("team.kudos.pickMember", locale)}</option>
           {targets.map((m) => (
@@ -121,7 +121,7 @@ export function TeamKudos({
               className={`flex h-9 w-9 items-center justify-center rounded-lg border text-[17px] transition ${
                 badge === candidate
                   ? "border-sage bg-sage-soft"
-                  : "border-sand bg-white hover:border-sage-ring"
+                  : "border-sand bg-surface-card hover:border-sage-ring"
               }`}
             >
               {candidate}
@@ -135,7 +135,7 @@ export function TeamKudos({
           rows={2}
           maxLength={400}
           placeholder={t("team.kudos.placeholder", locale)}
-          className="rounded-lg border border-sand bg-white p-3 text-sm text-ink outline-none focus:border-sage-ring"
+          className="rounded-lg border border-sand bg-surface-card p-3 text-sm text-ink outline-none focus:border-sage-ring"
         />
         <EmojiRow onPick={(emoji) => setMessage((prev) => `${prev}${emoji}`)} />
 

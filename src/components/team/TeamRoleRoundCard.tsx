@@ -54,7 +54,7 @@ export function TeamRoleRoundCard({
   }
 
   return (
-    <div className="rounded-2xl border border-sand bg-white p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
+    <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-[0_10px_26px_rgba(26,26,46,0.03)]">
       <div className="flex items-center justify-between gap-3">
         <div>
           <SectionEyebrow tone="muted">
@@ -93,7 +93,7 @@ export function TeamRoleRoundCard({
           </p>
         </div>
         <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
-          <p className="font-fraunces text-[20px] leading-none text-bronze">{estimateCount}</p>
+          <p className="font-fraunces text-[20px] leading-none text-[var(--color-accent-primary-strong)]">{estimateCount}</p>
           <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "becslésből" : "estimated"}
           </p>
@@ -108,7 +108,7 @@ export function TeamRoleRoundCard({
 
       {/* Member list */}
       {isRoundActive && members.length > 0 && (
-        <div className="mt-4 divide-y divide-sand rounded-xl border border-sand bg-white">
+        <div className="mt-4 divide-y divide-sand rounded-xl border border-sand bg-surface-card">
           {members.map((m) => (
             <div key={m.userId} className="flex items-center justify-between px-3 py-2">
               <span className="text-[12px] text-ink">{m.name}</span>
@@ -133,8 +133,8 @@ export function TeamRoleRoundCard({
             disabled={loading}
             className={`min-h-[44px] rounded-lg px-5 text-[12px] font-semibold transition disabled:opacity-50 ${
               isRoundActive
-                ? "border border-sand bg-white text-ink-body hover:border-rose-200 hover:text-rose-700"
-                : "bg-sage text-white hover:bg-sage-dark"
+                ? "border border-sand bg-surface-card text-ink-body hover:border-state-error-border hover:text-state-error-fg"
+                : "bg-sage text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
             }`}
           >
             {loading

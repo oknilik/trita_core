@@ -73,7 +73,7 @@ export default function TryClaimPage() {
   if (error) {
     return (
       <div className="flex min-h-dvh flex-col items-center justify-center bg-cream px-5">
-        <p className="mb-4 text-center text-body text-rose-700">{error}</p>
+        <p className="mb-4 text-center text-body text-state-error-fg">{error}</p>
         <button
           type="button"
           onClick={() => {
@@ -81,7 +81,7 @@ export default function TryClaimPage() {
             claimed.current = false;
             setRetryNonce((n) => n + 1);
           }}
-          className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-white"
+          className="rounded-lg bg-[var(--color-accent-primary)] px-6 py-3 text-sm font-semibold text-[var(--color-text-on-accent)]"
         >
           {t("tryClaim.retryCta", locale)}
         </button>

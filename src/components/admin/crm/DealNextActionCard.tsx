@@ -107,7 +107,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             value={dateDraft}
             onChange={(event) => setDateDraft(event.target.value)}
             aria-label="Következő lépés dátuma"
-            className="min-h-[44px] rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+            className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
           />
           <input
             type="text"
@@ -116,7 +116,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             maxLength={1000}
             placeholder="Mi a lépés? (pl. follow-up hívás az ajánlatról)"
             aria-label="Következő lépés jegyzete"
-            className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+            className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
           />
           <div className="flex gap-2">
             <Button type="button" size="sm" loading={busy} disabled={!dateDraft} onClick={() => void saveEditor()}>
@@ -148,7 +148,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
                     ...(deal.nextActionNote ? { note: deal.nextActionNote } : {}),
                   })
                 }
-                className="min-h-[40px] rounded-full border border-sand bg-white px-3 text-sm text-ink-body transition hover:border-bronze-edge hover:text-ink disabled:opacity-60"
+                className="min-h-[40px] rounded-full border border-sand bg-surface-card px-3 text-sm text-ink-body transition hover:border-bronze-edge hover:text-ink disabled:opacity-60"
               >
                 +{days} nap
               </button>
@@ -157,7 +157,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
               type="button"
               disabled={busy}
               onClick={openEditor}
-              className="min-h-[40px] text-sm text-bronze underline underline-offset-2"
+              className="min-h-[40px] text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
             >
               Szerkesztés
             </button>

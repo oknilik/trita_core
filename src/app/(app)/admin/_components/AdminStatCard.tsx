@@ -8,7 +8,7 @@ interface AdminStatCardProps {
 export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardProps) {
   return (
     <div
-      className="rounded-xl border border-sand bg-white p-6"
+      className="rounded-xl border border-sand bg-surface-card p-6"
       style={{ borderTopWidth: "3px", borderTopColor: "var(--color-sage)" }}
     >
       <p className="font-mono text-xs uppercase tracking-widest text-muted">
@@ -21,7 +21,7 @@ export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardPr
       {trend && (
         <div
           className={`mt-3 text-xs font-semibold ${
-            trend.value >= 0 ? "text-emerald-600" : "text-rose-600"
+            trend.value >= 0 ? "text-state-success-fg" : "text-state-error-fg"
           }`}
         >
           {trend.value >= 0 ? "↑" : "↓"} {Math.abs(trend.value)}% {trend.period}

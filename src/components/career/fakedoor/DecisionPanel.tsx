@@ -158,7 +158,7 @@ export function DecisionPanel({
       className={`flex min-h-[44px] cursor-pointer items-center gap-3 rounded-xl border-[1.5px] px-4 py-2.5 transition ${
         choice === value
           ? "border-sage bg-sage-soft/50"
-          : "border-sand bg-white hover:border-bronze-edge"
+          : "border-sand bg-surface-card hover:border-bronze-edge"
       }`}
     >
       <input
@@ -282,7 +282,7 @@ export function DecisionPanel({
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder={t("fakeDoor.emailPlaceholder", locale)}
-                  className="mt-2 min-h-[44px] w-full rounded-xl border border-sand bg-white px-4 text-base text-ink outline-none focus:border-sage md:text-body"
+                  className="mt-2 min-h-[44px] w-full rounded-xl border border-sand bg-surface-card px-4 text-base text-ink outline-none focus:border-sage md:text-body"
                 />
                 <p className="mt-1.5 text-caption text-ink-body">
                   {t("fakeDoor.notifyNote", locale)}

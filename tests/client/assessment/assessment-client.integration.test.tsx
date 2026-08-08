@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
@@ -112,15 +113,20 @@ function buildDraftSnapshot(params: {
 function renderAssessmentClient(
   overrides: Partial<ComponentProps<typeof AssessmentClient>> = {},
 ) {
+  // A ThemeProvider a gyökér-layoutban él; itt izoláltan renderelünk,
+  // ezért a héjnak ezt a darabját kézzel adjuk hozzá — a nav
+  // séma-választója enélkül provider nélkül hívná a useTheme-et.
   return render(
-    <AssessmentClient
-      testType={TEST_TYPE}
-      testName="TRITAN"
-      totalQuestions={TOTAL_QUESTIONS}
-      questions={QUESTIONS}
-      guestMode
-      {...overrides}
-    />,
+    <ThemeProvider>
+      <AssessmentClient
+        testType={TEST_TYPE}
+        testName="TRITAN"
+        totalQuestions={TOTAL_QUESTIONS}
+        questions={QUESTIONS}
+        guestMode
+        {...overrides}
+      />
+    </ThemeProvider>,
   );
 }
 

@@ -2,7 +2,7 @@ import {
   DIMENSION_GLYPHS,
   FORM_GEOMETRY,
   GLYPH_CANVAS,
-  GLYPH_COLORS,
+  GLYPH_COLORS_CSS,
   accompaniment,
   glyphDescription,
   intensityStyle,
@@ -62,7 +62,7 @@ function motifElements(
   scale: number,
   opacity: number,
 ): React.ReactNode {
-  const stroke = GLYPH_COLORS.line;
+  const stroke = GLYPH_COLORS_CSS.line;
   const common = {
     fill: "none" as const,
     stroke,
@@ -217,7 +217,7 @@ export function TypeGlyph({
           y="0"
           width={GLYPH_CANVAS.width}
           height={GLYPH_CANVAS.height}
-          fill={GLYPH_COLORS.canvas}
+          fill={GLYPH_COLORS_CSS.canvas}
         />
       )}
 
@@ -225,7 +225,7 @@ export function TypeGlyph({
         <>
           {/* Miró-csillag */}
           <g
-            stroke={GLYPH_COLORS.line}
+            stroke={GLYPH_COLORS_CSS.line}
             strokeWidth={5}
             strokeLinecap="round"
             opacity={0.9}
@@ -246,7 +246,7 @@ export function TypeGlyph({
             />
           </g>
           {/* Nap */}
-          <circle cx={parts.sun.x} cy={parts.sun.y} r={parts.sun.r} fill={GLYPH_COLORS.sun} />
+          <circle cx={parts.sun.x} cy={parts.sun.y} r={parts.sun.r} fill={GLYPH_COLORS_CSS.sun} />
         </>
       )}
 
@@ -281,17 +281,17 @@ export function TypeGlyph({
             cy={geometry.accent.y}
             r={geometry.accent.r}
             fill="none"
-            stroke={GLYPH_COLORS.line}
+            stroke={GLYPH_COLORS_CSS.line}
             strokeWidth={10}
           />
-          <circle cx={geometry.accent.x} cy={geometry.accent.y} r={8} fill={GLYPH_COLORS.form} />
+          <circle cx={geometry.accent.x} cy={geometry.accent.y} r={8} fill={GLYPH_COLORS_CSS.form} />
         </>
       ) : (
         <circle
           cx={geometry.accent.x}
           cy={geometry.accent.y}
           r={geometry.accent.r}
-          fill={geometry.accent.color === "form" ? GLYPH_COLORS.form : GLYPH_COLORS.line}
+          fill={geometry.accent.color === "form" ? GLYPH_COLORS_CSS.form : GLYPH_COLORS_CSS.line}
         />
       )}
 
@@ -327,12 +327,12 @@ export function TypeGlyph({
             cx={parts.counterweight.x}
             cy={parts.counterweight.y}
             r={parts.counterweight.r}
-            fill={GLYPH_COLORS.counterweight}
+            fill={GLYPH_COLORS_CSS.counterweight}
           />
           <path
             d={parts.ground}
             fill="none"
-            stroke={GLYPH_COLORS.line}
+            stroke={GLYPH_COLORS_CSS.line}
             strokeWidth={4}
             strokeLinecap="round"
           />
@@ -342,8 +342,8 @@ export function TypeGlyph({
       {/* Intenzitás 5: extra szikra-akcentus */}
       {style.extraSparks && (
         <>
-          <circle cx={geometry.anchor.x + 118} cy={geometry.anchor.y - 96} r={7} fill={GLYPH_COLORS.form} />
-          <circle cx={geometry.anchor.x + 146} cy={geometry.anchor.y - 132} r={4.5} fill={GLYPH_COLORS.line} />
+          <circle cx={geometry.anchor.x + 118} cy={geometry.anchor.y - 96} r={7} fill={GLYPH_COLORS_CSS.form} />
+          <circle cx={geometry.anchor.x + 146} cy={geometry.anchor.y - 132} r={4.5} fill={GLYPH_COLORS_CSS.line} />
         </>
       )}
 
@@ -355,7 +355,7 @@ export function TypeGlyph({
             fontFamily="Fraunces, Georgia, 'Times New Roman', serif"
             fontSize="21"
             letterSpacing="5"
-            fill={GLYPH_COLORS.caption}
+            fill={GLYPH_COLORS_CSS.caption}
           >
             {typeLabel.toUpperCase()}
           </text>
@@ -366,7 +366,7 @@ export function TypeGlyph({
               fontFamily="Fraunces, Georgia, 'Times New Roman', serif"
               fontSize="15"
               fontStyle="italic"
-              fill={GLYPH_COLORS.captionAccent}
+              fill={GLYPH_COLORS_CSS.captionAccent}
             >
               {dimensionLabel}
             </text>

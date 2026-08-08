@@ -236,9 +236,9 @@ export function JoinClient({
                   <div
                     className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-medium transition-colors ${
                       i + 1 < step
-                        ? "bg-sage text-white"
+                        ? "bg-sage text-[var(--color-action-primary-fg)]"
                         : i + 1 === step
-                        ? "bg-ink text-white"
+                        ? "bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                         : "bg-sand text-muted"
                     }`}
                   >
@@ -282,7 +282,7 @@ export function JoinClient({
               </div>
 
               {errors.submit && (
-                <p className="text-sm text-bronze">{errors.submit}</p>
+                <p className="text-sm text-[var(--color-accent-primary-strong)]">{errors.submit}</p>
               )}
 
               <div className="flex flex-col gap-3">
@@ -290,7 +290,7 @@ export function JoinClient({
                   type="button"
                   onClick={handleSwitchOrg}
                   disabled={isSubmitting}
-                  className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                  className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting ? copy.switchPrimaryLoading : copy.switchPrimary}
                 </button>
@@ -328,14 +328,14 @@ export function JoinClient({
               </div>
 
               {errors.submit && (
-                <p className="text-sm text-bronze">{errors.submit}</p>
+                <p className="text-sm text-[var(--color-accent-primary-strong)]">{errors.submit}</p>
               )}
 
               <button
                 type="button"
                 onClick={handleJoinExisting}
                 disabled={isSubmitting}
-                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting ? copy.joinLoading : copy.joinCta}
               </button>
@@ -368,7 +368,7 @@ export function JoinClient({
                 placeholder={copy.usernamePlaceholder}
                 maxLength={20}
                 error={errors.username}
-                errorClassName="pl-1 text-xs text-bronze"
+                errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                 autoFocus
               />
 
@@ -386,7 +386,7 @@ export function JoinClient({
                 }}
                 placeholder={copy.birthYearPlaceholder}
                 error={errors.birthYear}
-                errorClassName="pl-1 text-xs text-bronze"
+                errorClassName="pl-1 text-xs text-[var(--color-accent-primary-strong)]"
                 helpText={errors.birthYear ? undefined : copy.birthYearHint}
                 helpTextClassName="pl-1 text-xs text-muted"
                 inputClassName="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -411,14 +411,14 @@ export function JoinClient({
                   ))}
                 </div>
                 {errors.gender && (
-                  <span className="pl-1 text-xs text-bronze">{errors.gender}</span>
+                  <span className="pl-1 text-xs text-[var(--color-accent-primary-strong)]">{errors.gender}</span>
                 )}
               </div>
 
               <button
                 type="button"
                 onClick={handleStep1Next}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {copy.continueCta}
               </button>
@@ -451,7 +451,7 @@ export function JoinClient({
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-bronze underline hover:text-bronze-dark"
+                    className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                   >
                     {copy.privacyLabel}
                   </a>{" "}
@@ -460,11 +460,11 @@ export function JoinClient({
               </label>
 
               {errors.consent && (
-                <span className="text-sm text-bronze">{errors.consent}</span>
+                <span className="text-sm text-[var(--color-accent-primary-strong)]">{errors.consent}</span>
               )}
 
               {errors.submit && (
-                <p className="text-center text-sm text-bronze">{errors.submit}</p>
+                <p className="text-center text-sm text-[var(--color-accent-primary-strong)]">{errors.submit}</p>
               )}
 
               <div className="flex gap-3">
@@ -479,7 +479,7 @@ export function JoinClient({
                   type="button"
                   onClick={handleJoinNew}
                   disabled={isSubmitting || !consent}
-                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-white transition-colors hover:bg-sage-dark disabled:opacity-50"
+                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting ? copy.joinAndStartLoading : copy.joinAndStart}
                 </button>

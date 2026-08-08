@@ -66,17 +66,17 @@ export function PilotContent() {
             <div>
               <div className="mb-5 flex items-center gap-3">
                 <div className="h-px w-8 bg-bronze" />
-                <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+                <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("pilot.eyebrow", locale)}
                 </span>
               </div>
 
-              <div className="mb-6 inline-flex items-center rounded-full border border-bronze/15 bg-bronze/8 px-4 py-1.5 text-sm font-medium text-bronze">
+              <div className="mb-6 inline-flex items-center rounded-full border border-bronze/15 bg-bronze/8 px-4 py-1.5 text-sm font-medium text-[var(--color-accent-primary-strong)]">
                 {t("pilot.badge", locale)}
               </div>
 
               <h1 className="max-w-[11ch] font-fraunces text-[clamp(3rem,8vw,5.2rem)] leading-[0.98] tracking-tight text-ink">
-                {t("pilot.heroTitle", locale)}<em className="not-italic text-bronze">{t("pilot.heroTitleEm", locale)}</em>
+                {t("pilot.heroTitle", locale)}<em className="not-italic text-[var(--color-accent-primary-strong)]">{t("pilot.heroTitleEm", locale)}</em>
               </h1>
 
               <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-[19px]">
@@ -86,13 +86,13 @@ export function PilotContent() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <a
                   href="#jelentkezes"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
                 >
                   {t("pilot.heroCta", locale)}
                 </a>
                 <a
                   href="#mit-kapsz"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl border border-sand bg-white px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
+                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
                 >
                   {t("pilot.heroCtaSecondary", locale)}
                 </a>
@@ -105,9 +105,9 @@ export function PilotContent() {
               </div>
             </div>
 
-            <aside className="overflow-hidden rounded-[24px] border border-sand bg-white shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
+            <aside className="overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
               <div className="border-b border-sand bg-warm px-6 py-6">
-                <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+                <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
                 <p className="mt-3 font-fraunces text-[28px] leading-tight text-ink">
@@ -185,7 +185,7 @@ export function PilotContent() {
           <div>
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px w-8 bg-bronze" />
-              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                 {t("pilot.formEyebrow", locale)}
               </span>
             </div>
@@ -205,7 +205,7 @@ export function PilotContent() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-sand bg-white p-6 shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:p-8">
+          <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:p-8">
             {status === "sent" ? (
               <div className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center">
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
@@ -225,7 +225,7 @@ export function PilotContent() {
                       {t("pilot.formSubheading", locale)}
                     </p>
                   </div>
-                  <span className="rounded-full border border-bronze/15 bg-bronze/8 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-bronze">
+                  <span className="rounded-full border border-bronze/15 bg-bronze/8 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                     {t("pilot.formSpotsLabel", locale)}
                   </span>
                 </div>
@@ -239,7 +239,7 @@ export function PilotContent() {
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         placeholder={t("pilot.placeholderName", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                       />
                     </FormField>
 
@@ -250,7 +250,7 @@ export function PilotContent() {
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         placeholder={t("pilot.placeholderEmail", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                       />
                     </FormField>
                   </div>
@@ -262,7 +262,7 @@ export function PilotContent() {
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
                       placeholder={t("pilot.placeholderCompany", locale)}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     />
                   </FormField>
 
@@ -270,7 +270,7 @@ export function PilotContent() {
                     <select
                       value={form.size}
                       onChange={(e) => setForm({ ...form, size: e.target.value })}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     >
                       <option value="">{t("pilot.sizeOption0", locale)}</option>
                       <option value="5-10">{t("pilot.sizeOption1", locale)}</option>
@@ -287,7 +287,7 @@ export function PilotContent() {
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       rows={4}
                       placeholder={t("pilot.placeholderQuestion", locale)}
-                      className="w-full resize-none rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-white focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className="w-full resize-none rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
                     />
                   </FormField>
 
@@ -295,7 +295,7 @@ export function PilotContent() {
                     <button
                       type="submit"
                       disabled={status === "sending"}
-                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-8 py-3.5 text-base font-semibold text-white transition-all hover:-translate-y-0.5 hover:bg-bronze-dark hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-8 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>
@@ -308,7 +308,7 @@ export function PilotContent() {
                   </div>
 
                   {status === "error" && (
-                    <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    <p className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg">
                       {t("pilot.errorMessage", locale)}
                     </p>
                   )}
@@ -337,7 +337,7 @@ function EditorialSection({
     <section id={id} className="border-t border-sand">
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
-          <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-bronze">
+          <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
             {eyebrow}
           </p>
         </div>
@@ -354,7 +354,7 @@ function EditorialSection({
 
 function MetaChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-white px-3 py-1.5 text-sm text-ink-body">
+    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-sm text-ink-body">
       {children}
     </span>
   );
@@ -373,7 +373,7 @@ function FormField({
     <label className="block">
       <span className="mb-2 block text-sm font-medium text-ink">
         {label}
-        {required && <span className="ml-1 text-bronze">*</span>}
+        {required && <span className="ml-1 text-[var(--color-accent-primary-strong)]">*</span>}
       </span>
       {children}
     </label>
@@ -382,9 +382,9 @@ function FormField({
 
 function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {
   return (
-    <article className="rounded-[24px] border border-sand bg-white p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
+    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
       <div className="mb-4 flex items-center gap-3">
-        <span className="font-dm-sans text-xs font-semibold uppercase tracking-widest text-bronze/70">
+        <span className="font-dm-sans text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {number}
         </span>
         <div className="h-px flex-1 bg-sand" />
@@ -397,7 +397,7 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
 
 function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
   return (
-    <article className="grid gap-5 rounded-[24px] border border-sand bg-white p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
+    <article className="grid gap-5 rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-bronze/10 font-fraunces text-2xl text-bronze">
         {step}
       </div>

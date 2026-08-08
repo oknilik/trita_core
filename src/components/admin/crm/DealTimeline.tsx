@@ -145,7 +145,7 @@ export function DealTimeline({
                 className={
                   isSystem
                     ? "rounded-lg border border-sand/60 bg-cream/50 px-3.5 py-2.5"
-                    : "rounded-xl border border-sand bg-white p-3.5"
+                    : "rounded-xl border border-sand bg-surface-card p-3.5"
                 }
               >
                 <div
@@ -158,7 +158,7 @@ export function DealTimeline({
                     className={
                       isSystem
                         ? "font-mono text-micro uppercase tracking-widest text-muted"
-                        : "text-label uppercase text-bronze"
+                        : "text-label uppercase text-[var(--color-accent-primary-strong)]"
                     }
                   >
                     {ACTIVITY_KIND_LABELS[activity.kind as ActivityKind] ?? activity.kind}
@@ -176,7 +176,7 @@ export function DealTimeline({
                       onChange={(event) => setSummaryDraft(event.target.value)}
                       maxLength={300}
                       aria-label="Összefoglaló szerkesztése"
-                      className="min-h-[44px] w-full rounded-lg border border-sand bg-white px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                      className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
                     />
                     <textarea
                       value={bodyDraft}
@@ -185,7 +185,7 @@ export function DealTimeline({
                       maxLength={4000}
                       placeholder="Törzs (opcionális)"
                       aria-label="Törzs szerkesztése"
-                      className="w-full rounded-lg border border-sand bg-white px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
+                      className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
                     />
                     <div className="flex gap-2">
                       <Button type="button" size="sm" loading={busy} onClick={() => void saveEdit(activity.id)}>
@@ -225,7 +225,7 @@ export function DealTimeline({
                             setBodyDraft(activity.body ?? "");
                             setConfirmDeleteId(null);
                           }}
-                          className="inline-flex min-h-[44px] items-center text-bronze underline underline-offset-2"
+                          className="inline-flex min-h-[44px] items-center text-[var(--color-accent-primary-strong)] underline underline-offset-2"
                         >
                           Szerkesztés
                         </button>

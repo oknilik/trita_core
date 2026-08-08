@@ -3,6 +3,8 @@ import { Fraunces, DM_Sans, DM_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { LocaleProvider } from "@/components/LocaleProvider";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { DEFAULT_LOCALE, t } from "@/lib/i18n";
 import { getMetadataBase } from "@/lib/seo";
@@ -77,14 +79,38 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang={DEFAULT_LOCALE}>
-      <body className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}>
+    // suppressHydrationWarning: a festés előtti script a `data-theme`-et a
+    // <html>-re teszi, a szerver-HTML-ben viszont NINCS ilyen attribútum
+    // (a gyökér-layout szándékosan nem olvas sütit — az az egész
+    // marketing-fát dinamikussá tenné). A React ezt attribútum-eltérésként
+    // jelentette minden oldalon. A kapcsoló CSAK ennek az elemnek a saját
+    // attribútumaira hat, a gyerekek hidratálását nem némítja el.
+    <html lang={DEFAULT_LOCALE} suppressHydrationWarning>
+      <head>
+        {/* WebKit ezt a metát használja annak eldöntésére, hogy a lap
+            EGYÁLTALÁN kezel-e sötét sémát — ebből vezeti le a natív
+            felületeket, köztük a MOBIL BILLENTYŰZETET. Kettőt jelent be
+            (light dark); hogy épp melyik AKTÍV, azt a globals.css
+            `:root[data-theme="…"]` szabálya dönti el, és a CSS erősebb a
+            metánál. Statikus, tehát a legelső bájtokban ott van — nem függ
+            a lenti scripttől. */}
+        <meta name="color-scheme" content="light dark" />
+        {/* Színséma a festés ELŐTT — enélkül minden oldalbetöltésnél
+            felvillanna a világos téma. Szerver-oldalon szándékosan NEM
+            olvasunk sütit: az az egész marketing-fát dinamikussá tenné. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body
+        className={`${fraunces.variable} ${dmSans.variable} ${dmMono.variable} antialiased`}
+      >
         {/* ClerkProvider NEM itt van: a marketing-fa (landing/blog/…) így nem
             szállít clerk-js bundle-t. A Clerk a (app) és (auth) zóna
             layoutjában él; a publikus nav auth-állapotát a nav-context adja. */}
-        <LocaleProvider>
-          <ToastProvider>{children}</ToastProvider>
-        </LocaleProvider>
+        <ThemeProvider>
+          <LocaleProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </LocaleProvider>
+        </ThemeProvider>
         <Analytics />
         <SpeedInsights />
       </body>

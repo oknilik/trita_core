@@ -74,7 +74,7 @@ export default async function InteractionPage({
   if (!scores || scores.type !== "likert" || !latestResult?.testType) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
-        <div className="w-full max-w-md rounded-2xl border border-sand bg-white p-8 text-center md:p-10">
+        <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 text-center md:p-10">
           <h1 className="font-fraunces text-[26px] leading-tight tracking-tight text-ink">
             {t("results.compareNeedResultTitle", locale)}
           </h1>
@@ -83,7 +83,7 @@ export default async function InteractionPage({
           </p>
           <a
             href="/assessment"
-            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06]"
+            className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-6 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06]"
           >
             {t("results.compareNeedResultCta", locale)}
           </a>

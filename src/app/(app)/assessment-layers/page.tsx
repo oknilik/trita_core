@@ -39,7 +39,7 @@ export default async function AssessmentLayersPage() {
           <Link
             key={layer.id}
             href={`/assessment-layers/${layer.slug}`}
-            className="rounded-2xl border border-sand bg-white p-5 transition-colors hover:border-sage/40"
+            className="rounded-2xl border border-sand bg-surface-card p-5 transition-colors hover:border-sage/40"
           >
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-ink">

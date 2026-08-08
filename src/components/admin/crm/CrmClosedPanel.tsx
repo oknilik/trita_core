@@ -62,7 +62,7 @@ export function CrmClosedPanel({
               className={`min-h-[40px] rounded-full border px-3.5 text-sm transition ${
                 active
                   ? "border-sage bg-sage-soft font-semibold text-ink"
-                  : "border-sand bg-white text-muted hover:border-bronze-edge hover:text-ink-body"
+                  : "border-sand bg-surface-card text-muted hover:border-bronze-edge hover:text-ink-body"
               }`}
             >
               {FILTER_LABELS[item]}

@@ -78,10 +78,10 @@ export function TeamReportMemberView({
     <div className="flex flex-col gap-6">
       {/* Fejléc — gradiens sáv + avatár */}
       <DashboardPanel className="overflow-hidden p-0">
-        <div className="bg-gradient-to-r from-sage/15 via-cream/70 to-white p-6">
+        <div className="bg-gradient-to-r from-sage/15 via-cream/70 to-[var(--color-surface-card)] p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-sage font-fraunces text-lg font-semibold text-white shadow-[0_6px_16px_rgba(107,138,99,0.35)]">
+              <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-sage font-fraunces text-lg font-semibold text-[var(--color-action-primary-fg)] shadow-[0_6px_16px_rgba(107,138,99,0.35)]">
                 {initialsOf(vm.memberName)}
               </div>
               <div>
@@ -98,7 +98,7 @@ export function TeamReportMemberView({
                 </p>
               </div>
             </div>
-            <span className="rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
+            <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-sage-dark shadow-sm ring-1 ring-sage/25">
               {isHu ? "Tag-nézet" : "Member view"}
             </span>
           </div>
@@ -192,7 +192,7 @@ export function TeamReportMemberView({
 
             {vm.complementLabels.length > 0 && (
               <div className="mt-5 flex items-start gap-3 rounded-[14px] border border-sage/30 bg-sage/10 px-4 py-3.5">
-                <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-sage text-white">
+                <span className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)]">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M8 2v5M8 2l3 3M8 2L5 5M3 10.5C3 12 5 14 8 14s5-2 5-3.5" />
                   </svg>
@@ -224,7 +224,7 @@ export function TeamReportMemberView({
             </p>
             <Link
               href="/assessment"
-              className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-white transition hover:bg-sage-dark"
+              className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
             >
               {isHu ? "A felmérésem kitöltése →" : "Complete my assessment →"}
             </Link>
@@ -242,15 +242,15 @@ export function TeamReportMemberView({
           <DashboardPanel className="p-6">
             <div className="flex flex-wrap items-center gap-5">
               <div className="flex flex-shrink-0 flex-col items-center gap-1.5">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-dark font-mono text-lg font-bold text-white shadow-[0_8px_20px_rgba(107,138,99,0.35)]">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-sage to-sage-dark font-mono text-lg font-bold text-[var(--color-action-primary-fg)] shadow-[0_8px_20px_rgba(107,138,99,0.35)]">
                   {vm.primaryRole.code}
                 </div>
                 {vm.roleFit === "rare" ? (
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-state-warning-fg ring-1 ring-state-warning-border">
                     {isHu ? "kulcsszerep" : "key role"}
                   </span>
                 ) : vm.roleFit === "shared" ? (
-                  <span className="rounded-full bg-sky-50 px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-sky-700 ring-1 ring-sky-200">
+                  <span className="rounded-full bg-state-info-bg px-2 py-0.5 text-micro font-semibold uppercase tracking-wide text-layer-org-bright ring-1 ring-state-info-border">
                     {isHu ? "közös erő" : "shared strength"}
                   </span>
                 ) : null}
@@ -308,8 +308,8 @@ export function TeamReportMemberView({
               </div>
             )}
             {vm.strengths && (
-              <div className="rounded-[14px] border-l-4 border-l-emerald-500/60 bg-emerald-50/40 p-4">
-                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-emerald-700">
+              <div className="rounded-[14px] border-l-4 border-l-emerald-500/60 bg-state-success-bg/40 p-4">
+                <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
                   <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M3 8.5l3 3 7-7" />
                   </svg>
@@ -318,7 +318,7 @@ export function TeamReportMemberView({
                 {/* EN lekérés jóváhagyott fordítás nélkül: jelezzük, hogy az
                     eredeti magyar szöveg látszik. */}
                 {!isHu && !hasApprovedEnTranslation(reportInput) ? (
-                  <p className="mb-2 text-micro text-amber-700">
+                  <p className="mb-2 text-micro text-state-warning-fg">
                     Shown in the Hungarian original — English translation pending
                     consultant approval.
                   </p>
@@ -342,7 +342,7 @@ export function TeamReportMemberView({
               {vm.tips.map((tip, i) => (
                 <li
                   key={i}
-                  className={`relative rounded-[12px] border border-sand border-l-4 bg-white py-3.5 pl-14 pr-4 text-sm leading-relaxed text-ink-body shadow-[0_4px_12px_rgba(26,26,46,0.03)] ${TIP_BORDERS[i] ?? TIP_BORDERS[0]}`}
+                  className={`relative rounded-[12px] border border-sand border-l-4 bg-surface-card py-3.5 pl-14 pr-4 text-sm leading-relaxed text-ink-body shadow-[0_4px_12px_rgba(26,26,46,0.03)] ${TIP_BORDERS[i] ?? TIP_BORDERS[0]}`}
                 >
                   <span
                     className={`absolute left-4 top-3 flex h-7 w-7 items-center justify-center rounded-full font-mono text-xs font-bold text-white ${TIP_ACCENTS[i] ?? TIP_ACCENTS[0]}`}
@@ -360,7 +360,7 @@ export function TeamReportMemberView({
       {/* Lábléc — módszertan + átláthatóság */}
       <DashboardPanel tone="cream" className="p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-body">
-          <span className="rounded-full bg-white px-2.5 py-1 font-mono text-[11px] text-muted ring-1 ring-sand">
+          <span className="rounded-full bg-surface-card px-2.5 py-1 font-mono text-[11px] text-muted ring-1 ring-sand">
             {isHu ? "min. 3 kitöltés" : "min. 3 responses"}
           </span>
           <span>

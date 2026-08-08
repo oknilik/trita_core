@@ -1,7 +1,11 @@
-// Holland-kód (RIASEC) értelmező tartalom — a /holland-kod oldal és a
-// karrier-modul magyarázó felületeinek közös forrása. A hat betű John
-// Holland érdeklődés-tipológiája (Holland, 1997); a Trita a kódot a
+// Holland-kód (RIASEC) értelmező tartalom. A hat betű John Holland
+// érdeklődés-tipológiája (Holland, 1997); a Trita a kódot a
 // karrier-iránytűben használja (mért kérdőív / címkék / becslés forrással).
+//
+// PARKOLVA (2026-08-07): a publikus értelmező lap kivezetve, mert a
+// karrier-réteg fagyasztva van (fake door mögött) — kifelé nem hivatkozunk
+// rá. A tartalom SZÁNDÉKOSAN marad a repóban: a modul élesítésekor ez a
+// forrás. Amíg nincs fogyasztója, importálatlan.
 
 import type { RiasecLetter } from "@/lib/career/types";
 

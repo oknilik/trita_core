@@ -262,7 +262,7 @@ function IndividualTeamRoleTable({
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-sand bg-white">
+        <tbody className="divide-y divide-sand bg-surface-card">
           {members.map((m) => (
             <tr key={m.id}>
               <td className="px-4 py-3">
@@ -384,7 +384,7 @@ function CrossAnalysis({
         return (
           <div
             key={cat.key}
-            className="flex flex-col gap-2 rounded-xl border border-sand bg-white p-4"
+            className="flex flex-col gap-2 rounded-xl border border-sand bg-surface-card p-4"
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-ink">
@@ -439,7 +439,7 @@ function PeerComparison({
   ).length;
 
   return (
-    <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
       <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
         {t("teamComp.peerEyebrow", loc)}
       </SectionEyebrow>
@@ -508,7 +508,7 @@ function PeerComparison({
                           <RoleChip role={r.role} isHu={isHu} size="xs" />
                           {selfTop.length > 0 && !selfSet.has(r.role) && (
                             <span
-                              className="font-mono text-micro text-bronze"
+                              className="font-mono text-micro text-[var(--color-accent-primary-strong)]"
                               title={t("teamComp.peerDiff", loc)}
                             >
                               •
@@ -615,7 +615,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       />
 
       {/* Role composition */}
-      <section className="rounded-2xl border border-sand bg-white p-6 shadow-sm md:p-8">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
           {t("teamComp.roleDistributionEyebrow", loc)}
         </SectionEyebrow>

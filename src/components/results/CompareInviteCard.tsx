@@ -127,7 +127,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           : t("results.compareStateRevoked", locale);
 
   return (
-    <section className="rounded-[22px] border border-sand bg-white p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+    <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
       <SectionEyebrow tone="muted">
         {t("results.compareCardTitle", locale)}
       </SectionEyebrow>
@@ -147,7 +147,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           type="button"
           onClick={handleCreate}
           disabled={busy}
-          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-white transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-5 text-caption font-bold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {t("results.compareCreateCta", locale)}
         </button>
@@ -163,7 +163,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         </p>
       ) : null}
       {error ? (
-        <p className="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-xs text-rose-700">
+        <p className="mt-3 rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
           {error}
         </p>
       ) : null}
@@ -183,7 +183,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 className={`rounded-full px-2 py-0.5 text-micro font-semibold ${
                   inv.state === "ACCEPTED"
                     ? "bg-sage/15 text-sage-dark"
-                    : "bg-amber-50 text-amber-700"
+                    : "bg-state-warning-bg text-state-warning-fg"
                 }`}
               >
                 {stateLabel(inv.state)}
@@ -198,7 +198,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
               {inv.state === "ACCEPTED" ? (
                 <Link
                   href={`/interaction?pair=${inv.id}`}
-                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                  className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                 >
                   {t("results.compareOpenPair", locale)}
                 </Link>
@@ -208,7 +208,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                   <button
                     type="button"
                     onClick={() => handleCopy(inv)}
-                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                   >
                     {copiedId === inv.id
                       ? t("results.compareCopied", locale)
@@ -218,7 +218,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                     type="button"
                     onClick={() => setQrForId(qrForId === inv.id ? null : inv.id)}
                     aria-expanded={qrForId === inv.id}
-                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-white px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
+                    className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-cream"
                   >
                     QR
                   </button>
@@ -228,7 +228,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 type="button"
                 onClick={() => handleRevoke(inv.id)}
                 disabled={busy}
-                className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-[12px] font-medium text-muted transition-colors hover:text-rose-700 disabled:opacity-50"
+                className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-[12px] font-medium text-muted transition-colors hover:text-state-error-fg disabled:opacity-50"
               >
                 {t("results.compareRevoke", locale)}
               </button>

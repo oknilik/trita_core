@@ -83,7 +83,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
               href="/contact"
               className={getButtonClassName({
                 className:
-                  "bg-accent-candidate px-8 text-white hover:bg-accent-candidate-strong",
+                  "bg-accent-candidate px-8 text-[var(--color-text-on-candidate)] hover:bg-accent-candidate-strong",
               })}
             >
               {t("hiring.activateAddon", locale)}
@@ -98,7 +98,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
             href="/contact"
             className={getButtonClassName({
               className:
-                "bg-accent-candidate px-8 text-white hover:bg-accent-candidate-strong",
+                "bg-accent-candidate px-8 text-[var(--color-text-on-candidate)] hover:bg-accent-candidate-strong",
             })}
           >
             {t("hiring.activateSubscription", locale)}

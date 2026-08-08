@@ -28,7 +28,7 @@ export function ObserverFlowStatusCard({
     return (
       <section className="rounded-2xl border border-sage-ring bg-sage-ghost p-6 md:p-8">
         <div className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sage text-white">
+          <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)]">
             <svg viewBox="0 0 16 16" className="h-4.5 w-4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 8.5l3 3 7-7" />
             </svg>
@@ -46,7 +46,7 @@ export function ObserverFlowStatusCard({
               <button
                 type="button"
                 onClick={onOpenComparison}
-                className="mt-3 inline-flex min-h-[42px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-white transition hover:bg-sage-dark"
+                className="mt-3 inline-flex min-h-[42px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
                 {isHu ? "Összevetés megnyitása →" : "Open comparison →"}
               </button>
@@ -63,7 +63,7 @@ export function ObserverFlowStatusCard({
       Math.round((flow.receivedCount / Math.max(1, flow.minForReveal)) * 100),
     );
     return (
-      <section className="rounded-2xl border border-sand bg-white p-6 md:p-8">
+      <section className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
         <SectionEyebrow>
           {isHu ? "csapat-folyamat" : "team process"}
         </SectionEyebrow>
@@ -137,7 +137,7 @@ export function ObserverFlowStatusCard({
   return (
     <section className="rounded-2xl border border-sand bg-cream/60 p-6 md:p-8">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white text-muted ring-1 ring-sand">
+        <span className="mt-0.5 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-surface-card text-muted ring-1 ring-sand">
           <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3.5" y="7" width="9" height="6" rx="1.5" />
             <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" />
@@ -181,7 +181,7 @@ export function ObserverFlowStrip({
       <button
         type="button"
         onClick={onOpenComparison}
-        className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-sage-dark"
+        className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
       >
         {isHu
           ? `Külső visszajelzés megérkezett (${flow.receivedCount}) — összevetés →`
@@ -191,9 +191,9 @@ export function ObserverFlowStrip({
       <button
         type="button"
         onClick={onOpenInvites}
-        className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 ring-1 ring-amber-200 transition hover:bg-amber-100"
+        className="inline-flex items-center gap-1.5 rounded-full bg-state-warning-bg px-3 py-1.5 text-xs font-semibold text-bronze-700 ring-1 ring-state-warning-border transition hover:bg-state-warning-bg"
       >
-        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-amber-500" />
+        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-bronze-300" />
         {isHu
           ? `Külső visszajelzés folyamatban (${flow.receivedCount}/${flow.minForReveal})`
           : `Outside feedback in progress (${flow.receivedCount}/${flow.minForReveal})`}
@@ -202,7 +202,7 @@ export function ObserverFlowStrip({
       <button
         type="button"
         onClick={onOpenInvites}
-        className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-ink-body ring-1 ring-sand transition hover:bg-cream"
+        className="inline-flex items-center gap-1.5 rounded-full bg-surface-card px-3 py-1.5 text-xs font-medium text-ink-body ring-1 ring-sand transition hover:bg-cream"
       >
         <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
           <rect x="3.5" y="7" width="9" height="6" rx="1.5" />
@@ -215,7 +215,7 @@ export function ObserverFlowStrip({
     );
 
   return (
-    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-sand bg-white px-4 py-3">
+    <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-sand bg-surface-card px-4 py-3">
       <span className="inline-flex items-center gap-1.5 rounded-full bg-sage-ghost px-3 py-1.5 text-xs font-semibold text-sage-dark">
         <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M3 8.5l3 3 7-7" />

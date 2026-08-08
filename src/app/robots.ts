@@ -13,7 +13,6 @@ const PUBLIC_PATHS = [
   "/blog",
   "/contact",
   "/founding",
-  "/holland-kod",
   "/patterns",
   "/pilot",
   "/pricing",

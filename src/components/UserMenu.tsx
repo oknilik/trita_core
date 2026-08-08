@@ -20,7 +20,7 @@ export function UserMenu() {
   return (
     <Link
       href="/profile"
-      className="flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-white px-2 py-1 text-sm font-semibold text-[var(--color-text-secondary)] shadow-sm transition hover:border-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+      className="flex min-h-[44px] items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-surface-card px-2 py-1 text-sm font-semibold text-[var(--color-text-secondary)] shadow-sm transition hover:border-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
     >
       {loading ? (
         <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />

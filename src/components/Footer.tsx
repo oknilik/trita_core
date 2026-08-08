@@ -31,7 +31,6 @@ export function Footer() {
         { label: t("footer.blog", locale), href: "/blog" },
         { label: t("footer.pricing", locale), href: "/pricing" },
         { label: t("footer.patterns", locale), href: "/patterns" },
-        { label: t("footer.hollandCode", locale), href: "/holland-kod" },
         { label: t("footer.pilot", locale), href: "/pilot" },
       ],
     },
@@ -71,13 +70,18 @@ export function Footer() {
         aria-hidden="true"
         className="pointer-events-none block h-10 w-full md:h-14"
       >
+        {/* A kitöltés UGYANAZ a token, mint a törzs gradiensének `from-`
+            stopja — így a varrat nem tud elcsúszni. Korábban `--color-ink`
+            volt: az SZÖVEG-token, tehát sötét sémán VILÁGOSSÁ fordul, és a
+            hullám krém sávként világított az oldal és a footer között
+            (2026-08-07). */}
         <path
           d="M0,26 C240,10 480,34 720,22 C960,10 1120,30 1280,18 C1360,12 1410,20 1440,16 L1440,56 L0,56 Z"
-          fill="var(--color-ink)"
+          fill="var(--color-surface-inverse)"
         />
       </svg>
 
-      <div className="pointer-events-auto w-full bg-gradient-to-b from-ink to-ink-body pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
+      <div className="pointer-events-auto w-full bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
       <div className="mx-auto w-full max-w-[1120px] px-7">
         <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
 
@@ -86,12 +90,12 @@ export function Footer() {
             <Link
               href="/"
               aria-label="trita"
-              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-cream"
+              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-[var(--color-text-on-inverse)]"
             >
               <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
               <span style={{ color: "var(--color-accent-primary)" }}>a</span>
             </Link>
-            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-cream/70">
+            <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
               {t("footer.tagline", locale)}
             </p>
           </div>
@@ -99,7 +103,7 @@ export function Footer() {
           {/* Link columns */}
           {columns.map((col) => (
             <div key={col.heading}>
-              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-cream/55">
+              <p className="mb-3 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                 {col.heading}
               </p>
               <ul className="flex flex-col gap-2">
@@ -107,7 +111,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-caption text-cream/75 underline-offset-4 transition-colors hover:text-bronze hover:underline"
+                      className="text-caption text-[var(--color-text-on-inverse-muted)] underline-offset-4 transition-colors hover:text-[var(--color-accent-primary-strong)] hover:underline"
                     >
                       {link.label}
                     </Link>
@@ -119,8 +123,8 @@ export function Footer() {
 
         </div>
 
-        <div className="mt-10 border-t border-cream/10 pt-5">
-          <p className="text-[12px] text-cream/70">{t("footer.copyright", locale)}</p>
+        <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-5">
+          <p className="text-[12px] text-[var(--color-text-on-inverse-muted)]">{t("footer.copyright", locale)}</p>
         </div>
       </div>
       </div>

@@ -36,7 +36,17 @@ export default defineConfig({
         ...devices["Desktop Chrome"],
         // A célpont mindig a helyi dev-szerver — host-oldali proxy env
         // (pl. vállalati/CI HTTP_PROXY) ne térítse el a localhost-forgalmat.
-        launchOptions: { args: ["--no-proxy-server"] },
+        //
+        // PLAYWRIGHT_CHROMIUM_PATH: menekülő-út zárt környezethez, ahol a
+        // Playwright által várt böngésző-build nincs letöltve, de egy másik
+        // elérhető (a PLAYWRIGHT_BASE_URL mintájára). Üresen hagyva a
+        // Playwright a saját letöltését használja — CI-ben ez a helyes.
+        launchOptions: {
+          args: ["--no-proxy-server"],
+          ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+            : {}),
+        },
       },
     },
   ],
