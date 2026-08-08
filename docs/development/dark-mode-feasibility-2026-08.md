@@ -1100,3 +1100,31 @@ Váltáskor (a fejléc-választóval) mindhárom élőben követi.
 > a gyökéren bizonyítottan `dark` — ez az a bemenet, amiből a platform a
 > billentyűzet megjelenését származtatja —, de a végső képet valódi
 > eszközön kell megnézni.
+
+### 19.4 A `color-scheme` meta (2026-08-07, kiegészítés)
+
+Visszajelzés: iOS-en a billentyűzet továbbra is világos. Ezért végigmértem a
+teljes láncot egy ŰRLAPOS lapon (`/contact`), sötét sémán:
+
+| | érték |
+|---|---|
+| `<meta name="color-scheme">` | `light dark` |
+| `<html>` computed `color-scheme` | **`dark`** |
+| minden `input` / `textarea` / `select` computed `color-scheme` | **`dark`** |
+
+Ez pontosan az a bemenet, amiből a WebKit a `UIKeyboardAppearance`-t
+származtatja — a lánc tehát hiánytalan. Kiegészítésként bekerült a
+`<meta name="color-scheme" content="light dark">` is: ez a WebKit
+dokumentált jelzése arról, hogy a lap egyáltalán kezel sötét sémát. Statikus,
+tehát a legelső bájtokban ott van, és nem függ a festés előtti scripttől; hogy
+épp melyik séma AKTÍV, azt továbbra is a CSS dönti el (a CSS erősebb a metánál).
+
+**Fontos időrend:** a gyökér-szintű `color-scheme` csak a 19. szakasz
+commitjában került be. Előtte CSAK a `.theme-scope` (egy leszármazott div)
+volt sötét — a WebKit viszont a dokumentumból dolgozik, tehát a billentyűzet
+jogosan maradt világos. Aki a korábbi buildet nézi, változatlanul azt látja.
+
+**Eszköz nélküli önellenőrzés:** a rugalmas görgetés (overscroll bounce). A
+régi buildben a lap tetején/alján KRÉM sáv villan, az újban sötét — ugyanaz a
+`--background`, amit a 19.1 fordított meg. Ha ott még krémet látsz, a build a
+régi.

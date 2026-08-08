@@ -87,6 +87,14 @@ export default function RootLayout({
     // attribútumaira hat, a gyerekek hidratálását nem némítja el.
     <html lang={DEFAULT_LOCALE} suppressHydrationWarning>
       <head>
+        {/* WebKit ezt a metát használja annak eldöntésére, hogy a lap
+            EGYÁLTALÁN kezel-e sötét sémát — ebből vezeti le a natív
+            felületeket, köztük a MOBIL BILLENTYŰZETET. Kettőt jelent be
+            (light dark); hogy épp melyik AKTÍV, azt a globals.css
+            `:root[data-theme="…"]` szabálya dönti el, és a CSS erősebb a
+            metánál. Statikus, tehát a legelső bájtokban ott van — nem függ
+            a lenti scripttől. */}
+        <meta name="color-scheme" content="light dark" />
         {/* Színséma a festés ELŐTT — enélkül minden oldalbetöltésnél
             felvillanna a világos téma. Szerver-oldalon szándékosan NEM
             olvasunk sütit: az az egész marketing-fát dinamikussá tenné. */}
