@@ -229,9 +229,15 @@ export function NavBar({
             {!isSignedIn && (
               <>
                 {/* Sign in — desktop only */}
+                {/* Másodlagos gomb a bronz CTA mellé. A korábbi „fehér kártya
+                    homok kerettel" gyakorlatilag láthatatlan volt: a
+                    kártya-felület a fejlécsávon 1,05:1, a homok keret 1,24:1
+                    — a gomb beleolvadt a sávba. Zsálya kontúr (5,8:1) + mély
+                    zsálya felirat (11,3:1): egyértelműen gomb, és a kitöltött
+                    bronz elsődlegessel világos párt alkot. */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-border-default)] bg-surface-card px-4 py-[7px] text-caption text-[var(--color-text-secondary)] transition-all hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] lg:inline-flex"
+                  className="hidden rounded-lg border border-[var(--color-action-primary-bg)] bg-transparent px-4 py-[7px] text-caption font-medium text-[var(--color-accent-self-deep)] transition-all hover:bg-[var(--color-surface-self-accent-soft)] lg:inline-flex"
                 >
                   {t("nav.signIn", locale)}
                 </Link>
