@@ -192,6 +192,10 @@ const html = `<!doctype html>
 ${starCss}
   body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; }
   .loaders { align-items:flex-end; }
+  /* A SectionTransition középre zárását Tailwind-osztály adja; itt nincs
+     Tailwind, ezért az előnézetben kézzel utánozzuk — különben balra
+     tapadva látszana, és félrevezetne. */
+  .scheme > div[aria-hidden] { display:flex; justify-content:center; }
   .loader-cell { display:flex; flex-direction:column; align-items:center; gap:6px;
                  font:10px ui-monospace, monospace; opacity:.6; color: var(--color-text-primary); }
   .scheme { background: var(--preview-canvas); color: var(--color-text-primary); padding: 32px 28px 48px; }
