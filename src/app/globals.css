@@ -137,8 +137,8 @@
   /* A jelölt-hero stopjai SAJÁT tokenek (eddig az akcentekből kölcsönöztek).
      Sötéten a terrakotta akcent VILÁGOSSÁ fordul — a hero így világos
      peach-gradiens lett volna fehér felirattal. */
-  --palette-layer-candidate-hero-from: #8a4a32;
-  --palette-layer-candidate-hero-mid: #6d3826;
+  --palette-layer-candidate-hero-from: #4b3930;
+  --palette-layer-candidate-hero-mid: #372a25;
   /* A hero halk másodlagos szövege. Eddig `text-white/[0.42]` volt, ami a
      legvilágosabb stopon 2,5–3,0:1 — a mondat gyakorlatilag eltűnt. Fix
      érték mindkét sémán (a hero mindkettőben sötét panel): ≥ 4,6:1. */
@@ -164,7 +164,7 @@
   --palette-layer-org-badge: #f4c792;
   --palette-layer-org-soft: #e8eff7;
   --palette-layer-org-border: #bfd0e2;
-  --palette-layer-candidate-hero-to: #47251a;
+  --palette-layer-candidate-hero-to: #191924;
   --palette-layer-candidate-badge: #f6cfa8;
   --palette-eval-high-fg: #1e3d34;
   --palette-state-success-solid: #059669;
@@ -259,7 +259,7 @@
   --palette-ink-body: #cac5bb;
   --palette-ink-warm: #9b9487;
   --palette-layer-candidate-badge: #f6cfa8;
-  --palette-layer-candidate-hero-to: #562d1f;
+  --palette-layer-candidate-hero-to: #333347;
   --palette-layer-org-accent: #6f9bc4;
   --palette-layer-org-border: #33475c;
   --palette-layer-org-bright: #85aed4;
@@ -274,8 +274,8 @@
   --palette-layer-team-wash: #1e1a20;
   --palette-layer-org-wash: #171a21;
   --palette-layer-candidate-wash: #221a1b;
-  --palette-layer-candidate-hero-from: #81452f;
-  --palette-layer-candidate-hero-mid: #6e3927;
+  --palette-layer-candidate-hero-from: #513d34;
+  --palette-layer-candidate-hero-mid: #40312b;
   --palette-text-on-inverse-muted: #dad5ce;
   --palette-surface-inverse: #2b2b34;
   --palette-surface-inverse-soft: #3b3b46;

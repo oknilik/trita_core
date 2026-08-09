@@ -286,7 +286,7 @@ export function HiringDashboard({
         )}
         title={(
           <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
-            trita {t("hiring.title", locale)}
+            {t("hiring.title", locale)}
           </h1>
         )}
         summary={t("hiring.heroSummary", locale)}

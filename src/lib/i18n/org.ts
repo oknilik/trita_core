@@ -1237,7 +1237,11 @@ export const orgTranslations = {
 
     // HiringDashboard — header
     eyebrow: { hu: "felvételi", en: "hiring" },
-    title: { hu: "Felvétel", en: "Hiring" },
+    // A hero címe. NEM „trita Felvétel": a felület a felhasználó saját
+    // munkájáról szól, nem a termékről — a márkanév a fejlécben már ott van.
+    // A „Felvétel" pedig HR-folyamatot nevez meg; a cél viszont az, hogy új
+    // ember érkezik a csapatba.
+    title: { hu: "Új csapattagok", en: "New teammates" },
     heroSummary: {
       hu: "Kezeld egy helyen a jelöltfolyamatot: meghívás, státusz és eredménykövetés.",
       en: "Manage the full candidate flow in one place: invites, status, and results.",

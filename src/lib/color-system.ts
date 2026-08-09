@@ -238,9 +238,9 @@ export const LAYER_THEMES: Record<LayerKey, LayerTheme> = {
   /** Terrakotta — kizárólag a jelölt-domain rétegszíne (destruktívként tilos). */
   candidate: {
     accent: "#8a4a32",
-    heroFrom: "#8a4a32",
-    heroMid: "#6d3826",
-    heroTo: "#47251a",
+    heroFrom: "#4b3930",
+    heroMid: "#372a25",
+    heroTo: "#191924",
     glow: "#e0a878",
     badgeBg: "rgba(224,168,120,0.22)",
     badgeText: "#f6cfa8",
