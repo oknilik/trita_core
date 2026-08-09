@@ -125,15 +125,21 @@ amiért a 3. szint létezik: a jel önmagában nem állít semmit, tehát
 szabadon vihető olyan helyre is, aminek nincs mérési tartalma. Cserébe a
 várakozás pillanata is a márka nyelvén beszél.
 
-A mozgás két rétegű: lassú, egyenletes forgás az egész jelen, plusz a négy
-szárpár fázisban eltolt lélegzése (skála + opacitás). Két részlet, ami nem
+A mozgás két rétegű: forgás az egész jelen, plusz a négy szárpár fázisban
+eltolt kinyúlása-visszahúzódása (skála + opacitás). Három részlet, ami nem
 nyilvánvaló:
 
 - **A forgás ciklusa 45°, nem 360°.** A nyolcágú csillag 45 fokonként
   önmagával fedésbe kerül, tehát ennyi elég a varrat nélküli hurokhoz.
-- **A pulzus amplitúdója szűk** (0,88–1 skála, 0,72–1 opacitás). Az első
-  változat tágabb volt (0,82 / 0,45), és 24 pixelen a csillag nem
-  animáltnak, hanem töröttnek látszott — hiányzó ágakkal.
+- **A forgás nem `linear`, hanem `cubic-bezier`.** A jel minden 45 fokos
+  lépésnél nekiindul, majd leül — ez adja a lüktetést. Egyenletes forgással
+  gépiesen csúszik, nem él.
+- **A dinamikát a SKÁLA hordozza, nem az opacitás.** Egy visszahúzódó szár
+  mozgásnak látszik, egy elhalványuló szár viszont hiányzó ágnak: az első
+  változat 0,45-ös opacitás-padlóval 24 pixelen töröttnek tűnt. A végleges
+  arány ezért fordított — tág skála (0,62–1,06), szűk opacitás (0,82–1).
+  A négy szárpár eltolása a ciklus negyedét fedi le, így a kinyúlás
+  körbefut a csillagon.
 
 Reduced motion mellett mindkét animáció **kikapcsol** (nem lassul), és a jel
 teljes opacitáson, elforgatás nélkül áll meg: a töltés ténye továbbra is
@@ -144,6 +150,10 @@ elszáll, ha a jelölő eltűnik.
 Hozzáférhetőség: a töltőképernyő `role="status"` + `aria-live="polite"` és
 sr-only felirat (`common.loading`, HU+EN). A néma spinner úgy viselkedett a
 képernyőolvasón, mintha az oldal befagyott volna.
+
+A töltőképernyőkről **lekerült a wordmark**: a töltés másodperc töredéke, és
+a logó ott csak visszaigazolja, amit a felhasználó úgyis tud. A jel egyedül
+tisztább, és nagyobbra vehető (64px).
 
 Átállítva: `RedirectLoader` (a `/dashboard` diszpécser köztes állapota) és a
 `SkeletonLoader` középső jele. A gombokban lévő apró inline spinnerek

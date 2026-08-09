@@ -1298,13 +1298,22 @@ input[type="range"].pattern-range::-moz-range-track {
    A töltőállapot jele a formanyelv tinta-csillaga. Két, egymásra rétegzett
    mozgás adja a „lélegzést":
 
-   – `star-loader-spin`: lassú, egyenletes forgás az egész jelen. Nyolcágú,
-     45°-osan szimmetrikus alakzat, ezért 45 fok elfordulás után önmagával
-     fedésbe kerül — a ciklus ennyi, így a hurok VARRAT NÉLKÜL zár. A teljes
-     360°-os forgás ugyanilyen tempóhoz nyolcszor hosszabb ciklus kellene.
-   – `star-loader-pulse`: a szárpárok fázisban eltolva pulzálnak (skála +
-     opacitás). Az eltolást a komponens `animation-delay`-je adja, ezért itt
-     nincs külön kulcskocka-variáns.
+   – `star-loader-spin`: forgás az egész jelen. Nyolcágú, 45°-osan
+     szimmetrikus alakzat, ezért 45 fok elfordulás után önmagával fedésbe
+     kerül — a ciklus ennyi, így a hurok VARRAT NÉLKÜL zár. A teljes 360°-os
+     forgáshoz ugyanilyen tempóhoz nyolcszor hosszabb ciklus kellene.
+     A lendületet a `cubic-bezier` adja: a jel minden 45 fokos lépésnél
+     nekiindul, majd leül. Egyenletes (linear) forgással sokkal élettelenebb
+     — az gépiesen csúszik, nem lüktet.
+   – `star-loader-pulse`: a szárpárok fázisban eltolva nyúlnak ki és húzódnak
+     vissza (skála + opacitás). Az eltolást a komponens `animation-delay`-je
+     adja, ezért itt nincs külön kulcskocka-variáns.
+
+   Az AMPLITÚDÓ tanulsága: a dinamikát a SKÁLA hordozza, nem az opacitás.
+   Egy visszahúzódó szár mozgásnak látszik, egy elhalványuló szár viszont
+   HIÁNYZÓ ágnak — az első változat 0.45-ös opacitás-padlóval 24 pixelen
+   töröttnek tűnt. Ezért a skála tartománya tág (0.62–1.06), az opacitásé
+   viszont szűk marad (0.82–1).
 
    Reduced motion: mindkettő KIKAPCSOL (nem lassul), és a jel teljes
    opacitáson, elforgatás nélkül áll meg — így a töltés ténye továbbra is
@@ -1318,30 +1327,26 @@ input[type="range"].pattern-range::-moz-range-track {
   }
 }
 
-/* Szűk amplitúdó, magas opacitás-padló: a szárak fázisban eltolva
-   lélegeznek, de a jel MINDEN pillanatban felismerhetően szimmetrikus
-   csillag marad. Tágabb tartománnyal (0.82 / 0.45 opacitás) 24 pixelen
-   töröttnek látszott, nem animáltnak. */
 @keyframes star-loader-pulse {
   0%,
   100% {
-    transform: scale(0.88);
-    opacity: 0.72;
+    transform: scale(0.62);
+    opacity: 0.82;
   }
   50% {
-    transform: scale(1);
+    transform: scale(1.06);
     opacity: 1;
   }
 }
 
 .star-loader-spin {
   transform-origin: 50% 50%;
-  animation: star-loader-spin 6s linear infinite;
+  animation: star-loader-spin 1.9s cubic-bezier(0.6, 0, 0.4, 1) infinite;
 }
 
 .star-loader-pulse {
   transform-origin: 50% 50%;
-  animation: star-loader-pulse 1.6s ease-in-out infinite;
+  animation: star-loader-pulse 1.15s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

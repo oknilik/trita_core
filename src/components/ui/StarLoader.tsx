@@ -17,11 +17,12 @@ const CENTER = VIEWBOX / 2;
 const RADIUS = 38;
 
 /**
- * A négy szárpár fázis-eltolása — ettől lélegzik, nem villan egyszerre.
- * A pulzus 1,6 s, tehát a 0–330 ms-os eltolás a ciklus ötöde: érzékelhető
- * hullámzás, de a szárak nem szakadnak szét látható „hiányzó ág" képpé.
+ * A négy szárpár fázis-eltolása. A pulzus 1,15 s, az eltolás pedig a ciklus
+ * negyedét fedi le (0 → 288 ms), tehát a kinyúlás körbefut a csillagon —
+ * ez adja a szikrázó, pörgő karakterét. Kisebb eltolással a négy szárpár
+ * egyszerre lüktetne, ami egyszerű méret-pumpálásnak látszik.
  */
-const PHASE_MS = [0, 110, 220, 330];
+const PHASE_MS = [0, 96, 192, 288];
 
 export function StarLoader({
   /** Pixelben; a vonalvastagság együtt skálázódik. */
@@ -76,7 +77,11 @@ export function StarLoader({
 }
 
 /**
- * Teljes képernyős töltőállapot: vászon + csillag + wordmark.
+ * Teljes képernyős töltőállapot: vászon + csillag, felirat nélkül.
+ *
+ * A wordmark szándékosan NINCS alatta: a töltés másodperc töredéke, és a
+ * logó ott csak visszaigazolja, amit a felhasználó úgyis tud (hol van) —
+ * a jel egyedül tisztább, és nagyobbra vehető.
  *
  * A `status` szerep + `aria-live="polite"` azért kell, hogy a képernyőolvasó
  * bemondja a várakozást — a néma spinner úgy viselkedik, mintha az oldal
@@ -89,14 +94,8 @@ export function StarLoaderScreen({ label }: { label: string }) {
       aria-live="polite"
       className="flex min-h-dvh items-center justify-center bg-[var(--color-surface-canvas)]"
     >
-      <div className="flex flex-col items-center gap-5">
-        <StarLoader size={56} />
-        <span className="font-fraunces text-2xl font-black tracking-[-0.03em] text-ink">
-          <span className="text-[var(--color-action-primary-bg)]">t</span>rit
-          <span className="text-[var(--color-accent-primary)]">a</span>
-        </span>
-        <span className="sr-only">{label}</span>
-      </div>
+      <StarLoader size={64} />
+      <span className="sr-only">{label}</span>
     </div>
   );
 }

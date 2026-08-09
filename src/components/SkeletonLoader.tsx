@@ -37,12 +37,11 @@ export function SkeletonLoader() {
         </div>
       </div>
 
-      {/* Töltő-jel — a formanyelv tinta-csillaga (3. szint), nem pörgő karika. */}
+      {/* Töltő-jel — a formanyelv tinta-csillaga (3. szint), nem pörgő
+          karika, és wordmark nélkül: a skeleton mögött úgyis a saját
+          felülete látszik, a logó ott csak zaj. */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <StarLoader size={44} />
-          <span className="font-fraunces text-sm text-[var(--color-text-muted)]">trit<span className="text-[var(--color-accent-primary-strong)]">a</span></span>
-        </div>
+        <StarLoader size={56} />
       </div>
     </div>
   );
