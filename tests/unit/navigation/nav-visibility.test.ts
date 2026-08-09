@@ -87,6 +87,23 @@ test("manager topnav omits admin-only organization menu", () => {
   assert.equal(ids.includes("org"), false);
 });
 
+// 2026-08-09: a menüpont MINDIG listát nyit. Korábban egy csapatnál közvetlen
+// link volt (UX-audit #25) — a használatban ez kiszámíthatatlanná tette a
+// gombot: ugyanaz a „Csapatok" hol listát nyitott, hol elnavigált.
+test("teams menu opens a list even with a single team, for every role", () => {
+  for (const role of ["self", "org_manager"] as const) {
+    const teamsItem = buildWorkspaceNavigation(role, baseContext)
+      .find((item) => item.id === "teams");
+
+    assert.ok(teamsItem, `${role}: nincs Csapatok menüpont`);
+    assert.equal(teamsItem.kind, "dropdown", `${role}: a menüpont navigál lista helyett`);
+    assert.deepEqual(
+      teamsItem.items?.map((entry) => entry.href),
+      ["/team/team_1?tab=overview"],
+    );
+  }
+});
+
 test("manager teams dropdown lists all accessible teams (member or manager)", () => {
   const navItems = buildWorkspaceNavigation("org_manager", multiTeamContext);
   const teamsItem = navItems.find((item) => item.id === "teams");

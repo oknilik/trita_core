@@ -203,18 +203,12 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
 
   if (ctx.teams.length === 0) return null;
 
-  // Egyetlen csapatnál nincs dropdown (UX-audit #25): a menü nagyobb lenne,
-  // mint a mögötte lévő világ — közvetlen link a csapatra.
-  if (ctx.teams.length === 1) {
-    const only = ctx.teams[0];
-    return {
-      id: "teams",
-      label: role === "org_manager" ? t("nav.myTeam", locale) : (only.name || t("nav.myTeam", locale)),
-      kind: "link",
-      primaryHref: `/team/${only.id}?tab=overview`,
-      matchPrefixes: uniqueMatchPrefixes("/team", `/team/${only.id}`),
-    };
-  }
+  // 2026-08-09: az egy-csapatos KÖZVETLEN LINK kivezetve (korábban UX-audit
+  // #25). Az a szabály onnan nézve volt logikus, hogy egy elemű menü
+  // felesleges — a használatban viszont kiszámíthatatlanná tette a
+  // menüpontot: ugyanaz a „Csapatok" gomb hol listát nyitott, hol azonnal
+  // elnavigált egy csapatra. A menüpont mostantól MINDIG listát nyit,
+  // szereptől és darabszámtól függetlenül.
 
   // A külön „Csapataim" lista-oldal tétel kivezetve (2026-07-29): a menü
   // maga A lista — az elemek egyben AKTÍV CSAPATOT is váltanak (a Vezérlő
