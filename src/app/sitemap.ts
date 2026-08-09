@@ -71,6 +71,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${baseUrl}/`, lastModified: reviewedAt, changeFrequency: "weekly", priority: 1 },
     { url: `${baseUrl}/pricing`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${baseUrl}/about`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/try`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
     { url: `${baseUrl}/patterns`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/pilot`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.6 },

@@ -474,4 +474,204 @@ export const landingTranslations = {
       en: "I'll personally reach out to you within 24 hours at the email address you provided.",
     },
   },
+  // ── /about — „Mi az a Trita" ────────────────────────────────────────
+  // A gondolat-oldal: mire épül a termék, milyen rétegekből áll össze a
+  // kép, és mi a célunk vele. A többi marketing-laptól az különbözteti
+  // meg, hogy NEM ajánlatot tesz — magyaráz. A CTA-k ezért hátul vannak.
+  //
+  // Szóhasználat (CLAUDE.md): „hat személyiségdimenzió" (a modellnév nem
+  // megy ki a felületre), „csapatszerep-kérdőív" (nem Belbin), a
+  // kérdésbank „szabadon felhasználható, kutatásban használt".
+  about: {
+    metaTitle: {
+      hu: "Mi az a Trita? A gondolat és a felépítés | Trita",
+      en: "What is Trita? The idea and how it's built | Trita",
+    },
+    metaDescription: {
+      hu: "Mire épül a Trita: négy mérési réteg, tanácsadói validálás és egy közös nyelv a csapatról. Elmondjuk, hogyan áll össze a kép — és mi a célunk vele.",
+      en: "What Trita is built on: four measurement layers, consultant validation and a shared language about the team. How the picture comes together — and what we're aiming at.",
+    },
+
+    // ── Hero ──
+    heroEyebrow: { hu: "A trita gondolat", en: "The idea behind trita" },
+    heroTitleBefore: { hu: "Attól, hogy együtt dolgoztok, még nem ", en: "Working together doesn't mean you " },
+    heroTitleEm: { hu: "ismeritek egymást.", en: "know each other." },
+    heroBody: {
+      hu: "A legfontosabb döntések a legtöbb csapatban emberekről szólnak: ki mihez ért, kivel működik jól, min csúszik meg az együttműködés. Ezekre viszont ritkán van más alapunk, mint a benyomás. A Trita ezt az alapot cseréli le egy mérhető, közösen olvasható képre.",
+      en: "In most teams the decisions that matter most are about people: who's good at what, who works well with whom, where collaboration slips. Yet we rarely have anything to go on beyond impressions. Trita replaces that footing with a measurable picture everyone can read.",
+    },
+    heroLead: {
+      hu: "Ez az oldal arról szól, hogyan áll össze ez a kép, és mi a célunk vele.",
+      en: "This page is about how that picture comes together — and what we're aiming at with it.",
+    },
+    heroCtaPrimary: { hu: "Beszéljünk a csapatotokról →", en: "Let's talk about your team →" },
+    heroCtaSecondary: { hu: "Kipróbálom magamon →", en: "Try it on myself →" },
+    heroChip1: { hu: "Négy mérési réteg", en: "Four measurement layers" },
+    heroChip2: { hu: "Tanácsadói validálás", en: "Consultant validation" },
+    heroChip3: { hu: "Becsült és mért mindig jelölve", en: "Estimated vs. measured always labeled" },
+    asideEyebrow: { hu: "Egy mondatban", en: "In one sentence" },
+    asideTitle: {
+      hu: "Közös nyelvet adunk ahhoz, amiről eddig csak érezni lehetett valamit.",
+      en: "We give you a shared language for what you could previously only sense.",
+    },
+    asideBody: {
+      hu: "Nem címkéket osztunk, és nem a pillanatnyi hangulatot mérjük. Azt mutatjuk meg, kikből áll a csapat — és ebből mi következik a mindennapi működésre.",
+      en: "We don't hand out labels, and we don't measure today's mood. We show who the team is made of — and what follows from that for everyday work.",
+    },
+
+    // ── Miért ──
+    whyEyebrow: { hu: "Miért csináljuk", en: "Why we do it" },
+    whyTitle: {
+      hu: "A csapatról szóló döntések a legdrágábbak — és a legkevésbé alátámasztottak.",
+      en: "Decisions about teams are the most expensive — and the least evidenced.",
+    },
+    why1Title: { hu: "A benyomás nem összevethető", en: "Impressions can't be compared" },
+    why1Desc: {
+      hu: "Két vezető ugyanarról az emberről két különböző képet hoz, és nincs mihez viszonyítani. A vita így nem a döntésről szól, hanem arról, kinek van igaza.",
+      en: "Two managers describe the same person in two different ways, with no common reference. The debate stops being about the decision and becomes about who's right.",
+    },
+    why2Title: { hu: "A típus-címke megáll a névnél", en: "A type label stops at the name" },
+    why2Desc: {
+      hu: "Egy betűkombináció szórakoztató, de másnap már nem lehet vele mit kezdeni. Használható irány nélkül a mérés csak beszélgetés-indító marad.",
+      en: "A four-letter code is fun, but there's nothing to do with it the next morning. Without an actionable direction, a measurement is just a conversation starter.",
+    },
+    why3Title: { hu: "A hangulatmérés a tünetet nézi", en: "Mood surveys look at the symptom" },
+    why3Desc: {
+      hu: "Az elégedettségi kérdőív azt mutatja, mi van most. Azt nem, hogy kikből áll a csapat — pedig a tartós mintázatok magyarázzák meg, miért tér vissza ugyanaz a súrlódás.",
+      en: "An engagement survey shows how things are right now. It doesn't show who the team is made of — yet the stable patterns are what explain why the same friction keeps returning.",
+    },
+
+    // ── Hogyan épül fel (rétegábra) ──
+    buildEyebrow: { hu: "Hogyan épül fel", en: "How it's built" },
+    buildTitle: { hu: "Négy réteg, ami egyetlen képpé áll össze.", en: "Four layers that become a single picture." },
+    buildLead: {
+      hu: "Minden réteg önmagában is olvasható, de az igazi érték az összeolvasásukban van. A sorrend nem véletlen: mindig az egyénnél kezdünk, és csak akkor lépünk feljebb, ha az alatta lévő réteg megvan.",
+      en: "Each layer stands on its own, but the value is in reading them together. The order isn't accidental: we always start with the individual, and only move up once the layer beneath is in place.",
+    },
+    buildDiagramAlt: {
+      hu: "Ábra: a négy mérési réteg egyetlen, tanácsadó által validált csapatképpé fut össze.",
+      en: "Diagram: the four measurement layers converge into a single, consultant-validated team picture.",
+    },
+    layer1Title: { hu: "Önértékelés — hat személyiségdimenzió", en: "Self-assessment — six personality dimensions" },
+    layer1Desc: {
+      hu: "Egy nagyjából 9 perces kérdőív, szabadon felhasználható, kutatásban használt kérdésbankból. Ez adja az alapot: milyen tartós mintázatok mozgatnak valakit munkahelyi helyzetekben.",
+      en: "A roughly 9-minute questionnaire drawn from a freely usable item pool used in research. This is the foundation: which stable patterns drive someone in work situations.",
+    },
+    layer1Tag: { hu: "~9 perc · egyéni", en: "~9 min · individual" },
+    layer2Title: { hu: "Külső visszajelzés — ahogy mások látnak", en: "External feedback — how others see you" },
+    layer2Desc: {
+      hu: "Kollégák és ismerősök adnak visszajelzést egy személyes linken, magabiztossági jelöléssel. Az önkép és a külső kép eltérése önmagában is az egyik legerősebb jelzés.",
+      en: "Colleagues and acquaintances give feedback through a personal link, with a confidence rating. The gap between self-image and outside view is one of the strongest signals on its own.",
+    },
+    layer2Tag: { hu: "opcionális · személyes link", en: "optional · personal link" },
+    layer3Title: { hu: "Csapatszerepek — ki mit visz a csapatban", en: "Team roles — what each person carries" },
+    layer3Desc: {
+      hu: "Saját, kilenc szerepből álló csapatszerep-kérdőív, önértékeléssel és csapattársi visszajelzéssel. A csapattársi kép mindig összesítve jelenik meg, legalább három értékelőtől.",
+      en: "Our own nine-role team role questionnaire, with self-assessment and teammate feedback. The teammate view is always shown aggregated, from at least three raters.",
+    },
+    layer3Tag: { hu: "9 szerep · önkép + csapattársi", en: "9 roles · self + teammate" },
+    layer4Title: { hu: "Pszichológiai biztonság — mennyire szabad hibázni", en: "Psychological safety — how safe it is to fail" },
+    layer4Desc: {
+      hu: "Névtelen pulzusmérés arról, mennyire biztonságos kérdezni, ellentmondani, hibát bevallani. Gyakran ez magyarázza meg, miért nem jön elő a többi rétegben látszó potenciál.",
+      en: "An anonymous pulse on how safe it feels to ask, disagree and admit a mistake. This is often what explains why the potential visible in the other layers doesn't surface.",
+    },
+    layer4Tag: { hu: "névtelen · pulzus", en: "anonymous · pulse" },
+    buildOutcomeLabel: { hu: "Ebből lesz", en: "Which becomes" },
+    buildOutcomeTitle: { hu: "Validált csapatkép", en: "A validated team picture" },
+    buildOutcomeDesc: {
+      hu: "A négy rétegből tanácsadó által ellenőrzött és értelmezett összkép készül — nem algoritmus dobja ki. A publikált kép mindig aggregált: egyéni értékek nem látszanak benne.",
+      en: "The four layers become an aggregate picture that a consultant reviews and interprets — it isn't spat out by an algorithm. What gets published is always aggregated: individual values never appear.",
+    },
+
+    // ── Az út ──
+    pathEyebrow: { hu: "Az út", en: "The path" },
+    pathTitle: { hu: "Magadtól a csapaton át a szervezetig.", en: "From yourself through the team to the organization." },
+    pathLead: {
+      hu: "Ugyanaz a mérés más-más felbontásban válik hasznossá. Mindenki a saját eredményénél kezd, és csak az látja a következő szintet, akinek szerepe van benne.",
+      en: "The same measurement becomes useful at different resolutions. Everyone starts with their own result, and only those with a role at the next level get to see it.",
+    },
+    pathDiagramAlt: {
+      hu: "Ábra: a mérés köre az egyéntől a külső visszajelzésen és a csapaton át a szervezetig tágul.",
+      en: "Diagram: the circle of measurement widens from the individual through external feedback and the team to the organization.",
+    },
+    path1Title: { hu: "Magad", en: "Yourself" },
+    path1Desc: {
+      hu: "A saját profilod, karrierképed és fejlődési fókuszod. Ez a réteg ingyenes, és önmagában is teljes.",
+      en: "Your own profile, career picture and growth focus. This layer is free, and complete in itself.",
+    },
+    path2Title: { hu: "Ahogy mások látnak", en: "How others see you" },
+    path2Desc: {
+      hu: "A külső visszajelzések a saját eredményed mellé kerülnek — nem helyette. A kettő eltérése a beszélgetés kiindulópontja.",
+      en: "External feedback sits next to your own result — not instead of it. The gap between them is where the conversation starts.",
+    },
+    path3Title: { hu: "A csapat", en: "The team" },
+    path3Desc: {
+      hu: "Az egyéni profilokból csapatkép lesz: mintázat, erősségek, súrlódási pontok és a szerepek térképe.",
+      en: "Individual profiles become a team picture: pattern, strengths, friction points and a map of roles.",
+    },
+    path4Title: { hu: "A szervezet", en: "The organization" },
+    path4Desc: {
+      hu: "Több csapat egymás mellett: hol ismétlődik ugyanaz a minta, és hol egyedi a helyzet.",
+      en: "Several teams side by side: where the same pattern repeats, and where a situation is genuinely unique.",
+    },
+
+    // ── Alapelvek ──
+    valuesEyebrow: { hu: "Amit betartunk", en: "What we hold to" },
+    valuesTitle: {
+      hu: "Hitelesség nélkül a mérés csak vélemény, drágábban.",
+      en: "Without credibility, a measurement is just an opinion — at a higher price.",
+    },
+    value1Title: { hu: "Becsült és mért soha nem mosódik össze", en: "Estimated and measured never blur" },
+    value1Desc: {
+      hu: "Ahol becslésből dolgozunk, ott az oda van írva. Minden elemzési kimeneten látszik a forrás és a megbízhatóság — ez alapszabály, nem beállítás.",
+      en: "Where we work from an estimate, it says so. Every analytical output carries its source and confidence — this is a ground rule, not a setting.",
+    },
+    value2Title: { hu: "A csapatkép aggregált", en: "The team picture is aggregated" },
+    value2Desc: {
+      hu: "A vezető nem látja senkinek az egyéni pontszámát. Csapatátlagot és szórást igen — a mögötte lévő embereket nem.",
+      en: "A manager never sees anyone's individual score. Team average and spread, yes — the people behind them, no.",
+    },
+    value3Title: { hu: "Ember olvassa el, mielőtt kimegy", en: "A human reads it before it ships" },
+    value3Desc: {
+      hu: "A csapatképet publikálás előtt tanácsadó ellenőrzi és értelmezi. A számokból így nem lesz félreolvasható ítélet.",
+      en: "A consultant reviews and interprets the team picture before it's published, so the numbers don't turn into a verdict that can be misread.",
+    },
+    value4Title: { hu: "Nincs jó és rossz profil", en: "There is no good or bad profile" },
+    value4Desc: {
+      hu: "Ami az egyik helyzetben erősség, a másikban kockázat. A riport ezt mondja ki — nem rangsorol embereket.",
+      en: "What is a strength in one situation is a risk in another. The report says exactly that — it doesn't rank people.",
+    },
+
+    // ── A cél ──
+    goalEyebrow: { hu: "Mi a célunk", en: "What we're aiming at" },
+    goalTitle: {
+      hu: "Hogy a csapatról szóló beszélgetés végre ugyanarról szóljon.",
+      en: "So that the conversation about the team is finally about the same thing.",
+    },
+    goalDiagramAlt: {
+      hu: "Ábra: az össze nem vethető benyomásokból rendezett, közösen olvasható kép lesz.",
+      en: "Diagram: incomparable impressions become an ordered picture everyone can read.",
+    },
+    goalBody1: {
+      hu: "Az a célunk, hogy egy csapatban ne kelljen évekig együtt dolgozni ahhoz, hogy kiderüljön, ki mihez ért és mi miért csúszik. Amit ma három év közös tapasztalata ad meg, azt szeretnénk pár hét alatt megbeszélhetővé tenni.",
+      en: "Our aim is that a team shouldn't need years together before it becomes clear who's good at what and why things slip. What three years of shared experience gives you today, we want to make discussable in a few weeks.",
+    },
+    goalBody2: {
+      hu: "És hogy ne egy riport legyen, amit senki nem nyit ki. A Trita a tanácsadói munka eszköze: a mérés adja a képet, a közös értelmezés a jelentését, a platform pedig azt, hogy fél év múlva is visszanézhető legyen, mi változott.",
+      en: "And that it shouldn't be a report nobody opens. Trita is a tool for consulting work: the measurement provides the picture, the joint debrief provides its meaning, and the platform makes it possible to look back six months later and see what changed.",
+    },
+    goalBeforeLabel: { hu: "Enélkül", en: "Without it" },
+    goalBeforeText: { hu: "Benyomások, amiket nem lehet egymás mellé tenni.", en: "Impressions that can't be placed side by side." },
+    goalAfterLabel: { hu: "Ezzel", en: "With it" },
+    goalAfterText: { hu: "Egy kép, amiről ugyanazon a nyelven lehet beszélni.", en: "A picture you can discuss in the same language." },
+
+    // ── Záró CTA ──
+    ctaTitle: { hu: "Kezdjük egy beszélgetéssel.", en: "Let's start with a conversation." },
+    ctaBody: {
+      hu: "Mesélj a csapatodról — egy munkanapon belül válaszolunk. Ha előbb magadon néznéd meg, az egyéni felmérés ingyenes.",
+      en: "Tell us about your team — we reply within one business day. If you'd rather try it on yourself first, the individual assessment is free.",
+    },
+    ctaPrimary: { hu: "Kapcsolatfelvétel →", en: "Get in touch →" },
+    ctaSecondary: { hu: "Kipróbálom magamon →", en: "Try it on myself →" },
+  },
 } as const;
