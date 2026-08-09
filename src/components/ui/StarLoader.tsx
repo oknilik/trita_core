@@ -10,29 +10,54 @@
 // (`star-loader-spin` / `star-loader-pulse`), a reduced-motion kikapcsolás
 // is ott — így a mozgás-szabály egy helyen módosul.
 
-import { starGeometry } from "@/lib/miro-primitives";
+import { starArms } from "@/lib/miro-primitives";
 
 const VIEWBOX = 100;
 const CENTER = VIEWBOX / 2;
 const RADIUS = 38;
 
 /**
- * A négy szárpár fázis-eltolása. A pulzus 1,15 s, az eltolás pedig a ciklus
- * negyedét fedi le (0 → 288 ms), tehát a kinyúlás körbefut a csillagon —
- * ez adja a szikrázó, pörgő karakterét. Kisebb eltolással a négy szárpár
- * egyszerre lüktetne, ami egyszerű méret-pumpálásnak látszik.
+ * A wordmark három színe az ágakra osztva — ugyanazokból a tokenekből,
+ * amikből maga a logó (`t` zsálya · `rit` tinta · `a` bronz). Mind a három
+ * token VILÁGOSSÁ fordul a sötét sémán, tehát nem kell külön sötét készlet
+ * (ellenőrizve: a paletta mindhárom értéke felülíródik a sötét blokkban).
+ *
+ * Az arány szándékosan tinta-túlsúlyos (négy ág a nyolcból): a jel továbbra
+ * is a formanyelv TINTA-csillaga, a két márkaszín csak átvillan rajta. Fele-
+ * fele elosztásnál karácsonyfa lenne, nem töltő-jel.
+ *
+ * Az elosztás 180°-osan szimmetrikus (a szemközti ág mindig azonos színű),
+ * így a forgás közben a színegyensúly állandó marad — különben a csillag
+ * „billegne" egy szín felé.
  */
-const PHASE_MS = [0, 96, 192, 288];
+const ARM_COLORS = [
+  "var(--color-action-primary-bg)", // ↑ zsálya
+  "var(--color-text-primary)",
+  "var(--color-accent-primary)", // → bronz
+  "var(--color-text-primary)",
+  "var(--color-action-primary-bg)", // ↓ zsálya
+  "var(--color-text-primary)",
+  "var(--color-accent-primary)", // ← bronz
+  "var(--color-text-primary)",
+];
+
+/**
+ * Ágankénti fázis-eltolás. A pulzus 1,15 s, a nyolc ág eltolása a ciklus
+ * negyedét fedi le, tehát a kinyúlás KÖRBEFUT a csillagon — ez adja a
+ * szikrázó karakterét. Egyszerre lüktető ágak sima méret-pumpálásnak
+ * látszanának.
+ */
+const PHASE_STEP_MS = 36;
 
 export function StarLoader({
   /** Pixelben; a vonalvastagság együtt skálázódik. */
   size = 48,
   /**
-   * A jel színe. Alapból a tinta — ami sötét sémán VILÁGOSSÁ fordul, mert
-   * egy szó szerint fekete csillag a sötét vásznon láthatatlan lenne.
-   * Sötét panelen (ami mindkét sémán sötét) adj át explicit értéket.
+   * Egyszínű változat. Alapból nincs: a jel a wordmark három színét viseli
+   * (tinta-túlsúllyal). Akkor adj át értéket, ha a jel olyan panelre kerül,
+   * ami MINDKÉT sémán sötét — ott a tinta-ágak eltűnnének.
    */
-  color = "var(--color-text-primary)",
+  color,
   /** Képernyőolvasónak. `null` = a jel dekoráció, a szöveget a keret adja. */
   label = null,
   className,
@@ -42,7 +67,7 @@ export function StarLoader({
   label?: string | null;
   className?: string;
 }) {
-  const { lines } = starGeometry(CENTER, CENTER, RADIUS);
+  const arms = starArms(CENTER, CENTER, RADIUS);
   const strokeWidth = Math.max(1.5, VIEWBOX * 0.055);
 
   return (
@@ -57,15 +82,15 @@ export function StarLoader({
       focusable="false"
     >
       <g className="star-loader-spin">
-        {lines.map((l, i) => (
+        {arms.map((arm, i) => (
           <g
-            key={`${l.x1}-${l.y1}-${l.x2}-${l.y2}`}
+            key={`${arm.x2}-${arm.y2}`}
             className="star-loader-pulse"
-            style={{ animationDelay: `${PHASE_MS[i % PHASE_MS.length]}ms` }}
+            style={{ animationDelay: `${i * PHASE_STEP_MS}ms` }}
           >
             <line
-              x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}
-              stroke={color}
+              x1={arm.x1} y1={arm.y1} x2={arm.x2} y2={arm.y2}
+              stroke={color ?? ARM_COLORS[i]}
               strokeWidth={strokeWidth}
               strokeLinecap="round"
             />

@@ -111,6 +111,33 @@ export interface StarGeometry {
   lines: Array<{ x1: number; y1: number; x2: number; y2: number }>;
 }
 
+/**
+ * Ugyanaz a csillag, de nyolc KÜLÖN ágra bontva (középpontból kifelé).
+ *
+ * A `starGeometry` négy átmérőt ad — az kevesebb elem, és a statikus
+ * kísérőjelnek tökéletes. Ahol viszont ágankénti szín vagy fázis kell (a
+ * töltő-jel), ott az átmérő nem elég: a szemközti ágak elkerülhetetlenül
+ * együtt mozognának és egy színt kapnának. A kirajzolt kép azonos, mert a
+ * nyolc ág ugyanabban a középpontban találkozik.
+ *
+ * A sorrend a felső ágtól indul, az óramutató járása szerint.
+ */
+export function starArms(
+  cx: number,
+  cy: number,
+  radius: number,
+): Array<{ x1: number; y1: number; x2: number; y2: number }> {
+  return Array.from({ length: 8 }, (_, i) => {
+    const angle = (Math.PI / 4) * i - Math.PI / 2;
+    return {
+      x1: r2(cx),
+      y1: r2(cy),
+      x2: r2(cx + Math.cos(angle) * radius),
+      y2: r2(cy + Math.sin(angle) * radius),
+    };
+  });
+}
+
 /** Nyolcágú tinta-csillag — a formanyelv leggyakoribb kísérőjele. */
 export function starGeometry(cx: number, cy: number, radius: number): StarGeometry {
   const d = radius * 0.71;

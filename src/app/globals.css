@@ -1313,7 +1313,9 @@ input[type="range"].pattern-range::-moz-range-track {
    Egy visszahúzódó szár mozgásnak látszik, egy elhalványuló szár viszont
    HIÁNYZÓ ágnak — az első változat 0.45-ös opacitás-padlóval 24 pixelen
    töröttnek tűnt. Ezért a skála tartománya tág (0.62–1.06), az opacitásé
-   viszont szűk marad (0.82–1).
+   viszont épphogy érzékelhető (0.9–1): az ágak a wordmark színeit viselik,
+   és 0.82-nél a tinta már láthatóan szürkévé mosódott a logó mély tintájához
+   képest. A halványítás itt csak mélységet ad, nem mozgást.
 
    Reduced motion: mindkettő KIKAPCSOL (nem lassul), és a jel teljes
    opacitáson, elforgatás nélkül áll meg — így a töltés ténye továbbra is
@@ -1331,7 +1333,7 @@ input[type="range"].pattern-range::-moz-range-track {
   0%,
   100% {
     transform: scale(0.62);
-    opacity: 0.82;
+    opacity: 0.9;
   }
   50% {
     transform: scale(1.06);

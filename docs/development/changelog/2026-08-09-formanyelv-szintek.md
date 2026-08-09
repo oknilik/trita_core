@@ -155,6 +155,26 @@ A töltőképernyőkről **lekerült a wordmark**: a töltés másodperc töred�
 a logó ott csak visszaigazolja, amit a felhasználó úgyis tud. A jel egyedül
 tisztább, és nagyobbra vehető (64px).
 
+**A jel a logó három színét viseli.** Nem külön paletta: pontosan azok a
+tokenek, amikből a wordmark is épül (`t` zsálya · `rit` tinta · `a` bronz),
+tehát a színcsere és a sémaváltás együtt mozgatja őket. Ehhez a csillag
+nyolc KÜLÖN ágra bomlott (`starArms`) — négy átmérővel a szemközti ágak
+elkerülhetetlenül egy színt és egy fázist kapnának. A statikus kísérőjel
+maradt a négyátmérős `starGeometry`-n; a kirajzolt kép azonos.
+
+Két arányszabály:
+
+- **Tinta-túlsúly** (négy ág a nyolcból): a jel továbbra is a formanyelv
+  tinta-csillaga, a két márkaszín csak átvillan rajta. Fele-fele elosztásnál
+  karácsonyfa lenne.
+- **180°-osan szimmetrikus elosztás** (a szemközti ág mindig azonos színű),
+  így forgás közben a színegyensúly állandó — különben a csillag billegne
+  egy szín felé.
+
+A színek miatt az opacitás-padló 0,82-ről **0,9-re** ment fel: 0,82-nél a
+tinta láthatóan szürkévé mosódott a logó mély tintájához képest. A mozgást
+úgyis a skála viszi, a halványítás csak mélységet ad.
+
 Átállítva: `RedirectLoader` (a `/dashboard` diszpécser köztes állapota) és a
 `SkeletonLoader` középső jele. A gombokban lévő apró inline spinnerek
 maradtak — ott a 16px-es karika funkcionálisan jobb, és nem is töltőképernyő.
