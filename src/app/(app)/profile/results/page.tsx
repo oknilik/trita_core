@@ -22,6 +22,8 @@ import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
+import { buildSimpleSummary } from "@/lib/results/simple-summary";
+import { resolveResultsViewMode } from "@/lib/results/view-mode";
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
@@ -69,7 +71,13 @@ export default async function ProfileResultsPage({
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true, username: true, email: true, careerBackground: true },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      careerBackground: true,
+      resultsViewMode: true,
+    },
   });
   if (!profile) redirect("/sign-in");
 
@@ -491,6 +499,26 @@ export default async function ProfileResultsPage({
     closingText: BLOCK8[lang],
   } : undefined;
 
+  // ── Egyszerű nézet ─────────────────────────────────────────────────────────
+  // Ugyanazokból a pontszámokból dolgozik, mint a részletes kép — nincs új
+  // mérés és nincs új DB-hívás. A nézetmodell szerver-oldalon áll össze, hogy
+  // a szöveg-táblák ne kerüljenek a kliens-bundle-be.
+  const simpleSummary = buildSimpleSummary({
+    dimensions: mainDimensions.map((d) => ({
+      code: d.code,
+      label: d.label,
+      score: d.score,
+    })),
+    locale: lang,
+  });
+
+  // Nézet-mód: ?view= → mélylinkelt ?tab= → tárolt preferencia → egyszerű.
+  const viewMode = resolveResultsViewMode({
+    param: resolvedParams?.view,
+    tab: tabParam,
+    stored: profile.resultsViewMode,
+  });
+
   return (
     <PlatformPageShell
       surface="self"
@@ -569,6 +597,8 @@ export default async function ProfileResultsPage({
           }}
           teamRoleMeasuredScores={teamRoleMeasuredScores}
           teamRolePeer={teamRolePeer}
+          initialViewMode={viewMode}
+          simpleSummary={simpleSummary}
           experienceHints={journeySnapshot.resolution.experienceHints}
           experienceHintDestination={journeySnapshot.resolution.destination}
         />

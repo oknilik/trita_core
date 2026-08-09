@@ -103,6 +103,10 @@ model UserProfile {
   // eredmény-értesítők) nem érinti. Kapcsoló: /email-preferences.
   lifecycleEmailsOptOut Boolean @default(false)
 
+  // Eredmeny-nezet: "simple" | "full". NULL = meg nem valasztott -> az
+  // egyszeru nezet indul. A valasztast a /api/profile/view-mode irja.
+  resultsViewMode String?
+
   assessmentResults       AssessmentResult[]
   assessmentDraft         AssessmentDraft?
   consultantInvitesSent   ConsultantInvite[]   @relation("ConsultantInviter")

@@ -45,6 +45,10 @@ import { buildArchetypeStory } from "@/lib/profile-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
+import type { ResultsViewMode } from "@/lib/results/view-mode";
+import type { SimpleSummary } from "@/lib/results/simple-summary";
+import { ViewModeSwitch } from "@/components/results/simple/ViewModeSwitch";
+import { SimpleResultsView } from "@/components/results/simple/SimpleResultsView";
 
 type ProfileLevel = "start" | "plus";
 type TabId = "results" | "workstyle" | "comparison" | "invites";
@@ -177,6 +181,13 @@ export interface ProfileTabsProps {
   teamRoleMeasuredScores?: Record<string, number> | null;
   /** Csapattársi szerep-visszajelzés aggregátuma (kampányból). */
   teamRolePeer?: TeamRolesPeerData | null;
+  /**
+   * Egyszerű vagy részletes nézet induláskor — a szerver oldja fel
+   * (`?view=` → tárolt preferencia → egyszerű). Ld. lib/results/view-mode.ts.
+   */
+  initialViewMode?: ResultsViewMode;
+  /** Az egyszerű nézet szerver-oldalon összeállított nézetmodellje. */
+  simpleSummary?: SimpleSummary | null;
 }
 
 // ─── Shared paywall components ──────────────────────────────────────────────
@@ -533,6 +544,8 @@ export function ProfileTabs({
   careerResult = null,
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
+  initialViewMode = "full",
+  simpleSummary = null,
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
@@ -640,6 +653,44 @@ export function ProfileTabs({
     [router],
   );
 
+  // ── Nézet-mód (egyszerű ⇄ részletes) ──────────────────────────────────────
+  // Az egyszerű nézet csak akkor él, ha a szerver adott hozzá nézetmodellt.
+  const [viewMode, setViewMode] = useState<ResultsViewMode>(
+    simpleSummary ? initialViewMode : "full",
+  );
+  // A pontszámok alapból rejtve: a szám olyan pontosságot ígér, amivel egy
+  // önjellemzés nem rendelkezik. Ez munkamenet-szintű kapcsoló, nem tárolt
+  // preferencia — a nézet-választással ellentétben nem hordoz szándékot.
+  const [showNumbers, setShowNumbers] = useState(false);
+
+  const handleViewModeChange = useCallback(
+    (next: ResultsViewMode, targetTab?: TabId) => {
+      setViewMode(next);
+      const url = new URL(window.location.href);
+      url.searchParams.set("view", next);
+      // A fül-paraméter az egyszerű nézetben értelmetlen (nincs fülsáv);
+      // részletesre váltáskor viszont az URL is kövesse a megnyitott fület,
+      // hogy egy frissítés ugyanoda érkezzen.
+      if (next === "simple") {
+        url.searchParams.delete("tab");
+      } else if (targetTab) {
+        url.searchParams.set("tab", targetTab);
+        setActiveTab(targetTab);
+      }
+      router.replace(url.pathname + url.search, { scroll: false });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // A választás megjegyzése eszközfüggetlen (UserProfile). Ha a mentés
+      // nem megy át, a nézet akkor is átvált — a preferencia elvesztése nem
+      // ok arra, hogy a felhasználó kérése ne teljesüljön.
+      void fetch("/api/profile/view-mode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: next }),
+      }).catch(() => {});
+    },
+    [router],
+  );
+
   const ALL_TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
     {
       id: "results",
@@ -671,6 +722,20 @@ export function ProfileTabs({
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
+
+      {/* Nézetváltó — a felület állandó eleme, nem lapalji link. Csak ott
+          jelenik meg, ahol tényleg van mit váltani (van egyszerű nézetmodell). */}
+      {simpleSummary && (
+        <div className="-mb-4">
+          <ViewModeSwitch
+            mode={viewMode}
+            onChange={handleViewModeChange}
+            showNumbers={viewMode === "simple" ? showNumbers : undefined}
+            onToggleNumbers={viewMode === "simple" ? setShowNumbers : undefined}
+            locale={locale}
+          />
+        </div>
+      )}
 
       {/* Dark sage hero + a hozzá tapadó karakter-ábra fül — egy blokk,
           hogy a fül a banner alsó szélére üljön (a külső gap ne tolja el).
@@ -946,6 +1011,22 @@ export function ProfileTabs({
         }}
       />
 
+      {viewMode === "simple" && simpleSummary ? (
+        <>
+          <TabViewTracker surface="results" tab="simple" />
+          {/* Az egyszerű nézetben nincs fülsáv, haladás-sáv és következő-lépés
+              kártya: a navigációt a nézet két záró sora adja (részletes nézet,
+              külső kép). A visszajelzés-űrlap mindkét nézetben marad. */}
+          <SimpleResultsView
+            summary={simpleSummary}
+            showNumbers={showNumbers}
+            locale={locale}
+            onOpenFull={() => handleViewModeChange("full")}
+            onOpenComparison={() => handleViewModeChange("full", "comparison")}
+          />
+        </>
+      ) : (
+        <>
       {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
           út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}
       {observerFlow && observerFlow.state !== "self_serve" ? (
@@ -1217,7 +1298,11 @@ export function ProfileTabs({
         </div>
       ) : null}
 
-      {/* Elégedettség-visszajelzés — egyszer, az oldal alján */}
+        </>
+      )}
+
+      {/* Elégedettség-visszajelzés — egyszer, az oldal alján. Mindkét
+          nézetben renderel: az egyszerű nézet nem eshet ki a mérésből. */}
       <FeedbackForm
         initialSubmitted={feedbackSubmitted}
         hasObserverFeedback={hasObserverData}

@@ -376,6 +376,46 @@ export const resultsTranslations = {
     summaryPerfectMatch: { hu: "Ritka és értékes: az önképed szinte teljesen egyezik mások értékelésével.", en: "Rare and valuable: your self-image almost perfectly matches others' assessment." },
   },
   results: {
+    // ── Egyszerű nézet (2026-08-09) ────────────────────────────────────────
+    // A rövidített kép feliratai. A dimenzió-nevek és a pólus-címkék NEM itt
+    // élnek: előbbi a tritan.ts-ben, utóbbi a results/simple-copy.ts-ben
+    // (dimenzió-kód szerint indexelt táblák, a dimension-insights.ts mintája).
+    viewModeSimple: { hu: "Egyszerű", en: "Simple" },
+    viewModeFull: { hu: "Részletes", en: "Detailed" },
+    viewModeLabel: { hu: "Nézet", en: "View" },
+    viewModeNumbers: { hu: "Számok", en: "Numbers" },
+    viewModeNumbersHint: {
+      hu: "Pontszámok megjelenítése a skálákon",
+      en: "Show scores on the scales",
+    },
+    simpleStatementsTitle: { hu: "Rólad, három mondatban", en: "You, in three sentences" },
+    simpleStatementStrength: { hu: "Ami a legjobban megy", en: "What works best" },
+    simpleStatementPattern: { hu: "Ahogy dolgozol", en: "How you work" },
+    simpleStatementWatch: { hu: "Amire figyelj", en: "What to watch" },
+    simpleStatementSource: { hu: "Miből látszik:", en: "Where this comes from:" },
+    simpleDimsTitle: { hu: "Hol állsz a hat dimenzión", en: "Where you stand on the six dimensions" },
+    simpleDimsNote: {
+      hu: "A sorok két véglet közti helyzetet mutatnak — egyik vég sem jobb a másiknál.",
+      en: "Each row shows a position between two ends — neither end is better than the other.",
+    },
+    simpleDimExpand: { hu: "Mit jelent ez?", en: "What does this mean?" },
+    simpleMethodTitle: { hu: "Ez a kép a saját válaszaidból készült", en: "This picture comes from your own answers" },
+    simpleMethodBody: {
+      hu: "Önjellemzés, nem diagnózis. Azt mutatja, mi jellemző rád hat személyiségdimenzió mentén.",
+      en: "A self-description, not a diagnosis. It shows what is characteristic of you across six personality dimensions.",
+    },
+    simpleSwitchTitle: { hu: "Szeretnél mélyebbre menni?", en: "Want to go deeper?" },
+    simpleSwitchBody: {
+      hu: "A részletes nézetben ott az összes alskála, a munkastílusod, az ideális környezeted és a csapatszerepeid.",
+      en: "The detailed view has every facet, your work style, your ideal environment and your team roles.",
+    },
+    simpleSwitchCta: { hu: "Részletes nézet", en: "Detailed view" },
+    simpleOutsideTitle: { hu: "Ahogy mások látnak", en: "How others see you" },
+    simpleOutsideBody: {
+      hu: "A külső visszajelzések és az összevetés a részletes nézetben érhető el.",
+      en: "Outside feedback and the comparison live in the detailed view.",
+    },
+    simpleOutsideCta: { hu: "Külső kép megnyitása", en: "Open outside view" },
     heroEyebrow: { hu: "A te profilod", en: "Your profile" },
     heroShare: { hu: "Megosztás", en: "Share" },
     heroPdf: { hu: "PDF letöltés", en: "Download PDF" },

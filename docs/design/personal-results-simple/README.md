@@ -1,6 +1,8 @@
 # Egyszerű nézet a személyes eredményekhez — koncepció
 
-> Készült: 2026-08-09 · Állapot: **koncepció + makettek**, nincs production kód
+> Készült: 2026-08-09 · Állapot: **megépült** — a makettek a tervezési
+> kiindulópontot őrzik, az élő megvalósítás leírása:
+> `docs/development/changelog/2026-08-09-egyszeru-eredmeny-nezet-implementacio.md`
 > Makettek: `index.html` (áttekintés), `a-egy-tortenet.html`, `b-kartyak.html`,
 > `c-vizualis.html` — böngészőben megnyithatók, működő nézetváltóval.
 
@@ -93,15 +95,23 @@ Amit ez a koncepció **nem** old meg: a csapat- és külső-kép nézeteket nem
 és nem pótolja a tanácsadói beszélgetést — a célja, hogy a kliens fel tudja
 idézni, amit hallott.
 
-## 7. Nyitott döntések
+## 7. Döntések (2026-08-09, lezárva)
 
-| Kérdés | Javaslat | Állapot |
+| Kérdés | Döntés | Állapot |
 |---|---|---|
-| Melyik a kezdőnézet? | Első megnyitáskor az egyszerű, utána az utoljára használt | döntés kell |
-| Mi legyen a fülekkel egyszerű nézetben? | Fülsáv elrejtve; a „Külső kép" egy sorként a lap alján | döntés kell |
-| Pontszám a PDF-ben / megosztó-képen? | PDF marad számokkal; megosztó-kép forma + típusnév, szám nélkül | javaslat |
-| Ki írja a szövegeket? | A makett szövegei **tervezői mintaszövegek** — éles előtt tartalmi átnézés kell (HU+EN) | tartalom |
+| Melyik irány épül meg? | „A" az alap, mobilon a „B" csukott dimenzió-listájával | **megépült** |
+| Melyik a kezdőnézet? | Első megnyitáskor az egyszerű, utána az utoljára használt | **megépült** |
+| Hogyan tároljuk a választást? | `UserProfile.resultsViewMode` (eszközfüggetlen), Prisma-migrációval | **megépült** |
+| Mi legyen a fülekkel egyszerű nézetben? | Fülsáv elrejtve; a „Külső kép" egy sorként a lap alján | **megépült** |
+| Pontszám a PDF-ben / megosztó-képen? | PDF marad számokkal; megosztó-kép forma + típusnév, szám nélkül | későbbi kör |
+| Ki írja a szövegeket? | A táblák `src/lib/results/simple-copy.ts`-ben élnek — éles előtt tartalmi átnézés kell (HU+EN) | tartalom |
 | Külső visszajelzés esetén negyedik állítás? | „Ahogy mások látnak", csak a küszöb felett, forrás-jelöléssel | későbbi kör |
+
+Egy döntés menet közben jött, és a makettben még nem szerepelt:
+**a mélylinkelt `?tab=` felülírja a tárolt „egyszerű" preferenciát.** Az
+egyszerű nézetben nincs fülsáv, viszont tíz+ helyről érkezik
+`?tab=comparison#invitations` alakú link (értesítő e-mailek, journey-CTA-k,
+súgó) — enélkül azok zsákutcába futnának.
 
 ## 8. Implementációs vázlat
 
