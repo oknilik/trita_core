@@ -162,3 +162,19 @@ A minta-persona („Kovács Anna", X 81 · O 78 · H 74 · A 55 · C 46 · E 38)
 számítási logikát követi: a típuscímke (`Kísérletező hajtóerő`) és az összegző
 mondat pontosan az, amit a `personality-type.ts` és a `dimension-insights.ts`
 adna ezekre az értékekre.
+
+## 11. Önálló, egyfájlos változat (artifact)
+
+`onallo-lap.html` — a teljes koncepció + mind a három makett **egyetlen,
+külső függőség nélküli fájlban** (inline CSS/JS, semmilyen CDN). Ez a
+megosztható/publikálható változat; a fenti több-fájlos készlet a
+munkapéldány.
+
+Két eltérés a több-fájlos változathoz képest:
+
+- **Világos és sötét témában is renderel** — a sötét készlet a termék valós
+  dark tokenjeit használja (`globals.css` `[data-theme="dark"]` réteg), a
+  dimenzió-hue-k is a sötét változatukra váltanak.
+- **Nem tölt webfontot** (a publikálási CSP tiltja a külső hosztokat): a
+  Fraunces/DM Sans helyett rendszer-szerif és rendszer-sans a tartalék.
+  Ahol a néző gépén megvan a Fraunces, ott az jelenik meg.

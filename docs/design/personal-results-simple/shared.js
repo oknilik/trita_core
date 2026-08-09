@@ -324,8 +324,8 @@
     const node = el(`
       <div class="shapewrap">
         <div>
-          <svg viewBox="-58 -34 ${size + 116} ${size + 68}" width="100%"
-               style="max-width:470px;display:block;margin:0 auto">
+          <svg viewBox="-96 -34 ${size + 192} ${size + 68}" width="100%"
+               style="max-width:500px;display:block;margin:0 auto">
             <defs>
               <linearGradient id="shapefill" x1="0" y1="0" x2="1" y2="1">
                 <stop offset="0%" stop-color="#3d6b5e" stop-opacity=".26"/>
@@ -456,7 +456,9 @@
           const host = btn.closest("[data-app]") || document;
           host.querySelectorAll("[data-switch] button").forEach((b) =>
             b.classList.toggle("on", b.dataset.view === view));
-          host.querySelectorAll("[data-view]").forEach((v) => {
+          // FONTOS: csak a vászon-panelek, a szegmens-gombok is `data-view`-t
+          // hordoznak — szűkítés nélkül a váltó elrejtené önmagát.
+          host.querySelectorAll(".canvas[data-view]").forEach((v) => {
             v.style.display = v.dataset.view === view ? "" : "none";
           });
           // Váltás után a nézet tetejére: a mobil-keretben a keret görgethető
