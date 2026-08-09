@@ -266,21 +266,47 @@ function NavHeaderContent({
 
   // Csapat-váltás a nav-menüből: a kijelölt csapat perzisztens (a Vezérlő
   // ezután ide visz). A navigáció akkor is megtörténik, ha a mentés elhasal.
-  async function switchTeam(teamId: string) {
-    try {
-      await fetch("/api/team/context", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamId }),
-      });
-    } catch {
-      // a kijelölés ilyenkor marad a régi — a navigáció mehet tovább
-    }
-    router.refresh();
+  /**
+   * Aktív csapat kijelölése a Csapatok-menüből.
+   *
+   * MINDKÉT hívási helye egy `<Link>`-en ül, ami közben a csapatoldalra
+   * navigál — ezért itt SEM `await`, SEM `router.refresh()` nincs:
+   *
+   *  – A `refresh()` a JELENLEGI útvonalat rendereli újra. Amíg a POST
+   *    válaszára vártunk, a Link navigációja már elindult, és a beérkező
+   *    refresh visszarántotta a felhasználót arra az oldalra, ahonnan a
+   *    menüt nyitotta. Az org-oldalról indulva ez pontosan úgy nézett ki,
+   *    mintha a menü a szervezetre vinne — mobilon a lassabb hálózat miatt
+   *    szinte mindig ez nyert (2026-08-09).
+   *  – A frissítés amúgy is felesleges: a cél-oldal a navigációval újra
+   *    renderel, a csapatoldal pedig URL-ből azonosítja a csapatot, nem a
+   *    kijelölt kontextusból.
+   *
+   * `keepalive`: a kérésnek túl kell élnie a lapváltást, különben a
+   * kijelölés elveszne, ha a navigáció hamarabb kész, mint a POST.
+   */
+  function switchTeam(teamId: string) {
+    void fetch("/api/team/context", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ teamId }),
+      keepalive: true,
+    }).catch(() => {
+      // A kijelölés ilyenkor marad a régi — a navigáció mehet tovább.
+    });
   }
 
   const homePath = homeHref.split("?")[0] ?? homeHref;
   const activeTab = searchParams.get("tab");
+
+  /**
+   * Épp ezen a célponton állunk-e? A menü-hivatkozások `?tab=` paraméterrel
+   * jönnek, az útvonal-egyezéshez viszont csak a path számít — a csapatoldal
+   * bármelyik fülén állva ugyanaz a csapat az aktív.
+   */
+  function isMobileChildActive(href: string): boolean {
+    return pathname === (href.split("?")[0] ?? href);
+  }
   const navRole = resolveWorkspaceNavRole(role);
   const navItems = buildWorkspaceNavigation(navRole, {
     homeHref,
@@ -713,7 +739,7 @@ function NavHeaderContent({
                             onClick={() => {
                               closeAll();
                               if (item.id === "teams" && child.id.startsWith("team-")) {
-                                void switchTeam(child.id.slice("team-".length));
+                                switchTeam(child.id.slice("team-".length));
                               }
                             }}
                           />
@@ -878,22 +904,34 @@ function NavHeaderContent({
                         />
                       ) : (
                         <>
-                          <MobileMenuSectionLabel>{item.label}</MobileMenuSectionLabel>
-                          {item.items?.map((child) => (
-                            <MobileMenuRow
-                              key={child.id}
-                              href={child.href}
-                              icon={getItemIcon(item.id, "h-4 w-4")}
-                              title={child.label}
-                              desc={child.description}
-                              onClick={() => {
-                                setMobileMenu("closed");
-                                if (item.id === "teams" && child.id.startsWith("team-")) {
-                                  void switchTeam(child.id.slice("team-".length));
-                                }
-                              }}
-                            />
-                          ))}
+                          {/* Az org-váltó mintája (Szervezeteim (N) + görgethető
+                              lista + aktív jelölés): mobilon a lista maga a menü,
+                              nincs külön „megnyitás" lépés. A darabszám azért
+                              kell, mert görgetés-korlát mellett nem látszik
+                              egyszerre az összes. */}
+                          <MobileMenuSectionLabel>
+                            {item.items && item.items.length > 1
+                              ? `${item.label} (${item.items.length})`
+                              : item.label}
+                          </MobileMenuSectionLabel>
+                          <div className="flex max-h-72 flex-col overflow-y-auto">
+                            {item.items?.map((child) => (
+                              <MobileMenuRow
+                                key={child.id}
+                                href={child.href}
+                                icon={getItemIcon(item.id, "h-4 w-4")}
+                                title={child.label}
+                                desc={child.description}
+                                active={isMobileChildActive(child.href)}
+                                onClick={() => {
+                                  setMobileMenu("closed");
+                                  if (item.id === "teams" && child.id.startsWith("team-")) {
+                                    switchTeam(child.id.slice("team-".length));
+                                  }
+                                }}
+                              />
+                            ))}
+                          </div>
                         </>
                       )}
                     </div>

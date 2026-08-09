@@ -35,16 +35,48 @@ test("admin topnav is the simplified IA menu (no analytics)", () => {
   assert.deepEqual(ids, ["home", "tasks", "teams", "hiring", "org"]);
 });
 
-test("admin teams and org entries are plain links into the simple org page", () => {
+test("admin org entry is a plain link into the simple org page", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);
-  const teamsItem = navItems.find((item) => item.id === "teams");
   const orgItem = navItems.find((item) => item.id === "org");
 
-  assert.equal(teamsItem?.kind, "link");
-  assert.equal(teamsItem?.primaryHref, "/org/org_1?tab=teams");
   assert.equal(orgItem?.kind, "link");
   assert.equal(orgItem?.primaryHref, "/org/org_1");
   assert.equal(orgItem?.badge, 2);
+});
+
+// 2026-08-09: az admin Csapatok-menüje eddig a SZERVEZET oldalára vitt, és
+// onnan kellett még egyszer kattintani. A menü mostantól maga a lista.
+test("admin teams menu links straight to each team, with an all-teams escape", () => {
+  const navItems = buildWorkspaceNavigation("org_admin", multiTeamContext);
+  const teamsItem = navItems.find((item) => item.id === "teams");
+
+  assert.equal(teamsItem?.kind, "dropdown");
+  assert.deepEqual(
+    teamsItem?.items?.map((entry) => entry.href),
+    ["/team/team_1?tab=overview", "/team/team_2?tab=overview", "/org/org_1?tab=teams"],
+  );
+  // A menü FEJE is az org-listára visz: a dropdown címkéjére kattintva a
+  // teljes lista nyílik, nem egy önkényesen kiválasztott csapat.
+  assert.equal(teamsItem?.primaryHref, "/org/org_1?tab=teams");
+});
+
+test("admin teams menu keeps the team list short and never loses the escape", () => {
+  const many = Array.from({ length: 12 }, (_, i) => ({ id: `t${i}`, name: `Csapat ${i}` }));
+  const navItems = buildWorkspaceNavigation("org_admin", { ...baseContext, teams: many });
+  const teamsItem = navItems.find((item) => item.id === "teams");
+
+  // Adminnál a lista a szervezet ÖSSZES csapata — 12 tétel hosszabb lenne a
+  // képernyőnél, ezért vágjuk. Az „Összes csapat" tétel a levágottak útja.
+  assert.equal(teamsItem?.items?.length, 9);
+  assert.equal(teamsItem?.items?.at(-1)?.href, "/org/org_1?tab=teams");
+});
+
+test("admin without any team still gets a plain link to create the first one", () => {
+  const navItems = buildWorkspaceNavigation("org_admin", { ...baseContext, teams: [] });
+  const teamsItem = navItems.find((item) => item.id === "teams");
+
+  assert.equal(teamsItem?.kind, "link");
+  assert.equal(teamsItem?.primaryHref, "/org/org_1?tab=teams");
 });
 
 test("manager topnav omits admin-only organization menu", () => {
@@ -53,6 +85,23 @@ test("manager topnav omits admin-only organization menu", () => {
 
   assert.deepEqual(ids, ["home", "tasks", "teams", "hiring"]);
   assert.equal(ids.includes("org"), false);
+});
+
+// 2026-08-09: a menüpont MINDIG listát nyit. Korábban egy csapatnál közvetlen
+// link volt (UX-audit #25) — a használatban ez kiszámíthatatlanná tette a
+// gombot: ugyanaz a „Csapatok" hol listát nyitott, hol elnavigált.
+test("teams menu opens a list even with a single team, for every role", () => {
+  for (const role of ["self", "org_manager"] as const) {
+    const teamsItem = buildWorkspaceNavigation(role, baseContext)
+      .find((item) => item.id === "teams");
+
+    assert.ok(teamsItem, `${role}: nincs Csapatok menüpont`);
+    assert.equal(teamsItem.kind, "dropdown", `${role}: a menüpont navigál lista helyett`);
+    assert.deepEqual(
+      teamsItem.items?.map((entry) => entry.href),
+      ["/team/team_1?tab=overview"],
+    );
+  }
 });
 
 test("manager teams dropdown lists all accessible teams (member or manager)", () => {

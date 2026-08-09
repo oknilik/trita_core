@@ -73,6 +73,46 @@ Kapcsolódó dokumentum:
 - User avatar megjelenítéshez központi policy helper-t használj: `src/lib/ui/avatar.ts`.
 - Doodle asset maradhat illusztrációként, de nem lehet user-avatar fallback.
 
+## Formanyelv — három szint (2026-08-09)
+
+Az absztrakt ábrák **három szinten** élnek, és a szintek nem keverhetők.
+Ez nem stílus-, hanem hitelességi szabály: a jelentés-hígulás
+visszafordíthatatlan.
+
+| Szint | Készlet | Modul | Mikor rajzolható |
+|---|---|---|---|
+| 1. jelentő | hat alapforma + hat motívum | `src/lib/type-glyph.ts` | **csak** valódi pontszám mellett |
+| 2. szerkesztői | folt, holdsarló, ék, létra, ívsor, pontsor, lencse | `src/lib/editorial-art.ts` | bárhol, ahol illusztráció kell |
+| 3. textúra | csillag, nap, ellensúly, talajvonal | `src/lib/miro-primitives.ts` | bárhol, dekorációként |
+
+- **A hat alapforma dekorációként tilos.** Cikkfejlécre, üres állapotra,
+  landing-szekcióra a 2. vagy 3. szint való. Ha jelentő formát tennél
+  dekorációba, az azt üzeni az olvasónak, hogy a profil-ábra sem jelent
+  semmit.
+- **A `type-glyph.ts` szándékosan nem importál a közös modulból** — a
+  level-1 geometria befagyasztva marad, hogy egy szerkesztői hangolás soha
+  ne tudja elmozdítani a profil-ábrát. A közös elem a szabály, nem a kód.
+- **Méret-mód kötelező**: `resolveArtScale(width, height)`. 140px alatt
+  (a NAGYOBBIK oldalra nézve) elmarad a kíséret — 72 pixelen a csillag, a
+  nap és a talajvonal masszává olvad.
+- **Szövegre ülő kompozíciónál** `textSafeCorner` (kiemelt kártya, hero),
+  **elválasztónál** `quiet`. Sötét panelen — ami MINDKÉT sémán sötét —
+  `ART_COLORS_ON_INVERSE`, különben a tintavonal eltűnik.
+- **Ha szöveg ül az ábrán, az ábra FELSŐ SÁV, a szöveg alatta kap tiszta
+  mezőt** — és kell alá fátyol. Szabad szövegnél (pl. `heroQuote`) a hossz
+  nem korlátozható: mobilon egy hosszabb mondat öt sorra nyúlva a panel
+  kétharmadát elfoglalja, tehát nincs olyan sarok, amit geometriával
+  szabadon lehetne hagyni. A fátyol mindig a panel SAJÁT alapszínéből
+  dolgozzon, hogy a tónus ne változzon, csak mélyüljön.
+- **`preserveAspectRatio="slice"` mellett számolj a vágással.** A 420×260-as
+  hero-vászon mobilon egy ~358×270-es panelbe kerül: oldalanként ~9% eltűnik.
+  A szélső horgonyok 0.86 fölé ne kerüljenek, különben telefonon
+  félbevágódnak. Unit-teszt őrzi (`editorial-art.test.ts`).
+- Új ábra előtt futtasd az előnézetet: `npx tsx scripts/preview-editorial-art.ts`
+  (mindkét séma, minden méret-mód egy lapon).
+- Az ábrák `aria-hidden` dekorációk. Ha egy ábra tartalmat hordoz (típus-ábra),
+  ott `role="img"` + leíró `aria-label` kötelező — ld. `glyphDescription()`.
+
 ## Guardrail és tooling
 
 Lokális ellenőrzés:

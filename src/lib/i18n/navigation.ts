@@ -15,6 +15,13 @@ export const navigationTranslations = {
       hu: "Csapatoldal és publikált csapatkép",
       en: "Team page and published team profile",
     },
+    // A Csapatok-dropdown utolsó tétele adminnál: innen lehet csapatot
+    // létrehozni és a teljes listát kezelni.
+    allTeams: { hu: "Összes csapat", en: "All teams" },
+    allTeamsDescription: {
+      hu: "Lista és új csapat a szervezet oldalán",
+      en: "Full list and new team on the organization page",
+    },
     hiring: { hu: "Jelöltek", en: "Candidates" },
     org: { hu: "Szervezet", en: "Organization" },
     adminConsole: { hu: "Admin vezérlő", en: "Admin console" },

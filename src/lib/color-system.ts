@@ -238,9 +238,9 @@ export const LAYER_THEMES: Record<LayerKey, LayerTheme> = {
   /** Terrakotta — kizárólag a jelölt-domain rétegszíne (destruktívként tilos). */
   candidate: {
     accent: "#8a4a32",
-    heroFrom: "#8a4a32",
-    heroMid: "#6d3826",
-    heroTo: "#47251a",
+    heroFrom: "#4b3930",
+    heroMid: "#372a25",
+    heroTo: "#191924",
     glow: "#e0a878",
     badgeBg: "rgba(224,168,120,0.22)",
     badgeText: "#f6cfa8",
@@ -339,24 +339,45 @@ export const DYNAMICS_COLORS_CSS = {
   friction: "var(--color-state-warning-solid)",
 } as const;
 
-// ─── Avatar-paletta ──────────────────────────────────────────────────────────
-// Determinisztikus, nyugodt, státusz-mentes identitás-színek — a hat
-// dimenzió-base (a korábbi success/warning „identitás-színek" kivezetve).
+// ─── Avatar-paletta (identitás) ──────────────────────────────────────────────
+//
+// 2026-08-09 — a MÉRÉS palettájáról a MÁRKA palettájára állítva.
+//
+// Az avatar eddig a hat dimenzió-base színt kapta (indigó, lila, arany,
+// oliva, petrol, rózsa). Két baja volt ennek:
+//
+//  1. JELENTÉS. A dimenzió-színek mérési eredményt jelölnek. Ha a monogram
+//     az „Emocionalitás lilát" viseli, az olvasó jelentést lát bele — pedig
+//     az avatar színe a névből hasheltet, nem a profilból. Ugyanaz a hiba,
+//     mint amikor a jelentő formák dekorációba kerülnek: a jel elveszti a
+//     hitelét. (Ezért került ki korábban a success/warning is.)
+//  2. ARCULAT. Krém-zsálya-bronz felületen az indigó és a rózsa idegen test.
+//
+// Az új készlet kizárólag a márka saját tónusaiból áll (COLORS), és minden
+// alapszín ≥ 4,5:1 FEHÉR monogram-szöveggel. A hat érték szándékosan a
+// mélység és a hőfok mentén szóródik (két zöld, barna, pala, meleg szürke,
+// tinta), nem hat különböző hue mentén — így megkülönböztethetők, de nem
+// esnek szét szivárvánnyá.
+//
+// FONTOS: ezek nyers hexek, mert inline gradiens-háttérként utaznak, tehát
+// a színsémával NEM fordulnak. Mindegyik elég sötét ahhoz, hogy a fehér
+// monogram mindkét sémán olvasható maradjon rajta.
 
 export const AVATAR_COLORS: readonly string[] = [
-  DIMENSION_COLORS.INTE.base,
-  DIMENSION_COLORS.RESO.base,
-  DIMENSION_COLORS.TEMP.base,
-  DIMENSION_COLORS.ADAP.base,
-  DIMENSION_COLORS.THOR.base,
-  DIMENSION_COLORS.OPEN.base,
+  COLORS.sage,
+  COLORS.bronzeDark,
+  COLORS.inkBody,
+  COLORS.sageDark,
+  COLORS.inkWarm,
+  COLORS.sageDeep,
 ];
 
 export const AVATAR_GRADIENT_PAIRS: readonly (readonly [string, string])[] = [
-  [DIMENSION_COLORS.INTE.base, DIMENSION_COLORS.INTE.strong],
-  [DIMENSION_COLORS.RESO.base, DIMENSION_COLORS.RESO.strong],
-  [DIMENSION_COLORS.TEMP.base, DIMENSION_COLORS.TEMP.strong],
-  [DIMENSION_COLORS.ADAP.base, DIMENSION_COLORS.ADAP.strong],
-  [DIMENSION_COLORS.THOR.base, DIMENSION_COLORS.THOR.strong],
-  [DIMENSION_COLORS.OPEN.base, DIMENSION_COLORS.OPEN.strong],
+  [COLORS.sage, COLORS.sageDeep],
+  // A márka két akcentje egy gradiensben — a készlet „aláírás" darabja.
+  [COLORS.bronzeDark, COLORS.sageDeep],
+  [COLORS.inkBody, COLORS.ink],
+  [COLORS.sageDark, COLORS.ink],
+  [COLORS.inkWarm, COLORS.bronzeDark],
+  [COLORS.sageDeep, COLORS.ink],
 ];

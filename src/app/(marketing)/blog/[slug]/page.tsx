@@ -18,6 +18,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ReadingProgress } from "@/components/blog/ReadingProgress";
 import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
+import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -403,6 +404,21 @@ export default async function BlogPostPage({
               }}
             />
           </span>
+        </div>
+
+        {/* Cikk-fejléc vizuál. Eddig a cikkoldal teljesen kép nélkül indult,
+            pedig itt tölti az olvasó a 4–8 percet, és innen készül a
+            képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
+            kompozíció, mint a listán (azonos slug + artSeed + artMotif),
+            így a kártya és a cikk ugyanazt az arcot mutatja. */}
+        <div className="mb-8 h-[150px] overflow-hidden rounded-2xl border border-sand md:h-[190px]">
+          <BlogArtVisual
+            slug={post.slug}
+            tags={post.tags}
+            seed={post.artSeed}
+            motif={post.artMotif}
+            variant="card"
+          />
         </div>
 
         {/* Mobil TOC */}

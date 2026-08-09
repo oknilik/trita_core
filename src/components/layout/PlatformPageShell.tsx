@@ -34,14 +34,23 @@ const SURFACE_ACCENT: Record<PlatformSurface, string> = {
   org: "var(--color-surface-org-accent)",
 };
 
-// A lap „szoba-tónusa". SAJÁT token, nem a `-soft` chip-tint: sötéten a
-// kettő ellentétes irányba mozdul. A wash a vászonhoz simul (1,06–1,09),
-// hogy a hero legyen a kiemelt panel — korábban a `-soft` épp a hero sötét
-// végével esett egybe (1,01:1), ezért a hero alsó fele beleolvadt a lapba.
+// A lap alapszíne — 2026-08-09 óta MINDEN rétegen ugyanaz a krém vászon,
+// ami a főoldalé.
+//
+// Korábban rétegenként külön „szoba-tónus" (wash) festette a lapot: a
+// csapat homokos, a szervezet KÉK. Egy végig meleg rendszerben (a többi
+// felület h24–38 között mozog) a szervezet h212-es hideg kékje idegen
+// testként ült — és mivel a self már addig is sima krém volt, a rendszer
+// önmagával sem volt következetes.
+//
+// A réteg-identitást ezután a hero viszi (az mind a négy rétegen saját,
+// telített gradiens), plusz az akcent-tokenek a chrome-on. A wash-tokenek
+// szándékosan a helyükön maradnak: ha a réteg-tónus mégis hiányzik
+// görgetés után, egy soros visszaállítás.
 const SURFACE_ROOT_CLASS: Record<PlatformSurface, string> = {
   self: "bg-surface-canvas",
-  team: "bg-[var(--color-layer-team-wash)]",
-  org: "bg-[var(--color-layer-org-wash)]",
+  team: "bg-surface-canvas",
+  org: "bg-surface-canvas",
 };
 
 const DEFAULT_CONTENT_CLASS: Record<PlatformSurface, string> = {
@@ -66,8 +75,9 @@ export function PlatformPageShell({
   return (
     <div
       data-platform-surface={surface}
-      // pb-16: a hullámos footer -mt-10-zel EBBE a színes sávba húzódik —
-      // az él mögött így a felület saját háttere látszik (footer-varrat fix).
+      // pb-16: a hullámos footer -mt-10-zel EBBE a sávba húzódik — az él
+      // mögött így a lap saját háttere látszik (footer-varrat fix). A sáv
+      // most már mindenhol krém, de a párnázás továbbra is kell.
       className={cn("min-h-dvh pb-16", SURFACE_ROOT_CLASS[surface], className)}
       style={rootStyle}
     >

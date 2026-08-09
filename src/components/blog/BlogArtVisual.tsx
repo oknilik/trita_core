@@ -1,33 +1,37 @@
 // Generatív cikk-vizuál — determinisztikus SVG a slug + tagek alapján.
-// Nincs stock-fotó: minden cikk a termék vizuális nyelvén (radar, háló,
-// eloszlás-sávok, hullám) kap saját arcot. Szín kizárólag CSS-varból
-// (ui-hex-guardrail), így palettacserénél együtt mozog a felülettel.
+//
+// 2026-08-09 — „színpad" kompozíció (a formanyelv 2. szintje). A kép TÁRGYA
+// változatlanul a cikk témája (radar/háló/sávok/hullám), tehát a vizuál nem
+// állít semmit, amit eddig ne állított volna. Ami változott, az a KÉZÍRÁS:
+// tömör bronz felület a korábbi áttetsző kitöltés helyett, 3–5px tinta az
+// 1,2px hajszálvonal helyett, és köré a formanyelv kísérete (csillag, nap,
+// zsálya ellensúly, vándorló talajvonal).
+//
+// A hat JELENTŐ alapforma (type-glyph.ts) itt szándékosan nem szerepel —
+// azok csak valódi mérési eredmény mellett rajzolhatók. Ld. a szintbesorolást
+// a miro-primitives.ts fejlécében.
+//
+// Szín kizárólag CSS-varból (ui-hex-guardrail), így palettacserénél és
+// színsémaváltásnál együtt mozog a felülettel.
+
+import {
+  ART_COLORS,
+  ART_COLORS_ON_INVERSE,
+  accompanimentLayout,
+  groundPath,
+  hashString,
+  mulberry32,
+  r2,
+  starGeometry,
+  type ArtPalette,
+  type ArtScale,
+} from "@/lib/miro-primitives";
 
 type Motif = "radar" | "network" | "bars" | "waves";
 
-// mulberry32 — determinisztikus PRNG a slugból, hogy a vizuál build-ek
-// között stabil maradjon (SSG!).
-function hashString(input: string): number {
-  let h = 1779033703;
-  for (let i = 0; i < input.length; i++) {
-    h = Math.imul(h ^ input.charCodeAt(i), 3432918353);
-    h = (h << 13) | (h >>> 19);
-  }
-  return h >>> 0;
-}
-
-function mulberry32(seed: number): () => number {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
 // A motívum lehetőség szerint a témához igazodik, különben a slug dönt.
+// (Változatlan a 2026-08-09 áttervezés előttihez képest — a frontmatter
+// `artMotif` felülbírálás és az admin-előnézet erre épül.)
 function pickMotif(slug: string, tags: string[]): Motif {
   const joined = tags.join(" ").toLowerCase();
   if (/dinamika|dynamics|csapatszerep|team role|mobilit|bizalom|trust/.test(joined)) return "network";
@@ -38,105 +42,116 @@ function pickMotif(slug: string, tags: string[]): Motif {
   return motifs[hashString(slug) % motifs.length];
 }
 
-const SAGE = "var(--color-sage)";
-const BRONZE = "var(--color-accent-primary)";
-const BRONZE_SOFT = "var(--color-accent-primary-soft)";
+const VIEWBOX: Record<ArtScale, { w: number; h: number }> = {
+  hero: { w: 420, h: 260 },
+  card: { w: 400, h: 120 },
+  compact: { w: 100, h: 100 },
+};
 
-/** Sötét (featured) változatban világos vonalak, világosban sage/bronz. */
-function palette(dark: boolean) {
-  return dark
-    ? {
-        line: "rgba(255,255,255,0.14)",
-        lineSoft: "rgba(255,255,255,0.08)",
-        a: BRONZE_SOFT,
-        b: "rgba(255,255,255,0.75)",
-        fillA: "rgba(255,255,255,0.10)",
-      }
-    : {
-        line: "var(--color-border-strong)",
-        lineSoft: "var(--color-border-default)",
-        a: SAGE,
-        b: BRONZE,
-        fillA: "var(--color-surface-self-accent-soft)",
-      };
+/** A tárgy sugara és a vonalvastagság méret-módonként. */
+function metrics(scale: ArtScale, w: number, h: number) {
+  const unit = Math.min(w, h * 1.9) / 400;
+  const strokeWidth = Math.max(scale === "compact" ? 1.8 : 2.6, 4.2 * unit);
+  const radius =
+    scale === "compact"
+      ? Math.min(w, h) * 0.3
+      : // A hero tárgya kisebb: a panelt mobilon `slice` nagyítja (a 420×260
+        // vászon egy ~358×270-es dobozba kerül), tehát ott minden elem
+        // ~4%-kal nagyobbnak látszik, miközben kevesebb hely van.
+        Math.min(h * (scale === "hero" ? 0.2 : 0.3), w * (scale === "hero" ? 0.13 : 0.15));
+  return { strokeWidth, radius };
 }
 
-function RadarMotif({ seed, dark }: { seed: number; dark: boolean }) {
+// ── A tárgy: a cikk témája, tinta-kézírással ──────────────────────────
+
+function RadarSubject({
+  seed, cx, cy, R, sw, p,
+}: { seed: number; cx: number; cy: number; R: number; sw: number; p: ArtPalette }) {
   const rnd = mulberry32(seed);
-  const p = palette(dark);
-  const cx = 200, cy = 100, spokes = 5 + Math.floor(rnd() * 2);
-  const outer = 78;
-  const pts: string[] = [];
-  const dots: Array<{ x: number; y: number; hot: boolean }> = [];
-  for (let i = 0; i < spokes; i++) {
-    const ang = (Math.PI * 2 * i) / spokes - Math.PI / 2;
-    const r = outer * (0.45 + rnd() * 0.5);
-    const x = cx + Math.cos(ang) * r;
-    const y = cy + Math.sin(ang) * r;
-    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);
-    dots.push({ x, y, hot: rnd() > 0.5 });
+  const points: Array<[number, number]> = [];
+  for (let i = 0; i < 6; i += 1) {
+    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+    const r = R * (0.5 + rnd() * 0.55);
+    points.push([r2(cx + Math.cos(angle) * r), r2(cy + Math.sin(angle) * r)]);
   }
   return (
     <>
-      {[outer, outer * 0.66, outer * 0.33].map((r) => (
-        <circle key={r} cx={cx} cy={cy} r={r} fill="none" style={{ stroke: p.lineSoft }} strokeWidth="1.2" />
-      ))}
-      <polygon points={pts.join(" ")} style={{ fill: p.fillA, stroke: p.a }} strokeWidth="1.5" />
-      {dots.map((d, i) => (
-        <circle key={i} cx={d.x} cy={d.y} r="3.4" style={{ fill: d.hot ? p.a : p.b }} />
-      ))}
+      <circle
+        cx={r2(cx)} cy={r2(cy)} r={r2(R * 1.02)}
+        fill="none" stroke={p.line} strokeWidth={r2(sw * 0.55)} opacity={0.55}
+      />
+      <polygon points={points.map(([x, y]) => `${x},${y}`).join(" ")} fill={p.form} fillOpacity={0.92} />
+      {points.map(([x, y], i) =>
+        i % 2 === 0 ? <circle key={`${x}-${y}`} cx={x} cy={y} r={r2(sw * 0.85)} fill={p.line} /> : null,
+      )}
     </>
   );
 }
 
-function NetworkMotif({ seed, dark }: { seed: number; dark: boolean }) {
+function NetworkSubject({
+  seed, cx, cy, R, sw, p,
+}: { seed: number; cx: number; cy: number; R: number; sw: number; p: ArtPalette }) {
   const rnd = mulberry32(seed);
-  const p = palette(dark);
-  const n = 5 + Math.floor(rnd() * 2);
-  const nodes = Array.from({ length: n }, (_, i) => ({
-    x: 50 + (300 / (n - 1)) * i + (rnd() - 0.5) * 34,
-    y: 55 + rnd() * 90,
-    r: 8 + rnd() * 15,
-    hot: rnd() > 0.6,
+  const count = 4;
+  const nodes = Array.from({ length: count }, (_, i) => ({
+    x: r2(cx - R * 1.15 + ((R * 2.3) / (count - 1)) * i),
+    y: r2(cy + (rnd() - 0.5) * R * 1.1),
+    r: r2(R * (0.22 + rnd() * 0.36)),
   }));
   return (
     <>
       {nodes.slice(1).map((node, i) => (
         <line
-          key={i}
+          key={`edge-${node.x}-${node.y}`}
           x1={nodes[i].x} y1={nodes[i].y} x2={node.x} y2={node.y}
-          style={{ stroke: node.hot ? p.b : p.a }} strokeWidth="1.2" opacity="0.45"
+          stroke={p.line} strokeWidth={r2(sw * 0.7)} strokeLinecap="round" opacity={0.85}
         />
       ))}
-      {nodes.map((node, i) => (
-        <circle
-          key={i} cx={node.x} cy={node.y} r={node.r}
-          style={{ fill: node.hot ? p.b : p.a }}
-          opacity={0.35 + rnd() * 0.5}
-        />
-      ))}
+      {nodes.map((node, i) =>
+        i === 1 ? (
+          <circle
+            key={`node-${node.x}`} cx={node.x} cy={node.y} r={node.r}
+            fill="none" stroke={p.line} strokeWidth={r2(sw)}
+          />
+        ) : (
+          <circle
+            key={`node-${node.x}`} cx={node.x} cy={node.y} r={node.r}
+            fill={i % 2 ? p.counterweight : p.form}
+          />
+        ),
+      )}
     </>
   );
 }
 
-function BarsMotif({ seed, dark }: { seed: number; dark: boolean }) {
+function BarsSubject({
+  seed, cx, cy, R, sw, p,
+}: { seed: number; cx: number; cy: number; R: number; sw: number; p: ArtPalette }) {
   const rnd = mulberry32(seed);
-  const p = palette(dark);
-  const n = 6 + Math.floor(rnd() * 3);
-  const bw = 16;
-  const gap = (400 - 80 - n * bw) / (n - 1);
+  const count = 5;
+  const barWidth = R * 0.3;
+  const gap = R * 0.24;
+  const x0 = cx - (count * barWidth + (count - 1) * gap) / 2;
+  const base = cy + R * 0.95;
   return (
     <>
-      <line x1="40" y1="160" x2="360" y2="160" style={{ stroke: p.lineSoft }} strokeWidth="1.2" />
-      {Array.from({ length: n }, (_, i) => {
-        const h = 30 + rnd() * 95;
-        const hot = rnd() > 0.65;
+      <line
+        x1={r2(x0 - R * 0.3)} y1={r2(base)} x2={r2(x0 + count * (barWidth + gap))} y2={r2(base)}
+        stroke={p.line} strokeWidth={r2(sw * 0.7)} strokeLinecap="round" opacity={0.9}
+      />
+      {Array.from({ length: count }, (_, i) => {
+        const h = R * (0.45 + rnd() * 1.25);
+        const x = x0 + i * (barWidth + gap);
+        // A kiugró érték kontúrossá válik — a magnitúdó formában is látszik,
+        // nem csak méretben.
+        const outlined = h > R * 1.2;
         return (
           <rect
-            key={i}
-            x={40 + i * (bw + gap)} y={160 - h} width={bw} height={h} rx="3"
-            style={{ fill: hot ? p.b : p.a }}
-            opacity={hot ? 0.9 : 0.4 + rnd() * 0.45}
+            key={`bar-${i}`}
+            x={r2(x)} y={r2(base - h)} width={r2(barWidth)} height={r2(h)} rx={r2(barWidth / 2)}
+            fill={outlined ? "none" : i % 3 === 1 ? p.counterweight : p.form}
+            stroke={outlined ? p.line : undefined}
+            strokeWidth={outlined ? r2(sw) : undefined}
           />
         );
       })}
@@ -144,25 +159,22 @@ function BarsMotif({ seed, dark }: { seed: number; dark: boolean }) {
   );
 }
 
-function WavesMotif({ seed, dark }: { seed: number; dark: boolean }) {
+function WavesSubject({
+  seed, w, cx, cy, R, sw, p,
+}: { seed: number; w: number; cx: number; cy: number; R: number; sw: number; p: ArtPalette }) {
   const rnd = mulberry32(seed);
-  const p = palette(dark);
   const wave = (baseY: number, amp: number) => {
-    let d = `M -10 ${baseY}`;
-    for (let x = 0; x <= 420; x += 70) {
-      const y = baseY + (rnd() - 0.5) * amp * 2;
-      d += ` S ${x + 35} ${y}, ${x + 70} ${baseY + (rnd() - 0.5) * amp}`;
+    let d = `M ${r2(-4)} ${r2(baseY)}`;
+    for (let x = 0; x <= w + 40; x += w / 3) {
+      d += ` S ${r2(x + w / 6)} ${r2(baseY + (rnd() - 0.5) * amp * 2)}, ${r2(x + w / 3)} ${r2(baseY + (rnd() - 0.5) * amp)}`;
     }
     return d;
   };
-  const d1 = wave(80, 38);
-  const d2 = wave(120, 30);
-  const cxDot = 90 + rnd() * 220;
   return (
     <>
-      <path d={d1} fill="none" style={{ stroke: p.a }} strokeWidth="1.6" opacity="0.85" />
-      <path d={d2} fill="none" style={{ stroke: p.b }} strokeWidth="1.6" opacity="0.6" />
-      <circle cx={cxDot} cy={100 + (rnd() - 0.5) * 40} r="4" style={{ fill: p.b }} />
+      <path d={wave(cy - R * 0.4, R * 0.78)} fill="none" stroke={p.line} strokeWidth={r2(sw * 0.85)} strokeLinecap="round" />
+      <path d={wave(cy + R * 0.5, R * 0.62)} fill="none" stroke={p.form} strokeWidth={r2(sw * 2.1)} strokeLinecap="round" />
+      <circle cx={r2(cx + R * 0.5)} cy={r2(cy - R * 0.15)} r={r2(R * 0.16)} fill={p.counterweight} />
     </>
   );
 }
@@ -189,17 +201,22 @@ export function BlogArtVisual({
 }) {
   const seededKey = seed ? `${slug}#${seed}` : slug;
   const motif = motifOverride ?? pickMotif(slug, tags);
-  // SEEDET adunk át, nem generátort. A PRNG állapotot hordoz: ha a motívum
-  // a SZÜLŐBEN létrehozott generátort fogyasztja a saját renderjében, akkor
-  // egy különálló újrarender (dev StrictMode dupla render, memoizáció)
-  // elcsúsztatja a sorozatot — a szerver és a kliens más geometriát rajzol,
-  // és a React hidratálási hibával újraépíti a fát (2026-08-07). Seedből
-  // minden render ugyanonnan indul, tehát a render tiszta marad. A kirajzolt
-  // kép változatlan: a sorozat ugyanabból a magból ugyanaz.
+  // SEEDET adunk át, nem generátort — ld. mulberry32() a miro-primitives-ben.
   const artSeed = hashString(seededKey);
-  const dark = variant === "featured";
+
+  const scale: ArtScale = variant === "featured" ? "hero" : variant === "mini" ? "compact" : "card";
+  const { w, h } = VIEWBOX[scale];
+  const { strokeWidth, radius } = metrics(scale, w, h);
+  // A kiemelt panel MINDKÉT színsémán sötét (fehér idézet ül rajta), ezért
+  // ott a fix ink olvashatatlan lenne — külön készlet kell.
+  const p: ArtPalette = variant === "featured" ? ART_COLORS_ON_INVERSE : ART_COLORS;
+
+  const cx = w * (scale === "compact" ? 0.5 : scale === "hero" ? 0.66 : 0.54);
+  const cy = h * (scale === "compact" ? 0.5 : scale === "hero" ? 0.28 : 0.44);
+  const parts = accompanimentLayout(artSeed, w, h, radius, scale);
+
   const bg =
-    dark
+    variant === "featured"
       // A kiemelt vizuál SZÁNDÉKOSAN sötét alap (fehér felirat ül rajta),
       // ezért a réteg-hero tokenekből dolgozik: azok mindkét színsémán
       // sötétek. A sage-deep/-dark sötét sémán VILÁGOSSÁ fordul, ott a
@@ -209,22 +226,92 @@ export function BlogArtVisual({
         ? "var(--color-surface-muted)"
         : "var(--color-surface-self-accent-soft)";
 
-  const motifEl =
-    motif === "radar" ? <RadarMotif seed={artSeed} dark={dark} />
-    : motif === "network" ? <NetworkMotif seed={artSeed} dark={dark} />
-    : motif === "bars" ? <BarsMotif seed={artSeed} dark={dark} />
-    : <WavesMotif seed={artSeed} dark={dark} />;
+  // A gradiens-id-nek dokumentumon belül egyedinek ÉS szerver/kliens
+  // azonosnak kell lennie — ezért a magból képezzük, nem futásidejű
+  // számlálóból (a useId() nem opció: ez szerver-komponensként is renderel).
+  const scrimSideId = `art-scrim-x-${artSeed.toString(36)}`;
+  const scrimBottomId = `art-scrim-y-${artSeed.toString(36)}`;
+
+  const subjectSeed = artSeed + 101;
+  const subject =
+    motif === "radar" ? <RadarSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
+    : motif === "network" ? <NetworkSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
+    : motif === "bars" ? <BarsSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
+    : <WavesSubject seed={subjectSeed} w={w} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />;
 
   return (
     <svg
-      viewBox="0 0 400 200"
+      viewBox={`0 0 ${w} ${h}`}
       preserveAspectRatio="xMidYMid slice"
       className={className}
       style={{ background: bg, display: "block", width: "100%", height: "100%" }}
       role="img"
       aria-hidden
     >
-      {motifEl}
+      {/* Színpad — a formanyelv kísérete. Kis méreten (mini) elmarad: 72
+          pixelen a csillag, a nap és a talajvonal masszává olvad, és a
+          tárgy sem marad felismerhető. */}
+      {parts && (
+        <>
+          <circle cx={parts.sun.x} cy={parts.sun.y} r={parts.sun.r} fill={p.sun} />
+          <g stroke={p.line} strokeWidth={r2(strokeWidth * 0.7)} strokeLinecap="round" opacity={0.9}>
+            {starGeometry(parts.star.x, parts.star.y, parts.star.r).lines.map((l) => (
+              <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+            ))}
+          </g>
+        </>
+      )}
+
+      {subject}
+
+      {parts && (
+        <>
+          <circle
+            cx={parts.counterweight.x} cy={parts.counterweight.y} r={parts.counterweight.r}
+            fill={p.counterweight}
+          />
+          {/* A talajvonal két esetben elmarad:
+              – hero: a panel alsó sávjában az idézet ül, a vonal átvágná;
+              – hullám-motívum: ott a hullám MAGA a talaj-gesztus, egymás
+                mellett három közel párhuzamos vonallá esne szét. */}
+          {scale !== "hero" && motif !== "waves" && (
+            <path
+              d={groundPath(artSeed + 7, w, parts.groundY, radius * 0.3)}
+              fill="none" stroke={p.line} strokeWidth={r2(strokeWidth * 0.62)}
+              strokeLinecap="round" opacity={0.85}
+            />
+          )}
+        </>
+      )}
+
+      {/* A kiemelt panel szabálya: az ábra FELSŐ SÁV, a szöveg alatta kap
+          tiszta mezőt.
+          Geometriával ez nem oldható meg. Az idézet hossza nem korlátozható
+          (a `heroQuote` szabad szöveg), és mobilon öt sorra nyúlva a panel
+          alsó kétharmadát elfoglalja — nincs olyan sarok, amit szabadon
+          lehetne hagyni. Ezért a kompozíció felmegy a felső harmadba, alatta
+          pedig egy erős, alulról induló fátyol ad egyenletes szövegmezőt.
+          A fátyol a hero SAJÁT alapszínéből dolgozik, tehát a panel tónusa
+          nem változik, csak elmélyül; a felső sávban a stop 0-ra fut, így az
+          ábra ott sértetlen marad. */}
+      {variant === "featured" && (
+        <>
+          <defs>
+            <linearGradient id={scrimSideId} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.5" />
+              <stop offset="0.55" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id={scrimBottomId} x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.94" />
+              <stop offset="0.44" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.9" />
+              <stop offset="0.74" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.24" />
+              <stop offset="1" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimSideId})`} />
+          <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimBottomId})`} />
+        </>
+      )}
     </svg>
   );
 }

@@ -137,8 +137,8 @@
   /* A jelölt-hero stopjai SAJÁT tokenek (eddig az akcentekből kölcsönöztek).
      Sötéten a terrakotta akcent VILÁGOSSÁ fordul — a hero így világos
      peach-gradiens lett volna fehér felirattal. */
-  --palette-layer-candidate-hero-from: #8a4a32;
-  --palette-layer-candidate-hero-mid: #6d3826;
+  --palette-layer-candidate-hero-from: #4b3930;
+  --palette-layer-candidate-hero-mid: #372a25;
   /* A hero halk másodlagos szövege. Eddig `text-white/[0.42]` volt, ami a
      legvilágosabb stopon 2,5–3,0:1 — a mondat gyakorlatilag eltűnt. Fix
      érték mindkét sémán (a hero mindkettőben sötét panel): ≥ 4,6:1. */
@@ -164,7 +164,7 @@
   --palette-layer-org-badge: #f4c792;
   --palette-layer-org-soft: #e8eff7;
   --palette-layer-org-border: #bfd0e2;
-  --palette-layer-candidate-hero-to: #47251a;
+  --palette-layer-candidate-hero-to: #191924;
   --palette-layer-candidate-badge: #f6cfa8;
   --palette-eval-high-fg: #1e3d34;
   --palette-state-success-solid: #059669;
@@ -259,7 +259,7 @@
   --palette-ink-body: #cac5bb;
   --palette-ink-warm: #9b9487;
   --palette-layer-candidate-badge: #f6cfa8;
-  --palette-layer-candidate-hero-to: #562d1f;
+  --palette-layer-candidate-hero-to: #333347;
   --palette-layer-org-accent: #6f9bc4;
   --palette-layer-org-border: #33475c;
   --palette-layer-org-bright: #85aed4;
@@ -274,8 +274,8 @@
   --palette-layer-team-wash: #1e1a20;
   --palette-layer-org-wash: #171a21;
   --palette-layer-candidate-wash: #221a1b;
-  --palette-layer-candidate-hero-from: #81452f;
-  --palette-layer-candidate-hero-mid: #6e3927;
+  --palette-layer-candidate-hero-from: #513d34;
+  --palette-layer-candidate-hero-mid: #40312b;
   --palette-text-on-inverse-muted: #dad5ce;
   --palette-surface-inverse: #2b2b34;
   --palette-surface-inverse-soft: #3b3b46;
@@ -1291,5 +1291,99 @@ input[type="range"].pattern-range::-moz-range-track {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ─── Csillag-loader (formanyelv 3. szint) ──────────────────────────────
+   A töltőállapot jele a formanyelv tinta-csillaga. Két, egymásra rétegzett
+   mozgás adja a „lélegzést":
+
+   – `star-loader-spin`: forgás az egész jelen. Nyolcágú, 45°-osan
+     szimmetrikus alakzat, ezért 45 fok elfordulás után önmagával fedésbe
+     kerül — a ciklus ennyi, így a hurok VARRAT NÉLKÜL zár. A teljes 360°-os
+     forgáshoz ugyanilyen tempóhoz nyolcszor hosszabb ciklus kellene.
+     A lendületet a `cubic-bezier` adja: a jel minden 45 fokos lépésnél
+     nekiindul, majd leül. Egyenletes (linear) forgással sokkal élettelenebb
+     — az gépiesen csúszik, nem lüktet.
+   – `star-loader-pulse`: a szárpárok fázisban eltolva nyúlnak ki és húzódnak
+     vissza (skála + opacitás). Az eltolást a komponens `animation-delay`-je
+     adja, ezért itt nincs külön kulcskocka-variáns.
+
+   Az AMPLITÚDÓ tanulsága: a dinamikát a SKÁLA hordozza, nem az opacitás.
+   Egy visszahúzódó szár mozgásnak látszik, egy elhalványuló szár viszont
+   HIÁNYZÓ ágnak — az első változat 0.45-ös opacitás-padlóval 24 pixelen
+   töröttnek tűnt. Ezért a skála tartománya tág (0.62–1.06), az opacitásé
+   viszont épphogy érzékelhető (0.9–1): az ágak a wordmark színeit viselik,
+   és 0.82-nél a tinta már láthatóan szürkévé mosódott a logó mély tintájához
+   képest. A halványítás itt csak mélységet ad, nem mozgást.
+
+   Reduced motion: mindkettő KIKAPCSOL (nem lassul), és a jel teljes
+   opacitáson, elforgatás nélkül áll meg — így a töltés ténye továbbra is
+   látszik, csak nem mozog. */
+@keyframes star-loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes star-loader-pulse {
+  0%,
+  100% {
+    transform: scale(0.62);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+.star-loader-spin {
+  transform-origin: 50% 50%;
+  animation: star-loader-spin 1.9s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+}
+
+.star-loader-pulse {
+  transform-origin: 50% 50%;
+  animation: star-loader-pulse 1.15s ease-in-out infinite;
+}
+
+/* A kísérőjelek (bronz nap, zsálya ellensúly) nem forognak és nem nyúlnak —
+   csak lélegeznek, lassabban a csillagnál. Ha a tempójuk egyezne, a három
+   elem egyszerre mozdulna, és a jel pumpálásnak látszana. A `transform-box:
+   fill-box` azért kell, hogy a `center` origó a KÖR saját közepét jelentse,
+   ne az SVG vászonét — utóbbival a pöttyök a vászon közepe felé ugranának. */
+.star-loader-breathe {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: star-loader-breathe 2.1s ease-in-out infinite;
+}
+
+.star-loader-breathe-late {
+  animation-delay: 0.38s;
+}
+
+@keyframes star-loader-breathe {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-loader-spin,
+  .star-loader-pulse,
+  .star-loader-breathe {
+    animation: none;
+    transform: none;
+    opacity: 1;
   }
 }

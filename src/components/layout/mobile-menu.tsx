@@ -43,29 +43,40 @@ export function MobileMenuRow({
   icon,
   title,
   desc,
+  /** Az éppen nyitott célpont — az org-váltó mintája szerint kiemelve. */
+  active = false,
   onClick,
 }: {
   href: string;
   icon: React.ReactNode;
   title: string;
   desc?: string;
+  active?: boolean;
   onClick: () => void;
 }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3.5 rounded-xl px-3.5 py-3.5 transition-colors hover:bg-[var(--color-surface-subtle)]"
+      aria-current={active ? "page" : undefined}
+      className={`group flex items-center gap-3.5 rounded-xl px-3.5 py-3.5 transition-colors hover:bg-[var(--color-surface-subtle)] ${
+        active ? "bg-[var(--color-surface-subtle)]" : ""
+      }`}
     >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-[15px] font-medium text-[var(--color-text-primary)]">{title}</p>
+        <p className={`text-[15px] text-[var(--color-text-primary)] ${active ? "font-semibold" : "font-medium"}`}>
+          {title}
+        </p>
         {desc ? (
           <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
         ) : null}
       </div>
+      {active ? (
+        <span aria-hidden className="mr-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+      ) : null}
       <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
       </svg>

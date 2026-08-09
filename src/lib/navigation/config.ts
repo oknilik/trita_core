@@ -12,8 +12,8 @@ export type { WorkspaceNavRole };
 // Legfeljebb 5 menüpont, duplikátumok nélkül:
 //   · Vezérlő (link) — mindenkinek
 //   · Eredményeim (link) — self
-//   · Csapatok — admin/tanácsadó: link az org-oldal Csapatok fülére;
-//     tag/manager: dropdown a saját csapatokkal
+//   · Csapatok (dropdown) — a menü maga a csapatlista, egy kattintás a
+//     csapatoldalra; adminnál a végén „Összes csapat" az org-oldalra
 //   · Jelöltek (dropdown) — hiring-hozzáféréssel (candidate flow marad)
 //   · Szervezet (link) — admin/tanácsadó: az egyszerű org-oldal
 //     (fülek: Csapatok · Kampányok · Tagok; Beállítások a hero-ban)
@@ -67,6 +67,9 @@ export interface WorkspaceNavItem {
   badge?: number;
   items?: WorkspaceNavDestination[];
 }
+
+/** Adminnál a Csapatok-menüben legfeljebb ennyi csapat fér el. */
+const ADMIN_TEAM_MENU_LIMIT = 8;
 
 function uniqueMatchPrefixes(...prefixes: Array<string | null | undefined>): string[] {
   return [...new Set(prefixes.filter((value): value is string => Boolean(value)))];
@@ -145,34 +148,67 @@ function buildTasksNav(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavIt
   };
 }
 
-// Csapatok: admin/tanácsadó → egyetlen link az org-oldal Csapatok fülére
-// (ott a lista és a létrehozás is); tag/manager → dropdown a saját csapatokkal.
+// Csapatok: MINDEN szerepnél a menü maga a csapatlista — egy kattintás a
+// csapatoldalra. Adminnál a lista végén ott az „Összes csapat" tétel az
+// org-oldal Csapatok fülére (létrehozás, teljes lista).
 function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (role === "org_admin") {
     if (!ctx.org) return null;
+    const allTeamsHref = `/org/${ctx.org.id}?tab=teams`;
+
+    // Csapat nélküli szervezetben nincs mit lenyitni — marad a link a
+    // listára, ahol létre lehet hozni az elsőt.
+    if (ctx.teams.length === 0) {
+      return {
+        id: "teams",
+        label: t("nav.teams", locale),
+        kind: "link",
+        primaryHref: allTeamsHref,
+        matchPrefixes: ["/team"],
+      };
+    }
+
+    // 2026-08-09: az admin eddig egy kattintással a SZERVEZET oldalára
+    // került, és onnan kellett még egyszer kattintania a csapatra. Mostantól
+    // a menü maga a lista: egy kattintás a csapatoldalra. A teljes lista és
+    // a létrehozás az utolsó tételen marad elérhető.
+    //
+    // Adminnál a `ctx.teams` a szervezet ÖSSZES csapata (getAccessibleTeams),
+    // ezért kell a felső korlát: egy 20 csapatos szervezetben a menü
+    // hosszabb lenne a képernyőnél. A levágottak az „Összes csapat" mögött
+    // vannak — a lista sosem néma, mert az a tétel mindig ott van.
+    const shown = ctx.teams.slice(0, ADMIN_TEAM_MENU_LIMIT);
     return {
       id: "teams",
       label: t("nav.teams", locale),
-      kind: "link",
-      primaryHref: `/org/${ctx.org.id}?tab=teams`,
-      matchPrefixes: ["/team"],
+      kind: "dropdown",
+      primaryHref: allTeamsHref,
+      matchPrefixes: uniqueMatchPrefixes("/team", ...shown.map((team) => `/team/${team.id}`)),
+      items: [
+        ...shown.map((team) => ({
+          id: `team-${team.id}`,
+          label: team.name,
+          description: t("nav.teamItemDescription", locale),
+          href: `/team/${team.id}?tab=overview`,
+        })),
+        {
+          id: "teams-all",
+          label: t("nav.allTeams", locale),
+          description: t("nav.allTeamsDescription", locale),
+          href: allTeamsHref,
+        },
+      ],
     };
   }
 
   if (ctx.teams.length === 0) return null;
 
-  // Egyetlen csapatnál nincs dropdown (UX-audit #25): a menü nagyobb lenne,
-  // mint a mögötte lévő világ — közvetlen link a csapatra.
-  if (ctx.teams.length === 1) {
-    const only = ctx.teams[0];
-    return {
-      id: "teams",
-      label: role === "org_manager" ? t("nav.myTeam", locale) : (only.name || t("nav.myTeam", locale)),
-      kind: "link",
-      primaryHref: `/team/${only.id}?tab=overview`,
-      matchPrefixes: uniqueMatchPrefixes("/team", `/team/${only.id}`),
-    };
-  }
+  // 2026-08-09: az egy-csapatos KÖZVETLEN LINK kivezetve (korábban UX-audit
+  // #25). Az a szabály onnan nézve volt logikus, hogy egy elemű menü
+  // felesleges — a használatban viszont kiszámíthatatlanná tette a
+  // menüpontot: ugyanaz a „Csapatok" gomb hol listát nyitott, hol azonnal
+  // elnavigált egy csapatra. A menüpont mostantól MINDIG listát nyit,
+  // szereptől és darabszámtól függetlenül.
 
   // A külön „Csapataim" lista-oldal tétel kivezetve (2026-07-29): a menü
   // maga A lista — az elemek egyben AKTÍV CSAPATOT is váltanak (a Vezérlő
