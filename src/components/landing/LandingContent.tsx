@@ -7,6 +7,7 @@ import { Features } from "@/components/landing/Features";
 import { ProofSection } from "@/components/landing/ProofSection";
 import { StatsBar } from "@/components/landing/StatsBar";
 import { CtaSection } from "@/components/landing/CtaSection";
+import { SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { useSiteMode } from "@/components/landing/site-mode";
 
 // A ?mode= paramétert az URL-ből olvassuk, de NEM useSearchParams-szal:
@@ -23,6 +24,10 @@ export function LandingContent() {
       <HeroSection mode={mode} />
       <TrustBar mode={mode} />
       <HowItWorks mode={mode} />
+      {/* Szerkesztői átkötő (formanyelv 2. szint) — a „hogyan működik"
+          folyamat és a képesség-blokk közti levegő. Dekoráció, aria-hidden;
+          a mód a kulcsban van, hogy a self/team nézet ne ugyanazt kapja. */}
+      <SectionTransition artKey={artKeyFrom("landing", "how-features", mode)} />
       <Features mode={mode} />
       <ProofSection mode={mode} />
       <StatsBar mode={mode} />

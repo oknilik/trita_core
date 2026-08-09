@@ -59,3 +59,6 @@ docs/testing/persona-riportok*.pdf
 
 # O*NET nyers adat (97MB, letölthető: scripts/career-catalog/step3_onet.py fejléc)
 scripts/onet/
+
+# Szerkesztői ábra-előnézet (scripts/preview-editorial-art.ts)
+.art-previews/
