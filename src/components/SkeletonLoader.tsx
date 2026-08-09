@@ -41,7 +41,7 @@ export function SkeletonLoader() {
           karika, és wordmark nélkül: a skeleton mögött úgyis a saját
           felülete látszik, a logó ott csak zaj. */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <StarLoader size={56} />
+        <StarLoader size={64} />
       </div>
     </div>
   );

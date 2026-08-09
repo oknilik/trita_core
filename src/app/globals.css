@@ -1351,9 +1351,37 @@ input[type="range"].pattern-range::-moz-range-track {
   animation: star-loader-pulse 1.15s ease-in-out infinite;
 }
 
+/* A kísérőjelek (bronz nap, zsálya ellensúly) nem forognak és nem nyúlnak —
+   csak lélegeznek, lassabban a csillagnál. Ha a tempójuk egyezne, a három
+   elem egyszerre mozdulna, és a jel pumpálásnak látszana. A `transform-box:
+   fill-box` azért kell, hogy a `center` origó a KÖR saját közepét jelentse,
+   ne az SVG vászonét — utóbbival a pöttyök a vászon közepe felé ugranának. */
+.star-loader-breathe {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: star-loader-breathe 2.1s ease-in-out infinite;
+}
+
+.star-loader-breathe-late {
+  animation-delay: 0.38s;
+}
+
+@keyframes star-loader-breathe {
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .star-loader-spin,
-  .star-loader-pulse {
+  .star-loader-pulse,
+  .star-loader-breathe {
     animation: none;
     transform: none;
     opacity: 1;

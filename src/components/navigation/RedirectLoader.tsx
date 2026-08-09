@@ -17,7 +17,7 @@ export function RedirectLoader({ locale = "hu" }: { locale?: Locale }) {
       aria-live="polite"
       className="flex min-h-dvh items-center justify-center bg-cream"
     >
-      <StarLoader size={64} />
+      <StarLoader size={72} />
       <span className="sr-only">{t("common.loading", locale)}</span>
     </div>
   );

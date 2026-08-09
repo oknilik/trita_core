@@ -155,25 +155,36 @@ A töltőképernyőkről **lekerült a wordmark**: a töltés másodperc töred�
 a logó ott csak visszaigazolja, amit a felhasználó úgyis tud. A jel egyedül
 tisztább, és nagyobbra vehető (64px).
 
-**A jel a logó három színét viseli.** Nem külön paletta: pontosan azok a
-tokenek, amikből a wordmark is épül (`t` zsálya · `rit` tinta · `a` bronz),
-tehát a színcsere és a sémaváltás együtt mozgatja őket. Ehhez a csillag
-nyolc KÜLÖN ágra bomlott (`starArms`) — négy átmérővel a szemközti ágak
-elkerülhetetlenül egy színt és egy fázist kapnának. A statikus kísérőjel
-maradt a négyátmérős `starGeometry`-n; a kirajzolt kép azonos.
+**A csillag tinta, mellette a másik két márkaszín kísérőjelként.** Bronz nap
+fent jobbra, zsálya ellensúlypont lent balra — pontosan az a két elem, ami a
+blog- és landing-ábrákon is ott van. Ez az egyetlen megoldás, ami nem talál
+ki új szókincset: a töltőképernyő ugyanannak a nyelvnek a mondata lesz, nem
+külön dialektus. A színek a wordmark tokenjeiből jönnek, tehát a színcsere és
+a sémaváltás együtt mozgatja őket.
 
-Két arányszabály:
+Közben egy rövid kitérő volt: a két márkaszín magukon az ÁGAKON. Elvetve —
+nyolc külön ágra bontott, háromszínű csillag működött ugyan, de a jel
+elveszítette a tinta-karakterét, és a színek a wordmark mellé téve
+versenyeztek vele. A `starArms` helper viszont maradt: a nyolc ág külön
+kezelése kell az ágankénti fázis-eltoláshoz.
 
-- **Tinta-túlsúly** (négy ág a nyolcból): a jel továbbra is a formanyelv
-  tinta-csillaga, a két márkaszín csak átvillan rajta. Fele-fele elosztásnál
-  karácsonyfa lenne.
-- **180°-osan szimmetrikus elosztás** (a szemközti ág mindig azonos színű),
-  így forgás közben a színegyensúly állandó — különben a csillag billegne
-  egy szín felé.
+Geometriai szabályok, amiket a renderelés kényszerített ki:
 
-A színek miatt az opacitás-padló 0,82-ről **0,9-re** ment fel: 0,82-nél a
-tinta láthatóan szürkévé mosódott a logó mély tintájához képest. A mozgást
-úgyis a skála viszi, a halványítás csak mélységet ad.
+- **A hézagot a leghosszabb ághoz mérjük**, nem a nyugalmi sugárhoz —
+  különben a kísérőjelek a pulzus csúcsán összeérnének a csillaggal. A
+  `place(szög, hézag, sugár)` ezért számol, nem kézzel beírt koordináta:
+  egy sugár-módosítás így nem rontja el észrevétlenül a kompozíciót.
+- **A `size` a CSILLAGRA vonatkozik, nem a teljes jelre.** Kísérettel a
+  vászon 40%-kal nagyobb lesz körülötte. Enélkül a 48 pixeles küszöbön a
+  csillag ZSUGORODOTT: a 44-es, kíséret nélküli jel nagyobb volt, mint a
+  48-as — visszafelé ugró méretlépcső.
+- **48 pixel alatt nincs kíséret.** Ott a nap és az ellensúly néhány pixelre
+  zsugorodna: nem díszít, csak koszol. Ugyanaz a logika, mint a szerkesztői
+  ábrák `compact` szabályánál.
+
+Az opacitás-padló 0,82-ről **0,9-re** ment fel: 0,82-nél a tinta láthatóan
+szürkévé mosódott a logó mély tintájához képest. A mozgást úgyis a skála
+viszi, a halványítás csak mélységet ad.
 
 Átállítva: `RedirectLoader` (a `/dashboard` diszpécser köztes állapota) és a
 `SkeletonLoader` középső jele. A gombokban lévő apró inline spinnerek
