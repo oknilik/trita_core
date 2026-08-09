@@ -159,7 +159,7 @@ function schemeBlock(scheme: (typeof SCHEMES)[number]): string {
     <h3>cikkoldal fejléc — 840×190</h3>
     <div class="banner">${art(posts[2], "card")}</div>
 
-    <h3>landing átkötő — konstelláció (2. szint, self és team mód)</h3>
+    <h3>landing átkötő — a töltő-jel kísérete állóban (self és team mód)</h3>
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "self") }))}
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "team") }))}
 

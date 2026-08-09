@@ -20,7 +20,9 @@ import {
 import {
   ART_COLORS,
   ART_COLORS_ON_INVERSE,
+  groundPath,
   hashString,
+  mulberry32,
   r2,
   resolveArtScale,
   starGeometry,
@@ -121,28 +123,72 @@ export function EditorialArt({
 }
 
 /**
- * Szekció-átkötő: keskeny sáv két landing-szekció között. Szándékosan
- * alacsony (a tartalmat elválasztja, nem megtöri), és `aria-hidden` —
+ * Szekció-átkötő: keskeny sáv két landing-szekció között. `aria-hidden` —
  * dekoráció, nem tartalom.
+ *
+ * 2026-08-09: a szabad konstellációt (két forma + gerinc) felváltotta a
+ * TÖLTŐ-JEL kísérete: vándorló talajvonal, rajta a tinta-csillag, mellette
+ * a bronz nap és a zsálya ellensúly. Két oka van:
+ *
+ *  – Tisztább. Az elválasztónak egyetlen dolga van: levegőt adni két
+ *    szekció között. A konstelláció ehhez képest önálló illusztrációként
+ *    viselkedett, és a széles sávban szétesett.
+ *  – Egy nyelv. Ugyanaz a három jel, ami a töltőképernyőn is fut, csak
+ *    álló változatban — a felület így ismétli önmagát, nem bővíti a
+ *    szókincset.
+ *
+ * A szabad konstelláció (`EditorialArt`) megmarad a NAGY felületekre, ahol
+ * egyetlen kép visz mindent — ott továbbra is az a helyes eszköz.
  */
+const TRANSITION_VIEWBOX = { width: 1120, height: 72 } as const;
+
 export function SectionTransition({ artKey, className }: { artKey: string; className?: string }) {
-  // A magasság fix, a szélesség folyós: a `meet` illesztés miatt a
-  // kompozíció végig egyben marad, nem vágódik.
-  const height = 96;
-  const width = 1120;
+  const { width, height } = TRANSITION_VIEWBOX;
+  const p = ART_COLORS;
+  const seed = hashString(artKey);
+  const rnd = mulberry32(seed);
+
+  // A csillag a sáv közepe körül ül, de nem pontosan középen — a kis
+  // elcsúszás teszi rajzolttá a jelet. A kíséret hozzá képest helyezkedik,
+  // hogy a hármas mindig együtt olvasódjon.
+  const starX = r2(width * (0.44 + rnd() * 0.12));
+  const baseY = r2(height * 0.56);
+  const starR = 15;
+  const sunOnLeft = rnd() > 0.5;
+  const sunX = r2(starX + (sunOnLeft ? -1 : 1) * 74);
+  const dotX = r2(starX + (sunOnLeft ? 1 : -1) * 96);
+
   return (
     <div
       aria-hidden
       className={["mx-auto w-full max-w-[1120px] px-7", className].filter(Boolean).join(" ")}
-      style={{ opacity: 0.9 }}
     >
-      <EditorialArt
-        artKey={artKey}
-        width={width}
-        height={height}
-        quiet
-        className="h-[72px] w-full md:h-[96px]"
-      />
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-hidden
+        className="h-[56px] w-full md:h-[72px]"
+        style={{ display: "block" }}
+      >
+        {/* Talajvonal — végigfut a sávon, és túlnyúlik mindkét szélén, hogy
+            ne legyen látható vége. Ez köti össze a két szekciót. */}
+        <path
+          d={groundPath(seed + 11, width, baseY, 7)}
+          fill="none"
+          stroke={p.line}
+          strokeWidth={1.6}
+          strokeLinecap="round"
+          opacity={0.42}
+        />
+        <circle cx={sunX} cy={r2(baseY - 16)} r={11} fill={p.sun} />
+        <g stroke={p.line} strokeWidth={2.6} strokeLinecap="round" opacity={0.85}>
+          {starGeometry(starX, baseY, starR).lines.map((l) => (
+            <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+          ))}
+        </g>
+        <circle cx={dotX} cy={r2(baseY + 9)} r={5} fill={p.counterweight} />
+      </svg>
     </div>
   );
 }
