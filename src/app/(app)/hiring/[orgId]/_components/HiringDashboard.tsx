@@ -308,6 +308,7 @@ export function HiringDashboard({
                 type="button"
                 onClick={() => setShowForm((v) => !v)}
                 variant="ghost"
+                onInverse
                 className={[
                   "rounded-[10px] px-5 text-[12px] font-semibold",
                   showForm
@@ -324,7 +325,8 @@ export function HiringDashboard({
                 type="button"
                 disabled
                 variant="ghost"
-                className="rounded-[10px] border border-white/20 bg-white/10 px-5 text-[12px] text-[var(--color-text-on-inverse-muted)] hover:bg-white/10 hover:text-white/60"
+                onInverse
+                className="rounded-[10px] border px-5 text-[12px]"
               >
                 {t("hiring.inviteCandidate", locale)}
               </Button>
