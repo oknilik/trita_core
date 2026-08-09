@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V2 · Kontextus-sáv — trita header redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   V2 — KONTEXTUS-SÁV
+   A fejléc először azt mondja meg, HOL vagy, csak utána azt, hova mehetsz.
+   Bal oldalt logó-monogram + szervezet-váltó chip (ma ez 2 kattintásra van
+   a user-menü mélyén), középen szegmentált nav-kapcsoló, jobbra ⌘K kereső.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hdr {
+  background: var(--surface-header);
+  border-bottom: 1px solid var(--border-soft);
+}
+.hdr-in {
+  max-width: 1180px;
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ─── Bal: márka + kontextus ─── */
+.mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  padding-bottom: 2px;
+}
+.slash { color: var(--border-default); font-size: 17px; font-weight: 300; }
+
+.ctx {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 9px 0 10px;
+  border-radius: 9px;
+  max-width: 260px;
+}
+.ctx:hover { background: var(--surface-subtle); }
+.ctx-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ctx-role {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--sage-soft);
+  color: var(--sage-deep);
+  flex: none;
+}
+.ctx-role--consultant { background: var(--bronze-soft); color: var(--bronze-strong); }
+.ctx .ic-sm { color: var(--text-muted); flex: none; }
+
+/* ─── Közép: szegmentált nav ─── */
+.seg {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 11px;
+  background: var(--surface-subtle);
+  margin-left: auto;
+  margin-right: auto;
+}
+.seg-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 11px;
+  border-radius: 8px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.seg-item:hover { color: var(--text-primary); }
+.seg-item--active {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(26,26,46,.10), 0 0 0 1px rgba(26,26,46,.04);
+}
+.seg-item--open { background: color-mix(in srgb, var(--surface-card) 60%, transparent); color: var(--text-primary); }
+.seg-item .ic-sm:last-child { opacity: .45; }
+.seg-badge {
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--bronze-soft);
+  color: var(--bronze-strong);
+}
+
+/* ─── Jobb: kereső + eszközök ─── */
+.tools { display: flex; align-items: center; gap: 6px; flex: none; }
+.kbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 9px 0 10px;
+  border-radius: 9px;
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  min-width: 150px;
+}
+.kbar:hover { border-color: var(--text-muted); }
+.kbd {
+  margin-left: auto;
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 10.5px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+}
+.tool-btn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 9px;
+  color: var(--text-muted);
+}
+.tool-btn:hover { background: var(--surface-subtle); color: var(--text-primary); }
+
+/* Marketing ág */
+.mkt-link { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 0 10px; }
+.cta {
+  display: inline-flex; align-items: center; height: 34px; padding: 0 16px;
+  border-radius: 9px; background: var(--bronze-dark); color: var(--on-accent-deep);
+  font-size: 13px; font-weight: 600;
+}
+.ghost-btn {
+  display: inline-flex; align-items: center; height: 34px; padding: 0 15px;
+  border-radius: 9px; border: 1px solid var(--sage); color: var(--sage-deep);
+  font-size: 13px; font-weight: 500;
+}
+
+.pop--ctx { top: 56px; margin-top: -6px; left: 44px; width: 296px; }
+.pop--seg { top: 56px; margin-top: -6px; }
+
+.org-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 11px; border-radius: 10px;
+}
+.org-row:hover { background: var(--surface-subtle); }
+.org-row--active { background: var(--surface-subtle); }
+.org-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--sage); flex: none; margin-left: auto; }
+.org-mark {
+  width: 26px; height: 26px; flex: none; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+}
+
+/* ─── Mobil ─── */
+.m-hdr-in {
+  height: 56px; padding: 0 12px 0 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.m-ctx { display: flex; align-items: center; gap: 7px; min-width: 0; flex: 1; }
+.m-ctx .ctx-name { font-size: 14px; }
+.m-sheet {
+  border-top: 1px solid var(--border-soft);
+  background: var(--surface-header);
+  padding: 8px 10px 14px;
+}
+.m-row {
+  display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 10px;
+  font-size: 15px; font-weight: 500; color: var(--text-primary); border-radius: 10px;
+}
+.m-row .ic { color: var(--text-muted); }
+.m-row--active { background: var(--surface-subtle); color: var(--text-primary); font-weight: 600; }
+.m-label {
+  padding: 13px 10px 5px; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+<script src="demo.js"></script>
+
+<div class="doc">
+  <header class="doc-head">
+    <a class="doc-back" href="index.html"><svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev-r"/></svg> Vissza az áttekintőre</a>
+    <p class="doc-kicker">Verzió 02</p>
+    <h1 class="doc-title">Kontextus-sáv</h1>
+    <p class="doc-lead">
+      Ma a fejléc nem mondja meg, melyik szervezetben dolgozol — a név és a szerep a
+      user-menü mélyén van, a szervezet-váltó pedig csak akkor töltődik be, ha megnyitod.
+      Egy tanácsadónak, aki négy ügyfél-org között mozog, ez a legfontosabb hiányzó
+      információ. Itt a bal oldal lesz a <em>kontextus</em> (logó-monogram / szervezet + szerep,
+      egy kattintás a váltóhoz), a nav egy szegmentált kapcsolóba kerül, és belép egy
+      ⌘K kereső — a hosszú menük helyett gépeléssel is el lehet jutni bárhová.
+    </p>
+  </header>
+
+  <h2 class="doc-section-title">Belépve · asztali · ORG_ADMIN</h2>
+  <p class="doc-section-lead">A szegmentált kapcsoló egyben tartja a navigációt: vizuálisan egy tárgy, nem öt lebegő chip.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed in · admin</span><span class="tag">56px</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a class="mark" href="#">t</a>
+          <span class="slash">/</span>
+          <button class="ctx">
+            <span class="ctx-name">Acme Kft</span>
+            <span class="ctx-role">Admin</span>
+            <svg class="ic-sm"><use href="#i-chev"/></svg>
+          </button>
+
+          <nav class="seg">
+            <a class="seg-item seg-item--active" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+            <button class="seg-item"><svg class="ic-sm"><use href="#i-team"/></svg> Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <button class="seg-item"><svg class="ic-sm"><use href="#i-org"/></svg> Szervezet <span class="seg-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-report"/></svg> Analitika</a>
+          </nav>
+
+          <div class="tools">
+            <button class="kbar"><svg class="ic-sm"><use href="#i-search"/></svg> Keresés <span class="kbd">⌘K</span></button>
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn" style="padding:2px;border-radius:999px"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Szervezet-váltó · egy kattintás</h2>
+  <p class="doc-section-lead">Ez a verzió fő nyeresége: a többszervezetes tanácsadói munkamenet ma 3 lépés (avatar → menü → lista), itt 1.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · org switcher open</span><span class="tag">tanácsadói eset</span></div>
+    <div class="frame-body">
+      <div class="hdr" style="position:relative">
+        <div class="hdr-in">
+          <a class="mark" href="#">t</a>
+          <span class="slash">/</span>
+          <button class="ctx" style="background:var(--surface-subtle)">
+            <span class="ctx-name">Acme Kft</span>
+            <span class="ctx-role ctx-role--consultant">Tanácsadó</span>
+            <svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev"/></svg>
+          </button>
+          <div class="pop pop--ctx">
+            <div class="pop-label">Szervezeteim · 4</div>
+            <a class="org-row org-row--active" href="#">
+              <span class="org-mark" style="background:linear-gradient(135deg,#3d6b5e,#c17f4a)">A</span>
+              <span class="pop-txt"><strong>Acme Kft</strong><span>Tanácsadó · 3 csapat</span></span>
+              <span class="org-dot"></span>
+            </a>
+            <a class="org-row" href="#">
+              <span class="org-mark" style="background:linear-gradient(135deg,#4f5aa8,#7b5fae)">N</span>
+              <span class="pop-txt"><strong>Nordwind Zrt</strong><span>Tanácsadó · 5 csapat</span></span>
+            </a>
+            <a class="org-row" href="#">
+              <span class="org-mark" style="background:linear-gradient(135deg,#3d7f95,#78924f)">P</span>
+              <span class="pop-txt"><strong>Pontos Bt</strong><span>Admin · 1 csapat</span></span>
+            </a>
+            <a class="org-row" href="#">
+              <span class="org-mark" style="background:linear-gradient(135deg,#b4688a,#c08d2e)">V</span>
+              <span class="pop-txt"><strong>Volta Group</strong><span>Tanácsadó · 2 csapat</span></span>
+            </a>
+            <div class="pop-sep"></div>
+            <a class="pop-item" href="#">
+              <span class="pop-ic"><svg class="ic" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><path d="M8 3.5v9M3.5 8h9"/></svg></span>
+              <span class="pop-txt"><strong>Új ügyfél-szervezet</strong><span>Tanácsadói létrehozás</span></span>
+            </a>
+          </div>
+
+          <nav class="seg">
+            <a class="seg-item seg-item--active" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+            <button class="seg-item"><svg class="ic-sm"><use href="#i-team"/></svg> Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <button class="seg-item"><svg class="ic-sm"><use href="#i-org"/></svg> Szervezet <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-report"/></svg> Analitika</a>
+          </nav>
+
+          <div class="tools">
+            <button class="kbar"><svg class="ic-sm"><use href="#i-search"/></svg> Keresés <span class="kbd">⌘K</span></button>
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn" style="padding:2px;border-radius:999px"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:340px">
+        <div class="skel-h"></div>
+        <div class="skel-line w70"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Kijelentkezve · marketing</h2>
+  <p class="doc-section-lead">Kontextus nélkül a bal oldal a teljes szóvédjegyre vált vissza, a szegmentált kapcsoló balra húzódik.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed out</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a href="#" style="font-family:Fraunces,Georgia,serif;font-size:19px;font-weight:900;letter-spacing:-.03em;color:var(--text-primary)">
+            <span style="color:var(--sage)">t</span>rit<span style="color:var(--bronze)">a</span>
+          </a>
+          <nav class="seg" style="margin-left:18px;margin-right:auto">
+            <a class="seg-item seg-item--active" href="#">Főoldal</a>
+            <a class="seg-item" href="#">Blog</a>
+            <a class="seg-item" href="#">Mintázatok</a>
+            <a class="seg-item" href="#">Ajánlat</a>
+          </nav>
+          <div class="tools">
+            <a class="ghost-btn" href="#">Belépés</a>
+            <a class="cta" href="#">Kipróbálom</a>
+            <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);padding-left:10px;margin-left:4px;border-left:1px solid var(--border-default)"><b style="color:var(--text-primary);font-weight:500">HU</b> / EN</span>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:180px">
+        <div class="skel-h" style="width:340px;height:30px"></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Mobil</h2>
+  <p class="doc-section-lead">Mobilon a kontextus marad látható (ez a lényeg), a nav a hamburger mögé kerül. A kereső a menü tetején teljes szélességű mező.</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · zárva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="m-hdr-in">
+            <a class="mark" href="#">t</a>
+            <button class="m-ctx">
+              <span class="ctx-name">Acme Kft</span>
+              <svg class="ic-sm" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+            </button>
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="tool-btn"><svg class="ic-lg"><use href="#i-menu"/></svg></button>
+          </div>
+        </div>
+        <div class="skel" style="padding:20px">
+          <div class="skel-h" style="width:180px"></div>
+          <div class="skel-card"></div><div class="skel-card"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · menü nyitva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="m-hdr-in">
+            <a class="mark" href="#">t</a>
+            <button class="m-ctx"><span class="ctx-name">Acme Kft</span></button>
+            <button class="tool-btn" style="color:var(--text-primary)"><svg class="ic-lg"><use href="#i-close"/></svg></button>
+          </div>
+          <div class="m-sheet">
+            <button class="kbar" style="width:100%;height:40px;margin-bottom:8px"><svg class="ic-sm"><use href="#i-search"/></svg> Keresés a munkaterületen</button>
+            <a class="m-row m-row--active" href="#"><svg class="ic"><use href="#i-grid"/></svg> Vezérlő</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-team"/></svg> Csapatok <svg class="ic-sm" style="margin-left:auto;color:var(--text-muted)"><use href="#i-chev-r"/></svg></a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-org"/></svg> Szervezet <span class="seg-badge" style="margin-left:auto">2</span></a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-report"/></svg> Analitika</a>
+            <p class="m-label">Szervezet váltása</p>
+            <a class="m-row" href="#"><span class="org-mark" style="background:linear-gradient(135deg,#3d6b5e,#c17f4a)">A</span> Acme Kft <span class="org-dot"></span></a>
+            <a class="m-row" href="#"><span class="org-mark" style="background:linear-gradient(135deg,#4f5aa8,#7b5fae)">N</span> Nordwind Zrt</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Sötét séma</h2>
+
+  <div class="frame" data-theme="dark">
+    <div class="frame-label"><span>desktop · dark</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a class="mark" href="#">t</a>
+          <span class="slash">/</span>
+          <button class="ctx">
+            <span class="ctx-name">Nordwind Zrt</span>
+            <span class="ctx-role ctx-role--consultant">Tanácsadó</span>
+            <svg class="ic-sm"><use href="#i-chev"/></svg>
+          </button>
+          <nav class="seg">
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+            <a class="seg-item seg-item--active" href="#"><svg class="ic-sm"><use href="#i-team"/></svg> Csapatok</a>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <button class="seg-item"><svg class="ic-sm"><use href="#i-org"/></svg> Szervezet <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="seg-item" href="#"><svg class="ic-sm"><use href="#i-report"/></svg> Analitika</a>
+          </nav>
+          <div class="tools">
+            <button class="kbar"><svg class="ic-sm"><use href="#i-search"/></svg> Keresés <span class="kbd">⌘K</span></button>
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn" style="padding:2px;border-radius:999px"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:170px">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Mit nyerünk</h4>
+      <ul>
+        <li>Az org-kontextus és a szerep MINDIG látszik — ez ma sehol nincs a fejlécben.</li>
+        <li>Szervezet-váltás 3 lépésről 1-re; a tanácsadói munkamenet fő súrlódása.</li>
+        <li>A szegmentált kapcsoló egy tárgyként olvasható, nem öt különálló chipként.</li>
+        <li>A ⌘K hosszú távon kiváltja a mély menüket (csapat, tag, kampány keresése).</li>
+      </ul>
+    </div>
+    <div class="note note--risk">
+      <h4>Mit kockáztatunk</h4>
+      <ul>
+        <li>Ez a legdrágább verzió: kereső-index és command palette nélkül a ⌘K csak dísz.</li>
+        <li>A bal oldal hosszú org-névnél szorít; a szegmentált nav 1024px-en törik — kell egy „több" gomb.</li>
+        <li>A tagoknak (ORG_MEMBER, egy szervezet) a kontextus-chip redundáns zaj.</li>
+        <li>Az org-tagságokat mountkor be kell tölteni (ma lusta) — vagy a chip név nélkül villan be.</li>
+      </ul>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="index.html">Áttekintő</a>
+    <a href="v1-quiet-rail.html">V1 Csendes vonal</a>
+    <a href="v2-context-bar.html" aria-current="page">V2 Kontextus-sáv</a>
+    <a href="v3-floating-island.html">V3 Lebegő sziget</a>
+    <a href="v4-two-tier.html">V4 Kétsávos</a>
+    <a href="v5-editorial.html">V5 Márkás</a>
+  </nav>
+</div>
+</body>
+</html>

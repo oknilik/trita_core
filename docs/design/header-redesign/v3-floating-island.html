@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V3 · Lebegő sziget — trita header redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   V3 — LEBEGŐ SZIGET
+   A fejléc nem sáv, hanem egy lekerekített, áttetsző kártya, ami a lap
+   fölött úszik. A tartalom alatta látszik ki — ettől kap a felület
+   mélységet a mai lapos „sáv + vonal" helyett. Görgetésre összehúzódik
+   és a lap tetejéhez tapad.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.stage { position: relative; padding: 14px 0 0; }
+
+/* A hero mint háttér — hogy látszódjon, mi van a sziget alatt */
+.stage-hero {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 190px;
+  background:
+    radial-gradient(120% 140% at 12% 0%, color-mix(in srgb, var(--sage) 22%, transparent) 0%, transparent 60%),
+    linear-gradient(140deg, var(--sage-soft), var(--surface-warm) 70%);
+}
+
+.island-wrap { position: relative; padding: 0 18px; }
+
+.island {
+  position: relative;
+  max-width: 1060px;
+  margin: 0 auto;
+  height: 56px;
+  padding: 0 8px 0 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-card-soft) 82%, transparent);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid color-mix(in srgb, var(--border-soft) 75%, transparent);
+  box-shadow: var(--shadow-float);
+}
+
+/* Görgetett állapot: alacsonyabb, szélesebb, a lap tetejéhez tapad */
+.island--stuck {
+  height: 48px;
+  max-width: 1180px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface-header) 92%, transparent);
+}
+
+.logo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 19px; font-weight: 900; letter-spacing: -0.03em;
+  color: var(--text-primary); flex: none;
+}
+.logo .t { color: var(--sage); }
+.logo .a { color: var(--bronze); }
+
+.nav { display: flex; align-items: center; gap: 2px; margin: 0 auto; }
+.nav-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 13px; border-radius: 999px;
+  font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  white-space: nowrap;
+}
+.nav-item:hover { background: color-mix(in srgb, var(--sage-soft) 70%, transparent); color: var(--text-primary); }
+.nav-item--active {
+  background: var(--sage-soft);
+  color: var(--sage-deep);
+  font-weight: 600;
+}
+.nav-item--open { background: color-mix(in srgb, var(--sage-soft) 60%, transparent); color: var(--text-primary); }
+.nav-item .ic-sm:last-child { opacity: .5; }
+.nav-badge {
+  font-family: "DM Mono", ui-monospace, monospace; font-size: 10px;
+  padding: 1px 5px; border-radius: 999px;
+  background: var(--bronze-soft); color: var(--bronze-strong);
+}
+
+/* Jobb oldali beágyazott kapszula: a szigeten belüli kisebb sziget */
+.capsule {
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 3px 3px 3px 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-canvas) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border-default) 60%, transparent);
+  flex: none;
+}
+.cap-btn {
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 999px; color: var(--text-muted);
+}
+.cap-btn:hover { background: var(--surface-card); color: var(--text-primary); }
+
+.cta {
+  display: inline-flex; align-items: center; height: 36px; padding: 0 18px;
+  border-radius: 999px; background: var(--bronze-dark); color: var(--on-accent-deep);
+  font-size: 13px; font-weight: 600; flex: none;
+}
+.ghost-btn {
+  display: inline-flex; align-items: center; height: 36px; padding: 0 16px;
+  border-radius: 999px; border: 1px solid var(--sage); color: var(--sage-deep);
+  font-size: 13px; font-weight: 500;
+}
+
+.pop--island { top: 100%; margin-top: 8px; border-radius: 20px; }
+
+/* Vászon a sziget alatt */
+.under {
+  position: relative;
+  padding: 34px 34px 40px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.under-title {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 26px; font-weight: 600; color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+.under-sub { font-size: 13px; color: var(--text-secondary); max-width: 46ch; line-height: 1.6; }
+
+/* ─── Mobil ─── */
+/* `position: relative` mindkettőn: a `.stage-hero` abszolút pozicionált,
+   ezért a nem-pozicionált testvérek FÖLÉ festődne — a szigetet a saját
+   backdrop-filtere még megvédené, a menü-lapot viszont eltakarta. */
+.m-island {
+  position: relative;
+  margin: 10px 12px 0;
+  height: 52px; padding: 0 6px 0 16px;
+  display: flex; align-items: center; gap: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--surface-card-soft) 85%, transparent);
+  backdrop-filter: blur(16px);
+  border: 1px solid color-mix(in srgb, var(--border-soft) 75%, transparent);
+  box-shadow: var(--shadow-float);
+}
+.m-sheet {
+  position: relative;
+  margin: 8px 12px 16px;
+  border-radius: 22px;
+  background: var(--surface-card-soft);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-pop);
+  padding: 10px;
+}
+.m-row {
+  display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 0 12px;
+  font-size: 15px; font-weight: 500; color: var(--text-primary); border-radius: 999px;
+}
+.m-row .ic { color: var(--text-muted); }
+.m-row--active { background: var(--sage-soft); color: var(--sage-deep); font-weight: 600; }
+.m-row--active .ic { color: var(--sage-deep); }
+.m-label {
+  padding: 13px 12px 5px; font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted);
+}
+</style>
+</head>
+<body>
+<script src="demo.js"></script>
+
+<div class="doc">
+  <header class="doc-head">
+    <a class="doc-back" href="index.html"><svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev-r"/></svg> Vissza az áttekintőre</a>
+    <p class="doc-kicker">Verzió 03</p>
+    <h1 class="doc-title">Lebegő sziget</h1>
+    <p class="doc-lead">
+      A legbátrabb irány. A fejléc megszűnik sávnak lenni: lekerekített, áttetsző kártya,
+      ami a lap fölött úszik, és alatta átsejlik a tartalom. Ez adja meg azt a
+      „frissességet", amit a mai lapos sáv + hajszálvonal nem tud — cserébe ez a
+      legérzékenyebb megoldás: minden oldal tetején számolni kell azzal, hogy a
+      sziget alatt van tartalom. Görgetésre összehúzódik és a lap tetejéhez tapad,
+      így nem eszi a függőleges helyet.
+    </p>
+  </header>
+
+  <h2 class="doc-section-title">Belépve · asztali · lap tetején</h2>
+  <p class="doc-section-lead">A sziget a hero fölött úszik, a mögötte lévő szín átsüt rajta — a fejléc a felület része lesz, nem egy ráragasztott sáv.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed in · top</span><span class="tag">56px · lebeg</span></div>
+    <div class="frame-body">
+      <div class="stage">
+        <div class="stage-hero"></div>
+        <div class="island-wrap">
+          <div class="island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item nav-item--active" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+              <button class="nav-item">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <button class="nav-item">Szervezet <span class="nav-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="capsule">
+              <span class="bell-wrap">
+                <button class="cap-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot" style="border-color:var(--surface-canvas)"></span>
+              </span>
+              <button class="cap-btn" style="width:auto;padding:0 2px"><span class="avatar avatar--28">K</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="under">
+          <p class="under-title">Jó reggelt, Kilin</p>
+          <p class="under-sub">Két aktív 360°-os kör fut, és a Termékfejlesztés csapatban 3 visszajelzés érkezett tegnap óta.</p>
+          <div class="skel-row" style="margin-top:6px"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Görgetett állapot</h2>
+  <p class="doc-section-lead">48px, szélesebb, kisebb rádiusz, tömörebb háttér — a sziget „ledokkol", és nem lóg bele a tartalomba.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · scrolled</span><span class="tag">48px · dokkolt</span></div>
+    <div class="frame-body">
+      <div class="stage" style="padding-top:8px">
+        <div class="island-wrap">
+          <div class="island island--stuck">
+            <a class="logo" style="font-size:17px" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item nav-item--active" style="height:30px" href="#">Vezérlő</a>
+              <button class="nav-item" style="height:30px">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" style="height:30px" href="#">Jelöltek</a>
+              <button class="nav-item" style="height:30px">Szervezet <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" style="height:30px" href="#">Analitika</a>
+            </nav>
+            <div class="capsule" style="border:0;background:transparent">
+              <span class="bell-wrap"><button class="cap-btn"><svg class="ic"><use href="#i-bell"/></svg></button><span class="bell-dot" style="border-color:var(--surface-header)"></span></span>
+              <button class="cap-btn" style="width:auto;padding:0 2px"><span class="avatar avatar--28">K</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="under" style="padding-top:22px">
+          <div class="skel-line w70"></div>
+          <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div></div>
+          <div class="skel-line w45"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Lenyíló nyitva</h2>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · dropdown open</span></div>
+    <div class="frame-body">
+      <div class="stage">
+        <div class="stage-hero"></div>
+        <div class="island-wrap">
+          <div class="island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+              <div style="position:relative;display:flex">
+                <button class="nav-item nav-item--open">Csapatok <svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev"/></svg></button>
+                <div class="pop pop--island" style="left:-40px">
+                  <div class="pop-label">Csapataim · 3</div>
+                  <a class="pop-item pop-item--active" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>Termékfejlesztés</strong><span>12 tag · 9 kitöltés · 1 aktív kör</span></span>
+                  </a>
+                  <a class="pop-item" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>Értékesítés</strong><span>8 tag · 8 kitöltés</span></span>
+                  </a>
+                  <a class="pop-item" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>People Ops</strong><span>5 tag · 3 kitöltés</span></span>
+                  </a>
+                </div>
+              </div>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <button class="nav-item">Szervezet <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="capsule">
+              <span class="bell-wrap"><button class="cap-btn"><svg class="ic"><use href="#i-bell"/></svg></button><span class="bell-dot" style="border-color:var(--surface-canvas)"></span></span>
+              <button class="cap-btn" style="width:auto;padding:0 2px"><span class="avatar avatar--28">K</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="under" style="min-height:230px"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Kijelentkezve · marketing</h2>
+  <p class="doc-section-lead">Ez az irány marketing-oldalon a legerősebb: a lebegő sziget a landing hero-ja fölött modern, „termék"-hatású.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed out</span></div>
+    <div class="frame-body">
+      <div class="stage">
+        <div class="stage-hero" style="height:240px"></div>
+        <div class="island-wrap">
+          <div class="island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item nav-item--active" href="#">Főoldal</a>
+              <a class="nav-item" href="#">Blog</a>
+              <a class="nav-item" href="#">Mintázatok</a>
+              <a class="nav-item" href="#">Ajánlat</a>
+            </nav>
+            <a class="ghost-btn" href="#">Belépés</a>
+            <a class="cta" href="#">Kipróbálom</a>
+          </div>
+        </div>
+        <div class="under">
+          <p class="under-title" style="font-size:32px;max-width:20ch">Amit a csapatod tud magáról — és amit nem.</p>
+          <p class="under-sub">Önértékelés, kollégai visszajelzés és csapat-szintű mintázatok egy helyen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Mobil</h2>
+  <p class="doc-section-lead">Mobilon a sziget természetes: pilula-fejléc, alatta pilula-menü. A 12px oldalmargó viszont elveszik a tartalomból.</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · zárva</span></div>
+      <div class="frame-body">
+        <div class="stage" style="padding-top:0">
+          <div class="stage-hero" style="height:150px"></div>
+          <div class="m-island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:2px">
+              <span class="bell-wrap"><button class="cap-btn"><svg class="ic"><use href="#i-bell"/></svg></button><span class="bell-dot" style="border-color:var(--surface-card-soft)"></span></span>
+              <button class="cap-btn"><svg class="ic-lg"><use href="#i-menu"/></svg></button>
+            </div>
+          </div>
+          <div class="under" style="padding:26px 22px">
+            <p class="under-title" style="font-size:20px">Jó reggelt, Kilin</p>
+            <div class="skel-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · menü nyitva</span></div>
+      <div class="frame-body">
+        <div class="stage" style="padding-top:0">
+          <div class="stage-hero" style="height:150px"></div>
+          <div class="m-island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:2px">
+              <button class="cap-btn" style="color:var(--text-primary)"><svg class="ic-lg"><use href="#i-close"/></svg></button>
+            </div>
+          </div>
+          <div class="m-sheet">
+            <div style="display:flex;align-items:center;gap:11px;padding:6px 12px 12px">
+              <span class="avatar avatar--40">K</span>
+              <div>
+                <p style="font-size:14px;font-weight:600;color:var(--text-primary)">Kilin Kod</p>
+                <span style="font-size:12px;color:var(--text-muted)">Admin · Acme Kft</span>
+              </div>
+            </div>
+            <a class="m-row m-row--active" href="#"><svg class="ic"><use href="#i-grid"/></svg> Vezérlő</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-team"/></svg> Csapatok</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-org"/></svg> Szervezet</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-report"/></svg> Analitika</a>
+            <p class="m-label">Fiók</p>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-exit"/></svg> Kijelentkezés</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Sötét séma</h2>
+  <p class="doc-section-lead">Sötéten a blur-os üveghatás erősebb, de a kontraszt-tartalék kisebb: a szigetnek kell egy nem-áttetsző alsó rétege, különben a mögé kerülő világos kártya „átüt".</p>
+
+  <div class="frame" data-theme="dark">
+    <div class="frame-label"><span>desktop · dark</span></div>
+    <div class="frame-body">
+      <div class="stage">
+        <div class="stage-hero"></div>
+        <div class="island-wrap">
+          <div class="island">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item" href="#">Vezérlő</a>
+              <a class="nav-item nav-item--active" href="#">Csapatok</a>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <button class="nav-item">Szervezet <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="capsule">
+              <span class="bell-wrap"><button class="cap-btn"><svg class="ic"><use href="#i-bell"/></svg></button><span class="bell-dot" style="border-color:var(--surface-canvas)"></span></span>
+              <button class="cap-btn" style="width:auto;padding:0 2px"><span class="avatar avatar--28">K</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="under">
+          <p class="under-title">Jó estét, Kilin</p>
+          <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Mit nyerünk</h4>
+      <ul>
+        <li>Messze a legnagyobb vizuális ugrás — a landingen azonnal „új termék" érzés.</li>
+        <li>Mélység a mai lapos sáv helyett; a fejléc a felület része lesz.</li>
+        <li>A dokkolás (56 → 48px) görgetéskor visszaad függőleges helyet.</li>
+        <li>Mobilon a pilula-forma természetesen áll, a menü ugyanaz a nyelv.</li>
+      </ul>
+    </div>
+    <div class="note note--risk">
+      <h4>Mit kockáztatunk</h4>
+      <ul>
+        <li>MINDEN oldal tetejét újra kell nézni: a sziget alá kerülő tartalomnak felső levegő kell.</li>
+        <li>Az áttetszőség kontrasztot eszik — a WCAG-küszöböt oldalanként újra kell mérni (a projekt eddigi AA-fegyelme itt a legdrágább).</li>
+        <li>A `position: sticky` + blur + méretváltás görgetéskor gyengébb eszközön akadhat.</li>
+        <li>A fókusz-fejléc (`/assessment`, `/try`) és a lebegő forma nehezen fér össze.</li>
+      </ul>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="index.html">Áttekintő</a>
+    <a href="v1-quiet-rail.html">V1 Csendes vonal</a>
+    <a href="v2-context-bar.html">V2 Kontextus-sáv</a>
+    <a href="v3-floating-island.html" aria-current="page">V3 Lebegő sziget</a>
+    <a href="v4-two-tier.html">V4 Kétsávos</a>
+    <a href="v5-editorial.html">V5 Márkás</a>
+  </nav>
+</div>
+</body>
+</html>

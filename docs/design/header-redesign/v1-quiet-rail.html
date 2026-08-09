@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V1 · Csendes vonal — trita header redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   V1 — CSENDES VONAL
+   A fejléc egy vonal, nem egy panel. Nincs ikon a nav-ban, nincs chip,
+   nincs árnyék, nincs blur. Az egyetlen jelölés az aktív elem alatti
+   2px bronz vonal — ugyanaz a nyelv, mint a fül-sorokon a felületen belül.
+   Magasság 52px (ma 56), a jobb oldali klaszter ikonná zsugorodik.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hdr {
+  background: var(--surface-header);
+  border-bottom: 1px solid var(--border-soft);
+}
+.hdr-in {
+  max-width: 1120px;
+  margin: 0 auto;
+  height: 52px;
+  padding: 0 26px;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+.logo {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  flex: none;
+}
+.logo .t { color: var(--sage); }
+.logo .a { color: var(--bronze); }
+
+/* ─── A vonal maga ─── */
+.rail { display: flex; align-items: stretch; height: 52px; gap: 2px; flex: 1; }
+
+.rail-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 11px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  letter-spacing: -0.005em;
+}
+.rail-item:hover { color: var(--text-primary); }
+.rail-item .ic-sm { opacity: 0.45; }
+
+/* Aktív: 2px bronz vonal az alsó élen — se chip, se háttér. */
+.rail-item--active { color: var(--text-primary); font-weight: 600; }
+.rail-item--active::after {
+  content: "";
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--bronze);
+}
+/* Nyitott lenyíló: az elem „felkapcsol", de nem kap kitöltést */
+.rail-item--open { color: var(--text-primary); }
+.rail-item--open .ic-sm { opacity: 1; transform: rotate(180deg); }
+
+.rail-badge {
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: var(--bronze-soft);
+  color: var(--bronze-strong);
+}
+
+/* ─── Jobb oldali klaszter: két ikon, semmi több ─── */
+.tools { display: flex; align-items: center; gap: 4px; flex: none; }
+.tool-btn {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9px;
+  color: var(--text-muted);
+}
+.tool-btn:hover { background: var(--surface-subtle); color: var(--text-primary); }
+.avatar-btn { padding: 3px; border-radius: 999px; display: inline-flex; }
+.avatar-btn:hover { background: var(--surface-subtle); }
+
+/* Marketing ág */
+.mkt-link { font-size: 13px; font-weight: 500; color: var(--text-secondary); padding: 0 10px; }
+.mkt-link:hover { color: var(--text-primary); }
+.cta {
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 16px;
+  border-radius: 9px;
+  background: var(--bronze-dark);
+  color: var(--on-accent-deep);
+  font-size: 13px;
+  font-weight: 600;
+}
+.lang {
+  display: inline-flex;
+  font-family: "DM Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--text-muted);
+  gap: 2px;
+  padding-left: 8px;
+  margin-left: 4px;
+  border-left: 1px solid var(--border-default);
+}
+.lang b { color: var(--text-primary); font-weight: 500; }
+
+/* Lenyíló pozíció ehhez a fejléchez */
+.pop--rail { top: 52px; margin-top: 4px; }
+
+/* ─── Mobil ─── */
+.m-hdr-in {
+  height: 52px;
+  padding: 0 14px 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.m-sheet {
+  border-top: 1px solid var(--border-soft);
+  background: var(--surface-header);
+  padding: 6px 10px 14px;
+}
+.m-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 10px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  border-radius: 10px;
+}
+.m-row .ic { color: var(--text-muted); }
+.m-row--active { color: var(--bronze-strong); }
+.m-row--active .ic { color: var(--bronze-strong); }
+.m-label {
+  padding: 14px 10px 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.m-user {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--border-soft);
+  margin-bottom: 4px;
+}
+.m-user p { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.m-user span { font-size: 12px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<script src="demo.js"></script>
+
+<div class="doc">
+  <header class="doc-head">
+    <a class="doc-back" href="index.html"><svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev-r"/></svg> Vissza az áttekintőre</a>
+    <p class="doc-kicker">Verzió 01</p>
+    <h1 class="doc-title">Csendes vonal</h1>
+    <p class="doc-lead">
+      A fejléc ma egy <em>panel</em>: sáv + keret + árnyék + blur, benne ikonos chipek, és
+      kétféle aktív jelölés (a „Vezérlő" sötét pirula, a többi halvány chip). Ez a verzió
+      mindezt visszabontja egy <em>vonalra</em>. Nincs ikon a menüben, nincs kitöltött chip,
+      nincs árnyék — az aktív elemet egyetlen 2px bronz alávonás jelöli, ugyanaz a nyelv,
+      amit a felületen belüli fülsorok is használnak. A jobb oldal ikonokká zsugorodik:
+      a név és a chevron elhagyható, a monogram önmagában is felismerhető gomb.
+    </p>
+  </header>
+
+  <h2 class="doc-section-title">Belépve · asztali · ORG_ADMIN</h2>
+  <p class="doc-section-lead">Öt menüpont, ebből kettő lenyíló. A „Vezérlő" ugyanolyan elem, mint a többi — megszűnik a mai kettős aktív-nyelv.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed in · admin</span><span class="tag">52px</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+          <nav class="rail">
+            <a class="rail-item rail-item--active" href="#">Vezérlő</a>
+            <button class="rail-item">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="rail-item" href="#">Jelöltek</a>
+            <button class="rail-item">Szervezet <span class="rail-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="rail-item" href="#">Analitika</a>
+          </nav>
+          <div class="tools">
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Lenyíló nyitva · Csapatok</h2>
+  <p class="doc-section-lead">A nyitott elem nem kap kitöltést, csak „felkapcsol" és a chevron fordul — a panel viszi a hangsúlyt, nem a trigger.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · dropdown open</span></div>
+    <div class="frame-body">
+      <div class="hdr" style="position:relative">
+        <div class="hdr-in">
+          <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+          <nav class="rail">
+            <a class="rail-item rail-item--active" href="#">Vezérlő</a>
+            <div style="position:relative;display:flex">
+              <button class="rail-item rail-item--open">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <div class="pop pop--rail" style="left:0">
+                <div class="pop-label">Csapataim · 3</div>
+                <a class="pop-item pop-item--active" href="#">
+                  <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                  <span class="pop-txt"><strong>Termékfejlesztés</strong><span>12 tag · 9 kitöltés · 1 aktív kör</span></span>
+                  <svg class="ic-sm" style="opacity:.4"><use href="#i-chev-r"/></svg>
+                </a>
+                <a class="pop-item" href="#">
+                  <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                  <span class="pop-txt"><strong>Értékesítés</strong><span>8 tag · 8 kitöltés</span></span>
+                  <svg class="ic-sm" style="opacity:.4"><use href="#i-chev-r"/></svg>
+                </a>
+                <a class="pop-item" href="#">
+                  <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                  <span class="pop-txt"><strong>People Ops</strong><span>5 tag · 3 kitöltés</span></span>
+                  <svg class="ic-sm" style="opacity:.4"><use href="#i-chev-r"/></svg>
+                </a>
+              </div>
+            </div>
+            <a class="rail-item" href="#">Jelöltek</a>
+            <button class="rail-item">Szervezet <span class="rail-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="rail-item" href="#">Analitika</a>
+          </nav>
+          <div class="tools">
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:210px">
+        <div class="skel-h"></div>
+        <div class="skel-line w70"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Kijelentkezve · marketing</h2>
+  <p class="doc-section-lead">Ugyanaz a vonal, más töltet. A „Belépés" szöveg-linkké halkul, hogy egyetlen gomb — a bronz CTA — vigye a hangsúlyt.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed out</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+          <nav class="rail">
+            <a class="rail-item rail-item--active" href="#">Főoldal</a>
+            <a class="rail-item" href="#">Blog</a>
+            <a class="rail-item" href="#">Mintázatok</a>
+            <a class="rail-item" href="#">Ajánlat</a>
+          </nav>
+          <div class="tools">
+            <a class="mkt-link" href="#">Belépés</a>
+            <a class="cta" href="#">Kipróbálom</a>
+            <span class="lang"><b>HU</b> / EN</span>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:180px">
+        <div class="skel-h" style="width:340px;height:30px"></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Mobil</h2>
+  <p class="doc-section-lead">Zárva három elem; nyitva a menü a fejléc alá simul (nem külön kártya-panel), így nincs „lebegő lap a lap fölött" érzés.</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · zárva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="m-hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <div class="tools">
+              <span class="bell-wrap">
+                <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot"></span>
+              </span>
+              <button class="tool-btn"><svg class="ic-lg"><use href="#i-menu"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="skel" style="padding:20px">
+          <div class="skel-h" style="width:180px"></div>
+          <div class="skel-card"></div><div class="skel-card"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · menü nyitva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="m-hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <div class="tools">
+              <span class="bell-wrap">
+                <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot"></span>
+              </span>
+              <button class="tool-btn" style="color:var(--text-primary)"><svg class="ic-lg"><use href="#i-close"/></svg></button>
+            </div>
+          </div>
+          <div class="m-sheet">
+            <div class="m-user">
+              <span class="avatar avatar--40">K</span>
+              <div>
+                <p>Kilin Kod</p>
+                <span>Admin · Acme Kft</span>
+              </div>
+            </div>
+            <a class="m-row m-row--active" href="#"><svg class="ic"><use href="#i-grid"/></svg> Vezérlő</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-team"/></svg> Csapatok <span class="rail-badge" style="margin-left:auto">3</span></a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-org"/></svg> Szervezet <span class="rail-badge" style="margin-left:auto">2</span></a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-report"/></svg> Analitika</a>
+            <p class="m-label">Fiók</p>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-user"/></svg> Profil</a>
+            <a class="m-row" href="#"><svg class="ic"><use href="#i-exit"/></svg> Kijelentkezés</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Sötét séma</h2>
+  <p class="doc-section-lead">A vonalas jelölés sötéten is működik: a bronz alávonás a legvilágosabb elem a sávban, nem kell kitöltött chip a kiemeléshez.</p>
+
+  <div class="frame" data-theme="dark">
+    <div class="frame-label"><span>desktop · dark</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="hdr-in">
+          <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+          <nav class="rail">
+            <a class="rail-item" href="#">Vezérlő</a>
+            <button class="rail-item">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="rail-item" href="#">Jelöltek</a>
+            <button class="rail-item rail-item--active">Szervezet <span class="rail-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+            <a class="rail-item" href="#">Analitika</a>
+          </nav>
+          <div class="tools">
+            <span class="bell-wrap">
+              <button class="tool-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="avatar-btn"><span class="avatar avatar--28">K</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:170px">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Mit nyerünk</h4>
+      <ul>
+        <li>Egyetlen aktív-nyelv a mai kettő helyett (sötét pirula + halvány chip).</li>
+        <li>Az ikonok elhagyása 13px-en tisztább sort ad; ma minden elem ikon+szöveg, ez 5 elemnél zajos.</li>
+        <li>4px alacsonyabb sáv, árnyék és blur nélkül — kevesebb réteg a tartalom fölött.</li>
+        <li>A jobb klaszter ~120px-ről ~70px-re fogy: 1024–1200px között megszűnik a szorulás.</li>
+      </ul>
+    </div>
+    <div class="note note--risk">
+      <h4>Mit kockáztatunk</h4>
+      <ul>
+        <li>A név eltűnik a fejlécből — több fiók között váltó tanácsadónak ez visszalépés lehet.</li>
+        <li>Az org-kontextus továbbra sem látszik (a mai állapot marad, nem javul).</li>
+        <li>Ikon nélkül a menü kevésbé „scannelhető" gyors visszatérőknek; mérni kell.</li>
+        <li>A mobil sheet-be simulás miatt a hosszú menü tolja a tartalmat — scroll-kezelés kell.</li>
+      </ul>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="index.html">Áttekintő</a>
+    <a href="v1-quiet-rail.html" aria-current="page">V1 Csendes vonal</a>
+    <a href="v2-context-bar.html">V2 Kontextus-sáv</a>
+    <a href="v3-floating-island.html">V3 Lebegő sziget</a>
+    <a href="v4-two-tier.html">V4 Kétsávos</a>
+    <a href="v5-editorial.html">V5 Márkás</a>
+  </nav>
+</div>
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V5 · Márkás melegség — trita header redesign</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   V5 — MÁRKÁS MELEGSÉG
+   A mai fejléc bármelyik SaaS-é lehetne. Ez a verzió a meglévő
+   márka-anyagot (Fraunces, krém, zsálya, bronz) beviszi a fejlécbe:
+   meleg krém felület, 2px zsálya→bronz jelzővonal a lap tetején,
+   Fraunces menü-címkék, és zsálya „tinta"-alávonás az aktív elemen.
+   Semmi új token — a felület saját palettájából dolgozik.
+   ═══════════════════════════════════════════════════════════════════ */
+
+.hdr { background: var(--surface-warm); }
+
+/* Márka-jelzővonal: a lap legfelső 2px-e */
+.brandline {
+  height: 2px;
+  background: linear-gradient(90deg, var(--sage) 0%, var(--sage) 22%, var(--bronze) 62%, var(--bronze-dark) 100%);
+}
+
+.hdr-body { border-bottom: 1px solid var(--border-soft); }
+.hdr-in {
+  max-width: 1140px; margin: 0 auto; height: 58px; padding: 0 26px;
+  display: flex; align-items: stretch; gap: 22px;
+}
+
+.logo {
+  align-self: center;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 22px; font-weight: 900; letter-spacing: -0.035em;
+  color: var(--text-primary); flex: none;
+}
+.logo .t { color: var(--sage); }
+.logo .a { color: var(--bronze); }
+
+/* ─── Menü: Fraunces címkék, tinta-alávonás ─── */
+.nav { display: flex; align-items: stretch; gap: 4px; flex: 1; }
+.nav-item {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 12px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 15px; font-weight: 500; letter-spacing: -0.01em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.nav-item:hover { color: var(--text-primary); }
+.nav-item .ic-sm { opacity: .45; }
+
+.nav-item--active { color: var(--sage-deep); font-weight: 600; }
+[data-theme="dark"] .nav-item--active { color: var(--sage-deep); }
+/* „Tinta"-alávonás: enyhén ferde végű, lekerekített vonal — nem fül-jelölő,
+   hanem aláhúzás, ahogy egy nyomtatott oldalon jelölnénk. */
+.nav-item--active::after {
+  content: "";
+  position: absolute; left: 11px; right: 11px; bottom: 13px;
+  height: 3px; border-radius: 999px;
+  background: var(--sage);
+  opacity: .85;
+}
+.nav-item--open { color: var(--text-primary); }
+.nav-item--open .ic-sm { opacity: 1; transform: rotate(180deg); }
+
+.nav-badge {
+  font-family: "DM Sans", sans-serif;
+  font-size: 10.5px; font-weight: 600;
+  padding: 1px 6px; border-radius: 999px;
+  background: var(--bronze-soft); color: var(--bronze-strong);
+}
+
+.nav-div { width: 1px; align-self: center; height: 20px; background: var(--border-default); margin: 0 6px; flex: none; }
+
+/* ─── Jobb oldal: körvonalas gombok, zsálya-gyűrűs monogram ─── */
+.tools { display: flex; align-items: center; gap: 8px; flex: none; }
+.round-btn {
+  width: 34px; height: 34px; border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+}
+.round-btn:hover { border-color: var(--sage-ring); color: var(--text-primary); }
+
+.user-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 2px 12px 2px 2px;
+  border-radius: 999px;
+  border: 1px solid var(--border-default);
+  background: var(--surface-card);
+}
+.user-btn:hover { border-color: var(--sage-ring); }
+.user-btn .avatar { box-shadow: 0 0 0 2px var(--surface-card), 0 0 0 3.5px var(--sage-ring); }
+.user-btn .who { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; }
+.user-btn .who b { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.user-btn .who span { font-size: 10.5px; color: var(--text-muted); }
+
+.cta {
+  display: inline-flex; align-items: center; height: 38px; padding: 0 20px;
+  border-radius: 999px; background: var(--bronze-dark); color: var(--on-accent-deep);
+  font-size: 13.5px; font-weight: 600;
+}
+.ghost-btn {
+  display: inline-flex; align-items: center; height: 38px; padding: 0 18px;
+  border-radius: 999px; border: 1px solid var(--sage); color: var(--sage-deep);
+  font-size: 13.5px; font-weight: 500;
+}
+.lang {
+  font-family: "DM Mono", ui-monospace, monospace; font-size: 11px; color: var(--text-muted);
+  padding-left: 12px; border-left: 1px solid var(--border-default);
+}
+.lang b { color: var(--text-primary); font-weight: 500; }
+
+.pop--brand { top: 58px; margin-top: 0; border-radius: 18px; background: var(--surface-card); }
+.pop--brand .pop-txt strong { font-family: "Fraunces", Georgia, serif; font-size: 14.5px; font-weight: 600; }
+
+/* ─── Mobil ─── */
+.m-hdr-in { height: 56px; padding: 0 12px 0 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.m-sheet { border-top: 1px solid var(--border-soft); background: var(--surface-warm); padding: 8px 12px 16px; }
+.m-row {
+  display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 12px;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 17px; font-weight: 500; color: var(--text-primary); border-radius: 12px;
+}
+.m-row .ic { color: var(--text-muted); }
+.m-row--active { color: var(--sage-deep); font-weight: 600; background: var(--sage-soft); }
+.m-row--active .ic { color: var(--sage-deep); }
+.m-label {
+  padding: 14px 12px 4px;
+  font-family: "Fraunces", Georgia, serif; font-size: 13px; font-weight: 600;
+  color: var(--text-muted);
+}
+.m-user {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px; margin-bottom: 6px;
+  border-radius: 14px; background: var(--sage-soft);
+}
+.m-user p { font-family: "Fraunces", Georgia, serif; font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.m-user span { font-size: 12px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<script src="demo.js"></script>
+
+<div class="doc">
+  <header class="doc-head">
+    <a class="doc-back" href="index.html"><svg class="ic-sm" style="transform:rotate(180deg)"><use href="#i-chev-r"/></svg> Vissza az áttekintőre</a>
+    <p class="doc-kicker">Verzió 05</p>
+    <h1 class="doc-title">Márkás melegség</h1>
+    <p class="doc-lead">
+      A mai fejléc bármelyik SaaS-é lehetne: szürkés-fehér sáv, 13px-es sans menü,
+      ikonos chipek. Közben a terméknek van saját anyaga — Fraunces, krém, zsálya,
+      bronz —, ami a fejlécben egyáltalán nem jelenik meg, csak a logóban. Ez a verzió
+      beviszi: meleg krém felület a hűvös fehér helyett, 2px zsálya→bronz jelzővonal a
+      lap legtetején, <em>Fraunces</em> menü-címkék 15px-en, és zsálya „tinta"-alávonás az
+      aktív elemen. Új token nélkül, a meglévő palettából.
+    </p>
+  </header>
+
+  <h2 class="doc-section-title">Belépve · asztali · ORG_ADMIN</h2>
+  <p class="doc-section-lead">A menü nagyobb (15px Fraunces) és kevesebb elemet visel: az ikonok csak a lenyílókon és a mobilon maradnak, ahol tényleg segítenek.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed in · admin</span><span class="tag">2 + 58px</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="brandline"></div>
+        <div class="hdr-body">
+          <div class="hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item nav-item--active" href="#">Vezérlő</a>
+              <button class="nav-item">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <span class="nav-div"></span>
+              <button class="nav-item">Szervezet <span class="nav-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="tools">
+              <span class="bell-wrap">
+                <button class="round-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot" style="top:1px;right:1px;border-color:var(--surface-card)"></span>
+              </span>
+              <button class="user-btn">
+                <span class="avatar avatar--28">K</span>
+                <span class="who"><b>Kilin</b><span>Admin · Acme</span></span>
+                <svg class="ic-sm" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skel">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Lenyíló nyitva</h2>
+  <p class="doc-section-lead">A panel világos kártya, a címek Fraunces-ben — ugyanaz a tipográfiai hierarchia, amit a felület kártyái is használnak.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · dropdown open</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="brandline"></div>
+        <div class="hdr-body">
+          <div class="hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item" href="#">Vezérlő</a>
+              <div style="position:relative;display:flex">
+                <button class="nav-item nav-item--open">Csapatok <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+                <div class="pop pop--brand" style="left:0">
+                  <div class="pop-label">Csapataim · 3</div>
+                  <a class="pop-item pop-item--active" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>Termékfejlesztés</strong><span>12 tag · 9 kitöltés · 1 aktív kör</span></span>
+                  </a>
+                  <a class="pop-item" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>Értékesítés</strong><span>8 tag · 8 kitöltés</span></span>
+                  </a>
+                  <a class="pop-item" href="#">
+                    <span class="pop-ic"><svg class="ic"><use href="#i-team"/></svg></span>
+                    <span class="pop-txt"><strong>People Ops</strong><span>5 tag · 3 kitöltés</span></span>
+                  </a>
+                </div>
+              </div>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <span class="nav-div"></span>
+              <button class="nav-item nav-item--active">Szervezet <span class="nav-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="tools">
+              <span class="bell-wrap">
+                <button class="round-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot" style="top:1px;right:1px;border-color:var(--surface-card)"></span>
+              </span>
+              <button class="user-btn">
+                <span class="avatar avatar--28">K</span>
+                <span class="who"><b>Kilin</b><span>Admin · Acme</span></span>
+                <svg class="ic-sm" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:240px"></div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Kijelentkezve · marketing</h2>
+  <p class="doc-section-lead">Itt a legerősebb az irány: a landing amúgy is Fraunces-szel beszél, a fejléc végre ugyanazon a hangon.</p>
+
+  <div class="frame">
+    <div class="frame-label"><span>desktop · signed out</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="brandline"></div>
+        <div class="hdr-body">
+          <div class="hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item nav-item--active" href="#">Főoldal</a>
+              <a class="nav-item" href="#">Blog</a>
+              <a class="nav-item" href="#">Mintázatok</a>
+              <a class="nav-item" href="#">Ajánlat</a>
+            </nav>
+            <div class="tools">
+              <a class="ghost-btn" href="#">Belépés</a>
+              <a class="cta" href="#">Kipróbálom</a>
+              <span class="lang"><b>HU</b> / EN</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:190px;background:linear-gradient(180deg,var(--surface-warm),transparent 60%)">
+        <div class="skel-h" style="width:380px;height:32px"></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Mobil</h2>
+  <p class="doc-section-lead">A menü nagybetűs, Fraunces sorokból áll — ritkább, olvashatóbb, kevésbé „app-lista".</p>
+
+  <div style="display:flex;gap:16px;flex-wrap:wrap">
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · zárva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="brandline"></div>
+          <div class="hdr-body">
+            <div class="m-hdr-in">
+              <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+              <div class="tools">
+                <span class="bell-wrap">
+                  <button class="round-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                  <span class="bell-dot" style="top:1px;right:1px;border-color:var(--surface-card)"></span>
+                </span>
+                <button class="round-btn"><svg class="ic-lg"><use href="#i-menu"/></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="skel" style="padding:20px">
+          <div class="skel-h" style="width:180px"></div>
+          <div class="skel-card"></div><div class="skel-card"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="frame frame--mobile" style="flex:1;min-width:280px">
+      <div class="frame-label"><span>mobil · menü nyitva</span></div>
+      <div class="frame-body">
+        <div class="hdr">
+          <div class="brandline"></div>
+          <div class="hdr-body">
+            <div class="m-hdr-in">
+              <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+              <button class="round-btn" style="color:var(--text-primary)"><svg class="ic-lg"><use href="#i-close"/></svg></button>
+            </div>
+            <div class="m-sheet">
+              <div class="m-user">
+                <span class="avatar avatar--40">K</span>
+                <div>
+                  <p>Kilin Kod</p>
+                  <span>Admin · Acme Kft</span>
+                </div>
+              </div>
+              <a class="m-row m-row--active" href="#"><svg class="ic"><use href="#i-grid"/></svg> Vezérlő</a>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-team"/></svg> Csapatok <span class="nav-badge" style="margin-left:auto">3</span></a>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-candidate"/></svg> Jelöltek</a>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-org"/></svg> Szervezet <span class="nav-badge" style="margin-left:auto">2</span></a>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-report"/></svg> Analitika</a>
+              <p class="m-label">Fiók</p>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-user"/></svg> Profil</a>
+              <a class="m-row" href="#"><svg class="ic"><use href="#i-exit"/></svg> Kijelentkezés</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Sötét séma</h2>
+  <p class="doc-section-lead">Sötéten a meleg krém felület mély szürke-barnává fordul (a paletta már így viselkedik), a jelzővonal marad az egyetlen telített elem.</p>
+
+  <div class="frame" data-theme="dark">
+    <div class="frame-label"><span>desktop · dark</span></div>
+    <div class="frame-body">
+      <div class="hdr">
+        <div class="brandline"></div>
+        <div class="hdr-body">
+          <div class="hdr-in">
+            <a class="logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+            <nav class="nav">
+              <a class="nav-item" href="#">Vezérlő</a>
+              <a class="nav-item nav-item--active" href="#">Csapatok</a>
+              <a class="nav-item" href="#">Jelöltek</a>
+              <span class="nav-div"></span>
+              <button class="nav-item">Szervezet <span class="nav-badge">2</span> <svg class="ic-sm"><use href="#i-chev"/></svg></button>
+              <a class="nav-item" href="#">Analitika</a>
+            </nav>
+            <div class="tools">
+              <span class="bell-wrap">
+                <button class="round-btn"><svg class="ic"><use href="#i-bell"/></svg></button>
+                <span class="bell-dot" style="top:1px;right:1px;border-color:var(--surface-card)"></span>
+              </span>
+              <button class="user-btn">
+                <span class="avatar avatar--28">K</span>
+                <span class="who"><b>Kilin</b><span>Admin · Acme</span></span>
+                <svg class="ic-sm" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="skel" style="min-height:170px">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes">
+    <div class="note">
+      <h4>Mit nyerünk</h4>
+      <ul>
+        <li>A fejléc végre a termék hangján beszél — ma ez az egyetlen felület, ahol nincs márka-anyag.</li>
+        <li>15px-es menü 13px helyett: jobb olvashatóság és nagyobb célterület, cserébe kevesebb elem fér el (ez fegyelmezi a navot).</li>
+        <li>Nulla új token, nulla új szín: a meglévő palettából és tipográfiából épül.</li>
+        <li>A marketing- és az app-fejléc végre ugyanaz a nyelv (ma két különböző anatómia).</li>
+      </ul>
+    </div>
+    <div class="note note--risk">
+      <h4>Mit kockáztatunk</h4>
+      <ul>
+        <li>Serif menü 15px-en: gyors, ismétlődő scanneléshez a sans olvashatóbb — ezt tesztelni kell, nem eldönteni.</li>
+        <li>A Fraunces-címkék szélesebbek, mint a DM Sans: 5+ menüpontnál 1280px alatt szorulhat.</li>
+        <li>A tipográfiai konvenció szerint a Fraunces a címsorok betűje — a nav-ban használva a szerep-szétválás halványul.</li>
+        <li>A 2px jelzővonal a fókusz-fejlécen (`/assessment`) figyelemelvonó lehet; ott el kell hagyni.</li>
+      </ul>
+    </div>
+  </div>
+
+  <nav class="pager">
+    <a href="index.html">Áttekintő</a>
+    <a href="v1-quiet-rail.html">V1 Csendes vonal</a>
+    <a href="v2-context-bar.html">V2 Kontextus-sáv</a>
+    <a href="v3-floating-island.html">V3 Lebegő sziget</a>
+    <a href="v4-two-tier.html">V4 Kétsávos</a>
+    <a href="v5-editorial.html" aria-current="page">V5 Márkás</a>
+  </nav>
+</div>
+</body>
+</html>

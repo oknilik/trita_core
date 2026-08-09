@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Header redesign — 5 irány · trita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+/* A MAI fejléc hű újrarajzolása — kiindulási alap az összehasonlításhoz.
+   Forrás: src/components/layout/nav-header-ui.tsx (belépett ág). */
+.now-hdr {
+  background: color-mix(in srgb, var(--surface-header) 95%, transparent);
+  border-bottom: 1px solid var(--border-soft);
+  box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  backdrop-filter: blur(12px);
+}
+.now-in {
+  max-width: 1152px; margin: 0 auto; height: 56px; padding: 0 32px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+}
+.now-logo {
+  justify-self: start;
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 18px; font-weight: 900; letter-spacing: -0.03em; color: var(--text-primary);
+}
+.now-logo .t { color: var(--sage); }
+.now-logo .a { color: var(--bronze); }
+.now-nav { justify-self: center; display: flex; align-items: center; gap: 4px; }
+.now-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 12px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; color: var(--text-secondary);
+  white-space: nowrap;
+}
+.now-item--home-active {
+  background: var(--surface-inverse); color: var(--text-on-inverse);
+  padding: 6px 16px;
+}
+.now-item--active {
+  background: var(--surface-subtle); color: var(--bronze-strong); font-weight: 600;
+}
+.now-badge {
+  font-family: "DM Mono", ui-monospace, monospace; font-size: 10px;
+  padding: 1px 6px; border-radius: 999px;
+  background: var(--surface-inverse); color: var(--text-on-inverse);
+}
+.now-div { width: 1px; height: 20px; background: var(--border-soft); margin: 0 8px; }
+.now-right { justify-self: end; display: flex; align-items: center; gap: 8px; }
+.now-user {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 10px 2px 4px; border-radius: 999px;
+  border: 1px solid var(--border-default); background: var(--surface-card);
+  font-size: 12px; font-weight: 500; color: var(--text-secondary);
+}
+.now-bell {
+  width: 32px; height: 32px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 8px; color: var(--text-muted);
+}
+
+</style>
+</head>
+<body>
+<script src="demo.js"></script>
+
+<div class="doc">
+  <header class="doc-head">
+    <p class="doc-kicker">trita · design exploration · 2026-08-09</p>
+    <h1 class="doc-title">Fejléc — öt redesign-irány</h1>
+    <p class="doc-lead">
+      Öt kidolgozott irány a fejlécre, mindegyik külön makettben, valós tokenekkel
+      (a színek és a tipográfia a <code>globals.css</code> értékeiből származnak, nem
+      találgatásból). Minden makett ugyanazokat az állapotokat mutatja — belépett admin,
+      nyitott lenyíló, kijelentkezett marketing, mobil, sötét séma —, hogy
+      összehasonlíthatók legyenek. Ezek <em>makettek</em>: egyik sem érinti a
+      <code>src/</code> kódot.
+    </p>
+  </header>
+
+  <h2 class="doc-section-title">Ahonnan indulunk</h2>
+  <p class="doc-section-lead">
+    A mai fejléc újrarajzolva. Nem rossz — csak három dolog dolgozik ellene:
+    <strong>(1)</strong> két különböző aktív-nyelv él egymás mellett (a „Vezérlő" sötét pirula,
+    a többi halvány chip); <strong>(2)</strong> minden menüelem ikon + szöveg + badge 13px-en,
+    ami öt elemnél zajos; <strong>(3)</strong> a fejléc nem mondja meg, melyik szervezetben vagy —
+    a szervezet, a szerep és a váltó a user-menü mélyén ül, és lustán töltődik.
+  </p>
+
+  <div class="frame">
+    <div class="frame-label"><span>MA · desktop · signed in · admin</span><span class="tag">56px</span></div>
+    <div class="frame-body">
+      <div class="now-hdr">
+        <div class="now-in">
+          <a class="now-logo" href="#"><span class="t">t</span>rit<span class="a">a</span></a>
+          <nav class="now-nav">
+            <a class="now-item now-item--home-active" href="#"><svg class="ic-sm"><use href="#i-grid"/></svg> Vezérlő</a>
+            <button class="now-item"><svg class="ic-sm"><use href="#i-team"/></svg> Csapatok <svg class="ic-sm" style="opacity:.5"><use href="#i-chev"/></svg></button>
+            <a class="now-item" href="#"><svg class="ic-sm"><use href="#i-candidate"/></svg> Jelöltek</a>
+            <span class="now-div"></span>
+            <button class="now-item"><svg class="ic-sm"><use href="#i-org"/></svg> Szervezet <span class="now-badge">2</span> <svg class="ic-sm" style="opacity:.5"><use href="#i-chev"/></svg></button>
+            <a class="now-item" href="#"><svg class="ic-sm"><use href="#i-report"/></svg> Analitika</a>
+          </nav>
+          <div class="now-right">
+            <span class="now-div" style="margin:0"></span>
+            <span class="bell-wrap">
+              <button class="now-bell"><svg class="ic"><use href="#i-bell"/></svg></button>
+              <span class="bell-dot"></span>
+            </span>
+            <button class="now-user">
+              <span class="avatar" style="width:28px;height:28px">K</span>
+              Kilin Kod
+              <svg class="ic-sm" style="color:var(--text-muted)"><use href="#i-chev"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="skel">
+        <div class="skel-h"></div>
+        <div class="skel-row"><div class="skel-card"></div><div class="skel-card"></div><div class="skel-card"></div></div>
+        <div class="skel-line w70"></div><div class="skel-line w45"></div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="doc-section-title">Az öt irány</h2>
+  <p class="doc-section-lead">
+    Nem öt változat ugyanarra: öt különböző <em>döntés</em> arról, mi a fejléc feladata.
+    Kattints bármelyikre a teljes makettért.
+  </p>
+
+  <div class="cards">
+    <a class="card" href="v1-quiet-rail.html">
+      <p class="card-no">V1</p>
+      <h3>Csendes vonal</h3>
+      <p>
+        A fejléc egy vonal, nem panel. Nincs ikon, nincs chip, nincs árnyék — az aktív
+        elemet egyetlen 2px bronz alávonás jelöli. A jobb oldal két ikonná fogy.
+        A legkevesebb kockázat, a legnagyobb takarítás.
+      </p>
+      <div class="card-meta">
+        <span class="chip chip--sage">alacsony kockázat</span>
+        <span class="chip">52px</span>
+        <span class="chip">kb. 1 nap</span>
+      </div>
+    </a>
+
+    <a class="card" href="v2-context-bar.html">
+      <p class="card-no">V2</p>
+      <h3>Kontextus-sáv</h3>
+      <p>
+        Előbb azt mondja meg, HOL vagy: szervezet + szerep a bal oldalon, egy kattintásra
+        a váltóval. Középen szegmentált nav, jobbra ⌘K kereső. A tanácsadói
+        többszervezetes munkamenet fő súrlódását oldja.
+      </p>
+      <div class="card-meta">
+        <span class="chip chip--bronze">funkcionális nyereség</span>
+        <span class="chip">56px</span>
+        <span class="chip">kb. 3–5 nap (⌘K nélkül 2)</span>
+      </div>
+    </a>
+
+    <a class="card" href="v3-floating-island.html">
+      <p class="card-no">V3</p>
+      <h3>Lebegő sziget</h3>
+      <p>
+        Áttetsző, lekerekített kártya, ami a lap fölött úszik, és görgetésre ledokkol.
+        Messze a legnagyobb vizuális ugrás — és a legérzékenyebb: minden oldal tetejét
+        és a kontraszt-méréseket újra kell nézni.
+      </p>
+      <div class="card-meta">
+        <span class="chip chip--bronze">legbátrabb</span>
+        <span class="chip">56 → 48px</span>
+        <span class="chip">magas kockázat</span>
+      </div>
+    </a>
+
+    <a class="card" href="v4-two-tier.html">
+      <p class="card-no">V4</p>
+      <h3>Kétsávos munkaterület</h3>
+      <p>
+        A „ki vagyok / hol vagyok" és a „hova megyek" két külön sávba kerül. A nav 14px-re
+        nő, befér egy elsődleges akció, mobilon görgethető fülsor. Görgetésre a felső sáv
+        összecsukódik.
+      </p>
+      <div class="card-meta">
+        <span class="chip chip--sage">legjobban skálázik</span>
+        <span class="chip">34+46 → 46px</span>
+        <span class="chip">kb. 3 nap</span>
+      </div>
+    </a>
+
+    <a class="card" href="v5-editorial.html">
+      <p class="card-no">V5</p>
+      <h3>Márkás melegség</h3>
+      <p>
+        A fejléc végre a termék hangján beszél: meleg krém felület, zsálya→bronz
+        jelzővonal, Fraunces menü-címkék, zsálya tinta-alávonás. Nulla új token,
+        a meglévő palettából.
+      </p>
+      <div class="card-meta">
+        <span class="chip chip--sage">legmárkásabb</span>
+        <span class="chip">2+58px</span>
+        <span class="chip">kb. 1–2 nap</span>
+      </div>
+    </a>
+  </div>
+
+  <h2 class="doc-section-title">Egymás mellett</h2>
+  <p class="doc-section-lead">Amiben a döntés valójában áll — nem stílus, hanem az, hogy melyik problémát vállaljuk fel.</p>
+
+  <table class="cmp">
+    <thead>
+      <tr>
+        <th>Irány</th>
+        <th>Mit old meg</th>
+        <th>Aktív jelölés</th>
+        <th>Org-kontextus</th>
+        <th>Kockázat</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>V1 Csendes vonal</td>
+        <td>Vizuális zaj, kettős aktív-nyelv, jobb oldali szorulás</td>
+        <td>2px bronz alávonás</td>
+        <td>nem javul</td>
+        <td>alacsony</td>
+      </tr>
+      <tr>
+        <td>V2 Kontextus-sáv</td>
+        <td>Rejtett szervezet/szerep, 3 lépéses org-váltás, mély menük</td>
+        <td>fehér pirula szegmensben</td>
+        <td>állandóan látszik + 1 kattintás</td>
+        <td>közepes–magas (⌘K)</td>
+      </tr>
+      <tr>
+        <td>V3 Lebegő sziget</td>
+        <td>„Régi" hatás, lapos felület, tapadó sáv magassága</td>
+        <td>zsálya kitöltött pirula</td>
+        <td>nem javul</td>
+        <td>magas (kontraszt, oldal-tetők)</td>
+      </tr>
+      <tr>
+        <td>V4 Kétsávos</td>
+        <td>Két feladat egy sorban, kis célterületek, szűk 1024–1200px</td>
+        <td>2,5px bronz fül-alávonás</td>
+        <td>állandóan látszik + 1 kattintás</td>
+        <td>közepes (két anatómia)</td>
+      </tr>
+      <tr>
+        <td>V5 Márkás</td>
+        <td>Márkátlan, generikus SaaS-hatás; marketing/app hang-eltérés</td>
+        <td>zsálya tinta-alávonás</td>
+        <td>nem javul (a szerep látszik)</td>
+        <td>alacsony–közepes (serif nav)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="doc-section-title">Amit érdemes tudni a döntéshez</h2>
+  <div class="notes">
+    <div class="note">
+      <h4>Ha a cél „frissebb kinézet"</h4>
+      <ul>
+        <li><strong>V5</strong> a legjobb ár-érték: a márka-anyag már megvan, csak a fejléc nem használja.</li>
+        <li><strong>V3</strong> a legnagyobb ugrás, de a legdrágább is — érdemes lehet CSAK a marketing-fán bevezetni.</li>
+        <li><strong>V1</strong> nem „új", hanem tisztább; önmagában kevés, viszont bármelyik másikkal kombinálható.</li>
+      </ul>
+    </div>
+    <div class="note">
+      <h4>Ha a cél „jobban működjön"</h4>
+      <ul>
+        <li><strong>V2</strong> és <strong>V4</strong> ugyanazt a valós hiányt orvosolja: az org-kontextus ma nem látszik.</li>
+        <li>A ⌘K önálló döntés — kereső-index nélkül ne kerüljön be, mert dísz marad.</li>
+        <li>Az ORG_MEMBER szerepnek 2–3 menüpontja van; bármelyik irány kell hogy jól nézzen ki üresen is.</li>
+      </ul>
+    </div>
+    <div class="note note--risk">
+      <h4>Kombinálható</h4>
+      <ul>
+        <li>V5 felület + V1 aktív-jelölés + V2 org-chip → egy „vegyes" hatodik irány, kis kockázattal.</li>
+        <li>Mindegyikben közös: egyetlen aktív-nyelv, és a „Vezérlő" sötét pirula megszüntetése.</li>
+        <li>Szólj, melyik kettő tetszik, és összegyúrok belőlük egy konkrét javaslatot.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="doc-foot">
+    <p>
+      Makettek: <code>docs/design/header-redesign/</code> · a tokenek a <code>src/app/globals.css</code>
+      2026-08-09-i pillanatképéből származnak (világos + sötét készlet).
+      A fejlécek statikusak — a nyitott lenyílók és a görgetett állapotok külön keretekben látszanak,
+      nincs bennük JS-interakció.
+    </p>
+  </div>
+
+  <nav class="pager">
+    <a href="index.html" aria-current="page">Áttekintő</a>
+    <a href="v1-quiet-rail.html">V1 Csendes vonal</a>
+    <a href="v2-context-bar.html">V2 Kontextus-sáv</a>
+    <a href="v3-floating-island.html">V3 Lebegő sziget</a>
+    <a href="v4-two-tier.html">V4 Kétsávos</a>
+    <a href="v5-editorial.html">V5 Márkás</a>
+  </nav>
+</div>
+</body>
+</html>
