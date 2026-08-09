@@ -21,6 +21,7 @@ import {
   ART_COLORS,
   ART_COLORS_ON_INVERSE,
   hashString,
+  mulberry32,
   r2,
   resolveArtScale,
   starGeometry,
@@ -121,28 +122,73 @@ export function EditorialArt({
 }
 
 /**
- * Szekció-átkötő: keskeny sáv két landing-szekció között. Szándékosan
- * alacsony (a tartalmat elválasztja, nem megtöri), és `aria-hidden` —
- * dekoráció, nem tartalom.
+ * Szekció-átkötő: a formanyelv hármasa két landing-szekció között.
+ * `aria-hidden` — dekoráció, nem tartalom.
+ *
+ * 2026-08-09: két lépésben állt be. Először a szabad konstellációt (két
+ * forma + gerinc) váltotta le a töltő-jel kísérete; aztán a végigfutó
+ * talajvonal is kikerült.
+ *
+ *  – A VONAL nélkül tisztább. A hajszálvonal a teljes szélességet átfogta,
+ *    ezért a jel a sáv közepén elveszett a körülötte lévő szöveg mellett:
+ *    a szem a vonalat követte, nem a hármast.
+ *  – Ezért a sáv KOMPAKT, középre zárt jellé vált. Nem a szélességet tölti
+ *    ki, hanem a saját méretével van jelen — így nagyobb lehet anélkül,
+ *    hogy hangosabb lenne.
+ *  – Egy nyelv: ugyanaz a csillag-nap-ellensúly hármas, ami a
+ *    töltőképernyőn is fut, csak álló változatban.
+ *
+ * A szabad konstelláció (`EditorialArt`) megmarad a NAGY felületekre, ahol
+ * egyetlen kép visz mindent — ott továbbra is az a helyes eszköz.
  */
+const TRANSITION_VIEWBOX = { width: 190, height: 76 } as const;
+
 export function SectionTransition({ artKey, className }: { artKey: string; className?: string }) {
-  // A magasság fix, a szélesség folyós: a `meet` illesztés miatt a
-  // kompozíció végig egyben marad, nem vágódik.
-  const height = 96;
-  const width = 1120;
+  const { width, height } = TRANSITION_VIEWBOX;
+  const p = ART_COLORS;
+  const rnd = mulberry32(hashString(artKey));
+
+  const cx = width / 2;
+  const cy = height / 2;
+  const starR = 23;
+
+  // A nap és az ellensúly ellentétes oldalra kerül, a kulcsból eldöntve —
+  // így a self és a team nézet tükörképet kap, nem ugyanazt a jelet. A
+  // távolságok a csillag sugarához mérve élnek, hogy a hármas egyben
+  // maradjon: külön-külön lebegő pöttyök szétesnének.
+  const sunOnLeft = rnd() > 0.5;
+  const sunR = 9;
+  const dotR = 5;
+  const sunX = r2(cx + (sunOnLeft ? -1 : 1) * (starR + 15 + sunR));
+  const dotX = r2(cx + (sunOnLeft ? 1 : -1) * (starR + 17 + dotR));
+
   return (
     <div
       aria-hidden
-      className={["mx-auto w-full max-w-[1120px] px-7", className].filter(Boolean).join(" ")}
-      style={{ opacity: 0.9 }}
+      className={["flex w-full justify-center", className].filter(Boolean).join(" ")}
     >
-      <EditorialArt
-        artKey={artKey}
+      {/* A width/height ATTRIBÚTUM is ki van írva, nem csak az osztály: így a
+          jel akkor is a saját méretén renderel, ha a befoglaló környezetben
+          nincs Tailwind (előnézet-generátor, e-mail-szerű kontextus).
+          A CSS-osztály erősebb, tehát az appban továbbra is az számít. */}
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
         width={width}
         height={height}
-        quiet
-        className="h-[72px] w-full md:h-[96px]"
-      />
+        preserveAspectRatio="xMidYMid meet"
+        role="img"
+        aria-hidden
+        className="h-[64px] w-auto md:h-[80px]"
+        style={{ display: "block" }}
+      >
+        <circle cx={sunX} cy={r2(cy - 11)} r={sunR} fill={p.sun} />
+        <g stroke={p.line} strokeWidth={3.4} strokeLinecap="round" opacity={0.88}>
+          {starGeometry(cx, cy, starR).lines.map((l) => (
+            <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+          ))}
+        </g>
+        <circle cx={dotX} cy={r2(cy + 13)} r={dotR} fill={p.counterweight} />
+      </svg>
     </div>
   );
 }

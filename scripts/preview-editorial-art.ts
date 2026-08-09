@@ -159,7 +159,7 @@ function schemeBlock(scheme: (typeof SCHEMES)[number]): string {
     <h3>cikkoldal fejléc — 840×190</h3>
     <div class="banner">${art(posts[2], "card")}</div>
 
-    <h3>landing átkötő — konstelláció (2. szint, self és team mód)</h3>
+    <h3>landing átkötő — a töltő-jel kísérete állóban (self és team mód)</h3>
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "self") }))}
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "team") }))}
 
@@ -192,6 +192,10 @@ const html = `<!doctype html>
 ${starCss}
   body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; }
   .loaders { align-items:flex-end; }
+  /* A SectionTransition középre zárását Tailwind-osztály adja; itt nincs
+     Tailwind, ezért az előnézetben kézzel utánozzuk — különben balra
+     tapadva látszana, és félrevezetne. */
+  .scheme > div[aria-hidden] { display:flex; justify-content:center; }
   .loader-cell { display:flex; flex-direction:column; align-items:center; gap:6px;
                  font:10px ui-monospace, monospace; opacity:.6; color: var(--color-text-primary); }
   .scheme { background: var(--preview-canvas); color: var(--color-text-primary); padding: 32px 28px 48px; }
