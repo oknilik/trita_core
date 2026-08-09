@@ -117,6 +117,38 @@ renderel, hosszú idézettel — ez a hiba csak ott jött volna elő.
 szintbesorolást is őrzi: a szerkesztői formanevek nem ütközhetnek a jelentő
 formákéval.
 
+## Töltő-jel: a csillag lett a várakozás jele
+
+A pörgő karika helyett a formanyelv tinta-csillaga (3. szint) jelzi a
+töltést — `src/components/ui/StarLoader.tsx`. Ez pont az a használat,
+amiért a 3. szint létezik: a jel önmagában nem állít semmit, tehát
+szabadon vihető olyan helyre is, aminek nincs mérési tartalma. Cserébe a
+várakozás pillanata is a márka nyelvén beszél.
+
+A mozgás két rétegű: lassú, egyenletes forgás az egész jelen, plusz a négy
+szárpár fázisban eltolt lélegzése (skála + opacitás). Két részlet, ami nem
+nyilvánvaló:
+
+- **A forgás ciklusa 45°, nem 360°.** A nyolcágú csillag 45 fokonként
+  önmagával fedésbe kerül, tehát ennyi elég a varrat nélküli hurokhoz.
+- **A pulzus amplitúdója szűk** (0,88–1 skála, 0,72–1 opacitás). Az első
+  változat tágabb volt (0,82 / 0,45), és 24 pixelen a csillag nem
+  animáltnak, hanem töröttnek látszott — hiányzó ágakkal.
+
+Reduced motion mellett mindkét animáció **kikapcsol** (nem lassul), és a jel
+teljes opacitáson, elforgatás nélkül áll meg: a töltés ténye továbbra is
+látszik. A kulcskockák a `globals.css`-ben élnek, tehát a mozgás-szabály egy
+helyen módosul; az előnézet-generátor onnan vágja ki őket, és hangosan
+elszáll, ha a jelölő eltűnik.
+
+Hozzáférhetőség: a töltőképernyő `role="status"` + `aria-live="polite"` és
+sr-only felirat (`common.loading`, HU+EN). A néma spinner úgy viselkedett a
+képernyőolvasón, mintha az oldal befagyott volna.
+
+Átállítva: `RedirectLoader` (a `/dashboard` diszpécser köztes állapota) és a
+`SkeletonLoader` középső jele. A gombokban lévő apró inline spinnerek
+maradtak — ott a 16px-es karika funkcionálisan jobb, és nem is töltőképernyő.
+
 ## Ami szándékosan kimaradt
 
 - **OG-kép.** A satori nem old fel CSS-változót, ott a `COLORS` hexeiből

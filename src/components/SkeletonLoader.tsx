@@ -1,5 +1,7 @@
 "use client";
 
+import { StarLoader } from "@/components/ui/StarLoader";
+
 export function SkeletonLoader() {
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-[var(--color-surface-canvas)]">
@@ -35,10 +37,10 @@ export function SkeletonLoader() {
         </div>
       </div>
 
-      {/* Centered spinner */}
+      {/* Töltő-jel — a formanyelv tinta-csillaga (3. szint), nem pörgő karika. */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-action-primary-bg)] border-t-transparent" />
+          <StarLoader size={44} />
           <span className="font-fraunces text-sm text-[var(--color-text-muted)]">trit<span className="text-[var(--color-accent-primary-strong)]">a</span></span>
         </div>
       </div>

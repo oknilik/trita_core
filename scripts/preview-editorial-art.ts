@@ -14,16 +14,31 @@
  *
  * Mintája: scripts/preview-type-glyphs.ts (1. szint, típus-ábrák).
  */
-import { writeFileSync, mkdirSync } from "node:fs";
+import { writeFileSync, mkdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { BlogArtVisual } from "../src/components/blog/BlogArtVisual";
 import { EditorialArt, SectionTransition, artKeyFrom } from "../src/components/ui/EditorialArt";
+import { StarLoader } from "../src/components/ui/StarLoader";
 import { getAllPosts } from "../src/lib/blog";
 
 const outDir = process.argv[2] ?? join(process.cwd(), ".art-previews");
 mkdirSync(outDir, { recursive: true });
+
+// A töltő-jel kulcskockái a globals.css-ben élnek. Nem másoljuk ide (a
+// másolat elcsúszna), hanem KIVÁGJUK a forrásból — ha a jelölő eltűnik, az
+// előnézet hangosan elszáll, nem néma animáció nélküli csillagot mutat.
+const STAR_CSS_MARKER = "/* ─── Csillag-loader";
+const globalsCss = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
+const starCssStart = globalsCss.indexOf(STAR_CSS_MARKER);
+if (starCssStart < 0) {
+  throw new Error(
+    `A csillag-loader CSS-blokk nem található a globals.css-ben (jelölő: "${STAR_CSS_MARKER}"). ` +
+      "Ha átneveted, itt is frissítsd.",
+  );
+}
+const starCss = globalsCss.slice(starCssStart);
 
 // A token-értékek a globals.css két palettájából. Azért másolat és nem
 // import, mert a globals.css a Tailwind `@theme` blokkjában él, amit a
@@ -148,6 +163,16 @@ function schemeBlock(scheme: (typeof SCHEMES)[number]): string {
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "self") }))}
     ${renderToStaticMarkup(createElement(SectionTransition, { artKey: artKeyFrom("landing", "how-features", "team") }))}
 
+    <h3>töltő-jel — animált csillag (24 → 88px). Reduced motion: áll, de teljes opacitáson</h3>
+    <div class="minis loaders">
+      ${[24, 32, 44, 56, 88]
+        .map(
+          (s) =>
+            `<div class="loader-cell">${renderToStaticMarkup(createElement(StarLoader, { size: s }))}<span>${s}px</span></div>`,
+        )
+        .join("")}
+    </div>
+
     <h3>EditorialArt — nagy felület és kis méret</h3>
     <div class="editorial">
       <div class="ed-big">${renderToStaticMarkup(createElement(EditorialArt, { artKey: "patterns:hero", width: 420, height: 200 }))}</div>
@@ -164,7 +189,11 @@ function schemeBlock(scheme: (typeof SCHEMES)[number]): string {
 const html = `<!doctype html>
 <html lang="hu"><head><meta charset="utf-8"><title>Trita — szerkesztői ábrák előnézete</title>
 <style>
+${starCss}
   body { margin:0; font-family: ui-sans-serif, system-ui, sans-serif; }
+  .loaders { align-items:flex-end; }
+  .loader-cell { display:flex; flex-direction:column; align-items:center; gap:6px;
+                 font:10px ui-monospace, monospace; opacity:.6; color: var(--color-text-primary); }
   .scheme { background: var(--preview-canvas); color: var(--color-text-primary); padding: 32px 28px 48px; }
   h2 { font: 600 12px ui-monospace, monospace; letter-spacing:.16em; text-transform:uppercase; opacity:.65; margin:0 0 20px; }
   h3 { font: 600 11px ui-monospace, monospace; letter-spacing:.12em; text-transform:uppercase; opacity:.5; margin:28px 0 10px; font-weight:400; }

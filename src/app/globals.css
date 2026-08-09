@@ -1293,3 +1293,62 @@ input[type="range"].pattern-range::-moz-range-track {
     transform: none;
   }
 }
+
+/* ─── Csillag-loader (formanyelv 3. szint) ──────────────────────────────
+   A töltőállapot jele a formanyelv tinta-csillaga. Két, egymásra rétegzett
+   mozgás adja a „lélegzést":
+
+   – `star-loader-spin`: lassú, egyenletes forgás az egész jelen. Nyolcágú,
+     45°-osan szimmetrikus alakzat, ezért 45 fok elfordulás után önmagával
+     fedésbe kerül — a ciklus ennyi, így a hurok VARRAT NÉLKÜL zár. A teljes
+     360°-os forgás ugyanilyen tempóhoz nyolcszor hosszabb ciklus kellene.
+   – `star-loader-pulse`: a szárpárok fázisban eltolva pulzálnak (skála +
+     opacitás). Az eltolást a komponens `animation-delay`-je adja, ezért itt
+     nincs külön kulcskocka-variáns.
+
+   Reduced motion: mindkettő KIKAPCSOL (nem lassul), és a jel teljes
+   opacitáson, elforgatás nélkül áll meg — így a töltés ténye továbbra is
+   látszik, csak nem mozog. */
+@keyframes star-loader-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(45deg);
+  }
+}
+
+/* Szűk amplitúdó, magas opacitás-padló: a szárak fázisban eltolva
+   lélegeznek, de a jel MINDEN pillanatban felismerhetően szimmetrikus
+   csillag marad. Tágabb tartománnyal (0.82 / 0.45 opacitás) 24 pixelen
+   töröttnek látszott, nem animáltnak. */
+@keyframes star-loader-pulse {
+  0%,
+  100% {
+    transform: scale(0.88);
+    opacity: 0.72;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.star-loader-spin {
+  transform-origin: 50% 50%;
+  animation: star-loader-spin 6s linear infinite;
+}
+
+.star-loader-pulse {
+  transform-origin: 50% 50%;
+  animation: star-loader-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .star-loader-spin,
+  .star-loader-pulse {
+    animation: none;
+    transform: none;
+    opacity: 1;
+  }
+}
