@@ -266,17 +266,34 @@ function NavHeaderContent({
 
   // Csapat-váltás a nav-menüből: a kijelölt csapat perzisztens (a Vezérlő
   // ezután ide visz). A navigáció akkor is megtörténik, ha a mentés elhasal.
-  async function switchTeam(teamId: string) {
-    try {
-      await fetch("/api/team/context", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ teamId }),
-      });
-    } catch {
-      // a kijelölés ilyenkor marad a régi — a navigáció mehet tovább
-    }
-    router.refresh();
+  /**
+   * Aktív csapat kijelölése a Csapatok-menüből.
+   *
+   * MINDKÉT hívási helye egy `<Link>`-en ül, ami közben a csapatoldalra
+   * navigál — ezért itt SEM `await`, SEM `router.refresh()` nincs:
+   *
+   *  – A `refresh()` a JELENLEGI útvonalat rendereli újra. Amíg a POST
+   *    válaszára vártunk, a Link navigációja már elindult, és a beérkező
+   *    refresh visszarántotta a felhasználót arra az oldalra, ahonnan a
+   *    menüt nyitotta. Az org-oldalról indulva ez pontosan úgy nézett ki,
+   *    mintha a menü a szervezetre vinne — mobilon a lassabb hálózat miatt
+   *    szinte mindig ez nyert (2026-08-09).
+   *  – A frissítés amúgy is felesleges: a cél-oldal a navigációval újra
+   *    renderel, a csapatoldal pedig URL-ből azonosítja a csapatot, nem a
+   *    kijelölt kontextusból.
+   *
+   * `keepalive`: a kérésnek túl kell élnie a lapváltást, különben a
+   * kijelölés elveszne, ha a navigáció hamarabb kész, mint a POST.
+   */
+  function switchTeam(teamId: string) {
+    void fetch("/api/team/context", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ teamId }),
+      keepalive: true,
+    }).catch(() => {
+      // A kijelölés ilyenkor marad a régi — a navigáció mehet tovább.
+    });
   }
 
   const homePath = homeHref.split("?")[0] ?? homeHref;
@@ -713,7 +730,7 @@ function NavHeaderContent({
                             onClick={() => {
                               closeAll();
                               if (item.id === "teams" && child.id.startsWith("team-")) {
-                                void switchTeam(child.id.slice("team-".length));
+                                switchTeam(child.id.slice("team-".length));
                               }
                             }}
                           />
@@ -889,7 +906,7 @@ function NavHeaderContent({
                               onClick={() => {
                                 setMobileMenu("closed");
                                 if (item.id === "teams" && child.id.startsWith("team-")) {
-                                  void switchTeam(child.id.slice("team-".length));
+                                  switchTeam(child.id.slice("team-".length));
                                 }
                               }}
                             />
