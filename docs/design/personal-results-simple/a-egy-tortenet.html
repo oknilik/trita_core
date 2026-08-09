@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A) Egy oldal, egy történet — egyszerű eredmény-nézet · trita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+</head>
+<body>
+
+<div class="mock-topbar">
+  <strong>trita · Egyszerű eredmény-nézet — makettek</strong>
+  <div class="mock-links">
+    <a href="index.html">Áttekintés</a>
+    <a href="a-egy-tortenet.html" class="on">A · Egy történet</a>
+    <a href="b-kartyak.html">B · Kártyák</a>
+    <a href="c-vizualis.html">C · Vizuális</a>
+  </div>
+</div>
+
+<div class="mock-intro">
+  <div class="kicker">Irány A</div>
+  <h1>Egy oldal, egy történet</h1>
+  <p>
+    A szöveg viszi a nézetet, az ábra támasztja alá. A felhasználó a saját
+    eredményét <strong>összefüggő mondatokban</strong> kapja meg — először azt, hogy mi
+    a legerősebb oldala, aztán hogy hogyan dolgozik, végül hogy mire figyeljen.
+    A hat dimenzió alatta kétpólusú skálákon jelenik meg: nincs „jó" és „rossz"
+    vég, és alapból nincs pontszám sem.
+  </p>
+  <div class="meta">
+    <span>Görgetés: ~2,5 képernyő</span>
+    <span>Szó: ~180</span>
+    <span>Vizuális elem: 1 típus-ábra + 6 spektrum</span>
+    <span>Erőssége: érthetőség, kevés félreolvasás</span>
+  </div>
+</div>
+
+<div class="frame">
+  <div class="browser">
+    <div class="browser-bar">
+      <i></i><i></i><i></i>
+      <span class="url">trita.hu/profile/results?view=simple</span>
+    </div>
+
+    <div data-app id="app-a">
+      <!-- App-fejléc -->
+      <div class="appnav">
+        <div class="wordmark"><span class="t">t</span>rit<span class="a">a</span></div>
+        <nav><span>Vezérlő</span><span class="on">Eredményeim</span><span>Csapatok</span></nav>
+        <div class="avatar">KA</div>
+      </div>
+
+      <!-- Nézetváltó sáv -->
+      <div class="viewbar">
+        <div class="crumb"><b>Eredményeim</b> · személyes felmérés</div>
+        <div class="right">
+          <span class="toggle-num" data-numbers><span class="track"></span>Számok</span>
+          <div class="segment" data-switch>
+            <button class="on" data-view="simple">Egyszerű</button>
+            <button data-view="full">Részletes</button>
+          </div>
+          <button class="ghost-btn">PDF</button>
+        </div>
+      </div>
+
+      <!-- EGYSZERŰ NÉZET -->
+      <div class="canvas" data-view="simple">
+        <div class="sheet stack" id="a-simple"></div>
+      </div>
+
+      <!-- RÉSZLETES (jelenlegi) NÉZET -->
+      <div class="canvas" data-view="full" style="display:none">
+        <div class="sheet wide stack" id="a-full"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="devices">
+  <h2>Mobil</h2>
+  <p>
+    Ugyanaz a nézet 372 px-en. A nézetváltó a fejléc alatt teljes szélességben
+    marad, a spektrum-sorok egymás alá rendeződnek — a lap ugyanaz az egy
+    hasáb, nincs külön mobil-tartalom.
+  </p>
+  <div class="device-row">
+    <div>
+      <div class="device"><div class="screen" data-device-of="#app-a"></div></div>
+      <div class="cap" style="color:#6a6a7b">Egyszerű nézet · a váltó a keretben is működik</div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <h2>Tervezői jegyzetek</h2>
+  <div class="notegrid">
+    <div class="notecard"><div class="num">1</div><div>
+      <b>Először a mondat, utána a mérés</b>
+      <p>A jelenlegi nézet a radarral nyit — az ábra viszont nem válaszol arra, amit
+      a felhasználó kérdez („milyen vagyok?"). Itt a nyitómondat a válasz, az
+      ábra csak alátámasztja.</p></div></div>
+
+    <div class="notecard"><div class="num">2</div><div>
+      <b>Három állítás, nem hét szekció</b>
+      <p>Erősség → működésmód → figyelendő. Ez a sorrend a tanácsadói
+      visszajelzés természetes íve, és önmagában is megáll, ha valaki csak
+      ennyit olvas el.</p></div></div>
+
+    <div class="notecard"><div class="num">3</div><div>
+      <b>Kétpólusú skála pontszám helyett</b>
+      <p>A 0–100-as sáv „osztályzatnak" olvasódik: 38 = megbuktam. A két végén
+      megnevezett skála viselkedést jelöl, nem teljesítményt — az alacsony érték
+      is jelent valamit („higgadt távolságtartás").</p></div></div>
+
+    <div class="notecard"><div class="num">4</div><div>
+      <b>A szám opció, nem alapállapot</b>
+      <p>A „Számok" kapcsoló előhozza a pontokat annak, akinek kell. Alapból ki
+      van kapcsolva: a szám pontosságot ígér, amivel egy önjellemzés nem
+      rendelkezik.</p></div></div>
+
+    <div class="notecard"><div class="num">5</div><div>
+      <b>Forrás-jelölés az állításokon</b>
+      <p>Minden állítás alatt ott a dimenzió-chip, amiből származik. Ez a termék
+      hitelességi alapelve (becsült vs mért), és egyben átvezetés: a chipre
+      koppintva a részletes nézet megfelelő szekciója nyílik.</p></div></div>
+
+    <div class="notecard"><div class="num">6</div><div>
+      <b>A váltó együtt él a tartalommal</b>
+      <p>A „Részletes" nem lapalji link, hanem a fejléc állandó eleme — így nem
+      rejtett funkció. A választást megjegyezzük (`?view=` + felhasználói
+      beállítás), tehát aki egyszer átvált, annak legközelebb az a kezdőnézete.</p></div></div>
+
+    <div class="notecard"><div class="num">7</div><div>
+      <b>Egy módszertani jegyzet, nem öt</b>
+      <p>A „ez önjellemzés, nem diagnózis" mondat egyszer szerepel, jól láthatóan.
+      A részletes nézetben maradnak a szekciónkénti jegyzetek — az egyszerűben
+      a sok figyelmeztetés maga is zaj.</p></div></div>
+
+    <div class="notecard"><div class="num">8</div><div>
+      <b>Semmi új adat nem kell hozzá</b>
+      <p>A típus, a hero-mondat, a dimenzió-pontok és a szintek már ma
+      megvannak a szerveren. Új tartalom csak a pólus-címkék és a hat rövid
+      mondat (i18n kulcson, HU+EN).</p></div></div>
+  </div>
+</div>
+
+<div class="mock-foot">
+  Makett · nem production kód. Tokenek: <code>src/lib/design-tokens.ts</code>,
+  <code>src/lib/color-system.ts</code>. Dimenzió-címkék: <code>src/lib/tritan.ts</code>.
+</div>
+
+<script src="shared.js"></script>
+<script>
+(function () {
+  const D = TR.DATA;
+
+  // ── Egyszerű nézet összeállítása ──────────────────────────────────────
+  const simple = document.getElementById("a-simple");
+  TR.renderHero(simple);
+
+  // 1) Szöveges mag — három állítás
+  const st = document.createElement("section");
+  st.innerHTML = `
+    <div class="section-label"><span>Rólad, három mondatban</span></div>
+    <div class="statements">
+      ${D.statements.map((s) => `
+        <article class="statement">
+          <div class="tag"><i style="background:${s.color}"></i>${s.tag}</div>
+          <h3 class="fr">${s.title}</h3>
+          <p>${s.body}</p>
+          <div class="src">Miből látszik:
+            ${s.sources.map((x) => `<b style="background:${x.soft};color:${x.color}">${x.label}</b>`).join("")}
+          </div>
+        </article>`).join("")}
+    </div>`;
+  simple.appendChild(st);
+
+  // 2) Vizuális mag — hat kétpólusú skála
+  const sp = document.createElement("section");
+  sp.innerHTML = `<div class="section-label"><span>Hol állsz a hat dimenzión</span></div>`;
+  simple.appendChild(sp);
+  TR.renderSpectrum(sp);
+
+  // 3) Módszertani jegyzet
+  simple.appendChild((function () {
+    const d = document.createElement("div");
+    d.className = "note";
+    d.innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3d6b5e" stroke-width="1.7"
+           stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg>
+      <p><strong>Ez a kép a saját válaszaidból készült</strong> — önjellemzés, nem diagnózis.
+      Azt mutatja, mi jellemző rád hat személyiségdimenzió mentén. Ahhoz, hogy
+      lásd, mások hogyan látnak, kérj külső visszajelzést.</p>`;
+    return d;
+  })());
+
+  // 4) Átvezetés a részletes nézetre
+  simple.appendChild((function () {
+    const d = document.createElement("div");
+    d.className = "switch-cta";
+    d.innerHTML = `
+      <div>
+        <h4 class="fr">Szeretnél mélyebbre menni?</h4>
+        <p>A részletes nézetben ott a 24 alskála, a munkastílus, az ideális
+        környezet, a csapatszerepeid és a külső kép összevetése.</p>
+      </div>
+      <button class="primary-btn" data-goto-full>Részletes nézet →</button>`;
+    return d;
+  })());
+
+  // ── Részletes nézet ───────────────────────────────────────────────────
+  const full = document.getElementById("a-full");
+  TR.renderHero(full, { chips: false });
+  TR.renderExtended(full);
+
+  TR.initViewSwitch();
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto-full]");
+    if (!b) return;
+    const host = b.closest("[data-app]");
+    host.querySelector('[data-switch] button[data-view="full"]').click();
+  });
+  TR.mountDevices();
+})();
+</script>
+</body>
+</html>

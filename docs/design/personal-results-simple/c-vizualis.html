@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C) A formád — egyszerű eredmény-nézet · trita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .c-head { text-align: center; padding: 8px 0 4px; }
+  .c-head .who { font-size: 12px; color: var(--muted); }
+  .c-head h2 {
+    font-family: "Fraunces", serif; font-style: italic; font-weight: 500;
+    font-size: 38px; letter-spacing: -.02em; color: var(--bronze-dark); margin: 8px 0 12px;
+  }
+  .c-head p {
+    font-size: 16px; line-height: 1.6; color: var(--ink-body);
+    max-width: 46ch; margin: 0 auto;
+  }
+  .narrow .c-head h2 { font-size: 28px; }
+  .narrow .c-head p { font-size: 14.5px; }
+
+  .c-lines { display: flex; flex-direction: column; gap: 2px; }
+  .c-line {
+    display: flex; gap: 16px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border-soft); padding: 20px 22px;
+  }
+  .c-line:first-child { border-radius: var(--radius-card) var(--radius-card) 0 0; }
+  .c-line:last-child { border-radius: 0 0 var(--radius-card) var(--radius-card); }
+  .c-line .mark { width: 34px; flex: none; padding-top: 3px; }
+  .c-line h4 {
+    font-family: "Fraunces", serif; font-size: 18px; font-weight: 500;
+    line-height: 1.4; margin-bottom: 6px;
+  }
+  .c-line .tag {
+    font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 7px; display: block;
+  }
+  .c-line p { font-size: 13.5px; line-height: 1.62; color: var(--ink-body); }
+  .narrow .c-line { padding: 16px 16px; gap: 12px; }
+</style>
+</head>
+<body>
+
+<div class="mock-topbar">
+  <strong>trita · Egyszerű eredmény-nézet — makettek</strong>
+  <div class="mock-links">
+    <a href="index.html">Áttekintés</a>
+    <a href="a-egy-tortenet.html">A · Egy történet</a>
+    <a href="b-kartyak.html">B · Kártyák</a>
+    <a href="c-vizualis.html" class="on">C · Vizuális</a>
+  </div>
+</div>
+
+<div class="mock-intro">
+  <div class="kicker">Irány C</div>
+  <h1>A formád</h1>
+  <p>
+    Az ábra viszi a nézetet. A hat dimenzió egyetlen <strong>organikus alakzattá</strong>
+    áll össze — ez a „te alakod": megjegyezhető, megmutatható, és nem
+    osztályzatnak látszik. A pontokra koppintva a mellette lévő panel mondja el,
+    mit jelent az adott irány, alatta pedig ott a három állítás rövid formában.
+  </p>
+  <div class="meta">
+    <span>Görgetés: ~1,5 képernyő</span>
+    <span>Szó: ~120 + interaktív</span>
+    <span>Vizuális elem: 1 nagy forma</span>
+    <span>Erőssége: emlékezetesség, megosztás, „aha"-élmény</span>
+  </div>
+</div>
+
+<div class="frame">
+  <div class="browser">
+    <div class="browser-bar">
+      <i></i><i></i><i></i>
+      <span class="url">trita.hu/profile/results?view=simple</span>
+    </div>
+
+    <div data-app id="app-c">
+      <div class="appnav">
+        <div class="wordmark"><span class="t">t</span>rit<span class="a">a</span></div>
+        <nav><span>Vezérlő</span><span class="on">Eredményeim</span><span>Csapatok</span></nav>
+        <div class="avatar">KA</div>
+      </div>
+
+      <div class="viewbar">
+        <div class="crumb"><b>Eredményeim</b> · személyes felmérés</div>
+        <div class="right">
+          <span class="toggle-num" data-numbers><span class="track"></span>Számok</span>
+          <div class="segment" data-switch>
+            <button class="on" data-view="simple">Egyszerű</button>
+            <button data-view="full">Részletes</button>
+          </div>
+          <button class="ghost-btn">PDF</button>
+        </div>
+      </div>
+
+      <div class="canvas" data-view="simple">
+        <div class="sheet wide stack" id="c-simple"></div>
+      </div>
+
+      <div class="canvas" data-view="full" style="display:none">
+        <div class="sheet wide stack" id="c-full"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="devices">
+  <h2>Mobil</h2>
+  <p>
+    Mobilon a forma teljes szélességű, a magyarázó panel alá kerül. A koppintás
+    ugyanaz a gesztus, mint asztali gépen a kattintás — a nézet interakciója
+    nem hover-függő.
+  </p>
+  <div class="device-row">
+    <div>
+      <div class="device"><div class="screen" data-device-of="#app-c"></div></div>
+      <div class="cap" style="color:#6a6a7b">A forma és a magyarázat egymás alatt</div>
+    </div>
+  </div>
+</div>
+
+<div class="notes">
+  <h2>Tervezői jegyzetek</h2>
+  <div class="notegrid">
+    <div class="notecard"><div class="num">1</div><div>
+      <b>Miért nem radar?</b>
+      <p>A radar mérnöki ábra: rácsot, tengelyt, skálát olvastat. Ugyanaz az adat
+      lágy, zárt görbeként „alakká" válik — nem elemzed, hanem felismered.
+      A rács halványan megmarad, hogy ne legyen díszábra.</p></div></div>
+
+    <div class="notecard"><div class="num">2</div><div>
+      <b>Az ábra nem beszél helyettünk</b>
+      <p>Önmagában egy alakzat nem tanít semmit. Ezért a forma mellett mindig ott
+      egy panel, ami mondattá fordítja azt, amit a kiválasztott irány jelent —
+      így a nézet vizuális ÉS szöveges egyszerre.</p></div></div>
+
+    <div class="notecard"><div class="num">3</div><div>
+      <b>Alapállapot: a teljes kép</b>
+      <p>Kiválasztás előtt a panel a formát mint egészet magyarázza („nincs jó és
+      rossz alak"). Ez a mondat előzi meg a leggyakoribb félreértést, mielőtt az
+      egyáltalán felmerülne.</p></div></div>
+
+    <div class="notecard"><div class="num">4</div><div>
+      <b>A három állítás itt is kötelező</b>
+      <p>Az ábra alatt rövidebb formában, de ugyanaz a három üzenet. Aki csak
+      görget, az is megkapja a lényeget — az interakció bónusz, nem feltétel.</p></div></div>
+
+    <div class="notecard"><div class="num">5</div><div>
+      <b>Ez az a nézet, amiből share-kép lesz</b>
+      <p>A forma + a típusnév pont az az egység, ami OG-képként és PDF-borítóként
+      is működik. Egy vizuális nyelv a terméken belül és kívül.</p></div></div>
+
+    <div class="notecard"><div class="num">6</div><div>
+      <b>Kockázat, amit vállalni kell</b>
+      <p>Egy szabad formájú alakzat kevésbé összehasonlítható, mint egy sáv.
+      Aki két profilt akar egymás mellé tenni (pl. csapatban), annak a részletes
+      nézet radarja marad a helyes eszköz — ez a nézet nem az összevetésé.</p></div></div>
+  </div>
+</div>
+
+<div class="mock-foot">
+  Makett · nem production kód. Tokenek: <code>src/lib/design-tokens.ts</code>,
+  <code>src/lib/color-system.ts</code>. Dimenzió-címkék: <code>src/lib/tritan.ts</code>.
+</div>
+
+<script src="shared.js"></script>
+<script>
+(function () {
+  const D = TR.DATA;
+  const simple = document.getElementById("c-simple");
+
+  // 1) Fejléc: típusnév + egy mondat
+  simple.appendChild((function () {
+    const d = document.createElement("div");
+    d.className = "c-head";
+    d.innerHTML = `
+      <div class="who">${D.name} · felmérés: ${D.date}</div>
+      <h2>${D.type}</h2>
+      <p>${D.lede}</p>`;
+    return d;
+  })());
+
+  // 2) A forma (interaktív)
+  TR.renderShape(simple);
+
+  // 3) A három állítás rövid formában
+  const marks = {
+    strength: `<svg viewBox="0 0 34 34" width="34" height="34"><circle cx="17" cy="17" r="13" fill="#f8efdc"/><path d="M9 22 C15 22, 19 15, 25 11" fill="none" stroke="#c08d2e" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+    pattern: `<svg viewBox="0 0 34 34" width="34" height="34"><circle cx="13" cy="17" r="9" fill="#eef0f8" stroke="#4f5aa8" stroke-width="1.8"/><circle cx="21" cy="17" r="9" fill="none" stroke="#c08d2e" stroke-width="1.8" stroke-dasharray="3 3"/></svg>`,
+    watch: `<svg viewBox="0 0 34 34" width="34" height="34"><circle cx="17" cy="17" r="13" fill="#e6f1f5"/><path d="M17 10.5 v7.5 M17 22.6 v.1" stroke="#2c5f72" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+  };
+  const lines = document.createElement("section");
+  lines.innerHTML = `
+    <div class="section-label"><span>Amit a formád mond</span></div>
+    <div class="c-lines">
+      ${D.statements.map((s) => `
+        <div class="c-line">
+          <div class="mark">${marks[s.kind]}</div>
+          <div>
+            <span class="tag">${s.tag}</span>
+            <h4 class="fr">${s.title}</h4>
+            <p>${s.body}</p>
+          </div>
+        </div>`).join("")}
+    </div>`;
+  simple.appendChild(lines);
+
+  // 4) Jegyzet + átvezetés
+  simple.appendChild((function () {
+    const d = document.createElement("div");
+    d.className = "note";
+    d.innerHTML = `
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#3d6b5e" stroke-width="1.7"
+           stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.6v.1"/></svg>
+      <p><strong>A forma a saját válaszaidból rajzolódott</strong> — önjellemzés, nem diagnózis.
+      Hat személyiségdimenzió mentén mutatja, mi jellemző rád; a pontos értékeket a
+      „Számok" kapcsolóval és a részletes nézetben látod.</p>`;
+    return d;
+  })());
+
+  simple.appendChild((function () {
+    const d = document.createElement("div");
+    d.className = "switch-cta";
+    d.innerHTML = `
+      <div>
+        <h4 class="fr">Mi van a forma mögött?</h4>
+        <p>Pontszámok, 24 alskála, munkastílus, csapatszerepek és a külső kép
+        összevetése — ha érdekel a részletes kép is.</p>
+      </div>
+      <button class="primary-btn" data-goto-full>Részletes nézet →</button>`;
+    return d;
+  })());
+
+  // A szám-kapcsoló ebben a nézetben a forma pontjaira írja ki az értéket.
+  const full = document.getElementById("c-full");
+  TR.renderHero(full, { chips: false });
+  TR.renderExtended(full);
+
+  TR.initViewSwitch();
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto-full]");
+    if (!b) return;
+    b.closest("[data-app]").querySelector('[data-switch] button[data-view="full"]').click();
+  });
+  TR.mountDevices();
+})();
+</script>
+</body>
+</html>

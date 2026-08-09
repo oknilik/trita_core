@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Egyszerű eredmény-nézet — koncepció és makettek · trita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  .block { padding: 46px 0 0; }
+  .block h2 {
+    font-family: "Fraunces", serif; font-size: 26px; font-weight: 600;
+    letter-spacing: -.02em; margin-bottom: 8px;
+  }
+  .block > p.sub { font-size: 15px; color: var(--ink-body); max-width: 70ch; margin-bottom: 22px; }
+
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .panel {
+    background: var(--card); border: 1px solid var(--border-soft); border-radius: 16px;
+    padding: 22px 24px;
+  }
+  .panel h3 { font-family: "Fraunces", serif; font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+  .panel ul { list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  .panel li { font-size: 13.5px; line-height: 1.6; color: var(--ink-body); padding-left: 20px; position: relative; }
+  .panel li::before {
+    content: ""; position: absolute; left: 4px; top: 8px; width: 6px; height: 6px;
+    border-radius: 999px; background: var(--bronze);
+  }
+  .panel.bad li::before { background: var(--ink-300); }
+
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .principle {
+    background: var(--card); border: 1px solid var(--border-soft); border-radius: 14px; padding: 18px 20px;
+  }
+  .principle .n {
+    font-family: "DM Mono", monospace; font-size: 11px; color: var(--bronze-mid); letter-spacing: .1em;
+  }
+  .principle b { display: block; font-family: "Fraunces", serif; font-size: 16.5px; font-weight: 600; margin: 7px 0 6px; }
+  .principle p { font-size: 13px; line-height: 1.6; color: var(--ink-body); }
+
+  /* IA-diagram */
+  .ia { display: flex; flex-direction: column; gap: 8px; }
+  .ia-row {
+    display: flex; align-items: center; gap: 16px; background: var(--card);
+    border: 1px solid var(--border-soft); border-radius: 14px; padding: 16px 20px;
+  }
+  .ia-row .lvl {
+    width: 92px; flex: none; font-family: "DM Mono", monospace; font-size: 10.5px;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--bronze-mid);
+  }
+  .ia-row b { font-size: 14px; }
+  .ia-row p { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .ia-row .who {
+    margin-left: auto; flex: none; font-size: 11px; color: var(--ink-300);
+    background: var(--cream-300); border-radius: 999px; padding: 4px 11px;
+  }
+  .ia-sep { text-align: center; color: var(--ink-300); font-size: 13px; }
+
+  /* Irány-kártyák */
+  .dirs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .dir {
+    background: var(--card); border: 1px solid var(--border-soft); border-radius: 16px;
+    overflow: hidden; display: flex; flex-direction: column;
+  }
+  .dir .thumb { background: var(--cream); border-bottom: 1px solid var(--sand); padding: 16px; height: 168px; }
+  .dir .in { padding: 18px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+  .dir .kick { font-family: "DM Mono", monospace; font-size: 10.5px; letter-spacing: .12em; color: var(--bronze-mid); }
+  .dir h3 { font-family: "Fraunces", serif; font-size: 20px; font-weight: 600; margin: 7px 0 8px; }
+  .dir p { font-size: 13px; line-height: 1.6; color: var(--ink-body); }
+  .dir .kv { margin-top: 14px; display: flex; flex-direction: column; gap: 5px; }
+  .dir .kv div { display: flex; gap: 8px; font-size: 12px; }
+  .dir .kv span:first-child { color: var(--ink-300); width: 72px; flex: none; }
+  .dir a.go {
+    margin-top: 18px; text-align: center; text-decoration: none; background: var(--sage);
+    color: #fff; border-radius: 10px; padding: 11px 16px; font-size: 13px; font-weight: 500;
+  }
+  .dir a.go:hover { background: var(--sage-dark); }
+
+  /* Skeleton-thumbnail */
+  .sk { display: flex; flex-direction: column; gap: 6px; height: 100%; }
+  .sk i { display: block; border-radius: 4px; background: var(--sand); }
+  .sk .dark { background: #2c554a; }
+  .sk .card { background: #fff; border: 1px solid var(--border-soft); border-radius: 6px; flex: 1; }
+
+  .verdict {
+    background: linear-gradient(150deg, #24473d, #17322a); color: #fff;
+    border-radius: 20px; padding: 28px 30px; display: grid;
+    grid-template-columns: 1.3fr 1fr; gap: 26px;
+  }
+  .verdict h3 { font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; margin-bottom: 10px; }
+  .verdict p { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,.82); }
+  .verdict ol { margin-top: 12px; padding-left: 18px; }
+  .verdict li { font-size: 13.5px; line-height: 1.6; color: rgba(255,255,255,.82); margin-bottom: 7px; }
+  .verdict .side { border-left: 1px solid rgba(255,255,255,.14); padding-left: 24px; }
+  .verdict .side b { display: block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--bronze-300); margin-bottom: 10px; }
+
+  .qa { display: flex; flex-direction: column; gap: 10px; }
+  .qrow {
+    background: var(--card); border: 1px solid var(--border-soft); border-radius: 14px;
+    padding: 16px 20px; display: flex; gap: 16px; align-items: flex-start;
+  }
+  .qrow .q { flex: 1; font-size: 13.5px; font-weight: 600; }
+  .qrow .a { flex: 1.4; font-size: 13px; color: var(--ink-body); line-height: 1.6; }
+  .qrow .st {
+    flex: none; font-size: 10.5px; padding: 3px 9px; border-radius: 6px;
+    background: var(--bronze-100); color: #8a5530; font-weight: 600;
+  }
+
+  pre.code {
+    background: var(--card); border: 1px solid var(--border-soft); border-radius: 12px;
+    padding: 16px 18px; font-family: "DM Mono", monospace; font-size: 12px; line-height: 1.7;
+    color: var(--ink-body); overflow-x: auto;
+  }
+
+  @media (max-width: 900px) {
+    .split, .principles, .dirs, .verdict { grid-template-columns: 1fr; }
+    .verdict .side { border-left: 0; border-top: 1px solid rgba(255,255,255,.14); padding: 20px 0 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="mock-topbar">
+  <strong>trita · Egyszerű eredmény-nézet — makettek</strong>
+  <div class="mock-links">
+    <a href="index.html" class="on">Áttekintés</a>
+    <a href="a-egy-tortenet.html">A · Egy történet</a>
+    <a href="b-kartyak.html">B · Kártyák</a>
+    <a href="c-vizualis.html">C · Vizuális</a>
+  </div>
+</div>
+
+<div class="mock-intro">
+  <div class="kicker">Koncepció · 2026-08-09</div>
+  <h1>Egyszerű nézet a személyes eredményekhez</h1>
+  <p>
+    A <code>/profile/results</code> ma egy teljes riport. Ez a koncepció egy
+    <strong>rövidített nézetet</strong> tesz mellé — szövegben és vizuálisan is
+    egyszerűbbet —, amiből egy kapcsolóval át lehet menni a mostani, részletes
+    képre. Három kidolgozott irány, működő makettekben.
+  </p>
+</div>
+
+<div class="wrap">
+
+  <!-- ── Diagnózis ────────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Mit old meg</h2>
+    <p class="sub">
+      A mai Eredmények fül nem rossz — csak mindenkinek ugyanazt a mélységet
+      adja. Aki most kapta meg az eredményét, annak először egy válaszra van
+      szüksége, nem egy riportra.
+    </p>
+    <div class="split">
+      <div class="panel bad">
+        <h3>Ma — egy fül, 14 blokk</h3>
+        <ul>
+          <li>Hero → radar + 6 dimenzió-sáv → 6 nyitható dimenzió 24 alskálával</li>
+          <li>Altruizmus · Kulcs-tanulságok · Hogyan dolgozom · Ideális környezet</li>
+          <li>Szerep-illeszkedés · Csapatszerepek (9 szerep) · Fejlődési fókusz</li>
+          <li>3 átvezető CTA + következő-lépés kártya + visszajelzés-űrlap</li>
+          <li>Az első képernyőn <em>szám</em> van (0–100), mielőtt bármi megmagyarázná</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Egyszerű nézet — egy képernyő, egy válasz</h3>
+        <ul>
+          <li>Egy típus + egy mondat: „ki vagyok ebben a mérésben"</li>
+          <li>Három állítás: ami megy · ahogy dolgozol · amire figyelj</li>
+          <li>Hat kétpólusú skála — szám nélkül, pólus-nevekkel</li>
+          <li>Egy módszertani jegyzet, egy átvezetés a részletesre</li>
+          <li>A részletes nézet <em>egy kattintás</em>, nem külön oldal</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Elvek ────────────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Az elv — hat döntés, amit minden irány tart</h2>
+    <p class="sub">
+      Ezek nem stílus-kérdések: ha ezekből bármelyik kimarad, az „egyszerű
+      nézet" csak egy rövidebb riport lesz, nem egy érthetőbb.
+    </p>
+    <div class="principles">
+      <div class="principle"><div class="n">01</div><b>Mondat először</b>
+        <p>Az első dolog, amit a felhasználó lát, egy róla szóló mondat — nem
+        ábra, nem szám. Az ábra alátámaszt, nem helyettesít.</p></div>
+      <div class="principle"><div class="n">02</div><b>Nincs osztályzat</b>
+        <p>A 0–100 sáv teljesítménynek olvasódik. Helyette kétpólusú skála, ahol
+        mindkét vég viselkedést jelent, és egyik sem „rosszabb".</p></div>
+      <div class="principle"><div class="n">03</div><b>A szám opció</b>
+        <p>Egy kapcsoló előhozza a pontszámokat. Alapból ki: a szám olyan
+        pontosságot ígér, amivel egy önjellemzés nem rendelkezik.</p></div>
+      <div class="principle"><div class="n">04</div><b>Három üzenet, nem hét</b>
+        <p>Erősség → működésmód → figyelendő. Ez a tanácsadói visszajelzés
+        természetes íve, és önmagában is teljes.</p></div>
+      <div class="principle"><div class="n">05</div><b>Forrás mindig látszik</b>
+        <p>Minden állítás alatt ott a dimenzió, amiből jön. Becsült vs mért
+        jelölés nélkül nincs hiteles intelligence-kimenet.</p></div>
+      <div class="principle"><div class="n">06</div><b>A váltás visszafordítható</b>
+        <p>Egyszerű ⇄ Részletes bármikor, ugyanazon az URL-en, megjegyzett
+        választással. Semmi nem vész el, csak nincs útban.</p></div>
+    </div>
+  </section>
+
+  <!-- ── IA ───────────────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>A közös váz</h2>
+    <p class="sub">
+      Mind a három irány ugyanezt a négy réteget rendezi el másképp. A rétegek
+      sorrendje nem cserélhető: a felismerés előbb jön, mint a magyarázat, és a
+      magyarázat előbb, mint a mérés.
+    </p>
+    <div class="ia">
+      <div class="ia-row"><span class="lvl">1 · Felismerés</span>
+        <div><b>Típus + egy mondat</b><p>„Kísérletező hajtóerő" + a viselkedés-alapú összegző mondat.</p></div>
+        <span class="who">már megvan a kódban</span></div>
+      <div class="ia-sep">↓</div>
+      <div class="ia-row"><span class="lvl">2 · Megértés</span>
+        <div><b>Három állítás</b><p>Ami megy · ahogy dolgozol · amire figyelj — forrás-dimenzióval.</p></div>
+        <span class="who">új szöveg, meglévő adatból</span></div>
+      <div class="ia-sep">↓</div>
+      <div class="ia-row"><span class="lvl">3 · Kép</span>
+        <div><b>Hat dimenzió vizuálisan</b><p>Kétpólusú skála / mini-lista / organikus forma — irányonként más.</p></div>
+        <span class="who">új komponens</span></div>
+      <div class="ia-sep">↓</div>
+      <div class="ia-row"><span class="lvl">4 · Kilépés</span>
+        <div><b>Jegyzet + átvezetés</b><p>Egy módszertani mondat és egy gomb a részletes nézetre.</p></div>
+        <span class="who">meglévő minták</span></div>
+    </div>
+  </section>
+
+  <!-- ── Irányok ──────────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Három irány</h2>
+    <p class="sub">
+      Ugyanaz a váz, három különböző súlypont. Mindhárom teljes értékű makett:
+      működő nézetváltóval, szám-kapcsolóval, mobil-nézettel és a jelenlegi
+      részletes nézettel az összehasonlításhoz.
+    </p>
+    <div class="dirs">
+
+      <div class="dir">
+        <div class="thumb"><div class="sk">
+          <i class="dark" style="height:52px"></i>
+          <i class="card" style="flex:none;height:20px"></i>
+          <i class="card" style="flex:none;height:20px"></i>
+          <i class="card" style="flex:none;height:20px"></i>
+          <i style="height:5px;width:70%"></i>
+          <i style="height:5px;width:50%"></i>
+          <i style="height:5px;width:82%"></i>
+        </div></div>
+        <div class="in">
+          <div class="kick">IRÁNY A</div>
+          <h3>Egy oldal, egy történet</h3>
+          <p>A szöveg viszi. Három egymásra épülő állítás, alattuk hat kétpólusú
+          skála rövid magyarázó mondattal. A legkevesebb félreolvasás.</p>
+          <div class="kv">
+            <div><span>Súlypont</span><span>szöveg</span></div>
+            <div><span>Görgetés</span><span>~2,5 képernyő</span></div>
+            <div><span>Erős</span><span>érthetőség</span></div>
+            <div><span>Gyenge</span><span>kevésbé „látványos"</span></div>
+          </div>
+          <a class="go" href="a-egy-tortenet.html">Makett megnyitása →</a>
+        </div>
+      </div>
+
+      <div class="dir">
+        <div class="thumb"><div class="sk">
+          <i class="card" style="flex:none;height:34px"></i>
+          <div style="display:flex;gap:6px;flex:1">
+            <i class="card"></i><i class="card"></i><i class="card"></i>
+          </div>
+          <i style="height:5px;width:100%"></i>
+          <i style="height:5px;width:100%"></i>
+        </div></div>
+        <div class="in">
+          <div class="kick">IRÁNY B</div>
+          <h3>Három kártya</h3>
+          <p>Ugyanaz a három üzenet önálló, szkennelhető kártyákban, saját
+          ábrával. A hat dimenzió csukott mini-listában, kérésre nyílik.</p>
+          <div class="kv">
+            <div><span>Súlypont</span><span>modularitás</span></div>
+            <div><span>Görgetés</span><span>~2 képernyő</span></div>
+            <div><span>Erős</span><span>mobil, megosztás</span></div>
+            <div><span>Gyenge</span><span>a kapcsolat a kártyák közt</span></div>
+          </div>
+          <a class="go" href="b-kartyak.html">Makett megnyitása →</a>
+        </div>
+      </div>
+
+      <div class="dir">
+        <div class="thumb"><div class="sk">
+          <i style="height:5px;width:40%;margin:0 auto"></i>
+          <div style="flex:1;display:grid;place-items:center">
+            <svg viewBox="0 0 100 100" width="96" height="96">
+              <path d="M50 12 C74 20, 88 34, 84 54 C80 74, 62 88, 48 84 C30 79, 14 66, 16 46 C18 28, 32 16, 50 12 Z"
+                    fill="rgba(61,107,94,.22)" stroke="#3d6b5e" stroke-width="2"/>
+              <circle cx="50" cy="12" r="4" fill="#4f5aa8"/><circle cx="84" cy="54" r="4" fill="#c08d2e"/>
+              <circle cx="48" cy="84" r="4" fill="#78924f"/><circle cx="16" cy="46" r="4" fill="#b4688a"/>
+            </svg>
+          </div>
+          <i class="card" style="flex:none;height:22px"></i>
+        </div></div>
+        <div class="in">
+          <div class="kick">IRÁNY C</div>
+          <h3>A formád</h3>
+          <p>Egy nagy, organikus alakzat a hat dimenzióból. Koppintásra
+          magyarázza magát; alatta a három állítás tömör formában.</p>
+          <div class="kv">
+            <div><span>Súlypont</span><span>ábra</span></div>
+            <div><span>Görgetés</span><span>~1,5 képernyő</span></div>
+            <div><span>Erős</span><span>emlékezetesség</span></div>
+            <div><span>Gyenge</span><span>nem összehasonlítható</span></div>
+          </div>
+          <a class="go" href="c-vizualis.html">Makett megnyitása →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Ajánlás ──────────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Ajánlás</h2>
+    <p class="sub">Ha egyet kell választani, és utána finomítani.</p>
+    <div class="verdict">
+      <div>
+        <h3>Az „A" irány legyen az alap — a másik kettőből egy-egy elem beleépítve.</h3>
+        <p>
+          Az A az egyetlen, ami önmagában, görgetés és interakció nélkül is
+          megválaszolja a kérdést, amiért az ember megnyitja az oldalt. A B és a
+          C nem versenytárs, hanem alkatrész-forrás:
+        </p>
+        <ol>
+          <li><strong>A-ból marad</strong> a három állítás sorrendje és a kétpólusú
+          skála — ez a koncepció lelke.</li>
+          <li><strong>B-ből átjön</strong> a csukott dimenzió-lista mobilra: 372 px-en
+          hat kifejtett spektrum-sor már sok, ott csukva induljon.</li>
+          <li><strong>C-ből átjön</strong> a forma — de nem a nézet fő ábrájaként,
+          hanem a megosztó-képre és a PDF borítójára, ahol pont az emlékezetesség
+          a feladat.</li>
+        </ol>
+      </div>
+      <div class="side">
+        <b>Amit ez nem old meg</b>
+        <p>
+          A csapat- és a külső-kép nézeteket nem érinti — ott az összevetés a
+          feladat, ahhoz a radar és a sávok a helyes eszköz.
+        </p>
+        <p style="margin-top:14px">
+          És nem pótolja a tanácsadói beszélgetést: az egyszerű nézet célja, hogy
+          a kliens <em>fel tudja idézni</em>, amit hallott, ne az, hogy egyedül
+          értelmezze magát.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Nyitott döntések ─────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Amit el kell dönteni</h2>
+    <p class="sub">Ezek termék-döntések, nem technikaiak — a makettek mindkét választást elbírják.</p>
+    <div class="qa">
+      <div class="qrow">
+        <div class="q">Melyik a kezdőnézet?</div>
+        <div class="a">Javaslat: <strong>első megnyitáskor az egyszerű</strong>, utána
+        amit a felhasználó utoljára használt. Aki egyszer átvált részletesre,
+        annak az lesz az alapértelmezés.</div>
+        <div class="st">döntés kell</div>
+      </div>
+      <div class="qrow">
+        <div class="q">Mi legyen a fülekkel egyszerű nézetben?</div>
+        <div class="a">Javaslat: a fülsáv <strong>elrejtve</strong> — a „Külső kép" a
+        lap alján egy sorként jelenik meg. A fülsáv maga is összetettséget jelez.</div>
+        <div class="st">döntés kell</div>
+      </div>
+      <div class="qrow">
+        <div class="q">Pontszám a PDF-ben és a megosztó-képen?</div>
+        <div class="a">A PDF marad a részletes riport (számokkal). A megosztó-kép a
+        C-forma + típusnév, szám nélkül.</div>
+        <div class="st">javaslat</div>
+      </div>
+      <div class="qrow">
+        <div class="q">Ki írja a pólus-címkéket és a hat mondatot?</div>
+        <div class="a">A makettben szereplő szövegek <strong>tervezői mintaszövegek</strong>.
+        Éles bevezetés előtt tartalmi átnézés kell (HU+EN, i18n kulcson), a
+        dimenzió-nevek viszont változatlanul a <code>tritan.ts</code> címkéi.</div>
+        <div class="st">tartalom</div>
+      </div>
+      <div class="qrow">
+        <div class="q">Kell-e külső visszajelzés esetén negyedik állítás?</div>
+        <div class="a">Igen — „Ahogy mások látnak" néven, de csak a küszöb
+        (min. 2–3 értékelő) felett, forrás-jelöléssel. A váz ezt elbírja.</div>
+        <div class="st">későbbi kör</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Implementáció ────────────────────────────────────────────────── -->
+  <section class="block">
+    <h2>Mi kell hozzá kódban</h2>
+    <p class="sub">
+      Új adat nem kell: a típus, az összegző mondat, a dimenzió-pontok és a
+      szintek ma is elkészülnek a szerveren. A munka nagyja megjelenítés és szöveg.
+    </p>
+    <pre class="code">src/app/(app)/profile/results/page.tsx
+  └ searchParams.view === "simple" | "full"   (alap: felhasználói preferencia)
+
+src/components/results/simple/
+  ├ SimpleResultsView.tsx      — a négy réteg összerakása
+  ├ StatementBlock.tsx         — három állítás + forrás-chipek
+  ├ DimensionSpectrum.tsx      — kétpólusú skála (mobilon csukható)
+  └ ViewModeSwitch.tsx         — Egyszerű ⇄ Részletes + „Számok" kapcsoló
+
+src/lib/results/simple-summary.ts
+  └ buildSimpleSummary(scores, locale) → { type, lede, statements[], dims[] }
+     (a meglévő dimension-insights.ts + personality-type.ts fölött)
+
+src/lib/i18n/results.ts
+  └ új kulcsok: pólus-címkék (6×2), dimenzió-mondatok (6), szekció-címek,
+    kapcsoló-feliratok — HU + EN
+
+Megjegyzendő preferencia: UserProfile-on egy mező (pl. resultsViewMode),
+vagy amíg nincs migráció, localStorage + URL-paraméter.</pre>
+  </section>
+
+  <div class="mock-foot" style="padding-top:40px">
+    Makett-készlet · <code>docs/design/personal-results-simple/</code> ·
+    a látvány a valós token-készletből dolgozik, de ez nem production kód.
+    Írásos összefoglaló: <code>README.md</code> ugyanebben a mappában.
+  </div>
+</div>
+
+</body>
+</html>

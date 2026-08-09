@@ -1,0 +1,543 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   Trita — „Egyszerű eredmény-nézet" makett-készlet · közös stílus
+   A tokenek a valós rendszerből jönnek (src/lib/design-tokens.ts +
+   src/app/globals.css + src/lib/color-system.ts). Makett-fájl: nem
+   production CSS, de a token-értékek 1:1 egyeznek, hogy a látvány hiteles
+   legyen.
+   ─────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Neutrális alap */
+  --cream: #f7f4ef;
+  --cream-300: #f3f0eb;
+  --sand: #e8e0d3;
+  --warm: #f3eee4;
+  --warm-mid: #f0ede6;
+  --card: #ffffff;
+  --card-soft: #fdfcfa;
+  --border-soft: #ddd5c8;
+
+  /* Tinta */
+  --ink: #1a1a2e;
+  --ink-body: #4a4a5e;
+  --ink-warm: #7a756e;
+  --muted: #6a6a7b;
+  --ink-300: #8a8a9a;
+
+  /* Réteg-akcent: self = sage */
+  --sage: #3d6b5e;
+  --sage-dark: #2d5a4e;
+  --sage-deep: #1e3d34;
+  --sage-soft: #e8f2f0;
+  --sage-ring: #b8d0cb;
+
+  /* Akcent: bronz */
+  --bronze: #c17f4a;
+  --bronze-mid: #a86b3d;
+  --bronze-dark: #9a6538;
+  --bronze-soft: #f3d4c8;
+  --bronze-100: #faf0e6;
+  --bronze-300: #e0b088;
+
+  /* Dimenzió-paletta (color-system.ts) */
+  --dim-h: #4f5aa8;
+  --dim-h-strong: #3e4785;
+  --dim-h-soft: #eef0f8;
+  --dim-e: #7b5fae;
+  --dim-e-strong: #5f4693;
+  --dim-e-soft: #f1ecf9;
+  --dim-x: #c08d2e;
+  --dim-x-strong: #8a6215;
+  --dim-x-soft: #f8efdc;
+  --dim-a: #78924f;
+  --dim-a-strong: #556b35;
+  --dim-a-soft: #eff3e4;
+  --dim-c: #3d7f95;
+  --dim-c-strong: #2c5f72;
+  --dim-c-soft: #e6f1f5;
+  --dim-o: #b4688a;
+  --dim-o-strong: #8e4263;
+  --dim-o-soft: #f9eef3;
+
+  --radius-card: 18px;
+  --radius-lg: 24px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--warm-mid);
+  color: var(--ink);
+  font-family: "DM Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+/* A „Számok" kapcsoló globális rejtő-osztálya (SVG-re is működik). */
+.hide { display: none !important; }
+
+.fr { font-family: "Fraunces", Georgia, serif; }
+.mono { font-family: "DM Mono", ui-monospace, monospace; }
+
+a { color: inherit; }
+
+/* ── Makett-keret (a lapok tetején, NEM a termék része) ─────────────────── */
+
+.mock-topbar {
+  position: sticky; top: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 10px 24px;
+  background: var(--ink);
+  color: #fff;
+  font-size: 12px;
+}
+.mock-topbar strong { font-weight: 600; letter-spacing: .01em; }
+.mock-topbar .mock-links { display: flex; gap: 4px; flex-wrap: wrap; }
+.mock-topbar a {
+  text-decoration: none; padding: 5px 11px; border-radius: 7px;
+  background: rgba(255,255,255,.08); color: rgba(255,255,255,.72);
+  font-size: 11.5px; transition: .18s;
+}
+.mock-topbar a:hover { background: rgba(255,255,255,.16); color: #fff; }
+.mock-topbar a.on { background: var(--bronze); color: #fff; }
+
+.mock-intro {
+  max-width: 1080px; margin: 0 auto; padding: 40px 24px 8px;
+}
+.mock-intro .kicker {
+  font-family: "DM Mono", monospace; font-size: 11px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--bronze-mid);
+}
+.mock-intro h1 {
+  font-family: "Fraunces", serif; font-size: 34px; letter-spacing: -.02em;
+  margin: 10px 0 10px; font-weight: 600;
+}
+.mock-intro p { color: var(--ink-body); font-size: 15px; max-width: 68ch; }
+.mock-intro .meta {
+  margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px;
+}
+.mock-intro .meta span {
+  font-size: 11.5px; padding: 4px 10px; border-radius: 999px;
+  background: var(--card); border: 1px solid var(--border-soft); color: var(--muted);
+}
+
+/* ── Böngésző-keret ─────────────────────────────────────────────────────── */
+
+.frame {
+  max-width: 1080px; margin: 28px auto 0; padding: 0 24px;
+}
+.browser {
+  border-radius: 14px; overflow: hidden;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 24px 60px -30px rgba(26,26,46,.35);
+  background: var(--cream);
+}
+.browser-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 14px; background: var(--warm); border-bottom: 1px solid var(--border-soft);
+}
+.browser-bar i { width: 9px; height: 9px; border-radius: 999px; background: var(--warm-dark, #d9cfc1); display: block; }
+.browser-bar .url {
+  margin-left: 8px; flex: 1; background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: 7px; padding: 4px 12px; font-size: 11.5px; color: var(--muted);
+  font-family: "DM Mono", monospace;
+}
+
+/* ── App-fejléc ─────────────────────────────────────────────────────────── */
+
+.appnav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 28px; background: var(--cream);
+  border-bottom: 1px solid var(--sand);
+}
+.wordmark { font-family: "Fraunces", serif; font-size: 21px; font-weight: 600; letter-spacing: -.02em; }
+.wordmark .t { color: var(--sage); }
+.wordmark .a { color: var(--bronze); }
+.appnav nav { display: flex; gap: 22px; }
+.appnav nav span { font-size: 13px; color: var(--muted); }
+.appnav nav span.on { color: var(--ink); font-weight: 500; }
+.appnav .avatar {
+  width: 30px; height: 30px; border-radius: 999px; background: var(--sage-soft);
+  color: var(--sage-deep); display: grid; place-items: center;
+  font-size: 11.5px; font-weight: 600; border: 1px solid var(--sage-ring);
+}
+
+/* ── Nézetváltó sáv (a koncepció közös eleme) ───────────────────────────── */
+
+.viewbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+  padding: 14px 28px; background: var(--cream); border-bottom: 1px solid var(--sand);
+}
+.viewbar .crumb { font-size: 12.5px; color: var(--muted); }
+.viewbar .crumb b { color: var(--ink); font-weight: 600; }
+.viewbar .right { display: flex; align-items: center; gap: 10px; }
+
+.segment {
+  display: inline-flex; padding: 3px; gap: 3px;
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 11px;
+}
+.segment button {
+  border: 0; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 500;
+  padding: 7px 15px; border-radius: 8px; background: transparent; color: var(--muted);
+  min-height: 34px; transition: .18s;
+}
+.segment button.on { background: var(--sage); color: #fff; }
+.segment button:not(.on):hover { background: var(--cream-300); color: var(--ink); }
+
+.ghost-btn {
+  border: 1px solid var(--border-soft); background: var(--card); color: var(--ink-body);
+  border-radius: 9px; padding: 8px 14px; font: inherit; font-size: 12.5px; cursor: pointer;
+  min-height: 36px;
+}
+.ghost-btn:hover { background: var(--cream-300); }
+
+.toggle-num {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--muted); cursor: pointer; user-select: none;
+}
+.toggle-num .track {
+  width: 34px; height: 19px; border-radius: 999px; background: var(--sand);
+  position: relative; transition: .2s;
+}
+.toggle-num .track::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 15px; height: 15px;
+  border-radius: 999px; background: #fff; transition: .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle-num.on .track { background: var(--sage); }
+.toggle-num.on .track::after { transform: translateX(15px); }
+
+/* ── Lap-törzs ──────────────────────────────────────────────────────────── */
+
+.canvas { background: var(--cream); padding: 34px 28px 46px; }
+.sheet { max-width: 720px; margin: 0 auto; }
+.sheet.wide { max-width: 860px; }
+
+.eyebrow {
+  font-family: "DM Mono", monospace; font-size: 10.5px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--bronze-mid);
+}
+.section-label {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.section-label span {
+  font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--muted);
+}
+.section-label::after { content: ""; flex: 1; height: 1px; background: var(--sand); }
+
+/* ── Self hero (sage) ───────────────────────────────────────────────────── */
+
+.hero {
+  border-radius: var(--radius-lg);
+  background: linear-gradient(152deg, #24473d 0%, var(--sage-deep) 55%, #17322a 100%);
+  color: #fff; padding: 30px 32px 32px; position: relative; overflow: hidden;
+}
+.hero::after {
+  content: ""; position: absolute; right: -70px; top: -70px; width: 260px; height: 260px;
+  border-radius: 999px; border: 1px solid rgba(255,255,255,.07);
+}
+.hero .head { display: flex; align-items: center; gap: 16px; }
+.hero .head .who { min-width: 0; }
+.hero .name { font-family: "Fraunces", serif; font-size: 26px; letter-spacing: -.02em; }
+.hero .date { font-size: 11px; color: rgba(255,255,255,.55); margin-top: 3px; }
+.hero .glyphbox {
+  width: 62px; height: 62px; border-radius: 15px; border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.05); display: grid; place-items: center; flex: none;
+}
+.hero .typename {
+  font-family: "Fraunces", serif; font-style: italic; font-size: 30px;
+  color: var(--bronze-300); margin-top: 22px; letter-spacing: -.01em;
+}
+.hero .lede {
+  margin-top: 12px; font-size: 17px; line-height: 1.6; color: rgba(255,255,255,.86);
+  max-width: 44ch;
+}
+.hero .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 20px; }
+.hero .chip {
+  font-size: 11px; padding: 4px 10px; border-radius: 7px;
+  background: rgba(61,107,94,.42); color: #d8ece5; border: 1px solid rgba(255,255,255,.08);
+}
+.hero .chip.watch { background: rgba(193,127,74,.18); color: var(--bronze-300); }
+
+/* ── Állítás-blokk (szöveges mag) ──────────────────────────────────────── */
+
+.statements { display: flex; flex-direction: column; gap: 2px; }
+.statement {
+  background: var(--card); border: 1px solid var(--border-soft); padding: 22px 24px;
+}
+.statement:first-child { border-radius: var(--radius-card) var(--radius-card) 0 0; }
+.statement:last-child { border-radius: 0 0 var(--radius-card) var(--radius-card); }
+.statement .tag {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  color: var(--muted);
+}
+.statement .tag i { width: 7px; height: 7px; border-radius: 999px; display: block; }
+.statement h3 {
+  font-family: "Fraunces", serif; font-size: 22px; font-weight: 500; line-height: 1.35;
+  letter-spacing: -.01em; margin: 9px 0 8px;
+}
+.statement p { font-size: 14.5px; line-height: 1.65; color: var(--ink-body); max-width: 60ch; }
+.statement .src {
+  margin-top: 12px; font-size: 11px; color: var(--ink-300);
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+}
+.statement .src b {
+  font-weight: 500; padding: 2.5px 8px; border-radius: 6px; font-size: 10.5px;
+}
+
+/* ── Spektrum-sor (a fő vizuális elem) ─────────────────────────────────── */
+
+.spectrum {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card); padding: 8px 24px 20px;
+}
+.spec-row { padding: 15px 0; border-bottom: 1px solid var(--cream-300); }
+.spec-row:last-child { border-bottom: 0; }
+.spec-top {
+  display: flex; align-items: baseline; gap: 9px; margin-bottom: 9px;
+}
+.spec-letter {
+  width: 19px; height: 19px; border-radius: 6px; flex: none;
+  display: grid; place-items: center; font-size: 10.5px; font-weight: 700;
+  align-self: center;
+}
+.spec-name { font-size: 13px; font-weight: 600; letter-spacing: -.005em; }
+.spec-score {
+  margin-left: auto; font-family: "Fraunces", serif; font-size: 14px; font-weight: 600;
+}
+.spec-score.hide { display: none; }
+.spec-track {
+  position: relative; height: 6px; border-radius: 999px;
+  background: linear-gradient(90deg, var(--cream-300), var(--sand));
+  margin: 0 0 8px;
+}
+.spec-track .mid {
+  position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px;
+  background: var(--sand);
+}
+.spec-track .dot {
+  position: absolute; top: 50%; width: 15px; height: 15px; border-radius: 999px;
+  transform: translate(-50%, -50%); border: 3px solid var(--card);
+  box-shadow: 0 1px 4px rgba(26,26,46,.22);
+}
+.spec-poles {
+  display: flex; justify-content: space-between; gap: 12px;
+  font-size: 11.5px; color: var(--ink-300);
+}
+.spec-poles .near { color: var(--ink-body); font-weight: 500; }
+.spec-say {
+  margin-top: 9px; font-size: 13.5px; line-height: 1.6; color: var(--ink-body);
+}
+
+/* ── Kártyák (B irány) ─────────────────────────────────────────────────── */
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.bigcard {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card); padding: 22px 20px 24px;
+  display: flex; flex-direction: column; position: relative; overflow: hidden;
+}
+.bigcard .rule { position: absolute; left: 0; top: 0; bottom: 0; width: 3px; }
+.bigcard .tag {
+  font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.bigcard .art { height: 66px; margin-bottom: 16px; }
+.bigcard h3 {
+  font-family: "Fraunces", serif; font-size: 20px; font-weight: 500; line-height: 1.35;
+  letter-spacing: -.01em; margin-bottom: 9px;
+}
+.bigcard p { font-size: 13.5px; line-height: 1.62; color: var(--ink-body); }
+.bigcard .foot {
+  margin-top: auto; padding-top: 16px; font-size: 11px; color: var(--ink-300);
+}
+
+/* ── Nyitható sor (B irány mini-lista) ─────────────────────────────────── */
+
+.minilist {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-card); overflow: hidden;
+}
+.minirow { border-bottom: 1px solid var(--cream-300); }
+.minirow:last-child { border-bottom: 0; }
+.minirow summary {
+  list-style: none; cursor: pointer; padding: 14px 20px;
+  display: flex; align-items: center; gap: 12px; min-height: 52px;
+}
+.minirow summary::-webkit-details-marker { display: none; }
+.minirow summary:hover { background: var(--card-soft); }
+.minirow .bar {
+  flex: 1; height: 5px; border-radius: 999px; background: var(--cream-300);
+  position: relative; max-width: 220px;
+}
+.minirow .bar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; display: block; }
+.minirow .lvl {
+  font-size: 10.5px; font-weight: 600; padding: 3px 9px; border-radius: 6px;
+}
+.minirow .chev { color: var(--ink-300); font-size: 13px; transition: .2s; }
+.minirow[open] .chev { transform: rotate(90deg); }
+.minirow .body {
+  padding: 0 20px 18px 51px; font-size: 13.5px; line-height: 1.62; color: var(--ink-body);
+}
+
+/* ── C irány: profil-forma ─────────────────────────────────────────────── */
+
+.shapewrap {
+  background: var(--card); border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg); padding: 10px 16px 22px;
+  display: grid; grid-template-columns: 1.05fr .95fr; gap: 10px; align-items: center;
+}
+.shapewrap .readout { padding: 12px 10px 12px 18px; border-left: 1px solid var(--cream-300); }
+.shapewrap .readout .eyebrow { margin-bottom: 10px; display: block; }
+.shapewrap .readout h3 {
+  font-family: "Fraunces", serif; font-size: 21px; font-weight: 500; line-height: 1.35;
+  margin-bottom: 10px; letter-spacing: -.01em;
+}
+.shapewrap .readout p { font-size: 14px; line-height: 1.65; color: var(--ink-body); }
+.shapewrap .readout .hint { margin-top: 16px; font-size: 11.5px; color: var(--ink-300); }
+.shape-node { cursor: pointer; }
+.shape-label { font-size: 11.5px; fill: var(--muted); font-family: "DM Sans", sans-serif; }
+.shape-label.on { fill: var(--ink); font-weight: 600; }
+
+/* ── Módszertani jegyzet + CTA ─────────────────────────────────────────── */
+
+.note {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: var(--sage-soft); border: 1px solid var(--sage-ring);
+  border-radius: 14px; padding: 15px 18px;
+}
+.note svg { flex: none; margin-top: 1px; }
+.note p { font-size: 12.5px; line-height: 1.6; color: #24473d; }
+
+.switch-cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  flex-wrap: wrap;
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: var(--radius-card);
+  padding: 20px 24px;
+}
+.switch-cta h4 { font-family: "Fraunces", serif; font-size: 18px; font-weight: 500; margin-bottom: 5px; }
+.switch-cta p { font-size: 13px; color: var(--ink-body); max-width: 52ch; }
+.primary-btn {
+  border: 0; cursor: pointer; font: inherit; font-size: 13.5px; font-weight: 500;
+  background: var(--sage); color: #fff; border-radius: 10px; padding: 12px 20px;
+  min-height: 44px; white-space: nowrap;
+}
+.primary-btn:hover { background: var(--sage-dark); }
+.primary-btn.bronze { background: var(--bronze); }
+.primary-btn.bronze:hover { background: var(--bronze-dark); }
+
+.stack { display: flex; flex-direction: column; gap: 26px; }
+.stack.tight { gap: 18px; }
+
+/* ── Kibontott (jelenlegi) nézet — összehasonlításhoz ──────────────────── */
+
+.ext-tabs { display: flex; border: 1px solid var(--sand); border-radius: 11px; overflow: hidden; }
+.ext-tabs div {
+  flex: 1; text-align: center; padding: 12px; font-size: 12.5px; background: var(--card);
+  color: var(--muted); border-right: 1px solid var(--sand);
+}
+.ext-tabs div:last-child { border-right: 0; }
+.ext-tabs div.on { background: var(--sage); color: #fff; font-weight: 500; }
+
+.ext-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: center; }
+.striplist {
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 12px;
+  padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;
+}
+.striprow .line { display: flex; align-items: center; gap: 8px; }
+.striprow .line .dt { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+.striprow .line .nm { font-size: 12px; font-weight: 500; flex: 1; }
+.striprow .line .lv { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 5px; }
+.striprow .line .sc { font-family: "Fraunces", serif; font-size: 13px; width: 26px; text-align: right; }
+.striprow .track { height: 4px; border-radius: 2px; background: var(--sand); margin: 5px 0 0 16px; }
+.striprow .track i { display: block; height: 100%; border-radius: 2px; }
+
+.acc { border: 1px solid var(--border-soft); border-radius: 12px; overflow: hidden; background: var(--card); }
+.acc .row { border-bottom: 1px solid var(--cream-300); }
+.acc .row:last-child { border-bottom: 0; }
+.acc .rhead {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px; font-size: 13px;
+}
+.acc .rhead .sc { margin-left: auto; font-family: "Fraunces", serif; }
+.acc .rbody { padding: 0 16px 16px; font-size: 13px; color: var(--ink-body); line-height: 1.6; }
+.acc .facets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 18px; margin-top: 14px; }
+.acc .facet { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: var(--muted); }
+.acc .facet .fb { flex: 1; height: 4px; background: var(--cream-300); border-radius: 2px; }
+.acc .facet .fb i { display: block; height: 100%; border-radius: 2px; }
+
+.ext-more { display: flex; flex-direction: column; gap: 10px; }
+.ext-more .mrow {
+  display: flex; align-items: center; gap: 12px; background: var(--card);
+  border: 1px solid var(--border-soft); border-radius: 12px; padding: 15px 18px;
+}
+.ext-more .mrow b { font-size: 13.5px; font-weight: 600; }
+.ext-more .mrow span { font-size: 12px; color: var(--muted); }
+.ext-more .mrow .n {
+  margin-left: auto; font-family: "DM Mono", monospace; font-size: 11px; color: var(--ink-300);
+}
+
+/* ── Mobil készülék-keret ──────────────────────────────────────────────── */
+
+.devices { max-width: 1080px; margin: 0 auto; padding: 46px 24px 0; }
+.devices h2 {
+  font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; margin-bottom: 6px;
+}
+.devices > p { font-size: 14px; color: var(--ink-body); margin-bottom: 22px; max-width: 68ch; }
+.device-row { display: flex; gap: 26px; flex-wrap: wrap; }
+.device {
+  width: 372px; border-radius: 34px; background: var(--ink); padding: 10px;
+  box-shadow: 0 26px 60px -30px rgba(26,26,46,.5);
+}
+.device .screen {
+  border-radius: 26px; overflow: hidden; background: var(--cream);
+  height: 720px; overflow-y: auto; position: relative;
+}
+.device .cap { text-align: center; font-size: 11.5px; color: rgba(255,255,255,.6); padding: 8px 0 2px; }
+
+/* Keskeny renderelés (mobil-keret + valós kis képernyő) */
+.narrow .canvas { padding: 20px 16px 34px; }
+.narrow .appnav { padding: 12px 16px; }
+.narrow .appnav nav { display: none; }
+.narrow .viewbar { padding: 12px 16px; }
+.narrow .viewbar .crumb { display: none; }
+.narrow .viewbar .right { width: 100%; justify-content: space-between; }
+.narrow .hero { padding: 22px 20px 24px; border-radius: 20px; }
+.narrow .hero .typename { font-size: 25px; }
+.narrow .hero .lede { font-size: 15.5px; }
+.narrow .cards { grid-template-columns: 1fr; }
+.narrow .ext-grid { grid-template-columns: 1fr; }
+.narrow .shapewrap { grid-template-columns: 1fr; }
+.narrow .shapewrap .readout { border-left: 0; border-top: 1px solid var(--cream-300); padding: 16px 6px 4px; }
+.narrow .statement { padding: 18px 18px; }
+.narrow .spectrum { padding: 6px 16px 16px; }
+.narrow .acc .facets { grid-template-columns: 1fr; }
+
+/* ── Tervezői jegyzetek ────────────────────────────────────────────────── */
+
+.notes { max-width: 1080px; margin: 46px auto 0; padding: 0 24px 60px; }
+.notes h2 { font-family: "Fraunces", serif; font-size: 22px; font-weight: 600; margin-bottom: 16px; }
+.notegrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.notecard {
+  background: var(--card); border: 1px solid var(--border-soft); border-radius: 14px;
+  padding: 18px 20px; display: flex; gap: 14px;
+}
+.notecard .num {
+  width: 24px; height: 24px; flex: none; border-radius: 8px; background: var(--ink); color: #fff;
+  display: grid; place-items: center; font-size: 11px; font-weight: 600;
+}
+.notecard b { display: block; font-size: 13.5px; margin-bottom: 5px; }
+.notecard p { font-size: 13px; line-height: 1.6; color: var(--ink-body); }
+
+.mock-foot {
+  max-width: 1080px; margin: 0 auto; padding: 10px 24px 70px;
+  font-size: 12px; color: var(--ink-300);
+}
+
+@media (max-width: 900px) {
+  .cards, .ext-grid, .notegrid, .shapewrap { grid-template-columns: 1fr; }
+  .frame, .devices, .notes, .mock-intro { padding-left: 14px; padding-right: 14px; }
+}
