@@ -85,6 +85,31 @@ kitölti, a `nonzero` pedig a negatív körüljárású részt is — a szabály
 ≠0 winding-ot festi, nem a pozitívat. Két azonos irányba hajló ív a
 megoldás.
 
+## Utókör: a kiemelt panel takarása (mobil)
+
+Élesben kiderült, hogy a kiemelt kártyán az ábra **átvágta a „kiemelt cikk"
+chipet és az idézetet**. Asztali szélességen ez nem látszott: ott az idézet
+egy-két sor, mobilon viszont öt sorra nyúlik, és a panel kétharmadát
+elfoglalja.
+
+A javítás nem finomhangolás, hanem szabály: **ha szöveg ül az ábrán, az ábra
+felső sáv, a szöveg alatta kap tiszta mezőt.** Geometriával ugyanis nem
+megoldható — a `heroQuote` szabad szöveg, a hossza nem korlátozható, tehát
+nincs olyan sarok, amit szabadon lehetne hagyni.
+
+- A kompozíció és a kíséret felment a felső harmadba, a tárgy kisebb lett.
+- A kíséret a hero-n **nem sorsolódik** többé a bal oldalra: a bal felső
+  sarok a chipé.
+- Alá irányított fátyol került, a panel **saját** alapszínéből
+  (`--color-layer-self-hero-to`) — a tónus nem változik, csak mélyül, és a
+  felső sávban 0-ra fut, tehát ott az ábra sértetlen.
+- A szélső horgonyok 0.9-ről 0.86-ra jöttek be: a `slice` illesztés mobilon
+  oldalanként ~9%-ot levág, és a csillag addig félbevágódott.
+
+Két új regressziós teszt őrzi (hero-kíséret a jobb félen ÉS a vágáson belül).
+Az előnézet-generátor mostantól **mobil szélességű kiemelt kártyát is**
+renderel, hosszú idézettel — ez a hiba csak ott jött volna elő.
+
 ## Ellenőrzés
 
 `pnpm check` (type-check + lint + check:colors) zöld, unit 593/593, client

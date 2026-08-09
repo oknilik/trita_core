@@ -110,6 +110,27 @@ test("a széles, lapos sáv NEM compact — ott van hely a teljes kompozícióna
   assert.ok(Math.max(...xs) - Math.min(...xs) > 1120 * 0.4, "a sáv formái egy helyre kerültek");
 });
 
+test("a hero kísérete a jobb félen marad, a vágáson belül", () => {
+  // A kiemelt panelen bal fent a „kiemelt" chip ül — oda nem kerülhet jel.
+  // A jobb szél pedig mobilon levágódik (`slice`): a 420×260-as vászonból
+  // egy ~358×270-es panelben oldalanként ~9% tűnik el (2026-08-09).
+  const w = 420;
+  const h = 260;
+  const cropX = w * 0.09;
+  for (let seed = 0; seed < 40; seed += 1) {
+    const parts = accompanimentLayout(seed, w, h, 52, "hero");
+    assert.ok(parts);
+    for (const [name, mark] of [
+      ["star", parts.star],
+      ["sun", parts.sun],
+      ["counterweight", parts.counterweight],
+    ] as const) {
+      assert.ok(mark.x > w * 0.5, `seed ${seed}: a ${name} a chip felőli félre került`);
+      assert.ok(mark.x + mark.r <= w - cropX, `seed ${seed}: a ${name} kilóg a mobil vágásból`);
+    }
+  }
+});
+
 test("a kíséretben a csillag és a nap ellentétes oldalra kerül", () => {
   // Egymásra csúszva a felső sáv olvashatatlan kupaccá válik.
   for (let seed = 0; seed < 40; seed += 1) {

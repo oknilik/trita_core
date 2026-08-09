@@ -104,8 +104,27 @@ function schemeBlock(scheme: (typeof SCHEMES)[number]): string {
     .map((p) => `<div class="mini" title="${p.slug}">${art(p, "mini")}</div>`)
     .join("");
 
+  // A hero-panel a legszűkebb eset: MOBILON a hosszú `heroQuote` öt sorra
+  // nyúlva a panel alsó kétharmadát elfoglalja, és a `slice` illesztés ott
+  // rá is nagyít a kompozícióra. Ezt asztali szélességen nem látni — a
+  // takarás-hiba (2026-08-09) is csak telefonon jött elő.
+  const longQuote =
+    "A SHRM 2026-os adatai szerint a belső rotációs programok 93%-os hatékonyságúak a tehetség-rés kezelésében – mégis a szervezetek kevesebb mint negyede él velük.";
+
   return `<section class="scheme" style="${vars}">
     <h2>${scheme.label}</h2>
+
+    <h3>kiemelt cikk — mobil (390px), hosszú idézettel</h3>
+    <div class="phone">
+      <div class="featured mobile">
+        <div class="featured-art">
+          ${art(featured, "featured")}
+          <span class="chip">kiemelt cikk</span>
+          <p class="quote">„${longQuote}"</p>
+        </div>
+        <div class="featured-body"><strong>${featured.title}</strong></div>
+      </div>
+    </div>
 
     <h3>kiemelt cikk — hero, sötét panel mindkét sémán</h3>
     <div class="featured">
@@ -154,6 +173,13 @@ const html = `<!doctype html>
   .featured-art > svg { position:absolute; inset:0; }
   .quote { position:relative; margin:0; font:italic 18px Georgia, serif; color:#fff; line-height:1.35; }
   .featured-body { padding:24px; font:400 19px Georgia, serif; }
+  .phone { width:390px; }
+  .featured.mobile { grid-template-columns:1fr; }
+  .featured.mobile .featured-art { min-height:270px; padding:24px; }
+  .featured.mobile .quote { font-size:21px; }
+  .chip { position:relative; align-self:flex-start; margin-bottom:12px; background:rgba(255,255,255,.10);
+          color:rgba(255,255,255,.70); border-radius:99px; padding:5px 12px;
+          font:10px ui-monospace, monospace; letter-spacing:.14em; text-transform:uppercase; }
   .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:16px; }
   .card { margin:0; border:1px solid var(--preview-border); border-radius:14px; overflow:hidden; background:var(--preview-card); }
   .card-art { height:120px; }

@@ -161,8 +161,31 @@ export function accompanimentLayout(
 ): Accompaniment | null {
   if (scale === "compact") return null;
   const rnd = mulberry32(seed);
-  const starLeft = rnd() > 0.5;
   const topBand = scale === "hero" ? 0.2 : 0.25;
+
+  // A hero-panelen SZÖVEG ül: bal fent a „kiemelt" chip, lent az idézet —
+  // ami mobilon 5 sorra nyúlva a panel nagy részét elfoglalja. Ott a
+  // kíséret nem sorsolható a bal oldalra: a csillag pont a chip alá került
+  // (2026-08-09). A hero mindkét kísérőjelet a JOBB félre teszi, egymás
+  // alá nem csúszva; a bal felső sarok szabadon marad.
+  // A hero vászna 420×260, de a panel mobilon ~358×270 — a `slice`
+  // illesztés ott oldalanként ~9%-ot levág. Ami 0.9-nél ül, az telefonon
+  // félbevágódik (a csillag 2026-08-09-ig így járt), ezért a jobb szélső
+  // horgony 0.86-nál van: az a vágás után is bent marad.
+  if (scale === "hero") {
+    return {
+      star: { x: r2(width * 0.82), y: r2(height * 0.22), r: r2(unit * 0.46) },
+      sun: { x: r2(width * 0.66), y: r2(height * 0.13), r: r2(unit * 0.56) },
+      counterweight: {
+        x: r2(width * 0.86),
+        y: r2(height * 0.62),
+        r: r2(Math.max(3.5, unit * 0.12)),
+      },
+      groundY: r2(height * 0.88),
+    };
+  }
+
+  const starLeft = rnd() > 0.5;
   return {
     star: {
       x: r2(width * (starLeft ? 0.13 : 0.87)),

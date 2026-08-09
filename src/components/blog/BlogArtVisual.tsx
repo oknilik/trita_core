@@ -55,7 +55,10 @@ function metrics(scale: ArtScale, w: number, h: number) {
   const radius =
     scale === "compact"
       ? Math.min(w, h) * 0.3
-      : Math.min(h * (scale === "hero" ? 0.24 : 0.3), w * 0.15);
+      : // A hero tárgya kisebb: a panelt mobilon `slice` nagyítja (a 420×260
+        // vászon egy ~358×270-es dobozba kerül), tehát ott minden elem
+        // ~4%-kal nagyobbnak látszik, miközben kevesebb hely van.
+        Math.min(h * (scale === "hero" ? 0.2 : 0.3), w * (scale === "hero" ? 0.13 : 0.15));
   return { strokeWidth, radius };
 }
 
@@ -208,8 +211,8 @@ export function BlogArtVisual({
   // ott a fix ink olvashatatlan lenne — külön készlet kell.
   const p: ArtPalette = variant === "featured" ? ART_COLORS_ON_INVERSE : ART_COLORS;
 
-  const cx = w * (scale === "compact" ? 0.5 : scale === "hero" ? 0.62 : 0.54);
-  const cy = h * (scale === "compact" ? 0.5 : scale === "hero" ? 0.36 : 0.44);
+  const cx = w * (scale === "compact" ? 0.5 : scale === "hero" ? 0.66 : 0.54);
+  const cy = h * (scale === "compact" ? 0.5 : scale === "hero" ? 0.28 : 0.44);
   const parts = accompanimentLayout(artSeed, w, h, radius, scale);
 
   const bg =
@@ -222,6 +225,12 @@ export function BlogArtVisual({
       : hashString(seededKey) % 2 === 0
         ? "var(--color-surface-muted)"
         : "var(--color-surface-self-accent-soft)";
+
+  // A gradiens-id-nek dokumentumon belül egyedinek ÉS szerver/kliens
+  // azonosnak kell lennie — ezért a magból képezzük, nem futásidejű
+  // számlálóból (a useId() nem opció: ez szerver-komponensként is renderel).
+  const scrimSideId = `art-scrim-x-${artSeed.toString(36)}`;
+  const scrimBottomId = `art-scrim-y-${artSeed.toString(36)}`;
 
   const subjectSeed = artSeed + 101;
   const subject =
@@ -272,6 +281,35 @@ export function BlogArtVisual({
               strokeLinecap="round" opacity={0.85}
             />
           )}
+        </>
+      )}
+
+      {/* A kiemelt panel szabálya: az ábra FELSŐ SÁV, a szöveg alatta kap
+          tiszta mezőt.
+          Geometriával ez nem oldható meg. Az idézet hossza nem korlátozható
+          (a `heroQuote` szabad szöveg), és mobilon öt sorra nyúlva a panel
+          alsó kétharmadát elfoglalja — nincs olyan sarok, amit szabadon
+          lehetne hagyni. Ezért a kompozíció felmegy a felső harmadba, alatta
+          pedig egy erős, alulról induló fátyol ad egyenletes szövegmezőt.
+          A fátyol a hero SAJÁT alapszínéből dolgozik, tehát a panel tónusa
+          nem változik, csak elmélyül; a felső sávban a stop 0-ra fut, így az
+          ábra ott sértetlen marad. */}
+      {variant === "featured" && (
+        <>
+          <defs>
+            <linearGradient id={scrimSideId} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.5" />
+              <stop offset="0.55" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id={scrimBottomId} x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.94" />
+              <stop offset="0.44" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.9" />
+              <stop offset="0.74" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.24" />
+              <stop offset="1" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimSideId})`} />
+          <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimBottomId})`} />
         </>
       )}
     </svg>

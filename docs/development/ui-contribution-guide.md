@@ -98,6 +98,16 @@ visszafordíthatatlan.
 - **Szövegre ülő kompozíciónál** `textSafeCorner` (kiemelt kártya, hero),
   **elválasztónál** `quiet`. Sötét panelen — ami MINDKÉT sémán sötét —
   `ART_COLORS_ON_INVERSE`, különben a tintavonal eltűnik.
+- **Ha szöveg ül az ábrán, az ábra FELSŐ SÁV, a szöveg alatta kap tiszta
+  mezőt** — és kell alá fátyol. Szabad szövegnél (pl. `heroQuote`) a hossz
+  nem korlátozható: mobilon egy hosszabb mondat öt sorra nyúlva a panel
+  kétharmadát elfoglalja, tehát nincs olyan sarok, amit geometriával
+  szabadon lehetne hagyni. A fátyol mindig a panel SAJÁT alapszínéből
+  dolgozzon, hogy a tónus ne változzon, csak mélyüljön.
+- **`preserveAspectRatio="slice"` mellett számolj a vágással.** A 420×260-as
+  hero-vászon mobilon egy ~358×270-es panelbe kerül: oldalanként ~9% eltűnik.
+  A szélső horgonyok 0.86 fölé ne kerüljenek, különben telefonon
+  félbevágódnak. Unit-teszt őrzi (`editorial-art.test.ts`).
 - Új ábra előtt futtasd az előnézetet: `npx tsx scripts/preview-editorial-art.ts`
   (mindkét séma, minden méret-mód egy lapon).
 - Az ábrák `aria-hidden` dekorációk. Ha egy ábra tartalmat hordoz (típus-ábra),
