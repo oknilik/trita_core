@@ -84,6 +84,14 @@ zöld: `pnpm check` PASS · unit 733 · client 121.
   `ALIGNED_HUB_MIN_DEGREE`) tudatosan KÜLÖN maradtak. A journey hármas deklaráció
   deduplikálva (`src/lib/journey/constants.ts`); a névtelen literálok elnevezve.
   Érték nem változott (mind 3), viselkedés-azonos.
+- **Review-javítások:** a `DOSSIER_OBSERVER_MIN` is a kanonikus anonimitás-padlóra
+  állt (2 → 3) — a member-dossier observer-aggregátuma (dimenzió és facet
+  egyaránt) mostantól legalább 3 lezárt értékelésnél jelenik meg, a termék
+  anonimitás-ígéretével összhangban (viselkedés-változás). Az observer-completion
+  email küszöbe a reveal-küszöbre (`OBSERVER_MIN_FOR_REVEAL`) igazítva — a CTA
+  már nem visz zárt összevetés-nézetre. Néhány testvér-hely (TeamHeroBlock
+  `hasPattern`, TeamIntelligence mért-él-számláló, team-pattern min-tag,
+  psych-safety komment) a megfelelő konstansra/segédre állítva.
 
 ## Nyitva (tudatosan)
 

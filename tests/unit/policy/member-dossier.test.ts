@@ -55,26 +55,28 @@ describe("computeObserverAverage — observer-küszöb + átlag", () => {
   const full = (v: number): Record<string, number> =>
     Object.fromEntries(TRITAN_ORDER.map((c) => [c, v]));
 
-  it("0 vagy 1 készlet → null (küszöb alatt)", () => {
-    assert.equal(DOSSIER_OBSERVER_MIN, 2);
+  it("küszöb alatt (0/1/2 készlet) → null", () => {
+    assert.equal(DOSSIER_OBSERVER_MIN, 3);
     assert.equal(computeObserverAverage(TRITAN_ORDER, []), null);
     assert.equal(computeObserverAverage(TRITAN_ORDER, [full(50)]), null);
+    assert.equal(computeObserverAverage(TRITAN_ORDER, [full(40), full(51)]), null);
   });
 
-  it("2 készlet → dimenziónként kerekített átlag", () => {
-    const avg = computeObserverAverage(TRITAN_ORDER, [full(40), full(51)]);
+  it("3 készlet → dimenziónként kerekített átlag", () => {
+    const avg = computeObserverAverage(TRITAN_ORDER, [full(40), full(50), full(51)]);
     assert.ok(avg);
-    // (40+51)/2 = 45.5 → 46 (Math.round félfelé)
-    for (const c of TRITAN_ORDER) assert.equal(avg![c], 46);
+    // (40+50+51)/3 = 47 (Math.round)
+    for (const c of TRITAN_ORDER) assert.equal(avg![c], 47);
   });
 
   it("hiányzó dimenziót az adott készletben kihagy (csak jelenlévőkből átlagol)", () => {
     const a = full(60);
     const b = full(80);
-    delete b["OPEN"]; // OPEN csak az egyik készletben van
-    const avg = computeObserverAverage(TRITAN_ORDER, [a, b]);
-    assert.equal(avg!["OPEN"], 60); // csak 'a' hordozza → 60
-    assert.equal(avg!["TEMP"], 70); // (60+80)/2
+    const c = full(70);
+    delete b["OPEN"]; // OPEN csak két készletben van
+    const avg = computeObserverAverage(TRITAN_ORDER, [a, b, c]);
+    assert.equal(avg!["OPEN"], 65); // 'a'(60) és 'c'(70) hordozza → 65
+    assert.equal(avg!["TEMP"], 70); // (60+80+70)/3
   });
 });
 
@@ -87,56 +89,73 @@ describe("computeObserverFacetAverages — facet-szintű küszöb + listwise át
       ]),
     );
 
-  it("0 vagy 1 készlet → null (küszöb alatt)", () => {
+  it("küszöb alatt (0/1/2 készlet) → null", () => {
     assert.equal(computeObserverFacetAverages(TRITAN_ORDER, []), null);
     assert.equal(computeObserverFacetAverages(TRITAN_ORDER, [fullFacets(50)]), null);
+    assert.equal(
+      computeObserverFacetAverages(TRITAN_ORDER, [fullFacets(40), fullFacets(51)]),
+      null,
+    );
   });
 
-  it("2 teljes készlet → facetenként kerekített átlag", () => {
-    const avg = computeObserverFacetAverages(TRITAN_ORDER, [fullFacets(40), fullFacets(51)]);
+  it("3 teljes készlet → facetenként kerekített átlag", () => {
+    const avg = computeObserverFacetAverages(TRITAN_ORDER, [
+      fullFacets(40),
+      fullFacets(50),
+      fullFacets(51),
+    ]);
     assert.ok(avg);
-    // (40+51)/2 = 45.5 → 46 (Math.round félfelé)
+    // (40+50+51)/3 = 47 (Math.round)
     for (const dim of TRITAN_ORDER) {
       for (const f of TRITAN_DIMENSION_FACETS[dim]) {
-        assert.equal(avg![dim][f], 46);
+        assert.equal(avg![dim][f], 47);
       }
     }
   });
 
-  it("vegyes lefedettség: 1 raternél lévő facet kimarad, 2-nél csak belőlük átlagol", () => {
+  it("vegyes lefedettség: a nem teljesen lefedett facet kimarad (per-facet küszöb = DOSSIER_OBSERVER_MIN)", () => {
     const a = fullFacets(60);
     const b = fullFacets(80);
     const c = fullFacets(100);
-    // creativity csak a+c-nél van → (60+100)/2 = 80
+    // creativity csak a+c-nél (2/3) → küszöb alatt, kulcs-kihagyás
     delete b["OPEN"]["creativity"];
-    // inquisitiveness csak b-nél van → küszöb alatt, kulcs-kihagyás
-    delete a["OPEN"]["inquisitiveness"];
-    delete c["OPEN"]["inquisitiveness"];
     const avg = computeObserverFacetAverages(TRITAN_ORDER, [a, b, c]);
     assert.ok(avg);
-    assert.equal(avg!["OPEN"]["creativity"], 80);
-    assert.equal("inquisitiveness" in avg!["OPEN"], false);
-    // teljes lefedettségnél mindhárom számít: (60+80+100)/3 = 80
+    assert.equal("creativity" in avg!["OPEN"], false);
+    // teljes (3/3) lefedettségnél mindhárom számít: (60+80+100)/3 = 80
     assert.equal(avg!["OPEN"]["unconventionality"], 80);
   });
 
   it("üresen maradt dimenzió kulcsa is kimarad", () => {
     const a = fullFacets(60);
     const b = fullFacets(80);
-    delete a["OPEN"]; // OPEN csak b-nél → minden OPEN-facet küszöb alatt
-    const avg = computeObserverFacetAverages(TRITAN_ORDER, [a, b]);
+    const c = fullFacets(70);
+    delete a["OPEN"];
+    delete b["OPEN"];
+    delete c["OPEN"]; // OPEN egyik készletben sincs → dimenzió-kulcs kimarad
+    const avg = computeObserverFacetAverages(TRITAN_ORDER, [a, b, c]);
     assert.ok(avg);
     assert.equal("OPEN" in avg!, false);
-    assert.equal(avg!["TEMP"]["sociability"], 70); // (60+80)/2
+    assert.equal(avg!["TEMP"]["sociability"], 70); // (60+80+70)/3
   });
 
   it("facets nélküli (örökség) készletet tolerál — minden facet küszöb alatt → üres objektum", () => {
-    const avg = computeObserverFacetAverages(TRITAN_ORDER, [fullFacets(50), undefined]);
+    // 3-elemű halmaz, egy örökség-sorral (facets nélkül): minden facetnek
+    // csak 2 valódi lefedettsége van (< DOSSIER_OBSERVER_MIN) → mind kimarad.
+    const avg = computeObserverFacetAverages(TRITAN_ORDER, [
+      fullFacets(50),
+      fullFacets(60),
+      undefined,
+    ]);
     assert.deepEqual(avg, {});
   });
 
-  it("kerekítés: 61 és 62 átlaga 61.5 → 62", () => {
-    const avg = computeObserverFacetAverages(TRITAN_ORDER, [fullFacets(61), fullFacets(62)]);
+  it("kerekítés: 61, 62, 63 átlaga 62", () => {
+    const avg = computeObserverFacetAverages(TRITAN_ORDER, [
+      fullFacets(61),
+      fullFacets(62),
+      fullFacets(63),
+    ]);
     assert.equal(avg!["INTE"]["sincerity"], 62);
   });
 });

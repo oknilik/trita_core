@@ -13,9 +13,14 @@
 import { TRITAN_DIMENSION_FACETS, type TritanDimCode } from "@/lib/tritan";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { dimStandardError } from "@/lib/psychometrics";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
-/** A results-oldal observer-szabálya: legalább 2 lezárt értékelés. */
-export const DOSSIER_OBSERVER_MIN = 2;
+/**
+ * Observer-aggregátum megjelenítési küszöbe a dossiéban: a kanonikus
+ * anonimitás-padló (az observer egyéni válasza így sem közvetve nem
+ * fejthető vissza — admin/tanácsadói nézetben sem).
+ */
+export const DOSSIER_OBSERVER_MIN = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 /**
  * Önkép–külső kép eltérés-küszöb: a mérési hiba (SEM, rövid forma) alatt

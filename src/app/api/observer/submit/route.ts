@@ -14,6 +14,7 @@ import {
 } from "@/lib/observer/token-validation";
 import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -205,13 +206,15 @@ export async function POST(req: Request) {
     });
   })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
 
-  // Email — only from the 2nd completed observer onward (fire-and-forget)
+  // Email — csak az összevetés-küszöb elérésekor (fire-and-forget). A CTA az
+  // eredmény-oldalra visz, ami OBSERVER_MIN_FOR_REVEAL-nál nyílik — a korábbi
+  // 2-es küszöb egy még zárt nézetre küldte a felhasználót.
   prisma.observerAssessment.count({
     where: {
       invitation: { inviterId: invitation.inviterId },
     },
   }).then(async (completedCount) => {
-    if (completedCount < 2) return;
+    if (completedCount < OBSERVER_MIN_FOR_REVEAL) return;
     const inviter = await prisma.userProfile.findUnique({
       where: { id: invitation.inviterId },
       select: { email: true, locale: true, username: true },

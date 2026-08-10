@@ -5,6 +5,7 @@ import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { TeamSwitcher } from "@/components/team/TeamSwitcher";
 import { TeamTabBar } from "./TeamTabBar";
+import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import type { TeamTabContext } from "./types";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -31,9 +32,9 @@ export function TeamHeroBlock({
   const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
   const waitingCount = teamData.memberCount - completedCount - inProgressCount;
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
-  const hasPattern = completedCount >= 3;
+  const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
   const hasObserver = !!teamData.activeCampaign;
-  const patternTarget = 3;
+  const patternTarget = MIN_INTELLIGENCE_ASSESSMENTS;
   const patternProgressPct = Math.min(
     Math.round((completedCount / patternTarget) * 100),
     100,

@@ -9,6 +9,7 @@ import { TRITAN_DIMENSIONS } from "@/lib/tritan";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { TRUST_MIN_RATERS } from "@/lib/trust-network";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import {
   CAMPAIGN_STEP_LABELS,
   isCampaignStepType,
@@ -220,8 +221,8 @@ export function MemberDossierView({
                   ? `${sx.observerCount} értékelő aggregált átlaga — egyéni válasz nem jelenik meg.`
                   : `Aggregated average of ${sx.observerCount} raters — no individual response is shown.`
                 : isHu
-                  ? `Külső oszlophoz legalább 2 lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
-                  : `The external column needs at least 2 completed observer ratings (currently: ${sx.observerCount}).`}
+                  ? `Külső oszlophoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
+                  : `The external column needs at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} completed observer ratings (currently: ${sx.observerCount}).`}
             </p>
 
             {/* Rater-minőség jelzés — aggregált darabszám, raterenkénti flag soha. */}

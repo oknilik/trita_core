@@ -154,9 +154,9 @@ export function psychSafetyBand(index: number): "low" | "mid" | "high" {
 }
 
 /**
- * Anonim válaszhalmaz aggregálása. Az anonimitás-küszöb alatt (n < 3)
- * SZÁNDÉKOSAN null — egyéni válasz így sem közvetve, sem közvetlenül
- * nem visszafejthető.
+ * Anonim válaszhalmaz aggregálása. Az anonimitás-küszöb
+ * (PSYCH_SAFETY_MIN_RESPONSES) alatt SZÁNDÉKOSAN null — egyéni válasz így
+ * sem közvetve, sem közvetlenül nem visszafejthető.
  */
 export function aggregatePsychSafety(
   responses: unknown[],

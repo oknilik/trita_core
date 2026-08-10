@@ -108,9 +108,16 @@ const TENSION_THRESHOLD = 20;
 // Stabilitáshoz: ennyi distance-en belül "instabil" a tengely (0.15 → 3.75%)
 const STABILITY_THRESHOLD = 3.75;
 
-// Diverzitás (szórás) sávok (0–100 skálán)
+// Diverzitás (szórás) sávok (0–100 skálán).
+// FIGYELEM: e küszöbök még a korábbi populációs szórásra voltak hangolva;
+// a becslő mostantól torzítatlan mintaszórás (sampleStdDev, ÷(n−1)), ami
+// n=3–8-nál ~10–20%-kal nagyobb → a besorolás kissé gyakrabban jelez
+// "diverz"-et. A tényleges újrakalibráció pilot-normát igényel.
 const DIVERSITY_LOW  = 10;   // ez alatt "homogén"
 const DIVERSITY_HIGH = 20;   // ez felett "diverz"
+
+// Minimum tag a csapatminta számításához (statisztikai elégségesség).
+const PATTERN_MIN_MEMBERS = 3;
 
 // ============================================================
 // SEGÉDFÜGGVÉNYEK
@@ -150,7 +157,7 @@ function poleLetter(
 export function calculateTeamPattern(
   members: Array<{ userId: string; scores: TritanScores }>
 ): TeamPatternResult | null {
-  if (members.length < 3) return null;
+  if (members.length < PATTERN_MIN_MEMBERS) return null;
 
   const allScores = members.map((m) => m.scores);
 

@@ -5,6 +5,7 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { isMeasuredDynamicsSource } from "@/lib/friction-model";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -150,8 +151,8 @@ export function TeamIntelligence({
   );
   // Forrás-címke a mért/becsült arány szerint — a fix "profil becslés" mért
   // trust-kör mellett félrevezető volt.
-  const measuredEdgeCount = edges.filter(
-    (e) => e.source === "trust_round" || e.source === "observer",
+  const measuredEdgeCount = edges.filter((e) =>
+    isMeasuredDynamicsSource(e.source),
   ).length;
   // Négyágú feloldás — az intelligence-data.ts dynamicsStateLabel-jével azonosan:
   // nulla él „nincs adat", nem „profil-becslés".
