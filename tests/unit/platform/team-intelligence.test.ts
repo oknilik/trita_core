@@ -36,6 +36,17 @@ test("quality resolver follows minimum-assessment threshold", () => {
   assert.equal(resolveTeamIntelligenceQuality(MIN_INTELLIGENCE_ASSESSMENTS, 6), "sufficient");
 });
 
+test("quality resolver requires coverage, not just an absolute count (D3)", () => {
+  // 3 kitöltés 50 tagból = 6% lefedettség → csak részleges, nem "elégséges".
+  assert.equal(resolveTeamIntelligenceQuality(3, 50), "partial");
+  // 3/6 = 50% a küszöbön → elégséges.
+  assert.equal(resolveTeamIntelligenceQuality(3, 6), "sufficient");
+  // magas lefedettség → elégséges.
+  assert.equal(resolveTeamIntelligenceQuality(6, 6), "sufficient");
+  // 100% lefedettség sem elég, ha az abszolút szám a minimum alatt van.
+  assert.equal(resolveTeamIntelligenceQuality(2, 2), "partial");
+});
+
 test("confidence resolver maps quality to expected confidence", () => {
   assert.equal(resolveTeamIntelligenceConfidence("none"), "low");
   assert.equal(resolveTeamIntelligenceConfidence("partial"), "medium");

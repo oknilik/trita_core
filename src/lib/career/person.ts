@@ -6,7 +6,7 @@
 import { InvitationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
-import { estimateInterests, interestsFromTags } from "./interests";
+import { estimateInterests, interestsFromTags, isCompleteRiasecVector } from "./interests";
 import {
   AXIS_KEYS,
   DIM_CODES,
@@ -96,7 +96,10 @@ function normalizeInterests(
       const value = measured[letter];
       if (typeof value === "number") vector[letter] = value;
     }
-    if (Object.keys(vector).length >= 4) return { vector, source: "measured" };
+    // „measured" CSAK a hiánytalan (mind a hat betűs) kérdőívből — ez a
+    // scoreRiasec teljességi szabálya. Egy parciális vektor (kliens-állítás,
+    // szerver-oldalon eddig validálatlan) tags/estimated-re esik vissza.
+    if (isCompleteRiasecVector(vector)) return { vector, source: "measured" };
   }
   const fromTags = interestsFromTags(background?.interestTags);
   if (fromTags) return { vector: fromTags, source: "tags" };

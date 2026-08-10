@@ -4,7 +4,7 @@ import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { FRICTION_WEIGHTS, computeAlignedHubIds } from "@/lib/friction-model";
+import { FRICTION_WEIGHTS, computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
 import { EDGE_CONFIDENCE_ONE_SIDED } from "@/lib/trust-network";
 import { DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
@@ -176,7 +176,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     <span className="ml-auto text-micro text-muted">
                       {t(edgeLabelKey[e.type], loc)}
                     </span>
-                    {e.source === "trust_round" ? (
+                    {isMeasuredDynamicsSource(e.source) ? (
                       <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
                         {t("teamComp.dynamicsStateMeasured", loc)}
                       </span>
@@ -378,12 +378,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           </div>
         </div>
 
-        {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés. */}
-        {edges.some((e) => e.source === "trust_round") ? (
+        {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés.
+            A "mért" definíció közös (isMeasuredDynamicsSource): trust_round ∪
+            observer — az intelligence-data/cockpit/riport számlálóival azonos. */}
+        {edges.some((e) => isMeasuredDynamicsSource(e.source)) ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
-              : `Some connections are MEASURED from a trust round (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} connections); the rest are profile-based estimates.`}
+              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
+              : `Some connections are MEASURED from a trust round (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} connections); the rest are profile-based estimates.`}
           </p>
         ) : (
           <p className="mt-2 text-micro leading-relaxed text-muted">

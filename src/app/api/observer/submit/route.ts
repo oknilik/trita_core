@@ -6,9 +6,11 @@ import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
 import { getRequestLogger } from "@/lib/logger.server";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   resolveObserverTokenLifecycle,
   toObserverTokenErrorCode,
+  isObserverSelfSubmission,
 } from "@/lib/observer/token-validation";
 import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
 import { trackServerEvent } from "@/lib/analytics/server";
@@ -22,12 +24,18 @@ const submitSchema = z.object({
   token: z.string().min(1),
   relationshipType: z.enum(["FRIEND", "COLLEAGUE", "FAMILY", "PARTNER", "OTHER"]),
   knownDuration: z.string().min(1),
-  answers: z.array(answerSchema),
+  // Felső mérethatár: a legnagyobb élő forma 100 item — 150 bőven elég a
+  // valós (esetleg elavult id-kat is hordozó) beküldésnek, de kizárja a
+  // memória-terhelő túlméretes tömböt. A releváns id-kra szűrés utána fut.
+  answers: z.array(answerSchema).max(150),
   confidence: z.number().int().min(1).max(5).optional(),
 });
 
 export async function POST(req: Request) {
   const log = await getRequestLogger("observer");
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const body = await req.json();
   const parsed = submitSchema.safeParse(body);
   if (!parsed.success) {
@@ -50,19 +58,43 @@ export async function POST(req: Request) {
   const lifecycle = resolveObserverTokenLifecycle(invitation);
   if (lifecycle !== "active") {
     const code = toObserverTokenErrorCode(lifecycle);
-    return NextResponse.json({ error: code }, { status: code === "INVALID_TOKEN" ? 404 : 400 });
+    // A jóváhagyásra váró meghívóra beküldés → 403 (INVITE_NOT_APPROVED):
+    // a rater csak jóváhagyott (PENDING) meghívóra küldhet be.
+    const status =
+      code === "INVALID_TOKEN" ? 404 : code === "INVITE_NOT_APPROVED" ? 403 : 400;
+    return NextResponse.json({ error: code }, { status });
+  }
+
+  // A beküldő (ha bejelentkezett) feloldott profilja. A külsős úton is
+  // feloldjuk — az önhamisítás-tiltás minden observer-típusra érvényes.
+  // A néző-feloldás best-effort: ha a Clerk-kontextus nem érhető el (nem
+  // dobhat 500-at a publikus beküldés), névtelen (null) beküldőként kezeljük.
+  // Éles futásban a clerkMiddleware alatt az auth() a valós usert adja, így
+  // az önhamisítás-őr teljes értékű; kontextus nélkül a submitter amúgy sem
+  // lehet a bejelentkezett meghívó.
+  let viewerClerkId: string | null = null;
+  try {
+    viewerClerkId = await resolveObserverSubmitViewerClerkId();
+  } catch {
+    viewerClerkId = null;
+  }
+  const viewer = viewerClerkId
+    ? await prisma.userProfile.findUnique({
+        where: { clerkId: viewerClerkId },
+        select: { id: true },
+      })
+    : null;
+
+  // Önhamisítás-védelem: a meghívó (értékelt) SOHA nem küldhet be a saját
+  // meghívójára — külső/link-meghívónál is (ott nincs observerProfileId, így
+  // az addressee-ellenőrzés nem fogná meg).
+  if (isObserverSelfSubmission(viewer?.id, invitation.inviterId)) {
+    return NextResponse.json({ error: "SELF_SUBMISSION" }, { status: 403 });
   }
 
   // Belsős (név szerinti) meghívó: csak a bejelentkezett címzett adhatja be.
   // Külsős meghívónál (nincs observerProfileId) nincs ilyen validáció.
   if (invitation.observerProfileId) {
-    const userId = await resolveObserverSubmitViewerClerkId();
-    const viewer = userId
-      ? await prisma.userProfile.findUnique({
-          where: { clerkId: userId },
-          select: { id: true },
-        })
-      : null;
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
     }
@@ -132,11 +164,13 @@ export async function POST(req: Request) {
   // az esemény nem hordoz sem meghívó-tokent, sem személy-azonosítót.
   trackServerEvent("observer.assessment_complete", {});
 
-  // In-app notification — notify inviter that observer completed (fire-and-forget)
+  // In-app notification — notify inviter that observer completed (fire-and-forget).
+  // Az értesítés ANONIM: az értékelő nevét NEM hordozza (differencia-támadás
+  // elleni mitigáció — a névvel a futó átlagból beazonosítható lenne az utolsó
+  // értékelő; ld. results/page.tsx reveal-küszöb megjegyzését).
   import("@/lib/notifications").then(({ handleObserverCompleted }) =>
     handleObserverCompleted({
       inviterId: invitation.inviterId,
-      observerName: invitation.observerName ?? "Valaki",
       invitationId: invitation.id,
     }).catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error")),
   );

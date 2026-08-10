@@ -3,6 +3,7 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { ENV_ROW_LABELS, ENV_ROW_POLES, type EnvRowKey } from "@/lib/profile-content";
 
 interface EnvItem {
   label: string;
@@ -14,23 +15,19 @@ interface IdealEnvironmentSectionProps {
   isUnlocked: boolean;
 }
 
-// Pólus labelek és pozíció kiszámítása a szöveges értékből
-const POLES: Record<string, { low: string; high: string }> = {
-  Struktúra: { low: "szabad", high: "strukturált" },
-  Structure: { low: "flexible", high: "structured" },
-  "Társas intenzitás": { low: "egyéni", high: "csapatmunka" },
-  "Social intensity": { low: "solo", high: "teamwork" },
-  Változásgyakoriság: { low: "stabil", high: "változó" },
-  "Change frequency": { low: "stable", high: "dynamic" },
-  "Döntési sebesség": { low: "lassú", high: "gyors" },
-  "Decision pace": { low: "slow", high: "fast" },
-  "Terhelés-kezelés": { low: "alacsony", high: "magas" },
-  "Stress tolerance": { low: "low", high: "high" },
-  Projektciklus: { low: "rövid", high: "hosszú" },
-  "Project cycle": { low: "short", high: "long" },
-  Kultúra: { low: "pragmatikus", high: "értékvezérelt" },
-  Culture: { low: "pragmatic", high: "values-driven" },
-};
+// Bármely lokalizált sor-címke (hu VAGY en) → kanonikus kulcs. A címkék
+// forrása ugyanaz az ENV_ROW_LABELS, amiből a getEnvRows dolgozik, így a
+// pólus-feliratok MINDKÉT nyelven feloldódnak — a korábbi EN üres-pólus a
+// lokalizált-címke-mint-kulcs törékenységéből fakadt (pl. „Load management"
+// sosem talált „Stress tolerance" kulcsot).
+const LABEL_TO_ENV_KEY: Record<string, EnvRowKey> = Object.fromEntries(
+  (Object.entries(ENV_ROW_LABELS) as Array<[EnvRowKey, { hu: string; en: string }]>).flatMap(
+    ([key, label]) => [
+      [label.hu, key] as [string, EnvRowKey],
+      [label.en, key] as [string, EnvRowKey],
+    ],
+  ),
+);
 
 function getShortLabel(value: string, locale: Locale): string {
   const v = value.toLowerCase();
@@ -79,7 +76,11 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
 
       <div className="mt-4 flex flex-col gap-2.5">
         {items.map((item) => {
-          const poles = POLES[item.label] ?? { low: "", high: "" };
+          const envKey = LABEL_TO_ENV_KEY[item.label];
+          const polePair = envKey ? ENV_ROW_POLES[envKey] : null;
+          const poles = polePair
+            ? { low: polePair.low[locale], high: polePair.high[locale] }
+            : { low: "", high: "" };
           const pos = getPosition(item.value);
           const desc = getDescription(item.value);
 

@@ -21,6 +21,7 @@ import {
   sortTeamsByCompletion,
   splitDynamicsEdges,
 } from "@/lib/manager-cockpit-core";
+import { getCampaignTeamIds } from "@/lib/campaign-steps-core";
 import { getManageableTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
 
@@ -88,8 +89,8 @@ export interface ManagerCockpitTeamStats {
  *
  * Lekérdezések: (1) csapatok+tagok · (2) tagonkénti legutolsó self-eredmény
  * (org-stats.ts distinct+orderBy mintája) · (3) trust-megfigyelések ·
- * (4) függő csapat-meghívó darabszámok · (5) aktív org-kampány ·
- * (6) kampány-résztvevők COMPLETED observer-meghívói (feltételes).
+ * (4) függő csapat-meghívó darabszámok · (5) a kezelt csapatokat célzó aktív
+ * kampányok · (6) kampány-résztvevők COMPLETED observer-meghívói (feltételes).
  * Az élek in-memory épülnek a meglévő lib-függvényekkel.
  */
 export async function getManagerCockpitTeamStats(
@@ -125,7 +126,7 @@ export async function getManagerCockpitTeamStats(
   ];
 
   // (2)–(5) Egymástól független batch-lekérdezések párhuzamosan.
-  const [latestSelfResults, trustObservationsRaw, pendingInviteGroups, campaignRaw] =
+  const [latestSelfResults, trustObservationsRaw, pendingInviteGroups, campaignsRaw] =
     await Promise.all([
       allUserIds.length > 0
         ? prisma.assessmentResult.findMany({
@@ -145,8 +146,15 @@ export async function getManagerCockpitTeamStats(
         where: { teamId: { in: teamIds } },
         _count: { _all: true },
       }),
-      prisma.campaign.findFirst({
-        where: { orgId, status: "ACTIVE" },
+      // A kezelt csapatok VALAMELYIKÉT célzó aktív kampányok. A csapat→kampány
+      // párosítást lentebb a getCampaignTeamIds dönti el csapatonként — így egy
+      // B csapatnak indított kampány nem jelenik meg A "aktív kampányaként".
+      prisma.campaign.findMany({
+        where: {
+          orgId,
+          status: "ACTIVE",
+          OR: [{ teamId: { in: teamIds } }, { teamIds: { hasSome: teamIds } }],
+        },
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
@@ -155,6 +163,8 @@ export async function getManagerCockpitTeamStats(
           createdAt: true,
           type: true,
           steps: true,
+          teamId: true,
+          teamIds: true,
           requireFreshResults: true,
           activatedAt: true,
           participants: {
@@ -165,10 +175,12 @@ export async function getManagerCockpitTeamStats(
     ]);
 
   // (6) Kampány-haladáshoz: mely résztvevőknek van COMPLETED observer-
-  // meghívója — egyetlen lekérdezés az összes csapat résztvevőire.
+  // meghívója — egyetlen lekérdezés az összes érintett kampány résztvevőire.
   let completedObserverInviterIds: ReadonlySet<string> = new Set<string>();
-  if (campaignRaw) {
-    const participantIds = new Set(campaignRaw.participants.map((p) => p.userId));
+  if (campaignsRaw.length > 0) {
+    const participantIds = new Set(
+      campaignsRaw.flatMap((c) => c.participants.map((p) => p.userId)),
+    );
     const relevantIds = allUserIds.filter((id) => participantIds.has(id));
     if (relevantIds.length > 0) {
       const completed = await prisma.observerInvitation.findMany({
@@ -223,6 +235,12 @@ export async function getManagerCockpitTeamStats(
 
     const dynamicsEdges = mergeTrustEdges(buildProfileBasedEdges(members), trust);
 
+    // Az EZT a csapatot célzó, legfrissebb aktív kampány (a lista createdAt
+    // szerint csökkenő, a getCampaignTeamIds a pontos szabály). Csapat-célzású
+    // kampány híján nincs aktív kampány — nem szivárog át más csapaté.
+    const campaignRaw = campaignsRaw.find((c) =>
+      getCampaignTeamIds(c).includes(team.id),
+    );
     const activeCampaign = campaignRaw
       ? computeTeamActiveCampaign(campaignRaw, members, completedObserverInviterIds)
       : null;

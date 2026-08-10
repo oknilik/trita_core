@@ -4,7 +4,7 @@
 // és a csapat-rendezés / primary-választás szabálya lakik.
 // ─────────────────────────────────────────────────────────────────────
 
-import type { DynamicsEdgeType } from "./friction-model";
+import { isMeasuredDynamicsSource, type DynamicsEdgeType } from "./friction-model";
 
 export interface DynamicsEdgeSplit {
   alignedCount: number;
@@ -36,7 +36,7 @@ export function splitDynamicsEdges(
     if (edge.type === "aligned") split.alignedCount++;
     else if (edge.type === "complementary") split.complementaryCount++;
     else if (edge.type === "friction") split.frictionCount++;
-    if (edge.source === "trust_round" || edge.source === "observer") {
+    if (isMeasuredDynamicsSource(edge.source)) {
       split.measuredEdgeCount++;
     } else {
       split.estimatedEdgeCount++;

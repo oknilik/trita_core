@@ -32,7 +32,7 @@ function makeFit(id: string, family: string, rank: number, rankSe = 4): Occupati
     absoluteFit: rank,
     interest: null,
     preference: null,
-    feasibility: { gap: "ready", ready: true, fieldMatch: null, state: "level-only" },
+    feasibility: { gap: "ready", ready: true, fieldMatch: null, state: "level-only", licence: false },
     rank,
     orderedBy: "composite",
     choiceScore: null,

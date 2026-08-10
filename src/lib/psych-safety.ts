@@ -22,6 +22,8 @@
 // Ez a modul kliens-oldalon is importálható (nincs prisma-függése).
 // ============================================================
 
+import { sampleStdDev } from "@/lib/stats/dimension-stats";
+
 export const PSYCH_SAFETY_MIN_RESPONSES = 3;
 
 /** Likert 1–5 (1 = egyáltalán nem értek egyet … 5 = teljesen egyetértek) */
@@ -183,10 +185,9 @@ export function aggregatePsychSafety(
 
   const index =
     Math.round(personIndexes.reduce((a, b) => a + b, 0) / personIndexes.length);
-  const mean = personIndexes.reduce((a, b) => a + b, 0) / personIndexes.length;
-  const variance =
-    personIndexes.reduce((acc, v) => acc + (v - mean) ** 2, 0) / personIndexes.length;
-  const spread = Math.round(Math.sqrt(variance));
+  // Válaszadók közti szóródás: Bessel-korrekciós mintaszórás (a válaszok a
+  // csapat egy mintája; n ≥ PSYCH_SAFETY_MIN_RESPONSES itt mindig teljesül).
+  const spread = Math.round(sampleStdDev(personIndexes));
 
   return { count: valid.length, index, itemMeans, spread, band: psychSafetyBand(index) };
 }

@@ -67,6 +67,20 @@ describe("team-role itembank", () => {
       false,
     );
   });
+
+  it("rejects the all-weight-2 exploit (a candidate-route korábbi rése)", () => {
+    // C1: a jelölt-route kézi ellenőrzése NEM zárta ki, ha minden kijelölt
+    // item 2-es (kiemelt) súlyt kap — 12×2 = 24 összsúly, amivel egyszerre
+    // több szerep 100%-ra tornászható. A kanonikus validátor a „pontosan 3
+    // kiemelt" szabállyal ezt elutasítja.
+    const ids = TEAM_ROLE_ITEMS.map((i) => i.id).slice(0, TEAM_ROLE_MAX_SELECT);
+    const allTop: TeamRoleSelections = {};
+    ids.forEach((id) => {
+      allTop[id] = 2;
+    });
+    assert.equal(Object.keys(allTop).length, TEAM_ROLE_MAX_SELECT);
+    assert.equal(isValidTeamRoleSelectionSet(allTop), false);
+  });
 });
 
 describe("team-role scoring (selection-based)", () => {

@@ -16,7 +16,7 @@ import { getSelfAccessLevel, type SelfAccess } from "@/lib/access";
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
-import { resolveObserverFlowStatus } from "@/lib/observer-flow";
+import { resolveObserverFlowStatus, OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/member-dossier";
 import type { TritanDimCode } from "@/lib/tritan";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
@@ -266,7 +266,16 @@ export default async function ProfileResultsPage({
   const completedObservers = completedObserverAssessments.map(
     (e) => e.scores as ScoreResult,
   );
-  const hasObserverData = completedObservers.length >= 2;
+  // Külső kép reveal-küszöb: a kanonikus n≥3 (OBSERVER_MIN_FOR_REVEAL) a
+  // self-serve úton is — korábban itt 2 volt. A 3-as küszöb részleges
+  // mitigáció a differencia-támadásra: a célszemély a futó átlagból
+  // visszafejthetné az utolsó értékelőt (r₃ = 3·avg₃ − 2·avg₂), ha az átlag
+  // már n=2-nél látszana. A küszöb emelése + a completion-értesítés
+  // anonimizálása (nincs értékelő-név) csökkenti a támadás felületét.
+  // NEM teljes megoldás: a ratee lapozások közt továbbra is aktívan
+  // differenciálhat (avg₃ → avg₄ …) az újabb értékelők beérkeztével — ezt
+  // kis-N 360 mellett nem tudjuk teljesen kizárni.
+  const hasObserverData = completedObservers.length >= OBSERVER_MIN_FOR_REVEAL;
 
   const mainDimCodes = config.dimensions
     .filter((d) => d.code !== "I")

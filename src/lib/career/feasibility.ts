@@ -53,6 +53,13 @@ export interface Feasibility {
   /** true/false, ha van szakirány-adat a szerephez és a felhasználó megadta; különben null */
   fieldMatch: boolean | null;
   state: AccessState;
+  /**
+   * Szabályozott szakma: a belépéshez engedély / kamarai tagság KELL — akkor
+   * is, ha a végzettségi szint és a szakirány már megfelel (state="field-match").
+   * A `specialized` belépésű szerepekre mindig igaz. Enélkül a UI zöld „elég a
+   * végzettséged" chipet mutatna egy engedélyköteles szakmánál.
+   */
+  licence: boolean;
 }
 
 export function feasibilityFor(
@@ -81,10 +88,17 @@ export function feasibilityFor(
     state = "level-only";
   }
 
+  // A specialized belépés MINDIG engedély-/kamarai kötelezettséggel jár, akkor
+  // is, ha a szint és a szakirány stimmel (state="field-match"). A licenc-jelzés
+  // így nem tűnik el a „végzettséged megfelel" esetben sem — a gap és az engine
+  // flag is ezt tükrözi.
+  const licence = entry === "specialized";
+
   return {
-    gap: ready && state !== "licence-needed" ? "ready" : GAP_BY_ENTRY[entry],
+    gap: ready && !licence ? "ready" : GAP_BY_ENTRY[entry],
     ready,
     fieldMatch,
     state,
+    licence,
   };
 }

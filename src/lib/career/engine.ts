@@ -72,6 +72,12 @@ import {
  * tengelyt sem állított be, a preferencia kimarad, és a másik kettő viszi a
  * rangsort — tehát a központba helyezés nem büntet senkit, aki nem válaszolt.
  */
+// KALIBRÁCIÓ (2026-08-10): minden rangsor-súly ebben a fájlban (RANK_WEIGHTS,
+// CHOICE_WEIGHTS, interestWeightFor, a scoped metszet-/field-bónuszok) PRIOR —
+// szakértői becslés, NEM empirikusan hangolt érték. A Wilson/known-groups
+// harness kész, de élő modul és pilot-adat híján N=0: egyetlen súly sincs
+// adatból igazolva. A kalibráció a pilot után esedékes; addig egy súly
+// elmozdítása termékdöntés, nem hangolás.
 export const RANK_WEIGHTS = {
   preference: 0.45,
   demand: 0.35,
@@ -122,7 +128,7 @@ const INDUSTRY_PICK_BONUS = 5;
  * A kimondott szándék erősebb jel, mint a Holland-kód — különösen, mert a
  * Holland sokszor maga is becsült.
  */
-const CHOICE_WEIGHTS = { preference: 0.65, interest: 0.35 } as const;
+export const CHOICE_WEIGHTS = { preference: 0.65, interest: 0.35 } as const;
 /**
  * A jelölt-halmaz RELATÍV: a legjobb „mi felé húz" pontszámhoz képest ennyi
  * ponttal maradhat el egy tétel. Fix méretű halmaz nem működik — ha túl bő,
@@ -310,7 +316,7 @@ export interface EngineOptions {
  * többször, máskor viszont fölöslegesen szórta szét. Fallback marad az ISCO,
  * ha egy tételnek valamiért nincs családja.
  */
-function diversify(
+export function diversify(
   sorted: OccupationFit[],
   limit: number,
   perFamily: number,
@@ -324,11 +330,22 @@ function diversify(
     if (count < perFamily && picked.length < limit) {
       used.set(family, count + 1);
       picked.push(fit);
-    } else if (overflow.length < limit) {
+    } else {
       overflow.push(fit);
     }
   }
-  return [...picked, ...overflow].slice(0, limit);
+  // A családonkénti sapka a KIVÁLASZTÁST diverzifikálja. Ha így nem telik meg a
+  // limit, a maradékból a LEGMAGASABB rangúakkal töltünk fel (a `sorted` már
+  // rang szerint csökkenő, ezért az overflow eleje a legjobb). A visszaadott
+  // lista viszont MINDIG rang-monoton — utólag rendezzük. Enélkül a
+  // `[...picked, ...overflow]` egy magasabb rangú overflow-tételt egy
+  // alacsonyabb rangú picked mögé fűzne; a clusterByOverlap ott
+  // `leader.rank − fit.rank < 0`-t számolna, a klaszter-feltétel triviálisan
+  // igaz lenne, és a magas rangú elem az alsó klaszterbe olvadna.
+  const needed = Math.max(0, limit - picked.length);
+  return [...picked, ...overflow.slice(0, needed)]
+    .sort((a, b) => b.rank - a.rank || a.hu.localeCompare(b.hu, "hu"))
+    .slice(0, limit);
 }
 
 export function computeCareerFit(
@@ -463,6 +480,10 @@ export function computeCareerFit(
     if (!feasibility.ready) flags.push("entry-gap");
     if (feasibility.state === "field-match") flags.push("field-match");
     if (feasibility.state === "licence-needed") flags.push("licence-needed");
+    // Szabályozott szakma, amire a szint és a szakirány már megfelel: a
+    // licenc/kamarai figyelmeztetés a „field-match" chip mellett is jár — a
+    // felület ezt a flaget a zöld „elég a végzettséged" jelzés MELLETT mutatja.
+    if (feasibility.licence && feasibility.state === "field-match") flags.push("licence-ready");
     if (industryPick) flags.push("industry-pick");
     if (occupation.axesSource) flags.push("axes-estimated");
 
@@ -505,15 +526,29 @@ export function computeCareerFit(
   let sorted: OccupationFit[];
   let candidatePool: number | null = null;
   if (strategy === "scoped" && scopeActive) {
-    // Scope-mód: a halmazt a kimondott szándék adta; a sorrendet az érdeklődés
-    // (+ preferenciák) rendezi, metszet-kiemeléssel. A személyiség a klaszteren
-    // belül rendez, és annotál — nem szűr. A hiba-terjesztés ugyanazokkal a
-    // súlyokkal fut, mint a choiceScore (CHOICE_WEIGHTS).
+    // Scope-mód: a halmazt a kimondott szándék (bejelölt területek) adta; a
+    // sorrendet az érdeklődés (+ preferenciák) rendezi, metszet-kiemeléssel. A
+    // személyiség a klaszteren belül rendez, és annotál — nem szűr.
+    //
+    // A választási ALAP a differenciáltság-igazított érdeklődés-súlyt használja
+    // (`interestWeight` = interestWeightFor(forrás) × low-differentiation felező),
+    // NEM a nyers CHOICE_WEIGHTS.interest-et. A scoped ág ugyanis a
+    // canUseInterestLed kaput megkerüli (differenciáltságtól függetlenül fut),
+    // ezért a lapos érdeklődés-profil felezését itt KÉZZEL kell alkalmazni —
+    // különben a scope-mód erősebb Holland-jelet adna, mint a kompozit/
+    // interest-led ág ugyanarra a profilra.
+    //
+    // Az alap BÓNUSZ-MENTES (a choiceScore +5 INDUSTRY_PICK_BONUS-át NEM
+    // örökli). Az ipari evidenciát EGYSZER, a scoped bónuszok adják hozzá:
+    //   +6  metszet: a bejelölt területek közül a szerep legalább KETTŐT fed
+    //   +6  szakirány-egyezés (field-match): a végzettség iránya is stimmel
+    // A +5 (bármely-egyezés) itt zaj: scope-módban a halmaz már a bejelölt
+    // területekre szűrt, tehát az „egyet fed" a metszet-bónusszal ugyanazt az
+    // egyezést jutalmazná másodszor (a régi ág akár +17-et adott ugyanarra).
     const interestSe =
       person.interests?.source === "measured" ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER;
     const scopedRankSe = Math.sqrt(
-      (CHOICE_WEIGHTS.interest * interestSe) ** 2 +
-        (CHOICE_WEIGHTS.preference * PREFERENCE_SE) ** 2,
+      (interestWeight * interestSe) ** 2 + (CHOICE_WEIGHTS.preference * PREFERENCE_SE) ** 2,
     );
     const byId = new Map(getOccupations().map((o) => [o.id, o]));
     sorted = filtered
@@ -524,9 +559,18 @@ export function computeCareerFit(
         // A szakirány is kimondott jel: az eü-diplomás eü-váltónál az egyező
         // képzettségű szerep előrébb való, mint az azonos érdeklődésű idegen.
         const fieldBonus = fit.feasibility.state === "field-match" ? 6 : 0;
+        const choiceParts: Array<[number, number]> = [];
+        if (fit.interest !== null) choiceParts.push([fit.interest, interestWeight]);
+        if (fit.preference !== null) choiceParts.push([fit.preference, CHOICE_WEIGHTS.preference]);
+        const base = choiceParts.length
+          ? Math.round(
+              choiceParts.reduce((sum, [value, weight]) => sum + value * weight, 0) /
+                choiceParts.reduce((sum, [, weight]) => sum + weight, 0),
+            )
+          : fit.demandFit;
         return {
           ...fit,
-          rank: Math.min(100, (fit.choiceScore ?? fit.demandFit) + (intersect ? 6 : 0) + fieldBonus),
+          rank: Math.min(100, base + (intersect ? 6 : 0) + fieldBonus),
           rankSe: Math.round(scopedRankSe * 10) / 10,
           orderedBy: "interest" as const,
           flags: intersect ? [...fit.flags, "industry-intersect"] : fit.flags,

@@ -227,6 +227,8 @@ export interface OccupationFit {
     ready: boolean;
     fieldMatch: boolean | null;
     state: "field-match" | "level-only" | "licence-needed" | "training-needed";
+    /** szabályozott szakma: engedély/kamarai tagság kell (specialized belépés) */
+    licence: boolean;
   };
   /** rangsor-pontszám (0-100) — a stratégiától függ, mit jelent */
   rank: number;

@@ -428,9 +428,60 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
 
 // ─── Block 4 – Környezeti preferencia táblázat ────────────────────────────────
 
-type EnvRow = { label: LocalizedText; value: LocalizedText };
+// Stabil, lokalizációtól független sor-azonosító + szint. A megjelenítő
+// (IdealEnvironmentSection) ezekből teszi a markert és választja a pólus-
+// feliratokat — NEM a lokalizált címke/érték-string parse-olásából, ami a
+// korábbi EN üres-pólus és a RESO-inverzió hibát okozta.
+export type EnvRowKey =
+  | "structure"
+  | "social"
+  | "change"
+  | "decision"
+  | "culture"
+  | "cycle"
+  | "load";
 
-// Dimenzió + kategória kombinációra visszaadja a megfelelő sort
+export type EnvLevel = "low" | "mid" | "high";
+
+// Kanonikus sor-címkék kulcsonként. A getEnvRows címkéi ÉS a megjelenítő
+// címke→kulcs visszakeresése is EBBŐL dolgozik, így nincs drift a kettő közt
+// (a korábbi hibában az EN „Load management" címke nem talált POLES-kulcsot).
+export const ENV_ROW_LABELS: Record<EnvRowKey, LocalizedText> = {
+  structure: { hu: "Struktúra", en: "Structure" },
+  social: { hu: "Társas intenzitás", en: "Social intensity" },
+  change: { hu: "Változásgyakoriság", en: "Change frequency" },
+  decision: { hu: "Döntési sebesség", en: "Decision pace" },
+  culture: { hu: "Kultúra", en: "Culture" },
+  cycle: { hu: "Projektciklus", en: "Project cycle" },
+  load: { hu: "Terhelés-kezelés", en: "Load management" },
+};
+
+// Kanonikus pólus-feliratok kulcsonként (a track két vége) — mindkét nyelv
+// egy helyen, a megjelenítő a kulcs alapján olvassa.
+export const ENV_ROW_POLES: Record<EnvRowKey, { low: LocalizedText; high: LocalizedText }> = {
+  structure: { low: { hu: "szabad", en: "flexible" }, high: { hu: "strukturált", en: "structured" } },
+  social: { low: { hu: "egyéni", en: "solo" }, high: { hu: "csapatmunka", en: "teamwork" } },
+  change: { low: { hu: "stabil", en: "stable" }, high: { hu: "változó", en: "dynamic" } },
+  decision: { low: { hu: "lassú", en: "slow" }, high: { hu: "gyors", en: "fast" } },
+  culture: { low: { hu: "pragmatikus", en: "pragmatic" }, high: { hu: "értékvezérelt", en: "values-driven" } },
+  cycle: { low: { hu: "rövid", en: "short" }, high: { hu: "hosszú", en: "long" } },
+  load: { low: { hu: "alacsony", en: "low" }, high: { hu: "magas", en: "high" } },
+};
+
+export type EnvRow = {
+  key: EnvRowKey;
+  level: EnvLevel;
+  label: LocalizedText;
+  value: LocalizedText;
+};
+
+function envRow(key: EnvRowKey, level: EnvLevel, value: LocalizedText): EnvRow {
+  return { key, level, label: ENV_ROW_LABELS[key], value };
+}
+
+// Dimenzió + kategória kombinációra visszaadja a megfelelő sorokat. A `level`
+// a sor tengelyén elfoglalt pozíciót (low/mid/high) jelöli; a megjelenített
+// érték-szöveg a tanácsadó nyelvezet marad.
 export function getEnvRows(
   categories: Record<string, ProfileCategory>
 ): EnvRow[] {
@@ -438,118 +489,66 @@ export function getEnvRows(
 
   // Struktúra (THOR alapján)
   if (categories.THOR === "high") {
-    rows.push({
-      label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Magas – jobban működsz egyértelmű keretek és folyamatok között", en: "High – you work best within clear frameworks and processes" },
-    });
+    rows.push(envRow("structure", "high", { hu: "Magas – jobban működsz egyértelmű keretek és folyamatok között", en: "High – you work best within clear frameworks and processes" }));
   } else if (categories.THOR === "low") {
-    rows.push({
-      label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Alacsony – rugalmasan, önirányítva dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" },
-    });
+    rows.push(envRow("structure", "low", { hu: "Alacsony – rugalmasan, önirányítva dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" }));
   } else {
-    rows.push({
-      label: { hu: "Struktúra", en: "Structure" },
-      value: { hu: "Közepes – keretek között, de nem bürokratikusan dolgozol jól", en: "Medium – you do well with structure, but not bureaucracy" },
-    });
+    rows.push(envRow("structure", "mid", { hu: "Közepes – keretek között, de nem bürokratikusan dolgozol jól", en: "Medium – you do well with structure, but not bureaucracy" }));
   }
 
   // Társas intenzitás (TEMP alapján)
   if (categories.TEMP === "high") {
-    rows.push({
-      label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Magas – csapatmunkában, sok interakcióval virulsz", en: "High – you thrive on teamwork and frequent interaction" },
-    });
+    rows.push(envRow("social", "high", { hu: "Magas – csapatmunkában, sok interakcióval virulsz", en: "High – you thrive on teamwork and frequent interaction" }));
   } else if (categories.TEMP === "low") {
-    rows.push({
-      label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" },
-    });
+    rows.push(envRow("social", "low", { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" }));
   } else {
-    rows.push({
-      label: { hu: "Társas intenzitás", en: "Social intensity" },
-      value: { hu: "Alacsony-közepes – az önálló munka és a kiscsapat váltakozása fekszik neked", en: "Low to medium – a mix of independent and small-team work suits you" },
-    });
+    rows.push(envRow("social", "low", { hu: "Alacsony-közepes – az önálló munka és a kiscsapat váltakozása fekszik neked", en: "Low to medium – a mix of independent and small-team work suits you" }));
   }
 
   // Változásgyakoriság (OPEN és THOR alapján)
   if (categories.OPEN === "high" && categories.THOR === "high") {
-    rows.push({
-      label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Közepes – a fokozatos, keretezett változás fekszik neked", en: "Medium – gradual change within clear boundaries suits you" },
-    });
+    rows.push(envRow("change", "mid", { hu: "Közepes – a fokozatos, keretezett változás fekszik neked", en: "Medium – gradual change within clear boundaries suits you" }));
   } else if (categories.OPEN === "high") {
-    rows.push({
-      label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" },
-    });
+    rows.push(envRow("change", "high", { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" }));
   } else {
-    rows.push({
-      label: { hu: "Változásgyakoriság", en: "Change frequency" },
-      value: { hu: "Alacsony-közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" },
-    });
+    rows.push(envRow("change", "low", { hu: "Alacsony-közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" }));
   }
 
   // Döntési sebesség (THOR és OPEN alapján)
   if (categories.THOR === "high" && categories.OPEN === "low") {
-    rows.push({
-      label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" },
-    });
+    rows.push(envRow("decision", "mid", { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" }));
   } else if (categories.THOR === "low" && categories.OPEN === "high") {
-    rows.push({
-      label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" },
-    });
+    rows.push(envRow("decision", "high", { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" }));
   } else {
-    rows.push({
-      label: { hu: "Döntési sebesség", en: "Decision pace" },
-      value: { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" },
-    });
+    rows.push(envRow("decision", "mid", { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" }));
   }
 
   // Kultúra (INTE alapján)
   if (categories.INTE === "high") {
-    rows.push({
-      label: { hu: "Kultúra", en: "Culture" },
-      value: { hu: "Értékvezérelt, etikailag következetes közegben vagy otthon", en: "Values-driven, ethically consistent culture is where you're at home" },
-    });
+    rows.push(envRow("culture", "high", { hu: "Értékvezérelt, etikailag következetes közegben vagy otthon", en: "Values-driven, ethically consistent culture is where you're at home" }));
   } else if (categories.INTE === "low") {
-    rows.push({
-      label: { hu: "Kultúra", en: "Culture" },
-      value: { hu: "Teljesítményalapú, versengő kultúrában is jól elvagy", en: "Performance-based, competitive culture also works fine for you" },
-    });
+    rows.push(envRow("culture", "low", { hu: "Teljesítményalapú, versengő kultúrában is jól elvagy", en: "Performance-based, competitive culture also works fine for you" }));
   }
 
   // Projektciklus (THOR és OPEN alapján)
   if (categories.THOR === "high") {
-    rows.push({
-      label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Hosszú, mélyülő – alaposan viszed végig a munkát", en: "Long, deepening – you carry work through thoroughly" },
-    });
+    rows.push(envRow("cycle", "high", { hu: "Hosszú, mélyülő – alaposan viszed végig a munkát", en: "Long, deepening – you carry work through thoroughly" }));
   } else if (categories.OPEN === "high") {
-    rows.push({
-      label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Rövid-közepes – szívesen fedezel fel újat, a lezárás több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" },
-    });
+    rows.push(envRow("cycle", "low", { hu: "Rövid-közepes – szívesen fedezel fel újat, a lezárás több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" }));
   } else {
-    rows.push({
-      label: { hu: "Projektciklus", en: "Project cycle" },
-      value: { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" },
-    });
+    rows.push(envRow("cycle", "mid", { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" }));
   }
 
-  // Terhelés-kezelés (RESO alapján) — erőforrás-nyelv, nem deficit-keret
+  // Terhelés-kezelés (RESO alapján) — erőforrás-nyelv, nem deficit-keret.
+  // A tengely a terhelhetőség: RESO low (érzelmileg stabil) → magas
+  // terhelhetőség (high pólus, „jól viseled a nyomást"); RESO high
+  // (érzékenyebb) → védettebb, kiszámíthatóbb ritmust igényel (low pólus).
+  // Így a marker, a pólus-feliratok és a szöveg egy irányba mutat — a korábbi
+  // verzióban a RESO high szint-szó nélkül tévesen középre esett.
   if (categories.RESO === "high") {
-    rows.push({
-      label: { hu: "Terhelés-kezelés", en: "Load management" },
-      value: { hu: "Kiszámítható ritmus és rendszeres visszajelzés mellett hozod a legjobb formád", en: "You're at your best with a predictable rhythm and regular feedback" },
-    });
+    rows.push(envRow("load", "low", { hu: "Alacsony – kiszámítható ritmus és rendszeres visszajelzés mellett hozod a legjobb formád", en: "Low – you're at your best with a predictable rhythm and regular feedback" }));
   } else if (categories.RESO === "low") {
-    rows.push({
-      label: { hu: "Terhelés-kezelés", en: "Load management" },
-      value: { hu: "Magas – jól viseled a nyomást és a bizonytalanságot", en: "High – you handle pressure and uncertainty well" },
-    });
+    rows.push(envRow("load", "high", { hu: "Magas – jól viseled a nyomást és a bizonytalanságot", en: "High – you handle pressure and uncertainty well" }));
   }
 
   return rows;

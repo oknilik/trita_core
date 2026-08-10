@@ -10,7 +10,13 @@
 // ((átlag − 1) / 4) × 100, kerekítve.
 // ─────────────────────────────────────────────────────────────────────
 
-import { rankDimensionScores } from "./tritan";
+import { rankDimensionScores, TRITAN_ORDER } from "./tritan";
+
+// Csak a hat kanonikus HEXACO-dimenzió (TRITAN_ORDER) kerülhet a rangsorba.
+// Az intersticiális Altruizmus (`I`) skála pontszáma megmarad a dimensions
+// map-ben, de a top-listába — és onnan a primary/secondary glyphbe, ill. a
+// típus-címkébe — sosem szivároghat (ismeretlen kódra a TypeGlyph üres).
+const RANKABLE_DIM_CODES = new Set<string>(TRITAN_ORDER);
 
 export interface TeaserScoringMetaItem {
   id: number;
@@ -60,7 +66,9 @@ export function computeGuestTeaserScores(
   }
 
   const ranked = rankDimensionScores(
-    Object.entries(dimensions).map(([code, score]) => ({ code, score })),
+    Object.entries(dimensions)
+      .filter(([code]) => RANKABLE_DIM_CODES.has(code))
+      .map(([code, score]) => ({ code, score })),
   );
 
   return { dimensions, ranked };

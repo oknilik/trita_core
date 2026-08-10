@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { INDUSTRIES, INTEREST_TAGS } from "@/lib/industry-fit";
+import { isCompleteRiasecVector } from "@/lib/career/interests";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 // Karrier-iránytű háttéradatok mentése — a wizard válaszai a profilra
@@ -52,9 +53,14 @@ const schema = z.object({
     .array(z.enum(INTEREST_TAGS.map((tag) => tag.key) as [string, ...string[]]))
     .max(4)
     .optional(),
-  // MÉRT érdeklődés-profil (Mini-IP) — betűnként 0-100
+  // MÉRT érdeklődés-profil (Mini-IP) — betűnként 0-100. Csak a HIÁNYTALAN
+  // (mind a hat betűs) vektor fogadható el: a scoreRiasec is null-t ad hiányos
+  // kitöltésre, és a person.ts forrás-létrája csak a teljes vektort minősíti
+  // „measured"-nek. Egy parciális (kliens-állított) vektort itt elutasítunk,
+  // hogy ne kerülhessen a profilra hamis mérésként.
   riasecScores: z
     .record(z.enum(["R", "I", "A", "S", "E", "C"]), z.number().min(0).max(100))
+    .refine(isCompleteRiasecVector, { message: "RIASEC_INCOMPLETE" })
     .optional(),
   // Preferencia- és környezet-tengelyek: a wizard 2 lépésének válaszai. Eddig
   // csak kliens-state volt, ezért újratöltés után MÁS rangsor jött, mint amit a

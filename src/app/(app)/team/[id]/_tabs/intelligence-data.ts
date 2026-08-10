@@ -7,6 +7,7 @@ import {
   MIN_INTELLIGENCE_ASSESSMENTS,
   resolveTeamIntelligenceQuality,
 } from "@/lib/team-intelligence";
+import { isMeasuredDynamicsSource } from "@/lib/friction-model";
 import type { TeamPageData } from "./types";
 
 /**
@@ -54,8 +55,9 @@ export function buildIntelligenceViewData(params: {
   }));
   const hasDynamicsData = teamDynamicsEdges.length > 0;
   // Mért = trust-kör (vagy legacy observer) forrású él; a többi profil-becslés.
-  const measuredDynamicsEdgeCount = teamDynamicsEdges.filter(
-    (e) => e.source === "trust_round" || e.source === "observer",
+  // Közös definíció a friction-model.ts-ből (a DynamicsMap és a cockpit is ezt hívja).
+  const measuredDynamicsEdgeCount = teamDynamicsEdges.filter((e) =>
+    isMeasuredDynamicsSource(e.source),
   ).length;
   const estimatedDynamicsEdgeCount = teamDynamicsEdges.length - measuredDynamicsEdgeCount;
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);

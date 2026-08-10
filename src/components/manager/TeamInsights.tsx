@@ -13,6 +13,7 @@ interface HeatmapRow {
 
 import { t, tf, type Locale } from "@/lib/i18n";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { sampleStdDev } from "@/lib/stats/dimension-stats";
 
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
 function hexLetter(code: string): string {
@@ -114,20 +115,6 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Practical, stable team — values proven processes and predictability. Change management may require extra attention.",
     },
   },
-  N: {
-    high: {
-      hu: "Magas érzelmi reaktivitás a csapatban — stressz alatt az érzelmi szabályozás és a kiszámítható környezet kulcsfontosságú.",
-      en: "High emotional reactivity in the team — emotional regulation and a predictable environment are key under stress.",
-    },
-    mid: {
-      hu: "Közepes stressz-érzékenység — a csapat általában stabilnak mutatkozik, de helyzetfüggő ingadozás előfordulhat.",
-      en: "Moderate stress sensitivity — the team is generally stable, but situational variation may occur.",
-    },
-    low: {
-      hu: "Alacsony neuroticizmus — nyugodt, stressztűrő csapat, jól teljesít nyomás és bizonytalanság közepette.",
-      en: "Low neuroticism — calm, stress-resistant team that performs well under pressure and uncertainty.",
-    },
-  },
 };
 
 function getLevel(score: number): Level {
@@ -180,16 +167,16 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       : null;
   }
 
-  // Calculate std deviation per dimension (spread / diversity)
+  // Calculate std deviation per dimension (spread / diversity) — Bessel-
+  // korrekciós mintaszórás a közös stats-helperből (a csapat a populáció
+  // mintája; a ÷n populációs szórás lefelé torzított).
   const dimStdDev: Record<string, number> = {};
   for (const dim of dims) {
     const scores = scored
       .map((r) => r.scores[dim.code])
       .filter((s): s is number => s !== null);
     if (scores.length < 2) continue;
-    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / scores.length;
-    dimStdDev[dim.code] = Math.round(Math.sqrt(variance));
+    dimStdDev[dim.code] = Math.round(sampleStdDev(scores));
   }
 
   const rankedDims = dims

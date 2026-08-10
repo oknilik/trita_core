@@ -77,6 +77,21 @@ export function estimateInterests(
   };
 }
 
+/**
+ * Teljes-e a MÉRT érdeklődés-vektor. A `scoreRiasec` csak a hiánytalan (mind a
+ * hat betűs) kérdőív-kitöltésből ad eredményt — ezért „measured"-nek is csak a
+ * teljes vektor számíthat. Egy parciális (pl. négybetűs) vektor kliens-állítás
+ * lehet, de nem valódi mérés; a forrás-létrán tags/estimated felé kell esnie
+ * (person.ts), és a mentő route is ezt a teljességi szabályt kényszeríti
+ * (career-background/route.ts). Enélkül egy csonka vektor „measured"-ként a
+ * legmagasabb súlyt kapná, és megnyitná az interest-led rangsort.
+ */
+export function isCompleteRiasecVector(
+  vector: Partial<Record<RiasecLetter, number>>,
+): boolean {
+  return RIASEC_LETTERS.every((letter) => typeof vector[letter] === "number");
+}
+
 /** Profil-korreláció alapú congruence 0-100. A szintet kiszűrjük: az ALAK számít. */
 export function interestCongruence(
   user: Partial<Record<RiasecLetter, number>>,

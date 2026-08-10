@@ -3,49 +3,6 @@
 
 import { withHuArticle } from "@/lib/hu-grammar";
 
-// ── Dimenzió szintű insight (KPI sor + TRITAN blokk) ──────
-
-export function getDimensionInsight(dimension: string, score: number): string {
-  const insights: Record<string, { high: string; mid: string; low: string }> = {
-    INTE: {
-      high: "Erős fairness és szabálytisztelet",
-      mid:  "Kiegyensúlyozott etikai érzékenység",
-      low:  "Pragmatikus, célorientált hozzáállás",
-    },
-    RESO: {
-      high: "Érzékeny, empatikus csapatdinamika",
-      mid:  "Kiegyensúlyozott érzelmi stabilitás",
-      low:  "Reziliens, nyomásálló csapatenergia",
-    },
-    TEMP: {
-      high: "Magas csapatenergia, társas nyitottság",
-      mid:  "Kiegyensúlyozott aktivitási szint",
-      low:  "Visszafogott, mélymunka-orientált csapat",
-    },
-    ADAP: {
-      high: "Erős együttműködés, alacsony súrlódás",
-      mid:  "Vegyes kooperációs hajlandóság",
-      low:  "Direkt, konfrontatív kommunikáció",
-    },
-    THOR: {
-      high: "Fegyelmezett, strukturált munkavégzés",
-      mid:  "Kiegyensúlyozott szervezettség",
-      low:  "Rugalmas, adaptív munkastílus",
-    },
-    OPEN: {
-      high: "Nyitott, kísérletező szemlélet",
-      mid:  "Kiegyensúlyozott innováció és stabilitás",
-      low:  "Pragmatikus, bevált módszerekre építő szemlélet",
-    },
-  };
-
-  const dim = insights[dimension];
-  if (!dim) return "";
-  if (score >= 60) return dim.high;
-  if (score >= 40) return dim.mid;
-  return dim.low;
-}
-
 // ── TRITAN profil 1 mondatos összefoglaló ─────────────────
 
 export function generateTeamSummary(scores: Record<string, number>): string {

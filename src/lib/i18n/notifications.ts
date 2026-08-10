@@ -13,8 +13,10 @@ export const notificationTranslations = {
       body: { hu: "{name} köszönetet küldött neked a csapatban: „{team}”.", en: "{name} sent you kudos in the {team} team." },
     },
     observerCompleted: {
+      // Anonim üzenet — az értékelő neve szándékosan nem szerepel (a névvel a
+      // futó átlagból beazonosítható lenne az utolsó értékelő).
       title: { hu: "Megfigyelői visszajelzés érkezett", en: "Observer feedback received" },
-      body: { hu: "{name} kitöltötte a megfigyelői értékelést.", en: "{name} completed the observer assessment." },
+      body: { hu: "Egy külső értékelés beérkezett.", en: "A new observer assessment was received." },
     },
     observerSubmitted: {
       title: { hu: "Értékelés elküldve", en: "Assessment submitted" },

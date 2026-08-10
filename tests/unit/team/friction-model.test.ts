@@ -5,6 +5,8 @@ import {
   calculatePairFriction,
   computeAlignedHubIds,
   frictionToEdgeType,
+  isMeasuredDynamicsSource,
+  trustToDynamicsEdge,
 } from "@/lib/friction-model";
 
 const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
@@ -101,5 +103,27 @@ describe("computeAlignedHubIds — közös hub-definíció", () => {
 
   it("a küszöb konstansként exportált (≥3)", () => {
     assert.equal(ALIGNED_HUB_MIN_DEGREE, 3);
+  });
+});
+
+describe("trustToDynamicsEdge — mért trust-él → dinamika-él", () => {
+  it("strong→aligned, moderate→complementary, weak→friction", () => {
+    assert.equal(trustToDynamicsEdge("strong_trust"), "aligned");
+    assert.equal(trustToDynamicsEdge("moderate"), "complementary");
+    assert.equal(trustToDynamicsEdge("weak_trust"), "friction");
+  });
+
+  it("disconnected → null: a kapcsolat HIÁNYA nem súrlódás (nem rajzol élt)", () => {
+    assert.equal(trustToDynamicsEdge("disconnected"), null);
+  });
+});
+
+describe("isMeasuredDynamicsSource — közös mért-forrás definíció", () => {
+  it("trust_round és observer MÉRT; minden más becslés", () => {
+    assert.equal(isMeasuredDynamicsSource("trust_round"), true);
+    assert.equal(isMeasuredDynamicsSource("observer"), true);
+    assert.equal(isMeasuredDynamicsSource("profile_estimate"), false);
+    assert.equal(isMeasuredDynamicsSource(null), false);
+    assert.equal(isMeasuredDynamicsSource(undefined), false);
   });
 });

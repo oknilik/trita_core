@@ -942,6 +942,10 @@ export const resultsTranslations = {
       hu: "szabályozott szakma — szakvizsga / kamarai tagság kell",
       en: "regulated profession — licence or chamber membership required",
     },
+    cfAccessLicenceReady: {
+      hu: "a végzettséged megfelel, de a szakma engedély- / kamarai kötelezettséggel jár",
+      en: "your education fits, but this profession carries a licence / chamber obligation",
+    },
     cfAccessTraining: {
       hu: "képzés kell hozzá",
       en: "needs training",

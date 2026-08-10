@@ -1,5 +1,7 @@
 // src/lib/team-pattern.ts
 
+import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
+
 // ============================================================
 // TYPES
 // ============================================================
@@ -31,8 +33,6 @@ export interface AxisDetail {
 
 export interface StyleDistance {
   userId: string;
-  deviations: Record<string, number>;
-  patternDistance: number; // 0 = tökéletesen rajta, magasabb = távolabb
   tensionAxes: string[];   // tengelyek, ahol nagy az eltérés
 }
 
@@ -114,18 +114,10 @@ const DIVERSITY_HIGH = 20;   // ez felett "diverz"
 
 // ============================================================
 // SEGÉDFÜGGVÉNYEK
+// A dimenzió-átlag és -szórás a közös, tiszta stats-modulból (mean /
+// sampleStdDev). A szórás Bessel-korrekciós (mintaszórás, ÷(n−1)) — a
+// csapat a populáció mintája, a ÷n lefelé torzított.
 // ============================================================
-
-function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((s, v) => s + v, 0) / values.length;
-}
-
-function stddev(values: number[]): number {
-  if (values.length < 2) return 0;
-  const avg = mean(values);
-  return Math.sqrt(mean(values.map((v) => (v - avg) ** 2)));
-}
 
 function gradeAxis(value: number, threshold: number): AxisGrade {
   const diff = value - threshold;
@@ -171,10 +163,10 @@ export function calculateTeamPattern(
   };
 
   const rawDiversity: TeamDiversity = {
-    drive:      stddev(allScores.map((s) => s.TEMP)),
-    cohesion:   stddev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline: stddev(allScores.map((s) => s.THOR)),
-    openness:   stddev(allScores.map((s) => s.OPEN)),
+    drive:      sampleStdDev(allScores.map((s) => s.TEMP)),
+    cohesion:   sampleStdDev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
+    discipline: sampleStdDev(allScores.map((s) => s.THOR)),
+    openness:   sampleStdDev(allScores.map((s) => s.OPEN)),
   };
 
   // ── 2. Tengely részletek ────────────────────────────────
@@ -265,6 +257,9 @@ export function calculateTeamPattern(
 
   // ── 8. Egyén-minta távolság ─────────────────────────────
   const styleDistances: StyleDistance[] = members.map((m) => {
+    // A tengely-eltérések csak a feszültség-tengelyek kiszűréséhez kellenek
+    // (a fogyasztó a tensionAxes darabszámát használja) — a deviations map és
+    // a patternDistance nem hagyja el a függvényt.
     const deviations: Record<string, number> = {
       drive:      Math.abs(m.scores.TEMP - rawAxes.drive),
       cohesion:   Math.abs((m.scores.ADAP + m.scores.INTE) / 2 - rawAxes.cohesion),
@@ -278,8 +273,6 @@ export function calculateTeamPattern(
 
     return {
       userId: m.userId,
-      deviations,
-      patternDistance: mean(Object.values(deviations)),
       tensionAxes,
     };
   });
@@ -839,11 +832,3 @@ export const AXIS_LABELS = {
   discipline: { name: "Fegyelem",  low: "Rugalmas",     high: "Strukturált" },
   openness:   { name: "Nyitottság",low: "Pragmatikus",  high: "Felfedező" },
 } as const;
-
-export const GRADE_LABELS: Record<AxisGrade, string> = {
-  strong_high: "erősen",
-  slight_high: "enyhén",
-  balanced:    "kiegyensúlyozott",
-  slight_low:  "enyhén",
-  strong_low:  "erősen",
-};

@@ -2,17 +2,17 @@ import { prisma } from "./prisma";
 import type { ScoreResult } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
 import { buildTeamTrustNetwork } from "./trust-network.server";
-import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
+import { getCampaignSteps, getCampaignTeamIds, isCampaignStepDone } from "./campaign-steps-core";
 import {
   EDGE_CONFIDENCE_MUTUAL,
   EDGE_CONFIDENCE_ONE_SIDED,
-  type TrustEdgeType,
   type TrustNetwork,
 } from "./trust-network";
 import {
   FRICTION_WEIGHTS,
   calculatePairFriction,
   frictionToEdgeType,
+  trustToDynamicsEdge,
   type DynamicsEdgeType,
 } from "./friction-model";
 
@@ -66,7 +66,6 @@ export interface TeamActiveCampaign {
   teamParticipantCount: number;
   teamSelfDoneCount: number;
   teamObserverDoneCount: number;
-  daysActive: number;
   /**
    * Mérésenkénti haladás a csapat résztvevőire (2026-07-29): a hero
    * kitöltési aránya CSAK a személyiség-profilt méri — a kör többi
@@ -95,8 +94,6 @@ export interface TeamPageData {
   memberCount: number;
   completedCount: number;
   dimAvg: Record<string, number> | null;
-  topDim: { code: string; value: number } | null;
-  bottomDim: { code: string; value: number } | null;
   activeCampaign: TeamActiveCampaign | null;
   dynamicsEdges: TeamDynamicsEdge[];
   members: SerializedTeamMember[];
@@ -150,15 +147,10 @@ export function buildProfileBasedEdges(
   return edges;
 }
 
-/** Mért trust-él → dinamika-él típus (a térkép háromfokú skálájára). */
-const TRUST_TO_DYNAMICS: Record<TrustEdgeType, DynamicsEdgeType> = {
-  strong_trust: "aligned",
-  moderate: "complementary",
-  weak_trust: "friction",
-  disconnected: "friction",
-};
-
 // Exportált a manager-cockpit kötegelt betöltőjének — ld. buildProfileBasedEdges.
+// A mért trust-él → dinamika-él leképezés a friction-model.ts tiszta
+// trustToDynamicsEdge helperjében él; a `disconnected` (nincs elég kapcsolat)
+// null-t ad → az élt KIHAGYJUK (a kapcsolat hiánya nem súrlódás).
 export function mergeTrustEdges(
   profileEdges: TeamDynamicsEdge[],
   trust: TrustNetwork | null,
@@ -168,26 +160,36 @@ export function mergeTrustEdges(
   const measured = new Map(
     trust.edges.map((e) => [[e.a, e.b].sort().join("|"), e]),
   );
-  const merged = profileEdges.map((edge) => {
+  const merged: TeamDynamicsEdge[] = [];
+  for (const edge of profileEdges) {
     const key = [edge.fromUserId, edge.toUserId].sort().join("|");
     const trustEdge = measured.get(key);
-    if (!trustEdge) return edge;
+    if (!trustEdge) {
+      merged.push(edge);
+      continue;
+    }
     measured.delete(key);
-    return {
+    const type = trustToDynamicsEdge(trustEdge.type);
+    // disconnected: a mérés felülírja a profil-becslést, de a kapcsolat
+    // hiányát nem rajzoljuk élként (sem mértként, sem becslésként).
+    if (type === null) continue;
+    merged.push({
       ...edge,
-      type: TRUST_TO_DYNAMICS[trustEdge.type],
+      type,
       source: "trust_round" as const,
       confidence: trustEdge.mutual ? EDGE_CONFIDENCE_MUTUAL : EDGE_CONFIDENCE_ONE_SIDED,
-    };
-  });
+    });
+  }
 
   // Mért pár, amihez nincs profil-él (pl. hiányzó önértékelés) — így is
-  // felkerül a térképre, becslés nélkül.
+  // felkerül a térképre, becslés nélkül. A disconnected itt is kimarad.
   for (const trustEdge of measured.values()) {
+    const type = trustToDynamicsEdge(trustEdge.type);
+    if (type === null) continue;
     merged.push({
       fromUserId: trustEdge.a,
       toUserId: trustEdge.b,
-      type: TRUST_TO_DYNAMICS[trustEdge.type],
+      type,
       source: "trust_round",
       relationshipType: null,
       confidence: trustEdge.mutual ? EDGE_CONFIDENCE_MUTUAL : EDGE_CONFIDENCE_ONE_SIDED,
@@ -237,10 +239,6 @@ export function computeTeamActiveCampaign(
     completedObserverInviterIds.has(p.userId),
   ).length;
 
-  const daysActive = Math.floor(
-    (Date.now() - campaignRaw.createdAt.getTime()) / (1000 * 60 * 60 * 24)
-  );
-
   // Mérésenkénti haladás a csapat résztvevőire — a kampány-részletező
   // lépés-logikájával azonos (isCampaignStepDone), így a két felület
   // ugyanazt a számot mutatja. A self-fallback fresh-tudatos.
@@ -280,7 +278,6 @@ export function computeTeamActiveCampaign(
     teamParticipantCount,
     teamSelfDoneCount,
     teamObserverDoneCount,
-    daysActive,
     stepProgress,
   };
 }
@@ -402,24 +399,21 @@ export async function getTeamPageData(
     }
   }
 
-  // topDim / bottomDim
-  let topDim: { code: string; value: number } | null = null;
-  let bottomDim: { code: string; value: number } | null = null;
-  if (dimAvg) {
-    const entries = (DIM_ORDER as readonly string[])
-      .filter((code) => dimAvg![code] !== undefined)
-      .map((code) => ({ code, value: dimAvg![code] }));
-    if (entries.length > 0) {
-      topDim = entries.reduce((best, e) => (e.value > best.value ? e : best));
-      bottomDim = entries.reduce((worst, e) => (e.value < worst.value ? e : worst));
-    }
-  }
-
   // Parallelize: campaign lookup + pending invites
-  const [campaignRaw, pendingInvitesRaw] = await Promise.all([
+  // Kampány-scope: CSAK az EZT a csapatot célzó aktív kampányt vesszük
+  // figyelembe. Korábban a {orgId, status:ACTIVE} szűrő csapat-szűrő nélkül
+  // egy másik csapatnak indított kampányt is ennek a csapatnak mutatott.
+  // A DB-szűrő durván szűkít (teamId VAGY teamIds tartalmazza), a pontos
+  // döntést a getCampaignTeamIds hozza (a teamIds az igazság, üresnél a
+  // legacy teamId) — így a teamId≠teamIds[0] él-eset sem téveszt.
+  const [campaignCandidates, pendingInvitesRaw] = await Promise.all([
     team.orgId
-      ? prisma.campaign.findFirst({
-          where: { orgId: team.orgId, status: "ACTIVE" },
+      ? prisma.campaign.findMany({
+          where: {
+            orgId: team.orgId,
+            status: "ACTIVE",
+            OR: [{ teamId }, { teamIds: { has: teamId } }],
+          },
           orderBy: { createdAt: "desc" },
           select: {
             id: true,
@@ -428,6 +422,8 @@ export async function getTeamPageData(
             createdAt: true,
             type: true,
             steps: true,
+            teamId: true,
+            teamIds: true,
             requireFreshResults: true,
             activatedAt: true,
             participants: {
@@ -435,13 +431,18 @@ export async function getTeamPageData(
             },
           },
         })
-      : Promise.resolve(null),
+      : Promise.resolve([]),
     prisma.teamPendingInvite.findMany({
       where: { teamId },
       orderBy: { createdAt: "asc" },
       select: { id: true, email: true, createdAt: true },
     }),
   ]);
+
+  // Az EZT a csapatot ténylegesen célzó, legfrissebb aktív kampány (a lista
+  // createdAt szerint csökkenő). getCampaignTeamIds a pontos szabály.
+  const campaignRaw =
+    campaignCandidates.find((c) => getCampaignTeamIds(c).includes(teamId)) ?? null;
 
   // ── Profile-based friction edges (pairwise TRITAN gap analysis) ──────────
   // Ahol van mért trust-kör adat, az felülírja a profil-alapú becslést
@@ -573,8 +574,6 @@ export async function getTeamPageData(
     memberCount: members.length,
     completedCount,
     dimAvg,
-    topDim,
-    bottomDim,
     activeCampaign,
     dynamicsEdges,
     members,

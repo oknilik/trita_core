@@ -8,7 +8,7 @@ import {
   resolvePersonalityTypeFromScores,
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
-import { rankDimensionScores } from "@/lib/tritan";
+import { rankDimensionScores, TRITAN_ORDER } from "@/lib/tritan";
 
 const META: TeaserScoringMetaItem[] = [
   { id: 1, dimension: "TEMP", reversed: false },
@@ -51,6 +51,38 @@ describe("computeGuestTeaserScores", () => {
     assert.ok(result);
     assert.equal(Object.keys(result.dimensions).length, 2);
     assert.equal(result.dimensions.TEMP, 50);
+  });
+
+  it("az intersticiális Altruizmus (I) skálát kizárja a rangsorból (üres glyph ellen)", () => {
+    // Az `I` (Altruizmus) közbülső skála a kérdésbankban is szerepel; ha a
+    // vendég erősen helyesli, a naiv rangsorban a top-2-be kerülne → a
+    // TryCompleteClient primary/secondary-je „I" lenne, üres glyphhel.
+    const metaWithAltruism: TeaserScoringMetaItem[] = [
+      { id: 1, dimension: "I", reversed: false },
+      { id: 2, dimension: "I", reversed: false },
+      { id: 3, dimension: "TEMP", reversed: false },
+      { id: 4, dimension: "OPEN", reversed: false },
+      { id: 5, dimension: "INTE", reversed: false },
+    ];
+    // I: 5,5 → 100 (a legmagasabb) · INTE: 4 → 75 · TEMP: 3 → 50 · OPEN: 2 → 25
+    const result = computeGuestTeaserScores(metaWithAltruism, {
+      1: 5, 2: 5, 3: 3, 4: 2, 5: 4,
+    });
+    assert.ok(result);
+    // A dimensions map teljes marad (I benne, 100 ponttal)…
+    assert.equal(result.dimensions.I, 100);
+    // …de a ranked SOSEM tartalmazza az I-t.
+    assert.ok(!result.ranked.some((r) => r.code === "I"));
+    // Minden ranked kód a hat kanonikus dimenzió egyike → ismert glyph/címke.
+    const knownCodes = new Set<string>(TRITAN_ORDER);
+    for (const entry of result.ranked) {
+      assert.ok(knownCodes.has(entry.code), `ismeretlen ranked kód: ${entry.code}`);
+    }
+    // A top-2 a valódi dimenziókból jön (I nélkül): INTE(75) > TEMP(50).
+    assert.deepEqual(
+      result.ranked.slice(0, 2).map((r) => r.code),
+      ["INTE", "TEMP"],
+    );
   });
 
   it("holtversenynél a kanonikus sorrend (TRITAN_ORDER) dönt", () => {

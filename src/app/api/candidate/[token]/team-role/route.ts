@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import {
-  TEAM_ROLE_ITEMS,
-  TEAM_ROLE_MIN_SELECT,
-  TEAM_ROLE_MAX_SELECT,
-} from "@/lib/team-role-questions";
+import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 
 // POST /api/candidate/[token]/team-role — a jelölt opcionális csapatszerep-
 // kérdőívének beküldése (a TRITAN submit UTÁNI 2. lépés). Token-alapú,
 // auth nélkül; csak akkor fogadjuk, ha a meghívón engedélyezve van, a
 // fő teszt már beérkezett, és szerep-válasz még nincs.
 
-const VALID_ITEM_IDS = new Set(TEAM_ROLE_ITEMS.map((item) => item.id));
-
 const bodySchema = z.object({
-  selections: z.record(z.string(), z.union([z.literal(1), z.literal(2)])),
+  selections: z.record(z.string(), z.number()),
 });
 
 export async function POST(
@@ -30,13 +24,13 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
   }
 
+  // Kanonikus kiválasztás-validátor — ugyanaz, amit a két hitelesített
+  // útvonal (api/team-roles/submit, api/team-roles/peers/submit) használ.
+  // A kézi „elemszám + ismert id" ellenőrzés NEM zárta ki a rossz kiemelt-
+  // darabszámot (pl. mind a 12 item 2-es súllyal → egyszerre több szerep
+  // 100%-on); a validátor a „pontosan 3 kiemelt" szabályt is kikényszeríti.
   const selections = parsed.data.selections;
-  const keys = Object.keys(selections);
-  if (
-    keys.length < TEAM_ROLE_MIN_SELECT ||
-    keys.length > TEAM_ROLE_MAX_SELECT ||
-    keys.some((k) => !VALID_ITEM_IDS.has(k))
-  ) {
+  if (!isValidTeamRoleSelectionSet(selections)) {
     return NextResponse.json({ error: "INVALID_SELECTIONS" }, { status: 400 });
   }
 

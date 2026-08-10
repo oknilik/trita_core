@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { computeCareerForProfile } from "@/lib/career/service";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { INDUSTRY_ISCO } from "@/lib/career/industries";
 import { AXIS_KEYS, VETO_TAGS } from "@/lib/career/types";
 
@@ -44,6 +46,16 @@ export async function POST(req: Request) {
     select: { id: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  // Kapuzás: a parkolt modul (CAREER_MODULE_READY=false) VAGY az org-szintű
+  // elrejtés esetén a végpont NEM létezik — összhangban azzal, hogy a UI szerint
+  // a feature nincs (a /career a fake doort mutatja, a menüpont eltűnik, a
+  // results-oldal a careerResult-ot null-ra kényszeríti). Élő belső hívó nincs:
+  // a CareerCompass csak CAREER_MODULE_READY mellett renderel és hívja ezt a
+  // végpontot; a hiring/jelölt-ág külön számol, nem ezen az API-n keresztül.
+  if (!CAREER_MODULE_READY || (await isCareerModuleHidden(profile.id))) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   const log = await getRequestLogger("career");
   const parsed = schema.safeParse(await req.json().catch(() => ({})));

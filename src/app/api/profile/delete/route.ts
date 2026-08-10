@@ -42,6 +42,19 @@ export async function POST(req: Request) {
         },
         data: { status: "REVOKED" },
       }),
+      // Observer-meghívók (GDPR): a törölt user (mint értékelt) FÜGGŐ
+      // meghívóit lezárjuk — így a token érvénytelen lesz (a /observe és a
+      // submit elutasítja), és a reminder-sweep (csak PENDING-et céloz) sem
+      // emailez tovább. Az értékelő PII-ját (email/név) is nullázzuk.
+      // A már KITÖLTÖTT (COMPLETED) meghívók az anonim aggregátumhoz kellenek
+      // — azokat NEM bántjuk.
+      prisma.observerInvitation.updateMany({
+        where: {
+          inviterId: profile.id,
+          status: { in: ["PENDING", "AWAITING_APPROVAL"] },
+        },
+        data: { status: "CANCELED", observerEmail: null, observerName: null },
+      }),
       // Analitika: az eseményeket NEM töröljük, hanem elvágjuk a személytől.
       // Így az aggregált tölcsér-számok (amelyekben a törlő felhasználó
       // annak idején benne volt) nem esnek szét visszamenőleg, de az

@@ -33,6 +33,28 @@ type AssessmentQuestion = { id: number; text: string }
 // kényszer-interstitial hármas helyett), saját „Folytatom" gombbal.
 const MILESTONE_PERCENT = 50
 
+// A betöltött piszkozat-válaszokat a KISZOLGÁLT kérdések id-halmazára
+// szűrjük, MIELŐTT state-be kerülnek (ahogy az ObserverClient is teszi).
+// Forma-váltás vagy egy korábbi teljes forma után benn ragadt, formán
+// kívüli id-k különben hamis „kész" answeredCountot és elutasított submit-
+// payloadot okoznának — a debounced mentés visszaírná a szennyezett
+// állapotot, és a kitöltés helyrehozhatatlan hurokba kerülne.
+function pickInFormAnswers(
+  raw: Record<string, number> | Record<number, number> | undefined,
+  allowedIds: ReadonlySet<number>,
+): Record<number, number> {
+  const result: Record<number, number> = {}
+  if (!raw) return result
+  for (const [key, rawValue] of Object.entries(raw)) {
+    const questionId = Number(key)
+    if (!Number.isInteger(questionId) || !allowedIds.has(questionId)) continue
+    const value = Number(rawValue)
+    if (!Number.isInteger(value) || value < 1 || value > 5) continue
+    result[questionId] = value
+  }
+  return result
+}
+
 
 interface AssessmentClientProps {
   testType: TestType
@@ -76,26 +98,25 @@ export function AssessmentClient({
   const shellMinHeight = hasShellHeader ? "min-h-[calc(100dvh-3rem)]" : "min-h-dvh"
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
-  const draftStorageKey = useMemo(() => getAssessmentDraftKey(testType), [testType])
+  // A kulcs a scope-pal együtt épül (ahogy az írás/olvasás is): belépett
+  // usernél a draft a `__u_<scope>` kulcson él, a storage-listener enélkül
+  // sosem ismerné fel a másik fül frissítését (kereszt-fül szinkron).
+  const draftStorageKey = useMemo(() => getAssessmentDraftKey(testType, draftScope), [testType, draftScope])
   const maxQuestionIndex = Math.max(totalQuestions - 1, 0)
   const clampQuestionIndex = useCallback(
     (value: number) => Math.min(Math.max(value, 0), maxQuestionIndex),
     [maxQuestionIndex],
   )
 
-  const [answers, setAnswers] = useState<Record<number, number>>(() => {
-    if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      const parsed: Record<number, number> = {}
-      for (const [k, v] of Object.entries(initialDraft.answers)) {
-        const questionId = Number(k)
-        if (!Number.isInteger(questionId)) continue
-        if (!Number.isInteger(v) || v < 1 || v > 5) continue
-        parsed[questionId] = v
-      }
-      return parsed
-    }
-    return {}
-  })
+  // A szerver-piszkozat formára szűrt kezdőállapota — a seedhez és a
+  // „belépéskor már kész volt" döntéshez is EZ a forrás (nem a nyers,
+  // esetleg formán kívüli id-kat is tartalmazó initialDraft).
+  const initialInFormAnswers = useMemo(
+    () => pickInFormAnswers(initialDraft?.answers, questionIdSet),
+    [initialDraft?.answers, questionIdSet],
+  )
+
+  const [answers, setAnswers] = useState<Record<number, number>>(() => initialInFormAnswers)
   const [questionIndex, setQuestionIndex] = useState(0) // single flat index 0..totalQuestions-1
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSavingDraft, setIsSavingDraft] = useState(false)
@@ -129,9 +150,8 @@ export function AssessmentClient({
   // UX-A8: már látott-e milestone-t (folytatott draftnál félút felett nem
   // mutatjuk újra).
   const milestoneSeenRef = useRef<boolean>(
-    !!initialDraft?.answers &&
-      (Object.keys(initialDraft.answers).length / totalQuestions) * 100 >=
-        MILESTONE_PERCENT,
+    (Object.keys(initialInFormAnswers).length / totalQuestions) * 100 >=
+      MILESTONE_PERCENT,
   )
 
   const answeredCount = Object.keys(answers).length
@@ -142,9 +162,7 @@ export function AssessmentClient({
   // már teljes draftra fut — élő kitöltés közben (amikor az utolsó válasz
   // most érkezik) a normál "Kiértékelés" út marad.
   const wasCompleteAtMount = useRef(
-    guestMode &&
-      !!initialDraft?.answers &&
-      Object.keys(initialDraft.answers).length >= totalQuestions,
+    guestMode && Object.keys(initialInFormAnswers).length >= totalQuestions,
   )
   useEffect(() => {
     // ?review=1: a záróoldal "Válaszok átnézése" linkje — ilyenkor maradunk.
@@ -247,15 +265,7 @@ export function AssessmentClient({
     if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
       clearAssessmentDraftFromStorage(testType, draftScope)
       localDraftRevisionRef.current = 0
-      const parsedAnswers: Record<number, number> = {}
-      for (const [key, rawValue] of Object.entries(initialDraft.answers)) {
-        const questionId = Number(key)
-        const value = Number(rawValue)
-        if (!questionIdSet.has(questionId)) continue
-        if (!Number.isInteger(value) || value < 1 || value > 5) continue
-        parsedAnswers[questionId] = value
-      }
-      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, parsedAnswers)
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, initialInFormAnswers)
       setQuestionIndexSafe(resumeIndex)
       return
     }
@@ -279,6 +289,7 @@ export function AssessmentClient({
     clearDraft,
     draftScope,
     initialDraft?.answers,
+    initialInFormAnswers,
     orderedQuestionIds,
     questionIdSet,
     setQuestionIndexSafe,

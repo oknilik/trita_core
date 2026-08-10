@@ -4,6 +4,7 @@ import type { SerializedTeamMember } from "@/lib/team-stats";
 import { isTeamManagerRole } from "@/lib/org-roles";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { TRITAN_DIMENSIONS, TRITAN_DIMENSIONS_LOWER } from "@/lib/tritan";
+import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
 export type TeamIntelligenceSubTab = "map" | "dynamics" | "roles";
@@ -70,17 +71,16 @@ function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((sum, value) => sum + value, 0) / values.length;
-}
+// A dimenzió-szórás a közös, Bessel-korrekciós stats-helperből (sampleStdDev).
 
-function stdDev(values: number[]): number {
-  if (values.length < 2) return 0;
-  const avg = mean(values);
-  const variance = mean(values.map((value) => (value - avg) ** 2));
-  return Math.sqrt(variance);
-}
+/**
+ * A csapatkép „elégségessége" NEM csak abszolút kitöltés-szám kérdése:
+ * a lefedettséget (kitöltő / tag) is figyelembe kell venni. 3/50 tag is
+ * elérné az abszolút küszöböt, de a csapatnak 6%-a — ez legfeljebb részleges
+ * kép. „sufficient" csak akkor, ha van legalább MIN_INTELLIGENCE_ASSESSMENTS
+ * kitöltés ÉS a lefedettség a küszöb felett van; egyébként „partial".
+ */
+export const SUFFICIENT_COVERAGE_MIN = 0.5; // a tagok legalább fele
 
 export function resolveTeamIntelligenceQuality(
   assessedCount: number,
@@ -88,6 +88,7 @@ export function resolveTeamIntelligenceQuality(
 ): TeamIntelligenceEvidenceQuality {
   if (assessedCount === 0 || totalCount === 0) return "none";
   if (assessedCount < MIN_INTELLIGENCE_ASSESSMENTS) return "partial";
+  if (assessedCount / totalCount < SUFFICIENT_COVERAGE_MIN) return "partial";
   return "sufficient";
 }
 
@@ -252,7 +253,7 @@ export function buildTeamIntelligencePriorities({
       (member.scores!.ADAP + member.scores!.INTE) / 2,
     );
     const cohesionAverage = mean(cohesionValues);
-    const cohesionSpread = stdDev(cohesionValues);
+    const cohesionSpread = sampleStdDev(cohesionValues);
     if (cohesionAverage < 45 || cohesionSpread > 18) {
       priorities.push({
         id: "cohesion_risk",

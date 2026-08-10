@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
-import { computeAlignedHubIds } from "@/lib/friction-model";
+import { computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
 import {
@@ -239,11 +240,10 @@ export async function buildTeamReportAggregates(
         .map((m) => m.scores![dim])
         .filter((v): v is number => typeof v === "number");
       if (values.length === 0) continue;
-      const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
-      const variance =
-        values.reduce((sum, v) => sum + (v - avg) ** 2, 0) / values.length;
-      dimensionAverages[dim] = Math.round(avg);
-      dimensionSpread[dim] = round1(Math.sqrt(variance));
+      // Bessel-korrekciós mintaszórás a közös stats-helperből (a csapat a
+      // populáció mintája — a ÷n populációs szórás lefelé torzított).
+      dimensionAverages[dim] = Math.round(mean(values));
+      dimensionSpread[dim] = round1(sampleStdDev(values));
     }
   }
 
@@ -287,8 +287,8 @@ export async function buildTeamReportAggregates(
 
   // Adatalap: mi MÉRT, mi becsült. Mért = mért bizalmi kör (`trust_round`)
   // vagy a régi observer-forrás; becsült = profil-alapú (`profile_estimate`).
-  const measuredEdgeCount = teamData.dynamicsEdges.filter(
-    (e) => e.source === "trust_round" || e.source === "observer",
+  const measuredEdgeCount = teamData.dynamicsEdges.filter((e) =>
+    isMeasuredDynamicsSource(e.source),
   ).length;
   const estimatedEdgeCount = teamData.dynamicsEdges.length - measuredEdgeCount;
   const evidence = {
@@ -540,6 +540,16 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   const alignedShare = agg.dynamics && dynamicsTotal > 0
     ? agg.dynamics.alignedCount / dynamicsTotal
     : 0;
+  // A „hasonló profil / homogén / közös vakfolt" értelmezés CSAK profil-becslés
+  // eredetű aligned élre igaz. A mért bizalmi körből (trust_round) származó
+  // aligned él MAGAS BIZALMAT jelent, nem profil-hasonlóságot — abból
+  // homogenitást állítani hamis lenne. A source mező különíti el a kettőt.
+  const alignedReflectsSimilarity = agg.dynamics
+    ? agg.dynamics.source !== "trust_round"
+    : false;
+  const profileHomogeneitySignal = alignedReflectsSimilarity && alignedShare >= 0.5;
+  const highTrustSignal =
+    agg.dynamics?.source === "trust_round" && alignedShare >= 0.5;
   const frictionDimLabels = (agg.dynamics?.topFrictionDims ?? [])
     .map((dim) => PREFILL_DIM_LABELS[dim] ?? dim)
     .join(", ");
@@ -568,8 +578,11 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
   const strengths = bullets([
     ...topDims.map((dim) => getStrengthInsight(dim)),
-    alignedShare >= 0.5
+    profileHomogeneitySignal
       ? "A hasonló munkastílusok gyors összecsiszolódást és alacsony koordinációs költséget adnak."
+      : "",
+    highTrustSignal
+      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat — stabil együttműködési alap."
       : "",
   ]);
 
@@ -579,7 +592,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     frictionShare >= 0.4
       ? `A tagpárok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
       : "",
-    alignedShare >= 0.5
+    profileHomogeneitySignal
       ? "A homogén profil közös vakfoltokat hordozhat — amit senki nem vesz észre, az kimarad."
       : "",
     gapRoleNames
@@ -617,7 +630,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     measuredMissing
       ? "Mért bizalmi kör (360°) indítása — a jelenlegi kapcsolati kép profil-alapú becslésen áll, a mért adat megerősíti vagy árnyalja."
       : "",
-    alignedShare >= 0.5
+    profileHomogeneitySignal
       ? "Külső visszajelzés tudatos behozása (más csapat, ügyfél, mentor) a közös vakfoltok ellensúlyozására."
       : "",
     ...(ps && psWeakAreas.length > 0

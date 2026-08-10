@@ -2,7 +2,15 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { buildWorkstyleContent, ROLE_TAGS, SOLO_ROLE_TAGS } from "@/lib/workstyle-content";
 import { TENSION_PAIRS, runProfileEngine } from "@/lib/profile-engine";
-import { ROLE_TEXTS, SOLO_DIM_ROLE_TEXTS, SOLO_DIM_NARRATIVES, getEnvRows } from "@/lib/profile-content";
+import {
+  ROLE_TEXTS,
+  SOLO_DIM_ROLE_TEXTS,
+  SOLO_DIM_NARRATIVES,
+  getEnvRows,
+  ENV_ROW_LABELS,
+  ENV_ROW_POLES,
+  type EnvRowKey,
+} from "@/lib/profile-content";
 import { tritanConfig } from "@/lib/questions/tritan";
 
 // Szerepkör-illeszkedés tartalom-guardrail: a profil-engine TRITAN dim-kódokat
@@ -105,4 +113,56 @@ test("env-sorok TRITAN kategóriákból dolgoznak (extrém profil extra sorokat 
   const labels = extremeRows.map((r) => r.label.hu);
   assert.ok(labels.includes("Kultúra"));
   assert.ok(labels.includes("Terhelés-kezelés"));
+});
+
+const ENV_KEYS = new Set<EnvRowKey>([
+  "structure",
+  "social",
+  "change",
+  "decision",
+  "culture",
+  "cycle",
+  "load",
+]);
+
+test("minden env-sor stabil kulcsot és szintet ad, a címke a kanonikus táblából jön", () => {
+  const rows = getEnvRows(
+    runProfileEngine(scores({ INTE: 90, RESO: 10, THOR: 90, TEMP: 90, OPEN: 90 }), "TRITAN").categories,
+  );
+  const validLevels = new Set(["low", "mid", "high"]);
+  for (const row of rows) {
+    assert.ok(ENV_KEYS.has(row.key), `ismeretlen env kulcs: ${row.key}`);
+    assert.ok(validLevels.has(row.level), `ismeretlen env szint: ${row.level}`);
+    assert.equal(row.label.hu, ENV_ROW_LABELS[row.key].hu);
+    assert.equal(row.label.en, ENV_ROW_LABELS[row.key].en);
+  }
+});
+
+test("minden env-kulcshoz nem üres pólus-felirat HU-ban ÉS EN-ben (EN üres-pólus regresszió ellen)", () => {
+  for (const key of ENV_KEYS) {
+    const pole = ENV_ROW_POLES[key];
+    assert.ok(pole, `nincs pólus a(z) ${key} kulcshoz`);
+    for (const lang of LOCALES) {
+      assert.ok(pole.low[lang].length > 0, `${key}.low.${lang} üres`);
+      assert.ok(pole.high[lang].length > 0, `${key}.high.${lang} üres`);
+    }
+  }
+});
+
+test("RESO/terhelhetőség sor a helyes pólust jelöli: RESO high→low, RESO low→high", () => {
+  // RESO high (érzékenyebb) → alacsonyabb terhelhetőség (low pólus, bal oldal).
+  const sensitive = getEnvRows(runProfileEngine(scores({ RESO: 90 }), "TRITAN").categories);
+  const sensitiveLoad = sensitive.find((r) => r.key === "load");
+  assert.ok(sensitiveLoad, "hiányzik a load sor (RESO high)");
+  assert.equal(sensitiveLoad.level, "low");
+  assert.ok(sensitiveLoad.value.hu.startsWith("Alacsony"));
+  assert.ok(sensitiveLoad.value.en.startsWith("Low"));
+
+  // RESO low (érzelmileg stabil) → magas terhelhetőség (high pólus, jobb oldal).
+  const resilient = getEnvRows(runProfileEngine(scores({ RESO: 10 }), "TRITAN").categories);
+  const resilientLoad = resilient.find((r) => r.key === "load");
+  assert.ok(resilientLoad, "hiányzik a load sor (RESO low)");
+  assert.equal(resilientLoad.level, "high");
+  assert.ok(resilientLoad.value.hu.startsWith("Magas"));
+  assert.ok(resilientLoad.value.en.startsWith("High"));
 });

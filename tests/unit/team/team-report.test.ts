@@ -105,6 +105,49 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   }
 });
 
+test("prefill: high aligned share from TRUST data does NOT claim homogeneity (D2)", () => {
+  const trustAligned: TeamReportAggregates = {
+    ...richAggregates,
+    evidence: { quality: "sufficient", measuredEdgeCount: 6, estimatedEdgeCount: 0 },
+    dynamics: {
+      alignedCount: 4,
+      complementaryCount: 1,
+      frictionCount: 1,
+      topFrictionDims: [],
+      source: "trust_round",
+    },
+  };
+  const prefill = buildDraftNarrativePrefill(trustAligned);
+  assert.ok(prefill);
+  // A magas bizalom NEM homogenitás — a vakfolt/hasonló-profil szöveg kimarad.
+  assert.ok(!prefill!.risks.includes("homogén profil"));
+  assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
+  assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
+  // Helyette a mért bizalmat pozitívan nevezi meg.
+  assert.ok(prefill!.strengths.includes("bizalmi kapcsolat"));
+});
+
+test("prefill: high aligned share from PROFILE estimate keeps the homogeneity note (D2)", () => {
+  const profileAligned: TeamReportAggregates = {
+    ...richAggregates,
+    evidence: { quality: "sufficient", measuredEdgeCount: 0, estimatedEdgeCount: 6 },
+    dynamics: {
+      alignedCount: 4,
+      complementaryCount: 1,
+      frictionCount: 1,
+      topFrictionDims: [],
+      source: "profile_estimate",
+    },
+  };
+  const prefill = buildDraftNarrativePrefill(profileAligned);
+  assert.ok(prefill);
+  // Profil-hasonlóság → a homogén-vakfolt értelmezés jogos.
+  assert.ok(prefill!.risks.includes("homogén profil"));
+  assert.ok(prefill!.strengths.includes("hasonló munkastílus"));
+  // Becslésből nem állítunk mért bizalmat.
+  assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
+});
+
 test("prefill: no dimension averages returns null", () => {
   const prefill = buildDraftNarrativePrefill({
     ...richAggregates,
