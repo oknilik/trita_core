@@ -238,11 +238,15 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   let tritanAvg: Record<string, number> | null = null;
   let completedMemberCount = 0;
   if (orgMemberIds.length > 0) {
+    // A distinct profilonként a RENDEZETT eredmény első sorát tartja meg;
+    // orderBy nélkül a legkorábbi kitöltésből számolna. A desc a legutolsó
+    // kitöltést hozza — így a self-latest lekérdezéssel (~:143) konzisztens.
     const assessmentResults = await prisma.assessmentResult.findMany({
       where: {
         userProfileId: { in: orgMemberIds },
         isSelfAssessment: true,
       },
+      orderBy: { createdAt: "desc" },
       select: { userProfileId: true, scores: true },
       distinct: ["userProfileId"],
     });

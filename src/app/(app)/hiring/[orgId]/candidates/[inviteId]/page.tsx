@@ -540,7 +540,7 @@ export default async function CandidateResultPage({
                     />
                     {teamVal !== null && (
                       <div
-                        className="absolute top-0 h-3 w-0.5 rounded-full bg-[var(--color-surface-inverse)]-body/40"
+                        className="absolute top-0 h-3 w-0.5 rounded-full bg-[var(--color-ink-body)]/40"
                         style={{ left: `${teamVal}%` }}
                         title={`${t("hiring.teamAvgTooltip", locale)}: ${teamVal}%`}
                       />
