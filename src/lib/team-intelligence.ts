@@ -169,7 +169,7 @@ export function buildTeamIntelligencePriorities({
   const priorities: TeamIntelligencePriority[] = [];
   const missingAssessments = Math.max(memberCount - completedCount, 0);
 
-  if (memberCount > 0 && completedCount < 3) {
+  if (memberCount > 0 && completedCount < MIN_INTELLIGENCE_ASSESSMENTS) {
     priorities.push({
       id: "missing_assessments",
       tone: "amber",

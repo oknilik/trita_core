@@ -23,8 +23,9 @@
 // ============================================================
 
 import { sampleStdDev } from "@/lib/stats/dimension-stats";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
-export const PSYCH_SAFETY_MIN_RESPONSES = 3;
+export const PSYCH_SAFETY_MIN_RESPONSES = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 /** Likert 1–5 (1 = egyáltalán nem értek egyet … 5 = teljesen egyetértek) */
 export interface PsychSafetyItem {

@@ -16,6 +16,7 @@
 import { prisma } from "@/lib/prisma";
 import { InvitationStatus } from "@prisma/client";
 import { isConsultingLed } from "@/lib/operating-mode";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
 /**
  * Ennyi beérkezett visszajelzésnél nyílik meg az önkép–külső kép összevetés
@@ -23,7 +24,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
  * (trust-kör, pulse, peer-szerepek) 3-as anonimitás-küszöböt ígér — két
  * értékelőnél a kitöltő félig beazonosítható, ami visszahat az őszinteségre.
  */
-export const OBSERVER_MIN_FOR_REVEAL = 3;
+export const OBSERVER_MIN_FOR_REVEAL = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 export type ObserverFlowState = "self_serve" | "locked" | "in_progress" | "available";
 

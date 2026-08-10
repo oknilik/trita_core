@@ -1,6 +1,7 @@
 import "server-only";
 
 import { isConsultingLed } from "@/lib/operating-mode";
+import { MIN_MEMBERS_FOR_ORG_INSIGHTS } from "./constants";
 import type {
   JourneyActionId,
   JourneyNextBestAction,
@@ -288,7 +289,7 @@ function resolveCtaIdsWithLocale(
           ),
         };
       }
-      if (org.completedMemberCount < 3) {
+      if (org.completedMemberCount < MIN_MEMBERS_FOR_ORG_INSIGHTS) {
         return {
           primary: "INVITE_ORG_MEMBERS",
           secondary: "LAUNCH_ORG_CAMPAIGN",

@@ -16,8 +16,9 @@ import {
   type TeamRoleScores,
 } from "./team-role-scoring";
 import type { TeamRoleSelections } from "./team-role-questions";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
 
-export const TEAM_ROLE_PEER_MIN_RATERS = 3;
+export const TEAM_ROLE_PEER_MIN_RATERS = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 export interface PeerRoleProfile {
   /** Hány értékelő visszajelzéséből áll össze a kép. */

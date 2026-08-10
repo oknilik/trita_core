@@ -24,6 +24,7 @@ import {
 import { getCampaignTeamIds } from "@/lib/campaign-steps-core";
 import { getManageableTeamIds } from "@/lib/team-auth";
 import { getActiveOrgMembership } from "@/lib/org-context";
+import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 
 export type TeamEventKind = "assessment_completed" | "observer_received" | "member_joined";
 
@@ -292,7 +293,7 @@ export async function getManagerCockpitData(
       completionPct:
         memberCount > 0 ? Math.round((ts.completedCount / memberCount) * 100) : 0,
       pendingInviteCount: ts.pendingInviteCount,
-      hasPattern: ts.completedCount >= 3,
+      hasPattern: ts.completedCount >= MIN_INTELLIGENCE_ASSESSMENTS,
       activeCampaign: ts.activeCampaign,
       ...splitDynamicsEdges(ts.dynamicsEdges),
     };

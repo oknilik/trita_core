@@ -1,6 +1,7 @@
 import { prisma } from "./prisma";
 import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
 import { getOrgPendingInviteCount, getOrgTeamCount } from "./org-counts.server";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
 
 export interface ParticipantStat {
   userId: string;
@@ -267,7 +268,9 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       }
     }
 
-    if (completedMemberCount >= 3) {
+    // Org-szintű dimenzió-átlag csak az anonimitás-padló felett jelenik meg:
+    // ennél kevesebb kitöltőnél az aggregátum közvetve egyéni profilt fedne fel.
+    if (completedMemberCount >= MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) {
       tritanAvg = {};
       for (const d of dims) {
         tritanAvg[d] = Math.round(sums[d] / completedMemberCount);

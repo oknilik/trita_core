@@ -16,7 +16,9 @@
 //   peer-küszöb mintája.
 // ─────────────────────────────────────────────────────────────────────
 
-export const TRUST_MIN_RATERS = 3;
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
+
+export const TRUST_MIN_RATERS = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 export type TrustQuestionId =
   | "trust"
