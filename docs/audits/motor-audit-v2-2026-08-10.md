@@ -10,8 +10,16 @@
 >
 > **Összkép:** az első kör javításai megerősítve, 0 regresszió. A friss szem
 > viszont mélyebb réteget talált: 5 élő bug, 7 biztonsági/hozzáférési lelet, és
-> egy rendszerszintű statisztikai minta. Ez a doksi egy lehetséges v2-javítási
-> kör bemenete — a javítás NEM része ennek a körnek.
+> egy rendszerszintű statisztikai minta.
+>
+> **JAVÍTÁSI ÁLLAPOT (2026-08-10, még aznap):** a teljes lista javítva — mind az
+> 5 élő bug, mind a 7 biztonsági lelet, a csapat-réteg statisztikai fegyelme
+> (Bessel-korrekció, aligned/bizalom de-konfláció, coverage-tudat), a karrier-
+> motor mélyrétege és a konszolidáció. Részletek:
+> `docs/development/changelog/2026-08-10-motor-audit-v2-javitas.md`. Pilot-adatra
+> vár: a csapat-küszöbök és a karrier-súlyok tényleges kalibrációja (az eszközök
+> `scripts/research/` alatt készen). Strukturális változást igényel: a
+> differencia-támadás maradék kockázata (részleges mitigáció megtörtént).
 
 ## 1. Élő bugok (kódban visszaellenőrizve)
 
