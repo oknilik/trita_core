@@ -2167,4 +2167,13 @@ export const orgTranslations = {
     countryPickerTitle: { hu: "Ország", en: "Country" },
     countryPickerSearch: { hu: "Keresés...", en: "Search..." },
   },
+
+  // ── Tag-dossié (/org/[id]/members/[userId]) ──────────────────────────
+  memberDossier: {
+    // Rater-minőség aggregátum — csak darabszám, raterenkénti flag soha.
+    observerQualityNote: {
+      hu: "{n} külső értékelés alacsony differenciáltságú — az eltéréseket óvatosan érdemes olvasni.",
+      en: "{n} external rating(s) show low differentiation — read the differences with caution.",
+    },
+  },
 } as const;

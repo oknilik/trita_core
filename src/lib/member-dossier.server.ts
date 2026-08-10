@@ -14,6 +14,12 @@ import {
   type DossierFeedbackItem,
   type DossierMeasurementStatus,
 } from "@/lib/member-dossier";
+import {
+  assessRaterQuality,
+  buildRaterQualityItemMeta,
+  extractRaterAnswers,
+} from "@/lib/observer/rater-quality";
+import { getTestConfig } from "@/lib/questions";
 import { aggregatePeerRoleScores } from "@/lib/team-role-peer";
 import { getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
@@ -158,6 +164,18 @@ export async function buildMemberDossier(
   );
   const dims = computeDimComparisons(TRITAN_ORDER, selfDims, observerAvg);
   const topGaps = topGapDims(dims);
+
+  // Rater-minőség (halo / straight-line / fordított-item konzisztencia) a
+  // tárolt nyers itemválaszokból. CSAK darabszám kerül ki — raterenkénti
+  // flag nevesítve soha; nem kizárási szabály, csak olvasási óvatosság.
+  // A bank fix (TestType.TRITAN az egyedüli érték); a teljes konfig itemei
+  // a rövid (TSFI-S) kitöltéseket is lefedik.
+  const raterQualityMeta = buildRaterQualityItemMeta(getTestConfig("TRITAN").questions);
+  const observerSuspectCount = observers.reduce((count, o) => {
+    const answers = extractRaterAnswers(o.scores);
+    if (!answers) return count; // örökség-sor tárolt válaszok nélkül — nem értékelhető
+    return assessRaterQuality(answers, raterQualityMeta).suspect ? count + 1 : count;
+  }, 0);
 
   // Csapatszerep peer: raterenként a legutolsó készlet (updatedAt asc → felülír).
   const peerByRater = new Map<string, TeamRoleSelections>();
@@ -323,6 +341,7 @@ export async function buildMemberDossier(
       selfCompletedAt: selfLatest?.createdAt.toISOString() ?? null,
       selfRoundCount: selfCount,
       observerCount: observers.length,
+      observerSuspectCount,
       observerShown: observers.length >= DOSSIER_OBSERVER_MIN,
       dims,
       topGaps,

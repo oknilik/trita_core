@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { tf, type Locale } from "@/lib/i18n";
 import type {
   SerializedMemberDossier,
   DossierMeasurementKey,
@@ -76,6 +77,7 @@ export function MemberDossierView({
   isHu: boolean;
 }) {
   const { header, participation, selfVsExternal: sx, embeddedness, feedback } = dossier;
+  const locale: Locale = isHu ? "hu" : "en";
 
   return (
     <div className="flex flex-col gap-6">
@@ -221,6 +223,15 @@ export function MemberDossierView({
                   ? `Külső oszlophoz legalább 2 lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
                   : `The external column needs at least 2 completed observer ratings (currently: ${sx.observerCount}).`}
             </p>
+
+            {/* Rater-minőség jelzés — aggregált darabszám, raterenkénti flag soha. */}
+            {sx.observerSuspectCount >= 1 ? (
+              <p className="mt-1 text-micro text-muted">
+                {tf("memberDossier.observerQualityNote", locale, {
+                  n: sx.observerSuspectCount,
+                })}
+              </p>
+            ) : null}
 
             {sx.topGaps.length > 0 ? (
               <div className="mt-4 rounded-xl border border-state-warning-border bg-state-warning-bg p-3.5">
