@@ -12,12 +12,6 @@ import { t } from "@/lib/i18n/public";
 export function AboutContent() {
   const { locale } = useLocale();
 
-  const problems = [
-    { title: t("about.why1Title", locale), desc: t("about.why1Desc", locale) },
-    { title: t("about.why2Title", locale), desc: t("about.why2Desc", locale) },
-    { title: t("about.why3Title", locale), desc: t("about.why3Desc", locale) },
-  ];
-
   const layers = [
     {
       number: "01",
@@ -131,18 +125,42 @@ export function AboutContent() {
         </div>
       </section>
 
-      {/* ── Miért csináljuk ────────────────────────────────────────── */}
-      <EditorialSection eyebrow={t("about.whyEyebrow", locale)} title={t("about.whyTitle", locale)}>
-        <div className="grid gap-5 md:grid-cols-3">
-          {problems.map((item) => (
-            <article
-              key={item.title}
-              className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]"
+      {/* ── Kinek szól ─────────────────────────────────────────────────
+          Korán jön, mert a látogató első kérdése nem a módszertan, hanem
+          hogy „ez nekem szól-e". A két kártya a két réteg-színt viszi
+          (self = zsálya, team = réteg-bronz), ahogy a journey is. */}
+      <EditorialSection
+        eyebrow={t("about.audienceEyebrow", locale)}
+        title={t("about.audienceTitle", locale)}
+      >
+        <div className="grid gap-5 md:grid-cols-2">
+          <article className="flex flex-col rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-6">
+            <SectionEyebrow tone="self">{t("about.audienceSelfTitle", locale)}</SectionEyebrow>
+            <p className="mt-3 flex-1 text-base leading-8 text-ink-body">
+              {t("about.audienceSelfDesc", locale)}
+            </p>
+            {/* A soft-zsálya alapon a világosabb text-sage kontrasztja kevés —
+                itt a sötét árnyalat az alap, a hover világosít. */}
+            <Link
+              href="/try"
+              className="mt-4 inline-flex min-h-[44px] items-center self-start font-medium text-sage-dark transition-colors hover:text-sage"
             >
-              <h3 className="font-fraunces text-[24px] leading-tight text-ink">{item.title}</h3>
-              <p className="mt-3 text-base leading-8 text-ink-body">{item.desc}</p>
-            </article>
-          ))}
+              {t("about.audienceSelfCta", locale)}
+            </Link>
+          </article>
+
+          <article className="flex flex-col rounded-[24px] border border-sand bg-surface-card px-6 py-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
+            <SectionEyebrow tone="team">{t("about.audienceTeamTitle", locale)}</SectionEyebrow>
+            <p className="mt-3 flex-1 text-base leading-8 text-ink-body">
+              {t("about.audienceTeamDesc", locale)}
+            </p>
+            <Link
+              href="/contact"
+              className="mt-4 inline-flex min-h-[44px] items-center self-start font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
+            >
+              {t("about.audienceTeamCta", locale)}
+            </Link>
+          </article>
         </div>
       </EditorialSection>
 

@@ -8,11 +8,11 @@ a lapot tette le.
 
 ## Mit mond a lap, és milyen sorrendben
 
-1. **Hero** — a tét egy mondatban: a csapatról szóló döntéseknek ma nincs
-   más alapjuk, mint a benyomás.
-2. **Miért csináljuk** — a három dolog, amit a meglévő eszközök nem adnak
-   meg (a benyomás nem összevethető · a típus-címke megáll a névnél · a
-   hangulatmérés a tünetet nézi).
+1. **Hero** — a catch phrase („Ami mérhető, az megbeszélhető.") + a kettős
+   tét: az önismeret ÉS a csapatkép ma benyomásokra épül. Az aside a
+   motiváció: „Miért építjük".
+2. **Kinek szól** — egyéni kitöltőknek (ingyenes, az eredményed a tiéd) és
+   csapatoknak/vezetőknek (tanácsadó vezette program), saját CTA-val.
 3. **Hogyan épül fel** — a négy mérési réteg + a belőlük készülő validált
    csapatkép (saját ábra).
 4. **Az út** — magadtól a csapaton át a szervezetig (saját ábra).
@@ -20,8 +20,35 @@ a lapot tette le.
    aggregált csapatkép, emberi validálás, nincs jó és rossz profil.
 6. **Mi a célunk** — rendezetlenből rendezett (saját ábra), majd CTA.
 
-A CTA-k szándékosan **hátul** vannak, és a lap nem árazik: a `/pricing` és a
-`/pilot` dolga az ajánlat, ezé a magyarázat.
+A lap nem árazik: a `/pricing` és a `/pilot` dolga az ajánlat, ezé a
+magyarázat és az irányba tétel.
+
+## Utókör: brand-átnézés (még aznap)
+
+Az első változat marketing-szemmel négy ponton vérzett; mind a négy javítva:
+
+1. **Redundancia a landinggel.** A „Miért csináljuk" hármas kettő érve a
+   landing ProofSection-jét ismételte (típus-címke ≈ „Nem csak címkéz",
+   hangulatmérés ≈ „Összetétel, nem klíma"). A versenytárs-összevetés a
+   landing dolga — a szekció TÖRÖLVE, a harmadik érv (a benyomás nem
+   összevethető) a hero-törzsbe olvadt. A rétegek/út/alapelvek/cél nem
+   redundáns: az sehol máshol nincs elmondva.
+2. **Az egyéni kitöltő nem volt megszólítva.** Az eredeti hero („Attól,
+   hogy együtt dolgoztok…") csak csapatoknak beszélt, pedig a tölcsér
+   teteje az ingyenes egyéni teszt — és az oldal olvasói közt ott a
+   MEGHÍVOTT munkavállaló is, akinek az első kérdése: „mit lát ebből a
+   főnököm?". Új „Kinek szól" blokk két kártyával; az egyéni kártyában
+   kimondva: az eredményed a tiéd, a csapatképben csak összesítve jelensz
+   meg.
+3. **Hiányzott a motiváció.** A hero-aside mostantól „Miért építjük" —
+   első szám többes, kimondott meggyőződés: a legfontosabb beszélgetések
+   ma elmaradnak, mert nincs mivel elkezdeni őket.
+4. **Nem volt megragadó mondat.** A H1 mostantól maga a catch phrase:
+   **„Ami mérhető, az megbeszélhető."** — a „amit mérünk, azt kezeljük"
+   menedzsment-közhely emberi fordulata (nem kezelni akarjuk az embereket,
+   hanem beszélgetni róluk), és mindkét célcsoportra igaz. A cél-szekció
+   zárja a keretet („megbeszélhetővé tenni"), a meta description és az
+   llms.txt is ezzel indít.
 
 ## Három saját ábra — és miért nem `EditorialArt`
 

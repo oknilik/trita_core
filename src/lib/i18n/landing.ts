@@ -477,28 +477,28 @@ export const landingTranslations = {
   // ── /about — „Mi az a Trita" ────────────────────────────────────────
   // A gondolat-oldal: mire épül a termék, milyen rétegekből áll össze a
   // kép, és mi a célunk vele. A többi marketing-laptól az különbözteti
-  // meg, hogy NEM ajánlatot tesz — magyaráz. A CTA-k ezért hátul vannak.
+  // meg, hogy NEM árazó ajánlat-lap — magyaráz és irányba tesz; a
+  // részletes ajánlat a /pricing és a /pilot dolga.
+  //
+  // Brand-kör (2026-08-09, 2. kör): a versenytárs-összevetés („miért más,
+  // mint egy átlagos teszt/felmérés") NEM ennek a lapnak a dolga — az a
+  // landing ProofSection-jében él, itt ismételte volna. Helyette: kinek
+  // szól (egyéni kitöltő ÉS csapat), miért építjük (motiváció), és a
+  // catch phrase — „Ami mérhető, az megbeszélhető." — ami a szokásos
+  // „amit mérünk, azt kezeljük" menedzsment-közhely emberi fordulata:
+  // nem kezelni akarjuk az embereket, hanem beszélgetni róluk.
   //
   // Szóhasználat (CLAUDE.md): „hat személyiségdimenzió" (a modellnév nem
   // megy ki a felületre), „csapatszerep-kérdőív" (nem Belbin), a
   // kérdésbank „szabadon felhasználható, kutatásban használt".
   about: {
-    metaTitle: {
-      hu: "Mi az a Trita? A gondolat és a felépítés | Trita",
-      en: "What is Trita? The idea and how it's built | Trita",
-    },
-    metaDescription: {
-      hu: "Mire épül a Trita: négy mérési réteg, tanácsadói validálás és egy közös nyelv a csapatról. Elmondjuk, hogyan áll össze a kép — és mi a célunk vele.",
-      en: "What Trita is built on: four measurement layers, consultant validation and a shared language about the team. How the picture comes together — and what we're aiming at.",
-    },
-
     // ── Hero ──
     heroEyebrow: { hu: "A trita gondolat", en: "The idea behind trita" },
-    heroTitleBefore: { hu: "Attól, hogy együtt dolgoztok, még nem ", en: "Working together doesn't mean you " },
-    heroTitleEm: { hu: "ismeritek egymást.", en: "know each other." },
+    heroTitleBefore: { hu: "Ami mérhető, az ", en: "What you can measure, you can " },
+    heroTitleEm: { hu: "megbeszélhető.", en: "talk about." },
     heroBody: {
-      hu: "A legfontosabb döntések a legtöbb csapatban emberekről szólnak: ki mihez ért, kivel működik jól, min csúszik meg az együttműködés. Ezekre viszont ritkán van más alapunk, mint a benyomás. A Trita ezt az alapot cseréli le egy mérhető, közösen olvasható képre.",
-      en: "In most teams the decisions that matter most are about people: who's good at what, who works well with whom, where collaboration slips. Yet we rarely have anything to go on beyond impressions. Trita replaces that footing with a measurable picture everyone can read.",
+      hu: "A munkahelyi önismeret és a csapatról alkotott kép ma többnyire benyomásokra épül — két ember ugyanarról a helyzetről két külön történetet mesél, és nincs mihez viszonyítani. A Trita ezt az alapot cseréli le mérhető, közösen olvasható képre: előbb rólad, aztán — ha csapatban dolgoztok — rólatok.",
+      en: "Self-knowledge at work, and the picture we hold of a team, are mostly built on impressions — two people tell two different stories about the same situation, with nothing to compare them against. Trita replaces that footing with a measurable picture everyone can read: first about you, then — if you work as a team — about all of you.",
     },
     heroLead: {
       hu: "Ez az oldal arról szól, hogyan áll össze ez a kép, és mi a célunk vele.",
@@ -509,37 +509,36 @@ export const landingTranslations = {
     heroChip1: { hu: "Négy mérési réteg", en: "Four measurement layers" },
     heroChip2: { hu: "Tanácsadói validálás", en: "Consultant validation" },
     heroChip3: { hu: "Becsült és mért mindig jelölve", en: "Estimated vs. measured always labeled" },
-    asideEyebrow: { hu: "Egy mondatban", en: "In one sentence" },
+    // Az aside a MOTIVÁCIÓ — az egyetlen hely a publikus felületen, ahol
+    // első szám többesben kimondjuk, miért építjük ezt az egészet.
+    asideEyebrow: { hu: "Miért építjük", en: "Why we're building it" },
     asideTitle: {
-      hu: "Közös nyelvet adunk ahhoz, amiről eddig csak érezni lehetett valamit.",
-      en: "We give you a shared language for what you could previously only sense.",
+      hu: "Mert a legfontosabb beszélgetések ma elmaradnak.",
+      en: "Because the conversations that matter most don't happen.",
     },
     asideBody: {
-      hu: "Nem címkéket osztunk, és nem a pillanatnyi hangulatot mérjük. Azt mutatjuk meg, kikből áll a csapat — és ebből mi következik a mindennapi működésre.",
-      en: "We don't hand out labels, and we don't measure today's mood. We show who the team is made of — and what follows from that for everyday work.",
+      hu: "Túl sok jó csapat működik vakon: a szerepekről, a súrlódásokról, az egymás közti különbségekről akkor esik szó először, amikor már baj van. Azt akarjuk, hogy ezekhez a beszélgetésekhez legyen közös nyelv — és hogy időben történjenek meg, ne utólag.",
+      en: "Too many good teams run blind: roles, friction and the differences between people first come up when something is already wrong. We want these conversations to have a shared language — and to happen in time, not in hindsight.",
     },
 
-    // ── Miért ──
-    whyEyebrow: { hu: "Miért csináljuk", en: "Why we do it" },
-    whyTitle: {
-      hu: "A csapatról szóló döntések a legdrágábbak — és a legkevésbé alátámasztottak.",
-      en: "Decisions about teams are the most expensive — and the least evidenced.",
+    // ── Kinek szól ──
+    audienceEyebrow: { hu: "Kinek szól", en: "Who it's for" },
+    audienceTitle: {
+      hu: "Magadnak ingyenes. A csapatnak közös munka.",
+      en: "Free for yourself. A joint program for the team.",
     },
-    why1Title: { hu: "A benyomás nem összevethető", en: "Impressions can't be compared" },
-    why1Desc: {
-      hu: "Két vezető ugyanarról az emberről két különböző képet hoz, és nincs mihez viszonyítani. A vita így nem a döntésről szól, hanem arról, kinek van igaza.",
-      en: "Two managers describe the same person in two different ways, with no common reference. The debate stops being about the decision and becomes about who's right.",
+    audienceSelfTitle: { hu: "Egyéni kitöltőknek", en: "For individuals" },
+    audienceSelfDesc: {
+      hu: "Teljes felmérés nagyjából 9 perc alatt, dimenziószintű riport, karrierkép és külső visszajelzés — ingyen, rejtett fizetős szint nélkül. Az eredményed a tiéd: ha egy szervezet hívott meg, a csapatképben akkor is csak összesítve jelensz meg.",
+      en: "The full assessment in about 9 minutes, a dimension-level report, a career picture and external feedback — free, with no hidden paid tier. Your result is yours: even if an organization invited you, you only ever appear in the team picture in aggregate.",
     },
-    why2Title: { hu: "A típus-címke megáll a névnél", en: "A type label stops at the name" },
-    why2Desc: {
-      hu: "Egy betűkombináció szórakoztató, de másnap már nem lehet vele mit kezdeni. Használható irány nélkül a mérés csak beszélgetés-indító marad.",
-      en: "A four-letter code is fun, but there's nothing to do with it the next morning. Without an actionable direction, a measurement is just a conversation starter.",
+    audienceSelfCta: { hu: "Kipróbálom ingyen →", en: "Try it for free →" },
+    audienceTeamTitle: { hu: "Csapatoknak és vezetőknek", en: "For teams and leaders" },
+    audienceTeamDesc: {
+      hu: "Tanácsadó vezette program: a négy mérési rétegből validált csapatkép készül, amit közös workshopon értelmezünk — és fél év múlva is látszik, mi változott. Az ár a létszámtól és a program mélységétől függ.",
+      en: "A consultant-led program: the four measurement layers become a validated team picture we interpret together in a workshop — and six months later you can still see what changed. Pricing depends on headcount and depth.",
     },
-    why3Title: { hu: "A hangulatmérés a tünetet nézi", en: "Mood surveys look at the symptom" },
-    why3Desc: {
-      hu: "Az elégedettségi kérdőív azt mutatja, mi van most. Azt nem, hogy kikből áll a csapat — pedig a tartós mintázatok magyarázzák meg, miért tér vissza ugyanaz a súrlódás.",
-      en: "An engagement survey shows how things are right now. It doesn't show who the team is made of — yet the stable patterns are what explain why the same friction keeps returning.",
-    },
+    audienceTeamCta: { hu: "Beszéljünk a csapatotokról →", en: "Let's talk about your team →" },
 
     // ── Hogyan épül fel (rétegábra) ──
     buildEyebrow: { hu: "Hogyan épül fel", en: "How it's built" },
@@ -645,16 +644,16 @@ export const landingTranslations = {
     // ── A cél ──
     goalEyebrow: { hu: "Mi a célunk", en: "What we're aiming at" },
     goalTitle: {
-      hu: "Hogy a csapatról szóló beszélgetés végre ugyanarról szóljon.",
-      en: "So that the conversation about the team is finally about the same thing.",
+      hu: "Hogy az emberekről szóló beszélgetések végre ugyanarról szóljanak.",
+      en: "So that conversations about people are finally about the same thing.",
     },
     goalDiagramAlt: {
       hu: "Ábra: az össze nem vethető benyomásokból rendezett, közösen olvasható kép lesz.",
       en: "Diagram: incomparable impressions become an ordered picture everyone can read.",
     },
     goalBody1: {
-      hu: "Az a célunk, hogy egy csapatban ne kelljen évekig együtt dolgozni ahhoz, hogy kiderüljön, ki mihez ért és mi miért csúszik. Amit ma három év közös tapasztalata ad meg, azt szeretnénk pár hét alatt megbeszélhetővé tenni.",
-      en: "Our aim is that a team shouldn't need years together before it becomes clear who's good at what and why things slip. What three years of shared experience gives you today, we want to make discussable in a few weeks.",
+      hu: "Az a célunk, hogy az önismeret munkaeszköz legyen, ne poszterbölcsesség — és hogy egy csapatban ne kelljen évekig együtt dolgozni ahhoz, hogy kiderüljön, ki mihez ért és mi miért csúszik. Amit ma három év közös tapasztalata ad meg, azt szeretnénk pár hét alatt megbeszélhetővé tenni.",
+      en: "Our aim is for self-knowledge to be a working tool, not poster wisdom — and for a team not to need years together before it becomes clear who's good at what and why things slip. What three years of shared experience gives you today, we want to make discussable in a few weeks.",
     },
     goalBody2: {
       hu: "És hogy ne egy riport legyen, amit senki nem nyit ki. A Trita a tanácsadói munka eszköze: a mérés adja a képet, a közös értelmezés a jelentését, a platform pedig azt, hogy fél év múlva is visszanézhető legyen, mi változott.",

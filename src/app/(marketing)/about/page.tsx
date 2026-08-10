@@ -14,10 +14,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/about",
   title: "Mi az a Trita? A gondolat és a felépítés | Trita",
   description:
-    "Mire épül a Trita: négy mérési réteg, tanácsadói validálás és egy közös nyelv a csapatról. Elmondjuk, hogyan áll össze a kép — és mi a célunk vele.",
+    "Ami mérhető, az megbeszélhető. Így épül fel a Trita: négy mérési réteg, tanácsadói validálás és közös nyelv rólad és a csapatról — egyénileg ingyenes, csapatoknak program.",
   ogTitle: "Mi az a Trita? A gondolat és a felépítés",
   ogDescription:
-    "Négy mérési réteg, tanácsadói validálás és egy közös nyelv a csapatról — így áll össze a kép.",
+    "Ami mérhető, az megbeszélhető. Négy mérési réteg, tanácsadói validálás és közös nyelv rólad és a csapatról.",
 });
 
 export default function AboutPage() {
@@ -28,7 +28,7 @@ export default function AboutPage() {
           path: "/about",
           title: "Mi az a Trita? A gondolat és a felépítés",
           description:
-            "A Trita felépítése négy mérési rétegből: személyiség, külső visszajelzés, csapatszerepek és pszichológiai biztonság — tanácsadó által validált csapatképpé összeolvasva.",
+            "Ami mérhető, az megbeszélhető. A Trita felépítése négy mérési rétegből: személyiség, külső visszajelzés, csapatszerepek és pszichológiai biztonság — tanácsadó által validált csapatképpé összeolvasva. Egyéneknek ingyenes, csapatoknak tanácsadó vezette program.",
           about: ["Csapatdiagnosztika", "Személyiségfelmérés", "Csapatintelligencia"],
           breadcrumb: [
             { name: "Főoldal", path: "/" },
