@@ -174,6 +174,13 @@ function OccupationCard({
           {fit.feasibility.state === "training-needed" &&
             ` — ${t(GAP_KEY[fit.feasibility.gap] ?? GAP_KEY.ready, locale)}`}
         </span>
+        {/* Szabályozott szakma, amire a végzettség már „elég" (field-match): a
+            licenc/kamarai kötelezettség a zöld chip MELLETT külön figyelmeztet. */}
+        {fit.flags.includes("licence-ready") && (
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
+            {t("results.cfAccessLicenceReady", locale)}
+          </span>
+        )}
         {fit.interest !== null && (
           <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro text-[var(--color-text-secondary)]">
             🎯 {tf("results.cfInterestMatch", locale, { value: fit.interest })}

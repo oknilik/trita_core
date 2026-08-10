@@ -104,6 +104,26 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
+  // Jóváhagyásra váró (külső) meghívó: a rater még NEM tölthet ki — a beküldés
+  // 403 INVITE_NOT_APPROVED-dal el is utasítaná. Külön állapot-lap, nem az űrlap.
+  if (lifecycle === "awaiting_approval") {
+    return (
+      <div className="min-h-screen bg-cream">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
+            <div className="text-5xl leading-none">⏳</div>
+            <h1 className="mt-4 text-2xl font-bold text-ink">
+              {t("observer.awaitingTitle", locale)}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
+              {t("observer.awaitingBody", locale)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Belsős (név szerinti kollégának szóló) meghívó: CSAK a bejelentkezett
   // címzett töltheti ki. Külsős meghívónál (nincs observerProfileId) ilyen
   // validáció nem lehetséges — az marad publikus.
