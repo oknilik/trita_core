@@ -155,6 +155,22 @@ export interface TrustObservationInput {
   answers: TrustAnswerSet;
 }
 
+/**
+ * (rater → értékelt) páronként az UTOLSÓ megfigyelés nyer — a bemenet
+ * időrendben (régi → új) legyen rendezve; az ismételt körök így felülírják
+ * a korábbit, nem duplázódnak. A buildTeamTrustNetwork és a manager-cockpit
+ * kötegelt betöltőjének közös dedupe-lépése.
+ */
+export function dedupeLatestTrustObservations<T extends TrustObservationInput>(
+  observations: readonly T[],
+): T[] {
+  const latest = new Map<string, T>();
+  for (const obs of observations) {
+    latest.set(`${obs.raterUserId}→${obs.aboutUserId}`, obs);
+  }
+  return [...latest.values()];
+}
+
 /** Irányítatlan pár-él: a és b rendezett (a < b), a pontszám az irányok átlaga. */
 export interface TrustEdge {
   a: string;
