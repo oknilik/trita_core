@@ -71,6 +71,8 @@ export function GET(): Response {
 
 ${line("/", "Főoldal", "Mit mér a Trita, kinek szól, hogyan épül fel az egyéni és a csapatszintű kép.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
+${line("/about", "Mi az a Trita", "A gondolat és a felépítés: „Ami mérhető, az megbeszélhető.” Négy mérési réteg (személyiség, külső visszajelzés, csapatszerepek, pszichológiai biztonság), tanácsadói validálás; egyéneknek ingyenes, csapatoknak program.", baseUrl)}
+${line("/rolunk", "Rólunk", "A Trita mögött tanácsadói műhely áll: a platformot a saját munkánkhoz építettük. Miért csináljuk, és hogyan dolgozunk a partnercsapatokkal.", baseUrl)}
 ${line("/pricing", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
 ${line("/patterns", "16 csapatműködési mintázat", "Négy tengely (hajtóerő, kohézió, fegyelem, nyitottság) mentén leírt 16 csapatminta erősségekkel és kockázatokkal.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}

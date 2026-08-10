@@ -64,6 +64,10 @@ export const commonTranslations = {
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
     blog: { hu: "Blog", en: "Blog" },
+    // A gondolat-oldal (/about) a termék-oszlop ELSŐ tétele: aki a láblécig
+    // görgetett, az sokszor még mindig azt kérdezi, mi ez az egész.
+    about: { hu: "Mi az a Trita", en: "What is Trita" },
+    aboutUs: { hu: "Rólunk", en: "About us" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     // A fogalmi/tartalmi lap eddig CSAK a sitemapben és belső

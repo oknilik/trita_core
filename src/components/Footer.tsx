@@ -28,6 +28,8 @@ export function Footer() {
     {
       heading: t("footer.colProduct", locale),
       links: [
+        { label: t("footer.about", locale), href: "/about" },
+        { label: t("footer.aboutUs", locale), href: "/rolunk" },
         { label: t("footer.blog", locale), href: "/blog" },
         { label: t("footer.pricing", locale), href: "/pricing" },
         { label: t("footer.patterns", locale), href: "/patterns" },
