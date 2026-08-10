@@ -17,12 +17,13 @@ import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus } from "@/lib/observer-flow";
-import { computeObserverAverage } from "@/lib/member-dossier";
+import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/member-dossier";
 import type { TritanDimCode } from "@/lib/tritan";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
+import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
@@ -239,6 +240,15 @@ export default async function ProfileResultsPage({
   const config = getTestConfig(testType, locale);
   const accessLevel = toProfileLevel(accessLevelRaw);
 
+  // Mérési hiba a tárolt forma-pecsétből — pecsét nélküli (örökség) sorokra
+  // a konzervatívabb rövid formával számolunk.
+  const assessmentForm = scores.form ?? "short";
+  const dimSem = dimStandardError(assessmentForm);
+  const dimSemRounded = Math.round(dimSem);
+  // Facet-szintű SEM a facet-összevetéshez — kevesebb itemből számolt
+  // pontszám, ezért nagyobb hiba; a kliens kerekítve, propként kapja.
+  const facetSemRounded = Math.round(facetStandardError(assessmentForm));
+
   // ── Draft info ─────────────────────────────────────────────────────────────
   const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
@@ -264,12 +274,21 @@ export default async function ProfileResultsPage({
 
   // Kanonikus átlagoló (member-dossier): a lefedetlen dimenzió NEM kap
   // értéket — így nem gyárt hamis 0-s „vakfoltot" az összevetésben.
+  const likertObservers = completedObservers.filter((o) => o.type === "likert");
   const observerAvg = computeObserverAverage(
     mainDimCodes as TritanDimCode[],
-    completedObservers
-      .filter((o) => o.type === "likert")
-      .map((o) => o.dimensions),
+    likertObservers.map((o) => o.dimensions),
   );
+
+  // Facet-szintű külső átlag ugyanabból a forrásból — facetenként külön
+  // küszöb (≥2 értékelő), a ritkán lefedett facet kulcsa kimarad.
+  const observerFacetAverages = computeObserverFacetAverages(
+    mainDimCodes as TritanDimCode[],
+    likertObservers.map((o) => o.facets),
+  );
+  // Örökség-eredményben nincs facet-bontás — ilyenkor a facet-összevetés
+  // önkép-oldala hiányzik, a szekció nem jelenhet meg.
+  const selfFacetScores = scores.facets ?? null;
 
   // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből.
   const observerConfidences = completedObserverAssessments
@@ -465,6 +484,9 @@ export default async function ProfileResultsPage({
     if (!strongest || !weakest) return "";
 
     const s = DIMENSION_STRENGTH_VERBS[strongest.code]?.[locale] ?? strongest.label;
+    // Lapos profilnál (a teljes terjedelem a mérési hibán belül: max−min <
+    // 2·SEM) a „leggyengébb" kijelölése műtermék lenne — csak az erősség megy ki.
+    if (strongest.score - weakest.score < 2 * dimSem) return `${s}.`;
     const w = DIMENSION_WEAK_VERBS[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
     return `${s} — ${w}.`;
   })();
@@ -550,6 +572,9 @@ export default async function ProfileResultsPage({
           hasObserverData={hasObserverData}
           observerCount={completedObservers.length}
           avgObserverConfidence={avgObserverConfidence}
+          selfFacetScores={selfFacetScores}
+          observerFacetAverages={hasObserverData ? observerFacetAverages : null}
+          facetSem={facetSemRounded}
           observerFlow={observerFlow}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
@@ -559,6 +584,7 @@ export default async function ProfileResultsPage({
           strengths={strengths}
           watchAreas={watchAreas}
           plusContent={plusContent}
+          dimensionSem={dimSemRounded}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}
           bridgeNextStep={{

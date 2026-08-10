@@ -324,7 +324,9 @@ export const resultsTranslations = {
     insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself." },
     insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak téged.", en: "You rate yourself higher in this dimension than others rate you." },
     facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison" },
-    facetMapSubtitle: { hu: "Alskálák és aspektusok, az eltérés mértéke szerint rendezve. A különbség: (mások átlaga) − (te).", en: "Facets and aspects sorted by absolute divergence. Difference is (others' average) − (you)." },
+    facetMapSubtitle: { hu: "Önértékelésed és a külső átlag alskálánként, dimenziónként csoportosítva. A különbség: (mások átlaga) − (te).", en: "Your self-rating and the outside average on each sub-scale, grouped by dimension. Difference is (others' average) − (you)." },
+    facetMapAllMatch: { hu: "Minden lefedett alskálán a mérési hibán (±{sem} pont) belül van az eltérés — nincs kiugró különbség.", en: "Every covered sub-scale agrees within the measurement error (±{sem} points) — no notable gaps." },
+    facetMethodNote: { hu: "Az alskála-pontszám kevés kérdésből számolt becslés, ezért a mérési hibája (±{sem} pont) nagyobb, mint a fő dimenzióké. A ±{sem} ponton belüli eltérést egyezésként jelöljük, és csak a mindkét oldalról lefedett alskálák jelennek meg.", en: "Sub-scale scores are estimates based on only a few questions, so their measurement error (±{sem} points) is larger than for the main dimensions. Differences within ±{sem} points are marked as a match, and only sub-scales covered on both sides are shown." },
     heatmapMatch: { hu: "Közel azonos", en: "Close match" },
     heatmapObsHigher: { hu: "Mások magasabbra értékelnek", en: "Others rate higher" },
     heatmapSelfHigher: { hu: "Te értékeled magasabbra", en: "You rate higher" },
@@ -392,6 +394,17 @@ export const resultsTranslations = {
     facetAnxietyGloss: {
       hu: "Normál személyiségvonás: azt mutatja, mennyire jellemző rád a hétköznapi aggodalmaskodás — nem klinikai állapotot jelez.",
       en: "A normal personality trait: how prone you are to everyday worry — it does not indicate a clinical condition.",
+    },
+    // Mérési hiba (±SEM) a dimenzió-pontszám mellett — a {sem} a kérdőív-
+    // formához tartozó kerekített SEM (szerver-oldalról jön proppal).
+    scoreSemHint: {
+      hu: "A pontszám becsült mérési hibája ±{sem} pont — a sávhatárok közelében óvatosan érdemes olvasni.",
+      en: "The estimated measurement error of this score is ±{sem} points — read it with caution near band boundaries.",
+    },
+    // Percentilis-sor — CSAK aktív norma-tábla mellett jelenik meg (norms.ts).
+    scorePercentileLine: {
+      hu: "Ez az érték a kitöltők kb. {p}%-ánál magasabb.",
+      en: "This score is higher than roughly {p}% of respondents.",
     },
     teamRoleEyebrow: { hu: "Csapatszerepek", en: "Team roles" },
     teamRoleTitle: { hu: "Így jelenhetsz meg csapatban", en: "How you show up in teams" },

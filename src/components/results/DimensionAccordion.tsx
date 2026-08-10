@@ -4,8 +4,9 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
 import { dimensionFacetNames } from "@/lib/tritan";
+import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { UpgradeButton } from "@/components/profile/UpgradeButton";
 
@@ -34,6 +35,12 @@ interface DimensionAccordionProps {
   showUpsell?: boolean;
   /** Alapból nyitott elem indexe (pl. a legerősebb dimenzió) */
   defaultOpenIdx?: number | null;
+  /**
+   * A kérdőív-formához tartozó KEREKÍTETT mérési hiba (SEM) — a szerver
+   * számolja (psychometrics.dimStandardError), mert a bank kliens-bundle-be
+   * húzása nélkül itt nem származtatható. null/undefined → nincs ± jelzés.
+   */
+  sem?: number | null;
 }
 
 function AccordionItem({
@@ -47,6 +54,7 @@ function AccordionItem({
   onToggle,
   showUpsell,
   locale,
+  sem,
 }: {
   code: string;
   name: string;
@@ -58,6 +66,7 @@ function AccordionItem({
   onToggle: () => void;
   showUpsell: boolean;
   locale: Locale;
+  sem: number | null;
 }) {
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
@@ -65,6 +74,8 @@ function AccordionItem({
   // feloldás után látott alskála-nevekkel azonosak, lokalizáltan.
   const facetNames = dimensionFacetNames(code, locale);
   const hasFacetData = facets.length > 0 && !showUpsell;
+  // Percentilis csak aktív norma-tábla mellett (ma null → nem renderel).
+  const percentile = percentileForScore(code, value);
 
   return (
     <div
@@ -91,6 +102,14 @@ function AccordionItem({
         >
           {value}%
         </span>
+        {typeof sem === "number" && (
+          <span
+            className="shrink-0 text-micro tabular-nums text-[var(--color-text-muted)]"
+            title={tf("results.scoreSemHint", locale, { sem })}
+          >
+            ±{sem}
+          </span>
+        )}
         <span
           className={`shrink-0 text-[11px] text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         >
@@ -177,6 +196,21 @@ function AccordionItem({
                 </>
               )}
 
+              {/* Módszertani jegyzet: ±SEM magyarázat + (aktív norma-tábla
+                  esetén) percentilis-sor — a mért/becsült jelölés termék-
+                  alapelvének megfelelően visszafogottan. */}
+              {(typeof sem === "number" || percentile !== null) && (
+                <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
+                  {typeof sem === "number"
+                    ? tf("results.scoreSemHint", locale, { sem })
+                    : null}
+                  {typeof sem === "number" && percentile !== null ? " " : null}
+                  {percentile !== null
+                    ? tf("results.scorePercentileLine", locale, { p: percentile })
+                    : null}
+                </p>
+              )}
+
               {/* Upsell teaser — Self Start only */}
               {showUpsell && facetNames.length > 0 && (
                 <div className="mt-4 flex items-center gap-3 rounded-[10px] bg-[var(--color-surface-inverse)] px-4 py-3">
@@ -206,6 +240,7 @@ export function DimensionAccordion({
   dimensions,
   showUpsell = false,
   defaultOpenIdx = 0,
+  sem = null,
 }: DimensionAccordionProps) {
   // Alapból egy elem nyitva (default: az első) — a tartalom ne legyen
   // teljesen rejtve az első ránézésre.
@@ -237,6 +272,7 @@ export function DimensionAccordion({
           onToggle={() => setOpenIdx(openIdx === i ? null : i)}
           showUpsell={showUpsell}
           locale={locale}
+          sem={sem ?? null}
         />
       ))}
     </section>

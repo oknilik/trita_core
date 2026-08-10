@@ -9,9 +9,15 @@
 > P2-réteg nagy része javítva, a contribution-placement modell kivezetve, három
 > új funkció bekerült — részletek:
 > `docs/development/changelog/2026-08-10-motor-javitasok.md`. A lenti
-> hivatkozott sorszámok az audit-kori állapotra mutatnak. Nyitva: a P1
-> adatigényes tételei (norma, SEM a fő felületen, küszöb-kalibráció,
-> rater-minőség, facet-szintű observer-összevetés, recency).
+> hivatkozott sorszámok az audit-kori állapotra mutatnak.
+>
+> **P1-MÉLYÍTÉS (még aznap):** SEM a fő úton (típuscímke-óvatosság, ±SEM,
+> dossier-küszöb), norma-infrastruktúra + kalibrációs scriptek, rater-minőség
+> detektor, facet-szintű observer-összevetés, cockpit N+1 —
+> `2026-08-10-p1-melyites.md` + `2026-08-10-manager-cockpit-koteg.md`.
+> Pilot-adatra vár: norma-tábla feltöltése, 12/22 és minta-küszöb kalibráció,
+> valódi α; nyitva még: recency-súlyozás a peer/trust poolokban, interakció
+> „mért" szint, minta-motor Bessel/bimodalitás.
 
 ## Hatókör
 

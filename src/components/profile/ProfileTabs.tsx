@@ -125,6 +125,21 @@ export interface ProfileTabsProps {
   /** Az értékelők átlagos magabiztossága (1–5) — null, ha nincs adat. */
   avgObserverConfidence?: number | null;
   /**
+   * Self facet-pontszámok a scores JSON-ból (dim → facetkód → 0–100) —
+   * null, ha az örökség-eredményben nincs facet-bontás.
+   */
+  selfFacetScores?: Record<string, Record<string, number>> | null;
+  /**
+   * Facet-szintű observer-átlag (member-dossier kanonikus aggregátora,
+   * facetenként ≥2 értékelő) — null küszöb alatt.
+   */
+  observerFacetAverages?: Record<string, Record<string, number>> | null;
+  /**
+   * Kerekített facet-SEM (± pont) a facet-összevetés egyezés-küszöbéhez —
+   * a szerver számolja (lib/psychometrics), a bank nem kerül kliens-bundle-be.
+   */
+  facetSem?: number | null;
+  /**
    * Observer-folyamat állapota (self/csapat szétválasztás, 2026-07-22).
    * Org-tagnál ("locked" | "in_progress" | "available") a meghívó-tab
    * állapot-kártyát mutat a személyes meghívó-flow helyett, és az
@@ -171,6 +186,12 @@ export interface ProfileTabsProps {
     closingText: string;
   };
   bridgeNextStep?: BridgeNextStep;
+  /**
+   * A kérdőív-formához tartozó kerekített mérési hiba (±SEM) a dimenzió-
+   * pontszámok mellé — a szerver számolja (lib/psychometrics), mert a
+   * kérdésbank nem kerülhet kliens-bundle-be.
+   */
+  dimensionSem?: number | null;
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
   careerModuleHidden?: boolean;
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
@@ -240,6 +261,8 @@ interface ResultsTabProps {
   plusContent?: ProfileTabsProps["plusContent"];
   /** Observer-folyamat állapota — "locked"-nál a CTA zsákutca lenne (B5). */
   observerFlow?: ProfileTabsProps["observerFlow"];
+  /** Kerekített ±SEM a dimenzió-akkordeonhoz (szerverről). */
+  dimensionSem?: number | null;
   /** Observer-CTA: átvált a meghívások tabra */
   onOpenInvites: () => void;
 }
@@ -252,6 +275,7 @@ function ResultsTab({
   locale,
   plusContent,
   observerFlow = null,
+  dimensionSem = null,
   onOpenInvites,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
@@ -354,6 +378,7 @@ function ResultsTab({
           dimensions={accordionDims}
           showUpsell={!isPlus}
           defaultOpenIdx={0}
+          sem={dimensionSem}
         />
       </section>
 
@@ -524,6 +549,9 @@ export function ProfileTabs({
   hasObserverData,
   observerCount,
   avgObserverConfidence = null,
+  selfFacetScores = null,
+  observerFacetAverages = null,
+  facetSem = null,
   observerFlow = null,
   sentInvitations,
   receivedInvitations,
@@ -534,6 +562,7 @@ export function ProfileTabs({
   watchAreas,
   plusContent,
   bridgeNextStep,
+  dimensionSem = null,
   careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
@@ -1048,6 +1077,7 @@ export function ProfileTabs({
               locale={locale}
               plusContent={plusContent}
               observerFlow={observerFlow}
+              dimensionSem={dimensionSem}
             />
             <WorkStyleTab
               dimensions={dimensions}
@@ -1150,6 +1180,9 @@ export function ProfileTabs({
                 hasObserverData={hasObserverData}
                 observerCount={observerCount}
                 avgConfidence={avgObserverConfidence}
+                selfFacetScores={selfFacetScores}
+                observerFacetAverages={observerFacetAverages}
+                facetSem={facetSem}
               />
               <div id="invitations" className="scroll-mt-24">
                 <InvitationsTab

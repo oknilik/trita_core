@@ -10,11 +10,20 @@
 // observer egyéni válasz SOHA (csak aggregátum, min. DOSSIER_OBSERVER_MIN).
 // ─────────────────────────────────────────────────────────────────────
 
-import type { TritanDimCode } from "@/lib/tritan";
+import { TRITAN_DIMENSION_FACETS, type TritanDimCode } from "@/lib/tritan";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
+import { dimStandardError } from "@/lib/psychometrics";
 
 /** A results-oldal observer-szabálya: legalább 2 lezárt értékelés. */
 export const DOSSIER_OBSERVER_MIN = 2;
+
+/**
+ * Önkép–külső kép eltérés-küszöb: a mérési hiba (SEM, rövid forma) alatt
+ * a delta nem jel, hanem zaj — a korábbi fix 5 jóval a hiba alatt volt.
+ * (A psychometrics-import a kérdésbankot is behúzza — kliens-komponens
+ * futásidőben ne importálja ezt a modult, típusokat `import type`-pal vigyen.)
+ */
+export const DOSSIER_GAP_MIN_DELTA = Math.round(dimStandardError("short"));
 
 export type DossierMeasurementKey =
   | "self"
@@ -59,9 +68,10 @@ export interface DossierSelfVsExternal {
   selfCompletedAt: string | null;
   selfRoundCount: number;
   observerCount: number;
+  observerSuspectCount: number; // rater-minőség flaggel érintett értékelések (observer/rater-quality.ts) — csak darabszám
   observerShown: boolean;
   dims: DossierDimComparison[];
-  topGaps: DossierDimComparison[]; // |delta| >= 5, max 3
+  topGaps: DossierDimComparison[]; // |delta| >= DOSSIER_GAP_MIN_DELTA (SEM), max 3
   teamRole: {
     selfTop: { role: TeamRoleCode; score: number }[] | null;
     selfCompletedAt: string | null;
@@ -147,6 +157,42 @@ export function computeObserverAverage(
 }
 
 /**
+ * Observer-facetátlag a raterenkénti scores.facets JSON-okból
+ * ({dim: {facetKód: 0–100}}). NULL, ha összesen DOSSIER_OBSERVER_MIN-nél
+ * kevesebb válaszkészlet van. Egyébként facetenként LISTWISE: csak az az
+ * érték kerül a kimenetbe, amelyhez legalább DOSSIER_OBSERVER_MIN
+ * értékelőnél van szám — 1 fős „aggregátum" az egyéni választ fedné fel.
+ * Hiánynál kulcs-kihagyás (facet és üresen maradt dimenzió is kimarad);
+ * a facets nélküli (örökség) készletet tolerálja.
+ */
+export function computeObserverFacetAverages(
+  order: TritanDimCode[],
+  observerFacetSets: Array<Record<string, Record<string, number>> | undefined>,
+): Record<string, Record<string, number>> | null {
+  if (observerFacetSets.length < DOSSIER_OBSERVER_MIN) return null;
+
+  const result: Record<string, Record<string, number>> = {};
+  for (const code of order) {
+    const facetCodes = TRITAN_DIMENSION_FACETS[code] ?? [];
+    const dimResult: Record<string, number> = {};
+    for (const facet of facetCodes) {
+      let sum = 0;
+      let n = 0;
+      for (const set of observerFacetSets) {
+        const v = set?.[code]?.[facet];
+        if (typeof v === "number") {
+          sum += v;
+          n += 1;
+        }
+      }
+      if (n >= DOSSIER_OBSERVER_MIN) dimResult[facet] = Math.round(sum / n);
+    }
+    if (Object.keys(dimResult).length > 0) result[code] = dimResult;
+  }
+  return result;
+}
+
+/**
  * Önkép vs. külső kép dimenziónként, TRITAN-sorrendben. Observer-átlag
  * nélkül (null) az observer/delta mezők null-ok. delta = observer − self.
  * Self-érték nélküli kód kimarad a sorokból (üres self → üres lista) —
@@ -178,12 +224,13 @@ export function computeDimComparisons(
 
 /**
  * A legnagyobb önkép–külső kép eltérések: |delta| szerint csökkenő, a
- * küszöb alattiakat (és az observer nélküli sorokat) kihagyva.
+ * küszöb alattiakat (és az observer nélküli sorokat) kihagyva. A default
+ * küszöb a mérési hiba (DOSSIER_GAP_MIN_DELTA) — paraméterrel felülírható.
  */
 export function topGapDims(
   dims: DossierDimComparison[],
   n = 3,
-  minAbsDelta = 5,
+  minAbsDelta = DOSSIER_GAP_MIN_DELTA,
 ): DossierDimComparison[] {
   return dims
     .filter((d) => d.delta !== null && Math.abs(d.delta) >= minAbsDelta)
