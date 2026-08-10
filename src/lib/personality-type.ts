@@ -106,16 +106,45 @@ export function personalityAdjective(
 }
 
 /**
+ * A melléknévi színezet megbízhatósági küszöbe: ha a 2. és 3. helyezett
+ * dimenzió pontkülönbsége ennél kisebb, a "második legerősebb" kijelölése
+ * a mérési hibán belüli sorrend — a melléknév ilyenkor műtermék lenne.
+ *
+ * Érték = Math.round(dimStandardError("short")) a közös pszichometriai
+ * magból (src/lib/psychometrics.ts). SZÁNDÉKOSAN literál: ezt a modult
+ * kliens-komponensek is importálják (guest-teaser, TypeGlyphPlate…), a
+ * psychometrics viszont a teljes kérdésbankot húzná a bundle-be. A drift
+ * ellen invariáns-teszt véd: tests/unit/scoring/psychometrics.test.ts.
+ */
+export const TYPE_ADJECTIVE_MIN_GAP = 10;
+
+/**
  * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
  * (rankDimensionScores: pontszám csökkenő, holtversenynél TRITAN_ORDER —
  * így a vendég-teaser és a belépett felületek azonos címkét adnak).
- * Kevesebb mint két dimenziónál null.
+ * Kevesebb mint két (ismert) dimenziónál null.
+ *
+ * Csak az archetípus-nyelvtan által ismert kódok rangsorolódnak: az
+ * intersticiális altruizmus-skála ("I") és bármely sérült kulcs kiesik —
+ * különben a rangsort és a gap-szabályt olyan skála torzítaná, amiből
+ * címke úgysem képezhető (nyers scores.dimensions bemenetnél ez élő eset).
+ *
+ * Melléknév-óvatosság: ha a 2. és 3. helyezett közti különbség a mérési
+ * hibán belül van (< TYPE_ADJECTIVE_MIN_GAP), csak a főnévi archetípus
+ * megy ki ("Újító" / "Innovator") — a melléknévi színezet nem állítható
+ * megbízhatóan. Pontosan két dimenziónál nincs 3. helyezett, ilyenkor a
+ * teljes címke marad.
  */
 export function resolvePersonalityTypeFromScores(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
   locale: PersonalityLocale,
 ): string | null {
-  if (dimensions.length < 2) return null;
-  const [first, second] = rankDimensionScores(dimensions);
+  const known = dimensions.filter((d) => PERSONALITY_TYPE_PARTS[d.code]);
+  if (known.length < 2) return null;
+  const ranked = rankDimensionScores(known);
+  const [first, second, third] = ranked;
+  if (third && second.score - third.score < TYPE_ADJECTIVE_MIN_GAP) {
+    return personalityNoun(first.code, locale);
+  }
   return resolvePersonalityTypeLabel(first.code, second.code, locale);
 }

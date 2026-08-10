@@ -1,38 +1,23 @@
-// Mérési bizonytalanság: reliabilitás → SE → konfidencia-sáv → klaszterezés.
+// Mérési bizonytalanság a karrier-motorban: a közös pszichometriai mag
+// (reliabilitás → SE → sáv, ld. src/lib/psychometrics.ts) + a karrier-
+// specifikus hibaterjesztés: observer-keverés, illeszkedés-SE, klaszterezés.
 //
-// A pontszám önértékelés-alapú BECSLÉS. A sáv nem konstans (mint a v1-ben),
-// hanem a tényleges item-számból számolt megbízhatóságból jön, és a hibát
-// végigvezetjük az illeszkedés-számításon. Ez a termék hitelességi alapelve:
-// ahol a különbség a hibán belül van, ott NEM állítunk sorrendet.
+// A hibát végigvezetjük az illeszkedés-számításon: ahol a különbség a
+// hibán belül van, ott NEM állítunk sorrendet.
 
-import type { AssessmentForm, OccupationFit } from "./types";
+import type { OccupationFit } from "./types";
 
-/** Item-számok a TSFI bankban (dimenziónként) — a reliabilitás alapja. */
-const ITEMS_PER_DIM: Record<AssessmentForm, number> = { short: 9.5, full: 16 };
-/** Facet-szintű item-szám (ma nincs facet-cél a katalógusban; a konstans a bővítéshez van). */
-export const ITEMS_PER_FACET: Record<AssessmentForm, number> = { short: 2.5, full: 4 };
-
-/** Átlagos item-item korreláció személyiség-skálákon (konzervatív becslés). */
-const MEAN_ITEM_R = 0.22;
-/** A pontszám-eloszlás szórása a 0-100 skálán (populációs becslés). */
-const SCORE_SD = 20;
-
-/** Spearman–Brown / Cronbach-α becslés item-számból és átlagos item-korrelációból. */
-export function alphaFromItems(k: number, meanR = MEAN_ITEM_R): number {
-  return (k * meanR) / (1 + (k - 1) * meanR);
-}
-
-/** Mérési hiba (SEM) egy dimenzió-pontszámon, a kérdőív-forma szerint. */
-export function dimStandardError(form: AssessmentForm): number {
-  const alpha = alphaFromItems(ITEMS_PER_DIM[form]);
-  return SCORE_SD * Math.sqrt(Math.max(0, 1 - alpha));
-}
-
-/** Facet-szintű SEM — mindig NAGYOBB, mint a dimenzióé (kevesebb item). */
-export function facetStandardError(form: AssessmentForm): number {
-  const alpha = alphaFromItems(ITEMS_PER_FACET[form]);
-  return SCORE_SD * Math.sqrt(Math.max(0, 1 - alpha));
-}
+// A közös mag re-exportja — minden meglévő career-oldali import változatlan.
+export {
+  ITEMS_PER_DIM,
+  ITEMS_PER_FACET,
+  MEAN_ITEM_R,
+  SCORE_SD,
+  alphaFromItems,
+  dimStandardError,
+  facetStandardError,
+  bandFor,
+} from "@/lib/psychometrics";
 
 /**
  * Observer-súly: az értékelők számával nő, de a self mindig legalább 50%-ot tart.
@@ -67,13 +52,6 @@ export function fitStandardError(
     return sum + (c.weight * slope * dimSe) ** 2;
   }, 0);
   return Math.sqrt(variance);
-}
-
-export function bandFor(score: number, se: number): { low: number; high: number } {
-  return {
-    low: Math.max(0, Math.round(score - se)),
-    high: Math.min(100, Math.round(score + se)),
-  };
 }
 
 /**

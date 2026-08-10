@@ -9,7 +9,7 @@
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import {
-  resolvePersonalityTypeLabel,
+  resolvePersonalityTypeFromScores,
   type PersonalityLocale,
 } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
@@ -47,11 +47,9 @@ export function buildShareOgModel(
 
   return {
     displayName: username ?? null,
-    typeLabel: resolvePersonalityTypeLabel(
-      pair.primaryCode,
-      pair.secondaryCode,
-      locale,
-    ),
+    // Ugyanaz a resolver, mint a /share oldal címkéje — közeli 2-3.
+    // helyezettnél az OG-kép is főnév-only címkét kap, nem térhetnek el.
+    typeLabel: resolvePersonalityTypeFromScores(dims, locale),
     primaryCode: pair.primaryCode,
     secondaryCode: pair.secondaryCode,
     intensity: pair.intensity,

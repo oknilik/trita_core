@@ -95,8 +95,15 @@ describe("computeGuestTeaserScores", () => {
       rankDimensionScores(shuffled).slice(0, 2).map((d) => d.code),
       teaserTop2,
     );
-    assert.equal(
-      resolvePersonalityTypeFromScores(shuffled, "hu"),
+    // Teljes holtversenyben a melléknév bizonytalan (2-3. helyezett a mérési
+    // hibán belül) → mindkét út főnév-only címkét ad, és mivel a teaser is a
+    // közös resolvert hívja (TryCompleteClient), nem térhetnek el.
+    const teaserLabel = resolvePersonalityTypeFromScores(result.ranked, "hu");
+    assert.equal(teaserLabel, "Értékőr");
+    assert.equal(resolvePersonalityTypeFromScores(shuffled, "hu"), teaserLabel);
+    // A teljes (melléknév+főnév) címke ilyenkor NEM megy ki.
+    assert.notEqual(
+      teaserLabel,
       resolvePersonalityTypeLabel(teaserTop2[0], teaserTop2[1], "hu"),
     );
   });

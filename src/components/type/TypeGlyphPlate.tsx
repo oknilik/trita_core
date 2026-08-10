@@ -7,7 +7,7 @@ import {
   DIMENSION_GLYPHS,
   resolveGlyphPair,
 } from "@/lib/type-glyph";
-import { resolvePersonalityTypeLabel } from "@/lib/personality-type";
+import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { t, tf, type Locale } from "@/lib/i18n";
@@ -91,7 +91,9 @@ export function TypeGlyphPlate({
   if (!pair) return null;
 
   const { primaryCode, secondaryCode, intensity } = pair;
-  const typeLabel = resolvePersonalityTypeLabel(primaryCode, secondaryCode, locale);
+  // Ugyanaz a resolver, mint a hero típusneve (personality-type) — közeli
+  // 2-3. helyezettnél mindkettő főnév-only címkét ad, nem térhetnek el.
+  const typeLabel = resolvePersonalityTypeFromScores(dimensions, locale);
   if (!typeLabel) return null;
 
   const primaryGlyph = DIMENSION_GLYPHS[primaryCode];

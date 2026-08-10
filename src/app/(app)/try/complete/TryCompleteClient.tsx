@@ -15,7 +15,7 @@ import {
   type TeaserScoringMetaItem,
 } from "@/lib/guest-teaser";
 import {
-  resolvePersonalityTypeLabel,
+  resolvePersonalityTypeFromScores,
   type PersonalityLocale,
 } from "@/lib/personality-type";
 import { intensityFromScore } from "@/lib/type-glyph";
@@ -62,9 +62,11 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
 
     const [primary, secondary] = scores.ranked;
     const personalityLocale: PersonalityLocale = locale === "hu" ? "hu" : "en";
-    const typeLabel = resolvePersonalityTypeLabel(
-      primary.code,
-      secondary.code,
+    // Ugyanaz a resolver, mint a belépett results/share úton — a melléknév-
+    // óvatosság (közeli 2-3. helyezettnél főnév-only címke) itt is érvényes,
+    // különben a claim után "átnevezhetne" a típus.
+    const typeLabel = resolvePersonalityTypeFromScores(
+      scores.ranked,
       personalityLocale,
     );
     if (!typeLabel) return null;
