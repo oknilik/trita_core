@@ -21,12 +21,15 @@ export type ProfileEngineOutput = {
   topSoloDims: SoloDim[];
 };
 
-const HIGH = 65;
-const LOW = 35;
+// Pólus-küszöbök — a kategorizálás házi konvenciója (szigorú > / <
+// összehasonlítás). Az interakció-motor és a csapat-pressure ugyanezt a
+// határt importálja, hogy a küszöb ne csússzon szét.
+export const PROFILE_HIGH_THRESHOLD = 65;
+export const PROFILE_LOW_THRESHOLD = 35;
 
 function categorize(score: number): ProfileCategory {
-  if (score > HIGH) return "high";
-  if (score < LOW) return "low";
+  if (score > PROFILE_HIGH_THRESHOLD) return "high";
+  if (score < PROFILE_LOW_THRESHOLD) return "low";
   return "medium";
 }
 
@@ -61,19 +64,6 @@ export const TENSION_PAIRS: TensionPairDef[] = [
   { dimA: "ADAP", levelA: "low",  dimB: "OPEN", levelB: "high", risk: false, contentKey: "disruptiveInnovator" },
 ];
 
-/**
- * Maps Big Five codes to the internal TRITAN-like model:
- * - N (Neuroticism) → E (Emotionality)
- * - E (Extraversion) → X
- * - O, C, A → unchanged
- * - H is not available in Big Five (will be undefined → H-pairs are skipped)
- */
-function normalizeToCodes(
-  dimensions: Record<string, number>
-): Record<string, number> {
-  return dimensions;
-}
-
 function getTopSoloDims(
   normalized: Record<string, number>,
   categories: Record<string, ProfileCategory>,
@@ -95,10 +85,8 @@ export function runProfileEngine(
   dimensions: Record<string, number>,
   _testType: string
 ): ProfileEngineOutput {
-  const normalized = normalizeToCodes(dimensions);
-
   const categories: Record<string, ProfileCategory> = {};
-  for (const [code, score] of Object.entries(normalized)) {
+  for (const [code, score] of Object.entries(dimensions)) {
     // Skip interstitial dimensions like "I" (Altruism)
     if (code === "I") continue;
     categories[code] = categorize(score);
@@ -123,7 +111,7 @@ export function runProfileEngine(
   const block6Pairs = activeTensionPairs.filter((p) => !p.risk);
   const block7Pairs = activeTensionPairs.filter((p) => p.risk);
 
-  const topSoloDims = getTopSoloDims(normalized, categories);
+  const topSoloDims = getTopSoloDims(dimensions, categories);
 
   return {
     categories,

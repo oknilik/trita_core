@@ -9,6 +9,26 @@ import { TEAM_ROLES } from "./team-role-scoring";
 type TritanDimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
 type WeightMap = Partial<Record<TritanDimCode, number>>;
 
+const TRITAN_DIM_CODES: TritanDimCode[] = [
+  "INTE",
+  "RESO",
+  "TEMP",
+  "ADAP",
+  "THOR",
+  "OPEN",
+];
+
+/**
+ * Becslés csak TELJES dimenzió-készletből készül: részleges (örökség/sérült)
+ * score-sorból a hiányzó dimenziók default-feltöltése mért-kinézetű, de
+ * valójában kitalált szerepet adna.
+ */
+export function hasCompleteTritanDims(
+  scores: Partial<Record<TritanDimCode, number>> | null | undefined,
+): scores is Record<TritanDimCode, number> {
+  return TRITAN_DIM_CODES.every((dim) => typeof scores?.[dim] === "number");
+}
+
 // Weights derived from personality-role literature
 // Each role gets a weighted sum of TRITAN dim scores (positive = boosted by high score)
 export const TRITAN_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
@@ -47,11 +67,12 @@ export function estimateTeamRolesFromTritan(
 // A megjelenítési precedencia-szabály egyetlen helyen: kitöltött kérdőív >
 // TRITAN-becslés. A perzisztált pontszámok kulcsai közül csak az ismert
 // szerep-kódokat tartjuk meg (legacy kulcsú régi sorokra becslés-fallback),
-// hogy a TEAM_ROLES-feloldás sose fusson undefined-ra.
+// hogy a TEAM_ROLES-feloldás sose fusson undefined-ra. Null, ha se mért
+// eredmény, se teljes dimenzió-készlet nincs — ilyenkor nincs mit mutatni.
 export function resolveDisplayRoleScores(
   measured: Record<string, number> | null | undefined,
-  tritan: Record<TritanDimCode, number>,
-): { scores: TeamRoleScores; source: "questionnaire" | "estimate" } {
+  tritan: Partial<Record<TritanDimCode, number>> | null | undefined,
+): { scores: TeamRoleScores; source: "questionnaire" | "estimate" } | null {
   if (measured) {
     const filtered = Object.fromEntries(
       Object.entries(measured).filter(([code]) => code in TEAM_ROLES),
@@ -60,5 +81,6 @@ export function resolveDisplayRoleScores(
       return { scores: filtered as TeamRoleScores, source: "questionnaire" };
     }
   }
+  if (!hasCompleteTritanDims(tritan)) return null;
   return { scores: estimateTeamRolesFromTritan(tritan), source: "estimate" };
 }

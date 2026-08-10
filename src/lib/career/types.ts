@@ -266,6 +266,12 @@ export interface CareerFitResult {
     strategy: RankStrategy;
     /** hány tétel került a jelölt-halmazba (interest-led esetén) */
     candidatePool: number | null;
+    /**
+     * Az érdeklődés-komponens TÉNYLEGES kompozit-súlya (forrás ×
+     * differenciáltság; 0, ha nincs érdeklődés-adat). A UI EZT mutassa —
+     * ne számoljon saját súlyt.
+     */
+    interestWeight: number;
     /** true, ha a scope túl kevés találatot adott, és kibővítettük */
     scopeWidened?: boolean;
     /** hány szerepet zárt ki a felhasználó vétója */

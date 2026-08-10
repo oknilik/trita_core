@@ -1,6 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeCareerFit, generalWorkPropensity, RANK_WEIGHTS } from "@/lib/career/engine";
+import {
+  computeCareerFit,
+  generalWorkPropensity,
+  interestWeightFor,
+  RANK_WEIGHTS,
+} from "@/lib/career/engine";
 import { getOccupations, CATALOG_VERSION } from "@/lib/career/catalog";
 import {
   alphaFromItems,
@@ -381,10 +386,59 @@ test("a rangsor-súlyok sorrendje: kimondott szándék → személyiség → ér
     RANK_WEIGHTS.preference > RANK_WEIGHTS.demand,
     "a kimondott preferencia nem erősebb a személyiségnél",
   );
+  // Az érdeklődés súlya forrás-függő (interestWeightFor) — a legerősebb (mért)
+  // forma sem előzheti meg a személyiséget, és a lépcső monoton csökken.
   assert.ok(
-    RANK_WEIGHTS.demand > RANK_WEIGHTS.interest,
+    RANK_WEIGHTS.demand >= interestWeightFor("measured"),
     "a személyiség nem erősebb az érdeklődésnél",
   );
+  assert.ok(interestWeightFor("measured") > interestWeightFor("tags"));
+  assert.ok(interestWeightFor("tags") > interestWeightFor("estimated"));
+});
+
+test("meta.interestWeight: a közölt súly azonos a rangsorban ténylegesen használttal", () => {
+  const interests = {
+    vector: { R: 85, I: 60, A: 20, S: 25, E: 30, C: 55 },
+    source: "measured" as const,
+  };
+  const result = computeCareerFit(
+    { dims: balanced, form: "short", interests, prefs: { people: 1 } },
+    { limit: 10, strategy: "composite" },
+  );
+  assert.equal(result.meta.interestWeight, interestWeightFor("measured"));
+  // Rekonstruáljuk a rangot a meta-súlyból — ha a motor belül más súllyal
+  // számolna, az itt eltérést adna (a UI ezt a meta-értéket mutatja).
+  const fit = result.ranked.find(
+    (f) => f.interest !== null && f.preference !== null && !f.flags.includes("industry-pick"),
+  );
+  assert.ok(fit, "nincs teljes komponensű tétel a rangsorban");
+  const wi = result.meta.interestWeight;
+  const weightSum = RANK_WEIGHTS.demand + wi + RANK_WEIGHTS.preference;
+  const expected = Math.min(
+    100,
+    Math.round(
+      (fit.demandFit * RANK_WEIGHTS.demand +
+        (fit.interest ?? 0) * wi +
+        (fit.preference ?? 0) * RANK_WEIGHTS.preference) /
+        weightSum,
+    ),
+  );
+  assert.equal(fit.rank, expected);
+
+  // Lapos érdeklődés-profilnál a súly feleződik — a metának EZT kell mutatnia.
+  const flat = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      interests: { vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 }, source: "measured" },
+    },
+    { limit: 5 },
+  );
+  assert.equal(flat.meta.interestWeight, interestWeightFor("measured") * 0.5);
+
+  // Érdeklődés-adat nélkül a súly nulla.
+  const none = computeCareerFit({ dims: balanced, form: "short" }, { limit: 5 });
+  assert.equal(none.meta.interestWeight, 0);
 });
 
 test("preferencia nélkül a másik két komponens viszi a rangsort", () => {

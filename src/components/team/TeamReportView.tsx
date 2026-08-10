@@ -1,4 +1,5 @@
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import { t, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   PSYCH_SAFETY_ITEMS,
@@ -14,7 +15,7 @@ import {
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
-import { TEAM_PRESSURE_CONTENT } from "@/lib/team-pressure";
+import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { TritanDimCode } from "@/lib/tritan";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
@@ -286,6 +287,7 @@ export function TeamReportView({
   report: SerializedTeamReport;
   isHu: boolean;
 }) {
+  const loc: Locale = isHu ? "hu" : "en";
   // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
   // (mezőnkénti fallback az eredetire) — ld. lib/team-report-i18n.ts.
   const report = localizeTeamReport(reportInput, isHu);
@@ -941,7 +943,9 @@ export function TeamReportView({
             <div className="flex flex-col gap-4">
               {agg.pressure.concentrations.map((c) => {
                 const content =
-                  TEAM_PRESSURE_CONTENT[c.dim as TritanDimCode]?.[c.pole];
+                  c.pole === "polarized"
+                    ? TEAM_PRESSURE_POLARIZED_TEXT
+                    : TEAM_PRESSURE_CONTENT[c.dim as TritanDimCode]?.[c.pole];
                 if (!content) return null;
                 const dimLabel = DIM_LABELS[c.dim]
                   ? isHu
@@ -960,9 +964,11 @@ export function TeamReportView({
                       />
                       <p className="text-sm font-semibold text-ink">
                         {dimLabel} —{" "}
-                        {c.pole === "high"
-                          ? isHu ? "magas pólus" : "high pole"
-                          : isHu ? "alacsony pólus" : "low pole"}
+                        {c.pole === "polarized"
+                          ? t("teamComp.polePolarized", loc)
+                          : c.pole === "high"
+                            ? t("teamComp.poleHigh", loc)
+                            : t("teamComp.poleLow", loc)}
                       </p>
                       <span className="ml-auto rounded-full border border-state-warning-border bg-surface-card px-2 py-0.5 text-micro font-medium text-bronze-700">
                         {c.count}/{c.assessedCount} {isHu ? "tag" : "members"}

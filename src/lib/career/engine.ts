@@ -63,6 +63,11 @@ import {
  * származó profil-hasonlóság. Sorrend: kimondott szándék → személyiség →
  * érdeklődés.
  *
+ * Az ÉRDEKLŐDÉS súlya nem fix, ezért NEM itt él: a forrástól függ
+ * (`interestWeightFor`), és lapos profilnál tovább gyengül
+ * (`LOW_DIFFERENTIATION_FACTOR`). A ténylegesen használt értéket a
+ * `meta.interestWeight` hordozza — a UI onnan mutatja.
+ *
  * A súlyok a MEGLÉVŐ komponensekre újranormálódnak: ha a user egyetlen
  * tengelyt sem állított be, a preferencia kimarad, és a másik kettő viszi a
  * rangsort — tehát a központba helyezés nem büntet senkit, aki nem válaszolt.
@@ -70,7 +75,6 @@ import {
 export const RANK_WEIGHTS = {
   preference: 0.45,
   demand: 0.35,
-  interest: 0.2,
 } as const;
 
 /**
@@ -86,6 +90,16 @@ export function interestWeightFor(source: "measured" | "tags" | "estimated"): nu
 
 /** Alacsony érdeklődés-differenciáltságnál a Holland-jel gyengébb. */
 const LOW_DIFFERENTIATION_FACTOR = 0.5;
+
+/**
+ * Komponens-hibák a rangsor-SE terjesztéséhez (0-100 skálán): a mért
+ * érdeklődés (30 itemes kérdőív) és a közvetlen preferencia-válasz jóval
+ * pontosabb, mint a személyiség-alapú illeszkedés; a címke/becslés-alapú
+ * érdeklődés a legzajosabb.
+ */
+const INTEREST_SE_MEASURED = 6;
+const INTEREST_SE_OTHER = 12;
+const PREFERENCE_SE = 5;
 
 /** A választott iparágakhoz tartozó szerepek rangsor-bónusza (nem szűrés). */
 const INDUSTRY_PICK_BONUS = 5;
@@ -331,6 +345,11 @@ export function computeCareerFit(
     : null;
   const interestFactor =
     differentiation === "low" ? LOW_DIFFERENTIATION_FACTOR : 1;
+  // Az érdeklődés TÉNYLEGES rangsor-súlya (forrás × differenciáltság) — a meta
+  // is ezt hordozza, hogy a UI ne számolhasson mást, mint a motor.
+  const interestWeight = person.interests
+    ? interestWeightFor(person.interests.source) * interestFactor
+    : 0;
 
   let catalog = getOccupations();
   let scopeWidened = false;
@@ -396,9 +415,6 @@ export function computeCareerFit(
     );
 
     // Kompozit: csak a meglévő komponensek, a súlyok újranormálva.
-    const interestWeight = person.interests
-      ? interestWeightFor(person.interests.source) * interestFactor
-      : 0;
     const parts: Array<[number, number]> = [[demandFit, RANK_WEIGHTS.demand]];
     if (interest !== null) parts.push([interest, interestWeight]);
     if (preference !== null) parts.push([preference, RANK_WEIGHTS.preference]);
@@ -426,12 +442,14 @@ export function computeCareerFit(
       Math.round(parts.reduce((sum, [v, w]) => sum + v * w, 0) / weightSum) +
         (industryPick ? INDUSTRY_PICK_BONUS : 0),
     );
-    // A rangsor hibája: a komponensek hibáinak súlyozott terjesztése. Az
-    // érdeklődés (30 itemes mért kérdőív) és a preferencia (közvetlen válasz)
-    // jóval pontosabb, mint a személyiség-alapú illeszkedés.
+    // A rangsor hibája: a komponensek hibáinak súlyozott terjesztése.
     const interestSe =
-      interest === null ? 0 : person.interests?.source === "measured" ? 6 : 12;
-    const preferenceSe = preference === null ? 0 : 5;
+      interest === null
+        ? 0
+        : person.interests?.source === "measured"
+          ? INTEREST_SE_MEASURED
+          : INTEREST_SE_OTHER;
+    const preferenceSe = preference === null ? 0 : PREFERENCE_SE;
     const rankSe =
       Math.sqrt(
         (RANK_WEIGHTS.demand * se) ** 2 +
@@ -489,9 +507,14 @@ export function computeCareerFit(
   if (strategy === "scoped" && scopeActive) {
     // Scope-mód: a halmazt a kimondott szándék adta; a sorrendet az érdeklődés
     // (+ preferenciák) rendezi, metszet-kiemeléssel. A személyiség a klaszteren
-    // belül rendez, és annotál — nem szűr.
-    const interestSe = person.interests?.source === "measured" ? 6 : 12;
-    const scopedRankSe = Math.sqrt((0.7 * interestSe) ** 2 + (0.3 * 5) ** 2);
+    // belül rendez, és annotál — nem szűr. A hiba-terjesztés ugyanazokkal a
+    // súlyokkal fut, mint a choiceScore (CHOICE_WEIGHTS).
+    const interestSe =
+      person.interests?.source === "measured" ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER;
+    const scopedRankSe = Math.sqrt(
+      (CHOICE_WEIGHTS.interest * interestSe) ** 2 +
+        (CHOICE_WEIGHTS.preference * PREFERENCE_SE) ** 2,
+    );
     const byId = new Map(getOccupations().map((o) => [o.id, o]));
     sorted = filtered
       .map((fit) => {
@@ -553,6 +576,7 @@ export function computeCareerFit(
       dimSe: Math.round(dimSe * 10) / 10,
       strategy,
       candidatePool,
+      interestWeight,
       ...(scopeWidened ? { scopeWidened: true } : {}),
       ...(vetoExcluded > 0 ? { vetoExcluded } : {}),
     },

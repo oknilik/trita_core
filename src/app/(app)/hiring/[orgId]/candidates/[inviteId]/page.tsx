@@ -35,6 +35,10 @@ export async function generateMetadata(): Promise<Metadata> {
 // A fehér betűs kitöltött badge-ek STRONG-on ülnek (AA), a sáv/radar BASE-en.
 const DIM_COLORS: Record<string, string> = DIMENSION_STRONG;
 
+// Csapatátlag-küszöb: ennyi kitöltött önértékelés alatt az "átlag" egy-két
+// ember profilját tükrözné, nem a csapatét.
+const TEAM_AVG_MIN_MEMBERS = 3;
+
 function getDimensionInsight(
   dim: string,
   category: "high" | "medium" | "low",
@@ -207,6 +211,7 @@ export default async function CandidateResultPage({
 
   // Fetch team members' scores for comparison
   let teamAvg: Record<string, number> | null = null;
+  let teamValidCount = 0;
   if (selectedTeamId) {
     const teamMembers = await prisma.teamMember.findMany({
       where: { teamId: selectedTeamId },
@@ -231,7 +236,8 @@ export default async function CandidateResultPage({
           !!s && dims.every((d) => typeof s[d] === "number")
       );
 
-    if (validScores.length >= 1) {
+    teamValidCount = validScores.length;
+    if (validScores.length >= TEAM_AVG_MIN_MEMBERS) {
       const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
       for (const s of validScores) {
         for (const d of dims) sums[d] += s[d];
@@ -362,7 +368,12 @@ export default async function CandidateResultPage({
           </div>
           {selectedTeam && !teamAvg && (
             <p className="mt-2 text-xs text-muted">
-              {t("hiring.noAssessments", locale).replace("{name}", selectedTeam.name)}
+              {teamValidCount > 0
+                ? t("hiring.notEnoughTeamData", locale).replace(
+                    "{min}",
+                    String(TEAM_AVG_MIN_MEMBERS),
+                  )
+                : t("hiring.noAssessments", locale).replace("{name}", selectedTeam.name)}
             </p>
           )}
         </div>
@@ -435,18 +446,20 @@ export default async function CandidateResultPage({
                 );
                 const fitLevel =
                   avgAbsGap < 10 ? "excellent" : avgAbsGap < 20 ? "good" : "divergent";
+                // A címke HASONLÓSÁGOT mond, nem alkalmasságot: az eltérő
+                // profil kiegészítő is lehet, ezért nem kap minősítést.
                 // Értékelő ramp (color-system EVAL_RAMP): zsálya→bronz→neutrális
                 const fitLabels = {
-                  excellent: { hu: "Kiváló illeszkedés", en: "Excellent fit", color: EVAL_RAMP.high.accent },
-                  good: { hu: "Jó illeszkedés", en: "Good fit", color: EVAL_RAMP.mid.fg },
-                  divergent: { hu: "Eltérő profil", en: "Divergent profile", color: EVAL_RAMP.low.fg },
-                };
+                  excellent: { key: "hiring.similarityHigh", color: EVAL_RAMP.high.accent },
+                  good: { key: "hiring.similarityMid", color: EVAL_RAMP.mid.fg },
+                  divergent: { key: "hiring.similarityLow", color: EVAL_RAMP.low.fg },
+                } as const;
                 const fit = fitLabels[fitLevel];
                 const topGap = gapAnalysis[0];
                 return (
                   <>
                     <p className="text-lg font-semibold" style={{ color: fit.color }}>
-                      {isHu ? fit.hu : fit.en}
+                      {t(fit.key, locale)}
                     </p>
                     <p className="mt-1 text-xs text-ink-body">
                       {t("hiring.avgDeviation", locale).replace("{points}", String(avgAbsGap))}
@@ -462,7 +475,12 @@ export default async function CandidateResultPage({
                 );
               })() : (
                 <p className="text-xs text-muted">
-                  {t("hiring.teamComparisonNA", locale)}
+                  {teamValidCount > 0
+                    ? t("hiring.notEnoughTeamData", locale).replace(
+                        "{min}",
+                        String(TEAM_AVG_MIN_MEMBERS),
+                      )
+                    : t("hiring.teamComparisonNA", locale)}
                 </p>
               )}
             </div>

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getTeamPageData, FRICTION_WEIGHTS } from "@/lib/team-stats";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { computeAlignedHubIds } from "@/lib/friction-model";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
 import {
   MIN_INTELLIGENCE_ASSESSMENTS,
@@ -139,7 +140,8 @@ export interface TeamReportAggregates {
   pressure?: {
     concentrations: Array<{
       dim: string;
-      pole: "high" | "low";
+      /** `polarized` = mindkét pólus küszöb feletti — egyetlen összevont találat. */
+      pole: "high" | "low" | "polarized";
       count: number;
       assessedCount: number;
     }>;
@@ -200,6 +202,22 @@ function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }
 
+/**
+ * A súrlódást leginkább hajtó dimenziók: súly·szórás szerint rangsorolva,
+ * max 2. A szűrés ugyanerre a mennyiségre megy: w·szórás ≥ 2, ami a korábbi
+ * 12-es nyers szórás-küszöb × átlagsúly (1/6) megfelelője.
+ */
+export function computeTopFrictionDims(
+  dimensionSpread: Record<string, number>,
+): string[] {
+  return Object.entries(dimensionSpread)
+    .map(([dim, spread]) => ({ dim, score: (FRICTION_WEIGHTS[dim] ?? 0) * spread }))
+    .filter((d) => d.score >= 2)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 2)
+    .map((d) => d.dim);
+}
+
 export async function buildTeamReportAggregates(
   teamId: string,
 ): Promise<TeamReportAggregates | null> {
@@ -236,18 +254,16 @@ export async function buildTeamReportAggregates(
     let questionnaireCount = 0;
     let estimateCount = 0;
     for (const member of assessed) {
-      let scores: TeamRoleScores | null = null;
-      if (member.teamRoleSource === "questionnaire" && member.teamRoleScores) {
-        scores = member.teamRoleScores as TeamRoleScores;
-        questionnaireCount++;
-      } else if (member.scores && "INTE" in member.scores && "TEMP" in member.scores) {
-        scores = estimateTeamRolesFromTritan(
-          member.scores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-        );
-        estimateCount++;
-      }
-      if (!scores) continue;
-      const top3 = getTopRoles(scores, 3);
+      // Precedencia a kanonikus szabályból (team-role-estimate):
+      // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+      const resolved = resolveDisplayRoleScores(
+        member.teamRoleSource === "questionnaire" ? member.teamRoleScores : null,
+        member.scores,
+      );
+      if (!resolved) continue;
+      if (resolved.source === "questionnaire") questionnaireCount++;
+      else estimateCount++;
+      const top3 = getTopRoles(resolved.scores, 3);
       top3.forEach(({ role }, index) => {
         if (!(role in TEAM_ROLES)) return;
         if (index === 0) {
@@ -290,12 +306,7 @@ export async function buildTeamReportAggregates(
     }
     // Súrlódás-hajtó dimenziók: magas szórás × friction-súly (C/A/H dominál).
     const topFrictionDims = dimensionSpread
-      ? Object.entries(dimensionSpread)
-          .map(([dim, spread]) => ({ dim, score: (FRICTION_WEIGHTS[dim] ?? 0) * spread }))
-          .filter((d) => (dimensionSpread![d.dim] ?? 0) >= 12)
-          .sort((a, b) => b.score - a.score)
-          .slice(0, 2)
-          .map((d) => d.dim)
+      ? computeTopFrictionDims(dimensionSpread)
       : [];
     dynamics = {
       alignedCount: counts.aligned,
@@ -343,38 +354,27 @@ export async function buildTeamReportAggregates(
         };
       }
     } else if (hasMinimum && teamData.dynamicsEdges.length > 0) {
-      // Profil-alapú becslés fallback: a legtöbb "aligned" (hasonló profilú)
-      // kapcsolattal rendelkező tag(ok) — a dinamika-térkép hub-definíciójával
-      // összhangban (aligned-fok ≥ 3). Beágyazatlan-tag itt nincs.
-      const alignedDegree = new Map<string, number>();
-      for (const edge of teamData.dynamicsEdges) {
-        if (edge.type !== "aligned") continue;
-        alignedDegree.set(
-          edge.fromUserId,
-          (alignedDegree.get(edge.fromUserId) ?? 0) + 1,
-        );
-        alignedDegree.set(
-          edge.toUserId,
-          (alignedDegree.get(edge.toUserId) ?? 0) + 1,
-        );
-      }
-      const maxDegree = Math.max(0, ...alignedDegree.values());
-      if (maxDegree >= 3) {
-        const hubs = namesFor(
-          [...alignedDegree.entries()]
-            .filter(([, degree]) => degree === maxDegree)
-            .map(([id]) => id),
-        );
-        if (hubs.length > 0) {
-          trustHighlights = {
-            source: "profile_estimate",
-            measuredPairCount: 0,
-            possiblePairCount: trust?.possiblePairCount ?? null,
-            coveragePct: null,
-            hubs,
-            isolated: [],
-          };
-        }
+      // Profil-alapú becslés fallback: a dinamika-térképpel KÖZÖS hub-
+      // definíció (computeAlignedHubIds, aligned-fok ≥ 3, mindkét végpont
+      // számít). Beágyazatlan-tag itt nincs.
+      const hubs = namesFor(
+        computeAlignedHubIds(
+          teamData.dynamicsEdges.map((e) => ({
+            from: e.fromUserId,
+            to: e.toUserId,
+            type: e.type,
+          })),
+        ),
+      );
+      if (hubs.length > 0) {
+        trustHighlights = {
+          source: "profile_estimate",
+          measuredPairCount: 0,
+          possiblePairCount: trust?.possiblePairCount ?? null,
+          coveragePct: null,
+          hubs,
+          isolated: [],
+        };
       }
     }
   }
@@ -595,7 +595,13 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? `Nyomás alatti kollektív minta: ${agg.pressure.concentrations
           .map(
             (c) =>
-              `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${c.pole === "high" ? "magas" : "alacsony"} pólus, ${c.count}/${c.assessedCount} tag)`,
+              `${PREFILL_DIM_LABELS[c.dim] ?? c.dim} (${
+                c.pole === "polarized"
+                  ? "két ellentétes pólus"
+                  : c.pole === "high"
+                    ? "magas pólus"
+                    : "alacsony pólus"
+              }, ${c.count}/${c.assessedCount} tag)`,
           )
           .join(", ")} — az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
       : "",

@@ -52,13 +52,3 @@ export const tierColors = {
     cardHover: "hover:bg-[var(--color-eval-low-bg)]",
   },
 } as const;
-
-// TRITAN alskálák — dimenzió KÓD alapján (teszt-független)
-export const dimensionFacets: Record<string, string[]> = {
-  INTE: ["Egyenesség", "Méltányosság", "Mértékletesség", "Szerénység"],
-  RESO: ["Óvatosság", "Stresszérzékenység", "Támaszkeresés", "Érzelmi kötődés"],
-  TEMP: ["Társas önbizalom", "Fellépés", "Társaságkedvelés", "Lendület"],
-  ADAP: ["Megbocsátás", "Elfogadás", "Rugalmasság", "Türelem"],
-  THOR: ["Rendszerezettség", "Kitartás", "Precizitás", "Megfontoltság"],
-  OPEN: ["Esztétikai fogékonyság", "Kíváncsiság", "Alkotókedv", "Rendhagyó gondolkodás"],
-};

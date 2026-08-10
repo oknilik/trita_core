@@ -41,11 +41,12 @@ function messageOf(payload: unknown): string {
   return typeof m === "string" ? m : "";
 }
 
-const TRUST_TO_DOSSIER: Record<TrustEdgeType, DossierEdgeType> = {
+// A "disconnected" (nincs működő kapcsolat a pár között) NEM konfliktus —
+// élként nem jelenítjük meg, ezért nincs a leképezésben.
+const TRUST_TO_DOSSIER: Record<Exclude<TrustEdgeType, "disconnected">, DossierEdgeType> = {
   strong_trust: "aligned",
   moderate: "complementary",
   weak_trust: "friction",
-  disconnected: "friction",
 };
 
 function latestIso(dates: (Date | null | undefined)[]): string | null {
@@ -204,11 +205,13 @@ export async function buildMemberDossier(
     const edges: DossierEdge[] = [];
     const measuredOtherIds = new Set<string>();
 
-    // Mért élek a trust-körből (a tagot érintő párok).
+    // Mért élek a trust-körből (a tagot érintő párok). A "disconnected"
+    // pár mértnek számít (a becslés nem írja felül), de él nem lesz belőle.
     for (const e of network?.edges ?? []) {
       if (e.a !== targetUserId && e.b !== targetUserId) continue;
       const otherUserId = e.a === targetUserId ? e.b : e.a;
       measuredOtherIds.add(otherUserId);
+      if (e.type === "disconnected") continue;
       edges.push({
         otherUserId,
         otherName: nameOf(otherUserId),
@@ -226,6 +229,7 @@ export async function buildMemberDossier(
         const otherSelf = selfScoresOf(m.userId);
         if (!otherSelf) continue;
         const friction = calculatePairFriction(targetSelf, otherSelf);
+        if (friction === null) continue;
         edges.push({
           otherUserId: m.userId,
           otherName: nameOf(m.userId),

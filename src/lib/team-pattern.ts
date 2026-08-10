@@ -19,8 +19,6 @@ export interface TeamDiversity {
   cohesion: number;
   discipline: number;
   openness: number;
-  emotionality: number;
-  honesty: number;
 }
 
 export interface AxisDetail {
@@ -91,7 +89,7 @@ export interface TritanScores {
 //   3.2 → 55  |  3.4 → 60  |  3.5 → 62.5  |  3.3 → 57.5
 // ============================================================
 
-const THRESHOLDS = {
+export const PATTERN_THRESHOLDS = {
   drive:      55,
   cohesion:   60,
   discipline: 62.5,
@@ -173,20 +171,18 @@ export function calculateTeamPattern(
   };
 
   const rawDiversity: TeamDiversity = {
-    drive:        stddev(allScores.map((s) => s.TEMP)),
-    cohesion:     stddev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline:   stddev(allScores.map((s) => s.THOR)),
-    openness:     stddev(allScores.map((s) => s.OPEN)),
-    emotionality: stddev(allScores.map((s) => s.RESO)),
-    honesty:      stddev(allScores.map((s) => s.INTE)),
+    drive:      stddev(allScores.map((s) => s.TEMP)),
+    cohesion:   stddev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
+    discipline: stddev(allScores.map((s) => s.THOR)),
+    openness:   stddev(allScores.map((s) => s.OPEN)),
   };
 
   // ── 2. Tengely részletek ────────────────────────────────
   const axisEntries: [string, number, number, number][] = [
-    ["drive",      rawAxes.drive,      THRESHOLDS.drive,      rawDiversity.drive],
-    ["cohesion",   rawAxes.cohesion,   THRESHOLDS.cohesion,   rawDiversity.cohesion],
-    ["discipline", rawAxes.discipline, THRESHOLDS.discipline, rawDiversity.discipline],
-    ["openness",   rawAxes.openness,   THRESHOLDS.openness,   rawDiversity.openness],
+    ["drive",      rawAxes.drive,      PATTERN_THRESHOLDS.drive,      rawDiversity.drive],
+    ["cohesion",   rawAxes.cohesion,   PATTERN_THRESHOLDS.cohesion,   rawDiversity.cohesion],
+    ["discipline", rawAxes.discipline, PATTERN_THRESHOLDS.discipline, rawDiversity.discipline],
+    ["openness",   rawAxes.openness,   PATTERN_THRESHOLDS.openness,   rawDiversity.openness],
   ];
 
   const axes: Record<string, AxisDetail> = {};
@@ -210,10 +206,10 @@ export function calculateTeamPattern(
   // NEM a belső dimenziókódok. (A 2026-07-i TRITAN→HEXACO átnevezés itt
   // tévedésből a betű-literálokat is átírta; a kulcsok 4 betűsek maradtak.)
   const patternCode = [
-    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "E", "R"),
-    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "C", "V"),
-    poleLetter(rawAxes.discipline, THRESHOLDS.discipline, "S", "F"),
-    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "X", "P"),
+    poleLetter(rawAxes.drive,      PATTERN_THRESHOLDS.drive,      "E", "R"),
+    poleLetter(rawAxes.cohesion,   PATTERN_THRESHOLDS.cohesion,   "C", "V"),
+    poleLetter(rawAxes.discipline, PATTERN_THRESHOLDS.discipline, "S", "F"),
+    poleLetter(rawAxes.openness,   PATTERN_THRESHOLDS.openness,   "X", "P"),
   ].join("");
 
   // ── 4. Globális diverzitás suffix ──────────────────────

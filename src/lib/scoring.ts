@@ -4,6 +4,7 @@ import {
   isLikertQuestion,
   type LikertQuestion,
 } from "./questions";
+import type { AssessmentForm } from "./questions/types";
 import { TRITAN_ORDER } from "./tritan";
 
 // ============================================
@@ -18,7 +19,6 @@ interface LikertAnswer {
 interface LikertScores {
   dimensions: Record<string, number>;
   facets: Record<string, Record<string, number>>;
-  aspects: Record<string, Record<string, number>>;
 }
 
 function scoreLikert(
@@ -31,7 +31,6 @@ function scoreLikert(
 
   const totals: Record<string, { sum: number; count: number }> = {};
   const facetTotals: Record<string, Record<string, { sum: number; count: number }>> = {};
-  const aspectTotals: Record<string, Record<string, { sum: number; count: number }>> = {};
 
   for (const dim of config.dimensions) {
     totals[dim.code] = { sum: 0, count: 0 };
@@ -39,12 +38,6 @@ function scoreLikert(
       facetTotals[dim.code] = {};
       for (const f of dim.facets) {
         facetTotals[dim.code][f.code] = { sum: 0, count: 0 };
-      }
-    }
-    if (dim.aspects?.length) {
-      aspectTotals[dim.code] = {};
-      for (const a of dim.aspects) {
-        aspectTotals[dim.code][a.code] = { sum: 0, count: 0 };
       }
     }
   }
@@ -63,10 +56,6 @@ function scoreLikert(
       facetTotals[dim][question.facet].sum += value;
       facetTotals[dim][question.facet].count += 1;
     }
-    if (question.aspect && aspectTotals[dim]?.[question.aspect]) {
-      aspectTotals[dim][question.aspect].sum += value;
-      aspectTotals[dim][question.aspect].count += 1;
-    }
   }
 
   const dimensions: Record<string, number> = {};
@@ -83,34 +72,48 @@ function scoreLikert(
     }
   }
 
-  const aspects: Record<string, Record<string, number>> = {};
-  for (const [dimCode, aspectMap] of Object.entries(aspectTotals)) {
-    aspects[dimCode] = {};
-    for (const [aspectCode, { sum, count }] of Object.entries(aspectMap)) {
-      aspects[dimCode][aspectCode] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
-    }
-  }
-
-  return { dimensions, facets, aspects };
+  return { dimensions, facets };
 }
 
 // ============================================
 // Public API
 // ============================================
 
+// Provenance-pecsét: a tárolt score-JSON azonosítja, melyik bankkal és
+// motor-verzióval született — bank-csere/újrapontozás esetén enélkül nem
+// lehetne eldönteni, mely sorok érintettek.
+export const SCORING_BANK_VERSION = "tsfi-v2";
+export const SCORING_ENGINE_VERSION = 1;
+// Ennyi beadott item fölött a kitöltés a teljes bank ("full") — a pecsét
+// és az örökség-sorok questionCount-heurisztikája ugyanehhez köt.
+export const SCORING_FULL_FORM_MIN_ITEMS = 100;
+
 export type ScoreResult = {
   type: "likert";
   dimensions: Record<string, number>;
   facets?: Record<string, Record<string, number>>;
+  /** Örökség: a korábbi motor üres aspects-et tárolt — olvasáskor tolerált. */
   aspects?: Record<string, Record<string, number>>;
+  // Provenance-mezők — a pecsét bevezetése előtt tárolt sorokban hiányoznak.
+  form?: AssessmentForm;
+  bankVersion?: string;
+  engineVersion?: number;
 };
 
 export function calculateScores(
   testType: TestType,
   answers: LikertAnswer[]
 ): ScoreResult {
-  const { dimensions, facets, aspects } = scoreLikert(testType, answers);
-  return { type: "likert", dimensions, facets, aspects };
+  const { dimensions, facets } = scoreLikert(testType, answers);
+  return {
+    type: "likert",
+    dimensions,
+    facets,
+    // A beadott itemszám azonosítja a formát (60 = TSFI-S, 100 = teljes bank).
+    form: answers.length >= SCORING_FULL_FORM_MIN_ITEMS ? "full" : "short",
+    bankVersion: SCORING_BANK_VERSION,
+    engineVersion: SCORING_ENGINE_VERSION,
+  };
 }
 
 /**
@@ -126,9 +129,12 @@ export function extractDimensionScores(
   if ("dimensions" in obj && obj.dimensions && typeof obj.dimensions === "object") {
     return obj.dimensions as Record<string, number>;
   }
-  const hasDimKey = TRITAN_ORDER.some((code) => typeof obj[code] === "number");
-  if (hasDimKey) {
-    return obj as Record<string, number>;
+  // Flat örökség-formátum: csak az ismert dim-kódok kerülnek vissza — a
+  // tárolt JSON kísérő kulcsai (answers, questionCount, …) nem szivárognak.
+  const flat: Record<string, number> = {};
+  for (const code of TRITAN_ORDER) {
+    const value = obj[code];
+    if (typeof value === "number") flat[code] = value;
   }
-  return null;
+  return Object.keys(flat).length > 0 ? flat : null;
 }

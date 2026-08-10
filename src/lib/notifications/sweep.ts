@@ -16,7 +16,8 @@
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
-import { sendReflectionPromptEmail } from "@/lib/emails";
+import { sendObserverInviteEmail, sendReflectionPromptEmail } from "@/lib/emails";
+import { normalizeLocale } from "@/lib/i18n";
 import { OPEN_DEAL_STAGES, QUOTE_EXPIRING_WINDOW_DAYS } from "@/lib/crm/constants";
 import { formatQuoteNo, resolveCrmDueWindow } from "@/lib/crm/guards";
 import { expireQuote } from "@/lib/crm/quotes";
@@ -180,6 +181,117 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
   }
 }
 
+// ── Observer-emlékeztető sweep ──────────────────────────────────────────────
+// A reminderCount/lastReminderSentAt oszlopok eddig csak a kézi admin-gombot
+// szolgálták ki — az automata kör ugyanazon az e-mail úton (isReminder) megy,
+// a meglévő napi cronból. A plafonok szándékosan óvatosak: max 2 automata
+// emlékeztető meghívónként, futásonként max 50 küldés (határos cron-idő).
+
+export const OBSERVER_REMINDER_MIN_AGE_DAYS = 4;
+export const OBSERVER_REMINDER_REPEAT_DAYS = 5;
+export const OBSERVER_REMINDER_MAX_COUNT = 2;
+export const OBSERVER_REMINDER_BATCH_LIMIT = 50;
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+export interface ObserverReminderRow {
+  status: string;
+  observerEmail: string | null;
+  expiresAt: Date;
+  createdAt: Date;
+  lastReminderSentAt: Date | null;
+  reminderCount: number;
+}
+
+/**
+ * Pure kiválasztó: mely függő meghívókra megy automata emlékeztető.
+ * A DB-lekérdezés durván előszűr, de MINDEN szabály itt is érvényesül —
+ * a viselkedés egy helyen, unit-tesztelhetően él.
+ */
+export function selectObserverReminderCandidates<T extends ObserverReminderRow>(
+  invitations: ReadonlyArray<T>,
+  now: Date = new Date(),
+): T[] {
+  const oldEnough = now.getTime() - OBSERVER_REMINDER_MIN_AGE_DAYS * DAY_MS;
+  const repeatBefore = now.getTime() - OBSERVER_REMINDER_REPEAT_DAYS * DAY_MS;
+
+  const selected: T[] = [];
+  for (const inv of invitations) {
+    if (selected.length >= OBSERVER_REMINDER_BATCH_LIMIT) break;
+    if (inv.status !== "PENDING") continue;
+    if (!inv.observerEmail) continue;
+    if (inv.expiresAt.getTime() <= now.getTime()) continue;
+    if (inv.createdAt.getTime() > oldEnough) continue;
+    if (inv.reminderCount >= OBSERVER_REMINDER_MAX_COUNT) continue;
+    if (inv.lastReminderSentAt && inv.lastReminderSentAt.getTime() > repeatBefore) continue;
+    selected.push(inv);
+  }
+  return selected;
+}
+
+async function runObserverReminderSweep(result: SweepResult): Promise<void> {
+  const now = new Date();
+  const pending = await prisma.observerInvitation.findMany({
+    where: {
+      status: "PENDING",
+      observerEmail: { not: null },
+      expiresAt: { gt: now },
+      reminderCount: { lt: OBSERVER_REMINDER_MAX_COUNT },
+    },
+    // A legrégebbi meghívók előnyt kapnak, ha a futásonkénti plafon vág.
+    orderBy: { createdAt: "asc" },
+    select: {
+      id: true,
+      token: true,
+      status: true,
+      observerEmail: true,
+      observerName: true,
+      createdAt: true,
+      expiresAt: true,
+      reminderCount: true,
+      lastReminderSentAt: true,
+      inviter: { select: { username: true, email: true, locale: true } },
+    },
+  });
+
+  const candidates = selectObserverReminderCandidates(pending, now);
+  for (const inv of candidates) {
+    if (!inv.observerEmail) continue;
+    try {
+      await sendObserverInviteEmail({
+        to: inv.observerEmail,
+        inviterName: inv.inviter.username ?? inv.inviter.email ?? "Trita",
+        token: inv.token,
+        recipientName: inv.observerName ?? undefined,
+        locale: normalizeLocale(inv.inviter.locale),
+        isReminder: true,
+      });
+    } catch (err) {
+      // Küldés-hiba: a számláló nem lép, a következő futás újrapróbálja.
+      result.errors.push(
+        `observer reminder ${inv.id}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+      continue;
+    }
+    result.emailsSent++;
+    try {
+      await prisma.observerInvitation.update({
+        where: { id: inv.id },
+        data: { reminderCount: { increment: 1 }, lastReminderSentAt: new Date() },
+      });
+    } catch (err) {
+      // A levél már KIMENT — a számláló-hiba külön jelölést kap, mert a
+      // következő futás emiatt ismételhet (a max-plafon a rekordolt
+      // küldésekre garantált, a kézbesítettekre nem).
+      result.errors.push(
+        `observer reminder ${inv.id}: counter update failed (email already sent): ${
+          err instanceof Error ? err.message : String(err)
+        }`,
+      );
+    }
+  }
+}
+
 // ── CRM napi sweep ──────────────────────────────────────────────────────────
 // A meglévő napi cron (release-steps → runNotificationSweep) viszi, ÚJ
 // endpoint nélkül. Három feladat: (c) lejárt SENT ajánlat auto-EXPIRED +
@@ -324,6 +436,15 @@ export async function runNotificationSweep(): Promise<SweepResult> {
   } catch (err) {
     result.errors.push(
       `reflection sweep: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
+
+  // Observer-emlékeztetők — szintén hibatűrő, a többi lépést nem boríthatja.
+  try {
+    await runObserverReminderSweep(result);
+  } catch (err) {
+    result.errors.push(
+      `observer reminder sweep: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 

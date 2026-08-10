@@ -17,6 +17,8 @@ import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus } from "@/lib/observer-flow";
+import { computeObserverAverage } from "@/lib/member-dossier";
+import type { TritanDimCode } from "@/lib/tritan";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
@@ -97,7 +99,7 @@ export default async function ProfileResultsPage({
           status: InvitationStatus.COMPLETED,
         },
       },
-      select: { scores: true },
+      select: { scores: true, confidence: true },
     }),
     prisma.observerInvitation.findMany({
       where: { inviterId: profile.id },
@@ -260,20 +262,27 @@ export default async function ProfileResultsPage({
     .filter((d) => d.code !== "I")
     .map((d) => d.code);
 
-  const observerAvg: Record<string, number> = {};
-  if (hasObserverData) {
-    for (const code of mainDimCodes) {
-      let sum = 0;
-      let count = 0;
-      for (const obs of completedObservers) {
-        if (obs.type === "likert" && obs.dimensions[code] != null) {
-          sum += obs.dimensions[code];
-          count++;
-        }
-      }
-      observerAvg[code] = count > 0 ? Math.round(sum / count) : 0;
-    }
-  }
+  // Kanonikus átlagoló (member-dossier): a lefedetlen dimenzió NEM kap
+  // értéket — így nem gyárt hamis 0-s „vakfoltot" az összevetésben.
+  const observerAvg = computeObserverAverage(
+    mainDimCodes as TritanDimCode[],
+    completedObservers
+      .filter((o) => o.type === "likert")
+      .map((o) => o.dimensions),
+  );
+
+  // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből.
+  const observerConfidences = completedObserverAssessments
+    .map((a) => a.confidence)
+    .filter((c): c is number => typeof c === "number");
+  const avgObserverConfidence =
+    observerConfidences.length > 0
+      ? Math.round(
+          (observerConfidences.reduce((sum, c) => sum + c, 0) /
+            observerConfidences.length) *
+            10,
+        ) / 10
+      : null;
 
   const dimensions = config.dimensions.map((dim) => {
     const score = scores.dimensions[dim.code] ?? 0;
@@ -293,7 +302,7 @@ export default async function ProfileResultsPage({
       descriptionByLocale: dim.descriptionByLocale,
       insights: dim.insights,
       insightsByLocale: dim.insightsByLocale,
-      observerScore: hasObserverData ? (observerAvg[dim.code] ?? undefined) : undefined,
+      observerScore: hasObserverData ? observerAvg?.[dim.code] : undefined,
       facets: (dim.facets ?? []).map((f) => ({
         code: f.code,
         label: (f.labelByLocale?.[locale] ?? f.label) as string,
@@ -432,7 +441,6 @@ export default async function ProfileResultsPage({
     profile.username ?? profile.email ?? t("common.userFallback", locale);
 
   // ── Hero data ──────────────────────────────────────────────────────────────
-  const isHu = locale === "hu";
   const highDims = mainDimensions.filter((d) => d.score >= 70);
   const lowDims = mainDimensions.filter((d) => d.score < 40);
 
@@ -458,9 +466,7 @@ export default async function ProfileResultsPage({
 
     const s = DIMENSION_STRENGTH_VERBS[strongest.code]?.[locale] ?? strongest.label;
     const w = DIMENSION_WEAK_VERBS[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
-    return isHu
-      ? `${s} — ${w}.`
-      : `${s} — ${w}.`;
+    return `${s} — ${w}.`;
   })();
 
   // PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája)
@@ -480,6 +486,7 @@ export default async function ProfileResultsPage({
   const plusContent = accessLevel !== "start" ? {
     introText: BLOCK1[lang],
     howYouWork: workstyle.howYouWork,
+    riskParts: workstyle.riskParts,
     pressure: workstyle.pressure,
     pressureParts: workstyle.pressureParts,
     growthTip: workstyle.growthTip,
@@ -542,6 +549,7 @@ export default async function ProfileResultsPage({
           growthFocusItems={growthFocusItems}
           hasObserverData={hasObserverData}
           observerCount={completedObservers.length}
+          avgObserverConfidence={avgObserverConfidence}
           observerFlow={observerFlow}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}

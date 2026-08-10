@@ -149,27 +149,30 @@ export function computeObserverAverage(
 /**
  * Önkép vs. külső kép dimenziónként, TRITAN-sorrendben. Observer-átlag
  * nélkül (null) az observer/delta mezők null-ok. delta = observer − self.
- * Üres self → üres lista.
+ * Self-érték nélküli kód kimarad a sorokból (üres self → üres lista) —
+ * a 0-s helyettesítés hamis −100-as deltát gyártana.
  */
 export function computeDimComparisons(
   order: TritanDimCode[],
   selfDims: Record<string, number>,
   observerAvg: Record<string, number> | null,
 ): DossierDimComparison[] {
-  if (Object.keys(selfDims).length === 0) return [];
-
-  return order.map((code) => {
-    const self = Math.round(selfDims[code] ?? 0);
+  return order.flatMap((code) => {
+    const selfRaw = selfDims[code];
+    if (typeof selfRaw !== "number") return [];
+    const self = Math.round(selfRaw);
     const observer =
       observerAvg && typeof observerAvg[code] === "number"
         ? observerAvg[code]
         : null;
-    return {
-      code,
-      self,
-      observer,
-      delta: observer === null ? null : observer - self,
-    };
+    return [
+      {
+        code,
+        self,
+        observer,
+        delta: observer === null ? null : observer - self,
+      },
+    ];
   });
 }
 

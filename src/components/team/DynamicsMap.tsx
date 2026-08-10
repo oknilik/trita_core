@@ -4,7 +4,8 @@ import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { FRICTION_WEIGHTS } from "@/lib/friction-model";
+import { FRICTION_WEIGHTS, computeAlignedHubIds } from "@/lib/friction-model";
+import { EDGE_CONFIDENCE_ONE_SIDED } from "@/lib/trust-network";
 import { DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
@@ -44,18 +45,6 @@ function getCircularPositions(
     };
   });
   return result;
-}
-
-function getHubIds(edges: DynamicsEdge[]): string[] {
-  const counts: Record<string, number> = {};
-  edges
-    .filter((e) => e.type === "aligned")
-    .forEach((e) => {
-      counts[e.to] = (counts[e.to] ?? 0) + 1;
-    });
-  return Object.entries(counts)
-    .filter(([, count]) => count >= 3)
-    .map(([id]) => id);
 }
 
 // ── Dimension breakdown helpers ──────────────────────────────────────────────
@@ -189,7 +178,13 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     </span>
                     {e.source === "trust_round" ? (
                       <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
-                        {loc === "hu" ? "mért" : "measured"}
+                        {t("teamComp.dynamicsStateMeasured", loc)}
+                      </span>
+                    ) : null}
+                    {/* egyoldalú confidence = csak az egyik irányból van mért válasz */}
+                    {e.source === "trust_round" && e.confidence === EDGE_CONFIDENCE_ONE_SIDED ? (
+                      <span className="rounded-full border border-sand px-1.5 py-0.5 text-micro text-muted">
+                        {t("teamComp.edgeOneSided", loc)}
                       </span>
                     ) : null}
                     <svg
@@ -272,7 +267,8 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   }
 
   const positions = getCircularPositions(members, 180, 180, 130);
-  const hubIds = getHubIds(edges);
+  // Közös hub-definíció (friction-model): aligned-fok ≥ 3, mindkét végpont számít.
+  const hubIds = computeAlignedHubIds(edges);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">

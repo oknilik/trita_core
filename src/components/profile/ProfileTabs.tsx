@@ -22,6 +22,8 @@ import type { TritanDimCode } from "@/lib/tritan";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
+import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "@/lib/team-role-scoring";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
@@ -120,6 +122,8 @@ export interface ProfileTabsProps {
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
   observerCount: number;
+  /** Az értékelők átlagos magabiztossága (1–5) — null, ha nincs adat. */
+  avgObserverConfidence?: number | null;
   /**
    * Observer-folyamat állapota (self/csapat szétválasztás, 2026-07-22).
    * Org-tagnál ("locked" | "in_progress" | "available") a meghívó-tab
@@ -145,6 +149,8 @@ export interface ProfileTabsProps {
   plusContent?: {
     introText: string;
     howYouWork: string[];
+    /** Kockázati tension-párok strukturáltan — a PDF riskInsight forrása. */
+    riskParts?: { summary: string; mitigation: string; source?: string }[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
@@ -517,6 +523,7 @@ export function ProfileTabs({
   growthFocusItems,
   hasObserverData,
   observerCount,
+  avgObserverConfidence = null,
   observerFlow = null,
   sentInvitations,
   receivedInvitations,
@@ -759,9 +766,14 @@ export function ProfileTabs({
               });
             })();
 
-            // Workplace / risk insights for Plus callouts
+            // Workplace / risk insights for Plus callouts.
+            // Kockázat-címkét csak valódi risk-pár kaphat (riskParts) — a
+            // howYouWork[1] nem feltétlenül kockázati bekezdés.
             const workplaceInsight = plusContent?.howYouWork[0] ?? "";
-            const riskInsight = plusContent?.howYouWork[1] ?? "";
+            const firstRisk = plusContent?.riskParts?.[0];
+            const riskInsight = firstRisk
+              ? `${firstRisk.summary} ${firstRisk.mitigation}`
+              : undefined;
 
             // Karrier-export: UGYANAZ a szerver-oldali eredmény, amit a
             // képernyő mutat (a v1-ben a PDF külön, observer és preferenciák
@@ -836,44 +848,36 @@ export function ProfileTabs({
                 value: d.score,
                 description: d.insight,
               })),
-              ...((): { teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[]; teamRoleEstimated: boolean } => {
-                try {
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
-                  // A riport-felülettel egyezően: a MÉRT kérdőíves eredmény az
-                  // elsődleges; TRITAN-becslés csak fallback (forrás-jelöléssel).
-                  // Becslésnél a PDF sáv-címkét mutat pontszám nélkül (P2.3).
-                  let scores: Record<string, number> | null =
-                    teamRoleMeasuredScores ?? null;
-                  let measured = Boolean(scores);
-                  if (!scores) {
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports
-                    const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
-                    const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
-                    if (!("INTE" in hexScores) || !("TEMP" in hexScores)) {
-                      return { teamRoleRoles: [], teamRoleEstimated: true };
-                    }
-                    scores = estimateTeamRolesFromTritan(hexScores);
-                    measured = false;
-                  }
-                  const top3 = getTopRoles(scores, 3);
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { TEAM_ROLE_WHY } = require("@/lib/team-role-scoring");
-                  const sourceLabel = measured
-                    ? locale === "hu" ? "kitöltött kérdőívből" : "from completed questionnaire"
-                    : locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
-                  return {
-                    teamRoleRoles: top3.map((r: { role: string; score: number }, i: number) => ({
-                      name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
-                      subtitle: i === 0 ? sourceLabel : "",
-                      score: r.score,
-                      rank: i,
-                      // P5.3: indoklás csak becsült elsődleges szerepnél
-                      why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale === "hu" ? "hu" : "en"] : undefined,
-                    })),
-                    teamRoleEstimated: !measured,
-                  };
-                } catch { return { teamRoleRoles: [], teamRoleEstimated: true }; }
+              ...((): { teamRoleRoles: { name: string; subtitle: string; score: number; rank: number; why?: string }[]; teamRoleEstimated: boolean } => {
+                // A riport-felülettel egyezően a kanonikus precedencia-szabály
+                // (team-role-estimate): a MÉRT kérdőíves eredmény az elsődleges,
+                // TRITAN-becslés csak fallback (forrás-jelöléssel). Becslésnél
+                // a PDF sáv-címkét mutat pontszám nélkül (P2.3).
+                const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
+                const resolved = resolveDisplayRoleScores(teamRoleMeasuredScores, hexScores);
+                // Részleges (örökség) score-sorból nincs becsült szerep — a
+                // PDF-ben ilyenkor a szekció üresen marad.
+                if (!resolved) {
+                  return { teamRoleRoles: [], teamRoleEstimated: false };
+                }
+                const measured = resolved.source === "questionnaire";
+                const top3 = getTopRoles(resolved.scores, 3);
+                // Forrás-címke a képernyős badge-dzsel azonos kulcsból — a PDF
+                // és a felület ugyanazt mondja.
+                const sourceLabel = measured
+                  ? t("results.teamRoleSourceMeasured", locale)
+                  : t("results.teamRoleSourceEstimate", locale);
+                return {
+                  teamRoleRoles: top3.map((r, i) => ({
+                    name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
+                    subtitle: i === 0 ? sourceLabel : "",
+                    score: r.score,
+                    rank: i,
+                    // P5.3: indoklás csak becsült elsődleges szerepnél
+                    why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale === "hu" ? "hu" : "en"] : undefined,
+                  })),
+                  teamRoleEstimated: !measured,
+                };
               })(),
               plusContent: plusContent ? {
                 howYouWork: plusContent.howYouWork,
@@ -902,11 +906,13 @@ export function ProfileTabs({
                   observerFlow.state === "self_serve" ||
                   observerFlow.state === "available") ? {
                 count: observerCount,
-                dimensions: mainDims.map((d) => ({
-                  name: d.label,
-                  self: d.score,
-                  observer: d.observerScore ?? d.score,
-                })),
+                // Lefedetlen dimenzió (nincs observer-érték) kimarad — a
+                // hiányzó külső adat nem „tökéletes egyezés".
+                dimensions: mainDims.flatMap((d) =>
+                  d.observerScore == null
+                    ? []
+                    : [{ name: d.label, self: d.score, observer: d.observerScore }],
+                ),
                 summaryPoints: [],
               } : undefined,
             });
@@ -1143,6 +1149,7 @@ export function ProfileTabs({
                 dimensions={dimensions}
                 hasObserverData={hasObserverData}
                 observerCount={observerCount}
+                avgConfidence={avgObserverConfidence}
               />
               <div id="invitations" className="scroll-mt-24">
                 <InvitationsTab

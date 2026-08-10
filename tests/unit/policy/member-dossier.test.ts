@@ -102,6 +102,19 @@ describe("computeDimComparisons — sorrend, delta, üres self", () => {
   it("üres self → üres lista", () => {
     assert.deepEqual(computeDimComparisons(TRITAN_ORDER, {}, null), []);
   });
+
+  it("hiányzó self-dimenzió kimarad a sorokból (nincs hamis −100 delta)", () => {
+    const self: Record<string, number> = { TEMP: 50, RESO: 40, INTE: 30, THOR: 20, ADAP: 60 }; // OPEN hiányzik
+    const obs: Record<string, number> = Object.fromEntries(
+      TRITAN_ORDER.map((c) => [c, 60]),
+    );
+    const cmp = computeDimComparisons(TRITAN_ORDER, self, obs);
+    assert.deepEqual(
+      cmp.map((d) => d.code),
+      TRITAN_ORDER.filter((c) => c !== "OPEN"),
+    );
+    assert.ok(cmp.every((d) => d.delta === null || d.delta > -100));
+  });
 });
 
 describe("topGapDims — rangsor + 5 pontos küszöb", () => {

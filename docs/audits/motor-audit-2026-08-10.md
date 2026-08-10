@@ -4,6 +4,14 @@
 > számítási audit”. Ez a doksi a repo-belüli referencia: motoronkénti összefoglaló
 > + a priorizált leletlista. Minden konstans a kódból származik, fájl:sor
 > hivatkozással; az állapot a 2026-08-10-i main.
+>
+> **JAVÍTÁSI ÁLLAPOT (2026-08-10, ugyanezen a napon):** a teljes P0-lista és a
+> P2-réteg nagy része javítva, a contribution-placement modell kivezetve, három
+> új funkció bekerült — részletek:
+> `docs/development/changelog/2026-08-10-motor-javitasok.md`. A lenti
+> hivatkozott sorszámok az audit-kori állapotra mutatnak. Nyitva: a P1
+> adatigényes tételei (norma, SEM a fő felületen, küszöb-kalibráció,
+> rater-minőség, facet-szintű observer-összevetés, recency).
 
 ## Hatókör
 

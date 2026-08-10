@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { getDimensionTier, tierColors, dimensionFacets } from "@/lib/dimension-utils";
+import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { dimensionFacetNames } from "@/lib/tritan";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -60,7 +61,9 @@ function AccordionItem({
 }) {
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
-  const facetNames = dimensionFacets[code] || [];
+  // A teaser-nevek a kanonikus facet-térképből (tritan.ts) jönnek — így a
+  // feloldás után látott alskála-nevekkel azonosak, lokalizáltan.
+  const facetNames = dimensionFacetNames(code, locale);
   const hasFacetData = facets.length > 0 && !showUpsell;
 
   return (

@@ -297,9 +297,16 @@ export default async function SharedProfilePage({
         {/* TeamRole */}
         {teamRoleTop3.length > 0 && (
           <div>
-            <p className="mb-1.5 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-              {t("results.teamRoleHeading", locale)}
-            </p>
+            <div className="mb-1.5 flex flex-wrap items-center gap-2">
+              <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+                {t("results.teamRoleHeading", locale)}
+              </p>
+              {/* Forrás-badge — a megosztott nézet mindig profil-alapú becslést mutat. */}
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                {t("results.teamRoleSourceEstimate", locale)}
+              </span>
+            </div>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
               {teamRoleTop3.map(({ role, score }, idx) => {
                 const roleMeta = TEAM_ROLES[role];

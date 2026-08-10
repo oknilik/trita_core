@@ -133,9 +133,18 @@ export type TrustEdgeType =
   | "weak_trust"
   | "disconnected";
 
+// A moderate él alsó határa — a beágyazatlan (isolated) tagok számítása is
+// ehhez köt: aki alatta marad minden élén, annak nincs ≥ moderate kapcsolata.
+export const TRUST_EDGE_MODERATE_MIN = 55;
+
+// Mért pár-él confidence-e a dinamika-térképen: mindkét irányból van válasz
+// (mutual) vs csak az egyikből — a felület az egyoldalút külön jelöli.
+export const EDGE_CONFIDENCE_MUTUAL = 100;
+export const EDGE_CONFIDENCE_ONE_SIDED = 50;
+
 export function trustEdgeType(score: number): TrustEdgeType {
   if (score >= 75) return "strong_trust";
-  if (score >= 55) return "moderate";
+  if (score >= TRUST_EDGE_MODERATE_MIN) return "moderate";
   if (score >= 35) return "weak_trust";
   return "disconnected";
 }
@@ -246,7 +255,7 @@ export function computeTrustNetwork(
   const isolatedUserIds = nodes
     .filter((n) => {
       const myEdges = edges.filter((e) => e.a === n.userId || e.b === n.userId);
-      return myEdges.length >= 2 && myEdges.every((e) => e.score < 55);
+      return myEdges.length >= 2 && myEdges.every((e) => e.score < TRUST_EDGE_MODERATE_MIN);
     })
     .map((n) => n.userId);
 

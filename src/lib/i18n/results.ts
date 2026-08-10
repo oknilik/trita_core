@@ -359,6 +359,7 @@ export const resultsTranslations = {
     legendObserver: { hu: "Observer átlag (Mások)", en: "Observer avg. (Others)" },
     gapMatch: { hu: "egyezik", en: "match" },
     gapDiff: { hu: "eltérés", en: "gap" },
+    noObserverDim: { hu: "Ehhez a dimenzióhoz még nincs elég külső visszajelzés.", en: "Not enough external feedback for this dimension yet." },
     blindSpotEyebrow: { hu: "Vakfolt-elemzés", en: "Blind spot analysis" },
     blindSpotTitle: { hu: "Amit mások másképp látnak", en: "What others see differently" },
     blindSpotBody: { hu: "Olyan területek, ahol az önképed és mások visszajelzése között érdemi különbség van.", en: "Areas where your self-image and others' feedback differ meaningfully." },

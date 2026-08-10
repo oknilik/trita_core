@@ -1,6 +1,7 @@
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import type { SerializedTeamMember } from "@/lib/team-stats";
+import { isTeamManagerRole } from "@/lib/org-roles";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { TRITAN_DIMENSIONS, TRITAN_DIMENSIONS_LOWER } from "@/lib/tritan";
 
@@ -26,7 +27,8 @@ export interface TeamIntelligencePriority {
     | "role_coverage_gap"
     | "cohesion_risk"
     | "dimension_spread"
-    | "leader_team_mismatch";
+    | "leader_team_mismatch"
+    | "healthy_baseline";
   tone: "sage" | "amber" | "violet" | "rose";
   title: string;
   reason: string;
@@ -42,7 +44,10 @@ export function resolveTeamTabRedirect(tab: string | undefined): "intelligence" 
 interface BuildEvidenceInput {
   assessedCount: number;
   totalCount: number;
-  hasDynamicsData: boolean;
+  /** Dinamika-élek száma összesen (mért + becsült). */
+  dynamicsEdgeCount: number;
+  /** Mért (trust_round / legacy observer forrású) élek száma. */
+  measuredDynamicsEdgeCount: number;
   locale: "hu" | "en";
 }
 
@@ -77,16 +82,6 @@ function stdDev(values: number[]): number {
   return Math.sqrt(variance);
 }
 
-function isLikelyLeaderRole(role: string): boolean {
-  const normalized = role.trim().toLowerCase();
-  return (
-    normalized.includes("manager") ||
-    normalized.includes("lead") ||
-    normalized.includes("owner") ||
-    normalized.includes("admin")
-  );
-}
-
 export function resolveTeamIntelligenceQuality(
   assessedCount: number,
   totalCount: number,
@@ -94,118 +89,6 @@ export function resolveTeamIntelligenceQuality(
   if (assessedCount === 0 || totalCount === 0) return "none";
   if (assessedCount < MIN_INTELLIGENCE_ASSESSMENTS) return "partial";
   return "sufficient";
-}
-
-// ─── Contribution placement (team map) ──────────────────────────────────────
-//
-// Replaces the earlier single-dimension threshold heuristic (C → skill,
-// (O+X)/2 → growth) with weighted composites over the TRITAN profile.
-// Weights are a documented starting point, not a validated calibration:
-// - delivery reliability: Conscientiousness dominates (planning, follow-
-//   through), Honesty-Humility adds dependability, low Emotionality adds
-//   stability under pressure.
-// - growth/adaptability: Openness dominates (learning orientation),
-//   eXtraversion adds approach energy, low Emotionality adds resilience.
-// Confidence reflects distance from the banding thresholds: placements
-// near a band edge are explicitly low-confidence.
-
-export interface TritanProfile {
-  INTE: number;
-  RESO: number;
-  TEMP: number;
-  ADAP: number;
-  THOR: number;
-  OPEN: number;
-}
-
-export type PlacementLevel = 1 | 2 | 3;
-export type PlacementConfidence = "low" | "medium" | "high";
-
-export interface ContributionPlacement {
-  /** 0-100 weighted composite: how reliably this person ships/delivers */
-  deliveryScore: number;
-  /** 0-100 weighted composite: learning/adaptability orientation */
-  growthScore: number;
-  skillLevel: PlacementLevel;
-  growthPotential: PlacementLevel;
-  confidence: PlacementConfidence;
-  source: "self_estimate";
-}
-
-const DELIVERY_WEIGHTS: Partial<Record<keyof TritanProfile, number>> = {
-  THOR: 0.6,
-  INTE: 0.25,
-  RESO: 0.15, // inverted: stability = 100 - E
-};
-
-const GROWTH_WEIGHTS: Partial<Record<keyof TritanProfile, number>> = {
-  OPEN: 0.5,
-  TEMP: 0.3,
-  RESO: 0.2, // inverted: resilience = 100 - E
-};
-
-const INVERTED_DIMS: ReadonlySet<keyof TritanProfile> = new Set(["RESO"]);
-
-const BAND_LOW = 40;
-const BAND_HIGH = 60;
-// Composite within this distance of a band edge → placement is uncertain
-const LOW_CONFIDENCE_MARGIN = 5;
-const MEDIUM_CONFIDENCE_MARGIN = 10;
-
-function weightedComposite(
-  tritan: TritanProfile,
-  weights: Partial<Record<keyof TritanProfile, number>>,
-): number {
-  let sum = 0;
-  let totalWeight = 0;
-  for (const [dim, weight] of Object.entries(weights) as Array<
-    [keyof TritanProfile, number]
-  >) {
-    const raw = tritan[dim];
-    if (typeof raw !== "number" || Number.isNaN(raw)) continue;
-    const value = INVERTED_DIMS.has(dim) ? 100 - raw : raw;
-    sum += value * weight;
-    totalWeight += weight;
-  }
-  if (totalWeight <= 0) return 50;
-  return Math.round(sum / totalWeight);
-}
-
-function toBand(score: number): PlacementLevel {
-  if (score >= BAND_HIGH) return 3;
-  if (score >= BAND_LOW) return 2;
-  return 1;
-}
-
-function boundaryDistance(score: number): number {
-  return Math.min(Math.abs(score - BAND_LOW), Math.abs(score - BAND_HIGH));
-}
-
-export function resolveContributionPlacement(
-  tritan: TritanProfile,
-): ContributionPlacement {
-  const deliveryScore = weightedComposite(tritan, DELIVERY_WEIGHTS);
-  const growthScore = weightedComposite(tritan, GROWTH_WEIGHTS);
-
-  const minDistance = Math.min(
-    boundaryDistance(deliveryScore),
-    boundaryDistance(growthScore),
-  );
-  const confidence: PlacementConfidence =
-    minDistance < LOW_CONFIDENCE_MARGIN
-      ? "low"
-      : minDistance < MEDIUM_CONFIDENCE_MARGIN
-        ? "medium"
-        : "high";
-
-  return {
-    deliveryScore,
-    growthScore,
-    skillLevel: toBand(deliveryScore),
-    growthPotential: toBand(growthScore),
-    confidence,
-    source: "self_estimate",
-  };
 }
 
 export function resolveTeamIntelligenceConfidence(
@@ -219,11 +102,16 @@ export function resolveTeamIntelligenceConfidence(
 export function buildTeamIntelligenceEvidence({
   assessedCount,
   totalCount,
-  hasDynamicsData,
+  dynamicsEdgeCount,
+  measuredDynamicsEdgeCount,
   locale,
 }: BuildEvidenceInput): TeamIntelligenceEvidenceBySub {
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
   const roleQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
+  const hasDynamicsData = dynamicsEdgeCount > 0;
+  // Csak MÉRT él emeli az evidenciát önértékelés fölé — a tisztán
+  // profil-alapú becslés forrása "self", konfidenciája alacsony.
+  const hasMeasuredDynamics = measuredDynamicsEdgeCount > 0;
 
   return {
     map: {
@@ -237,17 +125,21 @@ export function buildTeamIntelligenceEvidence({
       ),
     },
     dynamics: {
-      source: "self_plus_observer",
+      source: hasMeasuredDynamics ? "self_plus_observer" : "self",
       quality: hasDynamicsData ? "partial" : "none",
-      confidence: hasDynamicsData ? "medium" : "low",
+      confidence: hasMeasuredDynamics ? "medium" : "low",
       note: tr(
         locale,
-        hasDynamicsData
-          ? "A kapcsolati minta observer/peer adatokból épül."
-          : "A kapcsolati nézethez observer vagy peer-kapcsolati adat szükséges.",
-        hasDynamicsData
-          ? "Relationship map is based on observer/peer data."
-          : "Relationship view requires observer or peer-connection data.",
+        hasMeasuredDynamics
+          ? "A kapcsolati minta részben mért bizalmi kör adatból épül."
+          : hasDynamicsData
+            ? "A kapcsolati minta profil-alapú becslés — mért adathoz bizalmi kör szükséges."
+            : "A kapcsolati nézethez observer vagy peer-kapcsolati adat szükséges.",
+        hasMeasuredDynamics
+          ? "The relationship map partly builds on measured trust-round data."
+          : hasDynamicsData
+            ? "The relationship map is a profile-based estimate — a trust round provides measured data."
+            : "Relationship view requires observer or peer-connection data.",
       ),
     },
     roles: {
@@ -326,19 +218,14 @@ export function buildTeamIntelligencePriorities({
     const keyRoles: Array<keyof typeof TEAM_ROLES> = ["KO", "HA", "ER"];
     const presentTopRoles = new Set<keyof typeof TEAM_ROLES>();
     membersWithScores.forEach((member) => {
-      // Prefer the real questionnaire result; estimate only as fallback
-      const scores =
-        member.teamRoleSource === "questionnaire" && member.teamRoleScores
-          ? (member.teamRoleScores as Record<keyof typeof TEAM_ROLES, number>)
-          : estimateTeamRolesFromTritan({
-              INTE: member.scores!.INTE,
-              RESO: member.scores!.RESO,
-              TEMP: member.scores!.TEMP,
-              ADAP: member.scores!.ADAP,
-              THOR: member.scores!.THOR,
-              OPEN: member.scores!.OPEN,
-            });
-      const top = getTopRoles(scores, 1)[0]?.role;
+      // Precedencia a kanonikus szabályból (team-role-estimate):
+      // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+      const resolved = resolveDisplayRoleScores(
+        member.teamRoleSource === "questionnaire" ? member.teamRoleScores : null,
+        member.scores,
+      );
+      if (!resolved) return;
+      const top = getTopRoles(resolved.scores, 1)[0]?.role;
       if (top) presentTopRoles.add(top);
     });
 
@@ -418,8 +305,10 @@ export function buildTeamIntelligencePriorities({
       });
     }
 
+    // A TeamMember.role kötött értékkészletű ("member" | "manager" | "admin",
+    // ld. prisma séma) — a vezető a csapat-szintű kezelő szerep viselője.
     const leaderWithScores = membersWithScores.find((member) =>
-      isLikelyLeaderRole(member.role),
+      isTeamManagerRole(member.role),
     );
     if (leaderWithScores) {
       const teamAverageH = mean(
@@ -462,7 +351,7 @@ export function buildTeamIntelligencePriorities({
 
   if (priorities.length === 0 && missingAssessments === 0) {
     priorities.push({
-      id: "role_coverage_gap",
+      id: "healthy_baseline",
       tone: "sage",
       title: tr(locale, "Jó állapot", "Healthy baseline"),
       reason: tr(

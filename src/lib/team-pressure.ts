@@ -9,18 +9,29 @@
 // a riport-értelmezési sablonok elve: megfigyelés akció nélkül = zaj.
 // ─────────────────────────────────────────────────────────────────────
 
+import {
+  PROFILE_HIGH_THRESHOLD,
+  PROFILE_LOW_THRESHOLD,
+} from "@/lib/profile-engine";
 import type { TritanDimCode } from "@/lib/tritan";
 
 export type PressurePole = "high" | "low";
+/**
+ * Találat-pólus: ha egy dimenziónál MINDKÉT pólus eléri a koncentráció-
+ * küszöböt, egyetlen "polarized" találat születik a két (egymásnak
+ * ellentmondó) pólus-találat helyett.
+ */
+export type PressureFindingPole = PressurePole | "polarized";
 
 interface PressureText {
   hu: string;
   en: string;
 }
 
-// Pólus-küszöbök — az egyéni profilmotor HIGH/LOW határaival azonosak.
-export const PRESSURE_HIGH_THRESHOLD = 65;
-export const PRESSURE_LOW_THRESHOLD = 35;
+// Pólus-küszöbök — az egyéni profilmotor HIGH/LOW határaiból (itt ≥/≤
+// összehasonlítással, a koncentráció-számlálás inkluzív).
+export const PRESSURE_HIGH_THRESHOLD = PROFILE_HIGH_THRESHOLD;
+export const PRESSURE_LOW_THRESHOLD = PROFILE_LOW_THRESHOLD;
 // Koncentráció: az értékelt tagok legalább fele + legalább 2 fő.
 export const PRESSURE_SHARE_THRESHOLD = 0.5;
 export const PRESSURE_MIN_COUNT = 2;
@@ -93,10 +104,19 @@ export const TEAM_PRESSURE_CONTENT: Record<
   },
 };
 
+/**
+ * Generikus polarizációs szöveg — dimenziófüggetlen, mert a kettéosztottság
+ * dinamikája (két csoport, két reakciómód) minden dimenzióra azonos.
+ */
+export const TEAM_PRESSURE_POLARIZED_TEXT: PressureText = {
+  hu: "Ebben a dimenzióban a csapat két ellentétes pólusra oszlik: nyomás alatt a két csoport eltérő — akár egymásnak feszülő — módon reagálhat, és a különbség tovább mélyülhet. Segít, ha a kétféle működést nyíltan kimondjátok, és előre megállapodtok, melyik helyzetben melyik kapjon teret.",
+  en: "On this dimension the team splits into two opposite poles: under pressure the two groups may react in different — even clashing — ways, and the gap can widen further. It helps to name the two styles openly and agree in advance which one leads in which situation.",
+};
+
 export interface PressureConcentration {
   dim: TritanDimCode;
-  pole: PressurePole;
-  /** Hány értékelt tag van ezen a póluson. */
+  pole: PressureFindingPole;
+  /** Hány értékelt tag van ezen a póluson (polarizáltnál a két pólus összege). */
   count: number;
   /** Az értékelt tagok száma (a nevező). */
   assessedCount: number;
@@ -124,14 +144,25 @@ export function computeTeamPressure(
       .filter((v): v is number => typeof v === "number");
     if (values.length < PRESSURE_MIN_COUNT) continue;
 
-    for (const pole of ["high", "low"] as const) {
-      const count = values.filter((v) =>
-        pole === "high" ? v >= PRESSURE_HIGH_THRESHOLD : v <= PRESSURE_LOW_THRESHOLD,
-      ).length;
-      const share = count / values.length;
-      if (count >= PRESSURE_MIN_COUNT && share >= PRESSURE_SHARE_THRESHOLD) {
-        findings.push({ dim, pole, count, assessedCount: values.length, share });
-      }
+    const highCount = values.filter((v) => v >= PRESSURE_HIGH_THRESHOLD).length;
+    const lowCount = values.filter((v) => v <= PRESSURE_LOW_THRESHOLD).length;
+    const qualifies = (count: number) =>
+      count >= PRESSURE_MIN_COUNT && count / values.length >= PRESSURE_SHARE_THRESHOLD;
+
+    if (qualifies(highCount) && qualifies(lowCount)) {
+      // Kettőspólus: egy polarizált találat a két ellentmondó bekezdés helyett.
+      const count = highCount + lowCount;
+      findings.push({
+        dim,
+        pole: "polarized",
+        count,
+        assessedCount: values.length,
+        share: count / values.length,
+      });
+    } else if (qualifies(highCount)) {
+      findings.push({ dim, pole: "high", count: highCount, assessedCount: values.length, share: highCount / values.length });
+    } else if (qualifies(lowCount)) {
+      findings.push({ dim, pole: "low", count: lowCount, assessedCount: values.length, share: lowCount / values.length });
     }
   }
 

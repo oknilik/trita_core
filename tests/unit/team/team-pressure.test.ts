@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   computeTeamPressure,
   TEAM_PRESSURE_CONTENT,
+  TEAM_PRESSURE_POLARIZED_TEXT,
   PRESSURE_MAX_FINDINGS,
 } from "@/lib/team-pressure";
 import type { TritanDimCode } from "@/lib/tritan";
@@ -38,6 +39,16 @@ describe("TEAM_PRESSURE_CONTENT — tartalmi teljesség", () => {
         );
       }
     }
+  });
+
+  it("polarizált szöveg: mindkét nyelven él, hipotézis-nyelven", () => {
+    assert.ok(TEAM_PRESSURE_POLARIZED_TEXT.hu.length > 40);
+    assert.ok(TEAM_PRESSURE_POLARIZED_TEXT.en.length > 40);
+    assert.ok(
+      !/\bmindig\b|\bsoha\b|\bgarantáltan\b|\bbiztosan\b/i.test(
+        TEAM_PRESSURE_POLARIZED_TEXT.hu,
+      ),
+    );
   });
 });
 
@@ -98,6 +109,56 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
   it("egyetlen fős 'koncentrációt' (kis csapat, 1 kitöltő) nem emel ki", () => {
     assert.deepEqual(computeTeamPressure([member({ THOR: 90 })]), []);
     assert.deepEqual(computeTeamPressure([]), []);
+  });
+
+  it("kettőspólus: mindkét pólus küszöb felett → EGY polarizált találat", () => {
+    const result = computeTeamPressure([
+      member({ THOR: 80 }),
+      member({ THOR: 70 }),
+      member({ THOR: 20 }),
+      member({ THOR: 30 }),
+    ]);
+    assert.equal(result.length, 1);
+    assert.deepEqual(result[0], {
+      dim: "THOR",
+      pole: "polarized",
+      count: 4,
+      assessedCount: 4,
+    });
+  });
+
+  it("kettőspólus csak akkor, ha MINDKÉT pólus önállóan is teljesíti a küszöböt", () => {
+    // 1 fő az alacsony póluson (< PRESSURE_MIN_COUNT) → sima high találat marad
+    const result = computeTeamPressure([
+      member({ THOR: 80 }),
+      member({ THOR: 70 }),
+      member({ THOR: 20 }),
+      member({ THOR: 50 }),
+    ]);
+    assert.equal(result.length, 1);
+    assert.equal(result[0].pole, "high");
+    assert.equal(result[0].count, 2);
+  });
+
+  it("páratlan létszámú kétpólusú csapat: a kisebbik pólus a share-küszöb alatt marad → egyoldalú találat (szándékos szűk definíció)", () => {
+    // 5 főből 3 magas + 2 alacsony: a low pólus eléri a MIN_COUNT-ot, de a
+    // 2/5 arány a küszöb alatt van — a polarizált címke csak akkor jár, ha
+    // MINDKÉT pólus önállóan koncentráció (gyakorlatban páros, 50–50-es
+    // megoszlás, üres középsávval).
+    const result = computeTeamPressure([
+      member({ THOR: 80 }),
+      member({ THOR: 75 }),
+      member({ THOR: 70 }),
+      member({ THOR: 20 }),
+      member({ THOR: 30 }),
+    ]);
+    assert.equal(result.length, 1);
+    assert.deepEqual(result[0], {
+      dim: "THOR",
+      pole: "high",
+      count: 3,
+      assessedCount: 5,
+    });
   });
 
   it("null scores tagokat kihagyja a nevezőből", () => {

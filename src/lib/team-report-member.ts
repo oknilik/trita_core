@@ -17,7 +17,7 @@ import {
   type TeamRoleCode,
   type TeamRoleScores,
 } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 
 const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 type Loc = "hu" | "en";
@@ -131,15 +131,13 @@ export function buildMemberReportViewModel(
     .slice(0, 2)
     .map((d) => d.label);
 
-  // A néző saját szerepe (élő): kitöltött kérdőívből, különben TRITAN-becslésből.
-  let roleScores: TeamRoleScores | null = null;
-  if (viewer?.teamRoleSource === "questionnaire" && viewer.teamRoleScores) {
-    roleScores = viewer.teamRoleScores as TeamRoleScores;
-  } else if (selfScores && "INTE" in selfScores && "TEMP" in selfScores) {
-    roleScores = estimateTeamRolesFromTritan(
-      selfScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-    );
-  }
+  // A néző saját szerepe (élő) — a kanonikus precedencia-szabályból
+  // (team-role-estimate): kitöltött kérdőív > TRITAN-becslés; részleges
+  // self-score-ból nincs becslés.
+  const measuredRoles =
+    viewer?.teamRoleSource === "questionnaire" ? viewer.teamRoleScores : null;
+  const roleScores: TeamRoleScores | null =
+    resolveDisplayRoleScores(measuredRoles, selfScores)?.scores ?? null;
   const top = roleScores ? getTopRoles(roleScores, 2) : [];
   const primaryRole = top[0]
     ? { code: top[0].role, label: TEAM_ROLES[top[0].role][loc] }

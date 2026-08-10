@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   buildDraftNarrativePrefill,
+  computeTopFrictionDims,
   serializeTeamReport,
   type TeamReportAggregates,
 } from "@/lib/team-report";
@@ -110,6 +111,30 @@ test("prefill: no dimension averages returns null", () => {
     dimensionAverages: null,
   });
   assert.equal(prefill, null);
+});
+
+// ── computeTopFrictionDims ───────────────────────────────────────────────────
+
+test("topFrictionDims: a szűrés is a rangsorolt mennyiségre (w·szórás ≥ 2) megy", () => {
+  // THOR 10-es nyers szórás: 0.30 × 10 = 3 ≥ 2 → bekerül, pedig a régi
+  // nyers ≥12 szűrő kizárta volna; OPEN 20-as szórás: 0.05 × 20 = 1 < 2 →
+  // kimarad, pedig a nyers szűrő átengedte volna.
+  assert.deepEqual(computeTopFrictionDims({ THOR: 10, OPEN: 20 }), ["THOR"]);
+});
+
+test("topFrictionDims: w·szórás szerint rangsorol, max 2 dim", () => {
+  // THOR 5.4 > ADAP 3.0 > RESO 2.1 (levágva) > INTE 1.6 (küszöb alatt)
+  assert.deepEqual(
+    computeTopFrictionDims({ INTE: 8, RESO: 14, THOR: 18, ADAP: 12 }),
+    ["THOR", "ADAP"],
+  );
+});
+
+test("topFrictionDims: küszöb alatti szórásoknál üres", () => {
+  assert.deepEqual(
+    computeTopFrictionDims({ INTE: 5, RESO: 5, TEMP: 5, ADAP: 5, THOR: 5, OPEN: 5 }),
+    [],
+  );
 });
 
 test("unknown status normalizes to DRAFT", () => {

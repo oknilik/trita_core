@@ -3,7 +3,11 @@ import type { ScoreResult } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
 import { buildTeamTrustNetwork } from "./trust-network.server";
 import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
-import type { TrustEdgeType } from "./trust-network";
+import {
+  EDGE_CONFIDENCE_MUTUAL,
+  EDGE_CONFIDENCE_ONE_SIDED,
+  type TrustEdgeType,
+} from "./trust-network";
 import {
   FRICTION_WEIGHTS,
   calculatePairFriction,
@@ -123,6 +127,8 @@ function buildProfileBasedEdges(
       const a = assessed[i];
       const b = assessed[j];
       const friction = calculatePairFriction(a.scores!, b.scores!);
+      // Nincs közös dimenzió → nincs miből becsülni, él sem épül.
+      if (friction === null) continue;
       const type = frictionToEdgeType(friction);
 
       edges.push({
@@ -167,7 +173,7 @@ function mergeTrustEdges(
       ...edge,
       type: TRUST_TO_DYNAMICS[trustEdge.type],
       source: "trust_round" as const,
-      confidence: trustEdge.mutual ? 100 : 50,
+      confidence: trustEdge.mutual ? EDGE_CONFIDENCE_MUTUAL : EDGE_CONFIDENCE_ONE_SIDED,
     };
   });
 
@@ -180,7 +186,7 @@ function mergeTrustEdges(
       type: TRUST_TO_DYNAMICS[trustEdge.type],
       source: "trust_round",
       relationshipType: null,
-      confidence: trustEdge.mutual ? 100 : 50,
+      confidence: trustEdge.mutual ? EDGE_CONFIDENCE_MUTUAL : EDGE_CONFIDENCE_ONE_SIDED,
       dimensionDelta: null,
       createdAt: new Date().toISOString(),
     });

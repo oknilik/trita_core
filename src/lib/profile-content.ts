@@ -3,13 +3,6 @@ import type { ProfileCategory } from "./profile-engine";
 export type Locale = "hu" | "en";
 type LocalizedText = Record<Locale, string>;
 
-// ─── Section title ────────────────────────────────────────────────────────────
-
-export const SECTION_TITLE: LocalizedText = {
-  hu: "Munkastílusod",
-  en: "Your work style",
-};
-
 // ─── Block 1 – Bevezető framing ───────────────────────────────────────────────
 
 export const BLOCK1: LocalizedText = {
@@ -195,19 +188,7 @@ export const BLOCK3_SUMMARIES: Record<string, LocalizedText> = {
   },
 };
 
-// ─── Block 6 – Kombináció-insight fejléc ─────────────────────────────────────
-
-export const BLOCK6_TITLE: LocalizedText = {
-  hu: "A legfontosabbak",
-  en: "Key takeaways",
-};
-
 // ─── Block 7 – Kockázati jelzők szövegei ─────────────────────────────────────
-
-export const BLOCK7_TITLE: LocalizedText = {
-  hu: "Ami kihívás lehet",
-  en: "Things to watch for",
-};
 
 export const RISK_TEXTS: Record<string, LocalizedText> = {
   supportedVisibility: {
@@ -225,28 +206,6 @@ export const RISK_TEXTS: Record<string, LocalizedText> = {
 };
 
 // ─── Block 5 – Szerepkör-família ajánlások ────────────────────────────────────
-
-// UX-B12: a „Csapatszerep-hajlamok" szekcióval ütközött a „szerep" —
-// itt munkakör-típusok illeszkedéséről van szó (web + PDF közös címe).
-export const BLOCK5_TITLE: LocalizedText = {
-  hu: "Munkakör-illeszkedés",
-  en: "Work-role fit",
-};
-
-export const BLOCK5_STRONG: LocalizedText = {
-  hu: "Erős illeszkedés",
-  en: "Strong fit",
-};
-
-export const BLOCK5_MEDIUM: LocalizedText = {
-  hu: "Működhet, ha készülsz",
-  en: "Can work with preparation",
-};
-
-export const BLOCK5_WATCH: LocalizedText = {
-  hu: "Ahol segít a felkészülés",
-  en: "Where preparation helps",
-};
 
 export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium: string; watchOut: string }>> = {
   ethicalLeader: {
@@ -469,11 +428,6 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
 
 // ─── Block 4 – Környezeti preferencia táblázat ────────────────────────────────
 
-export const BLOCK4_TITLE: LocalizedText = {
-  hu: "Ideális környezet",
-  en: "Ideal environment",
-};
-
 type EnvRow = { label: LocalizedText; value: LocalizedText };
 
 // Dimenzió + kategória kombinációra visszaadja a megfelelő sort
@@ -606,21 +560,6 @@ export function getEnvRows(
 export const DEFAULT_NARRATIVE: LocalizedText = {
   hu: "A profilod dimenzióit nézve jól illeszkedő, összhangban lévő mintázat rajzolódik ki. Nincs jellemző belső feszültség az egyes dimenziók között – ez gyakran azt jelenti, hogy a személyiséged különböző aspektusai erősítik egymást.",
   en: "Looking across your profile dimensions, a coherent pattern emerges. There is no notable internal tension between the dimensions — meaning the different aspects of your personality often reinforce each other.",
-};
-
-export const BLOCK2_TITLE: LocalizedText = {
-  hu: "Dimenzióprofil",
-  en: "Dimension profile",
-};
-
-export const BLOCK3_TITLE: LocalizedText = {
-  hu: "Ahogy működsz",
-  en: "How you operate",
-};
-
-export const BLOCK4_EMPTY: LocalizedText = {
-  hu: "Most nincs egyetlen domináns irány: a dimenziók többsége középen van.",
-  en: "No single dominant direction yet: most dimensions sit in the middle.",
 };
 
 // ─── Solo dim narratives (Block 3 ha nincs tension pár) ──────────────────────

@@ -1,7 +1,7 @@
 import type { TestType } from "@prisma/client";
 import { runProfileEngine } from "@/lib/profile-engine";
 import {
-  RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
+  RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES, RISK_TEXTS, DEFAULT_NARRATIVE,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
   PRESSURE_BLINDSPOT_PREFIX, type PressureText,
   SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS, type GrowthPlan,
@@ -19,6 +19,10 @@ import type { Locale } from "@/lib/i18n";
 
 export interface WorkstyleContent {
   howYouWork: string[];
+  /** Kockázati tension-párok strukturáltan (összefoglaló + mitigációs tanács
+   *  + forrás-dimenziók) — a PDF/megjelenítés célzott használatához; a
+   *  howYouWork-ben ugyanez folyó szövegként is megjelenik. */
+  riskParts: { summary: string; mitigation: string; source: string }[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
   /** Ugyanez strukturáltan (stress/blindspot külön + forrás-dimenzió, P5.2). */
@@ -148,6 +152,11 @@ export function buildWorkstyleContent(
 ): WorkstyleContent {
   const engine = runProfileEngine(dimScores, testType);
 
+  // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
+  // a „miért" kimondása összeköti a hipotézist az adattal.
+  const sourceLabel = (dim: string, level: "high" | "medium" | "low") =>
+    `${DIM_LABELS[dim]?.[lang] ?? dim} · ${CATEGORY_LABELS[level][lang]}`;
+
   // "Ahogy működsz" narratives
   const howYouWork: string[] = [];
   // Add tension pair narratives (block 6)
@@ -163,20 +172,29 @@ export function buildWorkstyleContent(
       if (text) howYouWork.push(text);
     }
   }
-  // Add risk texts (block 7)
+  // Kockázati párok (block 7): az összefoglaló után a mitigációs tanács is
+  // bekerül külön bekezdésként, és strukturáltan is (riskParts).
+  const riskParts: WorkstyleContent["riskParts"] = [];
   for (const pair of engine.block7Pairs) {
     const summary = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
+    const mitigation = RISK_TEXTS[pair.contentKey]?.[lang];
     if (summary) howYouWork.push(summary);
+    if (mitigation) howYouWork.push(mitigation);
+    if (summary && mitigation) {
+      riskParts.push({
+        summary,
+        mitigation,
+        source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
+      });
+    }
   }
+  // Kiegyensúlyozott profil: se pár, se pólusos solo-dim — a lapos profil is
+  // kapjon értelmes nyitó bekezdést.
+  if (howYouWork.length === 0) howYouWork.push(DEFAULT_NARRATIVE[lang]);
 
   // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
   // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
   // összefűzött szöveget kap, az executive summary a strukturált részeket.
-  // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
-  // a „miért" kimondása összeköti a hipotézist az adattal.
-  const sourceLabel = (dim: string, level: "high" | "medium" | "low") =>
-    `${DIM_LABELS[dim]?.[lang] ?? dim} · ${CATEGORY_LABELS[level][lang]}`;
-
   const pressure: string[] = [];
   const pressureParts: (PressureText & { source: string })[] = [];
   for (const sd of engine.topSoloDims) {
@@ -206,9 +224,10 @@ export function buildWorkstyleContent(
 
   // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
   //  - click: a top-2 markáns dimenzió;
-  //  - friction: pólusos dimenziók a legerősebb súrlódás-jóslók közül
-  //    (THOR > ADAP > INTE — a team-stats FRICTION_WEIGHTS sorrendje, hogy
-  //    a riport és a csapat-felület ugyanazt a modellt mondja);
+  //  - friction: pólusos dimenziók a súrlódás-jóslók súly-sorrendjében
+  //    (THOR > ADAP > INTE > RESO > TEMP > OPEN — a team-stats
+  //    FRICTION_WEIGHTS sorrendje, hogy a riport és a csapat-felület
+  //    ugyanazt a modellt mondja), legfeljebb kettő;
   //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
   const collaboration = (() => {
     type CollabItem = { text: string; source?: string };
@@ -219,7 +238,7 @@ export function buildWorkstyleContent(
     }
     if (click.length === 0) click.push({ text: COLLAB_BALANCED_CLICK[lang] });
 
-    const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE"] as const;
+    const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE", "RESO", "TEMP", "OPEN"] as const;
     const friction: CollabItem[] = [];
     for (const dim of FRICTION_DIM_ORDER) {
       const level = engine.categories[dim];
@@ -304,6 +323,7 @@ export function buildWorkstyleContent(
 
   return {
     howYouWork,
+    riskParts,
     pressure,
     pressureParts,
     growthTip,

@@ -4,12 +4,11 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { TeamPatternResult, AxisDetail } from "@/lib/team-pattern";
-import { AXIS_LABELS, PATTERN_NAMES } from "@/lib/team-pattern";
+import { AXIS_LABELS, PATTERN_NAMES, PATTERN_THRESHOLDS } from "@/lib/team-pattern";
 
 // Remap a team-pattern axis value (0–100, asymmetric threshold) to a
 // PatternExplorer slider value (0–100, symmetric 50 = midpoint).
 // The team-pattern threshold becomes 50 on the slider.
-const PATTERN_THRESHOLDS = { drive: 55, cohesion: 60, discipline: 62.5, openness: 57.5 };
 function remapToSlider(value: number, threshold: number): number {
   const remapped =
     value < threshold

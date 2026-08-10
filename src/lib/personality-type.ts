@@ -10,6 +10,8 @@
 // forrása (a duplikált logika helyett).
 // ─────────────────────────────────────────────────────────────────────
 
+import { rankDimensionScores } from "./tritan";
+
 export type PersonalityLocale = "hu" | "en";
 
 interface TypeParts {
@@ -104,14 +106,16 @@ export function personalityAdjective(
 }
 
 /**
- * Kényelmi wrapper: pontozott dimenzió-listából (score szerint rendezve
- * választja ki a top kettőt). Kevesebb mint két dimenziónál null.
+ * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
+ * (rankDimensionScores: pontszám csökkenő, holtversenynél TRITAN_ORDER —
+ * így a vendég-teaser és a belépett felületek azonos címkét adnak).
+ * Kevesebb mint két dimenziónál null.
  */
 export function resolvePersonalityTypeFromScores(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
   locale: PersonalityLocale,
 ): string | null {
   if (dimensions.length < 2) return null;
-  const [first, second] = [...dimensions].sort((a, b) => b.score - a.score);
+  const [first, second] = rankDimensionScores(dimensions);
   return resolvePersonalityTypeLabel(first.code, second.code, locale);
 }

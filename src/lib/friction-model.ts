@@ -25,22 +25,53 @@ export const FRICTION_WEIGHTS: Record<string, number> = {
   OPEN: 0.05,  // újítás vs pragmatizmus
 };
 
+/**
+ * Páronkénti súrlódás-pontszám (0–100 skálájú eltérésekből). Részleges
+ * profilnál a jelen lévő súlyok összegével újranormalizál — enélkül a
+ * hiányzó dimenziók hamisan „aligned" irányba húznák az eredményt.
+ * Null, ha a két profilnak egyetlen közös dimenziója sincs.
+ */
 export function calculatePairFriction(
   scoresA: Record<string, number>,
   scoresB: Record<string, number>,
-): number {
+): number | null {
   let weightedSum = 0;
+  let presentWeight = 0;
   for (const dim of DIM_ORDER) {
     const a = scoresA[dim];
     const b = scoresB[dim];
     if (typeof a !== "number" || typeof b !== "number") continue;
-    weightedSum += (FRICTION_WEIGHTS[dim] ?? 0) * Math.abs(a - b);
+    const w = FRICTION_WEIGHTS[dim] ?? 0;
+    weightedSum += w * Math.abs(a - b);
+    presentWeight += w;
   }
-  return Math.round(weightedSum);
+  if (presentWeight <= 0) return null;
+  return Math.round(weightedSum / presentWeight);
 }
 
 export function frictionToEdgeType(frictionScore: number): DynamicsEdgeType {
   if (frictionScore < 12) return "aligned";
   if (frictionScore < 22) return "complementary";
   return "friction";
+}
+
+// ── Aligned-fokszám hub ─────────────────────────────────────────────────────
+// A profil-alapú hub definíció EGYETLEN helye: a legalább ennyi "aligned"
+// éllel rendelkező tag hub (mindkét él-végpont számít). A trust-network
+// erős-él fokszámú hub-ja ettől független, MÉRT fogalom — az ott marad.
+
+export const ALIGNED_HUB_MIN_DEGREE = 3;
+
+export function computeAlignedHubIds(
+  edges: ReadonlyArray<{ from: string; to: string; type: string }>,
+): string[] {
+  const degree = new Map<string, number>();
+  for (const e of edges) {
+    if (e.type !== "aligned") continue;
+    degree.set(e.from, (degree.get(e.from) ?? 0) + 1);
+    degree.set(e.to, (degree.get(e.to) ?? 0) + 1);
+  }
+  return [...degree.entries()]
+    .filter(([, d]) => d >= ALIGNED_HUB_MIN_DEGREE)
+    .map(([id]) => id);
 }

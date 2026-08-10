@@ -10,6 +10,8 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import {
+  OBSERVER_INVITE_MAX_ACTIVE,
+  OBSERVER_INVITE_TTL_DAYS,
   observerInviteRequiresApproval,
   resolveColleagueObserverType,
 } from "@/lib/observer/invite-policy";
@@ -178,13 +180,16 @@ export async function POST(req: Request) {
     }
   }
 
+  // Kvóta: az i18n „5 aktív meghívót" ígér — csak a függő, még nem lejárt
+  // meghívók fogyasztják a keretet (a kitöltött/lejárt/törölt nem).
   const activeCount = await prisma.observerInvitation.count({
     where: {
       inviterId: profile.id,
-      status: { not: "CANCELED" },
+      status: { in: ["AWAITING_APPROVAL", "PENDING"] },
+      expiresAt: { gt: new Date() },
     },
   });
-  if (activeCount >= 5) {
+  if (activeCount >= OBSERVER_INVITE_MAX_ACTIVE) {
     return NextResponse.json({ error: "INVITE_LIMIT_REACHED" }, { status: 400 });
   }
 
@@ -203,7 +208,7 @@ export async function POST(req: Request) {
       observerName: targetName,
       testType: profile.testType,
       status: needsApproval ? "AWAITING_APPROVAL" : "PENDING",
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expiresAt: new Date(Date.now() + OBSERVER_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000),
       observerType,
       externalContext: parsed.data.externalContext ?? null,
       campaignId: campaign?.id ?? null,

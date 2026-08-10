@@ -19,6 +19,10 @@
 
 import { FRICTION_WEIGHTS } from "@/lib/friction-model";
 import {
+  PROFILE_HIGH_THRESHOLD,
+  PROFILE_LOW_THRESHOLD,
+} from "@/lib/profile-engine";
+import {
   LEADER_SUPPLEMENTS,
   atomBlocksFor,
   findAtom,
@@ -30,11 +34,11 @@ import {
 import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
 
 // ── Pólus-küszöbök ───────────────────────────────────────────────────
-// A `profile-engine.ts` házi konvenciója (HIGH 65 / LOW 35, szigorú
-// összehasonlítással): a középsáv SZÁNDÉKOSAN néma — kiegyensúlyozott
-// dimenzióról nem állítunk dinamikát.
-const HIGH_THRESHOLD = 65;
-const LOW_THRESHOLD = 35;
+// A `profile-engine.ts` házi konvenciója (szigorú összehasonlítással):
+// a középsáv SZÁNDÉKOSAN néma — kiegyensúlyozott dimenzióról nem
+// állítunk dinamikát.
+const HIGH_THRESHOLD = PROFILE_HIGH_THRESHOLD;
+const LOW_THRESHOLD = PROFILE_LOW_THRESHOLD;
 
 /** A pólus-erősség referenciapontja: az 50-es középérték. */
 const MIDPOINT = 50;

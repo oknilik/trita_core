@@ -21,13 +21,6 @@ export interface IntelligenceMember {
   /** Kitöltött csapatszerep-kérdőív pontszámai — ha van, ez élvez elsőbbséget a becsléssel szemben. */
   measuredRoleScores: Record<string, number> | null;
   hasAssessmentData: boolean;
-  skillLevel: 1 | 2 | 3;
-  growthPotential: 1 | 2 | 3;
-  /** 0-100 weighted composites from resolveContributionPlacement */
-  deliveryScore: number;
-  growthScore: number;
-  placementConfidence: "low" | "medium" | "high";
-  zone: string;
   color: string;
   textColor: string;
 }
@@ -38,6 +31,8 @@ export interface DynamicsEdge {
   type: "aligned" | "complementary" | "friction";
   /** Az él adat-forrása — a "trust_round" MÉRT kapcsolati adat, a többi becslés. */
   source?: "observer" | "profile_estimate" | "trust_round";
+  /** Mért élnél 100 = kölcsönös, 50 = egyoldalú visszajelzés; becslésnél null. */
+  confidence?: number | null;
 }
 
 interface TeamIntelligenceProps {
@@ -153,6 +148,21 @@ export function TeamIntelligence({
     },
     { aligned: 0, complementary: 0, friction: 0 },
   );
+  // Forrás-címke a mért/becsült arány szerint — a fix "profil becslés" mért
+  // trust-kör mellett félrevezető volt.
+  const measuredEdgeCount = edges.filter(
+    (e) => e.source === "trust_round" || e.source === "observer",
+  ).length;
+  // Négyágú feloldás — az intelligence-data.ts dynamicsStateLabel-jével azonosan:
+  // nulla él „nincs adat", nem „profil-becslés".
+  const dynamicsSourceKey =
+    edges.length === 0
+      ? "teamComp.dynamicsStateNone"
+      : measuredEdgeCount === 0
+        ? "teamComp.dynamicsStateEstimated"
+        : measuredEdgeCount === edges.length
+          ? "teamComp.dynamicsStateMeasured"
+          : "teamComp.dynamicsStateMixed";
 
   return (
     <div className="flex flex-col gap-6 pt-2">
@@ -175,6 +185,7 @@ export function TeamIntelligence({
               member.measuredRoleScores,
               member.tritan,
             );
+            if (!resolved) return null;
             const hasMeasuredRoles = resolved.source === "questionnaire";
             const topRoles = getTopRoles(resolved.scores, 3);
             const topDims = Object.entries(member.tritan)
@@ -291,7 +302,7 @@ export function TeamIntelligence({
               {t("teamComp.subDynamics", loc)}
             </p>
             <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
-              {isHu ? "profil alapú becslés" : "profile-based estimate"}
+              {t(dynamicsSourceKey, loc)}
             </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />

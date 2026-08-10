@@ -159,6 +159,7 @@ export async function computeCareerForProfile(
         dimSe: 0,
         strategy: "composite",
         candidatePool: null,
+        interestWeight: 0,
       },
       sections: emptySections,
       scope: { mode: "open", keys: [], widened: false, active: false, ignored: false },
@@ -246,7 +247,8 @@ export async function computeCareerForProfile(
   );
 
   // Érdeklődés-blokk: a felhasználónak LÁTNIA kell a saját kódját és azt, hogy
-  // mekkora súllyal számít — enélkül úgy tűnik, mintha nem használnánk.
+  // mekkora súllyal számít — enélkül úgy tűnik, mintha nem használnánk. A súly
+  // a motor metájából jön: a mutatott és a ténylegesen használt érték azonos.
   const interests = person.interests
     ? {
         vector: Object.fromEntries(
@@ -254,16 +256,7 @@ export async function computeCareerForProfile(
         ) as Partial<Record<RiasecLetter, number>>,
         top: userTopLetters(person.interests.vector),
         source: person.interests.source,
-        weight:
-          result.ranked[0]?.interest === null
-            ? 0
-            : Math.round(
-                (person.interests.source === "measured"
-                  ? 0.35
-                  : person.interests.source === "tags"
-                    ? 0.25
-                    : 0.15) * 100,
-              ) / 100,
+        weight: Math.round(result.meta.interestWeight * 100) / 100,
       }
     : null;
 

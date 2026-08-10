@@ -3,12 +3,15 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
 interface ComparisonTabProps {
   dimensions: SerializedDimension[];
   hasObserverData: boolean;
   observerCount: number;
+  /** Az értékelők átlagos magabiztossága (1–5) — null, ha nincs adat. */
+  avgConfidence?: number | null;
 }
 
 // ─── Insight texts for gaps ──────────────────────────────────────────────────
@@ -51,7 +54,7 @@ function getSummaryPoints(
     );
   }
 
-  if (differing.length === 0) {
+  if (dims.length > 0 && differing.length === 0) {
     points.push(t("comparison.summaryPerfectMatch", locale));
   }
 
@@ -64,35 +67,44 @@ export function ComparisonTab({
   dimensions,
   hasObserverData,
   observerCount,
+  avgConfidence,
 }: ComparisonTabProps) {
   const { locale } = useLocale();
 
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
+  // observer: null = az adott dimenzióra nincs (elég) külső adat — az ilyen
+  // sor a gap-számításokból és a számlálókból kimarad, a kártyán jelzést kap.
   const dimData = mainDims.map((d) => ({
     code: d.code,
     name: d.label,
     self: d.score,
-    observer: d.observerScore ?? d.score,
+    observer: d.observerScore ?? null,
   }));
+  const covered = dimData.filter(
+    (d): d is (typeof dimData)[number] & { observer: number } => d.observer !== null,
+  );
 
-  const matchingCount = dimData.filter((d) => Math.abs(d.self - d.observer) < 10).length;
-  const differingCount = dimData.length - matchingCount;
+  const matchingCount = covered.filter((d) => Math.abs(d.self - d.observer) < 10).length;
+  const differingCount = covered.length - matchingCount;
   const avgGapPct = Math.round(
-    dimData.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (dimData.length || 1),
+    covered.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (covered.length || 1),
   );
   const isGoodMatch = differingCount <= 2;
 
-  const blindspots = dimData.filter((d) => Math.abs(d.self - d.observer) >= 10);
-  const noBlindspotDims = dimData.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
+  const blindspots = covered.filter((d) => Math.abs(d.self - d.observer) >= 10);
+  const noBlindspotDims = covered.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
 
-  const summaryPoints = getSummaryPoints(dimData, locale);
+  const summaryPoints = getSummaryPoints(covered, locale);
 
   const getInsight = (code: string, self: number, observer: number): string | null => {
     const gap = Math.abs(self - observer);
     if (gap < 10) return null;
     const dir = observer > self ? "higher" : "lower";
-    const key = `${code}_${dir}`;
+    // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
+    const letter = TRITAN_DIM_ABBR[code as TritanDimCode]?.en;
+    if (!letter) return null;
+    const key = `${letter}_${dir}`;
     const lang = locale === "hu" ? "hu" : "en";
     return GAP_INSIGHTS[key]?.[lang] ?? null;
   };
@@ -147,9 +159,24 @@ export function ComparisonTab({
         <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.headerBody", locale)}
         </p>
-        <span className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
-          {tf("comparison.observerBadge", locale, { count: observerCount })}
-        </span>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
+            {tf("comparison.observerBadge", locale, { count: observerCount })}
+          </span>
+          {avgConfidence != null && (
+            <span
+              title={t("comparison.confidenceLabel", locale)}
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]"
+            >
+              {tf("comparison.avgConfidence", locale, {
+                value:
+                  locale === "hu"
+                    ? String(avgConfidence).replace(".", ",")
+                    : String(avgConfidence),
+              })}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* 2. Overview card */}
@@ -208,9 +235,10 @@ export function ComparisonTab({
 
         <div className="flex flex-col gap-3">
           {dimData.map((dim) => {
-            const gap = Math.abs(dim.self - dim.observer);
-            const hasGap = gap >= 10;
-            const insight = getInsight(dim.code, dim.self, dim.observer);
+            const gap = dim.observer === null ? null : Math.abs(dim.self - dim.observer);
+            const hasGap = gap !== null && gap >= 10;
+            const insight =
+              dim.observer === null ? null : getInsight(dim.code, dim.self, dim.observer);
 
             return (
               <div
@@ -221,15 +249,17 @@ export function ComparisonTab({
               >
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-caption font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
-                  <span
-                    className="rounded px-2 py-0.5 text-[11px] font-medium"
-                    style={{
-                      backgroundColor: gap < 10 ? "var(--color-surface-self-accent-soft)" : gap < 15 ? "var(--color-surface-highlight-warm)" : "var(--color-state-error-soft)",
-                      color: gap < 10 ? "var(--color-accent-self-deep)" : gap < 15 ? "var(--color-accent-primary-strong)" : "var(--color-text-error-strong)",
-                    }}
-                  >
-                    ±{gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
-                  </span>
+                  {gap !== null && (
+                    <span
+                      className="rounded px-2 py-0.5 text-[11px] font-medium"
+                      style={{
+                        backgroundColor: gap < 10 ? "var(--color-surface-self-accent-soft)" : gap < 15 ? "var(--color-surface-highlight-warm)" : "var(--color-state-error-soft)",
+                        color: gap < 10 ? "var(--color-accent-self-deep)" : gap < 15 ? "var(--color-accent-primary-strong)" : "var(--color-text-error-strong)",
+                      }}
+                    >
+                      ±{gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -242,10 +272,18 @@ export function ComparisonTab({
                   </div>
                   <div className="flex items-center gap-2.5">
                     <span className="w-[50px] shrink-0 text-micro text-[var(--color-text-muted)]">{t("comparison.others", locale)}</span>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
-                      <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
-                    </div>
-                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                    {dim.observer === null ? (
+                      <span className="flex-1 text-micro italic text-[var(--color-text-muted)]">
+                        {t("comparison.noObserverDim", locale)}
+                      </span>
+                    ) : (
+                      <>
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+                          <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
+                        </div>
+                        <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                      </>
+                    )}
                   </div>
                 </div>
 

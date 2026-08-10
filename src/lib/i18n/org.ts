@@ -1358,10 +1358,22 @@ export const orgTranslations = {
     },
     watchAreasEyebrow: { hu: "figyelendő", en: "watch areas" },
     noLowArea: { hu: "Nincs kritikusan alacsony terület", en: "No critically low area" },
-    teamFitEyebrow: { hu: "csapat illeszkedés", en: "team fit" },
+    teamFitEyebrow: { hu: "hasonlóság a csapathoz", en: "team similarity" },
     teamComparisonNA: {
       hu: "Csapat összehasonlítás nem elérhető",
       en: "Team comparison not available",
+    },
+    notEnoughTeamData: {
+      hu: "Nincs elég csapat-adat az összehasonlításhoz — legalább {min} kitöltött önértékelés szükséges.",
+      en: "Not enough team data for a comparison — at least {min} completed self-assessments are needed.",
+    },
+    // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
+    // profil kiegészítő is lehet, ezért nem kap minősítést.
+    similarityHigh: { hu: "Nagyon hasonló a csapatátlaghoz", en: "Very similar to the team average" },
+    similarityMid: { hu: "Hasonló a csapatátlaghoz", en: "Similar to the team average" },
+    similarityLow: {
+      hu: "Eltér a csapatátlagtól — kiegészítő profil lehet",
+      en: "Differs from the team average — may be complementary",
     },
     avgDeviation: { hu: "Átlagos eltérés: ±{points} pont", en: "Average deviation: ±{points} points" },
     largestGap: { hu: "Legnagyobb: {label} ({gap})", en: "Largest: {label} ({gap})" },
@@ -1371,8 +1383,8 @@ export const orgTranslations = {
     candidateInTeam: { hu: "Jelölt a csapatban", en: "Candidate in the team" },
     deviationsFromTeam: { hu: "Eltérések a csapatátlagtól", en: "Deviations from team average" },
     deviationExplanation: {
-      hu: "A pozitív eltérés azt jelenti, hogy a jelölt erősebb ebben a dimenzióban. A negatív eltérés fejlesztési lehetőséget jelez.",
-      en: "Positive deviation means the candidate scores higher. Negative deviation suggests a growth area.",
+      hu: "A pozitív eltérés azt jelenti, hogy a jelölt pontszáma a csapatátlag fölött van, a negatív, hogy alatta. Az eltérés önmagában nem minősítés: a csapatátlagtól eltérő profil kiegészítő szerepet is betölthet.",
+      en: "A positive deviation means the candidate scores above the team average, a negative one below it. Deviation by itself is not a judgement: a profile that differs from the team average can also play a complementary role.",
     },
     behavioralPatternsEyebrow: { hu: "működési minták", en: "behavioral patterns" },
     characteristicDynamics: { hu: "Jellemző működési dinamikák", en: "Characteristic dynamics" },
@@ -1511,7 +1523,6 @@ export const orgTranslations = {
     tabIntelligenceShort: { hu: "Intelligencia", en: "Intelligence" },
     tabProfile: { hu: "Személyiségprofil", en: "Personality" },
     tabMembers: { hu: "Tagok", en: "Members" },
-    noDataZone: { hu: "Nincs adat", en: "No data" },
 
     // TeamOverviewTab — campaign banner
     activeBadge: { hu: "Aktív", en: "Active" },
@@ -1683,25 +1694,6 @@ export const orgTranslations = {
       en: "No team members have completed an assessment yet.",
     },
 
-    // TeamMap
-    clickAvatar: { hu: "Kattints egy avatárra", en: "Click on an avatar" },
-    clickAvatarDesc: { hu: "a részletes profil megtekintéséhez", en: "to view detailed profile" },
-    membersWithoutAssessment: {
-      hu: "Kitöltés nélküli tagok (nem jelennek meg a térképen):",
-      en: "Members without assessment data (excluded from the map):",
-    },
-    estimationNote: {
-      hu: "Az átlátszó avatárok pozíciója személyiségadatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
-      en: "Transparent avatars are positioned based on personality data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
-    },
-    growthPotentialAxis: { hu: "← fejlődési potenciál →", en: "← growth potential →" },
-    yAxisLabel: { hu: "magas → alacsony", en: "high → low" },
-    xLow: { hu: "alacsony", en: "low" },
-    xMid: { hu: "közép", en: "mid" },
-    xHigh: { hu: "magas", en: "high" },
-    skillLevelAxis: { hu: "← szakmai szint →", en: "← skill level →" },
-    estimatedTag: { hu: "becsült", en: "estimated" },
-
     // DynamicsMap
     noDynamicsTitle: { hu: "Még nincs kapcsolati adat", en: "No dynamics data yet" },
     noDynamicsDesc: {
@@ -1729,6 +1721,23 @@ export const orgTranslations = {
     hubPerson: { hu: "Hub személy", en: "Hub person" },
     clickPerson: { hu: "Kattints egy személyre", en: "Click on a person" },
     clickPersonConnections: { hu: "a kapcsolatai megtekintéséhez", en: "to view their connections" },
+    edgeOneSided: { hu: "egyoldalú visszajelzés", en: "one-sided feedback" },
+
+    // Dinamika-forrás állapotcímkék (mért/becsült él-arány szerint)
+    dynamicsStateMeasured: { hu: "mért", en: "measured" },
+    dynamicsStateMixed: { hu: "vegyes", en: "mixed" },
+    dynamicsStateEstimated: { hu: "profil-becslés", en: "profile estimate" },
+    dynamicsStateNone: { hu: "nincs adat", en: "no data" },
+
+    // Térkép-minőség címkék (kitöltöttség szerint)
+    mapStateSufficient: { hu: "elegendő adat", en: "sufficient data" },
+    mapStatePartial: { hu: "részleges adat", en: "partial data" },
+    mapStateNone: { hu: "nincs adat", en: "no data" },
+
+    // „Csapat nyomás alatt" pólus-címkék
+    polePolarized: { hu: "két ellentétes pólus", en: "two opposite poles" },
+    poleHigh: { hu: "magas pólus", en: "high pole" },
+    poleLow: { hu: "alacsony pólus", en: "low pole" },
 
     // RoleFitMap
     dominantDimsEyebrow: { hu: "domináns dimenziók", en: "dominant dimensions" },

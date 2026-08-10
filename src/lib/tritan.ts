@@ -59,6 +59,24 @@ export const TRITAN_DIMENSIONS_LOWER: Record<TritanDimCode, { hu: string; en: st
   OPEN: { hu: "nyitottság", en: "openness" },
 };
 
+/**
+ * Determinisztikus rangsor pontozott dimenzió-listára: pontszám szerint
+ * csökkenő, holtversenynél a kanonikus sorrend (TRITAN_ORDER) dönt — minden
+ * felület (vendég-teaser, eredményoldal, share) ugyanezt használja, hogy
+ * azonos pontszámokra azonos top-lista (és archetípus) szülessen.
+ */
+export function rankDimensionScores<T extends { code: string; score: number }>(
+  entries: ReadonlyArray<T>,
+): T[] {
+  const orderIndex = (code: string) => {
+    const idx = TRITAN_ORDER.indexOf(code as TritanDimCode);
+    return idx === -1 ? TRITAN_ORDER.length : idx;
+  };
+  return [...entries].sort(
+    (a, b) => b.score - a.score || orderIndex(a.code) - orderIndex(b.code),
+  );
+}
+
 /** Facet-nevek a kérdésbank facet-kódjai szerint (HEXACO-PI-R terminológia). */
 export const TRITAN_FACETS: Record<string, { hu: string; en: string }> = {
   // INTE — Becsületesség-Alázat (H)
@@ -92,6 +110,25 @@ export const TRITAN_FACETS: Record<string, { hu: string; en: string }> = {
   creativity: { hu: "Kreativitás", en: "Creativity" },
   unconventionality: { hu: "Konvenciómentesség", en: "Unconventionality" },
 };
+
+/** Dimenzió → facet-kódok, a kérdésbank sorrendjében. */
+export const TRITAN_DIMENSION_FACETS: Record<TritanDimCode, readonly string[]> = {
+  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
+  THOR: ["organization", "diligence", "perfectionism", "prudence"],
+  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+};
+
+/** Egy dimenzió lokalizált facet-nevei (pl. upsell-teaser felsorolás). */
+export function dimensionFacetNames(code: string, locale: "hu" | "en"): string[] {
+  const facetCodes = TRITAN_DIMENSION_FACETS[code as TritanDimCode];
+  if (!facetCodes) return [];
+  return facetCodes
+    .map((facet) => TRITAN_FACETS[facet]?.[locale])
+    .filter((name): name is string => Boolean(name));
+}
 
 /** Intersticiális altruizmus-skála (HEXACO interstitial). */
 export const TRITAN_ALTRUISM = { hu: "Altruizmus", en: "Altruism" };

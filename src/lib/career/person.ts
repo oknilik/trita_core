@@ -5,14 +5,14 @@
 
 import { InvitationStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
-import type { ScoreResult } from "@/lib/scoring";
+import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
 import { estimateInterests, interestsFromTags } from "./interests";
 import {
   AXIS_KEYS,
   DIM_CODES,
   RIASEC_LETTERS,
   VETO_TAGS,
+  type AssessmentForm,
   type AxisKey,
   type DimCode,
   type EduField,
@@ -38,6 +38,21 @@ export interface StoredCareerBackground {
   eduField?: string | null;
   /** kizárt munka-tulajdonságok (vétó-chipek) */
   vetoes?: string[];
+}
+
+/**
+ * A kérdőív-forma a TÁROLT kitöltésből: a kanonikus forrás a scoring-motor
+ * `form` pecsétje; a pecsét előtti örökség-sorokra a questionCount-heurisztika
+ * marad (100 itemes teljes bank = "full", minden más "short").
+ * A forma a hibasávot vezérli — a full-kitöltő szűkebb SEM-et érdemel.
+ */
+function formFromScores(scores: unknown): AssessmentForm {
+  const record = scores as { form?: unknown; questionCount?: unknown } | null;
+  if (record?.form === "full" || record?.form === "short") return record.form;
+  const count = record?.questionCount;
+  return typeof count === "number" && count >= SCORING_FULL_FORM_MIN_ITEMS
+    ? "full"
+    : "short";
 }
 
 function pickDims(scores: unknown): Partial<Record<DimCode, number>> {
@@ -180,7 +195,7 @@ export async function buildPersonInput(
 
   const person: PersonInput = {
     dims,
-    form: DEFAULT_ASSESSMENT_FORM,
+    form: formFromScores(latestResult?.scores),
     observer: observerCount > 0 ? { dims: observerDims, raterCount: observerCount } : null,
     interests: normalizeInterests(background, dims, normalizePrefs(background?.prefs)),
     prefs: normalizePrefs(background?.prefs),

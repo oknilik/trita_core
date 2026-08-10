@@ -7,6 +7,7 @@ import { sendObserverInviteEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageMeasurements } from "@/lib/measurement-auth";
+import { OBSERVER_INVITE_TTL_DAYS } from "@/lib/observer/invite-policy";
 import { handleObserverInviteDecision } from "@/lib/notifications";
 import { getRequestLogger } from "@/lib/logger.server";
 
@@ -79,7 +80,7 @@ export async function POST(
           status: "PENDING",
           approvedById: approver.id,
           approvedAt: new Date(),
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          expiresAt: new Date(Date.now() + OBSERVER_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000),
         }
       : { status: "CANCELED", approvedById: approver.id, approvedAt: new Date() },
   });

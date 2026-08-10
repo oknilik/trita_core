@@ -10,6 +10,8 @@
 // ((átlag − 1) / 4) × 100, kerekítve.
 // ─────────────────────────────────────────────────────────────────────
 
+import { rankDimensionScores } from "./tritan";
+
 export interface TeaserScoringMetaItem {
   id: number;
   dimension: string;
@@ -19,7 +21,12 @@ export interface TeaserScoringMetaItem {
 export interface GuestTeaserScores {
   /** Belső dimenziókód (INTE/RESO/…) → 0–100 pontszám. */
   dimensions: Record<string, number>;
-  /** Pontszám szerint csökkenő dimenzió-lista (holtversenynél kód szerint stabil). */
+  /**
+   * Pontszám szerint csökkenő dimenzió-lista — holtversenynél a kanonikus
+   * sorrend (TRITAN_ORDER) dönt, ugyanúgy, mint a regisztráció utáni
+   * archetípus-számításnál (personality-type), hogy a claim után ne
+   * „nevezhessen át" a típus.
+   */
   ranked: Array<{ code: string; score: number }>;
 }
 
@@ -52,9 +59,9 @@ export function computeGuestTeaserScores(
     dimensions[code] = Math.round(((sum / count - 1) / 4) * 100);
   }
 
-  const ranked = Object.entries(dimensions)
-    .map(([code, score]) => ({ code, score }))
-    .sort((a, b) => b.score - a.score || a.code.localeCompare(b.code));
+  const ranked = rankDimensionScores(
+    Object.entries(dimensions).map(([code, score]) => ({ code, score })),
+  );
 
   return { dimensions, ranked };
 }

@@ -4,10 +4,11 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLE_FAMILIES, teamRoleColors } from "@/lib/color-system";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
+import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
 interface MemberWithTeamRole {
@@ -419,8 +420,6 @@ export interface SerializedPeerRoleProfile {
   topRoles: { role: TeamRoleCode; score: number }[];
 }
 
-const PEER_MIN_RATERS = 3;
-
 function PeerComparison({
   members,
   peerProfiles,
@@ -435,7 +434,7 @@ function PeerComparison({
   if (rated.length === 0) return null;
 
   const aboveThreshold = rated.filter(
-    (m) => (peerProfiles[m.userId]?.raterCount ?? 0) >= PEER_MIN_RATERS,
+    (m) => (peerProfiles[m.userId]?.raterCount ?? 0) >= TEAM_ROLE_PEER_MIN_RATERS,
   ).length;
 
   return (
@@ -459,7 +458,7 @@ function PeerComparison({
         {rated.map((m) => {
           const peer = peerProfiles[m.userId];
           if (!peer) return null;
-          const belowThreshold = peer.raterCount < PEER_MIN_RATERS || !peer.scores;
+          const belowThreshold = peer.raterCount < TEAM_ROLE_PEER_MIN_RATERS || !peer.scores;
           const selfTop = m.source === "questionnaire" ? m.top3 : [];
           const selfSet = new Set(selfTop.map((r) => r.role));
           return (
@@ -477,7 +476,7 @@ function PeerComparison({
                 <p className="text-xs leading-relaxed text-muted">
                   {t("teamComp.peerBelowThreshold", loc).replace(
                     "{min}",
-                    String(PEER_MIN_RATERS),
+                    String(TEAM_ROLE_PEER_MIN_RATERS),
                   )}
                 </p>
               ) : (
@@ -544,24 +543,12 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
   const loc: Locale = isHu ? "hu" : "en";
   const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
-      // Real questionnaire result always wins over the TRITAN estimate
-      if (m.teamRoleScores && m.teamRoleSource === "questionnaire") {
-        const teamRoleScores = m.teamRoleScores as TeamRoleScores;
-        const top3 = getTopRoles(teamRoleScores, 3);
-        return {
-          id: m.id,
-          userId: m.userId,
-          displayName: m.displayName,
-          hasScores: true,
-          teamRoleScores,
-          top3,
-          primaryRole: top3[0]?.role ?? null,
-          source: "questionnaire" as const,
-        };
-      }
-
-      const hasTritan = m.scores && "INTE" in m.scores && "TEMP" in m.scores;
-      if (!hasTritan) {
+      // Precedencia a kanonikus szabályból (team-role-estimate):
+      // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+      const measured =
+        m.teamRoleSource === "questionnaire" ? m.teamRoleScores : null;
+      const resolved = resolveDisplayRoleScores(measured, m.scores);
+      if (!resolved) {
         return {
           id: m.id,
           userId: m.userId,
@@ -573,19 +560,16 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
           source: null,
         };
       }
-      const teamRoleScores = estimateTeamRolesFromTritan(
-        m.scores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-      );
-      const top3 = getTopRoles(teamRoleScores, 3);
+      const top3 = getTopRoles(resolved.scores, 3);
       return {
         id: m.id,
         userId: m.userId,
         displayName: m.displayName,
         hasScores: true,
-        teamRoleScores,
+        teamRoleScores: resolved.scores,
         top3,
         primaryRole: top3[0]?.role ?? null,
-        source: "estimate" as const,
+        source: resolved.source,
       };
     });
   }, [members]);

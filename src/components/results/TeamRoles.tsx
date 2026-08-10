@@ -1,8 +1,11 @@
 "use client";
 
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import {
+  estimateTeamRolesFromTritan,
+  resolveDisplayRoleScores,
+} from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
+import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -64,14 +67,16 @@ export function TeamRoles({
   const hasTritanDims = "INTE" in tritanScores && "TEMP" in tritanScores;
   if (!hasTritanDims) return null;
 
+  // Precedencia a kanonikus szabályból (team-role-estimate):
+  // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+  const resolved = resolveDisplayRoleScores(measuredScores, tritanScores);
+  if (!resolved) return null;
   const estimated = estimateTeamRolesFromTritan(
     tritanScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
   );
   const estimatedTop3 = getTopRoles(estimated, 3);
-  const isMeasured = Boolean(measuredScores);
-  const top3 = isMeasured
-    ? getTopRoles(measuredScores as TeamRoleScores, 3)
-    : estimatedTop3;
+  const isMeasured = resolved.source === "questionnaire";
+  const top3 = isMeasured ? getTopRoles(resolved.scores, 3) : estimatedTop3;
 
   // Összhang a személyiségprofillal: a MÉRT top 3 vs a TRITAN-becslés top 3.
   const personalityOverlap = isMeasured
