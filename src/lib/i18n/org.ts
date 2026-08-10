@@ -165,7 +165,7 @@ export const orgTranslations = {
       en: "We received your request!",
     },
     requestFollowUp: {
-      hu: "24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
+      hu: "24 órán belül személyesen keresünk az időpont-egyeztetéssel.",
       en: "We'll reach out within 24 hours to schedule a time.",
     },
     upgradeDesc: {

@@ -310,8 +310,8 @@ export const landingTranslations = {
     heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
     heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
     heroBody: {
-      hu: "A Trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban — személyiség, csapatszerepek és pszichológiai biztonság mérésével. Az első partnercsapatokkal személyesen dolgozom együtt, csapatra szabott feltételekkel.",
-      en: "The Trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team — by measuring personality, team roles, and psychological safety. I work personally with our first partner teams, on terms tailored to your team.",
+      hu: "A Trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban — személyiség, csapatszerepek és pszichológiai biztonság mérésével. Az első partnercsapatokkal személyesen dolgozunk együtt, csapatra szabott feltételekkel.",
+      en: "The Trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team — by measuring personality, team roles, and psychological safety. We work personally with our first partner teams, on terms tailored to your team.",
     },
     heroCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
@@ -326,8 +326,8 @@ export const landingTranslations = {
       en: "Not just another survey — a joint pilot for team collaboration.",
     },
     asideBody: {
-      hu: "Olyan cégeket keresek, akik nemcsak kipróbálni akarják a platformot, hanem tényleg szeretnék érteni, mi zajlik a csapatukban.",
-      en: "I'm looking for companies that don't just want to try the platform, but genuinely want to understand what's happening within their team.",
+      hu: "Olyan cégeket keresünk, akik nemcsak kipróbálni akarják a platformot, hanem tényleg szeretnék érteni, mi zajlik a csapatukban.",
+      en: "We're looking for companies that don't just want to try the platform, but genuinely want to understand what's happening within their team.",
     },
 
     // Signals
@@ -350,7 +350,7 @@ export const landingTranslations = {
     benefitsTitle: { hu: "90 nap teljes hozzáféréssel, személyes támogatással.", en: "90 days of full access with personal support." },
     benefit1Title: { hu: "Teljes platform-hozzáférés", en: "Full platform access" },
     benefit1Desc: {
-      hu: "A pilot alatt a teljes szervezeti szintű platformot használjátok: korlátlan csapat, szerepkörök, minden elemzés. Az árazásról a pilot tapasztalatai alapján adok csapatra szabott ajánlatot.",
+      hu: "A pilot alatt a teljes szervezeti szintű platformot használjátok: korlátlan csapat, szerepkörök, minden elemzés. Az árazásról a pilot tapasztalatai alapján adunk csapatra szabott ajánlatot.",
       en: "During the pilot you use the full organization-level platform: unlimited teams, roles, every analysis. Pricing comes as a custom offer based on what we learn in the pilot.",
     },
     benefit2Title: { hu: "Személyes bevezető alkalom", en: "Free onboarding session" },
@@ -422,8 +422,8 @@ export const landingTranslations = {
     formEyebrow: { hu: "Jelentkezés", en: "Apply" },
     formTitle: { hu: "Beszéljünk a csapatodról.", en: "Let's talk about your team." },
     formBody: {
-      hu: "Töltsd ki az alábbi formot, és 24 órán belül visszajelzek. Egy rövid beszélgetéssel kezdünk, kötelezettség nélkül.",
-      en: "Fill out the form below and I'll get back to you within 24 hours. We start with a short conversation, no strings attached.",
+      hu: "Töltsd ki az alábbi formot, és 24 órán belül visszajelzünk. Egy rövid beszélgetéssel kezdünk, kötelezettség nélkül.",
+      en: "Fill out the form below and we'll get back to you within 24 hours. We start with a short conversation, no strings attached.",
     },
     fitEyebrow: { hu: "Nektek való, ha", en: "Good fit if" },
     fitBody: {
@@ -470,8 +470,8 @@ export const landingTranslations = {
     // Success state
     successTitle: { hu: "Köszönöm a jelentkezést.", en: "Thank you for applying." },
     successBody: {
-      hu: "24 órán belül személyesen kereslek az általad megadott email címen.",
-      en: "I'll personally reach out to you within 24 hours at the email address you provided.",
+      hu: "24 órán belül személyesen keresünk az általad megadott email címen.",
+      en: "We'll personally reach out to you within 24 hours at the email address you provided.",
     },
   },
   // ── /about — „Mi az a Trita" ────────────────────────────────────────
@@ -672,5 +672,77 @@ export const landingTranslations = {
     },
     ctaPrimary: { hu: "Kapcsolatfelvétel →", en: "Get in touch →" },
     ctaSecondary: { hu: "Kipróbálom magamon →", en: "Try it on myself →" },
+
+    // Híd a /rolunk felé — a motiváció-aside teaserré vált, a teljes
+    // történet ott él.
+    asideLink: { hu: "Ismerd meg, ki áll mögötte →", en: "Meet who's behind it →" },
+  },
+  // ── /rolunk — „Kik vagyunk" ─────────────────────────────────────────
+  // Az /about a gondolaté (mi ez, hogyan épül fel) — ez az oldal az
+  // embereké (ki építi, miért, hogyan dolgozik). Szándékosan külön lap:
+  // összemosva mindkettő fókusza hígulna.
+  //
+  // Hang: T/1 műhely-„mi" — 2026-08-10-től ez az egységes brand-hang
+  // MINDENHOL (a korábbi pilot-oldali E/1 „én" is erre váltott). Név és
+  // fotó SZÁNDÉKOSAN nincs még — amint lesz publikus bemutatkozó, ide
+  // kerül; addig nem tákolunk arctalan „csapatunk" rácsot.
+  aboutUs: {
+    heroEyebrow: { hu: "Rólunk", en: "About us" },
+    heroTitleBefore: { hu: "A Trita mögött nem szoftvercég áll, hanem egy ", en: "Behind Trita you won't find a software company — you'll find a " },
+    heroTitleEm: { hu: "tanácsadói műhely.", en: "consulting practice." },
+    heroLead: {
+      hu: "Csapatokkal dolgozunk, és a platformot eredetileg a saját munkánkhoz építettük. Ez az oldal arról szól, kik vagyunk, miért csináljuk — és hogyan dolgozunk azokkal, akik minket választanak.",
+      en: "We work with teams, and we originally built the platform for our own consulting work. This page is about who we are, why we do this — and how we work with the teams who choose us.",
+    },
+
+    // ── Miért építjük ──
+    storyEyebrow: { hu: "Miért építjük", en: "Why we're building it" },
+    storyTitle: {
+      hu: "Abból a pillanatból született, amikor valami láthatóvá válik.",
+      en: "Born from the moment when something becomes visible.",
+    },
+    storyP1: {
+      hu: "Tanácsadóként újra és újra ugyanazt a pillanatot kerestük a csapatoknál: amikor egy mintázat, amit addig mindenki csak sejtett, egyszer csak kimondhatóvá válik. A workshopok legértékesebb percei mindig ezek voltak — és túl sok múlt azon, hogy aznap sikerül-e eljutni idáig.",
+      en: "As consultants we kept looking for the same moment in every team: when a pattern everyone had only sensed suddenly becomes something you can say out loud. Those were always the most valuable minutes of a workshop — and too much depended on whether we got there that day.",
+    },
+    storyP2: {
+      hu: "A Trita azért készült, hogy ezt a pillanatot ne a szerencsére bízzuk, hanem mérésre. Először a saját munkánkhoz építettünk eszközt; aztán kiderült, hogy a csapatok maguk is vissza akarják nézni, mi változott — így lett az eszközből platform.",
+      en: "Trita exists so that this moment isn't left to luck, but to measurement. We first built a tool for our own work; then it turned out teams wanted to come back and see what had changed — and the tool became a platform.",
+    },
+    storyP3: {
+      hu: "A nevünk mögött ma egy kis műhely áll: tanácsadói munka és az azt kiszolgáló módszertani fejlesztés. Nem akarunk mindenkinek mindent — kevés csapattal dolgozunk, azokkal viszont közel.",
+      en: "Behind the name today is a small workshop: consulting work and the methodology that serves it. We don't want to be everything to everyone — we work with few teams, but closely.",
+    },
+
+    // ── Így dolgozunk ──
+    howEyebrow: { hu: "Így dolgozunk", en: "How we work" },
+    howTitle: {
+      hu: "Három dolog, ami nálunk nem alku tárgya.",
+      en: "Three things we don't negotiate on.",
+    },
+    how1Title: { hu: "A tanácsadás az első", en: "Consulting comes first" },
+    how1Desc: {
+      hu: "A platform a közös munka eszköze, nem a helyettesítője. A mérés képet ad — az értelmezés beszélgetésben történik, nem PDF-ben.",
+      en: "The platform is a tool for the joint work, not a replacement for it. Measurement gives you the picture — interpretation happens in conversation, not in a PDF.",
+    },
+    how2Title: { hu: "Kicsik vagyunk — szándékosan", en: "Small on purpose" },
+    how2Desc: {
+      hu: "Egyszerre korlátozott számú csapattal dolgozunk. Cserébe nem ticketrendszert kapsz, hanem embert — az első beszélgetéstől a workshopig ugyanazt.",
+      en: "We work with a limited number of teams at a time. In return you don't get a ticketing system, you get a person — the same one from the first conversation to the workshop.",
+    },
+    how3Title: { hu: "A módszertan nyitott könyv", en: "The methodology is an open book" },
+    how3Desc: {
+      hu: "Szabadon felhasználható, kutatásban használt kérdésbankból dolgozunk, és minden kimeneten jelöljük, mi mért és mi becsült. Amit állítunk, arról meg tudjuk mutatni, honnan tudjuk.",
+      en: "We work from a freely usable item pool used in research, and every output labels what is measured and what is estimated. Whatever we claim, we can show you where it comes from.",
+    },
+
+    // ── Záró CTA ──
+    ctaTitle: { hu: "Beszélgessünk — ahogy dolgozni is fogunk.", en: "Let's talk — the same way we'll work." },
+    ctaBody: {
+      hu: "Írj pár mondatot a csapatodról, és egy munkanapon belül személyesen válaszolunk. Ha előbb a felépítés érdekel, nézd meg, hogyan áll össze a kép.",
+      en: "Write a few lines about your team and you'll get a personal reply within one business day. If you'd rather see the mechanics first, have a look at how the picture comes together.",
+    },
+    ctaPrimary: { hu: "Kapcsolatfelvétel →", en: "Get in touch →" },
+    ctaSecondary: { hu: "Hogyan épül fel a Trita? →", en: "How is Trita built? →" },
   },
 } as const;

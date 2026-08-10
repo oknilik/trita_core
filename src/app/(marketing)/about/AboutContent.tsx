@@ -119,6 +119,12 @@ export function AboutContent() {
                   {t("about.asideTitle", locale)}
                 </p>
                 <p className="mt-3 text-sm leading-7 text-ink-body">{t("about.asideBody", locale)}</p>
+                <Link
+                  href="/rolunk"
+                  className="mt-4 inline-flex min-h-[44px] items-center font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
+                >
+                  {t("about.asideLink", locale)}
+                </Link>
               </div>
             </aside>
           </div>
