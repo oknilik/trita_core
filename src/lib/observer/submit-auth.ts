@@ -12,6 +12,17 @@
 export type ObserverSubmitViewerResolver = () => Promise<string | null>;
 
 const defaultResolver: ObserverSubmitViewerResolver = async () => {
+  // Integrációs teszt-env: a Clerk szerver-SDK betöltése a node:test +
+  // react-server condition alatt (CI: node24) a next/navigation
+  // createContext-jén dob MÁR A MODUL-BETÖLTÉSKOR. A dinamikus import
+  // elutasítását — bár a hívó try/catch-eli — a node:test unhandledRejection-
+  // figyelője flaky teszt-hibaként (egy KÉSŐBBI esethez rendelve) csapja le.
+  // A submit néző-feloldása amúgy is best-effort (kontextus hiányában anonim
+  // null), ezért teszt-env-ben egyszerűen kihagyjuk a Clerk-importot. Ez a
+  // korábbi manuális seam (__setObserverSubmitViewerResolverForTests)
+  // automatikus, minden teszt-fájlra ható változata — így nem kell minden
+  // full-submit tesztben külön beállítani.
+  if (process.env.TRITA_INTEGRATION_TEST_DB === "1") return null;
   const { auth } = await import("@clerk/nextjs/server");
   const { userId } = await auth();
   return userId;
