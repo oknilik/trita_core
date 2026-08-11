@@ -1,4 +1,5 @@
 import { t, tf, type Locale } from "@/lib/i18n";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { TeamFeedbackCulture } from "@/lib/team-observer";
 
 // Visszajelzési kultúra kártya — a csapat egyetlen observer-forrású blokkja.
@@ -23,9 +24,11 @@ export function TeamFeedbackCultureCard({
 
   return (
     <section className="rounded-[22px] border border-sand bg-surface-card p-5 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-6">
-      <p className="font-mono text-micro uppercase tracking-widest text-muted">
+      {/* Kanonikus eyebrow-primitív (nem kézi bekezdés) — a csapat-felület
+          tónusával, ahogy a szomszédos FeedbackTabView is hívja. */}
+      <SectionEyebrow tone="team">
         {t("teamComp.feedbackCultureEyebrow", locale)}
-      </p>
+      </SectionEyebrow>
       <h2 className="mt-1.5 font-fraunces text-[22px] leading-tight text-ink">
         {t("teamComp.feedbackCultureTitle", locale)}
       </h2>
