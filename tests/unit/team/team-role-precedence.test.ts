@@ -5,7 +5,7 @@ import {
   hasCompleteTritanDims,
   resolveDisplayRoleScores,
 } from "@/lib/team-role-estimate";
-import { getTopRoles } from "@/lib/team-role-scoring";
+import { getTopRoles, type TeamRoleCode } from "@/lib/team-role-scoring";
 
 const NEUTRAL_TRITAN = {
   INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
@@ -26,6 +26,28 @@ describe("resolveDisplayRoleScores — kitöltött kérdőív > becslés", () =>
     assert.ok(resolved);
     assert.equal(resolved.source, "estimate");
     assert.deepEqual(resolved.scores, estimateTeamRolesFromTritan(NEUTRAL_TRITAN));
+  });
+
+  it("becslés-ágon az exact a kerekítetlen összegeket hordozza (S2 holtverseny-evidencia), mért ágon nincs", () => {
+    const estimated = resolveDisplayRoleScores(null, { ...NEUTRAL_TRITAN, TEMP: 63, ADAP: 47 });
+    assert.ok(estimated);
+    assert.equal(estimated.source, "estimate");
+    assert.ok(estimated.exact, "a becslés-ág nem adott exact evidenciát");
+    const exactMap: Partial<Record<TeamRoleCode, number>> = estimated.exact ?? {};
+    for (const [role, rounded] of Object.entries(estimated.scores)) {
+      const exactValue: number | undefined = exactMap[role as TeamRoleCode];
+      assert.equal(typeof exactValue, "number");
+      assert.equal(
+        Math.round(exactValue as number),
+        rounded,
+        `${role}: az exact nem a scores kerekítetlen párja`,
+      );
+    }
+
+    const measured = resolveDisplayRoleScores({ OG: 83, KE: 17 }, NEUTRAL_TRITAN);
+    assert.ok(measured);
+    assert.equal(measured.source, "questionnaire");
+    assert.equal(measured.exact, undefined, "mért ágon nincs exact — a perzisztált pontszám a jel");
   });
 
   it("csak legacy (ismeretlen) kulcsú mért sorra becslésre esik vissza", () => {

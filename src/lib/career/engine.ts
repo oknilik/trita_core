@@ -31,7 +31,6 @@ import {
   interestCongruence,
   interestDifferentiation,
 } from "./interests";
-import { aggregateFamilyFits } from "./family-fit";
 import {
   bandFor,
   blendedStandardError,
@@ -609,10 +608,10 @@ export function computeCareerFit(
     observerWeight: Math.round(weight * 100) / 100,
     clusters: clusterByOverlap(ranked),
     ranked,
-    // A családok a TELJES pontozott halmazból számolnak (`sorted`), nem a
-    // megjelenítésre levágott listából — különben a család pontszáma attól
-    // függne, hány tétele fért be a limitbe.
-    families: aggregateFamilyFits(sorted),
+    // A korábbi családszintű aggregátum (`families`) 2026-08-11-én kikerült:
+    // minden futáson kiszámolt, a service-en átfolyt, de EGYETLEN felület sem
+    // olvasta (holt ág). A per-tétel `family` mező él — a diversify() erre
+    // sapkázik. Visszaállításhoz: git history, family-fit.ts.
     meta: {
       catalogVersion: CATALOG_VERSION,
       occupationCount: catalog.length,

@@ -106,12 +106,55 @@ export function calculateTeamRoleScores(
   return totals;
 }
 
+/**
+ * FNV-1a hash — kicsi, függőség-mentes, determinisztikus. A holtverseny-
+ * feloldáshoz kell (ld. getTopRoles), nem kriptográfiai célra.
+ */
+function tieBreakHash(role: TeamRoleCode, seed: string): number {
+  let h = 0x811c9dc5;
+  const input = `${role}|${seed}`;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/**
+ * Top-N szerep egy pontszám-profilból.
+ *
+ * HOLTVERSENY-SZABÁLY (S2) — dokumentált döntés:
+ *  1. Elsődleges rendezés: pontszám szerint csökkenő.
+ *  2. Ha van finomabb evidencia (`exact` — pl. kerekítetlen peer-átlag vagy
+ *     becslés-összeg), az dönt: két azonosra KEREKÍTETT szerep közül az áll
+ *     előrébb, amelyik mögött ténylegesen több jel van.
+ *  3. Pontosan egyenlő evidenciánál egy determinisztikus, profil-függő hash
+ *     dönt — SZÁNDÉKOSAN NEM a szerep-kód sorrendje. A korábbi stabil sort a
+ *     TEAM_ROLES deklarációs sorrendjét örökítette, ami minden holtversenyt
+ *     a korai kódok (OG/KE/KO) javára döntött el a későiek (MV/MI/SZ)
+ *     rovására — kis mintánál (3 peer) ez látható, szisztematikus torzítás.
+ *     A hash a teljes pontszám-vektorból magvazódik, így ugyanarra a
+ *     profilra ismételt rendereléskor stabil (determinisztikus), a
+ *     populáció szintjén viszont egyik szerep sem élvez fix előnyt
+ *     (más profilnál más szerep nyeri az egyenlőséget).
+ */
 export function getTopRoles(
   scores: TeamRoleScores,
   n = 3,
+  exact?: Partial<Record<TeamRoleCode, number>>,
 ): { role: TeamRoleCode; score: number }[] {
+  // Kanonikus seed a hash-hez: a kódsorrend itt csak a seed-szöveg
+  // stabilitását adja (objektum-kulcssorrendtől független), rangot nem oszt.
+  const seed = (Object.keys(TEAM_ROLES) as TeamRoleCode[])
+    .map((role) => `${role}:${exact?.[role] ?? scores[role] ?? 0}`)
+    .join(",");
   return (Object.entries(scores) as [TeamRoleCode, number][])
-    .sort((a, b) => b[1] - a[1])
+    .map(([role, score]) => ({ role, score, sortKey: exact?.[role] ?? score }))
+    .sort(
+      (a, b) =>
+        b.sortKey - a.sortKey ||
+        tieBreakHash(a.role, seed) - tieBreakHash(b.role, seed),
+    )
     .slice(0, n)
-    .map(([role, score]) => ({ role, score }));
+    .map(({ role, score }) => ({ role, score }));
 }

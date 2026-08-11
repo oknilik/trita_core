@@ -43,13 +43,17 @@ export const TRITAN_TEAM_ROLE_WEIGHTS: Record<TeamRoleCode, WeightMap> = {
   SZ: { OPEN: +0.30, THOR: +0.25, TEMP: -0.15, ADAP: -0.05 }, // Single-minded, dedicated
 };
 
-// Estimate TeamRole scores from TRITAN dimension scores (0-100 range)
-// Returns TeamRoleScores where values are arbitrary weighted sums (not constrained to 0-10)
-// Suitable for relative ranking, not absolute comparison to questionnaire scores
-export function estimateTeamRolesFromTritan(
+/**
+ * Kerekítetlen becslés-összegek. A megjelenítés a kerekített változatot
+ * használja (estimateTeamRolesFromTritan); a kerekítetlen érték a
+ * top-rangsor holtverseny-feloldásának evidenciája (S2): két azonosra
+ * kerekített szerep közül az áll előrébb, amelyik súlyozott összege
+ * ténylegesen magasabb.
+ */
+function estimateTeamRolesRaw(
   tritan: Record<TritanDimCode, number>,
-): TeamRoleScores {
-  const raw = {} as TeamRoleScores;
+): Record<TeamRoleCode, number> {
+  const raw = {} as Record<TeamRoleCode, number>;
 
   for (const roleCode of Object.keys(TEAM_ROLES) as TeamRoleCode[]) {
     const weights = TRITAN_TEAM_ROLE_WEIGHTS[roleCode];
@@ -58,10 +62,24 @@ export function estimateTeamRolesFromTritan(
       const dimVal = tritan[dim] ?? 50;
       score += (dimVal - 50) * w;
     }
-    raw[roleCode] = Math.max(0, Math.round(score));
+    raw[roleCode] = Math.max(0, score);
   }
 
   return raw;
+}
+
+// Estimate TeamRole scores from TRITAN dimension scores (0-100 range)
+// Returns TeamRoleScores where values are arbitrary weighted sums (not constrained to 0-10)
+// Suitable for relative ranking, not absolute comparison to questionnaire scores
+export function estimateTeamRolesFromTritan(
+  tritan: Record<TritanDimCode, number>,
+): TeamRoleScores {
+  const raw = estimateTeamRolesRaw(tritan);
+  const rounded = {} as TeamRoleScores;
+  for (const roleCode of Object.keys(raw) as TeamRoleCode[]) {
+    rounded[roleCode] = Math.round(raw[roleCode]);
+  }
+  return rounded;
 }
 
 // A megjelenítési precedencia-szabály egyetlen helyen: kitöltött kérdőív >
@@ -69,10 +87,16 @@ export function estimateTeamRolesFromTritan(
 // szerep-kódokat tartjuk meg (legacy kulcsú régi sorokra becslés-fallback),
 // hogy a TEAM_ROLES-feloldás sose fusson undefined-ra. Null, ha se mért
 // eredmény, se teljes dimenzió-készlet nincs — ilyenkor nincs mit mutatni.
+// Becslés-ágon az `exact` a kerekítetlen összegeket hordozza — a getTopRoles
+// holtverseny-evidenciája; mért ágon nincs (a perzisztált pontszám a jel).
 export function resolveDisplayRoleScores(
   measured: Record<string, number> | null | undefined,
   tritan: Partial<Record<TritanDimCode, number>> | null | undefined,
-): { scores: TeamRoleScores; source: "questionnaire" | "estimate" } | null {
+): {
+  scores: TeamRoleScores;
+  source: "questionnaire" | "estimate";
+  exact?: Partial<Record<TeamRoleCode, number>>;
+} | null {
   if (measured) {
     const filtered = Object.fromEntries(
       Object.entries(measured).filter(([code]) => code in TEAM_ROLES),
@@ -82,5 +106,9 @@ export function resolveDisplayRoleScores(
     }
   }
   if (!hasCompleteTritanDims(tritan)) return null;
-  return { scores: estimateTeamRolesFromTritan(tritan), source: "estimate" };
+  return {
+    scores: estimateTeamRolesFromTritan(tritan),
+    source: "estimate",
+    exact: estimateTeamRolesRaw(tritan),
+  };
 }

@@ -1,5 +1,3 @@
-import type { FamilyFit } from "./family-fit";
-
 // Karrier-motor v2 — típusok.
 // A katalógus adat-oldala az O*NET 30.3-ból származtatott, kézzel ellenőrzött
 // foglalkozás-készlet (ld. docs/product/occupation-catalog-sources.md).
@@ -253,12 +251,6 @@ export interface CareerFitResult {
   clusters: OccupationFit[][];
   /** sorrendezett lista (a klaszterek kilapítva) */
   ranked: OccupationFit[];
-  /**
-   * Családszintű illeszkedés, csökkenő sorrendben. EZ az elsődleges
-   * kimenet: egyedi szakmát rangsorolni mérési hibán belül van, családot
-   * viszont lehet. Levezetés: docs/product/career-families.md
-   */
-  families: FamilyFit[];
   meta: {
     catalogVersion: string;
     occupationCount: number;

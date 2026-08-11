@@ -150,7 +150,6 @@ export async function computeCareerForProfile(
       general: 50,
       interestSource: null,
       interestDifferentiation: null,
-      families: [],
       observerWeight: 0,
       meta: {
         catalogVersion: "",
@@ -273,9 +272,6 @@ export async function computeCareerForProfile(
     interestSource: result.interestSource,
     interestDifferentiation: result.interestDifferentiation,
     observerWeight: result.observerWeight,
-    // Családszintű illeszkedés — a felület ezt csoportosítja majd; ma még
-    // csak átmegy, hogy a számítás és a szerződés kész legyen.
-    families: result.families,
     meta: result.meta,
     sections,
     scope,

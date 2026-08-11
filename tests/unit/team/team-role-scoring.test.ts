@@ -5,6 +5,7 @@ import {
   calculateTeamRoleScores,
   getTopRoles,
   type TeamRoleCode,
+  type TeamRoleScores,
 } from "@/lib/team-role-scoring";
 import {
   TEAM_ROLE_ITEMS,
@@ -18,6 +19,7 @@ import {
 import {
   aggregatePeerRoleScores,
   compareSelfAndPeerTopRoles,
+  poolPeerSelectionsByRatedMember,
   TEAM_ROLE_PEER_MIN_RATERS,
 } from "@/lib/team-role-peer";
 
@@ -162,5 +164,136 @@ describe("peer aggregate (anonymity threshold)", () => {
     assert.deepEqual([...diff.shared].sort(), ["KO", "OG"]);
     assert.deepEqual(diff.selfOnly, ["KE"]);
     assert.deepEqual(diff.peerOnly, ["MV"]);
+  });
+
+  it("kerekítve azonos peer-átlagnál a kerekítetlen átlag (evidencia) dönt — S2", () => {
+    // MV: (100, 0, 0) → kerekítetlen átlag 33,33; OG: (33, 33, 33) → 33,0.
+    // Mindkettő 33-ra kerekül — a több evidenciájú MV-nek kell elöl állnia,
+    // hiába későbbi a kódsorrendben.
+    const raterHigh: TeamRoleSelections = { MV1: 2, MV2: 2, MV3: 2, OG1: 2 };
+    const raterLow1: TeamRoleSelections = { OG1: 2 };
+    const raterLow2: TeamRoleSelections = { OG1: 2 };
+    const agg = aggregatePeerRoleScores([raterHigh, raterLow1, raterLow2]);
+    assert.ok(agg.scores);
+    assert.equal(agg.scores.MV, 33);
+    assert.equal(agg.scores.OG, 33);
+    assert.equal(agg.topRoles[0].role, "MV", "a magasabb kerekítetlen átlagú szerep áll elöl");
+    assert.equal(agg.topRoles[1].role, "OG");
+  });
+});
+
+// ── S2: holtverseny-feloldás — determinisztikus, de kódsorrend-mentes ───────
+
+describe("getTopRoles tie-break (S2)", () => {
+  const allTied = (value: number): TeamRoleScores =>
+    Object.fromEntries(
+      (Object.keys(TEAM_ROLES) as TeamRoleCode[]).map((role) => [role, value]),
+    ) as TeamRoleScores;
+
+  it("determinisztikus: ugyanarra a profilra ismételten ugyanaz a sorrend", () => {
+    const scores = allTied(42);
+    const first = getTopRoles(scores, 9).map((r) => r.role);
+    const second = getTopRoles(scores, 9).map((r) => r.role);
+    assert.deepEqual(first, second);
+  });
+
+  it("teljes döntetlennél NEM a deklarációs sorrend (OG/KE/KO) nyer minden profilon", () => {
+    // A régi stabil sort minden döntetlent az OG-nak adott. Az új szabály
+    // profil-függő hash-sel dönt: 100 különböző döntetlen-profilon minden
+    // szerepnek nyernie kell legalább egyszer, és a késői kódoknak
+    // (MV/MI/SZ) is érdemi arányban.
+    const winners = new Map<TeamRoleCode, number>();
+    for (let value = 0; value < 100; value += 1) {
+      const [top] = getTopRoles(allTied(value), 1);
+      winners.set(top.role, (winners.get(top.role) ?? 0) + 1);
+    }
+    assert.equal(winners.size, 9, `nem minden szerep nyert: ${[...winners.keys()].join(",")}`);
+    const lateWins = (["MV", "MI", "SZ"] as TeamRoleCode[]).reduce(
+      (sum, role) => sum + (winners.get(role) ?? 0),
+      0,
+    );
+    // Egyenletes eloszlásnál 33 lenne; a torzításmentesség őre egy laza sáv.
+    assert.ok(lateWins >= 15, `a késői kódok alig nyernek (${lateWins}/100) — kódsorrend-torzítás`);
+    assert.ok(
+      (winners.get("OG") ?? 0) < 50,
+      `az OG nyeri a döntetlenek felét (${winners.get("OG")}/100) — kódsorrend-torzítás`,
+    );
+  });
+
+  it("a finomabb evidencia (exact) felülírja a hash-t a kerekítés-azonos szerepeknél", () => {
+    const scores = { OG: 33, KE: 0, KO: 0, HA: 0, ER: 0, CS: 0, MV: 33, MI: 0, SZ: 0 } as TeamRoleScores;
+    // Az exact szerint az MV mögött több a jel — neki kell nyernie, minden
+    // hash-kimenettől függetlenül.
+    const top = getTopRoles(scores, 2, { OG: 33.0, MV: 33.4 });
+    assert.equal(top[0].role, "MV");
+    assert.equal(top[1].role, "OG");
+    // A megjelenített pontszám a kerekített marad.
+    assert.equal(top[0].score, 33);
+    // Fordított evidenciával fordul a sorrend — tehát tényleg az exact dönt.
+    const flipped = getTopRoles(scores, 2, { OG: 33.4, MV: 33.0 });
+    assert.equal(flipped[0].role, "OG");
+  });
+});
+
+// ── S4: a peer-halmaz a jelenlegi tagokra szűkül ────────────────────────────
+
+describe("poolPeerSelectionsByRatedMember (S4)", () => {
+  const sel = (id: string): TeamRoleSelections => ({ [id]: 2 });
+  const row = (about: string, rater: string, itemId = "OG1") => ({
+    aboutUserId: about,
+    raterUserId: rater,
+    selections: sel(itemId),
+  });
+
+  it("kilépett értékelők kiesnek → az értékelő-szám ≤ aktuális taglétszám − 1 (lefedettség ≤ 100%)", () => {
+    const current = new Set(["a", "b", "c"]);
+    // 'a'-ról 4 értékelés: 2 jelenlegi tagtól (b, c) + 2 kilépettől (x, y).
+    // Szűkítés nélkül raterCount=4 > taglétszám−1=2 → 200% „lefedettség".
+    const pooled = poolPeerSelectionsByRatedMember(
+      [row("a", "b"), row("a", "c"), row("a", "x"), row("a", "y")],
+      current,
+    );
+    const sets = pooled.get("a");
+    assert.ok(sets);
+    assert.equal(sets.length, 2, "kilépett értékelő jelölése bent maradt");
+    assert.ok(sets.length <= current.size - 1, "az értékelő-szám átlépi a taglétszám − 1 korlátot");
+  });
+
+  it("kilépett ÉRTÉKELT tag profilja nem képződik", () => {
+    const pooled = poolPeerSelectionsByRatedMember(
+      [row("gone", "a"), row("b", "a")],
+      new Set(["a", "b"]),
+    );
+    assert.equal(pooled.has("gone"), false);
+    assert.equal(pooled.has("b"), true);
+  });
+
+  it("páronként a legutolsó kör számít (a bemenet updatedAt szerint növekvő)", () => {
+    const older = { aboutUserId: "a", raterUserId: "b", selections: sel("OG1") };
+    const newer = { aboutUserId: "a", raterUserId: "b", selections: sel("MV1") };
+    const pooled = poolPeerSelectionsByRatedMember([older, newer], new Set(["a", "b"]));
+    const sets = pooled.get("a");
+    assert.ok(sets);
+    assert.equal(sets.length, 1, "az ismételt kör duplázódott a felülírás helyett");
+    assert.deepEqual(sets[0], sel("MV1"), "nem a legfrissebb kör maradt meg");
+  });
+
+  it("önjelölés védekezően kiesik", () => {
+    const pooled = poolPeerSelectionsByRatedMember([row("a", "a"), row("a", "b")], new Set(["a", "b"]));
+    assert.equal(pooled.get("a")?.length, 1);
+  });
+
+  it("a szűkítés UTÁN is áll az anonimitás-padló: küszöb alá eső profil rejtve", () => {
+    // 3 értékelésből 1 kilépetté → 2 marad, ami a küszöb (3) alatt van:
+    // az aggregátumnak null pontszámot kell adnia, nem kilépő-adattal feltöltöttet.
+    const pooled = poolPeerSelectionsByRatedMember(
+      [row("a", "b"), row("a", "c"), row("a", "leaver")],
+      new Set(["a", "b", "c"]),
+    );
+    const agg = aggregatePeerRoleScores(pooled.get("a") ?? []);
+    assert.equal(agg.raterCount, 2);
+    assert.ok(agg.raterCount < TEAM_ROLE_PEER_MIN_RATERS);
+    assert.equal(agg.scores, null, "küszöb alatti profil mégis megjelenik");
+    assert.deepEqual(agg.topRoles, []);
   });
 });

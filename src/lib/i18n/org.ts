@@ -1595,7 +1595,7 @@ export const orgTranslations = {
     },
 
     // TeamRoleSection
-    estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
+    estimatedRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
     peerEyebrow: { hu: "önkép vs. csapatkép", en: "self-image vs. team view" },
     peerTitle: { hu: "Így látja a csapat", en: "How the team sees it" },
     peerDesc: {
@@ -1618,8 +1618,8 @@ export const orgTranslations = {
     },
     teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     teamRoleDesc: {
-      hu: "A személyiségprofilok alapján becsült csapatszerepkörök. A pontos méréshez minden tagnak ki kell töltenie a csapatszerep kérdőívet.",
-      en: "Team roles estimated from personality profiles. For exact measurements, all members should complete the team-role questionnaire.",
+      hu: "Tagonkénti csapatszerep-profilok. A kitöltött csapatszerep-kérdőív mért adat; ahol még nincs kitöltés, a személyiségprofilból becslünk — a forrást minden tagnál külön jelöljük.",
+      en: "Per-member team-role profiles. A completed team-role questionnaire is measured data; where it is missing, we estimate from the personality profile — the source is badged for every member.",
     },
     profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
     profileStatusDesc: {
@@ -1651,6 +1651,16 @@ export const orgTranslations = {
     thSecondary: { hu: "Másodlagos", en: "Secondary" },
     thSupporting: { hu: "Kiegészítő", en: "Supporting" },
     noData: { hu: "Nincs adat", en: "No data" },
+    // Forrás-jelölés (S1) — mért kitöltés vs profil-alapú becslés. A vizuális
+    // konvenció a TeamIntelligence-ével azonos: sage = mért, amber = becsült.
+    sourceMeasuredBadge: { hu: "kitöltött", en: "measured" },
+    sourceEstimateBadge: { hu: "becslés", en: "estimate" },
+    roleSourceMixLine: {
+      hu: "{measured} valódi kitöltés · {estimated} profil-alapú becslés",
+      en: "{measured} real fill-outs · {estimated} profile-based estimates",
+    },
+    sourceMixMeasured: { hu: "{n} mért kitöltésből", en: "{n} from measured fill-outs" },
+    sourceMixEstimated: { hu: "{n} profil-alapú becslésből", en: "{n} from profile-based estimates" },
 
     // TeamMembersTab
     membersTabEyebrow: { hu: "tagok", en: "members" },
