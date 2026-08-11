@@ -118,14 +118,18 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
   });
 
   test("invite accept entrypoint with invalid token shows not-found without wrong redirect", async ({ page }) => {
+    // A TESZT-SZINTŰ budgetet tágítjuk, nem (csak) az assert-időt: ez a lépés
+    // három, egymás UTÁN futó várakozásból áll — `goto` (a `next dev` igény
+    // szerinti route-fordítása, hidegen a leglassabb), a pathname-poll (15s), és
+    // a not-found tartalom assertje. A Playwright alap teszt-timeoutja 30s, így
+    // egy 30s-os assert-timeout SOHA nem tud lefutni: a teszt-szintű plafon
+    // előbb üt („Test timeout of 30000ms exceeded"), függetlenül attól, hogy a
+    // tartalom helyes-e. (Helyben a merge utáni kódon a /join hidegen rendben
+    // renderel — a tartalom nem hibás, a budget volt szűk.) Ezért: bővebb
+    // teszt-budget + az alatta maradó assert-idő.
+    test.setTimeout(120_000);
     await page.goto("/join/c4-smoke-invalid-token", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/join/c4-smoke-invalid-token");
-    // A not-found tartalom streamelve érkezik — a `next dev` igény szerinti
-    // route-fordítása + a teljes app-shell SSR-je terhelt CI-runneren együtt is
-    // beleférő türelmi idő. A 15s határos volt (terhelt futáson mindhárom próba
-    // ~16s-nél bukott, holott a tartalom helyes — a szomszéd commitok zöldek),
-    // ezért 30s-re tágítjuk; ez nem hibát fed el, hanem a dev-render latenciát
-    // fedi le determinisztikusabban.
     await expect(
       page.getByText(/this page could not be found|ez az oldal nem található/i).first(),
     ).toBeVisible({ timeout: 30_000 });
