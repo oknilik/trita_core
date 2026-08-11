@@ -4,10 +4,11 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { hasCompleteTritanDims, resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLE_FAMILIES, teamRoleColors } from "@/lib/color-system";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
+import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 
 interface MemberWithTeamRole {
@@ -15,6 +16,10 @@ interface MemberWithTeamRole {
   userId: string;
   displayName: string;
   hasScores: boolean;
+  /** Van-e TELJES (hat dimenziós) személyiségprofilja — a profil-státusz
+      kártya számlálója; NEM azonos a hasScores-szal (az a szerep-adat
+      meglétét jelzi, ami kérdőív-only tagnál profil nélkül is igaz). */
+  hasPersonalityProfile: boolean;
   teamRoleScores: TeamRoleScores | null;
   top3: { role: TeamRoleCode; score: number }[];
   primaryRole: TeamRoleCode | null;
@@ -60,6 +65,68 @@ function RoleChip({
   );
 }
 
+/**
+ * Forrás-badge (S1): mért kitöltés vs profil-alapú becslés. A vizuális
+ * konvenció a meglévő intelligence-mintát követi (TeamIntelligence):
+ * sage = mért, amber (warning) = becsült — nem új vizuális nyelv.
+ */
+function SourceBadge({
+  source,
+  isHu,
+}: {
+  source: "questionnaire" | "estimate";
+  isHu: boolean;
+}) {
+  const loc: Locale = isHu ? "hu" : "en";
+  const measured = source === "questionnaire";
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-micro font-semibold ${
+        measured
+          ? "bg-sage/15 text-sage-dark"
+          : "bg-state-warning-bg text-state-warning-fg"
+      }`}
+    >
+      {measured
+        ? t("teamComp.sourceMeasuredBadge", loc)
+        : t("teamComp.sourceEstimateBadge", loc)}
+    </span>
+  );
+}
+
+/**
+ * Forrás-összetétel egy aggregált kimenethez (S1): hány tag adata mért és
+ * hány becsült. Minden kevert forrású intelligence-kimeneten kötelező —
+ * enélkül az aggregátum mértnek látszana akkor is, ha becslésből áll.
+ */
+function RoleSourceMixChips({
+  members,
+  isHu,
+}: {
+  members: MemberWithTeamRole[];
+  isHu: boolean;
+}) {
+  const loc: Locale = isHu ? "hu" : "en";
+  const withData = members.filter((m) => m.primaryRole);
+  const measured = withData.filter((m) => m.source === "questionnaire").length;
+  const estimated = withData.filter((m) => m.source === "estimate").length;
+  if (measured + estimated === 0) return null;
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-1.5">
+      {measured > 0 ? (
+        <span className="inline-flex items-center rounded-full bg-sage/15 px-2 py-0.5 text-micro font-semibold text-sage-dark">
+          {t("teamComp.sourceMixMeasured", loc).replace("{n}", String(measured))}
+        </span>
+      ) : null}
+      {estimated > 0 ? (
+        <span className="inline-flex items-center rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-semibold text-state-warning-fg">
+          {t("teamComp.sourceMixEstimated", loc).replace("{n}", String(estimated))}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 // ── TeamRoleCompletionStatus ────────────────────────────────────────────────────
 
 function TeamRoleCompletionStatus({
@@ -69,11 +136,15 @@ function TeamRoleCompletionStatus({
   members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
-  const withScores = members.filter((m) => m.hasScores).length;
+  // A kártya szövege a SZEMÉLYISÉGPROFIL meglétéről szól („X/Y tagnak van
+  // személyiségprofilja") — a számláló ezért a valódi (teljes hat dimenziós)
+  // profil-meglétet számolja, NEM a szerep-adat meglétét: egy kérdőív-only
+  // tag szerep-adattal, de profil nélkül nem tartozik bele.
+  const withProfile = members.filter((m) => m.hasPersonalityProfile).length;
   const questionnaireCount = members.filter((m) => m.source === "questionnaire").length;
   const estimateCount = members.filter((m) => m.source === "estimate").length;
   const total = members.length;
-  const pct = total > 0 ? Math.round((withScores / total) * 100) : 0;
+  const pct = total > 0 ? Math.round((withProfile / total) * 100) : 0;
 
   return (
     <div className="rounded-xl border border-sand bg-cream p-4">
@@ -83,12 +154,12 @@ function TeamRoleCompletionStatus({
             {t("teamComp.profileStatus", isHu ? "hu" : "en")}
           </p>
           <p className="mt-0.5 text-xs text-ink-body">
-            {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withScores)).replace("{total}", String(total))}
+            {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withProfile)).replace("{total}", String(total))}
           </p>
           <p className="mt-1 text-xs text-muted">
-            {isHu
-              ? `${questionnaireCount} valódi kitöltés · ${estimateCount} profil-alapú becslés`
-              : `${questionnaireCount} real fill-out · ${estimateCount} profile-based estimate`}
+            {t("teamComp.roleSourceMixLine", isHu ? "hu" : "en")
+              .replace("{measured}", String(questionnaireCount))
+              .replace("{estimated}", String(estimateCount))}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1">
@@ -269,13 +340,10 @@ function IndividualTeamRoleTable({
                 <span className="text-sm font-semibold text-ink">
                   {m.displayName}
                 </span>
-                {m.source === "questionnaire" ? (
-                  <span className="ml-2 inline-block rounded-full bg-sand/60 px-2 py-0.5 text-micro font-medium text-ink-body">
-                    {isHu ? "kitöltött" : "completed"}
-                  </span>
-                ) : m.source === "estimate" ? (
-                  <span className="ml-2 inline-block rounded-full border border-sand bg-cream px-2 py-0.5 text-micro font-medium text-muted">
-                    {isHu ? "becslés" : "estimate"}
+                {/* S1: mért vs becsült forrás — a közös sage/amber konvencióval */}
+                {m.source ? (
+                  <span className="ml-2 inline-block align-middle">
+                    <SourceBadge source={m.source} isHu={isHu} />
                   </span>
                 ) : null}
                 {/* Mobil: a másodlagos/támogató szerep-oszlop rejtve van, ezért
@@ -419,8 +487,6 @@ export interface SerializedPeerRoleProfile {
   topRoles: { role: TeamRoleCode; score: number }[];
 }
 
-const PEER_MIN_RATERS = 3;
-
 function PeerComparison({
   members,
   peerProfiles,
@@ -435,7 +501,7 @@ function PeerComparison({
   if (rated.length === 0) return null;
 
   const aboveThreshold = rated.filter(
-    (m) => (peerProfiles[m.userId]?.raterCount ?? 0) >= PEER_MIN_RATERS,
+    (m) => (peerProfiles[m.userId]?.raterCount ?? 0) >= TEAM_ROLE_PEER_MIN_RATERS,
   ).length;
 
   return (
@@ -452,14 +518,15 @@ function PeerComparison({
       <p className="mb-5 text-xs text-muted">
         {t("teamComp.peerCoverage", loc)
           .replace("{above}", String(aboveThreshold))
-          .replace("{total}", String(rated.length))}
+          .replace("{total}", String(rated.length))
+          .replace("{min}", String(TEAM_ROLE_PEER_MIN_RATERS))}
       </p>
 
       <div className="flex flex-col divide-y divide-sand">
         {rated.map((m) => {
           const peer = peerProfiles[m.userId];
           if (!peer) return null;
-          const belowThreshold = peer.raterCount < PEER_MIN_RATERS || !peer.scores;
+          const belowThreshold = peer.raterCount < TEAM_ROLE_PEER_MIN_RATERS || !peer.scores;
           const selfTop = m.source === "questionnaire" ? m.top3 : [];
           const selfSet = new Set(selfTop.map((r) => r.role));
           return (
@@ -477,7 +544,7 @@ function PeerComparison({
                 <p className="text-xs leading-relaxed text-muted">
                   {t("teamComp.peerBelowThreshold", loc).replace(
                     "{min}",
-                    String(PEER_MIN_RATERS),
+                    String(TEAM_ROLE_PEER_MIN_RATERS),
                   )}
                 </p>
               ) : (
@@ -525,7 +592,10 @@ function PeerComparison({
         })}
       </div>
       <p className="mt-4 text-[11px] leading-relaxed text-muted">
-        {t("teamComp.peerFootnote", loc)}
+        {t("teamComp.peerFootnote", loc).replace(
+          "{min}",
+          String(TEAM_ROLE_PEER_MIN_RATERS),
+        )}
       </p>
     </section>
   );
@@ -544,48 +614,38 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
   const loc: Locale = isHu ? "hu" : "en";
   const membersWithTeamRole = useMemo<MemberWithTeamRole[]>(() => {
     return members.map((m) => {
-      // Real questionnaire result always wins over the TRITAN estimate
-      if (m.teamRoleScores && m.teamRoleSource === "questionnaire") {
-        const teamRoleScores = m.teamRoleScores as TeamRoleScores;
-        const top3 = getTopRoles(teamRoleScores, 3);
-        return {
-          id: m.id,
-          userId: m.userId,
-          displayName: m.displayName,
-          hasScores: true,
-          teamRoleScores,
-          top3,
-          primaryRole: top3[0]?.role ?? null,
-          source: "questionnaire" as const,
-        };
-      }
-
-      const hasTritan = m.scores && "INTE" in m.scores && "TEMP" in m.scores;
-      if (!hasTritan) {
+      // Precedencia a kanonikus szabályból (team-role-estimate):
+      // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+      const measured =
+        m.teamRoleSource === "questionnaire" ? m.teamRoleScores : null;
+      const resolved = resolveDisplayRoleScores(measured, m.scores);
+      // Teljes hat dimenziós profil — a becslés-kapuval azonos definíció.
+      const hasPersonalityProfile = hasCompleteTritanDims(m.scores);
+      if (!resolved) {
         return {
           id: m.id,
           userId: m.userId,
           displayName: m.displayName,
           hasScores: false,
+          hasPersonalityProfile,
           teamRoleScores: null,
           top3: [],
           primaryRole: null,
           source: null,
         };
       }
-      const teamRoleScores = estimateTeamRolesFromTritan(
-        m.scores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-      );
-      const top3 = getTopRoles(teamRoleScores, 3);
+      // S2: becslés-ágon a kerekítetlen összegek a holtverseny-evidencia.
+      const top3 = getTopRoles(resolved.scores, 3, resolved.exact);
       return {
         id: m.id,
         userId: m.userId,
         displayName: m.displayName,
         hasScores: true,
-        teamRoleScores,
+        hasPersonalityProfile,
+        teamRoleScores: resolved.scores,
         top3,
         primaryRole: top3[0]?.role ?? null,
-        source: "estimate" as const,
+        source: resolved.source,
       };
     });
   }, [members]);
@@ -619,9 +679,11 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
           {t("teamComp.roleDistributionEyebrow", loc)}
         </SectionEyebrow>
-        <h4 className="mb-5 font-fraunces text-xl text-ink">
+        <h4 className="mb-2 font-fraunces text-xl text-ink">
           {t("teamComp.roleCompositionTitle", loc)}
         </h4>
+        {/* S1: az aggregátum forrás-összetétele (mért vs becsült) */}
+        <RoleSourceMixChips members={membersWithTeamRole} isHu={isHu} />
         <RoleComposition members={membersWithTeamRole} isHu={isHu} />
       </section>
 
@@ -638,9 +700,11 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
           {t("teamComp.categoryAnalysisEyebrow", loc)}
         </SectionEyebrow>
-        <p className="mb-4 text-sm text-ink-body">
+        <p className="mb-2 text-sm text-ink-body">
           {t("teamComp.categoryAnalysisDesc", loc)}
         </p>
+        {/* S1: az aggregátum forrás-összetétele (mért vs becsült) */}
+        <RoleSourceMixChips members={membersWithTeamRole} isHu={isHu} />
         <CrossAnalysis members={membersWithTeamRole} isHu={isHu} />
       </section>
 

@@ -8,42 +8,20 @@ import {
   familyLabel,
   getCareerFamily,
 } from "@/lib/career/families";
-import { aggregateFamilyFits, familiesAreDistinguishable } from "@/lib/career/family-fit";
 import { computeCareerFit } from "@/lib/career/engine";
-import type { OccupationFit } from "@/lib/career/types";
 
-const balancedDims = { INTE: 55, RESO: 50, TEMP: 55, ADAP: 55, THOR: 60, OPEN: 60 };
-
-/** Minimális OccupationFit az aggregálás izolált teszteléséhez. */
-function makeFit(id: string, family: string, rank: number, rankSe = 4): OccupationFit {
-  return {
-    id,
-    hu: id,
-    feor: null,
-    isco: "7212",
-    tier: 1,
-    entry: "vocational",
-    family,
-    demandFit: rank,
-    se: rankSe,
-    band: { low: rank - rankSe, high: rank + rankSe },
-    rankSe,
-    components: [],
-    absoluteFit: rank,
-    interest: null,
-    preference: null,
-    feasibility: { gap: "ready", ready: true, fieldMatch: null, state: "level-only" },
-    rank,
-    orderedBy: "composite",
-    choiceScore: null,
-    flags: [],
-  };
-}
+const balancedDims = { H: 55, E: 50, X: 55, A: 55, C: 60, O: 60 };
 
 // A család-réteg épsége. A besorolás OFFLINE készül
 // (scripts/career-catalog/step12_families.mjs) és befagyva él a katalógusban —
 // ezek a tesztek azt őrzik, hogy a befagyasztott állapot ne csússzon el a
-// konfigurációtól. Levezetés: docs/product/career-families.md
+// konfigurációtól. A `family` mező ÉL: a diversify() családonkénti sapkája
+// használja. Levezetés: docs/product/career-families.md
+//
+// A CSALÁDSZINTŰ AGGREGÁTUM (aggregateFamilyFits / CareerFitResult.families)
+// 2026-08-11-én kikerült: minden futáson kiszámolt, de egyetlen felület sem
+// olvasta (holt ág) — a hozzá tartozó tesztek is vele mentek. Visszaállítás:
+// git history, family-fit.ts.
 
 test("minden aktív foglalkozásnak van családja, és az létező kulcs", () => {
   const keys = new Set(CAREER_FAMILIES.map((family) => family.key));
@@ -127,76 +105,17 @@ test("a kis családok küszöbe alatti családok azonosíthatók", () => {
   );
 });
 
-// ── családszintű illeszkedés (a tényleges számítás) ─────────────────────────
+// ── holt ág eltávolítva: a motor nem számol családszintű aggregátumot ───────
 
-test("a motor családszintű illeszkedést is ad, rendezve", () => {
-  const result = computeCareerFit({
-    dims: { INTE: 70, RESO: 40, TEMP: 60, ADAP: 55, THOR: 75, OPEN: 65 },
-    form: "short",
-  });
-  assert.ok(result.families.length > 5, `túl kevés család: ${result.families.length}`);
-  for (let i = 1; i < result.families.length; i += 1) {
-    assert.ok(
-      result.families[i - 1].fit >= result.families[i].fit,
-      "a családok nincsenek csökkenő sorrendben",
-    );
-  }
-  for (const family of result.families) {
-    assert.ok(getCareerFamily(family.key), `ismeretlen család: ${family.key}`);
-    assert.ok(family.fit >= 0 && family.fit <= 100, `${family.key}: sávon kívüli fit`);
-    assert.ok(family.top.length > 0, `${family.key}: nincs top-tag`);
-    assert.ok(family.band.low <= family.fit && family.fit <= family.band.high);
-    // A top-tagok mind ehhez a családhoz tartoznak
-    for (const member of family.top) assert.equal(member.family, family.key);
-  }
-});
-
-test("a család pontszáma a legjobb tagjaiból számol, nem az összesből", () => {
-  // Szintetikus halmaz, hogy a két átlag TÉNYLEGESEN eltérjen: 9 tag,
-  // az elsők jók, a többi gyenge. Top-K = ceil(9/3) = 3 → a fit a 90/80/70
-  // átlaga (80), az ÖSSZES tag átlaga viszont 44.
-  const ranks = [90, 80, 70, 40, 40, 30, 20, 20, 10];
-  const fits = ranks.map((rank, i) => makeFit(`o${i}`, "gyartas", rank));
-  const [family] = aggregateFamilyFits(fits);
-
-  assert.equal(family.key, "gyartas");
-  assert.equal(family.scored, 9);
-  assert.equal(family.top.length, 3, "top-K = ceil(n/3)");
-  assert.equal(family.fit, 80, "a fit a legjobb 3 átlaga");
-
-  const allMean = Math.round(ranks.reduce((s, r) => s + r, 0) / ranks.length);
-  assert.ok(family.fit > allMean, `a fit (${family.fit}) nem tér el az összátlagtól (${allMean})`);
-});
-
-test("a top-halmaz felső korlátja 8, nagy családnál is", () => {
-  const fits = Array.from({ length: 60 }, (_, i) => makeFit(`o${i}`, "gyartas", 100 - i));
-  const [family] = aggregateFamilyFits(fits);
-  assert.equal(family.top.length, 8, "ceil(60/3) = 20 lenne, de a korlát 8");
-});
-
-test("az erősen korrelált tagok miatt a hibasáv NEM szűkül a tagszámmal", () => {
-  // Ha gyök(k)-val osztanánk (független minták feltevése), 4 tagnál a
-  // hibasáv feleződne. Konzervatívan a tagok hibájának átlagát vesszük.
-  const fits = [10, 9, 8, 7].map((n, i) => makeFit(`o${i}`, "gyartas", 80 + n, 6));
-  const [family] = aggregateFamilyFits(fits);
-  assert.equal(family.se, 6, "a családszintű SE a tagok SE-jének átlaga");
-});
-
-test("a kis családok jelölve vannak, a nagyok nem", () => {
-  const result = computeCareerFit({ dims: balancedDims, form: "short" });
-  for (const family of result.families) {
-    assert.equal(
-      family.small,
-      family.size < SMALL_FAMILY_THRESHOLD,
-      `${family.key}: rossz kis-család jelölés (size=${family.size})`,
-    );
-  }
-});
-
-test("a megkülönböztethetőség a mérési hibához méri a különbséget", () => {
-  const a = { fit: 70, se: 4 } as ReturnType<typeof aggregateFamilyFits>[number];
-  const b = { fit: 62, se: 4 } as ReturnType<typeof aggregateFamilyFits>[number];
-  const c = { fit: 68, se: 4 } as ReturnType<typeof aggregateFamilyFits>[number];
-  assert.equal(familiesAreDistinguishable(a, b), true);
-  assert.equal(familiesAreDistinguishable(a, c), false);
+test("a motor eredménye nem hordoz családszintű aggregátumot, a rangsor ép", () => {
+  const result = computeCareerFit({ dims: balancedDims, form: "short" }, { limit: 10 });
+  // A `families` kulcs a holt ággal együtt tűnt el — ha visszakerül, annak
+  // tudatos (felület által olvasott) döntésnek kell lennie, nem maradványnak.
+  assert.equal("families" in result, false, "a families holt ág visszakerült az eredménybe");
+  // A per-tétel family mező viszont él (diversify-sapka) — nem tűnhet el.
+  assert.ok(result.ranked.length > 0);
+  assert.ok(
+    result.ranked.some((fit) => typeof fit.family === "string" && fit.family.length > 0),
+    "a per-tétel family mező eltűnt — a diversify() családonkénti sapkája erre épül",
+  );
 });

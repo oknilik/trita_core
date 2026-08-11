@@ -13,6 +13,10 @@ import {
 import { getProfileCoreById } from "@/lib/profile.server";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
+import {
+  MIN_MEMBERS_FOR_ORG_INSIGHTS,
+  MIN_MEMBERS_FOR_TEAM_INSIGHTS,
+} from "@/lib/journey/constants";
 import type {
   ActiveSurface,
   JourneyCompletionSummary,
@@ -24,8 +28,6 @@ import type {
   JourneyTeamMembershipSnapshot,
 } from "@/lib/journey/types";
 
-const MIN_MEMBERS_FOR_TEAM_INSIGHTS = 3;
-const MIN_MEMBERS_FOR_ORG_INSIGHTS = 3;
 export interface ResolveJourneyContextOptions {
   teamId?: string | null;
   orgId?: string | null;

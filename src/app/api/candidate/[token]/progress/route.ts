@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import type { TestType } from "@prisma/client";
 import { resolveAcceptance } from "@/lib/acceptance/service";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getTestConfig } from "@/lib/questions";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { prisma } from "@/lib/prisma";
 
 const schema = z.object({
@@ -11,6 +15,10 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  // Publikus (token-alapú) végpont — rate limit a testvér-route-ok mintájára.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { token } = await params;
 
   const body = await req.json().catch(() => null);
@@ -34,10 +42,22 @@ export async function PATCH(
     return NextResponse.json({ ok: false });
   }
 
+  // A kliens által állított darabszám nem tény (2026-08-11, fix): a tárolt
+  // (és a hiring-felületen tényként mutatott) érték a meghívó TÉNYLEGES
+  // kérdőív-formájának itemszámára vágva kerül be — "500/60" nem létezhet.
+  // A jelölt-flow a DEFAULT_ASSESSMENT_FORM-ot szolgálja ki (apply/page.tsx),
+  // a plafon ugyanabból a konfigból jön.
+  const totalQuestions = getTestConfig(
+    invite.testType as TestType,
+    "hu",
+    DEFAULT_ASSESSMENT_FORM,
+  ).questions.length;
+  const answeredCount = Math.min(parsed.data.answeredCount, totalQuestions);
+
   await prisma.candidateInvite.update({
     where: { id: invite.id },
     data: {
-      draftAnsweredCount: parsed.data.answeredCount,
+      draftAnsweredCount: answeredCount,
       ...(invite.draftStartedAt ? {} : { draftStartedAt: new Date() }),
     },
   });

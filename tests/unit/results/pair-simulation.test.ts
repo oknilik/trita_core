@@ -5,14 +5,14 @@ import type { DimScores } from "@/lib/interaction-engine";
 
 // Markánsan eltérő pár: strukturált vs. felfedező működés.
 const STRUCTURED: DimScores = {
-  INTE: 70, RESO: 40, TEMP: 45, ADAP: 55, THOR: 85, OPEN: 25,
+  H: 70, E: 40, X: 45, A: 55, C: 85, O: 25,
 };
 const EXPLORER: DimScores = {
-  INTE: 50, RESO: 55, TEMP: 75, ADAP: 40, THOR: 25, OPEN: 85,
+  H: 50, E: 55, X: 75, A: 40, C: 25, O: 85,
 };
 // Kontraszt nélküli (közép-sávos) profil — sparse-ág.
 const NEUTRAL: DimScores = {
-  INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
+  H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
 };
 
 describe("buildPairSimulation — valódi páros mód (profile-profile)", () => {

@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   computeTrustNetwork,
+  dedupeLatestTrustObservations,
   type TrustAnswerSet,
   type TrustNetwork,
 } from "@/lib/trust-network";
@@ -30,21 +31,18 @@ export async function buildTeamTrustNetwork(
     }),
   ]);
 
-  // (rater → értékelt) páronként a legfrissebb válasz nyer.
-  const latest = new Map<
-    string,
-    { aboutUserId: string; raterUserId: string; answers: TrustAnswerSet }
-  >();
-  for (const obs of observations) {
-    latest.set(`${obs.raterUserId}→${obs.aboutUserId}`, {
+  // (rater → értékelt) páronként a legfrissebb válasz nyer — közös helper
+  // (trust-network.ts), a manager-cockpit kötegelt betöltője is ezt használja.
+  const deduped = dedupeLatestTrustObservations(
+    observations.map((obs) => ({
       aboutUserId: obs.aboutUserId,
       raterUserId: obs.raterUserId,
       answers: obs.answers as TrustAnswerSet,
-    });
-  }
+    })),
+  );
 
   return computeTrustNetwork(
-    [...latest.values()],
+    deduped,
     members.map((m) => m.userId),
   );
 }

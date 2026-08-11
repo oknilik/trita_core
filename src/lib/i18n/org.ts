@@ -426,7 +426,8 @@ export const orgTranslations = {
       psBandMid: { hu: "Közepes biztonság-élmény", en: "Moderate sense of safety" },
       psBandLow: { hu: "Törékeny biztonság-élmény", en: "Fragile sense of safety" },
       psResponses: { hu: "{count} válasz", en: "{count} responses" },
-      psSpread: { hu: "szóródás ±{spread} pont", en: "spread ±{spread} points" },
+      // ±-jel nélkül (2026-08-11 termékdöntés: ± jelölés nem kerül a UI-ra).
+      psSpread: { hu: "szóródás: {spread} pont", en: "spread: {spread} points" },
       psItemsTitle: { hu: "Állításonként", en: "By statement" },
       devArcEyebrow: { hu: "fejlődési ív", en: "development arc" },
       devArcTitle: { hu: "Fejlődési ív", en: "Development arc" },
@@ -1358,12 +1359,31 @@ export const orgTranslations = {
     },
     watchAreasEyebrow: { hu: "figyelendő", en: "watch areas" },
     noLowArea: { hu: "Nincs kritikusan alacsony terület", en: "No critically low area" },
-    teamFitEyebrow: { hu: "csapat illeszkedés", en: "team fit" },
+    teamFitEyebrow: { hu: "hasonlóság a csapathoz", en: "team similarity" },
     teamComparisonNA: {
       hu: "Csapat összehasonlítás nem elérhető",
       en: "Team comparison not available",
     },
-    avgDeviation: { hu: "Átlagos eltérés: ±{points} pont", en: "Average deviation: ±{points} points" },
+    notEnoughTeamData: {
+      hu: "Nincs elég csapat-adat az összehasonlításhoz — legalább {min} kitöltött önértékelés szükséges.",
+      en: "Not enough team data for a comparison — at least {min} completed self-assessments are needed.",
+    },
+    // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
+    // profil kiegészítő is lehet, ezért nem kap minősítést.
+    // A zaj-padló alatti hasonlóság a mérési hibán belüli EGYEZÉS — nem
+    // „kiváló egyezés" (hamis precizitás lenne — a mért SEM≈7,6 mellett is).
+    similarityWithinError: {
+      hu: "A mérési hibán belül egyezik a csapatátlaggal",
+      en: "Matches the team average within measurement error",
+    },
+    similarityHigh: { hu: "Nagyon hasonló a csapatátlaghoz", en: "Very similar to the team average" },
+    similarityMid: { hu: "Hasonló a csapatátlaghoz", en: "Similar to the team average" },
+    similarityLow: {
+      hu: "Eltér a csapatátlagtól — kiegészítő profil lehet",
+      en: "Differs from the team average — may be complementary",
+    },
+    // Az átlagos eltérés-szám marad, a ±-jel nem (2026-08-11 termékdöntés).
+    avgDeviation: { hu: "Átlagos eltérés: {points} pont", en: "Average deviation: {points} points" },
     largestGap: { hu: "Legnagyobb: {label} ({gap})", en: "Largest: {label} ({gap})" },
     tritanProfileEyebrow: { hu: "személyiségprofil", en: "personality profile" },
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
@@ -1371,8 +1391,8 @@ export const orgTranslations = {
     candidateInTeam: { hu: "Jelölt a csapatban", en: "Candidate in the team" },
     deviationsFromTeam: { hu: "Eltérések a csapatátlagtól", en: "Deviations from team average" },
     deviationExplanation: {
-      hu: "A pozitív eltérés azt jelenti, hogy a jelölt erősebb ebben a dimenzióban. A negatív eltérés fejlesztési lehetőséget jelez.",
-      en: "Positive deviation means the candidate scores higher. Negative deviation suggests a growth area.",
+      hu: "A pozitív eltérés azt jelenti, hogy a jelölt pontszáma a csapatátlag fölött van, a negatív, hogy alatta. Az eltérés önmagában nem minősítés: a csapatátlagtól eltérő profil kiegészítő szerepet is betölthet.",
+      en: "A positive deviation means the candidate scores above the team average, a negative one below it. Deviation by itself is not a judgement: a profile that differs from the team average can also play a complementary role.",
     },
     behavioralPatternsEyebrow: { hu: "működési minták", en: "behavioral patterns" },
     characteristicDynamics: { hu: "Jellemző működési dinamikák", en: "Characteristic dynamics" },
@@ -1419,7 +1439,9 @@ export const orgTranslations = {
     // TeamInsights
     teamInsights: {
       avgByDimension: { hu: "Csapatátlag dimenzióként", en: "Team average by dimension" },
-      stdDevHint: { hu: "±: szórás a csapaton belül", en: "±: standard deviation within the team" },
+      // A korábbi „±: szórás…" jelmagyarázat a kivezetett ±-számot magyarázta;
+      // az új sor azt mondja el, amit a blokk ténylegesen mutat.
+      stdDevHint: { hu: "Csapatátlagok — egyéni értékek nem jelennek meg.", en: "Team averages — individual values are not shown." },
       teamDynamics: { hu: "Csapatdinamika", en: "Team dynamics" },
       teamStrength: { hu: "Csapat erőssége", en: "Team strength" },
       growthArea: { hu: "Fejlesztési terület", en: "Growth area" },
@@ -1511,7 +1533,6 @@ export const orgTranslations = {
     tabIntelligenceShort: { hu: "Intelligencia", en: "Intelligence" },
     tabProfile: { hu: "Személyiségprofil", en: "Personality" },
     tabMembers: { hu: "Tagok", en: "Members" },
-    noDataZone: { hu: "Nincs adat", en: "No data" },
 
     // TeamOverviewTab — campaign banner
     activeBadge: { hu: "Aktív", en: "Active" },
@@ -1584,14 +1605,16 @@ export const orgTranslations = {
     },
 
     // TeamRoleSection
-    estimatedRolesEyebrow: { hu: "csapatszerepek becslése", en: "estimated team roles" },
+    estimatedRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
     peerEyebrow: { hu: "önkép vs. csapatkép", en: "self-image vs. team view" },
     peerTitle: { hu: "Így látja a csapat", en: "How the team sees it" },
     peerDesc: {
       hu: "A csapattársi visszajelzés-kör összesített képe tagonként — az önkitöltés mellé mért csapatkép kerül. A pötty a csapatkép azon szerepét jelöli, amely az önképben nem szerepel.",
       en: "The aggregated view from the peer feedback round, per member — a measured team view next to the self-report. The dot marks roles in the team view that don't appear in the self-image.",
     },
-    peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább 3 értékelő)", en: "team view available for {above} / {total} members (at least 3 raters)" },
+    // Az anonimitás-padló ({min} = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) a
+    // hívóból interpolálódik — literál számot ide ne égess be.
+    peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább {min} értékelő)", en: "team view available for {above} / {total} members (at least {min} raters)" },
     peerRaterCount: { hu: "{n} értékelő", en: "{n} raters" },
     peerBelowThreshold: {
       hu: "Még kevesebb mint {min} csapattárs adott visszajelzést — az összesített kép a névtelenség védelmében csak a küszöb felett jelenik meg.",
@@ -1602,13 +1625,13 @@ export const orgTranslations = {
     peerNoSelf: { hu: "Nincs saját kitöltés — az összevetéshez töltsd ki a szerep-kérdőívet.", en: "No self-report yet — fill in the role questionnaire to compare." },
     peerDiff: { hu: "Az önképben nem szerepel", en: "Not in the self-image" },
     peerFootnote: {
-      hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és 3 értékelő alatt nem jelenik meg.",
-      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below 3 raters.",
+      hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és {min} értékelő alatt nem jelenik meg.",
+      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below {min} raters.",
     },
     teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     teamRoleDesc: {
-      hu: "A személyiségprofilok alapján becsült csapatszerepkörök. A pontos méréshez minden tagnak ki kell töltenie a csapatszerep kérdőívet.",
-      en: "Team roles estimated from personality profiles. For exact measurements, all members should complete the team-role questionnaire.",
+      hu: "Tagonkénti csapatszerep-profilok. A kitöltött csapatszerep-kérdőív mért adat; ahol még nincs kitöltés, a személyiségprofilból becslünk — a forrást minden tagnál külön jelöljük.",
+      en: "Per-member team-role profiles. A completed team-role questionnaire is measured data; where it is missing, we estimate from the personality profile — the source is badged for every member.",
     },
     profileStatus: { hu: "Személyiségprofil státusz", en: "Personality profile status" },
     profileStatusDesc: {
@@ -1640,6 +1663,16 @@ export const orgTranslations = {
     thSecondary: { hu: "Másodlagos", en: "Secondary" },
     thSupporting: { hu: "Kiegészítő", en: "Supporting" },
     noData: { hu: "Nincs adat", en: "No data" },
+    // Forrás-jelölés (S1) — mért kitöltés vs profil-alapú becslés. A vizuális
+    // konvenció a TeamIntelligence-ével azonos: sage = mért, amber = becsült.
+    sourceMeasuredBadge: { hu: "kitöltött", en: "measured" },
+    sourceEstimateBadge: { hu: "becslés", en: "estimate" },
+    roleSourceMixLine: {
+      hu: "{measured} valódi kitöltés · {estimated} profil-alapú becslés",
+      en: "{measured} real fill-outs · {estimated} profile-based estimates",
+    },
+    sourceMixMeasured: { hu: "{n} mért kitöltésből", en: "{n} from measured fill-outs" },
+    sourceMixEstimated: { hu: "{n} profil-alapú becslésből", en: "{n} from profile-based estimates" },
 
     // TeamMembersTab
     membersTabEyebrow: { hu: "tagok", en: "members" },
@@ -1683,25 +1716,6 @@ export const orgTranslations = {
       en: "No team members have completed an assessment yet.",
     },
 
-    // TeamMap
-    clickAvatar: { hu: "Kattints egy avatárra", en: "Click on an avatar" },
-    clickAvatarDesc: { hu: "a részletes profil megtekintéséhez", en: "to view detailed profile" },
-    membersWithoutAssessment: {
-      hu: "Kitöltés nélküli tagok (nem jelennek meg a térképen):",
-      en: "Members without assessment data (excluded from the map):",
-    },
-    estimationNote: {
-      hu: "Az átlátszó avatárok pozíciója személyiségadatokból becsült (C → szakmai szint, (O+X)/2 → potenciál). A végleges elhelyezést a csapatvezető manuálisan pontosíthatja.",
-      en: "Transparent avatars are positioned based on personality data (C → skill level, (O+X)/2 → potential). Final placement can be manually adjusted by the team leader.",
-    },
-    growthPotentialAxis: { hu: "← fejlődési potenciál →", en: "← growth potential →" },
-    yAxisLabel: { hu: "magas → alacsony", en: "high → low" },
-    xLow: { hu: "alacsony", en: "low" },
-    xMid: { hu: "közép", en: "mid" },
-    xHigh: { hu: "magas", en: "high" },
-    skillLevelAxis: { hu: "← szakmai szint →", en: "← skill level →" },
-    estimatedTag: { hu: "becsült", en: "estimated" },
-
     // DynamicsMap
     noDynamicsTitle: { hu: "Még nincs kapcsolati adat", en: "No dynamics data yet" },
     noDynamicsDesc: {
@@ -1717,18 +1731,47 @@ export const orgTranslations = {
     edgeTension: { hu: "feszültség", en: "tension" },
     edgeNeutral: { hu: "semleges", en: "neutral" },
     edgeAligned: { hu: "hasonló profil", en: "aligned" },
+    // MÉRT (trust) aligned élre: az erős bizalom nem profil-hasonlóság —
+    // ott a semleges címke jár, nem az edgeAligned.
+    edgeAlignedNeutral: { hu: "összehangolt", en: "aligned" },
     edgeFriction: { hu: "lehetséges súrlódás", en: "potential friction" },
     edgeComplementary: { hu: "kiegészítő", en: "complementary" },
     incomingConnections: { hu: "kapcsolat ebben a hálóban", en: "connections in this network" },
     legendGood: { hu: "Jó együttmű.", en: "Good collab." },
     legendNeutral: { hu: "Semleges", en: "Neutral" },
     legendTension: { hu: "Feszültség", en: "Tension" },
-    legendAligned: { hu: "Hasonló profil", en: "Aligned" },
+    legendAligned: { hu: "Hasonló profil", en: "Similar profile" },
+    // Ha a térképen mért (trust) él is van, az aligned szín jelentése vegyes
+    // (erős bizalom VAGY hasonló profil) — a jelmagyarázat ilyenkor semleges.
+    legendAlignedNeutral: { hu: "Összehangolt", en: "Aligned" },
     legendComplementary: { hu: "Kiegészítő", en: "Complementary" },
     legendFriction: { hu: "Potenciális súrlódás", en: "Potential friction" },
     hubPerson: { hu: "Hub személy", en: "Hub person" },
     clickPerson: { hu: "Kattints egy személyre", en: "Click on a person" },
     clickPersonConnections: { hu: "a kapcsolatai megtekintéséhez", en: "to view their connections" },
+    edgeOneSided: { hu: "egyoldalú visszajelzés", en: "one-sided feedback" },
+    // Dimenzió-bontás elrejtve, ha a páros valamelyik tagjának nincs valódi
+    // profil-adata — kitalált (50-es default) értékek ellen nem számolunk gap-et.
+    breakdownNoProfile: {
+      hu: "Nincs profiladat a bontáshoz — a páros legalább egyik tagja még nem töltötte ki a személyiség-felmérést.",
+      en: "No profile data for this breakdown — at least one member of the pair hasn't completed the personality assessment yet.",
+    },
+
+    // Dinamika-forrás állapotcímkék (mért/becsült él-arány szerint)
+    dynamicsStateMeasured: { hu: "mért", en: "measured" },
+    dynamicsStateMixed: { hu: "vegyes", en: "mixed" },
+    dynamicsStateEstimated: { hu: "profil-becslés", en: "profile estimate" },
+    dynamicsStateNone: { hu: "nincs adat", en: "no data" },
+
+    // Térkép-minőség címkék (kitöltöttség szerint)
+    mapStateSufficient: { hu: "elegendő adat", en: "sufficient data" },
+    mapStatePartial: { hu: "részleges adat", en: "partial data" },
+    mapStateNone: { hu: "nincs adat", en: "no data" },
+
+    // „Csapat nyomás alatt" pólus-címkék
+    polePolarized: { hu: "két ellentétes pólus", en: "two opposite poles" },
+    poleHigh: { hu: "magas pólus", en: "high pole" },
+    poleLow: { hu: "alacsony pólus", en: "low pole" },
 
     // RoleFitMap
     dominantDimsEyebrow: { hu: "domináns dimenziók", en: "dominant dimensions" },
@@ -1772,6 +1815,21 @@ export const orgTranslations = {
     evidenceConfidenceLow: { hu: "alacsony", en: "low" },
     evidenceConfidenceMedium: { hu: "közepes", en: "medium" },
     evidenceConfidenceHigh: { hu: "magas", en: "high" },
+
+    // Szerep-hiány prioritás indoklása — forrás-tudatos változatok
+    // (hitelességi alapelv: mért szerepképre nem írhatjuk, hogy „becsült").
+    roleGapReasonMeasured: {
+      hu: "A mért szerepképben nem látszik: {roles}.",
+      en: "The measured role map is missing: {roles}.",
+    },
+    roleGapReasonMixed: {
+      hu: "A részben mért, részben becsült szerepképben nem látszik: {roles}.",
+      en: "The partly measured, partly estimated role map is missing: {roles}.",
+    },
+    roleGapReasonEstimated: {
+      hu: "A becsült szerepképben nem látszik: {roles}.",
+      en: "Estimated role map is missing: {roles}.",
+    },
   },
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────
@@ -2157,5 +2215,14 @@ export const orgTranslations = {
     // Country picker
     countryPickerTitle: { hu: "Ország", en: "Country" },
     countryPickerSearch: { hu: "Keresés...", en: "Search..." },
+  },
+
+  // ── Tag-dossié (/org/[id]/members/[userId]) ──────────────────────────
+  memberDossier: {
+    // Rater-minőség aggregátum — csak darabszám, raterenkénti flag soha.
+    observerQualityNote: {
+      hu: "{n} külső értékelés alacsony differenciáltságú — az eltéréseket óvatosan érdemes olvasni.",
+      en: "{n} external rating(s) show low differentiation — read the differences with caution.",
+    },
   },
 } as const;

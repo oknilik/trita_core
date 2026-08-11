@@ -8,6 +8,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { scrubProfileData } from "@/lib/account-scrub";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -143,21 +144,13 @@ export async function POST(req: Request) {
       .parse(event.data).id;
     const profile = await prisma.userProfile.findUnique({
       where: { clerkId: deletedId },
+      select: { id: true, email: true },
     });
     if (profile) {
-      await prisma.$transaction([
-        prisma.assessmentResult.updateMany({
-          where: { userProfileId: profile.id },
-          data: { userProfileId: null },
-        }),
-        prisma.assessmentDraft.deleteMany({
-          where: { userProfileId: profile.id },
-        }),
-        prisma.userProfile.update({
-          where: { id: profile.id },
-          data: { clerkId: null, email: null, deleted: true },
-        }),
-      ]);
+      // Ugyanaz a teljes GDPR-scrub, mint az in-app törlési úton (közös forrás)
+      // — a webhook-út korábban csak részlegesen takarított, így a dashboard/
+      // support-törlés kikerülte az observer-scrubot (motor-audit W6).
+      await scrubProfileData(profile.id, profile.email);
     }
   }
 

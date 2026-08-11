@@ -2,20 +2,32 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import type { HowYouWorkParts } from "@/lib/workstyle-content";
 
 interface HowYouWorkSectionProps {
-  paragraphs: string[];
+  /**
+   * Nevesített slotok a producer-től (workstyle-content, FIX 3): a korábbi
+   * pozicionális tömbnél a [1]-es bekezdés vakon „Figyelendő" címkét kapott,
+   * pedig csak valódi risk-párnál kockázat — pozitív narratíva is odakerült,
+   * a tényleges kockázat meg a kontextusba csúszott.
+   */
+  parts: HowYouWorkParts;
   isUnlocked: boolean;
 }
 
-export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionProps) {
+export function HowYouWorkSection({ parts, isUnlocked }: HowYouWorkSectionProps) {
   const { locale } = useLocale();
 
-  if (!isUnlocked || paragraphs.length === 0) return null;
+  if (!isUnlocked || !parts.main) return null;
 
-  const mainPattern = paragraphs[0] ?? "";
-  const watchArea = paragraphs[1] ?? "";
-  const context = paragraphs.slice(2).join(" ");
+  const mainPattern = parts.main;
+  const watchArea = parts.watch ?? "";
+  // „Jellemző mintázat" (tone: "note") — semleges kártya: valódi, cselekvésre
+  // váltható megfigyelés a fordított skálájú (Emocionalitás) párokból. NEM a
+  // borostyán „Figyelendő" (deficit-keretes) és NEM a szürke „Kontextus"
+  // maradék-slot: saját, szándékos helye van a rácsban.
+  const notes = parts.notes.join(" ");
+  const context = parts.context.join(" ");
 
   return (
     <div className="py-8">
@@ -46,6 +58,17 @@ export function HowYouWorkSection({ paragraphs, isUnlocked }: HowYouWorkSectionP
             </p>
             <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
               {watchArea}
+            </p>
+          </div>
+        )}
+
+        {notes && (
+          <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px]">
+            <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-secondary)]">
+              {t("results.howYouWorkNote", locale)}
+            </p>
+            <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
+              {notes}
             </p>
           </div>
         )}

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { completeAcceptance } from "@/lib/acceptance/service";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -9,7 +10,9 @@ const answerSchema = z.object({
 });
 
 const submitSchema = z.object({
-  answers: z.array(answerSchema),
+  // Felső mérethatár: a legnagyobb élő forma 100 item; 150 elég a valós
+  // beküldésnek, de kizárja a memória-terhelő túlméretes tömböt.
+  answers: z.array(answerSchema).max(150),
 });
 
 // POST /api/candidate/[token]/submit — submit candidate assessment answers
@@ -17,6 +20,9 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ token: string }> }
 ) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { token } = await params;
   const { userId } = await auth();
 

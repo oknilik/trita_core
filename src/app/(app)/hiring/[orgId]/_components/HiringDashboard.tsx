@@ -442,6 +442,7 @@ export function HiringDashboard({
             <CandidateInviteForm
               locale={locale}
               teams={teams}
+              orgId={orgId}
             />
           </div>
         </DashboardPanel>

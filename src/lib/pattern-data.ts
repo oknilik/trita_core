@@ -123,7 +123,9 @@ export const PATTERNS: Record<string, PatternContent> = {
       "Szabadon áramló, innovatív csapat, amelyben erős az összetartás, és szeretik a kísérletezést.",
     strengths: ["Rendkívüli kreativitás", "Erős bizalom", "Gyors alkalmazkodás", "Vonzó kultúra"],
     risks: ["Kaotikus végrehajtás", "Priorizálási nehézség", "Határidő-lazaság", "Nehéz visszajelzés"],
-    people: "Kreatív, empatikus, nyitott emberek, akik a közösséget és a szabadságot keresik.",
+    // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga — ezek
+    // a skálák toleranciát és megbocsátást mérnek, nem empátiát (2026-08-11).
+    people: "Kreatív, elfogadó, nyitott emberek, akik a közösséget és a szabadságot keresik.",
     contexts: "Design, márkastratégia, tartalomkészítés, UX-kutatás, kreatív ügynökségek",
     color: "light-dark(#d4763a, #d4763a)",
   },
@@ -222,7 +224,8 @@ export const PATTERNS: Record<string, PatternContent> = {
       "Csendes, gondoskodó csapat, egymásra figyel és praktikus megoldásokat keres.",
     strengths: ["Kiváló belső támogatás", "Pragmatikus gondolkodás", "Alacsony konfliktus", "Jó alkalmazkodás"],
     risks: ["Alacsony ambíció", "Nehéz döntések kerülése", "Láthatatlanság", "Konzervativizmus"],
-    people: "Empatikus, gyakorlatias, támogató csapatjátékosok.",
+    // Ld. fent: a kohézió-tengely nem empátia-mérés — türelem és tolerancia.
+    people: "Türelmes, gyakorlatias, támogató csapatjátékosok.",
     contexts: "HR, szociális munka, ügyfélszolgálat, egészségügy, mentoring",
     color: "light-dark(#6b9b7d, #6b9b7d)",
   },

@@ -58,7 +58,7 @@ export const landingTranslations = {
     teamDim1: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
     teamDim2: { hu: "Barátságosság", en: "Agreeableness" },
     teamDim3: { hu: "Nyitottság", en: "Openness" },
-    teamPrivacyNote: { hu: "Csapatátlag ± szórás — egyéni értékek nem jelennek meg.", en: "Team average ± spread — individual values are not shown." },
+    teamPrivacyNote: { hu: "Csapatátlag — egyéni értékek nem jelennek meg.", en: "Team average — individual values are not shown." },
     teamPatternLabel: { hu: "Csapatmintázat", en: "Team pattern" },
     teamPatternName: { hu: "Végrehajtó Egység", en: "Execution Unit" },
     teamNarrativeLabel: { hu: "Tanácsadói értékelés", en: "Consultant assessment" },

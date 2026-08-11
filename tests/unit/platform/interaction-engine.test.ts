@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import {
   RELATION_ATOMS,
   atomBlocksFor,
@@ -19,9 +19,9 @@ import {
 } from "@/lib/interaction-engine";
 
 /** Minden dimenzió a néma középsávban, kivéve a megadottakat. */
-function scores(overrides: Partial<Record<TritanDimCode, number>> = {}): DimScores {
+function scores(overrides: Partial<Record<HexacoCode, number>> = {}): DimScores {
   const out: DimScores = {};
-  for (const dim of TRITAN_ORDER) out[dim] = 50;
+  for (const dim of HEXACO_ORDER) out[dim] = 50;
   return { ...out, ...overrides };
 }
 
@@ -46,10 +46,10 @@ test("pólus-küszöb: a profile-engine konvenciója (HIGH 65 / LOW 35, szigorú
 });
 
 test("polarSides csak a pólusos dimenziókat adja, kanonikus sorrendben", () => {
-  const sides = polarSides(scores({ OPEN: 90, THOR: 10, TEMP: 50 }));
+  const sides = polarSides(scores({ O: 90, C: 10, X: 50 }));
   assert.deepEqual(sides, [
-    { dim: "THOR", pole: "low" },
-    { dim: "OPEN", pole: "high" },
+    { dim: "C", pole: "low" },
+    { dim: "O", pole: "high" },
   ]);
 });
 
@@ -72,7 +72,7 @@ test("kiegyensúlyozott pár → sparse, nem üres lista-találgatás", () => {
 test("hiányzó és érvénytelen pontszám nem borítja a motort", () => {
   const result = simulateInteraction({
     self: {},
-    other: { THOR: Number.NaN, OPEN: 90 },
+    other: { C: Number.NaN, O: 90 },
     level: "profile-archetype",
   });
   assert.equal(result.meta.sparse, true);
@@ -80,25 +80,25 @@ test("hiányzó és érvénytelen pontszám nem borítja a motort", () => {
 
 test("azonos dimenziós atom aktiválódik, és minden kiválasztott atom ad discusst", () => {
   const result = simulateInteraction({
-    self: scores({ THOR: 90 }),
-    other: scores({ THOR: 90 }),
+    self: scores({ C: 90 }),
+    other: scores({ C: 90 }),
     level: "profile-profile",
   });
   assert.equal(result.meta.sparse, false);
-  assert.deepEqual(result.meta.atomIds, ["same-THOR-high-high"]);
+  assert.deepEqual(result.meta.atomIds, ["same-C-high-high"]);
   assert.equal(
     result.discuss.length,
     result.meta.atomIds.length,
     "a discuss atomonként kötelező",
   );
-  assert.equal(result.discuss[0].atomId, "same-THOR-high-high");
-  assert.deepEqual(result.discuss[0].dims, ["THOR"]);
+  assert.equal(result.discuss[0].atomId, "same-C-high-high");
+  assert.deepEqual(result.discuss[0].dims, ["C"]);
 });
 
 test("determinisztikus: ugyanaz a bemenet ugyanazt a kimenetet adja", () => {
   const input = {
-    self: scores({ THOR: 88, ADAP: 20, OPEN: 75 }),
-    other: scores({ THOR: 25, ADAP: 82, OPEN: 90 }),
+    self: scores({ C: 88, A: 20, O: 75 }),
+    other: scores({ C: 25, A: 82, O: 90 }),
     level: "profile-profile" as const,
   };
   const a = simulateInteraction(input);
@@ -110,18 +110,18 @@ test("determinisztikus: ugyanaz a bemenet ugyanazt a kimenetet adja", () => {
 
 test("tükrözés: a két fél nézete aszimmetrikus atomnál eltér", () => {
   const highSide = simulateInteraction({
-    self: scores({ TEMP: 90 }),
-    other: scores({ TEMP: 10 }),
+    self: scores({ X: 90 }),
+    other: scores({ X: 10 }),
     level: "profile-profile",
   });
   const lowSide = simulateInteraction({
-    self: scores({ TEMP: 10 }),
-    other: scores({ TEMP: 90 }),
+    self: scores({ X: 10 }),
+    other: scores({ X: 90 }),
     level: "profile-profile",
   });
 
-  assert.deepEqual(highSide.meta.atomIds, ["same-TEMP-high-low"]);
-  assert.deepEqual(lowSide.meta.atomIds, ["same-TEMP-high-low"]);
+  assert.deepEqual(highSide.meta.atomIds, ["same-X-high-low"]);
+  assert.deepEqual(lowSide.meta.atomIds, ["same-X-high-low"]);
   assert.notEqual(
     highSide.discuss[0].text.hu,
     lowSide.discuss[0].text.hu,
@@ -131,66 +131,66 @@ test("tükrözés: a két fél nézete aszimmetrikus atomnál eltér", () => {
 
 test("szimmetrikus atomnál a két oldal ugyanazt kapja", () => {
   const a = simulateInteraction({
-    self: scores({ OPEN: 90 }),
-    other: scores({ OPEN: 85 }),
+    self: scores({ O: 90 }),
+    other: scores({ O: 85 }),
     level: "profile-profile",
   });
   const b = simulateInteraction({
-    self: scores({ OPEN: 85 }),
-    other: scores({ OPEN: 90 }),
+    self: scores({ O: 85 }),
+    other: scores({ O: 90 }),
     level: "profile-profile",
   });
-  assert.deepEqual(a.meta.atomIds, ["same-OPEN-high-high"]);
+  assert.deepEqual(a.meta.atomIds, ["same-O-high-high"]);
   assert.equal(a.discuss[0].text.hu, b.discuss[0].text.hu);
 });
 
 // ── Rangsor és válogatás ─────────────────────────────────────────────
 
-test("a sorrend a FRICTION_WEIGHTS-et követi: azonos erősségnél a THOR nyer", () => {
+test("a sorrend a FRICTION_WEIGHTS-et követi: azonos erősségnél a C nyer", () => {
   const result = simulateInteraction({
-    self: scores({ THOR: 90, OPEN: 90 }),
-    other: scores({ THOR: 90, OPEN: 90 }),
+    self: scores({ C: 90, O: 90 }),
+    other: scores({ C: 90, O: 90 }),
     level: "profile-profile",
   });
   assert.equal(
     result.meta.atomIds[0],
-    "same-THOR-high-high",
-    "a THOR (0,30) megelőzi az OPEN-t (0,05)",
+    "same-C-high-high",
+    "a C (0,30) megelőzi az O-t (0,05)",
   );
 });
 
 test("dimenzió-dedup: nem kap a felhasználó két azonos dimenziós szöveget", () => {
   const result = simulateInteraction({
-    self: scores({ THOR: 90, OPEN: 90 }),
-    other: scores({ THOR: 90, OPEN: 90 }),
+    self: scores({ C: 90, O: 90 }),
+    other: scores({ C: 90, O: 90 }),
     level: "profile-profile",
   });
-  // Három jelölt van (same-THOR, same-OPEN, cross-OPEN-THOR), de a
-  // same-OPEN már nem hoz új dimenziót a cross után.
+  // Három jelölt van (same-C, same-O, cross-O-C), de a
+  // same-O már nem hoz új dimenziót a cross után.
   assert.equal(result.meta.candidateCount, 3);
-  assert.ok(result.meta.atomIds.includes("same-THOR-high-high"));
-  assert.ok(result.meta.atomIds.includes("cross-OPEN-high-THOR-high"));
+  assert.ok(result.meta.atomIds.includes("same-C-high-high"));
+  assert.ok(result.meta.atomIds.includes("cross-O-high-C-high"));
   assert.ok(
-    !result.meta.atomIds.includes("same-OPEN-high-high"),
+    !result.meta.atomIds.includes("same-O-high-high"),
     "a harmadik atom nem hoz új dimenziót, ezért kimarad",
   );
 });
 
 test("a markánsabb pár előrébb kerül azonos dimenzió-súly mellett", () => {
-  // Két azonos súlyú dimenzió (TEMP és OPEN, mindkettő 0,05), eltérő
+  // Két azonos súlyú dimenzió (X és O, mindkettő 0,05), eltérő
   // pólus-erősséggel: a szélsőségesebb pár nyer.
   const result = simulateInteraction({
-    self: scores({ TEMP: 99, OPEN: 70 }),
-    other: scores({ TEMP: 99, OPEN: 70 }),
+    self: scores({ X: 99, O: 70 }),
+    other: scores({ X: 99, O: 70 }),
     level: "profile-profile",
   });
-  assert.equal(result.meta.atomIds[0], "same-TEMP-high-high");
+  assert.equal(result.meta.atomIds[0], "same-X-high-high");
 });
 
 test("maxAtoms korlátozza a kimenetet", () => {
   const input = {
-    self: scores({ THOR: 95, ADAP: 5, INTE: 95, TEMP: 95, OPEN: 95 }),
-    other: scores({ THOR: 5, ADAP: 95, INTE: 5, TEMP: 95, OPEN: 95 }),
+    self: scores({ C: 95, A: 5, H: 95, X: 95, O: 95 }),
+    other: scores({ C: 5, A: 95, H: 5, X: 95, O: 95 }),
     level: "profile-profile" as const,
   };
   const three = simulateInteraction(input);
@@ -204,8 +204,8 @@ test("maxAtoms korlátozza a kimenetet", () => {
 
 test("peer módban nincs vezetői kiegészítő", () => {
   const result = simulateInteraction({
-    self: scores({ THOR: 90 }),
-    other: scores({ THOR: 90 }),
+    self: scores({ C: 90 }),
+    other: scores({ C: 90 }),
     level: "profile-profile",
   });
   assert.deepEqual(result.leaderNotes, []);
@@ -214,32 +214,32 @@ test("peer módban nincs vezetői kiegészítő", () => {
 
 test("vezető-mód: csak a VEZETŐ pólusos dimenzióira ad kiegészítőt", () => {
   const result = simulateInteraction({
-    self: scores({ OPEN: 90 }),
-    other: scores({ THOR: 90 }),
+    self: scores({ O: 90 }),
+    other: scores({ C: 90 }),
     mode: "other-leads",
     level: "profile-archetype",
   });
   assert.deepEqual(
     result.leaderNotes.map((note) => note.dim),
-    ["THOR"],
-    "a vezető a másik fél, akinek csak a THOR pólusos",
+    ["C"],
+    "a vezető a másik fél, akinek csak a C pólusos",
   );
   assert.equal(result.leaderNotes[0].pole, "high");
 
   const mirrored = simulateInteraction({
-    self: scores({ OPEN: 90 }),
-    other: scores({ THOR: 90 }),
+    self: scores({ O: 90 }),
+    other: scores({ C: 90 }),
     mode: "self-leads",
     level: "profile-archetype",
   });
   assert.deepEqual(
     mirrored.leaderNotes.map((note) => note.dim),
-    ["OPEN"],
+    ["O"],
   );
 });
 
 test("vezetői kiegészítők súly szerint rendezve, maxLeaderNotes-ig", () => {
-  const leader = scores({ THOR: 90, ADAP: 90, TEMP: 90 });
+  const leader = scores({ C: 90, A: 90, X: 90 });
   const result = simulateInteraction({
     self: BALANCED,
     other: leader,
@@ -248,8 +248,8 @@ test("vezetői kiegészítők súly szerint rendezve, maxLeaderNotes-ig", () => 
   });
   assert.deepEqual(
     result.leaderNotes.map((note) => note.dim),
-    ["THOR", "ADAP"],
-    "THOR (0,30) > ADAP (0,25) > TEMP (0,05), alapból 2 fér ki",
+    ["C", "A"],
+    "C (0,30) > A (0,25) > X (0,05), alapból 2 fér ki",
   );
 
   const all = simulateInteraction({
@@ -261,7 +261,7 @@ test("vezetői kiegészítők súly szerint rendezve, maxLeaderNotes-ig", () => 
   });
   assert.deepEqual(
     all.leaderNotes.map((note) => note.dim),
-    ["THOR", "ADAP", "TEMP"],
+    ["C", "A", "X"],
   );
 });
 
@@ -283,20 +283,20 @@ test("lefedettség: mind a 30 atom elérhető valamilyen bemenettel", () => {
 
 test("a kimenet szövegei tényleg az atom-készletből jönnek", () => {
   const result = simulateInteraction({
-    self: scores({ ADAP: 10 }),
-    other: scores({ THOR: 90 }),
+    self: scores({ A: 10 }),
+    other: scores({ C: 90 }),
     level: "profile-profile",
   });
-  assert.deepEqual(result.meta.atomIds, ["cross-THOR-high-ADAP-low"]);
+  assert.deepEqual(result.meta.atomIds, ["cross-C-high-A-low"]);
 
   const found = findAtom(
-    { dim: "ADAP", pole: "low" },
-    { dim: "THOR", pole: "high" },
+    { dim: "A", pole: "low" },
+    { dim: "C", pole: "high" },
   );
   assert.ok(found);
   const expected = atomBlocksFor(found.atom, found.mirrored);
   assert.equal(result.discuss[0].text.hu, expected.discuss.hu);
-  assert.deepEqual(result.discuss[0].dims, ["THOR", "ADAP"]);
+  assert.deepEqual(result.discuss[0].dims, ["C", "A"]);
 });
 
 // ── Archetípus-prototípusok ──────────────────────────────────────────
@@ -329,8 +329,8 @@ test("a prototípus pontosan két pólusos dimenziót ad — a többi néma", ()
 });
 
 test("archetípus × archetípus szimuláció ad kimenetet és jelöli a szintet", () => {
-  const innovator = archetypePrototype({ dominant: "OPEN", secondary: "TEMP" });
-  const architect = archetypePrototype({ dominant: "THOR", secondary: "INTE" });
+  const innovator = archetypePrototype({ dominant: "O", secondary: "X" });
+  const architect = archetypePrototype({ dominant: "C", secondary: "H" });
   const result = simulateInteraction({
     self: innovator,
     other: architect,

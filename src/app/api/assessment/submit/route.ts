@@ -3,7 +3,7 @@ import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { assignTestType } from "@/lib/assignTestType";
-import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
+import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { checkRateLimit } from "@/lib/rate-limit";
@@ -63,9 +63,9 @@ export async function POST(req: Request) {
   }
 
   // Validate answers — a rövid (TSFI-S) és a teljes forma hiánytalan
-  // kitöltése egyaránt érvényes.
-  const config = getTestConfig(testType as TestType);
-  const expectedIds = new Set(config.questions.map((q) => q.id));
+  // kitöltése egyaránt érvényes, ahogy egy KORÁBBI rövid forma pontos
+  // id-halmaza is (beragadt bundle / forma-váltás közben futó kitöltés).
+  const expectedIds = getAcceptedAnswerIds(testType as TestType);
 
   // Filter to only the expected question IDs (drops stale answers from old test versions)
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));

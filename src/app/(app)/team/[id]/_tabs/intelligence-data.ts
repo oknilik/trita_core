@@ -5,39 +5,21 @@ import {
   buildTeamIntelligenceEvidence,
   buildTeamIntelligencePriorities,
   MIN_INTELLIGENCE_ASSESSMENTS,
-  resolveContributionPlacement,
   resolveTeamIntelligenceQuality,
 } from "@/lib/team-intelligence";
+import { isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
+import type { HexacoCode } from "@/lib/hexaco";
 import type { TeamPageData } from "./types";
 
-const ZONE_NAMES_EN: Record<string, string> = {
-  "3_1": "Emerging talent",
-  "3_2": "High growth",
-  "3_3": "Future leader",
-  "2_1": "Developing",
-  "2_2": "Solid contributor",
-  "2_3": "High performer",
-  "1_1": "Development focus",
-  "1_2": "Stable contributor",
-  "1_3": "Senior expert",
-};
-
-const ZONE_NAMES_HU: Record<string, string> = {
-  "3_1": "Feltörekvő tehetség",
-  "3_2": "Magas növekedés",
-  "3_3": "Jövő vezetője",
-  "2_1": "Fejlődik",
-  "2_2": "Megbízható tag",
-  "2_3": "Kiváló teljesítő",
-  "1_1": "Fejlesztési fókusz",
-  "1_2": "Stabil hozzájáruló",
-  "1_3": "Senior szakértő",
-};
-
-function getZoneName(skill: 1 | 2 | 3, potential: 1 | 2 | 3, isHu: boolean): string {
-  const names = isHu ? ZONE_NAMES_HU : ZONE_NAMES_EN;
-  return names[`${potential}_${skill}`] ?? (isHu ? "Megbízható tag" : "Solid contributor");
-}
+const TRITAN_DIM_CODES: readonly HexacoCode[] = [
+  "H",
+  "E",
+  "X",
+  "A",
+  "C",
+  "O",
+];
 
 /**
  * A csapatintelligencia nézet derivált adatai — tiszta számítás a
@@ -48,25 +30,20 @@ export function buildIntelligenceViewData(params: {
   teamData: TeamPageData;
   teamId: string;
   locale: Locale;
-  isHu: boolean;
   canReachOrgCampaigns: boolean;
 }) {
-  const { teamData, teamId, locale, isHu, canReachOrgCampaigns } = params;
+  const { teamData, teamId, locale, canReachOrgCampaigns } = params;
 
   const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
-    const tritan = m.scores
-      ? {
-          INTE: Math.round(m.scores.INTE ?? 50),
-          RESO: Math.round(m.scores.RESO ?? 50),
-          TEMP: Math.round(m.scores.TEMP ?? 50),
-          ADAP: Math.round(m.scores.ADAP ?? 50),
-          THOR: Math.round(m.scores.THOR ?? 50),
-          OPEN: Math.round(m.scores.OPEN ?? 50),
-        }
-      : { INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 };
-
-    const placement = resolveContributionPlacement(tritan);
-
+    // Csak a TÉNYLEGESEN mért dimenziók mennek tovább — a korábbi `?? 50`
+    // default kitalált profilt gyártott (kitöltetlen tagnál „E 50%" badge,
+    // becsült szerepprofil, hamis pár-bontás a dinamika-térképen), és a
+    // hasCompleteTritanDims downstream kapuit is kijátszotta.
+    const tritan: IntelligenceMember["tritan"] = {};
+    for (const code of TRITAN_DIM_CODES) {
+      const value = m.scores?.[code];
+      if (typeof value === "number") tritan[code] = Math.round(value);
+    }
     return {
       id: m.userId,
       name: m.displayName,
@@ -76,15 +53,10 @@ export function buildIntelligenceViewData(params: {
         m.teamRoleSource === "questionnaire" && m.teamRoleScores
           ? m.teamRoleScores
           : null,
-      hasAssessmentData: !!m.scores,
-      skillLevel: placement.skillLevel,
-      growthPotential: placement.growthPotential,
-      deliveryScore: placement.deliveryScore,
-      growthScore: placement.growthScore,
-      placementConfidence: placement.confidence,
-      zone: !m.scores
-        ? t("teamComp.noDataZone", locale)
-        : getZoneName(placement.skillLevel, placement.growthPotential, isHu),
+      // Assessment-adat csak TELJES fő-dimenzió-készletnél „van" — részleges
+      // (örökség/sérült) score-sorból nem állítunk profilt.
+      hasAssessmentData: hasCompleteTritanDims(m.scores),
+      isTrustHub: teamData.trustHubUserIds.includes(m.userId),
       color: getAvatarGradient(m.displayName)[0],
       textColor: "var(--color-neutral-white)",
     };
@@ -97,22 +69,37 @@ export function buildIntelligenceViewData(params: {
     to: edge.toUserId,
     type: edge.type as DynamicsEdge["type"],
     source: edge.source,
+    confidence: edge.confidence,
   }));
   const hasDynamicsData = teamDynamicsEdges.length > 0;
+  // Mért = trust-kör (vagy legacy observer) forrású él; a többi profil-becslés.
+  // Közös definíció a friction-model.ts-ből (a DynamicsMap és a cockpit is ezt hívja).
+  const measuredDynamicsEdgeCount = teamDynamicsEdges.filter((e) =>
+    isMeasuredDynamicsSource(e.source),
+  ).length;
+  const estimatedDynamicsEdgeCount = teamDynamicsEdges.length - measuredDynamicsEdgeCount;
   const mapQuality = resolveTeamIntelligenceQuality(assessedCount, totalCount);
   const intelligenceEvidenceBySub = buildTeamIntelligenceEvidence({
     assessedCount,
     totalCount,
-    hasDynamicsData,
+    dynamicsEdgeCount: teamDynamicsEdges.length,
+    measuredDynamicsEdgeCount,
     locale: locale as "hu" | "en",
   });
+  // Observer-kör: a kampány mérés-lépései közt van külső/relációs kör —
+  // a puszta kampány-lét (pl. csak pulse) még nem az.
+  const campaignStepTypes =
+    teamData.activeCampaign?.stepProgress.map((s) => s.type) ?? [];
+  const hasObserverRound =
+    campaignStepTypes.includes("OBSERVER_360") ||
+    campaignStepTypes.includes("TRUST_360");
   const intelligencePriorities = buildTeamIntelligencePriorities({
     members: teamData.members,
     completedCount: teamData.completedCount,
     memberCount: teamData.memberCount,
     teamId,
     orgId: teamData.orgId,
-    hasObserverRound: !!teamData.activeCampaign,
+    hasObserverRound,
     // Az observer-CTA az org kampány-oldalára visz → org-szerep dönt.
     canManageTeamActions: canReachOrgCampaigns,
     locale: locale as "hu" | "en",
@@ -122,14 +109,17 @@ export function buildIntelligenceViewData(params: {
   const membersWithoutAssessment = teamData.members.filter((member) => !member.scores);
   const intelligenceQualityLabel =
     mapQuality === "sufficient"
-      ? isHu ? "elegendő adat" : "sufficient data"
+      ? t("teamComp.mapStateSufficient", locale)
       : mapQuality === "partial"
-        ? isHu ? "részleges adat" : "partial data"
-        : isHu ? "nincs adat" : "no data";
-  const dynamicsStateLabel =
-    teamDynamicsEdges.length > 0
-      ? (isHu ? "profil becslés" : "profile estimate")
-      : (isHu ? "nincs adat" : "no data");
+        ? t("teamComp.mapStatePartial", locale)
+        : t("teamComp.mapStateNone", locale);
+  const dynamicsStateLabel = !hasDynamicsData
+    ? t("teamComp.dynamicsStateNone", locale)
+    : measuredDynamicsEdgeCount === 0
+      ? t("teamComp.dynamicsStateEstimated", locale)
+      : estimatedDynamicsEdgeCount === 0
+        ? t("teamComp.dynamicsStateMeasured", locale)
+        : t("teamComp.dynamicsStateMixed", locale);
 
   return {
     intelligenceMembers,

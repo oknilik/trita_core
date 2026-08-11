@@ -78,18 +78,20 @@ function itemRole(itemId: string): TeamRoleCode | null {
 }
 
 /**
- * Szerep-pontszámok egy kiválasztás-halmazból, 0–100 skálán.
+ * KEREKÍTETLEN szerep-pontszámok egy kiválasztás-halmazból (0–100 skála).
  *
- * Szerepenként az elméleti maximum: mind a 3 item kiemelt jelöléssel
- * (3 × 2 = 6 súly) — a gyakorlatban a 3 kiemelt-limit miatt ritka, de a
- * skála így stabil, és a self és peer profilok összevethetők rajta.
+ * Ez az aggregátorok (peer-átlag) bemenete: a raterenkénti kerekítés
+ * elhagyásával az átlag a VALÓDI súly-evidenciát tükrözi — kerekített
+ * per-rater értékek átlagolásánál egy koncentrált dupla-súlyú jelölés (2)
+ * veszíthetne szórt szimplákkal szemben (pl. 1+1+1 → 17,0 vs 2+1+0 →
+ * 16,67), pedig az össz-súlyuk azonos. Kerekítés csak megjelenítéskor.
  */
-export function calculateTeamRoleScores(
+export function calculateTeamRoleScoresRaw(
   selections: TeamRoleSelections,
-): TeamRoleScores {
+): Record<TeamRoleCode, number> {
   const totals = Object.fromEntries(
     Object.keys(TEAM_ROLES).map((k) => [k, 0]),
-  ) as TeamRoleScores;
+  ) as Record<TeamRoleCode, number>;
 
   for (const [itemId, weight] of Object.entries(selections)) {
     const role = itemRole(itemId);
@@ -100,18 +102,83 @@ export function calculateTeamRoleScores(
 
   const MAX_PER_ROLE = 6; // 3 item × 2 súly
   for (const role of Object.keys(totals) as TeamRoleCode[]) {
-    totals[role] = Math.round((totals[role] / MAX_PER_ROLE) * 100);
+    totals[role] = (totals[role] / MAX_PER_ROLE) * 100;
   }
 
   return totals;
 }
 
+/**
+ * Szerep-pontszámok egy kiválasztás-halmazból, 0–100 skálán (kerekítve).
+ *
+ * Szerepenként az elméleti maximum: mind a 3 item kiemelt jelöléssel
+ * (3 × 2 = 6 súly) — a gyakorlatban a 3 kiemelt-limit miatt ritka, de a
+ * skála így stabil, és a self és peer profilok összevethetők rajta.
+ */
+export function calculateTeamRoleScores(
+  selections: TeamRoleSelections,
+): TeamRoleScores {
+  const raw = calculateTeamRoleScoresRaw(selections);
+  const totals = {} as TeamRoleScores;
+  for (const role of Object.keys(raw) as TeamRoleCode[]) {
+    totals[role] = Math.round(raw[role]);
+  }
+  return totals;
+}
+
+/**
+ * FNV-1a hash — kicsi, függőség-mentes, determinisztikus. A holtverseny-
+ * feloldáshoz kell (ld. getTopRoles), nem kriptográfiai célra.
+ */
+function tieBreakHash(role: TeamRoleCode, seed: string): number {
+  let h = 0x811c9dc5;
+  const input = `${role}|${seed}`;
+  for (let i = 0; i < input.length; i += 1) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return h >>> 0;
+}
+
+/**
+ * Top-N szerep egy pontszám-profilból.
+ *
+ * HOLTVERSENY-SZABÁLY (S2) — dokumentált döntés:
+ *  1. Elsődleges rendezés: pontszám szerint csökkenő.
+ *  2. Ha van finomabb evidencia (`exact` — pl. kerekítetlen peer-átlag vagy
+ *     becslés-összeg), az dönt: két azonosra KEREKÍTETT szerep közül az áll
+ *     előrébb, amelyik mögött ténylegesen több jel van.
+ *  3. Pontosan egyenlő evidenciánál egy determinisztikus, profil-függő hash
+ *     dönt — SZÁNDÉKOSAN NEM a szerep-kód sorrendje. A korábbi stabil sort a
+ *     TEAM_ROLES deklarációs sorrendjét örökítette, ami minden holtversenyt
+ *     a korai kódok (OG/KE/KO) javára döntött el a későiek (MV/MI/SZ)
+ *     rovására — kis mintánál (3 peer) ez látható, szisztematikus torzítás.
+ *     A hash a teljes pontszám-vektorból magvazódik, így ugyanarra a
+ *     profilra ismételt rendereléskor stabil (determinisztikus), a
+ *     populáció szintjén viszont egyik szerep sem élvez fix előnyt
+ *     (más profilnál más szerep nyeri az egyenlőséget).
+ */
 export function getTopRoles(
   scores: TeamRoleScores,
   n = 3,
+  exact?: Partial<Record<TeamRoleCode, number>>,
 ): { role: TeamRoleCode; score: number }[] {
+  // Kanonikus seed a hash-hez: a kódsorrend itt csak a seed-szöveg
+  // stabilitását adja (objektum-kulcssorrendtől független), rangot nem oszt.
+  const seed = (Object.keys(TEAM_ROLES) as TeamRoleCode[])
+    .map((role) => `${role}:${exact?.[role] ?? scores[role] ?? 0}`)
+    .join(",");
   return (Object.entries(scores) as [TeamRoleCode, number][])
-    .sort((a, b) => b[1] - a[1])
+    // Örökség/sérült kulcsok kiszűrése (own-key, nem prototípus-lánc): egy nem
+    // kanonikus kód (pl. régi „PL") különben TEAM_ROLES[code] === undefined-en
+    // át a megjelenítésnél dobna (dossier 500). Motor-audit.
+    .filter(([role]) => Object.hasOwn(TEAM_ROLES, role))
+    .map(([role, score]) => ({ role, score, sortKey: exact?.[role] ?? score }))
+    .sort(
+      (a, b) =>
+        b.sortKey - a.sortKey ||
+        tieBreakHash(a.role, seed) - tieBreakHash(b.role, seed),
+    )
     .slice(0, n)
-    .map(([role, score]) => ({ role, score }));
+    .map(({ role, score }) => ({ role, score }));
 }

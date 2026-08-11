@@ -17,7 +17,7 @@ export interface CreditHistoryEntry {
 }
 
 export async function getCreditBalance(orgId: string): Promise<CreditBalance> {
-  const [sub, purchaseAgg, usageAgg] = await Promise.all([
+  const [sub, purchaseAgg, usageAgg, refundAgg] = await Promise.all([
     prisma.subscription.findUnique({
       where: { orgId },
       select: { candidateCredits: true },
@@ -30,12 +30,23 @@ export async function getCreditBalance(orgId: string): Promise<CreditBalance> {
       where: { orgId, type: "usage" },
       _sum: { amount: true },
     }),
+    prisma.candidateCredit.aggregate({
+      where: { orgId, type: "refund" },
+      _sum: { amount: true },
+    }),
   ]);
 
   return {
     available: sub?.candidateCredits ?? 0,
     totalPurchased: purchaseAgg._sum.amount ?? 0,
-    totalUsed: Math.abs(usageAgg._sum.amount ?? 0),
+    // A visszatérítés a felhasználást ellensúlyozza, nem a vásárlást növeli
+    // (2026-08-11, fix): a korábbi "purchase" típusú refund a totalPurchased
+    // számot hamisította. Nettó felhasználás = bruttó usage − refund; így az
+    // available = totalPurchased − totalUsed azonosság megmarad.
+    totalUsed: Math.max(
+      0,
+      Math.abs(usageAgg._sum.amount ?? 0) - (refundAgg._sum.amount ?? 0),
+    ),
   };
 }
 
@@ -44,6 +55,8 @@ export async function addCredits(params: {
   amount: number;
   actorId: string;
   note: string;
+  /** ledger-típus: vásárlás/feltöltés = "purchase" (alapértelmezés), visszavonás = "refund" */
+  type?: "purchase" | "refund";
 }): Promise<number> {
   return prisma.$transaction(async (tx) => {
     const sub = await tx.subscription.update({
@@ -55,7 +68,7 @@ export async function addCredits(params: {
     await tx.candidateCredit.create({
       data: {
         orgId: params.orgId,
-        type: "purchase",
+        type: params.type ?? "purchase",
         amount: params.amount,
         balance: sub.candidateCredits,
         note: params.note,
@@ -77,16 +90,20 @@ export async function useCredit(params: {
   note: string;
 }): Promise<number | null> {
   return prisma.$transaction(async (tx) => {
-    const sub = await tx.subscription.findUnique({
-      where: { orgId: params.orgId },
-      select: { candidateCredits: true },
+    // FELTÉTELES írás (nem check-then-act): a `candidateCredits > 0` szűrő MAGÁN
+    // az UPDATE-en van, így két párhuzamos felhasználás nem tud mindkettő
+    // átcsúszni egy 1-es egyenlegen (READ COMMITTED alatt a korábbi
+    // findUnique-őr mindkettőt átengedte volna → −1 egyenleg, két „sikeres"
+    // válasz). Ha 0 sort érintett, nincs kredit → null.
+    const consumed = await tx.subscription.updateMany({
+      where: { orgId: params.orgId, candidateCredits: { gt: 0 } },
+      data: { candidateCredits: { decrement: 1 } },
     });
 
-    if (!sub || sub.candidateCredits <= 0) return null;
+    if (consumed.count === 0) return null;
 
-    const updated = await tx.subscription.update({
+    const updated = await tx.subscription.findUniqueOrThrow({
       where: { orgId: params.orgId },
-      data: { candidateCredits: { decrement: 1 } },
       select: { candidateCredits: true },
     });
 

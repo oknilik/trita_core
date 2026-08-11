@@ -12,6 +12,12 @@ interface Team {
 interface CandidateInviteFormProps {
   locale: string;
   teams: Team[];
+  /**
+   * A hiring lap orgja — a meghívó kimondott hatóköre (2026-08-11): e nélkül
+   * a szerver team nélkül a LÉTREHOZÓ aktív orgjára esett vissza, és a
+   * meghívó (meg a jelölt eredménye) rossz szervezet alá került.
+   */
+  orgId: string;
   preselectedTeamId?: string;
 }
 
@@ -23,7 +29,7 @@ interface CreatedInvite {
   position?: string | null;
 }
 
-export function CandidateInviteForm({ locale, teams, preselectedTeamId }: CandidateInviteFormProps) {
+export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }: CandidateInviteFormProps) {
   const loc: Locale = locale === "en" ? "en" : "hu";
   const isHu = loc !== "en";
   const router = useRouter();
@@ -58,6 +64,9 @@ export function CandidateInviteForm({ locale, teams, preselectedTeamId }: Candid
       if (email.trim()) body.email = email.trim();
       if (name.trim()) body.name = name.trim();
       if (position.trim()) body.position = position.trim();
+      // A lap orgja MINDIG megy: a meghívó hatóköre a kimondott org, nem a
+      // létrehozó aktív orgja (2026-08-11, fix).
+      body.orgId = orgId;
       if (teamId) body.teamId = teamId;
       if (includeTeamRole) body.includeTeamRole = true;
       body.inviteLocale = inviteLocale;

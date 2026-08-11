@@ -1,12 +1,21 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
-import type { Locale } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
+import {
+  ENV_ROW_POLES,
+  ENV_ROW_SHORT_LABELS,
+  resolveEnvLevel,
+  resolveEnvRowKey,
+  type EnvLevel,
+} from "@/lib/profile-content";
 
 interface EnvItem {
   label: string;
   value: string;
+  /** F3-hedge: a pólus-ítélet a 65/70 (ill. 30/35) egyet-nem-értési sávban —
+   *  a bold szint-szó „Inkább …" alakot kap (getEnvRows adja). */
+  hedged?: boolean;
 }
 
 interface IdealEnvironmentSectionProps {
@@ -14,45 +23,16 @@ interface IdealEnvironmentSectionProps {
   isUnlocked: boolean;
 }
 
-// Pólus labelek és pozíció kiszámítása a szöveges értékből
-const POLES: Record<string, { low: string; high: string }> = {
-  Struktúra: { low: "szabad", high: "strukturált" },
-  Structure: { low: "flexible", high: "structured" },
-  "Társas intenzitás": { low: "egyéni", high: "csapatmunka" },
-  "Social intensity": { low: "solo", high: "teamwork" },
-  Változásgyakoriság: { low: "stabil", high: "változó" },
-  "Change frequency": { low: "stable", high: "dynamic" },
-  "Döntési sebesség": { low: "lassú", high: "gyors" },
-  "Decision pace": { low: "slow", high: "fast" },
-  "Terhelés-kezelés": { low: "alacsony", high: "magas" },
-  "Stress tolerance": { low: "low", high: "high" },
-  Projektciklus: { low: "rövid", high: "hosszú" },
-  "Project cycle": { low: "short", high: "long" },
-  Kultúra: { low: "pragmatikus", high: "értékvezérelt" },
-  Culture: { low: "pragmatic", high: "values-driven" },
-};
+// A sor kanonikus kulcsát és szintjét a profile-content visszafejtői adják
+// (resolveEnvRowKey / resolveEnvLevel) — ugyanabból a forrásból, amiből a
+// getEnvRows a sorokat építi. A korábbi helyi érték-prefix parser szűkebb
+// leképezés volt: a Kultúra-sor „Értékvezérelt/Teljesítményalapú" kezdetét
+// nem ismerte, és tévesen „Közepes" bold címkét mutatott (motor-audit v3 #11).
 
-function getShortLabel(value: string, locale: Locale): string {
-  const v = value.toLowerCase();
-  if (v.startsWith("magas") || v.startsWith("high")) return t("content.envLabelHigh", locale);
-  if (v.startsWith("alacsony") || v.startsWith("low")) return t("content.envLabelLow", locale);
-  if (v.startsWith("közepes") || v.startsWith("medium")) return t("content.envLabelMedium", locale);
-  if (v.startsWith("rövid") || v.startsWith("short")) return t("content.envLabelShort", locale);
-  if (v.startsWith("hosszú") || v.startsWith("long")) return t("content.envLabelLong", locale);
-  if (v.startsWith("gyors") || v.startsWith("fast")) return t("content.envLabelFast", locale);
-  return t("content.envLabelMedium", locale);
-}
-
-function getPosition(value: string): number {
-  const v = value.toLowerCase();
-  if (v.startsWith("magas") || v.startsWith("high")) return 80;
-  if (v.startsWith("alacsony") || v.startsWith("low")) return 20;
-  if (v.startsWith("közepes") || v.startsWith("medium")) return 50;
-  if (v.startsWith("rövid") || v.startsWith("short")) return 30;
-  if (v.startsWith("hosszú") || v.startsWith("long")) return 75;
-  if (v.startsWith("gyors") || v.startsWith("fast")) return 78;
-  if (v.startsWith("értékvezérelt") || v.startsWith("values")) return 80;
-  if (v.startsWith("teljesítmény") || v.startsWith("performance")) return 25;
+// A marker pozíciója a kanonikus szintből — nem szöveg-parse-olásból.
+function levelPosition(level: EnvLevel | null): number {
+  if (level === "high") return 80;
+  if (level === "low") return 20;
   return 50;
 }
 
@@ -79,8 +59,27 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
 
       <div className="mt-4 flex flex-col gap-2.5">
         {items.map((item) => {
-          const poles = POLES[item.label] ?? { low: "", high: "" };
-          const pos = getPosition(item.value);
+          const envKey = resolveEnvRowKey(item.label);
+          const level = envKey ? resolveEnvLevel(envKey, item.value) : null;
+          const polePair = envKey ? ENV_ROW_POLES[envKey] : null;
+          const poles = polePair
+            ? { low: polePair.low[locale], high: polePair.high[locale] }
+            : { low: "", high: "" };
+          // Bold szint-szó a kanonikus kulcs+szint táblából; ismeretlen sorra
+          // semleges „Közepes" — ugyanaz a defenzív alapérték, mint korábban.
+          // Hedge-sávban (F3, getEnvRows.hedged) a kemény szint-szó helyett
+          // „Inkább magas" / „Leaning fast" stb. — így a pólus-chip nem mond
+          // ellent az egy görgetésre lévő strip 70/40-es címkéjének.
+          const canonicalLabel =
+            envKey && level
+              ? ENV_ROW_SHORT_LABELS[envKey][level][locale]
+              : t("content.envLabelMedium", locale);
+          const shortLabel = item.hedged
+            ? tf("results.envLeaningLabel", locale, {
+                label: canonicalLabel.toLocaleLowerCase(locale === "hu" ? "hu" : "en"),
+              })
+            : canonicalLabel;
+          const pos = levelPosition(level);
           const desc = getDescription(item.value);
 
           return (
@@ -111,7 +110,7 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
                 </div>
               </div>
               <span className="text-[11px] text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">
-                <strong className="text-[var(--color-text-primary)]">{getShortLabel(item.value, locale)}</strong> — {desc}
+                <strong className="text-[var(--color-text-primary)]">{shortLabel}</strong> — {desc}
               </span>
             </div>
           );

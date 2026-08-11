@@ -9,6 +9,7 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { isSecondaryUncertain } from "@/lib/personality-type";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type AccessLevel = "start" | "plus";
@@ -69,6 +70,12 @@ export function ProfileHero({
   }, [pdfLoading]);
 
   const glyphPair = glyphDimensions ? resolveGlyphPair(glyphDimensions) : null;
+  // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
+  // párrá, mint a címke/tábla (isSecondaryUncertain) — a felolvasott szöveg
+  // nem állíthat erősorrendet, amit a látható felület már nem állít.
+  const glyphUncertain = glyphDimensions
+    ? isSecondaryUncertain(glyphDimensions)
+    : false;
   const level = LEVEL_CONFIG[accessLevel];
   const selfTheme = SURFACE_HERO_THEME.self;
 
@@ -120,6 +127,7 @@ export function ProfileHero({
               typeLabel={personalityType}
               locale={locale === "hu" ? "hu" : "en"}
               intensity={glyphPair.intensity}
+              secondaryUncertain={glyphUncertain}
               variant="badge"
               className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
             />
@@ -206,14 +214,26 @@ export function ProfileHero({
             onClick={onDownloadPdf}
             disabled={pdfLoading}
             variant="primary"
-            className="rounded-[9px] px-[18px] text-[11px] font-medium text-[var(--color-text-on-accent)] transition-all duration-300 hover:brightness-110"
-            style={{ backgroundColor: selfTheme.primary }}
+            onInverse
+            className="rounded-[9px] px-[18px] text-[11px] font-medium transition-all duration-300 hover:brightness-110"
+            // Kontraszt-fix (motor-audit v6, M7): a self-glow (brand-bronz
+            // #c17f4a) töltés a sötét zsálya-gradiensen ~2,7:1 — a gomb
+            // beleolvadt a hероba. A működő herók (team/org/candidate) mintája:
+            // VILÁGOS glow-töltés + sötét `text-on-accent` felirat. A self
+            // réteg világos bronza az `accent-primary-soft` (bronz-300) —
+            // töltésként ≥4,3:1 a gradiens-stopokon, a sötét felirat rajta
+            // ≥8:1, és mindkét színsémában világos marad. Inline style-ban,
+            // hogy a variant-osztályokkal ne legyen kaszkád-verseny.
+            style={{
+              backgroundColor: "var(--color-accent-primary-soft)",
+              color: "var(--color-text-on-accent)",
+            }}
           >
             {pdfLoading ? (
               <span className="inline-flex items-center gap-2">
                 <span
                   aria-hidden
-                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
                 />
                 {t("results.heroPdf", locale)}
               </span>

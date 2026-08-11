@@ -16,16 +16,26 @@ import { getSelfAccessLevel, type SelfAccess } from "@/lib/access";
 import type { ScoreResult } from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
-import { resolveObserverFlowStatus } from "@/lib/observer-flow";
+import { resolveObserverFlowStatus, OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
+import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/member-dossier";
+import type { HexacoCode } from "@/lib/hexaco";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
-import { buildWorkstyleContent } from "@/lib/workstyle-content";
+import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
+import {
+  buildWorkstyleContent,
+  selectGrowthFocusItems,
+  selectHeroInsightDims,
+} from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
-import { aggregatePeerRoleScores } from "@/lib/team-role-peer";
+import {
+  aggregatePeerRoleScores,
+  poolPeerSelectionsByRatedMember,
+} from "@/lib/team-role-peer";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -97,7 +107,7 @@ export default async function ProfileResultsPage({
           status: InvitationStatus.COMPLETED,
         },
       },
-      select: { scores: true },
+      select: { scores: true, confidence: true },
     }),
     prisma.observerInvitation.findMany({
       where: { inviterId: profile.id },
@@ -110,7 +120,6 @@ export default async function ProfileResultsPage({
         observerEmail: true,
         observerName: true,
         observerType: true,
-        assessment: { select: { relationshipType: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 10,
@@ -237,6 +246,24 @@ export default async function ProfileResultsPage({
   const config = getTestConfig(testType, locale);
   const accessLevel = toProfileLevel(accessLevelRaw);
 
+  // Mérési hiba a tárolt forma-pecsétből — pecsét nélküli (örökség) sorokra
+  // a konzervatívabb rövid formával számolunk. A SEM BELSŐ küszöb (lapos
+  // profil-kapu, facet-egyezés) — számként nem jelenik meg a felületen
+  // (2026-08-11 termékdöntés).
+  const assessmentForm = scores.form ?? "short";
+  const dimSem = dimStandardError(assessmentForm);
+  // Facet-szintű eltérés-küszöb a facet-összevetéshez: KÉT facet-pontszám
+  // (self vs observer-átlag) KÜLÖNBSÉGÉNEK hibája √2·SEM, nem 1×SEM — az
+  // 1×-es kapu ~40%-kal alul-becsülte, és a mérési hibán belüli facet-gapeket
+  // is „eltérésnek" jelölte (motor-audit v6, M2; a dimenzió-szintű kapu,
+  // DIFF_MIN_GAP, ugyanezt a √2-es szabályt követi). Kerekítve, propként megy.
+  // TUDATOS KÖVETKEZMÉNY (motor-audit v9 döntés): a rövid formán 2,5 item
+  // jut egy facetre, így a küszöb ≈ 17 pont — az „eltérés"-jelzés RITKÁN fog
+  // tüzelni. Ez nem hiba, hanem a facet-szintű megbízhatóság őszinte kezelése:
+  // a szekció egyezésnél pozitív állapotot mutat, a teljes lista egy
+  // kattintásra elérhető. Pilot-α után újraértékelendő (residuals-ledger §3).
+  const facetSemRounded = Math.round(Math.SQRT2 * facetStandardError(assessmentForm));
+
   // ── Draft info ─────────────────────────────────────────────────────────────
   const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
@@ -254,35 +281,72 @@ export default async function ProfileResultsPage({
   const completedObservers = completedObserverAssessments.map(
     (e) => e.scores as ScoreResult,
   );
-  const hasObserverData = completedObservers.length >= 2;
+  // Külső kép reveal-küszöb: a kanonikus n≥3 (OBSERVER_MIN_FOR_REVEAL) a
+  // self-serve úton is — korábban itt 2 volt. A 3-as küszöb részleges
+  // mitigáció a differencia-támadásra: a célszemély a futó átlagból
+  // visszafejthetné az utolsó értékelőt (r₃ = 3·avg₃ − 2·avg₂), ha az átlag
+  // már n=2-nél látszana. A küszöb emelése + a completion-értesítés
+  // anonimizálása (nincs értékelő-név) csökkenti a támadás felületét.
+  // NEM teljes megoldás: a ratee lapozások közt továbbra is aktívan
+  // differenciálhat (avg₃ → avg₄ …) az újabb értékelők beérkeztével — ezt
+  // kis-N 360 mellett nem tudjuk teljesen kizárni.
+  const hasObserverData = completedObservers.length >= OBSERVER_MIN_FOR_REVEAL;
 
   const mainDimCodes = config.dimensions
     .filter((d) => d.code !== "I")
     .map((d) => d.code);
 
-  const observerAvg: Record<string, number> = {};
-  if (hasObserverData) {
-    for (const code of mainDimCodes) {
-      let sum = 0;
-      let count = 0;
-      for (const obs of completedObservers) {
-        if (obs.type === "likert" && obs.dimensions[code] != null) {
-          sum += obs.dimensions[code];
-          count++;
-        }
-      }
-      observerAvg[code] = count > 0 ? Math.round(sum / count) : 0;
-    }
-  }
+  // Kanonikus átlagoló (member-dossier): a lefedetlen dimenzió NEM kap
+  // értéket — így nem gyárt hamis 0-s „vakfoltot" az összevetésben.
+  const likertObservers = completedObservers.filter((o) => o.type === "likert");
+  const observerAvg = computeObserverAverage(
+    mainDimCodes as HexacoCode[],
+    likertObservers.map((o) => o.dimensions),
+  );
 
-  const dimensions = config.dimensions.map((dim) => {
-    const score = scores.dimensions[dim.code] ?? 0;
+  // Facet-szintű külső átlag ugyanabból a forrásból — facetenként külön
+  // küszöb (≥3 értékelő, DOSSIER_OBSERVER_MIN), a ritkán lefedett facet
+  // kulcsa kimarad.
+  const observerFacetAverages = computeObserverFacetAverages(
+    mainDimCodes as HexacoCode[],
+    likertObservers.map((o) => o.facets),
+  );
+  // Örökség-eredményben nincs facet-bontás — ilyenkor a facet-összevetés
+  // önkép-oldala hiányzik, a szekció nem jelenhet meg.
+  const selfFacetScores = scores.facets ?? null;
+
+  // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből,
+  // és CSAK a reveal-küszöb (hasObserverData, n≥3) felett: n=1-nél a szám az
+  // egyetlen értékelő saját confidence-e lenne, ami a testvér-propokkal
+  // azonos anonimitás-védelmet igényel (különben az RSC-payloadban szivárog).
+  const observerConfidences = completedObserverAssessments
+    .map((a) => a.confidence)
+    .filter((c): c is number => typeof c === "number");
+  const avgObserverConfidence =
+    hasObserverData && observerConfidences.length > 0
+      ? Math.round(
+          (observerConfidences.reduce((sum, c) => sum + c, 0) /
+            observerConfidences.length) *
+            10,
+        ) / 10
+      : null;
+
+  // FIX 4 kiterjesztés (0 mint „nincs mérve", dimenzió-szint): a tárolt
+  // score-JSON-ból hiányzó dimenzió NEM 0 pont — a korábbi `?? 0` fallback
+  // valódi 0-ként renderelte („figyelendő" badge, 0-ból generált low-próza,
+  // fejlődési fókusz #1, radar-behorpadás; hiányzó I-nél 0%-os
+  // Segítőkészség-kártya). A nem mért dimenzió kimarad a listából — a
+  // lejjebbi fogyasztók (AltruismCard find("I"), PDF-altruizmus,
+  // személyiség-címke ≥2 dim szabálya) ezt hiányként kezelik, nem nullaként.
+  const dimensions = config.dimensions.flatMap((dim) => {
+    const score = scores.dimensions[dim.code];
+    if (typeof score !== "number") return [];
     const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
       low: string;
       mid: string;
       high: string;
     };
-    return {
+    return [{
       code: dim.code,
       label: (dim.labelByLocale?.[locale] ?? dim.label) as string,
       labelByLocale: dim.labelByLocale,
@@ -293,89 +357,100 @@ export default async function ProfileResultsPage({
       descriptionByLocale: dim.descriptionByLocale,
       insights: dim.insights,
       insightsByLocale: dim.insightsByLocale,
-      observerScore: hasObserverData ? (observerAvg[dim.code] ?? undefined) : undefined,
-      facets: (dim.facets ?? []).map((f) => ({
-        code: f.code,
-        label: (f.labelByLocale?.[locale] ?? f.label) as string,
-        score: scores.facets?.[dim.code]?.[f.code] ?? 0,
-      })),
-      aspects: (dim.aspects ?? []).map((a) => ({
-        code: a.code,
-        label: (a.labelByLocale?.[locale] ?? a.label) as string,
-        score: scores.aspects?.[dim.code]?.[a.code] ?? 0,
-      })),
-    };
+      observerScore: hasObserverData ? observerAvg?.[dim.code] : undefined,
+      // FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-
+      // bontás — a hiányzó érték NEM 0 pont. A korábbi `?? 0` fallback
+      // 24 koholt 0-facetet renderelt és a fejlődési fókuszba is 0-kat
+      // választott; a mérés nélküli facet kimarad.
+      // (A korábbi aspects-leképezés törölve: a bankban nincs aspect-item,
+      // a motor nem ír aspects-et — a ScoreResult.aspects csak tolerált
+      // örökség-mező, megjelenítője soha nem volt.)
+      facets: (dim.facets ?? []).flatMap((f) => {
+        const facetScore = scores.facets?.[dim.code]?.[f.code];
+        if (typeof facetScore !== "number") return [];
+        return [{
+          code: f.code,
+          label: (f.labelByLocale?.[locale] ?? f.label) as string,
+          score: facetScore,
+        }];
+      }),
+    }];
   });
 
   // ── Growth focus ───────────────────────────────────────────────────────────
   const mainDimensions = dimensions.filter((d) => d.code !== "I");
 
-  interface GrowthItem {
-    code: string;
-    label: string;
-    score: number;
-    dimCode: string;
-    dimLabel: string;
-    dimColor: string;
-  }
-
-  const allFacets: GrowthItem[] = [];
-  for (const dim of mainDimensions) {
-    for (const f of dim.facets) {
-      allFacets.push({
-        code: f.code,
-        label: f.label,
-        score: f.score,
-        dimCode: dim.code,
-        dimLabel: dim.label,
-        dimColor: dim.color,
-      });
-    }
-  }
-  const growthItems = allFacets
-    .filter((f) => f.score < 60)
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3);
-
-  const growthFallback: GrowthItem[] = mainDimensions
-    .filter((d) => d.score < 60)
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3)
-    .map((d) => ({
-      code: d.code,
-      label: d.label,
-      score: d.score,
-      dimCode: d.code,
-      dimLabel: d.label,
-      dimColor: d.color,
-    }));
-
-  const growthFocusItems = growthItems.length >= 1 ? growthItems : growthFallback;
+  // Kiválasztás a közös szabályból (workstyle-content, motor-audit v4):
+  //  - a fordított E kimarad a deficit-listából (alacsony = stabilitás);
+  //  - örökség-sorra (nincs facet-adat) a dimenzió-szintű fallback fut,
+  //    koholt 0-facet nem kerülhet a fókuszba (a facets tömb fent már csak
+  //    mért értékeket tartalmaz).
+  const growthFocusItems = selectGrowthFocusItems(mainDimensions);
 
   // ── Serialize invitations ──────────────────────────────────────────────────
   // ── Csapatszerep: mért self-eredmény + kampányból érkező társ-visszajelzés ─
-  const [teamRoleScoreRecord, teamRoleObservationsRaw] = await Promise.all([
+  const [teamRoleScoreRecord, myTeamMemberships] = await Promise.all([
     prisma.teamRoleScore.findFirst({
       where: { userProfileId: profile.id },
       orderBy: { createdAt: "desc" },
       select: { scores: true, source: true },
     }),
-    prisma.teamRoleObservation.findMany({
-      where: { aboutUserId: profile.id },
-      orderBy: { updatedAt: "asc" },
-      select: { raterUserId: true, selections: true },
+    prisma.teamMember.findMany({
+      where: { userId: profile.id },
+      select: { teamId: true },
     }),
   ]);
   const teamRoleMeasuredScores =
     teamRoleScoreRecord?.source === "questionnaire"
       ? (teamRoleScoreRecord.scores as Record<string, number>)
       : null;
-  // Raterenként a legfrissebb kör számít (ismételt körök felülírnak).
-  const latestByRater = new Map<string, TeamRoleSelections>();
-  for (const obs of teamRoleObservationsRaw) {
-    latestByRater.set(obs.raterUserId, obs.selections as TeamRoleSelections);
+  // Peer-aggregátum HATÓKÖRE (motor-audit v6, M6): a korábbi lekérdezés
+  // minden observationt összeszedett `aboutUserId` szerint — csapattól,
+  // szervezettől és időtől függetlenül, kilépő-védelem és self-szűrés
+  // nélkül. Most a csapat-fül S4-szabályát tükrözzük: csak a user JELENLEGI
+  // csapataiból származó sorok, és csak olyan értékelőtől, aki az adott
+  // csapatnak MA is tagja. A dedupe/self-kizárás a kanonikus
+  // poolPeerSelectionsByRatedMember-ben fut (updatedAt szerint növekvő
+  // sorrend → raterenként a legutolsó kör számít, csapatokon átívelően is).
+  const myTeamIds = myTeamMemberships.map((m) => m.teamId);
+  const [teamRoleObservationsRaw, currentCoMembers] =
+    myTeamIds.length > 0
+      ? await Promise.all([
+          prisma.teamRoleObservation.findMany({
+            where: { aboutUserId: profile.id, teamId: { in: myTeamIds } },
+            orderBy: { updatedAt: "asc" },
+            select: { teamId: true, raterUserId: true, selections: true },
+          }),
+          prisma.teamMember.findMany({
+            where: { teamId: { in: myTeamIds } },
+            select: { teamId: true, userId: true },
+          }),
+        ])
+      : [[], []];
+  const membersByTeam = new Map<string, Set<string>>();
+  for (const member of currentCoMembers) {
+    const set = membersByTeam.get(member.teamId) ?? new Set<string>();
+    set.add(member.userId);
+    membersByTeam.set(member.teamId, set);
   }
-  const peerAggregate = aggregatePeerRoleScores([...latestByRater.values()]);
+  // A pool második argumentuma az aktuális-tag halmaz; a csapatonkénti
+  // (szigorúbb) tagság-ellenőrzést az előszűrő adja, mert a pool egyetlen
+  // halmazzal dolgozik (a csapat-fül hívásában ez egy csapat tagsága).
+  const coMemberIds = new Set(currentCoMembers.map((m) => m.userId));
+  const scopedObservationRows = teamRoleObservationsRaw
+    .filter((obs) => membersByTeam.get(obs.teamId)?.has(obs.raterUserId))
+    .map((obs) => ({
+      aboutUserId: profile.id,
+      raterUserId: obs.raterUserId,
+      selections: obs.selections as TeamRoleSelections,
+    }));
+  const pooledPeerSelections = poolPeerSelectionsByRatedMember(
+    scopedObservationRows,
+    coMemberIds,
+  );
+  const peerAggregate = aggregatePeerRoleScores(
+    pooledPeerSelections.get(profile.id) ?? [],
+  );
   const teamRolePeer =
     peerAggregate.raterCount > 0
       ? {
@@ -385,16 +460,22 @@ export default async function ProfileResultsPage({
         }
       : null;
 
+  // W1 (privacy): a kitöltés időbélyege NAP-pontosságra vágva kerül a
+  // kliensre — a másodperc-pontos completedAt az anonim értékelő
+  // időzítés-alapú azonosítását segítené. A relationship mező (az értékelő
+  // viszony-típusa) törölve a payloadból: semmi nem renderelte, feleslegesen
+  // szivárgott volna a kliensre.
   const sentInvitations = sentInvitationsRaw.map((inv) => ({
     id: inv.id,
     token: inv.token,
     status: inv.status,
     createdAt: inv.createdAt.toISOString(),
-    completedAt: inv.completedAt?.toISOString() ?? null,
+    completedAt: inv.completedAt
+      ? inv.completedAt.toISOString().slice(0, 10)
+      : null,
     observerEmail: inv.observerEmail ?? null,
     observerName: inv.observerName ?? null,
     observerType: inv.observerType as string,
-    relationship: inv.assessment?.relationshipType ?? null,
   }));
 
   const receivedInvitations = receivedInvitationsRaw.map((inv) => ({
@@ -431,11 +512,6 @@ export default async function ProfileResultsPage({
   const displayName =
     profile.username ?? profile.email ?? t("common.userFallback", locale);
 
-  // ── Hero data ──────────────────────────────────────────────────────────────
-  const isHu = locale === "hu";
-  const highDims = mainDimensions.filter((d) => d.score >= 70);
-  const lowDims = mainDimensions.filter((d) => d.score < 40);
-
   // Személyiség-típus címke a top-2 dimenzióból — a közös archetípus-
   // nyelvtannal (melléknév + főnév, pl. „Energikus újító"); a korábbi
   // mechanikus összefűzés („Innovátor Energikus") kivezetve.
@@ -449,28 +525,32 @@ export default async function ProfileResultsPage({
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
 
-  // Hero insight — behavior-based sentence (not dimension names)
+  // Hero insight — behavior-based sentence (not dimension names).
+  // A pár-választás közös szabályból (workstyle-content, motor-audit v6, M4c):
+  // kanonikus rangsor (rankDimensionScores) + a fordított E kimarad a
+  // „leggyengébb" slotból (az alacsony Emocionalitás stabilitás, nem
+  // gyengeség) + lapos profilnál (terjedelem < HERO_RANGE_GATE_FACTOR·SEM,
+  // indoklás a konstansnál) csak az erősség megy ki.
   const heroInsight = (() => {
-    const sorted = [...mainDimensions].sort((a, b) => b.score - a.score);
-    const strongest = sorted[0];
-    const weakest = sorted[sorted.length - 1];
-    if (!strongest || !weakest) return "";
-
-    const s = DIMENSION_STRENGTH_VERBS[strongest.code]?.[locale] ?? strongest.label;
-    const w = DIMENSION_WEAK_VERBS[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
-    return isHu
-      ? `${s} — ${w}.`
-      : `${s} — ${w}.`;
+    const pick = selectHeroInsightDims(mainDimensions, dimSem);
+    if (!pick) return "";
+    // Lapos profil (terjedelem-kapu, pick.flat): a „legerősebb" állítás is
+    // zaj-műtermék lenne, miközben a strip csupa-közepest, a PDF pedig
+    // „Kiegyensúlyozott profil"-t mond — a hero itt a kiegyensúlyozott-
+    // profil mondatot kapja az erősség-ige helyett.
+    if (pick.flat) return t("results.heroBalancedInsight", locale);
+    const s =
+      DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
+    if (!pick.weakest) return `${s}.`;
+    const w =
+      DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ??
+      pick.weakest.label.toLowerCase();
+    return `${s} — ${w}.`;
   })();
 
-  // PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája)
-  const strengths = highDims.length > 0
-    ? highDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.strengthsSuffix", locale)
-    : t("results.balancedProfile", locale);
-
-  const watchAreas = lowDims.length > 0
-    ? t("results.watchPrefix", locale) + lowDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.watchSuffix", locale)
-    : t("results.noLowDim", locale);
+  // A korábbi legacy strengths/watchAreas összefoglaló sorok kivezetve
+  // (2026-08-11): a PDF-be mentek, de ott semmi nem renderelte őket — a
+  // bullet-alapú változat (strengthBullets/watchBullets, ProfileTabs) él.
 
   // ── Plus content (profile engine narratives) ──────────────────────────────
   const lang = (locale === "en" ? "en" : "hu") as Locale;
@@ -479,7 +559,8 @@ export default async function ProfileResultsPage({
 
   const plusContent = accessLevel !== "start" ? {
     introText: BLOCK1[lang],
-    howYouWork: workstyle.howYouWork,
+    howYouWorkParts: workstyle.howYouWorkParts,
+    riskParts: workstyle.riskParts,
     pressure: workstyle.pressure,
     pressureParts: workstyle.pressureParts,
     growthTip: workstyle.growthTip,
@@ -542,14 +623,16 @@ export default async function ProfileResultsPage({
           growthFocusItems={growthFocusItems}
           hasObserverData={hasObserverData}
           observerCount={completedObservers.length}
+          avgObserverConfidence={avgObserverConfidence}
+          selfFacetScores={selfFacetScores}
+          observerFacetAverages={hasObserverData ? observerFacetAverages : null}
+          facetSem={facetSemRounded}
           observerFlow={observerFlow}
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
           feedbackSubmitted={feedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
-          strengths={strengths}
-          watchAreas={watchAreas}
           plusContent={plusContent}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}

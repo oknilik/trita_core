@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { getDimensionTier, tierColors, dimensionFacets } from "@/lib/dimension-utils";
+import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { dimensionFacetNames } from "@/lib/hexaco";
+import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { UpgradeButton } from "@/components/profile/UpgradeButton";
+
+// A korábbi ±SEM-chip és mérési-hiba jegyzet 2026-08-11-én kivezetve
+// (termékdöntés): mérési-hiba SZÁM nem jelenik meg a felületen — a
+// bizonytalanság-kezelés a címke-/próza-szintű hedge-ekben él, a magyarázat
+// pedig a központi módszertani leírásban.
 
 interface FacetEntry {
   code: string;
@@ -60,8 +67,12 @@ function AccordionItem({
 }) {
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
-  const facetNames = dimensionFacets[code] || [];
+  // A teaser-nevek a kanonikus facet-térképből (tritan.ts) jönnek — így a
+  // feloldás után látott alskála-nevekkel azonosak, lokalizáltan.
+  const facetNames = dimensionFacetNames(code, locale);
   const hasFacetData = facets.length > 0 && !showUpsell;
+  // Percentilis csak aktív norma-tábla mellett (ma null → nem renderel).
+  const percentile = percentileForScore(code, value);
 
   return (
     <div
@@ -172,6 +183,14 @@ function AccordionItem({
                     </div>
                   </div>
                 </>
+              )}
+
+              {/* Percentilis-sor — CSAK aktív norma-tábla mellett (ma null →
+                  nem renderel). A ±SEM-jegyzet kivezetve (ld. fájl-fejkomment). */}
+              {percentile !== null && (
+                <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
+                  {tf("results.scorePercentileLine", locale, { p: percentile })}
+                </p>
               )}
 
               {/* Upsell teaser — Self Start only */}

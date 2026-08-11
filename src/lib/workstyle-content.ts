@@ -1,7 +1,7 @@
 import type { TestType } from "@prisma/client";
-import { runProfileEngine } from "@/lib/profile-engine";
+import { runProfileEngine, type PairTone } from "@/lib/profile-engine";
 import {
-  RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES,
+  RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES, RISK_TEXTS, DEFAULT_NARRATIVE,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
   PRESSURE_BLINDSPOT_PREFIX, type PressureText,
   SOLO_DIM_ROLE_MODIFIERS, DIMENSION_GROWTH_TIPS, type GrowthPlan,
@@ -11,14 +11,62 @@ import {
   DIM_LABELS, CATEGORY_LABELS,
   getEnvRows,
 } from "@/lib/profile-content";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { rankDimensionScores } from "@/lib/hexaco";
+import { deficitSlotEligible } from "@/lib/score-valence";
 import type { Locale } from "@/lib/i18n";
+
+// A fordított dimenzió kódja a kanonikus valencia-kapuból (score-valence.ts)
+// — a korábbi helyi literál kivezetve; az örökség-importok kedvéért innen is
+// re-exportáljuk.
+export { REVERSE_DIM_CODE } from "@/lib/score-valence";
 
 // Munkastílus-tartalom (Ahogy működsz / Ideális környezet / Szerep-illeszkedés)
 // közös generátora — a saját eredmény-oldal és a megosztott (/share/[token])
 // nézet ugyanebből dolgozik, hogy a két felület soha ne csússzon szét.
 
+/**
+ * „Ahogy működsz" — NEVESÍTETT slotok a pozicionális tömb helyett
+ * (motor-audit v4, FIX 3): a felület korábban a howYouWork[1]-et vakon
+ * „Figyelendő"-ként címkézte, pedig az 1-es index csak akkor kockázat, ha
+ * tényleg van risk-pár — különben egy pozitív narratíva került a borostyán
+ * kártyába, a valódi kockázat meg a kontextusba csúszott.
+ */
+export interface HowYouWorkParts {
+  /** Fő mintázat — az első narratíva (tension-pár / solo-dim / balanced). */
+  main: string;
+  /** Figyelendő — CSAK `tone: "risk"` párból (summary + tanács); nélküle null. */
+  watch: string | null;
+  /**
+   * Jellemző mintázat — a `tone: "note"` párok (fordított skála, jellemzően
+   * Emocionalitás). Tartalmilag ugyanaz a summary + gyakorlati tanács, mint a
+   * watch-slotban, de SEMLEGES kártyán: nem hiányosság, hanem „így érdemes
+   * ezzel dolgozni". Saját, nevesített slot — nem a kontextusba söpört
+   * maradék (2026-08-11 valencia-döntés).
+   */
+  notes: string[];
+  /** Kontextus — a további narratívák és további risk-szövegek. */
+  context: string[];
+}
+
 export interface WorkstyleContent {
   howYouWork: string[];
+  /** Ugyanez nevesített slotokkal — a megjelenítők EBBŐL rendereljenek. */
+  howYouWorkParts: HowYouWorkParts;
+  /** Nem-feloldás tension-párok strukturáltan (összefoglaló + gyakorlati
+   *  tanács + forrás-dimenziók + hangnem) — a PDF/megjelenítés célzott
+   *  használatához; a howYouWork-ben ugyanez folyó szövegként is megjelenik.
+   *  A név örökség (a fogyasztói oldalon így hívják): a lista `tone: "risk"`
+   *  ÉS `tone: "note"` párokat is tartalmaz — a megjelenítő a `tone` alapján
+   *  válasszon slotot, ne a lista puszta létéből következtessen kockázatra. */
+  riskParts: {
+    summary: string;
+    /** „risk" hangnemnél mitigáció, „note"-nál: hogyan érdemes ezzel dolgozni. */
+    advice: string;
+    source: string;
+    /** A pár megjelenítendő hangneme (score-valence.resolvePairTone). */
+    tone: PairTone;
+  }[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
   /** Ugyanez strukturáltan (stress/blindspot külön + forrás-dimenzió, P5.2). */
@@ -34,7 +82,9 @@ export interface WorkstyleContent {
     friction: { text: string; source?: string }[];
     needs: { text: string; source?: string }[];
   };
-  envItems: { label: string; value: string }[];
+  /** hedged: a 65/35-ös pólus-ítélet a vizuális tierrel (70/40) nem egyező
+   *  sávba esik — a megjelenítő szint-szava ilyenkor „Inkább …" (F3-hedge). */
+  envItems: { label: string; value: string; hedged?: boolean }[];
   roleFit: {
     strong: string;
     might: string;
@@ -97,32 +147,35 @@ export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might:
 // (guardrail-teszt őrzi a lefedettséget).
 export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    INTE_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
-    INTE_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
-    RESO_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
-    RESO_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Empatikus közeg"] },
-    TEMP_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
-    TEMP_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
-    ADAP_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
-    ADAP_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
-    THOR_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
-    THOR_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
-    OPEN_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
-    OPEN_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
+    H_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
+    H_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
+    E_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
+    // A prep-címke korábban „Empatikus közeg" volt — az alacsony
+    // Emocionalitást empátia-hiánynak keretezte (2026-08-11 valencia-döntés:
+    // ez a skála nem empátiát mér). A közeg jellemzője az érzelmi intenzitás.
+    E_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Érzelmileg intenzív közeg"] },
+    X_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
+    X_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
+    A_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
+    A_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
+    C_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
+    C_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
+    O_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
+    O_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
   },
   en: {
-    INTE_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
-    INTE_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
-    RESO_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
-    RESO_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Empathetic context"] },
-    TEMP_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
-    TEMP_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
-    ADAP_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
-    ADAP_low: { strong: ["Negotiation", "Strategy", "Decision-making"], might: ["Research", "Analysis"], prep: ["Harmonious team"] },
-    THOR_high: { strong: ["Project Management", "QA", "Operations"], might: ["Compliance", "Expert"], prep: ["Improvisation"] },
-    THOR_low: { strong: ["Innovation", "Startup", "Design"], might: ["Consulting", "Strategy"], prep: ["Structured execution"] },
-    OPEN_high: { strong: ["Research", "Innovation", "Strategy", "Design"], might: ["Consulting", "Education"], prep: ["Routine tasks"] },
-    OPEN_low: { strong: ["Execution", "Administration", "Operations"], might: ["Leadership", "PM"], prep: ["Experimentation"] },
+    H_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
+    H_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
+    E_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
+    E_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Emotionally intense context"] },
+    X_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
+    X_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
+    A_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
+    A_low: { strong: ["Negotiation", "Strategy", "Decision-making"], might: ["Research", "Analysis"], prep: ["Harmonious team"] },
+    C_high: { strong: ["Project Management", "QA", "Operations"], might: ["Compliance", "Expert"], prep: ["Improvisation"] },
+    C_low: { strong: ["Innovation", "Startup", "Design"], might: ["Consulting", "Strategy"], prep: ["Structured execution"] },
+    O_high: { strong: ["Research", "Innovation", "Strategy", "Design"], might: ["Consulting", "Education"], prep: ["Routine tasks"] },
+    O_low: { strong: ["Execution", "Administration", "Operations"], might: ["Leadership", "PM"], prep: ["Experimentation"] },
   },
 };
 
@@ -141,6 +194,16 @@ const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOu
   },
 };
 
+// F3 (motor-audit): a pólus-küszöb (profile-engine 65/35) és a vizuális tier
+// (dimension-utils 70/40) a 65–70 ill. 35–40 sávban eltér — egy 67-es
+// pontszám a stripen „mérsékelt", a pólus-chipen „magas" lenne. A chip ezért
+// a köztes sávban HEDGEL („inkább magas"), így nem mond ellent a stripnek,
+// a pólus-küszöböket (narratíva-logika) pedig nem bolygatjuk.
+const LEANING_LABELS: Record<"high" | "low", Record<Locale, string>> = {
+  high: { hu: "inkább magas", en: "leaning high" },
+  low: { hu: "inkább alacsony", en: "leaning low" },
+};
+
 export function buildWorkstyleContent(
   dimScores: Record<string, number>,
   testType: TestType,
@@ -148,35 +211,104 @@ export function buildWorkstyleContent(
 ): WorkstyleContent {
   const engine = runProfileEngine(dimScores, testType);
 
-  // "Ahogy működsz" narratives
-  const howYouWork: string[] = [];
+  // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
+  // a „miért" kimondása összeköti a hipotézist az adattal. A szint-szó a
+  // vizuális tierrel egyeztetve (F3, ld. LEANING_LABELS).
+  const sourceLabel = (dim: string, level: "high" | "medium" | "low") => {
+    const score = dimScores[dim];
+    const tier = typeof score === "number" ? getDimensionTier(score) : null;
+    let levelLabel = CATEGORY_LABELS[level][lang];
+    if (tier) {
+      if (level === "high" && tier !== "high") levelLabel = LEANING_LABELS.high[lang];
+      else if (level === "low" && tier !== "low") levelLabel = LEANING_LABELS.low[lang];
+      else if (level === "medium" && tier === "low") levelLabel = LEANING_LABELS.low[lang];
+      else if (level === "medium" && tier === "high") levelLabel = LEANING_LABELS.high[lang];
+    }
+    return `${DIM_LABELS[dim]?.[lang] ?? dim} · ${levelLabel}`;
+  };
+
+  // "Ahogy működsz" narratives — a narratívák és a risk-szövegek KÜLÖN
+  // gyűjtve, hogy a nevesített slotok (howYouWorkParts) ne pozícióból
+  // találgassák, melyik bekezdés kockázat.
+  const narratives: string[] = [];
   // Add tension pair narratives (block 6)
   for (const pair of engine.block6Pairs) {
     const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[lang];
-    if (narrative) howYouWork.push(narrative);
+    if (narrative) narratives.push(narrative);
   }
   // Add solo dim narratives if no tension pairs
-  if (howYouWork.length === 0) {
+  if (narratives.length === 0) {
     for (const sd of engine.topSoloDims) {
       const key = `${sd.dim}_${sd.level}`;
       const text = SOLO_DIM_NARRATIVES[key]?.[lang];
-      if (text) howYouWork.push(text);
+      if (text) narratives.push(text);
     }
   }
-  // Add risk texts (block 7)
-  for (const pair of engine.block7Pairs) {
+  // Nem-feloldás párok (risk + note): az összefoglaló után a gyakorlati tanács
+  // is bekerül külön bekezdésként, és strukturáltan is (riskParts). A két
+  // hangnem UGYANAZT a tartalmat kapja — csak a slot és a keretezés más.
+  const riskParts: WorkstyleContent["riskParts"] = [];
+  const riskTexts: string[] = [];
+  // Fél-pár (csak summary VAGY csak tanács van a deckben) — nevesített
+  // kártyára nem való, de a kontextusból sem veszhet el.
+  const orphanRiskTexts: string[] = [];
+  for (const pair of engine.pairs) {
+    if (pair.tone === "resolution") continue;
     const summary = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
-    if (summary) howYouWork.push(summary);
+    const advice = RISK_TEXTS[pair.contentKey]?.[lang];
+    if (summary) riskTexts.push(summary);
+    if (advice) riskTexts.push(advice);
+    if (summary && advice) {
+      riskParts.push({
+        summary,
+        advice,
+        source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
+        tone: pair.tone,
+      });
+    } else {
+      if (summary) orphanRiskTexts.push(summary);
+      if (advice) orphanRiskTexts.push(advice);
+    }
   }
+  // Kiegyensúlyozott profil: se pár, se pólusos solo-dim — a lapos profil is
+  // kapjon értelmes nyitó bekezdést.
+  if (narratives.length === 0 && riskTexts.length === 0) {
+    narratives.push(DEFAULT_NARRATIVE[lang]);
+  }
+
+  // Örökség-fogyasztóknak a pozicionális tömb változatlan sorrendben…
+  const howYouWork: string[] = [...narratives, ...riskTexts];
+  // …a megjelenítés viszont a nevesített slotokból megy (FIX 3): main = első
+  // narratíva; watch = CSAK `tone: "risk"` pár (summary + tanács együtt);
+  // notes = a `tone: "note"` párok (semleges kártya); context = a többi.
+  // A slot-választás a HANGNEMBŐL jön (score-valence): a korábbi
+  // `reverseValenced` szűrő — amely utólag emelte ki a fordított skálájú
+  // párokat a watch-slotból — ezzel feleslegessé vált és kivezetve.
+  const riskOnly = riskParts.filter((p) => p.tone === "risk");
+  const noteOnly = riskParts.filter((p) => p.tone === "note");
+  const partText = (part: (typeof riskParts)[number]) =>
+    `${part.summary} ${part.advice}`;
+  const firstRiskText = riskOnly[0] ? partText(riskOnly[0]) : null;
+  const firstNoteText = noteOnly[0] ? partText(noteOnly[0]) : null;
+  // Defenzív fallback: ha (hiányos deck miatt) egyetlen narratíva sincs, a
+  // main a risk/note szövegre esik vissza — üres main mellett a szekció el sem
+  // készülne, és a tartalom veszne el.
+  const mainText =
+    narratives[0] ?? orphanRiskTexts[0] ?? firstRiskText ?? firstNoteText ?? "";
+  const howYouWorkParts: HowYouWorkParts = {
+    main: mainText,
+    watch: firstRiskText && firstRiskText !== mainText ? firstRiskText : null,
+    notes: noteOnly.map(partText).filter((text) => text !== mainText),
+    context: [
+      ...narratives.slice(1),
+      ...riskOnly.slice(1).map(partText),
+      ...orphanRiskTexts.filter((text) => text !== mainText),
+    ],
+  };
 
   // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
   // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
   // összefűzött szöveget kap, az executive summary a strukturált részeket.
-  // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
-  // a „miért" kimondása összeköti a hipotézist az adattal.
-  const sourceLabel = (dim: string, level: "high" | "medium" | "low") =>
-    `${DIM_LABELS[dim]?.[lang] ?? dim} · ${CATEGORY_LABELS[level][lang]}`;
-
   const pressure: string[] = [];
   const pressureParts: (PressureText & { source: string })[] = [];
   for (const sd of engine.topSoloDims) {
@@ -191,8 +323,15 @@ export function buildWorkstyleContent(
   // Fejlődési javaslat (P2.4, P5.5) — a legalacsonyabb dimenzióhoz, csak ha
   // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
   // growthTip: rövid forma (summary-oldal); growthPlan: háromlépcsős ív.
+  // A fordított E KIMARAD a legalacsonyabb-választásból (motor-audit v6,
+  // M4a): az alacsony Emocionalitás stabilitás (erőforrás), nem deficit — a
+  // „Fejlődési fókusz · Emocionalitás · alacsony" forrás-chip egy stabil
+  // kitöltőnél hamis keretezés volt. A választás a legalacsonyabb NEM-E
+  // dimenzióra esik (ugyanaz a pólus-szabály, mint a selectGrowthFocusItems).
   const { growthTip, growthPlan } = (() => {
-    const entries = Object.entries(dimScores).filter(([code]) => code !== "I");
+    const entries = Object.entries(dimScores).filter(
+      ([code]) => code !== "I" && deficitSlotEligible(code),
+    );
     if (entries.length === 0) return { growthTip: undefined, growthPlan: undefined };
     const [lowestDim, lowestScore] = entries.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
     if (lowestScore >= 40) return { growthTip: undefined, growthPlan: undefined };
@@ -206,9 +345,10 @@ export function buildWorkstyleContent(
 
   // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
   //  - click: a top-2 markáns dimenzió;
-  //  - friction: pólusos dimenziók a legerősebb súrlódás-jóslók közül
-  //    (THOR > ADAP > INTE — a team-stats FRICTION_WEIGHTS sorrendje, hogy
-  //    a riport és a csapat-felület ugyanazt a modellt mondja);
+  //  - friction: pólusos dimenziók a súrlódás-jóslók súly-sorrendjében
+  //    (C > A > H > E > X > O — a team-stats
+  //    FRICTION_WEIGHTS sorrendje, hogy a riport és a csapat-felület
+  //    ugyanazt a modellt mondja), legfeljebb kettő;
   //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
   const collaboration = (() => {
     type CollabItem = { text: string; source?: string };
@@ -219,7 +359,7 @@ export function buildWorkstyleContent(
     }
     if (click.length === 0) click.push({ text: COLLAB_BALANCED_CLICK[lang] });
 
-    const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE"] as const;
+    const FRICTION_DIM_ORDER = ["C", "A", "H", "E", "X", "O"] as const;
     const friction: CollabItem[] = [];
     for (const dim of FRICTION_DIM_ORDER) {
       const level = engine.categories[dim];
@@ -279,10 +419,12 @@ export function buildWorkstyleContent(
     }
   }
 
-  // Environment rows
-  const envItems = getEnvRows(engine.categories).map((r) => ({
+  // Environment rows — a dimScores a hedge-sávok (F3) feloldásához megy át:
+  // pólus-ítélet a 65/70 ill. 30/35 közti sávból → „Inkább …" szint-szó.
+  const envItems = getEnvRows(engine.categories, dimScores).map((r) => ({
     label: r.label[lang],
     value: r.value[lang],
+    hedged: r.hedged ?? false,
   }));
 
   // Takeaways (block 6 summaries)
@@ -304,6 +446,8 @@ export function buildWorkstyleContent(
 
   return {
     howYouWork,
+    howYouWorkParts,
+    riskParts,
     pressure,
     pressureParts,
     growthTip,
@@ -321,4 +465,134 @@ export function buildWorkstyleContent(
     },
     takeaways,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Fejlődési fókusz — kiválasztási szabály (results-oldal „Fejlődési fókusz"
+// szekciója). Motor-audit v4:
+//  - FIX 2 (E fordított skála): a deficit-logika („a legalacsonyabb
+//    pontszám = fejlesztendő") a fordított Emocionalitásra hamis — az
+//    alacsony E stabilitás (erőforrás), nem hiány. Egy stabil kitöltőnél
+//    a Félelem/Szorongás 20 pont nem „első számú fejlődési terület", ezért a
+//    E-facetek és a E-dimenzió KIMARADNAK a deficit-választásból.
+//  - FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-bontás —
+//    a hiányzó facet nem 0 pont. A hívó csak VALÓDI facet-pontszámokat adjon
+//    át (üres facets tömb = nincs adat), ilyenkor a dimenzió-szintű fallback
+//    fut, koholt 0-facet nem kerülhet a fókuszba.
+// ─────────────────────────────────────────────────────────────────────
+
+export interface GrowthFocusItem {
+  code: string;
+  label: string;
+  score: number;
+  dimCode: string;
+  dimLabel: string;
+  dimColor: string;
+}
+
+interface GrowthFocusDimensionInput {
+  code: string;
+  label: string;
+  color: string;
+  score: number;
+  /** Csak MÉRT facet-pontszámok — örökség-sorra üres tömb. */
+  facets: { code: string; label: string; score: number }[];
+}
+
+export function selectGrowthFocusItems(
+  mainDimensions: GrowthFocusDimensionInput[],
+): GrowthFocusItem[] {
+  const allFacets: GrowthFocusItem[] = [];
+  for (const dim of mainDimensions) {
+    if (!deficitSlotEligible(dim.code)) continue; // fordított skála — nem deficit
+    for (const f of dim.facets) {
+      allFacets.push({
+        code: f.code,
+        label: f.label,
+        score: f.score,
+        dimCode: dim.code,
+        dimLabel: dim.label,
+        dimColor: dim.color,
+      });
+    }
+  }
+  // Dimenziónként legfeljebb 2 facet kerülhet a fókuszba: a GrowthFocus
+  // záró javaslata (GROWTH_HINT) dimenzió-kulcsos, így 3 azonos-dimenziós
+  // facet háromszor szó szerint ugyanazt a mondatot ismételné. A plafon a
+  // listát változatosabbá teszi anélkül, hogy a rangsort felborítaná.
+  const MAX_FACETS_PER_DIM = 2;
+  const perDimCount = new Map<string, number>();
+  const facetItems: GrowthFocusItem[] = [];
+  for (const f of allFacets.filter((x) => x.score < 60).sort((a, b) => a.score - b.score)) {
+    const used = perDimCount.get(f.dimCode) ?? 0;
+    if (used >= MAX_FACETS_PER_DIM) continue;
+    perDimCount.set(f.dimCode, used + 1);
+    facetItems.push(f);
+    if (facetItems.length === 3) break;
+  }
+  if (facetItems.length >= 1) return facetItems;
+
+  // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) —
+  // ugyanaz a pólus-szabály: az alacsony E itt sem „fejlesztendő".
+  return mainDimensions
+    .filter((d) => deficitSlotEligible(d.code) && d.score < 60)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3)
+    .map((d) => ({
+      code: d.code,
+      label: d.label,
+      score: d.score,
+      dimCode: d.code,
+      dimLabel: d.label,
+      dimColor: d.color,
+    }));
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Hero-mondat dimenzió-választása (results-oldal „heroInsight"). Motor-audit
+// v6, M4c: a „leggyengébb" slot korábban nyers `.sort`-tal a fordított E-t
+// is kiválaszthatta — egy stabil (alacsony Emocionalitású) kitöltő hero-
+// mondata a stabilitását nevezte meg gyengeségként. Szabályok:
+//  - rangsor a kanonikus rankDimensionScores-szal (determinista tie-break);
+//  - a leggyengébb slot a legalacsonyabb NEM-E dimenzió;
+//  - lapos profilnál (max−min < HERO_RANGE_GATE_FACTOR·SEM) nincs
+//    „leggyengébb" — csak az erősség megy ki (weakest: null).
+// ─────────────────────────────────────────────────────────────────────
+
+/**
+ * A lapos-profil kapu szorzója (motor-audit v9 döntés, 2026-08-11).
+ * Ez a kapu NEM két előre kijelölt pontszám különbségét vizsgálja (arra a
+ * kanonikus √2·SEM ≈ 1,41·SEM szabály él, ld. DIFF_MIN_GAP), hanem a hat
+ * dimenzió TERJEDELMÉT (max−min): a „legerősebb/leggyengébb" állításhoz a
+ * szélsőértékeket utólag, a zajt is beleértve választjuk ki. Hat független
+ * pontszám várható terjedelme tiszta zaj mellett ≈ 2,5·SEM, ezért a
+ * páronkénti √2-nél szigorúbb, 2·SEM-es kapu a szándékos minimum — a
+ * korábbi komment tévesen nevezte ezt „a két pontszám hibájának".
+ * Viselkedés-változás nincs; a értéket unit-teszt rögzíti.
+ */
+export const HERO_RANGE_GATE_FACTOR = 2;
+
+export function selectHeroInsightDims<T extends { code: string; score: number }>(
+  mainDimensions: ReadonlyArray<T>,
+  dimSem: number,
+): { strongest: T; weakest: T | null; flat: boolean } | null {
+  if (mainDimensions.length === 0) return null;
+  const ranked = rankDimensionScores(mainDimensions);
+  const strongest = ranked[0];
+  const weakCandidates = ranked.filter((d) => deficitSlotEligible(d.code));
+  const weakest = weakCandidates[weakCandidates.length - 1];
+  if (!weakest || weakest.code === strongest.code) {
+    return { strongest, weakest: null, flat: false };
+  }
+  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne — a terjedelem-
+  // kapu indoklása a HERO_RANGE_GATE_FACTOR kommentjében (range-statisztika,
+  // nem páronkénti különbség). ÉS: ugyanez a kapu az ERŐSSÉG-állítást is
+  // érvényteleníti — egy 2·SEM-en belüli mezőnyből a „legerősebb" kiemelése
+  // ugyanúgy zaj-műtermék, miközben a strip csupa-közepest, a PDF pedig
+  // „Kiegyensúlyozott profil"-t mond. A flat jelzésre a hívó a
+  // kiegyensúlyozott-profil hero-mondatot rendereli erősség-ige helyett.
+  if (strongest.score - weakest.score < HERO_RANGE_GATE_FACTOR * dimSem) {
+    return { strongest, weakest: null, flat: true };
+  }
+  return { strongest, weakest, flat: false };
 }

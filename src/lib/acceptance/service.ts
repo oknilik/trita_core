@@ -5,10 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { getActiveOrgMembership, setActiveOrgContext } from "@/lib/org-context";
 import { resolveJourney, resolveJourneyForClerkId } from "@/lib/journey/engine";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
-import { getTestConfig } from "@/lib/questions";
+import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { calculateScores } from "@/lib/scoring";
 import { isSharedAcceptanceServiceEnabled } from "@/lib/rollout-guards.server";
-import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("acceptance");
@@ -1154,12 +1153,15 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
   }
 
   const testType = candidateContext.testType as TestType;
-  // A jelölt a kiszolgált formot tölti ki (DEFAULT_ASSESSMENT_FORM — short),
-  // a teljesség-ellenőrzés is ahhoz mérendő. A korábbi form-nélküli hívás a
-  // teljes 100 itemes bankot várta, így a 60 itemes beadás mindig
-  // MISSING_ANSWER-rel bukott. A pontozás formától független.
-  const config = getTestConfig(testType, "hu", DEFAULT_ASSESSMENT_FORM);
-  const expectedIds = new Set(config.questions.map((q) => q.id));
+  // A jelölt a kiszolgált formot tölti ki (operating-mode: short).
+  // A teljesség-ellenőrzés a KÖZÖS forma-tudatos kapun megy (a többi beadási
+  // úttal azonosan): a mai rövid vagy teljes forma pontos id-halmaza, illetve
+  // egy korábbi rövid formáé is érvényes. A korábbi „csak a mai rövid forma
+  // id-jaira szűrünk, aztán darabszámot hasonlítunk" változat egy forma-
+  // összetétel-váltás után minden futó jelölt-kitöltést MISSING_ANSWER-rel
+  // dobott volna (a kivezetett itemek már a szűrőn kiestek). A pontozás
+  // formától független.
+  const expectedIds = getAcceptedAnswerIds(testType);
   const relevantAnswers = input.answers.filter((a) => expectedIds.has(a.questionId));
 
   const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));
@@ -1169,7 +1171,7 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
       errorState: { code: "DUPLICATE_ANSWER", status: 400 },
     };
   }
-  if (answeredIds.size !== expectedIds.size) {
+  if (!isCompleteFormAnswerSet(testType, answeredIds)) {
     return {
       ...resolved,
       errorState: { code: "MISSING_ANSWER", status: 400 },

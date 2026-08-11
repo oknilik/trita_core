@@ -1,8 +1,8 @@
 "use client";
 
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
-import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
+import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
@@ -61,31 +61,46 @@ export function TeamRoles({
 }: TeamRolesProps) {
   const lang = locale === "hu" ? "hu" : "en";
 
-  const hasTritanDims = "INTE" in tritanScores && "TEMP" in tritanScores;
+  const hasTritanDims = "H" in tritanScores && "X" in tritanScores;
   if (!hasTritanDims) return null;
 
-  const estimated = estimateTeamRolesFromTritan(
-    tritanScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-  );
-  const estimatedTop3 = getTopRoles(estimated, 3);
-  const isMeasured = Boolean(measuredScores);
-  const top3 = isMeasured
-    ? getTopRoles(measuredScores as TeamRoleScores, 3)
-    : estimatedTop3;
+  // Precedencia a kanonikus szabályból (team-role-estimate):
+  // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
+  const resolved = resolveDisplayRoleScores(measuredScores, tritanScores);
+  if (!resolved) return null;
+  // A becslés-oldali rangsorhoz a resolver exact evidenciája kell (S2):
+  // kerekítetlen összegek nélkül a holtverseny hash-re esne, és az elsődleges
+  // szerep felületenként eltérhetne. Mért ágon a becslés-top3 csak az
+  // összhang-jelzéshez kell — ahhoz külön becslés-feloldás adja az exactot.
+  const estimatedResolved = resolveDisplayRoleScores(null, tritanScores);
+  const estimatedTop3 = estimatedResolved
+    ? getTopRoles(estimatedResolved.scores, 3, estimatedResolved.exact)
+    : [];
+  const isMeasured = resolved.source === "questionnaire";
+  const top3 = isMeasured ? getTopRoles(resolved.scores, 3) : estimatedTop3;
 
   // Összhang a személyiségprofillal: a MÉRT top 3 vs a TRITAN-becslés top 3.
-  const personalityOverlap = isMeasured
-    ? compareSelfAndPeerTopRoles(top3, estimatedTop3).shared.length
-    : null;
+  // Csak TELJES dimenzió-készletből számolt becslés ellen — részleges
+  // profilból nincs becslés (nincs mihez hasonlítani).
+  const personalityOverlap =
+    isMeasured && estimatedTop3.length > 0
+      ? compareSelfAndPeerTopRoles(top3, estimatedTop3).shared.length
+      : null;
 
-  // Önkép vs. csapatkép: a megjelenített top 3 vs a peer-aggregátum top 3.
+  // Önkép vs. csapatkép: a MÉRT top 3 vs a peer-aggregátum top 3. CSAK
+  // kitöltött kérdőív ellen számolható — a becslés nem a user önképe,
+  // hanem TRITAN-ból származtatott tipp; azt önképként bemutatni („Te
+  // látod magadban…") hamis állítás lenne. A personalityOverlap-pel
+  // azonos kapu (isMeasured); becslés-ágon a peer-kép önösszevetés
+  // nélkül jelenik meg.
   const peerReady = Boolean(peer && peer.scores && peer.topRoles.length > 0);
-  const peerDelta = peerReady
-    ? compareSelfAndPeerTopRoles(
-        top3,
-        (peer as TeamRolesPeerData).topRoles.map((r) => ({ role: r.role as TeamRoleCode })),
-      )
-    : null;
+  const peerDelta =
+    peerReady && isMeasured
+      ? compareSelfAndPeerTopRoles(
+          top3,
+          (peer as TeamRolesPeerData).topRoles.map((r) => ({ role: r.role as TeamRoleCode })),
+        )
+      : null;
   const roleNames = (codes: TeamRoleCode[]) =>
     codes.map((c) => TEAM_ROLES[c][lang]).join(", ");
 
@@ -163,7 +178,10 @@ export function TeamRoles({
                       : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                 }`}
               >
-                {rank[lang]} · {score}%
+                {/* Becslés-ágon NINCS szám: a súlyozott összeg nem százalék,
+                    kiírva álprecizitás lenne (a PDF is elnyomja) — ott csak
+                    a rang/sáv jelenik meg. */}
+                {isMeasured ? `${rank[lang]} · ${score}%` : rank[lang]}
               </span>
 
               {/* Name */}
@@ -201,7 +219,7 @@ export function TeamRoles({
             </span>
           </div>
 
-          {peerReady && peerDelta ? (
+          {peerReady ? (
             <>
               <div className="mt-3 flex flex-wrap gap-2">
                 {peer.topRoles.slice(0, 3).map((r, idx) => (
@@ -218,7 +236,13 @@ export function TeamRoles({
                 ))}
               </div>
 
-              {peerDelta.selfOnly.length === 0 && peerDelta.peerOnly.length === 0 ? (
+              {/* Önösszevetés-verdikt CSAK mért önkép mellett; becslés-ágon
+                  a TeamRoleSection „nincs saját kitöltés" mintáját követjük. */}
+              {peerDelta === null ? (
+                <p className="mt-3 text-[12px] leading-relaxed text-[var(--color-text-muted)]">
+                  {t("teamComp.peerNoSelf", locale)}
+                </p>
+              ) : peerDelta.selfOnly.length === 0 && peerDelta.peerOnly.length === 0 ? (
                 <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)] px-4 py-3">
                   <span className="mt-0.5 text-sm">✓</span>
                   <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">

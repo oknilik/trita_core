@@ -7,6 +7,7 @@ import { PdfCalloutBox } from "../components/PdfCalloutBox";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
 import { withHuArticle } from "@/lib/hu-grammar";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
@@ -16,24 +17,29 @@ interface Props {
   locale: "hu" | "en";
 }
 
+// Egyezés/eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) — a
+// képernyős összevetéssel és a PdfComparison sáv-kiemeléssel AZONOS küszöb.
+// Korábban ez az oldal 10-nél vágott, a sáv-kiemelés 12-nél — egy PDF-oldalon
+// belül is ellentmondó számok születtek (motor-audit v6, M5).
+
 export function ReflectPage({ data, pageNum, totalPages, locale }: Props) {
   const obs = data.observerData;
   if (!obs) return null;
 
-  const matchCount = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) < 10).length;
+  const matchCount = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).length;
   const diffCount = obs.dimensions.length - matchCount;
   const avgGap = Math.round(
     obs.dimensions.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (obs.dimensions.length || 1),
   );
   const isGoodMatch = diffCount <= 2;
 
-  const blindspots = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) >= 10);
-  const noBlindspots = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
+  const blindspots = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP);
+  const noBlindspots = obs.dimensions.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).map((d) => d.name);
 
   // Topline summary for the overview card
   const toplineSummary = (() => {
     const bigGaps = obs.dimensions
-      .filter((d) => Math.abs(d.self - d.observer) >= 15)
+      .filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP)
       .sort((a, b) => Math.abs(b.self - b.observer) - Math.abs(a.self - a.observer))
       .slice(0, 2);
     if (bigGaps.length === 0) {

@@ -17,43 +17,43 @@ import {
   type TeamRoleCode,
   type TeamRoleScores,
 } from "@/lib/team-role-scoring";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 
-const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 type Loc = "hu" | "en";
 
 export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
-  THOR: {
+  C: {
     hu: "Használd a lelkiismeretességedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
     en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
   },
-  INTE: {
+  H: {
     hu: "Az egyenes, kiszámítható működésed bizalmat épít — támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
     en: "Your straightforward, dependable style builds trust — lean on it in tough conversations and decisions.",
   },
-  ADAP: {
+  A: {
     hu: "A rugalmasságod hidat épít az eltérő stílusok között — vállalj közvetítő szerepet, ahol feszül a helyzet.",
     en: "Your agreeableness bridges different styles — take a connecting role where things get tense.",
   },
-  RESO: {
+  E: {
     hu: "Ráérzel mások állapotára — gyakran te veszed észre elsőként, ha valaki elakad; ilyenkor szólalj meg.",
     en: "You sense how others are doing — you often notice first when someone is stuck; speak up then.",
   },
-  TEMP: {
+  X: {
     hu: "A lendületed viszi a csapatot — te tudod beindítani a közös munkát és tartani a tempót.",
     en: "Your energy drives the team — you can kick off shared work and keep up the pace.",
   },
-  OPEN: {
+  O: {
     hu: "Az újra való nyitottságod frissíti a csapatot — hozz be tudatosan külső perspektívát, ötletet.",
     en: "Your openness to new things refreshes the team — deliberately bring in outside perspectives and ideas.",
   },
@@ -81,6 +81,13 @@ export interface MemberReportViewModel {
   complementLabels: string[];
   primaryRole: { code: TeamRoleCode; label: string } | null;
   secondaryRole: { code: TeamRoleCode; label: string } | null;
+  /**
+   * A megjelenített szerep forrása (hitelességi alapelv): "questionnaire" =
+   * kitöltött csapatszerep-kérdőív (MÉRT), "estimate" = a személyiség-
+   * profilból számolt becslés. A nézetnek badge-elnie KELL — becsült szerep
+   * jelöletlenül mértnek látszana.
+   */
+  roleSource: "questionnaire" | "estimate" | null;
   /** A saját elsődleges szerep ritka (rá számítanak) vagy megosztott a csapatban. */
   roleFit: "rare" | "shared" | null;
   patternLabel: string | null;
@@ -131,16 +138,16 @@ export function buildMemberReportViewModel(
     .slice(0, 2)
     .map((d) => d.label);
 
-  // A néző saját szerepe (élő): kitöltött kérdőívből, különben TRITAN-becslésből.
-  let roleScores: TeamRoleScores | null = null;
-  if (viewer?.teamRoleSource === "questionnaire" && viewer.teamRoleScores) {
-    roleScores = viewer.teamRoleScores as TeamRoleScores;
-  } else if (selfScores && "INTE" in selfScores && "TEMP" in selfScores) {
-    roleScores = estimateTeamRolesFromTritan(
-      selfScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-    );
-  }
-  const top = roleScores ? getTopRoles(roleScores, 2) : [];
+  // A néző saját szerepe (élő) — a kanonikus precedencia-szabályból
+  // (team-role-estimate): kitöltött kérdőív > TRITAN-becslés; részleges
+  // self-score-ból nincs becslés. A source-t megőrizzük (a nézet badge-eli),
+  // az exact (kerekítetlen becslés-összeg) a holtverseny-evidencia — enélkül
+  // a hash-fallback más elsődleges szerepet adhatna, mint a többi felület.
+  const measuredRoles =
+    viewer?.teamRoleSource === "questionnaire" ? viewer.teamRoleScores : null;
+  const resolvedRoles = resolveDisplayRoleScores(measuredRoles, selfScores);
+  const roleScores: TeamRoleScores | null = resolvedRoles?.scores ?? null;
+  const top = roleScores ? getTopRoles(roleScores, 2, resolvedRoles?.exact) : [];
   const primaryRole = top[0]
     ? { code: top[0].role, label: TEAM_ROLES[top[0].role][loc] }
     : null;
@@ -149,11 +156,16 @@ export function buildMemberReportViewModel(
     : null;
 
   // Szerep-illeszkedés a befagyasztott aggregátumból: a saját elsődleges
-  // szerep hány tagnak elsődleges? ≤1 → ritka (rá számítanak), ≥2 → megosztott.
+  // szerep hány tagnak elsődleges? 1 → ritka (rá számítanak), ≥2 → megosztott.
+  // FONTOS: 0 darabszámnál NINCS állítás — a pillanatkép fagyáskor készült,
+  // a néző (pl. később csatlakozott vagy azóta kitöltött tag) lehet, hogy
+  // nincs is benne; a 0 tehát nem különböztethető meg a „ritka" esettől.
   let roleFit: "rare" | "shared" | null = null;
   if (primaryRole && agg?.roleDistribution) {
     const primaryCount = agg.roleDistribution.counts[primaryRole.code] ?? 0;
-    roleFit = primaryCount <= 1 ? "rare" : "shared";
+    if (primaryCount >= 1) {
+      roleFit = primaryCount === 1 ? "rare" : "shared";
+    }
   }
 
   const tips: string[] = [];
@@ -187,6 +199,7 @@ export function buildMemberReportViewModel(
     complementLabels,
     primaryRole,
     secondaryRole,
+    roleSource: resolvedRoles?.source ?? null,
     roleFit,
     patternLabel: agg?.pattern?.label ?? null,
     strengths: report.strengths,

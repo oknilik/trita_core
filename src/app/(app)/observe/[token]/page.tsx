@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import type { Metadata } from "next";
@@ -8,6 +9,10 @@ import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { resolveObserverTokenLifecycle } from "@/lib/observer/token-validation";
+import {
+  isValidObserverDraftCookie,
+  observerDraftCookieName,
+} from "@/lib/observer/draft-cookie";
 import { ObserverClient } from "./ObserverClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -104,19 +109,65 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
+  // Jóváhagyásra váró (külső) meghívó: a rater még NEM tölthet ki — a beküldés
+  // 403 INVITE_NOT_APPROVED-dal el is utasítaná. Külön állapot-lap, nem az űrlap.
+  if (lifecycle === "awaiting_approval") {
+    return (
+      <div className="min-h-screen bg-cream">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
+            <div className="text-5xl leading-none">⏳</div>
+            <h1 className="mt-4 text-2xl font-bold text-ink">
+              {t("observer.awaitingTitle", locale)}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
+              {t("observer.awaitingBody", locale)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // A néző (ha bejelentkezett) feloldott profilja — best-effort, egyszer.
+  const { userId: viewerClerkId } = await auth();
+  const viewer = viewerClerkId
+    ? await prisma.userProfile.findUnique({
+        where: { clerkId: viewerClerkId },
+        select: { id: true },
+      })
+    : null;
+
+  // Self-guard: a bejelentkezett MEGHÍVÓ (értékelt) nem nyithatja meg a saját
+  // meghívóját — sem a kitöltő űrlapot, sem a rater szerver-oldali draftját (a
+  // rater nyers item-válaszait). Külső tokennél is (ott az addressee-check
+  // nincs). Kijelentkezve a külső-token self-eset a W2-vel közös maradék.
+  if (viewer && viewer.id === invitation.inviterId) {
+    return (
+      <div className="min-h-screen bg-cream">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
+            <div className="text-5xl leading-none">🔒</div>
+            <h1 className="mt-4 text-2xl font-bold text-ink">
+              {t("observer.notAddresseeTitle", locale)}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
+              {t("observer.notAddresseeBody", locale)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Belsős (név szerinti kollégának szóló) meghívó: CSAK a bejelentkezett
   // címzett töltheti ki. Külsős meghívónál (nincs observerProfileId) ilyen
   // validáció nem lehetséges — az marad publikus.
   const isInternalInvite = Boolean(invitation.observerProfileId);
   if (isInternalInvite) {
-    const { userId } = await auth();
-    if (!userId) {
+    if (!viewerClerkId) {
       redirect(`/sign-in?redirect_url=${encodeURIComponent(`/observe/${token}`)}`);
     }
-    const viewer = await prisma.userProfile.findUnique({
-      where: { clerkId: userId },
-      select: { id: true },
-    });
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return (
         <div className="min-h-screen bg-cream">
@@ -139,9 +190,28 @@ export default async function ObservePage({ params }: ObservePageProps) {
   const config = getTestConfig(invitation.testType as TestType, locale, DEFAULT_ASSESSMENT_FORM);
   const inviterName = invitation.inviter.username ?? t("common.someone", locale);
 
-  const draft = await prisma.observerDraft.findUnique({
-    where: { invitationId: invitation.id },
-  });
+  // A szerver-oldali draft (a rater NYERS válaszai) csak annak jár, aki írta:
+  //  (a) nevesített meghívónál a bejelentkezett címzett (a fenti guard után a
+  //      viewer garantáltan ő), VAGY
+  //  (b) külső meghívónál az a böngésző, amelyik a draft-mentéskor kapott
+  //      HMAC-cookie-t hordozza (részletek + trade-off: observer/draft-cookie.ts).
+  // Enélkül a token bármely (akár kijelentkezett) birtokosa — tipikusan maga
+  // az ÉRTÉKELT, aki a linket küldte — elolvashatná a folyamatban lévő
+  // válaszokat (motor-audit: logged-out draft leak). Cookie nélkül a kitöltő
+  // egyszerűen elölről kezdi — a draft NEM törlődik, csak nem jelenik meg.
+  const cookieStore = await cookies();
+  const canReceiveDraft = isInternalInvite
+    ? true
+    : isValidObserverDraftCookie(
+        invitation.id,
+        cookieStore.get(observerDraftCookieName(invitation.id))?.value,
+      );
+
+  const draft = canReceiveDraft
+    ? await prisma.observerDraft.findUnique({
+        where: { invitationId: invitation.id },
+      })
+    : null;
 
   const initialDraft = draft
     ? {

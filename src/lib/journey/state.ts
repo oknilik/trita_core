@@ -3,6 +3,10 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { resolveJourneyContext } from "@/lib/journey/context";
 import { isConsultingLed } from "@/lib/operating-mode";
+import {
+  MIN_MEMBERS_FOR_ORG_INSIGHTS,
+  MIN_MEMBERS_FOR_TEAM_INSIGHTS,
+} from "@/lib/journey/constants";
 import type {
   JourneyAction,
   JourneyActionId,
@@ -21,9 +25,6 @@ export type {
   JourneyStage,
   JourneyState,
 } from "@/lib/journey/types";
-
-const MIN_MEMBERS_FOR_TEAM_INSIGHTS = 3;
-const MIN_MEMBERS_FOR_ORG_INSIGHTS = 3;
 
 interface JourneyContextOptions {
   teamId?: string | null;

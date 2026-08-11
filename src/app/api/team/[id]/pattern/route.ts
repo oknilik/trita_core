@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { canAccessTeam } from "@/lib/team-auth";
+import { canViewRawTeamResults } from "@/lib/team-auth";
+import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { calculateTeamPattern, type TritanScores } from "@/lib/team-pattern";
 import type { ScoreResult } from "@/lib/scoring";
 
@@ -16,7 +17,7 @@ export async function GET(
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
@@ -32,10 +33,17 @@ export async function GET(
         select: { role: true },
       })
     : null;
-  if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  const hasAccess = await canAccessTeam(profile.id, teamId, orgMembership.role);
-  if (!hasAccess) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  // A kapu a lap (team/[id]/page.tsx canViewRaw) tanácsadói feltételével
+  // AZONOS: ORG_CONSULTANT szerep VAGY tanácsadói fiók VAGY platform-admin.
+  // Korábban canAccessTeam (bármely tag / org admin) volt — miközben a lap
+  // ugyanezt az aggregátumot tanácsadói körre szűkíti, curl-lel bárki
+  // elérte a patternCode/tengely/confidence adatot.
+  const canViewRaw =
+    canViewRawTeamResults(orgMembership?.role) ||
+    profile.isConsultant ||
+    isPlatformAdminEmail(profile.email);
+  if (!canViewRaw) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   // Fetch team members with their latest self-assessment
   const teamMembers = await prisma.teamMember.findMany({
@@ -65,12 +73,15 @@ export async function GET(
     if (!ar) continue;
 
     // FONTOS: a tárolt score-JSON a BELSŐ dimenziókódokat használja
-    // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO display-betűket —
+    // (H/E/X/A/C/O), nem a HEXACO display-betűket —
     // ugyanaz az olvasási szabály, mint a team-stats.ts-ben.
-    const dims = (ar.scores as ScoreResult).dimensions;
+    // Hiányos/örökség score-JSON (nincs `dimensions` kulcs) NEM dönti el az
+    // egész endpointot: a tagot kihagyjuk, ahogy a team-stats.ts loader is.
+    const dims = (ar.scores as ScoreResult | null)?.dimensions;
     if (
-      dims.INTE === undefined || dims.RESO === undefined || dims.TEMP === undefined ||
-      dims.ADAP === undefined || dims.THOR === undefined || dims.OPEN === undefined
+      !dims ||
+      dims.H === undefined || dims.E === undefined || dims.X === undefined ||
+      dims.A === undefined || dims.C === undefined || dims.O === undefined
     ) {
       continue;
     }
@@ -78,12 +89,12 @@ export async function GET(
     membersWithScores.push({
       userId: tm.user.id,
       scores: {
-        INTE: dims.INTE,
-        RESO: dims.RESO,
-        TEMP: dims.TEMP,
-        ADAP: dims.ADAP,
-        THOR: dims.THOR,
-        OPEN: dims.OPEN,
+        H: dims.H,
+        E: dims.E,
+        X: dims.X,
+        A: dims.A,
+        C: dims.C,
+        O: dims.O,
       },
     });
   }
@@ -101,9 +112,18 @@ export async function GET(
     });
   }
 
-  // Merge API-level meta fields
+  // FONTOS (motor-audit): a per-tag, NEVESÍTETT eltérés-lista (styleDistances:
+  // [{userId, tensionAxes}]) NEM kerülhet ki ezen a route-on. A kapu csak
+  // canAccessTeam (bármely tag), a lap viszont átirányítja a nem-konzultánst,
+  // és a publikált report is csak anonim darabszámot mutat — így ez a route
+  // különben bárkinek kiadná, ki tér el melyik tengelyen. Az egyetlen kliens-
+  // fogyasztó (AdvisoryPageClient) csak a patternCode/patternName/diversitySuffix-et
+  // használja, ezért a nyers per-tag mezőt kiszűrjük.
+  const safeCore = { ...coreResult };
+  delete (safeCore as Record<string, unknown>).styleDistances;
+
   const result = {
-    ...coreResult,
+    ...safeCore,
     memberCount:          totalMembers,
     membersWithAssessment: membersWithScores.length,
     missingMembers:       totalMembers - membersWithScores.length,

@@ -66,10 +66,10 @@ const SHEET = {
 
 /** A négy kártya a tengelymotívumokat kapja ikonként — nincs emoji. */
 const CARDS = [
-  { lead: "fakeDoor.card1Lead", body: "fakeDoor.card1Body", motif: "TEMP" },
-  { lead: "fakeDoor.card2Lead", body: "fakeDoor.card2Body", motif: "ADAP" },
-  { lead: "fakeDoor.card3Lead", body: "fakeDoor.card3Body", motif: "THOR" },
-  { lead: "fakeDoor.card4Lead", body: "fakeDoor.card4Body", motif: "OPEN" },
+  { lead: "fakeDoor.card1Lead", body: "fakeDoor.card1Body", motif: "X" },
+  { lead: "fakeDoor.card2Lead", body: "fakeDoor.card2Body", motif: "A" },
+  { lead: "fakeDoor.card3Lead", body: "fakeDoor.card3Body", motif: "C" },
+  { lead: "fakeDoor.card4Lead", body: "fakeDoor.card4Body", motif: "O" },
 ];
 
 export function CareerFakeDoor({

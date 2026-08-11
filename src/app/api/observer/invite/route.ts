@@ -10,6 +10,8 @@ import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import {
+  OBSERVER_INVITE_MAX_ACTIVE,
+  OBSERVER_INVITE_TTL_DAYS,
   observerInviteRequiresApproval,
   resolveColleagueObserverType,
 } from "@/lib/observer/invite-policy";
@@ -178,13 +180,16 @@ export async function POST(req: Request) {
     }
   }
 
+  // Kvóta: az i18n „5 aktív meghívót" ígér — csak a függő, még nem lejárt
+  // meghívók fogyasztják a keretet (a kitöltött/lejárt/törölt nem).
   const activeCount = await prisma.observerInvitation.count({
     where: {
       inviterId: profile.id,
-      status: { not: "CANCELED" },
+      status: { in: ["AWAITING_APPROVAL", "PENDING"] },
+      expiresAt: { gt: new Date() },
     },
   });
-  if (activeCount >= 5) {
+  if (activeCount >= OBSERVER_INVITE_MAX_ACTIVE) {
     return NextResponse.json({ error: "INVITE_LIMIT_REACHED" }, { status: 400 });
   }
 
@@ -203,7 +208,7 @@ export async function POST(req: Request) {
       observerName: targetName,
       testType: profile.testType,
       status: needsApproval ? "AWAITING_APPROVAL" : "PENDING",
-      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+      expiresAt: new Date(Date.now() + OBSERVER_INVITE_TTL_DAYS * 24 * 60 * 60 * 1000),
       observerType,
       externalContext: parsed.data.externalContext ?? null,
       campaignId: campaign?.id ?? null,
@@ -279,35 +284,9 @@ export async function POST(req: Request) {
   });
 }
 
-export async function GET() {
-  const { userId } = await auth();
-  if (!userId) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-  });
-
-  if (!profile) {
-    return NextResponse.json({ invitations: [] });
-  }
-
-  const invitations = await prisma.observerInvitation.findMany({
-    where: { inviterId: profile.id },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      token: true,
-      status: true,
-      createdAt: true,
-      expiresAt: true,
-      completedAt: true,
-      observerEmail: true,
-      observerName: true,
-      observerType: true,
-    },
-  });
-
-  return NextResponse.json({ invitations });
-}
+// A korábbi GET /api/observer/invite handler törölve (motor-audit): nem volt
+// hívója (a meghívó-listát a profile/results/page.tsx építi szerver-oldalon),
+// viszont teljes-pontosságú completedAt-et + observer-neveket adott vissza,
+// újranyitva a W1 differencia-csatornát, amit a results-oldal nap-pontos
+// csonkolása lezárt. Ha valaha kell listázó endpoint, nap-pontos completedAt-tel
+// és self-guarddal térjen vissza.

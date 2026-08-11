@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import {
-  TEAM_ROLE_ITEMS,
-  TEAM_ROLE_MIN_SELECT,
-  TEAM_ROLE_MAX_SELECT,
-} from "@/lib/team-role-questions";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 
 // POST /api/candidate/[token]/team-role — a jelölt opcionális csapatszerep-
 // kérdőívének beküldése (a TRITAN submit UTÁNI 2. lépés). Token-alapú,
 // auth nélkül; csak akkor fogadjuk, ha a meghívón engedélyezve van, a
 // fő teszt már beérkezett, és szerep-válasz még nincs.
 
-const VALID_ITEM_IDS = new Set(TEAM_ROLE_ITEMS.map((item) => item.id));
-
 const bodySchema = z.object({
-  selections: z.record(z.string(), z.union([z.literal(1), z.literal(2)])),
+  selections: z.record(z.string(), z.number()),
 });
 
 export async function POST(
   req: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  // Publikus (token-alapú) végpont — rate limit a testvér-route-ok mintájára.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { token } = await params;
 
   const body = await req.json().catch(() => ({}));
@@ -30,13 +30,13 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
   }
 
+  // Kanonikus kiválasztás-validátor — ugyanaz, amit a két hitelesített
+  // útvonal (api/team-roles/submit, api/team-roles/peers/submit) használ.
+  // A kézi „elemszám + ismert id" ellenőrzés NEM zárta ki a rossz kiemelt-
+  // darabszámot (pl. mind a 12 item 2-es súllyal → egyszerre több szerep
+  // 100%-on); a validátor a „pontosan 3 kiemelt" szabályt is kikényszeríti.
   const selections = parsed.data.selections;
-  const keys = Object.keys(selections);
-  if (
-    keys.length < TEAM_ROLE_MIN_SELECT ||
-    keys.length > TEAM_ROLE_MAX_SELECT ||
-    keys.some((k) => !VALID_ITEM_IDS.has(k))
-  ) {
+  if (!isValidTeamRoleSelectionSet(selections)) {
     return NextResponse.json({ error: "INVALID_SELECTIONS" }, { status: 400 });
   }
 
@@ -46,6 +46,7 @@ export async function POST(
       id: true,
       status: true,
       includeTeamRole: true,
+      expiresAt: true,
       result: { select: { id: true, teamRoleSelections: true } },
     },
   });
@@ -57,6 +58,11 @@ export async function POST(
   if (invite.status === "CANCELED") {
     return NextResponse.json({ error: "REVOKED" }, { status: 409 });
   }
+  // Lejárat-kapu (2026-08-11, fix): a többi jelölt-útvonal (resend, apply)
+  // mintájára — lejárt meghívóra a 2. lépés sem küldhető be örökké.
+  if (invite.expiresAt < new Date()) {
+    return NextResponse.json({ error: "EXPIRED" }, { status: 409 });
+  }
   if (!invite.result) {
     return NextResponse.json({ error: "MAIN_ASSESSMENT_MISSING" }, { status: 409 });
   }
@@ -64,10 +70,17 @@ export async function POST(
     return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   }
 
-  await prisma.candidateResult.update({
-    where: { id: invite.result.id },
+  // FELTÉTELES írás (nem check-then-act, 2026-08-11, fix): a „még nincs
+  // szerep-válasz" feltétel MAGÁN az UPDATE-en fut — két párhuzamos beküldés
+  // közül csak az egyik írhat, a másik 409-et kap (a fenti guard READ
+  // COMMITTED alatt mindkettőt átengedte volna).
+  const written = await prisma.candidateResult.updateMany({
+    where: { id: invite.result.id, teamRoleSelections: { equals: Prisma.AnyNull } },
     data: { teamRoleSelections: selections },
   });
+  if (written.count === 0) {
+    return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
+  }
 
   return NextResponse.json({ ok: true });
 }

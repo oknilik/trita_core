@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { t, tf } from "@/lib/i18n";
+import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
+import { computeTeamCompletionBuckets } from "@/lib/team-stats";
 import {
   CAMPAIGN_STEP_LABELS,
   CAMPAIGN_STEP_LINKS,
@@ -31,11 +33,12 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
 
   const publishedPattern = publishedReport?.aggregates?.pattern ?? null;
 
-  const completedCount = teamData.completedCount;
-  const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
-  const waitingCount = teamData.memberCount - completedCount - inProgressCount;
+  // Közös vödör-számítás (team-stats) — a TeamHeroBlock-kal azonos definíció:
+  // folyamatban = van vázlat, de nincs eredmény; vár = el sem kezdte.
+  const { completedCount, inProgressCount, waitingCount } =
+    computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
-  const hasPattern = completedCount >= 3;
+  const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
 
   return (
     <PlatformPageShell

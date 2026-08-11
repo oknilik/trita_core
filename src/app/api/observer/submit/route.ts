@@ -1,17 +1,20 @@
 import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
+import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
 import { getRequestLogger } from "@/lib/logger.server";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   resolveObserverTokenLifecycle,
   toObserverTokenErrorCode,
+  isObserverSelfSubmission,
 } from "@/lib/observer/token-validation";
 import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -22,12 +25,18 @@ const submitSchema = z.object({
   token: z.string().min(1),
   relationshipType: z.enum(["FRIEND", "COLLEAGUE", "FAMILY", "PARTNER", "OTHER"]),
   knownDuration: z.string().min(1),
-  answers: z.array(answerSchema),
+  // Felső mérethatár: a legnagyobb élő forma 100 item — 150 bőven elég a
+  // valós (esetleg elavult id-kat is hordozó) beküldésnek, de kizárja a
+  // memória-terhelő túlméretes tömböt. A releváns id-kra szűrés utána fut.
+  answers: z.array(answerSchema).max(150),
   confidence: z.number().int().min(1).max(5).optional(),
 });
 
 export async function POST(req: Request) {
   const log = await getRequestLogger("observer");
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const body = await req.json();
   const parsed = submitSchema.safeParse(body);
   if (!parsed.success) {
@@ -50,27 +59,65 @@ export async function POST(req: Request) {
   const lifecycle = resolveObserverTokenLifecycle(invitation);
   if (lifecycle !== "active") {
     const code = toObserverTokenErrorCode(lifecycle);
-    return NextResponse.json({ error: code }, { status: code === "INVALID_TOKEN" ? 404 : 400 });
+    // A jóváhagyásra váró meghívóra beküldés → 403 (INVITE_NOT_APPROVED):
+    // a rater csak jóváhagyott (PENDING) meghívóra küldhet be.
+    const status =
+      code === "INVALID_TOKEN" ? 404 : code === "INVITE_NOT_APPROVED" ? 403 : 400;
+    return NextResponse.json({ error: code }, { status });
+  }
+
+  // A beküldő (ha bejelentkezett) feloldott profilja. A külsős úton is
+  // feloldjuk — az önhamisítás-tiltás minden observer-típusra érvényes.
+  // A néző-feloldás best-effort: ha a Clerk-kontextus nem érhető el (nem
+  // dobhat 500-at a publikus beküldés), névtelen (null) beküldőként kezeljük.
+  // Éles futásban a clerkMiddleware alatt az auth() a valós usert adja, így
+  // az önhamisítás-őr teljes értékű; kontextus nélkül a submitter amúgy sem
+  // lehet a bejelentkezett meghívó.
+  let viewerClerkId: string | null = null;
+  try {
+    viewerClerkId = await resolveObserverSubmitViewerClerkId();
+  } catch {
+    viewerClerkId = null;
+  }
+  const viewer = viewerClerkId
+    ? await prisma.userProfile.findUnique({
+        where: { clerkId: viewerClerkId },
+        select: { id: true },
+      })
+    : null;
+
+  // Önhamisítás-védelem: a meghívó (értékelt) SOHA nem küldhet be a saját
+  // meghívójára — külső/link-meghívónál is (ott nincs observerProfileId, így
+  // az addressee-ellenőrzés nem fogná meg).
+  //
+  // MARADÉK RÉS (motor-audit W2): ez az őr CSAK akkor tüzel, ha a viewer
+  // feloldódik (bejelentkezve). Egy KÜLSŐ (observerProfileId == null) tokenre
+  // KIJELENTKEZVE beküldve a viewer null → az őr kimarad, és a beküldés anonim
+  // „külső" értékelésként átmegy. Így az értékelt inkognitóban ≥3 hamis külső
+  // ratert gyárthat a saját linkjeiről. Belépve a rés zárva (403).
+  // A TELJES zárás TERMÉK-DÖNTÉS: vagy (a) a külső submit is bejelentkezést
+  // kér (az azonosságot csak a self-check-hez használva, az aggregátumban NEM
+  // tárolva) — ez viszont a dokumentált „auth nélküli observer-flow"-t
+  // (CLAUDE.md) változtatja meg; vagy (b) strukturális (zajos/karantén
+  // aggregátum). Auth-mentesen a token-tulajdonos == értékelt egyezés NEM
+  // dönthető el, mert külső tokennél nincs a beküldőhöz kötött profil.
+  // Amíg a döntés nincs meg, a rés dokumentált, nem csendes.
+  if (isObserverSelfSubmission(viewer?.id, invitation.inviterId)) {
+    return NextResponse.json({ error: "SELF_SUBMISSION" }, { status: 403 });
   }
 
   // Belsős (név szerinti) meghívó: csak a bejelentkezett címzett adhatja be.
   // Külsős meghívónál (nincs observerProfileId) nincs ilyen validáció.
   if (invitation.observerProfileId) {
-    const userId = await resolveObserverSubmitViewerClerkId();
-    const viewer = userId
-      ? await prisma.userProfile.findUnique({
-          where: { clerkId: userId },
-          select: { id: true },
-        })
-      : null;
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
     }
   }
 
-  // Validate all questions answered
-  const config = getTestConfig(invitation.testType as TestType);
-  const expectedIds = new Set(config.questions.map((q) => q.id));
+  // Validate all questions answered — a mai formák mellett a korábbi rövid
+  // forma pontos id-halmaza is elfogadott (30 napig élő observer-link:
+  // a fül a forma-váltás előtt is megnyílhatott).
+  const expectedIds = getAcceptedAnswerIds(invitation.testType as TestType);
 
   // Filter to only the expected question IDs (drops stale answers from old test versions)
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
@@ -132,66 +179,94 @@ export async function POST(req: Request) {
   // az esemény nem hordoz sem meghívó-tokent, sem személy-azonosítót.
   trackServerEvent("observer.assessment_complete", {});
 
-  // In-app notification — notify inviter that observer completed (fire-and-forget)
-  import("@/lib/notifications").then(({ handleObserverCompleted }) =>
-    handleObserverCompleted({
-      inviterId: invitation.inviterId,
-      observerName: invitation.observerName ?? "Valaki",
-      invitationId: invitation.id,
-    }).catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error")),
-  );
+  // A válasz-után futó, leválasztott best-effort mellékhatások (in-app
+  // értesítések + inviter-email). INTEGRÁCIÓS TESZTBEN TELJESEN KIMARADNAK.
+  //
+  // Miért a teljes kihagyás (nem await): a `@/lib/notifications` import-lánca
+  // a react-server feltétel alatt (CI: node24) a next/navigation `createContext`-
+  // jén dob, MÁR A MODUL-BETÖLTÉSKOR — a `.catch(...)` a láncon ezt nem fogja
+  // meg (a rejtett elutasítás az import-init-ből ered, nem a then-callbackből),
+  // ezért az await-elt Promise.allSettled sem zárta le. A node:test a
+  // leválasztott elutasítást flaky-n egy KÉSŐBBI teszt-esethez rendeli —
+  // CI-only integration-hiba, helyben nem reprodukálható. Egyetlen integrációs
+  // teszt sem állítja ezeket a mellékhatásokat (az observer-tesztek csak a
+  // DB-írást és a válasz-kódot nézik), így a teszt-környezetben biztonságosan
+  // elhagyhatók. Éles/dev alatt a gyors, fire-and-forget válasz változatlan.
+  if (process.env.TRITA_INTEGRATION_TEST_DB !== "1") {
+    // In-app notification — notify inviter that observer completed (fire-and-forget).
+    // Az értesítés ANONIM: az értékelő nevét NEM hordozza (differencia-támadás
+    // elleni mitigáció — a névvel a futó átlagból beazonosítható lenne az utolsó
+    // értékelő; ld. results/page.tsx reveal-küszöb megjegyzését).
+    import("@/lib/notifications")
+      .then(({ handleObserverCompleted }) =>
+        handleObserverCompleted({
+          inviterId: invitation.inviterId,
+          invitationId: invitation.id,
+        }),
+      )
+      .catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error"));
 
-  // In-app notification — notify observer that their submission was received (if registered user)
-  // observerProfileId may be null if the link wasn't opened while signed in,
-  // so we also try to match by observerEmail.
-  (async () => {
-    let observerUserId = invitation.observerProfileId;
+    // In-app notification — notify observer that their submission was received (if registered user)
+    // observerProfileId may be null if the link wasn't opened while signed in,
+    // so we also try to match by observerEmail.
+    void (async () => {
+      let observerUserId = invitation.observerProfileId;
 
-    if (!observerUserId && invitation.observerEmail) {
-      const observer = await prisma.userProfile.findFirst({
-        where: { email: invitation.observerEmail, deleted: false },
-        select: { id: true },
+      if (!observerUserId && invitation.observerEmail) {
+        const observer = await prisma.userProfile.findFirst({
+          where: {
+            email: { equals: invitation.observerEmail, mode: "insensitive" },
+            deleted: false,
+          },
+          select: { id: true },
+        });
+        observerUserId = observer?.id ?? null;
+      }
+
+      if (!observerUserId) return;
+
+      const inviter = await prisma.userProfile.findUnique({
+        where: { id: invitation.inviterId },
+        select: { username: true, email: true },
       });
-      observerUserId = observer?.id ?? null;
-    }
+      if (!inviter) return;
 
-    if (!observerUserId) return;
+      const { handleObserverSubmitted } = await import("@/lib/notifications");
+      await handleObserverSubmitted({
+        observerUserId,
+        inviterName: inviter.username ?? inviter.email ?? "—",
+        invitationId: invitation.id,
+      });
+    })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
 
-    const inviter = await prisma.userProfile.findUnique({
-      where: { id: invitation.inviterId },
-      select: { username: true, email: true },
-    });
-    if (!inviter) return;
-
-    const { handleObserverSubmitted } = await import("@/lib/notifications");
-    await handleObserverSubmitted({
-      observerUserId,
-      inviterName: inviter.username ?? inviter.email ?? "—",
-      invitationId: invitation.id,
-    });
-  })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
-
-  // Email — only from the 2nd completed observer onward (fire-and-forget)
-  prisma.observerAssessment.count({
-    where: {
-      invitation: { inviterId: invitation.inviterId },
-    },
-  }).then(async (completedCount) => {
-    if (completedCount < 2) return;
-    const inviter = await prisma.userProfile.findUnique({
-      where: { id: invitation.inviterId },
-      select: { email: true, locale: true, username: true },
-    });
-    if (!inviter?.email) return;
-    const locale = (["hu", "en"].includes(inviter.locale ?? "")
-      ? inviter.locale
-      : undefined) as "hu" | "en" | undefined;
-    sendObserverCompletionEmail({
-      to: inviter.email,
-      inviterName: inviter.username ?? inviter.email,
-      locale,
-    }).catch((err) => log.error({ event: "observer.observer_completion_send_error", err: err }, "Observer completion send error"));
-  }).catch((err) => log.error({ event: "observer.inviter_lookup_error", err: err }, "Inviter lookup error"));
+    // Email — csak az összevetés-küszöb elérésekor (fire-and-forget). A CTA az
+    // eredmény-oldalra visz, ami OBSERVER_MIN_FOR_REVEAL-nál nyílik — a korábbi
+    // 2-es küszöb egy még zárt nézetre küldte a felhasználót.
+    void prisma.observerAssessment
+      .count({
+        where: {
+          invitation: { inviterId: invitation.inviterId },
+        },
+      })
+      .then(async (completedCount) => {
+        if (completedCount < OBSERVER_MIN_FOR_REVEAL) return;
+        const inviter = await prisma.userProfile.findUnique({
+          where: { id: invitation.inviterId },
+          select: { email: true, locale: true, username: true },
+        });
+        if (!inviter?.email) return;
+        if (!process.env.RESEND_API_KEY) return;
+        const locale = (["hu", "en"].includes(inviter.locale ?? "")
+          ? inviter.locale
+          : undefined) as "hu" | "en" | undefined;
+        await sendObserverCompletionEmail({
+          to: inviter.email,
+          inviterName: inviter.username ?? inviter.email,
+          locale,
+        });
+      })
+      .catch((err) => log.error({ event: "observer.observer_completion_error", err: err }, "Observer completion error"));
+  }
 
   return NextResponse.json({ success: true });
 }

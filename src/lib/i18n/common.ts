@@ -168,6 +168,14 @@ export const commonTranslations = {
       hu: "Ez a meghívó lejárt.",
       en: "This invite has expired.",
     },
+    INVITE_NOT_APPROVED: {
+      hu: "Ez a meghívó még jóváhagyásra vár, egyelőre nem tölthető ki.",
+      en: "This invite is still awaiting approval and can't be completed yet.",
+    },
+    SELF_SUBMISSION: {
+      hu: "A saját meghívódra nem küldhetsz be visszajelzést.",
+      en: "You can't submit feedback on your own invite.",
+    },
     INVALID_TEST_TYPE: {
       hu: "Ez a teszt már nem elérhető.",
       en: "This test is no longer available.",

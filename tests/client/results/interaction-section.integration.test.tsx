@@ -23,20 +23,20 @@ vi.mock("@/components/LocaleProvider", () => ({
 }));
 
 const MARKED_PROFILE = {
-  INTE: 72,
-  RESO: 40,
-  TEMP: 30,
-  ADAP: 78,
-  THOR: 88,
-  OPEN: 35,
+  H: 72,
+  E: 40,
+  X: 30,
+  A: 78,
+  C: 88,
+  O: 35,
 };
 const FLAT_PROFILE = {
-  INTE: 50,
-  RESO: 50,
-  TEMP: 50,
-  ADAP: 50,
-  THOR: 50,
-  OPEN: 50,
+  H: 50,
+  E: 50,
+  X: 50,
+  A: 50,
+  C: 50,
+  O: 50,
 };
 
 const marked = () => buildArchetypeSimulations(MARKED_PROFILE, "hu");
@@ -97,10 +97,10 @@ describe("InteractionSection", () => {
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
 
-    await user.click(dominantTile("THOR"));
-    await user.click(secondaryTile("INTE"));
+    await user.click(dominantTile("C"));
+    await user.click(secondaryTile("H"));
 
-    const expected = sims.find((sim) => sim.key === "THOR-INTE")!;
+    const expected = sims.find((sim) => sim.key === "C-H")!;
     expect(screen.getByText(expected.label)).toBeInTheDocument();
   });
 
@@ -108,24 +108,24 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
-    await user.click(secondaryTile("ADAP"));
-    expect(secondaryTile("ADAP").checked).toBe(true);
+    await user.click(secondaryTile("A"));
+    expect(secondaryTile("A").checked).toBe(true);
 
     // A domináns ráállítása ugyanarra a dimenzióra: a második csempe eltűnik
     // a listából, és a kiválasztás átlép egy másikra.
-    await user.click(dominantTile("ADAP"));
-    expect(dominantTile("ADAP").checked).toBe(true);
+    await user.click(dominantTile("A"));
+    expect(dominantTile("A").checked).toBe(true);
 
     const secondaryRadios = within(secondaryGroup()).getAllByRole("radio");
     expect(secondaryRadios).toHaveLength(5);
     expect(secondaryRadios.map((radio) => (radio as HTMLInputElement).value)).not.toContain(
-      "ADAP",
+      "A",
     );
 
     const checked = secondaryRadios.find((radio) => (radio as HTMLInputElement).checked)!;
     expect(
       marked().some(
-        (sim) => sim.key === `ADAP-${(checked as HTMLInputElement).value}`,
+        (sim) => sim.key === `A-${(checked as HTMLInputElement).value}`,
       ),
     ).toBe(true);
   });
@@ -166,13 +166,51 @@ describe("InteractionSection", () => {
     ).not.toBeInTheDocument();
   });
 
+  // S3-hedge (motor-audit v4, FIX 5): főnév-only saját címkénél (a top-pár
+  // sorrendje a mérési hibán belül) a „Melléknév + Főnév" összeállítás-sor
+  // nem állíthatja a második dimenziót — a sor elmarad.
+  it("főnév-only saját címkénél nincs melléknév-összeállítás a saját oldalon", () => {
+    const nounOnly = personalityNoun("O", "hu")!; // „Újító"
+    render(
+      <InteractionSection
+        simulations={marked()}
+        selfLabel={nounOnly}
+        selfGlyph={{ primaryCode: "O", secondaryCode: "X", intensity: 4 }}
+      />,
+    );
+
+    const composition = [
+      personalityAdjective("X", "hu"),
+      personalityNoun("O", "hu"),
+    ].join(" + "); // „Energikus + Újító"
+    expect(screen.queryByText(composition)).not.toBeInTheDocument();
+    // A címke maga (főnév) természetesen látszik a saját oldalon.
+    expect(screen.getAllByText(nounOnly).length).toBeGreaterThan(0);
+  });
+
+  it("teljes (melléknév+főnév) címkénél az összeállítás-sor változatlan", () => {
+    render(
+      <InteractionSection
+        simulations={marked()}
+        selfLabel={resolvePersonalityTypeLabel("O", "X", "hu")!}
+        selfGlyph={{ primaryCode: "O", secondaryCode: "X", intensity: 4 }}
+      />,
+    );
+
+    const composition = [
+      personalityAdjective("X", "hu"),
+      personalityNoun("O", "hu"),
+    ].join(" + ");
+    expect(screen.getByText(composition)).toBeInTheDocument();
+  });
+
   it("azonos archetípusnál külön figyelmeztetés jön a közös vakfoltokról", async () => {
     const user = userEvent.setup();
     render(
       <InteractionSection
         simulations={marked()}
-        selfLabel={resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!}
-        selfGlyph={{ primaryCode: "OPEN", secondaryCode: "TEMP", intensity: 4 }}
+        selfLabel={resolvePersonalityTypeLabel("O", "X", "hu")!}
+        selfGlyph={{ primaryCode: "O", secondaryCode: "X", intensity: 4 }}
       />,
     );
 
@@ -182,8 +220,8 @@ describe("InteractionSection", () => {
     ).not.toBeInTheDocument();
 
     // …a sajátunkra állítva viszont igen.
-    await user.click(dominantTile("OPEN"));
-    await user.click(secondaryTile("TEMP"));
+    await user.click(dominantTile("O"));
+    await user.click(secondaryTile("X"));
     expect(
       screen.getByText(hu("results.interactionSameTitle")),
     ).toBeInTheDocument();
@@ -207,18 +245,18 @@ describe("InteractionSection", () => {
 
     // A domináns kiválasztása után a második csoport a maradék ötöt kínálja,
     // MELLÉKNÉVVEL — ugyanazzal a szókinccsel, amiből a profil neve épül.
-    await user.click(dominantTile("OPEN"));
+    await user.click(dominantTile("O"));
     const secondaryRadios = within(secondaryGroup()).getAllByRole("radio");
     expect(secondaryRadios).toHaveLength(5);
     for (const radio of secondaryRadios) {
       const dim = (radio as HTMLInputElement).value;
-      expect(dim).not.toBe("OPEN");
+      expect(dim).not.toBe("O");
       const adjective = personalityAdjective(dim, "hu")!;
       expect(radio.closest("label")?.textContent).toContain(adjective);
     }
 
-    await user.click(secondaryTile("TEMP"));
-    const expected = resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!;
+    await user.click(secondaryTile("X"));
+    const expected = resolvePersonalityTypeLabel("O", "X", "hu")!;
     expect(expected).toBe("Energikus újító");
     expect(screen.getByText(expected)).toBeInTheDocument();
   });
@@ -227,19 +265,19 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     const sims = marked();
     // A saját címke ugyanabból a forrásból jön, mint a profil fejléce.
-    const self = resolvePersonalityTypeLabel("THOR", "ADAP", "hu")!;
+    const self = resolvePersonalityTypeLabel("C", "A", "hu")!;
     expect(self).toBe("Együttműködő rendszerépítő");
 
     render(
       <InteractionSection
         simulations={sims}
         selfLabel={self}
-        selfGlyph={{ primaryCode: "THOR", secondaryCode: "ADAP", intensity: 3 }}
+        selfGlyph={{ primaryCode: "C", secondaryCode: "A", intensity: 3 }}
       />,
     );
 
-    await user.click(dominantTile("OPEN"));
-    await user.click(secondaryTile("TEMP"));
+    await user.click(dominantTile("O"));
+    await user.click(secondaryTile("X"));
 
     // Két oldal, mindkettő a saját címkéjével és eyebrow-jával.
     expect(screen.getByText(self)).toBeInTheDocument();
@@ -255,11 +293,11 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
-    await user.click(dominantTile("OPEN"));
-    await user.click(secondaryTile("TEMP"));
+    await user.click(dominantTile("O"));
+    await user.click(secondaryTile("X"));
 
-    const adjective = personalityAdjective("TEMP", "hu")!;
-    const noun = personalityNoun("OPEN", "hu")!;
+    const adjective = personalityAdjective("X", "hu")!;
+    const noun = personalityNoun("O", "hu")!;
     expect(screen.getByText(`${adjective} + ${noun}`)).toBeInTheDocument();
     // …és a kettőből összeálló név is ott van.
     expect(screen.getByText("Energikus újító")).toBeInTheDocument();

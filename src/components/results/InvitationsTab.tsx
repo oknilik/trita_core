@@ -7,14 +7,18 @@ import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { t, tf } from "@/lib/i18n";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+import { OBSERVER_INVITE_MAX_ACTIVE } from "@/lib/observer/invite-policy";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   isPlus: boolean;
-  // Az összevetés-küszöb: self-serve 2, kampány-vezérelt (org) 3
-  // (OBSERVER_MIN_FOR_REVEAL) — az info-banner ehhez igazodik.
+  // Az összevetés-küszöb (OBSERVER_MIN_FOR_REVEAL = anonimitás-padló, n≥3) —
+  // a hívó a szerver-oldali observer-flow értékét adja át; a default a
+  // kanonikus padlóból jön (a korábbi kézi 2 a reveal-kapuval mondott
+  // ellent: a banner „kész"-t ígért, az összevetés zárva maradt).
   minForReveal?: number;
   /** B14: szerver-oldalon ismert org-kontextus (observerFlow-ból) — a form
    *  címe és a picker-slot ettől függ, nem a kliens-fetch kimenetelétől,
@@ -78,7 +82,7 @@ export function InvitationsTab({
   sentInvitations,
   receivedInvitations,
   isPlus,
-  minForReveal = 2,
+  minForReveal = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE,
   hasColleagueDirectory = false,
 }: InvitationsTabProps) {
   const { locale } = useLocale();
@@ -152,7 +156,7 @@ export function InvitationsTab({
         id: data.id, token: data.token, status: data.status ?? "PENDING",
         createdAt: new Date().toISOString(), completedAt: null,
         observerEmail: hasEmail ? email.trim() : null, observerName: null,
-        observerType: data.observerType, relationship: null,
+        observerType: data.observerType,
       }, ...prev]);
       if (data.awaitingApproval) {
         showToast(t("invitations.awaitingApprovalToast", locale), "info");
@@ -189,7 +193,7 @@ export function InvitationsTab({
         id: data.id, token: data.token, status: data.status ?? "PENDING",
         createdAt: new Date().toISOString(), completedAt: null,
         observerEmail: null, observerName: colleague?.name ?? null,
-        observerType: data.observerType, relationship: null,
+        observerType: data.observerType,
       }, ...prev]);
       setColleagues((prev) =>
         prev.map((c) => (c.userId === colleagueUserId ? { ...c, alreadyInvited: true } : c)),
@@ -232,7 +236,12 @@ export function InvitationsTab({
   const pending = active.filter(
     (i) => i.status === "PENDING" || i.status === "AWAITING_APPROVAL",
   );
-  const canCreate = active.length < 5;
+  // A kvóta CSAK a függő (PENDING/AWAITING_APPROVAL) meghívókra vonatkozik —
+  // ugyanaz, amit a szerver számol (invite/route.ts): a KITÖLTÖTT nem fogyaszt
+  // keretet. A korábbi `active.length` a completed-et is beleszámolta, így 5
+  // kitöltött után a felhasználó nem tudott új visszajelzést kérni, holott a
+  // szerver elfogadta volna.
+  const canCreate = pending.length < OBSERVER_INVITE_MAX_ACTIVE;
 
   const typeBadge = (observerType?: string): string | null => {
     switch (observerType) {
@@ -284,7 +293,7 @@ export function InvitationsTab({
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
-          <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}/5</p>
+          <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}</p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
         </div>
       </div>
@@ -458,7 +467,18 @@ export function InvitationsTab({
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {/* Completed group */}
+          {/* Completed group.
+              W1 (differencia-támadás maradék felülete): ez a lista a meghívó
+              (értékelt) SAJÁT meghívóit mutatja névvel + nap-pontos dátummal —
+              ez szándékos (tudnod kell, kit hívtál és ki válaszolt). A
+              maradék kockázat NEM itt van, hanem az összevetés-nézet futó
+              observer-átlagában, ami minden betöltéskor újraszámol: egy
+              elszánt értékelt a k. és (k−1). állapot különbségéből visszafejtheti
+              az utolsó értékelő vektorát, és a nevesített listával névhez kötheti.
+              Mitigáció (kész): a completion-értesítés anonim (submit/route.ts),
+              a reveal csak n≥3-nál nyílik, a dátum nap-pontos (nincs sorrendi
+              idő-finomság). Teljes zárás = zajos/kvantált aggregátum — ez
+              pilot-kalibrációt igényel (ld. results reveal-küszöb jegyzet). */}
           {completed.length > 0 && (
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">

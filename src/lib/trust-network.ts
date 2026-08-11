@@ -14,9 +14,17 @@
 // - Csomópont-szintű aggregátum (befelé irányuló bizalom átlaga) csak
 //   TRUST_MIN_RATERS (3) értékelőtől létezik — alatta null, a pulse- és
 //   peer-küszöb mintája.
+// - Hub- és beágyazatlan-jelölés (névvel a riportban!) CSAK BEFELÉ
+//   EVIDENCIÁLT élekből számolódik: kölcsönös él, vagy egyoldalú él,
+//   ahol a csomópont az ÉRTÉKELT fél. A tisztán kifelé irányuló
+//   (a csomópont csak RATER) él nem evidencia a csomópontról — különben
+//   két csapattárs szigorú megítélése magát az értékelőt bélyegezné
+//   „beágyazatlan tagnak", két magas értékelés pedig hubbá tenné.
 // ─────────────────────────────────────────────────────────────────────
 
-export const TRUST_MIN_RATERS = 3;
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
+
+export const TRUST_MIN_RATERS = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 export type TrustQuestionId =
   | "trust"
@@ -133,9 +141,18 @@ export type TrustEdgeType =
   | "weak_trust"
   | "disconnected";
 
+// A moderate él alsó határa — a beágyazatlan (isolated) tagok számítása is
+// ehhez köt: aki alatta marad minden élén, annak nincs ≥ moderate kapcsolata.
+export const TRUST_EDGE_MODERATE_MIN = 55;
+
+// Mért pár-él confidence-e a dinamika-térképen: mindkét irányból van válasz
+// (mutual) vs csak az egyikből — a felület az egyoldalút külön jelöli.
+export const EDGE_CONFIDENCE_MUTUAL = 100;
+export const EDGE_CONFIDENCE_ONE_SIDED = 50;
+
 export function trustEdgeType(score: number): TrustEdgeType {
   if (score >= 75) return "strong_trust";
-  if (score >= 55) return "moderate";
+  if (score >= TRUST_EDGE_MODERATE_MIN) return "moderate";
   if (score >= 35) return "weak_trust";
   return "disconnected";
 }
@@ -144,6 +161,22 @@ export interface TrustObservationInput {
   aboutUserId: string;
   raterUserId: string;
   answers: TrustAnswerSet;
+}
+
+/**
+ * (rater → értékelt) páronként az UTOLSÓ megfigyelés nyer — a bemenet
+ * időrendben (régi → új) legyen rendezve; az ismételt körök így felülírják
+ * a korábbit, nem duplázódnak. A buildTeamTrustNetwork és a manager-cockpit
+ * kötegelt betöltőjének közös dedupe-lépése.
+ */
+export function dedupeLatestTrustObservations<T extends TrustObservationInput>(
+  observations: readonly T[],
+): T[] {
+  const latest = new Map<string, T>();
+  for (const obs of observations) {
+    latest.set(`${obs.raterUserId}→${obs.aboutUserId}`, obs);
+  }
+  return [...latest.values()];
 }
 
 /** Irányítatlan pár-él: a és b rendezett (a < b), a pontszám az irányok átlaga. */
@@ -162,16 +195,26 @@ export interface TrustNodeStat {
   inboundCount: number;
   /** Befelé irányuló bizalom átlaga (0–100) — null a küszöb alatt. */
   inboundMean: number | null;
-  /** Hány erős (strong_trust) él kapcsolódik hozzá. */
+  /**
+   * Hány erős (strong_trust), BEFELÉ evidenciált él kapcsolódik hozzá
+   * (kölcsönös, vagy egyoldalú, ahol ő az értékelt) — a fejléc-kontrakt
+   * szerint a csak-kifelé él nem számít.
+   */
   strongEdgeCount: number;
 }
 
 export interface TrustNetwork {
   edges: TrustEdge[];
   nodes: TrustNodeStat[];
-  /** A csapat összekötő(i): a legtöbb erős éllel (min. 2) rendelkező tag(ok). */
+  /**
+   * A csapat összekötő(i): a legtöbb erős, befelé evidenciált éllel
+   * (min. 2) rendelkező tag(ok).
+   */
   hubUserIds: string[];
-  /** Beágyazatlan tagok: legalább 2 mért éllel, de egyetlen ≥ moderate él nélkül. */
+  /**
+   * Beágyazatlan tagok: legalább 2 befelé evidenciált mért éllel, de
+   * egyetlen ≥ moderate él nélkül.
+   */
   isolatedUserIds: string[];
   measuredPairCount: number;
   /** Az összes lehetséges pár (ha ismert a taglista), különben null. */
@@ -184,12 +227,24 @@ export interface TrustNetwork {
  * A bizalmi háló felépítése érvényes megfigyelésekből. A hívó felel a
  * (aboutUserId, raterUserId) páronkénti dedupe-ért (legfrissebb kör
  * nyer) — ld. trust-network.server.ts.
+ *
+ * Ha `memberIds` adott, a megfigyelések a JELENLEGI tag-halmazra szűkülnek
+ * (értékelő ÉS értékelt is tag legyen): a kilépett tagok korábbi körökből
+ * ittmaradt válaszai nélkül nem duzzad az él-/erős-él-szám, a hub- és
+ * beágyazatlan-jelölés, az inbound-átlag — és a lefedettség (mért pár /
+ * lehetséges pár a jelenlegi tagokból) sem lépheti túl a 100%-ot.
  */
 export function computeTrustNetwork(
   observations: TrustObservationInput[],
   memberIds?: string[],
 ): TrustNetwork {
-  const valid = observations.filter((o) => isValidTrustAnswerSet(o.answers));
+  const memberSet = memberIds ? new Set(memberIds) : null;
+  const valid = observations.filter(
+    (o) =>
+      isValidTrustAnswerSet(o.answers) &&
+      (!memberSet ||
+        (memberSet.has(o.raterUserId) && memberSet.has(o.aboutUserId))),
+  );
 
   // Irányított pontszámok: rater → értékelt.
   const directed = new Map<string, number>();
@@ -225,14 +280,25 @@ export function computeTrustNetwork(
       nodeIds.add(obs.raterUserId);
     }
   }
+  // BEFELÉ evidenciált élek egy csomópontra: kölcsönös él, vagy egyoldalú
+  // él, ahol a csomópont az ÉRTÉKELT fél (van `másik→ő` irányított válasz).
+  // A csak-kifelé (a csomópont kizárólag RATER) él nem evidencia róla —
+  // hub/beágyazatlan jelölés nem épülhet a saját kiosztott értékeléseire.
+  const inboundEvidencedEdgesFor = (userId: string): TrustEdge[] =>
+    edges.filter(
+      (e) =>
+        (e.a === userId && directed.has(`${e.b}→${userId}`)) ||
+        (e.b === userId && directed.has(`${e.a}→${userId}`)),
+    );
+
   const nodes: TrustNodeStat[] = [...nodeIds].sort().map((userId) => {
     const inScores = inbound.get(userId) ?? [];
     const inboundMean =
       inScores.length >= TRUST_MIN_RATERS
         ? Math.round(inScores.reduce((x, y) => x + y, 0) / inScores.length)
         : null;
-    const strongEdgeCount = edges.filter(
-      (e) => e.type === "strong_trust" && (e.a === userId || e.b === userId),
+    const strongEdgeCount = inboundEvidencedEdgesFor(userId).filter(
+      (e) => e.type === "strong_trust",
     ).length;
     return { userId, inboundCount: inScores.length, inboundMean, strongEdgeCount };
   });
@@ -245,8 +311,8 @@ export function computeTrustNetwork(
 
   const isolatedUserIds = nodes
     .filter((n) => {
-      const myEdges = edges.filter((e) => e.a === n.userId || e.b === n.userId);
-      return myEdges.length >= 2 && myEdges.every((e) => e.score < 55);
+      const myEdges = inboundEvidencedEdgesFor(n.userId);
+      return myEdges.length >= 2 && myEdges.every((e) => e.score < TRUST_EDGE_MODERATE_MIN);
     })
     .map((n) => n.userId);
 
@@ -262,9 +328,11 @@ export function computeTrustNetwork(
     isolatedUserIds,
     measuredPairCount: edges.length,
     possiblePairCount,
+    // A tag-szűrés után az élszám ≤ lehetséges párszám; a clamp defenzív őr
+    // (a lefedettség szemantikailag legfeljebb 100%).
     coverage:
       possiblePairCount && possiblePairCount > 0
-        ? Math.round((edges.length / possiblePairCount) * 100) / 100
+        ? Math.min(1, Math.round((edges.length / possiblePairCount) * 100) / 100)
         : null,
   };
 }

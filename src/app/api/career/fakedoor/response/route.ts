@@ -12,6 +12,8 @@ import {
   isFakeDoorSource,
 } from "@/lib/fakedoor/career";
 import { resolveFakeDoorContext } from "@/lib/fakedoor/context.server";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 
 // Válasz-rögzítés — a mérés SZÁMLÁLÓJA.
 //
@@ -55,6 +57,17 @@ export async function POST(req: Request) {
   const valueGoal = interest === "yes" ? (parsed.data.valueGoal ?? null) : null;
   const reasonNo = interest === "no" ? (parsed.data.reasonNo ?? null) : null;
   const context = await resolveFakeDoorContext(sessionId);
+
+  // Kapuzás (2026-08-11): a fake door csak addig LÉTEZIK, amíg a modul parkolt
+  // — élő modulnál a végpont 404 (a mérés magától elhallgat). Az org-szintű
+  // elrejtés a mérésre is vonatkozik: az elrejtett tag a /career-en
+  // notFound()-ot kap, a válasza itt sem rögzülhet.
+  if (
+    CAREER_MODULE_READY ||
+    (context.profileId && (await isCareerModuleHidden(context.profileId)))
+  ) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   // A fizetési hajlandóság csak az ár-ághoz tartozik, és sosem lehet több a
   // LÁTOTT árnál — az érték csak ahhoz mérve értelmezhető. A felső határt a

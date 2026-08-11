@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 
@@ -13,6 +14,10 @@ export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  // E-mailt küldő végpont — rate limit a testvér-route-ok mintájára.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -43,9 +48,10 @@ export async function POST(
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
+  // leftAt: null — a szervezetből kilépett (volt) tag nem küldhet újra meghívót.
   const orgMembership = inviteOrgId
     ? await prisma.organizationMember.findFirst({
-        where: { userId: profile.id, orgId: inviteOrgId },
+        where: { userId: profile.id, orgId: inviteOrgId, leftAt: null },
         select: { role: true },
       })
     : null;

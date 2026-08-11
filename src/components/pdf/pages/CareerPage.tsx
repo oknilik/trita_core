@@ -19,9 +19,23 @@ interface Props {
   locale: "hu" | "en";
 }
 
-function tierLabel(score: number, locale: "hu" | "en"): { text: string; color: string } {
-  if (score >= 70) return { text: t("results.ccTierStrong", locale), color: colors.sageDark };
-  if (score >= 55) return { text: t("results.ccTierGood", locale), color: colors.ink };
+// A sáv-tudatos szint-címke (motor-audit v9): a nyers 70/55 vágás a mérési
+// hibán belüli különbségeket is eltérő verdiktté fordította (54 vs 56 két
+// külön címke, ~95%-ban átfedő intervallum mellett). Erősebb állítást csak
+// akkor teszünk, ha a konfidencia-sáv ALJA is a vágás felett van; különben
+// eggyel óvatosabb szint megy ki. A webes kártya ugyanezt a szabályt követi.
+function tierLabel(
+  score: number,
+  bandLow: number,
+  locale: "hu" | "en",
+): { text: string; color: string } {
+  const low = Number.isFinite(bandLow) ? bandLow : score;
+  if (score >= 70 && low >= 70) {
+    return { text: t("results.ccTierStrong", locale), color: colors.sageDark };
+  }
+  if (score >= 55 && low >= 55) {
+    return { text: t("results.ccTierGood", locale), color: colors.ink };
+  }
   return { text: t("results.ccTierConditional", locale), color: colors.bronze };
 }
 
@@ -40,7 +54,7 @@ export function CareerPage({ data, pageNum, totalPages, locale }: Props) {
       <View style={s.body}>
         <PdfCard eyebrow={t("pdf.careerTopDirections", locale)}>
           {career.roles.map((role, i) => {
-            const tier = tierLabel(role.score, locale);
+            const tier = tierLabel(role.score, role.bandLow, locale);
             return (
               <View
                 key={role.name}

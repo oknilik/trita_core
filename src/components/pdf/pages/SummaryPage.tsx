@@ -153,9 +153,9 @@ export function SummaryPage({ data, pageNum, totalPages, locale }: Props) {
 
         {/* ── Ahogy működsz — a munkastílus-oldalról ide emelve, hogy az
             összefoglaló oldal teljes legyen (tördelési audit 2026-07-29) ── */}
-        {pc?.howYouWork?.length ? (
+        {pc?.howYouWorkParts?.main ? (
           <PdfCard eyebrow={t("pdf.howYouWork", locale)}>
-            <PdfHowYouWork paragraphs={pc.howYouWork} locale={locale} />
+            <PdfHowYouWork parts={pc.howYouWorkParts} locale={locale} />
           </PdfCard>
         ) : null}
       </View>

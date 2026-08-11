@@ -5,6 +5,8 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { hexLetter } from "@/lib/hexaco";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -17,17 +19,21 @@ export interface IntelligenceMember {
   id: string;
   name: string;
   initials: string;
-  tritan: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number };
+  /**
+   * CSAK a ténylegesen mért dimenziók — hiányzó dimenzióra nincs kulcs
+   * (defaultolt 50-es kitalált adat lenne). Teljes készletnél
+   * hasAssessmentData = true.
+   */
+  tritan: Partial<Record<"H" | "E" | "X" | "A" | "C" | "O", number>>;
   /** Kitöltött csapatszerep-kérdőív pontszámai — ha van, ez élvez elsőbbséget a becsléssel szemben. */
   measuredRoleScores: Record<string, number> | null;
+  /** Mind a hat fő dimenzió mérten jelen van. */
   hasAssessmentData: boolean;
-  skillLevel: 1 | 2 | 3;
-  growthPotential: 1 | 2 | 3;
-  /** 0-100 weighted composites from resolveContributionPlacement */
-  deliveryScore: number;
-  growthScore: number;
-  placementConfidence: "low" | "medium" | "high";
-  zone: string;
+  /**
+   * A MÉRT bizalmi kör hub-ja (trust-network hubUserIds) — a dinamika-térkép
+   * ebből karikáz, hogy a riporttal azonos embert emeljen ki.
+   */
+  isTrustHub?: boolean;
   color: string;
   textColor: string;
 }
@@ -38,6 +44,8 @@ export interface DynamicsEdge {
   type: "aligned" | "complementary" | "friction";
   /** Az él adat-forrása — a "trust_round" MÉRT kapcsolati adat, a többi becslés. */
   source?: "observer" | "profile_estimate" | "trust_round";
+  /** Mért élnél 100 = kölcsönös, 50 = egyoldalú visszajelzés; becslésnél null. */
+  confidence?: number | null;
 }
 
 interface TeamIntelligenceProps {
@@ -142,8 +150,16 @@ export function TeamIntelligence({
 }: TeamIntelligenceProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const evidenceByTab = mergeEvidence(evidenceBySub);
-  const membersWithData = members.filter((member) => member.hasAssessmentData);
-  const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
+  // Erőforrás-térkép tagsága: akinek van megjeleníthető szerepe — MÉRT
+  // szerep-kérdőívhez NEM kell személyiség-teszt (a korábbi hasAssessmentData
+  // szűrő a mért szerep-kitöltést is eldobta, és a számláló alulszámolt).
+  const membersWithData = members.filter(
+    (member) =>
+      resolveDisplayRoleScores(member.measuredRoleScores, member.tritan) !== null,
+  );
+  const membersWithoutData = members.filter(
+    (member) => !membersWithData.includes(member),
+  );
   const dynamicsCounts = edges.reduce(
     (acc, edge) => {
       if (edge.type === "aligned") acc.aligned += 1;
@@ -153,6 +169,21 @@ export function TeamIntelligence({
     },
     { aligned: 0, complementary: 0, friction: 0 },
   );
+  // Forrás-címke a mért/becsült arány szerint — a fix "profil becslés" mért
+  // trust-kör mellett félrevezető volt.
+  const measuredEdgeCount = edges.filter((e) =>
+    isMeasuredDynamicsSource(e.source),
+  ).length;
+  // Négyágú feloldás — az intelligence-data.ts dynamicsStateLabel-jével azonosan:
+  // nulla él „nincs adat", nem „profil-becslés".
+  const dynamicsSourceKey =
+    edges.length === 0
+      ? "teamComp.dynamicsStateNone"
+      : measuredEdgeCount === 0
+        ? "teamComp.dynamicsStateEstimated"
+        : measuredEdgeCount === edges.length
+          ? "teamComp.dynamicsStateMeasured"
+          : "teamComp.dynamicsStateMixed";
 
   return (
     <div className="flex flex-col gap-6 pt-2">
@@ -175,9 +206,15 @@ export function TeamIntelligence({
               member.measuredRoleScores,
               member.tritan,
             );
+            if (!resolved) return null;
             const hasMeasuredRoles = resolved.source === "questionnaire";
-            const topRoles = getTopRoles(resolved.scores, 3);
+            // S2: becslés-ágon az exact a holtverseny-evidencia — enélkül a
+            // hash-fallback más top-szerepet adhatna, mint a többi felület.
+            const topRoles = getTopRoles(resolved.scores, 3, resolved.exact);
+            // Csak a jelen lévő (mért) dimenziókból — mért szerep-kérdőíves,
+            // de teszt nélküli tagnál a lista üres, nem kitalált 50-es.
             const topDims = Object.entries(member.tritan)
+              .filter((entry): entry is [string, number] => typeof entry[1] === "number")
               .sort(([, a], [, b]) => b - a)
               .slice(0, 2);
             return (
@@ -226,12 +263,14 @@ export function TeamIntelligence({
                 </div>
 
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {/* HEXACO-betű a badge-en (H/E/X/A/C/O) — a belső kód
+                      (H/X/…) nem kerülhet a felületre. */}
                   {topDims.map(([dim, value]) => (
                     <span
                       key={`${member.id}-${dim}`}
                       className="rounded-full bg-surface-card px-2 py-0.5 text-[11px] text-ink-body"
                     >
-                      <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
+                      <span className="font-semibold text-ink">{hexLetter(dim)}</span> {Math.round(value)}%
                     </span>
                   ))}
                 </div>
@@ -291,7 +330,7 @@ export function TeamIntelligence({
               {t("teamComp.subDynamics", loc)}
             </p>
             <span className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
-              {isHu ? "profil alapú becslés" : "profile-based estimate"}
+              {t(dynamicsSourceKey, loc)}
             </span>
           </div>
           <EvidenceSummary evidence={evidenceByTab.dynamics} loc={loc} />
@@ -299,7 +338,13 @@ export function TeamIntelligence({
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-[11px] text-sage">
-                  {isHu ? "Hasonló profil" : "Aligned"}: {dynamicsCounts.aligned}
+                  {/* „Hasonló profil" CSAK tisztán profil-becslésnél igaz —
+                      mért (trust) aligned él magas bizalmat jelent, nem
+                      profil-hasonlóságot; vegyes/mért képnél semleges címke. */}
+                  {measuredEdgeCount === 0
+                    ? isHu ? "Hasonló profil" : "Similar profile"
+                    : isHu ? "Összehangolt" : "Aligned"}
+                  : {dynamicsCounts.aligned}
                 </span>
                 <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
@@ -309,9 +354,19 @@ export function TeamIntelligence({
                 </span>
               </div>
               <p className="mt-2 text-[11px] text-ink-body/60">
-                {isHu
-                  ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
-                  : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."}
+                {/* Forrás-hű módszertan-sor: mért bizalmi kör mellett tilos
+                    mindent profil-becslésnek nevezni. */}
+                {measuredEdgeCount === 0
+                  ? isHu
+                    ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
+                    : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."
+                  : measuredEdgeCount === edges.length
+                    ? isHu
+                      ? "A kapcsolati kép mért bizalmi körből (360°) származik."
+                      : "The relationship picture comes from a measured trust round (360°)."
+                    : isHu
+                      ? `A kapcsolatok egy része mért bizalmi körből származik (${measuredEdgeCount}/${edges.length}), a többi személyiségprofil-eltérésből becsült.`
+                      : `Some connections come from a measured trust round (${measuredEdgeCount}/${edges.length}); the rest are estimated from personality-profile gaps.`}
               </p>
               <div className="mt-3">
                 <DynamicsMap members={members} edges={edges} isHu={isHu} />

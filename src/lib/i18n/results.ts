@@ -51,8 +51,8 @@ export const resultsTranslations = {
     spectrumLow: { hu: "Alacsony", en: "Low" },
     detailedTitle: { hu: "Részletes kiértékelés", en: "Detailed results" },
     detailedBody: { hu: "A skálaértékek és rövid jellemzésed.", en: "Scale values and short interpretation." },
-    altruismTitle: { hu: "Segítőkészség (kiegészítő skála)", en: "Helpfulness (additional scale)" },
-    altruismBody: { hu: "A segítőkészség több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "Helpfulness relates to multiple core dimensions, so it isn't included in the 6-factor average. It's best interpreted as a separate score." },
+    // (results.altruismTitle / altruismBody törölve 2026-08-11 — árva kulcsok
+    //  fogyasztó nélkül; az élő szövegek a `content.altruism*` névtérben élnek.)
     dimensionHint: { hu: "Kattints a részletekért", en: "Tap for details" },
     openDetails: { hu: "Részletek", en: "Details" },
     dimensionWhat: { hu: "Mit mér ez a dimenzió?", en: "What does this dimension measure?" },
@@ -324,7 +324,11 @@ export const resultsTranslations = {
     insightHigher: { hu: "Mások magasabbra értékelnek ebben a dimenzióban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself." },
     insightLower: { hu: "Te magasabbra értékeled magad ebben a dimenzióban, mint ahogy mások látnak téged.", en: "You rate yourself higher in this dimension than others rate you." },
     facetMapTitle: { hu: "Alskálák összehasonlítása", en: "Sub-scale comparison" },
-    facetMapSubtitle: { hu: "Alskálák és aspektusok, az eltérés mértéke szerint rendezve. A különbség: (mások átlaga) − (te).", en: "Facets and aspects sorted by absolute divergence. Difference is (others' average) − (you)." },
+    facetMapSubtitle: { hu: "Önértékelésed és a külső átlag alskálánként, dimenziónként csoportosítva. A különbség: (mások átlaga) − (te).", en: "Your self-rating and the outside average on each sub-scale, grouped by dimension. Difference is (others' average) − (you)." },
+    // Mérési-hiba SZÁM nem kerül a felületre (2026-08-11 termékdöntés) — a
+    // jelzés kvalitatív, a magyarázat a központi módszertani leírásban él.
+    facetMapAllMatch: { hu: "Minden lefedett alskálán a mérési hibán belüli az eltérés — nincs kiugró különbség.", en: "Every covered sub-scale agrees within the measurement error — no notable gaps." },
+    facetMethodNote: { hu: "Az alskála-pontszám kevés kérdésből számolt becslés, ezért a mérési hibája nagyobb, mint a fő dimenzióké. A mérési hibán belüli eltérést egyezésként jelöljük, és csak a mindkét oldalról lefedett alskálák jelennek meg.", en: "Sub-scale scores are estimates based on only a few questions, so their measurement error is larger than for the main dimensions. Differences within the measurement error are marked as a match, and only sub-scales covered on both sides are shown." },
     heatmapMatch: { hu: "Közel azonos", en: "Close match" },
     heatmapObsHigher: { hu: "Mások magasabbra értékelnek", en: "Others rate higher" },
     heatmapSelfHigher: { hu: "Te értékeled magasabbra", en: "You rate higher" },
@@ -359,20 +363,24 @@ export const resultsTranslations = {
     legendObserver: { hu: "Observer átlag (Mások)", en: "Observer avg. (Others)" },
     gapMatch: { hu: "egyezik", en: "match" },
     gapDiff: { hu: "eltérés", en: "gap" },
+    noObserverDim: { hu: "Ehhez a dimenzióhoz még nincs elég külső visszajelzés.", en: "Not enough external feedback for this dimension yet." },
     blindSpotEyebrow: { hu: "Vakfolt-elemzés", en: "Blind spot analysis" },
     blindSpotTitle: { hu: "Amit mások másképp látnak", en: "What others see differently" },
     blindSpotBody: { hu: "Olyan területek, ahol az önképed és mások visszajelzése között érdemi különbség van.", en: "Areas where your self-image and others' feedback differ meaningfully." },
     possibleBlindSpot: { hu: "Lehetséges vakfolt", en: "Possible blind spot" },
-    blindSpotStronger: { hu: "mások erősebbnek látnak", en: "others see you as stronger" },
-    blindSpotWeaker: { hu: "mások gyengébbnek látnak", en: "others see you as weaker" },
+    // Irány-semleges megfogalmazás (motor-audit v4, FIX 2): a fordított
+    // Emocionalitásnál az „erősebbnek/gyengébbnek lát" értékelő nyelv
+    // megfordulna — a „magasabbra/alacsonyabbra értékel" skála-nyelv nem.
+    blindSpotStronger: { hu: "mások magasabbra értékelnek", en: "others rate you higher" },
+    blindSpotWeaker: { hu: "mások alacsonyabbra értékelnek", en: "others rate you lower" },
     selfAssessment: { hu: "Önértékelés", en: "Self" },
     noBlindSpot: { hu: "Nincs vakfolt", en: "No blind spot" },
     noBlindSpotBody: { hu: "Ezekben a dimenziókban az önképed és mások visszajelzése közel azonos — reálisan látod magad.", en: "In these dimensions your self-image and others' feedback are nearly identical — you see yourself realistically." },
     summaryEyebrow: { hu: "Összefoglaló", en: "Summary" },
     summaryTitle: { hu: "Amit érdemes megjegyezni", en: "Worth noting" },
     summaryMatchMany: { hu: "{count} dimenzióban az önképed és mások visszajelzése szinte azonos — reálisan látod magad.", en: "In {count} dimensions your self-image and others' feedback are nearly identical — you see yourself realistically." },
-    summaryDiffStronger: { hu: "{name}: mások erősebbnek látnak (±{gap} pont eltérés).", en: "{name}: others see you as stronger (±{gap} point gap)." },
-    summaryDiffWeaker: { hu: "{name}: mások gyengébbnek látnak (±{gap} pont eltérés).", en: "{name}: others see you as weaker (±{gap} point gap)." },
+    summaryDiffStronger: { hu: "{name}: mások magasabbra értékelnek ({gap} pont eltérés).", en: "{name}: others rate you higher (a {gap}-point gap)." },
+    summaryDiffWeaker: { hu: "{name}: mások alacsonyabbra értékelnek ({gap} pont eltérés).", en: "{name}: others rate you lower (a {gap}-point gap)." },
     summaryPerfectMatch: { hu: "Ritka és értékes: az önképed szinte teljesen egyezik mások értékelésével.", en: "Rare and valuable: your self-image almost perfectly matches others' assessment." },
   },
   results: {
@@ -391,6 +399,14 @@ export const resultsTranslations = {
     facetAnxietyGloss: {
       hu: "Normál személyiségvonás: azt mutatja, mennyire jellemző rád a hétköznapi aggodalmaskodás — nem klinikai állapotot jelez.",
       en: "A normal personality trait: how prone you are to everyday worry — it does not indicate a clinical condition.",
+    },
+    // A korábbi scoreSemHint (±SEM a pontszám mellett) 2026-08-11-én
+    // kivezetve: mérési-hiba SZÁM nem jelenik meg a felületen (termékdöntés);
+    // a bizonytalanság-kezelés kvalitatív (főnév-only címke, hedge-szövegek).
+    // Percentilis-sor — CSAK aktív norma-tábla mellett jelenik meg (norms.ts).
+    scorePercentileLine: {
+      hu: "Ez az érték a kitöltők kb. {p}%-ánál magasabb.",
+      en: "This score is higher than roughly {p}% of respondents.",
     },
     teamRoleEyebrow: { hu: "Csapatszerepek", en: "Team roles" },
     teamRoleTitle: { hu: "Így jelenhetsz meg csapatban", en: "How you show up in teams" },
@@ -473,18 +489,34 @@ export const resultsTranslations = {
       en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you — it sheds light.",
     },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
-    strengthsSuffix: { hu: " — ezek az erősségeid.", en: " — these are your strengths." },
+    // A korábbi strengthsSuffix/watchPrefix/watchSuffix/noLowDim kulcsok
+    // kivezetve (2026-08-11): a PDF-be szánt legacy összefoglaló sorok
+    // (strengths/watchAreas) sehol nem renderelődtek — a bullet-alapú
+    // változat (strengthBullets/watchBullets) él helyettük.
     balancedProfile: { hu: "Kiegyensúlyozott profil, nincs kiugró erősség.", en: "Balanced profile, no standout strength." },
-    watchPrefix: { hu: "Alacsony ", en: "Low " },
-    watchSuffix: { hu: " — ezekre érdemes figyelni.", en: " — worth paying attention to." },
-    noLowDim: { hu: "Nincs kritikusan alacsony dimenzió.", en: "No critically low dimension." },
+    // Lapos-profil hero-mondat: ha a hat dimenzió terjedelme a mérési zajon
+    // belül van (HERO_RANGE_GATE_FACTOR·SEM), a hero nem állíthat legerősebbet
+    // — a PDF „Kiegyensúlyozott profil" szövegével konzisztens keretezés.
+    heroBalancedInsight: {
+      hu: "Kiegyensúlyozott profil — nincs kiugró erősség, a dimenzióid közel azonos szinten működnek.",
+      en: "Balanced profile — no standout strength; your dimensions operate at a similar level.",
+    },
     sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
     teamRoleHeading: { hu: "Csapatszerepek", en: "Team roles" },
     howYouWorkEyebrow: { hu: "Ahogy működsz", en: "How you operate" },
     howYouWorkMain: { hu: "Fő mintázat", en: "Key pattern" },
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
+    // Semleges („note") slot: a fordított skálájú (Emocionalitás) párok
+    // mintázat-megfigyelése + gyakorlati tanácsa. SZÁNDÉKOSAN nem hordoz
+    // valenciát — sem „Figyelendő", sem „Erősség" (2026-08-11 döntés,
+    // score-valence.ts).
+    howYouWorkNote: { hu: "Jellemző mintázat", en: "Characteristic pattern" },
     howYouWorkContext: { hu: "Kontextus", en: "Context" },
     envEyebrow: { hu: "Ideális környezet", en: "Ideal environment" },
+    // F3-hedge szint-szó sablon: a {label} a sor kanonikus szint-szava
+    // kisbetűvel (magas → „Inkább magas", gyors → „Leaning fast") — a 65/70
+    // (ill. 30/35) egyet-nem-értési sávban a kemény ítélet helyett.
+    envLeaningLabel: { hu: "Inkább {label}", en: "Leaning {label}" },
     // A `results.roleFitEyebrow` a shared-labels.ts-ben él: a publikus
     // landing-hero is használja, és így nem húzza be ezt a 137 KB-os fájlt.
     roleFitStrong: { hu: "Erős illeszkedés", en: "Strong fit" },
@@ -510,6 +542,17 @@ export const resultsTranslations = {
     glyphGrammar: {
       hu: "A nagy forma a legerősebb dimenziód — {primary}: {form}. A benne futó vékony vonal a második legerősebb — {secondary}: {motif}. A forma kitöltése a pontszám erősségét követi.",
       en: "The large shape is your strongest dimension — {primary}: the {form}. The thin line inside it is your second strongest — {secondary}: the {motif}. The fill weight follows the score.",
+    },
+    // S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a mérési hibán
+    // belül van, a próza nem állíthat sorrendet — a két dimenzió rendezetlen
+    // párként jelenik meg, „a második legerősebb" formula nélkül.
+    glyphGrammarUncertain: {
+      hu: "A két legerősebb dimenziód — {primary} és {secondary} — közel azonos erősségű, sorrendjük nem egyértelmű. A nagy forma {form}, a benne futó vékony vonal {motif}; a forma kitöltése a pontszám erősségét követi.",
+      en: "Your top two dimensions — {primary} and {secondary} — are close in strength, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
+    },
+    glyphPairUncertain: {
+      hu: "a két legerősebb: {a} · {b}",
+      en: "top two: {a} · {b}",
     },
     sectionDimensions: { hu: "Dimenziók részletesen", en: "Dimensions in detail" },
     sectionRoles: { hu: "Csapatszerep-hajlamok", en: "Team role tendencies" },
@@ -717,9 +760,13 @@ export const resultsTranslations = {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a hat személyiségdimenzió: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the six personality dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
     },
+    // Őszinte megfogalmazás (2026-08-11): a kiválasztó NEM a nyers minimumot
+    // veszi — a stabilitást jelző (fordított Emocionalitás-) skálák kimaradnak,
+    // és csak 60 pont alatti tétel kerülhet be. A korábbi „a legalacsonyabbra
+    // értékelted magad" ezt elhallgatta.
     growthIntro: {
-      hu: "Ezeken a területeken adtad magadnak a legalacsonyabb értékeket — nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
-      en: "These are the areas where you scored yourself lowest — not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
+      hu: "A kérdőív fejleszthető területei közül ezeket értékelted a legalacsonyabbra — a stabilitást jelző skálák nélkül. Nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
+      en: "Among the questionnaire's growth-eligible areas, these are the ones you rated lowest — stability-indicating scales excluded. Not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
     },
     // Háromlépcsős fejlődési ív címkéi — a PDF-fel (pdf.growth*) egyező szövegek.
     growthPlanBehavior: { hu: "Próbáld ki", en: "Try this" },
@@ -830,6 +877,13 @@ export const resultsTranslations = {
       hu: "A listát a bejelölt területeid szűrik ({areas}). A sorrendet az érdeklődés-kódod és a preferenciáid adják, a csoportokon belül a személyiséged — ha egy tétel eltér valamelyiktől, jelöljük.",
       en: "Your picked fields filter this list ({areas}). Your interest code and preferences set the order, personality orders within groups — any divergence is flagged per item.",
     },
+    // Scope-mód, de gyenge (lapos/becsült) vagy hiányzó érdeklődés-jellel: a
+    // sorrendet ilyenkor NEM az érdeklődés vezeti (motor forrás- és
+    // differenciáltság-kapu) — a szöveg nem állíthat mást, mint ami rendez.
+    cfStrategyScopedComposite: {
+      hu: "A listát a bejelölt területeid szűrik ({areas}). A sorrendet a kimondott preferenciáid és a személyiség-illeszkedésed adják — gyenge vagy hiányzó érdeklődés-jel legfeljebb kis súllyal számít.",
+      en: "Your picked fields filter this list ({areas}). Your stated preferences and personality fit set the order — a weak or missing interest signal contributes at low weight only.",
+    },
     cfScopeWidened: {
       hu: "A bejelölt területeken kevés találat volt, ezért a teljes katalógusból mutatunk — a bejelölt területeid kiemelve.",
       en: "Your picked fields had too few matches, so we show the full catalog with your picks highlighted.",
@@ -898,6 +952,12 @@ export const resultsTranslations = {
     },
     cfWhy: { hu: "Miért ennyi?", en: "Why this score?" },
     cfTargetHint: { hu: "cél {target} · te {user}", en: "target {target} · you {user}" },
+    // Skála-szél jelzés: a nyers skálára visszatolt cél 0/100-ra szorult, a
+    // mutatott pár távolsága ezért kisebb a pontozottnál (engine targetAtEdge).
+    cfTargetAtEdge: {
+      hu: "a cél a skála szélére szorult — az eltérés a mutatottnál nagyobb",
+      en: "target clipped at the scale edge — the gap is larger than shown",
+    },
     cfPositionIn: { hu: "sávon belül", en: "in range" },
     cfPositionOver: { hu: "cél fölött", en: "above target" },
     cfPositionUnder: { hu: "cél alatt", en: "below target" },
@@ -927,6 +987,10 @@ export const resultsTranslations = {
     cfAccessLicence: {
       hu: "szabályozott szakma — szakvizsga / kamarai tagság kell",
       en: "regulated profession — licence or chamber membership required",
+    },
+    cfAccessLicenceReady: {
+      hu: "a végzettséged megfelel, de a szakma engedély- / kamarai kötelezettséggel jár",
+      en: "your education fits, but this profession carries a licence / chamber obligation",
     },
     cfAccessTraining: {
       hu: "képzés kell hozzá",
@@ -1450,7 +1514,14 @@ export const resultsTranslations = {
     altruismTitle: { hu: "Kiegészítő skála", en: "Supplementary scale" },
     altruismName: { hu: "Segítőkészség", en: "Helpfulness" },
     altruismInfo: { hu: "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
-    altruismDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
+    // (content.altruismDetail törölve 2026-08-11 — egy sosem megépült
+    //  facet-bontás felirata volt; a skálának egyetlen facetje van.)
+    // Semleges SZINT-szavak a nem-valenciált kiegészítő skálához: a saját
+    // bannere mondja ki, hogy nem erősség/gyengeség — a valenciás
+    // „erősség/figyelendő" badge (getDimensionLabel) ellentmondott neki.
+    altruismLevelHigh: { hu: "magas", en: "high" },
+    altruismLevelMid: { hu: "mérsékelt", en: "moderate" },
+    altruismLevelLow: { hu: "alacsony", en: "low" },
     envLabelHigh: { hu: "Magas", en: "High" },
     envLabelLow: { hu: "Alacsony", en: "Low" },
     envLabelMedium: { hu: "Közepes", en: "Medium" },
@@ -1486,8 +1557,13 @@ export const resultsTranslations = {
     stageOrgReady: { hu: "Szervezet kész", en: "Org ready" },
     stageSelfNotStarted: { hu: "Önértékelés még nem indult", en: "Self not started" },
     stageSelfInProgress: { hu: "Önértékelés folyamatban", en: "Self in progress" },
-    // ProfileTabs — PDF profile character
-    profileCharacterHu: { hu: "A profilod fő karaktere: magas {top1}{top2Suffix}. {bottom} területen nyílhat tér a fejlődésre.", en: "Your profile character: high {top1}{top2Suffix}. {bottom} is where growth potential lies." },
+    // ProfileTabs — PDF profile character. Kapuzott (motor-audit v4, FIX 2):
+    // a „magas {dim}" mondat csak ténylegesen magas (≥70) dimenziókra megy ki
+    // (alatta a results.balancedProfile a fallback), a fejlődés-mondat pedig
+    // csak valóban alacsony (<40), NEM fordított dimenzióra — az alacsony
+    // Emocionalitás stabilitás, nem fejlődési terület.
+    profileCharacterHigh: { hu: "A profilod fő karaktere: magas {top1}{top2Suffix}.", en: "Your profile character: high {top1}{top2Suffix}." },
+    profileCharacterGrowth: { hu: " {bottom} területén nyílhat tér a fejlődésre.", en: " {bottom} is where growth potential lies." },
     profileCharacterTop2Suffix: { hu: ", magas {label}", en: ", high {label}" },
     // ProfileTabs
     paywallUnlock: { hu: "Feloldás — {price}", en: "Unlock — {price}" },
@@ -1776,12 +1852,14 @@ export const resultsTranslations = {
     avgGap: { hu: "átl. eltérés", en: "avg. gap" },
     you: { hu: "Te", en: "You" },
     others: { hu: "Mások", en: "Others" },
+    // Irány-semleges skála-nyelv (FIX 2) — a fordított Emocionalitásnál az
+    // „erősebbnek lát" értékelő megfogalmazás megfordulna.
     blindspotSignificantSelfHigher: {
-      hu: "Jelentős eltérés — te erősebbnek látod magad",
+      hu: "Jelentős eltérés — te magasabbra értékeled magad",
       en: "Significant gap — you rate yourself higher",
     },
     blindspotSignificantObsHigher: {
-      hu: "Jelentős eltérés — mások erősebbnek látnak",
+      hu: "Jelentős eltérés — mások magasabbra értékelnek",
       en: "Significant gap — others rate you higher",
     },
     blindspotModSelfHigher: {
@@ -1793,8 +1871,8 @@ export const resultsTranslations = {
       en: "Worth investigating",
     },
     blindspotSlight: { hu: "Enyhe eltérés", en: "Slight difference" },
-    othersRateHigher: { hu: "mások erősebbnek látnak", en: "others rate you higher" },
-    othersRateLower: { hu: "mások gyengébbnek látnak", en: "others rate you lower" },
+    othersRateHigher: { hu: "mások magasabbra értékelnek", en: "others rate you higher" },
+    othersRateLower: { hu: "mások alacsonyabbra értékelnek", en: "others rate you lower" },
     selfAssessment: { hu: "Önértékelés", en: "Self" },
     noBlindSpots: { hu: "Nincs vakfolt", en: "No blind spots" },
     noBlindSpotsDesc: {
@@ -1804,6 +1882,8 @@ export const resultsTranslations = {
     // ── PdfHowYouWork ──────────────────────────────────────────────────────
     keyPattern: { hu: "Fő mintázat", en: "Key pattern" },
     watchArea: { hu: "Figyelendő", en: "Watch area" },
+    // Semleges („note") kártya a PDF-ben — ugyanaz a slot, mint a felületen.
+    patternNote: { hu: "Jellemző mintázat", en: "Characteristic pattern" },
     context: { hu: "Kontextus", en: "Context" },
     // ── PdfInsightPair ─────────────────────────────────────────────────────
     yourStrengths: { hu: "Erősségeid", en: "Your strengths" },

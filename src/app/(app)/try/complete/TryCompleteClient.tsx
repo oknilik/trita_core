@@ -15,11 +15,12 @@ import {
   type TeaserScoringMetaItem,
 } from "@/lib/guest-teaser";
 import {
-  resolvePersonalityTypeLabel,
+  isSecondaryUncertain,
+  resolvePersonalityTypeFromScores,
   type PersonalityLocale,
 } from "@/lib/personality-type";
 import { intensityFromScore } from "@/lib/type-glyph";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { TryTeaserCard, type TeaserTopDim } from "./TryTeaserCard";
 
 interface TryCompleteClientProps {
@@ -62,19 +63,21 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
 
     const [primary, secondary] = scores.ranked;
     const personalityLocale: PersonalityLocale = locale === "hu" ? "hu" : "en";
-    const typeLabel = resolvePersonalityTypeLabel(
-      primary.code,
-      secondary.code,
+    // Ugyanaz a resolver, mint a belépett results/share úton — a melléknév-
+    // óvatosság (közeli 2-3. helyezettnél főnév-only címke) itt is érvényes,
+    // különben a claim után "átnevezhetne" a típus.
+    const typeLabel = resolvePersonalityTypeFromScores(
+      scores.ranked,
       personalityLocale,
     );
     if (!typeLabel) return null;
 
     const dimLabel = (code: string): string => {
-      const entry = TRITAN_DIMENSIONS[code as TritanDimCode];
+      const entry = HEXACO_DIMENSIONS[code as HexacoCode];
       return entry ? entry[personalityLocale] : code;
     };
     const dimLetter = (code: string): string =>
-      TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+      HEXACO_DIMENSIONS[code as HexacoCode]?.letter ?? code;
 
     const topDims: TeaserTopDim[] = scores.ranked.slice(0, 2).map((d) => ({
       code: d.code,
@@ -83,12 +86,20 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
       score: d.score,
     }));
 
+    // S3-hedge (FIX 5 + v8): a pár-felirat kapuja UGYANAZ a kanonikus
+    // isSecondaryUncertain, mint a belépett results-úton (TypeGlyphPlate) — top-
+    // pár VAGY 2–3. hely a mérési hibán belül. A korábbi isTopPairUncertain csak
+    // a top-párt nézte, így a 2–3. bizonytalanságnál a teaser még sorrendet
+    // sugalló „×"-et mutatott, miközben a claim utáni nézet már rendezetlen
+    // párt. Bizonytalan másodlagosnál rendezetlen elválasztó („·").
+    const pairSeparator = isSecondaryUncertain(scores.ranked) ? " · " : " × ";
+
     return {
       typeLabel,
       primaryCode: primary.code,
       secondaryCode: secondary.code,
       intensity: intensityFromScore(primary.score),
-      dimensionLabel: `${dimLabel(primary.code)} × ${dimLabel(secondary.code)}`,
+      dimensionLabel: `${dimLabel(primary.code)}${pairSeparator}${dimLabel(secondary.code)}`,
       topDims,
     };
   }, [scoringMeta, answers, locale]);

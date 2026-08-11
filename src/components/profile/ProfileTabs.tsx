@@ -16,12 +16,13 @@ import {
   ObserverFlowStatusCard,
   ObserverFlowStrip,
 } from "@/components/results/ObserverFlowStatusCard";
-import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
-import { TRITAN_ORDER, TRITAN_DIM_ABBR } from "@/lib/tritan";
-import type { TritanDimCode } from "@/lib/tritan";
+import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
+import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "@/lib/team-role-scoring";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { InlineUpsell } from "@/components/results/InlineUpsell";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
@@ -41,7 +42,11 @@ import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
-import { buildArchetypeStory } from "@/lib/profile-content";
+import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
+import { isSecondaryUncertain } from "@/lib/personality-type";
+import type { HowYouWorkParts } from "@/lib/workstyle-content";
+import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
@@ -64,7 +69,6 @@ export interface SerializedDimension {
   insightsByLocale?: Partial<Record<string, { low: string; mid: string; high: string }>>;
   observerScore?: number;
   facets: { code: string; label: string; score: number }[];
-  aspects: { code: string; label: string; score: number }[];
 }
 
 export interface SerializedGrowthItem {
@@ -81,11 +85,17 @@ export interface SerializedSentInvitation {
   token: string;
   status: string;
   createdAt: string;
+  /**
+   * NAP-pontosságú dátum (YYYY-MM-DD) — a másodperc-pontos kitöltési
+   * időbélyeg a kliensen differencia-támadási felület lenne (W1: az
+   * anonim értékelő azonosítása időzítés alapján). A korábbi
+   * `relationship` mező (az értékelő viszony-típusa) ugyanezért törölve —
+   * semmi nem renderelte.
+   */
   completedAt: string | null;
   observerEmail: string | null;
   observerName?: string | null;
   observerType?: string;
-  relationship: string | null;
 }
 
 export interface SerializedReceivedInvitation {
@@ -120,6 +130,23 @@ export interface ProfileTabsProps {
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
   observerCount: number;
+  /** Az értékelők átlagos magabiztossága (1–5) — null, ha nincs adat. */
+  avgObserverConfidence?: number | null;
+  /**
+   * Self facet-pontszámok a scores JSON-ból (dim → facetkód → 0–100) —
+   * null, ha az örökség-eredményben nincs facet-bontás.
+   */
+  selfFacetScores?: Record<string, Record<string, number>> | null;
+  /**
+   * Facet-szintű observer-átlag (member-dossier kanonikus aggregátora,
+   * facetenként ≥2 értékelő) — null küszöb alatt.
+   */
+  observerFacetAverages?: Record<string, Record<string, number>> | null;
+  /**
+   * Kerekített facet-SEM (± pont) a facet-összevetés egyezés-küszöbéhez —
+   * a szerver számolja (lib/psychometrics), a bank nem kerül kliens-bundle-be.
+   */
+  facetSem?: number | null;
   /**
    * Observer-folyamat állapota (self/csapat szétválasztás, 2026-07-22).
    * Org-tagnál ("locked" | "in_progress" | "available") a meghívó-tab
@@ -138,13 +165,22 @@ export interface ProfileTabsProps {
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
   heroInsight?: string;
-  /** PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája) */
-  strengths?: string;
-  watchAreas?: string;
   /** Plus content sections */
   plusContent?: {
     introText: string;
-    howYouWork: string[];
+    /** „Ahogy működsz" nevesített slotokkal (FIX 3): main = fő mintázat,
+     *  watch = CSAK `tone: "risk"` pár, notes = semleges „Jellemző mintázat"
+     *  (fordított skála), context = a többi bekezdés. */
+    howYouWorkParts: HowYouWorkParts;
+    /** Nem-feloldás tension-párok strukturáltan. A `tone` dönti el a
+     *  keretezést: "risk" = figyelendő, "note" = semleges jellemző mintázat
+     *  (fordított skála — TILOS deficitként megjeleníteni). */
+    riskParts?: {
+      summary: string;
+      advice: string;
+      source?: string;
+      tone?: PairTone;
+    }[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
@@ -159,7 +195,7 @@ export interface ProfileTabsProps {
       friction: { text: string; source?: string }[];
       needs: { text: string; source?: string }[];
     };
-    envItems: { label: string; value: string }[];
+    envItems: { label: string; value: string; hedged?: boolean }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
     closingText: string;
@@ -252,7 +288,7 @@ function ResultsTab({
 
   // Akkordeon a radar HEXACO-rendjében (H,E,X,A,C,O) — egyezik az
   // áttekintő listával; az első elem alapból nyitva.
-  const accordionDims = TRITAN_ORDER
+  const accordionDims = HEXACO_ORDER
     .map((code) => mainDims.find((d) => d.code === code))
     .filter((d): d is (typeof mainDims)[number] => Boolean(d))
     .map((d) => ({
@@ -293,7 +329,7 @@ function ResultsTab({
               {/* Sorrend = a radar HEXACO-rendje (H·E·X·A·C·O), a színek és
                   az értékek a dimenzió-színt viselik — alacsony szintnél is
                   jól láthatóan. */}
-              {TRITAN_ORDER
+              {HEXACO_ORDER
                 .map((code) => mainDims.find((d) => d.code === code))
                 .filter((d): d is (typeof mainDims)[number] => Boolean(d))
                 .map((d) => {
@@ -312,7 +348,9 @@ function ResultsTab({
                         <span
                           className={`shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
                         >
-                          {getDimensionLabel(d.score, locale)}
+                          {/* Pólus-tudatos címke: E alacsony sávja „stabil",
+                              nem „figyelendő" (fordított skála, FIX 2). */}
+                          {poleAwareDimensionLabel(d.code, d.score, locale)}
                         </span>
                         <span
                           className="w-8 shrink-0 text-right font-fraunces text-sm"
@@ -430,7 +468,7 @@ function WorkStyleTab({
       {isPlus && plusContent && (
         <>
           <HowYouWorkSection
-            paragraphs={plusContent.howYouWork}
+            parts={plusContent.howYouWorkParts}
             isUnlocked={true}
           />
           <IdealEnvironmentSection
@@ -441,6 +479,7 @@ function WorkStyleTab({
             strongFit={plusContent.roleFit.strong}
             mightWork={plusContent.roleFit.might}
             needsPrep={plusContent.roleFit.prep}
+            secondary={plusContent.roleFit.secondary}
             strongRoles={plusContent.roleFit.strongRoles}
             mightRoles={plusContent.roleFit.mightRoles}
             prepRoles={plusContent.roleFit.prepRoles}
@@ -517,14 +556,16 @@ export function ProfileTabs({
   growthFocusItems,
   hasObserverData,
   observerCount,
+  avgObserverConfidence = null,
+  selfFacetScores = null,
+  observerFacetAverages = null,
+  facetSem = null,
   observerFlow = null,
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
   personalityType,
   heroInsight,
-  strengths,
-  watchAreas,
   plusContent,
   bridgeNextStep,
   careerModuleHidden = false,
@@ -695,8 +736,19 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
-        watchDimensions={dimensions.filter((d) => d.code !== "I" && d.score < 40).map((d) => d.label)}
+        // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
+        // (score-valence, surface="self"). 2026-08-11 óta a E itt sem
+        // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
+        // a chip-sort, így nem marad árva „Legerősebb:" felirat.
+        topDimensions={dimensions
+          .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
+          .map((d) => d.label)}
+        // Pólus-tudatos „Figyelendő" (FIX 2): a fordított Emocionalitás
+        // alacsony sávja stabilitás — nem kerül a watch-chipek közé
+        // (kanonikus kapu: score-valence.deficitSlotEligible).
+        watchDimensions={dimensions
+          .filter((d) => d.code !== "I" && deficitSlotEligible(d.code) && d.score < 40)
+          .map((d) => d.label)}
         onShare={() => {
           track("results.export", { format: "link" });
           setShareOpen(true);
@@ -712,56 +764,74 @@ export function ProfileTabs({
             // Kanonikus HEXACO-sorrend (H·E·X·A·C·O) — a PDF radar, sávok és
             // facet-oldalak is ebben a rendben jelennek meg, a felülettel egyezően.
             const tritanIndex = (code: string) => {
-              const i = (TRITAN_ORDER as readonly string[]).indexOf(code);
-              return i === -1 ? TRITAN_ORDER.length : i;
+              const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
+              return i === -1 ? HEXACO_ORDER.length : i;
             };
             const mainDims = dimensions
               .filter((d) => d.code !== "I")
               .sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
-            const highDims = mainDims.filter((d) => d.score >= 70);
+            // Erősség-lista a kanonikus valencia-kapun át (self felület) — a
+            // E 2026-08-11 óta itt sem erősség; ha nem marad ≥70-es
+            // dimenzió, a strengthBullets a results.balancedProfile kulcsra
+            // esik vissza (nincs üres felsorolás).
+            const highDims = mainDims.filter(
+              (d) => strengthSlotEligible(d.code, "self") && d.score >= 70,
+            );
             const lowDims = mainDims.filter((d) => d.score < 40);
+            // Pólus-tudatos watch-lista (FIX 2): a fordított Emocionalitás
+            // alacsony sávja stabilitás (erőforrás), nem figyelendő terület.
+            const watchDims = lowDims.filter((d) => deficitSlotEligible(d.code));
 
             // Közös forrásból (dimension-insights.ts) — results-oldallal és
             // persona-riport generátorral szinkronban (javítási terv P1.5).
             const strengthDescs = DIMENSION_STRENGTH_DESCS;
             const watchDescs = DIMENSION_WATCH_DESCS;
             const lang = locale;
+            // Lapos profil (nincs ≥70 dimenzió): NEM mutatunk közepes sávú
+            // dimenziókat „Erősségeid"-ként — a profileCharacter ugyanitt a
+            // kiegyensúlyozott-profil szöveget adja, a kettő ellentmondott
+            // (motor-audit v6, M4d). Ugyanaz a kulcs megy a bullet-helyre is,
+            // így az Áttekintés-kártya nem állít hamis erősséget.
             const strengthBullets = highDims.length > 0
               ? highDims.map((d) => {
                   const desc = strengthDescs[d.code]?.[lang];
                   return desc ? `${d.label} — ${desc}` : d.label;
                 })
-              : sortedDims.slice(0, 2).map((d) => {
-                  const desc = strengthDescs[d.code]?.[lang];
-                  return desc ? `${d.label} — ${desc}` : d.label;
-                });
-            const watchBullets = lowDims.length > 0
-              ? lowDims.map((d) => {
+              : [t("results.balancedProfile", locale)];
+            const watchBullets = watchDims.length > 0
+              ? watchDims.map((d) => {
                   const desc = watchDescs[d.code]?.[lang];
                   return desc ? `${d.label} — ${desc}` : d.label;
                 })
               : [t("content.noLowDimension", locale)];
 
-            // Profile character
+            // Profile character — kapuzott (FIX 2): „magas {dim}" csak
+            // ténylegesen magas (≥70) dimenzióra megy ki, alatta a
+            // kiegyensúlyozott-profil szöveg; a fejlődés-mondat csak valóban
+            // alacsony (<40), NEM fordított dimenzióra (az alacsony E
+            // stabilitás, nem fejlődési terület).
             const profileCharacter = (() => {
-              const top2 = sortedDims.slice(0, 2);
-              const bottom = sortedDims[sortedDims.length - 1];
-              if (!top2[0] || !bottom) return "";
-              const top2Suffix = top2[1]
-                ? tf("content.profileCharacterTop2Suffix", locale, { label: top2[1].label.toLowerCase() })
+              const top2High = [...highDims]
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 2);
+              const highPart = top2High[0]
+                ? tf("content.profileCharacterHigh", locale, {
+                    top1: top2High[0].label.toLowerCase(),
+                    top2Suffix: top2High[1]
+                      ? tf("content.profileCharacterTop2Suffix", locale, {
+                          label: top2High[1].label.toLowerCase(),
+                        })
+                      : "",
+                  })
+                : t("results.balancedProfile", locale);
+              const growthDim = [...watchDims].sort((a, b) => a.score - b.score)[0];
+              const growthPart = growthDim
+                ? tf("content.profileCharacterGrowth", locale, { bottom: growthDim.label })
                 : "";
-              return tf("content.profileCharacterHu", locale, {
-                top1: top2[0].label.toLowerCase(),
-                top2Suffix,
-                bottom: bottom.label,
-              });
+              return `${highPart}${growthPart}`;
             })();
-
-            // Workplace / risk insights for Plus callouts
-            const workplaceInsight = plusContent?.howYouWork[0] ?? "";
-            const riskInsight = plusContent?.howYouWork[1] ?? "";
 
             // Karrier-export: UGYANAZ a szerver-oldali eredmény, amit a
             // képernyő mutat (a v1-ben a PDF külön, observer és preferenciák
@@ -773,12 +843,35 @@ export function ProfileTabs({
                 ...careerResult.sections.afterTraining.flat(),
               ].slice(0, 3);
               if (top.length === 0) return undefined;
-              const gaps = careerResult.sections.atLevel
-                .slice(0, 2)
-                .flat()
-                .flatMap((fit) => fit.components)
-                .filter((c) => c.position !== "in" && c.weight >= 0.15);
-              const firstGap = gaps[0];
+              // „Leggyakoribb eltérés": dimenzió+irány szerinti számlálás a
+              // top klasztereken (a CareerGrowthPlan.collectGaps szabályával
+              // egyezően: count, holtversenynél összsúly dönt) — a korábbi
+              // gaps[0] csupán az ELSŐ eltérés volt, nem a leggyakoribb.
+              const gapBuckets = new Map<
+                string,
+                { dim: string; position: string; count: number; weight: number }
+              >();
+              for (const fit of careerResult.sections.atLevel.slice(0, 2).flat()) {
+                for (const c of fit.components) {
+                  if (c.position === "in" || c.weight < 0.15) continue;
+                  const key = `${c.dim}:${c.position}`;
+                  const existing = gapBuckets.get(key);
+                  if (existing) {
+                    existing.count += 1;
+                    existing.weight += c.weight;
+                  } else {
+                    gapBuckets.set(key, {
+                      dim: c.dim,
+                      position: c.position,
+                      count: 1,
+                      weight: c.weight,
+                    });
+                  }
+                }
+              }
+              const firstGap = [...gapBuckets.values()].sort(
+                (a, b) => b.count - a.count || b.weight - a.weight,
+              )[0];
               const dimLabel = (code: string) =>
                 mainDims.find((d) => d.code === code)?.label ?? code;
               return {
@@ -807,76 +900,74 @@ export function ProfileTabs({
               ),
               personalityType: personalityType ?? "",
               heroInsight: heroInsight ?? "",
-              // P5.6: storytelling-felütés a summary-oldalra
+              // P5.6: storytelling-felütés a summary-oldalra. S3-hedge (FIX 5
+              // + v6 F1): a kapu a címke-lefokozáséval AZONOS
+              // (isSecondaryUncertain: top-pár VAGY 2–3. hely a mérési hibán
+              // belül) — ilyenkor csak a főnévi karakterkép megy ki, a második
+              // dimenziót színező mondat nem (a képernyő-címke is főnév-only).
               archetypeStory:
                 sortedDims[0] && sortedDims[1]
-                  ? buildArchetypeStory(sortedDims[0].code, sortedDims[1].code, locale === "hu" ? "hu" : "en") ?? undefined
+                  ? buildArchetypeStory(
+                      sortedDims[0].code,
+                      isSecondaryUncertain(mainDims) ? null : sortedDims[1].code,
+                      locale === "hu" ? "hu" : "en",
+                    ) ?? undefined
                   : undefined,
               plan: accessLevel,
-              strengths: strengths ?? "",
-              watchAreas: watchAreas ?? "",
               strengthBullets,
               watchBullets,
               profileCharacter,
               topDimensions: highDims.map((d) => d.label),
-              watchDimensions: lowDims.map((d) => d.label),
+              watchDimensions: watchDims.map((d) => d.label),
               altruism: (() => {
                 const alt = dimensions.find((d) => d.code === "I");
                 return alt ? { value: alt.score, description: alt.insight } : undefined;
               })(),
-              workplaceInsight,
-              riskInsight,
               career,
               dimensions: mainDims.map((d) => ({
                 code: d.code,
                 name: d.label,
                 shortName:
-                  TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHu ? "hu" : "en"] ??
+                  hexLetter(d.code) ??
                   (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
                 value: d.score,
                 description: d.insight,
               })),
-              ...((): { teamRoleRoles: { name: string; subtitle: string; score: number; rank: number }[]; teamRoleEstimated: boolean } => {
-                try {
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { TEAM_ROLES, getTopRoles } = require("@/lib/team-role-scoring");
-                  // A riport-felülettel egyezően: a MÉRT kérdőíves eredmény az
-                  // elsődleges; TRITAN-becslés csak fallback (forrás-jelöléssel).
-                  // Becslésnél a PDF sáv-címkét mutat pontszám nélkül (P2.3).
-                  let scores: Record<string, number> | null =
-                    teamRoleMeasuredScores ?? null;
-                  let measured = Boolean(scores);
-                  if (!scores) {
-                    // eslint-disable-next-line @typescript-eslint/no-require-imports
-                    const { estimateTeamRolesFromTritan } = require("@/lib/team-role-estimate");
-                    const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
-                    if (!("INTE" in hexScores) || !("TEMP" in hexScores)) {
-                      return { teamRoleRoles: [], teamRoleEstimated: true };
-                    }
-                    scores = estimateTeamRolesFromTritan(hexScores);
-                    measured = false;
-                  }
-                  const top3 = getTopRoles(scores, 3);
-                  // eslint-disable-next-line @typescript-eslint/no-require-imports
-                  const { TEAM_ROLE_WHY } = require("@/lib/team-role-scoring");
-                  const sourceLabel = measured
-                    ? locale === "hu" ? "kitöltött kérdőívből" : "from completed questionnaire"
-                    : locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
-                  return {
-                    teamRoleRoles: top3.map((r: { role: string; score: number }, i: number) => ({
-                      name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
-                      subtitle: i === 0 ? sourceLabel : "",
-                      score: r.score,
-                      rank: i,
-                      // P5.3: indoklás csak becsült elsődleges szerepnél
-                      why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale === "hu" ? "hu" : "en"] : undefined,
-                    })),
-                    teamRoleEstimated: !measured,
-                  };
-                } catch { return { teamRoleRoles: [], teamRoleEstimated: true }; }
+              ...((): { teamRoleRoles: { name: string; subtitle: string; score: number; rank: number; why?: string }[]; teamRoleEstimated: boolean } => {
+                // A riport-felülettel egyezően a kanonikus precedencia-szabály
+                // (team-role-estimate): a MÉRT kérdőíves eredmény az elsődleges,
+                // TRITAN-becslés csak fallback (forrás-jelöléssel). Becslésnél
+                // a PDF sáv-címkét mutat pontszám nélkül (P2.3).
+                const hexScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
+                const resolved = resolveDisplayRoleScores(teamRoleMeasuredScores, hexScores);
+                // Részleges (örökség) score-sorból nincs becsült szerep — a
+                // PDF-ben ilyenkor a szekció üresen marad.
+                if (!resolved) {
+                  return { teamRoleRoles: [], teamRoleEstimated: false };
+                }
+                const measured = resolved.source === "questionnaire";
+                // exact átadva: a kerekített holtversenyt a nyers evidencia
+                // dönti — így a PDF fő szerepe egyezik a többi felülettel.
+                const top3 = getTopRoles(resolved.scores, 3, resolved.exact);
+                // Forrás-címke a képernyős badge-dzsel azonos kulcsból — a PDF
+                // és a felület ugyanazt mondja.
+                const sourceLabel = measured
+                  ? t("results.teamRoleSourceMeasured", locale)
+                  : t("results.teamRoleSourceEstimate", locale);
+                return {
+                  teamRoleRoles: top3.map((r, i) => ({
+                    name: TEAM_ROLES[r.role][locale === "hu" ? "hu" : "en"],
+                    subtitle: i === 0 ? sourceLabel : "",
+                    score: r.score,
+                    rank: i,
+                    // P5.3: indoklás csak becsült elsődleges szerepnél
+                    why: i === 0 && !measured ? TEAM_ROLE_WHY[r.role][locale === "hu" ? "hu" : "en"] : undefined,
+                  })),
+                  teamRoleEstimated: !measured,
+                };
               })(),
               plusContent: plusContent ? {
-                howYouWork: plusContent.howYouWork,
+                howYouWorkParts: plusContent.howYouWorkParts,
                 pressure: plusContent.pressure,
                 pressureParts: plusContent.pressureParts,
                 growthTip: plusContent.growthTip,
@@ -886,11 +977,14 @@ export function ProfileTabs({
                 takeaways: plusContent.takeaways,
                 closingText: plusContent.closingText,
               } : undefined,
+              // A facets tömb örökség-sorra üres (FIX 4) — koholt 0-facet
+              // nem kerül a PDF-be; a code a pólus-tudatos jelölésekhez kell.
               facetDimensions: isPlus ? mainDims.map((d) => ({
                 name: d.label,
                 value: d.score,
                 insight: d.insight,
                 description: d.description,
+                code: d.code,
                 facets: d.facets,
               })) : undefined,
               // A reflect-oldal a felülettel azonos kapuzást követi: org-tagnál
@@ -902,11 +996,13 @@ export function ProfileTabs({
                   observerFlow.state === "self_serve" ||
                   observerFlow.state === "available") ? {
                 count: observerCount,
-                dimensions: mainDims.map((d) => ({
-                  name: d.label,
-                  self: d.score,
-                  observer: d.observerScore ?? d.score,
-                })),
+                // Lefedetlen dimenzió (nincs observer-érték) kimarad — a
+                // hiányzó külső adat nem „tökéletes egyezés".
+                dimensions: mainDims.flatMap((d) =>
+                  d.observerScore == null
+                    ? []
+                    : [{ name: d.label, self: d.score, observer: d.observerScore }],
+                ),
                 summaryPoints: [],
               } : undefined,
             });
@@ -1143,12 +1239,21 @@ export function ProfileTabs({
                 dimensions={dimensions}
                 hasObserverData={hasObserverData}
                 observerCount={observerCount}
+                avgConfidence={avgObserverConfidence}
+                selfFacetScores={selfFacetScores}
+                observerFacetAverages={observerFacetAverages}
+                facetSem={facetSem}
               />
               <div id="invitations" className="scroll-mt-24">
+                {/* minForReveal a szerver-oldali kanonikus küszöbből
+                    (observer-flow → anonimitás-padló) — a self-serve ág is
+                    ezt kapja, hogy az info-banner ne mondjon mást, mint a
+                    reveal-kapu (a korábbi kliens-default 2 volt, a kapu 3). */}
                 <InvitationsTab
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
+                  minForReveal={observerFlow?.minForReveal}
                   hasColleagueDirectory={Boolean(
                     observerFlow && observerFlow.state !== "self_serve",
                   )}

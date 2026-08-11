@@ -62,3 +62,6 @@ scripts/onet/
 
 # Szerkesztői ábra-előnézet (scripts/preview-editorial-art.ts)
 .art-previews/
+
+# Clerk dev-futás scratch lock (regenerálható, törölhető)
+clerk.lock

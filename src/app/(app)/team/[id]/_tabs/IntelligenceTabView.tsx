@@ -11,7 +11,7 @@ import type { TeamTabContext } from "./types";
 export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
   const { teamId, teamData, locale, isHu, canReachOrgCampaigns } = ctx;
   const intel = buildIntelligenceViewData({
-    teamData, teamId, locale, isHu, canReachOrgCampaigns,
+    teamData, teamId, locale, canReachOrgCampaigns,
   });
   const {
     intelligenceMembers,

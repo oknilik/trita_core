@@ -1,13 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 import {
   archetypeKey,
   buildArchetypeSimulations,
 } from "@/lib/interaction-view";
 
-const PROFILE = { INTE: 72, RESO: 40, TEMP: 30, ADAP: 78, THOR: 88, OPEN: 35 };
-const FLAT = { INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 };
+const PROFILE = { H: 72, E: 40, X: 30, A: 78, C: 88, O: 35 };
+const FLAT = { H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 };
 
 test("mind a 30 archetípus előáll, egyedi kulccsal", () => {
   const sims = buildArchetypeSimulations(PROFILE, "hu");
@@ -42,7 +42,7 @@ test("a szöveg a kért nyelven, feloldva jön (nem LocalizedText objektum)", ()
 test("a típus-címke lokalizált", () => {
   const hu = buildArchetypeSimulations(PROFILE, "hu");
   const en = buildArchetypeSimulations(PROFILE, "en");
-  const key = archetypeKey("OPEN", "TEMP");
+  const key = archetypeKey("O", "X");
   const huLabel = hu.find((sim) => sim.key === key)?.label;
   const enLabel = en.find((sim) => sim.key === key)?.label;
   assert.equal(huLabel, "Energikus újító");
@@ -51,8 +51,8 @@ test("a típus-címke lokalizált", () => {
 
 // A névtér-szabály őre: a felületen HEXACO-címke jelenik meg, nem belső kód.
 test("a dimenzió-címkék a kanonikus HEXACO-térképből jönnek", () => {
-  const huLabels = new Set(TRITAN_ORDER.map((dim) => TRITAN_DIMENSIONS[dim].hu));
-  const enLabels = new Set(TRITAN_ORDER.map((dim) => TRITAN_DIMENSIONS[dim].en));
+  const huLabels = new Set(HEXACO_ORDER.map((dim) => HEXACO_DIMENSIONS[dim].hu));
+  const enLabels = new Set(HEXACO_ORDER.map((dim) => HEXACO_DIMENSIONS[dim].en));
 
   for (const [locale, expected] of [
     ["hu", huLabels],
@@ -67,7 +67,7 @@ test("a dimenzió-címkék a kanonikus HEXACO-térképből jönnek", () => {
             `${locale}: „${label}" nem a kanonikus HEXACO-címkék között van`,
           );
           assert.ok(
-            !TRITAN_ORDER.includes(label as never),
+            !HEXACO_ORDER.includes(label as never),
             `${locale}: belső dimenziókód szivárgott ki a felületre: ${label}`,
           );
         }

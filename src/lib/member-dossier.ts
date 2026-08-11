@@ -10,11 +10,31 @@
 // observer egyéni válasz SOHA (csak aggregátum, min. DOSSIER_OBSERVER_MIN).
 // ─────────────────────────────────────────────────────────────────────
 
-import type { TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSION_FACETS, type HexacoCode } from "@/lib/hexaco";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
+import { diffStandardError } from "@/lib/psychometrics";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
-/** A results-oldal observer-szabálya: legalább 2 lezárt értékelés. */
-export const DOSSIER_OBSERVER_MIN = 2;
+/**
+ * Observer-aggregátum megjelenítési küszöbe a dossiéban: a kanonikus
+ * anonimitás-padló (az observer egyéni válasza így sem közvetve nem
+ * fejthető vissza — admin/tanácsadói nézetben sem).
+ */
+export const DOSSIER_OBSERVER_MIN = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
+
+/**
+ * Önkép–külső kép eltérés-küszöb: az önkép és a külső (observer) átlag KÉT
+ * FÜGGETLEN mérés, a különbségük hibája ezért √2·SEM (diffStandardError), nem
+ * 1×SEM — ez alatt a delta nem jel, hanem zaj. (A korábbi 1×SEM ~40%-kal
+ * alul-becsülte, így a mérési hibán belüli deltákat is „vakfoltként" hozta fel.)
+ * BELSŐ küszöb: eldönti, mikor NE emeljünk ki eltérést; a felületen mérési-hiba
+ * szám nem jelenik meg (2026-08-11 termék-döntés). ÉRTÉKE SZÁRMAZTATOTT, nem
+ * literál: a 2026-08-11-i MÉRT reliabilitás-konstansokkal (r̄ = 0,264,
+ * SD = 16,2 — ld. psychometrics.ts forrás-blokk) 14 → 11 lett. A psychometrics-import a
+ * kérdésbankot is behúzza — kliens-komponens futásidőben ne importálja ezt a
+ * modult, típusokat `import type`-pal vigyen.
+ */
+export const DOSSIER_GAP_MIN_DELTA = Math.round(diffStandardError("short"));
 
 export type DossierMeasurementKey =
   | "self"
@@ -48,7 +68,7 @@ export interface DossierHeader {
 }
 
 export interface DossierDimComparison {
-  code: TritanDimCode;
+  code: HexacoCode;
   self: number;
   observer: number | null; // null = küszöb alatt
   delta: number | null; // observer - self
@@ -59,9 +79,10 @@ export interface DossierSelfVsExternal {
   selfCompletedAt: string | null;
   selfRoundCount: number;
   observerCount: number;
+  observerSuspectCount: number; // rater-minőség flaggel érintett értékelések (observer/rater-quality.ts) — csak darabszám
   observerShown: boolean;
   dims: DossierDimComparison[];
-  topGaps: DossierDimComparison[]; // |delta| >= 5, max 3
+  topGaps: DossierDimComparison[]; // |delta| >= DOSSIER_GAP_MIN_DELTA (SEM), max 3
   teamRole: {
     selfTop: { role: TeamRoleCode; score: number }[] | null;
     selfCompletedAt: string | null;
@@ -125,7 +146,7 @@ export interface SerializedMemberDossier {
  * kihagyja (csak a jelenlévő értékekből számol átlagot).
  */
 export function computeObserverAverage(
-  order: TritanDimCode[],
+  order: HexacoCode[],
   observerDimSets: Record<string, number>[],
 ): Record<string, number> | null {
   if (observerDimSets.length < DOSSIER_OBSERVER_MIN) return null;
@@ -141,7 +162,47 @@ export function computeObserverAverage(
         n += 1;
       }
     }
-    if (n > 0) result[code] = Math.round(sum / n);
+    // Az anonimitás-padló PER-ÉRTÉK érvényes, nem csak a készletek számára:
+    // ha egy dimenziót csak 1–2 értékelő adott meg (a többi kihagyta), akkor a
+    // „csoportátlag" valójában 1–2 ember konkrét válasza lenne. Ugyanaz a
+    // listwise szabály, mint a facet-siblingben (computeObserverFacetAverages).
+    if (n >= DOSSIER_OBSERVER_MIN) result[code] = Math.round(sum / n);
+  }
+  return result;
+}
+
+/**
+ * Observer-facetátlag a raterenkénti scores.facets JSON-okból
+ * ({dim: {facetKód: 0–100}}). NULL, ha összesen DOSSIER_OBSERVER_MIN-nél
+ * kevesebb válaszkészlet van. Egyébként facetenként LISTWISE: csak az az
+ * érték kerül a kimenetbe, amelyhez legalább DOSSIER_OBSERVER_MIN
+ * értékelőnél van szám — 1 fős „aggregátum" az egyéni választ fedné fel.
+ * Hiánynál kulcs-kihagyás (facet és üresen maradt dimenzió is kimarad);
+ * a facets nélküli (örökség) készletet tolerálja.
+ */
+export function computeObserverFacetAverages(
+  order: HexacoCode[],
+  observerFacetSets: Array<Record<string, Record<string, number>> | undefined>,
+): Record<string, Record<string, number>> | null {
+  if (observerFacetSets.length < DOSSIER_OBSERVER_MIN) return null;
+
+  const result: Record<string, Record<string, number>> = {};
+  for (const code of order) {
+    const facetCodes = HEXACO_DIMENSION_FACETS[code] ?? [];
+    const dimResult: Record<string, number> = {};
+    for (const facet of facetCodes) {
+      let sum = 0;
+      let n = 0;
+      for (const set of observerFacetSets) {
+        const v = set?.[code]?.[facet];
+        if (typeof v === "number") {
+          sum += v;
+          n += 1;
+        }
+      }
+      if (n >= DOSSIER_OBSERVER_MIN) dimResult[facet] = Math.round(sum / n);
+    }
+    if (Object.keys(dimResult).length > 0) result[code] = dimResult;
   }
   return result;
 }
@@ -149,38 +210,42 @@ export function computeObserverAverage(
 /**
  * Önkép vs. külső kép dimenziónként, TRITAN-sorrendben. Observer-átlag
  * nélkül (null) az observer/delta mezők null-ok. delta = observer − self.
- * Üres self → üres lista.
+ * Self-érték nélküli kód kimarad a sorokból (üres self → üres lista) —
+ * a 0-s helyettesítés hamis −100-as deltát gyártana.
  */
 export function computeDimComparisons(
-  order: TritanDimCode[],
+  order: HexacoCode[],
   selfDims: Record<string, number>,
   observerAvg: Record<string, number> | null,
 ): DossierDimComparison[] {
-  if (Object.keys(selfDims).length === 0) return [];
-
-  return order.map((code) => {
-    const self = Math.round(selfDims[code] ?? 0);
+  return order.flatMap((code) => {
+    const selfRaw = selfDims[code];
+    if (typeof selfRaw !== "number") return [];
+    const self = Math.round(selfRaw);
     const observer =
       observerAvg && typeof observerAvg[code] === "number"
         ? observerAvg[code]
         : null;
-    return {
-      code,
-      self,
-      observer,
-      delta: observer === null ? null : observer - self,
-    };
+    return [
+      {
+        code,
+        self,
+        observer,
+        delta: observer === null ? null : observer - self,
+      },
+    ];
   });
 }
 
 /**
  * A legnagyobb önkép–külső kép eltérések: |delta| szerint csökkenő, a
- * küszöb alattiakat (és az observer nélküli sorokat) kihagyva.
+ * küszöb alattiakat (és az observer nélküli sorokat) kihagyva. A default
+ * küszöb a mérési hiba (DOSSIER_GAP_MIN_DELTA) — paraméterrel felülírható.
  */
 export function topGapDims(
   dims: DossierDimComparison[],
   n = 3,
-  minAbsDelta = 5,
+  minAbsDelta = DOSSIER_GAP_MIN_DELTA,
 ): DossierDimComparison[] {
   return dims
     .filter((d) => d.delta !== null && Math.abs(d.delta) >= minAbsDelta)

@@ -20,13 +20,9 @@ import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
-
-// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
-function hexLetter(code: string): string {
-  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
-}
-
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
+// a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
+import { hexLetter } from "@/lib/hexaco";
 
 function formatTimeAgo(date: Date, isHu: boolean): string {
   const now = Date.now();
@@ -347,7 +343,18 @@ export default async function ManagerCockpitPage() {
               sub={isHu ? "Tudatos kommunikáció szükséges" : "Conscious communication needed"}
             />
           </div>
-          <div className="mt-3 flex justify-end">
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+            {/* Forrás-transzparencia (termék-alapelv): a fenti számok mért és
+                becsült éleket is tartalmaznak — a megoszlás itt jelenik meg. */}
+            <p className="text-micro text-muted">
+              {(data.teams[0]?.measuredEdgeCount ?? 0) > 0
+                ? (isHu
+                    ? `ebből mért (bizalmi körből): ${data.teams[0]?.measuredEdgeCount ?? 0} · profil-becslés: ${data.teams[0]?.estimatedEdgeCount ?? 0}`
+                    : `measured (trust round): ${data.teams[0]?.measuredEdgeCount ?? 0} · profile estimate: ${data.teams[0]?.estimatedEdgeCount ?? 0}`)
+                : (isHu
+                    ? "profil-alapú becslés — még nincs mért bizalmi kör"
+                    : "profile-based estimate — no measured trust round yet")}
+            </p>
             <Link
               href={`/team/${data.teams[0].teamId}?tab=intelligence`}
               className="text-[12px] font-semibold text-sage transition-colors hover:text-sage-dark"

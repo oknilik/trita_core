@@ -2,16 +2,24 @@ import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import type { HowYouWorkParts } from "@/lib/workstyle-content";
 
 interface PdfHowYouWorkProps {
-  paragraphs: string[];
+  /**
+   * Nevesített slotok (workstyle-content, FIX 3) — a „Figyelendő" kártya csak
+   * valódi risk-párnál renderel, a pozicionális [1]-találgatás kivezetve.
+   */
+  parts: HowYouWorkParts;
   locale?: Locale;
 }
 
-export function PdfHowYouWork({ paragraphs, locale = "hu" }: PdfHowYouWorkProps) {
-  const main = paragraphs[0] ?? "";
-  const watch = paragraphs[1] ?? "";
-  const context = paragraphs.slice(2).join(" ");
+export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
+  const main = parts.main;
+  const watch = parts.watch ?? "";
+  // Semleges „Jellemző mintázat" kártya (tone: "note", fordított skála) — a
+  // felülettel azonos slot, hogy a PDF és a képernyő ne csússzon szét.
+  const notes = parts.notes.join(" ");
+  const context = parts.context.join(" ");
 
   return (
     <View style={{ marginBottom: 10 }}>
@@ -31,6 +39,14 @@ export function PdfHowYouWork({ paragraphs, locale = "hu" }: PdfHowYouWorkProps)
           </View>
         ) : null}
       </View>
+      {notes ? (
+        <View style={{ marginTop: 4, backgroundColor: colors.cream300, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.sand}` }}>
+          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink500, marginBottom: 2 }}>
+            {t("pdf.patternNote", locale)}
+          </Text>
+          <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>{notes}</Text>
+        </View>
+      ) : null}
       {context ? (
         <View style={{ marginTop: 4, backgroundColor: colors.white, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.cream500}` }}>
           <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink300, marginBottom: 2 }}>

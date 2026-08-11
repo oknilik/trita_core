@@ -7,8 +7,11 @@ import {
   DIMENSION_GLYPHS,
   resolveGlyphPair,
 } from "@/lib/type-glyph";
-import { resolvePersonalityTypeLabel } from "@/lib/personality-type";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import {
+  isSecondaryUncertain,
+  resolvePersonalityTypeFromScores,
+} from "@/lib/personality-type";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { t, tf, type Locale } from "@/lib/i18n";
 
@@ -36,7 +39,7 @@ interface TypeGlyphPlateProps {
 }
 
 function dimensionName(code: string, locale: Locale): string {
-  const dim = TRITAN_DIMENSIONS[code as TritanDimCode];
+  const dim = HEXACO_DIMENSIONS[code as HexacoCode];
   if (!dim) return code;
   return locale === "hu" ? dim.hu : dim.en;
 }
@@ -91,27 +94,48 @@ export function TypeGlyphPlate({
   if (!pair) return null;
 
   const { primaryCode, secondaryCode, intensity } = pair;
-  const typeLabel = resolvePersonalityTypeLabel(primaryCode, secondaryCode, locale);
+  // Ugyanaz a resolver, mint a hero típusneve (personality-type) — közeli
+  // 2-3. helyezettnél mindkettő főnév-only címkét ad, nem térhetnek el.
+  const typeLabel = resolvePersonalityTypeFromScores(dimensions, locale);
   if (!typeLabel) return null;
 
   const primaryGlyph = DIMENSION_GLYPHS[primaryCode];
   const secondaryGlyph = DIMENSION_GLYPHS[secondaryCode];
+
+  // S3-hedge (motor-audit v4 FIX 5 + v6 F1): a próza kapuja UGYANAZ, mint a
+  // címke-lefokozásé — isSecondaryUncertain (top-pár VAGY 2–3. hely a mérési
+  // hibán belül). A korábbi isTopPairUncertain csak a top-párt nézte, így a
+  // 2–3. bizonytalanságnál a címke már főnév-only volt, miközben a pár-felirat
+  // („X × Y") és a nyelvtan („a második legerősebb …") megnevezte a
+  // másodikat. Bizonytalan másodlagosnál a két dimenzió rendezetlen párként
+  // jelenik meg, erősorrend-állítás nélkül.
+  const secondaryUncertain = isSecondaryUncertain(dimensions);
+
   const pairLabel =
     primaryCode === secondaryCode
       ? dimensionName(primaryCode, locale)
-      : `${dimensionName(primaryCode, locale)} × ${dimensionName(secondaryCode, locale)}`;
+      : secondaryUncertain
+        ? tf("results.glyphPairUncertain", locale, {
+            a: dimensionName(primaryCode, locale),
+            b: dimensionName(secondaryCode, locale),
+          })
+        : `${dimensionName(primaryCode, locale)} × ${dimensionName(secondaryCode, locale)}`;
 
   // HU-ban a behelyettesített kifejezések már névelővel érkeznek
   // (hu-grammar.ts), így a sablonban nincs „a(z)” műtermék; EN-ben a
   // sablon adja a „the”-t.
   const isHu = locale === "hu";
   const article = (phrase: string) => (isHu ? withHuArticle(phrase) : phrase);
-  const grammar = tf("results.glyphGrammar", locale, {
-    form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),
-    primary: article(dimensionName(primaryCode, locale)),
-    motif: article(isHu ? secondaryGlyph.motifName.hu : secondaryGlyph.motifName.en),
-    secondary: article(dimensionName(secondaryCode, locale)),
-  });
+  const grammar = tf(
+    secondaryUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
+    locale,
+    {
+      form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),
+      primary: article(dimensionName(primaryCode, locale)),
+      motif: article(isHu ? secondaryGlyph.motifName.hu : secondaryGlyph.motifName.en),
+      secondary: article(dimensionName(secondaryCode, locale)),
+    },
+  );
 
   const panel = (
     <div className="grid grid-cols-1 items-center gap-5 px-4 pb-5 pt-4 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
@@ -121,6 +145,7 @@ export function TypeGlyphPlate({
         typeLabel={typeLabel}
         locale={locale}
         intensity={intensity}
+        secondaryUncertain={secondaryUncertain}
         variant="card"
         // Mobilon a kép nem nőhet a képernyő fölé — a panel egészének be
         // kell férnie a kijelzőbe nyitás után.
@@ -239,6 +264,7 @@ export function TypeGlyphPlate({
             typeLabel={typeLabel}
             locale={locale}
             intensity={intensity}
+            secondaryUncertain={secondaryUncertain}
             variant="badge"
             className="h-8 w-8 shrink-0 rounded-lg border border-[var(--color-border-soft)]"
           />

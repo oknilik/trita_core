@@ -12,13 +12,11 @@ interface HeatmapRow {
 }
 
 import { t, tf, type Locale } from "@/lib/i18n";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
-
-// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
-function hexLetter(code: string): string {
-  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
-}
-
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
+// a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
+import { hexLetter } from "@/lib/hexaco";
+import { sampleStdDev } from "@/lib/stats/dimension-stats";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 
 interface TeamInsightsProps {
   rows: HeatmapRow[];
@@ -30,7 +28,7 @@ interface TeamInsightsProps {
 type Level = "high" | "mid" | "low";
 
 const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = {
-  INTE: {
+  H: {
     high: {
       hu: "A csapat kultúráját az igazságosság és becsületesség jellemzi — alacsony belső politizálás, magas kölcsönös bizalom. Jó alap bizalomra épülő együttműködéshez.",
       en: "The team culture is defined by fairness and honesty — low internal politics, high mutual trust. A strong foundation for trust-based collaboration.",
@@ -44,21 +42,30 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "A low team average on this dimension may signal self-interest-driven dynamics. Making expectations and norms explicit is advisable.",
     },
   },
-  RESO: {
+  // 2026-08-11, valencia-revízió (kanonikus kapu: score-valence.ts): az
+  // Emocionalitás egyik pólusa sem erősség és nem is fejlesztendő hiány —
+  // mindhárom sáv jellemző-keretezésű, hozadékkal ÉS árral. A korábbi szöveg
+  // empátiát tulajdonított a magas átlagnak (amit a Félelem/Szorongás/
+  // Dependencia/Érzelmi kötődés facetek nem mérnek), az alacsonyat pedig
+  // „fejlesztendő empátia-hiánynak" keretezte. A két kártya-slot (erősség /
+  // fejlesztési terület) a valencia-kapun át már nem hívja ezt a sort — a
+  // térkép teljessége miatt marad, hogy egy jövőbeli felület se a régi
+  // keretezést találja itt.
+  E: {
     high: {
-      hu: "Empatikus, érzelmileg érzékeny csapat — erős interperszonális érzékenység, de nyomás alatt érdemes strukturált érzelmi támogatást biztosítani.",
-      en: "Empathetic and emotionally sensitive team — strong interpersonal awareness, though structured emotional support is useful under pressure.",
+      hu: "Érzelmileg érzékeny csapat — a feszültséget korán érzik meg, ugyanakkor tartós nyomás alatt gyorsabban fáradnak. Segít a kiszámítható tempó és a rendszeres, rövid visszajelzési pont.",
+      en: "Emotionally sensitive team — they register tension early, but tire faster under sustained pressure. A predictable tempo and regular short feedback points help.",
     },
     mid: {
-      hu: "Egészséges érzelmi egyensúly — a csapat kezeli a stresszt, miközben fogékony az empátiára és a kapcsolati dinamikákra.",
-      en: "Healthy emotional balance — the team handles stress well while remaining responsive to empathy and relational dynamics.",
+      hu: "Vegyes érzelmi intenzitás — a csapat jellemzően kezeli a nyomást, és a kapcsolati jelzések sem sikkadnak el teljesen.",
+      en: "Mixed emotional intensity — the team generally handles pressure while relational signals still get picked up.",
     },
     low: {
-      hu: "Stressztűrő, racionális döntéshozó csapat. Az empátiát és érzelmi kommunikációt tudatos fejlesztéssel lehet erősíteni.",
-      en: "Stress-tolerant, rational decision-making team. Empathy and emotional communication can be strengthened with intentional development.",
+      hu: "Stressztűrő, tárgyszerű döntéshozatal. Cserébe a feszültség sokáig láthatatlan maradhat: érdemes explicit visszajelző kört tartani, mert magától nem kerül szóba.",
+      en: "Stress-tolerant, matter-of-fact decision-making. In exchange, tension can stay invisible for a long time: an explicit check-in round helps, since it won't come up on its own.",
     },
   },
-  TEMP: {
+  X: {
     high: {
       hu: "Energikus, kommunikatív csapat — gyorsan épít kapcsolatokat, jól teljesít együttműködést és csapatmunkát igénylő feladatokon.",
       en: "Energetic, communicative team — builds relationships quickly and performs well on tasks requiring collaboration and teamwork.",
@@ -72,21 +79,26 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "More introverted team — deep focus and independent work are strengths. Proactive communication may need intentional development.",
     },
   },
-  ADAP: {
+  // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a Barátságosság
+  // facetjei a Megbocsátás · Gyengédség · Rugalmasság · Türelem — a skála NEM
+  // mér empátiát, ezért a magas csapatátlaghoz nem tapadhat empátia-ígéret
+  // („erős harmónia és empátia"). Mindkét pólus kétoldalú: a magas engedékeny
+  // ÉS elfedi a vitát, az alacsony élesebb ÉS hamarabb kimondja a bajt.
+  A: {
     high: {
-      hu: "Együttműködő, konfliktusmentes csapat — erős harmónia és empátia. Érdemes a direkt visszajelzési kultúrát is tudatosan erősíteni.",
-      en: "Cooperative, low-conflict team — strong harmony and empathy. Intentionally building a direct feedback culture is also worthwhile.",
+      hu: "Türelmes, alacsony konfliktusszintű csapat — elnézőek egymás hibáival, könnyen kötnek kompromisszumot. Cserébe a nézeteltérés ritkán kerül asztalra: érdemes a direkt visszajelzési kultúrát tudatosan erősíteni.",
+      en: "Patient, low-conflict team — lenient with each other's mistakes and quick to compromise. In exchange, disagreement rarely reaches the table: intentionally building a direct feedback culture is worthwhile.",
     },
     mid: {
-      hu: "Egészséges assertivitás és együttműködés aránya — a csapat képes mind az egyenes kommunikációra, mind a harmóniára.",
-      en: "Healthy balance of assertiveness and cooperation — the team can handle both direct communication and harmony.",
+      hu: "Egészséges assertivitás és engedékenység aránya — a csapat képes az egyenes vitára és a kompromisszumra is.",
+      en: "Healthy balance of assertiveness and accommodation — the team can handle both straight debate and compromise.",
     },
     low: {
-      hu: "Direkt, magabiztos csapat — gyors döntéshozatal és határozottság jellemzi. A konfliktuskezelési kultúrára figyelni érdemes.",
-      en: "Direct, assertive team — characterized by fast decision-making and confidence. Conflict management culture deserves attention.",
+      hu: "Direkt, vitaképes csapat — a problémát hamar kimondják, a döntés gyors, a visszajelzés őszinte. Cserébe a viták gyorsabban éleződnek: strukturált vitaformátum és tiszta döntési szabály segít.",
+      en: "Direct, debate-ready team — problems get named early, decisions come fast, feedback stays honest. In exchange, debates sharpen faster: a structured discussion format and clear decision rules help.",
     },
   },
-  THOR: {
+  C: {
     high: {
       hu: "Szervezett, megbízható, határidőkre érzékeny csapat — ideális komplex, több lépéses projektek végrehajtásához.",
       en: "Organized, reliable, deadline-aware team — ideal for executing complex, multi-step projects.",
@@ -100,7 +112,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Flexible, creative working style. Strengthening structural frameworks, prioritization tools, and process tracking is recommended.",
     },
   },
-  OPEN: {
+  O: {
     high: {
       hu: "Innovatív, kíváncsi csapat — szívesen kísérletezik és nyitott az új megközelítésekre. Jól teljesít változékony, kreatív feladatokban.",
       en: "Innovative, curious team — embraces experimentation and new approaches. Performs well in dynamic, creative tasks.",
@@ -112,20 +124,6 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
     low: {
       hu: "Gyakorlatias, stabil csapat — értékeli a bevált folyamatokat és a kiszámíthatóságot. Változásmenedzsment igényelhet külön figyelmet.",
       en: "Practical, stable team — values proven processes and predictability. Change management may require extra attention.",
-    },
-  },
-  N: {
-    high: {
-      hu: "Magas érzelmi reaktivitás a csapatban — stressz alatt az érzelmi szabályozás és a kiszámítható környezet kulcsfontosságú.",
-      en: "High emotional reactivity in the team — emotional regulation and a predictable environment are key under stress.",
-    },
-    mid: {
-      hu: "Közepes stressz-érzékenység — a csapat általában stabilnak mutatkozik, de helyzetfüggő ingadozás előfordulhat.",
-      en: "Moderate stress sensitivity — the team is generally stable, but situational variation may occur.",
-    },
-    low: {
-      hu: "Alacsony neuroticizmus — nyugodt, stressztűrő csapat, jól teljesít nyomás és bizonytalanság közepette.",
-      en: "Low neuroticism — calm, stress-resistant team that performs well under pressure and uncertainty.",
     },
   },
 };
@@ -180,24 +178,38 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
       : null;
   }
 
-  // Calculate std deviation per dimension (spread / diversity)
+  // Calculate std deviation per dimension (spread / diversity) — Bessel-
+  // korrekciós mintaszórás a közös stats-helperből (a csapat a populáció
+  // mintája; a ÷n populációs szórás lefelé torzított).
   const dimStdDev: Record<string, number> = {};
   for (const dim of dims) {
     const scores = scored
       .map((r) => r.scores[dim.code])
       .filter((s): s is number => s !== null);
     if (scores.length < 2) continue;
-    const mean = scores.reduce((a, b) => a + b, 0) / scores.length;
-    const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / scores.length;
-    dimStdDev[dim.code] = Math.round(Math.sqrt(variance));
+    dimStdDev[dim.code] = Math.round(sampleStdDev(scores));
   }
 
   const rankedDims = dims
     .filter((d) => teamAvg[d.code] !== null)
     .sort((a, b) => (teamAvg[b.code] ?? 0) - (teamAvg[a.code] ?? 0));
 
-  const topStrength = rankedDims[0];
-  const topGap = rankedDims[rankedDims.length - 1];
+  // „Csapat erőssége" (erősség-slot): a fordított kódolású E ezen az
+  // ÉRTÉKELŐ felületen sem lehet erősség — ugyanaz a kapu, mint a
+  // team-report.ts riport-generátorában (strengthSlotEligible "evaluative").
+  // Enélkül egy magas Emocionalitás-átlagú csapatnál a Félelem/Szorongás
+  // átlaga jelent volna meg zöld „erősség" kártyán. Ilyenkor a következő
+  // legmagasabb, valenciálható dimenzió lép a helyére.
+  const strengthRanked = rankedDims.filter((d) =>
+    strengthSlotEligible(d.code, "evaluative"),
+  );
+  const topStrength = strengthRanked[0];
+  // „Fejlesztési terület" (deficit-slot): a fordított kódolású E kizárva
+  // a kanonikus valencia-kapun át (score-valence) — az alacsony Emocionalitás
+  // stabilitás, nem fejlesztendő gyengeség; különben egy érzelmileg stabil
+  // csapat épp a stabilitását látná figyelmeztető kártyán.
+  const deficitRanked = rankedDims.filter((d) => deficitSlotEligible(d.code));
+  const topGap = deficitRanked[deficitRanked.length - 1];
   const mostDiverse = Object.entries(dimStdDev).sort((a, b) => b[1] - a[1])[0];
   const mostDiverseDim = mostDiverse
     ? dims.find((d) => d.code === mostDiverse[0])
@@ -216,7 +228,6 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
         <div className="flex flex-col gap-3">
           {dims.map((dim) => {
             const avg = teamAvg[dim.code];
-            const stdDev = dimStdDev[dim.code];
             return (
               <div key={hexLetter(dim.code)} className="flex items-center gap-3">
                 <span
@@ -244,6 +255,9 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     </div>
                   </div>
                 </div>
+                {/* Csak az átlag jelenik meg — a ±szórás-szám 2026-08-11-i
+                    termékdöntéssel lekerült a felületről (a szórás-számítás
+                    belül él tovább: a sokszínűség-kártyát hajtja). */}
                 <div className="w-16 shrink-0 text-right">
                   {avg !== null ? (
                     <span className="text-sm font-bold tabular-nums text-ink">
@@ -252,11 +266,6 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     </span>
                   ) : (
                     <span className="text-xs text-muted/60">–</span>
-                  )}
-                  {stdDev !== undefined && scored.length > 1 && (
-                    <p className="text-micro text-muted">
-                      ±{stdDev}
-                    </p>
                   )}
                 </div>
               </div>
@@ -291,7 +300,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topStrength.color }}
                   >
-                    {topStrength.code}
+                    {hexLetter(topStrength.code)}
                   </span>
                   <span className="text-sm font-semibold text-ink">
                     {topStrength.label}
@@ -320,7 +329,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topGap.color }}
                   >
-                    {topGap.code}
+                    {hexLetter(topGap.code)}
                   </span>
                   <span className="text-sm font-semibold text-ink">
                     {topGap.label}
@@ -349,13 +358,12 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: mostDiverseDim.color }}
                   >
-                    {mostDiverseDim.code}
+                    {hexLetter(mostDiverseDim.code)}
                   </span>
+                  {/* A ±szórás-szám nem jelenik meg (termékdöntés) — a
+                      kiválasztást továbbra is a belső szórás-rangsor adja. */}
                   <span className="text-sm font-semibold text-ink">
                     {mostDiverseDim.label}
-                    <span className="ml-1.5 text-xs font-normal text-muted">
-                      ±{mostDiverse[1]}
-                    </span>
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-ink-body">

@@ -16,6 +16,7 @@
 import { prisma } from "@/lib/prisma";
 import { InvitationStatus } from "@prisma/client";
 import { isConsultingLed } from "@/lib/operating-mode";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
 /**
  * Ennyi beérkezett visszajelzésnél nyílik meg az önkép–külső kép összevetés
@@ -23,7 +24,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
  * (trust-kör, pulse, peer-szerepek) 3-as anonimitás-küszöböt ígér — két
  * értékelőnél a kitöltő félig beazonosítható, ami visszahat az őszinteségre.
  */
-export const OBSERVER_MIN_FOR_REVEAL = 3;
+export const OBSERVER_MIN_FOR_REVEAL = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 export type ObserverFlowState = "self_serve" | "locked" | "in_progress" | "available";
 
@@ -37,18 +38,51 @@ export interface ObserverFlowStatus {
 export async function resolveObserverFlowStatus(
   profileId: string,
 ): Promise<ObserverFlowStatus> {
-  const [orgMembershipCount, receivedCount] = await Promise.all([
+  // Aktív kampány observer-lépéssel, amiben a user résztvevő?
+  // (Több-lépéses kampánynál a type az ELSŐ lépés — a steps-ben keresünk,
+  // a legacy type-ot fallbackként; minta: team-report psych-safety lookup.)
+  const [orgMembershipCount, participant] = await Promise.all([
     prisma.organizationMember.count({
       where: { userId: profileId, leftAt: null, role: { not: "ORG_CONSULTANT" } },
     }),
-    prisma.observerAssessment.count({
+    prisma.campaignParticipant.findFirst({
       where: {
-        invitation: { inviterId: profileId, status: InvitationStatus.COMPLETED },
+        userId: profileId,
+        campaign: {
+          status: "ACTIVE",
+          OR: [{ steps: { has: "OBSERVER_360" } }, { type: "OBSERVER_360" }],
+        },
+      },
+      orderBy: { addedAt: "desc" },
+      select: {
+        campaign: {
+          select: { name: true, activatedAt: true, requireFreshResults: true },
+        },
       },
     }),
   ]);
 
   const orgGoverned = isConsultingLed() && orgMembershipCount > 0;
+
+  // Újrafuttatási kör: a beérkezés-számláló csak az aktiválás UTÁNI
+  // kitöltéseket számolja — a team/[id] oldal fresh-szemantikájával azonosan.
+  // Csak org-governed módban: a self-serve nézet a teljes történetet mutatja.
+  const freshFrom =
+    orgGoverned &&
+    participant?.campaign.requireFreshResults &&
+    participant.campaign.activatedAt
+      ? participant.campaign.activatedAt
+      : null;
+
+  const receivedCount = await prisma.observerAssessment.count({
+    where: {
+      invitation: {
+        inviterId: profileId,
+        status: InvitationStatus.COMPLETED,
+        ...(freshFrom ? { completedAt: { gte: freshFrom } } : {}),
+      },
+    },
+  });
   if (!orgGoverned) {
     return {
       state: "self_serve",
@@ -66,21 +100,6 @@ export async function resolveObserverFlowStatus(
       activeCampaignName: null,
     };
   }
-
-  // Aktív kampány observer-lépéssel, amiben a user résztvevő?
-  // (Több-lépéses kampánynál a type az ELSŐ lépés — a steps-ben keresünk,
-  // a legacy type-ot fallbackként; minta: team-report psych-safety lookup.)
-  const participant = await prisma.campaignParticipant.findFirst({
-    where: {
-      userId: profileId,
-      campaign: {
-        status: "ACTIVE",
-        OR: [{ steps: { has: "OBSERVER_360" } }, { type: "OBSERVER_360" }],
-      },
-    },
-    orderBy: { addedAt: "desc" },
-    select: { campaign: { select: { name: true } } },
-  });
 
   return {
     state: participant ? "in_progress" : "locked",

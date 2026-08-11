@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { t } from "@/lib/i18n";
 import { DashboardPanel, DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -182,10 +183,12 @@ export function TeamReportMemberView({
                     </div>
                   );
                 })}
+                {/* A sáv-magyarázat ±-jel nélkül (2026-08-11 termékdöntés:
+                    ± jelölés nem kerül a felületre) — a sáv grafika marad. */}
                 <p className="mt-1 text-micro text-muted">
                   {isHu
-                    ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga ± szórása."
-                    : "Colored dot = your value · faint band = team average ± spread."}
+                    ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga körüli jellemző tartomány."
+                    : "Colored dot = your value · faint band = the team's typical range around the average."}
                 </p>
               </div>
             </div>
@@ -259,6 +262,23 @@ export function TeamReportMemberView({
               <div className="min-w-[220px] flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-fraunces text-xl text-ink">{vm.primaryRole.label}</span>
+                  {/* Forrás-badge (hitelességi alapelv): mért kitöltés vs
+                      profil-alapú becslés — a TeamRoleSection sage/amber
+                      konvenciójával. Becsült szerep jelöletlenül mértnek
+                      látszana. */}
+                  {vm.roleSource && (
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-micro font-semibold ${
+                        vm.roleSource === "questionnaire"
+                          ? "bg-sage/15 text-sage-dark"
+                          : "bg-state-warning-bg text-state-warning-fg"
+                      }`}
+                    >
+                      {vm.roleSource === "questionnaire"
+                        ? t("teamComp.sourceMeasuredBadge", loc)
+                        : t("teamComp.sourceEstimateBadge", loc)}
+                    </span>
+                  )}
                   {vm.secondaryRole && (
                     <span className="rounded-full border border-sand bg-cream px-2.5 py-0.5 text-xs text-ink-body">
                       {isHu ? "másodlagos: " : "secondary: "}
@@ -266,6 +286,13 @@ export function TeamReportMemberView({
                     </span>
                   )}
                 </div>
+                {vm.roleSource === "estimate" && (
+                  <p className="mt-1 text-micro text-muted">
+                    {isHu
+                      ? "A személyiségprofilodból becsült szerep — a csapatszerep-kérdőív kitöltésével mért adatra cserélheted."
+                      : "A role estimated from your personality profile — complete the team-role questionnaire to replace it with measured data."}
+                  </p>
+                )}
                 {vm.roleFit === "rare" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
                     {isHu ? "Ez a szerep a csapatban ritka — " : "This role is rare in the team — "}

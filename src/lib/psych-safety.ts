@@ -22,7 +22,10 @@
 // Ez a modul kliens-oldalon is importálható (nincs prisma-függése).
 // ============================================================
 
-export const PSYCH_SAFETY_MIN_RESPONSES = 3;
+import { sampleStdDev } from "@/lib/stats/dimension-stats";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+
+export const PSYCH_SAFETY_MIN_RESPONSES = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 /** Likert 1–5 (1 = egyáltalán nem értek egyet … 5 = teljesen egyetértek) */
 export interface PsychSafetyItem {
@@ -151,9 +154,9 @@ export function psychSafetyBand(index: number): "low" | "mid" | "high" {
 }
 
 /**
- * Anonim válaszhalmaz aggregálása. Az anonimitás-küszöb alatt (n < 3)
- * SZÁNDÉKOSAN null — egyéni válasz így sem közvetve, sem közvetlenül
- * nem visszafejthető.
+ * Anonim válaszhalmaz aggregálása. Az anonimitás-küszöb
+ * (PSYCH_SAFETY_MIN_RESPONSES) alatt SZÁNDÉKOSAN null — egyéni válasz így
+ * sem közvetve, sem közvetlenül nem visszafejthető.
  */
 export function aggregatePsychSafety(
   responses: unknown[],
@@ -183,10 +186,9 @@ export function aggregatePsychSafety(
 
   const index =
     Math.round(personIndexes.reduce((a, b) => a + b, 0) / personIndexes.length);
-  const mean = personIndexes.reduce((a, b) => a + b, 0) / personIndexes.length;
-  const variance =
-    personIndexes.reduce((acc, v) => acc + (v - mean) ** 2, 0) / personIndexes.length;
-  const spread = Math.round(Math.sqrt(variance));
+  // Válaszadók közti szóródás: Bessel-korrekciós mintaszórás (a válaszok a
+  // csapat egy mintája; n ≥ PSYCH_SAFETY_MIN_RESPONSES itt mindig teljesül).
+  const spread = Math.round(sampleStdDev(personIndexes));
 
   return { count: valid.length, index, itemMeans, spread, band: psychSafetyBand(index) };
 }

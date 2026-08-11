@@ -10,22 +10,24 @@ import { buildPersonInput } from "./person";
 import { clusterByOverlap } from "./psychometrics";
 import { roleTopLetters, userTopLetters } from "./interests";
 import { getOccupation } from "./catalog";
+import { hasIndustryMismatch, sectionFor } from "./sections";
 import {
   RIASEC_LETTERS,
   type CareerFitResult,
-  type EntryLevel,
   type OccupationFit,
   type PersonInput,
   type RiasecLetter,
   type VetoTag,
 } from "./types";
 
-/** Megjelenítéshez dúsított illeszkedés (leírás, aliasok, hivatalos nevek). */
+/**
+ * Megjelenítéshez dúsított illeszkedés (leírás + Holland-top). A korábbi
+ * aliases/eduHu/feorName mezők 2026-08-11-én kikerültek a kliens-payloadból:
+ * egyetlen felület sem olvasta őket (grep-igazolt holt adat), viszont minden
+ * fit-válaszban utaztak. Visszaállításhoz: git history + occupations.content.
+ */
 export interface CareerFitView extends OccupationFit {
   desc: string;
-  aliases: string[];
-  eduHu: string | null;
-  feorName: string;
   /** a foglalkozás három legerősebb Holland-betűje */
   riasecTop: string;
 }
@@ -43,7 +45,15 @@ export interface CareerSections {
   afterTraining: CareerFitView[][];
 }
 
-export interface CareerResultView extends Omit<CareerFitResult, "clusters" | "ranked"> {
+/**
+ * A kliensnek küldött meta: a motor metája a belső `candidatePool` nélkül
+ * (2026-08-11) — a jelölt-halmaz mérete diagnosztikai szám, egyetlen felület
+ * sem olvasta, a motor-tesztek a CareerFitResult-on továbbra is látják.
+ */
+export type CareerViewMeta = Omit<CareerFitResult["meta"], "candidatePool">;
+
+export interface CareerResultView extends Omit<CareerFitResult, "ranked" | "meta"> {
+  meta: CareerViewMeta;
   sections: CareerSections;
   scope: ScopeInfo;
   /** a jelenlegi területen belüli legjobb szerepek (ha a user megadta) */
@@ -86,46 +96,12 @@ export interface ScopeInfo {
   ignored: boolean;
 }
 
-const ENTRY_RANK: Record<EntryLevel, number> = {
-  open: 0,
-  course: 1,
-  vocational: 2,
-  higher: 3,
-  specialized: 4,
-};
-
-const EDU_RANK: Record<string, number> = {
-  primary: 0,
-  secondary: 1,
-  vocational: 2,
-  higher: 3,
-  specialized: 4,
-};
+// A szakaszba sorolás (sectionFor) a ./sections modulban él (2026-08-11):
+// EGYETLEN forrása a motor feasibility eredménye — a korábbi külön lépcső
+// ismeretlen végzettségnél a course-belépést „Most elérhető"-nek mondta,
+// miközben a feasibility ugyanarra training-needed-et adott.
 
 type Section = keyof CareerSections;
-
-/**
- * Melyik szakaszba kerül a szerep. A „Most elérhető" a SZINTEDNEK megfelelő
- * belépésű szerepeket jelenti — egy diplomás egészségügyisnek a szakma-szintű
- * látszerész nem „most elérhető" ajánlat, hanem tudatos lefelé-váltás
- * (belowLevel, összecsukva). A szint fölött: tanulással.
- */
-const AT_LEVEL: Record<number, number[]> = {
-  0: [0],
-  1: [0, 1],
-  2: [2],
-  3: [3],
-  4: [3, 4],
-};
-
-function sectionFor(fit: OccupationFit, eduLevel: string | null | undefined): Section {
-  const entry = ENTRY_RANK[fit.entry];
-  if (!eduLevel) return entry <= 1 ? "atLevel" : "afterTraining";
-  const edu = EDU_RANK[eduLevel] ?? 0;
-  if (entry > edu) return "afterTraining";
-  if ((AT_LEVEL[edu] ?? [edu]).includes(entry)) return "atLevel";
-  return "belowLevel";
-}
 
 export async function computeCareerForProfile(
   userProfileId: string,
@@ -147,10 +123,8 @@ export async function computeCareerForProfile(
   const emptySections: CareerSections = { atLevel: [], belowLevel: [], afterTraining: [] };
   if (!hasSelfResult) {
     return {
-      general: 50,
       interestSource: null,
       interestDifferentiation: null,
-      families: [],
       observerWeight: 0,
       meta: {
         catalogVersion: "",
@@ -158,7 +132,7 @@ export async function computeCareerForProfile(
         form: person.form,
         dimSe: 0,
         strategy: "composite",
-        candidatePool: null,
+        interestWeight: 0,
       },
       sections: emptySections,
       scope: { mode: "open", keys: [], widened: false, active: false, ignored: false },
@@ -202,9 +176,6 @@ export async function computeCareerForProfile(
     return {
       ...fit,
       desc: extra?.desc ?? "",
-      aliases: extra?.aliases ?? [],
-      eduHu: extra?.eduHu ?? null,
-      feorName: extra?.feorName ?? "",
       riasecTop: occupation ? roleTopLetters(occupation) : "",
     };
   };
@@ -246,7 +217,8 @@ export async function computeCareerForProfile(
   );
 
   // Érdeklődés-blokk: a felhasználónak LÁTNIA kell a saját kódját és azt, hogy
-  // mekkora súllyal számít — enélkül úgy tűnik, mintha nem használnánk.
+  // mekkora súllyal számít — enélkül úgy tűnik, mintha nem használnánk. A súly
+  // a motor metájából jön: a mutatott és a ténylegesen használt érték azonos.
   const interests = person.interests
     ? {
         vector: Object.fromEntries(
@@ -254,36 +226,33 @@ export async function computeCareerForProfile(
         ) as Partial<Record<RiasecLetter, number>>,
         top: userTopLetters(person.interests.vector),
         source: person.interests.source,
-        weight:
-          result.ranked[0]?.interest === null
-            ? 0
-            : Math.round(
-                (person.interests.source === "measured"
-                  ? 0.35
-                  : person.interests.source === "tags"
-                    ? 0.25
-                    : 0.15) * 100,
-              ) / 100,
+        weight: Math.round(result.meta.interestWeight * 100) / 100,
       }
     : null;
 
   // Ellentmondás-jelzés: a bejelölt iparágak egyike sem szerepel a mért
-  // érdeklődés szerinti legjobb tételek között.
+  // érdeklődés szerinti legjobb CÍMKÉZETT tételek között. Az univerzális
+  // (industries: []) szerepek kimaradnak az ítéletből — rajtuk sosincs
+  // industry-pick flag, és scope-módban ők dominálják a topot (fix, 2026-08-11).
   const picked = new Set(options.industries ?? []);
-  const industryMismatch =
-    picked.size > 0 &&
-    person.interests?.source === "measured" &&
-    result.ranked.slice(0, 10).every((fit) => !fit.flags.includes("industry-pick"));
+  const industryMismatch = hasIndustryMismatch(
+    result.ranked.slice(0, 10).map((fit) => ({
+      flags: fit.flags,
+      industryTagged: (getOccupation(fit.id)?.industries ?? []).length > 0,
+    })),
+    picked.size,
+    person.interests?.source ?? null,
+  );
+
+  // A belső candidatePool nem utazik a kliensnek (2026-08-11).
+  const { candidatePool: _candidatePool, ...viewMeta } = result.meta;
+  void _candidatePool;
 
   return {
-    general: result.general,
     interestSource: result.interestSource,
     interestDifferentiation: result.interestDifferentiation,
     observerWeight: result.observerWeight,
-    // Családszintű illeszkedés — a felület ezt csoportosítja majd; ma még
-    // csak átmegy, hogy a számítás és a szerződés kész legyen.
-    families: result.families,
-    meta: result.meta,
+    meta: viewMeta,
     sections,
     scope,
     currentField: (currentFieldResult?.ranked ?? [])

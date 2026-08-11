@@ -6,6 +6,8 @@ import {
   type ObserverTokenErrorCode,
 } from "./token-validation";
 
+export type LinkObserverTokenErrorCode = ObserverTokenErrorCode | "SELF_LINK_FORBIDDEN";
+
 export type LinkObserverTokenResult =
   | {
       ok: true;
@@ -14,7 +16,7 @@ export type LinkObserverTokenResult =
     }
   | {
       ok: false;
-      code: ObserverTokenErrorCode;
+      code: LinkObserverTokenErrorCode;
     };
 
 interface LinkObserverTokenOptions {
@@ -32,6 +34,7 @@ export async function linkObserverTokenToProfile(
       id: true,
       status: true,
       expiresAt: true,
+      inviterId: true,
       observerProfileId: true,
     },
   });
@@ -46,6 +49,14 @@ export async function linkObserverTokenToProfile(
       ok: false,
       code: toObserverTokenErrorCode(lifecycle),
     };
+  }
+
+  // Self-guard: az ÉRTÉKELT (meghívó) nem claim-elheti a SAJÁT külső tokenjét
+  // — a submit-oldali önhamisítás-tiltás (isObserverSelfSubmission) párja a
+  // linkelésre. Enélkül a meghívó magához köthetné a tokent, ami az
+  // addressee-alapú védelmeket zavarná össze.
+  if (invitation.inviterId === options.profileId) {
+    return { ok: false, code: "SELF_LINK_FORBIDDEN" };
   }
 
   if (isObserverAssociationMismatch(invitation.observerProfileId, options.profileId)) {

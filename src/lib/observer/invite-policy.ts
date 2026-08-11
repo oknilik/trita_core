@@ -15,6 +15,31 @@
 // Kampány-kontextus nélkül (self-serve / magán használat) nincs kapu.
 // ─────────────────────────────────────────────────────────────────────
 
+// Kvóta és lejárat — az i18n-szövegek („5 aktív meghívó", „30 nap")
+// ezekhez az értékekhez kötöttek; a jóváhagyáskor újraszámolt lejárat is
+// innen jön.
+export const OBSERVER_INVITE_MAX_ACTIVE = 5;
+export const OBSERVER_INVITE_TTL_DAYS = 30;
+
+/**
+ * Kiküldöttnek számító meghívók where-töredéke (kampány-haladás számlálók).
+ * Az EXPIRED státuszt semmi nem írja (lazy-derivált) — a lejárt függő
+ * meghívó nem számít kiküldöttnek; a COMPLETED-et a lejárat nem érinti.
+ */
+export function sentObserverInviteWhere(now: Date = new Date()): {
+  OR: Array<
+    | { status: "COMPLETED" }
+    | { status: { in: ("AWAITING_APPROVAL" | "PENDING")[] }; expiresAt: { gt: Date } }
+  >;
+} {
+  return {
+    OR: [
+      { status: "COMPLETED" },
+      { status: { in: ["AWAITING_APPROVAL", "PENDING"] }, expiresAt: { gt: now } },
+    ],
+  };
+}
+
 export type ColleagueObserverType = "TEAM" | "ORG";
 
 export interface ObserverTypeBadge {

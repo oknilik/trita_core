@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 import type { ScoreResult } from "@/lib/scoring";
 import {
   DOSSIER_OBSERVER_MIN,
@@ -14,6 +14,12 @@ import {
   type DossierFeedbackItem,
   type DossierMeasurementStatus,
 } from "@/lib/member-dossier";
+import {
+  assessRaterQuality,
+  buildRaterQualityItemMeta,
+  extractRaterAnswers,
+} from "@/lib/observer/rater-quality";
+import { getTestConfig } from "@/lib/questions";
 import { aggregatePeerRoleScores } from "@/lib/team-role-peer";
 import { getTopRoles, type TeamRoleScores } from "@/lib/team-role-scoring";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
@@ -41,11 +47,12 @@ function messageOf(payload: unknown): string {
   return typeof m === "string" ? m : "";
 }
 
-const TRUST_TO_DOSSIER: Record<TrustEdgeType, DossierEdgeType> = {
+// A "disconnected" (nincs működő kapcsolat a pár között) NEM konfliktus —
+// élként nem jelenítjük meg, ezért nincs a leképezésben.
+const TRUST_TO_DOSSIER: Record<Exclude<TrustEdgeType, "disconnected">, DossierEdgeType> = {
   strong_trust: "aligned",
   moderate: "complementary",
   weak_trust: "friction",
-  disconnected: "friction",
 };
 
 function latestIso(dates: (Date | null | undefined)[]): string | null {
@@ -114,7 +121,16 @@ export async function buildMemberDossier(
       where: { userProfileId: targetUserId, source: "questionnaire" },
     }),
     prisma.teamRoleObservation.findMany({
-      where: { aboutUserId: targetUserId },
+      // Csak a tag EBBEN a szervezetben lévő csapataiban, és a self-sor
+      // (rater === about) kizárva — pontosan úgy, mint a trustObservation-nél
+      // alább. Korábban az aboutUserId-re szűrt, scope nélkül: másik org
+      // peer-visszajelzése is beszivárgott a dossiéba, és egy self-értékelés a
+      // min-3 anonimitás-padlóba számított (motor-audit).
+      where: {
+        aboutUserId: targetUserId,
+        NOT: { raterUserId: targetUserId },
+        teamId: { in: teamIds },
+      },
       orderBy: { updatedAt: "asc" },
       select: { raterUserId: true, selections: true, updatedAt: true },
     }),
@@ -152,15 +168,48 @@ export async function buildMemberDossier(
   // ── Önkép vs. külső kép ────────────────────────────────────────────
   const selfDims = selfLatest ? dimsOf(selfLatest.scores) : {};
   const observerAvg = computeObserverAverage(
-    TRITAN_ORDER,
+    HEXACO_ORDER,
     observers.map((o) => dimsOf(o.scores)),
   );
-  const dims = computeDimComparisons(TRITAN_ORDER, selfDims, observerAvg);
+  const dims = computeDimComparisons(HEXACO_ORDER, selfDims, observerAvg);
   const topGaps = topGapDims(dims);
 
+  // Rater-minőség (halo / straight-line / fordított-item konzisztencia) a
+  // tárolt nyers itemválaszokból. CSAK darabszám kerül ki — raterenkénti
+  // flag nevesítve soha; nem kizárási szabály, csak olvasási óvatosság.
+  // A bank fix (TestType.TRITAN az egyedüli érték); a teljes konfig itemei
+  // a rövid (TSFI-S) kitöltéseket is lefedik.
+  // CSAK akkor számoljuk/adjuk ki, ha az observer-aggregátum maga is látszik
+  // (n ≥ DOSSIER_OBSERVER_MIN): a padló alatt az „1 gyanús értékelő" jelzés
+  // egyetlen, beazonosítható raterre mutatna rá.
+  const observerShown = observers.length >= DOSSIER_OBSERVER_MIN;
+  const raterQualityMeta = observerShown
+    ? buildRaterQualityItemMeta(getTestConfig("TRITAN").questions)
+    : null;
+  const observerSuspectCount = raterQualityMeta
+    ? observers.reduce((count, o) => {
+        const answers = extractRaterAnswers(o.scores);
+        if (!answers) return count; // örökség-sor tárolt válaszok nélkül — nem értékelhető
+        return assessRaterQuality(answers, raterQualityMeta).suspect ? count + 1 : count;
+      }, 0)
+    : 0;
+
   // Csapatszerep peer: raterenként a legutolsó készlet (updatedAt asc → felülír).
+  // A rátereket a tag JELENLEGI csapattársaira szűrjük: egy azóta KILÉPETT
+  // értékelő régi véleménye nem számíthat a min-3 anonimitás-padlóba, sem az
+  // átlagba (motor-audit v6 — a v5 dossier-scope csak a teamId-t + a self-sort
+  // zárta, a leaver-rátert nem). A team-tab ugyanezt teszi (S4).
+  const currentPeerMemberIds = new Set(
+    (
+      await prisma.teamMember.findMany({
+        where: { teamId: { in: teamIds } },
+        select: { userId: true },
+      })
+    ).map((m) => m.userId),
+  );
   const peerByRater = new Map<string, TeamRoleSelections>();
   for (const obs of rolePeerObs) {
+    if (!currentPeerMemberIds.has(obs.raterUserId)) continue; // kilépett rater
     peerByRater.set(obs.raterUserId, obs.selections as TeamRoleSelections);
   }
   const peerAgg = aggregatePeerRoleScores([...peerByRater.values()]);
@@ -204,11 +253,13 @@ export async function buildMemberDossier(
     const edges: DossierEdge[] = [];
     const measuredOtherIds = new Set<string>();
 
-    // Mért élek a trust-körből (a tagot érintő párok).
+    // Mért élek a trust-körből (a tagot érintő párok). A "disconnected"
+    // pár mértnek számít (a becslés nem írja felül), de él nem lesz belőle.
     for (const e of network?.edges ?? []) {
       if (e.a !== targetUserId && e.b !== targetUserId) continue;
       const otherUserId = e.a === targetUserId ? e.b : e.a;
       measuredOtherIds.add(otherUserId);
+      if (e.type === "disconnected") continue;
       edges.push({
         otherUserId,
         otherName: nameOf(otherUserId),
@@ -226,6 +277,7 @@ export async function buildMemberDossier(
         const otherSelf = selfScoresOf(m.userId);
         if (!otherSelf) continue;
         const friction = calculatePairFriction(targetSelf, otherSelf);
+        if (friction === null) continue;
         edges.push({
           otherUserId: m.userId,
           otherName: nameOf(m.userId),
@@ -268,7 +320,11 @@ export async function buildMemberDossier(
     { key: "self", lastAt: selfLatest?.createdAt.toISOString() ?? null, count: selfCount },
     {
       key: "observer",
-      lastAt: observers[0]?.createdAt.toISOString() ?? null,
+      // NAP pontosságra csonkolva (YYYY-MM-DD): a legutolsó beérkezés pontos
+      // időbélyege az anonimitás-padló alatt (n<3) egyetlen értékelőt
+      // azonosítana be („ki küldte be tegnap 14:32-kor?") — a részvétel-
+      // mátrixhoz a nap is elég.
+      lastAt: observers[0]?.createdAt.toISOString().slice(0, 10) ?? null,
       count: observers.length,
     },
     {
@@ -319,7 +375,8 @@ export async function buildMemberDossier(
       selfCompletedAt: selfLatest?.createdAt.toISOString() ?? null,
       selfRoundCount: selfCount,
       observerCount: observers.length,
-      observerShown: observers.length >= DOSSIER_OBSERVER_MIN,
+      observerSuspectCount,
+      observerShown,
       dims,
       topGaps,
       teamRole: {

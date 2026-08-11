@@ -337,6 +337,34 @@ describe("AssessmentClient integration behavior", () => {
     expect(JSON.parse(persistedPayload as string).answers).toEqual({ "101": 3 });
   });
 
+  it("drops out-of-form server draft answers so a partial draft is not falsely complete", async () => {
+    // 9 érvényes válasz (101–109) + 3 formán kívüli, „ragadós" id (901–903).
+    // Szűrés nélkül a 12 nyers válasz hamis „kész" (>= 10) állapotot adna:
+    // Kiértékelés gomb + a szerver által 400-zal elutasított submit-payload.
+    renderAssessmentClient({
+      initialDraft: {
+        answers: {
+          "101": 3, "102": 3, "103": 3, "104": 3, "105": 3,
+          "106": 3, "107": 3, "108": 3, "109": 3,
+          "901": 5, "902": 4, "903": 2,
+        },
+        currentPage: 0,
+      },
+    });
+
+    // A resume az első ténylegesen megválaszolatlan formán belüli kérdésnél
+    // (10.) áll meg — nem esik vissza „kész"-be a formán kívüli id-k miatt.
+    await expectCurrentQuestionNumber(10);
+
+    const evaluateLabel = t("assessment.evaluateCta", "en");
+    expect(
+      screen.queryByRole("button", { name: new RegExp(evaluateLabel, "i") }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }),
+    ).toBeInTheDocument();
+  });
+
   it("recovers after tab close/reopen by resuming from persisted local draft", async () => {
     const user = userEvent.setup();
     const firstRender = renderAssessmentClient();

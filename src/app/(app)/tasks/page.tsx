@@ -21,6 +21,7 @@ import {
 } from "@/lib/campaign-steps";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
+import { sentObserverInviteWhere } from "@/lib/observer/invite-policy";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
 
@@ -114,7 +115,9 @@ export default async function MyMeasurementsPage() {
       ? await prisma.observerInvitation.findMany({
           where: {
             inviterId: profile.id,
-            status: { in: ["AWAITING_APPROVAL", "PENDING", "COMPLETED"] },
+            // A lejárt függő meghívó itt sem számít kiküldöttnek — a
+            // team/[id] oldallal közös szabály (invite-policy).
+            ...sentObserverInviteWhere(),
           },
           select: { status: true, createdAt: true, completedAt: true },
         })

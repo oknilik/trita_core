@@ -1,5 +1,8 @@
 // src/lib/team-pattern.ts
 
+import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
+import { PATTERNS } from "@/lib/pattern-data";
+
 // ============================================================
 // TYPES
 // ============================================================
@@ -19,8 +22,6 @@ export interface TeamDiversity {
   cohesion: number;
   discipline: number;
   openness: number;
-  emotionality: number;
-  honesty: number;
 }
 
 export interface AxisDetail {
@@ -33,8 +34,6 @@ export interface AxisDetail {
 
 export interface StyleDistance {
   userId: string;
-  deviations: Record<string, number>;
-  patternDistance: number; // 0 = tökéletesen rajta, magasabb = távolabb
   tensionAxes: string[];   // tengelyek, ahol nagy az eltérés
 }
 
@@ -77,12 +76,12 @@ export interface TeamPatternResult {
 
 /** Scores in 0–100 range (as stored in AssessmentResult.scores.dimensions) */
 export interface TritanScores {
-  INTE: number;
-  RESO: number;
-  TEMP: number;
-  ADAP: number;
-  THOR: number;
-  OPEN: number;
+  H: number;
+  E: number;
+  X: number;
+  A: number;
+  C: number;
+  O: number;
 }
 
 // ============================================================
@@ -91,7 +90,7 @@ export interface TritanScores {
 //   3.2 → 55  |  3.4 → 60  |  3.5 → 62.5  |  3.3 → 57.5
 // ============================================================
 
-const THRESHOLDS = {
+export const PATTERN_THRESHOLDS = {
   drive:      55,
   cohesion:   60,
   discipline: 62.5,
@@ -107,27 +106,31 @@ const SLIGHT_BAND = 12.5;
 // Egyén-minta eltérés küszöb (0.8 Likert → 20%)
 const TENSION_THRESHOLD = 20;
 
-// Stabilitáshoz: ennyi distance-en belül "instabil" a tengely (0.15 → 3.75%)
-const STABILITY_THRESHOLD = 3.75;
+// Stabilitás: egy tengely akkor küszöb-közeli (instabil), ha a fokozata
+// "balanced" — azaz a BALANCED_BAND-en belül ül. A korábbi külön
+// STABILITY_THRESHOLD (3.75) KESKENYEBB volt a balanced sávnál (6.25), így
+// egy tengely lehetett egyszerre „kiegyensúlyozott" fokozatú ÉS „stabilan
+// egy pólus felé hajló" — a fokozat, a pólus-betű és a stabilitás-jegyzet
+// ellentmondott egymásnak. A stabilitás mostantól a fokozatból SZÁRMAZIK,
+// külön küszöb nincs.
 
-// Diverzitás (szórás) sávok (0–100 skálán)
+// Diverzitás (szórás) sávok (0–100 skálán).
+// FIGYELEM: e küszöbök még a korábbi populációs szórásra voltak hangolva;
+// a becslő mostantól torzítatlan mintaszórás (sampleStdDev, ÷(n−1)), ami
+// n=3–8-nál ~10–20%-kal nagyobb → a besorolás kissé gyakrabban jelez
+// "diverz"-et. A tényleges újrakalibráció pilot-normát igényel.
 const DIVERSITY_LOW  = 10;   // ez alatt "homogén"
 const DIVERSITY_HIGH = 20;   // ez felett "diverz"
 
+// Minimum tag a csapatminta számításához (statisztikai elégségesség).
+const PATTERN_MIN_MEMBERS = 3;
+
 // ============================================================
 // SEGÉDFÜGGVÉNYEK
+// A dimenzió-átlag és -szórás a közös, tiszta stats-modulból (mean /
+// sampleStdDev). A szórás Bessel-korrekciós (mintaszórás, ÷(n−1)) — a
+// csapat a populáció mintája, a ÷n lefelé torzított.
 // ============================================================
-
-function mean(values: number[]): number {
-  if (values.length === 0) return 0;
-  return values.reduce((s, v) => s + v, 0) / values.length;
-}
-
-function stddev(values: number[]): number {
-  if (values.length < 2) return 0;
-  const avg = mean(values);
-  return Math.sqrt(mean(values.map((v) => (v - avg) ** 2)));
-}
 
 function gradeAxis(value: number, threshold: number): AxisGrade {
   const diff = value - threshold;
@@ -160,33 +163,31 @@ function poleLetter(
 export function calculateTeamPattern(
   members: Array<{ userId: string; scores: TritanScores }>
 ): TeamPatternResult | null {
-  if (members.length < 3) return null;
+  if (members.length < PATTERN_MIN_MEMBERS) return null;
 
   const allScores = members.map((m) => m.scores);
 
   // ── 1. Tengely értékek ──────────────────────────────────
   const rawAxes: TeamAxes = {
-    drive:      mean(allScores.map((s) => s.TEMP)),
-    cohesion:   mean(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline: mean(allScores.map((s) => s.THOR)),
-    openness:   mean(allScores.map((s) => s.OPEN)),
+    drive:      mean(allScores.map((s) => s.X)),
+    cohesion:   mean(allScores.map((s) => (s.A + s.H) / 2)),
+    discipline: mean(allScores.map((s) => s.C)),
+    openness:   mean(allScores.map((s) => s.O)),
   };
 
   const rawDiversity: TeamDiversity = {
-    drive:        stddev(allScores.map((s) => s.TEMP)),
-    cohesion:     stddev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline:   stddev(allScores.map((s) => s.THOR)),
-    openness:     stddev(allScores.map((s) => s.OPEN)),
-    emotionality: stddev(allScores.map((s) => s.RESO)),
-    honesty:      stddev(allScores.map((s) => s.INTE)),
+    drive:      sampleStdDev(allScores.map((s) => s.X)),
+    cohesion:   sampleStdDev(allScores.map((s) => (s.A + s.H) / 2)),
+    discipline: sampleStdDev(allScores.map((s) => s.C)),
+    openness:   sampleStdDev(allScores.map((s) => s.O)),
   };
 
   // ── 2. Tengely részletek ────────────────────────────────
   const axisEntries: [string, number, number, number][] = [
-    ["drive",      rawAxes.drive,      THRESHOLDS.drive,      rawDiversity.drive],
-    ["cohesion",   rawAxes.cohesion,   THRESHOLDS.cohesion,   rawDiversity.cohesion],
-    ["discipline", rawAxes.discipline, THRESHOLDS.discipline, rawDiversity.discipline],
-    ["openness",   rawAxes.openness,   THRESHOLDS.openness,   rawDiversity.openness],
+    ["drive",      rawAxes.drive,      PATTERN_THRESHOLDS.drive,      rawDiversity.drive],
+    ["cohesion",   rawAxes.cohesion,   PATTERN_THRESHOLDS.cohesion,   rawDiversity.cohesion],
+    ["discipline", rawAxes.discipline, PATTERN_THRESHOLDS.discipline, rawDiversity.discipline],
+    ["openness",   rawAxes.openness,   PATTERN_THRESHOLDS.openness,   rawDiversity.openness],
   ];
 
   const axes: Record<string, AxisDetail> = {};
@@ -194,11 +195,16 @@ export function calculateTeamPattern(
 
   for (const [name, value, threshold, div] of axisEntries) {
     const dist = Math.abs(value - threshold);
-    if (dist <= STABILITY_THRESHOLD) unstableAxes.push(name);
+    const grade = gradeAxis(value, threshold);
+    // Instabil = "balanced" fokozatú tengely (küszöb-közeli). Így a fokozat,
+    // a kiosztott pólus-betű és a stabilitás-jegyzet garantáltan egyet mond:
+    // „stabil" (minden tengely egyértelműen egy pólus felé hajlik) CSAK akkor
+    // állítható, ha egyik tengely sem "balanced".
+    if (grade === "balanced") unstableAxes.push(name);
 
     axes[name] = {
       value,
-      grade: gradeAxis(value, threshold),
+      grade,
       diversity: div,
       diversityLabel: diversityLabel(div),
       distanceFromThreshold: dist,
@@ -210,10 +216,10 @@ export function calculateTeamPattern(
   // NEM a belső dimenziókódok. (A 2026-07-i TRITAN→HEXACO átnevezés itt
   // tévedésből a betű-literálokat is átírta; a kulcsok 4 betűsek maradtak.)
   const patternCode = [
-    poleLetter(rawAxes.drive,      THRESHOLDS.drive,      "E", "R"),
-    poleLetter(rawAxes.cohesion,   THRESHOLDS.cohesion,   "C", "V"),
-    poleLetter(rawAxes.discipline, THRESHOLDS.discipline, "S", "F"),
-    poleLetter(rawAxes.openness,   THRESHOLDS.openness,   "X", "P"),
+    poleLetter(rawAxes.drive,      PATTERN_THRESHOLDS.drive,      "E", "R"),
+    poleLetter(rawAxes.cohesion,   PATTERN_THRESHOLDS.cohesion,   "C", "V"),
+    poleLetter(rawAxes.discipline, PATTERN_THRESHOLDS.discipline, "S", "F"),
+    poleLetter(rawAxes.openness,   PATTERN_THRESHOLDS.openness,   "X", "P"),
   ].join("");
 
   // ── 4. Globális diverzitás suffix ──────────────────────
@@ -269,11 +275,14 @@ export function calculateTeamPattern(
 
   // ── 8. Egyén-minta távolság ─────────────────────────────
   const styleDistances: StyleDistance[] = members.map((m) => {
+    // A tengely-eltérések csak a feszültség-tengelyek kiszűréséhez kellenek
+    // (a fogyasztó a tensionAxes darabszámát használja) — a deviations map és
+    // a patternDistance nem hagyja el a függvényt.
     const deviations: Record<string, number> = {
-      drive:      Math.abs(m.scores.TEMP - rawAxes.drive),
-      cohesion:   Math.abs((m.scores.ADAP + m.scores.INTE) / 2 - rawAxes.cohesion),
-      discipline: Math.abs(m.scores.THOR - rawAxes.discipline),
-      openness:   Math.abs(m.scores.OPEN - rawAxes.openness),
+      drive:      Math.abs(m.scores.X - rawAxes.drive),
+      cohesion:   Math.abs((m.scores.A + m.scores.H) / 2 - rawAxes.cohesion),
+      discipline: Math.abs(m.scores.C - rawAxes.discipline),
+      openness:   Math.abs(m.scores.O - rawAxes.openness),
     };
 
     const tensionAxes = Object.entries(deviations)
@@ -282,8 +291,6 @@ export function calculateTeamPattern(
 
     return {
       userId: m.userId,
-      deviations,
-      patternDistance: mean(Object.values(deviations)),
       tensionAxes,
     };
   });
@@ -341,7 +348,42 @@ export interface PatternContent {
   leaderActions: string[];
 }
 
-export const PATTERN_NAMES: Record<string, PatternContent> = {
+// ── Név-forrás egységesítés (2026-08-11) ────────────────────────────
+// A 16 mintázat MEGJELENŐ nevének egyetlen forrása a pattern-data.ts
+// (PATTERNS[bináris kulcs].alias) — a /patterns felfedező ugyanazt a
+// név-családot mutatja elsődleges címkeként, így a riport és a marketing
+// egy nyelvet beszél. Az alábbi tartalom-táblában maradó `name` literál
+// csak VÉSZ-fallback (ha egy kód nem oldódna fel a pattern-data-ban);
+// a kanonikus PATTERN_NAMES export a nevet a pattern-data-ból veszi.
+
+/** Tengelyenkénti pólus-betűpárok [magas, alacsony] — drive/cohesion/discipline/openness. */
+const AXIS_POLE_LETTERS: ReadonlyArray<readonly [string, string]> = [
+  ["E", "R"],
+  ["C", "V"],
+  ["S", "F"],
+  ["X", "P"],
+];
+
+/** 4 betűs mintakód → pattern-data bináris kulcs (pl. "ECSX" → "1111"). */
+export function patternCodeToBinaryKey(code: string): string | null {
+  if (code.length !== AXIS_POLE_LETTERS.length) return null;
+  let key = "";
+  for (let i = 0; i < AXIS_POLE_LETTERS.length; i++) {
+    const [high, low] = AXIS_POLE_LETTERS[i];
+    if (code[i] === high) key += "1";
+    else if (code[i] === low) key += "0";
+    else return null;
+  }
+  return key;
+}
+
+/** A mintázat publikus neve a kanonikus név-táblából (pattern-data). */
+export function patternPublicName(code: string): string | null {
+  const key = patternCodeToBinaryKey(code);
+  return key ? (PATTERNS[key]?.alias ?? null) : null;
+}
+
+const PATTERN_CONTENT: Record<string, PatternContent> = {
 
   // ── Energikus + Összetartó ─────────────────────────────
 
@@ -363,7 +405,11 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
       "A struktúra rugalmatlansággá válhat, ha a folyamatok túlterheltek",
     ],
     communicationStyle:
-      "Gyors, közvetlen, de empatikus. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
+      // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga — az
+      // „empatikus" ezen a tengelyen ugyanaz a túl-ígéret, amit a pattern-data
+      // két sorából is kivezettünk (2026-08-11): a Barátságosság türelmet és
+      // megbocsátást mér, nem empátiát.
+      "Gyors, közvetlen, de türelmes. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
     idealTasks:
       "Új termékek fejlesztése, innovációs sprint, stratégiai pivot — ahol egyszerre kell kreativitás és megvalósítási képesség.",
     riskSituations:
@@ -832,6 +878,17 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
   },
 };
 
+/**
+ * Kanonikus mintázat-tábla: tartalom innen, NÉV a pattern-data-ból
+ * (egy név-tábla elv — a literál `name` csak fallback).
+ */
+export const PATTERN_NAMES: Record<string, PatternContent> = Object.fromEntries(
+  Object.entries(PATTERN_CONTENT).map(([code, content]) => [
+    code,
+    { ...content, name: patternPublicName(code) ?? content.name },
+  ]),
+);
+
 // ============================================================
 // UI LABELS — a frontend számára
 // ============================================================
@@ -843,11 +900,3 @@ export const AXIS_LABELS = {
   discipline: { name: "Fegyelem",  low: "Rugalmas",     high: "Strukturált" },
   openness:   { name: "Nyitottság",low: "Pragmatikus",  high: "Felfedező" },
 } as const;
-
-export const GRADE_LABELS: Record<AxisGrade, string> = {
-  strong_high: "erősen",
-  slight_high: "enyhén",
-  balanced:    "kiegyensúlyozott",
-  slight_low:  "enyhén",
-  strong_low:  "erősen",
-};

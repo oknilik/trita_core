@@ -1,13 +1,16 @@
 import Link from "next/link";
+import { tf, type Locale } from "@/lib/i18n";
 import type {
   SerializedMemberDossier,
   DossierMeasurementKey,
   DossierEdgeType,
 } from "@/lib/member-dossier";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { TRUST_MIN_RATERS } from "@/lib/trust-network";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import {
   CAMPAIGN_STEP_LABELS,
   isCampaignStepType,
@@ -76,6 +79,7 @@ export function MemberDossierView({
   isHu: boolean;
 }) {
   const { header, participation, selfVsExternal: sx, embeddedness, feedback } = dossier;
+  const locale: Locale = isHu ? "hu" : "en";
 
   return (
     <div className="flex flex-col gap-6">
@@ -189,11 +193,16 @@ export function MemberDossierView({
               </thead>
               <tbody className="divide-y divide-sand/70">
                 {sx.dims.map((d) => {
-                  const big = d.delta !== null && Math.abs(d.delta) >= 10;
+                  // Önkép–külső kép eltérés kiemelése CSAK a kanonikus
+                  // difference-kapu (DIFF_MIN_GAP = round(√2·SEM)) felett — a
+                  // 10–14 pontos Δ két pontszám különbségeként még a mérési
+                  // zajon belül van. Ugyanaz a küszöb, mint a ComparisonTab /
+                  // PDF összevetéseknél; a korábbi 10-es érték túl-jelzett.
+                  const big = d.delta !== null && Math.abs(d.delta) >= DIFF_MIN_GAP;
                   return (
                     <tr key={d.code} className={big ? "bg-state-warning-bg/60" : undefined}>
                       <td className="py-1.5 text-ink-body">
-                        {isHu ? TRITAN_DIMENSIONS[d.code].hu : TRITAN_DIMENSIONS[d.code].en}
+                        {isHu ? HEXACO_DIMENSIONS[d.code].hu : HEXACO_DIMENSIONS[d.code].en}
                       </td>
                       <td className="py-1.5 text-right tabular-nums text-ink">{d.self}</td>
                       <td className="py-1.5 text-right tabular-nums text-ink">
@@ -218,9 +227,18 @@ export function MemberDossierView({
                   ? `${sx.observerCount} értékelő aggregált átlaga — egyéni válasz nem jelenik meg.`
                   : `Aggregated average of ${sx.observerCount} raters — no individual response is shown.`
                 : isHu
-                  ? `Külső oszlophoz legalább 2 lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
-                  : `The external column needs at least 2 completed observer ratings (currently: ${sx.observerCount}).`}
+                  ? `Külső oszlophoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
+                  : `The external column needs at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} completed observer ratings (currently: ${sx.observerCount}).`}
             </p>
+
+            {/* Rater-minőség jelzés — aggregált darabszám, raterenkénti flag soha. */}
+            {sx.observerSuspectCount >= 1 ? (
+              <p className="mt-1 text-micro text-muted">
+                {tf("memberDossier.observerQualityNote", locale, {
+                  n: sx.observerSuspectCount,
+                })}
+              </p>
+            ) : null}
 
             {sx.topGaps.length > 0 ? (
               <div className="mt-4 rounded-xl border border-state-warning-border bg-state-warning-bg p-3.5">
@@ -230,7 +248,7 @@ export function MemberDossierView({
                 <ul className="mt-1.5 flex flex-col gap-1">
                   {sx.topGaps.map((g) => (
                     <li key={g.code} className="text-caption text-ink-body">
-                      {isHu ? TRITAN_DIMENSIONS[g.code].hu : TRITAN_DIMENSIONS[g.code].en}:{" "}
+                      {isHu ? HEXACO_DIMENSIONS[g.code].hu : HEXACO_DIMENSIONS[g.code].en}:{" "}
                       <span className="tabular-nums font-medium">
                         {g.delta! > 0 ? `+${g.delta}` : g.delta}
                       </span>{" "}

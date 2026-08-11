@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { scrubProfileData } from "@/lib/account-scrub";
 
 const deleteSchema = z.object({
   confirm: z.literal("DELETE"),
@@ -21,41 +22,12 @@ export async function POST(req: Request) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true },
   });
 
   if (profile) {
-    await prisma.$transaction([
-      prisma.assessmentResult.updateMany({
-        where: { userProfileId: profile.id },
-        data: { userProfileId: null },
-      }),
-      prisma.assessmentDraft.deleteMany({
-        where: { userProfileId: profile.id },
-      }),
-      // Páros összehasonlítás: a törölt fél minden meghívója/párja azonnal
-      // visszavonódik — a másik fél sem érheti el többé a szimulációt.
-      prisma.compareInvite.updateMany({
-        where: {
-          OR: [{ inviterId: profile.id }, { partnerId: profile.id }],
-          status: { in: ["PENDING", "ACCEPTED"] },
-        },
-        data: { status: "REVOKED" },
-      }),
-      // Analitika: az eseményeket NEM töröljük, hanem elvágjuk a személytől.
-      // Így az aggregált tölcsér-számok (amelyekben a törlő felhasználó
-      // annak idején benne volt) nem esnek szét visszamenőleg, de az
-      // eseményei többé nem köthetők hozzá — ez a GDPR törlési jog
-      // teljesítése az analitikai adaton.
-      prisma.analyticsEvent.updateMany({
-        where: { userProfileId: profile.id },
-        data: { userProfileId: null, isAuthed: false },
-      }),
-      prisma.userProfile.update({
-        where: { id: profile.id },
-        data: { clerkId: null, email: null, deleted: true },
-      }),
-    ]);
+    // A teljes GDPR-scrub a közös forrásból (a Clerk-webhook ugyanezt hívja).
+    await scrubProfileData(profile.id, profile.email);
   }
 
   const client = await clerkClient();

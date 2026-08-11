@@ -17,7 +17,7 @@ function likert(dims: Record<string, number>) {
   return { type: "likert", dimensions: dims };
 }
 
-const DIMS = { INTE: 50, RESO: 50, TEMP: 82, ADAP: 50, THOR: 60, OPEN: 40 };
+const DIMS = { H: 50, E: 50, X: 82, A: 50, C: 60, O: 40 };
 
 describe("selectReflectionCandidates — 7–10 napos ablak", () => {
   it("az ablakban lévő legfrissebb eredmény jelölt, a legerősebb dimenzióval", () => {
@@ -26,7 +26,7 @@ describe("selectReflectionCandidates — 7–10 napos ablak", () => {
       NOW,
     );
     assert.equal(candidates.length, 1);
-    assert.deepEqual(candidates[0], { userId: "u1", topDim: "TEMP" });
+    assert.deepEqual(candidates[0], { userId: "u1", topDim: "X" });
   });
 
   it("ablakon kívül (túl friss vagy túl régi) nem jelölt", () => {
@@ -67,12 +67,12 @@ describe("selectReflectionCandidates — 7–10 napos ablak", () => {
         {
           userProfileId: "u1",
           createdAt: daysAgo(9),
-          scores: likert({ FOO: 99, THOR: 70, OPEN: 30 }),
+          scores: likert({ FOO: 99, C: 70, O: 30 }),
         },
       ],
       NOW,
     );
     assert.equal(candidates.length, 1);
-    assert.equal(candidates[0].topDim, "THOR");
+    assert.equal(candidates[0].topDim, "C");
   });
 });

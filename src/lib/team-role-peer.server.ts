@@ -6,6 +6,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   aggregatePeerRoleScores,
+  poolPeerSelectionsByRatedMember,
   type PeerRoleProfile,
 } from "@/lib/team-role-peer";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
@@ -15,31 +16,45 @@ import type { TeamRoleSelections } from "@/lib/team-role-questions";
  * profil). MINDEN eddigi kampány-kör observationjeit összesíti; egy
  * (aboutUserId, raterUserId) párnál a legfrissebb kör számít, hogy az
  * ismételt körök felülírják a korábbit, ne duplázódjanak.
+ *
+ * S4: mind az értékelő-, mind az értékelt-halmaz a JELENLEGI
+ * csapattagokra szűkül (poolPeerSelectionsByRatedMember) — a kilépett
+ * tagok ittmaradt observationjei nélkül az értékelő-szám nem lépheti túl
+ * az aktuális taglétszám − 1-et, így a lefedettség sem a 100%-ot; az
+ * anonimitás-padló a szűkített halmazon érvényesül.
  */
 export async function buildTeamPeerRoleProfiles(
   teamId: string,
 ): Promise<Map<string, PeerRoleProfile>> {
-  const observations = await prisma.teamRoleObservation.findMany({
-    where: { teamId },
-    orderBy: { updatedAt: "asc" },
-    select: {
-      aboutUserId: true,
-      raterUserId: true,
-      selections: true,
-    },
-  });
+  const [observations, members] = await Promise.all([
+    prisma.teamRoleObservation.findMany({
+      where: { teamId },
+      orderBy: { updatedAt: "asc" },
+      select: {
+        aboutUserId: true,
+        raterUserId: true,
+        selections: true,
+      },
+    }),
+    prisma.teamMember.findMany({
+      where: { teamId },
+      select: { userId: true },
+    }),
+  ]);
 
-  // aboutUserId → (raterUserId → legfrissebb selections)
-  const byAbout = new Map<string, Map<string, TeamRoleSelections>>();
-  for (const obs of observations) {
-    const raters = byAbout.get(obs.aboutUserId) ?? new Map();
-    raters.set(obs.raterUserId, obs.selections as TeamRoleSelections);
-    byAbout.set(obs.aboutUserId, raters);
-  }
+  const currentMemberIds = new Set(members.map((m) => m.userId));
+  const pooled = poolPeerSelectionsByRatedMember(
+    observations.map((obs) => ({
+      aboutUserId: obs.aboutUserId,
+      raterUserId: obs.raterUserId,
+      selections: obs.selections as TeamRoleSelections,
+    })),
+    currentMemberIds,
+  );
 
   const profiles = new Map<string, PeerRoleProfile>();
-  for (const [aboutUserId, raters] of byAbout) {
-    profiles.set(aboutUserId, aggregatePeerRoleScores([...raters.values()]));
+  for (const [aboutUserId, selectionSets] of pooled) {
+    profiles.set(aboutUserId, aggregatePeerRoleScores(selectionSets));
   }
   return profiles;
 }

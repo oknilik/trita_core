@@ -1,14 +1,31 @@
 "use client";
 
+import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { hexLetter } from "@/lib/hexaco";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
+
+// Önkép–külső kép eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) —
+// két hiba-terhelt pontszám KÜLÖNBSÉGÉNEK mérési hibája, nem egy ponté. A
+// korábbi hardkódolt 10 (1×SEM) a kapu alatti gap-eket már „eltérésnek"
+// osztályozta, miközben a dossziè/PDF a kanonikus kaput használta — a két
+// felület ellentmondott egymásnak (motor-audit v6, M1).
 
 interface ComparisonTabProps {
   dimensions: SerializedDimension[];
   hasObserverData: boolean;
   observerCount: number;
+  /** Az értékelők átlagos magabiztossága (1–5) — null, ha nincs adat. */
+  avgConfidence?: number | null;
+  /** Self facet-pontszámok (dim → facetkód → 0–100) — null örökség-eredménynél. */
+  selfFacetScores?: Record<string, Record<string, number>> | null;
+  /** Facet-szintű observer-átlag (facetenként ≥2 értékelő) — null küszöb alatt. */
+  observerFacetAverages?: Record<string, Record<string, number>> | null;
+  /** Kerekített facet-SEM (± pont) az egyezés-küszöbhöz — szerverről jön. */
+  facetSem?: number | null;
 }
 
 // ─── Insight texts for gaps ──────────────────────────────────────────────────
@@ -35,8 +52,8 @@ function getSummaryPoints(
   locale: Locale,
 ): string[] {
   const points: string[] = [];
-  const matching = dims.filter((d) => Math.abs(d.self - d.observer) < 10);
-  const differing = dims.filter((d) => Math.abs(d.self - d.observer) >= 10);
+  const matching = dims.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP);
+  const differing = dims.filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP);
 
   if (matching.length >= 4) {
     points.push(
@@ -51,11 +68,228 @@ function getSummaryPoints(
     );
   }
 
-  if (differing.length === 0) {
+  if (dims.length > 0 && differing.length === 0) {
     points.push(t("comparison.summaryPerfectMatch", locale));
   }
 
   return points;
+}
+
+// ─── Facet-szintű önkép–külső kép összevetés ─────────────────────────────────
+
+interface FacetComparisonRow {
+  code: string;
+  label: string;
+  self: number;
+  observer: number;
+  delta: number; // observer − self
+}
+
+function FacetComparisonSection({
+  dims,
+  selfFacetScores,
+  observerFacetAverages,
+  facetSem,
+  locale,
+}: {
+  dims: SerializedDimension[];
+  selfFacetScores: Record<string, Record<string, number>> | null;
+  observerFacetAverages: Record<string, Record<string, number>> | null;
+  facetSem: number | null;
+  locale: Locale;
+}) {
+  // Alapból tömör: csak a mérési hibán túli eltérések (a showLess kulcs
+  // szövege szerint) — a showAll a teljes lefedett listát nyitja.
+  const [showAll, setShowAll] = useState(false);
+
+  // Az egyezés-küszöb a facet-SEM — nélküle a jelölés nem értelmezhető.
+  if (!selfFacetScores || !observerFacetAverages || typeof facetSem !== "number") {
+    return null;
+  }
+
+  // Csak a MINDKÉT oldalról lefedett facetek; a facet-nevek a szerveren
+  // lokalizált serialized dimenziókból jönnek (accordionnal azonos forrás).
+  const groups = dims.flatMap((dim) => {
+    const selfDim = selfFacetScores[dim.code];
+    const obsDim = observerFacetAverages[dim.code];
+    if (!selfDim || !obsDim) return [];
+    const rows: FacetComparisonRow[] = dim.facets.flatMap((f) => {
+      const self = selfDim[f.code];
+      const observer = obsDim[f.code];
+      if (typeof self !== "number" || typeof observer !== "number") return [];
+      const selfRounded = Math.round(self);
+      const observerRounded = Math.round(observer);
+      return [
+        {
+          code: f.code,
+          label: f.label,
+          self: selfRounded,
+          observer: observerRounded,
+          delta: observerRounded - selfRounded,
+        },
+      ];
+    });
+    if (rows.length === 0) return [];
+    return [{ code: dim.code, label: dim.label, rows }];
+  });
+
+  if (groups.length === 0) return null;
+
+  const isGap = (row: FacetComparisonRow) => Math.abs(row.delta) >= facetSem;
+  const totalRows = groups.reduce((sum, g) => sum + g.rows.length, 0);
+  const gapCount = groups.reduce(
+    (sum, g) => sum + g.rows.filter(isGap).length,
+    0,
+  );
+
+  const visibleGroups = showAll
+    ? groups
+    : groups
+        .map((g) => ({ ...g, rows: g.rows.filter(isGap) }))
+        .filter((g) => g.rows.length > 0);
+
+  const legendChip = (
+    symbol: string,
+    labelKey: string,
+    tone: "match" | "gap",
+  ) => (
+    <span className="flex items-center gap-1.5 text-micro text-[var(--color-text-muted)]">
+      <span
+        className="inline-flex min-w-[22px] justify-center rounded px-1 py-0.5 font-semibold"
+        style={{
+          backgroundColor:
+            tone === "match"
+              ? "var(--color-surface-self-accent-soft)"
+              : "var(--color-surface-highlight-warm)",
+          color:
+            tone === "match"
+              ? "var(--color-accent-self-deep)"
+              : "var(--color-accent-primary-strong)",
+        }}
+      >
+        {symbol}
+      </span>
+      {t(labelKey, locale)}
+    </span>
+  );
+
+  return (
+    <div>
+      <h3 className="font-fraunces text-lg text-[var(--color-text-primary)]">
+        {t("comparison.facetMapTitle", locale)}
+      </h3>
+      <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
+        {t("comparison.facetMapSubtitle", locale)}
+      </p>
+
+      {/* Jelölés-legenda — a delta-jelvény három állapota */}
+      <div className="mb-4 mt-3 flex flex-wrap gap-x-4 gap-y-1.5">
+        {legendChip("≈", "comparison.heatmapMatch", "match")}
+        {legendChip("+", "comparison.heatmapObsHigher", "gap")}
+        {legendChip("−", "comparison.heatmapSelfHigher", "gap")}
+      </div>
+
+      {visibleGroups.length === 0 ? (
+        <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]">
+          <p className="text-caption leading-relaxed text-[var(--color-accent-self-deep)]">
+            {t("comparison.facetMapAllMatch", locale)}
+          </p>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {visibleGroups.map((group) => (
+            <div
+              key={group.code}
+              className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-4 px-[18px]"
+            >
+              {/* Csoport-fejléc: dimenzió-név + oszlopcímek */}
+              <div className="flex items-center gap-2.5 border-b border-[var(--color-border-soft)] pb-2 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
+                <span className="min-w-0 flex-1 font-semibold text-[var(--color-text-secondary)]">
+                  {group.label}
+                </span>
+                <span className="w-9 shrink-0 text-right">
+                  {t("comparison.self", locale)}
+                </span>
+                <span className="w-9 shrink-0 text-right">
+                  {t("comparison.others", locale)}
+                </span>
+                <span className="w-14 shrink-0 text-right">
+                  {t("comparison.gapDiff", locale)}
+                </span>
+              </div>
+              {group.rows.map((row) => {
+                const match = !isGap(row);
+                const directionText = match
+                  ? t("comparison.deltaDirectionMatch", locale)
+                  : row.delta > 0
+                    ? t("comparison.deltaDirectionHigher", locale)
+                    : t("comparison.deltaDirectionLower", locale);
+                return (
+                  <div
+                    key={row.code}
+                    className="flex min-h-[44px] items-center gap-2.5 border-b border-[var(--color-border-soft)] py-1.5 last:border-b-0 last:pb-0"
+                  >
+                    <span className="min-w-0 flex-1 text-caption text-[var(--color-text-primary)]">
+                      {row.label}
+                    </span>
+                    <span
+                      className="w-9 shrink-0 text-right text-caption font-semibold tabular-nums"
+                      style={{ color: "var(--color-action-primary-bg)" }}
+                    >
+                      {row.self}
+                    </span>
+                    <span
+                      className="w-9 shrink-0 text-right text-caption font-semibold tabular-nums"
+                      style={{ color: "var(--color-accent-primary)" }}
+                    >
+                      {row.observer}
+                    </span>
+                    <span className="w-14 shrink-0 text-right">
+                      <span
+                        title={directionText}
+                        aria-label={directionText}
+                        className="inline-flex min-w-[38px] justify-center rounded px-1.5 py-0.5 text-micro font-semibold tabular-nums"
+                        style={{
+                          backgroundColor: match
+                            ? "var(--color-surface-self-accent-soft)"
+                            : "var(--color-surface-highlight-warm)",
+                          color: match
+                            ? "var(--color-accent-self-deep)"
+                            : "var(--color-accent-primary-strong)",
+                        }}
+                      >
+                        {match ? "≈" : row.delta > 0 ? `+${row.delta}` : `−${Math.abs(row.delta)}`}
+                      </span>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Váltó: tömör (csak eltérések) ↔ teljes lista — csak ha van különbség */}
+      {gapCount < totalRows && (
+        <button
+          type="button"
+          onClick={() => setShowAll((v) => !v)}
+          className="mt-3 inline-flex min-h-[44px] w-full items-center justify-center rounded-[10px] border border-[var(--color-border-soft)] bg-surface-card px-4 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)] md:w-auto"
+        >
+          {showAll
+            ? t("comparison.showLess", locale)
+            : t("comparison.showAll", locale)}
+        </button>
+      )}
+
+      {/* Módszertani mikro-jegyzet — a becsült vs mért jelölés alapelve.
+          A facetSem BELSŐ küszöbként él tovább (isGap) — számként nem
+          jelenik meg (2026-08-11 termékdöntés). */}
+      <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
+        {t("comparison.facetMethodNote", locale)}
+      </p>
+    </div>
+  );
 }
 
 // ─── Main component ──────────────────────────────────────────────────────────
@@ -64,35 +298,47 @@ export function ComparisonTab({
   dimensions,
   hasObserverData,
   observerCount,
+  avgConfidence,
+  selfFacetScores = null,
+  observerFacetAverages = null,
+  facetSem = null,
 }: ComparisonTabProps) {
   const { locale } = useLocale();
 
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
+  // observer: null = az adott dimenzióra nincs (elég) külső adat — az ilyen
+  // sor a gap-számításokból és a számlálókból kimarad, a kártyán jelzést kap.
   const dimData = mainDims.map((d) => ({
     code: d.code,
     name: d.label,
     self: d.score,
-    observer: d.observerScore ?? d.score,
+    observer: d.observerScore ?? null,
   }));
+  const covered = dimData.filter(
+    (d): d is (typeof dimData)[number] & { observer: number } => d.observer !== null,
+  );
 
-  const matchingCount = dimData.filter((d) => Math.abs(d.self - d.observer) < 10).length;
-  const differingCount = dimData.length - matchingCount;
+  const matchingCount = covered.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).length;
+  const differingCount = covered.length - matchingCount;
   const avgGapPct = Math.round(
-    dimData.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (dimData.length || 1),
+    covered.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (covered.length || 1),
   );
   const isGoodMatch = differingCount <= 2;
 
-  const blindspots = dimData.filter((d) => Math.abs(d.self - d.observer) >= 10);
-  const noBlindspotDims = dimData.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
+  const blindspots = covered.filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP);
+  const noBlindspotDims = covered.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).map((d) => d.name);
 
-  const summaryPoints = getSummaryPoints(dimData, locale);
+  const summaryPoints = getSummaryPoints(covered, locale);
 
   const getInsight = (code: string, self: number, observer: number): string | null => {
     const gap = Math.abs(self - observer);
-    if (gap < 10) return null;
+    if (gap < DIFF_MIN_GAP) return null;
     const dir = observer > self ? "higher" : "lower";
-    const key = `${code}_${dir}`;
+    // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
+    const letter = hexLetter(code);
+    if (!letter) return null;
+    const key = `${letter}_${dir}`;
     const lang = locale === "hu" ? "hu" : "en";
     return GAP_INSIGHTS[key]?.[lang] ?? null;
   };
@@ -147,9 +393,24 @@ export function ComparisonTab({
         <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.headerBody", locale)}
         </p>
-        <span className="mt-1.5 inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
-          {tf("comparison.observerBadge", locale, { count: observerCount })}
-        </span>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
+            {tf("comparison.observerBadge", locale, { count: observerCount })}
+          </span>
+          {avgConfidence != null && (
+            <span
+              title={t("comparison.confidenceLabel", locale)}
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]"
+            >
+              {tf("comparison.avgConfidence", locale, {
+                value:
+                  locale === "hu"
+                    ? String(avgConfidence).replace(".", ",")
+                    : String(avgConfidence),
+              })}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* 2. Overview card */}
@@ -187,7 +448,12 @@ export function ComparisonTab({
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
-            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">{avgGapPct}%</p>
+            {/* Skála-PONT, nem százalék: az átlagos |önkép−külső| gap 0–100-as
+                skálapontban értendő — a korábbi „%" suffix hamis mértékegység
+                volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
+            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">
+              {avgGapPct} {t("comparison.pointsUnitShort", locale)}
+            </p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>
@@ -208,9 +474,10 @@ export function ComparisonTab({
 
         <div className="flex flex-col gap-3">
           {dimData.map((dim) => {
-            const gap = Math.abs(dim.self - dim.observer);
-            const hasGap = gap >= 10;
-            const insight = getInsight(dim.code, dim.self, dim.observer);
+            const gap = dim.observer === null ? null : Math.abs(dim.self - dim.observer);
+            const hasGap = gap !== null && gap >= DIFF_MIN_GAP;
+            const insight =
+              dim.observer === null ? null : getInsight(dim.code, dim.self, dim.observer);
 
             return (
               <div
@@ -221,15 +488,24 @@ export function ComparisonTab({
               >
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-caption font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
-                  <span
-                    className="rounded px-2 py-0.5 text-[11px] font-medium"
-                    style={{
-                      backgroundColor: gap < 10 ? "var(--color-surface-self-accent-soft)" : gap < 15 ? "var(--color-surface-highlight-warm)" : "var(--color-state-error-soft)",
-                      color: gap < 10 ? "var(--color-accent-self-deep)" : gap < 15 ? "var(--color-accent-primary-strong)" : "var(--color-text-error-strong)",
-                    }}
-                  >
-                    ±{gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
-                  </span>
+                  {gap !== null && (
+                    // Sima eltérés-szám, ± nélkül — a ± mérési-hiba jelölésnek
+                    // olvasható, az pedig nem jelenik meg a felületen
+                    // (2026-08-11 termékdöntés); az irány a sávokból látszik.
+                    // Bronz magnitúdó-rámpa a PDF DeltaIndicatorral egyezően
+                    // (zsálya egyezés → bronz → mély bronz): a nagy eltérés
+                    // „figyelemre érdemes vakfolt", nem hiba — a korábbi piros
+                    // (state-error) szégyen-jelzés kivezetve.
+                    <span
+                      className="rounded px-2 py-0.5 text-[11px] font-medium"
+                      style={{
+                        backgroundColor: gap < DIFF_MIN_GAP ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-highlight-warm)",
+                        color: gap < DIFF_MIN_GAP ? "var(--color-accent-self-deep)" : gap < 20 ? "var(--color-bronze-dark)" : "var(--color-accent-primary-strong)",
+                      }}
+                    >
+                      {gap} {t("comparison.pointsUnitShort", locale)} — {gap < DIFF_MIN_GAP ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
+                    </span>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
@@ -242,10 +518,18 @@ export function ComparisonTab({
                   </div>
                   <div className="flex items-center gap-2.5">
                     <span className="w-[50px] shrink-0 text-micro text-[var(--color-text-muted)]">{t("comparison.others", locale)}</span>
-                    <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
-                      <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
-                    </div>
-                    <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                    {dim.observer === null ? (
+                      <span className="flex-1 text-micro italic text-[var(--color-text-muted)]">
+                        {t("comparison.noObserverDim", locale)}
+                      </span>
+                    ) : (
+                      <>
+                        <div className="h-1.5 flex-1 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+                          <div className="h-full rounded-sm" style={{ width: `${dim.observer}%`, backgroundColor: "var(--color-accent-primary-soft)" }} />
+                        </div>
+                        <span className="w-7 shrink-0 text-right text-micro font-semibold" style={{ color: "var(--color-accent-primary)" }}>{dim.observer}</span>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -260,6 +544,16 @@ export function ComparisonTab({
           })}
         </div>
       </div>
+
+      {/* 3.5 Facet-szintű összevetés — a ténylegesen akcionálható szint;
+          csak a mindkét oldalról lefedett alskálák, facet-SEM küszöbbel */}
+      <FacetComparisonSection
+        dims={mainDims}
+        selfFacetScores={selfFacetScores}
+        observerFacetAverages={observerFacetAverages}
+        facetSem={facetSem}
+        locale={locale}
+      />
 
       {/* 4. Blind spot analysis */}
       <div>
@@ -300,7 +594,7 @@ export function ComparisonTab({
                   </span>
                   <span className="flex items-center gap-1 text-[11px] text-[var(--color-text-muted)]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--color-accent-primary-soft)" }} />
-                    Observer: {bs.observer}
+                    {t("comparison.others", locale)}: {bs.observer}
                   </span>
                 </div>
               </div>

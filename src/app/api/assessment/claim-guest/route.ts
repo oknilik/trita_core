@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
+import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { resolveGuestClaimViewerClerkId } from "@/lib/guest-claim-auth";
 
 const answerSchema = z.object({
@@ -11,10 +12,15 @@ const answerSchema = z.object({
 });
 
 const claimSchema = z.object({
-  answers: z.array(answerSchema),
+  // Felső mérethatár: a legnagyobb élő forma 100 item; 150 elég a valós
+  // beküldésnek, de kizárja a memória-terhelő túlméretes tömböt.
+  answers: z.array(answerSchema).max(150),
 });
 
 export async function POST(req: Request) {
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const userId = await resolveGuestClaimViewerClerkId();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -48,9 +54,11 @@ export async function POST(req: Request) {
   }
 
   // Validate answers against TRITAN config — a rövid (TSFI-S) és a teljes
-  // forma hiánytalan kitöltése egyaránt érvényes.
-  const config = getTestConfig(testType);
-  const expectedIds = new Set(config.questions.map((q) => q.id));
+  // forma hiánytalan kitöltése egyaránt érvényes, ahogy egy KORÁBBI rövid
+  // forma pontos id-halmaza is. Ez itt a legélesebb: a vendég-draft napokig
+  // (a claim-ig) a localStorage-ban ül, és a /try/claim SZŰRETLENÜL küldi be
+  // — forma-váltás után enélkül minden régi draft claimje elbukna.
+  const expectedIds = getAcceptedAnswerIds(testType);
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
 
   const answeredIds = new Set(relevantAnswers.map((a) => a.questionId));

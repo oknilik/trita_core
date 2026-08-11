@@ -9,9 +9,13 @@ import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
-import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
-import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import {
+  isSecondaryUncertain,
+  resolvePersonalityTypeFromScores,
+} from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { loadShareOgModel } from "@/lib/share-og";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
@@ -26,23 +30,30 @@ export const dynamic = "force-dynamic";
 
 // A cím és leírás a megosztott profilhoz igazodik (og:title a
 // link-előnézetben), a noindex marad — a kép az opengraph-image route-ból jön.
+// A locale ugyanabból a feloldóból (getServerLocale), amiből az oldal törzse
+// — a korábbi hardkódolt "hu" EN-nézőnek is magyar címet/típusnevet adott.
+// (Az OG-KÉP route-ja tudatosan hu marad — a kép cache-elt, néző-független.)
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ token: string }>;
 }): Promise<Metadata> {
-  const { token } = await params;
-  const model = await loadShareOgModel(token, "hu");
+  const [{ token }, locale] = await Promise.all([params, getServerLocale()]);
+  const isHu = locale === "hu";
+  const model = await loadShareOgModel(token, isHu ? "hu" : "en");
   const title =
     model.displayName && model.typeLabel
       ? `${model.displayName} — ${model.typeLabel} | trita`
       : model.typeLabel
         ? `${model.typeLabel} | trita`
-        : "Megosztott profil | trita";
+        : isHu
+          ? "Megosztott profil | trita"
+          : "Shared profile | trita";
   return {
     title,
-    description:
-      "Személyiségprofil a trita platformról — önértékelés és külső visszajelzés, tudományos alapon.",
+    description: isHu
+      ? "Személyiségprofil a trita platformról — önértékelés és külső visszajelzés, tudományos alapon."
+      : "A personality profile from the trita platform — self-assessment and external feedback, on a scientific basis.",
     robots: { index: false },
   };
 }
@@ -113,20 +124,25 @@ export default async function SharedProfilePage({
   const config = getTestConfig(testType, locale);
   const displayName = result.userProfile?.username ?? t("common.userFallback", locale);
 
+  // FIX 4 kiterjesztés (0 mint „nincs mérve"): a score-JSON-ból hiányzó
+  // dimenzió NEM 0 pont — a korábbi `?? 0` valódi 0-ként renderelte
+  // („figyelendő" badge, 0-ból generált low-próza). A nem mért dimenzió
+  // kimarad a megosztott nézetből is.
   const dimensions = config.dimensions
     .filter((d) => d.code !== "I")
-    .map((dim) => {
-      const score = scores.dimensions[dim.code] ?? 0;
+    .flatMap((dim) => {
+      const score = scores.dimensions[dim.code];
+      if (typeof score !== "number") return [];
       const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
         low: string; mid: string; high: string;
       };
-      return {
+      return [{
         code: dim.code,
         label: (dim.labelByLocale?.[locale] ?? dim.label) as string,
         score,
         insight: getInsight(score, insights),
         description: (dim.descriptionByLocale?.[locale] ?? dim.description) as string,
-      };
+      }];
     });
 
   const formattedDate = result.createdAt.toLocaleDateString(
@@ -145,6 +161,11 @@ export default async function SharedProfilePage({
   const glyphPair = resolveGlyphPair(
     dimensions.map((d) => ({ code: d.code, score: d.score })),
   );
+  // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
+  // párrá, mint a címke (isSecondaryUncertain) — erősorrend-állítás nélkül.
+  const glyphUncertain = isSecondaryUncertain(
+    dimensions.map((d) => ({ code: d.code, score: d.score })),
+  );
 
   // Munkastílus — ugyanabból a generátorból, mint a saját eredmény-oldal
   // workstyle tabja (lib/workstyle-content.ts), hogy a megosztott nézet
@@ -157,9 +178,15 @@ export default async function SharedProfilePage({
 
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
-  const hasTeamRole = "INTE" in hexScores && "TEMP" in hexScores;
-  const teamRoleTop3 = hasTeamRole
-    ? getTopRoles(estimateTeamRolesFromTritan(hexScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>), 3)
+  const hasTeamRole = "H" in hexScores && "X" in hexScores;
+  // resolveDisplayRoleScores: exact (nyers evidencia) tie-break — a fő szerep
+  // egyezik a többi felülettel; részleges dim-sornál null (nincs becslés
+  // kitalált 50-esekből), így a szekció üresen marad.
+  const resolvedRole = hasTeamRole
+    ? resolveDisplayRoleScores(null, hexScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>)
+    : null;
+  const teamRoleTop3 = resolvedRole
+    ? getTopRoles(resolvedRole.scores, 3, resolvedRole.exact)
     : [];
 
   const rankLabels = [
@@ -195,6 +222,7 @@ export default async function SharedProfilePage({
                   typeLabel={personalityType || displayName}
                   locale={isHu ? "hu" : "en"}
                   intensity={glyphPair.intensity}
+                  secondaryUncertain={glyphUncertain}
                   variant="badge"
                   className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
                 />
@@ -245,7 +273,8 @@ export default async function SharedProfilePage({
                     className="inline-block rounded px-[7px] py-[2px] text-micro font-semibold"
                     style={{ backgroundColor: tierBg, color: tierColor }}
                   >
-                    {getDimensionLabel(dim.score, locale)}
+                    {/* Pólus-tudatos címke: E alacsony sávja „stabil" (FIX 2). */}
+                    {poleAwareDimensionLabel(dim.code, dim.score, locale)}
                   </span>
                 </div>
               );
@@ -281,12 +310,13 @@ export default async function SharedProfilePage({
 
         {/* Munkastílus */}
         <div className="flex flex-col">
-          <HowYouWorkSection paragraphs={workstyle.howYouWork} isUnlocked={true} />
+          <HowYouWorkSection parts={workstyle.howYouWorkParts} isUnlocked={true} />
           <IdealEnvironmentSection items={workstyle.envItems} isUnlocked={true} />
           <RoleFitSection
             strongFit={workstyle.roleFit.strong}
             mightWork={workstyle.roleFit.might}
             needsPrep={workstyle.roleFit.prep}
+            secondary={workstyle.roleFit.secondary}
             strongRoles={workstyle.roleFit.strongRoles}
             mightRoles={workstyle.roleFit.mightRoles}
             prepRoles={workstyle.roleFit.prepRoles}
@@ -297,11 +327,18 @@ export default async function SharedProfilePage({
         {/* TeamRole */}
         {teamRoleTop3.length > 0 && (
           <div>
-            <p className="mb-1.5 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-              {t("results.teamRoleHeading", locale)}
-            </p>
+            <div className="mb-1.5 flex flex-wrap items-center gap-2">
+              <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+                {t("results.teamRoleHeading", locale)}
+              </p>
+              {/* Forrás-badge — a megosztott nézet mindig profil-alapú becslést mutat. */}
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
+                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                {t("results.teamRoleSourceEstimate", locale)}
+              </span>
+            </div>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
-              {teamRoleTop3.map(({ role, score }, idx) => {
+              {teamRoleTop3.map(({ role }, idx) => {
                 const roleMeta = TEAM_ROLES[role];
                 const isPrimary = idx === 0;
                 return (
@@ -322,7 +359,10 @@ export default async function SharedProfilePage({
                             : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                       }`}
                     >
-                      {rankLabels[idx][locale]} · {score}%
+                      {/* Becsült szerepnél NINCS pontszám (P2.3, a PDF-fel
+                          egyezően): a profil-alapú becslés %-a álprecizitást
+                          sugallna — csak a rang-sáv megy ki. */}
+                      {rankLabels[idx][locale]}
                     </span>
                     <p className={`font-fraunces text-[var(--color-text-primary)] ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
                       {roleMeta[locale]}

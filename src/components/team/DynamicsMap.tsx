@@ -4,7 +4,8 @@ import { useState } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { FRICTION_WEIGHTS } from "@/lib/friction-model";
+import { FRICTION_WEIGHTS, computeAlignedHubIds, isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { EDGE_CONFIDENCE_ONE_SIDED } from "@/lib/trust-network";
 import { DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 import type { IntelligenceMember, DynamicsEdge } from "./TeamIntelligence";
 
@@ -46,45 +47,33 @@ function getCircularPositions(
   return result;
 }
 
-function getHubIds(edges: DynamicsEdge[]): string[] {
-  const counts: Record<string, number> = {};
-  edges
-    .filter((e) => e.type === "aligned")
-    .forEach((e) => {
-      counts[e.to] = (counts[e.to] ?? 0) + 1;
-    });
-  return Object.entries(counts)
-    .filter(([, count]) => count >= 3)
-    .map(([id]) => id);
-}
-
 // ── Dimension breakdown helpers ──────────────────────────────────────────────
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 const DIM_FRICTION_HINT: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
-  ADAP: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
-  INTE: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
-  RESO: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
-  TEMP: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
-  OPEN: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
+  C: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
+  A: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
+  H: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
+  E: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
+  X: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
+  O: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
 };
 
 const DIM_ALIGNED_HINT: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
-  ADAP: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
-  INTE: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
-  RESO: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
-  TEMP: { hu: "Hasonló szociális energia", en: "Similar social energy" },
-  OPEN: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
+  C: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
+  A: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
+  H: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
+  E: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
+  X: { hu: "Hasonló szociális energia", en: "Similar social energy" },
+  O: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
 };
 
 interface DimGap {
@@ -100,12 +89,17 @@ function computeDimBreakdown(
   b: IntelligenceMember["tritan"],
   loc: Locale,
 ): { gaps: DimGap[]; totalFriction: number } {
-  const dims = ["THOR", "ADAP", "INTE", "RESO", "TEMP", "OPEN"] as const;
+  const dims = ["C", "A", "H", "E", "X", "O"] as const;
   const gaps: DimGap[] = [];
   let totalFriction = 0;
 
   for (const code of dims) {
-    const gap = Math.abs(a[code] - b[code]);
+    const aValue = a[code];
+    const bValue = b[code];
+    // Részleges profil: hiányzó dimenzióból nincs gap — a hívó ugyan teljes
+    // profil-párnál nyitja a bontást (hasAssessmentData), az őr defenzív.
+    if (typeof aValue !== "number" || typeof bValue !== "number") continue;
+    const gap = Math.abs(aValue - bValue);
     const w = FRICTION_WEIGHTS[code] ?? 0;
     const contribution = Math.round(w * gap);
     totalFriction += contribution;
@@ -145,6 +139,14 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
     complementary: "teamComp.edgeComplementary",
   };
 
+  // MÉRT (trust) élre a „hasonló profil" címke hamis állítás lenne — az
+  // aligned ott ERŐS BIZALMAT jelent, nem profil-hasonlóságot. Mért élen
+  // ezért forrás-semleges címke jár.
+  const edgeLabel = (e: DynamicsEdge): string =>
+    e.type === "aligned" && isMeasuredDynamicsSource(e.source)
+      ? t("teamComp.edgeAlignedNeutral", loc)
+      : t(edgeLabelKey[e.type], loc);
+
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-surface-card p-4">
       <div className="flex items-center gap-3">
@@ -168,7 +170,12 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
               const target = memberMap[otherId];
               if (!target) return null;
               const isExpanded = expandedEdge === otherId;
-              const breakdown = isExpanded
+              // Dimenzió-bontás CSAK valódi profil-párból: kitöltetlen vagy
+              // részleges profilú tagnál nincs miből gap-et számolni — a
+              // hasAssessmentData csak teljes fő-dimenzió-készletnél igaz.
+              const hasPairProfiles =
+                member.hasAssessmentData && target.hasAssessmentData;
+              const breakdown = isExpanded && hasPairProfiles
                 ? computeDimBreakdown(member.tritan, target.tritan, loc)
                 : null;
 
@@ -185,11 +192,17 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     />
                     <span className="text-[11px] text-ink-body">{target.name}</span>
                     <span className="ml-auto text-micro text-muted">
-                      {t(edgeLabelKey[e.type], loc)}
+                      {edgeLabel(e)}
                     </span>
-                    {e.source === "trust_round" ? (
+                    {isMeasuredDynamicsSource(e.source) ? (
                       <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
-                        {loc === "hu" ? "mért" : "measured"}
+                        {t("teamComp.dynamicsStateMeasured", loc)}
+                      </span>
+                    ) : null}
+                    {/* egyoldalú confidence = csak az egyik irányból van mért válasz */}
+                    {e.source === "trust_round" && e.confidence === EDGE_CONFIDENCE_ONE_SIDED ? (
+                      <span className="rounded-full border border-sand px-1.5 py-0.5 text-micro text-muted">
+                        {t("teamComp.edgeOneSided", loc)}
                       </span>
                     ) : null}
                     <svg
@@ -200,6 +213,15 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     </svg>
                   </button>
 
+                  {/* Hiányzó profil-adatnál a bontás helyett jelöljük az okot
+                      — nem számolunk gap-et kitalált 50-esek ellen. */}
+                  {isExpanded && !hasPairProfiles && (
+                    <div className="mb-2 ml-5 mt-1 rounded-lg border border-dashed border-sand bg-cream/60 p-3">
+                      <p className="text-micro leading-snug text-muted">
+                        {t("teamComp.breakdownNoProfile", loc)}
+                      </p>
+                    </div>
+                  )}
                   {isExpanded && breakdown && (
                     <div className="mb-2 ml-5 mt-1 rounded-lg border border-sand bg-cream/60 p-3">
                       <div className="flex flex-col gap-2">
@@ -272,7 +294,18 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   }
 
   const positions = getCircularPositions(members, 180, 180, 130);
-  const hubIds = getHubIds(edges);
+  // Van-e mért (trust) él a térképen — a jelmagyarázat „hasonló profil"
+  // címkéje csak tisztán profil-becslés képre igaz; mért él mellett az
+  // aligned szín semleges címkét kap (a mért aligned = erős bizalom).
+  const hasMeasuredEdges = edges.some((e) => isMeasuredDynamicsSource(e.source));
+  // Hub-forrás a riporttal (team-report trustHighlights) AZONOSAN: ha van
+  // mért trust-pár, a trust-háló hub-jai (isTrustHub, szerveren számolva)
+  // karikázódnak; csak tiszta profil-becslés képen fut a computeAlignedHubIds
+  // (aligned-fok ≥ 3, mindkét végpont számít). Korábban a térkép a KEVERT
+  // él-listán becsült hubot — a riport és a térkép más embert emelhetett ki.
+  const hubIds = hasMeasuredEdges
+    ? members.filter((m) => m.isTrustHub).map((m) => m.id)
+    : computeAlignedHubIds(edges);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">
@@ -366,7 +399,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-4">
           {(["aligned", "complementary", "friction"] as DynamicsEdge["type"][]).map((edgeType) => {
-            const legendKey = edgeType === "aligned" ? "teamComp.legendAligned" : edgeType === "complementary" ? "teamComp.legendComplementary" : "teamComp.legendFriction";
+            const legendKey =
+              edgeType === "aligned"
+                ? hasMeasuredEdges
+                  ? "teamComp.legendAlignedNeutral"
+                  : "teamComp.legendAligned"
+                : edgeType === "complementary"
+                  ? "teamComp.legendComplementary"
+                  : "teamComp.legendFriction";
             return (
               <div key={edgeType} className="flex items-center gap-2">
                 <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
@@ -382,12 +422,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           </div>
         </div>
 
-        {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés. */}
-        {edges.some((e) => e.source === "trust_round") ? (
+        {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés.
+            A "mért" definíció közös (isMeasuredDynamicsSource): trust_round ∪
+            observer — az intelligence-data/cockpit/riport számlálóival azonos. */}
+        {hasMeasuredEdges ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
-              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
-              : `Some connections are MEASURED from a trust round (${edges.filter((e) => e.source === "trust_round").length}/${edges.length} connections); the rest are profile-based estimates.`}
+              ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`
+              : `Some connections are MEASURED from a trust round (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} connections); the rest are profile-based estimates.`}
           </p>
         ) : (
           <p className="mt-2 text-micro leading-relaxed text-muted">

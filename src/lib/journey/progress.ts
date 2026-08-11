@@ -5,8 +5,10 @@ import type {
   JourneyScopeProgress,
   JourneyStage,
 } from "@/lib/journey/types";
+import { MIN_MEMBERS_FOR_TEAM_INSIGHTS } from "@/lib/journey/constants";
 
-const MIN_MEMBERS_FOR_TEAM_INSIGHTS = 3;
+// Személyes observer-cél — journey-progress súlyozáshoz, NEM anonimitás-
+// vagy insight-küszöb; ezért marad külön, lokális konstansként.
 const OBSERVER_TARGET = 3;
 
 interface ComputeScopeProgressOptions {

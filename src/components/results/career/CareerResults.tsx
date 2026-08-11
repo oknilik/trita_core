@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { withHuArticle } from "@/lib/hu-grammar";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { INDUSTRIES } from "@/lib/industry-fit";
+import {
+  INTEREST_SE_MEASURED,
+  INTEREST_SE_OTHER,
+  clearlyBelow,
+} from "@/lib/career/psychometrics";
 import type { CareerFitView, CareerResultView } from "@/lib/career/service";
 
 // Klaszteres eredmény-nézet. A legfontosabb elvi különbség a v1-hez képest:
@@ -64,7 +69,7 @@ const VETO_LABEL_KEYS: Record<string, string> = {
 };
 
 function dimLabel(code: string, isHu: boolean): string {
-  const dim = TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS];
+  const dim = HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS];
   if (!dim) return code;
   return `${dim.letter} ${isHu ? dim.hu : dim.en}`;
 }
@@ -81,25 +86,45 @@ function OccupationCard({
   fit,
   hero,
   delayMs = 0,
+  interestSe = INTEREST_SE_OTHER,
 }: {
   fit: CareerFitView;
   hero: boolean;
   delayMs?: number;
+  /** az érdeklődés-pontszám hibája (mért: 6, egyéb forrás: 12) — a címke-kapuhoz */
+  interestSe?: number;
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState<"sent" | null>(null);
+  // SE-tudatos figyelmeztetés-kapuk (2026-08-11, fix): negatív verdiktet csak
+  // akkor mondunk ki, ha az érték INTERVALLUMA (sáv, ill. ±SE) is egyértelműen
+  // a vágás alatt van. Egy 54-es demandFit 46–62-es sávval nem „feszültség",
+  // hanem küszöb-környéki érték — ott a semleges chip (a mindig látható
+  // pontszám + sáv) beszél, verdikt nélkül. A demandFit sávja (band = ±1 SE)
+  // a payloadban jön; az érdeklődés margója a forrás SE-je.
+  const interestDiverges =
+    fit.interest !== null && clearlyBelow(fit.interest, interestSe, 55);
+  const personalityTension = fit.band.high < 55;
+  // Súly-megjelenítés normálva (2026-08-11, fix): a pontozás a súlyösszeggel
+  // normál (Σw a katalógusban 0,88–1,00 között szór), a nyers súlyok kiírva
+  // nem adnának 100%-ot. A mutatott százalék a TÉNYLEGES relatív súly.
+  const totalWeight = fit.components.reduce((sum, c) => sum + c.weight, 0);
+  const weightPct = (weight: number) =>
+    totalWeight > 0 ? Math.round((weight / totalWeight) * 100) : Math.round(weight * 100);
 
   async function sendFeedback(verdict: "accurate" | "inaccurate") {
     setFeedback("sent");
     try {
+      // A fitScore-t a szerver számolja újra a tárolt profilból — a kliens
+      // által állított pontszám hamisítható lenne, és a kalibrációs adatot
+      // mérgezné (a verdict + a szerver-oldali pontszám együtt a jel).
       await fetch("/api/industry-fit/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           occupationId: fit.id,
-          fitScore: fit.demandFit,
           verdict,
         }),
       });
@@ -174,6 +199,13 @@ function OccupationCard({
           {fit.feasibility.state === "training-needed" &&
             ` — ${t(GAP_KEY[fit.feasibility.gap] ?? GAP_KEY.ready, locale)}`}
         </span>
+        {/* Szabályozott szakma, amire a végzettség már „elég" (field-match): a
+            licenc/kamarai kötelezettség a zöld chip MELLETT külön figyelmeztet. */}
+        {fit.flags.includes("licence-ready") && (
+          <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
+            {t("results.cfAccessLicenceReady", locale)}
+          </span>
+        )}
         {fit.interest !== null && (
           <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro text-[var(--color-text-secondary)]">
             🎯 {tf("results.cfInterestMatch", locale, { value: fit.interest })}
@@ -192,12 +224,14 @@ function OccupationCard({
             {t("results.cfIndustryPick", locale)}
           </span>
         )}
-        {fit.interest !== null && fit.interest < 55 && (
+        {/* Negatív verdikt csak az intervallum-kapun át — küszöb-környéki
+            értéknél a semleges pontszám-chip beszél, verdikt nélkül. */}
+        {interestDiverges && fit.interest !== null && (
           <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
             {tf("results.cfInterestDiverges", locale, { value: fit.interest })}
           </span>
         )}
-        {fit.demandFit < 55 && (
+        {personalityTension && (
           <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
             {t("results.cfPersonalityTension", locale)}
           </span>
@@ -224,11 +258,21 @@ function OccupationCard({
               <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-44 sm:text-[11px]">
                 {dimLabel(component.dim, isHu)}
                 <span className="block text-micro text-[var(--color-text-muted)]">
+                  {/* A NYERS párt mutatjuk (userRaw/targetRaw): a „te {user}" így
+                      azonos a results-oldali pontszámmal. A centrált (pontozási)
+                      értéket mutatni ellentmondana neki (nyers 90 → „te 58"). A
+                      cél ugyanazzal az eltolással jön, a távolság változatlan.
+                      Ha a visszatolt cél a skála szélére szorult (targetAtEdge),
+                      a mutatott pár távolsága KISEBB a pontozottnál — ezt
+                      kimondjuk, nem hagyjuk ellentmondani a pozíció-címkének. */}
                   {tf("results.cfTargetHint", locale, {
-                    target: Math.round(component.target),
-                    user: component.userValue,
-                  })}{" "}
-                  · {Math.round(component.weight * 100)}%
+                    target: component.targetRaw,
+                    user: component.userRaw,
+                  })}
+                  {component.targetAtEdge
+                    ? ` (${t("results.cfTargetAtEdge", locale)})`
+                    : ""}{" "}
+                  · {weightPct(component.weight)}%
                 </span>
               </span>
               <div className="h-2 min-w-[48px] flex-1 overflow-hidden rounded-full bg-[var(--color-border-soft)] md:min-w-[60px]">
@@ -264,8 +308,9 @@ function OccupationCard({
                   dim: isHu
                     ? withHuArticle(dimLabel(fit.components[0].dim, isHu))
                     : dimLabel(fit.components[0].dim, isHu),
-                  target: Math.round(fit.components[0].target),
-                  user: fit.components[0].userValue,
+                  // Nyers pár — a results-oldali pontszámmal azonos skálán.
+                  target: fit.components[0].targetRaw,
+                  user: fit.components[0].userRaw,
                 })}
             </p>
           )}
@@ -320,7 +365,15 @@ function OccupationCard({
  * Egy klaszter kártyái. A csoport tagjai egyenrangúak, de 5-nél többet nem
  * zúdítunk a felhasználóra: a többi egy kattintással nyílik.
  */
-function ClusterCards({ cluster, hero }: { cluster: CareerFitView[]; hero: boolean }) {
+function ClusterCards({
+  cluster,
+  hero,
+  interestSe,
+}: {
+  cluster: CareerFitView[];
+  hero: boolean;
+  interestSe: number;
+}) {
   const { locale } = useLocale();
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? cluster : cluster.slice(0, 5);
@@ -334,6 +387,7 @@ function ClusterCards({ cluster, hero }: { cluster: CareerFitView[]; hero: boole
           fit={fit}
           hero={hero && cluster.length === 1}
           delayMs={i * 60}
+          interestSe={interestSe}
         />
       ))}
       {hidden > 0 && (
@@ -366,12 +420,14 @@ function CareerSection({
   title,
   hint,
   clusters,
+  interestSe,
   hero = false,
   collapsible = false,
 }: {
   title: string;
   hint: string;
   clusters: CareerFitView[][];
+  interestSe: number;
   hero?: boolean;
   collapsible?: boolean;
 }) {
@@ -409,7 +465,11 @@ function CareerSection({
                   {t("results.cfClusterOrder", locale)}
                 </p>
               )}
-              <ClusterCards cluster={cluster} hero={hero && index === 0} />
+              <ClusterCards
+                cluster={cluster}
+                hero={hero && index === 0}
+                interestSe={interestSe}
+              />
             </div>
           ))}
         </div>
@@ -437,6 +497,10 @@ export function CareerResults({
   const { locale } = useLocale();
   const [confirmReset, setConfirmReset] = useState(false);
   const [resetting, setResetting] = useState(false);
+  // Az érdeklődés-verdikt margója a forrás SE-je (mért kérdőív: 6, címke/
+  // becslés: 12) — a motor rangSe-terjesztésével azonos konstansok.
+  const interestSe =
+    result.interestSource === "measured" ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER;
   const totalClusters =
     result.sections.atLevel.length +
     result.sections.belowLevel.length +
@@ -574,14 +638,25 @@ export function CareerResults({
       <div className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
         <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
           {result.scope.active
-            ? tf("results.cfStrategyScoped", locale, {
-                areas: result.scope.keys
-                  .map((key) => {
-                    const industry = INDUSTRIES.find((entry) => entry.key === key);
-                    return industry ? (locale === "hu" ? industry.hu : industry.en) : key;
-                  })
-                  .join(" + "),
-              })
+            ? tf(
+                // A motor scoped forrás- és differenciáltság-kapujának tükre:
+                // csak MÉRT és DIFFERENCIÁLT érdeklődésnél rendez az érdeklődés
+                // — gyenge/hiányzó jelnél a kompozit alap, és a szöveg ezt
+                // mondja ki (nem állíthat mást, mint ami tényleg rendezett).
+                result.interestSource === "measured" &&
+                  result.interestDifferentiation !== "low"
+                  ? "results.cfStrategyScoped"
+                  : "results.cfStrategyScopedComposite",
+                locale,
+                {
+                  areas: result.scope.keys
+                    .map((key) => {
+                      const industry = INDUSTRIES.find((entry) => entry.key === key);
+                      return industry ? (locale === "hu" ? industry.hu : industry.en) : key;
+                    })
+                    .join(" + "),
+                },
+              )
             : t(
                 result.meta.strategy === "interest-led"
                   ? "results.cfStrategyInterestLed"
@@ -637,18 +712,21 @@ export function CareerResults({
         title={t("results.cfSectionAtLevel", locale)}
         hint={t("results.cfSectionAtLevelHint", locale)}
         clusters={result.sections.atLevel}
+        interestSe={interestSe}
         hero
       />
       <CareerSection
         title={t("results.cfSectionTraining", locale)}
         hint={t("results.cfSectionTrainingHint", locale)}
         clusters={result.sections.afterTraining}
+        interestSe={interestSe}
         collapsible
       />
       <CareerSection
         title={t("results.cfSectionBelow", locale)}
         hint={t("results.cfSectionBelowHint", locale)}
         clusters={result.sections.belowLevel}
+        interestSe={interestSe}
         collapsible
       />
 
@@ -659,7 +737,13 @@ export function CareerResults({
           </p>
           <div className="flex flex-col gap-3">
             {result.currentField.map((fit, i) => (
-              <OccupationCard key={fit.id} fit={fit} hero={false} delayMs={i * 60} />
+              <OccupationCard
+                key={fit.id}
+                fit={fit}
+                hero={false}
+                delayMs={i * 60}
+                interestSe={interestSe}
+              />
             ))}
           </div>
         </section>

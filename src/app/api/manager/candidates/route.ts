@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import {
   CandidateApplyServiceError,
@@ -13,6 +14,9 @@ const bodySchema = z.object({
   email: z.string().email().optional(),
   name: z.string().min(1).max(100),
   position: z.string().max(100).optional(),
+  // A hiring lap orgja — a meghívó kimondott hatóköre (2026-08-11): a
+  // service EZ alá iktat, és a hívó szerepét ebben az orgban ellenőrzi.
+  orgId: z.string().optional(),
   teamId: z.string().optional(),
   includeTeamRole: z.boolean().optional(),
   inviteLocale: z.enum(["hu", "en"]).optional(),
@@ -20,13 +24,17 @@ const bodySchema = z.object({
 
 // POST /api/manager/candidates — create a candidate invite link (+ optionally send email)
 export async function POST(req: Request) {
+  // E-mailt küldő végpont — rate limit a testvér-route-ok mintájára.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const parsed = bodySchema.safeParse(await req.json());
   if (!parsed.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
-  const { email, name, position, teamId, includeTeamRole, inviteLocale } = parsed.data;
+  const { email, name, position, orgId, teamId, includeTeamRole, inviteLocale } = parsed.data;
   let serviceResult;
   try {
     serviceResult = await createCandidateApplyInvite({
@@ -34,6 +42,7 @@ export async function POST(req: Request) {
       email,
       name,
       position,
+      orgId,
       teamId,
       includeTeamRole,
     });

@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { linkObserverTokenToProfile } from "@/lib/observer/link-service";
 
 const linkSchema = z.object({
@@ -9,6 +10,10 @@ const linkSchema = z.object({
 });
 
 export async function POST(req: Request) {
+  // A testvér-route-okkal (submit/draft/invite) azonos standard rate-limit.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
@@ -44,6 +49,12 @@ export async function POST(req: Request) {
         { error: "Ez a meghívó másik felhasználóhoz tartozik." },
         { status: 409 },
       );
+    }
+    // Rövid hibakód (repo-konvenció): a meghívó a SAJÁT tokenjét nem
+    // claim-elheti. A hívók (sign-in/sign-up onboarding) fire-and-forget
+    // hívnak — a kód a kliens-oldali lokalizáció horgonyja, ha később kell.
+    if (linkResult.code === "SELF_LINK_FORBIDDEN") {
+      return NextResponse.json({ error: "SELF_LINK_FORBIDDEN" }, { status: 403 });
     }
     if (linkResult.code === "ALREADY_USED") {
       return NextResponse.json(

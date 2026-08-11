@@ -151,12 +151,13 @@ function SelfPanel() {
 function TeamPanel() {
   const { locale } = useLocale();
 
-  // A TeamReportView redukált változata: aggregált értékek ± szórással,
-  // egyéni adatok nélkül — a vezető a termékben is ezt a nézetet kapja.
+  // A TeamReportView redukált változata: aggregált átlagok, egyéni adatok
+  // nélkül — a vezető a termékben is ezt a nézetet kapja. (A ±szórás-szám a
+  // termékből is kikerült, ezért a minta-kártya sem mutatja.)
   const dims = [
-    { name: t("landing.teamDim1", locale), mean: 78, spread: 9 },
-    { name: t("landing.teamDim2", locale), mean: 38, spread: 18 },
-    { name: t("landing.teamDim3", locale), mean: 55, spread: 12 },
+    { name: t("landing.teamDim1", locale), mean: 78 },
+    { name: t("landing.teamDim2", locale), mean: 38 },
+    { name: t("landing.teamDim3", locale), mean: 55 },
   ];
 
   return (
@@ -205,7 +206,7 @@ function TeamPanel() {
           </div>
         </div>
 
-        {/* Dimenzió-átlagok ± szórás */}
+        {/* Dimenzió-átlagok */}
         <div className="mt-4 flex flex-col gap-2.5 border-t border-sand pt-4">
           {dims.map((d) => (
             <div key={d.name} className="flex items-center gap-2 md:gap-3">
@@ -215,7 +216,6 @@ function TeamPanel() {
               </div>
               <span className="w-12 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink md:w-14">
                 {d.mean}
-                <span className="text-muted"> ±{d.spread}</span>
               </span>
             </div>
           ))}

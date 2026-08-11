@@ -1,21 +1,35 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { computeCareerFit, generalWorkPropensity, RANK_WEIGHTS } from "@/lib/career/engine";
+import {
+  CHOICE_WEIGHTS,
+  computeCareerFit,
+  diversify,
+  interestWeightFor,
+  RANK_WEIGHTS,
+} from "@/lib/career/engine";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { getOccupations, CATALOG_VERSION } from "@/lib/career/catalog";
 import {
+  INTEREST_SE_MEASURED,
+  INTEREST_SE_OTHER,
   alphaFromItems,
   bandFor,
   blendedStandardError,
+  clearlyBelow,
   clusterByOverlap,
   dimStandardError,
   facetStandardError,
   observerWeight,
 } from "@/lib/career/psychometrics";
-import { interestCongruence, interestDifferentiation } from "@/lib/career/interests";
+import {
+  interestCongruence,
+  interestDifferentiation,
+  isCompleteRiasecVector,
+} from "@/lib/career/interests";
 import { feasibilityFor } from "@/lib/career/feasibility";
 import { AXIS_KEYS, DIM_CODES, RIASEC_LETTERS, type OccupationFit } from "@/lib/career/types";
 
-const balanced = { INTE: 55, RESO: 50, TEMP: 55, ADAP: 55, THOR: 60, OPEN: 60 };
+const balanced = { H: 55, E: 50, X: 55, A: 55, C: 60, O: 60 };
 
 // ── katalógus-integritás ────────────────────────────────────────────────────
 
@@ -118,6 +132,16 @@ test("differenciáltság: lapos profil = gyenge jel", () => {
   assert.equal(interestDifferentiation({ R: 20 }), null);
 });
 
+test("measured RIASEC csak HIÁNYTALAN vektorból (E4)", () => {
+  // A scoreRiasec-kel AZONOS teljességi szabály: mind a hat betű kell. Ezt a
+  // predikátumot használja a person.ts forrás-létrája ÉS a career-background
+  // route validációja is — egy parciális, kliens-állított vektor nem mérés.
+  assert.equal(isCompleteRiasecVector({ R: 60, I: 75, A: 66, S: 42, E: 48, C: 64 }), true);
+  assert.equal(isCompleteRiasecVector({ R: 60, I: 75, A: 66, S: 42 }), false, "négybetűs nem mérés");
+  assert.equal(isCompleteRiasecVector({ R: 60, I: 75, A: 66, S: 42, E: 48 }), false, "ötbetűs sem");
+  assert.equal(isCompleteRiasecVector({}), false);
+});
+
 // ── megvalósíthatóság ───────────────────────────────────────────────────────
 
 test("hozzáférés: a SZINT és a SZAKIRÁNY külön kérdés", () => {
@@ -126,11 +150,13 @@ test("hozzáférés: a SZINT és a SZAKIRÁNY külön kérdés", () => {
   assert.equal(levelOnly.ready, true);
   assert.equal(levelOnly.state, "level-only");
   assert.equal(levelOnly.fieldMatch, null);
+  assert.equal(levelOnly.licence, false, "nem szabályozott szakma nem licenc-köteles");
 
   // szint + egyező szakirány
   const matched = feasibilityFor("higher", "higher", ["health"], ["health", "natural_science"]);
   assert.equal(matched.state, "field-match");
   assert.equal(matched.fieldMatch, true);
+  assert.equal(matched.licence, false, "a nem-specialized field-match nem licenc-köteles");
 
   // szint megvan, de MÁS szakirány — ez a leggyakoribb félreértés forrása
   const otherField = feasibilityFor("higher", "higher", ["economics"], ["health"]);
@@ -141,10 +167,15 @@ test("hozzáférés: a SZINT és a SZAKIRÁNY külön kérdés", () => {
   const withoutLicence = feasibilityFor("specialized", "higher", ["health"], ["health"]);
   assert.equal(withoutLicence.state, "licence-needed");
   assert.equal(withoutLicence.gap, "licence");
+  assert.equal(withoutLicence.licence, true);
 
-  // szakvizsgával és egyező szakiránnyal viszont igen
+  // szakvizsgával és egyező szakiránnyal a SZINT és a SZAKIRÁNY megfelel
+  // (state="field-match"), de a licenc-jelzés akkor sem tűnhet el: a szakma
+  // engedély-/kamarai kötelezettséggel jár (E3).
   const withLicence = feasibilityFor("specialized", "specialized", ["health"], ["health"]);
   assert.equal(withLicence.state, "field-match");
+  assert.equal(withLicence.licence, true, "a szabályozott szakma field-matchnél is licenc-köteles");
+  assert.equal(withLicence.gap, "licence", "a gap a licenc-igenyt tukrozi, nem ready");
 
   // szakvizsga MÁS szakirányban nem nyit meg egy szabályozott szakmát
   const wrongLicence = feasibilityFor("specialized", "specialized", ["legal"], ["health"]);
@@ -153,6 +184,36 @@ test("hozzáférés: a SZINT és a SZAKIRÁNY külön kérdés", () => {
   // a szint alatt: képzés kell
   assert.equal(feasibilityFor("vocational", "secondary").state, "training-needed");
   assert.equal(feasibilityFor("open", null).ready, true);
+});
+
+test("licenc-caveat: szabályozott szakma field-matchnél is jelzi a licencet (E3)", () => {
+  // Szabályozott (specialized) szakma, amire a szint ÉS a szakirány is stimmel:
+  // state="field-match", de a licenc-jelzés (flag + feasibility.licence) megmarad.
+  const doctor = computeCareerFit(
+    { dims: balanced, form: "short", eduLevel: "specialized", eduFields: ["health"] },
+    { only: ["29-1215.00"] }, // Háziorvos — entry=specialized, eduFields=["health"]
+  ).ranked[0];
+  assert.ok(doctor, "nincs teszt-foglalkozás");
+  assert.equal(doctor.feasibility.state, "field-match");
+  assert.equal(doctor.feasibility.licence, true);
+  assert.ok(
+    doctor.flags.includes("licence-ready"),
+    "a szabályozott szakma field-matchnél sem kapott licenc-flaget",
+  );
+
+  // Nem szabályozott (higher) szakma, szintén field-match: NINCS licenc-caveat —
+  // a nem-specialized ág változatlan.
+  const manager = computeCareerFit(
+    { dims: balanced, form: "short", eduLevel: "higher", eduFields: ["economics"] },
+    { only: ["11-1021.00"] }, // Ügyvezető — entry=higher, eduFields=["economics"]
+  ).ranked[0];
+  assert.ok(manager);
+  assert.equal(manager.feasibility.state, "field-match");
+  assert.equal(manager.feasibility.licence, false);
+  assert.ok(
+    !manager.flags.includes("licence-ready"),
+    "nem-specialized field-match licenc-flaget kapott",
+  );
 });
 
 test("katalógus: a tételek többségéhez van képzési terület", () => {
@@ -165,11 +226,6 @@ test("katalógus: a tételek többségéhez van képzési terület", () => {
 
 // ── motor ───────────────────────────────────────────────────────────────────
 
-test("általános munkahelyi alap: C és H súlyozott átlaga", () => {
-  assert.equal(generalWorkPropensity({ THOR: 80, INTE: 60 }), 72);
-  assert.equal(generalWorkPropensity({}), 50);
-});
-
 test("differenciál rangsor: a profil szintje nem tolja el a sorrendet", () => {
   const low = computeCareerFit({ dims: balanced, form: "short" }, { limit: 10 });
   const raised = Object.fromEntries(
@@ -181,8 +237,21 @@ test("differenciál rangsor: a profil szintje nem tolja el a sorrendet", () => {
     low.ranked.map((f) => f.id),
     "az egyenletesen magasabb profil ugyanazt a sorrendet kapja",
   );
-  // ...az általános szint viszont IGENIS különbözik
-  assert.ok(high.general > low.general);
+});
+
+test("holt mezők nem térnek vissza: general/absoluteFit/clusters kikerült", () => {
+  // 2026-08-11: minden futáson kiszámolt, de egyetlen felület sem olvasta —
+  // ráadásul a general/absoluteFit a nyers kevert profil SZINTJÉT szivárogtatta.
+  // Ha visszakerülnek, az tudatos (felület által olvasott) döntés legyen.
+  const result = computeCareerFit({ dims: balanced, form: "short" }, { limit: 5 });
+  assert.equal("general" in result, false, "a general holt ág visszakerült");
+  assert.equal("clusters" in result, false, "a clusters holt ág visszakerült");
+  assert.ok(result.ranked.length > 0);
+  assert.equal(
+    "absoluteFit" in result.ranked[0],
+    false,
+    "az absoluteFit holt mező visszakerült",
+  );
 });
 
 test("ideal-point: a cél FÖLÖTTI eltérés is csökkenti az illeszkedést", () => {
@@ -206,23 +275,156 @@ test("ideal-point: a cél FÖLÖTTI eltérés is csökkenti az illeszkedést", (
 
 test("H-padló: magas becsületesség-alázat nem büntethető, alacsony nem jutalmazható", () => {
   const occupation = getOccupations().find((o) =>
-    o.demand.some((c) => c.dim === "INTE" && c.target < 45 && c.w > 0.15),
+    o.demand.some((c) => c.dim === "H" && c.target < 45 && c.w > 0.15),
   );
   assert.ok(occupation, "nincs alacsony H-célú foglalkozás a katalógusban");
   const run = (h: number) =>
-    computeCareerFit({ dims: { ...balanced, INTE: h }, form: "short" }, { only: [occupation.id] })
+    computeCareerFit({ dims: { ...balanced, H: h }, form: "short" }, { only: [occupation.id] })
       .ranked[0];
   const honest = run(92);
   const opportunist = run(15);
-  const componentHonest = honest.components.find((c) => c.dim === "INTE")!;
+  const componentHonest = honest.components.find((c) => c.dim === "H")!;
   assert.equal(componentHonest.note, "h-floor");
   assert.equal(componentHonest.alignment, 100, "a magas H nem kaphat büntetést");
-  const componentOpportunist = opportunist.components.find((c) => c.dim === "INTE")!;
+  const componentOpportunist = opportunist.components.find((c) => c.dim === "H")!;
   assert.ok(
     componentOpportunist.alignment < componentHonest.alignment,
     "az alacsony H nem illeszkedhet jobban",
   );
   assert.ok(honest.flags.includes("h-floor"));
+});
+
+test("H-padló a NYERS ponton fut: a relatíve alacsony, abszolút magas H nem bűnhődik", () => {
+  // A centrált ponton futó padló egy abszolút őszinte usert büntetett, akinek
+  // az H a SAJÁT profiljában relatíve a legalacsonyabb (70 a 85-ös átlag
+  // mellett → centrálva ~38 → „nem éri el az 50-et"). Az invariáns abszolút:
+  // magas H-val nem lehet rosszabbul illeszkedni egy alacsony H-célú szerepre.
+  const occupation = getOccupations().find((o) =>
+    o.demand.some((c) => c.dim === "H" && c.target < 45 && c.w > 0.15),
+  );
+  assert.ok(occupation, "nincs alacsony H-célú foglalkozás a katalógusban");
+  const run = (dims: Record<string, number>) =>
+    computeCareerFit(
+      { dims: dims as typeof balanced, form: "short" },
+      { only: [occupation.id] },
+    ).ranked[0].components.find((c) => c.dim === "H")!;
+
+  // Abszolút őszinte (H 70), de a saját profiljában ez a legalacsonyabb.
+  const honestRelativelyLow = run({
+    H: 70,
+    E: 85,
+    X: 85,
+    A: 85,
+    C: 85,
+    O: 85,
+  });
+  assert.equal(honestRelativelyLow.note, "h-floor");
+  assert.equal(
+    honestRelativelyLow.alignment,
+    100,
+    "az abszolút őszinte user a centrált padlón bűnhődött",
+  );
+  // A H-padlós komponens értékei a NYERS skálán vannak (a két skála itt egybeesik).
+  assert.equal(honestRelativelyLow.userValue, 70);
+  assert.equal(honestRelativelyLow.userRaw, 70);
+  assert.equal(honestRelativelyLow.targetRaw, 50);
+
+  // A lapos, kevésbé őszinte profil nem járhat JOBBAN nála.
+  const flat = run({ H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 });
+  assert.ok(
+    honestRelativelyLow.alignment >= flat.alignment,
+    "magas H-val rosszabb illeszkedés jött ki, mint lapos profillal",
+  );
+
+  // Abszolút alacsony H viszont továbbra sem kap jutalmat.
+  const lowAbsolute = run({ H: 20, E: 55, X: 55, A: 55, C: 55, O: 55 });
+  assert.ok(lowAbsolute.alignment < 100, "az abszolút alacsony H nem érhet a padló fölé");
+});
+
+test("komponens-megjelenítés: a userRaw a results-oldali pontszám, a targetRaw vele egy skálán", () => {
+  // A centrált (pontozási) érték „te {..}"-ként ellentmondana a results-oldalnak
+  // (nyers C 90 → „te 58"). A motor ezért NYERS megjelenítési párt is ad:
+  // userRaw = nyers pont, targetRaw = a cél ugyanazzal az eltolással — a
+  // távolság (és vele a position/alignment) változatlan.
+  const dims = { H: 55, E: 50, X: 55, A: 55, C: 90, O: 60 };
+  const mean = Object.values(dims).reduce((a, b) => a + b, 0) / 6;
+  const result = computeCareerFit({ dims, form: "short" }, { limit: 5, diversify: false });
+  assert.ok(result.ranked.length > 0);
+  let checked = 0;
+  for (const fit of result.ranked) {
+    for (const component of fit.components) {
+      if (component.note === "h-floor") continue;
+      const raw = dims[component.dim as keyof typeof dims];
+      assert.equal(component.userRaw, raw, `${fit.hu}/${component.dim}: userRaw ≠ nyers pont`);
+      assert.equal(
+        component.userValue,
+        Math.round(raw - mean + 50),
+        `${fit.hu}/${component.dim}: a userValue nem a centrált pont`,
+      );
+      // A pár koherens: a nyers távolság (kerekítésen belül) a pontozási távolság.
+      const unclamped = component.target + (mean - 50);
+      if (unclamped >= 0 && unclamped <= 100) {
+        assert.ok(
+          Math.abs(
+            Math.abs(component.userRaw - component.targetRaw) -
+              Math.abs(component.userValue - component.target),
+          ) <= 1,
+          `${fit.hu}/${component.dim}: a nyers pár távolsága elcsúszott`,
+        );
+        checked += 1;
+      }
+    }
+  }
+  assert.ok(checked > 0, "nem volt ellenőrizhető komponens");
+});
+
+test("skála-szél: a kicsúszó visszatolt cél targetAtEdge jelzést kap (v6)", () => {
+  // Magas átlagú profilnál (shift = átlag − 50 ≈ +40) a magas célú komponens
+  // visszatolt célja 100 fölé esne; a vágás után a mutatott |userRaw −
+  // targetRaw| kisebb a pontozott távolságnál. A motor ezt nem hallgatja el:
+  // a komponens targetAtEdge jelzést hordoz, amit a UI kimond.
+  const dims = { H: 90, E: 88, X: 92, A: 90, C: 95, O: 85 };
+  const result = computeCareerFit(
+    { dims, form: "short" },
+    { limit: 477, diversify: false },
+  );
+  const components = result.ranked.flatMap((fit) => fit.components);
+  const flagged = components.filter((component) => component.targetAtEdge);
+  assert.ok(flagged.length > 0, "magas-átlagú profilon nincs jelölt skála-szél komponens");
+  for (const component of flagged) {
+    assert.notEqual(component.note, "h-floor", "H-padlós komponens nem kaphat skála-szél jelzést");
+    assert.ok(
+      component.targetRaw === 0 || component.targetRaw === 100,
+      `targetAtEdge, de a cél nem a skála szélén: ${component.targetRaw}`,
+    );
+    // A jelzés oka: a vágott pár távolsága legfeljebb a pontozott távolság
+    // (tipikusan kisebb) — nagyobb sosem lehet.
+    assert.ok(
+      Math.abs(component.userRaw - component.targetRaw) <=
+        Math.abs(component.userValue - component.target) + 1,
+      "a vágott pár távolsága nagyobb a pontozottnál",
+    );
+  }
+  // Nem-jelölt (és nem H-padlós) komponensen a pár koherens (±1 kerekítés).
+  const clean = components.filter(
+    (component) => !component.targetAtEdge && component.note !== "h-floor",
+  );
+  assert.ok(clean.length > 0);
+  for (const component of clean) {
+    assert.ok(
+      Math.abs(
+        Math.abs(component.userRaw - component.targetRaw) -
+          Math.abs(component.userValue - component.target),
+      ) <= 1,
+      `${component.dim}: jelöletlen komponens elcsúszott párral`,
+    );
+  }
+  // Kiegyensúlyozott (50 körüli átlagú) profilon nincs skála-szél jelzés.
+  const centeredRun = computeCareerFit({ dims: balanced, form: "short" }, { limit: 40 });
+  assert.ok(
+    centeredRun.ranked.flatMap((fit) => fit.components).every((c) => !c.targetAtEdge),
+    "kiegyensúlyozott profilon is jelölt skála-szél",
+  );
 });
 
 test("kétlépcsős rendezés: mért érdeklődésnél a lista érdeklődés-vezérelt", () => {
@@ -352,6 +554,255 @@ test("scope: több bejelölt terület metszete kiemelést kap", () => {
   }
 });
 
+test("scoped: az ipari evidencia EGYSZER számít — nincs +5 és +6 kétszerezés (E2)", () => {
+  const interests = {
+    vector: { R: 20, I: 60, A: 40, S: 30, E: 70, C: 45 },
+    source: "measured" as const,
+  };
+  // Egyetlen bejelölt terület (max. 1 átfedés → nincs metszet-bónusz) és nincs
+  // szakirány-adat (nincs field-match bónusz): a rangnak a tiszta, bónusz-mentes
+  // választási alappal kell egyeznie. Preferencia nélkül ez maga az érdeklődés.
+  const scoped = computeCareerFit(
+    { dims: balanced, form: "short", interests },
+    { limit: 20, scope: ["tech"], industries: ["tech"] },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  assert.ok(scoped.ranked.length > 0);
+  for (const fit of scoped.ranked) {
+    // A régi kód a choiceScore +5 INDUSTRY_PICK_BONUS-át örökölte a tech-címkés
+    // tételekre (rank = interest + 5). A javítás után az alap bónusz-mentes.
+    assert.equal(fit.interest !== null, true, `${fit.hu}: hiányzó érdeklődés-pontszám`);
+    assert.equal(fit.rank, fit.interest, `${fit.hu}: az ipari bónusz kétszer számított`);
+  }
+});
+
+test("scoped: lapos MÉRT érdeklődés nem rendezhet egyedül — demandFit-horgony (E2 + v6)", () => {
+  // 2026-08-11 (motor-audit v6): a scoped forrás-kapu a DIFFERENCIÁLTSÁGRA is
+  // kiterjed (a canUseInterestLed tükre). A mért, de lapos érdeklődés korábban
+  // a felezett súlyú (17,5%-os) egy/kétkomponensű alapot kapta — preferencia-
+  // tengelyek nélkül az egykomponensű átlagban a súly kiesett, és a lapos jel
+  // adta a sorrend 100%-át. Az új viselkedés: lapos mért érdeklődés a
+  // demandFit-horgonyú kompozit alapba esik, a felezett súlyával.
+  const flatInterest = {
+    vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 }, // low differentiation
+    source: "measured" as const,
+  };
+  const scoped = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      interests: flatInterest,
+      prefs: { people: 1, structure: 1 },
+    },
+    { limit: 20, scope: ["tech"], industries: ["tech"] },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  // A scoped ág is alkalmazza a low-differentiation felezőt (megkerülte a
+  // canUseInterestLed kaput): a meta a felezett súlyt hordozza.
+  assert.equal(scoped.meta.interestWeight, interestWeightFor("measured") * 0.5);
+  // A rang a demandFit-tel horgonyzott kompozit alap (a felezett érdeklődés-
+  // súllyal). Egy scope + nincs szakirány → nincs metszet/field bónusz.
+  const wi = scoped.meta.interestWeight;
+  let checked = 0;
+  for (const fit of scoped.ranked) {
+    if (fit.interest === null || fit.preference === null) continue;
+    const expected = Math.min(
+      100,
+      Math.round(
+        (fit.demandFit * RANK_WEIGHTS.demand +
+          fit.interest * wi +
+          fit.preference * RANK_WEIGHTS.preference) /
+          (RANK_WEIGHTS.demand + wi + RANK_WEIGHTS.preference),
+      ),
+    );
+    assert.equal(fit.rank, expected, `${fit.hu}: a lapos mért jel nem horgonyzott`);
+    assert.equal(fit.orderedBy, "composite", `${fit.hu}: hamis orderedBy-címke`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, "nem volt teljes komponensű scoped tétel az ellenőrzéshez");
+});
+
+test("scoped: lapos mért érdeklődés preferencia NÉLKÜL sem rendezhet egyedül (v6)", () => {
+  // Az audit-forgatókönyv: kitöltött Mini-IP, de lapos profil, és a wizard
+  // preferencia-lépése kihagyva. A régi ág itt EGYETLEN komponenst tett az
+  // alapba (interest·w/w = interest): a lapos mért jel rendezte a teljes
+  // listát, miközben a kártya 17,5%-os súlyt mutatott.
+  const flatInterest = {
+    vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 },
+    source: "measured" as const,
+  };
+  const scoped = computeCareerFit(
+    { dims: balanced, form: "short", interests: flatInterest },
+    { limit: 30, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  const wi = scoped.meta.interestWeight;
+  assert.equal(wi, interestWeightFor("measured") * 0.5);
+  let checked = 0;
+  for (const fit of scoped.ranked) {
+    if (fit.interest === null) continue;
+    const expected = Math.min(
+      100,
+      Math.round(
+        (fit.demandFit * RANK_WEIGHTS.demand + fit.interest * wi) /
+          (RANK_WEIGHTS.demand + wi),
+      ),
+    );
+    assert.equal(fit.rank, expected, `${fit.hu}: a lapos mért jel nem horgonyzott`);
+    assert.equal(fit.orderedBy, "composite", `${fit.hu}: hamis orderedBy-címke`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, "nem volt érdeklődés-pontszámú scoped tétel");
+  const byInterest = [...scoped.ranked]
+    .sort((a, b) => (b.interest ?? 0) - (a.interest ?? 0))
+    .map((fit) => fit.id);
+  assert.notDeepEqual(
+    scoped.ranked.map((fit) => fit.id),
+    byInterest,
+    "a sorrend a tiszta érdeklődés-sorrend — a lapos mért jel egyedül rendezett",
+  );
+  // A DIFFERENCIÁLT mért érdeklődés viselkedése változatlan: érdeklődés vezet.
+  const differentiated = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      interests: {
+        vector: { R: 20, I: 60, A: 40, S: 30, E: 70, C: 45 },
+        source: "measured" as const,
+      },
+    },
+    { limit: 20, scope: ["tech"], industries: ["tech"] },
+  );
+  assert.ok(
+    differentiated.ranked.every((fit) => fit.orderedBy === "interest"),
+    "a differenciált mért érdeklődés elvesztette a scoped rendezést",
+  );
+});
+
+test("scoped: becsült érdeklődés NEM rendezhet egyedül — demandFit-horgony (forrás-kapu)", () => {
+  // A régi ág egykomponensű súlyozott átlagot számolt, amiben a súly kiesik
+  // (interest·w/w = interest): egy 7,5–15%-os súlyú BECSÜLT jel adta a sorrend
+  // 100%-át, miközben a kártya a kis súlyt mutatta. Az interest-led forrás-kapu
+  // (becsültnél körkörös) a scoped rendezésre is érvényes.
+  const estimated = {
+    vector: { R: 70, I: 60, A: 30, S: 35, E: 55, C: 65 }, // differenciált
+    source: "estimated" as const,
+  };
+  const scoped = computeCareerFit(
+    { dims: balanced, form: "short", interests: estimated },
+    { limit: 30, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  const wi = scoped.meta.interestWeight;
+  assert.equal(wi, interestWeightFor("estimated"));
+  let checked = 0;
+  for (const fit of scoped.ranked) {
+    if (fit.interest === null) continue;
+    // Nincs preferencia, egy scope (nincs metszet-bónusz), nincs szakirány-adat
+    // (nincs field-bónusz): a rang a demandFit-tel horgonyzott kompozit alap.
+    const expected = Math.min(
+      100,
+      Math.round(
+        (fit.demandFit * RANK_WEIGHTS.demand + fit.interest * wi) /
+          (RANK_WEIGHTS.demand + wi),
+      ),
+    );
+    assert.equal(fit.rank, expected, `${fit.hu}: a becsült jel nem horgonyzott`);
+    assert.equal(fit.orderedBy, "composite", `${fit.hu}: hamis orderedBy-címke`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, "nem volt érdeklődés-pontszámú scoped tétel");
+  assert.ok(
+    scoped.ranked.some((fit) => fit.rank !== fit.interest),
+    "a rang mindenhol a nyers érdeklődés — a horgony nem él",
+  );
+  const byInterest = [...scoped.ranked]
+    .sort((a, b) => (b.interest ?? 0) - (a.interest ?? 0))
+    .map((fit) => fit.id);
+  assert.notDeepEqual(
+    scoped.ranked.map((fit) => fit.id),
+    byInterest,
+    "a sorrend a tiszta érdeklődés-sorrend — a becsült jel egyedül rendezett",
+  );
+
+  // Az audit-forgatókönyv: wizard-default (iparág bejelölve, RIASEC kihagyva) →
+  // lapos becsült érdeklődés, 7,5% súly. A horgony itt is kell.
+  const flatEstimated = {
+    vector: { R: 50, I: 52, A: 48, S: 51, E: 49, C: 50 },
+    source: "estimated" as const,
+  };
+  const flat = computeCareerFit(
+    { dims: balanced, form: "short", interests: flatEstimated },
+    { limit: 30, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(flat.meta.interestWeight, interestWeightFor("estimated") * 0.5);
+  for (const fit of flat.ranked) {
+    if (fit.interest === null) continue;
+    const expected = Math.min(
+      100,
+      Math.round(
+        (fit.demandFit * RANK_WEIGHTS.demand + fit.interest * flat.meta.interestWeight) /
+          (RANK_WEIGHTS.demand + flat.meta.interestWeight),
+      ),
+    );
+    assert.equal(fit.rank, expected, `${fit.hu}: a 7,5%-os jel nem horgonyzott`);
+  }
+});
+
+test("scoped rankSe: a tényleges alap-komponensekből, súlyösszeggel normálva (mint a kompozit)", () => {
+  // A régi képlet mindig mindkét tagot számolta (preferencia nélkül is), és nem
+  // osztott a súlyösszeggel → 1,2–2,5× szűkebb klaszterek.
+  const interests = {
+    vector: { R: 20, I: 60, A: 40, S: 30, E: 70, C: 45 },
+    source: "measured" as const,
+  };
+
+  // 1) mért érdeklődés + preferencia: mindkét komponens, normálva.
+  const withPrefs = computeCareerFit(
+    { dims: balanced, form: "short", interests, prefs: { people: 1, structure: 1 } },
+    { limit: 20, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(withPrefs.meta.strategy, "scoped");
+  const wi = withPrefs.meta.interestWeight;
+  const seBoth =
+    Math.round(
+      (Math.sqrt((wi * 6) ** 2 + (CHOICE_WEIGHTS.preference * 5) ** 2) /
+        (wi + CHOICE_WEIGHTS.preference)) *
+        10,
+    ) / 10;
+  let checkedBoth = 0;
+  for (const fit of withPrefs.ranked) {
+    if (fit.interest === null || fit.preference === null) continue;
+    assert.equal(fit.rankSe, seBoth, `${fit.hu}: nem normált scoped rankSe`);
+    checkedBoth += 1;
+  }
+  assert.ok(checkedBoth > 0);
+
+  // 2) mért érdeklődés preferencia NÉLKÜL: egyetlen komponens → a rankSe a
+  // komponens saját hibája (sqrt((w·se)²)/w = se), nem a kevert képlet.
+  const noPrefs = computeCareerFit(
+    { dims: balanced, form: "short", interests },
+    { limit: 20, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  for (const fit of noPrefs.ranked) {
+    if (fit.interest === null) continue;
+    assert.equal(fit.rankSe, 6, `${fit.hu}: az egykomponensű rankSe nem a mért érdeklődés-SE`);
+  }
+
+  // 3) érdeklődés-adat nélkül a scoped ág demandFit-re esik vissza: a címke
+  // EZT mondja ki (a régi ág "interest"-nek hazudta), a rankSe a demand-SE.
+  const noInterest = computeCareerFit(
+    { dims: balanced, form: "short" },
+    { limit: 20, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(noInterest.meta.strategy, "scoped");
+  assert.ok(noInterest.ranked.length > 0);
+  for (const fit of noInterest.ranked) {
+    assert.equal(fit.orderedBy, "demandFit", `${fit.hu}: a demandFit-fallback hamis címkét kapott`);
+    assert.equal(fit.rankSe, fit.se, `${fit.hu}: a fallback rankSe nem a demand-SE`);
+  }
+});
+
 test("kompozit: az érdeklődés és a preferencia módosítja a rangsort, a demandFit nem változik", () => {
   const base = computeCareerFit({ dims: balanced, form: "short" }, { limit: 20 });
   const withInterest = computeCareerFit(
@@ -381,10 +832,59 @@ test("a rangsor-súlyok sorrendje: kimondott szándék → személyiség → ér
     RANK_WEIGHTS.preference > RANK_WEIGHTS.demand,
     "a kimondott preferencia nem erősebb a személyiségnél",
   );
+  // Az érdeklődés súlya forrás-függő (interestWeightFor) — a legerősebb (mért)
+  // forma sem előzheti meg a személyiséget, és a lépcső monoton csökken.
   assert.ok(
-    RANK_WEIGHTS.demand > RANK_WEIGHTS.interest,
+    RANK_WEIGHTS.demand >= interestWeightFor("measured"),
     "a személyiség nem erősebb az érdeklődésnél",
   );
+  assert.ok(interestWeightFor("measured") > interestWeightFor("tags"));
+  assert.ok(interestWeightFor("tags") > interestWeightFor("estimated"));
+});
+
+test("meta.interestWeight: a közölt súly azonos a rangsorban ténylegesen használttal", () => {
+  const interests = {
+    vector: { R: 85, I: 60, A: 20, S: 25, E: 30, C: 55 },
+    source: "measured" as const,
+  };
+  const result = computeCareerFit(
+    { dims: balanced, form: "short", interests, prefs: { people: 1 } },
+    { limit: 10, strategy: "composite" },
+  );
+  assert.equal(result.meta.interestWeight, interestWeightFor("measured"));
+  // Rekonstruáljuk a rangot a meta-súlyból — ha a motor belül más súllyal
+  // számolna, az itt eltérést adna (a UI ezt a meta-értéket mutatja).
+  const fit = result.ranked.find(
+    (f) => f.interest !== null && f.preference !== null && !f.flags.includes("industry-pick"),
+  );
+  assert.ok(fit, "nincs teljes komponensű tétel a rangsorban");
+  const wi = result.meta.interestWeight;
+  const weightSum = RANK_WEIGHTS.demand + wi + RANK_WEIGHTS.preference;
+  const expected = Math.min(
+    100,
+    Math.round(
+      (fit.demandFit * RANK_WEIGHTS.demand +
+        (fit.interest ?? 0) * wi +
+        (fit.preference ?? 0) * RANK_WEIGHTS.preference) /
+        weightSum,
+    ),
+  );
+  assert.equal(fit.rank, expected);
+
+  // Lapos érdeklődés-profilnál a súly feleződik — a metának EZT kell mutatnia.
+  const flat = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      interests: { vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 }, source: "measured" },
+    },
+    { limit: 5 },
+  );
+  assert.equal(flat.meta.interestWeight, interestWeightFor("measured") * 0.5);
+
+  // Érdeklődés-adat nélkül a súly nulla.
+  const none = computeCareerFit({ dims: balanced, form: "short" }, { limit: 5 });
+  assert.equal(none.meta.interestWeight, 0);
 });
 
 test("preferencia nélkül a másik két komponens viszi a rangsort", () => {
@@ -419,6 +919,63 @@ test("diverzifikálás: egy ISCO-alcsoportból legfeljebb kettő", () => {
   }
   const worst = Math.max(...counts.values());
   assert.ok(worst <= 3, `egy szakmacsalád túl sokszor szerepel: ${worst}`);
+  // A diverzifikált lista is RANG-MONOTON (E1): a családonkénti sapka nem
+  // tolhat magasabb rangú tételt egy alacsonyabb mögé.
+  for (let i = 1; i < result.ranked.length; i += 1) {
+    assert.ok(
+      result.ranked[i - 1].rank >= result.ranked[i].rank,
+      `a diverzifikált rangsor nem monoton: ${result.ranked.map((f) => f.rank).join(",")}`,
+    );
+  }
+});
+
+test("diverzifikálás: a családonkénti sapka nem töri meg a rang-monotonitást (E1)", () => {
+  // Két családból (X, Y) építünk rangsort úgy, hogy a sapka (perFamily=2) X
+  // magas rangú tételeit overflow-ba tolja, és egy alacsonyabb rangú Y-t vesz
+  // be helyettük. A régi `[...picked, ...overflow]` az overflow-ba került magas
+  // rangú X-et az alacsony Y MÖGÉ fűzte → a clusterByOverlap negatív gapet
+  // számolt, és az X a legalsó (Y-vezette) klaszterbe olvadt.
+  const make = (id: string, family: string, rank: number): OccupationFit =>
+    ({
+      id,
+      hu: id,
+      family,
+      rank,
+      rankSe: 1,
+      se: 1,
+      demandFit: rank,
+      tier: 1,
+      feasibility: { ready: true },
+    }) as unknown as OccupationFit;
+  const sorted = [
+    make("X1", "X", 95),
+    make("X2", "X", 90),
+    make("X3", "X", 85), // sapka miatt overflow
+    make("Y1", "Y", 60), // alacsonyabb, de a sapka miatt a picked-be kerül
+    make("X4", "X", 55),
+  ];
+  const out = diversify(sorted, 4, 2);
+
+  // 1) a visszaadott lista rang-monoton
+  for (let i = 1; i < out.length; i += 1) {
+    assert.ok(
+      out[i - 1].rank >= out[i].rank,
+      `nem monoton: ${out.map((f) => f.rank).join(",")}`,
+    );
+  }
+  // 2) a diverzitás-szándék megmaradt: limit-feltöltésnél a maradékból a
+  //    LEGMAGASABB rangú jön (X3=85), nem a legalsó (X4=55).
+  assert.ok(out.some((f) => f.id === "X3"), "a feltöltés nem a legmagasabb rangú maradékot vette");
+  assert.ok(!out.some((f) => f.id === "X4"), "a limit fölötti alacsony tétel bekerült");
+
+  // 3) a klaszterezés ép: egyetlen klaszter-tag rangja sem előzi meg a vezetőét
+  const clusters = clusterByOverlap(out);
+  for (const cluster of clusters) {
+    const leaderRank = cluster[0].rank;
+    for (const fit of cluster) {
+      assert.ok(fit.rank <= leaderRank, `magas rangú (${fit.rank}) tétel az alsó klaszterben`);
+    }
+  }
 });
 
 test("readyOnly: csak a végzettséggel elérhető szerepek maradnak", () => {
@@ -430,17 +987,129 @@ test("readyOnly: csak a végzettséggel elérhető szerepek maradnak", () => {
   assert.ok(result.ranked.every((f) => f.feasibility.ready));
 });
 
-test("observer: az értékelők számával csökken a hibasáv", () => {
-  const solo = computeCareerFit(
-    { dims: balanced, form: "short", observer: { dims: { THOR: 70 }, raterCount: 1 } },
+test("observer: az értékelők számával csökken a hibasáv (a padló fölött)", () => {
+  const few = computeCareerFit(
+    { dims: balanced, form: "short", observer: { dims: { C: 70 }, raterCount: 3 } },
     { limit: 3 },
   );
   const many = computeCareerFit(
-    { dims: balanced, form: "short", observer: { dims: { THOR: 70 }, raterCount: 6 } },
+    { dims: balanced, form: "short", observer: { dims: { C: 70 }, raterCount: 6 } },
     { limit: 3 },
   );
-  assert.ok(many.meta.dimSe < solo.meta.dimSe);
-  assert.ok(many.observerWeight > solo.observerWeight);
+  const selfOnly = computeCareerFit({ dims: balanced, form: "short" }, { limit: 3 });
+  assert.ok(many.meta.dimSe < few.meta.dimSe);
+  assert.ok(few.meta.dimSe < selfOnly.meta.dimSe);
+  assert.ok(few.observerWeight > 0);
+});
+
+test("observer-padló: 3 értékelő alatt a külső jel egyáltalán nem keveredik be", () => {
+  // ANONIMITÁS: a kevert kimenet + ismert súly alatt a ratee visszafejthetné az
+  // egy-két értékelő válaszát (blended = self·(1−w)+obs·w, a self ismert). A
+  // padló a termék közös küszöbe — a person.ts és a motor is ezt kényszeríti.
+  const selfOnly = computeCareerFit({ dims: balanced, form: "short" }, { limit: 8 });
+  for (let raters = 1; raters < MIN_RATERS_FOR_ANONYMOUS_AGGREGATE; raters += 1) {
+    const gated = computeCareerFit(
+      {
+        dims: balanced,
+        form: "short",
+        observer: { dims: { C: 95, H: 5, X: 90 }, raterCount: raters },
+      },
+      { limit: 8 },
+    );
+    assert.equal(gated.observerWeight, 0, `${raters} értékelőnél a súly nem 0`);
+    assert.equal(gated.meta.dimSe, selfOnly.meta.dimSe, "a hibasáv nem lehet szűkebb");
+    // NEM INVERTÁLHATÓ: a teljes kimenet bitre azonos a self-only futással —
+    // nincs olyan szerializált érték, amiből az observer-vektor visszaállna.
+    assert.deepEqual(gated.ranked, selfOnly.ranked, `${raters} értékelő átszivárgott`);
+  }
+  // A padlón (3 értékelő) a keverés él, és a közölt súly DURVA (1 tizedes):
+  // a pontos súly a keverés invertálásához kellene.
+  const atFloor = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      observer: { dims: { C: 95 }, raterCount: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE },
+    },
+    { limit: 8 },
+  );
+  assert.ok(atFloor.observerWeight > 0);
+  assert.equal(
+    Math.round(atFloor.observerWeight * 10) / 10,
+    atFloor.observerWeight,
+    "a közölt observer-súly 1 tizedesnél pontosabb",
+  );
+  assert.notDeepEqual(atFloor.ranked, selfOnly.ranked, "a padlón a keverésnek élnie kell");
+});
+
+test("userRaw observer-keverés MELLETT is a SELF pontszám — a keverés belső marad", () => {
+  // Szerződés (2026-08-11, fix): a userRaw a results-oldali ÖNÉRTÉKELÉS-pont.
+  // A korábbi kevert userRaw + a minden n≥3-ra pontosan 0,5-ös observerWeight
+  // együtt PONTOSAN invertálhatóvá tette az observer-aggregátumot
+  // (obs = 2·userRaw − self). A keverés a pontozásban él, a szerializált
+  // nyers párban nem.
+  const dims = { H: 60, E: 45, X: 62, A: 58, C: 70, O: 55 };
+  const observerDims = { H: 20, E: 80, X: 30, A: 90, C: 20, O: 90 };
+  const occupation = getOccupations().find((o) => o.demand.length >= 3);
+  assert.ok(occupation, "nincs többkomponensű teszt-foglalkozás");
+
+  const blendedRun = computeCareerFit(
+    {
+      dims,
+      form: "short",
+      observer: { dims: observerDims, raterCount: 4 },
+    },
+    { only: [occupation.id] },
+  );
+  const selfRun = computeCareerFit({ dims, form: "short" }, { only: [occupation.id] });
+  assert.ok(blendedRun.observerWeight > 0, "a keverésnek élnie kell");
+
+  const blendedFit = blendedRun.ranked[0];
+  const selfFit = selfRun.ranked[0];
+  let checkedPairs = 0;
+  for (const component of blendedFit.components) {
+    // 1) A userRaw MINDEN komponensen (H-padlóson is) a self pont — obs nem
+    //    fejthető vissza belőle.
+    assert.equal(
+      component.userRaw,
+      dims[component.dim as keyof typeof dims],
+      `${component.dim}: a userRaw nem a self pontszám`,
+    );
+    // 2) A megjelenítési pár konzisztens a pontozással (nem h-floor, nem edge).
+    if (component.note !== "h-floor" && !component.targetAtEdge) {
+      assert.ok(
+        Math.abs(
+          Math.abs(component.userRaw - component.targetRaw) -
+            Math.abs(component.userValue - component.target),
+        ) <= 1,
+        `${component.dim}: a self-horgonyú pár távolsága elcsúszott`,
+      );
+      checkedPairs += 1;
+    }
+  }
+  assert.ok(checkedPairs > 0, "nem volt ellenőrizhető komponens-pár");
+
+  // 3) A keverés BELSŐ maradt: az extrém observer-profil elmozdítja a
+  //    pontozott értékeket a self-only futáshoz képest.
+  const scoringMoved = blendedFit.components.some((component) => {
+    const selfComponent = selfFit.components.find((c) => c.dim === component.dim);
+    return selfComponent !== undefined && selfComponent.userValue !== component.userValue;
+  });
+  assert.ok(
+    scoringMoved || blendedFit.demandFit !== selfFit.demandFit,
+    "az observer-keverés nem hatott a pontozásra — a keverés kiesett",
+  );
+});
+
+test("SE-tudatos verdikt-kapu: küszöb-környéki érték nem kap negatív címkét", () => {
+  // A CareerResults figyelmeztetés-chipjei ezen a kapun futnak: negatív
+  // verdikt csak akkor, ha az érték ±SE sávja is a vágás alatt van.
+  assert.equal(clearlyBelow(54, 8, 55), false, "az 54 (band 46–62) nem 'feszültség'");
+  assert.equal(clearlyBelow(40, 8, 55), true, "a 40 ± 8 egyértelműen a vágás alatt van");
+  assert.equal(clearlyBelow(48, INTEREST_SE_MEASURED, 55), true);
+  assert.equal(clearlyBelow(48, INTEREST_SE_OTHER, 55), false, "zajos forrásnál szélesebb a sáv");
+  // A motor rangSe-terjesztése és a felületi kapu ugyanazokat a konstansokat
+  // használja.
+  assert.ok(INTEREST_SE_MEASURED < INTEREST_SE_OTHER);
 });
 
 test("rövid forma szélesebb sávot ad, mint a teljes", () => {
@@ -453,19 +1122,21 @@ test("rövid forma szélesebb sávot ad, mint a teljes", () => {
 test("hiányzó dimenziók: üres profil nem dob, üres listát ad", () => {
   const result = computeCareerFit({ dims: {}, form: "short" }, { limit: 5 });
   assert.equal(result.ranked.length, 0);
-  assert.equal(result.clusters.length, 0);
 });
 
-test("klaszterek lefedik a rangsort, és sorrendben csökkennek", () => {
+test("a rangsor klaszterezhető: lefedi a listát, a vezetők csökkennek", () => {
+  // A motor-szintű `clusters` mező holt ágként kikerült (a service szakaszonként
+  // klaszterez) — a klaszterezési szerződést a clusterByOverlap(ranked) őrzi.
   const result = computeCareerFit(
     { dims: balanced, form: "short", prefs: { people: 1, variety: 1 } },
     { limit: 12 },
   );
+  const clusters = clusterByOverlap(result.ranked);
   assert.equal(
-    result.clusters.reduce((sum, cluster) => sum + cluster.length, 0),
+    clusters.reduce((sum, cluster) => sum + cluster.length, 0),
     result.ranked.length,
   );
-  const leaders = result.clusters.map((cluster) => cluster[0].rank);
+  const leaders = clusters.map((cluster) => cluster[0].rank);
   for (let i = 1; i < leaders.length; i += 1) {
     assert.ok(leaders[i - 1] > leaders[i], "a klaszter-vezetők nem csökkenő sorrendben vannak");
   }

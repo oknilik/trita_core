@@ -35,6 +35,7 @@ import {
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { DIMENSION_BASE } from "@/lib/color-system";
+import { extractDimensionScores } from "@/lib/scoring";
 
 export const dynamic = "force-dynamic";
 
@@ -48,19 +49,19 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
   CLOSED: null,
 };
 
-const TRITAN_DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const TRITAN_DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 
 // Kanonikus HEXACO-paletta (color-system.ts) — a korábbi kevert (státusz-
 // színeket kölcsönző, O=hiba-piros) helyi térkép kivezetve.
 const TRITAN_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const TRITAN_LABEL_KEYS: Record<string, string> = {
-  INTE: "org.campaign.tritanINTE",
-  RESO: "org.campaign.tritanRESO",
-  TEMP: "org.campaign.tritanTEMP",
-  ADAP: "org.campaign.tritanADAP",
-  THOR: "org.campaign.tritanTHOR",
-  OPEN: "org.campaign.tritanOPEN",
+  H: "org.campaign.tritanINTE",
+  E: "org.campaign.tritanRESO",
+  X: "org.campaign.tritanTEMP",
+  A: "org.campaign.tritanADAP",
+  C: "org.campaign.tritanTHOR",
+  O: "org.campaign.tritanOPEN",
 };
 
 function statusLabel(status: string, locale: "hu" | "en") {
@@ -90,10 +91,14 @@ function eyebrowLabel(status: string, locale: "hu" | "en") {
 function computeAvgScores(
   results: { userProfileId: string | null; scores: unknown }[]
 ): Record<string, number> | null {
-  const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
+  const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
   let count = 0;
   for (const r of results) {
-    const scores = r.scores as Record<string, number>;
+    // Közös score-olvasó (scoring.ts): a tárolt sor BEÁGYAZOTT
+    // ({dimensions:{...}}) — a korábbi flat-record cast miatt egyetlen
+    // modern sor sem számított, így a „Fejlődési ív" sosem renderelt.
+    const scores = extractDimensionScores(r.scores);
+    if (!scores) continue;
     const hasAll = TRITAN_DIMS.every((d) => typeof scores[d] === "number");
     if (hasAll) {
       for (const d of TRITAN_DIMS) {
@@ -279,13 +284,16 @@ export default async function CampaignDetailPage({
       ? campaign.activatedAt
       : null;
 
-  // Self-assessment completion (fresh-tudatos)
+  // Self-assessment completion (fresh-tudatos). A distinct a RENDEZETT
+  // eredmény első sorát tartja meg — orderBy nélkül nem determinisztikus,
+  // melyik kitöltés számítana (org-stats mintája: legutolsó nyer).
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
       ...(freshFrom ? { createdAt: { gte: freshFrom } } : {}),
     },
+    orderBy: { createdAt: "desc" },
     select: { userProfileId: true, scores: true },
     distinct: ["userProfileId"],
   });
@@ -426,11 +434,18 @@ export default async function CampaignDetailPage({
     if (prevCampaign) {
       const prevParticipantIds = prevCampaign.participants.map((p) => p.userId);
       if (prevParticipantIds.length > 0) {
+        // A „korábbi" eredmény a JELENLEGI kör indulása ELŐTTI legutolsó
+        // kitöltés. Időhatár + orderBy nélkül a distinct rendezetlen sort
+        // adott vissza — a „korábbi" akár ugyanaz a sor lehetett, mint a
+        // jelenlegi, és a fejlődési ív hamis nullát mutatott.
+        const currentCampaignStart = campaign.activatedAt ?? campaign.createdAt;
         const prevResults = await prisma.assessmentResult.findMany({
           where: {
             userProfileId: { in: prevParticipantIds },
             isSelfAssessment: true,
+            createdAt: { lt: currentCampaignStart },
           },
+          orderBy: { createdAt: "desc" },
           select: { userProfileId: true, scores: true },
           distinct: ["userProfileId"],
         });

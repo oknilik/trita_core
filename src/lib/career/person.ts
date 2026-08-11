@@ -4,15 +4,17 @@
 // a userre három különböző eredmény jött.)
 
 import { InvitationStatus } from "@prisma/client";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { prisma } from "@/lib/prisma";
-import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
-import type { ScoreResult } from "@/lib/scoring";
-import { estimateInterests, interestsFromTags } from "./interests";
+import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
+import { aggregateObserverDims } from "./observer-aggregate";
+import { estimateInterests, interestsFromTags, isCompleteRiasecVector } from "./interests";
 import {
   AXIS_KEYS,
   DIM_CODES,
   RIASEC_LETTERS,
   VETO_TAGS,
+  type AssessmentForm,
   type AxisKey,
   type DimCode,
   type EduField,
@@ -38,6 +40,21 @@ export interface StoredCareerBackground {
   eduField?: string | null;
   /** kizárt munka-tulajdonságok (vétó-chipek) */
   vetoes?: string[];
+}
+
+/**
+ * A kérdőív-forma a TÁROLT kitöltésből: a kanonikus forrás a scoring-motor
+ * `form` pecsétje; a pecsét előtti örökség-sorokra a questionCount-heurisztika
+ * marad (100 itemes teljes bank = "full", minden más "short").
+ * A forma a hibasávot vezérli — a full-kitöltő szűkebb SEM-et érdemel.
+ */
+function formFromScores(scores: unknown): AssessmentForm {
+  const record = scores as { form?: unknown; questionCount?: unknown } | null;
+  if (record?.form === "full" || record?.form === "short") return record.form;
+  const count = record?.questionCount;
+  return typeof count === "number" && count >= SCORING_FULL_FORM_MIN_ITEMS
+    ? "full"
+    : "short";
 }
 
 function pickDims(scores: unknown): Partial<Record<DimCode, number>> {
@@ -81,7 +98,10 @@ function normalizeInterests(
       const value = measured[letter];
       if (typeof value === "number") vector[letter] = value;
     }
-    if (Object.keys(vector).length >= 4) return { vector, source: "measured" };
+    // „measured" CSAK a hiánytalan (mind a hat betűs) kérdőívből — ez a
+    // scoreRiasec teljességi szabálya. Egy parciális vektor (kliens-állítás,
+    // szerver-oldalon eddig validálatlan) tags/estimated-re esik vissza.
+    if (isCompleteRiasecVector(vector)) return { vector, source: "measured" };
   }
   const fromTags = interestsFromTags(background?.interestTags);
   if (fromTags) return { vector: fromTags, source: "tags" };
@@ -155,33 +175,27 @@ export async function buildPersonInput(
   const background = (profile?.careerBackground ?? null) as StoredCareerBackground | null;
   const dims = pickDims(latestResult?.scores);
 
-  const observerDims: Partial<Record<DimCode, number>> = {};
-  let observerCount = 0;
-  if (observerAssessments.length > 0) {
-    const sums: Partial<Record<DimCode, { sum: number; n: number }>> = {};
-    for (const assessment of observerAssessments) {
-      const values = pickDims(assessment.scores);
-      let counted = false;
-      for (const dim of DIM_CODES) {
-        const value = values[dim];
-        if (typeof value !== "number") continue;
-        const bucket = (sums[dim] ??= { sum: 0, n: 0 });
-        bucket.sum += value;
-        bucket.n += 1;
-        counted = true;
-      }
-      if (counted) observerCount += 1;
-    }
-    for (const dim of DIM_CODES) {
-      const bucket = sums[dim];
-      if (bucket && bucket.n > 0) observerDims[dim] = Math.round(bucket.sum / bucket.n);
-    }
-  }
+  // Observer-aggregátum PER-DIMENZIÓ anonimitás-padlóval (2026-08-11, fix):
+  // egy dimenzió csak akkor számít observer-átlagnak, ha arra a dimenzióra
+  // legalább MIN_RATERS_FOR_ANONYMOUS_AGGREGATE értékelő adott pontot — a
+  // korábbi bucket.n > 0 egyetlen értékelő válaszát is átlagként keverte be.
+  const { dims: observerDims, raterCount: observerCount } = aggregateObserverDims(
+    observerAssessments.map((assessment) => pickDims(assessment.scores)),
+  );
 
   const person: PersonInput = {
     dims,
-    form: DEFAULT_ASSESSMENT_FORM,
-    observer: observerCount > 0 ? { dims: observerDims, raterCount: observerCount } : null,
+    form: formFromScores(latestResult?.scores),
+    // ANONIMITÁS-PADLÓ: observer-jel csak a termék közös küszöbétől (3
+    // értékelő). Alatta a kevert kimenet + ismert keverési súly a ratee
+    // számára visszafejthetővé tenné az egy-két értékelő válaszát
+    // (blended = self·(1−w) + obs·w, a self a results-oldalról ismert) —
+    // az összevetés-fül ugyanezt n≥3-nál kapuzza. A motor (engine.blendDims)
+    // másodszor is kapuz, ez itt az adat-oldali forrás-szabály.
+    observer:
+      observerCount >= MIN_RATERS_FOR_ANONYMOUS_AGGREGATE
+        ? { dims: observerDims, raterCount: observerCount }
+        : null,
     interests: normalizeInterests(background, dims, normalizePrefs(background?.prefs)),
     prefs: normalizePrefs(background?.prefs),
     eduLevel: background?.eduLevel ?? null,

@@ -109,6 +109,14 @@ export const assessmentTranslations = {
     back: { hu: "Vissza", en: "Back" },
     finish: { hu: "Befejezem ✓", en: "Finish ✓" },
     submitting: { hu: "Mentés…", en: "Saving…" },
+    // Beküldés-hiba (self-flow): a válaszok kliens-oldalon megvannak, újra
+    // beküldhetők — a korábbi néma átirányítás a kitöltést nyomtalanul dobta el.
+    errorTitle: { hu: "A beküldés nem sikerült", en: "Submission failed" },
+    errorBody: {
+      hu: "A válaszaid nálad vannak, nem vesztek el — próbáld meg újra beküldeni.",
+      en: "Your answers are still here, nothing is lost — please try submitting again.",
+    },
+    retry: { hu: "Újrapróbálom", en: "Try again" },
   },
   teamRolePeers: {
     eyebrow: { hu: "csapattársi visszajelzés", en: "peer feedback" },
@@ -158,6 +166,11 @@ export const assessmentTranslations = {
     inactiveBody: { hu: "Ez a meghívó vissza lett vonva. Kérj új linket az ismerősödtől.", en: "This invite was canceled. Ask for a new link." },
     expiredTitle: { hu: "A meghívó lejárt", en: "Invite expired" },
     expiredBody: { hu: "Ez a meghívó már nem érvényes. Kérj új linket.", en: "This invite is no longer valid. Ask for a new link." },
+    awaitingTitle: { hu: "A meghívó jóváhagyásra vár", en: "This invite is awaiting approval" },
+    awaitingBody: {
+      hu: "Ezt a külső visszajelzés-kérést előbb a szervezet egyik felelősének jóvá kell hagynia. Amint jóváhagyták, ezen a linken kitöltheted — nézz vissza később.",
+      en: "This external feedback request first needs approval from someone at the organization. Once it's approved you can complete it at this link — check back later.",
+    },
     introTitle: { hu: "Visszajelzés", en: "Observer assessment" },
     introBody: { hu: "{inviter} megkért, hogy töltsd ki róla ezt a felmérést: {testName}.", en: "{inviter} asked you to complete this {testName} assessment about them." },
     introBody2: { hu: "A válaszaid név nélkül jelennek meg, és csak összesített átlagok láthatók.", en: "Your answers remain anonymous; only aggregated averages are visible." },

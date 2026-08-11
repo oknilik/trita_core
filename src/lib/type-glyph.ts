@@ -10,11 +10,12 @@
 // Miró-inspirált absztrakt kompozíció, de a TRITA palettával
 // (design-tokens.ts) — nincs saját hexkód ebben a fájlban.
 //
-// A dimenziókódok a belső TRITAN-kódok (INTE/RESO/TEMP/ADAP/THOR/OPEN),
+// A dimenziókódok a belső TRITAN-kódok (H/E/X/A/C/O),
 // a megjelenítés HEXACO-névtérben történik (ld. tritan.ts).
 // ─────────────────────────────────────────────────────────────────────
 
 import { COLORS } from "@/lib/design-tokens";
+import { rankDimensionScores } from "./hexaco";
 
 export const GLYPH_CANVAS = { width: 800, height: 900 } as const;
 
@@ -73,48 +74,48 @@ export interface DimensionGlyph {
 
 /** A hat dimenzió alapmotívumai. A sorrend a HEXACO-sorrendet követi. */
 export const DIMENSION_GLYPHS: Record<string, DimensionGlyph> = {
-  INTE: {
-    code: "INTE",
+  H: {
+    code: "H",
     hexaco: "H",
     form: "arch",
     motif: "scales",
     formName: { hu: "kapuív", en: "arch" },
     motifName: { hu: "mérleg", en: "scales" },
   },
-  RESO: {
-    code: "RESO",
+  E: {
+    code: "E",
     hexaco: "E",
     form: "drop",
     motif: "resonance",
     formName: { hu: "csepp", en: "drop" },
     motifName: { hu: "koncentrikus ívek", en: "concentric arcs" },
   },
-  TEMP: {
-    code: "TEMP",
+  X: {
+    code: "X",
     hexaco: "X",
     form: "comet",
     motif: "bolt",
     formName: { hu: "üstökös", en: "comet" },
     motifName: { hu: "villám", en: "bolt" },
   },
-  ADAP: {
-    code: "ADAP",
+  A: {
+    code: "A",
     hexaco: "A",
     form: "discs",
     motif: "rings",
     formName: { hu: "kapcsolódó korongok", en: "linked discs" },
     motifName: { hu: "gyűrűpár", en: "ring pair" },
   },
-  THOR: {
-    code: "THOR",
+  C: {
+    code: "C",
     hexaco: "C",
     form: "block",
     motif: "rungs",
     formName: { hu: "tömb", en: "block" },
     motifName: { hu: "létrafokok", en: "rungs" },
   },
-  OPEN: {
-    code: "OPEN",
+  O: {
+    code: "O",
     hexaco: "O",
     form: "eye",
     motif: "spiral",
@@ -123,7 +124,7 @@ export const DIMENSION_GLYPHS: Record<string, DimensionGlyph> = {
   },
 };
 
-export const GLYPH_DIMENSION_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+export const GLYPH_DIMENSION_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 
 // ── Alapformák ────────────────────────────────────────────────────────
 // Mindegyik EGY zárt bronz forma (az egyéni típus egyetlen alakzat; a
@@ -154,7 +155,7 @@ export const FORM_GEOMETRY: Record<GlyphFormId, FormGeometry> = {
     anchor: { x: 470, y: 452 },
     accent: { kind: "dot", x: 470, y: 268, r: 11, color: "line" },
   },
-  // Csepp — érzelmi telítettség, rezonancia. (E · empata)
+  // Csepp — érzelmi telítettség, rezonancia. (E · ráhangolódó)
   drop: {
     path: "M 470 288 C 566 404, 578 476, 524 538 C 470 598, 396 574, 384 496 C 374 434, 416 358, 470 288 Z",
     anchor: { x: 470, y: 462 },
@@ -337,13 +338,20 @@ export function accompaniment(primaryCode: string, secondaryCode: string): Accom
  * Ábra-pár a pontozott dimenzió-listából — ugyanabból a sorrendből, mint a
  * típusnév (resolvePersonalityTypeFromScores): a legerősebb adja a formát,
  * a második a motívumot. Az intenzitás a domináns dimenzió pontszámából jön.
+ *
+ * FONTOS (interp S2): a rangsor a KÖZÖS rankDimensionScores-t használja
+ * (pontszám csökkenő, holtversenynél HEXACO_ORDER) — pontosan úgy, ahogy a
+ * típusnév. A korábbi nyers `.sort((a,b) => b.score - a.score)` holtversenynél
+ * a bemenet sorrendjétől függő, NEM determinisztikus párt adott, így a rajzolt
+ * ábra és a szöveges címke a top-2 azonos pontszámánál ELTÉRHETETT egymástól.
+ * Egy forrásból rangsorolva a kettő mindig egyezik.
  */
 export function resolveGlyphPair(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
 ): { primaryCode: string; secondaryCode: string; intensity: number } | null {
   const known = dimensions.filter((d) => DIMENSION_GLYPHS[d.code]);
   if (known.length < 2) return null;
-  const [first, second] = [...known].sort((a, b) => b.score - a.score);
+  const [first, second] = rankDimensionScores(known);
   return {
     primaryCode: first.code,
     secondaryCode: second.code,
@@ -351,16 +359,34 @@ export function resolveGlyphPair(
   };
 }
 
-/** A típus-ábra leíró szövege (aria-label / alt) — nem dekoráció, hanem tartalom. */
+/**
+ * A típus-ábra leíró szövege (aria-label / alt) — nem dekoráció, hanem
+ * tartalom.
+ *
+ * `uncertain` (S3-hedge, motor-audit v9): ha a másodlagos dimenzió
+ * megnevezése bizonytalan (isSecondaryUncertain — a látható tábla ilyenkor
+ * rendezetlen/hedge-elt szöveget mutat), az aria-label sem állíthat
+ * „alapforma + motívum" erősorrendet — rendezetlen párként írja le a két
+ * dimenziót. A szövegek szándékosan helyben élnek (a glyphGrammar i18n-
+ * kulcsokkal tartalmilag egyeztetve): a teljes i18n-szótár behúzása ide az
+ * OG-kép route-ot és minden glyph-fogyasztót ~110 KB-tal terhelne.
+ */
 export function glyphDescription(
   primaryCode: string,
   secondaryCode: string,
   typeLabel: string,
   locale: "hu" | "en",
+  uncertain = false,
 ): string {
   const primary = DIMENSION_GLYPHS[primaryCode];
   const secondary = DIMENSION_GLYPHS[secondaryCode];
   if (!primary || !secondary) return typeLabel;
+  if (uncertain) {
+    if (locale === "hu") {
+      return `${typeLabel} — absztrakt típus-ábra a két legerősebb, közel azonos erősségű dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
+    }
+    return `${typeLabel} — abstract type glyph of the two strongest, closely matched dimensions: ${primary.formName.en} (${primary.hexaco}) and ${secondary.motifName.en} (${secondary.hexaco}); their order isn't clear-cut.`;
+  }
   if (locale === "hu") {
     return `${typeLabel} — absztrakt típus-ábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
   }

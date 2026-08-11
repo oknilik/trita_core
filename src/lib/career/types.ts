@@ -1,13 +1,11 @@
-import type { FamilyFit } from "./family-fit";
-
 // Karrier-motor v2 — típusok.
 // A katalógus adat-oldala az O*NET 30.3-ból származtatott, kézzel ellenőrzött
 // foglalkozás-készlet (ld. docs/product/occupation-catalog-sources.md).
 
-/** Belső dimenziókódok (a DB score-JSON-okkal azonosak). RESO fordított: magasabb = érzelmesebb. */
-export type DimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
+/** Belső dimenziókódok (a DB score-JSON-okkal azonosak). E fordított: magasabb = érzelmesebb. */
+export type DimCode = "H" | "E" | "X" | "A" | "C" | "O";
 
-export const DIM_CODES: DimCode[] = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+export const DIM_CODES: DimCode[] = ["H", "E", "X", "A", "C", "O"];
 
 export type RiasecLetter = "R" | "I" | "A" | "S" | "E" | "C";
 
@@ -185,10 +183,33 @@ export interface PersonInput {
 
 export interface FitComponent {
   dim: DimCode;
+  /** a PONTOZÁS célja: profil-alak (centrált) skálán; H-padlónál nyers 50 */
   target: number;
   tol: number;
   weight: number;
+  /**
+   * a PONTOZÁSBAN használt érték: profil-centrált (a saját átlag 50-re tolva);
+   * H-padlós komponensnél a NYERS kevert pont (az abszolút becsületesség számít)
+   */
   userValue: number;
+  /**
+   * MEGJELENÍTÉSI pár NYERS skálán: a userRaw a results-oldali ÖNÉRTÉKELÉS-
+   * pontszám (SOHA nem a kevert érték — a kevert pár + ismert 0,5-ös súly
+   * visszafejthetővé tenné az observer-aggregátumot), a targetRaw a cél
+   * ugyanazzal az eltolással visszahozva — |userRaw − targetRaw| ≈
+   * |userValue − target|, tehát a position/alignment ezekkel is konzisztens.
+   * A UI EZT mutassa „te {..}"-ként, különben a centrált érték ellentmond a
+   * results-oldalnak (pl. nyers 90 → „te 58").
+   */
+  userRaw: number;
+  targetRaw: number;
+  /**
+   * true, ha a nyers skálára visszatolt cél a skála szélére (0/100) szorult:
+   * ilyenkor a |userRaw − targetRaw| KISEBB, mint a pontozott
+   * |userValue − target| távolság — a UI jelezze, hogy a cél a mutatottnál
+   * kijjebb esne (a position/alignment a pontozott távolságból jön, az ép).
+   */
+  targetAtEdge?: true;
   /** 0-100: mennyire esik a user értéke a cél-sávba */
   alignment: number;
   /** "under" = a cél alatt, "over" = a cél felett, "in" = a toleranciasávon belül */
@@ -213,11 +234,13 @@ export interface OccupationFit {
   /** a differenciál illeszkedés mérési hibája (SE) */
   se: number;
   band: { low: number; high: number };
-  /** a KOMPOZIT rangsor-pontszám mérési hibája — a klaszterezés ezen fut */
+  /**
+   * A rangsor-pontszám mérési hibája — a klaszterezés ezen fut. Mindig a
+   * TÉNYLEGESEN a rangba számított komponensek hibáiból terjed, a súlyösszeggel
+   * normálva (ld. engine.ts) — a stratégiák között ez a szerződés közös.
+   */
   rankSe: number;
   components: FitComponent[];
-  /** abszolút szint-illeszkedés: eléri-e a user a szerep elvárt szintjeit */
-  absoluteFit: number;
   /** Holland-congruence 0-100 (null, ha nincs érdeklődés-adat) */
   interest: number | null;
   /** preferencia/környezet-egyezés 0-100 (null, ha a user nem állított be tengelyt) */
@@ -227,6 +250,8 @@ export interface OccupationFit {
     ready: boolean;
     fieldMatch: boolean | null;
     state: "field-match" | "level-only" | "licence-needed" | "training-needed";
+    /** szabályozott szakma: engedély/kamarai tagság kell (specialized belépés) */
+    licence: boolean;
   };
   /** rangsor-pontszám (0-100) — a stratégiától függ, mit jelent */
   rank: number;
@@ -241,22 +266,18 @@ export interface OccupationFit {
 export type RankStrategy = "scoped" | "interest-led" | "composite";
 
 export interface CareerFitResult {
-  /** általános munkahelyi alap (C + H), profil-szinten egyszer */
-  general: number;
   interestSource: InterestInput["source"] | null;
   /** érdeklődés-differenciáltság: alacsonynál gyenge jel a Holland-rangsor */
   interestDifferentiation: "low" | "ok" | null;
-  observerWeight: number;
-  /** klaszterek: egy klaszteren belül a különbség a mérési hibán belül van */
-  clusters: OccupationFit[][];
-  /** sorrendezett lista (a klaszterek kilapítva) */
-  ranked: OccupationFit[];
   /**
-   * Családszintű illeszkedés, csökkenő sorrendben. EZ az elsődleges
-   * kimenet: egyedi szakmát rangsorolni mérési hibán belül van, családot
-   * viszont lehet. Levezetés: docs/product/career-families.md
+   * Az observer-keverés súlya, SZÁNDÉKOSAN durva (1 tizedes) felbontással.
+   * Az anonimitás-padló (MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) alatt mindig 0 —
+   * a pontos súly + ismert self-pontok együtt visszafejthetővé tennék az
+   * egyes értékelők válaszait (blended = self·(1−w) + obs·w).
    */
-  families: FamilyFit[];
+  observerWeight: number;
+  /** sorrendezett lista */
+  ranked: OccupationFit[];
   meta: {
     catalogVersion: string;
     occupationCount: number;
@@ -266,6 +287,12 @@ export interface CareerFitResult {
     strategy: RankStrategy;
     /** hány tétel került a jelölt-halmazba (interest-led esetén) */
     candidatePool: number | null;
+    /**
+     * Az érdeklődés-komponens TÉNYLEGES kompozit-súlya (forrás ×
+     * differenciáltság; 0, ha nincs érdeklődés-adat). A UI EZT mutassa —
+     * ne számoljon saját súlyt.
+     */
+    interestWeight: number;
     /** true, ha a scope túl kevés találatot adott, és kibővítettük */
     scopeWidened?: boolean;
     /** hány szerepet zárt ki a felhasználó vétója */

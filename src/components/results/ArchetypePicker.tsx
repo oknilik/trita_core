@@ -4,7 +4,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { TypeGlyph, TypeMotifMark } from "@/components/type/TypeGlyph";
 import { DIMENSION_GLYPHS } from "@/lib/type-glyph";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import { personalityAdjective, personalityNoun } from "@/lib/personality-type";
 
 // Archetípus-választó ÁBRÁKKAL.
@@ -19,10 +19,10 @@ import { personalityAdjective, personalityNoun } from "@/lib/personality-type";
 // kézzel megírni.
 
 interface ArchetypePickerProps {
-  dominant: TritanDimCode;
-  secondary: TritanDimCode;
-  onDominantChange: (dim: TritanDimCode) => void;
-  onSecondaryChange: (dim: TritanDimCode) => void;
+  dominant: HexacoCode;
+  secondary: HexacoCode;
+  onDominantChange: (dim: HexacoCode) => void;
+  onSecondaryChange: (dim: HexacoCode) => void;
 }
 
 // min-w-0 + a címkéken break-words: 320-360px-en a 3 oszlopos rács cellája
@@ -44,8 +44,8 @@ export function ArchetypePicker({
   const { locale } = useLocale();
   const lang = locale === "hu" ? "hu" : "en";
 
-  const dimName = (dim: TritanDimCode) =>
-    lang === "hu" ? TRITAN_DIMENSIONS[dim].hu : TRITAN_DIMENSIONS[dim].en;
+  const dimName = (dim: HexacoCode) =>
+    lang === "hu" ? HEXACO_DIMENSIONS[dim].hu : HEXACO_DIMENSIONS[dim].en;
 
   return (
     <div className="mb-5 flex flex-col gap-4">
@@ -58,7 +58,7 @@ export function ArchetypePicker({
           {t("results.interactionPickDominantHint", locale)}
         </p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-          {TRITAN_ORDER.map((dim) => {
+          {HEXACO_ORDER.map((dim) => {
             const active = dim === dominant;
             return (
               <label key={dim} className={`${TILE_BASE} ${active ? TILE_ACTIVE : TILE_IDLE}`}>
@@ -102,7 +102,7 @@ export function ArchetypePicker({
           {t("results.interactionPickSecondaryHint", locale)}
         </p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
-          {TRITAN_ORDER.filter((dim) => dim !== dominant).map((dim) => {
+          {HEXACO_ORDER.filter((dim) => dim !== dominant).map((dim) => {
             const active = dim === secondary;
             return (
               <label key={dim} className={`${TILE_BASE} ${active ? TILE_ACTIVE : TILE_IDLE}`}>

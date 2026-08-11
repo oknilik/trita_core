@@ -14,12 +14,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { TypeGlyph } from "../src/components/type/TypeGlyph";
 import { GLYPH_COLORS } from "../src/lib/type-glyph";
-import { TRITAN_DIMENSIONS } from "../src/lib/tritan";
+import { HEXACO_DIMENSIONS } from "../src/lib/hexaco";
 
 const outDir = process.argv[2] ?? join(process.cwd(), ".glyph-previews");
 mkdirSync(outDir, { recursive: true });
 
-const DEMO = { primary: "OPEN", secondary: "TEMP", label: "Energikus újító" };
+const DEMO = { primary: "O", secondary: "X", label: "Energikus újító" };
 
 const glyph = (variant: "hero" | "card" | "badge") =>
   renderToStaticMarkup(
@@ -38,18 +38,18 @@ const TYPE_GOLD = "#e8a96a";
 
 // Dimenzió-sáv: a valódi HEXACO-betűk és -nevek, hogy a makett ne hazudjon
 const DIM_SCORES: Record<string, number> = {
-  INTE: 62,
-  RESO: 44,
-  TEMP: 78,
-  ADAP: 57,
-  THOR: 51,
-  OPEN: 86,
+  H: 62,
+  E: 44,
+  X: 78,
+  A: 57,
+  C: 51,
+  O: 86,
 };
 
 const dimensionStrip = (order: string[]) =>
   `<div class="dimstrip">${order
     .map((code) => {
-      const dim = TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS];
+      const dim = HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS];
       const score = DIM_SCORES[code];
       return `<div class="dimcell">
         <span class="dimletter">${dim.letter}</span>
@@ -60,7 +60,7 @@ const dimensionStrip = (order: string[]) =>
     })
     .join("")}</div>`;
 
-const ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+const ORDER = ["H", "E", "X", "A", "C", "O"];
 
 // ── C: eredmény-oldal, hero + típus-tábla + következő blokk ───────────
 const heroBlock = (compact = false) => `

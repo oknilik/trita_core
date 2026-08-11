@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 import {
   MIN_INTELLIGENCE_ASSESSMENTS,
+  buildTeamIntelligenceEvidence,
   buildTeamIntelligencePriorities,
-  resolveContributionPlacement,
   resolveTeamIntelligenceConfidence,
   resolveTeamIntelligenceQuality,
   resolveTeamTabRedirect,
@@ -36,6 +36,17 @@ test("quality resolver follows minimum-assessment threshold", () => {
   assert.equal(resolveTeamIntelligenceQuality(MIN_INTELLIGENCE_ASSESSMENTS, 6), "sufficient");
 });
 
+test("quality resolver requires coverage, not just an absolute count (D3)", () => {
+  // 3 kitöltés 50 tagból = 6% lefedettség → csak részleges, nem "elégséges".
+  assert.equal(resolveTeamIntelligenceQuality(3, 50), "partial");
+  // 3/6 = 50% a küszöbön → elégséges.
+  assert.equal(resolveTeamIntelligenceQuality(3, 6), "sufficient");
+  // magas lefedettség → elégséges.
+  assert.equal(resolveTeamIntelligenceQuality(6, 6), "sufficient");
+  // 100% lefedettség sem elég, ha az abszolút szám a minimum alatt van.
+  assert.equal(resolveTeamIntelligenceQuality(2, 2), "partial");
+});
+
 test("confidence resolver maps quality to expected confidence", () => {
   assert.equal(resolveTeamIntelligenceConfidence("none"), "low");
   assert.equal(resolveTeamIntelligenceConfidence("partial"), "medium");
@@ -65,10 +76,10 @@ test("priority engine flags missing assessment completions", () => {
 
 test("priority engine adds high spread trigger when a dimension range is wide", () => {
   const members: SerializedTeamMember[] = [
-    makeMember("u1", "member", { INTE: 60, RESO: 45, TEMP: 20, ADAP: 60, THOR: 60, OPEN: 50 }),
-    makeMember("u2", "member", { INTE: 61, RESO: 46, TEMP: 75, ADAP: 59, THOR: 58, OPEN: 52 }),
-    makeMember("u3", "member", { INTE: 59, RESO: 44, TEMP: 24, ADAP: 61, THOR: 62, OPEN: 48 }),
-    makeMember("u4", "member", { INTE: 60, RESO: 45, TEMP: 70, ADAP: 60, THOR: 61, OPEN: 50 }),
+    makeMember("u1", "member", { H: 60, E: 45, X: 20, A: 60, C: 60, O: 50 }),
+    makeMember("u2", "member", { H: 61, E: 46, X: 75, A: 59, C: 58, O: 52 }),
+    makeMember("u3", "member", { H: 59, E: 44, X: 24, A: 61, C: 62, O: 48 }),
+    makeMember("u4", "member", { H: 60, E: 45, X: 70, A: 60, C: 61, O: 50 }),
   ];
 
   const priorities = buildTeamIntelligencePriorities({
@@ -85,86 +96,124 @@ test("priority engine adds high spread trigger when a dimension range is wide", 
   assert.equal(priorities.some((priority) => priority.id === "dimension_spread"), true);
 });
 
+test("cohesion risk reason shows the average but no ± spread number (2026-08-11)", () => {
+  // Alacsony kohézió-proxy (A/H = 40 → átlag 40% < 45) → cohesion_risk.
+  // A szórás továbbra is kiváltó lehet, de számként nem jelenhet meg.
+  const members: SerializedTeamMember[] = ["u1", "u2", "u3", "u4"].map((id) =>
+    makeMember(id, "member", { H: 40, E: 48, X: 52, A: 40, C: 54, O: 51 }),
+  );
+
+  for (const locale of ["hu", "en"] as const) {
+    const priorities = buildTeamIntelligencePriorities({
+      members,
+      completedCount: 4,
+      memberCount: 4,
+      teamId: "team_1",
+      orgId: "org_1",
+      hasObserverRound: true,
+      canManageTeamActions: false,
+      locale,
+    });
+
+    const cohesion = priorities.find((priority) => priority.id === "cohesion_risk");
+    assert.ok(cohesion, `hiányzó cohesion_risk (${locale})`);
+    assert.ok(cohesion.reason.includes("40%"), `hiányzó átlag-szám (${locale})`);
+    assert.ok(!cohesion.reason.includes("±"), `± maradt a szövegben (${locale})`);
+  }
+});
+
 test("priority engine adds leader-team mismatch trigger for large H/A delta", () => {
+  // A TeamMember.role kötött készlete: "member" | "manager" | "admin" —
+  // mindkét kezelő szerep vezetőnek számít.
+  for (const leaderRole of ["manager", "admin"] as const) {
+    const members: SerializedTeamMember[] = [
+      makeMember("lead_1", leaderRole, { H: 80, E: 45, X: 50, A: 80, C: 55, O: 50 }),
+      makeMember("u2", "member", { H: 55, E: 48, X: 52, A: 55, C: 54, O: 51 }),
+      makeMember("u3", "member", { H: 54, E: 47, X: 50, A: 56, C: 56, O: 49 }),
+      makeMember("u4", "member", { H: 56, E: 46, X: 49, A: 54, C: 55, O: 50 }),
+    ];
+
+    const priorities = buildTeamIntelligencePriorities({
+      members,
+      completedCount: 4,
+      memberCount: 4,
+      teamId: "team_1",
+      orgId: "org_1",
+      hasObserverRound: true,
+      canManageTeamActions: false,
+      locale: "hu",
+    });
+
+    assert.equal(
+      priorities.some((priority) => priority.id === "leader_team_mismatch"),
+      true,
+      `leader role: ${leaderRole}`,
+    );
+  }
+});
+
+test("priority engine falls back to a dedicated healthy_baseline card", () => {
   const members: SerializedTeamMember[] = [
-    makeMember("lead_1", "manager", { INTE: 80, RESO: 45, TEMP: 50, ADAP: 80, THOR: 55, OPEN: 50 }),
-    makeMember("u2", "member", { INTE: 55, RESO: 48, TEMP: 52, ADAP: 55, THOR: 54, OPEN: 51 }),
-    makeMember("u3", "member", { INTE: 54, RESO: 47, TEMP: 50, ADAP: 56, THOR: 56, OPEN: 49 }),
-    makeMember("u4", "member", { INTE: 56, RESO: 46, TEMP: 49, ADAP: 54, THOR: 55, OPEN: 50 }),
+    makeMember("u1", "member", { H: 55, E: 48, X: 52, A: 55, C: 54, O: 51 }),
+    makeMember("u2", "member", { H: 54, E: 47, X: 50, A: 56, C: 56, O: 49 }),
+    makeMember("u3", "member", { H: 56, E: 46, X: 49, A: 54, C: 55, O: 50 }),
   ];
 
   const priorities = buildTeamIntelligencePriorities({
     members,
-    completedCount: 4,
-    memberCount: 4,
+    completedCount: 3,
+    memberCount: 3,
     teamId: "team_1",
     orgId: "org_1",
     hasObserverRound: true,
-    canManageTeamActions: false,
+    canManageTeamActions: true,
     locale: "hu",
   });
 
-  assert.equal(priorities.some((priority) => priority.id === "leader_team_mismatch"), true);
+  assert.equal(priorities.length, 1);
+  assert.equal(priorities[0].id, "healthy_baseline");
 });
 
-// ─── resolveContributionPlacement ────────────────────────────────────────────
+// ─── buildTeamIntelligenceEvidence — dinamika-provenance ─────────────────────
 
-test("contribution placement: high C/H + low E lands in top delivery band", () => {
-  const placement = resolveContributionPlacement({
-    INTE: 80, RESO: 20, TEMP: 50, ADAP: 50, THOR: 85, OPEN: 50,
+test("dynamics evidence: purely estimated edges stay self-sourced, low confidence", () => {
+  const evidence = buildTeamIntelligenceEvidence({
+    assessedCount: 4,
+    totalCount: 4,
+    dynamicsEdgeCount: 6,
+    measuredDynamicsEdgeCount: 0,
+    locale: "en",
   });
 
-  // delivery = 0.6*85 + 0.25*80 + 0.15*(100-20) = 83
-  assert.equal(placement.deliveryScore, 83);
-  assert.equal(placement.skillLevel, 3);
-  assert.equal(placement.source, "self_estimate");
+  assert.equal(evidence.dynamics.source, "self");
+  assert.equal(evidence.dynamics.quality, "partial");
+  assert.equal(evidence.dynamics.confidence, "low");
 });
 
-test("contribution placement: high O/X + low E lands in top growth band", () => {
-  const placement = resolveContributionPlacement({
-    INTE: 50, RESO: 25, TEMP: 75, ADAP: 50, THOR: 50, OPEN: 85,
+test("dynamics evidence: measured trust edges raise source and confidence", () => {
+  const evidence = buildTeamIntelligenceEvidence({
+    assessedCount: 4,
+    totalCount: 4,
+    dynamicsEdgeCount: 6,
+    measuredDynamicsEdgeCount: 2,
+    locale: "en",
   });
 
-  // growth = 0.5*85 + 0.3*75 + 0.2*(100-25) = 80
-  assert.equal(placement.growthScore, 80);
-  assert.equal(placement.growthPotential, 3);
+  assert.equal(evidence.dynamics.source, "self_plus_observer");
+  assert.equal(evidence.dynamics.confidence, "medium");
 });
 
-test("contribution placement: emotionality is inverted (high E lowers both axes)", () => {
-  const calm = resolveContributionPlacement({ INTE: 50, RESO: 10, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 });
-  const anxious = resolveContributionPlacement({ INTE: 50, RESO: 90, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 });
-
-  assert.ok(calm.deliveryScore > anxious.deliveryScore);
-  assert.ok(calm.growthScore > anxious.growthScore);
-});
-
-test("contribution placement: composite near band edge is low confidence", () => {
-  // delivery composite lands exactly on the 60 boundary → distance 0 → low
-  const placement = resolveContributionPlacement({
-    INTE: 60, RESO: 40, TEMP: 80, ADAP: 50, THOR: 60, OPEN: 80,
+test("dynamics evidence: no edges at all → quality none", () => {
+  const evidence = buildTeamIntelligenceEvidence({
+    assessedCount: 4,
+    totalCount: 4,
+    dynamicsEdgeCount: 0,
+    measuredDynamicsEdgeCount: 0,
+    locale: "en",
   });
 
-  assert.equal(placement.deliveryScore, 60);
-  assert.equal(placement.confidence, "low");
-});
-
-test("contribution placement: composites far from both edges are high confidence", () => {
-  const placement = resolveContributionPlacement({
-    INTE: 90, RESO: 10, TEMP: 90, ADAP: 50, THOR: 90, OPEN: 90,
-  });
-
-  assert.ok(placement.deliveryScore >= 70);
-  assert.ok(placement.growthScore >= 70);
-  assert.equal(placement.confidence, "high");
-});
-
-test("contribution placement: middle profile lands in the middle band", () => {
-  const placement = resolveContributionPlacement({
-    INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
-  });
-
-  assert.equal(placement.skillLevel, 2);
-  assert.equal(placement.growthPotential, 2);
+  assert.equal(evidence.dynamics.quality, "none");
+  assert.equal(evidence.dynamics.confidence, "low");
 });
 
 // ─── canViewRawTeamResults (report gating, F1) ──────────────────────────────

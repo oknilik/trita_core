@@ -140,45 +140,45 @@ const TEAMS: TeamSpec[] = [
     members: [
       // Csapatvezető + org-admin: módszeres rendszerépítő
       { slug: "kata", first: "Aurora", last: "Kata", orgRole: "ORG_ADMIN", teamRole: "manager",
-        dims: { INTE: 74, RESO: 46, TEMP: 58, ADAP: 60, THOR: 88, OPEN: 66 } },
+        dims: { H: 74, E: 46, X: 58, A: 60, C: 88, O: 66 } },
       { slug: "bence", first: "Aurora", last: "Bence", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 58, RESO: 40, TEMP: 62, ADAP: 48, THOR: 52, OPEN: 90 } },
+        dims: { H: 58, E: 40, X: 62, A: 48, C: 52, O: 90 } },
       { slug: "dora", first: "Aurora", last: "Dóra", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 68, RESO: 66, TEMP: 44, ADAP: 72, THOR: 70, OPEN: 58 } },
+        dims: { H: 68, E: 66, X: 44, A: 72, C: 70, O: 58 } },
       { slug: "gergo", first: "Aurora", last: "Gergő", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 50, RESO: 34, TEMP: 78, ADAP: 44, THOR: 46, OPEN: 76 } },
+        dims: { H: 50, E: 34, X: 78, A: 44, C: 46, O: 76 } },
       { slug: "hanna", first: "Aurora", last: "Hanna", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 80, RESO: 58, TEMP: 40, ADAP: 66, THOR: 76, OPEN: 50 } },
+        dims: { H: 80, E: 58, X: 40, A: 66, C: 76, O: 50 } },
     ],
   },
   {
     name: "Értékesítés",
     members: [
       { slug: "marton", first: "Aurora", last: "Márton", orgRole: "ORG_MEMBER", teamRole: "manager",
-        dims: { INTE: 56, RESO: 38, TEMP: 90, ADAP: 78, THOR: 54, OPEN: 62 } },
+        dims: { H: 56, E: 38, X: 90, A: 78, C: 54, O: 62 } },
       { slug: "reka", first: "Aurora", last: "Réka", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 62, RESO: 52, TEMP: 82, ADAP: 84, THOR: 44, OPEN: 58 } },
+        dims: { H: 62, E: 52, X: 82, A: 84, C: 44, O: 58 } },
       { slug: "tamas", first: "Aurora", last: "Tamás", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 44, RESO: 30, TEMP: 86, ADAP: 56, THOR: 60, OPEN: 54 } },
+        dims: { H: 44, E: 30, X: 86, A: 56, C: 60, O: 54 } },
       { slug: "zsofia", first: "Aurora", last: "Zsófia", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 70, RESO: 64, TEMP: 72, ADAP: 80, THOR: 50, OPEN: 66 } },
+        dims: { H: 70, E: 64, X: 72, A: 80, C: 50, O: 66 } },
       { slug: "levente", first: "Aurora", last: "Levente", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 52, RESO: 44, TEMP: 76, ADAP: 62, THOR: 68, OPEN: 42 } },
+        dims: { H: 52, E: 44, X: 76, A: 62, C: 68, O: 42 } },
     ],
   },
   {
     name: "Ügyfélszolgálat",
     members: [
       { slug: "eszter", first: "Aurora", last: "Eszter", orgRole: "ORG_MEMBER", teamRole: "manager",
-        dims: { INTE: 72, RESO: 84, TEMP: 54, ADAP: 86, THOR: 62, OPEN: 48 } },
+        dims: { H: 72, E: 84, X: 54, A: 86, C: 62, O: 48 } },
       { slug: "adam", first: "Aurora", last: "Ádám", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 66, RESO: 78, TEMP: 46, ADAP: 74, THOR: 58, OPEN: 44 } },
+        dims: { H: 66, E: 78, X: 46, A: 74, C: 58, O: 44 } },
       { slug: "nora", first: "Aurora", last: "Nóra", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 58, RESO: 88, TEMP: 62, ADAP: 70, THOR: 40, OPEN: 56 } },
+        dims: { H: 58, E: 88, X: 62, A: 70, C: 40, O: 56 } },
       { slug: "peter", first: "Aurora", last: "Péter", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 76, RESO: 56, TEMP: 38, ADAP: 68, THOR: 82, OPEN: 46 } },
+        dims: { H: 76, E: 56, X: 38, A: 68, C: 82, O: 46 } },
       { slug: "viktoria", first: "Aurora", last: "Viktória", orgRole: "ORG_MEMBER", teamRole: "member",
-        dims: { INTE: 64, RESO: 72, TEMP: 68, ADAP: 78, THOR: 48, OPEN: 60 } },
+        dims: { H: 64, E: 72, X: 68, A: 78, C: 48, O: 60 } },
     ],
   },
 ];
@@ -186,9 +186,9 @@ const TEAMS: TeamSpec[] = [
 const emailOf = (m: Member) => `aurora-${m.slug}+clerk_test@trita.io`;
 const nameOf = (m: Member) => `${m.first} ${m.last}`;
 
-/** Tanácsadó self-profilja: domináns OPEN + második TEMP = „Energikus újító". */
+/** Tanácsadó self-profilja: domináns O + második X = „Energikus újító". */
 const CONSULTANT_DIMS: Record<DimCode, number> = {
-  INTE: 68, RESO: 46, TEMP: 82, ADAP: 62, THOR: 54, OPEN: 91,
+  H: 68, E: 46, X: 82, A: 62, C: 54, O: 91,
 };
 
 const RELATIONSHIPS: RelationshipType[] = ["COLLEAGUE", "COLLEAGUE", "FRIEND"];

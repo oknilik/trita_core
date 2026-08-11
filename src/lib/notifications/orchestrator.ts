@@ -17,9 +17,12 @@ import { resolveOrgRecipients } from "./policy";
 
 // ── Observer events ─────────────────────────────────────────────────────────
 
+// Az értékelő NEVÉT szándékosan NEM kapja meg és nem tárolja: az anonim
+// „egy külső értékelés beérkezett" üzenet a termék anonimitás-ígéretét követi,
+// és megakadályozza, hogy a futó átlagból + névből az utolsó értékelő
+// beazonosítható legyen (differencia-támadás mitigációja).
 export async function handleObserverCompleted(params: {
   inviterId: string;
-  observerName: string;
   invitationId: string;
 }) {
   const meta = NOTIFICATION_TYPE_META.OBSERVER_COMPLETED;
@@ -28,7 +31,6 @@ export async function handleObserverCompleted(params: {
     type: "OBSERVER_COMPLETED",
     category: meta.category,
     priority: meta.defaultPriority,
-    vars: { name: params.observerName },
     link: "/profile/results?tab=comparison#observer-flow",
     sourceType: "observer_invitation",
     sourceId: params.invitationId,

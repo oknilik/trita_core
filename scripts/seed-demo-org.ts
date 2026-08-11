@@ -93,8 +93,8 @@ const USERS = [
     firstName: "Horizont",
     lastName: "Anna",
     role: "ORG_ADMIN" as const,
-    // Módszeres szervező: magas THOR+INTE
-    dimensions: { INTE: 76, RESO: 50, TEMP: 48, ADAP: 55, THOR: 86, OPEN: 52 },
+    // Módszeres szervező: magas C+H
+    dimensions: { H: 76, E: 50, X: 48, A: 55, C: 86, O: 52 },
   },
   {
     email: "horizont-balazs+clerk_test@trita.io",
@@ -102,8 +102,8 @@ const USERS = [
     firstName: "Horizont",
     lastName: "Balázs",
     role: "ORG_MEMBER" as const,
-    // Energikus kapcsolatépítő: magas TEMP+ADAP
-    dimensions: { INTE: 52, RESO: 44, TEMP: 84, ADAP: 74, THOR: 50, OPEN: 58 },
+    // Energikus kapcsolatépítő: magas X+A
+    dimensions: { H: 52, E: 44, X: 84, A: 74, C: 50, O: 58 },
   },
   {
     email: "horizont-csilla+clerk_test@trita.io",
@@ -111,8 +111,8 @@ const USERS = [
     firstName: "Horizont",
     lastName: "Csilla",
     role: "ORG_MEMBER" as const,
-    // Kísérletező újító: magas OPEN, alacsonyabb THOR
-    dimensions: { INTE: 55, RESO: 58, TEMP: 60, ADAP: 52, THOR: 40, OPEN: 88 },
+    // Kísérletező újító: magas O, alacsonyabb C
+    dimensions: { H: 55, E: 58, X: 60, A: 52, C: 40, O: 88 },
   },
   {
     email: "horizont-daniel+clerk_test@trita.io",
@@ -120,8 +120,8 @@ const USERS = [
     firstName: "Horizont",
     lastName: "Dániel",
     role: "ORG_MEMBER" as const,
-    // Nyugodt stabilizáló: alacsony RESO, kiegyensúlyozott
-    dimensions: { INTE: 62, RESO: 30, TEMP: 45, ADAP: 66, THOR: 60, OPEN: 48 },
+    // Nyugodt stabilizáló: alacsony E, kiegyensúlyozott
+    dimensions: { H: 62, E: 30, X: 45, A: 66, C: 60, O: 48 },
   },
   {
     email: "horizont-eszter+clerk_test@trita.io",
@@ -129,8 +129,8 @@ const USERS = [
     firstName: "Horizont",
     lastName: "Eszter",
     role: "ORG_MEMBER" as const,
-    // Empatikus támogató: magas RESO+ADAP
-    dimensions: { INTE: 60, RESO: 82, TEMP: 50, ADAP: 78, THOR: 54, OPEN: 56 },
+    // Empatikus támogató: magas E+A
+    dimensions: { H: 60, E: 82, X: 50, A: 78, C: 54, O: 56 },
   },
 ];
 
