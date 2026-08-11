@@ -5,7 +5,7 @@
 **Ág:** `codex/ux-journey-simplification`
 
 **Kiindulópont:** `origin/main` (`84867e5`)
-**Státusz:** első megvalósítási szelet elkészült
+**Státusz:** első szelet elkészült; második szelet megkezdve
 
 ## 1. Vezetői döntés
 
@@ -86,10 +86,16 @@ Ez célállapot, nem egyetlen release-ben végrehajtandó navigációcsere.
 
 ### Szelet 2 — egy következő lépés
 
-- journey `recommendedNextAction` minden fő cockpit tetején;
-- duplikált teendők eltávolítása a csapat-áttekintésből;
-- „Feladataim” és helyi feladatkártyák felelősségi határának rögzítése;
+- [ ] egy ajánlott következő lépés minden fő cockpit tetején;
+- [x] a versengő helyi teendőblokkok összevonása a csapat-áttekintésben;
+- [x] „Feladataim” és helyi fókuszkártya felelősségi határának rögzítése;
 - kampány-időzítési vezérlők áthelyezése beállítási kontextusba.
+
+**Rögzített felelősségi határ:** a csapat-áttekintés egyetlen, azonnal
+végrehajtható teendőt emel ki. A prioritás: nyitott mérési lépés → megkezdett
+vagy beérkezett visszajelzéskérés → saját observer-kör → később nyíló mérés.
+A teljes mérési backlog és a további párhuzamos feladatok kanonikus helye a
+`/tasks`; a csapatoldal nem ismétli meg listaként ugyanazokat a tételeket.
 
 ### Szelet 3 — csapatoldal és riport
 
@@ -188,3 +194,12 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
 - a teljes `pnpm check` a már jelen lévő, untracked `playwright-report/`
   generált JavaScript-fájljait is linteli. A saját változások célzott lintje
   tiszta; a felhasználói riportkönyvtárat nem módosítottuk és nem töröltük.
+
+## 10. Második szelet részverifikációja
+
+- a csapat-fókusz prioritási szabályának 4/4 unit tesztje zöld;
+- a fókuszkártya kliensoldali render- és linktesztje 1/1 zöld;
+- a teljes unit suite 971/971 zöld;
+- TypeScript typecheck és célzott ESLint hibamentes;
+- színtoken- és új-hex guard hibamentes;
+- az optimalizált production build sikeres, 102 statikus oldallal.

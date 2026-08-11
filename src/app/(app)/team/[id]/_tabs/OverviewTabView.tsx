@@ -5,7 +5,6 @@ import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
 import {
   CAMPAIGN_STEP_LABELS,
-  CAMPAIGN_STEP_LINKS,
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
 import {
@@ -17,6 +16,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
+import { TeamOverviewNextAction } from "@/components/team/TeamOverviewNextAction";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
@@ -56,163 +56,14 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
           />
         ) : null}
 
-        {/* A következő nyitott mérés-lépés — kitöltés-felhívás */}
-        {pendingMeasurement ? (
-          <section>
-            <div className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
-                  {isHu
-                    ? CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].hu
-                    : CAMPAIGN_STEP_LABELS[pendingMeasurement.stepType].en}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-ink">
-                  {pendingMeasurement.campaignName}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-ink-body">
-                  {pendingMeasurement.stepType === "PSYCH_SAFETY"
-                    ? isHu
-                      ? "8 rövid állítás, ~2 perc. A válaszaid névtelenek — csak a csapatszintű összesítés látszik, legalább 3 kitöltéstől."
-                      : "8 short statements, ~2 minutes. Your answers are anonymous — only the team-level aggregate is shown, from at least 3 responses."
-                    : pendingMeasurement.stepType === "TRUST_360"
-                      ? isHu
-                        ? "5 rövid kérdés csapattársanként az együttműködésetekről (~2-3 perc) — a dinamika-térkép becslései helyére mért kapcsolati adat kerül."
-                        : "5 short questions per teammate about how you work together (~2-3 minutes) — measured relationship data replaces the dynamics map estimates."
-                      : pendingMeasurement.stepType === "TEAM_ROLE_360"
-                        ? isHu
-                          ? "Jelöld ki csapattársanként a rájuk leginkább jellemző állításokat (~3-4 perc/fő) — a csapatkép legalább 3 értékelőnél áll össze."
-                          : "Pick the statements that best describe each teammate (~3-4 minutes each) — the team view forms with at least 3 raters."
-                        : pendingMeasurement.stepType === "TEAM_ROLE"
-                          ? isHu
-                            ? "Rövid kérdőív arról, milyen szerepeket viszel a csapatban — a becslés helyett mért szerep-térkép készül."
-                            : "A short questionnaire about the roles you play in the team — a measured role map replaces the estimate."
-                          : pendingMeasurement.stepType === "PEER_FEEDBACK"
-                            ? isHu
-                              ? "Adj rövid, jövő-irányú visszajelzést a csapattársaidnak (~5-10 perc) — a visszajelzés nevesített, a címzett látja, kitől jött."
-                              : "Give each teammate a short, future-focused piece of feedback (~5-10 minutes) — feedback is attributed, recipients see who it came from."
-                            : isHu
-                              ? "Töltsd ki az önértékelést (~10 perc) — ez az alapja a csapatképnek, és utána nyílnak a további mérések."
-                              : "Complete the self-assessment (~10 minutes) — it is the basis of the team picture, and further measurements open after it."}
-                </p>
-              </div>
-              {pendingMeasurement.opensAt ? (
-                <div className="shrink-0 rounded-[10px] border border-sand bg-surface-card px-4 py-2.5 text-center">
-                  <p className="font-mono text-micro uppercase tracking-wide text-muted">
-                    {isHu ? "Érkezik" : "Arriving"}
-                  </p>
-                  <p className="text-caption font-semibold tabular-nums text-ink">
-                    {pendingMeasurement.opensAt.toLocaleString(isHu ? "hu-HU" : "en-GB", {
-                      month: "short",
-                      day: "numeric",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              ) : (
-                <Link
-                  href={CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType]}
-                  className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-                >
-                  {pendingMeasurement.started
-                    ? isHu ? "Folytatom a kitöltést" : "Continue filling in"
-                    : pendingMeasurement.stepType === "PEER_FEEDBACK"
-                      ? isHu ? "Visszajelzést adok" : "Give feedback"
-                      : isHu ? "Kitöltöm most" : "Fill it in now"}
-                </Link>
-              )}
-            </div>
-            {/* Tag-oldali kampány-nézet: teljes haladás + vissza a feladatokra */}
-            <p className="mt-2 text-right">
-              <Link
-                href="/tasks"
-                className="text-xs font-semibold text-sage-dark transition hover:text-ink"
-              >
-                {isHu ? "Összes mérési feladatom" : "All my measurement tasks"}
-              </Link>
-            </p>
-          </section>
-        ) : null}
-
-        {/* Futó observer-kör: a self-kitöltés után is látszik a gyűjtés
-            állapota — a meghívó-küldés a tag feladata, ne vesszen el. */}
-        {observerGathering ? (
-          <section>
-            <div className="flex flex-col gap-3 rounded-[18px] border border-bronze/35 bg-bronze/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                  {isHu ? "Külső visszajelzés — gyűjtés alatt" : "Outside feedback — collecting"}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-ink">
-                  {observerGathering.campaignName}
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-ink-body">
-                  {isHu
-                    ? `Te kéred fel az értékelőidet: küldj meghívót legalább ${observerGathering.min} kollégának vagy külső partnernek — az önkép–külső kép összevetésed ${observerGathering.min} beérkezett visszajelzésnél nyílik meg.`
-                    : `You choose your raters: invite at least ${observerGathering.min} colleagues or external partners — your self vs. outside view comparison opens at ${observerGathering.min} received responses.`}
-                </p>
-                <p className="mt-2 font-mono text-xs tabular-nums text-[var(--color-accent-primary-strong)]">
-                  {isHu
-                    ? `${observerGathering.received}/${observerGathering.min} beérkezett · ${observerGathering.sent} meghívó elküldve`
-                    : `${observerGathering.received}/${observerGathering.min} received · ${observerGathering.sent} invites sent`}
-                </p>
-              </div>
-              <Link
-                href="/profile/results?tab=comparison#observer-flow"
-                className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-action-primary-bg px-5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-              >
-                {observerGathering.sent < observerGathering.min
-                  ? isHu ? "Kérek visszajelzést" : "Request feedback"
-                  : isHu ? "Meghívók kezelése" : "Manage invites"}
-              </Link>
-            </div>
-          </section>
-        ) : null}
-
-        {/* Tőlem kért observer-visszajelzések (csapattársaktól) — innen
-            indítható vagy folytatható a kitöltés. */}
-        {receivedFeedbackRequests.length > 0 ? (
-          <section>
-            <div className="rounded-[18px] border border-sage/35 bg-sage/5 p-5">
-              <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
-                {isHu ? "Tőled kért visszajelzés" : "Feedback requested from you"}
-              </p>
-              <div className="mt-3 flex flex-col gap-2">
-                {receivedFeedbackRequests.map((req) => (
-                  <div
-                    key={req.token}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-sand bg-surface-card px-3.5 py-2.5"
-                  >
-                    <span className="flex min-w-0 items-center gap-2.5">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
-                        ★
-                      </span>
-                      <span className="text-caption font-medium text-ink">
-                        {isHu
-                          ? `${req.inviterName} visszajelzést kér tőled`
-                          : `${req.inviterName} asked you for feedback`}
-                      </span>
-                      {req.answered > 0 && (
-                        <span className="rounded-full bg-sage/10 px-2 py-0.5 text-micro font-semibold text-sage-dark">
-                          {req.answered}/{req.total}{" "}
-                          {isHu ? "kérdés kész" : "questions done"}
-                        </span>
-                      )}
-                    </span>
-                    <Link
-                      href={`/observe/${req.token}`}
-                      className="inline-flex min-h-[36px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-                    >
-                      {req.answered > 0
-                        ? isHu ? "Folytatom" : "Continue"
-                        : isHu ? "Kitöltöm" : "Fill in"}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        ) : null}
+        {/* Egyetlen fókuszált teendő: a helyi blokkok nem versenyeznek
+            egymással; a teljes mérési backlog kanonikus helye a /tasks. */}
+        <TeamOverviewNextAction
+          isHu={isHu}
+          pendingMeasurement={pendingMeasurement}
+          observerGathering={observerGathering}
+          receivedFeedbackRequests={receivedFeedbackRequests}
+        />
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
         <section>
