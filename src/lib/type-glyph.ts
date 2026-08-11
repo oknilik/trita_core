@@ -359,16 +359,34 @@ export function resolveGlyphPair(
   };
 }
 
-/** A típus-ábra leíró szövege (aria-label / alt) — nem dekoráció, hanem tartalom. */
+/**
+ * A típus-ábra leíró szövege (aria-label / alt) — nem dekoráció, hanem
+ * tartalom.
+ *
+ * `uncertain` (S3-hedge, motor-audit v9): ha a másodlagos dimenzió
+ * megnevezése bizonytalan (isSecondaryUncertain — a látható tábla ilyenkor
+ * rendezetlen/hedge-elt szöveget mutat), az aria-label sem állíthat
+ * „alapforma + motívum" erősorrendet — rendezetlen párként írja le a két
+ * dimenziót. A szövegek szándékosan helyben élnek (a glyphGrammar i18n-
+ * kulcsokkal tartalmilag egyeztetve): a teljes i18n-szótár behúzása ide az
+ * OG-kép route-ot és minden glyph-fogyasztót ~110 KB-tal terhelne.
+ */
 export function glyphDescription(
   primaryCode: string,
   secondaryCode: string,
   typeLabel: string,
   locale: "hu" | "en",
+  uncertain = false,
 ): string {
   const primary = DIMENSION_GLYPHS[primaryCode];
   const secondary = DIMENSION_GLYPHS[secondaryCode];
   if (!primary || !secondary) return typeLabel;
+  if (uncertain) {
+    if (locale === "hu") {
+      return `${typeLabel} — absztrakt típus-ábra a két legerősebb, közel azonos erősségű dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
+    }
+    return `${typeLabel} — abstract type glyph of the two strongest, closely matched dimensions: ${primary.formName.en} (${primary.hexaco}) and ${secondary.motifName.en} (${secondary.hexaco}); their order isn't clear-cut.`;
+  }
   if (locale === "hu") {
     return `${typeLabel} — absztrakt típus-ábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
   }

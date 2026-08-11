@@ -44,6 +44,7 @@ import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -68,7 +69,6 @@ export interface SerializedDimension {
   insightsByLocale?: Partial<Record<string, { low: string; mid: string; high: string }>>;
   observerScore?: number;
   facets: { code: string; label: string; score: number }[];
-  aspects: { code: string; label: string; score: number }[];
 }
 
 export interface SerializedGrowthItem {
@@ -187,7 +187,7 @@ export interface ProfileTabsProps {
       friction: { text: string; source?: string }[];
       needs: { text: string; source?: string }[];
     };
-    envItems: { label: string; value: string }[];
+    envItems: { label: string; value: string; hedged?: boolean }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
     closingText: string;
@@ -471,6 +471,7 @@ function WorkStyleTab({
             strongFit={plusContent.roleFit.strong}
             mightWork={plusContent.roleFit.might}
             needsPrep={plusContent.roleFit.prep}
+            secondary={plusContent.roleFit.secondary}
             strongRoles={plusContent.roleFit.strongRoles}
             mightRoles={plusContent.roleFit.mightRoles}
             prepRoles={plusContent.roleFit.prepRoles}
@@ -727,11 +728,17 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
+        // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
+        // (score-valence, surface="self" — a RESO itt jelenleg megengedett,
+        // nyitott termékdöntésig, ld. a modul fejlécét).
+        topDimensions={dimensions
+          .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
+          .map((d) => d.label)}
         // Pólus-tudatos „Figyelendő" (FIX 2): a fordított Emocionalitás
-        // alacsony sávja stabilitás — nem kerül a watch-chipek közé.
+        // alacsony sávja stabilitás — nem kerül a watch-chipek közé
+        // (kanonikus kapu: score-valence.deficitSlotEligible).
         watchDimensions={dimensions
-          .filter((d) => d.code !== "I" && d.code !== "RESO" && d.score < 40)
+          .filter((d) => d.code !== "I" && deficitSlotEligible(d.code) && d.score < 40)
           .map((d) => d.label)}
         onShare={() => {
           track("results.export", { format: "link" });
@@ -756,11 +763,15 @@ export function ProfileTabs({
               .sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
-            const highDims = mainDims.filter((d) => d.score >= 70);
+            // Erősség-lista a kanonikus valencia-kapun át (self felület —
+            // a RESO jelenleg megengedett, nyitott termékdöntésig).
+            const highDims = mainDims.filter(
+              (d) => strengthSlotEligible(d.code, "self") && d.score >= 70,
+            );
             const lowDims = mainDims.filter((d) => d.score < 40);
             // Pólus-tudatos watch-lista (FIX 2): a fordított Emocionalitás
             // alacsony sávja stabilitás (erőforrás), nem figyelendő terület.
-            const watchDims = lowDims.filter((d) => d.code !== "RESO");
+            const watchDims = lowDims.filter((d) => deficitSlotEligible(d.code));
 
             // Közös forrásból (dimension-insights.ts) — results-oldallal és
             // persona-riport generátorral szinkronban (javítási terv P1.5).
@@ -821,12 +832,35 @@ export function ProfileTabs({
                 ...careerResult.sections.afterTraining.flat(),
               ].slice(0, 3);
               if (top.length === 0) return undefined;
-              const gaps = careerResult.sections.atLevel
-                .slice(0, 2)
-                .flat()
-                .flatMap((fit) => fit.components)
-                .filter((c) => c.position !== "in" && c.weight >= 0.15);
-              const firstGap = gaps[0];
+              // „Leggyakoribb eltérés": dimenzió+irány szerinti számlálás a
+              // top klasztereken (a CareerGrowthPlan.collectGaps szabályával
+              // egyezően: count, holtversenynél összsúly dönt) — a korábbi
+              // gaps[0] csupán az ELSŐ eltérés volt, nem a leggyakoribb.
+              const gapBuckets = new Map<
+                string,
+                { dim: string; position: string; count: number; weight: number }
+              >();
+              for (const fit of careerResult.sections.atLevel.slice(0, 2).flat()) {
+                for (const c of fit.components) {
+                  if (c.position === "in" || c.weight < 0.15) continue;
+                  const key = `${c.dim}:${c.position}`;
+                  const existing = gapBuckets.get(key);
+                  if (existing) {
+                    existing.count += 1;
+                    existing.weight += c.weight;
+                  } else {
+                    gapBuckets.set(key, {
+                      dim: c.dim,
+                      position: c.position,
+                      count: 1,
+                      weight: c.weight,
+                    });
+                  }
+                }
+              }
+              const firstGap = [...gapBuckets.values()].sort(
+                (a, b) => b.count - a.count || b.weight - a.weight,
+              )[0];
               const dimLabel = (code: string) =>
                 mainDims.find((d) => d.code === code)?.label ?? code;
               return {

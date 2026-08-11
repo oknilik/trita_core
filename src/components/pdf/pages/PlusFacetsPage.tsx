@@ -6,6 +6,7 @@ import { PdfAltruism } from "../components/PdfAltruism";
 import { PdfCard, PdfMiniHeader } from "../components/PdfCard";
 import { t, tf } from "@/lib/i18n";
 import { withHuArticle } from "@/lib/hu-grammar";
+import { deficitSlotEligible, isReverseValenced } from "@/lib/score-valence";
 import type { PdfData } from "../TritaPdf";
 
 interface Props {
@@ -27,13 +28,19 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
   // „Kiemelkedő" (erősség-keretezésű) lista: a fordított Emocionalitás (RESO)
   // facetei KIMARADNAK — a magas Félelem/Szorongás nem „kiemelkedő erősség",
   // a zöld pill hamis keretezés volt (motor-audit v6, M4b; a bottom-lista
-  // pólus-szabályának tükörpárja).
-  const topFacets = sortedFacets.filter((f) => f.dimCode !== "RESO").slice(0, 5);
+  // pólus-szabályának tükörpárja). MEGJEGYZÉS: ez ennek az oldalnak a saját,
+  // a self-felület általános szabályánál (score-valence: strengthSlotEligible
+  // "self" felületen RESO-t enged) SZIGORÚBB szabálya — az isReverseValenced
+  // a kanonikus kód-feloldó, a kizárás maga oldal-szintű döntés.
+  const topFacets = sortedFacets
+    .filter((f) => !isReverseValenced(f.dimCode))
+    .slice(0, 5);
   // Alsó (fejlődés-keretezésű) lista: a fordított Emocionalitás (RESO)
   // facetei kimaradnak — az alacsony Félelem/Szorongás stabilitás, nem
-  // „tér a fejlődésre" (motor-audit v4, FIX 2 pólus-szabály).
+  // „tér a fejlődésre" (motor-audit v4, FIX 2 pólus-szabály; kanonikus kapu:
+  // score-valence.deficitSlotEligible).
   const bottomFacets = sortedFacets
-    .filter((f) => f.dimCode !== "RESO")
+    .filter((f) => deficitSlotEligible(f.dimCode))
     .slice(-4)
     .reverse();
 
@@ -47,10 +54,19 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
 
   // Overall summary for the closing card
   const overallSummary = (() => {
-    const highDims = facetDims.filter((d) => d.value >= 70);
+    // A RESO a magas-összegzésből is kimarad — ugyanennek az oldalnak a
+    // facet-pill szabályával (topFacets) konzisztensen: a zöld pillek közül
+    // kizárt dimenzió nem lehet egy bekezdéssel lejjebb „a profilod
+    // erőssége". (A tágabb self-felületi szabály — RESO mint erősség a saját
+    // eredményoldalon — változatlan, ld. score-valence fejléc.)
+    const highDims = facetDims.filter(
+      (d) => d.value >= 70 && !isReverseValenced(d.code),
+    );
     // Az alacsony RESO nem „tudatos figyelmet érdemlő" terület (fordított
     // skála: alacsony = stabil) — a low-listából kimarad.
-    const lowDims = facetDims.filter((d) => d.value < 40 && d.code !== "RESO");
+    const lowDims = facetDims.filter(
+      (d) => d.value < 40 && deficitSlotEligible(d.code),
+    );
     if (highDims.length === 0 && lowDims.length === 0) {
       return t("pdf.facetBalanced", locale);
     }

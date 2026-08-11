@@ -86,12 +86,18 @@ export function rankDimensionScores<T extends { code: string; score: number }>(
   );
 }
 
-/** Facet-nevek a kérdésbank facet-kódjai szerint (HEXACO-PI-R terminológia). */
+/**
+ * Facet-nevek a kérdésbank facet-kódjai szerint (HEXACO-PI-R terminológia).
+ * A NEVEK KANONIKUS FORRÁSA A KÉRDÉSBANK (questions/tritan.ts FacetConfig
+ * labeljei) — ez a térkép ahhoz igazodik, és guardrail-teszt őrzi
+ * (tests/unit/results/dimension-facet-map.test.ts): a zárt teaser és a
+ * feloldott akkordeon így soha nem mutat eltérő alskála-nevet.
+ */
 export const TRITAN_FACETS: Record<string, { hu: string; en: string }> = {
   // INTE — Becsületesség-Alázat (H)
   sincerity: { hu: "Őszinteség", en: "Sincerity" },
   fairness: { hu: "Méltányosság", en: "Fairness" },
-  greed_avoidance: { hu: "Kapzsiságkerülés", en: "Greed Avoidance" },
+  greed_avoidance: { hu: "Mohóságkerülés", en: "Greed Avoidance" },
   modesty: { hu: "Szerénység", en: "Modesty" },
   // RESO — Emocionalitás (E)
   fearfulness: { hu: "Félelem", en: "Fearfulness" },
@@ -104,7 +110,7 @@ export const TRITAN_FACETS: Record<string, { hu: string; en: string }> = {
   sociability: { hu: "Társaságkedvelés", en: "Sociability" },
   liveliness: { hu: "Élénkség", en: "Liveliness" },
   // ADAP — Barátságosság (A)
-  forgiveness: { hu: "Megbocsátás", en: "Forgivingness" },
+  forgiveness: { hu: "Megbocsátás", en: "Forgiveness" },
   gentleness: { hu: "Gyengédség", en: "Gentleness" },
   flexibility: { hu: "Rugalmasság", en: "Flexibility" },
   patience: { hu: "Türelem", en: "Patience" },

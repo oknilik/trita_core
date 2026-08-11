@@ -6,19 +6,21 @@
  * generált riportok GARANTÁLTAN ugyanazokból a pontszámokból épüljenek.
  */
 
-import { resolvePersonalityTypeLabel } from "../src/lib/personality-type";
+import { resolvePersonalityTypeFromScores } from "../src/lib/personality-type";
 import { TENSION_PAIRS } from "../src/lib/profile-engine";
+import { TRITAN_DIMENSION_FACETS, rankDimensionScores } from "../src/lib/tritan";
 
 export const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
 export type DimCode = (typeof DIMS)[number];
 
+// A facet-sorrend a KANONIKUS térképből (tritan.ts TRITAN_DIMENSION_FACETS)
+// származik — a korábbi helyi másolat a THOR facetjeit felcserélt sorrendben
+// (prudence↔perfectionism) deklarálta, így a buildFacets index-alapú
+// offsetjei más facetre estek, mint az éles felület sorrendje.
 export const TRITAN_FACETS: Record<string, string[]> = {
-  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
-  THOR: ["organization", "diligence", "prudence", "perfectionism"],
-  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+  ...Object.fromEntries(
+    Object.entries(TRITAN_DIMENSION_FACETS).map(([dim, codes]) => [dim, [...codes]]),
+  ),
   I: ["altruism"],
 };
 
@@ -36,13 +38,18 @@ export type Persona = {
 
 /**
  * Determinisztikus pontszám-recept az archetípus-personáknak: domináns 86,
- * másodlagos 74 (mindkettő "high"), a maradék négy dimenzió fix sorrendben
- * 55/50/45/30 — így van medium és low sáv is, és a top-2 sorrend egyértelmű.
+ * másodlagos 68 (mindkettő "high" a 65-ös pólus-küszöb felett), a maradék
+ * négy dimenzió fix sorrendben 52/48/44/30 — van medium és low sáv is.
+ *
+ * A rések SZÁNDÉKOSAN ≥ DIFF_MIN_GAP (15): 86−68=18 és 68−52=16 — a korábbi
+ * 86/74 recept 12 pontos top-rése a bizonytalanság-kapun fennakadt, így mind
+ * a 30 archetípus-fixture főnév-only címkét kapott (a melléknévi színezet,
+ * amit a fixture demonstrálna, sosem jelent meg).
  */
 function buildArchetypeDimensions(primary: DimCode, secondary: DimCode): Record<string, number> {
   const rest = DIMS.filter((d) => d !== primary && d !== secondary);
-  const restValues = [55, 50, 45, 30];
-  const dimensions: Record<string, number> = { [primary]: 86, [secondary]: 74 };
+  const restValues = [52, 48, 44, 30];
+  const dimensions: Record<string, number> = { [primary]: 86, [secondary]: 68 };
   rest.forEach((dim, i) => {
     dimensions[dim] = restValues[i];
   });
@@ -64,11 +71,16 @@ export function buildFacets(dimensions: Record<string, number>): Record<string, 
   return facets;
 }
 
+// A címke a KAPUZOTT feloldón át (resolvePersonalityTypeFromScores) — a
+// korábbi resolvePersonalityTypeLabel-hívás megkerülte a bizonytalanság-
+// kaput, így a tension-personák (top-rés 4 pont) teljes „melléknév+főnév"
+// címkét kaptak, amit az éles felület sosem adna nekik.
 function labelFromDimensions(dimensions: Record<string, number>): string {
-  const sorted = DIMS.map((d) => ({ code: d, score: dimensions[d] })).sort((a, b) => b.score - a.score);
+  const entries = DIMS.map((d) => ({ code: d, score: dimensions[d] }));
+  const ranked = rankDimensionScores(entries);
   return (
-    resolvePersonalityTypeLabel(sorted[0].code, sorted[1].code, "hu") ??
-    `${sorted[0].code}/${sorted[1].code}`
+    resolvePersonalityTypeFromScores(entries, "hu") ??
+    `${ranked[0].code}/${ranked[1].code}`
   );
 }
 

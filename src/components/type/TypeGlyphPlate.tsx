@@ -145,6 +145,7 @@ export function TypeGlyphPlate({
         typeLabel={typeLabel}
         locale={locale}
         intensity={intensity}
+        secondaryUncertain={secondaryUncertain}
         variant="card"
         // Mobilon a kép nem nőhet a képernyő fölé — a panel egészének be
         // kell férnie a kijelzőbe nyitás után.
@@ -263,6 +264,7 @@ export function TypeGlyphPlate({
             typeLabel={typeLabel}
             locale={locale}
             intensity={intensity}
+            secondaryUncertain={secondaryUncertain}
             variant="badge"
             className="h-8 w-8 shrink-0 rounded-lg border border-[var(--color-border-soft)]"
           />

@@ -315,12 +315,15 @@ export default async function ProfileResultsPage({
   // önkép-oldala hiányzik, a szekció nem jelenhet meg.
   const selfFacetScores = scores.facets ?? null;
 
-  // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből.
+  // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből,
+  // és CSAK a reveal-küszöb (hasObserverData, n≥3) felett: n=1-nél a szám az
+  // egyetlen értékelő saját confidence-e lenne, ami a testvér-propokkal
+  // azonos anonimitás-védelmet igényel (különben az RSC-payloadban szivárog).
   const observerConfidences = completedObserverAssessments
     .map((a) => a.confidence)
     .filter((c): c is number => typeof c === "number");
   const avgObserverConfidence =
-    observerConfidences.length > 0
+    hasObserverData && observerConfidences.length > 0
       ? Math.round(
           (observerConfidences.reduce((sum, c) => sum + c, 0) /
             observerConfidences.length) *
@@ -328,14 +331,22 @@ export default async function ProfileResultsPage({
         ) / 10
       : null;
 
-  const dimensions = config.dimensions.map((dim) => {
-    const score = scores.dimensions[dim.code] ?? 0;
+  // FIX 4 kiterjesztés (0 mint „nincs mérve", dimenzió-szint): a tárolt
+  // score-JSON-ból hiányzó dimenzió NEM 0 pont — a korábbi `?? 0` fallback
+  // valódi 0-ként renderelte („figyelendő" badge, 0-ból generált low-próza,
+  // fejlődési fókusz #1, radar-behorpadás; hiányzó I-nél 0%-os
+  // Segítőkészség-kártya). A nem mért dimenzió kimarad a listából — a
+  // lejjebbi fogyasztók (AltruismCard find("I"), PDF-altruizmus,
+  // személyiség-címke ≥2 dim szabálya) ezt hiányként kezelik, nem nullaként.
+  const dimensions = config.dimensions.flatMap((dim) => {
+    const score = scores.dimensions[dim.code];
+    if (typeof score !== "number") return [];
     const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
       low: string;
       mid: string;
       high: string;
     };
-    return {
+    return [{
       code: dim.code,
       label: (dim.labelByLocale?.[locale] ?? dim.label) as string,
       labelByLocale: dim.labelByLocale,
@@ -347,10 +358,13 @@ export default async function ProfileResultsPage({
       insights: dim.insights,
       insightsByLocale: dim.insightsByLocale,
       observerScore: hasObserverData ? observerAvg?.[dim.code] : undefined,
-      // FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-/
-      // aspect-bontás — a hiányzó érték NEM 0 pont. A korábbi `?? 0`
-      // fallback 24 koholt 0-facetet renderelt és a fejlődési fókuszba is
-      // 0-kat választott; a mérés nélküli facet mostantól kimarad.
+      // FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-
+      // bontás — a hiányzó érték NEM 0 pont. A korábbi `?? 0` fallback
+      // 24 koholt 0-facetet renderelt és a fejlődési fókuszba is 0-kat
+      // választott; a mérés nélküli facet kimarad.
+      // (A korábbi aspects-leképezés törölve: a bankban nincs aspect-item,
+      // a motor nem ír aspects-et — a ScoreResult.aspects csak tolerált
+      // örökség-mező, megjelenítője soha nem volt.)
       facets: (dim.facets ?? []).flatMap((f) => {
         const facetScore = scores.facets?.[dim.code]?.[f.code];
         if (typeof facetScore !== "number") return [];
@@ -360,16 +374,7 @@ export default async function ProfileResultsPage({
           score: facetScore,
         }];
       }),
-      aspects: (dim.aspects ?? []).flatMap((a) => {
-        const aspectScore = scores.aspects?.[dim.code]?.[a.code];
-        if (typeof aspectScore !== "number") return [];
-        return [{
-          code: a.code,
-          label: (a.labelByLocale?.[locale] ?? a.label) as string,
-          score: aspectScore,
-        }];
-      }),
-    };
+    }];
   });
 
   // ── Growth focus ───────────────────────────────────────────────────────────
@@ -529,6 +534,11 @@ export default async function ProfileResultsPage({
   const heroInsight = (() => {
     const pick = selectHeroInsightDims(mainDimensions, dimSem);
     if (!pick) return "";
+    // Lapos profil (terjedelem-kapu, pick.flat): a „legerősebb" állítás is
+    // zaj-műtermék lenne, miközben a strip csupa-közepest, a PDF pedig
+    // „Kiegyensúlyozott profil"-t mond — a hero itt a kiegyensúlyozott-
+    // profil mondatot kapja az erősség-ige helyett.
+    if (pick.flat) return t("results.heroBalancedInsight", locale);
     const s =
       DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
     if (!pick.weakest) return `${s}.`;

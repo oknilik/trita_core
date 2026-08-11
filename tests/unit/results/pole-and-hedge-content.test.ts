@@ -4,8 +4,10 @@ import {
   ARCHETYPE_STORY_ADJ,
   ARCHETYPE_STORY_NOUN,
   buildArchetypeStory,
+  getEnvRows,
   poleAwareDimensionLabel,
 } from "@/lib/profile-content";
+import type { ProfileCategory } from "@/lib/profile-engine";
 import { resultsTranslations } from "@/lib/i18n/results";
 
 // Motor-audit v4 tartalom-guardrailek:
@@ -45,6 +47,55 @@ test("poleAwareDimensionLabel: nem-fordított dimenzión a kanonikus címke mara
   assert.equal(poleAwareDimensionLabel("RESO", 80, "hu"), "erősség");
   // Kód nélküli (örökség) hívó: kanonikus címke.
   assert.equal(poleAwareDimensionLabel(undefined, 25, "hu"), "figyelendő");
+});
+
+// ── getEnvRows F3-hedge: a 65/35↔70/40 egyet-nem-értési sáv ──────────────
+// A pólus-ítélet (categorize >65 / <35) és a vizuális tier (≥70 / <40) közti
+// sávban (66–69 ill. 30–34) a sor `hedged` jelzést kap — a megjelenítő ekkor
+// „Inkább …" szint-szót ír a kemény („Magas") helyett.
+
+const CATS = (over: Partial<Record<string, ProfileCategory>>): Record<string, ProfileCategory> => ({
+  INTE: "medium", RESO: "medium", TEMP: "medium",
+  ADAP: "medium", THOR: "medium", OPEN: "medium",
+  ...over,
+});
+
+test("getEnvRows: THOR=66 (pólus-high, tier-mid) → a Struktúra-sor hedged", () => {
+  const rows = getEnvRows(CATS({ THOR: "high" }), { THOR: 66 });
+  const structure = rows.find((r) => r.key === "structure");
+  assert.ok(structure);
+  assert.equal(structure.level, "high");
+  assert.equal(structure.hedged, true);
+});
+
+test("getEnvRows: THOR=72 (tier-high is) → nincs hedge", () => {
+  const rows = getEnvRows(CATS({ THOR: "high" }), { THOR: 72 });
+  const structure = rows.find((r) => r.key === "structure");
+  assert.ok(structure);
+  assert.equal(Boolean(structure.hedged), false);
+});
+
+test("getEnvRows: TEMP=33 (épphogy pólus-low, tükör-sáv) → hedged; 25-nél nem", () => {
+  const hedged = getEnvRows(CATS({ TEMP: "low" }), { TEMP: 33 })
+    .find((r) => r.key === "social");
+  assert.equal(hedged?.hedged, true);
+  const firm = getEnvRows(CATS({ TEMP: "low" }), { TEMP: 25 })
+    .find((r) => r.key === "social");
+  assert.equal(Boolean(firm?.hedged), false);
+});
+
+test("getEnvRows: fordított tengelyű sor (load) — a kiváltó RESO-pólus sávja dönt", () => {
+  // RESO 67 (high pólus a sávban) → a „Terhelés-kezelés" low-verdikt hedged.
+  const rows = getEnvRows(CATS({ RESO: "high" }), { RESO: 67 });
+  const load = rows.find((r) => r.key === "load");
+  assert.equal(load?.hedged, true);
+});
+
+test("getEnvRows: pontszámok nélkül a viselkedés változatlan (nincs hedge)", () => {
+  const rows = getEnvRows(CATS({ THOR: "high" }));
+  const structure = rows.find((r) => r.key === "structure");
+  assert.ok(structure);
+  assert.equal(Boolean(structure.hedged), false);
 });
 
 test("results-szótár: nem maradt megjelenő ± / mérési-hiba szám a kulcsokban", () => {

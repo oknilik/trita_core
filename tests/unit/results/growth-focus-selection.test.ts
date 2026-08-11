@@ -47,6 +47,30 @@ test("RESO-facetek kimaradnak a deficit-alapú fókuszból", () => {
   assert.equal(items[0].code, "organization");
 });
 
+test("dimenziónként max 2 facet: nincs háromszor ismételt záró-javaslat", () => {
+  // A GROWTH_HINT dimenzió-kulcsos — 3 azonos-dimenziós facet háromszor szó
+  // szerint ugyanazt a mondatot zárná. A plafon után a 3. helyre a következő
+  // legalacsonyabb MÁSIK dimenziós facet lép.
+  const items = selectGrowthFocusItems([
+    dim("THOR", "Lelkiismeretesség", 30, [
+      { code: "organization", label: "Szervezettség", score: 20 },
+      { code: "diligence", label: "Szorgalom", score: 25 },
+      { code: "prudence", label: "Körültekintés", score: 28 },
+    ]),
+    dim("TEMP", "Extraverzió", 50, [
+      { code: "sociability", label: "Társaságkedvelés", score: 45 },
+    ]),
+  ]);
+
+  assert.equal(items.length, 3);
+  assert.deepEqual(
+    items.map((i) => i.code),
+    ["organization", "diligence", "sociability"],
+  );
+  const thorCount = items.filter((i) => i.dimCode === "THOR").length;
+  assert.ok(thorCount <= 2, "kettőnél több THOR-facet a fókuszban");
+});
+
 test("örökség-sor (üres facets): dimenzió-fallback fut, RESO és koholt 0 nélkül", () => {
   const items = selectGrowthFocusItems([
     dim("RESO", "Emocionalitás", 20),

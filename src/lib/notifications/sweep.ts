@@ -15,7 +15,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { TRITAN_DIMENSIONS, rankDimensionScores, type TritanDimCode } from "@/lib/tritan";
 import { sendObserverInviteEmail, sendReflectionPromptEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { OPEN_DEAL_STAGES, QUOTE_EXPIRING_WINDOW_DAYS } from "@/lib/crm/constants";
@@ -86,14 +86,29 @@ export function selectReflectionCandidates(
 
     const scores = result.scores as ScoreResult | null;
     if (!scores || scores.type !== "likert" || !scores.dimensions) continue;
-    const ranked = Object.entries(scores.dimensions)
-      .filter(([code]) => code in TRITAN_DIMENSIONS)
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    // Kanonikus rangsor (rankDimensionScores): pontszám csökkenő, holtverseny-
+    // nél TRITAN_ORDER — pontosan az, amit a profil-felületek is futtatnak.
+    // A korábbi localeCompare-os (ábécés, belső kódon futó) tie-break
+    // holtversenynél MÁS „legerősebbet" nevezett meg az e-mailben, mint amit
+    // a profil mutat.
+    // ISMERT KORLÁT (bizonytalanság-kapu): a REFLECTION_PROMPT sablon
+    // szerkezete („A legerősebb dimenziód: {dimLabel}") egyetlen dimenziót
+    // követel, ezért a mérési hibán belüli top-pár (isTopPairUncertain)
+    // esetén is a determinisztikus rangsor elsője megy ki — ilyenkor a
+    // profil-címke is ugyanennek a dimenziónak a főnevét mutatja (főnév-only
+    // degradáció), így a kettő nem mond ellent. Hedge-elt sablon-variáns
+    // (i18n/notifications.ts + emails.ts — nem ennek a modulnak a hatásköre)
+    // bevezetése után ide is kapu kell.
+    const ranked = rankDimensionScores(
+      Object.entries(scores.dimensions)
+        .filter(([code]) => code in TRITAN_DIMENSIONS)
+        .map(([code, score]) => ({ code, score })),
+    );
     if (ranked.length === 0) continue;
 
     candidates.push({
       userId: result.userProfileId,
-      topDim: ranked[0][0] as TritanDimCode,
+      topDim: ranked[0].code as TritanDimCode,
     });
   }
   return candidates;

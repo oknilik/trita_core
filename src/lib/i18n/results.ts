@@ -494,6 +494,13 @@ export const resultsTranslations = {
     // (strengths/watchAreas) sehol nem renderelődtek — a bullet-alapú
     // változat (strengthBullets/watchBullets) él helyettük.
     balancedProfile: { hu: "Kiegyensúlyozott profil, nincs kiugró erősség.", en: "Balanced profile, no standout strength." },
+    // Lapos-profil hero-mondat: ha a hat dimenzió terjedelme a mérési zajon
+    // belül van (HERO_RANGE_GATE_FACTOR·SEM), a hero nem állíthat legerősebbet
+    // — a PDF „Kiegyensúlyozott profil" szövegével konzisztens keretezés.
+    heroBalancedInsight: {
+      hu: "Kiegyensúlyozott profil — nincs kiugró erősség, a dimenzióid közel azonos szinten működnek.",
+      en: "Balanced profile — no standout strength; your dimensions operate at a similar level.",
+    },
     sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
     teamRoleHeading: { hu: "Csapatszerepek", en: "Team roles" },
     howYouWorkEyebrow: { hu: "Ahogy működsz", en: "How you operate" },
@@ -501,6 +508,10 @@ export const resultsTranslations = {
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
     howYouWorkContext: { hu: "Kontextus", en: "Context" },
     envEyebrow: { hu: "Ideális környezet", en: "Ideal environment" },
+    // F3-hedge szint-szó sablon: a {label} a sor kanonikus szint-szava
+    // kisbetűvel (magas → „Inkább magas", gyors → „Leaning fast") — a 65/70
+    // (ill. 30/35) egyet-nem-értési sávban a kemény ítélet helyett.
+    envLeaningLabel: { hu: "Inkább {label}", en: "Leaning {label}" },
     // A `results.roleFitEyebrow` a shared-labels.ts-ben él: a publikus
     // landing-hero is használja, és így nem húzza be ezt a 137 KB-os fájlt.
     roleFitStrong: { hu: "Erős illeszkedés", en: "Strong fit" },
@@ -744,9 +755,13 @@ export const resultsTranslations = {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a hat személyiségdimenzió: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
       en: "The hexagon is your self-assessment profile — the further out a point, the stronger that dimension. Letters clockwise from top are the six personality dimensions: H – Honesty-Humility · E – Emotionality · X – Extraversion · A – Agreeableness · C – Conscientiousness · O – Openness.",
     },
+    // Őszinte megfogalmazás (2026-08-11): a kiválasztó NEM a nyers minimumot
+    // veszi — a stabilitást jelző (fordított Emocionalitás-) skálák kimaradnak,
+    // és csak 60 pont alatti tétel kerülhet be. A korábbi „a legalacsonyabbra
+    // értékelted magad" ezt elhallgatta.
     growthIntro: {
-      hu: "Ezeken a területeken adtad magadnak a legalacsonyabb értékeket — nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
-      en: "These are the areas where you scored yourself lowest — not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
+      hu: "A kérdőív fejleszthető területei közül ezeket értékelted a legalacsonyabbra — a stabilitást jelző skálák nélkül. Nem hibák, hanem a leggyorsabb fejlődési lehetőségek. Válassz egyet, és figyeld tudatosan egy hétig.",
+      en: "Among the questionnaire's growth-eligible areas, these are the ones you rated lowest — stability-indicating scales excluded. Not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
     },
     // Háromlépcsős fejlődési ív címkéi — a PDF-fel (pdf.growth*) egyező szövegek.
     growthPlanBehavior: { hu: "Próbáld ki", en: "Try this" },
@@ -1495,6 +1510,12 @@ export const resultsTranslations = {
     altruismName: { hu: "Segítőkészség", en: "Helpfulness" },
     altruismInfo: { hu: "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
     altruismDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
+    // Semleges SZINT-szavak a nem-valenciált kiegészítő skálához: a saját
+    // bannere mondja ki, hogy nem erősség/gyengeség — a valenciás
+    // „erősség/figyelendő" badge (getDimensionLabel) ellentmondott neki.
+    altruismLevelHigh: { hu: "magas", en: "high" },
+    altruismLevelMid: { hu: "mérsékelt", en: "moderate" },
+    altruismLevelLow: { hu: "alacsony", en: "low" },
     envLabelHigh: { hu: "Magas", en: "High" },
     envLabelLow: { hu: "Alacsony", en: "Low" },
     envLabelMedium: { hu: "Közepes", en: "Medium" },

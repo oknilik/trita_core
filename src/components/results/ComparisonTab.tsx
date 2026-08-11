@@ -448,7 +448,12 @@ export function ComparisonTab({
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
-            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">{avgGapPct}%</p>
+            {/* Skála-PONT, nem százalék: az átlagos |önkép−külső| gap 0–100-as
+                skálapontban értendő — a korábbi „%" suffix hamis mértékegység
+                volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
+            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">
+              {avgGapPct} {t("comparison.pointsUnitShort", locale)}
+            </p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>

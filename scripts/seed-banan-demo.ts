@@ -100,12 +100,15 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+// A facet-sorrend a kanonikus térképet (tritan.ts TRITAN_DIMENSION_FACETS)
+// követi — a THOR korábban felcserélt sorrendben (prudence↔perfectionism)
+// állt itt, eltérve az éles felület és a personas.shared.ts sorrendjétől.
 const TRITAN_FACETS: Record<string, string[]> = {
   INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
   RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
   TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
   ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
-  THOR: ["organization", "diligence", "prudence", "perfectionism"],
+  THOR: ["organization", "diligence", "perfectionism", "prudence"],
   OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
   I: ["altruism"],
 };

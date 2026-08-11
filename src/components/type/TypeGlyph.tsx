@@ -45,6 +45,13 @@ interface TypeGlyphProps {
   locale?: "hu" | "en";
   /** 1–5; a domináns dimenzió erőssége (intensityFromScore()). */
   intensity?: number;
+  /**
+   * S3-hedge: a másodlagos dimenzió megnevezése bizonytalan
+   * (personality-type.isSecondaryUncertain) — az aria-label ilyenkor
+   * rendezetlen párként írja le a két dimenziót, erősorrend-állítás nélkül
+   * (a látható tábla/címke ugyanígy degradál).
+   */
+  secondaryUncertain?: boolean;
   variant?: GlyphVariant;
   /**
    * Kitöltött krém alaplap. Alapból igen (kártya-szerű ábra); ha a
@@ -187,6 +194,7 @@ export function TypeGlyph({
   dimensionLabel,
   locale = "hu",
   intensity = 3,
+  secondaryUncertain = false,
   variant = "card",
   canvas = true,
   className,
@@ -209,7 +217,13 @@ export function TypeGlyph({
       viewBox={VIEWBOX[variant]}
       className={className}
       role="img"
-      aria-label={glyphDescription(primaryCode, secondaryCode, typeLabel, locale)}
+      aria-label={glyphDescription(
+        primaryCode,
+        secondaryCode,
+        typeLabel,
+        locale,
+        secondaryUncertain,
+      )}
     >
       {canvas && (
         <rect

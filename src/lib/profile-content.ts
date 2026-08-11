@@ -1,5 +1,6 @@
 import type { ProfileCategory } from "./profile-engine";
 import { getDimensionTier, getDimensionLabel } from "./dimension-utils";
+import { isReverseValenced } from "./score-valence";
 
 export type Locale = "hu" | "en";
 type LocalizedText = Record<Locale, string>;
@@ -16,7 +17,7 @@ export function poleAwareDimensionLabel(
   score: number,
   locale: string = "hu",
 ): string {
-  if (code === "RESO" && getDimensionTier(score) === "low") {
+  if (code && isReverseValenced(code) && getDimensionTier(score) === "low") {
     return locale === "hu" ? "stabil" : "stable";
   }
   return getDimensionLabel(score, locale);
@@ -508,6 +509,14 @@ export type EnvRow = {
   level: EnvLevel;
   label: LocalizedText;
   value: LocalizedText;
+  /**
+   * F3-hedge (motor-audit v9): a sort kiváltó dimenzió-pólus a 65/35-ös
+   * profile-engine küszöbön már túl van, de a 70/40-es vizuális tieren még
+   * nem (magas pólus: 65<score<70; alacsony pólus: 30≤score<35 tükör-sáv) —
+   * a kemény szint-szó („Magas") itt ellentmondana az egy görgetésre lévő
+   * strip „mérsékelt" címkéjének, ezért a megjelenítő „Inkább …" alakot ad.
+   */
+  hedged?: boolean;
 };
 
 // ─── Sor-érték változatok ────────────────────────────────────────────────────
@@ -557,33 +566,58 @@ const ENV_ROW_VARIANTS: Record<EnvRowKey, Record<string, EnvRowVariant>> = {
   },
 };
 
-function envRow(key: EnvRowKey, variant: EnvRowVariant): EnvRow {
-  return { key, level: variant.level, label: ENV_ROW_LABELS[key], value: variant.value };
+function envRow(key: EnvRowKey, variant: EnvRowVariant, hedged = false): EnvRow {
+  return {
+    key,
+    level: variant.level,
+    label: ENV_ROW_LABELS[key],
+    value: variant.value,
+    ...(hedged ? { hedged: true } : {}),
+  };
 }
 
 // Dimenzió + kategória kombinációra visszaadja a megfelelő sorokat. A `level`
 // a sor tengelyén elfoglalt pozíciót (low/mid/high) jelöli; a megjelenített
 // érték-szöveg a tanácsadó nyelvezet marad.
+//
+// dimScores (opcionális, F3-hedge): a nyers pontszámokból dől el, hogy a sort
+// kiváltó pólus-ítélet a 65/35↔70/40 egyet-nem-értési sávba esik-e — ilyenkor
+// a sor `hedged` jelzést kap, és a megjelenítő „Inkább …" szint-szót ír a
+// kemény („Magas") helyett. Pontszámok nélkül a viselkedés változatlan.
 export function getEnvRows(
-  categories: Record<string, ProfileCategory>
+  categories: Record<string, ProfileCategory>,
+  dimScores?: Record<string, number>,
 ): EnvRow[] {
   const rows: EnvRow[] = [];
   const v = ENV_ROW_VARIANTS;
 
+  // Hedge-sávok: magas pólus 65<score<70 (a strip ott még „mérsékelt");
+  // alacsony pólus a tükör-sáv 30≤score<35 (épphogy pólusos ítélet). A sáv a
+  // sort KIVÁLTÓ dimenzió-pólusra vonatkozik — a fordított tengelyű soroknál
+  // (cycle exploratory, load) is a kiváltó pólus sávja dönt.
+  const inHighBand = (code: string) => {
+    const score = dimScores?.[code];
+    return typeof score === "number" && score > 65 && getDimensionTier(score) !== "high";
+  };
+  const inLowBand = (code: string) => {
+    const score = dimScores?.[code];
+    return typeof score === "number" && score < 35 && score >= 30;
+  };
+
   // Struktúra (THOR alapján)
   if (categories.THOR === "high") {
-    rows.push(envRow("structure", v.structure.high));
+    rows.push(envRow("structure", v.structure.high, inHighBand("THOR")));
   } else if (categories.THOR === "low") {
-    rows.push(envRow("structure", v.structure.low));
+    rows.push(envRow("structure", v.structure.low, inLowBand("THOR")));
   } else {
     rows.push(envRow("structure", v.structure.mid));
   }
 
   // Társas intenzitás (TEMP alapján)
   if (categories.TEMP === "high") {
-    rows.push(envRow("social", v.social.high));
+    rows.push(envRow("social", v.social.high, inHighBand("TEMP")));
   } else if (categories.TEMP === "low") {
-    rows.push(envRow("social", v.social.low));
+    rows.push(envRow("social", v.social.low, inLowBand("TEMP")));
   } else {
     rows.push(envRow("social", v.social.lowMix));
   }
@@ -592,32 +626,35 @@ export function getEnvRows(
   if (categories.OPEN === "high" && categories.THOR === "high") {
     rows.push(envRow("change", v.change.framed));
   } else if (categories.OPEN === "high") {
-    rows.push(envRow("change", v.change.high));
+    rows.push(envRow("change", v.change.high, inHighBand("OPEN")));
   } else {
     rows.push(envRow("change", v.change.stable));
   }
 
-  // Döntési sebesség (THOR és OPEN alapján)
+  // Döntési sebesség (THOR és OPEN alapján) — a „Gyors" ítélet két pólusból
+  // következik; bármelyik kiváltó a sávban → hedge.
   if (categories.THOR === "high" && categories.OPEN === "low") {
     rows.push(envRow("decision", v.decision.deliberate));
   } else if (categories.THOR === "low" && categories.OPEN === "high") {
-    rows.push(envRow("decision", v.decision.fast));
+    rows.push(
+      envRow("decision", v.decision.fast, inLowBand("THOR") || inHighBand("OPEN")),
+    );
   } else {
     rows.push(envRow("decision", v.decision.balanced));
   }
 
   // Kultúra (INTE alapján) — csak pólusos INTE-nél jelenik meg.
   if (categories.INTE === "high") {
-    rows.push(envRow("culture", v.culture.high));
+    rows.push(envRow("culture", v.culture.high, inHighBand("INTE")));
   } else if (categories.INTE === "low") {
-    rows.push(envRow("culture", v.culture.low));
+    rows.push(envRow("culture", v.culture.low, inLowBand("INTE")));
   }
 
   // Projektciklus (THOR és OPEN alapján)
   if (categories.THOR === "high") {
-    rows.push(envRow("cycle", v.cycle.long));
+    rows.push(envRow("cycle", v.cycle.long, inHighBand("THOR")));
   } else if (categories.OPEN === "high") {
-    rows.push(envRow("cycle", v.cycle.exploratory));
+    rows.push(envRow("cycle", v.cycle.exploratory, inHighBand("OPEN")));
   } else {
     rows.push(envRow("cycle", v.cycle.balanced));
   }
@@ -629,9 +666,9 @@ export function getEnvRows(
   // Így a marker, a pólus-feliratok és a szöveg egy irányba mutat — a korábbi
   // verzióban a RESO high szint-szó nélkül tévesen középre esett.
   if (categories.RESO === "high") {
-    rows.push(envRow("load", v.load.protected));
+    rows.push(envRow("load", v.load.protected, inHighBand("RESO")));
   } else if (categories.RESO === "low") {
-    rows.push(envRow("load", v.load.resilient));
+    rows.push(envRow("load", v.load.resilient, inLowBand("RESO")));
   }
 
   return rows;

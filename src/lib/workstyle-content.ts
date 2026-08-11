@@ -13,7 +13,13 @@ import {
 } from "@/lib/profile-content";
 import { getDimensionTier } from "@/lib/dimension-utils";
 import { rankDimensionScores } from "@/lib/tritan";
+import { deficitSlotEligible } from "@/lib/score-valence";
 import type { Locale } from "@/lib/i18n";
+
+// A fordított dimenzió kódja a kanonikus valencia-kapuból (score-valence.ts)
+// — a korábbi helyi literál kivezetve; az örökség-importok kedvéért innen is
+// re-exportáljuk.
+export { REVERSE_DIM_CODE } from "@/lib/score-valence";
 
 // Munkastílus-tartalom (Ahogy működsz / Ideális környezet / Szerep-illeszkedés)
 // közös generátora — a saját eredmény-oldal és a megosztott (/share/[token])
@@ -58,7 +64,9 @@ export interface WorkstyleContent {
     friction: { text: string; source?: string }[];
     needs: { text: string; source?: string }[];
   };
-  envItems: { label: string; value: string }[];
+  /** hedged: a 65/35-ös pólus-ítélet a vizuális tierrel (70/40) nem egyező
+   *  sávba esik — a megjelenítő szint-szava ilyenkor „Inkább …" (F3-hedge). */
+  envItems: { label: string; value: string; hedged?: boolean }[];
   roleFit: {
     strong: string;
     might: string;
@@ -174,11 +182,6 @@ const LEANING_LABELS: Record<"high" | "low", Record<Locale, string>> = {
   high: { hu: "inkább magas", en: "leaning high" },
   low: { hu: "inkább alacsony", en: "leaning low" },
 };
-
-/** A fordított (magasabb = érzelmileg reaktívabb) dimenzió belső kódja —
- *  az alacsony pontszám itt stabilitás, ezért a deficit-alapú választásokból
- *  (fejlődési tipp, fejlődési fókusz, hero „leggyengébb" slot) kimarad. */
-const REVERSE_DIM_CODE = "RESO";
 
 export function buildWorkstyleContent(
   dimScores: Record<string, number>,
@@ -296,7 +299,7 @@ export function buildWorkstyleContent(
   // dimenzióra esik (ugyanaz a pólus-szabály, mint a selectGrowthFocusItems).
   const { growthTip, growthPlan } = (() => {
     const entries = Object.entries(dimScores).filter(
-      ([code]) => code !== "I" && code !== REVERSE_DIM_CODE,
+      ([code]) => code !== "I" && deficitSlotEligible(code),
     );
     if (entries.length === 0) return { growthTip: undefined, growthPlan: undefined };
     const [lowestDim, lowestScore] = entries.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
@@ -385,10 +388,12 @@ export function buildWorkstyleContent(
     }
   }
 
-  // Environment rows
-  const envItems = getEnvRows(engine.categories).map((r) => ({
+  // Environment rows — a dimScores a hedge-sávok (F3) feloldásához megy át:
+  // pólus-ítélet a 65/70 ill. 30/35 közti sávból → „Inkább …" szint-szó.
+  const envItems = getEnvRows(engine.categories, dimScores).map((r) => ({
     label: r.label[lang],
     value: r.value[lang],
+    hedged: r.hedged ?? false,
   }));
 
   // Takeaways (block 6 summaries)
@@ -468,7 +473,7 @@ export function selectGrowthFocusItems(
 ): GrowthFocusItem[] {
   const allFacets: GrowthFocusItem[] = [];
   for (const dim of mainDimensions) {
-    if (dim.code === REVERSE_DIM_CODE) continue; // fordított skála — nem deficit
+    if (!deficitSlotEligible(dim.code)) continue; // fordított skála — nem deficit
     for (const f of dim.facets) {
       allFacets.push({
         code: f.code,
@@ -480,16 +485,26 @@ export function selectGrowthFocusItems(
       });
     }
   }
-  const facetItems = allFacets
-    .filter((f) => f.score < 60)
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3);
+  // Dimenziónként legfeljebb 2 facet kerülhet a fókuszba: a GrowthFocus
+  // záró javaslata (GROWTH_HINT) dimenzió-kulcsos, így 3 azonos-dimenziós
+  // facet háromszor szó szerint ugyanazt a mondatot ismételné. A plafon a
+  // listát változatosabbá teszi anélkül, hogy a rangsort felborítaná.
+  const MAX_FACETS_PER_DIM = 2;
+  const perDimCount = new Map<string, number>();
+  const facetItems: GrowthFocusItem[] = [];
+  for (const f of allFacets.filter((x) => x.score < 60).sort((a, b) => a.score - b.score)) {
+    const used = perDimCount.get(f.dimCode) ?? 0;
+    if (used >= MAX_FACETS_PER_DIM) continue;
+    perDimCount.set(f.dimCode, used + 1);
+    facetItems.push(f);
+    if (facetItems.length === 3) break;
+  }
   if (facetItems.length >= 1) return facetItems;
 
   // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) —
   // ugyanaz a pólus-szabály: az alacsony RESO itt sem „fejlesztendő".
   return mainDimensions
-    .filter((d) => d.code !== REVERSE_DIM_CODE && d.score < 60)
+    .filter((d) => deficitSlotEligible(d.code) && d.score < 60)
     .sort((a, b) => a.score - b.score)
     .slice(0, 3)
     .map((d) => ({
@@ -529,20 +544,24 @@ export const HERO_RANGE_GATE_FACTOR = 2;
 export function selectHeroInsightDims<T extends { code: string; score: number }>(
   mainDimensions: ReadonlyArray<T>,
   dimSem: number,
-): { strongest: T; weakest: T | null } | null {
+): { strongest: T; weakest: T | null; flat: boolean } | null {
   if (mainDimensions.length === 0) return null;
   const ranked = rankDimensionScores(mainDimensions);
   const strongest = ranked[0];
-  const weakCandidates = ranked.filter((d) => d.code !== REVERSE_DIM_CODE);
+  const weakCandidates = ranked.filter((d) => deficitSlotEligible(d.code));
   const weakest = weakCandidates[weakCandidates.length - 1];
   if (!weakest || weakest.code === strongest.code) {
-    return { strongest, weakest: null };
+    return { strongest, weakest: null, flat: false };
   }
   // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne — a terjedelem-
   // kapu indoklása a HERO_RANGE_GATE_FACTOR kommentjében (range-statisztika,
-  // nem páronkénti különbség). Csak az erősség megy ki.
+  // nem páronkénti különbség). ÉS: ugyanez a kapu az ERŐSSÉG-állítást is
+  // érvényteleníti — egy 2·SEM-en belüli mezőnyből a „legerősebb" kiemelése
+  // ugyanúgy zaj-műtermék, miközben a strip csupa-közepest, a PDF pedig
+  // „Kiegyensúlyozott profil"-t mond. A flat jelzésre a hívó a
+  // kiegyensúlyozott-profil hero-mondatot rendereli erősség-ige helyett.
   if (strongest.score - weakest.score < HERO_RANGE_GATE_FACTOR * dimSem) {
-    return { strongest, weakest: null };
+    return { strongest, weakest: null, flat: true };
   }
-  return { strongest, weakest };
+  return { strongest, weakest, flat: false };
 }

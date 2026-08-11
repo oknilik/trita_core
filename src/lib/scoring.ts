@@ -84,6 +84,45 @@ function scoreLikert(
 // lehetne eldönteni, mely sorok érintettek.
 export const SCORING_BANK_VERSION = "tsfi-v2";
 export const SCORING_ENGINE_VERSION = 1;
+
+// ── Bank-ujjlenyomat ────────────────────────────────────────────────────────
+// A bankVersion kézzel karbantartott literál — egy item-kulcsolási szerkesztés
+// (reversed-flip, dimenzió/facet-átsorolás) észrevétlenül átcsúszna alatta.
+// A bankHash ezért a PONTOZÁST meghatározó mezőkből (id, reversed, dimension,
+// facet) számolt, determinisztikus FNV-1a ujjlenyomat: modul-betöltéskor
+// egyszer áll elő, és a bankVersion mellé kerül a score-JSON-ba. Az item
+// SZÖVEGE szándékosan nem része — a megfogalmazás-finomítás nem érinti a
+// pontozást. Függőség-mentes, olcsó (≈100 rövid sor hash-e).
+
+/** 32 bites FNV-1a, 8 hexjegyű stringként. */
+function fnv1a(input: string): string {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < input.length; i += 1) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash.toString(16).padStart(8, "0");
+}
+
+/**
+ * Stabil ujjlenyomat egy item-lista pontozás-releváns mezőiből. Exportált,
+ * hogy a unit-teszt szintetikus bankon bizonyíthassa: egy reversed-flip
+ * megváltoztatja a hash-t.
+ */
+export function computeBankHash(
+  questions: ReadonlyArray<Pick<LikertQuestion, "id" | "reversed" | "dimension" | "facet">>,
+): string {
+  const canonical = [...questions]
+    .sort((a, b) => a.id - b.id)
+    .map((q) => `${q.id}|${q.reversed ? 1 : 0}|${q.dimension}|${q.facet ?? ""}`)
+    .join("\n");
+  return fnv1a(canonical);
+}
+
+// Modul-betöltéskor számolt ujjlenyomat a (jelenleg egyetlen) TRITAN bankról.
+export const SCORING_BANK_HASH = computeBankHash(
+  getTestConfig("TRITAN" as TestType).questions.filter(isLikertQuestion),
+);
 // Ennyi beadott item fölött a kitöltés a teljes bank ("full") — a pecsét
 // és az örökség-sorok questionCount-heurisztikája ugyanehhez köt.
 export const SCORING_FULL_FORM_MIN_ITEMS = 100;
@@ -97,6 +136,9 @@ export type ScoreResult = {
   // Provenance-mezők — a pecsét bevezetése előtt tárolt sorokban hiányoznak.
   form?: AssessmentForm;
   bankVersion?: string;
+  /** A bank item-kulcsolásának ujjlenyomata (computeBankHash) — a kézi
+   *  bankVersion mellett a szerkesztés-driftet is detektálja. */
+  bankHash?: string;
   engineVersion?: number;
 };
 
@@ -112,6 +154,7 @@ export function calculateScores(
     // A beadott itemszám azonosítja a formát (60 = TSFI-S, 100 = teljes bank).
     form: answers.length >= SCORING_FULL_FORM_MIN_ITEMS ? "full" : "short",
     bankVersion: SCORING_BANK_VERSION,
+    bankHash: SCORING_BANK_HASH,
     engineVersion: SCORING_ENGINE_VERSION,
   };
 }

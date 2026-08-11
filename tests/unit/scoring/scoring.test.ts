@@ -2,7 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   calculateScores,
+  computeBankHash,
   extractDimensionScores,
+  SCORING_BANK_HASH,
   SCORING_BANK_VERSION,
   SCORING_ENGINE_VERSION,
 } from "@/lib/scoring";
@@ -107,6 +109,37 @@ describe("calculateScores", () => {
       answersAtEffective(fullQuestions, 3),
     );
     assert.equal(fullResult.form, "full");
+  });
+
+  it("bank-ujjlenyomat: a score-JSON a modul-szintű bankHash-t hordozza", () => {
+    const result = calculateScores("TRITAN", answersAtEffective(shortQuestions, 3));
+    assert.equal(result.bankHash, SCORING_BANK_HASH);
+    // A hash a teljes bank pontozás-releváns mezőiből determinisztikus.
+    assert.equal(
+      SCORING_BANK_HASH,
+      computeBankHash(getTestConfig("TRITAN").questions.filter(isLikertQuestion)),
+    );
+    assert.match(SCORING_BANK_HASH, /^[0-9a-f]{8}$/);
+  });
+
+  it("bank-ujjlenyomat: egy reversed-flip megváltoztatja a hash-t", () => {
+    // Ez a bankVersion-literál vakfoltja: egy item-kulcsolási szerkesztés
+    // (reversed, dimenzió, facet) a verzió-string alatt észrevétlen maradna —
+    // a hash-nek tüzelnie kell rá.
+    const bank = [
+      { id: 1, reversed: false, dimension: "THOR", facet: "organization" },
+      { id: 2, reversed: true, dimension: "OPEN", facet: "creativity" },
+    ];
+    const flipped = [
+      { ...bank[0], reversed: true },
+      bank[1],
+    ];
+    assert.notEqual(computeBankHash(bank), computeBankHash(flipped));
+    // Dimenzió-átsorolás is más hash-t ad.
+    const remapped = [{ ...bank[0], dimension: "ADAP" }, bank[1]];
+    assert.notEqual(computeBankHash(bank), computeBankHash(remapped));
+    // A bemenet sorrendje viszont nem számít (id szerint kanonizál).
+    assert.equal(computeBankHash(bank), computeBankHash([bank[1], bank[0]]));
   });
 
   it("aspects-et nem számol és nem ír (a bankban nincs aspect-item)", () => {
