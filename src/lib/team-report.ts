@@ -26,6 +26,8 @@ import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { buildTeamTrustNetwork } from "@/lib/trust-network.server";
 import { computeTeamPressure } from "@/lib/team-pressure";
+import { getCampaignTeamIds } from "@/lib/campaign-steps-core";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import {
   parseReportTranslations,
   type ReportTranslations,
@@ -132,6 +134,14 @@ export interface TeamReportAggregates {
     campaignStatus: string;
     measuredAt: string;
   } | null;
+  /**
+   * Van a csapatot lefedő pulse-kör, de TÖBB csapatra szól — a
+   * PsychSafetyResponse-on nincs csapat-oszlop, így csapat-szintű aggregátum
+   * nem képezhető belőle (psychSafety ilyenkor null). A vázlat-előtöltés
+   * ebből tudja, hogy NEM javasolhat új pulse-indítást. Opcionális: régebbi
+   * pillanatképekben nem létezik.
+   */
+  psychSafetyMultiTeam?: boolean;
   /**
    * „Csapat nyomás alatt" — dimenzió-pólus koncentrációk (az értékelt tagok
    * ≥ fele ugyanazon a póluson). Opcionális: régebbi pillanatképekben nem
@@ -253,7 +263,11 @@ export async function buildTeamReportAggregates(
     const secondaryCounts: Record<string, number> = {};
     let questionnaireCount = 0;
     let estimateCount = 0;
-    for (const member of assessed) {
+    // MINDEN tagon iterálunk, nem csak a személyiség-teszttel rendelkezőkön:
+    // a MÉRT szerep-kérdőívhez nem kell tritan (korábban a teszt nélküli tag
+    // mért szerepe kiesett → a roleGaps lefedett szerepet is hiányzónak írt).
+    // A becslés-ág változatlanul csak teljes score-készletből fut.
+    for (const member of teamData.members) {
       // Precedencia a kanonikus szabályból (team-role-estimate):
       // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
       const resolved = resolveDisplayRoleScores(
@@ -384,14 +398,24 @@ export async function buildTeamReportAggregates(
 
   // Pszichológiai biztonság: a legutóbbi kör anonim aggregátuma.
   // A pillanatképbe fagy — a riport a publikáláskori állapotot őrzi.
+  //
+  // Csapat-célzás a kanonikus szabállyal (getCampaignTeamIds): a teamIds az
+  // igazság, üresnél a legacy teamId. A korábbi, csak-teamId szűrő két hibát
+  // hordozott: (1) a csak teamIds-ben célzott csapat SEMMIT nem talált;
+  // (2) több-csapatos kampánynál MÁS csapatok válaszai is beleszámoltak —
+  // a PsychSafetyResponse-on nincs csapat-oszlop, ezért több-csapatos körből
+  // csapat-szintű aggregátum NEM képezhető (psychSafety null + jelzőbit).
   let psychSafety: TeamReportAggregates["psychSafety"] = null;
-  const psCampaign = await prisma.campaign.findFirst({
+  let psychSafetyMultiTeam = false;
+  const psCandidates = await prisma.campaign.findMany({
     // Több-lépéses kampánynál a type az ELSŐ lépés (pl. OBSERVER_360) —
     // a pulse-t a steps-ben kell keresni, a legacy type-ot fallbackként.
     where: {
-      teamId,
       status: { in: ["ACTIVE", "CLOSED"] },
-      OR: [{ steps: { has: "PSYCH_SAFETY" } }, { type: "PSYCH_SAFETY" }],
+      AND: [
+        { OR: [{ teamId }, { teamIds: { has: teamId } }] },
+        { OR: [{ steps: { has: "PSYCH_SAFETY" } }, { type: "PSYCH_SAFETY" }] },
+      ],
     },
     orderBy: { createdAt: "desc" },
     select: {
@@ -399,14 +423,47 @@ export async function buildTeamReportAggregates(
       status: true,
       closedAt: true,
       createdAt: true,
-      psychSafetyResponses: { select: { answers: true } },
+      teamId: true,
+      teamIds: true,
+      psychSafetyResponses: { select: { answers: true, submittedOn: true } },
     },
   });
+  const psCovering = psCandidates.filter((c) =>
+    getCampaignTeamIds(c).includes(teamId),
+  );
+  const psSingleTeam = psCovering.filter(
+    (c) => getCampaignTeamIds(c).length === 1,
+  );
+  // A LEZÁRT kör a stabil mérés: előnyt kap egy újabb, félúton lévő aktív
+  // körrel szemben (az félkész, torzított képet fagyasztana a riportba).
+  const psLatestClosed = [...psSingleTeam]
+    .filter((c) => c.status === "CLOSED")
+    .sort(
+      (a, b) =>
+        (b.closedAt ?? b.createdAt).getTime() -
+        (a.closedAt ?? a.createdAt).getTime(),
+    )[0];
+  const psCampaign =
+    psLatestClosed ?? psSingleTeam.find((c) => c.status === "ACTIVE") ?? null;
+  // Csak több-csapatos pulse fedi a csapatot → nincs aggregátum, de a
+  // prefill ne javasoljon „új pulse indítást" — az fut, csak nem bontható.
+  psychSafetyMultiTeam = !psCampaign && psCovering.length > 0;
   if (psCampaign) {
     const psAgg = aggregatePsychSafety(
       psCampaign.psychSafetyResponses.map((r) => r.answers),
     );
     if (psAgg) {
+      // measuredAt: lezárt körnél a zárás napja; AKTÍV körnél a legutóbbi
+      // beérkezett válasz napja — a kampány createdAt a kör indítása, nem a
+      // mérés ideje lenne.
+      const latestResponseAt = psCampaign.psychSafetyResponses.reduce<Date | null>(
+        (acc, r) => (!acc || r.submittedOn > acc ? r.submittedOn : acc),
+        null,
+      );
+      const measuredAt =
+        psCampaign.status === "CLOSED"
+          ? (psCampaign.closedAt ?? psCampaign.createdAt)
+          : (latestResponseAt ?? psCampaign.createdAt);
       psychSafety = {
         index: psAgg.index,
         band: psAgg.band,
@@ -416,7 +473,7 @@ export async function buildTeamReportAggregates(
         weakItemIds: weakPsychSafetyItemIds(psAgg.itemMeans),
         campaignName: psCampaign.name,
         campaignStatus: psCampaign.status,
-        measuredAt: (psCampaign.closedAt ?? psCampaign.createdAt).toISOString(),
+        measuredAt: measuredAt.toISOString(),
       };
     }
   }
@@ -493,6 +550,7 @@ export async function buildTeamReportAggregates(
     dynamics,
     trustHighlights,
     psychSafety,
+    psychSafetyMultiTeam,
     pressure,
     peerRoles,
   };
@@ -524,16 +582,18 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   if (!avgs || Object.keys(avgs).length < 2) return null;
 
   const sorted = Object.entries(avgs).sort((a, b) => b[1] - a[1]);
-  // RESO (Emocionalitás) FORDÍTOTT irányú: sem az alacsony (érzelmi
-  // stabilitás), sem a magas (érzelmi ráhangolódás) pólusa nem „erősség"/
-  // „kockázat" — ezért a valencia-alapú erősség (topDims) / figyelendő
-  // (bottomDim) válogatásból kihagyjuk, ugyanúgy, ahogy a workstyle-content.ts
-  // az egyéni prózában. Különben egy érzelmileg STABIL csapat legalacsonyabb
-  // dimenziója (RESO) tévesen „kockázatként" jelenne meg. RESO a semleges
-  // profil-mondatban (generateTeamSummary) marad, pólus-tudatos címkével.
-  const valenced = sorted.filter(([dim]) => dim !== "RESO");
-  const topDims = valenced.slice(0, 2).map(([dim]) => dim);
-  const bottomDim = valenced[valenced.length - 1][0];
+  // Valencia-kapu a kanonikus modulból (score-valence): a fordított kódolású
+  // RESO ezen az ÉRTÉKELŐ felületen sem erősség- (topDims), sem deficit-
+  // (bottomDim) slotba nem kerülhet — különben egy érzelmileg STABIL csapat
+  // legalacsonyabb dimenziója (RESO) tévesen „kockázatként" jelenne meg.
+  // RESO a semleges profil-mondatban (generateTeamSummary) marad,
+  // pólus-tudatos címkével.
+  const strengthEligible = sorted.filter(([dim]) =>
+    strengthSlotEligible(dim, "evaluative"),
+  );
+  const deficitEligible = sorted.filter(([dim]) => deficitSlotEligible(dim));
+  const topDims = strengthEligible.slice(0, 2).map(([dim]) => dim);
+  const bottomDim = deficitEligible[deficitEligible.length - 1][0];
   const spreadDims = agg.dimensionSpread
     ? Object.entries(agg.dimensionSpread)
         .filter(([, spread]) => spread >= 12)
@@ -583,10 +643,12 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   const bullets = (lines: string[]) =>
     lines.filter((l) => l.length > 0).map((l) => `• ${l}`).join("\n");
 
-  // Összefoglaló: profil-mondat + dinamika-számok.
+  // Összefoglaló: profil-mondat + dinamika-számok. A darabszám ÉL-szám
+  // (felmért kapcsolat), nem az összes tagpár — profil-él csak felmért tagok
+  // közt épül, a kapcsolat nélküli (disconnected) mért pár pedig kimarad.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` A ${dynamicsTotal} tagpárból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő, ${agg.dynamics.frictionCount} pedig súrlódási potenciált mutat.`;
+    summary += ` A ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő, ${agg.dynamics.frictionCount} pedig súrlódási potenciált mutat.`;
   }
 
   const strengths = bullets([
@@ -603,7 +665,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
-      ? `A tagpárok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
+      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
       : "",
     profileHomogeneitySignal
       ? "A homogén profil közös vakfoltokat hordozhat — amit senki nem vesz észre, az kimarad."
@@ -652,7 +714,9 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             `${getPsychSafetyItem(id)?.area.hu ?? id}: ${PSYCH_SAFETY_ACTIONS[id]?.hu ?? ""}`,
         )
       : []),
-    !ps
+    // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást —
+    // a mérés fut, csak csapat-szintre nem bontható (psychSafetyMultiTeam).
+    !ps && !agg.psychSafetyMultiTeam
       ? "Pszichológiai biztonság pulse indítása — névtelen, ~2 perces mérés; enélkül a csapatkép a kimondott véleményekre épül, a visszatartottakra nem."
       : "",
   ]);

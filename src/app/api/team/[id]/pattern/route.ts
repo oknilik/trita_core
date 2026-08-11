@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { canAccessTeam } from "@/lib/team-auth";
+import { canViewRawTeamResults } from "@/lib/team-auth";
+import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { calculateTeamPattern, type TritanScores } from "@/lib/team-pattern";
 import type { ScoreResult } from "@/lib/scoring";
 
@@ -16,7 +17,7 @@ export async function GET(
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
@@ -32,10 +33,17 @@ export async function GET(
         select: { role: true },
       })
     : null;
-  if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  const hasAccess = await canAccessTeam(profile.id, teamId, orgMembership.role);
-  if (!hasAccess) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  // A kapu a lap (team/[id]/page.tsx canViewRaw) tanácsadói feltételével
+  // AZONOS: ORG_CONSULTANT szerep VAGY tanácsadói fiók VAGY platform-admin.
+  // Korábban canAccessTeam (bármely tag / org admin) volt — miközben a lap
+  // ugyanezt az aggregátumot tanácsadói körre szűkíti, curl-lel bárki
+  // elérte a patternCode/tengely/confidence adatot.
+  const canViewRaw =
+    canViewRawTeamResults(orgMembership?.role) ||
+    profile.isConsultant ||
+    isPlatformAdminEmail(profile.email);
+  if (!canViewRaw) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   // Fetch team members with their latest self-assessment
   const teamMembers = await prisma.teamMember.findMany({

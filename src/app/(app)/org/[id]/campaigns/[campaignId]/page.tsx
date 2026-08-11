@@ -35,6 +35,7 @@ import {
   isCampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { DIMENSION_BASE } from "@/lib/color-system";
+import { extractDimensionScores } from "@/lib/scoring";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +94,11 @@ function computeAvgScores(
   const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
   let count = 0;
   for (const r of results) {
-    const scores = r.scores as Record<string, number>;
+    // Közös score-olvasó (scoring.ts): a tárolt sor BEÁGYAZOTT
+    // ({dimensions:{...}}) — a korábbi flat-record cast miatt egyetlen
+    // modern sor sem számított, így a „Fejlődési ív" sosem renderelt.
+    const scores = extractDimensionScores(r.scores);
+    if (!scores) continue;
     const hasAll = TRITAN_DIMS.every((d) => typeof scores[d] === "number");
     if (hasAll) {
       for (const d of TRITAN_DIMS) {
@@ -279,13 +284,16 @@ export default async function CampaignDetailPage({
       ? campaign.activatedAt
       : null;
 
-  // Self-assessment completion (fresh-tudatos)
+  // Self-assessment completion (fresh-tudatos). A distinct a RENDEZETT
+  // eredmény első sorát tartja meg — orderBy nélkül nem determinisztikus,
+  // melyik kitöltés számítana (org-stats mintája: legutolsó nyer).
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
       ...(freshFrom ? { createdAt: { gte: freshFrom } } : {}),
     },
+    orderBy: { createdAt: "desc" },
     select: { userProfileId: true, scores: true },
     distinct: ["userProfileId"],
   });
@@ -426,11 +434,18 @@ export default async function CampaignDetailPage({
     if (prevCampaign) {
       const prevParticipantIds = prevCampaign.participants.map((p) => p.userId);
       if (prevParticipantIds.length > 0) {
+        // A „korábbi" eredmény a JELENLEGI kör indulása ELŐTTI legutolsó
+        // kitöltés. Időhatár + orderBy nélkül a distinct rendezetlen sort
+        // adott vissza — a „korábbi" akár ugyanaz a sor lehetett, mint a
+        // jelenlegi, és a fejlődési ív hamis nullát mutatott.
+        const currentCampaignStart = campaign.activatedAt ?? campaign.createdAt;
         const prevResults = await prisma.assessmentResult.findMany({
           where: {
             userProfileId: { in: prevParticipantIds },
             isSelfAssessment: true,
+            createdAt: { lt: currentCampaignStart },
           },
+          orderBy: { createdAt: "desc" },
           select: { userProfileId: true, scores: true },
           distinct: ["userProfileId"],
         });

@@ -16,6 +16,7 @@ import { t, tf, type Locale } from "@/lib/i18n";
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
 import { hexLetter } from "@/lib/tritan";
 import { sampleStdDev } from "@/lib/stats/dimension-stats";
+import { deficitSlotEligible } from "@/lib/score-valence";
 
 interface TeamInsightsProps {
   rows: HeatmapRow[];
@@ -180,7 +181,12 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
     .sort((a, b) => (teamAvg[b.code] ?? 0) - (teamAvg[a.code] ?? 0));
 
   const topStrength = rankedDims[0];
-  const topGap = rankedDims[rankedDims.length - 1];
+  // „Fejlesztési terület" (deficit-slot): a fordított kódolású RESO kizárva
+  // a kanonikus valencia-kapun át (score-valence) — az alacsony Emocionalitás
+  // stabilitás, nem fejlesztendő gyengeség; különben egy érzelmileg stabil
+  // csapat épp a stabilitását látná figyelmeztető kártyán.
+  const deficitRanked = rankedDims.filter((d) => deficitSlotEligible(d.code));
+  const topGap = deficitRanked[deficitRanked.length - 1];
   const mostDiverse = Object.entries(dimStdDev).sort((a, b) => b[1] - a[1])[0];
   const mostDiverseDim = mostDiverse
     ? dims.find((d) => d.code === mostDiverse[0])

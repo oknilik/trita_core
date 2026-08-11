@@ -78,7 +78,7 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
     });
   });
 
-  it("alacsony pólust is felismer (≤35)", () => {
+  it("alacsony pólust is felismer (<35)", () => {
     const result = computeTeamPressure([
       member({ ADAP: 20 }),
       member({ ADAP: 30 }),
@@ -159,6 +159,17 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
       count: 3,
       assessedCount: 5,
     });
+  });
+
+  it("a pontosan küszöbön álló érték (65/35) nem pólus-tag — a profile-engine categorize vágásával azonos", () => {
+    // Egyénileg a 65 „medium" (categorize: > 65 a high) — a csapat-nyomás
+    // korábban ≥ 65-tel már magas-pólusú koncentráció-tagnak számolta.
+    const result = computeTeamPressure([
+      member({ THOR: 65, ADAP: 35 }),
+      member({ THOR: 65, ADAP: 35 }),
+      member({}),
+    ]);
+    assert.deepEqual(result, []);
   });
 
   it("null scores tagokat kihagyja a nevezőből", () => {

@@ -19,10 +19,21 @@ export interface IntelligenceMember {
   id: string;
   name: string;
   initials: string;
-  tritan: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number };
+  /**
+   * CSAK a ténylegesen mért dimenziók — hiányzó dimenzióra nincs kulcs
+   * (defaultolt 50-es kitalált adat lenne). Teljes készletnél
+   * hasAssessmentData = true.
+   */
+  tritan: Partial<Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>>;
   /** Kitöltött csapatszerep-kérdőív pontszámai — ha van, ez élvez elsőbbséget a becsléssel szemben. */
   measuredRoleScores: Record<string, number> | null;
+  /** Mind a hat fő dimenzió mérten jelen van. */
   hasAssessmentData: boolean;
+  /**
+   * A MÉRT bizalmi kör hub-ja (trust-network hubUserIds) — a dinamika-térkép
+   * ebből karikáz, hogy a riporttal azonos embert emeljen ki.
+   */
+  isTrustHub?: boolean;
   color: string;
   textColor: string;
 }
@@ -139,8 +150,16 @@ export function TeamIntelligence({
 }: TeamIntelligenceProps) {
   const loc: Locale = isHu ? "hu" : "en";
   const evidenceByTab = mergeEvidence(evidenceBySub);
-  const membersWithData = members.filter((member) => member.hasAssessmentData);
-  const membersWithoutData = members.filter((member) => !member.hasAssessmentData);
+  // Erőforrás-térkép tagsága: akinek van megjeleníthető szerepe — MÉRT
+  // szerep-kérdőívhez NEM kell személyiség-teszt (a korábbi hasAssessmentData
+  // szűrő a mért szerep-kitöltést is eldobta, és a számláló alulszámolt).
+  const membersWithData = members.filter(
+    (member) =>
+      resolveDisplayRoleScores(member.measuredRoleScores, member.tritan) !== null,
+  );
+  const membersWithoutData = members.filter(
+    (member) => !membersWithData.includes(member),
+  );
   const dynamicsCounts = edges.reduce(
     (acc, edge) => {
       if (edge.type === "aligned") acc.aligned += 1;
@@ -192,7 +211,10 @@ export function TeamIntelligence({
             // S2: becslés-ágon az exact a holtverseny-evidencia — enélkül a
             // hash-fallback más top-szerepet adhatna, mint a többi felület.
             const topRoles = getTopRoles(resolved.scores, 3, resolved.exact);
+            // Csak a jelen lévő (mért) dimenziókból — mért szerep-kérdőíves,
+            // de teszt nélküli tagnál a lista üres, nem kitalált 50-es.
             const topDims = Object.entries(member.tritan)
+              .filter((entry): entry is [string, number] => typeof entry[1] === "number")
               .sort(([, a], [, b]) => b - a)
               .slice(0, 2);
             return (

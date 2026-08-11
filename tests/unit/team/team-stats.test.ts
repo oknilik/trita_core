@@ -1,6 +1,10 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import { mergeTrustEdges, type TeamDynamicsEdge } from "@/lib/team-stats";
+import {
+  computeTeamCompletionBuckets,
+  mergeTrustEdges,
+  type TeamDynamicsEdge,
+} from "@/lib/team-stats";
 import {
   computeTrustNetwork,
   TRUST_QUESTIONS,
@@ -106,5 +110,45 @@ describe("mergeTrustEdges — kilépett tag mért párjai (a szűrt trust-háló
       merged.every((e) => current.has(e.fromUserId) && current.has(e.toUserId)),
       "kilépett taghoz kötött él került a dinamika-térképre",
     );
+  });
+});
+
+// ── FIX 8: kitöltés-vödrök — kész / folyamatban (vázlat) / vár ──────────────
+
+describe("computeTeamCompletionBuckets", () => {
+  it("folyamatban = vázlat eredmény nélkül; vár = se eredmény, se vázlat", () => {
+    const buckets = computeTeamCompletionBuckets([
+      { scores: { INTE: 50 }, hasDraft: false }, // kész
+      { scores: null, hasDraft: true }, // folyamatban
+      { scores: null, hasDraft: false }, // vár
+      { scores: null, hasDraft: undefined }, // vár (kötegelt betöltő, nincs vázlat-adat)
+    ]);
+    assert.deepEqual(buckets, {
+      completedCount: 1,
+      inProgressCount: 1,
+      waitingCount: 2,
+    });
+  });
+
+  it("eredménnyel rendelkező tag ittmaradt vázlata nem duplázódik folyamatban-ba", () => {
+    const buckets = computeTeamCompletionBuckets([
+      { scores: { INTE: 62 }, hasDraft: true },
+    ]);
+    assert.deepEqual(buckets, {
+      completedCount: 1,
+      inProgressCount: 0,
+      waitingCount: 0,
+    });
+  });
+
+  it("regresszió: a 'vár' szegmens nem szerkezetileg 0 — a vázlat nélküli tag oda esik", () => {
+    // A régi képlet (scores === null && joinedAt → folyamatban) minden
+    // kitöltetlen tagot folyamatban-nak számolt, a waiting mindig 0 volt.
+    const buckets = computeTeamCompletionBuckets([
+      { scores: null, hasDraft: false },
+      { scores: null, hasDraft: false },
+    ]);
+    assert.equal(buckets.waitingCount, 2);
+    assert.equal(buckets.inProgressCount, 0);
   });
 });

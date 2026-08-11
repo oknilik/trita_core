@@ -156,11 +156,16 @@ export function buildMemberReportViewModel(
     : null;
 
   // Szerep-illeszkedés a befagyasztott aggregátumból: a saját elsődleges
-  // szerep hány tagnak elsődleges? ≤1 → ritka (rá számítanak), ≥2 → megosztott.
+  // szerep hány tagnak elsődleges? 1 → ritka (rá számítanak), ≥2 → megosztott.
+  // FONTOS: 0 darabszámnál NINCS állítás — a pillanatkép fagyáskor készült,
+  // a néző (pl. később csatlakozott vagy azóta kitöltött tag) lehet, hogy
+  // nincs is benne; a 0 tehát nem különböztethető meg a „ritka" esettől.
   let roleFit: "rare" | "shared" | null = null;
   if (primaryRole && agg?.roleDistribution) {
     const primaryCount = agg.roleDistribution.counts[primaryRole.code] ?? 0;
-    roleFit = primaryCount <= 1 ? "rare" : "shared";
+    if (primaryCount >= 1) {
+      roleFit = primaryCount === 1 ? "rare" : "shared";
+    }
   }
 
   const tips: string[] = [];

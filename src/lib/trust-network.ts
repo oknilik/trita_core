@@ -14,6 +14,12 @@
 // - Csomópont-szintű aggregátum (befelé irányuló bizalom átlaga) csak
 //   TRUST_MIN_RATERS (3) értékelőtől létezik — alatta null, a pulse- és
 //   peer-küszöb mintája.
+// - Hub- és beágyazatlan-jelölés (névvel a riportban!) CSAK BEFELÉ
+//   EVIDENCIÁLT élekből számolódik: kölcsönös él, vagy egyoldalú él,
+//   ahol a csomópont az ÉRTÉKELT fél. A tisztán kifelé irányuló
+//   (a csomópont csak RATER) él nem evidencia a csomópontról — különben
+//   két csapattárs szigorú megítélése magát az értékelőt bélyegezné
+//   „beágyazatlan tagnak", két magas értékelés pedig hubbá tenné.
 // ─────────────────────────────────────────────────────────────────────
 
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
@@ -189,16 +195,26 @@ export interface TrustNodeStat {
   inboundCount: number;
   /** Befelé irányuló bizalom átlaga (0–100) — null a küszöb alatt. */
   inboundMean: number | null;
-  /** Hány erős (strong_trust) él kapcsolódik hozzá. */
+  /**
+   * Hány erős (strong_trust), BEFELÉ evidenciált él kapcsolódik hozzá
+   * (kölcsönös, vagy egyoldalú, ahol ő az értékelt) — a fejléc-kontrakt
+   * szerint a csak-kifelé él nem számít.
+   */
   strongEdgeCount: number;
 }
 
 export interface TrustNetwork {
   edges: TrustEdge[];
   nodes: TrustNodeStat[];
-  /** A csapat összekötő(i): a legtöbb erős éllel (min. 2) rendelkező tag(ok). */
+  /**
+   * A csapat összekötő(i): a legtöbb erős, befelé evidenciált éllel
+   * (min. 2) rendelkező tag(ok).
+   */
   hubUserIds: string[];
-  /** Beágyazatlan tagok: legalább 2 mért éllel, de egyetlen ≥ moderate él nélkül. */
+  /**
+   * Beágyazatlan tagok: legalább 2 befelé evidenciált mért éllel, de
+   * egyetlen ≥ moderate él nélkül.
+   */
   isolatedUserIds: string[];
   measuredPairCount: number;
   /** Az összes lehetséges pár (ha ismert a taglista), különben null. */
@@ -264,14 +280,25 @@ export function computeTrustNetwork(
       nodeIds.add(obs.raterUserId);
     }
   }
+  // BEFELÉ evidenciált élek egy csomópontra: kölcsönös él, vagy egyoldalú
+  // él, ahol a csomópont az ÉRTÉKELT fél (van `másik→ő` irányított válasz).
+  // A csak-kifelé (a csomópont kizárólag RATER) él nem evidencia róla —
+  // hub/beágyazatlan jelölés nem épülhet a saját kiosztott értékeléseire.
+  const inboundEvidencedEdgesFor = (userId: string): TrustEdge[] =>
+    edges.filter(
+      (e) =>
+        (e.a === userId && directed.has(`${e.b}→${userId}`)) ||
+        (e.b === userId && directed.has(`${e.a}→${userId}`)),
+    );
+
   const nodes: TrustNodeStat[] = [...nodeIds].sort().map((userId) => {
     const inScores = inbound.get(userId) ?? [];
     const inboundMean =
       inScores.length >= TRUST_MIN_RATERS
         ? Math.round(inScores.reduce((x, y) => x + y, 0) / inScores.length)
         : null;
-    const strongEdgeCount = edges.filter(
-      (e) => e.type === "strong_trust" && (e.a === userId || e.b === userId),
+    const strongEdgeCount = inboundEvidencedEdgesFor(userId).filter(
+      (e) => e.type === "strong_trust",
     ).length;
     return { userId, inboundCount: inScores.length, inboundMean, strongEdgeCount };
   });
@@ -284,7 +311,7 @@ export function computeTrustNetwork(
 
   const isolatedUserIds = nodes
     .filter((n) => {
-      const myEdges = edges.filter((e) => e.a === n.userId || e.b === n.userId);
+      const myEdges = inboundEvidencedEdgesFor(n.userId);
       return myEdges.length >= 2 && myEdges.every((e) => e.score < TRUST_EDGE_MODERATE_MIN);
     })
     .map((n) => n.userId);

@@ -2,6 +2,7 @@
 // Értelmezési réteg — elkülönítve a core kalkulációtól (team-pattern.ts)
 
 import { withHuArticle } from "@/lib/hu-grammar";
+import { deficitSlotEligible } from "@/lib/score-valence";
 
 // ── TRITAN profil 1 mondatos összefoglaló ─────────────────
 
@@ -11,14 +12,15 @@ export function generateTeamSummary(scores: Record<string, number>): string {
 
   const highest = entries[0];
   const secondHighest = entries[1];
-  // RESO (érzelmi érzékenység) FORDÍTOTT irányú: az alacsony pólusa (érzelmi
-  // stabilitás) NEM hiányosság. A „legalacsonyabb csapatátlag … elég-e a
-  // szerephez?" NEGATÍV valenciájú slotból ezért kizárjuk — különben egy
-  // érzelmileg stabil csapatnál épp a stabilitást kérdőjelezné meg. A magas
-  // slotok tényszerű megnevezések, azok maradnak.
-  const nonResoEntries = entries.filter(([dim]) => dim !== "RESO");
+  // A fordított kódolású RESO alacsony pólusa (érzelmi stabilitás) NEM
+  // hiányosság — a „legalacsonyabb csapatátlag … elég-e a szerephez?"
+  // NEGATÍV valenciájú slotból a kanonikus kapun (score-valence
+  // deficitSlotEligible) át zárjuk ki, különben egy érzelmileg stabil
+  // csapatnál épp a stabilitást kérdőjelezné meg. A magas slotok tényszerű
+  // megnevezések, azok maradnak.
+  const deficitEntries = entries.filter(([dim]) => deficitSlotEligible(dim));
   const lowest =
-    nonResoEntries[nonResoEntries.length - 1] ?? entries[entries.length - 1];
+    deficitEntries[deficitEntries.length - 1] ?? entries[entries.length - 1];
 
   // Alanyesetű, tényszerű dimenzió-nevek — a magas ÉS az alacsony slot is
   // ugyanazt a mért dimenziót nevezi meg (a korábbi verzió az alacsony

@@ -166,4 +166,21 @@ describe("buildMemberReportViewModel — szerep-illeszkedés", () => {
     const rare = buildMemberReportViewModel(rareReport, measured, "hu");
     assert.equal(rare.roleFit, "rare");
   });
+
+  it("a pillanatképben nem szereplő néző szerepére nincs rare/shared állítás (FIX 11)", () => {
+    // A befagyasztott eloszlásban a néző MV szerepe 0 darab — ez nem
+    // különböztethető meg attól, hogy a néző nincs is benne a pillanatképben
+    // (pl. később töltött ki). Ilyenkor nem állítunk illeszkedést.
+    const measured = viewer({
+      teamRoleSource: "questionnaire",
+      teamRoleScores: { OG: 0, KE: 0, KO: 0, HA: 0, ER: 0, CS: 0, MV: 90, MI: 10, SZ: 0 },
+    });
+    const report = makeReport();
+    report.aggregates!.roleDistribution!.counts = { KE: 3 };
+    const vm = buildMemberReportViewModel(report, measured, "hu");
+    assert.equal(vm.primaryRole?.code, "MV");
+    assert.equal(vm.roleFit, null);
+    assert.ok(!vm.tips.some((tip) => tip.includes("ritka")));
+    assert.ok(!vm.tips.some((tip) => tip.includes("többen is viszitek")));
+  });
 });

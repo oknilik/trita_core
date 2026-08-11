@@ -1,5 +1,6 @@
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { tf } from "@/lib/i18n";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 import { isTeamManagerRole } from "@/lib/org-roles";
 import { withHuArticle } from "@/lib/hu-grammar";
@@ -218,7 +219,13 @@ export function buildTeamIntelligencePriorities({
   if (membersWithScores.length >= 4) {
     const keyRoles: Array<keyof typeof TEAM_ROLES> = ["KO", "HA", "ER"];
     const presentTopRoles = new Set<keyof typeof TEAM_ROLES>();
-    membersWithScores.forEach((member) => {
+    // Szerep-lefedettség MINDEN tagból: a MÉRT szerep-kérdőívhez nem kell
+    // személyiség-teszt (korábban a scores-szűrt részhalmaz iterálódott, így
+    // egy teszt nélküli tag mért szerepe kiesett → hamis „hiányzó
+    // kulcsszerep" jelzés). A forrás-számláló a copy-változatot dönti el.
+    let measuredRoleCount = 0;
+    let estimatedRoleCount = 0;
+    members.forEach((member) => {
       // Precedencia a kanonikus szabályból (team-role-estimate):
       // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
       const resolved = resolveDisplayRoleScores(
@@ -226,6 +233,8 @@ export function buildTeamIntelligencePriorities({
         member.scores,
       );
       if (!resolved) return;
+      if (resolved.source === "questionnaire") measuredRoleCount += 1;
+      else estimatedRoleCount += 1;
       // S2: becslés-ágon az exact (kerekítetlen összeg) a holtverseny-
       // evidencia — enélkül a hash-fallback más elsődleges szerepet adhatna,
       // mint a többi felület.
@@ -238,15 +247,19 @@ export function buildTeamIntelligencePriorities({
       const roleNames = missingKeyRoles
         .map((role) => (locale === "hu" ? TEAM_ROLES[role].hu : TEAM_ROLES[role].en))
         .join(", ");
+      // Forrás-tudatos indoklás: tisztán mért szerepképre nem írhatjuk,
+      // hogy „becsült" (hitelességi alapelv — forrás-jelölés kötelező).
+      const roleGapReasonKey =
+        measuredRoleCount > 0 && estimatedRoleCount === 0
+          ? "teamComp.roleGapReasonMeasured"
+          : measuredRoleCount > 0
+            ? "teamComp.roleGapReasonMixed"
+            : "teamComp.roleGapReasonEstimated";
       priorities.push({
         id: "role_coverage_gap",
         tone: "sage",
         title: tr(locale, "Hiányzó kulcsszerep", "Missing key role"),
-        reason: tr(
-          locale,
-          `A becsült szerepképben nem látszik: ${roleNames}.`,
-          `Estimated role map is missing: ${roleNames}.`,
-        ),
+        reason: tf(roleGapReasonKey, locale, { roles: roleNames }),
         ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
         ctaHref: `/team/${teamId}?tab=teamRole`,
       });

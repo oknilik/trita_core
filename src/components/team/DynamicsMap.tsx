@@ -94,7 +94,12 @@ function computeDimBreakdown(
   let totalFriction = 0;
 
   for (const code of dims) {
-    const gap = Math.abs(a[code] - b[code]);
+    const aValue = a[code];
+    const bValue = b[code];
+    // Részleges profil: hiányzó dimenzióból nincs gap — a hívó ugyan teljes
+    // profil-párnál nyitja a bontást (hasAssessmentData), az őr defenzív.
+    if (typeof aValue !== "number" || typeof bValue !== "number") continue;
+    const gap = Math.abs(aValue - bValue);
     const w = FRICTION_WEIGHTS[code] ?? 0;
     const contribution = Math.round(w * gap);
     totalFriction += contribution;
@@ -165,9 +170,9 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
               const target = memberMap[otherId];
               if (!target) return null;
               const isExpanded = expandedEdge === otherId;
-              // Dimenzió-bontás CSAK valódi profil-párból: kitöltetlen tagnál
-              // az intelligence-data 50-es default-profilt ad — abból gap-et
-              // számolni kitalált adat lenne (mért él alatt pláne félrevezető).
+              // Dimenzió-bontás CSAK valódi profil-párból: kitöltetlen vagy
+              // részleges profilú tagnál nincs miből gap-et számolni — a
+              // hasAssessmentData csak teljes fő-dimenzió-készletnél igaz.
               const hasPairProfiles =
                 member.hasAssessmentData && target.hasAssessmentData;
               const breakdown = isExpanded && hasPairProfiles
@@ -289,12 +294,18 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   }
 
   const positions = getCircularPositions(members, 180, 180, 130);
-  // Közös hub-definíció (friction-model): aligned-fok ≥ 3, mindkét végpont számít.
-  const hubIds = computeAlignedHubIds(edges);
   // Van-e mért (trust) él a térképen — a jelmagyarázat „hasonló profil"
   // címkéje csak tisztán profil-becslés képre igaz; mért él mellett az
   // aligned szín semleges címkét kap (a mért aligned = erős bizalom).
   const hasMeasuredEdges = edges.some((e) => isMeasuredDynamicsSource(e.source));
+  // Hub-forrás a riporttal (team-report trustHighlights) AZONOSAN: ha van
+  // mért trust-pár, a trust-háló hub-jai (isTrustHub, szerveren számolva)
+  // karikázódnak; csak tiszta profil-becslés képen fut a computeAlignedHubIds
+  // (aligned-fok ≥ 3, mindkét végpont számít). Korábban a térkép a KEVERT
+  // él-listán becsült hubot — a riport és a térkép más embert emelhetett ki.
+  const hubIds = hasMeasuredEdges
+    ? members.filter((m) => m.isTrustHub).map((m) => m.id)
+    : computeAlignedHubIds(edges);
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">

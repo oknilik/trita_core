@@ -85,7 +85,9 @@ const richAggregates: TeamReportAggregates = {
 test("prefill: rich aggregates produce every narrative field + action items", () => {
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
-  assert.ok(prefill!.summary.includes("6 tagpárból"));
+  // A szám ÉL-darabszám (felmért kapcsolat), nem tagpár — a copy őszinte.
+  assert.ok(prefill!.summary.includes("6 felmért kapcsolatból"));
+  assert.ok(!prefill!.summary.includes("tagpár"));
   assert.ok(prefill!.strengths.startsWith("• "));
   // friction 50% → norma-kockázat + ajánlás
   assert.ok(prefill!.risks.includes("munkastílus-különbség"));
@@ -170,6 +172,36 @@ test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-tru
   assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
   // A „mért bizalmi kör alapján…" erősség-mondat is csak tiszta trust_round-nál jár.
   assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
+});
+
+test("prefill: RESO legalacsonyabb átlagnál sem kerül a figyelendő (deficit) slotba — score-valence kapu", () => {
+  const resoLowest: TeamReportAggregates = {
+    ...richAggregates,
+    dimensionAverages: { INTE: 62, RESO: 30, TEMP: 58, ADAP: 51, THOR: 70, OPEN: 45 },
+  };
+  const prefill = buildDraftNarrativePrefill(resoLowest);
+  assert.ok(prefill);
+  // Az érzelmi stabilitás nem kockázat — a RESO figyelendő-szövege kimarad,
+  // a legalacsonyabb ELIGIBLE dimenzió (OPEN) figyelendője kerül be.
+  assert.ok(!prefill!.risks.includes("Érzelmileg ráhangolódóbb"));
+  assert.ok(prefill!.risks.includes("Pragmatikus fókusz"));
+});
+
+test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javaslat (FIX 2)", () => {
+  const multiTeamPulse: TeamReportAggregates = {
+    ...richAggregates,
+    psychSafety: null,
+    psychSafetyMultiTeam: true,
+  };
+  const prefill = buildDraftNarrativePrefill(multiTeamPulse);
+  assert.ok(prefill);
+  assert.ok(!prefill!.recommendations.includes("pulse indítása"));
+});
+
+test("prefill: se pulse-adat, se lefedő kör → marad a pulse-indítás javaslat", () => {
+  const prefill = buildDraftNarrativePrefill(richAggregates);
+  assert.ok(prefill);
+  assert.ok(prefill!.recommendations.includes("Pszichológiai biztonság pulse indítása"));
 });
 
 test("prefill: no dimension averages returns null", () => {

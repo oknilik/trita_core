@@ -28,8 +28,11 @@ interface PressureText {
   en: string;
 }
 
-// Pólus-küszöbök — az egyéni profilmotor HIGH/LOW határaiból (itt ≥/≤
-// összehasonlítással, a koncentráció-számlálás inkluzív).
+// Pólus-küszöbök — az egyéni profilmotor HIGH/LOW határaiból, SZIGORÚ
+// (>/<) összehasonlítással, a profile-engine categorize()-zal azonosan.
+// Korábban ≥/≤ volt: a pontosan 65-ös tag egyénileg „medium"-nak számított,
+// itt viszont magas-pólusú koncentráció-taggá vált — a két felület
+// ellentmondott egymásnak.
 export const PRESSURE_HIGH_THRESHOLD = PROFILE_HIGH_THRESHOLD;
 export const PRESSURE_LOW_THRESHOLD = PROFILE_LOW_THRESHOLD;
 // Koncentráció: az értékelt tagok legalább fele + legalább 2 fő.
@@ -144,8 +147,10 @@ export function computeTeamPressure(
       .filter((v): v is number => typeof v === "number");
     if (values.length < PRESSURE_MIN_COUNT) continue;
 
-    const highCount = values.filter((v) => v >= PRESSURE_HIGH_THRESHOLD).length;
-    const lowCount = values.filter((v) => v <= PRESSURE_LOW_THRESHOLD).length;
+    // Szigorú összehasonlítás — a profile-engine categorize() vágásával
+    // azonos: a pontosan küszöbön álló érték "medium", nem pólus-tag.
+    const highCount = values.filter((v) => v > PRESSURE_HIGH_THRESHOLD).length;
+    const lowCount = values.filter((v) => v < PRESSURE_LOW_THRESHOLD).length;
     const qualifies = (count: number) =>
       count >= PRESSURE_MIN_COUNT && count / values.length >= PRESSURE_SHARE_THRESHOLD;
 
