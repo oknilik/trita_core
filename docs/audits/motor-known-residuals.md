@@ -51,6 +51,14 @@ a referencia-minta hiányzik. Amíg nincs pilot:
 - **SEM-konstansok.** A `MEAN_ITEM_R = 0.22` és `SCORE_SD = 20` (`psychometrics.ts`)
   kézzel beállított priorok. Minden mérési-hiba-alapú belső döntés ezekből ered.
   (A ± a felületen NEM jelenik meg — ld. 4. pont —, de a belső logikát ezek vezérlik.)
+  **ELSŐ MÉRT VISSZAJELZÉS (2026-08-11, IPIP-referencia, n = 21 681):** a valódi
+  α = .769 (prior-alapú becslés .738), item-korreláció .264 (prior 0,22), szórás
+  **16,2** (prior 20) → **SEM 7,68** a feltételezett 10,23 helyett. A priorunk
+  tehát **25–27%-kal pesszimista**: a különbség-kapuk túl szigorúak, valós
+  eltéréseket fojtunk el (mért √2·SEM ≈ 10,9 vs a jelenlegi `DIFF_MIN_GAP` 14).
+  A szórás a leginkább populáció-függő szám, ezért a kaput a HAZAI pilotig
+  tartjuk — utána ~11 felé mozdítható. Részletek + dimenziónkénti bontás:
+  `docs/research/ipip-reference-2026-08.md`.
 - **Kettős pólus/tier-küszöb.** 65/35 (`profile-engine`, narratíva-logika) vs 70/40
   (`dimension-utils`, vizuális tier). TUDATOSAN külön mechanizmusok; a közös vágás és
   annak ÉRTÉKE pilot-kérdés. A v5 összehangolta a felületi megjelenést (a forrás-chip
@@ -115,16 +123,26 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   (a hatókör-ellenőrzés megvan), hanem a szándékolt nyilvánosság kérdése.
 - **ANONYMOUS observer-típus.** Definiált, de sosem gyártott enum-ág. Bekötni (nyílt
   link) vagy törölni — elnevezési/termék-döntés.
-- **RESO magas pólus a self-felületen (v9).** A fordított Emocionalitás ALACSONY
-  pólusa mindenhol ki van zárva a deficit-slotokból (stabilitás ≠ gyengeség), és az
-  ÉRTÉKELŐ felületeken (hiring) mindkét pólus valencia-mentes. A SELF-felületen
-  (saját eredmény, PDF) viszont a magas RESO ma „erősség" badge-et, „Legerősebb:
-  Emocionalitás" chipet és „Empata" karakterjegyet kap — miközben ugyanennek a
-  pontszámnak a facetjei Szorongás/Félelem néven jelennek meg. A vak szem jogos
-  pszichometriai kifogása vs a tudatos „Empata" termék-narratíva: TULAJDONOSI
-  DÖNTÉS kell (megtartás, átfogalmazás, vagy valencia-mentesítés). A szabály
-  kanonikus helye mostantól a `src/lib/score-valence.ts` — a döntés EGY helyen
-  átvezethető.
+- ~~**RESO magas pólus a self-felületen (v9).**~~ **LEZÁRVA (2026-08-11):** a
+  döntés megszületett — az Emocionalitás MINDKÉT pólusa, MINDKÉT felület-típuson
+  **valencia-mentes**. Nem erősség és nem hiányosság: jellemző. A dimenzió nem
+  tűnik el (mindkét pólus kétoldalú prózát kap: hozadék ÉS ára), csak a
+  valenciás slotokból marad ki. Az „empata"/„Empath" címke — ami a
+  Félelem/Szorongás/Dependencia/Érzelmi kötődés facetekre empátiát ígért —
+  „ráhangolódó"/„Signal Reader"-re cserélve, és az empátia-tulajdonítás minden
+  testvér-felületről eltűnt. A tension-pár tábla aszimmetriája (egyedül a
+  RESO-magas párok voltak `risk: true`) is rendezve: a tartalom megmarad, de
+  nem kerül valenciás „Figyelendő" kártyára. Kanonikus hely:
+  `src/lib/score-valence.ts`.
+  **Maradék [termékdöntés]:** a `profile-engine.ts` `TENSION_PAIRS` táblájában
+  a `risk` flag ÉRTÉKEI változatlanok (RESO-magas: true) — a megjelenítés
+  kapuzza őket. Ha a flag szemantikáját is valencia-mentesre visszük, az a
+  RISK_TEXTS mitigációs tartalom átstrukturálását igényli (egy „megjegyzés"
+  állapot bevezetése a „kockázat" mellé) — külön munka, nem sürgős.
+- **Empátia-szókincs az ADAP-nál (v9).** A `TeamInsights.tsx` magas
+  Barátságosság-szövege „empátiát" tulajdonít — ez a Barátságosság, nem az
+  Emocionalitás, tehát a RESO-döntés hatókörén kívül esik. Kérdés, hogy a
+  „ne ígérjünk olyan konstruktumot, amit nem mérünk" elv kiterjed-e rá.
 - **Személyes observer-visszajelzés org-kontextusban (v9).** A member-dossier
   observer-aggregátuma és a manager-cockpit tevékenység-feedje a tag MINDEN valaha
   gyűjtött külső visszajelzését látja (a belépés előtti, magánkörös meghívókat is)
@@ -135,11 +153,16 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   null, de a pontos értékelő-DARABSZÁM („1 értékelő") kimegy — kis csapatban ez a
   részvétel TÉNYÉT azonosítja (ki adott már le, mikor). Döntés: „< 3" jelzés a
   pontos szám helyett a padló alatt, vagy elfogadott maradék.
-- **Altruizmus-skála kijelzési paritása (v9).** A rövid formán 2 itemes kiegészítő
-  skála (α≈0,36, SEM≈16) ugyanazzal a numerikus nyelvvel (%-szám, sáv) jelenik
-  meg, mint a 10 itemes fődimenziók. A valencia-mentes badge a v9-ben kód-szinten
-  rendezve; a szám-kijelzés paritása (hedge, sáv-elrejtés, vagy item-bővítés)
-  termék-döntés.
+- ~~**Altruizmus-skála kijelzési paritása (v9).**~~ **LEZÁRVA (2026-08-11):** a
+  2 itemes skála (α≈0,36, SEM≈16, 12,5 pont/kattintás) **kikerült a rövid
+  formából**. Helyette egy RESO- és egy OPEN-item lépett be, így a rövid forma
+  továbbra is 60 item, de dimenziónként pontosan 10 (korábban 9–10 + 2
+  altruizmus) — ez psychometriailag jobb, mint a kiindulás. A skála és mind a
+  4 itemje megmarad a TELJES formára (későbbi tanácsadói opció). Új kitöltésnél
+  a kártya magától eltűnik (a hiányzó dimenzió-kulcs kezelése rendezve);
+  örökség-sorok továbbra is mutatják a valós, mért értéket.
+  **Következmény:** `DIFF_MIN_GAP` 15 → 14 — a küszöb a bankból származik,
+  több item = kisebb mérési hiba = kisebb állítható különbség.
 - **„Kollektív minta" minimum-n (v9).** `PRESSURE_MIN_COUNT = 2` + ≥50% arány:
   3 fős csapatban 2 ember már „csapat-szintű nyomás-mintázatot" publikál a
   riportba. Döntés: minimum-n emelése (pl. 3) vagy elfogadott maradék.
@@ -221,6 +244,21 @@ eltávolított a UI-ról (dimenzió-szint is).
 ---
 
 ## Változásnapló (a ledger frissítései)
+
+- **2026-08-11 (v9 utókör) — KÉT TERMÉKDÖNTÉS LEZÁRVA + AZ ELSŐ MÉRT SZÁMOK.**
+  - **Emocionalitás-valencia:** lezárva — mindkét pólus, mindkét felület-típus
+    valencia-mentes; az „empata" címke és az empátia-tulajdonítás minden
+    testvér-felületről eltűnt; mindkét pólus kétoldalú prózát kapott. Maradék:
+    a `TENSION_PAIRS` `risk`-flag szemantikája (megjelenítés-szinten kapuzva).
+  - **Altruizmus-skála:** lezárva — ki a rövid formából; a forma 60 item maradt,
+    de dimenziónként pontosan 10. Következmény: `DIFF_MIN_GAP` 15 → 14.
+    Mellékesen javítva egy valós törés: a régi item-készlettel érkező kitöltés
+    (vendég-draft, futó observer-link) 400-at kapott volna — örökség-készlet
+    elfogadás került be.
+  - **IPIP-referencia lefuttatva valódi adaton** (n = 21 681, GitHub-tükör):
+    először van mért α/szórás/SEM a kézi priorok helyett. Beírva a §1-be.
+    A tábla BELSŐ kalibrációra való, `ACTIVE_NORM_TABLE`-be nem kerül.
+  - **Új nyitott tétel:** empátia-szókincs a Barátságosságnál (§2).
 
 - **2026-08-11 (v9 után) — A KÓD-KÖRÖK LEZÁRVA (tulajdonosi döntés): a következő
   lépés a SZERKEZET és a PILOT, nem újabb audit.** A kilencedik vak kör (6 elemző,
