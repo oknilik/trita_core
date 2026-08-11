@@ -9,6 +9,9 @@ import {
 // Melléknév-óvatosság: ha a 2. és 3. helyezett dimenzió különbsége a mérési
 // hibán belül van (< TYPE_ADJECTIVE_MIN_GAP = round(SEM, rövid forma)), a
 // melléknévi színezet nem állítható megbízhatóan → főnév-only címke.
+// Top-pár óvatosság (motor-audit v3, interpr. S3): ugyanez a kapu az 1-2.
+// helyezettre is fut — ha a két legerősebb dimenzió van egy SEM-en belül,
+// a domináns kijelölése (és vele a fő archetípus) volna műtermék.
 
 const dims = (scores: Record<string, number>) =>
   Object.entries(scores).map(([code, score]) => ({ code, score }));
@@ -40,19 +43,46 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Energikus újító");
   });
 
-  it("teljes holtverseny → főnév-only (a 2. hely a kanonikus sorrend műterméke)", () => {
+  it("közeli 1-2. helyezett (gap < küszöb) → csak főnév, hiába nagy a 2-3. gap (interpr. S3)", () => {
+    // OPEN(80) vs TEMP(78): a domináns kijelölése SEM-en belüli sorrend —
+    // pedig ez dönti el a fő archetípust. A 2-3. gap (33) önmagában nagy,
+    // a korábbi kapu ezért itt teljes címkét engedett ki.
+    const scores = dims({ OPEN: 80, TEMP: 78, THOR: 45, ADAP: 30, RESO: 25, INTE: 20 });
+    assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
+    assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
+  });
+
+  it("pont a küszöbön lévő 1-2. gap → teljes címke (a szabály szigorú <)", () => {
+    const scores = dims({
+      OPEN: 80,
+      TEMP: 80 - TYPE_ADJECTIVE_MIN_GAP,
+      THOR: 45,
+      ADAP: 30,
+      RESO: 25,
+      INTE: 20,
+    });
+    assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Energikus újító");
+  });
+
+  it("teljes holtverseny → főnév-only (a sorrend a kanonikus tie-break műterméke)", () => {
     const scores = dims({ OPEN: 50, TEMP: 50, THOR: 50, ADAP: 50, RESO: 50, INTE: 50 });
     // Holtversenynél a rangsor: INTE, RESO, … — de a címke csak a főnév.
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Értékőr");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Value Guardian");
   });
 
-  it("pontosan két dimenziónál nincs 3. helyezett → teljes címke marad", () => {
+  it("pontosan két, jól elváló dimenziónál → teljes címke marad", () => {
     const scores = dims({ OPEN: 80, TEMP: 60 });
     assert.equal(
       resolvePersonalityTypeFromScores(scores, "hu"),
       resolvePersonalityTypeLabel("OPEN", "TEMP", "hu"),
     );
+  });
+
+  it("pontosan két, SEM-en belüli dimenzió → főnév-only (a top-pár kapu 3. helyezett nélkül is él)", () => {
+    const scores = dims({ OPEN: 80, TEMP: 78 });
+    assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
+    assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
   });
 
   it("kevesebb mint két (ismert) dimenzió → null (hívói fallback)", () => {

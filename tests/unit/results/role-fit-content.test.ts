@@ -9,6 +9,9 @@ import {
   getEnvRows,
   ENV_ROW_LABELS,
   ENV_ROW_POLES,
+  ENV_ROW_SHORT_LABELS,
+  resolveEnvRowKey,
+  resolveEnvLevel,
   type EnvRowKey,
 } from "@/lib/profile-content";
 import { tritanConfig } from "@/lib/questions/tritan";
@@ -147,6 +150,91 @@ test("minden env-kulcshoz nem üres pólus-felirat HU-ban ÉS EN-ben (EN üres-p
       assert.ok(pole.high[lang].length > 0, `${key}.high.${lang} üres`);
     }
   }
+});
+
+test("Kultúra-sor rövid címkéje a kanonikus pólust adja, nem a semleges középértéket (motor-audit v3 #11)", () => {
+  // INTE high → értékvezérelt (high pólus). A korábbi érték-prefix parser a
+  // „Értékvezérelt/Values-driven" kezdetet nem ismerte → téves „Közepes" bold.
+  const valuesRow = getEnvRows(
+    runProfileEngine(scores({ INTE: 90 }), "TRITAN").categories,
+  ).find((r) => r.key === "culture");
+  assert.ok(valuesRow, "hiányzik a culture sor (INTE high)");
+  assert.equal(valuesRow.level, "high");
+  for (const lang of LOCALES) {
+    assert.equal(resolveEnvRowKey(valuesRow.label[lang]), "culture");
+    assert.equal(resolveEnvLevel("culture", valuesRow.value[lang]), "high");
+  }
+  assert.equal(ENV_ROW_SHORT_LABELS.culture.high.hu, "Értékvezérelt");
+  assert.equal(ENV_ROW_SHORT_LABELS.culture.high.en, "Values-driven");
+
+  // INTE low → pragmatikus (low pólus) — nem eshet a semleges középre.
+  const pragmaticRow = getEnvRows(
+    runProfileEngine(scores({ INTE: 10 }), "TRITAN").categories,
+  ).find((r) => r.key === "culture");
+  assert.ok(pragmaticRow, "hiányzik a culture sor (INTE low)");
+  assert.equal(pragmaticRow.level, "low");
+  for (const lang of LOCALES) {
+    assert.equal(resolveEnvLevel("culture", pragmaticRow.value[lang]), "low");
+  }
+  assert.equal(ENV_ROW_SHORT_LABELS.culture.low.hu, "Pragmatikus");
+  assert.equal(ENV_ROW_SHORT_LABELS.culture.low.en, "Pragmatic");
+
+  // A rövid címke a pólus-szókincset követi (bold szó = track-vég felirat).
+  assert.equal(
+    ENV_ROW_SHORT_LABELS.culture.high.hu.toLowerCase(),
+    ENV_ROW_POLES.culture.high.hu,
+  );
+  assert.equal(
+    ENV_ROW_SHORT_LABELS.culture.low.en.toLowerCase(),
+    ENV_ROW_POLES.culture.low.en,
+  );
+});
+
+test("minden kiadható env-sor kanonikusan visszafejthető, a rövid címke sehol nem üres", () => {
+  // Az öt vezérlő dimenzió összes kategória-kombinációja — minden getEnvRows-
+  // ág (és minden érték-változat) legalább egyszer kiadódik. A megjelenítő
+  // pontosan ezt a visszafejtést futtatja (label→kulcs, érték→szint), tehát
+  // ha itt minden feloldódik, a felületen nem lehet üres/rossz pólusú címke.
+  const levels = ["high", "medium", "low"] as const;
+  const seen = new Set<string>();
+  for (const thor of levels)
+    for (const open of levels)
+      for (const temp of levels)
+        for (const inte of levels)
+          for (const reso of levels) {
+            const rows = getEnvRows({
+              THOR: thor,
+              OPEN: open,
+              TEMP: temp,
+              INTE: inte,
+              RESO: reso,
+              ADAP: "medium",
+            });
+            for (const row of rows) {
+              for (const lang of LOCALES) {
+                assert.equal(
+                  resolveEnvRowKey(row.label[lang]),
+                  row.key,
+                  `címke nem oldódik kulccsá: ${row.label[lang]}`,
+                );
+                assert.equal(
+                  resolveEnvLevel(row.key, row.value[lang]),
+                  row.level,
+                  `érték nem oldódik szintté: ${row.value[lang]}`,
+                );
+                const short = ENV_ROW_SHORT_LABELS[row.key][row.level][lang];
+                assert.ok(
+                  short.length > 0,
+                  `üres rövid címke: ${row.key}.${row.level}.${lang}`,
+                );
+              }
+              seen.add(`${row.key}:${row.level}`);
+            }
+          }
+  // A pólusos sorok mindkét iránya előfordult a bejárásban (a fordított
+  // orientációjú RESO/load-ot is beleértve).
+  assert.ok(seen.has("culture:high") && seen.has("culture:low"));
+  assert.ok(seen.has("load:low") && seen.has("load:high"));
 });
 
 test("RESO/terhelhetőség sor a helyes pólust jelöli: RESO high→low, RESO low→high", () => {

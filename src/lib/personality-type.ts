@@ -132,8 +132,17 @@ export const TYPE_ADJECTIVE_MIN_GAP = 10;
  * Melléknév-óvatosság: ha a 2. és 3. helyezett közti különbség a mérési
  * hibán belül van (< TYPE_ADJECTIVE_MIN_GAP), csak a főnévi archetípus
  * megy ki ("Újító" / "Innovator") — a melléknévi színezet nem állítható
- * megbízhatóan. Pontosan két dimenziónál nincs 3. helyezett, ilyenkor a
- * teljes címke marad.
+ * megbízhatóan.
+ *
+ * Top-pár óvatosság (motor-audit v3, interpr. S3): ugyanez a kapu az 1. és
+ * 2. helyezettre is fut — ha a két LEGERŐSEBB dimenzió van egy SEM-en belül,
+ * a főnév/melléknév kiosztás (melyik a domináns) a mérési hibán belüli
+ * sorrend műterméke lenne, pedig pont ez határozza meg a fő archetípust.
+ * Ilyenkor is főnév-only címke megy ki, a determinisztikus rangsor (pontszám,
+ * holtversenynél TRITAN_ORDER) szerinti első főnevével — ugyanaz a
+ * degradáció, ami a 2-3. helyezett közeli esetében már élt (a teljes
+ * holtverseny eddig is így viselkedett). Pontosan két dimenziónál nincs
+ * 3. helyezett, ott csak a top-pár kapu fut.
  */
 export function resolvePersonalityTypeFromScores(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
@@ -143,7 +152,11 @@ export function resolvePersonalityTypeFromScores(
   if (known.length < 2) return null;
   const ranked = rankDimensionScores(known);
   const [first, second, third] = ranked;
-  if (third && second.score - third.score < TYPE_ADJECTIVE_MIN_GAP) {
+  const topPairUncertain = first.score - second.score < TYPE_ADJECTIVE_MIN_GAP;
+  const adjectiveUncertain = third
+    ? second.score - third.score < TYPE_ADJECTIVE_MIN_GAP
+    : false;
+  if (topPairUncertain || adjectiveUncertain) {
     return personalityNoun(first.code, locale);
   }
   return resolvePersonalityTypeLabel(first.code, second.code, locale);

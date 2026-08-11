@@ -468,6 +468,22 @@ export const ENV_ROW_POLES: Record<EnvRowKey, { low: LocalizedText; high: Locali
   load: { low: { hu: "alacsony", en: "low" }, high: { hu: "magas", en: "high" } },
 };
 
+// Kanonikus RÖVID (kiemelt) címke kulcs+szint szerint — a megjelenítő ebből
+// oldja fel a sor bold szint-szavát, NEM az érték-szöveg prefix-parse-olásából.
+// A korábbi parser szűkebb leképezése a Kultúra-sor „Értékvezérelt /
+// Teljesítményalapú" kezdetét nem ismerte, és tévesen „Közepes"-t mutatott
+// (motor-audit v3 #11). A kultúra címkéi a sor pólus-szókincsét követik
+// (ENV_ROW_POLES.culture), így a bold szó és a track-vég felirata egybevág.
+export const ENV_ROW_SHORT_LABELS: Record<EnvRowKey, Record<EnvLevel, LocalizedText>> = {
+  structure: { low: { hu: "Alacsony", en: "Low" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Magas", en: "High" } },
+  social: { low: { hu: "Alacsony", en: "Low" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Magas", en: "High" } },
+  change: { low: { hu: "Alacsony", en: "Low" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Magas", en: "High" } },
+  decision: { low: { hu: "Lassú", en: "Slow" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Gyors", en: "Fast" } },
+  culture: { low: { hu: "Pragmatikus", en: "Pragmatic" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Értékvezérelt", en: "Values-driven" } },
+  cycle: { low: { hu: "Rövid", en: "Short" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Hosszú", en: "Long" } },
+  load: { low: { hu: "Alacsony", en: "Low" }, mid: { hu: "Közepes", en: "Medium" }, high: { hu: "Magas", en: "High" } },
+};
+
 export type EnvRow = {
   key: EnvRowKey;
   level: EnvLevel;
@@ -475,8 +491,55 @@ export type EnvRow = {
   value: LocalizedText;
 };
 
-function envRow(key: EnvRowKey, level: EnvLevel, value: LocalizedText): EnvRow {
-  return { key, level, label: ENV_ROW_LABELS[key], value };
+// ─── Sor-érték változatok ────────────────────────────────────────────────────
+// MINDEN kiadható érték-szöveg itt él, a szintjéhez kötve — a getEnvRows
+// ebből választ, és a megjelenítő-oldali visszafejtés (érték → szint,
+// resolveEnvLevel) is ebből épül, így a kettő szerkezetileg nem tud
+// széttartani. Egy szinthez több szövegváltozat is tartozhat (pl. a social
+// „low" két árnyalata).
+type EnvRowVariant = { level: EnvLevel; value: LocalizedText };
+
+const ENV_ROW_VARIANTS: Record<EnvRowKey, Record<string, EnvRowVariant>> = {
+  structure: {
+    high: { level: "high", value: { hu: "Magas – jobban működsz egyértelmű keretek és folyamatok között", en: "High – you work best within clear frameworks and processes" } },
+    low: { level: "low", value: { hu: "Alacsony – rugalmasan, önirányítva dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" } },
+    mid: { level: "mid", value: { hu: "Közepes – keretek között, de nem bürokratikusan dolgozol jól", en: "Medium – you do well with structure, but not bureaucracy" } },
+  },
+  social: {
+    high: { level: "high", value: { hu: "Magas – csapatmunkában, sok interakcióval virulsz", en: "High – you thrive on teamwork and frequent interaction" } },
+    low: { level: "low", value: { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" } },
+    lowMix: { level: "low", value: { hu: "Alacsony-közepes – az önálló munka és a kiscsapat váltakozása fekszik neked", en: "Low to medium – a mix of independent and small-team work suits you" } },
+  },
+  change: {
+    framed: { level: "mid", value: { hu: "Közepes – a fokozatos, keretezett változás fekszik neked", en: "Medium – gradual change within clear boundaries suits you" } },
+    high: { level: "high", value: { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" } },
+    stable: { level: "low", value: { hu: "Alacsony-közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" } },
+  },
+  decision: {
+    deliberate: { level: "mid", value: { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" } },
+    fast: { level: "high", value: { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" } },
+    balanced: { level: "mid", value: { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" } },
+  },
+  // A kultúra-értékek a többi sorral azonos „Szint-szó – leírás" szerkezetet
+  // követik (a szint-szó a pólus-szókincs) — így a leírás-levágás és a bold
+  // címke minden soron ugyanúgy működik.
+  culture: {
+    high: { level: "high", value: { hu: "Értékvezérelt – etikailag következetes közegben vagy otthon", en: "Values-driven – an ethically consistent culture is where you're at home" } },
+    low: { level: "low", value: { hu: "Pragmatikus – teljesítményalapú, versengő kultúrában is jól elvagy", en: "Pragmatic – a performance-based, competitive culture also works fine for you" } },
+  },
+  cycle: {
+    long: { level: "high", value: { hu: "Hosszú, mélyülő – alaposan viszed végig a munkát", en: "Long, deepening – you carry work through thoroughly" } },
+    exploratory: { level: "low", value: { hu: "Rövid-közepes – szívesen fedezel fel újat, a lezárás több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" } },
+    balanced: { level: "mid", value: { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" } },
+  },
+  load: {
+    protected: { level: "low", value: { hu: "Alacsony – kiszámítható ritmus és rendszeres visszajelzés mellett hozod a legjobb formád", en: "Low – you're at your best with a predictable rhythm and regular feedback" } },
+    resilient: { level: "high", value: { hu: "Magas – jól viseled a nyomást és a bizonytalanságot", en: "High – you handle pressure and uncertainty well" } },
+  },
+};
+
+function envRow(key: EnvRowKey, variant: EnvRowVariant): EnvRow {
+  return { key, level: variant.level, label: ENV_ROW_LABELS[key], value: variant.value };
 }
 
 // Dimenzió + kategória kombinációra visszaadja a megfelelő sorokat. A `level`
@@ -486,57 +549,58 @@ export function getEnvRows(
   categories: Record<string, ProfileCategory>
 ): EnvRow[] {
   const rows: EnvRow[] = [];
+  const v = ENV_ROW_VARIANTS;
 
   // Struktúra (THOR alapján)
   if (categories.THOR === "high") {
-    rows.push(envRow("structure", "high", { hu: "Magas – jobban működsz egyértelmű keretek és folyamatok között", en: "High – you work best within clear frameworks and processes" }));
+    rows.push(envRow("structure", v.structure.high));
   } else if (categories.THOR === "low") {
-    rows.push(envRow("structure", "low", { hu: "Alacsony – rugalmasan, önirányítva dolgozol a legjobban", en: "Low – you work best flexibly and self-directed" }));
+    rows.push(envRow("structure", v.structure.low));
   } else {
-    rows.push(envRow("structure", "mid", { hu: "Közepes – keretek között, de nem bürokratikusan dolgozol jól", en: "Medium – you do well with structure, but not bureaucracy" }));
+    rows.push(envRow("structure", v.structure.mid));
   }
 
   // Társas intenzitás (TEMP alapján)
   if (categories.TEMP === "high") {
-    rows.push(envRow("social", "high", { hu: "Magas – csapatmunkában, sok interakcióval virulsz", en: "High – you thrive on teamwork and frequent interaction" }));
+    rows.push(envRow("social", v.social.high));
   } else if (categories.TEMP === "low") {
-    rows.push(envRow("social", "low", { hu: "Alacsony – önálló munkában vagy kis csapatban dolgozol a legjobban", en: "Low – you work best independently or in a small team" }));
+    rows.push(envRow("social", v.social.low));
   } else {
-    rows.push(envRow("social", "low", { hu: "Alacsony-közepes – az önálló munka és a kiscsapat váltakozása fekszik neked", en: "Low to medium – a mix of independent and small-team work suits you" }));
+    rows.push(envRow("social", v.social.lowMix));
   }
 
   // Változásgyakoriság (OPEN és THOR alapján)
   if (categories.OPEN === "high" && categories.THOR === "high") {
-    rows.push(envRow("change", "mid", { hu: "Közepes – a fokozatos, keretezett változás fekszik neked", en: "Medium – gradual change within clear boundaries suits you" }));
+    rows.push(envRow("change", v.change.framed));
   } else if (categories.OPEN === "high") {
-    rows.push(envRow("change", "high", { hu: "Magas – szívesen dolgozol változó, ismeretlen közegben", en: "High – you enjoy working in shifting, novel environments" }));
+    rows.push(envRow("change", v.change.high));
   } else {
-    rows.push(envRow("change", "low", { hu: "Alacsony-közepes – stabil, kiszámítható folyamatok között működsz jól", en: "Low to medium – you work well with stable, predictable processes" }));
+    rows.push(envRow("change", v.change.stable));
   }
 
   // Döntési sebesség (THOR és OPEN alapján)
   if (categories.THOR === "high" && categories.OPEN === "low") {
-    rows.push(envRow("decision", "mid", { hu: "Közepes – átgondoltan, szabályok mentén döntesz szívesen", en: "Medium – you prefer deliberate, rule-based decisions" }));
+    rows.push(envRow("decision", v.decision.deliberate));
   } else if (categories.THOR === "low" && categories.OPEN === "high") {
-    rows.push(envRow("decision", "high", { hu: "Gyors – intuitívan, rugalmasan döntesz", en: "Fast – you decide intuitively and flexibly" }));
+    rows.push(envRow("decision", v.decision.fast));
   } else {
-    rows.push(envRow("decision", "mid", { hu: "Közepes – átgondoltan döntesz, de nem húzod az időt", en: "Medium – you decide deliberately, without dragging it out" }));
+    rows.push(envRow("decision", v.decision.balanced));
   }
 
-  // Kultúra (INTE alapján)
+  // Kultúra (INTE alapján) — csak pólusos INTE-nél jelenik meg.
   if (categories.INTE === "high") {
-    rows.push(envRow("culture", "high", { hu: "Értékvezérelt, etikailag következetes közegben vagy otthon", en: "Values-driven, ethically consistent culture is where you're at home" }));
+    rows.push(envRow("culture", v.culture.high));
   } else if (categories.INTE === "low") {
-    rows.push(envRow("culture", "low", { hu: "Teljesítményalapú, versengő kultúrában is jól elvagy", en: "Performance-based, competitive culture also works fine for you" }));
+    rows.push(envRow("culture", v.culture.low));
   }
 
   // Projektciklus (THOR és OPEN alapján)
   if (categories.THOR === "high") {
-    rows.push(envRow("cycle", "high", { hu: "Hosszú, mélyülő – alaposan viszed végig a munkát", en: "Long, deepening – you carry work through thoroughly" }));
+    rows.push(envRow("cycle", v.cycle.long));
   } else if (categories.OPEN === "high") {
-    rows.push(envRow("cycle", "low", { hu: "Rövid-közepes – szívesen fedezel fel újat, a lezárás több tudatosságot kíván", en: "Short to medium – you love exploring; closing takes more deliberate effort" }));
+    rows.push(envRow("cycle", v.cycle.exploratory));
   } else {
-    rows.push(envRow("cycle", "mid", { hu: "Közepes – elmélyülsz, de tartod a határidőket", en: "Medium – you go deep while keeping deadlines" }));
+    rows.push(envRow("cycle", v.cycle.balanced));
   }
 
   // Terhelés-kezelés (RESO alapján) — erőforrás-nyelv, nem deficit-keret.
@@ -546,12 +610,54 @@ export function getEnvRows(
   // Így a marker, a pólus-feliratok és a szöveg egy irányba mutat — a korábbi
   // verzióban a RESO high szint-szó nélkül tévesen középre esett.
   if (categories.RESO === "high") {
-    rows.push(envRow("load", "low", { hu: "Alacsony – kiszámítható ritmus és rendszeres visszajelzés mellett hozod a legjobb formád", en: "Low – you're at your best with a predictable rhythm and regular feedback" }));
+    rows.push(envRow("load", v.load.protected));
   } else if (categories.RESO === "low") {
-    rows.push(envRow("load", "high", { hu: "Magas – jól viseled a nyomást és a bizonytalanságot", en: "High – you handle pressure and uncertainty well" }));
+    rows.push(envRow("load", v.load.resilient));
   }
 
   return rows;
+}
+
+// ─── Megjelenítő-oldali visszafejtés ─────────────────────────────────────────
+// A megjelenítő (IdealEnvironmentSection) lokalizált {label, value} párokat
+// kap (a workstyle-content így adja tovább) — a kanonikus kulcs és szint az
+// alábbi regiszterekből fejthető vissza. Mindkét nyelv szerepel bennük, így a
+// feloldás nyelvfüggetlen; és mivel a regiszterek a getEnvRows-szal KÖZÖS
+// forrásból (ENV_ROW_LABELS, ENV_ROW_VARIANTS) épülnek, nem driftelhetnek —
+// a korábbi EN üres-pólus és a Kultúra téves „Közepes" címkéje pont a
+// megjelenítőben duplikált, részleges leképezésekből fakadt.
+
+const LABEL_TO_ENV_KEY: Record<string, EnvRowKey> = Object.fromEntries(
+  (Object.entries(ENV_ROW_LABELS) as Array<[EnvRowKey, LocalizedText]>).flatMap(
+    ([key, label]) => [
+      [label.hu, key] as [string, EnvRowKey],
+      [label.en, key] as [string, EnvRowKey],
+    ],
+  ),
+);
+
+const ENV_VALUE_TO_LEVEL: Record<EnvRowKey, Record<string, EnvLevel>> = Object.fromEntries(
+  (Object.entries(ENV_ROW_VARIANTS) as Array<[EnvRowKey, Record<string, EnvRowVariant>]>).map(
+    ([key, variants]) => [
+      key,
+      Object.fromEntries(
+        Object.values(variants).flatMap((variant) => [
+          [variant.value.hu, variant.level] as [string, EnvLevel],
+          [variant.value.en, variant.level] as [string, EnvLevel],
+        ]),
+      ),
+    ],
+  ),
+) as Record<EnvRowKey, Record<string, EnvLevel>>;
+
+/** Lokalizált sor-címke (hu VAGY en) → kanonikus sor-kulcs; ismeretlenre null. */
+export function resolveEnvRowKey(label: string): EnvRowKey | null {
+  return LABEL_TO_ENV_KEY[label] ?? null;
+}
+
+/** Lokalizált érték-szöveg (hu VAGY en) → a sor kanonikus szintje; ismeretlenre null. */
+export function resolveEnvLevel(key: EnvRowKey, value: string): EnvLevel | null {
+  return ENV_VALUE_TO_LEVEL[key]?.[value] ?? null;
 }
 
 // ─── Block 3 – Általános narratíva (ha nincs tension pár) ────────────────────
