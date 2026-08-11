@@ -13,6 +13,14 @@ import { prisma } from "@/lib/prisma";
 import type { InvitationStatus } from "@prisma/client";
 import { getTestConfig } from "@/lib/questions";
 import { POST as observerSubmitPOST } from "@/app/api/observer/submit/route";
+import {
+  POST as observerDraftPOST,
+  DELETE as observerDraftDELETE,
+} from "@/app/api/observer/draft/route";
+import {
+  observerDraftCookieName,
+  observerDraftCookieValue,
+} from "@/lib/observer/draft-cookie";
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
@@ -354,4 +362,124 @@ test("C5.2 Observer token acceptance", async (t) => {
     assert.equal(body2.error, "ALREADY_USED");
   });
 
+});
+
+// ── Draft route lifecycle + birtoklás-cookie ───────────────────────────────────
+
+function buildDraftPayload(token: string) {
+  return {
+    token,
+    phase: "assessment" as const,
+    relationshipType: "COLLEAGUE",
+    knownDuration: "1_3",
+    answers: { "1": 3, "2": 4 },
+    currentPage: 0,
+  };
+}
+
+async function callDraftPost(token: string) {
+  const req = new Request("http://localhost/api/observer/draft", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(buildDraftPayload(token)),
+  });
+  return observerDraftPOST(req);
+}
+
+async function callDraftDelete(token: string) {
+  const req = new Request("http://localhost/api/observer/draft", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token }),
+  });
+  return observerDraftDELETE(req);
+}
+
+test("Observer draft route — lifecycle + cookie", async (t) => {
+  await t.test("aktív külső tokenre a draft-írás megy, és HMAC-cookie-t kap", async () => {
+    const inviter = await createInviterProfile();
+    const invitation = await createInvitation(inviter.id);
+
+    const res = await callDraftPost(invitation.token);
+    assert.equal(res.status, 200);
+
+    const draft = await prisma.observerDraft.findUnique({
+      where: { invitationId: invitation.id },
+    });
+    assert.ok(draft, "a draft mentődik");
+
+    // A válasz beállítja a birtoklás-bizonyíték cookie-t (fix: logged-out
+    // draft-szivárgás — a draftot csak az író böngésző olvashatja vissza).
+    const setCookie = res.headers.get("set-cookie") ?? "";
+    assert.ok(
+      setCookie.includes(
+        `${observerDraftCookieName(invitation.id)}=${observerDraftCookieValue(invitation.id)}`,
+      ),
+      "a külső meghívó draft-POST-ja HMAC-cookie-t állít",
+    );
+    assert.match(setCookie, /httponly/i, "httpOnly — JS-ből nem olvasható");
+  });
+
+  await t.test("LEJÁRT (de PENDING) tokenre a draft-írás 400 INVITE_EXPIRED", async () => {
+    const inviter = await createInviterProfile();
+    const invitation = await createInvitation(inviter.id, { expiresAt: PAST });
+
+    const res = await callDraftPost(invitation.token);
+    const body = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(body.error, "INVITE_EXPIRED");
+    assert.equal(
+      await prisma.observerDraft.findUnique({ where: { invitationId: invitation.id } }),
+      null,
+      "lejárt tokennel draft nem jöhet létre",
+    );
+  });
+
+  await t.test("LEJÁRT tokenre a draft-törlés is elutasítva", async () => {
+    const inviter = await createInviterProfile();
+    const invitation = await createInvitation(inviter.id, { expiresAt: PAST });
+    await prisma.observerDraft.create({
+      data: {
+        invitationId: invitation.id,
+        phase: "assessment",
+        relationshipType: "COLLEAGUE",
+        knownDuration: "1_3",
+        answers: { "1": 3 },
+      },
+    });
+
+    const res = await callDraftDelete(invitation.token);
+    const body = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(body.error, "INVITE_EXPIRED");
+    assert.ok(
+      await prisma.observerDraft.findUnique({ where: { invitationId: invitation.id } }),
+      "a lejárt token nem nyúlhat a drafthoz",
+    );
+  });
+
+  await t.test("CANCELED tokenre a draft-írás 400 INVITE_CANCELED", async () => {
+    const inviter = await createInviterProfile();
+    const invitation = await createInvitation(inviter.id, { status: "CANCELED" });
+
+    const res = await callDraftPost(invitation.token);
+    const body = await res.json();
+
+    assert.equal(res.status, 400);
+    assert.equal(body.error, "INVITE_CANCELED");
+  });
+
+  await t.test("COMPLETED tokenre a törlés megengedett marad (beadás utáni takarítás)", async () => {
+    const inviter = await createInviterProfile();
+    const invitation = await createInvitation(inviter.id, {
+      status: "COMPLETED",
+      completedAt: NOW,
+    });
+
+    const res = await callDraftDelete(invitation.token);
+    assert.equal(res.status, 200);
+    assert.equal((await res.json()).ok, true);
+  });
 });

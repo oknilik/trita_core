@@ -163,6 +163,27 @@ test("C5.2 Observer token link + acceptance", async (t) => {
     if (!result.ok) assert.equal(result.code, "INVITE_CANCELED");
   });
 
+  await t.test("self-guard: az értékelt nem claim-elheti a SAJÁT tokenjét", async () => {
+    const inviter = await createProfile("inviter");
+    const invitation = await createInvitation(inviter.id);
+
+    const result = await linkObserverTokenToProfile({
+      token: invitation.token,
+      profileId: inviter.id,
+      now: NOW,
+    });
+
+    assert.equal(result.ok, false);
+    if (!result.ok) assert.equal(result.code, "SELF_LINK_FORBIDDEN");
+
+    // A token NEM kötődött a meghívóhoz.
+    const after = await prisma.observerInvitation.findUnique({
+      where: { id: invitation.id },
+      select: { observerProfileId: true },
+    });
+    assert.equal(after?.observerProfileId, null);
+  });
+
   await t.test("wrong target / wrong entity association is rejected", async () => {
     const inviter = await createProfile("inviter");
     const linkedObserver = await createProfile("linked_observer");

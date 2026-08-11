@@ -179,12 +179,20 @@ export async function buildMemberDossier(
   // flag nevesítve soha; nem kizárási szabály, csak olvasási óvatosság.
   // A bank fix (TestType.TRITAN az egyedüli érték); a teljes konfig itemei
   // a rövid (TSFI-S) kitöltéseket is lefedik.
-  const raterQualityMeta = buildRaterQualityItemMeta(getTestConfig("TRITAN").questions);
-  const observerSuspectCount = observers.reduce((count, o) => {
-    const answers = extractRaterAnswers(o.scores);
-    if (!answers) return count; // örökség-sor tárolt válaszok nélkül — nem értékelhető
-    return assessRaterQuality(answers, raterQualityMeta).suspect ? count + 1 : count;
-  }, 0);
+  // CSAK akkor számoljuk/adjuk ki, ha az observer-aggregátum maga is látszik
+  // (n ≥ DOSSIER_OBSERVER_MIN): a padló alatt az „1 gyanús értékelő" jelzés
+  // egyetlen, beazonosítható raterre mutatna rá.
+  const observerShown = observers.length >= DOSSIER_OBSERVER_MIN;
+  const raterQualityMeta = observerShown
+    ? buildRaterQualityItemMeta(getTestConfig("TRITAN").questions)
+    : null;
+  const observerSuspectCount = raterQualityMeta
+    ? observers.reduce((count, o) => {
+        const answers = extractRaterAnswers(o.scores);
+        if (!answers) return count; // örökség-sor tárolt válaszok nélkül — nem értékelhető
+        return assessRaterQuality(answers, raterQualityMeta).suspect ? count + 1 : count;
+      }, 0)
+    : 0;
 
   // Csapatszerep peer: raterenként a legutolsó készlet (updatedAt asc → felülír).
   // A rátereket a tag JELENLEGI csapattársaira szűrjük: egy azóta KILÉPETT
@@ -312,7 +320,11 @@ export async function buildMemberDossier(
     { key: "self", lastAt: selfLatest?.createdAt.toISOString() ?? null, count: selfCount },
     {
       key: "observer",
-      lastAt: observers[0]?.createdAt.toISOString() ?? null,
+      // NAP pontosságra csonkolva (YYYY-MM-DD): a legutolsó beérkezés pontos
+      // időbélyege az anonimitás-padló alatt (n<3) egyetlen értékelőt
+      // azonosítana be („ki küldte be tegnap 14:32-kor?") — a részvétel-
+      // mátrixhoz a nap is elég.
+      lastAt: observers[0]?.createdAt.toISOString().slice(0, 10) ?? null,
       count: observers.length,
     },
     {
@@ -364,7 +376,7 @@ export async function buildMemberDossier(
       selfRoundCount: selfCount,
       observerCount: observers.length,
       observerSuspectCount,
-      observerShown: observers.length >= DOSSIER_OBSERVER_MIN,
+      observerShown,
       dims,
       topGaps,
       teamRole: {

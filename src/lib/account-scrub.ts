@@ -1,5 +1,8 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, type NotificationType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("account-scrub");
 
 /**
  * Fiók-törlési GDPR-scrub — EGY kanonikus forrás, amit MINDKÉT törlési út hív:
@@ -20,6 +23,17 @@ export async function scrubProfileData(
   profileId: string,
   email: string | null,
 ): Promise<void> {
+  // A törölt user NEVE a tranzakció ELŐTT kimentve — a lenti tombstone
+  // nullázza, de az értesítés-redakcióhoz (vars.inviterName/targetLabel)
+  // még kelleni fog.
+  const scrubbedName =
+    (
+      await prisma.userProfile.findUnique({
+        where: { id: profileId },
+        select: { username: true },
+      })
+    )?.username?.trim() || null;
+
   // A törölt user rater-oldali azonosítói: a profil-id-ja, plusz az emailje
   // (ha névvel/emaillel hívták meg értékelőnek egy MÁSIK user meghívóján).
   // Case-INSENSITIVE email-illesztés: a flow minden más email-összevetése is az
@@ -129,6 +143,38 @@ export async function scrubProfileData(
           }),
         ]
       : []),
+    // Függő csapat-/szervezet-/tanácsadó-meghívók a törölt user emailjére:
+    // a sor MAGA a PII (email + melyik org/csapat hívta) és funkciója sincs
+    // már — töröljük. Case-insensitive illesztés, mint minden email-útnál.
+    // Email híján (már scrubolt hívás) nincs mire illeszteni → kimarad.
+    ...(email
+      ? [
+          prisma.teamPendingInvite.deleteMany({
+            where: { email: { equals: email, mode: "insensitive" as const } },
+          }),
+          prisma.organizationPendingInvite.deleteMany({
+            where: { email: { equals: email, mode: "insensitive" as const } },
+          }),
+          prisma.consultantInvite.deleteMany({
+            where: { email: { equals: email, mode: "insensitive" as const } },
+          }),
+        ]
+      : []),
+    // Fake-door (érdeklődés-mérés) válaszok: a sor az aggregált számokhoz
+    // marad (module/interest/ár), de a közvetlen azonosítók mennek — email,
+    // profil-kapcsolat, ÉS az „egyéb" szabad szöveg (abba bármilyen PII-t
+    // gépelhetett). Illesztés profil VAGY case-insensitive email szerint.
+    prisma.fakeDoorResponse.updateMany({
+      where: email
+        ? {
+            OR: [
+              { profileId },
+              { email: { equals: email, mode: "insensitive" as const } },
+            ],
+          }
+        : { profileId },
+      data: { email: null, otherText: null, profileId: null },
+    }),
     // Analitika: az eseményeket nem töröljük, csak elvágjuk a személytől —
     // az aggregált tölcsér-számok nem esnek szét, de az események nem
     // köthetők vissza.
@@ -156,4 +202,88 @@ export async function scrubProfileData(
       },
     }),
   ]);
+
+  // A fő tranzakció UTÁN, best-effort: a törölt user neve/emailje MÁS userek
+  // értesítés-listáiban (vars.inviterName / vars.targetLabel) különben örökre
+  // bent maradna. Hibája nem akaszthatja meg a törlést — a DB-scrub fentebb
+  // már lefutott.
+  await redactScrubbedIdentityFromNotifications(scrubbedName, email);
+}
+
+// Az observer-értesítés-típusok, amelyek vars-a a meghívó/értékelt nevét
+// (inviterName) vagy a meghívott értékelő címkéjét (targetLabel — név vagy
+// email) hordozza. Forrás: notifications/orchestrator.ts (itt NEM módosítjuk).
+const IDENTITY_CARRYING_NOTIFICATION_TYPES: NotificationType[] = [
+  "OBSERVER_SUBMITTED",
+  "OBSERVER_COLLEAGUE_INVITED",
+  "OBSERVER_APPROVAL_REQUESTED",
+  "OBSERVER_INVITE_APPROVED",
+  "OBSERVER_INVITE_DECLINED",
+];
+
+/** A vars-mezőben szereplő érték a törölt userre mutat-e? (név-egyezés vagy
+ *  email-egyezés/-tartalmazás — a targetLabel „Név (email)" formát is hordozhat). */
+function matchesScrubbedIdentity(
+  value: string,
+  name: string | null,
+  email: string | null,
+): boolean {
+  const v = value.trim();
+  if (!v) return false;
+  if (name && v === name) return true;
+  if (email) {
+    const emailLower = email.trim().toLowerCase();
+    if (emailLower && v.toLowerCase().includes(emailLower)) return true;
+  }
+  return false;
+}
+
+/**
+ * A törölt user nevét/emailjét hordozó notification-vars mezők redaktálása
+ * „—" sentinelre. A JSON-mezőre nincs DB-oldali szűrés — a jelölt típusok
+ * sorait olvassuk be, és JS-ben illesztünk (a típus-lista rövid, a
+ * notification-tábla user-szinten korlátos).
+ */
+async function redactScrubbedIdentityFromNotifications(
+  name: string | null,
+  email: string | null,
+): Promise<void> {
+  if (!name && !email) return;
+  try {
+    const notifications = await prisma.notification.findMany({
+      where: { type: { in: IDENTITY_CARRYING_NOTIFICATION_TYPES } },
+      select: { id: true, vars: true },
+    });
+
+    const updates: Prisma.PrismaPromise<unknown>[] = [];
+    for (const n of notifications) {
+      const vars = n.vars as Record<string, unknown> | null;
+      if (!vars || typeof vars !== "object") continue;
+      let changed = false;
+      const next: Record<string, unknown> = { ...vars };
+      for (const key of ["inviterName", "targetLabel"] as const) {
+        const value = next[key];
+        if (typeof value === "string" && matchesScrubbedIdentity(value, name, email)) {
+          next[key] = "—";
+          changed = true;
+        }
+      }
+      if (changed) {
+        updates.push(
+          prisma.notification.update({
+            where: { id: n.id },
+            data: { vars: next as Prisma.InputJsonValue },
+          }),
+        );
+      }
+    }
+    if (updates.length > 0) {
+      await prisma.$transaction(updates);
+    }
+  } catch (err) {
+    log.warn(
+      { event: "account_scrub.notification_redact_failed", err },
+      "Notification-vars redakció nem futott le — a fő scrub ettől még teljes",
+    );
+  }
 }
