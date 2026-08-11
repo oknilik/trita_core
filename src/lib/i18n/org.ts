@@ -426,7 +426,8 @@ export const orgTranslations = {
       psBandMid: { hu: "Közepes biztonság-élmény", en: "Moderate sense of safety" },
       psBandLow: { hu: "Törékeny biztonság-élmény", en: "Fragile sense of safety" },
       psResponses: { hu: "{count} válasz", en: "{count} responses" },
-      psSpread: { hu: "szóródás ±{spread} pont", en: "spread ±{spread} points" },
+      // ±-jel nélkül (2026-08-11 termékdöntés: ± jelölés nem kerül a UI-ra).
+      psSpread: { hu: "szóródás: {spread} pont", en: "spread: {spread} points" },
       psItemsTitle: { hu: "Állításonként", en: "By statement" },
       devArcEyebrow: { hu: "fejlődési ív", en: "development arc" },
       devArcTitle: { hu: "Fejlődési ív", en: "Development arc" },
@@ -1369,13 +1370,20 @@ export const orgTranslations = {
     },
     // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
     // profil kiegészítő is lehet, ezért nem kap minősítést.
+    // A zaj-padló alatti hasonlóság a mérési hibán belüli EGYEZÉS — nem
+    // „kiváló egyezés" (hamis precizitás lenne, SEM≈10 mellett).
+    similarityWithinError: {
+      hu: "A mérési hibán belül egyezik a csapatátlaggal",
+      en: "Matches the team average within measurement error",
+    },
     similarityHigh: { hu: "Nagyon hasonló a csapatátlaghoz", en: "Very similar to the team average" },
     similarityMid: { hu: "Hasonló a csapatátlaghoz", en: "Similar to the team average" },
     similarityLow: {
       hu: "Eltér a csapatátlagtól — kiegészítő profil lehet",
       en: "Differs from the team average — may be complementary",
     },
-    avgDeviation: { hu: "Átlagos eltérés: ±{points} pont", en: "Average deviation: ±{points} points" },
+    // Az átlagos eltérés-szám marad, a ±-jel nem (2026-08-11 termékdöntés).
+    avgDeviation: { hu: "Átlagos eltérés: {points} pont", en: "Average deviation: {points} points" },
     largestGap: { hu: "Legnagyobb: {label} ({gap})", en: "Largest: {label} ({gap})" },
     tritanProfileEyebrow: { hu: "személyiségprofil", en: "personality profile" },
     personalityProfile: { hu: "Személyiségprofil", en: "Personality profile" },
@@ -1431,7 +1439,9 @@ export const orgTranslations = {
     // TeamInsights
     teamInsights: {
       avgByDimension: { hu: "Csapatátlag dimenzióként", en: "Team average by dimension" },
-      stdDevHint: { hu: "±: szórás a csapaton belül", en: "±: standard deviation within the team" },
+      // A korábbi „±: szórás…" jelmagyarázat a kivezetett ±-számot magyarázta;
+      // az új sor azt mondja el, amit a blokk ténylegesen mutat.
+      stdDevHint: { hu: "Csapatátlagok — egyéni értékek nem jelennek meg.", en: "Team averages — individual values are not shown." },
       teamDynamics: { hu: "Csapatdinamika", en: "Team dynamics" },
       teamStrength: { hu: "Csapat erőssége", en: "Team strength" },
       growthArea: { hu: "Fejlesztési terület", en: "Growth area" },

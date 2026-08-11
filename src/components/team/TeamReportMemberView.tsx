@@ -183,10 +183,12 @@ export function TeamReportMemberView({
                     </div>
                   );
                 })}
+                {/* A sáv-magyarázat ±-jel nélkül (2026-08-11 termékdöntés:
+                    ± jelölés nem kerül a felületre) — a sáv grafika marad. */}
                 <p className="mt-1 text-micro text-muted">
                   {isHu
-                    ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga ± szórása."
-                    : "Colored dot = your value · faint band = team average ± spread."}
+                    ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga körüli jellemző tartomány."
+                    : "Colored dot = your value · faint band = the team's typical range around the average."}
                 </p>
               </div>
             </div>

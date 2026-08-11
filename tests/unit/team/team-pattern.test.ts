@@ -2,13 +2,16 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   calculateTeamPattern,
+  patternCodeToBinaryKey,
+  patternPublicName,
   PATTERN_NAMES,
   type TritanScores,
 } from "@/lib/team-pattern";
+import { PATTERNS } from "@/lib/pattern-data";
 
 // Küszöbök a team-pattern.ts-ből: drive(TEMP) 55 · cohesion((ADAP+INTE)/2) 60 ·
 // discipline(THOR) 62.5 · openness(OPEN) 57.5. A "high"/"low" értékek jó messze
-// vannak a küszöbtől és a ±3.75-ös instabil sávtól.
+// vannak a küszöbtől és a ±6.25-ös "balanced" (= instabil) sávtól.
 const THRESHOLDS = { drive: 55, cohesion: 60, discipline: 62.5, openness: 57.5 };
 const OFFSET = 20;
 
@@ -73,6 +76,28 @@ describe("calculateTeamPattern — mintakód és névfeloldás", () => {
     const actual = new Set(Object.keys(PATTERN_NAMES));
     assert.deepEqual(actual, expected);
   });
+
+  // Név-tábla egységesítés: a riport-név forrása a pattern-data (a /patterns
+  // felfedező elsődleges címkéjével azonos név-család) — a két motor nem
+  // hordozhat eltérő neveket.
+  it("minden mintakód neve a pattern-data kanonikus név-táblájából oldódik fel", () => {
+    for (const code of Object.keys(PATTERN_NAMES)) {
+      const key = patternCodeToBinaryKey(code);
+      assert.ok(key, `nem képezhető bináris kulcs: ${code}`);
+      assert.ok(PATTERNS[key!], `nincs pattern-data bejegyzés: ${code} → ${key}`);
+      assert.equal(PATTERN_NAMES[code].name, PATTERNS[key!].alias);
+      assert.equal(patternPublicName(code), PATTERNS[key!].alias);
+    }
+  });
+
+  it("patternCodeToBinaryKey: érvényes kódot képez, érvénytelenre null-t ad", () => {
+    assert.equal(patternCodeToBinaryKey("ECSX"), "1111");
+    assert.equal(patternCodeToBinaryKey("RVFP"), "0000");
+    assert.equal(patternCodeToBinaryKey("RCFX"), "0101");
+    assert.equal(patternCodeToBinaryKey("XXXX"), null);
+    assert.equal(patternCodeToBinaryKey("EC"), null);
+    assert.equal(patternCodeToBinaryKey(""), null);
+  });
 });
 
 describe("calculateTeamPattern — alternatíva és stabilitás", () => {
@@ -94,7 +119,7 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
 
   it("küszöb-közeli tengely → közepes stabilitás + érvényes, egy pozícióban eltérő alternatíva", () => {
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
-    // openness a küszöb fölé, de az instabil sávon (±3.75) belülre
+    // openness a küszöb fölé, de a "balanced" (instabil) sávon belülre
     scores.OPEN = THRESHOLDS.openness + 2;
     const result = calculateTeamPattern(team(scores));
     assert.ok(result);
@@ -117,6 +142,46 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
     // az alternatíva a legközelebbi tengelyt (drive, distance 1) fordítja
     assert.equal(result.patternCode, "RCSX");
     assert.equal(result.alternativeCode, "ECSX");
+  });
+
+  it("a 'balanced' fokozatú tengely instabilnak számít — a fokozat, a betű és a jegyzet egyet mond", () => {
+    // A korábbi hibás zóna: distance 5 a BALANCED_BAND-en (6.25) BELÜL, de a
+    // régi külön stabilitás-küszöbön (3.75) KÍVÜL volt — a tengely fokozata
+    // "balanced" lett, mégis „stabil" minősítés + „minden tengely egyértelműen
+    // egy pólus felé hajlik" jegyzet készült hozzá.
+    const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
+    scores.OPEN = THRESHOLDS.openness + 5;
+    const result = calculateTeamPattern(team(scores));
+    assert.ok(result);
+    assert.equal(result.axes.openness.grade, "balanced");
+    assert.deepEqual(result.unstableAxes, ["openness"]);
+    assert.notEqual(result.stability, "stabil");
+    assert.ok(!result.stabilityNote.includes("minden tengely egyértelműen"));
+    // A pólus-betű a kódban továbbra is kiosztódik, de az alternatíva jelzi a
+    // bizonytalanságot: ugyanaz a kód, az openness-pozíció átfordításával.
+    assert.equal(result.patternCode, "ECSX");
+    assert.equal(result.alternativeCode, "ECSP");
+  });
+
+  it("stabil minősítés CSAK akkor, ha egyik tengely sem 'balanced' fokozatú", () => {
+    for (let bits = 0; bits < 16; bits++) {
+      const result = calculateTeamPattern(
+        team(
+          scoresFor({
+            drive: Boolean(bits & 8),
+            cohesion: Boolean(bits & 4),
+            discipline: Boolean(bits & 2),
+            openness: Boolean(bits & 1),
+          }),
+        ),
+      );
+      assert.ok(result);
+      const balancedAxes = Object.entries(result.axes)
+        .filter(([, axis]) => axis.grade === "balanced")
+        .map(([name]) => name);
+      assert.deepEqual(result.unstableAxes, balancedAxes);
+      assert.equal(result.stability === "stabil", balancedAxes.length === 0);
+    }
   });
 
   it("homogén, kis csapatnál a confidence-faktorok konzisztensek", () => {

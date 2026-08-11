@@ -37,6 +37,15 @@ export const TRITAN_DIMENSIONS: Record<
 };
 
 /**
+ * HEXACO-betű (H/E/X/A/C/O) belső dimenziókódból — badge-ek, chipek.
+ * KANONIKUS feloldó: a felületeken belső kód (TEMP/INTE/…) soha nem
+ * jelenhet meg nyersen; ismeretlen kódra a bemenetet adja vissza.
+ */
+export function hexLetter(code: string): string {
+  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+}
+
+/**
  * Rövid tengely-címkék (radar, kompakt chipek) — a HEXACO standard
  * egybetűs jelölései.
  */

@@ -549,9 +549,11 @@ export function TeamReportView({
                             }}
                           />
                         </div>
+                        {/* Csak az átlag-szám látszik — a ±szórás-szám
+                            2026-08-11-i termékdöntéssel lekerült a felületről;
+                            a szórást a halvány sáv hordozza vizuálisan. */}
                         <span className="w-14 shrink-0 text-right font-mono text-xs text-ink">
                           {value}
-                          {spread !== undefined && <span className="text-muted"> ±{spread}</span>}
                         </span>
                       </div>
                     </div>
@@ -1125,10 +1127,12 @@ export function TeamReportView({
                       ? isHu ? "Közepes biztonság-élmény" : "Moderate sense of safety"
                       : isHu ? "Törékeny biztonság-élmény" : "Fragile sense of safety"}
                 </p>
+                {/* A ±szóródás-szám nem jelenik meg (2026-08-11 termékdöntés)
+                    — az aggregátumban a spread tovább él, csak a kijelzés
+                    szűnt meg. */}
                 <p className="mt-0.5 text-xs text-ink-body/60">
                   {agg.psychSafety.count}{" "}
                   {isHu ? "névtelen válasz" : "anonymous responses"} ·{" "}
-                  {isHu ? "szóródás" : "spread"} ±{agg.psychSafety.spread} ·{" "}
                   {new Date(agg.psychSafety.measuredAt).toLocaleDateString(
                     isHu ? "hu-HU" : "en-GB",
                     { year: "numeric", month: "short" },

@@ -12,14 +12,10 @@ interface HeatmapRow {
 }
 
 import { t, tf, type Locale } from "@/lib/i18n";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
+// a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
+import { hexLetter } from "@/lib/tritan";
 import { sampleStdDev } from "@/lib/stats/dimension-stats";
-
-// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
-function hexLetter(code: string): string {
-  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
-}
-
 
 interface TeamInsightsProps {
   rows: HeatmapRow[];
@@ -203,7 +199,6 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
         <div className="flex flex-col gap-3">
           {dims.map((dim) => {
             const avg = teamAvg[dim.code];
-            const stdDev = dimStdDev[dim.code];
             return (
               <div key={hexLetter(dim.code)} className="flex items-center gap-3">
                 <span
@@ -231,6 +226,9 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     </div>
                   </div>
                 </div>
+                {/* Csak az átlag jelenik meg — a ±szórás-szám 2026-08-11-i
+                    termékdöntéssel lekerült a felületről (a szórás-számítás
+                    belül él tovább: a sokszínűség-kártyát hajtja). */}
                 <div className="w-16 shrink-0 text-right">
                   {avg !== null ? (
                     <span className="text-sm font-bold tabular-nums text-ink">
@@ -239,11 +237,6 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     </span>
                   ) : (
                     <span className="text-xs text-muted/60">–</span>
-                  )}
-                  {stdDev !== undefined && scored.length > 1 && (
-                    <p className="text-micro text-muted">
-                      ±{stdDev}
-                    </p>
                   )}
                 </div>
               </div>
@@ -278,7 +271,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topStrength.color }}
                   >
-                    {topStrength.code}
+                    {hexLetter(topStrength.code)}
                   </span>
                   <span className="text-sm font-semibold text-ink">
                     {topStrength.label}
@@ -307,7 +300,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: topGap.color }}
                   >
-                    {topGap.code}
+                    {hexLetter(topGap.code)}
                   </span>
                   <span className="text-sm font-semibold text-ink">
                     {topGap.label}
@@ -336,13 +329,12 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                     className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
                     style={{ backgroundColor: mostDiverseDim.color }}
                   >
-                    {mostDiverseDim.code}
+                    {hexLetter(mostDiverseDim.code)}
                   </span>
+                  {/* A ±szórás-szám nem jelenik meg (termékdöntés) — a
+                      kiválasztást továbbra is a belső szórás-rangsor adja. */}
                   <span className="text-sm font-semibold text-ink">
                     {mostDiverseDim.label}
-                    <span className="ml-1.5 text-xs font-normal text-muted">
-                      ±{mostDiverse[1]}
-                    </span>
                   </span>
                 </div>
                 <p className="text-xs leading-relaxed text-ink-body">

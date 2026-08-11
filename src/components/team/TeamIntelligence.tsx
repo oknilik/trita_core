@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { hexLetter } from "@/lib/tritan";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -240,12 +241,14 @@ export function TeamIntelligence({
                 </div>
 
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {/* HEXACO-betű a badge-en (H/E/X/A/C/O) — a belső kód
+                      (INTE/TEMP/…) nem kerülhet a felületre. */}
                   {topDims.map(([dim, value]) => (
                     <span
                       key={`${member.id}-${dim}`}
                       className="rounded-full bg-surface-card px-2 py-0.5 text-[11px] text-ink-body"
                     >
-                      <span className="font-semibold text-ink">{dim}</span> {Math.round(value)}%
+                      <span className="font-semibold text-ink">{hexLetter(dim)}</span> {Math.round(value)}%
                     </span>
                   ))}
                 </div>

@@ -108,7 +108,8 @@ export async function GET(
   // különben bárkinek kiadná, ki tér el melyik tengelyen. Az egyetlen kliens-
   // fogyasztó (AdvisoryPageClient) csak a patternCode/patternName/diversitySuffix-et
   // használja, ezért a nyers per-tag mezőt kiszűrjük.
-  const { styleDistances: _omitStyleDistances, ...safeCore } = coreResult;
+  const safeCore = { ...coreResult };
+  delete (safeCore as Record<string, unknown>).styleDistances;
 
   const result = {
     ...safeCore,

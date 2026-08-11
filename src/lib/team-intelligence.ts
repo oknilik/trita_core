@@ -256,6 +256,9 @@ export function buildTeamIntelligencePriorities({
       (member.scores!.ADAP + member.scores!.INTE) / 2,
     );
     const cohesionAverage = mean(cohesionValues);
+    // A szórás továbbra is a kockázat-jelzés EGYIK kiváltója (magas belső
+    // eltérés alacsony átlag nélkül is kohéziós kockázat), de számként nem
+    // jelenik meg a szövegben — 2026-08-11 termékdöntés: ± szám nincs a UI-n.
     const cohesionSpread = sampleStdDev(cohesionValues);
     if (cohesionAverage < 45 || cohesionSpread > 18) {
       priorities.push({
@@ -264,12 +267,8 @@ export function buildTeamIntelligencePriorities({
         title: tr(locale, "Kohéziós kockázat", "Cohesion risk"),
         reason: tr(
           locale,
-          `A kohézió-közelítő jelző átlaga ${Math.round(clamp(cohesionAverage, 0, 100))}% (szórás ±${Math.round(
-            clamp(cohesionSpread, 0, 100),
-          )}) — a barátságosság és a becsületesség-alázat átlagából számolt becslés.`,
-          `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% (spread ±${Math.round(
-            clamp(cohesionSpread, 0, 100),
-          )}) — an estimate computed from the agreeableness and honesty-humility averages.`,
+          `A kohézió-közelítő jelző átlaga ${Math.round(clamp(cohesionAverage, 0, 100))}% — a barátságosság és a becsületesség-alázat átlagából számolt becslés.`,
+          `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% — an estimate computed from the agreeableness and honesty-humility averages.`,
         ),
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
         ctaHref: `/team/${teamId}?tab=profile`,

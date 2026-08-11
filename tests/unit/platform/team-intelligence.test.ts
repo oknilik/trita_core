@@ -96,6 +96,32 @@ test("priority engine adds high spread trigger when a dimension range is wide", 
   assert.equal(priorities.some((priority) => priority.id === "dimension_spread"), true);
 });
 
+test("cohesion risk reason shows the average but no ± spread number (2026-08-11)", () => {
+  // Alacsony kohézió-proxy (ADAP/INTE = 40 → átlag 40% < 45) → cohesion_risk.
+  // A szórás továbbra is kiváltó lehet, de számként nem jelenhet meg.
+  const members: SerializedTeamMember[] = ["u1", "u2", "u3", "u4"].map((id) =>
+    makeMember(id, "member", { INTE: 40, RESO: 48, TEMP: 52, ADAP: 40, THOR: 54, OPEN: 51 }),
+  );
+
+  for (const locale of ["hu", "en"] as const) {
+    const priorities = buildTeamIntelligencePriorities({
+      members,
+      completedCount: 4,
+      memberCount: 4,
+      teamId: "team_1",
+      orgId: "org_1",
+      hasObserverRound: true,
+      canManageTeamActions: false,
+      locale,
+    });
+
+    const cohesion = priorities.find((priority) => priority.id === "cohesion_risk");
+    assert.ok(cohesion, `hiányzó cohesion_risk (${locale})`);
+    assert.ok(cohesion.reason.includes("40%"), `hiányzó átlag-szám (${locale})`);
+    assert.ok(!cohesion.reason.includes("±"), `± maradt a szövegben (${locale})`);
+  }
+});
+
 test("priority engine adds leader-team mismatch trigger for large H/A delta", () => {
   // A TeamMember.role kötött készlete: "member" | "manager" | "admin" —
   // mindkét kezelő szerep vezetőnek számít.

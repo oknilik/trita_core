@@ -30,14 +30,10 @@ function scoreToAlpha(score: number | null): number {
 }
 
 import { t, type Locale } from "@/lib/i18n";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
+// a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
+import { hexLetter } from "@/lib/tritan";
 import { dimColors } from "@/lib/color-system";
-
-// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot.
-function hexLetter(code: string): string {
-  return TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
-}
-
 
 function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
   if (score == null) return { label: "–", textClass: "text-muted" };

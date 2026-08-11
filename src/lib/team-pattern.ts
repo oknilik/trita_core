@@ -1,6 +1,7 @@
 // src/lib/team-pattern.ts
 
 import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
+import { PATTERNS } from "@/lib/pattern-data";
 
 // ============================================================
 // TYPES
@@ -105,8 +106,13 @@ const SLIGHT_BAND = 12.5;
 // Egyén-minta eltérés küszöb (0.8 Likert → 20%)
 const TENSION_THRESHOLD = 20;
 
-// Stabilitáshoz: ennyi distance-en belül "instabil" a tengely (0.15 → 3.75%)
-const STABILITY_THRESHOLD = 3.75;
+// Stabilitás: egy tengely akkor küszöb-közeli (instabil), ha a fokozata
+// "balanced" — azaz a BALANCED_BAND-en belül ül. A korábbi külön
+// STABILITY_THRESHOLD (3.75) KESKENYEBB volt a balanced sávnál (6.25), így
+// egy tengely lehetett egyszerre „kiegyensúlyozott" fokozatú ÉS „stabilan
+// egy pólus felé hajló" — a fokozat, a pólus-betű és a stabilitás-jegyzet
+// ellentmondott egymásnak. A stabilitás mostantól a fokozatból SZÁRMAZIK,
+// külön küszöb nincs.
 
 // Diverzitás (szórás) sávok (0–100 skálán).
 // FIGYELEM: e küszöbök még a korábbi populációs szórásra voltak hangolva;
@@ -189,11 +195,16 @@ export function calculateTeamPattern(
 
   for (const [name, value, threshold, div] of axisEntries) {
     const dist = Math.abs(value - threshold);
-    if (dist <= STABILITY_THRESHOLD) unstableAxes.push(name);
+    const grade = gradeAxis(value, threshold);
+    // Instabil = "balanced" fokozatú tengely (küszöb-közeli). Így a fokozat,
+    // a kiosztott pólus-betű és a stabilitás-jegyzet garantáltan egyet mond:
+    // „stabil" (minden tengely egyértelműen egy pólus felé hajlik) CSAK akkor
+    // állítható, ha egyik tengely sem "balanced".
+    if (grade === "balanced") unstableAxes.push(name);
 
     axes[name] = {
       value,
-      grade: gradeAxis(value, threshold),
+      grade,
       diversity: div,
       diversityLabel: diversityLabel(div),
       distanceFromThreshold: dist,
@@ -337,7 +348,42 @@ export interface PatternContent {
   leaderActions: string[];
 }
 
-export const PATTERN_NAMES: Record<string, PatternContent> = {
+// ── Név-forrás egységesítés (2026-08-11) ────────────────────────────
+// A 16 mintázat MEGJELENŐ nevének egyetlen forrása a pattern-data.ts
+// (PATTERNS[bináris kulcs].alias) — a /patterns felfedező ugyanazt a
+// név-családot mutatja elsődleges címkeként, így a riport és a marketing
+// egy nyelvet beszél. Az alábbi tartalom-táblában maradó `name` literál
+// csak VÉSZ-fallback (ha egy kód nem oldódna fel a pattern-data-ban);
+// a kanonikus PATTERN_NAMES export a nevet a pattern-data-ból veszi.
+
+/** Tengelyenkénti pólus-betűpárok [magas, alacsony] — drive/cohesion/discipline/openness. */
+const AXIS_POLE_LETTERS: ReadonlyArray<readonly [string, string]> = [
+  ["E", "R"],
+  ["C", "V"],
+  ["S", "F"],
+  ["X", "P"],
+];
+
+/** 4 betűs mintakód → pattern-data bináris kulcs (pl. "ECSX" → "1111"). */
+export function patternCodeToBinaryKey(code: string): string | null {
+  if (code.length !== AXIS_POLE_LETTERS.length) return null;
+  let key = "";
+  for (let i = 0; i < AXIS_POLE_LETTERS.length; i++) {
+    const [high, low] = AXIS_POLE_LETTERS[i];
+    if (code[i] === high) key += "1";
+    else if (code[i] === low) key += "0";
+    else return null;
+  }
+  return key;
+}
+
+/** A mintázat publikus neve a kanonikus név-táblából (pattern-data). */
+export function patternPublicName(code: string): string | null {
+  const key = patternCodeToBinaryKey(code);
+  return key ? (PATTERNS[key]?.alias ?? null) : null;
+}
+
+const PATTERN_CONTENT: Record<string, PatternContent> = {
 
   // ── Energikus + Összetartó ─────────────────────────────
 
@@ -827,6 +873,17 @@ export const PATTERN_NAMES: Record<string, PatternContent> = {
     ],
   },
 };
+
+/**
+ * Kanonikus mintázat-tábla: tartalom innen, NÉV a pattern-data-ból
+ * (egy név-tábla elv — a literál `name` csak fallback).
+ */
+export const PATTERN_NAMES: Record<string, PatternContent> = Object.fromEntries(
+  Object.entries(PATTERN_CONTENT).map(([code, content]) => [
+    code,
+    { ...content, name: patternPublicName(code) ?? content.name },
+  ]),
+);
 
 // ============================================================
 // UI LABELS — a frontend számára

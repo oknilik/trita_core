@@ -118,6 +118,22 @@ export function TeamHeroBlock({
   const heroChips = teamDashboardVm.heroSummary.chips;
   const teamHeroTheme = SURFACE_HERO_THEME.team;
 
+  // ── Hero CTA-kezelések ─────────────────────────────────────────────
+  // A hero ELSŐDLEGES CTA-ja mindig a tömör, világos (glow-háttér + sötét
+  // tinta) kezelést kapja — a 8%-os fehér szellem-gomb a sötét réteg-
+  // gradiensen gyakorlatilag eltűnik, az CSAK másodlagos akcióként állhat
+  // egy tömör gomb MELLETT. Ha a kör-kezelés az egyetlen renderelt akció
+  // (nem-tag vezető/tanácsadó, még nincs csapatkép), az örökli az
+  // elsődleges kezelést. Az org/manager cockpit hero-CTA-i ugyanezt a
+  // tömör mintát használják.
+  const isTeamMember = teamData.members.some((m) => m.userId === profile.id);
+  const showPatternCta = hasPattern && canViewRaw;
+  const manageRoundIsPrimary = !isTeamMember && !showPatternCta;
+  const heroCtaSolidClass =
+    "inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110";
+  const heroCtaGhostClass =
+    "inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]";
+
   return (
     <>
       {/* ═══ HERO — minden fülön azonos ═══ */}
@@ -157,13 +173,13 @@ export function TeamHeroBlock({
         actions={(
           <>
             {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
-            {teamData.members.some((m) => m.userId === profile.id) ? (
+            {isTeamMember ? (
               <Link
                 href={`/team/${teamId}?tab=feedback`}
                 scroll={false}
                 // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
                 // 2,7:1-et adott, ami AA alatt van mindkét színsémán.
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+                className={`${heroCtaSolidClass} gap-1.5`}
                 style={{ backgroundColor: teamHeroTheme.primary }}
               >
                 <svg
@@ -182,11 +198,11 @@ export function TeamHeroBlock({
                 {isHu ? "Visszajelzés" : "Feedback"}
               </Link>
             ) : null}
-            {hasPattern && canViewRaw ? (
+            {showPatternCta ? (
               <Link
                 href={`/team/${teamId}?tab=profile`}
                 scroll={false}
-                className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+                className={heroCtaSolidClass}
                 style={{ backgroundColor: teamHeroTheme.primary }}
               >
                 {t("teamDetail.heroViewPattern", locale)}
@@ -199,7 +215,12 @@ export function TeamHeroBlock({
                     ? `/org/${teamData.orgId}?tab=campaigns`
                     : `/org/${teamData.orgId}/campaigns/new?team=${teamId}`
                 }
-                className="inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]"
+                className={manageRoundIsPrimary ? heroCtaSolidClass : heroCtaGhostClass}
+                style={
+                  manageRoundIsPrimary
+                    ? { backgroundColor: teamHeroTheme.primary }
+                    : undefined
+                }
               >
                 {hasObserver
                   ? t("teamDetail.heroManageRound", locale)
