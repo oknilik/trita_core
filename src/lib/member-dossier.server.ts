@@ -121,7 +121,16 @@ export async function buildMemberDossier(
       where: { userProfileId: targetUserId, source: "questionnaire" },
     }),
     prisma.teamRoleObservation.findMany({
-      where: { aboutUserId: targetUserId },
+      // Csak a tag EBBEN a szervezetben lévő csapataiban, és a self-sor
+      // (rater === about) kizárva — pontosan úgy, mint a trustObservation-nél
+      // alább. Korábban az aboutUserId-re szűrt, scope nélkül: másik org
+      // peer-visszajelzése is beszivárgott a dossiéba, és egy self-értékelés a
+      // min-3 anonimitás-padlóba számított (motor-audit).
+      where: {
+        aboutUserId: targetUserId,
+        NOT: { raterUserId: targetUserId },
+        teamId: { in: teamIds },
+      },
       orderBy: { updatedAt: "asc" },
       select: { raterUserId: true, selections: true, updatedAt: true },
     }),

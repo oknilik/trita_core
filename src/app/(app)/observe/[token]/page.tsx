@@ -124,19 +124,45 @@ export default async function ObservePage({ params }: ObservePageProps) {
     );
   }
 
+  // A néző (ha bejelentkezett) feloldott profilja — best-effort, egyszer.
+  const { userId: viewerClerkId } = await auth();
+  const viewer = viewerClerkId
+    ? await prisma.userProfile.findUnique({
+        where: { clerkId: viewerClerkId },
+        select: { id: true },
+      })
+    : null;
+
+  // Self-guard: a bejelentkezett MEGHÍVÓ (értékelt) nem nyithatja meg a saját
+  // meghívóját — sem a kitöltő űrlapot, sem a rater szerver-oldali draftját (a
+  // rater nyers item-válaszait). Külső tokennél is (ott az addressee-check
+  // nincs). Kijelentkezve a külső-token self-eset a W2-vel közös maradék.
+  if (viewer && viewer.id === invitation.inviterId) {
+    return (
+      <div className="min-h-screen bg-cream">
+        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
+          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
+            <div className="text-5xl leading-none">🔒</div>
+            <h1 className="mt-4 text-2xl font-bold text-ink">
+              {t("observer.notAddresseeTitle", locale)}
+            </h1>
+            <p className="mt-3 text-sm leading-relaxed text-ink-body">
+              {t("observer.notAddresseeBody", locale)}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Belsős (név szerinti kollégának szóló) meghívó: CSAK a bejelentkezett
   // címzett töltheti ki. Külsős meghívónál (nincs observerProfileId) ilyen
   // validáció nem lehetséges — az marad publikus.
   const isInternalInvite = Boolean(invitation.observerProfileId);
   if (isInternalInvite) {
-    const { userId } = await auth();
-    if (!userId) {
+    if (!viewerClerkId) {
       redirect(`/sign-in?redirect_url=${encodeURIComponent(`/observe/${token}`)}`);
     }
-    const viewer = await prisma.userProfile.findUnique({
-      where: { clerkId: userId },
-      select: { id: true },
-    });
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return (
         <div className="min-h-screen bg-cream">

@@ -106,17 +106,22 @@ export function personalityAdjective(
 }
 
 /**
- * A melléknévi színezet megbízhatósági küszöbe: ha a 2. és 3. helyezett
- * dimenzió pontkülönbsége ennél kisebb, a "második legerősebb" kijelölése
- * a mérési hibán belüli sorrend — a melléknév ilyenkor műtermék lenne.
+ * Sorrend-megbízhatósági küszöb: ha KÉT dimenzió pontkülönbsége ennél kisebb,
+ * a köztük lévő sorrend a mérési hibán belül van → NEM állítjuk (a címke
+ * főnév-only, a próza nem nevezi meg a másodikat).
  *
- * Érték = Math.round(dimStandardError("short")) a közös pszichometriai
- * magból (src/lib/psychometrics.ts). SZÁNDÉKOSAN literál: ezt a modult
- * kliens-komponensek is importálják (guest-teaser, TypeGlyphPlate…), a
- * psychometrics viszont a teljes kérdésbankot húzná a bundle-be. A drift
- * ellen invariáns-teszt véd: tests/unit/scoring/psychometrics.test.ts.
+ * Érték = Math.round(diffStandardError("short")) = round(√2·SEM): két pont
+ * KÜLÖNBSÉGÉNEK hibája, nem egy ponté — a korábbi 10 (= 1×SEM) ~40%-kal
+ * alul-becsülte, ezért olyan sorrendeket is „biztosnak" vett, amik a mérési
+ * hibán belül voltak. SZÁNDÉKOSAN literál: ezt a modult kliens-komponensek is
+ * importálják (guest-teaser, TypeGlyphPlate…), a psychometrics a teljes
+ * kérdésbankot húzná a bundle-be. Drift ellen invariáns-teszt:
+ * tests/unit/scoring/psychometrics.test.ts.
  */
-export const TYPE_ADJECTIVE_MIN_GAP = 10;
+export const DIFF_MIN_GAP = 15;
+
+/** @deprecated Használd a DIFF_MIN_GAP-et — azonos küszöb (√2·SEM). */
+export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
 
 /**
  * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
@@ -152,12 +157,30 @@ export function resolvePersonalityTypeFromScores(
   if (known.length < 2) return null;
   const ranked = rankDimensionScores(known);
   const [first, second, third] = ranked;
-  const topPairUncertain = first.score - second.score < TYPE_ADJECTIVE_MIN_GAP;
+  const topPairUncertain = first.score - second.score < DIFF_MIN_GAP;
   const adjectiveUncertain = third
-    ? second.score - third.score < TYPE_ADJECTIVE_MIN_GAP
+    ? second.score - third.score < DIFF_MIN_GAP
     : false;
   if (topPairUncertain || adjectiveUncertain) {
     return personalityNoun(first.code, locale);
   }
   return resolvePersonalityTypeLabel(first.code, second.code, locale);
+}
+
+/**
+ * Igaz, ha a két legerősebb (ismert) dimenzió pontkülönbsége a mérési hibán
+ * belül van (< DIFF_MIN_GAP = √2·SEM) — ilyenkor a domináns/másodlagos sorrend
+ * bizonytalan, és a próza (glyph-plate „a második legerősebb …", interakció-
+ * subtitle „Energikus + Újító") NEM nevezheti meg a másodikat, hedge-elnie kell.
+ * A címke-logika (resolvePersonalityTypeFromScores) ugyanezt a kaput futtatja —
+ * így az ábra melletti szöveg és a címke sosem mond ellent egymásnak.
+ * Ez BELSŐ jelzés: nem hoz felszínre mérési-hiba számot, csak a szöveget kapuzza.
+ */
+export function isTopPairUncertain(
+  dimensions: ReadonlyArray<{ code: string; score: number }>,
+): boolean {
+  const known = dimensions.filter((d) => PERSONALITY_TYPE_PARTS[d.code]);
+  if (known.length < 2) return false;
+  const ranked = rankDimensionScores(known);
+  return ranked[0].score - ranked[1].score < DIFF_MIN_GAP;
 }

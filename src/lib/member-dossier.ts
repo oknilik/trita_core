@@ -12,7 +12,7 @@
 
 import { TRITAN_DIMENSION_FACETS, type TritanDimCode } from "@/lib/tritan";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
-import { dimStandardError } from "@/lib/psychometrics";
+import { diffStandardError } from "@/lib/psychometrics";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 
 /**
@@ -23,12 +23,16 @@ import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 export const DOSSIER_OBSERVER_MIN = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
 
 /**
- * Önkép–külső kép eltérés-küszöb: a mérési hiba (SEM, rövid forma) alatt
- * a delta nem jel, hanem zaj — a korábbi fix 5 jóval a hiba alatt volt.
- * (A psychometrics-import a kérdésbankot is behúzza — kliens-komponens
- * futásidőben ne importálja ezt a modult, típusokat `import type`-pal vigyen.)
+ * Önkép–külső kép eltérés-küszöb: az önkép és a külső (observer) átlag KÉT
+ * FÜGGETLEN mérés, a különbségük hibája ezért √2·SEM (diffStandardError), nem
+ * 1×SEM — ez alatt a delta nem jel, hanem zaj. (A korábbi 1×SEM ~40%-kal
+ * alul-becsülte, így a mérési hibán belüli deltákat is „vakfoltként" hozta fel.)
+ * BELSŐ küszöb: eldönti, mikor NE emeljünk ki eltérést; a felületen mérési-hiba
+ * szám nem jelenik meg (2026-08-11 termék-döntés). A psychometrics-import a
+ * kérdésbankot is behúzza — kliens-komponens futásidőben ne importálja ezt a
+ * modult, típusokat `import type`-pal vigyen.
  */
-export const DOSSIER_GAP_MIN_DELTA = Math.round(dimStandardError("short"));
+export const DOSSIER_GAP_MIN_DELTA = Math.round(diffStandardError("short"));
 
 export type DossierMeasurementKey =
   | "self"

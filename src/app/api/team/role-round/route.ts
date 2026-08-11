@@ -85,6 +85,7 @@ export async function GET(req: NextRequest) {
   const team = await prisma.team.findUnique({
     where: { id: teamId },
     select: {
+      orgId: true,
       teamRoleRoundActive: true,
       teamRoleRoundStartedAt: true,
       members: {
@@ -104,7 +105,20 @@ export async function GET(req: NextRequest) {
       },
     },
   });
-  if (!team) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  if (!team?.orgId) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+  // Tagság + kezelés-jogosultság (mint a POST-nál). Korábban a GET CSAK
+  // bejelentkezést kért, így bármely belépett user bármely csapat teljes
+  // rosszterét + kitöltési státuszát lekérhette (cross-org info-szivárgás,
+  // motor-audit).
+  const membership = await prisma.organizationMember.findUnique({
+    where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
+    select: { role: true },
+  });
+  if (!membership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  if (!(await canManageTeam(profile.id, teamId, membership.role))) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
 
   const memberStatus = team.members.map((m) => ({
     userId: m.userId,

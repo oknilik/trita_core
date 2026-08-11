@@ -75,3 +75,17 @@ export function bandFor(score: number, se: number): { low: number; high: number 
     high: Math.min(100, Math.round(score + se)),
   };
 }
+
+/**
+ * Két FÜGGETLEN pontszám KÜLÖNBSÉGÉNEK standard hibája: SE(diff) = √2·SEM.
+ * Minden „a sorrend/gap a mérési hibán belül van?" döntés EZT használja, nem az
+ * egy-pontos SEM-et — két hiba-bearing pont különbsége √2-szer zajosabb, mint
+ * egy pont. (A korábbi 1×SEM-kapu ~40%-kal alul-becsülte a különbség hibáját.)
+ *
+ * FONTOS: ez BELSŐ logikai küszöb — eldönti, MIKOR NE állítsunk sorrendet/
+ * címkét. A felületen mérési-hiba SZÁM (±) NEM jelenik meg (2026-08-11 termék-
+ * döntés: a ± nem kerül ki a UI-ra, a magyarázat külön, központi leírásban él).
+ */
+export function diffStandardError(form: AssessmentForm): number {
+  return Math.SQRT2 * dimStandardError(form);
+}

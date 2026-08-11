@@ -6,12 +6,13 @@ import {
   alphaFromItems,
   bandFor,
   dimStandardError,
+  diffStandardError,
   facetStandardError,
 } from "@/lib/psychometrics";
 import * as careerPsychometrics from "@/lib/career/psychometrics";
 import { tritanConfig } from "@/lib/questions/tritan";
 import { TRITAN_ORDER } from "@/lib/tritan";
-import { TYPE_ADJECTIVE_MIN_GAP } from "@/lib/personality-type";
+import { DIFF_MIN_GAP, TYPE_ADJECTIVE_MIN_GAP } from "@/lib/personality-type";
 import { DOSSIER_GAP_MIN_DELTA } from "@/lib/member-dossier";
 
 // ── Invariáns: az item-számok a BANKBÓL származnak ───────────────────
@@ -56,18 +57,27 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.ok(facetStandardError("full") > dimStandardError("full"));
   });
 
-  it("a rövid forma kerekített SEM-je 10 — erre épül a címke- és dossié-küszöb", () => {
+  it("a rövid forma kerekített SEM-je 10 (egy pont hibája)", () => {
     assert.equal(Math.round(dimStandardError("short")), 10);
   });
 
-  it("TYPE_ADJECTIVE_MIN_GAP (personality-type literál) = round(SEM short)", () => {
-    // A literál a kliens-bundle miatt nem importálhatja a bankot — ez a
-    // teszt köti a pszichometriai maghoz (drift itt bukik el).
-    assert.equal(TYPE_ADJECTIVE_MIN_GAP, Math.round(dimStandardError("short")));
+  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~15)", () => {
+    assert.equal(diffStandardError("short"), Math.SQRT2 * dimStandardError("short"));
+    assert.equal(Math.round(diffStandardError("short")), 15);
+    assert.ok(diffStandardError("short") > dimStandardError("short"));
   });
 
-  it("DOSSIER_GAP_MIN_DELTA = round(SEM short)", () => {
-    assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(dimStandardError("short")));
+  it("DIFF_MIN_GAP (personality-type literál) = round(√2·SEM short)", () => {
+    // A literál a kliens-bundle miatt nem importálhatja a bankot — ez a teszt
+    // köti a pszichometriai maghoz (drift itt bukik el). A sorrend-kapu KÉT
+    // pont különbségét méri, ezért √2·SEM, nem 1×SEM.
+    assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
+    // A régi alias ugyanarra az értékre mutat (visszafelé kompatibilitás).
+    assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
+  });
+
+  it("DOSSIER_GAP_MIN_DELTA = round(√2·SEM short) — önkép–külső kép különbség", () => {
+    assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
   });
 
   it("sáv: a pontszám körül szimmetrikus, 0-100 közé vágva", () => {

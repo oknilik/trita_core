@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  DIFF_MIN_GAP,
   TYPE_ADJECTIVE_MIN_GAP,
   resolvePersonalityTypeFromScores,
   resolvePersonalityTypeLabel,
@@ -106,7 +107,10 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
     assert.equal(resolvePersonalityTypeFromScores(withI, "hu"), "Energikus újító");
   });
 
-  it("a küszöb a mérési hibából jön (~10) — ld. psychometrics invariáns-teszt", () => {
-    assert.equal(TYPE_ADJECTIVE_MIN_GAP, 10);
+  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM ~15) — ld. psychometrics invariáns-teszt", () => {
+    // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM (≈15),
+    // nem 1×SEM (10). A régi alias visszafelé kompatibilis, azonos értékkel.
+    assert.equal(DIFF_MIN_GAP, 15);
+    assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });
 });
