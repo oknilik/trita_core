@@ -304,17 +304,26 @@ export function HiringDashboard({
         actions={(
           <>
             {canInviteNew ? (
+              // „Mégse" = másodlagos akció → az inverz ghost készlet elég.
+              // „Jelölt meghívása" = elsődleges CTA → a JELÖLT réteg akcentje
+              // világos töltésként, sötét felirattal. A réteg-színt inline
+              // `style` viszi (a self-hero PDF-gombjának bevált mintája): a
+              // `cn()` nem tailwind-merge, ezért egy utility-osztály nem
+              // tudná megbízhatóan felülírni a variant színét.
               <Button
                 type="button"
                 onClick={() => setShowForm((v) => !v)}
-                variant="ghost"
+                variant={showForm ? "ghost" : "primary"}
                 onInverse
-                className={[
-                  "rounded-[10px] px-5 text-[12px] font-semibold",
+                className="rounded-[10px] px-5 text-[12px] font-semibold"
+                style={
                   showForm
-                    ? "bg-surface-card text-ink hover:bg-[var(--color-surface-card)]/90 hover:text-ink"
-                    : "bg-[var(--color-accent-candidate-primary)] text-[var(--color-layer-candidate-hero-to)] hover:bg-[var(--color-accent-candidate-primary)] hover:text-[var(--color-layer-candidate-hero-to)] hover:brightness-110",
-                ].join(" ")}
+                    ? undefined
+                    : {
+                        backgroundColor: "var(--color-accent-candidate-primary)",
+                        color: "var(--color-layer-candidate-hero-to)",
+                      }
+                }
               >
                 {showForm
                   ? t("hiring.cancelButton", locale)

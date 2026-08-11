@@ -11,8 +11,9 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   fullWidth?: boolean;
   /**
    * A gomb olyan panelen ül, ami MINDKÉT színsémán sötét (réteg-hero).
-   * Ilyenkor a tiltott állapot és a fókuszgyűrű-eltolás az inverz készletet
-   * kapja — a világos `state-disabled-*` tokenek sötét alapon eltűnnek.
+   * Ilyenkor a VARIANT-színek, a tiltott állapot és a fókuszgyűrű-eltolás is
+   * az inverz készletet kapja — a világos tokenek sötét alapon eltűnnek.
+   * KÖTELEZŐ minden `SurfaceHero actions=` slotba kerülő gombon.
    */
   onInverse?: boolean;
   iconLeft?: ReactNode;
@@ -58,6 +59,40 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   destructive: "bg-action-destructive-bg text-action-destructive-fg hover:bg-action-destructive-bg-hover",
 };
 
+/**
+ * Variant-készlet SÖTÉT panelre (`onInverse`) — a világos helyett, NEM mellé.
+ *
+ * MIÉRT KÜLÖN TÉRKÉP, ÉS MIÉRT NEM A HÍVÓ `className`-jében (2026-08-11):
+ * a `cn()` sima összefűző, NEM tailwind-merge — ütköző utility-ket nem old
+ * fel, mindkettő kimegy az osztálylistába, és hogy melyik nyer, azt a
+ * GENERÁLT CSS sorrendje dönti, nem a `className` sorrendje. A hívóhelyek
+ * ezt feltételezték: a self-hero „Megosztás" gombja `variant="ghost"` +
+ * `text-[var(--color-text-on-inverse-muted)]` volt, de a variant sötét
+ * `text-action-secondary-fg`-je nyert — a gomb eltűnt a zsálya-gradiensen.
+ * Alapállapotban láthatatlan volt, és CSAK hoverre jelent meg, mert a ghost
+ * saját `hover:bg-state-hover-bg`-je (világos krém) alatt a sötét felirat
+ * hirtelen olvashatóvá vált. Ugyanez a csapda a jelölt-heróban.
+ *
+ * A `onInverse` eddig CSAK a tiltott állapotot és a fókuszgyűrű-eltolást
+ * kezelte (2026-08-09) — az ALAPÁLLAPOT világos maradt. Ez a kiegészítés
+ * zárja a rést: ütközés helyett a sötét panel a saját készletét kapja.
+ *
+ * A `primary` réteg-semlegesen világos töltést kap sötét felirattal (ez a
+ * működő herók mintája). Amelyik hívó a RÉTEG akcentjét akarja (self:
+ * bronz-300), az inline `style`-lal teszi — az megbízhatóan nyer a
+ * kaszkádban, szemben egy utility-osztállyal.
+ */
+const VARIANT_ON_INVERSE_CLASSES: Record<ButtonVariant, string> = {
+  primary:
+    "bg-[var(--color-text-on-inverse)] text-[var(--color-surface-inverse)] hover:brightness-110",
+  secondary:
+    "border border-white/25 bg-white/[0.08] text-[var(--color-text-on-inverse)] hover:border-white/40 hover:bg-white/[0.16] hover:text-white",
+  ghost:
+    "bg-white/[0.07] text-[var(--color-text-on-inverse)] hover:bg-white/[0.16] hover:text-white",
+  destructive:
+    "bg-action-destructive-bg text-action-destructive-fg hover:bg-action-destructive-bg-hover",
+};
+
 const SIZE_CLASSES: Record<ButtonSize, string> = {
   sm: "min-h-[40px] px-[var(--ui-space-4)] text-sm",
   md: "min-h-[44px] px-[var(--ui-space-5)] text-sm",
@@ -80,7 +115,7 @@ export function getButtonClassName({
       : "focus-visible:ring-offset-surface-canvas",
     "disabled:pointer-events-none disabled:cursor-not-allowed",
     onInverse ? DISABLED_ON_INVERSE_CLASSES : DISABLED_CLASSES,
-    VARIANT_CLASSES[variant],
+    onInverse ? VARIANT_ON_INVERSE_CLASSES[variant] : VARIANT_CLASSES[variant],
     SIZE_CLASSES[size],
     fullWidth && "w-full",
     className,

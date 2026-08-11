@@ -202,7 +202,12 @@ export function ProfileHero({
             onClick={onShare}
             disabled={shareLoading}
             variant="ghost"
-            className="rounded-[9px] bg-white/[0.07] px-[18px] text-[11px] font-medium text-[var(--color-text-on-inverse-muted)] hover:bg-white/[0.12] hover:text-white"
+            // A sötét hero-panel készlete a primitívből jön (onInverse). A
+            // korábbi kézi szín-felülírás NEM működött: a `cn()` nem
+            // tailwind-merge, így a variant világos `text-action-secondary-fg`-je
+            // nyert, és a gomb csak hoverre vált láthatóvá.
+            onInverse
+            className="rounded-[9px] px-[18px] text-[11px] font-medium"
           >
             <span className="inline-flex items-center gap-2">
               <ShareIcon />
