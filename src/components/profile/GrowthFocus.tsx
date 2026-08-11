@@ -21,15 +21,24 @@ interface GrowthFocusProps {
   locale: Locale;
 }
 
-// Generic growth suggestion per dimension
+// Generic growth suggestion per dimension.
+//
+// PÓLUS-SZABÁLY (motor-audit v4, FIX 2): a fejlődési fókusz mindig ALACSONY
+// pontszámú tételt mutat, ezért a hint a dimenzió ALSÓ pólusához szól. A
+// fordított Emocionalitásnál (RESO) az alacsony pontszám stabilitást jelent
+// — a fejlődési irány ott a támogatás/elismerés kimondása (ld.
+// profile-content DIMENSION_GROWTH_TIPS.RESO), NEM a stresszkezelés (az a
+// MAGAS emocionalitás ellenszere lenne). A kiválasztás (workstyle-content
+// selectGrowthFocusItems) RESO-t eleve kihagyja a deficit-listából — ez a
+// hint biztonsági háló, ha RESO-tétel mégis ide kerülne.
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
   INTE: {
     hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
     en: "Value-aligned decision-making and transparent communication.",
   },
   RESO: {
-    hu: "Stresszkezelési technikák és érzelmi önszabályozás erősítése.",
-    en: "Strengthening stress management and emotional self-regulation.",
+    hu: "A támogatás és elismerés kimondása — pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
+    en: "Expressing support and acknowledgement — e.g. closing one conversation a week with explicit appreciation.",
   },
   TEMP: {
     hu: "Társas jelenlét és láthatóság tudatos növelése.",

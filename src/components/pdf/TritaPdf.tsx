@@ -1,5 +1,6 @@
 import { Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
+import type { HowYouWorkParts } from "@/lib/workstyle-content";
 import { CoverPage } from "./pages/CoverPage";
 import { SummaryPage } from "./pages/SummaryPage";
 import { StartPage } from "./pages/StartPage";
@@ -23,9 +24,6 @@ export interface PdfData {
   // Bullet-based insights
   strengthBullets: string[];
   watchBullets: string[];
-  // Legacy string versions
-  strengths: string;
-  watchAreas: string;
   // Profile character callout
   profileCharacter?: string;
   // Hero dimension chips
@@ -45,7 +43,9 @@ export interface PdfData {
   };
   // Plus content
   plusContent?: {
-    howYouWork: string[];
+    /** „Ahogy működsz" nevesített slotokkal (FIX 3) — a watch csak valódi
+     *  risk-párnál létezik, a pozicionális [0]/[1] találgatás kivezetve. */
+    howYouWorkParts: HowYouWorkParts;
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
@@ -73,10 +73,7 @@ export interface PdfData {
     takeaways: string[];
     closingText: string;
   };
-  facetDimensions?: { name: string; value: number; insight?: string; description?: string; facets: { label: string; score: number }[] }[];
-  // Callout insights (kept for data but no longer rendered as separate callouts)
-  workplaceInsight?: string;
-  riskInsight?: string;
+  facetDimensions?: { name: string; value: number; insight?: string; description?: string; code?: string; facets: { label: string; score: number }[] }[];
   // Reflect observer data
   observerData?: {
     count: number;

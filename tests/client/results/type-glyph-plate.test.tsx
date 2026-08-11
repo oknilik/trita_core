@@ -73,4 +73,43 @@ describe("TypeGlyphPlate", () => {
     );
     expect(container).toBeEmptyDOMElement();
   });
+
+  // S3-hedge (motor-audit v4, FIX 5): mérési hibán belüli top-2 sorrendnél
+  // a felirat nem sugallhat sorrendet („X × Y"), a nyelvtan nem mondhat
+  // „második legerősebb"-et — a pár rendezetlenül jelenik meg.
+  it("bizonytalan top-párnál rendezetlen pár-felirat és hedge-elt nyelvtan", () => {
+    // OPEN 78 vs THOR 74: a különbség (4) a mérési hibán belül (< 15).
+    const uncertain = [
+      { code: "INTE", score: 40 },
+      { code: "RESO", score: 35 },
+      { code: "TEMP", score: 30 },
+      { code: "ADAP", score: 25 },
+      { code: "THOR", score: 74 },
+      { code: "OPEN", score: 78 },
+    ];
+    render(<TypeGlyphPlate dimensions={uncertain} locale="hu" defaultOpen />);
+
+    // A címke főnév-only (a resolver ugyanazt a kaput futtatja).
+    expect(screen.queryByText(/Módszeres újító/)).toBeNull();
+    // Nincs sorrendet sugalló „×" pár-felirat…
+    expect(screen.queryByText(/Nyitottság × Lelkiismeretesség/)).toBeNull();
+    // …helyette rendezetlen felsorolás.
+    expect(
+      screen.getAllByText(/a két legerősebb: Nyitottság · Lelkiismeretesség/).length,
+    ).toBeGreaterThan(0);
+    // A nyelvtan nem állít „második legerősebb"-et, hanem a közel azonos
+    // erősséget mondja ki.
+    expect(screen.queryByText(/a második legerősebb/)).toBeNull();
+    expect(
+      screen.getByText(/A két legerősebb dimenziód — a Nyitottság és a Lelkiismeretesség/),
+    ).toBeInTheDocument();
+    // Mérési-hiba SZÁM nem jelenik meg a hedge-szövegben sem.
+    expect(document.body.textContent).not.toContain("±");
+  });
+
+  it("határozott sorrendnél változatlan a „×” felirat és a sima nyelvtan", () => {
+    render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" defaultOpen />);
+    expect(screen.getAllByText(/Nyitottság × Lelkiismeretesség/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/a második legerősebb/)).toBeInTheDocument();
+  });
 });

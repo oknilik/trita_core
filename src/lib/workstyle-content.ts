@@ -11,14 +11,33 @@ import {
   DIM_LABELS, CATEGORY_LABELS,
   getEnvRows,
 } from "@/lib/profile-content";
+import { getDimensionTier } from "@/lib/dimension-utils";
 import type { Locale } from "@/lib/i18n";
 
 // Munkastílus-tartalom (Ahogy működsz / Ideális környezet / Szerep-illeszkedés)
 // közös generátora — a saját eredmény-oldal és a megosztott (/share/[token])
 // nézet ugyanebből dolgozik, hogy a két felület soha ne csússzon szét.
 
+/**
+ * „Ahogy működsz" — NEVESÍTETT slotok a pozicionális tömb helyett
+ * (motor-audit v4, FIX 3): a felület korábban a howYouWork[1]-et vakon
+ * „Figyelendő"-ként címkézte, pedig az 1-es index csak akkor kockázat, ha
+ * tényleg van risk-pár — különben egy pozitív narratíva került a borostyán
+ * kártyába, a valódi kockázat meg a kontextusba csúszott.
+ */
+export interface HowYouWorkParts {
+  /** Fő mintázat — az első narratíva (tension-pár / solo-dim / balanced). */
+  main: string;
+  /** Figyelendő — CSAK valódi risk-párból (summary + mitigáció); nélküle null. */
+  watch: string | null;
+  /** Kontextus — a további narratívák és risk-szövegek. */
+  context: string[];
+}
+
 export interface WorkstyleContent {
   howYouWork: string[];
+  /** Ugyanez nevesített slotokkal — a megjelenítők EBBŐL rendereljenek. */
+  howYouWorkParts: HowYouWorkParts;
   /** Kockázati tension-párok strukturáltan (összefoglaló + mitigációs tanács
    *  + forrás-dimenziók) — a PDF/megjelenítés célzott használatához; a
    *  howYouWork-ben ugyanez folyó szövegként is megjelenik. */
@@ -145,6 +164,16 @@ const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOu
   },
 };
 
+// F3 (motor-audit): a pólus-küszöb (profile-engine 65/35) és a vizuális tier
+// (dimension-utils 70/40) a 65–70 ill. 35–40 sávban eltér — egy 67-es
+// pontszám a stripen „mérsékelt", a pólus-chipen „magas" lenne. A chip ezért
+// a köztes sávban HEDGEL („inkább magas"), így nem mond ellent a stripnek,
+// a pólus-küszöböket (narratíva-logika) pedig nem bolygatjuk.
+const LEANING_LABELS: Record<"high" | "low", Record<Locale, string>> = {
+  high: { hu: "inkább magas", en: "leaning high" },
+  low: { hu: "inkább alacsony", en: "leaning low" },
+};
+
 export function buildWorkstyleContent(
   dimScores: Record<string, number>,
   testType: TestType,
@@ -153,44 +182,89 @@ export function buildWorkstyleContent(
   const engine = runProfileEngine(dimScores, testType);
 
   // Forrás-jelölés (P5.2): melyik dimenzió-pólusból következik az állítás —
-  // a „miért" kimondása összeköti a hipotézist az adattal.
-  const sourceLabel = (dim: string, level: "high" | "medium" | "low") =>
-    `${DIM_LABELS[dim]?.[lang] ?? dim} · ${CATEGORY_LABELS[level][lang]}`;
+  // a „miért" kimondása összeköti a hipotézist az adattal. A szint-szó a
+  // vizuális tierrel egyeztetve (F3, ld. LEANING_LABELS).
+  const sourceLabel = (dim: string, level: "high" | "medium" | "low") => {
+    const score = dimScores[dim];
+    const tier = typeof score === "number" ? getDimensionTier(score) : null;
+    let levelLabel = CATEGORY_LABELS[level][lang];
+    if (tier) {
+      if (level === "high" && tier !== "high") levelLabel = LEANING_LABELS.high[lang];
+      else if (level === "low" && tier !== "low") levelLabel = LEANING_LABELS.low[lang];
+      else if (level === "medium" && tier === "low") levelLabel = LEANING_LABELS.low[lang];
+      else if (level === "medium" && tier === "high") levelLabel = LEANING_LABELS.high[lang];
+    }
+    return `${DIM_LABELS[dim]?.[lang] ?? dim} · ${levelLabel}`;
+  };
 
-  // "Ahogy működsz" narratives
-  const howYouWork: string[] = [];
+  // "Ahogy működsz" narratives — a narratívák és a risk-szövegek KÜLÖN
+  // gyűjtve, hogy a nevesített slotok (howYouWorkParts) ne pozícióból
+  // találgassák, melyik bekezdés kockázat.
+  const narratives: string[] = [];
   // Add tension pair narratives (block 6)
   for (const pair of engine.block6Pairs) {
     const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[lang];
-    if (narrative) howYouWork.push(narrative);
+    if (narrative) narratives.push(narrative);
   }
   // Add solo dim narratives if no tension pairs
-  if (howYouWork.length === 0) {
+  if (narratives.length === 0) {
     for (const sd of engine.topSoloDims) {
       const key = `${sd.dim}_${sd.level}`;
       const text = SOLO_DIM_NARRATIVES[key]?.[lang];
-      if (text) howYouWork.push(text);
+      if (text) narratives.push(text);
     }
   }
   // Kockázati párok (block 7): az összefoglaló után a mitigációs tanács is
   // bekerül külön bekezdésként, és strukturáltan is (riskParts).
   const riskParts: WorkstyleContent["riskParts"] = [];
+  const riskTexts: string[] = [];
+  // Fél-pár (csak summary VAGY csak mitigáció van a deckben) — a watch-
+  // kártyára nem való, de a kontextusból sem veszhet el.
+  const orphanRiskTexts: string[] = [];
   for (const pair of engine.block7Pairs) {
     const summary = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
     const mitigation = RISK_TEXTS[pair.contentKey]?.[lang];
-    if (summary) howYouWork.push(summary);
-    if (mitigation) howYouWork.push(mitigation);
+    if (summary) riskTexts.push(summary);
+    if (mitigation) riskTexts.push(mitigation);
     if (summary && mitigation) {
       riskParts.push({
         summary,
         mitigation,
         source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
       });
+    } else {
+      if (summary) orphanRiskTexts.push(summary);
+      if (mitigation) orphanRiskTexts.push(mitigation);
     }
   }
   // Kiegyensúlyozott profil: se pár, se pólusos solo-dim — a lapos profil is
   // kapjon értelmes nyitó bekezdést.
-  if (howYouWork.length === 0) howYouWork.push(DEFAULT_NARRATIVE[lang]);
+  if (narratives.length === 0 && riskTexts.length === 0) {
+    narratives.push(DEFAULT_NARRATIVE[lang]);
+  }
+
+  // Örökség-fogyasztóknak a pozicionális tömb változatlan sorrendben…
+  const howYouWork: string[] = [...narratives, ...riskTexts];
+  // …a megjelenítés viszont a nevesített slotokból megy (FIX 3): main = első
+  // narratíva; watch = CSAK valódi risk-pár (summary + mitigáció együtt);
+  // context = minden további bekezdés.
+  const firstRisk = riskParts[0] ?? null;
+  const firstRiskText = firstRisk
+    ? `${firstRisk.summary} ${firstRisk.mitigation}`
+    : null;
+  // Defenzív fallback: ha (hiányos deck miatt) egyetlen narratíva sincs, a
+  // main a risk-szövegre esik vissza — üres main mellett a szekció el sem
+  // készülne, és a kockázat veszne el.
+  const mainText = narratives[0] ?? orphanRiskTexts[0] ?? firstRiskText ?? "";
+  const howYouWorkParts: HowYouWorkParts = {
+    main: mainText,
+    watch: firstRiskText && firstRiskText !== mainText ? firstRiskText : null,
+    context: [
+      ...narratives.slice(1),
+      ...riskParts.slice(1).map((part) => `${part.summary} ${part.mitigation}`),
+      ...orphanRiskTexts.filter((text) => text !== mainText),
+    ],
+  };
 
   // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
   // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
@@ -323,6 +397,7 @@ export function buildWorkstyleContent(
 
   return {
     howYouWork,
+    howYouWorkParts,
     riskParts,
     pressure,
     pressureParts,
@@ -341,4 +416,78 @@ export function buildWorkstyleContent(
     },
     takeaways,
   };
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Fejlődési fókusz — kiválasztási szabály (results-oldal „Fejlődési fókusz"
+// szekciója). Motor-audit v4:
+//  - FIX 2 (RESO fordított skála): a deficit-logika („a legalacsonyabb
+//    pontszám = fejlesztendő") a fordított Emocionalitásra hamis — az
+//    alacsony RESO stabilitás (erőforrás), nem hiány. Egy stabil kitöltőnél
+//    a Félelem/Szorongás 20 pont nem „első számú fejlődési terület", ezért a
+//    RESO-facetek és a RESO-dimenzió KIMARADNAK a deficit-választásból.
+//  - FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-bontás —
+//    a hiányzó facet nem 0 pont. A hívó csak VALÓDI facet-pontszámokat adjon
+//    át (üres facets tömb = nincs adat), ilyenkor a dimenzió-szintű fallback
+//    fut, koholt 0-facet nem kerülhet a fókuszba.
+// ─────────────────────────────────────────────────────────────────────
+
+export interface GrowthFocusItem {
+  code: string;
+  label: string;
+  score: number;
+  dimCode: string;
+  dimLabel: string;
+  dimColor: string;
+}
+
+interface GrowthFocusDimensionInput {
+  code: string;
+  label: string;
+  color: string;
+  score: number;
+  /** Csak MÉRT facet-pontszámok — örökség-sorra üres tömb. */
+  facets: { code: string; label: string; score: number }[];
+}
+
+/** A fordított (magasabb = érzelmileg reaktívabb) dimenzió belső kódja. */
+const REVERSE_DIM_CODE = "RESO";
+
+export function selectGrowthFocusItems(
+  mainDimensions: GrowthFocusDimensionInput[],
+): GrowthFocusItem[] {
+  const allFacets: GrowthFocusItem[] = [];
+  for (const dim of mainDimensions) {
+    if (dim.code === REVERSE_DIM_CODE) continue; // fordított skála — nem deficit
+    for (const f of dim.facets) {
+      allFacets.push({
+        code: f.code,
+        label: f.label,
+        score: f.score,
+        dimCode: dim.code,
+        dimLabel: dim.label,
+        dimColor: dim.color,
+      });
+    }
+  }
+  const facetItems = allFacets
+    .filter((f) => f.score < 60)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3);
+  if (facetItems.length >= 1) return facetItems;
+
+  // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) —
+  // ugyanaz a pólus-szabály: az alacsony RESO itt sem „fejlesztendő".
+  return mainDimensions
+    .filter((d) => d.code !== REVERSE_DIM_CODE && d.score < 60)
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3)
+    .map((d) => ({
+      code: d.code,
+      label: d.label,
+      score: d.score,
+      dimCode: d.code,
+      dimLabel: d.label,
+      dimColor: d.color,
+    }));
 }

@@ -21,11 +21,17 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
 
   // Collect all facets across dimensions for the highlight callout
   const allFacets = facetDims.flatMap((d) =>
-    d.facets.map((f) => ({ name: f.label, value: f.score, dimName: d.name })),
+    d.facets.map((f) => ({ name: f.label, value: f.score, dimName: d.name, dimCode: d.code })),
   );
   const sortedFacets = [...allFacets].sort((a, b) => b.value - a.value);
   const topFacets = sortedFacets.slice(0, 5);
-  const bottomFacets = sortedFacets.slice(-4).reverse();
+  // Alsó (fejlődés-keretezésű) lista: a fordított Emocionalitás (RESO)
+  // facetei kimaradnak — az alacsony Félelem/Szorongás stabilitás, nem
+  // „tér a fejlődésre" (motor-audit v4, FIX 2 pólus-szabály).
+  const bottomFacets = sortedFacets
+    .filter((f) => f.dimCode !== "RESO")
+    .slice(-4)
+    .reverse();
 
   // Build a summary sentence from top/bottom facets
   const facetSummaryText = (() => {
@@ -38,7 +44,9 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
   // Overall summary for the closing card
   const overallSummary = (() => {
     const highDims = facetDims.filter((d) => d.value >= 70);
-    const lowDims = facetDims.filter((d) => d.value < 40);
+    // Az alacsony RESO nem „tudatos figyelmet érdemlő" terület (fordított
+    // skála: alacsony = stabil) — a low-listából kimarad.
+    const lowDims = facetDims.filter((d) => d.value < 40 && d.code !== "RESO");
     if (highDims.length === 0 && lowDims.length === 0) {
       return t("pdf.facetBalanced", locale);
     }

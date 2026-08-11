@@ -30,11 +30,13 @@ function DeltaIndicator({ selfValue, observerValue }: { selfValue: number; obser
 
   return (
     <View style={{ width: 50, alignItems: "center" }}>
+      {/* A gap sima eltérés-szám (irányát a nyíl adja) — a ± jel 2026-08-11
+          óta nem jelenik meg a felületen (mérési-hiba jelölésnek olvasható). */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 1, padding: "1.5 4", borderRadius: 3, backgroundColor: badgeColors[level].bg }}>
         {level !== "small" && (
           <Text style={{ fontSize: 7.5, color: badgeColors[level].color }}>{direction}</Text>
         )}
-        <Text style={{ fontSize: 6.5, fontWeight: 600, color: badgeColors[level].color }}>±{gap}</Text>
+        <Text style={{ fontSize: 6.5, fontWeight: 600, color: badgeColors[level].color }}>{gap}</Text>
       </View>
       <View style={{ width: 36, height: 2.5, backgroundColor: colors.cream500, borderRadius: 1, marginTop: 2, overflow: "hidden" }}>
         <View style={{ width: barWidth[level], height: 2.5, backgroundColor: barColors[level], borderRadius: 1 }} />

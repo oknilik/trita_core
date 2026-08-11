@@ -7,7 +7,10 @@ import {
   DIMENSION_GLYPHS,
   resolveGlyphPair,
 } from "@/lib/type-glyph";
-import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
+import {
+  isTopPairUncertain,
+  resolvePersonalityTypeFromScores,
+} from "@/lib/personality-type";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { t, tf, type Locale } from "@/lib/i18n";
@@ -98,22 +101,39 @@ export function TypeGlyphPlate({
 
   const primaryGlyph = DIMENSION_GLYPHS[primaryCode];
   const secondaryGlyph = DIMENSION_GLYPHS[secondaryCode];
+
+  // S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a mérési hibán
+  // belül van, sem a pár-felirat („X × Y" — sorrendet sugall), sem a
+  // nyelvtan („a második legerősebb …") nem állíthat erősorrendet — a két
+  // dimenzió rendezetlen párként jelenik meg. A címke (typeLabel) ilyenkor
+  // már főnév-only (personality-type ugyanazt a kaput futtatja).
+  const topPairUncertain = isTopPairUncertain(dimensions);
+
   const pairLabel =
     primaryCode === secondaryCode
       ? dimensionName(primaryCode, locale)
-      : `${dimensionName(primaryCode, locale)} × ${dimensionName(secondaryCode, locale)}`;
+      : topPairUncertain
+        ? tf("results.glyphPairUncertain", locale, {
+            a: dimensionName(primaryCode, locale),
+            b: dimensionName(secondaryCode, locale),
+          })
+        : `${dimensionName(primaryCode, locale)} × ${dimensionName(secondaryCode, locale)}`;
 
   // HU-ban a behelyettesített kifejezések már névelővel érkeznek
   // (hu-grammar.ts), így a sablonban nincs „a(z)” műtermék; EN-ben a
   // sablon adja a „the”-t.
   const isHu = locale === "hu";
   const article = (phrase: string) => (isHu ? withHuArticle(phrase) : phrase);
-  const grammar = tf("results.glyphGrammar", locale, {
-    form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),
-    primary: article(dimensionName(primaryCode, locale)),
-    motif: article(isHu ? secondaryGlyph.motifName.hu : secondaryGlyph.motifName.en),
-    secondary: article(dimensionName(secondaryCode, locale)),
-  });
+  const grammar = tf(
+    topPairUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
+    locale,
+    {
+      form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),
+      primary: article(dimensionName(primaryCode, locale)),
+      motif: article(isHu ? secondaryGlyph.motifName.hu : secondaryGlyph.motifName.en),
+      secondary: article(dimensionName(secondaryCode, locale)),
+    },
+  );
 
   const panel = (
     <div className="grid grid-cols-1 items-center gap-5 px-4 pb-5 pt-4 md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">

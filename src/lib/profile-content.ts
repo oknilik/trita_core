@@ -1,7 +1,26 @@
 import type { ProfileCategory } from "./profile-engine";
+import { getDimensionTier, getDimensionLabel } from "./dimension-utils";
 
 export type Locale = "hu" | "en";
 type LocalizedText = Record<Locale, string>;
+
+/**
+ * Pólus-tudatos tier-címke (motor-audit v4, FIX 2): az Emocionalitás (RESO)
+ * fordított skála — az alacsony sáv ott stabilitást jelent, nem hiányt. A
+ * sima getDimensionLabel „figyelendő"-je helyett RESO-nál az alacsony sáv
+ * „stabil" címkét kap; minden más dimenzión a kanonikus címke megy ki.
+ * Közös forrás a képernyő-strip, a share-oldal és a PDF-strip számára.
+ */
+export function poleAwareDimensionLabel(
+  code: string | undefined,
+  score: number,
+  locale: string = "hu",
+): string {
+  if (code === "RESO" && getDimensionTier(score) === "low") {
+    return locale === "hu" ? "stabil" : "stable";
+  }
+  return getDimensionLabel(score, locale);
+}
 
 // ─── Block 1 – Bevezető framing ───────────────────────────────────────────────
 
@@ -974,15 +993,24 @@ export const ARCHETYPE_STORY_ADJ: Record<string, LocalizedText> = {
   },
 };
 
-/** Archetípus-történet a domináns + második dimenzióból (P5.6). */
+/**
+ * Archetípus-történet a domináns + második dimenzióból (P5.6).
+ *
+ * S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a mérési hibán belül
+ * van (isTopPairUncertain), a hívó `null` secondaryCode-dal hívja — ilyenkor
+ * csak a főnévi karakterkép megy ki, a második dimenziót színező mondat nem
+ * állítható (a címke is főnév-only ilyenkor, a próza nem mondhat többet).
+ */
 export function buildArchetypeStory(
   primaryCode: string,
-  secondaryCode: string,
+  secondaryCode: string | null,
   lang: Locale,
 ): string | null {
   const noun = ARCHETYPE_STORY_NOUN[primaryCode]?.[lang];
+  if (!noun) return null;
+  if (!secondaryCode) return noun;
   const adj = ARCHETYPE_STORY_ADJ[secondaryCode]?.[lang];
-  if (!noun || !adj) return null;
+  if (!adj) return null;
   return `${noun} ${adj}`;
 }
 

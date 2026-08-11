@@ -24,7 +24,7 @@ import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
-import { buildWorkstyleContent } from "@/lib/workstyle-content";
+import { buildWorkstyleContent, selectGrowthFocusItems } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
@@ -113,7 +113,6 @@ export default async function ProfileResultsPage({
         observerEmail: true,
         observerName: true,
         observerType: true,
-        assessment: { select: { relationshipType: true } },
       },
       orderBy: { createdAt: "desc" },
       take: 10,
@@ -241,12 +240,13 @@ export default async function ProfileResultsPage({
   const accessLevel = toProfileLevel(accessLevelRaw);
 
   // Mérési hiba a tárolt forma-pecsétből — pecsét nélküli (örökség) sorokra
-  // a konzervatívabb rövid formával számolunk.
+  // a konzervatívabb rövid formával számolunk. A SEM BELSŐ küszöb (lapos
+  // profil-kapu, facet-egyezés) — számként nem jelenik meg a felületen
+  // (2026-08-11 termékdöntés).
   const assessmentForm = scores.form ?? "short";
   const dimSem = dimStandardError(assessmentForm);
-  const dimSemRounded = Math.round(dimSem);
-  // Facet-szintű SEM a facet-összevetéshez — kevesebb itemből számolt
-  // pontszám, ezért nagyobb hiba; a kliens kerekítve, propként kapja.
+  // Facet-szintű SEM a facet-összevetés egyezés-küszöbéhez — kevesebb itemből
+  // számolt pontszám, ezért nagyobb hiba; a kliens kerekítve, propként kapja.
   const facetSemRounded = Math.round(facetStandardError(assessmentForm));
 
   // ── Draft info ─────────────────────────────────────────────────────────────
@@ -331,63 +331,40 @@ export default async function ProfileResultsPage({
       insights: dim.insights,
       insightsByLocale: dim.insightsByLocale,
       observerScore: hasObserverData ? observerAvg?.[dim.code] : undefined,
-      facets: (dim.facets ?? []).map((f) => ({
-        code: f.code,
-        label: (f.labelByLocale?.[locale] ?? f.label) as string,
-        score: scores.facets?.[dim.code]?.[f.code] ?? 0,
-      })),
-      aspects: (dim.aspects ?? []).map((a) => ({
-        code: a.code,
-        label: (a.labelByLocale?.[locale] ?? a.label) as string,
-        score: scores.aspects?.[dim.code]?.[a.code] ?? 0,
-      })),
+      // FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-/
+      // aspect-bontás — a hiányzó érték NEM 0 pont. A korábbi `?? 0`
+      // fallback 24 koholt 0-facetet renderelt és a fejlődési fókuszba is
+      // 0-kat választott; a mérés nélküli facet mostantól kimarad.
+      facets: (dim.facets ?? []).flatMap((f) => {
+        const facetScore = scores.facets?.[dim.code]?.[f.code];
+        if (typeof facetScore !== "number") return [];
+        return [{
+          code: f.code,
+          label: (f.labelByLocale?.[locale] ?? f.label) as string,
+          score: facetScore,
+        }];
+      }),
+      aspects: (dim.aspects ?? []).flatMap((a) => {
+        const aspectScore = scores.aspects?.[dim.code]?.[a.code];
+        if (typeof aspectScore !== "number") return [];
+        return [{
+          code: a.code,
+          label: (a.labelByLocale?.[locale] ?? a.label) as string,
+          score: aspectScore,
+        }];
+      }),
     };
   });
 
   // ── Growth focus ───────────────────────────────────────────────────────────
   const mainDimensions = dimensions.filter((d) => d.code !== "I");
 
-  interface GrowthItem {
-    code: string;
-    label: string;
-    score: number;
-    dimCode: string;
-    dimLabel: string;
-    dimColor: string;
-  }
-
-  const allFacets: GrowthItem[] = [];
-  for (const dim of mainDimensions) {
-    for (const f of dim.facets) {
-      allFacets.push({
-        code: f.code,
-        label: f.label,
-        score: f.score,
-        dimCode: dim.code,
-        dimLabel: dim.label,
-        dimColor: dim.color,
-      });
-    }
-  }
-  const growthItems = allFacets
-    .filter((f) => f.score < 60)
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3);
-
-  const growthFallback: GrowthItem[] = mainDimensions
-    .filter((d) => d.score < 60)
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3)
-    .map((d) => ({
-      code: d.code,
-      label: d.label,
-      score: d.score,
-      dimCode: d.code,
-      dimLabel: d.label,
-      dimColor: d.color,
-    }));
-
-  const growthFocusItems = growthItems.length >= 1 ? growthItems : growthFallback;
+  // Kiválasztás a közös szabályból (workstyle-content, motor-audit v4):
+  //  - a fordított RESO kimarad a deficit-listából (alacsony = stabilitás);
+  //  - örökség-sorra (nincs facet-adat) a dimenzió-szintű fallback fut,
+  //    koholt 0-facet nem kerülhet a fókuszba (a facets tömb fent már csak
+  //    mért értékeket tartalmaz).
+  const growthFocusItems = selectGrowthFocusItems(mainDimensions);
 
   // ── Serialize invitations ──────────────────────────────────────────────────
   // ── Csapatszerep: mért self-eredmény + kampányból érkező társ-visszajelzés ─
@@ -422,16 +399,22 @@ export default async function ProfileResultsPage({
         }
       : null;
 
+  // W1 (privacy): a kitöltés időbélyege NAP-pontosságra vágva kerül a
+  // kliensre — a másodperc-pontos completedAt az anonim értékelő
+  // időzítés-alapú azonosítását segítené. A relationship mező (az értékelő
+  // viszony-típusa) törölve a payloadból: semmi nem renderelte, feleslegesen
+  // szivárgott volna a kliensre.
   const sentInvitations = sentInvitationsRaw.map((inv) => ({
     id: inv.id,
     token: inv.token,
     status: inv.status,
     createdAt: inv.createdAt.toISOString(),
-    completedAt: inv.completedAt?.toISOString() ?? null,
+    completedAt: inv.completedAt
+      ? inv.completedAt.toISOString().slice(0, 10)
+      : null,
     observerEmail: inv.observerEmail ?? null,
     observerName: inv.observerName ?? null,
     observerType: inv.observerType as string,
-    relationship: inv.assessment?.relationshipType ?? null,
   }));
 
   const receivedInvitations = receivedInvitationsRaw.map((inv) => ({
@@ -468,10 +451,6 @@ export default async function ProfileResultsPage({
   const displayName =
     profile.username ?? profile.email ?? t("common.userFallback", locale);
 
-  // ── Hero data ──────────────────────────────────────────────────────────────
-  const highDims = mainDimensions.filter((d) => d.score >= 70);
-  const lowDims = mainDimensions.filter((d) => d.score < 40);
-
   // Személyiség-típus címke a top-2 dimenzióból — a közös archetípus-
   // nyelvtannal (melléknév + főnév, pl. „Energikus újító"); a korábbi
   // mechanikus összefűzés („Innovátor Energikus") kivezetve.
@@ -500,14 +479,9 @@ export default async function ProfileResultsPage({
     return `${s} — ${w}.`;
   })();
 
-  // PDF-riport összefoglaló sorai (a képernyőn az accordion a próza gazdája)
-  const strengths = highDims.length > 0
-    ? highDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.strengthsSuffix", locale)
-    : t("results.balancedProfile", locale);
-
-  const watchAreas = lowDims.length > 0
-    ? t("results.watchPrefix", locale) + lowDims.map((d) => d.label.toLowerCase()).join(", ") + t("results.watchSuffix", locale)
-    : t("results.noLowDim", locale);
+  // A korábbi legacy strengths/watchAreas összefoglaló sorok kivezetve
+  // (2026-08-11): a PDF-be mentek, de ott semmi nem renderelte őket — a
+  // bullet-alapú változat (strengthBullets/watchBullets, ProfileTabs) él.
 
   // ── Plus content (profile engine narratives) ──────────────────────────────
   const lang = (locale === "en" ? "en" : "hu") as Locale;
@@ -516,7 +490,7 @@ export default async function ProfileResultsPage({
 
   const plusContent = accessLevel !== "start" ? {
     introText: BLOCK1[lang],
-    howYouWork: workstyle.howYouWork,
+    howYouWorkParts: workstyle.howYouWorkParts,
     riskParts: workstyle.riskParts,
     pressure: workstyle.pressure,
     pressureParts: workstyle.pressureParts,
@@ -590,10 +564,7 @@ export default async function ProfileResultsPage({
           feedbackSubmitted={feedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
-          strengths={strengths}
-          watchAreas={watchAreas}
           plusContent={plusContent}
-          dimensionSem={dimSemRounded}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}
           bridgeNextStep={{

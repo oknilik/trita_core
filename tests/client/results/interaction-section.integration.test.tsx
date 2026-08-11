@@ -166,6 +166,44 @@ describe("InteractionSection", () => {
     ).not.toBeInTheDocument();
   });
 
+  // S3-hedge (motor-audit v4, FIX 5): főnév-only saját címkénél (a top-pár
+  // sorrendje a mérési hibán belül) a „Melléknév + Főnév" összeállítás-sor
+  // nem állíthatja a második dimenziót — a sor elmarad.
+  it("főnév-only saját címkénél nincs melléknév-összeállítás a saját oldalon", () => {
+    const nounOnly = personalityNoun("OPEN", "hu")!; // „Újító"
+    render(
+      <InteractionSection
+        simulations={marked()}
+        selfLabel={nounOnly}
+        selfGlyph={{ primaryCode: "OPEN", secondaryCode: "TEMP", intensity: 4 }}
+      />,
+    );
+
+    const composition = [
+      personalityAdjective("TEMP", "hu"),
+      personalityNoun("OPEN", "hu"),
+    ].join(" + "); // „Energikus + Újító"
+    expect(screen.queryByText(composition)).not.toBeInTheDocument();
+    // A címke maga (főnév) természetesen látszik a saját oldalon.
+    expect(screen.getAllByText(nounOnly).length).toBeGreaterThan(0);
+  });
+
+  it("teljes (melléknév+főnév) címkénél az összeállítás-sor változatlan", () => {
+    render(
+      <InteractionSection
+        simulations={marked()}
+        selfLabel={resolvePersonalityTypeLabel("OPEN", "TEMP", "hu")!}
+        selfGlyph={{ primaryCode: "OPEN", secondaryCode: "TEMP", intensity: 4 }}
+      />,
+    );
+
+    const composition = [
+      personalityAdjective("TEMP", "hu"),
+      personalityNoun("OPEN", "hu"),
+    ].join(" + ");
+    expect(screen.getByText(composition)).toBeInTheDocument();
+  });
+
   it("azonos archetípusnál külön figyelmeztetés jön a közös vakfoltokról", async () => {
     const user = userEvent.setup();
     render(

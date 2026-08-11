@@ -10,6 +10,11 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { UpgradeButton } from "@/components/profile/UpgradeButton";
 
+// A korábbi ±SEM-chip és mérési-hiba jegyzet 2026-08-11-én kivezetve
+// (termékdöntés): mérési-hiba SZÁM nem jelenik meg a felületen — a
+// bizonytalanság-kezelés a címke-/próza-szintű hedge-ekben él, a magyarázat
+// pedig a központi módszertani leírásban.
+
 interface FacetEntry {
   code: string;
   label: string;
@@ -35,12 +40,6 @@ interface DimensionAccordionProps {
   showUpsell?: boolean;
   /** Alapból nyitott elem indexe (pl. a legerősebb dimenzió) */
   defaultOpenIdx?: number | null;
-  /**
-   * A kérdőív-formához tartozó KEREKÍTETT mérési hiba (SEM) — a szerver
-   * számolja (psychometrics.dimStandardError), mert a bank kliens-bundle-be
-   * húzása nélkül itt nem származtatható. null/undefined → nincs ± jelzés.
-   */
-  sem?: number | null;
 }
 
 function AccordionItem({
@@ -54,7 +53,6 @@ function AccordionItem({
   onToggle,
   showUpsell,
   locale,
-  sem,
 }: {
   code: string;
   name: string;
@@ -66,7 +64,6 @@ function AccordionItem({
   onToggle: () => void;
   showUpsell: boolean;
   locale: Locale;
-  sem: number | null;
 }) {
   const tier = getDimensionTier(value);
   const colors = tierColors[tier];
@@ -102,14 +99,6 @@ function AccordionItem({
         >
           {value}%
         </span>
-        {typeof sem === "number" && (
-          <span
-            className="shrink-0 text-micro tabular-nums text-[var(--color-text-muted)]"
-            title={tf("results.scoreSemHint", locale, { sem })}
-          >
-            ±{sem}
-          </span>
-        )}
         <span
           className={`shrink-0 text-[11px] text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         >
@@ -196,18 +185,11 @@ function AccordionItem({
                 </>
               )}
 
-              {/* Módszertani jegyzet: ±SEM magyarázat + (aktív norma-tábla
-                  esetén) percentilis-sor — a mért/becsült jelölés termék-
-                  alapelvének megfelelően visszafogottan. */}
-              {(typeof sem === "number" || percentile !== null) && (
+              {/* Percentilis-sor — CSAK aktív norma-tábla mellett (ma null →
+                  nem renderel). A ±SEM-jegyzet kivezetve (ld. fájl-fejkomment). */}
+              {percentile !== null && (
                 <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
-                  {typeof sem === "number"
-                    ? tf("results.scoreSemHint", locale, { sem })
-                    : null}
-                  {typeof sem === "number" && percentile !== null ? " " : null}
-                  {percentile !== null
-                    ? tf("results.scorePercentileLine", locale, { p: percentile })
-                    : null}
+                  {tf("results.scorePercentileLine", locale, { p: percentile })}
                 </p>
               )}
 
@@ -240,7 +222,6 @@ export function DimensionAccordion({
   dimensions,
   showUpsell = false,
   defaultOpenIdx = 0,
-  sem = null,
 }: DimensionAccordionProps) {
   // Alapból egy elem nyitva (default: az első) — a tartalom ne legyen
   // teljesen rejtve az első ránézésre.
@@ -272,7 +253,6 @@ export function DimensionAccordion({
           onToggle={() => setOpenIdx(openIdx === i ? null : i)}
           showUpsell={showUpsell}
           locale={locale}
-          sem={sem ?? null}
         />
       ))}
     </section>

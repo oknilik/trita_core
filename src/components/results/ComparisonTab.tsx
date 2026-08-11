@@ -185,7 +185,7 @@ function FacetComparisonSection({
       {visibleGroups.length === 0 ? (
         <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-4 px-[18px]">
           <p className="text-caption leading-relaxed text-[var(--color-accent-self-deep)]">
-            {tf("comparison.facetMapAllMatch", locale, { sem: facetSem })}
+            {t("comparison.facetMapAllMatch", locale)}
           </p>
         </div>
       ) : (
@@ -275,9 +275,11 @@ function FacetComparisonSection({
         </button>
       )}
 
-      {/* Módszertani mikro-jegyzet — a becsült vs mért jelölés alapelve */}
+      {/* Módszertani mikro-jegyzet — a becsült vs mért jelölés alapelve.
+          A facetSem BELSŐ küszöbként él tovább (isGap) — számként nem
+          jelenik meg (2026-08-11 termékdöntés). */}
       <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
-        {tf("comparison.facetMethodNote", locale, { sem: facetSem })}
+        {t("comparison.facetMethodNote", locale)}
       </p>
     </div>
   );
@@ -475,6 +477,9 @@ export function ComparisonTab({
                 <div className="mb-2.5 flex flex-wrap items-center justify-between gap-1.5">
                   <span className="text-caption font-semibold text-[var(--color-text-primary)]">{dim.name}</span>
                   {gap !== null && (
+                    // Sima eltérés-szám, ± nélkül — a ± mérési-hiba jelölésnek
+                    // olvasható, az pedig nem jelenik meg a felületen
+                    // (2026-08-11 termékdöntés); az irány a sávokból látszik.
                     <span
                       className="rounded px-2 py-0.5 text-[11px] font-medium"
                       style={{
@@ -482,7 +487,7 @@ export function ComparisonTab({
                         color: gap < 10 ? "var(--color-accent-self-deep)" : gap < 15 ? "var(--color-accent-primary-strong)" : "var(--color-text-error-strong)",
                       }}
                     >
-                      ±{gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
+                      {gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
                     </span>
                   )}
                 </div>
@@ -573,7 +578,7 @@ export function ComparisonTab({
                   </span>
                   <span className="flex items-center gap-1 text-[11px] text-[var(--color-text-muted)]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--color-accent-primary-soft)" }} />
-                    Observer: {bs.observer}
+                    {t("comparison.others", locale)}: {bs.observer}
                   </span>
                 </div>
               </div>

@@ -9,8 +9,9 @@ import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import type { ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
-import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
-import { estimateTeamRolesFromTritan } from "@/lib/team-role-estimate";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { loadShareOgModel } from "@/lib/share-og";
@@ -158,8 +159,14 @@ export default async function SharedProfilePage({
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
   const hasTeamRole = "INTE" in hexScores && "TEMP" in hexScores;
-  const teamRoleTop3 = hasTeamRole
-    ? getTopRoles(estimateTeamRolesFromTritan(hexScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>), 3)
+  // resolveDisplayRoleScores: exact (nyers evidencia) tie-break — a fő szerep
+  // egyezik a többi felülettel; részleges dim-sornál null (nincs becslés
+  // kitalált 50-esekből), így a szekció üresen marad.
+  const resolvedRole = hasTeamRole
+    ? resolveDisplayRoleScores(null, hexScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>)
+    : null;
+  const teamRoleTop3 = resolvedRole
+    ? getTopRoles(resolvedRole.scores, 3, resolvedRole.exact)
     : [];
 
   const rankLabels = [
@@ -245,7 +252,8 @@ export default async function SharedProfilePage({
                     className="inline-block rounded px-[7px] py-[2px] text-micro font-semibold"
                     style={{ backgroundColor: tierBg, color: tierColor }}
                   >
-                    {getDimensionLabel(dim.score, locale)}
+                    {/* Pólus-tudatos címke: RESO alacsony sávja „stabil" (FIX 2). */}
+                    {poleAwareDimensionLabel(dim.code, dim.score, locale)}
                   </span>
                 </div>
               );
@@ -281,7 +289,7 @@ export default async function SharedProfilePage({
 
         {/* Munkastílus */}
         <div className="flex flex-col">
-          <HowYouWorkSection paragraphs={workstyle.howYouWork} isUnlocked={true} />
+          <HowYouWorkSection parts={workstyle.howYouWorkParts} isUnlocked={true} />
           <IdealEnvironmentSection items={workstyle.envItems} isUnlocked={true} />
           <RoleFitSection
             strongFit={workstyle.roleFit.strong}
@@ -308,7 +316,7 @@ export default async function SharedProfilePage({
               </span>
             </div>
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-[1.4fr_1fr_1fr]">
-              {teamRoleTop3.map(({ role, score }, idx) => {
+              {teamRoleTop3.map(({ role }, idx) => {
                 const roleMeta = TEAM_ROLES[role];
                 const isPrimary = idx === 0;
                 return (
@@ -329,7 +337,10 @@ export default async function SharedProfilePage({
                             : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                       }`}
                     >
-                      {rankLabels[idx][locale]} · {score}%
+                      {/* Becsült szerepnél NINCS pontszám (P2.3, a PDF-fel
+                          egyezően): a profil-alapú becslés %-a álprecizitást
+                          sugallna — csak a rang-sáv megy ki. */}
+                      {rankLabels[idx][locale]}
                     </span>
                     <p className={`font-fraunces text-[var(--color-text-primary)] ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
                       {roleMeta[locale]}

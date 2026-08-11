@@ -152,7 +152,7 @@ export function InvitationsTab({
         id: data.id, token: data.token, status: data.status ?? "PENDING",
         createdAt: new Date().toISOString(), completedAt: null,
         observerEmail: hasEmail ? email.trim() : null, observerName: null,
-        observerType: data.observerType, relationship: null,
+        observerType: data.observerType,
       }, ...prev]);
       if (data.awaitingApproval) {
         showToast(t("invitations.awaitingApprovalToast", locale), "info");
@@ -189,7 +189,7 @@ export function InvitationsTab({
         id: data.id, token: data.token, status: data.status ?? "PENDING",
         createdAt: new Date().toISOString(), completedAt: null,
         observerEmail: null, observerName: colleague?.name ?? null,
-        observerType: data.observerType, relationship: null,
+        observerType: data.observerType,
       }, ...prev]);
       setColleagues((prev) =>
         prev.map((c) => (c.userId === colleagueUserId ? { ...c, alreadyInvited: true } : c)),

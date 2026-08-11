@@ -2,16 +2,21 @@ import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import type { HowYouWorkParts } from "@/lib/workstyle-content";
 
 interface PdfHowYouWorkProps {
-  paragraphs: string[];
+  /**
+   * Nevesített slotok (workstyle-content, FIX 3) — a „Figyelendő" kártya csak
+   * valódi risk-párnál renderel, a pozicionális [1]-találgatás kivezetve.
+   */
+  parts: HowYouWorkParts;
   locale?: Locale;
 }
 
-export function PdfHowYouWork({ paragraphs, locale = "hu" }: PdfHowYouWorkProps) {
-  const main = paragraphs[0] ?? "";
-  const watch = paragraphs[1] ?? "";
-  const context = paragraphs.slice(2).join(" ");
+export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
+  const main = parts.main;
+  const watch = parts.watch ?? "";
+  const context = parts.context.join(" ");
 
   return (
     <View style={{ marginBottom: 10 }}>

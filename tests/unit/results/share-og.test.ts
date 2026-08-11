@@ -3,15 +3,17 @@ import assert from "node:assert/strict";
 import { buildShareOgModel } from "@/lib/share-og";
 
 // Jól elváló rangsor: az 1-2. ÉS a 2-3. helyezett közti gap is nagyobb a
-// mérési hibánál (TYPE_ADJECTIVE_MIN_GAP) — így a teljes „melléknév + főnév"
-// címke megy ki. SEM-en belüli top-párnál (interp S3 kapu) a resolver
-// főnév-only címkére szelídül, az a személyiség-típus tesztjeiben él.
+// mérési hibánál (DIFF_MIN_GAP = 15, SE(diff)-kapu) — így a teljes
+// „melléknév + főnév" címke megy ki. SEM-en belüli top-párnál (interp S3
+// kapu) a resolver főnév-only címkére szelídül, az a személyiség-típus
+// tesztjeiben él. (A fixture a 10→15-ös küszöb-emelés után frissítve:
+// 90/73/55 — mindkét gap ≥ 15.)
 const DIMS = {
   INTE: 55,
   RESO: 50,
-  TEMP: 78,
+  TEMP: 73,
   ADAP: 30,
-  THOR: 62,
+  THOR: 55,
   OPEN: 90,
 };
 

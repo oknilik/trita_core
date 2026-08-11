@@ -204,6 +204,18 @@ export function InteractionSection({
     selfGlyph?.primaryCode === dominant &&
     selfGlyph?.secondaryCode === secondary;
 
+  // S3-hedge (motor-audit v4, FIX 5): ha a saját címke főnév-only (a
+  // personality-type resolver a mérési hibán belüli top-2/2-3. sorrendnél
+  // nem ad melléknevet), a „Melléknév + Főnév" összeállítás-sor sem
+  // állíthatja a második dimenziót — csak a főnév megy ki. A jelet magából
+  // a címkéből olvassuk, így a szekció nem mondhat ellent a fejlécnek.
+  const selfNoun = selfGlyph
+    ? personalityNoun(selfGlyph.primaryCode, locale)
+    : null;
+  const selfLabelIsNounOnly = Boolean(
+    selfLabel && selfNoun && selfLabel === selfNoun,
+  );
+
   return (
     <section>
       {!hideHeader && (
@@ -237,11 +249,11 @@ export function InteractionSection({
                   eyebrow={t("results.interactionPairYou", locale)}
                   label={selfLabel}
                   glyph={selfGlyph}
-                  nounPart={
-                    selfGlyph ? personalityNoun(selfGlyph.primaryCode, locale) : null
-                  }
+                  // Főnév-only címkénél a teljes összeállítás-sor elmarad —
+                  // a puszta főnév a fenti címkét ismételné.
+                  nounPart={selfLabelIsNounOnly ? null : selfNoun}
                   adjectivePart={
-                    selfGlyph
+                    selfGlyph && !selfLabelIsNounOnly
                       ? personalityAdjective(selfGlyph.secondaryCode, locale)
                       : null
                   }

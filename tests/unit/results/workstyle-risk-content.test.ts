@@ -62,6 +62,63 @@ test("csupa közepes profil: a DEFAULT_NARRATIVE az első howYouWork-bekezdés",
   }
 });
 
+// ─── howYouWorkParts — nevesített slotok (motor-audit v4, FIX 3) ────────────
+
+test("risk-profil: a watch-slot a risk-pár (summary+mitigáció), a main a narratíva", () => {
+  for (const lang of LOCALES) {
+    const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
+    const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
+    const mitigation = RISK_TEXTS.supportedVisibility[lang];
+
+    // A main az ELSŐ NARRATÍVA (nem a risk-szöveg) — a watch a teljes
+    // risk-pár. A korábbi pozicionális megjelenítés a [1]-es narratívát
+    // címkézte volna kockázatnak.
+    assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
+    assert.notEqual(ws.howYouWorkParts.main, summary);
+    assert.notEqual(ws.howYouWorkParts.main, mitigation);
+    assert.equal(ws.howYouWorkParts.watch, `${summary} ${mitigation}`);
+    // A risk-szövegek a watch-slotban élnek — a kontextus a maradék
+    // narratíva, a risk-párt nem duplikálja.
+    assert.ok(!ws.howYouWorkParts.context.includes(summary));
+    assert.ok(!ws.howYouWorkParts.context.includes(mitigation));
+    assert.deepEqual(
+      ws.howYouWorkParts.context,
+      ws.howYouWork.slice(1).filter((p) => p !== summary && p !== mitigation),
+    );
+  }
+});
+
+test("nem-risk profil: NINCS watch-slot, a további narratíva a kontextusba megy", () => {
+  // INTE 80 + OPEN 80 → responsibleInnovator (nem risk-pár)
+  const ws = buildWorkstyleContent(scores({ INTE: 80, OPEN: 80 }), "TRITAN", "hu");
+  assert.equal(ws.riskParts.length, 0);
+  assert.equal(ws.howYouWorkParts.watch, null);
+  assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
+  // Pozíció-ekvivalencia risk nélkül: minden további bekezdés kontextus.
+  assert.deepEqual(ws.howYouWorkParts.context, ws.howYouWork.slice(1));
+});
+
+test("csupa közepes profil: main = DEFAULT_NARRATIVE, watch nélkül", () => {
+  for (const lang of LOCALES) {
+    const ws = buildWorkstyleContent(scores({}), "TRITAN", lang);
+    assert.equal(ws.howYouWorkParts.main, DEFAULT_NARRATIVE[lang]);
+    assert.equal(ws.howYouWorkParts.watch, null);
+    assert.deepEqual(ws.howYouWorkParts.context, []);
+  }
+});
+
+// ─── Forrás-chip vs. strip (motor-audit F3): hedge a 65–70-es sávban ────────
+
+test("forrás-chip: 65–70 közti pontszám „inkább magas”, 70 felett sima „magas”", () => {
+  // RESO 80 (tier: high) + TEMP 67 (pólus: high, tier: mid) → supportedVisibility
+  const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 67 }), "TRITAN", "hu");
+  assert.equal(ws.riskParts.length, 1);
+  const source = ws.riskParts[0].source;
+  assert.ok(source.includes("Extraverzió · inkább magas"), `hedge hiányzik: ${source}`);
+  assert.ok(source.includes("Emocionalitás · magas"), `sima címke hiányzik: ${source}`);
+  assert.ok(!source.includes("Extraverzió · magas"), `a 67-es nem kaphat sima „magas"-t: ${source}`);
+});
+
 test("súrlódás-copy a gyengébb jóslókból is elérhető (RESO/TEMP/OPEN)", () => {
   // Csak RESO pólusos — a csonka [THOR, ADAP, INTE] sorrendben nem lenne találat.
   const ws = buildWorkstyleContent(scores({ RESO: 80 }), "TRITAN", "hu");

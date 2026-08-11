@@ -1,11 +1,14 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
-import { getDimensionTier, getDimensionLabel } from "@/lib/dimension-utils";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { poleAwareDimensionLabel } from "@/lib/profile-content";
 
 interface Dim {
   name: string;
   shortName: string;
   value: number;
+  /** Belső dimenziókód — a pólus-tudatos címkéhez (RESO alacsony = „stabil"). */
+  code?: string;
 }
 
 const tierColor = (tier: string) =>
@@ -42,7 +45,7 @@ export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; 
                 marginBottom: 2,
               }}
             >
-              {getDimensionLabel(dim.value, locale)}
+              {poleAwareDimensionLabel(dim.code, dim.value, locale)}
             </Text>
             <View style={{ width: "80%", height: 2, backgroundColor: colors.cream500, borderRadius: 1 }}>
               <View

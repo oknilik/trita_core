@@ -15,6 +15,7 @@ import {
   type TeaserScoringMetaItem,
 } from "@/lib/guest-teaser";
 import {
+  isTopPairUncertain,
   resolvePersonalityTypeFromScores,
   type PersonalityLocale,
 } from "@/lib/personality-type";
@@ -85,12 +86,17 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
       score: d.score,
     }));
 
+    // S3-hedge (FIX 5): mérési hibán belüli top-2 sorrendnél a címke már
+    // főnév-only — a pár-felirat sem sugallhat sorrendet („×"), rendezetlen
+    // elválasztót kap.
+    const pairSeparator = isTopPairUncertain(scores.ranked) ? " · " : " × ";
+
     return {
       typeLabel,
       primaryCode: primary.code,
       secondaryCode: secondary.code,
       intensity: intensityFromScore(primary.score),
-      dimensionLabel: `${dimLabel(primary.code)} × ${dimLabel(secondary.code)}`,
+      dimensionLabel: `${dimLabel(primary.code)}${pairSeparator}${dimLabel(secondary.code)}`,
       topDims,
     };
   }, [scoringMeta, answers, locale]);
