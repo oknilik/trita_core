@@ -134,10 +134,17 @@ npx tsx scripts/research/norms-from-ipip-dataset.ts --csv ... --dump-codebook
 Ha a letöltés nem megy (proxy/offline), a script kézi letöltési útmutatóval,
 0-s kóddal lép ki. Minőség-szűrés: a csomag saját ellenőrzését alkalmazza,
 ha van — a VCL-szókincs-ellenőrzést (VCL6/VCL9/VCL12 nem létező szavak = 1
-→ kizárás) automatikusan; egyéb (pl. komolyság-) oszlopra a codebook
-elolvasása után kézzel: `--screen <oszlop>=<megtartott érték>`. Az
-alkalmazott szűrőket a kimenet dokumentálja. Összefoglaló doksi:
-`docs/research/ipip-reference-2026-08.md`.
+→ kizárás) automatikusan; egyéb (validitás-, komolyság-) oszlopra a codebook
+elolvasása után kézzel, **összehasonlító operátorral**:
+`--screen <oszlop><op><érték>`, ahol `<op>` ∈ `>=` `<=` `!=` `>` `<` `=`
+(a feltétel a MEGTARTOTT sorokra igaz; mindkét oldal szám → numerikus
+összevetés, egyébként szöveges). Operátor azért kell, mert a validitás-item
+nem feltétlenül 0/1: a HEXACO-csomagban a `V1`/`V2` („értem az instrukciót" /
+„pontosan válaszoltam") **7-fokú Likert** — a ténylegesen alkalmazott szűrő
+`--screen "V1>=5" --screen "V2>=5"` volt. A script a szűrő-jelölt oszlopokat
+(`serious|attent|check|valid` nevűek + `V<szám>`) ki is listázza. Az
+alkalmazott szűrőket a kimenet dokumentálja. Összefoglaló doksi (MÉRT
+számokkal, 2026-08-11): `docs/research/ipip-reference-2026-08.md`.
 
 ## stats.ts — közös segéd
 

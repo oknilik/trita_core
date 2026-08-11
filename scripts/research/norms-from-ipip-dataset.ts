@@ -5,7 +5,12 @@
  *   npx tsx scripts/research/norms-from-ipip-dataset.ts --download
  *   npx tsx scripts/research/norms-from-ipip-dataset.ts --csv <adatfájl> \
  *     [--codebook <fájl>] [--form=short|full|both] [--json <fájl>] \
- *     [--screen <oszlop>=<megtartott érték>] [--dump-codebook]
+ *     [--screen <oszlop><op><érték>] [--dump-codebook]
+ *
+ * A doksi számait előállító futtatás (2026-08-11, n=21 681 / 21 675):
+ *   --csv .../data.csv --codebook .../codebook.txt --form=both \
+ *   --screen "V1>=5" --screen "V2>=5"
+ * Eredmény + forrás-URL + MD5: docs/research/ipip-reference-2026-08.md
  *
  * MIT CSINÁL
  *  - Az openpsychometrics.org/_rawdata/ „IPIP HEXACO” adatcsomagjából
@@ -68,6 +73,14 @@ const TEST_TYPE = "TRITAN" as TestType;
 const RAWDATA_INDEX_URL = "https://openpsychometrics.org/_rawdata/";
 const DATA_DIR = path.resolve(process.cwd(), "scripts/research/.data");
 
+// Tükör-fallback: az openpsychometrics.org felé sok futtatókörnyezet proxyja
+// tiltó (2026-08-11: 403 CONNECT). A haghish/openpsychometrics repo az
+// eredeti _rawdata/ klónja („solely for research purpose"), a HEXACO-csomag
+// kicsomagolva érhető el — ellenőrzött MD5-ökkel, ld.
+// docs/research/ipip-reference-2026-08.md.
+const MIRROR_BASE =
+  "https://raw.githubusercontent.com/haghish/openpsychometrics/main/HEXACO";
+
 // ── Az 5 adaptált item (docs/product/tsfi-item-provenance.md táblája):
 // a TSFI-szöveg eltér az IPIP-eredetitől, ezért a szövegegyezéshez az
 // EREDETI IPIP-tételt használjuk. (12/36 az E/1+would-vágással is menne,
@@ -89,7 +102,49 @@ interface Args {
   forms: AssessmentForm[];
   jsonPath: string | null;
   dumpCodebook: boolean;
-  manualScreens: Array<{ column: string; keep: string }>;
+  manualScreens: ScreenSpec[];
+}
+
+/** `--screen COL>=5` / `COL=1` / `COL!=0` … — a megtartott sorok feltétele. */
+type ScreenOp = ">=" | "<=" | "!=" | ">" | "<" | "=";
+interface ScreenSpec {
+  column: string;
+  op: ScreenOp;
+  value: string;
+}
+
+const SCREEN_OPS: ScreenOp[] = [">=", "<=", "!=", ">", "<", "="];
+
+function parseScreen(raw: string): ScreenSpec | null {
+  for (const op of SCREEN_OPS) {
+    const at = raw.indexOf(op);
+    if (at > 0) {
+      return { column: raw.slice(0, at), op, value: raw.slice(at + op.length) };
+    }
+  }
+  return null;
+}
+
+/** Igaz → a sor MEGMARAD. Számösszehasonlítás, ha mindkét oldal szám. */
+function screenKeeps(spec: ScreenSpec, cell: string | undefined): boolean {
+  const raw = cell ?? "";
+  const lhs = Number(raw);
+  const rhs = Number(spec.value);
+  const numeric = raw !== "" && Number.isFinite(lhs) && Number.isFinite(rhs);
+  switch (spec.op) {
+    case "=":
+      return numeric ? lhs === rhs : raw === spec.value;
+    case "!=":
+      return numeric ? lhs !== rhs : raw !== spec.value;
+    case ">=":
+      return numeric && lhs >= rhs;
+    case "<=":
+      return numeric && lhs <= rhs;
+    case ">":
+      return numeric && lhs > rhs;
+    case "<":
+      return numeric && lhs < rhs;
+  }
 }
 
 function usage(): never {
@@ -97,7 +152,9 @@ function usage(): never {
     "Használat: npx tsx scripts/research/norms-from-ipip-dataset.ts " +
       "(--download | --csv <adatfájl>) [--codebook <fájl>] " +
       "[--form=short|full|both] [--json <fájl>] " +
-      "[--screen <oszlop>=<érték>] [--dump-codebook]",
+      "[--screen <oszlop><op><érték>] [--dump-codebook]\n" +
+      "  --screen operátorai: >= <= != > < =  (a feltétel a MEGTARTOTT sorokra igaz)\n" +
+      '  pl. a HEXACO-csomag 7-fokú validitás-itemjeire: --screen "V1>=5" --screen "V2>=5"',
   );
   process.exit(2);
 }
@@ -126,10 +183,9 @@ function parseArgs(): Args {
     } else if (arg === "--dump-codebook") {
       args.dumpCodebook = true;
     } else if (arg === "--screen") {
-      const raw = argv[++i] ?? "";
-      const eq = raw.indexOf("=");
-      if (eq <= 0) usage();
-      args.manualScreens.push({ column: raw.slice(0, eq), keep: raw.slice(eq + 1) });
+      const spec = parseScreen(argv[++i] ?? "");
+      if (!spec) usage();
+      args.manualScreens.push(spec);
     } else if (arg.startsWith("--form")) {
       const value = arg.includes("=") ? arg.split("=")[1] : argv[++i];
       if (value === "short" || value === "full") args.forms = [value];
@@ -170,7 +226,35 @@ KÉZI LETÖLTÉS
        --csv scripts/research/.data/<kicsomagolt mappa>/data.csv
      (a codebookot a script az adatfájl mappájában magától megtalálja;
       ha máshol van: --codebook <fájl>)
+
+  Ha az openpsychometrics.org felé a hálózat tiltott, a tükör közvetlenül:
+     curl -sSL -o scripts/research/.data/data.csv ${MIRROR_BASE}/data.csv
+     curl -sSL -o scripts/research/.data/codebook.txt ${MIRROR_BASE}/codebook.txt
 `);
+}
+
+/**
+ * Tükör-letöltés: a kicsomagolt data.csv + codebook.txt közvetlenül.
+ * Csak akkor fut, ha az eredeti forrás nem érhető el.
+ */
+function tryMirrorDownload(): { dataFile: string; codebook: string | null } | null {
+  const dataFile = path.join(DATA_DIR, "data.csv");
+  const codebook = path.join(DATA_DIR, "codebook.txt");
+  console.log(`Tükör-letöltés: ${MIRROR_BASE}/{data.csv,codebook.txt}`);
+  try {
+    for (const [url, target] of [
+      [`${MIRROR_BASE}/data.csv`, dataFile],
+      [`${MIRROR_BASE}/codebook.txt`, codebook],
+    ]) {
+      execFileSync("curl", ["-sSL", "--fail", "--max-time", "600", "-o", target, url], {
+        stdio: "inherit",
+      });
+    }
+  } catch (error) {
+    console.log(`A tükör sem érhető el — ${String(error).slice(0, 200)}`);
+    return null;
+  }
+  return { dataFile, codebook };
 }
 
 function curlText(url: string): string {
@@ -180,34 +264,46 @@ function curlText(url: string): string {
   });
 }
 
+/** Eredeti forrás → tükör → kézi útmutató, ebben a sorrendben. */
 function tryDownload(): { dataFile: string; codebook: string | null } | null {
   ensureDataDir();
+  const direct = tryOriginalDownload();
+  if (direct) return direct;
+  const mirrored = tryMirrorDownload();
+  if (mirrored) return mirrored;
+  printManualDownloadHelp("sem az eredeti forrás, sem a tükör nem érhető el");
+  return null;
+}
+
+/** Az openpsychometrics.org indexéről a HEXACO-zip; hiba esetén null (+ ok). */
+function tryOriginalDownload(): { dataFile: string; codebook: string | null } | null {
+  const fail = (reason: string) => {
+    console.log(`Az eredeti forrás nem használható: ${reason}`);
+    return null;
+  };
   let indexHtml: string;
   try {
     indexHtml = curlText(RAWDATA_INDEX_URL);
   } catch (error) {
-    printManualDownloadHelp(
+    return fail(
       `az index-oldal (${RAWDATA_INDEX_URL}) nem érhető el — ${String(error).slice(0, 200)}`,
     );
-    return null;
   }
   // Az indexben a HEXACO-csomag zip-hivatkozását keressük.
   const hrefs = [...indexHtml.matchAll(/href=["']([^"']+\.zip)["']/gi)].map((m) => m[1]);
   const zipHref = hrefs.find((h) => /hexaco/i.test(h)) ?? null;
   if (!zipHref) {
-    printManualDownloadHelp("az indexoldalon nem találtam HEXACO nevű .zip hivatkozást");
-    return null;
+    return fail("az indexoldalon nem találtam HEXACO nevű .zip hivatkozást");
   }
   const zipUrl = new URL(zipHref, RAWDATA_INDEX_URL).toString();
   const zipPath = path.join(DATA_DIR, path.basename(zipHref));
   console.log(`Letöltés: ${zipUrl}`);
   try {
-    execFileSync("curl", ["-sSL", "--max-time", "600", "-o", zipPath, zipUrl], {
+    execFileSync("curl", ["-sSL", "--fail", "--max-time", "600", "-o", zipPath, zipUrl], {
       stdio: "inherit",
     });
   } catch (error) {
-    printManualDownloadHelp(`a zip letöltése megszakadt — ${String(error).slice(0, 200)}`);
-    return null;
+    return fail(`a zip letöltése megszakadt — ${String(error).slice(0, 200)}`);
   }
   const extractDir = path.join(
     DATA_DIR,
@@ -217,15 +313,11 @@ function tryDownload(): { dataFile: string; codebook: string | null } | null {
     fs.mkdirSync(extractDir, { recursive: true });
     execFileSync("unzip", ["-o", zipPath, "-d", extractDir], { stdio: "inherit" });
   } catch (error) {
-    printManualDownloadHelp(`az unzip nem futott le — ${String(error).slice(0, 200)}`);
-    return null;
+    return fail(`az unzip nem futott le — ${String(error).slice(0, 200)}`);
   }
   const located = locateDataFiles(extractDir);
   if (!located) {
-    printManualDownloadHelp(
-      `a kicsomagolt mappában (${extractDir}) nem találtam adatfájlt`,
-    );
-    return null;
+    return fail(`a kicsomagolt mappában (${extractDir}) nem találtam adatfájlt`);
   }
   return located;
 }
@@ -542,18 +634,21 @@ function main() {
   const vclFakeCols = ["VCL6", "VCL9", "VCL12"]
     .map((c) => headerIndex.get(c))
     .filter((i): i is number => i != null);
+  // A jelöltek közé a validitás-itemek (OP-konvenció: V1, V2 …) is beleférnek —
+  // a HEXACO-csomagban ezek az „értem az instrukciót" / „pontosan válaszoltam"
+  // sorok, 7-fokú skálán, ezért kell a --screen-hez az operátor (pl. V1>=5).
   const screenCandidates = header.filter(
     (c) =>
-      /serious|attent|check|valid/i.test(c) &&
+      (/serious|attent|check|valid/i.test(c) || /^V\d+$/.test(c)) &&
       !mapped.some((m) => m.column === c),
   );
-  const manualScreenIdx = args.manualScreens.map(({ column, keep }) => {
-    const idx = headerIndex.get(column);
+  const manualScreenIdx = args.manualScreens.map((spec) => {
+    const idx = headerIndex.get(spec.column);
     if (idx == null) {
-      console.error(`--screen: nincs "${column}" nevű oszlop az adatban.`);
+      console.error(`--screen: nincs "${spec.column}" nevű oszlop az adatban.`);
       process.exit(1);
     }
-    return { idx, keep, column };
+    return { ...spec, idx };
   });
 
   const appliedScreens: string[] = [];
@@ -563,7 +658,7 @@ function main() {
     );
   }
   for (const s of manualScreenIdx) {
-    appliedScreens.push(`kézi szűrő: ${s.column} == ${s.keep} megtartva`);
+    appliedScreens.push(`kézi szűrő: ${s.column} ${s.op} ${s.value} megtartva`);
   }
 
   interface Row {
@@ -583,7 +678,7 @@ function main() {
       screenedOut += 1;
       continue;
     }
-    if (manualScreenIdx.some((s) => cells[s.idx] !== s.keep)) {
+    if (manualScreenIdx.some((s) => !screenKeeps(s, cells[s.idx]))) {
       screenedOut += 1;
       continue;
     }
