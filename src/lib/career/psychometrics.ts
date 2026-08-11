@@ -20,6 +20,25 @@ export {
 } from "@/lib/psychometrics";
 
 /**
+ * Komponens-hibák (0-100 skálán) a rangsor-SE terjesztéséhez ÉS a felületi
+ * ítélet-kapukhoz. Itt élnek (nem az engine-ben), mert a kliens-oldali
+ * címke-kapu (CareerResults) is ezekből számol margót — az engine a katalógus-
+ * JSON-okat húzná be a kliens-bundle-be, ez a modul könnyű.
+ */
+export const INTEREST_SE_MEASURED = 6;
+export const INTEREST_SE_OTHER = 12;
+
+/**
+ * Intervallum-tudatos negatív ítélet: csak akkor állítjuk, hogy az érték a
+ * vágás ALATT van, ha a teljes ±margin sáv is alatta marad. Egy 54-es érték
+ * 8-as hibával nem „a küszöb alatt van", hanem „a küszöb körül" — a kimondott
+ * negatív verdikt ilyenkor többet állít, mint amit a mérés tud.
+ */
+export function clearlyBelow(value: number, margin: number, cut: number): boolean {
+  return value + margin < cut;
+}
+
+/**
  * Observer-súly: az értékelők számával nő, de a self mindig legalább 50%-ot tart.
  * (A v1 fix 50/50 keverése egyetlen értékelőnek ugyanakkora szót adott, mint ötnek.)
  */

@@ -160,7 +160,9 @@ export default async function CareerFakeDoorReportPage() {
         <h2 className="font-fraunces text-lg text-ink">Közönség szerint</h2>
         <p className="mt-1 text-xs text-muted">
           A tanácsadói válasz más terméket értékel (ügyfélnek venné, nem
-          magának) — ezért külön sor, nem beolvasztva.
+          magának) — ezért külön sor, nem beolvasztva. Minden szám
+          profil-szinten deduplikált: fiókonként az utolsó válasz és az első
+          megtekintés számít (új sessionId-vel nem lehet szavazatot halmozni).
         </p>
         <div className="mt-4">
           <Table>
@@ -222,11 +224,17 @@ export default async function CareerFakeDoorReportPage() {
 
       {/* Fizetési hajlandóság: az „ár" ok önmagában nem termékdöntés — az
           összeg az. A csúszka mindig a LÁTOTT árról indul, ezért a „hányad
-          része" oszlop az, ami az ársávok között összemérhető. */}
-      {report.willingness.count > 0 && (
-        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+          része" oszlop az, ami az ársávok között összemérhető. KÖZÖNSÉGENKÉNT
+          (2026-08-11): a tanácsadói és az egyéni összeg nem ugyanarra a
+          termékre vonatkozik — összevont medián nincs. */}
+      {report.willingnessByAudience.map(({ audience, summary }) => (
+        <section
+          key={audience}
+          className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm"
+        >
           <h2 className="font-fraunces text-lg text-ink">
-            Mennyit adnának érte — akiknek drága ({report.willingness.count})
+            Mennyit adnának érte — {AUDIENCE_LABEL[audience] ?? audience},
+            akiknek drága ({summary.count})
           </h2>
           <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-4">
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -234,9 +242,7 @@ export default async function CareerFakeDoorReportPage() {
                 Medián
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {report.willingness.median == null
-                  ? "—"
-                  : formatPrice(report.willingness.median, "hu")}
+                {summary.median == null ? "—" : formatPrice(summary.median, "hu")}
               </p>
             </div>
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -244,9 +250,7 @@ export default async function CareerFakeDoorReportPage() {
                 Átlag
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {report.willingness.average == null
-                  ? "—"
-                  : formatPrice(report.willingness.average, "hu")}
+                {summary.average == null ? "—" : formatPrice(summary.average, "hu")}
               </p>
             </div>
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -254,9 +258,9 @@ export default async function CareerFakeDoorReportPage() {
                 A látott ár hányada
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {report.willingness.medianShareOfShownPrice == null
+                {summary.medianShareOfShownPrice == null
                   ? "—"
-                  : `${report.willingness.medianShareOfShownPrice}%`}
+                  : `${summary.medianShareOfShownPrice}%`}
               </p>
             </div>
             <div className="rounded-lg border border-sand bg-cream p-4">
@@ -264,14 +268,14 @@ export default async function CareerFakeDoorReportPage() {
                 Semennyit
               </p>
               <p className="mt-2 break-words text-2xl font-bold tabular-nums text-ink">
-                {report.willingness.zero}
+                {summary.zero}
               </p>
             </div>
           </div>
 
-          {report.willingness.values.length > 0 && (
+          {summary.values.length > 0 && (
             <ul className="mt-4 flex flex-col gap-1.5">
-              {report.willingness.values.map((row) => (
+              {summary.values.map((row) => (
                 <li
                   key={row.amount}
                   className="flex items-baseline justify-between gap-3 border-t border-sand pt-1.5 text-sm first:border-t-0"
@@ -285,14 +289,14 @@ export default async function CareerFakeDoorReportPage() {
             </ul>
           )}
 
-          {report.willingness.answered < report.willingness.count && (
+          {summary.answered < summary.count && (
             <p className="mt-3 text-xs text-muted">
-              {report.willingness.count - report.willingness.answered} válaszadó
-              nem mozdította a csúszkát (átugorta a kérdést).
+              {summary.count - summary.answered} válaszadó nem mozdította a
+              csúszkát (átugorta a kérdést).
             </p>
           )}
         </section>
-      )}
+      ))}
 
       {report.otherTexts.length > 0 && (
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">

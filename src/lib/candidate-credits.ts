@@ -17,7 +17,7 @@ export interface CreditHistoryEntry {
 }
 
 export async function getCreditBalance(orgId: string): Promise<CreditBalance> {
-  const [sub, purchaseAgg, usageAgg] = await Promise.all([
+  const [sub, purchaseAgg, usageAgg, refundAgg] = await Promise.all([
     prisma.subscription.findUnique({
       where: { orgId },
       select: { candidateCredits: true },
@@ -30,12 +30,23 @@ export async function getCreditBalance(orgId: string): Promise<CreditBalance> {
       where: { orgId, type: "usage" },
       _sum: { amount: true },
     }),
+    prisma.candidateCredit.aggregate({
+      where: { orgId, type: "refund" },
+      _sum: { amount: true },
+    }),
   ]);
 
   return {
     available: sub?.candidateCredits ?? 0,
     totalPurchased: purchaseAgg._sum.amount ?? 0,
-    totalUsed: Math.abs(usageAgg._sum.amount ?? 0),
+    // A visszatérítés a felhasználást ellensúlyozza, nem a vásárlást növeli
+    // (2026-08-11, fix): a korábbi "purchase" típusú refund a totalPurchased
+    // számot hamisította. Nettó felhasználás = bruttó usage − refund; így az
+    // available = totalPurchased − totalUsed azonosság megmarad.
+    totalUsed: Math.max(
+      0,
+      Math.abs(usageAgg._sum.amount ?? 0) - (refundAgg._sum.amount ?? 0),
+    ),
   };
 }
 
@@ -44,6 +55,8 @@ export async function addCredits(params: {
   amount: number;
   actorId: string;
   note: string;
+  /** ledger-típus: vásárlás/feltöltés = "purchase" (alapértelmezés), visszavonás = "refund" */
+  type?: "purchase" | "refund";
 }): Promise<number> {
   return prisma.$transaction(async (tx) => {
     const sub = await tx.subscription.update({
@@ -55,7 +68,7 @@ export async function addCredits(params: {
     await tx.candidateCredit.create({
       data: {
         orgId: params.orgId,
-        type: "purchase",
+        type: params.type ?? "purchase",
         amount: params.amount,
         balance: sub.candidateCredits,
         note: params.note,

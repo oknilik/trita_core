@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 
 // POST /api/candidate/[token]/team-role — a jelölt opcionális csapatszerep-
@@ -16,6 +18,10 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
+  // Publikus (token-alapú) végpont — rate limit a testvér-route-ok mintájára.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { token } = await params;
 
   const body = await req.json().catch(() => ({}));
@@ -40,6 +46,7 @@ export async function POST(
       id: true,
       status: true,
       includeTeamRole: true,
+      expiresAt: true,
       result: { select: { id: true, teamRoleSelections: true } },
     },
   });
@@ -51,6 +58,11 @@ export async function POST(
   if (invite.status === "CANCELED") {
     return NextResponse.json({ error: "REVOKED" }, { status: 409 });
   }
+  // Lejárat-kapu (2026-08-11, fix): a többi jelölt-útvonal (resend, apply)
+  // mintájára — lejárt meghívóra a 2. lépés sem küldhető be örökké.
+  if (invite.expiresAt < new Date()) {
+    return NextResponse.json({ error: "EXPIRED" }, { status: 409 });
+  }
   if (!invite.result) {
     return NextResponse.json({ error: "MAIN_ASSESSMENT_MISSING" }, { status: 409 });
   }
@@ -58,10 +70,17 @@ export async function POST(
     return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
   }
 
-  await prisma.candidateResult.update({
-    where: { id: invite.result.id },
+  // FELTÉTELES írás (nem check-then-act, 2026-08-11, fix): a „még nincs
+  // szerep-válasz" feltétel MAGÁN az UPDATE-en fut — két párhuzamos beküldés
+  // közül csak az egyik írhat, a másik 409-et kap (a fenti guard READ
+  // COMMITTED alatt mindkettőt átengedte volna).
+  const written = await prisma.candidateResult.updateMany({
+    where: { id: invite.result.id, teamRoleSelections: { equals: Prisma.AnyNull } },
     data: { teamRoleSelections: selections },
   });
+  if (written.count === 0) {
+    return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
+  }
 
   return NextResponse.json({ ok: true });
 }

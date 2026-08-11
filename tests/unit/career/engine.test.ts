@@ -10,9 +10,12 @@ import {
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { getOccupations, CATALOG_VERSION } from "@/lib/career/catalog";
 import {
+  INTEREST_SE_MEASURED,
+  INTEREST_SE_OTHER,
   alphaFromItems,
   bandFor,
   blendedStandardError,
+  clearlyBelow,
   clusterByOverlap,
   dimStandardError,
   facetStandardError,
@@ -1036,6 +1039,77 @@ test("observer-padló: 3 értékelő alatt a külső jel egyáltalán nem kevere
     "a közölt observer-súly 1 tizedesnél pontosabb",
   );
   assert.notDeepEqual(atFloor.ranked, selfOnly.ranked, "a padlón a keverésnek élnie kell");
+});
+
+test("userRaw observer-keverés MELLETT is a SELF pontszám — a keverés belső marad", () => {
+  // Szerződés (2026-08-11, fix): a userRaw a results-oldali ÖNÉRTÉKELÉS-pont.
+  // A korábbi kevert userRaw + a minden n≥3-ra pontosan 0,5-ös observerWeight
+  // együtt PONTOSAN invertálhatóvá tette az observer-aggregátumot
+  // (obs = 2·userRaw − self). A keverés a pontozásban él, a szerializált
+  // nyers párban nem.
+  const dims = { INTE: 60, RESO: 45, TEMP: 62, ADAP: 58, THOR: 70, OPEN: 55 };
+  const observerDims = { INTE: 20, RESO: 80, TEMP: 30, ADAP: 90, THOR: 20, OPEN: 90 };
+  const occupation = getOccupations().find((o) => o.demand.length >= 3);
+  assert.ok(occupation, "nincs többkomponensű teszt-foglalkozás");
+
+  const blendedRun = computeCareerFit(
+    {
+      dims,
+      form: "short",
+      observer: { dims: observerDims, raterCount: 4 },
+    },
+    { only: [occupation.id] },
+  );
+  const selfRun = computeCareerFit({ dims, form: "short" }, { only: [occupation.id] });
+  assert.ok(blendedRun.observerWeight > 0, "a keverésnek élnie kell");
+
+  const blendedFit = blendedRun.ranked[0];
+  const selfFit = selfRun.ranked[0];
+  let checkedPairs = 0;
+  for (const component of blendedFit.components) {
+    // 1) A userRaw MINDEN komponensen (H-padlóson is) a self pont — obs nem
+    //    fejthető vissza belőle.
+    assert.equal(
+      component.userRaw,
+      dims[component.dim as keyof typeof dims],
+      `${component.dim}: a userRaw nem a self pontszám`,
+    );
+    // 2) A megjelenítési pár konzisztens a pontozással (nem h-floor, nem edge).
+    if (component.note !== "h-floor" && !component.targetAtEdge) {
+      assert.ok(
+        Math.abs(
+          Math.abs(component.userRaw - component.targetRaw) -
+            Math.abs(component.userValue - component.target),
+        ) <= 1,
+        `${component.dim}: a self-horgonyú pár távolsága elcsúszott`,
+      );
+      checkedPairs += 1;
+    }
+  }
+  assert.ok(checkedPairs > 0, "nem volt ellenőrizhető komponens-pár");
+
+  // 3) A keverés BELSŐ maradt: az extrém observer-profil elmozdítja a
+  //    pontozott értékeket a self-only futáshoz képest.
+  const scoringMoved = blendedFit.components.some((component) => {
+    const selfComponent = selfFit.components.find((c) => c.dim === component.dim);
+    return selfComponent !== undefined && selfComponent.userValue !== component.userValue;
+  });
+  assert.ok(
+    scoringMoved || blendedFit.demandFit !== selfFit.demandFit,
+    "az observer-keverés nem hatott a pontozásra — a keverés kiesett",
+  );
+});
+
+test("SE-tudatos verdikt-kapu: küszöb-környéki érték nem kap negatív címkét", () => {
+  // A CareerResults figyelmeztetés-chipjei ezen a kapun futnak: negatív
+  // verdikt csak akkor, ha az érték ±SE sávja is a vágás alatt van.
+  assert.equal(clearlyBelow(54, 8, 55), false, "az 54 (band 46–62) nem 'feszültség'");
+  assert.equal(clearlyBelow(40, 8, 55), true, "a 40 ± 8 egyértelműen a vágás alatt van");
+  assert.equal(clearlyBelow(48, INTEREST_SE_MEASURED, 55), true);
+  assert.equal(clearlyBelow(48, INTEREST_SE_OTHER, 55), false, "zajos forrásnál szélesebb a sáv");
+  // A motor rangSe-terjesztése és a felületi kapu ugyanazokat a konstansokat
+  // használja.
+  assert.ok(INTEREST_SE_MEASURED < INTEREST_SE_OTHER);
 });
 
 test("rövid forma szélesebb sávot ad, mint a teljes", () => {

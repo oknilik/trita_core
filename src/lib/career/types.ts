@@ -193,11 +193,13 @@ export interface FitComponent {
    */
   userValue: number;
   /**
-   * MEGJELENÍTÉSI pár NYERS skálán: a userRaw azonos a results-oldali
-   * pontszámmal, a targetRaw a cél ugyanazzal az eltolással visszahozva —
-   * |userRaw − targetRaw| ≈ |userValue − target|, tehát a position/alignment
-   * ezekkel is konzisztens. A UI EZT mutassa „te {..}"-ként, különben a
-   * centrált érték ellentmond a results-oldalnak (pl. nyers 90 → „te 58").
+   * MEGJELENÍTÉSI pár NYERS skálán: a userRaw a results-oldali ÖNÉRTÉKELÉS-
+   * pontszám (SOHA nem a kevert érték — a kevert pár + ismert 0,5-ös súly
+   * visszafejthetővé tenné az observer-aggregátumot), a targetRaw a cél
+   * ugyanazzal az eltolással visszahozva — |userRaw − targetRaw| ≈
+   * |userValue − target|, tehát a position/alignment ezekkel is konzisztens.
+   * A UI EZT mutassa „te {..}"-ként, különben a centrált érték ellentmond a
+   * results-oldalnak (pl. nyers 90 → „te 58").
    */
   userRaw: number;
   targetRaw: number;

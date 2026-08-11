@@ -172,3 +172,64 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
     },
   },
 };
+
+/** Egy összegyűjtött eltérés: dimenzió + irány + hány top-szerepnél fordul elő. */
+export interface GrowthGap {
+  dim: DimCode;
+  pole: Pole;
+  count: number;
+  weight: number;
+}
+
+/**
+ * A felső klaszterek leggyakoribb ELTÉRÉSEI, irány-tudatosan — a
+ * CareerGrowthPlan bemenete (itt él, hogy prisma nélkül tesztelhető legyen).
+ *
+ * H-PADLÓ-KIZÁRÁS (2026-08-11, fix): a motor a H-padlós (note === "h-floor")
+ * komponenst az above-target jelzésből is kizárja — az alignment ott 100, a
+ * geometriai position viszont "over" marad. A gyűjtés ugyanezt a kizárást
+ * alkalmazza: nélküle a magas becsületesség-alázatú felhasználó fejlődési
+ * kártyát kapott arra, hogy legyen KEVÉSBÉ őszinte — pont a kimondott
+ * invariáns ellen.
+ */
+export function collectGrowthGaps(
+  sections: {
+    atLevel: Array<Array<{ components: FitComponentLike[] }>>;
+    afterTraining: Array<Array<{ components: FitComponentLike[] }>>;
+  },
+  max = 2,
+): GrowthGap[] {
+  const buckets = new Map<string, GrowthGap>();
+  const top = [...sections.atLevel, ...sections.afterTraining].slice(0, 2).flat();
+  for (const fit of top) {
+    for (const component of fit.components) {
+      if (component.position === "in" || component.weight < 0.15) continue;
+      // A H-padlós komponens nem eltérés: a magas H-t szándékosan nem büntetjük.
+      if (component.note === "h-floor") continue;
+      const key = `${component.dim}:${component.position}`;
+      const existing = buckets.get(key);
+      if (existing) {
+        existing.count += 1;
+        existing.weight += component.weight;
+      } else {
+        buckets.set(key, {
+          dim: component.dim,
+          pole: component.position,
+          count: 1,
+          weight: component.weight,
+        });
+      }
+    }
+  }
+  return [...buckets.values()]
+    .sort((a, b) => b.count - a.count || b.weight - a.weight)
+    .slice(0, max);
+}
+
+/** A gyűjtéshez szükséges komponens-alak (a FitComponent szűkítése). */
+export interface FitComponentLike {
+  dim: DimCode;
+  position: "under" | "in" | "over";
+  weight: number;
+  note?: "h-floor";
+}
