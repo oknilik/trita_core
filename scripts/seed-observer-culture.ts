@@ -38,7 +38,11 @@
  *
  * A --teardown a KÖZÖS eltolást vonja vissza (visszaírja a független jitteres
  * képet); a meghívókat és a válaszokat nem törli — azokat a showcase-seed
- * teardownja kezeli.
+ * teardownja kezeli. FIGYELEM: a kampány-kötést SEM bontja vissza, tehát
+ * teardown után a blokk továbbra is renderel, csak „minden egybevágó"
+ * képpel (helyben mérve: 5 lefedett, 5 egybevágó, 0 eltérés). Ez szándékos —
+ * a kampány-kötés a mérési ciklus tulajdona (seed-campaign-cycle), nem ezé
+ * a scripté.
  */
 
 import { readFileSync } from "fs";
