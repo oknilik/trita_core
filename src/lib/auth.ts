@@ -84,13 +84,19 @@ export async function requireOrgContext(orgId: string): Promise<{
   const profile = await getProfileCoreByClerkId(userId);
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
 
-  const membership = await prisma.organizationMember.findUnique({
+  const membershipRow = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
     select: {
       role: true,
+      leftAt: true,
       org: { select: { id: true, name: true, status: true } },
     },
   });
+
+  // Kilépett tag nem kap org-kontextust (motor-audit v9): a testvér-lekérdezések
+  // (org-context, module-visibility, journey) mind `leftAt: null`-t szűrnek — itt
+  // a findUnique összetett kulcsa miatt a szűrés a lekérdezés UTÁN történik.
+  const membership = membershipRow?.leftAt ? null : membershipRow;
 
   if (!membership) {
     const fallback = await resolveJourneyFallbackForProfileId(profile.id);

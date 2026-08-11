@@ -34,7 +34,6 @@ function dim(
     insights: { low: "", mid: "", high: "" },
     observerScore,
     facets: [],
-    aspects: [],
   };
 }
 

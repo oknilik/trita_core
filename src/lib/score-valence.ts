@@ -30,7 +30,11 @@ export const REVERSE_DIM_CODE = "RESO";
  */
 export type ValenceSurface = "self" | "evaluative";
 
-export function isReverseValenced(code: string): boolean {
+/**
+ * A kód lehet `undefined` is (részleges/örökség sorokból származó lista-elem) —
+ * ilyenkor nem fordított skáláról van szó, a hívónak nem kell külön őriznie.
+ */
+export function isReverseValenced(code: string | undefined | null): boolean {
   return code === REVERSE_DIM_CODE;
 }
 
@@ -38,7 +42,7 @@ export function isReverseValenced(code: string): boolean {
  * Bekerülhet-e a dimenzió alacsony pólusa deficit-jellegű slotba
  * (gyengeség, kockázat, fejlesztendő terület)? A RESO-ra mindig false.
  */
-export function deficitSlotEligible(code: string): boolean {
+export function deficitSlotEligible(code: string | undefined | null): boolean {
   return !isReverseValenced(code);
 }
 
@@ -48,7 +52,7 @@ export function deficitSlotEligible(code: string): boolean {
  * (nyitott termékdöntésig — ld. fejléc).
  */
 export function strengthSlotEligible(
-  code: string,
+  code: string | undefined | null,
   surface: ValenceSurface,
 ): boolean {
   if (!isReverseValenced(code)) return true;
