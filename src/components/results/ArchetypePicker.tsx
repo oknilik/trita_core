@@ -21,6 +21,8 @@ import { personalityAdjective, personalityNoun } from "@/lib/personality-type";
 interface ArchetypePickerProps {
   dominant: HexacoCode;
   secondary: HexacoCode;
+  dominantSelected: boolean;
+  secondarySelected: boolean;
   onDominantChange: (dim: HexacoCode) => void;
   onSecondaryChange: (dim: HexacoCode) => void;
 }
@@ -38,6 +40,8 @@ const TILE_ACTIVE =
 export function ArchetypePicker({
   dominant,
   secondary,
+  dominantSelected,
+  secondarySelected,
   onDominantChange,
   onSecondaryChange,
 }: ArchetypePickerProps) {
@@ -59,7 +63,7 @@ export function ArchetypePicker({
         </p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
           {HEXACO_ORDER.map((dim) => {
-            const active = dim === dominant;
+            const active = dominantSelected && dim === dominant;
             return (
               <label key={dim} className={`${TILE_BASE} ${active ? TILE_ACTIVE : TILE_IDLE}`}>
                 <input
@@ -93,8 +97,10 @@ export function ArchetypePicker({
         </div>
       </fieldset>
 
-      {/* MÁSODLAGOS — a formán belül futó motívum. */}
-      <fieldset>
+      {/* MÁSODLAGOS — csak az első döntés után jelenik meg. Így a
+          felhasználó egyszerre egy kérdést old meg, és nem kap előre
+          kitöltött, idegennek ható elemzést. */}
+      {dominantSelected ? <fieldset>
         <legend className="mb-1.5 text-caption font-semibold text-[var(--color-text-primary)]">
           {t("results.interactionPickSecondary", locale)}
         </legend>
@@ -103,7 +109,7 @@ export function ArchetypePicker({
         </p>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
           {HEXACO_ORDER.filter((dim) => dim !== dominant).map((dim) => {
-            const active = dim === secondary;
+            const active = secondarySelected && dim === secondary;
             return (
               <label key={dim} className={`${TILE_BASE} ${active ? TILE_ACTIVE : TILE_IDLE}`}>
                 <input
@@ -134,7 +140,7 @@ export function ArchetypePicker({
             );
           })}
         </div>
-      </fieldset>
+      </fieldset> : null}
     </div>
   );
 }

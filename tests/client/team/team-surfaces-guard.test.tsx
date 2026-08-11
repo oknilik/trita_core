@@ -1,9 +1,8 @@
 /**
  * TEAM felület-guardok (Vitest + RTL) — 2026-08-11 javítások:
  *
- * FIX A (kód-szivárgás): a felületen belső dimenziókód (X/H/…) nem
- * jelenhet meg — a badge-ek a HEXACO-betűt (H/E/X/A/C/O) mutatják, a közös
- * `hexLetter` feloldón át (tritan.ts).
+ * FIX A (kód-szivárgás): a vezetői alapnézetben sem örökség-kód, sem
+ * H/E/X/A/C/O rövidítés nem jelenik meg; a teljes dimenziónév viszi a jelentést.
  * FIX B (termékdöntés): ±szórás/±eltérés SZÁM sehol nem jelenik meg a
  * renderelt csapat-kimenetben — a diszperzió-számítás belül él tovább
  * (sokszínűség-kártya, kohézió-trigger, halvány sáv-grafika).
@@ -45,11 +44,6 @@ vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
 }));
 
-// 2026-08-11: a belső dimenziókódok kivezetve — a kanonikus kód MAGA a
-// HEXACO-betű (H/E/X/A/C/O), amit a badge-ek szándékosan meg is jelenítenek.
-// Ezért az őrszem itt már nem a betűkre fut (az önmagát bukná), hanem a
-// KIVEZETETT örökség-kódokra: ha egy felület valaha visszahozná az INTE/RESO/…
-// jelölést, az regresszió.
 const LEGACY_DIM_CODES = ["INTE", "RESO", "TEMP", "THOR", "ADAP"];
 
 function expectNoLegacyDimCodes() {
@@ -79,15 +73,16 @@ const ROWS = [
 ];
 
 describe("TeamInsights", () => {
-  it("a badge-ek HEXACO-betűt mutatnak, örökség-kód nem szivárog ki", () => {
+  it("teljes dimenzióneveket mutat, belső rövidítés nem szivárog ki", () => {
     render(<TeamInsights rows={ROWS} dims={DIMS} isHu />);
 
     expectNoLegacyDimCodes();
-    // Átlag-sáv + erősség-kártya badge — az O „O"-ként oldódik fel.
-    expect(screen.getAllByText("O").length).toBeGreaterThanOrEqual(2);
-    // Fejlesztési terület (H) → „H"; sokszínűség-kártya (X) → „X".
-    expect(screen.getAllByText("H").length).toBeGreaterThanOrEqual(2);
-    expect(screen.getAllByText("X").length).toBeGreaterThanOrEqual(2);
+    expect(screen.queryByText("O")).not.toBeInTheDocument();
+    expect(screen.queryByText("H")).not.toBeInTheDocument();
+    expect(screen.queryByText("X")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Nyitottság").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("Becsületesség-Alázat").length).toBeGreaterThanOrEqual(2);
+    expect(screen.getAllByText("Extraverzió").length).toBeGreaterThanOrEqual(2);
   });
 
   it("nem jelenít meg ± szórás-számot; az átlagok maradnak", () => {

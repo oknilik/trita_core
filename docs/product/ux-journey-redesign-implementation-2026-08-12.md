@@ -5,7 +5,7 @@
 **Ág:** `codex/ux-journey-simplification`
 
 **Kiindulópont:** `origin/main` (`84867e5`)
-**Státusz:** az első négy megvalósítási szelet elkészült; a korábbi audit-backlog lezárása következik
+**Státusz:** minden tervezett szelet és a korábbi UX-audit backlogja elkészült
 
 ## 1. Vezetői döntés
 
@@ -237,3 +237,24 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
   profilmozgásokat mutatja, oksági állítás nélkül;
 - a teljes unit suite 981/981 zöld;
 - TypeScript typecheck hibamentes.
+
+## 13. Korábbi audit-backlog lezárása
+
+- a személyes riport fejezet-ugró sávot kapott, a hosszú munkastílus- és
+  fejlődési rész igény szerint nyitható;
+- a két eredményfül egyszerű, kétoszlopos szegmens lett: nincs vízszintes
+  scroll-state, él-fade, auto-center vagy routeres lapugrás;
+- az interakciós archetípusválasztás kétlépcsős, és nem mutat előre kitöltött
+  elemzést explicit választás előtt;
+- a kolléga-meghívó skeletonja és az értesítés-elvetés visszavonása a
+  kódbázisban már elkészült volt; a korábbi audit státusza ehhez igazodott;
+- a rétegzett interakció kliens-integrációs tesztje 14/14 zöld;
+- a teljes unit suite 981/981, a teljes client suite 159/159 zöld;
+- TypeScript typecheck, célzott ESLint, színtoken- és új-hex guard hibamentes;
+- az optimalizált production build sikeres, 102 statikus oldallal;
+- a publikus egyéni/csapatos mód és a kontextuális fejléc-CTA 390x844-es mobil
+  viewporton böngészőben is ellenőrizve, a meglévő vizuális rendszerben maradt.
+
+Az autentikált képernyők teljes böngészős adat-ellenőrzését a helyi adatbázis
+korábban jelzett sémaeltérése korlátozza; a komponens-, integrációs és production
+build ellenőrzések ettől függetlenül teljesen zöldek.

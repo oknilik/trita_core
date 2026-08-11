@@ -168,8 +168,8 @@ export function InteractionSection({
     [simulations],
   );
 
-  // Alapértelmezés: az első olyan archetípus, amelyik tényleg mond valamit.
-  // Üres állapottal indulni azt sugallná, hogy a funkció nem működik.
+  // A belső kezdőérték csak technikai fallback. A felület nem jelöli ki és
+  // nem értelmezi addig, amíg a felhasználó mindkét réteget ki nem választja.
   const initial = useMemo(
     () => simulations.find((sim) => !sim.sparse) ?? simulations[0],
     [simulations],
@@ -181,19 +181,30 @@ export function InteractionSection({
   const [secondary, setSecondary] = useState<HexacoCode>(
     initial?.secondary ?? "X",
   );
+  const [dominantSelected, setDominantSelected] = useState(false);
+  const [secondarySelected, setSecondarySelected] = useState(false);
   const [leaderMode, setLeaderMode] = useState(false);
 
   if (simulations.length === 0) return null;
 
   const handleDominantChange = (next: HexacoCode) => {
     setDominant(next);
+    setDominantSelected(true);
+    setSecondarySelected(false);
     // A két dimenzió nem eshet egybe — ilyenkor a másodikat léptetjük.
     if (next === secondary) {
       setSecondary(HEXACO_ORDER.find((dim) => dim !== next) ?? secondary);
     }
   };
 
-  const current = byKey.get(archetypeKey(dominant, secondary));
+  const handleSecondaryChange = (next: HexacoCode) => {
+    setSecondary(next);
+    setSecondarySelected(true);
+  };
+
+  const current = dominantSelected && secondarySelected
+    ? byKey.get(archetypeKey(dominant, secondary))
+    : undefined;
 
   // Ugyanaz az archetípus, mint a sajátod. Ez a leggyakoribb választás (a
   // felhasználó először magát nézi meg), és a legfélrevezethetőbb: a
@@ -233,8 +244,10 @@ export function InteractionSection({
       <ArchetypePicker
         dominant={dominant}
         secondary={secondary}
+        dominantSelected={dominantSelected}
+        secondarySelected={secondarySelected}
         onDominantChange={handleDominantChange}
-        onSecondaryChange={setSecondary}
+        onSecondaryChange={handleSecondaryChange}
       />
 
       {current && (

@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import { dimColorsCss } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
@@ -301,7 +300,7 @@ function ResultsTab({
   return (
     <div className="flex flex-col gap-10 md:gap-14">
       {/* 1. Áttekintés: radar + dimenzió-strip */}
-      <section>
+      <section id="profile-overview" className="scroll-mt-24">
         <DashboardSectionHeader
           label={t("results.sectionOverview", locale)}
           className="mb-4"
@@ -379,7 +378,7 @@ function ResultsTab({
       </section>
 
       {/* 2. Dimenziók részletesen — a legerősebb alapból nyitva */}
-      <section>
+      <section id="profile-dimensions" className="scroll-mt-24">
         <DashboardSectionHeader
           label={t("results.sectionDimensions", locale)}
           className="mb-4"
@@ -575,27 +574,6 @@ export function ProfileTabs({
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
-  const router = useRouter();
-  const tabBarRef = useRef<HTMLDivElement>(null);
-  const tabScrollRef = useRef<HTMLDivElement>(null);
-  // Görgethetőség-jelzés: él-fade csak akkor, ha arra még van tartalom.
-  const [tabFade, setTabFade] = useState({ left: false, right: false });
-
-  const updateTabFade = useCallback(() => {
-    const el = tabScrollRef.current;
-    if (!el) return;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    setTabFade({
-      left: el.scrollLeft > 4,
-      right: el.scrollLeft < maxScroll - 4,
-    });
-  }, []);
-
-  useEffect(() => {
-    updateTabFade();
-    window.addEventListener("resize", updateTabFade);
-    return () => window.removeEventListener("resize", updateTabFade);
-  }, [updateTabFade]);
 
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
@@ -623,23 +601,6 @@ export function ProfileTabs({
     timer = window.setTimeout(tryScroll, 100);
     return () => window.clearTimeout(timer);
   }, []);
-
-  // Az aktív tab a fül-sávon BELÜL középre kerül — csak vízszintesen.
-  // Korábban scrollIntoView volt: az a LAPOT is görgette, hogy a fül-sáv
-  // látszódjon, ezért mobilon minden betöltés/frissítés után az oldal
-  // magától lecsúszott a fül-sáv fölötti blokkra. A scrollLeft-állítás
-  // csak a vízszintes konténert mozgatja, a lap-görgetést nem érinti.
-  useEffect(() => {
-    const container = tabScrollRef.current;
-    const el = container?.querySelector<HTMLButtonElement>(
-      `button[data-tab-id="${activeTab}"]`,
-    );
-    if (!container || !el) return;
-    const target = el.offsetLeft - (container.clientWidth - el.offsetWidth) / 2;
-    const left = Math.max(0, Math.min(target, container.scrollWidth - container.clientWidth));
-    if (Math.abs(container.scrollLeft - left) < 2) return;
-    container.scrollTo({ left, behavior: "smooth" });
-  }, [activeTab]);
 
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
@@ -671,12 +632,9 @@ export function ProfileTabs({
       setActiveTab(tab);
       const url = new URL(window.location.href);
       url.searchParams.set("tab", tab);
-      router.push(url.pathname + url.search, { scroll: false });
-      setTimeout(() => {
-        tabBarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
+      window.history.replaceState({}, "", url.pathname + url.search + url.hash);
     },
-    [router],
+    [],
   );
 
   const ALL_TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
@@ -1115,34 +1073,18 @@ export function ProfileTabs({
 
       {/* Tab bar — pill style */}
       <div
-        ref={tabBarRef}
-        className="relative scroll-mt-24 rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
+        className="grid grid-cols-2 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
+        role="tablist"
+        aria-label="Profile navigation"
       >
-        {/* Él-fade jelzők — csak ott, ahol még van elgörgetett tartalom */}
-        {tabFade.left && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-[var(--color-surface-card)] to-transparent" />
-        )}
-        {tabFade.right && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-[var(--color-surface-card)] to-transparent" />
-        )}
-        <div
-          ref={tabScrollRef}
-          onScroll={updateTabFade}
-          className="flex snap-x overflow-x-auto rounded-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          role="tablist"
-          aria-label="Profile navigation"
-        >
         {TABS.map((tab, i) => (
           <button
             key={tab.id}
-            data-tab-id={tab.id}
             role="tab"
             aria-selected={activeTab === tab.id}
             onClick={() => handleTabChange(tab.id)}
             className={[
-              // Mobilon természetes szélesség + vízszintes görgetés; md-től
-              // egyenlő oszlopok. A felirat sosem törik/csonkul.
-              "flex min-h-[48px] flex-none shrink-0 snap-start items-center justify-center gap-1.5 whitespace-nowrap px-4 py-3 text-center text-xs font-medium transition-all md:flex-1 md:px-3",
+              "flex min-h-[48px] min-w-0 items-center justify-center gap-1.5 px-3 py-3 text-center text-xs font-medium transition-all",
               i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
               activeTab === tab.id
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
@@ -1158,7 +1100,6 @@ export function ProfileTabs({
             <span>{tab.label}</span>
           </button>
         ))}
-        </div>
       </div>
 
       {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
@@ -1175,6 +1116,30 @@ export function ProfileTabs({
             egy fülön, szekcióként; a Meghívók a Külső kép fül része. */}
         {activeTab === "results" && (
           <>
+            <nav
+              aria-label={isHu ? "Riport fejezetei" : "Report sections"}
+              className="flex flex-wrap gap-2 rounded-xl border border-[var(--color-border-soft)] bg-surface-card p-2"
+            >
+              <a href="#profile-overview" className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream">
+                {isHu ? "Áttekintés" : "Overview"}
+              </a>
+              <a href="#profile-dimensions" className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream">
+                {isHu ? "Dimenziók" : "Dimensions"}
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  const details = document.getElementById("workstyle-details") as HTMLDetailsElement | null;
+                  if (details) {
+                    details.open = true;
+                    details.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
+                className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream"
+              >
+                {isHu ? "Munkastílus és fejlődés" : "Work style and growth"}
+              </button>
+            </nav>
             <ResultsTab
               dimensions={dimensions}
               onOpenInvites={() => handleTabChange("comparison")}
@@ -1184,15 +1149,23 @@ export function ProfileTabs({
               plusContent={plusContent}
               observerFlow={observerFlow}
             />
-            <WorkStyleTab
-              dimensions={dimensions}
-              growthFocusItems={growthFocusItems}
-              isPlus={isPlus}
-              locale={locale}
-              plusContent={plusContent}
-              teamRoleMeasuredScores={teamRoleMeasuredScores}
-              teamRolePeer={teamRolePeer}
-            />
+            <details id="workstyle-details" className="scroll-mt-24 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card">
+              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
+                <p className="font-fraunces text-xl text-ink">{isHu ? "Részletes munkastílus és fejlődés" : "Detailed work style and growth"}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{isHu ? "Munkakörnyezet, szerepilleszkedés, csapatszerepek és fejlesztési fókusz — akkor nyisd meg, amikor mélyebbre mennél." : "Work environment, role fit, team roles and development focus — open when you want to go deeper."}</p>
+              </summary>
+              <div className="border-t border-[var(--color-border-soft)] p-5 md:p-6">
+                <WorkStyleTab
+                  dimensions={dimensions}
+                  growthFocusItems={growthFocusItems}
+                  isPlus={isPlus}
+                  locale={locale}
+                  plusContent={plusContent}
+                  teamRoleMeasuredScores={teamRoleMeasuredScores}
+                  teamRolePeer={teamRolePeer}
+                />
+              </div>
+            </details>
             {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
                 idáig eljutott, annak ez a következő logikus lépés. */}
             <div className="flex flex-col gap-3">
