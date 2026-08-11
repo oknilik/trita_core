@@ -197,7 +197,6 @@ export interface ProfileTabsProps {
     envItems: { label: string; value: string; hedged?: boolean }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
-    closingText: string;
   };
   bridgeNextStep?: BridgeNextStep;
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
@@ -406,11 +405,7 @@ function ResultsTab({
 
       {/* 3. Kulcs-tanulságok — rövid zárás; a részletes munkastílus külön tabon */}
       {isPlus && plusContent && (
-        <KeyTakeawaysSection
-          paragraphs={plusContent.takeaways}
-          closingText={plusContent.closingText}
-          isUnlocked={true}
-        />
+        <KeyTakeawaysSection paragraphs={plusContent.takeaways} isUnlocked={true} />
       )}
 
       {/* Observer kontextus-CTA — ha még nincs külső visszajelzés. Zárolt
@@ -978,7 +973,6 @@ export function ProfileTabs({
                 collaboration: plusContent.collaboration,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,
-                closingText: plusContent.closingText,
               } : undefined,
               // A facets tömb örökség-sorra üres (FIX 4) — koholt 0-facet
               // nem kerül a PDF-be; a code a pólus-tudatos jelölésekhez kell.

@@ -83,7 +83,7 @@ export function PlusWorkStylePage({ data, pageNum, totalPages, locale }: Props) 
 
         {/* ── Kulcs-tanulságok ── */}
         <View wrap={false}>
-          <PdfTakeaways takeaways={pc.takeaways} closer={pc.closingText} locale={locale} />
+          <PdfTakeaways takeaways={pc.takeaways} locale={locale} />
         </View>
 
         {/* ── Fejlődési fókusz (P2.4, P5.5): viselkedés → reflexió → mérés ── */}

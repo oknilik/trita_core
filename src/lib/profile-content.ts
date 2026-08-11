@@ -30,12 +30,13 @@ export const BLOCK1: LocalizedText = {
   en: "No labels. Instead, we highlight how you operate at work: what moves you forward, what weighs on you, and what keeps you steady. Not a diagnosis, but a clean snapshot of your current patterns.",
 };
 
-// ─── Block 8 – Záró framing ───────────────────────────────────────────────────
-
-export const BLOCK8: LocalizedText = {
-  hu: "Gondolj rá iránytűként: segít tisztábban látni, miben vagy erős, és mire érdemes tudatosabban figyelned. Térj vissza hozzá bátran, amikor új helyzet vagy döntés előtt állsz.",
-  en: "Treat it as a compass: it helps you see where you're strong and what deserves more deliberate attention. Come back to it whenever you're facing a new situation or decision.",
-};
+// ─── Block 8 – Záró framing: KIVEZETVE (2026-08-11) ──────────────────────────
+//
+// A záró „iránytű"-bekezdés (a kulcs-tanulságok kártya alján, a felületen és
+// a PDF-ben is) tulajdonosi döntéssel törölve — zavaró volt. A `closingText`
+// prop-lánc a KeyTakeawaysSection / PdfTakeaways felől is kivezetve, hogy ne
+// maradjon holt vezeték. Ha valaha visszakerül, a kulcs-tanulságok kártya a
+// helye — nem új szekció.
 
 // ─── Dimenzió nevek (Block 2 megjelenítőhöz) ─────────────────────────────────
 

@@ -5,11 +5,10 @@ import { t } from "@/lib/i18n";
 
 interface KeyTakeawaysSectionProps {
   paragraphs: string[];
-  closingText: string;
   isUnlocked: boolean;
 }
 
-export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: KeyTakeawaysSectionProps) {
+export function KeyTakeawaysSection({ paragraphs, isUnlocked }: KeyTakeawaysSectionProps) {
   const { locale } = useLocale();
 
   if (!isUnlocked || paragraphs.length === 0) return null;
@@ -30,11 +29,6 @@ export function KeyTakeawaysSection({ paragraphs, closingText, isUnlocked }: Key
           </div>
         ))}
       </div>
-      {closingText && (
-        <p className="mt-4 border-t border-white/[0.06] pt-3.5 font-fraunces text-sm italic leading-relaxed text-white/[0.6]">
-          {closingText}
-        </p>
-      )}
     </div>
   );
 }

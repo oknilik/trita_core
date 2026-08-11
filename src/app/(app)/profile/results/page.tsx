@@ -25,7 +25,7 @@ import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/memb
 import type { HexacoCode } from "@/lib/hexaco";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
-import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
+import { BLOCK1 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
 import {
@@ -585,7 +585,6 @@ export default async function ProfileResultsPage({
     envItems: workstyle.envItems,
     roleFit: workstyle.roleFit,
     takeaways: workstyle.takeaways,
-    closingText: BLOCK8[lang],
   } : undefined;
 
   return (
