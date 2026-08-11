@@ -1,11 +1,13 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
-import { getDimensionTier } from "@/lib/dimension-utils";
+import { dimColors } from "@/lib/color-system";
 
 interface Dim {
   name: string;
   value: number;
   description: string;
+  /** Dimenziókód — a pötty identitás-színéhez (szín ≠ értékelés). */
+  code?: string;
 }
 
 interface PdfDimDetailsProps {
@@ -28,8 +30,7 @@ export function PdfDimDetails({ dimensions, previewOnly = false, hasPlus = false
   return (
     <View style={{ marginBottom: 2 }}>
       {displayed.map((dim) => {
-        const tier = getDimensionTier(dim.value);
-        const dotColor = tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
+        const dotColor = dimColors(dim.code ?? "").base;
         return (
           <View
             key={dim.name}

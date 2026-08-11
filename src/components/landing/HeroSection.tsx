@@ -7,7 +7,8 @@ import { t } from "@/lib/i18n/public";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
-import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
+import { getDimensionLabel } from "@/lib/dimension-utils";
+import { dimColorsCss } from "@/lib/color-system";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 
@@ -23,15 +24,17 @@ const riseIn = "animate-rise-in";
 function SelfPanel() {
   const { locale } = useLocale();
 
-  // A ProfileHero + DimensionStrip redukált változata, az élő tier-tokenekkel.
-  // H E X A C O sorrend, mint a valódi riportban.
+  // A ProfileHero + DimensionStrip redukált változata, az élő paletta-
+  // tokenekkel. H E X A C O sorrend, mint a valódi riportban — a kód azért
+  // kell, mert a szín a DIMENZIÓT azonosítja, nem a pontszámot értékeli
+  // (ld. DimensionAccordion fejkomment).
   const dims = [
-    { name: t("landing.selfDim1", locale), value: 58 },
-    { name: t("landing.selfDim2", locale), value: 46 },
-    { name: t("landing.selfDim3", locale), value: 72 },
-    { name: t("landing.selfDim4", locale), value: 34 },
-    { name: t("landing.selfDim5", locale), value: 61 },
-    { name: t("landing.selfDim6", locale), value: 79 },
+    { code: "H", name: t("landing.selfDim1", locale), value: 58 },
+    { code: "E", name: t("landing.selfDim2", locale), value: 46 },
+    { code: "X", name: t("landing.selfDim3", locale), value: 72 },
+    { code: "A", name: t("landing.selfDim4", locale), value: 34 },
+    { code: "C", name: t("landing.selfDim5", locale), value: 61 },
+    { code: "O", name: t("landing.selfDim6", locale), value: 79 },
   ];
 
   const strengths = [t("landing.selfDim6", locale), t("landing.selfDim3", locale)];
@@ -73,15 +76,23 @@ function SelfPanel() {
         <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
           <div className="grid grid-cols-3">
             {dims.map((dim, i) => {
-              const colors = tierColors[getDimensionTier(dim.value)];
+              const colors = dimColorsCss(dim.code);
               return (
                 <div
                   key={dim.name}
                   className={`min-w-0 px-1 py-3.5 text-center md:px-2 ${i % 3 < 2 ? "border-r border-[var(--color-border-soft)]" : ""} ${i < 3 ? "border-b border-[var(--color-border-soft)]" : ""}`}
                 >
                   <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
-                  <p className={`mb-1 font-fraunces text-[20px] leading-none ${colors.text}`}>{dim.value}</p>
-                  <span className={`inline-block max-w-full truncate rounded px-1 py-[2px] text-micro font-semibold md:px-1.5 ${colors.tagBg} ${colors.tagText}`}>
+                  <p
+                    className="mb-1 font-fraunces text-[20px] leading-none"
+                    style={{ color: colors.strong }}
+                  >
+                    {dim.value}
+                  </p>
+                  <span
+                    className="inline-block max-w-full truncate rounded px-1 py-[2px] text-micro font-semibold md:px-1.5"
+                    style={{ backgroundColor: colors.soft, color: colors.strong }}
+                  >
                     {getDimensionLabel(dim.value, locale)}
                   </span>
                 </div>

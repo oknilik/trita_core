@@ -1,6 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { DYNAMICS_COLORS, DYNAMICS_COLORS_CSS } from "@/lib/color-system";
+import {
+  DIMENSION_COLORS,
+  DIMENSION_COLORS_CSS,
+  DYNAMICS_COLORS,
+  DYNAMICS_COLORS_CSS,
+} from "@/lib/color-system";
 import { GLYPH_COLORS, GLYPH_COLORS_CSS } from "@/lib/type-glyph";
 import { resolveToken } from "./css-tokens";
 
@@ -49,4 +54,23 @@ test("DYNAMICS_COLORS_CSS a literál térkép pontos tükre", () => {
 
 test("GLYPH_COLORS_CSS a literál térkép pontos tükre", () => {
   assertSameMap(GLYPH_COLORS, GLYPH_COLORS_CSS, "GLYPH_COLORS");
+});
+
+test("DIMENSION_COLORS_CSS a literál paletta pontos tükre", () => {
+  // A dimenzió-paletta hármas (base/strong/soft) — laposítva mérjük, hogy
+  // ugyanaz az összevetés fusson rá, mint a többi térképre.
+  const flatten = (map: Record<string, { base: string; strong: string; soft: string }>) =>
+    Object.fromEntries(
+      Object.entries(map).flatMap(([code, triple]) =>
+        (["base", "strong", "soft"] as const).map((key) => [
+          `${code}.${key}`,
+          triple[key],
+        ]),
+      ),
+    );
+  assertSameMap(
+    flatten(DIMENSION_COLORS),
+    flatten(DIMENSION_COLORS_CSS),
+    "DIMENSION_COLORS",
+  );
 });

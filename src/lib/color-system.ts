@@ -62,6 +62,39 @@ export function dimColors(code: string): DimColorTriple {
   return DIMENSION_COLORS[code as DimCode] ?? DIM_FALLBACK;
 }
 
+/**
+ * Ugyanaz a paletta DOM-hoz: CSS-változóként, tehát színsémát vált.
+ *
+ * Miért két térkép — ld. a DYNAMICS_COLORS / DYNAMICS_COLORS_CSS párost: a
+ * literál hex a FIX médiumoké (react-pdf, OG-kép, email — ott nincs
+ * CSS-változó), ez pedig az inline style-é és az SVG-attribútumoké a
+ * felületen. A kettő szinkronját a ts-color-maps teszt őrzi.
+ */
+export const DIMENSION_COLORS_CSS: Record<DimCode, DimColorTriple> = {
+  H: { base: "var(--color-dim-h-base)", strong: "var(--color-dim-h-strong)", soft: "var(--color-dim-h-soft)" },
+  E: { base: "var(--color-dim-e-base)", strong: "var(--color-dim-e-strong)", soft: "var(--color-dim-e-soft)" },
+  X: { base: "var(--color-dim-x-base)", strong: "var(--color-dim-x-strong)", soft: "var(--color-dim-x-soft)" },
+  A: { base: "var(--color-dim-a-base)", strong: "var(--color-dim-a-strong)", soft: "var(--color-dim-a-soft)" },
+  C: { base: "var(--color-dim-c-base)", strong: "var(--color-dim-c-strong)", soft: "var(--color-dim-c-soft)" },
+  O: { base: "var(--color-dim-o-base)", strong: "var(--color-dim-o-strong)", soft: "var(--color-dim-o-soft)" },
+};
+
+/**
+ * A kiegészítő (intersticiális) Segítőkészség-skála NEM a hat főfaktor
+ * egyike, ezért nincs saját identitás-hue-ja: semleges tintán jelenik meg.
+ * Így a kártya vizuálisan is azt mondja, amit a bannere szövegben állít.
+ */
+const DIM_NEUTRAL_CSS: DimColorTriple = {
+  base: "var(--color-text-muted)",
+  strong: "var(--color-text-secondary)",
+  soft: "var(--color-surface-subtle)",
+};
+
+/** Kód-alapú lookup a DOM-hoz; ismeretlen/kiegészítő kódra semleges tint. */
+export function dimColorsCss(code: string): DimColorTriple {
+  return DIMENSION_COLORS_CSS[code as DimCode] ?? DIM_NEUTRAL_CSS;
+}
+
 /** Kényelmi térképek a `Record<string, string>` alakú fogyasztóknak. */
 export const DIMENSION_BASE: Record<DimCode, string> = {
   H: DIMENSION_COLORS.H.base,

@@ -1,6 +1,6 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
-import { getDimensionTier } from "@/lib/dimension-utils";
+import { dimColors } from "@/lib/color-system";
 import { poleAwareDimensionLabel } from "@/lib/profile-content";
 
 interface Dim {
@@ -11,17 +11,16 @@ interface Dim {
   code?: string;
 }
 
-const tierColor = (tier: string) =>
-  tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
-const tierBg = (tier: string) =>
-  tier === "high" ? colors.sage100 : tier === "mid" ? colors.bronze100 : colors.cream300;
-
+// SZÍN = IDENTITÁS (2026-08-11, ld. DimensionAccordion fejkomment): a
+// korábbi tier-rámpa (zsálya/bronz/ink300) értékelést vitt egy leíró
+// skálára, és a 70-es vágása a mérési hibán belül járt. A PDF a literál
+// hex-palettából dolgozik — a react-pdf nem old fel CSS-változót.
 export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; locale?: "hu" | "en" }) {
   return (
     <View style={{ flexDirection: "row", marginBottom: 6, border: `1 solid ${colors.cream500}`, borderRadius: 4 }}>
       {dimensions.map((dim, i) => {
-        const tier = getDimensionTier(dim.value);
-        const tc = tierColor(tier);
+        const dc = dimColors(dim.code ?? "");
+        const tc = dc.strong;
         return (
           <View
             key={dim.name}
@@ -38,7 +37,7 @@ export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; 
               style={{
                 fontSize: 5.5,
                 fontWeight: 600,
-                backgroundColor: tierBg(tier),
+                backgroundColor: dc.soft,
                 color: tc,
                 padding: "1 3",
                 borderRadius: 2,
@@ -52,7 +51,7 @@ export function PdfDimStrip({ dimensions, locale = "hu" }: { dimensions: Dim[]; 
                 style={{
                   width: `${dim.value}%`,
                   height: 2,
-                  backgroundColor: tc,
+                  backgroundColor: dc.base,
                   borderRadius: 1,
                 }}
               />

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { dimColorsCss } from "@/lib/color-system";
 import { dimensionFacetNames } from "@/lib/hexaco";
 import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
@@ -14,6 +14,24 @@ import { UpgradeButton } from "@/components/profile/UpgradeButton";
 // (termékdöntés): mérési-hiba SZÁM nem jelenik meg a felületen — a
 // bizonytalanság-kezelés a címke-/próza-szintű hedge-ekben él, a magyarázat
 // pedig a központi módszertani leírásban.
+//
+// SZÍN = IDENTITÁS, NEM ÉRTÉK (2026-08-11). Korábban az értékelő ramp
+// (tierColors: ≥70 zsálya, 40–69 bronz, <40 homok) festette a kártyát, a
+// keretet, a pöttyöt, a sávot és a számot. Három baja volt:
+//  1. a 70-es vágás a MÉRÉSI HIBÁN BELÜL van (dimenzió-SEM a rövid formán
+//     ≈7,6 pont) — 68 és 82 közé kategorikus határt húzott, amit a kérdőív
+//     nem tud feloldani, miközben 68 és 46 azonos színt kapott;
+//  2. a gyakorlatban binárissá esett össze (a <40 sáv ritka), így „skála"
+//     helyett megfelelt/nem-felelt-meg képet adott;
+//  3. ÉRTÉKELŐ rámpa volt LEÍRÓ skálán: a magas Extraverzió nem „jobb", mint
+//     a közepes Becsületesség-Alázat. Ez szembement a szekció saját
+//     alcímével („a dimenziók nem skatulyák") és a score-valence.ts
+//     termékdöntésével is (az Emocionalitás mindkét pólusa valencia-mentes —
+//     mégis ugyanazt a zöld/bronz/homok kezelést kapta).
+// Mostantól a szín a DIMENZIÓT azonosítja (DIMENSION_COLORS, ugyanaz a
+// paletta, amit a radar és a strip használ), az ÉRTÉKET a sáv hossza és a
+// szám hordozza. A tier-alapú SZÖVEGES címke (erősség/mérsékelt/figyelendő)
+// ettől függetlenül él tovább a stripen — az külön termék-kérdés.
 
 interface FacetEntry {
   code: string;
@@ -65,8 +83,7 @@ function AccordionItem({
   showUpsell: boolean;
   locale: Locale;
 }) {
-  const tier = getDimensionTier(value);
-  const colors = tierColors[tier];
+  const colors = dimColorsCss(code);
   // A teaser-nevek a kanonikus facet-térképből (tritan.ts) jönnek — így a
   // feloldás után látott alskála-nevekkel azonosak, lokalizáltan.
   const facetNames = dimensionFacetNames(code, locale);
@@ -75,27 +92,31 @@ function AccordionItem({
   const percentile = percentileForScore(code, value);
 
   return (
-    <div
-      className={`mb-2.5 overflow-hidden rounded-xl border-[1.5px] shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)] ${colors.border}`}
-    >
+    <div className="mb-2.5 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-shadow hover:shadow-[0_4px_12px_rgba(0,0,0,0.05)]">
       {/* HEADER */}
       <button
         type="button"
         onClick={onToggle}
-        className={`flex w-full items-center gap-3 px-[18px] py-3.5 text-left transition-colors ${colors.cardBg} ${colors.cardHover}`}
+        className="flex w-full items-center gap-3 bg-surface-card px-[18px] py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
       >
-        <div className={`h-2 w-2 shrink-0 rounded-full ${colors.dot}`} />
+        <div
+          className="h-2 w-2 shrink-0 rounded-full"
+          style={{ backgroundColor: colors.base }}
+        />
         <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
           {name}
         </span>
-        <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
+        {/* A SÁV hordozza az értéket (a szín csak azonosít) — ezért kapott
+            valamivel több súlyt, mint a korábbi 1px-es vonal. */}
+        <div className="h-1.5 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
           <div
-            className={`h-full rounded-sm ${colors.fill}`}
-            style={{ width: `${value}%` }}
+            className="h-full rounded-sm"
+            style={{ width: `${value}%`, backgroundColor: colors.base }}
           />
         </div>
         <span
-          className={`w-10 shrink-0 text-right font-fraunces text-base tabular-nums ${colors.text}`}
+          className="w-10 shrink-0 text-right font-fraunces text-base tabular-nums"
+          style={{ color: colors.strong }}
         >
           {value}%
         </span>
@@ -148,9 +169,9 @@ function AccordionItem({
                   <div className="rounded-lg bg-[var(--color-surface-card)]/60 p-3">
                     {/* Mobilon egy oszlop — két oszlopban a skála+szám összecsúszna */}
                     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      {/* A facet a SAJÁT dimenziójához tartozik — annak a
+                          hue-ját viseli, nem külön értékelő színt. */}
                       {facets.map((f) => {
-                        const fTier = getDimensionTier(f.score);
-                        const fColors = tierColors[fTier];
                         return (
                           <div
                             key={f.code}
@@ -166,14 +187,15 @@ function AccordionItem({
                                 </span>
                               )}
                             </span>
-                            <div className="h-1 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
+                            <div className="h-1.5 w-[60px] shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)]">
                               <div
-                                className={`h-full rounded-sm ${fColors.fill}`}
-                                style={{ width: `${f.score}%` }}
+                                className="h-full rounded-sm"
+                                style={{ width: `${f.score}%`, backgroundColor: colors.base }}
                               />
                             </div>
                             <span
-                              className={`w-6 shrink-0 text-right text-[11px] font-semibold tabular-nums ${fColors.text}`}
+                              className="w-6 shrink-0 text-right text-[11px] font-semibold tabular-nums"
+                              style={{ color: colors.strong }}
                             >
                               {f.score}
                             </span>
