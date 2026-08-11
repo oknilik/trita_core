@@ -120,10 +120,14 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
   test("invite accept entrypoint with invalid token shows not-found without wrong redirect", async ({ page }) => {
     await page.goto("/join/c4-smoke-invalid-token", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/join/c4-smoke-invalid-token");
-    // A not-found tartalom streamelve érkezik — dev-fordítással együtt is
-    // beférő türelmi idő.
+    // A not-found tartalom streamelve érkezik — a `next dev` igény szerinti
+    // route-fordítása + a teljes app-shell SSR-je terhelt CI-runneren együtt is
+    // beleférő türelmi idő. A 15s határos volt (terhelt futáson mindhárom próba
+    // ~16s-nél bukott, holott a tartalom helyes — a szomszéd commitok zöldek),
+    // ezért 30s-re tágítjuk; ez nem hibát fed el, hanem a dev-render latenciát
+    // fedi le determinisztikusabban.
     await expect(
       page.getByText(/this page could not be found|ez az oldal nem található/i).first(),
-    ).toBeVisible({ timeout: 15_000 });
+    ).toBeVisible({ timeout: 30_000 });
   });
 });
