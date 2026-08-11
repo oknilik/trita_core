@@ -202,24 +202,26 @@ describe("computeDimComparisons — sorrend, delta, üres self", () => {
 });
 
 describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
-  it("a default küszöb a mérési hiba: pontosan 10", () => {
-    // = Math.round(dimStandardError("short")) — a fix 5 a hiba alatt volt.
-    assert.equal(DOSSIER_GAP_MIN_DELTA, 10);
+  it("a default küszöb a KÜLÖNBSÉG mérési hibája: √2·SEM ~15", () => {
+    // = Math.round(diffStandardError("short")): az önkép és a külső (observer)
+    // átlag KÉT független mérés, a különbségük hibája √2·SEM — a korábbi
+    // 1×SEM=10 ~40%-kal alul-becsülte, így a hibán belüli deltákat is felhozta.
+    assert.equal(DOSSIER_GAP_MIN_DELTA, 15);
   });
 
-  it("|delta| szerint csökkenő, a SEM-küszöb (10) alattiak és null-ok kihagyva, max n", () => {
+  it("|delta| szerint csökkenő, a diff-küszöb (15) alattiak és null-ok kihagyva, max n", () => {
     const self: Record<string, number> = { TEMP: 50, RESO: 50, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
     const obs: Record<string, number> = { TEMP: 53, RESO: 42, INTE: 70, THOR: 46, ADAP: 65, OPEN: 51 };
-    // deltak: TEMP +3(kihagy), RESO -8(kihagy — hibán belül), INTE +20,
-    // THOR -4(kihagy), ADAP +15, OPEN +1(kihagy)
+    // deltak: TEMP +3(kihagy), RESO -8(kihagy), INTE +20 (bekerül),
+    // THOR -4(kihagy), ADAP +15 (bekerül — pont a küszöbön, >=), OPEN +1(kihagy)
     const gaps = topGapDims(computeDimComparisons(TRITAN_ORDER, self, obs));
     assert.deepEqual(gaps.map((d) => d.code), ["INTE", "ADAP"]);
   });
 
-  it("küszöb-határ: |delta| = 9 kimarad, |delta| = 10 bekerül", () => {
+  it("küszöb-határ: |delta| = 14 kimarad, |delta| = 15 bekerül", () => {
     const self: Record<string, number> = { TEMP: 50, RESO: 50, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
-    const obs: Record<string, number> = { TEMP: 59, RESO: 40, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
-    // deltak: TEMP +9 (kihagy), RESO -10 (bekerül)
+    const obs: Record<string, number> = { TEMP: 64, RESO: 35, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
+    // deltak: TEMP +14 (kihagy), RESO -15 (bekerül)
     const gaps = topGapDims(computeDimComparisons(TRITAN_ORDER, self, obs));
     assert.deepEqual(gaps.map((d) => d.code), ["RESO"]);
   });
