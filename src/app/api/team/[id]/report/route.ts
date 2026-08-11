@@ -94,9 +94,9 @@ async function requireConsultant(teamId: string) {
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership || !canViewRawTeamResults(membership.role)) {
+  if (!membership || membership.leftAt || !canViewRawTeamResults(membership.role)) {
     return { error: "FORBIDDEN" as const, status: 403 };
   }
 

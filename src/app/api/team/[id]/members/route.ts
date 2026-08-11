@@ -42,9 +42,11 @@ export async function POST(
 
   const orgMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!orgMembership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  if (!orgMembership || orgMembership.leftAt) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
 
   const snapshot = await resolveTeamPolicySnapshot({
     orgId: team.orgId,

@@ -30,7 +30,7 @@ export async function GET(
   const orgMembership = team.orgId
     ? await prisma.organizationMember.findUnique({
         where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-        select: { role: true },
+        select: { role: true, leftAt: true },
       })
     : null;
 
@@ -40,7 +40,7 @@ export async function GET(
   // ugyanezt az aggregátumot tanácsadói körre szűkíti, curl-lel bárki
   // elérte a patternCode/tengely/confidence adatot.
   const canViewRaw =
-    canViewRawTeamResults(orgMembership?.role) ||
+    canViewRawTeamResults(orgMembership?.leftAt ? null : orgMembership?.role) ||
     profile.isConsultant ||
     isPlatformAdminEmail(profile.email);
   if (!canViewRaw) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });

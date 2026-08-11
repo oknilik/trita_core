@@ -573,7 +573,11 @@ export async function handleInquiryReceived(params: {
   const consultantIds = params.organizationId
     ? (
         await prisma.organizationMember.findMany({
-          where: { orgId: params.organizationId, role: "ORG_CONSULTANT" },
+          where: {
+            orgId: params.organizationId,
+            role: "ORG_CONSULTANT",
+            leftAt: null,
+          },
           select: { userId: true },
         })
       ).map((m) => m.userId)

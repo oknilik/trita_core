@@ -258,3 +258,25 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
 Az autentikált képernyők teljes böngészős adat-ellenőrzését a helyi adatbázis
 korábban jelzett sémaeltérése korlátozza; a komponens-, integrációs és production
 build ellenőrzések ettől függetlenül teljesen zöldek.
+
+## 14. Szervezetből kilépő felhasználó self-fallbackje
+
+- a szervezeti eltávolítás egyetlen tranzakcióban soft-exittel lezárja az
+  `OrganizationMember` sort, és törli az adott org aktív csapattagságait;
+- a személyes profil, a self `AssessmentResult` és az observer-kapcsolatok nem
+  törlődnek;
+- ha nem marad más valódi org-tagság, a profil `INDIVIDUAL` szerepre, üres
+  `activeOrgId` és `activeTeamId` kontextusra áll vissza;
+- több-szervezetes fióknál a megmaradt aktív, illetve legfrissebb tagság lesz a
+  fallback, és csak az eltávolított org csapatkapcsolatai szűnnek meg;
+- a szervezeti, kampány-, team- és riport-API-k a `leftAt` értéket is
+  jogosultsági kapuként kezelik, ezért a kilépett user mélylinkkel sem őrzi meg
+  a korábbi hozzáférést;
+- a taglisták és admin létszámok csak az aktív tagságokat számítják;
+- az új unit tesztek 4/4 zöldek; a két új adatbázisos integrációs eset a self
+  eredmény megőrzését és a több-org fallbacket ellenőrzi. Helyben a teszt-DB
+  `prisma migrate deploy` bootstrapja schema-engine hibával megállt a tesztek
+  indulása előtt, ezért ennek végső bizonyítéka a PR hermetikus GitHub CI-je;
+- a teljes unit suite 985/985, a teljes client suite 159/159 zöld;
+- TypeScript typecheck, célzott ESLint és a szín/hex guardok hibamentesek;
+- az optimalizált production build sikeres, 102 statikus oldallal.

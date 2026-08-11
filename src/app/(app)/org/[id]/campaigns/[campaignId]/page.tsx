@@ -195,7 +195,7 @@ export default async function CampaignDetailPage({
       },
     }),
     prisma.organizationMember.findMany({
-      where: { orgId },
+      where: { orgId, leftAt: null },
       select: {
         userId: true,
         user: { select: { username: true, email: true } },

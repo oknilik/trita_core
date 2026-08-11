@@ -45,10 +45,11 @@ export async function PATCH(
   }
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
   if (
     !membership ||
+    membership.leftAt ||
     (!hasOrgRole(membership.role, "ORG_MANAGER") &&
       !canViewRawTeamResults(membership.role))
   ) {

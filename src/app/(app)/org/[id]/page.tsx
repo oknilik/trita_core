@@ -188,7 +188,7 @@ export default async function OrgDetailPage({
   const [pageData, members, pendingInvites, teams] = await Promise.all([
     getOrgPageData(orgId),
     prisma.organizationMember.findMany({
-      where: { orgId },
+      where: { orgId, leftAt: null },
       orderBy: { joinedAt: "asc" },
       select: {
         id: true,

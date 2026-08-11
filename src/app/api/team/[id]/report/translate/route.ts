@@ -41,10 +41,10 @@ export async function POST(
   // platform-tanácsadó / platform-admin).
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
   const isConsultant =
-    (membership && canViewRawTeamResults(membership.role)) ||
+    (membership && !membership.leftAt && canViewRawTeamResults(membership.role)) ||
     profile.isConsultant ||
     isPlatformAdminEmail(profile.email);
   if (!isConsultant) {
