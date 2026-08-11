@@ -6,6 +6,7 @@ import {
   resolvePersonalityTypeFromScores,
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
+import { diffStandardError } from "@/lib/psychometrics";
 
 // Melléknév-óvatosság: ha a 2. és 3. helyezett dimenzió különbsége a mérési
 // hibán belül van (< TYPE_ADJECTIVE_MIN_GAP = round(SEM, rövid forma)), a
@@ -107,10 +108,14 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
     assert.equal(resolvePersonalityTypeFromScores(withI, "hu"), "Energikus újító");
   });
 
-  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM ~15) — ld. psychometrics invariáns-teszt", () => {
-    // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM (≈15),
-    // nem 1×SEM (10). A régi alias visszafelé kompatibilis, azonos értékkel.
-    assert.equal(DIFF_MIN_GAP, 15);
+  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM) — ld. psychometrics invariáns-teszt", () => {
+    // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM,
+    // nem 1×SEM (≈10). A KONKRÉT érték a bankból jön (a rövid forma
+    // item-számából), ezért itt NEM literálhoz kötjük — a korábbi kézi 15
+    // pontosan attól avult el, hogy a bank változott (2026-08-11: 60
+    // fő-dimenziós item → 14). A számszerű invariáns helye:
+    // tests/unit/scoring/psychometrics.test.ts (ott a bankból számol).
+    assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
     assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });
 });

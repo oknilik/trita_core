@@ -729,8 +729,9 @@ export function ProfileTabs({
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
         // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
-        // (score-valence, surface="self" — a RESO itt jelenleg megengedett,
-        // nyitott termékdöntésig, ld. a modul fejlécét).
+        // (score-valence, surface="self"). 2026-08-11 óta a RESO itt sem
+        // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
+        // a chip-sort, így nem marad árva „Legerősebb:" felirat.
         topDimensions={dimensions
           .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
           .map((d) => d.label)}
@@ -763,8 +764,10 @@ export function ProfileTabs({
               .sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
-            // Erősség-lista a kanonikus valencia-kapun át (self felület —
-            // a RESO jelenleg megengedett, nyitott termékdöntésig).
+            // Erősség-lista a kanonikus valencia-kapun át (self felület) — a
+            // RESO 2026-08-11 óta itt sem erősség; ha nem marad ≥70-es
+            // dimenzió, a strengthBullets a results.balancedProfile kulcsra
+            // esik vissza (nincs üres felsorolás).
             const highDims = mainDims.filter(
               (d) => strengthSlotEligible(d.code, "self") && d.score >= 70,
             );

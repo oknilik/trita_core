@@ -10,9 +10,19 @@ import type { Locale } from "@/lib/i18n";
 // mondatok tendenciát jeleznek („jellemzően", „többnyire"), nem
 // kategorikus jellem-ítéletet — a gyenge-oldali megfogalmazások eleve
 // tendencia-nyelven íródtak, azok változatlanok.
+//
+// RESO-kivétel (2026-08-11, valencia-revízió — kanonikus kapu:
+// score-valence.ts): az Emocionalitás egyik pólusa sem erősség és nem is
+// hiányosság. A dimenzió a hero „legerősebb" HELYÉN továbbra is megnevezhető
+// (különben egy magas-E kitöltő profilja kiürülne), de a MONDAT ott is
+// jellemző-keretezésű, nem erősség-keretezésű; és MINDKÉT pólus prózája
+// kétoldalú (hozadék ÉS ára), hogy egyik se olvasódjon verdiktként.
 // ─────────────────────────────────────────────────────────────────────
 
-/** Hero-tagline erősség-fele: a legmagasabb dimenzióhoz. */
+/**
+ * Hero-tagline első fele: a legmagasabb dimenzióhoz.
+ * A RESO-nál ez NEM erősség-állítás, hanem jellemző-leírás (ld. fejléc).
+ */
 export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = {
   // P5.1: viselkedési preferencia, nem erkölcsi ítélet — a „manipulációmentes"
   // implicit módon morálisan minősítette az alacsonyabb pólust.
@@ -20,9 +30,12 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
     hu: "Jellemzően nyílt lapokkal, közvetlen eszközökkel dolgozol",
     en: "You tend to work with open cards and direct means",
   },
+  // Jellemző-keretezés, nem erősség-keretezés (ld. fejléc): a mondat leír,
+  // nem dicsér, és a hozadék mellett az árát is kimondja — így a hero nem
+  // mond ellent a lentebbi facet-bontásnak (Szorongás/Félelem).
   RESO: {
-    hu: "Többnyire mélyen és empatikusan kapcsolódsz másokhoz",
-    en: "You tend to connect deeply and empathetically with others",
+    hu: "Többnyire hamar megérzed a helyzetek érzelmi töltetét, és sokat viszel magaddal belőle",
+    en: "You tend to pick up a situation's emotional charge early, and carry a lot of it with you",
   },
   TEMP: {
     hu: "Jellemzően energikusan és inspirálóan vagy jelen",
@@ -42,15 +55,24 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
   },
 };
 
-/** Hero-tagline gyenge-fele: a legalacsonyabb dimenzióhoz. */
+/**
+ * Hero-tagline gyenge-fele: a legalacsonyabb dimenzióhoz.
+ *
+ * A RESO-sor a HERO-ban NEM érhető el (a kanonikus kapu kizárja a fordított
+ * dimenziót a „leggyengébb" slotból — score-valence.deficitSlotEligible,
+ * workstyle-content.selectHeroInsightDims). SZÁNDÉKOSAN benne marad, de
+ * valencia-mentesre írva: a térkép dim-kód szerinti, és ha egy jövőbeli
+ * felület mégis feloldja, ne a régi hiány-keretezés („az érzelmi bevonódás
+ * kevésbé természetes tereped") kerüljön ki.
+ */
 export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   INTE: {
     hu: "a státusz és pozíció természetesebb tereped",
     en: "status and positioning come more naturally to you",
   },
   RESO: {
-    hu: "az érzelmi bevonódás kevésbé természetes tereped",
-    en: "emotional involvement is less natural for you",
+    hu: "a higgadtság megőrzése természetesebb, mint mások érzelmi jelzéseinek olvasása",
+    en: "staying level comes more naturally than reading others' emotional signals",
   },
   TEMP: {
     hu: "a társas láthatóság kevésbé természetes tereped",
@@ -78,7 +100,11 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
  */
 export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = {
   INTE: { hu: "nyílt működés, kiszámíthatóság, bizalomépítés", en: "open dealing, predictability, trust-building" },
-  RESO: { hu: "érzelmi mélység, törődő jelenlét", en: "emotional depth, caring presence" },
+  // A RESO-sor a valencia-kapu (score-valence.strengthSlotEligible) miatt
+  // NEM kerül erősség-bulletbe. Aligned marad, mert a térkép dim-kód
+  // szerinti — a korábbi „érzelmi mélység, törődő jelenlét" erény-keretezés
+  // volt (és empátiát ígért, amit ez a skála nem mér).
+  RESO: { hu: "korán érzékeli a feszültséget, és sokat visz magával belőle", en: "registers tension early, and carries a lot of it" },
   TEMP: { hu: "lendület, társas magabiztosság", en: "momentum, social confidence" },
   ADAP: { hu: "megbocsátás, higgadtság, kompromisszumkészség", en: "forgiveness, composure, willingness to compromise" },
   THOR: { hu: "szervezettség, kitartás, pontosság", en: "organized, persistent, precise" },
@@ -88,7 +114,9 @@ export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = 
 /** Figyelendő-bullet kiegészítők — a tagline gyenge-felétől eltérő szókinccsel (P3.2). */
 export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
   INTE: { hu: "erős versenyszellem, státusz-tudatosság", en: "strong competitive drive, status awareness" },
-  RESO: { hu: "tárgyilagos, érzelmileg visszafogott stílus", en: "matter-of-fact, emotionally reserved style" },
+  // Szintén nem érhető el (deficitSlotEligible kizárja) — kétoldalúra írva:
+  // nyomás alatti higgadtság ÉS a jelzések elkerülésének kockázata.
+  RESO: { hu: "nyomás alatt higgadt, mások érzelmi jelzéseit ritkábban veszi észre", en: "steady under pressure, less likely to register others' emotional signals" },
   TEMP: { hu: "háttérben marad, ritkábban lép színre", en: "stays in the background, steps forward less often" },
   ADAP: { hu: "gyorsabban éleződő viták, kevesebb kompromisszum", en: "debates sharpen quickly, fewer compromises" },
   THOR: { hu: "lazább struktúra, improvizatívabb munkamód", en: "looser structure, more improvised workflow" },

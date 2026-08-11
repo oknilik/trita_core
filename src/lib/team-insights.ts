@@ -44,10 +44,15 @@ export function generateTeamSummary(scores: Record<string, number>): string {
 
 // ── Kulcs jellemzők actionable insight-ok ─────────────────
 
+// A RESO-sor a valencia-kapun (strengthSlotEligible "evaluative" —
+// team-report.ts) NEM jut el az erősség-slotba: egy Félelem/Szorongás
+// átlagból „empatikus csapat — különösen erős" erény-állítást csinálni
+// kétszeresen hibás volt (2026-08-11 valencia-döntés). A sor a térkép
+// teljessége miatt marad, jellemző-keretezésben, hozadékkal ÉS árral.
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
     INTE: "A csapat ösztönösen méltányos döntéseket hoz — használd ki a belső mediátorok erejét.",
-    RESO: "Empatikus csapat — workshopokon és ügyfélhelyzetekben különösen erős.",
+    RESO: "Érzelmileg ráhangolódó csapat — a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
     TEMP: "Társas helyzetekben gyorsan aktiválható — workshopokon, prezentációknál kiváló.",
     ADAP: "Erős együttműködés — komplex projekteknél kevesebb koordinációra lehet szükség.",
     THOR: "Fegyelmezett végrehajtás — határidős projekteknél ez jellemzően erőforrás.",

@@ -58,18 +58,34 @@ function scoreLikert(
     }
   }
 
+  // „Nincs mérve" ≠ 0 pont (2026-08-11). A korábbi `count === 0 ? 0 : …`
+  // ág a meg nem válaszolt skálára KOHOLT, a valódi 0-tól megkülönböztet-
+  // hetetlen nullát írt a tárolt score-JSON-ba — abból lett 0%-os sáv,
+  // „figyelendő" badge, low-próza és fejlődési fókusz. A válasz nélküli
+  // dimenzió/facet ezért teljesen KIMARAD a JSON-ból; az olvasók
+  // (results/page.tsx, share, hiring, team/org aggregátumok, career
+  // person.ts, PDF) mind `typeof … === "number"` kapuval dolgoznak, tehát
+  // a hiányzó kulcsot hiányként — nem nullaként — kezelik.
+  const score = (sum: number, count: number) =>
+    Math.round(((sum / count - 1) / 4) * 100);
+
   const dimensions: Record<string, number> = {};
   for (const dim of config.dimensions) {
     const { sum, count } = totals[dim.code];
-    dimensions[dim.code] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
+    if (count === 0) continue;
+    dimensions[dim.code] = score(sum, count);
   }
 
   const facets: Record<string, Record<string, number>> = {};
   for (const [dimCode, facetMap] of Object.entries(facetTotals)) {
-    facets[dimCode] = {};
+    const dimFacets: Record<string, number> = {};
     for (const [facetCode, { sum, count }] of Object.entries(facetMap)) {
-      facets[dimCode][facetCode] = count === 0 ? 0 : Math.round(((sum / count - 1) / 4) * 100);
+      if (count === 0) continue;
+      dimFacets[facetCode] = score(sum, count);
     }
+    // Üresen maradt dimenzió-kulcs sem kerül a facets-be — a `{}` ugyanúgy
+    // „megmért, de üres" látszatot keltene, mint a koholt 0.
+    if (Object.keys(dimFacets).length > 0) facets[dimCode] = dimFacets;
   }
 
   return { dimensions, facets };

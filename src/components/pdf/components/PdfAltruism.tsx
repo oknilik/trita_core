@@ -12,6 +12,11 @@ interface PdfAltruismProps {
 
 export function PdfAltruism({ value, description, locale = "hu" }: PdfAltruismProps) {
   const dotColor = value >= 70 ? colors.sage : value >= 40 ? colors.bronze : colors.ink300;
+  // A webes AltruismCard-dal azonos sávpadló: 0%-nál a nulla szélességű sáv
+  // adathibának/renderelési hibának látszik, nem szándékos alacsony értéknek.
+  // (A pontozás 2026-08-11 óta nem ír koholt 0-t, de egy VALÓDI 0 továbbra is
+  // előfordulhat — annak is látszania kell.)
+  const barWidth = Math.max(0, Math.min(100, value));
 
   return (
     <View style={{ marginBottom: 6 }}>
@@ -30,10 +35,16 @@ export function PdfAltruism({ value, description, locale = "hu" }: PdfAltruismPr
             </Text>
           </View>
           <View style={{ width: 50, height: 3, backgroundColor: colors.cream500, borderRadius: 2, overflow: "hidden" }}>
-            <View style={{ width: `${value}%`, height: 3, backgroundColor: dotColor, borderRadius: 2 }} />
+            <View style={{ width: `${Math.max(barWidth, 2)}%`, height: 3, backgroundColor: dotColor, borderRadius: 2 }} />
           </View>
           <Text style={{ fontSize: 7.5, fontWeight: 600, color: dotColor, width: 20, textAlign: "right" }}>{value}%</Text>
         </View>
+        {/* A webes AltruismCard info-bannerével azonos keretezés: a skála nem
+            része a hat főfaktornak, ezért nem is számít bele az átlagukba.
+            Enélkül a PDF-ben egy hetedik dimenziónak látszott. */}
+        <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.35, marginBottom: 2 }}>
+          {t("content.altruismInfo", locale)}
+        </Text>
         <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.35 }}>{description}</Text>
       </View>
     </View>

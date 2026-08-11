@@ -48,7 +48,14 @@ export interface WorkstyleContent {
   /** Kockázati tension-párok strukturáltan (összefoglaló + mitigációs tanács
    *  + forrás-dimenziók) — a PDF/megjelenítés célzott használatához; a
    *  howYouWork-ben ugyanez folyó szövegként is megjelenik. */
-  riskParts: { summary: string; mitigation: string; source: string }[];
+  riskParts: {
+    summary: string;
+    mitigation: string;
+    source: string;
+    /** Fordított skálából (RESO) eredő pár — nem kerülhet valenciás
+     *  („Figyelendő") kártyára, csak kontextusként jelenik meg. */
+    reverseValenced: boolean;
+  }[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
   /** Ugyanez strukturáltan (stress/blindspot külön + forrás-dimenzió, P5.2). */
@@ -132,7 +139,10 @@ export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; m
     INTE_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
     INTE_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
     RESO_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
-    RESO_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Empatikus közeg"] },
+    // A prep-címke korábban „Empatikus közeg" volt — az alacsony
+    // Emocionalitást empátia-hiánynak keretezte (2026-08-11 valencia-döntés:
+    // ez a skála nem empátiát mér). A közeg jellemzője az érzelmi intenzitás.
+    RESO_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Érzelmileg intenzív közeg"] },
     TEMP_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
     TEMP_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
     ADAP_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
@@ -146,7 +156,7 @@ export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; m
     INTE_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
     INTE_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
     RESO_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
-    RESO_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Empathetic context"] },
+    RESO_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Emotionally intense context"] },
     TEMP_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
     TEMP_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
     ADAP_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
@@ -240,6 +250,10 @@ export function buildWorkstyleContent(
         summary,
         mitigation,
         source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
+        // A pár fordított skálából (RESO) ered-e — a megjelenítő ez alapján
+        // NEM teszi valenciás („Figyelendő") kártyára (ld. lentebb).
+        reverseValenced:
+          !deficitSlotEligible(pair.dimA) || !deficitSlotEligible(pair.dimB),
       });
     } else {
       if (summary) orphanRiskTexts.push(summary);
@@ -257,7 +271,15 @@ export function buildWorkstyleContent(
   // …a megjelenítés viszont a nevesített slotokból megy (FIX 3): main = első
   // narratíva; watch = CSAK valódi risk-pár (summary + mitigáció együtt);
   // context = minden további bekezdés.
-  const firstRisk = riskParts[0] ?? null;
+  // Valencia-kapu a „Figyelendő" kártyára (2026-08-11): a TENSION_PAIRS
+  // táblában a hat dimenzió közül EGYEDÜL a RESO-magas párok vannak
+  // `risk: true`-ra állítva (a RESO-alacsony párok mind `false`) — vagyis a
+  // fordított skála magas pólusa strukturálisan borostyán „Figyelendő"
+  // kártyát kapott, miközben az alacsony pólus zöldet. Ez ellentmond a
+  // valencia-mentes döntésnek (score-valence.ts fejléc).
+  // A TARTALOM nem vész el: az összefoglaló és a mitigációs tanács ugyanúgy
+  // kimegy (riskParts + context), csak nem valenciás címke alatt.
+  const firstRisk = riskParts.find((p) => !p.reverseValenced) ?? null;
   const firstRiskText = firstRisk
     ? `${firstRisk.summary} ${firstRisk.mitigation}`
     : null;

@@ -26,9 +26,17 @@ export const PERSONALITY_TYPE_PARTS: Record<string, TypeParts> = {
     noun: { hu: "értékőr", en: "Value Guardian" },
     adjective: { hu: "elvhű", en: "Principled" },
   },
+  // 2026-08-11, valencia-revízió: a korábbi „empata"/"Empath" NEM a mért
+  // konstruktum — az Emocionalitás facetjei a Félelem / Szorongás /
+  // Dependencia / Érzelmi kötődés, az empátia (mások iránti törődés) nem
+  // ezen a skálán mérődik. A helyére a ráhangolódás-család került: leíró,
+  // nem erény — nem ígér empátiát, törődést vagy „érzelmi mélységet".
+  // (EN: a „ráhangolódó" főnévi helyzetben angolul nem áll meg jelzővel —
+  // „Energetic Attuned" nyelvtanilag rossz —, ezért a főnév leíró
+  // szókapcsolat, a melléknévi színezet marad „Attuned".)
   RESO: {
-    noun: { hu: "empata", en: "Empath" },
-    adjective: { hu: "empatikus", en: "Empathetic" },
+    noun: { hu: "ráhangolódó", en: "Signal Reader" },
+    adjective: { hu: "ráhangolódó", en: "Attuned" },
   },
   TEMP: {
     noun: { hu: "hajtóerő", en: "Driving Force" },
@@ -117,8 +125,15 @@ export function personalityAdjective(
  * importálják (guest-teaser, TypeGlyphPlate…), a psychometrics a teljes
  * kérdésbankot húzná a bundle-be. Drift ellen invariáns-teszt:
  * tests/unit/scoring/psychometrics.test.ts.
+ *
+ * 15 → 14 (2026-08-11): a kiegészítő altruizmus-skála két itemje kikerült a
+ * rövid formából, és helyettük két FŐ-dimenziós item lépett be, így a hat
+ * dimenzió 58 helyett 60 itemen nyugszik (9,67 → 10 item/dimenzió).
+ * Több item = magasabb α (0,7317 → 0,7383) = kisebb SEM (10,36 → 10,23),
+ * tehát SE(diff) 14,65 → 14,47. A kapu nem „lazult": pontosan annyival lett
+ * szűkebb, amennyivel a mérés pontosabb.
  */
-export const DIFF_MIN_GAP = 15;
+export const DIFF_MIN_GAP = 14;
 
 /** @deprecated Használd a DIFF_MIN_GAP-et — azonos küszöb (√2·SEM). */
 export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;

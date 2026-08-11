@@ -1,17 +1,22 @@
 /**
  * ComparisonTab client tests (Vitest + RTL) — motor-audit v6, M1 + M5.
  *
- * Az önkép–külső kép dimenzió-kapu a kanonikus DIFF_MIN_GAP (= round(√2·SEM)
- * = 15): a korábbi hardkódolt 10 a 10–14 pontos gap-eket „eltérésnek" és
- * „vakfoltnak" osztályozta, miközben a dosszié/PDF ugyanarra 15-öt használt.
- * A ≥15-ös chip pedig a bronz magnitúdó-rámpán él (nem piros/error) — a nagy
- * eltérés „figyelemre érdemes vakfolt", nem hiba.
+ * Az önkép–külső kép dimenzió-kapu a kanonikus DIFF_MIN_GAP (= round(√2·SEM)):
+ * a korábbi hardkódolt 10 a kapu alatti gap-eket „eltérésnek" és „vakfoltnak"
+ * osztályozta, miközben a dosszié/PDF ugyanarra a kanonikus küszöböt
+ * használta. A kapu FELETTI chip pedig a bronz magnitúdó-rámpán él (nem
+ * piros/error) — a nagy eltérés „figyelemre érdemes vakfolt", nem hiba.
+ *
+ * A küszöb SZÁMÉRTÉKE a kérdésbankból jön (rövid forma item-száma), ezért itt
+ * nem literálhoz kötjük — a számszerű invariáns helye:
+ * tests/unit/scoring/psychometrics.test.ts.
  */
 
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { ComparisonTab } from "@/components/results/ComparisonTab";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
+import { diffStandardError } from "@/lib/psychometrics";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
 vi.mock("@/components/LocaleProvider", () => ({
@@ -37,7 +42,7 @@ function dim(
   };
 }
 
-// Gap-ek: INTE 12 (a 10–14-es vitatott sáv), TEMP 16 (kapu felett, medium),
+// Gap-ek: INTE 12 (a kapu alatti, vitatott sáv), TEMP 16 (kapu felett, medium),
 // ADAP 25 (kapu felett, large), a többi 0.
 const DIMENSIONS: SerializedDimension[] = [
   dim("INTE", "Becsületesség-Alázat", 60, 72),
@@ -60,10 +65,11 @@ function renderTab() {
 
 describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
   it("a kapu a kanonikus √2·SEM konstans, nem a régi 10-es literál", () => {
-    expect(DIFF_MIN_GAP).toBe(15);
+    expect(DIFF_MIN_GAP).toBe(Math.round(diffStandardError("short")));
+    expect(DIFF_MIN_GAP).toBeGreaterThan(10);
   });
 
-  it("a 10–14 pontos gap egyezésnek számít, nem eltérésnek", () => {
+  it("a kapu alatti (12 pontos) gap egyezésnek számít, nem eltérésnek", () => {
     renderTab();
     // A 12 pontos INTE-gap chipje „egyezik" címkét kap…
     expect(screen.getByText("12 pont — egyezik")).toBeInTheDocument();

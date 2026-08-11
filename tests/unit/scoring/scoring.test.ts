@@ -56,13 +56,58 @@ describe("calculateScores", () => {
     }
   });
 
-  it("count=0 → 0 (üres beadás: minden dimenzió 0, nem null/NaN)", () => {
-    // Dokumentált viselkedés: válasz nélküli dimenzió pontszáma 0. A hiánytalan
-    // kitöltést az API-réteg (isCompleteFormAnswerSet) garantálja, a motor nem.
+  it("válasz nélküli dimenzió KIMARAD a JSON-ból (nincs koholt 0)", () => {
+    // A „nincs mérve" nem 0 pont: a korábbi motor a valódi 0-tól megkülön-
+    // böztethetetlen nullát írt, abból lett 0%-os sáv, „figyelendő" badge és
+    // fejlődési fókusz egy meg sem kérdezett skálán. A hiánytalan kitöltést
+    // az API-réteg (isCompleteFormAnswerSet) garantálja, a motor nem.
     const result = calculateScores("TRITAN", []);
+    assert.deepEqual(result.dimensions, {});
     for (const code of TRITAN_ORDER) {
-      assert.equal(result.dimensions[code], 0);
+      assert.equal(code in result.dimensions, false, `${code} nem lehet a JSON-ban`);
     }
+    // Üres facet-map sem kerül be — a `{}` ugyanúgy „megmért, de üres".
+    assert.deepEqual(result.facets, {});
+  });
+
+  it("részleges beadásnál CSAK a megmért dimenzió/facet kerül a JSON-ba", () => {
+    const straight = fullQuestions.find((q) => !q.reversed && q.facet);
+    assert.ok(straight);
+    const result = calculateScores("TRITAN", [
+      { questionId: straight.id, value: 5 },
+    ]);
+
+    assert.deepEqual(Object.keys(result.dimensions), [straight.dimension]);
+    assert.equal(result.dimensions[straight.dimension], 100);
+    // A többi öt dimenzió kulcsa hiányzik — nem 0.
+    for (const code of TRITAN_ORDER) {
+      if (code === straight.dimension) continue;
+      assert.equal(code in result.dimensions, false);
+    }
+
+    // Facet-oldal ugyanígy: csak a megválaszolt facet, csak a saját dimenziója
+    // alatt. A megmért dimenzió TÖBBI facetje sem kap koholt 0-t.
+    assert.deepEqual(Object.keys(result.facets ?? {}), [straight.dimension]);
+    assert.deepEqual(Object.keys(result.facets?.[straight.dimension] ?? {}), [
+      straight.facet,
+    ]);
+  });
+
+  it("a rövid forma pontozásában NINCS kiegészítő altruizmus-skála (I)", () => {
+    // A rövid forma 2026-08-11 óta egyetlen `I` itemet sem szolgál ki, így a
+    // tárolt score-JSON-ban sem jelenhet meg — sem dimenzióként, sem facetként.
+    const result = calculateScores(
+      "TRITAN",
+      answersAtEffective(shortQuestions, 4),
+    );
+    assert.equal("I" in result.dimensions, false);
+    assert.equal("I" in (result.facets ?? {}), false);
+    assert.deepEqual(Object.keys(result.dimensions).sort(), [...TRITAN_ORDER].sort());
+
+    // A TELJES forma viszont továbbra is méri (mind a 4 altruizmus-item ott van).
+    const full = calculateScores("TRITAN", answersAtEffective(fullQuestions, 4));
+    assert.equal(full.dimensions.I, 75);
+    assert.equal(full.facets?.I?.altruism, 75);
   });
 
   it("bankon kívüli (stale) questionId-t figyelmen kívül hagy", () => {

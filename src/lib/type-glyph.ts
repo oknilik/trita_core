@@ -155,7 +155,7 @@ export const FORM_GEOMETRY: Record<GlyphFormId, FormGeometry> = {
     anchor: { x: 470, y: 452 },
     accent: { kind: "dot", x: 470, y: 268, r: 11, color: "line" },
   },
-  // Csepp — érzelmi telítettség, rezonancia. (E · empata)
+  // Csepp — érzelmi telítettség, rezonancia. (E · ráhangolódó)
   drop: {
     path: "M 470 288 C 566 404, 578 476, 524 538 C 470 598, 396 574, 384 496 C 374 434, 416 358, 470 288 Z",
     anchor: { x: 470, y: 462 },

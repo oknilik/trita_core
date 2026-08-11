@@ -64,26 +64,41 @@ test("csupa közepes profil: a DEFAULT_NARRATIVE az első howYouWork-bekezdés",
 
 // ─── howYouWorkParts — nevesített slotok (motor-audit v4, FIX 3) ────────────
 
-test("risk-profil: a watch-slot a risk-pár (summary+mitigáció), a main a narratíva", () => {
+test("RESO-vezérelt risk-pár: nincs Figyelendő-kártya, a tartalom kontextusba megy", () => {
+  // 2026-08-11 valencia-döntés: a TENSION_PAIRS táblában a hat dimenzió közül
+  // EGYEDÜL a RESO-magas párok `risk: true`-k (a RESO-alacsonyak mind false),
+  // vagyis a fordított skála magas pólusa strukturálisan borostyán
+  // „Figyelendő" kártyát kapott. A pár TARTALMA megmarad (riskParts +
+  // kontextus), csak a valenciás keretezés szűnik meg.
   for (const lang of LOCALES) {
     const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
     const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
     const mitigation = RISK_TEXTS.supportedVisibility[lang];
 
-    // A main az ELSŐ NARRATÍVA (nem a risk-szöveg) — a watch a teljes
-    // risk-pár. A korábbi pozicionális megjelenítés a [1]-es narratívát
-    // címkézte volna kockázatnak.
     assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
-    assert.notEqual(ws.howYouWorkParts.main, summary);
-    assert.notEqual(ws.howYouWorkParts.main, mitigation);
-    assert.equal(ws.howYouWorkParts.watch, `${summary} ${mitigation}`);
-    // A risk-szövegek a watch-slotban élnek — a kontextus a maradék
-    // narratíva, a risk-párt nem duplikálja.
-    assert.ok(!ws.howYouWorkParts.context.includes(summary));
-    assert.ok(!ws.howYouWorkParts.context.includes(mitigation));
-    assert.deepEqual(
-      ws.howYouWorkParts.context,
-      ws.howYouWork.slice(1).filter((p) => p !== summary && p !== mitigation),
+    assert.equal(ws.howYouWorkParts.watch, null);
+    // A pár nem vész el: strukturáltan is megvan, reverseValenced jelöléssel…
+    const part = ws.riskParts.find((p) => p.summary === summary);
+    assert.ok(part, "a RESO-pár riskParts-ban marad");
+    assert.equal(part.reverseValenced, true);
+    assert.equal(part.mitigation, mitigation);
+    // …és a folyó szövegben (howYouWork) is kimegy.
+    assert.ok(ws.howYouWork.includes(summary));
+    assert.ok(ws.howYouWork.includes(mitigation));
+  }
+});
+
+test("nem-RESO risk-pár: a watch-slot változatlanul a risk-pár (a kapu szelektív)", () => {
+  // ADAP 20 + THOR 80 → structuredCompetitor. Ez NEM fordított skálából ered,
+  // tehát a valenciás kártya változatlanul jár neki — a fenti kapu nem
+  // kapcsolja ki általánosan a „Figyelendő" slotot.
+  for (const lang of LOCALES) {
+    const ws = buildWorkstyleContent(scores({ RESO: 50, ADAP: 20, THOR: 80 }), "TRITAN", lang);
+    const valenced = ws.riskParts.filter((p) => !p.reverseValenced);
+    if (valenced.length === 0) continue; // deck-függő; ha nincs ilyen pár, nincs mit állítani
+    assert.equal(
+      ws.howYouWorkParts.watch,
+      `${valenced[0].summary} ${valenced[0].mitigation}`,
     );
   }
 });

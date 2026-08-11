@@ -12,10 +12,15 @@
 
 import { rankDimensionScores, TRITAN_ORDER } from "./tritan";
 
-// Csak a hat kanonikus HEXACO-dimenzió (TRITAN_ORDER) kerülhet a rangsorba.
-// Az intersticiális Altruizmus (`I`) skála pontszáma megmarad a dimensions
-// map-ben, de a top-listába — és onnan a primary/secondary glyphbe, ill. a
-// típus-címkébe — sosem szivároghat (ismeretlen kódra a TypeGlyph üres).
+// Csak a hat kanonikus dimenzió (TRITAN_ORDER) szerepel a teaser-kimenetben.
+//
+// 2026-08-11: korábban a kiegészítő altruizmus-skála (`I`) pontszáma BENNE
+// maradt a `dimensions` mapben, és csak a `ranked` szűrte ki — a típus-címke
+// így védve volt, de az exportált alak hazudott: egy hetedik, sehol meg nem
+// jelenített „dimenziót" kínált a hívóknak. A rövid forma azóta egyetlen
+// altruizmus-itemet sem szolgál ki, tehát élő kitöltésből amúgy sem áll elő
+// `I` — a szűrés a szerződést teszi őszintévé (és a régi, `I`-t is hordozó
+// vendég-draftra is helyesen viselkedik).
 const RANKABLE_DIM_CODES = new Set<string>(TRITAN_ORDER);
 
 export interface TeaserScoringMetaItem {
@@ -25,7 +30,11 @@ export interface TeaserScoringMetaItem {
 }
 
 export interface GuestTeaserScores {
-  /** Belső dimenziókód (INTE/RESO/…) → 0–100 pontszám. */
+  /**
+   * Belső dimenziókód (INTE/RESO/…) → 0–100 pontszám — KIZÁRÓLAG a hat
+   * kanonikus dimenzió. A kiegészítő skálák (pl. `I`) nem kerülnek bele:
+   * a teaser-felület sem jeleníti meg őket, a `ranked` pedig eleve szűri.
+   */
   dimensions: Record<string, number>;
   /**
    * Pontszám szerint csökkenő dimenzió-lista — holtversenynél a kanonikus
@@ -62,13 +71,12 @@ export function computeGuestTeaserScores(
 
   const dimensions: Record<string, number> = {};
   for (const [code, { sum, count }] of Object.entries(totals)) {
+    if (!RANKABLE_DIM_CODES.has(code)) continue;
     dimensions[code] = Math.round(((sum / count - 1) / 4) * 100);
   }
 
   const ranked = rankDimensionScores(
-    Object.entries(dimensions)
-      .filter(([code]) => RANKABLE_DIM_CODES.has(code))
-      .map(([code, score]) => ({ code, score })),
+    Object.entries(dimensions).map(([code, score]) => ({ code, score })),
   );
 
   return { dimensions, ranked };

@@ -16,7 +16,7 @@ import { t, tf, type Locale } from "@/lib/i18n";
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
 import { hexLetter } from "@/lib/tritan";
 import { sampleStdDev } from "@/lib/stats/dimension-stats";
-import { deficitSlotEligible } from "@/lib/score-valence";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 
 interface TeamInsightsProps {
   rows: HeatmapRow[];
@@ -42,18 +42,27 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "A low team average on this dimension may signal self-interest-driven dynamics. Making expectations and norms explicit is advisable.",
     },
   },
+  // 2026-08-11, valencia-revízió (kanonikus kapu: score-valence.ts): az
+  // Emocionalitás egyik pólusa sem erősség és nem is fejlesztendő hiány —
+  // mindhárom sáv jellemző-keretezésű, hozadékkal ÉS árral. A korábbi szöveg
+  // empátiát tulajdonított a magas átlagnak (amit a Félelem/Szorongás/
+  // Dependencia/Érzelmi kötődés facetek nem mérnek), az alacsonyat pedig
+  // „fejlesztendő empátia-hiánynak" keretezte. A két kártya-slot (erősség /
+  // fejlesztési terület) a valencia-kapun át már nem hívja ezt a sort — a
+  // térkép teljessége miatt marad, hogy egy jövőbeli felület se a régi
+  // keretezést találja itt.
   RESO: {
     high: {
-      hu: "Empatikus, érzelmileg érzékeny csapat — erős interperszonális érzékenység, de nyomás alatt érdemes strukturált érzelmi támogatást biztosítani.",
-      en: "Empathetic and emotionally sensitive team — strong interpersonal awareness, though structured emotional support is useful under pressure.",
+      hu: "Érzelmileg érzékeny csapat — a feszültséget korán érzik meg, ugyanakkor tartós nyomás alatt gyorsabban fáradnak. Segít a kiszámítható tempó és a rendszeres, rövid visszajelzési pont.",
+      en: "Emotionally sensitive team — they register tension early, but tire faster under sustained pressure. A predictable tempo and regular short feedback points help.",
     },
     mid: {
-      hu: "Egészséges érzelmi egyensúly — a csapat kezeli a stresszt, miközben fogékony az empátiára és a kapcsolati dinamikákra.",
-      en: "Healthy emotional balance — the team handles stress well while remaining responsive to empathy and relational dynamics.",
+      hu: "Vegyes érzelmi intenzitás — a csapat jellemzően kezeli a nyomást, és a kapcsolati jelzések sem sikkadnak el teljesen.",
+      en: "Mixed emotional intensity — the team generally handles pressure while relational signals still get picked up.",
     },
     low: {
-      hu: "Stressztűrő, racionális döntéshozó csapat. Az empátiát és érzelmi kommunikációt tudatos fejlesztéssel lehet erősíteni.",
-      en: "Stress-tolerant, rational decision-making team. Empathy and emotional communication can be strengthened with intentional development.",
+      hu: "Stressztűrő, tárgyszerű döntéshozatal. Cserébe a feszültség sokáig láthatatlan maradhat: érdemes explicit visszajelző kört tartani, mert magától nem kerül szóba.",
+      en: "Stress-tolerant, matter-of-fact decision-making. In exchange, tension can stay invisible for a long time: an explicit check-in round helps, since it won't come up on its own.",
     },
   },
   TEMP: {
@@ -180,7 +189,16 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
     .filter((d) => teamAvg[d.code] !== null)
     .sort((a, b) => (teamAvg[b.code] ?? 0) - (teamAvg[a.code] ?? 0));
 
-  const topStrength = rankedDims[0];
+  // „Csapat erőssége" (erősség-slot): a fordított kódolású RESO ezen az
+  // ÉRTÉKELŐ felületen sem lehet erősség — ugyanaz a kapu, mint a
+  // team-report.ts riport-generátorában (strengthSlotEligible "evaluative").
+  // Enélkül egy magas Emocionalitás-átlagú csapatnál a Félelem/Szorongás
+  // átlaga jelent volna meg zöld „erősség" kártyán. Ilyenkor a következő
+  // legmagasabb, valenciálható dimenzió lép a helyére.
+  const strengthRanked = rankedDims.filter((d) =>
+    strengthSlotEligible(d.code, "evaluative"),
+  );
+  const topStrength = strengthRanked[0];
   // „Fejlesztési terület" (deficit-slot): a fordított kódolású RESO kizárva
   // a kanonikus valencia-kapun át (score-valence) — az alacsony Emocionalitás
   // stabilitás, nem fejlesztendő gyengeség; különben egy érzelmileg stabil

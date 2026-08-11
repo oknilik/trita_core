@@ -145,5 +145,8 @@ export function dimensionFacetNames(code: string, locale: "hu" | "en"): string[]
     .filter((name): name is string => Boolean(name));
 }
 
-/** Intersticiális altruizmus-skála (HEXACO interstitial). */
-export const TRITAN_ALTRUISM = { hu: "Altruizmus", en: "Altruism" };
+// A kiegészítő altruizmus-skála (`I`) NEM kap kanonikus címkét ebben a
+// térképben: nem fő dimenzió, és a felületi neve („Segítőkészség") az
+// i18n-ből jön (content.altruismName / pdf.altruism). A korábbi
+// TRITAN_ALTRUISM export importáló nélkül állt itt, és „hetedik dimenzió"
+// látszatát keltette — 2026-08-11-én törölve.

@@ -10,6 +10,7 @@ import {
   topGapDims,
 } from "@/lib/member-dossier";
 import { TRITAN_DIMENSION_FACETS, TRITAN_ORDER } from "@/lib/tritan";
+import { diffStandardError } from "@/lib/psychometrics";
 
 // A tag-dossié hozzáférés KŐBE VÉSETT (2026-07-28): kizárólag org admin +
 // tanácsadói kör. A manager NEM, a tag a sajátját SEM. Explicit allowlist.
@@ -205,14 +206,18 @@ describe("computeDimComparisons — sorrend, delta, üres self", () => {
 });
 
 describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
-  it("a default küszöb a KÜLÖNBSÉG mérési hibája: √2·SEM ~15", () => {
+  it("a default küszöb a KÜLÖNBSÉG mérési hibája: √2·SEM", () => {
     // = Math.round(diffStandardError("short")): az önkép és a külső (observer)
     // átlag KÉT független mérés, a különbségük hibája √2·SEM — a korábbi
     // 1×SEM=10 ~40%-kal alul-becsülte, így a hibán belüli deltákat is felhozta.
-    assert.equal(DOSSIER_GAP_MIN_DELTA, 15);
+    // A SZÁMÉRTÉK a bankból származik (rövid forma item/dimenzió), ezért itt
+    // nem literálhoz kötjük — a numerikus invariáns helye:
+    // tests/unit/scoring/psychometrics.test.ts.
+    assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
+    assert.ok(DOSSIER_GAP_MIN_DELTA > 10);
   });
 
-  it("|delta| szerint csökkenő, a diff-küszöb (15) alattiak és null-ok kihagyva, max n", () => {
+  it("|delta| szerint csökkenő, a diff-küszöb alattiak és null-ok kihagyva, max n", () => {
     const self: Record<string, number> = { TEMP: 50, RESO: 50, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
     const obs: Record<string, number> = { TEMP: 53, RESO: 42, INTE: 70, THOR: 46, ADAP: 65, OPEN: 51 };
     // deltak: TEMP +3(kihagy), RESO -8(kihagy), INTE +20 (bekerül),
@@ -221,10 +226,19 @@ describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
     assert.deepEqual(gaps.map((d) => d.code), ["INTE", "ADAP"]);
   });
 
-  it("küszöb-határ: |delta| = 14 kimarad, |delta| = 15 bekerül", () => {
+  it("küszöb-határ: a küszöb alatti egy ponttal kimarad, a küszöb bekerül", () => {
+    // A határeset a kanonikus küszöbhöz igazodik (nem fix literál), így a
+    // bank item-számának változása nem teszi hamissá a tesztet.
+    const gate = DOSSIER_GAP_MIN_DELTA;
     const self: Record<string, number> = { TEMP: 50, RESO: 50, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
-    const obs: Record<string, number> = { TEMP: 64, RESO: 35, INTE: 50, THOR: 50, ADAP: 50, OPEN: 50 };
-    // deltak: TEMP +14 (kihagy), RESO -15 (bekerül)
+    const obs: Record<string, number> = {
+      TEMP: 50 + (gate - 1), // pont a küszöb alatt → kihagy
+      RESO: 50 - gate, //       pont a küszöbön (>=) → bekerül
+      INTE: 50,
+      THOR: 50,
+      ADAP: 50,
+      OPEN: 50,
+    };
     const gaps = topGapDims(computeDimComparisons(TRITAN_ORDER, self, obs));
     assert.deepEqual(gaps.map((d) => d.code), ["RESO"]);
   });

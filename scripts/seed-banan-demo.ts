@@ -103,6 +103,8 @@ function shuffle<T>(arr: T[]): T[] {
 // A facet-sorrend a kanonikus térképet (tritan.ts TRITAN_DIMENSION_FACETS)
 // követi — a THOR korábban felcserélt sorrendben (prudence↔perfectionism)
 // állt itt, eltérve az éles felület és a personas.shared.ts sorrendjétől.
+// A kiegészítő altruizmus-skála (`I`) 2026-08-11 óta nincs a rövid (TSFI-S,
+// 60 itemes) formában, amit ez a seed emulál — nem generálunk rá pontszámot.
 const TRITAN_FACETS: Record<string, string[]> = {
   INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
   RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
@@ -110,7 +112,6 @@ const TRITAN_FACETS: Record<string, string[]> = {
   ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
   THOR: ["organization", "diligence", "perfectionism", "prudence"],
   OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
-  I: ["altruism"],
 };
 
 function generateTritanScores() {

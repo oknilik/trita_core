@@ -8,15 +8,27 @@
 // „pontszám → erősség / kockázat / fejlesztendő" besorolás ezen a modulon
 // megy át; új felületen tilos kézzel RESO-literált szűrni.
 //
+// TERMÉKDÖNTÉS 2026-08-11 (a korábban NYITOTT kérdés lezárva): az
+// Emocionalitás (RESO) MINDKÉT pólusa, MINDKÉT felület-típuson
+// valencia-mentes. Nem erősség és nem hiányosság — jellemző.
+// Indok: a dimenzió facetjei a Félelem / Szorongás / Dependencia /
+// Érzelmi kötődés — ezekre a saját eredményoldalon zöld „erősség" badge-et
+// és „Legerősebb: Emocionalitás" chipet adni önmagával került ellentmondásba
+// (egy görgetéssel lejjebb ugyanaz a pontszám „Szorongás 82"-ként jelent meg).
+// A dimenzió NEM tűnik el: leírható és látható marad (pólus-próza mindkét
+// oldalon ajándékkal ÉS költséggel, dimension-insights.ts), csak a
+// valenciás (erősség/gyengeség) slotokból marad ki.
+//
 // Aktuális szabályok:
 //  - Deficit / kockázat / fejlesztendő slot (alacsony pólus): a RESO SOSEM
 //    kerülhet bele — az alacsony Emocionalitás stabilitás, nem gyengeség.
-//  - Erősség slot (magas pólus): ÉRTÉKELŐ felületen (hiring, csapat-
-//    kockázat, vezetői döntéstámogatás) a RESO kizárva — a magas
-//    Emocionalitás nem „erősség" egy munkáltatói/vezetői döntésben.
-//    Önismereti felületen (saját eredmény, PDF) jelenleg megengedett
-//    („Empata" karakterjegy) — ez NYITOTT termékdöntés, ld.
-//    docs/audits/motor-known-residuals.md §2.
+//  - Erősség slot (magas pólus): a RESO SOSEM kerülhet bele — sem értékelő
+//    (hiring, csapat-kockázat, vezetői döntéstámogatás), sem önismereti
+//    (saját eredmény, PDF, share, OG) felületen.
+//
+// A `surface` paraméter SZÁNDÉKOSAN megmarad: a hívási helyek jelzik vele,
+// milyen kontextusban sorolnak be, és egy jövőbeli, felület-függő szabály
+// (nem a RESO-ra) így nem igényel újabb call-site túrát.
 // ─────────────────────────────────────────────────────────────────────
 
 /** A fordított kódolású dimenzió belső kódja (magasabb = érzelmesebb). */
@@ -48,13 +60,13 @@ export function deficitSlotEligible(code: string | undefined | null): boolean {
 
 /**
  * Bekerülhet-e a dimenzió magas pólusa erősség-jellegű slotba?
- * A RESO értékelő felületen kizárva; önismereti felületen megengedett
- * (nyitott termékdöntésig — ld. fejléc).
+ * A RESO-ra MINDIG false — mindkét felület-típuson (2026-08-11-i
+ * termékdöntés, ld. fejléc). A `surface` a hívási hely kontextusát
+ * dokumentálja; a RESO-szabály nem függ tőle.
  */
 export function strengthSlotEligible(
   code: string | undefined | null,
-  surface: ValenceSurface,
+  _surface: ValenceSurface,
 ): boolean {
-  if (!isReverseValenced(code)) return true;
-  return surface === "self";
+  return !isReverseValenced(code);
 }

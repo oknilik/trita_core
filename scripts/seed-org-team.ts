@@ -77,6 +77,9 @@ function nearbyScore(base: number, variance = 18): number {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
+// A kiegészítő altruizmus-skála (`I`) 2026-08-11 óta nincs a rövid (TSFI-S,
+// 60 itemes) formában, amit ez a seed emulál — így nem is generálunk rá
+// pontszámot: a seedelt sor azt mutassa, amit egy mai valódi kitöltés ír.
 const TRITAN_FACETS: Record<string, string[]> = {
   INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
   RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
@@ -84,7 +87,6 @@ const TRITAN_FACETS: Record<string, string[]> = {
   ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
   THOR: ["organization", "diligence", "prudence", "perfectionism"],
   OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
-  I: ["altruism"], // Interstitial altruism scale
 };
 
 function generateTritanScores() {

@@ -17,12 +17,13 @@ export type DimCode = (typeof DIMS)[number];
 // származik — a korábbi helyi másolat a THOR facetjeit felcserélt sorrendben
 // (prudence↔perfectionism) deklarálta, így a buildFacets index-alapú
 // offsetjei más facetre estek, mint az éles felület sorrendje.
-export const TRITAN_FACETS: Record<string, string[]> = {
-  ...Object.fromEntries(
-    Object.entries(TRITAN_DIMENSION_FACETS).map(([dim, codes]) => [dim, [...codes]]),
-  ),
-  I: ["altruism"],
-};
+// A kiegészítő altruizmus-skála (`I`) 2026-08-11 óta nincs a rövid formában,
+// így élő kitöltésből nem áll elő — a personák sem gyártanak rá pontszámot.
+// (A persona-PDF altruizmus-blokkja emiatt kimarad, ahogy egy mai valódi
+// kitöltésnél is; a generátor `undefined`-re fel van készítve.)
+export const TRITAN_FACETS: Record<string, string[]> = Object.fromEntries(
+  Object.entries(TRITAN_DIMENSION_FACETS).map(([dim, codes]) => [dim, [...codes]]),
+);
 
 export type PersonaKind = "archetype" | "tension";
 
@@ -41,7 +42,7 @@ export type Persona = {
  * másodlagos 68 (mindkettő "high" a 65-ös pólus-küszöb felett), a maradék
  * négy dimenzió fix sorrendben 52/48/44/30 — van medium és low sáv is.
  *
- * A rések SZÁNDÉKOSAN ≥ DIFF_MIN_GAP (15): 86−68=18 és 68−52=16 — a korábbi
+ * A rések SZÁNDÉKOSAN ≥ DIFF_MIN_GAP (14): 86−68=18 és 68−52=16 — a korábbi
  * 86/74 recept 12 pontos top-rése a bizonytalanság-kapun fennakadt, így mind
  * a 30 archetípus-fixture főnév-only címkét kapott (a melléknévi színezet,
  * amit a fixture demonstrálna, sosem jelent meg).
@@ -53,7 +54,6 @@ function buildArchetypeDimensions(primary: DimCode, secondary: DimCode): Record<
   rest.forEach((dim, i) => {
     dimensions[dim] = restValues[i];
   });
-  dimensions.I = 50;
   return dimensions;
 }
 
@@ -124,7 +124,6 @@ export function buildTensionPersonas(): Persona[] {
     rest.forEach((dim, i) => {
       dimensions[dim] = restValues[i];
     });
-    dimensions.I = 50;
     return {
       slug,
       label: labelFromDimensions(dimensions),

@@ -105,10 +105,30 @@ adat: dry run próbakitöltések + pilot.
 
 Hivatalos IPIP rövid forma nincs — a TSFI-S a saját v2 bankból
 származtatott részhalmaz (`short: true` flag): facetenként legalább 2
-kiegyensúlyozott kulcsirányú item, +10 megerősítő item a termék-kritikus
-faceteken, +2 altruizmus. Jogilag azonos a jogállása (public domain
+kiegyensúlyozott kulcsirányú item, plusz megerősítő itemek a
+termék-kritikus faceteken. Jogilag azonos a jogállása (public domain
 forrás, saját válogatás). A rövid forma megbízhatósága facet-szinten
 alacsonyabb (2-3 item/facet) — facet-bontást a felület a rövid formánál
-óvatosabban értelmezzen; dimenzió-szinten (9-10 item) a megbízhatóság
+óvatosabban értelmezzen; dimenzió-szinten (10 item) a megbízhatóság
 megfelelő. A pontozás a teljes konfigból történik, így a rövid és teljes
 kitöltések ugyanazon a 0–100 skálán összevethetők.
+
+**Összetétel-változás (2026-08-11).** A rövid forma korábban 58
+fő-dimenziós itemet és 2 altruizmus-itemet tartalmazott (98, 99). A
+kiegészítő altruizmus-skála a rövid formán mindössze 2 itemen nyugodott
+(α ≈ 0,36; kattintásonként 12,5 pont), miközben egyetlen aggregátumba,
+összehasonlításba, archetípusba és csapat-felületbe sem számított bele —
+egyetlen kártyán jelent meg. Ezért a két item kikerült a rövid formából,
+és két fő-dimenziós item lépett be helyettük: **77** (RESO / fearfulness)
+és **79** (OPEN / inquisitiveness).
+
+- Itemszám változatlan: **60**. Új összetétel: **10 item / fő dimenzió**
+  (korábban 9-10, összesen 58), kiegészítő skála a rövid formán nincs.
+- A **teljes (100 itemes) forma változatlan**: mind a négy
+  altruizmus-item (97-100) benne marad, a skála ott továbbra is mérhető.
+- Mérési következmény: 9,67 → 10 item/dimenzió, α 0,7317 → 0,7383,
+  SEM 10,36 → 10,23, SE(diff) 14,65 → 14,47 — ezért a különbség-kapu
+  (`DIFF_MIN_GAP`, `src/lib/personality-type.ts`) 15 → **14**.
+- A forma-váltás előtt indított kitöltések nem vesznek el: a régi rövid
+  forma pontos id-halmazát a beadási kapu továbbra is elfogadja
+  (`LEGACY_COMPLETE_FORM_ID_SETS`, `src/lib/questions/index.ts`).

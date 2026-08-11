@@ -47,9 +47,12 @@ const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
     hu: "Becsületesség, igazságosság, szerénység — mennyire kerüli a manipulációt és az önérdek-érvényesítést",
     en: "Honesty, fairness, modesty — tendency to avoid manipulation and self-promotion",
   },
+  // A skála-leírás a MÉRT facetekhez igazodik (Félelem · Szorongás ·
+  // Dependencia · Érzelmi kötődés) — a korábbi „empátia mások iránt" olyat
+  // ígért, amit ez a dimenzió nem mér (2026-08-11 valencia-döntés).
   RESO: {
-    hu: "Érzelmi érzékenység, szorongásra való hajlam, empátia mások iránt",
-    en: "Emotional sensitivity, tendency toward anxiety, empathy for others",
+    hu: "Érzelmi érzékenység, aggodalomra való hajlam, erős érzelmi kötődés",
+    en: "Emotional sensitivity, tendency toward worry, strong emotional attachments",
   },
   TEMP: {
     hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",

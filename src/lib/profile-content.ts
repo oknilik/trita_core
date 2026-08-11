@@ -364,12 +364,12 @@ export const ROLE_TEXTS: Record<string, Record<Locale, { strong: string; medium:
     hu: {
       strong: "Emberekkel intenzíven foglalkozó, változékony, magas elvárású szerepek – vezető, értékesítési vezető, kríziskoordinátor, változásmenedzsment.",
       medium: "Projektvezetés, ügyfélkapcsolati szerepkörök, ahol az extraverzió és a stressztűrés egyszerre számít.",
-      watchOut: "Nehéz lehet, ha a társas aktivitás nem jár valódi mélységgel, vagy ha az érzelmi stabilitásodat mások érzéketlenségként értelmezik. Érdemes tudatosan kommunikálni az empátiát is.",
+      watchOut: "Nehéz lehet, ha a társas aktivitás nem jár valódi mélységgel, vagy ha az érzelmi stabilitásodat mások érzéketlenségként értelmezik. Érdemes a szándékaidat is kimondani, nemcsak a tényeket.",
     },
     en: {
       strong: "Roles with intensive people work in volatile, high-expectation contexts — leadership, sales leadership, crisis coordination, change management.",
       medium: "Project leadership, client-facing roles where extraversion and stress tolerance both matter.",
-      watchOut: "It can be difficult if social activity lacks real depth, or if others interpret your emotional stability as insensitivity. Make a conscious effort to also communicate empathy.",
+      watchOut: "It can be difficult if social activity lacks real depth, or if others interpret your emotional stability as insensitivity. Make a point of voicing your intent, not just the facts.",
     },
   },
   calmExecution: {
@@ -734,13 +734,19 @@ export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
     hu: "A válaszaid ambiciózus, stratégiai gondolkodásra utalnak: ritkán riadsz vissza a kihívásoktól és a versenytől. A célok elérése hajtóerő számodra – a versengés és az önérvényesítés a természetes közeged lehet.",
     en: "Your responses point to ambitious, strategic thinking: you rarely shy away from challenges or competition. Achieving goals drives you — competition and self-assertion may well be your natural environment.",
   },
+  // 2026-08-11, valencia-revízió (kanonikus kapu: score-valence.ts): az
+  // Emocionalitás egyik pólusa sem erény és nem is hiány. A korábbi HU/EN
+  // szöveg empátiát tulajdonított a magas pólusnak („empatikusan reagálsz…
+  // ez értéket ad a kapcsolataidnak") — ezt a skála (Félelem / Szorongás /
+  // Dependencia / Érzelmi kötődés) nem méri. Mindkét pólus két oldallal
+  // íródik: mit hoz ÉS mibe kerül.
   RESO_high: {
-    hu: "A válaszaid alapján az érzelmi érzékenység az egyik meghatározó jellemződ: empatikusan és könnyen reagálsz a körülötted zajló eseményekre – ez értéket ad a kapcsolataidnak, de igényli a megfelelő, támogató keretet.",
-    en: "Your responses suggest emotional sensitivity is one of your defining traits: you respond with empathy and readily to events around you — this adds value to your relationships but calls for a supportive, well-structured environment.",
+    hu: "A válaszaid alapján az érzelmi érzékenység az egyik meghatározó jellemződ: hamar megérzed a helyzetek töltetét, és sokáig veled is marad. Sok korai információ jut így el hozzád – és sok terhet is jelent, ezért számít, milyen keretben dolgozol.",
+    en: "Your responses suggest emotional sensitivity is one of your defining traits: you register the charge of a situation early, and it stays with you for a while. That brings you a lot of early information — and a lot of load, which is why the setting you work in matters.",
   },
   RESO_low: {
-    hu: "Válaszaid kiemelkedő érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – ez változékony közegben erőforrás lehet.",
-    en: "Your responses point to outstanding emotional stability. You typically maintain your balance even under pressure and uncertainty — in volatile environments this can be a real asset.",
+    hu: "Válaszaid kifejezett érzelmi stabilitást jeleznek. Nyomás és bizonytalanság alatt is jellemzően megőrzöd az egyensúlyodat – cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+    en: "Your responses point to marked emotional stability. You typically keep your balance under pressure and uncertainty — in exchange, others' emotional signals reach you less often, and your calm can be read as distance.",
   },
   TEMP_high: {
     hu: "A válaszaid erősen extravertált mintázatot mutatnak – a kapcsolatokból és interakciókból nyersz energiát. A társas tér a természetes közeged lehet, ahol aktívan alakítod a dinamikát.",
@@ -791,13 +797,17 @@ export const SOLO_DIM_SUMMARIES: Record<string, LocalizedText> = {
     hu: "Erőforrásod az ambíció és az érdekérvényesítés. Figyeld meg: éles versenyben a kapcsolati bizalom könnyen sérülhet — a közösen rögzített játékszabályok védik.",
     en: "Your asset is ambition and self-assertion. Worth watching: in sharp competition relational trust can erode — shared ground rules protect it.",
   },
+  // A két RESO-sor SZÁNDÉKOSAN nem az „Erőforrásod…" nyitóformulát viszi,
+  // amit a többi dimenzió (2026-08-11-i valencia-döntés): az Emocionalitás
+  // egyik pólusa sem erőforrás-állítás, hanem jellemző. A műfaj (egy
+  // megfigyelés + egy figyelő-pont) ugyanaz marad.
   RESO_high: {
-    hu: "Erőforrásod az érzelmi ráhangolódás és a mély kapcsolódás. Figyeld meg: tartós nyomás alatt gyorsabban merülhetsz ki — a stresszkezelő rutin nálad nem extra, hanem alapfelszerelés.",
-    en: "Your asset is emotional attunement and deep connection. Worth watching: sustained pressure may drain you faster — a stress routine is core equipment for you, not an extra.",
+    hu: "Jellemződ a korai ráhangolódás: hamarabb érzed meg a feszültséget, mint hogy kimondanák. Figyeld meg: tartós nyomás alatt gyorsabban merülhetsz ki — a stresszkezelő rutin nálad nem extra, hanem alapfelszerelés.",
+    en: "A defining trait of yours is early attunement: you register tension before it's said out loud. Worth watching: sustained pressure may drain you faster — a stress routine is core equipment for you, not an extra.",
   },
   RESO_low: {
-    hu: "Erőforrásod a nyugalom nyomás alatt. Figyeld meg: mások ezt megélhetik távolságtartásnak — a támogató visszajelzést néha ki is kell mondanod, nem elég érezni.",
-    en: "Your asset is calm under pressure. Worth watching: others may read it as distance — supportive feedback sometimes needs to be said out loud, not just felt.",
+    hu: "Jellemződ a nyugalom nyomás alatt. Figyeld meg: mások ezt megélhetik távolságtartásnak — a támogató visszajelzést néha ki is kell mondanod, nem elég érezni.",
+    en: "A defining trait of yours is calm under pressure. Worth watching: others may read it as distance — supportive feedback sometimes needs to be said out loud, not just felt.",
   },
   TEMP_high: {
     hu: "Erőforrásod az energia és a társas jelenlét. Figyeld meg: a csendesebb hangok melletted elhalkulhatnak — tudatosan érdemes teret nyitnod nekik.",
@@ -981,9 +991,14 @@ export const ARCHETYPE_STORY_NOUN: Record<string, LocalizedText> = {
     hu: "Az értékőr ritkán a leghangosabb ember a szobában — inkább az, akiben a többiek ösztönösen megbíznak. Számára a nyílt lapok és a kapcsolatok minősége többet ér, mint a gyors győzelem.",
     en: "The Value Guardian is rarely the loudest person in the room — more often the one others instinctively trust. Open cards and the quality of relationships matter more to them than a quick win.",
   },
+  // 2026-08-11, valencia-revízió: a MEGFIGYELÉS marad (korán észreveszi a
+  // feszültséget), a CÍMKE („empata") és az erény-keretezés megy — az
+  // Emocionalitás facetjei (Félelem/Szorongás/Dependencia/Érzelmi kötődés)
+  // nem empátiát mérnek. A második mondat ezért az árát is kimondja, nem
+  // erényt tulajdonít.
   RESO: {
-    hu: "Az empata az, aki előbb veszi észre a feszültséget, mint hogy bárki kimondaná. A csapat érzelmi térképe nála van — akkor is, ha ezt senki nem kérte tőle.",
-    en: "The Empath notices tension before anyone says it out loud. They hold the team's emotional map — even when nobody asked them to.",
+    hu: "A ráhangolódó az, aki előbb veszi észre a feszültséget, mint hogy bárki kimondaná. Ez sok információt ad — és sok terhet is: ami a térben van, nála is ott marad.",
+    en: "The Signal Reader notices tension before anyone says it out loud. That yields a lot of information — and a lot of load: what's in the room stays with them too.",
   },
   TEMP: {
     hu: "A hajtóerő az, aki mellett beindulnak a dolgok: ahol ő van, ott tempó van. Az energiája ragadós — a csapat gyakran róla veszi a ritmust.",
@@ -1008,9 +1023,12 @@ export const ARCHETYPE_STORY_ADJ: Record<string, LocalizedText> = {
     hu: "Ezt nálad jellemzően erős belső iránytű egészíti ki: a hogyan legalább annyira számít, mint a mennyi.",
     en: "In you this is typically paired with a strong inner compass: the how matters as much as the how much.",
   },
+  // A korábbi „érzed is, mi történik a másikkal" burkolt empátia-állítás volt
+  // (a skála nem mér mások-olvasási pontosságot) — a helyére a saját
+  // oldalról leírt ráhangolódás került, az árával együtt.
   RESO: {
-    hu: "Ezt nálad jellemzően erős érzelmi ráhangolódás színezi: nemcsak látod a helyzeteket, érzed is, mi történik a másikkal.",
-    en: "In you this is typically coloured by strong emotional attunement: you don't just see situations, you feel what's happening in the other person.",
+    hu: "Ezt nálad jellemzően erős érzelmi ráhangolódás színezi: a helyzetek töltete nem megy el melletted — és utána is veled marad egy ideig.",
+    en: "In you this is typically coloured by strong emotional attunement: the charge of a situation doesn't pass you by — and it stays with you for a while afterwards.",
   },
   TEMP: {
     hu: "Ehhez nálad jellemzően lendület társul: nemcsak képviseled, amit fontosnak tartasz — energiát is adsz köré.",
@@ -1246,6 +1264,12 @@ export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> =
       challenge: "For one month, track how often you held your own line. The goal isn't perfection — it's seeing the pattern.",
     },
   },
+  // A RESO-sor a valencia-kapun (score-valence.deficitSlotEligible,
+  // workstyle-content growth-választó) NEM érhető el: az alacsony
+  // Emocionalitás nem fejlesztendő hiány. A sor a térkép teljessége miatt
+  // marad, és szándékosan viselkedés-javaslat („mondd ki"), nem
+  // jellem-ítélet — ha egy jövőbeli felület mégis feloldja, ne hiányt
+  // állítson.
   RESO: {
     hu: {
       behavior: "Zárj le hetente egy beszélgetést egy kimondott elismeréssel („örülök, hogy…”, „köszönöm, hogy…”).",
@@ -1395,12 +1419,12 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
   RESO_high: {
     hu: {
       strong: "Emberközeli, támogató szerepek: HR, coaching/mentoring, egészségügy vagy szociális terület, ügyfélélmény.",
-      medium: "Kapcsolati szerepek (ügyfélmunka, oktatás, tárgyalás), ahol az empátia kézzelfogható értéket teremt.",
+      medium: "Kapcsolati szerepek (ügyfélmunka, oktatás, tárgyalás), ahol számít, hogy valaki korán megérzi a hangulatváltozást.",
       watchOut: "Tartós nyomás és kiszámíthatatlanság kimerítő lehet. Számolj tudatos pihenőkkel, és legyen stabil stresszkezelési rutinod.",
     },
     en: {
       strong: "Supportive, people-centered roles: HR, coaching/mentoring, healthcare or social services, customer experience.",
-      medium: "Relationship-heavy roles (customer work, teaching, negotiation) where empathy creates tangible value.",
+      medium: "Relationship-heavy roles (customer work, teaching, negotiation) where picking up a shift in mood early matters.",
       watchOut: "Sustained pressure and unpredictability can wear you down. Plan recovery time and keep a simple stress-management routine.",
     },
   },
@@ -1408,12 +1432,12 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
     hu: {
       strong: "Nagy nyomású döntési és krízishelyzetek, ahol a nyugalom versenyelőny.",
       medium: "Változásvezetés, transzformáció, startup: ahol a bizonytalanság a munka része.",
-      watchOut: "A stabilitásod néha ridegségnek tűnhet. Mondd ki aktívan a szándékaidat és az együttérzést is, ne csak a tényeket.",
+      watchOut: "A stabilitásod néha ridegségnek tűnhet. Mondd ki a szándékaidat is, ne csak a tényeket — a nyugalmadból magától nem derül ki, hogyan látod a másik helyzetét.",
     },
     en: {
       strong: "High-pressure decision roles and crisis contexts where calm is an advantage.",
       medium: "Change leadership, transformation, startups, where uncertainty is part of the job.",
-      watchOut: "Your steadiness can be read as coldness. Name your intent and empathy explicitly, not only the facts.",
+      watchOut: "Your steadiness can be read as coldness. Say your intent out loud, not only the facts — your calm alone doesn't convey how you read the other person's situation.",
     },
   },
   TEMP_high: {

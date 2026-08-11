@@ -51,8 +51,8 @@ export const resultsTranslations = {
     spectrumLow: { hu: "Alacsony", en: "Low" },
     detailedTitle: { hu: "Részletes kiértékelés", en: "Detailed results" },
     detailedBody: { hu: "A skálaértékek és rövid jellemzésed.", en: "Scale values and short interpretation." },
-    altruismTitle: { hu: "Segítőkészség (kiegészítő skála)", en: "Helpfulness (additional scale)" },
-    altruismBody: { hu: "A segítőkészség több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "Helpfulness relates to multiple core dimensions, so it isn't included in the 6-factor average. It's best interpreted as a separate score." },
+    // (results.altruismTitle / altruismBody törölve 2026-08-11 — árva kulcsok
+    //  fogyasztó nélkül; az élő szövegek a `content.altruism*` névtérben élnek.)
     dimensionHint: { hu: "Kattints a részletekért", en: "Tap for details" },
     openDetails: { hu: "Részletek", en: "Details" },
     dimensionWhat: { hu: "Mit mér ez a dimenzió?", en: "What does this dimension measure?" },
@@ -1509,7 +1509,8 @@ export const resultsTranslations = {
     altruismTitle: { hu: "Kiegészítő skála", en: "Supplementary scale" },
     altruismName: { hu: "Segítőkészség", en: "Helpfulness" },
     altruismInfo: { hu: "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
-    altruismDetail: { hu: "Részletes bontás", en: "Detailed breakdown" },
+    // (content.altruismDetail törölve 2026-08-11 — egy sosem megépült
+    //  facet-bontás felirata volt; a skálának egyetlen facetje van.)
     // Semleges SZINT-szavak a nem-valenciált kiegészítő skálához: a saját
     // bannere mondja ki, hogy nem erősség/gyengeség — a valenciás
     // „erősség/figyelendő" badge (getDimensionLabel) ellentmondott neki.

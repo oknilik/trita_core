@@ -53,10 +53,12 @@ describe("computeGuestTeaserScores", () => {
     assert.equal(result.dimensions.TEMP, 50);
   });
 
-  it("az intersticiális Altruizmus (I) skálát kizárja a rangsorból (üres glyph ellen)", () => {
-    // Az `I` (Altruizmus) közbülső skála a kérdésbankban is szerepel; ha a
-    // vendég erősen helyesli, a naiv rangsorban a top-2-be kerülne → a
+  it("a kiegészítő Altruizmus (I) skálát a KIMENETBŐL is kizárja", () => {
+    // Az `I` (Altruizmus) skála a teljes kérdésbankban szerepel; ha a vendég
+    // erősen helyesli, a naiv rangsorban a top-2-be kerülne → a
     // TryCompleteClient primary/secondary-je „I" lenne, üres glyphhel.
+    // A rövid forma 2026-08-11 óta nem szolgál ki altruizmus-itemet, de egy
+    // RÉGI vendég-draft (localStorage) még hordozhatja őket.
     const metaWithAltruism: TeaserScoringMetaItem[] = [
       { id: 1, dimension: "I", reversed: false },
       { id: 2, dimension: "I", reversed: false },
@@ -69,9 +71,10 @@ describe("computeGuestTeaserScores", () => {
       1: 5, 2: 5, 3: 3, 4: 2, 5: 4,
     });
     assert.ok(result);
-    // A dimensions map teljes marad (I benne, 100 ponttal)…
-    assert.equal(result.dimensions.I, 100);
-    // …de a ranked SOSEM tartalmazza az I-t.
+    // Az exportált alak őszinte: az `I` sem a dimensions mapben, sem a
+    // rangsorban nem jelenik meg (korábban a dimensions hordozta, és csak a
+    // ranked szűrte — egy sehol meg nem jelenített „hetedik dimenzió").
+    assert.equal("I" in result.dimensions, false);
     assert.ok(!result.ranked.some((r) => r.code === "I"));
     // Minden ranked kód a hat kanonikus dimenzió egyike → ismert glyph/címke.
     const knownCodes = new Set<string>(TRITAN_ORDER);

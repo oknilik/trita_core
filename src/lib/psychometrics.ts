@@ -18,9 +18,15 @@ import { tritanConfig } from "@/lib/questions/tritan";
 import { TRITAN_ORDER } from "@/lib/tritan";
 
 // ── Item-számok a TSFI bankból származtatva ──────────────────────────
-// A hat fő dimenzió itemei számítanak (az intersticiális altruizmus-skála
-// nem); a korábbi kézzel átlagolt konstansok (9.5 / 2.5) helyett a bank a
+// A hat fő dimenzió itemei számítanak (a kiegészítő altruizmus-skála nem);
+// a korábbi kézzel átlagolt konstansok (9.5 / 2.5) helyett a bank a
 // forrás — invariáns-teszt: tests/unit/scoring/psychometrics.test.ts.
+//
+// 2026-08-11 óta a rövid forma MINDEN itemje fő-dimenziós: 60 item,
+// dimenziónként pontosan 10 (korábban 58 + 2 altruizmus). Ez mozgatja a
+// SEM-et (10,36 → 10,23) és vele a DIFF_MIN_GAP-et (15 → 14) — a küszöb
+// nem itt él (kliens-bundle), hanem a personality-type.ts literáljában,
+// amit a fenti invariáns-teszt köt ide.
 const MAIN_DIM_CODES = new Set<string>(TRITAN_ORDER);
 const mainItems = tritanConfig.questions.filter((q) =>
   MAIN_DIM_CODES.has(q.dimension),

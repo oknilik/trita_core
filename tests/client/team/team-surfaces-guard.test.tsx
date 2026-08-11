@@ -92,6 +92,27 @@ describe("TeamInsights", () => {
     // Az átlag-szám (OPEN: 80) továbbra is látszik.
     expect(screen.getAllByText("80").length).toBeGreaterThanOrEqual(1);
   });
+
+  // 2026-08-11 valencia-döntés (score-valence.ts): az Emocionalitás egyik
+  // pólusa sem erősség és nem is fejlesztendő terület. Itt a RESO a
+  // LEGMAGASABB és egyben a LEGALACSONYABB jelölt is lenne (85 / —), tehát
+  // mindkét kártya-slotot elvinné a kapu nélkül.
+  const RESO_TOP_ROWS = [
+    { memberId: "m1", displayName: "Anna", testType: "TRITAN", scores: { INTE: 40, RESO: 85, TEMP: 45, ADAP: 55, THOR: 60, OPEN: 50 } },
+    { memberId: "m2", displayName: "Béla", testType: "TRITAN", scores: { INTE: 42, RESO: 86, TEMP: 44, ADAP: 54, THOR: 61, OPEN: 52 } },
+    { memberId: "m3", displayName: "Csaba", testType: "TRITAN", scores: { INTE: 41, RESO: 84, TEMP: 46, ADAP: 56, THOR: 59, OPEN: 51 } },
+  ];
+
+  it("a legmagasabb átlagú Emocionalitás NEM kerül a „Csapat erőssége” kártyára", () => {
+    render(<TeamInsights rows={RESO_TOP_ROWS} dims={DIMS} isHu />);
+
+    // Az erősség-kártya a következő valenciálható dimenziót (THOR ≈ 60)
+    // mutatja; a RESO-átlag (85) csak az átlag-sávban jelenhet meg, ott is
+    // egyszer — az erősség-kártyán nem ismétlődik.
+    expect(screen.getAllByText("85").length).toBe(1);
+    // A kivezetett erény-állítás nem jelenhet meg a kártyán.
+    expect(document.body.textContent).not.toContain("Empatikus");
+  });
 });
 
 // ── TeamIntelligence (erőforrás-térkép chipek) ──────────────────────────────

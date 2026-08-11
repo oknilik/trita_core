@@ -30,18 +30,29 @@ describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
   it("ITEMS_PER_DIM a bank tényleges item-számaiból jön", () => {
     assert.equal(ITEMS_PER_DIM.short, shortItems.length / TRITAN_ORDER.length);
     assert.equal(ITEMS_PER_DIM.full, mainItems.length / TRITAN_ORDER.length);
-    // TSFI v2 szerkezeti tények: 16 item/dim a teljes bankban, a rövid
-    // forma dimenziónként 9-10 itemet mér (interstitial altruizmus nélkül).
+    // TSFI v2 szerkezeti tények: 16 item/dim a teljes bankban. A rövid forma
+    // 2026-08-11 óta KIEGYENSÚLYOZOTT: mind a 60 itemje fő-dimenziós, tehát
+    // pontosan 10 item/dimenzió (korábban 58 + 2 altruizmus → 9,67).
     assert.equal(ITEMS_PER_DIM.full, 16);
-    assert.ok(ITEMS_PER_DIM.short >= 9 && ITEMS_PER_DIM.short <= 10);
+    assert.equal(ITEMS_PER_DIM.short, 10);
+    assert.equal(shortItems.length, 60);
   });
 
-  it("ITEMS_PER_FACET a bank facet-lefedéséből jön (full: 4)", () => {
+  it("ITEMS_PER_FACET a bank facet-lefedéséből jön (full: 4, short: 2,5)", () => {
     assert.equal(facetCount, 24); // 6 dim × 4 facet
     assert.equal(ITEMS_PER_FACET.full, mainItems.length / facetCount);
     assert.equal(ITEMS_PER_FACET.full, 4);
     assert.equal(ITEMS_PER_FACET.short, shortItems.length / facetCount);
-    assert.ok(ITEMS_PER_FACET.short >= 2 && ITEMS_PER_FACET.short <= 3);
+    assert.equal(ITEMS_PER_FACET.short, 60 / 24);
+  });
+
+  it("a rövid formában nincs kiegészítő (nem fő-dimenziós) item", () => {
+    // Ez köti a SEM-számítást a valósághoz: a psychometrics a FŐ-dimenziós
+    // itemekből számol, tehát ha a rövid formába visszaszivárogna egy
+    // kiegészítő skála, a ténylegesnél pontosabbnak hinné a mérést.
+    const allShort = tritanConfig.questions.filter((q) => q.short === true);
+    assert.equal(allShort.length, shortItems.length);
+    assert.equal(allShort.some((q) => !mainCodes.has(q.dimension)), false);
   });
 
   it("minden rövid-forma item a teljes bank része (short ⊂ full)", () => {
@@ -51,7 +62,8 @@ describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
 
 describe("psychometrics — SEM és a rá épülő küszöbök", () => {
   it("több item = magasabb alfa, kisebb hiba; facet mindig bizonytalanabb", () => {
-    assert.ok(alphaFromItems(16) > alphaFromItems(9));
+    assert.ok(alphaFromItems(16) > alphaFromItems(10));
+    assert.ok(alphaFromItems(10) > alphaFromItems(58 / 6));
     assert.ok(dimStandardError("full") < dimStandardError("short"));
     assert.ok(facetStandardError("short") > dimStandardError("short"));
     assert.ok(facetStandardError("full") > dimStandardError("full"));
@@ -61,9 +73,9 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.equal(Math.round(dimStandardError("short")), 10);
   });
 
-  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~15)", () => {
+  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~14,47)", () => {
     assert.equal(diffStandardError("short"), Math.SQRT2 * dimStandardError("short"));
-    assert.equal(Math.round(diffStandardError("short")), 15);
+    assert.equal(Math.round(diffStandardError("short")), 14);
     assert.ok(diffStandardError("short") > dimStandardError("short"));
   });
 
@@ -71,7 +83,10 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     // A literál a kliens-bundle miatt nem importálhatja a bankot — ez a teszt
     // köti a pszichometriai maghoz (drift itt bukik el). A sorrend-kapu KÉT
     // pont különbségét méri, ezért √2·SEM, nem 1×SEM.
+    // 2026-08-11: 15 → 14, mert a rövid forma 58 helyett 60 FŐ-dimenziós
+    // itemen nyugszik (az altruizmus-skála kikerült, két fő item belépett).
     assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
+    assert.equal(DIFF_MIN_GAP, 14);
     // A régi alias ugyanarra az értékre mutat (visszafelé kompatibilitás).
     assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });

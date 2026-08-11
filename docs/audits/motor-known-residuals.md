@@ -77,6 +77,11 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   esetben ~10 pont eltérés csupán az item-allokációból). Amíg egyetlen forma él
   (short), ez látens; forma-keveredésnél (org-átlag, hiring, normák) forma-szűrés
   vagy facet-kiegyensúlyozott pontozás kell — pilot + verziózási döntés.
+  **Részben rendezve (2026-08-11):** a DIMENZIÓ-szintű egyenetlenség megszűnt —
+  az altruizmus-itemek kikerültek a rövid formából, helyükre egy RESO- és egy
+  OPEN-item lépett, így a rövid forma 60 item, dimenziónként pontosan 10.
+  A FACET-szintű 2/3-as egyenetlenség megmarad (60 item / 24 facet nem osztható
+  egyenlően) — ez marad pilot-kérdés.
 - **IPIP-referencia tábla (v9 — tulajdonosi döntés).** Az OpenPsychometrics
   IPIP–HEXACO item-szintű mintájából (~20e fő, angol nyelvű, önszelektált online)
   képzett referencia-tábla és valódi Cronbach-α **kizárólag BELSŐ kalibrációra**
@@ -170,7 +175,7 @@ a referencia-minta hiányzik. Amíg nincs pilot:
 - **A közös rangsor holtverseny-tie-breakje** (`rankDimensionScores` TRITAN_ORDER;
   a csapatszerep FNV-hash) determinisztikus és szándékos.
 - **Kétszintű evidencia-politika (v9 — dokumentált).** Az önkép–külső összevetés
-  „beszédtéma"-kapuja 1×SE(diff) (`DIFF_MIN_GAP = 15`, ~68%-os szint — célja
+  „beszédtéma"-kapuja 1×SE(diff) (`DIFF_MIN_GAP` = `round(√2·SEM)`, ~68%-os szint — célja
   beszélgetés-indítás a tanácsadásban), a hiring-döntéstámogatás kapuja
   1,96×SE(diff) (~95% — célja állítás-erősség egy munkáltatói döntésben). A két
   szint KÜLÖNBÖZŐ céljú felületekhez tartozik, és szándékos; ha egy felület
@@ -198,7 +203,8 @@ benyomását. A v5 minden numerikus ±-t / SEM-sávot / „becsült mérési hib
 eltávolított a UI-ról (dimenzió-szint is).
 
 - A **mérési-hiba fegyelem a LOGIKÁBAN él**, nem a kijelzőn: a különbség-kapuk a KÉT pont
-  KÜLÖNBSÉGÉNEK hibáját használják (`DIFF_MIN_GAP = round(√2·SEM) = 15`,
+  KÜLÖNBSÉGÉNEK hibáját használják (`DIFF_MIN_GAP = round(√2·SEM)` — a bankból
+  származtatva, a 2026-08-11-i forma-kiegyensúlyozás óta 14,
   `diffStandardError`), nem az 1×SEM-et — így ott NEM állítunk sorrendet/címkét, ahol a
   delta a hibán belül van (a próza is főnév-only / hedge-elt). Ez szám nélkül történik.
 - A felhasználónak szóló **magyarázatot** (mit jelent a mérési hiba, miért nem

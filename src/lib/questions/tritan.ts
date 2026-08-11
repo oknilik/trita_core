@@ -40,6 +40,16 @@ import { DIMENSION_COLORS } from "@/lib/color-system";
  *
  * Részletes jogi összefoglaló: docs/product/tsfi-item-provenance.md
  * Dimenziókódok: TEMP/RESO/INTE/THOR/ADAP/OPEN (ld. src/lib/tritan.ts).
+ *
+ * RÖVID FORMA (TSFI-S, `short: true`) — 60 item, KIZÁRÓLAG fő dimenziós,
+ * dimenziónként pontosan 10. A kiegészítő altruizmus-skála (`I`) NEM része:
+ * 2026-08-11-ig 2 itemmel benne volt (98, 99), de két itemen a skála
+ * megbízhatatlan volt (α ≈ 0,36), és egyetlen aggregátumba sem számított —
+ * helyettük a 77 (RESO/fearfulness) és a 79 (OPEN/inquisitiveness) lépett be,
+ * így az itemszám 60 maradt, a hat dimenzió pedig kiegyensúlyozott lett.
+ * A TELJES forma változatlan: mind a négy altruizmus-item (97-100) benne van.
+ * A régi rövid forma id-halmazát a beadási kapu továbbra is elfogadja
+ * (questions/index.ts → LEGACY_COMPLETE_FORM_ID_SETS).
  */
 export const tritanConfig: TestConfig = {
   type: "TRITAN",
@@ -101,20 +111,20 @@ export const tritanConfig: TestConfig = {
         hu: "Az emocionalitás (E) dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Dependencia (mások érzelmi támogatásának igénye) és a Szentimentalitás (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
       },
       insights: {
-        low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, ritkán van szükséged mások érzelmi támogatására, és érzelmi távolságtartással éled meg a kapcsolataidat.",
-        mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és empátiát érzel mások iránt, de általában önállóan is megbirkózol a kihívásokkal.",
-        high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, fontos számodra a közel állókkal való érzelmi megosztás. Ez az empátia és érzelmi mélység a meleg, gondoskodó kapcsolatok alapja lehet.",
+        low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, és ritkán van szükséged mások érzelmi támogatására. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+        mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és eljutnak hozzád a helyzetek érzelmi jelzései, de általában önállóan is megbirkózol a kihívásokkal.",
+        high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, és fontos számodra a közel állókkal való érzelmi megosztás. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
       },
       insightsByLocale: {
         en: {
-          low: "You are not deterred by physical danger, feel little worry even in stressful situations, have little need to share your concerns with others, and tend to feel emotionally detached in your relationships.",
-          mid: "You experience moderate emotional intensity: you occasionally seek support in stressful situations and feel empathy toward others, while generally managing challenges independently.",
-          high: "You are strongly emotionally connected: sensitive to others' feelings, intensely affected by fears and stress, and feel a real need to share your concerns with those close to you. This emotional depth and empathy can be the foundation of warm, caring relationships.",
+          low: "You are not deterred by physical danger, feel little worry even in stressful situations, and have little need to share your concerns with others. In exchange, others' emotional signals reach you less often, and your calm can be read as distance.",
+          mid: "You experience moderate emotional intensity: you occasionally seek support in stressful situations and pick up the emotional signals around you, while generally managing challenges independently.",
+          high: "You are strongly emotionally connected: intensely affected by fears and stress, and you feel a real need to share your concerns with those close to you. A lot of early signal reaches you this way — and you carry a lot of it with you.",
         },
         hu: {
-          low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, ritkán van szükséged mások érzelmi támogatására, és érzelmi távolságtartással éled meg a kapcsolataidat.",
-          mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és empátiát érzel mások iránt, de általában önállóan is megbirkózol a kihívásokkal.",
-          high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, fontos számodra a közel állókkal való érzelmi megosztás. Ez az empátia és érzelmi mélység a meleg, gondoskodó kapcsolatok alapja lehet.",
+          low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, és ritkán van szükséged mások érzelmi támogatására. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+          mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és eljutnak hozzád a helyzetek érzelmi jelzései, de általában önállóan is megbirkózol a kihívásokkal.",
+          high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, és fontos számodra a közel állókkal való érzelmi megosztás. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
         },
       },
       facets: [
@@ -1532,6 +1542,7 @@ export const tritanConfig: TestConfig = {
       id: 77,
       dimension: "RESO",
       facet: "fearfulness",
+      short: true,
       text: "I like to do frightening things.",
       textByLocale: {
         hu: "Szeretek borzongató dolgokat csinálni.",
@@ -1564,6 +1575,7 @@ export const tritanConfig: TestConfig = {
       id: 79,
       dimension: "OPEN",
       facet: "inquisitiveness",
+      short: true,
       text: "I will not probe deeply into a subject.",
       textByLocale: {
         hu: "Nem szoktam mélyebbre ásni egy-egy témában.",
@@ -1871,7 +1883,6 @@ export const tritanConfig: TestConfig = {
       id: 98,
       dimension: "I",
       facet: "altruism",
-      short: true,
       text: "I love to help others.",
       textByLocale: {
         hu: "Szeretek segíteni másoknak.",
@@ -1887,7 +1898,6 @@ export const tritanConfig: TestConfig = {
       id: 99,
       dimension: "I",
       facet: "altruism",
-      short: true,
       text: "I am indifferent to the feelings of others.",
       textByLocale: {
         hu: "Hidegen hagynak mások érzései.",

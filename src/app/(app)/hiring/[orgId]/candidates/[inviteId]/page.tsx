@@ -15,6 +15,7 @@ import {
 import type { Locale } from "@/lib/profile-content";
 import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
 import { diffStandardError } from "@/lib/psychometrics";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import type { AssessmentForm } from "@/lib/questions/types";
 import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -62,18 +63,26 @@ function getDimensionInsight(
         en: "Pragmatic, results-oriented. Good at selling and negotiating, but watch transparency in team settings.",
       },
     },
+    // 2026-08-11, valencia-revízió (kanonikus kapu: src/lib/score-valence.ts):
+    // az Emocionalitás egyik pólusa sem erősség és nem is hiányosság —
+    // különösen egy ÉRTÉKELŐ (jelölt-)felületen nem, ahol a mondat felvételi
+    // döntést támogat. A korábbi szöveg empátiát és mások-olvasási pontosságot
+    // tulajdonított a magas pólusnak (a facetek: Félelem · Szorongás ·
+    // Dependencia · Érzelmi kötődés — ezek egyike sem ezt méri), az
+    // alacsonyat pedig érzelem-vaksággal vádolta. Mindhárom sáv leíró, és a
+    // hozadék mellett az árát is kimondja.
     RESO: {
       high: {
-        hu: "Érzelmileg érzékeny, empatikus. Jól olvas másokat, de stressz alatt lassabban regenerálódik. Strukturált visszajelzés segíti.",
-        en: "Emotionally sensitive, empathetic. Reads others well but recovers slower under stress. Benefits from structured feedback.",
+        hu: "Érzelmileg érzékeny: korán megérzi a helyzetek töltetét, és sokáig viszi magával. Stressz után lassabban regenerálódik — a kiszámítható tempó és a rendszeres visszajelzés segíti.",
+        en: "Emotionally sensitive: registers the charge of a situation early and carries it for a while. Recovers more slowly after stress — a predictable tempo and regular feedback help.",
       },
       medium: {
-        hu: "Kiegyensúlyozott érzelmi reaktivitás. Képes empátiára, de stresszhelyzetben is működőképes.",
-        en: "Balanced emotional reactivity. Empathetic but functional under stress.",
+        hu: "Vegyes érzelmi intenzitás: a kapcsolati jelzések eljutnak hozzá, és nyomás alatt is működőképes marad.",
+        en: "Mixed emotional intensity: relational signals reach them, and they stay functional under pressure.",
       },
       low: {
-        hu: "Stressztűrő, racionális döntéshozó. Jó krízishelyzetben, de a csapattagok érzelmeit néha figyelmen kívül hagyhatja.",
-        en: "Stress-tolerant, rational decision-maker. Great in crises but may overlook teammates' emotions.",
+        hu: "Tárgyszerű, nyomás alatt is stabil. Cserébe mások érzelmi jelzéseit ritkábban veszi észre, és a nyugalmát távolságtartásnak olvashatják.",
+        en: "Matter-of-fact, steady under pressure. In exchange, they register others' emotional signals less often, and their calm can be read as distance.",
       },
     },
     TEMP: {
@@ -224,11 +233,16 @@ export default async function CandidateResultPage({
   // „figyelendő" panelbe, egy reaktív jelölté a zöld „erősség" panelbe kerülne
   // (fordított döntéstámogatás). A pólus-tudatos dimenzió-szöveg lentebb külön,
   // helyesen jeleníti meg az emocionalitást.
+  // A szűrés a KANONIKUS valencia-kapun megy (score-valence.ts) — a korábbi
+  // kézi `d !== "RESO"` literál pontosan az a minta volt, amitől a szabály
+  // felületenként szétcsúszott. Üres lista esetén a panel a
+  // „kiegyensúlyozott profil" / „nincs figyelendő terület" szöveget adja,
+  // tehát nem marad cím tartalom nélkül.
   const highDims = presentDims.filter(
-    (d) => d !== "RESO" && profileOutput.categories[d] === "high",
+    (d) => strengthSlotEligible(d, "evaluative") && profileOutput.categories[d] === "high",
   );
   const lowDims = presentDims.filter(
-    (d) => d !== "RESO" && profileOutput.categories[d] === "low",
+    (d) => deficitSlotEligible(d) && profileOutput.categories[d] === "low",
   );
 
   // Selected team: searchParam → invite's team → first org team

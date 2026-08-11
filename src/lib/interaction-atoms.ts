@@ -145,8 +145,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     symmetric: true,
     view: {
       easy: {
-        hu: "Mély kölcsönös empátia: észreveszitek egymás terheit, és nem kell magyarázni, miért nehéz egy nap — ez ritka biztonságot ad.",
-        en: "Deep mutual empathy can develop: you typically notice each other's load, and a hard day rarely needs explaining — a valuable kind of safety.",
+        // Diádikus dinamika-leírás (két magas pólus egymás mellett), nem
+        // erény-állítás: a korábbi „empátia" szó ezt a skálát empátia-mérőnek
+        // olvastatta (2026-08-11 valencia-döntés). A HU is hedge-elve, az
+        // EN-nel egyezően („alakulhat" / „can develop").
+        hu: "Mély kölcsönös ráhangolódás alakulhat ki: észreveszitek egymás terheit, és nem kell magyarázni, miért nehéz egy nap — ez ritka biztonságot ad.",
+        en: "Deep mutual attunement can develop: you typically notice each other's load, and a hard day rarely needs explaining — a valuable kind of safety.",
       },
       friction: {
         hu: "Feszült időszakban egymás aggodalmait erősíthetitek fel: közös spirál, amelyben mindketten egyre nagyobbnak látjátok a kockázatot.",
