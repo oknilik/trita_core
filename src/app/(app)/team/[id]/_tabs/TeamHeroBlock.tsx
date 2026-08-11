@@ -82,7 +82,7 @@ export function TeamHeroBlock({
         secondary: hasPattern
           ? {
               label: t("teamDetail.actionViewPattern", locale),
-              href: `/team/${teamId}?tab=profile`,
+              href: `/team/${teamId}?tab=intelligence#team-profile`,
             }
           : null,
       };
@@ -97,7 +97,7 @@ export function TeamHeroBlock({
         label: hasPattern
           ? t("teamDetail.actionViewPatternAlt", locale)
           : t("teamDetail.actionOpenMembers", locale),
-        href: hasPattern ? `/team/${teamId}?tab=profile` : `/team/${teamId}?tab=members`,
+        href: hasPattern ? `/team/${teamId}?tab=intelligence#team-profile` : `/team/${teamId}?tab=members`,
       },
       secondary: null,
     };
@@ -177,7 +177,7 @@ export function TeamHeroBlock({
             {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
             {isTeamMember ? (
               <Link
-                href={`/team/${teamId}?tab=feedback`}
+                href={`/team/${teamId}?tab=members#feedback`}
                 scroll={false}
                 // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
                 // 2,7:1-et adott, ami AA alatt van mindkét színsémán.
@@ -202,7 +202,7 @@ export function TeamHeroBlock({
             ) : null}
             {showPatternCta ? (
               <Link
-                href={`/team/${teamId}?tab=profile`}
+                href={`/team/${teamId}?tab=intelligence#team-profile`}
                 scroll={false}
                 className={heroCtaSolidClass}
                 style={{ backgroundColor: teamHeroTheme.primary }}

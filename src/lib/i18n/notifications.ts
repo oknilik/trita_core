@@ -110,7 +110,7 @@ export const notificationTranslations = {
     },
     teamReportPublished: {
       title: { hu: "A csapatkép elkészült", en: "Team picture ready" },
-      body: { hu: "Elérhető a validált csapatkép a csapathoz: „{teamName}”.", en: "The validated team picture for {teamName} is available." },
+      body: { hu: "Elérhető a tanácsadó által jóváhagyott csapatkép: „{teamName}”.", en: "The consultant-approved team picture for {teamName} is available." },
     },
     teamMemberAdded: {
       title: { hu: "Csapatba kerültél", en: "You've been added to a team" },

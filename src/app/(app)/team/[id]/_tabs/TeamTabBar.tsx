@@ -17,7 +17,7 @@ export function TeamTabBar({
   ctx: TeamTabContext;
   active: string;
 }) {
-  const { teamId, teamData, locale, isHu, canViewRaw, isTeamMemberSelf, hasPublishedReport } = ctx;
+  const { teamId, teamData, locale, isHu, canViewRaw, hasPublishedReport } = ctx;
 
   const tabs: { key: string; label: string; shortLabel?: string; badge?: number }[] = [
     { key: "overview", label: isHu ? "Áttekintés" : "Overview" },
@@ -26,18 +26,12 @@ export function TeamTabBar({
       label: t("teamComp.tabMembers", locale),
       badge: teamData.memberCount + teamData.pendingInvites.length,
     },
-    ...(isTeamMemberSelf
-      ? [{ key: "feedback", label: isHu ? "Visszajelzés" : "Feedback" }]
-      : []),
     ...(canViewRaw
       ? [
           {
             key: "intelligence",
-            label: t("teamComp.tabIntelligence", locale),
-            shortLabel: t("teamComp.tabIntelligenceShort", locale),
+            label: isHu ? "Elemzések" : "Analysis",
           },
-          { key: "profile", label: t("teamComp.tabProfile", locale) },
-          { key: "teamRole", label: isHu ? "Csapatszerepek" : "Team roles" },
         ]
       : []),
     ...(canViewRaw || hasPublishedReport
@@ -46,8 +40,9 @@ export function TeamTabBar({
   ];
 
   return (
-    <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-      <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 shadow-[0_10px_28px_rgba(26,26,46,0.04)]">
+    <div className="relative">
+      <div className="overflow-x-auto pb-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="inline-flex min-w-full gap-1.5 rounded-2xl border border-sand bg-surface-card p-1.5 pr-8 shadow-[0_10px_28px_rgba(26,26,46,0.04)] md:pr-1.5">
         {tabs.map((tab) => {
           const isActive = tab.key === active;
           return (
@@ -88,7 +83,13 @@ export function TeamTabBar({
             </Link>
           );
         })}
+        </div>
       </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-y-0 right-0 w-10 rounded-r-2xl bg-gradient-to-l from-surface-card via-surface-card/85 to-transparent md:hidden"
+      />
+      <span className="sr-only">{isHu ? "A fülek oldalra görgethetők." : "Tabs can be scrolled horizontally."}</span>
     </div>
   );
 }

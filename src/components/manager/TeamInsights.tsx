@@ -12,9 +12,6 @@ interface HeatmapRow {
 }
 
 import { t, tf, type Locale } from "@/lib/i18n";
-// A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
-// a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
-import { hexLetter } from "@/lib/hexaco";
 import { sampleStdDev } from "@/lib/stats/dimension-stats";
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 
@@ -229,13 +226,12 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
           {dims.map((dim) => {
             const avg = teamAvg[dim.code];
             return (
-              <div key={hexLetter(dim.code)} className="flex items-center gap-3">
+              <div key={dim.code} className="flex items-center gap-3">
                 <span
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                  aria-hidden="true"
+                  className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
                   style={{ backgroundColor: dim.color }}
-                >
-                  {hexLetter(dim.code)}
-                </span>
+                />
                 <div className="flex-1">
                   <div className="relative h-7 overflow-hidden rounded-lg bg-sand/50">
                     {avg !== null && (
@@ -297,11 +293,10 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                    aria-hidden="true"
+                    className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: topStrength.color }}
-                  >
-                    {hexLetter(topStrength.code)}
-                  </span>
+                  />
                   <span className="text-sm font-semibold text-ink">
                     {topStrength.label}
                     <span className="ml-1.5 text-xs font-normal text-muted">
@@ -326,11 +321,10 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                    aria-hidden="true"
+                    className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: topGap.color }}
-                  >
-                    {hexLetter(topGap.code)}
-                  </span>
+                  />
                   <span className="text-sm font-semibold text-ink">
                     {topGap.label}
                     <span className="ml-1.5 text-xs font-normal text-muted">
@@ -355,11 +349,10 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
                 </div>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-micro font-bold text-white"
+                    aria-hidden="true"
+                    className="inline-flex h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: mostDiverseDim.color }}
-                  >
-                    {hexLetter(mostDiverseDim.code)}
-                  </span>
+                  />
                   {/* A ±szórás-szám nem jelenik meg (termékdöntés) — a
                       kiválasztást továbbra is a belső szórás-rangsor adja. */}
                   <span className="text-sm font-semibold text-ink">

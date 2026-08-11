@@ -18,6 +18,7 @@ import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { HexacoCode } from "@/lib/hexaco";
+import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
@@ -344,6 +345,9 @@ export function TeamReportView({
         day: "numeric",
       })
     : null;
+  const leadershipStrengths = extractNarrativeHighlights(report.strengths);
+  const leadershipRisks = extractNarrativeHighlights(report.risks);
+  const leadershipActions = (report.actionItems ?? []).slice(0, 3);
 
   const dynamicsTotal = agg?.dynamics
     ? agg.dynamics.alignedCount + agg.dynamics.complementaryCount + agg.dynamics.frictionCount
@@ -387,14 +391,14 @@ export function TeamReportView({
               <SectionEyebrow>
                 {isDraft
                   ? isHu ? "csapatkép — előnézet" : "team picture — preview"
-                  : isHu ? "validált csapatkép" : "validated team picture"}
+                  : isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
               </SectionEyebrow>
               <h2 className="mt-1 font-fraunces text-2xl text-ink">
                 {report.title ?? (isHu ? "Csapatkép" : "Team picture")}
               </h2>
               {publishedDate && (
                 <p className="mt-1 text-xs text-muted">
-                  {isHu ? "Tanácsadó által validálva · " : "Validated by consultant · "}
+                  {isHu ? "Tanácsadó által jóváhagyva · " : "Approved by consultant · "}
                   {publishedDate}
                 </p>
               )}
@@ -448,6 +452,70 @@ export function TeamReportView({
           </div>
         )}
       </DashboardPanel>
+
+      {(leadershipStrengths.length > 0 ||
+        leadershipRisks.length > 0 ||
+        leadershipActions.length > 0) && (
+        <section aria-labelledby="leadership-snapshot-title">
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
+            <div>
+              <SectionEyebrow>{isHu ? "vezetői összefoglaló" : "leadership snapshot"}</SectionEyebrow>
+              <h2 id="leadership-snapshot-title" className="mt-1 font-fraunces text-xl text-ink">
+                {isHu ? "A lényeg egy képernyőn" : "The essentials on one screen"}
+              </h2>
+            </div>
+            <p className="text-xs text-muted">{isHu ? "3 erősség · 3 kockázat · 3 akció" : "3 strengths · 3 risks · 3 actions"}</p>
+          </div>
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+            {[
+              {
+                key: "strengths",
+                title: isHu ? "Erősségek" : "Strengths",
+                items: leadershipStrengths,
+                edge: "border-l-state-success-border",
+                marker: "bg-state-success-bg text-state-success-fg",
+              },
+              {
+                key: "risks",
+                title: isHu ? "Kockázatok" : "Risks",
+                items: leadershipRisks,
+                edge: "border-l-state-warning-border",
+                marker: "bg-state-warning-bg text-state-warning-fg",
+              },
+            ].map((column) => (
+              <DashboardPanel key={column.key} className={`border-l-4 p-4 ${column.edge}`}>
+                <p className="font-mono text-micro uppercase tracking-widest text-muted">{column.title}</p>
+                {column.items.length > 0 ? (
+                  <ol className="mt-3 flex flex-col gap-2.5">
+                    {column.items.map((item, index) => (
+                      <li key={`${column.key}-${index}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink-body">
+                        <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-micro font-semibold ${column.marker}`}>{index + 1}</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ol>
+                ) : <p className="mt-3 text-xs text-muted">—</p>}
+              </DashboardPanel>
+            ))}
+            <DashboardPanel className="border-l-4 border-l-sage-soft p-4">
+              <p className="font-mono text-micro uppercase tracking-widest text-muted">{isHu ? "Akciók" : "Actions"}</p>
+              {leadershipActions.length > 0 ? (
+                <ol className="mt-3 flex flex-col gap-2.5">
+                  {leadershipActions.map((item, index) => (
+                    <li key={`${item.timeframe}-${index}`} className="flex items-start gap-2.5">
+                      <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage-soft px-1 text-micro font-semibold text-sage-dark">{item.timeframe}</span>
+                      <div>
+                        <p className="text-sm font-semibold leading-snug text-ink">{item.title}</p>
+                        <p className="mt-0.5 text-micro text-muted">{isHu ? "napos fókusz" : "day focus"}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              ) : <p className="mt-3 text-xs text-muted">—</p>}
+            </DashboardPanel>
+          </div>
+        </section>
+      )}
 
       {/* Csapatprofil: radar + szórás-sávok */}
       {agg?.dimensionAverages && (

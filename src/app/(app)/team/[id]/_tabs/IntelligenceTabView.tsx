@@ -4,14 +4,20 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
 import { TeamFeedbackCultureCard } from "@/components/team/TeamFeedbackCultureCard";
+import { TeamProfileTab } from "@/components/team/TeamProfileTab";
+import { TeamRoleSection } from "@/components/team/TeamRoleSection";
+import { TeamRoleRoundCard } from "@/components/team/TeamRoleRoundCard";
 import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
+import { prisma } from "@/lib/prisma";
+import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
+import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
 
 // ── Intelligence tab: potential/types and map ───────────────────────────
 export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
-  const { teamId, teamData, locale, isHu, canReachOrgCampaigns } = ctx;
+  const { teamId, teamData, locale, isHu, canReachOrgCampaigns, isOrgManager } = ctx;
   // Visszajelzési kultúra: az EGYETLEN observer-forrású csapat-blokk.
   // `null`, ha a lefedettség a TEAM_OBSERVER_MIN_COVERED padló alatt van —
   // ilyenkor a kártya nem renderel (nem „0"-t mutat, hanem semmit).
@@ -117,6 +123,30 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
     );
   }
 
+  const [teamRoleTeam, peerProfileEntries] = await Promise.all([
+    prisma.team.findUnique({
+      where: { id: teamId },
+      select: { teamRoleRoundActive: true, teamRoleRoundStartedAt: true },
+    }),
+    buildTeamPeerRoleProfiles(teamId),
+  ]);
+  const teamRoleMemberStatus = teamData.members.map((member) => {
+    const hasQuestionnaire = member.teamRoleSource === "questionnaire";
+    return {
+      userId: member.userId,
+      name: member.displayName,
+      hasQuestionnaire,
+      hasEstimate:
+        !hasQuestionnaire && hasCompleteTritanDims(member.scores),
+    };
+  });
+  const teamRoleCompletedCount = teamRoleMemberStatus.filter(
+    (member) => member.hasQuestionnaire,
+  ).length;
+  const teamRoleEstimateCount = teamRoleMemberStatus.filter(
+    (member) => member.hasEstimate,
+  ).length;
+
   return (
     <PlatformPageShell
       surface="team"
@@ -151,11 +181,31 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         </div>
       </section>
 
+      <nav
+        aria-label={isHu ? "Elemzési fejezetek" : "Analysis sections"}
+        className="flex flex-wrap gap-2 rounded-2xl border border-sand bg-surface-card p-2 shadow-[0_8px_22px_rgba(26,26,46,0.04)]"
+      >
+        {[
+          { href: "#team-summary", hu: "Összkép", en: "Overview" },
+          { href: "#team-profile", hu: "Csapatprofil", en: "Team profile" },
+          { href: "#team-roles", hu: "Csapatszerepek", en: "Team roles" },
+          { href: "#development-priorities", hu: "Prioritások", en: "Priorities" },
+        ].map((item) => (
+          <a
+            key={item.href}
+            href={item.href}
+            className="inline-flex min-h-[38px] items-center rounded-xl px-3 text-xs font-semibold text-ink-body transition-colors hover:bg-cream hover:text-ink"
+          >
+            {isHu ? item.hu : item.en}
+          </a>
+        ))}
+      </nav>
+
       {feedbackCulture ? (
         <TeamFeedbackCultureCard culture={feedbackCulture} locale={locale} />
       ) : null}
 
-      <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+      <section id="team-summary" className="scroll-mt-6 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {isHu ? "Csapat-összefoglaló" : "Team summary"}
         </p>
@@ -215,6 +265,14 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         isHu={isHu}
       />
 
+      <section id="team-profile" className="scroll-mt-6">
+        <TeamProfileTab
+          heatmapRows={teamData.heatmapRows}
+          dimConfigs={teamData.dimConfigs}
+          isHu={isHu}
+        />
+      </section>
+
       <TeamIntelligence
         members={intelligenceMembers}
         edges={teamDynamicsEdges}
@@ -223,11 +281,29 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
         isHu={isHu}
         noDataCtaHref={`/team/${teamId}?tab=members`}
         noDataCtaLabel={isHu ? "Tagok és kitöltések megnyitása" : "Open members and completions"}
-        deepDiveHref={`/team/${teamId}?tab=teamRole`}
+        deepDiveHref="#team-roles"
         deepDiveLabel={isHu ? "Részletes csapatszerep elemzés" : "Detailed team-role analysis"}
       />
 
-      <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
+      <section id="team-roles" className="scroll-mt-6 space-y-8">
+        <TeamRoleRoundCard
+          teamId={teamId}
+          isRoundActive={teamRoleTeam?.teamRoleRoundActive ?? false}
+          totalMembers={teamData.members.length}
+          completedCount={teamRoleCompletedCount}
+          estimateCount={teamRoleEstimateCount}
+          members={teamRoleMemberStatus}
+          canManage={isOrgManager}
+          isHu={isHu}
+        />
+        <TeamRoleSection
+          members={teamData.members}
+          isHu={isHu}
+          peerProfiles={Object.fromEntries(peerProfileEntries)}
+        />
+      </section>
+
+      <section id="development-priorities" className="scroll-mt-6 rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {isHu ? "Fejlesztési prioritások" : "Development priorities"}
         </p>

@@ -45,8 +45,18 @@ export interface TeamIntelligencePriority {
   ctaHref: string;
 }
 
-export function resolveTeamTabRedirect(tab: string | undefined): "intelligence" | null {
-  if (tab === "roles") return "intelligence";
+export function resolveTeamTabRedirect(
+  tab: string | undefined,
+): { tab: "intelligence" | "members"; anchor?: string } | null {
+  if (tab === "roles" || tab === "teamRole") {
+    return { tab: "intelligence", anchor: "#team-roles" };
+  }
+  if (tab === "profile") {
+    return { tab: "intelligence", anchor: "#team-profile" };
+  }
+  if (tab === "feedback") {
+    return { tab: "members", anchor: "#feedback" };
+  }
   return null;
 }
 
@@ -268,7 +278,7 @@ export function buildTeamIntelligencePriorities({
         title: tr(locale, "Hiányzó kulcsszerep", "Missing key role"),
         reason: tf(roleGapReasonKey, locale, { roles: roleNames }),
         ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
-        ctaHref: `/team/${teamId}?tab=teamRole`,
+        ctaHref: `/team/${teamId}?tab=intelligence#team-roles`,
       });
     }
 
@@ -291,7 +301,7 @@ export function buildTeamIntelligencePriorities({
           `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% — an estimate computed from the agreeableness and honesty-humility averages.`,
         ),
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
-        ctaHref: `/team/${teamId}?tab=profile`,
+        ctaHref: `/team/${teamId}?tab=intelligence#team-profile`,
       });
     }
 
@@ -327,7 +337,7 @@ export function buildTeamIntelligencePriorities({
           `${HEXACO_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team, which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
-        ctaHref: `/team/${teamId}?tab=profile`,
+        ctaHref: `/team/${teamId}?tab=intelligence#team-profile`,
       });
     }
 
@@ -372,7 +382,7 @@ export function buildTeamIntelligencePriorities({
             `The leader's honesty-humility and agreeableness scores visibly differ from the team average. This is an estimate — worth validating in conversation.`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
-          ctaHref: `/team/${teamId}?tab=teamRole`,
+          ctaHref: `/team/${teamId}?tab=intelligence#team-roles`,
         });
       }
     }
@@ -389,7 +399,7 @@ export function buildTeamIntelligencePriorities({
         "No critical action detected from current data; plan the next observer round.",
       ),
       ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
-      ctaHref: `/team/${teamId}?tab=profile`,
+      ctaHref: `/team/${teamId}?tab=intelligence#team-profile`,
     });
   }
 

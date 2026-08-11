@@ -200,7 +200,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     </div>
                     <div>
                       <SectionEyebrow>
-                        {isHu ? "validált csapatkép" : "validated team picture"}
+                        {isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
                       </SectionEyebrow>
                       {publishedPattern?.label ? (
                         <p className="mt-1 font-fraunces text-2xl leading-tight text-ink">
@@ -208,7 +208,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                         </p>
                       ) : (
                         <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
-                          {isHu ? "A csapat validált profilja" : "The team's validated profile"}
+                          {isHu ? "A csapat jóváhagyott profilja" : "The team's approved profile"}
                         </p>
                       )}
                       {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
@@ -217,7 +217,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.memberCount}{" "}
-                          {isHu ? "tag a validált képben" : "members in the validated picture"}
+                          {isHu ? "tag a jóváhagyott képben" : "members in the approved picture"}
                         </span>
                         <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
                           {publishedReport.aggregates!.completionPct}%{" "}
@@ -233,8 +233,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó által validált, aggregált kép — egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
-                          : "Aggregate picture validated by your consultant — without individual results, frozen at publication."}
+                          ? "A tanácsadó által jóváhagyott, aggregált kép — egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
+                          : "Aggregate picture approved by your consultant — without individual results, frozen at publication."}
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}
@@ -253,7 +253,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                     </span>
                     <div>
                       <p className="text-sm font-semibold text-ink">
-                        {isHu ? "A validált csapatkép elérhető" : "The validated team picture is available"}
+                        {isHu ? "A jóváhagyott csapatkép elérhető" : "The approved team picture is available"}
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-ink-body">
                         {isHu
@@ -279,12 +279,12 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 </span>
                 <div>
                   <p className="text-sm font-semibold text-ink">
-                    {isHu ? "A csapatkép validálás alatt" : "Team picture pending validation"}
+                    {isHu ? "A csapatkép tanácsadói jóváhagyásra vár" : "Team picture awaiting consultant approval"}
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-body">
                     {isHu
-                      ? "A csapatszintű eredményeket a tanácsadó összesíti és validálja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
-                      : "Team-level results are aggregated and validated by your consultant — they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
+                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      : "Team-level results are aggregated and approved by your consultant — they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
                   </p>
                 </div>
               </div>

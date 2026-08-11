@@ -28,7 +28,7 @@ export default function AboutPage() {
           path: "/about",
           title: "Mi az a Trita? A gondolat és a felépítés",
           description:
-            "Ami mérhető, az megbeszélhető. A Trita felépítése négy mérési rétegből: személyiség, külső visszajelzés, csapatszerepek és pszichológiai biztonság — tanácsadó által validált csapatképpé összeolvasva. Egyéneknek ingyenes, csapatoknak tanácsadó vezette program.",
+            "Ami mérhető, az megbeszélhető. A Trita felépítése négy mérési rétegből: személyiség, külső visszajelzés, csapatszerepek és pszichológiai biztonság — tanácsadó által jóváhagyott csapatképpé összeolvasva. Egyéneknek ingyenes, csapatoknak tanácsadó vezette program.",
           about: ["Csapatdiagnosztika", "Személyiségfelmérés", "Csapatintelligencia"],
           breadcrumb: [
             { name: "Főoldal", path: "/" },

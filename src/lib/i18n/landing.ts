@@ -535,8 +535,8 @@ export const landingTranslations = {
     audienceSelfCta: { hu: "Kipróbálom ingyen →", en: "Try it for free →" },
     audienceTeamTitle: { hu: "Csapatoknak és vezetőknek", en: "For teams and leaders" },
     audienceTeamDesc: {
-      hu: "Tanácsadó vezette program: a négy mérési rétegből validált csapatkép készül, amit közös workshopon értelmezünk — és fél év múlva is látszik, mi változott. Az ár a létszámtól és a program mélységétől függ.",
-      en: "A consultant-led program: the four measurement layers become a validated team picture we interpret together in a workshop — and six months later you can still see what changed. Pricing depends on headcount and depth.",
+      hu: "Tanácsadó vezette program: a négy mérési rétegből jóváhagyott csapatkép készül, amit közös workshopon értelmezünk — és fél év múlva is látszik, mi változott. Az ár a létszámtól és a program mélységétől függ.",
+      en: "A consultant-led program: the four measurement layers become an approved team picture we interpret together in a workshop — and six months later you can still see what changed. Pricing depends on headcount and depth.",
     },
     audienceTeamCta: { hu: "Beszéljünk a csapatotokról →", en: "Let's talk about your team →" },
 
@@ -548,8 +548,8 @@ export const landingTranslations = {
       en: "Each layer stands on its own, but the value is in reading them together. The order isn't accidental: we always start with the individual, and only move up once the layer beneath is in place.",
     },
     buildDiagramAlt: {
-      hu: "Ábra: a négy mérési réteg egyetlen, tanácsadó által validált csapatképpé fut össze.",
-      en: "Diagram: the four measurement layers converge into a single, consultant-validated team picture.",
+      hu: "Ábra: a négy mérési réteg egyetlen, tanácsadó által jóváhagyott csapatképpé fut össze.",
+      en: "Diagram: the four measurement layers converge into a single, consultant-approved team picture.",
     },
     layer1Title: { hu: "Önértékelés — hat személyiségdimenzió", en: "Self-assessment — six personality dimensions" },
     layer1Desc: {
@@ -576,7 +576,7 @@ export const landingTranslations = {
     },
     layer4Tag: { hu: "névtelen · pulzus", en: "anonymous · pulse" },
     buildOutcomeLabel: { hu: "Ebből lesz", en: "Which becomes" },
-    buildOutcomeTitle: { hu: "Validált csapatkép", en: "A validated team picture" },
+    buildOutcomeTitle: { hu: "Jóváhagyott csapatkép", en: "An approved team picture" },
     buildOutcomeDesc: {
       hu: "A négy rétegből tanácsadó által ellenőrzött és értelmezett összkép készül — nem algoritmus dobja ki. A publikált kép mindig aggregált: egyéni értékek nem látszanak benne.",
       en: "The four layers become an aggregate picture that a consultant reviews and interprets — it isn't spat out by an algorithm. What gets published is always aggregated: individual values never appear.",

@@ -5,7 +5,7 @@
 **Ág:** `codex/ux-journey-simplification`
 
 **Kiindulópont:** `origin/main` (`84867e5`)
-**Státusz:** első és második szelet elkészült; harmadik szelet következik
+**Státusz:** első, második és harmadik szelet elkészült; negyedik szelet következik
 
 ## 1. Vezetői döntés
 
@@ -99,11 +99,12 @@ A teljes mérési backlog és a további párhuzamos feladatok kanonikus helye a
 
 ### Szelet 3 — csapatoldal és riport
 
-- tanácsadói csapatfülek összevonása: Áttekintés / Emberek / Elemzések / Riport;
-- mobil fülsor görgethetőségének látható jelzése;
-- vezetői riport első képernyő: 3 erősség, 3 kockázat, 3 akció;
-- belső dimenziókódok elrejtése az alapnézetből;
-- „validált” helyett „tanácsadó által jóváhagyott”.
+- [x] tanácsadói csapatfülek összevonása: Áttekintés / Emberek / Elemzések / Riport;
+- [x] a régi profil-, csapatszerep- és visszajelzés-linkek megőrzése célzott átirányítással;
+- [x] mobil fülsor görgethetőségének látható jelzése;
+- [x] vezetői riport első képernyő: legfeljebb 3 erősség, 3 kockázat, 3 akció;
+- [x] belső dimenziókódok elrejtése az alapnézetből;
+- [x] „validált” helyett „tanácsadó által jóváhagyott”.
 
 ### Szelet 4 — végrehajtás és megtartás
 
@@ -205,3 +206,14 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
 - TypeScript typecheck és célzott ESLint hibamentes;
 - színtoken- és új-hex guard hibamentes;
 - az optimalizált production build sikeres, 102 statikus oldallal.
+
+## 11. Harmadik szelet részverifikációja
+
+- a hét csapatfül négy, feladat-alapú célra egyszerűsödött;
+- a régi `profile`, `teamRole`, `roles` és `feedback` mélylinkek a megfelelő
+  új fejezethez irányítanak;
+- a vezetői 3–3–3 összefoglaló tisztán prezentációs réteg, nem írja át a
+  tanácsadói tartalmat;
+- az új narratíva-kiemelő és a régi linkek regressziós tesztjei zöldek;
+- a teljes unit suite 978/978 zöld;
+- TypeScript typecheck hibamentes.

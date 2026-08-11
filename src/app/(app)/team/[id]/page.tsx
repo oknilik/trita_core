@@ -46,11 +46,8 @@ import { resolveTeamTabRedirect } from "@/lib/team-intelligence";
 import type { TeamTabContext } from "./_tabs/types";
 import { OverviewTabView } from "./_tabs/OverviewTabView";
 import { IntelligenceTabView } from "./_tabs/IntelligenceTabView";
-import { ProfileTabView } from "./_tabs/ProfileTabView";
 import { MembersTabView } from "./_tabs/MembersTabView";
-import { TeamRoleTabView } from "./_tabs/TeamRoleTabView";
 import { ReportTabView } from "./_tabs/ReportTabView";
-import { FeedbackTabView } from "./_tabs/FeedbackTabView";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 
 export const dynamic = "force-dynamic";
@@ -65,11 +62,8 @@ export const dynamic = "force-dynamic";
 const TEAM_TAB_KEYS = [
   "overview",
   "intelligence",
-  "profile",
   "members",
-  "teamRole",
   "report",
-  "feedback",
 ] as const;
 
 type TeamTabKey = (typeof TEAM_TAB_KEYS)[number];
@@ -100,7 +94,9 @@ export default async function TeamDetailPage({
   const requestedTab = resolvedSearchParams.tab;
   const teamTabRedirect = resolveTeamTabRedirect(requestedTab);
   if (teamTabRedirect) {
-    redirect(`/team/${teamId}?tab=${teamTabRedirect}`);
+    redirect(
+      `/team/${teamId}?tab=${teamTabRedirect.tab}${teamTabRedirect.anchor ?? ""}`,
+    );
   }
   const activeTab: TeamTabKey = isTeamTab(requestedTab)
     ? requestedTab
@@ -348,7 +344,7 @@ export default async function TeamDetailPage({
     profile.isConsultant ||
     isPlatformAdminEmail(profile.email);
   // Raw-result tabs are consultant-only; everyone else gets the progress view.
-  if (!canViewRaw && (activeTab === "intelligence" || activeTab === "profile" || activeTab === "teamRole")) {
+  if (!canViewRaw && activeTab === "intelligence") {
     redirect(`/team/${teamId}?tab=overview`);
   }
 
@@ -422,11 +418,7 @@ export default async function TeamDetailPage({
   const teamData = await getTeamPageData(teamId, locale as "hu" | "en");
   if (!teamData) notFound();
 
-  // Visszajelzés fül: csak csapattagnak (kitüntetett hely).
   const isTeamMemberSelf = teamData.members.some((m) => m.userId === profile.id);
-  if (activeTab === "feedback" && !isTeamMemberSelf) {
-    redirect(`/team/${teamId}?tab=overview`);
-  }
 
   const ctx: TeamTabContext = {
     teamId,
@@ -459,13 +451,6 @@ export default async function TeamDetailPage({
   const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
 
   switch (activeTab) {
-    case "profile":
-      return (
-        <>
-          {tabTracker}
-          <ProfileTabView ctx={ctx} />
-        </>
-      );
     case "members":
       return (
         <>
@@ -473,25 +458,11 @@ export default async function TeamDetailPage({
           <MembersTabView ctx={ctx} />
         </>
       );
-    case "feedback":
-      return (
-        <>
-          {tabTracker}
-          <FeedbackTabView ctx={ctx} />
-        </>
-      );
     case "intelligence":
       return (
         <>
           {tabTracker}
           <IntelligenceTabView ctx={ctx} />
-        </>
-      );
-    case "teamRole":
-      return (
-        <>
-          {tabTracker}
-          <TeamRoleTabView ctx={ctx} />
         </>
       );
     case "report":
