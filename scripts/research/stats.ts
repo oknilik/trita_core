@@ -1,8 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────
 // Kis, tiszta statisztikai segédek a research-/kalibrációs scriptekhez.
-// Prisma-mentes; SZÁNDÉKOSAN mintavételi (n−1) szórást számol — a norma-
-// tábla és a kalibráció populáció-becslés, nem a src alatti (÷n) motorok
-// leírója. Üres/elégtelen bemenetre NaN-t ad, a formázó „–"-t ír belőle.
+// Prisma-mentes; mintavételi (n−1) szórást számol — ugyanazzal a Bessel-
+// korrekcióval, mint a src alatti közös motor (lib/stats/dimension-stats).
+// Azért nem onnan importál, hogy a scriptek függőség-fája lapos maradjon.
+// Üres/elégtelen bemenetre NaN-t ad, a formázó „–"-t ír belőle.
 // ─────────────────────────────────────────────────────────────────────
 
 export function mean(values: readonly number[]): number {

@@ -509,9 +509,22 @@ export function selectGrowthFocusItems(
 // mondata a stabilitását nevezte meg gyengeségként. Szabályok:
 //  - rangsor a kanonikus rankDimensionScores-szal (determinista tie-break);
 //  - a leggyengébb slot a legalacsonyabb NEM-RESO dimenzió;
-//  - lapos profilnál (a MEGJELENÍTETT pár terjedelme < 2·SEM) nincs
+//  - lapos profilnál (max−min < HERO_RANGE_GATE_FACTOR·SEM) nincs
 //    „leggyengébb" — csak az erősség megy ki (weakest: null).
 // ─────────────────────────────────────────────────────────────────────
+
+/**
+ * A lapos-profil kapu szorzója (motor-audit v9 döntés, 2026-08-11).
+ * Ez a kapu NEM két előre kijelölt pontszám különbségét vizsgálja (arra a
+ * kanonikus √2·SEM ≈ 1,41·SEM szabály él, ld. DIFF_MIN_GAP), hanem a hat
+ * dimenzió TERJEDELMÉT (max−min): a „legerősebb/leggyengébb" állításhoz a
+ * szélsőértékeket utólag, a zajt is beleértve választjuk ki. Hat független
+ * pontszám várható terjedelme tiszta zaj mellett ≈ 2,5·SEM, ezért a
+ * páronkénti √2-nél szigorúbb, 2·SEM-es kapu a szándékos minimum — a
+ * korábbi komment tévesen nevezte ezt „a két pontszám hibájának".
+ * Viselkedés-változás nincs; a értéket unit-teszt rögzíti.
+ */
+export const HERO_RANGE_GATE_FACTOR = 2;
 
 export function selectHeroInsightDims<T extends { code: string; score: number }>(
   mainDimensions: ReadonlyArray<T>,
@@ -525,9 +538,10 @@ export function selectHeroInsightDims<T extends { code: string; score: number }>
   if (!weakest || weakest.code === strongest.code) {
     return { strongest, weakest: null };
   }
-  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne (a különbség a
-  // KÉT pontszám mérési hibáján, 2·SEM-en belül van) — csak az erősség megy ki.
-  if (strongest.score - weakest.score < 2 * dimSem) {
+  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne — a terjedelem-
+  // kapu indoklása a HERO_RANGE_GATE_FACTOR kommentjében (range-statisztika,
+  // nem páronkénti különbség). Csak az erősség megy ki.
+  if (strongest.score - weakest.score < HERO_RANGE_GATE_FACTOR * dimSem) {
     return { strongest, weakest: null };
   }
   return { strongest, weakest };

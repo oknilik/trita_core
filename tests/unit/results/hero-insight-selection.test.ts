@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { selectHeroInsightDims } from "@/lib/workstyle-content";
+import { HERO_RANGE_GATE_FACTOR, selectHeroInsightDims } from "@/lib/workstyle-content";
 
 // Hero-mondat dimenzió-választása (motor-audit v6, M4c): a results-oldal
 // „leggyengébb" slotja korábban nyers `.sort`-tal a fordított RESO-t is
 // kiválaszthatta — egy stabil kitöltő hero-mondata a stabilitását nevezte
 // gyengeségnek. Szabályok: kanonikus rangsor (rankDimensionScores,
 // determinista tie-break), RESO kimarad a gyenge-slotból, lapos profilnál
-// (a megjelenített pár < 2·SEM) nincs gyenge-slot.
+// (max−min terjedelem < HERO_RANGE_GATE_FACTOR·SEM) nincs gyenge-slot —
+// a range-statisztika indoklása a konstans kommentjében (motor-audit v9).
 
 const d = (code: string, score: number) => ({ code, score });
 const SEM = 10;
@@ -71,4 +72,23 @@ test("egyetlen nem-RESO dimenzió = a legerősebb: nincs gyenge-slot", () => {
 
 test("üres bemenet: null (hívói fallback)", () => {
   assert.equal(selectHeroInsightDims([], SEM), null);
+});
+
+// ── A terjedelem-kapu rögzítése (motor-audit v9 döntés) ──────────────────
+// A kapu SZÁNDÉKOSAN 2·SEM (szigorúbb a páronkénti √2-szabálynál), mert a
+// max−min hat pontszám terjedelme — tiszta zaj mellett a várható terjedelem
+// ≈ 2,5·SEM. A faktor megváltoztatása tudatos döntést igényel, nem drift.
+
+test("a terjedelem-kapu faktora rögzítve: 2", () => {
+  assert.equal(HERO_RANGE_GATE_FACTOR, 2);
+});
+
+test("határeset: pontosan 2·SEM terjedelemnél a gyenge-slot már kimegy", () => {
+  // gap = 20 = 2·SEM → nem „kisebb, mint", tehát a weakest megjelenik.
+  const pick = selectHeroInsightDims(
+    [d("OPEN", 70), d("THOR", 60), d("TEMP", 50)],
+    SEM,
+  );
+  assert.ok(pick);
+  assert.equal(pick.weakest?.code, "TEMP");
 });

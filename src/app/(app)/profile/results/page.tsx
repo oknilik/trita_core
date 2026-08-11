@@ -257,6 +257,11 @@ export default async function ProfileResultsPage({
   // 1×-es kapu ~40%-kal alul-becsülte, és a mérési hibán belüli facet-gapeket
   // is „eltérésnek" jelölte (motor-audit v6, M2; a dimenzió-szintű kapu,
   // DIFF_MIN_GAP, ugyanezt a √2-es szabályt követi). Kerekítve, propként megy.
+  // TUDATOS KÖVETKEZMÉNY (motor-audit v9 döntés): a rövid formán ~2,4 item
+  // jut egy facetre, így a küszöb ≈ 22 pont — az „eltérés"-jelzés RITKÁN fog
+  // tüzelni. Ez nem hiba, hanem a facet-szintű megbízhatóság őszinte kezelése:
+  // a szekció egyezésnél pozitív állapotot mutat, a teljes lista egy
+  // kattintásra elérhető. Pilot-α után újraértékelendő (residuals-ledger §3).
   const facetSemRounded = Math.round(Math.SQRT2 * facetStandardError(assessmentForm));
 
   // ── Draft info ─────────────────────────────────────────────────────────────
@@ -519,7 +524,8 @@ export default async function ProfileResultsPage({
   // A pár-választás közös szabályból (workstyle-content, motor-audit v6, M4c):
   // kanonikus rangsor (rankDimensionScores) + a fordított RESO kimarad a
   // „leggyengébb" slotból (az alacsony Emocionalitás stabilitás, nem
-  // gyengeség) + lapos profilnál (< 2·SEM) csak az erősség megy ki.
+  // gyengeség) + lapos profilnál (terjedelem < HERO_RANGE_GATE_FACTOR·SEM,
+  // indoklás a konstansnál) csak az erősség megy ki.
   const heroInsight = (() => {
     const pick = selectHeroInsightDims(mainDimensions, dimSem);
     if (!pick) return "";
