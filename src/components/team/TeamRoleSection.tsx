@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { hasCompleteTritanDims, resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLE_FAMILIES, teamRoleColors } from "@/lib/color-system";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode, TeamRoleScores } from "@/lib/team-role-scoring";
@@ -16,6 +16,10 @@ interface MemberWithTeamRole {
   userId: string;
   displayName: string;
   hasScores: boolean;
+  /** Van-e TELJES (hat dimenziós) személyiségprofilja — a profil-státusz
+      kártya számlálója; NEM azonos a hasScores-szal (az a szerep-adat
+      meglétét jelzi, ami kérdőív-only tagnál profil nélkül is igaz). */
+  hasPersonalityProfile: boolean;
   teamRoleScores: TeamRoleScores | null;
   top3: { role: TeamRoleCode; score: number }[];
   primaryRole: TeamRoleCode | null;
@@ -132,11 +136,15 @@ function TeamRoleCompletionStatus({
   members: MemberWithTeamRole[];
   isHu: boolean;
 }) {
-  const withScores = members.filter((m) => m.hasScores).length;
+  // A kártya szövege a SZEMÉLYISÉGPROFIL meglétéről szól („X/Y tagnak van
+  // személyiségprofilja") — a számláló ezért a valódi (teljes hat dimenziós)
+  // profil-meglétet számolja, NEM a szerep-adat meglétét: egy kérdőív-only
+  // tag szerep-adattal, de profil nélkül nem tartozik bele.
+  const withProfile = members.filter((m) => m.hasPersonalityProfile).length;
   const questionnaireCount = members.filter((m) => m.source === "questionnaire").length;
   const estimateCount = members.filter((m) => m.source === "estimate").length;
   const total = members.length;
-  const pct = total > 0 ? Math.round((withScores / total) * 100) : 0;
+  const pct = total > 0 ? Math.round((withProfile / total) * 100) : 0;
 
   return (
     <div className="rounded-xl border border-sand bg-cream p-4">
@@ -146,7 +154,7 @@ function TeamRoleCompletionStatus({
             {t("teamComp.profileStatus", isHu ? "hu" : "en")}
           </p>
           <p className="mt-0.5 text-xs text-ink-body">
-            {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withScores)).replace("{total}", String(total))}
+            {t("teamComp.profileStatusDesc", isHu ? "hu" : "en").replace("{done}", String(withProfile)).replace("{total}", String(total))}
           </p>
           <p className="mt-1 text-xs text-muted">
             {t("teamComp.roleSourceMixLine", isHu ? "hu" : "en")
@@ -611,12 +619,15 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       const measured =
         m.teamRoleSource === "questionnaire" ? m.teamRoleScores : null;
       const resolved = resolveDisplayRoleScores(measured, m.scores);
+      // Teljes hat dimenziós profil — a becslés-kapuval azonos definíció.
+      const hasPersonalityProfile = hasCompleteTritanDims(m.scores);
       if (!resolved) {
         return {
           id: m.id,
           userId: m.userId,
           displayName: m.displayName,
           hasScores: false,
+          hasPersonalityProfile,
           teamRoleScores: null,
           top3: [],
           primaryRole: null,
@@ -630,6 +641,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
         userId: m.userId,
         displayName: m.displayName,
         hasScores: true,
+        hasPersonalityProfile,
         teamRoleScores: resolved.scores,
         top3,
         primaryRole: top3[0]?.role ?? null,

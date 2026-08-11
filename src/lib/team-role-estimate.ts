@@ -98,10 +98,21 @@ export function resolveDisplayRoleScores(
   exact?: Partial<Record<TeamRoleCode, number>>;
 } | null {
   if (measured) {
+    // Own-key szűrés (nem prototípus-lánc): egy `in`-alapú szűrő a
+    // "constructor"/"toString" jellegű kulcsokat is átengedné — a
+    // getTopRoles (team-role-scoring) ugyanezért Object.hasOwn-t használ.
     const filtered = Object.fromEntries(
-      Object.entries(measured).filter(([code]) => code in TEAM_ROLES),
+      Object.entries(measured).filter(([code]) => Object.hasOwn(TEAM_ROLES, code)),
     );
-    if (Object.keys(filtered).length > 0) {
+    // Mért ágnak MIND a 9 kanonikus szerep-kód kell: egy részleges sor
+    // (pl. {"OG": 100} — örökség/sérült adat) mértként elfogadva a többi
+    // 8 szerepre elnyomná a becslést, és csonka profilt mutatna
+    // „kitöltött" badge-dzsel. A valódi submit (calculateTeamRoleScores)
+    // mindig mind a 9 kódot perzisztálja, így élő adatot ez nem érint.
+    const complete = (Object.keys(TEAM_ROLES) as TeamRoleCode[]).every(
+      (code) => typeof filtered[code] === "number",
+    );
+    if (complete) {
       return { scores: filtered as TeamRoleScores, source: "questionnaire" };
     }
   }

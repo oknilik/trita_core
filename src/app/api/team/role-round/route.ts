@@ -64,76 +64,11 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ ok: true, active });
 }
 
-/**
- * GET /api/team/role-round?teamId=xxx
- *
- * Returns Team role round status and per-member completion.
- */
-export async function GET(req: NextRequest) {
-  const { userId } = await auth();
-  if (!userId) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-
-  const teamId = req.nextUrl.searchParams.get("teamId");
-  if (!teamId) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
-
-  const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: userId },
-    select: { id: true },
-  });
-  if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-
-  const team = await prisma.team.findUnique({
-    where: { id: teamId },
-    select: {
-      orgId: true,
-      teamRoleRoundActive: true,
-      teamRoleRoundStartedAt: true,
-      members: {
-        select: {
-          userId: true,
-          user: {
-            select: {
-              username: true,
-              teamRoleScores: {
-                orderBy: { createdAt: "desc" },
-                take: 1,
-                select: { source: true, updatedAt: true },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-  if (!team?.orgId) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-
-  // Tagság + kezelés-jogosultság (mint a POST-nál). Korábban a GET CSAK
-  // bejelentkezést kért, így bármely belépett user bármely csapat teljes
-  // rosszterét + kitöltési státuszát lekérhette (cross-org info-szivárgás,
-  // motor-audit).
-  const membership = await prisma.organizationMember.findUnique({
-    where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
-  });
-  if (!membership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  if (!(await canManageTeam(profile.id, teamId, membership.role))) {
-    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
-  }
-
-  const memberStatus = team.members.map((m) => ({
-    userId: m.userId,
-    name: m.user.username ?? "?",
-    hasQuestionnaire: m.user.teamRoleScores[0]?.source === "questionnaire",
-    hasEstimate: m.user.teamRoleScores[0]?.source === "estimate",
-    completedAt: m.user.teamRoleScores[0]?.updatedAt?.toISOString() ?? null,
-  }));
-
-  return NextResponse.json({
-    active: team.teamRoleRoundActive,
-    startedAt: team.teamRoleRoundStartedAt?.toISOString() ?? null,
-    totalMembers: memberStatus.length,
-    completedCount: memberStatus.filter((m) => m.hasQuestionnaire).length,
-    estimateCount: memberStatus.filter((m) => m.hasEstimate && !m.hasQuestionnaire).length,
-    members: memberStatus,
-  });
-}
+// A korábbi GET /api/team/role-round?teamId=xxx handler 2026-08-11-én
+// TÖRÖLVE (halott route-eltakarítás, motor-audit-v4): egyetlen hívója sem
+// volt (a TeamRoleRoundCard csak a POST-ot használja, a tab-nézet szerver-
+// oldalon számol), és az estimateCount-ja a DB-beli source === "estimate"
+// sorokra épült, amit egyetlen írási út sem perzisztál (a submit mindig
+// "questionnaire"-t ír) — így a szám definíció szerint mindig 0 volt. A
+// kanonikus státusz-számítás a resolveDisplayRoleScores /
+// hasCompleteTritanDims megjelenítési szabálya (TeamRoleTabView).

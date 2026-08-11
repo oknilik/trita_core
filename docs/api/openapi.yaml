@@ -683,7 +683,8 @@ paths:
               properties: { reportId: { type: string } }
       responses: { "200": { description: OK } }
   /api/team/role-round:
-    get: { tags: [TeamRoles], summary: Csapatszerep-kör állapota, responses: { "200": { description: OK } } }
+    # A GET (kör-állapot) a motor-audit v9-ben törölve — nem volt hívója, és a
+    # becslés-számlálója egy soha nem perzisztált source:"estimate" értékre épült.
     post: { tags: [TeamRoles], summary: Csapatszerep-kör nyitása/zárása, responses: { "200": { description: OK } } }
 
   # ── TeamRoles / Trust / PsychSafety ──────────────────────────────────────
