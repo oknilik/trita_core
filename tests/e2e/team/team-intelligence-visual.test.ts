@@ -325,9 +325,13 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(resourceSection.getByText("Sufficient One")).toBeVisible();
 
     // Motor-audit v7 (user-kérés): a felületen NINCS ±N mérési-hiba jelölés, és a
-    // resource-map dimenzió-chip HEXACO-betűt mutat, nem nyers TRITAN belső kódot.
+    // resource-map dimenzió-chip HEXACO-betűt mutat, nem kivezetett belső kódot.
+    // 2026-08-11: a belső kódok kivezetve — a kanonikus kód MAGA a HEXACO-betű,
+    // amit a chip szándékosan meg is jelenít („C 62%"), ezért az őrszem a
+    // KIVEZETETT örökség-kódokra fut. (A korábbi regex ezeket sorolta fel; az
+    // átnevezéskor betűkre fordult, amivel a saját állítását tagadta volna.)
     await expect(page.locator("main")).not.toContainText("±");
-    await expect(resourceSection).not.toContainText(/\b(H|E|X|A|C|O)\b/);
+    await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|THOR|ADAP)\b/);
 
     // Deep-dive CTA szekció — a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({

@@ -22,7 +22,8 @@
  *    TSFI-S (60 itemes) és a teljes (100−8 itemes) formára.
  *  - Dimenziónként: n, átlag, mintavételi szórás, decilisek, VALÓDI
  *    Cronbach-α + átlagos item-item korreláció + implikált SEM — a
- *    psychometrics.ts priorjai (MEAN_ITEM_R=0.22, SCORE_SD=20) mellett,
+ *    psychometrics.ts konstansai mellett (FIGYELEM: 2026-08-11 óta ezek maguk
+ *    is EBBŐL a mintából származnak, tehát az összevetés mért-vs-mért),
  *    hogy a kalibrációs delta explicit legyen. Sáv-kihasználtság a két élő
  *    vágásrendszerre (40/70 és 35/65) — a norms-from-results.ts mintája.
  *  - A végén NormTable-kompatibilis JSON-blokkot ír ki

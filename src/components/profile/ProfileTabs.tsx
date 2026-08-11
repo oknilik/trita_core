@@ -18,7 +18,6 @@ import {
 } from "@/components/results/ObserverFlowStatusCard";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
 import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
-import type { HexacoCode } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
@@ -47,6 +46,7 @@ import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-cont
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
+import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
@@ -169,10 +169,18 @@ export interface ProfileTabsProps {
   plusContent?: {
     introText: string;
     /** „Ahogy működsz" nevesített slotokkal (FIX 3): main = fő mintázat,
-     *  watch = CSAK valódi risk-pár, context = a többi bekezdés. */
+     *  watch = CSAK `tone: "risk"` pár, notes = semleges „Jellemző mintázat"
+     *  (fordított skála), context = a többi bekezdés. */
     howYouWorkParts: HowYouWorkParts;
-    /** Kockázati tension-párok strukturáltan. */
-    riskParts?: { summary: string; mitigation: string; source?: string }[];
+    /** Nem-feloldás tension-párok strukturáltan. A `tone` dönti el a
+     *  keretezést: "risk" = figyelendő, "note" = semleges jellemző mintázat
+     *  (fordított skála — TILOS deficitként megjeleníteni). */
+    riskParts?: {
+      summary: string;
+      advice: string;
+      source?: string;
+      tone?: PairTone;
+    }[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */

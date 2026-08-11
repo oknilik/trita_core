@@ -70,3 +70,69 @@ export function strengthSlotEligible(
 ): boolean {
   return !isReverseValenced(code);
 }
+
+// ─────────────────────────────────────────────────────────────────────
+// Tension-párok hangneme (2026-08-11, a `risk: boolean` kivezetése).
+//
+// A profile-engine TENSION_PAIRS táblája korábban logikai `risk` jelzőt
+// hordozott. Ez strukturálisan valenciás volt: a hat dimenzió közül
+// EGYEDÜL a E-magas párok voltak `risk: true`, vagyis a fordított skála
+// magas pólusa mindig borostyán „Figyelendő" kártyát kapott, az alacsony
+// pólusa zöldet — pontosan az a valencia, amit a fenti termékdöntés
+// elvet. Kétállapotú jelzővel nem is lehetett másképp: minden pár vagy
+// „pozitív feloldás", vagy „kockázat" volt.
+//
+// Ezért három hangnem:
+//  - "resolution" — pozitív/semleges feloldás-narratíva;
+//  - "risk"       — valódi figyelendő mintázat, valenciát hordozó
+//                   dimenziókon;
+//  - "note"       — valódi, cselekvésre váltható mintázat-megfigyelés,
+//                   amit TILOS hiányosságként keretezni (a fordított
+//                   skálából eredő párok ide kerülnek).
+//
+// A besorolás ITT dől el (nem a hívási helyeken): egy jövőbeli valencia-
+// döntés egyetlen fájlt érint.
+// ─────────────────────────────────────────────────────────────────────
+
+/** A tartalmi táblában deklarált (szerzői) hangnem. */
+export type DeclaredPairTone = "resolution" | "risk";
+
+/** A megjelenítendő hangnem — a valencia-kapu kimenete. */
+export type PairTone = DeclaredPairTone | "note";
+
+/**
+ * Egy tension-pár tagja: dimenzió-kód + a pólus, amelyen a pár tüzel.
+ * A szintet SZÁNDÉKOSAN kéri a helper (nem csak a kódot): a jelenlegi
+ * szabály nem használja, de a pólus-függő valencia-döntés így nem igényel
+ * újabb call-site túrát.
+ */
+export type PairMember = {
+  code: string;
+  level: "high" | "medium" | "low";
+};
+
+/**
+ * Egy tension-pár megjelenítendő hangneme.
+ *
+ * Szabályok:
+ *  1. Deklarált „risk" + fordított skálájú tag → "note". Az E egyik pólusa
+ *     sem hiányosság, tehát deficit-keretes („Figyelendő") kártyára nem
+ *     kerülhet — a TARTALOM viszont nem vész el, semleges slotba megy.
+ *  2. Deklarált „resolution" + fordított skálájú tag ÉRTÉKELŐ felületen
+ *     → "note". Az értékelő felület (hiring) a feloldás-párokra zöld
+ *     „Erősség" badge-et tesz; az alacsony E-t erősségként címkézni
+ *     ugyanaz a valencia, csak tükrözve. Önismereti felületen a
+ *     feloldás-narratíva nem hordoz valenciás címkét (folyó szöveg), ott
+ *     nincs mit kapuzni — marad "resolution".
+ *  3. Minden más eset: a deklarált hangnem.
+ */
+export function resolvePairTone(
+  declared: DeclaredPairTone,
+  members: ReadonlyArray<PairMember>,
+  surface: ValenceSurface,
+): PairTone {
+  const touchesReverse = members.some((m) => isReverseValenced(m.code));
+  if (!touchesReverse) return declared;
+  if (declared === "risk") return "note";
+  return surface === "evaluative" ? "note" : "resolution";
+}

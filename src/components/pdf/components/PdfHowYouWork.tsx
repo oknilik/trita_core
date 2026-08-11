@@ -16,6 +16,9 @@ interface PdfHowYouWorkProps {
 export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
   const main = parts.main;
   const watch = parts.watch ?? "";
+  // Semleges „Jellemző mintázat" kártya (tone: "note", fordított skála) — a
+  // felülettel azonos slot, hogy a PDF és a képernyő ne csússzon szét.
+  const notes = parts.notes.join(" ");
   const context = parts.context.join(" ");
 
   return (
@@ -36,6 +39,14 @@ export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
           </View>
         ) : null}
       </View>
+      {notes ? (
+        <View style={{ marginTop: 4, backgroundColor: colors.cream300, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.sand}` }}>
+          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink500, marginBottom: 2 }}>
+            {t("pdf.patternNote", locale)}
+          </Text>
+          <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>{notes}</Text>
+        </View>
+      ) : null}
       {context ? (
         <View style={{ marginTop: 4, backgroundColor: colors.white, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.cream500}` }}>
           <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink300, marginBottom: 2 }}>

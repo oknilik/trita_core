@@ -1371,7 +1371,7 @@ export const orgTranslations = {
     // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
     // profil kiegészítő is lehet, ezért nem kap minősítést.
     // A zaj-padló alatti hasonlóság a mérési hibán belüli EGYEZÉS — nem
-    // „kiváló egyezés" (hamis precizitás lenne, SEM≈10 mellett).
+    // „kiváló egyezés" (hamis precizitás lenne — a mért SEM≈7,6 mellett is).
     similarityWithinError: {
       hu: "A mérési hibán belül egyezik a csapatátlaggal",
       en: "Matches the team average within measurement error",

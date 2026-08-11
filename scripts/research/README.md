@@ -92,7 +92,7 @@ a kitöltőket a `src/lib/scoring.ts` motorjával (azonos POMP-formula,
 importálva) pontozza a rövid (TSFI-S) és a teljes formára, majd
 dimenziónként n/átlag/szórás/decilisek + VALÓDI Cronbach-α, átlagos
 item-item korreláció és implikált SEM — a `psychometrics.ts` priorjai
-(MEAN_ITEM_R=0.22, SCORE_SD=20 → SEM≈10.4 short) mellé állítva, továbbá
+(a psychometrics.ts konstansai — 2026-08-11 óta MAGUK IS mértek, ld. lent) mellé állítva, továbbá
 sáv-kihasználtság a két élő vágásrendszerre (40/70 és 35/65).
 
 **FONTOS — termékdöntés (2026-08-11): a kimenet CSAK BELSŐ KALIBRÁCIÓS

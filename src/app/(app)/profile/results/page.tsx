@@ -257,8 +257,8 @@ export default async function ProfileResultsPage({
   // 1×-es kapu ~40%-kal alul-becsülte, és a mérési hibán belüli facet-gapeket
   // is „eltérésnek" jelölte (motor-audit v6, M2; a dimenzió-szintű kapu,
   // DIFF_MIN_GAP, ugyanezt a √2-es szabályt követi). Kerekítve, propként megy.
-  // TUDATOS KÖVETKEZMÉNY (motor-audit v9 döntés): a rövid formán ~2,4 item
-  // jut egy facetre, így a küszöb ≈ 22 pont — az „eltérés"-jelzés RITKÁN fog
+  // TUDATOS KÖVETKEZMÉNY (motor-audit v9 döntés): a rövid formán 2,5 item
+  // jut egy facetre, így a küszöb ≈ 17 pont — az „eltérés"-jelzés RITKÁN fog
   // tüzelni. Ez nem hiba, hanem a facet-szintű megbízhatóság őszinte kezelése:
   // a szekció egyezésnél pozitív állapotot mutat, a teljes lista egy
   // kattintásra elérhető. Pilot-α után újraértékelendő (residuals-ledger §3).

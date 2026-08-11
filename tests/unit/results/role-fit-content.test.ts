@@ -87,11 +87,14 @@ test("solo fallback profil (csak egy extrém dim): roleFit nem üres", () => {
   }
 });
 
-test("csak risk-pár profil: solo fallback ad roleFit tartalmat", () => {
-  // E high + X high → supportedVisibility (risk) — block6 üres
+test("csak nem-feloldás pár profil: solo fallback ad roleFit tartalmat", () => {
+  // E high + X high → supportedVisibility. A tábla „risk"-nek deklarálja, a
+  // valencia-kapu viszont „note"-ra szelídíti (fordított skála) — a
+  // feloldás-slot (block6) így is üres, tehát a solo fallback fut.
   const engine = runProfileEngine(scores({ E: 80, X: 80 }), "TRITAN");
   assert.equal(engine.block6Pairs.length, 0);
-  assert.ok(engine.block7Pairs.length > 0);
+  assert.equal(engine.block7Pairs.length, 0);
+  assert.ok(engine.notePairs.length > 0);
 
   const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", "hu");
   assert.ok(ws.roleFit.strong.length > 0);

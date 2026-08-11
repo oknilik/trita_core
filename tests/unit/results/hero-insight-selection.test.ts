@@ -11,7 +11,11 @@ import { HERO_RANGE_GATE_FACTOR, selectHeroInsightDims } from "@/lib/workstyle-c
 // a range-statisztika indoklása a konstans kommentjében (motor-audit v9).
 
 const d = (code: string, score: number) => ({ code, score });
-const SEM = 10;
+// Fixture-SEM: a mért konstansokkal a rövid forma dimenzió-SEM-je ≈ 7,6 —
+// itt kerek 8-cal dolgozunk, hogy a határeset-számok olvashatók maradjanak.
+// A tesztek RELÁCIÓKAT rögzítenek (terjedelem vs. HERO_RANGE_GATE_FACTOR·SEM),
+// nem abszolút pontszámokat, ezért a fixture értéke szabadon választható.
+const SEM = 8;
 
 test("a leggyengébb slot a legalacsonyabb NEM-E dimenzió", () => {
   const pick = selectHeroInsightDims(

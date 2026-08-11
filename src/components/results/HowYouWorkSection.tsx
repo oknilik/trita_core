@@ -22,6 +22,11 @@ export function HowYouWorkSection({ parts, isUnlocked }: HowYouWorkSectionProps)
 
   const mainPattern = parts.main;
   const watchArea = parts.watch ?? "";
+  // „Jellemző mintázat" (tone: "note") — semleges kártya: valódi, cselekvésre
+  // váltható megfigyelés a fordított skálájú (Emocionalitás) párokból. NEM a
+  // borostyán „Figyelendő" (deficit-keretes) és NEM a szürke „Kontextus"
+  // maradék-slot: saját, szándékos helye van a rácsban.
+  const notes = parts.notes.join(" ");
   const context = parts.context.join(" ");
 
   return (
@@ -53,6 +58,17 @@ export function HowYouWorkSection({ parts, isUnlocked }: HowYouWorkSectionProps)
             </p>
             <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
               {watchArea}
+            </p>
+          </div>
+        )}
+
+        {notes && (
+          <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-[18px]">
+            <p className="mb-1.5 text-micro font-bold uppercase tracking-wide text-[var(--color-text-secondary)]">
+              {t("results.howYouWorkNote", locale)}
+            </p>
+            <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
+              {notes}
             </p>
           </div>
         )}

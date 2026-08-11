@@ -11,6 +11,7 @@ import {
   DIM_LABELS,
   CATEGORY_LABELS,
   RESOLUTION_NARRATIVES,
+  RISK_TEXTS,
 } from "@/lib/profile-content";
 import type { Locale } from "@/lib/profile-content";
 import { HEXACO_DIMENSIONS, HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
@@ -99,18 +100,23 @@ function getDimensionInsight(
         en: "Deeply focused, introverted. Excels in solo work and deep focus. May be less vocal in team meetings.",
       },
     },
+    // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a Barátságosság
+    // facetjei a Megbocsátás · Gyengédség · Rugalmasság · Türelem — a skála
+    // toleranciát és indulat-kontrollt mér, NEM empátiát, és nem is
+    // versengést. Egy ÉRTÉKELŐ (jelölt-)felületen ez különösen fontos: a
+    // mondat felvételi döntést támogat. Mindkét pólus leíró és kétoldalú.
     A: {
       high: {
-        hu: "Kooperatív, konfliktuselkerülő. Kiváló csapatjátékos, de néha a saját véleményét háttérbe szorítja a harmónia kedvéért.",
-        en: "Cooperative, conflict-averse. Excellent team player but may suppress own opinions to maintain harmony.",
+        hu: "Türelmes, elnéző: könnyen megbocsát és rugalmasan köt kompromisszumot. Cserébe a saját ellenvéleményét háttérbe szoríthatja, ezért a kritikáját érdemes külön kikérni.",
+        en: "Patient and lenient: forgives easily and compromises flexibly. In exchange, they may keep their own objection to themselves, so their criticism is worth asking for explicitly.",
       },
       medium: {
-        hu: "Együttműködő, de képes a saját pozícióját képviselni. Jó egyensúly a harmónia és az assertivitás között.",
-        en: "Collaborative but assertive when needed. Good balance between harmony and standing ground.",
+        hu: "Kompromisszumkész, de képes a saját pozícióját képviselni. Jó egyensúly az engedékenység és az assertivitás között.",
+        en: "Ready to compromise while still able to hold their own position. A good balance between accommodation and assertiveness.",
       },
       low: {
-        hu: "Kritikus, versengő. Nem fél konfrontálódni, jól működik versenykörnyezetben. Csapatban érdemes az együttműködési stílusra figyelni.",
-        en: "Critical, competitive. Comfortable with confrontation, thrives in competitive settings. Watch collaboration style in teams.",
+        hu: "Egyenes, vitaképes: hamar szóvá teszi, ami nem stimmel, és kitart az álláspontja mellett — értékes ott, ahol őszinte visszajelzés és határozott képviselet kell. Cserébe a viták gyorsabban éleződhetnek, és provokációra hamar elfogy a türelme.",
+        en: "Direct and debate-ready: names what doesn't add up early and holds their position — valuable where honest feedback and a firm stance are the job. In exchange, debates can sharpen faster, and patience runs out quickly under provocation.",
       },
     },
     C: {
@@ -223,7 +229,12 @@ export default async function CandidateResultPage({
   const gapNoiseFloor = gapSe * Math.sqrt(2 / Math.PI);
   const assertableGap = 1.96 * gapSe;
 
-  const profileOutput = runProfileEngine(candidateScores, testType);
+  // ÉRTÉKELŐ felület: a pár-hangnem a valencia-kapun (score-valence) ezzel a
+  // kontextussal dől el. A jelölt-oldalon a feloldás-párok zöld „Erősség",
+  // a risk-párok narancs „Figyelendő" badge-et kapnak — a fordított skálát
+  // (Emocionalitás) érintő párok EGYIKBE SEM valók, azok semleges
+  // „Jellemző mintázat" panelre kerülnek (tone: "note").
+  const profileOutput = runProfileEngine(candidateScores, testType, "evaluative");
 
   // All high/low dims for the summary block.
   // E (Emocionalitás) FORDÍTOTT irányú: a magas pólus (érzelmi ráhangolódás)
@@ -492,8 +503,8 @@ export default async function CandidateResultPage({
                   gapAnalysis.reduce((sum, g) => sum + Math.abs(g.gap), 0) / gapAnalysis.length
                 );
                 // Mérési-hiba-tudatos címkézés: a korábbi nyers vágások
-                // (<10 „kiváló", <20 „jó") a zajszint ALATT jártak — SEM≈10
-                // mellett azonos valódi profilok is ~11-12 pontos átlagos
+                // (<10 „kiváló", <20 „jó") a mérési hibán BELÜL jártak — a mért
+                // SEM≈7,6 mellett azonos valódi profilok is ~8-9 pontos átlagos
                 // |gapet| adnak. Eltérést csak akkor állítunk, ha legalább egy
                 // dimenzió gapje ~1,96·SE fölött van; a zaj-padló alatti
                 // hasonlóság pedig „a mérési hibán belül egyezik" — nem
@@ -764,7 +775,7 @@ export default async function CandidateResultPage({
       )}
 
       {/* ④ MŰKÖDÉSI MINTÁK */}
-      {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
+      {(profileOutput.showBlock6 || profileOutput.showBlock7 || profileOutput.showNotes) && (
         <DashboardPanel className="p-6 md:p-8">
             <SectionEyebrow tone="bronze" className="mb-1.5">
               {t("hiring.behavioralPatternsEyebrow", locale)}
@@ -774,7 +785,7 @@ export default async function CandidateResultPage({
             </h2>
 
             <div className="space-y-3">
-              {/* Erősség pair-ek */}
+              {/* Erősség pair-ek (tone: "resolution") */}
               {profileOutput.block6Pairs.map((pair) => {
                 const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
                 return (
@@ -809,7 +820,8 @@ export default async function CandidateResultPage({
                 );
               })}
 
-              {/* Figyelendő pair-ek */}
+              {/* Figyelendő pair-ek (tone: "risk") — valenciát hordozó
+                  dimenziókból; a fordított skálájú párok NEM ide jönnek. */}
               {profileOutput.block7Pairs.map((pair) => {
                 const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
                 return (
@@ -839,6 +851,54 @@ export default async function CandidateResultPage({
                     </div>
                     {narrative && (
                       <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Semleges mintázatok (tone: "note") — a fordított skálájú
+                  (Emocionalitás) párok. Sem erősség, sem figyelendő: leíró
+                  mintázat + a gyakorlati tanács („így érdemes ezzel
+                  dolgozni"), ami korábban egyáltalán nem jutott ki erre a
+                  felületre. A panel szándékosan semleges (homok/krém), hogy a
+                  döntéshozó ne valenciaként olvassa. */}
+              {profileOutput.notePairs.map((pair) => {
+                const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
+                const advice = RISK_TEXTS[pair.contentKey]?.[contentLocale] ?? "";
+                return (
+                  <div
+                    key={pair.contentKey}
+                    className="rounded-xl border border-sand bg-cream p-4"
+                  >
+                    <div className="mb-2 flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <span
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
+                          style={{ background: DIM_COLORS[pair.dimA] }}
+                        >
+                          {HEXACO_DIMENSIONS[pair.dimA as HexacoCode]?.letter ?? pair.dimA}
+                        </span>
+                        <span className="text-micro text-muted">+</span>
+                        <span
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
+                          style={{ background: DIM_COLORS[pair.dimB] }}
+                        >
+                          {HEXACO_DIMENSIONS[pair.dimB as HexacoCode]?.letter ?? pair.dimB}
+                        </span>
+                      </div>
+                      {/* TODO(koordinator): a badge-kulcs a results-névtérben él
+                          (i18n/results.ts) — az org.ts a párhuzamos kör másik
+                          gazdájánál van; érdemes később `hiring.patternBadge`
+                          néven átvinni. */}
+                      <span className="rounded-full bg-surface-card px-2 py-0.5 text-micro font-semibold text-ink-body">
+                        {t("results.howYouWorkNote", locale)}
+                      </span>
+                    </div>
+                    {narrative && (
+                      <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
+                    )}
+                    {advice && (
+                      <p className="mt-2 text-sm leading-relaxed text-muted">{advice}</p>
                     )}
                   </div>
                 );

@@ -47,15 +47,19 @@ test("jelölt-oldal: a hasonlóság-címke SE-tudatos, nem nyers pont-vágás", 
   );
 });
 
-test("jelölt-oldal: a régi vágások tényleg a zajszint alatt jártak (számszerű)", () => {
-  // SEM(short)≈10 → SE(gap)=√2·SEM≈14,5; azonos valódi profilok mellett az
-  // átlagos |gap| várható értéke ~0,8·SE≈11,6 — a régi „<10 = kiváló egyezés"
-  // tehát olyan pontosságot állított, amit a műszer nem tud. Az állíthatósági
-  // küszöb (1,96·SE≈28) pedig a régi „<20 = jó" határ FÖLÖTT van.
+test("jelölt-oldal: a régi vágások a mérési hibán belül jártak (számszerű)", () => {
+  // 2026-08-11 (mért reliabilitás-konstansok): SEM(short) 10,23 → 7,56, tehát
+  // SE(gap) = √2·SEM 14,47 → 10,70, a zaj-padló (0,8·SE) 11,6 → 8,5.
+  // A régi „<10 = kiváló egyezés" vágás így már nem a zaj-padló ALATT van, de
+  // továbbra is a KÜLÖNBSÉG mérési hibáján (1×SE) BELÜL — vagyis olyan
+  // pontosságot állított, amit a műszer nem tud. Az állíthatósági küszöb
+  // (1,96·SE ≈ 21) pedig változatlanul a régi „<20 = jó" határ FÖLÖTT van.
+  // A kapuk a bankból/konstansokból származnak, ezért itt sem literálhoz
+  // kötünk: a RELÁCIÓ a védendő állítás.
   const gapSe = diffStandardError("short");
   assert.ok(
-    gapSe * Math.sqrt(2 / Math.PI) > 10,
-    `a zaj-padló (${(gapSe * Math.sqrt(2 / Math.PI)).toFixed(1)}) nem haladja meg a régi 10 pontos vágást`,
+    gapSe > 10,
+    `a gap-hiba (${gapSe.toFixed(1)}) nem haladja meg a régi 10 pontos vágást`,
   );
   assert.ok(
     1.96 * gapSe > 20,

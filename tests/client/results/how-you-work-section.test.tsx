@@ -19,12 +19,13 @@ vi.mock("@/components/LocaleProvider", () => ({
 const MAIN = "Fő narratíva-bekezdés a működésedről.";
 const SECOND_NARRATIVE = "Második, POZITÍV narratíva-bekezdés.";
 const RISK = "Valódi kockázati összefoglaló. Mitigációs tanács hozzá.";
+const NOTE = "Semleges mintázat-megfigyelés. Így érdemes ezzel dolgozni.";
 
 describe("HowYouWorkSection", () => {
   it("watch-slot nélkül NINCS Figyelendő kártya — a második narratíva kontextus", () => {
     render(
       <HowYouWorkSection
-        parts={{ main: MAIN, watch: null, context: [SECOND_NARRATIVE] }}
+        parts={{ main: MAIN, watch: null, notes: [], context: [SECOND_NARRATIVE] }}
         isUnlocked
       />,
     );
@@ -40,7 +41,7 @@ describe("HowYouWorkSection", () => {
   it("valódi risk-párral a watch-slot a Figyelendő kártyába kerül", () => {
     render(
       <HowYouWorkSection
-        parts={{ main: MAIN, watch: RISK, context: [] }}
+        parts={{ main: MAIN, watch: RISK, notes: [], context: [] }}
         isUnlocked
       />,
     );
@@ -53,9 +54,53 @@ describe("HowYouWorkSection", () => {
     expect(screen.queryByText("Kontextus")).toBeNull();
   });
 
+  it("note-slot: SEMLEGES Jellemző mintázat kártya, nem a Figyelendő", () => {
+    // A fordított skálájú (Emocionalitás) párok hangneme "note" — a
+    // tartalmuk (összefoglaló + gyakorlati tanács) saját, valenciamentes
+    // kártyát kap, nem a borostyán deficit-keretet és nem a Kontextus
+    // maradék-slotot.
+    render(
+      <HowYouWorkSection
+        parts={{ main: MAIN, watch: null, notes: [NOTE], context: [] }}
+        isUnlocked
+      />,
+    );
+
+    expect(screen.getByText("Jellemző mintázat")).toBeInTheDocument();
+    expect(screen.getByText(NOTE)).toBeInTheDocument();
+    expect(screen.queryByText("Figyelendő")).toBeNull();
+    expect(screen.queryByText("Kontextus")).toBeNull();
+  });
+
+  it("note és risk EGYÜTT: külön kártyán, a note nem keveredik a Figyelendőbe", () => {
+    render(
+      <HowYouWorkSection
+        parts={{ main: MAIN, watch: RISK, notes: [NOTE], context: [] }}
+        isUnlocked
+      />,
+    );
+
+    const watchCard = screen.getByText("Figyelendő").parentElement;
+    const noteCard = screen.getByText("Jellemző mintázat").parentElement;
+    expect(watchCard?.textContent).toContain(RISK);
+    expect(watchCard?.textContent).not.toContain(NOTE);
+    expect(noteCard?.textContent).toContain(NOTE);
+    expect(noteCard?.textContent).not.toContain(RISK);
+  });
+
+  it("üres notes-listával nincs semleges kártya", () => {
+    render(
+      <HowYouWorkSection
+        parts={{ main: MAIN, watch: null, notes: [], context: [] }}
+        isUnlocked
+      />,
+    );
+    expect(screen.queryByText("Jellemző mintázat")).toBeNull();
+  });
+
   it("üres main-nel (nincs tartalom) nem renderel semmit", () => {
     const { container } = render(
-      <HowYouWorkSection parts={{ main: "", watch: null, context: [] }} isUnlocked />,
+      <HowYouWorkSection parts={{ main: "", watch: null, notes: [], context: [] }} isUnlocked />,
     );
     expect(container).toBeEmptyDOMElement();
   });
@@ -63,7 +108,7 @@ describe("HowYouWorkSection", () => {
   it("zárolt állapotban nem renderel", () => {
     const { container } = render(
       <HowYouWorkSection
-        parts={{ main: MAIN, watch: RISK, context: [] }}
+        parts={{ main: MAIN, watch: RISK, notes: [], context: [] }}
         isUnlocked={false}
       />,
     );

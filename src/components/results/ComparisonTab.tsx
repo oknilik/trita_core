@@ -10,8 +10,8 @@ import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
 // Önkép–külső kép eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) —
 // két hiba-terhelt pontszám KÜLÖNBSÉGÉNEK mérési hibája, nem egy ponté. A
-// korábbi hardkódolt 10 (1×SEM) a 10–14 pontos gap-eket már „eltérésnek"
-// osztályozta, miközben a dossziè/PDF ugyanarra 15-ös kaput használt — a két
+// korábbi hardkódolt 10 (1×SEM) a kapu alatti gap-eket már „eltérésnek"
+// osztályozta, miközben a dossziè/PDF a kanonikus kaput használta — a két
 // felület ellentmondott egymásnak (motor-audit v6, M1).
 
 interface ComparisonTabProps {

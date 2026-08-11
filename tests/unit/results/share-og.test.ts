@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { buildShareOgModel } from "@/lib/share-og";
 
 // Jól elváló rangsor: az 1-2. ÉS a 2-3. helyezett közti gap is nagyobb a
-// mérési hibánál (DIFF_MIN_GAP = 15, SE(diff)-kapu) — így a teljes
+// mérési hibánál (DIFF_MIN_GAP = round(√2·SEM), SE(diff)-kapu) — így a teljes
 // „melléknév + főnév" címke megy ki. SEM-en belüli top-párnál (interp S3
 // kapu) a resolver főnév-only címkére szelídül, az a személyiség-típus
 // tesztjeiben él. (A fixture a 10→15-ös küszöb-emelés után frissítve:

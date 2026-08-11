@@ -1,5 +1,5 @@
 import type { TestType } from "@prisma/client";
-import { runProfileEngine } from "@/lib/profile-engine";
+import { runProfileEngine, type PairTone } from "@/lib/profile-engine";
 import {
   RESOLUTION_NARRATIVES, BLOCK3_SUMMARIES, RISK_TEXTS, DEFAULT_NARRATIVE,
   SOLO_DIM_NARRATIVES, SOLO_DIM_SUMMARIES, SOLO_DIM_PRESSURE,
@@ -35,9 +35,17 @@ export { REVERSE_DIM_CODE } from "@/lib/score-valence";
 export interface HowYouWorkParts {
   /** Fő mintázat — az első narratíva (tension-pár / solo-dim / balanced). */
   main: string;
-  /** Figyelendő — CSAK valódi risk-párból (summary + mitigáció); nélküle null. */
+  /** Figyelendő — CSAK `tone: "risk"` párból (summary + tanács); nélküle null. */
   watch: string | null;
-  /** Kontextus — a további narratívák és risk-szövegek. */
+  /**
+   * Jellemző mintázat — a `tone: "note"` párok (fordított skála, jellemzően
+   * Emocionalitás). Tartalmilag ugyanaz a summary + gyakorlati tanács, mint a
+   * watch-slotban, de SEMLEGES kártyán: nem hiányosság, hanem „így érdemes
+   * ezzel dolgozni". Saját, nevesített slot — nem a kontextusba söpört
+   * maradék (2026-08-11 valencia-döntés).
+   */
+  notes: string[];
+  /** Kontextus — a további narratívák és további risk-szövegek. */
   context: string[];
 }
 
@@ -45,16 +53,19 @@ export interface WorkstyleContent {
   howYouWork: string[];
   /** Ugyanez nevesített slotokkal — a megjelenítők EBBŐL rendereljenek. */
   howYouWorkParts: HowYouWorkParts;
-  /** Kockázati tension-párok strukturáltan (összefoglaló + mitigációs tanács
-   *  + forrás-dimenziók) — a PDF/megjelenítés célzott használatához; a
-   *  howYouWork-ben ugyanez folyó szövegként is megjelenik. */
+  /** Nem-feloldás tension-párok strukturáltan (összefoglaló + gyakorlati
+   *  tanács + forrás-dimenziók + hangnem) — a PDF/megjelenítés célzott
+   *  használatához; a howYouWork-ben ugyanez folyó szövegként is megjelenik.
+   *  A név örökség (a fogyasztói oldalon így hívják): a lista `tone: "risk"`
+   *  ÉS `tone: "note"` párokat is tartalmaz — a megjelenítő a `tone` alapján
+   *  válasszon slotot, ne a lista puszta létéből következtessen kockázatra. */
   riskParts: {
     summary: string;
-    mitigation: string;
+    /** „risk" hangnemnél mitigáció, „note"-nál: hogyan érdemes ezzel dolgozni. */
+    advice: string;
     source: string;
-    /** Fordított skálából (E) eredő pár — nem kerülhet valenciás
-     *  („Figyelendő") kártyára, csak kontextusként jelenik meg. */
-    reverseValenced: boolean;
+    /** A pár megjelenítendő hangneme (score-valence.resolvePairTone). */
+    tone: PairTone;
   }[];
   /** Vakfolt + nyomás alatti működés hipotézisek a top-2 solo dimenzióból (P2.1). */
   pressure: string[];
@@ -233,31 +244,30 @@ export function buildWorkstyleContent(
       if (text) narratives.push(text);
     }
   }
-  // Kockázati párok (block 7): az összefoglaló után a mitigációs tanács is
-  // bekerül külön bekezdésként, és strukturáltan is (riskParts).
+  // Nem-feloldás párok (risk + note): az összefoglaló után a gyakorlati tanács
+  // is bekerül külön bekezdésként, és strukturáltan is (riskParts). A két
+  // hangnem UGYANAZT a tartalmat kapja — csak a slot és a keretezés más.
   const riskParts: WorkstyleContent["riskParts"] = [];
   const riskTexts: string[] = [];
-  // Fél-pár (csak summary VAGY csak mitigáció van a deckben) — a watch-
+  // Fél-pár (csak summary VAGY csak tanács van a deckben) — nevesített
   // kártyára nem való, de a kontextusból sem veszhet el.
   const orphanRiskTexts: string[] = [];
-  for (const pair of engine.block7Pairs) {
+  for (const pair of engine.pairs) {
+    if (pair.tone === "resolution") continue;
     const summary = BLOCK3_SUMMARIES[pair.contentKey]?.[lang];
-    const mitigation = RISK_TEXTS[pair.contentKey]?.[lang];
+    const advice = RISK_TEXTS[pair.contentKey]?.[lang];
     if (summary) riskTexts.push(summary);
-    if (mitigation) riskTexts.push(mitigation);
-    if (summary && mitigation) {
+    if (advice) riskTexts.push(advice);
+    if (summary && advice) {
       riskParts.push({
         summary,
-        mitigation,
+        advice,
         source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
-        // A pár fordított skálából (E) ered-e — a megjelenítő ez alapján
-        // NEM teszi valenciás („Figyelendő") kártyára (ld. lentebb).
-        reverseValenced:
-          !deficitSlotEligible(pair.dimA) || !deficitSlotEligible(pair.dimB),
+        tone: pair.tone,
       });
     } else {
       if (summary) orphanRiskTexts.push(summary);
-      if (mitigation) orphanRiskTexts.push(mitigation);
+      if (advice) orphanRiskTexts.push(advice);
     }
   }
   // Kiegyensúlyozott profil: se pár, se pólusos solo-dim — a lapos profil is
@@ -269,30 +279,29 @@ export function buildWorkstyleContent(
   // Örökség-fogyasztóknak a pozicionális tömb változatlan sorrendben…
   const howYouWork: string[] = [...narratives, ...riskTexts];
   // …a megjelenítés viszont a nevesített slotokból megy (FIX 3): main = első
-  // narratíva; watch = CSAK valódi risk-pár (summary + mitigáció együtt);
-  // context = minden további bekezdés.
-  // Valencia-kapu a „Figyelendő" kártyára (2026-08-11): a TENSION_PAIRS
-  // táblában a hat dimenzió közül EGYEDÜL a E-magas párok vannak
-  // `risk: true`-ra állítva (a E-alacsony párok mind `false`) — vagyis a
-  // fordított skála magas pólusa strukturálisan borostyán „Figyelendő"
-  // kártyát kapott, miközben az alacsony pólus zöldet. Ez ellentmond a
-  // valencia-mentes döntésnek (score-valence.ts fejléc).
-  // A TARTALOM nem vész el: az összefoglaló és a mitigációs tanács ugyanúgy
-  // kimegy (riskParts + context), csak nem valenciás címke alatt.
-  const firstRisk = riskParts.find((p) => !p.reverseValenced) ?? null;
-  const firstRiskText = firstRisk
-    ? `${firstRisk.summary} ${firstRisk.mitigation}`
-    : null;
+  // narratíva; watch = CSAK `tone: "risk"` pár (summary + tanács együtt);
+  // notes = a `tone: "note"` párok (semleges kártya); context = a többi.
+  // A slot-választás a HANGNEMBŐL jön (score-valence): a korábbi
+  // `reverseValenced` szűrő — amely utólag emelte ki a fordított skálájú
+  // párokat a watch-slotból — ezzel feleslegessé vált és kivezetve.
+  const riskOnly = riskParts.filter((p) => p.tone === "risk");
+  const noteOnly = riskParts.filter((p) => p.tone === "note");
+  const partText = (part: (typeof riskParts)[number]) =>
+    `${part.summary} ${part.advice}`;
+  const firstRiskText = riskOnly[0] ? partText(riskOnly[0]) : null;
+  const firstNoteText = noteOnly[0] ? partText(noteOnly[0]) : null;
   // Defenzív fallback: ha (hiányos deck miatt) egyetlen narratíva sincs, a
-  // main a risk-szövegre esik vissza — üres main mellett a szekció el sem
-  // készülne, és a kockázat veszne el.
-  const mainText = narratives[0] ?? orphanRiskTexts[0] ?? firstRiskText ?? "";
+  // main a risk/note szövegre esik vissza — üres main mellett a szekció el sem
+  // készülne, és a tartalom veszne el.
+  const mainText =
+    narratives[0] ?? orphanRiskTexts[0] ?? firstRiskText ?? firstNoteText ?? "";
   const howYouWorkParts: HowYouWorkParts = {
     main: mainText,
     watch: firstRiskText && firstRiskText !== mainText ? firstRiskText : null,
+    notes: noteOnly.map(partText).filter((text) => text !== mainText),
     context: [
       ...narratives.slice(1),
-      ...riskParts.slice(1).map((part) => `${part.summary} ${part.mitigation}`),
+      ...riskOnly.slice(1).map(partText),
       ...orphanRiskTexts.filter((text) => text !== mainText),
     ],
   };

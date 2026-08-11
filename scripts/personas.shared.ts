@@ -42,7 +42,7 @@ export type Persona = {
  * másodlagos 68 (mindkettő "high" a 65-ös pólus-küszöb felett), a maradék
  * négy dimenzió fix sorrendben 52/48/44/30 — van medium és low sáv is.
  *
- * A rések SZÁNDÉKOSAN ≥ DIFF_MIN_GAP (14): 86−68=18 és 68−52=16 — a korábbi
+ * A rések SZÁNDÉKOSAN ≥ DIFF_MIN_GAP: 86−68=18 és 68−52=16 — a korábbi
  * 86/74 recept 12 pontos top-rése a bizonytalanság-kapun fennakadt, így mind
  * a 30 archetípus-fixture főnév-only címkét kapott (a melléknévi színezet,
  * amit a fixture demonstrálna, sosem jelent meg).

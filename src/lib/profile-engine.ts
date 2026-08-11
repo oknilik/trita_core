@@ -1,9 +1,28 @@
+import {
+  resolvePairTone,
+  type DeclaredPairTone,
+  type PairTone,
+  type ValenceSurface,
+} from "@/lib/score-valence";
+
 export type ProfileCategory = "high" | "medium" | "low";
+
+// A hangnem-típusok a kanonikus valencia-modulból jönnek (score-valence.ts) —
+// innen csak kényelmi re-export, hogy a megjelenítők egy helyről importáljanak.
+export type { DeclaredPairTone, PairTone };
 
 export type ActivePair = {
   dimA: string;
   dimB: string;
-  risk: boolean;
+  /**
+   * A pár megjelenítendő hangneme (a korábbi `risk: boolean` helyett):
+   *  - "resolution" — pozitív/semleges feloldás;
+   *  - "risk"       — valódi figyelendő mintázat;
+   *  - "note"       — semleges mintázat-megfigyelés (fordított skála) —
+   *                   TILOS hiányosságként keretezni.
+   * A besorolás a score-valence.resolvePairTone-on megy át.
+   */
+  tone: PairTone;
   contentKey: string;
 };
 
@@ -14,10 +33,17 @@ export type SoloDim = {
 
 export type ProfileEngineOutput = {
   categories: Record<string, ProfileCategory>;
+  /** Minden aktív pár, a TENSION_PAIRS tábla sorrendjében, hangnemmel. */
+  pairs: ActivePair[];
+  /** tone === "resolution" — feloldás-narratívák. */
   block6Pairs: ActivePair[];
+  /** tone === "risk" — VALÓDI figyelendő párok (deficit-keretezhető). */
   block7Pairs: ActivePair[];
+  /** tone === "note" — semleges mintázat-megfigyelések (fordított skála). */
+  notePairs: ActivePair[];
   showBlock6: boolean;
   showBlock7: boolean;
+  showNotes: boolean;
   topSoloDims: SoloDim[];
 };
 
@@ -48,30 +74,38 @@ type TensionPairDef = {
   levelA: ProfileCategory;
   dimB: string;
   levelB: ProfileCategory;
-  risk: boolean;
+  /**
+   * SZERZŐI hangnem: „ez a mintázat feloldás vagy figyelendő minta?".
+   * A MEGJELENÍTENDŐ hangnem ebből a valencia-kapun keresztül áll elő
+   * (score-valence.resolvePairTone) — a fordított skálát (E) érintő
+   * párok „note"-tá szelídülnek, mert egyik pólusuk sem hiányosság.
+   * Itt tehát TILOS kézzel „note"-ot deklarálni: a tábla a tartalom
+   * szándékát írja le, a valencia-döntés egy helyen dől el.
+   */
+  tone: DeclaredPairTone;
   contentKey: string;
 };
 
 export const TENSION_PAIRS: TensionPairDef[] = [
-  { dimA: "H", levelA: "high", dimB: "X", levelB: "high", risk: false, contentKey: "ethicalLeader" },
-  { dimA: "H", levelA: "high", dimB: "A", levelB: "low",  risk: false, contentKey: "principledConfronter" },
-  { dimA: "H", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "responsibleInnovator" },
-  { dimA: "E", levelA: "high", dimB: "X", levelB: "high", risk: true,  contentKey: "supportedVisibility" },
-  { dimA: "E", levelA: "high", dimB: "C", levelB: "high", risk: true,  contentKey: "structuredStability" },
-  { dimA: "E", levelA: "high", dimB: "O", levelB: "high", risk: true,  contentKey: "safeExperimentation" },
-  { dimA: "X", levelA: "low",  dimB: "A", levelB: "high", risk: false, contentKey: "deepCollaboration" },
-  { dimA: "X", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "solitaryInnovator" },
-  { dimA: "A", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "facilitatedInnovation" },
-  { dimA: "A", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "structuredCompetitor" },
-  { dimA: "C", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "structuredInnovator" },
+  { dimA: "H", levelA: "high", dimB: "X", levelB: "high", tone: "resolution", contentKey: "ethicalLeader" },
+  { dimA: "H", levelA: "high", dimB: "A", levelB: "low",  tone: "resolution", contentKey: "principledConfronter" },
+  { dimA: "H", levelA: "high", dimB: "O", levelB: "high", tone: "resolution", contentKey: "responsibleInnovator" },
+  { dimA: "E", levelA: "high", dimB: "X", levelB: "high", tone: "risk",       contentKey: "supportedVisibility" },
+  { dimA: "E", levelA: "high", dimB: "C", levelB: "high", tone: "risk",       contentKey: "structuredStability" },
+  { dimA: "E", levelA: "high", dimB: "O", levelB: "high", tone: "risk",       contentKey: "safeExperimentation" },
+  { dimA: "X", levelA: "low",  dimB: "A", levelB: "high", tone: "resolution", contentKey: "deepCollaboration" },
+  { dimA: "X", levelA: "low",  dimB: "O", levelB: "high", tone: "resolution", contentKey: "solitaryInnovator" },
+  { dimA: "A", levelA: "high", dimB: "O", levelB: "high", tone: "resolution", contentKey: "facilitatedInnovation" },
+  { dimA: "A", levelA: "low",  dimB: "C", levelB: "high", tone: "resolution", contentKey: "structuredCompetitor" },
+  { dimA: "C", levelA: "high", dimB: "O", levelB: "high", tone: "resolution", contentKey: "structuredInnovator" },
   // New pairs – congruent combinations
-  { dimA: "E", levelA: "low",  dimB: "X", levelB: "high", risk: false, contentKey: "resilientLeader" },
-  { dimA: "E", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "calmExecution" },
-  { dimA: "E", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "exploratoryAnalyst" },
-  { dimA: "X", levelA: "high", dimB: "C", levelB: "high", risk: false, contentKey: "organizedLeader" },
-  { dimA: "X", levelA: "high", dimB: "A", levelB: "high", risk: false, contentKey: "harmoniousConnector" },
-  { dimA: "H", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "performanceDriver" },
-  { dimA: "A", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "disruptiveInnovator" },
+  { dimA: "E", levelA: "low",  dimB: "X", levelB: "high", tone: "resolution", contentKey: "resilientLeader" },
+  { dimA: "E", levelA: "low",  dimB: "C", levelB: "high", tone: "resolution", contentKey: "calmExecution" },
+  { dimA: "E", levelA: "low",  dimB: "O", levelB: "high", tone: "resolution", contentKey: "exploratoryAnalyst" },
+  { dimA: "X", levelA: "high", dimB: "C", levelB: "high", tone: "resolution", contentKey: "organizedLeader" },
+  { dimA: "X", levelA: "high", dimB: "A", levelB: "high", tone: "resolution", contentKey: "harmoniousConnector" },
+  { dimA: "H", levelA: "low",  dimB: "C", levelB: "high", tone: "resolution", contentKey: "performanceDriver" },
+  { dimA: "A", levelA: "low",  dimB: "O", levelB: "high", tone: "resolution", contentKey: "disruptiveInnovator" },
 ];
 
 function getTopSoloDims(
@@ -91,9 +125,18 @@ function getTopSoloDims(
     .map(({ dim, level }) => ({ dim, level }));
 }
 
+/**
+ * @param surface Melyik felület-típus kéri a párokat — a valencia-kapu ezt
+ *   kapja meg (score-valence). Alapértelmezés: "self" (saját eredmény, PDF,
+ *   share). Az ÉRTÉKELŐ felületek (hiring, döntéstámogatás) adják át az
+ *   "evaluative"-ot: ott a feloldás-párok valenciás („Erősség") badge-et
+ *   kapnak, ezért a fordított skálát érintő párok is semleges hangnemre
+ *   szelídülnek.
+ */
 export function runProfileEngine(
   dimensions: Record<string, number>,
-  _testType: string
+  _testType: string,
+  surface: ValenceSurface = "self",
 ): ProfileEngineOutput {
   const categories: Record<string, ProfileCategory> = {};
   for (const [code, score] of Object.entries(dimensions)) {
@@ -112,23 +155,36 @@ export function runProfileEngine(
       activeTensionPairs.push({
         dimA: def.dimA,
         dimB: def.dimB,
-        risk: def.risk,
+        // A hangnem a kanonikus valencia-kapun át (NEM literál-összehasonlítás
+        // a hívási helyeken): fordított skálájú tag → semleges „note".
+        tone: resolvePairTone(
+          def.tone,
+          [
+            { code: def.dimA, level: def.levelA },
+            { code: def.dimB, level: def.levelB },
+          ],
+          surface,
+        ),
         contentKey: def.contentKey,
       });
     }
   }
 
-  const block6Pairs = activeTensionPairs.filter((p) => !p.risk);
-  const block7Pairs = activeTensionPairs.filter((p) => p.risk);
+  const block6Pairs = activeTensionPairs.filter((p) => p.tone === "resolution");
+  const block7Pairs = activeTensionPairs.filter((p) => p.tone === "risk");
+  const notePairs = activeTensionPairs.filter((p) => p.tone === "note");
 
   const topSoloDims = getTopSoloDims(dimensions, categories);
 
   return {
     categories,
+    pairs: activeTensionPairs,
     block6Pairs,
     block7Pairs,
+    notePairs,
     showBlock6: block6Pairs.length > 0,
     showBlock7: block7Pairs.length > 0,
+    showNotes: notePairs.length > 0,
     topSoloDims,
   };
 }

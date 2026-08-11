@@ -506,6 +506,11 @@ export const resultsTranslations = {
     howYouWorkEyebrow: { hu: "Ahogy működsz", en: "How you operate" },
     howYouWorkMain: { hu: "Fő mintázat", en: "Key pattern" },
     howYouWorkWatch: { hu: "Figyelendő", en: "Watch area" },
+    // Semleges („note") slot: a fordított skálájú (Emocionalitás) párok
+    // mintázat-megfigyelése + gyakorlati tanácsa. SZÁNDÉKOSAN nem hordoz
+    // valenciát — sem „Figyelendő", sem „Erősség" (2026-08-11 döntés,
+    // score-valence.ts).
+    howYouWorkNote: { hu: "Jellemző mintázat", en: "Characteristic pattern" },
     howYouWorkContext: { hu: "Kontextus", en: "Context" },
     envEyebrow: { hu: "Ideális környezet", en: "Ideal environment" },
     // F3-hedge szint-szó sablon: a {label} a sor kanonikus szint-szava
@@ -1877,6 +1882,8 @@ export const resultsTranslations = {
     // ── PdfHowYouWork ──────────────────────────────────────────────────────
     keyPattern: { hu: "Fő mintázat", en: "Key pattern" },
     watchArea: { hu: "Figyelendő", en: "Watch area" },
+    // Semleges („note") kártya a PDF-ben — ugyanaz a slot, mint a felületen.
+    patternNote: { hu: "Jellemző mintázat", en: "Characteristic pattern" },
     context: { hu: "Kontextus", en: "Context" },
     // ── PdfInsightPair ─────────────────────────────────────────────────────
     yourStrengths: { hu: "Erősségeid", en: "Your strengths" },
