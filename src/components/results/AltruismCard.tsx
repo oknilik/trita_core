@@ -2,12 +2,21 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { getDimensionTier, getDimensionLabel, tierColors } from "@/lib/dimension-utils";
+import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
 
 interface AltruismCardProps {
   value: number;
   description: string;
 }
+
+// Semleges SZINT-címke a nem-valenciált kiegészítő skálához: a kártya saját
+// bannere mondja ki, hogy a Segítőkészség nem számít bele a hat főfaktorba —
+// a valenciás getDimensionLabel („erősség"/„figyelendő") ennek ellentmondott.
+const LEVEL_KEYS = {
+  high: "content.altruismLevelHigh",
+  mid: "content.altruismLevelMid",
+  low: "content.altruismLevelLow",
+} as const;
 
 export function AltruismCard({ value, description }: AltruismCardProps) {
   const { locale } = useLocale();
@@ -37,9 +46,10 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             {t("content.altruismName", locale)}
           </span>
           {/* Szöveges besorolás — 0 közeli értéknél a szám önmagában
-              adathibának tűnne (design-akciólista #13). */}
-          <span className={`shrink-0 rounded px-1.5 py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}>
-            {getDimensionLabel(value, locale)}
+              adathibának tűnne (design-akciólista #13). Semleges szint-szó
+              és semleges stílus: nem erősség/figyelendő ítélet. */}
+          <span className="shrink-0 rounded bg-[var(--color-surface-subtle)] px-1.5 py-[2px] text-micro font-semibold text-[var(--color-text-muted)]">
+            {t(LEVEL_KEYS[tier], locale)}
           </span>
           <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
             {/* Min. 2% sávszélesség, hogy a 0 is szándékos értéknek látsszon */}

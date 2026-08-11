@@ -11,7 +11,7 @@ import {
   isSecondaryUncertain,
   resolvePersonalityTypeFromScores,
 } from "@/lib/personality-type";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { t, tf, type Locale } from "@/lib/i18n";
 
@@ -39,7 +39,7 @@ interface TypeGlyphPlateProps {
 }
 
 function dimensionName(code: string, locale: Locale): string {
-  const dim = TRITAN_DIMENSIONS[code as TritanDimCode];
+  const dim = HEXACO_DIMENSIONS[code as HexacoCode];
   if (!dim) return code;
   return locale === "hu" ? dim.hu : dim.en;
 }
@@ -145,6 +145,7 @@ export function TypeGlyphPlate({
         typeLabel={typeLabel}
         locale={locale}
         intensity={intensity}
+        secondaryUncertain={secondaryUncertain}
         variant="card"
         // Mobilon a kép nem nőhet a képernyő fölé — a panel egészének be
         // kell férnie a kijelzőbe nyitás után.
@@ -263,6 +264,7 @@ export function TypeGlyphPlate({
             typeLabel={typeLabel}
             locale={locale}
             intensity={intensity}
+            secondaryUncertain={secondaryUncertain}
             variant="badge"
             className="h-8 w-8 shrink-0 rounded-lg border border-[var(--color-border-soft)]"
           />

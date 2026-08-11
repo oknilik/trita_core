@@ -128,12 +128,12 @@ test("címkékből becsült érdeklődés-vektor: a választott betűk kiemelked
 });
 
 test("személyiség-alapú érdeklődés-becslés: minden betű azonos skálán mozog", () => {
-  const flat = estimateInterests({ INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 }, {});
+  const flat = estimateInterests({ H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 }, {});
   const values = RIASEC_LETTERS.map((letter) => flat[letter] ?? 0);
   const spread = Math.max(...values) - Math.min(...values);
   assert.ok(spread < 15, `semleges profilnál is nagy a szórás: ${spread}`);
   const social = estimateInterests(
-    { INTE: 50, RESO: 60, TEMP: 80, ADAP: 80, THOR: 50, OPEN: 50 },
+    { H: 50, E: 60, X: 80, A: 80, C: 50, O: 50 },
     { people: 1 },
   );
   assert.ok((social.S ?? 0) > (flat.S ?? 0), "a társas profil nem emelte az S-t");

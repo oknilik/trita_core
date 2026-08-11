@@ -22,7 +22,7 @@ import { getActiveOrgMembership } from "@/lib/org-context";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
-import { hexLetter } from "@/lib/tritan";
+import { hexLetter } from "@/lib/hexaco";
 
 function formatTimeAgo(date: Date, isHu: boolean): string {
   const now = Date.now();

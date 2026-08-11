@@ -9,6 +9,7 @@ import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { isSecondaryUncertain } from "@/lib/personality-type";
 import { ShareCardDownload } from "@/components/results/ShareCardDownload";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
@@ -40,6 +41,11 @@ export function ShareModal({
   const previewGlyph = preview?.glyphDimensions
     ? resolveGlyphPair(preview.glyphDimensions)
     : null;
+  // S3-hedge: az előnézeti ábra aria-labelje ugyanazzal a kapuval degradál,
+  // mint a címke (isSecondaryUncertain) — rendezetlen pár, erősorrend nélkül.
+  const previewGlyphUncertain = preview?.glyphDimensions
+    ? isSecondaryUncertain(preview.glyphDimensions)
+    : false;
 
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -188,6 +194,7 @@ export function ShareModal({
                       typeLabel={preview.personalityType}
                       locale={locale === "hu" ? "hu" : "en"}
                       intensity={previewGlyph.intensity}
+                      secondaryUncertain={previewGlyphUncertain}
                       variant="badge"
                       className="h-11 w-11 shrink-0 rounded-lg border border-white/20"
                     />

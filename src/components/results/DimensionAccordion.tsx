@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
-import { dimensionFacetNames } from "@/lib/tritan";
+import { dimensionFacetNames } from "@/lib/hexaco";
 import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";

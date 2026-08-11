@@ -106,7 +106,11 @@ export async function POST(req: NextRequest) {
           raterUserId: profile.id,
           selections: obs.selections,
         },
-        update: { selections: obs.selections },
+        // A teamId az update-ágban is frissül: ha a tag feloldott csapata
+        // menet közben változott (resolveCampaignTeamIdForUser), az ismételt
+        // beküldés különben a RÉGI csapathoz ragadna — a friss értékelés az
+        // új csapat aggregátumából hiányozna, és a min-3 padló alá vihetné.
+        update: { teamId, selections: obs.selections },
       }),
     ),
   );

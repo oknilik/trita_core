@@ -8,16 +8,41 @@
 import type { OccupationFit } from "./types";
 
 // A közös mag re-exportja — minden meglévő career-oldali import változatlan.
+// FIGYELEM (2026-08-11): a MEAN_ITEM_R / SCORE_SD már nem kézi prior, hanem
+// MÉRT érték (r̄ = 0,264, SD = 16,2; IPIP–HEXACO nyílt adat, n = 21 681) —
+// a karrier-motor minden SE-je (fitStandardError, klaszterezés) ezzel ~25%-kal
+// szűkebb sávot ad. Forrás és korlátok: a psychometrics.ts forrás-blokkja.
 export {
   ITEMS_PER_DIM,
   ITEMS_PER_FACET,
   MEAN_ITEM_R,
   SCORE_SD,
+  MEASURED_SCORE_SD_BY_DIM,
+  MEASURED_MEAN_ITEM_R_BY_DIM,
   alphaFromItems,
   dimStandardError,
   facetStandardError,
   bandFor,
 } from "@/lib/psychometrics";
+
+/**
+ * Komponens-hibák (0-100 skálán) a rangsor-SE terjesztéséhez ÉS a felületi
+ * ítélet-kapukhoz. Itt élnek (nem az engine-ben), mert a kliens-oldali
+ * címke-kapu (CareerResults) is ezekből számol margót — az engine a katalógus-
+ * JSON-okat húzná be a kliens-bundle-be, ez a modul könnyű.
+ */
+export const INTEREST_SE_MEASURED = 6;
+export const INTEREST_SE_OTHER = 12;
+
+/**
+ * Intervallum-tudatos negatív ítélet: csak akkor állítjuk, hogy az érték a
+ * vágás ALATT van, ha a teljes ±margin sáv is alatta marad. Egy 54-es érték
+ * 8-as hibával nem „a küszöb alatt van", hanem „a küszöb körül" — a kimondott
+ * negatív verdikt ilyenkor többet állít, mint amit a mérés tud.
+ */
+export function clearlyBelow(value: number, margin: number, cut: number): boolean {
+  return value + margin < cut;
+}
 
 /**
  * Observer-súly: az értékelők számával nő, de a self mindig legalább 50%-ot tart.

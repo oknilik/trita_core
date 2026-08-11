@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { checkRateLimit } from "@/lib/rate-limit";
 import { hasOrgRole } from "@/lib/auth";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import {
@@ -17,6 +18,11 @@ const schema = z.object({ orgId: z.string() });
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
 export async function POST(req: Request) {
+  // A végpont minden ORG_ADMIN-nak e-mailt küld — rate limit nélkül egy
+  // hívó korlátlan levél-sokszorozót kapott volna.
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -46,8 +52,11 @@ export async function POST(req: Request) {
       select: { name: true },
     }),
     prisma.organizationMember.findMany({
-      where: { orgId, role: "ORG_ADMIN" },
+      where: { orgId, role: "ORG_ADMIN", leftAt: null },
       select: { user: { select: { email: true, username: true } } },
+      // Fan-out fojtás: egy kérés legfeljebb ennyi admin-levelet indíthat —
+      // a rate limit a kérés-számot fogja, ez a kérésenkénti sokszorozót.
+      take: 10,
     }),
   ]);
 

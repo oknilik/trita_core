@@ -6,6 +6,7 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { TeamSwitcher } from "@/components/team/TeamSwitcher";
 import { TeamTabBar } from "./TeamTabBar";
 import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
+import { computeTeamCompletionBuckets } from "@/lib/team-stats";
 import type { TeamTabContext } from "./types";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -28,9 +29,10 @@ export function TeamHeroBlock({
     memberTeams,
   } = ctx;
 
-  const completedCount = teamData.completedCount;
-  const inProgressCount = teamData.members.filter((m) => m.scores === null && m.joinedAt).length;
-  const waitingCount = teamData.memberCount - completedCount - inProgressCount;
+  // Közös vödör-számítás (team-stats): folyamatban = van vázlat, de nincs
+  // eredmény; vár = el sem kezdte. Az OverviewTabView ugyanezt hívja.
+  const { completedCount, inProgressCount, waitingCount } =
+    computeTeamCompletionBuckets(teamData.members);
   const completionPct = teamData.memberCount > 0 ? Math.round((completedCount / teamData.memberCount) * 100) : 0;
   const hasPattern = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
   const hasObserver = !!teamData.activeCampaign;

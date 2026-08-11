@@ -10,7 +10,7 @@
 // observer egyéni válasz SOHA (csak aggregátum, min. DOSSIER_OBSERVER_MIN).
 // ─────────────────────────────────────────────────────────────────────
 
-import { TRITAN_DIMENSION_FACETS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSION_FACETS, type HexacoCode } from "@/lib/hexaco";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { diffStandardError } from "@/lib/psychometrics";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
@@ -28,7 +28,9 @@ export const DOSSIER_OBSERVER_MIN = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
  * 1×SEM — ez alatt a delta nem jel, hanem zaj. (A korábbi 1×SEM ~40%-kal
  * alul-becsülte, így a mérési hibán belüli deltákat is „vakfoltként" hozta fel.)
  * BELSŐ küszöb: eldönti, mikor NE emeljünk ki eltérést; a felületen mérési-hiba
- * szám nem jelenik meg (2026-08-11 termék-döntés). A psychometrics-import a
+ * szám nem jelenik meg (2026-08-11 termék-döntés). ÉRTÉKE SZÁRMAZTATOTT, nem
+ * literál: a 2026-08-11-i MÉRT reliabilitás-konstansokkal (r̄ = 0,264,
+ * SD = 16,2 — ld. psychometrics.ts forrás-blokk) 14 → 11 lett. A psychometrics-import a
  * kérdésbankot is behúzza — kliens-komponens futásidőben ne importálja ezt a
  * modult, típusokat `import type`-pal vigyen.
  */
@@ -66,7 +68,7 @@ export interface DossierHeader {
 }
 
 export interface DossierDimComparison {
-  code: TritanDimCode;
+  code: HexacoCode;
   self: number;
   observer: number | null; // null = küszöb alatt
   delta: number | null; // observer - self
@@ -144,7 +146,7 @@ export interface SerializedMemberDossier {
  * kihagyja (csak a jelenlévő értékekből számol átlagot).
  */
 export function computeObserverAverage(
-  order: TritanDimCode[],
+  order: HexacoCode[],
   observerDimSets: Record<string, number>[],
 ): Record<string, number> | null {
   if (observerDimSets.length < DOSSIER_OBSERVER_MIN) return null;
@@ -179,14 +181,14 @@ export function computeObserverAverage(
  * a facets nélküli (örökség) készletet tolerálja.
  */
 export function computeObserverFacetAverages(
-  order: TritanDimCode[],
+  order: HexacoCode[],
   observerFacetSets: Array<Record<string, Record<string, number>> | undefined>,
 ): Record<string, Record<string, number>> | null {
   if (observerFacetSets.length < DOSSIER_OBSERVER_MIN) return null;
 
   const result: Record<string, Record<string, number>> = {};
   for (const code of order) {
-    const facetCodes = TRITAN_DIMENSION_FACETS[code] ?? [];
+    const facetCodes = HEXACO_DIMENSION_FACETS[code] ?? [];
     const dimResult: Record<string, number> = {};
     for (const facet of facetCodes) {
       let sum = 0;
@@ -212,7 +214,7 @@ export function computeObserverFacetAverages(
  * a 0-s helyettesítés hamis −100-as deltát gyártana.
  */
 export function computeDimComparisons(
-  order: TritanDimCode[],
+  order: HexacoCode[],
   selfDims: Record<string, number>,
   observerAvg: Record<string, number> | null,
 ): DossierDimComparison[] {

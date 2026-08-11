@@ -123,12 +123,19 @@ function OptionCard({
 }
 
 /** Mért érdeklődés-kérdőív (Mini-IP mintájára) — 30 gyors item, egyenként,
- *  1-5 skálán, auto-advance-szel. A wizard vizuális nyelvét követi. */
+ *  1-5 skálán, auto-advance-szel. A wizard vizuális nyelvét követi.
+ *
+ *  A NYERS válaszokat is felfelé adja (2026-08-11, fix): a mért Holland-kódot
+ *  a SZERVER pontozza a válaszokból — a kliens-oldali pontszám csak azonnali
+ *  megjelenítésre való, a mentett „measured" forrás a szerveré. */
 function RiasecProfiler({
   onComplete,
   onCancel,
 }: {
-  onComplete: (scores: Record<string, number>) => void;
+  onComplete: (
+    scores: Record<string, number>,
+    answers: Record<number, number>,
+  ) => void;
   onCancel: () => void;
 }) {
   const { locale } = useLocale();
@@ -151,7 +158,7 @@ function RiasecProfiler({
         setIndex(index + 1);
       } else {
         const scores = scoreRiasec(next);
-        if (scores) onComplete(scores);
+        if (scores) onComplete(scores, next);
       }
     }, 240);
   }
@@ -362,6 +369,11 @@ export function CareerCompass({
   const [celebrate, setCelebrate] = useState(false);
   // Mért érdeklődés-kérdőív (Mini-IP) nyitva-e az eredmény-nézetben
   const [profilerOpen, setProfilerOpen] = useState(false);
+  // A kérdőív NYERS válaszai — a szerver ebből pontoz („measured" forrás csak
+  // szerver-oldali pontozásból születhet). A kliens-oldali scores csak UI.
+  const [riasecAnswers, setRiasecAnswers] = useState<Record<number, number> | null>(
+    null,
+  );
   // Kijelölés-visszajelzés: a lépésváltás rövid késleltetéssel jön, hogy a
   // pop-animáció látsszon; a timer guard a dupla-kattintás ellen véd.
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -419,11 +431,18 @@ export function CareerCompass({
     setStep("result");
     setCelebrate(true);
     // A preferenciák és a vezetői szándék IS mentődik — enélkül újratöltés
-    // után más rangsor jött, mint amit a user a wizard végén látott.
+    // után más rangsor jött, mint amit a user a wizard végén látott. A mért
+    // Holland-kódhoz a NYERS válaszok mennek (riasecAnswers) — a pontozás a
+    // szerveré, a kliens-oldali riasecScores-t a végpont nem fogadja el.
     void fetch("/api/profile/career-background", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...background, prefs, leadIntent }),
+      body: JSON.stringify({
+        ...background,
+        prefs,
+        leadIntent,
+        ...(riasecAnswers ? { riasecAnswers } : {}),
+      }),
     }).catch(() => {
       /* a mentés hibája nem blokkolja az eredményt */
     });
@@ -500,13 +519,18 @@ export function CareerCompass({
         await fetch("/api/profile/career-background", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...next, prefs, leadIntent }),
+          body: JSON.stringify({
+            ...next,
+            prefs,
+            leadIntent,
+            ...(riasecAnswers ? { riasecAnswers } : {}),
+          }),
         });
       } catch {
         /* a kliens-oldali állapot így is helyes */
       }
     },
-    [background, prefs, leadIntent],
+    [background, prefs, leadIntent, riasecAnswers],
   );
 
   /**
@@ -529,6 +553,7 @@ export function CareerCompass({
     setProfilerOpen(false);
     setCelebrate(false);
     setRiasecPrefilled(false);
+    setRiasecAnswers(null);
     setStep("intro");
   }, []);
 
@@ -929,9 +954,12 @@ export function CareerCompass({
           {profilerOpen ? (
             <RiasecProfiler
               onCancel={() => setProfilerOpen(false)}
-              onComplete={(scores) => {
+              onComplete={(scores, answers) => {
                 setProfilerOpen(false);
+                // A kliens-pontszám csak a helyi UI-hoz — a mentéskor a nyers
+                // válaszok (riasecAnswers) mennek, a szerver pontoz.
                 patch({ riasecScores: scores as CareerBackground["riasecScores"] });
+                setRiasecAnswers(answers);
                 goNext("riasec");
               }}
             />
@@ -1101,7 +1129,7 @@ export function CareerCompass({
                     <div className="mt-3">
                       <RiasecProfiler
                         onCancel={() => setProfilerOpen(false)}
-                        onComplete={(scores) => {
+                        onComplete={(scores, answers) => {
                           setProfilerOpen(false);
                           setCelebrate(true);
                           const nextBackground = {
@@ -1109,10 +1137,18 @@ export function CareerCompass({
                             riasecScores: scores as CareerBackground["riasecScores"],
                           };
                           setBackground(nextBackground);
+                          setRiasecAnswers(answers);
+                          // A mért kódot a szerver pontozza a nyers válaszokból
+                          // (riasecAnswers) — a kliens-scores csak azonnali UI.
                           void fetch("/api/profile/career-background", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ ...nextBackground, prefs, leadIntent }),
+                            body: JSON.stringify({
+                              ...nextBackground,
+                              prefs,
+                              leadIntent,
+                              riasecAnswers: answers,
+                            }),
                           })
                             .then(() => fetchFit(nextBackground, prefs, leadIntent))
                             .catch(() => {});

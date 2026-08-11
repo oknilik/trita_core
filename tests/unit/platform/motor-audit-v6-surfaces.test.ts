@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { diffStandardError } from "@/lib/psychometrics";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 
 // Motor-audit v6 felület-kontraktusok (2026-08-11) — FORRÁS-SZINTŰ tesztek
 // (a page/route-handlerek Clerk/Prisma nélkül unit-rétegben nem hívhatók;
@@ -12,8 +12,8 @@ import { TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
 // Három szerződés:
 //  1) A jelölt-oldal hasonlóság-címkéi mérési-hiba-tudatosak — a korábbi nyers
 //     vágások (<10 „kiváló", <20 „jó") a zajszint ALATT jártak.
-//  2) Nyers belső dim-kód (INTE/RESO/THOR/…) nem kerülhet a felületre — a
-//     badge a kanonikus HEXACO-betű (TRITAN_DIMENSIONS[..].letter).
+//  2) Nyers belső dim-kód (H/E/C/…) nem kerülhet a felületre — a
+//     badge a kanonikus HEXACO-betű (HEXACO_DIMENSIONS[..].letter).
 //  3) A csapatszerep self-beküldő nem nyelheti el a hibát (res.ok ellenőrzés).
 
 const read = (relative: string) =>
@@ -47,15 +47,19 @@ test("jelölt-oldal: a hasonlóság-címke SE-tudatos, nem nyers pont-vágás", 
   );
 });
 
-test("jelölt-oldal: a régi vágások tényleg a zajszint alatt jártak (számszerű)", () => {
-  // SEM(short)≈10 → SE(gap)=√2·SEM≈14,5; azonos valódi profilok mellett az
-  // átlagos |gap| várható értéke ~0,8·SE≈11,6 — a régi „<10 = kiváló egyezés"
-  // tehát olyan pontosságot állított, amit a műszer nem tud. Az állíthatósági
-  // küszöb (1,96·SE≈28) pedig a régi „<20 = jó" határ FÖLÖTT van.
+test("jelölt-oldal: a régi vágások a mérési hibán belül jártak (számszerű)", () => {
+  // 2026-08-11 (mért reliabilitás-konstansok): SEM(short) 10,23 → 7,56, tehát
+  // SE(gap) = √2·SEM 14,47 → 10,70, a zaj-padló (0,8·SE) 11,6 → 8,5.
+  // A régi „<10 = kiváló egyezés" vágás így már nem a zaj-padló ALATT van, de
+  // továbbra is a KÜLÖNBSÉG mérési hibáján (1×SE) BELÜL — vagyis olyan
+  // pontosságot állított, amit a műszer nem tud. Az állíthatósági küszöb
+  // (1,96·SE ≈ 21) pedig változatlanul a régi „<20 = jó" határ FÖLÖTT van.
+  // A kapuk a bankból/konstansokból származnak, ezért itt sem literálhoz
+  // kötünk: a RELÁCIÓ a védendő állítás.
   const gapSe = diffStandardError("short");
   assert.ok(
-    gapSe * Math.sqrt(2 / Math.PI) > 10,
-    `a zaj-padló (${(gapSe * Math.sqrt(2 / Math.PI)).toFixed(1)}) nem haladja meg a régi 10 pontos vágást`,
+    gapSe > 10,
+    `a gap-hiba (${gapSe.toFixed(1)}) nem haladja meg a régi 10 pontos vágást`,
   );
   assert.ok(
     1.96 * gapSe > 20,
@@ -79,8 +83,8 @@ test("jelölt-oldal + blog: a dim-badge a HEXACO-betű, nem a nyers belső kód"
   for (const page of [HIRING_PAGE, BLOG_PAGE]) {
     const source = read(page);
     assert.ok(
-      /TRITAN_DIMENSIONS\[[^\]]+\]\.letter|TRITAN_DIMENSIONS\[[^\]]+\]\?\.letter/.test(source),
-      `${page}: a badge nem a TRITAN_DIMENSIONS[..].letter térképen megy át`,
+      /HEXACO_DIMENSIONS\[[^\]]+\]\.letter|HEXACO_DIMENSIONS\[[^\]]+\]\?\.letter/.test(source),
+      `${page}: a badge nem a HEXACO_DIMENSIONS[..].letter térképen megy át`,
     );
   }
   // A hiring-oldal badge-je nem a nyers kódot rendereli.
@@ -90,8 +94,8 @@ test("jelölt-oldal + blog: a dim-badge a HEXACO-betű, nem a nyers belső kód"
     "a jelölt-oldal ismét nyers dim-kódot renderel",
   );
   // A kanonikus térkép minden belső kódra ad betűt (a kontraktus alapja).
-  for (const code of TRITAN_ORDER) {
-    assert.match(TRITAN_DIMENSIONS[code].letter, /^[HEXACO]$/);
+  for (const code of HEXACO_ORDER) {
+    assert.match(HEXACO_DIMENSIONS[code].letter, /^[HEXACO]$/);
   }
 });
 

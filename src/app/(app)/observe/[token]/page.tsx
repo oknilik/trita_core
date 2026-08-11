@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import type { Metadata } from "next";
@@ -8,6 +9,10 @@ import type { TestType } from "@prisma/client";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { resolveObserverTokenLifecycle } from "@/lib/observer/token-validation";
+import {
+  isValidObserverDraftCookie,
+  observerDraftCookieName,
+} from "@/lib/observer/draft-cookie";
 import { ObserverClient } from "./ObserverClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -185,9 +190,28 @@ export default async function ObservePage({ params }: ObservePageProps) {
   const config = getTestConfig(invitation.testType as TestType, locale, DEFAULT_ASSESSMENT_FORM);
   const inviterName = invitation.inviter.username ?? t("common.someone", locale);
 
-  const draft = await prisma.observerDraft.findUnique({
-    where: { invitationId: invitation.id },
-  });
+  // A szerver-oldali draft (a rater NYERS válaszai) csak annak jár, aki írta:
+  //  (a) nevesített meghívónál a bejelentkezett címzett (a fenti guard után a
+  //      viewer garantáltan ő), VAGY
+  //  (b) külső meghívónál az a böngésző, amelyik a draft-mentéskor kapott
+  //      HMAC-cookie-t hordozza (részletek + trade-off: observer/draft-cookie.ts).
+  // Enélkül a token bármely (akár kijelentkezett) birtokosa — tipikusan maga
+  // az ÉRTÉKELT, aki a linket küldte — elolvashatná a folyamatban lévő
+  // válaszokat (motor-audit: logged-out draft leak). Cookie nélkül a kitöltő
+  // egyszerűen elölről kezdi — a draft NEM törlődik, csak nem jelenik meg.
+  const cookieStore = await cookies();
+  const canReceiveDraft = isInternalInvite
+    ? true
+    : isValidObserverDraftCookie(
+        invitation.id,
+        cookieStore.get(observerDraftCookieName(invitation.id))?.value,
+      );
+
+  const draft = canReceiveDraft
+    ? await prisma.observerDraft.findUnique({
+        where: { invitationId: invitation.id },
+      })
+    : null;
 
   const initialDraft = draft
     ? {

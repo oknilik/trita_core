@@ -78,12 +78,12 @@ test("a típus-skála tokenek jelen vannak a globals.css-ben", () => {
 // ─── 2026-08 szín-rendszer: color-system.ts ↔ globals.css ───────────────────
 
 const DIM_CSS_LETTER: Record<DimCode, string> = {
-  INTE: "h",
-  RESO: "e",
-  TEMP: "x",
-  ADAP: "a",
-  THOR: "c",
-  OPEN: "o",
+  H: "h",
+  E: "e",
+  X: "x",
+  A: "a",
+  C: "c",
+  O: "o",
 };
 
 test("DIMENSION_COLORS szinkronban a --color-dim-* tokenekkel", () => {
@@ -96,8 +96,8 @@ test("DIMENSION_COLORS szinkronban a --color-dim-* tokenekkel", () => {
 });
 
 test("E/O hue-döntés érvényben (E=viola, O=mályva — doksi 5. fejezet)", () => {
-  assert.equal(DIMENSION_COLORS.RESO.base, "#7b5fae");
-  assert.equal(DIMENSION_COLORS.OPEN.base, "#b4688a");
+  assert.equal(DIMENSION_COLORS.E.base, "#7b5fae");
+  assert.equal(DIMENSION_COLORS.O.base, "#b4688a");
 });
 
 test("TEAM_ROLE_FAMILIES szinkronban a --color-role-* tokenekkel", () => {

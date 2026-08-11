@@ -43,9 +43,10 @@ export async function DELETE(
   if (!invite) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   const inviteOrgId = invite.orgId ?? invite.team?.orgId ?? null;
+  // leftAt: null — a szervezetből kilépett (volt) tag nem nyúlhat a meghívókhoz.
   const orgMembership = inviteOrgId
     ? await prisma.organizationMember.findFirst({
-        where: { userId: profile.id, orgId: inviteOrgId },
+        where: { userId: profile.id, orgId: inviteOrgId, leftAt: null },
         select: { role: true },
       })
     : null;
@@ -75,12 +76,32 @@ export async function DELETE(
       const isUnlimited = tier === "org" || tier === "scale";
       if (!isUnlimited && sub) {
         const label = invite.name ?? invite.email ?? "unknown";
-        await addCredits({
-          orgId,
-          amount: 1,
-          actorId: profile.id,
-          note: `Visszavonás: ${label}${invite.position ? ` (${invite.position})` : ""}`,
+        // FELHASZNÁLÁS-BIZONYÍTÉK (2026-08-11, fix): a visszatérítés csak
+        // akkor jár, ha van ledger-nyom arról, hogy ERRE a jelöltre kredit
+        // fogyott. A létrehozáskori fogyasztás ugyanezzel a note-tal
+        // ledgerelődik (candidate-apply/service) — a kapcsolás gating-ki
+        // állapotban létrejött (kredit nélküli) meghívóknál üt: azok
+        // visszavonása a flag későbbi bekapcsolása után nem verhet ingyen
+        // kreditet. MARADÉK-KOCKÁZAT (séma nélkül nem zárható): a ledger
+        // nem hordoz invite-azonosítót, ezért az azonos nevű/pozíciójú
+        // jelöltek usage-sora keresztben is bizonyítéknak számít — a
+        // note-egyezés a legerősebb elérhető kulcs.
+        const usageNote = `Jelölt: ${label}${invite.position ? ` (${invite.position})` : ""}`;
+        const consumed = await prisma.candidateCredit.findFirst({
+          where: { orgId, type: "usage", note: usageNote },
+          select: { id: true },
         });
+        if (consumed) {
+          await addCredits({
+            orgId,
+            amount: 1,
+            actorId: profile.id,
+            // "refund" típus: a visszatérítés nem vásárlás — "purchase"-ként
+            // ledgerelve a totalPurchased számot hamisította (2026-08-11, fix).
+            type: "refund",
+            note: `Visszavonás: ${label}${invite.position ? ` (${invite.position})` : ""}`,
+          });
+        }
       }
     }
   }

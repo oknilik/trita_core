@@ -8,12 +8,23 @@ import { useCredit as consumeCredit } from "@/lib/candidate-credits";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { isCandidateGatingEnabled } from "@/lib/operating-mode";
+import {
+  CandidateInviteScopeError,
+  resolveInviteOrgScope,
+} from "./org-scope";
 
 export interface CreateCandidateApplyInviteInput {
   clerkId: string;
   email?: string;
   name: string;
   position?: string;
+  /**
+   * A hiring lap orgja — a meghívó KIMONDOTT hatóköre (2026-08-11, fix).
+   * Ha meg van adva, a meghívó EZ alá az org alá kerül, a hívó szerepét
+   * ebben az orgban ellenőrizzük, és a teamId-nek is ide kell tartoznia.
+   * Nélküle (örökölt kliens) a korábbi lépcső él: team orgja → aktív org.
+   */
+  orgId?: string;
   teamId?: string;
   includeTeamRole?: boolean;
 }
@@ -36,6 +47,7 @@ export interface CreateCandidateApplyInviteResult {
 export type CandidateApplyServiceErrorCode =
   | "UNAUTHORIZED"
   | "FORBIDDEN"
+  | "ORG_SCOPE_MISMATCH"
   | "CAPABILITY_DENIED"
   | "NO_CANDIDATE_CREDITS";
 
@@ -70,30 +82,64 @@ export async function createCandidateApplyInvite(
 
   // Jelölt-kezelés (2026-07-23): csak a tanácsadói kör — ORG_CONSULTANT
   // szerep, platform-tanácsadó vagy trita-admin (isConsultantSurface).
-  let orgId: string | null = null;
-  let orgRole: string | null = null;
-  if (input.teamId) {
-    const orgMembership = await prisma.organizationMember.findFirst({
-      where: { userId: profile.id, org: { teams: { some: { id: input.teamId } } } },
-      select: { role: true, orgId: true },
+  //
+  // ORG-HATÓKÖR (2026-08-11, fix): a hívó KIMONDOTT orgId-ja a hatókör — a
+  // korábbi aktív-org fallback team nélkül a LÉTREHOZÓ aktív orgja alá
+  // iktatta a meghívót, akkor is, ha a tanácsadó egy másik org hiring lapján
+  // állt. A döntési szabály a resolveInviteOrgScope-ban él (tisztán tesztelt);
+  // itt csak a bemeneteit olvassuk fel. Minden tagság-lekérés leftAt: null
+  // szűréssel fut — a kilépett tag nem hozhat létre meghívót.
+  const [team, requestedOrgMembership, teamOrgMembership, activeMembership] =
+    await Promise.all([
+      input.teamId
+        ? prisma.team.findUnique({
+            where: { id: input.teamId },
+            select: { orgId: true },
+          })
+        : Promise.resolve(null),
+      input.orgId
+        ? prisma.organizationMember.findFirst({
+            where: { userId: profile.id, orgId: input.orgId, leftAt: null },
+            select: { role: true, orgId: true },
+          })
+        : Promise.resolve(null),
+      input.teamId && !input.orgId
+        ? prisma.organizationMember.findFirst({
+            where: {
+              userId: profile.id,
+              leftAt: null,
+              org: { teams: { some: { id: input.teamId } } },
+            },
+            select: { role: true, orgId: true },
+          })
+        : Promise.resolve(null),
+      !input.orgId && !input.teamId
+        ? getActiveOrgMembership(profile.id)
+        : Promise.resolve(null),
+    ]);
+
+  let orgId: string;
+  let orgRole: string;
+  try {
+    const scope = resolveInviteOrgScope({
+      requestedOrgId: input.orgId ?? null,
+      teamOrgId: team?.orgId ?? null,
+      teamRequested: Boolean(input.teamId),
+      requestedOrgMembership,
+      teamOrgMembership,
+      activeMembership: activeMembership
+        ? { orgId: activeMembership.orgId, role: activeMembership.role }
+        : null,
     });
-    if (!orgMembership) {
-      throw new CandidateApplyServiceError("FORBIDDEN", 403);
+    orgId = scope.orgId;
+    orgRole = scope.role;
+  } catch (error) {
+    if (error instanceof CandidateInviteScopeError) {
+      throw new CandidateApplyServiceError(error.code, error.status);
     }
-    orgId = orgMembership.orgId;
-    orgRole = orgMembership.role;
-  } else {
-    const orgMembership = await getActiveOrgMembership(profile.id);
-    if (!orgMembership) {
-      throw new CandidateApplyServiceError("FORBIDDEN", 403);
-    }
-    orgId = orgMembership.orgId;
-    orgRole = orgMembership.role;
+    throw error;
   }
 
-  if (!orgId || !orgRole) {
-    throw new CandidateApplyServiceError("FORBIDDEN", 403);
-  }
   if (!isConsultantSurface(orgRole, profile.email, profile.isConsultant)) {
     throw new CandidateApplyServiceError("FORBIDDEN", 403);
   }

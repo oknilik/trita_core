@@ -20,7 +20,7 @@ import {
   type PersonalityLocale,
 } from "@/lib/personality-type";
 import { intensityFromScore } from "@/lib/type-glyph";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { TryTeaserCard, type TeaserTopDim } from "./TryTeaserCard";
 
 interface TryCompleteClientProps {
@@ -73,11 +73,11 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
     if (!typeLabel) return null;
 
     const dimLabel = (code: string): string => {
-      const entry = TRITAN_DIMENSIONS[code as TritanDimCode];
+      const entry = HEXACO_DIMENSIONS[code as HexacoCode];
       return entry ? entry[personalityLocale] : code;
     };
     const dimLetter = (code: string): string =>
-      TRITAN_DIMENSIONS[code as TritanDimCode]?.letter ?? code;
+      HEXACO_DIMENSIONS[code as HexacoCode]?.letter ?? code;
 
     const topDims: TeaserTopDim[] = scores.ranked.slice(0, 2).map((d) => ({
       code: d.code,

@@ -40,7 +40,7 @@ import {
 } from "../src/lib/dimension-insights";
 import { estimateTeamRolesFromTritan } from "../src/lib/team-role-estimate";
 import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "../src/lib/team-role-scoring";
-import { TRITAN_ORDER, TRITAN_DIM_ABBR, type TritanDimCode } from "../src/lib/tritan";
+import { HEXACO_ORDER, hexLetter, type HexacoCode } from "../src/lib/hexaco";
 import { t, tf, type Locale } from "../src/lib/i18n";
 import type { PdfData } from "../src/components/pdf/TritaPdf";
 import { CoverPage } from "../src/components/pdf/pages/CoverPage";
@@ -105,8 +105,8 @@ const strengthDescs = DIMENSION_STRENGTH_DESCS;
 const watchDescs = DIMENSION_WATCH_DESCS;
 
 function tritanIndex(code: string): number {
-  const i = (TRITAN_ORDER as readonly string[]).indexOf(code);
-  return i === -1 ? TRITAN_ORDER.length : i;
+  const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
+  return i === -1 ? HEXACO_ORDER.length : i;
 }
 
 function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"): PdfData {
@@ -152,7 +152,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
 
   // Pólus-tudatos watch-lista (motor-audit v4, FIX 2, a ProfileTabs tükre):
   // a fordított Emocionalitás alacsony sávja stabilitás, nem figyelendő.
-  const watchDims = lowDims.filter((d) => d.code !== "RESO");
+  const watchDims = lowDims.filter((d) => d.code !== "E");
 
   const strengthBullets = (highDims.length > 0 ? highDims : sortedDims.slice(0, 2)).map((d) => {
     const desc = strengthDescs[d.code]?.[locale];
@@ -166,7 +166,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     : [t("content.noLowDimension", locale)];
 
   // Kapuzott profil-karakter (FIX 2): „magas X" csak ≥70-re, alatta a
-  // balanced-fallback; fejlődés-mondat csak valóban alacsony, nem-RESO dimre.
+  // balanced-fallback; fejlődés-mondat csak valóban alacsony, nem-E dimre.
   const profileCharacter = (() => {
     const top2High = [...highDims].sort((a, b) => b.score - a.score).slice(0, 2);
     const highPart = top2High[0]
@@ -188,7 +188,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
   const workstyle = buildWorkstyleContent(dimScores, "TRITAN", locale);
 
   const teamRoleRoles = (() => {
-    const scores = estimateTeamRolesFromTritan(dimScores as Record<TritanDimCode, number>);
+    const scores = estimateTeamRolesFromTritan(dimScores as Record<HexacoCode, number>);
     const top3 = getTopRoles(scores, 3);
     const sourceLabel = locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
     return top3.map((r, i) => ({
@@ -233,7 +233,7 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     altruism,
     dimensions: mainDims.map((d) => ({
       name: d.label,
-      shortName: TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHuLoc(locale) ? "hu" : "en"] ??
+      shortName: hexLetter(d.code) ??
         (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
       value: d.score,
       description: d.insight,

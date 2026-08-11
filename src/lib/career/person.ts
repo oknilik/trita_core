@@ -7,6 +7,7 @@ import { InvitationStatus } from "@prisma/client";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { prisma } from "@/lib/prisma";
 import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
+import { aggregateObserverDims } from "./observer-aggregate";
 import { estimateInterests, interestsFromTags, isCompleteRiasecVector } from "./interests";
 import {
   AXIS_KEYS,
@@ -174,28 +175,13 @@ export async function buildPersonInput(
   const background = (profile?.careerBackground ?? null) as StoredCareerBackground | null;
   const dims = pickDims(latestResult?.scores);
 
-  const observerDims: Partial<Record<DimCode, number>> = {};
-  let observerCount = 0;
-  if (observerAssessments.length > 0) {
-    const sums: Partial<Record<DimCode, { sum: number; n: number }>> = {};
-    for (const assessment of observerAssessments) {
-      const values = pickDims(assessment.scores);
-      let counted = false;
-      for (const dim of DIM_CODES) {
-        const value = values[dim];
-        if (typeof value !== "number") continue;
-        const bucket = (sums[dim] ??= { sum: 0, n: 0 });
-        bucket.sum += value;
-        bucket.n += 1;
-        counted = true;
-      }
-      if (counted) observerCount += 1;
-    }
-    for (const dim of DIM_CODES) {
-      const bucket = sums[dim];
-      if (bucket && bucket.n > 0) observerDims[dim] = Math.round(bucket.sum / bucket.n);
-    }
-  }
+  // Observer-aggregátum PER-DIMENZIÓ anonimitás-padlóval (2026-08-11, fix):
+  // egy dimenzió csak akkor számít observer-átlagnak, ha arra a dimenzióra
+  // legalább MIN_RATERS_FOR_ANONYMOUS_AGGREGATE értékelő adott pontot — a
+  // korábbi bucket.n > 0 egyetlen értékelő válaszát is átlagként keverte be.
+  const { dims: observerDims, raterCount: observerCount } = aggregateObserverDims(
+    observerAssessments.map((assessment) => pickDims(assessment.scores)),
+  );
 
   const person: PersonInput = {
     dims,

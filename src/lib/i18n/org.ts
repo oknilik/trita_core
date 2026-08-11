@@ -1371,7 +1371,7 @@ export const orgTranslations = {
     // A címke a csapatátlaghoz mért HASONLÓSÁG, nem alkalmasság — az eltérő
     // profil kiegészítő is lehet, ezért nem kap minősítést.
     // A zaj-padló alatti hasonlóság a mérési hibán belüli EGYEZÉS — nem
-    // „kiváló egyezés" (hamis precizitás lenne, SEM≈10 mellett).
+    // „kiváló egyezés" (hamis precizitás lenne — a mért SEM≈7,6 mellett is).
     similarityWithinError: {
       hu: "A mérési hibán belül egyezik a csapatátlaggal",
       en: "Matches the team average within measurement error",
@@ -1815,6 +1815,21 @@ export const orgTranslations = {
     evidenceConfidenceLow: { hu: "alacsony", en: "low" },
     evidenceConfidenceMedium: { hu: "közepes", en: "medium" },
     evidenceConfidenceHigh: { hu: "magas", en: "high" },
+
+    // Szerep-hiány prioritás indoklása — forrás-tudatos változatok
+    // (hitelességi alapelv: mért szerepképre nem írhatjuk, hogy „becsült").
+    roleGapReasonMeasured: {
+      hu: "A mért szerepképben nem látszik: {roles}.",
+      en: "The measured role map is missing: {roles}.",
+    },
+    roleGapReasonMixed: {
+      hu: "A részben mért, részben becsült szerepképben nem látszik: {roles}.",
+      en: "The partly measured, partly estimated role map is missing: {roles}.",
+    },
+    roleGapReasonEstimated: {
+      hu: "A becsült szerepképben nem látszik: {roles}.",
+      en: "Estimated role map is missing: {roles}.",
+    },
   },
 
   // ── Team pages (/team, /team/[id]) ──────────────────────────────────────

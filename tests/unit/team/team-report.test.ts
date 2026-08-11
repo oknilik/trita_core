@@ -62,8 +62,8 @@ const richAggregates: TeamReportAggregates = {
   memberCount: 5,
   completedCount: 4,
   completionPct: 80,
-  dimensionAverages: { INTE: 62, RESO: 45, TEMP: 58, ADAP: 51, THOR: 70, OPEN: 40 },
-  dimensionSpread: { INTE: 8, RESO: 14, TEMP: 9, ADAP: 6, THOR: 18, OPEN: 7 },
+  dimensionAverages: { H: 62, E: 45, X: 58, A: 51, C: 70, O: 40 },
+  dimensionSpread: { H: 8, E: 14, X: 9, A: 6, C: 18, O: 7 },
   pattern: { label: "Végrehajtó mag", confidence: "medium" },
   roleDistribution: {
     counts: { IM: 3, CO: 1 },
@@ -77,7 +77,7 @@ const richAggregates: TeamReportAggregates = {
     alignedCount: 1,
     complementaryCount: 2,
     frictionCount: 3,
-    topFrictionDims: ["THOR", "RESO"],
+    topFrictionDims: ["C", "E"],
     source: "profile_estimate",
   },
 };
@@ -85,7 +85,9 @@ const richAggregates: TeamReportAggregates = {
 test("prefill: rich aggregates produce every narrative field + action items", () => {
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
-  assert.ok(prefill!.summary.includes("6 tagpárból"));
+  // A szám ÉL-darabszám (felmért kapcsolat), nem tagpár — a copy őszinte.
+  assert.ok(prefill!.summary.includes("6 felmért kapcsolatból"));
+  assert.ok(!prefill!.summary.includes("tagpár"));
   assert.ok(prefill!.strengths.startsWith("• "));
   // friction 50% → norma-kockázat + ajánlás
   assert.ok(prefill!.risks.includes("munkastílus-különbség"));
@@ -172,6 +174,36 @@ test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-tru
   assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
 });
 
+test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) slotba — score-valence kapu", () => {
+  const resoLowest: TeamReportAggregates = {
+    ...richAggregates,
+    dimensionAverages: { H: 62, E: 30, X: 58, A: 51, C: 70, O: 45 },
+  };
+  const prefill = buildDraftNarrativePrefill(resoLowest);
+  assert.ok(prefill);
+  // Az érzelmi stabilitás nem kockázat — a E figyelendő-szövege kimarad,
+  // a legalacsonyabb ELIGIBLE dimenzió (O) figyelendője kerül be.
+  assert.ok(!prefill!.risks.includes("Érzelmileg ráhangolódóbb"));
+  assert.ok(prefill!.risks.includes("Pragmatikus fókusz"));
+});
+
+test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javaslat (FIX 2)", () => {
+  const multiTeamPulse: TeamReportAggregates = {
+    ...richAggregates,
+    psychSafety: null,
+    psychSafetyMultiTeam: true,
+  };
+  const prefill = buildDraftNarrativePrefill(multiTeamPulse);
+  assert.ok(prefill);
+  assert.ok(!prefill!.recommendations.includes("pulse indítása"));
+});
+
+test("prefill: se pulse-adat, se lefedő kör → marad a pulse-indítás javaslat", () => {
+  const prefill = buildDraftNarrativePrefill(richAggregates);
+  assert.ok(prefill);
+  assert.ok(prefill!.recommendations.includes("Pszichológiai biztonság pulse indítása"));
+});
+
 test("prefill: no dimension averages returns null", () => {
   const prefill = buildDraftNarrativePrefill({
     ...richAggregates,
@@ -183,23 +215,23 @@ test("prefill: no dimension averages returns null", () => {
 // ── computeTopFrictionDims ───────────────────────────────────────────────────
 
 test("topFrictionDims: a szűrés is a rangsorolt mennyiségre (w·szórás ≥ 2) megy", () => {
-  // THOR 10-es nyers szórás: 0.30 × 10 = 3 ≥ 2 → bekerül, pedig a régi
-  // nyers ≥12 szűrő kizárta volna; OPEN 20-as szórás: 0.05 × 20 = 1 < 2 →
+  // C 10-es nyers szórás: 0.30 × 10 = 3 ≥ 2 → bekerül, pedig a régi
+  // nyers ≥12 szűrő kizárta volna; O 20-as szórás: 0.05 × 20 = 1 < 2 →
   // kimarad, pedig a nyers szűrő átengedte volna.
-  assert.deepEqual(computeTopFrictionDims({ THOR: 10, OPEN: 20 }), ["THOR"]);
+  assert.deepEqual(computeTopFrictionDims({ C: 10, O: 20 }), ["C"]);
 });
 
 test("topFrictionDims: w·szórás szerint rangsorol, max 2 dim", () => {
-  // THOR 5.4 > ADAP 3.0 > RESO 2.1 (levágva) > INTE 1.6 (küszöb alatt)
+  // C 5.4 > A 3.0 > E 2.1 (levágva) > H 1.6 (küszöb alatt)
   assert.deepEqual(
-    computeTopFrictionDims({ INTE: 8, RESO: 14, THOR: 18, ADAP: 12 }),
-    ["THOR", "ADAP"],
+    computeTopFrictionDims({ H: 8, E: 14, C: 18, A: 12 }),
+    ["C", "A"],
   );
 });
 
 test("topFrictionDims: küszöb alatti szórásoknál üres", () => {
   assert.deepEqual(
-    computeTopFrictionDims({ INTE: 5, RESO: 5, TEMP: 5, ADAP: 5, THOR: 5, OPEN: 5 }),
+    computeTopFrictionDims({ H: 5, E: 5, X: 5, A: 5, C: 5, O: 5 }),
     [],
   );
 });

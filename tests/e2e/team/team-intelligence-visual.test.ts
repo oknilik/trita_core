@@ -39,16 +39,16 @@ const ALL_PROFILE_IDS = [
   ...FIXTURE.sufficientMembers.map((member) => member.profileId),
 ];
 
-function scorePayload(input: { INTE: number; RESO: number; TEMP: number; ADAP: number; THOR: number; OPEN: number }) {
+function scorePayload(input: { H: number; E: number; X: number; A: number; C: number; O: number }) {
   return {
     type: "likert",
     dimensions: {
-      INTE: input.INTE,
-      RESO: input.RESO,
-      TEMP: input.TEMP,
-      ADAP: input.ADAP,
-      THOR: input.THOR,
-      OPEN: input.OPEN,
+      H: input.H,
+      E: input.E,
+      X: input.X,
+      A: input.A,
+      C: input.C,
+      O: input.O,
     },
   };
 }
@@ -208,35 +208,35 @@ async function createFixture() {
         userProfileId: FIXTURE.admin.profileId,
         testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ INTE: 61, RESO: 47, TEMP: 51, ADAP: 58, THOR: 62, OPEN: 56 }),
+        scores: scorePayload({ H: 61, E: 47, X: 51, A: 58, C: 62, O: 56 }),
       },
       {
         id: "e2e_intel_visual_result_low_1",
         userProfileId: FIXTURE.lowMembers[0].profileId,
         testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ INTE: 55, RESO: 49, TEMP: 33, ADAP: 57, THOR: 54, OPEN: 52 }),
+        scores: scorePayload({ H: 55, E: 49, X: 33, A: 57, C: 54, O: 52 }),
       },
       {
         id: "e2e_intel_visual_result_ok_1",
         userProfileId: FIXTURE.sufficientMembers[0].profileId,
         testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ INTE: 49, RESO: 51, TEMP: 73, ADAP: 48, THOR: 52, OPEN: 64 }),
+        scores: scorePayload({ H: 49, E: 51, X: 73, A: 48, C: 52, O: 64 }),
       },
       {
         id: "e2e_intel_visual_result_ok_2",
         userProfileId: FIXTURE.sufficientMembers[1].profileId,
         testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ INTE: 58, RESO: 45, TEMP: 30, ADAP: 64, THOR: 66, OPEN: 53 }),
+        scores: scorePayload({ H: 58, E: 45, X: 30, A: 64, C: 66, O: 53 }),
       },
       {
         id: "e2e_intel_visual_result_ok_3",
         userProfileId: FIXTURE.sufficientMembers[2].profileId,
         testType: "TRITAN",
         isSelfAssessment: true,
-        scores: scorePayload({ INTE: 63, RESO: 43, TEMP: 68, ADAP: 59, THOR: 60, OPEN: 62 }),
+        scores: scorePayload({ H: 63, E: 43, X: 68, A: 59, C: 60, O: 62 }),
       },
     ],
   });
@@ -325,9 +325,13 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(resourceSection.getByText("Sufficient One")).toBeVisible();
 
     // Motor-audit v7 (user-kérés): a felületen NINCS ±N mérési-hiba jelölés, és a
-    // resource-map dimenzió-chip HEXACO-betűt mutat, nem nyers TRITAN belső kódot.
+    // resource-map dimenzió-chip HEXACO-betűt mutat, nem kivezetett belső kódot.
+    // 2026-08-11: a belső kódok kivezetve — a kanonikus kód MAGA a HEXACO-betű,
+    // amit a chip szándékosan meg is jelenít („C 62%"), ezért az őrszem a
+    // KIVEZETETT örökség-kódokra fut. (A korábbi regex ezeket sorolta fel; az
+    // átnevezéskor betűkre fordult, amivel a saját állítását tagadta volna.)
     await expect(page.locator("main")).not.toContainText("±");
-    await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|ADAP|THOR|OPEN)\b/);
+    await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|THOR|ADAP)\b/);
 
     // Deep-dive CTA szekció — a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({

@@ -4,7 +4,7 @@ import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { INDUSTRIES, INTEREST_TAGS } from "@/lib/industry-fit";
-import { isCompleteRiasecVector } from "@/lib/career/interests";
+import { scoreRiasec } from "@/lib/questions/riasec";
 import { getOccupation } from "@/lib/career/catalog";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
@@ -62,14 +62,17 @@ const schema = z.object({
     .array(z.enum(INTEREST_TAGS.map((tag) => tag.key) as [string, ...string[]]))
     .max(4)
     .optional(),
-  // MÉRT érdeklődés-profil (Mini-IP) — betűnként 0-100. Csak a HIÁNYTALAN
-  // (mind a hat betűs) vektor fogadható el: a scoreRiasec is null-t ad hiányos
-  // kitöltésre, és a person.ts forrás-létrája csak a teljes vektort minősíti
-  // „measured"-nek. Egy parciális (kliens-állított) vektort itt elutasítunk,
-  // hogy ne kerülhessen a profilra hamis mérésként.
-  riasecScores: z
-    .record(z.enum(["R", "I", "A", "S", "E", "C"]), z.number().min(0).max(100))
-    .refine(isCompleteRiasecVector, { message: "RIASEC_INCOMPLETE" })
+  // MÉRT érdeklődés-profil (Mini-IP) — a kliens a 30 item NYERS válaszait
+  // küldi (itemId → 1-5), a hat betű-pontszámot a SZERVER számolja
+  // (2026-08-11, fix): a korábbi végpont hat kliens-számolt számot fogadott
+  // el „measured" forrásként, amit bármilyen kézi hívás hamisíthatott. A
+  // scoreRiasec a teljességet is kikényszeríti (hiányos/érvénytelen válasz-
+  // halmaz → null → a mentés becsült/címke-forrásra esik vissza). Egy
+  // pontszám-only payload (örökölt kliens riasecScores mezője) a zod strip
+  // miatt némán kimarad — a tárolt korábbi mért kód a lentebbi megőrző
+  // logikával változatlanul él tovább.
+  riasecAnswers: z
+    .record(z.string().regex(/^\d+$/), z.number().int().min(1).max(5))
     .optional(),
   // Preferencia- és környezet-tengelyek: a wizard 2 lépésének válaszai. Eddig
   // csak kliens-state volt, ezért újratöltés után MÁS rangsor jött, mint amit a
@@ -144,13 +147,27 @@ export async function POST(req: Request) {
 
   // A MÉRT érdeklődés-kérdőív (Holland) eredménye csak ÚJRAKEZDÉSKOR vész el
   // (DELETE), módosításkor soha. A mentés teljes cserét ír, ezért ha a
-  // beküldött háttér nem hozza a pontszámokat, a meglévőt megtartjuk — a
-  // kitöltés drága (a leghosszabb lépés), és egy hiányos kliens-payload nem
-  // törölheti el. Kiürítéshez a DELETE való.
+  // beküldött háttér nem hoz érvényes kitöltést, a meglévő pontszámokat
+  // megtartjuk — a kitöltés drága (a leghosszabb lépés), és egy hiányos
+  // kliens-payload nem törölheti el. Kiürítéshez a DELETE való.
   const previous = (profile.careerBackground ?? null) as {
     riasecScores?: Record<string, number>;
   } | null;
-  const next = { ...parsed.data };
+  const { riasecAnswers, ...backgroundFields } = parsed.data;
+  const next: typeof backgroundFields & { riasecScores?: Record<string, number> } = {
+    ...backgroundFields,
+  };
+  // Szerver-oldali pontozás: a nyers válaszokból számolt betű-pontszámok
+  // kerülnek a profilra. Érvénytelen/hiányos válasz-halmaz → nincs mért kód
+  // (a forrás-létra becsültre esik), a korábban tárolt mért kód megmarad.
+  if (riasecAnswers) {
+    const answers: Record<number, number> = {};
+    for (const [id, value] of Object.entries(riasecAnswers)) {
+      answers[Number(id)] = value;
+    }
+    const scored = scoreRiasec(answers);
+    if (scored) next.riasecScores = scored;
+  }
   if (!next.riasecScores && previous?.riasecScores) {
     next.riasecScores = previous.riasecScores;
   }

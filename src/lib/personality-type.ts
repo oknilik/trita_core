@@ -10,7 +10,7 @@
 // forrása (a duplikált logika helyett).
 // ─────────────────────────────────────────────────────────────────────
 
-import { rankDimensionScores } from "./tritan";
+import { rankDimensionScores } from "./hexaco";
 
 export type PersonalityLocale = "hu" | "en";
 
@@ -22,27 +22,35 @@ interface TypeParts {
 }
 
 export const PERSONALITY_TYPE_PARTS: Record<string, TypeParts> = {
-  INTE: {
+  H: {
     noun: { hu: "értékőr", en: "Value Guardian" },
     adjective: { hu: "elvhű", en: "Principled" },
   },
-  RESO: {
-    noun: { hu: "empata", en: "Empath" },
-    adjective: { hu: "empatikus", en: "Empathetic" },
+  // 2026-08-11, valencia-revízió: a korábbi „empata"/"Empath" NEM a mért
+  // konstruktum — az Emocionalitás facetjei a Félelem / Szorongás /
+  // Dependencia / Érzelmi kötődés, az empátia (mások iránti törődés) nem
+  // ezen a skálán mérődik. A helyére a ráhangolódás-család került: leíró,
+  // nem erény — nem ígér empátiát, törődést vagy „érzelmi mélységet".
+  // (EN: a „ráhangolódó" főnévi helyzetben angolul nem áll meg jelzővel —
+  // „Energetic Attuned" nyelvtanilag rossz —, ezért a főnév leíró
+  // szókapcsolat, a melléknévi színezet marad „Attuned".)
+  E: {
+    noun: { hu: "ráhangolódó", en: "Signal Reader" },
+    adjective: { hu: "ráhangolódó", en: "Attuned" },
   },
-  TEMP: {
+  X: {
     noun: { hu: "hajtóerő", en: "Driving Force" },
     adjective: { hu: "energikus", en: "Energetic" },
   },
-  ADAP: {
+  A: {
     noun: { hu: "hídépítő", en: "Bridge-Builder" },
     adjective: { hu: "együttműködő", en: "Collaborative" },
   },
-  THOR: {
+  C: {
     noun: { hu: "rendszerépítő", en: "Architect" },
     adjective: { hu: "módszeres", en: "Methodical" },
   },
-  OPEN: {
+  O: {
     noun: { hu: "újító", en: "Innovator" },
     adjective: { hu: "kísérletező", en: "Inventive" },
   },
@@ -117,15 +125,28 @@ export function personalityAdjective(
  * importálják (guest-teaser, TypeGlyphPlate…), a psychometrics a teljes
  * kérdésbankot húzná a bundle-be. Drift ellen invariáns-teszt:
  * tests/unit/scoring/psychometrics.test.ts.
+ *
+ * 15 → 14 (2026-08-11, bank-átsúlyozás): a kiegészítő altruizmus-skála két
+ * itemje kikerült a rövid formából, helyettük két FŐ-dimenziós item lépett be
+ * (9,67 → 10 item/dimenzió), így α 0,7317 → 0,7383, SEM 10,36 → 10,23.
+ *
+ * 14 → 11 (2026-08-11, MÉRT reliabilitás): a psychometrics.ts kézi priorjai
+ * (r̄ = 0,22, SD = 20) helyére mért értékek kerültek (r̄ = 0,264, SD = 16,2 —
+ * IPIP–HEXACO nyílt adat, n = 21 681, ld. docs/research/ipip-reference-2026-08.md
+ * és a psychometrics.ts forrás-blokkja). A prior ~25%-kal pesszimista volt:
+ * α 0,7383 → 0,7820, SEM 10,23 → 7,56, SE(diff) 14,47 → 10,70 → kerekítve 11.
+ * A kapu nem „lazult": eddig a 11-13 pontos, VALÓS különbségeket is elnyeltük.
+ * A minta nemzetközi, angol nyelvű, önszelektált — közelítő referencia; a
+ * magyar pilot adata ezt a számot felülírja.
  */
-export const DIFF_MIN_GAP = 15;
+export const DIFF_MIN_GAP = 11;
 
 /** @deprecated Használd a DIFF_MIN_GAP-et — azonos küszöb (√2·SEM). */
 export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
 
 /**
  * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
- * (rankDimensionScores: pontszám csökkenő, holtversenynél TRITAN_ORDER —
+ * (rankDimensionScores: pontszám csökkenő, holtversenynél HEXACO_ORDER —
  * így a vendég-teaser és a belépett felületek azonos címkét adnak).
  * Kevesebb mint két (ismert) dimenziónál null.
  *
@@ -144,7 +165,7 @@ export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
  * a főnév/melléknév kiosztás (melyik a domináns) a mérési hibán belüli
  * sorrend műterméke lenne, pedig pont ez határozza meg a fő archetípust.
  * Ilyenkor is főnév-only címke megy ki, a determinisztikus rangsor (pontszám,
- * holtversenynél TRITAN_ORDER) szerinti első főnevével — ugyanaz a
+ * holtversenynél HEXACO_ORDER) szerinti első főnevével — ugyanaz a
  * degradáció, ami a 2-3. helyezett közeli esetében már élt (a teljes
  * holtverseny eddig is így viselkedett). Pontosan két dimenziónál nincs
  * 3. helyezett, ott csak a top-pár kapu fut.

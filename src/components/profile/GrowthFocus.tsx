@@ -25,34 +25,34 @@ interface GrowthFocusProps {
 //
 // PÓLUS-SZABÁLY (motor-audit v4, FIX 2): a fejlődési fókusz mindig ALACSONY
 // pontszámú tételt mutat, ezért a hint a dimenzió ALSÓ pólusához szól. A
-// fordított Emocionalitásnál (RESO) az alacsony pontszám stabilitást jelent
+// fordított Emocionalitásnál (E) az alacsony pontszám stabilitást jelent
 // — a fejlődési irány ott a támogatás/elismerés kimondása (ld.
-// profile-content DIMENSION_GROWTH_TIPS.RESO), NEM a stresszkezelés (az a
+// profile-content DIMENSION_GROWTH_TIPS.E), NEM a stresszkezelés (az a
 // MAGAS emocionalitás ellenszere lenne). A kiválasztás (workstyle-content
-// selectGrowthFocusItems) RESO-t eleve kihagyja a deficit-listából — ez a
-// hint biztonsági háló, ha RESO-tétel mégis ide kerülne.
+// selectGrowthFocusItems) E-t eleve kihagyja a deficit-listából — ez a
+// hint biztonsági háló, ha E-tétel mégis ide kerülne.
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
-  INTE: {
+  H: {
     hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
     en: "Value-aligned decision-making and transparent communication.",
   },
-  RESO: {
+  E: {
     hu: "A támogatás és elismerés kimondása — pl. hetente egy beszélgetés zárása kimondott visszajelzéssel.",
     en: "Expressing support and acknowledgement — e.g. closing one conversation a week with explicit appreciation.",
   },
-  TEMP: {
+  X: {
     hu: "Társas jelenlét és láthatóság tudatos növelése.",
     en: "Consciously building social presence and visibility.",
   },
-  ADAP: {
+  A: {
     hu: "Együttműködési és konfliktuskezelési készségek fejlesztése.",
     en: "Developing collaboration and conflict resolution skills.",
   },
-  THOR: {
+  C: {
     hu: "Szervezettség, tervezés és következetes végrehajtás fejlesztése.",
     en: "Building organization, planning, and consistent execution.",
   },
-  OPEN: {
+  O: {
     hu: "Kíváncsiság, tanulási kedv és kreatív gondolkodás ösztönzése.",
     en: "Encouraging curiosity, a learning mindset, and creative thinking.",
   },

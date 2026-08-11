@@ -11,10 +11,12 @@ import {
   DIM_LABELS,
   CATEGORY_LABELS,
   RESOLUTION_NARRATIVES,
+  RISK_TEXTS,
 } from "@/lib/profile-content";
 import type { Locale } from "@/lib/profile-content";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import { diffStandardError } from "@/lib/psychometrics";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import type { AssessmentForm } from "@/lib/questions/types";
 import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
@@ -48,7 +50,7 @@ function getDimensionInsight(
   locale: Locale
 ): string {
   const insights: Record<string, Record<string, Record<Locale, string>>> = {
-    INTE: {
+    H: {
       high: {
         hu: "Etikus, szabálykövető. Nem hajlamos manipulációra, transzparens kommunikátor. Jó compliance, audit és bizalmi pozíciókban.",
         en: "Ethical, rule-following. Not prone to manipulation, transparent communicator. Strong in compliance, audit, and trust-based roles.",
@@ -62,21 +64,29 @@ function getDimensionInsight(
         en: "Pragmatic, results-oriented. Good at selling and negotiating, but watch transparency in team settings.",
       },
     },
-    RESO: {
+    // 2026-08-11, valencia-revízió (kanonikus kapu: src/lib/score-valence.ts):
+    // az Emocionalitás egyik pólusa sem erősség és nem is hiányosság —
+    // különösen egy ÉRTÉKELŐ (jelölt-)felületen nem, ahol a mondat felvételi
+    // döntést támogat. A korábbi szöveg empátiát és mások-olvasási pontosságot
+    // tulajdonított a magas pólusnak (a facetek: Félelem · Szorongás ·
+    // Dependencia · Érzelmi kötődés — ezek egyike sem ezt méri), az
+    // alacsonyat pedig érzelem-vaksággal vádolta. Mindhárom sáv leíró, és a
+    // hozadék mellett az árát is kimondja.
+    E: {
       high: {
-        hu: "Érzelmileg érzékeny, empatikus. Jól olvas másokat, de stressz alatt lassabban regenerálódik. Strukturált visszajelzés segíti.",
-        en: "Emotionally sensitive, empathetic. Reads others well but recovers slower under stress. Benefits from structured feedback.",
+        hu: "Érzelmileg érzékeny: korán megérzi a helyzetek töltetét, és sokáig viszi magával. Stressz után lassabban regenerálódik — a kiszámítható tempó és a rendszeres visszajelzés segíti.",
+        en: "Emotionally sensitive: registers the charge of a situation early and carries it for a while. Recovers more slowly after stress — a predictable tempo and regular feedback help.",
       },
       medium: {
-        hu: "Kiegyensúlyozott érzelmi reaktivitás. Képes empátiára, de stresszhelyzetben is működőképes.",
-        en: "Balanced emotional reactivity. Empathetic but functional under stress.",
+        hu: "Vegyes érzelmi intenzitás: a kapcsolati jelzések eljutnak hozzá, és nyomás alatt is működőképes marad.",
+        en: "Mixed emotional intensity: relational signals reach them, and they stay functional under pressure.",
       },
       low: {
-        hu: "Stressztűrő, racionális döntéshozó. Jó krízishelyzetben, de a csapattagok érzelmeit néha figyelmen kívül hagyhatja.",
-        en: "Stress-tolerant, rational decision-maker. Great in crises but may overlook teammates' emotions.",
+        hu: "Tárgyszerű, nyomás alatt is stabil. Cserébe mások érzelmi jelzéseit ritkábban veszi észre, és a nyugalmát távolságtartásnak olvashatják.",
+        en: "Matter-of-fact, steady under pressure. In exchange, they register others' emotional signals less often, and their calm can be read as distance.",
       },
     },
-    TEMP: {
+    X: {
       high: {
         hu: "Energikus, társaságkedvelő. Természetes facilitátor és csapatépítő. Ideális ügyfélkapcsolati vagy vezetői pozícióban.",
         en: "Energetic, sociable. Natural facilitator and team builder. Ideal for client-facing or leadership roles.",
@@ -90,21 +100,26 @@ function getDimensionInsight(
         en: "Deeply focused, introverted. Excels in solo work and deep focus. May be less vocal in team meetings.",
       },
     },
-    ADAP: {
+    // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a Barátságosság
+    // facetjei a Megbocsátás · Gyengédség · Rugalmasság · Türelem — a skála
+    // toleranciát és indulat-kontrollt mér, NEM empátiát, és nem is
+    // versengést. Egy ÉRTÉKELŐ (jelölt-)felületen ez különösen fontos: a
+    // mondat felvételi döntést támogat. Mindkét pólus leíró és kétoldalú.
+    A: {
       high: {
-        hu: "Kooperatív, konfliktuselkerülő. Kiváló csapatjátékos, de néha a saját véleményét háttérbe szorítja a harmónia kedvéért.",
-        en: "Cooperative, conflict-averse. Excellent team player but may suppress own opinions to maintain harmony.",
+        hu: "Türelmes, elnéző: könnyen megbocsát és rugalmasan köt kompromisszumot. Cserébe a saját ellenvéleményét háttérbe szoríthatja, ezért a kritikáját érdemes külön kikérni.",
+        en: "Patient and lenient: forgives easily and compromises flexibly. In exchange, they may keep their own objection to themselves, so their criticism is worth asking for explicitly.",
       },
       medium: {
-        hu: "Együttműködő, de képes a saját pozícióját képviselni. Jó egyensúly a harmónia és az assertivitás között.",
-        en: "Collaborative but assertive when needed. Good balance between harmony and standing ground.",
+        hu: "Kompromisszumkész, de képes a saját pozícióját képviselni. Jó egyensúly az engedékenység és az assertivitás között.",
+        en: "Ready to compromise while still able to hold their own position. A good balance between accommodation and assertiveness.",
       },
       low: {
-        hu: "Kritikus, versengő. Nem fél konfrontálódni, jól működik versenykörnyezetben. Csapatban érdemes az együttműködési stílusra figyelni.",
-        en: "Critical, competitive. Comfortable with confrontation, thrives in competitive settings. Watch collaboration style in teams.",
+        hu: "Egyenes, vitaképes: hamar szóvá teszi, ami nem stimmel, és kitart az álláspontja mellett — értékes ott, ahol őszinte visszajelzés és határozott képviselet kell. Cserébe a viták gyorsabban éleződhetnek, és provokációra hamar elfogy a türelme.",
+        en: "Direct and debate-ready: names what doesn't add up early and holds their position — valuable where honest feedback and a firm stance are the job. In exchange, debates can sharpen faster, and patience runs out quickly under provocation.",
       },
     },
-    THOR: {
+    C: {
       high: {
         hu: "Rendszerezett, precíz, megbízható. Határidőket tart, részletekre figyel. Ideális projektvezetői vagy ops pozícióban.",
         en: "Organized, precise, reliable. Meets deadlines, detail-oriented. Ideal for project management or ops roles.",
@@ -118,7 +133,7 @@ function getDimensionInsight(
         en: "Spontaneous, flexible but less structured. Strong in creative roles, may need support in project management.",
       },
     },
-    OPEN: {
+    O: {
       high: {
         hu: "Nyitott, kreatív, érdeklődő. Szeret új megközelítéseket keresni. Innovációs és stratégiai pozíciókban erős.",
         en: "Open, creative, curious. Likes exploring new approaches. Strong in innovation and strategy roles.",
@@ -195,7 +210,7 @@ export default async function CandidateResultPage({
   const candidateScores = extractDimensionScores(invite.result.scores) ?? {};
   const testType = invite.result.testType ?? "TRITAN";
   // Kanonikus HEXACO-sorrend (tritan.ts) — nem helyi dim-lista.
-  const dims: TritanDimCode[] = TRITAN_ORDER;
+  const dims: HexacoCode[] = HEXACO_ORDER;
   // Hiányzó dimenzió ≠ 0%: a korábbi `?? 0` egy csonka score-JSON-t valós
   // nullaként rajzolt ki (bar, radar, gap-sor). A hiányzó dimenziót kihagyjuk.
   const presentDims = dims.filter((d) => typeof candidateScores[d] === "number");
@@ -214,21 +229,31 @@ export default async function CandidateResultPage({
   const gapNoiseFloor = gapSe * Math.sqrt(2 / Math.PI);
   const assertableGap = 1.96 * gapSe;
 
-  const profileOutput = runProfileEngine(candidateScores, testType);
+  // ÉRTÉKELŐ felület: a pár-hangnem a valencia-kapun (score-valence) ezzel a
+  // kontextussal dől el. A jelölt-oldalon a feloldás-párok zöld „Erősség",
+  // a risk-párok narancs „Figyelendő" badge-et kapnak — a fordított skálát
+  // (Emocionalitás) érintő párok EGYIKBE SEM valók, azok semleges
+  // „Jellemző mintázat" panelre kerülnek (tone: "note").
+  const profileOutput = runProfileEngine(candidateScores, testType, "evaluative");
 
   // All high/low dims for the summary block.
-  // RESO (Emocionalitás) FORDÍTOTT irányú: a magas pólus (érzelmi ráhangolódás)
+  // E (Emocionalitás) FORDÍTOTT irányú: a magas pólus (érzelmi ráhangolódás)
   // NEM „erősség", az alacsony (érzelmi stabilitás) NEM „figyelendő". Ezért a
   // valenciás erősség/figyelendő gyorsösszegzőből kizárjuk — különben egy
-  // stabil, stressztűrő jelölt (RESO alacsony) stabilitása a narancs
+  // stabil, stressztűrő jelölt (E alacsony) stabilitása a narancs
   // „figyelendő" panelbe, egy reaktív jelölté a zöld „erősség" panelbe kerülne
   // (fordított döntéstámogatás). A pólus-tudatos dimenzió-szöveg lentebb külön,
   // helyesen jeleníti meg az emocionalitást.
+  // A szűrés a KANONIKUS valencia-kapun megy (score-valence.ts) — a korábbi
+  // kézi `d !== "E"` literál pontosan az a minta volt, amitől a szabály
+  // felületenként szétcsúszott. Üres lista esetén a panel a
+  // „kiegyensúlyozott profil" / „nincs figyelendő terület" szöveget adja,
+  // tehát nem marad cím tartalom nélkül.
   const highDims = presentDims.filter(
-    (d) => d !== "RESO" && profileOutput.categories[d] === "high",
+    (d) => strengthSlotEligible(d, "evaluative") && profileOutput.categories[d] === "high",
   );
   const lowDims = presentDims.filter(
-    (d) => d !== "RESO" && profileOutput.categories[d] === "low",
+    (d) => deficitSlotEligible(d) && profileOutput.categories[d] === "low",
   );
 
   // Selected team: searchParam → invite's team → first org team
@@ -270,7 +295,7 @@ export default async function CandidateResultPage({
 
     teamValidCount = validScores.length;
     if (validScores.length >= TEAM_AVG_MIN_MEMBERS) {
-      const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
+      const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
       for (const s of validScores) {
         for (const d of dims) sums[d] += s[d];
       }
@@ -478,8 +503,8 @@ export default async function CandidateResultPage({
                   gapAnalysis.reduce((sum, g) => sum + Math.abs(g.gap), 0) / gapAnalysis.length
                 );
                 // Mérési-hiba-tudatos címkézés: a korábbi nyers vágások
-                // (<10 „kiváló", <20 „jó") a zajszint ALATT jártak — SEM≈10
-                // mellett azonos valódi profilok is ~11-12 pontos átlagos
+                // (<10 „kiváló", <20 „jó") a mérési hibán BELÜL jártak — a mért
+                // SEM≈7,6 mellett azonos valódi profilok is ~8-9 pontos átlagos
                 // |gapet| adnak. Eltérést csak akkor állítunk, ha legalább egy
                 // dimenzió gapje ~1,96·SE fölött van; a zaj-padló alatti
                 // hasonlóság pedig „a mérési hibán belül egyezik" — nem
@@ -559,13 +584,13 @@ export default async function CandidateResultPage({
                   className="rounded-xl border border-warm-mid p-4 transition hover:bg-cream/50"
                 >
                   <div className="mb-2 flex items-center gap-3">
-                    {/* HEXACO-betű, NEM a belső dim-kód (INTE/RESO/…) — a
+                    {/* HEXACO-betű, NEM a belső dim-kód (H/E/…) — a
                         teljes címke mellette áll, a badge a kanonikus betű. */}
                     <div
                       className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-micro font-bold text-white"
                       style={{ background: color }}
                     >
-                      {TRITAN_DIMENSIONS[d].letter}
+                      {HEXACO_DIMENSIONS[d].letter}
                     </div>
                     <span className="text-sm font-semibold text-ink">{dimLabel}</span>
                     <span
@@ -651,7 +676,7 @@ export default async function CandidateResultPage({
                         className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                         style={{ background: DIM_COLORS[g.dim] }}
                       >
-                        {TRITAN_DIMENSIONS[g.dim].letter}
+                        {HEXACO_DIMENSIONS[g.dim].letter}
                       </div>
                       <span className="w-28 truncate text-xs text-ink-body">{g.label}</span>
 
@@ -750,7 +775,7 @@ export default async function CandidateResultPage({
       )}
 
       {/* ④ MŰKÖDÉSI MINTÁK */}
-      {(profileOutput.showBlock6 || profileOutput.showBlock7) && (
+      {(profileOutput.showBlock6 || profileOutput.showBlock7 || profileOutput.showNotes) && (
         <DashboardPanel className="p-6 md:p-8">
             <SectionEyebrow tone="bronze" className="mb-1.5">
               {t("hiring.behavioralPatternsEyebrow", locale)}
@@ -760,7 +785,7 @@ export default async function CandidateResultPage({
             </h2>
 
             <div className="space-y-3">
-              {/* Erősség pair-ek */}
+              {/* Erősség pair-ek (tone: "resolution") */}
               {profileOutput.block6Pairs.map((pair) => {
                 const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
                 return (
@@ -774,14 +799,14 @@ export default async function CandidateResultPage({
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
-                          {TRITAN_DIMENSIONS[pair.dimA as TritanDimCode]?.letter ?? pair.dimA}
+                          {HEXACO_DIMENSIONS[pair.dimA as HexacoCode]?.letter ?? pair.dimA}
                         </span>
                         <span className="text-micro text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
-                          {TRITAN_DIMENSIONS[pair.dimB as TritanDimCode]?.letter ?? pair.dimB}
+                          {HEXACO_DIMENSIONS[pair.dimB as HexacoCode]?.letter ?? pair.dimB}
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-micro font-semibold text-sage">
@@ -795,7 +820,8 @@ export default async function CandidateResultPage({
                 );
               })}
 
-              {/* Figyelendő pair-ek */}
+              {/* Figyelendő pair-ek (tone: "risk") — valenciát hordozó
+                  dimenziókból; a fordított skálájú párok NEM ide jönnek. */}
               {profileOutput.block7Pairs.map((pair) => {
                 const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
                 return (
@@ -809,14 +835,14 @@ export default async function CandidateResultPage({
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
-                          {TRITAN_DIMENSIONS[pair.dimA as TritanDimCode]?.letter ?? pair.dimA}
+                          {HEXACO_DIMENSIONS[pair.dimA as HexacoCode]?.letter ?? pair.dimA}
                         </span>
                         <span className="text-micro text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
-                          {TRITAN_DIMENSIONS[pair.dimB as TritanDimCode]?.letter ?? pair.dimB}
+                          {HEXACO_DIMENSIONS[pair.dimB as HexacoCode]?.letter ?? pair.dimB}
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">
@@ -825,6 +851,54 @@ export default async function CandidateResultPage({
                     </div>
                     {narrative && (
                       <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* Semleges mintázatok (tone: "note") — a fordított skálájú
+                  (Emocionalitás) párok. Sem erősség, sem figyelendő: leíró
+                  mintázat + a gyakorlati tanács („így érdemes ezzel
+                  dolgozni"), ami korábban egyáltalán nem jutott ki erre a
+                  felületre. A panel szándékosan semleges (homok/krém), hogy a
+                  döntéshozó ne valenciaként olvassa. */}
+              {profileOutput.notePairs.map((pair) => {
+                const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
+                const advice = RISK_TEXTS[pair.contentKey]?.[contentLocale] ?? "";
+                return (
+                  <div
+                    key={pair.contentKey}
+                    className="rounded-xl border border-sand bg-cream p-4"
+                  >
+                    <div className="mb-2 flex items-center gap-2">
+                      <div className="flex items-center gap-1">
+                        <span
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
+                          style={{ background: DIM_COLORS[pair.dimA] }}
+                        >
+                          {HEXACO_DIMENSIONS[pair.dimA as HexacoCode]?.letter ?? pair.dimA}
+                        </span>
+                        <span className="text-micro text-muted">+</span>
+                        <span
+                          className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
+                          style={{ background: DIM_COLORS[pair.dimB] }}
+                        >
+                          {HEXACO_DIMENSIONS[pair.dimB as HexacoCode]?.letter ?? pair.dimB}
+                        </span>
+                      </div>
+                      {/* TODO(koordinator): a badge-kulcs a results-névtérben él
+                          (i18n/results.ts) — az org.ts a párhuzamos kör másik
+                          gazdájánál van; érdemes később `hiring.patternBadge`
+                          néven átvinni. */}
+                      <span className="rounded-full bg-surface-card px-2 py-0.5 text-micro font-semibold text-ink-body">
+                        {t("results.howYouWorkNote", locale)}
+                      </span>
+                    </div>
+                    {narrative && (
+                      <p className="text-sm leading-relaxed text-ink-body">{narrative}</p>
+                    )}
+                    {advice && (
+                      <p className="mt-2 text-sm leading-relaxed text-muted">{advice}</p>
                     )}
                   </div>
                 );

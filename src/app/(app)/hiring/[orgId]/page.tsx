@@ -1,7 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import type { TestType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getTestConfig } from "@/lib/questions";
+import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { requireOrgContext } from "@/lib/auth";
 import { getPlanTier } from "@/lib/subscription";
 import { getCreditBalance } from "@/lib/candidate-credits";
@@ -126,7 +129,19 @@ export default async function HiringPage({
     }),
   ]);
 
-  const TOTAL_QUESTIONS: Record<string, number> = { TRITAN: 60 };
+  // A nevező FORMA-TUDATOS (2026-08-11, fix): a jelölt-flow a
+  // DEFAULT_ASSESSMENT_FORM kérdéslistáját kapja (apply/page.tsx), a
+  // haladás-nevező ugyanabból a konfigból jön — a korábbi fix 60 a forma
+  // váltásakor némán hazudott volna. A progress-végpont ugyanerre a plafonra
+  // vágja a tárolt számlálót, tehát "500/60" szerkezetileg nem létezhet.
+  const totalQuestionsFor = (testType: string): number => {
+    try {
+      return getTestConfig(testType as TestType, locale, DEFAULT_ASSESSMENT_FORM)
+        .questions.length;
+    } catch {
+      return 60;
+    }
+  };
 
   const invites = invitesRaw.map((inv) => ({
     id: inv.id,
@@ -140,7 +155,7 @@ export default async function HiringPage({
     teamName: inv.team?.name ?? null,
     hasResult: !!inv.result,
     draftAnsweredCount: inv.draftAnsweredCount,
-    totalQuestions: TOTAL_QUESTIONS[inv.testType] ?? 60,
+    totalQuestions: totalQuestionsFor(inv.testType),
   }));
 
   return (

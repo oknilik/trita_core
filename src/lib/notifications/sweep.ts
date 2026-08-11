@@ -15,7 +15,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { ScoreResult } from "@/lib/scoring";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, rankDimensionScores, type HexacoCode } from "@/lib/hexaco";
 import { sendObserverInviteEmail, sendReflectionPromptEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { OPEN_DEAL_STAGES, QUOTE_EXPIRING_WINDOW_DAYS } from "@/lib/crm/constants";
@@ -58,7 +58,7 @@ export const REFLECTION_WINDOW_END_DAYS = 10;
 export interface ReflectionCandidate {
   userId: string;
   /** A legerősebb dimenzió belső kódja — a személyre szabott szöveghez. */
-  topDim: TritanDimCode;
+  topDim: HexacoCode;
 }
 
 /**
@@ -86,14 +86,29 @@ export function selectReflectionCandidates(
 
     const scores = result.scores as ScoreResult | null;
     if (!scores || scores.type !== "likert" || !scores.dimensions) continue;
-    const ranked = Object.entries(scores.dimensions)
-      .filter(([code]) => code in TRITAN_DIMENSIONS)
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    // Kanonikus rangsor (rankDimensionScores): pontszám csökkenő, holtverseny-
+    // nél HEXACO_ORDER — pontosan az, amit a profil-felületek is futtatnak.
+    // A korábbi localeCompare-os (ábécés, belső kódon futó) tie-break
+    // holtversenynél MÁS „legerősebbet" nevezett meg az e-mailben, mint amit
+    // a profil mutat.
+    // ISMERT KORLÁT (bizonytalanság-kapu): a REFLECTION_PROMPT sablon
+    // szerkezete („A legerősebb dimenziód: {dimLabel}") egyetlen dimenziót
+    // követel, ezért a mérési hibán belüli top-pár (isTopPairUncertain)
+    // esetén is a determinisztikus rangsor elsője megy ki — ilyenkor a
+    // profil-címke is ugyanennek a dimenziónak a főnevét mutatja (főnév-only
+    // degradáció), így a kettő nem mond ellent. Hedge-elt sablon-variáns
+    // (i18n/notifications.ts + emails.ts — nem ennek a modulnak a hatásköre)
+    // bevezetése után ide is kapu kell.
+    const ranked = rankDimensionScores(
+      Object.entries(scores.dimensions)
+        .filter(([code]) => code in HEXACO_DIMENSIONS)
+        .map(([code, score]) => ({ code, score })),
+    );
     if (ranked.length === 0) continue;
 
     candidates.push({
       userId: result.userProfileId,
-      topDim: ranked[0][0] as TritanDimCode,
+      topDim: ranked[0].code as HexacoCode,
     });
   }
   return candidates;
@@ -145,8 +160,8 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
           // címke vars-ként megy, és a HU body a {dimLabelHu}-t, az EN body
           // a {dimLabelEn}-t hivatkozza — a tf() a néző nyelvén a megfelelőt
           // interpolálja.
-          dimLabelHu: TRITAN_DIMENSIONS[candidate.topDim].hu,
-          dimLabelEn: TRITAN_DIMENSIONS[candidate.topDim].en,
+          dimLabelHu: HEXACO_DIMENSIONS[candidate.topDim].hu,
+          dimLabelEn: HEXACO_DIMENSIONS[candidate.topDim].en,
         },
         link: "/interaction",
         dedupeKey: `REFLECTION_PROMPT:${candidate.userId}`,
@@ -168,7 +183,7 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
         const emailLocale = profile.locale === "en" ? "en" : "hu";
         await sendReflectionPromptEmail({
           to: profile.email,
-          dimLabel: TRITAN_DIMENSIONS[candidate.topDim][emailLocale],
+          dimLabel: HEXACO_DIMENSIONS[candidate.topDim][emailLocale],
           locale: emailLocale,
         });
         result.emailsSent++;

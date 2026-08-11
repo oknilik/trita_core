@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
 import { buildTeamPeerRoleProfiles } from "@/lib/team-role-peer.server";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamRoleSection } from "@/components/team/TeamRoleSection";
@@ -24,7 +25,11 @@ export async function TeamRoleTabView({ ctx }: { ctx: TeamTabContext }) {
       userId: m.userId,
       name: m.displayName,
       hasQuestionnaire,
-      hasEstimate: !hasQuestionnaire && !!m.scores,
+      // Ugyanaz a teljességi kapu, mint a lenti TeamRoleSection-ben
+      // (resolveDisplayRoleScores): részleges profilból NINCS becslés —
+      // a sima truthiness-ellenőrzés „Becslés" chipet mutatna ott, ahol a
+      // szekció „Nincs adat"-ot.
+      hasEstimate: !hasQuestionnaire && hasCompleteTritanDims(m.scores),
     };
   });
   const teamRoleCompletedCount = teamRoleMemberStatus.filter((m) => m.hasQuestionnaire).length;

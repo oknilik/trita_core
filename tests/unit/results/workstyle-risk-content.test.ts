@@ -17,13 +17,16 @@ const LOCALES = ["hu", "en"] as const;
 
 function scores(overrides: Record<string, number>): Record<string, number> {
   const base: Record<string, number> = {
-    INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
+    H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
   };
   return { ...base, ...overrides };
 }
 
-test("minden risk-pár contentKey-hez van RISK_TEXTS (hu+en)", () => {
-  for (const pair of TENSION_PAIRS.filter((p) => p.risk)) {
+test("minden deklarált risk-pár contentKey-hez van RISK_TEXTS (hu+en)", () => {
+  // A tábla SZERZŐI hangneme („tone") — a megjelenítendő hangnem ebből a
+  // valencia-kapun át áll elő (a fordított skálájú párokból „note" lesz),
+  // de a tartalmi lefedettség mindkettőre ugyanaz.
+  for (const pair of TENSION_PAIRS.filter((p) => p.tone === "risk")) {
     for (const lang of LOCALES) {
       assert.ok(
         RISK_TEXTS[pair.contentKey]?.[lang],
@@ -33,25 +36,26 @@ test("minden risk-pár contentKey-hez van RISK_TEXTS (hu+en)", () => {
   }
 });
 
-test("kockázati pár: az összefoglaló után a mitigációs tanács is bekerül", () => {
-  // RESO high + TEMP high → supportedVisibility (risk pár)
+test("nem-feloldás pár: az összefoglaló után a gyakorlati tanács is bekerül", () => {
+  // E high + X high → supportedVisibility (deklarált risk → megjelenítve note)
   for (const lang of LOCALES) {
-    const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
+    const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", lang);
     const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
-    const mitigation = RISK_TEXTS.supportedVisibility[lang];
+    const advice = RISK_TEXTS.supportedVisibility[lang];
     const summaryIdx = ws.howYouWork.indexOf(summary);
     assert.ok(summaryIdx >= 0, `összefoglaló hiányzik a howYouWork-ből (${lang})`);
-    assert.equal(ws.howYouWork[summaryIdx + 1], mitigation);
+    assert.equal(ws.howYouWork[summaryIdx + 1], advice);
 
     assert.equal(ws.riskParts.length, 1);
     assert.equal(ws.riskParts[0].summary, summary);
-    assert.equal(ws.riskParts[0].mitigation, mitigation);
+    assert.equal(ws.riskParts[0].advice, advice);
+    assert.equal(ws.riskParts[0].tone, "note");
     assert.ok(ws.riskParts[0].source.length > 0);
   }
 });
 
 test("nem-risk profil: riskParts üres", () => {
-  const ws = buildWorkstyleContent(scores({ INTE: 80, OPEN: 80 }), "TRITAN", "hu");
+  const ws = buildWorkstyleContent(scores({ H: 80, O: 80 }), "TRITAN", "hu");
   assert.deepEqual(ws.riskParts, []);
 });
 
@@ -64,35 +68,65 @@ test("csupa közepes profil: a DEFAULT_NARRATIVE az első howYouWork-bekezdés",
 
 // ─── howYouWorkParts — nevesített slotok (motor-audit v4, FIX 3) ────────────
 
-test("risk-profil: a watch-slot a risk-pár (summary+mitigáció), a main a narratíva", () => {
+test("E-vezérelt pár: nincs Figyelendő-kártya, a tartalom a semleges notes-slotba megy", () => {
+  // 2026-08-11 valencia-döntés + a `risk: boolean` → `tone` átállás: a
+  // fordított skálát (E) érintő párok hangneme "note" — sem deficit-keretes
+  // („Figyelendő"), sem kontextusba söpört maradék: saját, semleges slot.
   for (const lang of LOCALES) {
-    const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
+    const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", lang);
     const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
-    const mitigation = RISK_TEXTS.supportedVisibility[lang];
+    const advice = RISK_TEXTS.supportedVisibility[lang];
 
-    // A main az ELSŐ NARRATÍVA (nem a risk-szöveg) — a watch a teljes
-    // risk-pár. A korábbi pozicionális megjelenítés a [1]-es narratívát
-    // címkézte volna kockázatnak.
     assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
-    assert.notEqual(ws.howYouWorkParts.main, summary);
-    assert.notEqual(ws.howYouWorkParts.main, mitigation);
-    assert.equal(ws.howYouWorkParts.watch, `${summary} ${mitigation}`);
-    // A risk-szövegek a watch-slotban élnek — a kontextus a maradék
-    // narratíva, a risk-párt nem duplikálja.
-    assert.ok(!ws.howYouWorkParts.context.includes(summary));
-    assert.ok(!ws.howYouWorkParts.context.includes(mitigation));
-    assert.deepEqual(
-      ws.howYouWorkParts.context,
-      ws.howYouWork.slice(1).filter((p) => p !== summary && p !== mitigation),
-    );
+    assert.equal(ws.howYouWorkParts.watch, null);
+    // A pár nem vész el: nevesített semleges slot (summary + tanács)…
+    assert.deepEqual(ws.howYouWorkParts.notes, [`${summary} ${advice}`]);
+    // …strukturáltan is megvan, "note" hangnemmel…
+    const part = ws.riskParts.find((p) => p.summary === summary);
+    assert.ok(part, "a E-pár riskParts-ban marad");
+    assert.equal(part.tone, "note");
+    assert.equal(part.advice, advice);
+    // …és a folyó szövegben (howYouWork) is kimegy.
+    assert.ok(ws.howYouWork.includes(summary));
+    assert.ok(ws.howYouWork.includes(advice));
+    // A semleges tartalom NEM duplázódik a kontextusban.
+    assert.ok(!ws.howYouWorkParts.context.some((c) => c.includes(advice)));
+  }
+});
+
+test("MINDEN E-vezérelt pár-profil: a watch-slot üres, a tartalom megvan", () => {
+  // A három deklarált risk-pár mind E-magas (supportedVisibility /
+  // structuredStability / safeExperimentation) — egyik sem kaphat
+  // deficit-keretes slotot egyetlen nyelven sem.
+  const cases: [string, Record<string, number>][] = [
+    ["supportedVisibility", { E: 80, X: 80 }],
+    ["structuredStability", { E: 80, C: 80 }],
+    ["safeExperimentation", { E: 80, O: 80 }],
+  ];
+  for (const [key, dims] of cases) {
+    for (const lang of LOCALES) {
+      const ws = buildWorkstyleContent(scores(dims), "TRITAN", lang);
+      assert.equal(ws.howYouWorkParts.watch, null, `${key}/${lang}: watch nem üres`);
+      assert.ok(
+        ws.riskParts.every((p) => p.tone === "note"),
+        `${key}/${lang}: nem-note hangnem került a listába`,
+      );
+      const summary = BLOCK3_SUMMARIES[key][lang];
+      const advice = RISK_TEXTS[key][lang];
+      assert.ok(
+        ws.howYouWorkParts.notes.some((n) => n.includes(summary) && n.includes(advice)),
+        `${key}/${lang}: a summary vagy a tanács elveszett`,
+      );
+    }
   }
 });
 
 test("nem-risk profil: NINCS watch-slot, a további narratíva a kontextusba megy", () => {
-  // INTE 80 + OPEN 80 → responsibleInnovator (nem risk-pár)
-  const ws = buildWorkstyleContent(scores({ INTE: 80, OPEN: 80 }), "TRITAN", "hu");
+  // H 80 + O 80 → responsibleInnovator (feloldás-pár)
+  const ws = buildWorkstyleContent(scores({ H: 80, O: 80 }), "TRITAN", "hu");
   assert.equal(ws.riskParts.length, 0);
   assert.equal(ws.howYouWorkParts.watch, null);
+  assert.deepEqual(ws.howYouWorkParts.notes, []);
   assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
   // Pozíció-ekvivalencia risk nélkül: minden további bekezdés kontextus.
   assert.deepEqual(ws.howYouWorkParts.context, ws.howYouWork.slice(1));
@@ -103,6 +137,7 @@ test("csupa közepes profil: main = DEFAULT_NARRATIVE, watch nélkül", () => {
     const ws = buildWorkstyleContent(scores({}), "TRITAN", lang);
     assert.equal(ws.howYouWorkParts.main, DEFAULT_NARRATIVE[lang]);
     assert.equal(ws.howYouWorkParts.watch, null);
+    assert.deepEqual(ws.howYouWorkParts.notes, []);
     assert.deepEqual(ws.howYouWorkParts.context, []);
   }
 });
@@ -110,8 +145,8 @@ test("csupa közepes profil: main = DEFAULT_NARRATIVE, watch nélkül", () => {
 // ─── Forrás-chip vs. strip (motor-audit F3): hedge a 65–70-es sávban ────────
 
 test("forrás-chip: 65–70 közti pontszám „inkább magas”, 70 felett sima „magas”", () => {
-  // RESO 80 (tier: high) + TEMP 67 (pólus: high, tier: mid) → supportedVisibility
-  const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 67 }), "TRITAN", "hu");
+  // E 80 (tier: high) + X 67 (pólus: high, tier: mid) → supportedVisibility
+  const ws = buildWorkstyleContent(scores({ E: 80, X: 67 }), "TRITAN", "hu");
   assert.equal(ws.riskParts.length, 1);
   const source = ws.riskParts[0].source;
   assert.ok(source.includes("Extraverzió · inkább magas"), `hedge hiányzik: ${source}`);
@@ -119,20 +154,20 @@ test("forrás-chip: 65–70 közti pontszám „inkább magas”, 70 felett sima
   assert.ok(!source.includes("Extraverzió · magas"), `a 67-es nem kaphat sima „magas"-t: ${source}`);
 });
 
-test("súrlódás-copy a gyengébb jóslókból is elérhető (RESO/TEMP/OPEN)", () => {
-  // Csak RESO pólusos — a csonka [THOR, ADAP, INTE] sorrendben nem lenne találat.
-  const ws = buildWorkstyleContent(scores({ RESO: 80 }), "TRITAN", "hu");
-  assert.equal(ws.collaboration.friction[0]?.text, COLLAB_FRICTION.RESO_high.hu);
+test("súrlódás-copy a gyengébb jóslókból is elérhető (E/X/O)", () => {
+  // Csak E pólusos — a csonka [C, A, H] sorrendben nem lenne találat.
+  const ws = buildWorkstyleContent(scores({ E: 80 }), "TRITAN", "hu");
+  assert.equal(ws.collaboration.friction[0]?.text, COLLAB_FRICTION.E_high.hu);
 });
 
 test("súrlódás: a súly-sorrend első két pólusos dimenziója, legfeljebb kettő", () => {
   const ws = buildWorkstyleContent(
-    scores({ THOR: 80, ADAP: 20, RESO: 80, OPEN: 80 }),
+    scores({ C: 80, A: 20, E: 80, O: 80 }),
     "TRITAN",
     "hu",
   );
   assert.deepEqual(
     ws.collaboration.friction.map((f) => f.text),
-    [COLLAB_FRICTION.THOR_high.hu, COLLAB_FRICTION.ADAP_low.hu],
+    [COLLAB_FRICTION.C_high.hu, COLLAB_FRICTION.A_low.hu],
   );
 });

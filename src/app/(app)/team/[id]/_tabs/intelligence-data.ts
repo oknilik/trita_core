@@ -8,7 +8,18 @@ import {
   resolveTeamIntelligenceQuality,
 } from "@/lib/team-intelligence";
 import { isMeasuredDynamicsSource } from "@/lib/friction-model";
+import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
+import type { HexacoCode } from "@/lib/hexaco";
 import type { TeamPageData } from "./types";
+
+const TRITAN_DIM_CODES: readonly HexacoCode[] = [
+  "H",
+  "E",
+  "X",
+  "A",
+  "C",
+  "O",
+];
 
 /**
  * A csapatintelligencia nézet derivált adatai — tiszta számítás a
@@ -23,26 +34,33 @@ export function buildIntelligenceViewData(params: {
 }) {
   const { teamData, teamId, locale, canReachOrgCampaigns } = params;
 
-  const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => ({
-    id: m.userId,
-    name: m.displayName,
-    initials: getAvatarMonogram(m.displayName, { length: 2 }),
-    tritan: {
-      INTE: Math.round(m.scores?.INTE ?? 50),
-      RESO: Math.round(m.scores?.RESO ?? 50),
-      TEMP: Math.round(m.scores?.TEMP ?? 50),
-      ADAP: Math.round(m.scores?.ADAP ?? 50),
-      THOR: Math.round(m.scores?.THOR ?? 50),
-      OPEN: Math.round(m.scores?.OPEN ?? 50),
-    },
-    measuredRoleScores:
-      m.teamRoleSource === "questionnaire" && m.teamRoleScores
-        ? m.teamRoleScores
-        : null,
-    hasAssessmentData: !!m.scores,
-    color: getAvatarGradient(m.displayName)[0],
-    textColor: "var(--color-neutral-white)",
-  }));
+  const intelligenceMembers: IntelligenceMember[] = teamData.members.map((m) => {
+    // Csak a TÉNYLEGESEN mért dimenziók mennek tovább — a korábbi `?? 50`
+    // default kitalált profilt gyártott (kitöltetlen tagnál „E 50%" badge,
+    // becsült szerepprofil, hamis pár-bontás a dinamika-térképen), és a
+    // hasCompleteTritanDims downstream kapuit is kijátszotta.
+    const tritan: IntelligenceMember["tritan"] = {};
+    for (const code of TRITAN_DIM_CODES) {
+      const value = m.scores?.[code];
+      if (typeof value === "number") tritan[code] = Math.round(value);
+    }
+    return {
+      id: m.userId,
+      name: m.displayName,
+      initials: getAvatarMonogram(m.displayName, { length: 2 }),
+      tritan,
+      measuredRoleScores:
+        m.teamRoleSource === "questionnaire" && m.teamRoleScores
+          ? m.teamRoleScores
+          : null,
+      // Assessment-adat csak TELJES fő-dimenzió-készletnél „van" — részleges
+      // (örökség/sérült) score-sorból nem állítunk profilt.
+      hasAssessmentData: hasCompleteTritanDims(m.scores),
+      isTrustHub: teamData.trustHubUserIds.includes(m.userId),
+      color: getAvatarGradient(m.displayName)[0],
+      textColor: "var(--color-neutral-white)",
+    };
+  });
 
   const assessedCount = intelligenceMembers.filter((m) => m.hasAssessmentData).length;
   const totalCount = intelligenceMembers.length;

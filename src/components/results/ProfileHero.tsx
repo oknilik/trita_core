@@ -9,6 +9,7 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
+import { isSecondaryUncertain } from "@/lib/personality-type";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 
 type AccessLevel = "start" | "plus";
@@ -69,6 +70,12 @@ export function ProfileHero({
   }, [pdfLoading]);
 
   const glyphPair = glyphDimensions ? resolveGlyphPair(glyphDimensions) : null;
+  // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
+  // párrá, mint a címke/tábla (isSecondaryUncertain) — a felolvasott szöveg
+  // nem állíthat erősorrendet, amit a látható felület már nem állít.
+  const glyphUncertain = glyphDimensions
+    ? isSecondaryUncertain(glyphDimensions)
+    : false;
   const level = LEVEL_CONFIG[accessLevel];
   const selfTheme = SURFACE_HERO_THEME.self;
 
@@ -120,6 +127,7 @@ export function ProfileHero({
               typeLabel={personalityType}
               locale={locale === "hu" ? "hu" : "en"}
               intensity={glyphPair.intensity}
+              secondaryUncertain={glyphUncertain}
               variant="badge"
               className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
             />

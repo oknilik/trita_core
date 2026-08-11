@@ -68,12 +68,12 @@ export function estimateInterests(
     return Math.round(parts.reduce((sum, [value, weight]) => sum + value * weight, 0) / total);
   };
   return {
-    R: mix([[100 - axis("people"), 0.4], [100 - axis("creation"), 0.2], [dim("THOR"), 0.4]]),
-    I: mix([[dim("OPEN"), 0.5], [100 - axis("people"), 0.2], [dim("THOR"), 0.3]]),
-    A: mix([[dim("OPEN"), 0.5], [axis("creation"), 0.4], [100 - dim("THOR"), 0.1]]),
-    S: mix([[dim("ADAP"), 0.4], [axis("people"), 0.4], [dim("RESO"), 0.2]]),
-    E: mix([[dim("TEMP"), 0.5], [axis("people"), 0.3], [axis("variety"), 0.2]]),
-    C: mix([[dim("THOR"), 0.6], [100 - axis("variety"), 0.4]]),
+    R: mix([[100 - axis("people"), 0.4], [100 - axis("creation"), 0.2], [dim("C"), 0.4]]),
+    I: mix([[dim("O"), 0.5], [100 - axis("people"), 0.2], [dim("C"), 0.3]]),
+    A: mix([[dim("O"), 0.5], [axis("creation"), 0.4], [100 - dim("C"), 0.1]]),
+    S: mix([[dim("A"), 0.4], [axis("people"), 0.4], [dim("E"), 0.2]]),
+    E: mix([[dim("X"), 0.5], [axis("people"), 0.3], [axis("variety"), 0.2]]),
+    C: mix([[dim("C"), 0.6], [100 - axis("variety"), 0.4]]),
   };
 }
 

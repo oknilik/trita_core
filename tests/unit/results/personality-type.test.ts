@@ -6,6 +6,7 @@ import {
   resolvePersonalityTypeFromScores,
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
+import { diffStandardError } from "@/lib/psychometrics";
 
 // Melléknév-óvatosság: ha a 2. és 3. helyezett dimenzió különbsége a mérési
 // hibán belül van (< TYPE_ADJECTIVE_MIN_GAP = round(SEM, rövid forma)), a
@@ -19,78 +20,78 @@ const dims = (scores: Record<string, number>) =>
 
 describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
   it("közeli 2-3. helyezett (gap < küszöb) → csak főnév, nagybetűsítve", () => {
-    // OPEN(80) domináns, TEMP(60) vs THOR(55): gap 5 < 10 → a melléknév bizonytalan.
-    const scores = dims({ OPEN: 80, TEMP: 60, THOR: 55, ADAP: 30, RESO: 25, INTE: 20 });
+    // O(80) domináns, X(60) vs C(55): gap 5 < küszöb → a melléknév bizonytalan.
+    const scores = dims({ O: 80, X: 60, C: 55, A: 30, E: 25, H: 20 });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
   });
 
   it("távoli 2-3. helyezett (gap >= küszöb) → teljes címke", () => {
-    // TEMP(60) vs THOR(45): gap 15 → magabiztos melléknév.
-    const scores = dims({ OPEN: 80, TEMP: 60, THOR: 45, ADAP: 30, RESO: 25, INTE: 20 });
+    // X(60) vs C(45): gap 15 → magabiztos melléknév.
+    const scores = dims({ O: 80, X: 60, C: 45, A: 30, E: 25, H: 20 });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Energikus újító");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Energetic Innovator");
   });
 
   it("pont a küszöbön (gap == küszöb) → teljes címke (a szabály szigorú <)", () => {
     const scores = dims({
-      OPEN: 80,
-      TEMP: 60,
-      THOR: 60 - TYPE_ADJECTIVE_MIN_GAP,
-      ADAP: 30,
-      RESO: 25,
-      INTE: 20,
+      O: 80,
+      X: 60,
+      C: 60 - TYPE_ADJECTIVE_MIN_GAP,
+      A: 30,
+      E: 25,
+      H: 20,
     });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Energikus újító");
   });
 
   it("közeli 1-2. helyezett (gap < küszöb) → csak főnév, hiába nagy a 2-3. gap (interpr. S3)", () => {
-    // OPEN(80) vs TEMP(78): a domináns kijelölése SEM-en belüli sorrend —
+    // O(80) vs X(78): a domináns kijelölése SEM-en belüli sorrend —
     // pedig ez dönti el a fő archetípust. A 2-3. gap (33) önmagában nagy,
     // a korábbi kapu ezért itt teljes címkét engedett ki.
-    const scores = dims({ OPEN: 80, TEMP: 78, THOR: 45, ADAP: 30, RESO: 25, INTE: 20 });
+    const scores = dims({ O: 80, X: 78, C: 45, A: 30, E: 25, H: 20 });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
   });
 
   it("pont a küszöbön lévő 1-2. gap → teljes címke (a szabály szigorú <)", () => {
     const scores = dims({
-      OPEN: 80,
-      TEMP: 80 - TYPE_ADJECTIVE_MIN_GAP,
-      THOR: 45,
-      ADAP: 30,
-      RESO: 25,
-      INTE: 20,
+      O: 80,
+      X: 80 - TYPE_ADJECTIVE_MIN_GAP,
+      C: 45,
+      A: 30,
+      E: 25,
+      H: 20,
     });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Energikus újító");
   });
 
   it("teljes holtverseny → főnév-only (a sorrend a kanonikus tie-break műterméke)", () => {
-    const scores = dims({ OPEN: 50, TEMP: 50, THOR: 50, ADAP: 50, RESO: 50, INTE: 50 });
-    // Holtversenynél a rangsor: INTE, RESO, … — de a címke csak a főnév.
+    const scores = dims({ O: 50, X: 50, C: 50, A: 50, E: 50, H: 50 });
+    // Holtversenynél a rangsor: H, E, … — de a címke csak a főnév.
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Értékőr");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Value Guardian");
   });
 
   it("pontosan két, jól elváló dimenziónál → teljes címke marad", () => {
-    const scores = dims({ OPEN: 80, TEMP: 60 });
+    const scores = dims({ O: 80, X: 60 });
     assert.equal(
       resolvePersonalityTypeFromScores(scores, "hu"),
-      resolvePersonalityTypeLabel("OPEN", "TEMP", "hu"),
+      resolvePersonalityTypeLabel("O", "X", "hu"),
     );
   });
 
   it("pontosan két, SEM-en belüli dimenzió → főnév-only (a top-pár kapu 3. helyezett nélkül is él)", () => {
-    const scores = dims({ OPEN: 80, TEMP: 78 });
+    const scores = dims({ O: 80, X: 78 });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
   });
 
   it("kevesebb mint két (ismert) dimenzió → null (hívói fallback)", () => {
-    assert.equal(resolvePersonalityTypeFromScores(dims({ OPEN: 80 }), "hu"), null);
+    assert.equal(resolvePersonalityTypeFromScores(dims({ O: 80 }), "hu"), null);
     assert.equal(resolvePersonalityTypeFromScores([], "hu"), null);
     assert.equal(
-      resolvePersonalityTypeFromScores(dims({ OPEN: 80, I: 70 }), "hu"),
+      resolvePersonalityTypeFromScores(dims({ O: 80, I: 70 }), "hu"),
       null,
     );
   });
@@ -98,8 +99,8 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
   it("ismeretlen kód (pl. az intersticiális 'I') nem torzítja a rangsort és a gap-et", () => {
     // Az altruizmus-skála gyakran magas — nyers scores.dimensions bemenetnél
     // sem lophatja el a 2. helyet, és a 2-3. helyezett gap-jébe sem számít.
-    const withI = dims({ OPEN: 80, I: 75, TEMP: 60, THOR: 45, ADAP: 30, RESO: 25, INTE: 20 });
-    const withoutI = dims({ OPEN: 80, TEMP: 60, THOR: 45, ADAP: 30, RESO: 25, INTE: 20 });
+    const withI = dims({ O: 80, I: 75, X: 60, C: 45, A: 30, E: 25, H: 20 });
+    const withoutI = dims({ O: 80, X: 60, C: 45, A: 30, E: 25, H: 20 });
     assert.equal(
       resolvePersonalityTypeFromScores(withI, "hu"),
       resolvePersonalityTypeFromScores(withoutI, "hu"),
@@ -107,10 +108,15 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
     assert.equal(resolvePersonalityTypeFromScores(withI, "hu"), "Energikus újító");
   });
 
-  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM ~15) — ld. psychometrics invariáns-teszt", () => {
-    // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM (≈15),
-    // nem 1×SEM (10). A régi alias visszafelé kompatibilis, azonos értékkel.
-    assert.equal(DIFF_MIN_GAP, 15);
+  it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM) — ld. psychometrics invariáns-teszt", () => {
+    // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM,
+    // nem 1×SEM. A KONKRÉT érték a bankból (rövid forma item-száma) ÉS a
+    // reliabilitás-konstansokból jön, ezért itt NEM literálhoz kötjük — a
+    // korábbi kézi 15 pontosan attól avult el, hogy a bank változott
+    // (2026-08-11: 60 fő-dimenziós item → 14), majd a 14 attól, hogy a kézi
+    // SEM-priorok helyére MÉRT értékek kerültek (→ 11). A számszerű invariáns
+    // helye: tests/unit/scoring/psychometrics.test.ts (ott a bankból számol).
+    assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
     assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });
 });

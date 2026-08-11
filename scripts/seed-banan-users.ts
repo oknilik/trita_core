@@ -104,16 +104,16 @@ const USERS = [
     username: "Banán Panna",
     firstName: "Banán",
     lastName: "Panna",
-    // Empatikus hídépítő jelleg: magas RESO+ADAP
-    dimensions: { INTE: 58, RESO: 84, TEMP: 52, ADAP: 76, THOR: 46, OPEN: 55 },
+    // Empatikus hídépítő jelleg: magas E+A
+    dimensions: { H: 58, E: 84, X: 52, A: 76, C: 46, O: 55 },
   },
   {
     email: "banan-david+clerk_test@trita.io",
     username: "Banán Dávid",
     firstName: "Banán",
     lastName: "Dávid",
-    // Elvhű rendszerépítő jelleg: magas THOR+INTE
-    dimensions: { INTE: 78, RESO: 48, TEMP: 55, ADAP: 44, THOR: 84, OPEN: 50 },
+    // Elvhű rendszerépítő jelleg: magas C+H
+    dimensions: { H: 78, E: 48, X: 55, A: 44, C: 84, O: 50 },
   },
 ];
 

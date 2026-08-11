@@ -6,13 +6,13 @@ import {
   TEAM_PRESSURE_POLARIZED_TEXT,
   PRESSURE_MAX_FINDINGS,
 } from "@/lib/team-pressure";
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 
-const DIMS: TritanDimCode[] = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+const DIMS: HexacoCode[] = ["H", "E", "X", "A", "C", "O"];
 
-function member(overrides: Partial<Record<TritanDimCode, number>>) {
+function member(overrides: Partial<Record<HexacoCode, number>>) {
   const scores = Object.fromEntries(DIMS.map((d) => [d, 50])) as Record<
-    TritanDimCode,
+    HexacoCode,
     number
   >;
   return { scores: { ...scores, ...overrides } };
@@ -55,7 +55,7 @@ describe("TEAM_PRESSURE_CONTENT — tartalmi teljesség", () => {
 describe("computeTeamPressure — pólus-koncentrációk", () => {
   it("az értékelt tagok felénél kisebb koncentrációt nem emel ki", () => {
     const result = computeTeamPressure([
-      member({ THOR: 80 }),
+      member({ C: 80 }),
       member({}),
       member({}),
       member({}),
@@ -65,62 +65,62 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
 
   it("≥50% + ≥2 fő azonos póluson → kiemelés a helyes darabszámmal", () => {
     const result = computeTeamPressure([
-      member({ THOR: 80 }),
-      member({ THOR: 70 }),
-      member({ THOR: 40 }),
+      member({ C: 80 }),
+      member({ C: 70 }),
+      member({ C: 40 }),
     ]);
     assert.equal(result.length, 1);
     assert.deepEqual(result[0], {
-      dim: "THOR",
+      dim: "C",
       pole: "high",
       count: 2,
       assessedCount: 3,
     });
   });
 
-  it("alacsony pólust is felismer (≤35)", () => {
+  it("alacsony pólust is felismer (<35)", () => {
     const result = computeTeamPressure([
-      member({ ADAP: 20 }),
-      member({ ADAP: 30 }),
-      member({ ADAP: 60 }),
+      member({ A: 20 }),
+      member({ A: 30 }),
+      member({ A: 60 }),
     ]);
     assert.equal(result.length, 1);
-    assert.equal(result[0].dim, "ADAP");
+    assert.equal(result[0].dim, "A");
     assert.equal(result[0].pole, "low");
   });
 
   it("legfeljebb 3 találat, a legerősebb arány szerint rendezve", () => {
-    const strong = { THOR: 80, ADAP: 80, TEMP: 20, OPEN: 20 } as const;
+    const strong = { C: 80, A: 80, X: 20, O: 20 } as const;
     const result = computeTeamPressure([
       member(strong),
       member(strong),
       member(strong),
-      member({ THOR: 70 }),
+      member({ C: 70 }),
     ]);
     assert.equal(result.length, PRESSURE_MAX_FINDINGS);
-    // THOR 4/4 = 100% az első; a 3/4-esek (75%) közül kód szerint stabil sorrend
-    assert.equal(result[0].dim, "THOR");
+    // C 4/4 = 100% az első; a 3/4-esek (75%) közül kód szerint stabil sorrend
+    assert.equal(result[0].dim, "C");
     assert.deepEqual(
       result.slice(1).map((r) => r.dim),
-      ["ADAP", "OPEN"],
+      ["A", "O"],
     );
   });
 
   it("egyetlen fős 'koncentrációt' (kis csapat, 1 kitöltő) nem emel ki", () => {
-    assert.deepEqual(computeTeamPressure([member({ THOR: 90 })]), []);
+    assert.deepEqual(computeTeamPressure([member({ C: 90 })]), []);
     assert.deepEqual(computeTeamPressure([]), []);
   });
 
   it("kettőspólus: mindkét pólus küszöb felett → EGY polarizált találat", () => {
     const result = computeTeamPressure([
-      member({ THOR: 80 }),
-      member({ THOR: 70 }),
-      member({ THOR: 20 }),
-      member({ THOR: 30 }),
+      member({ C: 80 }),
+      member({ C: 70 }),
+      member({ C: 20 }),
+      member({ C: 30 }),
     ]);
     assert.equal(result.length, 1);
     assert.deepEqual(result[0], {
-      dim: "THOR",
+      dim: "C",
       pole: "polarized",
       count: 4,
       assessedCount: 4,
@@ -130,10 +130,10 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
   it("kettőspólus csak akkor, ha MINDKÉT pólus önállóan is teljesíti a küszöböt", () => {
     // 1 fő az alacsony póluson (< PRESSURE_MIN_COUNT) → sima high találat marad
     const result = computeTeamPressure([
-      member({ THOR: 80 }),
-      member({ THOR: 70 }),
-      member({ THOR: 20 }),
-      member({ THOR: 50 }),
+      member({ C: 80 }),
+      member({ C: 70 }),
+      member({ C: 20 }),
+      member({ C: 50 }),
     ]);
     assert.equal(result.length, 1);
     assert.equal(result[0].pole, "high");
@@ -146,25 +146,36 @@ describe("computeTeamPressure — pólus-koncentrációk", () => {
     // MINDKÉT pólus önállóan koncentráció (gyakorlatban páros, 50–50-es
     // megoszlás, üres középsávval).
     const result = computeTeamPressure([
-      member({ THOR: 80 }),
-      member({ THOR: 75 }),
-      member({ THOR: 70 }),
-      member({ THOR: 20 }),
-      member({ THOR: 30 }),
+      member({ C: 80 }),
+      member({ C: 75 }),
+      member({ C: 70 }),
+      member({ C: 20 }),
+      member({ C: 30 }),
     ]);
     assert.equal(result.length, 1);
     assert.deepEqual(result[0], {
-      dim: "THOR",
+      dim: "C",
       pole: "high",
       count: 3,
       assessedCount: 5,
     });
   });
 
+  it("a pontosan küszöbön álló érték (65/35) nem pólus-tag — a profile-engine categorize vágásával azonos", () => {
+    // Egyénileg a 65 „medium" (categorize: > 65 a high) — a csapat-nyomás
+    // korábban ≥ 65-tel már magas-pólusú koncentráció-tagnak számolta.
+    const result = computeTeamPressure([
+      member({ C: 65, A: 35 }),
+      member({ C: 65, A: 35 }),
+      member({}),
+    ]);
+    assert.deepEqual(result, []);
+  });
+
   it("null scores tagokat kihagyja a nevezőből", () => {
     const result = computeTeamPressure([
-      member({ OPEN: 80 }),
-      member({ OPEN: 70 }),
+      member({ O: 80 }),
+      member({ O: 70 }),
       { scores: null },
     ]);
     assert.equal(result.length, 1);

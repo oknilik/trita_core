@@ -13,12 +13,12 @@ import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 
 // Domináns: Nyitottság (O, szem) · második: Lelkiismeretesség (C, létrafokok)
 const DIMENSIONS = [
-  { code: "INTE", score: 55 },
-  { code: "RESO", score: 50 },
-  { code: "TEMP", score: 45 },
-  { code: "ADAP", score: 30 },
-  { code: "THOR", score: 74 },
-  { code: "OPEN", score: 90 },
+  { code: "H", score: 55 },
+  { code: "E", score: 50 },
+  { code: "X", score: 45 },
+  { code: "A", score: 30 },
+  { code: "C", score: 74 },
+  { code: "O", score: 90 },
 ];
 
 describe("TypeGlyphPlate", () => {
@@ -69,7 +69,7 @@ describe("TypeGlyphPlate", () => {
 
   it("két érvényes dimenzió alatt nem renderel semmit", () => {
     const { container } = render(
-      <TypeGlyphPlate dimensions={[{ code: "OPEN", score: 90 }]} locale="hu" />,
+      <TypeGlyphPlate dimensions={[{ code: "O", score: 90 }]} locale="hu" />,
     );
     expect(container).toBeEmptyDOMElement();
   });
@@ -78,14 +78,14 @@ describe("TypeGlyphPlate", () => {
   // a felirat nem sugallhat sorrendet („X × Y"), a nyelvtan nem mondhat
   // „második legerősebb"-et — a pár rendezetlenül jelenik meg.
   it("bizonytalan top-párnál rendezetlen pár-felirat és hedge-elt nyelvtan", () => {
-    // OPEN 78 vs THOR 74: a különbség (4) a mérési hibán belül (< 15).
+    // O 78 vs C 74: a különbség (4) a mérési hibán belül (< 15).
     const uncertain = [
-      { code: "INTE", score: 40 },
-      { code: "RESO", score: 35 },
-      { code: "TEMP", score: 30 },
-      { code: "ADAP", score: 25 },
-      { code: "THOR", score: 74 },
-      { code: "OPEN", score: 78 },
+      { code: "H", score: 40 },
+      { code: "E", score: 35 },
+      { code: "X", score: 30 },
+      { code: "A", score: 25 },
+      { code: "C", score: 74 },
+      { code: "O", score: 78 },
     ];
     render(<TypeGlyphPlate dimensions={uncertain} locale="hu" defaultOpen />);
 
@@ -117,15 +117,15 @@ describe("TypeGlyphPlate", () => {
   // (isSecondaryUncertain) — a 2–3. helyezett közelségénél a címke már
   // főnév-only volt, de a pár-felirat és a nyelvtan megnevezte a másodikat.
   it("bizonytalan MÁSODLAGOSNÁL (2–3. közel) is hedge-el a pár-felirat és a nyelvtan", () => {
-    // Top-pár határozott (OPEN 90 vs THOR 74, gap 16 ≥ 15), de a 2–3. hely
-    // (THOR 74 vs INTE 65, gap 9 < 15) a mérési hibán belül van.
+    // Top-pár határozott (O 90 vs C 74, gap 16 ≥ 15), de a 2–3. hely
+    // (C 74 vs H 65, gap 9 < 15) a mérési hibán belül van.
     const adjectiveUncertain = [
-      { code: "INTE", score: 65 },
-      { code: "RESO", score: 30 },
-      { code: "TEMP", score: 40 },
-      { code: "ADAP", score: 25 },
-      { code: "THOR", score: 74 },
-      { code: "OPEN", score: 90 },
+      { code: "H", score: 65 },
+      { code: "E", score: 30 },
+      { code: "X", score: 40 },
+      { code: "A", score: 25 },
+      { code: "C", score: 74 },
+      { code: "O", score: 90 },
     ];
     render(<TypeGlyphPlate dimensions={adjectiveUncertain} locale="hu" defaultOpen />);
 

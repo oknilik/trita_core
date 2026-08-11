@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores } from "@/lib/scoring";
 import {
   buildProfileBasedEdges,
   computeTeamActiveCampaign,
@@ -197,7 +197,10 @@ export async function getManagerCockpitTeamStats(
   const scoresByUserId = new Map<string, Record<string, number> | null>();
   for (const r of latestSelfResults) {
     if (!r.userProfileId) continue;
-    scoresByUserId.set(r.userProfileId, (r.scores as ScoreResult).dimensions ?? null);
+    // extractDimensionScores: a beágyazott ({dimensions:{…}}) ÉS az örökség
+    // lapos ({X:62,…}) score-JSON-t is kezeli — a hiring-felülettel azonos
+    // olvasat (korábban a lapos formátumú tag „kitöltetlennek" látszott itt).
+    scoresByUserId.set(r.userProfileId, extractDimensionScores(r.scores));
   }
 
   const observationsByTeamId = new Map<string, typeof trustObservationsRaw>();
@@ -337,8 +340,16 @@ export async function getManagerCockpitData(
       orderBy: { createdAt: "desc" },
       take: EVENT_LIMIT,
     }),
+    // CSAK az org-vezérelt (ebben a szervezetben indított kampányhoz kötött)
+    // observer-visszajelzések — a tag PRIVÁT (kampányon kívüli, személyes
+    // meghívós) visszajelzése nem a menedzser-feed dolga (motor-audit).
     prisma.observerAssessment.findMany({
-      where: { invitation: { inviterId: { in: uniqueUserIds } } },
+      where: {
+        invitation: {
+          inviterId: { in: uniqueUserIds },
+          campaign: { orgId: membership.orgId },
+        },
+      },
       select: { createdAt: true, invitation: { select: { inviterId: true } } },
       orderBy: { createdAt: "desc" },
       take: EVENT_LIMIT,
@@ -375,7 +386,11 @@ export async function getManagerCockpitData(
       memberName: userNameById.get(uid) ?? "?",
       teamName: ctx.teamName,
       teamId: ctx.teamId,
-      timestamp: o.createdAt.toISOString(),
+      // NAP pontosság (YYYY-MM-DD): a perc-pontos beérkezési idő az egyes
+      // (anonimnak ígért) értékelő beazonosítását segítené — a feednek a
+      // nap is elég. (A rendezés lexikografikus, a csonkolt érték is jól
+      // sorolódik.)
+      timestamp: o.createdAt.toISOString().slice(0, 10),
     });
   }
 
@@ -393,14 +408,24 @@ export async function getManagerCockpitData(
   events.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
   const recentEvents = events.slice(0, 10);
 
+  // Org-szintű összesítés EGYEDI userekre: a több csapatban is tag user a
+  // csapatonkénti memberCount-összegben többször számítódna (és a kitöltési
+  // százalék nevezőjét is felfújná). A csapatonkénti számok maradnak
+  // csapat-szintűek — csak a totál megy a uniqueUserIds halmazon.
+  const completedUserIds = new Set(
+    teamStats.flatMap((ts) =>
+      ts.members.filter((m) => m.scores !== null).map((m) => m.userId),
+    ),
+  );
+
   return {
     orgId: org.id,
     orgName: org.name,
     profileId,
     teams: sortedTeams,
     primaryTeamData,
-    totalMembers: sortedTeams.reduce((s, t) => s + t.memberCount, 0),
-    totalCompleted: sortedTeams.reduce((s, t) => s + t.completedCount, 0),
+    totalMembers: uniqueUserIds.length,
+    totalCompleted: completedUserIds.size,
     totalPendingInvites: sortedTeams.reduce((s, t) => s + t.pendingInviteCount, 0),
     recentEvents,
   };

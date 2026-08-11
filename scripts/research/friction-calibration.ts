@@ -12,7 +12,8 @@
  *  1) trust-sávonkénti friction-eloszlás (n, átlag, medián, kvartilisek);
  *  2) konkordancia a jelenlegi vágással (a határokat a kódból deriválja,
  *     nem literálból) — elvárt megfelelés: erős↔aligned ·
- *     közepes↔complementary · gyenge+szétkapcsolt↔friction;
+ *     közepes↔complementary · gyenge↔friction; a szétkapcsolt él a
+ *     runtime-modellel összhangban (trustToDynamicsEdge → null) kimarad;
  *  3) javasolt új vágáspontok: a szomszédos sáv-mediánok felezőpontjai.
  *
  * n < 30 párnál a javaslat csak jelzésértékű — a riport ezt kiírja.
@@ -56,15 +57,21 @@ import {
   type TrustEdgeType,
 } from "../../src/lib/trust-network";
 import { extractDimensionScores } from "../../src/lib/scoring";
-import { TRITAN_ORDER } from "../../src/lib/tritan";
+import { HEXACO_ORDER } from "../../src/lib/hexaco";
 
 // Elvárt trust↔friction megfelelés (a kalibráció hipotézise): magas mért
-// bizalom ↔ alacsony becsült súrlódás.
-const EXPECTED_BY_TRUST: Record<TrustEdgeType, DynamicsEdgeType> = {
+// bizalom ↔ alacsony becsült súrlódás. A `disconnected` él SZÁNDÉKOSAN
+// nincs a hipotézisben: a runtime-modell szerint (trustToDynamicsEdge →
+// null) a kapcsolat hiánya nem súrlódás-jel — a konkordancia és a
+// vágás-javaslat ezért kihagyja; a leíró eloszlás-táblában viszont marad,
+// mert ott informatív.
+const EXPECTED_BY_TRUST: Record<
+  Exclude<TrustEdgeType, "disconnected">,
+  DynamicsEdgeType
+> = {
   strong_trust: "aligned",
   moderate: "complementary",
   weak_trust: "friction",
-  disconnected: "friction",
 };
 
 const TRUST_BAND_ORDER: TrustEdgeType[] = [
@@ -258,7 +265,7 @@ async function main() {
     if (!row.userProfileId || seen.has(row.userProfileId)) continue;
     seen.add(row.userProfileId);
     const dims = extractDimensionScores(row.scores);
-    if (!dims || !TRITAN_ORDER.every((c) => typeof dims[c] === "number")) continue;
+    if (!dims || !HEXACO_ORDER.every((c) => typeof dims[c] === "number")) continue;
     profileByUser.set(row.userProfileId, dims);
   }
 
@@ -354,10 +361,15 @@ async function main() {
   }
 
   // ── 5. konkordancia a jelenlegi vágással ──────────────────────────────
+  // A szétkapcsolt párok kimaradnak: a runtime-modell (trustToDynamicsEdge)
+  // a kapcsolat hiányát nem fordítja súrlódásra, így elvárt címkéjük sincs.
   const { c1, c2 } = currentFrictionCuts();
+  const concordanceRecords = records.filter((r) => r.trustType !== "disconnected");
   const concordance = (cutA: number, cutB: number) =>
-    records.filter(
-      (r) => classifyWithCuts(r.friction, cutA, cutB) === EXPECTED_BY_TRUST[r.trustType],
+    concordanceRecords.filter(
+      (r) =>
+        classifyWithCuts(r.friction, cutA, cutB) ===
+        EXPECTED_BY_TRUST[r.trustType as Exclude<TrustEdgeType, "disconnected">],
     ).length;
 
   const currentMatches = concordance(c1, c2);
@@ -365,10 +377,12 @@ async function main() {
     `\n── Konkordancia a jelenlegi vágással (aligned <${c1} · complementary <${c2}) ──`,
   );
   console.log(
-    "elvárt megfelelés: erős↔aligned · közepes↔complementary · gyenge+szétkapcsolt↔friction",
+    "elvárt megfelelés: erős↔aligned · közepes↔complementary · gyenge↔friction " +
+      "(szétkapcsolt: kizárva — a runtime-modellben nem súrlódás-jel)",
   );
   console.log(
-    `egyezés: ${currentMatches}/${records.length} (${pct(currentMatches, records.length)})`,
+    `egyezés: ${currentMatches}/${concordanceRecords.length} ` +
+      `(${pct(currentMatches, concordanceRecords.length)})`,
   );
 
   console.log("\nkonfúziós mátrix (sor: mért trust-sáv · oszlop: friction-címke):");
@@ -394,19 +408,18 @@ async function main() {
   // ── 6. javasolt vágáspontok ───────────────────────────────────────────
   // A konkordancia-csoportosítás szerinti három sáv mediánjai; a javasolt
   // vágás a szomszédos mediánok felezőpontja.
+  // A szétkapcsolt sáv itt is kimarad (ld. EXPECTED_BY_TRUST) — a vágást a
+  // három, súrlódás-hipotézissel bíró bizalmi szint mediánjai határozzák meg.
   const strongFrictions = frictionsByBand.get("strong_trust") ?? [];
   const moderateFrictions = frictionsByBand.get("moderate") ?? [];
-  const lowTrustFrictions = [
-    ...(frictionsByBand.get("weak_trust") ?? []),
-    ...(frictionsByBand.get("disconnected") ?? []),
-  ];
+  const lowTrustFrictions = frictionsByBand.get("weak_trust") ?? [];
 
   console.log("\n── Javasolt vágáspontok (szomszédos sáv-mediánok felezőpontjai) ──");
   let suggestion: { c1: number; c2: number; matches: number } | null = null;
   const medianGroups: Array<{ name: string; values: number[] }> = [
     { name: "erős", values: strongFrictions },
     { name: "közepes", values: moderateFrictions },
-    { name: "gyenge+szétkapcsolt", values: lowTrustFrictions },
+    { name: "gyenge", values: lowTrustFrictions },
   ];
   const emptyGroups = medianGroups.filter((g) => g.values.length === 0).map((g) => g.name);
 
@@ -421,7 +434,7 @@ async function main() {
     const mLow = median(lowTrustFrictions);
     console.log(
       `sáv-mediánok: erős ${fmt(mStrong)} · közepes ${fmt(mModerate)} · ` +
-        `gyenge+szétkapcsolt ${fmt(mLow)}`,
+        `gyenge ${fmt(mLow)}`,
     );
     if (!(mStrong < mModerate && mModerate < mLow)) {
       console.log(
@@ -442,8 +455,8 @@ async function main() {
         `  (egészre kerekítve: ${intC1} / ${intC2} — jelenlegi: ${c1} / ${c2})`,
     );
     console.log(
-      `konkordancia a javasolt (egész) vágással: ${suggestedMatches}/${records.length} ` +
-        `(${pct(suggestedMatches, records.length)})`,
+      `konkordancia a javasolt (egész) vágással: ${suggestedMatches}/${concordanceRecords.length} ` +
+        `(${pct(suggestedMatches, concordanceRecords.length)})`,
     );
     console.log(
       "élesítés: friction-model.ts frictionToEdgeType + tests/unit/team/friction-model.test.ts",
@@ -476,17 +489,20 @@ async function main() {
         p75: roundTo(s.p75, 2),
       })),
       concordance: {
+        // A ráta nevezője a szétkapcsolt párok NÉLKÜLI halmaz (a runtime-
+        // modellben a disconnected élnek nincs elvárt friction-címkéje).
+        scoredPairs: concordanceRecords.length,
         current: {
           cuts: [c1, c2],
           matches: currentMatches,
-          rate: roundTo(currentMatches / records.length, 3),
+          rate: roundTo(currentMatches / concordanceRecords.length, 3),
           matrix,
         },
         suggested: suggestion
           ? {
               cuts: [suggestion.c1, suggestion.c2],
               matches: suggestion.matches,
-              rate: roundTo(suggestion.matches / records.length, 3),
+              rate: roundTo(suggestion.matches / concordanceRecords.length, 3),
             }
           : null,
       },

@@ -1,5 +1,5 @@
 import { prisma } from "./prisma";
-import type { ScoreResult } from "./scoring";
+import { extractDimensionScores } from "./scoring";
 import { calculateTeamPattern, type TeamPatternResult, type TritanScores } from "./team-pattern";
 import { buildTeamTrustNetwork } from "./trust-network.server";
 import { getCampaignSteps, getCampaignTeamIds, isCampaignStepDone } from "./campaign-steps-core";
@@ -16,7 +16,7 @@ import {
   type DynamicsEdgeType,
 } from "./friction-model";
 
-const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 export type { DynamicsEdgeType };
 
 // Kanonikus HEXACO-paletta (color-system.ts) — base a markokra (sáv, cella,
@@ -26,21 +26,21 @@ import { DIMENSION_BASE, DIMENSION_STRONG } from "./color-system";
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const DIM_LABELS_HU: Record<string, string> = {
-  INTE: "Becsületesség-Alázat",
-  RESO: "Emocionalitás",
-  TEMP: "Extraverzió",
-  ADAP: "Barátságosság",
-  THOR: "Lelkiismeretesség",
-  OPEN: "Nyitottság",
+  H: "Becsületesség-Alázat",
+  E: "Emocionalitás",
+  X: "Extraverzió",
+  A: "Barátságosság",
+  C: "Lelkiismeretesség",
+  O: "Nyitottság",
 };
 
 const DIM_LABELS_EN: Record<string, string> = {
-  INTE: "Honesty-Humility",
-  RESO: "Emotionality",
-  TEMP: "Extraversion",
-  ADAP: "Agreeableness",
-  THOR: "Conscientiousness",
-  OPEN: "Openness",
+  H: "Honesty-Humility",
+  E: "Emotionality",
+  X: "Extraversion",
+  A: "Agreeableness",
+  C: "Conscientiousness",
+  O: "Openness",
 };
 
 export interface SerializedTeamMember {
@@ -56,6 +56,34 @@ export interface SerializedTeamMember {
   /** Completed team-role questionnaire result; null → fall back to TRITAN estimate */
   teamRoleScores: Record<string, number> | null;
   teamRoleSource: "questionnaire" | "estimate" | null;
+  /**
+   * Van-e mentett felmérés-vázlata (AssessmentDraft) — a „folyamatban"
+   * állapot jele. Opcionális: csak a getTeamPageData tölti; a kötegelt
+   * (cockpit) betöltő nem, ott undefined.
+   */
+  hasDraft?: boolean;
+}
+
+/**
+ * Kitöltés-állapot vödrök a csapat-fejblokk és az overview közös számításához:
+ * kész = van eredmény; folyamatban = nincs eredmény, de van mentett vázlat;
+ * vár = se eredmény, se vázlat (el sem kezdte). Korábban a „folyamatban" a
+ * `scores === null && joinedAt` volt — a joinedAt mindig igaz, így a „vár"
+ * szegmens szerkezetileg 0 maradt, és az ia-contract „nem kezdte el" jelzése
+ * sosem sülhetett el.
+ */
+export function computeTeamCompletionBuckets(
+  members: ReadonlyArray<Pick<SerializedTeamMember, "scores" | "hasDraft">>,
+): { completedCount: number; inProgressCount: number; waitingCount: number } {
+  let completedCount = 0;
+  let inProgressCount = 0;
+  let waitingCount = 0;
+  for (const member of members) {
+    if (member.scores !== null) completedCount += 1;
+    else if (member.hasDraft) inProgressCount += 1;
+    else waitingCount += 1;
+  }
+  return { completedCount, inProgressCount, waitingCount };
 }
 
 export interface TeamActiveCampaign {
@@ -96,6 +124,12 @@ export interface TeamPageData {
   dimAvg: Record<string, number> | null;
   activeCampaign: TeamActiveCampaign | null;
   dynamicsEdges: TeamDynamicsEdge[];
+  /**
+   * A MÉRT bizalmi kör hub-jai (trust-network hubUserIds) — üres, ha nincs
+   * mért pár. A dinamika-térkép ebből karikáz, hogy a riport
+   * (trustHighlights) és a térkép UGYANAZT az embert emelje ki.
+   */
+  trustHubUserIds: string[];
   members: SerializedTeamMember[];
   pendingInvites: Array<{ id: string; email: string; createdAt: string }>;
   heatmapRows: Array<{
@@ -332,9 +366,10 @@ export async function getTeamPageData(
   // Build members with scores
   const members: SerializedTeamMember[] = team.members.map((m) => {
     const ar = m.user.assessmentResults[0];
-    const rawDimensions = ar
-      ? (ar.scores as ScoreResult).dimensions
-      : null;
+    // Közös score-olvasó (scoring.ts): a legacy FLAT score-sor is kitöltés —
+    // a puszta `.dimensions` olvasás azt itt kitöltetlennek látta, miközben
+    // a hiring felület kitöltöttnek.
+    const rawDimensions = ar ? extractDimensionScores(ar.scores) : null;
 
     // Compute top3Dims from DIM_ORDER dims
     const top3Dims: Array<{ code: string; value: number; color: string }> = [];
@@ -406,7 +441,7 @@ export async function getTeamPageData(
   // A DB-szűrő durván szűkít (teamId VAGY teamIds tartalmazza), a pontos
   // döntést a getCampaignTeamIds hozza (a teamIds az igazság, üresnél a
   // legacy teamId) — így a teamId≠teamIds[0] él-eset sem téveszt.
-  const [campaignCandidates, pendingInvitesRaw] = await Promise.all([
+  const [campaignCandidates, pendingInvitesRaw, draftRows] = await Promise.all([
     team.orgId
       ? prisma.campaign.findMany({
           where: {
@@ -437,7 +472,20 @@ export async function getTeamPageData(
       orderBy: { createdAt: "asc" },
       select: { id: true, email: true, createdAt: true },
     }),
+    // Felmérés-vázlatok: a „folyamatban" (elkezdte, de nincs eredménye)
+    // állapothoz — a fejblokk/overview kitöltés-vödrei ebből számolnak.
+    members.length > 0
+      ? prisma.assessmentDraft.findMany({
+          where: { userProfileId: { in: members.map((m) => m.userId) } },
+          select: { userProfileId: true },
+        })
+      : Promise.resolve([]),
   ]);
+
+  const draftUserIds = new Set(draftRows.map((d) => d.userProfileId));
+  for (const member of members) {
+    member.hasDraft = draftUserIds.has(member.userId);
+  }
 
   // Az EZT a csapatot ténylegesen célzó, legfrissebb aktív kampány (a lista
   // createdAt szerint csökkenő). getCampaignTeamIds a pontos szabály.
@@ -448,10 +496,17 @@ export async function getTeamPageData(
   // Ahol van mért trust-kör adat, az felülírja a profil-alapú becslést
   // (feature-ideas #1: edge source csere profile_estimate → trust_round;
   // a becslés fallbackként megmarad a nem mért párokra).
+  const trustNetwork = await buildTeamTrustNetwork(teamId).catch(() => null);
   const dynamicsEdges = mergeTrustEdges(
     buildProfileBasedEdges(members),
-    await buildTeamTrustNetwork(teamId).catch(() => null),
+    trustNetwork,
   );
+  // Mért hub-ok a térképnek — a riport (trustHighlights) is ezt használja,
+  // így a két felület nem karikázhat különböző embert.
+  const trustHubUserIds =
+    trustNetwork && trustNetwork.measuredPairCount > 0
+      ? trustNetwork.hubUserIds
+      : [];
 
   // Compute active campaign stats — a tiszta rész a computeTeamActiveCampaign
   // helperben él (a manager-cockpit kötegelt betöltője is azt használja);
@@ -530,7 +585,7 @@ export async function getTeamPageData(
 
   // Compute team pattern (requires at least 3 members with full TRITAN scores).
   // FONTOS: a member.scores a NYERS score-JSON dimenziói — a BELSŐ kódokkal
-  // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO megjelenítési betűkkel
+  // (H/E/X/A/C/O), nem a HEXACO megjelenítési betűkkel
   // (H/E/X/A/C/O). A 2026-07-29-es HEXACO-átállás után itt tévesen a
   // display-betűket kerestük, ezért a mintázat mindig null lett.
   const tritanMembers: Array<{ userId: string; scores: TritanScores }> = [];
@@ -538,18 +593,18 @@ export async function getTeamPageData(
     const s = m.scores;
     if (
       s &&
-      s.INTE !== undefined && s.RESO !== undefined && s.TEMP !== undefined &&
-      s.ADAP !== undefined && s.THOR !== undefined && s.OPEN !== undefined
+      s.H !== undefined && s.E !== undefined && s.X !== undefined &&
+      s.A !== undefined && s.C !== undefined && s.O !== undefined
     ) {
       tritanMembers.push({
         userId: m.userId,
         scores: {
-          INTE: s.INTE,
-          RESO: s.RESO,
-          TEMP: s.TEMP,
-          ADAP: s.ADAP,
-          THOR: s.THOR,
-          OPEN: s.OPEN,
+          H: s.H,
+          E: s.E,
+          X: s.X,
+          A: s.A,
+          C: s.C,
+          O: s.O,
         },
       });
     }
@@ -576,6 +631,7 @@ export async function getTeamPageData(
     dimAvg,
     activeCampaign,
     dynamicsEdges,
+    trustHubUserIds,
     members,
     pendingInvites,
     heatmapRows,

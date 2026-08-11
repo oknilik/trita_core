@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
+import {
+  resolveObserverTokenLifecycle,
+  toObserverTokenErrorCode,
+} from "@/lib/observer/token-validation";
+import {
+  observerDraftCookieName,
+  observerDraftCookieValue,
+} from "@/lib/observer/draft-cookie";
 
 /**
  * Blokkoljuk-e a draft olvasását/írását (403)?
@@ -20,7 +28,10 @@ async function shouldBlockDraftAccess(
 ): Promise<boolean> {
   let viewerId: string | null = null;
   try {
-    const { userId } = await auth();
+    // A Clerk-feloldás a submit-auth seamen át fut (lazy import) — így a
+    // route integrációs tesztben is betölthető (a Clerk szerver-SDK a
+    // node:test + react-server condition alatt modul-betöltéskor dobna).
+    const userId = await resolveObserverSubmitViewerClerkId();
     if (userId) {
       const viewer = await prisma.userProfile.findUnique({
         where: { clerkId: userId },
@@ -67,10 +78,23 @@ export async function POST(req: Request) {
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },
-    select: { id: true, status: true, inviterId: true, observerProfileId: true },
+    select: {
+      id: true,
+      status: true,
+      expiresAt: true,
+      inviterId: true,
+      observerProfileId: true,
+    },
   });
-  if (!invitation || invitation.status !== "PENDING") {
-    return NextResponse.json({ error: "Invalid token" }, { status: 400 });
+  if (!invitation) {
+    return NextResponse.json({ error: "INVALID_TOKEN" }, { status: 400 });
+  }
+  // Teljes életciklus-ellenőrzés (nem csak status === PENDING): a LEJÁRT
+  // PENDING token draftot sem írhat többé — a submit/link route-okkal azonos
+  // szabály (resolveObserverTokenLifecycle), rövid hibakóddal.
+  const lifecycle = resolveObserverTokenLifecycle(invitation);
+  if (lifecycle !== "active") {
+    return NextResponse.json({ error: toObserverTokenErrorCode(lifecycle) }, { status: 400 });
   }
   if (await shouldBlockDraftAccess(invitation.inviterId, invitation.observerProfileId)) {
     return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });
@@ -95,7 +119,26 @@ export async function POST(req: Request) {
     },
   });
 
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  // KÜLSŐ (nem nevesített) meghívónál a draft visszaolvasása ehhez a
+  // böngészőhöz kötött: httpOnly HMAC-cookie bizonyítja, hogy a draftot ez a
+  // kliens írta (részletek + trade-off: observer/draft-cookie.ts). Nevesített
+  // meghívónál a bejelentkezett címzett auth alapján kapja a draftot — ott a
+  // cookie-ra nincs szükség.
+  if (!invitation.observerProfileId) {
+    const maxAgeSeconds = Math.max(
+      60,
+      Math.floor((invitation.expiresAt.getTime() - Date.now()) / 1000),
+    );
+    res.cookies.set(observerDraftCookieName(invitation.id), observerDraftCookieValue(invitation.id), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: maxAgeSeconds,
+    });
+  }
+  return res;
 }
 
 export async function DELETE(req: Request) {
@@ -110,10 +153,24 @@ export async function DELETE(req: Request) {
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },
-    select: { id: true, inviterId: true, observerProfileId: true },
+    select: {
+      id: true,
+      status: true,
+      expiresAt: true,
+      inviterId: true,
+      observerProfileId: true,
+    },
   });
   if (!invitation) {
     return NextResponse.json({ ok: true });
+  }
+  // Életciklus-őr a törlésre is: LEJÁRT/lezárt tokennel a draft nem
+  // manipulálható. A COMPLETED ág megengedett marad — a beadás utáni kliens-
+  // oldali takarítás ide fut be (a submit-tranzakció a draftot már törölte,
+  // a hívás idempotens no-op).
+  const lifecycle = resolveObserverTokenLifecycle(invitation);
+  if (lifecycle !== "active" && lifecycle !== "completed") {
+    return NextResponse.json({ error: toObserverTokenErrorCode(lifecycle) }, { status: 400 });
   }
   if (await shouldBlockDraftAccess(invitation.inviterId, invitation.observerProfileId)) {
     return NextResponse.json({ error: "NOT_ADDRESSEE" }, { status: 403 });

@@ -175,7 +175,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
         testType: "TRITAN",
         isSelfAssessment: true,
         shareToken: makeId("share"),
-        scores: { INTE: 55, RESO: 50, TEMP: 60, ADAP: 45, THOR: 52, OPEN: 58 } as Prisma.InputJsonValue,
+        scores: { H: 55, E: 50, X: 60, A: 45, C: 52, O: 58 } as Prisma.InputJsonValue,
       },
     });
 
@@ -285,5 +285,148 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(c?.name, null);
     // A manager-kötés marad (a folyamat az org rekordja) — csak az identitás megy.
     assert.equal(c?.managerId, manager.id);
+  });
+
+  await t.test("függő team-/org-/consultant-meghívók törlődnek (case-insensitive email)", async () => {
+    const target = await createProfile();
+    const owner = await createProfile();
+    const org = await prisma.organization.create({
+      data: { name: "Scrub Org", ownerId: owner.id },
+    });
+    const team = await prisma.team.create({
+      data: { name: "Scrub Team", ownerId: owner.id, orgId: org.id },
+    });
+
+    // A törölt user emailjére szóló függő meghívók — MÁS betűzéssel tárolva.
+    const teamInvite = await prisma.teamPendingInvite.create({
+      data: { teamId: team.id, email: target.email!.toUpperCase() },
+    });
+    const orgInvite = await prisma.organizationPendingInvite.create({
+      data: { orgId: org.id, email: target.email!.toUpperCase() },
+    });
+    const consultantInvite = await prisma.consultantInvite.create({
+      data: { email: target.email!.toUpperCase(), invitedById: owner.id },
+    });
+    // Kontroll: MÁS emailre szóló meghívót a scrub nem érinthet.
+    const otherInvite = await prisma.teamPendingInvite.create({
+      data: { teamId: team.id, email: `keep_${randomUUID().slice(0, 8)}@example.com` },
+    });
+
+    await scrubProfileData(target.id, target.email);
+
+    assert.equal(
+      await prisma.teamPendingInvite.findUnique({ where: { id: teamInvite.id } }),
+      null,
+      "a csapat-meghívó sor maga a PII — törlődik",
+    );
+    assert.equal(
+      await prisma.organizationPendingInvite.findUnique({ where: { id: orgInvite.id } }),
+      null,
+    );
+    assert.equal(
+      await prisma.consultantInvite.findUnique({ where: { id: consultantInvite.id } }),
+      null,
+    );
+    assert.ok(
+      await prisma.teamPendingInvite.findUnique({ where: { id: otherInvite.id } }),
+      "másik user meghívója marad",
+    );
+  });
+
+  await t.test("FakeDoorResponse: email + otherText + profil-link redaktálva, a sor marad", async () => {
+    const target = await createProfile();
+
+    // Profil-link szerint illeszkedő sor, szabad-szöveges „egyéb" mezővel.
+    const byProfile = await prisma.fakeDoorResponse.create({
+      data: {
+        module: "career",
+        sessionId: makeId("sess"),
+        profileId: target.id,
+        audience: "member",
+        priceVariant: 1,
+        interest: "no",
+        reasonNo: "other",
+        otherText: "Szabad szöveg, benne PII",
+        emailOptIn: true,
+        email: "optin.cim@example.com",
+        viewedAt: NOW,
+      },
+    });
+    // Csak (case-variant) email szerint illeszkedő sor, profil-link nélkül.
+    const byEmail = await prisma.fakeDoorResponse.create({
+      data: {
+        module: "career",
+        sessionId: makeId("sess"),
+        audience: "guest",
+        priceVariant: 2,
+        interest: "yes",
+        email: target.email!.toUpperCase(),
+        viewedAt: NOW,
+      },
+    });
+
+    await scrubProfileData(target.id, target.email);
+
+    const p = await prisma.fakeDoorResponse.findUnique({ where: { id: byProfile.id } });
+    assert.ok(p, "a sor megmarad az aggregált számokhoz");
+    assert.equal(p?.email, null);
+    assert.equal(p?.otherText, null, "a szabad szöveg is redaktálva");
+    assert.equal(p?.profileId, null);
+    assert.equal(p?.interest, "no", "az aggregátum-mezők változatlanok");
+    assert.equal(p?.reasonNo, "other");
+
+    const e = await prisma.fakeDoorResponse.findUnique({ where: { id: byEmail.id } });
+    assert.equal(e?.email, null, "case-variant email szerint is redaktál");
+  });
+
+  await t.test("notification-vars: a törölt user neve/emailje redaktálva más usereknél", async () => {
+    const target = await createProfile();
+    const recipient = await createProfile();
+
+    // A törölt user NEVÉT hordozó értesítés egy MÁSIK user listájában.
+    const byName = await prisma.notification.create({
+      data: {
+        userId: recipient.id,
+        type: "OBSERVER_SUBMITTED",
+        titleKey: "notif.observerSubmittedTitle",
+        bodyKey: "notif.observerSubmittedBody",
+        vars: { inviterName: target.username! },
+      },
+    });
+    // A törölt user EMAILJÉT (case-variant, „Név (email)" formában) hordozó
+    // targetLabel — az inviterName itt egy másik (élő) user, az marad.
+    const byLabel = await prisma.notification.create({
+      data: {
+        userId: recipient.id,
+        type: "OBSERVER_APPROVAL_REQUESTED",
+        titleKey: "notif.observerApprovalTitle",
+        bodyKey: "notif.observerApprovalBody",
+        vars: {
+          inviterName: "Élő Kolléga",
+          targetLabel: `Külső Értékelő (${target.email!.toUpperCase()})`,
+        },
+      },
+    });
+    // Kontroll: nem a törölt userre mutató vars érintetlen marad.
+    const untouched = await prisma.notification.create({
+      data: {
+        userId: recipient.id,
+        type: "OBSERVER_COLLEAGUE_INVITED",
+        titleKey: "notif.observerColleagueTitle",
+        bodyKey: "notif.observerColleagueBody",
+        vars: { inviterName: "Élő Kolléga" },
+      },
+    });
+
+    await scrubProfileData(target.id, target.email);
+
+    const n1 = await prisma.notification.findUnique({ where: { id: byName.id } });
+    assert.deepEqual(n1?.vars, { inviterName: "—" });
+
+    const n2 = await prisma.notification.findUnique({ where: { id: byLabel.id } });
+    assert.deepEqual(n2?.vars, { inviterName: "Élő Kolléga", targetLabel: "—" });
+
+    const n3 = await prisma.notification.findUnique({ where: { id: untouched.id } });
+    assert.deepEqual(n3?.vars, { inviterName: "Élő Kolléga" });
   });
 });

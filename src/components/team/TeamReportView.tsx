@@ -17,15 +17,15 @@ import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 // Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts); mark-
@@ -34,7 +34,7 @@ import { DIMENSION_BASE, DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
-const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 
 // Hiányzó csapatszerep rövid következménye a vezető nyelvén.
 const ROLE_GAP_HINTS: Record<string, { hu: string; en: string }> = {
@@ -744,32 +744,35 @@ export function TeamReportView({
             subtitle={
               dynSource === "trust_round"
                 ? isHu
-                  ? "Milyen erősek a tagpárok mért munkakapcsolatai — összkép, egyéni párok nélkül."
-                  : "How strong the measured working relationships between member pairs are — an overview, without individual pairs."
+                  ? "Milyen erősek a felmért munkakapcsolatok — összkép, egyéni párok nélkül."
+                  : "How strong the assessed working relationships are — an overview, without individual pairs."
                 : dynSource === "mixed"
                   ? isHu
-                    ? "A tagpárok együttműködési képe — részben mért, részben becsült; összkép, egyéni párok nélkül."
-                    : "The collaboration picture across member pairs — partly measured, partly estimated; an overview, without individual pairs."
+                    ? "A felmért kapcsolatok együttműködési képe — részben mért, részben becsült; összkép, egyéni párok nélkül."
+                    : "The collaboration picture across the assessed relationships — partly measured, partly estimated; an overview, without individual pairs."
                   : isHu
-                    ? "Mennyire hasonlóan dolgoznak a tagpárok — összkép, egyéni párok nélkül."
-                    : "How similarly member pairs work — an overview, without individual pairs."
+                    ? "Mennyire hasonlóan dolgoznak a felmért kapcsolatok tagjai — összkép, egyéni párok nélkül."
+                    : "How similarly people work across the assessed relationships — an overview, without individual pairs."
             }
           />
           <DashboardPanel className="p-6">
             <p className="mb-3 text-sm text-ink-body">
               {/* Forrás-hű fejléc: mért bizalmi kör élei NEM munkastílus-
-                  összevetésből jönnek — annak nevezni hamis attribúció. */}
+                  összevetésből jönnek — annak nevezni hamis attribúció.
+                  A darabszám FELMÉRT KAPCSOLAT (él), nem az összes tagpár:
+                  profil-él csak felmért tagok közt épül, a kapcsolat nélküli
+                  (disconnected) mért pár pedig nem kerül a képbe. */}
               {dynSource === "trust_round"
                 ? isHu
-                  ? `A csapat mind a ${dynamicsTotal} tagpárjának mért bizalmi képe — milyen erős és kölcsönös a két ember munkakapcsolata.`
-                  : `A measured trust picture of all ${dynamicsTotal} member pairs — how strong and mutual each pair's working relationship is.`
+                  ? `A csapat ${dynamicsTotal} felmért kapcsolatának mért bizalmi képe — milyen erős és kölcsönös a két ember munkakapcsolata.`
+                  : `A measured trust picture of the team's ${dynamicsTotal} assessed relationships — how strong and mutual each working relationship is.`
                 : dynSource === "mixed"
                   ? isHu
-                    ? `A csapat mind a ${dynamicsTotal} tagpárjának kapcsolati képe — részben mért bizalmi körből, részben profil-alapú munkastílus-összevetésből.`
-                    : `The relationship picture of all ${dynamicsTotal} member pairs — partly from a measured trust round, partly from a profile-based working-style comparison.`
+                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának képe — részben mért bizalmi körből, részben profil-alapú munkastílus-összevetésből.`
+                    : `The picture of the team's ${dynamicsTotal} assessed relationships — partly from a measured trust round, partly from a profile-based working-style comparison.`
                   : isHu
-                    ? `A csapat mind a ${dynamicsTotal} tagpárjának munkastílus-összevetése — mennyire hasonlóan vagy eltérően dolgozik két ember.`
-                    : `A working-style comparison of all ${dynamicsTotal} member pairs — how similarly or differently two people work.`}
+                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának munkastílus-összevetése — mennyire hasonlóan vagy eltérően dolgozik két ember.`
+                    : `A working-style comparison of the team's ${dynamicsTotal} assessed relationships — how similarly or differently two people work.`}
             </p>
 
             <div className="flex h-5 w-full gap-[2px] overflow-hidden rounded-full">
@@ -1058,7 +1061,7 @@ export function TeamReportView({
                 const content =
                   c.pole === "polarized"
                     ? TEAM_PRESSURE_POLARIZED_TEXT
-                    : TEAM_PRESSURE_CONTENT[c.dim as TritanDimCode]?.[c.pole];
+                    : TEAM_PRESSURE_CONTENT[c.dim as HexacoCode]?.[c.pole];
                 if (!content) return null;
                 const dimLabel = DIM_LABELS[c.dim]
                   ? isHu

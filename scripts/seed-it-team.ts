@@ -33,19 +33,19 @@ function nearbyScore(base: number, variance = 18) {
   return Math.max(5, Math.min(95, Math.round(base + (Math.random() - 0.5) * 2 * variance)));
 }
 
-const TRITAN_FACETS: Record<string, string[]> = {
-  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
-  THOR: ["organization", "diligence", "prudence", "perfectionism"],
-  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const HEXACO_FACETS: Record<string, string[]> = {
+  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  A: ["forgiveness", "gentleness", "flexibility", "patience"],
+  C: ["organization", "diligence", "prudence", "perfectionism"],
+  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
 function generateTritanScores() {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
+  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
     const base = rand(22, 83);
     dimensions[dim] = base;
     facets[dim] = {};

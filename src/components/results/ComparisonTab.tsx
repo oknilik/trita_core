@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { hexLetter } from "@/lib/hexaco";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
 // Önkép–külső kép eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) —
 // két hiba-terhelt pontszám KÜLÖNBSÉGÉNEK mérési hibája, nem egy ponté. A
-// korábbi hardkódolt 10 (1×SEM) a 10–14 pontos gap-eket már „eltérésnek"
-// osztályozta, miközben a dossziè/PDF ugyanarra 15-ös kaput használt — a két
+// korábbi hardkódolt 10 (1×SEM) a kapu alatti gap-eket már „eltérésnek"
+// osztályozta, miközben a dossziè/PDF a kanonikus kaput használta — a két
 // felület ellentmondott egymásnak (motor-audit v6, M1).
 
 interface ComparisonTabProps {
@@ -336,7 +336,7 @@ export function ComparisonTab({
     if (gap < DIFF_MIN_GAP) return null;
     const dir = observer > self ? "higher" : "lower";
     // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
-    const letter = TRITAN_DIM_ABBR[code as TritanDimCode]?.en;
+    const letter = hexLetter(code);
     if (!letter) return null;
     const key = `${letter}_${dir}`;
     const lang = locale === "hu" ? "hu" : "en";
@@ -448,7 +448,12 @@ export function ComparisonTab({
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
-            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">{avgGapPct}%</p>
+            {/* Skála-PONT, nem százalék: az átlagos |önkép−külső| gap 0–100-as
+                skálapontban értendő — a korábbi „%" suffix hamis mértékegység
+                volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
+            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">
+              {avgGapPct} {t("comparison.pointsUnitShort", locale)}
+            </p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>

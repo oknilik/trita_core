@@ -21,7 +21,7 @@ import {
   runNotificationSweep,
   selectReflectionCandidates,
 } from "@/lib/notifications/sweep";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 
 // Az email-láb determinisztikusan a hiba-ágra megy (a kísérlet ténye a
 // SweepResult.errors-ból olvasható): a kulcs kiürítése CSAK ennek a
@@ -39,14 +39,14 @@ function daysAgo(days: number): Date {
   return new Date(Date.now() - days * DAY_MS);
 }
 
-// OPEN a legerősebb — a személyre szabott szöveg dimenziója egyértelmű.
+// O a legerősebb — a személyre szabott szöveg dimenziója egyértelmű.
 const OPEN_TOP_DIMS = {
-  INTE: 40,
-  RESO: 45,
-  TEMP: 50,
-  ADAP: 55,
-  THOR: 60,
-  OPEN: 82,
+  H: 40,
+  E: 45,
+  X: 50,
+  A: 55,
+  C: 60,
+  O: 82,
 };
 
 async function createUserWithSelfResult(
@@ -147,7 +147,7 @@ test("D1 Reflection sweep", async (t) => {
       {
         userProfileId: "u_tie",
         createdAt: at(8 * DAY_MS),
-        scores: likert({ OPEN: 70, ADAP: 70, INTE: 10 }),
+        scores: likert({ O: 70, A: 70, H: 10 }),
       },
     ];
 
@@ -158,8 +158,8 @@ test("D1 Reflection sweep", async (t) => {
       [...byUser.keys()].sort(),
       ["u_edge_end", "u_edge_start", "u_tie"],
     );
-    assert.equal(byUser.get("u_edge_start"), "OPEN");
-    assert.equal(byUser.get("u_tie"), "ADAP");
+    assert.equal(byUser.get("u_edge_start"), "O");
+    assert.equal(byUser.get("u_tie"), "A");
   });
 
   await t.test("~8 napja kitöltött self-eredmény → REFLECTION_PROMPT keletkezik", async () => {
@@ -181,8 +181,8 @@ test("D1 Reflection sweep", async (t) => {
 
     // Per-locale megszemélyesítés: mindkét nyelvű címke vars-ként utazik.
     const vars = notif.vars as { dimLabelHu?: string; dimLabelEn?: string };
-    assert.equal(vars.dimLabelHu, TRITAN_DIMENSIONS.OPEN.hu);
-    assert.equal(vars.dimLabelEn, TRITAN_DIMENSIONS.OPEN.en);
+    assert.equal(vars.dimLabelHu, HEXACO_DIMENSIONS.O.hu);
+    assert.equal(vars.dimLabelEn, HEXACO_DIMENSIONS.O.en);
   });
 
   await t.test("dedupe: a második sweep nem hoz létre újat", async () => {

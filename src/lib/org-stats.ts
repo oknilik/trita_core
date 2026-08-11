@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import { extractDimensionScores } from "./scoring";
 import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
 import { getOrgPendingInviteCount, getOrgTeamCount } from "./org-counts.server";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
@@ -122,8 +123,12 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   // A pending-invite és team darabszámot a journey completionSummary is
   // kiszámolta ugyanerre az org-ra — közös, kérés-szinten memoizált forrás
   // (org-counts.server.ts), így renderenként egyszer megy ki.
+  // A kilépett tagok (leftAt) nem számítanak — a testvér-hívóhelyek
+  // (journey/context, org-context, notifications) mintája.
   const [memberRows, pendingRows, teamRows] = await Promise.all([
-    prisma.organizationMember.count({ where: { orgId, role: { not: "ORG_CONSULTANT" } } }),
+    prisma.organizationMember.count({
+      where: { orgId, leftAt: null, role: { not: "ORG_CONSULTANT" } },
+    }),
     getOrgPendingInviteCount(orgId),
     getOrgTeamCount(orgId),
   ]);
@@ -229,9 +234,11 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
     };
   });
 
-  // TRITAN averages: fetch all org member userIds and their assessments
+  // TRITAN averages: fetch all org member userIds and their assessments.
+  // A kilépett tagok itt sem számítanak (leftAt: null) — különben a
+  // completedMemberCount és a dimenzió-átlag távozott tagokat is tartalmazna.
   const orgMembers = await prisma.organizationMember.findMany({
-    where: { orgId, role: { not: "ORG_CONSULTANT" } },
+    where: { orgId, leftAt: null, role: { not: "ORG_CONSULTANT" } },
     select: { userId: true },
   });
   const orgMemberIds = orgMembers.map((m) => m.userId);
@@ -252,12 +259,14 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       distinct: ["userProfileId"],
     });
 
-    const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
-    const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
+    const dims = ["H", "E", "X", "A", "C", "O"];
+    const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
 
     for (const ar of assessmentResults) {
-      const scores = ar.scores as { type?: string; dimensions?: Record<string, number> };
-      const dimScores = scores.dimensions;
+      // Közös score-olvasó (scoring.ts): a legacy FLAT score-sor is számít
+      // kitöltésnek — a puszta `.dimensions` olvasás azt itt kihagyta,
+      // miközben a hiring felület ugyanazt a sort kitöltöttnek vette.
+      const dimScores = extractDimensionScores(ar.scores);
       if (!dimScores) continue;
       const hasAllDims = dims.every((d) => typeof dimScores[d] === "number");
       if (hasAllDims) {

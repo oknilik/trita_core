@@ -1,24 +1,24 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hexLetter, TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
+import { hexLetter, HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 
 // A hexLetter a KÖZÖS badge-feloldó (tritan.ts): a felületeken a belső
-// dimenziókód (TEMP/INTE/…) soha nem jelenhet meg nyersen — a manager-
+// dimenziókód (X/H/…) soha nem jelenhet meg nyersen — a manager-
 // cockpit, a TeamInsights, a TeamHeatmap és a TeamIntelligence korábban
 // három lokális másolatból (ill. feloldás nélkül) dolgozott.
 
 test("hexLetter: belső kód → HEXACO-betű (H/E/X/A/C/O)", () => {
-  assert.equal(hexLetter("INTE"), "H");
-  assert.equal(hexLetter("RESO"), "E");
-  assert.equal(hexLetter("TEMP"), "X");
-  assert.equal(hexLetter("ADAP"), "A");
-  assert.equal(hexLetter("THOR"), "C");
-  assert.equal(hexLetter("OPEN"), "O");
+  assert.equal(hexLetter("H"), "H");
+  assert.equal(hexLetter("E"), "E");
+  assert.equal(hexLetter("X"), "X");
+  assert.equal(hexLetter("A"), "A");
+  assert.equal(hexLetter("C"), "C");
+  assert.equal(hexLetter("O"), "O");
 });
 
-test("hexLetter: a kanonikus térképpel (TRITAN_DIMENSIONS) azonos betűt ad", () => {
-  for (const code of TRITAN_ORDER) {
-    assert.equal(hexLetter(code), TRITAN_DIMENSIONS[code].letter);
+test("hexLetter: a kanonikus térképpel (HEXACO_DIMENSIONS) azonos betűt ad", () => {
+  for (const code of HEXACO_ORDER) {
+    assert.equal(hexLetter(code), HEXACO_DIMENSIONS[code].letter);
   }
 });
 

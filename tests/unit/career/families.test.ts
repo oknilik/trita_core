@@ -10,7 +10,7 @@ import {
 } from "@/lib/career/families";
 import { computeCareerFit } from "@/lib/career/engine";
 
-const balancedDims = { INTE: 55, RESO: 50, TEMP: 55, ADAP: 55, THOR: 60, OPEN: 60 };
+const balancedDims = { H: 55, E: 50, X: 55, A: 55, C: 60, O: 60 };
 
 // A család-réteg épsége. A besorolás OFFLINE készül
 // (scripts/career-catalog/step12_families.mjs) és befagyva él a katalógusban —

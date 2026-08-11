@@ -45,8 +45,8 @@ function makeId(prefix: string): string {
 
 // Erősen pólusos, egymással ellentétes profilpár — a páros szimuláció
 // garantáltan nem sparse (minden dimenzió a HIGH 65 / LOW 35 küszöbön túl).
-const POLAR_SELF = { INTE: 80, RESO: 25, TEMP: 78, ADAP: 30, THOR: 82, OPEN: 74 };
-const POLAR_OTHER = { INTE: 22, RESO: 76, TEMP: 24, ADAP: 72, THOR: 20, OPEN: 28 };
+const POLAR_SELF = { H: 80, E: 25, X: 78, A: 30, C: 82, O: 74 };
+const POLAR_OTHER = { H: 22, E: 76, X: 24, A: 72, C: 20, O: 28 };
 
 async function createUser(
   prefix: string,
@@ -72,12 +72,12 @@ async function createUser(
     const scores: ScoreResult = {
       type: "likert",
       dimensions: overrides.dimensions ?? {
-        INTE: 50,
-        RESO: 50,
-        TEMP: 50,
-        ADAP: 50,
-        THOR: 50,
-        OPEN: 50,
+        H: 50,
+        E: 50,
+        X: 50,
+        A: 50,
+        C: 50,
+        O: 50,
       },
     };
     await prisma.assessmentResult.create({

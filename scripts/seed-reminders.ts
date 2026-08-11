@@ -197,7 +197,7 @@ async function seed() {
     });
 
     // Create a completed AssessmentResult so this draft appears as "Már kész"
-    const tritanScores = { INTE: 65, RESO: 72, TEMP: 58, ADAP: 80, THOR: 68, OPEN: 75 };
+    const tritanScores = { H: 65, E: 72, X: 58, A: 80, C: 68, O: 75 };
     await prisma.assessmentResult.create({
       data: {
         userProfileId: user.id,

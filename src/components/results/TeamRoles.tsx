@@ -61,7 +61,7 @@ export function TeamRoles({
 }: TeamRolesProps) {
   const lang = locale === "hu" ? "hu" : "en";
 
-  const hasTritanDims = "INTE" in tritanScores && "TEMP" in tritanScores;
+  const hasTritanDims = "H" in tritanScores && "X" in tritanScores;
   if (!hasTritanDims) return null;
 
   // Precedencia a kanonikus szabályból (team-role-estimate):
@@ -87,14 +87,20 @@ export function TeamRoles({
       ? compareSelfAndPeerTopRoles(top3, estimatedTop3).shared.length
       : null;
 
-  // Önkép vs. csapatkép: a megjelenített top 3 vs a peer-aggregátum top 3.
+  // Önkép vs. csapatkép: a MÉRT top 3 vs a peer-aggregátum top 3. CSAK
+  // kitöltött kérdőív ellen számolható — a becslés nem a user önképe,
+  // hanem TRITAN-ból származtatott tipp; azt önképként bemutatni („Te
+  // látod magadban…") hamis állítás lenne. A personalityOverlap-pel
+  // azonos kapu (isMeasured); becslés-ágon a peer-kép önösszevetés
+  // nélkül jelenik meg.
   const peerReady = Boolean(peer && peer.scores && peer.topRoles.length > 0);
-  const peerDelta = peerReady
-    ? compareSelfAndPeerTopRoles(
-        top3,
-        (peer as TeamRolesPeerData).topRoles.map((r) => ({ role: r.role as TeamRoleCode })),
-      )
-    : null;
+  const peerDelta =
+    peerReady && isMeasured
+      ? compareSelfAndPeerTopRoles(
+          top3,
+          (peer as TeamRolesPeerData).topRoles.map((r) => ({ role: r.role as TeamRoleCode })),
+        )
+      : null;
   const roleNames = (codes: TeamRoleCode[]) =>
     codes.map((c) => TEAM_ROLES[c][lang]).join(", ");
 
@@ -213,7 +219,7 @@ export function TeamRoles({
             </span>
           </div>
 
-          {peerReady && peerDelta ? (
+          {peerReady ? (
             <>
               <div className="mt-3 flex flex-wrap gap-2">
                 {peer.topRoles.slice(0, 3).map((r, idx) => (
@@ -230,7 +236,13 @@ export function TeamRoles({
                 ))}
               </div>
 
-              {peerDelta.selfOnly.length === 0 && peerDelta.peerOnly.length === 0 ? (
+              {/* Önösszevetés-verdikt CSAK mért önkép mellett; becslés-ágon
+                  a TeamRoleSection „nincs saját kitöltés" mintáját követjük. */}
+              {peerDelta === null ? (
+                <p className="mt-3 text-[12px] leading-relaxed text-[var(--color-text-muted)]">
+                  {t("teamComp.peerNoSelf", locale)}
+                </p>
+              ) : peerDelta.selfOnly.length === 0 && peerDelta.peerOnly.length === 0 ? (
                 <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)] px-4 py-3">
                   <span className="mt-0.5 text-sm">✓</span>
                   <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">

@@ -24,9 +24,9 @@ function makeReport(
       completedCount: 4,
       completionPct: 80,
       dimensionAverages: {
-        INTE: 55, RESO: 50, TEMP: 52, ADAP: 48, THOR: 60, OPEN: 45,
+        H: 55, E: 50, X: 52, A: 48, C: 60, O: 45,
       },
-      dimensionSpread: { INTE: 8, RESO: 6, TEMP: 9, ADAP: 7, THOR: 10, OPEN: 5 },
+      dimensionSpread: { H: 8, E: 6, X: 9, A: 7, C: 10, O: 5 },
       pattern: null,
       roleDistribution: {
         counts: { MV: 2, KE: 1 },
@@ -55,7 +55,7 @@ function makeReport(
 }
 
 const FULL_TRITAN = {
-  INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
+  H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
 };
 
 function viewer(overrides: Partial<MemberViewerInput> = {}): MemberViewerInput {
@@ -105,7 +105,7 @@ describe("buildMemberReportViewModel — szerep-forrás (mért vs becsült)", ()
   it("részleges profilból nincs becslés (roleSource null) — nem gyártunk mért-kinézetű szerepet", () => {
     const vm = buildMemberReportViewModel(
       makeReport(),
-      viewer({ scores: { INTE: 80, TEMP: 20 } }),
+      viewer({ scores: { H: 80, X: 20 } }),
       "hu",
     );
     assert.equal(vm.roleSource, null);
@@ -120,8 +120,8 @@ describe("buildMemberReportViewModel — S2: a kerekítetlen becslés-evidencia 
   // legyen, a kerekítetlen összegük viszont eltérjen — az elsődleges
   // szerepnek az exact szerint kell dőlnie, nem a hash-fallback szerint,
   // különben a tag-riport mást mutatna, mint a csapatszerep-tab.
-  const P1 = { INTE: 50, RESO: 52, TEMP: 90, ADAP: 46, THOR: 50, OPEN: 50 }; // KE 67,0 > HA 66,8
-  const P2 = { INTE: 50, RESO: 52, TEMP: 90, ADAP: 45, THOR: 50, OPEN: 50 }; // HA 67,1 > KE 66,8
+  const P1 = { H: 50, E: 52, X: 90, A: 46, C: 50, O: 50 }; // KE 67,0 > HA 66,8
+  const P2 = { H: 50, E: 52, X: 90, A: 45, C: 50, O: 50 }; // HA 67,1 > KE 66,8
 
   it("kerekítve azonos KE/HA-nál a magasabb kerekítetlen összegű az elsődleges (mindkét irányban)", () => {
     const vm1 = buildMemberReportViewModel(makeReport(), viewer({ scores: P1 }), "hu");
@@ -165,5 +165,22 @@ describe("buildMemberReportViewModel — szerep-illeszkedés", () => {
     rareReport.aggregates!.roleDistribution!.counts = { MV: 1, KE: 3 };
     const rare = buildMemberReportViewModel(rareReport, measured, "hu");
     assert.equal(rare.roleFit, "rare");
+  });
+
+  it("a pillanatképben nem szereplő néző szerepére nincs rare/shared állítás (FIX 11)", () => {
+    // A befagyasztott eloszlásban a néző MV szerepe 0 darab — ez nem
+    // különböztethető meg attól, hogy a néző nincs is benne a pillanatképben
+    // (pl. később töltött ki). Ilyenkor nem állítunk illeszkedést.
+    const measured = viewer({
+      teamRoleSource: "questionnaire",
+      teamRoleScores: { OG: 0, KE: 0, KO: 0, HA: 0, ER: 0, CS: 0, MV: 90, MI: 10, SZ: 0 },
+    });
+    const report = makeReport();
+    report.aggregates!.roleDistribution!.counts = { KE: 3 };
+    const vm = buildMemberReportViewModel(report, measured, "hu");
+    assert.equal(vm.primaryRole?.code, "MV");
+    assert.equal(vm.roleFit, null);
+    assert.ok(!vm.tips.some((tip) => tip.includes("ritka")));
+    assert.ok(!vm.tips.some((tip) => tip.includes("többen is viszitek")));
   });
 });

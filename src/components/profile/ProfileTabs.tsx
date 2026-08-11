@@ -17,8 +17,7 @@ import {
   ObserverFlowStrip,
 } from "@/components/results/ObserverFlowStatusCard";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
-import { TRITAN_ORDER, TRITAN_DIM_ABBR } from "@/lib/tritan";
-import type { TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
@@ -44,8 +43,10 @@ import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
+import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
+import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
@@ -68,7 +69,6 @@ export interface SerializedDimension {
   insightsByLocale?: Partial<Record<string, { low: string; mid: string; high: string }>>;
   observerScore?: number;
   facets: { code: string; label: string; score: number }[];
-  aspects: { code: string; label: string; score: number }[];
 }
 
 export interface SerializedGrowthItem {
@@ -169,10 +169,18 @@ export interface ProfileTabsProps {
   plusContent?: {
     introText: string;
     /** „Ahogy működsz" nevesített slotokkal (FIX 3): main = fő mintázat,
-     *  watch = CSAK valódi risk-pár, context = a többi bekezdés. */
+     *  watch = CSAK `tone: "risk"` pár, notes = semleges „Jellemző mintázat"
+     *  (fordított skála), context = a többi bekezdés. */
     howYouWorkParts: HowYouWorkParts;
-    /** Kockázati tension-párok strukturáltan. */
-    riskParts?: { summary: string; mitigation: string; source?: string }[];
+    /** Nem-feloldás tension-párok strukturáltan. A `tone` dönti el a
+     *  keretezést: "risk" = figyelendő, "note" = semleges jellemző mintázat
+     *  (fordított skála — TILOS deficitként megjeleníteni). */
+    riskParts?: {
+      summary: string;
+      advice: string;
+      source?: string;
+      tone?: PairTone;
+    }[];
     /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
     pressure?: string[];
     /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
@@ -187,7 +195,7 @@ export interface ProfileTabsProps {
       friction: { text: string; source?: string }[];
       needs: { text: string; source?: string }[];
     };
-    envItems: { label: string; value: string }[];
+    envItems: { label: string; value: string; hedged?: boolean }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
     closingText: string;
@@ -280,7 +288,7 @@ function ResultsTab({
 
   // Akkordeon a radar HEXACO-rendjében (H,E,X,A,C,O) — egyezik az
   // áttekintő listával; az első elem alapból nyitva.
-  const accordionDims = TRITAN_ORDER
+  const accordionDims = HEXACO_ORDER
     .map((code) => mainDims.find((d) => d.code === code))
     .filter((d): d is (typeof mainDims)[number] => Boolean(d))
     .map((d) => ({
@@ -321,7 +329,7 @@ function ResultsTab({
               {/* Sorrend = a radar HEXACO-rendje (H·E·X·A·C·O), a színek és
                   az értékek a dimenzió-színt viselik — alacsony szintnél is
                   jól láthatóan. */}
-              {TRITAN_ORDER
+              {HEXACO_ORDER
                 .map((code) => mainDims.find((d) => d.code === code))
                 .filter((d): d is (typeof mainDims)[number] => Boolean(d))
                 .map((d) => {
@@ -340,7 +348,7 @@ function ResultsTab({
                         <span
                           className={`shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
                         >
-                          {/* Pólus-tudatos címke: RESO alacsony sávja „stabil",
+                          {/* Pólus-tudatos címke: E alacsony sávja „stabil",
                               nem „figyelendő" (fordított skála, FIX 2). */}
                           {poleAwareDimensionLabel(d.code, d.score, locale)}
                         </span>
@@ -471,6 +479,7 @@ function WorkStyleTab({
             strongFit={plusContent.roleFit.strong}
             mightWork={plusContent.roleFit.might}
             needsPrep={plusContent.roleFit.prep}
+            secondary={plusContent.roleFit.secondary}
             strongRoles={plusContent.roleFit.strongRoles}
             mightRoles={plusContent.roleFit.mightRoles}
             prepRoles={plusContent.roleFit.prepRoles}
@@ -727,11 +736,18 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        topDimensions={dimensions.filter((d) => d.code !== "I" && d.score >= 70).map((d) => d.label)}
+        // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
+        // (score-valence, surface="self"). 2026-08-11 óta a E itt sem
+        // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
+        // a chip-sort, így nem marad árva „Legerősebb:" felirat.
+        topDimensions={dimensions
+          .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
+          .map((d) => d.label)}
         // Pólus-tudatos „Figyelendő" (FIX 2): a fordított Emocionalitás
-        // alacsony sávja stabilitás — nem kerül a watch-chipek közé.
+        // alacsony sávja stabilitás — nem kerül a watch-chipek közé
+        // (kanonikus kapu: score-valence.deficitSlotEligible).
         watchDimensions={dimensions
-          .filter((d) => d.code !== "I" && d.code !== "RESO" && d.score < 40)
+          .filter((d) => d.code !== "I" && deficitSlotEligible(d.code) && d.score < 40)
           .map((d) => d.label)}
         onShare={() => {
           track("results.export", { format: "link" });
@@ -748,19 +764,25 @@ export function ProfileTabs({
             // Kanonikus HEXACO-sorrend (H·E·X·A·C·O) — a PDF radar, sávok és
             // facet-oldalak is ebben a rendben jelennek meg, a felülettel egyezően.
             const tritanIndex = (code: string) => {
-              const i = (TRITAN_ORDER as readonly string[]).indexOf(code);
-              return i === -1 ? TRITAN_ORDER.length : i;
+              const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
+              return i === -1 ? HEXACO_ORDER.length : i;
             };
             const mainDims = dimensions
               .filter((d) => d.code !== "I")
               .sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
-            const highDims = mainDims.filter((d) => d.score >= 70);
+            // Erősség-lista a kanonikus valencia-kapun át (self felület) — a
+            // E 2026-08-11 óta itt sem erősség; ha nem marad ≥70-es
+            // dimenzió, a strengthBullets a results.balancedProfile kulcsra
+            // esik vissza (nincs üres felsorolás).
+            const highDims = mainDims.filter(
+              (d) => strengthSlotEligible(d.code, "self") && d.score >= 70,
+            );
             const lowDims = mainDims.filter((d) => d.score < 40);
             // Pólus-tudatos watch-lista (FIX 2): a fordított Emocionalitás
             // alacsony sávja stabilitás (erőforrás), nem figyelendő terület.
-            const watchDims = lowDims.filter((d) => d.code !== "RESO");
+            const watchDims = lowDims.filter((d) => deficitSlotEligible(d.code));
 
             // Közös forrásból (dimension-insights.ts) — results-oldallal és
             // persona-riport generátorral szinkronban (javítási terv P1.5).
@@ -788,7 +810,7 @@ export function ProfileTabs({
             // Profile character — kapuzott (FIX 2): „magas {dim}" csak
             // ténylegesen magas (≥70) dimenzióra megy ki, alatta a
             // kiegyensúlyozott-profil szöveg; a fejlődés-mondat csak valóban
-            // alacsony (<40), NEM fordított dimenzióra (az alacsony RESO
+            // alacsony (<40), NEM fordított dimenzióra (az alacsony E
             // stabilitás, nem fejlődési terület).
             const profileCharacter = (() => {
               const top2High = [...highDims]
@@ -821,12 +843,35 @@ export function ProfileTabs({
                 ...careerResult.sections.afterTraining.flat(),
               ].slice(0, 3);
               if (top.length === 0) return undefined;
-              const gaps = careerResult.sections.atLevel
-                .slice(0, 2)
-                .flat()
-                .flatMap((fit) => fit.components)
-                .filter((c) => c.position !== "in" && c.weight >= 0.15);
-              const firstGap = gaps[0];
+              // „Leggyakoribb eltérés": dimenzió+irány szerinti számlálás a
+              // top klasztereken (a CareerGrowthPlan.collectGaps szabályával
+              // egyezően: count, holtversenynél összsúly dönt) — a korábbi
+              // gaps[0] csupán az ELSŐ eltérés volt, nem a leggyakoribb.
+              const gapBuckets = new Map<
+                string,
+                { dim: string; position: string; count: number; weight: number }
+              >();
+              for (const fit of careerResult.sections.atLevel.slice(0, 2).flat()) {
+                for (const c of fit.components) {
+                  if (c.position === "in" || c.weight < 0.15) continue;
+                  const key = `${c.dim}:${c.position}`;
+                  const existing = gapBuckets.get(key);
+                  if (existing) {
+                    existing.count += 1;
+                    existing.weight += c.weight;
+                  } else {
+                    gapBuckets.set(key, {
+                      dim: c.dim,
+                      position: c.position,
+                      count: 1,
+                      weight: c.weight,
+                    });
+                  }
+                }
+              }
+              const firstGap = [...gapBuckets.values()].sort(
+                (a, b) => b.count - a.count || b.weight - a.weight,
+              )[0];
               const dimLabel = (code: string) =>
                 mainDims.find((d) => d.code === code)?.label ?? code;
               return {
@@ -883,7 +928,7 @@ export function ProfileTabs({
                 code: d.code,
                 name: d.label,
                 shortName:
-                  TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHu ? "hu" : "en"] ??
+                  hexLetter(d.code) ??
                   (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
                 value: d.score,
                 description: d.insight,

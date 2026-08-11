@@ -19,7 +19,7 @@ mkdirSync(outDir, { recursive: true });
 
 // Példa-típus végig ugyanaz, hogy a méretek összevethetők legyenek:
 // domináns Nyitottság (szem), második Extraverzió (villám) — „Energikus újító”.
-const DEMO = { primaryCode: "OPEN", secondaryCode: "TEMP", label: "Energikus újító" };
+const DEMO = { primaryCode: "O", secondaryCode: "X", label: "Energikus újító" };
 
 const glyph = (variant: "hero" | "card" | "badge", extra: Record<string, unknown> = {}) =>
   renderToStaticMarkup(

@@ -17,6 +17,7 @@ a `--json` exportot ne commitold.
 ```bash
 npx tsx scripts/research/norms-from-results.ts [--form=short|full] [--json <fájl>]
 npx tsx scripts/research/friction-calibration.ts [--mutual-only] [--json <fájl>]
+npx tsx scripts/research/norms-from-ipip-dataset.ts --download   # DB nem kell
 ```
 
 Üres vagy kevés adatnál mindkét script értelmes üzenettel fut le (nem
@@ -80,6 +81,70 @@ egyoldalú élek nélküli, konzervatívabb kalibráció.
 `src/lib/friction-model.ts` `frictionToEdgeType` — vele együtt frissítendő
 a `tests/unit/team/friction-model.test.ts` sávhatár-tesztjei; a fogyasztók
 (dinamika-térkép, dossier, interakció-motor) a modulból követik a változást.
+
+## norms-from-ipip-dataset.ts — közelítő referencia az OpenPsychometrics IPIP–HEXACO-mintából
+
+**Mi ez:** a TSFI itemjeinek forrás-pooljából (IPIP–HEXACO, ld.
+`docs/product/tsfi-item-provenance.md`) az openpsychometrics.org nyilvános
+nyers adatán (240 item, N≈22 ezer) számolt referencia-statisztika: a TSFI-be
+átvett itemeket a csomag codebookja alapján (szövegegyeztetéssel) leképezi,
+a kitöltőket a `src/lib/scoring.ts` motorjával (azonos POMP-formula,
+importálva) pontozza a rövid (TSFI-S) és a teljes formára, majd
+dimenziónként n/átlag/szórás/decilisek + VALÓDI Cronbach-α, átlagos
+item-item korreláció és implikált SEM — a `psychometrics.ts` priorjai
+(a psychometrics.ts konstansai — 2026-08-11 óta MAGUK IS mértek, ld. lent) mellé állítva, továbbá
+sáv-kihasználtság a két élő vágásrendszerre (40/70 és 35/65).
+
+**FONTOS — termékdöntés (2026-08-11): a kimenet CSAK BELSŐ KALIBRÁCIÓS
+REFERENCIA.** A kiírt NormTable-blokk (`version: "ipip-ref-<dátum>"`) NEM
+kerülhet a `src/lib/norms.ts` `ACTIVE_NORM_TABLE`-jébe — oda kizárólag a
+saját pilot normái valók (`norms-from-results.ts`). A minta korlátai:
+
+- nemzetközi, ANGOL nyelvű kitöltés (a TSFI magyar fordításáról semmit nem
+  mond), önszelektált online látogatók — se magyar, se ügyfél-populációs
+  norma nem vezethető le belőle;
+- a TSFI 8 kiegészítő itemje (social_self_esteem ×4, altruizmus ×4) nem az
+  IPIP–HEXACO poolból jön, ezért nincs adata: az X (Extraverzió) dimenzió
+  a 16-ból 12 itemmel (short: 10-ből 8-cal) közelített, az altruizmus-skála
+  kimarad;
+- a pontozott „TSFI-forma" itt a leképezett item-RÉSZHALMAZ — a valódi
+  kitöltési szituáció (kérdéssorrend, magyar szöveg, kontextus) más.
+
+Mire jó: α/SEM-priorok ellenőrzése mért adattal, a 40/70-es és 35/65-ös
+sávhatárok kihasználtsági sanity-checkje, eloszlás-alak (decilisek) — a
+pilot előtti nagyságrendi kalibrációhoz.
+
+**Futtatás** (DB/DATABASE_URL nem kell; a nyers adat a gitignore-olt
+`scripts/research/.data/` alá kerül, se zip, se CSV nem commitolható):
+
+```bash
+# 1) letöltés + kicsomagolás + teljes elemzés egyben (hálózat kell):
+npx tsx scripts/research/norms-from-ipip-dataset.ts --download
+
+# 2) vagy kézzel letöltött/kicsomagolt adatra:
+npx tsx scripts/research/norms-from-ipip-dataset.ts \
+  --csv scripts/research/.data/<mappa>/data.csv \
+  [--codebook <fájl>] [--form=short|full|both] \
+  [--json scripts/research/.data/ipip-reference-normtable.json]
+
+# codebook-egyeztetés hibakeresése:
+npx tsx scripts/research/norms-from-ipip-dataset.ts --csv ... --dump-codebook
+```
+
+Ha a letöltés nem megy (proxy/offline), a script kézi letöltési útmutatóval,
+0-s kóddal lép ki. Minőség-szűrés: a csomag saját ellenőrzését alkalmazza,
+ha van — a VCL-szókincs-ellenőrzést (VCL6/VCL9/VCL12 nem létező szavak = 1
+→ kizárás) automatikusan; egyéb (validitás-, komolyság-) oszlopra a codebook
+elolvasása után kézzel, **összehasonlító operátorral**:
+`--screen <oszlop><op><érték>`, ahol `<op>` ∈ `>=` `<=` `!=` `>` `<` `=`
+(a feltétel a MEGTARTOTT sorokra igaz; mindkét oldal szám → numerikus
+összevetés, egyébként szöveges). Operátor azért kell, mert a validitás-item
+nem feltétlenül 0/1: a HEXACO-csomagban a `V1`/`V2` („értem az instrukciót" /
+„pontosan válaszoltam") **7-fokú Likert** — a ténylegesen alkalmazott szűrő
+`--screen "V1>=5" --screen "V2>=5"` volt. A script a szűrő-jelölt oszlopokat
+(`serious|attent|check|valid` nevűek + `V<szám>`) ki is listázza. Az
+alkalmazott szűrőket a kimenet dokumentálja. Összefoglaló doksi (MÉRT
+számokkal, 2026-08-11): `docs/research/ipip-reference-2026-08.md`.
 
 ## stats.ts — közös segéd
 

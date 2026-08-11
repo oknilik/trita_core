@@ -36,12 +36,12 @@ function buildLikertScores(offset: number) {
   return {
     type: "likert",
     dimensions: {
-      INTE: 58 + offset,
-      RESO: 54 + offset,
-      TEMP: 49 + offset,
-      ADAP: 62 + offset,
-      THOR: 64 + offset,
-      OPEN: 57 + offset,
+      H: 58 + offset,
+      E: 54 + offset,
+      X: 49 + offset,
+      A: 62 + offset,
+      C: 64 + offset,
+      O: 57 + offset,
     },
   };
 }

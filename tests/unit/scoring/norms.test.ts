@@ -51,8 +51,8 @@ describe("norms — aktív tábla nélkül minden néma (null-ág)", () => {
   });
 
   it("percentileForScore null → a felület nem renderel percentilis-sort", () => {
-    assert.equal(percentileForScore("OPEN", 72), null);
-    assert.equal(percentileForScore("INTE", 50), null);
+    assert.equal(percentileForScore("O", 72), null);
+    assert.equal(percentileForScore("H", 50), null);
     assert.equal(percentileForScore("ismeretlen", 50), null);
   });
 });

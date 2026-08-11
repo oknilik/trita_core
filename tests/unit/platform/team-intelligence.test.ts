@@ -76,10 +76,10 @@ test("priority engine flags missing assessment completions", () => {
 
 test("priority engine adds high spread trigger when a dimension range is wide", () => {
   const members: SerializedTeamMember[] = [
-    makeMember("u1", "member", { INTE: 60, RESO: 45, TEMP: 20, ADAP: 60, THOR: 60, OPEN: 50 }),
-    makeMember("u2", "member", { INTE: 61, RESO: 46, TEMP: 75, ADAP: 59, THOR: 58, OPEN: 52 }),
-    makeMember("u3", "member", { INTE: 59, RESO: 44, TEMP: 24, ADAP: 61, THOR: 62, OPEN: 48 }),
-    makeMember("u4", "member", { INTE: 60, RESO: 45, TEMP: 70, ADAP: 60, THOR: 61, OPEN: 50 }),
+    makeMember("u1", "member", { H: 60, E: 45, X: 20, A: 60, C: 60, O: 50 }),
+    makeMember("u2", "member", { H: 61, E: 46, X: 75, A: 59, C: 58, O: 52 }),
+    makeMember("u3", "member", { H: 59, E: 44, X: 24, A: 61, C: 62, O: 48 }),
+    makeMember("u4", "member", { H: 60, E: 45, X: 70, A: 60, C: 61, O: 50 }),
   ];
 
   const priorities = buildTeamIntelligencePriorities({
@@ -97,10 +97,10 @@ test("priority engine adds high spread trigger when a dimension range is wide", 
 });
 
 test("cohesion risk reason shows the average but no ± spread number (2026-08-11)", () => {
-  // Alacsony kohézió-proxy (ADAP/INTE = 40 → átlag 40% < 45) → cohesion_risk.
+  // Alacsony kohézió-proxy (A/H = 40 → átlag 40% < 45) → cohesion_risk.
   // A szórás továbbra is kiváltó lehet, de számként nem jelenhet meg.
   const members: SerializedTeamMember[] = ["u1", "u2", "u3", "u4"].map((id) =>
-    makeMember(id, "member", { INTE: 40, RESO: 48, TEMP: 52, ADAP: 40, THOR: 54, OPEN: 51 }),
+    makeMember(id, "member", { H: 40, E: 48, X: 52, A: 40, C: 54, O: 51 }),
   );
 
   for (const locale of ["hu", "en"] as const) {
@@ -127,10 +127,10 @@ test("priority engine adds leader-team mismatch trigger for large H/A delta", ()
   // mindkét kezelő szerep vezetőnek számít.
   for (const leaderRole of ["manager", "admin"] as const) {
     const members: SerializedTeamMember[] = [
-      makeMember("lead_1", leaderRole, { INTE: 80, RESO: 45, TEMP: 50, ADAP: 80, THOR: 55, OPEN: 50 }),
-      makeMember("u2", "member", { INTE: 55, RESO: 48, TEMP: 52, ADAP: 55, THOR: 54, OPEN: 51 }),
-      makeMember("u3", "member", { INTE: 54, RESO: 47, TEMP: 50, ADAP: 56, THOR: 56, OPEN: 49 }),
-      makeMember("u4", "member", { INTE: 56, RESO: 46, TEMP: 49, ADAP: 54, THOR: 55, OPEN: 50 }),
+      makeMember("lead_1", leaderRole, { H: 80, E: 45, X: 50, A: 80, C: 55, O: 50 }),
+      makeMember("u2", "member", { H: 55, E: 48, X: 52, A: 55, C: 54, O: 51 }),
+      makeMember("u3", "member", { H: 54, E: 47, X: 50, A: 56, C: 56, O: 49 }),
+      makeMember("u4", "member", { H: 56, E: 46, X: 49, A: 54, C: 55, O: 50 }),
     ];
 
     const priorities = buildTeamIntelligencePriorities({
@@ -154,9 +154,9 @@ test("priority engine adds leader-team mismatch trigger for large H/A delta", ()
 
 test("priority engine falls back to a dedicated healthy_baseline card", () => {
   const members: SerializedTeamMember[] = [
-    makeMember("u1", "member", { INTE: 55, RESO: 48, TEMP: 52, ADAP: 55, THOR: 54, OPEN: 51 }),
-    makeMember("u2", "member", { INTE: 54, RESO: 47, TEMP: 50, ADAP: 56, THOR: 56, OPEN: 49 }),
-    makeMember("u3", "member", { INTE: 56, RESO: 46, TEMP: 49, ADAP: 54, THOR: 55, OPEN: 50 }),
+    makeMember("u1", "member", { H: 55, E: 48, X: 52, A: 55, C: 54, O: 51 }),
+    makeMember("u2", "member", { H: 54, E: 47, X: 50, A: 56, C: 56, O: 49 }),
+    makeMember("u3", "member", { H: 56, E: 46, X: 49, A: 54, C: 55, O: 50 }),
   ];
 
   const priorities = buildTeamIntelligencePriorities({

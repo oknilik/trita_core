@@ -31,7 +31,7 @@ import {
   type Pole,
   type RelationAtom,
 } from "@/lib/interaction-atoms";
-import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 
 // ── Pólus-küszöbök ───────────────────────────────────────────────────
 // A `profile-engine.ts` házi konvenciója (szigorú összehasonlítással):
@@ -44,7 +44,7 @@ const LOW_THRESHOLD = PROFILE_LOW_THRESHOLD;
 const MIDPOINT = 50;
 
 export type Polarity = Pole | "medium";
-export type DimScores = Partial<Record<TritanDimCode, number>>;
+export type DimScores = Partial<Record<HexacoCode, number>>;
 
 /** Adatforrás-szint — a felület ebből rakja ki a pontosság-jelzést. */
 export type InteractionLevel =
@@ -77,12 +77,12 @@ export interface InteractionLine {
   /** Melyik atomból jött — visszakövethetőség és forrás-badge. */
   atomId: string;
   /** Az érintett dimenziók (azonos atomnál egy, keresztnél kettő). */
-  dims: TritanDimCode[];
+  dims: HexacoCode[];
   text: LocalizedText;
 }
 
 export interface LeaderNote {
-  dim: TritanDimCode;
+  dim: HexacoCode;
   pole: Pole;
   text: LocalizedText;
 }
@@ -133,7 +133,7 @@ function poleStrength(score: number): number {
 /** A pólusos (nem középsávos) dimenziók, a kanonikus sorrendben. */
 export function polarSides(scores: DimScores): AtomSide[] {
   const sides: AtomSide[] = [];
-  for (const dim of TRITAN_ORDER) {
+  for (const dim of HEXACO_ORDER) {
     const polarity = polarityOf(scores[dim]);
     if (polarity === "high" || polarity === "low") {
       sides.push({ dim, pole: polarity });
@@ -147,13 +147,13 @@ export function polarSides(scores: DimScores): AtomSide[] {
 interface Candidate {
   atom: RelationAtom;
   mirrored: boolean;
-  dims: TritanDimCode[];
+  dims: HexacoCode[];
   salience: number;
 }
 
 /**
  * Bázis-súly: azonos dimenziónál a dimenzió súrlódás-súlya, keresztnél a
- * két dimenzió súlyának átlaga. Így a THOR/ADAP feszültségek természetesen
+ * két dimenzió súlyának átlaga. Így a C/A feszültségek természetesen
  * felülre kerülnek, a kereszt-atomok pedig nem nyomják el az azonos
  * dimenziós párokat pusztán azért, mert két dimenziót érintenek.
  */
@@ -187,7 +187,7 @@ function collectCandidates(self: DimScores, other: DimScores): Candidate[] {
       // A pár annyira markáns, amennyire a GYENGÉBB oldala — egy alig
       // pólusos fél nem tesz erőssé egy dinamikát.
       const strength = Math.min(myStrength, theirStrength);
-      const dims: TritanDimCode[] =
+      const dims: HexacoCode[] =
         found.atom.kind === "same"
           ? [found.atom.a.dim]
           : [found.atom.a.dim, found.atom.b.dim];
@@ -210,7 +210,7 @@ function collectCandidates(self: DimScores, other: DimScores): Candidate[] {
 
 /**
  * Válogatás: markánsság szerint csökkenően, de egy atom csak akkor kerül
- * be, ha ÚJ dimenziót hoz — különben három egymás alatti THOR-szöveget
+ * be, ha ÚJ dimenziót hoz — különben három egymás alatti C-szöveget
  * kapna a felhasználó. Azonos markánsságnál az atom-ID dönt, hogy a
  * kimenet determinisztikus legyen.
  */
@@ -218,7 +218,7 @@ function selectAtoms(candidates: Candidate[], maxAtoms: number): Candidate[] {
   const sorted = [...candidates].sort(
     (a, b) => b.salience - a.salience || a.atom.id.localeCompare(b.atom.id),
   );
-  const usedDims = new Set<TritanDimCode>();
+  const usedDims = new Set<HexacoCode>();
   const picked: Candidate[] = [];
 
   for (const candidate of sorted) {
@@ -311,22 +311,22 @@ export const ARCHETYPE_SECONDARY_SCORE = 74;
 export const ARCHETYPE_NEUTRAL_SCORE = 50;
 
 export interface ArchetypePair {
-  dominant: TritanDimCode;
-  secondary: TritanDimCode;
+  dominant: HexacoCode;
+  secondary: HexacoCode;
 }
 
 export function archetypePrototype(pair: ArchetypePair): DimScores {
   const scores: DimScores = {};
-  for (const dim of TRITAN_ORDER) scores[dim] = ARCHETYPE_NEUTRAL_SCORE;
+  for (const dim of HEXACO_ORDER) scores[dim] = ARCHETYPE_NEUTRAL_SCORE;
   scores[pair.dominant] = ARCHETYPE_DOMINANT_SCORE;
   scores[pair.secondary] = ARCHETYPE_SECONDARY_SCORE;
   return scores;
 }
 
 /** Mind a 30 archetípus-pár, a kanonikus dimenzió-sorrendben. */
-export const ARCHETYPE_PAIRS: ArchetypePair[] = TRITAN_ORDER.flatMap(
+export const ARCHETYPE_PAIRS: ArchetypePair[] = HEXACO_ORDER.flatMap(
   (dominant) =>
-    TRITAN_ORDER.filter((secondary) => secondary !== dominant).map(
+    HEXACO_ORDER.filter((secondary) => secondary !== dominant).map(
       (secondary) => ({ dominant, secondary }),
     ),
 );

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import {
   CROSS_DIMENSION_ATOMS,
   LEADER_SUPPLEMENTS,
@@ -38,7 +38,7 @@ function assertBlocks(atom: RelationAtom, which: "view" | "viewB") {
 
 test("azonos dimenziós lefedettség: 6 dimenzió × 3 pólus-kombináció = 18 atom", () => {
   assert.equal(SAME_DIMENSION_ATOMS.length, 18);
-  for (const dim of TRITAN_ORDER) {
+  for (const dim of HEXACO_ORDER) {
     const combos: Array<[Pole, Pole]> = [
       ["high", "high"],
       ["high", "low"],
@@ -64,7 +64,7 @@ test("kereszt-atomok: legalább 10 kiemelt pár, mind aszimmetrikus viewB-vel", 
 test("minden atom: érvényes dimenziókód, egyedi id, egyedi pólus-pár", () => {
   const ids = new Set<string>();
   const keys = new Set<string>();
-  const validDims = new Set<string>(TRITAN_ORDER);
+  const validDims = new Set<string>(HEXACO_ORDER);
   for (const atom of RELATION_ATOMS) {
     assert.ok(!ids.has(atom.id), `duplikált id: ${atom.id}`);
     ids.add(atom.id);
@@ -100,10 +100,10 @@ test("aszimmetrikus atomnak viewB-je van, szimmetrikusnak nincs szüksége rá",
 });
 
 test("vezető-kiegészítő: mind a 6 dimenzió × 2 pólus kitöltve", () => {
-  for (const dim of TRITAN_ORDER) {
+  for (const dim of HEXACO_ORDER) {
     for (const pole of POLES) {
       assertLocalized(
-        LEADER_SUPPLEMENTS[dim as TritanDimCode][pole],
+        LEADER_SUPPLEMENTS[dim as HexacoCode][pole],
         `LEADER_SUPPLEMENTS.${dim}.${pole}`,
       );
     }
@@ -112,12 +112,12 @@ test("vezető-kiegészítő: mind a 6 dimenzió × 2 pólus kitöltve", () => {
 
 test("findAtom irányfüggetlen, a tükrözött nézőpont a viewB-t adja", () => {
   const direct = findAtom(
-    { dim: "THOR", pole: "high" },
-    { dim: "THOR", pole: "low" },
+    { dim: "C", pole: "high" },
+    { dim: "C", pole: "low" },
   );
   const mirrored = findAtom(
-    { dim: "THOR", pole: "low" },
-    { dim: "THOR", pole: "high" },
+    { dim: "C", pole: "low" },
+    { dim: "C", pole: "high" },
   );
   assert.ok(direct && mirrored);
   assert.equal(direct.atom.id, mirrored.atom.id);
@@ -130,7 +130,7 @@ test("findAtom irányfüggetlen, a tükrözött nézőpont a viewB-t adja", () =
   assert.equal(mirroredBlocks, mirrored.atom.viewB);
 
   // Szimmetrikus atomnál mindkét irány ugyanazt a nézetet adja.
-  const symA = findAtom({ dim: "OPEN", pole: "high" }, { dim: "OPEN", pole: "high" });
+  const symA = findAtom({ dim: "O", pole: "high" }, { dim: "O", pole: "high" });
   assert.ok(symA);
   assert.equal(atomBlocksFor(symA.atom, symA.mirrored), symA.atom.view);
 });

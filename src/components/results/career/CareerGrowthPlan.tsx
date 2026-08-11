@@ -3,49 +3,18 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { dimColors } from "@/lib/color-system";
 import { t, tf } from "@/lib/i18n";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
-import { GROWTH_BY_POLE, type Pole } from "@/lib/career/growth-content";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
+import { GROWTH_BY_POLE, collectGrowthGaps } from "@/lib/career/growth-content";
 import type { CareerResultView } from "@/lib/career/service";
-import type { DimCode } from "@/lib/career/types";
 
 // Irány-tudatos fejlődési blokk: a felső klaszterekben leggyakoribb ELTÉRÉST
 // nézi, és megtartja az irányát. (A v1 dimenzió-szinten tanácsolt, ezért
 // „cél fölötti” eltérésnél az ellenkező irányba küldte a felhasználót.)
-
-interface GapCount {
-  dim: DimCode;
-  pole: Pole;
-  count: number;
-  weight: number;
-}
-
-function collectGaps(result: CareerResultView, max = 2): GapCount[] {
-  const buckets = new Map<string, GapCount>();
-  const top = [...result.sections.atLevel, ...result.sections.afterTraining]
-    .slice(0, 2)
-    .flat();
-  for (const fit of top) {
-    for (const component of fit.components) {
-      if (component.position === "in" || component.weight < 0.15) continue;
-      const key = `${component.dim}:${component.position}`;
-      const existing = buckets.get(key);
-      if (existing) {
-        existing.count += 1;
-        existing.weight += component.weight;
-      } else {
-        buckets.set(key, {
-          dim: component.dim,
-          pole: component.position,
-          count: 1,
-          weight: component.weight,
-        });
-      }
-    }
-  }
-  return [...buckets.values()]
-    .sort((a, b) => b.count - a.count || b.weight - a.weight)
-    .slice(0, max);
-}
+//
+// A gyűjtés (collectGrowthGaps) a lib-ben él, és a motor H-padló-kizárását is
+// alkalmazza: a note === "h-floor" komponens nem eltérés — nélküle a magas
+// becsületesség-alázatú felhasználót arra coacholtuk, hogy legyen kevésbé
+// őszinte (2026-08-11, fix).
 
 export function CareerGrowthPlan({
   result,
@@ -57,7 +26,7 @@ export function CareerGrowthPlan({
 }) {
   const { locale } = useLocale();
   const isHu = locale === "hu";
-  const gaps = collectGaps(result);
+  const gaps = collectGrowthGaps(result.sections);
   if (gaps.length === 0) {
     if (result.sections.atLevel.length + result.sections.afterTraining.length === 0) return null;
     // Nincs jelentős eltérés: ezt ki KELL mondani, különben a hiányzó blokk
@@ -85,7 +54,7 @@ export function CareerGrowthPlan({
 
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         {gaps.map((gap) => {
-          const dim = TRITAN_DIMENSIONS[gap.dim];
+          const dim = HEXACO_DIMENSIONS[gap.dim];
           const content = GROWTH_BY_POLE[gap.dim][gap.pole][isHu ? "hu" : "en"];
           return (
             <div

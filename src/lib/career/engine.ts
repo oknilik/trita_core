@@ -33,6 +33,8 @@ import {
   interestDifferentiation,
 } from "./interests";
 import {
+  INTEREST_SE_MEASURED,
+  INTEREST_SE_OTHER,
   bandFor,
   blendedStandardError,
   dimStandardError,
@@ -100,10 +102,9 @@ const LOW_DIFFERENTIATION_FACTOR = 0.5;
  * Komponens-hibák a rangsor-SE terjesztéséhez (0-100 skálán): a mért
  * érdeklődés (30 itemes kérdőív) és a közvetlen preferencia-válasz jóval
  * pontosabb, mint a személyiség-alapú illeszkedés; a címke/becslés-alapú
- * érdeklődés a legzajosabb.
+ * érdeklődés a legzajosabb. Az érdeklődés-SE-k a psychometrics modulban élnek
+ * (a felületi címke-kapu is onnan olvassa őket).
  */
-const INTEREST_SE_MEASURED = 6;
-const INTEREST_SE_OTHER = 12;
 const PREFERENCE_SE = 5;
 
 /** A választott iparágakhoz tartozó szerepek rangsor-bónusza (nem szűrés). */
@@ -139,7 +140,7 @@ const CANDIDATE_MIN = 30;
 const CANDIDATE_MAX = 60;
 
 /** Vezetői ambíció: ezek a komponensek kapnak többletsúlyt. */
-const LEAD_BOOST: Partial<Record<DimCode, number>> = { TEMP: 0.15, RESO: 0.05 };
+const LEAD_BOOST: Partial<Record<DimCode, number>> = { X: 0.15, E: 0.05 };
 
 /**
  * Illeszkedés egy komponensre: 100 a célon, 50 egy toleranciányira, 0 két
@@ -157,22 +158,23 @@ function alignmentFor(userValue: number, target: number, tol: number): number {
  *
  * A H-padló a NYERS (kevert) ponton fut, NEM a centráltan: az invariáns az
  * ABSZOLÚT becsületességről szól. Centrált ponttal egy abszolút őszinte user,
- * akinek az INTE a saját profiljában relatíve a legalacsonyabb (pl. INTE 70 a
+ * akinek az H a saját profiljában relatíve a legalacsonyabb (pl. H 70 a
  * 85-ös átlag mellett → centrálva 38), rosszabbul járt volna egy laposabb,
  * kevésbé őszinte profilnál — pont a kimondott invariáns ellen.
  */
 function componentFit(
   dim: DimCode,
   centeredValue: number,
-  rawValue: number,
+  blendedRaw: number,
+  selfRaw: number,
   target: number,
   tol: number,
   weight: number,
 ): FitComponent {
-  const hFloor = dim === "INTE" && target < 50;
+  const hFloor = dim === "H" && target < 50;
   const effectiveTarget = hFloor ? 50 : target;
-  // H-padlónál az értékelt pont a nyers; máshol a profil-alak (centrált).
-  const userValue = hFloor ? rawValue : centeredValue;
+  // H-padlónál az értékelt pont a nyers KEVERT; máshol a profil-alak (centrált).
+  const userValue = hFloor ? blendedRaw : centeredValue;
   const alignment = hFloor && userValue >= effectiveTarget
     ? 100
     : alignmentFor(userValue, effectiveTarget, tol);
@@ -182,10 +184,16 @@ function componentFit(
       : userValue < effectiveTarget
         ? "under"
         : "over";
-  // Megjelenítési pár a NYERS skálán: a cél ugyanazzal az eltolással kerül
-  // vissza (rawValue − centeredValue = profilátlag − 50), így a távolság — és
-  // vele a position/alignment — változatlan; a userRaw viszont azonos a
-  // results-oldali pontszámmal. H-padlónál a két skála egybeesik (nyers 50).
+  // Megjelenítési pár a NYERS skálán, a SELF pontra horgonyozva (2026-08-11,
+  // fix): a userRaw a results-oldali ÖNÉRTÉKELÉS-pontszám, NEM a kevert érték.
+  // A korábbi kevert userRaw megsértette a dokumentált szerződést, és — mivel
+  // az observerWeight(n) minden n≥3-ra pontosan 0,5 — az observer-aggregátum
+  // pontosan visszafejthető volt (obs = 2·userRaw − self). A keverés innentől
+  // TELJESEN belső: a pontozásban (userValue, alignment, position) él, de a
+  // szerializált nyers pár csak a self pontot hordozza. A cél a self-horgonyhoz
+  // képest ugyanazzal az eltolással jön vissza (selfRaw − centeredValue), így
+  // |userRaw − targetRaw| = |userValue − target| — a position/alignment a
+  // mutatott párral is konzisztens. H-padlónál a targetRaw a nyers 50.
   //
   // SKÁLA-SZÉL (2026-08-11): magas (vagy nagyon alacsony) átlagú profilnál az
   // eltolt cél kicsúszhat a 0-100 skáláról. A vágás után a |userRaw − targetRaw|
@@ -194,7 +202,7 @@ function componentFit(
   // hamisítjuk meg (az a results-oldali pontszám), ezért a pár mellé
   // `targetAtEdge` jelzés kerül, és a UI kimondja, hogy a cél a skála szélére
   // szorult.
-  const shift = rawValue - centeredValue;
+  const shift = selfRaw - centeredValue;
   const shiftedTarget = target + shift;
   const targetRaw = hFloor
     ? effectiveTarget
@@ -206,7 +214,7 @@ function componentFit(
     tol,
     weight,
     userValue: Math.round(userValue),
-    userRaw: Math.round(rawValue),
+    userRaw: Math.round(selfRaw),
     targetRaw: Math.round(targetRaw),
     alignment: Math.round(alignment),
     position,
@@ -417,12 +425,22 @@ export function computeCareerFit(
     let totalWeight = 0;
     for (const component of weights) {
       const centeredValue = centered[component.dim];
-      const rawValue = blended[component.dim];
-      if (typeof centeredValue !== "number" || typeof rawValue !== "number") continue;
+      const blendedRaw = blended[component.dim];
+      // A megjelenítési pár horgonya a SELF pont (a results-oldali pontszám).
+      // A blendDims csak olyan dimenziót kever, ahol van self érték, tehát ha
+      // a blendedRaw szám, a self is az.
+      const selfRaw = person.dims[component.dim];
+      if (
+        typeof centeredValue !== "number" ||
+        typeof blendedRaw !== "number" ||
+        typeof selfRaw !== "number"
+      )
+        continue;
       const fit = componentFit(
         component.dim,
         centeredValue,
-        rawValue,
+        blendedRaw,
+        selfRaw,
         component.target,
         component.tol,
         component.w,

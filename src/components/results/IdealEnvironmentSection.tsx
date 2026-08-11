@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import {
   ENV_ROW_POLES,
   ENV_ROW_SHORT_LABELS,
@@ -13,6 +13,9 @@ import {
 interface EnvItem {
   label: string;
   value: string;
+  /** F3-hedge: a pólus-ítélet a 65/70 (ill. 30/35) egyet-nem-értési sávban —
+   *  a bold szint-szó „Inkább …" alakot kap (getEnvRows adja). */
+  hedged?: boolean;
 }
 
 interface IdealEnvironmentSectionProps {
@@ -64,10 +67,18 @@ export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentS
             : { low: "", high: "" };
           // Bold szint-szó a kanonikus kulcs+szint táblából; ismeretlen sorra
           // semleges „Közepes" — ugyanaz a defenzív alapérték, mint korábban.
-          const shortLabel =
+          // Hedge-sávban (F3, getEnvRows.hedged) a kemény szint-szó helyett
+          // „Inkább magas" / „Leaning fast" stb. — így a pólus-chip nem mond
+          // ellent az egy görgetésre lévő strip 70/40-es címkéjének.
+          const canonicalLabel =
             envKey && level
               ? ENV_ROW_SHORT_LABELS[envKey][level][locale]
               : t("content.envLabelMedium", locale);
+          const shortLabel = item.hedged
+            ? tf("results.envLeaningLabel", locale, {
+                label: canonicalLabel.toLocaleLowerCase(locale === "hu" ? "hu" : "en"),
+              })
+            : canonicalLabel;
           const pos = levelPosition(level);
           const desc = getDescription(item.value);
 

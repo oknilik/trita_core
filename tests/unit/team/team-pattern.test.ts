@@ -9,8 +9,8 @@ import {
 } from "@/lib/team-pattern";
 import { PATTERNS } from "@/lib/pattern-data";
 
-// Küszöbök a team-pattern.ts-ből: drive(TEMP) 55 · cohesion((ADAP+INTE)/2) 60 ·
-// discipline(THOR) 62.5 · openness(OPEN) 57.5. A "high"/"low" értékek jó messze
+// Küszöbök a team-pattern.ts-ből: drive(X) 55 · cohesion((A+H)/2) 60 ·
+// discipline(C) 62.5 · openness(O) 57.5. A "high"/"low" értékek jó messze
 // vannak a küszöbtől és a ±6.25-ös "balanced" (= instabil) sávtól.
 const THRESHOLDS = { drive: 55, cohesion: 60, discipline: 62.5, openness: 57.5 };
 const OFFSET = 20;
@@ -23,13 +23,13 @@ function scoresFor(axes: {
 }): TritanScores {
   const cohesionValue = THRESHOLDS.cohesion + (axes.cohesion ? OFFSET : -OFFSET);
   return {
-    TEMP: THRESHOLDS.drive + (axes.drive ? OFFSET : -OFFSET),
-    // cohesion = (ADAP + INTE) / 2 — azonos értékkel a cél pontosan kijön
-    ADAP: cohesionValue,
-    INTE: cohesionValue,
-    THOR: THRESHOLDS.discipline + (axes.discipline ? OFFSET : -OFFSET),
-    OPEN: THRESHOLDS.openness + (axes.openness ? OFFSET : -OFFSET),
-    RESO: 50,
+    X: THRESHOLDS.drive + (axes.drive ? OFFSET : -OFFSET),
+    // cohesion = (A + H) / 2 — azonos értékkel a cél pontosan kijön
+    A: cohesionValue,
+    H: cohesionValue,
+    C: THRESHOLDS.discipline + (axes.discipline ? OFFSET : -OFFSET),
+    O: THRESHOLDS.openness + (axes.openness ? OFFSET : -OFFSET),
+    E: 50,
   };
 }
 
@@ -120,7 +120,7 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
   it("küszöb-közeli tengely → közepes stabilitás + érvényes, egy pozícióban eltérő alternatíva", () => {
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
     // openness a küszöb fölé, de a "balanced" (instabil) sávon belülre
-    scores.OPEN = THRESHOLDS.openness + 2;
+    scores.O = THRESHOLDS.openness + 2;
     const result = calculateTeamPattern(team(scores));
     assert.ok(result);
     assert.equal(result.stability, "közepes");
@@ -133,8 +133,8 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
 
   it("két küszöb-közeli tengely → instabil", () => {
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
-    scores.OPEN = THRESHOLDS.openness + 2;
-    scores.TEMP = THRESHOLDS.drive - 1;
+    scores.O = THRESHOLDS.openness + 2;
+    scores.X = THRESHOLDS.drive - 1;
     const result = calculateTeamPattern(team(scores));
     assert.ok(result);
     assert.equal(result.stability, "instabil");
@@ -150,7 +150,7 @@ describe("calculateTeamPattern — alternatíva és stabilitás", () => {
     // "balanced" lett, mégis „stabil" minősítés + „minden tengely egyértelműen
     // egy pólus felé hajlik" jegyzet készült hozzá.
     const scores = scoresFor({ drive: true, cohesion: true, discipline: true, openness: true });
-    scores.OPEN = THRESHOLDS.openness + 5;
+    scores.O = THRESHOLDS.openness + 5;
     const result = calculateTeamPattern(team(scores));
     assert.ok(result);
     assert.equal(result.axes.openness.grade, "balanced");

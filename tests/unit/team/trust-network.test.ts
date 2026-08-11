@@ -184,6 +184,67 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
   });
 });
 
+// ── Befelé evidenciált hub/beágyazatlan (kifelé-él támadás elleni védelem) ──
+// A hub- és beágyazatlan-jelölés csak olyan élből számolható, amiben a
+// csomópontról VAN bejövő evidencia (kölcsönös él, vagy egyoldalú él az
+// értékelt oldalán). A csak-kifelé él a SAJÁT kiosztott értékelése — abból
+// róla nem állítható semmi.
+
+describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () => {
+  it("regresszió: két szigorú KIFELÉ értékelés nem bélyegzi az értékelőt beágyazatlan tagnak", () => {
+    // "attacker" két csapattársat értékel mélyre, őt senki — a régi logika
+    // a 2 (csak-kifelé) gyenge éle alapján névvel „beágyazatlan tagként"
+    // tette volna a publikált riportba.
+    const net = computeTrustNetwork(
+      [
+        obs("attacker", "u2", answersAt("min")),
+        obs("attacker", "u3", answersAt("min")),
+        obs("u2", "u3", answersAt("max")),
+        obs("u3", "u2", answersAt("max")),
+      ],
+      ["attacker", "u2", "u3"],
+    );
+    assert.deepEqual(net.isolatedUserIds, []);
+  });
+
+  it("regresszió: két magas KIFELÉ értékelés nem teszi az értékelőt hubbá", () => {
+    const net = computeTrustNetwork(
+      [obs("rater", "u2", answersAt("max")), obs("rater", "u3", answersAt("max"))],
+      ["rater", "u2", "u3"],
+    );
+    assert.deepEqual(net.hubUserIds, []);
+    assert.equal(net.nodes.find((n) => n.userId === "rater")?.strongEdgeCount, 0);
+  });
+
+  it("egyoldalú él az ÉRTÉKELT oldalán evidencia: két bejövő gyenge él beágyazatlanságot jelez", () => {
+    const net = computeTrustNetwork(
+      [
+        obs("u1", "u4", answersAt("min")),
+        obs("u2", "u4", answersAt("min")),
+        obs("u1", "u2", answersAt("max")),
+        obs("u2", "u1", answersAt("max")),
+      ],
+      ["u1", "u2", "u4"],
+    );
+    assert.deepEqual(net.isolatedUserIds, ["u4"]);
+  });
+
+  it("egyoldalú erős élek a hub-fokba is csak az értékelt oldalán számítanak", () => {
+    // u1-et hárman értékelik erősre — u1 hub; az értékelők kifelé-élei
+    // nekik nem adnak erős-él-fokot.
+    const net = computeTrustNetwork(
+      [
+        obs("u2", "u1", answersAt("max")),
+        obs("u3", "u1", answersAt("max")),
+        obs("u4", "u1", answersAt("max")),
+      ],
+      ["u1", "u2", "u3", "u4"],
+    );
+    assert.deepEqual(net.hubUserIds, ["u1"]);
+    assert.equal(net.nodes.find((n) => n.userId === "u2")?.strongEdgeCount, 0);
+  });
+});
+
 // ── FIX 4: kilépett tagok megfigyelései nem szennyezik a hálót ──────────────
 
 describe("computeTrustNetwork — kilépett tagok szűrése", () => {

@@ -7,6 +7,9 @@ interface RoleFitSectionProps {
   strongFit: string;
   mightWork: string;
   needsPrep: string;
+  /** A második legerősebb dimenzió árnyaló mondata (P2.2) — a PDF
+   *  (PdfRoleFit) ugyanezt rendereli; a képernyő korábban elejtette. */
+  secondary?: string;
   strongRoles?: string[];
   mightRoles?: string[];
   prepRoles?: string[];
@@ -44,6 +47,7 @@ export function RoleFitSection({
   strongFit,
   mightWork,
   needsPrep,
+  secondary,
   strongRoles,
   mightRoles,
   prepRoles,
@@ -68,6 +72,14 @@ export function RoleFitSection({
           {t("results.roleFitEyebrow", locale)}
         </p>
       </div>
+
+      {/* Másodlagos dimenzió árnyalása (P2.2) — a PDF-fel egyező helyen,
+          a sávok előtt. */}
+      {secondary ? (
+        <p className="mb-3 font-fraunces text-caption italic leading-relaxed text-[var(--color-text-secondary)]">
+          {secondary}
+        </p>
+      ) : null}
 
       <div className="mt-4 flex flex-col gap-3">
         {TIERS.map((tier) => {
@@ -105,6 +117,14 @@ export function RoleFitSection({
           );
         })}
       </div>
+
+      {/* Módszertani disclaimer — a PDF-fel (PdfRoleFit) közös kulcs: a
+          szerep-illeszkedés profil-alapú becslés, a személyiség csak egy
+          tényező. A képernyő és a publikus share-oldal korábban disclaimer
+          nélkül mutatta ugyanezeket a pozíció-pilleket. */}
+      <p className="mt-3 text-micro leading-relaxed text-[var(--color-text-muted)]">
+        {t("pdf.roleFitDisclaimer", locale)}
+      </p>
     </div>
   );
 }

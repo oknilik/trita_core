@@ -5,7 +5,7 @@ import type {
   DossierMeasurementKey,
   DossierEdgeType,
 } from "@/lib/member-dossier";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { TRUST_MIN_RATERS } from "@/lib/trust-network";
@@ -202,7 +202,7 @@ export function MemberDossierView({
                   return (
                     <tr key={d.code} className={big ? "bg-state-warning-bg/60" : undefined}>
                       <td className="py-1.5 text-ink-body">
-                        {isHu ? TRITAN_DIMENSIONS[d.code].hu : TRITAN_DIMENSIONS[d.code].en}
+                        {isHu ? HEXACO_DIMENSIONS[d.code].hu : HEXACO_DIMENSIONS[d.code].en}
                       </td>
                       <td className="py-1.5 text-right tabular-nums text-ink">{d.self}</td>
                       <td className="py-1.5 text-right tabular-nums text-ink">
@@ -248,7 +248,7 @@ export function MemberDossierView({
                 <ul className="mt-1.5 flex flex-col gap-1">
                   {sx.topGaps.map((g) => (
                     <li key={g.code} className="text-caption text-ink-body">
-                      {isHu ? TRITAN_DIMENSIONS[g.code].hu : TRITAN_DIMENSIONS[g.code].en}:{" "}
+                      {isHu ? HEXACO_DIMENSIONS[g.code].hu : HEXACO_DIMENSIONS[g.code].en}:{" "}
                       <span className="tabular-nums font-medium">
                         {g.delta! > 0 ? `+${g.delta}` : g.delta}
                       </span>{" "}

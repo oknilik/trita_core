@@ -1,7 +1,7 @@
 import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getTestConfig, isCompleteFormAnswerSet } from "@/lib/questions";
+import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
@@ -114,9 +114,10 @@ export async function POST(req: Request) {
     }
   }
 
-  // Validate all questions answered
-  const config = getTestConfig(invitation.testType as TestType);
-  const expectedIds = new Set(config.questions.map((q) => q.id));
+  // Validate all questions answered — a mai formák mellett a korábbi rövid
+  // forma pontos id-halmaza is elfogadott (30 napig élő observer-link:
+  // a fül a forma-váltás előtt is megnyílhatott).
+  const expectedIds = getAcceptedAnswerIds(invitation.testType as TestType);
 
   // Filter to only the expected question IDs (drops stale answers from old test versions)
   const relevantAnswers = answers.filter((a) => expectedIds.has(a.questionId));
