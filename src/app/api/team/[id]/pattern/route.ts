@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import { calculateTeamPattern, type TritanScores } from "@/lib/team-pattern";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores } from "@/lib/scoring";
 
 export async function GET(
   _req: Request,
@@ -72,12 +72,14 @@ export async function GET(
     const ar = tm.user.assessmentResults[0];
     if (!ar) continue;
 
-    // FONTOS: a tárolt score-JSON a BELSŐ dimenziókódokat használja
-    // (H/E/X/A/C/O), nem a HEXACO display-betűket —
-    // ugyanaz az olvasási szabály, mint a team-stats.ts-ben.
-    // Hiányos/örökség score-JSON (nincs `dimensions` kulcs) NEM dönti el az
-    // egész endpointot: a tagot kihagyjuk, ahogy a team-stats.ts loader is.
-    const dims = (ar.scores as ScoreResult | null)?.dimensions;
+    // A tárolt score-JSON KANONIKUS olvasója (extractDimensionScores) —
+    // ugyanaz az olvasási szabály, mint a team-stats.ts-ben: a beágyazott és
+    // a lapos alakot is kezeli, és az örökség-kulcsokat (INTE/RESO/…)
+    // HEXACO-betűre fordítja. Nyers `scores.dimensions` mellett minden
+    // 2026-08-11 előtti kitöltő kiesett a mintázat-számításból.
+    // Hiányos score-JSON NEM dönti el az egész endpointot: a tagot
+    // kihagyjuk, ahogy a team-stats.ts loader is.
+    const dims = extractDimensionScores(ar.scores);
     if (
       !dims ||
       dims.H === undefined || dims.E === undefined || dims.X === undefined ||

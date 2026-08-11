@@ -7,7 +7,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import { prisma } from "@/lib/prisma";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import {
   resolvePersonalityTypeFromScores,
   type PersonalityLocale,
@@ -74,7 +74,10 @@ export async function loadShareOgModel(
   if (scores.type !== "likert") return EMPTY_MODEL;
 
   return buildShareOgModel(
-    scores.dimensions ?? null,
+    // Kanonikus olvasó: az örökség-kulcsos sorok is kapnak típus-címkét és
+    // glyph-et — nyers `scores.dimensions` mellett a link-előnézet generikus
+    // brand-képre esett vissza.
+    extractDimensionScores(result.scores),
     result.userProfile?.username ?? null,
     locale,
   );

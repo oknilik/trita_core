@@ -7,7 +7,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { getDimensionTier } from "@/lib/dimension-utils";
 import { poleAwareDimensionLabel } from "@/lib/profile-content";
@@ -128,10 +128,14 @@ export default async function SharedProfilePage({
   // dimenzió NEM 0 pont — a korábbi `?? 0` valódi 0-ként renderelte
   // („figyelendő" badge, 0-ból generált low-próza). A nem mért dimenzió
   // kimarad a megosztott nézetből is.
+  // Kanonikus olvasó — az örökség-kulcsos (INTE/RESO/…) sorok is
+  // megjeleníthetők maradnak, a megosztott link nem ürül ki.
+  const dimensionScores = extractDimensionScores(result.scores) ?? {};
+
   const dimensions = config.dimensions
     .filter((d) => d.code !== "I")
     .flatMap((dim) => {
-      const score = scores.dimensions[dim.code];
+      const score = dimensionScores[dim.code];
       if (typeof score !== "number") return [];
       const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
         low: string; mid: string; high: string;

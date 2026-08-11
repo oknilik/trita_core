@@ -2,7 +2,7 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { HEXACO_ORDER } from "@/lib/hexaco";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores } from "@/lib/scoring";
 import {
   DOSSIER_OBSERVER_MIN,
   computeObserverAverage,
@@ -37,9 +37,12 @@ import { getCurrentStepType, getCampaignSteps } from "@/lib/campaign-steps-core"
 //   · pszich. biztonság pulse: itt egyáltalán nem szerepel.
 // ─────────────────────────────────────────────────────────────────────
 
+// A tárolt score-JSON kanonikus olvasója — a 2026-08-11 előtti sorok az
+// örökség-kulcsokat hordozzák, a dossié viszont HEXACO-betűvel indexel
+// (computeDimComparisons order-je). Nyers olvasással a régi tagok
+// önkép-oszlopa és az observer-átlaga is üresen jött vissza.
 function dimsOf(scores: unknown): Record<string, number> {
-  const dims = (scores as ScoreResult | null)?.dimensions;
-  return dims && typeof dims === "object" ? dims : {};
+  return extractDimensionScores(scores) ?? {};
 }
 
 function messageOf(payload: unknown): string {

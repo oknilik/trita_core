@@ -18,7 +18,11 @@ import { readFakeDoorSession } from "@/lib/fakedoor/session";
 import type { CareerBackground } from "@/lib/industry-fit";
 import { getTestConfig } from "@/lib/questions";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
-import type { ScoreResult } from "@/lib/scoring";
+import {
+  extractDimensionScores,
+  extractFacetScores,
+  type ScoreResult,
+} from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { CareerCompass } from "@/components/results/CareerCompass";
 import { CareerFakeDoor } from "@/components/career/fakedoor/CareerFakeDoor";
@@ -209,12 +213,16 @@ function buildGrowthItems(
   if (!scores || scores.type !== "likert" || !result?.testType) return [];
 
   const config = getTestConfig(result.testType as TestType, locale);
+  // Kanonikus olvasók — az örökség-kulcsos sorokon a nyers hozzáférés üres
+  // fejlődési fókuszt adott.
+  const dimensionScores = extractDimensionScores(result.scores) ?? {};
+  const facetScores = extractFacetScores(result.scores);
   const facets: GrowthItem[] = [];
   const dimFallback: GrowthItem[] = [];
 
   for (const dim of config.dimensions) {
     if (dim.code === "I") continue;
-    const dimScore = scores.dimensions?.[dim.code];
+    const dimScore = dimensionScores[dim.code];
     if (typeof dimScore !== "number") continue;
 
     if (dimScore < 60) {
@@ -229,7 +237,12 @@ function buildGrowthItems(
     }
 
     for (const facet of dim.facets ?? []) {
-      const facetScore = scores.facets?.[facet.code];
+      // A facet-map KÉTSZINTŰ ({dimenzió: {facetKód: 0–100}}) — a korábbi
+      // egyszintű `scores.facets?.[facet.code]` mindig undefined-ot adott,
+      // így a facet-ág sosem tüzelt, és a fejlődési fókusz némán a
+      // dimenzió-fallbackre esett vissza (a riport-oldal ugyanezt a listát
+      // facet-szinten mutatja — a kettő eltért).
+      const facetScore = facetScores?.[dim.code]?.[facet.code];
       if (typeof facetScore !== "number" || facetScore >= 60) continue;
       facets.push({
         code: facet.code,
