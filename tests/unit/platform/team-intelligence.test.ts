@@ -199,8 +199,33 @@ test("dynamics evidence: measured trust edges raise source and confidence", () =
     locale: "en",
   });
 
-  assert.equal(evidence.dynamics.source, "self_plus_observer");
+  // A MÉRT él a BIZALMI KÖRBŐL jön (isMeasuredDynamicsSource), nem az
+  // observer-körből. A korábbi `self_plus_observer` címke olyan forrást
+  // állított, ami nem járult hozzá — a bemenet neve is ezt mondja
+  // (measuredDynamicsEdgeCount, trust-él).
+  assert.equal(evidence.dynamics.source, "self_plus_trust");
   assert.equal(evidence.dynamics.confidence, "medium");
+});
+
+test("dynamics evidence: observer-kör NEM állítható forrásként", () => {
+  // Szerkezeti garancia: a dinamika-evidencia bemenetei közt egyáltalán
+  // nincs observer-jel, tehát semmilyen kombináció nem termelhet observer
+  // forrás-címkét. Ha valaha lesz observer-alapú dinamika, az ÚJ forrás-
+  // értéket kap — ez a teszt akkor tudatosan frissítendő.
+  for (const measured of [0, 1, 5]) {
+    const evidence = buildTeamIntelligenceEvidence({
+      assessedCount: 4,
+      totalCount: 4,
+      dynamicsEdgeCount: 6,
+      measuredDynamicsEdgeCount: measured,
+      locale: "en",
+    });
+    assert.notEqual(
+      evidence.dynamics.source as string,
+      "self_plus_observer",
+      "a dinamika-nézet observer-evidenciát állít, ami nincs mögötte",
+    );
+  }
 });
 
 test("dynamics evidence: no edges at all → quality none", () => {

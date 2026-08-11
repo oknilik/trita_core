@@ -2,7 +2,8 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
+import { getDimensionTier } from "@/lib/dimension-utils";
+import { dimColorsCss } from "@/lib/color-system";
 
 interface AltruismCardProps {
   value: number;
@@ -20,8 +21,11 @@ const LEVEL_KEYS = {
 
 export function AltruismCard({ value, description }: AltruismCardProps) {
   const { locale } = useLocale();
+  // A tier CSAK a semleges SZINT-szóhoz kell (LEVEL_KEYS). A SZÍN nem
+  // értékel: a Segítőkészség nem a hat főfaktor egyike, ezért nincs saját
+  // identitás-hue-ja sem — semleges tintát kap (dimColorsCss fallback).
   const tier = getDimensionTier(value);
-  const colors = tierColors[tier];
+  const colors = dimColorsCss("I");
 
   return (
     <div className="mt-6">
@@ -39,9 +43,12 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
       </div>
 
       {/* Altruism card */}
-      <div className={`overflow-hidden rounded-xl border-[1.5px] p-4 px-[18px] ${colors.border} ${colors.cardBg}`}>
+      <div className="overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-4 px-[18px]">
         <div className="flex items-center gap-3">
-          <div className={`h-2 w-2 shrink-0 rounded-full ${colors.dot}`} />
+          <div
+            className="h-2 w-2 shrink-0 rounded-full"
+            style={{ backgroundColor: colors.base }}
+          />
           <span className="flex-1 text-sm font-medium text-[var(--color-text-primary)]">
             {t("content.altruismName", locale)}
           </span>
@@ -51,11 +58,17 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
           <span className="shrink-0 rounded bg-[var(--color-surface-subtle)] px-1.5 py-[2px] text-micro font-semibold text-[var(--color-text-muted)]">
             {t(LEVEL_KEYS[tier], locale)}
           </span>
-          <div className="h-1 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
+          <div className="h-1.5 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
             {/* Min. 2% sávszélesség, hogy a 0 is szándékos értéknek látsszon */}
-            <div className={`h-full rounded-sm ${colors.fill}`} style={{ width: `${Math.max(value, 2)}%` }} />
+            <div
+              className="h-full rounded-sm"
+              style={{ width: `${Math.max(value, 2)}%`, backgroundColor: colors.base }}
+            />
           </div>
-          <span className={`w-10 shrink-0 text-right font-fraunces text-base tabular-nums ${colors.text}`}>
+          <span
+            className="w-10 shrink-0 text-right font-fraunces text-base tabular-nums"
+            style={{ color: colors.strong }}
+          >
             {value}%
           </span>
         </div>

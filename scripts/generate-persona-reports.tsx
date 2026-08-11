@@ -27,7 +27,7 @@ import React from "react";
 import { buildAllPersonas, buildFacets, type Persona } from "./personas.shared";
 import { getTestConfig } from "../src/lib/questions";
 import { buildWorkstyleContent } from "../src/lib/workstyle-content";
-import { BLOCK8, buildArchetypeStory } from "../src/lib/profile-content";
+import { buildArchetypeStory } from "../src/lib/profile-content";
 import {
   isTopPairUncertain,
   resolvePersonalityTypeFromScores,
@@ -250,7 +250,6 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       collaboration: workstyle.collaboration,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
-      closingText: BLOCK8[locale],
     } : undefined,
     facetDimensions: plan === "plus" ? mainDims.map((d) => ({
       name: d.label,

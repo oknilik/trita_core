@@ -7,9 +7,9 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { prisma } from "@/lib/prisma";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
-import { getDimensionTier } from "@/lib/dimension-utils";
+import { dimColorsCss } from "@/lib/color-system";
 import { poleAwareDimensionLabel } from "@/lib/profile-content";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import {
@@ -128,10 +128,14 @@ export default async function SharedProfilePage({
   // dimenzió NEM 0 pont — a korábbi `?? 0` valódi 0-ként renderelte
   // („figyelendő" badge, 0-ból generált low-próza). A nem mért dimenzió
   // kimarad a megosztott nézetből is.
+  // Kanonikus olvasó — az örökség-kulcsos (INTE/RESO/…) sorok is
+  // megjeleníthetők maradnak, a megosztott link nem ürül ki.
+  const dimensionScores = extractDimensionScores(result.scores) ?? {};
+
   const dimensions = config.dimensions
     .filter((d) => d.code !== "I")
     .flatMap((dim) => {
-      const score = scores.dimensions[dim.code];
+      const score = dimensionScores[dim.code];
       if (typeof score !== "number") return [];
       const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
         low: string; mid: string; high: string;
@@ -251,10 +255,14 @@ export default async function SharedProfilePage({
               szomszédba), md:-től marad az eredeti 6 oszlopos sáv. A cellák
               közti vonalat gap-px + háttér adja, így minden rácsban stimmel. */}
           <div className="grid grid-cols-2 gap-px bg-[var(--color-border-default)] md:grid-cols-6">
+            {/* Szín = dimenzió-identitás (ld. DimensionAccordion fejkomment).
+                A korábbi kézi tier→szín leképezés ráadásul a SELF RÉTEG
+                akcentjét (--color-action-primary-bg) használta adat-markként,
+                vagyis a „hol vagyok" jelentés-osztályt keverte a „mit látok"-ba
+                — a színrendszer doksija szerint egy hue csak egy osztályban
+                élhet. Az ÉRTÉKET a szám hordozza, a SZÖVEGET a tier-címke. */}
             {dimensions.map((dim) => {
-              const tier = getDimensionTier(dim.score);
-              const tierColor = tier === "high" ? "var(--color-action-primary-bg)" : tier === "mid" ? "var(--color-accent-primary)" : "var(--color-text-muted)";
-              const tierBg = tier === "high" ? "var(--color-surface-self-accent-soft)" : tier === "mid" ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)";
+              const colors = dimColorsCss(dim.code);
               return (
                 <div
                   key={dim.code}
@@ -266,12 +274,12 @@ export default async function SharedProfilePage({
                       {dim.label.length > 10 ? dim.label.slice(0, 10) + "." : dim.label}
                     </span>
                   </p>
-                  <p className="mb-1.5 font-fraunces text-[22px] leading-none" style={{ color: tierColor }}>
+                  <p className="mb-1.5 font-fraunces text-[22px] leading-none" style={{ color: colors.strong }}>
                     {dim.score}
                   </p>
                   <span
                     className="inline-block rounded px-[7px] py-[2px] text-micro font-semibold"
-                    style={{ backgroundColor: tierBg, color: tierColor }}
+                    style={{ backgroundColor: colors.soft, color: colors.strong }}
                   >
                     {/* Pólus-tudatos címke: E alacsony sávja „stabil" (FIX 2). */}
                     {poleAwareDimensionLabel(dim.code, dim.score, locale)}
@@ -284,23 +292,21 @@ export default async function SharedProfilePage({
 
         {/* Dimension details */}
         <div className="flex flex-col gap-3">
+          {/* Semleges kártya (a tier-alapú háttér- és keret-mosás kivezetve),
+              a hue csak a pöttyön és a számon azonosít. */}
           {dimensions.map((dim) => {
-            const tier = getDimensionTier(dim.score);
-            const tierColor = tier === "high" ? "var(--color-action-primary-bg)" : tier === "mid" ? "var(--color-accent-primary)" : "var(--color-text-muted)";
-            const cardBg = tier === "high" ? "var(--color-surface-self-accent-soft)" : tier === "mid" ? "var(--color-surface-highlight-warm)" : "white";
-            const borderColor = tier === "high" ? "rgba(61,107,94,0.22)" : tier === "mid" ? "rgba(193,127,74,0.18)" : "var(--color-border-default)";
+            const colors = dimColorsCss(dim.code);
             return (
               <div
                 key={dim.code}
-                className="rounded-xl p-4 px-[18px]"
-                style={{ backgroundColor: cardBg, border: `1.5px solid ${borderColor}` }}
+                className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-4 px-[18px]"
               >
                 <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: tierColor }} />
+                    <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: colors.base }} />
                     <span className="text-sm font-medium text-[var(--color-text-primary)]">{dim.label}</span>
                   </div>
-                  <span className="font-fraunces text-base" style={{ color: tierColor }}>{dim.score}%</span>
+                  <span className="font-fraunces text-base" style={{ color: colors.strong }}>{dim.score}%</span>
                 </div>
                 <p className="text-caption font-medium leading-relaxed text-[var(--color-text-primary)]">{dim.insight}</p>
               </div>

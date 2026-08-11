@@ -1,8 +1,21 @@
 export type DimensionTier = "high" | "mid" | "low";
 
-// Vizuális TIER-küszöb (≥70 magas, ≥40 mérsékelt) — ez a VIZUÁLIS kiemelést
-// vezérli: a dimenzió-sáv színe (tierColors), a rövid címke
-// (erősség/mérsékelt/figyelendő), a legend („Magas 70% felett"), a PDF-sávok.
+// TIER-küszöb (≥70 magas, ≥40 mérsékelt) — ma már CSAK a rövid SZÖVEGES
+// címkét (erősség/mérsékelt/figyelendő, ill. a pólus-tudatos változatát) és
+// néhány próza-kaput vezérel.
+//
+// SZÍNT NEM VEZÉREL TÖBBÉ (2026-08-11). A korábbi `tierColors` Tailwind-térkép
+// (zsálya/bronz/homok) festette a dimenzió-kártyát, a keretet, a pöttyöt, a
+// sávot és a számot minden felületen — kivezetve. Három baja volt:
+//  1. a 70-es vágás a MÉRÉSI HIBÁN BELÜL van (dimenzió-SEM a rövid formán
+//     ≈7,6 pont), tehát kategorikus határt húzott oda, ahol az instrumentum
+//     nem tud különbséget tenni;
+//  2. a <40 sáv ritka, így a „skála" a gyakorlatban binárissá esett össze;
+//  3. ÉRTÉKELŐ rámpa volt LEÍRÓ skálán — szembement a score-valence.ts
+//     termékdöntésével (az Emocionalitás mindkét pólusa valencia-mentes).
+// A szín mostantól a dimenziót AZONOSÍTJA (color-system.ts DIMENSION_COLORS /
+// DIMENSION_COLORS_CSS), az értéket a sáv hossza és a szám hordozza. Ezt a
+// szerződést a tests/unit/design/dimension-color-identity.test.ts őrzi.
 //
 // TUDATOSAN KÜLÖN a pólus-küszöbtől (profile-engine.ts PROFILE_HIGH/LOW = 65/35),
 // mert MÁS mechanizmust vezérel: az a tension-pár / interakció / pressure
@@ -29,39 +42,9 @@ export function getDimensionLabel(value: number, locale: string = "hu"): string 
   return labels[tier]?.[locale] ?? labels[tier]?.hu ?? "";
 }
 
-// Tailwind classok tier-enként — az értékelő ramp tokenjein (globals.css
-// --color-eval-*, tükör: color-system.ts EVAL_RAMP): zsálya→bronz→neutrális,
-// piros nélkül. A text-változatok AA-biztos fg-fokozatok (a korábbi bronz-
-// és ink300-szöveg kis méretben bukott fehéren).
-export const tierColors = {
-  high: {
-    dot: "bg-[var(--color-eval-high-accent)]",
-    text: "text-[var(--color-eval-high-accent)]",
-    fill: "bg-[var(--color-eval-high-accent)]",
-    tagBg: "bg-[var(--color-eval-high-bg)]",
-    tagText: "text-[var(--color-eval-high-fg)]",
-    border: "border-[var(--color-eval-high-accent)]/20",
-    cardBg: "bg-[var(--color-eval-high-bg)]",
-    cardHover: "hover:bg-[#dbeee8]",
-  },
-  mid: {
-    dot: "bg-[var(--color-eval-mid-accent)]",
-    text: "text-[var(--color-eval-mid-fg)]",
-    fill: "bg-[var(--color-eval-mid-accent)]",
-    tagBg: "bg-[var(--color-eval-mid-bg)]",
-    tagText: "text-[var(--color-eval-mid-fg)]",
-    border: "border-[var(--color-eval-mid-accent)]/20",
-    cardBg: "bg-[var(--color-eval-mid-bg)]",
-    cardHover: "hover:bg-[#f7ede1]",
-  },
-  low: {
-    dot: "border border-[var(--color-eval-low-accent)] bg-[var(--color-sand)]",
-    text: "text-[var(--color-eval-low-fg)]",
-    fill: "bg-[var(--color-sand)]",
-    tagBg: "bg-[var(--color-eval-low-bg)]",
-    tagText: "text-[var(--color-eval-low-fg)]",
-    border: "border-[var(--color-sand)]",
-    cardBg: "bg-surface-card",
-    cardHover: "hover:bg-[var(--color-eval-low-bg)]",
-  },
-} as const;
+// A `tierColors` Tailwind-térkép 2026-08-11-én KIVEZETVE (indoklás a fájl
+// fejkommentjében). A dimenzió-felületek a `color-system.ts` identitás-
+// palettájából dolgoznak: `dimColorsCss(code)` a DOM-on, `dimColors(code)` a
+// fix médiumokon (PDF/OG/email). Az `EVAL_RAMP` maga megmarad — de a
+// rendeltetése szerinti helyeken (fit-pontszám, verdikt, magabiztosság,
+// adat-minőség), nem a leíró személyiség-dimenziókon.

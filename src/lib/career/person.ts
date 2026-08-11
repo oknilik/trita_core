@@ -6,7 +6,11 @@
 import { InvitationStatus } from "@prisma/client";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { prisma } from "@/lib/prisma";
-import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
+import {
+  SCORING_FULL_FORM_MIN_ITEMS,
+  extractDimensionScores,
+  type ScoreResult,
+} from "@/lib/scoring";
 import { aggregateObserverDims } from "./observer-aggregate";
 import { estimateInterests, interestsFromTags, isCompleteRiasecVector } from "./interests";
 import {
@@ -59,8 +63,12 @@ function formFromScores(scores: unknown): AssessmentForm {
 
 function pickDims(scores: unknown): Partial<Record<DimCode, number>> {
   const result: Partial<Record<DimCode, number>> = {};
+  // Kanonikus olvasó: a DimCode-ok HEXACO-betűk, a 2026-08-11 előtt mentett
+  // score-JSON-ok viszont örökség-kulcsokat hordoznak — nyers olvasással a
+  // régi kitöltők személyiség-bemenete üres lett, és a karrier-illeszkedés
+  // csak a preferenciákból számolt.
   const dims = (scores as ScoreResult | null)?.type === "likert"
-    ? (scores as Extract<ScoreResult, { type: "likert" }>).dimensions
+    ? extractDimensionScores(scores)
     : null;
   if (!dims) return result;
   for (const dim of DIM_CODES) {

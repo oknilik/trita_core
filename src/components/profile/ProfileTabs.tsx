@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
-import { dimColors } from "@/lib/color-system";
+import { dimColorsCss } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
@@ -16,7 +16,6 @@ import {
   ObserverFlowStatusCard,
   ObserverFlowStrip,
 } from "@/components/results/ObserverFlowStatusCard";
-import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
 import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
@@ -198,7 +197,6 @@ export interface ProfileTabsProps {
     envItems: { label: string; value: string; hedged?: boolean }[];
     roleFit: { strong: string; might: string; prep: string; secondary?: string; strongRoles?: string[]; mightRoles?: string[]; prepRoles?: string[] };
     takeaways: string[];
-    closingText: string;
   };
   bridgeNextStep?: BridgeNextStep;
   // Org-szintű kapcsoló (trita admin): karrier-fül + PDF karrier-blokk rejtése.
@@ -333,8 +331,11 @@ function ResultsTab({
                 .map((code) => mainDims.find((d) => d.code === code))
                 .filter((d): d is (typeof mainDims)[number] => Boolean(d))
                 .map((d) => {
-                  const tier = getDimensionTier(d.score);
-                  const colors = tierColors[tier];
+                  // Szín = dimenzió-identitás (a pötty és a szám eddig is ezt
+                  // vitte); a badge ezzel átáll a saját hue soft/strong
+                  // párjára, így a soron egyetlen színrendszer fut. A badge
+                  // SZÖVEGE továbbra is a pólus-tudatos tier-címke.
+                  const colors = dimColorsCss(d.code);
                   return (
                     <div key={d.code}>
                       <div className="flex items-center gap-2">
@@ -346,7 +347,8 @@ function ResultsTab({
                           {d.label}
                         </span>
                         <span
-                          className={`shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
+                          className="shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold"
+                          style={{ backgroundColor: colors.soft, color: colors.strong }}
                         >
                           {/* Pólus-tudatos címke: E alacsony sávja „stabil",
                               nem „figyelendő" (fordított skála, FIX 2). */}
@@ -354,7 +356,7 @@ function ResultsTab({
                         </span>
                         <span
                           className="w-8 shrink-0 text-right font-fraunces text-sm"
-                          style={{ color: dimColors(d.code).strong }}
+                          style={{ color: colors.strong }}
                         >
                           {d.score}
                         </span>
@@ -403,11 +405,7 @@ function ResultsTab({
 
       {/* 3. Kulcs-tanulságok — rövid zárás; a részletes munkastílus külön tabon */}
       {isPlus && plusContent && (
-        <KeyTakeawaysSection
-          paragraphs={plusContent.takeaways}
-          closingText={plusContent.closingText}
-          isUnlocked={true}
-        />
+        <KeyTakeawaysSection paragraphs={plusContent.takeaways} isUnlocked={true} />
       )}
 
       {/* Observer kontextus-CTA — ha még nincs külső visszajelzés. Zárolt
@@ -975,7 +973,6 @@ export function ProfileTabs({
                 collaboration: plusContent.collaboration,
                 roleFit: plusContent.roleFit,
                 takeaways: plusContent.takeaways,
-                closingText: plusContent.closingText,
               } : undefined,
               // A facets tömb örökség-sorra üres (FIX 4) — koholt 0-facet
               // nem kerül a PDF-be; a code a pólus-tudatos jelölésekhez kell.

@@ -1,0 +1,95 @@
+# Visszajelzési kultúra demo-adat felvitele a PREVIEW adatbázisba.
+#
+# MIÉRT CI-BŐL: a seed lokális futtatáshoz DB-hozzáférés kell (vercel env pull
+# + node/pnpm). Ez a workflow ugyanazt a scriptet futtatja a GitHub futtatóján,
+# a repo secretjéből vett kapcsolattal — így a titok NEM kerül se chatbe, se
+# a repóba, és nem kell semmit telepíteni.
+#
+# BIZTONSÁGI KORLÁTOK (szándékosak):
+#   · KIZÁRÓLAG kézi indítás (workflow_dispatch) — se push, se PR nem futtatja;
+#   · a kapcsolatot a PREVIEW_DATABASE_URL secret adja, NEM a prod DATABASE_URL —
+#     külön néven, hogy a prod credential ne legyen véletlenül bekötve;
+#   · a `confirm` mezőbe be kell írni a `preview` szót, tehát véletlen
+#     kattintásra nem fut le;
+#   · a script maga idempotens, és van `--teardown` ága.
+#
+# Előfeltétel a cél-adatbázisban: a seed-showcase-org.ts és a
+# seed-campaign-cycle.ts már lefutott (org, csapatok, tagok, self-kitöltések,
+# observer-válaszok, kampányok). Ha nincs kampány, a script kiírja és nem
+# csinál semmit.
+#
+# Secret beállítása (egyszeri, a felületen — nem kell sehova bemásolni):
+#   Settings → Secrets and variables → Actions → New repository secret
+#   Név: PREVIEW_DATABASE_URL   Érték: a preview Neon connection string
+
+name: Seed observer culture (preview)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Írd be: preview'
+        required: true
+        default: ''
+      mode:
+        description: Művelet
+        required: true
+        default: seed
+        type: choice
+        options:
+          - seed
+          - teardown
+
+concurrency:
+  group: seed-observer-culture
+  cancel-in-progress: false
+
+jobs:
+  seed:
+    name: Seed observer culture
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Megerősítés ellenőrzése
+        if: inputs.confirm != 'preview'
+        run: |
+          echo "::error::A 'confirm' mezőbe a 'preview' szót kell írni. Nem futott le semmi."
+          exit 1
+
+      - name: Secret megléte
+        env:
+          PREVIEW_DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+        run: |
+          if [ -z "$PREVIEW_DATABASE_URL" ]; then
+            echo "::error::Hiányzik a PREVIEW_DATABASE_URL secret (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Prisma client
+        run: npx prisma generate --schema prisma/schema.prisma
+
+      - name: Seed
+        env:
+          DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+          DIRECT_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+        run: |
+          if [ "${{ inputs.mode }}" = "teardown" ]; then
+            npx tsx scripts/seed-observer-culture.ts --teardown
+          else
+            npx tsx scripts/seed-observer-culture.ts
+          fi

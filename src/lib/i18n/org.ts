@@ -1807,8 +1807,38 @@ export const orgTranslations = {
     evidenceQuality: { hu: "Minőség", en: "Quality" },
     evidenceConfidence: { hu: "Megbízhatóság", en: "Confidence" },
     evidenceSourceSelf: { hu: "Önértékelés", en: "Self assessment" },
-    evidenceSourceSelfObserver: { hu: "Önértékelés + külső visszajelzés", en: "Self + observer" },
+    // A dinamika-nézet mért éle a BIZALMI KÖRBŐL jön, nem az observer-
+    // körből (friction-model isMeasuredDynamicsSource). A korábbi
+    // „Önértékelés + külső visszajelzés" címke olyan forrást állított, ami
+    // nem járult hozzá — ld. team-intelligence.ts.
+    evidenceSourceSelfTrust: { hu: "Önértékelés + bizalmi kör", en: "Self + trust round" },
     evidenceSourceInferred: { hu: "Becsült modell", en: "Inferred model" },
+    // ── Visszajelzési kultúra (csapat observer-blokk) ─────────────────────
+    // A hangnem tudatos: az eltérés nem hiba, hanem a visszajelzés
+    // áramlásáról szóló jel. Semmilyen szöveg nem minősítheti a csapatot.
+    feedbackCultureEyebrow: { hu: "Visszajelzési kultúra", en: "Feedback culture" },
+    feedbackCultureTitle: {
+      hu: "Mennyire egyezik az önkép azzal, ahogy mások látnak",
+      en: "How closely self-image matches how others see you",
+    },
+    feedbackCultureLead: {
+      hu: "{covered} tagnak van mért külső képe a {total} főből — az alábbi bontás csak rájuk vonatkozik.",
+      en: "{covered} of {total} members have a measured external view — the breakdown below covers only them.",
+    },
+    feedbackCultureAligned: { hu: "egybevágó önkép", en: "matching self-image" },
+    feedbackCultureAlignedHint: {
+      hu: "Az önértékelés a mérési hibán belül egyezik a kollégák képével.",
+      en: "Self-assessment matches colleagues' view within measurement error.",
+    },
+    feedbackCultureGap: { hu: "érdemi eltérés", en: "meaningful difference" },
+    feedbackCultureGapHint: {
+      hu: "Legalább egy dimenzión a mérési hibát meghaladó a különbség. Ez nem hiba — jelzés, hogy ott érdemes beszélgetni.",
+      en: "On at least one dimension the difference exceeds measurement error. Not a fault — a cue that a conversation is worth having.",
+    },
+    feedbackCultureNote: {
+      hu: "Forrás: a szervezet kampányaiban gyűjtött külső visszajelzés (a személyes, kampányon kívüli visszajelzés nem szerepel benne). Tagonként legalább 3 értékelő kell hozzá, és csak összesített darabszám látszik — sem név, sem egyéni érték, sem dimenzió-bontás.",
+      en: "Source: external feedback collected in this organisation's campaigns (personal, non-campaign feedback is excluded). At least 3 raters per member are required, and only aggregate counts are shown — no names, individual values, or dimension breakdown.",
+    },
     evidenceQualityNone: { hu: "nincs", en: "none" },
     evidenceQualityPartial: { hu: "részleges", en: "partial" },
     evidenceQualitySufficient: { hu: "elegendő", en: "sufficient" },

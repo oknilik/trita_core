@@ -14,7 +14,7 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import { HEXACO_DIMENSIONS, rankDimensionScores, type HexacoCode } from "@/lib/hexaco";
 import { sendObserverInviteEmail, sendReflectionPromptEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
@@ -85,7 +85,13 @@ export function selectReflectionCandidates(
     if (ts > windowEnd || ts < windowStart) continue;
 
     const scores = result.scores as ScoreResult | null;
-    if (!scores || scores.type !== "likert" || !scores.dimensions) continue;
+    if (!scores || scores.type !== "likert") continue;
+    // Kanonikus olvasó: az örökség-kulcsos (INTE/RESO/…) sorok is átjönnek
+    // HEXACO-betűre — nyers olvasással a HEXACO_DIMENSIONS-szűrő minden
+    // 2026-08-11 előtti kitöltőt kidobott, így a reflexiós emlékeztető
+    // pont a régi userekhez nem ment ki.
+    const dimensionScores = extractDimensionScores(result.scores);
+    if (!dimensionScores) continue;
     // Kanonikus rangsor (rankDimensionScores): pontszám csökkenő, holtverseny-
     // nél HEXACO_ORDER — pontosan az, amit a profil-felületek is futtatnak.
     // A korábbi localeCompare-os (ábécés, belső kódon futó) tie-break
@@ -100,7 +106,7 @@ export function selectReflectionCandidates(
     // (i18n/notifications.ts + emails.ts — nem ennek a modulnak a hatásköre)
     // bevezetése után ide is kapu kell.
     const ranked = rankDimensionScores(
-      Object.entries(scores.dimensions)
+      Object.entries(dimensionScores)
         .filter(([code]) => code in HEXACO_DIMENSIONS)
         .map(([code, score]) => ({ code, score })),
     );

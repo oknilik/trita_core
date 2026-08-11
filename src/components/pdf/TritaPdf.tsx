@@ -71,7 +71,6 @@ export interface PdfData {
       prepRoles?: string[];
     };
     takeaways: string[];
-    closingText: string;
   };
   facetDimensions?: { name: string; value: number; insight?: string; description?: string; code?: string; facets: { label: string; score: number }[] }[];
   // Reflect observer data

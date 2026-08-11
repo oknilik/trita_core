@@ -1,6 +1,6 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
-import { getDimensionTier } from "@/lib/dimension-utils";
+import { dimColors } from "@/lib/color-system";
 import { t } from "@/lib/i18n";
 
 interface Facet {
@@ -13,6 +13,8 @@ interface Dim {
   value: number;
   insight?: string;
   description?: string;
+  /** Dimenziókód — a dimenzió és a facetjei az identitás-hue-t viselik. */
+  code?: string;
   facets: Facet[];
 }
 
@@ -20,8 +22,8 @@ export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dime
   return (
     <View style={{ marginBottom: 6 }}>
       {dimensions.map((dim, idx) => {
-        const tier = getDimensionTier(dim.value);
-        const dotColor = tier === "high" ? colors.sage : tier === "mid" ? colors.bronze : colors.ink300;
+        const dc = dimColors(dim.code ?? "");
+        const dotColor = dc.base;
         const isLast = idx === dimensions.length - 1;
         return (
           <View key={dim.name} wrap={false} style={{ marginBottom: isLast ? 0 : (compact ? 4 : 10), paddingBottom: isLast ? 0 : (compact ? 3 : 8), borderBottom: isLast ? undefined : `1 solid ${colors.cream500}` }}>
@@ -42,9 +44,9 @@ export function PdfFacets({ dimensions, compact = false, locale = "hu" }: { dime
 
             {/* Facet 2×2 grid */}
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 3 }}>
+              {/* A facet a saját dimenziójának hue-ját viseli. */}
               {dim.facets.map((facet) => {
-                const fTier = getDimensionTier(facet.score);
-                const fColor = fTier === "high" ? colors.sage : fTier === "mid" ? colors.bronze : colors.ink300;
+                const fColor = dc.strong;
                 return (
                   <View
                     key={facet.label}

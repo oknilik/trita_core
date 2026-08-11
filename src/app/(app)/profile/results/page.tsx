@@ -13,7 +13,11 @@ import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel, type SelfAccess } from "@/lib/access";
-import type { ScoreResult } from "@/lib/scoring";
+import {
+  extractDimensionScores,
+  extractFacetScores,
+  type ScoreResult,
+} from "@/lib/scoring";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus, OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
@@ -21,7 +25,7 @@ import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/memb
 import type { HexacoCode } from "@/lib/hexaco";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
-import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
+import { BLOCK1 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
 import {
@@ -242,6 +246,15 @@ export default async function ProfileResultsPage({
   const scores = latestResult.scores as ScoreResult;
   if (scores.type !== "likert") redirect(journeySnapshot.resolution.destination);
 
+  // A tárolt score-JSON KANONIKUS olvasói (scoring.ts). Nyers
+  // `scores.dimensions[dim.code]` hozzáférés itt hibás: a 2026-08-11 előtt
+  // mentett sorok az örökség-kulcsokat (INTE/RESO/TEMP/ADAP/THOR/OPEN)
+  // hordozzák, a `config.dimensions[].code` viszont már HEXACO-betű — a
+  // kettő sosem találkozik, és a teljes eredményoldal üresen renderelt
+  // (üres radar, üres áttekintő-strip, nincs dimenzió-akkordeon).
+  const selfDimensionScores = extractDimensionScores(latestResult.scores) ?? {};
+  const selfFacetScoresNormalized = extractFacetScores(latestResult.scores);
+
   const testType = latestResult.testType as TestType;
   const config = getTestConfig(testType, locale);
   const accessLevel = toProfileLevel(accessLevelRaw);
@@ -299,9 +312,12 @@ export default async function ProfileResultsPage({
   // Kanonikus átlagoló (member-dossier): a lefedetlen dimenzió NEM kap
   // értéket — így nem gyárt hamis 0-s „vakfoltot" az összevetésben.
   const likertObservers = completedObservers.filter((o) => o.type === "likert");
+  // Az observer-készletek UGYANAZON az örökség-normalizáláson mennek át, mint
+  // az önkép — különben a régi értékelések átlaga üres lenne, és az
+  // összevetés „nincs külső adat" képet mutatna meglévő válaszok mellett.
   const observerAvg = computeObserverAverage(
     mainDimCodes as HexacoCode[],
-    likertObservers.map((o) => o.dimensions),
+    likertObservers.map((o) => extractDimensionScores(o) ?? {}),
   );
 
   // Facet-szintű külső átlag ugyanabból a forrásból — facetenként külön
@@ -309,11 +325,11 @@ export default async function ProfileResultsPage({
   // kulcsa kimarad.
   const observerFacetAverages = computeObserverFacetAverages(
     mainDimCodes as HexacoCode[],
-    likertObservers.map((o) => o.facets),
+    likertObservers.map((o) => extractFacetScores(o) ?? undefined),
   );
   // Örökség-eredményben nincs facet-bontás — ilyenkor a facet-összevetés
   // önkép-oldala hiányzik, a szekció nem jelenhet meg.
-  const selfFacetScores = scores.facets ?? null;
+  const selfFacetScores = selfFacetScoresNormalized;
 
   // Az értékelők átlagos magabiztossága (1–5) — csak a megadott értékekből,
   // és CSAK a reveal-küszöb (hasObserverData, n≥3) felett: n=1-nél a szám az
@@ -339,7 +355,7 @@ export default async function ProfileResultsPage({
   // lejjebbi fogyasztók (AltruismCard find("I"), PDF-altruizmus,
   // személyiség-címke ≥2 dim szabálya) ezt hiányként kezelik, nem nullaként.
   const dimensions = config.dimensions.flatMap((dim) => {
-    const score = scores.dimensions[dim.code];
+    const score = selfDimensionScores[dim.code];
     if (typeof score !== "number") return [];
     const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
       low: string;
@@ -366,7 +382,7 @@ export default async function ProfileResultsPage({
       // a motor nem ír aspects-et — a ScoreResult.aspects csak tolerált
       // örökség-mező, megjelenítője soha nem volt.)
       facets: (dim.facets ?? []).flatMap((f) => {
-        const facetScore = scores.facets?.[dim.code]?.[f.code];
+        const facetScore = selfFacetScoresNormalized?.[dim.code]?.[f.code];
         if (typeof facetScore !== "number") return [];
         return [{
           code: f.code,
@@ -569,7 +585,6 @@ export default async function ProfileResultsPage({
     envItems: workstyle.envItems,
     roleFit: workstyle.roleFit,
     takeaways: workstyle.takeaways,
-    closingText: BLOCK8[lang],
   } : undefined;
 
   return (

@@ -62,7 +62,7 @@ interface TeamIntelligenceProps {
 
 const SOURCE_KEY: Record<TeamIntelligenceEvidence["source"], string> = {
   self: "teamComp.evidenceSourceSelf",
-  self_plus_observer: "teamComp.evidenceSourceSelfObserver",
+  self_plus_trust: "teamComp.evidenceSourceSelfTrust",
   inferred: "teamComp.evidenceSourceInferred",
 };
 
@@ -84,8 +84,11 @@ const DEFAULT_EVIDENCE: Record<SubTab, TeamIntelligenceEvidence> = {
     quality: "partial",
     confidence: "medium",
   },
+  // Adat NÉLKÜLI alapállapot: a forrás nem állíthat mért kört. A korábbi
+  // default `self_plus_observer` volt `quality: "none"` mellett — vagyis a
+  // „nincs adat" állapot is külső visszajelzést hirdetett.
   dynamics: {
-    source: "self_plus_observer",
+    source: "self",
     quality: "none",
     confidence: "low",
   },

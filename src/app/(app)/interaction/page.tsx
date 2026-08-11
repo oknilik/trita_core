@@ -11,7 +11,7 @@ import {
 } from "@/lib/interaction-view";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
-import type { ScoreResult } from "@/lib/scoring";
+import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { InteractionSection } from "@/components/results/InteractionSection";
@@ -93,10 +93,15 @@ export default async function InteractionPage({
   }
 
   const lang = (locale === "en" ? "en" : "hu") as Locale;
-  const simulations = buildArchetypeSimulations(scores.dimensions, lang);
+  // Kanonikus olvasó: a 2026-08-11 előtt mentett sorok örökség-kulcsokat
+  // hordoznak, az archetípus-/glyph-feloldók viszont HEXACO-betűre
+  // illesztenek — nyers olvasással a régi kitöltő üres típuscímkét és
+  // glyph nélküli oldalt kapott.
+  const selfDims = extractDimensionScores(latestResult.scores) ?? {};
+  const simulations = buildArchetypeSimulations(selfDims, lang);
   // A típusnév és az ábra UGYANABBÓL a sorrendből épül (legerősebb → forma,
   // második → motívum), így az összehasonlítás két oldala azonos logikájú.
-  const scoredDims = Object.entries(scores.dimensions).map(([code, score]) => ({
+  const scoredDims = Object.entries(selfDims).map(([code, score]) => ({
     code,
     score,
   }));
@@ -164,8 +169,9 @@ export default async function InteractionPage({
         select: { scores: true },
       });
       const otherScores = otherResult?.scores as ScoreResult | undefined;
-      if (otherScores && otherScores.type === "likert") {
-        const otherDims = Object.entries(otherScores.dimensions).map(
+      const otherDimScores = extractDimensionScores(otherResult?.scores);
+      if (otherScores && otherScores.type === "likert" && otherDimScores) {
+        const otherDims = Object.entries(otherDimScores).map(
           ([code, score]) => ({ code, score }),
         );
         const otherGlyph = resolveGlyphPair(otherDims);
@@ -178,11 +184,7 @@ export default async function InteractionPage({
             otherName:
               (isInviter ? pair.partner?.username : pair.inviter?.username) ??
               t("results.comparePartnerFallback", lang),
-            sim: buildPairSimulation(
-              scores.dimensions,
-              otherScores.dimensions,
-              lang,
-            ),
+            sim: buildPairSimulation(selfDims, otherDimScores, lang),
           };
         }
       }

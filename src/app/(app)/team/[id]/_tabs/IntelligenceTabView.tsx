@@ -3,13 +3,22 @@ import { t } from "@/lib/i18n";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamIntelligence } from "@/components/team/TeamIntelligence";
 import { TeamPatternCard } from "@/components/team/TeamPatternCard";
+import { TeamFeedbackCultureCard } from "@/components/team/TeamFeedbackCultureCard";
+import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import { buildIntelligenceViewData } from "./intelligence-data";
 import type { TeamTabContext } from "./types";
 
 // ── Intelligence tab: potential/types and map ───────────────────────────
-export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
+export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
   const { teamId, teamData, locale, isHu, canReachOrgCampaigns } = ctx;
+  // Visszajelzési kultúra: az EGYETLEN observer-forrású csapat-blokk.
+  // `null`, ha a lefedettség a TEAM_OBSERVER_MIN_COVERED padló alatt van —
+  // ilyenkor a kártya nem renderel (nem „0"-t mutat, hanem semmit).
+  const feedbackCulture = await loadTeamFeedbackCulture({
+    orgId: teamData.orgId,
+    members: teamData.members.map((m) => ({ userId: m.userId, scores: m.scores })),
+  });
   const intel = buildIntelligenceViewData({
     teamData, teamId, locale, canReachOrgCampaigns,
   });
@@ -141,6 +150,10 @@ export function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
           </span>
         </div>
       </section>
+
+      {feedbackCulture ? (
+        <TeamFeedbackCultureCard culture={feedbackCulture} locale={locale} />
+      ) : null}
 
       <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-5">
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
