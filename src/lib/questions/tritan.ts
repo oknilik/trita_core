@@ -39,13 +39,13 @@ import { DIMENSION_COLORS } from "@/lib/color-system";
  *   pilot-adat validálja.
  *
  * Részletes jogi összefoglaló: docs/product/tsfi-item-provenance.md
- * Dimenziókódok: TEMP/RESO/INTE/THOR/ADAP/OPEN (ld. src/lib/tritan.ts).
+ * Dimenziókódok: X/E/H/C/A/O (ld. src/lib/tritan.ts).
  *
  * RÖVID FORMA (TSFI-S, `short: true`) — 60 item, KIZÁRÓLAG fő dimenziós,
  * dimenziónként pontosan 10. A kiegészítő altruizmus-skála (`I`) NEM része:
  * 2026-08-11-ig 2 itemmel benne volt (98, 99), de két itemen a skála
  * megbízhatatlan volt (α ≈ 0,36), és egyetlen aggregátumba sem számított —
- * helyettük a 77 (RESO/fearfulness) és a 79 (OPEN/inquisitiveness) lépett be,
+ * helyettük a 77 (E/fearfulness) és a 79 (O/inquisitiveness) lépett be,
  * így az itemszám 60 maradt, a hat dimenzió pedig kiegyensúlyozott lett.
  * A TELJES forma változatlan: mind a négy altruizmus-item (97-100) benne van.
  * A régi rövid forma id-halmazát a beadási kapu továbbra is elfogadja
@@ -61,13 +61,13 @@ export const tritanConfig: TestConfig = {
   format: "likert",
   dimensions: [
     {
-      code: "INTE",
+      code: "H",
       label: "Honesty-Humility",
       labelByLocale: {
         en: "Honesty-Humility",
         hu: "Becsületesség-Alázat",
       },
-      color: DIMENSION_COLORS.INTE.base,
+      color: DIMENSION_COLORS.H.base,
       description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy facetje az Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és korrupció kerülése), a Mohóságkerülés (az anyagi javak és státusz iránti közömbösség) és a Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
       descriptionByLocale: {
         en: "The Honesty-Humility (H) dimension reflects the extent to which a person avoids manipulating others for personal gain, feels little temptation to break rules, is uninterested in lavish wealth and luxury, and feels no special sense of entitlement. Its four facets are Sincerity (genuine, non-manipulative engagement with others), Fairness (avoidance of fraud and exploitation), Greed Avoidance (indifference to material wealth and social status), and Modesty (not viewing oneself as superior or deserving of special treatment).",
@@ -98,13 +98,13 @@ export const tritanConfig: TestConfig = {
       ],
     },
     {
-      code: "RESO",
+      code: "E",
       label: "Emotionality",
       labelByLocale: {
         en: "Emotionality",
         hu: "Emocionalitás",
       },
-      color: DIMENSION_COLORS.RESO.base,
+      color: DIMENSION_COLORS.E.base,
       description: "Az emocionalitás (E) dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Dependencia (mások érzelmi támogatásának igénye) és a Szentimentalitás (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
       descriptionByLocale: {
         en: "The Emotionality (E) dimension measures sensitivity to physical danger and life stresses, the need for emotional support from others, and the strength of emotional bonds and empathic sensitivity. Its four facets are Fearfulness (tendency to avoid physical harm), Anxiety (tendency to worry in response to difficulties), Dependence (need for emotional support from others), and Sentimentality (strong emotional attachments and empathic sensitivity to others' feelings).",
@@ -135,13 +135,13 @@ export const tritanConfig: TestConfig = {
       ],
     },
     {
-      code: "TEMP",
+      code: "X",
       label: "Extraversion",
       labelByLocale: {
         en: "Extraversion",
         hu: "Extraverzió",
       },
-      color: DIMENSION_COLORS.TEMP.base,
+      color: DIMENSION_COLORS.X.base,
       description: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       descriptionByLocale: {
         en: "The Extraversion (X) dimension reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
@@ -172,13 +172,13 @@ export const tritanConfig: TestConfig = {
       ],
     },
     {
-      code: "ADAP",
+      code: "A",
       label: "Agreeableness",
       labelByLocale: {
         en: "Agreeableness",
         hu: "Barátságosság",
       },
-      color: DIMENSION_COLORS.ADAP.base,
+      color: DIMENSION_COLORS.A.base,
       description: "A barátságosság (A) dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Gyengédség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       descriptionByLocale: {
         en: "The Agreeableness (A) dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
@@ -209,13 +209,13 @@ export const tritanConfig: TestConfig = {
       ],
     },
     {
-      code: "THOR",
+      code: "C",
       label: "Conscientiousness",
       labelByLocale: {
         en: "Conscientiousness",
         hu: "Lelkiismeretesség",
       },
-      color: DIMENSION_COLORS.THOR.base,
+      color: DIMENSION_COLORS.C.base,
       description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolja át alaposan a döntéseit. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Körültekintés (impulzusok kontrollja, a döntések átgondolása).",
       descriptionByLocale: {
         en: "The Conscientiousness (C) dimension measures how organized and structured a person is, how persistently and disciplinedly they work toward goals, their drive for accuracy and thoroughness, and how carefully they deliberate before making decisions. Its four facets are Organization (preference for tidy surroundings and structured schedules), Diligence (strong work ethic and motivation to achieve), Perfectionism (thoroughness and attention to detail), and Prudence (impulse control and careful deliberation).",
@@ -246,13 +246,13 @@ export const tritanConfig: TestConfig = {
       ],
     },
     {
-      code: "OPEN",
+      code: "O",
       label: "Openness",
       labelByLocale: {
         en: "Openness",
         hu: "Nyitottság",
       },
-      color: DIMENSION_COLORS.OPEN.base,
+      color: DIMENSION_COLORS.O.base,
       description: "A nyitottság (O) dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadóképességet méri. Négy facetje az Esztétikai fogékonyság (elmerülés a természet és a művészet szépségében), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (az innováció és a kísérletezés iránti preferencia, eredeti megoldások keresése) és a Konvenciómentesség (nyitottság a szokatlan, esetleg radikális ötletekre).",
       descriptionByLocale: {
         en: "The Openness to Experience (O) dimension measures aesthetic appreciation, intellectual curiosity, creativity, and receptiveness to unusual ideas and perspectives. Its four facets are Aesthetic Appreciation (absorption in the beauty of art and nature), Inquisitiveness (active seeking of knowledge and experience), Creativity (preference for innovation and experimentation, seeking original solutions), and Unconventionality (openness to ideas that may seem strange or radical).",
@@ -289,7 +289,7 @@ export const tritanConfig: TestConfig = {
         en: "Altruism",
         hu: "Altruizmus",
       },
-      color: DIMENSION_COLORS.ADAP.strong,
+      color: DIMENSION_COLORS.A.strong,
       description: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
       descriptionByLocale: {
         en: "The Altruism (Interstitial) scale measures the extent to which a person feels genuine sympathy for the less fortunate and is motivated to give generously to those in need. Low scorers are relatively unmoved by others' hardship, while high scorers feel a strong inner drive to help and support those who are weak or in difficulty.",
@@ -320,7 +320,7 @@ export const tritanConfig: TestConfig = {
   questions: [
     {
       id: 1,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "aesthetic_appreciation",
       short: true,
       text: "I do not like art.",
@@ -337,7 +337,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 2,
-      dimension: "THOR",
+      dimension: "C",
       facet: "organization",
       short: true,
       text: "I keep things tidy.",
@@ -353,7 +353,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 3,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "forgiveness",
       text: "I try to forgive and forget.",
       textByLocale: {
@@ -368,7 +368,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 4,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_self_esteem",
       short: true,
       text: "I feel comfortable with myself.",
@@ -384,7 +384,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 5,
-      dimension: "RESO",
+      dimension: "E",
       facet: "fearfulness",
       short: true,
       text: "I begin to panic when there is danger.",
@@ -400,7 +400,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 6,
-      dimension: "INTE",
+      dimension: "H",
       facet: "sincerity",
       short: true,
       text: "I use flattery to get ahead.",
@@ -417,7 +417,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 7,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "inquisitiveness",
       text: "I find political discussions interesting.",
       textByLocale: {
@@ -432,7 +432,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 8,
-      dimension: "THOR",
+      dimension: "C",
       facet: "diligence",
       text: "I push myself very hard to succeed.",
       textByLocale: {
@@ -447,7 +447,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 9,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "gentleness",
       short: true,
       text: "I am quick to judge others.",
@@ -464,7 +464,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 10,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_boldness",
       short: true,
       text: "I keep in the background.",
@@ -481,7 +481,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 11,
-      dimension: "RESO",
+      dimension: "E",
       facet: "anxiety",
       short: true,
       text: "I often worry about things that turn out to be unimportant.",
@@ -497,7 +497,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 12,
-      dimension: "INTE",
+      dimension: "H",
       facet: "fairness",
       text: "I would admire a really clever scam.",
       textByLocale: {
@@ -513,7 +513,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 13,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "creativity",
       short: true,
       text: "I do not have a good imagination.",
@@ -530,7 +530,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 14,
-      dimension: "THOR",
+      dimension: "C",
       facet: "perfectionism",
       short: true,
       text: "I pay attention to details.",
@@ -546,7 +546,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 15,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "flexibility",
       short: true,
       text: "I am hard to convince.",
@@ -563,7 +563,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 16,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "sociability",
       short: true,
       text: "I would not enjoy a job that involves a lot of social interaction.",
@@ -580,7 +580,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 17,
-      dimension: "RESO",
+      dimension: "E",
       facet: "dependence",
       short: true,
       text: "I need reassurance.",
@@ -596,7 +596,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 18,
-      dimension: "INTE",
+      dimension: "H",
       facet: "greed_avoidance",
       short: true,
       text: "I would not enjoy being a famous celebrity.",
@@ -612,7 +612,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 19,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "unconventionality",
       text: "I like to be viewed as proper and conventional.",
       textByLocale: {
@@ -628,7 +628,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 20,
-      dimension: "THOR",
+      dimension: "C",
       facet: "prudence",
       text: "I make rash decisions.",
       textByLocale: {
@@ -644,7 +644,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 21,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "patience",
       short: true,
       text: "I get angry easily.",
@@ -661,7 +661,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 22,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "liveliness",
       short: true,
       text: "I am usually active and full of energy.",
@@ -677,7 +677,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 23,
-      dimension: "RESO",
+      dimension: "E",
       facet: "sentimentality",
       short: true,
       text: "I feel others' emotions.",
@@ -693,7 +693,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 24,
-      dimension: "INTE",
+      dimension: "H",
       facet: "modesty",
       short: true,
       text: "I don't think that I'm better than other people.",
@@ -709,7 +709,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 25,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "aesthetic_appreciation",
       text: "I do not like poetry.",
       textByLocale: {
@@ -725,7 +725,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 26,
-      dimension: "THOR",
+      dimension: "C",
       facet: "organization",
       short: true,
       text: "I like order.",
@@ -741,7 +741,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 27,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "forgiveness",
       short: true,
       text: "I am inclined to forgive others.",
@@ -757,7 +757,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 28,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_self_esteem",
       text: "I am very pleased with myself.",
       textByLocale: {
@@ -772,7 +772,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 29,
-      dimension: "RESO",
+      dimension: "E",
       facet: "fearfulness",
       short: true,
       text: "I face danger confidently.",
@@ -789,7 +789,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 30,
-      dimension: "INTE",
+      dimension: "H",
       facet: "sincerity",
       short: true,
       text: "I don't pretend to be more than I am.",
@@ -805,7 +805,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 31,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "inquisitiveness",
       short: true,
       text: "I would love to explore strange places.",
@@ -821,7 +821,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 32,
-      dimension: "THOR",
+      dimension: "C",
       facet: "diligence",
       short: true,
       text: "I work hard.",
@@ -837,7 +837,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 33,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "gentleness",
       short: true,
       text: "I accept people as they are.",
@@ -853,7 +853,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 34,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_boldness",
       text: "I am good at making impromptu speeches.",
       textByLocale: {
@@ -868,7 +868,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 35,
-      dimension: "RESO",
+      dimension: "E",
       facet: "anxiety",
       short: true,
       text: "I rarely worry.",
@@ -885,7 +885,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 36,
-      dimension: "INTE",
+      dimension: "H",
       facet: "fairness",
       short: true,
       text: "I would cheat to get ahead.",
@@ -902,7 +902,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 37,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "creativity",
       short: true,
       text: "I love to think up new ways of doing things.",
@@ -918,7 +918,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 38,
-      dimension: "THOR",
+      dimension: "C",
       facet: "perfectionism",
       short: true,
       text: "I pay too little attention to details.",
@@ -935,7 +935,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 39,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "flexibility",
       short: true,
       text: "I am good at taking advice.",
@@ -951,7 +951,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 40,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "sociability",
       text: "I love to chat.",
       textByLocale: {
@@ -966,7 +966,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 41,
-      dimension: "RESO",
+      dimension: "E",
       facet: "dependence",
       short: true,
       text: "I seek support when I need it.",
@@ -982,7 +982,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 42,
-      dimension: "INTE",
+      dimension: "H",
       facet: "greed_avoidance",
       short: true,
       text: "I love luxury.",
@@ -999,7 +999,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 43,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "unconventionality",
       text: "I know that my ideas sometimes surprise people.",
       textByLocale: {
@@ -1014,7 +1014,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 44,
-      dimension: "THOR",
+      dimension: "C",
       facet: "prudence",
       text: "I do things without thinking of the consequences.",
       textByLocale: {
@@ -1030,7 +1030,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 45,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "patience",
       text: "I find that it takes a lot to make me feel angry at someone.",
       textByLocale: {
@@ -1045,7 +1045,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 46,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "liveliness",
       text: "I maintain high energy throughout the day.",
       textByLocale: {
@@ -1060,7 +1060,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 47,
-      dimension: "RESO",
+      dimension: "E",
       facet: "sentimentality",
       text: "I am deeply moved by others' misfortunes.",
       textByLocale: {
@@ -1075,7 +1075,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 48,
-      dimension: "INTE",
+      dimension: "H",
       facet: "modesty",
       text: "I see myself as an average person.",
       textByLocale: {
@@ -1090,7 +1090,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 49,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "aesthetic_appreciation",
       short: true,
       text: "I believe in the importance of art.",
@@ -1106,7 +1106,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 50,
-      dimension: "THOR",
+      dimension: "C",
       facet: "organization",
       text: "I leave a mess around me.",
       textByLocale: {
@@ -1122,7 +1122,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 51,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "forgiveness",
       short: true,
       text: "I hold a grudge.",
@@ -1139,7 +1139,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 52,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_self_esteem",
       text: "I dislike myself.",
       textByLocale: {
@@ -1155,7 +1155,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 53,
-      dimension: "RESO",
+      dimension: "E",
       facet: "fearfulness",
       text: "I would fear walking in a high-crime part of a city.",
       textByLocale: {
@@ -1170,7 +1170,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 54,
-      dimension: "INTE",
+      dimension: "H",
       facet: "sincerity",
       short: true,
       text: "I put on a show to impress people.",
@@ -1187,7 +1187,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 55,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "inquisitiveness",
       short: true,
       text: "I avoid difficult reading material.",
@@ -1204,7 +1204,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 56,
-      dimension: "THOR",
+      dimension: "C",
       facet: "diligence",
       short: true,
       text: "I do just enough work to get by.",
@@ -1221,7 +1221,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 57,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "gentleness",
       text: "I have a good word for everyone.",
       textByLocale: {
@@ -1236,7 +1236,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 58,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_boldness",
       short: true,
       text: "I don't mind being the center of attention.",
@@ -1252,7 +1252,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 59,
-      dimension: "RESO",
+      dimension: "E",
       facet: "anxiety",
       text: "I remain calm under pressure.",
       textByLocale: {
@@ -1268,7 +1268,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 60,
-      dimension: "INTE",
+      dimension: "H",
       facet: "fairness",
       short: true,
       text: "I would never take things that aren't mine.",
@@ -1284,7 +1284,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 61,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "creativity",
       short: true,
       text: "I have a vivid imagination.",
@@ -1300,7 +1300,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 62,
-      dimension: "THOR",
+      dimension: "C",
       facet: "perfectionism",
       text: "I continue until everything is perfect.",
       textByLocale: {
@@ -1315,7 +1315,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 63,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "flexibility",
       short: true,
       text: "I can't stand being contradicted.",
@@ -1332,7 +1332,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 64,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "sociability",
       short: true,
       text: "I enjoy being part of a group.",
@@ -1348,7 +1348,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 65,
-      dimension: "RESO",
+      dimension: "E",
       facet: "dependence",
       text: "I often need help.",
       textByLocale: {
@@ -1363,7 +1363,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 66,
-      dimension: "INTE",
+      dimension: "H",
       facet: "greed_avoidance",
       text: "I seek status.",
       textByLocale: {
@@ -1379,7 +1379,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 67,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "unconventionality",
       short: true,
       text: "I am considered to be kind of eccentric.",
@@ -1395,7 +1395,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 68,
-      dimension: "THOR",
+      dimension: "C",
       facet: "prudence",
       short: true,
       text: "I do things according to a plan.",
@@ -1411,7 +1411,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 69,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "patience",
       short: true,
       text: "I am usually a patient person.",
@@ -1427,7 +1427,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 70,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "liveliness",
       text: "I often feel blue.",
       textByLocale: {
@@ -1443,7 +1443,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 71,
-      dimension: "RESO",
+      dimension: "E",
       facet: "sentimentality",
       text: "I immediately feel sad when hearing of an unhappy event.",
       textByLocale: {
@@ -1458,7 +1458,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 72,
-      dimension: "INTE",
+      dimension: "H",
       facet: "modesty",
       short: true,
       text: "I would like to have more power than other people.",
@@ -1475,7 +1475,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 73,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "aesthetic_appreciation",
       text: "I see beauty in things that others might not notice.",
       textByLocale: {
@@ -1490,7 +1490,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 74,
-      dimension: "THOR",
+      dimension: "C",
       facet: "organization",
       short: true,
       text: "I often forget to put things back in their proper place.",
@@ -1507,7 +1507,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 75,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "forgiveness",
       text: "I find it hard to forgive others.",
       textByLocale: {
@@ -1523,7 +1523,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 76,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_self_esteem",
       short: true,
       text: "I have a low opinion of myself.",
@@ -1540,7 +1540,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 77,
-      dimension: "RESO",
+      dimension: "E",
       facet: "fearfulness",
       short: true,
       text: "I like to do frightening things.",
@@ -1557,7 +1557,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 78,
-      dimension: "INTE",
+      dimension: "H",
       facet: "sincerity",
       text: "I tell people what they want to hear so that they will do what I want.",
       textByLocale: {
@@ -1573,7 +1573,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 79,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "inquisitiveness",
       short: true,
       text: "I will not probe deeply into a subject.",
@@ -1590,7 +1590,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 80,
-      dimension: "THOR",
+      dimension: "C",
       facet: "diligence",
       short: true,
       text: "I quickly lose interest in the tasks I start.",
@@ -1607,7 +1607,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 81,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "gentleness",
       text: "I rarely complain.",
       textByLocale: {
@@ -1622,7 +1622,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 82,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "social_boldness",
       short: true,
       text: "I would be afraid to give a speech in public.",
@@ -1639,7 +1639,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 83,
-      dimension: "RESO",
+      dimension: "E",
       facet: "anxiety",
       short: true,
       text: "I get stressed out easily.",
@@ -1655,7 +1655,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 84,
-      dimension: "INTE",
+      dimension: "H",
       facet: "fairness",
       short: true,
       text: "I return extra change when a cashier makes a mistake.",
@@ -1671,7 +1671,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 85,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "creativity",
       text: "I have difficulty imagining things.",
       textByLocale: {
@@ -1687,7 +1687,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 86,
-      dimension: "THOR",
+      dimension: "C",
       facet: "perfectionism",
       text: "I demand quality.",
       textByLocale: {
@@ -1702,7 +1702,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 87,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "flexibility",
       text: "I am hard to reason with.",
       textByLocale: {
@@ -1718,7 +1718,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 88,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "sociability",
       short: true,
       text: "I make friends easily.",
@@ -1734,7 +1734,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 89,
-      dimension: "RESO",
+      dimension: "E",
       facet: "dependence",
       text: "I can't do without the company of others.",
       textByLocale: {
@@ -1749,7 +1749,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 90,
-      dimension: "INTE",
+      dimension: "H",
       facet: "greed_avoidance",
       text: "I am mainly interested in money.",
       textByLocale: {
@@ -1765,7 +1765,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 91,
-      dimension: "OPEN",
+      dimension: "O",
       facet: "unconventionality",
       short: true,
       text: "I would hate to be considered odd or strange.",
@@ -1782,7 +1782,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 92,
-      dimension: "THOR",
+      dimension: "C",
       facet: "prudence",
       short: true,
       text: "I jump into things without thinking.",
@@ -1799,7 +1799,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 93,
-      dimension: "ADAP",
+      dimension: "A",
       facet: "patience",
       short: true,
       text: "I lose my temper.",
@@ -1816,7 +1816,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 94,
-      dimension: "TEMP",
+      dimension: "X",
       facet: "liveliness",
       short: true,
       text: "I tire out quickly.",
@@ -1833,7 +1833,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 95,
-      dimension: "RESO",
+      dimension: "E",
       facet: "sentimentality",
       short: true,
       text: "I seldom get emotional.",
@@ -1850,7 +1850,7 @@ export const tritanConfig: TestConfig = {
     },
     {
       id: 96,
-      dimension: "INTE",
+      dimension: "H",
       facet: "modesty",
       text: "I am likely to show off if I get the chance.",
       textByLocale: {

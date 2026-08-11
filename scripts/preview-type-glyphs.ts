@@ -14,13 +14,13 @@ import { createElement } from "react";
 import { TypeGlyph, TypeMotifMark } from "../src/components/type/TypeGlyph";
 import { DIMENSION_GLYPHS, GLYPH_DIMENSION_ORDER, GLYPH_COLORS } from "../src/lib/type-glyph";
 import { resolvePersonalityTypeLabel } from "../src/lib/personality-type";
-import { TRITAN_DIMENSIONS } from "../src/lib/tritan";
+import { HEXACO_DIMENSIONS } from "../src/lib/hexaco";
 
 const outDir = process.argv[2] ?? join(process.cwd(), ".glyph-previews");
 mkdirSync(outDir, { recursive: true });
 
 function dimensionName(code: string): string {
-  return TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS]?.hu ?? code;
+  return HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS]?.hu ?? code;
 }
 
 const cards: string[] = [];
@@ -63,8 +63,8 @@ for (const primary of GLYPH_DIMENSION_ORDER) {
 const intensityCards = [1, 2, 3, 4, 5].map((level) => {
   const svg = renderToStaticMarkup(
     createElement(TypeGlyph, {
-      primaryCode: "TEMP",
-      secondaryCode: "OPEN",
+      primaryCode: "X",
+      secondaryCode: "O",
       typeLabel: "Kísérletező hajtóerő",
       variant: "card",
       intensity: level,
@@ -190,8 +190,8 @@ const intensityStrip = [1, 2, 3, 4, 5]
     (level) => `<figure class="cell">
         ${renderToStaticMarkup(
           createElement(TypeGlyph, {
-            primaryCode: "TEMP",
-            secondaryCode: "OPEN",
+            primaryCode: "X",
+            secondaryCode: "O",
             typeLabel: "Kísérletező hajtóerő",
             variant: "card",
             intensity: level,

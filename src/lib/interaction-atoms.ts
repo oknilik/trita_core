@@ -12,7 +12,7 @@
 // Terv: docs/product/riport-interakcio-szimulacio-terv.md
 // ─────────────────────────────────────────────────────────────────────
 
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 
 export type Pole = "high" | "low";
 
@@ -32,12 +32,12 @@ export interface AtomBlocks {
 }
 
 export interface AtomSide {
-  dim: TritanDimCode;
+  dim: HexacoCode;
   pole: Pole;
 }
 
 export interface RelationAtom {
-  /** Stabil azonosító: "same-THOR-high-low" | "cross-OPEN-high-THOR-high" */
+  /** Stabil azonosító: "same-C-high-low" | "cross-O-high-C-high" */
   id: string;
   kind: "same" | "cross";
   a: AtomSide;
@@ -58,12 +58,12 @@ export interface RelationAtom {
 // ─────────────────────────────────────────────────────────────────────
 
 export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
-  // ── TEMP — extraverzió (X) ──────────────────────────────────────────
+  // ── X — extraverzió (X) ──────────────────────────────────────────
   {
-    id: "same-TEMP-high-high",
+    id: "same-X-high-high",
     kind: "same",
-    a: { dim: "TEMP", pole: "high" },
-    b: { dim: "TEMP", pole: "high" },
+    a: { dim: "X", pole: "high" },
+    b: { dim: "X", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -81,10 +81,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-TEMP-high-low",
+    id: "same-X-high-low",
     kind: "same",
-    a: { dim: "TEMP", pole: "high" },
-    b: { dim: "TEMP", pole: "low" },
+    a: { dim: "X", pole: "high" },
+    b: { dim: "X", pole: "low" },
     view: {
       easy: {
         hu: "Jó kiegészítő páros lehettek: jellemzően te hozod a lendületet és a kifelé irányuló energiát, ő a nyugodt mélységet és a fókuszált munkát.",
@@ -115,10 +115,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-TEMP-low-low",
+    id: "same-X-low-low",
     kind: "same",
-    a: { dim: "TEMP", pole: "low" },
-    b: { dim: "TEMP", pole: "low" },
+    a: { dim: "X", pole: "low" },
+    b: { dim: "X", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -136,12 +136,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── RESO — emocionalitás (E) ──────────────────────────────────────────────
+  // ── E — emocionalitás (E) ──────────────────────────────────────────────
   {
-    id: "same-RESO-high-high",
+    id: "same-E-high-high",
     kind: "same",
-    a: { dim: "RESO", pole: "high" },
-    b: { dim: "RESO", pole: "high" },
+    a: { dim: "E", pole: "high" },
+    b: { dim: "E", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -163,10 +163,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-RESO-high-low",
+    id: "same-E-high-low",
     kind: "same",
-    a: { dim: "RESO", pole: "high" },
-    b: { dim: "RESO", pole: "low" },
+    a: { dim: "E", pole: "high" },
+    b: { dim: "E", pole: "low" },
     view: {
       easy: {
         hu: "Nehéz helyzetben ő a horgony: stabil marad, amikor benned hullámzik a feszültség — ez kettőtöknek jól kiosztott szerep lehet.",
@@ -197,10 +197,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-RESO-low-low",
+    id: "same-E-low-low",
     kind: "same",
-    a: { dim: "RESO", pole: "low" },
-    b: { dim: "RESO", pole: "low" },
+    a: { dim: "E", pole: "low" },
+    b: { dim: "E", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -218,12 +218,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── INTE — becsületesség-alázat (H) ──────────────────────────────────────────────
+  // ── H — becsületesség-alázat (H) ──────────────────────────────────────────────
   {
-    id: "same-INTE-high-high",
+    id: "same-H-high-high",
     kind: "same",
-    a: { dim: "INTE", pole: "high" },
-    b: { dim: "INTE", pole: "high" },
+    a: { dim: "H", pole: "high" },
+    b: { dim: "H", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -241,10 +241,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-INTE-high-low",
+    id: "same-H-high-low",
     kind: "same",
-    a: { dim: "INTE", pole: "high" },
-    b: { dim: "INTE", pole: "low" },
+    a: { dim: "H", pole: "high" },
+    b: { dim: "H", pole: "low" },
     view: {
       easy: {
         hu: "Erős munkamegosztás lehet: ő ügyesen navigál érdekek és emberek között, te őrzöd a kereteket — együtt hatékonyak ÉS hitelesek lehettek.",
@@ -275,10 +275,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-INTE-low-low",
+    id: "same-H-low-low",
     kind: "same",
-    a: { dim: "INTE", pole: "low" },
-    b: { dim: "INTE", pole: "low" },
+    a: { dim: "H", pole: "low" },
+    b: { dim: "H", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -296,12 +296,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── THOR — lelkiismeretesség (C) ────────────────────────────────────────────
+  // ── C — lelkiismeretesség (C) ────────────────────────────────────────────
   {
-    id: "same-THOR-high-high",
+    id: "same-C-high-high",
     kind: "same",
-    a: { dim: "THOR", pole: "high" },
-    b: { dim: "THOR", pole: "high" },
+    a: { dim: "C", pole: "high" },
+    b: { dim: "C", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -319,10 +319,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-THOR-high-low",
+    id: "same-C-high-low",
     kind: "same",
-    a: { dim: "THOR", pole: "high" },
-    b: { dim: "THOR", pole: "low" },
+    a: { dim: "C", pole: "high" },
+    b: { dim: "C", pole: "low" },
     view: {
       easy: {
         hu: "Jó vészhelyzet-páros: te struktúrát és minőséget adsz, ő gyorsan mozdul és rögtönöz — együtt rugalmas ÉS megbízható a működésetek.",
@@ -353,10 +353,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-THOR-low-low",
+    id: "same-C-low-low",
     kind: "same",
-    a: { dim: "THOR", pole: "low" },
-    b: { dim: "THOR", pole: "low" },
+    a: { dim: "C", pole: "low" },
+    b: { dim: "C", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -374,12 +374,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── ADAP — barátságosság (A) ───────────────────────────────────────────
+  // ── A — barátságosság (A) ───────────────────────────────────────────
   {
-    id: "same-ADAP-high-high",
+    id: "same-A-high-high",
     kind: "same",
-    a: { dim: "ADAP", pole: "high" },
-    b: { dim: "ADAP", pole: "high" },
+    a: { dim: "A", pole: "high" },
+    b: { dim: "A", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -397,10 +397,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-ADAP-high-low",
+    id: "same-A-high-low",
     kind: "same",
-    a: { dim: "ADAP", pole: "high" },
-    b: { dim: "ADAP", pole: "low" },
+    a: { dim: "A", pole: "high" },
+    b: { dim: "A", pole: "low" },
     view: {
       easy: {
         hu: "Ő gyakran kimondja, amit te lenyelnél, te pedig tompíthatod, amit ő élezne — jól kalibrálva ez a páros őszinte ÉS emberséges lehet.",
@@ -431,10 +431,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-ADAP-low-low",
+    id: "same-A-low-low",
     kind: "same",
-    a: { dim: "ADAP", pole: "low" },
-    b: { dim: "ADAP", pole: "low" },
+    a: { dim: "A", pole: "low" },
+    b: { dim: "A", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -452,12 +452,12 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
 
-  // ── OPEN — nyitottság ──────────────────────────────────────────────
+  // ── O — nyitottság ──────────────────────────────────────────────
   {
-    id: "same-OPEN-high-high",
+    id: "same-O-high-high",
     kind: "same",
-    a: { dim: "OPEN", pole: "high" },
-    b: { dim: "OPEN", pole: "high" },
+    a: { dim: "O", pole: "high" },
+    b: { dim: "O", pole: "high" },
     symmetric: true,
     view: {
       easy: {
@@ -475,10 +475,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-OPEN-high-low",
+    id: "same-O-high-low",
     kind: "same",
-    a: { dim: "OPEN", pole: "high" },
-    b: { dim: "OPEN", pole: "low" },
+    a: { dim: "O", pole: "high" },
+    b: { dim: "O", pole: "low" },
     view: {
       easy: {
         hu: "Jó szűrőpáros: te hozod az új irányokat, ő a bevált módszerek erejét — ami kettőtök rostáján átmegy, az általában életképes.",
@@ -509,10 +509,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "same-OPEN-low-low",
+    id: "same-O-low-low",
     kind: "same",
-    a: { dim: "OPEN", pole: "low" },
-    b: { dim: "OPEN", pole: "low" },
+    a: { dim: "O", pole: "low" },
+    b: { dim: "O", pole: "low" },
     symmetric: true,
     view: {
       easy: {
@@ -538,10 +538,10 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
 
 export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
   {
-    id: "cross-OPEN-high-THOR-high",
+    id: "cross-O-high-C-high",
     kind: "cross",
-    a: { dim: "OPEN", pole: "high" },
-    b: { dim: "THOR", pole: "high" },
+    a: { dim: "O", pole: "high" },
+    b: { dim: "C", pole: "high" },
     view: {
       easy: {
         hu: "Kettőtökben meglehet a teljes lánc: jellemzően te hozod az ötletet és az irányt, ő a kivitelezés fegyelmét — az ilyen párosok gyakran szállítanak.",
@@ -572,10 +572,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-OPEN-high-THOR-low",
+    id: "cross-O-high-C-low",
     kind: "cross",
-    a: { dim: "OPEN", pole: "high" },
-    b: { dim: "THOR", pole: "low" },
+    a: { dim: "O", pole: "high" },
+    b: { dim: "C", pole: "low" },
     view: {
       easy: {
         hu: "Gyors, lelkes indulás: ő azonnal vevő az ötleteidre, és nem lassít adminisztrációval — minden új dolog könnyen elstartol nálatok.",
@@ -606,10 +606,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-THOR-high-ADAP-low",
+    id: "cross-C-high-A-low",
     kind: "cross",
-    a: { dim: "THOR", pole: "high" },
-    b: { dim: "ADAP", pole: "low" },
+    a: { dim: "C", pole: "high" },
+    b: { dim: "A", pole: "low" },
     view: {
       easy: {
         hu: "Magas mérce találkozhat egyenes visszajelzéssel: nála jellemzően hamar megtudod, mi nem működik, és a minőség gyorsan javulhat körülöttetek.",
@@ -640,10 +640,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-THOR-high-TEMP-high",
+    id: "cross-C-high-X-high",
     kind: "cross",
-    a: { dim: "THOR", pole: "high" },
-    b: { dim: "TEMP", pole: "high" },
+    a: { dim: "C", pole: "high" },
+    b: { dim: "X", pole: "high" },
     view: {
       easy: {
         hu: "Az ő lendülete a te szervezettségeddel párosulva ritka kombináció: nálatok az elindított dolgok célba is érnek.",
@@ -674,10 +674,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-TEMP-high-RESO-high",
+    id: "cross-X-high-E-high",
     kind: "cross",
-    a: { dim: "TEMP", pole: "high" },
-    b: { dim: "RESO", pole: "high" },
+    a: { dim: "X", pole: "high" },
+    b: { dim: "E", pole: "high" },
     view: {
       easy: {
         hu: "Élénk, érzelmileg jelenlévő kapcsolat alakulhat: ő jellemzően hamar észreveszi, ha valami nincs rendben — veled vagy a csapattal —, te pedig gyorsan tudsz rá mozdulni.",
@@ -708,10 +708,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-TEMP-low-RESO-high",
+    id: "cross-X-low-E-high",
     kind: "cross",
-    a: { dim: "TEMP", pole: "low" },
-    b: { dim: "RESO", pole: "high" },
+    a: { dim: "X", pole: "low" },
+    b: { dim: "E", pole: "high" },
     view: {
       easy: {
         hu: "Figyelmes, kíméletes páros lehettek: jellemzően nem nyomasztod tempóval, ő pedig észreveheti és tiszteletben tarthatja a határaidat.",
@@ -742,10 +742,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-INTE-high-ADAP-low",
+    id: "cross-H-high-A-low",
     kind: "cross",
-    a: { dim: "INTE", pole: "high" },
-    b: { dim: "ADAP", pole: "low" },
+    a: { dim: "H", pole: "high" },
+    b: { dim: "A", pole: "low" },
     view: {
       easy: {
         hu: "Mindketten kimondjátok az igazat — nálad elvből, nála vérmérsékletből. A kettőtök közelében ritkán élnek meg hazugságok.",
@@ -776,10 +776,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-INTE-high-OPEN-high",
+    id: "cross-H-high-O-high",
     kind: "cross",
-    a: { dim: "INTE", pole: "high" },
-    b: { dim: "OPEN", pole: "high" },
+    a: { dim: "H", pole: "high" },
+    b: { dim: "O", pole: "high" },
     view: {
       easy: {
         hu: "Felelős kísérletezés: ő újít, te őrzöd a kereteket — a párosotok mer is, meg megbízható is marad.",
@@ -810,10 +810,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-RESO-high-ADAP-low",
+    id: "cross-E-high-A-low",
     kind: "cross",
-    a: { dim: "RESO", pole: "high" },
-    b: { dim: "ADAP", pole: "low" },
+    a: { dim: "E", pole: "high" },
+    b: { dim: "A", pole: "low" },
     view: {
       easy: {
         hu: "Ő jellemzően gyorsan kimondja, amit te már régóta megérzel — a párosotok hamar felszínre hozhatja, ami másutt hónapokig lappangana.",
@@ -844,10 +844,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-RESO-low-ADAP-high",
+    id: "cross-E-low-A-high",
     kind: "cross",
-    a: { dim: "RESO", pole: "low" },
-    b: { dim: "ADAP", pole: "high" },
+    a: { dim: "E", pole: "low" },
+    b: { dim: "A", pole: "high" },
     view: {
       easy: {
         hu: "Nyugodt, kiegyensúlyozott működés: te stabil vagy, ő türelmes — a kettőtök közelében ritka a dráma.",
@@ -878,10 +878,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-THOR-high-RESO-high",
+    id: "cross-C-high-E-high",
     kind: "cross",
-    a: { dim: "THOR", pole: "high" },
-    b: { dim: "RESO", pole: "high" },
+    a: { dim: "C", pole: "high" },
+    b: { dim: "E", pole: "high" },
     view: {
       easy: {
         hu: "Az általad épített kiszámíthatóság neki biztonságot ad: a rendszered csökkenti a bizonytalanságot, amire ő a legérzékenyebb.",
@@ -912,10 +912,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
   },
   {
-    id: "cross-TEMP-high-OPEN-high",
+    id: "cross-X-high-O-high",
     kind: "cross",
-    a: { dim: "TEMP", pole: "high" },
-    b: { dim: "OPEN", pole: "high" },
+    a: { dim: "X", pole: "high" },
+    b: { dim: "O", pole: "high" },
     view: {
       easy: {
         hu: "Ti lehettek a kezdeményező motor: az ő ötletei a te lendületeddel párosulva gyorsan mozgásba hozhatnak bármit — és bárkit.",
@@ -959,10 +959,10 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
 // ─────────────────────────────────────────────────────────────────────
 
 export const LEADER_SUPPLEMENTS: Record<
-  TritanDimCode,
+  HexacoCode,
   Record<Pole, LocalizedText>
 > = {
-  TEMP: {
+  X: {
     high: {
       hu: "Ha a vezetőd erősen extravertált, a meetingjei jellemzően pörögnek, és aki hangosabb, könnyebben kap teret. Kérj strukturált szót — napirendi pontot, írásos felvezetést —, mert a csend nála könnyen egyetértésnek látszhat.",
       en: "If your leader is strongly extraverted, their meetings typically move fast, and louder voices get the floor more easily. Ask for structured airtime — an agenda item, a written brief — because silence can easily look like agreement to them.",
@@ -972,7 +972,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader leans introverted, they typically give little spontaneous feedback and don't fill the room — that's rarely distance. Ask actively for their read: with them, silence usually isn't displeasure, but praise isn't loud either.",
     },
   },
-  RESO: {
+  E: {
     high: {
       hu: "Ha a vezetőd érzelmileg erősen ráhangolódó, a hangulata jellemzően érződik a csapaton, és a terheket komolyan veszi — a tiédet is. Az őszinte jelzést általában értékeli, de időzítsd: feszült pillanatban a rossz hír nála felerősödhet.",
       en: "If your leader is highly emotionally attuned, their mood typically carries through the team, and they take burdens seriously — including yours. They usually value honest signals, but time them: in a tense moment, bad news can amplify with them.",
@@ -982,7 +982,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader is more emotionally reserved, they typically give little emotional affirmation, and with them no news is usually good news. If you need reassurance, ask for it explicitly — it rarely occurs to them on their own, but they'll usually give it gladly.",
     },
   },
-  INTE: {
+  H: {
     high: {
       hu: "Ha a vezetőd erősen elvhű, jellemzően kiszámítható és fair, a szava kötelez — cserébe általában ugyanezt várja. A taktikázás és a szépített beszámoló nála sokat kockáztat, az őszinte hibabevallás viszont pontot ér: a rossz hír korai kimondása bizalmat építhet.",
       en: "If your leader is strongly principled, they tend to be predictable and fair, bound by their word — usually expecting the same in return. Manoeuvring and polished reports risk a lot with them, while honest admission of error earns points: naming bad news early can build trust.",
@@ -992,7 +992,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader has flexible priorities and a deal-making style, they tend to decide fast and pragmatically, with emphases that move with the situation. It's worth putting your agreements in writing, because their focus can move on quickly — and watch for their unstated considerations too.",
     },
   },
-  THOR: {
+  C: {
     high: {
       hu: "Ha a vezetőd erősen strukturált, a minőség és a határidő nála jellemzően nem stílus, hanem megállapodás kérdése. Meglepetés helyett korai jelzést vár — a csúszás önmagában általában megbocsátható, az eltitkolt csúszás sokkal kevésbé.",
       en: "If your leader is highly structured, quality and deadlines typically aren't a matter of style for them but of agreement. They expect early warning rather than surprises — a slip in itself is usually forgivable; a hidden slip far less so.",
@@ -1002,7 +1002,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader is less structured, they typically set few frames, and details can slip past them — the freedom is real, but you'll likely have to supply the structure yourself. Ask concretely: what, by when, at what depth.",
     },
   },
-  ADAP: {
+  A: {
     high: {
       hu: "Ha a vezetőd erősen harmóniakereső, jellemzően türelmes, és a kritikát ritkán mondja ki élesen — figyeld a finom jelzéseket, mert nála a „talán érdemes lenne” gyakran erős kérés. Kérj konkrét visszajelzést, különben könnyen csak a jót hallod.",
       en: "If your leader leans strongly toward harmony, they tend to be patient and rarely sharp in criticism — watch for subtle signals, because their 'perhaps it might be worth' is often a firm request. Ask for concrete feedback, or you may only ever hear the good part.",
@@ -1012,7 +1012,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader has a very direct style, the edge is typically a mode, not personal — they usually handle debate well and respect those who push back with arguments. What they handle less well is unspoken hurt and silent withdrawal; open disagreement may be the safer route with them.",
     },
   },
-  OPEN: {
+  O: {
     high: {
       hu: "Ha a vezetőd erősen újító, az irányok nála gyakran váltanak, és a legutóbbi ötlet hangosabb lehet, mint a tavalyi stratégia. Kérdezd meg rendszeresen, mi fix és mi kísérlet — enélkül könnyen elköteleződésnek hallod a hangos gondolkodást is.",
       en: "If your leader is a strong innovator, directions tend to change often, and the latest idea can speak louder than last year's strategy. Regularly ask what's fixed and what's an experiment — otherwise you may hear every musing as a commitment.",

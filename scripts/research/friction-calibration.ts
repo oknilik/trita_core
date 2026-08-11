@@ -57,7 +57,7 @@ import {
   type TrustEdgeType,
 } from "../../src/lib/trust-network";
 import { extractDimensionScores } from "../../src/lib/scoring";
-import { TRITAN_ORDER } from "../../src/lib/tritan";
+import { HEXACO_ORDER } from "../../src/lib/hexaco";
 
 // Elvárt trust↔friction megfelelés (a kalibráció hipotézise): magas mért
 // bizalom ↔ alacsony becsült súrlódás. A `disconnected` él SZÁNDÉKOSAN
@@ -265,7 +265,7 @@ async function main() {
     if (!row.userProfileId || seen.has(row.userProfileId)) continue;
     seen.add(row.userProfileId);
     const dims = extractDimensionScores(row.scores);
-    if (!dims || !TRITAN_ORDER.every((c) => typeof dims[c] === "number")) continue;
+    if (!dims || !HEXACO_ORDER.every((c) => typeof dims[c] === "number")) continue;
     profileByUser.set(row.userProfileId, dims);
   }
 

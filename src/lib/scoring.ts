@@ -5,7 +5,7 @@ import {
   type LikertQuestion,
 } from "./questions";
 import type { AssessmentForm } from "./questions/types";
-import { TRITAN_ORDER } from "./tritan";
+import { normalizeDimensionKeys, normalizeFacetKeys } from "./hexaco";
 
 // ============================================
 // Likert scoring (TRITAN)
@@ -176,9 +176,16 @@ export function calculateScores(
 }
 
 /**
- * Extracts dimension scores from a stored scores JSON, handling:
- * - Nested ScoreResult: { type: "likert", dimensions: { TEMP: 62, ... } }
- * - Flat format: { TEMP: 62, RESO: 45, ... }
+ * A tárolt score-JSON KANONIKUS olvasója. Kezeli:
+ * - beágyazott ScoreResult-ot: `{ type: "likert", dimensions: { X: 62, … } }`
+ * - lapos örökség-formátumot: `{ X: 62, E: 45, … }`
+ *
+ * ÖRÖKSÉG-KULCSOK (2026-08-11): a belső dimenziókódok kivezetése előtt mentett
+ * sorok az INTE/RESO/TEMP/ADAP/THOR/OPEN kulcsokat használják — ezeket a
+ * `normalizeDimensionKeys` fordítja HEXACO-betűre, hogy a régi eredmények
+ * változatlanul olvashatók maradjanak (migráció nélkül). Minden dimenzió-
+ * olvasásnak ezen a függvényen kell átmennie; nyers `scores.dimensions`
+ * hozzáférés örökség-soron hibás (üres) képet ad.
  */
 export function extractDimensionScores(
   scores: unknown
@@ -186,14 +193,27 @@ export function extractDimensionScores(
   if (!scores || typeof scores !== "object") return null;
   const obj = scores as Record<string, unknown>;
   if ("dimensions" in obj && obj.dimensions && typeof obj.dimensions === "object") {
-    return obj.dimensions as Record<string, number>;
+    const normalized = normalizeDimensionKeys(obj.dimensions as Record<string, unknown>);
+    return Object.keys(normalized).length > 0 ? normalized : null;
   }
-  // Flat örökség-formátum: csak az ismert dim-kódok kerülnek vissza — a
-  // tárolt JSON kísérő kulcsai (answers, questionCount, …) nem szivárognak.
-  const flat: Record<string, number> = {};
-  for (const code of TRITAN_ORDER) {
-    const value = obj[code];
-    if (typeof value === "number") flat[code] = value;
-  }
+  // Lapos örökség-formátum: csak az ismert dim-kódok (kanonikus VAGY örökség)
+  // kerülnek vissza — a tárolt JSON kísérő kulcsai (answers, questionCount, …)
+  // nem szivárognak.
+  const flat = normalizeDimensionKeys(obj);
   return Object.keys(flat).length > 0 ? flat : null;
+}
+
+/**
+ * A tárolt score-JSON facet-bontásának kanonikus olvasója — ugyanaz az
+ * örökség-kulcs normalizálás, mint a dimenzió-oldalon (a KÜLSŐ kulcs fordul,
+ * a facet-kódok változatlanok). Nincs facet-bontás → null.
+ */
+export function extractFacetScores(
+  scores: unknown
+): Record<string, Record<string, number>> | null {
+  if (!scores || typeof scores !== "object") return null;
+  const obj = scores as Record<string, unknown>;
+  if (!("facets" in obj) || !obj.facets || typeof obj.facets !== "object") return null;
+  const normalized = normalizeFacetKeys(obj.facets as Record<string, unknown>);
+  return Object.keys(normalized).length > 0 ? normalized : null;
 }

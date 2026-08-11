@@ -177,7 +177,7 @@ test("reverseGap null, ha nincs mindkét irányú item — inconsistent nem élh
 test("extractRaterAnswers: tárolt scores JSON-ból, örökség-sorokra null", () => {
   const answers = extractRaterAnswers({
     type: "likert",
-    dimensions: { TEMP: 50 },
+    dimensions: { X: 50 },
     answers: [
       { questionId: 1, value: 4 },
       { questionId: "rossz", value: 4 }, // hibás tétel kimarad
@@ -190,7 +190,7 @@ test("extractRaterAnswers: tárolt scores JSON-ból, örökség-sorokra null", (
     { questionId: 2, value: 2 },
   ]);
 
-  assert.equal(extractRaterAnswers({ dimensions: { TEMP: 50 } }), null);
+  assert.equal(extractRaterAnswers({ dimensions: { X: 50 } }), null);
   assert.equal(extractRaterAnswers({ answers: [] }), null);
   assert.equal(extractRaterAnswers(null), null);
   assert.equal(extractRaterAnswers("scores"), null);

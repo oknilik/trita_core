@@ -50,10 +50,10 @@ import {
 import type { AssessmentForm } from "../../src/lib/questions/types";
 import type { DimNorm, NormTable } from "../../src/lib/norms";
 import {
-  TRITAN_DIMENSIONS,
-  TRITAN_ORDER,
-  type TritanDimCode,
-} from "../../src/lib/tritan";
+  HEXACO_DIMENSIONS,
+  HEXACO_ORDER,
+  type HexacoCode,
+} from "../../src/lib/hexaco";
 import { getDimensionTier } from "../../src/lib/dimension-utils";
 import {
   PROFILE_HIGH_THRESHOLD,
@@ -120,8 +120,8 @@ interface DimStats {
   bands3565: { low: number; mid: number; high: number };
 }
 
-function dimLabel(code: (typeof TRITAN_ORDER)[number]): string {
-  const dim = TRITAN_DIMENSIONS[code];
+function dimLabel(code: (typeof HEXACO_ORDER)[number]): string {
+  const dim = HEXACO_DIMENSIONS[code];
   return `${dim.letter} ${dim.hu} (${code})`;
 }
 
@@ -154,7 +154,7 @@ async function main() {
   }
 
   // Szűrés: form-pecsét, majd teljesség (mind a 6 dimenzió szám).
-  const valuesByDim = new Map<string, number[]>(TRITAN_ORDER.map((c) => [c, []]));
+  const valuesByDim = new Map<string, number[]>(HEXACO_ORDER.map((c) => [c, []]));
   const bankTally = new Map<string, number>();
   let skippedForm = 0;
   let skippedIncomplete = 0;
@@ -165,19 +165,19 @@ async function main() {
       continue;
     }
     const dims = extractDimensionScores(scores);
-    if (!dims || !TRITAN_ORDER.every((c) => typeof dims[c] === "number")) {
+    if (!dims || !HEXACO_ORDER.every((c) => typeof dims[c] === "number")) {
       skippedIncomplete += 1;
       continue;
     }
     const bank = (scores as { bankVersion?: unknown } | null)?.bankVersion;
     const bankKey = typeof bank === "string" ? bank : "(pecsét nélkül)";
     bankTally.set(bankKey, (bankTally.get(bankKey) ?? 0) + 1);
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       valuesByDim.get(code)?.push(dims[code]);
     }
   }
 
-  const n = valuesByDim.get(TRITAN_ORDER[0])?.length ?? 0;
+  const n = valuesByDim.get(HEXACO_ORDER[0])?.length ?? 0;
 
   console.log("── PILOT-NORMÁK a tárolt self-eredményekből ────────────────────");
   console.log(
@@ -209,7 +209,7 @@ async function main() {
   }
 
   // ── dimenziónkénti statisztika ──────────────────────────────────────────
-  const stats: DimStats[] = TRITAN_ORDER.map((code) => {
+  const stats: DimStats[] = HEXACO_ORDER.map((code) => {
     const values = valuesByDim.get(code) ?? [];
     const bands4070 = { low: 0, mid: 0, high: 0 };
     const bands3565 = { low: 0, mid: 0, high: 0 };
@@ -284,14 +284,14 @@ async function main() {
   // A NormTable-annotáció miatt a tsc garantálja, hogy a kinyomtatott blokk
   // a src/lib/norms.ts ACTIVE_NORM_TABLE kontraktusára illik (version,
   // source, n, dims{mean,sd}); a beemelés kézzel történik (README).
-  // A dims-cast biztonságos: a stats a TRITAN_ORDER-t 1:1 fedi le.
+  // A dims-cast biztonságos: a stats a HEXACO_ORDER-t 1:1 fedi le.
   const normTable: NormTable = {
     version: `pilot-${new Date().toISOString().slice(0, 10)}`,
     source: `pilot self-eredmények (TSFI${formFilter ? `, form=${formFilter}` : ""}), userenként a legutolsó`,
     n,
     dims: Object.fromEntries(
       stats.map((s) => [s.code, { mean: roundTo(s.mean, 2), sd: roundTo(s.sd, 2) }]),
-    ) as Record<TritanDimCode, DimNorm>,
+    ) as Record<HexacoCode, DimNorm>,
   };
   const invalidSd = stats.filter((s) => !Number.isFinite(s.sd) || s.sd <= 0);
   if (invalidSd.length > 0) {

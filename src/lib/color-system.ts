@@ -25,7 +25,7 @@ import { COLORS } from "@/lib/design-tokens";
 // Nincs piros, success-zöld vagy warning-amber a hat hue között — a
 // dimenzió identitást kódol, nem értéket.
 
-export type DimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
+export type DimCode = "H" | "E" | "X" | "A" | "C" | "O";
 
 export interface DimColorTriple {
   /** Mark (sáv, cella, pötty, radar) — fehér kártyán ≥3:1. */
@@ -38,17 +38,17 @@ export interface DimColorTriple {
 
 export const DIMENSION_COLORS: Record<DimCode, DimColorTriple> = {
   /** H · Becsületesség-Alázat — indigó (mély, higgadt, megbízható) */
-  INTE: { base: "#4f5aa8", strong: "#3e4785", soft: "#eef0f8" },
+  H: { base: "#4f5aa8", strong: "#3e4785", soft: "#eef0f8" },
   /** E · Emocionalitás — viola (introspektív érzelmi rezonancia) */
-  RESO: { base: "#7b5fae", strong: "#5f4693", soft: "#f1ecf9" },
+  E: { base: "#7b5fae", strong: "#5f4693", soft: "#f1ecf9" },
   /** X · Extraverzió — okker/arany (napfény; ≠ warning-amber: tompább, barnább) */
-  TEMP: { base: "#c08d2e", strong: "#8a6215", soft: "#f8efdc" },
+  X: { base: "#c08d2e", strong: "#8a6215", soft: "#f8efdc" },
   /** A · Barátságosság — moha (természet, szelídség; ≠ success-emerald) */
-  ADAP: { base: "#78924f", strong: "#556b35", soft: "#eff3e4" },
+  A: { base: "#78924f", strong: "#556b35", soft: "#eff3e4" },
   /** C · Lelkiismeretesség — petrol (hűvös-stabil, strukturált) */
-  THOR: { base: "#3d7f95", strong: "#2c5f72", soft: "#e6f1f5" },
+  C: { base: "#3d7f95", strong: "#2c5f72", soft: "#e6f1f5" },
   /** O · Nyitottság — mályva (képzelet, rendhagyó gondolkodás) */
-  OPEN: { base: "#b4688a", strong: "#8e4263", soft: "#f9eef3" },
+  O: { base: "#b4688a", strong: "#8e4263", soft: "#f9eef3" },
 };
 
 const DIM_FALLBACK: DimColorTriple = {
@@ -64,21 +64,21 @@ export function dimColors(code: string): DimColorTriple {
 
 /** Kényelmi térképek a `Record<string, string>` alakú fogyasztóknak. */
 export const DIMENSION_BASE: Record<DimCode, string> = {
-  INTE: DIMENSION_COLORS.INTE.base,
-  RESO: DIMENSION_COLORS.RESO.base,
-  TEMP: DIMENSION_COLORS.TEMP.base,
-  ADAP: DIMENSION_COLORS.ADAP.base,
-  THOR: DIMENSION_COLORS.THOR.base,
-  OPEN: DIMENSION_COLORS.OPEN.base,
+  H: DIMENSION_COLORS.H.base,
+  E: DIMENSION_COLORS.E.base,
+  X: DIMENSION_COLORS.X.base,
+  A: DIMENSION_COLORS.A.base,
+  C: DIMENSION_COLORS.C.base,
+  O: DIMENSION_COLORS.O.base,
 };
 
 export const DIMENSION_STRONG: Record<DimCode, string> = {
-  INTE: DIMENSION_COLORS.INTE.strong,
-  RESO: DIMENSION_COLORS.RESO.strong,
-  TEMP: DIMENSION_COLORS.TEMP.strong,
-  ADAP: DIMENSION_COLORS.ADAP.strong,
-  THOR: DIMENSION_COLORS.THOR.strong,
-  OPEN: DIMENSION_COLORS.OPEN.strong,
+  H: DIMENSION_COLORS.H.strong,
+  E: DIMENSION_COLORS.E.strong,
+  X: DIMENSION_COLORS.X.strong,
+  A: DIMENSION_COLORS.A.strong,
+  C: DIMENSION_COLORS.C.strong,
+  O: DIMENSION_COLORS.O.strong,
 };
 
 // ─── Csapatszerep-színek: 3 család × árnyalat (B-döntés) ─────────────────────

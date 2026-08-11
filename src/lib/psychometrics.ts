@@ -15,7 +15,7 @@
 
 import type { AssessmentForm } from "@/lib/questions/types";
 import { tritanConfig } from "@/lib/questions/tritan";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 
 // ── Item-számok a TSFI bankból származtatva ──────────────────────────
 // A hat fő dimenzió itemei számítanak (a kiegészítő altruizmus-skála nem);
@@ -27,7 +27,7 @@ import { TRITAN_ORDER } from "@/lib/tritan";
 // SEM-et (10,36 → 10,23) és vele a DIFF_MIN_GAP-et (15 → 14) — a küszöb
 // nem itt él (kliens-bundle), hanem a personality-type.ts literáljában,
 // amit a fenti invariáns-teszt köt ide.
-const MAIN_DIM_CODES = new Set<string>(TRITAN_ORDER);
+const MAIN_DIM_CODES = new Set<string>(HEXACO_ORDER);
 const mainItems = tritanConfig.questions.filter((q) =>
   MAIN_DIM_CODES.has(q.dimension),
 );
@@ -43,8 +43,8 @@ if (mainItems.length === 0 || shortMainItems.length === 0 || mainFacetCount === 
 
 /** Átlagos item-szám dimenziónként, kérdőív-formánként (a reliabilitás alapja). */
 export const ITEMS_PER_DIM: Record<AssessmentForm, number> = {
-  short: shortMainItems.length / TRITAN_ORDER.length,
-  full: mainItems.length / TRITAN_ORDER.length,
+  short: shortMainItems.length / HEXACO_ORDER.length,
+  full: mainItems.length / HEXACO_ORDER.length,
 };
 
 /** Átlagos item-szám facetenként, kérdőív-formánként. */

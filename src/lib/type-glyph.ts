@@ -10,12 +10,12 @@
 // Miró-inspirált absztrakt kompozíció, de a TRITA palettával
 // (design-tokens.ts) — nincs saját hexkód ebben a fájlban.
 //
-// A dimenziókódok a belső TRITAN-kódok (INTE/RESO/TEMP/ADAP/THOR/OPEN),
+// A dimenziókódok a belső TRITAN-kódok (H/E/X/A/C/O),
 // a megjelenítés HEXACO-névtérben történik (ld. tritan.ts).
 // ─────────────────────────────────────────────────────────────────────
 
 import { COLORS } from "@/lib/design-tokens";
-import { rankDimensionScores } from "./tritan";
+import { rankDimensionScores } from "./hexaco";
 
 export const GLYPH_CANVAS = { width: 800, height: 900 } as const;
 
@@ -74,48 +74,48 @@ export interface DimensionGlyph {
 
 /** A hat dimenzió alapmotívumai. A sorrend a HEXACO-sorrendet követi. */
 export const DIMENSION_GLYPHS: Record<string, DimensionGlyph> = {
-  INTE: {
-    code: "INTE",
+  H: {
+    code: "H",
     hexaco: "H",
     form: "arch",
     motif: "scales",
     formName: { hu: "kapuív", en: "arch" },
     motifName: { hu: "mérleg", en: "scales" },
   },
-  RESO: {
-    code: "RESO",
+  E: {
+    code: "E",
     hexaco: "E",
     form: "drop",
     motif: "resonance",
     formName: { hu: "csepp", en: "drop" },
     motifName: { hu: "koncentrikus ívek", en: "concentric arcs" },
   },
-  TEMP: {
-    code: "TEMP",
+  X: {
+    code: "X",
     hexaco: "X",
     form: "comet",
     motif: "bolt",
     formName: { hu: "üstökös", en: "comet" },
     motifName: { hu: "villám", en: "bolt" },
   },
-  ADAP: {
-    code: "ADAP",
+  A: {
+    code: "A",
     hexaco: "A",
     form: "discs",
     motif: "rings",
     formName: { hu: "kapcsolódó korongok", en: "linked discs" },
     motifName: { hu: "gyűrűpár", en: "ring pair" },
   },
-  THOR: {
-    code: "THOR",
+  C: {
+    code: "C",
     hexaco: "C",
     form: "block",
     motif: "rungs",
     formName: { hu: "tömb", en: "block" },
     motifName: { hu: "létrafokok", en: "rungs" },
   },
-  OPEN: {
-    code: "OPEN",
+  O: {
+    code: "O",
     hexaco: "O",
     form: "eye",
     motif: "spiral",
@@ -124,7 +124,7 @@ export const DIMENSION_GLYPHS: Record<string, DimensionGlyph> = {
   },
 };
 
-export const GLYPH_DIMENSION_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+export const GLYPH_DIMENSION_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 
 // ── Alapformák ────────────────────────────────────────────────────────
 // Mindegyik EGY zárt bronz forma (az egyéni típus egyetlen alakzat; a
@@ -340,7 +340,7 @@ export function accompaniment(primaryCode: string, secondaryCode: string): Accom
  * a második a motívumot. Az intenzitás a domináns dimenzió pontszámából jön.
  *
  * FONTOS (interp S2): a rangsor a KÖZÖS rankDimensionScores-t használja
- * (pontszám csökkenő, holtversenynél TRITAN_ORDER) — pontosan úgy, ahogy a
+ * (pontszám csökkenő, holtversenynél HEXACO_ORDER) — pontosan úgy, ahogy a
  * típusnév. A korábbi nyers `.sort((a,b) => b.score - a.score)` holtversenynél
  * a bemenet sorrendjétől függő, NEM determinisztikus párt adott, így a rajzolt
  * ábra és a szöveges címke a top-2 azonos pontszámánál ELTÉRHETETT egymástól.

@@ -3,7 +3,7 @@
 import { memo } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
-import { TRITAN_ORDER, TRITAN_DIMENSIONS, TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, HEXACO_DIMENSIONS, hexLetter, type HexacoCode } from "@/lib/hexaco";
 import { dimColors } from "@/lib/color-system";
 
 const CX = 150;
@@ -69,7 +69,7 @@ export const RadarChart = memo(function RadarChart({
 
   // HEXACO-sorrend: fentről órajárás szerint a tengelyek kiolvassák a
   // mozaikszót (H·E·X·A·C·O). Nem-standard kódoknál marad az eredeti sorrend.
-  const TRITAN_RADAR_ORDER: readonly string[] = TRITAN_ORDER;
+  const TRITAN_RADAR_ORDER: readonly string[] = HEXACO_ORDER;
   const isTritanSet = dimensions.every((d) => TRITAN_RADAR_ORDER.includes(d.code));
   const orderedDimensions = isTritanSet
     ? [...dimensions].sort(
@@ -80,9 +80,9 @@ export const RadarChart = memo(function RadarChart({
   // az egybetűs változatban két „T" is volt, ami önmagában nem
   // azonosította a dimenziót (design-akciólista #9).
   const axisLabel = (code: string): string =>
-    TRITAN_DIM_ABBR[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
+    hexLetter(code);
   const axisTitle = (code: string): string =>
-    TRITAN_DIMENSIONS[code as TritanDimCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
+    HEXACO_DIMENSIONS[code as HexacoCode]?.[locale === "hu" ? "hu" : "en"] ?? code;
 
   const n = orderedDimensions.length;
   const radarFillId = `radar-fill-${uid}`;

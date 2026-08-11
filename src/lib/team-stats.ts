@@ -16,7 +16,7 @@ import {
   type DynamicsEdgeType,
 } from "./friction-model";
 
-const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 export type { DynamicsEdgeType };
 
 // Kanonikus HEXACO-paletta (color-system.ts) — base a markokra (sáv, cella,
@@ -26,21 +26,21 @@ import { DIMENSION_BASE, DIMENSION_STRONG } from "./color-system";
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const DIM_LABELS_HU: Record<string, string> = {
-  INTE: "Becsületesség-Alázat",
-  RESO: "Emocionalitás",
-  TEMP: "Extraverzió",
-  ADAP: "Barátságosság",
-  THOR: "Lelkiismeretesség",
-  OPEN: "Nyitottság",
+  H: "Becsületesség-Alázat",
+  E: "Emocionalitás",
+  X: "Extraverzió",
+  A: "Barátságosság",
+  C: "Lelkiismeretesség",
+  O: "Nyitottság",
 };
 
 const DIM_LABELS_EN: Record<string, string> = {
-  INTE: "Honesty-Humility",
-  RESO: "Emotionality",
-  TEMP: "Extraversion",
-  ADAP: "Agreeableness",
-  THOR: "Conscientiousness",
-  OPEN: "Openness",
+  H: "Honesty-Humility",
+  E: "Emotionality",
+  X: "Extraversion",
+  A: "Agreeableness",
+  C: "Conscientiousness",
+  O: "Openness",
 };
 
 export interface SerializedTeamMember {
@@ -585,7 +585,7 @@ export async function getTeamPageData(
 
   // Compute team pattern (requires at least 3 members with full TRITAN scores).
   // FONTOS: a member.scores a NYERS score-JSON dimenziói — a BELSŐ kódokkal
-  // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO megjelenítési betűkkel
+  // (H/E/X/A/C/O), nem a HEXACO megjelenítési betűkkel
   // (H/E/X/A/C/O). A 2026-07-29-es HEXACO-átállás után itt tévesen a
   // display-betűket kerestük, ezért a mintázat mindig null lett.
   const tritanMembers: Array<{ userId: string; scores: TritanScores }> = [];
@@ -593,18 +593,18 @@ export async function getTeamPageData(
     const s = m.scores;
     if (
       s &&
-      s.INTE !== undefined && s.RESO !== undefined && s.TEMP !== undefined &&
-      s.ADAP !== undefined && s.THOR !== undefined && s.OPEN !== undefined
+      s.H !== undefined && s.E !== undefined && s.X !== undefined &&
+      s.A !== undefined && s.C !== undefined && s.O !== undefined
     ) {
       tritanMembers.push({
         userId: m.userId,
         scores: {
-          INTE: s.INTE,
-          RESO: s.RESO,
-          TEMP: s.TEMP,
-          ADAP: s.ADAP,
-          THOR: s.THOR,
-          OPEN: s.OPEN,
+          H: s.H,
+          E: s.E,
+          X: s.X,
+          A: s.A,
+          C: s.C,
+          O: s.O,
         },
       });
     }

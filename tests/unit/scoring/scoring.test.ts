@@ -9,7 +9,7 @@ import {
   SCORING_ENGINE_VERSION,
 } from "@/lib/scoring";
 import { getTestConfig, isLikertQuestion, type LikertQuestion } from "@/lib/questions";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 
 const fullQuestions = getTestConfig("TRITAN", "hu", "full")
   .questions.filter(isLikertQuestion) as LikertQuestion[];
@@ -50,7 +50,7 @@ describe("calculateScores", () => {
         "TRITAN",
         answersAtEffective(fullQuestions, effective),
       );
-      for (const code of TRITAN_ORDER) {
+      for (const code of HEXACO_ORDER) {
         assert.equal(result.dimensions[code], expected, `${code} @ ${effective}`);
       }
     }
@@ -63,7 +63,7 @@ describe("calculateScores", () => {
     // az API-réteg (isCompleteFormAnswerSet) garantálja, a motor nem.
     const result = calculateScores("TRITAN", []);
     assert.deepEqual(result.dimensions, {});
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       assert.equal(code in result.dimensions, false, `${code} nem lehet a JSON-ban`);
     }
     // Üres facet-map sem kerül be — a `{}` ugyanúgy „megmért, de üres".
@@ -80,7 +80,7 @@ describe("calculateScores", () => {
     assert.deepEqual(Object.keys(result.dimensions), [straight.dimension]);
     assert.equal(result.dimensions[straight.dimension], 100);
     // A többi öt dimenzió kulcsa hiányzik — nem 0.
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       if (code === straight.dimension) continue;
       assert.equal(code in result.dimensions, false);
     }
@@ -102,7 +102,7 @@ describe("calculateScores", () => {
     );
     assert.equal("I" in result.dimensions, false);
     assert.equal("I" in (result.facets ?? {}), false);
-    assert.deepEqual(Object.keys(result.dimensions).sort(), [...TRITAN_ORDER].sort());
+    assert.deepEqual(Object.keys(result.dimensions).sort(), [...HEXACO_ORDER].sort());
 
     // A TELJES forma viszont továbbra is méri (mind a 4 altruizmus-item ott van).
     const full = calculateScores("TRITAN", answersAtEffective(fullQuestions, 4));
@@ -132,7 +132,7 @@ describe("calculateScores", () => {
       "TRITAN",
       answersAtEffective(fullQuestions, 4),
     );
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       assert.equal(shortResult.dimensions[code], 75);
       assert.equal(fullResult.dimensions[code], 75);
     }
@@ -172,8 +172,8 @@ describe("calculateScores", () => {
     // (reversed, dimenzió, facet) a verzió-string alatt észrevétlen maradna —
     // a hash-nek tüzelnie kell rá.
     const bank = [
-      { id: 1, reversed: false, dimension: "THOR", facet: "organization" },
-      { id: 2, reversed: true, dimension: "OPEN", facet: "creativity" },
+      { id: 1, reversed: false, dimension: "C", facet: "organization" },
+      { id: 2, reversed: true, dimension: "O", facet: "creativity" },
     ];
     const flipped = [
       { ...bank[0], reversed: true },
@@ -181,7 +181,7 @@ describe("calculateScores", () => {
     ];
     assert.notEqual(computeBankHash(bank), computeBankHash(flipped));
     // Dimenzió-átsorolás is más hash-t ad.
-    const remapped = [{ ...bank[0], dimension: "ADAP" }, bank[1]];
+    const remapped = [{ ...bank[0], dimension: "A" }, bank[1]];
     assert.notEqual(computeBankHash(bank), computeBankHash(remapped));
     // A bemenet sorrendje viszont nem számít (id szerint kanonizál).
     assert.equal(computeBankHash(bank), computeBankHash([bank[1], bank[0]]));
@@ -200,33 +200,33 @@ describe("extractDimensionScores", () => {
   it("nested ScoreResult-ból a dimensions objektumot adja vissza", () => {
     const extracted = extractDimensionScores({
       type: "likert",
-      dimensions: { TEMP: 62, RESO: 45 },
+      dimensions: { X: 62, E: 45 },
       answers: [{ questionId: 1, value: 3 }],
       questionCount: 60,
     });
-    assert.deepEqual(extracted, { TEMP: 62, RESO: 45 });
+    assert.deepEqual(extracted, { X: 62, E: 45 });
   });
 
   it("flat formátumból csak az ismert dim-kódokat adja vissza", () => {
     const extracted = extractDimensionScores({
-      TEMP: 62,
-      RESO: 45,
-      OPEN: 80,
+      X: 62,
+      E: 45,
+      O: 80,
       questionCount: 100,
       answers: [1, 2, 3],
       type: "legacy",
     });
-    assert.deepEqual(extracted, { RESO: 45, TEMP: 62, OPEN: 80 });
+    assert.deepEqual(extracted, { E: 45, X: 62, O: 80 });
   });
 
   it("szemetes bemenetre null", () => {
     assert.equal(extractDimensionScores(null), null);
     assert.equal(extractDimensionScores(undefined), null);
-    assert.equal(extractDimensionScores("TEMP"), null);
+    assert.equal(extractDimensionScores("X"), null);
     assert.equal(extractDimensionScores(42), null);
     assert.equal(extractDimensionScores({}), null);
     assert.equal(extractDimensionScores({ foo: 1, bar: "x" }), null);
     // Dim-kód nem-szám értékkel nem számít találatnak.
-    assert.equal(extractDimensionScores({ TEMP: "62" }), null);
+    assert.equal(extractDimensionScores({ X: "62" }), null);
   });
 });

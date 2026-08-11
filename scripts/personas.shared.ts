@@ -8,21 +8,21 @@
 
 import { resolvePersonalityTypeFromScores } from "../src/lib/personality-type";
 import { TENSION_PAIRS } from "../src/lib/profile-engine";
-import { TRITAN_DIMENSION_FACETS, rankDimensionScores } from "../src/lib/tritan";
+import { HEXACO_DIMENSION_FACETS, rankDimensionScores } from "../src/lib/hexaco";
 
-export const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+export const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 export type DimCode = (typeof DIMS)[number];
 
-// A facet-sorrend a KANONIKUS térképből (tritan.ts TRITAN_DIMENSION_FACETS)
-// származik — a korábbi helyi másolat a THOR facetjeit felcserélt sorrendben
+// A facet-sorrend a KANONIKUS térképből (tritan.ts HEXACO_DIMENSION_FACETS)
+// származik — a korábbi helyi másolat a C facetjeit felcserélt sorrendben
 // (prudence↔perfectionism) deklarálta, így a buildFacets index-alapú
 // offsetjei más facetre estek, mint az éles felület sorrendje.
 // A kiegészítő altruizmus-skála (`I`) 2026-08-11 óta nincs a rövid formában,
 // így élő kitöltésből nem áll elő — a personák sem gyártanak rá pontszámot.
 // (A persona-PDF altruizmus-blokkja emiatt kimarad, ahogy egy mai valódi
 // kitöltésnél is; a generátor `undefined`-re fel van készítve.)
-export const TRITAN_FACETS: Record<string, string[]> = Object.fromEntries(
-  Object.entries(TRITAN_DIMENSION_FACETS).map(([dim, codes]) => [dim, [...codes]]),
+export const HEXACO_FACETS: Record<string, string[]> = Object.fromEntries(
+  Object.entries(HEXACO_DIMENSION_FACETS).map(([dim, codes]) => [dim, [...codes]]),
 );
 
 export type PersonaKind = "archetype" | "tension";
@@ -61,7 +61,7 @@ function buildArchetypeDimensions(primary: DimCode, secondary: DimCode): Record<
 export function buildFacets(dimensions: Record<string, number>): Record<string, Record<string, number>> {
   const offsets = [-6, -2, 3, 7];
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
+  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
     const base = dimensions[dim] ?? 50;
     facets[dim] = {};
     facetList.forEach((facet, i) => {

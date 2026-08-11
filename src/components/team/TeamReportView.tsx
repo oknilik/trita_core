@@ -17,15 +17,15 @@ import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 // Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts); mark-
@@ -34,7 +34,7 @@ import { DIMENSION_BASE, DYNAMICS_COLORS_CSS } from "@/lib/color-system";
 
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
-const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 
 // Hiányzó csapatszerep rövid következménye a vezető nyelvén.
 const ROLE_GAP_HINTS: Record<string, { hu: string; en: string }> = {
@@ -1061,7 +1061,7 @@ export function TeamReportView({
                 const content =
                   c.pole === "polarized"
                     ? TEAM_PRESSURE_POLARIZED_TEXT
-                    : TEAM_PRESSURE_CONTENT[c.dim as TritanDimCode]?.[c.pole];
+                    : TEAM_PRESSURE_CONTENT[c.dim as HexacoCode]?.[c.pole];
                 if (!content) return null;
                 const dimLabel = DIM_LABELS[c.dim]
                   ? isHu

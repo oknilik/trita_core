@@ -17,7 +17,7 @@ vi.mock("@/components/LocaleProvider", () => ({
 }));
 
 const DIM_WITH_FACETS = {
-  code: "OPEN",
+  code: "O",
   name: "Nyitottság",
   value: 82,
   description: "Munkahelyi leírás.",
@@ -29,7 +29,7 @@ const DIM_WITH_FACETS = {
 };
 
 const LEGACY_DIM = {
-  code: "THOR",
+  code: "C",
   name: "Lelkiismeretesség",
   value: 61,
   description: "Munkahelyi leírás.",

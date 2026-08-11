@@ -42,15 +42,15 @@ function dim(
   };
 }
 
-// Gap-ek: INTE 12 (a kapu alatti, vitatott sáv), TEMP 16 (kapu felett, medium),
-// ADAP 25 (kapu felett, large), a többi 0.
+// Gap-ek: H 12 (a kapu alatti, vitatott sáv), X 16 (kapu felett, medium),
+// A 25 (kapu felett, large), a többi 0.
 const DIMENSIONS: SerializedDimension[] = [
-  dim("INTE", "Becsületesség-Alázat", 60, 72),
-  dim("RESO", "Emocionalitás", 50, 50),
-  dim("TEMP", "Extraverzió", 40, 56),
-  dim("ADAP", "Barátságosság", 30, 55),
-  dim("THOR", "Lelkiismeretesség", 55, 55),
-  dim("OPEN", "Nyitottság", 65, 65),
+  dim("H", "Becsületesség-Alázat", 60, 72),
+  dim("E", "Emocionalitás", 50, 50),
+  dim("X", "Extraverzió", 40, 56),
+  dim("A", "Barátságosság", 30, 55),
+  dim("C", "Lelkiismeretesség", 55, 55),
+  dim("O", "Nyitottság", 65, 65),
 ];
 
 function renderTab() {
@@ -71,9 +71,9 @@ describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
 
   it("a kapu alatti (12 pontos) gap egyezésnek számít, nem eltérésnek", () => {
     renderTab();
-    // A 12 pontos INTE-gap chipje „egyezik" címkét kap…
+    // A 12 pontos H-gap chipje „egyezik" címkét kap…
     expect(screen.getByText("12 pont — egyezik")).toBeInTheDocument();
-    // …és az INTE a „Nincs vakfolt" kártya felsorolásában áll.
+    // …és az H a „Nincs vakfolt" kártya felsorolásában áll.
     const noBlindspotList = screen.getByText(/Becsületesség-Alázat.*Emocionalitás/);
     expect(noBlindspotList).toBeInTheDocument();
   });

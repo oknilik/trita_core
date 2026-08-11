@@ -97,8 +97,8 @@ export function getTestConfig(
 // rövid forma megint változik, a történeti halmaz akkor is önmagát írja le.
 const LEGACY_COMPLETE_FORM_ID_SETS: Partial<Record<TestType, readonly (readonly number[])[]>> = {
   // TSFI-S v1 (2026-07-16 – 2026-08-11): tartalmazta a kiegészítő
-  // altruizmus-skála 98/99 itemét, és NEM tartalmazta a 77 (RESO/fearfulness)
-  // és 79 (OPEN/inquisitiveness) itemet. 2026-08-11-én a skála kikerült a
+  // altruizmus-skála 98/99 itemét, és NEM tartalmazta a 77 (E/fearfulness)
+  // és 79 (O/inquisitiveness) itemet. 2026-08-11-én a skála kikerült a
   // rövid formából, a két fő-dimenziós item pedig beléptetve — az itemszám
   // (60) és a forma-kód ("short") változatlan.
   TRITAN: [

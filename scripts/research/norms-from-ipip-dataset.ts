@@ -60,10 +60,10 @@ import {
   PROFILE_LOW_THRESHOLD,
 } from "../../src/lib/profile-engine";
 import {
-  TRITAN_DIMENSIONS,
-  TRITAN_ORDER,
-  type TritanDimCode,
-} from "../../src/lib/tritan";
+  HEXACO_DIMENSIONS,
+  HEXACO_ORDER,
+  type HexacoCode,
+} from "../../src/lib/hexaco";
 import { fmt, mean, pct, percentile, roundTo, sampleSd } from "./stats";
 
 // A scoring-motor TestType-ot vár; a bank kulcsa a "TRITAN" string —
@@ -466,8 +466,8 @@ function poleBand(score: number): "low" | "mid" | "high" {
   return "mid";
 }
 
-function dimLabel(code: TritanDimCode): string {
-  const dim = TRITAN_DIMENSIONS[code];
+function dimLabel(code: HexacoCode): string {
+  const dim = HEXACO_DIMENSIONS[code];
   return `${dim.letter} ${dim.hu} (${code})`;
 }
 
@@ -486,7 +486,7 @@ interface FormReport {
   n: number;
   excludedIncomplete: number;
   dims: Array<{
-    code: TritanDimCode;
+    code: HexacoCode;
     kMapped: number;
     kBank: number;
     n: number;
@@ -503,7 +503,7 @@ interface FormReport {
   alphaPriorForm: number;
   semPriorForm: number;
   facets: Array<{
-    dim: TritanDimCode;
+    dim: HexacoCode;
     facet: string;
     itemsMapped: number;
     itemsTotal: number;
@@ -805,8 +805,8 @@ function analyzeForm(
   }
 
   // ── pontozás a scoring.ts motorral (AZONOS POMP-logika, nem másolat) ──
-  const dimScores = new Map<TritanDimCode, number[]>(
-    TRITAN_ORDER.map((c) => [c, []]),
+  const dimScores = new Map<HexacoCode, number[]>(
+    HEXACO_ORDER.map((c) => [c, []]),
   );
   const facetScores = new Map<string, number[]>();
   for (const answers of complete) {
@@ -814,7 +814,7 @@ function analyzeForm(
       TEST_TYPE,
       [...answers.entries()].map(([questionId, value]) => ({ questionId, value })),
     );
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       const v = result.dimensions[code];
       if (typeof v === "number") dimScores.get(code)?.push(v);
     }
@@ -834,7 +834,7 @@ function analyzeForm(
   const n = complete.length;
 
   // ── dimenziónkénti α / r̄ / SEM az item-mátrixból ──
-  const dims = TRITAN_ORDER.map((code) => {
+  const dims = HEXACO_ORDER.map((code) => {
     const items = formItems.filter((i) => i.question.dimension === code);
     // Fordított itemek kulcsirányba állítva (6−v) — a scoring.ts tükre.
     const itemColumns = items.map((item) =>
@@ -876,12 +876,12 @@ function analyzeForm(
 
   // ── facet-lefedettség + leíró ──
   const facetReports: FormReport["facets"] = [];
-  const facetDefs = new Map<string, { dim: TritanDimCode; total: number }>();
+  const facetDefs = new Map<string, { dim: HexacoCode; total: number }>();
   for (const q of allQuestions) {
-    if (!q.facet || !TRITAN_ORDER.includes(q.dimension as TritanDimCode)) continue;
+    if (!q.facet || !HEXACO_ORDER.includes(q.dimension as HexacoCode)) continue;
     if (form === "short" && q.short !== true) continue;
     const key = `${q.dimension}:${q.facet}`;
-    const entry = facetDefs.get(key) ?? { dim: q.dimension as TritanDimCode, total: 0 };
+    const entry = facetDefs.get(key) ?? { dim: q.dimension as HexacoCode, total: 0 };
     entry.total += 1;
     facetDefs.set(key, entry);
   }
@@ -903,7 +903,7 @@ function analyzeForm(
   }
   facetReports.sort(
     (a, b) =>
-      TRITAN_ORDER.indexOf(a.dim) - TRITAN_ORDER.indexOf(b.dim) ||
+      HEXACO_ORDER.indexOf(a.dim) - HEXACO_ORDER.indexOf(b.dim) ||
       a.facet.localeCompare(b.facet),
   );
 
@@ -914,7 +914,7 @@ function analyzeForm(
     n,
     dims: Object.fromEntries(
       dims.map((d) => [d.code, { mean: roundTo(d.mean, 2), sd: roundTo(d.sd, 2) }]),
-    ) as Record<TritanDimCode, DimNorm>,
+    ) as Record<HexacoCode, DimNorm>,
   };
 
   return {
@@ -931,7 +931,7 @@ function analyzeForm(
 
 function printFormReport(report: FormReport) {
   const labelWidth =
-    Math.max(...TRITAN_ORDER.map((c) => dimLabel(c).length)) + 2;
+    Math.max(...HEXACO_ORDER.map((c) => dimLabel(c).length)) + 2;
 
   console.log(
     `\n══ FORMA: ${report.form === "short" ? "TSFI-S (60 item)" : "teljes (100 item)"} — a leképezett itemekből ══`,
@@ -1006,7 +1006,7 @@ function printFormReport(report: FormReport) {
   for (const f of report.facets) {
     const partial = f.itemsMapped < f.itemsTotal;
     console.log(
-      `  ${TRITAN_DIMENSIONS[f.dim].letter} ${f.facet.padEnd(24)} ` +
+      `  ${HEXACO_DIMENSIONS[f.dim].letter} ${f.facet.padEnd(24)} ` +
         `${`${f.itemsMapped}/${f.itemsTotal}`.padStart(5)} item ` +
         `${partial ? (f.itemsMapped === 0 ? "NINCS LEFEDVE " : "RÉSZLEGES     ") : "teljes        "}` +
         `n=${String(f.n).padStart(6)}  átlag=${fmt(f.mean).padStart(6)}  szórás=${fmt(f.sd).padStart(6)}`,

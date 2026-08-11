@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
-import { TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import {
   personalityAdjective,
   personalityNoun,
@@ -175,21 +175,21 @@ export function InteractionSection({
     [simulations],
   );
 
-  const [dominant, setDominant] = useState<TritanDimCode>(
-    initial?.dominant ?? "OPEN",
+  const [dominant, setDominant] = useState<HexacoCode>(
+    initial?.dominant ?? "O",
   );
-  const [secondary, setSecondary] = useState<TritanDimCode>(
-    initial?.secondary ?? "TEMP",
+  const [secondary, setSecondary] = useState<HexacoCode>(
+    initial?.secondary ?? "X",
   );
   const [leaderMode, setLeaderMode] = useState(false);
 
   if (simulations.length === 0) return null;
 
-  const handleDominantChange = (next: TritanDimCode) => {
+  const handleDominantChange = (next: HexacoCode) => {
     setDominant(next);
     // A két dimenzió nem eshet egybe — ilyenkor a másodikat léptetjük.
     if (next === secondary) {
-      setSecondary(TRITAN_ORDER.find((dim) => dim !== next) ?? secondary);
+      setSecondary(HEXACO_ORDER.find((dim) => dim !== next) ?? secondary);
     }
   };
 

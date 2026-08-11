@@ -9,21 +9,21 @@ import { buildShareOgModel } from "@/lib/share-og";
 // tesztjeiben él. (A fixture a 10→15-ös küszöb-emelés után frissítve:
 // 90/73/55 — mindkét gap ≥ 15.)
 const DIMS = {
-  INTE: 55,
-  RESO: 50,
-  TEMP: 73,
-  ADAP: 30,
-  THOR: 55,
-  OPEN: 90,
+  H: 55,
+  E: 50,
+  X: 73,
+  A: 30,
+  C: 55,
+  O: 90,
 };
 
 describe("buildShareOgModel — OG-kártya adatmodell", () => {
   it("érvényes pontszámokból nevet, típust és glyph-párt ad", () => {
     const model = buildShareOgModel(DIMS, "Kata", "hu");
     assert.equal(model.displayName, "Kata");
-    // domináns OPEN (újító), második TEMP (energikus)
-    assert.equal(model.primaryCode, "OPEN");
-    assert.equal(model.secondaryCode, "TEMP");
+    // domináns O (újító), második X (energikus)
+    assert.equal(model.primaryCode, "O");
+    assert.equal(model.secondaryCode, "X");
     assert.equal(model.typeLabel, "Energikus újító");
     assert.ok(model.intensity >= 1 && model.intensity <= 5);
   });

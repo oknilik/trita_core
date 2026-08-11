@@ -32,7 +32,7 @@ function scoreToAlpha(score: number | null): number {
 import { t, type Locale } from "@/lib/i18n";
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
-import { hexLetter } from "@/lib/tritan";
+import { hexLetter } from "@/lib/hexaco";
 import { dimColors } from "@/lib/color-system";
 
 function scoreZone(score: number | null, locale: Locale): { label: string; textClass: string } {
@@ -43,30 +43,30 @@ function scoreZone(score: number | null, locale: Locale): { label: string; textC
 }
 
 const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
-  INTE: {
+  H: {
     hu: "Becsületesség, igazságosság, szerénység — mennyire kerüli a manipulációt és az önérdek-érvényesítést",
     en: "Honesty, fairness, modesty — tendency to avoid manipulation and self-promotion",
   },
   // A skála-leírás a MÉRT facetekhez igazodik (Félelem · Szorongás ·
   // Dependencia · Érzelmi kötődés) — a korábbi „empátia mások iránt" olyat
   // ígért, amit ez a dimenzió nem mér (2026-08-11 valencia-döntés).
-  RESO: {
+  E: {
     hu: "Érzelmi érzékenység, aggodalomra való hajlam, erős érzelmi kötődés",
     en: "Emotional sensitivity, tendency toward worry, strong emotional attachments",
   },
-  TEMP: {
+  X: {
     hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
     en: "Sociability, confidence, energy — degree to which social settings are energizing",
   },
-  ADAP: {
+  A: {
     hu: "Türelem, együttműködés, megbocsátás — mennyire kerüli a konfliktust és törekszik harmóniára",
     en: "Patience, cooperation, forgiveness — tendency to avoid conflict and seek harmony",
   },
-  THOR: {
+  C: {
     hu: "Szervezettség, kitartás, fegyelmezettség — mennyire megbízható és célirányos a munkavégzés",
     en: "Organization, diligence, self-discipline — reliability and goal-directedness at work",
   },
-  OPEN: {
+  O: {
     hu: "Nyitottság, kreativitás, intellektuális kíváncsiság — mennyire keresi az újszerű megközelítéseket",
     en: "Openness, creativity, intellectual curiosity — tendency to seek novel ideas and approaches",
   },
@@ -183,7 +183,7 @@ export function TeamHeatmap({ rows, dims, isHu }: TeamHeatmapProps) {
                 className="h-4 w-10 rounded-md"
                 style={{
                   backgroundColor: hexToRgba(
-                    dimColors(dims[0]?.code ?? "INTE").base,
+                    dimColors(dims[0]?.code ?? "H").base,
                     scoreToAlpha(v),
                   ),
                 }}

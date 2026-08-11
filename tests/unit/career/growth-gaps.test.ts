@@ -17,41 +17,41 @@ function section(components: FitComponentLike[]) {
 test("H-padlós 'over' komponens NEM kerül a fejlődési tervbe", () => {
   const gaps = collectGrowthGaps(
     section([
-      { dim: "INTE", position: "over", weight: 0.3, note: "h-floor" },
-      { dim: "TEMP", position: "under", weight: 0.25 },
+      { dim: "H", position: "over", weight: 0.3, note: "h-floor" },
+      { dim: "X", position: "under", weight: 0.25 },
     ]),
   );
   assert.equal(gaps.length, 1);
-  assert.equal(gaps[0].dim, "TEMP");
+  assert.equal(gaps[0].dim, "X");
   assert.equal(gaps[0].pole, "under");
   assert.ok(
-    !gaps.some((gap) => gap.dim === "INTE" && gap.pole === "over"),
+    !gaps.some((gap) => gap.dim === "H" && gap.pole === "over"),
     "a magas becsületesség-alázat 'legyél kevésbé őszinte' kártyát kapott",
   );
 });
 
-test("nem-padlós INTE eltérés változatlanul gyűjthető", () => {
+test("nem-padlós H eltérés változatlanul gyűjthető", () => {
   // A kizárás a NOTE-hoz kötött, nem a dimenzióhoz: egy magas H-célú szerep
   // alatt maradó user jogos 'under' jelzést kap.
   const gaps = collectGrowthGaps(
-    section([{ dim: "INTE", position: "under", weight: 0.3 }]),
+    section([{ dim: "H", position: "under", weight: 0.3 }]),
   );
   assert.equal(gaps.length, 1);
-  assert.equal(gaps[0].dim, "INTE");
+  assert.equal(gaps[0].dim, "H");
 });
 
 test("gyűjtési szabályok: 'in' és kis súly kimarad, gyakoriság rendez", () => {
   const gaps = collectGrowthGaps(
     section([
-      { dim: "THOR", position: "in", weight: 0.4 },
-      { dim: "OPEN", position: "under", weight: 0.1 }, // súly < 0.15
-      { dim: "TEMP", position: "under", weight: 0.2 },
-      { dim: "TEMP", position: "under", weight: 0.2 },
-      { dim: "ADAP", position: "over", weight: 0.2 },
+      { dim: "C", position: "in", weight: 0.4 },
+      { dim: "O", position: "under", weight: 0.1 }, // súly < 0.15
+      { dim: "X", position: "under", weight: 0.2 },
+      { dim: "X", position: "under", weight: 0.2 },
+      { dim: "A", position: "over", weight: 0.2 },
     ]),
   );
   assert.equal(gaps.length, 2);
-  assert.equal(gaps[0].dim, "TEMP");
+  assert.equal(gaps[0].dim, "X");
   assert.equal(gaps[0].count, 2);
-  assert.equal(gaps[1].dim, "ADAP");
+  assert.equal(gaps[1].dim, "A");
 });

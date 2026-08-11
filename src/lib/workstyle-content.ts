@@ -12,7 +12,7 @@ import {
   getEnvRows,
 } from "@/lib/profile-content";
 import { getDimensionTier } from "@/lib/dimension-utils";
-import { rankDimensionScores } from "@/lib/tritan";
+import { rankDimensionScores } from "@/lib/hexaco";
 import { deficitSlotEligible } from "@/lib/score-valence";
 import type { Locale } from "@/lib/i18n";
 
@@ -52,7 +52,7 @@ export interface WorkstyleContent {
     summary: string;
     mitigation: string;
     source: string;
-    /** Fordított skálából (RESO) eredő pár — nem kerülhet valenciás
+    /** Fordított skálából (E) eredő pár — nem kerülhet valenciás
      *  („Figyelendő") kártyára, csak kontextusként jelenik meg. */
     reverseValenced: boolean;
   }[];
@@ -136,35 +136,35 @@ export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might:
 // (guardrail-teszt őrzi a lefedettséget).
 export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    INTE_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
-    INTE_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
-    RESO_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
+    H_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
+    H_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
+    E_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
     // A prep-címke korábban „Empatikus közeg" volt — az alacsony
     // Emocionalitást empátia-hiánynak keretezte (2026-08-11 valencia-döntés:
     // ez a skála nem empátiát mér). A közeg jellemzője az érzelmi intenzitás.
-    RESO_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Érzelmileg intenzív közeg"] },
-    TEMP_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
-    TEMP_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
-    ADAP_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
-    ADAP_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
-    THOR_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
-    THOR_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
-    OPEN_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
-    OPEN_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
+    E_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Érzelmileg intenzív közeg"] },
+    X_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
+    X_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
+    A_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
+    A_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
+    C_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
+    C_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
+    O_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
+    O_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
   },
   en: {
-    INTE_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
-    INTE_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
-    RESO_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
-    RESO_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Emotionally intense context"] },
-    TEMP_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
-    TEMP_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
-    ADAP_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
-    ADAP_low: { strong: ["Negotiation", "Strategy", "Decision-making"], might: ["Research", "Analysis"], prep: ["Harmonious team"] },
-    THOR_high: { strong: ["Project Management", "QA", "Operations"], might: ["Compliance", "Expert"], prep: ["Improvisation"] },
-    THOR_low: { strong: ["Innovation", "Startup", "Design"], might: ["Consulting", "Strategy"], prep: ["Structured execution"] },
-    OPEN_high: { strong: ["Research", "Innovation", "Strategy", "Design"], might: ["Consulting", "Education"], prep: ["Routine tasks"] },
-    OPEN_low: { strong: ["Execution", "Administration", "Operations"], might: ["Leadership", "PM"], prep: ["Experimentation"] },
+    H_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
+    H_low: { strong: ["Business Development", "Sales", "Growth", "Entrepreneurship"], might: ["Leadership", "Strategy"], prep: ["Team building"] },
+    E_high: { strong: ["HR", "Coaching", "Healthcare", "CX"], might: ["Education", "Negotiation"], prep: ["High pressure", "Crisis"] },
+    E_low: { strong: ["Crisis Management", "Decision-making", "Leadership"], might: ["Change Leadership", "Startup"], prep: ["Emotionally intense context"] },
+    X_high: { strong: ["Sales", "Team Leadership", "PR", "Facilitation"], might: ["Project Management", "Education"], prep: ["Deep solo work"] },
+    X_low: { strong: ["Research", "Analysis", "Design", "Writing"], might: ["Consulting", "Expert"], prep: ["Networking", "Presentations"] },
+    A_high: { strong: ["Team Building", "Facilitation", "Coaching"], might: ["Sales", "Partnership"], prep: ["Conflict-heavy"] },
+    A_low: { strong: ["Negotiation", "Strategy", "Decision-making"], might: ["Research", "Analysis"], prep: ["Harmonious team"] },
+    C_high: { strong: ["Project Management", "QA", "Operations"], might: ["Compliance", "Expert"], prep: ["Improvisation"] },
+    C_low: { strong: ["Innovation", "Startup", "Design"], might: ["Consulting", "Strategy"], prep: ["Structured execution"] },
+    O_high: { strong: ["Research", "Innovation", "Strategy", "Design"], might: ["Consulting", "Education"], prep: ["Routine tasks"] },
+    O_low: { strong: ["Execution", "Administration", "Operations"], might: ["Leadership", "PM"], prep: ["Experimentation"] },
   },
 };
 
@@ -250,7 +250,7 @@ export function buildWorkstyleContent(
         summary,
         mitigation,
         source: `${sourceLabel(pair.dimA, engine.categories[pair.dimA])} × ${sourceLabel(pair.dimB, engine.categories[pair.dimB])}`,
-        // A pár fordított skálából (RESO) ered-e — a megjelenítő ez alapján
+        // A pár fordított skálából (E) ered-e — a megjelenítő ez alapján
         // NEM teszi valenciás („Figyelendő") kártyára (ld. lentebb).
         reverseValenced:
           !deficitSlotEligible(pair.dimA) || !deficitSlotEligible(pair.dimB),
@@ -272,8 +272,8 @@ export function buildWorkstyleContent(
   // narratíva; watch = CSAK valódi risk-pár (summary + mitigáció együtt);
   // context = minden további bekezdés.
   // Valencia-kapu a „Figyelendő" kártyára (2026-08-11): a TENSION_PAIRS
-  // táblában a hat dimenzió közül EGYEDÜL a RESO-magas párok vannak
-  // `risk: true`-ra állítva (a RESO-alacsony párok mind `false`) — vagyis a
+  // táblában a hat dimenzió közül EGYEDÜL a E-magas párok vannak
+  // `risk: true`-ra állítva (a E-alacsony párok mind `false`) — vagyis a
   // fordított skála magas pólusa strukturálisan borostyán „Figyelendő"
   // kártyát kapott, miközben az alacsony pólus zöldet. Ez ellentmond a
   // valencia-mentes döntésnek (score-valence.ts fejléc).
@@ -314,10 +314,10 @@ export function buildWorkstyleContent(
   // Fejlődési javaslat (P2.4, P5.5) — a legalacsonyabb dimenzióhoz, csak ha
   // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
   // growthTip: rövid forma (summary-oldal); growthPlan: háromlépcsős ív.
-  // A fordított RESO KIMARAD a legalacsonyabb-választásból (motor-audit v6,
+  // A fordított E KIMARAD a legalacsonyabb-választásból (motor-audit v6,
   // M4a): az alacsony Emocionalitás stabilitás (erőforrás), nem deficit — a
   // „Fejlődési fókusz · Emocionalitás · alacsony" forrás-chip egy stabil
-  // kitöltőnél hamis keretezés volt. A választás a legalacsonyabb NEM-RESO
+  // kitöltőnél hamis keretezés volt. A választás a legalacsonyabb NEM-E
   // dimenzióra esik (ugyanaz a pólus-szabály, mint a selectGrowthFocusItems).
   const { growthTip, growthPlan } = (() => {
     const entries = Object.entries(dimScores).filter(
@@ -337,7 +337,7 @@ export function buildWorkstyleContent(
   // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
   //  - click: a top-2 markáns dimenzió;
   //  - friction: pólusos dimenziók a súrlódás-jóslók súly-sorrendjében
-  //    (THOR > ADAP > INTE > RESO > TEMP > OPEN — a team-stats
+  //    (C > A > H > E > X > O — a team-stats
   //    FRICTION_WEIGHTS sorrendje, hogy a riport és a csapat-felület
   //    ugyanazt a modellt mondja), legfeljebb kettő;
   //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
@@ -350,7 +350,7 @@ export function buildWorkstyleContent(
     }
     if (click.length === 0) click.push({ text: COLLAB_BALANCED_CLICK[lang] });
 
-    const FRICTION_DIM_ORDER = ["THOR", "ADAP", "INTE", "RESO", "TEMP", "OPEN"] as const;
+    const FRICTION_DIM_ORDER = ["C", "A", "H", "E", "X", "O"] as const;
     const friction: CollabItem[] = [];
     for (const dim of FRICTION_DIM_ORDER) {
       const level = engine.categories[dim];
@@ -461,11 +461,11 @@ export function buildWorkstyleContent(
 // ─────────────────────────────────────────────────────────────────────
 // Fejlődési fókusz — kiválasztási szabály (results-oldal „Fejlődési fókusz"
 // szekciója). Motor-audit v4:
-//  - FIX 2 (RESO fordított skála): a deficit-logika („a legalacsonyabb
+//  - FIX 2 (E fordított skála): a deficit-logika („a legalacsonyabb
 //    pontszám = fejlesztendő") a fordított Emocionalitásra hamis — az
-//    alacsony RESO stabilitás (erőforrás), nem hiány. Egy stabil kitöltőnél
+//    alacsony E stabilitás (erőforrás), nem hiány. Egy stabil kitöltőnél
 //    a Félelem/Szorongás 20 pont nem „első számú fejlődési terület", ezért a
-//    RESO-facetek és a RESO-dimenzió KIMARADNAK a deficit-választásból.
+//    E-facetek és a E-dimenzió KIMARADNAK a deficit-választásból.
 //  - FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-bontás —
 //    a hiányzó facet nem 0 pont. A hívó csak VALÓDI facet-pontszámokat adjon
 //    át (üres facets tömb = nincs adat), ilyenkor a dimenzió-szintű fallback
@@ -524,7 +524,7 @@ export function selectGrowthFocusItems(
   if (facetItems.length >= 1) return facetItems;
 
   // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) —
-  // ugyanaz a pólus-szabály: az alacsony RESO itt sem „fejlesztendő".
+  // ugyanaz a pólus-szabály: az alacsony E itt sem „fejlesztendő".
   return mainDimensions
     .filter((d) => deficitSlotEligible(d.code) && d.score < 60)
     .sort((a, b) => a.score - b.score)
@@ -541,11 +541,11 @@ export function selectGrowthFocusItems(
 
 // ─────────────────────────────────────────────────────────────────────
 // Hero-mondat dimenzió-választása (results-oldal „heroInsight"). Motor-audit
-// v6, M4c: a „leggyengébb" slot korábban nyers `.sort`-tal a fordított RESO-t
+// v6, M4c: a „leggyengébb" slot korábban nyers `.sort`-tal a fordított E-t
 // is kiválaszthatta — egy stabil (alacsony Emocionalitású) kitöltő hero-
 // mondata a stabilitását nevezte meg gyengeségként. Szabályok:
 //  - rangsor a kanonikus rankDimensionScores-szal (determinista tie-break);
-//  - a leggyengébb slot a legalacsonyabb NEM-RESO dimenzió;
+//  - a leggyengébb slot a legalacsonyabb NEM-E dimenzió;
 //  - lapos profilnál (max−min < HERO_RANGE_GATE_FACTOR·SEM) nincs
 //    „leggyengébb" — csak az erősség megy ki (weakest: null).
 // ─────────────────────────────────────────────────────────────────────

@@ -18,7 +18,7 @@ import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus, OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { computeObserverAverage, computeObserverFacetAverages } from "@/lib/member-dossier";
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 import { getJourneySnapshotForProfileId } from "@/lib/journey/service";
 import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
@@ -300,7 +300,7 @@ export default async function ProfileResultsPage({
   // értéket — így nem gyárt hamis 0-s „vakfoltot" az összevetésben.
   const likertObservers = completedObservers.filter((o) => o.type === "likert");
   const observerAvg = computeObserverAverage(
-    mainDimCodes as TritanDimCode[],
+    mainDimCodes as HexacoCode[],
     likertObservers.map((o) => o.dimensions),
   );
 
@@ -308,7 +308,7 @@ export default async function ProfileResultsPage({
   // küszöb (≥3 értékelő, DOSSIER_OBSERVER_MIN), a ritkán lefedett facet
   // kulcsa kimarad.
   const observerFacetAverages = computeObserverFacetAverages(
-    mainDimCodes as TritanDimCode[],
+    mainDimCodes as HexacoCode[],
     likertObservers.map((o) => o.facets),
   );
   // Örökség-eredményben nincs facet-bontás — ilyenkor a facet-összevetés
@@ -381,7 +381,7 @@ export default async function ProfileResultsPage({
   const mainDimensions = dimensions.filter((d) => d.code !== "I");
 
   // Kiválasztás a közös szabályból (workstyle-content, motor-audit v4):
-  //  - a fordított RESO kimarad a deficit-listából (alacsony = stabilitás);
+  //  - a fordított E kimarad a deficit-listából (alacsony = stabilitás);
   //  - örökség-sorra (nincs facet-adat) a dimenzió-szintű fallback fut,
   //    koholt 0-facet nem kerülhet a fókuszba (a facets tömb fent már csak
   //    mért értékeket tartalmaz).
@@ -527,7 +527,7 @@ export default async function ProfileResultsPage({
 
   // Hero insight — behavior-based sentence (not dimension names).
   // A pár-választás közös szabályból (workstyle-content, motor-audit v6, M4c):
-  // kanonikus rangsor (rankDimensionScores) + a fordított RESO kimarad a
+  // kanonikus rangsor (rankDimensionScores) + a fordított E kimarad a
   // „leggyengébb" slotból (az alacsony Emocionalitás stabilitás, nem
   // gyengeség) + lapos profilnál (terjedelem < HERO_RANGE_GATE_FACTOR·SEM,
   // indoklás a konstansnál) csak az erősség megy ki.

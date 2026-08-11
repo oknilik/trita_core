@@ -17,8 +17,8 @@ import {
   ObserverFlowStrip,
 } from "@/components/results/ObserverFlowStatusCard";
 import { getDimensionTier, tierColors } from "@/lib/dimension-utils";
-import { TRITAN_ORDER, TRITAN_DIM_ABBR } from "@/lib/tritan";
-import type { TritanDimCode } from "@/lib/tritan";
+import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
+import type { HexacoCode } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
 import type { TeamRolesPeerData } from "@/components/results/TeamRoles";
@@ -280,7 +280,7 @@ function ResultsTab({
 
   // Akkordeon a radar HEXACO-rendjében (H,E,X,A,C,O) — egyezik az
   // áttekintő listával; az első elem alapból nyitva.
-  const accordionDims = TRITAN_ORDER
+  const accordionDims = HEXACO_ORDER
     .map((code) => mainDims.find((d) => d.code === code))
     .filter((d): d is (typeof mainDims)[number] => Boolean(d))
     .map((d) => ({
@@ -321,7 +321,7 @@ function ResultsTab({
               {/* Sorrend = a radar HEXACO-rendje (H·E·X·A·C·O), a színek és
                   az értékek a dimenzió-színt viselik — alacsony szintnél is
                   jól láthatóan. */}
-              {TRITAN_ORDER
+              {HEXACO_ORDER
                 .map((code) => mainDims.find((d) => d.code === code))
                 .filter((d): d is (typeof mainDims)[number] => Boolean(d))
                 .map((d) => {
@@ -340,7 +340,7 @@ function ResultsTab({
                         <span
                           className={`shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold ${colors.tagBg} ${colors.tagText}`}
                         >
-                          {/* Pólus-tudatos címke: RESO alacsony sávja „stabil",
+                          {/* Pólus-tudatos címke: E alacsony sávja „stabil",
                               nem „figyelendő" (fordított skála, FIX 2). */}
                           {poleAwareDimensionLabel(d.code, d.score, locale)}
                         </span>
@@ -729,7 +729,7 @@ export function ProfileTabs({
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
         // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
-        // (score-valence, surface="self"). 2026-08-11 óta a RESO itt sem
+        // (score-valence, surface="self"). 2026-08-11 óta a E itt sem
         // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
         // a chip-sort, így nem marad árva „Legerősebb:" felirat.
         topDimensions={dimensions
@@ -756,8 +756,8 @@ export function ProfileTabs({
             // Kanonikus HEXACO-sorrend (H·E·X·A·C·O) — a PDF radar, sávok és
             // facet-oldalak is ebben a rendben jelennek meg, a felülettel egyezően.
             const tritanIndex = (code: string) => {
-              const i = (TRITAN_ORDER as readonly string[]).indexOf(code);
-              return i === -1 ? TRITAN_ORDER.length : i;
+              const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
+              return i === -1 ? HEXACO_ORDER.length : i;
             };
             const mainDims = dimensions
               .filter((d) => d.code !== "I")
@@ -765,7 +765,7 @@ export function ProfileTabs({
             // Build bullet-based insights from dimension data
             const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
             // Erősség-lista a kanonikus valencia-kapun át (self felület) — a
-            // RESO 2026-08-11 óta itt sem erősség; ha nem marad ≥70-es
+            // E 2026-08-11 óta itt sem erősség; ha nem marad ≥70-es
             // dimenzió, a strengthBullets a results.balancedProfile kulcsra
             // esik vissza (nincs üres felsorolás).
             const highDims = mainDims.filter(
@@ -802,7 +802,7 @@ export function ProfileTabs({
             // Profile character — kapuzott (FIX 2): „magas {dim}" csak
             // ténylegesen magas (≥70) dimenzióra megy ki, alatta a
             // kiegyensúlyozott-profil szöveg; a fejlődés-mondat csak valóban
-            // alacsony (<40), NEM fordított dimenzióra (az alacsony RESO
+            // alacsony (<40), NEM fordított dimenzióra (az alacsony E
             // stabilitás, nem fejlődési terület).
             const profileCharacter = (() => {
               const top2High = [...highDims]
@@ -920,7 +920,7 @@ export function ProfileTabs({
                 code: d.code,
                 name: d.label,
                 shortName:
-                  TRITAN_DIM_ABBR[d.code as TritanDimCode]?.[isHu ? "hu" : "en"] ??
+                  hexLetter(d.code) ??
                   (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
                 value: d.score,
                 description: d.insight,

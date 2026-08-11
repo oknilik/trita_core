@@ -5,13 +5,13 @@ import { DIMENSION_COLORS, type DimCode } from "@/lib/color-system";
 
 // Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a
 // TRITAN-dimenziókkal + kompakt sávok. A dims tömb a kanonikus
-// TRITAN-sorrendben érkezik (TEMP · RESO · INTE · THOR · ADAP · OPEN).
+// TRITAN-sorrendben érkezik (X · E · H · C · A · O).
 
 interface Dim {
   name: string;
   shortName: string;
   value: number;
-  /** Belső dimenziókód (INTE/RESO/…) — a kanonikus hue lookupjához. */
+  /** Belső dimenziókód (H/E/…) — a kanonikus hue lookupjához. */
   code?: string;
 }
 

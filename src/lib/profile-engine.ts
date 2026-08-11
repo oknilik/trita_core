@@ -53,25 +53,25 @@ type TensionPairDef = {
 };
 
 export const TENSION_PAIRS: TensionPairDef[] = [
-  { dimA: "INTE", levelA: "high", dimB: "TEMP", levelB: "high", risk: false, contentKey: "ethicalLeader" },
-  { dimA: "INTE", levelA: "high", dimB: "ADAP", levelB: "low",  risk: false, contentKey: "principledConfronter" },
-  { dimA: "INTE", levelA: "high", dimB: "OPEN", levelB: "high", risk: false, contentKey: "responsibleInnovator" },
-  { dimA: "RESO", levelA: "high", dimB: "TEMP", levelB: "high", risk: true,  contentKey: "supportedVisibility" },
-  { dimA: "RESO", levelA: "high", dimB: "THOR", levelB: "high", risk: true,  contentKey: "structuredStability" },
-  { dimA: "RESO", levelA: "high", dimB: "OPEN", levelB: "high", risk: true,  contentKey: "safeExperimentation" },
-  { dimA: "TEMP", levelA: "low",  dimB: "ADAP", levelB: "high", risk: false, contentKey: "deepCollaboration" },
-  { dimA: "TEMP", levelA: "low",  dimB: "OPEN", levelB: "high", risk: false, contentKey: "solitaryInnovator" },
-  { dimA: "ADAP", levelA: "high", dimB: "OPEN", levelB: "high", risk: false, contentKey: "facilitatedInnovation" },
-  { dimA: "ADAP", levelA: "low",  dimB: "THOR", levelB: "high", risk: false, contentKey: "structuredCompetitor" },
-  { dimA: "THOR", levelA: "high", dimB: "OPEN", levelB: "high", risk: false, contentKey: "structuredInnovator" },
+  { dimA: "H", levelA: "high", dimB: "X", levelB: "high", risk: false, contentKey: "ethicalLeader" },
+  { dimA: "H", levelA: "high", dimB: "A", levelB: "low",  risk: false, contentKey: "principledConfronter" },
+  { dimA: "H", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "responsibleInnovator" },
+  { dimA: "E", levelA: "high", dimB: "X", levelB: "high", risk: true,  contentKey: "supportedVisibility" },
+  { dimA: "E", levelA: "high", dimB: "C", levelB: "high", risk: true,  contentKey: "structuredStability" },
+  { dimA: "E", levelA: "high", dimB: "O", levelB: "high", risk: true,  contentKey: "safeExperimentation" },
+  { dimA: "X", levelA: "low",  dimB: "A", levelB: "high", risk: false, contentKey: "deepCollaboration" },
+  { dimA: "X", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "solitaryInnovator" },
+  { dimA: "A", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "facilitatedInnovation" },
+  { dimA: "A", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "structuredCompetitor" },
+  { dimA: "C", levelA: "high", dimB: "O", levelB: "high", risk: false, contentKey: "structuredInnovator" },
   // New pairs – congruent combinations
-  { dimA: "RESO", levelA: "low",  dimB: "TEMP", levelB: "high", risk: false, contentKey: "resilientLeader" },
-  { dimA: "RESO", levelA: "low",  dimB: "THOR", levelB: "high", risk: false, contentKey: "calmExecution" },
-  { dimA: "RESO", levelA: "low",  dimB: "OPEN", levelB: "high", risk: false, contentKey: "exploratoryAnalyst" },
-  { dimA: "TEMP", levelA: "high", dimB: "THOR", levelB: "high", risk: false, contentKey: "organizedLeader" },
-  { dimA: "TEMP", levelA: "high", dimB: "ADAP", levelB: "high", risk: false, contentKey: "harmoniousConnector" },
-  { dimA: "INTE", levelA: "low",  dimB: "THOR", levelB: "high", risk: false, contentKey: "performanceDriver" },
-  { dimA: "ADAP", levelA: "low",  dimB: "OPEN", levelB: "high", risk: false, contentKey: "disruptiveInnovator" },
+  { dimA: "E", levelA: "low",  dimB: "X", levelB: "high", risk: false, contentKey: "resilientLeader" },
+  { dimA: "E", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "calmExecution" },
+  { dimA: "E", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "exploratoryAnalyst" },
+  { dimA: "X", levelA: "high", dimB: "C", levelB: "high", risk: false, contentKey: "organizedLeader" },
+  { dimA: "X", levelA: "high", dimB: "A", levelB: "high", risk: false, contentKey: "harmoniousConnector" },
+  { dimA: "H", levelA: "low",  dimB: "C", levelB: "high", risk: false, contentKey: "performanceDriver" },
+  { dimA: "A", levelA: "low",  dimB: "O", levelB: "high", risk: false, contentKey: "disruptiveInnovator" },
 ];
 
 function getTopSoloDims(

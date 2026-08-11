@@ -118,7 +118,7 @@ describe("mergeTrustEdges — kilépett tag mért párjai (a szűrt trust-háló
 describe("computeTeamCompletionBuckets", () => {
   it("folyamatban = vázlat eredmény nélkül; vár = se eredmény, se vázlat", () => {
     const buckets = computeTeamCompletionBuckets([
-      { scores: { INTE: 50 }, hasDraft: false }, // kész
+      { scores: { H: 50 }, hasDraft: false }, // kész
       { scores: null, hasDraft: true }, // folyamatban
       { scores: null, hasDraft: false }, // vár
       { scores: null, hasDraft: undefined }, // vár (kötegelt betöltő, nincs vázlat-adat)
@@ -132,7 +132,7 @@ describe("computeTeamCompletionBuckets", () => {
 
   it("eredménnyel rendelkező tag ittmaradt vázlata nem duplázódik folyamatban-ba", () => {
     const buckets = computeTeamCompletionBuckets([
-      { scores: { INTE: 62 }, hasDraft: true },
+      { scores: { H: 62 }, hasDraft: true },
     ]);
     assert.deepEqual(buckets, {
       completedCount: 1,

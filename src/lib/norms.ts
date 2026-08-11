@@ -10,7 +10,7 @@
 // Bank-mentes, kliens-oldalról is importálható modul.
 // ─────────────────────────────────────────────────────────────────────
 
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 
 export interface DimNorm {
   /** Minta-átlag a 0-100 skálán. */
@@ -27,7 +27,7 @@ export interface NormTable {
   /** Minta-elemszám. */
   n: number;
   /** Dimenziónkénti norma-paraméterek. */
-  dims: Record<TritanDimCode, DimNorm>;
+  dims: Record<HexacoCode, DimNorm>;
 }
 
 export const ACTIVE_NORM_TABLE: NormTable | null = null;
@@ -74,7 +74,7 @@ export function percentileFromNorm(score: number, norm: DimNorm): number | null 
  */
 export function percentileForScore(dim: string, score: number): number | null {
   if (!ACTIVE_NORM_TABLE) return null;
-  const norm = ACTIVE_NORM_TABLE.dims[dim as TritanDimCode];
+  const norm = ACTIVE_NORM_TABLE.dims[dim as HexacoCode];
   if (!norm) return null;
   return percentileFromNorm(score, norm);
 }

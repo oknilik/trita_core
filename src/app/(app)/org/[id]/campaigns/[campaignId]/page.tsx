@@ -49,19 +49,19 @@ const STATUS_TRANSITIONS: Record<string, string | null> = {
   CLOSED: null,
 };
 
-const TRITAN_DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const TRITAN_DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 
 // Kanonikus HEXACO-paletta (color-system.ts) — a korábbi kevert (státusz-
 // színeket kölcsönző, O=hiba-piros) helyi térkép kivezetve.
 const TRITAN_COLORS: Record<string, string> = DIMENSION_BASE;
 
 const TRITAN_LABEL_KEYS: Record<string, string> = {
-  INTE: "org.campaign.tritanINTE",
-  RESO: "org.campaign.tritanRESO",
-  TEMP: "org.campaign.tritanTEMP",
-  ADAP: "org.campaign.tritanADAP",
-  THOR: "org.campaign.tritanTHOR",
-  OPEN: "org.campaign.tritanOPEN",
+  H: "org.campaign.tritanINTE",
+  E: "org.campaign.tritanRESO",
+  X: "org.campaign.tritanTEMP",
+  A: "org.campaign.tritanADAP",
+  C: "org.campaign.tritanTHOR",
+  O: "org.campaign.tritanOPEN",
 };
 
 function statusLabel(status: string, locale: "hu" | "en") {
@@ -91,7 +91,7 @@ function eyebrowLabel(status: string, locale: "hu" | "en") {
 function computeAvgScores(
   results: { userProfileId: string | null; scores: unknown }[]
 ): Record<string, number> | null {
-  const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
+  const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
   let count = 0;
   for (const r of results) {
     // Közös score-olvasó (scoring.ts): a tárolt sor BEÁGYAZOTT

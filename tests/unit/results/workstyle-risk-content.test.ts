@@ -17,7 +17,7 @@ const LOCALES = ["hu", "en"] as const;
 
 function scores(overrides: Record<string, number>): Record<string, number> {
   const base: Record<string, number> = {
-    INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50,
+    H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
   };
   return { ...base, ...overrides };
 }
@@ -34,9 +34,9 @@ test("minden risk-pár contentKey-hez van RISK_TEXTS (hu+en)", () => {
 });
 
 test("kockázati pár: az összefoglaló után a mitigációs tanács is bekerül", () => {
-  // RESO high + TEMP high → supportedVisibility (risk pár)
+  // E high + X high → supportedVisibility (risk pár)
   for (const lang of LOCALES) {
-    const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
+    const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", lang);
     const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
     const mitigation = RISK_TEXTS.supportedVisibility[lang];
     const summaryIdx = ws.howYouWork.indexOf(summary);
@@ -51,7 +51,7 @@ test("kockázati pár: az összefoglaló után a mitigációs tanács is bekerü
 });
 
 test("nem-risk profil: riskParts üres", () => {
-  const ws = buildWorkstyleContent(scores({ INTE: 80, OPEN: 80 }), "TRITAN", "hu");
+  const ws = buildWorkstyleContent(scores({ H: 80, O: 80 }), "TRITAN", "hu");
   assert.deepEqual(ws.riskParts, []);
 });
 
@@ -64,14 +64,14 @@ test("csupa közepes profil: a DEFAULT_NARRATIVE az első howYouWork-bekezdés",
 
 // ─── howYouWorkParts — nevesített slotok (motor-audit v4, FIX 3) ────────────
 
-test("RESO-vezérelt risk-pár: nincs Figyelendő-kártya, a tartalom kontextusba megy", () => {
+test("E-vezérelt risk-pár: nincs Figyelendő-kártya, a tartalom kontextusba megy", () => {
   // 2026-08-11 valencia-döntés: a TENSION_PAIRS táblában a hat dimenzió közül
-  // EGYEDÜL a RESO-magas párok `risk: true`-k (a RESO-alacsonyak mind false),
+  // EGYEDÜL a E-magas párok `risk: true`-k (a E-alacsonyak mind false),
   // vagyis a fordított skála magas pólusa strukturálisan borostyán
   // „Figyelendő" kártyát kapott. A pár TARTALMA megmarad (riskParts +
   // kontextus), csak a valenciás keretezés szűnik meg.
   for (const lang of LOCALES) {
-    const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 80 }), "TRITAN", lang);
+    const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", lang);
     const summary = BLOCK3_SUMMARIES.supportedVisibility[lang];
     const mitigation = RISK_TEXTS.supportedVisibility[lang];
 
@@ -79,7 +79,7 @@ test("RESO-vezérelt risk-pár: nincs Figyelendő-kártya, a tartalom kontextusb
     assert.equal(ws.howYouWorkParts.watch, null);
     // A pár nem vész el: strukturáltan is megvan, reverseValenced jelöléssel…
     const part = ws.riskParts.find((p) => p.summary === summary);
-    assert.ok(part, "a RESO-pár riskParts-ban marad");
+    assert.ok(part, "a E-pár riskParts-ban marad");
     assert.equal(part.reverseValenced, true);
     assert.equal(part.mitigation, mitigation);
     // …és a folyó szövegben (howYouWork) is kimegy.
@@ -88,12 +88,12 @@ test("RESO-vezérelt risk-pár: nincs Figyelendő-kártya, a tartalom kontextusb
   }
 });
 
-test("nem-RESO risk-pár: a watch-slot változatlanul a risk-pár (a kapu szelektív)", () => {
-  // ADAP 20 + THOR 80 → structuredCompetitor. Ez NEM fordított skálából ered,
+test("nem-E risk-pár: a watch-slot változatlanul a risk-pár (a kapu szelektív)", () => {
+  // A 20 + C 80 → structuredCompetitor. Ez NEM fordított skálából ered,
   // tehát a valenciás kártya változatlanul jár neki — a fenti kapu nem
   // kapcsolja ki általánosan a „Figyelendő" slotot.
   for (const lang of LOCALES) {
-    const ws = buildWorkstyleContent(scores({ RESO: 50, ADAP: 20, THOR: 80 }), "TRITAN", lang);
+    const ws = buildWorkstyleContent(scores({ E: 50, A: 20, C: 80 }), "TRITAN", lang);
     const valenced = ws.riskParts.filter((p) => !p.reverseValenced);
     if (valenced.length === 0) continue; // deck-függő; ha nincs ilyen pár, nincs mit állítani
     assert.equal(
@@ -104,8 +104,8 @@ test("nem-RESO risk-pár: a watch-slot változatlanul a risk-pár (a kapu szelek
 });
 
 test("nem-risk profil: NINCS watch-slot, a további narratíva a kontextusba megy", () => {
-  // INTE 80 + OPEN 80 → responsibleInnovator (nem risk-pár)
-  const ws = buildWorkstyleContent(scores({ INTE: 80, OPEN: 80 }), "TRITAN", "hu");
+  // H 80 + O 80 → responsibleInnovator (nem risk-pár)
+  const ws = buildWorkstyleContent(scores({ H: 80, O: 80 }), "TRITAN", "hu");
   assert.equal(ws.riskParts.length, 0);
   assert.equal(ws.howYouWorkParts.watch, null);
   assert.equal(ws.howYouWorkParts.main, ws.howYouWork[0]);
@@ -125,8 +125,8 @@ test("csupa közepes profil: main = DEFAULT_NARRATIVE, watch nélkül", () => {
 // ─── Forrás-chip vs. strip (motor-audit F3): hedge a 65–70-es sávban ────────
 
 test("forrás-chip: 65–70 közti pontszám „inkább magas”, 70 felett sima „magas”", () => {
-  // RESO 80 (tier: high) + TEMP 67 (pólus: high, tier: mid) → supportedVisibility
-  const ws = buildWorkstyleContent(scores({ RESO: 80, TEMP: 67 }), "TRITAN", "hu");
+  // E 80 (tier: high) + X 67 (pólus: high, tier: mid) → supportedVisibility
+  const ws = buildWorkstyleContent(scores({ E: 80, X: 67 }), "TRITAN", "hu");
   assert.equal(ws.riskParts.length, 1);
   const source = ws.riskParts[0].source;
   assert.ok(source.includes("Extraverzió · inkább magas"), `hedge hiányzik: ${source}`);
@@ -134,20 +134,20 @@ test("forrás-chip: 65–70 közti pontszám „inkább magas”, 70 felett sima
   assert.ok(!source.includes("Extraverzió · magas"), `a 67-es nem kaphat sima „magas"-t: ${source}`);
 });
 
-test("súrlódás-copy a gyengébb jóslókból is elérhető (RESO/TEMP/OPEN)", () => {
-  // Csak RESO pólusos — a csonka [THOR, ADAP, INTE] sorrendben nem lenne találat.
-  const ws = buildWorkstyleContent(scores({ RESO: 80 }), "TRITAN", "hu");
-  assert.equal(ws.collaboration.friction[0]?.text, COLLAB_FRICTION.RESO_high.hu);
+test("súrlódás-copy a gyengébb jóslókból is elérhető (E/X/O)", () => {
+  // Csak E pólusos — a csonka [C, A, H] sorrendben nem lenne találat.
+  const ws = buildWorkstyleContent(scores({ E: 80 }), "TRITAN", "hu");
+  assert.equal(ws.collaboration.friction[0]?.text, COLLAB_FRICTION.E_high.hu);
 });
 
 test("súrlódás: a súly-sorrend első két pólusos dimenziója, legfeljebb kettő", () => {
   const ws = buildWorkstyleContent(
-    scores({ THOR: 80, ADAP: 20, RESO: 80, OPEN: 80 }),
+    scores({ C: 80, A: 20, E: 80, O: 80 }),
     "TRITAN",
     "hu",
   );
   assert.deepEqual(
     ws.collaboration.friction.map((f) => f.text),
-    [COLLAB_FRICTION.THOR_high.hu, COLLAB_FRICTION.ADAP_low.hu],
+    [COLLAB_FRICTION.C_high.hu, COLLAB_FRICTION.A_low.hu],
   );
 });

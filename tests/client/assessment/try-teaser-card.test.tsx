@@ -11,8 +11,8 @@ import { describe, expect, it } from "vitest";
 import { TryTeaserCard } from "@/app/(app)/try/complete/TryTeaserCard";
 
 const TOP_DIMS = [
-  { code: "TEMP", letter: "X", label: "Extraverzió", score: 88 },
-  { code: "OPEN", letter: "O", label: "Nyitottság", score: 63 },
+  { code: "X", letter: "X", label: "Extraverzió", score: 88 },
+  { code: "O", letter: "O", label: "Nyitottság", score: 63 },
 ];
 
 describe("TryTeaserCard", () => {
@@ -20,8 +20,8 @@ describe("TryTeaserCard", () => {
     render(
       <TryTeaserCard
         typeLabel="Kísérletező hajtóerő"
-        primaryCode="TEMP"
-        secondaryCode="OPEN"
+        primaryCode="X"
+        secondaryCode="O"
         intensity={5}
         dimensionLabel="Extraverzió × Nyitottság"
         topDims={TOP_DIMS}
@@ -45,13 +45,13 @@ describe("TryTeaserCard", () => {
     render(
       <TryTeaserCard
         typeLabel="Inventive Driving Force"
-        primaryCode="TEMP"
-        secondaryCode="OPEN"
+        primaryCode="X"
+        secondaryCode="O"
         intensity={4}
         dimensionLabel="Extraversion × Openness"
         topDims={[
-          { code: "TEMP", letter: "X", label: "Extraversion", score: 88 },
-          { code: "OPEN", letter: "O", label: "Openness", score: 63 },
+          { code: "X", letter: "X", label: "Extraversion", score: 88 },
+          { code: "O", letter: "O", label: "Openness", score: 63 },
         ]}
         locale="en"
       />,

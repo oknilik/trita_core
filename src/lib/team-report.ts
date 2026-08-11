@@ -207,7 +207,7 @@ export interface SerializedTeamReport {
   updatedAt: string;
 }
 
-const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 
 function round1(value: number): number {
   return Math.round(value * 10) / 10;
@@ -562,12 +562,12 @@ export async function buildTeamReportAggregates(
 // Csak magyarul generálunk (elsődleges piac); a tanácsadó átírhatja.
 
 const PREFILL_DIM_LABELS: Record<string, string> = {
-  INTE: "becsületesség-alázat",
-  RESO: "emocionalitás",
-  TEMP: "extraverzió",
-  ADAP: "barátságosság",
-  THOR: "lelkiismeretesség",
-  OPEN: "nyitottság",
+  H: "becsületesség-alázat",
+  E: "emocionalitás",
+  X: "extraverzió",
+  A: "barátságosság",
+  C: "lelkiismeretesség",
+  O: "nyitottság",
 };
 
 export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
@@ -583,10 +583,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
   const sorted = Object.entries(avgs).sort((a, b) => b[1] - a[1]);
   // Valencia-kapu a kanonikus modulból (score-valence): a fordított kódolású
-  // RESO ezen az ÉRTÉKELŐ felületen sem erősség- (topDims), sem deficit-
+  // E ezen az ÉRTÉKELŐ felületen sem erősség- (topDims), sem deficit-
   // (bottomDim) slotba nem kerülhet — különben egy érzelmileg STABIL csapat
-  // legalacsonyabb dimenziója (RESO) tévesen „kockázatként" jelenne meg.
-  // RESO a semleges profil-mondatban (generateTeamSummary) marad,
+  // legalacsonyabb dimenziója (E) tévesen „kockázatként" jelenne meg.
+  // E a semleges profil-mondatban (generateTeamSummary) marad,
   // pólus-tudatos címkével.
   const strengthEligible = sorted.filter(([dim]) =>
     strengthSlotEligible(dim, "evaluative"),

@@ -43,7 +43,7 @@ function assertNonEmptyLabels<K extends string>(
 }
 
 test("CRM constants registry", async (t) => {
-  await t.test("deal stage: címke + tone minden értékre; OPEN ⊂ ALL", () => {
+  await t.test("deal stage: címke + tone minden értékre; O ⊂ ALL", () => {
     assertNonEmptyLabels(DEAL_STAGES, DEAL_STAGE_LABELS, "DEAL_STAGE_LABELS");
     for (const stage of DEAL_STAGES) {
       assert.ok(DEAL_STAGE_TONES[stage], `hiányzó tone — ${stage}`);

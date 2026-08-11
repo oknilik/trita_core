@@ -10,7 +10,7 @@
 // forrása (a duplikált logika helyett).
 // ─────────────────────────────────────────────────────────────────────
 
-import { rankDimensionScores } from "./tritan";
+import { rankDimensionScores } from "./hexaco";
 
 export type PersonalityLocale = "hu" | "en";
 
@@ -22,7 +22,7 @@ interface TypeParts {
 }
 
 export const PERSONALITY_TYPE_PARTS: Record<string, TypeParts> = {
-  INTE: {
+  H: {
     noun: { hu: "értékőr", en: "Value Guardian" },
     adjective: { hu: "elvhű", en: "Principled" },
   },
@@ -34,23 +34,23 @@ export const PERSONALITY_TYPE_PARTS: Record<string, TypeParts> = {
   // (EN: a „ráhangolódó" főnévi helyzetben angolul nem áll meg jelzővel —
   // „Energetic Attuned" nyelvtanilag rossz —, ezért a főnév leíró
   // szókapcsolat, a melléknévi színezet marad „Attuned".)
-  RESO: {
+  E: {
     noun: { hu: "ráhangolódó", en: "Signal Reader" },
     adjective: { hu: "ráhangolódó", en: "Attuned" },
   },
-  TEMP: {
+  X: {
     noun: { hu: "hajtóerő", en: "Driving Force" },
     adjective: { hu: "energikus", en: "Energetic" },
   },
-  ADAP: {
+  A: {
     noun: { hu: "hídépítő", en: "Bridge-Builder" },
     adjective: { hu: "együttműködő", en: "Collaborative" },
   },
-  THOR: {
+  C: {
     noun: { hu: "rendszerépítő", en: "Architect" },
     adjective: { hu: "módszeres", en: "Methodical" },
   },
-  OPEN: {
+  O: {
     noun: { hu: "újító", en: "Innovator" },
     adjective: { hu: "kísérletező", en: "Inventive" },
   },
@@ -140,7 +140,7 @@ export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
 
 /**
  * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
- * (rankDimensionScores: pontszám csökkenő, holtversenynél TRITAN_ORDER —
+ * (rankDimensionScores: pontszám csökkenő, holtversenynél HEXACO_ORDER —
  * így a vendég-teaser és a belépett felületek azonos címkét adnak).
  * Kevesebb mint két (ismert) dimenziónál null.
  *
@@ -159,7 +159,7 @@ export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
  * a főnév/melléknév kiosztás (melyik a domináns) a mérési hibán belüli
  * sorrend műterméke lenne, pedig pont ez határozza meg a fő archetípust.
  * Ilyenkor is főnév-only címke megy ki, a determinisztikus rangsor (pontszám,
- * holtversenynél TRITAN_ORDER) szerinti első főnevével — ugyanaz a
+ * holtversenynél HEXACO_ORDER) szerinti első főnevével — ugyanaz a
  * degradáció, ami a 2-3. helyezett közeli esetében már élt (a teljes
  * holtverseny eddig is így viselkedett). Pontosan két dimenziónál nincs
  * 3. helyezett, ott csak a top-pár kapu fut.

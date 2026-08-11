@@ -8,7 +8,7 @@ import {
   resolveGlyphPair,
 } from "@/lib/type-glyph";
 import { PERSONALITY_TYPE_PARTS } from "@/lib/personality-type";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 
 // A típus-ábra nyelvtana csak akkor működik, ha MINDEN dimenzióhoz van
 // forma és motívum, és ha az ábra ugyanazt a párt használja, mint a
@@ -18,7 +18,7 @@ test("minden dimenzióhoz tartozik glyph, forma-geometriával", () => {
   for (const code of Object.keys(PERSONALITY_TYPE_PARTS)) {
     const glyph = DIMENSION_GLYPHS[code];
     assert.ok(glyph, `nincs glyph a(z) ${code} dimenzióhoz`);
-    assert.equal(glyph.hexaco, TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS].letter);
+    assert.equal(glyph.hexaco, HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS].letter);
     const geometry = FORM_GEOMETRY[glyph.form];
     assert.ok(geometry, `nincs geometria a(z) ${glyph.form} formához`);
     assert.ok(
@@ -37,22 +37,22 @@ test("a formák és motívumok dimenziónként egyediek (megkülönböztethetős
 
 test("resolveGlyphPair a két legerősebb dimenziót adja, sorrendhelyesen", () => {
   const pair = resolveGlyphPair([
-    { code: "INTE", score: 40 },
-    { code: "OPEN", score: 88 },
-    { code: "TEMP", score: 71 },
+    { code: "H", score: 40 },
+    { code: "O", score: 88 },
+    { code: "X", score: 71 },
   ]);
-  assert.deepEqual(pair, { primaryCode: "OPEN", secondaryCode: "TEMP", intensity: 5 });
+  assert.deepEqual(pair, { primaryCode: "O", secondaryCode: "X", intensity: 5 });
 });
 
 test("resolveGlyphPair: ismeretlen kód kiesik, két érvényes alatt null", () => {
-  assert.equal(resolveGlyphPair([{ code: "I", score: 90 }, { code: "OPEN", score: 50 }]), null);
-  assert.equal(resolveGlyphPair([{ code: "OPEN", score: 50 }]), null);
+  assert.equal(resolveGlyphPair([{ code: "I", score: 90 }, { code: "O", score: 50 }]), null);
+  assert.equal(resolveGlyphPair([{ code: "O", score: 50 }]), null);
 });
 
 test("egyező pár = tiszta típus (a komponens ilyenkor duplázza a motívumot)", () => {
   const pair = resolveGlyphPair([
-    { code: "THOR", score: 64 },
-    { code: "THOR", score: 64 },
+    { code: "C", score: 64 },
+    { code: "C", score: 64 },
   ]);
   assert.ok(pair);
   assert.equal(pair.primaryCode, pair.secondaryCode);

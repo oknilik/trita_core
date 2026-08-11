@@ -259,8 +259,8 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
       distinct: ["userProfileId"],
     });
 
-    const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
-    const sums: Record<string, number> = { INTE: 0, RESO: 0, TEMP: 0, ADAP: 0, THOR: 0, OPEN: 0 };
+    const dims = ["H", "E", "X", "A", "C", "O"];
+    const sums: Record<string, number> = { H: 0, E: 0, X: 0, A: 0, C: 0, O: 0 };
 
     for (const ar of assessmentResults) {
       // Közös score-olvasó (scoring.ts): a legacy FLAT score-sor is számít

@@ -17,12 +17,12 @@ vi.mock("@/components/LocaleProvider", () => ({
 }));
 
 const GLYPH_DIMS = [
-  { code: "INTE", score: 55 },
-  { code: "RESO", score: 50 },
-  { code: "TEMP", score: 45 },
-  { code: "ADAP", score: 30 },
-  { code: "THOR", score: 74 },
-  { code: "OPEN", score: 90 },
+  { code: "H", score: 55 },
+  { code: "E", score: 50 },
+  { code: "X", score: 45 },
+  { code: "A", score: 30 },
+  { code: "C", score: 74 },
+  { code: "O", score: 90 },
 ];
 
 describe("ProfileHero — elsődleges CTA a sötét herón", () => {

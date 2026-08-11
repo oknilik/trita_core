@@ -11,7 +11,7 @@ import {
 } from "@/lib/psychometrics";
 import * as careerPsychometrics from "@/lib/career/psychometrics";
 import { tritanConfig } from "@/lib/questions/tritan";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 import { DIFF_MIN_GAP, TYPE_ADJECTIVE_MIN_GAP } from "@/lib/personality-type";
 import { DOSSIER_GAP_MIN_DELTA } from "@/lib/member-dossier";
 
@@ -20,7 +20,7 @@ import { DOSSIER_GAP_MIN_DELTA } from "@/lib/member-dossier";
 // itt függetlenül újraszámoljuk a bankból, és ahhoz kötjük a modult.
 
 describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
-  const mainCodes = new Set<string>(TRITAN_ORDER);
+  const mainCodes = new Set<string>(HEXACO_ORDER);
   const mainItems = tritanConfig.questions.filter((q) => mainCodes.has(q.dimension));
   const shortItems = mainItems.filter((q) => q.short === true);
   const facetCount = new Set(
@@ -28,8 +28,8 @@ describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
   ).size;
 
   it("ITEMS_PER_DIM a bank tényleges item-számaiból jön", () => {
-    assert.equal(ITEMS_PER_DIM.short, shortItems.length / TRITAN_ORDER.length);
-    assert.equal(ITEMS_PER_DIM.full, mainItems.length / TRITAN_ORDER.length);
+    assert.equal(ITEMS_PER_DIM.short, shortItems.length / HEXACO_ORDER.length);
+    assert.equal(ITEMS_PER_DIM.full, mainItems.length / HEXACO_ORDER.length);
     // TSFI v2 szerkezeti tények: 16 item/dim a teljes bankban. A rövid forma
     // 2026-08-11 óta KIEGYENSÚLYOZOTT: mind a 60 itemje fő-dimenziós, tehát
     // pontosan 10 item/dimenzió (korábban 58 + 2 altruizmus → 9,67).

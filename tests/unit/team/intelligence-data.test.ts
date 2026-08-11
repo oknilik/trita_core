@@ -6,12 +6,12 @@ import type { TeamPageData } from "@/lib/team-stats";
 // ── Fixtúra ─────────────────────────────────────────────────────────────────
 
 const FULL_SCORES = {
-  INTE: 61.4,
-  RESO: 40,
-  TEMP: 55,
-  ADAP: 48,
-  THOR: 70,
-  OPEN: 52,
+  H: 61.4,
+  E: 40,
+  X: 55,
+  A: 48,
+  C: 70,
+  O: 52,
 };
 
 function teamData(overrides: Partial<TeamPageData> = {}): TeamPageData {
@@ -79,11 +79,11 @@ describe("buildIntelligenceViewData — nincs fabrikált dimenzió-adat", () => 
   it("részleges profilnál csak a jelen lévő dimenziók kerülnek át, hasAssessmentData false", () => {
     const vm = build(
       teamData({
-        members: [member("u1", { INTE: 80, TEMP: 20 })],
+        members: [member("u1", { H: 80, X: 20 })],
         memberCount: 1,
       }),
     );
-    assert.deepEqual(vm.intelligenceMembers[0].tritan, { INTE: 80, TEMP: 20 });
+    assert.deepEqual(vm.intelligenceMembers[0].tritan, { H: 80, X: 20 });
     // Részleges készletből nem állítunk teljes profilt (hasCompleteTritanDims kapu).
     assert.equal(vm.intelligenceMembers[0].hasAssessmentData, false);
   });
@@ -97,12 +97,12 @@ describe("buildIntelligenceViewData — nincs fabrikált dimenzió-adat", () => 
       }),
     );
     assert.deepEqual(vm.intelligenceMembers[0].tritan, {
-      INTE: 61,
-      RESO: 40,
-      TEMP: 55,
-      ADAP: 48,
-      THOR: 70,
-      OPEN: 52,
+      H: 61,
+      E: 40,
+      X: 55,
+      A: 48,
+      C: 70,
+      O: 52,
     });
     assert.equal(vm.intelligenceMembers[0].hasAssessmentData, true);
     assert.equal(vm.assessedCount, 1);

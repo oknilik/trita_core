@@ -50,30 +50,30 @@ function getCircularPositions(
 // ── Dimension breakdown helpers ──────────────────────────────────────────────
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 const DIM_FRICTION_HINT: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
-  ADAP: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
-  INTE: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
-  RESO: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
-  TEMP: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
-  OPEN: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
+  C: { hu: "Eltérő munkaszervezés és határidő-kezelés", en: "Different work organization and deadline approach" },
+  A: { hu: "Eltérő kommunikációs stílus és konfliktuskezelés", en: "Different communication style and conflict approach" },
+  H: { hu: "Eltérő motivációs minták és bizalmi beállítódás", en: "Different motivational patterns and trust orientation" },
+  E: { hu: "Eltérő érzelmi igények és stresszválasz", en: "Different emotional needs and stress response" },
+  X: { hu: "Eltérő energia-szint és interakciós igény", en: "Different energy level and interaction needs" },
+  O: { hu: "Eltérő hozzáállás az újdonsághoz és változáshoz", en: "Different attitude toward novelty and change" },
 };
 
 const DIM_ALIGNED_HINT: Record<string, { hu: string; en: string }> = {
-  THOR: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
-  ADAP: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
-  INTE: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
-  RESO: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
-  TEMP: { hu: "Hasonló szociális energia", en: "Similar social energy" },
-  OPEN: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
+  C: { hu: "Hasonló munkastílus és szervezettség", en: "Similar work style and organization" },
+  A: { hu: "Hasonló kommunikációs megközelítés", en: "Similar communication approach" },
+  H: { hu: "Hasonló értékrend és átláthatóság-igény", en: "Similar values and transparency needs" },
+  E: { hu: "Hasonló érzelmi hőfok", en: "Similar emotional temperature" },
+  X: { hu: "Hasonló szociális energia", en: "Similar social energy" },
+  O: { hu: "Hasonló nyitottság az újra", en: "Similar openness to new ideas" },
 };
 
 interface DimGap {
@@ -89,7 +89,7 @@ function computeDimBreakdown(
   b: IntelligenceMember["tritan"],
   loc: Locale,
 ): { gaps: DimGap[]; totalFriction: number } {
-  const dims = ["THOR", "ADAP", "INTE", "RESO", "TEMP", "OPEN"] as const;
+  const dims = ["C", "A", "H", "E", "X", "O"] as const;
   const gaps: DimGap[] = [];
   let totalFriction = 0;
 

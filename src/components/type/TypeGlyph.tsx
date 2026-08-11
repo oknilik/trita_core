@@ -34,7 +34,7 @@ const VIEWBOX: Record<GlyphVariant, string> = {
 };
 
 interface TypeGlyphProps {
-  /** Domináns dimenzió belső kódja (INTE/RESO/TEMP/ADAP/THOR/OPEN). */
+  /** Domináns dimenzió belső kódja (H/E/X/A/C/O). */
   primaryCode: string;
   /** Második legerősebb dimenzió kódja. Egyezés = „tiszta" típus. */
   secondaryCode: string;

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { diffStandardError } from "@/lib/psychometrics";
-import { TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER } from "@/lib/hexaco";
 
 // Motor-audit v6 felület-kontraktusok (2026-08-11) — FORRÁS-SZINTŰ tesztek
 // (a page/route-handlerek Clerk/Prisma nélkül unit-rétegben nem hívhatók;
@@ -12,8 +12,8 @@ import { TRITAN_DIMENSIONS, TRITAN_ORDER } from "@/lib/tritan";
 // Három szerződés:
 //  1) A jelölt-oldal hasonlóság-címkéi mérési-hiba-tudatosak — a korábbi nyers
 //     vágások (<10 „kiváló", <20 „jó") a zajszint ALATT jártak.
-//  2) Nyers belső dim-kód (INTE/RESO/THOR/…) nem kerülhet a felületre — a
-//     badge a kanonikus HEXACO-betű (TRITAN_DIMENSIONS[..].letter).
+//  2) Nyers belső dim-kód (H/E/C/…) nem kerülhet a felületre — a
+//     badge a kanonikus HEXACO-betű (HEXACO_DIMENSIONS[..].letter).
 //  3) A csapatszerep self-beküldő nem nyelheti el a hibát (res.ok ellenőrzés).
 
 const read = (relative: string) =>
@@ -79,8 +79,8 @@ test("jelölt-oldal + blog: a dim-badge a HEXACO-betű, nem a nyers belső kód"
   for (const page of [HIRING_PAGE, BLOG_PAGE]) {
     const source = read(page);
     assert.ok(
-      /TRITAN_DIMENSIONS\[[^\]]+\]\.letter|TRITAN_DIMENSIONS\[[^\]]+\]\?\.letter/.test(source),
-      `${page}: a badge nem a TRITAN_DIMENSIONS[..].letter térképen megy át`,
+      /HEXACO_DIMENSIONS\[[^\]]+\]\.letter|HEXACO_DIMENSIONS\[[^\]]+\]\?\.letter/.test(source),
+      `${page}: a badge nem a HEXACO_DIMENSIONS[..].letter térképen megy át`,
     );
   }
   // A hiring-oldal badge-je nem a nyers kódot rendereli.
@@ -90,8 +90,8 @@ test("jelölt-oldal + blog: a dim-badge a HEXACO-betű, nem a nyers belső kód"
     "a jelölt-oldal ismét nyers dim-kódot renderel",
   );
   // A kanonikus térkép minden belső kódra ad betűt (a kontraktus alapja).
-  for (const code of TRITAN_ORDER) {
-    assert.match(TRITAN_DIMENSIONS[code].letter, /^[HEXACO]$/);
+  for (const code of HEXACO_ORDER) {
+    assert.match(HEXACO_DIMENSIONS[code].letter, /^[HEXACO]$/);
   }
 });
 

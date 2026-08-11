@@ -83,13 +83,13 @@ function nearbyScore(base: number, variance = 18): number {
 // sem tartalmaz `I`-t, a seedelt soroknak pedig azt kell mutatniuk, amit az
 // éles felület kap (a régi, `I`-t hordozó sorokat a felület továbbra is
 // megjeleníti, de újat nem gyártunk).
-const TRITAN_FACETS: Record<string, string[]> = {
-  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
-  THOR: ["organization", "diligence", "prudence", "perfectionism"],
-  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const HEXACO_FACETS: Record<string, string[]> = {
+  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  A: ["forgiveness", "gentleness", "flexibility", "patience"],
+  C: ["organization", "diligence", "prudence", "perfectionism"],
+  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
 type ScoreJSON = {
@@ -105,17 +105,17 @@ type TritanDimensions = Record<"H" | "E" | "X" | "A" | "C" | "O", number>;
 const TRITAN_DIM_CODES = ["H", "E", "X", "A", "C", "O"] as const;
 
 // A CLI a HEXACO-BETŰKET ígéri (`--tritan H=70,E=40,…`), a score-JSON viszont
-// a BELSŐ dimenziókódokat használja (INTE/RESO/TEMP/ADAP/THOR/OPEN). A
+// a BELSŐ dimenziókódokat használja (H/E/X/A/C/O). A
 // generátor korábban a belső kódokkal indexelte a betűkkel kulcsolt objektumot,
 // így a `fixed` MINDIG undefined lett: a `--tritan` paraméter némán elveszett,
 // és a seed akkor is véletlen pontszámokat írt, ha a hívó fix profilt kért.
 const INTERNAL_DIM_BY_LETTER: Record<(typeof TRITAN_DIM_CODES)[number], string> = {
-  H: "INTE",
-  E: "RESO",
-  X: "TEMP",
-  A: "ADAP",
-  C: "THOR",
-  O: "OPEN",
+  H: "H",
+  E: "E",
+  X: "X",
+  A: "A",
+  C: "C",
+  O: "O",
 };
 const LETTER_BY_INTERNAL_DIM: Record<string, (typeof TRITAN_DIM_CODES)[number]> =
   Object.fromEntries(
@@ -183,7 +183,7 @@ function generateTritanScores(opts?: {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
 
-  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
+  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
     const letter = LETTER_BY_INTERNAL_DIM[dim];
     const fixed = letter ? opts?.fixedDimensions?.[letter] : undefined;
     const variance = opts?.aroundBaseVariance ?? 0;

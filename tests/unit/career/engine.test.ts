@@ -29,7 +29,7 @@ import {
 import { feasibilityFor } from "@/lib/career/feasibility";
 import { AXIS_KEYS, DIM_CODES, RIASEC_LETTERS, type OccupationFit } from "@/lib/career/types";
 
-const balanced = { INTE: 55, RESO: 50, TEMP: 55, ADAP: 55, THOR: 60, OPEN: 60 };
+const balanced = { H: 55, E: 50, X: 55, A: 55, C: 60, O: 60 };
 
 // ── katalógus-integritás ────────────────────────────────────────────────────
 
@@ -275,18 +275,18 @@ test("ideal-point: a cél FÖLÖTTI eltérés is csökkenti az illeszkedést", (
 
 test("H-padló: magas becsületesség-alázat nem büntethető, alacsony nem jutalmazható", () => {
   const occupation = getOccupations().find((o) =>
-    o.demand.some((c) => c.dim === "INTE" && c.target < 45 && c.w > 0.15),
+    o.demand.some((c) => c.dim === "H" && c.target < 45 && c.w > 0.15),
   );
   assert.ok(occupation, "nincs alacsony H-célú foglalkozás a katalógusban");
   const run = (h: number) =>
-    computeCareerFit({ dims: { ...balanced, INTE: h }, form: "short" }, { only: [occupation.id] })
+    computeCareerFit({ dims: { ...balanced, H: h }, form: "short" }, { only: [occupation.id] })
       .ranked[0];
   const honest = run(92);
   const opportunist = run(15);
-  const componentHonest = honest.components.find((c) => c.dim === "INTE")!;
+  const componentHonest = honest.components.find((c) => c.dim === "H")!;
   assert.equal(componentHonest.note, "h-floor");
   assert.equal(componentHonest.alignment, 100, "a magas H nem kaphat büntetést");
-  const componentOpportunist = opportunist.components.find((c) => c.dim === "INTE")!;
+  const componentOpportunist = opportunist.components.find((c) => c.dim === "H")!;
   assert.ok(
     componentOpportunist.alignment < componentHonest.alignment,
     "az alacsony H nem illeszkedhet jobban",
@@ -296,27 +296,27 @@ test("H-padló: magas becsületesség-alázat nem büntethető, alacsony nem jut
 
 test("H-padló a NYERS ponton fut: a relatíve alacsony, abszolút magas H nem bűnhődik", () => {
   // A centrált ponton futó padló egy abszolút őszinte usert büntetett, akinek
-  // az INTE a SAJÁT profiljában relatíve a legalacsonyabb (70 a 85-ös átlag
+  // az H a SAJÁT profiljában relatíve a legalacsonyabb (70 a 85-ös átlag
   // mellett → centrálva ~38 → „nem éri el az 50-et"). Az invariáns abszolút:
   // magas H-val nem lehet rosszabbul illeszkedni egy alacsony H-célú szerepre.
   const occupation = getOccupations().find((o) =>
-    o.demand.some((c) => c.dim === "INTE" && c.target < 45 && c.w > 0.15),
+    o.demand.some((c) => c.dim === "H" && c.target < 45 && c.w > 0.15),
   );
   assert.ok(occupation, "nincs alacsony H-célú foglalkozás a katalógusban");
   const run = (dims: Record<string, number>) =>
     computeCareerFit(
       { dims: dims as typeof balanced, form: "short" },
       { only: [occupation.id] },
-    ).ranked[0].components.find((c) => c.dim === "INTE")!;
+    ).ranked[0].components.find((c) => c.dim === "H")!;
 
-  // Abszolút őszinte (INTE 70), de a saját profiljában ez a legalacsonyabb.
+  // Abszolút őszinte (H 70), de a saját profiljában ez a legalacsonyabb.
   const honestRelativelyLow = run({
-    INTE: 70,
-    RESO: 85,
-    TEMP: 85,
-    ADAP: 85,
-    THOR: 85,
-    OPEN: 85,
+    H: 70,
+    E: 85,
+    X: 85,
+    A: 85,
+    C: 85,
+    O: 85,
   });
   assert.equal(honestRelativelyLow.note, "h-floor");
   assert.equal(
@@ -330,23 +330,23 @@ test("H-padló a NYERS ponton fut: a relatíve alacsony, abszolút magas H nem b
   assert.equal(honestRelativelyLow.targetRaw, 50);
 
   // A lapos, kevésbé őszinte profil nem járhat JOBBAN nála.
-  const flat = run({ INTE: 50, RESO: 50, TEMP: 50, ADAP: 50, THOR: 50, OPEN: 50 });
+  const flat = run({ H: 50, E: 50, X: 50, A: 50, C: 50, O: 50 });
   assert.ok(
     honestRelativelyLow.alignment >= flat.alignment,
     "magas H-val rosszabb illeszkedés jött ki, mint lapos profillal",
   );
 
   // Abszolút alacsony H viszont továbbra sem kap jutalmat.
-  const lowAbsolute = run({ INTE: 20, RESO: 55, TEMP: 55, ADAP: 55, THOR: 55, OPEN: 55 });
+  const lowAbsolute = run({ H: 20, E: 55, X: 55, A: 55, C: 55, O: 55 });
   assert.ok(lowAbsolute.alignment < 100, "az abszolút alacsony H nem érhet a padló fölé");
 });
 
 test("komponens-megjelenítés: a userRaw a results-oldali pontszám, a targetRaw vele egy skálán", () => {
   // A centrált (pontozási) érték „te {..}"-ként ellentmondana a results-oldalnak
-  // (nyers THOR 90 → „te 58"). A motor ezért NYERS megjelenítési párt is ad:
+  // (nyers C 90 → „te 58"). A motor ezért NYERS megjelenítési párt is ad:
   // userRaw = nyers pont, targetRaw = a cél ugyanazzal az eltolással — a
   // távolság (és vele a position/alignment) változatlan.
-  const dims = { INTE: 55, RESO: 50, TEMP: 55, ADAP: 55, THOR: 90, OPEN: 60 };
+  const dims = { H: 55, E: 50, X: 55, A: 55, C: 90, O: 60 };
   const mean = Object.values(dims).reduce((a, b) => a + b, 0) / 6;
   const result = computeCareerFit({ dims, form: "short" }, { limit: 5, diversify: false });
   assert.ok(result.ranked.length > 0);
@@ -383,7 +383,7 @@ test("skála-szél: a kicsúszó visszatolt cél targetAtEdge jelzést kap (v6)"
   // visszatolt célja 100 fölé esne; a vágás után a mutatott |userRaw −
   // targetRaw| kisebb a pontozott távolságnál. A motor ezt nem hallgatja el:
   // a komponens targetAtEdge jelzést hordoz, amit a UI kimond.
-  const dims = { INTE: 90, RESO: 88, TEMP: 92, ADAP: 90, THOR: 95, OPEN: 85 };
+  const dims = { H: 90, E: 88, X: 92, A: 90, C: 95, O: 85 };
   const result = computeCareerFit(
     { dims, form: "short" },
     { limit: 477, diversify: false },
@@ -989,11 +989,11 @@ test("readyOnly: csak a végzettséggel elérhető szerepek maradnak", () => {
 
 test("observer: az értékelők számával csökken a hibasáv (a padló fölött)", () => {
   const few = computeCareerFit(
-    { dims: balanced, form: "short", observer: { dims: { THOR: 70 }, raterCount: 3 } },
+    { dims: balanced, form: "short", observer: { dims: { C: 70 }, raterCount: 3 } },
     { limit: 3 },
   );
   const many = computeCareerFit(
-    { dims: balanced, form: "short", observer: { dims: { THOR: 70 }, raterCount: 6 } },
+    { dims: balanced, form: "short", observer: { dims: { C: 70 }, raterCount: 6 } },
     { limit: 3 },
   );
   const selfOnly = computeCareerFit({ dims: balanced, form: "short" }, { limit: 3 });
@@ -1012,7 +1012,7 @@ test("observer-padló: 3 értékelő alatt a külső jel egyáltalán nem kevere
       {
         dims: balanced,
         form: "short",
-        observer: { dims: { THOR: 95, INTE: 5, TEMP: 90 }, raterCount: raters },
+        observer: { dims: { C: 95, H: 5, X: 90 }, raterCount: raters },
       },
       { limit: 8 },
     );
@@ -1028,7 +1028,7 @@ test("observer-padló: 3 értékelő alatt a külső jel egyáltalán nem kevere
     {
       dims: balanced,
       form: "short",
-      observer: { dims: { THOR: 95 }, raterCount: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE },
+      observer: { dims: { C: 95 }, raterCount: MIN_RATERS_FOR_ANONYMOUS_AGGREGATE },
     },
     { limit: 8 },
   );
@@ -1047,8 +1047,8 @@ test("userRaw observer-keverés MELLETT is a SELF pontszám — a keverés bels�
   // együtt PONTOSAN invertálhatóvá tette az observer-aggregátumot
   // (obs = 2·userRaw − self). A keverés a pontozásban él, a szerializált
   // nyers párban nem.
-  const dims = { INTE: 60, RESO: 45, TEMP: 62, ADAP: 58, THOR: 70, OPEN: 55 };
-  const observerDims = { INTE: 20, RESO: 80, TEMP: 30, ADAP: 90, THOR: 20, OPEN: 90 };
+  const dims = { H: 60, E: 45, X: 62, A: 58, C: 70, O: 55 };
+  const observerDims = { H: 20, E: 80, X: 30, A: 90, C: 20, O: 90 };
   const occupation = getOccupations().find((o) => o.demand.length >= 3);
   assert.ok(occupation, "nincs többkomponensű teszt-foglalkozás");
 

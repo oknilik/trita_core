@@ -9,7 +9,7 @@ import {
   trustToDynamicsEdge,
 } from "@/lib/friction-model";
 
-const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 
 function profile(overrides: Partial<Record<(typeof DIMS)[number], number>> = {}) {
   const base = Object.fromEntries(DIMS.map((d) => [d, 50])) as Record<string, number>;
@@ -33,38 +33,38 @@ describe("calculatePairFriction — súlyozott eltérés", () => {
   });
 
   it("teljes profilnál a súlyösszeg 1 — az eredmény a súlyozott átlag", () => {
-    // Csak THOR tér el 30 ponttal: 0.30 × 30 = 9
+    // Csak C tér el 30 ponttal: 0.30 × 30 = 9
     assert.equal(
-      calculatePairFriction(profile({ THOR: 80 }), profile()),
+      calculatePairFriction(profile({ C: 80 }), profile()),
       9,
     );
   });
 
   it("hiányzó dimenziónál a jelen lévő súlyokkal renormalizál", () => {
-    // Csak THOR közös, 20 pontos eltérés — a renormalizált érték maga a 20
+    // Csak C közös, 20 pontos eltérés — a renormalizált érték maga a 20
     // (a régi, nem normalizált számítás 0.3 × 20 = 6-ot, hamis "aligned"-et adna).
     assert.equal(
-      calculatePairFriction({ THOR: 70 }, { THOR: 50 }),
+      calculatePairFriction({ C: 70 }, { C: 50 }),
       20,
     );
   });
 
   it("két közös dimenzió: a jelen lévő súlyok arányában átlagol", () => {
-    // THOR (0.30) 20 pont + ADAP (0.25) 20 pont → (6 + 5) / 0.55 = 20
+    // C (0.30) 20 pont + A (0.25) 20 pont → (6 + 5) / 0.55 = 20
     assert.equal(
-      calculatePairFriction({ THOR: 70, ADAP: 30 }, { THOR: 50, ADAP: 50 }),
+      calculatePairFriction({ C: 70, A: 30 }, { C: 50, A: 50 }),
       20,
     );
   });
 
   it("szimmetrikus: a-b és b-a azonos pontszámot ad", () => {
-    const a = profile({ THOR: 82, ADAP: 31, RESO: 64 });
-    const b = profile({ THOR: 45, OPEN: 90 });
+    const a = profile({ C: 82, A: 31, E: 64 });
+    const b = profile({ C: 45, O: 90 });
     assert.equal(calculatePairFriction(a, b), calculatePairFriction(b, a));
   });
 
   it("közös dimenzió nélkül null", () => {
-    assert.equal(calculatePairFriction({ THOR: 70 }, { OPEN: 40 }), null);
+    assert.equal(calculatePairFriction({ C: 70 }, { O: 40 }), null);
     assert.equal(calculatePairFriction({}, {}), null);
   });
 });

@@ -19,41 +19,41 @@ import {
 } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 
-const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
 type Loc = "hu" | "en";
 
 export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
-  INTE: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
-  RESO: { hu: "Emocionalitás", en: "Emotionality" },
-  TEMP: { hu: "Extraverzió", en: "Extraversion" },
-  ADAP: { hu: "Barátságosság", en: "Agreeableness" },
-  THOR: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
-  OPEN: { hu: "Nyitottság", en: "Openness" },
+  H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
+  E: { hu: "Emocionalitás", en: "Emotionality" },
+  X: { hu: "Extraverzió", en: "Extraversion" },
+  A: { hu: "Barátságosság", en: "Agreeableness" },
+  C: { hu: "Lelkiismeretesség", en: "Conscientiousness" },
+  O: { hu: "Nyitottság", en: "Openness" },
 };
 
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
-  THOR: {
+  C: {
     hu: "Használd a lelkiismeretességedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
     en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
   },
-  INTE: {
+  H: {
     hu: "Az egyenes, kiszámítható működésed bizalmat épít — támaszkodj rá a nehéz beszélgetéseknél és a döntéseknél.",
     en: "Your straightforward, dependable style builds trust — lean on it in tough conversations and decisions.",
   },
-  ADAP: {
+  A: {
     hu: "A rugalmasságod hidat épít az eltérő stílusok között — vállalj közvetítő szerepet, ahol feszül a helyzet.",
     en: "Your agreeableness bridges different styles — take a connecting role where things get tense.",
   },
-  RESO: {
+  E: {
     hu: "Ráérzel mások állapotára — gyakran te veszed észre elsőként, ha valaki elakad; ilyenkor szólalj meg.",
     en: "You sense how others are doing — you often notice first when someone is stuck; speak up then.",
   },
-  TEMP: {
+  X: {
     hu: "A lendületed viszi a csapatot — te tudod beindítani a közös munkát és tartani a tempót.",
     en: "Your energy drives the team — you can kick off shared work and keep up the pace.",
   },
-  OPEN: {
+  O: {
     hu: "Az újra való nyitottságod frissíti a csapatot — hozz be tudatosan külső perspektívát, ötletet.",
     en: "Your openness to new things refreshes the team — deliberately bring in outside perspectives and ideas.",
   },

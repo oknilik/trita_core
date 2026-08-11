@@ -175,7 +175,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
         testType: "TRITAN",
         isSelfAssessment: true,
         shareToken: makeId("share"),
-        scores: { INTE: 55, RESO: 50, TEMP: 60, ADAP: 45, THOR: 52, OPEN: 58 } as Prisma.InputJsonValue,
+        scores: { H: 55, E: 50, X: 60, A: 45, C: 52, O: 58 } as Prisma.InputJsonValue,
       },
     });
 

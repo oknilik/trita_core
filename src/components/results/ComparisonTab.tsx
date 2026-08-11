@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { hexLetter } from "@/lib/hexaco";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
 
@@ -336,7 +336,7 @@ export function ComparisonTab({
     if (gap < DIFF_MIN_GAP) return null;
     const dir = observer > self ? "higher" : "lower";
     // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
-    const letter = TRITAN_DIM_ABBR[code as TritanDimCode]?.en;
+    const letter = hexLetter(code);
     if (!letter) return null;
     const key = `${letter}_${dir}`;
     const lang = locale === "hu" ? "hu" : "en";

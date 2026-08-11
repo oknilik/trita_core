@@ -9,16 +9,16 @@ import {
 } from "@/lib/team-intelligence";
 import { isMeasuredDynamicsSource } from "@/lib/friction-model";
 import { hasCompleteTritanDims } from "@/lib/team-role-estimate";
-import type { TritanDimCode } from "@/lib/tritan";
+import type { HexacoCode } from "@/lib/hexaco";
 import type { TeamPageData } from "./types";
 
-const TRITAN_DIM_CODES: readonly TritanDimCode[] = [
-  "INTE",
-  "RESO",
-  "TEMP",
-  "ADAP",
-  "THOR",
-  "OPEN",
+const TRITAN_DIM_CODES: readonly HexacoCode[] = [
+  "H",
+  "E",
+  "X",
+  "A",
+  "C",
+  "O",
 ];
 
 /**

@@ -40,10 +40,10 @@ import {
 } from "@/lib/personality-type";
 
 // ─────────────────────────────────────────────────────────────────────
-// Emocionalitás (RESO) valencia-söprés — 2026-08-11-i termékdöntés
+// Emocionalitás (E) valencia-söprés — 2026-08-11-i termékdöntés
 // guardrailjei (kanonikus kapu: src/lib/score-valence.ts).
 //
-// A döntés: a RESO MINDKÉT pólusa, MINDKÉT felület-típuson valencia-mentes
+// A döntés: a E MINDKÉT pólusa, MINDKÉT felület-típuson valencia-mentes
 // (nem erősség, nem hiányosság — jellemző), ÉS a szókincse a mért
 // konstruktumhoz igazodik: a skála facetjei a Félelem / Szorongás /
 // Dependencia / Érzelmi kötődés — empátiát, törődést, „érzelmi mélységet"
@@ -54,7 +54,7 @@ import {
 // felületeken bent maradt. Ezért a tesztek nagy része tartalom-guard.
 // ─────────────────────────────────────────────────────────────────────
 
-const OTHER_DIMS = ["INTE", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const OTHER_DIMS = ["H", "X", "A", "C", "O"] as const;
 /** Az empátia-túlígéret bármely nyelvi alakja (HU/EN, kis/nagybetű). */
 const EMPATHY_RE = /empat|empát|emotional depth|érzelmi mélység/i;
 
@@ -63,11 +63,11 @@ const read = (relative: string) =>
 
 // ── 1. A kanonikus kapu ─────────────────────────────────────────────────
 
-test("score-valence: a RESO egyik slotba sem kerülhet — mindkét felület-típuson", () => {
-  assert.equal(strengthSlotEligible("RESO", "self"), false);
-  assert.equal(strengthSlotEligible("RESO", "evaluative"), false);
-  assert.equal(deficitSlotEligible("RESO"), false);
-  assert.equal(isReverseValenced("RESO"), true);
+test("score-valence: a E egyik slotba sem kerülhet — mindkét felület-típuson", () => {
+  assert.equal(strengthSlotEligible("E", "self"), false);
+  assert.equal(strengthSlotEligible("E", "evaluative"), false);
+  assert.equal(deficitSlotEligible("E"), false);
+  assert.equal(isReverseValenced("E"), true);
 });
 
 test("score-valence: a többi dimenzió mindkét slotba kerülhet", () => {
@@ -78,10 +78,10 @@ test("score-valence: a többi dimenzió mindkét slotba kerülhet", () => {
   }
 });
 
-// ── 2. Copy-guard: a magas RESO-hoz nem tapadhat empátia-ígéret ──────────
-// Grep-jellegű őr a tartalom-térképek RESO-sorain (mindkét pólus, HU+EN).
+// ── 2. Copy-guard: a magas E-hoz nem tapadhat empátia-ígéret ──────────
+// Grep-jellegű őr a tartalom-térképek E-sorain (mindkét pólus, HU+EN).
 
-/** RESO-hoz tartozó, felületre kimenő szövegek — minden térképből. */
+/** E-hoz tartozó, felületre kimenő szövegek — minden térképből. */
 function resoCopyStrings(): { where: string; text: string }[] {
   const out: { where: string; text: string }[] = [];
   const push = (where: string, value: unknown) => {
@@ -91,16 +91,16 @@ function resoCopyStrings(): { where: string; text: string }[] {
     }
   };
 
-  push("DIMENSION_STRENGTH_VERBS.RESO", DIMENSION_STRENGTH_VERBS.RESO);
-  push("DIMENSION_WEAK_VERBS.RESO", DIMENSION_WEAK_VERBS.RESO);
-  push("DIMENSION_STRENGTH_DESCS.RESO", DIMENSION_STRENGTH_DESCS.RESO);
-  push("DIMENSION_WATCH_DESCS.RESO", DIMENSION_WATCH_DESCS.RESO);
-  push("ARCHETYPE_STORY_NOUN.RESO", ARCHETYPE_STORY_NOUN.RESO);
-  push("ARCHETYPE_STORY_ADJ.RESO", ARCHETYPE_STORY_ADJ.RESO);
-  push("PERSONALITY_TYPE_PARTS.RESO", PERSONALITY_TYPE_PARTS.RESO);
-  push("DIMENSION_GROWTH_TIPS.RESO", DIMENSION_GROWTH_TIPS.RESO);
+  push("DIMENSION_STRENGTH_VERBS.E", DIMENSION_STRENGTH_VERBS.E);
+  push("DIMENSION_WEAK_VERBS.E", DIMENSION_WEAK_VERBS.E);
+  push("DIMENSION_STRENGTH_DESCS.E", DIMENSION_STRENGTH_DESCS.E);
+  push("DIMENSION_WATCH_DESCS.E", DIMENSION_WATCH_DESCS.E);
+  push("ARCHETYPE_STORY_NOUN.E", ARCHETYPE_STORY_NOUN.E);
+  push("ARCHETYPE_STORY_ADJ.E", ARCHETYPE_STORY_ADJ.E);
+  push("PERSONALITY_TYPE_PARTS.E", PERSONALITY_TYPE_PARTS.E);
+  push("DIMENSION_GROWTH_TIPS.E", DIMENSION_GROWTH_TIPS.E);
 
-  for (const key of ["RESO_high", "RESO_low"]) {
+  for (const key of ["E_high", "E_low"]) {
     push(`SOLO_DIM_NARRATIVES.${key}`, SOLO_DIM_NARRATIVES[key]);
     push(`SOLO_DIM_SUMMARIES.${key}`, SOLO_DIM_SUMMARIES[key]);
     push(`SOLO_DIM_PRESSURE.${key}`, SOLO_DIM_PRESSURE[key]);
@@ -113,9 +113,9 @@ function resoCopyStrings(): { where: string; text: string }[] {
     push(`SOLO_ROLE_TAGS.en.${key}`, SOLO_ROLE_TAGS.en?.[key]);
   }
 
-  // A RESO-t is tartalmazó tension-párok narratívái (profile-engine
-  // TENSION_PAIRS: RESO high → supportedVisibility / structuredStability /
-  // safeExperimentation; RESO low → resilientLeader / calmExecution /
+  // A E-t is tartalmazó tension-párok narratívái (profile-engine
+  // TENSION_PAIRS: E high → supportedVisibility / structuredStability /
+  // safeExperimentation; E low → resilientLeader / calmExecution /
   // exploratoryAnalyst).
   for (const key of [
     "supportedVisibility",
@@ -130,13 +130,13 @@ function resoCopyStrings(): { where: string; text: string }[] {
   }
 
   // Csapat-felület (HU-only szövegek).
-  out.push({ where: "team-insights.getStrengthInsight", text: getStrengthInsight("RESO") });
-  out.push({ where: "team-insights.getWatchAreaInsight", text: getWatchAreaInsight("RESO") });
-  out.push({ where: "team-insights.getDiversityInsight", text: getDiversityInsight("RESO") });
+  out.push({ where: "team-insights.getStrengthInsight", text: getStrengthInsight("E") });
+  out.push({ where: "team-insights.getWatchAreaInsight", text: getWatchAreaInsight("E") });
+  out.push({ where: "team-insights.getDiversityInsight", text: getDiversityInsight("E") });
 
-  // Interakció-atomok: a RESO-t érintő azonos-dimenziós párok.
+  // Interakció-atomok: a E-t érintő azonos-dimenziós párok.
   for (const atom of SAME_DIMENSION_ATOMS) {
-    if (atom.a.dim !== "RESO" && atom.b.dim !== "RESO") continue;
+    if (atom.a.dim !== "E" && atom.b.dim !== "E") continue;
     push(`interaction-atoms.${atom.id}.view`, atom.view);
     if (atom.viewB) push(`interaction-atoms.${atom.id}.viewB`, atom.viewB);
   }
@@ -144,16 +144,16 @@ function resoCopyStrings(): { where: string; text: string }[] {
   return out;
 }
 
-test("RESO-szövegek: sehol nem ígérünk empátiát / „érzelmi mélységet”", () => {
+test("E-szövegek: sehol nem ígérünk empátiát / „érzelmi mélységet”", () => {
   const offenders = resoCopyStrings().filter(({ text }) => EMPATHY_RE.test(text));
   assert.deepEqual(
     offenders.map((o) => `${o.where}: ${o.text}`),
     [],
-    "empátia-keretezés maradt a RESO-szövegekben (2026-08-11 valencia-döntés)",
+    "empátia-keretezés maradt a E-szövegekben (2026-08-11 valencia-döntés)",
   );
 });
 
-test("RESO-szövegek: HU és EN ugyanannyi tételt tartalmaz (nyelvi drift-őr)", () => {
+test("E-szövegek: HU és EN ugyanannyi tételt tartalmaz (nyelvi drift-őr)", () => {
   const byLang = resoCopyStrings().reduce(
     (acc, { where }) => {
       if (where.endsWith(".hu") || where.includes(".hu.")) acc.hu += 1;
@@ -162,7 +162,7 @@ test("RESO-szövegek: HU és EN ugyanannyi tételt tartalmaz (nyelvi drift-őr)"
     },
     { hu: 0, en: 0 },
   );
-  assert.equal(byLang.hu, byLang.en, "HU/EN paritás sérült a RESO-térképekben");
+  assert.equal(byLang.hu, byLang.en, "HU/EN paritás sérült a E-térképekben");
 });
 
 // ── 3. Kétoldalú pólus-próza ────────────────────────────────────────────
@@ -176,61 +176,61 @@ const HIGH_COST_RE =
 const LOW_COST_RE =
   /ritkábban|távolságtartás|nem jut|láthatatlan|kevésbé|természetesebb, mint|distance|less often|less likely|invisible|miss|comes more naturally than/i;
 
-test("pólus-próza: a magas RESO minden fő szövegében ott az ára is", () => {
+test("pólus-próza: a magas E minden fő szövegében ott az ára is", () => {
   const highTexts: [string, string][] = [
-    ["DIMENSION_STRENGTH_VERBS.hu", DIMENSION_STRENGTH_VERBS.RESO.hu],
-    ["DIMENSION_STRENGTH_VERBS.en", DIMENSION_STRENGTH_VERBS.RESO.en],
-    ["DIMENSION_STRENGTH_DESCS.hu", DIMENSION_STRENGTH_DESCS.RESO.hu],
-    ["DIMENSION_STRENGTH_DESCS.en", DIMENSION_STRENGTH_DESCS.RESO.en],
-    ["ARCHETYPE_STORY_NOUN.hu", ARCHETYPE_STORY_NOUN.RESO.hu],
-    ["ARCHETYPE_STORY_NOUN.en", ARCHETYPE_STORY_NOUN.RESO.en],
-    ["SOLO_DIM_NARRATIVES.RESO_high.hu", SOLO_DIM_NARRATIVES.RESO_high.hu],
-    ["SOLO_DIM_NARRATIVES.RESO_high.en", SOLO_DIM_NARRATIVES.RESO_high.en],
+    ["DIMENSION_STRENGTH_VERBS.hu", DIMENSION_STRENGTH_VERBS.E.hu],
+    ["DIMENSION_STRENGTH_VERBS.en", DIMENSION_STRENGTH_VERBS.E.en],
+    ["DIMENSION_STRENGTH_DESCS.hu", DIMENSION_STRENGTH_DESCS.E.hu],
+    ["DIMENSION_STRENGTH_DESCS.en", DIMENSION_STRENGTH_DESCS.E.en],
+    ["ARCHETYPE_STORY_NOUN.hu", ARCHETYPE_STORY_NOUN.E.hu],
+    ["ARCHETYPE_STORY_NOUN.en", ARCHETYPE_STORY_NOUN.E.en],
+    ["SOLO_DIM_NARRATIVES.E_high.hu", SOLO_DIM_NARRATIVES.E_high.hu],
+    ["SOLO_DIM_NARRATIVES.E_high.en", SOLO_DIM_NARRATIVES.E_high.en],
   ];
   for (const [where, text] of highTexts) {
     assert.ok(HIGH_COST_RE.test(text), `${where}: hiányzik a magas pólus ára — "${text}"`);
   }
 });
 
-test("pólus-próza: az alacsony RESO nincs hiányként keretezve, de az ára kimondott", () => {
+test("pólus-próza: az alacsony E nincs hiányként keretezve, de az ára kimondott", () => {
   const lowTexts: [string, string][] = [
-    ["DIMENSION_WEAK_VERBS.hu", DIMENSION_WEAK_VERBS.RESO.hu],
-    ["DIMENSION_WEAK_VERBS.en", DIMENSION_WEAK_VERBS.RESO.en],
-    ["DIMENSION_WATCH_DESCS.hu", DIMENSION_WATCH_DESCS.RESO.hu],
-    ["DIMENSION_WATCH_DESCS.en", DIMENSION_WATCH_DESCS.RESO.en],
-    ["SOLO_DIM_NARRATIVES.RESO_low.hu", SOLO_DIM_NARRATIVES.RESO_low.hu],
-    ["SOLO_DIM_NARRATIVES.RESO_low.en", SOLO_DIM_NARRATIVES.RESO_low.en],
+    ["DIMENSION_WEAK_VERBS.hu", DIMENSION_WEAK_VERBS.E.hu],
+    ["DIMENSION_WEAK_VERBS.en", DIMENSION_WEAK_VERBS.E.en],
+    ["DIMENSION_WATCH_DESCS.hu", DIMENSION_WATCH_DESCS.E.hu],
+    ["DIMENSION_WATCH_DESCS.en", DIMENSION_WATCH_DESCS.E.en],
+    ["SOLO_DIM_NARRATIVES.E_low.hu", SOLO_DIM_NARRATIVES.E_low.hu],
+    ["SOLO_DIM_NARRATIVES.E_low.en", SOLO_DIM_NARRATIVES.E_low.en],
   ];
   for (const [where, text] of lowTexts) {
     assert.ok(LOW_COST_RE.test(text), `${where}: hiányzik az alacsony pólus ára — "${text}"`);
   }
   // A kivezetett hiány-keretezés nem térhet vissza.
   const flat = JSON.stringify([
-    DIMENSION_WEAK_VERBS.RESO,
-    DIMENSION_WATCH_DESCS.RESO,
-    SOLO_DIM_NARRATIVES.RESO_low,
-    SOLO_DIM_SUMMARIES.RESO_low,
+    DIMENSION_WEAK_VERBS.E,
+    DIMENSION_WATCH_DESCS.E,
+    SOLO_DIM_NARRATIVES.E_low,
+    SOLO_DIM_SUMMARIES.E_low,
   ]);
   assert.ok(
     !/az érzelmi bevonódás kevésbé természetes tereped/.test(flat),
-    "visszatért a kivezetett hiány-keretezés az alacsony RESO-nál",
+    "visszatért a kivezetett hiány-keretezés az alacsony E-nál",
   );
 });
 
 // ── 4. Archetípus-címke ─────────────────────────────────────────────────
 
-test("archetípus: a RESO címkéje a ráhangolódás-család, nem az „empata”", () => {
-  assert.equal(PERSONALITY_TYPE_PARTS.RESO.noun.hu, "ráhangolódó");
-  assert.equal(PERSONALITY_TYPE_PARTS.RESO.noun.en, "Signal Reader");
-  assert.equal(PERSONALITY_TYPE_PARTS.RESO.adjective.hu, "ráhangolódó");
-  assert.equal(PERSONALITY_TYPE_PARTS.RESO.adjective.en, "Attuned");
+test("archetípus: a E címkéje a ráhangolódás-család, nem az „empata”", () => {
+  assert.equal(PERSONALITY_TYPE_PARTS.E.noun.hu, "ráhangolódó");
+  assert.equal(PERSONALITY_TYPE_PARTS.E.noun.en, "Signal Reader");
+  assert.equal(PERSONALITY_TYPE_PARTS.E.adjective.hu, "ráhangolódó");
+  assert.equal(PERSONALITY_TYPE_PARTS.E.adjective.en, "Attuned");
 });
 
 test("archetípus: a közös resolver adja a címkét a főnévi ÉS a melléknévi helyen", () => {
-  assert.equal(resolvePersonalityTypeLabel("RESO", "TEMP", "hu"), "Energikus ráhangolódó");
-  assert.equal(resolvePersonalityTypeLabel("RESO", "TEMP", "en"), "Energetic Signal Reader");
-  assert.equal(resolvePersonalityTypeLabel("TEMP", "RESO", "hu"), "Ráhangolódó hajtóerő");
-  assert.equal(resolvePersonalityTypeLabel("TEMP", "RESO", "en"), "Attuned Driving Force");
+  assert.equal(resolvePersonalityTypeLabel("E", "X", "hu"), "Energikus ráhangolódó");
+  assert.equal(resolvePersonalityTypeLabel("E", "X", "en"), "Energetic Signal Reader");
+  assert.equal(resolvePersonalityTypeLabel("X", "E", "hu"), "Ráhangolódó hajtóerő");
+  assert.equal(resolvePersonalityTypeLabel("X", "E", "en"), "Attuned Driving Force");
 });
 
 // ── 5. Felület-szintű szerződések (forrás-guard) ────────────────────────
@@ -249,7 +249,7 @@ test("csapat-felület: a „Csapat erőssége” kártya a kanonikus kapun megy"
   );
 });
 
-test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi RESO-literálból", () => {
+test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi E-literálból", () => {
   const source = read("src/app/(app)/hiring/[orgId]/candidates/[inviteId]/page.tsx");
   // A sor-kommentek (köztük ez a döntés-indoklás) nem részei a viselkedésnek
   // és nem mennek ki a felületre — a guard a kód-törzsre néz.
@@ -259,8 +259,8 @@ test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi
     "a jelölt-oldal nem a kanonikus valencia-kapun szűr",
   );
   assert.ok(
-    !/d !== "RESO"/.test(code),
-    "visszatért a kézi `d !== \"RESO\"` literál a jelölt-oldalon",
+    !/d !== "E"/.test(code),
+    "visszatért a kézi `d !== \"E\"` literál a jelölt-oldalon",
   );
   assert.ok(!EMPATHY_RE.test(code), "empátia-keretezés maradt a jelölt-oldal szövegeiben");
 });

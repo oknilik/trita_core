@@ -10,9 +10,9 @@
 // ((átlag − 1) / 4) × 100, kerekítve.
 // ─────────────────────────────────────────────────────────────────────
 
-import { rankDimensionScores, TRITAN_ORDER } from "./tritan";
+import { rankDimensionScores, HEXACO_ORDER } from "./hexaco";
 
-// Csak a hat kanonikus dimenzió (TRITAN_ORDER) szerepel a teaser-kimenetben.
+// Csak a hat kanonikus dimenzió (HEXACO_ORDER) szerepel a teaser-kimenetben.
 //
 // 2026-08-11: korábban a kiegészítő altruizmus-skála (`I`) pontszáma BENNE
 // maradt a `dimensions` mapben, és csak a `ranked` szűrte ki — a típus-címke
@@ -21,7 +21,7 @@ import { rankDimensionScores, TRITAN_ORDER } from "./tritan";
 // altruizmus-itemet sem szolgál ki, tehát élő kitöltésből amúgy sem áll elő
 // `I` — a szűrés a szerződést teszi őszintévé (és a régi, `I`-t is hordozó
 // vendég-draftra is helyesen viselkedik).
-const RANKABLE_DIM_CODES = new Set<string>(TRITAN_ORDER);
+const RANKABLE_DIM_CODES = new Set<string>(HEXACO_ORDER);
 
 export interface TeaserScoringMetaItem {
   id: number;
@@ -31,14 +31,14 @@ export interface TeaserScoringMetaItem {
 
 export interface GuestTeaserScores {
   /**
-   * Belső dimenziókód (INTE/RESO/…) → 0–100 pontszám — KIZÁRÓLAG a hat
+   * Belső dimenziókód (H/E/…) → 0–100 pontszám — KIZÁRÓLAG a hat
    * kanonikus dimenzió. A kiegészítő skálák (pl. `I`) nem kerülnek bele:
    * a teaser-felület sem jeleníti meg őket, a `ranked` pedig eleve szűri.
    */
   dimensions: Record<string, number>;
   /**
    * Pontszám szerint csökkenő dimenzió-lista — holtversenynél a kanonikus
-   * sorrend (TRITAN_ORDER) dönt, ugyanúgy, mint a regisztráció utáni
+   * sorrend (HEXACO_ORDER) dönt, ugyanúgy, mint a regisztráció utáni
    * archetípus-számításnál (personality-type), hogy a claim után ne
    * „nevezhessen át" a típus.
    */

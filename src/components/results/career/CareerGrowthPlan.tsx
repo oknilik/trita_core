@@ -3,7 +3,7 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { dimColors } from "@/lib/color-system";
 import { t, tf } from "@/lib/i18n";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 import { GROWTH_BY_POLE, collectGrowthGaps } from "@/lib/career/growth-content";
 import type { CareerResultView } from "@/lib/career/service";
 
@@ -54,7 +54,7 @@ export function CareerGrowthPlan({
 
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">
         {gaps.map((gap) => {
-          const dim = TRITAN_DIMENSIONS[gap.dim];
+          const dim = HEXACO_DIMENSIONS[gap.dim];
           const content = GROWTH_BY_POLE[gap.dim][gap.pole][isHu ? "hu" : "en"];
           return (
             <div

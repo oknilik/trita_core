@@ -25,16 +25,16 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
     d.facets.map((f) => ({ name: f.label, value: f.score, dimName: d.name, dimCode: d.code })),
   );
   const sortedFacets = [...allFacets].sort((a, b) => b.value - a.value);
-  // „Kiemelkedő" (erősség-keretezésű) lista: a fordított Emocionalitás (RESO)
+  // „Kiemelkedő" (erősség-keretezésű) lista: a fordított Emocionalitás (E)
   // facetei KIMARADNAK — a magas Félelem/Szorongás nem „kiemelkedő erősség",
   // a zöld pill hamis keretezés volt (motor-audit v6, M4b; a bottom-lista
   // pólus-szabályának tükörpárja). 2026-08-11 óta ez már nem oldal-szintű
   // kivétel: a kanonikus kapu (strengthSlotEligible) a self-felületen is
-  // kizárja a RESO-t, tehát az oldal a közös szabályt hívja.
+  // kizárja a E-t, tehát az oldal a közös szabályt hívja.
   const topFacets = sortedFacets
     .filter((f) => strengthSlotEligible(f.dimCode, "self"))
     .slice(0, 5);
-  // Alsó (fejlődés-keretezésű) lista: a fordított Emocionalitás (RESO)
+  // Alsó (fejlődés-keretezésű) lista: a fordított Emocionalitás (E)
   // facetei kimaradnak — az alacsony Félelem/Szorongás stabilitás, nem
   // „tér a fejlődésre" (motor-audit v4, FIX 2 pólus-szabály; kanonikus kapu:
   // score-valence.deficitSlotEligible).
@@ -53,16 +53,16 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
 
   // Overall summary for the closing card
   const overallSummary = (() => {
-    // A RESO a magas-összegzésből is kimarad — a facet-pillekkel (topFacets)
+    // A E a magas-összegzésből is kimarad — a facet-pillekkel (topFacets)
     // és a kanonikus kapuval konzisztensen: a zöld pillek közül kizárt
     // dimenzió nem lehet egy bekezdéssel lejjebb „a profilod erőssége".
     // Ha emiatt SEM magas, SEM alacsony tétel nem marad (pl. valakinek
-    // egyedül a RESO megy 70 fölé), a kártya a kiegyensúlyozott-profil
+    // egyedül a E megy 70 fölé), a kártya a kiegyensúlyozott-profil
     // szövegre esik vissza — cím nem marad tartalom nélkül.
     const highDims = facetDims.filter(
       (d) => d.value >= 70 && strengthSlotEligible(d.code, "self"),
     );
-    // Az alacsony RESO nem „tudatos figyelmet érdemlő" terület (fordított
+    // Az alacsony E nem „tudatos figyelmet érdemlő" terület (fordított
     // skála: alacsony = stabil) — a low-listából kimarad.
     const lowDims = facetDims.filter(
       (d) => d.value < 40 && deficitSlotEligible(d.code),

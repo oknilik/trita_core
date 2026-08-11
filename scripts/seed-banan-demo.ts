@@ -100,24 +100,24 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// A facet-sorrend a kanonikus térképet (tritan.ts TRITAN_DIMENSION_FACETS)
-// követi — a THOR korábban felcserélt sorrendben (prudence↔perfectionism)
+// A facet-sorrend a kanonikus térképet (tritan.ts HEXACO_DIMENSION_FACETS)
+// követi — a C korábban felcserélt sorrendben (prudence↔perfectionism)
 // állt itt, eltérve az éles felület és a personas.shared.ts sorrendjétől.
 // A kiegészítő altruizmus-skála (`I`) 2026-08-11 óta nincs a rövid (TSFI-S,
 // 60 itemes) formában, amit ez a seed emulál — nem generálunk rá pontszámot.
-const TRITAN_FACETS: Record<string, string[]> = {
-  INTE: ["sincerity", "fairness", "greed_avoidance", "modesty"],
-  RESO: ["fearfulness", "anxiety", "dependence", "sentimentality"],
-  TEMP: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
-  ADAP: ["forgiveness", "gentleness", "flexibility", "patience"],
-  THOR: ["organization", "diligence", "perfectionism", "prudence"],
-  OPEN: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
+const HEXACO_FACETS: Record<string, string[]> = {
+  H: ["sincerity", "fairness", "greed_avoidance", "modesty"],
+  E: ["fearfulness", "anxiety", "dependence", "sentimentality"],
+  X: ["social_self_esteem", "social_boldness", "sociability", "liveliness"],
+  A: ["forgiveness", "gentleness", "flexibility", "patience"],
+  C: ["organization", "diligence", "perfectionism", "prudence"],
+  O: ["aesthetic_appreciation", "inquisitiveness", "creativity", "unconventionality"],
 };
 
 function generateTritanScores() {
   const dimensions: Record<string, number> = {};
   const facets: Record<string, Record<string, number>> = {};
-  for (const [dim, facetList] of Object.entries(TRITAN_FACETS)) {
+  for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
     const base = rand(22, 83);
     dimensions[dim] = base;
     facets[dim] = {};

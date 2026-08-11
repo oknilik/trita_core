@@ -140,7 +140,7 @@ const CANDIDATE_MIN = 30;
 const CANDIDATE_MAX = 60;
 
 /** Vezetői ambíció: ezek a komponensek kapnak többletsúlyt. */
-const LEAD_BOOST: Partial<Record<DimCode, number>> = { TEMP: 0.15, RESO: 0.05 };
+const LEAD_BOOST: Partial<Record<DimCode, number>> = { X: 0.15, E: 0.05 };
 
 /**
  * Illeszkedés egy komponensre: 100 a célon, 50 egy toleranciányira, 0 két
@@ -158,7 +158,7 @@ function alignmentFor(userValue: number, target: number, tol: number): number {
  *
  * A H-padló a NYERS (kevert) ponton fut, NEM a centráltan: az invariáns az
  * ABSZOLÚT becsületességről szól. Centrált ponttal egy abszolút őszinte user,
- * akinek az INTE a saját profiljában relatíve a legalacsonyabb (pl. INTE 70 a
+ * akinek az H a saját profiljában relatíve a legalacsonyabb (pl. H 70 a
  * 85-ös átlag mellett → centrálva 38), rosszabbul járt volna egy laposabb,
  * kevésbé őszinte profilnál — pont a kimondott invariáns ellen.
  */
@@ -171,7 +171,7 @@ function componentFit(
   tol: number,
   weight: number,
 ): FitComponent {
-  const hFloor = dim === "INTE" && target < 50;
+  const hFloor = dim === "H" && target < 50;
   const effectiveTarget = hFloor ? 50 : target;
   // H-padlónál az értékelt pont a nyers KEVERT; máshol a profil-alak (centrált).
   const userValue = hFloor ? blendedRaw : centeredValue;

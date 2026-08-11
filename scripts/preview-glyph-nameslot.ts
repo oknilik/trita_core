@@ -13,12 +13,12 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { createElement } from "react";
 import { TypeGlyph } from "../src/components/type/TypeGlyph";
 import { GLYPH_COLORS } from "../src/lib/type-glyph";
-import { TRITAN_DIMENSIONS } from "../src/lib/tritan";
+import { HEXACO_DIMENSIONS } from "../src/lib/hexaco";
 
 const outDir = process.argv[2] ?? join(process.cwd(), ".glyph-previews");
 mkdirSync(outDir, { recursive: true });
 
-const DEMO = { primary: "OPEN", secondary: "TEMP", label: "Energikus újító" };
+const DEMO = { primary: "O", secondary: "X", label: "Energikus újító" };
 
 const glyph = (variant: "hero" | "card" | "badge") =>
   renderToStaticMarkup(
@@ -36,14 +36,14 @@ const HERO_GRADIENT = "linear-gradient(135deg,#2a5244 0%,#1e3d34 60%,#1a2e28 100
 const TYPE_GOLD = "#e8a96a";
 
 const DIM_SCORES: Record<string, number> = {
-  INTE: 62, RESO: 44, TEMP: 78, ADAP: 57, THOR: 51, OPEN: 86,
+  H: 62, E: 44, X: 78, A: 57, C: 51, O: 86,
 };
-const ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+const ORDER = ["H", "E", "X", "A", "C", "O"];
 
 const dimensionStrip = (codes: string[]) =>
   `<div class="dimstrip">${codes
     .map((code) => {
-      const dim = TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS];
+      const dim = HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS];
       return `<div class="dimcell">
         <span class="dimletter">${dim.letter}</span>
         <span class="dimname">${dim.hu}</span>

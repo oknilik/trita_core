@@ -11,7 +11,7 @@
 
 import type { TrustEdgeType } from "./trust-network";
 
-const DIM_ORDER = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+const DIM_ORDER = ["H", "E", "X", "A", "C", "O"] as const;
 
 export type DynamicsEdgeType = "aligned" | "complementary" | "friction";
 
@@ -19,12 +19,12 @@ export type DynamicsEdgeType = "aligned" | "complementary" | "friction";
 // és az A (barátságosság) eltérés a legerősebb munkahelyi súrlódás-jósló, a
 // H (becsületesség-alázat) követi; az E, X, O gyengébb.
 export const FRICTION_WEIGHTS: Record<string, number> = {
-  THOR: 0.30,  // határidő / minőség / végigvitel feszültsége
-  ADAP: 0.25,  // kommunikációs stílus ütközése
-  INTE: 0.20,  // bizalom és szándék-tulajdonítás
-  RESO: 0.15,  // érzelmi termosztát eltérése
-  TEMP: 0.05,  // kommunikációs gyakoriság eltérése
-  OPEN: 0.05,  // újítás vs pragmatizmus
+  C: 0.30,  // határidő / minőség / végigvitel feszültsége
+  A: 0.25,  // kommunikációs stílus ütközése
+  H: 0.20,  // bizalom és szándék-tulajdonítás
+  E: 0.15,  // érzelmi termosztát eltérése
+  X: 0.05,  // kommunikációs gyakoriság eltérése
+  O: 0.05,  // újítás vs pragmatizmus
 };
 
 /**

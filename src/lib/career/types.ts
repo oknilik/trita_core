@@ -2,10 +2,10 @@
 // A katalógus adat-oldala az O*NET 30.3-ból származtatott, kézzel ellenőrzött
 // foglalkozás-készlet (ld. docs/product/occupation-catalog-sources.md).
 
-/** Belső dimenziókódok (a DB score-JSON-okkal azonosak). RESO fordított: magasabb = érzelmesebb. */
-export type DimCode = "INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN";
+/** Belső dimenziókódok (a DB score-JSON-okkal azonosak). E fordított: magasabb = érzelmesebb. */
+export type DimCode = "H" | "E" | "X" | "A" | "C" | "O";
 
-export const DIM_CODES: DimCode[] = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+export const DIM_CODES: DimCode[] = ["H", "E", "X", "A", "C", "O"];
 
 export type RiasecLetter = "R" | "I" | "A" | "S" | "E" | "C";
 

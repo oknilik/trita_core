@@ -6,12 +6,12 @@ import type { SerializedTeamMember } from "@/lib/team-stats";
 // ── Fixtúrák ────────────────────────────────────────────────────────────────
 
 const FULL_SCORES = {
-  INTE: 50,
-  RESO: 50,
-  TEMP: 50,
-  ADAP: 50,
-  THOR: 50,
-  OPEN: 50,
+  H: 50,
+  E: 50,
+  X: 50,
+  A: 50,
+  C: 50,
+  O: 50,
 };
 
 /** Mért szerep-kérdőív, ahol az adott szerep az elsődleges. */

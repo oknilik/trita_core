@@ -128,7 +128,7 @@ const QUESTIONS = Array.from({ length: TOTAL_QUESTIONS }, (_, i) => ({
   id: 201 + i,
   text: `Question ${i + 1}`,
   textObserver: `Observer Q${i + 1}`,
-  dimension: ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"][i % 6],
+  dimension: ["H", "E", "X", "A", "C", "O"][i % 6],
   type: "likert" as const,
   reversed: false,
 }));

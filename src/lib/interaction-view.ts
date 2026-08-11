@@ -12,7 +12,7 @@
 
 import type { Locale } from "@/lib/i18n";
 import { resolvePersonalityTypeLabel } from "@/lib/personality-type";
-import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import {
   ARCHETYPE_PAIRS,
   archetypePrototype,
@@ -29,16 +29,16 @@ export interface InteractionTextLine {
 }
 
 export interface InteractionLeaderNote {
-  dim: TritanDimCode;
+  dim: HexacoCode;
   dimLabel: string;
   text: string;
 }
 
 export interface ArchetypeSimulationView {
-  /** Stabil kulcs a kiválasztáshoz: "OPEN-TEMP". */
+  /** Stabil kulcs a kiválasztáshoz: "O-X". */
   key: string;
-  dominant: TritanDimCode;
-  secondary: TritanDimCode;
+  dominant: HexacoCode;
+  secondary: HexacoCode;
   /** „Energikus újító" — a választó címkéje. */
   label: string;
   easy: InteractionTextLine[];
@@ -54,14 +54,14 @@ export interface ArchetypeSimulationView {
 }
 
 export function archetypeKey(
-  dominant: TritanDimCode,
-  secondary: TritanDimCode,
+  dominant: HexacoCode,
+  secondary: HexacoCode,
 ): string {
   return `${dominant}-${secondary}`;
 }
 
-function dimLabel(dim: TritanDimCode, locale: Locale): string {
-  const dimension = TRITAN_DIMENSIONS[dim];
+function dimLabel(dim: HexacoCode, locale: Locale): string {
+  const dimension = HEXACO_DIMENSIONS[dim];
   return locale === "hu" ? dimension.hu : dimension.en;
 }
 

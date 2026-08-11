@@ -73,15 +73,15 @@ export async function GET(
     if (!ar) continue;
 
     // FONTOS: a tárolt score-JSON a BELSŐ dimenziókódokat használja
-    // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO display-betűket —
+    // (H/E/X/A/C/O), nem a HEXACO display-betűket —
     // ugyanaz az olvasási szabály, mint a team-stats.ts-ben.
     // Hiányos/örökség score-JSON (nincs `dimensions` kulcs) NEM dönti el az
     // egész endpointot: a tagot kihagyjuk, ahogy a team-stats.ts loader is.
     const dims = (ar.scores as ScoreResult | null)?.dimensions;
     if (
       !dims ||
-      dims.INTE === undefined || dims.RESO === undefined || dims.TEMP === undefined ||
-      dims.ADAP === undefined || dims.THOR === undefined || dims.OPEN === undefined
+      dims.H === undefined || dims.E === undefined || dims.X === undefined ||
+      dims.A === undefined || dims.C === undefined || dims.O === undefined
     ) {
       continue;
     }
@@ -89,12 +89,12 @@ export async function GET(
     membersWithScores.push({
       userId: tm.user.id,
       scores: {
-        INTE: dims.INTE,
-        RESO: dims.RESO,
-        TEMP: dims.TEMP,
-        ADAP: dims.ADAP,
-        THOR: dims.THOR,
-        OPEN: dims.OPEN,
+        H: dims.H,
+        E: dims.E,
+        X: dims.X,
+        A: dims.A,
+        C: dims.C,
+        O: dims.O,
       },
     });
   }

@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { isMeasuredDynamicsSource } from "@/lib/friction-model";
-import { hexLetter } from "@/lib/tritan";
+import { hexLetter } from "@/lib/hexaco";
 import type {
   TeamIntelligenceEvidence,
   TeamIntelligenceSubTab,
@@ -24,7 +24,7 @@ export interface IntelligenceMember {
    * (defaultolt 50-es kitalált adat lenne). Teljes készletnél
    * hasAssessmentData = true.
    */
-  tritan: Partial<Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>>;
+  tritan: Partial<Record<"H" | "E" | "X" | "A" | "C" | "O", number>>;
   /** Kitöltött csapatszerep-kérdőív pontszámai — ha van, ez élvez elsőbbséget a becsléssel szemben. */
   measuredRoleScores: Record<string, number> | null;
   /** Mind a hat fő dimenzió mérten jelen van. */
@@ -264,7 +264,7 @@ export function TeamIntelligence({
 
                 <div className="mt-2.5 flex flex-wrap gap-1.5">
                   {/* HEXACO-betű a badge-en (H/E/X/A/C/O) — a belső kód
-                      (INTE/TEMP/…) nem kerülhet a felületre. */}
+                      (H/X/…) nem kerülhet a felületre. */}
                   {topDims.map(([dim, value]) => (
                     <span
                       key={`${member.id}-${dim}`}

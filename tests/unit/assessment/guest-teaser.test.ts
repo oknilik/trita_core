@@ -8,26 +8,26 @@ import {
   resolvePersonalityTypeFromScores,
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
-import { rankDimensionScores, TRITAN_ORDER } from "@/lib/tritan";
+import { rankDimensionScores, HEXACO_ORDER } from "@/lib/hexaco";
 
 const META: TeaserScoringMetaItem[] = [
-  { id: 1, dimension: "TEMP", reversed: false },
-  { id: 2, dimension: "TEMP", reversed: true },
-  { id: 3, dimension: "OPEN", reversed: false },
-  { id: 4, dimension: "OPEN", reversed: false },
+  { id: 1, dimension: "X", reversed: false },
+  { id: 2, dimension: "X", reversed: true },
+  { id: 3, dimension: "O", reversed: false },
+  { id: 4, dimension: "O", reversed: false },
 ];
 
 describe("computeGuestTeaserScores", () => {
   it("a scoring.ts Likert-formuláját követi (fordított item 6−v, ((átlag−1)/4)×100)", () => {
-    // TEMP: item1=5, item2 fordított 2→4 → átlag 4.5 → 87.5 → 88
-    // OPEN: 3 és 4 → átlag 3.5 → 62.5 → 63
+    // X: item1=5, item2 fordított 2→4 → átlag 4.5 → 87.5 → 88
+    // O: 3 és 4 → átlag 3.5 → 62.5 → 63
     const result = computeGuestTeaserScores(META, { 1: 5, 2: 2, 3: 3, 4: 4 });
     assert.ok(result);
-    assert.equal(result.dimensions.TEMP, 88);
-    assert.equal(result.dimensions.OPEN, 63);
+    assert.equal(result.dimensions.X, 88);
+    assert.equal(result.dimensions.O, 63);
     assert.deepEqual(
       result.ranked.map((r) => r.code),
-      ["TEMP", "OPEN"],
+      ["X", "O"],
     );
   });
 
@@ -50,7 +50,7 @@ describe("computeGuestTeaserScores", () => {
     const result = computeGuestTeaserScores(META, { 1: 3, 2: 3, 3: 3, 4: 3, 999: 5 });
     assert.ok(result);
     assert.equal(Object.keys(result.dimensions).length, 2);
-    assert.equal(result.dimensions.TEMP, 50);
+    assert.equal(result.dimensions.X, 50);
   });
 
   it("a kiegészítő Altruizmus (I) skálát a KIMENETBŐL is kizárja", () => {
@@ -62,11 +62,11 @@ describe("computeGuestTeaserScores", () => {
     const metaWithAltruism: TeaserScoringMetaItem[] = [
       { id: 1, dimension: "I", reversed: false },
       { id: 2, dimension: "I", reversed: false },
-      { id: 3, dimension: "TEMP", reversed: false },
-      { id: 4, dimension: "OPEN", reversed: false },
-      { id: 5, dimension: "INTE", reversed: false },
+      { id: 3, dimension: "X", reversed: false },
+      { id: 4, dimension: "O", reversed: false },
+      { id: 5, dimension: "H", reversed: false },
     ];
-    // I: 5,5 → 100 (a legmagasabb) · INTE: 4 → 75 · TEMP: 3 → 50 · OPEN: 2 → 25
+    // I: 5,5 → 100 (a legmagasabb) · H: 4 → 75 · X: 3 → 50 · O: 2 → 25
     const result = computeGuestTeaserScores(metaWithAltruism, {
       1: 5, 2: 5, 3: 3, 4: 2, 5: 4,
     });
@@ -77,25 +77,25 @@ describe("computeGuestTeaserScores", () => {
     assert.equal("I" in result.dimensions, false);
     assert.ok(!result.ranked.some((r) => r.code === "I"));
     // Minden ranked kód a hat kanonikus dimenzió egyike → ismert glyph/címke.
-    const knownCodes = new Set<string>(TRITAN_ORDER);
+    const knownCodes = new Set<string>(HEXACO_ORDER);
     for (const entry of result.ranked) {
       assert.ok(knownCodes.has(entry.code), `ismeretlen ranked kód: ${entry.code}`);
     }
-    // A top-2 a valódi dimenziókból jön (I nélkül): INTE(75) > TEMP(50).
+    // A top-2 a valódi dimenziókból jön (I nélkül): H(75) > X(50).
     assert.deepEqual(
       result.ranked.slice(0, 2).map((r) => r.code),
-      ["INTE", "TEMP"],
+      ["H", "X"],
     );
   });
 
-  it("holtversenynél a kanonikus sorrend (TRITAN_ORDER) dönt", () => {
+  it("holtversenynél a kanonikus sorrend (HEXACO_ORDER) dönt", () => {
     const result = computeGuestTeaserScores(META, { 1: 4, 2: 2, 3: 4, 4: 4 });
     assert.ok(result);
-    assert.equal(result.dimensions.TEMP, result.dimensions.OPEN);
-    // TEMP a TRITAN_ORDER-ben megelőzi az OPEN-t.
+    assert.equal(result.dimensions.X, result.dimensions.O);
+    // X a HEXACO_ORDER-ben megelőzi az O-t.
     assert.deepEqual(
       result.ranked.map((r) => r.code),
-      ["TEMP", "OPEN"],
+      ["X", "O"],
     );
   });
 
@@ -103,28 +103,28 @@ describe("computeGuestTeaserScores", () => {
     // Mind a hat dimenzió holtversenyben — a claim utáni archetípus nem
     // „nevezhető át" a regisztrációval.
     const fullMeta: TeaserScoringMetaItem[] = [
-      { id: 1, dimension: "OPEN", reversed: false },
-      { id: 2, dimension: "THOR", reversed: false },
-      { id: 3, dimension: "ADAP", reversed: false },
-      { id: 4, dimension: "TEMP", reversed: false },
-      { id: 5, dimension: "RESO", reversed: false },
-      { id: 6, dimension: "INTE", reversed: false },
+      { id: 1, dimension: "O", reversed: false },
+      { id: 2, dimension: "C", reversed: false },
+      { id: 3, dimension: "A", reversed: false },
+      { id: 4, dimension: "X", reversed: false },
+      { id: 5, dimension: "E", reversed: false },
+      { id: 6, dimension: "H", reversed: false },
     ];
     const result = computeGuestTeaserScores(fullMeta, {
       1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3,
     });
     assert.ok(result);
     const teaserTop2 = result.ranked.slice(0, 2).map((r) => r.code);
-    assert.deepEqual(teaserTop2, ["INTE", "RESO"]);
+    assert.deepEqual(teaserTop2, ["H", "E"]);
 
     // A belépett út kevert bemeneti sorrendből is ugyanazt a top-2-t adja.
     const shuffled = [
-      { code: "OPEN", score: 50 },
-      { code: "TEMP", score: 50 },
-      { code: "INTE", score: 50 },
-      { code: "THOR", score: 50 },
-      { code: "RESO", score: 50 },
-      { code: "ADAP", score: 50 },
+      { code: "O", score: 50 },
+      { code: "X", score: 50 },
+      { code: "H", score: 50 },
+      { code: "C", score: 50 },
+      { code: "E", score: 50 },
+      { code: "A", score: 50 },
     ];
     assert.deepEqual(
       rankDimensionScores(shuffled).slice(0, 2).map((d) => d.code),

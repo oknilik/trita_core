@@ -4,7 +4,7 @@ import { tf } from "@/lib/i18n";
 import type { SerializedTeamMember } from "@/lib/team-stats";
 import { isTeamManagerRole } from "@/lib/org-roles";
 import { withHuArticle } from "@/lib/hu-grammar";
-import { TRITAN_DIMENSIONS, TRITAN_DIMENSIONS_LOWER } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS, HEXACO_DIMENSIONS_LOWER } from "@/lib/hexaco";
 import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
@@ -208,12 +208,12 @@ export function buildTeamIntelligencePriorities({
   const membersWithScores = members.filter(
     (member) =>
       !!member.scores &&
-      member.scores.INTE !== undefined &&
-      member.scores.RESO !== undefined &&
-      member.scores.TEMP !== undefined &&
-      member.scores.ADAP !== undefined &&
-      member.scores.THOR !== undefined &&
-      member.scores.OPEN !== undefined,
+      member.scores.H !== undefined &&
+      member.scores.E !== undefined &&
+      member.scores.X !== undefined &&
+      member.scores.A !== undefined &&
+      member.scores.C !== undefined &&
+      member.scores.O !== undefined,
   );
 
   if (membersWithScores.length >= 4) {
@@ -266,7 +266,7 @@ export function buildTeamIntelligencePriorities({
     }
 
     const cohesionValues = membersWithScores.map((member) =>
-      (member.scores!.ADAP + member.scores!.INTE) / 2,
+      (member.scores!.A + member.scores!.H) / 2,
     );
     const cohesionAverage = mean(cohesionValues);
     // A szórás továbbra is a kockázat-jelzés EGYIK kiváltója (magas belső
@@ -288,7 +288,7 @@ export function buildTeamIntelligencePriorities({
       });
     }
 
-    const dimensions = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"] as const;
+    const dimensions = ["H", "E", "X", "A", "C", "O"] as const;
     const maxSpread = dimensions.reduce(
       (best, dim) => {
         const values = membersWithScores
@@ -303,7 +303,7 @@ export function buildTeamIntelligencePriorities({
         }
         return best;
       },
-      { dim: "TEMP" as (typeof dimensions)[number], range: 0 },
+      { dim: "X" as (typeof dimensions)[number], range: 0 },
     );
 
     if (maxSpread.range >= 32) {
@@ -316,8 +316,8 @@ export function buildTeamIntelligencePriorities({
         // „(N pont)" kikerül a szövegből.
         reason: tr(
           locale,
-          `${withHuArticle(TRITAN_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
-          `${TRITAN_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team, which may point to differing work styles.`,
+          `${withHuArticle(HEXACO_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
+          `${HEXACO_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team, which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
         ctaHref: `/team/${teamId}?tab=profile`,
@@ -338,16 +338,16 @@ export function buildTeamIntelligencePriorities({
       );
       const teamAverageH = mean(
         nonLeaderMembers
-          .map((member) => member.scores?.INTE)
+          .map((member) => member.scores?.H)
           .filter((value): value is number => typeof value === "number"),
       );
       const teamAverageA = mean(
         nonLeaderMembers
-          .map((member) => member.scores?.ADAP)
+          .map((member) => member.scores?.A)
           .filter((value): value is number => typeof value === "number"),
       );
-      const leaderDeltaH = Math.abs((leaderWithScores.scores?.INTE ?? teamAverageH) - teamAverageH);
-      const leaderDeltaA = Math.abs((leaderWithScores.scores?.ADAP ?? teamAverageA) - teamAverageA);
+      const leaderDeltaH = Math.abs((leaderWithScores.scores?.H ?? teamAverageH) - teamAverageH);
+      const leaderDeltaA = Math.abs((leaderWithScores.scores?.A ?? teamAverageA) - teamAverageA);
 
       if (nonLeaderMembers.length > 0 && (leaderDeltaH >= 18 || leaderDeltaA >= 18)) {
         priorities.push({

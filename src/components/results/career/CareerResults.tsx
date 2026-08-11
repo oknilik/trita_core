@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { withHuArticle } from "@/lib/hu-grammar";
-import { TRITAN_DIMENSIONS } from "@/lib/tritan";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { INDUSTRIES } from "@/lib/industry-fit";
 import {
@@ -69,7 +69,7 @@ const VETO_LABEL_KEYS: Record<string, string> = {
 };
 
 function dimLabel(code: string, isHu: boolean): string {
-  const dim = TRITAN_DIMENSIONS[code as keyof typeof TRITAN_DIMENSIONS];
+  const dim = HEXACO_DIMENSIONS[code as keyof typeof HEXACO_DIMENSIONS];
   if (!dim) return code;
   return `${dim.letter} ${isHu ? dim.hu : dim.en}`;
 }

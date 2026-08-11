@@ -7,7 +7,7 @@ import {
   isLikertQuestion,
   type LikertQuestion,
 } from "@/lib/questions";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 
 // ─────────────────────────────────────────────────────────────────────
 // A TSFI-S rövid forma ÖSSZETÉTELE (2026-08-11) és a forma-váltás
@@ -37,14 +37,14 @@ describe("TSFI-S rövid forma összetétele", () => {
       byDim.set(q.dimension, (byDim.get(q.dimension) ?? 0) + 1);
     }
     // Csak a hat fő dimenzió szerepel — `I` (altruizmus) egyáltalán nem.
-    assert.deepEqual([...byDim.keys()].sort(), [...TRITAN_ORDER].sort());
+    assert.deepEqual([...byDim.keys()].sort(), [...HEXACO_ORDER].sort());
     assert.equal(byDim.has("I"), false);
-    for (const code of TRITAN_ORDER) {
+    for (const code of HEXACO_ORDER) {
       assert.equal(byDim.get(code), 10, `${code} item-száma nem 10`);
     }
   });
 
-  it("a 77 (RESO) és 79 (OPEN) benne van, a 98/99 (altruizmus) nincs", () => {
+  it("a 77 (E) és 79 (O) benne van, a 98/99 (altruizmus) nincs", () => {
     const ids = new Set(shortItems.map((q) => q.id));
     assert.ok(ids.has(77));
     assert.ok(ids.has(79));

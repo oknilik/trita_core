@@ -61,7 +61,7 @@ export function TeamRoles({
 }: TeamRolesProps) {
   const lang = locale === "hu" ? "hu" : "en";
 
-  const hasTritanDims = "INTE" in tritanScores && "TEMP" in tritanScores;
+  const hasTritanDims = "H" in tritanScores && "X" in tritanScores;
   if (!hasTritanDims) return null;
 
   // Precedencia a kanonikus szabályból (team-role-estimate):

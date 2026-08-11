@@ -198,7 +198,7 @@ export async function getManagerCockpitTeamStats(
   for (const r of latestSelfResults) {
     if (!r.userProfileId) continue;
     // extractDimensionScores: a beágyazott ({dimensions:{…}}) ÉS az örökség
-    // lapos ({TEMP:62,…}) score-JSON-t is kezeli — a hiring-felülettel azonos
+    // lapos ({X:62,…}) score-JSON-t is kezeli — a hiring-felülettel azonos
     // olvasat (korábban a lapos formátumú tag „kitöltetlennek" látszott itt).
     scoresByUserId.set(r.userProfileId, extractDimensionScores(r.scores));
   }

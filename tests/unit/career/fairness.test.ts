@@ -66,8 +66,8 @@ test("fairness: a katalógus nagy része elérhető valamilyen profillal", () =>
 });
 
 test("differenciálás: a rangsor tetején valódi különbség van a profilok között", () => {
-  const analytical = { INTE: 55, RESO: 40, TEMP: 30, ADAP: 45, THOR: 75, OPEN: 85 };
-  const caring = { INTE: 85, RESO: 70, TEMP: 55, ADAP: 85, THOR: 60, OPEN: 45 };
+  const analytical = { H: 55, E: 40, X: 30, A: 45, C: 75, O: 85 };
+  const caring = { H: 85, E: 70, X: 55, A: 85, C: 60, O: 45 };
   const a = computeCareerFit({ dims: analytical, form: "short" }, { limit: 10 }).ranked;
   const b = computeCareerFit({ dims: caring, form: "short" }, { limit: 10 }).ranked;
   const overlap = a.filter((fit) => b.some((other) => other.id === fit.id)).length;
@@ -107,7 +107,7 @@ test("known-groups: a validáció a TELJES katalóguson fut, nem a motor saját 
   // foglalkozás null-ként kiesne, a percentilis pedig egy ELŐSZŰRT halmazon
   // számolódna — a nevező pont azokból a súlyokból származna, amiket validálunk.
   const person: PersonInput = {
-    dims: { INTE: 55, RESO: 45, TEMP: 70, ADAP: 60, THOR: 55, OPEN: 50 },
+    dims: { H: 55, E: 45, X: 70, A: 60, C: 55, O: 50 },
     form: "short",
     interests: {
       vector: { R: 15, I: 20, A: 40, S: 30, E: 85, C: 25 },

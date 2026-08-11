@@ -1,15 +1,15 @@
 // ─────────────────────────────────────────────────────────────────────
 // Kanonikus valencia-kapu (motor-audit v9 szerkezeti lépés, 2026-08-11).
 //
-// A fordított kódolású Emocionalitás (RESO) kezelése korábban legalább hat
-// fájlban élt szétszórt `!== "RESO"` literálként — a v4–v9 vak körök
+// A fordított kódolású Emocionalitás (E) kezelése korábban legalább hat
+// fájlban élt szétszórt `!== "E"` literálként — a v4–v9 vak körök
 // visszatérő hibaosztálya pontosan az volt, hogy egy-egy felület kimaradt
 // (hol a deficit-, hol az erősség-oldalon). Innentől MINDEN
 // „pontszám → erősség / kockázat / fejlesztendő" besorolás ezen a modulon
-// megy át; új felületen tilos kézzel RESO-literált szűrni.
+// megy át; új felületen tilos kézzel E-literált szűrni.
 //
 // TERMÉKDÖNTÉS 2026-08-11 (a korábban NYITOTT kérdés lezárva): az
-// Emocionalitás (RESO) MINDKÉT pólusa, MINDKÉT felület-típuson
+// Emocionalitás (E) MINDKÉT pólusa, MINDKÉT felület-típuson
 // valencia-mentes. Nem erősség és nem hiányosság — jellemző.
 // Indok: a dimenzió facetjei a Félelem / Szorongás / Dependencia /
 // Érzelmi kötődés — ezekre a saját eredményoldalon zöld „erősség" badge-et
@@ -20,19 +20,19 @@
 // valenciás (erősség/gyengeség) slotokból marad ki.
 //
 // Aktuális szabályok:
-//  - Deficit / kockázat / fejlesztendő slot (alacsony pólus): a RESO SOSEM
+//  - Deficit / kockázat / fejlesztendő slot (alacsony pólus): a E SOSEM
 //    kerülhet bele — az alacsony Emocionalitás stabilitás, nem gyengeség.
-//  - Erősség slot (magas pólus): a RESO SOSEM kerülhet bele — sem értékelő
+//  - Erősség slot (magas pólus): a E SOSEM kerülhet bele — sem értékelő
 //    (hiring, csapat-kockázat, vezetői döntéstámogatás), sem önismereti
 //    (saját eredmény, PDF, share, OG) felületen.
 //
 // A `surface` paraméter SZÁNDÉKOSAN megmarad: a hívási helyek jelzik vele,
 // milyen kontextusban sorolnak be, és egy jövőbeli, felület-függő szabály
-// (nem a RESO-ra) így nem igényel újabb call-site túrát.
+// (nem a E-ra) így nem igényel újabb call-site túrát.
 // ─────────────────────────────────────────────────────────────────────
 
 /** A fordított kódolású dimenzió belső kódja (magasabb = érzelmesebb). */
-export const REVERSE_DIM_CODE = "RESO";
+export const REVERSE_DIM_CODE = "E";
 
 /**
  * Melyik felület-típuson történik a besorolás:
@@ -52,7 +52,7 @@ export function isReverseValenced(code: string | undefined | null): boolean {
 
 /**
  * Bekerülhet-e a dimenzió alacsony pólusa deficit-jellegű slotba
- * (gyengeség, kockázat, fejlesztendő terület)? A RESO-ra mindig false.
+ * (gyengeség, kockázat, fejlesztendő terület)? A E-ra mindig false.
  */
 export function deficitSlotEligible(code: string | undefined | null): boolean {
   return !isReverseValenced(code);
@@ -60,9 +60,9 @@ export function deficitSlotEligible(code: string | undefined | null): boolean {
 
 /**
  * Bekerülhet-e a dimenzió magas pólusa erősség-jellegű slotba?
- * A RESO-ra MINDIG false — mindkét felület-típuson (2026-08-11-i
+ * A E-ra MINDIG false — mindkét felület-típuson (2026-08-11-i
  * termékdöntés, ld. fejléc). A `surface` a hívási hely kontextusát
- * dokumentálja; a RESO-szabály nem függ tőle.
+ * dokumentálja; a E-szabály nem függ tőle.
  */
 export function strengthSlotEligible(
   code: string | undefined | null,

@@ -1,7 +1,7 @@
 import "server-only";
 
 import { prisma } from "@/lib/prisma";
-import { TRITAN_ORDER } from "@/lib/tritan";
+import { HEXACO_ORDER } from "@/lib/hexaco";
 import type { ScoreResult } from "@/lib/scoring";
 import {
   DOSSIER_OBSERVER_MIN,
@@ -168,10 +168,10 @@ export async function buildMemberDossier(
   // ── Önkép vs. külső kép ────────────────────────────────────────────
   const selfDims = selfLatest ? dimsOf(selfLatest.scores) : {};
   const observerAvg = computeObserverAverage(
-    TRITAN_ORDER,
+    HEXACO_ORDER,
     observers.map((o) => dimsOf(o.scores)),
   );
-  const dims = computeDimComparisons(TRITAN_ORDER, selfDims, observerAvg);
+  const dims = computeDimComparisons(HEXACO_ORDER, selfDims, observerAvg);
   const topGaps = topGapDims(dims);
 
   // Rater-minőség (halo / straight-line / fordított-item konzisztencia) a

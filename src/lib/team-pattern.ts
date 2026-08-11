@@ -76,12 +76,12 @@ export interface TeamPatternResult {
 
 /** Scores in 0–100 range (as stored in AssessmentResult.scores.dimensions) */
 export interface TritanScores {
-  INTE: number;
-  RESO: number;
-  TEMP: number;
-  ADAP: number;
-  THOR: number;
-  OPEN: number;
+  H: number;
+  E: number;
+  X: number;
+  A: number;
+  C: number;
+  O: number;
 }
 
 // ============================================================
@@ -169,17 +169,17 @@ export function calculateTeamPattern(
 
   // ── 1. Tengely értékek ──────────────────────────────────
   const rawAxes: TeamAxes = {
-    drive:      mean(allScores.map((s) => s.TEMP)),
-    cohesion:   mean(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline: mean(allScores.map((s) => s.THOR)),
-    openness:   mean(allScores.map((s) => s.OPEN)),
+    drive:      mean(allScores.map((s) => s.X)),
+    cohesion:   mean(allScores.map((s) => (s.A + s.H) / 2)),
+    discipline: mean(allScores.map((s) => s.C)),
+    openness:   mean(allScores.map((s) => s.O)),
   };
 
   const rawDiversity: TeamDiversity = {
-    drive:      sampleStdDev(allScores.map((s) => s.TEMP)),
-    cohesion:   sampleStdDev(allScores.map((s) => (s.ADAP + s.INTE) / 2)),
-    discipline: sampleStdDev(allScores.map((s) => s.THOR)),
-    openness:   sampleStdDev(allScores.map((s) => s.OPEN)),
+    drive:      sampleStdDev(allScores.map((s) => s.X)),
+    cohesion:   sampleStdDev(allScores.map((s) => (s.A + s.H) / 2)),
+    discipline: sampleStdDev(allScores.map((s) => s.C)),
+    openness:   sampleStdDev(allScores.map((s) => s.O)),
   };
 
   // ── 2. Tengely részletek ────────────────────────────────
@@ -279,10 +279,10 @@ export function calculateTeamPattern(
     // (a fogyasztó a tensionAxes darabszámát használja) — a deviations map és
     // a patternDistance nem hagyja el a függvényt.
     const deviations: Record<string, number> = {
-      drive:      Math.abs(m.scores.TEMP - rawAxes.drive),
-      cohesion:   Math.abs((m.scores.ADAP + m.scores.INTE) / 2 - rawAxes.cohesion),
-      discipline: Math.abs(m.scores.THOR - rawAxes.discipline),
-      openness:   Math.abs(m.scores.OPEN - rawAxes.openness),
+      drive:      Math.abs(m.scores.X - rawAxes.drive),
+      cohesion:   Math.abs((m.scores.A + m.scores.H) / 2 - rawAxes.cohesion),
+      discipline: Math.abs(m.scores.C - rawAxes.discipline),
+      openness:   Math.abs(m.scores.O - rawAxes.openness),
     };
 
     const tensionAxes = Object.entries(deviations)

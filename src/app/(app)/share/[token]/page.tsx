@@ -178,12 +178,12 @@ export default async function SharedProfilePage({
 
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
-  const hasTeamRole = "INTE" in hexScores && "TEMP" in hexScores;
+  const hasTeamRole = "H" in hexScores && "X" in hexScores;
   // resolveDisplayRoleScores: exact (nyers evidencia) tie-break — a fő szerep
   // egyezik a többi felülettel; részleges dim-sornál null (nincs becslés
   // kitalált 50-esekből), így a szekció üresen marad.
   const resolvedRole = hasTeamRole
-    ? resolveDisplayRoleScores(null, hexScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>)
+    ? resolveDisplayRoleScores(null, hexScores as Record<"H" | "E" | "X" | "A" | "C" | "O", number>)
     : null;
   const teamRoleTop3 = resolvedRole
     ? getTopRoles(resolvedRole.scores, 3, resolvedRole.exact)
@@ -273,7 +273,7 @@ export default async function SharedProfilePage({
                     className="inline-block rounded px-[7px] py-[2px] text-micro font-semibold"
                     style={{ backgroundColor: tierBg, color: tierColor }}
                   >
-                    {/* Pólus-tudatos címke: RESO alacsony sávja „stabil" (FIX 2). */}
+                    {/* Pólus-tudatos címke: E alacsony sávja „stabil" (FIX 2). */}
                     {poleAwareDimensionLabel(dim.code, dim.score, locale)}
                   </span>
                 </div>

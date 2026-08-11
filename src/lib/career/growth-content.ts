@@ -15,7 +15,7 @@ interface GrowthText {
 }
 
 export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
-  INTE: {
+  H: {
     under: {
       hu: {
         headline: "Kiszámíthatóság és átláthatóság",
@@ -41,7 +41,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       },
     },
   },
-  RESO: {
+  E: {
     under: {
       hu: {
         headline: "Ráhangolódás mások érzéseire",
@@ -67,7 +67,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       },
     },
   },
-  TEMP: {
+  X: {
     under: {
       hu: {
         headline: "Láthatóság és kezdeményezés",
@@ -93,7 +93,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       },
     },
   },
-  ADAP: {
+  A: {
     under: {
       hu: {
         headline: "Együttműködés éles helyzetben",
@@ -119,7 +119,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       },
     },
   },
-  THOR: {
+  C: {
     under: {
       hu: {
         headline: "Következetesség és lezárás",
@@ -145,7 +145,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       },
     },
   },
-  OPEN: {
+  O: {
     under: {
       hu: {
         headline: "Kísérletezés és új nézőpontok",

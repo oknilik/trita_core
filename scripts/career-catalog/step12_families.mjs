@@ -33,7 +33,7 @@ const REVIEW = resolve(ROOT, "docs/product/data/career-families-review.csv");
 
 const WRITE = process.argv.includes("--write");
 
-const DIMS = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+const DIMS = ["H", "E", "X", "A", "C", "O"];
 const AXES = ["people", "variety", "autonomy", "creation", "pace", "structure", "setting"];
 const LETTERS = ["R", "I", "A", "S", "E", "C"];
 

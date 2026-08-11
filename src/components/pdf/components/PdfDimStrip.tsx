@@ -7,7 +7,7 @@ interface Dim {
   name: string;
   shortName: string;
   value: number;
-  /** Belső dimenziókód — a pólus-tudatos címkéhez (RESO alacsony = „stabil"). */
+  /** Belső dimenziókód — a pólus-tudatos címkéhez (E alacsony = „stabil"). */
   code?: string;
 }
 
