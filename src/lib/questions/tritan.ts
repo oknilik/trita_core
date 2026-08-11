@@ -184,21 +184,27 @@ export const tritanConfig: TestConfig = {
         en: "The Agreeableness (A) dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
         hu: "A barátságosság (A) dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Gyengédség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       },
+      // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a skála-LEÍRÁS
+      // fent irodalom-hű marad (az a konstruktum definíciója), a VERDIKT-
+      // szövegek viszont csak azt mondhatják, amit a négy facet mér —
+      // megbocsátás, elnéző ítélet, rugalmasság, türelem. Empátiát a
+      // Barátságosság nem mér, ezért itt nem is ígérünk. Mindkét pólus
+      // kétoldalú: a magasnál ott az ára, az alacsonynál ott a hozadéka.
       insights: {
-        low: "Hajlamos vagy haragot tartani azok iránt, akik megbántottak, kritikusan ítéled meg mások hibáit, makacsan véded az álláspontodat, és provokáció hatására könnyen elveszíted a türelmedet.",
+        low: "Nehezen engedsz el egy sérelmet, kritikusan ítéled meg mások hibáit, kitartóan véded az álláspontodat, és provokáció hatására hamar elfogy a türelmed. Cserébe a nézeteltérést kimondod, nem gyűjtöd — a visszajelzésed őszinte, a határaid láthatóak.",
         mid: "Képes vagy megbocsátani és kompromisszumot kötni, miközben szükség esetén meg tudod védeni az álláspontodat is. Általában megőrzöd a nyugalmad, de komoly provokáció esetén ingerültté válhatsz.",
-        high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet.",
+        high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet. Cserébe a saját sérelmed sokáig kimondatlan maradhat, és könnyen te leszel az, aki mindig enged.",
       },
       insightsByLocale: {
         en: {
-          low: "You tend to hold grudges against those who have wronged you, judge others' shortcomings critically, defend your point of view stubbornly, and feel anger readily in response to mistreatment.",
+          low: "You find it hard to let a wrong go, judge others' shortcomings critically, defend your point of view tenaciously, and run out of patience quickly under provocation. In exchange, you name disagreement instead of storing it — your feedback stays honest and your boundaries are visible.",
           mid: "You are capable of forgiving and compromising while still defending your position when it matters. You generally stay calm, though significant provocation may still stir your temper.",
-          high: "You readily forgive those who have wronged you, judge others' shortcomings with leniency, are willing to adapt flexibly and reach compromises, and rarely lose your temper.",
+          high: "You readily forgive those who have wronged you, judge others' shortcomings with leniency, are willing to adapt flexibly and reach compromises, and rarely lose your temper. In exchange, your own grievance can stay unspoken for a long time, and you can easily become the one who always yields.",
         },
         hu: {
-          low: "Hajlamos vagy haragot tartani azok iránt, akik megbántottak, kritikusan ítéled meg mások hibáit, makacsan véded az álláspontodat, és provokáció hatására könnyen elveszíted a türelmedet.",
+          low: "Nehezen engedsz el egy sérelmet, kritikusan ítéled meg mások hibáit, kitartóan véded az álláspontodat, és provokáció hatására hamar elfogy a türelmed. Cserébe a nézeteltérést kimondod, nem gyűjtöd — a visszajelzésed őszinte, a határaid láthatóak.",
           mid: "Képes vagy megbocsátani és kompromisszumot kötni, miközben szükség esetén meg tudod védeni az álláspontodat is. Általában megőrzöd a nyugalmad, de komoly provokáció esetén ingerültté válhatsz.",
-          high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet.",
+          high: "Könnyen megbocsátasz azoknak, akik megbántottak, elnézően ítéled meg mások gyengéit, hajlandó vagy rugalmasan alkalmazkodni és kompromisszumot kötni, és ritkán veszíted el a türelmedet. Cserébe a saját sérelmed sokáig kimondatlan maradhat, és könnyen te leszel az, aki mindig enged.",
         },
       },
       facets: [

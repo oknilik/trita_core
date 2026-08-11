@@ -28,7 +28,9 @@ export const DOSSIER_OBSERVER_MIN = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE;
  * 1×SEM — ez alatt a delta nem jel, hanem zaj. (A korábbi 1×SEM ~40%-kal
  * alul-becsülte, így a mérési hibán belüli deltákat is „vakfoltként" hozta fel.)
  * BELSŐ küszöb: eldönti, mikor NE emeljünk ki eltérést; a felületen mérési-hiba
- * szám nem jelenik meg (2026-08-11 termék-döntés). A psychometrics-import a
+ * szám nem jelenik meg (2026-08-11 termék-döntés). ÉRTÉKE SZÁRMAZTATOTT, nem
+ * literál: a 2026-08-11-i MÉRT reliabilitás-konstansokkal (r̄ = 0,264,
+ * SD = 16,2 — ld. psychometrics.ts forrás-blokk) 14 → 11 lett. A psychometrics-import a
  * kérdésbankot is behúzza — kliens-komponens futásidőben ne importálja ezt a
  * modult, típusokat `import type`-pal vigyen.
  */

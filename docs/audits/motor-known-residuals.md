@@ -48,16 +48,40 @@ a referencia-minta hiányzik. Amíg nincs pilot:
 
 - **Nem-normált POMP.** A dimenzió-pont `round(((átlag−1)/4)·100)` — 0–100-ra vetített
   nyers átlag, nem percentilis. A norma bedrótozva, kikapcsolva (`ACTIVE_NORM_TABLE = null`).
-- **SEM-konstansok.** A `MEAN_ITEM_R = 0.22` és `SCORE_SD = 20` (`psychometrics.ts`)
-  kézzel beállított priorok. Minden mérési-hiba-alapú belső döntés ezekből ered.
-  (A ± a felületen NEM jelenik meg — ld. 4. pont —, de a belső logikát ezek vezérlik.)
-  **ELSŐ MÉRT VISSZAJELZÉS (2026-08-11, IPIP-referencia, n = 21 681):** a valódi
-  α = .769 (prior-alapú becslés .738), item-korreláció .264 (prior 0,22), szórás
-  **16,2** (prior 20) → **SEM 7,68** a feltételezett 10,23 helyett. A priorunk
-  tehát **25–27%-kal pesszimista**: a különbség-kapuk túl szigorúak, valós
-  eltéréseket fojtunk el (mért √2·SEM ≈ 10,9 vs a jelenlegi `DIFF_MIN_GAP` 14).
-  A szórás a leginkább populáció-függő szám, ezért a kaput a HAZAI pilotig
-  tartjuk — utána ~11 felé mozdítható. Részletek + dimenziónkénti bontás:
+- **SEM-konstansok — a kézi priorok LECSERÉLVE mért értékekre (2026-08-11).**
+  A `MEAN_ITEM_R` és a `SCORE_SD` (`psychometrics.ts`) 2026-08-11-ig kézzel
+  beállított prior volt (**0.22 / 20**). Az IPIP-referencia-futtatás
+  (n = 21 681, a saját pontozó-motorunkkal újrapontozva) megmérte őket, és a
+  tulajdonosi döntés szerint **a mért értékek élesedtek: `MEAN_ITEM_R = 0.264`,
+  `SCORE_SD = 16.2`**. Következmény (rövid forma): α .738 → **.782**,
+  SEM 10,23 → **7,56**, √2·SEM 14,47 → **10,70**, tehát
+  `DIFF_MIN_GAP` **14 → 11** (és vele automatikusan a dossié-kapu, a
+  ComparisonTab/PDF eltérés-kapu, a facet-kapu 22 → **17**, a jelölt-oldali
+  állíthatósági küszöb 28,4 → **21,0**). Iránya: a prior **25–27%-kal
+  pesszimista** volt, azaz eddig **valós, 11–13 pontos különbségeket fojtottunk
+  el**. A számok forrás-jelölve élnek a kódban (a régi priorok is ott maradtak
+  auditálhatóság végett).
+  **Ami ettől NEM oldódott meg — a tétel PILOT-GATED marad:**
+  a minta **nemzetközi, angol nyelvű, önszelektált online** kitöltőké, és a
+  MOSTANI bank-összeállításra (60 rövid item, 10/dimenzió) érvényes; a
+  szórás a leginkább populáció-függő szám. A magyar pilot adata ezeket a
+  konstansokat **le fogja váltani** (és akkor a `DIFF_MIN_GAP` újraszámolandó
+  — az invariáns-teszt `tests/unit/scoring/psychometrics.test.ts` köti).
+  A felületi percentilis **továbbra is kikapcsolva** (`ACTIVE_NORM_TABLE = null`)
+  — ez a minta normának nem használható.
+  **Dimenzió-heterogenitás — TUDATOSAN elhalasztva.** A mért SD 11,9 (O) …
+  19,6 (X), az α .694 (O) … .803 (X), tehát egy globális konstans elvben az
+  O-t túlbünteti, az X-et alulbünteti. A két hatás azonban nagyrészt kioltja
+  egymást (a nagyobb szórású skálák α-ja is magasabb): a per-dimenzió √2·SEM
+  a rövid formán **9,2 (O) … 11,6 (H)**, a globális 10,70 körül — a
+  megjelenítést kapuzó küszöb dimenziónként legfeljebb ±1–2 ponttal térne el.
+  Ezért a **felületi kapuk globálisak maradnak** (egy magyarázható küszöb
+  helyett hat, dimenziónként eltérő „ennyi már eltérés" nem védhető), de a
+  mért per-dimenzió táblák a kódban élnek
+  (`MEASURED_SCORE_SD_BY_DIM`, `MEASURED_MEAN_ITEM_R_BY_DIM`), és a
+  `dimStandardError` / `diffStandardError` opcionális dimenzió-argumentummal
+  tud velük számolni (ismeretlen kódnál globális fallback, NaN nem keletkezik).
+  Újraértékelés a pilot után. Részletek + teljes tábla:
   `docs/research/ipip-reference-2026-08.md`.
 - **Kettős pólus/tier-küszöb.** 65/35 (`profile-engine`, narratíva-logika) vs 70/40
   (`dimension-utils`, vizuális tier). TUDATOSAN külön mechanizmusok; a közös vágás és
@@ -162,7 +186,8 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   a kártya magától eltűnik (a hiányzó dimenzió-kulcs kezelése rendezve);
   örökség-sorok továbbra is mutatják a valós, mért értéket.
   **Következmény:** `DIFF_MIN_GAP` 15 → 14 — a küszöb a bankból származik,
-  több item = kisebb mérési hiba = kisebb állítható különbség.
+  több item = kisebb mérési hiba = kisebb állítható különbség. (Még aznap
+  14 → **11**, amikor a kézi SEM-priorok helyére mért értékek kerültek — §1.)
 - **„Kollektív minta" minimum-n (v9).** `PRESSURE_MIN_COUNT = 2` + ≥50% arány:
   3 fős csapatban 2 ember már „csapat-szintű nyomás-mintázatot" publikál a
   riportba. Döntés: minimum-n emelése (pl. 3) vagy elfogadott maradék.
@@ -227,7 +252,8 @@ eltávolított a UI-ról (dimenzió-szint is).
 
 - A **mérési-hiba fegyelem a LOGIKÁBAN él**, nem a kijelzőn: a különbség-kapuk a KÉT pont
   KÜLÖNBSÉGÉNEK hibáját használják (`DIFF_MIN_GAP = round(√2·SEM)` — a bankból
-  származtatva, a 2026-08-11-i forma-kiegyensúlyozás óta 14,
+  és a MÉRT reliabilitás-konstansokból származtatva, 2026-08-11 óta **11**
+  (a forma-kiegyensúlyozás 15 → 14, a mért SEM 14 → 11; §1),
   `diffStandardError`), nem az 1×SEM-et — így ott NEM állítunk sorrendet/címkét, ahol a
   delta a hibán belül van (a próza is főnév-only / hedge-elt). Ez szám nélkül történik.
 - A felhasználónak szóló **magyarázatot** (mit jelent a mérési hiba, miért nem
@@ -251,12 +277,15 @@ eltávolított a UI-ról (dimenzió-szint is).
     testvér-felületről eltűnt; mindkét pólus kétoldalú prózát kapott. Maradék:
     a `TENSION_PAIRS` `risk`-flag szemantikája (megjelenítés-szinten kapuzva).
   - **Altruizmus-skála:** lezárva — ki a rövid formából; a forma 60 item maradt,
-    de dimenziónként pontosan 10. Következmény: `DIFF_MIN_GAP` 15 → 14.
+    de dimenziónként pontosan 10. Következmény: `DIFF_MIN_GAP` 15 → 14
+    (majd a mért SEM-konstansokkal → 11).
     Mellékesen javítva egy valós törés: a régi item-készlettel érkező kitöltés
     (vendég-draft, futó observer-link) 400-at kapott volna — örökség-készlet
     elfogadás került be.
   - **IPIP-referencia lefuttatva valódi adaton** (n = 21 681, GitHub-tükör):
-    először van mért α/szórás/SEM a kézi priorok helyett. Beírva a §1-be.
+    először van mért α/szórás/SEM a kézi priorok helyett. Beírva a §1-be —
+    és 2026-08-11-i tulajdonosi döntéssel ÉLESÍTVE is (`MEAN_ITEM_R` 0.22 →
+    0.264, `SCORE_SD` 20 → 16.2, `DIFF_MIN_GAP` 14 → 11).
     A tábla BELSŐ kalibrációra való, `ACTIVE_NORM_TABLE`-be nem kerül.
   - **Új nyitott tétel:** empátia-szókincs a Barátságosságnál (§2).
 

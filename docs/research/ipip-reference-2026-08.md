@@ -9,6 +9,34 @@
 > Az alábbi táblák **aggregátumok**. A nyers adat a gitignore-olt
 > `scripts/research/.data/` alatt marad, és SOHA nem kerül a repóba.
 
+## Mit vettünk át ebből a kódba (2026-08-11, tulajdonosi döntés)
+
+> „Az IPIP-ből használjuk a mértet, majd átállunk a pilot után a sajátra."
+
+| konstans | régi (kézi prior) | ÚJ (mért, él) | hol |
+|---|---|---|---|
+| `MEAN_ITEM_R` | 0.22 | **0.264** | `src/lib/psychometrics.ts` |
+| `SCORE_SD` | 20 | **16.2** | `src/lib/psychometrics.ts` |
+| `DIFF_MIN_GAP` | 14 | **11** | `src/lib/personality-type.ts` |
+
+Következmény (rövid forma): α .738 → .782 · SEM 10,23 → **7,56** ·
+√2·SEM 14,47 → **10,70** → kerekítve **11**. Automatikusan követi:
+`DOSSIER_GAP_MIN_DELTA` 14 → 11, a facet-eltérés küszöb 22 → **17**, a
+jelölt-oldali állíthatósági küszöb (1,96·SE) 28,4 → **21,0**.
+
+**Amit NEM vettünk át:** az `ACTIVE_NORM_TABLE` érintetlen (a felületi
+percentilis továbbra is kikapcsolva), és a per-dimenzió SEM sem élesedett
+kapuként — a mért per-dimenzió táblák a kódban vannak
+(`MEASURED_SCORE_SD_BY_DIM`, `MEASURED_MEAN_ITEM_R_BY_DIM`, opcionális
+argumentum a `dimStandardError`/`diffStandardError`-on), de a felületi kapuk
+globálisak maradnak: a per-dimenzió √2·SEM sáv szűk (9,2 O … 11,6 H a
+globális 10,70 körül), mert a nagyobb szórású skálák α-ja is magasabb.
+Indoklás: `docs/audits/motor-known-residuals.md` §1.
+
+**A magyar pilot ezeket a konstansokat leváltja** — az itteni minta
+nemzetközi, angol nyelvű, önszelektált, és a MOSTANI bank-összeállításra
+érvényes. A drift-őr: `tests/unit/scoring/psychometrics.test.ts`.
+
 ## Mi ez, és mire szabad használni
 
 A TSFI kérdésbank 92 fő-itemje az IPIP–HEXACO poolból származik
@@ -23,8 +51,9 @@ Ebből következően ez KÖZELÍTŐ referencia, ami
 
 - **CSAK BELSŐ KALIBRÁCIÓRA való** (termékdöntés, 2026-08-11):
   küszöb-ellenőrzés (40/70 és 35/65 sávhatárok kihasználtsága),
-  Cronbach-α és SEM-priorok (`src/lib/psychometrics.ts`:
-  `MEAN_ITEM_R=0.22`, `SCORE_SD=20`) összevetése mért adattal,
+  Cronbach-α és SEM-konstansok (`src/lib/psychometrics.ts`; a futtatáskor
+  még kézi priorok: `MEAN_ITEM_R=0.22`, `SCORE_SD=20`) mért adattal való
+  összevetése — ezek azóta a mért értékekre cserélve,
   eloszlás-alak (decilisek);
 - **NEM kerülhet a `src/lib/norms.ts` `ACTIVE_NORM_TABLE`-jébe** — a
   felületi percentilis kizárólag a saját pilot normáiból élesíthető
@@ -211,7 +240,12 @@ Mivel `SEM = SD·√(1−α)`, a kettő szorzódik: a mért SEM a rövid formán
 **7.68** a 10.23-as priorral szemben (**−25%**), a teljesen **6.22** a
 8.52-vel szemben (**−27%**).
 
-### Konkrét konstans-javaslatok (CSAK JAVASLAT — kód nem módosult)
+### Konkrét konstans-javaslatok
+
+> **Utólag (2026-08-11): a javaslat ÉLESEDETT** — a „most" oszlop a
+> döntés ELŐTTI állapotot írja le. A kód mai értékei a fenti „Mit vettünk át"
+> szakaszban vannak (`MEAN_ITEM_R` 0.264 · `SCORE_SD` 16.2 ·
+> `DIFF_MIN_GAP` 11).
 
 | Konstans | hol | most | mért evidencia | irány |
 |---|---|---|---|---|
@@ -244,8 +278,11 @@ zónát" nyitna meg; ez pont az a tartomány, ahol a legtöbb valós profil
 top-2 rése esik (a persona-fixture-öket is emiatt kellett 86/68-ra
 tolni, `scripts/personas.shared.ts`).
 
-**Ajánlott lépés (nem most, hanem a pilot után):** a `DIFF_MIN_GAP`
-maradjon a jelenlegi, prior-alapú **14**-en addig, amíg a saját pilot
+**Ajánlott lépés — FELÜLÍRVA (2026-08-11 tulajdonosi döntés: a mért
+értékek élesedtek, `DIFF_MIN_GAP` = 11; az alábbi bekezdés a döntés előtti
+óvatosabb javaslat, a benne leírt populáció-függőségi kockázat viszont
+továbbra is áll — ezért írja majd felül a pilot).** Az eredeti javaslat: a
+`DIFF_MIN_GAP` maradjon a prior-alapú **14**-en addig, amíg a saját pilot
 SD-je meg nem van — a SD a leginkább populáció-függő szám, és
 önszelektált online mintából átvenni éppolyan hiba lenne, mint normát
 átvenni belőle. Ha viszont a pilot SD is 16 körül jön ki, a védhető

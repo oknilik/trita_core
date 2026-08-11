@@ -8,11 +8,17 @@
 import type { OccupationFit } from "./types";
 
 // A közös mag re-exportja — minden meglévő career-oldali import változatlan.
+// FIGYELEM (2026-08-11): a MEAN_ITEM_R / SCORE_SD már nem kézi prior, hanem
+// MÉRT érték (r̄ = 0,264, SD = 16,2; IPIP–HEXACO nyílt adat, n = 21 681) —
+// a karrier-motor minden SE-je (fitStandardError, klaszterezés) ezzel ~25%-kal
+// szűkebb sávot ad. Forrás és korlátok: a psychometrics.ts forrás-blokkja.
 export {
   ITEMS_PER_DIM,
   ITEMS_PER_FACET,
   MEAN_ITEM_R,
   SCORE_SD,
+  MEASURED_SCORE_SD_BY_DIM,
+  MEASURED_MEAN_ITEM_R_BY_DIM,
   alphaFromItems,
   dimStandardError,
   facetStandardError,

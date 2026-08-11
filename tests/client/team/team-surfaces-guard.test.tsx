@@ -118,6 +118,40 @@ describe("TeamInsights", () => {
     // A kivezetett erény-állítás nem jelenhet meg a kártyán.
     expect(document.body.textContent).not.toContain("Empatikus");
   });
+
+  // 2026-08-11, a valencia-döntés kiterjesztése a Barátságosságra: a skála
+  // facetjei a Megbocsátás · Gyengédség · Rugalmasság · Türelem — empátiát
+  // NEM mér, ezért a magas A-átlaghoz nem tapadhat empátia-ígéret, és az
+  // alacsony sem keretezhető puszta hiányként (mindkét sáv kétoldalú).
+  const ADAP_HIGH_ROWS = [
+    { memberId: "m1", displayName: "Anna", testType: "TRITAN", scores: { H: 40, E: 45, X: 44, A: 85, C: 50, O: 42 } },
+    { memberId: "m2", displayName: "Béla", testType: "TRITAN", scores: { H: 42, E: 44, X: 45, A: 86, C: 51, O: 43 } },
+    { memberId: "m3", displayName: "Csaba", testType: "TRITAN", scores: { H: 41, E: 46, X: 43, A: 84, C: 49, O: 44 } },
+  ];
+
+  const ADAP_LOW_ROWS = [
+    { memberId: "m1", displayName: "Anna", testType: "TRITAN", scores: { H: 70, E: 55, X: 65, A: 22, C: 68, O: 66 } },
+    { memberId: "m2", displayName: "Béla", testType: "TRITAN", scores: { H: 71, E: 54, X: 66, A: 23, C: 69, O: 67 } },
+    { memberId: "m3", displayName: "Csaba", testType: "TRITAN", scores: { H: 69, E: 56, X: 64, A: 21, C: 67, O: 65 } },
+  ];
+
+  it("a magas Barátságosság-átlaghoz nem tapad empátia-ígéret", () => {
+    render(<TeamInsights rows={ADAP_HIGH_ROWS} dims={DIMS} isHu />);
+
+    const text = document.body.textContent ?? "";
+    expect(/empát|empat/i.test(text)).toBe(false);
+    // A kártya a mért facetekhez igazodó szókincset használja.
+    expect(text).toContain("kompromisszum");
+  });
+
+  it("az alacsony Barátságosság kártyája kétoldalú (hozadék ÉS ár)", () => {
+    render(<TeamInsights rows={ADAP_LOW_ROWS} dims={DIMS} isHu />);
+
+    const text = document.body.textContent ?? "";
+    expect(/empát|empat/i.test(text)).toBe(false);
+    // Nem hiányként keretez: ott a hozadék („őszinte") és az ára („Cserébe").
+    expect(text).toContain("Cserébe");
+  });
 });
 
 // ── TeamIntelligence (erőforrás-térkép chipek) ──────────────────────────────

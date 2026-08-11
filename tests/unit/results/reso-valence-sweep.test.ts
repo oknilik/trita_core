@@ -38,6 +38,7 @@ import {
   PERSONALITY_TYPE_PARTS,
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
+import { tritanConfig } from "@/lib/questions/tritan";
 
 // ─────────────────────────────────────────────────────────────────────
 // Emocionalitás (E) valencia-söprés — 2026-08-11-i termékdöntés
@@ -288,5 +289,158 @@ test("hőtérkép: az Emocionalitás skála-leírása a mért facetekhez igazodi
   assert.ok(
     !/hu: "Érzelmi érzékenység, szorongásra való hajlam, empátia mások iránt"/.test(source),
     "visszatért az „empátia mások iránt” a hőtérkép skála-leírásába",
+  );
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// 6. Barátságosság (A) — ugyanaz az elv, kiterjesztve (2026-08-11)
+//
+// Az A facetjei: Megbocsátás · Gyengédség · Rugalmasság · Türelem. A skála
+// mások hibáival szembeni toleranciát, enyhe ítéletet, kompromisszum-
+// készséget és indulat-kontrollt mér — empátiát NEM. Ezért a magas A-hoz
+// nem tapadhat empátia-ígéret, az alacsony A pedig nem keretezhető
+// „empátia-hiányként" vagy hidegségként: az alacsony pólus hozadéka az
+// őszinte visszajelzés és a határozott képviselet.
+//
+// A skála-LEÍRÁS (tritan.ts description) irodalom-hű maradhat — az a
+// konstruktum definíciója. A VERDIKT-szövegekre (insights + minden felületi
+// térkép) fut a guard.
+// ─────────────────────────────────────────────────────────────────────
+
+/** A-hoz tartozó, felületre kimenő szövegek — minden térképből. */
+function adapCopyStrings(): { where: string; text: string }[] {
+  const out: { where: string; text: string }[] = [];
+  const push = (where: string, value: unknown) => {
+    if (typeof value === "string") out.push({ where, text: value });
+    else if (value && typeof value === "object") {
+      for (const [k, v] of Object.entries(value)) push(`${where}.${k}`, v);
+    }
+  };
+
+  push("DIMENSION_STRENGTH_VERBS.A", DIMENSION_STRENGTH_VERBS.A);
+  push("DIMENSION_WEAK_VERBS.A", DIMENSION_WEAK_VERBS.A);
+  push("DIMENSION_STRENGTH_DESCS.A", DIMENSION_STRENGTH_DESCS.A);
+  push("DIMENSION_WATCH_DESCS.A", DIMENSION_WATCH_DESCS.A);
+  push("ARCHETYPE_STORY_NOUN.A", ARCHETYPE_STORY_NOUN.A);
+  push("ARCHETYPE_STORY_ADJ.A", ARCHETYPE_STORY_ADJ.A);
+  push("PERSONALITY_TYPE_PARTS.A", PERSONALITY_TYPE_PARTS.A);
+  push("DIMENSION_GROWTH_TIPS.A", DIMENSION_GROWTH_TIPS.A);
+
+  for (const key of ["A_high", "A_low"]) {
+    push(`SOLO_DIM_NARRATIVES.${key}`, SOLO_DIM_NARRATIVES[key]);
+    push(`SOLO_DIM_SUMMARIES.${key}`, SOLO_DIM_SUMMARIES[key]);
+    push(`SOLO_DIM_PRESSURE.${key}`, SOLO_DIM_PRESSURE[key]);
+    push(`SOLO_DIM_ROLE_MODIFIERS.${key}`, SOLO_DIM_ROLE_MODIFIERS[key]);
+    push(`SOLO_DIM_ROLE_TEXTS.${key}`, SOLO_DIM_ROLE_TEXTS[key]);
+    push(`COLLAB_CLICK.${key}`, COLLAB_CLICK[key]);
+    push(`COLLAB_FRICTION.${key}`, COLLAB_FRICTION[key]);
+    push(`COLLAB_NEEDS.${key}`, COLLAB_NEEDS[key]);
+    push(`SOLO_ROLE_TAGS.hu.${key}`, SOLO_ROLE_TAGS.hu?.[key]);
+    push(`SOLO_ROLE_TAGS.en.${key}`, SOLO_ROLE_TAGS.en?.[key]);
+  }
+
+  // Csapat-felület (HU-only szövegek).
+  out.push({ where: "team-insights.getStrengthInsight", text: getStrengthInsight("A") });
+  out.push({ where: "team-insights.getWatchAreaInsight", text: getWatchAreaInsight("A") });
+  out.push({ where: "team-insights.getDiversityInsight", text: getDiversityInsight("A") });
+
+  // Interakció-atomok: az A-t érintő azonos-dimenziós párok.
+  for (const atom of SAME_DIMENSION_ATOMS) {
+    if (atom.a.dim !== "A" && atom.b.dim !== "A") continue;
+    push(`interaction-atoms.${atom.id}.view`, atom.view);
+    if (atom.viewB) push(`interaction-atoms.${atom.id}.viewB`, atom.viewB);
+  }
+
+  // Kérdésbank: az akkordeon verdikt-hármasa (low/mid/high) — a description
+  // SZÁNDÉKOSAN kimarad (irodalom-hű konstruktum-definíció).
+  const adapDim = tritanConfig.dimensions.find((d) => d.code === "A");
+  assert.ok(adapDim, "nincs A dimenzió a kérdésbankban");
+  push("tritan.A.insights", adapDim.insights);
+  push("tritan.A.insightsByLocale", adapDim.insightsByLocale);
+
+  return out;
+}
+
+test("A-szövegek: sehol nem ígérünk empátiát (2026-08-11 kiterjesztés)", () => {
+  const offenders = adapCopyStrings().filter(({ text }) => EMPATHY_RE.test(text));
+  assert.deepEqual(
+    offenders.map((o) => `${o.where}: ${o.text}`),
+    [],
+    "empátia-keretezés került az A-szövegekbe — a skála (Megbocsátás/Gyengédség/Rugalmasság/Türelem) ezt nem méri",
+  );
+});
+
+test("A-szövegek: HU és EN ugyanannyi tételt tartalmaz (nyelvi drift-őr)", () => {
+  const byLang = adapCopyStrings().reduce(
+    (acc, { where }) => {
+      if (where.endsWith(".hu") || where.includes(".hu.")) acc.hu += 1;
+      if (where.endsWith(".en") || where.includes(".en.")) acc.en += 1;
+      return acc;
+    },
+    { hu: 0, en: 0 },
+  );
+  assert.equal(byLang.hu, byLang.en, "HU/EN paritás sérült az A-térképekben");
+});
+
+/** A-specifikus hiány-keretezés: „hideg", „érzéketlen", „nem törődik". */
+const A_LOW_DEFICIT_RE =
+  /hideg(?!en hagy)|érzéketlen|nem törődik|rideg|\bcold\b|uncaring|callous|insensitive/i;
+
+test("A alacsony pólus: nincs hidegség-/érzéketlenség-keretezés", () => {
+  const offenders = adapCopyStrings().filter(
+    ({ where, text }) =>
+      (where.includes("A_low") ||
+        where.includes("WEAK") ||
+        where.includes("WATCH") ||
+        where.includes("insights")) &&
+      A_LOW_DEFICIT_RE.test(text),
+  );
+  assert.deepEqual(
+    offenders.map((o) => `${o.where}: ${o.text}`),
+    [],
+    "az alacsony A hiányként (hidegség/érzéketlenség) van keretezve",
+  );
+});
+
+test("A akkordeon-verdikt: mindkét pólus kétoldalú (hozadék ÉS ár)", () => {
+  const adapDim = tritanConfig.dimensions.find((d) => d.code === "A");
+  const byLocale = adapDim?.insightsByLocale;
+  assert.ok(byLocale, "nincs lokalizált A insight-hármas");
+  const both = /Cserébe|In exchange/;
+  for (const locale of ["hu", "en"] as const) {
+    const bands = byLocale[locale];
+    assert.ok(bands, `hiányzik a(z) ${locale} A insight-hármas`);
+    for (const band of ["low", "high"] as const) {
+      assert.ok(
+        both.test(bands[band]),
+        `tritan.A.insightsByLocale.${locale}.${band}: hiányzik a másik oldal — "${bands[band]}"`,
+      );
+    }
+  }
+});
+
+test("csapat-felület: az A-sáv szövegeiben nincs empátia-ígéret", () => {
+  // A sor-kommentek (köztük a döntés-indoklás, ami idézi a kivezetett
+  // mondatot) nem mennek ki a felületre — a guard a kód-törzsre néz.
+  const code = read("src/components/manager/TeamInsights.tsx").replace(/\/\/.*$/gm, "");
+  assert.ok(
+    !/erős harmónia és empátia|strong harmony and empathy/.test(code),
+    "visszatért az „erős harmónia és empátia” állítás a magas A-csapatátlaghoz",
+  );
+});
+
+test("hőtérkép: a Barátságosság skála-leírása a mért facetekhez igazodik", () => {
+  const source = read("src/components/manager/TeamHeatmap.tsx");
+  const adapBlock = source.slice(source.indexOf("  A: {"), source.indexOf("  C: {"));
+  assert.ok(adapBlock.length > 0, "nem található az A skála-leírás a hőtérképen");
+  assert.ok(!EMPATHY_RE.test(adapBlock), "empátia-keretezés került az A skála-leírásába");
+});
+
+test("mintázat-katalógus: a kohézió-tengely (A+H) nem empátiaként íródik le", () => {
+  const source = read("src/lib/pattern-data.ts");
+  const code = source.replace(/\/\/.*$/gm, "");
+  assert.ok(
+    !EMPATHY_RE.test(code),
+    "empátia-keretezés maradt a mintázat-katalógusban (a kohézió-tengely A+H átlag, nem empátia-mérés)",
   );
 });

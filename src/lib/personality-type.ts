@@ -126,14 +126,20 @@ export function personalityAdjective(
  * kérdésbankot húzná a bundle-be. Drift ellen invariáns-teszt:
  * tests/unit/scoring/psychometrics.test.ts.
  *
- * 15 → 14 (2026-08-11): a kiegészítő altruizmus-skála két itemje kikerült a
- * rövid formából, és helyettük két FŐ-dimenziós item lépett be, így a hat
- * dimenzió 58 helyett 60 itemen nyugszik (9,67 → 10 item/dimenzió).
- * Több item = magasabb α (0,7317 → 0,7383) = kisebb SEM (10,36 → 10,23),
- * tehát SE(diff) 14,65 → 14,47. A kapu nem „lazult": pontosan annyival lett
- * szűkebb, amennyivel a mérés pontosabb.
+ * 15 → 14 (2026-08-11, bank-átsúlyozás): a kiegészítő altruizmus-skála két
+ * itemje kikerült a rövid formából, helyettük két FŐ-dimenziós item lépett be
+ * (9,67 → 10 item/dimenzió), így α 0,7317 → 0,7383, SEM 10,36 → 10,23.
+ *
+ * 14 → 11 (2026-08-11, MÉRT reliabilitás): a psychometrics.ts kézi priorjai
+ * (r̄ = 0,22, SD = 20) helyére mért értékek kerültek (r̄ = 0,264, SD = 16,2 —
+ * IPIP–HEXACO nyílt adat, n = 21 681, ld. docs/research/ipip-reference-2026-08.md
+ * és a psychometrics.ts forrás-blokkja). A prior ~25%-kal pesszimista volt:
+ * α 0,7383 → 0,7820, SEM 10,23 → 7,56, SE(diff) 14,47 → 10,70 → kerekítve 11.
+ * A kapu nem „lazult": eddig a 11-13 pontos, VALÓS különbségeket is elnyeltük.
+ * A minta nemzetközi, angol nyelvű, önszelektált — közelítő referencia; a
+ * magyar pilot adata ezt a számot felülírja.
  */
-export const DIFF_MIN_GAP = 14;
+export const DIFF_MIN_GAP = 11;
 
 /** @deprecated Használd a DIFF_MIN_GAP-et — azonos küszöb (√2·SEM). */
 export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;

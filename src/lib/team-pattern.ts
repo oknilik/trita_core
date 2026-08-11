@@ -405,7 +405,11 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "A struktúra rugalmatlansággá válhat, ha a folyamatok túlterheltek",
     ],
     communicationStyle:
-      "Gyors, közvetlen, de empatikus. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
+      // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga — az
+      // „empatikus" ezen a tengelyen ugyanaz a túl-ígéret, amit a pattern-data
+      // két sorából is kivezettünk (2026-08-11): a Barátságosság türelmet és
+      // megbocsátást mér, nem empátiát.
+      "Gyors, közvetlen, de türelmes. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
     idealTasks:
       "Új termékek fejlesztése, innovációs sprint, stratégiai pivot — ahol egyszerre kell kreativitás és megvalósítási képesség.",
     riskSituations:

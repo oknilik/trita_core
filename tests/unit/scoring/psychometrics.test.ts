@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import {
   ITEMS_PER_DIM,
   ITEMS_PER_FACET,
+  MEAN_ITEM_R,
+  SCORE_SD,
   alphaFromItems,
   bandFor,
   dimStandardError,
@@ -69,13 +71,26 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.ok(facetStandardError("full") > dimStandardError("full"));
   });
 
-  it("a rövid forma kerekített SEM-je 10 (egy pont hibája)", () => {
-    assert.equal(Math.round(dimStandardError("short")), 10);
+  it("a mért reliabilitás-konstansok élnek (nem a régi kézi priorok)", () => {
+    // 2026-08-11: a kézi priorok (r̄ = 0,22, SD = 20) helyére MÉRT értékek
+    // kerültek (IPIP–HEXACO nyílt adat, n = 21 681 — a forrás és a korlátok a
+    // psychometrics.ts forrás-blokkjában). Ez a teszt köti a számokat, hogy a
+    // visszaállásuk NE csendben történjen: a pilot-adat felülírhatja őket, de
+    // csak ezzel a teszttel együtt.
+    assert.equal(MEAN_ITEM_R, 0.264);
+    assert.equal(SCORE_SD, 16.2);
+    assert.notEqual(MEAN_ITEM_R, 0.22);
+    assert.notEqual(SCORE_SD, 20);
   });
 
-  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~14,47)", () => {
+  it("a rövid forma kerekített SEM-je 8 (egy pont hibája)", () => {
+    // Mért konstansokkal 7,56 (a kézi priorokkal 10,23 volt).
+    assert.equal(Math.round(dimStandardError("short")), 8);
+  });
+
+  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~10,70)", () => {
     assert.equal(diffStandardError("short"), Math.SQRT2 * dimStandardError("short"));
-    assert.equal(Math.round(diffStandardError("short")), 14);
+    assert.equal(Math.round(diffStandardError("short")), 11);
     assert.ok(diffStandardError("short") > dimStandardError("short"));
   });
 
@@ -83,16 +98,49 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     // A literál a kliens-bundle miatt nem importálhatja a bankot — ez a teszt
     // köti a pszichometriai maghoz (drift itt bukik el). A sorrend-kapu KÉT
     // pont különbségét méri, ezért √2·SEM, nem 1×SEM.
-    // 2026-08-11: 15 → 14, mert a rövid forma 58 helyett 60 FŐ-dimenziós
+    // 2026-08-11 (a): 15 → 14 — a rövid forma 58 helyett 60 FŐ-dimenziós
     // itemen nyugszik (az altruizmus-skála kikerült, két fő item belépett).
+    // 2026-08-11 (b): 14 → 11 — a kézi SEM-priorok helyére MÉRT értékek
+    // kerültek (r̄ 0,22 → 0,264, SD 20 → 16,2), a prior ~25%-kal pesszimista volt.
     assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
-    assert.equal(DIFF_MIN_GAP, 14);
+    assert.equal(DIFF_MIN_GAP, 11);
     // A régi alias ugyanarra az értékre mutat (visszafelé kompatibilitás).
     assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });
 
+  it("per-dimenzió SEM: mért SD + mért r̄, ismeretlen kódnál globális fallback", () => {
+    // A felületi kapuk GLOBÁLIS értéket használnak (ld. a döntés indoklását a
+    // dimStandardError doc-blokkjában); ez az ág belső elemzésre/pilot-
+    // kalibrációra él. A lényeg: NaN-t soha nem adhat.
+    for (const code of HEXACO_ORDER) {
+      const se = dimStandardError("short", code);
+      assert.ok(Number.isFinite(se) && se > 0);
+      assert.ok(dimStandardError("full", code) < se);
+    }
+    // Az O a legpontosabb, a H a legzajosabb skála a mért adaton.
+    assert.equal(Math.round(dimStandardError("short", "O") * 100) / 100, 6.48);
+    assert.equal(Math.round(dimStandardError("short", "H") * 100) / 100, 8.19);
+    // A per-dimenzió √2·SEM sáv szűk (9,2…11,6) — ezért maradt egy globális kapu.
+    const gaps = HEXACO_ORDER.map((c) => diffStandardError("short", c));
+    assert.ok(Math.min(...gaps) > 9 && Math.max(...gaps) < 12);
+    // Ismeretlen / hiányzó kód → globális érték, nem NaN.
+    assert.equal(dimStandardError("short", "I"), dimStandardError("short"));
+    assert.equal(dimStandardError("short", "nope"), dimStandardError("short"));
+    assert.equal(diffStandardError("short", "I"), diffStandardError("short"));
+  });
+
   it("DOSSIER_GAP_MIN_DELTA = round(√2·SEM short) — önkép–külső kép különbség", () => {
     assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
+    assert.equal(DOSSIER_GAP_MIN_DELTA, 11);
+  });
+
+  it("facet-szintű eltérés-küszöb (√2·facet-SEM, rövid) = 17", () => {
+    // A profil-oldal ezt adja propként a facet-összevetésnek. Mért
+    // konstansokkal 16,64 → 17 (a kézi priorokkal 21,66 → 22 volt): a
+    // facet-„eltérés" jelzés továbbra is ritkán tüzel, de már nem
+    // irreálisan ritkán. Drift-őr: a profil-oldal számítása itt bukik el.
+    assert.equal(Math.round(Math.SQRT2 * facetStandardError("short")), 17);
+    assert.equal(Math.round(Math.SQRT2 * facetStandardError("full")), 15);
   });
 
   it("sáv: a pontszám körül szimmetrikus, 0-100 közé vágva", () => {

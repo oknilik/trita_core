@@ -79,18 +79,23 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "More introverted team — deep focus and independent work are strengths. Proactive communication may need intentional development.",
     },
   },
+  // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a Barátságosság
+  // facetjei a Megbocsátás · Gyengédség · Rugalmasság · Türelem — a skála NEM
+  // mér empátiát, ezért a magas csapatátlaghoz nem tapadhat empátia-ígéret
+  // („erős harmónia és empátia"). Mindkét pólus kétoldalú: a magas engedékeny
+  // ÉS elfedi a vitát, az alacsony élesebb ÉS hamarabb kimondja a bajt.
   A: {
     high: {
-      hu: "Együttműködő, konfliktusmentes csapat — erős harmónia és empátia. Érdemes a direkt visszajelzési kultúrát is tudatosan erősíteni.",
-      en: "Cooperative, low-conflict team — strong harmony and empathy. Intentionally building a direct feedback culture is also worthwhile.",
+      hu: "Türelmes, alacsony konfliktusszintű csapat — elnézőek egymás hibáival, könnyen kötnek kompromisszumot. Cserébe a nézeteltérés ritkán kerül asztalra: érdemes a direkt visszajelzési kultúrát tudatosan erősíteni.",
+      en: "Patient, low-conflict team — lenient with each other's mistakes and quick to compromise. In exchange, disagreement rarely reaches the table: intentionally building a direct feedback culture is worthwhile.",
     },
     mid: {
-      hu: "Egészséges assertivitás és együttműködés aránya — a csapat képes mind az egyenes kommunikációra, mind a harmóniára.",
-      en: "Healthy balance of assertiveness and cooperation — the team can handle both direct communication and harmony.",
+      hu: "Egészséges assertivitás és engedékenység aránya — a csapat képes az egyenes vitára és a kompromisszumra is.",
+      en: "Healthy balance of assertiveness and accommodation — the team can handle both straight debate and compromise.",
     },
     low: {
-      hu: "Direkt, magabiztos csapat — gyors döntéshozatal és határozottság jellemzi. A konfliktuskezelési kultúrára figyelni érdemes.",
-      en: "Direct, assertive team — characterized by fast decision-making and confidence. Conflict management culture deserves attention.",
+      hu: "Direkt, vitaképes csapat — a problémát hamar kimondják, a döntés gyors, a visszajelzés őszinte. Cserébe a viták gyorsabban éleződnek: strukturált vitaformátum és tiszta döntési szabály segít.",
+      en: "Direct, debate-ready team — problems get named early, decisions come fast, feedback stays honest. In exchange, debates sharpen faster: a structured discussion format and clear decision rules help.",
     },
   },
   C: {

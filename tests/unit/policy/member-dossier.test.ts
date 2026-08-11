@@ -209,8 +209,9 @@ describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
   it("a default küszöb a KÜLÖNBSÉG mérési hibája: √2·SEM", () => {
     // = Math.round(diffStandardError("short")): az önkép és a külső (observer)
     // átlag KÉT független mérés, a különbségük hibája √2·SEM — a korábbi
-    // 1×SEM=10 ~40%-kal alul-becsülte, így a hibán belüli deltákat is felhozta.
-    // A SZÁMÉRTÉK a bankból származik (rövid forma item/dimenzió), ezért itt
+    // 1×SEM ~40%-kal alul-becsülte, így a hibán belüli deltákat is felhozta.
+    // A SZÁMÉRTÉK a bankból (rövid forma item/dimenzió) ÉS a mért
+    // reliabilitás-konstansokból származik (2026-08-11 óta 14 → 11), ezért itt
     // nem literálhoz kötjük — a numerikus invariáns helye:
     // tests/unit/scoring/psychometrics.test.ts.
     assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
@@ -221,7 +222,7 @@ describe("topGapDims — rangsor + SEM-alapú küszöb", () => {
     const self: Record<string, number> = { X: 50, E: 50, H: 50, C: 50, A: 50, O: 50 };
     const obs: Record<string, number> = { X: 53, E: 42, H: 70, C: 46, A: 65, O: 51 };
     // deltak: X +3(kihagy), E -8(kihagy), H +20 (bekerül),
-    // C -4(kihagy), A +15 (bekerül — pont a küszöbön, >=), O +1(kihagy)
+    // C -4(kihagy), A +15 (bekerül), O +1(kihagy)
     const gaps = topGapDims(computeDimComparisons(HEXACO_ORDER, self, obs));
     assert.deepEqual(gaps.map((d) => d.code), ["H", "A"]);
   });

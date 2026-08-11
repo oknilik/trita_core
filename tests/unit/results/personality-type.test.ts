@@ -20,7 +20,7 @@ const dims = (scores: Record<string, number>) =>
 
 describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
   it("közeli 2-3. helyezett (gap < küszöb) → csak főnév, nagybetűsítve", () => {
-    // O(80) domináns, X(60) vs C(55): gap 5 < 10 → a melléknév bizonytalan.
+    // O(80) domináns, X(60) vs C(55): gap 5 < küszöb → a melléknév bizonytalan.
     const scores = dims({ O: 80, X: 60, C: 55, A: 30, E: 25, H: 20 });
     assert.equal(resolvePersonalityTypeFromScores(scores, "hu"), "Újító");
     assert.equal(resolvePersonalityTypeFromScores(scores, "en"), "Innovator");
@@ -110,11 +110,12 @@ describe("resolvePersonalityTypeFromScores — melléknév-óvatosság", () => {
 
   it("a küszöb a KÜLÖNBSÉG mérési hibájából jön (√2·SEM) — ld. psychometrics invariáns-teszt", () => {
     // Két dimenzió KÜLÖNBSÉGE dönti el a sorrendet, ezért a kapu √2·SEM,
-    // nem 1×SEM (≈10). A KONKRÉT érték a bankból jön (a rövid forma
-    // item-számából), ezért itt NEM literálhoz kötjük — a korábbi kézi 15
-    // pontosan attól avult el, hogy a bank változott (2026-08-11: 60
-    // fő-dimenziós item → 14). A számszerű invariáns helye:
-    // tests/unit/scoring/psychometrics.test.ts (ott a bankból számol).
+    // nem 1×SEM. A KONKRÉT érték a bankból (rövid forma item-száma) ÉS a
+    // reliabilitás-konstansokból jön, ezért itt NEM literálhoz kötjük — a
+    // korábbi kézi 15 pontosan attól avult el, hogy a bank változott
+    // (2026-08-11: 60 fő-dimenziós item → 14), majd a 14 attól, hogy a kézi
+    // SEM-priorok helyére MÉRT értékek kerültek (→ 11). A számszerű invariáns
+    // helye: tests/unit/scoring/psychometrics.test.ts (ott a bankból számol).
     assert.equal(DIFF_MIN_GAP, Math.round(diffStandardError("short")));
     assert.equal(TYPE_ADJECTIVE_MIN_GAP, DIFF_MIN_GAP);
   });
