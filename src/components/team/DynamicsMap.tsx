@@ -134,6 +134,14 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
     complementary: "teamComp.edgeComplementary",
   };
 
+  // MÉRT (trust) élre a „hasonló profil" címke hamis állítás lenne — az
+  // aligned ott ERŐS BIZALMAT jelent, nem profil-hasonlóságot. Mért élen
+  // ezért forrás-semleges címke jár.
+  const edgeLabel = (e: DynamicsEdge): string =>
+    e.type === "aligned" && isMeasuredDynamicsSource(e.source)
+      ? t("teamComp.edgeAlignedNeutral", loc)
+      : t(edgeLabelKey[e.type], loc);
+
   return (
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-surface-card p-4">
       <div className="flex items-center gap-3">
@@ -157,7 +165,12 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
               const target = memberMap[otherId];
               if (!target) return null;
               const isExpanded = expandedEdge === otherId;
-              const breakdown = isExpanded
+              // Dimenzió-bontás CSAK valódi profil-párból: kitöltetlen tagnál
+              // az intelligence-data 50-es default-profilt ad — abból gap-et
+              // számolni kitalált adat lenne (mért él alatt pláne félrevezető).
+              const hasPairProfiles =
+                member.hasAssessmentData && target.hasAssessmentData;
+              const breakdown = isExpanded && hasPairProfiles
                 ? computeDimBreakdown(member.tritan, target.tritan, loc)
                 : null;
 
@@ -174,7 +187,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     />
                     <span className="text-[11px] text-ink-body">{target.name}</span>
                     <span className="ml-auto text-micro text-muted">
-                      {t(edgeLabelKey[e.type], loc)}
+                      {edgeLabel(e)}
                     </span>
                     {isMeasuredDynamicsSource(e.source) ? (
                       <span className="rounded-full bg-sage/15 px-1.5 py-0.5 font-mono text-micro uppercase tracking-wide text-sage-dark">
@@ -195,6 +208,15 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                     </svg>
                   </button>
 
+                  {/* Hiányzó profil-adatnál a bontás helyett jelöljük az okot
+                      — nem számolunk gap-et kitalált 50-esek ellen. */}
+                  {isExpanded && !hasPairProfiles && (
+                    <div className="mb-2 ml-5 mt-1 rounded-lg border border-dashed border-sand bg-cream/60 p-3">
+                      <p className="text-micro leading-snug text-muted">
+                        {t("teamComp.breakdownNoProfile", loc)}
+                      </p>
+                    </div>
+                  )}
                   {isExpanded && breakdown && (
                     <div className="mb-2 ml-5 mt-1 rounded-lg border border-sand bg-cream/60 p-3">
                       <div className="flex flex-col gap-2">
@@ -269,6 +291,10 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   const positions = getCircularPositions(members, 180, 180, 130);
   // Közös hub-definíció (friction-model): aligned-fok ≥ 3, mindkét végpont számít.
   const hubIds = computeAlignedHubIds(edges);
+  // Van-e mért (trust) él a térképen — a jelmagyarázat „hasonló profil"
+  // címkéje csak tisztán profil-becslés képre igaz; mért él mellett az
+  // aligned szín semleges címkét kap (a mért aligned = erős bizalom).
+  const hasMeasuredEdges = edges.some((e) => isMeasuredDynamicsSource(e.source));
 
   return (
     <div className="flex flex-col gap-4 md:flex-row">
@@ -362,7 +388,14 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         {/* Legend */}
         <div className="mt-3 flex flex-wrap gap-4">
           {(["aligned", "complementary", "friction"] as DynamicsEdge["type"][]).map((edgeType) => {
-            const legendKey = edgeType === "aligned" ? "teamComp.legendAligned" : edgeType === "complementary" ? "teamComp.legendComplementary" : "teamComp.legendFriction";
+            const legendKey =
+              edgeType === "aligned"
+                ? hasMeasuredEdges
+                  ? "teamComp.legendAlignedNeutral"
+                  : "teamComp.legendAligned"
+                : edgeType === "complementary"
+                  ? "teamComp.legendComplementary"
+                  : "teamComp.legendFriction";
             return (
               <div key={edgeType} className="flex items-center gap-2">
                 <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
@@ -381,7 +414,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
         {/* Forrás-transzparencia: mért trust-adat vs profil-alapú becslés.
             A "mért" definíció közös (isMeasuredDynamicsSource): trust_round ∪
             observer — az intelligence-data/cockpit/riport számlálóival azonos. */}
-        {edges.some((e) => isMeasuredDynamicsSource(e.source)) ? (
+        {hasMeasuredEdges ? (
           <p className="mt-2 text-micro leading-relaxed text-muted">
             {loc === "hu"
               ? `A kapcsolatok egy része bizalmi kör alapján MÉRT adat (${edges.filter((e) => isMeasuredDynamicsSource(e.source)).length}/${edges.length} kapcsolat), a többi profil-alapú becslés.`

@@ -1,7 +1,13 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { mergeTrustEdges, type TeamDynamicsEdge } from "@/lib/team-stats";
-import type { TrustEdge, TrustNetwork } from "@/lib/trust-network";
+import {
+  computeTrustNetwork,
+  TRUST_QUESTIONS,
+  type TrustAnswerSet,
+  type TrustEdge,
+  type TrustNetwork,
+} from "@/lib/trust-network";
 
 function trustNet(edges: TrustEdge[]): TrustNetwork {
   return {
@@ -74,5 +80,31 @@ describe("mergeTrustEdges — disconnected nem súrlódás (D2)", () => {
     const edges = [profileEdge("u1", "u2"), profileEdge("u1", "u3")];
     assert.equal(mergeTrustEdges(edges, null).length, 2);
     assert.equal(mergeTrustEdges(edges, trustNet([])).length, 2);
+  });
+});
+
+// ── FIX 4: a kilépett tag hátrahagyott mért párja nem éri el a térképet ─────
+
+describe("mergeTrustEdges — kilépett tag mért párjai (a szűrt trust-hálón át)", () => {
+  const maxAnswers = (): TrustAnswerSet =>
+    Object.fromEntries(TRUST_QUESTIONS.map((q) => [q.id, q.max]));
+
+  it("a jelenlegi tag-halmazra szűrt trust-hálóból csak tag-tag él jön át a dinamika-élek közé", () => {
+    const trust = computeTrustNetwork(
+      [
+        { raterUserId: "u1", aboutUserId: "gone", answers: maxAnswers() },
+        { raterUserId: "gone", aboutUserId: "u1", answers: maxAnswers() },
+        { raterUserId: "u1", aboutUserId: "u2", answers: maxAnswers() },
+      ],
+      ["u1", "u2"],
+    );
+    const merged = mergeTrustEdges([profileEdge("u1", "u2")], trust);
+    assert.equal(merged.length, 1);
+    assert.equal(merged[0].source, "trust_round");
+    const current = new Set(["u1", "u2"]);
+    assert.ok(
+      merged.every((e) => current.has(e.fromUserId) && current.has(e.toUserId)),
+      "kilépett taghoz kötött él került a dinamika-térképre",
+    );
   });
 });

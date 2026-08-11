@@ -78,18 +78,20 @@ function itemRole(itemId: string): TeamRoleCode | null {
 }
 
 /**
- * Szerep-pontszámok egy kiválasztás-halmazból, 0–100 skálán.
+ * KEREKÍTETLEN szerep-pontszámok egy kiválasztás-halmazból (0–100 skála).
  *
- * Szerepenként az elméleti maximum: mind a 3 item kiemelt jelöléssel
- * (3 × 2 = 6 súly) — a gyakorlatban a 3 kiemelt-limit miatt ritka, de a
- * skála így stabil, és a self és peer profilok összevethetők rajta.
+ * Ez az aggregátorok (peer-átlag) bemenete: a raterenkénti kerekítés
+ * elhagyásával az átlag a VALÓDI súly-evidenciát tükrözi — kerekített
+ * per-rater értékek átlagolásánál egy koncentrált dupla-súlyú jelölés (2)
+ * veszíthetne szórt szimplákkal szemben (pl. 1+1+1 → 17,0 vs 2+1+0 →
+ * 16,67), pedig az össz-súlyuk azonos. Kerekítés csak megjelenítéskor.
  */
-export function calculateTeamRoleScores(
+export function calculateTeamRoleScoresRaw(
   selections: TeamRoleSelections,
-): TeamRoleScores {
+): Record<TeamRoleCode, number> {
   const totals = Object.fromEntries(
     Object.keys(TEAM_ROLES).map((k) => [k, 0]),
-  ) as TeamRoleScores;
+  ) as Record<TeamRoleCode, number>;
 
   for (const [itemId, weight] of Object.entries(selections)) {
     const role = itemRole(itemId);
@@ -100,9 +102,27 @@ export function calculateTeamRoleScores(
 
   const MAX_PER_ROLE = 6; // 3 item × 2 súly
   for (const role of Object.keys(totals) as TeamRoleCode[]) {
-    totals[role] = Math.round((totals[role] / MAX_PER_ROLE) * 100);
+    totals[role] = (totals[role] / MAX_PER_ROLE) * 100;
   }
 
+  return totals;
+}
+
+/**
+ * Szerep-pontszámok egy kiválasztás-halmazból, 0–100 skálán (kerekítve).
+ *
+ * Szerepenként az elméleti maximum: mind a 3 item kiemelt jelöléssel
+ * (3 × 2 = 6 súly) — a gyakorlatban a 3 kiemelt-limit miatt ritka, de a
+ * skála így stabil, és a self és peer profilok összevethetők rajta.
+ */
+export function calculateTeamRoleScores(
+  selections: TeamRoleSelections,
+): TeamRoleScores {
+  const raw = calculateTeamRoleScoresRaw(selections);
+  const totals = {} as TeamRoleScores;
+  for (const role of Object.keys(raw) as TeamRoleCode[]) {
+    totals[role] = Math.round(raw[role]);
+  }
   return totals;
 }
 

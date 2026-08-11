@@ -510,7 +510,8 @@ function PeerComparison({
       <p className="mb-5 text-xs text-muted">
         {t("teamComp.peerCoverage", loc)
           .replace("{above}", String(aboveThreshold))
-          .replace("{total}", String(rated.length))}
+          .replace("{total}", String(rated.length))
+          .replace("{min}", String(TEAM_ROLE_PEER_MIN_RATERS))}
       </p>
 
       <div className="flex flex-col divide-y divide-sand">
@@ -583,7 +584,10 @@ function PeerComparison({
         })}
       </div>
       <p className="mt-4 text-[11px] leading-relaxed text-muted">
-        {t("teamComp.peerFootnote", loc)}
+        {t("teamComp.peerFootnote", loc).replace(
+          "{min}",
+          String(TEAM_ROLE_PEER_MIN_RATERS),
+        )}
       </p>
     </section>
   );

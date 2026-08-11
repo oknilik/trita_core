@@ -211,12 +211,24 @@ export interface TrustNetwork {
  * A bizalmi háló felépítése érvényes megfigyelésekből. A hívó felel a
  * (aboutUserId, raterUserId) páronkénti dedupe-ért (legfrissebb kör
  * nyer) — ld. trust-network.server.ts.
+ *
+ * Ha `memberIds` adott, a megfigyelések a JELENLEGI tag-halmazra szűkülnek
+ * (értékelő ÉS értékelt is tag legyen): a kilépett tagok korábbi körökből
+ * ittmaradt válaszai nélkül nem duzzad az él-/erős-él-szám, a hub- és
+ * beágyazatlan-jelölés, az inbound-átlag — és a lefedettség (mért pár /
+ * lehetséges pár a jelenlegi tagokból) sem lépheti túl a 100%-ot.
  */
 export function computeTrustNetwork(
   observations: TrustObservationInput[],
   memberIds?: string[],
 ): TrustNetwork {
-  const valid = observations.filter((o) => isValidTrustAnswerSet(o.answers));
+  const memberSet = memberIds ? new Set(memberIds) : null;
+  const valid = observations.filter(
+    (o) =>
+      isValidTrustAnswerSet(o.answers) &&
+      (!memberSet ||
+        (memberSet.has(o.raterUserId) && memberSet.has(o.aboutUserId))),
+  );
 
   // Irányított pontszámok: rater → értékelt.
   const directed = new Map<string, number>();
@@ -289,9 +301,11 @@ export function computeTrustNetwork(
     isolatedUserIds,
     measuredPairCount: edges.length,
     possiblePairCount,
+    // A tag-szűrés után az élszám ≤ lehetséges párszám; a clamp defenzív őr
+    // (a lefedettség szemantikailag legfeljebb 100%).
     coverage:
       possiblePairCount && possiblePairCount > 0
-        ? Math.round((edges.length / possiblePairCount) * 100) / 100
+        ? Math.min(1, Math.round((edges.length / possiblePairCount) * 100) / 100)
         : null,
   };
 }

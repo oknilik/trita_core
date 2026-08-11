@@ -1602,7 +1602,9 @@ export const orgTranslations = {
       hu: "A csapattársi visszajelzés-kör összesített képe tagonként — az önkitöltés mellé mért csapatkép kerül. A pötty a csapatkép azon szerepét jelöli, amely az önképben nem szerepel.",
       en: "The aggregated view from the peer feedback round, per member — a measured team view next to the self-report. The dot marks roles in the team view that don't appear in the self-image.",
     },
-    peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább 3 értékelő)", en: "team view available for {above} / {total} members (at least 3 raters)" },
+    // Az anonimitás-padló ({min} = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) a
+    // hívóból interpolálódik — literál számot ide ne égess be.
+    peerCoverage: { hu: "{above} / {total} tagnál áll össze a csapatkép (legalább {min} értékelő)", en: "team view available for {above} / {total} members (at least {min} raters)" },
     peerRaterCount: { hu: "{n} értékelő", en: "{n} raters" },
     peerBelowThreshold: {
       hu: "Még kevesebb mint {min} csapattárs adott visszajelzést — az összesített kép a névtelenség védelmében csak a küszöb felett jelenik meg.",
@@ -1613,8 +1615,8 @@ export const orgTranslations = {
     peerNoSelf: { hu: "Nincs saját kitöltés — az összevetéshez töltsd ki a szerep-kérdőívet.", en: "No self-report yet — fill in the role questionnaire to compare." },
     peerDiff: { hu: "Az önképben nem szerepel", en: "Not in the self-image" },
     peerFootnote: {
-      hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és 3 értékelő alatt nem jelenik meg.",
-      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below 3 raters.",
+      hu: "A csapatkép névtelen: senki egyéni jelölése nem visszakereshető, és {min} értékelő alatt nem jelenik meg.",
+      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below {min} raters.",
     },
     teamRoleTitle: { hu: "Csapatszerep-elemzés", en: "Team role analysis" },
     teamRoleDesc: {
@@ -1719,19 +1721,31 @@ export const orgTranslations = {
     edgeTension: { hu: "feszültség", en: "tension" },
     edgeNeutral: { hu: "semleges", en: "neutral" },
     edgeAligned: { hu: "hasonló profil", en: "aligned" },
+    // MÉRT (trust) aligned élre: az erős bizalom nem profil-hasonlóság —
+    // ott a semleges címke jár, nem az edgeAligned.
+    edgeAlignedNeutral: { hu: "összehangolt", en: "aligned" },
     edgeFriction: { hu: "lehetséges súrlódás", en: "potential friction" },
     edgeComplementary: { hu: "kiegészítő", en: "complementary" },
     incomingConnections: { hu: "kapcsolat ebben a hálóban", en: "connections in this network" },
     legendGood: { hu: "Jó együttmű.", en: "Good collab." },
     legendNeutral: { hu: "Semleges", en: "Neutral" },
     legendTension: { hu: "Feszültség", en: "Tension" },
-    legendAligned: { hu: "Hasonló profil", en: "Aligned" },
+    legendAligned: { hu: "Hasonló profil", en: "Similar profile" },
+    // Ha a térképen mért (trust) él is van, az aligned szín jelentése vegyes
+    // (erős bizalom VAGY hasonló profil) — a jelmagyarázat ilyenkor semleges.
+    legendAlignedNeutral: { hu: "Összehangolt", en: "Aligned" },
     legendComplementary: { hu: "Kiegészítő", en: "Complementary" },
     legendFriction: { hu: "Potenciális súrlódás", en: "Potential friction" },
     hubPerson: { hu: "Hub személy", en: "Hub person" },
     clickPerson: { hu: "Kattints egy személyre", en: "Click on a person" },
     clickPersonConnections: { hu: "a kapcsolatai megtekintéséhez", en: "to view their connections" },
     edgeOneSided: { hu: "egyoldalú visszajelzés", en: "one-sided feedback" },
+    // Dimenzió-bontás elrejtve, ha a páros valamelyik tagjának nincs valódi
+    // profil-adata — kitalált (50-es default) értékek ellen nem számolunk gap-et.
+    breakdownNoProfile: {
+      hu: "Nincs profiladat a bontáshoz — a páros legalább egyik tagja még nem töltötte ki a személyiség-felmérést.",
+      en: "No profile data for this breakdown — at least one member of the pair hasn't completed the personality assessment yet.",
+    },
 
     // Dinamika-forrás állapotcímkék (mért/becsült él-arány szerint)
     dynamicsStateMeasured: { hu: "mért", en: "measured" },

@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  estimateTeamRolesFromTritan,
-  resolveDisplayRoleScores,
-} from "@/lib/team-role-estimate";
+import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import type { TeamRoleCode } from "@/lib/team-role-scoring";
 import { compareSelfAndPeerTopRoles, TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
@@ -71,17 +68,24 @@ export function TeamRoles({
   // kitöltött kérdőív > TRITAN-becslés; részleges score-ból nincs becslés.
   const resolved = resolveDisplayRoleScores(measuredScores, tritanScores);
   if (!resolved) return null;
-  const estimated = estimateTeamRolesFromTritan(
-    tritanScores as Record<"INTE" | "RESO" | "TEMP" | "ADAP" | "THOR" | "OPEN", number>,
-  );
-  const estimatedTop3 = getTopRoles(estimated, 3);
+  // A becslés-oldali rangsorhoz a resolver exact evidenciája kell (S2):
+  // kerekítetlen összegek nélkül a holtverseny hash-re esne, és az elsődleges
+  // szerep felületenként eltérhetne. Mért ágon a becslés-top3 csak az
+  // összhang-jelzéshez kell — ahhoz külön becslés-feloldás adja az exactot.
+  const estimatedResolved = resolveDisplayRoleScores(null, tritanScores);
+  const estimatedTop3 = estimatedResolved
+    ? getTopRoles(estimatedResolved.scores, 3, estimatedResolved.exact)
+    : [];
   const isMeasured = resolved.source === "questionnaire";
   const top3 = isMeasured ? getTopRoles(resolved.scores, 3) : estimatedTop3;
 
   // Összhang a személyiségprofillal: a MÉRT top 3 vs a TRITAN-becslés top 3.
-  const personalityOverlap = isMeasured
-    ? compareSelfAndPeerTopRoles(top3, estimatedTop3).shared.length
-    : null;
+  // Csak TELJES dimenzió-készletből számolt becslés ellen — részleges
+  // profilból nincs becslés (nincs mihez hasonlítani).
+  const personalityOverlap =
+    isMeasured && estimatedTop3.length > 0
+      ? compareSelfAndPeerTopRoles(top3, estimatedTop3).shared.length
+      : null;
 
   // Önkép vs. csapatkép: a megjelenített top 3 vs a peer-aggregátum top 3.
   const peerReady = Boolean(peer && peer.scores && peer.topRoles.length > 0);
@@ -168,7 +172,10 @@ export function TeamRoles({
                       : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)]"
                 }`}
               >
-                {rank[lang]} · {score}%
+                {/* Becslés-ágon NINCS szám: a súlyozott összeg nem százalék,
+                    kiírva álprecizitás lenne (a PDF is elnyomja) — ott csak
+                    a rang/sáv jelenik meg. */}
+                {isMeasured ? `${rank[lang]} · ${score}%` : rank[lang]}
               </span>
 
               {/* Name */}

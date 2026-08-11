@@ -94,12 +94,14 @@ function OccupationCard({
   async function sendFeedback(verdict: "accurate" | "inaccurate") {
     setFeedback("sent");
     try {
+      // A fitScore-t a szerver számolja újra a tárolt profilból — a kliens
+      // által állított pontszám hamisítható lenne, és a kalibrációs adatot
+      // mérgezné (a verdict + a szerver-oldali pontszám együtt a jel).
       await fetch("/api/industry-fit/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           occupationId: fit.id,
-          fitScore: fit.demandFit,
           verdict,
         }),
       });
@@ -231,9 +233,13 @@ function OccupationCard({
               <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-44 sm:text-[11px]">
                 {dimLabel(component.dim, isHu)}
                 <span className="block text-micro text-[var(--color-text-muted)]">
+                  {/* A NYERS párt mutatjuk (userRaw/targetRaw): a „te {user}" így
+                      azonos a results-oldali pontszámmal. A centrált (pontozási)
+                      értéket mutatni ellentmondana neki (nyers 90 → „te 58"). A
+                      cél ugyanazzal az eltolással jön, a távolság változatlan. */}
                   {tf("results.cfTargetHint", locale, {
-                    target: Math.round(component.target),
-                    user: component.userValue,
+                    target: component.targetRaw,
+                    user: component.userRaw,
                   })}{" "}
                   · {Math.round(component.weight * 100)}%
                 </span>
@@ -271,8 +277,9 @@ function OccupationCard({
                   dim: isHu
                     ? withHuArticle(dimLabel(fit.components[0].dim, isHu))
                     : dimLabel(fit.components[0].dim, isHu),
-                  target: Math.round(fit.components[0].target),
-                  user: fit.components[0].userValue,
+                  // Nyers pár — a results-oldali pontszámmal azonos skálán.
+                  target: fit.components[0].targetRaw,
+                  user: fit.components[0].userRaw,
                 })}
             </p>
           )}

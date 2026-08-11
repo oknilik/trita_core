@@ -14,6 +14,7 @@
 //  5) H-PADLÓ: ha egy szerep alacsony becsületesség-alázatot "kíván", a magas H
 //     nem kap büntetést, és az alacsony H nem kap jutalmat.
 
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { getOccupations, CATALOG_VERSION } from "./catalog";
 import { feasibilityFor } from "./feasibility";
 /** Scope-egyezés az explicit iparág-címkéken. Üres címke-lista = univerzális. */
@@ -34,7 +35,6 @@ import {
 import {
   bandFor,
   blendedStandardError,
-  clusterByOverlap,
   dimStandardError,
   fitStandardError,
   observerWeight,
@@ -154,16 +154,25 @@ function alignmentFor(userValue: number, target: number, tol: number): number {
  * H-padló: ha a szerep cél-értéke a semlegesnél alacsonyabb becsületesség-alázat,
  * a cél 50-re emelkedik és a pontozás egyoldalú lesz. Így magas H-val nem lehet
  * rosszabbul illeszkedni, alacsonnyal pedig nem lehet "jobban".
+ *
+ * A H-padló a NYERS (kevert) ponton fut, NEM a centráltan: az invariáns az
+ * ABSZOLÚT becsületességről szól. Centrált ponttal egy abszolút őszinte user,
+ * akinek az INTE a saját profiljában relatíve a legalacsonyabb (pl. INTE 70 a
+ * 85-ös átlag mellett → centrálva 38), rosszabbul járt volna egy laposabb,
+ * kevésbé őszinte profilnál — pont a kimondott invariáns ellen.
  */
 function componentFit(
   dim: DimCode,
-  userValue: number,
+  centeredValue: number,
+  rawValue: number,
   target: number,
   tol: number,
   weight: number,
 ): FitComponent {
   const hFloor = dim === "INTE" && target < 50;
   const effectiveTarget = hFloor ? 50 : target;
+  // H-padlónál az értékelt pont a nyers; máshol a profil-alak (centrált).
+  const userValue = hFloor ? rawValue : centeredValue;
   const alignment = hFloor && userValue >= effectiveTarget
     ? 100
     : alignmentFor(userValue, effectiveTarget, tol);
@@ -173,26 +182,49 @@ function componentFit(
       : userValue < effectiveTarget
         ? "under"
         : "over";
+  // Megjelenítési pár a NYERS skálán: a cél ugyanazzal az eltolással kerül
+  // vissza (rawValue − centeredValue = profilátlag − 50), így a távolság — és
+  // vele a position/alignment — változatlan; a userRaw viszont azonos a
+  // results-oldali pontszámmal. H-padlónál a két skála egybeesik (nyers 50).
+  const shift = rawValue - centeredValue;
+  const targetRaw = hFloor
+    ? effectiveTarget
+    : Math.max(0, Math.min(100, target + shift));
   return {
     dim,
     target: effectiveTarget,
     tol,
     weight,
     userValue: Math.round(userValue),
+    userRaw: Math.round(rawValue),
+    targetRaw: Math.round(targetRaw),
     alignment: Math.round(alignment),
     position,
     ...(hFloor ? { note: "h-floor" as const } : {}),
   };
 }
 
-/** Self + observer keverés értékelő-szám szerinti súllyal (nem fix 50/50). */
+/**
+ * Self + observer keverés értékelő-szám szerinti súllyal (nem fix 50/50).
+ *
+ * ANONIMITÁS-PADLÓ: az observer-jel csak a termék közös küszöbétől
+ * (MIN_RATERS_FOR_ANONYMOUS_AGGREGATE = 3 értékelő) keveredik be. Alatta a
+ * kevert kimenet + ismert súly visszafejthetővé tenné az egy-két értékelő
+ * válaszát (blended = self·(1−w) + obs·w, a self a results-oldalról ismert) —
+ * az összevetés-fül ugyanezt n≥3-nál kapuzza. A person.ts eleve nem ad át
+ * padló alatti observer-inputot; ez itt a motor-oldali védőháló minden más
+ * hívóra (PDF, jelölt-réteg, közvetlen engine-hívás).
+ */
 function blendDims(person: PersonInput): {
   blended: Partial<Record<DimCode, number>>;
   weight: number;
 } {
   const raters = person.observer?.raterCount ?? 0;
+  if (!person.observer || raters < MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) {
+    return { blended: person.dims, weight: 0 };
+  }
   const weight = observerWeight(raters);
-  if (!person.observer || weight === 0) return { blended: person.dims, weight: 0 };
+  if (weight === 0) return { blended: person.dims, weight: 0 };
   const blended: Partial<Record<DimCode, number>> = {};
   for (const dim of DIM_CODES) {
     const self = person.dims[dim];
@@ -221,16 +253,11 @@ function centerProfile(
   return centered;
 }
 
-/**
- * Általános munkahelyi alap: a meta-analízisekben a lelkiismeretesség és a
- * becsületesség-alázat a legerősebb általános prediktorok. Profil-szintű szám,
- * NEM szerep-illeszkedés.
- */
-export function generalWorkPropensity(dims: Partial<Record<DimCode, number>>): number {
-  const c = dims.THOR ?? 50;
-  const h = dims.INTE ?? 50;
-  return Math.round(c * 0.6 + h * 0.4);
-}
+// A korábbi `generalWorkPropensity` (általános munkahelyi alap, C+H) és az
+// `absoluteFit` (abszolút szint-illeszkedés) 2026-08-11-én kikerült: minden
+// futáson kiszámoltuk és szerializáltuk, de EGYETLEN felület sem olvasta (holt
+// ág, grep-igazolva) — ráadásul mindkettő a nyers kevert profil SZINTJÉT
+// szivárogtatta a kliens felé. Visszaállításhoz: git history.
 
 /** Preferencia-egyezés a beállított tengelyeken (a nem állítottak kimaradnak). */
 function preferenceFit(
@@ -247,25 +274,6 @@ function preferenceFit(
     return acc + (1 - Math.abs(user - axes[axis]) / 2);
   }, 0);
   return Math.round((sum / active.length) * 100);
-}
-
-/** Abszolút szint-illeszkedés: eléri-e a user a szerep elvárt szintjeit. */
-function absoluteFit(
-  dims: Partial<Record<DimCode, number>>,
-  occupation: Occupation,
-): number {
-  let total = 0;
-  let count = 0;
-  for (const component of occupation.demand) {
-    const user = dims[component.dim];
-    if (typeof user !== "number") continue;
-    const required = occupation.abs[component.dim];
-    // csak a HIÁNY számít: a szint fölötti többlet nem von le
-    const deficit = Math.max(0, required - user);
-    total += Math.max(0, 100 - deficit * 2) * component.w;
-    count += component.w;
-  }
-  return count > 0 ? Math.round(total / count) : 50;
 }
 
 function demandWeights(
@@ -299,8 +307,6 @@ export interface EngineOptions {
   scope?: string[];
   /** rangsorolási stratégia (alapértelmezés: mért érdeklődésnél interest-led) */
   strategy?: RankStrategy;
-  /** a jelölt-halmaz mérete interest-led módban */
-  candidatePool?: number;
 }
 
 /**
@@ -399,11 +405,13 @@ export function computeCareerFit(
     let weighted = 0;
     let totalWeight = 0;
     for (const component of weights) {
-      const userValue = centered[component.dim];
-      if (typeof userValue !== "number") continue;
+      const centeredValue = centered[component.dim];
+      const rawValue = blended[component.dim];
+      if (typeof centeredValue !== "number" || typeof rawValue !== "number") continue;
       const fit = componentFit(
         component.dim,
-        userValue,
+        centeredValue,
+        rawValue,
         component.target,
         component.tol,
         component.w,
@@ -499,7 +507,6 @@ export function computeCareerFit(
       band: bandFor(demandFit, se),
       rankSe: Math.round(rankSe * 10) / 10,
       components: components.sort((a, b) => b.weight - a.weight),
-      absoluteFit: absoluteFit(blended, occupation),
       interest,
       preference,
       feasibility,
@@ -526,8 +533,17 @@ export function computeCareerFit(
   let candidatePool: number | null = null;
   if (strategy === "scoped" && scopeActive) {
     // Scope-mód: a halmazt a kimondott szándék (bejelölt területek) adta; a
-    // sorrendet az érdeklődés (+ preferenciák) rendezi, metszet-kiemeléssel. A
-    // személyiség a klaszteren belül rendez, és annotál — nem szűr.
+    // sorrendet MÉRT érdeklődésnél az érdeklődés (+ preferenciák) rendezi,
+    // metszet-kiemeléssel. A személyiség a klaszteren belül rendez, és
+    // annotál — nem szűr.
+    //
+    // FORRÁS-KAPU (2026-08-11): az interest-led kapu logikája a scoped
+    // rendezésre is érvényes. Becsült/címke-forrású érdeklődésnél a Holland-jel
+    // NEM rendezhet egyedül — az egykomponensű súlyozott átlagban a súly kiesik
+    // (interest·w/w = interest), így egy 7,5%-os súlyú becsült jel adta volna a
+    // sorrend 100%-át, miközben a kártya „8%"-ot mutat. Ilyenkor a kompozit
+    // súlyú alap rendez: demandFit horgonnyal, a gyenge érdeklődés legfeljebb a
+    // meta-beli súlyával szól bele.
     //
     // A választási ALAP a differenciáltság-igazított érdeklődés-súlyt használja
     // (`interestWeight` = interestWeightFor(forrás) × low-differentiation felező),
@@ -544,11 +560,12 @@ export function computeCareerFit(
     // A +5 (bármely-egyezés) itt zaj: scope-módban a halmaz már a bejelölt
     // területekre szűrt, tehát az „egyet fed" a metszet-bónusszal ugyanazt az
     // egyezést jutalmazná másodszor (a régi ág akár +17-et adott ugyanarra).
-    const interestSe =
-      person.interests?.source === "measured" ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER;
-    const scopedRankSe = Math.sqrt(
-      (interestWeight * interestSe) ** 2 + (CHOICE_WEIGHTS.preference * PREFERENCE_SE) ** 2,
-    );
+    //
+    // A rankSe tételenként a TÉNYLEGESEN az alapban lévő komponensekből terjed,
+    // a súlyösszeggel normálva (a kompozit ág mintája) — a korábbi közös,
+    // normálatlan képlet mindig mindkét tagot számolta, és 1,2–2,5× szűkebb
+    // klasztereket adott.
+    const measuredInterest = person.interests?.source === "measured";
     const byId = new Map(getOccupations().map((o) => [o.id, o]));
     sorted = filtered
       .map((fit) => {
@@ -558,20 +575,46 @@ export function computeCareerFit(
         // A szakirány is kimondott jel: az eü-diplomás eü-váltónál az egyező
         // képzettségű szerep előrébb való, mint az azonos érdeklődésű idegen.
         const fieldBonus = fit.feasibility.state === "field-match" ? 6 : 0;
-        const choiceParts: Array<[number, number]> = [];
-        if (fit.interest !== null) choiceParts.push([fit.interest, interestWeight]);
-        if (fit.preference !== null) choiceParts.push([fit.preference, CHOICE_WEIGHTS.preference]);
-        const base = choiceParts.length
+        // (érték, súly, SE) hármasok — az alap és a rankSe UGYANABBÓL a
+        // listából számol, így nem tudnak elcsúszni egymástól.
+        const baseParts: Array<[number, number, number]> = [];
+        if (measuredInterest) {
+          if (fit.interest !== null)
+            baseParts.push([fit.interest, interestWeight, INTEREST_SE_MEASURED]);
+          if (fit.preference !== null)
+            baseParts.push([fit.preference, CHOICE_WEIGHTS.preference, PREFERENCE_SE]);
+        } else {
+          baseParts.push([fit.demandFit, RANK_WEIGHTS.demand, fit.se]);
+          if (fit.interest !== null)
+            baseParts.push([fit.interest, interestWeight, INTEREST_SE_OTHER]);
+          if (fit.preference !== null)
+            baseParts.push([fit.preference, RANK_WEIGHTS.preference, PREFERENCE_SE]);
+        }
+        const baseWeight = baseParts.reduce((sum, [, w]) => sum + w, 0);
+        const base = baseWeight > 0
           ? Math.round(
-              choiceParts.reduce((sum, [value, weight]) => sum + value * weight, 0) /
-                choiceParts.reduce((sum, [, weight]) => sum + weight, 0),
+              baseParts.reduce((sum, [value, w]) => sum + value * w, 0) / baseWeight,
             )
           : fit.demandFit;
+        const rankSe = baseWeight > 0
+          ? Math.sqrt(baseParts.reduce((sum, [, w, se]) => sum + (w * se) ** 2, 0)) /
+            baseWeight
+          : fit.se;
+        // A címke azt mondja, ami tényleg rendezett: mért érdeklődésnél
+        // "interest"; kompozit-alapnál "composite"; ha csak a demandFit maradt
+        // (nincs érdeklődés/preferencia adat), "demandFit" — a korábbi ág a
+        // demandFit-fallbacket is "interest"-nek címkézte.
+        const orderedBy: OccupationFit["orderedBy"] =
+          baseWeight === 0 || (!measuredInterest && baseParts.length === 1)
+            ? "demandFit"
+            : measuredInterest
+              ? "interest"
+              : "composite";
         return {
           ...fit,
           rank: Math.min(100, base + (intersect ? 6 : 0) + fieldBonus),
-          rankSe: Math.round(scopedRankSe * 10) / 10,
-          orderedBy: "interest" as const,
+          rankSe: Math.round(rankSe * 10) / 10,
+          orderedBy,
           flags: intersect ? [...fit.flags, "industry-intersect"] : fit.flags,
         };
       })
@@ -586,8 +629,7 @@ export function computeCareerFit(
     const withinMargin = byChoice.filter(
       (fit) => (fit.choiceScore ?? 0) >= best - CANDIDATE_MARGIN,
     );
-    const poolSize = options.candidatePool
-      ?? Math.min(CANDIDATE_MAX, Math.max(CANDIDATE_MIN, withinMargin.length));
+    const poolSize = Math.min(CANDIDATE_MAX, Math.max(CANDIDATE_MIN, withinMargin.length));
     const pool = byChoice.slice(0, poolSize);
     candidatePool = pool.length;
     // 2. lépcső: a halmazon belül a személyiség-illeszkedés rendez
@@ -602,16 +644,19 @@ export function computeCareerFit(
     : diversify(sorted, options.limit ?? 24, options.perFamily ?? 2);
 
   return {
-    general: generalWorkPropensity(blended),
     interestSource: person.interests?.source ?? null,
     interestDifferentiation: differentiation,
-    observerWeight: Math.round(weight * 100) / 100,
-    clusters: clusterByOverlap(ranked),
+    // SZÁNDÉKOSAN durva (1 tizedes): a pontos súly + ismert self-pontok együtt
+    // invertálhatóvá tennék a keverést. A padló (≥3 értékelő) miatt az érték a
+    // gyakorlatban 0 vagy 0.5 — a UI csak „van-e külső jel + kb. mennyi"-t mutat.
+    observerWeight: Math.round(weight * 10) / 10,
     ranked,
     // A korábbi családszintű aggregátum (`families`) 2026-08-11-én kikerült:
     // minden futáson kiszámolt, a service-en átfolyt, de EGYETLEN felület sem
-    // olvasta (holt ág). A per-tétel `family` mező él — a diversify() erre
-    // sapkázik. Visszaállításhoz: git history, family-fit.ts.
+    // olvasta (holt ág). Ugyanígy ment ki a `general`, az `absoluteFit` és a
+    // `clusters` mező (a klaszterezést a service számolja szakaszonként; a
+    // motor-szintű clusters-t senki nem olvasta). A per-tétel `family` mező él
+    // — a diversify() erre sapkázik. Visszaállításhoz: git history.
     meta: {
       catalogVersion: CATALOG_VERSION,
       occupationCount: catalog.length,

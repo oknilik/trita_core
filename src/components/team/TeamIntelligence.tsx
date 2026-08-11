@@ -188,7 +188,9 @@ export function TeamIntelligence({
             );
             if (!resolved) return null;
             const hasMeasuredRoles = resolved.source === "questionnaire";
-            const topRoles = getTopRoles(resolved.scores, 3);
+            // S2: becslés-ágon az exact a holtverseny-evidencia — enélkül a
+            // hash-fallback más top-szerepet adhatna, mint a többi felület.
+            const topRoles = getTopRoles(resolved.scores, 3, resolved.exact);
             const topDims = Object.entries(member.tritan)
               .sort(([, a], [, b]) => b - a)
               .slice(0, 2);
@@ -311,7 +313,13 @@ export function TeamIntelligence({
             <div className="mt-2">
               <div className="flex flex-wrap gap-2">
                 <span className="rounded-full border border-state-success-border bg-state-success-bg px-2 py-0.5 text-[11px] text-sage">
-                  {isHu ? "Hasonló profil" : "Aligned"}: {dynamicsCounts.aligned}
+                  {/* „Hasonló profil" CSAK tisztán profil-becslésnél igaz —
+                      mért (trust) aligned él magas bizalmat jelent, nem
+                      profil-hasonlóságot; vegyes/mért képnél semleges címke. */}
+                  {measuredEdgeCount === 0
+                    ? isHu ? "Hasonló profil" : "Similar profile"
+                    : isHu ? "Összehangolt" : "Aligned"}
+                  : {dynamicsCounts.aligned}
                 </span>
                 <span className="rounded-full border border-sand bg-cream px-2 py-0.5 text-[11px] text-ink-body">
                   {isHu ? "Kiegészítő" : "Complementary"}: {dynamicsCounts.complementary}
@@ -321,9 +329,19 @@ export function TeamIntelligence({
                 </span>
               </div>
               <p className="mt-2 text-[11px] text-ink-body/60">
-                {isHu
-                  ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
-                  : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."}
+                {/* Forrás-hű módszertan-sor: mért bizalmi kör mellett tilos
+                    mindent profil-becslésnek nevezni. */}
+                {measuredEdgeCount === 0
+                  ? isHu
+                    ? "A becslés a személyiségprofil-eltérésekből számolódik. A tényleges kapcsolati dinamikához 360°-os bizalmi kör szükséges."
+                    : "Estimates are based on personality profile gaps. Actual relationship dynamics require a 360° trust round."
+                  : measuredEdgeCount === edges.length
+                    ? isHu
+                      ? "A kapcsolati kép mért bizalmi körből (360°) származik."
+                      : "The relationship picture comes from a measured trust round (360°)."
+                    : isHu
+                      ? `A kapcsolatok egy része mért bizalmi körből származik (${measuredEdgeCount}/${edges.length}), a többi személyiségprofil-eltérésből becsült.`
+                      : `Some connections come from a measured trust round (${measuredEdgeCount}/${edges.length}); the rest are estimated from personality-profile gaps.`}
               </p>
               <div className="mt-3">
                 <DynamicsMap members={members} edges={edges} isHu={isHu} />

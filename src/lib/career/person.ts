@@ -4,6 +4,7 @@
 // a userre három különböző eredmény jött.)
 
 import { InvitationStatus } from "@prisma/client";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { prisma } from "@/lib/prisma";
 import { SCORING_FULL_FORM_MIN_ITEMS, type ScoreResult } from "@/lib/scoring";
 import { estimateInterests, interestsFromTags, isCompleteRiasecVector } from "./interests";
@@ -199,7 +200,16 @@ export async function buildPersonInput(
   const person: PersonInput = {
     dims,
     form: formFromScores(latestResult?.scores),
-    observer: observerCount > 0 ? { dims: observerDims, raterCount: observerCount } : null,
+    // ANONIMITÁS-PADLÓ: observer-jel csak a termék közös küszöbétől (3
+    // értékelő). Alatta a kevert kimenet + ismert keverési súly a ratee
+    // számára visszafejthetővé tenné az egy-két értékelő válaszát
+    // (blended = self·(1−w) + obs·w, a self a results-oldalról ismert) —
+    // az összevetés-fül ugyanezt n≥3-nál kapuzza. A motor (engine.blendDims)
+    // másodszor is kapuz, ez itt az adat-oldali forrás-szabály.
+    observer:
+      observerCount >= MIN_RATERS_FOR_ANONYMOUS_AGGREGATE
+        ? { dims: observerDims, raterCount: observerCount }
+        : null,
     interests: normalizeInterests(background, dims, normalizePrefs(background?.prefs)),
     prefs: normalizePrefs(background?.prefs),
     eduLevel: background?.eduLevel ?? null,

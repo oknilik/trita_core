@@ -263,7 +263,10 @@ export async function buildTeamReportAggregates(
       if (!resolved) continue;
       if (resolved.source === "questionnaire") questionnaireCount++;
       else estimateCount++;
-      const top3 = getTopRoles(resolved.scores, 3);
+      // S2: becslés-ágon az exact (kerekítetlen összeg) a holtverseny-
+      // evidencia — enélkül a hash-fallback más elsődleges szerepet adhatna,
+      // mint a többi felület.
+      const top3 = getTopRoles(resolved.scores, 3, resolved.exact);
       top3.forEach(({ role }, index) => {
         if (!(role in TEAM_ROLES)) return;
         if (index === 0) {
@@ -540,12 +543,14 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   const alignedShare = agg.dynamics && dynamicsTotal > 0
     ? agg.dynamics.alignedCount / dynamicsTotal
     : 0;
-  // A „hasonló profil / homogén / közös vakfolt" értelmezés CSAK profil-becslés
-  // eredetű aligned élre igaz. A mért bizalmi körből (trust_round) származó
-  // aligned él MAGAS BIZALMAT jelent, nem profil-hasonlóságot — abból
-  // homogenitást állítani hamis lenne. A source mező különíti el a kettőt.
+  // A „hasonló profil / homogén / közös vakfolt" értelmezés CSAK TISZTÁN
+  // profil-becslés eredetű aligned élekre igaz. A mért bizalmi körből
+  // (trust_round) származó aligned él MAGAS BIZALMAT jelent, nem profil-
+  // hasonlóságot — abból homogenitást állítani hamis lenne. VEGYES (mixed)
+  // forrásnál sem tudható, hogy az aligned többség melyik feléből jön,
+  // ezért homogenitást ott SEM állítunk. A source mező különíti el.
   const alignedReflectsSimilarity = agg.dynamics
-    ? agg.dynamics.source !== "trust_round"
+    ? agg.dynamics.source === "profile_estimate"
     : false;
   const profileHomogeneitySignal = alignedReflectsSimilarity && alignedShare >= 0.5;
   const highTrustSignal =

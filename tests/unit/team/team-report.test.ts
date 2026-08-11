@@ -148,6 +148,30 @@ test("prefill: high aligned share from PROFILE estimate keeps the homogeneity no
   assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
 });
 
+test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-trust strength (FIX 3)", () => {
+  // Vegyes forrásnál nem tudható, hogy az aligned többség a mért bizalmi
+  // vagy a profil-becslés feléből jön — homogenitást (vakfoltot) és teljes
+  // mért bizalmat sem állíthat a prefill.
+  const mixedAligned: TeamReportAggregates = {
+    ...richAggregates,
+    evidence: { quality: "sufficient", measuredEdgeCount: 3, estimatedEdgeCount: 3 },
+    dynamics: {
+      alignedCount: 4,
+      complementaryCount: 1,
+      frictionCount: 1,
+      topFrictionDims: [],
+      source: "mixed",
+    },
+  };
+  const prefill = buildDraftNarrativePrefill(mixedAligned);
+  assert.ok(prefill);
+  assert.ok(!prefill!.risks.includes("homogén profil"));
+  assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
+  assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
+  // A „mért bizalmi kör alapján…" erősség-mondat is csak tiszta trust_round-nál jár.
+  assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
+});
+
 test("prefill: no dimension averages returns null", () => {
   const prefill = buildDraftNarrativePrefill({
     ...richAggregates,

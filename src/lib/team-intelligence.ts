@@ -226,7 +226,10 @@ export function buildTeamIntelligencePriorities({
         member.scores,
       );
       if (!resolved) return;
-      const top = getTopRoles(resolved.scores, 1)[0]?.role;
+      // S2: becslés-ágon az exact (kerekítetlen összeg) a holtverseny-
+      // evidencia — enélkül a hash-fallback más elsődleges szerepet adhatna,
+      // mint a többi felület.
+      const top = getTopRoles(resolved.scores, 1, resolved.exact)[0]?.role;
       if (top) presentTopRoles.add(top);
     });
 

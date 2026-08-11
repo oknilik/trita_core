@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   TEAM_ROLES,
   calculateTeamRoleScores,
+  calculateTeamRoleScoresRaw,
   getTopRoles,
   type TeamRoleCode,
   type TeamRoleScores,
@@ -116,6 +117,17 @@ describe("team-role scoring (selection-based)", () => {
     const sum = Object.values(scores).reduce((a, b) => a + b, 0);
     assert.equal(sum, scores.OG);
   });
+
+  it("a raw változat kerekítetlen, a kerekített annak a Math.round-ja", () => {
+    const selections: TeamRoleSelections = { OG1: 1, MV1: 2 };
+    const raw = calculateTeamRoleScoresRaw(selections);
+    assert.ok(Math.abs(raw.OG - (1 / 6) * 100) < 1e-9);
+    assert.ok(Math.abs(raw.MV - (2 / 6) * 100) < 1e-9);
+    const rounded = calculateTeamRoleScores(selections);
+    for (const role of Object.keys(raw) as TeamRoleCode[]) {
+      assert.equal(rounded[role], Math.round(raw[role]));
+    }
+  });
 });
 
 describe("peer aggregate (anonymity threshold)", () => {
@@ -166,10 +178,13 @@ describe("peer aggregate (anonymity threshold)", () => {
     assert.deepEqual(diff.peerOnly, ["MV"]);
   });
 
-  it("kerekítve azonos peer-átlagnál a kerekítetlen átlag (evidencia) dönt — S2", () => {
-    // MV: (100, 0, 0) → kerekítetlen átlag 33,33; OG: (33, 33, 33) → 33,0.
-    // Mindkettő 33-ra kerekül — a több evidenciájú MV-nek kell elöl állnia,
-    // hiába későbbi a kódsorrendben.
+  it("azonos össz-súlyú koncentrált (2+2+2 egy raternél) és szórt (2 mindenkitől) jelölés EGYENLŐ evidencia — nem a per-rater kerekítés dönt", () => {
+    // MV: egy rater mindhárom itemet kiemeli (súly 6) → nyers 100, 0, 0;
+    // OG: mindhárom rater 1-1 kiemelt itemet ad (súly 2) → nyers 33,33×3.
+    // Össz-súly mindkettőnél 6 → a nyers átlag azonos (33,33) — VALÓDI
+    // holtverseny, amit a determinisztikus hash old fel. A régi, kerekített
+    // per-rater átlagolás (100+0+0)/3 = 33,33 vs (33+33+33)/3 = 33,0
+    // torzítást csinált az azonos evidenciából.
     const raterHigh: TeamRoleSelections = { MV1: 2, MV2: 2, MV3: 2, OG1: 2 };
     const raterLow1: TeamRoleSelections = { OG1: 2 };
     const raterLow2: TeamRoleSelections = { OG1: 2 };
@@ -177,8 +192,64 @@ describe("peer aggregate (anonymity threshold)", () => {
     assert.ok(agg.scores);
     assert.equal(agg.scores.MV, 33);
     assert.equal(agg.scores.OG, 33);
-    assert.equal(agg.topRoles[0].role, "MV", "a magasabb kerekítetlen átlagú szerep áll elöl");
-    assert.equal(agg.topRoles[1].role, "OG");
+    // Azonos evidencia → a sorrend determinisztikus (ismételt hívásra azonos).
+    const again = aggregatePeerRoleScores([raterHigh, raterLow1, raterLow2]);
+    assert.deepEqual(
+      agg.topRoles.map((r) => r.role),
+      again.topRoles.map((r) => r.role),
+    );
+  });
+
+  it("a koncentrált dupla-súly (2+1+0) nem veszít a szórt szimplákkal (1+1+1) szemben — a nyers átlag a mérce (motor-audit v4)", () => {
+    // Azonos össz-súly (3-3) → az MI–SZ relatív sorrendnek FÜGGETLENNEK kell
+    // lennie attól, melyik szerep kapta a koncentrált jelölést. A régi kód
+    // per-rater kerekített átlagot vett: 1+1+1 → 17,0 verte a 2+1+0 → 16,67-et,
+    // így a sorrend a koncentráció-irány cseréjére megfordult.
+    const scenarioA = [
+      { MI1: 1, SZ1: 2 } as TeamRoleSelections,
+      { MI2: 1, SZ2: 1 } as TeamRoleSelections,
+      { MI3: 1 } as TeamRoleSelections,
+    ];
+    const scenarioB = [
+      { MI1: 2, SZ1: 1 } as TeamRoleSelections,
+      { MI2: 1, SZ2: 1 } as TeamRoleSelections,
+      { SZ3: 1 } as TeamRoleSelections,
+    ];
+    const aggA = aggregatePeerRoleScores(scenarioA);
+    const aggB = aggregatePeerRoleScores(scenarioB);
+    assert.ok(aggA.scores && aggB.scores);
+    // Mindkét szerep mindkét forgatókönyvben azonos kerekített pontot kap.
+    assert.equal(aggA.scores.MI, aggA.scores.SZ);
+    assert.deepEqual(aggA.scores, aggB.scores);
+    // Csak MI és SZ kapott jelölést → mindkettő a top-3-ban van, és a
+    // relatív sorrendjük nem fordulhat meg a koncentráció-irány cseréjétől
+    // (azonos evidencia → azonos seed → azonos hash-döntés).
+    const order = (roles: { role: TeamRoleCode }[]) => {
+      const mi = roles.findIndex((r) => r.role === "MI");
+      const sz = roles.findIndex((r) => r.role === "SZ");
+      assert.ok(mi >= 0 && sz >= 0, `MI/SZ hiányzik a top-listából: ${roles.map((r) => r.role).join(",")}`);
+      return Math.sign(mi - sz);
+    };
+    assert.equal(
+      order(aggA.topRoles),
+      order(aggB.topRoles),
+      "a MI–SZ sorrend a koncentráció-iránytól függ — a per-rater kerekítés torzít",
+    );
+  });
+
+  it("nagyobb össz-súly a rangsorban a kisebb elé kerül, koncentrációtól függetlenül", () => {
+    // SZ össz-súly 4 (2+2+0) vs MI össz-súly 3 (1+1+1) → SZ áll elöl.
+    const agg = aggregatePeerRoleScores([
+      { SZ1: 2, MI1: 1 } as TeamRoleSelections,
+      { SZ2: 2, MI2: 1 } as TeamRoleSelections,
+      { MI3: 1 } as TeamRoleSelections,
+    ]);
+    assert.ok(agg.scores);
+    const roles = agg.topRoles.map((r) => r.role);
+    assert.ok(
+      roles.indexOf("SZ") < roles.indexOf("MI"),
+      `SZ (össz-súly 4) az MI (3) mögé került: ${roles.join(",")}`,
+    );
   });
 });
 

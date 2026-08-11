@@ -184,6 +184,80 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
   });
 });
 
+// ── FIX 4: kilépett tagok megfigyelései nem szennyezik a hálót ──────────────
+
+describe("computeTrustNetwork — kilépett tagok szűrése", () => {
+  const strong = () => answersAt("max");
+  const weak = () => answersAt("min");
+
+  it("kilépett tag párjai kiesnek: él-szám, erős-él-szám, hub és inbound nem duzzad", () => {
+    // "gone" mindenkivel erős párt hagyott hátra; a jelenlegi tagok közt
+    // csak u1–u2 él. Szűrés nélkül u1/u2 2-2 erős éllel hub lenne, és az
+    // inbound-számokba a kilépett értékelése is beszámítana.
+    const net = computeTrustNetwork(
+      [
+        obs("gone", "u1", strong()), obs("u1", "gone", strong()),
+        obs("gone", "u2", strong()), obs("u2", "gone", strong()),
+        obs("gone", "u3", strong()), obs("u3", "gone", strong()),
+        obs("u1", "u2", strong()), obs("u2", "u1", strong()),
+      ],
+      ["u1", "u2", "u3"],
+    );
+    assert.equal(net.edges.length, 1);
+    assert.deepEqual([net.edges[0].a, net.edges[0].b], ["u1", "u2"]);
+    const current = new Set(["u1", "u2", "u3"]);
+    assert.ok(net.edges.every((e) => current.has(e.a) && current.has(e.b)));
+    assert.equal(net.nodes.find((n) => n.userId === "gone"), undefined);
+    // u1 erős élei: csak u2 (a gone-pár nem számít) → nincs hub (min. 2 kell).
+    assert.equal(net.nodes.find((n) => n.userId === "u1")?.strongEdgeCount, 1);
+    assert.deepEqual(net.hubUserIds, []);
+    // u1 inbound: csak u2 értékelése — a kilépetté nem.
+    assert.equal(net.nodes.find((n) => n.userId === "u1")?.inboundCount, 1);
+    assert.equal(net.measuredPairCount, 1);
+  });
+
+  it("lefedettség 100% felett nem lehet — kilépett-párok az élszámot sem növelik", () => {
+    // 2 jelenlegi tag → 1 lehetséges pár; a kilépettel együtt 3 megfigyelt
+    // pár maradt hátra. Szűrés nélkül a lefedettség 3/1 = 300% lenne.
+    const net = computeTrustNetwork(
+      [
+        obs("u1", "u2", strong()),
+        obs("u1", "gone", strong()),
+        obs("u2", "gone", strong()),
+        obs("gone", "u1", strong()),
+      ],
+      ["u1", "u2"],
+    );
+    assert.equal(net.possiblePairCount, 1);
+    assert.equal(net.measuredPairCount, 1);
+    assert.equal(net.coverage, 1);
+    assert.ok((net.coverage ?? 0) <= 1, "a lefedettség 100% fölé ment");
+  });
+
+  it("kilépett tagok gyenge élei nem jelölnek beágyazatlan (isolated) tagot", () => {
+    // u3-nak csak két kilépetthez volt (gyenge) éle — szűrés nélkül
+    // „2+ mért él, mind gyenge" alapon tévesen beágyazatlannak látszana.
+    const net = computeTrustNetwork(
+      [
+        obs("u3", "gone1", weak()), obs("gone1", "u3", weak()),
+        obs("u3", "gone2", weak()), obs("gone2", "u3", weak()),
+        obs("u1", "u2", strong()), obs("u2", "u1", strong()),
+      ],
+      ["u1", "u2", "u3"],
+    );
+    assert.deepEqual(net.isolatedUserIds, []);
+  });
+
+  it("taglista nélkül a szűrés nem fut (a hívó felel a scope-ért) — kompatibilitás", () => {
+    const net = computeTrustNetwork([
+      obs("x", "y", strong()),
+      obs("y", "x", strong()),
+    ]);
+    assert.equal(net.edges.length, 1);
+    assert.equal(net.coverage, null);
+  });
+});
+
 describe("lépés-ütemezési kapu (isStepGateOpen / isStepOpenFor)", () => {
   it("gate: missing or past nextStepOpensAt is open, future is closed", async () => {
     const { isStepGateOpen } = await import("@/lib/campaign-steps-core");

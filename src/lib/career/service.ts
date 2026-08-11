@@ -43,7 +43,7 @@ export interface CareerSections {
   afterTraining: CareerFitView[][];
 }
 
-export interface CareerResultView extends Omit<CareerFitResult, "clusters" | "ranked"> {
+export interface CareerResultView extends Omit<CareerFitResult, "ranked"> {
   sections: CareerSections;
   scope: ScopeInfo;
   /** a jelenlegi területen belüli legjobb szerepek (ha a user megadta) */
@@ -147,7 +147,6 @@ export async function computeCareerForProfile(
   const emptySections: CareerSections = { atLevel: [], belowLevel: [], afterTraining: [] };
   if (!hasSelfResult) {
     return {
-      general: 50,
       interestSource: null,
       interestDifferentiation: null,
       observerWeight: 0,
@@ -268,7 +267,6 @@ export async function computeCareerForProfile(
     result.ranked.slice(0, 10).every((fit) => !fit.flags.includes("industry-pick"));
 
   return {
-    general: result.general,
     interestSource: result.interestSource,
     interestDifferentiation: result.interestDifferentiation,
     observerWeight: result.observerWeight,

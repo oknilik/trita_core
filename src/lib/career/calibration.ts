@@ -8,6 +8,7 @@
 //     foglalkozásuk hol áll a SAJÁT rangsorukban. Ha a motor mér valamit, a
 //     saját szerep szisztematikusan feljebb kerül, mint véletlen esetén.
 
+import { getOccupation } from "./catalog";
 import { computeCareerFit } from "./engine";
 import type { PersonInput } from "./types";
 
@@ -97,18 +98,37 @@ export interface KnownGroupsResult {
  * A saját foglalkozás rangsor-percentilise: a teljes katalógusra kiszámolt
  * illeszkedésben hány százalék van alatta. Ha a motor nem mér semmit, ez
  * átlagosan 50 körül szór.
+ *
+ * A validáció KÉNYSZERÍTETTEN a kompozit stratégián és a TELJES katalóguson
+ * fut. Az alapértelmezett (interest-led) ág mért érdeklődésnél 30–60 tételre
+ * csonkolja a rangsort — egy pool-on kívüli saját foglalkozás így null-ként
+ * kiesett, a percentilis pedig egy ELŐSZŰRT halmazon belül számolódott: a
+ * nevező azokból a súlyokból származott, amiket éppen validálni akarunk
+ * (körkörös, a statisztikát felfelé torzító számítás). Ugyanezért a vétók is
+ * kimaradnak: egy vétóval kizárt saját szerep sem eshet ki az esetek közül.
  */
 export function ownOccupationPercentile(
   person: PersonInput,
   occupationId: string,
 ): number | null {
-  const result = computeCareerFit(person, {
-    limit: 10_000,
-    diversify: false,
-  });
+  // Katalóguson kívüli azonosító (adathiba, örökség-kulcs): nem a motort
+  // minősíti — ez maradhat kiesett eset.
+  if (!getOccupation(occupationId)) return null;
+  const result = computeCareerFit(
+    { ...person, vetoes: [] },
+    {
+      limit: 10_000,
+      diversify: false,
+      strategy: "composite",
+    },
+  );
   const ranked = result.ranked;
+  if (ranked.length < 2) return null;
   const index = ranked.findIndex((fit) => fit.id === occupationId);
-  if (index < 0 || ranked.length < 2) return null;
+  // Katalógusban létező, de a rangsorból mégis hiányzó saját szerep: ALSÓ
+  // percentilisként számít, nem kiesett esetként — a kiesés a validációs
+  // statisztikát javítaná, pont ott, ahol a motor a leggyengébb.
+  if (index < 0) return 0;
   return ((ranked.length - 1 - index) / (ranked.length - 1)) * 100;
 }
 

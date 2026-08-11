@@ -81,6 +81,13 @@ export interface MemberReportViewModel {
   complementLabels: string[];
   primaryRole: { code: TeamRoleCode; label: string } | null;
   secondaryRole: { code: TeamRoleCode; label: string } | null;
+  /**
+   * A megjelenített szerep forrása (hitelességi alapelv): "questionnaire" =
+   * kitöltött csapatszerep-kérdőív (MÉRT), "estimate" = a személyiség-
+   * profilból számolt becslés. A nézetnek badge-elnie KELL — becsült szerep
+   * jelöletlenül mértnek látszana.
+   */
+  roleSource: "questionnaire" | "estimate" | null;
   /** A saját elsődleges szerep ritka (rá számítanak) vagy megosztott a csapatban. */
   roleFit: "rare" | "shared" | null;
   patternLabel: string | null;
@@ -133,12 +140,14 @@ export function buildMemberReportViewModel(
 
   // A néző saját szerepe (élő) — a kanonikus precedencia-szabályból
   // (team-role-estimate): kitöltött kérdőív > TRITAN-becslés; részleges
-  // self-score-ból nincs becslés.
+  // self-score-ból nincs becslés. A source-t megőrizzük (a nézet badge-eli),
+  // az exact (kerekítetlen becslés-összeg) a holtverseny-evidencia — enélkül
+  // a hash-fallback más elsődleges szerepet adhatna, mint a többi felület.
   const measuredRoles =
     viewer?.teamRoleSource === "questionnaire" ? viewer.teamRoleScores : null;
-  const roleScores: TeamRoleScores | null =
-    resolveDisplayRoleScores(measuredRoles, selfScores)?.scores ?? null;
-  const top = roleScores ? getTopRoles(roleScores, 2) : [];
+  const resolvedRoles = resolveDisplayRoleScores(measuredRoles, selfScores);
+  const roleScores: TeamRoleScores | null = resolvedRoles?.scores ?? null;
+  const top = roleScores ? getTopRoles(roleScores, 2, resolvedRoles?.exact) : [];
   const primaryRole = top[0]
     ? { code: top[0].role, label: TEAM_ROLES[top[0].role][loc] }
     : null;
@@ -185,6 +194,7 @@ export function buildMemberReportViewModel(
     complementLabels,
     primaryRole,
     secondaryRole,
+    roleSource: resolvedRoles?.source ?? null,
     roleFit,
     patternLabel: agg?.pattern?.label ?? null,
     strengths: report.strengths,

@@ -2,7 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { computeCareerFit } from "@/lib/career/engine";
 import { getOccupations } from "@/lib/career/catalog";
-import { calibrateFeedback, runKnownGroups, wilsonLowerBound } from "@/lib/career/calibration";
+import {
+  calibrateFeedback,
+  ownOccupationPercentile,
+  runKnownGroups,
+  wilsonLowerBound,
+} from "@/lib/career/calibration";
 import { DIM_CODES, type DimCode, type PersonInput } from "@/lib/career/types";
 
 // F3 — a motor viselkedésének regressziós korlátai. Ezek a tesztek nem azt
@@ -94,6 +99,52 @@ test("kalibráció: aggregál, és csak elég mintánál jelez véletlen alatti 
   assert.ok(dev.belowChance, "8/8 nem-találó esetén jeleznie kell");
   assert.equal(nurse.total, 2);
   assert.ok(!nurse.belowChance, "2 szavazatból nem vonunk le következtetést");
+});
+
+test("known-groups: a validáció a TELJES katalóguson fut, nem a motor saját pool-ján (körkörösség)", () => {
+  // Mért érdeklődésnél az alapértelmezett ág (interest-led) 30–60 tételre
+  // csonkolja a rangsort. Ha a validáció ezen futna, egy pool-on kívüli saját
+  // foglalkozás null-ként kiesne, a percentilis pedig egy ELŐSZŰRT halmazon
+  // számolódna — a nevező pont azokból a súlyokból származna, amiket validálunk.
+  const person: PersonInput = {
+    dims: { INTE: 55, RESO: 45, TEMP: 70, ADAP: 60, THOR: 55, OPEN: 50 },
+    form: "short",
+    interests: {
+      vector: { R: 15, I: 20, A: 40, S: 30, E: 85, C: 25 },
+      source: "measured",
+    },
+    prefs: { people: 1, variety: 1 },
+  };
+  const defaultRun = computeCareerFit(person, { limit: 10_000, diversify: false });
+  assert.equal(defaultRun.meta.strategy, "interest-led");
+  assert.ok(
+    defaultRun.ranked.length < getOccupations().length,
+    "az interest-led ág nem csonkolt — a teszt előfeltétele sérült",
+  );
+  const inPool = new Set(defaultRun.ranked.map((fit) => fit.id));
+  const outsider = getOccupations().find((occupation) => !inPool.has(occupation.id));
+  assert.ok(outsider, "nincs pool-on kívüli foglalkozás");
+
+  // A pool-on kívüli saját foglalkozás NEM eshet ki: a kényszerített kompozit
+  // futásban valódi percentilist kap.
+  const percentile = ownOccupationPercentile(person, outsider.id);
+  assert.notEqual(percentile, null, "a pool-on kívüli saját szerep kiesett (körkörös validáció)");
+  assert.ok(percentile !== null && percentile >= 0 && percentile <= 100);
+
+  // A vétó sem dobhat ki esetet: a validációs futás a vétókat is figyelmen
+  // kívül hagyja (a saját szerep kizárása a statisztikát javítaná).
+  const babysitter = getOccupations().find((occupation) =>
+    (occupation.attrs ?? []).includes("children"),
+  );
+  assert.ok(babysitter, "nincs children-címkés foglalkozás");
+  const vetoed = ownOccupationPercentile(
+    { ...person, vetoes: ["children"] },
+    babysitter.id,
+  );
+  assert.notEqual(vetoed, null, "a vétózott saját szerep kiesett a validációból");
+
+  // Katalóguson kívüli azonosító (adathiba) viszont továbbra sem eset.
+  assert.equal(ownOccupationPercentile(person, "no-such-occupation"), null);
 });
 
 test("known-groups: a saját foglalkozás percentilise számolható, üres bemenetnél nulla", () => {

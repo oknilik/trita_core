@@ -183,10 +183,24 @@ export interface PersonInput {
 
 export interface FitComponent {
   dim: DimCode;
+  /** a PONTOZÁS célja: profil-alak (centrált) skálán; H-padlónál nyers 50 */
   target: number;
   tol: number;
   weight: number;
+  /**
+   * a PONTOZÁSBAN használt érték: profil-centrált (a saját átlag 50-re tolva);
+   * H-padlós komponensnél a NYERS kevert pont (az abszolút becsületesség számít)
+   */
   userValue: number;
+  /**
+   * MEGJELENÍTÉSI pár NYERS skálán: a userRaw azonos a results-oldali
+   * pontszámmal, a targetRaw a cél ugyanazzal az eltolással visszahozva —
+   * |userRaw − targetRaw| ≈ |userValue − target|, tehát a position/alignment
+   * ezekkel is konzisztens. A UI EZT mutassa „te {..}"-ként, különben a
+   * centrált érték ellentmond a results-oldalnak (pl. nyers 90 → „te 58").
+   */
+  userRaw: number;
+  targetRaw: number;
   /** 0-100: mennyire esik a user értéke a cél-sávba */
   alignment: number;
   /** "under" = a cél alatt, "over" = a cél felett, "in" = a toleranciasávon belül */
@@ -211,11 +225,13 @@ export interface OccupationFit {
   /** a differenciál illeszkedés mérési hibája (SE) */
   se: number;
   band: { low: number; high: number };
-  /** a KOMPOZIT rangsor-pontszám mérési hibája — a klaszterezés ezen fut */
+  /**
+   * A rangsor-pontszám mérési hibája — a klaszterezés ezen fut. Mindig a
+   * TÉNYLEGESEN a rangba számított komponensek hibáiból terjed, a súlyösszeggel
+   * normálva (ld. engine.ts) — a stratégiák között ez a szerződés közös.
+   */
   rankSe: number;
   components: FitComponent[];
-  /** abszolút szint-illeszkedés: eléri-e a user a szerep elvárt szintjeit */
-  absoluteFit: number;
   /** Holland-congruence 0-100 (null, ha nincs érdeklődés-adat) */
   interest: number | null;
   /** preferencia/környezet-egyezés 0-100 (null, ha a user nem állított be tengelyt) */
@@ -241,15 +257,17 @@ export interface OccupationFit {
 export type RankStrategy = "scoped" | "interest-led" | "composite";
 
 export interface CareerFitResult {
-  /** általános munkahelyi alap (C + H), profil-szinten egyszer */
-  general: number;
   interestSource: InterestInput["source"] | null;
   /** érdeklődés-differenciáltság: alacsonynál gyenge jel a Holland-rangsor */
   interestDifferentiation: "low" | "ok" | null;
+  /**
+   * Az observer-keverés súlya, SZÁNDÉKOSAN durva (1 tizedes) felbontással.
+   * Az anonimitás-padló (MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) alatt mindig 0 —
+   * a pontos súly + ismert self-pontok együtt visszafejthetővé tennék az
+   * egyes értékelők válaszait (blended = self·(1−w) + obs·w).
+   */
   observerWeight: number;
-  /** klaszterek: egy klaszteren belül a különbség a mérési hibán belül van */
-  clusters: OccupationFit[][];
-  /** sorrendezett lista (a klaszterek kilapítva) */
+  /** sorrendezett lista */
   ranked: OccupationFit[];
   meta: {
     catalogVersion: string;

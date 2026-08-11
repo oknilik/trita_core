@@ -9,7 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import {
-  calculateTeamRoleScores,
+  calculateTeamRoleScoresRaw,
   getTopRoles,
   TEAM_ROLES,
   type TeamRoleCode,
@@ -45,8 +45,13 @@ export function aggregatePeerRoleScores(
     Object.keys(TEAM_ROLES).map((k) => [k, 0]),
   ) as TeamRoleScores;
 
+  // Raterenként a NYERS (kerekítetlen) súlyösszeg-pontszámot átlagoljuk —
+  // kerekített per-rater értékek átlaga a valódi evidenciát torzítaná: egy
+  // koncentrált dupla-súlyú jelölés (2+1+0) veszíthetne szórt szimplákkal
+  // (1+1+1) szemben, pedig az össz-súlyuk azonos. Kerekítés csak a
+  // megjelenített scores-ban.
   for (const selections of selectionSets) {
-    const profile = calculateTeamRoleScores(selections);
+    const profile = calculateTeamRoleScoresRaw(selections);
     for (const role of Object.keys(sums) as TeamRoleCode[]) {
       sums[role] += profile[role];
     }
