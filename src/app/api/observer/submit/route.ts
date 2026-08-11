@@ -192,7 +192,7 @@ export async function POST(req: Request) {
   // In-app notification — notify observer that their submission was received (if registered user)
   // observerProfileId may be null if the link wasn't opened while signed in,
   // so we also try to match by observerEmail.
-  (async () => {
+  const notifyPromise = (async () => {
     let observerUserId = invitation.observerProfileId;
 
     if (!observerUserId && invitation.observerEmail) {
@@ -225,7 +225,7 @@ export async function POST(req: Request) {
   // Email — csak az összevetés-küszöb elérésekor (fire-and-forget). A CTA az
   // eredmény-oldalra visz, ami OBSERVER_MIN_FOR_REVEAL-nál nyílik — a korábbi
   // 2-es küszöb egy még zárt nézetre küldte a felhasználót.
-  prisma.observerAssessment.count({
+  const completionPromise = prisma.observerAssessment.count({
     where: {
       invitation: { inviterId: invitation.inviterId },
     },
@@ -250,6 +250,18 @@ export async function POST(req: Request) {
       locale,
     }).catch((err) => log.error({ event: "observer.observer_completion_send_error", err: err }, "Observer completion send error"));
   }).catch((err) => log.error({ event: "observer.inviter_lookup_error", err: err }, "Inviter lookup error"));
+
+  // Integrációs teszt-környezetben MEGVÁRJUK a válasz-után futó best-effort
+  // mellékhatásokat (in-app értesítés + email), hogy a leválasztott láncok ne
+  // bleedeljenek át egy KÉSŐBBI teszt-esetbe. A next/navigation import-lánca a
+  // react-server feltétel alatt (CI: node24) dobhat, és a node:test a rejtett
+  // elutasítást flaky-n a futó teszthez rendeli — CI-only integration-hiba,
+  // helyben nem reprodukálható. A promise-ok már `.catch`-eltek (resolve-olnak),
+  // az await csak lezárja a „handled-asynchronously" ablakot. Élesen ez az ág
+  // nem fut → marad a gyors, fire-and-forget válasz.
+  if (process.env.TRITA_INTEGRATION_TEST_DB === "1") {
+    await Promise.allSettled([notifyPromise, completionPromise]);
+  }
 
   return NextResponse.json({ success: true });
 }
