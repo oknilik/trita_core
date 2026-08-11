@@ -9,7 +9,14 @@ import { mean, sampleStdDev } from "@/lib/stats/dimension-stats";
 
 export const MIN_INTELLIGENCE_ASSESSMENTS = 3;
 export type TeamIntelligenceSubTab = "map" | "dynamics" | "roles";
-export type TeamIntelligenceEvidenceSource = "self" | "self_plus_observer" | "inferred";
+// FORRÁS-CÍMKÉK. A `self_plus_trust` néven futó érték korábban
+// `self_plus_observer` volt, és „Önértékelés + külső visszajelzés"-ként
+// renderelt — csakhogy a mért dinamika-élt a BIZALMI KÖR adja
+// (isMeasuredDynamicsSource, friction-model), az observer-kör nem járul
+// hozzá. A badge tehát olyan evidenciát állított, ami nincs mögötte. Egy
+// olyan termékben, ahol a forrás-jelölés a hitelességi alapelv, ez nem
+// kozmetikai hiba. (2026-08-11)
+export type TeamIntelligenceEvidenceSource = "self" | "self_plus_trust" | "inferred";
 export type TeamIntelligenceEvidenceQuality = "none" | "partial" | "sufficient";
 export type TeamIntelligenceEvidenceConfidence = "low" | "medium" | "high";
 
@@ -127,7 +134,7 @@ export function buildTeamIntelligenceEvidence({
       ),
     },
     dynamics: {
-      source: hasMeasuredDynamics ? "self_plus_observer" : "self",
+      source: hasMeasuredDynamics ? "self_plus_trust" : "self",
       quality: hasDynamicsData ? "partial" : "none",
       confidence: hasMeasuredDynamics ? "medium" : "low",
       note: tr(
