@@ -324,6 +324,11 @@ test.describe("Team intelligence structural snapshots", () => {
     await expect(resourceSection.getByText("4/4")).toBeVisible();
     await expect(resourceSection.getByText("Sufficient One")).toBeVisible();
 
+    // Motor-audit v7 (user-kérés): a felületen NINCS ±N mérési-hiba jelölés, és a
+    // resource-map dimenzió-chip HEXACO-betűt mutat, nem nyers TRITAN belső kódot.
+    await expect(page.locator("main")).not.toContainText("±");
+    await expect(resourceSection).not.toContainText(/\b(INTE|RESO|TEMP|ADAP|THOR|OPEN)\b/);
+
     // Deep-dive CTA szekció — a részletes elemzés a Csapatszerepek fülön él.
     const deepDiveSection = page.locator("section").filter({
       has: page.locator("p").filter({ hasText: /^Részletes csapatszerep elemzés$/ }),
