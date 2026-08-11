@@ -44,7 +44,7 @@ import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
-import { isTopPairUncertain } from "@/lib/personality-type";
+import { isSecondaryUncertain } from "@/lib/personality-type";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
@@ -767,15 +767,17 @@ export function ProfileTabs({
             const strengthDescs = DIMENSION_STRENGTH_DESCS;
             const watchDescs = DIMENSION_WATCH_DESCS;
             const lang = locale;
+            // Lapos profil (nincs ≥70 dimenzió): NEM mutatunk közepes sávú
+            // dimenziókat „Erősségeid"-ként — a profileCharacter ugyanitt a
+            // kiegyensúlyozott-profil szöveget adja, a kettő ellentmondott
+            // (motor-audit v6, M4d). Ugyanaz a kulcs megy a bullet-helyre is,
+            // így az Áttekintés-kártya nem állít hamis erősséget.
             const strengthBullets = highDims.length > 0
               ? highDims.map((d) => {
                   const desc = strengthDescs[d.code]?.[lang];
                   return desc ? `${d.label} — ${desc}` : d.label;
                 })
-              : sortedDims.slice(0, 2).map((d) => {
-                  const desc = strengthDescs[d.code]?.[lang];
-                  return desc ? `${d.label} — ${desc}` : d.label;
-                });
+              : [t("results.balancedProfile", locale)];
             const watchBullets = watchDims.length > 0
               ? watchDims.map((d) => {
                   const desc = watchDescs[d.code]?.[lang];
@@ -853,14 +855,16 @@ export function ProfileTabs({
               ),
               personalityType: personalityType ?? "",
               heroInsight: heroInsight ?? "",
-              // P5.6: storytelling-felütés a summary-oldalra. S3-hedge
-              // (FIX 5): mérési hibán belüli top-2 sorrendnél csak a főnévi
-              // karakterkép megy ki — a második dimenziót nem állítjuk.
+              // P5.6: storytelling-felütés a summary-oldalra. S3-hedge (FIX 5
+              // + v6 F1): a kapu a címke-lefokozáséval AZONOS
+              // (isSecondaryUncertain: top-pár VAGY 2–3. hely a mérési hibán
+              // belül) — ilyenkor csak a főnévi karakterkép megy ki, a második
+              // dimenziót színező mondat nem (a képernyő-címke is főnév-only).
               archetypeStory:
                 sortedDims[0] && sortedDims[1]
                   ? buildArchetypeStory(
                       sortedDims[0].code,
-                      isTopPairUncertain(mainDims) ? null : sortedDims[1].code,
+                      isSecondaryUncertain(mainDims) ? null : sortedDims[1].code,
                       locale === "hu" ? "hu" : "en",
                     ) ?? undefined
                   : undefined,
@@ -1196,10 +1200,15 @@ export function ProfileTabs({
                 facetSem={facetSem}
               />
               <div id="invitations" className="scroll-mt-24">
+                {/* minForReveal a szerver-oldali kanonikus küszöbből
+                    (observer-flow → anonimitás-padló) — a self-serve ág is
+                    ezt kapja, hogy az info-banner ne mondjon mást, mint a
+                    reveal-kapu (a korábbi kliens-default 2 volt, a kapu 3). */}
                 <InvitationsTab
                   sentInvitations={sentInvitations}
                   receivedInvitations={receivedInvitations}
                   isPlus={isPlus}
+                  minForReveal={observerFlow?.minForReveal}
                   hasColleagueDirectory={Boolean(
                     observerFlow && observerFlow.state !== "self_serve",
                   )}

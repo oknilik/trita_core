@@ -206,14 +206,26 @@ export function ProfileHero({
             onClick={onDownloadPdf}
             disabled={pdfLoading}
             variant="primary"
-            className="rounded-[9px] px-[18px] text-[11px] font-medium text-[var(--color-text-on-accent)] transition-all duration-300 hover:brightness-110"
-            style={{ backgroundColor: selfTheme.primary }}
+            onInverse
+            className="rounded-[9px] px-[18px] text-[11px] font-medium transition-all duration-300 hover:brightness-110"
+            // Kontraszt-fix (motor-audit v6, M7): a self-glow (brand-bronz
+            // #c17f4a) töltés a sötét zsálya-gradiensen ~2,7:1 — a gomb
+            // beleolvadt a hероba. A működő herók (team/org/candidate) mintája:
+            // VILÁGOS glow-töltés + sötét `text-on-accent` felirat. A self
+            // réteg világos bronza az `accent-primary-soft` (bronz-300) —
+            // töltésként ≥4,3:1 a gradiens-stopokon, a sötét felirat rajta
+            // ≥8:1, és mindkét színsémában világos marad. Inline style-ban,
+            // hogy a variant-osztályokkal ne legyen kaszkád-verseny.
+            style={{
+              backgroundColor: "var(--color-accent-primary-soft)",
+              color: "var(--color-text-on-accent)",
+            }}
           >
             {pdfLoading ? (
               <span className="inline-flex items-center gap-2">
                 <span
                   aria-hidden
-                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                  className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-current border-t-transparent"
                 />
                 {t("results.heroPdf", locale)}
               </span>

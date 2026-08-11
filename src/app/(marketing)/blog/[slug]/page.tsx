@@ -4,6 +4,7 @@ import Link from "next/link";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { getPostBySlug, getAllPosts, extractHeadings, slugifyHeading } from "@/lib/blog";
 import { DIMENSION_COLORS } from "@/lib/color-system";
+import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
 import { t } from "@/lib/i18n";
 import {
   appendSiteSuffix,
@@ -109,14 +110,29 @@ const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> =
       .map(([code, c]) => [code, { bg: c.soft, text: c.strong, border: c.base }]),
   );
 
+// HEXACO-betű → belső dim-kód visszatérkép: a posztok egy része betűvel
+// (H/E/X/A/C/O), más része belső kóddal (THOR/INTE) hívja a badge-et.
+const LETTER_TO_DIM: Record<string, TritanDimCode> = Object.fromEntries(
+  (Object.entries(TRITAN_DIMENSIONS) as [TritanDimCode, { letter: string }][])
+    .map(([dimCode, dim]) => [dim.letter, dimCode]),
+);
+
 function DimBadge({ code, label }: { code: string; label: string }) {
-  const colors = DIM_COLORS[code] ?? { bg: "var(--color-surface-subtle)", text: "var(--color-text-secondary)", border: "var(--color-border-default)" };
+  // A kódot a kanonikus térképen (tritan.ts) visszük át: belső kód (THOR/INTE)
+  // → HEXACO-betű, betű → önmaga — az olvasó SOHA nem lát nyers belső kódot.
+  // A szín is a felismert dimenzióból jön, így a betűvel hívott badge-ek sem
+  // esnek a neutrális fallbackre. Ismeretlen kód (pl. örökség-N) változatlanul,
+  // neutrális színnel megy át.
+  const dimCode: TritanDimCode | undefined =
+    code in TRITAN_DIMENSIONS ? (code as TritanDimCode) : LETTER_TO_DIM[code];
+  const letter = dimCode ? TRITAN_DIMENSIONS[dimCode].letter : code;
+  const colors = DIM_COLORS[dimCode ?? code] ?? { bg: "var(--color-surface-subtle)", text: "var(--color-text-secondary)", border: "var(--color-border-default)" };
   return (
     <span
       style={{ backgroundColor: colors.bg, color: colors.text, borderColor: colors.border }}
       className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold"
     >
-      <span className="font-dm-sans font-bold">{code}</span>
+      <span className="font-dm-sans font-bold">{letter}</span>
       <span>{label}</span>
     </span>
   );

@@ -109,6 +109,14 @@ export const assessmentTranslations = {
     back: { hu: "Vissza", en: "Back" },
     finish: { hu: "Befejezem ✓", en: "Finish ✓" },
     submitting: { hu: "Mentés…", en: "Saving…" },
+    // Beküldés-hiba (self-flow): a válaszok kliens-oldalon megvannak, újra
+    // beküldhetők — a korábbi néma átirányítás a kitöltést nyomtalanul dobta el.
+    errorTitle: { hu: "A beküldés nem sikerült", en: "Submission failed" },
+    errorBody: {
+      hu: "A válaszaid nálad vannak, nem vesztek el — próbáld meg újra beküldeni.",
+      en: "Your answers are still here, nothing is lost — please try submitting again.",
+    },
+    retry: { hu: "Újrapróbálom", en: "Try again" },
   },
   teamRolePeers: {
     eyebrow: { hu: "csapattársi visszajelzés", en: "peer feedback" },

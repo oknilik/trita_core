@@ -1,6 +1,7 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 import { t } from "@/lib/i18n";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { Locale } from "@/lib/i18n";
 
 interface CompDim {
@@ -9,6 +10,12 @@ interface CompDim {
   observer: number;
 }
 
+// Eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) — a ReflectPage
+// számlálóival/vakfolt-listájával és a képernyős összevetéssel azonos küszöb
+// (a korábbi 12 egy oldalon belül mondott ellent a 10-es vágásnak; motor-audit
+// v6, M5). A 20-as lépcső a kapu FELETTI magnitúdó-rámpa (medium → large),
+// nem mérési-hiba döntés.
+
 // ─── Delta indicator ──────────────────────────────────────────────────────────
 
 function DeltaIndicator({ selfValue, observerValue }: { selfValue: number; observerValue: number }) {
@@ -16,7 +23,7 @@ function DeltaIndicator({ selfValue, observerValue }: { selfValue: number; obser
   const selfHigher = selfValue > observerValue;
   const direction = selfHigher ? "↓" : "↑";
 
-  const level = gap >= 20 ? "large" : gap >= 12 ? "medium" : "small";
+  const level = gap >= 20 ? "large" : gap >= DIFF_MIN_GAP ? "medium" : "small";
   // Bronz-magnitúdó-rámpa (sageLight → bronze → bronze700): a nagy önkép-
   // külsőkép eltérés „figyelemre érdemes vakfolt", nem hiba — a korábbi
   // tégla-piros szégyen-jelzés kivezetve (color-system EVAL-elv).
@@ -136,7 +143,7 @@ export function PdfComparisonBars({ dimensions, locale = "hu" }: { dimensions: C
 
       {sorted.map((dim) => {
         const gap = Math.abs(dim.self - dim.observer);
-        const isGap = gap >= 12;
+        const isGap = gap >= DIFF_MIN_GAP;
         return (
           <View
             key={dim.name}
@@ -193,7 +200,9 @@ function getBlindspotLabel(self: number, observer: number, locale: Locale): stri
       ? t("pdf.blindspotSignificantSelfHigher", locale)
       : t("pdf.blindspotSignificantObsHigher", locale);
   }
-  if (gap >= 15) {
+  // A „mérsékelt" sáv alja a kapu maga — a vakfolt-lista a ReflectPage-en
+  // DIFF_MIN_GAP-nél vág, így a "slight" ág oda már nem jut el (defenzív).
+  if (gap >= DIFF_MIN_GAP) {
     return selfHigher
       ? t("pdf.blindspotModSelfHigher", locale)
       : t("pdf.blindspotModObsHigher", locale);

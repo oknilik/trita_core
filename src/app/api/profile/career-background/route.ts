@@ -5,10 +5,19 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { INDUSTRIES, INTEREST_TAGS } from "@/lib/industry-fit";
 import { isCompleteRiasecVector } from "@/lib/career/interests";
+import { getOccupation } from "@/lib/career/catalog";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { checkRateLimit } from "@/lib/rate-limit";
 
 // Karrier-iránytű háttéradatok mentése — a wizard válaszai a profilra
 // kerülnek, hogy visszatéréskor (és eszközök között) megmaradjanak.
+//
+// Kapuzás a /api/career/fit mintájára (2026-08-11): a parkolt modul
+// (CAREER_MODULE_READY=false) VAGY az org-szintű elrejtés esetén a végpont
+// NEM létezik (404) — parkolt modul mellett nem írható careerBackground.
+// Egyetlen élő hívó a CareerCompass, az pedig csak élő modulnál renderel;
+// az onboarding a saját útján (prisma-merge) ír, nem ezen a végponton.
 
 const industryKeys = INDUSTRIES.map((industry) => industry.key) as [string, ...string[]];
 
@@ -74,8 +83,17 @@ const schema = z.object({
   // Vezetői ambíció — a vezetői komponensek súlyát emeli a motorban.
   leadIntent: z.enum(["lead", "expert", "unsure"]).optional(),
   // Jelenlegi foglalkozás a katalógusból (O*NET-SOC) — a known-groups
-  // validáció adatforrása; a rangsorolásba NEM számít bele.
-  currentOccupationId: z.string().max(20).nullable().optional(),
+  // validáció adatforrása; a rangsorolásba NEM számít bele. Csak LÉTEZŐ
+  // katalógus-azonosító fogadható el: egy kitalált kód a validációs mintát
+  // mérgezné (a label szabad szöveg, az id nem az).
+  currentOccupationId: z
+    .string()
+    .max(20)
+    .nullable()
+    .optional()
+    .refine((id) => id == null || Boolean(getOccupation(id)), {
+      message: "UNKNOWN_OCCUPATION",
+    }),
   currentOccupationLabel: z.string().max(120).nullable().optional(),
   // Vétó-chipek: kizárt munka-tulajdonságok — a motor kemény szűrője.
   vetoes: z
@@ -114,6 +132,10 @@ export async function POST(req: Request) {
     select: { id: true, careerBackground: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  if (!CAREER_MODULE_READY || (await isCareerModuleHidden(profile.id))) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
@@ -159,6 +181,10 @@ export async function DELETE() {
     select: { id: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  if (!CAREER_MODULE_READY || (await isCareerModuleHidden(profile.id))) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   await prisma.userProfile.update({
     where: { id: profile.id },

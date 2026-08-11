@@ -5,7 +5,14 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { TRITAN_DIM_ABBR, type TritanDimCode } from "@/lib/tritan";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
+
+// Önkép–külső kép eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) —
+// két hiba-terhelt pontszám KÜLÖNBSÉGÉNEK mérési hibája, nem egy ponté. A
+// korábbi hardkódolt 10 (1×SEM) a 10–14 pontos gap-eket már „eltérésnek"
+// osztályozta, miközben a dossziè/PDF ugyanarra 15-ös kaput használt — a két
+// felület ellentmondott egymásnak (motor-audit v6, M1).
 
 interface ComparisonTabProps {
   dimensions: SerializedDimension[];
@@ -45,8 +52,8 @@ function getSummaryPoints(
   locale: Locale,
 ): string[] {
   const points: string[] = [];
-  const matching = dims.filter((d) => Math.abs(d.self - d.observer) < 10);
-  const differing = dims.filter((d) => Math.abs(d.self - d.observer) >= 10);
+  const matching = dims.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP);
+  const differing = dims.filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP);
 
   if (matching.length >= 4) {
     points.push(
@@ -312,21 +319,21 @@ export function ComparisonTab({
     (d): d is (typeof dimData)[number] & { observer: number } => d.observer !== null,
   );
 
-  const matchingCount = covered.filter((d) => Math.abs(d.self - d.observer) < 10).length;
+  const matchingCount = covered.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).length;
   const differingCount = covered.length - matchingCount;
   const avgGapPct = Math.round(
     covered.reduce((sum, d) => sum + Math.abs(d.self - d.observer), 0) / (covered.length || 1),
   );
   const isGoodMatch = differingCount <= 2;
 
-  const blindspots = covered.filter((d) => Math.abs(d.self - d.observer) >= 10);
-  const noBlindspotDims = covered.filter((d) => Math.abs(d.self - d.observer) < 10).map((d) => d.name);
+  const blindspots = covered.filter((d) => Math.abs(d.self - d.observer) >= DIFF_MIN_GAP);
+  const noBlindspotDims = covered.filter((d) => Math.abs(d.self - d.observer) < DIFF_MIN_GAP).map((d) => d.name);
 
   const summaryPoints = getSummaryPoints(covered, locale);
 
   const getInsight = (code: string, self: number, observer: number): string | null => {
     const gap = Math.abs(self - observer);
-    if (gap < 10) return null;
+    if (gap < DIFF_MIN_GAP) return null;
     const dir = observer > self ? "higher" : "lower";
     // A tábla HEXACO-betűkkel kulcsol — a belső dimenziókódot betűre képezzük.
     const letter = TRITAN_DIM_ABBR[code as TritanDimCode]?.en;
@@ -463,7 +470,7 @@ export function ComparisonTab({
         <div className="flex flex-col gap-3">
           {dimData.map((dim) => {
             const gap = dim.observer === null ? null : Math.abs(dim.self - dim.observer);
-            const hasGap = gap !== null && gap >= 10;
+            const hasGap = gap !== null && gap >= DIFF_MIN_GAP;
             const insight =
               dim.observer === null ? null : getInsight(dim.code, dim.self, dim.observer);
 
@@ -480,14 +487,18 @@ export function ComparisonTab({
                     // Sima eltérés-szám, ± nélkül — a ± mérési-hiba jelölésnek
                     // olvasható, az pedig nem jelenik meg a felületen
                     // (2026-08-11 termékdöntés); az irány a sávokból látszik.
+                    // Bronz magnitúdó-rámpa a PDF DeltaIndicatorral egyezően
+                    // (zsálya egyezés → bronz → mély bronz): a nagy eltérés
+                    // „figyelemre érdemes vakfolt", nem hiba — a korábbi piros
+                    // (state-error) szégyen-jelzés kivezetve.
                     <span
                       className="rounded px-2 py-0.5 text-[11px] font-medium"
                       style={{
-                        backgroundColor: gap < 10 ? "var(--color-surface-self-accent-soft)" : gap < 15 ? "var(--color-surface-highlight-warm)" : "var(--color-state-error-soft)",
-                        color: gap < 10 ? "var(--color-accent-self-deep)" : gap < 15 ? "var(--color-accent-primary-strong)" : "var(--color-text-error-strong)",
+                        backgroundColor: gap < DIFF_MIN_GAP ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-highlight-warm)",
+                        color: gap < DIFF_MIN_GAP ? "var(--color-accent-self-deep)" : gap < 20 ? "var(--color-bronze-dark)" : "var(--color-accent-primary-strong)",
                       }}
                     >
-                      {gap} {t("comparison.pointsUnitShort", locale)} — {gap < 10 ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
+                      {gap} {t("comparison.pointsUnitShort", locale)} — {gap < DIFF_MIN_GAP ? t("comparison.gapMatch", locale) : t("comparison.gapDiff", locale)}
                     </span>
                   )}
                 </div>

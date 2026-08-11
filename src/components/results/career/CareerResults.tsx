@@ -236,11 +236,17 @@ function OccupationCard({
                   {/* A NYERS párt mutatjuk (userRaw/targetRaw): a „te {user}" így
                       azonos a results-oldali pontszámmal. A centrált (pontozási)
                       értéket mutatni ellentmondana neki (nyers 90 → „te 58"). A
-                      cél ugyanazzal az eltolással jön, a távolság változatlan. */}
+                      cél ugyanazzal az eltolással jön, a távolság változatlan.
+                      Ha a visszatolt cél a skála szélére szorult (targetAtEdge),
+                      a mutatott pár távolsága KISEBB a pontozottnál — ezt
+                      kimondjuk, nem hagyjuk ellentmondani a pozíció-címkének. */}
                   {tf("results.cfTargetHint", locale, {
                     target: component.targetRaw,
                     user: component.userRaw,
-                  })}{" "}
+                  })}
+                  {component.targetAtEdge
+                    ? ` (${t("results.cfTargetAtEdge", locale)})`
+                    : ""}{" "}
                   · {Math.round(component.weight * 100)}%
                 </span>
               </span>
@@ -588,14 +594,25 @@ export function CareerResults({
       <div className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
         <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
           {result.scope.active
-            ? tf("results.cfStrategyScoped", locale, {
-                areas: result.scope.keys
-                  .map((key) => {
-                    const industry = INDUSTRIES.find((entry) => entry.key === key);
-                    return industry ? (locale === "hu" ? industry.hu : industry.en) : key;
-                  })
-                  .join(" + "),
-              })
+            ? tf(
+                // A motor scoped forrás- és differenciáltság-kapujának tükre:
+                // csak MÉRT és DIFFERENCIÁLT érdeklődésnél rendez az érdeklődés
+                // — gyenge/hiányzó jelnél a kompozit alap, és a szöveg ezt
+                // mondja ki (nem állíthat mást, mint ami tényleg rendezett).
+                result.interestSource === "measured" &&
+                  result.interestDifferentiation !== "low"
+                  ? "results.cfStrategyScoped"
+                  : "results.cfStrategyScopedComposite",
+                locale,
+                {
+                  areas: result.scope.keys
+                    .map((key) => {
+                      const industry = INDUSTRIES.find((entry) => entry.key === key);
+                      return industry ? (locale === "hu" ? industry.hu : industry.en) : key;
+                    })
+                    .join(" + "),
+                },
+              )
             : t(
                 result.meta.strategy === "interest-led"
                   ? "results.cfStrategyInterestLed"

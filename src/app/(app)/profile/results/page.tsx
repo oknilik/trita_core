@@ -24,11 +24,18 @@ import { createSelfDashboardIA } from "@/lib/dashboard/ia-contract";
 import { BLOCK1, BLOCK8 } from "@/lib/profile-content";
 import { DIMENSION_STRENGTH_VERBS, DIMENSION_WEAK_VERBS } from "@/lib/dimension-insights";
 import { dimStandardError, facetStandardError } from "@/lib/psychometrics";
-import { buildWorkstyleContent, selectGrowthFocusItems } from "@/lib/workstyle-content";
+import {
+  buildWorkstyleContent,
+  selectGrowthFocusItems,
+  selectHeroInsightDims,
+} from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs } from "@/components/profile/ProfileTabs";
-import { aggregatePeerRoleScores } from "@/lib/team-role-peer";
+import {
+  aggregatePeerRoleScores,
+  poolPeerSelectionsByRatedMember,
+} from "@/lib/team-role-peer";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
@@ -245,9 +252,12 @@ export default async function ProfileResultsPage({
   // (2026-08-11 termékdöntés).
   const assessmentForm = scores.form ?? "short";
   const dimSem = dimStandardError(assessmentForm);
-  // Facet-szintű SEM a facet-összevetés egyezés-küszöbéhez — kevesebb itemből
-  // számolt pontszám, ezért nagyobb hiba; a kliens kerekítve, propként kapja.
-  const facetSemRounded = Math.round(facetStandardError(assessmentForm));
+  // Facet-szintű eltérés-küszöb a facet-összevetéshez: KÉT facet-pontszám
+  // (self vs observer-átlag) KÜLÖNBSÉGÉNEK hibája √2·SEM, nem 1×SEM — az
+  // 1×-es kapu ~40%-kal alul-becsülte, és a mérési hibán belüli facet-gapeket
+  // is „eltérésnek" jelölte (motor-audit v6, M2; a dimenzió-szintű kapu,
+  // DIFF_MIN_GAP, ugyanezt a √2-es szabályt követi). Kerekítve, propként megy.
+  const facetSemRounded = Math.round(Math.SQRT2 * facetStandardError(assessmentForm));
 
   // ── Draft info ─────────────────────────────────────────────────────────────
   const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
@@ -368,28 +378,68 @@ export default async function ProfileResultsPage({
 
   // ── Serialize invitations ──────────────────────────────────────────────────
   // ── Csapatszerep: mért self-eredmény + kampányból érkező társ-visszajelzés ─
-  const [teamRoleScoreRecord, teamRoleObservationsRaw] = await Promise.all([
+  const [teamRoleScoreRecord, myTeamMemberships] = await Promise.all([
     prisma.teamRoleScore.findFirst({
       where: { userProfileId: profile.id },
       orderBy: { createdAt: "desc" },
       select: { scores: true, source: true },
     }),
-    prisma.teamRoleObservation.findMany({
-      where: { aboutUserId: profile.id },
-      orderBy: { updatedAt: "asc" },
-      select: { raterUserId: true, selections: true },
+    prisma.teamMember.findMany({
+      where: { userId: profile.id },
+      select: { teamId: true },
     }),
   ]);
   const teamRoleMeasuredScores =
     teamRoleScoreRecord?.source === "questionnaire"
       ? (teamRoleScoreRecord.scores as Record<string, number>)
       : null;
-  // Raterenként a legfrissebb kör számít (ismételt körök felülírnak).
-  const latestByRater = new Map<string, TeamRoleSelections>();
-  for (const obs of teamRoleObservationsRaw) {
-    latestByRater.set(obs.raterUserId, obs.selections as TeamRoleSelections);
+  // Peer-aggregátum HATÓKÖRE (motor-audit v6, M6): a korábbi lekérdezés
+  // minden observationt összeszedett `aboutUserId` szerint — csapattól,
+  // szervezettől és időtől függetlenül, kilépő-védelem és self-szűrés
+  // nélkül. Most a csapat-fül S4-szabályát tükrözzük: csak a user JELENLEGI
+  // csapataiból származó sorok, és csak olyan értékelőtől, aki az adott
+  // csapatnak MA is tagja. A dedupe/self-kizárás a kanonikus
+  // poolPeerSelectionsByRatedMember-ben fut (updatedAt szerint növekvő
+  // sorrend → raterenként a legutolsó kör számít, csapatokon átívelően is).
+  const myTeamIds = myTeamMemberships.map((m) => m.teamId);
+  const [teamRoleObservationsRaw, currentCoMembers] =
+    myTeamIds.length > 0
+      ? await Promise.all([
+          prisma.teamRoleObservation.findMany({
+            where: { aboutUserId: profile.id, teamId: { in: myTeamIds } },
+            orderBy: { updatedAt: "asc" },
+            select: { teamId: true, raterUserId: true, selections: true },
+          }),
+          prisma.teamMember.findMany({
+            where: { teamId: { in: myTeamIds } },
+            select: { teamId: true, userId: true },
+          }),
+        ])
+      : [[], []];
+  const membersByTeam = new Map<string, Set<string>>();
+  for (const member of currentCoMembers) {
+    const set = membersByTeam.get(member.teamId) ?? new Set<string>();
+    set.add(member.userId);
+    membersByTeam.set(member.teamId, set);
   }
-  const peerAggregate = aggregatePeerRoleScores([...latestByRater.values()]);
+  // A pool második argumentuma az aktuális-tag halmaz; a csapatonkénti
+  // (szigorúbb) tagság-ellenőrzést az előszűrő adja, mert a pool egyetlen
+  // halmazzal dolgozik (a csapat-fül hívásában ez egy csapat tagsága).
+  const coMemberIds = new Set(currentCoMembers.map((m) => m.userId));
+  const scopedObservationRows = teamRoleObservationsRaw
+    .filter((obs) => membersByTeam.get(obs.teamId)?.has(obs.raterUserId))
+    .map((obs) => ({
+      aboutUserId: profile.id,
+      raterUserId: obs.raterUserId,
+      selections: obs.selections as TeamRoleSelections,
+    }));
+  const pooledPeerSelections = poolPeerSelectionsByRatedMember(
+    scopedObservationRows,
+    coMemberIds,
+  );
+  const peerAggregate = aggregatePeerRoleScores(
+    pooledPeerSelections.get(profile.id) ?? [],
+  );
   const teamRolePeer =
     peerAggregate.raterCount > 0
       ? {
@@ -464,18 +514,20 @@ export default async function ProfileResultsPage({
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
 
-  // Hero insight — behavior-based sentence (not dimension names)
+  // Hero insight — behavior-based sentence (not dimension names).
+  // A pár-választás közös szabályból (workstyle-content, motor-audit v6, M4c):
+  // kanonikus rangsor (rankDimensionScores) + a fordított RESO kimarad a
+  // „leggyengébb" slotból (az alacsony Emocionalitás stabilitás, nem
+  // gyengeség) + lapos profilnál (< 2·SEM) csak az erősség megy ki.
   const heroInsight = (() => {
-    const sorted = [...mainDimensions].sort((a, b) => b.score - a.score);
-    const strongest = sorted[0];
-    const weakest = sorted[sorted.length - 1];
-    if (!strongest || !weakest) return "";
-
-    const s = DIMENSION_STRENGTH_VERBS[strongest.code]?.[locale] ?? strongest.label;
-    // Lapos profilnál (a teljes terjedelem a mérési hibán belül: max−min <
-    // 2·SEM) a „leggyengébb" kijelölése műtermék lenne — csak az erősség megy ki.
-    if (strongest.score - weakest.score < 2 * dimSem) return `${s}.`;
-    const w = DIMENSION_WEAK_VERBS[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
+    const pick = selectHeroInsightDims(mainDimensions, dimSem);
+    if (!pick) return "";
+    const s =
+      DIMENSION_STRENGTH_VERBS[pick.strongest.code]?.[locale] ?? pick.strongest.label;
+    if (!pick.weakest) return `${s}.`;
+    const w =
+      DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ??
+      pick.weakest.label.toLowerCase();
     return `${s} — ${w}.`;
   })();
 

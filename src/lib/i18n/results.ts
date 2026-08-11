@@ -857,6 +857,13 @@ export const resultsTranslations = {
       hu: "A listát a bejelölt területeid szűrik ({areas}). A sorrendet az érdeklődés-kódod és a preferenciáid adják, a csoportokon belül a személyiséged — ha egy tétel eltér valamelyiktől, jelöljük.",
       en: "Your picked fields filter this list ({areas}). Your interest code and preferences set the order, personality orders within groups — any divergence is flagged per item.",
     },
+    // Scope-mód, de gyenge (lapos/becsült) vagy hiányzó érdeklődés-jellel: a
+    // sorrendet ilyenkor NEM az érdeklődés vezeti (motor forrás- és
+    // differenciáltság-kapu) — a szöveg nem állíthat mást, mint ami rendez.
+    cfStrategyScopedComposite: {
+      hu: "A listát a bejelölt területeid szűrik ({areas}). A sorrendet a kimondott preferenciáid és a személyiség-illeszkedésed adják — gyenge vagy hiányzó érdeklődés-jel legfeljebb kis súllyal számít.",
+      en: "Your picked fields filter this list ({areas}). Your stated preferences and personality fit set the order — a weak or missing interest signal contributes at low weight only.",
+    },
     cfScopeWidened: {
       hu: "A bejelölt területeken kevés találat volt, ezért a teljes katalógusból mutatunk — a bejelölt területeid kiemelve.",
       en: "Your picked fields had too few matches, so we show the full catalog with your picks highlighted.",
@@ -925,6 +932,12 @@ export const resultsTranslations = {
     },
     cfWhy: { hu: "Miért ennyi?", en: "Why this score?" },
     cfTargetHint: { hu: "cél {target} · te {user}", en: "target {target} · you {user}" },
+    // Skála-szél jelzés: a nyers skálára visszatolt cél 0/100-ra szorult, a
+    // mutatott pár távolsága ezért kisebb a pontozottnál (engine targetAtEdge).
+    cfTargetAtEdge: {
+      hu: "a cél a skála szélére szorult — az eltérés a mutatottnál nagyobb",
+      en: "target clipped at the scale edge — the gap is larger than shown",
+    },
     cfPositionIn: { hu: "sávon belül", en: "in range" },
     cfPositionOver: { hu: "cél fölött", en: "above target" },
     cfPositionUnder: { hu: "cél alatt", en: "below target" },

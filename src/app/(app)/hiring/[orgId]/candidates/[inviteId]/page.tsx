@@ -13,6 +13,9 @@ import {
   RESOLUTION_NARRATIVES,
 } from "@/lib/profile-content";
 import type { Locale } from "@/lib/profile-content";
+import { TRITAN_DIMENSIONS, TRITAN_ORDER, type TritanDimCode } from "@/lib/tritan";
+import { diffStandardError } from "@/lib/psychometrics";
+import type { AssessmentForm } from "@/lib/questions/types";
 import { t } from "@/lib/i18n";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { RadarLegendNote } from "@/components/dashboard/RadarLegendNote";
@@ -191,13 +194,31 @@ export default async function CandidateResultPage({
 
   const candidateScores = extractDimensionScores(invite.result.scores) ?? {};
   const testType = invite.result.testType ?? "TRITAN";
-  const dims = ["INTE", "RESO", "TEMP", "ADAP", "THOR", "OPEN"];
+  // Kanonikus HEXACO-sorrend (tritan.ts) — nem helyi dim-lista.
+  const dims: TritanDimCode[] = TRITAN_ORDER;
+  // Hiányzó dimenzió ≠ 0%: a korábbi `?? 0` egy csonka score-JSON-t valós
+  // nullaként rajzolt ki (bar, radar, gap-sor). A hiányzó dimenziót kihagyjuk.
+  const presentDims = dims.filter((d) => typeof candidateScores[d] === "number");
+
+  // A kérdőív-forma a tárolt pontozás-pecsétből — pecsét nélküli (örökség)
+  // sorokra a konzervatívabb rövid formával számolunk (nagyobb SEM).
+  const scoresRecord = invite.result.scores as { form?: unknown } | null;
+  const candidateForm: AssessmentForm = scoresRecord?.form === "full" ? "full" : "short";
+  // Két FÜGGETLEN pontszám (jelölt vs csapattag-átlag) különbségének hibája:
+  // √2·SEM. Azonos valódi profilok mellett az |eltérés| várható értéke
+  // ~0,8·SE — ez alatt a „hasonlóság" a mérési hibán belüli megkülönböztet-
+  // hetetlenség, nem kiváló egyezés; eltérést pedig csak ~1,96·SE fölött
+  // állítunk. A SEM-szám a felületre nem kerül ki (2026-08-11 termékdöntés) —
+  // csak a címkéket kapuzza.
+  const gapSe = diffStandardError(candidateForm);
+  const gapNoiseFloor = gapSe * Math.sqrt(2 / Math.PI);
+  const assertableGap = 1.96 * gapSe;
 
   const profileOutput = runProfileEngine(candidateScores, testType);
 
   // All high/low dims for the summary block
-  const highDims = dims.filter((d) => profileOutput.categories[d] === "high");
-  const lowDims = dims.filter((d) => profileOutput.categories[d] === "low");
+  const highDims = presentDims.filter((d) => profileOutput.categories[d] === "high");
+  const lowDims = presentDims.filter((d) => profileOutput.categories[d] === "low");
 
   // Selected team: searchParam → invite's team → first org team
   const selectedTeamId =
@@ -247,15 +268,16 @@ export default async function CandidateResultPage({
     }
   }
 
-  // Gap analysis — sorted by absolute gap descending
-  const gapAnalysis = teamAvg
-    ? dims
+  // Gap analysis — sorted by absolute gap descending. Csak a jelöltnél TÉNYLEG
+  // mért dimenziókra: a hiányzó dim 0-ként −50 körüli hamis gapet adna.
+  const gapAnalysis = teamAvg && presentDims.length > 0
+    ? presentDims
         .map((d) => ({
           dim: d,
           label: DIM_LABELS[d]?.[contentLocale] ?? d,
-          candidate: candidateScores[d] ?? 0,
+          candidate: candidateScores[d],
           team: teamAvg![d],
-          gap: (candidateScores[d] ?? 0) - teamAvg![d],
+          gap: candidateScores[d] - teamAvg![d],
         }))
         .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))
     : null;
@@ -444,13 +466,27 @@ export default async function CandidateResultPage({
                 const avgAbsGap = Math.round(
                   gapAnalysis.reduce((sum, g) => sum + Math.abs(g.gap), 0) / gapAnalysis.length
                 );
+                // Mérési-hiba-tudatos címkézés: a korábbi nyers vágások
+                // (<10 „kiváló", <20 „jó") a zajszint ALATT jártak — SEM≈10
+                // mellett azonos valódi profilok is ~11-12 pontos átlagos
+                // |gapet| adnak. Eltérést csak akkor állítunk, ha legalább egy
+                // dimenzió gapje ~1,96·SE fölött van; a zaj-padló alatti
+                // hasonlóság pedig „a mérési hibán belül egyezik" — nem
+                // hamis precizitású „kiváló egyezés".
+                const significantGaps = gapAnalysis.filter(
+                  (g) => Math.abs(g.gap) > assertableGap,
+                );
                 const fitLevel =
-                  avgAbsGap < 10 ? "excellent" : avgAbsGap < 20 ? "good" : "divergent";
+                  significantGaps.length > 0
+                    ? "divergent"
+                    : avgAbsGap <= gapNoiseFloor
+                      ? "withinError"
+                      : "good";
                 // A címke HASONLÓSÁGOT mond, nem alkalmasságot: az eltérő
                 // profil kiegészítő is lehet, ezért nem kap minősítést.
                 // Értékelő ramp (color-system EVAL_RAMP): zsálya→bronz→neutrális
                 const fitLabels = {
-                  excellent: { key: "hiring.similarityHigh", color: EVAL_RAMP.high.accent },
+                  withinError: { key: "hiring.similarityWithinError", color: EVAL_RAMP.high.accent },
                   good: { key: "hiring.similarityMid", color: EVAL_RAMP.mid.fg },
                   divergent: { key: "hiring.similarityLow", color: EVAL_RAMP.low.fg },
                 } as const;
@@ -464,7 +500,8 @@ export default async function CandidateResultPage({
                     <p className="mt-1 text-xs text-ink-body">
                       {t("hiring.avgDeviation", locale).replace("{points}", String(avgAbsGap))}
                     </p>
-                    {topGap && Math.abs(topGap.gap) > 15 && (
+                    {/* A „legnagyobb eltérés" is csak a mérési hibán túl állítás. */}
+                    {topGap && Math.abs(topGap.gap) > assertableGap && (
                       <p className="mt-1 text-xs text-muted">
                         {t("hiring.largestGap", locale)
                           .replace("{label}", topGap.label)
@@ -497,8 +534,8 @@ export default async function CandidateResultPage({
           </h2>
 
           <div className="flex flex-col gap-4">
-            {dims.map((d) => {
-              const score = Math.round(candidateScores[d] ?? 0);
+            {presentDims.map((d) => {
+              const score = Math.round(candidateScores[d]);
               const category = profileOutput.categories[d] ?? "medium";
               const teamVal = teamAvg ? Math.round(teamAvg[d]) : null;
               const color = DIM_COLORS[d];
@@ -511,11 +548,13 @@ export default async function CandidateResultPage({
                   className="rounded-xl border border-warm-mid p-4 transition hover:bg-cream/50"
                 >
                   <div className="mb-2 flex items-center gap-3">
+                    {/* HEXACO-betű, NEM a belső dim-kód (INTE/RESO/…) — a
+                        teljes címke mellette áll, a badge a kanonikus betű. */}
                     <div
                       className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-micro font-bold text-white"
                       style={{ background: color }}
                     >
-                      {d}
+                      {TRITAN_DIMENSIONS[d].letter}
                     </div>
                     <span className="text-sm font-semibold text-ink">{dimLabel}</span>
                     <span
@@ -573,10 +612,10 @@ export default async function CandidateResultPage({
                 <div className="w-full max-w-[280px]">
                   <RadarChart
                     uid="candidate-vs-team"
-                    dimensions={dims.map((d) => ({
+                    dimensions={presentDims.map((d) => ({
                       code: d,
                       color: dimColors(d).base,
-                      score: candidateScores[d] ?? 0,
+                      score: candidateScores[d],
                       observerScore: teamAvg![d],
                     }))}
                     showObserver={true}
@@ -596,11 +635,12 @@ export default async function CandidateResultPage({
                 <div className="space-y-2">
                   {gapAnalysis.map((g) => (
                     <div key={g.dim} className="flex items-center gap-3">
+                      {/* HEXACO-betű, nem a belső kód — a címke mellette áll. */}
                       <div
                         className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                         style={{ background: DIM_COLORS[g.dim] }}
                       >
-                        {g.dim}
+                        {TRITAN_DIMENSIONS[g.dim].letter}
                       </div>
                       <span className="w-28 truncate text-xs text-ink-body">{g.label}</span>
 
@@ -621,13 +661,16 @@ export default async function CandidateResultPage({
                       </div>
 
                       {/* Bronz-magnitúdó (eval-ramp): nagyobb eltérés = mélyebb
-                          bronz; kis szöveghez AA-biztos árnyalatok. */}
+                          bronz; kis szöveghez AA-biztos árnyalatok. A lépcsők
+                          SE-tudatosak: mély bronz csak a ~1,96·SE fölött
+                          (állítható eltérés), bronz az 1·SE fölött, alatta
+                          zsálya (a mérési hibán belül). */}
                       <span
                         className={[
                           "w-12 text-right font-mono text-xs font-semibold",
-                          Math.abs(g.gap) > 20
+                          Math.abs(g.gap) > assertableGap
                             ? "text-bronze-700"
-                            : Math.abs(g.gap) > 10
+                            : Math.abs(g.gap) > gapSe
                               ? "text-bronze-dark"
                               : "text-sage-dark",
                         ].join(" ")}
@@ -720,14 +763,14 @@ export default async function CandidateResultPage({
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
-                          {pair.dimA}
+                          {TRITAN_DIMENSIONS[pair.dimA as TritanDimCode]?.letter ?? pair.dimA}
                         </span>
                         <span className="text-micro text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
-                          {pair.dimB}
+                          {TRITAN_DIMENSIONS[pair.dimB as TritanDimCode]?.letter ?? pair.dimB}
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(26,92,58,0.08)] px-2 py-0.5 text-micro font-semibold text-sage">
@@ -755,14 +798,14 @@ export default async function CandidateResultPage({
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimA] }}
                         >
-                          {pair.dimA}
+                          {TRITAN_DIMENSIONS[pair.dimA as TritanDimCode]?.letter ?? pair.dimA}
                         </span>
                         <span className="text-micro text-muted">+</span>
                         <span
                           className="rounded px-1.5 py-0.5 text-micro font-bold text-white"
                           style={{ background: DIM_COLORS[pair.dimB] }}
                         >
-                          {pair.dimB}
+                          {TRITAN_DIMENSIONS[pair.dimB as TritanDimCode]?.letter ?? pair.dimB}
                         </span>
                       </div>
                       <span className="rounded-full bg-[rgba(200,65,10,0.08)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-primary-strong)]">

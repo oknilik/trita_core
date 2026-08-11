@@ -186,10 +186,20 @@ function componentFit(
   // vissza (rawValue − centeredValue = profilátlag − 50), így a távolság — és
   // vele a position/alignment — változatlan; a userRaw viszont azonos a
   // results-oldali pontszámmal. H-padlónál a két skála egybeesik (nyers 50).
+  //
+  // SKÁLA-SZÉL (2026-08-11): magas (vagy nagyon alacsony) átlagú profilnál az
+  // eltolt cél kicsúszhat a 0-100 skáláról. A vágás után a |userRaw − targetRaw|
+  // KISEBB, mint a pontozott |userValue − target| távolság — a kártya „cél 100 ·
+  // te 95"-öt mutatna egy valójában nagyobb eltérésre. A userRaw-t nem
+  // hamisítjuk meg (az a results-oldali pontszám), ezért a pár mellé
+  // `targetAtEdge` jelzés kerül, és a UI kimondja, hogy a cél a skála szélére
+  // szorult.
   const shift = rawValue - centeredValue;
+  const shiftedTarget = target + shift;
   const targetRaw = hFloor
     ? effectiveTarget
-    : Math.max(0, Math.min(100, target + shift));
+    : Math.max(0, Math.min(100, shiftedTarget));
+  const targetAtEdge = !hFloor && (shiftedTarget < 0 || shiftedTarget > 100);
   return {
     dim,
     target: effectiveTarget,
@@ -201,6 +211,7 @@ function componentFit(
     alignment: Math.round(alignment),
     position,
     ...(hFloor ? { note: "h-floor" as const } : {}),
+    ...(targetAtEdge ? { targetAtEdge: true as const } : {}),
   };
 }
 
@@ -537,13 +548,15 @@ export function computeCareerFit(
     // metszet-kiemeléssel. A személyiség a klaszteren belül rendez, és
     // annotál — nem szűr.
     //
-    // FORRÁS-KAPU (2026-08-11): az interest-led kapu logikája a scoped
-    // rendezésre is érvényes. Becsült/címke-forrású érdeklődésnél a Holland-jel
-    // NEM rendezhet egyedül — az egykomponensű súlyozott átlagban a súly kiesik
-    // (interest·w/w = interest), így egy 7,5%-os súlyú becsült jel adta volna a
-    // sorrend 100%-át, miközben a kártya „8%"-ot mutat. Ilyenkor a kompozit
-    // súlyú alap rendez: demandFit horgonnyal, a gyenge érdeklődés legfeljebb a
-    // meta-beli súlyával szól bele.
+    // FORRÁS- ÉS DIFFERENCIÁLTSÁG-KAPU (2026-08-11): az interest-led kapu
+    // logikája TELJES EGÉSZÉBEN a scoped rendezésre is érvényes — a forrás
+    // (measured) ÉS a differenciáltság is. Becsült/címke-forrású VAGY mért, de
+    // LAPOS (low differentiation) érdeklődésnél a Holland-jel NEM rendezhet
+    // egyedül — az egykomponensű súlyozott átlagban a súly kiesik
+    // (interest·w/w = interest), így egy 7,5–17,5%-os súlyú gyenge jel adta
+    // volna a sorrend 100%-át, miközben a kártya a kis súlyt mutatja. Ilyenkor
+    // a kompozit súlyú alap rendez: demandFit horgonnyal, a gyenge érdeklődés
+    // legfeljebb a meta-beli (forrás × differenciáltság) súlyával szól bele.
     //
     // A választási ALAP a differenciáltság-igazított érdeklődés-súlyt használja
     // (`interestWeight` = interestWeightFor(forrás) × low-differentiation felező),
@@ -565,7 +578,12 @@ export function computeCareerFit(
     // a súlyösszeggel normálva (a kompozit ág mintája) — a korábbi közös,
     // normálatlan képlet mindig mindkét tagot számolta, és 1,2–2,5× szűkebb
     // klasztereket adott.
-    const measuredInterest = person.interests?.source === "measured";
+    const measuredSource = person.interests?.source === "measured";
+    // Az érdeklődés-vezette scoped alap kapuja a canUseInterestLed tükre:
+    // mért ÉS differenciált. Lapos mért érdeklődés a demandFit-horgonyú ágba
+    // esik — a mért forrás pontosabb komponens-hibája (INTEREST_SE_MEASURED)
+    // ott is megmarad.
+    const interestLedScope = measuredSource && differentiation !== "low";
     const byId = new Map(getOccupations().map((o) => [o.id, o]));
     sorted = filtered
       .map((fit) => {
@@ -578,7 +596,7 @@ export function computeCareerFit(
         // (érték, súly, SE) hármasok — az alap és a rankSe UGYANABBÓL a
         // listából számol, így nem tudnak elcsúszni egymástól.
         const baseParts: Array<[number, number, number]> = [];
-        if (measuredInterest) {
+        if (interestLedScope) {
           if (fit.interest !== null)
             baseParts.push([fit.interest, interestWeight, INTEREST_SE_MEASURED]);
           if (fit.preference !== null)
@@ -586,7 +604,11 @@ export function computeCareerFit(
         } else {
           baseParts.push([fit.demandFit, RANK_WEIGHTS.demand, fit.se]);
           if (fit.interest !== null)
-            baseParts.push([fit.interest, interestWeight, INTEREST_SE_OTHER]);
+            baseParts.push([
+              fit.interest,
+              interestWeight,
+              measuredSource ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER,
+            ]);
           if (fit.preference !== null)
             baseParts.push([fit.preference, RANK_WEIGHTS.preference, PREFERENCE_SE]);
         }
@@ -600,14 +622,14 @@ export function computeCareerFit(
           ? Math.sqrt(baseParts.reduce((sum, [, w, se]) => sum + (w * se) ** 2, 0)) /
             baseWeight
           : fit.se;
-        // A címke azt mondja, ami tényleg rendezett: mért érdeklődésnél
-        // "interest"; kompozit-alapnál "composite"; ha csak a demandFit maradt
-        // (nincs érdeklődés/preferencia adat), "demandFit" — a korábbi ág a
-        // demandFit-fallbacket is "interest"-nek címkézte.
+        // A címke azt mondja, ami tényleg rendezett: mért ÉS differenciált
+        // érdeklődésnél "interest"; kompozit-alapnál "composite"; ha csak a
+        // demandFit maradt (nincs érdeklődés/preferencia adat), "demandFit" —
+        // a korábbi ág a demandFit-fallbacket is "interest"-nek címkézte.
         const orderedBy: OccupationFit["orderedBy"] =
-          baseWeight === 0 || (!measuredInterest && baseParts.length === 1)
+          baseWeight === 0 || (!interestLedScope && baseParts.length === 1)
             ? "demandFit"
-            : measuredInterest
+            : interestLedScope
               ? "interest"
               : "composite";
         return {

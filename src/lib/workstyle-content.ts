@@ -12,6 +12,7 @@ import {
   getEnvRows,
 } from "@/lib/profile-content";
 import { getDimensionTier } from "@/lib/dimension-utils";
+import { rankDimensionScores } from "@/lib/tritan";
 import type { Locale } from "@/lib/i18n";
 
 // Munkastílus-tartalom (Ahogy működsz / Ideális környezet / Szerep-illeszkedés)
@@ -174,6 +175,11 @@ const LEANING_LABELS: Record<"high" | "low", Record<Locale, string>> = {
   low: { hu: "inkább alacsony", en: "leaning low" },
 };
 
+/** A fordított (magasabb = érzelmileg reaktívabb) dimenzió belső kódja —
+ *  az alacsony pontszám itt stabilitás, ezért a deficit-alapú választásokból
+ *  (fejlődési tipp, fejlődési fókusz, hero „leggyengébb" slot) kimarad. */
+const REVERSE_DIM_CODE = "RESO";
+
 export function buildWorkstyleContent(
   dimScores: Record<string, number>,
   testType: TestType,
@@ -283,8 +289,15 @@ export function buildWorkstyleContent(
   // Fejlődési javaslat (P2.4, P5.5) — a legalacsonyabb dimenzióhoz, csak ha
   // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
   // growthTip: rövid forma (summary-oldal); growthPlan: háromlépcsős ív.
+  // A fordított RESO KIMARAD a legalacsonyabb-választásból (motor-audit v6,
+  // M4a): az alacsony Emocionalitás stabilitás (erőforrás), nem deficit — a
+  // „Fejlődési fókusz · Emocionalitás · alacsony" forrás-chip egy stabil
+  // kitöltőnél hamis keretezés volt. A választás a legalacsonyabb NEM-RESO
+  // dimenzióra esik (ugyanaz a pólus-szabály, mint a selectGrowthFocusItems).
   const { growthTip, growthPlan } = (() => {
-    const entries = Object.entries(dimScores).filter(([code]) => code !== "I");
+    const entries = Object.entries(dimScores).filter(
+      ([code]) => code !== "I" && code !== REVERSE_DIM_CODE,
+    );
     if (entries.length === 0) return { growthTip: undefined, growthPlan: undefined };
     const [lowestDim, lowestScore] = entries.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
     if (lowestScore >= 40) return { growthTip: undefined, growthPlan: undefined };
@@ -450,9 +463,6 @@ interface GrowthFocusDimensionInput {
   facets: { code: string; label: string; score: number }[];
 }
 
-/** A fordított (magasabb = érzelmileg reaktívabb) dimenzió belső kódja. */
-const REVERSE_DIM_CODE = "RESO";
-
 export function selectGrowthFocusItems(
   mainDimensions: GrowthFocusDimensionInput[],
 ): GrowthFocusItem[] {
@@ -490,4 +500,35 @@ export function selectGrowthFocusItems(
       dimLabel: d.label,
       dimColor: d.color,
     }));
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Hero-mondat dimenzió-választása (results-oldal „heroInsight"). Motor-audit
+// v6, M4c: a „leggyengébb" slot korábban nyers `.sort`-tal a fordított RESO-t
+// is kiválaszthatta — egy stabil (alacsony Emocionalitású) kitöltő hero-
+// mondata a stabilitását nevezte meg gyengeségként. Szabályok:
+//  - rangsor a kanonikus rankDimensionScores-szal (determinista tie-break);
+//  - a leggyengébb slot a legalacsonyabb NEM-RESO dimenzió;
+//  - lapos profilnál (a MEGJELENÍTETT pár terjedelme < 2·SEM) nincs
+//    „leggyengébb" — csak az erősség megy ki (weakest: null).
+// ─────────────────────────────────────────────────────────────────────
+
+export function selectHeroInsightDims<T extends { code: string; score: number }>(
+  mainDimensions: ReadonlyArray<T>,
+  dimSem: number,
+): { strongest: T; weakest: T | null } | null {
+  if (mainDimensions.length === 0) return null;
+  const ranked = rankDimensionScores(mainDimensions);
+  const strongest = ranked[0];
+  const weakCandidates = ranked.filter((d) => d.code !== REVERSE_DIM_CODE);
+  const weakest = weakCandidates[weakCandidates.length - 1];
+  if (!weakest || weakest.code === strongest.code) {
+    return { strongest, weakest: null };
+  }
+  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne (a különbség a
+  // KÉT pontszám mérési hibáján, 2·SEM-en belül van) — csak az erősség megy ki.
+  if (strongest.score - weakest.score < 2 * dimSem) {
+    return { strongest, weakest: null };
+  }
+  return { strongest, weakest };
 }

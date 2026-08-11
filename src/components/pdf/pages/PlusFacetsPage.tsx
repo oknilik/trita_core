@@ -24,7 +24,11 @@ export function PlusFacetsPage({ data, pageNum, totalPages, locale }: Props) {
     d.facets.map((f) => ({ name: f.label, value: f.score, dimName: d.name, dimCode: d.code })),
   );
   const sortedFacets = [...allFacets].sort((a, b) => b.value - a.value);
-  const topFacets = sortedFacets.slice(0, 5);
+  // „Kiemelkedő" (erősség-keretezésű) lista: a fordított Emocionalitás (RESO)
+  // facetei KIMARADNAK — a magas Félelem/Szorongás nem „kiemelkedő erősség",
+  // a zöld pill hamis keretezés volt (motor-audit v6, M4b; a bottom-lista
+  // pólus-szabályának tükörpárja).
+  const topFacets = sortedFacets.filter((f) => f.dimCode !== "RESO").slice(0, 5);
   // Alsó (fejlődés-keretezésű) lista: a fordított Emocionalitás (RESO)
   // facetei kimaradnak — az alacsony Félelem/Szorongás stabilitás, nem
   // „tér a fejlődésre" (motor-audit v4, FIX 2 pólus-szabály).

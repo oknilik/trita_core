@@ -201,6 +201,13 @@ export interface FitComponent {
    */
   userRaw: number;
   targetRaw: number;
+  /**
+   * true, ha a nyers skálára visszatolt cél a skála szélére (0/100) szorult:
+   * ilyenkor a |userRaw − targetRaw| KISEBB, mint a pontozott
+   * |userValue − target| távolság — a UI jelezze, hogy a cél a mutatottnál
+   * kijjebb esne (a position/alignment a pontozott távolságból jön, az ép).
+   */
+  targetAtEdge?: true;
   /** 0-100: mennyire esik a user értéke a cél-sávba */
   alignment: number;
   /** "under" = a cél alatt, "over" = a cél felett, "in" = a toleranciasávon belül */

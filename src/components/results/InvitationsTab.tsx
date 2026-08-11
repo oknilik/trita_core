@@ -7,14 +7,17 @@ import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { t, tf } from "@/lib/i18n";
+import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   isPlus: boolean;
-  // Az összevetés-küszöb: self-serve 2, kampány-vezérelt (org) 3
-  // (OBSERVER_MIN_FOR_REVEAL) — az info-banner ehhez igazodik.
+  // Az összevetés-küszöb (OBSERVER_MIN_FOR_REVEAL = anonimitás-padló, n≥3) —
+  // a hívó a szerver-oldali observer-flow értékét adja át; a default a
+  // kanonikus padlóból jön (a korábbi kézi 2 a reveal-kapuval mondott
+  // ellent: a banner „kész"-t ígért, az összevetés zárva maradt).
   minForReveal?: number;
   /** B14: szerver-oldalon ismert org-kontextus (observerFlow-ból) — a form
    *  címe és a picker-slot ettől függ, nem a kliens-fetch kimenetelétől,
@@ -78,7 +81,7 @@ export function InvitationsTab({
   sentInvitations,
   receivedInvitations,
   isPlus,
-  minForReveal = 2,
+  minForReveal = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE,
   hasColleagueDirectory = false,
 }: InvitationsTabProps) {
   const { locale } = useLocale();

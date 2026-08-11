@@ -21,6 +21,9 @@ const GATED_ROUTES = [
   "src/app/api/career/fit/route.ts",
   "src/app/api/career/occupations/route.ts",
   "src/app/api/industry-fit/feedback/route.ts",
+  // 2026-08-11 (motor-audit v6): a wizard-háttér mentése/törlése is a modul
+  // része — parkolt/rejtett modul mellett nem írható careerBackground.
+  "src/app/api/profile/career-background/route.ts",
 ];
 
 test("minden karrier-végpont a modul-kapu mögött van (404 parkolt/rejtett modulnál)", () => {
@@ -44,6 +47,50 @@ test("minden karrier-végpont a modul-kapu mögött van (404 parkolt/rejtett mod
       `${route}: a kapu-feltétel eltér a /api/career/fit mintájától`,
     );
   }
+});
+
+test("fake door: FORDÍTOTT modul-kapu + org-elrejtés (élő modulnál vagy rejtett tagnak 404)", () => {
+  // A fake door csak addig LÉTEZIK, amíg a modul parkolt — a kapu polaritása
+  // ezért fordított: CAREER_MODULE_READY (kapcsoló ÁLLÍTVA) → 404. Az org-
+  // szintű elrejtés viszont ugyanúgy érvényes, mint a többi karrier-végponton:
+  // az elrejtett tag a /career-en notFound()-ot kap, a mérés sem rögzíthet róla.
+  const FAKE_DOOR_ROUTES = [
+    "src/app/api/career/fakedoor/view/route.ts",
+    "src/app/api/career/fakedoor/response/route.ts",
+  ];
+  for (const route of FAKE_DOOR_ROUTES) {
+    const source = read(route);
+    assert.ok(
+      source.includes("CAREER_MODULE_READY"),
+      `${route}: hiányzik a CAREER_MODULE_READY kapu`,
+    );
+    assert.ok(
+      !/!CAREER_MODULE_READY/.test(source),
+      `${route}: a fake door a NEM-parkolt kaput kapta — parkolt modulnál élnie kell`,
+    );
+    assert.match(
+      source,
+      /CAREER_MODULE_READY\s*\|\|/,
+      `${route}: a kapu nem az élő modulnál zár`,
+    );
+    assert.ok(
+      source.includes("isCareerModuleHidden"),
+      `${route}: hiányzik az org-szintű elrejtés-kapu`,
+    );
+    assert.ok(
+      /status:\s*404/.test(source),
+      `${route}: a kapu nem 404-gyel zár (a végpont "nem létezik")`,
+    );
+  }
+});
+
+test("careerBackground: a currentOccupationId csak létező katalógus-tétel lehet", () => {
+  // A known-groups validáció adatforrása — kitalált O*NET-kód a mintát mérgezné.
+  const source = read("src/app/api/profile/career-background/route.ts");
+  assert.ok(
+    source.includes("getOccupation"),
+    "a route nem validálja a currentOccupationId-t a katalógus ellen",
+  );
 });
 
 test("kalibrációs visszajelzés: a fitScore-t a szerver számolja, nem a kliens állítja", () => {

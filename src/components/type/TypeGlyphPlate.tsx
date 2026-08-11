@@ -8,7 +8,7 @@ import {
   resolveGlyphPair,
 } from "@/lib/type-glyph";
 import {
-  isTopPairUncertain,
+  isSecondaryUncertain,
   resolvePersonalityTypeFromScores,
 } from "@/lib/personality-type";
 import { TRITAN_DIMENSIONS, type TritanDimCode } from "@/lib/tritan";
@@ -102,17 +102,19 @@ export function TypeGlyphPlate({
   const primaryGlyph = DIMENSION_GLYPHS[primaryCode];
   const secondaryGlyph = DIMENSION_GLYPHS[secondaryCode];
 
-  // S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a mérési hibán
-  // belül van, sem a pár-felirat („X × Y" — sorrendet sugall), sem a
-  // nyelvtan („a második legerősebb …") nem állíthat erősorrendet — a két
-  // dimenzió rendezetlen párként jelenik meg. A címke (typeLabel) ilyenkor
-  // már főnév-only (personality-type ugyanazt a kaput futtatja).
-  const topPairUncertain = isTopPairUncertain(dimensions);
+  // S3-hedge (motor-audit v4 FIX 5 + v6 F1): a próza kapuja UGYANAZ, mint a
+  // címke-lefokozásé — isSecondaryUncertain (top-pár VAGY 2–3. hely a mérési
+  // hibán belül). A korábbi isTopPairUncertain csak a top-párt nézte, így a
+  // 2–3. bizonytalanságnál a címke már főnév-only volt, miközben a pár-felirat
+  // („X × Y") és a nyelvtan („a második legerősebb …") megnevezte a
+  // másodikat. Bizonytalan másodlagosnál a két dimenzió rendezetlen párként
+  // jelenik meg, erősorrend-állítás nélkül.
+  const secondaryUncertain = isSecondaryUncertain(dimensions);
 
   const pairLabel =
     primaryCode === secondaryCode
       ? dimensionName(primaryCode, locale)
-      : topPairUncertain
+      : secondaryUncertain
         ? tf("results.glyphPairUncertain", locale, {
             a: dimensionName(primaryCode, locale),
             b: dimensionName(secondaryCode, locale),
@@ -125,7 +127,7 @@ export function TypeGlyphPlate({
   const isHu = locale === "hu";
   const article = (phrase: string) => (isHu ? withHuArticle(phrase) : phrase);
   const grammar = tf(
-    topPairUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
+    secondaryUncertain ? "results.glyphGrammarUncertain" : "results.glyphGrammar",
     locale,
     {
       form: article(isHu ? primaryGlyph.formName.hu : primaryGlyph.formName.en),

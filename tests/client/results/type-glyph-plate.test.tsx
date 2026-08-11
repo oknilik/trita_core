@@ -112,4 +112,35 @@ describe("TypeGlyphPlate", () => {
     expect(screen.getAllByText(/Nyitottság × Lelkiismeretesség/).length).toBeGreaterThan(0);
     expect(screen.getByText(/a második legerősebb/)).toBeInTheDocument();
   });
+
+  // Motor-audit v6, F1: a próza kapuja a CÍMKE-lefokozás kapuja
+  // (isSecondaryUncertain) — a 2–3. helyezett közelségénél a címke már
+  // főnév-only volt, de a pár-felirat és a nyelvtan megnevezte a másodikat.
+  it("bizonytalan MÁSODLAGOSNÁL (2–3. közel) is hedge-el a pár-felirat és a nyelvtan", () => {
+    // Top-pár határozott (OPEN 90 vs THOR 74, gap 16 ≥ 15), de a 2–3. hely
+    // (THOR 74 vs INTE 65, gap 9 < 15) a mérési hibán belül van.
+    const adjectiveUncertain = [
+      { code: "INTE", score: 65 },
+      { code: "RESO", score: 30 },
+      { code: "TEMP", score: 40 },
+      { code: "ADAP", score: 25 },
+      { code: "THOR", score: 74 },
+      { code: "OPEN", score: 90 },
+    ];
+    render(<TypeGlyphPlate dimensions={adjectiveUncertain} locale="hu" defaultOpen />);
+
+    // A címke ilyenkor főnév-only („Újító") — a próza nem mondhat többet.
+    expect(screen.queryByText(/Módszeres újító/)).toBeNull();
+    expect(screen.getAllByText(/Újító/).length).toBeGreaterThan(0);
+    // Nincs sorrendet állító „×" felirat, sem „második legerősebb" formula…
+    expect(screen.queryByText(/Nyitottság × Lelkiismeretesség/)).toBeNull();
+    expect(screen.queryByText(/a második legerősebb/)).toBeNull();
+    // …helyette a rendezetlen felsorolás és a hedge-elt nyelvtan.
+    expect(
+      screen.getAllByText(/a két legerősebb: Nyitottság · Lelkiismeretesség/).length,
+    ).toBeGreaterThan(0);
+    expect(
+      screen.getByText(/A két legerősebb dimenziód — a Nyitottság és a Lelkiismeretesség/),
+    ).toBeInTheDocument();
+  });
 });

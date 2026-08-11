@@ -7,6 +7,8 @@ import { getRequestLogger } from "@/lib/logger.server";
 import { CAREER_FAKE_DOOR_MODULE, isFakeDoorSource } from "@/lib/fakedoor/career";
 import { resolveFakeDoorContext } from "@/lib/fakedoor/context.server";
 import { fakeDoorCookieOptions } from "@/lib/fakedoor/session";
+import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 
 // Megtekintés-rögzítés — ez a konverzió NEVEZŐJE.
 //
@@ -45,6 +47,19 @@ export async function POST(req: Request) {
       ? parsed.data.source
       : "direct";
   const context = await resolveFakeDoorContext(sessionId);
+
+  // Kapuzás (2026-08-11): a fake door csak addig LÉTEZIK, amíg a modul parkolt
+  // — élő modulnál (CAREER_MODULE_READY) a /career a CareerCompass-t mutatja,
+  // a mérő-végpont pedig 404 (a „kereslet-mérés magától elhallgat" garancia).
+  // Az org-szintű elrejtés a mérésre is vonatkozik: a /career az elrejtett
+  // tagnak notFound()-ot ad, tehát tőle legitim hívás nem jöhet — ami mégis
+  // jön, azt nem rögzítjük (a minta hígulna) és nem is szolgáljuk ki.
+  if (
+    CAREER_MODULE_READY ||
+    (context.profileId && (await isCareerModuleHidden(context.profileId)))
+  ) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   try {
     // Munkamenetenként egy sor. Az újratöltés nem számít új megtekintésnek,

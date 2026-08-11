@@ -375,6 +375,55 @@ test("komponens-megjelenítés: a userRaw a results-oldali pontszám, a targetRa
   assert.ok(checked > 0, "nem volt ellenőrizhető komponens");
 });
 
+test("skála-szél: a kicsúszó visszatolt cél targetAtEdge jelzést kap (v6)", () => {
+  // Magas átlagú profilnál (shift = átlag − 50 ≈ +40) a magas célú komponens
+  // visszatolt célja 100 fölé esne; a vágás után a mutatott |userRaw −
+  // targetRaw| kisebb a pontozott távolságnál. A motor ezt nem hallgatja el:
+  // a komponens targetAtEdge jelzést hordoz, amit a UI kimond.
+  const dims = { INTE: 90, RESO: 88, TEMP: 92, ADAP: 90, THOR: 95, OPEN: 85 };
+  const result = computeCareerFit(
+    { dims, form: "short" },
+    { limit: 477, diversify: false },
+  );
+  const components = result.ranked.flatMap((fit) => fit.components);
+  const flagged = components.filter((component) => component.targetAtEdge);
+  assert.ok(flagged.length > 0, "magas-átlagú profilon nincs jelölt skála-szél komponens");
+  for (const component of flagged) {
+    assert.notEqual(component.note, "h-floor", "H-padlós komponens nem kaphat skála-szél jelzést");
+    assert.ok(
+      component.targetRaw === 0 || component.targetRaw === 100,
+      `targetAtEdge, de a cél nem a skála szélén: ${component.targetRaw}`,
+    );
+    // A jelzés oka: a vágott pár távolsága legfeljebb a pontozott távolság
+    // (tipikusan kisebb) — nagyobb sosem lehet.
+    assert.ok(
+      Math.abs(component.userRaw - component.targetRaw) <=
+        Math.abs(component.userValue - component.target) + 1,
+      "a vágott pár távolsága nagyobb a pontozottnál",
+    );
+  }
+  // Nem-jelölt (és nem H-padlós) komponensen a pár koherens (±1 kerekítés).
+  const clean = components.filter(
+    (component) => !component.targetAtEdge && component.note !== "h-floor",
+  );
+  assert.ok(clean.length > 0);
+  for (const component of clean) {
+    assert.ok(
+      Math.abs(
+        Math.abs(component.userRaw - component.targetRaw) -
+          Math.abs(component.userValue - component.target),
+      ) <= 1,
+      `${component.dim}: jelöletlen komponens elcsúszott párral`,
+    );
+  }
+  // Kiegyensúlyozott (50 körüli átlagú) profilon nincs skála-szél jelzés.
+  const centeredRun = computeCareerFit({ dims: balanced, form: "short" }, { limit: 40 });
+  assert.ok(
+    centeredRun.ranked.flatMap((fit) => fit.components).every((c) => !c.targetAtEdge),
+    "kiegyensúlyozott profilon is jelölt skála-szél",
+  );
+});
+
 test("kétlépcsős rendezés: mért érdeklődésnél a lista érdeklődés-vezérelt", () => {
   const measured = {
     dims: balanced,
@@ -524,7 +573,13 @@ test("scoped: az ipari evidencia EGYSZER számít — nincs +5 és +6 kétszerez
   }
 });
 
-test("scoped: lapos érdeklődésnél a Holland-súly feleződik, nem nyers 0.35 (E2)", () => {
+test("scoped: lapos MÉRT érdeklődés nem rendezhet egyedül — demandFit-horgony (E2 + v6)", () => {
+  // 2026-08-11 (motor-audit v6): a scoped forrás-kapu a DIFFERENCIÁLTSÁGRA is
+  // kiterjed (a canUseInterestLed tükre). A mért, de lapos érdeklődés korábban
+  // a felezett súlyú (17,5%-os) egy/kétkomponensű alapot kapta — preferencia-
+  // tengelyek nélkül az egykomponensű átlagban a súly kiesett, és a lapos jel
+  // adta a sorrend 100%-át. Az új viselkedés: lapos mért érdeklődés a
+  // demandFit-horgonyú kompozit alapba esik, a felezett súlyával.
   const flatInterest = {
     vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 }, // low differentiation
     source: "measured" as const,
@@ -542,8 +597,8 @@ test("scoped: lapos érdeklődésnél a Holland-súly feleződik, nem nyers 0.35
   // A scoped ág is alkalmazza a low-differentiation felezőt (megkerülte a
   // canUseInterestLed kaput): a meta a felezett súlyt hordozza.
   assert.equal(scoped.meta.interestWeight, interestWeightFor("measured") * 0.5);
-  // A scoped rang a felezett érdeklődés-súlyú, bónusz-mentes alapot használja.
-  // Egy scope + nincs szakirány → nincs metszet/field bónusz, a rang = alap.
+  // A rang a demandFit-tel horgonyzott kompozit alap (a felezett érdeklődés-
+  // súllyal). Egy scope + nincs szakirány → nincs metszet/field bónusz.
   const wi = scoped.meta.interestWeight;
   let checked = 0;
   for (const fit of scoped.ranked) {
@@ -551,14 +606,74 @@ test("scoped: lapos érdeklődésnél a Holland-súly feleződik, nem nyers 0.35
     const expected = Math.min(
       100,
       Math.round(
-        (fit.interest * wi + fit.preference * CHOICE_WEIGHTS.preference) /
-          (wi + CHOICE_WEIGHTS.preference),
+        (fit.demandFit * RANK_WEIGHTS.demand +
+          fit.interest * wi +
+          fit.preference * RANK_WEIGHTS.preference) /
+          (RANK_WEIGHTS.demand + wi + RANK_WEIGHTS.preference),
       ),
     );
-    assert.equal(fit.rank, expected, `${fit.hu}: a scoped rang nem a felezett súlyú alap`);
+    assert.equal(fit.rank, expected, `${fit.hu}: a lapos mért jel nem horgonyzott`);
+    assert.equal(fit.orderedBy, "composite", `${fit.hu}: hamis orderedBy-címke`);
     checked += 1;
   }
   assert.ok(checked > 0, "nem volt teljes komponensű scoped tétel az ellenőrzéshez");
+});
+
+test("scoped: lapos mért érdeklődés preferencia NÉLKÜL sem rendezhet egyedül (v6)", () => {
+  // Az audit-forgatókönyv: kitöltött Mini-IP, de lapos profil, és a wizard
+  // preferencia-lépése kihagyva. A régi ág itt EGYETLEN komponenst tett az
+  // alapba (interest·w/w = interest): a lapos mért jel rendezte a teljes
+  // listát, miközben a kártya 17,5%-os súlyt mutatott.
+  const flatInterest = {
+    vector: { R: 50, I: 51, A: 49, S: 50, E: 52, C: 48 },
+    source: "measured" as const,
+  };
+  const scoped = computeCareerFit(
+    { dims: balanced, form: "short", interests: flatInterest },
+    { limit: 30, scope: ["tech"], industries: ["tech"], diversify: false },
+  );
+  assert.equal(scoped.meta.strategy, "scoped");
+  const wi = scoped.meta.interestWeight;
+  assert.equal(wi, interestWeightFor("measured") * 0.5);
+  let checked = 0;
+  for (const fit of scoped.ranked) {
+    if (fit.interest === null) continue;
+    const expected = Math.min(
+      100,
+      Math.round(
+        (fit.demandFit * RANK_WEIGHTS.demand + fit.interest * wi) /
+          (RANK_WEIGHTS.demand + wi),
+      ),
+    );
+    assert.equal(fit.rank, expected, `${fit.hu}: a lapos mért jel nem horgonyzott`);
+    assert.equal(fit.orderedBy, "composite", `${fit.hu}: hamis orderedBy-címke`);
+    checked += 1;
+  }
+  assert.ok(checked > 0, "nem volt érdeklődés-pontszámú scoped tétel");
+  const byInterest = [...scoped.ranked]
+    .sort((a, b) => (b.interest ?? 0) - (a.interest ?? 0))
+    .map((fit) => fit.id);
+  assert.notDeepEqual(
+    scoped.ranked.map((fit) => fit.id),
+    byInterest,
+    "a sorrend a tiszta érdeklődés-sorrend — a lapos mért jel egyedül rendezett",
+  );
+  // A DIFFERENCIÁLT mért érdeklődés viselkedése változatlan: érdeklődés vezet.
+  const differentiated = computeCareerFit(
+    {
+      dims: balanced,
+      form: "short",
+      interests: {
+        vector: { R: 20, I: 60, A: 40, S: 30, E: 70, C: 45 },
+        source: "measured" as const,
+      },
+    },
+    { limit: 20, scope: ["tech"], industries: ["tech"] },
+  );
+  assert.ok(
+    differentiated.ranked.every((fit) => fit.orderedBy === "interest"),
+    "a differenciált mért érdeklődés elvesztette a scoped rendezést",
+  );
 });
 
 test("scoped: becsült érdeklődés NEM rendezhet egyedül — demandFit-horgony (forrás-kapu)", () => {
