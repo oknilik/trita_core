@@ -15,6 +15,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import { COLORS } from "@/lib/design-tokens";
+import { rankDimensionScores } from "./tritan";
 
 export const GLYPH_CANVAS = { width: 800, height: 900 } as const;
 
@@ -337,13 +338,20 @@ export function accompaniment(primaryCode: string, secondaryCode: string): Accom
  * Ábra-pár a pontozott dimenzió-listából — ugyanabból a sorrendből, mint a
  * típusnév (resolvePersonalityTypeFromScores): a legerősebb adja a formát,
  * a második a motívumot. Az intenzitás a domináns dimenzió pontszámából jön.
+ *
+ * FONTOS (interp S2): a rangsor a KÖZÖS rankDimensionScores-t használja
+ * (pontszám csökkenő, holtversenynél TRITAN_ORDER) — pontosan úgy, ahogy a
+ * típusnév. A korábbi nyers `.sort((a,b) => b.score - a.score)` holtversenynél
+ * a bemenet sorrendjétől függő, NEM determinisztikus párt adott, így a rajzolt
+ * ábra és a szöveges címke a top-2 azonos pontszámánál ELTÉRHETETT egymástól.
+ * Egy forrásból rangsorolva a kettő mindig egyezik.
  */
 export function resolveGlyphPair(
   dimensions: ReadonlyArray<{ code: string; score: number }>,
 ): { primaryCode: string; secondaryCode: string; intensity: number } | null {
   const known = dimensions.filter((d) => DIMENSION_GLYPHS[d.code]);
   if (known.length < 2) return null;
-  const [first, second] = [...known].sort((a, b) => b.score - a.score);
+  const [first, second] = rankDimensionScores(known);
   return {
     primaryCode: first.code,
     secondaryCode: second.code,

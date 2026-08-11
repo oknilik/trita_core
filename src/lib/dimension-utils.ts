@@ -1,5 +1,18 @@
 export type DimensionTier = "high" | "mid" | "low";
 
+// Vizuális TIER-küszöb (≥70 magas, ≥40 mérsékelt) — ez a VIZUÁLIS kiemelést
+// vezérli: a dimenzió-sáv színe (tierColors), a rövid címke
+// (erősség/mérsékelt/figyelendő), a legend („Magas 70% felett"), a PDF-sávok.
+//
+// TUDATOSAN KÜLÖN a pólus-küszöbtől (profile-engine.ts PROFILE_HIGH/LOW = 65/35),
+// mert MÁS mechanizmust vezérel: az a tension-pár / interakció / pressure
+// NARRATÍVA-logika kapuja (melyik pár „tüzel"), ez a vizuális erősség-jelölés.
+// A két rendszer ezért egy 65–70 (ill. 35–40) közti pontszámnál eltérő
+// besorolást adhat (67 = itt „mid", a pólus-prózában „high") — ez a
+// motor-audit F3-lelete. A besorolás ÖSSZEHANGOLÁSA (közös vágás, és melyik
+// érték a kanonikus) VALÓDI kalibrációs kérdés: a nyers POMP nem normált, a
+// helyes vágópont a pilot-mintától függ. Amíg az nincs, egyik tuningolt
+// rendszert sem billentjük át a másikhoz — csak a duplázódás dokumentált.
 export function getDimensionTier(value: number): DimensionTier {
   if (value >= 70) return "high";
   if (value >= 40) return "mid";

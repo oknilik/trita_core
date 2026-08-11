@@ -89,6 +89,19 @@ export async function POST(req: Request) {
   // Önhamisítás-védelem: a meghívó (értékelt) SOHA nem küldhet be a saját
   // meghívójára — külső/link-meghívónál is (ott nincs observerProfileId, így
   // az addressee-ellenőrzés nem fogná meg).
+  //
+  // MARADÉK RÉS (motor-audit W2): ez az őr CSAK akkor tüzel, ha a viewer
+  // feloldódik (bejelentkezve). Egy KÜLSŐ (observerProfileId == null) tokenre
+  // KIJELENTKEZVE beküldve a viewer null → az őr kimarad, és a beküldés anonim
+  // „külső" értékelésként átmegy. Így az értékelt inkognitóban ≥3 hamis külső
+  // ratert gyárthat a saját linkjeiről. Belépve a rés zárva (403).
+  // A TELJES zárás TERMÉK-DÖNTÉS: vagy (a) a külső submit is bejelentkezést
+  // kér (az azonosságot csak a self-check-hez használva, az aggregátumban NEM
+  // tárolva) — ez viszont a dokumentált „auth nélküli observer-flow"-t
+  // (CLAUDE.md) változtatja meg; vagy (b) strukturális (zajos/karantén
+  // aggregátum). Auth-mentesen a token-tulajdonos == értékelt egyezés NEM
+  // dönthető el, mert külső tokennél nincs a beküldőhöz kötött profil.
+  // Amíg a döntés nincs meg, a rés dokumentált, nem csendes.
   if (isObserverSelfSubmission(viewer?.id, invitation.inviterId)) {
     return NextResponse.json({ error: "SELF_SUBMISSION" }, { status: 403 });
   }

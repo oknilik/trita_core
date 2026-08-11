@@ -458,7 +458,18 @@ export function InvitationsTab({
         </div>
       ) : (
         <div className="flex flex-col gap-4">
-          {/* Completed group */}
+          {/* Completed group.
+              W1 (differencia-támadás maradék felülete): ez a lista a meghívó
+              (értékelt) SAJÁT meghívóit mutatja névvel + nap-pontos dátummal —
+              ez szándékos (tudnod kell, kit hívtál és ki válaszolt). A
+              maradék kockázat NEM itt van, hanem az összevetés-nézet futó
+              observer-átlagában, ami minden betöltéskor újraszámol: egy
+              elszánt értékelt a k. és (k−1). állapot különbségéből visszafejtheti
+              az utolsó értékelő vektorát, és a nevesített listával névhez kötheti.
+              Mitigáció (kész): a completion-értesítés anonim (submit/route.ts),
+              a reveal csak n≥3-nál nyílik, a dátum nap-pontos (nincs sorrendi
+              idő-finomság). Teljes zárás = zajos/kvantált aggregátum — ez
+              pilot-kalibrációt igényel (ld. results reveal-küszöb jegyzet). */}
           {completed.length > 0 && (
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">

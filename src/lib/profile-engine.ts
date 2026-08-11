@@ -24,6 +24,16 @@ export type ProfileEngineOutput = {
 // Pólus-küszöbök — a kategorizálás házi konvenciója (szigorú > / <
 // összehasonlítás). Az interakció-motor és a csapat-pressure ugyanezt a
 // határt importálja, hogy a küszöb ne csússzon szét.
+//
+// TUDATOSAN KÜLÖN a vizuális tier-küszöbtől (dimension-utils.ts
+// getDimensionTier = 70/40): ez a 65/35 a tension-pár / interakció / pressure
+// NARRATÍVA-logika kapuja (a TENSION_PAIRS „high/low" pólusai erre a vágásra
+// vannak hangolva), a 70/40 a vizuális erősség-jelölést vezérli. A kettő egy
+// 65–70 (ill. 35–40) közti pontszámnál eltérő besorolást ad — ez a motor-audit
+// F3-lelete. NEM hangoljuk össze itt: a 65/35 átállítása 70/40-re elmozdítaná,
+// mely tension-párok tüzelnek (tuningolt narratíva-viselkedés). A helyes közös
+// vágópont normált mintát (pilot) igényel; addig a duplázódás dokumentált, az
+// értékek változatlanok.
 export const PROFILE_HIGH_THRESHOLD = 65;
 export const PROFILE_LOW_THRESHOLD = 35;
 
