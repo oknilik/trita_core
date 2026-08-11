@@ -184,3 +184,25 @@ export function isTopPairUncertain(
   const ranked = rankDimensionScores(known);
   return ranked[0].score - ranked[1].score < DIFF_MIN_GAP;
 }
+
+/**
+ * Igaz, ha a MÁSODLAGOS dimenzió (a melléknévi színezet) megnevezése bizonytalan
+ * — VAGY a top-pár van a mérési hibán belül (a domináns sem biztos), VAGY a 2–3.
+ * hely (a melléknév) van azon belül. Ez PONTOSAN a címke-lefokozás kapuja
+ * (resolvePersonalityTypeFromScores: `topPairUncertain || adjectiveUncertain`),
+ * ezért a prózát (glyph-plate „X × Y", „a második legerősebb …", archetípus-
+ * sztori) EHHEZ kell kötni — az `isTopPairUncertain` csak a top-párt nézi, így a
+ * 2–3. bizonytalanság esetén a próza megnevezte a másodikat, miközben a címke már
+ * főnév-only volt (motor-audit v6, interp F1). Belső jelzés: nem hoz ± számot.
+ */
+export function isSecondaryUncertain(
+  dimensions: ReadonlyArray<{ code: string; score: number }>,
+): boolean {
+  const known = dimensions.filter((d) => PERSONALITY_TYPE_PARTS[d.code]);
+  if (known.length < 2) return false;
+  const ranked = rankDimensionScores(known);
+  const [first, second, third] = ranked;
+  const topPairUncertain = first.score - second.score < DIFF_MIN_GAP;
+  const adjectiveUncertain = third ? second.score - third.score < DIFF_MIN_GAP : false;
+  return topPairUncertain || adjectiveUncertain;
+}

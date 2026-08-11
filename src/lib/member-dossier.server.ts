@@ -187,8 +187,21 @@ export async function buildMemberDossier(
   }, 0);
 
   // Csapatszerep peer: raterenként a legutolsó készlet (updatedAt asc → felülír).
+  // A rátereket a tag JELENLEGI csapattársaira szűrjük: egy azóta KILÉPETT
+  // értékelő régi véleménye nem számíthat a min-3 anonimitás-padlóba, sem az
+  // átlagba (motor-audit v6 — a v5 dossier-scope csak a teamId-t + a self-sort
+  // zárta, a leaver-rátert nem). A team-tab ugyanezt teszi (S4).
+  const currentPeerMemberIds = new Set(
+    (
+      await prisma.teamMember.findMany({
+        where: { teamId: { in: teamIds } },
+        select: { userId: true },
+      })
+    ).map((m) => m.userId),
+  );
   const peerByRater = new Map<string, TeamRoleSelections>();
   for (const obs of rolePeerObs) {
+    if (!currentPeerMemberIds.has(obs.raterUserId)) continue; // kilépett rater
     peerByRater.set(obs.raterUserId, obs.selections as TeamRoleSelections);
   }
   const peerAgg = aggregatePeerRoleScores([...peerByRater.values()]);

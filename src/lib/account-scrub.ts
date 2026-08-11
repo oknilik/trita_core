@@ -69,6 +69,15 @@ export async function scrubProfileData(
       },
       data: { status: "CANCELED", observerEmail: null, observerName: null },
     }),
+    // … és MINDEN inviter-oldali meghívón (státusztól függetlenül — a COMPLETED
+    // és a korábban CANCELED/EXPIRED sorokon is) elvágjuk a HARMADIK FÉL (a
+    // törölt user meghívottjai) PII-ját. A rater-oldalt már minden státuszra
+    // nulláztuk lentebb; ez a tükör az inviter-oldalra (motor-audit W6 maradék).
+    // A completed értékelés SCORE-ja marad (anonim aggregátum).
+    prisma.observerInvitation.updateMany({
+      where: { inviterId: profileId },
+      data: { observerEmail: null, observerName: null },
+    }),
     // Observer-meghívók — ÉRTÉKELŐ (rater) oldal: a FÜGGŐ rater-meghívókat
     // lezárjuk (a kitöltő már nem létezik) …
     prisma.observerInvitation.updateMany({

@@ -101,9 +101,17 @@ export async function GET(
     });
   }
 
-  // Merge API-level meta fields
+  // FONTOS (motor-audit): a per-tag, NEVESÍTETT eltérés-lista (styleDistances:
+  // [{userId, tensionAxes}]) NEM kerülhet ki ezen a route-on. A kapu csak
+  // canAccessTeam (bármely tag), a lap viszont átirányítja a nem-konzultánst,
+  // és a publikált report is csak anonim darabszámot mutat — így ez a route
+  // különben bárkinek kiadná, ki tér el melyik tengelyen. Az egyetlen kliens-
+  // fogyasztó (AdvisoryPageClient) csak a patternCode/patternName/diversitySuffix-et
+  // használja, ezért a nyers per-tag mezőt kiszűrjük.
+  const { styleDistances: _omitStyleDistances, ...safeCore } = coreResult;
+
   const result = {
-    ...coreResult,
+    ...safeCore,
     memberCount:          totalMembers,
     membersWithAssessment: membersWithScores.length,
     missingMembers:       totalMembers - membersWithScores.length,

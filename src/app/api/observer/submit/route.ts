@@ -197,7 +197,10 @@ export async function POST(req: Request) {
 
     if (!observerUserId && invitation.observerEmail) {
       const observer = await prisma.userProfile.findFirst({
-        where: { email: invitation.observerEmail, deleted: false },
+        where: {
+          email: { equals: invitation.observerEmail, mode: "insensitive" },
+          deleted: false,
+        },
         select: { id: true },
       });
       observerUserId = observer?.id ?? null;
@@ -233,6 +236,11 @@ export async function POST(req: Request) {
       select: { email: true, locale: true, username: true },
     });
     if (!inviter?.email) return;
+    // Kulcs hiányában (dev/teszt) NEM próbálunk küldeni: a getResend() szinkron
+    // dobna, és ez a válasz-után futó, leválasztott lánc rejtett elutasításként
+    // bleedelne át a következő teszt-esetbe (flaky integration). Élesen a kulcs
+    // megvan, így ott küld.
+    if (!process.env.RESEND_API_KEY) return;
     const locale = (["hu", "en"].includes(inviter.locale ?? "")
       ? inviter.locale
       : undefined) as "hu" | "en" | undefined;

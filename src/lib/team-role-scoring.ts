@@ -169,6 +169,10 @@ export function getTopRoles(
     .map((role) => `${role}:${exact?.[role] ?? scores[role] ?? 0}`)
     .join(",");
   return (Object.entries(scores) as [TeamRoleCode, number][])
+    // Örökség/sérült kulcsok kiszűrése (own-key, nem prototípus-lánc): egy nem
+    // kanonikus kód (pl. régi „PL") különben TEAM_ROLES[code] === undefined-en
+    // át a megjelenítésnél dobna (dossier 500). Motor-audit.
+    .filter(([role]) => Object.hasOwn(TEAM_ROLES, role))
     .map(([role, score]) => ({ role, score, sortKey: exact?.[role] ?? score }))
     .sort(
       (a, b) =>

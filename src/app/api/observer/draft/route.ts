@@ -99,7 +99,10 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const body = await req.json();
+  const rateLimitResponse = await checkRateLimit("api");
+  if (rateLimitResponse) return rateLimitResponse;
+
+  const body = await req.json().catch(() => null);
   const token = body?.token;
   if (!token || typeof token !== "string") {
     return NextResponse.json({ error: "Missing token" }, { status: 400 });
