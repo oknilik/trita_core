@@ -161,11 +161,18 @@ termék legtámadhatóbb pontja HR-szakmai szemmel.
 
 ### 2.1 A szimulációs szkript
 
-A fejlesztés F0 lépésében ez bekerül a repóba
-(`scripts/career-engine-simulate.ts`), hogy a metrikák a változások után
+A fejlesztés F0 lépésében ez bekerül a repóba, hogy a metrikák a változások után
 újrafuthassanak: profil-generálás → minden szerepre `score` → (a) within-person
 SD, (b) r(dim, átlagos fit) minden dimenzióra, (c) győztes-szerep entrópia,
 (d) iparág-lefedettség a top-3-ban. Ezek a **regressziós korlátok** a v2-höz.
+
+> **MEGVALÓSULT (2026-08-11): `scripts/career-validation/simulate.ts`** — a
+> `career-validation/` mappában, a kalibrációs riport mellett (nem a tervezett
+> gyökér-útvonalon). A felsoroltakon túl mér: rangsor-SE, **jel/zaj**, a
+> listavezető klaszterének méretét, elevation-korrelációt, karrier-család
+> lefedettséget és **test-retest** stabilitást (ugyanaz a profil kétszer, a
+> motor saját `dimSe`-jével zajosítva) — négy input-állapotban. A v1-hez mért
+> eredmény és a belőle következő javítás: `docs/audits/career-engine-benchmark-2026-08-11.md`.
 
 ---
 
@@ -322,7 +329,8 @@ adatból kalibrált-e.
   shrinkage-dzsel (`w_obs = k / (k + 2)` a mai fix 0.5 helyett).
 - A három `combined`-ág **egy** dokumentált formulába, nevesített
   konstansokkal (`WEIGHTS.demand`, `WEIGHTS.interest`, …), 0-100-ra vágva.
-- `scripts/career-engine-simulate.ts` + golden-teszt a mai kimenetre.
+- Szimulációs szkript + golden-teszt a mai kimenetre.
+  (Megvalósult: `scripts/career-validation/simulate.ts`, 2026-08-11.)
 - **Kész-kritérium:** a PDF és a képernyő bit-azonos eredményt ad ugyanarra az
   inputra; a szimulációs metrikák riportolva vannak.
 

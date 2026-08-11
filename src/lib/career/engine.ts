@@ -255,11 +255,33 @@ function blendDims(person: PersonInput): {
   return { blended, weight };
 }
 
-/** Profil-centrálás: a saját átlagot 50-re tolva marad a profil ALAKJA. */
+/**
+ * Profil-centrálás: a saját átlagot 50-re tolva marad a profil ALAKJA.
+ *
+ * A KÖZÉPÉRTÉK A H NÉLKÜL SZÁMOL (2026-08-11, fix). Indok — a H-padló
+ * dokumentált invariánsa („magas becsületesség-alázattal nem lehet rosszabbul
+ * illeszkedni") a centrálás mellékhatásán bukott el: a centrálás nulla-összegű,
+ * tehát az egyik dimenzió emelése az összes többi centrált értékét LEHÚZZA
+ * (H 20 → 85 a hatból számolt átlagot ~10,8-del emeli, a másik öt komponens
+ * ennyivel csúszik el a céljától). Mérés: a padló által VÉDETT szerepek
+ * 16,5%-án az alacsony H-jú iker magasabb pontot kapott, legrosszabb esetben
+ * 25 ponttal — pontosan az, amit az invariáns tilt.
+ *
+ * A javítás a gyökérnél fog: ha a H-t a padló ABSZOLÚT skálán pontozza (a
+ * componentFit szándékosan a nyers értéket nézi), akkor a H nem lehet része a
+ * RELATÍV alapvonalnak sem. Így a H változtatása a többi komponenst egyáltalán
+ * nem mozdítja, és az invariáns szerkezetileg — nem utólagos vágással — áll.
+ *
+ * A H saját centrált értéke továbbra is képződik (a nem padlós, H ≥ 50 célú
+ * szerepek ideal-point pontozásához kell), csak már az öt másik dimenzió
+ * alapvonalához mérve.
+ */
+const CENTERING_DIMS: DimCode[] = DIM_CODES.filter((dim) => dim !== "H");
+
 function centerProfile(
   dims: Partial<Record<DimCode, number>>,
 ): Partial<Record<DimCode, number>> {
-  const values = DIM_CODES.map((d) => dims[d]).filter(
+  const values = CENTERING_DIMS.map((d) => dims[d]).filter(
     (v): v is number => typeof v === "number",
   );
   if (values.length === 0) return dims;

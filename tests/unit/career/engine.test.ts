@@ -261,7 +261,11 @@ test("ideal-point: a cél FÖLÖTTI eltérés is csökkenti az illeszkedést", (
   assert.ok(occupation, "nincs alkalmas teszt-foglalkozás");
   const driver = occupation.demand.find((c) => c.w > 0.3)!;
   const onTarget = { ...balanced, [driver.dim]: driver.target } as typeof balanced;
-  const wayOver = { ...balanced, [driver.dim]: 99 } as typeof balanced;
+  // A többi dimenziót LE kell nyomni, különben a centrálás megeszi a túllövést:
+  // a centráló átlagban maga a driver is benne van, tehát a 99-es nyers pont
+  // önmagában még a tolerancia-sávon BELÜLI centrált értéket adhat. Így a
+  // fixture egyértelműen a cél fölé kerül — ezt hivatott mérni a teszt.
+  const wayOver = { H: 50, E: 20, X: 20, A: 20, C: 20, O: 20, [driver.dim]: 99 } as typeof balanced;
   const fitOn = computeCareerFit({ dims: onTarget, form: "short" }, { only: [occupation.id] });
   const fitOver = computeCareerFit({ dims: wayOver, form: "short" }, { only: [occupation.id] });
   const componentOn = fitOn.ranked[0].components.find((c) => c.dim === driver.dim)!;
@@ -341,13 +345,67 @@ test("H-padló a NYERS ponton fut: a relatíve alacsony, abszolút magas H nem b
   assert.ok(lowAbsolute.alignment < 100, "az abszolút alacsony H nem érhet a padló fölé");
 });
 
+test("H-padló: az invariáns a TELJES pontszámon áll, nem csak a komponensen", () => {
+  // A komponens-szintű padló önmagában nem elég: a centrálás nulla-összegű,
+  // ezért a H emelése korábban LEHÚZTA a másik öt komponens centrált értékét,
+  // és a padló VÉDTE szerepek 16,5%-án az alacsony H-jú iker kapott magasabb
+  // demandFit-et (legrosszabb eset 25 pont). A javítás óta a centráló átlag a
+  // H nélkül számol — ez a teszt a végeredményt köti, nem a komponenst.
+  const bases = [
+    { E: 55, X: 45, A: 60, C: 70, O: 50 },
+    { E: 30, X: 70, A: 40, C: 55, O: 75 },
+    { E: 65, X: 35, A: 75, C: 40, O: 45 },
+  ];
+  const floorIds = new Set(
+    getOccupations()
+      .filter((o) => (o.demand.find((c) => c.dim === "H")?.target ?? 100) < 50)
+      .map((o) => o.id),
+  );
+  assert.ok(floorIds.size > 50, "túl kevés H-padlós szerep a teszthez");
+
+  for (const base of bases) {
+    const run = (h: number) =>
+      computeCareerFit({ dims: { ...base, H: h }, form: "short" }, { limit: 10_000, diversify: false })
+        .ranked;
+    const honest = new Map(run(85).map((fit) => [fit.id, fit.demandFit]));
+    for (const fit of run(20)) {
+      if (!floorIds.has(fit.id)) continue;
+      const honestFit = honest.get(fit.id);
+      assert.ok(honestFit !== undefined);
+      assert.ok(
+        honestFit >= fit.demandFit,
+        `${fit.hu}: az alacsony H (${fit.demandFit}) megelőzte a magasat (${honestFit})`,
+      );
+    }
+  }
+});
+
+test("centrálás: a H változtatása nem mozdítja a H-t nem kérő szerepek pontját", () => {
+  // A centrálás mellékhatásának közvetlen kötése: egy olyan szerep, ami
+  // egyáltalán nem kér becsületesség-alázatot, nem változhat attól, hogy a
+  // felhasználó H-pontja más. Korábban a hatból számolt átlagon keresztül
+  // akár 27 pontot is mozdult.
+  const noH = getOccupations().find((o) => !o.demand.some((c) => c.dim === "H"));
+  assert.ok(noH, "nincs H-t nem kérő foglalkozás a katalógusban");
+  const base = { E: 45, X: 60, A: 55, C: 65, O: 50 };
+  const scoreAt = (h: number) =>
+    computeCareerFit({ dims: { ...base, H: h }, form: "short" }, { only: [noH.id] }).ranked[0]
+      .demandFit;
+  const reference = scoreAt(50);
+  for (const h of [5, 20, 35, 65, 80, 95]) {
+    assert.equal(scoreAt(h), reference, `a H=${h} elmozdította a H-független szerepet`);
+  }
+});
+
 test("komponens-megjelenítés: a userRaw a results-oldali pontszám, a targetRaw vele egy skálán", () => {
   // A centrált (pontozási) érték „te {..}"-ként ellentmondana a results-oldalnak
   // (nyers C 90 → „te 58"). A motor ezért NYERS megjelenítési párt is ad:
   // userRaw = nyers pont, targetRaw = a cél ugyanazzal az eltolással — a
   // távolság (és vele a position/alignment) változatlan.
   const dims = { H: 55, E: 50, X: 55, A: 55, C: 90, O: 60 };
-  const mean = Object.values(dims).reduce((a, b) => a + b, 0) / 6;
+  // A centráló átlag a H NÉLKÜL számol (ld. engine.ts `CENTERING_DIMS`): a H-t a
+  // padló abszolút skálán pontozza, ezért nem lehet része a relatív alapvonalnak.
+  const mean = (dims.E + dims.X + dims.A + dims.C + dims.O) / 5;
   const result = computeCareerFit({ dims, form: "short" }, { limit: 5, diversify: false });
   assert.ok(result.ranked.length > 0);
   let checked = 0;

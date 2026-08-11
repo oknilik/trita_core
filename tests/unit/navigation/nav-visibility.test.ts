@@ -157,7 +157,14 @@ test("member topnav has results + interaction + tasks next to own teams (UX-B7)"
   const navItems = buildWorkspaceNavigation("self", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "interaction", "tasks", "teams"]);
+  // A "career" a kész karrier-modul menüpontja (CAREER_MODULE_READY) — az
+  // Eredményeim mellett a helye, mert ugyanabból a profilból dolgozik.
+  assert.deepEqual(
+    ids,
+    CAREER_MODULE_READY
+      ? ["home", "results", "interaction", "career", "tasks", "teams"]
+      : ["home", "results", "interaction", "tasks", "teams"],
+  );
 
   // Az összehasonlítás-belépő az /interaction oldalra visz.
   const interactionItem = navItems.find((item) => item.id === "interaction");
@@ -192,7 +199,12 @@ test("member without teams gets no teams dropdown", () => {
   const navItems = buildWorkspaceNavigation("self", { ...baseContext, teams: [] });
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "results", "interaction", "tasks"]);
+  assert.deepEqual(
+    ids,
+    CAREER_MODULE_READY
+      ? ["home", "results", "interaction", "career", "tasks"]
+      : ["home", "results", "interaction", "tasks"],
+  );
 });
 
 test("admin org dropdown no longer contains the dead billing entry", () => {
@@ -203,14 +215,15 @@ test("admin org dropdown no longer contains the dead billing entry", () => {
   assert.equal(childIds.includes("org-billing"), false);
 });
 
-// A karrier-iránytű önálló oldal (`/career`), de a modul MÉG NEM KÉSZ: addig
-// az oldalon a kereslet-mérő ajánló áll, és a menüpont nem jelenik meg — az
-// ajánlóhoz egyetlen út vezet (riport-oldali CTA), különben a mérés tölcsére
-// olvashatatlan lenne. Ha a `CAREER_MODULE_READY` true-ra vált, ez a teszt
-// bukik: akkor az alábbi állítást kell megfordítani, nem a kapcsolót.
-test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
-  assert.equal(CAREER_MODULE_READY, false, "a modul kész lett — ld. a teszt kommentjét");
-
+// A karrier-iránytű önálló oldal (`/career`). A modul 2026-08-11-én VISSZA LETT
+// KÖTVE (`CAREER_MODULE_READY = true`) — a motor mért teljesítménye alapján,
+// ld. `docs/audits/career-engine-benchmark-2026-08-11.md`. A menüpont ezért
+// megjelenik; ami a modul állapotától FÜGGETLENÜL érvényes marad, az az
+// org-szintű elrejtés (`Organization.hideCareerModule`).
+//
+// A teszt a kapcsoló MINDKÉT állását leírja, hogy egy esetleges vissza-
+// parkolás se hagyjon hazug állítást a fájlban.
+test("karrier menüpont: a kész modulé megjelenik, a parkolté nem", () => {
   const visible = buildWorkspaceNavigation("self", {
     homeHref: "/dashboard",
     org: null,
@@ -219,11 +232,13 @@ test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
     activeCampaignCount: 0,
     openTaskCount: 0,
   });
-  assert.equal(
-    visible.find((item) => item.id === "career"),
-    undefined,
-    "a készületlen modul menüpontja megjelent",
-  );
+  const careerItem = visible.find((item) => item.id === "career");
+  if (CAREER_MODULE_READY) {
+    assert.ok(careerItem, "a kész modul menüpontja hiányzik");
+    assert.equal(careerItem.primaryHref, "/career");
+  } else {
+    assert.equal(careerItem, undefined, "a készületlen modul menüpontja megjelent");
+  }
 
   // Az org-szintű kapcsoló önmagában is elrejti — ez a szabály a modul
   // élesítése után is érvényben marad.

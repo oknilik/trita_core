@@ -96,6 +96,14 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   linkek: Realistic←THOR, Social←ADAP), az observer-cap és zaj-faktor mind priorok.
   A known-groups harness a v5-ben körkörösség-mentessé vált, de tényleges validációhoz
   mért-kérdőív párok kellenek.
+  **Mérve (2026-08-11):** a hatás nagysága immár szám, nem sejtés. A becsült
+  (személyiség-alapú) érdeklődés-ágon a C három RIASEC-betűt hajt (R +0,4 · I +0,3 ·
+  C +0,6), a H egyet sem — ezért wizard nélkül a legerősebb egydimenziós függés
+  **r(C) = 0,43**, és a becsült vektor **61%-ban „low differentiation"** lesz (a motor
+  ilyenkor felezi az érdeklődés-súlyt, tehát a rangsor a demandFit-re esik vissza).
+  Preferencia-válaszokkal ugyanez r = 0,30-ra esik. Átsúlyozás = kalibráció, nem
+  hibajavítás → marad pilot-gated. Mérés: `scripts/career-validation/simulate.ts`,
+  jegyzőkönyv: `docs/audits/career-engine-benchmark-2026-08-11.md`.
 - **Csapatszerep-becslő súlyok (v6).** A `team-role-estimate.ts` HEXACO→szerep súlyai
   nem-normáltak (per-szerep pozitív-összeg 0.45–0.90), ezért a szociálisan kívánatos,
   egyenletesen emelt profil strukturálisan a magas-nyereségű szerepek felé húz. Interim
@@ -199,6 +207,24 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   elleni ellenőrzés alias-változatokkal (pl. `+címke`) megkerülhető — a W2
   gyökér-maradék része; normalizálás (plus-címke levágás) részleges mitigáció,
   a teljes zárás a W2 fő döntésével együtt kezelendő.
+- **Karrier: az átkattintható preferencia-lépés (2026-08-11, MÉRT).** A jobfit
+  rangsorát a wizard preferencia-tengelyei tartják. Mérés (n = 800):
+  preferencia nélkül a listavezető klasztere **78,9 szerep** és két mérés
+  top-10-e **0,22** átfedésű; preferenciákkal **11,1 szerep** és **0,59**.
+  A lépés ma átkattintható (minden tengely alapértelmezése semleges, a
+  `preferenceFit` a be nem állítottakat kihagyja), és aki átkattintja, a gyenge
+  ágra kerül — jelzés nélkül. Nem kód-hiba: a döntés az, hogy (a) válaszkényszer
+  legyen-e a lépésen, vagy (b) a felület mondja ki a felbontatlanságot („ez a
+  ~20 irány egyformán illik"). A (b) illeszkedik jobban a becsült-vs-mért
+  jelölési elvhez. **A karrier-modul széles élesítésének 1. számú feltétele.**
+  Jegyzőkönyv: `docs/audits/career-engine-benchmark-2026-08-11.md`.
+- **Karrier: H-padló hatóköre H-cél ≥ 50 szerepeken (2026-08-11).** A padló
+  dokumentált garanciája („magas H nem büntethető") az alacsony H-t kívánó
+  szerepekre szól, és a 2026-08-11-i centrálás-javítás óta ott hiánytalanul áll
+  (0 sértés). A H-cél ≥ 50 szerepeken viszont a nagyon magas becsületesség-alázat
+  továbbra is kaphat ideal-point büntetést („a cél fölött vagy"). A garancia
+  kiterjesztése minden szerepre termékdöntés — etikailag védhető, de a
+  kétirányú ideal-point modell alóli kivétel lenne a H-ra.
 
 ## 3. Elfogadott tervezési kompromisszumok (a vak szem újra felhozhatja)
 
@@ -270,6 +296,28 @@ eltávolított a UI-ról (dimenzió-szint is).
 ---
 
 ## Változásnapló (a ledger frissítései)
+
+- **2026-08-11 (jobfit-visszakötés) — A KARRIER-MOTOR MEGMÉRVE, EGY ÚJ KÓD-BUG
+  JAVÍTVA.** A parkolt karrier-modul felülvizsgálata a v1 alapvonalhoz mérve
+  (`scripts/career-validation/simulate.ts`, n = 800; jegyzőkönyv:
+  `docs/audits/career-engine-benchmark-2026-08-11.md`).
+  - **A v1 fődiagnózisa („nem differenciál") megszűnt:** rangsor-szórás
+    5,3 → 10,0–11,9 · jel/zaj ~0,66 → 1,24–2,63 · elevation-r 0,70 → 0,01–0,09 ·
+    legerősebb dimenzió-r 0,82 → 0,26–0,43. A katalógus súlymasszája hat
+    dimenzión oszlik (9,8%–22,7%) a v1 THOR-dominanciája (31%) helyett.
+  - **Új kód-bug, javítva:** a H-padló dokumentált invariánsa nem állt — a padló
+    által VÉDETT szerepek 16,5%-án az alacsony H-jú iker kapott magasabb pontot
+    (legrosszabb 25 pont), a H-t nem is kérő szerepek 49,3%-a pedig egyáltalán
+    mozdult a H-tól. Ok: kereszt-csatolás a NYERS-skálás padló és a CENTRÁLT
+    komponensek között (a centrálás nulla-összegű). Javítás: a centráló átlag a
+    H nélkül számol (`CENTERING_DIMS`) → 0 sértés, 2 új kötő teszt.
+    Ez a hiba-osztály komponens-szinten láthatatlan volt — ezért kerülte el a
+    v1–v9 köröket.
+  - **Két új nyitott termékdöntés a §2-ben:** az átkattintható preferencia-lépés
+    (a széles élesítés 1. feltétele) és a H-padló hatóköre.
+  - **A §1 karrier-tétele számot kapott:** a becsült érdeklődés C-dominanciája
+    r = 0,43 (wizard nélkül), 61% low-differentiation.
+  - `CAREER_MODULE_READY = true` — a modul visszakötve.
 
 - **2026-08-11 (v9 utókör) — KÉT TERMÉKDÖNTÉS LEZÁRVA + AZ ELSŐ MÉRT SZÁMOK.**
   - **Emocionalitás-valencia:** lezárva — mindkét pólus, mindkét felület-típus
