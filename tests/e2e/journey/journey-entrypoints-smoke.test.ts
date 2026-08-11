@@ -118,14 +118,23 @@ test.describe("Journey entrypoint smoke (guest handoff)", () => {
   });
 
   test("invite accept entrypoint with invalid token shows not-found without wrong redirect", async ({ page }) => {
+    // A TESZT keretét is tágítani kell, nem csak az állításét (2026-08-11).
+    //
+    // A not-found tartalom streamelve érkezik: a `next dev` igény szerinti
+    // route-fordítása + a teljes app-shell SSR-je terhelt CI-runneren lassú.
+    // Ezért kapott az állítás előbb 15s, majd 30s türelmet — a 30s-es emelés
+    // viszont HATÁSTALAN volt: a playwright.config.ts nem ír felül
+    // teszt-timeoutot, tehát a Playwright alapértelmezett 30s-e a keret, és
+    // abból fogy a goto + a pathname-ellenőrzés is. Az állítás így sosem
+    // kaphatta meg a saját 30s-ét — a teszt halt meg előbb. A CI-napló ezt
+    // pontosan mutatja: „Test timeout of 30000ms exceeded", nem expect-timeout.
+    //
+    // A keret ezért 90s (a webServer indítási kerete 120s), így a 30s-es
+    // állítás-türelem ténylegesen felhasználható. Ez nem hibát fed el: a
+    // tartalom helyes, a késleltetés a dev-render latenciája.
+    test.setTimeout(90_000);
     await page.goto("/join/c4-smoke-invalid-token", { waitUntil: "domcontentloaded" });
     await expectFinalPathname(page, "/join/c4-smoke-invalid-token");
-    // A not-found tartalom streamelve érkezik — a `next dev` igény szerinti
-    // route-fordítása + a teljes app-shell SSR-je terhelt CI-runneren együtt is
-    // beleférő türelmi idő. A 15s határos volt (terhelt futáson mindhárom próba
-    // ~16s-nél bukott, holott a tartalom helyes — a szomszéd commitok zöldek),
-    // ezért 30s-re tágítjuk; ez nem hibát fed el, hanem a dev-render latenciát
-    // fedi le determinisztikusabban.
     await expect(
       page.getByText(/this page could not be found|ez az oldal nem található/i).first(),
     ).toBeVisible({ timeout: 30_000 });
