@@ -10,6 +10,7 @@ import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { TRUST_MIN_RATERS } from "@/lib/trust-network";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import {
   CAMPAIGN_STEP_LABELS,
   isCampaignStepType,
@@ -192,7 +193,12 @@ export function MemberDossierView({
               </thead>
               <tbody className="divide-y divide-sand/70">
                 {sx.dims.map((d) => {
-                  const big = d.delta !== null && Math.abs(d.delta) >= 10;
+                  // Önkép–külső kép eltérés kiemelése CSAK a kanonikus
+                  // difference-kapu (DIFF_MIN_GAP = round(√2·SEM)) felett — a
+                  // 10–14 pontos Δ két pontszám különbségeként még a mérési
+                  // zajon belül van. Ugyanaz a küszöb, mint a ComparisonTab /
+                  // PDF összevetéseknél; a korábbi 10-es érték túl-jelzett.
+                  const big = d.delta !== null && Math.abs(d.delta) >= DIFF_MIN_GAP;
                   return (
                     <tr key={d.code} className={big ? "bg-state-warning-bg/60" : undefined}>
                       <td className="py-1.5 text-ink-body">

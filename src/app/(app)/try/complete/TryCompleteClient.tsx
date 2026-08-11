@@ -15,7 +15,7 @@ import {
   type TeaserScoringMetaItem,
 } from "@/lib/guest-teaser";
 import {
-  isTopPairUncertain,
+  isSecondaryUncertain,
   resolvePersonalityTypeFromScores,
   type PersonalityLocale,
 } from "@/lib/personality-type";
@@ -86,10 +86,13 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
       score: d.score,
     }));
 
-    // S3-hedge (FIX 5): mérési hibán belüli top-2 sorrendnél a címke már
-    // főnév-only — a pár-felirat sem sugallhat sorrendet („×"), rendezetlen
-    // elválasztót kap.
-    const pairSeparator = isTopPairUncertain(scores.ranked) ? " · " : " × ";
+    // S3-hedge (FIX 5 + v8): a pár-felirat kapuja UGYANAZ a kanonikus
+    // isSecondaryUncertain, mint a belépett results-úton (TypeGlyphPlate) — top-
+    // pár VAGY 2–3. hely a mérési hibán belül. A korábbi isTopPairUncertain csak
+    // a top-párt nézte, így a 2–3. bizonytalanságnál a teaser még sorrendet
+    // sugalló „×"-et mutatott, miközben a claim utáni nézet már rendezetlen
+    // párt. Bizonytalan másodlagosnál rendezetlen elválasztó („·").
+    const pairSeparator = isSecondaryUncertain(scores.ranked) ? " · " : " × ";
 
     return {
       typeLabel,
