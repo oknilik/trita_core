@@ -63,6 +63,13 @@ a referencia-minta hiányzik. Amíg nincs pilot:
   linkek: Realistic←THOR, Social←ADAP), az observer-cap és zaj-faktor mind priorok.
   A known-groups harness a v5-ben körkörösség-mentessé vált, de tényleges validációhoz
   mért-kérdőív párok kellenek.
+- **Csapatszerep-becslő súlyok (v6).** A `team-role-estimate.ts` HEXACO→szerep súlyai
+  nem-normáltak (per-szerep pozitív-összeg 0.45–0.90), ezért a szociálisan kívánatos,
+  egyenletesen emelt profil strukturálisan a magas-nyereségű szerepek felé húz. Interim
+  [kód]: a súlyvektorok elérhető-tartomány szerinti normálása; teljes: pilot-kalibráció.
+- **Glyph-intenzitás sáv (v6).** A `type-glyph.ts` intenzitás-vágásai (25/40/62/80) egy
+  HARMADIK, dokumentálatlan küszöb-család a 40/70 és 35/65 mellett — ugyanaz a
+  pilot-normálás rendezi, de amíg nincs, legalább a tier-konstansokból származtatandó.
 
 ## 2. Termék-döntést igénylő maradék (nem bug — döntés kell)
 
@@ -114,11 +121,21 @@ eltávolított a UI-ról (dimenzió-szint is).
 - **Következmény a jövő auditokra:** ha egy vak kör azt jelzi, hogy „a facet ± nélkül
   jelenik meg" vagy „a mérési hiba nincs kivezetve", az **NEM új bug** — ez a döntés.
   Ha viszont egy ±-szám valahol MÉGIS megjelenik a UI-n, az regresszió (ÚJ bug).
+- **Nyitott al-döntés (v6):** a karrier-modul (parkolt) még kiír egy numerikus
+  konfidencia-sávot (`bandLow–bandHigh%`). Vagy a fő ±-döntés kiterjed rá (le a
+  felületről), vagy a karrier tudatosan kivétel — ez egy tisztázandó termék-al-döntés,
+  nem új bug.
 
 ---
 
 ## Változásnapló (a ledger frissítései)
 
+- **2026-08-11 (v6 után):** a hatodik vak kör (6 elemző) MINDEN struktúrális leletét
+  ehhez a ledgerhez rendeltük — 0 új struktúrális meglepetés (a validitási alap
+  konvergált). Hozzáadva: csapatszerep-becslő súlyok (§1), glyph-intenzitás sáv (§1),
+  karrier konfidencia-sáv ±-al-döntés (§4). A v6 új KÓD-rétege külön dokumentumban:
+  `motor-audit-v6-2026-08-11.md` (egy v7 kód-kör bemenete). A konvergencia-szabály
+  szerint: a struktúra kész, a kód-oldal még egy fókuszált kört igényel.
 - **2026-08-11 (v5 után):** ledger létrehozva. A v5 lezárta: a v3-fixek testvér-
   felületeit (W6 case-insensitive + CANCELED + Clerk-webhook közös scrub; W1 nap-pontos
   + `relationship` drop; csapatszerep badge/exact/scope; S3-próza), a privacy-réteget
