@@ -3,7 +3,7 @@
 > Élő dokumentum. Ez a **kanonikus alapvonal** a motor-auditok konvergenciájához:
 > ami itt szerepel, az NEM „új lelet" egy következő vak körben — vagy pilot-adatot
 > igényel (kóddal nem javítható), vagy tudatos termék-döntés/tervezési kompromisszum.
-> Utolsó frissítés: 2026-08-11 (a v5-javítási kör után).
+> Utolsó frissítés: 2026-08-11 (a v8 vak kör + javításai után).
 
 ## Miért van erre szükség (a végtelen-kör probléma)
 
@@ -82,10 +82,17 @@ a referencia-minta hiányzik. Amíg nincs pilot:
 - **Approval-kapu org-váltással.** Egy több-org tag az aktív-org váltásával
   approval nélkül gyárthat külső meghívót; a teljes zárás kampány-scope-hoz kötött
   aggregációt igényel (modell-döntés).
-- **Törölt profil demográfia-retenció.** A v5 után a törlés a PII-t (email/observer-
-  kapcsolat) elvágja; a `username`/`birthYear`/`gender`/`country`/`careerBackground`
-  megtartása vagy törlése kis termék/jogi döntés (a completed observer-score anonim
-  aggregátumhoz kötődik).
+- ~~**Törölt profil demográfia-retenció.**~~ **LEZÁRVA (v8, 2026-08-11):** a döntés
+  megszületett — TÖRLÉS. A tombstone a `username`/`birthYear`/`gender`/`country`/
+  `careerBackground` mezőket is nullázza, a publikus `shareToken` visszavonódik, és
+  az `Inquiry` (kapcsolat-űrlap szabad szöveg) + `CandidateInvite` (jelölt-azonosító)
+  PII is redaktálódik. A completed observer/self SCORE pszeudonimizálva marad az
+  anonim aggregátumhoz. Integrációs teszt fedi.
+- **Org-roster email-láthatóság (v8).** A `GET /api/org/[id]` és a kampány-résztvevő
+  lista bármely tagnak (ORG_MEMBER is) kiadja a tagok — és a még függő meghívottak —
+  email-címét. Ez ROSTER-LÁTHATÓSÁGI termék-döntés: ha a teljes névjegyzék nem
+  szánt alap-tagoknak, az email csak manage-képességgel menjen ki. Nem kód-bug
+  (a hatókör-ellenőrzés megvan), hanem a szándékolt nyilvánosság kérdése.
 - **ANONYMOUS observer-típus.** Definiált, de sosem gyártott enum-ág. Bekötni (nyílt
   link) vagy törölni — elnevezési/termék-döntés.
 
@@ -101,6 +108,14 @@ a referencia-minta hiányzik. Amíg nincs pilot:
 - **A differencia-támadás maradéka (W1).** Az observer-átlag betöltésenként újraszámol;
   a completion-értesítés anonim, a completed-lista a v5 óta nap-pontos, a `relationship`
   mező nem szivárog. A teljes zárás zajos/kvantált aggregátum → pilot.
+  **v8-kiegészítés (ÚJ részlet, ugyanaz a gyökér):** a dimenzió-átlag mellett a
+  FACET-átlag (`computeObserverFacetAverages`, ~24 egyenlet betöltésenként) is
+  újraszámol — ez a csatorna élesíti az egy-nevesített-rater visszafejtését a
+  dimenzió-only becsléshez képest. A mitigációs jegyzetek eddig csak a dimenzió-
+  átlagot említették. A javítási irány ugyanaz (fix rater-szám „snapshot" +
+  kvantálás/zaj), és a facet-rétegre is ki kell terjednie — pilot-kalibrált
+  termék-döntés, nem kód-bug. A per-ÉRTÉK anonimitás-padló viszont már kód-szinten
+  zárva (v8: `computeObserverAverage` is a facet-sibling listwise szabályát követi).
 - **A közös rangsor holtverseny-tie-breakje** (`rankDimensionScores` TRITAN_ORDER;
   a csapatszerep FNV-hash) determinisztikus és szándékos.
 
@@ -130,6 +145,36 @@ eltávolított a UI-ról (dimenzió-szint is).
 
 ## Változásnapló (a ledger frissítései)
 
+- **2026-08-11 (v8 után) — A KONVERGENCIA MÉG NEM ÁLLT BE, de a struktúra stabil.**
+  A hetedik javítási kör (HEXACO-címkék, hero-CTA-k, ± leszedése) után indított
+  nyolcadik vak kör (6 elemző) eredménye:
+  - **A v7 deliverable-jei ÁLLNAK.** Független megerősítés: a nyers dimenzió-kódok
+    (INTE/RESO/…) SEHOL nem szivárognak user-facing szövegbe; mind a négy hero
+    (self/team/org/hiring) CTA-ja látható és kontraszt-helyes; a „Belbin"/„TRITAN"
+    márkanevek nincsenek a felületen; a scoring/type-mag (reverse-scoring,
+    `DIFF_MIN_GAP`, hedge-kapuk, NaN-védelem) tiszta.
+  - **ÚJ kód-réteg (13 tétel) — javítva ebben a körben.** Két osztály-szintű téma:
+    (1) **RESO-valencia inverzió** három felületen (team-report prefill,
+    `generateTeamSummary`, jelölt-összegző) — az érzelmi STABILITÁST jelezték
+    kockázatként/„figyelendőként"; (2) **± szám a UI-n** két helyen (publikus
+    landing team-hero „± szórás", intelligence-tab spread/delta „(N pont)") — a
+    2026-08-11 döntés testvér-felületei. Plusz: GDPR-scrub kiterjesztés
+    (`Inquiry` + `CandidateInvite` PII), observer-kvóta kizárás, per-érték
+    anonimitás-padló, pattern-route crash, H-floor ellentmondás, kredit-race,
+    fake-door emailRate, két félrevezető megjegyzés.
+  - **A tanulság ismét a TESTVÉR-FELÜLET.** Egyetlen v8-lelet sem mondott ellent a
+    korábbi javításoknak — mindegyik egy MÁSIK felület volt, amit az adott
+    osztály-szintű döntés (RESO-irány, ±-tilalom, PII-scrub) még nem érte el.
+    Ez erősíti a v4 óta érvényes szabályt: a javítást osztály-szinten kell
+    végigvinni, és a vak kör pontosan a kimaradt testvért találja meg.
+  - **Ledger-mozgás:** a „törölt profil demográfia-retenció" LEZÁRVA (törlés
+    mellett döntöttünk, kóddal + teszttel), a W1 kapott egy új, valós
+    részletet (facet-csatorna amplifikátor), és bekerült egy új termék-döntés
+    (org-roster email-láthatóság). A validitási alap (§1) VÁLTOZATLAN — nyolc
+    kör alatt nem jött új strukturális meglepetés.
+  - **Következő lépés:** mivel ez a kör még adott új kód-leletet, a szabály szerint
+    egy újabb vak kör indokolt a mostani javítások után. Ha az nulla új kód-bugot
+    ad, a kód-körök lezárulnak és a pilot jön.
 - **2026-08-11 (v6 után):** a hatodik vak kör (6 elemző) MINDEN struktúrális leletét
   ehhez a ledgerhez rendeltük — 0 új struktúrális meglepetés (a validitási alap
   konvergált). Hozzáadva: csapatszerep-becslő súlyok (§1), glyph-intenzitás sáv (§1),
