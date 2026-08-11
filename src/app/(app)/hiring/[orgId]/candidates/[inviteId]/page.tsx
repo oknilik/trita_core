@@ -216,9 +216,20 @@ export default async function CandidateResultPage({
 
   const profileOutput = runProfileEngine(candidateScores, testType);
 
-  // All high/low dims for the summary block
-  const highDims = presentDims.filter((d) => profileOutput.categories[d] === "high");
-  const lowDims = presentDims.filter((d) => profileOutput.categories[d] === "low");
+  // All high/low dims for the summary block.
+  // RESO (Emocionalitás) FORDÍTOTT irányú: a magas pólus (érzelmi ráhangolódás)
+  // NEM „erősség", az alacsony (érzelmi stabilitás) NEM „figyelendő". Ezért a
+  // valenciás erősség/figyelendő gyorsösszegzőből kizárjuk — különben egy
+  // stabil, stressztűrő jelölt (RESO alacsony) stabilitása a narancs
+  // „figyelendő" panelbe, egy reaktív jelölté a zöld „erősség" panelbe kerülne
+  // (fordított döntéstámogatás). A pólus-tudatos dimenzió-szöveg lentebb külön,
+  // helyesen jeleníti meg az emocionalitást.
+  const highDims = presentDims.filter(
+    (d) => d !== "RESO" && profileOutput.categories[d] === "high",
+  );
+  const lowDims = presentDims.filter(
+    (d) => d !== "RESO" && profileOutput.categories[d] === "low",
+  );
 
   // Selected team: searchParam → invite's team → first org team
   const selectedTeamId =

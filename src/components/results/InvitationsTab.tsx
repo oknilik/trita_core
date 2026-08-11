@@ -8,6 +8,7 @@ import { useToast } from "@/components/ui/Toast";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { t, tf } from "@/lib/i18n";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
+import { OBSERVER_INVITE_MAX_ACTIVE } from "@/lib/observer/invite-policy";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
@@ -235,7 +236,12 @@ export function InvitationsTab({
   const pending = active.filter(
     (i) => i.status === "PENDING" || i.status === "AWAITING_APPROVAL",
   );
-  const canCreate = active.length < 5;
+  // A kvóta CSAK a függő (PENDING/AWAITING_APPROVAL) meghívókra vonatkozik —
+  // ugyanaz, amit a szerver számol (invite/route.ts): a KITÖLTÖTT nem fogyaszt
+  // keretet. A korábbi `active.length` a completed-et is beleszámolta, így 5
+  // kitöltött után a felhasználó nem tudott új visszajelzést kérni, holott a
+  // szerver elfogadta volna.
+  const canCreate = pending.length < OBSERVER_INVITE_MAX_ACTIVE;
 
   const typeBadge = (observerType?: string): string | null => {
     switch (observerType) {
@@ -287,7 +293,7 @@ export function InvitationsTab({
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
         </div>
         <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
-          <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}/5</p>
+          <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}</p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
         </div>
       </div>

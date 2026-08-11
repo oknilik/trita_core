@@ -298,10 +298,13 @@ export function buildTeamIntelligencePriorities({
         id: "dimension_spread",
         tone: "rose",
         title: tr(locale, "Magas dimenzió-szórás", "High dimension spread"),
+        // 2026-08-11 termékdöntés: dispersió/eltérés SZÁMKÉNT nem jelenik meg a
+        // UI-n (mint a cohesion_risk-nél). A szórás továbbra is a kiváltó, de a
+        // „(N pont)" kikerül a szövegből.
         reason: tr(
           locale,
-          `${withHuArticle(TRITAN_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés (${Math.round(maxSpread.range)} pont), ami eltérő munkastílusokra utalhat.`,
-          `${TRITAN_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team (${Math.round(maxSpread.range)} points), which may point to differing work styles.`,
+          `${withHuArticle(TRITAN_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
+          `${TRITAN_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team, which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
         ctaHref: `/team/${teamId}?tab=profile`,
@@ -314,20 +317,26 @@ export function buildTeamIntelligencePriorities({
       isTeamManagerRole(member.role),
     );
     if (leaderWithScores) {
+      // A vezetőt KIZÁRJUK a bázisból: önmagával átlagolva tompítaná a deltát
+      // (kis csapatban a vezető a bázis jelentős része). Csak akkor van értelmes
+      // összevetés, ha van legalább egy nem-vezető tag.
+      const nonLeaderMembers = membersWithScores.filter(
+        (member) => member !== leaderWithScores,
+      );
       const teamAverageH = mean(
-        membersWithScores
+        nonLeaderMembers
           .map((member) => member.scores?.INTE)
           .filter((value): value is number => typeof value === "number"),
       );
       const teamAverageA = mean(
-        membersWithScores
+        nonLeaderMembers
           .map((member) => member.scores?.ADAP)
           .filter((value): value is number => typeof value === "number"),
       );
       const leaderDeltaH = Math.abs((leaderWithScores.scores?.INTE ?? teamAverageH) - teamAverageH);
       const leaderDeltaA = Math.abs((leaderWithScores.scores?.ADAP ?? teamAverageA) - teamAverageA);
 
-      if (leaderDeltaH >= 18 || leaderDeltaA >= 18) {
+      if (nonLeaderMembers.length > 0 && (leaderDeltaH >= 18 || leaderDeltaA >= 18)) {
         priorities.push({
           id: "leader_team_mismatch",
           tone: "amber",
@@ -336,14 +345,11 @@ export function buildTeamIntelligencePriorities({
             "Vezető-csapat értékrend eltérés",
             "Leader-team value mismatch",
           ),
+          // 2026-08-11 termékdöntés: a delta SZÁMKÉNT nem jelenik meg a UI-n.
           reason: tr(
             locale,
-            `A vezető becsületesség-alázat és barátságosság értéke láthatóan eltér a csapatátlagtól (${Math.round(
-              leaderDeltaH,
-            )}, illetve ${Math.round(leaderDeltaA)} pont). Ez becslés — érdemes beszélgetéssel validálni.`,
-            `The leader's honesty-humility and agreeableness scores visibly differ from the team average (${Math.round(
-              leaderDeltaH,
-            )} and ${Math.round(leaderDeltaA)} points). This is an estimate — worth validating in conversation.`,
+            `A vezető becsületesség-alázat és barátságosság értéke láthatóan eltér a csapatátlagtól. Ez becslés — érdemes beszélgetéssel validálni.`,
+            `The leader's honesty-humility and agreeableness scores visibly differ from the team average. This is an estimate — worth validating in conversation.`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
           ctaHref: `/team/${teamId}?tab=teamRole`,

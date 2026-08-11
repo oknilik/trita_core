@@ -77,16 +77,20 @@ export async function useCredit(params: {
   note: string;
 }): Promise<number | null> {
   return prisma.$transaction(async (tx) => {
-    const sub = await tx.subscription.findUnique({
-      where: { orgId: params.orgId },
-      select: { candidateCredits: true },
+    // FELTÉTELES írás (nem check-then-act): a `candidateCredits > 0` szűrő MAGÁN
+    // az UPDATE-en van, így két párhuzamos felhasználás nem tud mindkettő
+    // átcsúszni egy 1-es egyenlegen (READ COMMITTED alatt a korábbi
+    // findUnique-őr mindkettőt átengedte volna → −1 egyenleg, két „sikeres"
+    // válasz). Ha 0 sort érintett, nincs kredit → null.
+    const consumed = await tx.subscription.updateMany({
+      where: { orgId: params.orgId, candidateCredits: { gt: 0 } },
+      data: { candidateCredits: { decrement: 1 } },
     });
 
-    if (!sub || sub.candidateCredits <= 0) return null;
+    if (consumed.count === 0) return null;
 
-    const updated = await tx.subscription.update({
+    const updated = await tx.subscription.findUniqueOrThrow({
       where: { orgId: params.orgId },
-      data: { candidateCredits: { decrement: 1 } },
       select: { candidateCredits: true },
     });
 

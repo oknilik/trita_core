@@ -524,8 +524,16 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   if (!avgs || Object.keys(avgs).length < 2) return null;
 
   const sorted = Object.entries(avgs).sort((a, b) => b[1] - a[1]);
-  const topDims = sorted.slice(0, 2).map(([dim]) => dim);
-  const bottomDim = sorted[sorted.length - 1][0];
+  // RESO (Emocionalitás) FORDÍTOTT irányú: sem az alacsony (érzelmi
+  // stabilitás), sem a magas (érzelmi ráhangolódás) pólusa nem „erősség"/
+  // „kockázat" — ezért a valencia-alapú erősség (topDims) / figyelendő
+  // (bottomDim) válogatásból kihagyjuk, ugyanúgy, ahogy a workstyle-content.ts
+  // az egyéni prózában. Különben egy érzelmileg STABIL csapat legalacsonyabb
+  // dimenziója (RESO) tévesen „kockázatként" jelenne meg. RESO a semleges
+  // profil-mondatban (generateTeamSummary) marad, pólus-tudatos címkével.
+  const valenced = sorted.filter(([dim]) => dim !== "RESO");
+  const topDims = valenced.slice(0, 2).map(([dim]) => dim);
+  const bottomDim = valenced[valenced.length - 1][0];
   const spreadDims = agg.dimensionSpread
     ? Object.entries(agg.dimensionSpread)
         .filter(([, spread]) => spread >= 12)

@@ -44,7 +44,10 @@ import { DIMENSION_COLORS } from "@/lib/color-system";
 export const tritanConfig: TestConfig = {
   type: "TRITAN",
   name: "Trita személyiségfelmérés",
-  description: "HEXACO-alapú, validált személyiségfelmérés (IPIP-itemek).",
+  // A user-facing szöveg NEM nevezi a modellt „HEXACO-nak" (CLAUDE.md) — a
+  // getTestConfig amúgy is a lokalizált testLabels-re cseréli, de a nyers mező
+  // se hordozza a tiltott megfogalmazást.
+  description: "Hatfaktoros, validált személyiségfelmérés (IPIP-itemek).",
   format: "likert",
   dimensions: [
     {

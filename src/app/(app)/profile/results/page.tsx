@@ -300,7 +300,8 @@ export default async function ProfileResultsPage({
   );
 
   // Facet-szintű külső átlag ugyanabból a forrásból — facetenként külön
-  // küszöb (≥2 értékelő), a ritkán lefedett facet kulcsa kimarad.
+  // küszöb (≥3 értékelő, DOSSIER_OBSERVER_MIN), a ritkán lefedett facet
+  // kulcsa kimarad.
   const observerFacetAverages = computeObserverFacetAverages(
     mainDimCodes as TritanDimCode[],
     likertObservers.map((o) => o.facets),

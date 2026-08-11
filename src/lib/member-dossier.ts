@@ -160,7 +160,11 @@ export function computeObserverAverage(
         n += 1;
       }
     }
-    if (n > 0) result[code] = Math.round(sum / n);
+    // Az anonimitás-padló PER-ÉRTÉK érvényes, nem csak a készletek számára:
+    // ha egy dimenziót csak 1–2 értékelő adott meg (a többi kihagyta), akkor a
+    // „csoportátlag" valójában 1–2 ember konkrét válasza lenne. Ugyanaz a
+    // listwise szabály, mint a facet-siblingben (computeObserverFacetAverages).
+    if (n >= DOSSIER_OBSERVER_MIN) result[code] = Math.round(sum / n);
   }
   return result;
 }

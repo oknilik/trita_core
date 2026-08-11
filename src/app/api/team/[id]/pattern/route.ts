@@ -67,8 +67,11 @@ export async function GET(
     // FONTOS: a tárolt score-JSON a BELSŐ dimenziókódokat használja
     // (INTE/RESO/TEMP/ADAP/THOR/OPEN), nem a HEXACO display-betűket —
     // ugyanaz az olvasási szabály, mint a team-stats.ts-ben.
-    const dims = (ar.scores as ScoreResult).dimensions;
+    // Hiányos/örökség score-JSON (nincs `dimensions` kulcs) NEM dönti el az
+    // egész endpointot: a tagot kihagyjuk, ahogy a team-stats.ts loader is.
+    const dims = (ar.scores as ScoreResult | null)?.dimensions;
     if (
+      !dims ||
       dims.INTE === undefined || dims.RESO === undefined || dims.TEMP === undefined ||
       dims.ADAP === undefined || dims.THOR === undefined || dims.OPEN === undefined
     ) {

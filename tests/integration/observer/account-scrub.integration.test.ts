@@ -233,4 +233,57 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     assert.equal(tomb?.country, null);
     assert.equal(tomb?.careerBackground, null, "a karrier-háttér Json is DB-NULL");
   });
+
+  await t.test("Inquiry + CandidateInvite PII redaktálva a törléskor (v8 P1)", async () => {
+    const target = await createProfile({ email: `p1_${randomUUID().slice(0, 8)}@test.trita.app` });
+    const manager = await createProfile();
+
+    // A törölt fél kapcsolat-űrlapja profil-linkkel …
+    const inqLinked = await prisma.inquiry.create({
+      data: {
+        name: "Teszt Elek",
+        email: target.email!,
+        topic: "general",
+        message: "Titkos üzenet a kapcsolat-űrlapról",
+        userProfileId: target.id,
+      },
+    });
+    // … és egy MÁSIK, csak (case-variant) email szerint illeszkedő, profil-link nélkül.
+    const inqByEmail = await prisma.inquiry.create({
+      data: {
+        name: "Teszt Elek",
+        email: target.email!.toUpperCase(),
+        topic: "general",
+        message: "Másik üzenet",
+        userProfileId: null,
+      },
+    });
+    // A törölt fél JELÖLTKÉNT egy MÁSIK user (manager) hiring-folyamatában.
+    const cand = await prisma.candidateInvite.create({
+      data: {
+        managerId: manager.id,
+        email: target.email!,
+        name: "Jelölt Név",
+        expiresAt: FUTURE,
+      },
+    });
+
+    await scrubProfileData(target.id, target.email);
+
+    const il = await prisma.inquiry.findUnique({ where: { id: inqLinked.id } });
+    assert.equal(il?.userProfileId, null);
+    assert.equal(il?.email, "");
+    assert.equal(il?.name, "—");
+    assert.equal(il?.message, "");
+
+    const ie = await prisma.inquiry.findUnique({ where: { id: inqByEmail.id } });
+    assert.equal(ie?.email, "", "case-variant email szerint is redaktál");
+    assert.equal(ie?.name, "—");
+
+    const c = await prisma.candidateInvite.findUnique({ where: { id: cand.id } });
+    assert.equal(c?.email, null, "a jelölt közvetlen emailje elvágva");
+    assert.equal(c?.name, null);
+    // A manager-kötés marad (a folyamat az org rekordja) — csak az identitás megy.
+    assert.equal(c?.managerId, manager.id);
+  });
 });

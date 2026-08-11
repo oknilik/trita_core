@@ -69,14 +69,17 @@ describe("computeObserverAverage — observer-küszöb + átlag", () => {
     for (const c of TRITAN_ORDER) assert.equal(avg![c], 47);
   });
 
-  it("hiányzó dimenziót az adott készletben kihagy (csak jelenlévőkből átlagol)", () => {
+  it("a küszöb alatt lefedett dimenzió KIMARAD (per-érték anonimitás-padló)", () => {
     const a = full(60);
     const b = full(80);
     const c = full(70);
-    delete b["OPEN"]; // OPEN csak két készletben van
+    delete b["OPEN"]; // OPEN csak KÉT készletben van → 2 < DOSSIER_OBSERVER_MIN
     const avg = computeObserverAverage(TRITAN_ORDER, [a, b, c]);
-    assert.equal(avg!["OPEN"], 65); // 'a'(60) és 'c'(70) hordozza → 65
-    assert.equal(avg!["TEMP"], 70); // (60+80+70)/3
+    // Az anonimitás-padló PER-ÉRTÉK érvényes, nem csak a készletek számára:
+    // két értékelőből képzett „átlag" a két konkrét választ fedné fel. Ugyanaz
+    // a listwise szabály, mint a facet-siblingnél (motor-audit v8).
+    assert.equal(avg!["OPEN"], undefined, "2 értékelős dimenzió nem kerül ki");
+    assert.equal(avg!["TEMP"], 70); // (60+80+70)/3 — teljes lefedettség marad
   });
 });
 

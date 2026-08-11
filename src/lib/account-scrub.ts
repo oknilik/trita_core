@@ -99,6 +99,36 @@ export async function scrubProfileData(
       where: raterMatch,
       data: { observerProfileId: null, observerEmail: null, observerName: null },
     }),
+    // Kapcsolat-űrlap (Inquiry): a törölt fél KÖZVETLEN, szabad-szöveges PII-ja
+    // (név, email, cég, üzenet-szöveg). A profil-tombstone miatt az FK SetNull
+    // nem elég — a mezőket redaktáljuk (a sor státusz/téma/időbélyeg megmarad az
+    // aggregátumhoz). A name/email/message a sémában KÖTELEZŐ, ezért sentinelre
+    // állítjuk, nem NULL-ra. Illesztés profil VAGY case-insensitive email szerint
+    // (a contact-form email alapján auto-linkel — motor-audit v8 P1).
+    prisma.inquiry.updateMany({
+      where: email
+        ? {
+            OR: [
+              { userProfileId: profileId },
+              { email: { equals: email, mode: "insensitive" as const } },
+            ],
+          }
+        : { userProfileId: profileId },
+      data: { name: "—", email: "", company: null, message: "", userProfileId: null },
+    }),
+    // Jelölt-meghívó (CandidateInvite): ha a törölt fél JELÖLTKÉNT (email
+    // szerint) szerepelt egy org hiring-folyamatában, a közvetlen azonosítóit
+    // (email, név) elvágjuk — a CandidateResult score-ja pszeudonimizálva marad,
+    // ugyanúgy, mint az observer/self esetében. A managerId a MEGHÍVÓ (nem a
+    // jelölt), arra NEM illesztünk. Email híján nincs mire illeszteni → kimarad.
+    ...(email
+      ? [
+          prisma.candidateInvite.updateMany({
+            where: { email: { equals: email, mode: "insensitive" as const } },
+            data: { email: null, name: null },
+          }),
+        ]
+      : []),
     // Analitika: az eseményeket nem töröljük, csak elvágjuk a személytől —
     // az aggregált tölcsér-számok nem esnek szét, de az események nem
     // köthetők vissza.

@@ -494,7 +494,18 @@ export function computeCareerFit(
 
     const flags: string[] = [];
     if (components.some((c) => c.note === "h-floor")) flags.push("h-floor");
-    if (components.some((c) => c.position === "over" && c.weight >= 0.2)) flags.push("above-target");
+    // A H-padlós komponens KIMARAD az „above-target" jelzésből: ott az alignment
+    // már 100 (a magas becsületesség-alázatot szándékosan NEM büntetjük), a
+    // geometriai position viszont „over" marad. Nélküle a kártya egyszerre írta
+    // ki, hogy „a magas H itt nem hátrány" ÉS hogy „a cél fölött vagy" —
+    // ugyanarra a dimenzióra, egymásnak ellentmondva.
+    if (
+      components.some(
+        (c) => c.position === "over" && c.weight >= 0.2 && c.note !== "h-floor",
+      )
+    ) {
+      flags.push("above-target");
+    }
     if (!feasibility.ready) flags.push("entry-gap");
     if (feasibility.state === "field-match") flags.push("field-match");
     if (feasibility.state === "licence-needed") flags.push("licence-needed");

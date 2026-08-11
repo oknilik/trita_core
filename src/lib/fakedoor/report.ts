@@ -126,6 +126,14 @@ function cell(views: ViewRow[], responses: ResponseRow[]): FakeDoorCell {
   const yes = responses.filter((row) => row.interest === "yes").length;
   const no = responses.filter((row) => row.interest === "no").length;
   const emails = responses.filter((row) => row.emailOptIn).length;
+  // Az emailRate az „igen → email" konverzió, ezért a SZÁMLÁLÓ is csak az
+  // igen-ágból jöhet. Az összes opt-in (`emails`) az ár-elutasítókat is
+  // tartalmazza (wouldPaySomething), így a korábbi emails/yes arány 100% fölé
+  // is mehetett, felfelé torzítva a kereslet-becslést. A teljes opt-in szám
+  // külön mezőben marad.
+  const yesEmails = responses.filter(
+    (row) => row.interest === "yes" && row.emailOptIn,
+  ).length;
   return {
     views: views.length,
     responses: responses.length,
@@ -134,7 +142,7 @@ function cell(views: ViewRow[], responses: ResponseRow[]): FakeDoorCell {
     emails,
     responseRate: rate(responses.length, views.length),
     yesRate: rate(yes, responses.length),
-    emailRate: rate(emails, yes),
+    emailRate: rate(yesEmails, yes),
   };
 }
 
