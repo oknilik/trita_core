@@ -5,7 +5,7 @@
 **Ág:** `codex/ux-journey-simplification`
 
 **Kiindulópont:** `origin/main` (`84867e5`)
-**Státusz:** első szelet elkészült; második szelet megkezdve
+**Státusz:** első és második szelet elkészült; harmadik szelet következik
 
 ## 1. Vezetői döntés
 
@@ -86,10 +86,10 @@ Ez célállapot, nem egyetlen release-ben végrehajtandó navigációcsere.
 
 ### Szelet 2 — egy következő lépés
 
-- [ ] egy ajánlott következő lépés minden fő cockpit tetején;
+- [x] egy ajánlott következő lépés minden fő cockpit tetején;
 - [x] a versengő helyi teendőblokkok összevonása a csapat-áttekintésben;
 - [x] „Feladataim” és helyi fókuszkártya felelősségi határának rögzítése;
-- kampány-időzítési vezérlők áthelyezése beállítási kontextusba.
+- [x] kampány-időzítési vezérlők áthelyezése a kampány részletezőjére.
 
 **Rögzített felelősségi határ:** a csapat-áttekintés egyetlen, azonnal
 végrehajtható teendőt emel ki. A prioritás: nyitott mérési lépés → megkezdett
@@ -198,8 +198,10 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
 ## 10. Második szelet részverifikációja
 
 - a csapat-fókusz prioritási szabályának 4/4 unit tesztje zöld;
+- a szervezeti fókusz prioritási szabályának 4/4 unit tesztje zöld;
 - a fókuszkártya kliensoldali render- és linktesztje 1/1 zöld;
-- a teljes unit suite 971/971 zöld;
+- a kampányütemezés kontextusváltásának kliensoldali tesztje 1/1 zöld;
+- a teljes unit suite 975/975 zöld;
 - TypeScript typecheck és célzott ESLint hibamentes;
 - színtoken- és új-hex guard hibamentes;
 - az optimalizált production build sikeres, 102 statikus oldallal.

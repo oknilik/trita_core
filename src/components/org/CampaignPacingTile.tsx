@@ -5,6 +5,7 @@
 // innen tudja átállítani az ütemet és azonnal kiküldeni a következőt.
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   CAMPAIGN_STEP_LABELS,
@@ -48,10 +49,12 @@ function useCountdown(targetIso: string | null): string | null {
 export function CampaignPacingTile({
   data,
   canManagePacing,
+  managementHref,
   isHu,
 }: {
   data: CampaignPacingTileData;
   canManagePacing: boolean;
+  managementHref?: string;
   isHu: boolean;
 }) {
   const router = useRouter();
@@ -200,6 +203,13 @@ export function CampaignPacingTile({
               </p>
             ) : null}
           </div>
+        ) : managementHref ? (
+          <Link
+            href={managementHref}
+            className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] border border-sand bg-surface-card px-4 text-caption font-semibold text-sage-dark transition hover:border-sage/40 hover:text-ink"
+          >
+            {isHu ? "Ütemezés kezelése" : "Manage pacing"}
+          </Link>
         ) : null}
       </div>
     </section>

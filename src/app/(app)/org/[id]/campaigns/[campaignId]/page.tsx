@@ -12,6 +12,7 @@ import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
 import { AddParticipantButton } from "@/components/org/AddParticipantButton";
 import { DraftCampaignEditor } from "@/components/org/DraftCampaignEditor";
+import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import {
   StatusChip,
@@ -186,6 +187,7 @@ export default async function CampaignDetailPage({
             userId: true,
             completedAt: true,
             currentStep: true,
+            nextStepOpensAt: true,
             stepCompletions: true,
             user: { select: { id: true, username: true, email: true } },
           },
@@ -396,6 +398,58 @@ export default async function CampaignDetailPage({
   const completionPct =
     totalCount > 0 ? Math.round((fullyDoneCount / totalCount) * 100) : 0;
 
+  let pacingTile = null;
+  if (campaign.status === "ACTIVE" && totalCount > 0) {
+    // Szerveroldali request-pillanatkép: ugyanaz az időreferencia dönt minden
+    // résztvevő nyitott/ütemezett állapotáról ebben az egy renderben.
+    // eslint-disable-next-line react-hooks/purity
+    const pacingNow = Date.now();
+    let doneCount = 0;
+    let scheduledCount = 0;
+    let nextReleaseAt: Date | null = null;
+    const openStepCounts = new Map<string, number>();
+
+    for (const participant of campaign.participants) {
+      const stepType = campaignSteps[participant.currentStep];
+      if (!stepType) {
+        doneCount += 1;
+        continue;
+      }
+      if (
+        participant.nextStepOpensAt &&
+        participant.nextStepOpensAt.getTime() > pacingNow
+      ) {
+        scheduledCount += 1;
+        if (!nextReleaseAt || participant.nextStepOpensAt < nextReleaseAt) {
+          nextReleaseAt = participant.nextStepOpensAt;
+        }
+        continue;
+      }
+      openStepCounts.set(stepType, (openStepCounts.get(stepType) ?? 0) + 1);
+    }
+
+    const openStepType =
+      [...openStepCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+    const openCount = [...openStepCounts.values()].reduce((sum, count) => sum + count, 0);
+    const targetTeamId = getCampaignTeamIds(campaign)[0] ?? null;
+
+    pacingTile = {
+      orgId,
+      campaignId: campaign.id,
+      campaignName: campaign.name,
+      teamName: targetTeamId
+        ? orgTeams.find((team) => team.id === targetTeamId)?.name ?? null
+        : null,
+      stepIntervalHours: campaign.stepIntervalHours,
+      totalParticipants: totalCount,
+      doneCount,
+      openCount,
+      openStepType,
+      scheduledCount,
+      nextReleaseAt: nextReleaseAt?.toISOString() ?? null,
+    };
+  }
+
   // For CLOSED: compute TRITAN averages + previous campaign comparison
   let currentAvgScores: Record<string, number> | null = null;
   let previousAvgScores: Record<string, number> | null = null;
@@ -539,6 +593,14 @@ export default async function CampaignDetailPage({
             )}
           </div>
         </div>
+
+        {pacingTile ? (
+          <CampaignPacingTile
+            data={pacingTile}
+            canManagePacing={canManageCampaign}
+            isHu={isHu}
+          />
+        ) : null}
 
         {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
         {showStepSection && totalCount > 0 && (

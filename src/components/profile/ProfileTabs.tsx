@@ -1065,6 +1065,54 @@ export function ProfileTabs({
         />
       )}
 
+      {/* A személyes cockpit egyetlen következő lépése közvetlenül az
+          állapotjelzés után jelenik meg, nem a hosszú riport legalján. */}
+      {bridgeNextStep ? (
+        <div className="space-y-3">
+          <JourneyNextStepCard
+            eyebrow={t("content.bridgeEyebrow", locale)}
+            title={bridgeStageLabel
+              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
+              : t("content.bridgeJourney", locale)}
+            description={bridgeNextStep.explanation}
+            primary={bridgeNextStep.primary}
+            secondary={bridgeNextStep.secondary}
+          />
+
+          {shouldShowOrgExpansionPrompt ? (
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
+                  : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
+                <Link
+                  href={experienceHintDestination ?? "/profile/results"}
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
+                </Link>
+              </p>
+            </Card>
+          ) : null}
+
+          {shouldShowAssessmentContinuation ? (
+            <Card spacing="sm" className="rounded-xl px-4 py-3">
+              <p className="text-[12px] leading-relaxed text-ink-body">
+                {locale === "hu"
+                  ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
+                  : "Your self assessment is still in progress. Continue where you left off."}{" "}
+                <Link
+                  href="/assessment"
+                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
+                >
+                  {locale === "hu" ? "Folytatás" : "Continue"} →
+                </Link>
+              </p>
+            </Card>
+          ) : null}
+        </div>
+      ) : null}
+
       {/* Tab bar — pill style */}
       <div
         ref={tabBarRef}
@@ -1268,56 +1316,6 @@ export function ProfileTabs({
           )
         )}
       </div>
-
-      {/* Journey bridge CTA — a következő lépés kártyája (UX-audit B3):
-          minden módban renderel. A journey-engine consulting-led alatt már
-          consulting-tudatos CTA-t ad (a self-serve CREATE_TEAM observer-
-          irányra átképezve), upgrade/checkout felületre nem mutat. */}
-      {bridgeNextStep ? (
-        <div className="space-y-3">
-          <JourneyNextStepCard
-            eyebrow={t("content.bridgeEyebrow", locale)}
-            title={bridgeStageLabel
-              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-              : t("content.bridgeJourney", locale)}
-            description={bridgeNextStep.explanation}
-            primary={bridgeNextStep.primary}
-            secondary={bridgeNextStep.secondary}
-          />
-
-          {shouldShowOrgExpansionPrompt ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
-                  : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
-                <Link
-                  href={experienceHintDestination ?? "/profile/results"}
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-
-          {shouldShowAssessmentContinuation ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
-                  : "Your self assessment is still in progress. Continue where you left off."}{" "}
-                <Link
-                  href="/assessment"
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Folytatás" : "Continue"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-        </div>
-      ) : null}
 
       {/* Elégedettség-visszajelzés — egyszer, az oldal alján */}
       <FeedbackForm

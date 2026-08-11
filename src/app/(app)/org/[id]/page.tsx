@@ -13,6 +13,7 @@ import { OrgPageShell } from "@/components/org/OrgPageShell";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
+import { OrgOverviewNextAction } from "@/components/org/OrgOverviewNextAction";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -28,6 +29,7 @@ import {
   DashboardPanel,
 } from "@/components/dashboard/DashboardPrimitives";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { resolveOrgOverviewFocus } from "@/lib/org-overview-focus";
 
 export const dynamic = "force-dynamic";
 
@@ -361,6 +363,19 @@ export default async function OrgDetailPage({
     pageData.memberCount - pageData.completedMemberCount,
     0,
   );
+  const overviewFocus = resolveOrgOverviewFocus({
+    locale: isHu ? "hu" : "en",
+    orgId,
+    teamCount: pageData.teamCount,
+    memberCount: pageData.memberCount,
+    completedMemberCount: pageData.completedMemberCount,
+    pendingInviteCount: pendingInvites.length,
+    activeCampaignCount: pageData.activeCampaignCount,
+    canCreateTeam: canCreateTeamActions,
+    canInviteMembers: canInviteMemberActions,
+    canLaunchCampaign: canLaunchCampaignActions,
+    canViewCampaigns: isConsultantView,
+  });
   const activeRemainingCount = Math.max(
     pageData.activeTotalParticipants - pageData.activeSelfDone,
     0,
@@ -559,10 +574,17 @@ export default async function OrgDetailPage({
         </div>
       </section>
 
+      <OrgOverviewNextAction focus={overviewFocus} isHu={isHu} />
+
       {pacingTile ? (
         <CampaignPacingTile
           data={pacingTile}
-          canManagePacing={isAdminForActions || isConsultantView}
+          canManagePacing={false}
+          managementHref={
+            isConsultantView
+              ? `/org/${orgId}/campaigns/${pacingTile.campaignId}`
+              : undefined
+          }
           isHu={isHu}
         />
       ) : null}

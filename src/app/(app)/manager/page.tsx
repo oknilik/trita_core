@@ -237,6 +237,20 @@ export default async function ManagerCockpitPage() {
         }
       />
 
+      <section>
+        <DashboardSectionHeader
+          label={isHu ? "Javasolt következő lépés" : "Suggested next step"}
+          className="mb-4"
+        />
+        <JourneyNextStepCard
+          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
+          title={nextStep.title}
+          description={nextStep.description}
+          primary={nextStep.primary}
+          secondary={nextStep.secondary}
+        />
+      </section>
+
       {/* ═══ CSAPATOK ═══ */}
       <section>
         <DashboardSectionHeader label={isHu ? "Csapataid" : "Your teams"} className="mb-4" />
@@ -400,17 +414,6 @@ export default async function ManagerCockpitPage() {
         </section>
       )}
 
-      {/* ═══ JAVASOLT KÖVETKEZŐ LÉPÉS ═══ */}
-      <section>
-        <DashboardSectionHeader label={isHu ? "Javasolt következő lépés" : "Suggested next step"} className="mb-4" />
-        <JourneyNextStepCard
-          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
-          title={nextStep.title}
-          description={nextStep.description}
-          primary={nextStep.primary}
-          secondary={nextStep.secondary}
-        />
-      </section>
     </PlatformPageShell>
   );
 }
