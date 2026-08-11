@@ -174,6 +174,7 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
         userProfileId: target.id,
         testType: "TRITAN",
         isSelfAssessment: true,
+        shareToken: makeId("share"),
         scores: { INTE: 55, RESO: 50, TEMP: 60, ADAP: 45, THOR: 52, OPEN: 58 } as Prisma.InputJsonValue,
       },
     });
@@ -185,11 +186,51 @@ test("account-scrub — GDPR fiók-törlés (scrubProfileData)", async (t) => {
     const evAfter = await prisma.analyticsEvent.findUnique({ where: { id: ev.id } });
     assert.equal(evAfter?.userProfileId, null);
     assert.equal(evAfter?.isAuthed, false);
-    assert.equal((await prisma.assessmentResult.findUnique({ where: { id: ar.id } }))?.userProfileId, null);
+    // Self-eredmény elárvul ÉS a publikus megosztó-link visszavonódik
+    // (motor-audit A1 HIGH — a /share/[token] különben a törölt user
+    // eredményét publikusan szolgálná ki).
+    const arAfter = await prisma.assessmentResult.findUnique({ where: { id: ar.id } });
+    assert.equal(arAfter?.userProfileId, null);
+    assert.equal(arAfter?.shareToken, null, "a törölt user megosztó-tokenje nullázódik");
 
+    // Tombstone: MINDEN közvetlen PII elvágva (motor-audit A2 — a korábbi scrub
+    // a username-t és a demográfiát bent hagyta).
     const tomb = await prisma.userProfile.findUnique({ where: { id: target.id } });
     assert.equal(tomb?.deleted, true);
     assert.equal(tomb?.clerkId, null);
     assert.equal(tomb?.email, null);
+    assert.equal(tomb?.username, null, "a nevet is nullázni kell");
+    assert.equal(tomb?.birthYear, null);
+    assert.equal(tomb?.gender, null);
+    assert.equal(tomb?.country, null);
+  });
+
+  await t.test("A1: demográfiával/karrier-háttérrel feltöltött profil is teljesen tombstone-ol", async () => {
+    const target = await prisma.userProfile.create({
+      data: {
+        id: makeId("scrub"),
+        clerkId: makeId("clerk"),
+        email: `demo_${randomUUID().slice(0, 8)}@test.trita.app`,
+        username: "Demografia Teszt",
+        birthYear: 1990,
+        gender: "female",
+        country: "HU",
+        careerBackground: { status: "employed", eduLevel: "msc", interests: ["a", "b"] } as Prisma.InputJsonValue,
+        testType: "TRITAN",
+        testTypeAssignedAt: NOW,
+        onboardedAt: NOW,
+        consentedAt: NOW,
+      },
+    });
+
+    await scrubProfileData(target.id, target.email);
+
+    const tomb = await prisma.userProfile.findUnique({ where: { id: target.id } });
+    assert.equal(tomb?.deleted, true);
+    assert.equal(tomb?.username, null);
+    assert.equal(tomb?.birthYear, null);
+    assert.equal(tomb?.gender, null);
+    assert.equal(tomb?.country, null);
+    assert.equal(tomb?.careerBackground, null, "a karrier-háttér Json is DB-NULL");
   });
 });

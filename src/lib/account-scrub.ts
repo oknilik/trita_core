@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -33,9 +34,15 @@ export async function scrubProfileData(
     : { observerProfileId: profileId };
 
   await prisma.$transaction([
+    // A self-eredmények elárvulnak (userProfileId → null, anonim aggregátum), ÉS
+    // a publikus megosztó-linkjük visszavonódik. A shareToken nélkül a
+    // /share/[token] oldalnak nincs guardja a törölt userre (findUnique csak a
+    // tokenre) — ha bent marad, a törölt user személyiség-eredménye publikusan
+    // elérhető maradna (motor-audit A1, HIGH). A token nullázása a linket a
+    // „visszavont" állapot-oldalra viszi.
     prisma.assessmentResult.updateMany({
       where: { userProfileId: profileId },
-      data: { userProfileId: null },
+      data: { userProfileId: null, shareToken: null },
     }),
     prisma.assessmentDraft.deleteMany({
       where: { userProfileId: profileId },
@@ -99,9 +106,24 @@ export async function scrubProfileData(
       where: { userProfileId: profileId },
       data: { userProfileId: null, isAuthed: false },
     }),
+    // Profil-tombstone: a személyhez köthető MINDEN mező elvágva. A korábbi
+    // scrub csak a clerkId/email-t nullázta (motor-audit A2) — a username (név)
+    // és a demográfiai/karrier-háttéradat (birthYear/gender/country/
+    // careerBackground) bent maradt, pedig ezek is közvetlen PII-k. A locale és
+    // a role/testType nem személyazonosító, marad. A careerBackground Json?, így
+    // DB-NULL-ra a Prisma.DbNull kell.
     prisma.userProfile.update({
       where: { id: profileId },
-      data: { clerkId: null, email: null, deleted: true },
+      data: {
+        clerkId: null,
+        email: null,
+        username: null,
+        birthYear: null,
+        gender: null,
+        country: null,
+        careerBackground: Prisma.DbNull,
+        deleted: true,
+      },
     }),
   ]);
 }
