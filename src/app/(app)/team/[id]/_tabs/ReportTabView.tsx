@@ -29,7 +29,7 @@ export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
         // látja; a sima ORG_MEMBER a szűkebb, saját szemszögű tag-nézetet.
         // Terv: docs/product/feature-ideas.md #4.
         isOrgManager ? (
-          <TeamReportView report={publishedReport} isHu={isHu} />
+          <TeamReportView report={publishedReport} isHu={isHu} canManageActions />
         ) : (
           <TeamReportMemberView
             report={publishedReport}

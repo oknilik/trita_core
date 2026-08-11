@@ -19,6 +19,7 @@ import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
 import type { HexacoCode } from "@/lib/hexaco";
 import { extractNarrativeHighlights } from "@/lib/team-report-presentation";
+import { TeamActionTracker } from "@/components/team/TeamActionTracker";
 
 const DIM_LABELS: Record<string, { hu: string; en: string }> = {
   H: { hu: "Becsületesség-Alázat", en: "Honesty-Humility" },
@@ -328,9 +329,11 @@ const TIMEFRAME_TONES: Record<
 export function TeamReportView({
   report: reportInput,
   isHu,
+  canManageActions = false,
 }: {
   report: SerializedTeamReport;
   isHu: boolean;
+  canManageActions?: boolean;
 }) {
   const loc: Locale = isHu ? "hu" : "en";
   // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
@@ -516,6 +519,16 @@ export function TeamReportView({
           </div>
         </section>
       )}
+
+      {report.actionItems && report.actionItems.length > 0 ? (
+        <TeamActionTracker
+          teamId={report.teamId}
+          reportId={report.id}
+          initialItems={report.actionItems}
+          isHu={isHu}
+          canManage={canManageActions && report.status === "PUBLISHED"}
+        />
+      ) : null}
 
       {/* Csapatprofil: radar + szórás-sávok */}
       {agg?.dimensionAverages && (
@@ -1459,6 +1472,13 @@ export function TeamReportView({
                               {item.description}
                             </p>
                           )}
+                          {(item.owner || item.dueDate || item.status) ? (
+                            <p className="mt-2 text-micro text-muted">
+                              {item.owner ? `${isHu ? "Felelős" : "Owner"}: ${item.owner}` : ""}
+                              {item.owner && item.dueDate ? " · " : ""}
+                              {item.dueDate ? `${isHu ? "Határidő" : "Due"}: ${item.dueDate}` : ""}
+                            </p>
+                          ) : null}
                         </li>
                       ))}
                     </ul>

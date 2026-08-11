@@ -9,6 +9,8 @@ import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TeamReportView } from "@/components/team/TeamReportView";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
+import { TeamWorkshopFacilitatorView } from "@/components/team/TeamWorkshopFacilitatorView";
+import { TeamReportComparison } from "@/components/team/TeamReportComparison";
 
 // Tanácsadói riport-szerkesztő. Csak ORG_CONSULTANT látja (a team page
 // szerver-oldalon kapuz). Vázlat → mentés → előnézet → publikálás; a
@@ -332,7 +334,14 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
           reportId: draft.id,
           action,
           ...values,
-          actionItems: actionItems.filter((item) => item.title.trim().length > 0),
+          actionItems: actionItems
+            .filter((item) => item.title.trim().length > 0)
+            .map((item) => ({
+              ...item,
+              owner: item.owner?.trim() || undefined,
+              dueDate: item.dueDate || undefined,
+              status: item.status ?? "not_started",
+            })),
         }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
@@ -494,7 +503,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                 onClick={() =>
                   setActionItems((items) => [
                     ...items,
-                    { title: "", description: "", timeframe: "30" },
+                    { title: "", description: "", timeframe: "30", status: "not_started" },
                   ])
                 }
                 className="text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
@@ -566,6 +575,48 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                   }
                   className="rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink"
                 />
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  <input
+                    type="text"
+                    value={item.owner ?? ""}
+                    placeholder={isHu ? "Felelős neve vagy szerepe" : "Owner name or role"}
+                    onChange={(e) =>
+                      setActionItems((items) =>
+                        items.map((it, i) => i === index ? { ...it, owner: e.target.value } : it),
+                      )
+                    }
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  />
+                  <input
+                    type="date"
+                    value={item.dueDate ?? ""}
+                    aria-label={isHu ? "Határidő" : "Due date"}
+                    onChange={(e) =>
+                      setActionItems((items) =>
+                        items.map((it, i) => i === index ? { ...it, dueDate: e.target.value } : it),
+                      )
+                    }
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  />
+                  <select
+                    value={item.status ?? "not_started"}
+                    aria-label={isHu ? "Akció státusza" : "Action status"}
+                    onChange={(e) =>
+                      setActionItems((items) =>
+                        items.map((it, i) => i === index ? {
+                          ...it,
+                          status: e.target.value as TeamReportActionItem["status"],
+                        } : it),
+                      )
+                    }
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  >
+                    <option value="not_started">{isHu ? "Még nem indult" : "Not started"}</option>
+                    <option value="in_progress">{isHu ? "Folyamatban" : "In progress"}</option>
+                    <option value="blocked">{isHu ? "Elakadt" : "Blocked"}</option>
+                    <option value="done">{isHu ? "Kész" : "Done"}</option>
+                  </select>
+                </div>
               </div>
             ))}
           </div>
@@ -742,6 +793,10 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
 
     {latestPublished && (
       <section className="flex flex-col gap-4">
+        <TeamWorkshopFacilitatorView report={latestPublished} isHu={isHu} />
+        {olderPublished[0] ? (
+          <TeamReportComparison current={latestPublished} previous={olderPublished[0]} isHu={isHu} />
+        ) : null}
         <div className="flex flex-wrap items-center justify-between gap-3">
           <SectionEyebrow tone="muted">
             {isHu
@@ -764,7 +819,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
             {isHu ? "Visszavonás szerkesztésre" : "Unpublish for editing"}
           </button>
         </div>
-        <TeamReportView report={latestPublished} isHu={isHu} />
+        <TeamReportView report={latestPublished} isHu={isHu} canManageActions />
       </section>
     )}
 

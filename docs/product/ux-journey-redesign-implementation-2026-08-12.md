@@ -5,7 +5,7 @@
 **Ág:** `codex/ux-journey-simplification`
 
 **Kiindulópont:** `origin/main` (`84867e5`)
-**Státusz:** első, második és harmadik szelet elkészült; negyedik szelet következik
+**Státusz:** az első négy megvalósítási szelet elkészült; a korábbi audit-backlog lezárása következik
 
 ## 1. Vezetői döntés
 
@@ -108,11 +108,19 @@ A teljes mérési backlog és a további párhuzamos feladatok kanonikus helye a
 
 ### Szelet 4 — végrehajtás és megtartás
 
-- akciók felelőssel, határidővel és státusszal;
-- workshop- és facilitátori nézet;
-- 30/60/90 napos utánkövetés;
-- mérési körök közötti változásnézet;
-- vezetői heti összefoglaló és elakadásjelzés.
+- [x] akciók felelőssel, határidővel és státusszal;
+- [x] a publikált riport akcióállapotának külön, jogosultságkezelt mentése;
+- [x] workshop- és facilitátori nézet 90 perces menetrenddel és guardraillel;
+- [x] 30/60/90 napos utánkövetés;
+- [x] két publikált mérési kör közötti változásnézet;
+- [x] vezetői heti összefoglaló és elakadásjelzés.
+
+**Adatmodell-döntés:** az akciókövetés a meglévő `TeamReport.actionItems` JSON
+mezőt bővíti opcionális `owner`, `dueDate` és `status` mezőkkel. Így nincs
+migráció, a korábbi riportok `not_started` alapállapottal továbbra is
+olvashatók, miközben a publikált riport befagyasztott mérési aggregátumai nem
+változnak. A külön akció-végpont csak a legutolsó publikált riportot engedi
+módosítani, szervezeti vezetői vagy tanácsadói jogosultsággal.
 
 ## 5. Szelet 1 elfogadási feltételei
 
@@ -216,4 +224,16 @@ nullable mezők. Ez csökkenti a rollout és a rollback kockázatát.
   tanácsadói tartalmat;
 - az új narratíva-kiemelő és a régi linkek regressziós tesztjei zöldek;
 - a teljes unit suite 978/978 zöld;
+- TypeScript typecheck hibamentes.
+
+## 12. Negyedik szelet részverifikációja
+
+- a régi és bővített akciószerkezet egyaránt szerializálható;
+- a heti összefoglaló külön számolja a kész, folyamatban lévő, elakadt,
+  lejárt és hét napon belül esedékes akciókat;
+- az akcióállapot-írás csak a legutóbbi publikált riportot és csak vezetői
+  vagy tanácsadói szervezeti szerepet enged;
+- a mérési összevetés a részvételt, a pszichológiai biztonságot és a legnagyobb
+  profilmozgásokat mutatja, oksági állítás nélkül;
+- a teljes unit suite 981/981 zöld;
 - TypeScript typecheck hibamentes.
