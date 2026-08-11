@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { Button } from "@/components/ui/primitives/Button";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { INDUSTRIES } from "@/lib/industry-fit";
@@ -19,10 +19,19 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 // ── Main component ───────────────────────────────────────────────────────────
 
-export function OnboardingClient() {
-  const router = useRouter();
+export type OnboardingVariant = "full" | "claim";
+
+export function OnboardingClient({
+  variant = "full",
+  onComplete,
+}: {
+  variant?: OnboardingVariant;
+  /** Tesztelési seam; élesben teljes oldalbetöltéses journey-handoff fut. */
+  onComplete?: () => void;
+}) {
   const { locale } = useLocale();
   const { showToast } = useToast();
+  const isClaimActivation = variant === "claim";
 
   const [username, setUsername] = useState("");
   const [birthYear, setBirthYear] = useState("");
@@ -111,7 +120,9 @@ export function OnboardingClient() {
     birthYearNum >= minBirthYear &&
     birthYearNum <= maxBirthYear;
 
-  const basicsValid = usernameValid && birthYearValid && gender !== "" && country !== "";
+  const basicsValid = isClaimActivation
+    ? usernameValid
+    : usernameValid && birthYearValid && gender !== "" && country !== "";
 
   // ── Flash + focus logic ──────────────────────────────────────────────────
 
@@ -143,6 +154,7 @@ export function OnboardingClient() {
 
   const focusFirstInvalid = () => {
     if (!usernameValid) { flashField("username"); return; }
+    if (isClaimActivation) return;
     if (!birthYearValid) { flashField("birthYear"); return; }
     if (gender === "") { flashField("gender"); return; }
     if (country === "") { flashField("country"); }
@@ -156,7 +168,7 @@ export function OnboardingClient() {
     // UX-A11: egyképernyős onboarding — a korábbi 1. lépés mezővalidációja
     // a submitra került. A mentés + Clerk-szinkron logika változatlan.
     setUsernameTouched(true);
-    setBirthYearTouched(true);
+    if (!isClaimActivation) setBirthYearTouched(true);
     if (!basicsValid) {
       focusFirstInvalid();
       return;
@@ -169,9 +181,11 @@ export function OnboardingClient() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           username: username.trim(),
-          birthYear: birthYearNum,
-          gender,
-          country,
+          ...(!isClaimActivation && {
+            birthYear: birthYearNum,
+            gender,
+            country,
+          }),
           consentedAt: new Date().toISOString(),
           ...(eduLevel && { eduLevel }),
           ...(eduLevel && eduLevel !== "primary" && eduField && { eduField }),
@@ -182,7 +196,14 @@ export function OnboardingClient() {
       if (!response.ok) throw new Error("Save failed");
 
       window.dispatchEvent(new CustomEvent("profile-updated"));
-      router.push(JOURNEY_HOME_HANDOFF_PATH);
+      // Next 16 alatt a kliens-routerből induló, szerver redirecttel végződő
+      // handoff időnként Router hook-sorrend hibába fut. Az onboarding egyszeri
+      // határátlépés, ezért itt a dokumentum-navigáció a stabil és helyes út.
+      if (onComplete) {
+        onComplete();
+      } else {
+        window.location.assign(JOURNEY_HOME_HANDOFF_PATH);
+      }
     } catch {
       showToast(t("onboarding.errorGeneric", locale), "error");
     } finally {
@@ -203,10 +224,10 @@ export function OnboardingClient() {
           <TritaLogo size={40} showText={false} />
           <div className="text-center">
             <h1 className="font-fraunces text-3xl text-ink">
-              {t("onboarding.title", locale)}
+              {t(isClaimActivation ? "onboarding.claimTitle" : "onboarding.title", locale)}
             </h1>
             <p className="mt-2 text-sm text-ink-body/70 max-w-sm">
-              {t("onboarding.subtitle", locale)}
+              {t(isClaimActivation ? "onboarding.claimSubtitle" : "onboarding.subtitle", locale)}
             </p>
           </div>
         </div>
@@ -217,10 +238,10 @@ export function OnboardingClient() {
           <div className="flex flex-col gap-6">
               <div>
                 <p className="font-fraunces text-xl text-ink">
-                  {t("onboarding.blockBasicsTitle", locale)}
+                  {t(isClaimActivation ? "onboarding.claimBlockTitle" : "onboarding.blockBasicsTitle", locale)}
                 </p>
                 <p className="text-xs text-muted mt-0.5">
-                  {t("onboarding.blockBasicsHint", locale)}
+                  {t(isClaimActivation ? "onboarding.claimBlockHint" : "onboarding.blockBasicsHint", locale)}
                 </p>
               </div>
 
@@ -254,6 +275,8 @@ export function OnboardingClient() {
                   />
                 </div>
 
+                {!isClaimActivation ? (
+                  <>
                 {/* Birth year */}
                 <div ref={birthYearFieldRef}>
                   <TextField
@@ -355,6 +378,15 @@ export function OnboardingClient() {
                   </div>
                 </div>
 
+                  </>
+                ) : (
+                  <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-3">
+                    <p className="text-sm leading-relaxed text-[var(--color-text-secondary)]">
+                      {t("onboarding.claimOptionalHint", locale)}
+                    </p>
+                  </div>
+                )}
+
               </div>
 
               {/* Hozzájárulás — UX-A11: nem külön lépés, közvetlenül a
@@ -393,28 +425,31 @@ export function OnboardingClient() {
                 </span>
               </label>
 
-              <button
+              <Button
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting || !consent}
-                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
+                loading={isSubmitting}
+                fullWidth
+                size="lg"
               >
-                {isSubmitting
-                  ? t("onboarding.saving", locale)
-                  : t("onboarding.submit", locale)}
-              </button>
+                {t(isClaimActivation ? "onboarding.claimSubmit" : "onboarding.submit", locale)}
+              </Button>
           </div>
 
         </div>
 
         {/* Footer hint */}
         <p className="mt-6 text-center text-xs text-muted">
-          {t("onboarding.footerHint", locale)}
+          {t(isClaimActivation ? "onboarding.claimFooterHint" : "onboarding.footerHint", locale)}
         </p>
 
       </div>
 
-      {/* Country picker */}
+      {/* A gyors aktiválásban ezek a pickerek nem nyithatók meg, de a
+          komponensek mountolása sem indokolt. */}
+      {!isClaimActivation ? (
+        <>
       <Picker
         isOpen={countryPickerOpen}
         onClose={() => setCountryPickerOpen(false)}
@@ -449,6 +484,8 @@ export function OnboardingClient() {
         selectedValue={currentIndustry}
         title={t("onboarding.industryLabel", locale)}
       />
+        </>
+      ) : null}
     </div>
   );
 }

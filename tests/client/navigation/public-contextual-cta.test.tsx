@@ -1,0 +1,44 @@
+import { act, render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { NavBar } from "@/components/NavBar";
+import { setSiteMode } from "@/components/landing/site-mode";
+
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/",
+}));
+
+vi.mock("@/components/LocaleProvider", () => ({
+  useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
+}));
+
+vi.mock("@/components/auth/auth-state", () => ({
+  useAuthState: () => ({ isSignedIn: false }),
+}));
+
+vi.mock("@/components/LanguageSwitcher", () => ({ LanguageSwitcher: () => null }));
+vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => null }));
+vi.mock("@/components/UserMenu", () => ({ UserMenu: () => null }));
+
+describe("publikus fejléc — landing kontextusú CTA", () => {
+  beforeEach(() => {
+    window.history.replaceState({}, "", "/");
+    window.scrollTo = vi.fn();
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    window.history.replaceState({}, "", "/");
+  });
+
+  it("egyéni módban a mérésre, csapatmódban a kapcsolatfelvételre visz", () => {
+    render(<NavBar />);
+
+    const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom →" });
+    expect(selfCtas.every((link) => link.getAttribute("href") === "/try")).toBe(true);
+
+    act(() => setSiteMode("team"));
+
+    const teamCtas = screen.getAllByRole("link", { name: "Egyeztetek →" });
+    expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
+  });
+});

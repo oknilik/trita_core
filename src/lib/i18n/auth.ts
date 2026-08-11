@@ -70,6 +70,34 @@ export const authTranslations = {
     errorBoundaryReload: { hu: "Újratöltés", en: "Reload" },
   },
   onboarding: {
+    claimTitle: {
+      hu: "Az eredményed készen áll",
+      en: "Your result is ready",
+    },
+    claimSubtitle: {
+      hu: "Még egy rövid lépés, és megnyitjuk a személyiségprofilodat.",
+      en: "One short step and we'll open your personality profile.",
+    },
+    claimBlockTitle: {
+      hu: "Mentsük el a profilodat",
+      en: "Save your profile",
+    },
+    claimBlockHint: {
+      hu: "Csak azt add meg, ami az induláshoz szükséges",
+      en: "Only what is needed to get started",
+    },
+    claimOptionalHint: {
+      hu: "A további háttéradatokat később, opcionálisan adhatod meg a profilodban.",
+      en: "You can add further background details later, optionally, from your profile.",
+    },
+    claimSubmit: {
+      hu: "Megnézem az eredményem",
+      en: "View my result",
+    },
+    claimFooterHint: {
+      hu: "A következő képernyőn már a saját eredményedet látod.",
+      en: "Your personal result is on the next screen.",
+    },
     progress: {
       hu: "Kitöltve: {completed}/{total}",
       en: "Completed: {completed}/{total}",
