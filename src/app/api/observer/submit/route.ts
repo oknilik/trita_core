@@ -178,89 +178,93 @@ export async function POST(req: Request) {
   // az esemény nem hordoz sem meghívó-tokent, sem személy-azonosítót.
   trackServerEvent("observer.assessment_complete", {});
 
-  // In-app notification — notify inviter that observer completed (fire-and-forget).
-  // Az értesítés ANONIM: az értékelő nevét NEM hordozza (differencia-támadás
-  // elleni mitigáció — a névvel a futó átlagból beazonosítható lenne az utolsó
-  // értékelő; ld. results/page.tsx reveal-küszöb megjegyzését).
-  import("@/lib/notifications").then(({ handleObserverCompleted }) =>
-    handleObserverCompleted({
-      inviterId: invitation.inviterId,
-      invitationId: invitation.id,
-    }).catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error")),
-  );
+  // A válasz-után futó, leválasztott best-effort mellékhatások (in-app
+  // értesítések + inviter-email). INTEGRÁCIÓS TESZTBEN TELJESEN KIMARADNAK.
+  //
+  // Miért a teljes kihagyás (nem await): a `@/lib/notifications` import-lánca
+  // a react-server feltétel alatt (CI: node24) a next/navigation `createContext`-
+  // jén dob, MÁR A MODUL-BETÖLTÉSKOR — a `.catch(...)` a láncon ezt nem fogja
+  // meg (a rejtett elutasítás az import-init-ből ered, nem a then-callbackből),
+  // ezért az await-elt Promise.allSettled sem zárta le. A node:test a
+  // leválasztott elutasítást flaky-n egy KÉSŐBBI teszt-esethez rendeli —
+  // CI-only integration-hiba, helyben nem reprodukálható. Egyetlen integrációs
+  // teszt sem állítja ezeket a mellékhatásokat (az observer-tesztek csak a
+  // DB-írást és a válasz-kódot nézik), így a teszt-környezetben biztonságosan
+  // elhagyhatók. Éles/dev alatt a gyors, fire-and-forget válasz változatlan.
+  if (process.env.TRITA_INTEGRATION_TEST_DB !== "1") {
+    // In-app notification — notify inviter that observer completed (fire-and-forget).
+    // Az értesítés ANONIM: az értékelő nevét NEM hordozza (differencia-támadás
+    // elleni mitigáció — a névvel a futó átlagból beazonosítható lenne az utolsó
+    // értékelő; ld. results/page.tsx reveal-küszöb megjegyzését).
+    import("@/lib/notifications")
+      .then(({ handleObserverCompleted }) =>
+        handleObserverCompleted({
+          inviterId: invitation.inviterId,
+          invitationId: invitation.id,
+        }),
+      )
+      .catch((err) => log.error({ event: "observer.observer_completed_error", err: err }, "Observer completed error"));
 
-  // In-app notification — notify observer that their submission was received (if registered user)
-  // observerProfileId may be null if the link wasn't opened while signed in,
-  // so we also try to match by observerEmail.
-  const notifyPromise = (async () => {
-    let observerUserId = invitation.observerProfileId;
+    // In-app notification — notify observer that their submission was received (if registered user)
+    // observerProfileId may be null if the link wasn't opened while signed in,
+    // so we also try to match by observerEmail.
+    void (async () => {
+      let observerUserId = invitation.observerProfileId;
 
-    if (!observerUserId && invitation.observerEmail) {
-      const observer = await prisma.userProfile.findFirst({
-        where: {
-          email: { equals: invitation.observerEmail, mode: "insensitive" },
-          deleted: false,
-        },
-        select: { id: true },
+      if (!observerUserId && invitation.observerEmail) {
+        const observer = await prisma.userProfile.findFirst({
+          where: {
+            email: { equals: invitation.observerEmail, mode: "insensitive" },
+            deleted: false,
+          },
+          select: { id: true },
+        });
+        observerUserId = observer?.id ?? null;
+      }
+
+      if (!observerUserId) return;
+
+      const inviter = await prisma.userProfile.findUnique({
+        where: { id: invitation.inviterId },
+        select: { username: true, email: true },
       });
-      observerUserId = observer?.id ?? null;
-    }
+      if (!inviter) return;
 
-    if (!observerUserId) return;
+      const { handleObserverSubmitted } = await import("@/lib/notifications");
+      await handleObserverSubmitted({
+        observerUserId,
+        inviterName: inviter.username ?? inviter.email ?? "—",
+        invitationId: invitation.id,
+      });
+    })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
 
-    const inviter = await prisma.userProfile.findUnique({
-      where: { id: invitation.inviterId },
-      select: { username: true, email: true },
-    });
-    if (!inviter) return;
-
-    const { handleObserverSubmitted } = await import("@/lib/notifications");
-    await handleObserverSubmitted({
-      observerUserId,
-      inviterName: inviter.username ?? inviter.email ?? "—",
-      invitationId: invitation.id,
-    });
-  })().catch((err) => log.error({ event: "observer.observer_submitted_error", err: err }, "Observer submitted error"));
-
-  // Email — csak az összevetés-küszöb elérésekor (fire-and-forget). A CTA az
-  // eredmény-oldalra visz, ami OBSERVER_MIN_FOR_REVEAL-nál nyílik — a korábbi
-  // 2-es küszöb egy még zárt nézetre küldte a felhasználót.
-  const completionPromise = prisma.observerAssessment.count({
-    where: {
-      invitation: { inviterId: invitation.inviterId },
-    },
-  }).then(async (completedCount) => {
-    if (completedCount < OBSERVER_MIN_FOR_REVEAL) return;
-    const inviter = await prisma.userProfile.findUnique({
-      where: { id: invitation.inviterId },
-      select: { email: true, locale: true, username: true },
-    });
-    if (!inviter?.email) return;
-    // Kulcs hiányában (dev/teszt) NEM próbálunk küldeni: a getResend() szinkron
-    // dobna, és ez a válasz-után futó, leválasztott lánc rejtett elutasításként
-    // bleedelne át a következő teszt-esetbe (flaky integration). Élesen a kulcs
-    // megvan, így ott küld.
-    if (!process.env.RESEND_API_KEY) return;
-    const locale = (["hu", "en"].includes(inviter.locale ?? "")
-      ? inviter.locale
-      : undefined) as "hu" | "en" | undefined;
-    sendObserverCompletionEmail({
-      to: inviter.email,
-      inviterName: inviter.username ?? inviter.email,
-      locale,
-    }).catch((err) => log.error({ event: "observer.observer_completion_send_error", err: err }, "Observer completion send error"));
-  }).catch((err) => log.error({ event: "observer.inviter_lookup_error", err: err }, "Inviter lookup error"));
-
-  // Integrációs teszt-környezetben MEGVÁRJUK a válasz-után futó best-effort
-  // mellékhatásokat (in-app értesítés + email), hogy a leválasztott láncok ne
-  // bleedeljenek át egy KÉSŐBBI teszt-esetbe. A next/navigation import-lánca a
-  // react-server feltétel alatt (CI: node24) dobhat, és a node:test a rejtett
-  // elutasítást flaky-n a futó teszthez rendeli — CI-only integration-hiba,
-  // helyben nem reprodukálható. A promise-ok már `.catch`-eltek (resolve-olnak),
-  // az await csak lezárja a „handled-asynchronously" ablakot. Élesen ez az ág
-  // nem fut → marad a gyors, fire-and-forget válasz.
-  if (process.env.TRITA_INTEGRATION_TEST_DB === "1") {
-    await Promise.allSettled([notifyPromise, completionPromise]);
+    // Email — csak az összevetés-küszöb elérésekor (fire-and-forget). A CTA az
+    // eredmény-oldalra visz, ami OBSERVER_MIN_FOR_REVEAL-nál nyílik — a korábbi
+    // 2-es küszöb egy még zárt nézetre küldte a felhasználót.
+    void prisma.observerAssessment
+      .count({
+        where: {
+          invitation: { inviterId: invitation.inviterId },
+        },
+      })
+      .then(async (completedCount) => {
+        if (completedCount < OBSERVER_MIN_FOR_REVEAL) return;
+        const inviter = await prisma.userProfile.findUnique({
+          where: { id: invitation.inviterId },
+          select: { email: true, locale: true, username: true },
+        });
+        if (!inviter?.email) return;
+        if (!process.env.RESEND_API_KEY) return;
+        const locale = (["hu", "en"].includes(inviter.locale ?? "")
+          ? inviter.locale
+          : undefined) as "hu" | "en" | undefined;
+        await sendObserverCompletionEmail({
+          to: inviter.email,
+          inviterName: inviter.username ?? inviter.email,
+          locale,
+        });
+      })
+      .catch((err) => log.error({ event: "observer.observer_completion_error", err: err }, "Observer completion error"));
   }
 
   return NextResponse.json({ success: true });
