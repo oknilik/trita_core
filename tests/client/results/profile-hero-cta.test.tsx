@@ -9,6 +9,7 @@
  */
 
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ProfileHero } from "@/components/results/ProfileHero";
 
@@ -47,5 +48,47 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     expect(style).toContain("--color-text-on-accent");
     // A régi, hеróba olvadó brand-bronz töltés nem térhet vissza.
     expect(style).not.toContain("#c17f4a");
+  });
+
+  it("az oldalsó lapfül a teljes karakterábra és a profil között vált", async () => {
+    render(
+      <ProfileHero
+        userName="Teszt Anna"
+        completedAt="2026. augusztus 1."
+        personalityType="Módszeres újító"
+        glyphDimensions={GLYPH_DIMS}
+        insight="Lendületet adsz a környezetednek."
+      />,
+    );
+
+    expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
+    expect(screen.queryByText("A te karakterábrád")).toBeNull();
+
+    await userEvent.click(screen.getByRole("button", { name: "Karakterábra megnyitása" }));
+
+    expect(screen.queryByRole("heading", { name: "Teszt Anna" })).toBeNull();
+    expect(screen.getByText("A te karakterábrád")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /absztrakt típus-ábra/ })).toBeInTheDocument();
+    expect(screen.getByText(/A nagy forma.*szem.*létrafokok/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Profiloldal megnyitása" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+
+    await userEvent.click(screen.getByRole("button", { name: "Profiloldal megnyitása" }));
+    expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
+  });
+
+  it("karakteradat nélkül nem mutat lapfület", () => {
+    render(
+      <ProfileHero
+        userName="Teszt Anna"
+        completedAt="2026. augusztus 1."
+        personalityType="Profil"
+        insight="Rövid összefoglaló."
+      />,
+    );
+
+    expect(screen.queryByRole("button", { name: "Karakterábra megnyitása" })).toBeNull();
   });
 });

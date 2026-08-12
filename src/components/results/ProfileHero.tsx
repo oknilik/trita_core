@@ -2,15 +2,17 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { ShareIcon, DocumentIcon } from "@/components/ui/icons";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
-import { resolveGlyphPair } from "@/lib/type-glyph";
+import { DIMENSION_GLYPHS, resolveGlyphPair } from "@/lib/type-glyph";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
+import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
+import { withHuArticle } from "@/lib/hu-grammar";
 
 type AccessLevel = "start" | "plus";
 
@@ -53,6 +55,7 @@ export function ProfileHero({
   watchDimensions = [],
 }: ProfileHeroProps) {
   const { locale } = useLocale();
+  const [heroSide, setHeroSide] = useState<"profile" | "glyph">("profile");
 
   // PDF-gomb finom visszajelzése: generálás alatt pörgő progress,
   // siker után zöld pipa, ami pár másodperc múlva magától eltűnik.
@@ -76,13 +79,115 @@ export function ProfileHero({
   const glyphUncertain = glyphDimensions
     ? isSecondaryUncertain(glyphDimensions)
     : false;
+  const dimensionName = (code: string) => {
+    const dimension = HEXACO_DIMENSIONS[code as HexacoCode];
+    if (!dimension) return code;
+    return locale === "hu" ? dimension.hu : dimension.en;
+  };
+  const glyphPairLabel = glyphPair
+    ? glyphPair.primaryCode === glyphPair.secondaryCode
+      ? dimensionName(glyphPair.primaryCode)
+      : glyphUncertain
+        ? tf("results.glyphPairUncertain", locale, {
+            a: dimensionName(glyphPair.primaryCode),
+            b: dimensionName(glyphPair.secondaryCode),
+          })
+        : `${dimensionName(glyphPair.primaryCode)} × ${dimensionName(glyphPair.secondaryCode)}`
+    : "";
+  const glyphGrammar = glyphPair
+    ? tf(
+        glyphUncertain ? "results.heroGlyphGrammarUncertain" : "results.heroGlyphGrammar",
+        locale,
+        {
+          form: locale === "hu"
+            ? withHuArticle(DIMENSION_GLYPHS[glyphPair.primaryCode].formName.hu)
+            : DIMENSION_GLYPHS[glyphPair.primaryCode].formName.en,
+          primary: locale === "hu"
+            ? withHuArticle(dimensionName(glyphPair.primaryCode))
+            : dimensionName(glyphPair.primaryCode),
+          motif: locale === "hu"
+            ? withHuArticle(DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.hu)
+            : DIMENSION_GLYPHS[glyphPair.secondaryCode].motifName.en,
+          secondary: locale === "hu"
+            ? withHuArticle(dimensionName(glyphPair.secondaryCode))
+            : dimensionName(glyphPair.secondaryCode),
+        },
+      )
+    : "";
   const level = LEVEL_CONFIG[accessLevel];
   const selfTheme = SURFACE_HERO_THEME.self;
+  const showingGlyph = Boolean(glyphPair) && heroSide === "glyph";
+
+  const flipControl = glyphPair ? (
+    <button
+      type="button"
+      aria-pressed={showingGlyph}
+      aria-label={t(
+        showingGlyph ? "results.heroGlyphBackA11y" : "results.heroGlyphOpenA11y",
+        locale,
+      )}
+      onClick={() => setHeroSide((side) => side === "profile" ? "glyph" : "profile")}
+      className="group absolute bottom-0 left-1/2 z-20 inline-flex min-h-[48px] w-[calc(100%-2.5rem)] -translate-x-1/2 items-center justify-center gap-2 rounded-t-lg border border-b-0 border-white/20 bg-[var(--color-surface-card)] px-4 text-xs font-semibold text-sage-dark shadow-[var(--ui-shadow-md)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:bottom-auto md:left-auto md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-x-0 md:-translate-y-1/2 md:flex-col md:rounded-l-xl md:rounded-r-none md:border-b md:border-r-0 md:px-2 md:shadow-[var(--ui-shadow-lg)]"
+    >
+      <span
+        aria-hidden="true"
+        className="text-base leading-none transition-transform duration-[var(--motion-duration-base)] group-hover:rotate-45 motion-reduce:transition-none"
+      >
+        ↻
+      </span>
+      <span className="md:[writing-mode:vertical-rl]">
+        {t(showingGlyph ? "results.heroGlyphBack" : "results.heroGlyphOpen", locale)}
+      </span>
+    </button>
+  ) : null;
 
   return (
-    <SurfaceHero
+    <div className="relative">
+      {showingGlyph && glyphPair ? (
+        <SurfaceHero
+          variant="self"
+          className="min-h-[330px]"
+          contentClassName="mx-auto max-w-4xl !px-5 !pb-20 !pt-6 md:!px-9 md:!pb-9 md:!pt-9"
+          title={(
+            <div
+              id="profile-hero-glyph-side"
+              className="grid min-h-[224px] items-center gap-6 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+              style={{ animation: "fadeIn 0.24s ease-out" }}
+            >
+              <div className="flex min-h-[210px] items-center justify-center rounded-[20px] border border-white/15 bg-[var(--color-surface-card)]/95 p-3 shadow-[var(--ui-shadow-lg)] md:min-h-[252px]">
+                <TypeGlyph
+                  primaryCode={glyphPair.primaryCode}
+                  secondaryCode={glyphPair.secondaryCode}
+                  typeLabel={personalityType}
+                  locale={locale === "hu" ? "hu" : "en"}
+                  intensity={glyphPair.intensity}
+                  secondaryUncertain={glyphUncertain}
+                  variant="card"
+                  className="max-h-[230px] w-full rounded-xl object-contain md:max-h-[252px]"
+                />
+              </div>
+              <div className="min-w-0">
+                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
+                  {t("results.heroGlyphEyebrow", locale)}
+                </p>
+                <h1 className="mt-2 break-words font-fraunces text-[34px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:text-[46px]">
+                  {personalityType}
+                </h1>
+                <p className="mt-4 font-fraunces text-[17px] italic text-[var(--color-accent-primary-soft)] md:text-[20px]">
+                  {glyphPairLabel}
+                </p>
+                <p className="mt-3 max-w-[420px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  {glyphGrammar}
+                </p>
+              </div>
+            </div>
+          )}
+        />
+      ) : (
+        <SurfaceHero
       variant="self"
-      contentClassName="mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10"
+      className={glyphPair ? "min-h-[330px]" : undefined}
+      contentClassName={`mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10 ${glyphPair ? "!pb-20 md:!pb-10" : ""}`}
       eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
@@ -113,23 +218,10 @@ export function ProfileHero({
         )
       }
       title={(
-        // A monogram-avatár helyén a típus-ábra áll (2026-07-30): a fejlécben
-        // egyetlen kép van, és az a profilról szól, nem a névkezdőbetűről.
-        // A dátum a névvel egy blokkban marad, hogy az ábra a teljes
-        // név-blokk magasságát kiadja (64 px).
-        <div className="mb-0.5 flex items-center gap-4">
-          {glyphPair && (
-            <TypeGlyph
-              primaryCode={glyphPair.primaryCode}
-              secondaryCode={glyphPair.secondaryCode}
-              typeLabel={personalityType}
-              locale={locale === "hu" ? "hu" : "en"}
-              intensity={glyphPair.intensity}
-              secondaryUncertain={glyphUncertain}
-              variant="badge"
-              className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
-            />
-          )}
+        // A kis karakterábra kikerült a név mellől: ott elveszett, és a hero
+        // szöveges hierarchiáját is megtörte. A teljes kompozíció a hero
+        // másik oldalán, önálló vizuális fókuszként jelenik meg.
+        <div id="profile-hero-profile-side" className="mb-0.5" style={{ animation: "fadeIn 0.24s ease-out" }}>
           <div className="min-w-0">
             <h1 className="break-words font-fraunces text-[26px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[34px]">
               {userName}
@@ -142,9 +234,7 @@ export function ProfileHero({
       )}
       body={(
         <div>
-          {/* A típusnév mellől az ábra kikerült — a fejlécben egy ábra van,
-              a név mellett. A jelentését a hero alatti tábla adja. Az
-              ál-percentilis badge végleg kivezetve (B17) — valós norma-
+          {/* Az ál-percentilis badge végleg kivezetve (B17) — valós norma-
               adattal térhet vissza (terv P4.3). */}
           <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
             {personalityType}
@@ -254,6 +344,10 @@ export function ProfileHero({
           </Button>
         </div>
       )}
-    />
+        />
+      )}
+
+      {flipControl}
+    </div>
   );
 }

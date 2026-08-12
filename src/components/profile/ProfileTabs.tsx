@@ -33,7 +33,6 @@ import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
-import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
@@ -965,24 +964,16 @@ export function ProfileTabs({
                   question: t("results.reportOverviewQuestion", locale),
                   description: t("results.reportOverviewBody", locale),
                   content: (
-                    <div className="flex flex-col gap-8 md:gap-10">
-                      <TypeGlyphPlate
-                        dimensions={dimensions
-                          .filter((dimension) => dimension.code !== "I")
-                          .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
-                        locale={locale}
-                      />
-                      <ResultsTab
-                        chapter="overview"
-                        dimensions={dimensions}
-                        onOpenInvites={() => handleTabChange("comparison")}
-                        isPlus={isPlus}
-                        hasObserverData={hasObserverData}
-                        locale={locale}
-                        plusContent={plusContent}
-                        observerFlow={observerFlow}
-                      />
-                    </div>
+                    <ResultsTab
+                      chapter="overview"
+                      dimensions={dimensions}
+                      onOpenInvites={() => handleTabChange("comparison")}
+                      isPlus={isPlus}
+                      hasObserverData={hasObserverData}
+                      locale={locale}
+                      plusContent={plusContent}
+                      observerFlow={observerFlow}
+                    />
                   ),
                 },
                 {

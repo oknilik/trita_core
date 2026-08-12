@@ -397,3 +397,21 @@ A lineáris riport vizuális tesztje után a részletes dokumentum fejezetei
 - az egész kártyafejléc nagy érintési cél, az állapot szöveggel és nyíllal is
   jelzett (`Megnyitás ↓` / `Bezárás ↑`), nem csak színnel;
 - a riport összes szakmai tartalma és a korábbi analitikai mérés megmaradt.
+
+### 15.5 Karakterábra — megfordítható hero, B irány
+
+A karakterábra kikerült a név melletti bélyegből és a részletes riport
+Áttekintés fejezetéből. Most a profilhero másik, azonos súlyú oldalán jelenik
+meg, nagy méretben.
+
+- asztali nézetben a hero jobb széléhez kapcsolódó, állandó lapfül jelzi a
+  váltást; mobilon ugyanez széles alsó kapcsoló;
+- a kapcsoló szövegesen is jelzi a célt (`Fordíts meg` / `Profilom`), nem
+  kizárólag ikonnal vagy animációval;
+- a karakteroldalon a teljes ábra, a típusnév, a dimenziópár és a forma–motívum
+  rövid magyarázata együtt látszik;
+- a váltás nem változtat URL-t és nem szakítja meg az eredményoldal olvasási
+  pozícióját;
+- ha nincs érvényes karakterpár, a lapfül nem jelenik meg;
+- a részletes riport Áttekintés kártyája így közvetlenül a radarhoz és a hat
+  dimenzióhoz vezet, ismétlődő karakterábra-blokk nélkül.
