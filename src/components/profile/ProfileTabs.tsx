@@ -1,20 +1,16 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
 import { t, tf } from "@/lib/i18n";
 import { dimColorsCss } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
+import { ProfileSummary } from "@/components/results/ProfileSummary";
 import { ShareModal } from "@/components/results/ShareModal";
-import { ProgressBar } from "@/components/results/ProgressBar";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
-import {
-  ObserverFlowStatusCard,
-  ObserverFlowStrip,
-} from "@/components/results/ObserverFlowStatusCard";
+import { ObserverFlowStatusCard } from "@/components/results/ObserverFlowStatusCard";
 import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
@@ -33,11 +29,9 @@ import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
-import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
-import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
@@ -50,7 +44,7 @@ import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
 
 type ProfileLevel = "start" | "plus";
-type TabId = "results" | "workstyle" | "comparison" | "invites";
+export type ProfileViewId = "summary" | "details" | "comparison";
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
 
@@ -123,7 +117,7 @@ export interface ProfileTabsProps {
   name: string;
   assessmentDate: string;
   accessLevel: ProfileLevel;
-  initialTab: TabId;
+  initialTab: ProfileViewId;
   dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
@@ -575,7 +569,7 @@ export function ProfileTabs({
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
 
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+  const [activeTab, setActiveTab] = useState<ProfileViewId>(initialTab);
 
   // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
   // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
@@ -607,28 +601,8 @@ export function ProfileTabs({
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const stageKeyMap: Record<string, string> = {
-    SELF_COMPLETED: "content.stageSelfCompleted",
-    OBSERVER_PENDING: "content.stageObserverPending",
-    TEAM_NOT_JOINED: "content.stageTeamNotJoined",
-    TEAM_PENDING_MEMBERS: "content.stageTeamPendingMembers",
-    TEAM_PARTIAL: "content.stageTeamPartial",
-    TEAM_READY: "content.stageTeamReady",
-    ORG_PARTIAL: "content.stageOrgPartial",
-    ORG_READY: "content.stageOrgReady",
-    SELF_NOT_STARTED: "content.stageSelfNotStarted",
-    SELF_IN_PROGRESS: "content.stageSelfInProgress",
-  };
-  const bridgeStageLabel = bridgeNextStep
-    ? (stageKeyMap[bridgeNextStep.stage]
-        ? t(stageKeyMap[bridgeNextStep.stage], locale)
-        : t("content.bridgeFallbackStage", locale))
-    : null;
-  const shouldShowOrgExpansionPrompt = Boolean(experienceHints?.showOrgExpansionPrompt);
-  const shouldShowAssessmentContinuation = Boolean(experienceHints?.showAssessmentContinuation);
-
   const handleTabChange = useCallback(
-    (tab: TabId) => {
+    (tab: ProfileViewId) => {
       setActiveTab(tab);
       const url = new URL(window.location.href);
       url.searchParams.set("tab", tab);
@@ -637,10 +611,21 @@ export function ProfileTabs({
     [],
   );
 
-  const ALL_TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
+  const ALL_TABS: { id: ProfileViewId; label: string; locked: boolean; icon: React.ReactNode }[] = [
     {
-      id: "results",
-      label: t("results.tabResults", locale),
+      id: "summary",
+      label: t("results.tabSummary", locale),
+      locked: false,
+      icon: (
+        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 10c2.1-3.5 4.4-5.2 7-5.2s4.9 1.7 7 5.2c-2.1 3.5-4.4 5.2-7 5.2S5.1 13.5 3 10Z" />
+          <circle cx="10" cy="10" r="2.2" />
+        </svg>
+      ),
+    },
+    {
+      id: "details",
+      label: t("results.tabDetails", locale),
       locked: false,
       icon: (
         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -661,7 +646,7 @@ export function ProfileTabs({
       ),
     },
   ];
-  // A karrier-iránytű 2026-07-31 óta ÖNÁLLÓ oldal (`/career`) — a fülek közül
+  // A karrier-iránytű 2026-07-31 óta ÖNÁLLÓ oldal (`/career`) — a nézetek közül
   // kikerült. A `careerModuleHidden` itt már csak a PDF karrier-blokkjára
   // vonatkozik (az oldal maga 404-et ad, ha az org kikapcsolta).
   const TABS = ALL_TABS;
@@ -997,91 +982,20 @@ export function ProfileTabs({
         }}
       />
 
-      {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
-          út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}
-      {observerFlow && observerFlow.state !== "self_serve" ? (
-        <ObserverFlowStrip
-          flow={{
-            state: observerFlow.state,
-            receivedCount: observerFlow.receivedCount,
-            minForReveal: observerFlow.minForReveal,
-            activeCampaignName: observerFlow.activeCampaignName,
-          }}
-          isHu={locale === "hu"}
-          onOpenInvites={() => handleTabChange("comparison")}
-          onOpenComparison={() => handleTabChange("comparison")}
-        />
-      ) : (
-        <ProgressBar
-          hasSelfPlus={isPlus}
-          observersSent={sentInvitations.length > 0}
-          observersCompleted={hasObserverData}
-          sentCount={sentInvitations.length}
-          receivedCount={observerCount}
-          onNavigateToComparison={() => handleTabChange("comparison")}
-          onNavigateToInvites={() => handleTabChange("comparison")}
-        />
-      )}
-
-      {/* A személyes cockpit egyetlen következő lépése közvetlenül az
-          állapotjelzés után jelenik meg, nem a hosszú riport legalján. */}
-      {bridgeNextStep ? (
-        <div className="space-y-3">
-          <JourneyNextStepCard
-            eyebrow={t("content.bridgeEyebrow", locale)}
-            title={bridgeStageLabel
-              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-              : t("content.bridgeJourney", locale)}
-            description={bridgeNextStep.explanation}
-            primary={bridgeNextStep.primary}
-            secondary={bridgeNextStep.secondary}
-          />
-
-          {shouldShowOrgExpansionPrompt ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
-                  : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
-                <Link
-                  href={experienceHintDestination ?? "/profile/results"}
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-
-          {shouldShowAssessmentContinuation ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
-                  : "Your self assessment is still in progress. Continue where you left off."}{" "}
-                <Link
-                  href="/assessment"
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Folytatás" : "Continue"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/* Tab bar — pill style */}
+      {/* Három olvasási mód: gyors összkép, teljes riport, külső nézőpont. */}
       <div
-        className="grid grid-cols-2 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
+        className="grid grid-cols-3 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
         role="tablist"
         aria-label="Profile navigation"
       >
         {TABS.map((tab, i) => (
           <button
             key={tab.id}
+            id={`profile-tab-${tab.id}`}
             role="tab"
             aria-selected={activeTab === tab.id}
+            aria-controls={`profile-panel-${tab.id}`}
+            tabIndex={activeTab === tab.id ? 0 : -1}
             onClick={() => handleTabChange(tab.id)}
             className={[
               "flex min-h-[48px] min-w-0 items-center justify-center gap-1.5 px-3 py-3 text-center text-xs font-medium transition-all",
@@ -1109,12 +1023,33 @@ export function ProfileTabs({
       {/* Tab content */}
       <div
         key={activeTab}
+        id={`profile-panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`profile-tab-${activeTab}`}
+        tabIndex={0}
         className="flex flex-col gap-10 md:gap-14"
         style={{ animation: "fadeIn 0.25s ease-out" }}
       >
-        {/* Fül-dieta (UX-audit #22): a Munkastílus az Eredmények folytatása —
-            egy fülön, szekcióként; a Meghívók a Külső kép fül része. */}
-        {activeTab === "results" && (
+        {activeTab === "summary" && (
+          <ProfileSummary
+            dimensions={dimensions}
+            plusContent={plusContent}
+            bridgeNextStep={bridgeNextStep}
+            observerFlow={observerFlow}
+            sentInvitations={sentInvitations}
+            observerCount={observerCount}
+            hasObserverData={hasObserverData}
+            experienceHints={experienceHints}
+            experienceHintDestination={experienceHintDestination}
+            onOpenDetails={() => handleTabChange("details")}
+            onOpenComparison={() => handleTabChange("comparison")}
+            locale={locale}
+          />
+        )}
+
+        {/* A korábbi teljes eredményoldal változatlan mélységgel elérhető,
+            de csak explicit kérésre terheli a felhasználót. */}
+        {activeTab === "details" && (
           <>
             <nav
               aria-label={isHu ? "Riport fejezetei" : "Report sections"}

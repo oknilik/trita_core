@@ -35,7 +35,7 @@ import {
 } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
-import { ProfileTabs } from "@/components/profile/ProfileTabs";
+import { ProfileTabs, type ProfileViewId } from "@/components/profile/ProfileTabs";
 import {
   aggregatePeerRoleScores,
   poolPeerSelectionsByRatedMember,
@@ -68,8 +68,6 @@ function getInsight(
   const range = score < 40 ? "low" : score < 70 ? "mid" : "high";
   return insights[range];
 }
-
-type TabId = "results" | "workstyle" | "comparison" | "invites";
 
 export default async function ProfileResultsPage({
   searchParams,
@@ -514,11 +512,12 @@ export default async function ProfileResultsPage({
   // korábbi e-mail) ne fussanak zsákutcába.
   if (tabParam === "career") redirect("/career");
 
-  const initialTab: TabId =
-    tabParam === "comparison" ? "comparison" :
-    tabParam === "invites" ? "comparison" :
-    tabParam === "workstyle" ? "results" :
-    "results";
+  const initialTab: ProfileViewId =
+    tabParam === "comparison" || tabParam === "invites"
+      ? "comparison"
+      : tabParam === "details" || tabParam === "results" || tabParam === "workstyle"
+        ? "details"
+        : "summary";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
   // redirect helyett explicit sáv magyarázza, mi történt, és innen
