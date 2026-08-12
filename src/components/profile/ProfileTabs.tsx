@@ -7,6 +7,10 @@ import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { ProfileSummary } from "@/components/results/ProfileSummary";
+import {
+  ReportChapterAccordion,
+  type ReportChapterId,
+} from "@/components/results/ReportChapterAccordion";
 import { ShareModal } from "@/components/results/ShareModal";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
@@ -118,6 +122,7 @@ export interface ProfileTabsProps {
   assessmentDate: string;
   accessLevel: ProfileLevel;
   initialTab: ProfileViewId;
+  initialDetailChapter?: ReportChapterId;
   dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
@@ -264,6 +269,7 @@ interface ResultsTabProps {
   observerFlow?: ProfileTabsProps["observerFlow"];
   /** Observer-CTA: átvált a meghívások tabra */
   onOpenInvites: () => void;
+  chapter: "overview" | "dimensions";
 }
 
 // „Ki vagyok?" — radar, dimenziók, altruizmus, kulcs-tanulságok.
@@ -275,6 +281,7 @@ function ResultsTab({
   plusContent,
   observerFlow = null,
   onOpenInvites,
+  chapter,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
@@ -292,14 +299,9 @@ function ResultsTab({
       facets: d.facets,
     }));
 
-  return (
-    <div className="flex flex-col gap-10 md:gap-14">
-      {/* 1. Áttekintés: radar + dimenzió-strip */}
-      <section id="profile-overview" className="scroll-mt-24">
-        <DashboardSectionHeader
-          label={t("results.sectionOverview", locale)}
-          className="mb-4"
-        />
+  if (chapter === "overview") {
+    return (
+      <section>
         <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
           <div className="mx-auto w-full max-w-[320px]">
             <RadarChart
@@ -371,13 +373,13 @@ function ResultsTab({
           </div>
         </div>
       </section>
+    );
+  }
 
+  return (
+    <div className="flex flex-col gap-10 md:gap-14">
       {/* 2. Dimenziók részletesen — a legerősebb alapból nyitva */}
-      <section id="profile-dimensions" className="scroll-mt-24">
-        <DashboardSectionHeader
-          label={t("results.sectionDimensions", locale)}
-          className="mb-4"
-        />
+      <section>
         <DimensionAccordion
           dimensions={accordionDims}
           showUpsell={!isPlus}
@@ -545,6 +547,7 @@ export function ProfileTabs({
   assessmentDate,
   accessLevel,
   initialTab,
+  initialDetailChapter = "overview",
   dimensions,
   growthFocusItems,
   hasObserverData,
@@ -1019,68 +1022,75 @@ export function ProfileTabs({
             de csak explicit kérésre terheli a felhasználót. */}
         {activeTab === "details" && (
           <>
-            <nav
-              aria-label={isHu ? "Riport fejezetei" : "Report sections"}
-              className="flex flex-wrap gap-2 rounded-xl border border-[var(--color-border-soft)] bg-surface-card p-2"
-            >
-              <a href="#profile-overview" className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream">
-                {isHu ? "Áttekintés" : "Overview"}
-              </a>
-              <a href="#profile-dimensions" className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream">
-                {isHu ? "Dimenziók" : "Dimensions"}
-              </a>
-              <button
-                type="button"
-                onClick={() => {
-                  const details = document.getElementById("workstyle-details") as HTMLDetailsElement | null;
-                  if (details) {
-                    details.open = true;
-                    details.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }
-                }}
-                className="inline-flex min-h-[38px] items-center rounded-lg px-3 text-xs font-semibold text-ink-body hover:bg-cream"
-              >
-                {isHu ? "Munkastílus és fejlődés" : "Work style and growth"}
-              </button>
-            </nav>
-            <TypeGlyphPlate
-              dimensions={dimensions
-                .filter((dimension) => dimension.code !== "I")
-                .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
+            <ReportChapterAccordion
+              initialChapter={initialDetailChapter}
               locale={locale}
-            />
-            <ResultsTab
-              dimensions={dimensions}
-              onOpenInvites={() => handleTabChange("comparison")}
-              isPlus={isPlus}
-              hasObserverData={hasObserverData}
-              locale={locale}
-              plusContent={plusContent}
-              observerFlow={observerFlow}
-            />
-            <details
-              id="workstyle-details"
-              onToggle={(event) => {
-                if (event.currentTarget.open) track("results.section_open", { section: "workstyle" });
+              onChapterOpen={(chapter) => {
+                track("results.section_open", {
+                  section: chapter === "dimensions" ? "dimensions" : chapter,
+                });
               }}
-              className="scroll-mt-24 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
-            >
-              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
-                <p className="font-fraunces text-xl text-ink">{isHu ? "Részletes munkastílus és fejlődés" : "Detailed work style and growth"}</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">{isHu ? "Munkakörnyezet, szerepilleszkedés, csapatszerepek és fejlesztési fókusz — akkor nyisd meg, amikor mélyebbre mennél." : "Work environment, role fit, team roles and development focus — open when you want to go deeper."}</p>
-              </summary>
-              <div className="border-t border-[var(--color-border-soft)] p-5 md:p-6">
-                <WorkStyleTab
-                  dimensions={dimensions}
-                  growthFocusItems={growthFocusItems}
-                  isPlus={isPlus}
-                  locale={locale}
-                  plusContent={plusContent}
-                  teamRoleMeasuredScores={teamRoleMeasuredScores}
-                  teamRolePeer={teamRolePeer}
-                />
-              </div>
-            </details>
+              chapters={[
+                {
+                  id: "overview",
+                  title: t("results.reportOverviewTitle", locale),
+                  description: t("results.reportOverviewBody", locale),
+                  content: (
+                    <div className="flex flex-col gap-8 md:gap-10">
+                      <TypeGlyphPlate
+                        dimensions={dimensions
+                          .filter((dimension) => dimension.code !== "I")
+                          .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
+                        locale={locale}
+                      />
+                      <ResultsTab
+                        chapter="overview"
+                        dimensions={dimensions}
+                        onOpenInvites={() => handleTabChange("comparison")}
+                        isPlus={isPlus}
+                        hasObserverData={hasObserverData}
+                        locale={locale}
+                        plusContent={plusContent}
+                        observerFlow={observerFlow}
+                      />
+                    </div>
+                  ),
+                },
+                {
+                  id: "dimensions",
+                  title: t("results.reportDimensionsTitle", locale),
+                  description: t("results.reportDimensionsBody", locale),
+                  content: (
+                    <ResultsTab
+                      chapter="dimensions"
+                      dimensions={dimensions}
+                      onOpenInvites={() => handleTabChange("comparison")}
+                      isPlus={isPlus}
+                      hasObserverData={hasObserverData}
+                      locale={locale}
+                      plusContent={plusContent}
+                      observerFlow={observerFlow}
+                    />
+                  ),
+                },
+                {
+                  id: "workstyle",
+                  title: t("results.reportWorkstyleTitle", locale),
+                  description: t("results.reportWorkstyleBody", locale),
+                  content: (
+                    <WorkStyleTab
+                      dimensions={dimensions}
+                      growthFocusItems={growthFocusItems}
+                      isPlus={isPlus}
+                      locale={locale}
+                      plusContent={plusContent}
+                      teamRoleMeasuredScores={teamRoleMeasuredScores}
+                      teamRolePeer={teamRolePeer}
+                    />
+                  ),
+                },
+              ]}
+            />
             {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
                 idáig eljutott, annak ez a következő logikus lépés. */}
             <details

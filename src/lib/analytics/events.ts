@@ -273,7 +273,7 @@ const appEvents = {
   "results.section_open": spec({
     schema: z
       .object({
-        section: z.enum(["dimension", "workstyle", "extensions"]),
+        section: z.enum(["overview", "dimensions", "dimension", "workstyle", "extensions"]),
       })
       .strict(),
     origin: "client",

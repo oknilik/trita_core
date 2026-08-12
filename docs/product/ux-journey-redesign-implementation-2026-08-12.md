@@ -313,5 +313,21 @@ ellenőrzését továbbra is a 9. fejezetben rögzített, lemaradt fejlesztői
 adatbázisséma korlátozza. A célzott typecheck, ESLint és 16 érintett kliens- és
 analitikai teszt zöld; a teljes repo-lint a meglévő, generált
 `playwright-report/` bundle-ök miatt nem használható tiszta jelként.
+
+### 15.1 Részletes riport — C irány
+
+A külön fejezet-ugró sáv helyett a részletes riport egyetlen, számozott
+fejezet-akkordeont használ. Egyszerre egy fejezet nyitott: Áttekintés,
+Dimenziók, majd Munkastílus és fejlődés. A nyitott fejezet végén egy vezetett
+„Következő fejezet” gomb visz tovább, miközben bármelyik fejezet közvetlenül
+is megnyitható. A karakterábra az Áttekintés tartalma lett, így nem képez
+negyedik navigációs sávot. A régi `?tab=workstyle` mélylink közvetlenül a
+harmadik fejezetet nyitja; a fejezetnyitások továbbra is mértek.
+
+A komponens desktopon és 390×844-es mobil viewporton vízszintes túlcsordulás
+nélkül működik. Mobilon a hosszabb fejezetleírások rejtve maradnak, a cím,
+sorszám és nyitási állapot egyetlen, legalább 78 px magas érintési célban él.
+
 - TypeScript typecheck, célzott ESLint és a szín/hex guardok hibamentesek;
-- az optimalizált production build sikeres, 102 statikus oldallal.
+- mind a 985 unit és 166 kliens teszt sikeres;
+- az optimalizált production build sikeres, 103 oldallal.

@@ -36,6 +36,7 @@ import {
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs, type ProfileViewId } from "@/components/profile/ProfileTabs";
+import type { ReportChapterId } from "@/components/results/ReportChapterAccordion";
 import {
   aggregatePeerRoleScores,
   poolPeerSelectionsByRatedMember,
@@ -519,6 +520,8 @@ export default async function ProfileResultsPage({
       : tabParam === "details" || tabParam === "results" || tabParam === "workstyle"
         ? "details"
         : "summary";
+  const initialDetailChapter: ReportChapterId =
+    tabParam === "workstyle" ? "workstyle" : "overview";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
   // redirect helyett explicit sáv magyarázza, mi történt, és innen
@@ -634,6 +637,7 @@ export default async function ProfileResultsPage({
           assessmentDate={latestResult.createdAt.toISOString()}
           accessLevel={accessLevel}
           initialTab={initialTab}
+          initialDetailChapter={initialDetailChapter}
           dimensions={dimensions}
           growthFocusItems={growthFocusItems}
           hasObserverData={hasObserverData}
