@@ -269,6 +269,17 @@ const appEvents = {
     description: "Riport exportálása vagy megosztása.",
     question: "A6",
   }),
+
+  "results.section_open": spec({
+    schema: z
+      .object({
+        section: z.enum(["dimension", "workstyle", "extensions"]),
+      })
+      .strict(),
+    origin: "client",
+    description: "A részletes riport egy mélyebb szekciójának megnyitása.",
+    question: "A4 / A6",
+  }),
 } as const;
 
 export const ANALYTICS_EVENTS = {

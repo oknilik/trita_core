@@ -154,6 +154,7 @@ export interface ProfileTabsProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   feedbackSubmitted: boolean;
+  clarityFeedbackSubmitted: boolean;
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
   heroInsight?: string;
@@ -381,6 +382,7 @@ function ResultsTab({
           dimensions={accordionDims}
           showUpsell={!isPlus}
           defaultOpenIdx={0}
+          onDimensionOpen={() => track("results.section_open", { section: "dimension" })}
         />
       </section>
 
@@ -555,6 +557,7 @@ export function ProfileTabs({
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
+  clarityFeedbackSubmitted,
   personalityType,
   heroInsight,
   plusContent,
@@ -1005,6 +1008,7 @@ export function ProfileTabs({
             hasObserverData={hasObserverData}
             experienceHints={experienceHints}
             experienceHintDestination={experienceHintDestination}
+            clarityFeedbackSubmitted={clarityFeedbackSubmitted}
             onOpenDetails={() => handleTabChange("details")}
             onOpenComparison={() => handleTabChange("comparison")}
             locale={locale}
@@ -1054,7 +1058,13 @@ export function ProfileTabs({
               plusContent={plusContent}
               observerFlow={observerFlow}
             />
-            <details id="workstyle-details" className="scroll-mt-24 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card">
+            <details
+              id="workstyle-details"
+              onToggle={(event) => {
+                if (event.currentTarget.open) track("results.section_open", { section: "workstyle" });
+              }}
+              className="scroll-mt-24 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
+            >
               <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
                 <p className="font-fraunces text-xl text-ink">{isHu ? "Részletes munkastílus és fejlődés" : "Detailed work style and growth"}</p>
                 <p className="mt-1 text-xs leading-relaxed text-muted">{isHu ? "Munkakörnyezet, szerepilleszkedés, csapatszerepek és fejlesztési fókusz — akkor nyisd meg, amikor mélyebbre mennél." : "Work environment, role fit, team roles and development focus — open when you want to go deeper."}</p>
@@ -1073,15 +1083,25 @@ export function ProfileTabs({
             </details>
             {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
                 idáig eljutott, annak ez a következő logikus lépés. */}
-            <div className="flex flex-col gap-3">
-              <SectionCta
-                eyebrow={t("results.ctaInteractionEyebrow", locale)}
-                title={t("results.ctaInteractionTitle", locale)}
-                body={t("results.ctaInteractionBody", locale)}
-                cta={t("results.ctaInteractionButton", locale)}
-                href="/interaction"
-                motif="pair"
-              />
+            <details
+              onToggle={(event) => {
+                if (event.currentTarget.open) track("results.section_open", { section: "extensions" });
+              }}
+              className="rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
+            >
+              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
+                <p className="font-fraunces text-xl text-ink">{t("results.detailsExtensionsTitle", locale)}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{t("results.detailsExtensionsBody", locale)}</p>
+              </summary>
+              <div className="flex flex-col gap-3 border-t border-[var(--color-border-soft)] p-4 md:p-5">
+                <SectionCta
+                  eyebrow={t("results.ctaInteractionEyebrow", locale)}
+                  title={t("results.ctaInteractionTitle", locale)}
+                  body={t("results.ctaInteractionBody", locale)}
+                  cta={t("results.ctaInteractionButton", locale)}
+                  href="/interaction"
+                  motif="pair"
+                />
               {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
                   működő iránytűre visz, amíg nincs kész, a kereslet-mérő
                   oldalra. A `from=results` a mérésben a belépési pontot
@@ -1107,7 +1127,12 @@ export function ProfileTabs({
                     motif="compass"
                   />
                 ))}
-            </div>
+              </div>
+            </details>
+            <FeedbackForm
+              initialSubmitted={feedbackSubmitted}
+              hasObserverFeedback={hasObserverData}
+            />
           </>
         )}
         {activeTab === "comparison" && (
@@ -1195,11 +1220,6 @@ export function ProfileTabs({
         )}
       </div>
 
-      {/* Elégedettség-visszajelzés — egyszer, az oldal alján */}
-      <FeedbackForm
-        initialSubmitted={feedbackSubmitted}
-        hasObserverFeedback={hasObserverData}
-      />
     </div>
   );
 }

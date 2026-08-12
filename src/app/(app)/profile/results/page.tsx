@@ -92,7 +92,7 @@ export default async function ProfileResultsPage({
     sentInvitationsRaw,
     receivedInvitationsRaw,
     draft,
-    satisfactionFeedbackRecord,
+    feedbackRecords,
     journeySnapshot,
     careerHiddenMembership,
   ] = await Promise.all([
@@ -143,9 +143,9 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { answers: true, testType: true },
     }),
-    prisma.feedback.findFirst({
-      where: { userProfileId: profile.id, kind: "satisfaction" },
-      select: { id: true },
+    prisma.feedback.findMany({
+      where: { userProfileId: profile.id, kind: { in: ["satisfaction", "result_clarity"] } },
+      select: { kind: true },
     }),
     getJourneySnapshotForProfileId(profile.id, {
       locale,
@@ -276,7 +276,8 @@ export default async function ProfileResultsPage({
   const facetSemRounded = Math.round(Math.SQRT2 * facetStandardError(assessmentForm));
 
   // ── Draft info ─────────────────────────────────────────────────────────────
-  const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
+  const feedbackSubmitted = feedbackRecords.some((feedback) => feedback.kind === "satisfaction");
+  const clarityFeedbackSubmitted = feedbackRecords.some((feedback) => feedback.kind === "result_clarity");
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
   const selfDashboardVm = createSelfDashboardIA({
     locale,
@@ -645,6 +646,7 @@ export default async function ProfileResultsPage({
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
           feedbackSubmitted={feedbackSubmitted}
+          clarityFeedbackSubmitted={clarityFeedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
           plusContent={plusContent}

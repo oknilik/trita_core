@@ -15,6 +15,7 @@ import type {
   SerializedSentInvitation,
 } from "@/components/profile/ProfileTabs";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
+import { ResultClarityFeedback } from "@/components/results/ResultClarityFeedback";
 
 interface ProfileSummaryProps {
   dimensions: SerializedDimension[];
@@ -26,6 +27,7 @@ interface ProfileSummaryProps {
   hasObserverData: boolean;
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
+  clarityFeedbackSubmitted: boolean;
   onOpenDetails: () => void;
   onOpenComparison: () => void;
   locale: Locale;
@@ -195,6 +197,7 @@ export function ProfileSummary({
   hasObserverData,
   experienceHints,
   experienceHintDestination,
+  clarityFeedbackSubmitted,
   onOpenDetails,
   onOpenComparison,
   locale,
@@ -326,6 +329,8 @@ export function ProfileSummary({
           {t("results.summaryOpenDetails", locale)} →
         </Button>
       </section>
+
+      <ResultClarityFeedback initialSubmitted={clarityFeedbackSubmitted} locale={locale} />
     </div>
   );
 }

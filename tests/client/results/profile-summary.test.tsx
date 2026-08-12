@@ -36,6 +36,7 @@ describe("ProfileSummary", () => {
         sentInvitations={[]}
         observerCount={0}
         hasObserverData={false}
+        clarityFeedbackSubmitted={false}
         onOpenDetails={onOpenDetails}
         onOpenComparison={vi.fn()}
         locale="hu"
