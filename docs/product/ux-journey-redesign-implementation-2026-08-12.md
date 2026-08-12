@@ -428,9 +428,12 @@ hero-nézetként jelenik meg, nagy méretben.
 - első betöltéskor a hero és a swipe-ikon egyszer néhány pixelt oldalra mozdul;
 - váltáskor a két teljes nézet egyidejűleg, kis távolságon keresztezi egymást:
   a régi oldal kifelé, az új az ellenkező irányból befelé csúszik;
-- a húzás közben a hero legfeljebb 10 px-en követi az ujjat, így a gesztus
-  azonnal válaszol, de nem tud elszaladni;
-- a két hero eltérő magassága is ugyanebben a 320 ms-os átmenetben változik,
+- a két nézet folyamatosan előre renderelve marad; húzás közben nincs DOM-klón,
+  React-újrarenderelés vagy magasságmérés, csak két GPU-komponált
+  `translate3d` érték követi 1:1-ben az ujjat;
+- az elengedés a húzás távolságát és pillanatnyi sebességét is figyelembe veszi,
+  majd 140–230 ms között pattan a célra vagy rugózik vissza;
+- a két hero eltérő magassága csak az elengedés utáni rövid átmenetben változik,
   ezért az alatta lévő tartalom nem ugrik;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön

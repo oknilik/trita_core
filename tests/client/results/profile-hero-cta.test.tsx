@@ -62,7 +62,10 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
-    expect(screen.queryByText("A te karakterábrád")).toBeNull();
+    expect(screen.getByText("A te karakterábrád").closest("[aria-hidden]")).toHaveAttribute(
+      "aria-hidden",
+      "true",
+    );
     const initialSwipeButton = screen.getByRole("button", { name: "Karakterábra megjelenítése" });
     expect(initialSwipeButton).toHaveClass("h-12", "w-12", "rounded-full");
     expect(screen.getByText("Karakterábra")).toHaveClass("hidden", "md:block");
@@ -115,11 +118,12 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
 
       await userEvent.click(screen.getByRole("button", { name: "Karakterábra megjelenítése" }));
       await waitFor(() => expect(animate).toHaveBeenCalledTimes(5));
-      expect(animate.mock.calls[2]?.[0]).toEqual(expect.arrayContaining([
-        expect.objectContaining({ opacity: 0.94, transform: "translate3d(-22px, 0, 0)" }),
-      ]));
-      expect(animate.mock.calls[3]?.[0]).toEqual(expect.arrayContaining([
-        expect.objectContaining({ opacity: 0.94, transform: "translate3d(22px, 0, 0)" }),
+      const profileFrames = animate.mock.calls[2]?.[0] as Keyframe[];
+      const glyphFrames = animate.mock.calls[3]?.[0] as Keyframe[];
+      expect(profileFrames.at(-1)?.transform).toBe("translate3d(-1px, 0, 0)");
+      expect(glyphFrames.at(-1)?.transform).toBe("translate3d(0px, 0, 0)");
+      expect(profileFrames).toEqual(expect.not.arrayContaining([
+        expect.objectContaining({ opacity: expect.anything() }),
       ]));
 
       unmount();
