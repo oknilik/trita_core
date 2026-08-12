@@ -182,15 +182,15 @@ export function ProfileHero({
       return;
     }
 
-    const incomingAngle = flipDirectionRef.current * -48;
+    const incomingAngle = flipDirectionRef.current * -14;
     const animation = heroMotionRef.current.animate(
       [
-        { opacity: 0.38, transform: `rotateY(${incomingAngle}deg) scale(0.985)` },
-        { opacity: 1, transform: "rotateY(0deg) scale(1)" },
+        { opacity: 0.84, transform: `rotateY(${incomingAngle}deg)` },
+        { opacity: 1, transform: "rotateY(0deg)" },
       ],
       {
-        duration: 300,
-        easing: "cubic-bezier(0.2, 0.72, 0.25, 1)",
+        duration: 260,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
     );
     animation.addEventListener("finish", () => {
@@ -219,12 +219,12 @@ export function ProfileHero({
 
     const outgoing = heroMotionRef.current.animate(
       [
-        { opacity: 1, transform: "rotateY(0deg) scale(1)" },
-        { opacity: 0.38, transform: `rotateY(${direction * 48}deg) scale(0.985)` },
+        { opacity: 1, transform: "rotateY(0deg)" },
+        { opacity: 0.84, transform: `rotateY(${direction * 14}deg)` },
       ],
       {
-        duration: 180,
-        easing: "cubic-bezier(0.4, 0, 0.7, 0.25)",
+        duration: 150,
+        easing: "cubic-bezier(0.32, 0, 0.67, 0)",
       },
     );
     outgoing.addEventListener("finish", () => setHeroSide(nextSide), { once: true });
@@ -285,7 +285,6 @@ export function ProfileHero({
               <div
                 id="profile-hero-glyph-side"
                 className="grid min-h-[224px] items-center gap-6 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
-                style={{ animation: "fadeIn 0.24s ease-out" }}
               >
                 <div className="flex min-h-[192px] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-[var(--color-layer-self-soft)] p-2 md:min-h-[252px] md:p-3">
                   <TypeGlyph
@@ -355,7 +354,7 @@ export function ProfileHero({
         // A kis karakterábra kikerült a név mellől: ott elveszett, és a hero
         // szöveges hierarchiáját is megtörte. A teljes kompozíció a hero
         // másik oldalán, önálló vizuális fókuszként jelenik meg.
-        <div id="profile-hero-profile-side" className="mb-0.5" style={{ animation: "fadeIn 0.24s ease-out" }}>
+        <div id="profile-hero-profile-side" className="mb-0.5">
           <div className="min-w-0">
             <h1 className="break-words font-fraunces text-[26px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[34px]">
               {userName}

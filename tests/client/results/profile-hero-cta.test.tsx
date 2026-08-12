@@ -82,7 +82,7 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
   });
 
-  it("egyszeri betöltési mozgással teszi felfedezhetővé a második oldalt", async () => {
+  it("finom betöltési jelzést és kis szögű átfordítást használ", async () => {
     const previousAnimate = Object.getOwnPropertyDescriptor(Element.prototype, "animate");
     const cancel = vi.fn();
     const animate = vi.fn((..._args: Parameters<Element["animate"]>) => ({
@@ -111,6 +111,12 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
       ]));
       expect(animate.mock.calls[1]?.[0]).toEqual(expect.arrayContaining([
         expect.objectContaining({ transform: expect.stringContaining("rotate(") }),
+      ]));
+
+      await userEvent.click(screen.getByRole("button", { name: "Karakterábra megnyitása" }));
+      await waitFor(() => expect(animate).toHaveBeenCalledTimes(3));
+      expect(animate.mock.calls[2]?.[0]).toEqual(expect.arrayContaining([
+        expect.objectContaining({ opacity: 0.84, transform: "rotateY(-14deg)" }),
       ]));
 
       unmount();

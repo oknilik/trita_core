@@ -423,8 +423,9 @@ meg, nagy méretben.
 - asztalon megmarad a szöveges oldalsó lapfül;
 - első betöltéskor a hero egyszer finoman megbillen, a forgatásikon pedig rövid
   fordulattal jelzi a második oldal lehetőségét;
-- kattintáskor mindkét irányban rövid perspektivikus átfordulás köti össze a
-  profil- és karakteroldalt;
+- kattintáskor mindkét irányban visszafogott, kis szögű perspektivikus
+  átfordulás köti össze a profil- és karakteroldalt; a tartalom nem kap külön
+  ráúszó animációt, így a váltás egyetlen nyugodt mozdulat marad;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.
