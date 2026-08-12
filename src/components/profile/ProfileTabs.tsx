@@ -8,9 +8,9 @@ import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { ProfileSummary } from "@/components/results/ProfileSummary";
 import {
-  ReportChapterFocus,
-  type ReportChapterId,
-} from "@/components/results/ReportChapterFocus";
+  LinearReport,
+  type LinearReportSectionId,
+} from "@/components/results/LinearReport";
 import { ShareModal } from "@/components/results/ShareModal";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
@@ -49,6 +49,7 @@ import { track } from "@/lib/analytics/client";
 
 type ProfileLevel = "start" | "plus";
 export type ProfileViewId = "summary" | "details" | "comparison";
+export type ReportChapterId = LinearReportSectionId;
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
 
@@ -576,8 +577,6 @@ export function ProfileTabs({
   const locale = rawLocale as Locale;
 
   const [activeTab, setActiveTab] = useState<ProfileViewId>(initialTab);
-  const [activeDetailChapter, setActiveDetailChapter] = useState<ReportChapterId>(initialDetailChapter);
-
   // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
   // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
   // a cél-elemhez (a második kör a hydration utáni layout-shiftet követi le).
@@ -612,53 +611,13 @@ export function ProfileTabs({
     (tab: ProfileViewId) => {
       setActiveTab(tab);
       const url = new URL(window.location.href);
-      url.searchParams.set("tab", tab);
-      if (tab === "details") url.searchParams.set("chapter", activeDetailChapter);
-      else url.searchParams.delete("chapter");
+      if (tab === "summary") url.searchParams.delete("tab");
+      else url.searchParams.set("tab", tab);
+      if (tab !== "details") url.searchParams.delete("chapter");
       window.history.replaceState({}, "", url.pathname + url.search + url.hash);
     },
-    [activeDetailChapter],
+    [],
   );
-
-  const ALL_TABS: { id: ProfileViewId; label: string; locked: boolean; icon: React.ReactNode }[] = [
-    {
-      id: "summary",
-      label: t("results.tabSummary", locale),
-      locked: false,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 10c2.1-3.5 4.4-5.2 7-5.2s4.9 1.7 7 5.2c-2.1 3.5-4.4 5.2-7 5.2S5.1 13.5 3 10Z" />
-          <circle cx="10" cy="10" r="2.2" />
-        </svg>
-      ),
-    },
-    {
-      id: "details",
-      label: t("results.tabDetails", locale),
-      locked: false,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="10" cy="10" r="8" />
-          <path d="M10 2 L10 10 L16 6" />
-          <circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none" />
-        </svg>
-      ),
-    },
-    {
-      id: "comparison",
-      label: t("results.tabComparison", locale),
-      locked: !isPlus,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 10h14M3 5h7M3 15h7M13 5l4 5-4 5" />
-        </svg>
-      ),
-    },
-  ];
-  // A karrier-iránytű 2026-07-31 óta ÖNÁLLÓ oldal (`/career`) — a nézetek közül
-  // kikerült. A `careerModuleHidden` itt már csak a PDF karrier-blokkjára
-  // vonatkozik (az oldal maga 404-et ad, ha az org kikapcsolta).
-  const TABS = ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
@@ -955,83 +914,12 @@ export function ProfileTabs({
         }}
       />
 
-      {/* Mobilon egyetlen módválasztó marad látható; desktopon a három
-          olvasási mód visszafogott, aláhúzott tabsorként jelenik meg. */}
-      <div className="relative md:hidden">
-        <label
-          htmlFor="profile-view-select"
-          className="mb-2 block font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]"
-        >
-          {t("results.viewSelectorLabel", locale)}
-        </label>
-        <select
-          id="profile-view-select"
-          value={activeTab}
-          onChange={(event) => handleTabChange(event.target.value as ProfileViewId)}
-          className="min-h-[50px] w-full appearance-none rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 pr-11 text-sm font-semibold text-ink shadow-sm"
-        >
-          {TABS.map((tab) => (
-            <option key={tab.id} value={tab.id}>
-              {tab.locked ? `${tab.label} · ${t("results.viewSelectorLocked", locale)}` : tab.label}
-            </option>
-          ))}
-        </select>
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 20 20"
-          className="pointer-events-none absolute bottom-[15px] right-4 h-5 w-5 text-muted"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="m6 8 4 4 4-4" />
-        </svg>
-      </div>
-
-      <div
-        className="hidden items-end gap-8 border-b border-[var(--color-border-soft)] md:flex"
-        role="tablist"
-        aria-label={t("results.viewSelectorLabel", locale)}
-      >
-        {TABS.map((tab) => (
-          <button
-            key={tab.id}
-            id={`profile-tab-${tab.id}`}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            aria-controls={`profile-panel-${tab.id}`}
-            tabIndex={activeTab === tab.id ? 0 : -1}
-            onClick={() => handleTabChange(tab.id)}
-            className={`flex min-h-[48px] items-center gap-2 border-b-2 px-0.5 pb-3 pt-2 text-sm font-semibold transition ${
-              activeTab === tab.id
-                ? "border-sage text-sage-dark"
-                : "border-transparent text-muted hover:text-ink-body"
-            }`}
-          >
-            {tab.locked ? (
-              <svg viewBox="0 0 12 14" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="1" y="6" width="10" height="7" rx="1.5" />
-                <path d="M3 6V4a3 3 0 0 1 6 0v2" />
-              </svg>
-            ) : tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
-      </div>
-
       {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
           (a váltás-kezelő azt nem látná). */}
       <TabViewTracker surface="results" tab={activeTab} />
 
-      {/* Tab content */}
       <div
         key={activeTab}
-        id={`profile-panel-${activeTab}`}
-        role="tabpanel"
-        aria-label={TABS.find((tab) => tab.id === activeTab)?.label}
-        tabIndex={0}
         className="flex flex-col gap-10 md:gap-14"
         style={{ animation: "fadeIn 0.25s ease-out" }}
       >
@@ -1053,27 +941,28 @@ export function ProfileTabs({
           />
         )}
 
-        {/* A korábbi teljes eredményoldal változatlan mélységgel elérhető,
-            de csak explicit kérésre terheli a felhasználót. */}
+        {/* A teljes riport egyetlen lineáris dokumentum. A tartalomjegyzék
+            gyorsítja a visszatérő olvasást, de nem rejt el fejezeteket. */}
         {activeTab === "details" && (
           <>
-            <ReportChapterFocus
-              initialChapter={activeDetailChapter}
+            <LinearReport
+              initialSection={initialDetailChapter}
               locale={locale}
-              onChapterOpen={(chapter) => {
-                setActiveDetailChapter(chapter);
+              onBack={() => handleTabChange("summary")}
+              onSectionOpen={(section) => {
                 const url = new URL(window.location.href);
                 url.searchParams.set("tab", "details");
-                url.searchParams.set("chapter", chapter);
+                url.searchParams.set("chapter", section);
                 window.history.replaceState({}, "", url.pathname + url.search + url.hash);
                 track("results.section_open", {
-                  section: chapter === "dimensions" ? "dimensions" : chapter,
+                  section: section === "dimensions" ? "dimensions" : section,
                 });
               }}
-              chapters={[
+              sections={[
                 {
                   id: "overview",
                   title: t("results.reportOverviewTitle", locale),
+                  question: t("results.reportOverviewQuestion", locale),
                   description: t("results.reportOverviewBody", locale),
                   content: (
                     <div className="flex flex-col gap-8 md:gap-10">
@@ -1099,6 +988,7 @@ export function ProfileTabs({
                 {
                   id: "dimensions",
                   title: t("results.reportDimensionsTitle", locale),
+                  question: t("results.reportDimensionsQuestion", locale),
                   description: t("results.reportDimensionsBody", locale),
                   content: (
                     <ResultsTab
@@ -1116,6 +1006,7 @@ export function ProfileTabs({
                 {
                   id: "workstyle",
                   title: t("results.reportWorkstyleTitle", locale),
+                  question: t("results.reportWorkstyleQuestion", locale),
                   description: t("results.reportWorkstyleBody", locale),
                   content: (
                     <WorkStyleTab
@@ -1186,15 +1077,31 @@ export function ProfileTabs({
           </>
         )}
         {activeTab === "comparison" && (
-          // „Külső kép" (UX-audit #22): az összevetés ÉS a meghívó-kezelés egy
-          // folyamat két fele — egy fülön. Org-tagnál az összevetés a kampány-
-          // küszöbig zárva: állapot-kártya (nem hiány-nyelv). FONTOS
-          // (2026-07-29 fix): a külső adat kampányban IS a user meghívóiból
-          // érkezik — futó observer-körnél a meghívó-kezelő ITT jelenik meg,
-          // enélkül a tag senkit sem tudna felkérni.
-          observerFlow && observerFlow.state === "locked" ? (
-            // A #observer-flow horgonyra ugranak a „Meghívók kezelése" CTA-k
-            // (csapat-banner, tag-nézet) — scroll-mt a fejléc alá csúszás ellen.
+          <>
+            <header className="border-b border-[var(--color-border-soft)] pb-5">
+              <button
+                type="button"
+                onClick={() => handleTabChange("summary")}
+                className="inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-ink-body transition hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
+              >
+                <span aria-hidden="true">←</span>
+                {t("results.reportBackToSummary", locale)}
+              </button>
+              <p className="mt-5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                {t("results.summaryComparisonTitle", locale)}
+              </p>
+              <h2 className="mt-2 max-w-2xl font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
+                {hasObserverData
+                  ? t("results.summaryComparisonReadyBody", locale)
+                  : t("results.summaryComparisonStartBody", locale)}
+              </h2>
+            </header>
+
+            {/* A külső nézőpont az összevetés és a meghívó-kezelés közös
+                célfelülete. Org-tagnál az összevetés a kampányküszöbig zárva
+                marad, futó körben viszont a meghívó-kezelő elérhető. */}
+            {observerFlow && observerFlow.state === "locked" ? (
+            // A #observer-flow horgonyra ugranak a kapcsolódó CTA-k.
             <div id="observer-flow" className="scroll-mt-24">
               <ObserverFlowStatusCard
                 flow={{
@@ -1206,7 +1113,7 @@ export function ProfileTabs({
                 isHu={locale === "hu"}
               />
             </div>
-          ) : observerFlow && observerFlow.state === "in_progress" ? (
+            ) : observerFlow && observerFlow.state === "in_progress" ? (
             <>
               <div id="observer-flow" className="scroll-mt-24">
                 <ObserverFlowStatusCard
@@ -1231,7 +1138,7 @@ export function ProfileTabs({
                 />
               </div>
             </>
-          ) : isPlus ? (
+            ) : isPlus ? (
             <>
               <ComparisonTabNew
                 dimensions={dimensions}
@@ -1258,7 +1165,7 @@ export function ProfileTabs({
                 />
               </div>
             </>
-          ) : (
+            ) : (
             <TabPaywall
               tier="self_plus"
               tierLabel="Plus"
@@ -1266,7 +1173,8 @@ export function ProfileTabs({
               locale={locale}
               teaser={t("content.paywallComparisonTeaser", locale)}
             />
-          )
+            )}
+          </>
         )}
       </div>
 

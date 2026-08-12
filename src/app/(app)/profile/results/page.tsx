@@ -35,8 +35,11 @@ import {
 } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
-import { ProfileTabs, type ProfileViewId } from "@/components/profile/ProfileTabs";
-import type { ReportChapterId } from "@/components/results/ReportChapterFocus";
+import {
+  ProfileTabs,
+  type ProfileViewId,
+  type ReportChapterId,
+} from "@/components/profile/ProfileTabs";
 import {
   aggregatePeerRoleScores,
   poolPeerSelectionsByRatedMember,

@@ -357,3 +357,28 @@ megosztáskor is megőrzi. A fejezetváltások analitikai mérése változatlan 
 A fókusznézetet 390×844-es mobil és 1280×800-as desktop viewporton ellenőriztük.
 Mindkettőn vízszintes túlcsordulás nélkül működik; a mobil fejezetválasztó
 lezárja a háttérgörgetést, Escape-pel és explicit bezárógombbal is zárható.
+
+### 15.3 Újratervezett eredményélmény — összkép + lineáris riport
+
+A következő validációs körben az eredményoldalt nem a meglévő navigációból,
+hanem a felhasználó első két kérdéséből indítottuk újra: „mit jelent ez nekem?"
+és „hol találom az összes bizonyítékot?". Az oldal ezért már nem három
+egyenrangú nézetet kínál.
+
+- az `Összkép` maga a kezdőoldal: három, számozott értelmezési kapaszkodóval;
+- a hat dimenzió sávjai kikerültek az első olvasási rétegből, mert a gyors
+  összképen egyszerre növelték az információs és a vizuális terhelést;
+- két kontextuális belépő maradt: `Minden részlet` és `Külső nézőpont`;
+- a teljes riport egyetlen lineáris dokumentum, így minden információ bent
+  marad, de nincs fejezetállapot, akkordeon-navigáció vagy módválasztó;
+- a rövid tartalomjegyzék csak gyorshivatkozás: nem rejt el tartalmat;
+- a fejezetcímek felhasználói kérdést kapnak (`Milyen mintázat rajzolódik
+  ki?`, `Mi van a profilod mögött?`, `Hogyan fordítsd ezt működésre?`), hogy
+  a szakmai struktúra mellett a várható haszon is azonnal érthető legyen;
+- a külső nézőpont saját fejlécet és egyértelmű visszautat kapott, de nem
+  került vissza globális tabként az alapképernyőre;
+- a régi `?tab=results`, `?tab=workstyle`, `?tab=comparison` és `?tab=invites`
+  mélylinkek továbbra is a megfelelő tartalomhoz vezetnek.
+
+Ez a változat tudatosan prototípus a meglévő UX-branchen: a vizuális rendszer,
+a mérési logika, a jogosultságok és a teljes részletes tartalom változatlan.

@@ -3,9 +3,7 @@
 import Link from "next/link";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
-import { dimColorsCss } from "@/lib/color-system";
 import { HEXACO_ORDER } from "@/lib/hexaco";
-import { poleAwareDimensionLabel } from "@/lib/profile-content";
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
 import { t, type Locale } from "@/lib/i18n";
 import type {
@@ -64,8 +62,9 @@ export function buildProfileSummaryInsights(
     plusContent?.howYouWorkParts.watch ??
     attention?.insight ??
     t("results.summaryBalancedAttention", locale);
-  const workText =
-    plusContent?.howYouWorkParts.main ??
+  const growthText =
+    plusContent?.growthTip ??
+    attention?.description ??
     strongest?.description ??
     strongest?.insight ??
     "";
@@ -82,20 +81,12 @@ export function buildProfileSummaryInsights(
       tone: "attention",
     },
     {
-      label: t("results.summaryWork", locale),
-      text: workText,
+      label: t("results.summaryGrowth", locale),
+      text: growthText,
       tone: "work",
     },
   ];
 }
-
-const TONE_CLASSES: Record<SummaryInsight["tone"], string> = {
-  strength:
-    "border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)]",
-  attention:
-    "border-[var(--color-accent-primary)]/25 bg-[var(--color-surface-highlight-warm)]",
-  work: "border-[var(--color-border-soft)] bg-surface-card",
-};
 
 function NextStepSummary({
   bridgeNextStep,
@@ -202,7 +193,6 @@ export function ProfileSummary({
   onOpenComparison,
   locale,
 }: ProfileSummaryProps) {
-  const ordered = orderedMainDimensions(dimensions);
   const insights = buildProfileSummaryInsights(dimensions, plusContent, locale);
 
   return (
@@ -218,71 +208,75 @@ export function ProfileSummary({
           {t("results.summaryBody", locale)}
         </p>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-3">
+        <div className="mt-7 overflow-hidden rounded-[20px] border border-[var(--color-border-soft)] bg-surface-card px-5 md:px-7">
           {insights.map((insight, index) => (
             <article
               key={insight.tone}
-              className={`relative overflow-hidden rounded-2xl border p-5 ${TONE_CLASSES[insight.tone]}`}
+              className="grid grid-cols-[34px_minmax(0,1fr)] gap-3 border-t border-[var(--color-border-soft)] py-5 first:border-t-0 md:grid-cols-[42px_minmax(0,1fr)] md:py-6"
             >
-              <span className="absolute right-4 top-3 font-fraunces text-[34px] text-ink/[0.06]">
+              <span className="pt-0.5 font-mono text-micro font-semibold tracking-widest text-[var(--color-accent-primary-strong)]">
                 0{index + 1}
               </span>
-              <p className="relative pr-7 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-                {insight.label}
-              </p>
-              <p className="relative mt-3 text-body leading-relaxed text-[var(--color-text-secondary)]">
-                {insight.text}
-              </p>
+              <div>
+                <h3 className="text-sm font-semibold text-ink">{insight.label}</h3>
+                <p className="mt-1.5 max-w-2xl text-caption leading-relaxed text-ink-body">
+                  {insight.text}
+                </p>
+              </div>
             </article>
           ))}
         </div>
       </section>
 
-      <Card as="section" spacing="lg" className="border-[var(--color-border-soft)]">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-              {t("results.summaryDimensionsEyebrow", locale)}
-            </p>
-            <h2 className="mt-1.5 font-fraunces text-[22px] text-ink">
-              {t("results.summaryDimensionsTitle", locale)}
-            </h2>
-          </div>
-          <p className="max-w-sm text-micro leading-relaxed text-muted sm:text-right">
-            {t("results.summaryScaleNote", locale)}
-          </p>
-        </div>
+      <section aria-labelledby="summary-explore-heading">
+        <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+          {t("results.summaryExploreEyebrow", locale)}
+        </p>
+        <h2 id="summary-explore-heading" className="mt-2 font-fraunces text-[24px] leading-tight text-ink">
+          {t("results.summaryExploreTitle", locale)}
+        </h2>
 
-        <div className="mt-6 grid gap-x-8 gap-y-4 md:grid-cols-2">
-          {ordered.map((dimension) => {
-            const colors = dimColorsCss(dimension.code);
-            return (
-              <div key={dimension.code}>
-                <div className="flex items-center gap-2.5">
-                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: colors.base }} />
-                  <span className="min-w-0 flex-1 text-sm font-medium text-ink">{dimension.label}</span>
-                  <span
-                    className="shrink-0 rounded-md px-2 py-0.5 text-micro font-semibold"
-                    style={{ backgroundColor: colors.soft, color: colors.strong }}
-                  >
-                    {poleAwareDimensionLabel(dimension.code, dimension.score, locale)}
-                  </span>
-                </div>
-                <div
-                  className="ml-5 mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--color-border-default)]"
-                  role="meter"
-                  aria-label={dimension.label}
-                  aria-valuemin={0}
-                  aria-valuemax={100}
-                  aria-valuenow={dimension.score}
-                >
-                  <div className="h-full rounded-full" style={{ width: `${dimension.score}%`, backgroundColor: colors.base }} />
-                </div>
-              </div>
-            );
-          })}
+        <div className="mt-5 grid gap-3 md:grid-cols-[1.15fr_0.85fr]">
+          <button
+            type="button"
+            onClick={onOpenDetails}
+            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] bg-sage px-5 py-5 text-left text-[var(--color-action-primary-fg)] shadow-[var(--ui-shadow-sm)] transition hover:bg-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
+          >
+            <span>
+              <strong className="block font-fraunces text-[22px] font-medium">
+                {t("results.summaryDetailsPrompt", locale)}
+              </strong>
+              <span className="mt-1.5 block max-w-sm text-xs leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                {t("results.summaryDetailsMeta", locale)}
+              </span>
+            </span>
+            <span
+              aria-hidden="true"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-lg transition group-hover:translate-x-0.5 group-hover:bg-white/15"
+            >
+              →
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={onOpenComparison}
+            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card px-5 py-5 text-left shadow-[var(--ui-shadow-sm)] transition hover:border-[var(--color-state-hover-border)] hover:bg-[var(--color-state-hover-bg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
+          >
+            <span>
+              <strong className="block font-fraunces text-[20px] font-medium text-ink">
+                {t("results.summaryComparisonTitle", locale)}
+              </strong>
+              <span className="mt-1.5 block text-xs leading-relaxed text-muted">
+                {t(hasObserverData ? "results.summaryComparisonReadyBody" : "results.summaryComparisonStartBody", locale)}
+              </span>
+            </span>
+            <span aria-hidden="true" className="shrink-0 text-lg text-sage-dark transition group-hover:translate-x-0.5">
+              →
+            </span>
+          </button>
         </div>
-      </Card>
+      </section>
 
       <NextStepSummary
         bridgeNextStep={bridgeNextStep}
@@ -317,18 +311,6 @@ export function ProfileSummary({
           ) : null}
         </div>
       ) : null}
-
-      <section className="rounded-2xl border border-[var(--color-border-soft)] bg-surface-card px-5 py-6 text-center md:px-8 md:py-8">
-        <p className="font-fraunces text-xl text-ink">
-          {t("results.summaryDetailsPrompt", locale)}
-        </p>
-        <p className="mx-auto mt-2 max-w-xl text-caption leading-relaxed text-muted">
-          {t("results.summaryDetailsBody", locale)}
-        </p>
-        <Button type="button" onClick={onOpenDetails} variant="ghost" className="mt-5 rounded-xl px-5">
-          {t("results.summaryOpenDetails", locale)} →
-        </Button>
-      </section>
 
       {!clarityFeedbackSubmitted ? (
         <ResultClarityFeedback initialSubmitted={false} locale={locale} />

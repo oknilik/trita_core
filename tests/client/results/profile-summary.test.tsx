@@ -22,13 +22,13 @@ describe("ProfileSummary", () => {
     expect(insights.map((item) => item.label)).toEqual([
       "Ami természetesen megy",
       "Ami több figyelmet kérhet",
-      "Munkahelyen ez számít",
+      "Ahol a legtöbbet fejlődhetsz",
     ]);
     expect(insights[0].text).toBe("Erős értékrend.");
     expect(insights[1].text).toBe("Egyenes vitahelyzetek.");
   });
 
-  it("a rövid nézetben számok helyett szintcímkéket és egy részletező CTA-t mutat", async () => {
+  it("a rövid nézetben csak az értelmezést és két egyértelmű továbblépést mutat", async () => {
     const onOpenDetails = vi.fn();
     render(
       <ProfileSummary
@@ -44,10 +44,11 @@ describe("ProfileSummary", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Ezt érdemes elvinned az eredményedből." })).toBeInTheDocument();
-    expect(screen.getAllByRole("meter")).toHaveLength(6);
+    expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");
+    expect(screen.getByRole("button", { name: /Külső nézőpont/ })).toBeInTheDocument();
 
-    await userEvent.click(screen.getByRole("button", { name: /Részletes riport megnyitása/ }));
+    await userEvent.click(screen.getByRole("button", { name: /Minden részlet/ }));
     expect(onOpenDetails).toHaveBeenCalledOnce();
   });
 });
