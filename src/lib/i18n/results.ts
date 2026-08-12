@@ -858,6 +858,7 @@ export const resultsTranslations = {
       hu: "Kártya letöltése képként",
       en: "Download card as image",
     },
+    shareCardCompact: { hu: "Kép", en: "Image" },
     shareCardWorking: { hu: "Kép készítése…", en: "Preparing image…" },
     compareQrAlt: {
       hu: "QR-kód az összehasonlító linkhez",
@@ -1725,22 +1726,14 @@ export const resultsTranslations = {
     shareError: { hu: "Hiba történt", en: "An error occurred" },
     // ShareModal
     shareModalTitle: { hu: "Profil megosztása", en: "Share your profile" },
-    shareModalDesc: {
-      hu: "Te döntöd el, hogyan küldöd tovább.",
-      en: "You decide how to share it.",
-    },
-    shareRecipientPreview: { hu: "A címzett ezt látja", en: "What the recipient sees" },
-    sharePrivacySummary: {
-      hu: "A publikus profil a fő eredményeket, a munkastílust és a valószínű csapatszerepeket mutatja.",
-      en: "The public profile shows key results, work style, and likely team roles.",
-    },
     shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
     shareCreateAndCopy: { hu: "Link létrehozása és másolása", en: "Create and copy link" },
     shareCreating: { hu: "Link létrehozása…", en: "Creating link…" },
     shareActive: { hu: "A link aktív", en: "Link is active" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
-    shareEmailToggle: { hu: "Emailben küldöm", en: "Send by email" },
+    shareEmailCompact: { hu: "Email", en: "Email" },
+    shareLinkedInLabel: { hu: "Megosztás LinkedInen", en: "Share on LinkedIn" },
     shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
     shareEmailQrHint: {
       hu: "A levélben a profil linkje és egy QR-kód is szerepel.",
@@ -1762,7 +1755,6 @@ export const resultsTranslations = {
       en: "The previous link will stop working immediately and will no longer open your profile.",
     },
     shareRevokeConfirm: { hu: "Igen, visszavonom", en: "Yes, revoke" },
-    shareRevocableHint: { hu: "A létrehozott linket bármikor visszavonhatod.", en: "You can revoke the link at any time." },
     shareRevoked: {
       hu: "A megosztás visszavonva — a korábbi link már nem működik.",
       en: "Sharing revoked — the previous link no longer works.",

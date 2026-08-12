@@ -2,8 +2,8 @@
  * ShareModal client integration tests (Vitest + RTL)
  *
  * Covers the progressive disclosure flow: deferred link creation, accessible
- * dialog semantics, clipboard feedback, optional email sending, and confirmed
- * revocation of an existing share.
+ * dialog semantics, clipboard feedback, compact secondary actions, LinkedIn
+ * sharing, optional email sending, and confirmed revocation.
  */
 
 import { render, screen, waitFor } from "@testing-library/react";
@@ -120,7 +120,7 @@ describe("ShareModal", () => {
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
     expect(screen.queryByPlaceholderText(t("content.shareEmailPlaceholder", "en"))).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailCompact", "en") }));
     await user.type(
       screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
       "friend@example.com",
@@ -146,7 +146,7 @@ describe("ShareModal", () => {
     mockShareCreate();
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
-    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailCompact", "en") }));
     await user.type(
       screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
       "not-an-email",
@@ -187,6 +187,38 @@ describe("ShareModal", () => {
     expect(await screen.findByDisplayValue(/\/share\/tok123$/)).toBeInTheDocument();
   });
 
+  it("creates a public link and opens the LinkedIn share composer", async () => {
+    const user = userEvent.setup();
+    const popup = {
+      opener: window,
+      location: { href: "" },
+      close: vi.fn(),
+    };
+    const openSpy = vi
+      .spyOn(window, "open")
+      .mockReturnValue(popup as unknown as Window);
+    mockShareCreate("linkedintok");
+    render(<ShareModal isOpen onClose={vi.fn()} />);
+
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareLinkedInLabel", "en") }),
+    );
+
+    expect(openSpy).toHaveBeenCalledWith(
+      "about:blank",
+      "trita-linkedin-share",
+      "width=600,height=640",
+    );
+    expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "POST" });
+    await waitFor(() => {
+      expect(popup.location.href).toContain(
+        "https://www.linkedin.com/sharing/share-offsite/?url=",
+      );
+      expect(decodeURIComponent(popup.location.href)).toMatch(/\/share\/linkedintok$/);
+    });
+    expect(screen.getByDisplayValue(/\/share\/linkedintok$/)).toBeInTheDocument();
+  });
+
   it("keeps the generated link visible when email delivery fails", async () => {
     const user = userEvent.setup();
     fetchMock.mockResolvedValue({
@@ -195,7 +227,7 @@ describe("ShareModal", () => {
     });
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
-    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailCompact", "en") }));
     await user.type(
       screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
       "friend@example.com",

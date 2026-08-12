@@ -11,6 +11,7 @@ import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { ShareCardDownload } from "@/components/results/ShareCardDownload";
+import { track } from "@/lib/analytics/client";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -24,7 +25,7 @@ export interface ShareCardPreview {
 /**
  * Fókuszált megosztási flow:
  * - link nélkül egyetlen egyértelmű elsődleges akció;
- * - email és képkártya fokozatosan feltárható másodlagos utak;
+ * - email, LinkedIn és képkártya egy kompakt másodlagos akciósorban;
  * - visszavonás csak ténylegesen aktív linknél, külön megerősítéssel.
  */
 export function ShareModal({
@@ -144,6 +145,30 @@ export function ShareModal({
     }
   };
 
+  const handleLinkedIn = async () => {
+    // Aktív linknél azonnal nyitható a LinkedIn. Új link létrehozásakor előbb
+    // nyitunk egy üres ablakot, hogy az aszinkron kérés után se blokkolja a
+    // böngésző a felhasználó által kezdeményezett megosztást.
+    let popup: Window | null = null;
+    if (!shareUrl) {
+      popup = window.open("about:blank", "trita-linkedin-share", "width=600,height=640");
+      if (popup) popup.opener = null;
+    }
+
+    const url = shareUrl ?? (await createLink());
+    if (!url) {
+      popup?.close();
+      return;
+    }
+
+    const linkedInUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+    if (popup) {
+      popup.location.href = linkedInUrl;
+    } else {
+      window.open(linkedInUrl, "_blank", "noopener,noreferrer,width=600,height=640");
+    }
+  };
+
   const handleRevoke = async () => {
     setBusy(true);
     try {
@@ -168,7 +193,6 @@ export function ShareModal({
       isOpen={isOpen}
       onClose={onClose}
       title={t("content.shareModalTitle", locale)}
-      description={t("content.shareModalDesc", locale)}
       closeLabel={t("common.close", locale)}
     >
       <div className="flex flex-col gap-4">
@@ -197,9 +221,6 @@ export function ShareModal({
           <>
             {preview ? (
               <div>
-                <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                  {t("content.shareRecipientPreview", locale)}
-                </p>
                 <div
                   className="relative overflow-hidden rounded-2xl p-4"
                   style={{
@@ -241,9 +262,6 @@ export function ShareModal({
                     </div>
                   ) : null}
                 </div>
-                <p className="mt-2.5 text-xs leading-relaxed text-[var(--color-text-muted)]">
-                  {t("content.sharePrivacySummary", locale)}
-                </p>
               </div>
             ) : null}
 
@@ -295,22 +313,49 @@ export function ShareModal({
               </div>
             )}
 
-            <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card">
+            <div className={`grid gap-2 ${preview && previewGlyph ? "grid-cols-3" : "grid-cols-2"}`}>
               <button
                 type="button"
                 aria-expanded={emailOpen}
                 onClick={() => setEmailOpen((open) => !open)}
-                className="flex min-h-[48px] w-full items-center justify-between gap-3 px-4 text-left text-sm font-semibold text-ink"
+                className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-semibold transition ${emailOpen ? "border-sage/40 bg-sage-soft text-sage-dark" : "border-[var(--color-border-soft)] bg-surface-card text-ink-body hover:bg-[var(--color-surface-subtle)] hover:text-ink"}`}
               >
-                <span className="inline-flex items-center gap-2">
-                  <span aria-hidden="true">✉</span>
-                  {t("content.shareEmailToggle", locale)}
-                </span>
-                <span aria-hidden="true" className={`text-muted transition-transform ${emailOpen ? "rotate-180" : ""}`}>⌄</span>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <rect x="3" y="5" width="18" height="14" rx="2" />
+                  <path d="m3 7 9 6 9-6" />
+                </svg>
+                {t("content.shareEmailCompact", locale)}
               </button>
 
-              {emailOpen ? (
-                <div className="border-t border-[var(--color-border-soft)] p-4">
+              <button
+                type="button"
+                onClick={() => {
+                  track("results.export", { format: "link" });
+                  void handleLinkedIn();
+                }}
+                disabled={busy}
+                aria-label={t("content.shareLinkedInLabel", locale)}
+                className="flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border border-[var(--color-border-soft)] bg-surface-card px-2 py-2 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:bg-[var(--color-surface-subtle)] hover:text-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
+                </svg>
+                LinkedIn
+              </button>
+
+              {preview && previewGlyph ? (
+                <ShareCardDownload
+                  userName={preview.userName}
+                  personalityType={preview.personalityType}
+                  topDims={preview.topDims}
+                  glyph={previewGlyph}
+                  compact
+                />
+              ) : null}
+            </div>
+
+            {emailOpen ? (
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-surface-card p-4">
                   {emailState === "sent" ? (
                     <div className="rounded-xl border border-sage/25 bg-sage-soft p-4">
                       <p className="inline-flex items-center gap-2 text-sm font-semibold text-sage-dark">
@@ -366,17 +411,7 @@ export function ShareModal({
                       </Button>
                     </div>
                   )}
-                </div>
-              ) : null}
-            </div>
-
-            {preview && previewGlyph ? (
-              <ShareCardDownload
-                userName={preview.userName}
-                personalityType={preview.personalityType}
-                topDims={preview.topDims}
-                glyph={previewGlyph}
-              />
+              </div>
             ) : null}
 
             {hasActiveShare ? (
@@ -424,11 +459,7 @@ export function ShareModal({
                   </div>
                 ) : null}
               </div>
-            ) : (
-              <p className="text-center text-micro text-muted">
-                {t("content.shareRevocableHint", locale)}
-              </p>
-            )}
+            ) : null}
           </>
         )}
       </div>
