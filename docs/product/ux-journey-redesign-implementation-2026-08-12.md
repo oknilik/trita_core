@@ -438,6 +438,8 @@ hero-nézetként jelenik meg, nagy méretben.
 - mindkét hero fixen 330 px magas: a karakterábra mobilon kompakt, kétoszlopos
   kompozíciót kapott kisebb, de teljes ábrával és változatlan információval;
 - azonos magasság miatt az alatta lévő oldal egyáltalán nem mozdul swipe közben;
+- a profil CTA-sora és a karakterkártya kép–szöveg kompozíciója azonos optikai
+  felső–alsó margót kapott, így egyik tartalmi tömb sem ül le a kártya aljára;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.

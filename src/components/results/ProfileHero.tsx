@@ -455,7 +455,7 @@ export function ProfileHero({
           <SurfaceHero
             variant="self"
             className={glyphPair ? "h-[330px]" : undefined}
-            contentClassName="mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10"
+            contentClassName="mx-auto max-w-4xl px-5 pb-[25px] pt-[27px] md:px-9 md:py-10"
             eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
@@ -614,11 +614,11 @@ export function ProfileHero({
           <SurfaceHero
             variant="self"
             className="h-[330px]"
-            contentClassName="mx-auto max-w-4xl !px-4 !py-4 md:!px-9 md:!pb-9 md:!pt-9"
+            contentClassName="mx-auto max-w-4xl !px-4 !pb-7 !pt-7 md:!px-9 md:!pb-9 md:!pt-9"
             title={(
               <div
                 id="profile-hero-glyph-side"
-                className="grid min-h-[258px] grid-cols-[112px_minmax(0,1fr)] items-center gap-3 md:min-h-[224px] md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+                className="grid h-[244px] translate-y-[7px] grid-cols-[112px_minmax(0,1fr)] items-center gap-3 md:h-auto md:min-h-[224px] md:translate-y-0 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
               >
                 <div className="flex h-[188px] items-center justify-center overflow-hidden rounded-[18px] border border-white/15 bg-[var(--color-layer-self-soft)] p-1.5 md:h-auto md:min-h-[252px] md:rounded-[20px] md:p-3">
                   <TypeGlyph
@@ -633,7 +633,7 @@ export function ProfileHero({
                     className="max-h-[176px] w-full rounded-xl object-contain md:max-h-[252px]"
                   />
                 </div>
-                <div className="min-w-0 pt-10 md:pt-0">
+                <div className="min-w-0">
                   <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                     {t("results.heroGlyphEyebrow", locale)}
                   </p>
