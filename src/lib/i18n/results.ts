@@ -1744,8 +1744,8 @@ export const resultsTranslations = {
     shareAnotherRecipient: { hu: "Másik címzett", en: "Another recipient" },
     shareEmailInvalid: { hu: "Érvénytelen email-cím", en: "Invalid email address" },
     shareEmailError: { hu: "Az email küldése nem sikerült. A linket ettől még kimásolhatod.", en: "The email could not be sent. You can still copy the link." },
-    shareManage: { hu: "Megosztás kezelése", en: "Manage sharing" },
-    shareRevoke: { hu: "Megosztás visszavonása", en: "Revoke sharing" },
+    shareStatusActive: { hu: "A megosztási link aktív", en: "Share link is active" },
+    shareRevokeShort: { hu: "Visszavonás", en: "Revoke" },
     shareRevokeConfirmTitle: { hu: "Biztosan visszavonod?", en: "Revoke this share?" },
     shareRevokeConfirmBody: {
       hu: "A korábbi link azonnal megszűnik, és többé nem nyitja meg a profilodat.",

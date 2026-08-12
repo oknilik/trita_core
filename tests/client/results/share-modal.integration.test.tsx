@@ -79,7 +79,7 @@ describe("ShareModal", () => {
     ).toBeEnabled();
     expect(fetchMock).not.toHaveBeenCalled();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
-    expect(screen.queryByText(t("content.shareRevoke", "en"))).not.toBeInTheDocument();
+    expect(screen.queryByText(t("content.shareRevokeShort", "en"))).not.toBeInTheDocument();
     expect(screen.queryByRole("img")).not.toBeInTheDocument();
     expect(screen.queryByText(t("content.shareEmailQrHint", "en"))).not.toBeInTheDocument();
   });
@@ -192,8 +192,8 @@ describe("ShareModal", () => {
     render(<ShareModal isOpen initialToken="oldtok" onClose={vi.fn()} />);
 
     expect(screen.queryByDisplayValue(/\/share\/oldtok$/)).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: t("content.shareManage", "en") }));
-    await user.click(screen.getByRole("button", { name: t("content.shareRevoke", "en") }));
+    expect(screen.getByText(t("content.shareStatusActive", "en"))).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: t("content.shareRevokeShort", "en") }));
     expect(screen.getByText(t("content.shareRevokeConfirmTitle", "en"))).toBeInTheDocument();
     expect(fetchMock).not.toHaveBeenCalled();
     await user.click(
@@ -208,7 +208,7 @@ describe("ShareModal", () => {
     await expect(navigator.clipboard.readText()).resolves.toMatch(/\/share\/tok123$/);
   });
 
-  it("keeps the generated link visible when email delivery fails", async () => {
+  it("keeps the generated share active when email delivery fails", async () => {
     const user = userEvent.setup();
     fetchMock.mockResolvedValue({
       ok: false,
@@ -225,6 +225,6 @@ describe("ShareModal", () => {
 
     expect(await screen.findByText(t("content.shareEmailError", "en"))).toBeInTheDocument();
     expect(screen.queryByDisplayValue(/\/share\/kepttok$/)).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: t("content.shareManage", "en") })).toBeInTheDocument();
+    expect(screen.getByText(t("content.shareStatusActive", "en"))).toBeInTheDocument();
   });
 });

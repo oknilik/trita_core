@@ -54,7 +54,6 @@ export function ShareModal({
   const [revoked, setRevoked] = useState(false);
   const [busy, setBusy] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
-  const [manageOpen, setManageOpen] = useState(false);
   const [confirmRevoke, setConfirmRevoke] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -154,7 +153,6 @@ export function ShareModal({
       setCopied(false);
       setEmailState("idle");
       setEmailOpen(false);
-      setManageOpen(false);
       setConfirmRevoke(false);
     } catch {
       setLoadError(true);
@@ -344,49 +342,39 @@ export function ShareModal({
             ) : null}
 
             {hasActiveShare ? (
-              <div className="overflow-hidden rounded-xl border border-[var(--color-border-soft)] bg-surface-card">
-                <button
-                  type="button"
-                  aria-expanded={manageOpen}
-                  onClick={() => {
-                    setManageOpen((open) => !open);
-                    setConfirmRevoke(false);
-                  }}
-                  className="flex min-h-[48px] w-full items-center justify-between gap-3 px-4 text-left text-sm font-semibold text-ink-body"
-                >
-                  {t("content.shareManage", locale)}
-                  <span aria-hidden="true" className={`text-muted transition-transform ${manageOpen ? "rotate-180" : ""}`}>⌄</span>
-                </button>
-                {manageOpen ? (
-                  <div className="border-t border-[var(--color-border-soft)] p-4">
-                    {confirmRevoke ? (
-                      <div className="rounded-xl border border-[var(--color-state-error-border)] bg-[var(--color-state-error-bg)] p-3.5">
-                        <p className="text-sm font-semibold text-[var(--color-state-error-fg)]">
-                          {t("content.shareRevokeConfirmTitle", locale)}
-                        </p>
-                        <p className="mt-1 text-xs leading-relaxed text-ink-body">
-                          {t("content.shareRevokeConfirmBody", locale)}
-                        </p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button type="button" variant="secondary" size="sm" onClick={() => setConfirmRevoke(false)}>
-                            {t("common.cancel", locale)}
-                          </Button>
-                          <Button type="button" variant="destructive" size="sm" disabled={busy} onClick={() => void handleRevoke()}>
-                            {t("content.shareRevokeConfirm", locale)}
-                          </Button>
-                        </div>
-                      </div>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setConfirmRevoke(true)}
-                        className="min-h-[44px] rounded-[10px] px-3 text-sm font-semibold text-[var(--color-state-error-fg)] transition hover:bg-[var(--color-state-error-bg)]"
-                      >
-                        {t("content.shareRevoke", locale)}
-                      </button>
-                    )}
+              <div className="border-t border-[var(--color-border-soft)] pt-3">
+                {confirmRevoke ? (
+                  <div className="rounded-xl border border-[var(--color-state-error-border)] bg-[var(--color-surface-subtle)] p-3.5">
+                    <p className="text-sm font-semibold text-ink">
+                      {t("content.shareRevokeConfirmTitle", locale)}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-body">
+                      {t("content.shareRevokeConfirmBody", locale)}
+                    </p>
+                    <div className="mt-3 flex flex-wrap justify-end gap-2">
+                      <Button type="button" variant="secondary" size="sm" onClick={() => setConfirmRevoke(false)}>
+                        {t("common.cancel", locale)}
+                      </Button>
+                      <Button type="button" variant="destructive" size="sm" disabled={busy} onClick={() => void handleRevoke()}>
+                        {t("content.shareRevokeConfirm", locale)}
+                      </Button>
+                    </div>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="flex min-h-[44px] items-center justify-between gap-3 px-1">
+                    <p className="inline-flex min-w-0 items-center gap-2 text-xs font-medium text-ink-body">
+                      <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-sage" />
+                      {t("content.shareStatusActive", locale)}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmRevoke(true)}
+                      className="min-h-[40px] shrink-0 rounded-lg px-2 text-xs font-semibold text-muted underline decoration-sand underline-offset-4 transition hover:bg-[var(--color-state-error-bg)] hover:text-[var(--color-state-error-fg)]"
+                    >
+                      {t("content.shareRevokeShort", locale)}
+                    </button>
+                  </div>
+                )}
               </div>
             ) : null}
         </>
