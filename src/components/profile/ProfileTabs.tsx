@@ -941,8 +941,8 @@ export function ProfileTabs({
           />
         )}
 
-        {/* A teljes riport egyetlen lineáris dokumentum. A tartalomjegyzék
-            gyorsítja a visszatérő olvasást, de nem rejt el fejezeteket. */}
+        {/* A teljes riport három fejezetkártyában olvasható. A kártyafejlécek
+            mindig látszanak, a szakmai tartalomból legfeljebb egy van nyitva. */}
         {activeTab === "details" && (
           <>
             <LinearReport

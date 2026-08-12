@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { t, type Locale } from "@/lib/i18n";
 
 export type LinearReportSectionId = "overview" | "dimensions" | "workstyle";
@@ -28,21 +28,31 @@ export function LinearReport({
   onBack,
   onSectionOpen,
 }: LinearReportProps) {
+  const resolvedInitial = sections.some((section) => section.id === initialSection)
+    ? initialSection
+    : sections[0]?.id;
+  const [openSectionId, setOpenSectionId] = useState<LinearReportSectionId | undefined>(resolvedInitial);
   const sectionRefs = useRef<Partial<Record<LinearReportSectionId, HTMLElement | null>>>({});
-  const didApplyInitialSection = useRef(false);
 
   useEffect(() => {
-    if (didApplyInitialSection.current || initialSection === "overview") return;
-    didApplyInitialSection.current = true;
-    const timer = window.setTimeout(() => {
-      sectionRefs.current[initialSection]?.scrollIntoView({ behavior: "auto", block: "start" });
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, [initialSection]);
+    if (!resolvedInitial || resolvedInitial === "overview") return;
 
-  const openSection = (sectionId: LinearReportSectionId) => {
-    sectionRefs.current[sectionId]?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const timer = window.setTimeout(() => {
+      sectionRefs.current[resolvedInitial]?.scrollIntoView?.({
+        behavior: "auto",
+        block: "start",
+      });
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [resolvedInitial]);
+
+  const openSection = (sectionId: LinearReportSectionId, element: HTMLElement) => {
+    setOpenSectionId(sectionId);
     onSectionOpen?.(sectionId);
+    window.requestAnimationFrame(() => {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   };
 
   return (
@@ -66,57 +76,74 @@ export function LinearReport({
         <p className="mt-2 max-w-2xl text-caption leading-relaxed text-muted">
           {t("results.reportLinearBody", locale)}
         </p>
-
-        <nav aria-label={t("results.reportChaptersLabel", locale)} className="mt-6 flex flex-wrap gap-x-5 gap-y-1">
-          {sections.map((section, index) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => openSection(section.id)}
-              className="inline-flex min-h-[44px] items-center gap-2 border-b border-transparent text-xs font-semibold text-ink-body transition hover:border-sage hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
-            >
-              <span className="font-mono text-micro tracking-widest text-[var(--color-accent-primary-strong)]">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              {section.title}
-            </button>
-          ))}
-        </nav>
       </header>
 
-      <div className="flex flex-col gap-14 md:gap-20">
-        {sections.map((section, index) => (
-          <section
-            key={section.id}
-            id={`report-${section.id}`}
-            ref={(element) => {
-              sectionRefs.current[section.id] = element;
-            }}
-            aria-labelledby={`report-${section.id}-heading`}
-            className="scroll-mt-24"
-          >
-            <div className="grid gap-2 border-t border-[var(--color-border-soft)] pt-5 md:grid-cols-[52px_minmax(0,1fr)] md:gap-4 md:pt-7">
-              <span className="font-mono text-micro font-semibold tracking-widest text-[var(--color-accent-primary-strong)]">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <p className="text-micro font-semibold uppercase tracking-wide text-muted">
-                  {section.question}
-                </p>
-                <h3 id={`report-${section.id}-heading`} className="mt-1.5 font-fraunces text-[26px] leading-tight text-ink md:text-[32px]">
-                  {section.title}
-                </h3>
-                <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-                  {section.description}
-                </p>
-              </div>
-            </div>
+      <div className="flex flex-col gap-3" aria-label={t("results.reportChaptersLabel", locale)}>
+        {sections.map((section, index) => {
+          const isOpen = section.id === openSectionId;
+          const actionLabel = isOpen
+            ? t("results.reportCardClose", locale)
+            : t("results.reportCardOpen", locale);
 
-            <div className="mt-7 md:ml-[68px] md:mt-9">
-              {section.content}
-            </div>
-          </section>
-        ))}
+          return (
+            <section
+              key={section.id}
+              id={`report-${section.id}`}
+              ref={(element) => {
+                sectionRefs.current[section.id] = element;
+              }}
+              aria-labelledby={`report-${section.id}-heading`}
+              className={`scroll-mt-24 overflow-hidden rounded-[20px] border bg-surface-card shadow-[var(--ui-shadow-sm)] transition-colors ${
+                isOpen
+                  ? "border-sage/55"
+                  : "border-[var(--color-border-soft)] hover:border-[var(--color-state-hover-border)]"
+              }`}
+            >
+              <button
+                type="button"
+                aria-label={`${String(index + 1).padStart(2, "0")}. ${section.title} — ${actionLabel}`}
+                aria-expanded={isOpen}
+                aria-controls={`report-${section.id}-content`}
+                onClick={(event) => {
+                  if (isOpen) {
+                    setOpenSectionId(undefined);
+                    return;
+                  }
+                  openSection(section.id, event.currentTarget.closest("section") ?? event.currentTarget);
+                }}
+                className="grid min-h-[108px] w-full grid-cols-[36px_minmax(0,1fr)] gap-3 px-5 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-state-focus-ring)] md:grid-cols-[44px_minmax(0,1fr)_auto] md:items-center md:gap-4 md:px-7 md:py-6"
+              >
+                <span className="self-start pt-0.5 font-mono text-micro font-semibold tracking-widest text-[var(--color-accent-primary-strong)] md:self-center md:pt-0">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="min-w-0">
+                  <span className="block text-micro font-semibold uppercase tracking-wide text-muted">
+                    {section.question}
+                  </span>
+                  <span id={`report-${section.id}-heading`} className="mt-1 block font-fraunces text-[22px] leading-tight text-ink md:text-[25px]">
+                    {section.title}
+                  </span>
+                  <span className="mt-1.5 block text-xs leading-relaxed text-muted">
+                    {section.description}
+                  </span>
+                </span>
+                <span className="col-start-2 inline-flex min-h-[32px] items-center text-xs font-semibold text-sage-dark md:col-start-3 md:self-center">
+                  {actionLabel}
+                  <span aria-hidden="true" className="ml-1">{isOpen ? "↑" : "↓"}</span>
+                </span>
+              </button>
+
+              {isOpen ? (
+                <div
+                  id={`report-${section.id}-content`}
+                  className="border-t border-[var(--color-border-soft)] px-5 pb-7 pt-6 md:px-7 md:pb-9 md:pt-8"
+                >
+                  {section.content}
+                </div>
+              ) : null}
+            </section>
+          );
+        })}
       </div>
     </div>
   );

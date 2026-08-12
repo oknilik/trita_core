@@ -382,3 +382,18 @@ egyenrangú nézetet kínál.
 
 Ez a változat tudatosan prototípus a meglévő UX-branchen: a vizuális rendszer,
 a mérési logika, a jogosultságok és a teljes részletes tartalom változatlan.
+
+### 15.4 Részletes riport — fejezetkártyás A irány
+
+A lineáris riport vizuális tesztje után a részletes dokumentum fejezetei
+önálló, erős kártyafelületet kaptak. A kártya fejléce egyszerre tartalomjegyzék,
+összefoglaló és nyitási felület; külön fejezetnavigáció nincs.
+
+- mindhárom fejezet címe, felhasználói kérdése és rövid tartalma mindig látszik;
+- egyszerre legfeljebb egy fejezet tartalma nyitott, ezért mobilon sem nő kontrollálatlanul
+  a vizuális és görgetési terhelés;
+- a kezdőállapot és a `?chapter=...` mélylink a megfelelő kártyát nyitja;
+- fejezetváltáskor a korábbi tartalom bezárul, az új kártya a viewportba kerül;
+- az egész kártyafejléc nagy érintési cél, az állapot szöveggel és nyíllal is
+  jelzett (`Megnyitás ↓` / `Bezárás ↑`), nem csak színnel;
+- a riport összes szakmai tartalma és a korábbi analitikai mérés megmaradt.

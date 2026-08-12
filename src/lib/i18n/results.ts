@@ -417,8 +417,8 @@ export const resultsTranslations = {
     summaryExploreTitle: { hu: "Innen csak akkor menj mélyebbre, amikor szeretnél.", en: "Go deeper only when you want to." },
     summaryDetailsPrompt: { hu: "Minden részlet", en: "All details" },
     summaryDetailsMeta: {
-      hu: "A teljes riport egyetlen olvasási folyamban: profilkép, 6 dimenzió, alskálák, munkastílus és fejlődés.",
-      en: "The complete report in one reading flow: profile pattern, 6 dimensions, facets, work style and growth.",
+      hu: "A teljes riport három tiszta fejezetben: profilkép, 6 dimenzió, alskálák, munkastílus és fejlődés.",
+      en: "The complete report in three clear chapters: profile pattern, 6 dimensions, facets, work style and growth.",
     },
     summaryDetailsBody: {
       hu: "A részletes riportban megkapod mind a hat dimenzió értelmezését, az alskálákat, a munkastílust és a fejlődési fókuszt.",
@@ -447,8 +447,10 @@ export const resultsTranslations = {
     reportChapterCurrent: { hu: "Aktuális", en: "Current" },
     reportBackToSummary: { hu: "Vissza az összképhez", en: "Back to overview" },
     reportLinearEyebrow: { hu: "A teljes riportod", en: "Your complete report" },
-    reportLinearTitle: { hu: "Minden részlet, egy olvasási folyamban.", en: "Every detail in one reading flow." },
-    reportLinearBody: { hu: "Haladj végig rajta sorban, vagy ugorj közvetlenül ahhoz a részhez, amelyik most érdekel.", en: "Read it in order, or jump directly to the section you need right now." },
+    reportLinearTitle: { hu: "Minden részlet, tiszta fejezetekben.", en: "Every detail, in clear chapters." },
+    reportLinearBody: { hu: "A teljes szakmai mélység megmarad, de egyszerre csak egy gondolati egység kér figyelmet.", en: "The full professional depth remains, while only one idea asks for your attention at a time." },
+    reportCardOpen: { hu: "Megnyitás", en: "Open" },
+    reportCardClose: { hu: "Bezárás", en: "Close" },
     viewSelectorLabel: { hu: "Eredménynézet", en: "Result view" },
     viewSelectorLocked: { hu: "Plus", en: "Plus" },
     reportOverviewTitle: { hu: "Áttekintés", en: "Overview" },

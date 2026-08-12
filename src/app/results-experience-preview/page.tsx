@@ -88,8 +88,22 @@ const dimensions: SerializedDimension[] = [
   },
 ];
 
-export default function ResultsExperiencePreviewPage() {
+export default async function ResultsExperiencePreviewPage({
+  searchParams,
+}: {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}) {
   if (process.env.NODE_ENV !== "development") notFound();
+
+  const resolvedParams = await searchParams;
+  const tabParam = resolvedParams?.tab;
+  const chapterParam = resolvedParams?.chapter;
+  const initialTab = tabParam === "details" || tabParam === "comparison"
+    ? tabParam
+    : "summary";
+  const initialDetailChapter = chapterParam === "dimensions" || chapterParam === "workstyle"
+    ? chapterParam
+    : "overview";
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)] px-4 py-8 md:py-12">
@@ -101,7 +115,8 @@ export default function ResultsExperiencePreviewPage() {
           name="Péter"
           assessmentDate="2026-08-12T08:00:00.000Z"
           accessLevel="plus"
-          initialTab="summary"
+          initialTab={initialTab}
+          initialDetailChapter={initialDetailChapter}
           dimensions={dimensions}
           growthFocusItems={[
             { code: "flexibility", label: "Rugalmasság", score: 31, dimCode: "A", dimLabel: "Barátságosság", dimColor: "var(--color-dim-a-base)" },

@@ -13,17 +13,22 @@ const SECTIONS: LinearReportSection[] = [
 ];
 
 describe("LinearReport", () => {
-  it("minden fejezetet egyszerre, olvasási sorrendben tart a dokumentumban", () => {
+  it("elsőre egyetlen fejezetet nyit ki, a többi összefoglalóját láthatóan tartja", () => {
     render(<LinearReport sections={SECTIONS} locale="hu" onBack={vi.fn()} />);
 
     expect(screen.getByText("Áttekintés tartalma")).toBeInTheDocument();
-    expect(screen.getByText("Dimenziók tartalma")).toBeInTheDocument();
-    expect(screen.getByText("Munkastílus tartalma")).toBeInTheDocument();
+    expect(screen.queryByText("Dimenziók tartalma")).toBeNull();
+    expect(screen.queryByText("Munkastílus tartalma")).toBeNull();
+    expect(screen.getByRole("button", { name: "02. Dimenziók — Megnyitás" })).toBeInTheDocument();
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("a tartalomjegyzék a kiválasztott szekcióhoz görget", async () => {
+  it("a kártyák közötti váltáskor pontosan egy fejezetet tart nyitva", async () => {
     const scrollIntoView = vi.fn();
+    const requestAnimationFrame = vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      callback(0);
+      return 1;
+    });
     Object.defineProperty(HTMLElement.prototype, "scrollIntoView", {
       configurable: true,
       value: scrollIntoView,
@@ -38,10 +43,28 @@ describe("LinearReport", () => {
         onSectionOpen={onSectionOpen}
       />,
     );
-    await userEvent.click(screen.getByRole("button", { name: /02\s*Dimenziók/ }));
+    await userEvent.click(screen.getByRole("button", { name: "02. Dimenziók — Megnyitás" }));
 
     expect(scrollIntoView).toHaveBeenCalledOnce();
     expect(onSectionOpen).toHaveBeenCalledWith("dimensions");
+    expect(screen.queryByText("Áttekintés tartalma")).toBeNull();
+    expect(screen.getByText("Dimenziók tartalma")).toBeInTheDocument();
+    expect(screen.queryByText("Munkastílus tartalma")).toBeNull();
+    requestAnimationFrame.mockRestore();
+  });
+
+  it("a mélylinkből választott fejezetet nyitja meg elsőként", () => {
+    render(
+      <LinearReport
+        sections={SECTIONS}
+        initialSection="workstyle"
+        locale="hu"
+        onBack={vi.fn()}
+      />,
+    );
+
+    expect(screen.queryByText("Áttekintés tartalma")).toBeNull();
+    expect(screen.getByText("Munkastílus tartalma")).toBeInTheDocument();
   });
 
   it("egyetlen visszalépéssel visszavisz az összképhez", async () => {
