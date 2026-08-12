@@ -36,7 +36,7 @@ import {
 import { t, type Locale } from "@/lib/i18n";
 
 import { ProfileTabs, type ProfileViewId } from "@/components/profile/ProfileTabs";
-import type { ReportChapterId } from "@/components/results/ReportChapterAccordion";
+import type { ReportChapterId } from "@/components/results/ReportChapterFocus";
 import {
   aggregatePeerRoleScores,
   poolPeerSelectionsByRatedMember,
@@ -520,8 +520,13 @@ export default async function ProfileResultsPage({
       : tabParam === "details" || tabParam === "results" || tabParam === "workstyle"
         ? "details"
         : "summary";
+  const chapterParam = resolvedParams?.chapter;
   const initialDetailChapter: ReportChapterId =
-    tabParam === "workstyle" ? "workstyle" : "overview";
+    tabParam === "workstyle"
+      ? "workstyle"
+      : chapterParam === "dimensions" || chapterParam === "workstyle"
+        ? chapterParam
+        : "overview";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
   // redirect helyett explicit sáv magyarázza, mi történt, és innen

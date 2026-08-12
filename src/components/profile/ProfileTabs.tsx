@@ -8,9 +8,9 @@ import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
 import { ProfileSummary } from "@/components/results/ProfileSummary";
 import {
-  ReportChapterAccordion,
+  ReportChapterFocus,
   type ReportChapterId,
-} from "@/components/results/ReportChapterAccordion";
+} from "@/components/results/ReportChapterFocus";
 import { ShareModal } from "@/components/results/ShareModal";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
@@ -576,6 +576,7 @@ export function ProfileTabs({
   const locale = rawLocale as Locale;
 
   const [activeTab, setActiveTab] = useState<ProfileViewId>(initialTab);
+  const [activeDetailChapter, setActiveDetailChapter] = useState<ReportChapterId>(initialDetailChapter);
 
   // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
   // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
@@ -612,9 +613,11 @@ export function ProfileTabs({
       setActiveTab(tab);
       const url = new URL(window.location.href);
       url.searchParams.set("tab", tab);
+      if (tab === "details") url.searchParams.set("chapter", activeDetailChapter);
+      else url.searchParams.delete("chapter");
       window.history.replaceState({}, "", url.pathname + url.search + url.hash);
     },
-    [],
+    [activeDetailChapter],
   );
 
   const ALL_TABS: { id: ProfileViewId; label: string; locked: boolean; icon: React.ReactNode }[] = [
@@ -952,13 +955,47 @@ export function ProfileTabs({
         }}
       />
 
-      {/* Három olvasási mód: gyors összkép, teljes riport, külső nézőpont. */}
+      {/* Mobilon egyetlen módválasztó marad látható; desktopon a három
+          olvasási mód visszafogott, aláhúzott tabsorként jelenik meg. */}
+      <div className="relative md:hidden">
+        <label
+          htmlFor="profile-view-select"
+          className="mb-2 block font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]"
+        >
+          {t("results.viewSelectorLabel", locale)}
+        </label>
+        <select
+          id="profile-view-select"
+          value={activeTab}
+          onChange={(event) => handleTabChange(event.target.value as ProfileViewId)}
+          className="min-h-[50px] w-full appearance-none rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 pr-11 text-sm font-semibold text-ink shadow-sm"
+        >
+          {TABS.map((tab) => (
+            <option key={tab.id} value={tab.id}>
+              {tab.locked ? `${tab.label} · ${t("results.viewSelectorLocked", locale)}` : tab.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 20 20"
+          className="pointer-events-none absolute bottom-[15px] right-4 h-5 w-5 text-muted"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="m6 8 4 4 4-4" />
+        </svg>
+      </div>
+
       <div
-        className="grid grid-cols-3 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
+        className="hidden items-end gap-8 border-b border-[var(--color-border-soft)] md:flex"
         role="tablist"
-        aria-label="Profile navigation"
+        aria-label={t("results.viewSelectorLabel", locale)}
       >
-        {TABS.map((tab, i) => (
+        {TABS.map((tab) => (
           <button
             key={tab.id}
             id={`profile-tab-${tab.id}`}
@@ -967,13 +1004,11 @@ export function ProfileTabs({
             aria-controls={`profile-panel-${tab.id}`}
             tabIndex={activeTab === tab.id ? 0 : -1}
             onClick={() => handleTabChange(tab.id)}
-            className={[
-              "flex min-h-[48px] min-w-0 items-center justify-center gap-1.5 px-3 py-3 text-center text-xs font-medium transition-all",
-              i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
+            className={`flex min-h-[48px] items-center gap-2 border-b-2 px-0.5 pb-3 pt-2 text-sm font-semibold transition ${
               activeTab === tab.id
-                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
-                : "bg-surface-card text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
-            ].filter(Boolean).join(" ")}
+                ? "border-sage text-sage-dark"
+                : "border-transparent text-muted hover:text-ink-body"
+            }`}
           >
             {tab.locked ? (
               <svg viewBox="0 0 12 14" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
@@ -995,7 +1030,7 @@ export function ProfileTabs({
         key={activeTab}
         id={`profile-panel-${activeTab}`}
         role="tabpanel"
-        aria-labelledby={`profile-tab-${activeTab}`}
+        aria-label={TABS.find((tab) => tab.id === activeTab)?.label}
         tabIndex={0}
         className="flex flex-col gap-10 md:gap-14"
         style={{ animation: "fadeIn 0.25s ease-out" }}
@@ -1022,10 +1057,15 @@ export function ProfileTabs({
             de csak explicit kérésre terheli a felhasználót. */}
         {activeTab === "details" && (
           <>
-            <ReportChapterAccordion
-              initialChapter={initialDetailChapter}
+            <ReportChapterFocus
+              initialChapter={activeDetailChapter}
               locale={locale}
               onChapterOpen={(chapter) => {
+                setActiveDetailChapter(chapter);
+                const url = new URL(window.location.href);
+                url.searchParams.set("tab", "details");
+                url.searchParams.set("chapter", chapter);
+                window.history.replaceState({}, "", url.pathname + url.search + url.hash);
                 track("results.section_open", {
                   section: chapter === "dimensions" ? "dimensions" : chapter,
                 });

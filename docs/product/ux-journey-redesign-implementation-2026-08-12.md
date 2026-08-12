@@ -329,5 +329,31 @@ nélkül működik. Mobilon a hosszabb fejezetleírások rejtve maradnak, a cím
 sorszám és nyitási állapot egyetlen, legalább 78 px magas érintési célban él.
 
 - TypeScript typecheck, célzott ESLint és a szín/hex guardok hibamentesek;
-- mind a 985 unit és 166 kliens teszt sikeres;
+- mind a 985 unit és 167 kliens teszt sikeres;
 - az optimalizált production build sikeres, 103 oldallal.
+
+### 15.2 Fókusznézet — a C irány egyszerűsítése
+
+A mobil vizuális ellenőrzés alapján az akkordeon rendezte ugyan a tartalmat,
+de a három állandó fejezetfejléc továbbra is második teljes navigációként
+versengett a három eredménynézettel. A fókusznézet ezért szétválasztja a két
+szintet:
+
+- mobilon az Összkép, Részletes riport és Külső kép egyetlen natív
+  eredménynézet-választóban él;
+- desktopon ugyanez egy keret nélküli, aláhúzott szöveges tabsor;
+- a részletes riport egyszerre csak az aktuális fejezet címét, leírását és
+  tartalmát mutatja;
+- a helyzetet három finom progressz-szakasz és az `1 / 3` számláló jelzi;
+- a közvetlen fejezetugrás mobilon alsó lapként, desktopon kompakt dialógusként
+  csak kérésre jelenik meg;
+- a fejezet végén egyetlen „Következő fejezet” CTA vezeti tovább az olvasást.
+
+Így alapállapotban nem jelenik meg egyszerre két teljes navigációs rendszer.
+A `?tab=workstyle` mélylink továbbra is közvetlenül a harmadik fejezetet nyitja;
+az új `?tab=details&chapter=…` állapot az aktuális fejezetet frissítéskor és
+megosztáskor is megőrzi. A fejezetváltások analitikai mérése változatlan marad.
+
+A fókusznézetet 390×844-es mobil és 1280×800-as desktop viewporton ellenőriztük.
+Mindkettőn vízszintes túlcsordulás nélkül működik; a mobil fejezetválasztó
+lezárja a háttérgörgetést, Escape-pel és explicit bezárógombbal is zárható.
