@@ -23,6 +23,7 @@ interface ModalProps {
   hideCloseButton?: boolean;
   hideHeader?: boolean;
   closeLabel?: string;
+  mobilePosition?: "bottom" | "center";
 }
 
 export function Modal({
@@ -37,6 +38,7 @@ export function Modal({
   hideCloseButton = false,
   hideHeader = false,
   closeLabel = "Close",
+  mobilePosition = "bottom",
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,9 @@ export function Modal({
     <div
       className={[
         "fixed inset-0 z-50 flex justify-center",
-        isBrand ? "items-end p-0 sm:items-center sm:p-4" : "items-center p-4",
+        isBrand && mobilePosition === "bottom"
+          ? "items-end p-0 sm:items-center sm:p-4"
+          : "items-center p-4",
       ].join(" ")}
     >
       {/* Backdrop */}
@@ -150,7 +154,9 @@ export function Modal({
           // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
           "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
           isBrand
-            ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+            ? mobilePosition === "bottom"
+              ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+              : "max-w-[520px] rounded-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)]"
             : "max-w-md rounded-2xl bg-surface-card shadow-2xl",
           variant === "danger"
             ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-state-error-border/70")
@@ -198,13 +204,17 @@ export function Modal({
         <div
           className={hideCloseButton
             ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
-            : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
+            : mobilePosition === "center"
+              ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
+              : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
         >
           {!hideHeader && (
             <div
               className={
                 isBrand
-                  ? "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
+                  ? mobilePosition === "center"
+                    ? "grid grid-cols-[36px_minmax(0,1fr)_36px] items-start gap-3"
+                    : "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
                   : "flex items-start gap-3"
               }
             >
@@ -265,7 +275,12 @@ export function Modal({
                   )
                 )}
               </div>
-              {isBrand ? <div aria-hidden className="hidden h-9 w-9 sm:block" /> : null}
+              {isBrand ? (
+                <div
+                  aria-hidden
+                  className={mobilePosition === "center" ? "h-9 w-9" : "hidden h-9 w-9 sm:block"}
+                />
+              ) : null}
             </div>
           )}
 

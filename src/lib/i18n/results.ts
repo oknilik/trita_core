@@ -1731,21 +1731,7 @@ export const resultsTranslations = {
     shareLinkCompact: { hu: "Link", en: "Link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
     shareEmailCompact: { hu: "Email", en: "Email" },
-    shareLinkedInLabel: { hu: "Megosztás LinkedInen", en: "Share on LinkedIn" },
-    shareLinkedInCopied: {
-      hu: "A kép a vágólapon van. A LinkedIn szerkesztőben illeszd be a ⌘V vagy Ctrl+V billentyűkkel.",
-      en: "The image is on your clipboard. Paste it into the LinkedIn composer with ⌘V or Ctrl+V.",
-    },
-    shareLinkedInShared: { hu: "A kép készen áll a megosztásra.", en: "The image is ready to share." },
-    shareLinkedInDownloaded: {
-      hu: "A böngésző nem engedte a képmásolást, ezért letöltöttük. Töltsd fel a megnyílt LinkedIn szerkesztőben.",
-      en: "Your browser did not allow image copying, so the image was downloaded. Upload it in the LinkedIn composer.",
-    },
-    shareLinkedInError: {
-      hu: "A LinkedIn-megosztás előkészítése nem sikerült.",
-      en: "Could not prepare the LinkedIn share.",
-    },
-    shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
+    shareEmailLabel: { hu: "Címzett email-címe", en: "Recipient email" },
     shareEmailQrHint: {
       hu: "A levélben a profil linkje és egy QR-kód is szerepel.",
       en: "The email includes the profile link and a QR code.",

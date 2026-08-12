@@ -10,14 +10,10 @@ import { TextField } from "@/components/ui/primitives/TextField";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { isSecondaryUncertain } from "@/lib/personality-type";
-import {
-  ShareCardDownload,
-  type ShareCardDownloadHandle,
-} from "@/components/results/ShareCardDownload";
+import { ShareCardDownload } from "@/components/results/ShareCardDownload";
 import { track } from "@/lib/analytics/client";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
-type LinkedInState = "idle" | "preparing" | "copied" | "shared" | "downloaded" | "error";
 
 export interface ShareCardPreview {
   userName: string;
@@ -28,7 +24,7 @@ export interface ShareCardPreview {
 
 /**
  * Fókuszált megosztási flow:
- * - link, email, LinkedIn és képkártya egyetlen kompakt akciósorban;
+ * - link, email és képkártya egyetlen kompakt akciósorban;
  * - visszavonás csak ténylegesen aktív linknél, külön megerősítéssel.
  */
 export function ShareModal({
@@ -64,10 +60,8 @@ export function ShareModal({
   const [email, setEmail] = useState("");
   const [sentEmail, setSentEmail] = useState("");
   const [emailState, setEmailState] = useState<EmailState>("idle");
-  const [linkedInState, setLinkedInState] = useState<LinkedInState>("idle");
 
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const shareCardRef = useRef<ShareCardDownloadHandle>(null);
   const shareUrl = shareToken
     ? `${origin}/share/${shareToken}`
     : null;
@@ -87,7 +81,6 @@ export function ShareModal({
     setCopied(false);
     setLoadError(false);
     setConfirmRevoke(false);
-    setLinkedInState("idle");
     setEmailState((state) => state === "sent" ? state : "idle");
   }, [isOpen]);
 
@@ -151,63 +144,6 @@ export function ShareModal({
     }
   };
 
-  const handleLinkedIn = async () => {
-    const builder = shareCardRef.current;
-    if (!builder) return;
-
-    setLinkedInState("preparing");
-    const probeFile = new File([new Blob(["png"], { type: "image/png" })], "trita-tipuskartya.png", { type: "image/png" });
-    const canShareFile =
-      typeof navigator.share === "function" &&
-      typeof navigator.canShare === "function" &&
-      navigator.canShare({ files: [probeFile] });
-    const popup = canShareFile
-      ? null
-      : window.open("about:blank", "trita-linkedin-share", "width=720,height=760");
-    if (popup) popup.opener = null;
-
-    try {
-      const blob = await builder.buildPngBlob();
-      const file = new File([blob], "trita-tipuskartya.png", { type: "image/png" });
-
-      if (canShareFile) {
-        try {
-          await navigator.share({
-            files: [file],
-            title: preview?.personalityType ?? t("content.shareModalTitle", locale),
-          });
-          setLinkedInState("shared");
-          return;
-        } catch (error) {
-          if (error instanceof DOMException && error.name === "AbortError") {
-            setLinkedInState("idle");
-            return;
-          }
-        }
-      }
-
-      if (typeof ClipboardItem !== "undefined" && typeof navigator.clipboard?.write === "function") {
-        await navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
-        setLinkedInState("copied");
-      } else {
-        const downloadUrl = URL.createObjectURL(blob);
-        const anchor = document.createElement("a");
-        anchor.href = downloadUrl;
-        anchor.download = "trita-tipuskartya.png";
-        anchor.click();
-        URL.revokeObjectURL(downloadUrl);
-        setLinkedInState("downloaded");
-      }
-
-      const composerUrl = "https://www.linkedin.com/feed/?shareActive=true";
-      if (popup) popup.location.href = composerUrl;
-      else window.open(composerUrl, "_blank", "noopener,noreferrer,width=720,height=760");
-    } catch {
-      popup?.close();
-      setLinkedInState("error");
-    }
-  };
-
   const handleRevoke = async () => {
     setBusy(true);
     try {
@@ -233,6 +169,7 @@ export function ShareModal({
       onClose={onClose}
       title={t("content.shareModalTitle", locale)}
       closeLabel={t("common.close", locale)}
+      mobilePosition="center"
     >
       <div className="flex flex-col gap-4">
         {loadError ? (
@@ -295,7 +232,7 @@ export function ShareModal({
               </div>
             ) : null}
 
-            <div className={`grid gap-2 ${preview && previewGlyph ? "grid-cols-4" : "grid-cols-3"}`}>
+            <div className={`grid gap-2 ${preview && previewGlyph ? "grid-cols-3" : "grid-cols-2"}`}>
               <button
                 type="button"
                 onClick={() => {
@@ -332,22 +269,6 @@ export function ShareModal({
                 {t("content.shareEmailCompact", locale)}
               </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  track("results.export", { format: "image" });
-                  void handleLinkedIn();
-                }}
-                disabled={linkedInState === "preparing" || !previewGlyph}
-                aria-label={t("content.shareLinkedInLabel", locale)}
-                className="flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border border-[var(--color-border-soft)] bg-surface-card px-2 py-2 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:bg-[var(--color-surface-subtle)] hover:text-sage-dark disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" />
-                </svg>
-                {linkedInState === "preparing" ? t("results.shareCardWorking", locale) : "LinkedIn"}
-              </button>
-
               {preview && previewGlyph ? (
                 <ShareCardDownload
                   userName={preview.userName}
@@ -355,31 +276,12 @@ export function ShareModal({
                   topDims={preview.topDims}
                   glyph={previewGlyph}
                   compact
-                  ref={shareCardRef}
                 />
               ) : null}
             </div>
 
-            {linkedInState === "copied" ? (
-              <p role="status" className="rounded-lg bg-sage-soft px-3 py-2 text-xs leading-relaxed text-sage-dark">
-                {t("content.shareLinkedInCopied", locale)}
-              </p>
-            ) : linkedInState === "shared" ? (
-              <p role="status" className="rounded-lg bg-sage-soft px-3 py-2 text-xs leading-relaxed text-sage-dark">
-                {t("content.shareLinkedInShared", locale)}
-              </p>
-            ) : linkedInState === "downloaded" ? (
-              <p role="status" className="rounded-lg bg-[var(--color-surface-highlight-warm)] px-3 py-2 text-xs leading-relaxed text-ink-body">
-                {t("content.shareLinkedInDownloaded", locale)}
-              </p>
-            ) : linkedInState === "error" ? (
-              <p role="alert" className="rounded-lg bg-[var(--color-state-error-bg)] px-3 py-2 text-xs leading-relaxed text-[var(--color-state-error-fg)]">
-                {t("content.shareLinkedInError", locale)}
-              </p>
-            ) : null}
-
             {emailOpen ? (
-              <div className="rounded-xl border border-[var(--color-border-soft)] bg-surface-card p-4">
+              <div className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-3.5">
                   {emailState === "sent" ? (
                     <div className="rounded-xl border border-sage/25 bg-sage-soft p-4">
                       <p className="inline-flex items-center gap-2 text-sm font-semibold text-sage-dark">
@@ -401,7 +303,7 @@ export function ShareModal({
                       </button>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2.5">
                       <TextField
                         type="email"
                         label={t("content.shareEmailLabel", locale)}
@@ -414,6 +316,8 @@ export function ShareModal({
                           if (event.key === "Enter") void handleSend();
                         }}
                         placeholder={t("content.shareEmailPlaceholder", locale)}
+                        labelClassName="text-xs font-semibold text-ink-body"
+                        inputClassName="rounded-xl border-[var(--color-border-soft)] bg-surface-card px-3.5 shadow-[var(--ui-shadow-sm)]"
                         error={
                           emailState === "invalid"
                             ? t("content.shareEmailInvalid", locale)
@@ -424,10 +328,11 @@ export function ShareModal({
                       />
                       <Button
                         type="button"
-                        variant="secondary"
+                        variant="primary"
+                        fullWidth
                         onClick={() => void handleSend()}
                         disabled={emailState === "sending" || !email.trim()}
-                        className="self-start"
+                        className="rounded-xl"
                       >
                         {emailState === "sending"
                           ? t("content.shareEmailSending", locale)
