@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { flushSync } from "react-dom";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
@@ -57,12 +58,21 @@ export function ProfileHero({
   const { locale } = useLocale();
   const [heroSide, setHeroSide] = useState<"profile" | "glyph">("profile");
   const heroMotionRef = useRef<HTMLDivElement | null>(null);
-  const cardIconTopRef = useRef<SVGGElement | null>(null);
+  const transitionFrameRef = useRef<HTMLDivElement | null>(null);
+  const outgoingLayerRef = useRef<HTMLDivElement | null>(null);
+  const swipeIconRef = useRef<SVGSVGElement | null>(null);
   const hintAnimationsRef = useRef<Animation[]>([]);
-  const cardDirectionRef = useRef(-1);
+  const transitionAnimationsRef = useRef<Animation[]>([]);
   const didRunHintRef = useRef(false);
-  const hasSwitchedRef = useRef(false);
   const isSwitchingRef = useRef(false);
+  const swipeStartRef = useRef<{
+    pointerId: number;
+    pointerType: string;
+    target: EventTarget | null;
+    x: number;
+    y: number;
+  } | null>(null);
+  const swipePreviewXRef = useRef(0);
 
   // PDF-gomb finom visszajelzése: generálás alatt pörgő progress,
   // siker után zöld pipa, ami pár másodperc múlva magától eltűnik.
@@ -136,26 +146,26 @@ export function ProfileHero({
       [
         { transform: "translate3d(0, 0, 0)" },
         { transform: "translate3d(0, 0, 0)", offset: 0.48 },
-        { transform: "translate3d(-3px, -3px, 0)", offset: 0.66 },
-        { transform: "translate3d(1px, 0, 0)", offset: 0.82 },
+        { transform: "translate3d(-4px, 0, 0)", offset: 0.64 },
+        { transform: "translate3d(2px, 0, 0)", offset: 0.8 },
         { transform: "translate3d(0, 0, 0)" },
       ],
       {
-        duration: 1200,
+        duration: 1150,
         delay: 350,
         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     );
-    const iconHint = cardIconTopRef.current?.animate(
+    const iconHint = swipeIconRef.current?.animate(
       [
         { transform: "translate3d(0, 0, 0)" },
         { transform: "translate3d(0, 0, 0)", offset: 0.48 },
-        { transform: "translate3d(2px, -2px, 0)", offset: 0.68 },
-        { transform: "translate3d(-1px, 0, 0)", offset: 0.84 },
+        { transform: "translate3d(-3px, 0, 0)", offset: 0.64 },
+        { transform: "translate3d(3px, 0, 0)", offset: 0.8 },
         { transform: "translate3d(0, 0, 0)" },
       ],
       {
-        duration: 1200,
+        duration: 1150,
         delay: 350,
         easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
@@ -171,66 +181,163 @@ export function ProfileHero({
     };
   }, [hasGlyphPair]);
 
-  useEffect(() => {
-    if (!hasSwitchedRef.current) return;
-    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      isSwitchingRef.current = false;
-      return;
-    }
-    if (typeof heroMotionRef.current?.animate !== "function") {
-      isSwitchingRef.current = false;
-      return;
-    }
-
-    const incomingX = cardDirectionRef.current * -12;
-    const animation = heroMotionRef.current.animate(
-      [
-        { opacity: 0.92, transform: `translate3d(${incomingX}px, 6px, 0)` },
-        { opacity: 1, transform: "translate3d(0, 0, 0)" },
-      ],
-      {
-        duration: 240,
-        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-      },
-    );
-    animation.addEventListener("finish", () => {
-      isSwitchingRef.current = false;
-    }, { once: true });
-
-    return () => animation.cancel();
-  }, [heroSide]);
-
-  const handleCardSwitch = () => {
+  const handleSwipeSwitch = (requestedSide?: "profile" | "glyph") => {
     if (isSwitchingRef.current) return;
+    const nextSide = requestedSide ?? (heroSide === "profile" ? "glyph" : "profile");
+    if (nextSide === heroSide) return;
+
     isSwitchingRef.current = true;
-    const nextSide = heroSide === "profile" ? "glyph" : "profile";
     const direction = nextSide === "glyph" ? -1 : 1;
-    cardDirectionRef.current = direction;
     hintAnimationsRef.current.forEach((animation) => animation.cancel());
     hintAnimationsRef.current = [];
-    hasSwitchedRef.current = true;
 
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion || typeof heroMotionRef.current?.animate !== "function") {
+    const hero = heroMotionRef.current;
+    const frame = transitionFrameRef.current;
+    const outgoingLayer = outgoingLayerRef.current;
+    if (
+      reduceMotion
+      || typeof hero?.animate !== "function"
+      || !frame
+      || !outgoingLayer
+    ) {
       setHeroSide(nextSide);
       isSwitchingRef.current = false;
       return;
     }
 
-    const outgoing = heroMotionRef.current.animate(
+    const oldHeight = hero.getBoundingClientRect().height;
+    const outgoingClone = hero.cloneNode(true) as HTMLDivElement;
+    outgoingClone.removeAttribute("data-profile-card-motion");
+    outgoingClone.setAttribute("aria-hidden", "true");
+    outgoingClone.inert = true;
+    outgoingClone.querySelectorAll("[id]").forEach((element) => element.removeAttribute("id"));
+    outgoingLayer.replaceChildren(outgoingClone);
+
+    frame.style.height = `${oldHeight}px`;
+    frame.style.overflow = "hidden";
+    flushSync(() => setHeroSide(nextSide));
+    const newHeight = hero.getBoundingClientRect().height;
+
+    const outgoing = outgoingClone.animate(
       [
         { opacity: 1, transform: "translate3d(0, 0, 0)" },
-        { opacity: 0.92, transform: `translate3d(${direction * 18}px, -7px, 0)` },
+        { opacity: 0.94, transform: `translate3d(${direction * 22}px, 0, 0)` },
       ],
       {
-        duration: 150,
-        easing: "cubic-bezier(0.4, 0, 0.6, 1)",
+        duration: 320,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     );
-    outgoing.addEventListener("finish", () => setHeroSide(nextSide), { once: true });
+    const incoming = hero.animate(
+      [
+        { opacity: 0.94, transform: `translate3d(${direction * -22}px, 0, 0)` },
+        { opacity: 1, transform: "translate3d(0, 0, 0)" },
+      ],
+      {
+        duration: 320,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+    );
+    const height = frame.animate(
+      [
+        { height: `${oldHeight}px` },
+        { height: `${newHeight}px` },
+      ],
+      {
+        duration: 320,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      },
+    );
+    transitionAnimationsRef.current = [outgoing, incoming, height];
+
+    let transitionFinished = false;
+    const finishTransition = () => {
+      if (transitionFinished) return;
+      transitionFinished = true;
+      outgoingLayer.replaceChildren();
+      frame.style.height = "";
+      frame.style.overflow = "";
+      transitionAnimationsRef.current = [];
+      isSwitchingRef.current = false;
+    };
+    incoming.addEventListener("finish", finishTransition, { once: true });
+    incoming.addEventListener("cancel", finishTransition, { once: true });
   };
 
-  const cardControl = glyphPair ? (
+  const handleSwipeStart = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    hintAnimationsRef.current.forEach((animation) => animation.cancel());
+    hintAnimationsRef.current = [];
+    swipePreviewXRef.current = 0;
+    swipeStartRef.current = {
+      pointerId: event.pointerId,
+      pointerType: event.pointerType,
+      target: event.target,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  };
+
+  const handleSwipeMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = swipeStartRef.current;
+    if (!start || start.pointerId !== event.pointerId || isSwitchingRef.current) return;
+    const startedOnControl = start.target instanceof Element
+      && Boolean(start.target.closest("button, a, input, select, textarea"));
+    if (start.pointerType === "mouse" && startedOnControl) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    if (Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+    const previewX = Math.max(-10, Math.min(10, deltaX * 0.16));
+    swipePreviewXRef.current = previewX;
+    if (heroMotionRef.current) {
+      heroMotionRef.current.style.transform = `translate3d(${previewX}px, 0, 0)`;
+    }
+  };
+
+  const handleSwipeEnd = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const start = swipeStartRef.current;
+    swipeStartRef.current = null;
+    if (!start || start.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    const startedOnControl = start.target instanceof Element
+      && Boolean(start.target.closest("button, a, input, select, textarea"));
+    if (start.pointerType === "mouse" && startedOnControl) return;
+    const previewX = swipePreviewXRef.current;
+    swipePreviewXRef.current = 0;
+    if (heroMotionRef.current) heroMotionRef.current.style.transform = "";
+
+    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.25) {
+      if (Math.abs(previewX) > 0.5 && typeof heroMotionRef.current?.animate === "function") {
+        heroMotionRef.current.animate(
+          [
+            { transform: `translate3d(${previewX}px, 0, 0)` },
+            { transform: "translate3d(0, 0, 0)" },
+          ],
+          { duration: 150, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+        );
+      }
+      return;
+    }
+    handleSwipeSwitch(deltaX < 0 ? "glyph" : "profile");
+  };
+
+  const handleSwipeCancel = () => {
+    swipeStartRef.current = null;
+    swipePreviewXRef.current = 0;
+    if (heroMotionRef.current) heroMotionRef.current.style.transform = "";
+  };
+
+  useEffect(() => () => {
+    transitionAnimationsRef.current.forEach((animation) => animation.cancel());
+    transitionAnimationsRef.current = [];
+  }, []);
+
+  const swipeControl = glyphPair ? (
     <button
       type="button"
       aria-pressed={showingGlyph}
@@ -238,46 +345,23 @@ export function ProfileHero({
         showingGlyph ? "results.heroGlyphBackA11y" : "results.heroGlyphOpenA11y",
         locale,
       )}
-      onClick={handleCardSwitch}
+      onClick={() => handleSwipeSwitch()}
       className="group absolute right-3 top-3 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)] shadow-[var(--ui-shadow-lg)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-y-1/2 md:flex-col md:gap-2 md:rounded-l-xl md:rounded-r-none md:border-r-0 md:px-2"
     >
       <svg
+        ref={swipeIconRef}
         aria-hidden="true"
         viewBox="0 0 24 24"
         fill="none"
-        className="h-5 w-5"
+        className="h-5 w-5 transition-transform duration-[var(--motion-duration-base)] group-hover:scale-105 motion-reduce:transition-none"
       >
-        <rect
-          x="4"
-          y="7"
-          width="13"
-          height="13"
-          rx="2.25"
+        <path
+          d="M8.5 7.5 4 12l4.5 4.5M15.5 7.5 20 12l-4.5 4.5M5 12h14"
           stroke="currentColor"
-          strokeWidth="1.6"
-          opacity="0.52"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <g
-          ref={cardIconTopRef}
-          className="transition-transform duration-[var(--motion-duration-base)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
-        >
-          <rect
-            x="7"
-            y="4"
-            width="13"
-            height="13"
-            rx="2.25"
-            fill="var(--color-surface-self-accent-soft)"
-            stroke="currentColor"
-            strokeWidth="1.6"
-          />
-          <path
-            d="M11 8h5M11 11h3.5"
-            stroke="currentColor"
-            strokeWidth="1.4"
-            strokeLinecap="round"
-          />
-        </g>
       </svg>
       <span className="hidden text-xs font-semibold md:block md:[writing-mode:vertical-rl]">
         {t(showingGlyph ? "results.heroGlyphBack" : "results.heroGlyphOpen", locale)}
@@ -286,23 +370,22 @@ export function ProfileHero({
   ) : null;
 
   return (
-    <div className="relative isolate pb-2">
-      {glyphPair ? (
-        <>
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-5 bottom-0 top-3 z-0 rounded-[26px] border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] opacity-45"
-          />
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-x-2.5 bottom-1 top-2 z-[1] rounded-[27px] border border-white/15 bg-[var(--color-accent-self-strong)] opacity-55"
-          />
-        </>
-      ) : null}
-      <div
-        ref={heroMotionRef}
-        data-profile-card-motion
-        className="relative z-10"
+    <div className="relative isolate">
+      <div ref={transitionFrameRef} className="relative">
+        <div
+          ref={outgoingLayerRef}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-10"
+        />
+        <div
+          ref={heroMotionRef}
+          data-profile-swipe-motion
+          className="relative z-0"
+          onPointerDown={handleSwipeStart}
+          onPointerMove={handleSwipeMove}
+          onPointerUp={handleSwipeEnd}
+          onPointerCancel={handleSwipeCancel}
+          style={{ touchAction: "pan-y" }}
       >
         {showingGlyph && glyphPair ? (
           <SurfaceHero
@@ -507,9 +590,10 @@ export function ProfileHero({
             )}
           />
         )}
+        </div>
       </div>
 
-      {cardControl}
+      {swipeControl}
     </div>
   );
 }

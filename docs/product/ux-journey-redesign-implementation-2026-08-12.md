@@ -398,14 +398,14 @@ A lineáris riport vizuális tesztje után a részletes dokumentum fejezetei
   jelzett (`Megnyitás ↓` / `Bezárás ↑`), nem csak színnel;
 - a riport összes szakmai tartalma és a korábbi analitikai mérés megmaradt.
 
-### 15.5 Karakterábra — rétegzett hero-kártyák, B irány
+### 15.5 Karakterábra — swipe-olható hero, B irány
 
 A karakterábra kikerült a név melletti bélyegből és a részletes riport
-Áttekintés fejezetéből. Most a profillal egy kétlapos, egymásra rétegzett
-hero-kártyapakliban jelenik meg, nagy méretben.
+Áttekintés fejezetéből. Most a profil mellett egy vízszintesen váltható második
+hero-nézetként jelenik meg, nagy méretben.
 
 - asztali nézetben a hero jobb széléhez kapcsolódó, szöveges lapfül jelzi a
-  váltást; mobilon a jobb felső sarokban önálló kártyapakli-ikon jelenik meg;
+  váltást; mobilon a jobb felső sarokban önálló, kétirányú swipe-ikon jelenik meg;
 - mobilon az ikont egyszeri, finom betöltési mozgás teszi felfedezhetővé, a
   hozzáférhető név pedig mindig egyértelműen jelzi a céloldalt;
 - a karakteroldalon a teljes ábra, a típusnév, a dimenziópár és a forma–motívum
@@ -418,16 +418,20 @@ hero-kártyapakliban jelenik meg, nagy méretben.
 
 #### Mobilos és mozgás-finomítás
 
-- mobilon a széles alsó sáv helyett 48 × 48 px-es, csak ikonos kártyaváltó
+- mobilon a széles alsó sáv helyett 48 × 48 px-es, csak ikonos swipe-vezérlő
   jelenik meg a hero jobb felső sarkában;
 - asztalon megmarad a szöveges oldalsó lapfül;
-- a hero alatt két vékony kártyaél állandóan látszik, ezért mozgás nélkül is
-  érthető, hogy van egy másik lap;
-- első betöltéskor a felső hero-lap és az ikon felső lapja egyszer néhány
-  pixelt megemelkedik;
-- kattintáskor a felső lap finoman oldalra-felfelé úszik, az új lap pedig az
-  alatta lévő pakliból érkezik a helyére; nincs forgatás vagy perspektivikus
-  torzítás;
+- mobilon a hero valódi vízszintes húzógesztussal is váltható, a függőleges
+  oldalgörgetést nem blokkolja;
+- a hero megosztás- és PDF-gombjai egérrel továbbra is biztonságosan
+  kattinthatók; az interaktív elemen induló egérhúzás nem vált nézetet;
+- első betöltéskor a hero és a swipe-ikon egyszer néhány pixelt oldalra mozdul;
+- váltáskor a két teljes nézet egyidejűleg, kis távolságon keresztezi egymást:
+  a régi oldal kifelé, az új az ellenkező irányból befelé csúszik;
+- a húzás közben a hero legfeljebb 10 px-en követi az ujjat, így a gesztus
+  azonnal válaszol, de nem tud elszaladni;
+- a két hero eltérő magassága is ugyanebben a 320 ms-os átmenetben változik,
+  ezért az alatta lévő tartalom nem ugrik;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.
