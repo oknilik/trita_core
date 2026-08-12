@@ -278,5 +278,40 @@ build ellenőrzések ettől függetlenül teljesen zöldek.
   `prisma migrate deploy` bootstrapja schema-engine hibával megállt a tesztek
   indulása előtt, ezért ennek végső bizonyítéka a PR hermetikus GitHub CI-je;
 - a teljes unit suite 985/985, a teljes client suite 159/159 zöld;
+
+## 15. Eredményoldal progresszív feltárása
+
+A következő UX-kör a személyes eredmény első olvasását egyszerűsíti úgy, hogy
+a meglévő mély riport és a Trita vizuális karaktere megmarad.
+
+- az alapértelmezett `Összkép` három értelmezési kapaszkodót, szám nélküli
+  hatdimenziós profilképet és egy helyzetfüggő következő lépést mutat;
+- a `Részletes riport` őrzi meg a radart, a pontos értékeket, alskálákat,
+  munkastílust, fejlődési fókuszt és a további modulok átvezetőit;
+- a régi `?tab=results` és `?tab=workstyle` mélylinkek a részletes riportba,
+  a comparison/invites linkek a `Külső kép` nézetbe érkeznek;
+- a hero erősség/figyelendő chipjei kikerültek, mert az Összkép értelmezési
+  kártyái ugyanazt a feladatot egyértelműbb kontextussal látják el;
+- a karakterábra magyarázata a részletes nézetbe került, ahol igény szerint
+  nyitható, nem verseng az első összképpel;
+- a pontos értékek `x / 100` formátumot és explicit skálamagyarázatot kaptak:
+  nem osztályzatok és norma nélkül nem percentilisek;
+- a Segítőkészség információja és értéke egyetlen kompakt blokk lett;
+- a kapcsolati és karrier-átvezetők egy `További felfedezési irányok`
+  szekcióban nyithatók meg;
+- az Összképen egyetlen gyors érthetőségi kérdés jelenik meg, a hosszabb
+  elégedettségi kérdőív csak a Részletes riport végén;
+- a meglévő `surface.tab_view` méri a három olvasási módot, az új
+  `results.section_open` pedig a dimenzió-, munkastílus- és további irányok
+  megnyitását. A sémák zártak, szabad szöveg vagy pontszám nem kerül az
+  analitikai streambe.
+
+**Vizuális és technikai ellenőrzés:** az Összkép külön komponens-előnézetben
+1280×720 és 390×844 viewporton is vízszintes túlcsordulás nélkül, a meglévő
+cream/ink/sage/bronze tokenekkel renderelt. Az autentikált teljes oldal helyi
+ellenőrzését továbbra is a 9. fejezetben rögzített, lemaradt fejlesztői
+adatbázisséma korlátozza. A célzott typecheck, ESLint és 16 érintett kliens- és
+analitikai teszt zöld; a teljes repo-lint a meglévő, generált
+`playwright-report/` bundle-ök miatt nem használható tiszta jelként.
 - TypeScript typecheck, célzott ESLint és a szín/hex guardok hibamentesek;
 - az optimalizált production build sikeres, 102 statikus oldallal.

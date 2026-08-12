@@ -330,7 +330,9 @@ export function ProfileSummary({
         </Button>
       </section>
 
-      <ResultClarityFeedback initialSubmitted={clarityFeedbackSubmitted} locale={locale} />
+      {!clarityFeedbackSubmitted ? (
+        <ResultClarityFeedback initialSubmitted={false} locale={locale} />
+      ) : null}
     </div>
   );
 }

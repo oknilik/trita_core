@@ -20,7 +20,7 @@ describe("ResultClarityFeedback", () => {
     expect(await screen.findByRole("status")).toHaveTextContent("Köszönjük");
   });
 
-  it("korábbi válasznál nem kérdez újra", () => {
+  it("korábbi válasznál nem kérdez újra a komponens és köszönő állapotot jelez", () => {
     render(<ResultClarityFeedback initialSubmitted locale="hu" />);
     expect(screen.queryByRole("button")).toBeNull();
     expect(screen.getByRole("status")).toBeInTheDocument();
