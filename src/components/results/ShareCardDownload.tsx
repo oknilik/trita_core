@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { forwardRef, useImperativeHandle, useRef, useState } from "react";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
@@ -19,6 +19,10 @@ interface ShareCardDownloadProps {
   compact?: boolean;
 }
 
+export interface ShareCardDownloadHandle {
+  buildPngBlob: () => Promise<Blob>;
+}
+
 const CARD_SIZE = 1080;
 
 /**
@@ -29,13 +33,13 @@ const CARD_SIZE = 1080;
  * A tipográfiát a canvas rajzolja (document.fonts), így a betűk nem esnek
  * vissza rendszer-fontra, ahogy SVG-beli szövegnél történne.
  */
-export function ShareCardDownload({
+export const ShareCardDownload = forwardRef<ShareCardDownloadHandle, ShareCardDownloadProps>(function ShareCardDownload({
   userName,
   personalityType,
   topDims,
   glyph,
   compact = false,
-}: ShareCardDownloadProps) {
+}, ref) {
   const { locale } = useLocale();
   const glyphHostRef = useRef<HTMLDivElement>(null);
   const [busy, setBusy] = useState(false);
@@ -123,6 +127,8 @@ export function ShareCardDownload({
     }
   };
 
+  useImperativeHandle(ref, () => ({ buildPngBlob }));
+
   const handleClick = async () => {
     setBusy(true);
     setError(false);
@@ -207,4 +213,4 @@ export function ShareCardDownload({
       ) : null}
     </div>
   );
-}
+});

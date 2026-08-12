@@ -12,6 +12,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ShareModal } from "@/components/results/ShareModal";
 import { t } from "@/lib/i18n";
 
+vi.mock("@/components/results/ShareCardDownload", async () => {
+  const React = await import("react");
+  return {
+    ShareCardDownload: React.forwardRef(function MockShareCardDownload(
+      _props: unknown,
+      ref: React.ForwardedRef<{ buildPngBlob: () => Promise<Blob> }>,
+    ) {
+      React.useImperativeHandle(ref, () => ({
+        buildPngBlob: async () => new Blob(["image"], { type: "image/png" }),
+      }));
+      return <button type="button" aria-label="Download card as image">Image</button>;
+    }),
+  };
+});
+
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({
     locale: "en",
@@ -65,6 +80,16 @@ function mockShareCreate(token = "tok123") {
   });
 }
 
+const preview = {
+  userName: "Alex",
+  personalityType: "Innovator",
+  topDims: [{ label: "Openness", score: 82 }],
+  glyphDimensions: [
+    { code: "O", score: 82 },
+    { code: "X", score: 74 },
+  ],
+};
+
 describe("ShareModal", () => {
   it("opens as an accessible, inactive dialog without creating a share", async () => {
     mockShareCreate();
@@ -75,7 +100,7 @@ describe("ShareModal", () => {
     ).toBeInTheDocument();
     expect(screen.getByRole("button", { name: t("common.close", "en") })).toBeEnabled();
     expect(
-      screen.getByRole("button", { name: t("content.shareCreateAndCopy", "en") }),
+      screen.getByRole("button", { name: t("content.shareCopyLink", "en") }),
     ).toBeEnabled();
     expect(fetchMock).not.toHaveBeenCalled();
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
@@ -91,17 +116,15 @@ describe("ShareModal", () => {
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
     await user.click(
-      screen.getByRole("button", { name: t("content.shareCreateAndCopy", "en") }),
+      screen.getByRole("button", { name: t("content.shareCopyLink", "en") }),
     );
 
     // Az első másolás hozza létre a linket…
     expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "POST" });
-    await waitFor(() => {
-      expect(screen.getByDisplayValue(/\/share\/tok123$/)).toBeInTheDocument();
-    });
     // …és rögtön a vágólapra is kerül (userEvent clipboard-stub).
     await expect(navigator.clipboard.readText()).resolves.toMatch(/\/share\/tok123$/);
     expect(await screen.findByText(t("content.shareCopied", "en"))).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(/\/share\/tok123$/)).not.toBeInTheDocument();
     expect(alertSpy).not.toHaveBeenCalled();
     alertSpy.mockRestore();
   });
@@ -129,7 +152,7 @@ describe("ShareModal", () => {
 
     expect(await screen.findByText(/Sent to:/)).toHaveTextContent("friend@example.com");
     expect(screen.getByText(t("content.shareEmailQrHint", "en"))).toBeInTheDocument();
-    expect(screen.getByDisplayValue(/\/share\/mailtok$/)).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(/\/share\/mailtok$/)).not.toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/profile/share/send",
       expect.objectContaining({
@@ -157,7 +180,7 @@ describe("ShareModal", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("requires confirmation before revoking an existing share, then offers a new one", async () => {
+  it("requires confirmation before revoking an existing share, then keeps link creation available", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation((url: string, init?: RequestInit) => {
       if (url === "/api/profile/share" && init?.method === "DELETE") {
@@ -170,7 +193,7 @@ describe("ShareModal", () => {
     });
     render(<ShareModal isOpen initialToken="oldtok" onClose={vi.fn()} />);
 
-    expect(screen.getByDisplayValue(/\/share\/oldtok$/)).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(/\/share\/oldtok$/)).not.toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: t("content.shareManage", "en") }));
     await user.click(screen.getByRole("button", { name: t("content.shareRevoke", "en") }));
     expect(screen.getByText(t("content.shareRevokeConfirmTitle", "en"))).toBeInTheDocument();
@@ -182,12 +205,12 @@ describe("ShareModal", () => {
     expect(await screen.findByText(t("content.shareRevoked", "en"))).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "DELETE" });
 
-    // Új link létrehozása visszavonás után
-    await user.click(screen.getByRole("button", { name: t("content.shareCreateNew", "en") }));
-    expect(await screen.findByDisplayValue(/\/share\/tok123$/)).toBeInTheDocument();
+    // A kompakt Link gomb új tokent készít és másol visszavonás után.
+    await user.click(screen.getByRole("button", { name: t("content.shareCopyLink", "en") }));
+    await expect(navigator.clipboard.readText()).resolves.toMatch(/\/share\/tok123$/);
   });
 
-  it("creates a public link and opens the LinkedIn share composer", async () => {
+  it("copies the generated image and opens a blank LinkedIn composer on desktop", async () => {
     const user = userEvent.setup();
     const popup = {
       opener: window,
@@ -197,8 +220,15 @@ describe("ShareModal", () => {
     const openSpy = vi
       .spyOn(window, "open")
       .mockReturnValue(popup as unknown as Window);
-    mockShareCreate("linkedintok");
-    render(<ShareModal isOpen onClose={vi.fn()} />);
+    const clipboardWrite = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator.clipboard, "write", {
+      configurable: true,
+      value: clipboardWrite,
+    });
+    vi.stubGlobal("ClipboardItem", class ClipboardItemMock {
+      constructor(public items: Record<string, Blob>) {}
+    });
+    render(<ShareModal isOpen preview={preview} onClose={vi.fn()} />);
 
     await user.click(
       screen.getByRole("button", { name: t("content.shareLinkedInLabel", "en") }),
@@ -207,16 +237,38 @@ describe("ShareModal", () => {
     expect(openSpy).toHaveBeenCalledWith(
       "about:blank",
       "trita-linkedin-share",
-      "width=600,height=640",
+      "width=720,height=760",
     );
-    expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "POST" });
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(clipboardWrite).toHaveBeenCalledOnce();
     await waitFor(() => {
-      expect(popup.location.href).toContain(
-        "https://www.linkedin.com/sharing/share-offsite/?url=",
-      );
-      expect(decodeURIComponent(popup.location.href)).toMatch(/\/share\/linkedintok$/);
+      expect(popup.location.href).toBe("https://www.linkedin.com/feed/?shareActive=true");
     });
-    expect(screen.getByDisplayValue(/\/share\/linkedintok$/)).toBeInTheDocument();
+    expect(screen.getByText(t("content.shareLinkedInCopied", "en"))).toBeInTheDocument();
+  });
+
+  it("passes the generated image to native sharing when file sharing is available", async () => {
+    const user = userEvent.setup();
+    const share = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "canShare", {
+      configurable: true,
+      value: vi.fn().mockReturnValue(true),
+    });
+    Object.defineProperty(navigator, "share", {
+      configurable: true,
+      value: share,
+    });
+    const openSpy = vi.spyOn(window, "open");
+    render(<ShareModal isOpen preview={preview} onClose={vi.fn()} />);
+
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareLinkedInLabel", "en") }),
+    );
+
+    await waitFor(() => expect(share).toHaveBeenCalledOnce());
+    expect(share.mock.calls[0][0].files[0]).toBeInstanceOf(File);
+    expect(openSpy).not.toHaveBeenCalled();
+    expect(screen.getByText(t("content.shareLinkedInShared", "en"))).toBeInTheDocument();
   });
 
   it("keeps the generated link visible when email delivery fails", async () => {
@@ -235,6 +287,7 @@ describe("ShareModal", () => {
     await user.click(screen.getByRole("button", { name: t("content.shareEmailSend", "en") }));
 
     expect(await screen.findByText(t("content.shareEmailError", "en"))).toBeInTheDocument();
-    expect(screen.getByDisplayValue(/\/share\/kepttok$/)).toBeInTheDocument();
+    expect(screen.queryByDisplayValue(/\/share\/kepttok$/)).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: t("content.shareManage", "en") })).toBeInTheDocument();
   });
 });

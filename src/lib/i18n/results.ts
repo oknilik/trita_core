@@ -1726,14 +1726,25 @@ export const resultsTranslations = {
     shareError: { hu: "Hiba történt", en: "An error occurred" },
     // ShareModal
     shareModalTitle: { hu: "Profil megosztása", en: "Share your profile" },
-    shareLinkLabel: { hu: "Megosztható link", en: "Shareable link" },
-    shareCreateAndCopy: { hu: "Link létrehozása és másolása", en: "Create and copy link" },
     shareCreating: { hu: "Link létrehozása…", en: "Creating link…" },
-    shareActive: { hu: "A link aktív", en: "Link is active" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
+    shareLinkCompact: { hu: "Link", en: "Link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
     shareEmailCompact: { hu: "Email", en: "Email" },
     shareLinkedInLabel: { hu: "Megosztás LinkedInen", en: "Share on LinkedIn" },
+    shareLinkedInCopied: {
+      hu: "A kép a vágólapon van. A LinkedIn szerkesztőben illeszd be a ⌘V vagy Ctrl+V billentyűkkel.",
+      en: "The image is on your clipboard. Paste it into the LinkedIn composer with ⌘V or Ctrl+V.",
+    },
+    shareLinkedInShared: { hu: "A kép készen áll a megosztásra.", en: "The image is ready to share." },
+    shareLinkedInDownloaded: {
+      hu: "A böngésző nem engedte a képmásolást, ezért letöltöttük. Töltsd fel a megnyílt LinkedIn szerkesztőben.",
+      en: "Your browser did not allow image copying, so the image was downloaded. Upload it in the LinkedIn composer.",
+    },
+    shareLinkedInError: {
+      hu: "A LinkedIn-megosztás előkészítése nem sikerült.",
+      en: "Could not prepare the LinkedIn share.",
+    },
     shareEmailLabel: { hu: "Küldés emailben", en: "Send by email" },
     shareEmailQrHint: {
       hu: "A levélben a profil linkje és egy QR-kód is szerepel.",
@@ -1759,7 +1770,6 @@ export const resultsTranslations = {
       hu: "A megosztás visszavonva — a korábbi link már nem működik.",
       en: "Sharing revoked — the previous link no longer works.",
     },
-    shareCreateNew: { hu: "Új link létrehozása", en: "Create a new link" },
     // Share page — revoked/expired link
     shareExpiredEyebrow: { hu: "Megosztott profil", en: "Shared profile" },
     shareExpiredTitle: { hu: "Ez a link már nem él", en: "This link is no longer active" },
