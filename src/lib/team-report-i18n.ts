@@ -16,6 +16,9 @@ export interface TranslatedActionItem {
   title: string;
   description: string;
   timeframe: "30" | "60" | "90";
+  owner?: string;
+  dueDate?: string;
+  status?: "not_started" | "in_progress" | "blocked" | "done";
 }
 
 export interface ReportTranslationEn {
@@ -86,7 +89,10 @@ export function localizeTeamReport<T extends LocalizableReport>(
     leadershipGuide: en.leadershipGuide ?? report.leadershipGuide,
     actionItems:
       en.actionItems && en.actionItems.length > 0
-        ? en.actionItems
+        ? en.actionItems.map((item, index) => ({
+            ...report.actionItems?.[index],
+            ...item,
+          }))
         : report.actionItems,
   };
 }

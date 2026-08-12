@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
+import { exitOrganizationMember } from "@/lib/org-membership-lifecycle.server";
 
 const patchSchema = z.object({
   role: z.enum(["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"]),
@@ -26,9 +27,9 @@ export async function PATCH(
 
   const requesterMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!requesterMembership) {
+  if (!requesterMembership || requesterMembership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
   const patchPolicySnapshot = await resolveOrgPolicySnapshot({
@@ -52,14 +53,16 @@ export async function PATCH(
 
   const targetMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: targetUserId } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!targetMembership) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  if (!targetMembership || targetMembership.leftAt) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   // Prevent demoting last admin
   if (targetMembership.role === "ORG_ADMIN" && body.data.role !== "ORG_ADMIN") {
     const adminCount = await prisma.organizationMember.count({
-      where: { orgId, role: "ORG_ADMIN" },
+      where: { orgId, role: "ORG_ADMIN", leftAt: null },
     });
     if (adminCount <= 1) {
       return NextResponse.json({ error: "LAST_ADMIN" }, { status: 400 });
@@ -93,9 +96,9 @@ export async function DELETE(
 
   const requesterMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!requesterMembership) {
+  if (!requesterMembership || requesterMembership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
   const deletePolicySnapshot = await resolveOrgPolicySnapshot({
@@ -116,23 +119,24 @@ export async function DELETE(
 
   const targetMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: targetUserId } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!targetMembership) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  if (!targetMembership || targetMembership.leftAt) {
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  }
 
   // Prevent removing last admin
   if (targetMembership.role === "ORG_ADMIN") {
     const adminCount = await prisma.organizationMember.count({
-      where: { orgId, role: "ORG_ADMIN" },
+      where: { orgId, role: "ORG_ADMIN", leftAt: null },
     });
     if (adminCount <= 1) {
       return NextResponse.json({ error: "LAST_ADMIN" }, { status: 400 });
     }
   }
 
-  await prisma.organizationMember.delete({
-    where: { orgId_userId: { orgId, userId: targetUserId } },
-  });
+  const exit = await exitOrganizationMember({ orgId, userId: targetUserId });
+  if (!exit) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, exit });
 }

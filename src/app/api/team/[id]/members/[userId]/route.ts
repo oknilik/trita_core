@@ -38,9 +38,9 @@ async function requireTeamManage(
 
   const orgMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!orgMembership) {
+  if (!orgMembership || orgMembership.leftAt) {
     return { ok: false, response: NextResponse.json({ error: "FORBIDDEN" }, { status: 403 }) };
   }
 

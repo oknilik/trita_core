@@ -35,7 +35,11 @@ import {
 } from "@/lib/workstyle-content";
 import { t, type Locale } from "@/lib/i18n";
 
-import { ProfileTabs } from "@/components/profile/ProfileTabs";
+import {
+  ProfileTabs,
+  type ProfileViewId,
+  type ReportChapterId,
+} from "@/components/profile/ProfileTabs";
 import {
   aggregatePeerRoleScores,
   poolPeerSelectionsByRatedMember,
@@ -69,8 +73,6 @@ function getInsight(
   return insights[range];
 }
 
-type TabId = "results" | "workstyle" | "comparison" | "invites";
-
 export default async function ProfileResultsPage({
   searchParams,
 }: {
@@ -94,7 +96,7 @@ export default async function ProfileResultsPage({
     sentInvitationsRaw,
     receivedInvitationsRaw,
     draft,
-    satisfactionFeedbackRecord,
+    feedbackRecords,
     journeySnapshot,
     careerHiddenMembership,
   ] = await Promise.all([
@@ -145,9 +147,9 @@ export default async function ProfileResultsPage({
       where: { userProfileId: profile.id },
       select: { answers: true, testType: true },
     }),
-    prisma.feedback.findFirst({
-      where: { userProfileId: profile.id, kind: "satisfaction" },
-      select: { id: true },
+    prisma.feedback.findMany({
+      where: { userProfileId: profile.id, kind: { in: ["satisfaction", "result_clarity"] } },
+      select: { kind: true },
     }),
     getJourneySnapshotForProfileId(profile.id, {
       locale,
@@ -278,7 +280,8 @@ export default async function ProfileResultsPage({
   const facetSemRounded = Math.round(Math.SQRT2 * facetStandardError(assessmentForm));
 
   // ── Draft info ─────────────────────────────────────────────────────────────
-  const feedbackSubmitted = Boolean(satisfactionFeedbackRecord);
+  const feedbackSubmitted = feedbackRecords.some((feedback) => feedback.kind === "satisfaction");
+  const clarityFeedbackSubmitted = feedbackRecords.some((feedback) => feedback.kind === "result_clarity");
   const pendingInvitesCount = journeySnapshot.state.completionSummary.self.pendingInvites;
   const selfDashboardVm = createSelfDashboardIA({
     locale,
@@ -514,11 +517,19 @@ export default async function ProfileResultsPage({
   // korábbi e-mail) ne fussanak zsákutcába.
   if (tabParam === "career") redirect("/career");
 
-  const initialTab: TabId =
-    tabParam === "comparison" ? "comparison" :
-    tabParam === "invites" ? "comparison" :
-    tabParam === "workstyle" ? "results" :
-    "results";
+  const initialTab: ProfileViewId =
+    tabParam === "comparison" || tabParam === "invites"
+      ? "comparison"
+      : tabParam === "details" || tabParam === "results" || tabParam === "workstyle"
+        ? "details"
+        : "summary";
+  const chapterParam = resolvedParams?.chapter;
+  const initialDetailChapter: ReportChapterId =
+    tabParam === "workstyle"
+      ? "workstyle"
+      : chapterParam === "dimensions" || chapterParam === "workstyle"
+        ? chapterParam
+        : "overview";
 
   // Az /assessment kész eredménnyel ide irányít (?retake=true) — a néma
   // redirect helyett explicit sáv magyarázza, mi történt, és innen
@@ -634,6 +645,7 @@ export default async function ProfileResultsPage({
           assessmentDate={latestResult.createdAt.toISOString()}
           accessLevel={accessLevel}
           initialTab={initialTab}
+          initialDetailChapter={initialDetailChapter}
           dimensions={dimensions}
           growthFocusItems={growthFocusItems}
           hasObserverData={hasObserverData}
@@ -646,6 +658,7 @@ export default async function ProfileResultsPage({
           sentInvitations={sentInvitations}
           receivedInvitations={receivedInvitations}
           feedbackSubmitted={feedbackSubmitted}
+          clarityFeedbackSubmitted={clarityFeedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
           plusContent={plusContent}

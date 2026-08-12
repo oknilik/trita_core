@@ -58,6 +58,8 @@ interface DimensionAccordionProps {
   showUpsell?: boolean;
   /** Alapból nyitott elem indexe (pl. a legerősebb dimenzió) */
   defaultOpenIdx?: number | null;
+  /** Akkor fut le, amikor a felhasználó egy zárt dimenziót megnyit. */
+  onDimensionOpen?: (code: string) => void;
 }
 
 function AccordionItem({
@@ -97,6 +99,8 @@ function AccordionItem({
       <button
         type="button"
         onClick={onToggle}
+        aria-expanded={isOpen}
+        aria-controls={`dimension-panel-${code}`}
         className="flex w-full items-center gap-3 bg-surface-card px-[18px] py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
       >
         <div
@@ -118,7 +122,7 @@ function AccordionItem({
           className="w-10 shrink-0 text-right font-fraunces text-base tabular-nums"
           style={{ color: colors.strong }}
         >
-          {value}%
+          {tf("results.scoreOutOfHundred", locale, { value })}
         </span>
         <span
           className={`shrink-0 text-[11px] text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
@@ -131,6 +135,7 @@ function AccordionItem({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={`dimension-panel-${code}`}
             initial={{ height: 0 }}
             animate={{ height: "auto" }}
             exit={{ height: 0 }}
@@ -244,6 +249,7 @@ export function DimensionAccordion({
   dimensions,
   showUpsell = false,
   defaultOpenIdx = 0,
+  onDimensionOpen,
 }: DimensionAccordionProps) {
   // Alapból egy elem nyitva (default: az első) — a tartalom ne legyen
   // teljesen rejtve az első ránézésre.
@@ -272,7 +278,10 @@ export function DimensionAccordion({
           insight={dim.insight}
           facets={dim.facets ?? []}
           isOpen={openIdx === i}
-          onToggle={() => setOpenIdx(openIdx === i ? null : i)}
+          onToggle={() => {
+            if (openIdx !== i) onDimensionOpen?.(dim.code);
+            setOpenIdx(openIdx === i ? null : i);
+          }}
           showUpsell={showUpsell}
           locale={locale}
         />

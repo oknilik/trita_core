@@ -28,9 +28,11 @@ export async function GET(
   // Verify membership
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  if (!membership || membership.leftAt) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
 
   const [org, members, pendingInvites, teams] = await Promise.all([
     prisma.organization.findUnique({
@@ -38,7 +40,7 @@ export async function GET(
       select: { id: true, name: true, status: true, ownerId: true, createdAt: true },
     }),
     prisma.organizationMember.findMany({
-      where: { orgId },
+      where: { orgId, leftAt: null },
       orderBy: { joinedAt: "asc" },
       select: {
         id: true,
@@ -87,9 +89,9 @@ export async function PATCH(
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership || !hasOrgRole(membership.role, "ORG_ADMIN")) {
+  if (!membership || membership.leftAt || !hasOrgRole(membership.role, "ORG_ADMIN")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 

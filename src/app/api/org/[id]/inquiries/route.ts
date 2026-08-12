@@ -24,9 +24,9 @@ async function requireConsultant(orgId: string) {
   if (!profile) return null;
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) return null;
+  if (!membership || membership.leftAt) return null;
   if (!isConsultantSurface(membership.role, profile.email, profile.isConsultant)) {
     return null;
   }

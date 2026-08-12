@@ -43,7 +43,7 @@ describe("DimensionAccordion", () => {
       <DimensionAccordion dimensions={[DIM_WITH_FACETS]} defaultOpenIdx={0} />,
     );
 
-    expect(screen.getByText("82%")).toBeInTheDocument();
+    expect(screen.getByText("82 / 100")).toBeInTheDocument();
     expect(document.body.textContent).not.toContain("±");
     expect(document.body.textContent).not.toContain("mérési hib");
   });

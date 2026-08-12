@@ -53,8 +53,23 @@ test("confidence resolver maps quality to expected confidence", () => {
   assert.equal(resolveTeamIntelligenceConfidence("sufficient"), "high");
 });
 
-test("legacy roles tab redirects to intelligence", () => {
-  assert.equal(resolveTeamTabRedirect("roles"), "intelligence");
+test("legacy team tabs redirect to their consolidated sections", () => {
+  assert.deepEqual(resolveTeamTabRedirect("roles"), {
+    tab: "intelligence",
+    anchor: "#team-roles",
+  });
+  assert.deepEqual(resolveTeamTabRedirect("teamRole"), {
+    tab: "intelligence",
+    anchor: "#team-roles",
+  });
+  assert.deepEqual(resolveTeamTabRedirect("profile"), {
+    tab: "intelligence",
+    anchor: "#team-profile",
+  });
+  assert.deepEqual(resolveTeamTabRedirect("feedback"), {
+    tab: "members",
+    anchor: "#feedback",
+  });
   assert.equal(resolveTeamTabRedirect("intelligence"), null);
   assert.equal(resolveTeamTabRedirect(undefined), null);
 });

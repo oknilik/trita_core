@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
 import { t, tf } from "@/lib/i18n";
 import { dimColorsCss } from "@/lib/color-system";
 import type { Locale } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { ProfileHero } from "@/components/results/ProfileHero";
+import { ProfileSummary } from "@/components/results/ProfileSummary";
+import {
+  LinearReport,
+  type LinearReportSectionId,
+} from "@/components/results/LinearReport";
 import { ShareModal } from "@/components/results/ShareModal";
-import { ProgressBar } from "@/components/results/ProgressBar";
 import { UpgradeButton } from "./UpgradeButton";
 import { FeedbackForm } from "@/components/dashboard/FeedbackForm";
-import {
-  ObserverFlowStatusCard,
-  ObserverFlowStrip,
-} from "@/components/results/ObserverFlowStatusCard";
+import { ObserverFlowStatusCard } from "@/components/results/ObserverFlowStatusCard";
 import { HEXACO_ORDER, hexLetter } from "@/lib/hexaco";
 import { DimensionAccordion } from "@/components/results/DimensionAccordion";
 import { TeamRoles } from "@/components/results/TeamRoles";
@@ -34,11 +33,8 @@ import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
-import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
-import { TypeGlyphPlate } from "@/components/type/TypeGlyphPlate";
 import { SectionCta } from "@/components/results/SectionCta";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
-import { Card } from "@/components/ui/primitives/Card";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
@@ -51,7 +47,8 @@ import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
 
 type ProfileLevel = "start" | "plus";
-type TabId = "results" | "workstyle" | "comparison" | "invites";
+export type ProfileViewId = "summary" | "details" | "comparison";
+export type ReportChapterId = LinearReportSectionId;
 
 // ─── Serialized prop types ──────────────────────────────────────────────────
 
@@ -124,7 +121,8 @@ export interface ProfileTabsProps {
   name: string;
   assessmentDate: string;
   accessLevel: ProfileLevel;
-  initialTab: TabId;
+  initialTab: ProfileViewId;
+  initialDetailChapter?: ReportChapterId;
   dimensions: SerializedDimension[];
   growthFocusItems: SerializedGrowthItem[];
   hasObserverData: boolean;
@@ -161,6 +159,7 @@ export interface ProfileTabsProps {
   sentInvitations: SerializedSentInvitation[];
   receivedInvitations: SerializedReceivedInvitation[];
   feedbackSubmitted: boolean;
+  clarityFeedbackSubmitted: boolean;
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
   heroInsight?: string;
@@ -270,6 +269,7 @@ interface ResultsTabProps {
   observerFlow?: ProfileTabsProps["observerFlow"];
   /** Observer-CTA: átvált a meghívások tabra */
   onOpenInvites: () => void;
+  chapter: "overview" | "dimensions";
 }
 
 // „Ki vagyok?" — radar, dimenziók, altruizmus, kulcs-tanulságok.
@@ -281,6 +281,7 @@ function ResultsTab({
   plusContent,
   observerFlow = null,
   onOpenInvites,
+  chapter,
 }: ResultsTabProps) {
   const mainDims = dimensions.filter((d) => d.code !== "I");
 
@@ -298,14 +299,9 @@ function ResultsTab({
       facets: d.facets,
     }));
 
-  return (
-    <div className="flex flex-col gap-10 md:gap-14">
-      {/* 1. Áttekintés: radar + dimenzió-strip */}
+  if (chapter === "overview") {
+    return (
       <section>
-        <DashboardSectionHeader
-          label={t("results.sectionOverview", locale)}
-          className="mb-4"
-        />
         <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-2">
           <div className="mx-auto w-full max-w-[320px]">
             <RadarChart
@@ -377,17 +373,18 @@ function ResultsTab({
           </div>
         </div>
       </section>
+    );
+  }
 
+  return (
+    <div className="flex flex-col gap-10 md:gap-14">
       {/* 2. Dimenziók részletesen — a legerősebb alapból nyitva */}
       <section>
-        <DashboardSectionHeader
-          label={t("results.sectionDimensions", locale)}
-          className="mb-4"
-        />
         <DimensionAccordion
           dimensions={accordionDims}
           showUpsell={!isPlus}
           defaultOpenIdx={0}
+          onDimensionOpen={() => track("results.section_open", { section: "dimension" })}
         />
       </section>
 
@@ -550,6 +547,7 @@ export function ProfileTabs({
   assessmentDate,
   accessLevel,
   initialTab,
+  initialDetailChapter = "overview",
   dimensions,
   growthFocusItems,
   hasObserverData,
@@ -562,6 +560,7 @@ export function ProfileTabs({
   sentInvitations,
   receivedInvitations,
   feedbackSubmitted,
+  clarityFeedbackSubmitted,
   personalityType,
   heroInsight,
   plusContent,
@@ -575,30 +574,8 @@ export function ProfileTabs({
 }: ProfileTabsProps) {
   const { locale: rawLocale } = useLocale();
   const locale = rawLocale as Locale;
-  const router = useRouter();
-  const tabBarRef = useRef<HTMLDivElement>(null);
-  const tabScrollRef = useRef<HTMLDivElement>(null);
-  // Görgethetőség-jelzés: él-fade csak akkor, ha arra még van tartalom.
-  const [tabFade, setTabFade] = useState({ left: false, right: false });
 
-  const updateTabFade = useCallback(() => {
-    const el = tabScrollRef.current;
-    if (!el) return;
-    const maxScroll = el.scrollWidth - el.clientWidth;
-    setTabFade({
-      left: el.scrollLeft > 4,
-      right: el.scrollLeft < maxScroll - 4,
-    });
-  }, []);
-
-  useEffect(() => {
-    updateTabFade();
-    window.addEventListener("resize", updateTabFade);
-    return () => window.removeEventListener("resize", updateTabFade);
-  }, [updateTabFade]);
-
-  const [activeTab, setActiveTab] = useState<TabId>(initialTab);
-
+  const [activeTab, setActiveTab] = useState<ProfileViewId>(initialTab);
   // Hash-horgonyok (#observer-flow stb.): az App Router streaming miatt nem
   // görget hash-re magától, ezért mount után ismételt ráigazítással visszük
   // a cél-elemhez (a második kör a hydration utáni layout-shiftet követi le).
@@ -624,104 +601,26 @@ export function ProfileTabs({
     return () => window.clearTimeout(timer);
   }, []);
 
-  // Az aktív tab a fül-sávon BELÜL középre kerül — csak vízszintesen.
-  // Korábban scrollIntoView volt: az a LAPOT is görgette, hogy a fül-sáv
-  // látszódjon, ezért mobilon minden betöltés/frissítés után az oldal
-  // magától lecsúszott a fül-sáv fölötti blokkra. A scrollLeft-állítás
-  // csak a vízszintes konténert mozgatja, a lap-görgetést nem érinti.
-  useEffect(() => {
-    const container = tabScrollRef.current;
-    const el = container?.querySelector<HTMLButtonElement>(
-      `button[data-tab-id="${activeTab}"]`,
-    );
-    if (!container || !el) return;
-    const target = el.offsetLeft - (container.clientWidth - el.offsetWidth) / 2;
-    const left = Math.max(0, Math.min(target, container.scrollWidth - container.clientWidth));
-    if (Math.abs(container.scrollLeft - left) < 2) return;
-    container.scrollTo({ left, behavior: "smooth" });
-  }, [activeTab]);
-
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
-  const stageKeyMap: Record<string, string> = {
-    SELF_COMPLETED: "content.stageSelfCompleted",
-    OBSERVER_PENDING: "content.stageObserverPending",
-    TEAM_NOT_JOINED: "content.stageTeamNotJoined",
-    TEAM_PENDING_MEMBERS: "content.stageTeamPendingMembers",
-    TEAM_PARTIAL: "content.stageTeamPartial",
-    TEAM_READY: "content.stageTeamReady",
-    ORG_PARTIAL: "content.stageOrgPartial",
-    ORG_READY: "content.stageOrgReady",
-    SELF_NOT_STARTED: "content.stageSelfNotStarted",
-    SELF_IN_PROGRESS: "content.stageSelfInProgress",
-  };
-  const bridgeStageLabel = bridgeNextStep
-    ? (stageKeyMap[bridgeNextStep.stage]
-        ? t(stageKeyMap[bridgeNextStep.stage], locale)
-        : t("content.bridgeFallbackStage", locale))
-    : null;
-  const shouldShowOrgExpansionPrompt = Boolean(experienceHints?.showOrgExpansionPrompt);
-  const shouldShowAssessmentContinuation = Boolean(experienceHints?.showAssessmentContinuation);
-
   const handleTabChange = useCallback(
-    (tab: TabId) => {
+    (tab: ProfileViewId) => {
       setActiveTab(tab);
       const url = new URL(window.location.href);
-      url.searchParams.set("tab", tab);
-      router.push(url.pathname + url.search, { scroll: false });
-      setTimeout(() => {
-        tabBarRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
+      if (tab === "summary") url.searchParams.delete("tab");
+      else url.searchParams.set("tab", tab);
+      if (tab !== "details") url.searchParams.delete("chapter");
+      window.history.replaceState({}, "", url.pathname + url.search + url.hash);
     },
-    [router],
+    [],
   );
-
-  const ALL_TABS: { id: TabId; label: string; locked: boolean; icon: React.ReactNode }[] = [
-    {
-      id: "results",
-      label: t("results.tabResults", locale),
-      locked: false,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="10" cy="10" r="8" />
-          <path d="M10 2 L10 10 L16 6" />
-          <circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none" />
-        </svg>
-      ),
-    },
-    {
-      id: "comparison",
-      label: t("results.tabComparison", locale),
-      locked: !isPlus,
-      icon: (
-        <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 10h14M3 5h7M3 15h7M13 5l4 5-4 5" />
-        </svg>
-      ),
-    },
-  ];
-  // A karrier-iránytű 2026-07-31 óta ÖNÁLLÓ oldal (`/career`) — a fülek közül
-  // kikerült. A `careerModuleHidden` itt már csak a PDF karrier-blokkjára
-  // vonatkozik (az oldal maga 404-et ad, ha az org kikapcsolta).
-  const TABS = ALL_TABS;
 
   return (
     <div className="flex flex-col gap-8 md:gap-12">
 
-      {/* Dark sage hero + a hozzá tapadó karakter-ábra fül — egy blokk,
-          hogy a fül a banner alsó szélére üljön (a külső gap ne tolja el).
-          A negatív alsó margó a fül alatti térközt szedi vissza: a fül a
-          bannerhez tartozik, nem önálló szekció. */}
-      {/* -mb-3: a jelzés ~11 px-t lóg a banner alá, ezt vesszük vissza, hogy
-          a hero ALSÓ SZÉLÉTŐL mért térköz ugyanannyi legyen, mint az oldal
-          többi blokkja között (gap-8 / md:gap-12). */}
-      <div className="-mb-3 flex flex-col">
-      {/* A hero a fül és a panel FELETT van (z-20), így a fül teteje alá
-          csúszik, a panel pedig alóla gördül ki. */}
-      <div className="relative z-20">
       <ProfileHero
         userName={name}
         completedAt={new Date(assessmentDate).toLocaleDateString(
@@ -734,19 +633,6 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
-        // (score-valence, surface="self"). 2026-08-11 óta a E itt sem
-        // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
-        // a chip-sort, így nem marad árva „Legerősebb:" felirat.
-        topDimensions={dimensions
-          .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
-          .map((d) => d.label)}
-        // Pólus-tudatos „Figyelendő" (FIX 2): a fordított Emocionalitás
-        // alacsony sávja stabilitás — nem kerül a watch-chipek közé
-        // (kanonikus kapu: score-valence.deficitSlotEligible).
-        watchDimensions={dimensions
-          .filter((d) => d.code !== "I" && deficitSlotEligible(d.code) && d.score < 40)
-          .map((d) => d.label)}
         onShare={() => {
           track("results.export", { format: "link" });
           setShareOpen(true);
@@ -1009,18 +895,6 @@ export function ProfileTabs({
         }}
         pdfLoading={pdfLoading}
       />
-      </div>
-
-      {/* Karakter-ábra magyarázat — a banner alsó szélére ülő kis fül;
-          nyitva a teljes kompozíció + a nyelvtan a hero alatt jelenik meg. */}
-      <TypeGlyphPlate
-        mode="heroTab"
-        dimensions={dimensions
-          .filter((d) => d.code !== "I")
-          .map((d) => ({ code: d.code, score: d.score }))}
-        locale={locale}
-      />
-      </div>
 
       <ShareModal
         isOpen={shareOpen}
@@ -1039,123 +913,127 @@ export function ProfileTabs({
         }}
       />
 
-      {/* Progress bar — org-tagnál a lépés-sáv helyett állapot-csík: a saját
-          út a kitöltéssel kész, az observer csapat-folyamat (nem hiány). */}
-      {observerFlow && observerFlow.state !== "self_serve" ? (
-        <ObserverFlowStrip
-          flow={{
-            state: observerFlow.state,
-            receivedCount: observerFlow.receivedCount,
-            minForReveal: observerFlow.minForReveal,
-            activeCampaignName: observerFlow.activeCampaignName,
-          }}
-          isHu={locale === "hu"}
-          onOpenInvites={() => handleTabChange("comparison")}
-          onOpenComparison={() => handleTabChange("comparison")}
-        />
-      ) : (
-        <ProgressBar
-          hasSelfPlus={isPlus}
-          observersSent={sentInvitations.length > 0}
-          observersCompleted={hasObserverData}
-          sentCount={sentInvitations.length}
-          receivedCount={observerCount}
-          onNavigateToComparison={() => handleTabChange("comparison")}
-          onNavigateToInvites={() => handleTabChange("comparison")}
-        />
-      )}
-
-      {/* Tab bar — pill style */}
-      <div
-        ref={tabBarRef}
-        className="relative scroll-mt-24 rounded-xl border-[1.5px] border-[var(--color-border-default)] bg-surface-card"
-      >
-        {/* Él-fade jelzők — csak ott, ahol még van elgörgetett tartalom */}
-        {tabFade.left && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 rounded-l-xl bg-gradient-to-r from-[var(--color-surface-card)] to-transparent" />
-        )}
-        {tabFade.right && (
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 rounded-r-xl bg-gradient-to-l from-[var(--color-surface-card)] to-transparent" />
-        )}
-        <div
-          ref={tabScrollRef}
-          onScroll={updateTabFade}
-          className="flex snap-x overflow-x-auto rounded-xl [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          role="tablist"
-          aria-label="Profile navigation"
-        >
-        {TABS.map((tab, i) => (
-          <button
-            key={tab.id}
-            data-tab-id={tab.id}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            onClick={() => handleTabChange(tab.id)}
-            className={[
-              // Mobilon természetes szélesség + vízszintes görgetés; md-től
-              // egyenlő oszlopok. A felirat sosem törik/csonkul.
-              "flex min-h-[48px] flex-none shrink-0 snap-start items-center justify-center gap-1.5 whitespace-nowrap px-4 py-3 text-center text-xs font-medium transition-all md:flex-1 md:px-3",
-              i < TABS.length - 1 && "border-r border-[var(--color-border-default)]",
-              activeTab === tab.id
-                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
-                : "bg-surface-card text-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]",
-            ].filter(Boolean).join(" ")}
-          >
-            {tab.locked ? (
-              <svg viewBox="0 0 12 14" className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                <rect x="1" y="6" width="10" height="7" rx="1.5" />
-                <path d="M3 6V4a3 3 0 0 1 6 0v2" />
-              </svg>
-            ) : tab.icon}
-            <span>{tab.label}</span>
-          </button>
-        ))}
-        </div>
-      </div>
-
       {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
           (a váltás-kezelő azt nem látná). */}
       <TabViewTracker surface="results" tab={activeTab} />
 
-      {/* Tab content */}
       <div
         key={activeTab}
         className="flex flex-col gap-10 md:gap-14"
         style={{ animation: "fadeIn 0.25s ease-out" }}
       >
-        {/* Fül-dieta (UX-audit #22): a Munkastílus az Eredmények folytatása —
-            egy fülön, szekcióként; a Meghívók a Külső kép fül része. */}
-        {activeTab === "results" && (
+        {activeTab === "summary" && (
+          <ProfileSummary
+            dimensions={dimensions}
+            plusContent={plusContent}
+            bridgeNextStep={bridgeNextStep}
+            observerFlow={observerFlow}
+            sentInvitations={sentInvitations}
+            observerCount={observerCount}
+            hasObserverData={hasObserverData}
+            experienceHints={experienceHints}
+            experienceHintDestination={experienceHintDestination}
+            clarityFeedbackSubmitted={clarityFeedbackSubmitted}
+            onOpenDetails={() => handleTabChange("details")}
+            onOpenComparison={() => handleTabChange("comparison")}
+            locale={locale}
+          />
+        )}
+
+        {/* A teljes riport három fejezetkártyában olvasható. A kártyafejlécek
+            mindig látszanak, a szakmai tartalomból legfeljebb egy van nyitva. */}
+        {activeTab === "details" && (
           <>
-            <ResultsTab
-              dimensions={dimensions}
-              onOpenInvites={() => handleTabChange("comparison")}
-              isPlus={isPlus}
-              hasObserverData={hasObserverData}
+            <LinearReport
+              initialSection={initialDetailChapter}
               locale={locale}
-              plusContent={plusContent}
-              observerFlow={observerFlow}
-            />
-            <WorkStyleTab
-              dimensions={dimensions}
-              growthFocusItems={growthFocusItems}
-              isPlus={isPlus}
-              locale={locale}
-              plusContent={plusContent}
-              teamRoleMeasuredScores={teamRoleMeasuredScores}
-              teamRolePeer={teamRolePeer}
+              onBack={() => handleTabChange("summary")}
+              onSectionOpen={(section) => {
+                const url = new URL(window.location.href);
+                url.searchParams.set("tab", "details");
+                url.searchParams.set("chapter", section);
+                window.history.replaceState({}, "", url.pathname + url.search + url.hash);
+                track("results.section_open", {
+                  section: section === "dimensions" ? "dimensions" : section,
+                });
+              }}
+              sections={[
+                {
+                  id: "overview",
+                  title: t("results.reportOverviewTitle", locale),
+                  question: t("results.reportOverviewQuestion", locale),
+                  description: t("results.reportOverviewBody", locale),
+                  content: (
+                    <ResultsTab
+                      chapter="overview"
+                      dimensions={dimensions}
+                      onOpenInvites={() => handleTabChange("comparison")}
+                      isPlus={isPlus}
+                      hasObserverData={hasObserverData}
+                      locale={locale}
+                      plusContent={plusContent}
+                      observerFlow={observerFlow}
+                    />
+                  ),
+                },
+                {
+                  id: "dimensions",
+                  title: t("results.reportDimensionsTitle", locale),
+                  question: t("results.reportDimensionsQuestion", locale),
+                  description: t("results.reportDimensionsBody", locale),
+                  content: (
+                    <ResultsTab
+                      chapter="dimensions"
+                      dimensions={dimensions}
+                      onOpenInvites={() => handleTabChange("comparison")}
+                      isPlus={isPlus}
+                      hasObserverData={hasObserverData}
+                      locale={locale}
+                      plusContent={plusContent}
+                      observerFlow={observerFlow}
+                    />
+                  ),
+                },
+                {
+                  id: "workstyle",
+                  title: t("results.reportWorkstyleTitle", locale),
+                  question: t("results.reportWorkstyleQuestion", locale),
+                  description: t("results.reportWorkstyleBody", locale),
+                  content: (
+                    <WorkStyleTab
+                      dimensions={dimensions}
+                      growthFocusItems={growthFocusItems}
+                      isPlus={isPlus}
+                      locale={locale}
+                      plusContent={plusContent}
+                      teamRoleMeasuredScores={teamRoleMeasuredScores}
+                      teamRolePeer={teamRolePeer}
+                    />
+                  ),
+                },
+              ]}
             />
             {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
                 idáig eljutott, annak ez a következő logikus lépés. */}
-            <div className="flex flex-col gap-3">
-              <SectionCta
-                eyebrow={t("results.ctaInteractionEyebrow", locale)}
-                title={t("results.ctaInteractionTitle", locale)}
-                body={t("results.ctaInteractionBody", locale)}
-                cta={t("results.ctaInteractionButton", locale)}
-                href="/interaction"
-                motif="pair"
-              />
+            <details
+              onToggle={(event) => {
+                if (event.currentTarget.open) track("results.section_open", { section: "extensions" });
+              }}
+              className="rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
+            >
+              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
+                <p className="font-fraunces text-xl text-ink">{t("results.detailsExtensionsTitle", locale)}</p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{t("results.detailsExtensionsBody", locale)}</p>
+              </summary>
+              <div className="flex flex-col gap-3 border-t border-[var(--color-border-soft)] p-4 md:p-5">
+                <SectionCta
+                  eyebrow={t("results.ctaInteractionEyebrow", locale)}
+                  title={t("results.ctaInteractionTitle", locale)}
+                  body={t("results.ctaInteractionBody", locale)}
+                  cta={t("results.ctaInteractionButton", locale)}
+                  href="/interaction"
+                  motif="pair"
+                />
               {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
                   működő iránytűre visz, amíg nincs kész, a kereslet-mérő
                   oldalra. A `from=results` a mérésben a belépési pontot
@@ -1181,19 +1059,40 @@ export function ProfileTabs({
                     motif="compass"
                   />
                 ))}
-            </div>
+              </div>
+            </details>
+            <FeedbackForm
+              initialSubmitted={feedbackSubmitted}
+              hasObserverFeedback={hasObserverData}
+            />
           </>
         )}
         {activeTab === "comparison" && (
-          // „Külső kép" (UX-audit #22): az összevetés ÉS a meghívó-kezelés egy
-          // folyamat két fele — egy fülön. Org-tagnál az összevetés a kampány-
-          // küszöbig zárva: állapot-kártya (nem hiány-nyelv). FONTOS
-          // (2026-07-29 fix): a külső adat kampányban IS a user meghívóiból
-          // érkezik — futó observer-körnél a meghívó-kezelő ITT jelenik meg,
-          // enélkül a tag senkit sem tudna felkérni.
-          observerFlow && observerFlow.state === "locked" ? (
-            // A #observer-flow horgonyra ugranak a „Meghívók kezelése" CTA-k
-            // (csapat-banner, tag-nézet) — scroll-mt a fejléc alá csúszás ellen.
+          <>
+            <header className="border-b border-[var(--color-border-soft)] pb-5">
+              <button
+                type="button"
+                onClick={() => handleTabChange("summary")}
+                className="inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-ink-body transition hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
+              >
+                <span aria-hidden="true">←</span>
+                {t("results.reportBackToSummary", locale)}
+              </button>
+              <p className="mt-5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                {t("results.summaryComparisonTitle", locale)}
+              </p>
+              <h2 className="mt-2 max-w-2xl font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
+                {hasObserverData
+                  ? t("results.summaryComparisonReadyBody", locale)
+                  : t("results.summaryComparisonStartBody", locale)}
+              </h2>
+            </header>
+
+            {/* A külső nézőpont az összevetés és a meghívó-kezelés közös
+                célfelülete. Org-tagnál az összevetés a kampányküszöbig zárva
+                marad, futó körben viszont a meghívó-kezelő elérhető. */}
+            {observerFlow && observerFlow.state === "locked" ? (
+            // A #observer-flow horgonyra ugranak a kapcsolódó CTA-k.
             <div id="observer-flow" className="scroll-mt-24">
               <ObserverFlowStatusCard
                 flow={{
@@ -1205,7 +1104,7 @@ export function ProfileTabs({
                 isHu={locale === "hu"}
               />
             </div>
-          ) : observerFlow && observerFlow.state === "in_progress" ? (
+            ) : observerFlow && observerFlow.state === "in_progress" ? (
             <>
               <div id="observer-flow" className="scroll-mt-24">
                 <ObserverFlowStatusCard
@@ -1230,7 +1129,7 @@ export function ProfileTabs({
                 />
               </div>
             </>
-          ) : isPlus ? (
+            ) : isPlus ? (
             <>
               <ComparisonTabNew
                 dimensions={dimensions}
@@ -1257,7 +1156,7 @@ export function ProfileTabs({
                 />
               </div>
             </>
-          ) : (
+            ) : (
             <TabPaywall
               tier="self_plus"
               tierLabel="Plus"
@@ -1265,65 +1164,11 @@ export function ProfileTabs({
               locale={locale}
               teaser={t("content.paywallComparisonTeaser", locale)}
             />
-          )
+            )}
+          </>
         )}
       </div>
 
-      {/* Journey bridge CTA — a következő lépés kártyája (UX-audit B3):
-          minden módban renderel. A journey-engine consulting-led alatt már
-          consulting-tudatos CTA-t ad (a self-serve CREATE_TEAM observer-
-          irányra átképezve), upgrade/checkout felületre nem mutat. */}
-      {bridgeNextStep ? (
-        <div className="space-y-3">
-          <JourneyNextStepCard
-            eyebrow={t("content.bridgeEyebrow", locale)}
-            title={bridgeStageLabel
-              ? `${t("content.bridgeJourney", locale)} · ${bridgeStageLabel}`
-              : t("content.bridgeJourney", locale)}
-            description={bridgeNextStep.explanation}
-            primary={bridgeNextStep.primary}
-            secondary={bridgeNextStep.secondary}
-          />
-
-          {shouldShowOrgExpansionPrompt ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "Van függő szervezeti meghívásod. Ha szeretnéd, most kiterjesztheted a személyes utadat csapat- és szervezeti nézetre."
-                  : "You have a pending organization invite. If you want, you can now extend your personal journey to team and org views."}{" "}
-                <Link
-                  href={experienceHintDestination ?? "/profile/results"}
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Meghívás megnyitása" : "Open invite"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-
-          {shouldShowAssessmentContinuation ? (
-            <Card spacing="sm" className="rounded-xl px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-ink-body">
-                {locale === "hu"
-                  ? "A self assessmented még folyamatban van. Folytasd ott, ahol abbahagytad."
-                  : "Your self assessment is still in progress. Continue where you left off."}{" "}
-                <Link
-                  href="/assessment"
-                  className="font-semibold text-[var(--color-accent-primary-strong)] no-underline transition-colors hover:text-bronze-dark"
-                >
-                  {locale === "hu" ? "Folytatás" : "Continue"} →
-                </Link>
-              </p>
-            </Card>
-          ) : null}
-        </div>
-      ) : null}
-
-      {/* Elégedettség-visszajelzés — egyszer, az oldal alján */}
-      <FeedbackForm
-        initialSubmitted={feedbackSubmitted}
-        hasObserverFeedback={hasObserverData}
-      />
     </div>
   );
 }

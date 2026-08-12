@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { applyConsultantInviteIfAny } from "@/lib/consultant-invites";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getServerAuth } from "@/lib/auth-server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 import { resolveJourney } from "@/lib/journey/engine";
 import { resolveStaffDestination } from "@/lib/journey/guardrails.server";
@@ -59,14 +60,14 @@ async function ensureProfile(clerkId: string, email?: string) {
 export default async function OnboardingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ intent?: string }>;
+  searchParams: Promise<{ intent?: string; source?: string }>;
 }) {
-  const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  const [{ userId }, user] = await Promise.all([getServerAuth(), currentUser()]);
+  if (!userId) redirect("/sign-in");
 
   const params = await searchParams;
   const queryIntent = params?.intent;
-  const metadataIntent = user.unsafeMetadata?.intent as string | undefined;
+  const metadataIntent = user?.unsafeMetadata?.intent as string | undefined;
   const explicitIntent = normalizeJourneyIntent(queryIntent ?? metadataIntent);
   // intent forrása: query param → Clerk unsafeMetadata → default "explore".
   // Consulting-led módban a "team" intent NEM nyitja a self-serve
@@ -76,16 +77,25 @@ export default async function OnboardingPage({
   const intent = isConsultingLed() && rawIntent === "team" ? "explore" : rawIntent;
 
   const profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
-    select: { id: true, onboardedAt: true, deleted: true },
+    where: { clerkId: userId },
+    select: {
+      id: true,
+      onboardedAt: true,
+      deleted: true,
+      assessmentResults: {
+        where: { isSelfAssessment: true },
+        select: { id: true },
+        take: 1,
+      },
+    },
   });
 
   // Race condition: deleted profile → detach and recreate
   if (profile?.deleted) {
     await prisma.userProfile.update({ where: { id: profile.id }, data: { clerkId: null } });
     const recreated = await ensureProfile(
-      user.id,
-      user.primaryEmailAddress?.emailAddress ?? undefined,
+      userId,
+      user?.primaryEmailAddress?.emailAddress ?? undefined,
     );
     if (explicitIntent) {
       await setJourneyIntentForProfile(recreated.id, explicitIntent);
@@ -96,8 +106,8 @@ export default async function OnboardingPage({
   // Profile nem létezik még (webhook race) → create
   if (!profile) {
     const created = await ensureProfile(
-      user.id,
-      user.primaryEmailAddress?.emailAddress ?? undefined,
+      userId,
+      user?.primaryEmailAddress?.emailAddress ?? undefined,
     );
     if (explicitIntent) {
       await setJourneyIntentForProfile(created.id, explicitIntent);
@@ -128,5 +138,12 @@ export default async function OnboardingPage({
     redirect(journey.destination);
   }
 
-  return intent === "team" ? <OrgOnboardingWizard /> : <OnboardingClient />;
+  const isClaimActivation =
+    params?.source === "claim" && profile.assessmentResults.length > 0;
+
+  return intent === "team" ? (
+    <OrgOnboardingWizard />
+  ) : (
+    <OnboardingClient variant={isClaimActivation ? "claim" : "full"} />
+  );
 }

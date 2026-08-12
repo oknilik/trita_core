@@ -56,6 +56,7 @@ interface SurfaceHeroProps {
   aside?: ReactNode;
   className?: string;
   contentClassName?: string;
+  titleClassName?: string;
   summaryClassName?: string;
 }
 
@@ -73,6 +74,7 @@ export function SurfaceHero({
   aside,
   className,
   contentClassName,
+  titleClassName,
   summaryClassName,
 }: SurfaceHeroProps) {
   const theme = SURFACE_HERO_THEME[variant];
@@ -117,7 +119,7 @@ export function SurfaceHero({
               </div>
             ) : null}
 
-            <div className="mt-2 md:mt-3">{title}</div>
+            <div className={cn("mt-2 md:mt-3", titleClassName)}>{title}</div>
             {meta ? <div className="mt-1">{meta}</div> : null}
             {body ? <div className="mt-3">{body}</div> : null}
             {summary ? (

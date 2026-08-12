@@ -27,6 +27,9 @@ const narrativeFields = {
         title: z.string().max(200),
         description: z.string().max(2000),
         timeframe: z.enum(["30", "60", "90"]),
+        owner: z.string().max(120).optional(),
+        dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
+        status: z.enum(["not_started", "in_progress", "blocked", "done"]).optional(),
       }),
     )
     .max(20)
@@ -54,6 +57,9 @@ const translationsEnSchema = z
             title: z.string().max(200),
             description: z.string().max(2000),
             timeframe: z.enum(["30", "60", "90"]),
+            owner: z.string().max(120).optional(),
+            dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
+            status: z.enum(["not_started", "in_progress", "blocked", "done"]).optional(),
           }),
         )
         .max(20)
@@ -88,9 +94,9 @@ async function requireConsultant(teamId: string) {
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership || !canViewRawTeamResults(membership.role)) {
+  if (!membership || membership.leftAt || !canViewRawTeamResults(membership.role)) {
     return { error: "FORBIDDEN" as const, status: 403 };
   }
 

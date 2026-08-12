@@ -1,31 +1,11 @@
 import type { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { getSelfAccessLevel } from "@/lib/access";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { getServerAuth } from "@/lib/auth-server";
 import { INDUSTRIES } from "@/lib/industry-fit";
-
-const currentYear = new Date().getFullYear();
-
-const onboardingSchema = z.object({
-  username: z.string().min(2).max(20),
-  birthYear: z.number().int().min(currentYear - 100).max(currentYear - 16),
-  gender: z.enum(["male", "female", "other", "prefer_not_to_say"]),
-  country: z.string().min(1).max(100).optional(),
-  consentedAt: z.string().datetime().optional(),
-  // Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez, a
-  // careerBackground JSON-ba merge-ölve (kulcsok = career-background route)
-  eduLevel: z.enum(["primary", "secondary", "vocational", "higher"]).optional(),
-  eduField: z
-    .enum([
-      "tech_engineering", "economics", "health", "humanities",
-      "natural_science", "legal", "arts", "pedagogy", "trade", "none",
-    ])
-    .optional(),
-  currentIndustry: z.string().max(50).optional(),
-});
+import { onboardingSchema } from "@/lib/onboarding-payload";
 
 export async function GET() {
   const { userId } = await getServerAuth();
@@ -112,8 +92,8 @@ export async function POST(req: Request) {
     where: { clerkId: userId },
     data: {
       username: parsed.data.username,
-      birthYear: parsed.data.birthYear,
-      gender: parsed.data.gender,
+      ...(parsed.data.birthYear !== undefined && { birthYear: parsed.data.birthYear }),
+      ...(parsed.data.gender !== undefined && { gender: parsed.data.gender }),
       ...(parsed.data.country && { country: parsed.data.country }),
       ...(parsed.data.consentedAt && {
         consentedAt: new Date(parsed.data.consentedAt),

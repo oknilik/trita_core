@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { getDimensionTier } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
 
@@ -28,22 +28,19 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
   const colors = dimColorsCss("I");
 
   return (
-    <div className="mt-6">
-      {/* Info banner */}
-      <div className="mb-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
-        <span className="mt-0.5 shrink-0 text-sm text-[var(--color-text-muted)]">ℹ</span>
+    <section className="mt-6 overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card">
+      <div className="flex items-start gap-2.5 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-[18px] py-3.5">
+        <span aria-hidden="true" className="mt-0.5 shrink-0 text-sm text-[var(--color-text-muted)]">ℹ</span>
         <div>
           <p className="text-xs font-semibold text-[var(--color-text-primary)]">
-            {t("content.altruismName", locale)} ({t("content.altruismTitle", locale)})
+            {t("content.altruismName", locale)} · {t("content.altruismTitle", locale)}
           </p>
           <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
             {t("content.altruismInfo", locale)}
           </p>
         </div>
       </div>
-
-      {/* Altruism card */}
-      <div className="overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-4 px-[18px]">
+      <div className="p-4 px-[18px]">
         <div className="flex items-center gap-3">
           <div
             className="h-2 w-2 shrink-0 rounded-full"
@@ -69,11 +66,11 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             className="w-10 shrink-0 text-right font-fraunces text-base tabular-nums"
             style={{ color: colors.strong }}
           >
-            {value}%
+            {tf("results.scoreOutOfHundred", locale, { value })}
           </span>
         </div>
         <p className="mt-2.5 max-w-prose text-body text-[var(--color-text-secondary)]">{description}</p>
       </div>
-    </div>
+    </section>
   );
 }

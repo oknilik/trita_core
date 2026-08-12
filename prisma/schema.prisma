@@ -260,7 +260,7 @@ model ObserverAssessment {
 // (ResearchSurvey, SatisfactionFeedback, DimensionFeedback, RoleFitFeedback,
 // FeatureInterest) helyett. kind + targetKey azonosítja a típust és célt,
 // rating a számszerű értékelés, payload a típus-specifikus többlet.
-// kind értékek: "satisfaction" | "dimension" | "role_fit" | "feature_interest"
+// kind értékek: "satisfaction" | "result_clarity" | "dimension" | "role_fit" | "feature_interest"
 // targetKey: dimension → "<assessmentResultId>:<dimCode>" ·
 //            role_fit → "<industryKey>:<roleKey>" · feature_interest → featureKey
 model Feedback {

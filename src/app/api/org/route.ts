@@ -138,7 +138,9 @@ export async function GET() {
           name: true,
           status: true,
           createdAt: true,
-          _count: { select: { members: true, teams: true } },
+          _count: {
+            select: { members: { where: { leftAt: null } }, teams: true },
+          },
         },
       },
     },

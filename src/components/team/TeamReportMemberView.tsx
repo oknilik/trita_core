@@ -94,8 +94,8 @@ export function TeamReportMemberView({
                 </h2>
                 <p className="mt-1 text-xs text-muted">
                   {isHu
-                    ? "A saját eredményed a csapat validált, összesített képéhez mérve. Másokról egyéni adatot nem mutatunk."
-                    : "Your own result measured against the team's validated, aggregated picture. We don't show individual data about others."}
+                    ? "A saját eredményed a csapat tanácsadó által jóváhagyott, összesített képéhez mérve. Másokról egyéni adatot nem mutatunk."
+                    : "Your own result measured against the team's consultant-approved aggregate picture. We don't show individual data about others."}
                 </p>
               </div>
             </div>
@@ -391,7 +391,7 @@ export function TeamReportMemberView({
             {isHu ? "min. 3 kitöltés" : "min. 3 responses"}
           </span>
           <span>
-            {isHu ? "Ez a csapat validált, összesített képe. A részletes egyéni eredményed: " : "This is the team's validated, aggregated picture. Your detailed individual result: "}
+            {isHu ? "Ez a csapat tanácsadó által jóváhagyott, összesített képe. A részletes egyéni eredményed: " : "This is the team's consultant-approved aggregate picture. Your detailed individual result: "}
             <Link href="/profile/results" className="font-semibold text-sage-dark hover:underline">
               {isHu ? "Profil › Eredmények →" : "Profile › Results →"}
             </Link>

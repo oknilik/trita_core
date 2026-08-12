@@ -48,7 +48,7 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
   const [membership, campaign] = await Promise.all([
     prisma.organizationMember.findUnique({
       where: { orgId_userId: { orgId, userId: profile.id } },
-      select: { role: true },
+      select: { role: true, leftAt: true },
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
@@ -56,7 +56,7 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
   ]);
 
-  if (!membership || !campaign) return null;
+  if (!membership || membership.leftAt || !campaign) return null;
   return {
     profileId: profile.id,
     email: profile.email,
@@ -390,7 +390,7 @@ export async function POST(
 
   // Verify all userIds are org members
   const memberships = await prisma.organizationMember.findMany({
-    where: { orgId, userId: { in: body.data.userIds } },
+    where: { orgId, userId: { in: body.data.userIds }, leftAt: null },
     select: { userId: true },
   });
   const validIds = new Set(memberships.map((m) => m.userId));

@@ -40,9 +40,9 @@ export async function POST(req: Request) {
   // Verify requester is a manager in this org
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership || !hasOrgRole(membership.role, "ORG_MANAGER")) {
+  if (!membership || membership.leftAt || !hasOrgRole(membership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
 

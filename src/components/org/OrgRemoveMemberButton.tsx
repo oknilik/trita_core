@@ -67,6 +67,11 @@ export function OrgRemoveMemberButton({ orgId, userId, isHu }: OrgRemoveMemberBu
             {isHu ? "Mégse" : "Cancel"}
           </button>
         </div>
+        <p className="max-w-xs text-xs leading-relaxed text-muted md:text-right">
+          {isHu
+            ? "A személyes profilja és saját eredményei megmaradnak; csak a szervezeti és csapathozzáférése szűnik meg."
+            : "Their personal profile and self results will remain; only organization and team access will be removed."}
+        </p>
         {error && <p className="text-xs text-state-error-fg">{error}</p>}
       </div>
     );

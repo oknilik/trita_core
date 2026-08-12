@@ -44,9 +44,11 @@ export async function GET(
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  if (!membership || membership.leftAt) {
+    return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
+  }
 
   const campaigns = await prisma.campaign.findMany({
     where: { orgId },
@@ -84,9 +86,9 @@ export async function POST(
 
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
   // Mérést csak tanácsadó indít (ORG_CONSULTANT vagy platform-admin).

@@ -13,7 +13,11 @@ export async function OrgsTab() {
       billingProfile: true,
       hideCareerModule: true,
       createdAt: true,
-      _count: { select: { members: { where: { role: { not: "ORG_CONSULTANT" } } } } },
+      _count: {
+        select: {
+          members: { where: { role: { not: "ORG_CONSULTANT" }, leftAt: null } },
+        },
+      },
       subscription: {
         select: {
           status: true,
@@ -24,7 +28,7 @@ export async function OrgsTab() {
         },
       },
       members: {
-        where: { role: "ORG_CONSULTANT" },
+        where: { role: "ORG_CONSULTANT", leftAt: null },
         select: {
           userId: true,
           user: { select: { email: true, username: true } },

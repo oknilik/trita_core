@@ -68,21 +68,12 @@ describe("InteractionSection", () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("alapból egy tartalmas (nem sparse) archetípuson áll", () => {
-    const sims = marked();
-    render(<InteractionSection simulations={sims} />);
+  it("rétegzetten indul: előbb csak az első választás látszik", () => {
+    render(<InteractionSection simulations={marked()} />);
 
-    const initial = sims.find((sim) => !sim.sparse)!;
-    expect(screen.getByText(initial.label)).toBeInTheDocument();
-    // A három blokk közül a discuss atomonként kötelező — ez a funkció magja.
-    expect(screen.getByText(hu("results.interactionDiscuss"))).toBeInTheDocument();
-    expect(
-      screen.getByText(initial.discuss[0].text),
-    ).toBeInTheDocument();
-    // A sparse üzenet ilyenkor NEM jelenhet meg.
-    expect(
-      screen.queryByText(hu("results.interactionSparse")),
-    ).not.toBeInTheDocument();
+    expect(dominantGroup()).toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: hu("results.interactionPickSecondary") })).not.toBeInTheDocument();
+    expect(screen.queryByText(hu("results.interactionDiscuss"))).not.toBeInTheDocument();
   });
 
   it("a hitelességi jegyzet mindig látszik", () => {
@@ -108,6 +99,7 @@ describe("InteractionSection", () => {
     const user = userEvent.setup();
     render(<InteractionSection simulations={marked()} />);
 
+    await user.click(dominantTile("C"));
     await user.click(secondaryTile("A"));
     expect(secondaryTile("A").checked).toBe(true);
 
@@ -122,12 +114,8 @@ describe("InteractionSection", () => {
       "A",
     );
 
-    const checked = secondaryRadios.find((radio) => (radio as HTMLInputElement).checked)!;
-    expect(
-      marked().some(
-        (sim) => sim.key === `A-${(checked as HTMLInputElement).value}`,
-      ),
-    ).toBe(true);
+    expect(secondaryRadios.some((radio) => (radio as HTMLInputElement).checked)).toBe(false);
+    expect(screen.queryByText(hu("results.interactionDiscuss"))).not.toBeInTheDocument();
   });
 
   it("a viszony-kapcsoló mutatja és elrejti a vezetői blokkot", async () => {
@@ -137,6 +125,8 @@ describe("InteractionSection", () => {
 
     const initial = sims.find((sim) => !sim.sparse)!;
     expect(initial.leaderNotes.length).toBeGreaterThan(0);
+    await user.click(dominantTile(initial.dominant));
+    await user.click(secondaryTile(initial.secondary));
 
     const peer = screen.getByRole("button", {
       name: hu("results.interactionRelationPeer"),
@@ -169,7 +159,8 @@ describe("InteractionSection", () => {
   // S3-hedge (motor-audit v4, FIX 5): főnév-only saját címkénél (a top-pár
   // sorrendje a mérési hibán belül) a „Melléknév + Főnév" összeállítás-sor
   // nem állíthatja a második dimenziót — a sor elmarad.
-  it("főnév-only saját címkénél nincs melléknév-összeállítás a saját oldalon", () => {
+  it("főnév-only saját címkénél nincs melléknév-összeállítás a saját oldalon", async () => {
+    const user = userEvent.setup();
     const nounOnly = personalityNoun("O", "hu")!; // „Újító"
     render(
       <InteractionSection
@@ -178,17 +169,21 @@ describe("InteractionSection", () => {
         selfGlyph={{ primaryCode: "O", secondaryCode: "X", intensity: 4 }}
       />,
     );
+    await user.click(dominantTile("O"));
+    await user.click(secondaryTile("X"));
 
     const composition = [
       personalityAdjective("X", "hu"),
       personalityNoun("O", "hu"),
     ].join(" + "); // „Energikus + Újító"
-    expect(screen.queryByText(composition)).not.toBeInTheDocument();
+    const ownSide = screen.getByText(hu("results.interactionPairYou")).parentElement!.parentElement!;
+    expect(within(ownSide).queryByText(composition)).not.toBeInTheDocument();
     // A címke maga (főnév) természetesen látszik a saját oldalon.
     expect(screen.getAllByText(nounOnly).length).toBeGreaterThan(0);
   });
 
-  it("teljes (melléknév+főnév) címkénél az összeállítás-sor változatlan", () => {
+  it("teljes (melléknév+főnév) címkénél az összeállítás-sor változatlan", async () => {
+    const user = userEvent.setup();
     render(
       <InteractionSection
         simulations={marked()}
@@ -196,12 +191,15 @@ describe("InteractionSection", () => {
         selfGlyph={{ primaryCode: "O", secondaryCode: "X", intensity: 4 }}
       />,
     );
+    await user.click(dominantTile("O"));
+    await user.click(secondaryTile("X"));
 
     const composition = [
       personalityAdjective("X", "hu"),
       personalityNoun("O", "hu"),
     ].join(" + ");
-    expect(screen.getByText(composition)).toBeInTheDocument();
+    const ownSide = screen.getByText(hu("results.interactionPairYou")).parentElement!.parentElement!;
+    expect(within(ownSide).getByText(composition)).toBeInTheDocument();
   });
 
   it("azonos archetípusnál külön figyelmeztetés jön a közös vakfoltokról", async () => {
@@ -303,17 +301,25 @@ describe("InteractionSection", () => {
     expect(screen.getByText("Energikus újító")).toBeInTheDocument();
   });
 
-  it("saját címke nélkül csak a választott típus oldala jelenik meg", () => {
+  it("saját címke nélkül csak a választott típus oldala jelenik meg", async () => {
+    const user = userEvent.setup();
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
     const initial = sims.find((sim) => !sim.sparse)!;
+    await user.click(dominantTile(initial.dominant));
+    await user.click(secondaryTile(initial.secondary));
 
     expect(screen.getByText(initial.label)).toBeInTheDocument();
     expect(screen.queryByText(hu("results.interactionPairYou"))).toBeNull();
   });
 
-  it("lapos profilnál a sparse üzenet jön, nem üres blokkok", () => {
-    render(<InteractionSection simulations={flat()} />);
+  it("lapos profilnál a sparse üzenet jön, nem üres blokkok", async () => {
+    const user = userEvent.setup();
+    const sims = flat();
+    render(<InteractionSection simulations={sims} />);
+    const initial = sims[0];
+    await user.click(dominantTile(initial.dominant));
+    await user.click(secondaryTile(initial.secondary));
 
     expect(
       screen.getByText(hu("results.interactionSparse")),

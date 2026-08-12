@@ -13,6 +13,7 @@ import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
+import { useSiteMode } from "@/components/landing/site-mode";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -130,6 +131,7 @@ export function NavBar({
   // adja — így a marketing-fa nem szállít clerk-js bundle-t.
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
+  const siteMode = useSiteMode();
   const [drawerOpen, setDrawerOpen] = useState(false);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
   // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
@@ -143,8 +145,16 @@ export function NavBar({
   // Hide on assessment/try pages (they have their own minimal nav)
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
+  const isTeamLanding = currentPath === "/" && siteMode === "team";
+  const publicCtaHref = isTeamLanding ? "/contact" : "/try";
+  const publicCtaLabel = isTeamLanding
+    ? t("nav.ctaTeam", locale)
+    : hasDraft
+      ? t("landing.selfCtaContinueShort", locale)
+      : t("nav.ctaSelf", locale);
+
   const publicLinks = [
-    { id: "home", href: "/", label: t("nav.home", locale) },
+    { id: "home", href: "/", label: t("nav.publicHome", locale) },
     { id: "blog", href: "/blog", label: t("nav.blog", locale) },
     { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
@@ -248,10 +258,10 @@ export function NavBar({
                     bronze-dark 4.89:1, és a bronz-család része (ugyanez a
                     CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
-                  href="/try"
+                  href={publicCtaHref}
                   className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
                 >
-                  {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                  {publicCtaLabel}
                 </Link>
               </>
             )}
@@ -345,11 +355,11 @@ export function NavBar({
                 {t("nav.signIn", locale)}
               </Link>
               <Link
-                href="/try"
+                href={publicCtaHref}
                 onClick={() => setDrawerOpen(false)}
                 className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
               >
-                {hasDraft ? t("landing.selfCtaContinueShort", locale) : t("nav.ctaSelf", locale)}
+                {publicCtaLabel}
               </Link>
             </div>
           ) : null}

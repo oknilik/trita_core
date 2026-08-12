@@ -35,9 +35,9 @@ export async function POST(
   // ORG_MANAGER and above may invite
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
   const policySnapshot = await resolveOrgPolicySnapshot({
@@ -110,12 +110,14 @@ export async function POST(
   const targetExistingMembership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId, userId: targetUser.id } },
   });
-  if (targetExistingMembership) {
+  if (targetExistingMembership && !targetExistingMembership.leftAt) {
     return NextResponse.json({ error: "ALREADY_MEMBER" }, { status: 409 });
   }
 
-  const member = await prisma.organizationMember.create({
-    data: { orgId, userId: targetUser.id, role },
+  const member = await prisma.organizationMember.upsert({
+    where: { orgId_userId: { orgId, userId: targetUser.id } },
+    create: { orgId, userId: targetUser.id, role },
+    update: { role, leftAt: null, joinedAt: new Date() },
     select: { id: true, role: true, joinedAt: true },
   });
 

@@ -62,7 +62,10 @@ export default function TryClaimPage() {
           throw new Error(body?.error ?? "Claim failed");
         }
         clearAssessmentDraftFromStorage("TRITAN");
-        router.replace("/onboarding");
+        // A vendég már végigment a mérésen: az eredmény elé csak a minimális
+        // aktiválás (megszólítás + hozzájárulás) kerül. Az onboarding oldal
+        // szerveren ellenőrzi, hogy valóban létezik-e claimelt self eredmény.
+        router.replace("/onboarding?source=claim");
       })
       .catch((err) => {
         log.warn({ event: "try.claim_failed", err }, "Claim failed");

@@ -180,6 +180,11 @@ export interface TeamReportActionItem {
   description: string;
   /** Időtáv napokban: 30 / 60 / 90 */
   timeframe: "30" | "60" | "90";
+  /** A végrehajtás felelőse — szabad szöveg, mert lehet szerep vagy név. */
+  owner?: string;
+  /** ISO naptári nap (YYYY-MM-DD); időzóna-független követéshez. */
+  dueDate?: string;
+  status?: "not_started" | "in_progress" | "blocked" | "done";
 }
 
 export interface SerializedTeamReport {
@@ -789,14 +794,33 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
 export function parseActionItems(value: unknown): TeamReportActionItem[] | null {
   if (!Array.isArray(value)) return null;
-  const items = value.filter(
-    (item): item is TeamReportActionItem =>
-      typeof item === "object" &&
-      item !== null &&
-      typeof (item as TeamReportActionItem).title === "string" &&
-      typeof (item as TeamReportActionItem).description === "string" &&
-      ["30", "60", "90"].includes(String((item as TeamReportActionItem).timeframe)),
-  );
+  const statuses = ["not_started", "in_progress", "blocked", "done"] as const;
+  const items = value.flatMap((raw): TeamReportActionItem[] => {
+    if (!raw || typeof raw !== "object" || Array.isArray(raw)) return [];
+    const item = raw as Record<string, unknown>;
+    if (
+      typeof item.title !== "string" ||
+      typeof item.description !== "string" ||
+      !["30", "60", "90"].includes(String(item.timeframe))
+    ) return [];
+    const status = statuses.includes(item.status as (typeof statuses)[number])
+      ? item.status as TeamReportActionItem["status"]
+      : undefined;
+    const dueDate =
+      typeof item.dueDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(item.dueDate)
+        ? item.dueDate
+        : undefined;
+    return [{
+      title: item.title,
+      description: item.description,
+      timeframe: item.timeframe as TeamReportActionItem["timeframe"],
+      ...(typeof item.owner === "string" && item.owner.trim()
+        ? { owner: item.owner.trim() }
+        : {}),
+      ...(dueDate ? { dueDate } : {}),
+      ...(status ? { status } : {}),
+    }];
+  });
   return items.length > 0 ? items : null;
 }
 

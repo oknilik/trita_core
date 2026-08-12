@@ -42,6 +42,7 @@ export const commonTranslations = {
   },
   nav: {
     home: { hu: "Főoldal", en: "Home" },
+    publicHome: { hu: "Főoldal", en: "Home" },
     dashboard: { hu: "Vezérlő", en: "Dashboard" },
     signIn: { hu: "Bejelentkezés", en: "Sign in" },
     signOut: { hu: "Kijelentkezés", en: "Sign out" },
@@ -52,7 +53,7 @@ export const commonTranslations = {
     team: { hu: "Csapat", en: "Team" },
     organizations: { hu: "Szervezetek", en: "Organizations" },
     ctaSelf: { hu: "Kipróbálom →", en: "Try it →" },
-    ctaTeam: { hu: "Csapat →", en: "Teams →" },
+    ctaTeam: { hu: "Egyeztetek →", en: "Talk to us →" },
     modeSelf: { hu: "Egyéneknek", en: "For individuals" },
     modeTeam: { hu: "Csapatoknak", en: "For teams" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },

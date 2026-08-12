@@ -99,7 +99,7 @@ export default async function NewCampaignPage({
 
   const [members, teams] = await Promise.all([
     prisma.organizationMember.findMany({
-      where: { orgId },
+      where: { orgId, leftAt: null },
       orderBy: { joinedAt: "asc" },
       select: {
         userId: true,

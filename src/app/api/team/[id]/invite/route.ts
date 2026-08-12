@@ -45,9 +45,9 @@ export async function POST(
   // Org team: centralized capability check for invite
   const membership = await prisma.organizationMember.findUnique({
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
-    select: { role: true },
+    select: { role: true, leftAt: true },
   });
-  if (!membership) {
+  if (!membership || membership.leftAt) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
   const policySnapshot = await resolveTeamPolicySnapshot({

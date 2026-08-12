@@ -39,7 +39,7 @@ export default async function OrgSettingsPage({
 
   const [members, creditBalance] = await Promise.all([
     prisma.organizationMember.findMany({
-      where: { orgId },
+      where: { orgId, leftAt: null },
       orderBy: { joinedAt: "asc" },
       select: {
         userId: true,

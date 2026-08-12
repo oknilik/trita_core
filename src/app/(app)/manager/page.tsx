@@ -124,7 +124,7 @@ export default async function ManagerCockpitPage() {
         href: `/team/${weakestTeam.teamId}?tab=members`,
       },
       secondary: weakestTeam.hasPattern
-        ? { label: isHu ? "Csapatkép" : "Team profile", href: `/team/${weakestTeam.teamId}?tab=profile` }
+        ? { label: isHu ? "Csapatkép" : "Team profile", href: `/team/${weakestTeam.teamId}?tab=intelligence#team-profile` }
         : null,
     };
   } else if (teamWithCampaign) {
@@ -147,7 +147,7 @@ export default async function ManagerCockpitPage() {
         : "Your teams are in good shape. Review results or start a feedback round.",
       primary: {
         label: isHu ? "Csapatkép megtekintése" : "View team profile",
-        href: `/team/${data.teams[0].teamId}?tab=profile`,
+        href: `/team/${data.teams[0].teamId}?tab=intelligence#team-profile`,
       },
     };
   }
@@ -236,6 +236,20 @@ export default async function ManagerCockpitPage() {
           </>
         }
       />
+
+      <section>
+        <DashboardSectionHeader
+          label={isHu ? "Javasolt következő lépés" : "Suggested next step"}
+          className="mb-4"
+        />
+        <JourneyNextStepCard
+          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
+          title={nextStep.title}
+          description={nextStep.description}
+          primary={nextStep.primary}
+          secondary={nextStep.secondary}
+        />
+      </section>
 
       {/* ═══ CSAPATOK ═══ */}
       <section>
@@ -400,17 +414,6 @@ export default async function ManagerCockpitPage() {
         </section>
       )}
 
-      {/* ═══ JAVASOLT KÖVETKEZŐ LÉPÉS ═══ */}
-      <section>
-        <DashboardSectionHeader label={isHu ? "Javasolt következő lépés" : "Suggested next step"} className="mb-4" />
-        <JourneyNextStepCard
-          eyebrow={isHu ? "Csapatvezető teendő" : "Manager action"}
-          title={nextStep.title}
-          description={nextStep.description}
-          primary={nextStep.primary}
-          secondary={nextStep.secondary}
-        />
-      </section>
     </PlatformPageShell>
   );
 }
