@@ -439,7 +439,9 @@ hero-nézetként jelenik meg, nagy méretben.
   kompozíciót kapott kisebb, de teljes ábrával és változatlan információval;
 - azonos magasság miatt az alatta lévő oldal egyáltalán nem mozdul swipe közben;
 - a profil CTA-sora és a karakterkártya kép–szöveg kompozíciója azonos optikai
-  felső–alsó margót kapott, így egyik tartalmi tömb sem ül le a kártya aljára;
+  felső–alsó margót kapott; desktopon a teljes tartalmi blokk a fix kártyán
+  belül középre rendeződik, így egyik kompozíció sem nyúlik túl vagy ül le az
+  alsó szélre;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.

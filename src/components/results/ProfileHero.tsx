@@ -455,7 +455,7 @@ export function ProfileHero({
           <SurfaceHero
             variant="self"
             className={glyphPair ? "h-[330px]" : undefined}
-            contentClassName="mx-auto max-w-4xl px-5 pb-[25px] pt-[27px] md:px-9 md:py-10"
+            contentClassName="mx-auto max-w-4xl px-5 pb-[25px] pt-[27px] md:flex md:h-full md:flex-col md:justify-center md:!py-0 md:!px-9"
             eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
@@ -614,7 +614,8 @@ export function ProfileHero({
           <SurfaceHero
             variant="self"
             className="h-[330px]"
-            contentClassName="mx-auto max-w-4xl !px-4 !pb-7 !pt-7 md:!px-9 md:!pb-9 md:!pt-9"
+            contentClassName="mx-auto max-w-4xl !px-4 !pb-7 !pt-7 md:flex md:h-full md:flex-col md:justify-center md:!px-9 md:!py-0"
+            titleClassName="md:!mt-0"
             title={(
               <div
                 id="profile-hero-glyph-side"

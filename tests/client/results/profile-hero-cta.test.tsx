@@ -72,6 +72,13 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     expect(container.querySelector("[data-profile-swipe-frame]")).toHaveStyle({ height: "330px" });
     expect(container.querySelector("[data-profile-swipe-motion]")).toHaveClass("h-[330px]");
     expect(container.querySelector("[data-profile-glyph-slide]")).toHaveClass("h-[330px]");
+    const profileContent = container.querySelector(
+      "[data-profile-swipe-motion] section > div:nth-child(2)",
+    );
+    expect(profileContent).toHaveClass("md:flex", "md:h-full", "md:justify-center", "md:!py-0");
+    expect(container.querySelector("#profile-hero-glyph-side")?.parentElement).toHaveClass(
+      "md:!mt-0",
+    );
     expect(container.querySelector("[data-profile-glyph-slide]")?.getAttribute("style")).toContain(
       "translate3d(13px",
     );
