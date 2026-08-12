@@ -404,10 +404,10 @@ A karakterábra kikerült a név melletti bélyegből és a részletes riport
 Áttekintés fejezetéből. Most a profilhero másik, azonos súlyú oldalán jelenik
 meg, nagy méretben.
 
-- asztali nézetben a hero jobb széléhez kapcsolódó, állandó lapfül jelzi a
-  váltást; mobilon ugyanez széles alsó kapcsoló;
-- a kapcsoló szövegesen is jelzi a célt (`Fordíts meg` / `Profilom`), nem
-  kizárólag ikonnal vagy animációval;
+- asztali nézetben a hero jobb széléhez kapcsolódó, szöveges lapfül jelzi a
+  váltást; mobilon a jobb felső sarokban önálló forgatásikon jelenik meg;
+- mobilon az ikont egyszeri, finom betöltési mozgás teszi felfedezhetővé, a
+  hozzáférhető név pedig mindig egyértelműen jelzi a céloldalt;
 - a karakteroldalon a teljes ábra, a típusnév, a dimenziópár és a forma–motívum
   rövid magyarázata együtt látszik;
 - a váltás nem változtat URL-t és nem szakítja meg az eredményoldal olvasási
@@ -415,3 +415,16 @@ meg, nagy méretben.
 - ha nincs érvényes karakterpár, a lapfül nem jelenik meg;
 - a részletes riport Áttekintés kártyája így közvetlenül a radarhoz és a hat
   dimenzióhoz vezet, ismétlődő karakterábra-blokk nélkül.
+
+#### Mobilos és mozgás-finomítás
+
+- mobilon a széles alsó sáv helyett 48 × 48 px-es, csak ikonos forgatásgomb
+  jelenik meg a hero jobb felső sarkában;
+- asztalon megmarad a szöveges oldalsó lapfül;
+- első betöltéskor a hero egyszer finoman megbillen, a forgatásikon pedig rövid
+  fordulattal jelzi a második oldal lehetőségét;
+- kattintáskor mindkét irányban rövid perspektivikus átfordulás köti össze a
+  profil- és karakteroldalt;
+- `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
+- a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
+  krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.

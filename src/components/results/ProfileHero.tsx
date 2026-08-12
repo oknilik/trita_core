@@ -56,6 +56,13 @@ export function ProfileHero({
 }: ProfileHeroProps) {
   const { locale } = useLocale();
   const [heroSide, setHeroSide] = useState<"profile" | "glyph">("profile");
+  const heroMotionRef = useRef<HTMLDivElement | null>(null);
+  const flipIconRef = useRef<SVGSVGElement | null>(null);
+  const hintAnimationsRef = useRef<Animation[]>([]);
+  const flipDirectionRef = useRef(-1);
+  const didRunHintRef = useRef(false);
+  const hasFlippedRef = useRef(false);
+  const isFlippingRef = useRef(false);
 
   // PDF-gomb finom visszajelzése: generálás alatt pörgő progress,
   // siker után zöld pipa, ami pár másodperc múlva magától eltűnik.
@@ -117,6 +124,111 @@ export function ProfileHero({
   const level = LEVEL_CONFIG[accessLevel];
   const selfTheme = SURFACE_HERO_THEME.self;
   const showingGlyph = Boolean(glyphPair) && heroSide === "glyph";
+  const hasGlyphPair = Boolean(glyphPair);
+
+  useEffect(() => {
+    if (!hasGlyphPair || didRunHintRef.current) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    if (typeof heroMotionRef.current?.animate !== "function") return;
+    didRunHintRef.current = true;
+
+    const heroHint = heroMotionRef.current.animate(
+      [
+        { transform: "rotateY(0deg) translateX(0)" },
+        { transform: "rotateY(0deg) translateX(0)", offset: 0.48 },
+        { transform: "rotateY(-2.6deg) translateX(-2px)", offset: 0.64 },
+        { transform: "rotateY(0.9deg) translateX(0)", offset: 0.79 },
+        { transform: "rotateY(0deg) translateX(0)" },
+      ],
+      {
+        duration: 1350,
+        delay: 300,
+        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+      },
+    );
+    const iconHint = flipIconRef.current?.animate(
+      [
+        { transform: "rotate(0deg) scale(1)" },
+        { transform: "rotate(0deg) scale(1)", offset: 0.48 },
+        { transform: "rotate(115deg) scale(1.08)", offset: 0.68 },
+        { transform: "rotate(92deg) scale(1)", offset: 0.82 },
+        { transform: "rotate(0deg) scale(1)" },
+      ],
+      {
+        duration: 1350,
+        delay: 300,
+        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+      },
+    );
+
+    hintAnimationsRef.current = iconHint ? [heroHint, iconHint] : [heroHint];
+    return () => {
+      hintAnimationsRef.current.forEach((animation) => animation.cancel());
+      hintAnimationsRef.current = [];
+      // Fejlesztői Strict Mode-ban az első effect-kört a React azonnal
+      // visszavonja. Engedjük, hogy a valódi második kör elindítsa a jelzést.
+      didRunHintRef.current = false;
+    };
+  }, [hasGlyphPair]);
+
+  useEffect(() => {
+    if (!hasFlippedRef.current) return;
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      isFlippingRef.current = false;
+      return;
+    }
+    if (typeof heroMotionRef.current?.animate !== "function") {
+      isFlippingRef.current = false;
+      return;
+    }
+
+    const incomingAngle = flipDirectionRef.current * -48;
+    const animation = heroMotionRef.current.animate(
+      [
+        { opacity: 0.38, transform: `rotateY(${incomingAngle}deg) scale(0.985)` },
+        { opacity: 1, transform: "rotateY(0deg) scale(1)" },
+      ],
+      {
+        duration: 300,
+        easing: "cubic-bezier(0.2, 0.72, 0.25, 1)",
+      },
+    );
+    animation.addEventListener("finish", () => {
+      isFlippingRef.current = false;
+    }, { once: true });
+
+    return () => animation.cancel();
+  }, [heroSide]);
+
+  const handleFlip = () => {
+    if (isFlippingRef.current) return;
+    isFlippingRef.current = true;
+    const nextSide = heroSide === "profile" ? "glyph" : "profile";
+    const direction = nextSide === "glyph" ? -1 : 1;
+    flipDirectionRef.current = direction;
+    hintAnimationsRef.current.forEach((animation) => animation.cancel());
+    hintAnimationsRef.current = [];
+    hasFlippedRef.current = true;
+
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || typeof heroMotionRef.current?.animate !== "function") {
+      setHeroSide(nextSide);
+      isFlippingRef.current = false;
+      return;
+    }
+
+    const outgoing = heroMotionRef.current.animate(
+      [
+        { opacity: 1, transform: "rotateY(0deg) scale(1)" },
+        { opacity: 0.38, transform: `rotateY(${direction * 48}deg) scale(0.985)` },
+      ],
+      {
+        duration: 180,
+        easing: "cubic-bezier(0.4, 0, 0.7, 0.25)",
+      },
+    );
+    outgoing.addEventListener("finish", () => setHeroSide(nextSide), { once: true });
+  };
 
   const flipControl = glyphPair ? (
     <button
@@ -126,69 +238,91 @@ export function ProfileHero({
         showingGlyph ? "results.heroGlyphBackA11y" : "results.heroGlyphOpenA11y",
         locale,
       )}
-      onClick={() => setHeroSide((side) => side === "profile" ? "glyph" : "profile")}
-      className="group absolute bottom-0 left-1/2 z-20 inline-flex min-h-[48px] w-[calc(100%-2.5rem)] -translate-x-1/2 items-center justify-center gap-2 rounded-t-lg border border-b-0 border-white/20 bg-[var(--color-surface-card)] px-4 text-xs font-semibold text-sage-dark shadow-[var(--ui-shadow-md)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:bottom-auto md:left-auto md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-x-0 md:-translate-y-1/2 md:flex-col md:rounded-l-xl md:rounded-r-none md:border-b md:border-r-0 md:px-2 md:shadow-[var(--ui-shadow-lg)]"
+      onClick={handleFlip}
+      className="group absolute right-3 top-3 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)] shadow-[var(--ui-shadow-lg)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-y-1/2 md:flex-col md:gap-2 md:rounded-l-xl md:rounded-r-none md:border-r-0 md:px-2"
     >
-      <span
+      <svg
+        ref={flipIconRef}
         aria-hidden="true"
-        className="text-base leading-none transition-transform duration-[var(--motion-duration-base)] group-hover:rotate-45 motion-reduce:transition-none"
+        viewBox="0 0 24 24"
+        fill="none"
+        className="h-5 w-5 transition-transform duration-[var(--motion-duration-base)] group-hover:rotate-45 motion-reduce:transition-none"
       >
-        ↻
-      </span>
-      <span className="md:[writing-mode:vertical-rl]">
+        <path
+          d="M19 8.5A7.5 7.5 0 0 0 6.6 5.7L5 7.3M5 7.3V3.5M5 7.3h3.8"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M5 15.5a7.5 7.5 0 0 0 12.4 2.8L19 16.7m0 0v3.8m0-3.8h-3.8"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <span className="hidden text-xs font-semibold md:block md:[writing-mode:vertical-rl]">
         {t(showingGlyph ? "results.heroGlyphBack" : "results.heroGlyphOpen", locale)}
       </span>
     </button>
   ) : null;
 
   return (
-    <div className="relative">
-      {showingGlyph && glyphPair ? (
-        <SurfaceHero
-          variant="self"
-          className="min-h-[330px]"
-          contentClassName="mx-auto max-w-4xl !px-5 !pb-20 !pt-6 md:!px-9 md:!pb-9 md:!pt-9"
-          title={(
-            <div
-              id="profile-hero-glyph-side"
-              className="grid min-h-[224px] items-center gap-6 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
-              style={{ animation: "fadeIn 0.24s ease-out" }}
-            >
-              <div className="flex min-h-[210px] items-center justify-center rounded-[20px] border border-white/15 bg-[var(--color-surface-card)]/95 p-3 shadow-[var(--ui-shadow-lg)] md:min-h-[252px]">
-                <TypeGlyph
-                  primaryCode={glyphPair.primaryCode}
-                  secondaryCode={glyphPair.secondaryCode}
-                  typeLabel={personalityType}
-                  locale={locale === "hu" ? "hu" : "en"}
-                  intensity={glyphPair.intensity}
-                  secondaryUncertain={glyphUncertain}
-                  variant="card"
-                  className="max-h-[230px] w-full rounded-xl object-contain md:max-h-[252px]"
-                />
+    <div className="relative" style={{ perspective: "1400px" }}>
+      <div
+        ref={heroMotionRef}
+        data-profile-hero-motion
+        style={{ transformOrigin: showingGlyph ? "right center" : "left center" }}
+      >
+        {showingGlyph && glyphPair ? (
+          <SurfaceHero
+            variant="self"
+            className="min-h-[330px]"
+            contentClassName="mx-auto max-w-4xl !px-5 !pb-7 !pt-5 md:!px-9 md:!pb-9 md:!pt-9"
+            title={(
+              <div
+                id="profile-hero-glyph-side"
+                className="grid min-h-[224px] items-center gap-6 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+                style={{ animation: "fadeIn 0.24s ease-out" }}
+              >
+                <div className="flex min-h-[192px] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-[var(--color-layer-self-soft)] p-2 md:min-h-[252px] md:p-3">
+                  <TypeGlyph
+                    primaryCode={glyphPair.primaryCode}
+                    secondaryCode={glyphPair.secondaryCode}
+                    typeLabel={personalityType}
+                    locale={locale === "hu" ? "hu" : "en"}
+                    intensity={glyphPair.intensity}
+                    secondaryUncertain={glyphUncertain}
+                    variant="card"
+                    canvas={false}
+                    className="max-h-[202px] w-full rounded-xl object-contain md:max-h-[252px]"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
+                    {t("results.heroGlyphEyebrow", locale)}
+                  </p>
+                  <h1 className="mt-2 break-words font-fraunces text-[34px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:text-[46px]">
+                    {personalityType}
+                  </h1>
+                  <p className="mt-4 font-fraunces text-[17px] italic text-[var(--color-accent-primary-soft)] md:text-[20px]">
+                    {glyphPairLabel}
+                  </p>
+                  <p className="mt-3 max-w-[420px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                    {glyphGrammar}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
-                  {t("results.heroGlyphEyebrow", locale)}
-                </p>
-                <h1 className="mt-2 break-words font-fraunces text-[34px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:text-[46px]">
-                  {personalityType}
-                </h1>
-                <p className="mt-4 font-fraunces text-[17px] italic text-[var(--color-accent-primary-soft)] md:text-[20px]">
-                  {glyphPairLabel}
-                </p>
-                <p className="mt-3 max-w-[420px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)]">
-                  {glyphGrammar}
-                </p>
-              </div>
-            </div>
-          )}
-        />
-      ) : (
-        <SurfaceHero
-      variant="self"
-      className={glyphPair ? "min-h-[330px]" : undefined}
-      contentClassName={`mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10 ${glyphPair ? "!pb-20 md:!pb-10" : ""}`}
-      eyebrow={
+            )}
+          />
+        ) : (
+          <SurfaceHero
+            variant="self"
+            className={glyphPair ? "min-h-[330px]" : undefined}
+            contentClassName="mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10"
+            eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.
         SELF_PAYWALL_ENABLED ? (
@@ -196,8 +330,8 @@ export function ProfileHero({
             {t("results.heroEyebrow", locale)}
           </p>
         ) : undefined
-      }
-      badge={
+            }
+            badge={
         SELF_PAYWALL_ENABLED ? (
           <span
             className="rounded-md px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide"
@@ -216,8 +350,8 @@ export function ProfileHero({
             {t("results.heroEyebrow", locale)}
           </span>
         )
-      }
-      title={(
+            }
+            title={(
         // A kis karakterábra kikerült a név mellől: ott elveszett, és a hero
         // szöveges hierarchiáját is megtörte. A teljes kompozíció a hero
         // másik oldalán, önálló vizuális fókuszként jelenik meg.
@@ -231,8 +365,8 @@ export function ProfileHero({
             </p>
           </div>
         </div>
-      )}
-      body={(
+            )}
+            body={(
         <div>
           {/* Az ál-percentilis badge végleg kivezetve (B17) — valós norma-
               adattal térhet vissza (terv P4.3). */}
@@ -240,10 +374,10 @@ export function ProfileHero({
             {personalityType}
           </span>
         </div>
-      )}
-      summary={insight}
-      summaryClassName="max-w-[480px] text-[var(--color-text-on-inverse-muted)]"
-      chips={(
+            )}
+            summary={insight}
+            summaryClassName="max-w-[480px] text-[var(--color-text-on-inverse-muted)]"
+            chips={(
         <>
           {(topDimensions.length > 0 || watchDimensions.length > 0) ? (
             <div className="flex flex-wrap items-center gap-2">
@@ -282,8 +416,8 @@ export function ProfileHero({
             </div>
           ) : null}
         </>
-      )}
-      actions={(
+            )}
+            actions={(
         <div className="flex flex-wrap gap-2">
           <Button
             type="button"
@@ -343,9 +477,10 @@ export function ProfileHero({
             )}
           </Button>
         </div>
-      )}
-        />
-      )}
+            )}
+          />
+        )}
+      </div>
 
       {flipControl}
     </div>

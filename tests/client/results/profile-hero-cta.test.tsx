@@ -8,7 +8,7 @@
  * (inline style-ban él, hogy a variant-osztályokkal ne legyen kaszkád-verseny).
  */
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { ProfileHero } from "@/components/results/ProfileHero";
@@ -50,7 +50,7 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     expect(style).not.toContain("#c17f4a");
   });
 
-  it("az oldalsó lapfül a teljes karakterábra és a profil között vált", async () => {
+  it("a reszponzív forgatásvezérlő a teljes karakterábra és a profil között vált", async () => {
     render(
       <ProfileHero
         userName="Teszt Anna"
@@ -63,8 +63,11 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
 
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
     expect(screen.queryByText("A te karakterábrád")).toBeNull();
+    const initialFlipButton = screen.getByRole("button", { name: "Karakterábra megnyitása" });
+    expect(initialFlipButton).toHaveClass("h-12", "w-12", "rounded-full");
+    expect(screen.getByText("Fordíts meg")).toHaveClass("hidden", "md:block");
 
-    await userEvent.click(screen.getByRole("button", { name: "Karakterábra megnyitása" }));
+    await userEvent.click(initialFlipButton);
 
     expect(screen.queryByRole("heading", { name: "Teszt Anna" })).toBeNull();
     expect(screen.getByText("A te karakterábrád")).toBeInTheDocument();
@@ -77,6 +80,48 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Profiloldal megnyitása" }));
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
+  });
+
+  it("egyszeri betöltési mozgással teszi felfedezhetővé a második oldalt", async () => {
+    const previousAnimate = Object.getOwnPropertyDescriptor(Element.prototype, "animate");
+    const cancel = vi.fn();
+    const animate = vi.fn((..._args: Parameters<Element["animate"]>) => ({
+      cancel,
+      addEventListener: vi.fn(),
+    }) as unknown as Animation);
+    Object.defineProperty(Element.prototype, "animate", {
+      configurable: true,
+      value: animate,
+    });
+
+    try {
+      const { unmount } = render(
+        <ProfileHero
+          userName="Teszt Anna"
+          completedAt="2026. augusztus 1."
+          personalityType="Módszeres újító"
+          glyphDimensions={GLYPH_DIMS}
+          insight="Lendületet adsz a környezetednek."
+        />,
+      );
+
+      await waitFor(() => expect(animate).toHaveBeenCalledTimes(2));
+      expect(animate.mock.calls[0]?.[0]).toEqual(expect.arrayContaining([
+        expect.objectContaining({ transform: expect.stringContaining("rotateY") }),
+      ]));
+      expect(animate.mock.calls[1]?.[0]).toEqual(expect.arrayContaining([
+        expect.objectContaining({ transform: expect.stringContaining("rotate(") }),
+      ]));
+
+      unmount();
+      expect(cancel).toHaveBeenCalledTimes(2);
+    } finally {
+      if (previousAnimate) {
+        Object.defineProperty(Element.prototype, "animate", previousAnimate);
+      } else {
+        delete (Element.prototype as unknown as { animate?: Element["animate"] }).animate;
+      }
+    }
   });
 
   it("karakteradat nélkül nem mutat lapfület", () => {
