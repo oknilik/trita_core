@@ -57,12 +57,12 @@ export function ProfileHero({
   const { locale } = useLocale();
   const [heroSide, setHeroSide] = useState<"profile" | "glyph">("profile");
   const heroMotionRef = useRef<HTMLDivElement | null>(null);
-  const flipIconRef = useRef<SVGSVGElement | null>(null);
+  const cardIconTopRef = useRef<SVGGElement | null>(null);
   const hintAnimationsRef = useRef<Animation[]>([]);
-  const flipDirectionRef = useRef(-1);
+  const cardDirectionRef = useRef(-1);
   const didRunHintRef = useRef(false);
-  const hasFlippedRef = useRef(false);
-  const isFlippingRef = useRef(false);
+  const hasSwitchedRef = useRef(false);
+  const isSwitchingRef = useRef(false);
 
   // PDF-gomb finom visszajelzése: generálás alatt pörgő progress,
   // siker után zöld pipa, ami pár másodperc múlva magától eltűnik.
@@ -134,30 +134,30 @@ export function ProfileHero({
 
     const heroHint = heroMotionRef.current.animate(
       [
-        { transform: "rotateY(0deg) translateX(0)" },
-        { transform: "rotateY(0deg) translateX(0)", offset: 0.48 },
-        { transform: "rotateY(-2.6deg) translateX(-2px)", offset: 0.64 },
-        { transform: "rotateY(0.9deg) translateX(0)", offset: 0.79 },
-        { transform: "rotateY(0deg) translateX(0)" },
+        { transform: "translate3d(0, 0, 0)" },
+        { transform: "translate3d(0, 0, 0)", offset: 0.48 },
+        { transform: "translate3d(-3px, -3px, 0)", offset: 0.66 },
+        { transform: "translate3d(1px, 0, 0)", offset: 0.82 },
+        { transform: "translate3d(0, 0, 0)" },
       ],
       {
-        duration: 1350,
-        delay: 300,
-        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        duration: 1200,
+        delay: 350,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     );
-    const iconHint = flipIconRef.current?.animate(
+    const iconHint = cardIconTopRef.current?.animate(
       [
-        { transform: "rotate(0deg) scale(1)" },
-        { transform: "rotate(0deg) scale(1)", offset: 0.48 },
-        { transform: "rotate(115deg) scale(1.08)", offset: 0.68 },
-        { transform: "rotate(92deg) scale(1)", offset: 0.82 },
-        { transform: "rotate(0deg) scale(1)" },
+        { transform: "translate3d(0, 0, 0)" },
+        { transform: "translate3d(0, 0, 0)", offset: 0.48 },
+        { transform: "translate3d(2px, -2px, 0)", offset: 0.68 },
+        { transform: "translate3d(-1px, 0, 0)", offset: 0.84 },
+        { transform: "translate3d(0, 0, 0)" },
       ],
       {
-        duration: 1350,
-        delay: 300,
-        easing: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        duration: 1200,
+        delay: 350,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     );
 
@@ -172,65 +172,65 @@ export function ProfileHero({
   }, [hasGlyphPair]);
 
   useEffect(() => {
-    if (!hasFlippedRef.current) return;
+    if (!hasSwitchedRef.current) return;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      isFlippingRef.current = false;
+      isSwitchingRef.current = false;
       return;
     }
     if (typeof heroMotionRef.current?.animate !== "function") {
-      isFlippingRef.current = false;
+      isSwitchingRef.current = false;
       return;
     }
 
-    const incomingAngle = flipDirectionRef.current * -14;
+    const incomingX = cardDirectionRef.current * -12;
     const animation = heroMotionRef.current.animate(
       [
-        { opacity: 0.84, transform: `rotateY(${incomingAngle}deg)` },
-        { opacity: 1, transform: "rotateY(0deg)" },
+        { opacity: 0.92, transform: `translate3d(${incomingX}px, 6px, 0)` },
+        { opacity: 1, transform: "translate3d(0, 0, 0)" },
       ],
       {
-        duration: 260,
-        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        duration: 240,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       },
     );
     animation.addEventListener("finish", () => {
-      isFlippingRef.current = false;
+      isSwitchingRef.current = false;
     }, { once: true });
 
     return () => animation.cancel();
   }, [heroSide]);
 
-  const handleFlip = () => {
-    if (isFlippingRef.current) return;
-    isFlippingRef.current = true;
+  const handleCardSwitch = () => {
+    if (isSwitchingRef.current) return;
+    isSwitchingRef.current = true;
     const nextSide = heroSide === "profile" ? "glyph" : "profile";
     const direction = nextSide === "glyph" ? -1 : 1;
-    flipDirectionRef.current = direction;
+    cardDirectionRef.current = direction;
     hintAnimationsRef.current.forEach((animation) => animation.cancel());
     hintAnimationsRef.current = [];
-    hasFlippedRef.current = true;
+    hasSwitchedRef.current = true;
 
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion || typeof heroMotionRef.current?.animate !== "function") {
       setHeroSide(nextSide);
-      isFlippingRef.current = false;
+      isSwitchingRef.current = false;
       return;
     }
 
     const outgoing = heroMotionRef.current.animate(
       [
-        { opacity: 1, transform: "rotateY(0deg)" },
-        { opacity: 0.84, transform: `rotateY(${direction * 14}deg)` },
+        { opacity: 1, transform: "translate3d(0, 0, 0)" },
+        { opacity: 0.92, transform: `translate3d(${direction * 18}px, -7px, 0)` },
       ],
       {
         duration: 150,
-        easing: "cubic-bezier(0.32, 0, 0.67, 0)",
+        easing: "cubic-bezier(0.4, 0, 0.6, 1)",
       },
     );
     outgoing.addEventListener("finish", () => setHeroSide(nextSide), { once: true });
   };
 
-  const flipControl = glyphPair ? (
+  const cardControl = glyphPair ? (
     <button
       type="button"
       aria-pressed={showingGlyph}
@@ -238,30 +238,46 @@ export function ProfileHero({
         showingGlyph ? "results.heroGlyphBackA11y" : "results.heroGlyphOpenA11y",
         locale,
       )}
-      onClick={handleFlip}
+      onClick={handleCardSwitch}
       className="group absolute right-3 top-3 z-20 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)] shadow-[var(--ui-shadow-lg)] transition hover:bg-[var(--color-surface-subtle)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 focus-visible:ring-offset-sage-dark md:right-0 md:top-1/2 md:min-h-[132px] md:w-11 md:-translate-y-1/2 md:flex-col md:gap-2 md:rounded-l-xl md:rounded-r-none md:border-r-0 md:px-2"
     >
       <svg
-        ref={flipIconRef}
         aria-hidden="true"
         viewBox="0 0 24 24"
         fill="none"
-        className="h-5 w-5 transition-transform duration-[var(--motion-duration-base)] group-hover:rotate-45 motion-reduce:transition-none"
+        className="h-5 w-5"
       >
-        <path
-          d="M19 8.5A7.5 7.5 0 0 0 6.6 5.7L5 7.3M5 7.3V3.5M5 7.3h3.8"
+        <rect
+          x="4"
+          y="7"
+          width="13"
+          height="13"
+          rx="2.25"
           stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeWidth="1.6"
+          opacity="0.52"
         />
-        <path
-          d="M5 15.5a7.5 7.5 0 0 0 12.4 2.8L19 16.7m0 0v3.8m0-3.8h-3.8"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
+        <g
+          ref={cardIconTopRef}
+          className="transition-transform duration-[var(--motion-duration-base)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5 motion-reduce:transition-none"
+        >
+          <rect
+            x="7"
+            y="4"
+            width="13"
+            height="13"
+            rx="2.25"
+            fill="var(--color-surface-self-accent-soft)"
+            stroke="currentColor"
+            strokeWidth="1.6"
+          />
+          <path
+            d="M11 8h5M11 11h3.5"
+            stroke="currentColor"
+            strokeWidth="1.4"
+            strokeLinecap="round"
+          />
+        </g>
       </svg>
       <span className="hidden text-xs font-semibold md:block md:[writing-mode:vertical-rl]">
         {t(showingGlyph ? "results.heroGlyphBack" : "results.heroGlyphOpen", locale)}
@@ -270,11 +286,23 @@ export function ProfileHero({
   ) : null;
 
   return (
-    <div className="relative" style={{ perspective: "1400px" }}>
+    <div className="relative isolate pb-2">
+      {glyphPair ? (
+        <>
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-5 bottom-0 top-3 z-0 rounded-[26px] border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] opacity-45"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-2.5 bottom-1 top-2 z-[1] rounded-[27px] border border-white/15 bg-[var(--color-accent-self-strong)] opacity-55"
+          />
+        </>
+      ) : null}
       <div
         ref={heroMotionRef}
-        data-profile-hero-motion
-        style={{ transformOrigin: showingGlyph ? "right center" : "left center" }}
+        data-profile-card-motion
+        className="relative z-10"
       >
         {showingGlyph && glyphPair ? (
           <SurfaceHero
@@ -481,7 +509,7 @@ export function ProfileHero({
         )}
       </div>
 
-      {flipControl}
+      {cardControl}
     </div>
   );
 }

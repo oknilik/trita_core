@@ -398,14 +398,14 @@ A lineáris riport vizuális tesztje után a részletes dokumentum fejezetei
   jelzett (`Megnyitás ↓` / `Bezárás ↑`), nem csak színnel;
 - a riport összes szakmai tartalma és a korábbi analitikai mérés megmaradt.
 
-### 15.5 Karakterábra — megfordítható hero, B irány
+### 15.5 Karakterábra — rétegzett hero-kártyák, B irány
 
 A karakterábra kikerült a név melletti bélyegből és a részletes riport
-Áttekintés fejezetéből. Most a profilhero másik, azonos súlyú oldalán jelenik
-meg, nagy méretben.
+Áttekintés fejezetéből. Most a profillal egy kétlapos, egymásra rétegzett
+hero-kártyapakliban jelenik meg, nagy méretben.
 
 - asztali nézetben a hero jobb széléhez kapcsolódó, szöveges lapfül jelzi a
-  váltást; mobilon a jobb felső sarokban önálló forgatásikon jelenik meg;
+  váltást; mobilon a jobb felső sarokban önálló kártyapakli-ikon jelenik meg;
 - mobilon az ikont egyszeri, finom betöltési mozgás teszi felfedezhetővé, a
   hozzáférhető név pedig mindig egyértelműen jelzi a céloldalt;
 - a karakteroldalon a teljes ábra, a típusnév, a dimenziópár és a forma–motívum
@@ -418,14 +418,16 @@ meg, nagy méretben.
 
 #### Mobilos és mozgás-finomítás
 
-- mobilon a széles alsó sáv helyett 48 × 48 px-es, csak ikonos forgatásgomb
+- mobilon a széles alsó sáv helyett 48 × 48 px-es, csak ikonos kártyaváltó
   jelenik meg a hero jobb felső sarkában;
 - asztalon megmarad a szöveges oldalsó lapfül;
-- első betöltéskor a hero egyszer finoman megbillen, a forgatásikon pedig rövid
-  fordulattal jelzi a második oldal lehetőségét;
-- kattintáskor mindkét irányban visszafogott, kis szögű perspektivikus
-  átfordulás köti össze a profil- és karakteroldalt; a tartalom nem kap külön
-  ráúszó animációt, így a váltás egyetlen nyugodt mozdulat marad;
+- a hero alatt két vékony kártyaél állandóan látszik, ezért mozgás nélkül is
+  érthető, hogy van egy másik lap;
+- első betöltéskor a felső hero-lap és az ikon felső lapja egyszer néhány
+  pixelt megemelkedik;
+- kattintáskor a felső lap finoman oldalra-felfelé úszik, az új lap pedig az
+  alatta lévő pakliból érkezik a helyére; nincs forgatás vagy perspektivikus
+  torzítás;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.

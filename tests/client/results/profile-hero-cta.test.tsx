@@ -50,7 +50,7 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     expect(style).not.toContain("#c17f4a");
   });
 
-  it("a reszponzív forgatásvezérlő a teljes karakterábra és a profil között vált", async () => {
+  it("a reszponzív kártyaváltó a teljes karakterábra és a profil között vált", async () => {
     render(
       <ProfileHero
         userName="Teszt Anna"
@@ -63,26 +63,26 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
 
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
     expect(screen.queryByText("A te karakterábrád")).toBeNull();
-    const initialFlipButton = screen.getByRole("button", { name: "Karakterábra megnyitása" });
-    expect(initialFlipButton).toHaveClass("h-12", "w-12", "rounded-full");
-    expect(screen.getByText("Fordíts meg")).toHaveClass("hidden", "md:block");
+    const initialCardButton = screen.getByRole("button", { name: "Karakterlap megjelenítése" });
+    expect(initialCardButton).toHaveClass("h-12", "w-12", "rounded-full");
+    expect(screen.getByText("Karakterlap")).toHaveClass("hidden", "md:block");
 
-    await userEvent.click(initialFlipButton);
+    await userEvent.click(initialCardButton);
 
     expect(screen.queryByRole("heading", { name: "Teszt Anna" })).toBeNull();
     expect(screen.getByText("A te karakterábrád")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /absztrakt típus-ábra/ })).toBeInTheDocument();
     expect(screen.getByText(/A nagy forma.*szem.*létrafokok/)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Profiloldal megnyitása" })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Profillap megjelenítése" })).toHaveAttribute(
       "aria-pressed",
       "true",
     );
 
-    await userEvent.click(screen.getByRole("button", { name: "Profiloldal megnyitása" }));
+    await userEvent.click(screen.getByRole("button", { name: "Profillap megjelenítése" }));
     expect(screen.getByRole("heading", { name: "Teszt Anna" })).toBeInTheDocument();
   });
 
-  it("finom betöltési jelzést és kis szögű átfordítást használ", async () => {
+  it("finom betöltési jelzést és egymásra úszó kártyaváltást használ", async () => {
     const previousAnimate = Object.getOwnPropertyDescriptor(Element.prototype, "animate");
     const cancel = vi.fn();
     const animate = vi.fn((..._args: Parameters<Element["animate"]>) => ({
@@ -107,16 +107,16 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
 
       await waitFor(() => expect(animate).toHaveBeenCalledTimes(2));
       expect(animate.mock.calls[0]?.[0]).toEqual(expect.arrayContaining([
-        expect.objectContaining({ transform: expect.stringContaining("rotateY") }),
+        expect.objectContaining({ transform: "translate3d(-3px, -3px, 0)" }),
       ]));
       expect(animate.mock.calls[1]?.[0]).toEqual(expect.arrayContaining([
-        expect.objectContaining({ transform: expect.stringContaining("rotate(") }),
+        expect.objectContaining({ transform: "translate3d(2px, -2px, 0)" }),
       ]));
 
-      await userEvent.click(screen.getByRole("button", { name: "Karakterábra megnyitása" }));
+      await userEvent.click(screen.getByRole("button", { name: "Karakterlap megjelenítése" }));
       await waitFor(() => expect(animate).toHaveBeenCalledTimes(3));
       expect(animate.mock.calls[2]?.[0]).toEqual(expect.arrayContaining([
-        expect.objectContaining({ opacity: 0.84, transform: "rotateY(-14deg)" }),
+        expect.objectContaining({ opacity: 0.92, transform: "translate3d(-18px, -7px, 0)" }),
       ]));
 
       unmount();
@@ -140,6 +140,6 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
       />,
     );
 
-    expect(screen.queryByRole("button", { name: "Karakterábra megnyitása" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Karakterlap megjelenítése" })).toBeNull();
   });
 });
