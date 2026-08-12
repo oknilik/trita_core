@@ -163,6 +163,8 @@ export interface ProfileTabsProps {
   /** Hero-specific props (optional — defaults provided) */
   personalityType?: string;
   heroInsight?: string;
+  /** Már élő publikus megosztás tokenje; null esetén a modal csak szándékra hoz létre linket. */
+  shareToken?: string | null;
   /** Plus content sections */
   plusContent?: {
     introText: string;
@@ -563,6 +565,7 @@ export function ProfileTabs({
   clarityFeedbackSubmitted,
   personalityType,
   heroInsight,
+  shareToken = null,
   plusContent,
   bridgeNextStep,
   careerModuleHidden = false,
@@ -899,6 +902,7 @@ export function ProfileTabs({
       <ShareModal
         isOpen={shareOpen}
         onClose={() => setShareOpen(false)}
+        initialToken={shareToken}
         preview={{
           userName: name,
           personalityType: personalityType ?? t("content.personalityProfileFallback", locale),

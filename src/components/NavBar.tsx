@@ -153,6 +153,34 @@ export function NavBar({
       ? t("landing.selfCtaContinueShort", locale)
       : t("nav.ctaSelf", locale);
 
+  // A megosztott profil nem marketing-belépőoldal, hanem egy személyes
+  // artefaktum. Itt a teljes navigáció elvinné a figyelmet a tartalomról;
+  // csak a márka, a nyelv és az egyetlen releváns sajátprofil-CTA marad.
+  if (currentPath.startsWith("/share/")) {
+    return (
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
+        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-3 px-4 md:px-5">
+          <Link
+            href="/"
+            aria-label="trita"
+            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+          >
+            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          </Link>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <Link
+              href="/try"
+              className="rounded-lg bg-[var(--color-bronze-dark)] px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] sm:px-4"
+            >
+              {locale === "hu" ? "Saját profil készítése" : "Create my profile"}
+            </Link>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
   const publicLinks = [
     { id: "home", href: "/", label: t("nav.publicHome", locale) },
     { id: "blog", href: "/blog", label: t("nav.blog", locale) },

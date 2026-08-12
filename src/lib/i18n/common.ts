@@ -100,6 +100,8 @@ export const commonTranslations = {
     statusExpired: { hu: "Lejárt", en: "Expired" },
     back: { hu: "Vissza", en: "Back" },
     next: { hu: "Tovább", en: "Next" },
+    close: { hu: "Bezárás", en: "Close" },
+    cancel: { hu: "Mégse", en: "Cancel" },
     // A töltő-jel felolvasott szövege (StarLoaderScreen). A néma spinner úgy
     // viselkedik a képernyőolvasón, mintha az oldal befagyott volna.
     loading: { hu: "Betöltés…", en: "Loading…" },

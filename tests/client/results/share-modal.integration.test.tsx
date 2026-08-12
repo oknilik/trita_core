@@ -1,12 +1,9 @@
 /**
  * ShareModal client integration tests (Vitest + RTL)
  *
- * Covers: deferred link creation (UX-B6 — opening the modal must not write
- * a share token; the first copy materializes it), clipboard copy with inline
- * feedback (no browser alert), optional email sending with validation states
- * (token is created server-side; the email carries the QR code — the modal
- * has no QR block, only the hint about it), and share revocation + new link
- * creation.
+ * Covers the progressive disclosure flow: deferred link creation, accessible
+ * dialog semantics, clipboard feedback, optional email sending, and confirmed
+ * revocation of an existing share.
  */
 
 import { render, screen, waitFor } from "@testing-library/react";
@@ -69,27 +66,22 @@ function mockShareCreate(token = "tok123") {
 }
 
 describe("ShareModal", () => {
-  it("does not create a share link on open, and has no QR block (UX-B6)", async () => {
+  it("opens as an accessible, inactive dialog without creating a share", async () => {
     mockShareCreate();
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
-    // A modal megnyitása önmagában nem írhat shareTokent — semmilyen
-    // hálózati hívás nem történhet.
-    await waitFor(() => {
-      expect(
-        screen.getByRole("button", { name: t("content.shareCopyLink", "en") }),
-      ).toBeEnabled();
-    });
-    expect(fetchMock).not.toHaveBeenCalled();
-    // QR-gomb/blokk nincs a modalban: a QR az emailben utazik…
     expect(
-      screen.queryByRole("button", { name: /qr/i }),
-    ).not.toBeInTheDocument();
-    expect(screen.queryByRole("img")).not.toBeInTheDocument();
-    // …amit az email-blokk alatti hint mond el a felhasználónak.
-    expect(
-      screen.getByText(t("content.shareEmailQrHint", "en")),
+      screen.getByRole("dialog", { name: t("content.shareModalTitle", "en") }),
     ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: t("common.close", "en") })).toBeEnabled();
+    expect(
+      screen.getByRole("button", { name: t("content.shareCreateAndCopy", "en") }),
+    ).toBeEnabled();
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
+    expect(screen.queryByText(t("content.shareRevoke", "en"))).not.toBeInTheDocument();
+    expect(screen.queryByRole("img")).not.toBeInTheDocument();
+    expect(screen.queryByText(t("content.shareEmailQrHint", "en"))).not.toBeInTheDocument();
   });
 
   it("creates the link on first copy and copies it with inline feedback, no alert", async () => {
@@ -98,7 +90,9 @@ describe("ShareModal", () => {
     mockShareCreate();
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
-    await user.click(screen.getByRole("button", { name: t("content.shareCopyLink", "en") }));
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareCreateAndCopy", "en") }),
+    );
 
     // Az első másolás hozza létre a linket…
     expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "POST" });
@@ -112,23 +106,30 @@ describe("ShareModal", () => {
     alertSpy.mockRestore();
   });
 
-  it("sends the link by email without a client-side link (token is created server-side)", async () => {
+  it("reveals email on demand and confirms the recipient and QR attachment", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation((url: string) => {
       if (url === "/api/profile/share/send") {
-        return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ ok: true, token: "mailtok" }),
+        });
       }
       return Promise.reject(new Error(`unexpected fetch: ${url}`));
     });
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
+    expect(screen.queryByPlaceholderText(t("content.shareEmailPlaceholder", "en"))).not.toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
     await user.type(
       screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
       "friend@example.com",
     );
     await user.click(screen.getByRole("button", { name: t("content.shareEmailSend", "en") }));
 
-    expect(await screen.findByText(t("content.shareEmailSent", "en"))).toBeInTheDocument();
+    expect(await screen.findByText(/Sent to:/)).toHaveTextContent("friend@example.com");
+    expect(screen.getByText(t("content.shareEmailQrHint", "en"))).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/\/share\/mailtok$/)).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/profile/share/send",
       expect.objectContaining({
@@ -145,6 +146,7 @@ describe("ShareModal", () => {
     mockShareCreate();
     render(<ShareModal isOpen onClose={vi.fn()} />);
 
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
     await user.type(
       screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
       "not-an-email",
@@ -155,7 +157,7 @@ describe("ShareModal", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("revokes existing shares without a materialized link, then offers a new one", async () => {
+  it("requires confirmation before revoking an existing share, then offers a new one", async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation((url: string, init?: RequestInit) => {
       if (url === "/api/profile/share" && init?.method === "DELETE") {
@@ -166,11 +168,16 @@ describe("ShareModal", () => {
       }
       return Promise.reject(new Error(`unexpected fetch: ${url}`));
     });
-    render(<ShareModal isOpen onClose={vi.fn()} />);
+    render(<ShareModal isOpen initialToken="oldtok" onClose={vi.fn()} />);
 
-    // Korábbi munkamenetben létrehozott link is visszavonható — nem kell
-    // előbb megjeleníteni (a DELETE szerver-oldalon minden tokent töröl).
+    expect(screen.getByDisplayValue(/\/share\/oldtok$/)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: t("content.shareManage", "en") }));
     await user.click(screen.getByRole("button", { name: t("content.shareRevoke", "en") }));
+    expect(screen.getByText(t("content.shareRevokeConfirmTitle", "en"))).toBeInTheDocument();
+    expect(fetchMock).not.toHaveBeenCalled();
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareRevokeConfirm", "en") }),
+    );
 
     expect(await screen.findByText(t("content.shareRevoked", "en"))).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "DELETE" });
@@ -178,5 +185,24 @@ describe("ShareModal", () => {
     // Új link létrehozása visszavonás után
     await user.click(screen.getByRole("button", { name: t("content.shareCreateNew", "en") }));
     expect(await screen.findByDisplayValue(/\/share\/tok123$/)).toBeInTheDocument();
+  });
+
+  it("keeps the generated link visible when email delivery fails", async () => {
+    const user = userEvent.setup();
+    fetchMock.mockResolvedValue({
+      ok: false,
+      json: () => Promise.resolve({ error: "SEND_FAILED", token: "kepttok" }),
+    });
+    render(<ShareModal isOpen onClose={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailToggle", "en") }));
+    await user.type(
+      screen.getByPlaceholderText(t("content.shareEmailPlaceholder", "en")),
+      "friend@example.com",
+    );
+    await user.click(screen.getByRole("button", { name: t("content.shareEmailSend", "en") }));
+
+    expect(await screen.findByText(t("content.shareEmailError", "en"))).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/\/share\/kepttok$/)).toBeInTheDocument();
   });
 });

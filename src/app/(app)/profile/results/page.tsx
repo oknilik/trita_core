@@ -103,7 +103,7 @@ export default async function ProfileResultsPage({
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
       orderBy: { createdAt: "desc" },
-      select: { id: true, scores: true, testType: true, createdAt: true },
+      select: { id: true, scores: true, testType: true, createdAt: true, shareToken: true },
     }),
     getSelfAccessLevel(profile.id),
     prisma.observerAssessment.findMany({
@@ -661,6 +661,7 @@ export default async function ProfileResultsPage({
           clarityFeedbackSubmitted={clarityFeedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
+          shareToken={latestResult.shareToken}
           plusContent={plusContent}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}

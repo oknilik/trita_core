@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useOverlayTransition } from "./useOverlayTransition";
 
@@ -22,6 +22,7 @@ interface ModalProps {
   design?: "default" | "brand";
   hideCloseButton?: boolean;
   hideHeader?: boolean;
+  closeLabel?: string;
 }
 
 export function Modal({
@@ -35,8 +36,13 @@ export function Modal({
   design = "brand",
   hideCloseButton = false,
   hideHeader = false,
+  closeLabel = "Close",
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const modalId = useId().replaceAll(":", "");
+  const titleId = `modal-title-${modalId}`;
+  const descriptionId = description ? `${titleId}-description` : undefined;
   const { shouldRender, isEntered } = useOverlayTransition(
     isOpen,
     MODAL_TRANSITION_MS,
@@ -47,6 +53,30 @@ export function Modal({
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusable = Array.from(
+          modalRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        ).filter((element) => !element.hasAttribute("hidden"));
+        if (focusable.length === 0) {
+          event.preventDefault();
+          modalRef.current?.focus();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     },
     [onClose]
@@ -59,8 +89,21 @@ export function Modal({
 
   useEffect(() => {
     if (isOpen) {
+      const previouslyFocused = document.activeElement as HTMLElement | null;
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      const frame = window.requestAnimationFrame(() => {
+        const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        (firstFocusable ?? modalRef.current)?.focus();
+      });
+      return () => {
+        window.cancelAnimationFrame(frame);
+        document.removeEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = "";
+        previouslyFocused?.focus();
+      };
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -89,6 +132,12 @@ export function Modal({
 
       {/* Modal */}
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={hideHeader ? undefined : titleId}
+        aria-describedby={descriptionId}
+        tabIndex={-1}
         className={[
           "transition-all duration-200 ease-out motion-reduce:transition-none",
           isEntered
@@ -125,6 +174,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
+            aria-label={closeLabel}
             className={[
               // 44px érintőcél az ikon optikai közepének megtartásával
               // (a korábbi p-1 + 20px ikon ≈ 28px volt).
@@ -184,6 +234,7 @@ export function Modal({
                   </p>
                 )}
                 <h2
+                  id={titleId}
                   className={[
                     "text-lg font-semibold",
                     isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
@@ -201,6 +252,7 @@ export function Modal({
                     </div>
                   ) : (
                     <p
+                      id={descriptionId}
                       className={[
                         "mt-2 text-sm leading-relaxed",
                         variant === "danger"
