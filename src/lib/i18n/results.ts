@@ -425,7 +425,8 @@ export const resultsTranslations = {
     insightWatch: { hu: "Figyelendő", en: "Watch areas" },
     dimSectionEyebrow: { hu: "Dimenziók", en: "Dimensions" },
     dimSectionTitle: { hu: "Így működsz a fő dimenziók mentén", en: "How you work across key dimensions" },
-    dimSectionDesc: { hu: "A dimenziók nem skatulyák, hanem mintázatok: megmutatják, mi mozgat, mi ad stabilitást, és hol jöhet feszültség.", en: "Dimensions aren't boxes — they're patterns that show what drives you, what keeps you steady, and where tension may arise." },
+    dimSectionDesc: { hu: "A dimenziók nem skatulyák, minősítések vagy percentilisek. A 0–100-as skálán kirajzolódó mintázatok azt mutatják meg, mi mozgat, mi ad stabilitást, és hol jöhet feszültség.", en: "Dimensions aren't boxes, grades or percentiles. Patterns on the 0–100 scale show what drives you, what keeps you steady, and where tension may arise." },
+    scoreOutOfHundred: { hu: "{value} / 100", en: "{value} / 100" },
     facetLabel: { hu: "alskála részletesen", en: "facets in detail" },
     facetUnlock: { hu: "Plus feloldása — €9", en: "Unlock Plus — €9" },
     // LR-FACET — nem-klinikai glossza a „Szorongás" facethez (kulcs-alapú

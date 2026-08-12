@@ -82,9 +82,7 @@ export function ProfileHero({
   return (
     <SurfaceHero
       variant="self"
-      // Az alsó padding nagyobb: a hero aljában sáv kell a karakter-ábra
-      // feliratának (a hozzá tartozó fül a banner alsó széléből lóg ki).
-      contentClassName="mx-auto max-w-4xl px-5 pb-12 pt-8 md:px-9 md:pb-14 md:pt-10"
+      contentClassName="mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10"
       eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
         // eyebrow nincs.

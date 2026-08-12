@@ -654,17 +654,6 @@ export function ProfileTabs({
   return (
     <div className="flex flex-col gap-8 md:gap-12">
 
-      {/* Dark sage hero + a hozzá tapadó karakter-ábra fül — egy blokk,
-          hogy a fül a banner alsó szélére üljön (a külső gap ne tolja el).
-          A negatív alsó margó a fül alatti térközt szedi vissza: a fül a
-          bannerhez tartozik, nem önálló szekció. */}
-      {/* -mb-3: a jelzés ~11 px-t lóg a banner alá, ezt vesszük vissza, hogy
-          a hero ALSÓ SZÉLÉTŐL mért térköz ugyanannyi legyen, mint az oldal
-          többi blokkja között (gap-8 / md:gap-12). */}
-      <div className="-mb-3 flex flex-col">
-      {/* A hero a fül és a panel FELETT van (z-20), így a fül teteje alá
-          csúszik, a panel pedig alóla gördül ki. */}
-      <div className="relative z-20">
       <ProfileHero
         userName={name}
         completedAt={new Date(assessmentDate).toLocaleDateString(
@@ -677,19 +666,6 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        // Erősség-lista önismereti felületen: a kanonikus valencia-kapun át
-        // (score-valence, surface="self"). 2026-08-11 óta a E itt sem
-        // erősség — a kapu zárja; üres listánál a ProfileHero nem rendereli
-        // a chip-sort, így nem marad árva „Legerősebb:" felirat.
-        topDimensions={dimensions
-          .filter((d) => d.code !== "I" && strengthSlotEligible(d.code, "self") && d.score >= 70)
-          .map((d) => d.label)}
-        // Pólus-tudatos „Figyelendő" (FIX 2): a fordított Emocionalitás
-        // alacsony sávja stabilitás — nem kerül a watch-chipek közé
-        // (kanonikus kapu: score-valence.deficitSlotEligible).
-        watchDimensions={dimensions
-          .filter((d) => d.code !== "I" && deficitSlotEligible(d.code) && d.score < 40)
-          .map((d) => d.label)}
         onShare={() => {
           track("results.export", { format: "link" });
           setShareOpen(true);
@@ -952,18 +928,6 @@ export function ProfileTabs({
         }}
         pdfLoading={pdfLoading}
       />
-      </div>
-
-      {/* Karakter-ábra magyarázat — a banner alsó szélére ülő kis fül;
-          nyitva a teljes kompozíció + a nyelvtan a hero alatt jelenik meg. */}
-      <TypeGlyphPlate
-        mode="heroTab"
-        dimensions={dimensions
-          .filter((d) => d.code !== "I")
-          .map((d) => ({ code: d.code, score: d.score }))}
-        locale={locale}
-      />
-      </div>
 
       <ShareModal
         isOpen={shareOpen}
@@ -1075,6 +1039,12 @@ export function ProfileTabs({
                 {isHu ? "Munkastílus és fejlődés" : "Work style and growth"}
               </button>
             </nav>
+            <TypeGlyphPlate
+              dimensions={dimensions
+                .filter((dimension) => dimension.code !== "I")
+                .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
+              locale={locale}
+            />
             <ResultsTab
               dimensions={dimensions}
               onOpenInvites={() => handleTabChange("comparison")}
