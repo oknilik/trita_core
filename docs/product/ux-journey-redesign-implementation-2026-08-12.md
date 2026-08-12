@@ -433,8 +433,11 @@ hero-nézetként jelenik meg, nagy méretben.
   `translate3d` érték követi 1:1-ben az ujjat;
 - az elengedés a húzás távolságát és pillanatnyi sebességét is figyelembe veszi,
   majd 140–230 ms között pattan a célra vagy rugózik vissza;
-- a két hero eltérő magassága csak az elengedés utáni rövid átmenetben változik,
-  ezért az alatta lévő tartalom nem ugrik;
+- a két hero között 12 px-es valódi rés fut, ezért a swipe közben két különálló
+  kártyának érződnek, nem egy összefüggő felületnek;
+- mindkét hero fixen 330 px magas: a karakterábra mobilon kompakt, kétoszlopos
+  kompozíciót kapott kisebb, de teljes ábrával és változatlan információval;
+- azonos magasság miatt az alatta lévő oldal egyáltalán nem mozdul swipe közben;
 - `prefers-reduced-motion` esetén minden bevezető és váltóanimáció kikapcsol;
 - a karakteroldal képkerete a self-réteg zsálya színét használja, az SVG külön
   krém vászna nélkül, így nem jelenik meg idegen fehér kártya a sötét heróban.

@@ -23,6 +23,8 @@ const LEVEL_CONFIG: Record<AccessLevel, { label: string; bg: string; color: stri
 
 const SELF_TOP_DIM_BG = "rgba(61,107,94,0.3)";
 const SELF_TOP_DIM_TEXT = "var(--color-surface-self-accent-soft)";
+const SWIPE_CARD_GAP = 12;
+const HERO_CARD_HEIGHT = 330;
 
 interface ProfileHeroProps {
   userName: string;
@@ -140,8 +142,9 @@ export function ProfileHero({
 
   const setSlidePositions = (side: "profile" | "glyph", offset = 0) => {
     const width = slideWidthRef.current || swipeFrameRef.current?.clientWidth || 1;
-    const profileX = side === "profile" ? offset : -width + offset;
-    const glyphX = side === "profile" ? width + offset : offset;
+    const travel = width + SWIPE_CARD_GAP;
+    const profileX = side === "profile" ? offset : -travel + offset;
+    const glyphX = side === "profile" ? travel + offset : offset;
     if (profileSlideRef.current) {
       profileSlideRef.current.style.transform = `translate3d(${profileX}px, 0, 0)`;
     }
@@ -163,8 +166,8 @@ export function ProfileHero({
     const measure = () => {
       slideWidthRef.current = frame.getBoundingClientRect().width || frame.clientWidth || 1;
       slideHeightsRef.current = {
-        profile: profileSlide.scrollHeight || profileSlide.getBoundingClientRect().height || 330,
-        glyph: glyphSlide?.scrollHeight || glyphSlide?.getBoundingClientRect().height || 330,
+        profile: profileSlide.getBoundingClientRect().height || HERO_CARD_HEIGHT,
+        glyph: glyphSlide?.getBoundingClientRect().height || HERO_CARD_HEIGHT,
       };
       setSlidePositions(heroSide);
       setFrameHeight(slideHeightsRef.current[heroSide]);
@@ -239,6 +242,7 @@ export function ProfileHero({
     const profileSlide = profileSlideRef.current;
     const glyphSlide = glyphSlideRef.current;
     const width = slideWidthRef.current || frame?.clientWidth || 1;
+    const travel = width + SWIPE_CARD_GAP;
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (
       !frame
@@ -259,11 +263,11 @@ export function ProfileHero({
     }
 
     transitionAnimationsRef.current.forEach((animation) => animation.cancel());
-    const currentProfileX = heroSide === "profile" ? offset : -width + offset;
-    const currentGlyphX = heroSide === "profile" ? width + offset : offset;
-    const targetProfileX = nextSide === "profile" ? 0 : -width;
-    const targetGlyphX = nextSide === "profile" ? width : 0;
-    const remaining = Math.abs(targetProfileX - currentProfileX) / width;
+    const currentProfileX = heroSide === "profile" ? offset : -travel + offset;
+    const currentGlyphX = heroSide === "profile" ? travel + offset : offset;
+    const targetProfileX = nextSide === "profile" ? 0 : -travel;
+    const targetGlyphX = nextSide === "profile" ? travel : 0;
+    const remaining = Math.abs(targetProfileX - currentProfileX) / travel;
     const duration = Math.round(Math.max(140, Math.min(230, 225 * remaining - Math.abs(velocityX) * 55)));
     const easing = nextSide === heroSide
       ? "cubic-bezier(0.2, 0.85, 0.25, 1)"
@@ -439,18 +443,18 @@ export function ProfileHero({
         onPointerMove={handleSwipeMove}
         onPointerUp={handleSwipeEnd}
         onPointerCancel={handleSwipeCancel}
-        style={{ height: "330px", touchAction: "pan-y" }}
+        style={{ height: `${HERO_CARD_HEIGHT}px`, touchAction: "pan-y" }}
       >
         <div
           ref={profileSlideRef}
           data-profile-swipe-motion
           aria-hidden={showingGlyph}
-          className="absolute inset-x-0 top-0 z-0 will-change-transform"
-          style={{ transform: showingGlyph ? "translate3d(-100%, 0, 0)" : "translate3d(0, 0, 0)" }}
+          className="absolute inset-x-0 top-0 z-0 h-[330px] will-change-transform"
+          style={{ transform: showingGlyph ? "translate3d(calc(-100% - 12px), 0, 0)" : "translate3d(0, 0, 0)" }}
         >
           <SurfaceHero
             variant="self"
-            className={glyphPair ? "min-h-[330px]" : undefined}
+            className={glyphPair ? "h-[330px]" : undefined}
             contentClassName="mx-auto max-w-4xl px-5 py-8 md:px-9 md:py-10"
             eyebrow={
         // Kikapcsolt paywallnál az „A te profilod" badge-ként jelenik meg,
@@ -602,20 +606,21 @@ export function ProfileHero({
         {glyphPair ? (
           <div
             ref={glyphSlideRef}
+            data-profile-glyph-slide
             aria-hidden={!showingGlyph}
-            className="absolute inset-x-0 top-0 z-0 will-change-transform"
-            style={{ transform: showingGlyph ? "translate3d(0, 0, 0)" : "translate3d(100%, 0, 0)" }}
+            className="absolute inset-x-0 top-0 z-0 h-[330px] will-change-transform"
+            style={{ transform: showingGlyph ? "translate3d(0, 0, 0)" : "translate3d(calc(100% + 12px), 0, 0)" }}
           >
           <SurfaceHero
             variant="self"
-            className="min-h-[330px]"
-            contentClassName="mx-auto max-w-4xl !px-5 !pb-7 !pt-5 md:!px-9 md:!pb-9 md:!pt-9"
+            className="h-[330px]"
+            contentClassName="mx-auto max-w-4xl !px-4 !py-4 md:!px-9 md:!pb-9 md:!pt-9"
             title={(
               <div
                 id="profile-hero-glyph-side"
-                className="grid min-h-[224px] items-center gap-6 md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
+                className="grid min-h-[258px] grid-cols-[112px_minmax(0,1fr)] items-center gap-3 md:min-h-[224px] md:grid-cols-[minmax(220px,0.9fr)_minmax(0,1.1fr)] md:gap-9"
               >
-                <div className="flex min-h-[192px] items-center justify-center overflow-hidden rounded-[20px] border border-white/15 bg-[var(--color-layer-self-soft)] p-2 md:min-h-[252px] md:p-3">
+                <div className="flex h-[188px] items-center justify-center overflow-hidden rounded-[18px] border border-white/15 bg-[var(--color-layer-self-soft)] p-1.5 md:h-auto md:min-h-[252px] md:rounded-[20px] md:p-3">
                   <TypeGlyph
                     primaryCode={glyphPair.primaryCode}
                     secondaryCode={glyphPair.secondaryCode}
@@ -625,20 +630,20 @@ export function ProfileHero({
                     secondaryUncertain={glyphUncertain}
                     variant="card"
                     canvas={false}
-                    className="max-h-[202px] w-full rounded-xl object-contain md:max-h-[252px]"
+                    className="max-h-[176px] w-full rounded-xl object-contain md:max-h-[252px]"
                   />
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 pt-10 md:pt-0">
                   <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                     {t("results.heroGlyphEyebrow", locale)}
                   </p>
-                  <h1 className="mt-2 break-words font-fraunces text-[34px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:text-[46px]">
+                  <h1 className="mt-1.5 break-words font-fraunces text-[27px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:mt-2 md:text-[46px]">
                     {personalityType}
                   </h1>
-                  <p className="mt-4 font-fraunces text-[17px] italic text-[var(--color-accent-primary-soft)] md:text-[20px]">
+                  <p className="mt-2 font-fraunces text-[14px] leading-snug italic text-[var(--color-accent-primary-soft)] md:mt-4 md:text-[20px]">
                     {glyphPairLabel}
                   </p>
-                  <p className="mt-3 max-w-[420px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  <p className="mt-2 max-w-[420px] text-[11px] leading-[1.45] text-[var(--color-text-on-inverse-muted)] md:mt-3 md:text-[14px] md:leading-relaxed">
                     {glyphGrammar}
                   </p>
                 </div>

@@ -51,7 +51,7 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
   });
 
   it("a reszponzív swipe-vezérlő a teljes karakterábra és a profil között vált", async () => {
-    render(
+    const { container } = render(
       <ProfileHero
         userName="Teszt Anna"
         completedAt="2026. augusztus 1."
@@ -69,6 +69,12 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
     const initialSwipeButton = screen.getByRole("button", { name: "Karakterábra megjelenítése" });
     expect(initialSwipeButton).toHaveClass("h-12", "w-12", "rounded-full");
     expect(screen.getByText("Karakterábra")).toHaveClass("hidden", "md:block");
+    expect(container.querySelector("[data-profile-swipe-frame]")).toHaveStyle({ height: "330px" });
+    expect(container.querySelector("[data-profile-swipe-motion]")).toHaveClass("h-[330px]");
+    expect(container.querySelector("[data-profile-glyph-slide]")).toHaveClass("h-[330px]");
+    expect(container.querySelector("[data-profile-glyph-slide]")?.getAttribute("style")).toContain(
+      "translate3d(13px",
+    );
 
     await userEvent.click(initialSwipeButton);
 
@@ -120,7 +126,7 @@ describe("ProfileHero — elsődleges CTA a sötét herón", () => {
       await waitFor(() => expect(animate).toHaveBeenCalledTimes(5));
       const profileFrames = animate.mock.calls[2]?.[0] as Keyframe[];
       const glyphFrames = animate.mock.calls[3]?.[0] as Keyframe[];
-      expect(profileFrames.at(-1)?.transform).toBe("translate3d(-1px, 0, 0)");
+      expect(profileFrames.at(-1)?.transform).toBe("translate3d(-13px, 0, 0)");
       expect(glyphFrames.at(-1)?.transform).toBe("translate3d(0px, 0, 0)");
       expect(profileFrames).toEqual(expect.not.arrayContaining([
         expect.objectContaining({ opacity: expect.anything() }),
