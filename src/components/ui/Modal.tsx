@@ -51,10 +51,20 @@ export function Modal({
   );
   const isBrand = design === "brand";
 
+  // Az onClose-t a hívók jellemzően inline arrow-ként adják át, így minden
+  // szülő-render új identitást jelent. Ha ez a billentyű-kezelőn át a
+  // fókusz-effect dep-jébe szivárog, a nyitott modal minden szülő-renderre
+  // újra a legelső elemre ugrik (gépelés közben elveszik a mező fókusza) —
+  // ezért refen keresztül olvassuk, és a handler identitása állandó marad.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        onCloseRef.current();
         return;
       }
 
@@ -81,7 +91,7 @@ export function Modal({
         }
       }
     },
-    [onClose]
+    []
   );
 
   useEffect(() => {

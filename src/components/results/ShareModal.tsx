@@ -11,7 +11,6 @@ import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { resolveGlyphPair } from "@/lib/type-glyph";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { ShareCardDownload } from "@/components/results/ShareCardDownload";
-import { track } from "@/lib/analytics/client";
 
 type EmailState = "idle" | "sending" | "sent" | "error" | "invalid";
 
@@ -32,12 +31,20 @@ export function ShareModal({
   onClose,
   preview = null,
   initialToken = null,
+  initialHasShare = false,
 }: {
   isOpen: boolean;
   onClose: () => void;
   preview?: ShareCardPreview | null;
   /** Szerverről érkező, már aktív link. A modal megnyitása nem hoz létre tokent. */
   initialToken?: string | null;
+  /**
+   * Van-e élő megosztás akkor is, ha a LEGUTÓBBI eredményhez nem tartozik
+   * token (újrakitöltés után a régi eredmény linkje még nyílik). A DELETE
+   * minden tokent visszavon, ezért a visszavonást ehhez kötjük — különben a
+   * kint maradt régi link a felületről nem lenne visszavonható.
+   */
+  initialHasShare?: boolean;
 }) {
   const { locale } = useLocale();
   const previewGlyph = preview?.glyphDimensions
@@ -52,7 +59,9 @@ export function ShareModal({
   const [loadError, setLoadError] = useState(false);
   const [copied, setCopied] = useState(false);
   const [revoked, setRevoked] = useState(false);
-  const [busy, setBusy] = useState(false);
+  // Melyik művelet fut — a „Link létrehozása…" felirat csak a link-ághoz
+  // tartozik; egy közös `busy` a visszavonás alatt is átírta a Link gombot.
+  const [pending, setPending] = useState<null | "link" | "revoke">(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [confirmRevoke, setConfirmRevoke] = useState(false);
 
@@ -64,7 +73,7 @@ export function ShareModal({
   const shareUrl = shareToken
     ? `${origin}/share/${shareToken}`
     : null;
-  const hasActiveShare = Boolean(shareToken) && !revoked;
+  const hasActiveShare = (Boolean(shareToken) || initialHasShare) && !revoked;
 
   useEffect(() => {
     setOrigin(window.location.origin);
@@ -84,7 +93,7 @@ export function ShareModal({
   }, [isOpen]);
 
   const createLink = useCallback(async (): Promise<string | null> => {
-    setBusy(true);
+    setPending("link");
     setLoadError(false);
     try {
       const res = await fetch("/api/profile/share", { method: "POST" });
@@ -97,7 +106,7 @@ export function ShareModal({
       setLoadError(true);
       return null;
     } finally {
-      setBusy(false);
+      setPending(null);
     }
   }, []);
 
@@ -107,7 +116,6 @@ export function ShareModal({
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
-      track("results.export", { format: "link" });
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopied(false), 2400);
     } catch {
@@ -145,7 +153,7 @@ export function ShareModal({
   };
 
   const handleRevoke = async () => {
-    setBusy(true);
+    setPending("revoke");
     try {
       const res = await fetch("/api/profile/share", { method: "DELETE" });
       if (!res.ok) throw new Error("REVOKE_FAILED");
@@ -158,7 +166,7 @@ export function ShareModal({
     } catch {
       setLoadError(true);
     } finally {
-      setBusy(false);
+      setPending(null);
     }
   };
 
@@ -241,8 +249,7 @@ export function ShareModal({
               <button
                 type="button"
                 onClick={() => void handleCopy()}
-                disabled={busy}
-                aria-label={t("content.shareCopyLink", locale)}
+                disabled={pending !== null}
                 className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-semibold transition ${copied ? "border-sage/40 bg-sage-soft text-sage-dark" : "border-[var(--color-border-soft)] bg-surface-card text-ink-body hover:bg-[var(--color-surface-subtle)] hover:text-ink"} disabled:cursor-not-allowed disabled:opacity-50`}
               >
                 {copied ? <SuccessCheck /> : (
@@ -251,7 +258,7 @@ export function ShareModal({
                     <path d="M14 11a5 5 0 0 0-7.07-.07l-2 2A5 5 0 0 0 12 20l1.15-1.15" />
                   </svg>
                 )}
-                {busy
+                {pending === "link"
                   ? t("content.shareCreating", locale)
                   : copied
                     ? t("content.shareCopied", locale)
@@ -359,7 +366,7 @@ export function ShareModal({
                       <Button type="button" variant="secondary" size="sm" onClick={() => setConfirmRevoke(false)}>
                         {t("common.cancel", locale)}
                       </Button>
-                      <Button type="button" variant="destructive" size="sm" disabled={busy} onClick={() => void handleRevoke()}>
+                      <Button type="button" variant="destructive" size="sm" disabled={pending !== null} onClick={() => void handleRevoke()}>
                         {t("content.shareRevokeConfirm", locale)}
                       </Button>
                     </div>

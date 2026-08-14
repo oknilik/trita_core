@@ -21,6 +21,8 @@ interface EnvItem {
 interface IdealEnvironmentSectionProps {
   items: EnvItem[];
   isUnlocked: boolean;
+  /** A befoglaló felület már kiírja a szekció címét (ld. HowYouWorkSection). */
+  hideHeading?: boolean;
 }
 
 // A sor kanonikus kulcsát és szintjét a profile-content visszafejtői adják
@@ -43,21 +45,27 @@ function getDescription(value: string): string {
   return idx >= 0 ? value.slice(idx + 3).trim() : value;
 }
 
-export function IdealEnvironmentSection({ items, isUnlocked }: IdealEnvironmentSectionProps) {
+export function IdealEnvironmentSection({
+  items,
+  isUnlocked,
+  hideHeading = false,
+}: IdealEnvironmentSectionProps) {
   const { locale } = useLocale();
 
   if (!isUnlocked || items.length === 0) return null;
 
   return (
-    <div className="py-8">
-      <div className="mb-4 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-          {t("results.envEyebrow", locale)}
-        </p>
-      </div>
+    <div className={hideHeading ? undefined : "py-8"}>
+      {!hideHeading && (
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+          <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+            {t("results.envEyebrow", locale)}
+          </p>
+        </div>
+      )}
 
-      <div className="mt-4 flex flex-col gap-2.5">
+      <div className={hideHeading ? "flex flex-col gap-2.5" : "mt-4 flex flex-col gap-2.5"}>
         {items.map((item) => {
           const envKey = resolveEnvRowKey(item.label);
           const level = envKey ? resolveEnvLevel(envKey, item.value) : null;

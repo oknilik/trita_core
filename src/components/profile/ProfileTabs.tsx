@@ -165,6 +165,11 @@ export interface ProfileTabsProps {
   heroInsight?: string;
   /** Már élő publikus megosztás tokenje; null esetén a modal csak szándékra hoz létre linket. */
   shareToken?: string | null;
+  /**
+   * Van-e BÁRMELY élő megosztás (nem csak a legutóbbi eredményen) — a
+   * visszavonás ettől függ, mert a DELETE is minden tokent visszavon.
+   */
+  hasActiveShare?: boolean;
   /** Plus content sections */
   plusContent?: {
     introText: string;
@@ -566,6 +571,7 @@ export function ProfileTabs({
   personalityType,
   heroInsight,
   shareToken = null,
+  hasActiveShare = false,
   plusContent,
   bridgeNextStep,
   careerModuleHidden = false,
@@ -903,6 +909,7 @@ export function ProfileTabs({
         isOpen={shareOpen}
         onClose={() => setShareOpen(false)}
         initialToken={shareToken}
+        initialHasShare={hasActiveShare}
         preview={{
           userName: name,
           personalityType: personalityType ?? t("content.personalityProfileFallback", locale),

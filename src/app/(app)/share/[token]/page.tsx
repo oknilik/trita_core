@@ -22,6 +22,10 @@ import { loadShareOgModel } from "@/lib/share-og";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
 import { buildWorkstyleContent } from "@/lib/workstyle-content";
+import { dimensionDefinition } from "@/lib/dimension-description";
+import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
+import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
+import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { t, tf } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
@@ -56,14 +60,15 @@ export async function generateMetadata({
   };
 }
 
-function dimensionDefinition(description: string): string {
-  const facetMarker = description.search(/ Négy facetje | Its four facets /);
-  return facetMarker >= 0 ? description.slice(0, facetMarker).trim() : description;
-}
-
-function environmentLevel(value: string): string {
-  const separator = value.search(/ [–—] /);
-  return separator >= 0 ? value.slice(0, separator).trim() : value;
+// A dimenzió személyre szabott értelmezése — a megosztott lapon ugyanaz a
+// sáv-választás fut, mint a saját eredmény-oldalon: a szám mellé MINDIG a
+// pontszámhoz tartozó szöveg megy ki, nem a dimenzió általános definíciója.
+function getInsight(
+  score: number,
+  insights: { low: string; mid: string; high: string },
+): string {
+  const range = score < 40 ? "low" : score < 70 ? "mid" : "high";
+  return insights[range];
 }
 
 export default async function SharedProfilePage({
@@ -137,10 +142,14 @@ export default async function SharedProfilePage({
     .flatMap((dim) => {
       const score = dimensionScores[dim.code];
       if (typeof score !== "number") return [];
+      const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
+        low: string; mid: string; high: string;
+      };
       return [{
         code: dim.code,
         label: (dim.labelByLocale?.[locale] ?? dim.label) as string,
         score,
+        insight: getInsight(score, insights),
         description: (dim.descriptionByLocale?.[locale] ?? dim.description) as string,
       }];
     });
@@ -345,7 +354,13 @@ export default async function SharedProfilePage({
                     <span className="inline-flex rounded-full px-2.5 py-1 text-micro font-semibold" style={{ backgroundColor: colors.soft, color: colors.strong }}>
                       {poleAwareDimensionLabel(dimension.code, dimension.score, locale)}
                     </span>
-                    <p className="mt-3 max-w-2xl text-caption leading-relaxed text-ink-body">
+                    {/* Előbb a személyre szabott értelmezés (ez a megosztás
+                        tétje), utána halkabban a dimenzió definíciója —
+                        az adja a kontextust annak, aki most találkozik vele. */}
+                    <p className="mt-3 max-w-2xl text-caption font-medium leading-relaxed text-ink">
+                      {dimension.insight}
+                    </p>
+                    <p className="mt-2.5 max-w-2xl text-caption leading-relaxed text-muted">
                       {dimensionDefinition(dimension.description)}
                     </p>
                   </div>
@@ -371,14 +386,11 @@ export default async function SharedProfilePage({
                 </span>
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
               </summary>
+              {/* A saját eredmény-oldallal AZONOS narratíva (közös producer:
+                  workstyle-content) — a korábbi sablonmondat helyett, ami
+                  minden profilnak ugyanazt a két dimenzió-nevet mondta fel. */}
               <div className="border-t border-[var(--color-border-soft)] px-5 py-5">
-                <p className="text-caption leading-relaxed text-ink-body">
-                  {tf("results.shareWorkSummary", locale, {
-                    type: personalityType || t("content.personalityProfileFallback", locale),
-                    first: topDimensions[0]?.label ?? "—",
-                    second: topDimensions[1]?.label ?? "—",
-                  })}
-                </p>
+                <HowYouWorkSection parts={workstyle.howYouWorkParts} isUnlocked hideHeading />
               </div>
             </details>
 
@@ -390,13 +402,34 @@ export default async function SharedProfilePage({
                 </span>
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
               </summary>
-              <div className="grid gap-2.5 border-t border-[var(--color-border-soft)] px-5 py-5 sm:grid-cols-2">
-                {workstyle.envItems.map((item) => (
-                  <div key={item.label} className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-3">
-                    <p className="text-micro font-semibold uppercase tracking-wide text-muted">{item.label}</p>
-                    <p className="mt-1 text-sm font-medium text-ink">{environmentLevel(item.value)}</p>
-                  </div>
-                ))}
+              {/* A szint-szó a kanonikus feloldóból jön (resolveEnvLevel), nem
+                  az érték-szöveg vágásából — a hedge-sáv („Inkább magas") és a
+                  magyarázó fél mondat így nem esik ki a megosztott nézetből. */}
+              <div className="border-t border-[var(--color-border-soft)] px-5 py-5">
+                <IdealEnvironmentSection items={workstyle.envItems} isUnlocked hideHeading />
+              </div>
+            </details>
+
+            <details className="group overflow-hidden rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]">
+              <summary className="flex min-h-[82px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
+                <span>
+                  <strong className="block font-fraunces text-[20px] font-medium text-ink">{t("results.shareChapterRoleFit", locale)}</strong>
+                  <span className="mt-1 block text-xs leading-relaxed text-muted">{t("results.shareChapterRoleFitBody", locale)}</span>
+                </span>
+                <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
+              </summary>
+              <div className="border-t border-[var(--color-border-soft)] px-5 py-5">
+                <RoleFitSection
+                  strongFit={workstyle.roleFit.strong}
+                  mightWork={workstyle.roleFit.might}
+                  needsPrep={workstyle.roleFit.prep}
+                  secondary={workstyle.roleFit.secondary}
+                  strongRoles={workstyle.roleFit.strongRoles}
+                  mightRoles={workstyle.roleFit.mightRoles}
+                  prepRoles={workstyle.roleFit.prepRoles}
+                  isUnlocked
+                  hideHeading
+                />
               </div>
             </details>
 

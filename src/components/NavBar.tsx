@@ -173,7 +173,7 @@ export function NavBar({
               href="/try"
               className="rounded-lg bg-[var(--color-bronze-dark)] px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] sm:px-4"
             >
-              {locale === "hu" ? "Saját profil készítése" : "Create my profile"}
+              {t("nav.ctaSharedOwnProfile", locale)}
             </Link>
           </div>
         </div>

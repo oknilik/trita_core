@@ -209,6 +209,59 @@ describe("ShareModal", () => {
     await expect(navigator.clipboard.readText()).resolves.toMatch(/\/share\/tok123$/);
   });
 
+  it("offers revocation for a share that lives on an older result (no current token)", async () => {
+    // Újrakitöltés után a legutóbbi eredményhez nem tartozik token, a korábbi
+    // eredmény linkje viszont még nyílik — és a DELETE azt is visszavonja.
+    // Ha a visszavonás a látható tokenhez lenne kötve, a kint maradt link a
+    // felületről nem lenne visszavonható.
+    const user = userEvent.setup();
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (url === "/api/profile/share" && init?.method === "DELETE") {
+        return Promise.resolve({ ok: true, json: () => Promise.resolve({ ok: true }) });
+      }
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    });
+    render(<ShareModal isOpen initialToken={null} initialHasShare onClose={vi.fn()} />);
+
+    expect(screen.getByText(t("content.shareStatusActive", "en"))).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: t("content.shareRevokeShort", "en") }));
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareRevokeConfirm", "en") }),
+    );
+
+    expect(await screen.findByText(t("content.shareRevoked", "en"))).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledWith("/api/profile/share", { method: "DELETE" });
+    expect(screen.queryByText(t("content.shareStatusActive", "en"))).not.toBeInTheDocument();
+  });
+
+  it("does not relabel the link action while a revocation is running", async () => {
+    const user = userEvent.setup();
+    let resolveDelete: (value: unknown) => void = () => {};
+    fetchMock.mockImplementation((url: string, init?: RequestInit) => {
+      if (url === "/api/profile/share" && init?.method === "DELETE") {
+        return new Promise((resolve) => {
+          resolveDelete = resolve;
+        });
+      }
+      return Promise.reject(new Error(`unexpected fetch: ${url}`));
+    });
+    render(<ShareModal isOpen initialToken="oldtok" onClose={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: t("content.shareRevokeShort", "en") }));
+    await user.click(
+      screen.getByRole("button", { name: t("content.shareRevokeConfirm", "en") }),
+    );
+
+    // Visszavonás közben a Link gomb NEM állítja azt, hogy linket készít.
+    expect(
+      screen.queryByText(t("content.shareCreating", "en")),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: t("content.shareCopyLink", "en") })).toBeDisabled();
+
+    resolveDelete({ ok: true, json: () => Promise.resolve({ ok: true }) });
+    expect(await screen.findByText(t("content.shareRevoked", "en"))).toBeInTheDocument();
+  });
+
   it("keeps the generated share active when email delivery fails", async () => {
     const user = userEvent.setup();
     fetchMock.mockResolvedValue({

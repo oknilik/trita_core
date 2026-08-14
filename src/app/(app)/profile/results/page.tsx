@@ -99,6 +99,7 @@ export default async function ProfileResultsPage({
     feedbackRecords,
     journeySnapshot,
     careerHiddenMembership,
+    activeShareCount,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -159,6 +160,18 @@ export default async function ProfileResultsPage({
     // és a navigációval (module-visibility.ts). Itt már csak a PDF
     // karrier-blokkjára hat, a fül 2026-07-31 óta külön oldal.
     isCareerModuleHidden(profile.id),
+    // Élő megosztás MINDEN self-eredményen, nem csak a legutóbbin: a
+    // /share/[token] bármelyik eredmény tokenjével nyílik, és a DELETE is az
+    // összeset vonja vissza. Újrakitöltés után a régi eredményhez tartozó link
+    // marad kint — a visszavonást ezért erre kell kötni, nem a latestResult
+    // tokenjére (különben a felületről nem lenne visszavonható).
+    prisma.assessmentResult.count({
+      where: {
+        userProfileId: profile.id,
+        isSelfAssessment: true,
+        shareToken: { not: null },
+      },
+    }),
   ]);
 
   // Karrier-illeszkedés: a szerveren, EGY forrásból — a fül kezdeti nézete és
@@ -662,6 +675,7 @@ export default async function ProfileResultsPage({
           personalityType={personalityType}
           heroInsight={heroInsight}
           shareToken={latestResult.shareToken}
+          hasActiveShare={activeShareCount > 0}
           plusContent={plusContent}
           careerResult={careerResult}
           careerModuleHidden={Boolean(careerHiddenMembership)}

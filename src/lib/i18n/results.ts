@@ -635,17 +635,18 @@ export const resultsTranslations = {
     shareExploreTitle: { hu: "Innen akkor menj tovább, amikor szeretnél.", en: "Go deeper when you are ready." },
     shareChapterWork: { hu: "Ahogy működik", en: "How this profile operates" },
     shareChapterWorkBody: {
-      hu: "A típus és a legkarakteresebb dimenziók közös mintázata.",
-      en: "The combined pattern of the type and most distinctive dimensions.",
-    },
-    shareWorkSummary: {
-      hu: "A profil típusa „{type}”; a két legkarakteresebb jelzés {first} és {second}. Ezek valószínű működési irányok, amelyeket mindig a konkrét helyzetekkel együtt érdemes értelmezni.",
-      en: "In the {type} profile, {first} and {second} are the two most distinctive signals. Treat them as likely operating patterns and interpret them alongside real situations.",
+      hu: "Fő mintázat, figyelendő pont és kontextus a mért dimenziókból.",
+      en: "Key pattern, what to watch, and context from the measured dimensions.",
     },
     shareChapterEnvironment: { hu: "Ideális környezet", en: "Ideal environment" },
     shareChapterEnvironmentBody: {
       hu: "Azok a környezeti pólusok, amelyek várhatóan támogatják ezt a profilt.",
       en: "Environmental poles that are likely to support this profile.",
+    },
+    shareChapterRoleFit: { hu: "Szerep-illeszkedés", en: "Role fit" },
+    shareChapterRoleFitBody: {
+      hu: "Milyen jellegű munkakörökben mozog otthonosabban ez a profil, és mi kíván tudatosabb felkészülést.",
+      en: "The kinds of roles this profile moves in most naturally, and what needs more deliberate preparation.",
     },
     shareChapterRoles: { hu: "Valószínű csapatszerepek", en: "Likely team roles" },
     shareChapterRolesBody: {
@@ -904,8 +905,8 @@ export const resultsTranslations = {
     },
     emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
     shareVisibleSummary: {
-      hu: "A link birtokában látható lesz a profilod összképe, hat dimenziója, munkastílusa, ideális környezete és becsült csapatszerepei. A megosztást bármikor visszavonhatod.",
-      en: "Anyone with the link can see your profile overview, six dimensions, work style, ideal environment, and estimated team roles. You can revoke access at any time.",
+      hu: "A link megnyitója ezt látja: mind a hat dimenziód pontszámmal és személyre szabott értelmezéssel, a munkastílus-leírásod, az ideális környezeted és szerep-illeszkedésed, valamint a becsült csapatszerepeid. A megosztást bármikor visszavonhatod.",
+      en: "Whoever opens the link sees: all six of your dimensions with scores and personalized interpretation, your work-style narrative, your ideal environment and role fit, and your estimated team roles. You can revoke sharing at any time.",
     },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a hat személyiségdimenzió: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",
@@ -1728,7 +1729,6 @@ export const resultsTranslations = {
     shareModalTitle: { hu: "Profil megosztása", en: "Share your profile" },
     shareCreating: { hu: "Link létrehozása…", en: "Creating link…" },
     shareCopyLink: { hu: "Link másolása", en: "Copy link" },
-    shareLinkCompact: { hu: "Link", en: "Link" },
     shareCopied: { hu: "Másolva", en: "Copied" },
     shareEmailCompact: { hu: "Email", en: "Email" },
     shareEmailLabel: { hu: "Címzett email-címe", en: "Recipient email" },
@@ -1739,7 +1739,6 @@ export const resultsTranslations = {
     shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
     shareEmailSend: { hu: "Küldés", en: "Send" },
     shareEmailSending: { hu: "Küldés…", en: "Sending…" },
-    shareEmailSent: { hu: "Email elküldve", en: "Email sent" },
     shareEmailSentTo: { hu: "Elküldtük ide:", en: "Sent to:" },
     shareAnotherRecipient: { hu: "Másik címzett", en: "Another recipient" },
     shareEmailInvalid: { hu: "Érvénytelen email-cím", en: "Invalid email address" },
