@@ -104,6 +104,7 @@ describe("ShareModal", () => {
     expect(screen.getByRole("button", { name: t("content.shareCopyLink", "en") })).toBeEnabled();
     expect(screen.getByRole("button", { name: t("content.shareEmailCompact", "en") })).toBeEnabled();
     expect(screen.getByRole("button", { name: t("results.shareCardDownload", "en") })).toBeEnabled();
+    expect(screen.getByText(t("results.shareVisibleSummary", "en"))).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /linkedin/i })).not.toBeInTheDocument();
   });
 

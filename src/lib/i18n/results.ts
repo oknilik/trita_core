@@ -595,12 +595,12 @@ export const resultsTranslations = {
     },
     sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
     shareHeroInsight: {
-      hu: "A profil legerősebb jelzései: {first} és {second}.",
-      en: "The profile's strongest signals are {first} and {second}.",
+      hu: "A profil legkarakteresebb jelzései: {first} és {second}.",
+      en: "The profile's most distinctive signals are {first} and {second}.",
     },
     shareHeroInsightSingle: {
-      hu: "A profil legerősebb jelzése: {first}.",
-      en: "The profile's strongest signal is {first}.",
+      hu: "A profil legkarakteresebb jelzése: {first}.",
+      en: "The profile's most distinctive signal is {first}.",
     },
     shareSummaryEyebrow: { hu: "Gyors összkép", en: "Quick overview" },
     shareSummaryTitle: {
@@ -611,20 +611,20 @@ export const resultsTranslations = {
       hu: "Három kapaszkodó a közös értelmezéshez.",
       en: "Three anchors for making sense of the profile together.",
     },
-    shareQuickNatural: { hu: "A legerősebb jelzés", en: "Strongest signal" },
+    shareQuickNatural: { hu: "A legkarakteresebb jelzés", en: "Most distinctive signal" },
     shareQuickNaturalText: {
-      hu: "{label}: {score}/100 — ez a profil egyik legmeghatározóbb dimenziója.",
-      en: "{label}: {score}/100 — one of the profile's most defining dimensions.",
+      hu: "{label}: {score}/100 — ez a pólus rajzolódik ki a legkarakteresebben a profilban.",
+      en: "{label}: {score}/100 — this is the profile's most distinctly expressed pole.",
     },
-    shareQuickNuance: { hu: "Ami árnyalja a képet", en: "What adds nuance" },
+    shareQuickNuance: { hu: "A másik karakteres jelzés", en: "Another distinctive signal" },
     shareQuickNuanceText: {
-      hu: "{label}: {score}/100 — eltérő működési pólus, nem minősítés vagy hiányosság.",
-      en: "{label}: {score}/100 — a different operating pole, not a rating or deficiency.",
+      hu: "{label}: {score}/100 — egy másik markáns működési pólus, nem minősítés vagy hiányosság.",
+      en: "{label}: {score}/100 — another pronounced operating pole, not a rating or deficiency.",
     },
     shareQuickUse: { hu: "Így érdemes használni", en: "How to use this" },
     shareQuickUseText: {
-      hu: "A profil beszélgetésindító: közös helyzetek és konkrét példák mentén válik igazán hasznossá.",
-      en: "Use the profile as a conversation starter, grounded in shared situations and concrete examples.",
+      hu: "A profil hipotézis és beszélgetésindító, nem kész ítélet: közös helyzetek és konkrét példák mentén válik igazán hasznossá.",
+      en: "Treat the profile as a hypothesis and conversation starter, not a verdict; ground it in shared situations and concrete examples.",
     },
     shareDimensionsTitle: { hu: "A hat fő dimenzió", en: "The six core dimensions" },
     shareDimensionsBody: {
@@ -635,12 +635,12 @@ export const resultsTranslations = {
     shareExploreTitle: { hu: "Innen akkor menj tovább, amikor szeretnél.", en: "Go deeper when you are ready." },
     shareChapterWork: { hu: "Ahogy működik", en: "How this profile operates" },
     shareChapterWorkBody: {
-      hu: "A típus és a legerősebb dimenziók közös mintázata.",
-      en: "The combined pattern of the type and strongest dimensions.",
+      hu: "A típus és a legkarakteresebb dimenziók közös mintázata.",
+      en: "The combined pattern of the type and most distinctive dimensions.",
     },
     shareWorkSummary: {
-      hu: "A profil típusa „{type}”; a két legerősebb jelzés {first} és {second}. Ezek valószínű működési irányok, amelyeket mindig a konkrét helyzetekkel együtt érdemes értelmezni.",
-      en: "In the {type} profile, {first} and {second} are the two strongest signals. Treat them as likely operating patterns and interpret them alongside real situations.",
+      hu: "A profil típusa „{type}”; a két legkarakteresebb jelzés {first} és {second}. Ezek valószínű működési irányok, amelyeket mindig a konkrét helyzetekkel együtt érdemes értelmezni.",
+      en: "In the {type} profile, {first} and {second} are the two most distinctive signals. Treat them as likely operating patterns and interpret them alongside real situations.",
     },
     shareChapterEnvironment: { hu: "Ideális környezet", en: "Ideal environment" },
     shareChapterEnvironmentBody: {
@@ -904,8 +904,8 @@ export const resultsTranslations = {
     },
     emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
     shareVisibleSummary: {
-      hu: "A link megnyitója ezt látja: mind a hat dimenziód pontszámmal és értelmezéssel, a munkastílus-leírásod, az ideális környezeted és szerep-illeszkedésed, valamint a csapatszerep-hajlamaid.",
-      en: "Whoever opens the link sees: all six of your dimensions with scores and interpretation, your work-style narrative, your ideal environment and role fit, and your team-role tendencies.",
+      hu: "A link birtokában látható lesz a profilod összképe, hat dimenziója, munkastílusa, ideális környezete és becsült csapatszerepei. A megosztást bármikor visszavonhatod.",
+      en: "Anyone with the link can see your profile overview, six dimensions, work style, ideal environment, and estimated team roles. You can revoke access at any time.",
     },
     radarNote: {
       hu: "A hatszög az önértékelésed alapján rajzolt profil — minél kijjebb ér egy pont, annál erősebb az adott dimenzió. A betűk fentről körben a hat személyiségdimenzió: H – Becsületesség-Alázat · E – Emocionalitás · X – Extraverzió · A – Barátságosság · C – Lelkiismeretesség · O – Nyitottság.",

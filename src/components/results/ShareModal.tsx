@@ -107,6 +107,7 @@ export function ShareModal({
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
+      track("results.export", { format: "link" });
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => setCopied(false), 2400);
     } catch {
@@ -230,13 +231,16 @@ export function ShareModal({
               </div>
             ) : null}
 
+            {preview ? (
+              <p className="text-xs leading-relaxed text-muted">
+                {t("results.shareVisibleSummary", locale)}
+              </p>
+            ) : null}
+
             <div className={`grid gap-2 ${preview && previewGlyph ? "grid-cols-3" : "grid-cols-2"}`}>
               <button
                 type="button"
-                onClick={() => {
-                  track("results.export", { format: "link" });
-                  void handleCopy();
-                }}
+                onClick={() => void handleCopy()}
                 disabled={busy}
                 aria-label={t("content.shareCopyLink", locale)}
                 className={`flex min-h-[64px] flex-col items-center justify-center gap-1.5 rounded-xl border px-2 py-2 text-xs font-semibold transition ${copied ? "border-sage/40 bg-sage-soft text-sage-dark" : "border-[var(--color-border-soft)] bg-surface-card text-ink-body hover:bg-[var(--color-surface-subtle)] hover:text-ink"} disabled:cursor-not-allowed disabled:opacity-50`}
@@ -251,7 +255,7 @@ export function ShareModal({
                   ? t("content.shareCreating", locale)
                   : copied
                     ? t("content.shareCopied", locale)
-                    : t("content.shareLinkCompact", locale)}
+                    : t("content.shareCopyLink", locale)}
               </button>
 
               <button

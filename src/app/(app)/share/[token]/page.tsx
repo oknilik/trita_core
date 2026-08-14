@@ -195,35 +195,40 @@ export default async function SharedProfilePage({
     { hu: "Harmadik", en: "Tertiary" },
   ];
 
-  const rankedDimensions = [...dimensions].sort((a, b) => b.score - a.score);
-  const strongestDimension = rankedDimensions[0] ?? null;
-  const lowestDimension = rankedDimensions[rankedDimensions.length - 1] ?? null;
-  const topDimensions = rankedDimensions.slice(0, 2);
+  // A dimenziók bipolárisak: egy alacsony pontszám ugyanúgy karakteres
+  // működési pólus lehet, mint egy magas. Ezért nem a nyers pontszámot,
+  // hanem a semleges középponttól való eltérést rangsoroljuk.
+  const distinctiveDimensions = [...dimensions].sort(
+    (a, b) => Math.abs(b.score - 50) - Math.abs(a.score - 50),
+  );
+  const mostDistinctiveDimension = distinctiveDimensions[0] ?? null;
+  const secondDistinctiveDimension = distinctiveDimensions[1] ?? null;
+  const topDimensions = distinctiveDimensions.slice(0, 2);
   const sharedHeroInsight = topDimensions.length >= 2
     ? tf("results.shareHeroInsight", locale, {
         first: topDimensions[0].label,
         second: topDimensions[1].label,
       })
-    : strongestDimension
-      ? tf("results.shareHeroInsightSingle", locale, { first: strongestDimension.label })
+    : mostDistinctiveDimension
+      ? tf("results.shareHeroInsightSingle", locale, { first: mostDistinctiveDimension.label })
       : "";
 
   const quickSummary = [
     {
       label: t("results.shareQuickNatural", locale),
-      text: strongestDimension
+      text: mostDistinctiveDimension
         ? tf("results.shareQuickNaturalText", locale, {
-            label: strongestDimension.label,
-            score: strongestDimension.score,
+            label: mostDistinctiveDimension.label,
+            score: mostDistinctiveDimension.score,
           })
         : "",
     },
     {
       label: t("results.shareQuickNuance", locale),
-      text: lowestDimension
+      text: secondDistinctiveDimension
         ? tf("results.shareQuickNuanceText", locale, {
-            label: lowestDimension.label,
-            score: lowestDimension.score,
+            label: secondDistinctiveDimension.label,
+            score: secondDistinctiveDimension.score,
           })
         : "",
     },
@@ -322,7 +327,7 @@ export default async function SharedProfilePage({
               return (
                 <details
                   key={dimension.code}
-                  open={dimension.code === strongestDimension?.code}
+                  open={dimension.code === mostDistinctiveDimension?.code}
                   className="group overflow-hidden rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]"
                 >
                   <summary className="flex min-h-[56px] cursor-pointer list-none items-center gap-3 px-4 py-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-state-focus-ring)] [&::-webkit-details-marker]:hidden">
