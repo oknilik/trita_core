@@ -14,6 +14,8 @@ interface RoleFitSectionProps {
   mightRoles?: string[];
   prepRoles?: string[];
   isUnlocked: boolean;
+  /** A befoglaló felület már kiírja a szekció címét (ld. HowYouWorkSection). */
+  hideHeading?: boolean;
 }
 
 const TIERS = [
@@ -52,6 +54,7 @@ export function RoleFitSection({
   mightRoles,
   prepRoles,
   isUnlocked,
+  hideHeading = false,
 }: RoleFitSectionProps) {
   const { locale } = useLocale();
 
@@ -65,13 +68,15 @@ export function RoleFitSection({
   };
 
   return (
-    <div className="py-8">
-      <div className="mb-4 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-          {t("results.roleFitEyebrow", locale)}
-        </p>
-      </div>
+    <div className={hideHeading ? undefined : "py-8"}>
+      {!hideHeading && (
+        <div className="mb-4 flex items-center gap-2.5">
+          <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+          <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+            {t("results.roleFitEyebrow", locale)}
+          </p>
+        </div>
+      )}
 
       {/* Másodlagos dimenzió árnyalása (P2.2) — a PDF-fel egyező helyen,
           a sávok előtt. */}

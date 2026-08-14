@@ -16,6 +16,7 @@ interface ShareCardDownloadProps {
   personalityType: string;
   topDims: Array<{ label: string; score: number }>;
   glyph: { primaryCode: string; secondaryCode: string; intensity: number };
+  compact?: boolean;
 }
 
 const CARD_SIZE = 1080;
@@ -33,6 +34,7 @@ export function ShareCardDownload({
   personalityType,
   topDims,
   glyph,
+  compact = false,
 }: ShareCardDownloadProps) {
   const { locale } = useLocale();
   const glyphHostRef = useRef<HTMLDivElement>(null);
@@ -156,7 +158,7 @@ export function ShareCardDownload({
   };
 
   return (
-    <div>
+    <div className={compact ? "h-full" : undefined}>
       {/* Rejtett, teljes méretű glyph — ebből szerializálunk. A modal-beli
           kis badge-változat helyett a card-variánst rajzoljuk a képre. */}
       <div ref={glyphHostRef} aria-hidden className="pointer-events-none fixed -left-[9999px] top-0 h-[400px] w-[360px]">
@@ -170,8 +172,8 @@ export function ShareCardDownload({
         />
       </div>
 
-      {/* Halk, másodlagos szöveg-link (nem kártya-blokk): a modal fő akciói
-          a link-másolás és az email-küldés — a kép-letöltés kiegészítő út. */}
+      {/* A modalban kompakt csatornagombként, más kontextusban halk
+          szöveg-linkként jelenik meg; a generálási logika közös marad. */}
       <button
         type="button"
         onClick={() => {
@@ -180,11 +182,23 @@ export function ShareCardDownload({
           void handleClick();
         }}
         disabled={busy}
-        className="inline-flex min-h-[44px] items-center gap-1.5 text-caption font-medium text-muted underline decoration-sand underline-offset-4 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+        aria-label={t("results.shareCardDownload", locale)}
+        className={compact
+          ? "flex min-h-[64px] h-full w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-[var(--color-border-soft)] bg-surface-card px-2 py-2 text-xs font-semibold text-ink-body transition hover:border-sage/40 hover:bg-[var(--color-surface-subtle)] hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
+          : "inline-flex min-h-[44px] items-center gap-1.5 text-caption font-medium text-muted underline decoration-sand underline-offset-4 transition hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"}
       >
+        {compact ? (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="3" />
+            <circle cx="8.5" cy="8.5" r="1.5" />
+            <path d="m21 15-5-5L5 21" />
+          </svg>
+        ) : null}
         {busy
           ? t("results.shareCardWorking", locale)
-          : t("results.shareCardDownload", locale)}
+          : compact
+            ? t("results.shareCardCompact", locale)
+            : t("results.shareCardDownload", locale)}
       </button>
       {error ? (
         <p className="mt-1 text-xs text-state-error-fg">

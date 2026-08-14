@@ -69,7 +69,9 @@ export async function POST(request: Request) {
       qrPng,
     });
   } catch {
-    return NextResponse.json({ error: "SEND_FAILED" }, { status: 500 });
+    // A token ekkor már létrejöhetett. Visszaadjuk, hogy a kliens ne mutasson
+    // tévesen inaktív állapotot pusztán a kézbesítés hibája miatt.
+    return NextResponse.json({ error: "SEND_FAILED", token }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, token });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useOverlayTransition } from "./useOverlayTransition";
 
@@ -22,6 +22,8 @@ interface ModalProps {
   design?: "default" | "brand";
   hideCloseButton?: boolean;
   hideHeader?: boolean;
+  closeLabel?: string;
+  mobilePosition?: "bottom" | "center";
 }
 
 export function Modal({
@@ -35,21 +37,61 @@ export function Modal({
   design = "brand",
   hideCloseButton = false,
   hideHeader = false,
+  closeLabel = "Close",
+  mobilePosition = "bottom",
 }: ModalProps) {
   const [mounted, setMounted] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const modalId = useId().replaceAll(":", "");
+  const titleId = `modal-title-${modalId}`;
+  const descriptionId = description ? `${titleId}-description` : undefined;
   const { shouldRender, isEntered } = useOverlayTransition(
     isOpen,
     MODAL_TRANSITION_MS,
   );
   const isBrand = design === "brand";
 
+  // Az onClose-t a hívók jellemzően inline arrow-ként adják át, így minden
+  // szülő-render új identitást jelent. Ha ez a billentyű-kezelőn át a
+  // fókusz-effect dep-jébe szivárog, a nyitott modal minden szülő-renderre
+  // újra a legelső elemre ugrik (gépelés közben elveszik a mező fókusza) —
+  // ezért refen keresztül olvassuk, és a handler identitása állandó marad.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        onClose();
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusable = Array.from(
+          modalRef.current?.querySelectorAll<HTMLElement>(
+            'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ) ?? [],
+        ).filter((element) => !element.hasAttribute("hidden"));
+        if (focusable.length === 0) {
+          event.preventDefault();
+          modalRef.current?.focus();
+          return;
+        }
+
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     },
-    [onClose]
+    []
   );
 
   useEffect(() => {
@@ -59,8 +101,21 @@ export function Modal({
 
   useEffect(() => {
     if (isOpen) {
+      const previouslyFocused = document.activeElement as HTMLElement | null;
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      const frame = window.requestAnimationFrame(() => {
+        const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        (firstFocusable ?? modalRef.current)?.focus();
+      });
+      return () => {
+        window.cancelAnimationFrame(frame);
+        document.removeEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = "";
+        previouslyFocused?.focus();
+      };
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -74,7 +129,9 @@ export function Modal({
     <div
       className={[
         "fixed inset-0 z-50 flex justify-center",
-        isBrand ? "items-end p-0 sm:items-center sm:p-4" : "items-center p-4",
+        isBrand && mobilePosition === "bottom"
+          ? "items-end p-0 sm:items-center sm:p-4"
+          : "items-center p-4",
       ].join(" ")}
     >
       {/* Backdrop */}
@@ -89,6 +146,12 @@ export function Modal({
 
       {/* Modal */}
       <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={hideHeader ? undefined : titleId}
+        aria-describedby={descriptionId}
+        tabIndex={-1}
         className={[
           "transition-all duration-200 ease-out motion-reduce:transition-none",
           isEntered
@@ -101,7 +164,9 @@ export function Modal({
           // (bottom-sheet módban a fejléc csúszna a képernyő fölé).
           "relative flex w-full max-h-[92dvh] flex-col overflow-hidden border md:max-h-[calc(100dvh-2rem)]",
           isBrand
-            ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+            ? mobilePosition === "bottom"
+              ? "max-w-none rounded-t-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)] sm:max-w-[520px] sm:rounded-2xl"
+              : "max-w-[520px] rounded-2xl bg-surface-card shadow-[0_18px_42px_rgba(26,26,46,0.18)]"
             : "max-w-md rounded-2xl bg-surface-card shadow-2xl",
           variant === "danger"
             ? (isBrand ? "border-[var(--color-state-error-border)]" : "border-state-error-border/70")
@@ -125,6 +190,7 @@ export function Modal({
           <button
             type="button"
             onClick={onClose}
+            aria-label={closeLabel}
             className={[
               // 44px érintőcél az ikon optikai közepének megtartásával
               // (a korábbi p-1 + 20px ikon ≈ 28px volt).
@@ -148,13 +214,17 @@ export function Modal({
         <div
           className={hideCloseButton
             ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
-            : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
+            : mobilePosition === "center"
+              ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
+              : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
         >
           {!hideHeader && (
             <div
               className={
                 isBrand
-                  ? "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
+                  ? mobilePosition === "center"
+                    ? "grid grid-cols-[36px_minmax(0,1fr)_36px] items-start gap-3"
+                    : "grid grid-cols-[36px_minmax(0,1fr)] items-start gap-3 sm:grid-cols-[36px_minmax(0,1fr)_36px]"
                   : "flex items-start gap-3"
               }
             >
@@ -184,6 +254,7 @@ export function Modal({
                   </p>
                 )}
                 <h2
+                  id={titleId}
                   className={[
                     "text-lg font-semibold",
                     isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
@@ -201,6 +272,7 @@ export function Modal({
                     </div>
                   ) : (
                     <p
+                      id={descriptionId}
                       className={[
                         "mt-2 text-sm leading-relaxed",
                         variant === "danger"
@@ -213,7 +285,12 @@ export function Modal({
                   )
                 )}
               </div>
-              {isBrand ? <div aria-hidden className="hidden h-9 w-9 sm:block" /> : null}
+              {isBrand ? (
+                <div
+                  aria-hidden
+                  className={mobilePosition === "center" ? "h-9 w-9" : "hidden h-9 w-9 sm:block"}
+                />
+              ) : null}
             </div>
           )}
 

@@ -13,9 +13,15 @@ interface HowYouWorkSectionProps {
    */
   parts: HowYouWorkParts;
   isUnlocked: boolean;
+  /**
+   * Ha a befoglaló felület MÁR kiírja a szekció címét (megosztott profil
+   * fejezet-akkordeonjai), a saját eyebrow+cím duplikálna — ilyenkor csak a
+   * tartalom megy ki, a szekció-keret a befoglalóé.
+   */
+  hideHeading?: boolean;
 }
 
-export function HowYouWorkSection({ parts, isUnlocked }: HowYouWorkSectionProps) {
+export function HowYouWorkSection({ parts, isUnlocked, hideHeading = false }: HowYouWorkSectionProps) {
   const { locale } = useLocale();
 
   if (!isUnlocked || !parts.main) return null;
@@ -30,16 +36,20 @@ export function HowYouWorkSection({ parts, isUnlocked }: HowYouWorkSectionProps)
   const context = parts.context.join(" ");
 
   return (
-    <div className="py-8">
-      <div className="mb-1.5 flex items-center gap-2.5">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
-        <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-          {t("results.howYouWorkEyebrow", locale)}
-        </p>
-      </div>
-      <h3 className="mb-5 font-fraunces text-lg text-[var(--color-text-primary)]">
-        {t("content.howYouWorkSub", locale)}
-      </h3>
+    <div className={hideHeading ? undefined : "py-8"}>
+      {!hideHeading && (
+        <>
+          <div className="mb-1.5 flex items-center gap-2.5">
+            <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
+            <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
+              {t("results.howYouWorkEyebrow", locale)}
+            </p>
+          </div>
+          <h3 className="mb-5 font-fraunces text-lg text-[var(--color-text-primary)]">
+            {t("content.howYouWorkSub", locale)}
+          </h3>
+        </>
+      )}
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
         <div className="rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)] p-[18px]">
