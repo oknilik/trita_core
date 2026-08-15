@@ -96,9 +96,9 @@ describe("PairInteractionView", () => {
       />,
     );
 
-    const easy = screen.getByRole("button", { name: "Ami magától megy" });
+    const easy = screen.getByRole("button", { name: /Ami magától megy/ });
     const friction = screen.getByRole("button", {
-      name: "Ahol súrlódás várható",
+      name: /Ahol súrlódás várható/,
     });
 
     expect(easy).toHaveAttribute("aria-expanded", "true");
