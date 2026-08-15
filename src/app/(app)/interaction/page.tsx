@@ -1,10 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { t, type Locale } from "@/lib/i18n";
+import { t, tf, type Locale } from "@/lib/i18n";
 import {
   buildArchetypeSimulations,
   buildPairSimulation,
@@ -196,14 +197,31 @@ export default async function InteractionPage({
       surface="self"
       contentClassName="max-w-4xl gap-8 px-4 py-10 md:gap-10"
     >
-      <header>
+      {pairView ? (
+        <Link
+          href="/interaction"
+          className="inline-flex min-h-[44px] w-fit items-center gap-2 rounded-lg text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)]"
+        >
+          <span aria-hidden="true">←</span>
+          {t("results.comparePairBackToList", lang)}
+        </Link>
+      ) : null}
+
+      <header className={pairView ? "-mt-4 text-center" : undefined}>
+        {pairView ? (
+          <p className="mb-2 text-label uppercase text-[var(--color-accent-primary-strong)]">
+            {t("results.comparePairEyebrow", lang)}
+          </p>
+        ) : null}
         <h1 className="font-fraunces text-title text-[var(--color-text-primary)]">
-          {t("results.sectionInteraction", lang)}
+          {pairView
+            ? tf("results.comparePairHeading", lang, { name: pairView.otherName })
+            : t("results.sectionInteraction", lang)}
         </h1>
-        {/* UX-B13: a saját, erre az oldalra írt intro — nem a CTA-kártya
-            szövegének ismétlése. */}
-        <p className="mt-2 max-w-prose text-body leading-relaxed text-[var(--color-text-secondary)]">
-          {t("results.interactionIntro", lang)}
+        <p className={`mt-2 text-body leading-relaxed text-[var(--color-text-secondary)] ${pairView ? "mx-auto max-w-lg" : "max-w-prose"}`}>
+          {pairView
+            ? t("results.comparePairIntro", lang)
+            : t("results.interactionIntro", lang)}
         </p>
       </header>
 
