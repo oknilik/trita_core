@@ -711,7 +711,7 @@ export function ObserverClient({
             ✓ {t("assessment.savedState", locale)}
           </span>
           {/* Az observer sosem lép be — a séma-választó csak itt érhető el. */}
-          <ThemeToggle />
+          <ThemeToggle variant="compact" />
         </div>
       </nav>
 
