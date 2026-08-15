@@ -845,6 +845,29 @@ export const resultsTranslations = {
     },
     comparePairTitle: { hu: "Ti ketten", en: "The two of you" },
     comparePairWith: { hu: "Összehasonlítás vele: {name}", en: "Comparing with: {name}" },
+    comparePairEyebrow: { hu: "Két valódi profil", en: "Two real profiles" },
+    comparePairHeading: { hu: "Te és {name}", en: "You and {name}" },
+    comparePairIntro: {
+      hu: "Így találkozik a működésetek a közös helyzetekben.",
+      en: "How your ways of working meet in shared situations.",
+    },
+    comparePairRealProfiles: {
+      hu: "Két valódi önértékelés",
+      en: "Two real self-assessments",
+    },
+    compareRelationLabel: { hu: "Kapcsolatotok", en: "Your relationship" },
+    compareRelationPeer: { hu: "Egyenrangú kollégák", en: "Peer colleagues" },
+    compareRelationOtherLeads: {
+      hu: "{name} vezet engem",
+      en: "{name} leads me",
+    },
+    compareRelationSelfLeadsNamed: {
+      hu: "Én vezetem őt: {name}",
+      en: "I lead {name}",
+    },
+    compareCommonPicture: { hu: "Közös kép", en: "Shared picture" },
+    compareConnects: { hu: "Ami összeköt", en: "What connects you" },
+    compareAttention: { hu: "Amire figyeljetek", en: "What to watch" },
     compareRelationSelfLeads: { hu: "Én vezetem őt", en: "I lead them" },
     comparePairSourceNote: {
       hu: "Két valódi, megosztott önértékelés összevetése — pontosabb, mint a típus-becslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetés-indítónak készült.",
@@ -853,6 +876,10 @@ export const resultsTranslations = {
     comparePairBack: {
       hu: "Vissza a típus-választóhoz",
       en: "Back to the type picker",
+    },
+    comparePairBackToList: {
+      hu: "Vissza az összehasonlításokhoz",
+      en: "Back to comparisons",
     },
     // A3 — archetípus-kártya képként
     shareCardDownload: {
