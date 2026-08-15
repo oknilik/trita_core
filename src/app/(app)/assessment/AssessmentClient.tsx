@@ -637,7 +637,7 @@ export function AssessmentClient({
             </Link>
             {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
                 ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
-            <ThemeToggle />
+            <ThemeToggle variant="compact" />
           </nav>
         )}
 
@@ -740,7 +740,7 @@ export function AssessmentClient({
         <div className="flex items-center gap-3">
           {/* A kitöltés közben is elérhető: aki világosban indult és
               zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
-          <ThemeToggle />
+          <ThemeToggle variant="compact" />
           {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
           <span className="text-micro text-[var(--color-action-primary-bg)]">
             ✓ {guestMode

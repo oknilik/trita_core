@@ -28,8 +28,8 @@ export const navigationTranslations = {
     backToHome: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
   },
   theme: {
-    label: { hu: "Színséma", en: "Appearance" },
-    system: { hu: "Rendszer", en: "System" },
+    label: { hu: "Megjelenés", en: "Appearance" },
+    system: { hu: "Rendszerbeállítás", en: "System setting" },
     light: { hu: "Világos", en: "Light" },
     dark: { hu: "Sötét", en: "Dark" },
   },
