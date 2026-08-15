@@ -301,7 +301,7 @@ export function NavBar({
             <LanguageSwitcher />
             {showThemeToggle ? (
               <div className="hidden lg:block">
-                <ThemeToggle />
+                <ThemeToggle variant="compact" />
               </div>
             ) : null}
 
