@@ -345,7 +345,17 @@ export function PairInteractionView({
                   aria-hidden="true"
                   className="absolute left-1/2 top-1/2 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-surface-card font-fraunces text-[var(--color-accent-primary-strong)] shadow-sm md:flex"
                 >
-                  ✦
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.3"
+                    strokeLinecap="round"
+                  >
+                    <path d="M10 2v16M2 10h16M4.35 4.35l11.3 11.3M15.65 4.35l-11.3 11.3" />
+                  </svg>
                 </span>
               </div>
             </section>
