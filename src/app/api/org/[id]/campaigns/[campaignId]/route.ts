@@ -15,8 +15,9 @@ const patchSchema = z.union([
   z.object({
     status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
   }),
-  // DRAFT-kampány szerkesztése: mérések, cél-csapat, ütem, név — aktiválás
-  // előtt bármi módosítható; aktiválás után a kampány összetétele fix.
+  // DRAFT-kampány szerkesztése: custom körnél mérések, minden körnél
+  // cél-csapat, ütem és név. Nevesített preset lépéssora draftban is fix;
+  // aktiválás után a teljes kampányösszetétel rögzül.
   z.object({
     action: z.literal("edit_draft"),
     // Nincs termékoldali darab-limit — minden katalógus-lépés mehet.
@@ -55,7 +56,17 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true, type: true, teamId: true, teamIds: true, steps: true, activatedAt: true },
+      select: {
+        id: true,
+        orgId: true,
+        status: true,
+        presetId: true,
+        type: true,
+        teamId: true,
+        teamIds: true,
+        steps: true,
+        activatedAt: true,
+      },
     }),
   ]);
 
@@ -96,6 +107,7 @@ export async function GET(
       id: true,
       name: true,
       description: true,
+      presetId: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -152,6 +164,15 @@ export async function PATCH(
       return NextResponse.json({ error: "CAMPAIGN_NOT_DRAFT" }, { status: 409 });
     }
     const edit = body.data;
+
+    // A nevesített preset mérési készlete szerződés, nem kiinduló sablon.
+    // Célzás és pacing tovább szerkeszthető, a steps csak CUSTOM körnél.
+    if (ctx.campaign.presetId && edit.types !== undefined) {
+      return NextResponse.json(
+        { error: "PRESET_STEPS_IMMUTABLE" },
+        { status: 409 },
+      );
+    }
 
     const steps = edit.types
       ? normalizeCampaignSteps(edit.types)
@@ -212,6 +233,7 @@ export async function PATCH(
         id: true,
         name: true,
         status: true,
+        presetId: true,
         type: true,
         steps: true,
         teamId: true,

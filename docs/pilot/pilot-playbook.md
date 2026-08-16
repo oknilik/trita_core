@@ -52,6 +52,9 @@ egy gyenge eset kedvéért utólag nem írjuk át.
 ### T–2 hét — szerződés és setup
 
 - Pilot-megállapodás és adatkezelési melléklet elfogadva.
+- A baseline `TEAM_SCAN_LICENSE`, a follow-up `REMEASUREMENT_CYCLE`; a
+  `paid` / `discounted` / `pilot_free` / `barter` kezelés és a védett
+  kereskedelmi rekord hivatkozása rögzítve.
 - Org, csapat és névsor létrehozva; tanácsadó hozzárendelve.
 - A csapat megkapja a stabil, pszeudonim `case_id` és alias értéket; a valódi
   név ↔ alias kapcsolat csak a védett ügyfélmappában él.

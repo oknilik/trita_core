@@ -148,3 +148,27 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   augusztus 7.; elfogadott ajánlat: augusztus 14.). A terv ezeket explicit
   indulási blokkolóként jelöli; a szeptember 8-i kickoff nem tartható a
   consent vagy a mérési lépések összenyomásával.
+
+## P2.4 — scan-licenc + újramérési kör
+
+- Kód-audit javította a stratégiai dokumentum téves előfeltevését: a jelenlegi
+  sémában csak a hozzáférést hordozó `Subscription` maradt; `Purchase` és
+  `BillingEventLog` nincs. A hiányzó `billing-v1-parked` annotált tag a teljes
+  billing eltávolítása előtti `ba9dc5be` commitra került.
+- Két árfüggetlen egység rögzült: az első, csapatonkénti
+  `TEAM_SCAN_LICENSE` és minden további, csapat × kör alapú
+  `REMEASUREMENT_CYCLE` subscription-usage.
+- A kampány opcionális `presetId` eredetmezőt kapott. A create út ezt megőrzi;
+  régi vagy custom kampány nem minősül lépéssor-hasonlóság alapján Scan v1
+  kohorsz- vagy elszámolási egységgé. Az OpenAPI kampány-create szerződése is
+  felvette a presetet és a teljes aktuális lépéskészletet.
+- Javult egy draft-kapu: a nevesített Scan v1 lépéseit a korábbi közös
+  szerkesztő át tudta írni. A szerver most 409-cel védi a preset lépéssorát,
+  a kliens pedig csak a célcsapatot és a pacinget hagyja módosítani.
+- A tiszta kereskedelmi szerződés csak lezárt `SCAN_V1` kampány + ugyanabból a
+  kampányból befagyasztott publikált riport esetén ad egységet, a
+  `campaignId + teamId` kulccsal idempotensen. Ár, fizetési státusz és provider
+  nincs a domainfüggvényben.
+- A runtime számlázás szándékosan kikapcsolva marad a 20 esetes playbook,
+  akkreditáció, önkiszolgáló tenant-audit és providerfüggetlen append-only
+  usage ledger elkészültéig. A pilot kézi feltételeit az esetnapló rögzíti.

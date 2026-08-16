@@ -169,6 +169,7 @@ export default async function CampaignDetailPage({
         id: true,
         name: true,
         description: true,
+        presetId: true,
         status: true,
         type: true,
         steps: true,
@@ -1069,6 +1070,7 @@ export default async function CampaignDetailPage({
           <DraftCampaignEditor
             orgId={orgId}
             campaignId={campaign.id}
+            initialPresetId={campaign.presetId}
             initialSteps={
               (campaign.steps.length > 0
                 ? campaign.steps

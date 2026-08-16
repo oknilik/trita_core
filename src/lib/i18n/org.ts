@@ -447,6 +447,10 @@ export const orgTranslations = {
         hu: "Amíg a mérés piszkozat, a lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után az összetétel rögzül.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
+      editPresetDraftHint: {
+        hu: "A nevesített csomag mérési lépései rögzítettek; piszkozatként a cél-csapat és az ütem még módosítható.",
+        en: "The named package has fixed measurement steps; its target team and pacing can still be changed while it is a draft.",
+      },
       editTypesLabel: { hu: "Mérések (sorrendjük kanonikus)", en: "Measurements (canonical order)" },
       editTeamLabel: { hu: "Cél-csapat", en: "Target team" },
       editNoTeam: { hu: "Nincs csapat-célzás (egyénileg kiválasztott résztvevők)", en: "No team targeting (individually selected participants)" },

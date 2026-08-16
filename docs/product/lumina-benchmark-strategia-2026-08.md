@@ -345,11 +345,15 @@ A Luminánál a portré-kredit nem termel visszamérési adatot — az ő 17 év
 bizalmat halmozott, nem adatkészletet. Ez a Trita esélye arra, hogy ne 17 év
 alatt érjen oda.
 
-**Kód-vonatkozás.** A `Subscription`/`Purchase`/`BillingEventLog` modellek a
-sémában megmaradtak, a `billing-v1-parked` tag visszaállítható, az
-`ORG_CONSULTANT` szerep és a capability-motor pedig már ma a partner-hálózat
-szubsztrátuma. Ez a lépcső **nem igényel új architektúrát** — csak akkreditációt,
-önkiszolgáló org-létrehozást és elszámolást.
+**Kód-vonatkozás — 2026-08-16-i auditkorrekció.** A fenti korábbi feltevéssel
+ellentétben csak a `Subscription` maradt a jelenlegi sémában; a `Purchase`
+táblát a 2026-07-31-i migráció törölte, `BillingEventLog` sincs, és a
+`billing-v1-parked` tag is hiányzott. A taget most a teljes billingréteg
+eltávolítása előtti `ba9dc5be` állapotra rögzítettük, de az csak visszaállítási
+referencia. Az `ORG_CONSULTANT` szerep és a capability-motor továbbra is a
+partner-hálózat szubsztrátuma; a későbbi elszámoláshoz viszont új,
+providerfüggetlen usage ledger kell. A pontos egység- és aktiválási szerződés:
+`docs/product/team-scan-commercial-units.md`.
 
 ---
 

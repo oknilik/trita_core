@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Trita API
-  version: "2026-07-22"
+  version: "2026-08-16"
   description: |
     Trita platform belső API-leírója — kézzel karbantartott, a route-fájlok
     Zod-sémáiból származtatva. Auth: Clerk session cookie (böngésző-hívások),
@@ -900,28 +900,55 @@ paths:
               properties:
                 name: { type: string, maxLength: 100 }
                 description: { type: string, maxLength: 500 }
-                type: { type: string, enum: [OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY] }
+                presetId:
+                  type: string
+                  enum: [SCAN_V1]
+                  description: A nevesített preset lépéssora draftban is változtathatatlan.
+                type: { type: string, enum: [SELF_ASSESSMENT, OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY, PEER_FEEDBACK] }
                 types:
                   type: array
-                  maxItems: 3
-                  items: { type: string, enum: [OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY] }
+                  minItems: 1
+                  maxItems: 7
+                  items: { type: string, enum: [SELF_ASSESSMENT, OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY, PEER_FEEDBACK] }
                 teamId: { type: string }
+                teamIds: { type: array, maxItems: 50, items: { type: string } }
                 allowExternalObservers: { type: boolean, default: false }
                 stepIntervalHours: { type: integer, minimum: 0, maximum: 168, default: 24 }
-      responses: { "200": { description: OK } }
+                peerFeedbackAnonymous: { type: boolean, default: false }
+                requireFreshResults: { type: boolean, default: false }
+      responses: { "201": { description: Created } }
   /api/org/{id}/campaigns/{campaignId}:
     get: { tags: [Org], summary: Kampány részletei, responses: { "200": { description: OK } } }
     patch:
       tags: [Org]
-      summary: Kampány-státusz váltás (DRAFT→ACTIVE→CLOSED, visszafordíthatatlan)
+      summary: Kampánystátusz-váltás vagy custom draft szerkesztése
       requestBody:
         content:
           application/json:
             schema:
-              type: object
-              required: [status]
-              properties: { status: { type: string, enum: [DRAFT, ACTIVE, CLOSED] } }
-      responses: { "200": { description: OK } }
+              oneOf:
+                - type: object
+                  required: [status]
+                  properties: { status: { type: string, enum: [DRAFT, ACTIVE, CLOSED] } }
+                - type: object
+                  required: [action]
+                  properties:
+                    action: { type: string, const: edit_draft }
+                    types:
+                      type: array
+                      minItems: 1
+                      maxItems: 7
+                      description: Csak preset nélküli custom kampánynál módosítható.
+                      items: { type: string, enum: [SELF_ASSESSMENT, OBSERVER_360, TEAM_ROLE, TEAM_ROLE_360, TRUST_360, PSYCH_SAFETY, PEER_FEEDBACK] }
+                    teamId: { type: [string, "null"] }
+                    teamIds: { type: array, maxItems: 50, items: { type: string } }
+                    stepIntervalHours: { type: integer, minimum: 0, maximum: 168 }
+                    peerFeedbackAnonymous: { type: boolean }
+                    name: { type: string, maxLength: 100 }
+                    description: { type: [string, "null"], maxLength: 500 }
+      responses:
+        "200": { description: OK }
+        "409": { description: Érvénytelen állapotváltás vagy rögzített preset-lépéssor }
     post:
       tags: [Org]
       summary: Résztvevők hozzáadása

@@ -42,6 +42,10 @@ internal_calibration_use: yes
 anonymized_research_use: yes | no | pending
 public_reference_permission: named | anonymous | no | pending
 permission_record_location: internal-link-or-id
+baseline_commercial_unit: TEAM_SCAN_LICENSE
+followup_commercial_unit: REMEASUREMENT_CYCLE
+commercial_treatment: paid | discounted | pilot_free | barter
+commercial_terms_record_location: protected-internal-link-or-id
 ```
 
 Az alias stabil marad minden körben. A valódi org-/csapatnév és a
@@ -169,6 +173,6 @@ Akciónként röviden:
 Ezt a sort másold a közös, hozzáférés-szabályozott esetindexbe. Szabad szöveg
 helyett rövid, szűrhető értékeket használj.
 
-| case_id | team_size_band | baseline_date | followup_date | main_target | action_status | outcome_gate | composition | public_reference | playbook_candidate |
-|---|---|---|---|---|---|---|---|---|---|
-| TS-YYYY-NNN |  |  |  |  | done/partial/blocked | beyond_error/within_error/n-a | stable/warning/unknown | named/anonymous/no/pending | yes/no |
+| case_id | team_size_band | baseline_date | followup_date | commercial_treatment | main_target | action_status | outcome_gate | composition | public_reference | playbook_candidate |
+|---|---|---|---|---|---|---|---|---|---|---|
+| TS-YYYY-NNN |  |  |  | paid/discounted/pilot_free/barter |  | done/partial/blocked | beyond_error/within_error/n-a | stable/warning/unknown | named/anonymous/no/pending | yes/no |

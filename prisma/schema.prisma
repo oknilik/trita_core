@@ -538,6 +538,10 @@ model Campaign {
   orgId                  String
   name                   String
   description            String?
+  // A nevesített mérési csomag eredete. Nem a steps-ből következtetjük
+  // vissza: egy azonos lépéssorú CUSTOM kampány nem válhat észrevétlenül
+  // Scan v1 kohorsz- vagy kereskedelmi egységgé.
+  presetId               String?
   // Mérés-típus: pl. "SELF_ASSESSMENT" | "OBSERVER_360" | "TRUST_360"
   // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
   type                   String    @default("OBSERVER_360")
@@ -586,6 +590,7 @@ model Campaign {
   @@index([orgId])
   @@index([createdBy])
   @@index([teamId])
+  @@index([presetId])
 }
 
 model CampaignParticipant {
