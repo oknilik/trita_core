@@ -124,3 +124,27 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   továbbra is rögzül, és a működő admin Kérdések fülre mutat.
 - Sem kód, sem adat nem törlődött. A felületenkénti visszaállítás pontos
   lépéseit a `docs/product/portfolio-parking-2026-08.md` checklistje rögzíti.
+
+## P2.3 — az első esettől gyűjtött playbook
+
+- Másolható, strukturált Team Scan esetnapló készült egy csapat teljes
+  diagnózis → beavatkozás → visszamérés köréhez. Ugyanabban a rekordban él a
+  mérési evidencia, a workshopon használt állítás, a vállalt akció, a kapuzott
+  kimenet és a „mit csinálnánk másként” visszatekintés.
+- A napló a riport- és action ID-ket, valamint a P1.2-ben bevezetett egzakt
+  célmutató-kulcsokat használja. A `significant` címke mérési-hiba kapuként,
+  a kompozíció külön döntésként szerepel; kontrollcsoport nélkül okozati
+  állítás továbbra sem engedett.
+- Kitöltött esetnapló nem kerül gitbe. Név, email, nyers válasz, contributor
+  kulcs és azonosítható idézet tiltott; a stabil alias ↔ ügyfél kapcsolat és
+  a referenciaengedély csak hozzáférés-szabályozott belső helyen élhet.
+- A playbook 48 órás naplózási SLA-t, közös egy-soros esetindexet, öt esetenként
+  kalibrációs review-t és húsz eset utáni partner-playbook kivonatot rögzít.
+- A kampányütemezés, az első kör terve, a riportértelmezés és az
+  ügyfél-kommunikáció a rögzített self + trust + pulse Scan v1-hez igazodott.
+  A korábbi kötelező observer-, szerep- és karrierutasítások kikerültek az
+  alapfolyamatból; a 2026-08-04-i pre-pilot terv történeti scope-jelzést kapott.
+- Az első éles kör tervében két nyitott határidő már elmúlt (célszervezet:
+  augusztus 7.; elfogadott ajánlat: augusztus 14.). A terv ezeket explicit
+  indulási blokkolóként jelöli; a szeptember 8-i kickoff nem tartható a
+  consent vagy a mérési lépések összenyomásával.
