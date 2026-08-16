@@ -1,6 +1,10 @@
 import { prisma } from "./prisma";
 import { extractDimensionScores } from "./scoring";
-import { getCampaignSteps, isCampaignStepDone } from "./campaign-steps-core";
+import {
+  getCampaignSteps,
+  isCampaignStepDone,
+  isSelfResultForCampaign,
+} from "./campaign-steps-core";
 import { getOrgPendingInviteCount, getOrgTeamCount } from "./org-counts.server";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
 
@@ -139,20 +143,24 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
   );
 
   // Fetch self-assessment completion for all participant userIds.
-  // A legutóbbi eredmény dátumát is visszük: újrafelvételi körnél
-  // (requireFreshResults) csak az aktiválás utáni beadás számít késznek.
+  // Minden self-eredményt visszük, mert átfedő fresh kampányoknál nem
+  // feltétlenül ugyanaz a legutolsó eredmény tartozik mindegyik körhöz.
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: allParticipantUserIds },
       isSelfAssessment: true,
     },
-    orderBy: { createdAt: "desc" },
-    select: { userProfileId: true, createdAt: true },
-    distinct: ["userProfileId"],
+    select: { userProfileId: true, campaignId: true, createdAt: true },
   });
-  const selfLatestMap = new Map<string, Date>();
+  const selfResultsMap = new Map<
+    string,
+    Array<{ campaignId: string | null; createdAt: Date }>
+  >();
   for (const r of selfDoneResults) {
-    if (r.userProfileId) selfLatestMap.set(r.userProfileId, r.createdAt);
+    if (!r.userProfileId) continue;
+    const results = selfResultsMap.get(r.userProfileId) ?? [];
+    results.push({ campaignId: r.campaignId, createdAt: r.createdAt });
+    selfResultsMap.set(r.userProfileId, results);
   }
 
   // Fetch completed observer invitations for all participant userIds
@@ -180,9 +188,8 @@ export async function getOrgPageData(orgId: string): Promise<OrgPageData> {
 
     const stepDoneCounts = steps.map(() => 0);
     const participants: ParticipantStat[] = c.participants.map((p) => {
-      const latestSelf = selfLatestMap.get(p.userId);
-      const selfDone = Boolean(
-        latestSelf && (freshFrom === null || latestSelf.getTime() >= freshFrom),
+      const selfDone = (selfResultsMap.get(p.userId) ?? []).some((result) =>
+        isSelfResultForCampaign(result, c),
       );
       const observerCount = (observerCompletionsMap.get(p.userId) ?? []).filter(
         (d) => freshFrom === null || d.getTime() >= freshFrom,

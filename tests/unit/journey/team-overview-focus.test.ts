@@ -6,6 +6,7 @@ test("open measurement wins over feedback and observer tasks", () => {
   const focus = resolveTeamOverviewFocus({
     locale: "hu",
     pendingMeasurement: {
+      campaignId: "autumn-round",
       campaignName: "Őszi kör",
       stepType: "PSYCH_SAFETY",
       opensAt: null,
@@ -27,6 +28,7 @@ test("in-progress requested feedback wins over a scheduled measurement", () => {
   const focus = resolveTeamOverviewFocus({
     locale: "en",
     pendingMeasurement: {
+      campaignId: "autumn-round",
       campaignName: "Autumn round",
       stepType: "TRUST_360",
       opensAt: new Date("2026-09-01T08:00:00.000Z"),
@@ -42,6 +44,23 @@ test("in-progress requested feedback wins over a scheduled measurement", () => {
   assert.equal(focus?.kind, "feedback");
   assert.equal(focus?.primary.href, "/observe/started");
   assert.match(focus?.description ?? "", /3\/5/);
+});
+
+test("self measurement carries the exact campaign round in its link", () => {
+  const focus = resolveTeamOverviewFocus({
+    locale: "hu",
+    pendingMeasurement: {
+      campaignId: "round / 2",
+      campaignName: "Második kör",
+      stepType: "OBSERVER_360",
+      opensAt: null,
+      started: false,
+    },
+    observerGathering: null,
+    receivedFeedbackRequests: [],
+  });
+
+  assert.equal(focus?.primary.href, "/assessment?campaignId=round%20%2F%202");
 });
 
 test("observer collection is the focus when it is the only actionable item", () => {

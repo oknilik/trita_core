@@ -2,7 +2,9 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
   countCampaignStepsDone,
+  getCampaignStepLink,
   isCampaignStepDone,
+  isSelfResultForCampaign,
   normalizeCampaignSteps,
 } from "@/lib/campaign-steps-core";
 
@@ -67,6 +69,77 @@ describe("normalizeCampaignSteps", () => {
     assert.deepEqual(
       normalizeCampaignSteps(["TRUST_360", "OBSERVER_360", "TRUST_360", "nope"]),
       ["OBSERVER_360", "TRUST_360"],
+    );
+  });
+});
+
+describe("getCampaignStepLink", () => {
+  it("a self-lépés linkjébe beírja a kampánykört", () => {
+    assert.equal(
+      getCampaignStepLink("OBSERVER_360", "campaign / 2"),
+      "/assessment?campaignId=campaign%20%2F%202",
+    );
+  });
+
+  it("a többi kitöltő kanonikus linkjét nem módosítja", () => {
+    assert.equal(
+      getCampaignStepLink("PSYCH_SAFETY", "campaign-2"),
+      "/assessment/psych-safety",
+    );
+  });
+});
+
+describe("isSelfResultForCampaign", () => {
+  const campaign = {
+    id: "round-2",
+    requireFreshResults: true,
+    activatedAt: new Date("2026-08-01T00:00:00Z"),
+  };
+
+  it("fresh körben az explicit kör-címke a biztos egyezés", () => {
+    assert.equal(
+      isSelfResultForCampaign(
+        { campaignId: "round-2", createdAt: "2026-07-01T00:00:00Z" },
+        campaign,
+      ),
+      true,
+    );
+  });
+
+  it("másik kampány címkézett eredményét dátumtól függetlenül kizárja", () => {
+    assert.equal(
+      isSelfResultForCampaign(
+        { campaignId: "another-round", createdAt: "2026-08-02T00:00:00Z" },
+        campaign,
+      ),
+      false,
+    );
+  });
+
+  it("legacy címke nélküli adatnál megtartja az aktiválási dátum fallbacket", () => {
+    assert.equal(
+      isSelfResultForCampaign(
+        { campaignId: null, createdAt: "2026-08-02T00:00:00Z" },
+        campaign,
+      ),
+      true,
+    );
+    assert.equal(
+      isSelfResultForCampaign(
+        { campaignId: null, createdAt: "2026-07-31T23:59:59Z" },
+        campaign,
+      ),
+      false,
+    );
+  });
+
+  it("nem-fresh kampánynál a korábbi self-eredmény továbbra is elég", () => {
+    assert.equal(
+      isSelfResultForCampaign(
+        { campaignId: null, createdAt: "2020-01-01T00:00:00Z" },
+        { ...campaign, requireFreshResults: false },
+      ),
+      true,
     );
   });
 });

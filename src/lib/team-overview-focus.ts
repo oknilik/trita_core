@@ -1,10 +1,11 @@
 import {
   CAMPAIGN_STEP_LABELS,
-  CAMPAIGN_STEP_LINKS,
+  getCampaignStepLink,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
 
 export interface TeamOverviewMeasurementTask {
+  campaignId: string;
   campaignName: string;
   stepType: CampaignStepType;
   opensAt: Date | null;
@@ -123,7 +124,10 @@ export function resolveTeamOverviewFocus(input: {
             : hu
               ? "Kitöltöm most"
               : "Start now",
-        href: CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType],
+        href: getCampaignStepLink(
+          pendingMeasurement.stepType,
+          pendingMeasurement.campaignId,
+        ),
       },
       secondary: secondary(true),
       scheduledAt: null,

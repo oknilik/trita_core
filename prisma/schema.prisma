@@ -177,6 +177,9 @@ model AssessmentDraft {
 model AssessmentResult {
   id            String   @id @default(cuid())
   userProfileId String?
+  // Opcionális mérési-kör címke. A régi és self-serve eredményeknél null;
+  // kampányból indított beadásnál a konkrét kampányhoz kötjük.
+  campaignId    String?
   scores        Json
   createdAt     DateTime @default(now())
 
@@ -188,8 +191,10 @@ model AssessmentResult {
   shareToken String? @unique
 
   userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
+  campaign    Campaign?    @relation("AssessmentResultCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
 
   @@index([userProfileId])
+  @@index([campaignId])
 }
 
 // Observer invitation for peer assessment
@@ -576,6 +581,7 @@ model Campaign {
   observerInvitations  ObserverInvitation[]
   teamRoleAnswers      TeamRoleAnswer[]      @relation("TeamRoleAnswerCampaign")
   teamRoleScores       TeamRoleScore[]       @relation("TeamRoleScoreCampaign")
+  assessmentResults    AssessmentResult[]    @relation("AssessmentResultCampaign")
 
   @@index([orgId])
   @@index([createdBy])

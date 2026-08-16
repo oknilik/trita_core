@@ -293,7 +293,16 @@ export default async function CampaignDetailPage({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
-      ...(freshFrom ? { createdAt: { gte: freshFrom } } : {}),
+      ...(campaign.requireFreshResults
+        ? freshFrom
+          ? {
+              OR: [
+                { campaignId: campaign.id },
+                { campaignId: null, createdAt: { gte: freshFrom } },
+              ],
+            }
+          : { campaignId: campaign.id }
+        : {}),
     },
     orderBy: { createdAt: "desc" },
     select: { userProfileId: true, scores: true },

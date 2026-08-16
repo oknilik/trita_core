@@ -35,6 +35,7 @@ export interface TeamTabContext {
   hasPublishedReport: boolean;
   /** A néző következő nyitott mérés-lépése a csapat aktív kampányaiban. */
   pendingMeasurement: {
+    campaignId: string;
     campaignName: string;
     stepType: CampaignStepType;
     opensAt: Date | null;

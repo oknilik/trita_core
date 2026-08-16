@@ -43,6 +43,8 @@ import {
 
 export interface TeamReportAggregates {
   generatedAt: string;
+  /** A self-eredmények forrásköre; hiányában tagonként a legfrissebb eredmény. */
+  assessmentCampaignId?: string;
   memberCount: number;
   completedCount: number;
   completionPct: number;
@@ -246,8 +248,11 @@ export function computeTopFrictionDims(
 
 export async function buildTeamReportAggregates(
   teamId: string,
+  options?: { assessmentCampaignId?: string },
 ): Promise<TeamReportAggregates | null> {
-  const teamData = await getTeamPageData(teamId, "hu");
+  // Alapértelmezésben megmarad a tagonkénti legfrissebb self-eredmény.
+  // Kör-riportnál az explicit campaignId pontosan az adott felvételt olvassa.
+  const teamData = await getTeamPageData(teamId, "hu", options);
   if (!teamData) return null;
 
   const assessed = teamData.members.filter((m) => m.scores !== null);
@@ -541,6 +546,9 @@ export async function buildTeamReportAggregates(
 
   return {
     generatedAt: new Date().toISOString(),
+    ...(options?.assessmentCampaignId
+      ? { assessmentCampaignId: options.assessmentCampaignId }
+      : {}),
     memberCount,
     completedCount,
     completionPct:

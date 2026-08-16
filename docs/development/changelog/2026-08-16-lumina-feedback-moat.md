@@ -27,3 +27,17 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
 - Megfelelő átfedésnél a dimenziódeltát csak a mindkét körben jelen lévő
   tagokból számolja újra; gyenge vagy ismeretlen kompozíciónál fail-closed,
   explicit figyelmeztetéssel nem állít profilváltozást.
+
+## P0.3 — self-eredmény kör-címkézése
+
+- Az `AssessmentResult` opcionális, indexelt `campaignId` mezőt és
+  `ON DELETE SET NULL` kapcsolatot kapott; a legacy és self-serve rekordok
+  továbbra is érvényesek.
+- A kampányból nyitott self-kérdőív URL-je hordozza a konkrét kör azonosítóját.
+  A szerver ellenőrzi, hogy a user abban az aktív, nyitott lépésben áll-e.
+- Egy beadás csak a címkézett kampányt lépteti; két átfedő kör nem záródhat le
+  ugyanattól az eredménytől.
+- A fresh-kör olvasói a pontos címkét részesítik előnyben. A dátumheurisztika
+  csak a migráció előtti, címke nélküli rekordok kompatibilitási fallbackje.
+- A csapatadat- és riportépítő opcionális kampányszűrőt kapott; alapértelmezése
+  változatlanul tagonként a legfrissebb self-eredmény.

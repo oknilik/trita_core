@@ -9,6 +9,10 @@ import { calculateScores } from "@/lib/scoring";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
+import {
+  advanceCampaignStepForUser,
+  resolveActiveCampaignIdForStep,
+} from "@/lib/campaign-steps";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -18,6 +22,7 @@ const answerSchema = z.object({
 const submissionSchema = z.object({
   testType: z.enum(["TRITAN"]),
   answers: z.array(answerSchema),
+  campaignId: z.string().min(1).max(191).optional(),
 });
 
 export async function POST(req: Request) {
@@ -40,7 +45,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const { testType: clientTestType, answers } = parsed.data;
+  const { testType: clientTestType, answers, campaignId: requestedCampaignId } = parsed.data;
   log.info({ event: "assessment.submit_received", clientTestType, answerCount: answers.length, clerkId: userId }, "Submission received");
 
   const profile = await prisma.userProfile.upsert({
@@ -59,6 +64,22 @@ export async function POST(req: Request) {
     return NextResponse.json(
       { error: "A teszttípus nem egyezik a hozzárendelt teszttel." },
       { status: 400 }
+    );
+  }
+
+  const campaignId = requestedCampaignId
+    ? await resolveActiveCampaignIdForStep(profile.id, "OBSERVER_360", {
+        campaignId: requestedCampaignId,
+      })
+    : null;
+  if (requestedCampaignId && !campaignId) {
+    log.warn(
+      { event: "assessment.submit_campaign_not_open", requestedCampaignId },
+      "Campaign step is not open for user",
+    );
+    return NextResponse.json(
+      { error: "Ez a mérési kör már nem nyitott ehhez a kérdőívhez." },
+      { status: 409 },
     );
   }
 
@@ -106,6 +127,7 @@ export async function POST(req: Request) {
     prisma.assessmentResult.create({
       data: {
         userProfileId: profile.id,
+        campaignId,
         testType: testType as TestType,
         scores: {
           ...scores,
@@ -128,10 +150,13 @@ export async function POST(req: Request) {
     { userProfileId: profile.id },
   );
 
-  // Több-lépéses kampány: a self teljesítése lépteti az OBSERVER_360 lépést
-  import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>
-    advanceCampaignStepForUser(profile.id, "OBSERVER_360").catch(() => {}),
-  );
+  // Csak azt a kampánykört léptetjük, amelyből a kérdőív ténylegesen
+  // megnyílt. Így két átfedő kampányt egyetlen self-beadás nem zár le.
+  if (campaignId) {
+    advanceCampaignStepForUser(profile.id, "OBSERVER_360", { campaignId }).catch(
+      () => {},
+    );
+  }
 
   // In-app notification via orchestrator (fire-and-forget)
   import("@/lib/notifications").then(({ handleResultReady }) =>

@@ -318,7 +318,8 @@ export function computeTeamActiveCampaign(
 
 export async function getTeamPageData(
   teamId: string,
-  locale: "hu" | "en"
+  locale: "hu" | "en",
+  options?: { assessmentCampaignId?: string },
 ): Promise<TeamPageData | null> {
   const team = await prisma.team.findUnique({
     where: { id: teamId },
@@ -342,7 +343,12 @@ export async function getTeamPageData(
               email: true,
               username: true,
               assessmentResults: {
-                where: { isSelfAssessment: true },
+                where: {
+                  isSelfAssessment: true,
+                  ...(options?.assessmentCampaignId
+                    ? { campaignId: options.assessmentCampaignId }
+                    : {}),
+                },
                 orderBy: { createdAt: "desc" },
                 take: 1,
                 select: { testType: true, scores: true },

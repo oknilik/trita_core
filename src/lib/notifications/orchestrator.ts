@@ -6,7 +6,11 @@
  */
 
 import { prisma } from "@/lib/prisma";
-import { CAMPAIGN_STEP_LINKS } from "@/lib/campaign-steps-core";
+import {
+  getCampaignStepLink,
+  isCampaignStepType,
+  isSelfResultForCampaign,
+} from "@/lib/campaign-steps-core";
 import {
   buildNextActionDueDedupeKey,
   buildQuoteExpiringDedupeKey,
@@ -233,18 +237,28 @@ export async function handleMeasurementStepOpened(params: {
   stepType: string;
 }) {
   const meta = NOTIFICATION_TYPE_META.MEASUREMENT_STEP_OPENED;
-  // A kanonikus lépés→link térkép (campaign-steps-core) — így az új
-  // lépés-típusok (TEAM_ROLE_360, TRUST_360) linkje sem marad le.
-  const STEP_LINKS: Record<string, string> = CAMPAIGN_STEP_LINKS;
   // OBSERVER_360: ha a self már kész, a teendő a MEGHÍVÓK küldése — a
   // link ilyenkor a Külső kép fülre visz, nem az (üres) kitöltőre.
-  let link = STEP_LINKS[params.stepType] ?? "/dashboard";
+  let link = isCampaignStepType(params.stepType)
+    ? getCampaignStepLink(params.stepType, params.campaignId)
+    : "/dashboard";
   if (params.stepType === "OBSERVER_360") {
-    const selfDone = await prisma.assessmentResult.findFirst({
-      where: { userProfileId: params.userId, isSelfAssessment: true },
-      select: { id: true },
-    });
-    if (selfDone) link = "/profile/results?tab=comparison#observer-flow";
+    const [campaign, selfResults] = await Promise.all([
+      prisma.campaign.findUnique({
+        where: { id: params.campaignId },
+        select: { id: true, requireFreshResults: true, activatedAt: true },
+      }),
+      prisma.assessmentResult.findMany({
+        where: { userProfileId: params.userId, isSelfAssessment: true },
+        select: { campaignId: true, createdAt: true },
+      }),
+    ]);
+    if (
+      campaign &&
+      selfResults.some((result) => isSelfResultForCampaign(result, campaign))
+    ) {
+      link = "/profile/results?tab=comparison#observer-flow";
+    }
   }
   await persistNotificationBatch([
     {

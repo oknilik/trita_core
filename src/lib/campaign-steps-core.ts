@@ -42,6 +42,19 @@ export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
   PEER_FEEDBACK: "/assessment/peer-feedback",
 };
 
+/**
+ * Kampányból nyitott self-kérdőívnél a kör az URL része. A többi mérés
+ * saját beadási útja már kampányhoz kötött; náluk a kanonikus link marad.
+ */
+export function getCampaignStepLink(
+  stepType: CampaignStepType,
+  campaignId?: string | null,
+): string {
+  const base = CAMPAIGN_STEP_LINKS[stepType];
+  if (stepType !== "OBSERVER_360" || !campaignId) return base;
+  return `${base}?campaignId=${encodeURIComponent(campaignId)}`;
+}
+
 export function isCampaignStepType(value: string): value is CampaignStepType {
   return (CAMPAIGN_STEP_ORDER as readonly string[]).includes(value);
 }
@@ -147,4 +160,24 @@ export function isStepOpenFor(
     getCurrentStepType(campaign, participant) === stepType &&
     isStepGateOpen(participant)
   );
+}
+
+/**
+ * Egy self-eredmény beleszámít-e az adott kampány OBSERVER_360 lépésébe?
+ * Fresh körben az explicit kampánycímke az elsődleges. A címke nélküli,
+ * aktiválás utáni eredmény csak a migráció előtti adatok kompatibilitási
+ * fallbackje; más kampány címkézett eredménye soha nem számít bele.
+ */
+export function isSelfResultForCampaign(
+  result: { campaignId?: string | null; createdAt: Date | string },
+  campaign: {
+    id: string;
+    requireFreshResults: boolean;
+    activatedAt?: Date | string | null;
+  },
+): boolean {
+  if (!campaign.requireFreshResults) return true;
+  if (result.campaignId === campaign.id) return true;
+  if (result.campaignId || !campaign.activatedAt) return false;
+  return new Date(result.createdAt).getTime() >= new Date(campaign.activatedAt).getTime();
 }
