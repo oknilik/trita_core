@@ -19,6 +19,7 @@ import { OpsTab } from "@/app/(app)/admin/_tabs/OpsTab";
 import { FeedbackTab } from "@/app/(app)/admin/_tabs/FeedbackTab";
 import { RemindersTab } from "@/app/(app)/admin/_tabs/RemindersTab";
 import { BlogTab } from "@/app/(app)/admin/_tabs/BlogTab";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +49,12 @@ export async function generateMetadata(): Promise<Metadata> {
 // ─────────────────────────────────────────────────────────────────────
 const TAB_IDS = ["overview", "analytics", "crm", "inquiries", "orgs", "consultants", "blog", "ops", "feedback", "reminders"] as const;
 
+function isAdminTabActive(tab: AdminTabId): boolean {
+  if (tab === "crm") return isPortfolioSurfaceActive("crm");
+  if (tab === "blog") return isPortfolioSurfaceActive("blog");
+  return true;
+}
+
 const TAB_TITLES: Record<AdminTabId, string> = {
   overview: "Vezérlő",
   analytics: "Analitika",
@@ -71,20 +78,24 @@ export default async function AdminPage({
   const { tab, range: rangeParam, seg: segParam, view } = await searchParams;
   const range: AdminRange = isAdminRange(rangeParam) ? rangeParam : "30d";
   const segment: AdminSegment = isAdminSegment(segParam) ? segParam : "all";
-  const activeTab: AdminTabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
+  const requestedTab: AdminTabId = (TAB_IDS as readonly string[]).includes(tab ?? "")
     ? (tab as AdminTabId)
     : "overview";
+  const activeTab: AdminTabId = isAdminTabActive(requestedTab) ? requestedTab : "overview";
 
   // Nav-badge-ek (olcsó indexelt countok): új megkeresések + esedékes
   // (lejárt vagy mai) CRM next actionök nyitott dealeken.
+  const crmActive = isPortfolioSurfaceActive("crm");
   const { dueBefore } = resolveCrmDueWindow();
   const [newInquiryCount, crmDueCount] = await Promise.all([
     prisma.inquiry.count({ where: { status: "NEW" } }).catch(() => 0),
-    prisma.deal
-      .count({
-        where: { stage: { in: [...OPEN_DEAL_STAGES] }, nextActionAt: { lt: dueBefore } },
-      })
-      .catch(() => 0),
+    crmActive
+      ? prisma.deal
+          .count({
+            where: { stage: { in: [...OPEN_DEAL_STAGES] }, nextActionAt: { lt: dueBefore } },
+          })
+          .catch(() => 0)
+      : Promise.resolve(0),
   ]);
 
   return (
@@ -113,14 +124,14 @@ export default async function AdminPage({
             <div className="min-w-0">
               {activeTab === "overview" && <OverviewTab locale={locale} range={range} segment={segment} />}
               {activeTab === "analytics" && <AnalyticsTab range={range} />}
-              {activeTab === "crm" && <CrmTab view={view} />}
+              {crmActive && activeTab === "crm" && <CrmTab view={view} />}
               {activeTab === "inquiries" && <InquiriesTab />}
               {activeTab === "orgs" && <OrgsTab />}
               {activeTab === "consultants" && <ConsultantsTab />}
               {activeTab === "ops" && <OpsTab />}
               {activeTab === "feedback" && <FeedbackTab />}
               {activeTab === "reminders" && <RemindersTab />}
-              {activeTab === "blog" && <BlogTab />}
+              {isPortfolioSurfaceActive("blog") && activeTab === "blog" && <BlogTab />}
             </div>
           </FadeIn>
         </div>

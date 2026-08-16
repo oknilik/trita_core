@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 // ─────────────────────────────────────────────────────────────────────
 // Admin navigáció — modern dashboard-elrendezés (2026-07-28):
@@ -38,7 +39,7 @@ interface NavGroup {
 const ICON = "h-4 w-4 shrink-0";
 
 function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
-  return [
+  const groups: NavGroup[] = [
     {
       label: null,
       items: [
@@ -73,18 +74,22 @@ function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
     {
       label: "Ügyfelek",
       items: [
-        {
-          // CRM — a napi értékesítési hurok (Ma/Beérkező/Pipeline/Lezártak);
-          // a badge az esedékes (lejárt + mai) next actionök száma.
-          id: "crm",
-          label: "CRM",
-          badge: crmDueCount > 0 ? crmDueCount : undefined,
-          icon: (
-            <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M1.5 2h13L10 7.5V13l-4 1.5V7.5L1.5 2Z" />
-            </svg>
-          ),
-        },
+        ...(isPortfolioSurfaceActive("crm")
+          ? [
+              {
+                // CRM — a napi értékesítési hurok (Ma/Beérkező/Pipeline/Lezártak);
+                // a badge az esedékes (lejárt + mai) next actionök száma.
+                id: "crm" as const,
+                label: "CRM",
+                badge: crmDueCount > 0 ? crmDueCount : undefined,
+                icon: (
+                  <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1.5 2h13L10 7.5V13l-4 1.5V7.5L1.5 2Z" />
+                  </svg>
+                ),
+              },
+            ]
+          : []),
         {
           id: "inquiries",
           label: "Kérdések",
@@ -121,18 +126,20 @@ function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
     },
     {
       label: "Tartalom",
-      items: [
-        {
-          id: "blog",
-          label: "Blog",
-          icon: (
-            <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" />
-              <path d="M5 5.5h6M5 8h6M5 10.5h3.5" />
-            </svg>
-          ),
-        },
-      ],
+      items: isPortfolioSurfaceActive("blog")
+        ? [
+            {
+              id: "blog" as const,
+              label: "Blog",
+              icon: (
+                <svg className={ICON} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 2h10a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1Z" />
+                  <path d="M5 5.5h6M5 8h6M5 10.5h3.5" />
+                </svg>
+              ),
+            },
+          ]
+        : [],
     },
     {
       label: "Működés",
@@ -168,6 +175,7 @@ function buildGroups(newInquiryCount: number, crmDueCount: number): NavGroup[] {
       ],
     },
   ];
+  return groups.filter((group) => group.items.length > 0);
 }
 
 function Badge({ value, active }: { value: number; active: boolean }) {

@@ -1,4 +1,5 @@
 import { featureInterestLabel } from "@/lib/feature-interest";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 // Visszajelzések admin-nézet: szerep-kalibráció (RoleFitFeedback aggregát)
@@ -54,6 +55,8 @@ export function AdminFeedbackSection({
     (sum, r) => sum + r.accurate + r.inaccurate,
     0,
   );
+  const careerActive = isPortfolioSurfaceActive("career");
+  const fakedoorActive = isPortfolioSurfaceActive("fakedoor");
 
   return (
     <div className="mt-8 flex flex-col gap-8">
@@ -120,24 +123,25 @@ export function AdminFeedbackSection({
         </div>
       </section>
       {/* Szerep-kalibráció */}
-      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
-        <SectionEyebrow>
-          szerep-kalibráció
-        </SectionEyebrow>
-        <h2 className="mt-1 font-fraunces text-xl text-ink">
-          Karrier-iránytű visszajelzések ({totalVotes} szavazat)
-        </h2>
-        <p className="mt-1 text-xs text-ink-body">
-          „Dolgoztál hasonló szerepben — találó?” válaszok foglalkozásonként. Ahol a
-          nem-találó arány magas, ott a katalógus cél-profilját érdemes
-          felülvizsgálni (src/lib/career/catalog/). A „régi katalógus” jelölésű
-          sorok a v1 motor idejéből valók, más azonosító-térrel.
-        </p>
+      {careerActive ? (
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+          <SectionEyebrow>
+            szerep-kalibráció
+          </SectionEyebrow>
+          <h2 className="mt-1 font-fraunces text-xl text-ink">
+            Karrier-iránytű visszajelzések ({totalVotes} szavazat)
+          </h2>
+          <p className="mt-1 text-xs text-ink-body">
+            „Dolgoztál hasonló szerepben — találó?” válaszok foglalkozásonként. Ahol a
+            nem-találó arány magas, ott a katalógus cél-profilját érdemes
+            felülvizsgálni (src/lib/career/catalog/). A „régi katalógus” jelölésű
+            sorok a v1 motor idejéből valók, más azonosító-térrel.
+          </p>
 
-        {roleFitAggregates.length === 0 ? (
-          <p className="mt-4 text-sm text-muted">Még nincs visszajelzés.</p>
-        ) : (
-          <div className="mt-4 overflow-x-auto">
+          {roleFitAggregates.length === 0 ? (
+            <p className="mt-4 text-sm text-muted">Még nincs visszajelzés.</p>
+          ) : (
+            <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-sand font-mono text-micro uppercase tracking-widest text-muted">
@@ -174,27 +178,29 @@ export function AdminFeedbackSection({
                 })}
               </tbody>
             </table>
-          </div>
-        )}
-      </section>
+            </div>
+          )}
+        </section>
+      ) : null}
 
       {/* Érdeklődés-jelzések */}
-      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
-        <SectionEyebrow>
-          érdeklődés-jelzések
-        </SectionEyebrow>
-        <h2 className="mt-1 font-fraunces text-xl text-ink">
-          Lead-ek és javaslatok ({interests.length})
-        </h2>
-        <p className="mt-1 text-xs text-ink-body">
-          A szöveges üzenetek emailben mentek ({process.env.CONTACT_FORM_TO ?? "info@trita.io"})
-          — itt a ki/mit/mikor látszik.
-        </p>
+      {fakedoorActive ? (
+        <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+          <SectionEyebrow>
+            érdeklődés-jelzések
+          </SectionEyebrow>
+          <h2 className="mt-1 font-fraunces text-xl text-ink">
+            Lead-ek és javaslatok ({interests.length})
+          </h2>
+          <p className="mt-1 text-xs text-ink-body">
+            A szöveges üzenetek emailben mentek ({process.env.CONTACT_FORM_TO ?? "info@trita.io"})
+            — itt a ki/mit/mikor látszik.
+          </p>
 
-        {interests.length === 0 ? (
-          <p className="mt-4 text-sm text-muted">Még nincs jelzés.</p>
-        ) : (
-          <div className="mt-4 overflow-x-auto">
+          {interests.length === 0 ? (
+            <p className="mt-4 text-sm text-muted">Még nincs jelzés.</p>
+          ) : (
+            <div className="mt-4 overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-sand font-mono text-micro uppercase tracking-widest text-muted">
@@ -228,9 +234,10 @@ export function AdminFeedbackSection({
                 ))}
               </tbody>
             </table>
-          </div>
-        )}
-      </section>
+            </div>
+          )}
+        </section>
+      ) : null}
     </div>
   );
 }

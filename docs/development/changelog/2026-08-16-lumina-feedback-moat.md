@@ -105,3 +105,19 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   forrásleírással ellátott, legalább 200 fős kohorsznál ad ki
   `ACTIVE_NORM_TABLE`-jelöltet. Minden más futás leíró kalibráció és
   fail-closed módon felsorolja az aktiválási blokkolókat.
+
+## P2.2 — aktív portfólió-parkolás
+
+- A parkolás előtti teljes állapot annotált git taget kapott:
+  `portfolio-v1-pre-parking-2026-08-16` (`b7d78cb2`).
+- Egy kliensbiztos központi állapottábla kapuzza a karrier-, hiring-, CRM-,
+  blog-, fakedoor-, pattern explorer- és publikus share felületet.
+- A parkolt oldalak és API-k mélylinkről sem élnek; eltűntek a workspace,
+  marketing, admin, org-, eredmény- és riportfelületi belépők.
+- A blog és a mintafelfedező nem marad a sitemapben, robots allow-listában
+  vagy `llms.txt`-ben. A parkolt hiring/CRM értesítések nem növelik a látható
+  olvasatlan számlálót.
+- A CRM napi sweepje és inquiry auto-attach folyamata szünetel; az inquiry
+  továbbra is rögzül, és a működő admin Kérdések fülre mutat.
+- Sem kód, sem adat nem törlődött. A felületenkénti visszaállítás pontos
+  lépéseit a `docs/product/portfolio-parking-2026-08.md` checklistje rögzíti.

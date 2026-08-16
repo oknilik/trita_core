@@ -35,6 +35,7 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { SectionCta } from "@/components/results/SectionCta";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory, poleAwareDimensionLabel } from "@/lib/profile-content";
@@ -612,6 +613,8 @@ export function ProfileTabs({
 
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
+  const careerActive = isPortfolioSurfaceActive("career");
+  const publicSharingActive = isPortfolioSurfaceActive("publicSharing");
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
@@ -642,10 +645,12 @@ export function ProfileTabs({
           .map((d) => ({ code: d.code, score: d.score }))}
         insight={heroInsight ?? ""}
         accessLevel={accessLevel}
-        onShare={() => {
-          track("results.export", { format: "link" });
-          setShareOpen(true);
-        }}
+        onShare={publicSharingActive
+          ? () => {
+              track("results.export", { format: "link" });
+              setShareOpen(true);
+            }
+          : undefined}
         onDownloadPdf={async () => {
           // A6: melyik riport-kimenetet viszik el magukkal. A letöltés
           // SZÁNDÉKÁT mérjük (a kattintást), nem a fájl elkészültét — a
@@ -905,24 +910,26 @@ export function ProfileTabs({
         pdfLoading={pdfLoading}
       />
 
-      <ShareModal
-        isOpen={shareOpen}
-        onClose={() => setShareOpen(false)}
-        initialToken={shareToken}
-        initialHasShare={hasActiveShare}
-        preview={{
-          userName: name,
-          personalityType: personalityType ?? t("content.personalityProfileFallback", locale),
-          topDims: dimensions
-            .filter((d) => d.code !== "I")
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 2)
-            .map((d) => ({ label: d.label, score: d.score })),
-          glyphDimensions: dimensions
-            .filter((d) => d.code !== "I")
-            .map((d) => ({ code: d.code, score: d.score })),
-        }}
-      />
+      {publicSharingActive ? (
+        <ShareModal
+          isOpen={shareOpen}
+          onClose={() => setShareOpen(false)}
+          initialToken={shareToken}
+          initialHasShare={hasActiveShare}
+          preview={{
+            userName: name,
+            personalityType: personalityType ?? t("content.personalityProfileFallback", locale),
+            topDims: dimensions
+              .filter((d) => d.code !== "I")
+              .sort((a, b) => b.score - a.score)
+              .slice(0, 2)
+              .map((d) => ({ label: d.label, score: d.score })),
+            glyphDimensions: dimensions
+              .filter((d) => d.code !== "I")
+              .map((d) => ({ code: d.code, score: d.score })),
+          }}
+        />
+      ) : null}
 
       {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
           (a váltás-kezelő azt nem látná). */}
@@ -1050,7 +1057,7 @@ export function ProfileTabs({
                   oldalra. A `from=results` a mérésben a belépési pontot
                   jelöli — a riportból érkező szándéka mást ér, mint a
                   közvetlen látogatóé. */}
-              {!careerModuleHidden &&
+              {careerActive && !careerModuleHidden &&
                 (CAREER_MODULE_READY ? (
                   <SectionCta
                     eyebrow={t("results.ctaCareerEyebrow", locale)}

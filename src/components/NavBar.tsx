@@ -14,6 +14,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { useSiteMode } from "@/components/landing/site-mode";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -183,7 +184,9 @@ export function NavBar({
 
   const publicLinks = [
     { id: "home", href: "/", label: t("nav.publicHome", locale) },
-    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    ...(isPortfolioSurfaceActive("blog")
+      ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
+      : []),
     { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 
@@ -191,7 +194,9 @@ export function NavBar({
     // Bejelentkezve a link az appba (journey handoff) visz — a címke is
     // ezt mondja, ne 'Főoldal'-t (design-akciólista #18).
     { id: "dashboard", href: signedInHomeHref, label: t("nav.dashboard", locale) },
-    { id: "blog", href: "/blog", label: t("nav.blog", locale) },
+    ...(isPortfolioSurfaceActive("blog")
+      ? [{ id: "blog", href: "/blog", label: t("nav.blog", locale) }]
+      : []),
     { id: "pricing", href: "/pricing", label: t("nav.pricing", locale) },
   ];
 

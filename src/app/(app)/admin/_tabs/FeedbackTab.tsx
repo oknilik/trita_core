@@ -2,26 +2,33 @@ import { prisma } from "@/lib/prisma";
 import { getOccupation } from "@/lib/career/catalog";
 import { calibrateFeedback, type FeedbackRow } from "@/lib/career/calibration";
 import { AdminFeedbackSection } from "@/app/(app)/admin/_components/AdminFeedbackSection";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 // Visszajelzések fül — szerep-kalibráció + érdeklődés-jelzések + elégedettség
 // (utóbbi a megszűnt Kutatás fülről költözött ide)
 export async function FeedbackTab() {
+  const careerActive = isPortfolioSurfaceActive("career");
+  const fakedoorActive = isPortfolioSurfaceActive("fakedoor");
   const [roleFitRows, interestRows, satisfactionRows, dimensionRows] = await Promise.all([
-    prisma.feedback.findMany({
-      where: { kind: "role_fit" },
-      select: { targetKey: true, rating: true, payload: true },
-    }),
-    prisma.feedback.findMany({
-      where: { kind: "feature_interest" },
-      orderBy: { createdAt: "desc" },
-      take: 100,
-      select: {
-        id: true,
-        targetKey: true,
-        createdAt: true,
-        userProfile: { select: { email: true, username: true } },
-      },
-    }),
+    careerActive
+      ? prisma.feedback.findMany({
+          where: { kind: "role_fit" },
+          select: { targetKey: true, rating: true, payload: true },
+        })
+      : Promise.resolve([]),
+    fakedoorActive
+      ? prisma.feedback.findMany({
+          where: { kind: "feature_interest" },
+          orderBy: { createdAt: "desc" },
+          take: 100,
+          select: {
+            id: true,
+            targetKey: true,
+            createdAt: true,
+            userProfile: { select: { email: true, username: true } },
+          },
+        })
+      : Promise.resolve([]),
     prisma.feedback.findMany({
       where: { kind: "satisfaction" },
       select: { rating: true, payload: true },

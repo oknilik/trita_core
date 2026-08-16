@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/seo";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
  * Indexelhető publikus felületek. Együtt kell mozogniuk a `sitemap.ts`
@@ -10,10 +11,10 @@ import { getSiteUrl } from "@/lib/seo";
  */
 const PUBLIC_PATHS = [
   "/",
-  "/blog",
+  ...(isPortfolioSurfaceActive("blog") ? ["/blog"] : []),
   "/contact",
   "/founding",
-  "/patterns",
+  ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
   "/pricing",
   // A /privacy tervezet-állapotban is BEJÁRHATÓ marad (nem tesszük a
@@ -38,6 +39,7 @@ const PRIVATE_PATHS = [
   "/apply/",
   "/assessment",
   "/assessment-layers",
+  ...(!isPortfolioSurfaceActive("blog") ? ["/blog"] : []),
   "/career",
   "/dashboard",
   "/email-preferences",
@@ -48,6 +50,7 @@ const PRIVATE_PATHS = [
   "/observe/",
   "/onboarding",
   "/org",
+  ...(!isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/profile",
   "/share/",
   "/sign-in",

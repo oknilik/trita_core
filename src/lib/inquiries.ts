@@ -5,6 +5,7 @@ import { attachInquiryToOpenDeal } from "@/lib/crm/auto-attach";
 import { handleInquiryReceived } from "@/lib/notifications";
 import { resend, EMAIL_FROM } from "@/lib/resend";
 import { createLogger } from "@/lib/logger";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 const log = createLogger("inquiries");
 
@@ -75,13 +76,15 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
   // inquiry rálinkelődik (SYSTEM-activityvel). Best effort — a hibája nem
   // törheti a contact-flow-t. Auto-deal-létrehozás szándékosan NINCS: a
   // pipeline-ba kerülés kvalifikációs döntés az admin Beérkező nézetében.
-  try {
-    await attachInquiryToOpenDeal(inquiry.id, senderEmail);
-  } catch (error) {
-    log.error(
-      { event: "inquiries.crm_auto_attach_failed", err: error },
-      "CRM auto-attach failed",
-    );
+  if (isPortfolioSurfaceActive("crm")) {
+    try {
+      await attachInquiryToOpenDeal(inquiry.id, senderEmail);
+    } catch (error) {
+      log.error(
+        { event: "inquiries.crm_auto_attach_failed", err: error },
+        "CRM auto-attach failed",
+      );
+    }
   }
 
   // In-app notif: adminok + (org-link esetén) tanácsadók
@@ -118,7 +121,7 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
       "Üzenet:",
       params.message,
       "",
-      "Kezelés: /admin?tab=crm (Beérkező)",
+      "Kezelés: /admin?tab=inquiries",
     ].join("\n");
     const { error } = await resend.emails.send({
       from: EMAIL_FROM,

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { buildWorkspaceNavigation, type WorkspaceNavContext } from "@/lib/navigation/config";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import {
   canViewAnalyticsFeature,
   canViewDashboardBlock,
@@ -32,7 +33,7 @@ test("admin topnav is the simplified IA menu (no analytics)", () => {
 
   // A „Feladataim" org-tagságnál mindenkinek megjelenik (2026-07-29):
   // a tanácsadó/admin is lehet csapattag, neki is lehet kitöltendő köre.
-  assert.deepEqual(ids, ["home", "tasks", "teams", "hiring", "org"]);
+  assert.deepEqual(ids, ["home", "tasks", "teams", "org"]);
 });
 
 test("admin org entry is a plain link into the simple org page", () => {
@@ -83,7 +84,7 @@ test("manager topnav omits admin-only organization menu", () => {
   const navItems = buildWorkspaceNavigation("org_manager", baseContext);
   const ids = navItems.map((item) => item.id);
 
-  assert.deepEqual(ids, ["home", "tasks", "teams", "hiring"]);
+  assert.deepEqual(ids, ["home", "tasks", "teams"]);
   assert.equal(ids.includes("org"), false);
 });
 
@@ -209,6 +210,7 @@ test("admin org dropdown no longer contains the dead billing entry", () => {
 // olvashatatlan lenne. Ha a `CAREER_MODULE_READY` true-ra vált, ez a teszt
 // bukik: akkor az alábbi állítást kell megfordítani, nem a kapcsolót.
 test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
+  assert.equal(isPortfolioSurfaceActive("career"), false, "a P2.2 parkolás feloldódott");
   assert.equal(CAREER_MODULE_READY, false, "a modul kész lett — ld. a teszt kommentjét");
 
   const visible = buildWorkspaceNavigation("self", {
@@ -240,5 +242,13 @@ test("karrier menüpont: amíg a modul nem kész, nincs a menüben", () => {
     hidden.find((item) => item.id === "career"),
     undefined,
     "a menüpont megjelent",
+  );
+});
+
+test("a parkolt hiring hozzáféréssel sem kerül vissza a munkatér-menübe", () => {
+  assert.equal(isPortfolioSurfaceActive("hiring"), false);
+  assert.equal(
+    buildWorkspaceNavigation("org_admin", baseContext).some((item) => item.id === "hiring"),
+    false,
   );
 });

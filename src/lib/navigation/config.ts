@@ -2,6 +2,7 @@ import { resolveWorkspaceNavRole, type WorkspaceNavRole } from "@/lib/navigation
 import { t, type Locale } from "@/lib/i18n";
 import { canViewNavSection } from "@/lib/navigation/visibility";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export { resolveWorkspaceNavRole };
 export type { WorkspaceNavRole };
@@ -117,6 +118,7 @@ function buildInteractionItem(locale: Locale): WorkspaceNavItem {
 // Karrier-iránytű: 2026-07-31 óta önálló oldal (korábban az Eredményeim egyik
 // füle). Az Eredményeim mellett van a helye, mert ugyanabból a profilból dolgozik.
 function buildCareerItem(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
+  if (!isPortfolioSurfaceActive("career")) return null;
   if (ctx.careerModuleHidden) return null;
   // Amíg a modul nem kész, a `/career` a kereslet-mérő ajánlót mutatja. Azt
   // egyetlen úton engedjük elérni (riport-oldali CTA), különben a tölcsér
@@ -235,6 +237,7 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
 // „Kreditek" akciók a /hiring felület fejlécében élnek.
 function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole, locale: Locale): WorkspaceNavItem | null {
   void role;
+  if (!isPortfolioSurfaceActive("hiring")) return null;
   if (!ctx.org || !ctx.hasHiringAccess) return null;
   return {
     id: "hiring",

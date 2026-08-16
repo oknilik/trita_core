@@ -30,6 +30,7 @@ import {
 } from "@/components/dashboard/DashboardPrimitives";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { resolveOrgOverviewFocus } from "@/lib/org-overview-focus";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export const dynamic = "force-dynamic";
 
@@ -282,7 +283,7 @@ export default async function OrgDetailPage({
   }
 
   // Jelöltek — csak tanácsadói felületen (Jelöltek fül)
-  const candidateInvites = isConsultantView
+  const candidateInvites = isConsultantView && isPortfolioSurfaceActive("hiring")
     ? await prisma.candidateInvite.findMany({
         where: { OR: [{ orgId }, { team: { orgId } }] },
         orderBy: { createdAt: "desc" },

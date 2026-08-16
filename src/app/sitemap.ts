@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { getSiteUrl, getTranslatedLanguageAlternates } from "@/lib/seo";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { LEGAL_DOCS_ARE_DRAFT } from "@/lib/legal/company";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
  * A statikus marketing-oldalak tartalmi felülvizsgálatának dátuma.
@@ -17,11 +18,12 @@ const CONTENT_REVIEWED_AT = new Date("2026-08-06T00:00:00.000Z");
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = getSiteUrl();
   const reviewedAt = CONTENT_REVIEWED_AT;
+  const blogActive = isPortfolioSurfaceActive("blog");
 
   // Piszkozat nélkül (getAllPosts alapból kiszűri) — ami nincs kint, az nem
   // kerülhet a sitemapbe sem.
-  const huPosts = getAllPosts("hu");
-  const enPosts = getAllPosts("en");
+  const huPosts = blogActive ? getAllPosts("hu") : [];
+  const enPosts = blogActive ? getAllPosts("en") : [];
   const posts = [...huPosts, ...enPosts];
 
   const blogUrls: MetadataRoute.Sitemap = posts.map((post) => {
@@ -74,9 +76,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/about`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/rolunk`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.5 },
     { url: `${baseUrl}/try`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${baseUrl}/patterns`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.7 },
+    ...(isPortfolioSurfaceActive("patternExplorer")
+      ? [{ url: `${baseUrl}/patterns`, lastModified: reviewedAt, changeFrequency: "monthly" as const, priority: 0.7 }]
+      : []),
     { url: `${baseUrl}/pilot`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.6 },
-    { url: `${baseUrl}/blog`, lastModified: newestPostAt, changeFrequency: "weekly", priority: 0.8 },
+    ...(blogActive
+      ? [{ url: `${baseUrl}/blog`, lastModified: newestPostAt, changeFrequency: "weekly" as const, priority: 0.8 }]
+      : []),
     ...blogUrls,
     // A /privacy CSAK akkor kerül a sitemapbe, ha a jogi dokumentum már nem
     // tervezet. Helykitöltő cégadatokkal indexelni egy jogi lapot félrevezető

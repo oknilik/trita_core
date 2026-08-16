@@ -30,12 +30,14 @@ function productionRobots() {
 const PRIVATE_PREFIXES = [
   "/admin",
   "/api/",
+  "/blog",
   "/dashboard",
   "/hiring/",
   "/join/",
   "/manager",
   "/observe/",
   "/org",
+  "/patterns",
   "/profile",
   "/share/",
   "/team",
@@ -103,11 +105,14 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
   }
 });
 
-test("az llms.txt a fő publikus lapokat és a kapcsolati címet tartalmazza", async () => {
+test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/pricing", "/patterns", "/pilot", "/blog"]) {
+  for (const path of ["/try", "/pricing", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
+  }
+  for (const path of ["/patterns", "/blog"]) {
+    assert.equal(body.includes(`${path})`), false, `parkolt lap kint maradt: ${path}`);
   }
   assert.ok(body.includes("hello@trita.io"));
 });
