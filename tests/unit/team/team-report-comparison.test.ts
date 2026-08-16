@@ -26,5 +26,28 @@ test("comparison computes round deltas and ranks dimension movement", () => {
   );
   assert.equal(result.completionDelta, 20);
   assert.equal(result.psychSafetyDelta, 4.5);
-  assert.deepEqual(result.dimensionChanges.map((item) => [item.code, item.delta]), [["X", 15], ["H", 5]]);
+  assert.equal(result.psychSafetySignificant, false);
+  assert.deepEqual(
+    result.dimensionChanges.map((item) => [item.code, item.delta, item.significant]),
+    [["X", 15, true], ["H", 5, false]],
+  );
+});
+
+test("azonos riport önmagával összevetve nem ad mérési hibán túli változást", () => {
+  const same = report(80, { H: 55, E: 48, X: 61, A: 52, C: 64, O: 70 }, 68);
+  const result = compareTeamReports(same, same);
+
+  assert.equal(result.psychSafetyDelta, 0);
+  assert.equal(result.psychSafetySignificant, false);
+  assert.equal(result.dimensionChanges.filter((item) => item.significant).length, 0);
+});
+
+test("nagy pszichológiai-biztonság elmozdulás átmegy a konzervatív prior-kapun", () => {
+  const result = compareTeamReports(
+    report(100, { H: 60 }, 80),
+    report(100, { H: 60 }, 60),
+  );
+
+  assert.equal(result.psychSafetyDelta, 20);
+  assert.equal(result.psychSafetySignificant, true);
 });

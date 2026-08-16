@@ -26,6 +26,11 @@ export function TeamReportComparison({
   isHu: boolean;
 }) {
   const comparison = compareTeamReports(current, previous);
+  const significantDimensionChanges = comparison.dimensionChanges.filter(
+    (item) => item.significant,
+  );
+  const withinErrorCount =
+    comparison.dimensionChanges.length - significantDimensionChanges.length;
   const currentDate = current.publishedAt ? new Date(current.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB") : "—";
   const previousDate = previous.publishedAt ? new Date(previous.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB") : "—";
 
@@ -43,13 +48,23 @@ export function TeamReportComparison({
         </DashboardPanel>
         <DashboardPanel className="p-4">
           <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Pszichológiai biztonság" : "Psychological safety"}</p>
-          <p className="mt-1 font-fraunces text-2xl text-ink">{comparison.psychSafetyDelta === null ? "—" : deltaLabel(comparison.psychSafetyDelta)}</p>
+          {comparison.psychSafetyDelta === null ? (
+            <p className="mt-1 font-fraunces text-2xl text-ink">—</p>
+          ) : comparison.psychSafetySignificant ? (
+            <p className="mt-1 font-fraunces text-2xl text-ink">
+              {deltaLabel(comparison.psychSafetyDelta)}
+            </p>
+          ) : (
+            <p className="mt-2 text-xs text-muted">
+              {isHu ? "A mérési hibán belül maradt" : "Within measurement error"}
+            </p>
+          )}
         </DashboardPanel>
         <DashboardPanel className="p-4">
-          <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Legnagyobb profilmozgások" : "Largest profile shifts"}</p>
-          {comparison.dimensionChanges.length > 0 ? (
+          <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Mérési hibán túli profilmozgások" : "Profile shifts beyond measurement error"}</p>
+          {significantDimensionChanges.length > 0 ? (
             <ul className="mt-2 space-y-1.5">
-              {comparison.dimensionChanges.slice(0, 3).map((item) => (
+              {significantDimensionChanges.slice(0, 3).map((item) => (
                 <li key={item.code} className="flex justify-between gap-3 text-xs text-ink-body">
                   <span>{DIMENSION_LABELS[item.code]?.[isHu ? "hu" : "en"] ?? (isHu ? "Dimenzió" : "Dimension")}</span>
                   <span className="font-semibold text-ink">{deltaLabel(item.delta)}</span>
@@ -59,8 +74,15 @@ export function TeamReportComparison({
           ) : <p className="mt-2 text-xs text-muted">—</p>}
         </DashboardPanel>
       </div>
+      {withinErrorCount > 0 ? (
+        <p className="mt-2 text-micro text-muted">
+          {isHu
+            ? `${withinErrorCount} további dimenzióeltérés a mérési hibán belül maradt, ezért nem rangsoroljuk.`
+            : `${withinErrorCount} additional dimension difference${withinErrorCount === 1 ? "" : "s"} remained within measurement error and is not ranked.`}
+        </p>
+      ) : null}
       <p className="mt-2 text-micro text-muted">
-        {isHu ? "A változás leíró jelzés, nem oksági bizonyíték; az eltérő részvételi arányt a debriefen külön értelmezni kell." : "Change is descriptive, not causal evidence; differences in participation should be interpreted during the debrief."}
+        {isHu ? "Csak a mérési hibán túli eltérést mutatjuk változásként. Ez leíró jelzés, nem oksági bizonyíték; az eltérő részvételi arányt a debriefen külön értelmezni kell." : "Only differences beyond measurement error are shown as change. This is descriptive, not causal evidence; differences in participation should be interpreted during the debrief."}
       </p>
     </section>
   );

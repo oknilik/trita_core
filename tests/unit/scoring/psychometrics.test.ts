@@ -10,6 +10,8 @@ import {
   dimStandardError,
   diffStandardError,
   facetStandardError,
+  independentMeanDiffStandardError,
+  teamMeanDiffStandardError,
 } from "@/lib/psychometrics";
 import * as careerPsychometrics from "@/lib/career/psychometrics";
 import { tritanConfig } from "@/lib/questions/tritan";
@@ -92,6 +94,32 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.equal(diffStandardError("short"), Math.SQRT2 * dimStandardError("short"));
     assert.equal(Math.round(diffStandardError("short")), 11);
     assert.ok(diffStandardError("short") > dimStandardError("short"));
+  });
+
+  it("a két csapatátlag különbségi hibája a mintanagysággal csökken", () => {
+    const smallTeam = teamMeanDiffStandardError("short", 3, 3, "H");
+    const mediumTeam = teamMeanDiffStandardError("short", 8, 8, "H");
+    const largeTeam = teamMeanDiffStandardError("short", 20, 20, "H");
+
+    assert.ok(smallTeam > mediumTeam);
+    assert.ok(mediumTeam > largeTeam);
+    assert.equal(
+      mediumTeam,
+      independentMeanDiffStandardError(
+        dimStandardError("short", "H"),
+        8,
+        dimStandardError("short", "H"),
+        8,
+      ),
+    );
+  });
+
+  it("üres vagy érvénytelen minta fail-closed: nincs védhető változás", () => {
+    assert.equal(teamMeanDiffStandardError("short", 0, 5), Number.POSITIVE_INFINITY);
+    assert.equal(
+      independentMeanDiffStandardError(Number.NaN, 5, 8, 5),
+      Number.POSITIVE_INFINITY,
+    );
   });
 
   it("DIFF_MIN_GAP (personality-type literál) = round(√2·SEM short)", () => {
