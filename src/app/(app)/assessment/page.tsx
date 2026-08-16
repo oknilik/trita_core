@@ -72,15 +72,14 @@ export default async function AssessmentPage({
 
   // If user already has results, no draft in progress, and hasn't confirmed retake → redirect
   const params = await searchParams;
-  const campaignStep = params.campaignId
-    ? await resolveActiveSelfAssessmentCampaign(profile.id, {
-        campaignId: params.campaignId,
-      })
-    : null;
+  const campaignStep = await resolveActiveSelfAssessmentCampaign(
+    profile.id,
+    params.campaignId ? { campaignId: params.campaignId } : undefined,
+  );
   const campaignId = campaignStep?.campaignId ?? null;
   // Ismeretlen, lezárt, más felhasználóhoz tartozó vagy még időzített körből
   // nem fogadunk el self-beadást. A feladatsor megmutatja az aktuális lépést.
-  if (params.campaignId && !campaignId) redirect("/tasks");
+  if (params.campaignId && campaignId !== params.campaignId) redirect("/tasks");
 
   if (
     profile.assessmentResults.length > 0 &&

@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import type { TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -13,6 +12,7 @@ import {
   advanceCampaignStepForUser,
   resolveActiveSelfAssessmentCampaign,
 } from "@/lib/campaign-steps";
+import { resolveAssessmentSubmitViewerClerkId } from "@/lib/assessment-submit-auth";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   const rateLimitResponse = await checkRateLimit("api");
   if (rateLimitResponse) return rateLimitResponse;
 
-  const { userId } = await auth();
+  const userId = await resolveAssessmentSubmitViewerClerkId();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
@@ -67,13 +67,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const campaignStep = requestedCampaignId
-    ? await resolveActiveSelfAssessmentCampaign(profile.id, {
-        campaignId: requestedCampaignId,
-      })
-    : null;
+  const campaignStep = await resolveActiveSelfAssessmentCampaign(
+    profile.id,
+    requestedCampaignId ? { campaignId: requestedCampaignId } : undefined,
+  );
   const campaignId = campaignStep?.campaignId ?? null;
-  if (requestedCampaignId && !campaignId) {
+  if (requestedCampaignId && campaignId !== requestedCampaignId) {
     log.warn(
       { event: "assessment.submit_campaign_not_open", requestedCampaignId },
       "Campaign step is not open for user",
