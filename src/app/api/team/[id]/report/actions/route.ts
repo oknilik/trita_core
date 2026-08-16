@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
 import { hasOrgRole } from "@/lib/org-roles";
 import { serializeTeamReport } from "@/lib/team-report";
+import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
 
 const actionItemSchema = z.object({
   title: z.string().min(1).max(200),
@@ -13,6 +14,7 @@ const actionItemSchema = z.object({
   owner: z.string().max(120).optional(),
   dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
   status: z.enum(["not_started", "in_progress", "blocked", "done"]),
+  targetMetric: teamActionTargetSchema.optional(),
 });
 
 const requestSchema = z.object({

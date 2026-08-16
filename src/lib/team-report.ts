@@ -38,6 +38,10 @@ import {
 } from "@/lib/team-report-composition";
 import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
 import type { TeamFeedbackCulture } from "@/lib/team-observer";
+import {
+  parseTeamActionTarget,
+  type TeamActionTarget,
+} from "@/lib/team-action-target";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -204,6 +208,8 @@ export interface TeamReportActionItem {
   /** ISO naptári nap (YYYY-MM-DD); időzóna-független követéshez. */
   dueDate?: string;
   status?: "not_started" | "in_progress" | "blocked" | "done";
+  /** A következő mérési körben visszamérendő, strukturált célmutató. */
+  targetMetric?: TeamActionTarget;
 }
 
 export interface SerializedTeamReport {
@@ -689,6 +695,10 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
         .map((id) => getPsychSafetyItem(id)?.area.hu)
         .filter((a): a is string => Boolean(a))
     : [];
+  const singleRoleGapTarget =
+    agg.roleGaps?.length === 1
+      ? parseTeamActionTarget({ kind: "role_gap", roleCode: agg.roleGaps[0] })
+      : undefined;
 
   const bullets = (lines: string[]) =>
     lines.filter((l) => l.length > 0).map((l) => `• ${l}`).join("\n");
@@ -806,6 +816,9 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             title: "Szerep-tisztázás",
             description: `A lefedetlen szerepek (${gapRoleNames}) pótlásának megtervezése: belső felelős kijelölése, folyamat-támasz vagy külső erőforrás.`,
             timeframe: "60" as const,
+            ...(singleRoleGapTarget
+              ? { targetMetric: singleRoleGapTarget }
+              : {}),
           },
         ]
       : []),
@@ -816,15 +829,23 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             description:
               "Bizalmi kör (360°) indítása a csapatban — a becsült kapcsolati elemek megerősítése mért adattal, a következő riport pontosabb képet ad.",
             timeframe: "60" as const,
+            targetMetric: { kind: "trust_coverage" as const },
           },
         ]
       : []),
     ...(ps && ps.weakItemIds.length > 0
-      ? ps.weakItemIds.slice(0, 2).map((id) => ({
-          title: `Pszichológiai biztonság: ${getPsychSafetyItem(id)?.area.hu ?? id}`,
-          description: PSYCH_SAFETY_ACTIONS[id]?.hu ?? "",
-          timeframe: "30" as const,
-        }))
+      ? ps.weakItemIds.slice(0, 2).map((id) => {
+          const targetMetric = parseTeamActionTarget({
+            kind: "psych_safety_item",
+            itemId: id,
+          });
+          return {
+            title: `Pszichológiai biztonság: ${getPsychSafetyItem(id)?.area.hu ?? id}`,
+            description: PSYCH_SAFETY_ACTIONS[id]?.hu ?? "",
+            timeframe: "30" as const,
+            ...(targetMetric ? { targetMetric } : {}),
+          };
+        })
       : []),
     {
       title: "Utánkövetés és riport-frissítés",
@@ -855,6 +876,7 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
       typeof item.dueDate === "string" && /^\d{4}-\d{2}-\d{2}$/u.test(item.dueDate)
         ? item.dueDate
         : undefined;
+    const targetMetric = parseTeamActionTarget(item.targetMetric);
     return [{
       title: item.title,
       description: item.description,
@@ -864,6 +886,7 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
         : {}),
       ...(dueDate ? { dueDate } : {}),
       ...(status ? { status } : {}),
+      ...(targetMetric ? { targetMetric } : {}),
     }];
   });
   return items.length > 0 ? items : null;

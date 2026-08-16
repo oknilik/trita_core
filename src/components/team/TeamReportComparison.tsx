@@ -5,6 +5,7 @@ import {
 } from "@/lib/team-report-comparison";
 import { PSYCH_SAFETY_ITEMS } from "@/lib/psych-safety";
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import { teamActionTargetLabel } from "@/lib/team-action-target";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
@@ -40,6 +41,53 @@ function psychItemLabel(id: string, isHu: boolean): string {
 function roleLabel(code: string, isHu: boolean): string {
   const role = TEAM_ROLES[code as keyof typeof TEAM_ROLES];
   return role?.[isHu ? "hu" : "en"] ?? code;
+}
+
+function actionOutcomeMetric(
+  outcome: ReturnType<typeof compareTeamReports>["actionOutcomes"][number],
+  isHu: boolean,
+): string {
+  if (!outcome.metric) return isHu ? "Nincs összevethető adat" : "No comparable data";
+  if (outcome.target.kind === "role_gap") {
+    const state = (value: number) =>
+      value === 1
+        ? isHu ? "hézag" : "gap"
+        : isHu ? "lefedett" : "covered";
+    return `${state(outcome.metric.previous)} → ${state(outcome.metric.current)}`;
+  }
+  const suffix = outcome.target.kind === "trust_coverage" ? "%" : "";
+  return transitionLabel(outcome.metric, suffix, outcome.direction !== "context_only");
+}
+
+function actionOutcomeGate(
+  outcome: ReturnType<typeof compareTeamReports>["actionOutcomes"][number],
+  isHu: boolean,
+): string {
+  if (outcome.gate === "unavailable") return isHu ? "nincs adat" : "no data";
+  if (outcome.gate === "categorical") {
+    return isHu ? "kategorikus állapot" : "categorical state";
+  }
+  if (outcome.gate === "descriptive") {
+    return isHu ? "nincs még kalibrált kapu" : "no calibrated gate yet";
+  }
+  return outcome.significant
+    ? isHu ? "igen · mérési kapun túl" : "yes · beyond measurement gate"
+    : isHu ? "nem · mérési hibán belül" : "no · within measurement error";
+}
+
+function actionOutcomeDirection(
+  direction: ReturnType<typeof compareTeamReports>["actionOutcomes"][number]["direction"],
+  isHu: boolean,
+): string {
+  const labels = {
+    improved: isHu ? "kedvező irány" : "favourable direction",
+    worsened: isHu ? "kedvezőtlen irány" : "unfavourable direction",
+    unchanged: isHu ? "változatlan" : "unchanged",
+    no_clear_change: isHu ? "nincs védhető elmozdulás" : "no defensible movement",
+    context_only: isHu ? "csak összetételi kontextus" : "composition context only",
+    unavailable: isHu ? "nem mérhető" : "not measurable",
+  } as const;
+  return labels[direction];
 }
 
 export function TeamReportComparison({
@@ -309,6 +357,58 @@ export function TeamReportComparison({
           )}
         </DashboardPanel>
       </div>
+
+      {comparison.actionOutcomes.length > 0 ? (
+        <div className="mt-5">
+          <h3 className="font-fraunces text-lg text-ink">
+            {isHu ? "Vállalt akció → mért kimenet" : "Committed action → measured outcome"}
+          </h3>
+          <div className="mt-3 overflow-x-auto rounded-xl border border-sand">
+            <table className="min-w-full border-collapse text-left text-xs">
+              <thead className="bg-cream text-micro uppercase tracking-widest text-muted">
+                <tr>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Akció" : "Action"}</th>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Célmutató" : "Target"}</th>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Kimenet" : "Outcome"}</th>
+                  <th className="px-3 py-2 font-semibold">{isHu ? "Mérési kapu" : "Measurement gate"}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-sand bg-surface-card">
+                {comparison.actionOutcomes.map((outcome, index) => (
+                  <tr key={`${outcome.title}-${index}`}>
+                    <td className="px-3 py-3 align-top text-ink">
+                      <p className="font-semibold">{outcome.title}</p>
+                      <p className="mt-0.5 text-micro text-muted">
+                        {outcome.status === "done"
+                          ? isHu ? "kész" : "done"
+                          : outcome.status === "in_progress"
+                            ? isHu ? "folyamatban" : "in progress"
+                            : outcome.status === "blocked"
+                              ? isHu ? "elakadt" : "blocked"
+                              : isHu ? "nem indult" : "not started"}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top text-ink-body">
+                      {teamActionTargetLabel(outcome.target, isHu ? "hu" : "en")}
+                    </td>
+                    <td className="px-3 py-3 align-top text-ink-body">
+                      <p className="font-semibold text-ink">
+                        {actionOutcomeMetric(outcome, isHu)}
+                      </p>
+                      <p className="mt-0.5 text-micro text-muted">
+                        {actionOutcomeDirection(outcome.direction, isHu)}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top text-ink-body">
+                      {actionOutcomeGate(outcome, isHu)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      ) : null}
 
       <h3 className="mt-5 font-fraunces text-lg text-ink">
         {isHu ? "Mérési kontrollok" : "Measurement controls"}

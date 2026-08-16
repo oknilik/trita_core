@@ -20,7 +20,12 @@ const baseRecord = {
   interviewFindings: "Interjú-tanulságok",
   leadershipGuide: "Vezetési javaslatok",
   actionItems: [
-    { title: "Kickoff workshop", description: "Normák tisztázása", timeframe: "30" },
+    {
+      title: "Kickoff workshop",
+      description: "Normák tisztázása",
+      timeframe: "30",
+      targetMetric: { kind: "psych_safety_item", itemId: "PS1" },
+    },
     { title: "hiányos elem", timeframe: "60" },
   ],
   internalNotes: "BIZALMAS tanácsadói jegyzet",
@@ -63,7 +68,12 @@ test("comparisonBasis csak a tanácsadói szerializációban marad meg", () => {
 test("action items: malformed entries dropped, valid kept", () => {
   const serialized = serializeTeamReport(baseRecord, { includeInternalNotes: false });
   assert.deepEqual(serialized.actionItems, [
-    { title: "Kickoff workshop", description: "Normák tisztázása", timeframe: "30" },
+    {
+      title: "Kickoff workshop",
+      description: "Normák tisztázása",
+      timeframe: "30",
+      targetMetric: { kind: "psych_safety_item", itemId: "PS1" },
+    },
   ]);
   assert.equal(serialized.leadershipGuide, "Vezetési javaslatok");
 });
@@ -121,9 +131,37 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   assert.ok(titles.includes("Szerep-tisztázás"));
   assert.ok(titles.includes("Mért bizalmi kör"));
   assert.ok(titles.includes("Utánkövetés és riport-frissítés"));
+  assert.deepEqual(
+    prefill!.actionItems.find((item) => item.title === "Mért bizalmi kör")?.targetMetric,
+    { kind: "trust_coverage" },
+  );
   for (const item of prefill!.actionItems) {
     assert.ok(["30", "60", "90"].includes(item.timeframe));
   }
+});
+
+test("prefill: a gyenge pulse-terület akciója a konkrét itemre céloz", () => {
+  const prefill = buildDraftNarrativePrefill({
+    ...richAggregates,
+    psychSafety: {
+      index: 52,
+      band: "low",
+      count: 5,
+      spread: 10,
+      itemMeans: { PS1: 2.8 },
+      weakItemIds: ["PS1"],
+      campaignName: "Pulse",
+      campaignStatus: "CLOSED",
+      measuredAt: "2026-08-01",
+    },
+  });
+  const action = prefill!.actionItems.find((item) =>
+    item.title.includes("Kényes témák felvetése")
+  );
+  assert.deepEqual(action?.targetMetric, {
+    kind: "psych_safety_item",
+    itemId: "PS1",
+  });
 });
 
 test("prefill: high aligned share from TRUST data does NOT claim homogeneity (D2)", () => {

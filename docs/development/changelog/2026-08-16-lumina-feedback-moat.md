@@ -58,3 +58,19 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
 - A HEXACO-delta a felületen már mérési kontroll, nem fejlődési mutató. Az
   összetétel-változás a relációs/szerepeltéréseket is leíró kontextussá
   fokozza vissza, és az oksági korlátot a felület kimondja.
+
+## P1.2 — akció → kimenet kapcsolat
+
+- Az akcióelem opcionális, strukturált `targetMetric` mezőt kapott. Választható
+  cél a pulse-index vagy konkrét pulse-item, a bizalmi háló lefedettsége vagy
+  beágyazatlansága, illetve egy konkrét csapatszerep-hézag.
+- A tanácsadói riport-szerkesztő célmutató-választót ad; az akciókövető a
+  hozzárendelt célt a vezetőnek is megmutatja. A régi akciók cél nélkül
+  változatlanul olvashatók.
+- A generált pulse-akciók automatikusan a gyenge itemre, a mért bizalmi kör
+  adatgyűjtési akciója a hálólefedettségre mutat.
+- A következő riport összehasonlítója táblában kapcsolja össze az előző kör
+  vállalását, státuszát, célmutatóját és mért kimenetét.
+- Pulse-célnál a P0.1 mérési kapu dönti el, védhető-e az elmozdulás.
+  Relációs célhoz kalibrált hiba híján a rendszer nem gyárt hamis
+  „szignifikáns” címkét; kategorikus szerephézagnál az állapotváltást jelzi.

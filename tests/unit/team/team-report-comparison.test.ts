@@ -243,6 +243,34 @@ test("a változékony mért rétegeket külön összehasonlítja", () => {
       gapCount: 1,
     },
   });
+  previous.actionItems = [
+    {
+      title: "Kényes témák fóruma",
+      description: "",
+      timeframe: "30",
+      status: "done",
+      targetMetric: { kind: "psych_safety_item", itemId: "PS1" },
+    },
+    {
+      title: "Segítségkérés rutinja",
+      description: "",
+      timeframe: "30",
+      status: "in_progress",
+      targetMetric: { kind: "psych_safety_item", itemId: "PS2" },
+    },
+    {
+      title: "Peremre került tagok bevonása",
+      description: "",
+      timeframe: "60",
+      targetMetric: { kind: "trust_isolated_count" },
+    },
+    {
+      title: "Ötletgazda szerep pótlása",
+      description: "",
+      timeframe: "60",
+      targetMetric: { kind: "role_gap", roleCode: "OG" },
+    },
+  ];
 
   const result = compareTeamReports(current, previous);
   assert.deepEqual(
@@ -280,6 +308,45 @@ test("a változékony mért rétegeket külön összehasonlítja", () => {
     mismatchCount: { previous: 3, current: 1, delta: -2 },
     mismatchSharePct: { previous: 75, current: 25, delta: -50 },
   });
+  assert.deepEqual(
+    result.actionOutcomes.map((outcome) => ({
+      title: outcome.title,
+      metric: outcome.metric,
+      gate: outcome.gate,
+      significant: outcome.significant,
+      direction: outcome.direction,
+    })),
+    [
+      {
+        title: "Kényes témák fóruma",
+        metric: { previous: 2, current: 4, delta: 2 },
+        gate: "measurement_error",
+        significant: true,
+        direction: "improved",
+      },
+      {
+        title: "Segítségkérés rutinja",
+        metric: { previous: 3.5, current: 3.8, delta: 0.3 },
+        gate: "measurement_error",
+        significant: false,
+        direction: "no_clear_change",
+      },
+      {
+        title: "Peremre került tagok bevonása",
+        metric: { previous: 2, current: 1, delta: -1 },
+        gate: "descriptive",
+        significant: null,
+        direction: "improved",
+      },
+      {
+        title: "Ötletgazda szerep pótlása",
+        metric: { previous: 1, current: 0, delta: -1 },
+        gate: "categorical",
+        significant: null,
+        direction: "improved",
+      },
+    ],
+  );
 });
 
 test("régi snapshot változékony rétegek nélkül is kompatibilis", () => {
@@ -292,4 +359,33 @@ test("régi snapshot változékony rétegek nélkül is kompatibilis", () => {
   assert.equal(result.externalPerspective, null);
   assert.equal(result.peerRolePerspective, null);
   assert.deepEqual(result.psychSafetyItemChanges, []);
+});
+
+test("az első mért bizalmi kör adatgyűjtési akciója 0-ról kap lefedettségi kimenetet", () => {
+  const previous = report(100, { H: 50 }, 60, undefined, {
+    evidence: { quality: "partial", measuredEdgeCount: 0, estimatedEdgeCount: 4 },
+  });
+  previous.actionItems = [{
+    title: "Mért bizalmi kör",
+    description: "",
+    timeframe: "60",
+    targetMetric: { kind: "trust_coverage" },
+  }];
+  const current = report(100, { H: 50 }, 60, undefined, {
+    evidence: { quality: "sufficient", measuredEdgeCount: 5, estimatedEdgeCount: 0 },
+    trustHighlights: {
+      source: "trust_round",
+      measuredPairCount: 5,
+      possiblePairCount: 10,
+      coveragePct: 50,
+      hubs: [],
+      isolated: [],
+    },
+  });
+
+  const [outcome] = compareTeamReports(current, previous).actionOutcomes;
+  assert.deepEqual(outcome.metric, { previous: 0, current: 50, delta: 50 });
+  assert.equal(outcome.gate, "descriptive");
+  assert.equal(outcome.significant, null);
+  assert.equal(outcome.direction, "improved");
 });

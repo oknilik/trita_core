@@ -4,6 +4,10 @@ import {
   teamMeanDiffStandardError,
 } from "@/lib/psychometrics";
 import { TEAM_ROLES } from "@/lib/team-role-scoring";
+import {
+  parseTeamActionTarget,
+  type TeamActionTarget,
+} from "@/lib/team-action-target";
 
 // ── Pszichológiai biztonság mérési-hiba priorok ─────────────────────
 // PRIOROK, NEM MÉRT TRITA-RELIABILITÁS: a saját, 8 itemes TPS skálán még
@@ -76,6 +80,23 @@ export interface PeerRolePerspectiveComparison {
   mismatchSharePct: NumericChange;
 }
 
+export interface TeamActionOutcome {
+  title: string;
+  status: "not_started" | "in_progress" | "blocked" | "done";
+  target: TeamActionTarget;
+  metric: NumericChange | null;
+  gate: "measurement_error" | "categorical" | "descriptive" | "unavailable";
+  /** Null = ehhez a mutatóhoz még nincs kalibrált statisztikai kapu. */
+  significant: boolean | null;
+  direction:
+    | "improved"
+    | "worsened"
+    | "unchanged"
+    | "no_clear_change"
+    | "context_only"
+    | "unavailable";
+}
+
 export interface TeamReportCompositionComparison {
   status: "comparable" | "changed" | "unknown";
   common: number | null;
@@ -97,6 +118,7 @@ export interface TeamReportComparisonResult {
   externalPerspective: PerspectiveGapComparison | null;
   /** Csapatszerep-önkép ↔ peer top-3 eltérés, aggregáltan. */
   peerRolePerspective: PeerRolePerspectiveComparison | null;
+  actionOutcomes: TeamActionOutcome[];
   /** Teljes csapat nyers profil-deltája — kompozíciós kontextus, nem fejlődés. */
   dimensionChanges: DimensionChange[];
   /** Kizárólag a mindkét körben jelen lévő, megfelelő méretű stabil mag deltája. */
@@ -373,6 +395,157 @@ function comparePeerRolePerspective(
   };
 }
 
+function directionFor(
+  metric: NumericChange,
+  better: "higher" | "lower",
+  options?: { significant?: boolean | null; contextOnly?: boolean },
+): TeamActionOutcome["direction"] {
+  if (options?.contextOnly) return "context_only";
+  if (metric.delta === 0) return "unchanged";
+  if (options?.significant === false) return "no_clear_change";
+  const improved = better === "higher" ? metric.delta > 0 : metric.delta < 0;
+  return improved ? "improved" : "worsened";
+}
+
+function compareActionOutcomes(params: {
+  current: SerializedTeamReport;
+  previous: SerializedTeamReport;
+  psychSafetySignificant: boolean | null;
+  psychSafetyItemChanges: PsychSafetyItemChange[];
+  trustNetwork: TrustNetworkComparison | null;
+  compositionComparable: boolean;
+}): TeamActionOutcome[] {
+  const {
+    current,
+    previous,
+    psychSafetySignificant,
+    psychSafetyItemChanges,
+    trustNetwork,
+    compositionComparable,
+  } = params;
+  return (previous.actionItems ?? []).flatMap((item) => {
+    const target = parseTeamActionTarget(item.targetMetric);
+    if (!target) return [];
+    const base = {
+      title: item.title,
+      status: item.status ?? ("not_started" as const),
+      target,
+    };
+
+    if (target.kind === "psych_safety_index") {
+      const previousValue = previous.aggregates?.psychSafety?.index;
+      const currentValue = current.aggregates?.psychSafety?.index;
+      if (typeof previousValue !== "number" || typeof currentValue !== "number") {
+        return [{
+          ...base,
+          metric: null,
+          gate: "unavailable" as const,
+          significant: null,
+          direction: "unavailable" as const,
+        }];
+      }
+      const metric = numericChange(previousValue, currentValue, 1);
+      return [{
+        ...base,
+        metric,
+        gate: "measurement_error" as const,
+        significant: psychSafetySignificant,
+        direction: directionFor(metric, "higher", {
+          significant: psychSafetySignificant,
+        }),
+      }];
+    }
+
+    if (target.kind === "psych_safety_item") {
+      const change = psychSafetyItemChanges.find(
+        (itemChange) => itemChange.id === target.itemId,
+      );
+      if (!change) {
+        return [{
+          ...base,
+          metric: null,
+          gate: "unavailable" as const,
+          significant: null,
+          direction: "unavailable" as const,
+        }];
+      }
+      const metric = numericChange(change.previous, change.current, 2);
+      return [{
+        ...base,
+        metric,
+        gate: "measurement_error" as const,
+        significant: change.significant,
+        direction: directionFor(metric, "higher", {
+          significant: change.significant,
+        }),
+      }];
+    }
+
+    if (target.kind === "trust_coverage" || target.kind === "trust_isolated_count") {
+      const currentTrust = current.aggregates?.trustHighlights?.source === "trust_round"
+        ? current.aggregates.trustHighlights
+        : null;
+      const previousHasNoMeasuredRelationships =
+        previous.aggregates?.evidence?.measuredEdgeCount === 0;
+      const metric = target.kind === "trust_coverage"
+        ? trustNetwork?.coveragePct ?? (
+            currentTrust?.coveragePct !== null &&
+            currentTrust?.coveragePct !== undefined &&
+            previousHasNoMeasuredRelationships
+              ? numericChange(0, currentTrust.coveragePct, 0)
+              : null
+          )
+        : trustNetwork?.isolatedCount ?? null;
+      if (!metric) {
+        return [{
+          ...base,
+          metric: null,
+          gate: "unavailable" as const,
+          significant: null,
+          direction: "unavailable" as const,
+        }];
+      }
+      return [{
+        ...base,
+        metric,
+        gate: "descriptive" as const,
+        significant: null,
+        direction: directionFor(
+          metric,
+          target.kind === "trust_coverage" ? "higher" : "lower",
+          { contextOnly: !compositionComparable },
+        ),
+      }];
+    }
+
+    const previousGaps = previous.aggregates?.roleGaps;
+    const currentGaps = current.aggregates?.roleGaps;
+    if (!Array.isArray(previousGaps) || !Array.isArray(currentGaps)) {
+      return [{
+        ...base,
+        metric: null,
+        gate: "unavailable" as const,
+        significant: null,
+        direction: "unavailable" as const,
+      }];
+    }
+    const metric = numericChange(
+      previousGaps.includes(target.roleCode) ? 1 : 0,
+      currentGaps.includes(target.roleCode) ? 1 : 0,
+      0,
+    );
+    return [{
+      ...base,
+      metric,
+      gate: "categorical" as const,
+      significant: null,
+      direction: directionFor(metric, "lower", {
+        contextOnly: !compositionComparable,
+      }),
+    }];
+  });
+}
+
 function mean(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
@@ -467,6 +640,14 @@ export function compareTeamReports(
       (a, b) => Math.abs(b.delta) - Math.abs(a.delta),
     );
   }
+  const actionOutcomes = compareActionOutcomes({
+    current,
+    previous,
+    psychSafetySignificant,
+    psychSafetyItemChanges,
+    trustNetwork,
+    compositionComparable: compositionData.result.status === "comparable",
+  });
 
   return {
     completionDelta,
@@ -477,6 +658,7 @@ export function compareTeamReports(
     roleCoverage,
     externalPerspective,
     peerRolePerspective,
+    actionOutcomes,
     dimensionChanges,
     stableCoreDimensionChanges,
     composition: compositionData.result,
