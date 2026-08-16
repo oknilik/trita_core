@@ -90,15 +90,17 @@ a legdrágább helyen aláásható állítás.
   Egy átlag standard hibája `SEM/√n`, két független átlagé:
   `√(SEM²/n₁ + SEM²/n₂)`. Ugyanaz a `dimStandardError(form, code)` a bemenet,
   ami ma is — a konstansok a mért IPIP-kalibrációból jönnek.
-- A `compareTeamReports()` kapjon `n₁`/`n₂`-t (ez az aggregátumban már ott van:
-  `completedCount`), és minden `dimensionChanges` elem kapjon egy
-  `significant: boolean` mezőt. A rendezés maradhat `|delta|` szerint, de a
-  **nem szignifikáns tételek nem kerülhetnek a narratívába** — a
-  `TeamReportComparison.tsx` külön, halkabb blokkban vagy sehol jelenítse meg.
+- A `compareTeamReports()` kapjon `n₁`/`n₂`-t. A teljes csapat
+  `dimensionChanges` listája csak kompozíciós kontextus, ezért nem kap
+  szignifikancia-címkét. A mérési-hiba kapu a mindkét körben jelen lévő
+  `stableCoreDimensionChanges` elemein él; **csak ezek kerülhetnek változásként
+  a narratívába**.
 - A pszichológiai biztonság indexére ugyanez kell, más konstanssal: a
   `psych-safety.ts` 8 itemes skálája saját reliabilitást igényel — amíg nincs
   mért α, a küszöb legyen konzervatív prior, **kommentben megjelölve, hogy
   prior és nem mért** (a `rater-quality.ts` küszöb-blokkjának mintája szerint).
+  Az item-szintű kapu friss snapshotnál a mért `itemSds` értékből, régi
+  snapshotnál dokumentált 1,1-es Likert-SD priorból számoljon.
 - Teszt: `tests/unit/` — invariáns, hogy `n` növelésével a küszöb csökken, és
   hogy azonos riport önmagával összehasonlítva nulla szignifikáns változást ad.
 

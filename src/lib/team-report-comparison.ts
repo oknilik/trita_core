@@ -20,11 +20,11 @@ export const PSYCH_SAFETY_SCORE_SD_PRIOR = 20;
 export const PSYCH_SAFETY_SEM_PRIOR =
   PSYCH_SAFETY_SCORE_SD_PRIOR * Math.sqrt(1 - PSYCH_SAFETY_RELIABILITY_PRIOR);
 
-// PRIOR, NEM MÉRT ITEM-SZÓRÁS: az 1–5 skálás egyedi pulse-itemhez nincs
-// snapshotolt szórás. A 2,5-es prior szándékosan konzervatív (a teljes
-// négy pontos skálaterjedelemhez közeli); pilotadat után itemenkénti mért
-// szórásra cserélendő. Addig csak a nagy, védhető itemmozgás kerül narratívába.
-export const PSYCH_SAFETY_ITEM_SD_PRIOR = 2.5;
+// PRIOR, NEM MÉRT ITEM-SZÓRÁS: régi snapshotnál, ahol még nincs itemenkénti
+// mért szórás, reális Likert-item fallbacket használunk az 1–5 skálán.
+// A friss snapshotok már a tényleges itemSds értékeket tárolják; a priort a
+// piloteloszlás után kötelező újrakalibrálni.
+export const PSYCH_SAFETY_ITEM_SD_PRIOR = 1.1;
 
 /** A kisebbik kör legalább ekkora része legyen közös. */
 export const TEAM_REPORT_COMPOSITION_MIN_OVERLAP = 0.7;
@@ -36,6 +36,10 @@ type DimensionChange = {
   previous: number;
   current: number;
   delta: number;
+};
+
+type StableCoreDimensionChange = DimensionChange & {
+  sampleSize: number;
   /** Mérési hibán túli elmozdulás; nem klasszikus NHST p-érték. */
   significant: boolean;
 };
@@ -122,7 +126,7 @@ export interface TeamReportComparisonResult {
   /** Teljes csapat nyers profil-deltája — kompozíciós kontextus, nem fejlődés. */
   dimensionChanges: DimensionChange[];
   /** Kizárólag a mindkét körben jelen lévő, megfelelő méretű stabil mag deltája. */
-  stableCoreDimensionChanges: Array<DimensionChange & { sampleSize: number }>;
+  stableCoreDimensionChanges: StableCoreDimensionChange[];
   composition: TeamReportCompositionComparison;
 }
 
@@ -223,12 +227,6 @@ function comparePsychSafetyItems(
   if (!current?.psychSafety || !previous?.psychSafety) return [];
   const currentWeak = new Set(current.psychSafety.weakItemIds ?? []);
   const previousWeak = new Set(previous.psychSafety.weakItemIds ?? []);
-  const threshold = independentMeanDiffStandardError(
-    PSYCH_SAFETY_ITEM_SD_PRIOR,
-    previous.psychSafety.count,
-    PSYCH_SAFETY_ITEM_SD_PRIOR,
-    current.psychSafety.count,
-  );
 
   return Object.entries(current.psychSafety.itemMeans ?? {})
     .filter(([, value]) => typeof value === "number")
@@ -236,12 +234,24 @@ function comparePsychSafetyItems(
       const previousValue = previous.psychSafety!.itemMeans?.[id];
       if (typeof previousValue !== "number") return [];
       const change = numericChange(previousValue, currentValue, 2);
+      const previousSd = previous.psychSafety!.itemSds?.[id];
+      const currentSd = current.psychSafety!.itemSds?.[id];
+      const threshold = independentMeanDiffStandardError(
+        typeof previousSd === "number" && Number.isFinite(previousSd) && previousSd >= 0
+          ? previousSd
+          : PSYCH_SAFETY_ITEM_SD_PRIOR,
+        previous.psychSafety!.count,
+        typeof currentSd === "number" && Number.isFinite(currentSd) && currentSd >= 0
+          ? currentSd
+          : PSYCH_SAFETY_ITEM_SD_PRIOR,
+        current.psychSafety!.count,
+      );
       const wasWeak = previousWeak.has(id);
       const isWeak = currentWeak.has(id);
       return [{
         id,
         ...change,
-        significant: Math.abs(change.delta) >= threshold,
+        significant: Math.abs(change.delta) > 0 && Math.abs(change.delta) >= threshold,
         weakness: wasWeak
           ? isWeak
             ? "remained_weak" as const
@@ -591,22 +601,11 @@ export function compareTeamReports(
       previous: previousDimensions[code],
       current: currentDimensions[code],
       delta: currentDimensions[code] - previousDimensions[code],
-      // A jelenlegi operating mode alapformája TSFI-S. A rövid forma SEM-je
-      // a teljesénél nagyobb, ezért vegyes/örökölt adatnál is konzervatív
-      // fallback, amíg a pillanatkép nem tárol forma-összetételt.
-      significant:
-        Math.abs(currentDimensions[code] - previousDimensions[code]) >=
-        teamMeanDiffStandardError(
-          "short",
-          previousAgg?.completedCount ?? 0,
-          currentAgg?.completedCount ?? 0,
-          code,
-        ),
     }))
     .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
 
   const compositionData = compareComposition(current, previous);
-  const stableCoreDimensionChanges: Array<DimensionChange & { sampleSize: number }> = [];
+  const stableCoreDimensionChanges: StableCoreDimensionChange[] = [];
   if (
     compositionData.result.status === "comparable" &&
     compositionData.currentMap &&

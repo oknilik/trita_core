@@ -47,9 +47,10 @@ test("comparison computes round deltas and ranks dimension movement", () => {
   assert.equal(result.psychSafetyDelta, 4.5);
   assert.equal(result.psychSafetySignificant, false);
   assert.deepEqual(
-    result.dimensionChanges.map((item) => [item.code, item.delta, item.significant]),
-    [["X", 15, true], ["H", 5, false]],
+    result.dimensionChanges.map((item) => [item.code, item.delta]),
+    [["X", 15], ["H", 5]],
   );
+  assert.equal("significant" in result.dimensionChanges[0], false);
   assert.deepEqual(result.composition, {
     status: "comparable",
     common: 5,
@@ -67,17 +68,42 @@ test("comparison computes round deltas and ranks dimension movement", () => {
 test("azonos riport önmagával összevetve nem ad mérési hibán túli változást", () => {
   const same = report(80, { H: 55, E: 48, X: 61, A: 52, C: 64, O: 70 }, 68);
   same.aggregates!.psychSafety!.itemMeans = { PS1: 3.2 };
+  same.aggregates!.psychSafety!.itemSds = { PS1: 0 };
   same.aggregates!.psychSafety!.weakItemIds = ["PS1"];
   const result = compareTeamReports(same, same);
 
   assert.equal(result.psychSafetyDelta, 0);
   assert.equal(result.psychSafetySignificant, false);
-  assert.equal(result.dimensionChanges.filter((item) => item.significant).length, 0);
+  assert.ok(result.dimensionChanges.every((item) => item.delta === 0));
+  assert.ok(result.dimensionChanges.every((item) => !("significant" in item)));
   assert.equal(result.stableCoreDimensionChanges.filter((item) => item.significant).length, 0);
   assert.deepEqual(
     result.psychSafetyItemChanges.map((item) => [item.delta, item.significant]),
     [[0, false]],
   );
+});
+
+test("a pulse itemkapu mért item-SD-t használ, régi snapshotnál priorra esik vissza", () => {
+  const previous = report(100, { H: 50 }, 60);
+  const current = report(100, { H: 50 }, 60);
+  previous.aggregates!.psychSafety = {
+    ...previous.aggregates!.psychSafety!,
+    count: 10,
+    itemMeans: { PS1: 3 },
+    itemSds: { PS1: 0.5 },
+  };
+  current.aggregates!.psychSafety = {
+    ...current.aggregates!.psychSafety!,
+    count: 10,
+    itemMeans: { PS1: 3.3 },
+    itemSds: { PS1: 0.5 },
+  };
+
+  assert.equal(compareTeamReports(current, previous).psychSafetyItemChanges[0].significant, true);
+
+  delete previous.aggregates!.psychSafety!.itemSds;
+  delete current.aggregates!.psychSafety!.itemSds;
+  assert.equal(compareTeamReports(current, previous).psychSafetyItemChanges[0].significant, false);
 });
 
 test("nagy pszichológiai-biztonság elmozdulás átmegy a konzervatív prior-kapun", () => {

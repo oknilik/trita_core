@@ -146,6 +146,8 @@ export interface TeamReportAggregates {
     spread: number;
     /** Itemenkénti normalizált átlag (1–5, magas = biztonságos) */
     itemMeans: Record<string, number>;
+    /** Itemenkénti mintaszórás (1–5); régi snapshotokban nincs. */
+    itemSds?: Record<string, number>;
     /** A küszöb (3,4) alatti területek, leggyengébbtől — akció-javaslathoz */
     weakItemIds: string[];
     campaignName: string;
@@ -518,6 +520,7 @@ export async function buildTeamReportAggregates(
         count: psAgg.count,
         spread: psAgg.spread,
         itemMeans: psAgg.itemMeans,
+        itemSds: psAgg.itemSds,
         weakItemIds: weakPsychSafetyItemIds(psAgg.itemMeans),
         campaignName: psCampaign.name,
         campaignStatus: psCampaign.status,
