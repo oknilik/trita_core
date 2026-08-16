@@ -41,6 +41,25 @@ test("internal notes survive consultant serialization", () => {
   assert.equal(serialized.internalNotes, "BIZALMAS tanácsadói jegyzet");
 });
 
+test("comparisonBasis csak a tanácsadói szerializációban marad meg", () => {
+  const record = {
+    ...baseRecord,
+    aggregates: {
+      memberCount: 3,
+      comparisonBasis: {
+        version: 1,
+        contributors: [{ key: "pseudonym", dimensions: { H: 50 } }],
+      },
+    },
+  };
+
+  const organizationView = serializeTeamReport(record, { includeInternalNotes: false });
+  const consultantView = serializeTeamReport(record, { includeInternalNotes: true });
+
+  assert.equal(organizationView.aggregates?.comparisonBasis, undefined);
+  assert.equal(consultantView.aggregates?.comparisonBasis?.contributors.length, 1);
+});
+
 test("action items: malformed entries dropped, valid kept", () => {
   const serialized = serializeTeamReport(baseRecord, { includeInternalNotes: false });
   assert.deepEqual(serialized.actionItems, [

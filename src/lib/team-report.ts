@@ -32,6 +32,10 @@ import {
   parseReportTranslations,
   type ReportTranslations,
 } from "@/lib/team-report-i18n";
+import {
+  buildTeamReportComparisonBasis,
+  type TeamReportComparisonBasis,
+} from "@/lib/team-report-composition";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -46,6 +50,12 @@ export interface TeamReportAggregates {
   dimensionAverages: Record<string, number> | null;
   /** Dimenziónkénti szórás — a csapat heterogenitása */
   dimensionSpread: Record<string, number> | null;
+  /**
+   * BELSŐ, tanácsadói összehasonlítási alap a stabil mag újraszámításához.
+   * Pszeudonim kulcs + hat dimenzió, nyers user ID nélkül. Régi snapshotban
+   * hiányzik; nem tanácsadói szerializációból kötelezően redaktáljuk.
+   */
+  comparisonBasis?: TeamReportComparisonBasis;
   pattern: {
     label: string;
     confidence: string;
@@ -241,6 +251,7 @@ export async function buildTeamReportAggregates(
   if (!teamData) return null;
 
   const assessed = teamData.members.filter((m) => m.scores !== null);
+  const comparisonBasis = buildTeamReportComparisonBasis(teamId, assessed);
   const completedCount = assessed.length;
   const memberCount = teamData.members.length;
   const hasMinimum = completedCount >= MIN_INTELLIGENCE_ASSESSMENTS;
@@ -536,6 +547,7 @@ export async function buildTeamReportAggregates(
       memberCount > 0 ? Math.round((completedCount / memberCount) * 100) : 0,
     dimensionAverages,
     dimensionSpread,
+    comparisonBasis,
     pattern:
       hasMinimum && teamData.patternResult
         ? {
@@ -849,12 +861,22 @@ export function serializeTeamReport(
   report: TeamReportRecord,
   options: { includeInternalNotes: boolean },
 ): SerializedTeamReport {
+  const rawAggregates = (report.aggregates as TeamReportAggregates | null) ?? null;
+  // A stabil-mag alap per-tag, bár pszeudonimizált score-okat tartalmaz.
+  // Szervezeti vezető/tag számára nincs rá szükség, ezért ugyanazon a
+  // tanácsadói kapun redaktáljuk, mint az internalNotes mezőt.
+  let aggregates = rawAggregates;
+  if (rawAggregates && !options.includeInternalNotes) {
+    aggregates = { ...rawAggregates };
+    delete aggregates.comparisonBasis;
+  }
+
   return {
     id: report.id,
     teamId: report.teamId,
     status: report.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",
     title: report.title,
-    aggregates: (report.aggregates as TeamReportAggregates | null) ?? null,
+    aggregates,
     summary: report.summary,
     strengths: report.strengths,
     risks: report.risks,

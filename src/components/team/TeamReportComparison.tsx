@@ -26,11 +26,11 @@ export function TeamReportComparison({
   isHu: boolean;
 }) {
   const comparison = compareTeamReports(current, previous);
-  const significantDimensionChanges = comparison.dimensionChanges.filter(
+  const significantDimensionChanges = comparison.stableCoreDimensionChanges.filter(
     (item) => item.significant,
   );
   const withinErrorCount =
-    comparison.dimensionChanges.length - significantDimensionChanges.length;
+    comparison.stableCoreDimensionChanges.length - significantDimensionChanges.length;
   const currentDate = current.publishedAt ? new Date(current.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB") : "—";
   const previousDate = previous.publishedAt ? new Date(previous.publishedAt).toLocaleDateString(isHu ? "hu-HU" : "en-GB") : "—";
 
@@ -41,6 +41,32 @@ export function TeamReportComparison({
         {isHu ? "Mi változott az előző kör óta?" : "What changed since the previous round?"}
       </h2>
       <p className="mt-1 text-xs text-muted">{previousDate} → {currentDate}</p>
+      {comparison.composition.status === "unknown" ? (
+        <div className="mt-3 rounded-xl border border-state-warning-border bg-state-warning-bg p-3 text-xs text-state-warning-fg" role="status">
+          {isHu
+            ? "A régebbi riport nem tartalmaz hozzájáruló-pillanatképet. A csapat összetétele nem ellenőrizhető, ezért a profildeltát nem állítjuk változásként."
+            : "The older report has no contributor snapshot. Team composition cannot be verified, so profile deltas are not presented as change."}
+        </div>
+      ) : comparison.composition.status === "changed" ? (
+        <div className="mt-3 rounded-xl border border-state-warning-border bg-state-warning-bg p-3 text-xs text-state-warning-fg" role="alert">
+          <p className="font-semibold">
+            {isHu
+              ? "A két kör összetétele nem elég hasonló a profilváltozás állításához."
+              : "Round composition is not similar enough to claim profile change."}
+          </p>
+          <p className="mt-1">
+            {isHu
+              ? `Közös kitöltők: ${comparison.composition.common} · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left} · átfedés: ${comparison.composition.overlapPct}%`
+              : `Common contributors: ${comparison.composition.common} · new this round: ${comparison.composition.joined} · absent this round: ${comparison.composition.left} · overlap: ${comparison.composition.overlapPct}%`}
+          </p>
+        </div>
+      ) : (
+        <div className="mt-3 rounded-xl border border-sage/30 bg-sage/5 p-3 text-xs text-ink-body" role="status">
+          {isHu
+            ? `Stabil mag: ${comparison.composition.common} közös kitöltő · új ebben a körben: ${comparison.composition.joined} · kimaradt: ${comparison.composition.left}. A profilkontrollt csak a közös tagokból számoljuk.`
+            : `Stable core: ${comparison.composition.common} common contributors · new this round: ${comparison.composition.joined} · absent: ${comparison.composition.left}. Profile control uses common members only.`}
+        </div>
+      )}
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-3">
         <DashboardPanel className="p-4">
           <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Kitöltöttség" : "Completion"}</p>
@@ -61,8 +87,12 @@ export function TeamReportComparison({
           )}
         </DashboardPanel>
         <DashboardPanel className="p-4">
-          <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Mérési hibán túli profilmozgások" : "Profile shifts beyond measurement error"}</p>
-          {significantDimensionChanges.length > 0 ? (
+          <p className="text-micro uppercase tracking-widest text-muted">{isHu ? "Stabil mag profilkontrollja" : "Stable-core profile control"}</p>
+          {comparison.composition.status !== "comparable" ? (
+            <p className="mt-2 text-xs text-muted">
+              {isHu ? "Nem értelmezhető" : "Not interpretable"}
+            </p>
+          ) : significantDimensionChanges.length > 0 ? (
             <ul className="mt-2 space-y-1.5">
               {significantDimensionChanges.slice(0, 3).map((item) => (
                 <li key={item.code} className="flex justify-between gap-3 text-xs text-ink-body">
@@ -82,7 +112,7 @@ export function TeamReportComparison({
         </p>
       ) : null}
       <p className="mt-2 text-micro text-muted">
-        {isHu ? "Csak a mérési hibán túli eltérést mutatjuk változásként. Ez leíró jelzés, nem oksági bizonyíték; az eltérő részvételi arányt a debriefen külön értelmezni kell." : "Only differences beyond measurement error are shown as change. This is descriptive, not causal evidence; differences in participation should be interpreted during the debrief."}
+        {isHu ? "A profilnál csak a stabil mag mérési hibán túli eltérését mutatjuk; a teljes csapat átlaga kompozíciós kontextus marad. A pulse ismételt anonim keresztmetszet, ezért leíró jelzés, nem oksági bizonyíték." : "For profiles, only stable-core differences beyond measurement error are shown; the full-team average remains composition context. The pulse is a repeated anonymous cross-section, so it is descriptive, not causal evidence."}
       </p>
     </section>
   );
