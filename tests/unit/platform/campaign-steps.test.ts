@@ -8,6 +8,7 @@ import {
   isCampaignStepDone,
   isSelfResultForCampaign,
   normalizeCampaignSteps,
+  resolveCampaignRequireFreshResults,
 } from "@/lib/campaign-steps-core";
 
 // Lépés-teljesítés logika (2026-07-29): a kampány-statok forrása a
@@ -98,6 +99,17 @@ describe("SCAN_V1 preset", () => {
     ]);
     assert.equal(CAMPAIGN_PRESETS.SCAN_V1.steps.includes("OBSERVER_360"), false);
     assert.equal(CAMPAIGN_PRESETS.SCAN_V1.steps.includes("TEAM_ROLE_360"), false);
+    assert.equal(CAMPAIGN_PRESETS.SCAN_V1.requireFreshResults, true);
+  });
+
+  it("a kliens nem kapcsolhatja ki a Scan v1 kör-címkézett self adatát", () => {
+    assert.equal(resolveCampaignRequireFreshResults("SCAN_V1", false), true);
+    assert.equal(resolveCampaignRequireFreshResults("SCAN_V1", true), true);
+  });
+
+  it("egyedi körben a tanácsadó fresh-döntése marad érvényes", () => {
+    assert.equal(resolveCampaignRequireFreshResults(undefined, false), false);
+    assert.equal(resolveCampaignRequireFreshResults(undefined, true), true);
   });
 
   it("a feloldott lista módosítása nem írja át a globális presetet", () => {

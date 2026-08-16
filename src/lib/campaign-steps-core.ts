@@ -37,6 +37,8 @@ export const CAMPAIGN_PRESETS: Record<
     label: { hu: string; en: string };
     description: { hu: string; en: string };
     steps: readonly CampaignStepType[];
+    /** A preset minden self-eredménye ehhez a konkrét körhöz címkézett. */
+    requireFreshResults: boolean;
   }
 > = {
   SCAN_V1: {
@@ -46,6 +48,7 @@ export const CAMPAIGN_PRESETS: Record<
       en: "Self-assessment, trust network and psychological safety pulse.",
     },
     steps: ["SELF_ASSESSMENT", "TRUST_360", "PSYCH_SAFETY"],
+    requireFreshResults: true,
   },
 };
 
@@ -53,6 +56,19 @@ export function getCampaignPresetSteps(
   presetId: CampaignPresetId,
 ): CampaignStepType[] {
   return [...CAMPAIGN_PRESETS[presetId].steps];
+}
+
+/**
+ * Presetnél a szerver-konstans az igazság: a kliens nem kapcsolhatja ki a
+ * kör-címkézéshez szükséges fresh selfet. Egyedi körben a kért érték marad.
+ */
+export function resolveCampaignRequireFreshResults(
+  presetId: CampaignPresetId | undefined,
+  requested: boolean,
+): boolean {
+  return presetId
+    ? CAMPAIGN_PRESETS[presetId].requireFreshResults
+    : requested;
 }
 
 export function isSelfAssessmentCampaignStep(

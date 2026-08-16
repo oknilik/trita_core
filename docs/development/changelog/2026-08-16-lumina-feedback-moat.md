@@ -90,6 +90,9 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   duplikációt.
 - Az új self-lépés végigkapta az explicit kampánylinket, kör-címkézett
   beadást, fresh-fast-forwardot, értesítést, feladat- és riporthaladást.
+- Korrekció: a `SCAN_V1` preset szerveroldalon kötelezően fresh self-kört
+  használ. A kliens nem kapcsolhatja ki, ezért régi self-eredmény nem ugorhatja
+  át a baseline-t, és a riport/norma-kohorsz pontos kampánycímkét kap.
 
 ## P2.1 — norma- és mintázatígéret kalibrálása
 

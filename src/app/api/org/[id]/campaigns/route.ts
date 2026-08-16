@@ -9,6 +9,7 @@ import {
   CAMPAIGN_STEP_ORDER,
   getCampaignPresetSteps,
   normalizeCampaignSteps,
+  resolveCampaignRequireFreshResults,
 } from "@/lib/campaign-steps-core";
 
 const createSchema = z.object({
@@ -146,6 +147,10 @@ export async function POST(
   if (steps.length === 0) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
+  const requireFreshResults = resolveCampaignRequireFreshResults(
+    body.data.presetId,
+    body.data.requireFreshResults,
+  );
 
   // Szerep-kört vagy pszich. biztonságot tartalmazó kampány csak csapatra
   // indítható (a kör a csapaton él, az anonim aggregátum csapatszintű).
@@ -175,7 +180,7 @@ export async function POST(
       allowExternalObservers: body.data.allowExternalObservers,
       stepIntervalHours: body.data.stepIntervalHours,
       peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,
-      requireFreshResults: body.data.requireFreshResults,
+      requireFreshResults,
       createdBy: profile.id,
     },
     select: {

@@ -169,6 +169,10 @@ export function CampaignWizard({
       ? STEP_ORDER.filter((tp) => selectedTypes.has(tp))
       : [...CAMPAIGN_PRESETS[campaignPackage].steps];
   const type: CampaignType | null = chosenSteps[0] ?? null;
+  const effectiveRequireFreshResults =
+    campaignPackage === "CUSTOM"
+      ? requireFreshResults
+      : CAMPAIGN_PRESETS[campaignPackage].requireFreshResults;
 
   // Auto-név: "Marketing — Kollégai visszajelzés (360°) · 2026. július"
   // több lépésnél: "Marketing — Mérés-sorozat (3) · 2026. július"
@@ -297,7 +301,7 @@ export function CampaignWizard({
             teamIds: targetTeamIds.size > 0 ? Array.from(targetTeamIds) : undefined,
             allowExternalObservers,
             stepIntervalHours,
-            requireFreshResults,
+            requireFreshResults: effectiveRequireFreshResults,
           }),
         });
         if (!createRes.ok) {
@@ -637,20 +641,29 @@ export function CampaignWizard({
                 </div>
               </div>
             ) : null}
-            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
-              <input
-                type="checkbox"
-                checked={requireFreshResults}
-                onChange={(e) => setRequireFreshResults(e.target.checked)}
-                className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
-              />
-              <span className="text-caption leading-relaxed text-ink-body">
+            {campaignPackage === "SCAN_V1" ? (
+              <div className="rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5 text-caption leading-relaxed text-ink-body">
                 <span className="font-semibold text-ink">
-                  {t("campaignWiz.freshLabel", locale)}
+                  {t("campaignWiz.scanV1FreshLabel", locale)}
                 </span>{" "}
-                {t("campaignWiz.freshHint", locale)}
-              </span>
-            </label>
+                {t("campaignWiz.scanV1FreshHint", locale)}
+              </div>
+            ) : (
+              <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
+                <input
+                  type="checkbox"
+                  checked={requireFreshResults}
+                  onChange={(e) => setRequireFreshResults(e.target.checked)}
+                  className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
+                />
+                <span className="text-caption leading-relaxed text-ink-body">
+                  <span className="font-semibold text-ink">
+                    {t("campaignWiz.freshLabel", locale)}
+                  </span>{" "}
+                  {t("campaignWiz.freshHint", locale)}
+                </span>
+              </label>
+            )}
             {chosenSteps.includes("PEER_FEEDBACK") ? (
               <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/60 px-4 py-3.5">
                 <input

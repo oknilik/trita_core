@@ -1190,6 +1190,14 @@ export const orgTranslations = {
       hu: "A korábbi eredmények ebben a körben nem számítanak — minden résztvevő újra kitölti a kérdőíveket. A régi eredmények megmaradnak, a kör a későbbi összehasonlítás alapja.",
       en: "Previous results don't count in this round — every participant fills in the questionnaires again. Old results are kept; the round becomes the basis for later comparison.",
     },
+    scanV1FreshLabel: {
+      hu: "Körhöz kötött self-adat.",
+      en: "Round-labelled self data.",
+    },
+    scanV1FreshHint: {
+      hu: "A Scan v1-ben minden résztvevő friss self-kérdőívet tölt ki. Ettől lesz a baseline, a visszamérés és a pilotkohorsz pontosan ugyanahhoz a körhöz köthető.",
+      en: "In Scan v1 every participant completes a fresh self-assessment. This keeps the baseline, follow-up and pilot cohort tied to the exact measurement round.",
+    },
     peerFbAnonLabel: { hu: "Anonim-aggregált javaslatok.", en: "Anonymous, aggregated suggestions." },
     peerFbAnonHint: {
       hu: "A fejlesztő javaslatok a címzettnél név nélkül, összekeverve jelennek meg, és csak legalább 3 beküldőnél. Az elismerések mindig nevesítettek.",
