@@ -46,13 +46,13 @@ test("in-progress requested feedback wins over a scheduled measurement", () => {
   assert.match(focus?.description ?? "", /3\/5/);
 });
 
-test("self measurement carries the exact campaign round in its link", () => {
+test("standalone self measurement carries the exact campaign round in its link", () => {
   const focus = resolveTeamOverviewFocus({
     locale: "hu",
     pendingMeasurement: {
       campaignId: "round / 2",
       campaignName: "Második kör",
-      stepType: "OBSERVER_360",
+      stepType: "SELF_ASSESSMENT",
       opensAt: null,
       started: false,
     },

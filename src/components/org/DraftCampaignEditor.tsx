@@ -6,29 +6,21 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import {
+  CAMPAIGN_STEP_ORDER,
+  type CampaignStepType,
+} from "@/lib/campaign-steps-core";
 
 // DRAFT-kampány szerkesztő: amíg a kampány nincs aktiválva, a mérés-lépések,
 // a cél-csapat és a lépés-ütem szabadon módosítható. Aktiválás után a
 // kampány összetétele fix (az API is 409-cel véd).
 
-type CampaignType =
-  | "OBSERVER_360"
-  | "TEAM_ROLE"
-  | "TEAM_ROLE_360"
-  | "TRUST_360"
-  | "PSYCH_SAFETY"
-  | "PEER_FEEDBACK";
+type CampaignType = CampaignStepType;
 
-const STEP_ORDER: CampaignType[] = [
-  "OBSERVER_360",
-  "TEAM_ROLE",
-  "TEAM_ROLE_360",
-  "TRUST_360",
-  "PSYCH_SAFETY",
-  "PEER_FEEDBACK",
-];
+const STEP_ORDER: CampaignType[] = [...CAMPAIGN_STEP_ORDER];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  SELF_ASSESSMENT: "campaignWiz.typeSelfName",
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
   TEAM_ROLE_360: "campaignWiz.typeRole360Name",
@@ -81,7 +73,11 @@ export function DraftCampaignEditor({
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(tp)) next.delete(tp);
-      else next.add(tp);
+      else {
+        next.add(tp);
+        if (tp === "OBSERVER_360") next.delete("SELF_ASSESSMENT");
+        if (tp === "SELF_ASSESSMENT") next.delete("OBSERVER_360");
+      }
       return next;
     });
     setNotice(null);

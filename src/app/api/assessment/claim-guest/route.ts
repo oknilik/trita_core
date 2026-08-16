@@ -132,9 +132,13 @@ export async function POST(req: Request) {
     },
   });
 
-  // Több-lépéses kampány: a megszerzett self-eredmény lépteti az OBSERVER_360 lépést
+  // Több-lépéses kampány: a megszerzett self-eredmény bármelyik nyitott,
+  // selfet tartalmazó lépést teljesítheti (önálló self vagy legacy observer).
   import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>
-    advanceCampaignStepForUser(profile.id, "OBSERVER_360").catch(() => {}),
+    Promise.all([
+      advanceCampaignStepForUser(profile.id, "SELF_ASSESSMENT"),
+      advanceCampaignStepForUser(profile.id, "OBSERVER_360"),
+    ]).catch(() => {}),
   );
 
   return NextResponse.json({ id: result.id });

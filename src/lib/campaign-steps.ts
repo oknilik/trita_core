@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import {
   getCampaignSteps,
   getCampaignTeamIds,
+  isSelfAssessmentCampaignStep,
   isStepOpenFor,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
@@ -83,7 +84,8 @@ export async function getStepPartialProgress(
 
 /**
  * Megkezdett-e a user az adott nyitott lépést? Értékelős lépésnél a
- * rész-haladásból, OBSERVER_360-nál a szerver-oldali felmérés-piszkozatból
+ * rész-haladásból, self / OBSERVER_360 lépésnél a szerver-oldali
+ * felmérés-piszkozatból
  * derül ki — a CTA erre vált „kezdés"-ről „folytatás"-ra.
  */
 export async function hasStartedStep(
@@ -91,7 +93,7 @@ export async function hasStartedStep(
   stepType: string,
   profileId: string,
 ): Promise<boolean> {
-  if (stepType === "OBSERVER_360") {
+  if (isSelfAssessmentCampaignStep(stepType)) {
     const draft = await prisma.assessmentDraft.findUnique({
       where: { userProfileId: profileId },
       select: { answers: true },
@@ -152,6 +154,29 @@ export async function resolveActiveCampaignIdForStep(
     if (isStepOpenFor(p.campaign, p, stepType)) {
       return p.campaign.id;
     }
+  }
+  return null;
+}
+
+/**
+ * A személyiség-kérdőívet két kampánylépés nyithatja: az önálló self és a
+ * legacy self + observer kör. A beadó útvonalnak azt is tudnia kell, melyik
+ * konkrét lépést teljesítse, ezért az id mellett a típust is visszaadjuk.
+ */
+export async function resolveActiveSelfAssessmentCampaign(
+  profileId: string,
+  options?: { campaignId?: string },
+): Promise<{
+  campaignId: string;
+  stepType: "SELF_ASSESSMENT" | "OBSERVER_360";
+} | null> {
+  for (const stepType of ["SELF_ASSESSMENT", "OBSERVER_360"] as const) {
+    const campaignId = await resolveActiveCampaignIdForStep(
+      profileId,
+      stepType,
+      options,
+    );
+    if (campaignId) return { campaignId, stepType };
   }
   return null;
 }
@@ -271,10 +296,10 @@ export async function releaseDueCampaignSteps(options?: {
 
 /**
  * Résztvevők haladásának inicializálása aktiváláskor (vagy utólagos
- * hozzáadáskor). Szabály: az OBSERVER_360 lépés "előre teljesítettnek"
- * számít, ha a usernek már van kész self-eredménye (a self teszt a
- * termékben egyszeri) — így nem ragad be az első lépésnél. Minden más
- * lépést a kampány alatt kell teljesíteni.
+ * hozzáadáskor). Szabály: a selfet tartalmazó lépés "előre teljesítettnek"
+ * számít, ha a usernek már van elfogadható self-eredménye — így a nem-fresh
+ * kör nem ragad be az első lépésnél. Minden más lépést a kampány alatt kell
+ * teljesíteni.
  *
  * Újrafelvételi kör (requireFreshResults): a fast-forward a konkrét
  * kampányhoz címkézett eredményt fogadja el. Migráció előtti, címke nélküli
@@ -310,7 +335,7 @@ export async function initializeCampaignProgress(
   const steps = getCampaignSteps(campaign);
   if (steps.length === 0 || campaign.participants.length === 0) return;
 
-  // Kinek van már kész self-eredménye? (OBSERVER_360 fast-forwardhoz)
+  // Kinek van már kész self-eredménye? (self-lépés fast-forwardhoz)
   // Újrafelvételi körben csak az aktiválás utáni eredmény számít.
   const userIds = campaign.participants.map((p) => p.userId);
   const selfDone = await prisma.assessmentResult.findMany({
@@ -343,11 +368,14 @@ export async function initializeCampaignProgress(
         : {};
 
     while (
-      steps[currentStep] === "OBSERVER_360" &&
+      isSelfAssessmentCampaignStep(steps[currentStep] ?? "") &&
       selfDoneSet.has(p.userId) &&
-      !completions.OBSERVER_360
+      !completions[steps[currentStep]]
     ) {
-      completions = { ...completions, OBSERVER_360: new Date().toISOString() };
+      completions = {
+        ...completions,
+        [steps[currentStep]]: new Date().toISOString(),
+      };
       currentStep += 1;
     }
 

@@ -11,7 +11,7 @@ import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import {
   advanceCampaignStepForUser,
-  resolveActiveCampaignIdForStep,
+  resolveActiveSelfAssessmentCampaign,
 } from "@/lib/campaign-steps";
 
 const answerSchema = z.object({
@@ -67,11 +67,12 @@ export async function POST(req: Request) {
     );
   }
 
-  const campaignId = requestedCampaignId
-    ? await resolveActiveCampaignIdForStep(profile.id, "OBSERVER_360", {
+  const campaignStep = requestedCampaignId
+    ? await resolveActiveSelfAssessmentCampaign(profile.id, {
         campaignId: requestedCampaignId,
       })
     : null;
+  const campaignId = campaignStep?.campaignId ?? null;
   if (requestedCampaignId && !campaignId) {
     log.warn(
       { event: "assessment.submit_campaign_not_open", requestedCampaignId },
@@ -152,8 +153,8 @@ export async function POST(req: Request) {
 
   // Csak azt a kampánykört léptetjük, amelyből a kérdőív ténylegesen
   // megnyílt. Így két átfedő kampányt egyetlen self-beadás nem zár le.
-  if (campaignId) {
-    advanceCampaignStepForUser(profile.id, "OBSERVER_360", { campaignId }).catch(
+  if (campaignId && campaignStep) {
+    advanceCampaignStepForUser(profile.id, campaignStep.stepType, { campaignId }).catch(
       () => {},
     );
   }

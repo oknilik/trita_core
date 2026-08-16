@@ -62,6 +62,7 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
       return hu
         ? "Adj rövid, jövőorientált visszajelzést a csapattársaidnak."
         : "Give your teammates short, future-focused feedback.";
+    case "SELF_ASSESSMENT":
     case "OBSERVER_360":
       return hu
         ? "Töltsd ki az önértékelést; ez alapozza meg a csapatképet."

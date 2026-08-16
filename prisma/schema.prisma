@@ -538,7 +538,7 @@ model Campaign {
   orgId                  String
   name                   String
   description            String?
-  // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY"
+  // Mérés-típus: pl. "SELF_ASSESSMENT" | "OBSERVER_360" | "TRUST_360"
   // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
   type                   String    @default("OBSERVER_360")
   // Rendezett mérés-lépések. Üres tömbnél a `type` az egyetlen lépés.

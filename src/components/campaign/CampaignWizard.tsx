@@ -8,6 +8,12 @@ import { Button } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
+import {
+  CAMPAIGN_PRESETS,
+  CAMPAIGN_STEP_ORDER,
+  type CampaignPresetId,
+  type CampaignStepType,
+} from "@/lib/campaign-steps-core";
 
 interface Member {
   userId: string;
@@ -29,25 +35,14 @@ interface CampaignWizardProps {
 }
 
 type Step = 1 | 2 | 3 | 4;
-type CampaignType =
-  | "OBSERVER_360"
-  | "TEAM_ROLE"
-  | "TEAM_ROLE_360"
-  | "TRUST_360"
-  | "PSYCH_SAFETY"
-  | "PEER_FEEDBACK";
+type CampaignType = CampaignStepType;
+type CampaignPackage = CampaignPresetId | "CUSTOM";
 
 // Kanonikus lépés-sorrend: személyiség → szerepek → reláció → biztonság.
-const STEP_ORDER: CampaignType[] = [
-  "OBSERVER_360",
-  "TEAM_ROLE",
-  "TEAM_ROLE_360",
-  "TRUST_360",
-  "PSYCH_SAFETY",
-  "PEER_FEEDBACK",
-];
+const STEP_ORDER: CampaignType[] = [...CAMPAIGN_STEP_ORDER];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  SELF_ASSESSMENT: "campaignWiz.typeSelfName",
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
   TEAM_ROLE_360: "campaignWiz.typeRole360Name",
@@ -58,13 +53,20 @@ const TYPE_NAME_KEYS: Record<CampaignType, string> = {
 
 // A mérés-katalógus: mit mér, mennyi idő, mit kapsz belőle.
 const TYPE_CARDS: Array<{
-  type: CampaignType | "PSYCH_SAFETY";
+  type: CampaignType;
   nameKey: string;
   descKey: string;
   metaKey?: string;
   outKey?: string;
   comingSoon?: boolean;
 }> = [
+  {
+    type: "SELF_ASSESSMENT",
+    nameKey: "campaignWiz.typeSelfName",
+    descKey: "campaignWiz.typeSelfDesc",
+    metaKey: "campaignWiz.typeSelfMeta",
+    outKey: "campaignWiz.typeSelfOut",
+  },
   {
     type: "OBSERVER_360",
     nameKey: "campaignWiz.typeObserverName",
@@ -119,8 +121,13 @@ export function CampaignWizard({
   const router = useRouter();
   const preselectedTeam = teams.find((tm) => tm.id === preselectedTeamId) ?? null;
   const [step, setStep] = useState<Step>(1);
-  // Több mérés is választható — a tagoknak sorban nyílnak meg.
-  const [selectedTypes, setSelectedTypes] = useState<Set<CampaignType>>(new Set());
+  // A reprodukálható Scan v1 az alapértelmezett. A haladó egyedi mód
+  // megőrzi a meglévő, egycélú kampányokat és kiegészítő köröket.
+  const [campaignPackage, setCampaignPackage] =
+    useState<CampaignPackage>("SCAN_V1");
+  const [selectedTypes, setSelectedTypes] = useState<Set<CampaignType>>(
+    new Set(CAMPAIGN_PRESETS.SCAN_V1.steps),
+  );
   const [name, setName] = useState("");
   const [nameTouched, setNameTouched] = useState(false);
   const [description, setDescription] = useState("");
@@ -157,7 +164,10 @@ export function CampaignWizard({
   const targetTeams = teams.filter((tm) => targetTeamIds.has(tm.id));
   const targetTeam = targetTeams[0] ?? null;
 
-  const chosenSteps = STEP_ORDER.filter((tp) => selectedTypes.has(tp));
+  const chosenSteps =
+    campaignPackage === "CUSTOM"
+      ? STEP_ORDER.filter((tp) => selectedTypes.has(tp))
+      : [...CAMPAIGN_PRESETS[campaignPackage].steps];
   const type: CampaignType | null = chosenSteps[0] ?? null;
 
   // Auto-név: "Marketing — Kollégai visszajelzés (360°) · 2026. július"
@@ -176,11 +186,26 @@ export function CampaignWizard({
     return `${teamName ? `${teamName} — ` : ""}${label} · ${monthYear}`.slice(0, 100);
   }
 
+  function selectCampaignPackage(nextPackage: CampaignPackage) {
+    setCampaignPackage(nextPackage);
+    const nextSteps =
+      nextPackage === "CUSTOM"
+        ? STEP_ORDER.filter((tp) => selectedTypes.has(tp))
+        : [...CAMPAIGN_PRESETS[nextPackage].steps];
+    if (!nameTouched) setName(buildSuggestedName(nextSteps, targetTeam?.name));
+  }
+
   function toggleType(nextType: CampaignType) {
     setSelectedTypes((prev) => {
       const next = new Set(prev);
       if (next.has(nextType)) next.delete(nextType);
-      else next.add(nextType);
+      else {
+        next.add(nextType);
+        // Az OBSERVER_360 eleve tartalmaz selfet; a két lépés egy sorozatban
+        // duplikálná ugyanazt a kérdőívet.
+        if (nextType === "OBSERVER_360") next.delete("SELF_ASSESSMENT");
+        if (nextType === "SELF_ASSESSMENT") next.delete("OBSERVER_360");
+      }
       if (!nameTouched) {
         setName(buildSuggestedName(STEP_ORDER.filter((tp) => next.has(tp)), targetTeam?.name));
       }
@@ -267,7 +292,8 @@ export function CampaignWizard({
             name: name.trim(),
             description: description.trim() || undefined,
             type,
-            types: chosenSteps,
+            presetId: campaignPackage === "CUSTOM" ? undefined : campaignPackage,
+            types: campaignPackage === "CUSTOM" ? chosenSteps : undefined,
             teamIds: targetTeamIds.size > 0 ? Array.from(targetTeamIds) : undefined,
             allowExternalObservers,
             stepIntervalHours,
@@ -389,74 +415,123 @@ export function CampaignWizard({
           <h2 className="mb-5 font-fraunces text-xl text-ink">
             {t("campaignWiz.typeTitle", locale)}
           </h2>
-          <p className="mb-4 text-caption leading-relaxed text-ink-body">
-            {t("campaignWiz.typeMultiHint", locale)}
-          </p>
-          {/* Kompakt checkbox-sorok (UX-audit #24): a nagy leírás-kártya
-              olvasásra hívott, nem kijelölésre — a valódi checkbox mutatja,
-              hogy TÖBB mérés is választható. A hosszú leírás lenyílóban. */}
-          <div className="flex flex-col gap-2">
-            {TYPE_CARDS.map((card) => {
-              const isSelected = selectedTypes.has(card.type as CampaignType);
-              const orderIndex = chosenSteps.indexOf(card.type as CampaignType);
-              return (
-                <div
-                  key={card.type}
-                  className={[
-                    "rounded-[14px] border transition",
-                    card.comingSoon
-                      ? "border-dashed border-sand bg-cream/40 opacity-70"
-                      : isSelected
-                      ? "border-sage bg-sage/5"
-                      : "border-sand bg-surface-card hover:border-sage/50",
-                  ].join(" ")}
-                >
-                  <label
-                    className={[
-                      "flex items-center gap-3 p-3.5",
-                      card.comingSoon ? "cursor-not-allowed" : "cursor-pointer",
-                    ].join(" ")}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      disabled={card.comingSoon}
-                      onChange={() => !card.comingSoon && toggleType(card.type as CampaignType)}
-                      className="h-4.5 w-4.5 shrink-0 accent-[var(--color-accent-primary)]"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
-                      {card.metaKey && (
-                        <p className="mt-0.5 font-mono text-micro uppercase tracking-wide text-muted">
-                          {t(card.metaKey, locale)}
-                        </p>
-                      )}
-                    </div>
-                    {isSelected ? (
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
-                        {orderIndex + 1}
-                      </span>
-                    ) : card.comingSoon ? (
-                      <span className="rounded-full bg-sand px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
-                        {t("campaignWiz.typeComingSoon", locale)}
-                      </span>
-                    ) : null}
-                  </label>
-                  <details className="border-t border-sand/60 px-3.5 pb-3">
-                    <summary className="cursor-pointer select-none pt-2 text-[11px] font-medium text-muted transition-colors hover:text-ink-body">
-                      {locale === "hu" ? "Részletek" : "Details"}
-                    </summary>
-                    <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
-                      {t(card.descKey, locale)}
-                    </p>
-                    {card.outKey && (
-                      <p className="mt-1 text-[11px] text-[var(--color-accent-primary-strong)]">{t(card.outKey, locale)}</p>
-                    )}
-                  </details>
-                </div>
-              );
-            })}
+          <div className="grid gap-3 md:grid-cols-2">
+            <button
+              type="button"
+              aria-pressed={campaignPackage === "SCAN_V1"}
+              onClick={() => selectCampaignPackage("SCAN_V1")}
+              className={[
+                "rounded-[14px] border p-4 text-left transition",
+                campaignPackage === "SCAN_V1"
+                  ? "border-sage bg-sage/5"
+                  : "border-sand bg-surface-card hover:border-sage/50",
+              ].join(" ")}
+            >
+              <span className="flex items-center justify-between gap-3">
+                <span className="text-body font-semibold text-ink">
+                  {CAMPAIGN_PRESETS.SCAN_V1.label[locale]}
+                </span>
+                <span className="rounded-full bg-sage/15 px-2.5 py-1 text-micro font-bold uppercase tracking-wide text-sage-dark">
+                  {t("campaignWiz.packageRecommended", locale)}
+                </span>
+              </span>
+              <span className="mt-2 block text-caption leading-relaxed text-ink-body">
+                {CAMPAIGN_PRESETS.SCAN_V1.description[locale]}
+              </span>
+              <span className="mt-2 block font-mono text-micro uppercase tracking-wide text-muted">
+                {t("campaignWiz.scanV1Meta", locale)}
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-pressed={campaignPackage === "CUSTOM"}
+              onClick={() => selectCampaignPackage("CUSTOM")}
+              className={[
+                "rounded-[14px] border p-4 text-left transition",
+                campaignPackage === "CUSTOM"
+                  ? "border-sage bg-sage/5"
+                  : "border-sand bg-surface-card hover:border-sage/50",
+              ].join(" ")}
+            >
+              <span className="text-body font-semibold text-ink">
+                {t("campaignWiz.packageCustomName", locale)}
+              </span>
+              <span className="mt-2 block text-caption leading-relaxed text-ink-body">
+                {t("campaignWiz.packageCustomDesc", locale)}
+              </span>
+            </button>
           </div>
+
+          {campaignPackage === "CUSTOM" && (
+            <div className="mt-5 border-t border-sand pt-4">
+              <p className="mb-4 text-caption leading-relaxed text-ink-body">
+                {t("campaignWiz.typeMultiHint", locale)}
+              </p>
+              {/* A haladó mód megtartja az egyedi mérés-sorozatokat. */}
+              <div className="flex flex-col gap-2">
+                {TYPE_CARDS.map((card) => {
+                  const isSelected = selectedTypes.has(card.type);
+                  const orderIndex = chosenSteps.indexOf(card.type);
+                  return (
+                    <div
+                      key={card.type}
+                      className={[
+                        "rounded-[14px] border transition",
+                        card.comingSoon
+                          ? "border-dashed border-sand bg-cream/40 opacity-70"
+                          : isSelected
+                            ? "border-sage bg-sage/5"
+                            : "border-sand bg-surface-card hover:border-sage/50",
+                      ].join(" ")}
+                    >
+                      <label
+                        className={[
+                          "flex items-center gap-3 p-3.5",
+                          card.comingSoon ? "cursor-not-allowed" : "cursor-pointer",
+                        ].join(" ")}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          disabled={card.comingSoon}
+                          onChange={() => !card.comingSoon && toggleType(card.type)}
+                          className="h-4.5 w-4.5 shrink-0 accent-[var(--color-accent-primary)]"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
+                          {card.metaKey && (
+                            <p className="mt-0.5 font-mono text-micro uppercase tracking-wide text-muted">
+                              {t(card.metaKey, locale)}
+                            </p>
+                          )}
+                        </div>
+                        {isSelected ? (
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
+                            {orderIndex + 1}
+                          </span>
+                        ) : card.comingSoon ? (
+                          <span className="rounded-full bg-sand px-2.5 py-0.5 text-micro font-semibold uppercase tracking-wide text-muted">
+                            {t("campaignWiz.typeComingSoon", locale)}
+                          </span>
+                        ) : null}
+                      </label>
+                      <details className="border-t border-sand/60 px-3.5 pb-3">
+                        <summary className="cursor-pointer select-none pt-2 text-[11px] font-medium text-muted transition-colors hover:text-ink-body">
+                          {locale === "hu" ? "Részletek" : "Details"}
+                        </summary>
+                        <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
+                          {t(card.descKey, locale)}
+                        </p>
+                        {card.outKey && (
+                          <p className="mt-1 text-[11px] text-[var(--color-accent-primary-strong)]">{t(card.outKey, locale)}</p>
+                        )}
+                      </details>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* Élő sorrend-előnézet (UX-audit #24): a lényeg — a tagoknak
               EBBEN a sorrendben nyílnak a lépések — ne fejben álljon össze. */}

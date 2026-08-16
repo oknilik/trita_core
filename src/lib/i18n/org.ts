@@ -1116,6 +1116,26 @@ export const orgTranslations = {
     // Típusválasztó (0. lépés)
     stepType: { hu: "Mérés típusa", en: "Measurement type" },
     typeTitle: { hu: "Mit szeretnél mérni?", en: "What do you want to measure?" },
+    packageRecommended: { hu: "Ajánlott", en: "Recommended" },
+    scanV1Meta: {
+      hu: "Rögzített pilot-készlet · observer és peer kör nélkül",
+      en: "Fixed pilot set · without observer and peer rounds",
+    },
+    packageCustomName: { hu: "Egyedi mérési kör", en: "Custom measurement round" },
+    packageCustomDesc: {
+      hu: "Haladó összeállítás egycélú méréshez, második körhöz vagy kiegészítő modulhoz.",
+      en: "Advanced setup for a focused measurement, second round or add-on module.",
+    },
+    typeSelfName: { hu: "Önértékelés", en: "Self-assessment" },
+    typeSelfDesc: {
+      hu: "A tagok kitöltik a 60 állításos személyiség-kérdőívet, külső értékelők meghívása nélkül.",
+      en: "Members complete the 60-item personality questionnaire without inviting external observers.",
+    },
+    typeSelfMeta: { hu: "60 állítás · ~10 perc / fő", en: "60 items · ~10 min per member" },
+    typeSelfOut: {
+      hu: "Eredmény: körhöz címkézett self profil és csapatszintű dimenzió-kontroll",
+      en: "Output: round-labelled self profile and team-level dimension control",
+    },
     typeObserverName: { hu: "Külső visszajelzés (360°)", en: "External feedback (360°)" },
     typeObserverDesc: {
       hu: "A tagok kollégákat hívnak meg, akik kívülről jellemzik őket — az önkép és a külső kép összevethetővé válik.",

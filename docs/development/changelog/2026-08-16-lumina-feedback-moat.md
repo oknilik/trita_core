@@ -74,3 +74,19 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
 - Pulse-célnál a P0.1 mérési kapu dönti el, védhető-e az elmozdulás.
   Relációs célhoz kalibrált hiba híján a rendszer nem gyárt hamis
   „szignifikáns” címkét; kategorikus szerephézagnál az állapotváltást jelzi.
+
+## P1.3 — rögzített Scan v1 mérési készlet
+
+- A kampány-létrehozó alapértelmezett, nevesített `SCAN_V1` csomagot kínál;
+  a szerver oldja fel a rögzített lépés-sort, ezért a kliens nem módosíthatja
+  észrevétlenül a pilot mérési készletét.
+- A kódban korábban az `OBSERVER_360` összekötötte a self kérdőívet és a
+  külső értékelőket. Külön `SELF_ASSESSMENT` kampánylépés készült, így a
+  Scan v1 ténylegesen csak self + bizalmi háló + pszichológiai biztonság.
+- Az observer, a csapatszerep-self/peer és az elismerés-kör az egyedi,
+  haladó összeállításban maradt a második körök és kiegészítők számára.
+- A self és observer lépés együtt nem választható: az observer eleve
+  tartalmaz selfet, ezért a szerver és mindkét szerkesztő kiszűri a
+  duplikációt.
+- Az új self-lépés végigkapta az explicit kampánylinket, kör-címkézett
+  beadást, fresh-fast-forwardot, értesítést, feladat- és riporthaladást.

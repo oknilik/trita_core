@@ -4,7 +4,10 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { canManageMeasurements } from "@/lib/measurement-auth";
-import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_STEP_ORDER,
+  normalizeCampaignSteps,
+} from "@/lib/campaign-steps-core";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 
@@ -16,11 +19,11 @@ const patchSchema = z.union([
   // előtt bármi módosítható; aktiválás után a kampány összetétele fix.
   z.object({
     action: z.literal("edit_draft"),
-    // Nincs darab-limit — akár mind a 6 mérés mehet egy körben.
+    // Nincs termékoldali darab-limit — minden katalógus-lépés mehet.
     types: z
-      .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
+      .array(z.enum(CAMPAIGN_STEP_ORDER))
       .min(1)
-      .max(6)
+      .max(CAMPAIGN_STEP_ORDER.length)
       .optional(),
     teamId: z.string().min(1).nullable().optional(),
     // Több cél-csapat (2026-07-29): üres tömb = célzás törlése.
