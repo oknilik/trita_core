@@ -90,3 +90,18 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   duplikációt.
 - Az új self-lépés végigkapta az explicit kampánylinket, kör-címkézett
   beadást, fresh-fast-forwardot, értesítést, feladat- és riporthaladást.
+
+## P2.1 — norma- és mintázatígéret kalibrálása
+
+- A 16 minta kódban rögzített módszertani státusza „értelmezési nyelv”;
+  nem validált tipológia. A publikus felfedező, SEO/LLM leírások és a
+  csapatriportok ugyanezt a keretezést használják.
+- A pilot- és főoldali ígéret a mért bizalmi hálót, pszichológiai
+  biztonságot, célzott akciót és kapuzott visszamérést teszi előre. A
+  mintanév többé nem a diagnosztika bizonyítékaként szerepel.
+- Külön kutatási protokoll választja szét az egyéni norma `n≈200–500`
+  és a 16-as csapatminta `n≈15–20 csapat` elemzési egységét.
+- A norma-script csak pontos kampánycímkékkel scope-olt, `short` formás,
+  forrásleírással ellátott, legalább 200 fős kohorsznál ad ki
+  `ACTIVE_NORM_TABLE`-jelöltet. Minden más futás leíró kalibráció és
+  fail-closed módon felsorolja az aktiválási blokkolókat.

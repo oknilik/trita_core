@@ -332,6 +332,9 @@ export function TeamReportMemberView({
                 <p className="mt-1 font-fraunces text-xl leading-tight text-ink">
                   {vm.patternLabel}
                 </p>
+                <p className="mt-3 text-micro leading-relaxed text-muted">
+                  {t("teamComp.framingNote", loc)}
+                </p>
               </div>
             )}
             {vm.strengths && (

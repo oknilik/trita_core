@@ -15,23 +15,30 @@ mutató URL-lel is futtathatók (read-only), de az eredmény bizalmas —
 a `--json` exportot ne commitold.
 
 ```bash
-npx tsx scripts/research/norms-from-results.ts [--form=short|full] [--json <fájl>]
+npx tsx scripts/research/norms-from-results.ts [--form=short|full] \
+  [--campaign <id> ...] [--source <kohorsz-leírás>] [--json <fájl>]
 npx tsx scripts/research/friction-calibration.ts [--mutual-only] [--json <fájl>]
 npx tsx scripts/research/norms-from-ipip-dataset.ts --download   # DB nem kell
 ```
 
 Üres vagy kevés adatnál mindkét script értelmes üzenettel fut le (nem
-hibázik); a mintaméretet mindig kiírják, `n < 30`-nál figyelmeztetnek —
-ilyenkor a számok jelzésértékűek, élesíteni még nem szabad belőlük.
+hibázik). A norm-script a mintaméretet mindig kiírja, és csak explicit
+pilot-kampányokra scope-olt, rövid formás, dokumentált, legalább 200 fős
+kohorsznál bocsát ki élesíthető norma-blokkot. Máskor a számok leíró
+kalibrációs inputok, nem normák.
 
 ## norms-from-results.ts — pilot-normák
 
-**Mikor:** a pilot önkitöltéseinek beérkezése után (normatáblához n ≥ 30 a
-minimum-jelzés, megbízhatóhoz inkább 100+).
+**Mikor:** a pilot önkitöltéseinek beérkezése után. A P2.1 cél 200–500
+egyéni profil; az aktív táblához a script minimum 200-at, explicit
+kampány-scope-ot, `--form=short` szűrést és review-olható `--source`
+leírást követel.
 
-**Mit számol:** userenként a LEGUTOLSÓ self-eredményből (isSelfAssessment,
-testType=TRITAN, törölt profil és vendégsor kizárva), csak teljes
-6-dimenziós profilokra:
+**Mit számol:** userenként a LEGUTOLSÓ, a megadott pilot-kampány(ok)hoz
+pontosan címkézett self-eredményből (`--campaign` többször megadható;
+isSelfAssessment, testType=TRITAN, törölt profil és vendégsor kizárva), csak
+teljes 6-dimenziós profilokra. `--campaign` nélkül kutatói leíró futás
+lehetséges, de élesíthető norma-blokk nem készül:
 
 - dimenziónként n, átlag, mintavételi szórás (n−1), kvartilisek, decilisek;
 - sáv-kihasználtság a két élő vágásrendszerre: 40/70
@@ -41,10 +48,10 @@ testType=TRITAN, törölt profil és vendégsor kizárva), csak teljes
   nélküli örökség-soroknál a questionCount-heurisztika dönt (≥100 item =
   full, minden más short — a `career/person.ts` mintája).
 
-**Kimenet:** ember-olvasható táblák stdout-ra + a `src/lib/norms.ts`
-`ACTIVE_NORM_TABLE`-jébe illeszthető JSON-blokk (`version` =
-`pilot-<futtatás dátuma>`, `source`, `n`, `dims{mean,sd}`). A blokk a
-`NormTable` típussal annotált — ha a kontraktus bővül, a type-check jelez.
+**Kimenet:** ember-olvasható táblák stdout-ra. Az `ACTIVE_NORM_TABLE`-be
+illeszthető JSON-blokk (`version`, `source`, `n`, `dims{mean,sd}`) csak a
+fenti aktiválási kapuk teljesülésekor jelenik meg. A `--json` export a
+blokkoló okokat és a nem élesíthető jelöltet is megőrzi auditáláshoz.
 
 **Hová kerül az eredmény:** a JSON-blokkot KÉZZEL kell a
 `src/lib/norms.ts` `ACTIVE_NORM_TABLE`-jébe emelni (review-val, nem

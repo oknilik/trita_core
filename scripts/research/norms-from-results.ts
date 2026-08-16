@@ -2,7 +2,8 @@
  * Pilot-norma számítás a TÁROLT self-eredményekből — a motor-audit P1
  * „norma-percentilis" tételéhez (docs/audits/motor-audit-2026-08-10.md).
  *
- *   npx tsx scripts/research/norms-from-results.ts [--form=short|full] [--json <fájl>]
+ *   npx tsx scripts/research/norms-from-results.ts [--form=short|full]
+ *     [--campaign <id> ...] [--source <kohorsz-leírás>] [--json <fájl>]
  *
  * Userenként a LEGUTOLSÓ self-eredmény számít (a team-stats betöltő
  * mintája: isSelfAssessment + createdAt desc), és csak a teljes,
@@ -11,11 +12,11 @@
  *     kvartilisek, decilisek + sáv-kihasználtság a 40/70-es
  *     (dimension-utils getDimensionTier) és a 35/65-ös (profile-engine
  *     pólus-küszöbök) vágásokra;
- *  2) a src/lib/norms.ts ACTIVE_NORM_TABLE-jébe kézzel beilleszthető
- *     JSON-blokk (version = futtatás dátuma, source, n, dims{mean,sd}).
+ *  2) csak megfelelően scope-olt, legalább 200 fős short-form pilotkohorsznál
+ *     a src/lib/norms.ts ACTIVE_NORM_TABLE-jébe kézzel beilleszthető blokk.
  *
- * A mintaméret MINDIG kiírva — kevés adatnál a számok jelzésértékűek,
- * nem normák. Üres DB-nél a script értelmes üzenettel, hibátlanul lép ki.
+ * A mintaméret MINDIG kiírva — kevés vagy scope nélküli adatnál a számok
+ * jelzésértékűek, nem normák. Üres DB-nél értelmesen, hibátlanul lép ki.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -59,6 +60,10 @@ import {
   PROFILE_HIGH_THRESHOLD,
   PROFILE_LOW_THRESHOLD,
 } from "../../src/lib/profile-engine";
+import {
+  PILOT_NORM_MIN_N,
+  pilotNormActivationBlockers,
+} from "./norm-activation";
 
 /**
  * Forma a tárolt score-JSON-ból: a kanonikus a scoring-motor `form`
@@ -82,10 +87,19 @@ function poleBand(score: number): "low" | "mid" | "high" {
   return "mid";
 }
 
-function parseArgs(): { form: AssessmentForm | null; jsonPath: string | null } {
+interface NormArgs {
+  form: AssessmentForm | null;
+  jsonPath: string | null;
+  campaignIds: string[];
+  sourceLabel: string | null;
+}
+
+function parseArgs(): NormArgs {
   const argv = process.argv.slice(2);
   let form: AssessmentForm | null = null;
   let jsonPath: string | null = null;
+  const campaignIds: string[] = [];
+  let sourceLabel: string | null = null;
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
     if (arg === "--json") {
@@ -98,13 +112,38 @@ function parseArgs(): { form: AssessmentForm | null; jsonPath: string | null } {
         process.exit(2);
       }
       form = value;
+    } else if (arg === "--campaign" || arg === "--campaign-id") {
+      const value = argv[i + 1]?.trim();
+      if (!value) {
+        console.error(`${arg} után kampányazonosító szükséges.`);
+        process.exit(2);
+      }
+      campaignIds.push(value);
+      i += 1;
+    } else if (arg === "--source") {
+      const value = argv[i + 1]?.trim();
+      if (!value) {
+        console.error("--source után a kohorsz rövid leírása szükséges.");
+        process.exit(2);
+      }
+      sourceLabel = value;
+      i += 1;
     } else {
       console.error(`Ismeretlen argumentum: ${arg}`);
-      console.error("Használat: npx tsx scripts/research/norms-from-results.ts [--form=short|full] [--json <fájl>]");
+      console.error(
+        "Használat: npx tsx scripts/research/norms-from-results.ts " +
+          "[--form=short|full] [--campaign <id> ...] " +
+          "[--source <kohorsz-leírás>] [--json <fájl>]",
+      );
       process.exit(2);
     }
   }
-  return { form, jsonPath };
+  return {
+    form,
+    jsonPath,
+    campaignIds: [...new Set(campaignIds)],
+    sourceLabel,
+  };
 }
 
 const DECILE_PS = [10, 20, 30, 40, 50, 60, 70, 80, 90] as const;
@@ -126,7 +165,12 @@ function dimLabel(code: (typeof HEXACO_ORDER)[number]): string {
 }
 
 async function main() {
-  const { form: formFilter, jsonPath } = parseArgs();
+  const {
+    form: formFilter,
+    jsonPath,
+    campaignIds,
+    sourceLabel,
+  } = parseArgs();
 
   if (!process.env.DATABASE_URL) {
     console.error("Nincs DATABASE_URL — exportáld a shellben, vagy tedd a .env(.local)-ba.");
@@ -142,6 +186,7 @@ async function main() {
       testType: TestType.TRITAN,
       userProfileId: { not: null },
       userProfile: { deleted: false },
+      ...(campaignIds.length > 0 ? { campaignId: { in: campaignIds } } : {}),
     },
     orderBy: { createdAt: "desc" },
     select: { userProfileId: true, scores: true },
@@ -181,7 +226,8 @@ async function main() {
 
   console.log("── PILOT-NORMÁK a tárolt self-eredményekből ────────────────────");
   console.log(
-    `szűrő: testType=TRITAN · törölt profil kizárva · form=${formFilter ?? "mind"}`,
+    `szűrő: testType=TRITAN · törölt profil kizárva · form=${formFilter ?? "mind"}` +
+      ` · kampány=${campaignIds.length > 0 ? `${campaignIds.length} kijelölt kör` : "NINCS SCOPE"}`,
   );
   console.log(
     `userenként legutolsó self-eredmény: ${latestByUser.size} · ` +
@@ -204,8 +250,11 @@ async function main() {
     await prisma.$disconnect();
     return;
   }
-  if (n < 30) {
-    console.log("FIGYELEM: n < 30 — kalibrációhoz kevés, a tábla csak jelzésértékű.");
+  if (n < PILOT_NORM_MIN_N) {
+    console.log(
+      `FIGYELEM: n < ${PILOT_NORM_MIN_N} — leíró kalibrációra használható, ` +
+        "de aktív magyar pilot-normaként nem élesíthető.",
+    );
   }
 
   // ── dimenziónkénti statisztika ──────────────────────────────────────────
@@ -285,28 +334,47 @@ async function main() {
   // a src/lib/norms.ts ACTIVE_NORM_TABLE kontraktusára illik (version,
   // source, n, dims{mean,sd}); a beemelés kézzel történik (README).
   // A dims-cast biztonságos: a stats a HEXACO_ORDER-t 1:1 fedi le.
-  const normTable: NormTable = {
+  const normTableCandidate: NormTable = {
     version: `pilot-${new Date().toISOString().slice(0, 10)}`,
-    source: `pilot self-eredmények (TSFI${formFilter ? `, form=${formFilter}` : ""}), userenként a legutolsó`,
+    source:
+      sourceLabel ??
+      `scope nélküli self-eredmények (TSFI${formFilter ? `, form=${formFilter}` : ""})`,
     n,
     dims: Object.fromEntries(
       stats.map((s) => [s.code, { mean: roundTo(s.mean, 2), sd: roundTo(s.sd, 2) }]),
     ) as Record<HexacoCode, DimNorm>,
   };
   const invalidSd = stats.filter((s) => !Number.isFinite(s.sd) || s.sd <= 0);
-  if (invalidSd.length > 0) {
+  const activationBlockers = pilotNormActivationBlockers({
+    campaignCount: campaignIds.length,
+    form: formFilter,
+    sourceLabel,
+    n,
+    invalidSdCodes: invalidSd.map((s) => s.code),
+  });
+  const normTable = activationBlockers.length === 0 ? normTableCandidate : null;
+
+  if (normTable) {
+    console.log("\n── src/lib/norms.ts — review után beilleszthető PILOT-NORMA ──");
+    console.log(JSON.stringify(normTable, null, 2));
+  } else {
+    console.log("\n── NORMA NEM ÉLESÍTHETŐ ──");
+    for (const blocker of activationBlockers) console.log(`- ${blocker}`);
     console.log(
-      `\nFIGYELEM: nem pozitív szórás (${invalidSd.map((s) => s.code).join(", ")}) — ` +
-        "a NormTable sd > 0-t vár, a blokk így NEM élesíthető.",
+      "A leíró statisztika kalibrációs input marad; ACTIVE_NORM_TABLE blokkot " +
+        "a script fail-closed nem bocsát ki.",
     );
   }
-  console.log("\n── src/lib/norms.ts — ACTIVE_NORM_TABLE-be illeszthető blokk ──");
-  console.log(JSON.stringify(normTable, null, 2));
 
   if (jsonPath) {
     const report = {
       generatedAt: new Date().toISOString(),
-      filter: { form: formFilter, testType: "TRITAN" },
+      filter: {
+        form: formFilter,
+        testType: "TRITAN",
+        campaignIds,
+        source: sourceLabel,
+      },
       counts: {
         usersWithSelfResult: latestByUser.size,
         skippedForm,
@@ -328,6 +396,8 @@ async function main() {
         bands3565: s.bands3565,
       })),
       normTable,
+      normTableCandidate,
+      activationBlockers,
     };
     fs.writeFileSync(jsonPath, JSON.stringify(report, null, 2));
     console.log(`\nJSON: ${jsonPath}`);

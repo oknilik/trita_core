@@ -1620,8 +1620,8 @@ export const orgTranslations = {
     memberAssessments: { hu: "tag értékelése alapján", en: "member assessments" },
     missingData: { hu: "hiányzó adat", en: "missing" },
     framingNote: {
-      hu: "A csapat jelenlegi önértékelés-alapú működési mintázatának értelmezése. Nem diagnózis, nem teljesítménycímke — idővel változhat.",
-      en: "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time.",
+      hu: "Értelmezési nyelv a csapat jelenlegi, önértékelés-alapú tengelyeihez — nem validált tipológia, diagnózis vagy teljesítménycímke. A közvetlenül mért bizalmi háló és pszichológiai biztonság külön evidencia.",
+      en: "Interpretive language for the team's current self-assessment-based axes — not a validated typology, diagnosis, or performance label. The directly measured trust network and psychological safety are separate evidence.",
     },
 
     // TeamRoleSection

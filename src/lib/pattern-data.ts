@@ -2,6 +2,22 @@
 // Single source of truth for the 16 team operating patterns.
 // Used by: PatternExplorer (public /patterns page) + team-pattern engine.
 
+/**
+ * Módszertani státusz — a 16 név nem validált tipológia. A mögöttes négy
+ * csapattengely és küszöb csapat-szinten kalibrálandó; 15–20 pilotcsapat nem
+ * ad elég megfigyelést 16 kategória validálásához. A minta ezért csak
+ * értelmezési nyelv, míg a Scan ígérete a közvetlenül mért rétegekre épül.
+ */
+export const TEAM_PATTERN_EVIDENCE_STATUS = {
+  status: "interpretive_language",
+  validatedTypology: false,
+  calibrationUnit: "team",
+  framing: {
+    hu: "A 16 minta értelmezési nyelv, nem validált csapattipológia. A címke az önértékelés-alapú csapattengelyeket foglalja össze; a mért bizalmi háló és pszichológiai biztonság külön bizonyíték.",
+    en: "The 16 patterns are an interpretive language, not a validated team typology. The label summarizes self-assessment-based team axes; the measured trust network and psychological safety are separate evidence.",
+  },
+} as const;
+
 export interface AxisMeta {
   key: string;
   name: string;
