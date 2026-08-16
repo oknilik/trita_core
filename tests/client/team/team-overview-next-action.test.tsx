@@ -8,6 +8,7 @@ describe("TeamOverviewNextAction", () => {
       <TeamOverviewNextAction
         isHu
         pendingMeasurement={{
+          campaignId: "campaign-autumn",
           campaignName: "Őszi kör",
           stepType: "PSYCH_SAFETY",
           opensAt: null,
