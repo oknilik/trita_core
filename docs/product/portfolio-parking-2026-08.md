@@ -5,10 +5,11 @@ Kapcsolódó döntés: `lumina-benchmark-strategia-2026-08.md`, P2.2.
 ## Cél
 
 A pilot alatt egyetlen zászlóshajó marad élő: a **Trita Team Scan** és annak
-mérési körei. A szélesebb portfólió kódját és adatait nem töröljük, de nem
-engedjük ki ügyfél-, admin-, API- vagy keresőfelületre. Így a parkolt modul nem
-ígér karbantartott terméket, és nem visz becsült állítást a tanácsadói
-beszélgetésbe.
+mérési körei. A Scan értékesítését és disztribúcióját közvetlenül kiszolgáló
+CRM, ajánlatkezelés és publikus eredménymegosztás szintén aktív. A szélesebb
+portfólió kódját és adatait nem töröljük, de nem engedjük ki ügyfél-, admin-,
+API- vagy keresőfelületre. Így a parkolt modul nem ígér karbantartott terméket,
+és nem visz becsült állítást a tanácsadói beszélgetésbe.
 
 ## Visszaállítható pillanatkép
 
@@ -26,11 +27,21 @@ mindig aktuális ágon kell feloldani a központi kaput.
 |---|---|---|---|
 | Karrier-motor és katalógus | `career` | `/career`, career/industry/profile API-k, riport-CTA | katalógus, algoritmus, `careerBackground`, feedback |
 | Jelölt/hiring flow | `hiring` | `/hiring`, `/apply`, candidate/hiring API-k, nav és org-fül | meghívók, eredmények, kreditek |
-| CRM és ajánlat | `crm` | admin CRM/quote oldalak és API-k; napi sweep és inquiry auto-attach szünetel | dealek, aktivitások, ajánlatok, inquiry-kapcsolatok |
 | Blog | `blog` | publikus blog, admin API/fül, nav, sitemap, `llms.txt` | MDX tartalom és szerkesztő |
 | Fake door | `fakedoor` | publikus mérő API-k, admin riport/export | view/response és korábbi interest adatok |
 | `/patterns` felfedező | `patternExplorer` | oldal, team-riport CTA, footer, sitemap, `llms.txt` | a mintamotor és riportbeli értelmezés élő marad |
-| Publikus profilmegosztás/OG | `publicSharing` | `/share`, share API, eredményoldali CTA | tokenek nem törlődnek, csak nem oldhatók fel |
+
+A blog és a `/patterns` felfedező parkolása tudatos **lead-gen döntés**, nem
+pusztán karbantartási higiénia. Ezek az inbound/SEO felületek a pilot fókusza
+érdekében kerülnek ki ideiglenesen; a disztribúciós stratégia felülvizsgálatakor
+külön döntéssel kell visszatérni rájuk.
+
+## Aktív támogató felületek
+
+| Felület | Központi kulcs | Miért marad aktív |
+|---|---|---|
+| CRM és ajánlat | `crm` | A fizetett Scan-ek intake-, ajánlat- és utánkövetési pipeline-ja; inquiry auto-attach és napi sweep |
+| Publikus profilmegosztás/OG | `publicSharing` | Vendég-teaser, referenciamegosztás és OG-kimenet; a tokenes út továbbra sem indexelhető |
 
 A HTTP-kapu a `src/lib/portfolio-parking.ts` állapotából dolgozik. Parkolt
 oldal a fő belépőre irányít, parkolt API `404 FEATURE_PARKED` választ ad. A
@@ -47,8 +58,6 @@ kapacitással szabad visszaállítani.
    - a karrier-motornál a `CAREER_MODULE_READY` is legyen tudatos döntés;
    - a career fake door csak a `fakedoor` kapuval együtt mérhet;
    - hiringnél ellenőrizd a kreditet, a meghívó-emailt és a régi tokeneket;
-   - CRM-nél a napi sweep, inquiry auto-attach és a korábbi értesítések is
-     automatikusan visszakapcsolnak.
 3. Nézd át az adott felület adatvédelmi, anonimitási és jogosultsági kapuit;
    régi adatot ne migrálj vagy törölj automatikusan.
 4. Futtasd az érintett unit-, route- és end-to-end teszteket, valamint a teljes
@@ -61,8 +70,8 @@ kapacitással szabad visszaállítani.
 
 ## Adatkezelési garancia
 
-A parkolás nem futtat sémamigrációt és nem töröl rekordot. A korábbi publikus
-share tokenek, jelöltlinkek és admin-mélylinkek HTTP-szinten záródnak le; a
-visszaállíthatósághoz szükséges adat változatlanul megmarad. A tag szintén nem
-mozgat adatbázist — kizárólag forrásreferencia.
-
+A parkolás nem futtat sémamigrációt és nem töröl rekordot. A parkolt
+jelöltlinkek és admin-mélylinkek HTTP-szinten záródnak le; a publikus share
+tokenek a disztribúciós felület részeként elérhetők, de crawlerből továbbra is
+tiltottak. A visszaállíthatósághoz szükséges adat változatlanul megmarad. A tag
+szintén nem mozgat adatbázist — kizárólag forrásreferencia.

@@ -9,11 +9,13 @@
 export const PORTFOLIO_SURFACE_STATE = {
   career: "parked",
   hiring: "parked",
-  crm: "parked",
+  // A fizetett pilotok intake → ajánlat → utánkövetés operációs gerince.
+  crm: "active",
   blog: "parked",
   fakedoor: "parked",
   patternExplorer: "parked",
-  publicSharing: "parked",
+  // A vendég-teaser és az OG/share kimenet a Team Scan disztribúcióját szolgálja.
+  publicSharing: "active",
 } as const;
 
 export type PortfolioSurface = keyof typeof PORTFOLIO_SURFACE_STATE;
@@ -101,4 +103,3 @@ export function parkedPortfolioSurfaceForPath(pathname: string): PortfolioSurfac
   }
   return null;
 }
-

@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 
 import robotsRoute from "@/app/robots";
 import { GET as llmsTxt } from "@/app/llms.txt/route";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
  * A robots.ts preview/dev környezetben MINDENT tilt (a preview-URL nem
@@ -115,4 +116,21 @@ test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
     assert.equal(body.includes(`${path})`), false, `parkolt lap kint maradt: ${path}`);
   }
   assert.ok(body.includes("hello@trita.io"));
+});
+
+test("az aktív publikus megosztás tokenútja továbbra sem crawler-belépő", async () => {
+  assert.equal(isPortfolioSurfaceActive("publicSharing"), true);
+  const body = await llmsTxt().text();
+  assert.equal(/\]\(https?:\/\/[^)]+\/share\//.test(body), false);
+
+  const result = productionRobots();
+  const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
+  for (const rule of rules) {
+    const disallow = Array.isArray(rule?.disallow)
+      ? rule.disallow
+      : rule?.disallow
+        ? [rule.disallow]
+        : [];
+    assert.ok(disallow.includes("/share/"));
+  }
 });

@@ -6,22 +6,22 @@ import {
   parkedPortfolioSurfaceForPath,
 } from "@/lib/portfolio-parking";
 
-test("P2.2: a széles portfólió minden kijelölt felülete aktívan parkolt", () => {
+test("P2.2: csak a fókuszon kívüli felületek parkoltak", () => {
   assert.deepEqual(PORTFOLIO_SURFACE_STATE, {
     career: "parked",
     hiring: "parked",
-    crm: "parked",
+    crm: "active",
     blog: "parked",
     fakedoor: "parked",
     patternExplorer: "parked",
-    publicSharing: "parked",
+    publicSharing: "active",
   });
 
-  for (const surface of Object.keys(PORTFOLIO_SURFACE_STATE)) {
-    assert.equal(
-      isPortfolioSurfaceActive(surface as keyof typeof PORTFOLIO_SURFACE_STATE),
-      false,
-    );
+  for (const surface of ["career", "hiring", "blog", "fakedoor", "patternExplorer"] as const) {
+    assert.equal(isPortfolioSurfaceActive(surface), false, surface);
+  }
+  for (const surface of ["crm", "publicSharing"] as const) {
+    assert.equal(isPortfolioSurfaceActive(surface), true, surface);
   }
 });
 
@@ -33,15 +33,11 @@ test("P2.2: a parkolt oldal- és API-belépők ugyanahhoz a kapuhoz tartoznak", 
     ["/hiring/org_1", "hiring"],
     ["/apply/token", "hiring"],
     ["/api/manager/candidates/id/resend", "hiring"],
-    ["/admin/crm/deal_1", "crm"],
-    ["/api/admin/quote/rates", "crm"],
     ["/blog/example", "blog"],
     ["/api/admin/blog", "blog"],
     ["/admin/fakedoor/career", "fakedoor"],
     ["/api/career/fakedoor/response", "fakedoor"],
     ["/patterns", "patternExplorer"],
-    ["/share/token", "publicSharing"],
-    ["/api/profile/share/send", "publicSharing"],
   ] as const;
 
   for (const [pathname, surface] of cases) {
@@ -57,6 +53,10 @@ test("P2.2: a zászlóshajó és a hasonló előtagú útvonalak nyitva maradnak
     "/org/org_1",
     "/team/team_1",
     "/tasks",
+    "/admin/crm/deal_1",
+    "/api/admin/quote/rates",
+    "/share/token",
+    "/api/profile/share/send",
     "/api/team-reports/report_1",
     "/api/profile/shareholder",
     "/blogger",
@@ -65,4 +65,3 @@ test("P2.2: a zászlóshajó és a hasonló előtagú útvonalak nyitva maradnak
     assert.equal(parkedPortfolioSurfaceForPath(pathname), null, pathname);
   }
 });
-

@@ -27,6 +27,13 @@ const multiTeamContext: WorkspaceNavContext = {
   ],
 };
 
+test("a pilot operációs és disztribúciós felületei aktívak maradnak", () => {
+  assert.equal(isPortfolioSurfaceActive("crm"), true);
+  assert.equal(isPortfolioSurfaceActive("publicSharing"), true);
+  assert.equal(isPortfolioSurfaceActive("career"), false);
+  assert.equal(isPortfolioSurfaceActive("hiring"), false);
+});
+
 test("admin topnav is the simplified IA menu (no analytics)", () => {
   const navItems = buildWorkspaceNavigation("org_admin", baseContext);
   const ids = navItems.map((item) => item.id);
