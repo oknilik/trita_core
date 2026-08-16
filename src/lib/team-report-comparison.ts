@@ -423,7 +423,7 @@ function compareActionOutcomes(params: {
     trustNetwork,
     compositionComparable,
   } = params;
-  return (previous.actionItems ?? []).flatMap((item) => {
+  return (previous.actionItems ?? []).flatMap((item): TeamActionOutcome[] => {
     const target = parseTeamActionTarget(item.targetMetric);
     if (!target) return [];
     const base = {
