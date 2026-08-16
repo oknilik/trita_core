@@ -12,16 +12,20 @@ import {
 } from "@/lib/trust-network";
 
 /**
- * A csapat bizalmi hálója. MINDEN eddigi kampány-kör megfigyeléseit
- * összesíti; egy (aboutUserId, raterUserId) párnál a legfrissebb kör
- * számít — az ismételt körök felülírják a korábbit, nem duplázódnak.
+ * A csapat bizalmi hálója. Alapból MINDEN eddigi kampány-kört összesít;
+ * explicit campaignId-nál csak az adott riportkört. Egy (aboutUserId,
+ * raterUserId) párnál a legfrissebb válasz számít, nincs duplázás.
  */
 export async function buildTeamTrustNetwork(
   teamId: string,
+  options?: { campaignId?: string },
 ): Promise<TrustNetwork> {
   const [observations, members] = await Promise.all([
     prisma.trustObservation.findMany({
-      where: { teamId },
+      where: {
+        teamId,
+        ...(options?.campaignId ? { campaignId: options.campaignId } : {}),
+      },
       orderBy: { updatedAt: "asc" },
       select: { aboutUserId: true, raterUserId: true, answers: true },
     }),

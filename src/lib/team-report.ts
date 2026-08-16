@@ -36,6 +36,8 @@ import {
   buildTeamReportComparisonBasis,
   type TeamReportComparisonBasis,
 } from "@/lib/team-report-composition";
+import { loadTeamFeedbackCulture } from "@/lib/team-observer.server";
+import type { TeamFeedbackCulture } from "@/lib/team-observer";
 
 // A publikált csapatkép aggregátum-pillanatképe. Publikáláskor fagy be —
 // a validált kép nem változhat utólagos kitöltésektől.
@@ -185,6 +187,11 @@ export interface TeamReportAggregates {
     /** Hány tagnál élt mindkét oldal az összevetéshez */
     comparedCount: number;
   } | null;
+  /**
+   * Személyen belüli önkép–külső kép összhang, kizárólag kampány-hatókörű
+   * observer-adatból és csapat-szintű anonimitási padló felett.
+   */
+  feedbackCulture?: TeamFeedbackCulture | null;
 }
 
 export interface TeamReportActionItem {
@@ -251,11 +258,20 @@ export async function buildTeamReportAggregates(
   options?: { assessmentCampaignId?: string },
 ): Promise<TeamReportAggregates | null> {
   // Alapértelmezésben megmarad a tagonkénti legfrissebb self-eredmény.
-  // Kör-riportnál az explicit campaignId pontosan az adott felvételt olvassa.
+  // Kör-riportnál az explicit campaignId minden kampány-kötött réteget
+  // (self, szerep, trust, pulse, observer) ugyanarra a felvételre szűr.
   const teamData = await getTeamPageData(teamId, "hu", options);
   if (!teamData) return null;
 
   const assessed = teamData.members.filter((m) => m.scores !== null);
+  const feedbackCulturePromise = loadTeamFeedbackCulture({
+    orgId: teamData.orgId,
+    members: teamData.members.map((member) => ({
+      userId: member.userId,
+      scores: member.scores,
+    })),
+    campaignId: options?.assessmentCampaignId,
+  });
   const comparisonBasis = buildTeamReportComparisonBasis(teamId, assessed);
   const completedCount = assessed.length;
   const memberCount = teamData.members.length;
@@ -376,21 +392,23 @@ export async function buildTeamReportAggregates(
         .map((id) => nameByUserId.get(id))
         .filter((n): n is string => Boolean(n));
 
-    const trust = await buildTeamTrustNetwork(teamId).catch(() => null);
+    const trust = await buildTeamTrustNetwork(teamId, {
+      campaignId: options?.assessmentCampaignId,
+    }).catch(() => null);
     if (trust && trust.measuredPairCount > 0) {
       const hubs = namesFor(trust.hubUserIds);
       const isolated = namesFor(trust.isolatedUserIds);
-      if (hubs.length > 0 || isolated.length > 0) {
-        trustHighlights = {
-          source: "trust_round",
-          measuredPairCount: trust.measuredPairCount,
-          possiblePairCount: trust.possiblePairCount,
-          coveragePct:
-            trust.coverage !== null ? Math.round(trust.coverage * 100) : null,
-          hubs,
-          isolated,
-        };
-      }
+      // A hálózati lefedettség hub/beágyazatlan találat nélkül is mérés.
+      // A régi feltétel ilyenkor eldobta a mért párszámot a snapshotból.
+      trustHighlights = {
+        source: "trust_round",
+        measuredPairCount: trust.measuredPairCount,
+        possiblePairCount: trust.possiblePairCount,
+        coveragePct:
+          trust.coverage !== null ? Math.round(trust.coverage * 100) : null,
+        hubs,
+        isolated,
+      };
     } else if (hasMinimum && teamData.dynamicsEdges.length > 0) {
       // Profil-alapú becslés fallback: a dinamika-térképpel KÖZÖS hub-
       // definíció (computeAlignedHubIds, aligned-fok ≥ 3, mindkét végpont
@@ -432,6 +450,9 @@ export async function buildTeamReportAggregates(
     // Több-lépéses kampánynál a type az ELSŐ lépés (pl. OBSERVER_360) —
     // a pulse-t a steps-ben kell keresni, a legacy type-ot fallbackként.
     where: {
+      ...(options?.assessmentCampaignId
+        ? { id: options.assessmentCampaignId }
+        : {}),
       status: { in: ["ACTIVE", "CLOSED"] },
       AND: [
         { OR: [{ teamId }, { teamIds: { has: teamId } }] },
@@ -511,7 +532,9 @@ export async function buildTeamReportAggregates(
 
   // Csapattársi szerep-visszajelzés (peer-kör) — aggregált, küszöb feletti kép.
   let peerRoles: TeamReportAggregates["peerRoles"] = null;
-  const peerProfiles = await buildTeamPeerRoleProfiles(teamId);
+  const peerProfiles = await buildTeamPeerRoleProfiles(teamId, {
+    campaignId: options?.assessmentCampaignId,
+  });
   if (peerProfiles.size > 0) {
     const topRoleCounts: Record<string, number> = {};
     let ratedCount = 0;
@@ -543,6 +566,7 @@ export async function buildTeamReportAggregates(
       comparedCount,
     };
   }
+  const feedbackCulture = await feedbackCulturePromise;
 
   return {
     generatedAt: new Date().toISOString(),
@@ -578,6 +602,7 @@ export async function buildTeamReportAggregates(
     psychSafetyMultiTeam,
     pressure,
     peerRoles,
+    feedbackCulture,
   };
 }
 

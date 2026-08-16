@@ -41,3 +41,20 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
   csak a migráció előtti, címke nélküli rekordok kompatibilitási fallbackje.
 - A csapatadat- és riportépítő opcionális kampányszűrőt kapott; alapértelmezése
   változatlanul tagonként a legfrissebb self-eredmény.
+
+## P1.1 — a változékony rétegek visszamérése
+
+- Az összehasonlító a pszichológiai biztonság indexe mellett itemenként is
+  visszamér. Narratívába csak a konzervatív, dokumentált item-szórás priorból
+  képzett mérési kapun túli elmozdulás kerül.
+- A befagyasztott riportokból összevethető a mért bizalmi háló lefedettsége,
+  él-, hub- és beágyazatlan-tag száma; a háló-pillanatkép akkor sem vész el,
+  ha éppen nincs hub vagy beágyazatlan találat.
+- A csapatszerep-lefedettség, a megszűnt/új szerephézagok, valamint az
+  önkép–peer szerepkép eltérése külön visszamérési réteget kapott.
+- A riport-pillanatkép anonimitási padló felett tárolja a személyen belüli
+  önkép–observer összhang aggregátumát. Kör-szűrt riportnál az observer-adat
+  is ugyanarra a kampányra szűrhető.
+- A HEXACO-delta a felületen már mérési kontroll, nem fejlődési mutató. Az
+  összetétel-változás a relációs/szerepeltéréseket is leíró kontextussá
+  fokozza vissza, és az oksági korlátot a felület kimondja.

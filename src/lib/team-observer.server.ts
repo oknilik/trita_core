@@ -25,8 +25,10 @@ import {
 export async function loadTeamFeedbackCulture(params: {
   orgId: string | null;
   members: Array<{ userId: string; scores: Record<string, number> | null }>;
+  /** Kör-riportnál csak ennek a kampánynak a külső értékelései számítsanak. */
+  campaignId?: string;
 }): Promise<TeamFeedbackCulture | null> {
-  const { orgId, members } = params;
+  const { orgId, members, campaignId } = params;
   if (!orgId || members.length === 0) return null;
 
   const userIds = members.map((m) => m.userId);
@@ -36,7 +38,7 @@ export async function loadTeamFeedbackCulture(params: {
         inviterId: { in: userIds },
         status: InvitationStatus.COMPLETED,
         // A kampány-kötés a hatókör-vörösvonal: privát kör nem kerülhet be.
-        campaign: { orgId },
+        campaign: { orgId, ...(campaignId ? { id: campaignId } : {}) },
       },
     },
     select: { scores: true, invitation: { select: { inviterId: true } } },

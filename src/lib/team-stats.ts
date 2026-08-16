@@ -354,6 +354,9 @@ export async function getTeamPageData(
                 select: { testType: true, scores: true },
               },
               teamRoleScores: {
+                where: options?.assessmentCampaignId
+                  ? { campaignId: options.assessmentCampaignId }
+                  : undefined,
                 orderBy: { createdAt: "desc" },
                 take: 1,
                 select: { scores: true, source: true },

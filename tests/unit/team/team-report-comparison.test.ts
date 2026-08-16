@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { compareTeamReports } from "../../../src/lib/team-report-comparison";
-import type { SerializedTeamReport } from "../../../src/lib/team-report";
+import type {
+  SerializedTeamReport,
+  TeamReportAggregates,
+} from "../../../src/lib/team-report";
 
 type Contributor = { key: string; dimensions: Record<string, number> };
 
@@ -16,6 +19,7 @@ function report(
     { key: "d", dimensions },
     { key: "e", dimensions },
   ],
+  layers: Partial<TeamReportAggregates> = {},
 ): SerializedTeamReport {
   return {
     id: String(completionPct), teamId: "team", status: "PUBLISHED", title: null,
@@ -25,6 +29,7 @@ function report(
       comparisonBasis: { version: 1, contributors },
       roleDistribution: null, roleGaps: null, evidence: null, dynamics: null,
       psychSafety: { index: safety, band: "mid", count: 5, spread: 0, itemMeans: {}, weakItemIds: [], campaignName: "Pulse", campaignStatus: "CLOSED", measuredAt: "2026-08-12" },
+      ...layers,
     },
     summary: null, strengths: null, risks: null, recommendations: null,
     interviewFindings: null, leadershipGuide: null, actionItems: null,
@@ -61,12 +66,18 @@ test("comparison computes round deltas and ranks dimension movement", () => {
 
 test("azonos riport önmagával összevetve nem ad mérési hibán túli változást", () => {
   const same = report(80, { H: 55, E: 48, X: 61, A: 52, C: 64, O: 70 }, 68);
+  same.aggregates!.psychSafety!.itemMeans = { PS1: 3.2 };
+  same.aggregates!.psychSafety!.weakItemIds = ["PS1"];
   const result = compareTeamReports(same, same);
 
   assert.equal(result.psychSafetyDelta, 0);
   assert.equal(result.psychSafetySignificant, false);
   assert.equal(result.dimensionChanges.filter((item) => item.significant).length, 0);
   assert.equal(result.stableCoreDimensionChanges.filter((item) => item.significant).length, 0);
+  assert.deepEqual(
+    result.psychSafetyItemChanges.map((item) => [item.delta, item.significant]),
+    [[0, false]],
+  );
 });
 
 test("nagy pszichológiai-biztonság elmozdulás átmegy a konzervatív prior-kapun", () => {
@@ -143,4 +154,142 @@ test("régi snapshot comparisonBasis nélkül is olvasható, de fail-closed", ()
   assert.equal(result.composition.status, "unknown");
   assert.equal(result.composition.reason, "missing_basis");
   assert.equal(result.stableCoreDimensionChanges.length, 0);
+});
+
+test("a változékony mért rétegeket külön összehasonlítja", () => {
+  const contributors = ["a", "b", "c", "d", "e"].map((key) => ({
+    key,
+    dimensions: { H: 50 },
+  }));
+  const previous = report(100, { H: 50 }, 55, contributors, {
+    psychSafety: {
+      index: 55,
+      band: "mid",
+      count: 10,
+      spread: 12,
+      itemMeans: { PS1: 2, PS2: 3.5 },
+      weakItemIds: ["PS1"],
+      campaignName: "Első pulse",
+      campaignStatus: "CLOSED",
+      measuredAt: "2026-06-01",
+    },
+    evidence: { quality: "sufficient", measuredEdgeCount: 4, estimatedEdgeCount: 0 },
+    trustHighlights: {
+      source: "trust_round",
+      measuredPairCount: 4,
+      possiblePairCount: 10,
+      coveragePct: 40,
+      hubs: ["Anna"],
+      isolated: ["Béla", "Csilla"],
+    },
+    roleDistribution: {
+      counts: {},
+      questionnaireCount: 2,
+      estimateCount: 3,
+    },
+    roleGaps: ["OG", "HA"],
+    peerRoles: {
+      ratedCount: 4,
+      memberCount: 5,
+      topRoleCounts: {},
+      mismatchCount: 3,
+      comparedCount: 4,
+    },
+    feedbackCulture: {
+      memberCount: 5,
+      coveredCount: 4,
+      alignedCount: 2,
+      gapCount: 2,
+    },
+  });
+  const current = report(100, { H: 50 }, 68, contributors, {
+    psychSafety: {
+      index: 68,
+      band: "mid",
+      count: 10,
+      spread: 10,
+      itemMeans: { PS1: 4, PS2: 3.8 },
+      weakItemIds: [],
+      campaignName: "Második pulse",
+      campaignStatus: "CLOSED",
+      measuredAt: "2026-08-01",
+    },
+    evidence: { quality: "sufficient", measuredEdgeCount: 7, estimatedEdgeCount: 0 },
+    trustHighlights: {
+      source: "trust_round",
+      measuredPairCount: 7,
+      possiblePairCount: 10,
+      coveragePct: 70,
+      hubs: ["Anna", "Dani"],
+      isolated: ["Csilla"],
+    },
+    roleDistribution: {
+      counts: {},
+      questionnaireCount: 4,
+      estimateCount: 1,
+    },
+    roleGaps: ["HA"],
+    peerRoles: {
+      ratedCount: 4,
+      memberCount: 5,
+      topRoleCounts: {},
+      mismatchCount: 1,
+      comparedCount: 4,
+    },
+    feedbackCulture: {
+      memberCount: 5,
+      coveredCount: 4,
+      alignedCount: 3,
+      gapCount: 1,
+    },
+  });
+
+  const result = compareTeamReports(current, previous);
+  assert.deepEqual(
+    result.psychSafetyItemChanges.map((item) => [
+      item.id,
+      item.delta,
+      item.significant,
+      item.weakness,
+    ]),
+    [
+      ["PS1", 2, true, "resolved"],
+      ["PS2", 0.3, false, "not_weak"],
+    ],
+  );
+  assert.deepEqual(result.trustNetwork, {
+    measuredPairs: { previous: 4, current: 7, delta: 3 },
+    coveragePct: { previous: 40, current: 70, delta: 30 },
+    hubCount: { previous: 1, current: 2, delta: 1 },
+    isolatedCount: { previous: 2, current: 1, delta: -1 },
+  });
+  assert.deepEqual(result.roleCoverage, {
+    coveredRoles: { previous: 7, current: 8, delta: 1 },
+    gapCount: { previous: 2, current: 1, delta: -1 },
+    questionnaireCount: { previous: 2, current: 4, delta: 2 },
+    resolvedGaps: ["OG"],
+    newGaps: [],
+  });
+  assert.deepEqual(result.externalPerspective, {
+    coveredCount: { previous: 4, current: 4, delta: 0 },
+    gapCount: { previous: 2, current: 1, delta: -1 },
+    gapSharePct: { previous: 50, current: 25, delta: -25 },
+  });
+  assert.deepEqual(result.peerRolePerspective, {
+    comparedCount: { previous: 4, current: 4, delta: 0 },
+    mismatchCount: { previous: 3, current: 1, delta: -2 },
+    mismatchSharePct: { previous: 75, current: 25, delta: -50 },
+  });
+});
+
+test("régi snapshot változékony rétegek nélkül is kompatibilis", () => {
+  const result = compareTeamReports(
+    report(100, { H: 50 }, 60),
+    report(100, { H: 50 }, 60),
+  );
+  assert.equal(result.trustNetwork, null);
+  assert.equal(result.roleCoverage, null);
+  assert.equal(result.externalPerspective, null);
+  assert.equal(result.peerRolePerspective, null);
+  assert.deepEqual(result.psychSafetyItemChanges, []);
 });
