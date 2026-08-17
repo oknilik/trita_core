@@ -1,14 +1,23 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
+import { track } from "@/lib/analytics/client";
 
 export function PilotContent() {
   const { locale } = useLocale();
   const [form, setForm] = useState({ name: "", email: "", company: "", size: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const formStarted = useRef(false);
+
+  // Űrlap első érintése — a pilot-tölcsér eddig mérétlen volt (P1.2).
+  const handleFormStart = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    track("form.start", { form_id: "pilot_apply" });
+  };
 
   const benefitGroups = [
     [
@@ -53,8 +62,10 @@ export function PilotContent() {
       });
 
       if (!res.ok) throw new Error("Failed");
+      track("form.submit", { form_id: "pilot_apply", outcome: "success" });
       setStatus("sent");
     } catch {
+      track("form.submit", { form_id: "pilot_apply", outcome: "error" });
       setStatus("error");
     }
   };
@@ -232,7 +243,7 @@ export function PilotContent() {
                   </span>
                 </div>
 
-                <form onSubmit={handleSubmit} className="grid gap-5">
+                <form onSubmit={handleSubmit} onFocus={handleFormStart} className="grid gap-5">
                   <div className="grid gap-5 md:grid-cols-2">
                     <FormField label={t("pilot.labelName", locale)} required>
                       <input

@@ -87,6 +87,7 @@ export function PricingContent() {
 
           <Link
             href="/contact"
+            onClick={() => track("cta.click", { cta_id: "pricing_team", surface: "pricing" })}
             className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
           >
             {t("pricing.teamCta", locale)}
@@ -109,6 +110,7 @@ export function PricingContent() {
           </p>
           <Link
             href="/pilot"
+            onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })}
             className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-surface-card px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
           >
             {t("pricing.pilotCta", locale)}

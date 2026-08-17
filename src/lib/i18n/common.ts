@@ -1,4 +1,32 @@
 export const commonTranslations = {
+  // ── Hibahatár-oldalak (error.tsx) közös szövegei ────────────────────────
+  // A nyers error.message SOHA nem kerül a felhasználó elé (technikai,
+  // angol, és belső részletet szivárogtathat) — helyette semleges szöveg +
+  // opcionális digest-hibakód a support-azonosításhoz.
+  errors: {
+    eyebrow: { hu: "hiba történt", en: "something went wrong" },
+    genericTitle: { hu: "Valami félrement", en: "Something went wrong" },
+    dashboardTitle: { hu: "Hiba a betöltés közben", en: "Error while loading" },
+    teamTitle: {
+      hu: "Nem sikerült betölteni a csapat adatait",
+      en: "Couldn't load the team data",
+    },
+    orgTitle: {
+      hu: "Nem sikerült betölteni a szervezet adatait",
+      en: "Couldn't load the organization data",
+    },
+    assessmentTitle: {
+      hu: "Hiba a teszt betöltésekor",
+      en: "Error loading the assessment",
+    },
+    body: {
+      hu: "Próbáld újra — ha a hiba megmarad, írj nekünk a Kapcsolat oldalról.",
+      en: "Try again — if the problem persists, reach us via the Contact page.",
+    },
+    retry: { hu: "Újrapróbálás", en: "Try again" },
+    errorCode: { hu: "Hibakód", en: "Error code" },
+  },
+
   meta: {
     title: {
       hu: "Trita - Személyiség- és csapatintelligencia",

@@ -9,6 +9,7 @@ import {
   advanceCampaignStepForUser,
   resolveActiveSelfAssessmentCampaign,
 } from "@/lib/campaign-steps";
+import { trackServerEvent } from "@/lib/analytics/server";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -147,6 +148,10 @@ export async function POST(req: Request) {
       campaignId: campaignStep.campaignId,
     }).catch(() => {});
   }
+
+  // A vendég-tölcsér záró konverziója — csak a FRISS claim számít
+  // (az alreadyClaimed ág idempotens ismétlés, nem konverzió).
+  trackServerEvent("assessment.guest_claim", {}, { userProfileId: profile.id });
 
   return NextResponse.json({ id: result.id });
 }

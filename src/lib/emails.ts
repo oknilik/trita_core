@@ -1319,6 +1319,84 @@ export async function sendOrgInviteEmail(params: {
   return true;
 }
 
+// ─── Consultant invite email ─────────────────────────────────────────────────
+// Az admin tanácsadó-meghívójához (ConsultantInvite). Két eset: a profil már
+// létezik (a hozzáférés azonnal aktív) vs. még nincs fiók (regisztrációra
+// hívunk — a meghívó email-egyezéssel aktiválódik). Korábban SEMMILYEN email
+// nem ment ki: az admin csak remélhette, hogy a meghívott magától regisztrál.
+
+const consultantInviteTranslations = {
+  hu: {
+    subject: "Tanácsadói hozzáférés a Tritán",
+    headingExisting: "Tanácsadói hozzáférést kaptál",
+    headingNew: "Meghívtak a Tritára tanácsadóként",
+    bodyExisting:
+      "A fiókodhoz tanácsadói hozzáférést kapcsoltunk a Trita platformon. Belépés után eléred a hozzád rendelt szervezetek tanácsadói felületeit.",
+    bodyNew:
+      "Tanácsadói hozzáférést kaptál a Trita platformon. Regisztrálj ezzel az email-címmel, és a hozzáférés automatikusan aktiválódik az első belépéskor.",
+    ctaExisting: "Belépés",
+    ctaNew: "Regisztráció",
+    footer: "Ha nem számítottál erre a meghívóra, hagyd figyelmen kívül ezt az emailt.",
+    thanks: "Üdvözlettel,",
+    team: "a Trita csapat",
+  },
+  en: {
+    subject: "Consultant access on Trita",
+    headingExisting: "You've been granted consultant access",
+    headingNew: "You've been invited to Trita as a consultant",
+    bodyExisting:
+      "Consultant access has been attached to your account on the Trita platform. After signing in, you can access the consultant surfaces of your assigned organizations.",
+    bodyNew:
+      "You've been granted consultant access on the Trita platform. Register with this email address and the access activates automatically on your first sign-in.",
+    ctaExisting: "Sign in",
+    ctaNew: "Register",
+    footer: "If you weren't expecting this invitation, simply ignore this email.",
+    thanks: "Best regards,",
+    team: "the Trita team",
+  },
+};
+
+export async function sendConsultantInviteEmail(params: {
+  to: string;
+  /** true = a profil már létezik, a hozzáférés azonnal aktív. */
+  hasAccount: boolean;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = params.locale ?? "hu";
+  const t = consultantInviteTranslations[locale];
+  const heading = params.hasAccount ? t.headingExisting : t.headingNew;
+  const body = params.hasAccount ? t.bodyExisting : t.bodyNew;
+  const cta = params.hasAccount ? t.ctaExisting : t.ctaNew;
+  const ctaLink = params.hasAccount ? `${APP_URL}/sign-in` : `${APP_URL}/sign-up`;
+
+  const html = buildEmailLayout({
+    locale,
+    heading,
+    preheader: body,
+    bodyContent: `
+    <p style="${EMAIL_P};margin-bottom:24px">${body}</p>
+    ${renderCtaButton({ href: ctaLink, label: cta })}`,
+    footerDisclaimer: t.footer,
+    thanks: t.thanks,
+    team: t.team,
+  });
+
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: t.subject,
+    html,
+    text: `${heading}\n\n${body}\n\n${cta}: ${ctaLink}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+  });
+
+  if (error) {
+    log.error({ event: "email.send_failed", template: "consultant_invite", to: params.to, err: error }, "Failed to send consultant invite");
+    return false;
+  }
+  log.info({ event: "email.sent", template: "consultant_invite", to: params.to }, "Consultant invite sent");
+  return true;
+}
+
 // ─── Measurement step email (lépés-nyitás / emlékeztető) ─────────────────────
 // A MEASUREMENT_STEP_OPENED in-app értesítés email-párja (variant: "opened"),
 // illetve a tanácsadói „Emlékeztető küldése" gomb emailje (variant:

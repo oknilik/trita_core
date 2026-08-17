@@ -142,7 +142,10 @@ export const landingTranslations = {
     statTeamMinLabel: { hu: "tagonkénti kitöltés", en: "per-member completion" },
     statTeamPictureValue: { hu: "néhány nap", en: "days" },
     statTeamPictureLabel: { hu: "a jóváhagyott csapatképig", en: "to a reviewed team picture" },
-    statTeamPatternLabel: { hu: "felismerhető csapatmintázat", en: "recognizable team patterns" },
+    // A korábbi „16 felismerhető csapatmintázat" stat kivezetve: a /patterns
+    // felület parkolt, és a playbook szerint a minta „értelmezési nyelv, nem
+    // validált csapattípus" — a stat a Scan v1 tényleges rétegeit mondja.
+    statTeamLayersLabel: { hu: "mérési réteg a Team Scan v1-ben", en: "measurement layers in Team Scan v1" },
     // CtaSection
     ctaSelfHeadlineBefore: { hu: "~10 perc, és megvan az első, használható ", en: "In ~10 minutes you get a first, actionable " },
     ctaSelfHeadlineEm: { hu: "karrierképed.", en: "career picture." },

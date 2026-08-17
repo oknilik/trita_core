@@ -123,6 +123,9 @@ export function AssessmentClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [evaluationProgress, setEvaluationProgress] = useState(0)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
+  // P1.5: a szerver-oldali draft-mentés hibája eddig néma volt (catch {}) —
+  // a user eszközváltásnál magyarázat nélkül veszítette el a haladást.
+  const [serverSaveFailed, setServerSaveFailed] = useState(false)
   const [autoAdvance, setAutoAdvance] = useState(true)
   const [milestoneOpen, setMilestoneOpen] = useState(false)
   // null = not yet determined (avoid flash), true = show intro, false = skip
@@ -357,7 +360,7 @@ export function AssessmentClient({
       const abortController = new AbortController()
       serverSaveAbortRef.current = abortController
       try {
-        await fetch('/api/assessment/draft', {
+        const res = await fetch('/api/assessment/draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -366,8 +369,24 @@ export function AssessmentClient({
           }),
           signal: abortController.signal,
         })
-      } catch {
-        // Silent fail
+        if (res.ok) {
+          setServerSaveFailed(false)
+        } else {
+          setServerSaveFailed(true)
+          log.warn(
+            { event: 'assessment.server_draft_save_failed', status: res.status },
+            'Server draft save returned non-OK',
+          )
+        }
+      } catch (err) {
+        // Az AbortError nem hiba: egy újabb mentés váltotta le ezt a kérést.
+        if ((err as Error | undefined)?.name !== 'AbortError') {
+          setServerSaveFailed(true)
+          log.warn(
+            { event: 'assessment.server_draft_save_failed', err },
+            'Server draft save failed',
+          )
+        }
       } finally {
         if (serverSaveAbortRef.current === abortController) {
           serverSaveAbortRef.current = null
@@ -851,6 +870,13 @@ export function AssessmentClient({
             </motion.div>
           </AnimatePresence>
         </div>
+
+        {/* P1.5: szerver-mentés-hiba jelzés — nem blokkol, csak tájékoztat */}
+        {serverSaveFailed && !guestMode && (
+          <p role="status" className="mt-4 text-xs text-state-warning-fg">
+            {t('assessment.saveErrorHint', locale)}
+          </p>
+        )}
 
         {/* Hint */}
         <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">

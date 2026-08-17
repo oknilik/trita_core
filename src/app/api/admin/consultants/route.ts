@@ -6,6 +6,10 @@ import {
   applyConsultantInviteIfAny,
   assignConsultantToOrg,
 } from "@/lib/consultant-invites";
+import { sendConsultantInviteEmail } from "@/lib/emails";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("admin-consultants");
 
 // ─────────────────────────────────────────────────────────────────────
 // Platform-szintű tanácsadó-kezelés (csak platform-admin).
@@ -120,14 +124,31 @@ export async function POST(req: NextRequest) {
     // Ha a profil már létezik, azonnal alkalmazzuk.
     const existing = await prisma.userProfile.findFirst({
       where: { email: { equals: email, mode: "insensitive" }, deleted: false },
-      select: { id: true },
+      select: { id: true, locale: true },
     });
     let appliedNow = false;
     if (existing) {
       appliedNow = await applyConsultantInviteIfAny(existing.id, email);
     }
 
-    return NextResponse.json({ ok: true, inviteId: invite.id, appliedNow });
+    // Értesítő email a meghívottnak — best effort (a meghívó-rekord már él;
+    // korábban semmilyen email nem ment, az admin csak remélhette, hogy a
+    // meghívott magától regisztrál).
+    let emailSent = false;
+    try {
+      emailSent = await sendConsultantInviteEmail({
+        to: email,
+        hasAccount: Boolean(existing),
+        locale: existing?.locale === "en" ? "en" : "hu",
+      });
+    } catch (error) {
+      log.error(
+        { event: "admin_consultants.invite_email_failed", err: error },
+        "Consultant invite email failed",
+      );
+    }
+
+    return NextResponse.json({ ok: true, inviteId: invite.id, appliedNow, emailSent });
   }
 
   if (data.action === "revoke_invite") {

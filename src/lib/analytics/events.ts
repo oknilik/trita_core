@@ -210,6 +210,16 @@ const serverEvents = {
     question: "P1 / A1",
   }),
 
+  "assessment.guest_claim": spec({
+    schema: z.object({}).strict(),
+    // A claim TÉNYE szerver-oldali igazság (a /api/assessment/claim-guest
+    // friss-claim sikerága írja) — a vendég-tölcsér záró konverziós lépése,
+    // e nélkül a /try → regisztráció út vakon futott.
+    origin: "server",
+    description: "Vendég-eredmény sikeres átemelése regisztrált profilba.",
+    question: "P1 / P3",
+  }),
+
   "inquiry.submit": spec({
     schema: z
       .object({

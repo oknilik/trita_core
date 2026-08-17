@@ -1,6 +1,11 @@
 export const assessmentTranslations = {
   assessment: {
     introEyebrow: { hu: "Személyiségfelmérés", en: "Personality assessment" },
+    // P1.5: a szerver-oldali draft-mentés hibája többé nem néma.
+    saveErrorHint: {
+      hu: "A mentés most nem jut el a szerverre — a haladásod ezen az eszközön biztonságban van, a következő válasznál automatikusan újrapróbáljuk.",
+      en: "Your progress isn't reaching the server right now — it's safe on this device, and we'll retry automatically with your next answer.",
+    },
     introHeadline1: { hu: "~{minutes} perc, és megkapod az első ", en: "~{minutes} minutes to your first " },
     introHeadlineEm: { hu: "karrierképedet.", en: "career profile." },
     introSub: { hu: "Minden kérdésnél az első benyomásodra hagyatkozz — ne gondolkozz sokat. Nincsenek jó vagy rossz válaszok.", en: "Go with your first instinct on each question — don't overthink it. There are no right or wrong answers." },

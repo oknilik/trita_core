@@ -201,7 +201,7 @@ export function ObserverClient({
       const d = latestDraftRef.current;
       if (d.phase === "done" || d.phase === "inactive") return;
       try {
-        await fetch("/api/observer/draft", {
+        const res = await fetch("/api/observer/draft", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -213,7 +213,20 @@ export function ObserverClient({
             currentPage: d.currentPage,
           }),
         });
-      } catch {}
+        if (!res.ok) {
+          // P1.5: a szerver-oldali draft-mentés hibája eddig teljesen néma
+          // volt — localStorage a fallback, de eszközváltásnál adatvesztés.
+          log.warn(
+            { event: "observer.server_draft_save_failed", status: res.status },
+            "Observer server draft save returned non-OK",
+          );
+        }
+      } catch (err) {
+        log.warn(
+          { event: "observer.server_draft_save_failed", err },
+          "Observer server draft save failed",
+        );
+      }
     }, 2000);
     return () => { if (serverSaveDebounce.current) clearTimeout(serverSaveDebounce.current); };
   }, [DRAFT_KEY, token, phase, relationshipType, knownDuration, answers, currentPage]);
