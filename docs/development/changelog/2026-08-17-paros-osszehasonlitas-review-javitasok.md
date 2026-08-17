@@ -228,7 +228,9 @@ előtt. A kártya állapotérzékeny:
 
 A két CTA a `/interaction?mode=real|type` paraméterrel a megfelelő chooser-
 utat nyitja meg. A riport aljáról a páros CTA kikerült, hogy a funkció ne
-duplikálódjon; ott csak a karrier-átvezető marad.
+duplikálódjon. A „További felfedezési irány" karrier fake door a pilotból
+szintén kikerült: a mögöttes modul megmarad, de az eredményoldal nem kínálja
+fel és nem méri ezt az ígéretet ebben a körben.
 
 Tesztek: `interaction-entry-card.test.tsx` mindhárom állapotot és a cél-URL-eket,
 az `interaction-comparison-chooser.test.tsx` pedig az URL által választott
