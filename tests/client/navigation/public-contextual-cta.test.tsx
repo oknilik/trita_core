@@ -43,6 +43,17 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
     expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
   });
 
+  it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {
+    render(<NavBar />);
+
+    expect(screen.getByRole("link", { name: "Blog" })).toHaveAttribute("href", "/blog");
+
+    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
+    const blogLinks = screen.getAllByRole("link", { name: "Blog" });
+    expect(blogLinks).toHaveLength(2);
+    expect(blogLinks.every((link) => link.getAttribute("href") === "/blog")).toBe(true);
+  });
+
   it("görgetés közben is teljes kapszulaként látható marad", () => {
     render(<NavBar />);
 

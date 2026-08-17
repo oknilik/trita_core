@@ -31,7 +31,6 @@ function productionRobots() {
 const PRIVATE_PREFIXES = [
   "/admin",
   "/api/",
-  "/blog",
   "/dashboard",
   "/hiring/",
   "/join/",
@@ -112,9 +111,10 @@ test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   for (const path of ["/try", "/pricing", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
-  for (const path of ["/patterns", "/blog"]) {
+  for (const path of ["/patterns"]) {
     assert.equal(body.includes(`${path})`), false, `parkolt lap kint maradt: ${path}`);
   }
+  assert.ok(body.includes("/blog)"), "az aktív bloglista hiányzik az llms.txt-ből");
   assert.ok(body.includes("hello@trita.io"));
 });
 
