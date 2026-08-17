@@ -3,7 +3,7 @@ import type { WebhookEvent } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendVerificationCodeEmail, sendMagicLinkEmail } from "@/lib/emails";
+import { sendVerificationCodeEmail, sendMagicLinkEmail, sendWelcomeEmail } from "@/lib/emails";
 import { clerkClient } from "@clerk/nextjs/server";
 import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journey/intent";
 import { getRequestLogger } from "@/lib/logger.server";
@@ -134,6 +134,22 @@ export async function POST(req: Request) {
             observerType: "INTERNAL",
           },
         });
+      }
+
+      // Welcome email — best effort, a hibája nem buktathatja a webhookot
+      // (Clerk nem-2xx-re újrapróbál, és a profil-szinkron a fontosabb).
+      // A locale a sign-up unsafeMetadata-jából jön (sign-up/page.tsx).
+      try {
+        const metadataLocale = user.unsafe_metadata?.locale;
+        await sendWelcomeEmail({
+          to: email,
+          locale: metadataLocale === "en" ? "en" : "hu",
+        });
+      } catch (error) {
+        log.error(
+          { event: "clerk_webhook.welcome_email_failed", err: error },
+          "Welcome email failed",
+        );
       }
     }
   }

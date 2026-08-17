@@ -63,6 +63,8 @@ export async function POST(
   if (campaign.status !== "ACTIVE") {
     return NextResponse.json({ error: "CAMPAIGN_NOT_ACTIVE" }, { status: 409 });
   }
-  const released = await releaseDueCampaignSteps({ campaignId, force: true });
+  // emailNotify: a „Küldés most" a tanácsadó explicit push-a a résztvevők
+  // felé — a user jelenléte nélkül nyit, ezért email-párral megy.
+  const released = await releaseDueCampaignSteps({ campaignId, force: true, emailNotify: true });
   return NextResponse.json({ ok: true, released });
 }

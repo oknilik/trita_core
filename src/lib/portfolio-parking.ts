@@ -37,12 +37,15 @@ interface ParkedRouteRule {
 const PARKED_ROUTE_RULES: readonly ParkedRouteRule[] = [
   {
     surface: "fakedoor",
+    // A /api/features/interest (és a 308-as /api/feature-interest örökség-út)
+    // NEM fake door: az eredmény-oldali „csapat érdekel" meleg-lead banner és
+    // a kívánságlista végpontja — élő felületek hívják (TeamInterestBanner),
+    // ezért nem parkolható a fakedoor kapuval. (Korábban itt szerepelt, és a
+    // zászlóshajó riport-oldal lead-gombja 404-et kapott.)
     prefixes: [
       "/admin/fakedoor",
       "/api/admin/fakedoor",
       "/api/career/fakedoor",
-      "/api/feature-interest",
-      "/api/features/interest",
     ],
   },
   {

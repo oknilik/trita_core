@@ -292,6 +292,23 @@ export const orgTranslations = {
   // ── Org detail page (/org/[id]) ──────────────────────────────────────────
   org: {
     eyebrow: { hu: "szervezet", en: "organization" },
+
+    // ── /org/suspended — inaktív szervezet zsákutca-oldala ───────────────
+    suspended: {
+      eyebrow: { hu: "inaktív", en: "inactive" },
+      title: { hu: "Szervezet inaktív", en: "Organization inactive" },
+      body1: {
+        hu: "A szervezet, amelyhez tartozol, jelenleg inaktív.",
+        en: "The organization you belong to is currently inactive.",
+      },
+      body2: {
+        hu: "Ha úgy gondolod, ez hiba, keresd a szervezet adminisztrátorát — vagy írj nekünk, és segítünk.",
+        en: "If you think this is a mistake, contact your organization's administrator — or write to us and we'll help.",
+      },
+      ctaResults: { hu: "Vissza az eredményeimhez", en: "Back to my results" },
+      ctaContact: { hu: "Kapcsolatfelvétel", en: "Contact us" },
+    },
+
     setupPending: { hu: "Beállítás folyamatban", en: "Setup pending" },
     settingsLink: { hu: "Beállítások", en: "Settings" },
     membersLabel: { hu: "Tagok", en: "Members" },
