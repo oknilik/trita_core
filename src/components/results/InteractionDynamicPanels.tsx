@@ -12,6 +12,13 @@ interface InteractionDynamicPanelsProps {
   friction: InteractionTextLine[];
   discuss: InteractionTextLine[];
   sparse: boolean;
+  /**
+   * Rövid magyarázat arra az esetre, ha a szimuláció EGYETLEN markáns pontot
+   * talált. Ilyenkor a kép rövid, és a felhasználó ezt joggal hiszi hibának
+   * („a karakter-út bővebb") — pedig mérési eredmény. Felületenként más a
+   * mondat, ezért kívülről jön.
+   */
+  thinNote?: string;
 }
 
 function LineList({ lines }: { lines: InteractionTextLine[] }) {
@@ -115,6 +122,7 @@ export function InteractionDynamicPanels({
   friction,
   discuss,
   sparse,
+  thinNote,
 }: InteractionDynamicPanelsProps) {
   const { locale } = useLocale();
 
@@ -153,6 +161,19 @@ export function InteractionDynamicPanels({
   const [openPanel, setOpenPanel] = useState<PanelId | null>(
     () => panels[0]?.id ?? null,
   );
+
+  // A progresszív feltárás a HOSSZ kezelésére van. Egyetlen blokknál nincs
+  // mit fokozatosan feltárni: a sorszám („1"), a chevron és az összecsukás
+  // ott már csak apparátus, ami kevesebbnek MUTATJA a tartalmat, mint
+  // amennyi. Ilyenkor a blokk nyitva, cím szerint, keret nélkül áll.
+  const useAccordion = panels.length >= 2;
+
+  // Egy atom = a motor egyetlen markáns pontot talált. Nem hiba, de a
+  // felhasználónak meg kell mondani, különben a rövid kép hibának látszik.
+  const atomCount = new Set(
+    [...easy, ...friction, ...discuss].map((line) => line.atomId),
+  ).size;
+  const isThin = atomCount <= 1;
 
   if (sparse) {
     return (
@@ -225,9 +246,15 @@ export function InteractionDynamicPanels({
         </section>
       ) : null}
 
+      {isThin && thinNote ? (
+        <p className="max-w-prose text-caption leading-relaxed text-[var(--color-text-muted)]">
+          {thinNote}
+        </p>
+      ) : null}
+
       {/* Progresszív feltárás: egyszerre csak az olvasott rész viszi el a
           képernyő magasságát. */}
-      {panels.length > 0 ? (
+      {useAccordion ? (
         <section className="relative">
           <span
             aria-hidden="true"
@@ -246,7 +273,16 @@ export function InteractionDynamicPanels({
             ))}
           </div>
         </section>
-      ) : null}
+      ) : (
+        panels.map((panel) => (
+          <section key={panel.id}>
+            <h2 className="mb-3 font-fraunces text-heading text-[var(--color-text-primary)]">
+              {panel.title}
+            </h2>
+            <LineList lines={panel.lines} />
+          </section>
+        ))
+      )}
     </div>
   );
 }

@@ -135,6 +135,45 @@ ott maradjon, ahol tartozik, a motor bemenetében:
 Amit **nem** tettünk: a prototípus négy semleges dimenzióját nem töltjük fel.
 Az kitalált állítás lenne, és szemben megy a „becsült vs mért" alapelvvel.
 
+## 8. A rövid valódi kép nem látszik hibának — és a chooser már nem ígér többet
+
+Bejelentés: a valódi páros nézet kevesebbet ad, mint a karakter-út. Mérve
+**igaz, és rendszerszintű** — de nem hiba, és nem is fordítva van, mint ahogy a
+7. pont chooser-szövege sugallta.
+
+A prototípus pontszámai `86` / `74`, a pólus-küszöb `65` / `35`
+(`PROFILE_HIGH_THRESHOLD`), vagyis a karakter **maximálisan pólusos**. Egy
+valódi ember jellemzően 55–70 között tetőzik, tehát gyakran csak 1–2 dimenziója
+lépi át a küszöböt. 30 archetípus vs. 200 valósághű partner egy profilra:
+
+| | átlag atom | ≤1 atom |
+|---|---|---|
+| Karakter-út | **2,53** | 2/30 |
+| Valódi út | **1,93** | **61/200 (30%)** |
+
+Tehát a valódi pároknál minden harmadik eset „rövid". Ehhez két dolgot kellett
+javítani:
+
+- **A progresszív feltárás csak ott fut, ahol van mit feltárni.** Egyetlen atom
+  esetén a „Közös kép" elviszi az easy és friction első sorát, és csak a
+  „Mit beszéljetek meg előre" marad — egy sorszámozott, összecsukható,
+  egyelemű accordion. Az apparátus (a „1", a chevron, a csukott állapot)
+  kevesebbnek MUTATJA a tartalmat, mint amennyi. Két blokk alatt ezért a
+  blokk nyitva, cím szerint, accordion nélkül áll.
+- **Kimondjuk, ha a pár egyetlen markáns ponton tér el**
+  (`comparePairThinNote`). A `sparse` jelzés a 0 atomos esetet fedte; az
+  1 atomosra eddig nem volt szó, és pont az látszik hibának.
+
+A 7. pont chooser-szövegét vissza kell vonni: sem a „pontosabb közös kép", sem
+a helyére írt „mind a hat dimenzió számít" nem volt igaz ígéret — **mindkettő
+több tartalmat sugallt a valódi úton**, miközben mérve a karakter-út a bővebb.
+A kártyák most azt mondják meg, MI az adott út, nem azt, melyik ad többet:
+„a ti tényleges dinamikátok" vs. „elméleti karakter · gyors próba".
+
+Amit itt sem tettünk: a pólus-küszöböt nem lazítottuk. Attól több atom lenne,
+de a középsáv szándékosan néma — kiegyensúlyozott dimenzióról nem állítunk
+dinamikát (`interaction-engine.ts:37-39`).
+
 ## Ami tudatosan maradt
 
 - Az `EditorialBackHeader` ikon-only vissza gombja `ProfileTabs`-ben és

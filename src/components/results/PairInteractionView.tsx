@@ -165,6 +165,7 @@ export function PairInteractionView({
         friction={sim.friction}
         discuss={sim.discuss}
         sparse={sim.sparse}
+        thinNote={t("results.comparePairThinNote", locale)}
       />
 
       <div className="flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">

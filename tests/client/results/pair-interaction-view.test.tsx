@@ -14,36 +14,44 @@ vi.mock("@/components/type/TypeGlyph", () => ({
   ),
 }));
 
+// A motor egy ATOMBÓL állítja elő az easy/friction/discuss sorokat, MIND
+// ugyanazzal az atomId-vel. A fixture ezt követi: három atom (a1–a3), amiből
+// a1 mindhárom blokkot adja, a2 csak easy+discuss, a3 csak friction+discuss.
 const sim: PairSimulationView = {
   easy: [
     {
-      atomId: "easy-1",
+      atomId: "a1",
       dimLabels: ["Nyitottság", "Extraverzió"],
       text: "Gyorsan megértitek egymás szándékát.",
     },
     {
-      atomId: "easy-2",
+      atomId: "a2",
       dimLabels: ["Barátságosság"],
       text: "Konfliktusban is megmaradtok tárgyilagosnak.",
     },
   ],
   friction: [
     {
-      atomId: "friction-1",
+      atomId: "a1",
       dimLabels: ["Lelkiismeretesség"],
       text: "Más ritmusban hozhatjátok meg a döntéseket.",
     },
     {
-      atomId: "friction-2",
+      atomId: "a3",
       dimLabels: ["Emocionalitás"],
       text: "A visszajelzés élességét máshol húzzátok meg.",
     },
   ],
   discuss: [
     {
-      atomId: "discuss-1",
+      atomId: "a1",
       dimLabels: ["Együttműködés"],
       text: "Egyezzetek meg a döntési tempóban.",
+    },
+    {
+      atomId: "a2",
+      dimLabels: ["Barátságosság"],
+      text: "Beszéljétek meg, mikor kell élesebb visszajelzés.",
     },
   ],
   leaderNotesSelf: [
@@ -75,6 +83,14 @@ const other = {
   secondaryCode: "E",
   intensity: 3,
   label: "Empatikus hídépítő",
+};
+
+/** Egyetlen markáns pont: mindhárom sor ugyanabból az atomból jön. */
+const singleAtomSim: PairSimulationView = {
+  ...sim,
+  easy: [sim.easy[0]],
+  friction: [sim.friction[0]],
+  discuss: [sim.discuss[0]],
 };
 
 function renderView(simulation: PairSimulationView = sim) {
@@ -125,25 +141,46 @@ describe("PairInteractionView", () => {
     ).toBeInTheDocument();
   });
 
-  it("elhagyja azt a panelt, aminek a közös képen túl nincs több mondata", () => {
-    renderView({
-      ...sim,
-      easy: [sim.easy[0]],
-      friction: [sim.friction[0]],
-    });
+  it("egyetlen markáns pontnál nem accordiont épít, hanem nyitott blokkot", () => {
+    // Egy atom: a közös kép elviszi az easy/friction első sorát, és csak a
+    // „mit beszéljetek meg" marad. Sorszámozott, összecsukható panel ilyenkor
+    // csak apparátus — kevesebbnek MUTATJA a tartalmat, mint amennyi.
+    renderView(singleAtomSim);
 
+    expect(screen.queryByRole("button", { name: /Ami magától megy/ })).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: /Ami magától megy/ }),
+      screen.queryByRole("button", { name: /Mit beszéljetek meg előre/ }),
     ).not.toBeInTheDocument();
+
+    // A tartalom viszont ott van, címmel és nyitva.
     expect(
-      screen.queryByRole("button", { name: /Ahol súrlódás várható/ }),
+      screen.getByRole("heading", { name: "Mit beszéljetek meg előre" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText("Egyezzetek meg a döntési tempóban."),
+    ).toBeInTheDocument();
+  });
+
+  it("kimondja, ha a pár egyetlen markáns ponton tér el", () => {
+    renderView(singleAtomSim);
+
+    // A karakter-prototípus maximálisan pólusos, egy valódi ember nem —
+    // enélkül a rövid kép hibának látszik a karakter-úthoz képest.
+    expect(
+      screen.getByText(/egyetlen markáns ponton tér el/),
+    ).toBeInTheDocument();
+  });
+
+  it("két markáns pont felett viszont accordiont épít, sorszámmal", () => {
+    renderView();
+
+    const easy = screen.getByRole("button", { name: /Ami magától megy/ });
+    expect(easy).toHaveTextContent("1");
+    expect(easy).toHaveAttribute("aria-expanded", "true");
+    // Rövid képre szánt magyarázat itt nem jelenik meg.
+    expect(
+      screen.queryByText(/egyetlen markáns ponton tér el/),
     ).not.toBeInTheDocument();
-    // A megmaradt blokk 1-es sorszámmal indul — nincs lyuk a számozásban.
-    const discuss = screen.getByRole("button", {
-      name: /Mit beszéljetek meg előre/,
-    });
-    expect(discuss).toHaveTextContent("1");
-    expect(discuss).toHaveAttribute("aria-expanded", "true");
   });
 
   it("egyszerre egy részletes blokkot nyitva tart, a többit összecsukja", async () => {

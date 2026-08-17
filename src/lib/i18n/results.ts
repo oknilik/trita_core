@@ -800,22 +800,24 @@ export const resultsTranslations = {
       hu: "A két lehetőség eltérő pontosságú — ezért előbb az utat választod ki, és csak utána a konkrét profilt.",
       en: "The two paths offer different levels of precision — choose the path first, then the specific profile.",
     },
-    // A „pontosabb" félrevezetett: azt sugallta, hogy ugyanaz a tartalom, csak
-    // élesebben. A valóság: a karakter CSAK a két legerősebb dimenzióról állít
-    // valamit, egy valódi profil viszont annyiról, amennyi nála pólusos —
-    // vagyis a valódi út TÖBBET mond, nem ugyanazt élesebben.
+    // Se a „pontosabb", se a „mind a hat dimenzió számít" nem volt igaz
+    // ígéret: mindkettő TÖBB tartalmat sugallt a valódi úton. Mérve fordítva
+    // van — a karakter-prototípus maximálisan pólusos (86/74 a 65/35-ös
+    // küszöbnél), egy valódi ember 55–70 között tetőzik, így a karakter-út
+    // átlagosan 2,53 atomot ad, a valódi 1,93-at. A kártyák ezért azt mondják
+    // meg, MI az adott út, nem azt, melyik ad többet.
     compareChooserRealTitle: { hu: "Valódi személlyel", en: "With a real person" },
     compareChooserRealBody: {
-      hu: "Két kitöltött profil · mind a hat dimenzió számít",
-      en: "Two completed profiles · all six dimensions count",
+      hu: "Két kitöltött profil · a ti tényleges dinamikátok",
+      en: "Two completed profiles · your actual dynamic",
     },
     compareChooserTypeTitle: {
       hu: "Karakterrel kipróbálom",
       en: "Try it with a character",
     },
     compareChooserTypeBody: {
-      hu: "Két dimenzióra épülő szimuláció · meghívás nélkül",
-      en: "A simulation built on two dimensions · no invitation needed",
+      hu: "Elméleti karakter · gyors próba meghívás nélkül",
+      en: "A hypothetical character · a quick try, no invitation",
     },
     compareConnectionsTitle: {
       hu: "Válassz a kapcsolataid közül",
@@ -965,6 +967,13 @@ export const resultsTranslations = {
     compareRelationSelfLeads: {
       hu: "Én vezetem vagy mentorálom őt",
       en: "I lead or mentor them",
+    },
+    // Egyetlen markáns pont esetén (a valódi pároknál ez ~30%) a kép rövid.
+    // Ki kell mondani, különben hibának látszik a karakter-úthoz képest —
+    // a karakter-prototípus ugyanis maximálisan pólusos, egy valódi ember nem.
+    comparePairThinNote: {
+      hu: "Kettőtök profilja egyetlen markáns ponton tér el, ezért ez a kép rövid. Egy karakter-szimuláció hosszabb lehet — de a karakter kihegyezett, elméleti eset; ez itt rólatok szól.",
+      en: "Your profiles differ on a single pronounced point, so this picture is short. A character simulation can run longer — but a character is a sharpened, hypothetical case; this one is about the two of you.",
     },
     comparePairSourceNote: {
       hu: "Két valódi, megosztott önértékelés összevetése — pontosabb, mint a típus-becslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetés-indítónak készült.",
