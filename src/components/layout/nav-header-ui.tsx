@@ -210,8 +210,6 @@ function NavHeaderContent({
 
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
   const [mobileMenu, setMobileMenu] = useState<MobileMenuState>("closed");
-  const [headerMinimized, setHeaderMinimized] = useState(false);
-  const headerLastScrollY = useRef(0);
   const [resolvedUsername, setResolvedUsername] = useState<string | null>(user.username ?? null);
   const [resolvedEmail, setResolvedEmail] = useState<string | null>(user.email ?? null);
   const [identityReady, setIdentityReady] = useState<boolean>(() => Boolean(user.username || user.email));
@@ -410,41 +408,6 @@ function NavHeaderContent({
     return () => window.removeEventListener("profile-updated", handler);
   }, [refreshIdentity]);
 
-  // Ugyanaz az irányérzékeny halkítás, mint a publikus fejlécen: lefelé
-  // csak a desktop kapszula / mobil hamburger marad, felfelé visszaáll a
-  // teljes fejléc. A fókusz-mód saját, minimál fejlécét nem érinti.
-  useEffect(() => {
-    if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) return;
-
-    headerLastScrollY.current = window.scrollY;
-    let animationFrame: number | null = null;
-
-    const handleScroll = () => {
-      if (animationFrame !== null) return;
-      animationFrame = window.requestAnimationFrame(() => {
-        const nextScrollY = window.scrollY;
-        const delta = nextScrollY - headerLastScrollY.current;
-
-        if (nextScrollY <= 32) {
-          setHeaderMinimized(false);
-        } else if (delta > 6) {
-          setHeaderMinimized(true);
-        } else if (delta < -6) {
-          setHeaderMinimized(false);
-        }
-
-        headerLastScrollY.current = nextScrollY;
-        animationFrame = null;
-      });
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
-    };
-  }, [pathname]);
-
   // Fókusz-mód a kitöltő felületeken: a teljes navigáció zavaró lenne,
   // de vissza-út mindig kell (design-akciólista #3) — minimál fejléc:
   // logó + „Vissza a vezérlőre" link.
@@ -527,13 +490,6 @@ function NavHeaderContent({
         return item.matchPrefixes.some(matchesPrefix);
     }
   }
-
-  const isWorkspaceHeaderCompact =
-    headerMinimized &&
-    mobileMenu === "closed" &&
-    openDropdown !== "user" &&
-    openDropdown !== "notifications";
-
 
   // FONTOS: ez NEM komponens, hanem JSX-változó.
   //
@@ -718,35 +674,23 @@ function NavHeaderContent({
 
       <header
         data-testid="workspace-nav-header"
-        data-compact={isWorkspaceHeaderCompact ? "true" : "false"}
-        className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 motion-reduce:transition-none ${
-          isWorkspaceHeaderCompact
-            ? "pointer-events-none border-b border-transparent bg-transparent shadow-none"
-            : "border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_4px_rgba(0,0,0,0.05)] backdrop-blur-[14px]"
-        }`}
+        data-compact="false"
+        className="sticky top-0 z-40 bg-transparent"
       >
         <div
-          className={`mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center px-4 transition-[height] duration-200 motion-reduce:transition-none sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8 ${
-            isWorkspaceHeaderCompact ? "h-14" : "h-14 lg:h-[68px]"
-          }`}
+          className="mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1280px] grid-cols-[1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5"
         >
           <Link
             href={homeHref}
             aria-label="trita"
-            className={`justify-self-start text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
-              isWorkspaceHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
-            }`}
+            className="pointer-events-auto justify-self-start text-[var(--color-text-primary)]"
           >
             <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
 
           <nav
             aria-label={t("nav.menu", locale)}
-            className={`pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 transition-shadow duration-200 motion-reduce:transition-none lg:flex lg:justify-self-center ${
-              isWorkspaceHeaderCompact
-                ? "shadow-[0_10px_28px_rgba(26,26,46,0.13)]"
-                : "shadow-[0_1px_2px_rgba(26,26,46,0.04)]"
-            }`}
+            className="pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
           >
             {navItems.map((item, index) => {
               const isActive = isNavItemActive(item);
@@ -820,9 +764,7 @@ function NavHeaderContent({
             })}
           </nav>
 
-          <div className={`hidden items-center gap-2 transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:flex lg:justify-self-end ${
-            isWorkspaceHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
-          }`}>
+          <div className="pointer-events-auto hidden items-center gap-2 lg:flex lg:justify-self-end">
             <div className="relative">
               <NotificationBell
                 isOpen={openDropdown === "notifications"}
@@ -883,11 +825,7 @@ function NavHeaderContent({
                 ensureOrgMemberships();
                 setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"));
               }}
-              className={`pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-[var(--color-text-primary)] transition-[background-color,box-shadow] duration-200 hover:bg-[var(--color-border-default)] motion-reduce:transition-none ${
-                isWorkspaceHeaderCompact
-                  ? "bg-[var(--color-surface-card)] shadow-[0_8px_24px_rgba(26,26,46,0.14)]"
-                  : "bg-[var(--color-surface-subtle)] shadow-none"
-              }`}
+              className="pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-border-default)]"
             >
               {mobileMenu !== "closed" ? (
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
