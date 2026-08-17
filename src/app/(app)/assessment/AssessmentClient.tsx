@@ -727,11 +727,21 @@ export function AssessmentClient({
         homeHref={assessmentHomeHref}
         center={(
           <div className="flex w-full items-center gap-2.5 lg:gap-3">
-            <div className="flex shrink-0 items-baseline gap-1">
+            <div className="hidden shrink-0 items-baseline gap-1 sm:flex">
               <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
               <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
             </div>
-            <div className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
+            <div
+              role="progressbar"
+              aria-label={tf('assessment.progressLabel', locale, {
+                done: questionIndex + 1,
+                total: totalQuestions,
+              })}
+              aria-valuemin={1}
+              aria-valuemax={totalQuestions}
+              aria-valuenow={questionIndex + 1}
+              className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]"
+            >
               {/* Answered reach — light sage: up to last answered question position */}
               {(() => {
                 let lastAnsweredIdx = -1;
@@ -751,23 +761,28 @@ export function AssessmentClient({
                 style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
               />
             </div>
-            <span className="shrink-0 whitespace-nowrap text-[10px] text-[var(--color-text-muted)] sm:text-[11px]">
+            <span className="hidden shrink-0 whitespace-nowrap text-[11px] text-[var(--color-text-muted)] sm:inline">
               {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
             </span>
           </div>
         )}
       >
           <div className="flex items-center gap-2 sm:gap-3">
-            {/* A kitöltés közben is elérhető: aki világosban indult és
-                zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
-            <ThemeToggle variant="compact" />
-            <a
-              href={guestMode ? "/" : "/profile/results"}
-              className="whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3"
-            >
-              <span className="sm:hidden">{locale === 'hu' ? 'Később' : 'Later'}</span>
-              <span className="hidden sm:inline">{t('assessment.continueLater', locale)}</span>
-            </a>
+            <div className="flex shrink-0 items-baseline gap-1 sm:hidden">
+              <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+            </div>
+            {/* A fókuszált mobilfejléc csak a logót és az előrehaladást
+                tartja meg; a másodlagos műveletek asztalon érhetők el. */}
+            <div className="hidden items-center gap-2 sm:flex sm:gap-3">
+              <ThemeToggle variant="compact" />
+              <a
+                href={guestMode ? "/" : "/profile/results"}
+                className="whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3"
+              >
+                {t('assessment.continueLater', locale)}
+              </a>
+            </div>
           </div>
       </AssessmentFocusHeader>
 
@@ -864,12 +879,12 @@ export function AssessmentClient({
       </div>
 
       {/* ═══ FLOATING CONTROL DOCK ═══ */}
-      <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
+      <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-2 items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:grid-cols-[1fr_auto_1fr] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-[11px] transition-all sm:px-4 sm:text-caption md:px-5 ${
+          className={`col-start-1 row-start-1 min-h-[48px] w-full justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -878,7 +893,7 @@ export function AssessmentClient({
           ← {t('assessment.prevCta', locale)}
         </button>
 
-        <label className="flex min-h-[44px] min-w-0 cursor-pointer items-center justify-center gap-1.5">
+        <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
@@ -892,10 +907,7 @@ export function AssessmentClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          <span className="whitespace-nowrap text-[10px] text-[var(--color-text-muted)] sm:hidden">
-            {locale === 'hu' ? 'Automatikus' : 'Auto'}
-          </span>
-          <span className="hidden whitespace-nowrap text-[11px] text-[var(--color-text-muted)] sm:inline">
+          <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
             {t('assessment.autoAdvance', locale)}
           </span>
         </label>
@@ -907,7 +919,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleNextStep()}
             disabled={!canProceed}
-            className={`min-h-[44px] justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-[11px] font-semibold transition-all sm:px-4 sm:text-caption md:px-6 ${
+            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${
               canProceed
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -920,7 +932,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleFinish()}
             disabled={isSubmitting}
-            className={`min-h-[44px] justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-[11px] font-semibold transition-all sm:px-4 sm:text-caption md:px-6 ${
+            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${
               !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

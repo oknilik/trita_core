@@ -12,12 +12,13 @@ import {
   type HelpEntry,
   type HelpTopic,
 } from "@/lib/help/topics";
+import { isFocusRoute } from "@/lib/navigation/focus-routes";
 
 // Vezetett (gombos) segítő — statikus tudásbázisból válaszol, LLM nélkül.
 // Tartalma: src/lib/help/topics.ts. Landing + belépett felület egyaránt
 // használja; a közönséget (audience) a root layout adja át szerep alapján.
 
-const HIDDEN_PREFIXES = ["/observe", "/pilot", "/assessment", "/onboarding"];
+const HIDDEN_NON_FOCUS_PREFIXES = ["/pilot"];
 
 export function HelpWidget({ audience }: { audience: HelpAudience }) {
   const pathname = usePathname();
@@ -41,7 +42,12 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open]);
 
-  if (HIDDEN_PREFIXES.some((prefix) => pathname?.startsWith(prefix))) {
+  if (
+    isFocusRoute(pathname) ||
+    HIDDEN_NON_FOCUS_PREFIXES.some(
+      (prefix) => pathname === prefix || pathname?.startsWith(`${prefix}/`),
+    )
+  ) {
     return null;
   }
 
