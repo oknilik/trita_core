@@ -274,7 +274,14 @@ const appEvents = {
   }),
 
   "results.export": spec({
-    schema: z.object({ format: z.enum(["pdf", "image", "link"]) }).strict(),
+    schema: z
+      .object({
+        format: z.enum(["pdf", "image", "link"]),
+        // Melyik riport-felület exportál: hiányában az egyéni eredmény-oldal
+        // (történeti default), "team_report" = publikált csapatriport (P1.1).
+        surface: tag(32).optional(),
+      })
+      .strict(),
     origin: "client",
     description: "Riport exportálása vagy megosztása.",
     question: "A6",

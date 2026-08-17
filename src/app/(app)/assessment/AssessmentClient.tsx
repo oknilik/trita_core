@@ -679,7 +679,9 @@ export function AssessmentClient({
               </p>
               <div className="mb-6 max-w-[520px] rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-4 py-3.5 lg:px-5 lg:py-4">
                 <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)] lg:text-sm">
-                  {t("assessment.introInfo", locale)}
+                  {/* P1.6: vendégnek nem ígérünk szerver-mentést — a draft
+                      csak ebben a böngészőben él (localStorage). */}
+                  {t(guestMode ? "assessment.introInfoGuest" : "assessment.introInfo", locale)}
                 </p>
               </div>
               <button

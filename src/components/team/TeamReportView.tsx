@@ -14,6 +14,7 @@ import {
   localizeTeamReport,
 } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { TeamReportPdfButton } from "@/components/team/TeamReportPdfButton";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
@@ -411,8 +412,13 @@ export function TeamReportView({
                 {isHu ? "Vázlat-előnézet" : "Draft preview"}
               </span>
             ) : (
-              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
-                {isHu ? "Publikált" : "Published"}
+              <span className="flex flex-wrap items-center gap-2">
+                {/* P1.1: nyomtatható riport a vezetői debriefhez — csak
+                    publikált állapotban, a lokalizált riport-objektumból. */}
+                <TeamReportPdfButton report={report} isHu={isHu} />
+                <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
+                  {isHu ? "Publikált" : "Published"}
+                </span>
               </span>
             )}
           </div>

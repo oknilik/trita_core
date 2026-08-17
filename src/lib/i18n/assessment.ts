@@ -10,6 +10,12 @@ export const assessmentTranslations = {
     introHeadlineEm: { hu: "karrierképedet.", en: "career profile." },
     introSub: { hu: "Minden kérdésnél az első benyomásodra hagyatkozz — ne gondolkozz sokat. Nincsenek jó vagy rossz válaszok.", en: "Go with your first instinct on each question — don't overthink it. There are no right or wrong answers." },
     introInfo: { hu: "Bármikor félbeszakíthatod — mentjük a haladásodat, és később ott folytathatod, ahol abbahagytad.", en: "You can pause anytime — we'll save your progress so you can continue where you left off." },
+    // P1.6: a vendég-draft KIZÁRÓLAG ebben a böngészőben él — ezt nem
+    // hallgatjuk el, mert inkognitó/sütitörlés/eszközváltás = elveszett 60 item.
+    introInfoGuest: {
+      hu: "Bármikor félbeszakíthatod — a haladásod ebben a böngészőben mentődik, itt folytathatod. Másik eszközön vagy a böngészési adatok törlése után nem lesz elérhető; regisztráció után az eredményed a fiókodba kerül.",
+      en: "You can pause anytime — your progress is saved in this browser, and you can continue here. It won't be available on another device or after clearing browsing data; once you register, your result is stored in your account.",
+    },
     introMeta: { hu: "{count} kérdés · ~{minutes} perc · azonnali eredmény", en: "{count} questions · ~{minutes} minutes · instant results" },
     introStep1: { hu: "Kitöltés", en: "Assessment" },
     introStep1Sub: { hu: "{count} kérdés, az első benyomásod alapján", en: "{count} questions, based on your first instinct" },
