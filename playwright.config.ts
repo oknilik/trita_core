@@ -4,7 +4,8 @@ import { defineConfig, devices } from "@playwright/test";
 // kimarad — CI-runneren előfordult, hogy a chromium a "localhost"-ra
 // ERR_NAME_NOT_RESOLVED-et adott, miközben a Node-oldali health-check
 // ugyanoda gond nélkül elért.
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4100";
+const serverPort = process.env.PLAYWRIGHT_PORT ?? "4100";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${serverPort}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -24,10 +25,12 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "TRITA_E2E_AUTH_BYPASS=1 pnpm exec next dev -p 4100",
+    command: `TRITA_E2E_AUTH_BYPASS=1 pnpm exec next dev -p ${serverPort}`,
     url: baseURL,
     timeout: 120_000,
-    reuseExistingServer: true,
+    // A pilot gate soha nem használhat újra egy esetleg dev-DB-vel futó
+    // helyi szervert: saját porton, saját processzként indul.
+    reuseExistingServer: process.env.TRITA_PILOT_GATE !== "1",
   },
   projects: [
     {
