@@ -61,6 +61,21 @@ export const commonTranslations = {
     dropdownProfile: { hu: "Profilom", en: "My profile" },
     dropdownSignOut: { hu: "Kijelentkezés", en: "Sign out" },
   },
+  pageState: {
+    loading: { hu: "Az oldal betöltése folyamatban", en: "Loading page" },
+    errorEyebrow: { hu: "Átmeneti hiba", en: "Temporary issue" },
+    errorTitle: {
+      hu: "Ezt most nem sikerült betölteni",
+      en: "We couldn't load this right now",
+    },
+    errorBody: {
+      hu: "Az adataid megmaradtak. Próbáld újra, vagy térj vissza a vezérlőhöz.",
+      en: "Your data is safe. Try again, or return to the dashboard.",
+    },
+    retry: { hu: "Újrapróbálás", en: "Try again" },
+    dashboard: { hu: "Vezérlő", en: "Dashboard" },
+    reference: { hu: "Hivatkozási azonosító", en: "Reference ID" },
+  },
   footer: {
     tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },
     colProduct: { hu: "Termék", en: "Product" },

@@ -25,6 +25,9 @@ import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { sentObserverInviteWhere } from "@/lib/observer/invite-policy";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { CheckIcon } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -258,20 +261,18 @@ export default async function MyMeasurementsPage() {
         )}
 
         {cards.length === 0 && feedbackRequests.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
-            <h2 className="font-fraunces text-xl text-ink">
-              {t("myTasks.noneTitle", loc)}
-            </h2>
-            <p className="mt-2 text-sm text-ink-body">
-              {t("myTasks.noneBody", loc)}
-            </p>
-            <Link
-              href="/dashboard"
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-            >
-              {t("myTasks.backToDashboard", loc)}
-            </Link>
-          </div>
+          <EmptyState
+            variant="action"
+            className="mt-8"
+            icon={<CheckIcon className="size-5" />}
+            title={t("myTasks.noneTitle", loc)}
+            description={t("myTasks.noneBody", loc)}
+            cta={(
+              <Link href="/dashboard" className={getButtonClassName({ size: "sm" })}>
+                {t("myTasks.backToDashboard", loc)}
+              </Link>
+            )}
+          />
         ) : (
           <div className="mt-8 flex flex-col gap-5">
             {cards.map((card) => {

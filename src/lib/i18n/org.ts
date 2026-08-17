@@ -1960,6 +1960,11 @@ export const orgTranslations = {
       hu: "Még nincs csapatod. Hozz létre egyet fentebb!",
       en: "No teams yet. Create one above!",
     },
+    noTeamsTitle: { hu: "Még nincs csapatod", en: "You don't have a team yet" },
+    noTeamsMember: {
+      hu: "Még nem kerültél csapatba. A szervezeti menedzser tud hozzáadni egyhez.",
+      en: "You haven't been added to a team yet. An organization manager can add you.",
+    },
     memberTag: { hu: "tag", en: "member" },
     membersTag: { hu: "tag", en: "members" },
     createdPrefix: { hu: "Létrehozva: ", en: "Created " },

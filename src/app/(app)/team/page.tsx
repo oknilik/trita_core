@@ -16,6 +16,8 @@ import { hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { PlusIcon } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -124,14 +126,17 @@ export default async function TeamListPage() {
           </div>
 
           {teams.length === 0 && (
-            <Card
-              spacing="lg"
-              className="border-dashed p-10 text-center"
-            >
-              <p className="text-sm text-muted">
-                {t("team.noTeams", locale)}
-              </p>
-            </Card>
+            <EmptyState
+              variant="action"
+              icon={<PlusIcon className="size-5" />}
+              title={t("team.noTeamsTitle", locale)}
+              description={t(canCreateTeam ? "team.noTeams" : "team.noTeamsMember", locale)}
+              cta={canCreateTeam ? (
+                <Link href="#create-team" className={getButtonClassName({ size: "sm" })}>
+                  {t("team.createNew", locale)}
+                </Link>
+              ) : undefined}
+            />
           )}
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
