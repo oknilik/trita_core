@@ -18,7 +18,7 @@ export function TrustBar({ mode }: { mode: SiteMode }) {
   ];
 
   return (
-    <div className="border-y border-[var(--color-border-default)]">
+    <div className="mx-auto w-[calc(100%-1.5rem)] max-w-[1180px] border-y border-[var(--color-border-default)]">
       <div className="mx-auto flex max-w-[1120px] flex-wrap items-center justify-center gap-8 px-7 py-5">
         {items.map((item) => (
           <div key={item.text} className="flex items-center gap-2">
