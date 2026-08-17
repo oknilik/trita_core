@@ -20,7 +20,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "./mobile-menu";
 import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
-import { NotificationsProvider } from "./NotificationsProvider";
+import { NotificationsProvider, useNotifications } from "./NotificationsProvider";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -201,6 +201,7 @@ function NavHeaderContent({
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
   const { locale } = useLocale();
+  const { count: notificationCount, ensureList: ensureNotificationList } = useNotifications();
 
   type DropdownKey = WorkspaceNavItem["id"] | "user" | "notifications" | null;
   // Egy menüszint (UX-audit #26): a korábbi quickview→expanded kétlépcső
@@ -527,8 +528,6 @@ function NavHeaderContent({
     }
   }
 
-  const currentNavLabel =
-    navItems.find((item) => isNavItemActive(item))?.label ?? homeLabel;
   const isWorkspaceHeaderCompact =
     headerMinimized &&
     mobileMenu === "closed" &&
@@ -727,7 +726,7 @@ function NavHeaderContent({
         }`}
       >
         <div
-          className={`mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 transition-[height] duration-200 motion-reduce:transition-none sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8 ${
+          className={`mx-auto grid max-w-7xl grid-cols-[1fr_auto] items-center px-4 transition-[height] duration-200 motion-reduce:transition-none sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8 ${
             isWorkspaceHeaderCompact ? "h-14" : "h-14 lg:h-[68px]"
           }`}
         >
@@ -740,12 +739,6 @@ function NavHeaderContent({
           >
             <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
-
-          <span className={`truncate px-3 text-center text-[11px] font-semibold text-[var(--color-text-muted)] transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:hidden ${
-            isWorkspaceHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
-          }`}>
-            {currentNavLabel}
-          </span>
 
           <nav
             aria-label={t("nav.menu", locale)}
@@ -877,18 +870,10 @@ function NavHeaderContent({
             </div>
           </div>
 
-          <div className="pointer-events-auto flex items-center gap-1 justify-self-end lg:hidden">
-            <div className={`relative transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
-              isWorkspaceHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
-            }`}>
-              <NotificationBell
-                isOpen={openDropdown === "notifications"}
-                onToggle={() => toggle("notifications")}
-              />
-              {openDropdown === "notifications" && (
-                <NotificationPanel onClose={() => setOpenDropdown(null)} />
-              )}
-            </div>
+          <div className="pointer-events-auto flex justify-self-end lg:hidden">
+            {openDropdown === "notifications" && (
+              <NotificationPanel onClose={() => setOpenDropdown(null)} />
+            )}
             <button
               type="button"
               aria-label={t("nav.menu", locale)}
@@ -967,6 +952,35 @@ function NavHeaderContent({
                     </div>
                   )}
                 </div>
+
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  onClick={() => {
+                    ensureNotificationList();
+                    setMobileMenu("closed");
+                    setOpenDropdown("notifications");
+                  }}
+                  className="group mx-4 mt-3 flex w-[calc(100%-2rem)] items-center gap-3.5 rounded-xl px-3.5 py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
+                >
+                  <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
+                    <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M10 2a5 5 0 0 0-5 5v3l-1.5 2.5h13L15 10V7a5 5 0 0 0-5-5Z" />
+                      <path d="M8 16a2 2 0 0 0 4 0" />
+                    </svg>
+                    {notificationCount > 0 ? (
+                      <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--color-bronze-dark)] px-1 text-micro font-bold leading-none text-[var(--color-text-on-accent-deep)]">
+                        {notificationCount > 99 ? "99+" : notificationCount}
+                      </span>
+                    ) : null}
+                  </span>
+                  <span className="min-w-0 flex-1 text-[15px] font-medium text-[var(--color-text-primary)]">
+                    {t("notifications.bellLabel", locale)}
+                  </span>
+                  <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                    <path d="M4 2l4 4-4 4" />
+                  </svg>
+                </button>
 
                 {/* Link-típusú nav-elem (pl. Jelöltek, Szervezet, egy-csapatos
                     Csapatom) KATTINTHATÓ sorként renderel — a dropdown-elem
