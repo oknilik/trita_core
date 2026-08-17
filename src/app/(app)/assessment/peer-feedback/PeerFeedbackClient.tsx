@@ -276,9 +276,9 @@ export function PeerFeedbackClient({
       )}
 
       {/* ── Sticky haladásjelző ── */}
-      {/* A shell fókusz-fejléce is sticky (h-12 = 48px) az /assessment*
-          útvonalakon — a jelző ez alá tapad, hogy ne csússzon takarásba. */}
-      <div className="sticky top-12 z-10 -mx-4 mt-5 border-b border-sand/70 bg-cream/95 px-4 py-2.5 backdrop-blur-sm">
+      {/* A shell lebegő fókusz-fejléce sticky az /assessment* útvonalakon;
+          a jelző a kapszula alatt áll meg, hogy ne csússzon takarásba. */}
+      <div className="sticky top-16 z-10 -mx-4 mt-5 border-b border-sand/70 bg-cream/95 px-4 py-2.5 backdrop-blur-sm lg:top-20">
         <div className="flex items-center justify-between gap-3">
           <p className="text-xs font-semibold text-ink" aria-live="polite">
             {tf("peerFb.stepLabel", locale, {

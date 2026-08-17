@@ -4,12 +4,11 @@ import { estimateAssessmentMinutes } from "@/lib/questions/types";
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { TritaWordmark } from "@/components/TritaLogo";
+import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -93,13 +92,15 @@ export function AssessmentClient({
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
-  // Bejelentkezve az app-shell fókusz-fejléce (sticky, h-12 = 48px) már
+  // Bejelentkezve az app-shell lebegő fókusz-fejléce már
   // renderel a kitöltő fölött. Ilyenkor NEM ismételjük meg a logót, és a
   // teljes-magasság számításából levonjuk a fejlécet — különben két
   // trita-sáv eszi a mobil viewportot, és a lábléc a fold alá csúszik.
   const { isSignedIn } = useAuthState()
   const hasShellHeader = isSignedIn
-  const shellMinHeight = hasShellHeader ? "min-h-[calc(100dvh-3rem)]" : "min-h-dvh"
+  const shellMinHeight = hasShellHeader
+    ? "min-h-[calc(100dvh-4rem)] lg:min-h-[calc(100dvh-5rem)]"
+    : "min-h-dvh"
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
   // A kulcs a scope-pal együtt épül (ahogy az írás/olvasás is): belépett
@@ -639,22 +640,19 @@ export function AssessmentClient({
       { name: t("landing.selfDim3", locale), val: 34 },
     ]
     return (
-      <div className={`${shellMinHeight} bg-[var(--color-surface-canvas)]`}>
+      <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
         {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
         {!hasShellHeader && (
-          <nav className="flex items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-            <Link href="/" className="text-[var(--color-text-primary)]">
-              <TritaWordmark className="text-2xl" />
-            </Link>
+          <AssessmentFocusHeader>
             {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
                 ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
             <ThemeToggle variant="compact" />
-          </nav>
+          </AssessmentFocusHeader>
         )}
 
         {/* Two-column hero */}
-        <div className="mx-auto max-w-4xl px-5 lg:px-10">
-          <div className="grid grid-cols-1 items-start gap-8 py-10 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:py-14">
+        <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 lg:px-10 2xl:max-w-6xl">
+          <div className="grid w-full grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14 lg:py-14 2xl:gap-20">
 
             {/* Left column */}
             <div>
@@ -664,22 +662,22 @@ export function AssessmentClient({
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
-              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[var(--color-text-primary)] lg:text-[28px]">
+              <h1 className="mb-4 max-w-[620px] font-fraunces text-[28px] leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-[34px] 2xl:text-[40px]">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
-              <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mb-6 max-w-[480px] text-sm leading-relaxed text-[var(--color-text-muted)] lg:text-base">
                 {t("assessment.introSub", locale)}
               </p>
-              <div className="mb-5 rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-3.5 py-3">
-                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)]">
+              <div className="mb-6 max-w-[520px] rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-4 py-3.5 lg:px-5 lg:py-4">
+                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)] lg:text-sm">
                   {t("assessment.introInfo", locale)}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[12px] bg-[var(--color-action-primary-bg)] px-9 py-4 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto lg:text-base"
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -691,20 +689,20 @@ export function AssessmentClient({
             {/* Right column */}
             <div className="flex flex-col gap-2.5">
               {steps.map((s) => (
-                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-surface-card p-3 px-3.5">
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${s.style}`}>
+                <div key={s.num} className="flex items-start gap-3 rounded-[12px] border border-[var(--color-border-default)] bg-surface-card px-4 py-3.5 lg:px-5 lg:py-4">
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium lg:h-9 lg:w-9 lg:text-sm ${s.style}`}>
                     {s.num}
                   </div>
                   <div>
-                    <p className="text-caption font-semibold text-[var(--color-text-primary)]">{s.title}</p>
-                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{s.sub}</p>
+                    <p className="text-caption font-semibold text-[var(--color-text-primary)] lg:text-sm">{s.title}</p>
+                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)] lg:text-xs">{s.sub}</p>
                   </div>
                 </div>
               ))}
               {/* Dekoratív miniatűr eredmény-teaser — a törpe, halvány szöveg
                   szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
                   ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
-              <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5">
+              <div aria-hidden className="mt-1 rounded-[12px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5 lg:px-5 lg:py-4">
                 {/* eslint-disable-next-line no-restricted-syntax */}
                 <p className="text-[6px] uppercase tracking-widest text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
@@ -729,7 +727,7 @@ export function AssessmentClient({
             </div>
 
           </div>
-        </div>
+        </main>
       </div>
     )
   }
@@ -738,34 +736,42 @@ export function AssessmentClient({
     <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
       {/* ═══ MINIMAL NAV ═══ — a logó csak akkor, ha a shell fejléce nem
           renderel fölötte (különben két azonos márkasáv ülne egymáson). */}
-      <nav
-        className={`flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--color-surface-header)]/95 px-4 backdrop-blur-[12px] sm:px-10 lg:px-16 ${
-          hasShellHeader ? "justify-end py-1.5" : "justify-between py-3"
-        }`}
-      >
-        {!hasShellHeader && (
-          <Link href="/" className="text-[var(--color-text-primary)]">
-            <TritaWordmark className="text-2xl" />
-          </Link>
-        )}
-        <div className="flex items-center gap-3">
-          {/* A kitöltés közben is elérhető: aki világosban indult és
-              zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
-          <ThemeToggle variant="compact" />
-          {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
-          <span className="text-micro text-[var(--color-action-primary-bg)]">
-            ✓ {guestMode
-              ? t('assessment.savedStateGuest', locale)
-              : isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
-          </span>
-          <a
-            href={guestMode ? "/" : "/profile/results"}
-            className="rounded-md border border-[var(--color-border-default)] bg-surface-card px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
-          >
-            {t('assessment.continueLater', locale)}
-          </a>
+      {!hasShellHeader ? (
+        <AssessmentFocusHeader>
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* A kitöltés közben is elérhető: aki világosban indult és
+                zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
+            <ThemeToggle variant="compact" />
+            {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
+            <span className="hidden whitespace-nowrap text-micro text-[var(--color-action-primary-bg)] sm:inline">
+              ✓ {guestMode
+                ? t('assessment.savedStateGuest', locale)
+                : isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
+            </span>
+            <a
+              href={guestMode ? "/" : "/profile/results"}
+              className="whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3"
+            >
+              {t('assessment.continueLater', locale)}
+            </a>
+          </div>
+        </AssessmentFocusHeader>
+      ) : (
+        <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1180px] shrink-0 justify-end px-2 py-2">
+          <div className="flex items-center gap-3">
+            <ThemeToggle variant="compact" />
+            <span className="text-micro text-[var(--color-action-primary-bg)]">
+              ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
+            </span>
+            <a
+              href="/profile/results"
+              className="rounded-md border border-[var(--color-border-default)] bg-surface-card px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
+            >
+              {t('assessment.continueLater', locale)}
+            </a>
+          </div>
         </div>
-      </nav>
+      )}
 
       {/* ═══ PROGRESS BAR — single row ═══ */}
       <div className="flex shrink-0 items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-2.5 md:gap-4 md:px-7">

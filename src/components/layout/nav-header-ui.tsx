@@ -8,6 +8,7 @@ import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { TritaWordmark } from "@/components/TritaLogo";
+import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
 import {
   buildWorkspaceNavigation,
   resolveWorkspaceNavRole,
@@ -412,26 +413,15 @@ function NavHeaderContent({
   // logó + „Vissza a vezérlőre" link.
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
     return (
-      <header className="sticky top-0 z-40 bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
-        <div className="mx-auto w-[calc(100%-1.5rem)] max-w-[1280px] border-b border-[var(--color-border-soft)]">
-          <div className="mx-auto flex h-12 max-w-6xl items-center justify-between px-5 lg:px-8">
-            <Link
-              href={homeHref}
-              aria-label="trita"
-              className="text-[var(--color-text-primary)]"
-            >
-              <TritaWordmark className="text-lg" />
-            </Link>
-            <Link
-              href={homeHref}
-              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]"
-            >
-              <span aria-hidden="true">←</span>
-              {t("nav.backToHome", locale)}
-            </Link>
-          </div>
-        </div>
-      </header>
+      <AssessmentFocusHeader homeHref={homeHref}>
+        <Link
+          href={homeHref}
+          className="inline-flex min-h-10 items-center gap-1.5 rounded-[11px] px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+        >
+          <span aria-hidden="true">←</span>
+          <span className="hidden sm:inline">{t("nav.backToHome", locale)}</span>
+        </Link>
+      </AssessmentFocusHeader>
     );
   }
 
