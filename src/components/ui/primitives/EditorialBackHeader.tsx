@@ -35,7 +35,7 @@ function BackArrow() {
 }
 
 const backControlClassName =
-  "mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-highlight-warm)] text-[var(--color-text-primary)] transition-transform hover:-translate-x-0.5 hover:text-[var(--color-accent-primary-strong)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2";
+  "mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-surface-card text-[var(--color-accent-primary-strong)] shadow-[var(--ui-shadow-sm)] transition-all hover:-translate-x-0.5 hover:border-[var(--color-accent-primary)] hover:bg-[var(--color-surface-highlight-warm)] hover:shadow-[var(--ui-shadow-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2";
 
 /**
  * Oldalszintű visszanavigáció, a célkontextust és az aktuális címet egyetlen
