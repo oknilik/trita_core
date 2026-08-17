@@ -27,6 +27,7 @@ import { HowYouWorkSection } from "@/components/results/HowYouWorkSection";
 import { IdealEnvironmentSection } from "@/components/results/IdealEnvironmentSection";
 import { RoleFitSection } from "@/components/results/RoleFitSection";
 import { t, tf } from "@/lib/i18n";
+import { buildSignInPath } from "@/lib/navigation/auth-redirects";
 
 export const dynamic = "force-dynamic";
 
@@ -113,7 +114,7 @@ export default async function SharedProfilePage({
             <Link href="/try" className={getButtonClassName({ variant: "primary" })}>
               {t("content.shareExpiredCtaTry", locale)}
             </Link>
-            <Link href="/sign-in" className={getButtonClassName({ variant: "secondary" })}>
+            <Link href={buildSignInPath(`/share/${token}`)} className={getButtonClassName({ variant: "secondary" })}>
               {t("content.shareExpiredCtaSignIn", locale)}
             </Link>
           </div>

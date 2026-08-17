@@ -59,8 +59,10 @@ test.describe("Mobil pilot minőségkapu", () => {
   });
 
   test("az auth belépő mobilon olvasható, címkézett és a viewporton belül marad", async ({ page }) => {
-    await page.goto("/sign-in?redirect_url=%2Fdashboard");
-    await expect(page).toHaveURL(/\/sign-in/);
+    await page.goto("/tasks?filter=open");
+    await expect(page).toHaveURL(
+      /\/sign-in\?redirect_url=%2Ftasks%3Ffilter%3Dopen/,
+    );
     await expect(page.getByRole("heading", { level: 1 })).toContainText(/folytasd|continue/i);
     await expect(page.getByLabel(/e-mail|email/i)).toBeVisible();
     await expectTouchTarget(page.getByRole("link", { name: "trita" }));

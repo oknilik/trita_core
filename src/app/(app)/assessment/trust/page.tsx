@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -9,6 +8,7 @@ import type { Locale } from "@/lib/i18n";
 import { getCampaignTeamIds, isStepOpenFor } from "@/lib/campaign-steps-core";
 import { releaseDueCampaignSteps, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
 import { TrustPeersClient } from "./TrustPeersClient";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -22,13 +22,13 @@ export async function generateMetadata(): Promise<Metadata> {
 // ld. src/lib/trust-network.ts fejkomment. Minta: team-roles/peers.
 export default async function TrustPeersPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
   await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});

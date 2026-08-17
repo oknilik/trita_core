@@ -1,5 +1,5 @@
 import { auth } from "@clerk/nextjs/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { prisma } from "@/lib/prisma";
@@ -16,6 +16,7 @@ import {
 } from "@/lib/fakedoor/career";
 import { readFakeDoorSession } from "@/lib/fakedoor/session";
 import type { CareerBackground } from "@/lib/industry-fit";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { getTestConfig } from "@/lib/questions";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import {
@@ -70,7 +71,7 @@ export default async function CareerPage({
     auth(),
     searchParams,
   ]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -78,7 +79,7 @@ export default async function CareerPage({
     where: { clerkId: userId },
     select: { id: true, email: true, careerBackground: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   if (await isCareerModuleHidden(profile.id)) notFound();
 

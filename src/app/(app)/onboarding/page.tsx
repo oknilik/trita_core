@@ -11,6 +11,7 @@ import { resolveJourney } from "@/lib/journey/engine";
 import { resolveStaffDestination } from "@/lib/journey/guardrails.server";
 import { OrgOnboardingWizard } from "./OrgOnboardingWizard";
 import { OnboardingClient } from "./OnboardingClient";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -63,7 +64,7 @@ export default async function OnboardingPage({
   searchParams: Promise<{ intent?: string; source?: string }>;
 }) {
   const [{ userId }, user] = await Promise.all([getServerAuth(), currentUser()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const params = await searchParams;
   const queryIntent = params?.intent;

@@ -15,6 +15,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TeamListPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 

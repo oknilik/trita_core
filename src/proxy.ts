@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { parkedPortfolioSurfaceForPath } from "@/lib/portfolio-parking";
+import { buildSignInPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 
 function nextWithPathname(req: NextRequest) {
   // Request-korreláció: minden kérés kap egy x-request-id-t (a bejövőt
@@ -15,6 +16,7 @@ function nextWithPathname(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   requestHeaders.set("x-request-id", requestId);
   requestHeaders.set("x-pathname", req.nextUrl.pathname);
+  requestHeaders.set("x-request-target", `${req.nextUrl.pathname}${req.nextUrl.search}`);
   const res = NextResponse.next({ request: { headers: requestHeaders } });
   res.headers.set("x-request-id", requestId);
   res.headers.set("x-pathname", req.nextUrl.pathname);
@@ -31,6 +33,11 @@ const isProtectedRoute = createRouteMatcher([
   "/admin(.*)",
   "/team(.*)",
   "/onboarding(.*)",
+  "/advisory(.*)",
+  "/career(.*)",
+  "/email-preferences(.*)",
+  "/interaction(.*)",
+  "/tasks(.*)",
 ]);
 
 // Public pages (no auth required)
@@ -88,7 +95,8 @@ const handler = clerkMiddleware(async (auth, req) => {
   if (isAuthRoute(req)) {
     const { userId } = await auth();
     if (userId || e2eBypass) {
-      return NextResponse.redirect(new URL(JOURNEY_HOME_HANDOFF_PATH, req.url));
+      const returnTo = sanitizeInternalRedirect(req.nextUrl.searchParams.get("redirect_url"));
+      return NextResponse.redirect(new URL(returnTo ?? JOURNEY_HOME_HANDOFF_PATH, req.url));
     }
     return nextWithPathname(req);
   }
@@ -111,10 +119,11 @@ const handler = clerkMiddleware(async (auth, req) => {
     if (e2eBypass) {
       return nextWithPathname(req);
     }
-    const homeUrl = new URL("/", req.url).toString();
+    const requestedPath = `${req.nextUrl.pathname}${req.nextUrl.search}`;
+    const signInUrl = new URL(buildSignInPath(requestedPath), req.url).toString();
     await auth.protect({
-      unauthenticatedUrl: homeUrl,
-      unauthorizedUrl: homeUrl,
+      unauthenticatedUrl: signInUrl,
+      unauthorizedUrl: signInUrl,
     });
   }
 

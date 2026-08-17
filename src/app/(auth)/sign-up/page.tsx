@@ -13,6 +13,7 @@ import AuthPageShell from "@/components/auth/AuthPageShell";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { createClientLogger } from "@/lib/client-logger";
+import { buildSignInPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 
 const log = createClientLogger("auth");
 
@@ -62,7 +63,7 @@ function SignUpContent() {
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
   const redirectUrl = searchParams.get("redirect_url");
-  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
+  const safeRedirectUrl = sanitizeInternalRedirect(redirectUrl);
   const { locale } = useLocale();
   // Consulting-led módban nincs intent-választó: minden regisztráció a
   // személyes (explore) úton indul, csapat/org kizárólag meghívóval vagy
@@ -372,7 +373,7 @@ function SignUpContent() {
                   observeToken
                     ? `/sign-in?observeToken=${observeToken}`
                     : safeRedirectUrl
-                    ? `/sign-in?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
+                    ? buildSignInPath(safeRedirectUrl)
                     : "/sign-in"
                 }
                 className="rounded-sm font-semibold text-[var(--color-action-primary-bg)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)]"

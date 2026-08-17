@@ -14,6 +14,7 @@ import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 import { createClientLogger } from "@/lib/client-logger";
+import { buildSignInPath } from "@/lib/navigation/auth-redirects";
 
 const log = createClientLogger("profile");
 
@@ -157,7 +158,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!sessionEligible) { router.push("/sign-in"); return null; }
+  if (!sessionEligible) { router.push(buildSignInPath("/profile")); return null; }
 
   const initials = getAvatarMonogram(
     username.trim() || email,

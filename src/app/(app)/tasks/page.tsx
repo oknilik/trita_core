@@ -1,11 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import {
   CAMPAIGN_STEP_LABELS,
   getCampaignStepLink,
@@ -37,14 +37,14 @@ export async function generateMetadata(): Promise<Metadata> {
 // (pl. „2/5 értékelés kész") és vissza-linkkel a kitöltő-felületre.
 export default async function MyMeasurementsPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
   const loc = locale as Locale;
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
   await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});

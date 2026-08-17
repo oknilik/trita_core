@@ -12,6 +12,7 @@ import AuthPageShell from "@/components/auth/AuthPageShell";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { createClientLogger } from "@/lib/client-logger";
+import { buildSignUpPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 
 const log = createClientLogger("auth");
 
@@ -62,7 +63,7 @@ function SignInContent() {
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
   const redirectUrl = searchParams.get("redirect_url");
-  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
+  const safeRedirectUrl = sanitizeInternalRedirect(redirectUrl);
   const { locale } = useLocale();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -337,7 +338,7 @@ function SignInContent() {
             observeToken
               ? `/sign-up?observeToken=${observeToken}`
               : safeRedirectUrl
-                ? `/sign-up?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
+                ? buildSignUpPath(safeRedirectUrl)
                 : "/sign-up"
           }
           className="rounded-sm font-semibold text-[var(--color-action-primary-bg)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)]"

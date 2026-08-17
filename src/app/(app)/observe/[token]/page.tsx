@@ -14,6 +14,7 @@ import {
   observerDraftCookieName,
 } from "@/lib/observer/draft-cookie";
 import { ObserverClient } from "./ObserverClient";
+import { buildSignInPath } from "@/lib/navigation/auth-redirects";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -166,7 +167,7 @@ export default async function ObservePage({ params }: ObservePageProps) {
   const isInternalInvite = Boolean(invitation.observerProfileId);
   if (isInternalInvite) {
     if (!viewerClerkId) {
-      redirect(`/sign-in?redirect_url=${encodeURIComponent(`/observe/${token}`)}`);
+      redirect(buildSignInPath(`/observe/${token}`));
     }
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return (
