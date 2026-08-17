@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NavBar } from "@/components/NavBar";
 import { setSiteMode } from "@/components/landing/site-mode";
@@ -43,7 +43,7 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
     expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
   });
 
-  it("lefelé görgetve minimalizál, felfelé görgetve visszaáll", async () => {
+  it("görgetés közben is teljes kapszulaként látható marad", () => {
     render(<NavBar />);
 
     const header = screen.getByTestId("public-nav-header");
@@ -51,15 +51,8 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
 
     window.scrollY = 120;
     fireEvent.scroll(window);
-    await waitFor(() => expect(header).toHaveAttribute("data-compact", "true"));
-
-    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
     expect(header).toHaveAttribute("data-compact", "false");
-
-    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
-
-    window.scrollY = 80;
-    fireEvent.scroll(window);
-    await waitFor(() => expect(header).toHaveAttribute("data-compact", "false"));
+    expect(screen.getByRole("link", { name: "trita" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Menü" })).toBeVisible();
   });
 });
