@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/public";
 
-export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" }) {
+export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" | "footer" }) {
   const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
 
@@ -17,6 +17,33 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [open]);
+
+  if (variant === "footer") {
+    return (
+      <div className="flex items-center gap-2 text-[11px] text-[var(--color-text-on-inverse-muted)]">
+        <span className="mr-1 text-micro uppercase tracking-[0.14em] opacity-70">
+          {t("locale.label", locale)}
+        </span>
+        {SUPPORTED_LOCALES.map((loc, index) => (
+          <div key={loc} className="contents">
+            {index > 0 ? <span aria-hidden="true" className="opacity-40">·</span> : null}
+            <button
+              type="button"
+              aria-pressed={loc === locale}
+              onClick={() => setLocale(loc as Locale)}
+              className={`rounded px-1 py-1 transition-colors hover:text-[var(--color-text-on-inverse)] ${
+                loc === locale
+                  ? "font-semibold text-[var(--color-text-on-inverse)]"
+                  : "text-[var(--color-text-on-inverse-muted)]"
+              }`}
+            >
+              {t(`locale.${loc}` as const, locale)}
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (variant === "pills") {
     return (

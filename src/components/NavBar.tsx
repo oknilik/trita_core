@@ -6,7 +6,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
@@ -194,15 +193,17 @@ export function NavBar({
     : hasDraft
       ? t("landing.selfCtaContinueShort", locale)
       : t("nav.ctaSelf", locale);
+  const publicCtaText = publicCtaLabel.replace(/\s*→\s*$/, "");
   const isPublicHeaderCompact = !isSignedIn && headerMinimized && !drawerOpen;
 
   // A megosztott profil nem marketing-belépőoldal, hanem egy személyes
   // artefaktum. Itt a teljes navigáció elvinné a figyelmet a tartalomról;
-  // csak a márka, a nyelv és az egyetlen releváns sajátprofil-CTA marad.
+  // csak a márka és az egyetlen releváns sajátprofil-CTA marad. A nyelv a
+  // footerben érhető el: az angol támogatás szándékosan csendes.
   if (currentPath.startsWith("/share/")) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-3 px-4 md:px-5">
+      <header className="sticky top-0 z-40 bg-transparent">
+        <div className="mx-auto mt-2 flex h-14 w-[calc(100%-1.5rem)] max-w-4xl items-center justify-between gap-3 rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-4 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] md:mt-3 md:px-5">
           <Link
             href="/"
             aria-label="trita"
@@ -210,13 +211,13 @@ export function NavBar({
           >
             <TritaWordmark className="text-lg" />
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
+          <div className="flex items-center">
             <Link
               href="/try"
-              className="rounded-lg bg-[var(--color-bronze-dark)] px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] sm:px-4"
+              className="inline-flex min-h-10 items-center gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-4 pr-1 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06]"
             >
-              {t("nav.ctaSharedOwnProfile", locale)}
+              <span>{t("nav.ctaSharedOwnProfile", locale)}</span>
+              <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
             </Link>
           </div>
         </div>
@@ -284,15 +285,17 @@ export function NavBar({
       <header
         data-testid="public-nav-header"
         data-compact={isPublicHeaderCompact ? "true" : "false"}
-        className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 motion-reduce:transition-none ${
+        className={`sticky top-0 z-40 bg-transparent transition-[height] duration-200 motion-reduce:transition-none ${
           isPublicHeaderCompact
-            ? "pointer-events-none border-b border-transparent bg-transparent shadow-none"
-            : "border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_4px_rgba(0,0,0,0.05)] backdrop-blur-[14px]"
+            ? "pointer-events-none"
+            : ""
         }`}
       >
         <div
-          className={`mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 transition-[height] duration-200 motion-reduce:transition-none sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8 ${
-            isPublicHeaderCompact ? "h-14" : "h-14 lg:h-[68px]"
+          className={`mx-auto grid grid-cols-[auto_1fr_auto] items-center transition-[height,margin,width,background-color,border-color,box-shadow,padding] duration-200 motion-reduce:transition-none lg:grid-cols-[1fr_auto_1fr] ${
+            isPublicHeaderCompact
+              ? "h-14 max-w-7xl px-4 sm:px-5 lg:px-8"
+              : "mt-2 h-14 w-[calc(100%-1.5rem)] max-w-[1180px] rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:rounded-[22px] lg:px-5"
           }`}
         >
 
@@ -334,45 +337,34 @@ export function NavBar({
           <div className="pointer-events-auto flex items-center gap-2 justify-self-end">
             {!isSignedIn && (
               <>
-                {/* Sign in — desktop only */}
-                {/* Másodlagos gomb a bronz CTA mellé. A korábbi „fehér kártya
-                    homok kerettel" gyakorlatilag láthatatlan volt: a
-                    kártya-felület a fejlécsávon 1,05:1, a homok keret 1,24:1
-                    — a gomb beleolvadt a sávba. Zsálya kontúr (5,8:1) + mély
-                    zsálya felirat (11,3:1): egyértelműen gomb, és a kitöltött
-                    bronz elsődlegessel világos párt alkot. */}
+                {/* Csendes másodlagos belépő: nincs még egy teljes gombtest a
+                    fő CTA mellett, csak egy finom körjel és szöveg. */}
                 <Link
                   href="/sign-in"
-                  className={`hidden min-h-10 items-center rounded-[11px] border border-[var(--color-action-primary-bg)] bg-transparent px-4 text-caption font-medium text-[var(--color-accent-self-deep)] transition-[opacity,transform,background-color] duration-200 hover:bg-[var(--color-surface-self-accent-soft)] motion-reduce:transition-none lg:inline-flex ${
+                  className={`hidden min-h-10 items-center gap-2 rounded-[11px] px-2 text-caption font-medium text-[var(--color-accent-self-deep)] transition-[opacity,transform,color] duration-200 hover:text-[var(--color-action-primary-bg-hover)] motion-reduce:transition-none lg:inline-flex ${
                     isPublicHeaderCompact ? "lg:pointer-events-none lg:-translate-y-2 lg:opacity-0" : "lg:translate-y-0 lg:opacity-100"
                   }`}
                 >
-                  {t("nav.signIn", locale)}
+                  <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--color-surface-self-border)] text-[11px]">↗</span>
+                  <span>{t("nav.signIn", locale)}</span>
                 </Link>
-                {/* CTA — always visible.
-                    Háttér: bronze-dark, NEM a világosabb accent-primary —
-                    fehér szöveggel az utóbbi csak 3.28:1 (12–13px normál
-                    szöveg → AA-bukó, Lighthouse color-contrast). A
-                    bronze-dark 4.89:1, és a bronz-család része (ugyanez a
-                    CtaSection hover-színe), így az identitás megmarad. */}
+                {/* A bronz CTA külön nyílmezőt kap: karakteresebb, de továbbra
+                    is egyetlen elsődleges felület marad a fejlécben. */}
                 <Link
                   href={publicCtaHref}
-                  className={`inline-flex min-h-10 items-center rounded-[11px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_3px_10px_rgba(139,82,48,0.16)] transition-[opacity,transform,filter] duration-200 hover:brightness-[1.06] motion-reduce:transition-none lg:px-5 lg:text-caption ${
+                  aria-label={publicCtaLabel}
+                  className={`inline-flex min-h-10 items-center gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-3 pr-1 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[opacity,transform,filter] duration-200 hover:brightness-[1.06] motion-reduce:transition-none lg:gap-2.5 lg:pl-4 lg:text-caption ${
                     isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
                   }`}
                 >
-                  {publicCtaLabel}
+                  <span>{publicCtaText}</span>
+                  <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
                 </Link>
               </>
             )}
 
             {isSignedIn && <UserMenu />}
 
-            {/* Separator + Language — always visible */}
-            <div className={`hidden h-5 w-px bg-[var(--color-border-default)] transition-opacity duration-200 lg:block ${isPublicHeaderCompact ? "opacity-0" : "opacity-100"}`} />
-            <div className={`hidden transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:block ${isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"}`}>
-              <LanguageSwitcher />
-            </div>
             {showThemeToggle ? (
               <div className={`hidden transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:block ${isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"}`}>
                 <ThemeToggle variant="compact" />
@@ -457,26 +449,22 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
-                {t("nav.signIn", locale)}
+                <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--color-surface-self-border)] text-[11px]">↗</span>
+                <span>{t("nav.signIn", locale)}</span>
               </Link>
               <Link
                 href={publicCtaHref}
+                aria-label={publicCtaLabel}
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-between gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-3 pr-1 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
               >
-                {publicCtaLabel}
+                <span>{publicCtaText}</span>
+                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
               </Link>
             </div>
           ) : null}
-
-          <MobileMenuSectionLabel>
-            {locale === "hu" ? "Nyelv" : "Language"}
-          </MobileMenuSectionLabel>
-          <div className="px-3 pb-1">
-            <LanguageSwitcher variant="pills" />
-          </div>
 
           {showThemeToggle ? (
             <>
