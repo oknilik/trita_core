@@ -134,7 +134,6 @@ export function PairInteractionView({
 }: PairInteractionViewProps) {
   const { locale } = useLocale();
   const [mode, setMode] = useState<RelationshipMode>("peer");
-  const [openPanel, setOpenPanel] = useState<PanelId | null>("easy");
 
   const leaderNotes: InteractionLeaderNote[] =
     mode === "other-leads"
@@ -155,34 +154,41 @@ export function PairInteractionView({
     },
   ];
 
-  const summaryEasy = sim.easy[0]?.text ?? null;
-  const summaryFriction = sim.friction[0]?.text ?? null;
+  const summaryEasy = sim.easy[0] ?? null;
+  const summaryFriction = sim.friction[0] ?? null;
+  const hasSummary = Boolean(summaryEasy || summaryFriction);
 
-  const panels: Array<{
-    id: PanelId;
-    number: number;
-    title: string;
-    lines: InteractionTextLine[];
-  }> = [
-    {
-      id: "easy",
-      number: 1,
-      title: t("results.interactionEasy", locale),
-      lines: sim.easy,
-    },
-    {
-      id: "friction",
-      number: 2,
-      title: t("results.interactionFriction", locale),
-      lines: sim.friction,
-    },
-    {
-      id: "discuss",
-      number: 3,
-      title: t("results.interactionDiscuss", locale),
-      lines: sim.discuss,
-    },
-  ];
+  // A motor összesen max 3 atomot választ, és a „Közös kép" már kimondja az
+  // első erősség- és súrlódásjelzést. A panelek ezért csak azt hozzák, ami
+  // AZON TÚL van — különben a nyitott első panel szó szerint megismételné a
+  // fentebb olvasott mondatot. A `discuss` külön szövegblokk, az egészben jön.
+  const panels = (
+    [
+      {
+        id: "easy",
+        title: t("results.interactionEasy", locale),
+        lines: summaryEasy ? sim.easy.slice(1) : sim.easy,
+      },
+      {
+        id: "friction",
+        title: t("results.interactionFriction", locale),
+        lines: summaryFriction ? sim.friction.slice(1) : sim.friction,
+      },
+      {
+        id: "discuss",
+        title: t("results.interactionDiscuss", locale),
+        lines: sim.discuss,
+      },
+    ] satisfies Array<{ id: PanelId; title: string; lines: InteractionTextLine[] }>
+  )
+    // A sorszám a LÁTHATÓ panelekhez igazodik: kiürült blokk nem hagy lyukat
+    // a számozásban.
+    .filter((panel) => panel.lines.length > 0)
+    .map((panel, index) => ({ ...panel, number: index + 1 }));
+
+  const [openPanel, setOpenPanel] = useState<PanelId | null>(
+    () => panels[0]?.id ?? null,
+  );
 
   return (
     <section className="flex flex-col gap-7">
@@ -232,7 +238,9 @@ export function PairInteractionView({
                     className="h-full w-full"
                   />
                 </div>
-                <p className="mt-1 text-center text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary)]">
+                {/* A név azonosít — nem címke: ezért nem 10px-es, nem
+                    verzálos (a „KATALIN" felirat úgy olvas, mint egy tag). */}
+                <p className="mx-auto mt-1.5 max-w-[12rem] break-words text-center text-caption font-semibold text-[var(--color-accent-primary)]">
                   {eyebrow}
                 </p>
                 <p className="mx-auto mt-1 max-w-[12rem] text-center font-fraunces text-[15px] leading-snug text-[var(--color-text-on-inverse)] sm:text-[18px]">
@@ -268,97 +276,127 @@ export function PairInteractionView({
         />
       </div>
 
+      {/* A vezetői jegyzetek az EGYETLEN tartalom, ami a fenti választótól
+          függ — ezért közvetlenül alatta állnak. Az oldal alján a user
+          átállította a kapcsolatot, és a képernyőn semmi nem változott.
+          A wrapper akkor is a fában marad, ha üres (sr-only: nincs
+          layout-hatása), hogy a live-region be tudja mondani a megjelenést. */}
+      <div
+        aria-live="polite"
+        className={leaderNotes.length > 0 ? undefined : "sr-only"}
+      >
+        {leaderNotes.length > 0 ? (
+          <section className="rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-highlight-warm)] p-5">
+            <p className="mb-3 text-label uppercase text-[var(--color-accent-primary-strong)]">
+              {t("results.interactionLeaderTitle", locale)}
+            </p>
+            <ul className="flex flex-col gap-3">
+              {leaderNotes.map((note) => (
+                <li key={note.dim}>
+                  <p className="text-body leading-relaxed text-[var(--color-text-secondary)]">
+                    {note.text}
+                  </p>
+                  <p className="mt-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
+                    {note.dimLabel}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+      </div>
+
       {sim.sparse ? (
         <p className="rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-5 text-body leading-relaxed text-[var(--color-text-secondary)]">
           {t("results.interactionSparse", locale)}
         </p>
       ) : (
         <>
-          {/* A részletek előtt egyetlen, azonnal használható közös kép. */}
-          {summaryEasy && summaryFriction ? (
+          {/* A részletek előtt egyetlen, azonnal használható közös kép. Ha
+              csak az egyik oldal van meg, azt mutatjuk — nem tüntetjük el az
+              egész blokkot a hiányzó másik fél miatt. */}
+          {hasSummary ? (
             <section>
               <h2 className="mb-3 font-fraunces text-heading text-[var(--color-text-primary)]">
                 {t("results.compareCommonPicture", locale)}
               </h2>
-              <div className="relative grid overflow-hidden rounded-2xl border border-[var(--color-border-soft)] md:grid-cols-2">
-                <div className="bg-[var(--color-surface-self-accent-soft)] p-5 md:pr-7">
-                  <p className="text-label uppercase text-[var(--color-accent-self-deep)]">
-                    {t("results.compareConnects", locale)}
-                  </p>
-                  <p className="mt-2 text-body leading-relaxed text-[var(--color-accent-self-deep)]">
-                    {summaryEasy}
-                  </p>
-                </div>
-                <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-highlight-warm)] p-5 md:border-l md:border-t-0 md:pl-7">
-                  <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-                    {t("results.compareAttention", locale)}
-                  </p>
-                  <p className="mt-2 text-body leading-relaxed text-[var(--color-text-secondary)]">
-                    {summaryFriction}
-                  </p>
-                </div>
-                <span
-                  aria-hidden="true"
-                  className="absolute left-1/2 top-1/2 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-surface-card font-fraunces text-[var(--color-accent-primary-strong)] shadow-sm md:flex"
-                >
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                    className="h-5 w-5"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.3"
-                    strokeLinecap="round"
+              <div
+                className={`relative grid overflow-hidden rounded-2xl border border-[var(--color-border-soft)] ${
+                  summaryEasy && summaryFriction ? "md:grid-cols-2" : ""
+                }`}
+              >
+                {summaryEasy ? (
+                  <div className="bg-[var(--color-surface-self-accent-soft)] p-5 md:pr-7">
+                    <p className="text-label uppercase text-[var(--color-accent-self-deep)]">
+                      {t("results.compareConnects", locale)}
+                    </p>
+                    <p className="mt-2 text-body leading-relaxed text-[var(--color-accent-self-deep)]">
+                      {summaryEasy.text}
+                    </p>
+                  </div>
+                ) : null}
+                {summaryFriction ? (
+                  <div
+                    className={`bg-[var(--color-surface-highlight-warm)] p-5 ${
+                      summaryEasy
+                        ? "border-t border-[var(--color-border-soft)] md:border-l md:border-t-0 md:pl-7"
+                        : ""
+                    }`}
                   >
-                    <path d="M10 2v16M2 10h16M4.35 4.35l11.3 11.3M15.65 4.35l-11.3 11.3" />
-                  </svg>
-                </span>
+                    <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
+                      {t("results.compareAttention", locale)}
+                    </p>
+                    <p className="mt-2 text-body leading-relaxed text-[var(--color-text-secondary)]">
+                      {summaryFriction.text}
+                    </p>
+                  </div>
+                ) : null}
+                {summaryEasy && summaryFriction ? (
+                  <span
+                    aria-hidden="true"
+                    className="absolute left-1/2 top-1/2 hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-surface-card font-fraunces text-[var(--color-accent-primary-strong)] shadow-sm md:flex"
+                  >
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.3"
+                      strokeLinecap="round"
+                    >
+                      <path d="M10 2v16M2 10h16M4.35 4.35l11.3 11.3M15.65 4.35l-11.3 11.3" />
+                    </svg>
+                  </span>
+                ) : null}
               </div>
             </section>
           ) : null}
 
-          {/* Progresszív feltárás: a három kérdés látszik, egyszerre csak az
-              olvasott rész viszi el a képernyő magasságát. */}
-          <section className="relative">
-            <span
-              aria-hidden="true"
-              className="absolute bottom-7 left-[17px] top-7 w-px bg-[var(--color-border-default)]"
-            />
-            <div className="relative">
-              {panels.map((panel) => (
-                <InsightPanel
-                  key={panel.id}
-                  {...panel}
-                  open={openPanel === panel.id}
-                  onToggle={() =>
-                    setOpenPanel((current) => (current === panel.id ? null : panel.id))
-                  }
-                />
-              ))}
-            </div>
-          </section>
+          {/* Progresszív feltárás: egyszerre csak az olvasott rész viszi el a
+              képernyő magasságát. */}
+          {panels.length > 0 ? (
+            <section className="relative">
+              <span
+                aria-hidden="true"
+                className="absolute bottom-7 left-[17px] top-7 w-px bg-[var(--color-border-default)]"
+              />
+              <div className="relative">
+                {panels.map((panel) => (
+                  <InsightPanel
+                    key={panel.id}
+                    {...panel}
+                    open={openPanel === panel.id}
+                    onToggle={() =>
+                      setOpenPanel((current) => (current === panel.id ? null : panel.id))
+                    }
+                  />
+                ))}
+              </div>
+            </section>
+          ) : null}
         </>
       )}
-
-      {leaderNotes.length > 0 ? (
-        <section className="rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-highlight-warm)] p-5">
-          <p className="mb-3 text-label uppercase text-[var(--color-accent-primary-strong)]">
-            {t("results.interactionLeaderTitle", locale)}
-          </p>
-          <ul className="flex flex-col gap-3">
-            {leaderNotes.map((note) => (
-              <li key={note.dim}>
-                <p className="text-body leading-relaxed text-[var(--color-text-secondary)]">
-                  {note.text}
-                </p>
-                <p className="mt-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-                  {note.dimLabel}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
 
       <div className="flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--color-accent-primary-strong)] text-caption text-[var(--color-accent-primary-strong)]">

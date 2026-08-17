@@ -818,9 +818,22 @@ export const resultsTranslations = {
       hu: "{count} kapcsolat készen áll",
       en: "{count} ready to compare",
     },
+    // Nulla kapcsolat: ott nincs miből választani — a meghívás a feladat.
+    compareConnectionsEmptyTitle: {
+      hu: "Hívj meg valakit a közös képhez",
+      en: "Invite someone for a shared picture",
+    },
+    compareConnectionsEmptyBody: {
+      hu: "Ha ő is kitölti a saját tesztjét, mindketten a valódi profiljaitok dinamikáját látjátok.",
+      en: "Once they complete their own assessment, you both see the dynamic of your real profiles.",
+    },
     compareInvitePromptTitle: {
       hu: "Valaki mással néznéd meg?",
       en: "Want to explore it with someone else?",
+    },
+    compareInviteFirstTitle: {
+      hu: "Küldj egy meghívólinket",
+      en: "Send an invitation link",
     },
     compareInvitePromptBody: {
       hu: "Készíts neki meghívólinket a valódi összehasonlításhoz.",
@@ -850,6 +863,14 @@ export const resultsTranslations = {
     compareCopy: { hu: "Link másolása", en: "Copy link" },
     compareCopied: { hu: "Másolva!", en: "Copied!" },
     compareRevoke: { hu: "Visszavonás", en: "Revoke" },
+    // A visszavonás a MÁSIK félnél is megszünteti a közös képet — ezért
+    // kérdezünk rá, mielőtt lefut.
+    compareRevokeConfirmQuestion: {
+      hu: "Mindkettőtöknél megszűnik. Biztos?",
+      en: "It ends for both of you. Sure?",
+    },
+    compareRevokeConfirmYes: { hu: "Igen, visszavonom", en: "Yes, revoke" },
+    compareRevokeConfirmNo: { hu: "Mégsem", en: "Cancel" },
     compareStatePending: { hu: "függőben", en: "pending" },
     compareStateAccepted: { hu: "elfogadva", en: "accepted" },
     compareStateExpired: { hu: "lejárt", en: "expired" },
@@ -859,6 +880,12 @@ export const resultsTranslations = {
     compareListEmpty: {
       hu: "Még nincs aktív linked vagy elfogadott párod.",
       en: "No active links or accepted pairs yet.",
+    },
+    // Kiküldött, de még el nem fogadott link mellé: a „nincs aktív linked"
+    // ilyenkor ellentmond a közvetlenül alatta látható függő listának.
+    compareListPendingOnly: {
+      hu: "A kiküldött linkre vár — amint elfogadja, itt megnyílik a közös kép.",
+      en: "Waiting on the link you sent — the shared picture opens here once they accept.",
     },
     compareError: {
       hu: "Nem sikerült — próbáld újra.",

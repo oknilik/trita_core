@@ -15,12 +15,24 @@ vi.mock("@/components/results/InteractionSection", () => ({
   InteractionSection: () => <div data-testid="type-route">Karakterválasztó</div>,
 }));
 
+const acceptedInvite = {
+  id: "inv-1",
+  token: null,
+  state: "ACCEPTED" as const,
+  role: "inviter" as const,
+  otherName: "Anna",
+  createdAt: "2026-08-01T10:00:00.000Z",
+  acceptedAt: "2026-08-02T10:00:00.000Z",
+  expiresAt: "2026-09-01T10:00:00.000Z",
+  otherGlyph: null,
+};
+
 describe("InteractionComparisonChooser", () => {
-  it("a valódi személyes utat mutatja alapból, majd karakterre váltható", async () => {
+  it("elfogadott pár mellett a valódi utat nyitja meg, és karakterre váltható", async () => {
     const user = userEvent.setup();
     render(
       <InteractionComparisonChooser
-        invites={[]}
+        invites={[acceptedInvite]}
         simulations={[]}
       />,
     );
@@ -39,5 +51,23 @@ describe("InteractionComparisonChooser", () => {
     expect(type).toHaveAttribute("aria-pressed", "true");
     expect(screen.queryByTestId("real-person-route")).not.toBeInTheDocument();
     expect(screen.getByTestId("type-route")).toBeInTheDocument();
+  });
+
+  it("elfogadott pár nélkül az azonnal használható karakter-utat nyitja meg", async () => {
+    const user = userEvent.setup();
+    render(<InteractionComparisonChooser invites={[]} simulations={[]} />);
+
+    const real = screen.getByRole("button", { name: /Valódi személlyel/ });
+    const type = screen.getByRole("button", { name: /Karakterrel kipróbálom/ });
+
+    // Üres kapcsolatlista helyett az azonnal használható út a default — a
+    // valódi út elvi elsősége a kártyák SORRENDJÉBEN marad meg.
+    expect(type).toHaveAttribute("aria-pressed", "true");
+    expect(real).toHaveAttribute("aria-pressed", "false");
+    expect(screen.getByTestId("type-route")).toBeInTheDocument();
+
+    await user.click(real);
+
+    expect(screen.getByTestId("real-person-route")).toBeInTheDocument();
   });
 });

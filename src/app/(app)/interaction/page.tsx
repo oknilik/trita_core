@@ -125,9 +125,12 @@ export default async function InteractionPage({
     },
   });
 
+  // Csak az ÉLŐ (elfogadott) párok profilját olvassuk ki: a visszavont
+  // párnál a partner adatai a szerveren sem kellenek.
   const otherProfileIds = Array.from(
     new Set(
       rawInvites.flatMap((inv) => {
+        if (resolveCompareInviteState(inv, now) !== "ACCEPTED") return [];
         const otherId =
           inv.inviterId === profile.id ? inv.partnerId : inv.inviterId;
         return otherId ? [otherId] : [];
@@ -168,10 +171,11 @@ export default async function InteractionPage({
   const compareInvites: SerializedCompareInvite[] = rawInvites.map((inv) => {
     const isInviter = inv.inviterId === profile.id;
     const otherId = isInviter ? inv.partnerId : inv.inviterId;
+    const state = resolveCompareInviteState(inv, now);
     return {
       id: inv.id,
       token: isInviter ? inv.token : null,
-      state: resolveCompareInviteState(inv, now),
+      state,
       role: isInviter ? "inviter" : "partner",
       otherName: isInviter
         ? (inv.partner?.username ?? null)
@@ -179,7 +183,14 @@ export default async function InteractionPage({
       createdAt: inv.createdAt.toISOString(),
       acceptedAt: inv.acceptedAt?.toISOString() ?? null,
       expiresAt: inv.expiresAt.toISOString(),
-      otherGlyph: otherId ? (otherGlyphByProfileId.get(otherId) ?? null) : null,
+      // A glyph a partner két legerősebb dimenzióját mutatja meg — ez CSAK
+      // élő, kölcsönös consent mellett mehet a kliensre. Egy elfogadott,
+      // majd visszavont párnál a payloadból is ki kell maradnia, nem csak a
+      // renderből (`compare-invite.ts`: bármelyik fél bármikor visszavonhat).
+      otherGlyph:
+        state === "ACCEPTED" && otherId
+          ? (otherGlyphByProfileId.get(otherId) ?? null)
+          : null,
     };
   });
 

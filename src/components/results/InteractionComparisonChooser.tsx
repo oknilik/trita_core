@@ -60,7 +60,15 @@ export function InteractionComparisonChooser({
   selfGlyph,
 }: InteractionComparisonChooserProps) {
   const { locale } = useLocale();
-  const [route, setRoute] = useState<ComparisonRoute>("real");
+  // A default az ADAT alapján dől el, nem elvi sorrend szerint: akinek van
+  // elfogadott párja, annak a valódi út a jutalom; akinek nincs, annak a
+  // „valódi" út egy üres lista lenne, miközben a karakter-út azonnal
+  // használható. Az elvi sorrend (valódi > típus) a kártyák sorrendjében
+  // marad meg.
+  const hasAcceptedInvite = invites.some((inv) => inv.state === "ACCEPTED");
+  const [route, setRoute] = useState<ComparisonRoute>(
+    hasAcceptedInvite ? "real" : "type",
+  );
 
   const choices: Array<{
     id: ComparisonRoute;

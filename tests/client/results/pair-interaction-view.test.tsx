@@ -21,12 +21,22 @@ const sim: PairSimulationView = {
       dimLabels: ["Nyitottság", "Extraverzió"],
       text: "Gyorsan megértitek egymás szándékát.",
     },
+    {
+      atomId: "easy-2",
+      dimLabels: ["Barátságosság"],
+      text: "Konfliktusban is megmaradtok tárgyilagosnak.",
+    },
   ],
   friction: [
     {
       atomId: "friction-1",
       dimLabels: ["Lelkiismeretesség"],
       text: "Más ritmusban hozhatjátok meg a döntéseket.",
+    },
+    {
+      atomId: "friction-2",
+      dimLabels: ["Emocionalitás"],
+      text: "A visszajelzés élességét máshol húzzátok meg.",
     },
   ],
   discuss: [
@@ -67,16 +77,20 @@ const other = {
   label: "Empatikus hídépítő",
 };
 
+function renderView(simulation: PairSimulationView = sim) {
+  return render(
+    <PairInteractionView
+      self={self}
+      other={other}
+      otherName="Anna"
+      sim={simulation}
+    />,
+  );
+}
+
 describe("PairInteractionView", () => {
   it("mobilbarát közös vásznon mutatja a két profilt és az első összképet", () => {
-    render(
-      <PairInteractionView
-        self={self}
-        other={other}
-        otherName="Anna"
-        sim={sim}
-      />,
-    );
+    renderView();
 
     expect(screen.getAllByTestId("type-glyph")).toHaveLength(2);
     expect(screen.getByText("Két valódi önértékelés")).toBeInTheDocument();
@@ -85,16 +99,56 @@ describe("PairInteractionView", () => {
     expect(screen.getByText("Amire figyeljetek")).toBeInTheDocument();
   });
 
+  it("a nevet olvasható méretben, nem verzál mikro-címkeként írja ki", () => {
+    renderView();
+
+    const name = screen.getByText("Anna");
+    expect(name.className).toContain("text-caption");
+    expect(name.className).not.toContain("text-micro");
+    expect(name.className).not.toContain("uppercase");
+  });
+
+  it("nem ismétli meg a „Közös kép” mondatait a nyitott panelben", () => {
+    renderView();
+
+    // A motor max 3 atomot ad: ha a panel is a teljes listát hozná, a
+    // nyitott első panel szó szerint megismételné a fentebb olvasott sort.
+    expect(
+      screen.getAllByText("Gyorsan megértitek egymás szándékát."),
+    ).toHaveLength(1);
+    expect(
+      screen.getAllByText("Más ritmusban hozhatjátok meg a döntéseket."),
+    ).toHaveLength(1);
+    // Ami a összképen túl van, az a panelben nyílik.
+    expect(
+      screen.getByText("Konfliktusban is megmaradtok tárgyilagosnak."),
+    ).toBeInTheDocument();
+  });
+
+  it("elhagyja azt a panelt, aminek a közös képen túl nincs több mondata", () => {
+    renderView({
+      ...sim,
+      easy: [sim.easy[0]],
+      friction: [sim.friction[0]],
+    });
+
+    expect(
+      screen.queryByRole("button", { name: /Ami magától megy/ }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Ahol súrlódás várható/ }),
+    ).not.toBeInTheDocument();
+    // A megmaradt blokk 1-es sorszámmal indul — nincs lyuk a számozásban.
+    const discuss = screen.getByRole("button", {
+      name: /Mit beszéljetek meg előre/,
+    });
+    expect(discuss).toHaveTextContent("1");
+    expect(discuss).toHaveAttribute("aria-expanded", "true");
+  });
+
   it("egyszerre egy részletes blokkot nyitva tart, a többit összecsukja", async () => {
     const user = userEvent.setup();
-    render(
-      <PairInteractionView
-        self={self}
-        other={other}
-        otherName="Anna"
-        sim={sim}
-      />,
-    );
+    renderView();
 
     const easy = screen.getByRole("button", { name: /Ami magától megy/ });
     const friction = screen.getByRole("button", {
@@ -112,14 +166,7 @@ describe("PairInteractionView", () => {
 
   it("névvel egyértelműsíti a vezetői irányt és megmutatja a kapcsolódó jegyzetet", async () => {
     const user = userEvent.setup();
-    render(
-      <PairInteractionView
-        self={self}
-        other={other}
-        otherName="Anna"
-        sim={sim}
-      />,
-    );
+    renderView();
 
     const relation = screen.getByRole("button", {
       name: /Kapcsolatotok Egyenrangú kapcsolat/,
@@ -141,16 +188,36 @@ describe("PairInteractionView", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
+  it("a választó mellé teszi a tőle függő vezetői jegyzetet, live-regionben", async () => {
+    const user = userEvent.setup();
+    renderView();
+
+    // A jegyzet a választó UTÁN, de a „Közös kép” ELŐTT áll: a user a
+    // vezetői irány átállítása után lát is változást a képernyőn.
+    const live = document.querySelector("[aria-live='polite']");
+    expect(live).not.toBeNull();
+
+    await user.click(
+      screen.getByRole("button", { name: /Kapcsolatotok Egyenrangú kapcsolat/ }),
+    );
+    await user.click(
+      screen.getByRole("option", { name: "Anna vezet vagy mentorál engem" }),
+    );
+
+    expect(live).toHaveTextContent(
+      "Anna vezetőként teret ad a közös mérlegelésnek.",
+    );
+
+    const sharedPicture = screen.getByRole("heading", { name: "Közös kép" });
+    expect(
+      live!.compareDocumentPosition(sharedPicture) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
   it("billentyűzettel is végigjárhatóvá teszi az egyedi kapcsolatválasztót", async () => {
     const user = userEvent.setup();
-    render(
-      <PairInteractionView
-        self={self}
-        other={other}
-        otherName="Anna"
-        sim={sim}
-      />,
-    );
+    renderView();
 
     const relation = screen.getByRole("button", {
       name: /Kapcsolatotok Egyenrangú kapcsolat/,
@@ -173,5 +240,25 @@ describe("PairInteractionView", () => {
     expect(
       screen.getByText("Anna vezetőként teret ad a közös mérlegelésnek."),
     ).toBeInTheDocument();
+  });
+
+  it("Tabbal a triggerre adja vissza a fókuszt, nem a body-ra", async () => {
+    const user = userEvent.setup();
+    renderView();
+
+    const relation = screen.getByRole("button", {
+      name: /Kapcsolatotok Egyenrangú kapcsolat/,
+    });
+    relation.focus();
+    await user.keyboard("{ArrowDown}");
+    expect(
+      screen.getByRole("option", { name: "Egyenrangú kapcsolat" }),
+    ).toHaveFocus();
+
+    await user.keyboard("{Tab}");
+
+    await waitFor(() => expect(relation).toHaveFocus());
+    expect(document.body).not.toHaveFocus();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 });

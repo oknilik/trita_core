@@ -45,7 +45,9 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
   // Opcionális email-küldés link-készítéskor.
   const [email, setEmail] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
-  const [inviteExpanded, setInviteExpanded] = useState(false);
+  // Visszavonás előtti megerősítés: melyik sor kérdezett rá. A művelet a
+  // másik fél számára is megszünteti a közös képet — nem egy kattintás.
+  const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
 
   const qrInvite = qrForId
     ? (invites.find((inv) => inv.id === qrForId && inv.token) ?? null)
@@ -53,6 +55,11 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
 
   const acceptedInvites = invites.filter((inv) => inv.state === "ACCEPTED");
   const pendingInvites = invites.filter((inv) => inv.state === "PENDING");
+  // Akinek még egyáltalán nincs kapcsolata, annak a meghívás NEM másodlagos
+  // művelet: az az egyetlen értelmes következő lépés, tehát nyitva indul.
+  const hasAnyConnection =
+    acceptedInvites.length > 0 || pendingInvites.length > 0;
+  const [inviteExpanded, setInviteExpanded] = useState(!hasAnyConnection);
 
   const handleCreate = async () => {
     setBusy(true);
@@ -136,11 +143,17 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
     <section>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
+          {/* Nulla kapcsolatnál a „Válassz a kapcsolataid közül" cím
+              értelmetlen — ott a meghívás maga a feladat. */}
           <h2 className="font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] sm:text-[28px]">
-            {t("results.compareConnectionsTitle", locale)}
+            {hasAnyConnection
+              ? t("results.compareConnectionsTitle", locale)
+              : t("results.compareConnectionsEmptyTitle", locale)}
           </h2>
           <p className="mt-1 text-caption text-[var(--color-text-muted)]">
-            {t("results.compareConnectionsBody", locale)}
+            {hasAnyConnection
+              ? t("results.compareConnectionsBody", locale)
+              : t("results.compareConnectionsEmptyBody", locale)}
           </p>
         </div>
         {acceptedInvites.length > 0 ? (
@@ -153,11 +166,16 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         ) : null}
       </div>
 
-      <div className="mt-5 flex flex-col gap-3">
+      <div className={acceptedInvites.length > 0 ? "mt-5 flex flex-col gap-3" : ""}>
         {acceptedInvites.length === 0 ? (
-          <p className="rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-5 text-caption text-[var(--color-text-muted)]">
-            {t("results.compareListEmpty", locale)}
-          </p>
+          // Ha van kiküldött link, akkor NEM igaz, hogy „nincs aktív linked" —
+          // az a lista közvetlenül alább ott van. Nulla kapcsolatnál pedig
+          // egyáltalán nem kell placeholder: a nyitott meghívó-blokk a tartalom.
+          pendingInvites.length > 0 ? (
+            <p className="mt-5 rounded-2xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-5 text-caption text-[var(--color-text-muted)]">
+              {t("results.compareListPendingOnly", locale)}
+            </p>
+          ) : null
         ) : (
           acceptedInvites.map((inv) => {
             const otherName =
@@ -205,14 +223,42 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                   >
                     {t("results.compareOpenPair", locale)} →
                   </Link>
-                  <button
-                    type="button"
-                    onClick={() => handleRevoke(inv.id)}
-                    disabled={busy}
-                    className="inline-flex min-h-[44px] items-center rounded-xl px-3 text-micro font-medium text-[var(--color-text-muted)] transition-colors hover:text-state-error-fg disabled:opacity-50"
-                  >
-                    {t("results.compareRevoke", locale)}
-                  </button>
+                  {/* Két lépés: a visszavonás a MÁSIK félnél is megszünteti a
+                      közös képet, és közvetlenül a primary CTA mellett áll. */}
+                  {confirmRevokeId === inv.id ? (
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="text-micro text-[var(--color-text-muted)]">
+                        {t("results.compareRevokeConfirmQuestion", locale)}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setConfirmRevokeId(null);
+                          void handleRevoke(inv.id);
+                        }}
+                        disabled={busy}
+                        className="inline-flex min-h-[44px] items-center rounded-xl px-3 text-micro font-semibold text-state-error-fg transition-colors hover:underline disabled:opacity-50"
+                      >
+                        {t("results.compareRevokeConfirmYes", locale)}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmRevokeId(null)}
+                        className="inline-flex min-h-[44px] items-center rounded-xl px-3 text-micro font-medium text-[var(--color-text-muted)] transition-colors hover:text-[var(--color-text-primary)]"
+                      >
+                        {t("results.compareRevokeConfirmNo", locale)}
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmRevokeId(inv.id)}
+                      disabled={busy}
+                      className="inline-flex min-h-[44px] items-center rounded-xl px-3 text-micro font-medium text-[var(--color-text-muted)] transition-colors hover:text-state-error-fg disabled:opacity-50"
+                    >
+                      {t("results.compareRevoke", locale)}
+                    </button>
+                  )}
                 </div>
               </article>
             );
@@ -239,22 +285,27 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-fraunces text-[18px] text-[var(--color-text-primary)]">
-              {t("results.compareInvitePromptTitle", locale)}
+              {hasAnyConnection
+                ? t("results.compareInvitePromptTitle", locale)
+                : t("results.compareInviteFirstTitle", locale)}
             </p>
             <p className="mt-0.5 text-micro leading-relaxed text-[var(--color-text-muted)]">
               {t("results.compareInvitePromptBody", locale)}
             </p>
           </div>
-          <button
-            type="button"
-            onClick={() => setInviteExpanded((current) => !current)}
-            aria-expanded={inviteExpanded}
-            className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 text-caption font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
-          >
-            {inviteExpanded
-              ? t("results.compareInviteHide", locale)
-              : t("results.compareInviteToggle", locale)}
-          </button>
+          {/* Nulla kapcsolatnál nincs mire visszacsukni: a toggle csak zaj. */}
+          {hasAnyConnection ? (
+            <button
+              type="button"
+              onClick={() => setInviteExpanded((current) => !current)}
+              aria-expanded={inviteExpanded}
+              className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 text-caption font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+            >
+              {inviteExpanded
+                ? t("results.compareInviteHide", locale)
+                : t("results.compareInviteToggle", locale)}
+            </button>
+          ) : null}
         </div>
 
         {inviteExpanded ? (

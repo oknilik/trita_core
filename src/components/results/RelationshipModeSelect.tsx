@@ -117,7 +117,11 @@ export function RelationshipModeSelect({
       event.preventDefault();
       closeAndFocusTrigger();
     } else if (event.key === "Tab") {
-      setOpen(false);
+      // A lista bezárása unmountolja a fókuszált opciót — ha a böngésző
+      // default tabbolása is lefut, a fókusz a <body>-ra esik. Ezért itt mi
+      // adjuk vissza a triggerre, onnan tabbol tovább a user.
+      event.preventDefault();
+      closeAndFocusTrigger();
     }
   };
 
@@ -146,7 +150,7 @@ export function RelationshipModeSelect({
           aria-labelledby={`${labelId} ${valueId}`}
           onClick={() => setOpen((current) => !current)}
           onKeyDown={handleTriggerKeyDown}
-          className="flex min-h-[32px] w-full items-center gap-3 text-left text-caption font-semibold text-[var(--color-text-primary)]"
+          className="flex min-h-[44px] w-full items-center gap-3 text-left text-caption font-semibold text-[var(--color-text-primary)]"
         >
           <span id={valueId} className="min-w-0 flex-1 truncate">
             {selected.label}
@@ -187,6 +191,9 @@ export function RelationshipModeSelect({
                   type="button"
                   role="option"
                   aria-selected={active}
+                  // A listbox EGY tab-stop: a nyitott lista opciói között
+                  // nyíllal lépünk (roving fókusz), nem Tabbal.
+                  tabIndex={-1}
                   onClick={() => choose(option.value)}
                   onKeyDown={(event) => handleOptionKeyDown(event, index)}
                   className={`flex min-h-[48px] w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-caption transition-colors ${
