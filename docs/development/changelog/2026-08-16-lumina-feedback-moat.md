@@ -172,3 +172,25 @@ Forrás: `docs/product/lumina-benchmark-strategia-2026-08.md`.
 - A runtime számlázás szándékosan kikapcsolva marad a 20 esetes playbook,
   akkreditáció, önkiszolgáló tenant-audit és providerfüggetlen append-only
   usage ledger elkészültéig. A pilot kézi feltételeit az esetnapló rögzíti.
+
+## Main-merge 2026-08-17 (PR #29 páros összehasonlítás)
+
+A `main` időközben megkapta a páros összehasonlítás átdolgozását (PR #29).
+Két fájl ütközött; mindkettő tartalmilag dőlt el, nem mechanikusan:
+
+- **`profile/results/page.tsx`** — a `publicSharingActive` kapu a megosztás-
+  számlálón marad (P2.2), és mellé bekerül a `compareInvite` lekérdezés. A
+  `Promise.all` destrukturálása mindkét ágat viszi.
+- **`ProfileTabs.tsx`** — a riport végi „bővítmények" `<details>` blokk a main
+  döntése szerint kikerül: a páros belépő már az összkép tetején kap kiemelt
+  kártyát, a karrier fake door pedig a pilotból ki van véve
+  (ld. `2026-08-17-paros-osszehasonlitas-review-javitasok.md`, 9. pont). Az
+  ehhez tartozó `SectionCta` / `CAREER_MODULE_READY` import törölve, és a
+  blokkal együtt a helyben feleslegessé vált `careerActive` kapu is — a
+  karrier-modul parkolását a szerver oldali `careerHiddenMembership` intézi
+  (`careerActive ? isCareerModuleHidden(...) : true`), tehát a P2.2 kapu
+  nem gyengült. A `publicSharingActive` (hero-megosztás + `ShareModal`)
+  változatlanul él.
+
+A merge után: type-check 0 hiba, lint tiszta, `check:colors` OK,
+unit 1035/1035, kliens 202/202, quality gate és UI guardrail zöld.
