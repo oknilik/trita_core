@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
@@ -56,7 +57,7 @@ export function AboutContent() {
   return (
     <main className="bg-cream text-ink selection:bg-bronze/20">
       {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section className="border-b border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
             <div>
@@ -170,12 +171,15 @@ export function AboutContent() {
         </div>
       </EditorialSection>
 
-      <div className="border-t border-sand py-10 md:py-12">
-        <SectionTransition artKey={artKeyFrom("about", "build")} />
+      <div>
+        <PageWidthDivider />
+        <div className="py-10 md:py-12">
+          <SectionTransition artKey={artKeyFrom("about", "build")} />
+        </div>
       </div>
 
       {/* ── Hogyan épül fel — rétegábra ────────────────────────────── */}
-      <section id="felepites" className="border-t border-sand">
+      <section id="felepites">
         <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
           <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
             <div>
@@ -273,12 +277,15 @@ export function AboutContent() {
         </div>
       </EditorialSection>
 
-      <div className="border-t border-sand py-10 md:py-12">
-        <SectionTransition artKey={artKeyFrom("about", "goal")} />
+      <div>
+        <PageWidthDivider />
+        <div className="py-10 md:py-12">
+          <SectionTransition artKey={artKeyFrom("about", "goal")} />
+        </div>
       </div>
 
       {/* ── Mi a célunk ────────────────────────────────────────────── */}
-      <section className="border-t border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
           <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
             <div>
@@ -318,7 +325,8 @@ export function AboutContent() {
       </section>
 
       {/* ── Záró CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-sand">
+      <section>
+        <PageWidthDivider />
         <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
             <h2 className="mx-auto max-w-[18ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
@@ -364,7 +372,8 @@ function EditorialSection({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="border-t border-sand">
+    <section id={id}>
+      <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow>{eyebrow}</SectionEyebrow>

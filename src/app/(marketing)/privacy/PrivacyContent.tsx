@@ -1,6 +1,7 @@
 "use client";
 
 import { useLocale } from "@/components/LocaleProvider";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { LEGAL_DOCS_ARE_DRAFT } from "@/lib/legal/company";
 import { getPrivacyPolicy, type PolicyBlock } from "@/lib/legal/privacy-policy";
@@ -107,7 +108,7 @@ export function PrivacyContent() {
   return (
     <main id="top" className="min-h-dvh bg-cream">
       {/* ── Fejléc ── */}
-      <section className="border-b border-sand bg-[var(--color-layer-self-hero-from)] px-6 py-14 lg:px-16 lg:py-16">
+      <section className="bg-[var(--color-layer-self-hero-from)] px-6 py-14 lg:px-16 lg:py-16">
         <div className="mx-auto max-w-6xl">
           <SectionEyebrow tone="onDark" className="mb-4">
             {doc.eyebrow}
@@ -127,18 +128,20 @@ export function PrivacyContent() {
         </div>
       </section>
 
-      <section className="px-6 py-10 lg:px-16 lg:py-14">
-        <div className="mx-auto max-w-6xl">
-          {LEGAL_DOCS_ARE_DRAFT && (
-            // Amíg a cégadatok helykitöltők, ezt ki KELL mondani: egy joginak
-            // látszó, de kitalált azonosítókat közlő lap félrevezeti az
-            // érintettet. A jelölés a `company.ts` egyetlen konstansával
-            // tűnik el, amikor a valós adatok bekerülnek.
-            <div className="mb-8 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
-              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">{doc.draftBadge}</p>
-              <p className="mt-2 text-caption leading-relaxed text-ink-body">{doc.draftNote}</p>
-            </div>
-          )}
+      <section>
+        <PageWidthDivider />
+        <div className="px-6 py-10 lg:px-16 lg:py-14">
+          <div className="mx-auto max-w-6xl">
+            {LEGAL_DOCS_ARE_DRAFT && (
+              // Amíg a cégadatok helykitöltők, ezt ki KELL mondani: egy joginak
+              // látszó, de kitalált azonosítókat közlő lap félrevezeti az
+              // érintettet. A jelölés a `company.ts` egyetlen konstansával
+              // tűnik el, amikor a valós adatok bekerülnek.
+              <div className="mb-8 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
+                <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">{doc.draftBadge}</p>
+                <p className="mt-2 text-caption leading-relaxed text-ink-body">{doc.draftNote}</p>
+              </div>
+            )}
 
           {/* min-w-0 a rács-elemeken: a grid-item alapértelmezett
               `min-width: auto` a TARTALOM min-content méretét veszi, és a
@@ -148,7 +151,7 @@ export function PrivacyContent() {
               akkor tud dolgozni, ha a sáv szűkebb lehet nála.
               (A `lg:grid-cols-[240px_minmax(0,1fr)]` ugyanezt teszi a
               kétsávos elrendezésben.) */}
-          <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
+            <div className="grid gap-8 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10">
             {/* ── Tartalomjegyzék ── */}
             <aside className="h-fit min-w-0 rounded-lg border border-sand bg-surface-card p-4 lg:sticky lg:top-28">
               <p className="mb-3 text-label uppercase text-ink-body">{doc.tocLabel}</p>
@@ -198,6 +201,7 @@ export function PrivacyContent() {
                   ↑ {doc.backToTop}
                 </a>
               </p>
+            </div>
             </div>
           </div>
         </div>

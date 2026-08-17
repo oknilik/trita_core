@@ -311,8 +311,8 @@ export function NavBar({
       </header>
 
       {shouldShowSignedInHint && signedInHint ? (
-        <div className="border-b border-[var(--color-border-default)] bg-[var(--color-surface-canvas)]">
-          <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-5 py-2.5 lg:px-8">
+        <div className="bg-[var(--color-surface-canvas)]">
+          <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1180px] items-start justify-between gap-3 border-b border-[var(--color-border-default)] px-5 py-2.5 lg:px-8">
             <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
