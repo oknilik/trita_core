@@ -89,6 +89,52 @@ nem névként.
   lépünk.
 - **44px-es touch target** a select triggeren (32px volt).
 
+## 7. A két összehasonlítási út egy rendszer lett
+
+Bejelentés: „nem ugyanazt látom, ha karakterrel hasonlítok össze, mint amikor
+ugyanazzal a stílussal valódi profilon". Utánamérve **nem pontszám-hiba**: a
+motor mindkét úton ugyanaz, a karakter-út kimenete a valódi út **részhalmaza**.
+
+Az `archetypePrototype()` a hat dimenzióból négyet fixen `50`-re állít, ami
+pont a középvonal — a `polarSides()` azokat nem tekinti pólusosnak. Így a
+prototípusnak **pontosan 2** pólusos dimenziója van, egy valódi partnernek
+viszont 2–6. Mérés 12 generált valódi partnerrel, akiknek a top-2 dimenziója
+azonos az „O-X" karakterrel:
+
+- 22/30 (**73%**) valódi atom megjelent a karakter-úton is,
+- **6/12 esetben teljesen azonos** volt a kimenet,
+- a többiben a valódi út 1–2 mondattal többet mondott — olyan dimenziókról,
+  amikről a prototípus nem tud.
+
+Amit ez a kör javított — a **megjelenítést**, hogy a maradék (valódi) eltérés
+ott maradjon, ahol tartozik, a motor bemenetében:
+
+- **Közös prezentáció.** Új `InteractionDynamicPanels`: a „Közös kép" +
+  számozott accordion mostantól EGY komponens, amit mindkét felület használ.
+  Eddig ugyanaz a mondat a valódi úton „Ami összeköt", a karakter-úton „Ami
+  magától megy" címke alatt jelent meg — két név ugyanarra. (Ez a 1. pont
+  dedup-javításának mellékhatása volt: az első sor kimozdult a panelből.)
+- **Közös vezetői blokk.** Új `InteractionLeaderNotes` — a live-region és a
+  választó alatti elhelyezés mindkét úton azonos.
+- **Közös kapcsolat-választó, három iránnyal.** A karakter-út 2 állapotú
+  pilljét a `RelationshipModeSelect` váltja. Az „Én vezetem vagy mentorálom őt"
+  irány ott eddig **egyáltalán nem volt elérhető**: `buildArchetypeSimulations`
+  fixen `other-leads`-szel futott. Most `leaderNotesSelf` + `leaderNotesOther`
+  jön (mint a valódi páros nézetben), így a kapcsoló ott sem jár hálózattal.
+  A kontroll pozicionálása `className`-be került — nem a komponens tudja, hogy
+  sötét hero alá lóg-e be.
+- **Kimondott tartalmi határ a tartalom ELŐTT.** Az `interactionTypeScopeNote`
+  megnevezi a karakter két dimenzióját, és kimondja, hogy egy valódi profil
+  ezért többet és mást is mutathat. A módszertani jegyzet
+  (`interactionSourceNote`) nem ismétli — az a lap alján marad, most a valódi
+  úttal azonos „i"-boxban.
+- **Chooser-szöveg.** A „pontosabb közös kép" félrevezetett: azt sugallta,
+  hogy ugyanaz a tartalom, csak élesebben. Helyette „mind a hat dimenzió
+  számít" vs. „két dimenzióra épülő szimuláció".
+
+Amit **nem** tettünk: a prototípus négy semleges dimenzióját nem töltjük fel.
+Az kitalált állítás lenne, és szemben megy a „becsült vs mért" alapelvvel.
+
 ## Ami tudatosan maradt
 
 - Az `EditorialBackHeader` ikon-only vissza gombja `ProfileTabs`-ben és
@@ -115,3 +161,12 @@ elfogadott kapcsolat (lista a tartalom, meghívás másodlagos), függő-only
 állapot szövege, visszavonás-megerősítés.
 
 `interaction-comparison-chooser.test.tsx` — a default út mindkét adatállapotra.
+
+`interaction-section.integration.test.tsx` — mindhárom kapcsolat-irány a
+karakter-úton (az „én vezetem" irányt eddig nem lehetett tesztelni, mert nem
+létezett), és a tartalmi határ kimondása. A tesztek továbbra is a VALÓDI
+motor-kimeneten futnak, nem fixture-ön.
+
+`tests/unit/platform/interaction-view.test.ts` — mindkét vezető-irány elő van
+számolva minden archetípusra, és a self-irány (ami csak a saját profiltól függ)
+mind a 30-nál azonos.

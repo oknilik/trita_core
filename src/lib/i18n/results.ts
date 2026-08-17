@@ -774,6 +774,13 @@ export const resultsTranslations = {
       hu: "Milyen az ő iránymutatása mellett működni",
       en: "What it may be like to work with their guidance",
     },
+    // A karakter-út tartalmi határa, a tartalom ELŐTT kimondva — a konkrét két
+    // dimenzió nevével. A módszertani részt (mit nem állítunk, hipotézis) nem
+    // ismétli: az az `interactionSourceNote` a lap alján.
+    interactionTypeScopeNote: {
+      hu: "Ez a karakter a {dims} dimenziókra épül — ezért egy valódi profillal többet és mást is láthatsz, akkor is, ha ugyanaz a típusneve.",
+      en: "This character is built on {dims} — so a real profile can show you more, and different things, even when it carries the same type name.",
+    },
     interactionSparse: {
       hu: "Kettőtök között nincs elég markáns eltérés ahhoz, hogy megalapozott dinamikát mondjunk — ez önmagában jó hír: a legtöbb helyzetben hasonlóan működnétek.",
       en: "There isn't enough of a contrast between you two to state a grounded dynamic — which is good news in itself: in most situations you'd operate similarly.",
@@ -793,18 +800,22 @@ export const resultsTranslations = {
       hu: "A két lehetőség eltérő pontosságú — ezért előbb az utat választod ki, és csak utána a konkrét profilt.",
       en: "The two paths offer different levels of precision — choose the path first, then the specific profile.",
     },
+    // A „pontosabb" félrevezetett: azt sugallta, hogy ugyanaz a tartalom, csak
+    // élesebben. A valóság: a karakter CSAK a két legerősebb dimenzióról állít
+    // valamit, egy valódi profil viszont annyiról, amennyi nála pólusos —
+    // vagyis a valódi út TÖBBET mond, nem ugyanazt élesebben.
     compareChooserRealTitle: { hu: "Valódi személlyel", en: "With a real person" },
     compareChooserRealBody: {
-      hu: "Két kitöltött profil · pontosabb közös kép",
-      en: "Two completed profiles · a more precise shared picture",
+      hu: "Két kitöltött profil · mind a hat dimenzió számít",
+      en: "Two completed profiles · all six dimensions count",
     },
     compareChooserTypeTitle: {
       hu: "Karakterrel kipróbálom",
       en: "Try it with a character",
     },
     compareChooserTypeBody: {
-      hu: "Gyors típus-szimuláció · meghívás nélkül",
-      en: "Quick type simulation · no invitation needed",
+      hu: "Két dimenzióra épülő szimuláció · meghívás nélkül",
+      en: "A simulation built on two dimensions · no invitation needed",
     },
     compareConnectionsTitle: {
       hu: "Válassz a kapcsolataid közül",

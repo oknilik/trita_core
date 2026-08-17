@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/ui/cn";
 import {
   useEffect,
   useId,
@@ -20,6 +21,12 @@ interface RelationshipModeSelectProps {
   value: RelationshipMode;
   options: RelationshipModeOption[];
   onChange: (value: RelationshipMode) => void;
+  /**
+   * Elhelyezés a befoglaló felületen. A kontroll nem tudhatja, hogy egy
+   * sötét hero alá lóg-e be (valódi páros) vagy sima folyamban áll-e
+   * (karakter-szimuláció) — ezért a margó/átlapolás kívülről jön.
+   */
+  className?: string;
 }
 
 function RelationIcon() {
@@ -46,6 +53,7 @@ export function RelationshipModeSelect({
   value,
   options,
   onChange,
+  className,
 }: RelationshipModeSelectProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -128,7 +136,10 @@ export function RelationshipModeSelect({
   return (
     <div
       ref={rootRef}
-      className="relative z-20 mx-3 -mt-6 flex items-center gap-3 rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-3 shadow-[var(--ui-shadow-md)] sm:mx-8"
+      className={cn(
+        "relative z-20 flex items-center gap-3 rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-3 shadow-[var(--ui-shadow-md)]",
+        className,
+      )}
     >
       <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]">
         <RelationIcon />

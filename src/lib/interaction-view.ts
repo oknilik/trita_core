@@ -45,10 +45,13 @@ export interface ArchetypeSimulationView {
   friction: InteractionTextLine[];
   discuss: InteractionTextLine[];
   /**
-   * A vezető-mód kapcsolóhoz. Mindig kiszámoljuk (ugyanaz a futás adja),
-   * a felület dönti el, mikor mutatja — így a kapcsoló sem jár hálózattal.
+   * A vezető-irány kapcsolóhoz, mindkét irányra előre kiszámolva — a
+   * felület hálózat nélkül vált, ahogy a valódi páros nézetben is.
+   * Vezetői kiegészítők, ha ÉN vezetek (a nézőpont-tulajdonos).
    */
-  leaderNotes: InteractionLeaderNote[];
+  leaderNotesSelf: InteractionLeaderNote[];
+  /** Vezetői kiegészítők, ha a KARAKTER vezet. */
+  leaderNotesOther: InteractionLeaderNote[];
   /** Nincs elég markáns eltérés — a felület külön üzenetet ad. */
   sparse: boolean;
 }
@@ -137,19 +140,29 @@ export function buildPairSimulation(
 /**
  * Mind a 30 archetípus szimulációja a megadott profilhoz, egy nyelven.
  *
- * A `mode: "other-leads"` azért fix, mert így egyetlen futásból megvan az
- * atom-válogatás ÉS a vezetői kiegészítő is; a felület a kapcsolóval csak
- * mutatja vagy elrejti az utóbbit.
+ * Az atom-válogatást a mode nem érinti (csak a vezetői kiegészítőket), ezért
+ * a blokkok az `other-leads` futásból jönnek, és — a valódi páros nézettel
+ * azonos módon — mindkét vezető-irány kiegészítőit kiszámoljuk, hogy a
+ * kapcsoló ott se járjon hálózattal. (A self-irány jegyzetei csak a saját
+ * profiltól függnek, tehát mind a 30 archetípusra ugyanazok; a második futás
+ * a szimmetria és az olvashatóság kedvéért marad archetípusonként.)
  */
 export function buildArchetypeSimulations(
   selfScores: DimScores,
   locale: Locale,
 ): ArchetypeSimulationView[] {
   return ARCHETYPE_PAIRS.map((pair) => {
-    const result = simulateInteraction({
+    const prototype = archetypePrototype(pair);
+    const otherLeads = simulateInteraction({
       self: selfScores,
-      other: archetypePrototype(pair),
+      other: prototype,
       mode: "other-leads",
+      level: "profile-archetype",
+    });
+    const selfLeads = simulateInteraction({
+      self: selfScores,
+      other: prototype,
+      mode: "self-leads",
       level: "profile-archetype",
     });
 
@@ -160,11 +173,12 @@ export function buildArchetypeSimulations(
       label:
         resolvePersonalityTypeLabel(pair.dominant, pair.secondary, locale) ??
         dimLabel(pair.dominant, locale),
-      easy: serializeLines(result.easy, locale),
-      friction: serializeLines(result.friction, locale),
-      discuss: serializeLines(result.discuss, locale),
-      leaderNotes: serializeLeaderNotes(result.leaderNotes, locale),
-      sparse: result.meta.sparse,
+      easy: serializeLines(otherLeads.easy, locale),
+      friction: serializeLines(otherLeads.friction, locale),
+      discuss: serializeLines(otherLeads.discuss, locale),
+      leaderNotesSelf: serializeLeaderNotes(selfLeads.leaderNotes, locale),
+      leaderNotesOther: serializeLeaderNotes(otherLeads.leaderNotes, locale),
+      sparse: otherLeads.meta.sparse,
     };
   });
 }
