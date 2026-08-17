@@ -26,7 +26,7 @@ export function TritaWordmark({ className = "", style }: TritaWordmarkProps) {
       <span aria-hidden="true" className="inline-flex items-baseline">
         tr
         <span className="relative inline-block">ı
-          <span className="absolute left-1/2 top-[0.035em] size-[0.13em] min-h-px min-w-px -translate-x-1/2 rounded-full bg-[var(--color-accent-primary-strong)]" />
+          <span className="absolute left-1/2 top-[-0.015em] size-[0.18em] min-h-px min-w-px -translate-x-1/2 rounded-full bg-[var(--color-accent-primary-strong)]" />
         </span>
         ta
       </span>
