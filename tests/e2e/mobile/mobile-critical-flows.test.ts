@@ -58,9 +58,19 @@ test.describe("Mobil pilot minőségkapu", () => {
     await expect(progress).toHaveAttribute("aria-valuenow", "1");
   });
 
-  test("az auth belépő mobilon a viewporton belül marad", async ({ page }) => {
+  test("az auth belépő mobilon olvasható, címkézett és a viewporton belül marad", async ({ page }) => {
     await page.goto("/sign-in?redirect_url=%2Fdashboard");
     await expect(page).toHaveURL(/\/sign-in/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/folytasd|continue/i);
+    await expect(page.getByLabel(/e-mail|email/i)).toBeVisible();
+    await expectTouchTarget(page.getByRole("link", { name: "trita" }));
+    await expectTouchTarget(page.getByRole("link", { name: /főoldal|home/i }));
+    await expectTouchTarget(page.getByRole("button", { name: /belépési kód|sign-in code/i }));
+
+    const headingOrder = await page.locator("h1, h2").evaluateAll((headings) =>
+      headings.map((heading) => heading.tagName),
+    );
+    expect(headingOrder[0]).toBe("H1");
     await expectNoHorizontalOverflow(page);
   });
 
@@ -77,4 +87,3 @@ test.describe("Mobil pilot minőségkapu", () => {
     });
   }
 });
-
