@@ -6,7 +6,7 @@ import { useTheme } from "@/components/ThemeProvider";
 import { t } from "@/lib/i18n/public";
 import { THEME_PREFERENCES, type ThemePreference } from "@/lib/theme";
 
-type ThemeToggleVariant = "menu" | "compact";
+type ThemeToggleVariant = "menu" | "compact" | "footer";
 
 interface ThemeToggleProps {
   className?: string;
@@ -157,6 +157,40 @@ export function ThemeToggle({
         onSelect={setPreference}
         className={className}
       />
+    );
+  }
+
+  if (variant === "footer") {
+    return (
+      <div
+        role="radiogroup"
+        aria-label={t("theme.label", locale)}
+        className={`flex items-center gap-2 text-[11px] text-[var(--color-text-on-inverse-muted)] ${className}`}
+      >
+        <span className="mr-1 text-micro uppercase tracking-[0.14em] opacity-70">
+          {t("theme.label", locale)}
+        </span>
+        {THEME_PREFERENCES.map((option, index) => {
+          const active = preference === option;
+          return (
+            <div key={option} className="contents">
+              {index > 0 ? <span aria-hidden="true" className="opacity-40">·</span> : null}
+              <button
+                type="button"
+                role="radio"
+                aria-checked={active}
+                onClick={() => setPreference(option)}
+                className={`rounded px-1 py-1 transition-colors hover:text-[var(--color-text-on-inverse)] ${active
+                  ? "font-semibold text-[var(--color-text-on-inverse)]"
+                  : "text-[var(--color-text-on-inverse-muted)]"
+                }`}
+              >
+                {t(`theme.${option}`, locale)}
+              </button>
+            </div>
+          );
+        })}
+      </div>
     );
   }
 

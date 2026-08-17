@@ -6,9 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { TritaWordmark } from "@/components/TritaLogo";
-import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
+import { MobileMenuShell, MobileMenuRow } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -108,21 +107,11 @@ function NavLink({
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
-  /**
-   * Látszik-e a séma-választó. Alapból NEM: ezt a navot a marketing-fa is
-   * használja, ahol a sötét mód szándékosan nincs hatókörben — ott egy
-   * kapcsoló, ami láthatóan nem csinál semmit, hibának tűnne.
-   * Az (app) zóna kijelentkezett ága (`/try`, `/observe/[token]`,
-   * `/join/[token]`, `/share/[token]`) viszont `.theme-scope`-on belül van,
-   * ezért ott bekapcsoljuk.
-   */
-  showThemeToggle?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
-  showThemeToggle = false,
 }: NavBarProps) {
   const { locale } = useLocale();
   // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
@@ -171,10 +160,9 @@ export function NavBar({
           <div className="flex items-center">
             <Link
               href="/try"
-              className="inline-flex min-h-10 items-center gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-4 pr-1 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06]"
+              className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06]"
             >
               <span>{t("nav.ctaSharedOwnProfile", locale)}</span>
-              <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
             </Link>
           </div>
         </div>
@@ -280,35 +268,25 @@ export function NavBar({
           <div className="pointer-events-auto flex items-center gap-2 justify-self-end">
             {!isSignedIn && (
               <>
-                {/* Csendes másodlagos belépő: nincs még egy teljes gombtest a
-                    fő CTA mellett, csak egy finom körjel és szöveg. */}
+                {/* Csendes másodlagos belépő: a tiszta felirat nem versenyez
+                    a fő CTA-val, és nem igényel magyarázó ikont. */}
                 <Link
                   href="/sign-in"
-                  className="hidden min-h-10 items-center gap-2 rounded-[11px] px-2 text-caption font-medium text-[var(--color-accent-self-deep)] transition-colors hover:text-[var(--color-action-primary-bg-hover)] lg:inline-flex"
+                  className="hidden min-h-10 items-center rounded-[11px] px-3 text-caption font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-action-primary-bg-hover)] lg:inline-flex"
                 >
-                  <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--color-surface-self-border)] text-[11px]">↗</span>
                   <span>{t("nav.signIn", locale)}</span>
                 </Link>
-                {/* A bronz CTA külön nyílmezőt kap: karakteresebb, de továbbra
-                    is egyetlen elsődleges felület marad a fejlécben. */}
                 <Link
                   href={publicCtaHref}
-                  aria-label={publicCtaLabel}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-3 pr-1 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter] hover:brightness-[1.06] lg:gap-2.5 lg:pl-4 lg:text-caption"
+                  aria-label={publicCtaText}
+                  className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption"
                 >
                   <span>{publicCtaText}</span>
-                  <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
                 </Link>
               </>
             )}
 
             {isSignedIn && <UserMenu />}
-
-            {showThemeToggle ? (
-              <div className="hidden lg:block">
-                <ThemeToggle variant="compact" />
-              </div>
-            ) : null}
 
             {/* Hamburger — mobile */}
             <button
@@ -384,30 +362,19 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
-                <span aria-hidden="true" className="flex h-6 w-6 items-center justify-center rounded-full border border-[var(--color-surface-self-border)] text-[11px]">↗</span>
                 <span>{t("nav.signIn", locale)}</span>
               </Link>
               <Link
                 href={publicCtaHref}
-                aria-label={publicCtaLabel}
+                aria-label={publicCtaText}
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-between gap-2 rounded-[13px] bg-[var(--color-bronze-dark)] py-1 pl-3 pr-1 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
               >
                 <span>{publicCtaText}</span>
-                <span aria-hidden="true" className="flex h-8 w-8 items-center justify-center rounded-[10px] bg-white/15 text-[15px]">→</span>
               </Link>
             </div>
-          ) : null}
-
-          {showThemeToggle ? (
-            <>
-              <MobileMenuSectionLabel>{t("theme.label", locale)}</MobileMenuSectionLabel>
-              <div className="px-3 pb-1">
-                <ThemeToggle />
-              </div>
-            </>
           ) : null}
 
         </div>

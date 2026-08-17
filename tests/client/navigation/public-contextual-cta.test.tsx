@@ -34,12 +34,12 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
   it("egyéni módban a mérésre, csapatmódban a kapcsolatfelvételre visz", () => {
     render(<NavBar />);
 
-    const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom →" });
+    const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom" });
     expect(selfCtas.every((link) => link.getAttribute("href") === "/try")).toBe(true);
 
     act(() => setSiteMode("team"));
 
-    const teamCtas = screen.getAllByRole("link", { name: "Egyeztetek →" });
+    const teamCtas = screen.getAllByRole("link", { name: "Egyeztetek" });
     expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
   });
 
