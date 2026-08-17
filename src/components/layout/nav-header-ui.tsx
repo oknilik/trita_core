@@ -411,6 +411,12 @@ function NavHeaderContent({
   // Fókusz-mód a kitöltő felületeken: a teljes navigáció zavaró lenne,
   // de vissza-út mindig kell (design-akciólista #3) — minimál fejléc:
   // logó + „Vissza a vezérlőre" link.
+  // A fő self-kitöltő a valós idejű progressz miatt saját kapszulát rajzol.
+  // Az assessment alfolyamok továbbra is ezt a shell-fejlécet használják.
+  if (pathname === "/try" || pathname === "/assessment") {
+    return null;
+  }
+
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
     return (
       <AssessmentFocusHeader homeHref={homeHref}>

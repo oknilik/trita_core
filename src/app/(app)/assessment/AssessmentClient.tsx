@@ -92,15 +92,12 @@ export function AssessmentClient({
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
-  // Bejelentkezve az app-shell lebegő fókusz-fejléce már
-  // renderel a kitöltő fölött. Ilyenkor NEM ismételjük meg a logót, és a
-  // teljes-magasság számításából levonjuk a fejlécet — különben két
-  // trita-sáv eszi a mobil viewportot, és a lábléc a fold alá csúszik.
+  // A fő kitöltő saját kapszulát rajzol, mert a progressz valós időben itt
+  // érhető el. A shell ezért az exact /assessment és /try útvonalon nem
+  // renderel külön fejlécet; az alfolyamok továbbra is a shellt használják.
   const { isSignedIn } = useAuthState()
-  const hasShellHeader = isSignedIn
-  const shellMinHeight = hasShellHeader
-    ? "min-h-[calc(100dvh-4rem)] lg:min-h-[calc(100dvh-5rem)]"
-    : "min-h-dvh"
+  const assessmentHomeHref = isSignedIn ? JOURNEY_HOME_HANDOFF_PATH : "/"
+  const shellMinHeight = "min-h-dvh"
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
   // A kulcs a scope-pal együtt épül (ahogy az írás/olvasás is): belépett
@@ -641,14 +638,11 @@ export function AssessmentClient({
     ]
     return (
       <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
-        {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
-        {!hasShellHeader && (
-          <AssessmentFocusHeader>
-            {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
-                ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
-            <ThemeToggle variant="compact" />
-          </AssessmentFocusHeader>
-        )}
+        <AssessmentFocusHeader homeHref={assessmentHomeHref}>
+          {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
+              ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
 
         {/* Two-column hero */}
         <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 lg:px-10 2xl:max-w-6xl">
@@ -734,10 +728,40 @@ export function AssessmentClient({
 
   return (
     <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
-      {/* ═══ MINIMAL NAV ═══ — a logó csak akkor, ha a shell fejléce nem
-          renderel fölötte (különben két azonos márkasáv ülne egymáson). */}
-      {!hasShellHeader ? (
-        <AssessmentFocusHeader>
+      <AssessmentFocusHeader
+        homeHref={assessmentHomeHref}
+        center={(
+          <div className="flex w-full items-center gap-2.5 lg:gap-3">
+            <div className="flex shrink-0 items-baseline gap-1">
+              <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+            </div>
+            <div className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
+              {/* Answered reach — light sage: up to last answered question position */}
+              {(() => {
+                let lastAnsweredIdx = -1;
+                for (let i = questions.length - 1; i >= 0; i--) {
+                  if (answers[questions[i].id] !== undefined) { lastAnsweredIdx = i; break; }
+                }
+                const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
+                return (
+                  <div
+                    className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+                    style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
+                  />
+                );
+              })()}
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+                style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
+              />
+            </div>
+            <span className="hidden shrink-0 whitespace-nowrap text-[11px] text-[var(--color-text-muted)] sm:inline">
+              {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
+            </span>
+          </div>
+        )}
+      >
           <div className="flex items-center gap-2 sm:gap-3">
             {/* A kitöltés közben is elérhető: aki világosban indult és
                 zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
@@ -755,55 +779,7 @@ export function AssessmentClient({
               {t('assessment.continueLater', locale)}
             </a>
           </div>
-        </AssessmentFocusHeader>
-      ) : (
-        <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1180px] shrink-0 justify-end px-2 py-2">
-          <div className="flex items-center gap-3">
-            <ThemeToggle variant="compact" />
-            <span className="text-micro text-[var(--color-action-primary-bg)]">
-              ✓ {isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
-            </span>
-            <a
-              href="/profile/results"
-              className="rounded-md border border-[var(--color-border-default)] bg-surface-card px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
-            >
-              {t('assessment.continueLater', locale)}
-            </a>
-          </div>
-        </div>
-      )}
-
-      {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-2.5 md:gap-4 md:px-7">
-        <div className="flex items-baseline gap-1">
-          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
-          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
-        </div>
-        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
-          {/* Answered reach — light sage: up to last answered question position */}
-          {(() => {
-            let lastAnsweredIdx = -1;
-            for (let i = questions.length - 1; i >= 0; i--) {
-              if (answers[questions[i].id] !== undefined) { lastAnsweredIdx = i; break; }
-            }
-            const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
-            return (
-              <div
-                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
-                style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
-              />
-            );
-          })()}
-          {/* Current position — solid sage */}
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
-            style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
-          />
-        </div>
-        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
-          {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
-        </span>
-      </div>
+      </AssessmentFocusHeader>
 
       {/* ═══ QUESTION AREA (centered) ═══ */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
