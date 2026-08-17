@@ -123,7 +123,7 @@ describe("PairInteractionView", () => {
 
     const relation = screen.getByRole("combobox");
     expect(
-      screen.getByRole("option", { name: "Anna vezet engem" }),
+      screen.getByRole("option", { name: "Anna vezet vagy mentorál engem" }),
     ).toBeInTheDocument();
 
     await user.selectOptions(relation, "other-leads");

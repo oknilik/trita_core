@@ -714,8 +714,8 @@ export const resultsTranslations = {
       en: "How would you work together?",
     },
     interactionIntro: {
-      hu: "Válaszd ki, milyen működésmódú emberrel dolgoznál — és megnézzük, mi menne magától köztetek, hol lenne súrlódás, és mit érdemes előre megbeszélni.",
-      en: "Pick the way of working you'd be paired with — and we'll show what would come easily between you, where friction is likely, and what's worth agreeing on up front.",
+      hu: "Válaszd ki, kivel vagy milyen karakterrel szeretnéd megnézni a közös működéseteket.",
+      en: "Choose who — or what kind of character — you'd like to explore your shared dynamic with.",
     },
     interactionPickDominant: { hu: "A legerősebb vonása", en: "Their strongest trait" },
     interactionPickDominantHint: {
@@ -739,19 +739,22 @@ export const resultsTranslations = {
       hu: "Milyen viszonyban vagytok?",
       en: "What's your relationship?",
     },
-    interactionRelationPeer: { hu: "Egyenrangúak", en: "Peers" },
-    interactionRelationLeader: { hu: "Ő a vezetőd", en: "They lead you" },
+    interactionRelationPeer: { hu: "Egyenrangú kapcsolat", en: "Equal relationship" },
+    interactionRelationLeader: {
+      hu: "Ő vezet vagy mentorál engem",
+      en: "They lead or mentor me",
+    },
     interactionRelationPeerHint: {
-      hu: "A dinamika két egyenrangú fél között — nincs döntési fölény egyik oldalon sem.",
-      en: "The dynamic between two peers — neither side holds decision power over the other.",
+      hu: "A dinamika két egyenrangú fél között — nincs tartós döntési fölény egyik oldalon sem.",
+      en: "The dynamic between two equal sides — neither holds lasting decision power over the other.",
     },
     interactionRelationLeaderHint: {
-      hu: "Ilyenkor egy külön blokk is megjelenik arról, milyen ilyen vezető mellett dolgozni.",
-      en: "This also adds a block on what it's like to work under a manager like this.",
+      hu: "Ilyenkor egy külön blokk is megjelenik arról, milyen az ő iránymutatása mellett működni.",
+      en: "This also adds a block on what it may be like to work with their guidance.",
     },
     interactionLeaderToggle: {
-      hu: "Ő a vezetőd",
-      en: "They're your manager",
+      hu: "Ő vezet vagy mentorál",
+      en: "They lead or mentor you",
     },
     // A páros-fejléc: „Te (Módszeres hídépítő) × Energikus újító" — láthatóvá
     // teszi, hogy KETTŐTÖK dinamikájáról van szó, és hogy a két oldal ugyanazt
@@ -768,8 +771,8 @@ export const resultsTranslations = {
       en: "What to agree on up front",
     },
     interactionLeaderTitle: {
-      hu: "Milyen ilyen vezető mellett dolgozni",
-      en: "What it's like to work under this manager",
+      hu: "Milyen az ő iránymutatása mellett működni",
+      en: "What it may be like to work with their guidance",
     },
     interactionSparse: {
       hu: "Kettőtök között nincs elég markáns eltérés ahhoz, hogy megalapozott dinamikát mondjunk — ez önmagában jó hír: a legtöbb helyzetben hasonlóan működnétek.",
@@ -781,13 +784,63 @@ export const resultsTranslations = {
       en: "Type-level estimate: your real scores are compared against a type prototype for which only the two strongest dimensions are known — we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
     },
     // ── Valódi páros összehasonlítás (B1) ────────────────────────────
+    compareChooserEyebrow: {
+      hu: "Összehasonlítás alapja",
+      en: "Comparison basis",
+    },
+    compareChooserTitle: { hu: "Miből induljunk ki?", en: "Where should we start?" },
+    compareChooserBody: {
+      hu: "A két lehetőség eltérő pontosságú — ezért előbb az utat választod ki, és csak utána a konkrét profilt.",
+      en: "The two paths offer different levels of precision — choose the path first, then the specific profile.",
+    },
+    compareChooserRealTitle: { hu: "Valódi személlyel", en: "With a real person" },
+    compareChooserRealBody: {
+      hu: "Két kitöltött profil · pontosabb közös kép",
+      en: "Two completed profiles · a more precise shared picture",
+    },
+    compareChooserTypeTitle: {
+      hu: "Karakterrel kipróbálom",
+      en: "Try it with a character",
+    },
+    compareChooserTypeBody: {
+      hu: "Gyors típus-szimuláció · meghívás nélkül",
+      en: "Quick type simulation · no invitation needed",
+    },
+    compareConnectionsTitle: {
+      hu: "Válassz a kapcsolataid közül",
+      en: "Choose from your connections",
+    },
+    compareConnectionsBody: {
+      hu: "Az elfogadott kapcsolat azonnal összehasonlítható.",
+      en: "An accepted connection is ready to compare immediately.",
+    },
+    compareConnectionsReady: {
+      hu: "{count} kapcsolat készen áll",
+      en: "{count} ready to compare",
+    },
+    compareInvitePromptTitle: {
+      hu: "Valaki mással néznéd meg?",
+      en: "Want to explore it with someone else?",
+    },
+    compareInvitePromptBody: {
+      hu: "Készíts neki meghívólinket a valódi összehasonlításhoz.",
+      en: "Create an invitation link for a real-profile comparison.",
+    },
+    compareInviteToggle: { hu: "Személy meghívása", en: "Invite someone" },
+    compareInviteHide: { hu: "Meghívás elrejtése", en: "Hide invitation" },
+    comparePendingTitle: { hu: "Függő meghívások", en: "Pending invitations" },
+    compareTypePickerTitle: { hu: "Válassz egy karaktert", en: "Choose a character" },
+    compareTypePickerBody: {
+      hu: "Gyors előnézet a másik fél teljes tesztje nélkül.",
+      en: "A quick preview without the other person's full assessment.",
+    },
     compareCardTitle: {
-      hu: "Összehasonlítás valódi kollégával",
-      en: "Compare with a real colleague",
+      hu: "Összehasonlítás valódi személlyel",
+      en: "Compare with a real person",
     },
     compareCardBody: {
-      hu: "Küldj egy linket valakinek, akivel együtt dolgozol. Ha ő is kitölti a saját tesztjét és elfogadja, mindketten a VALÓDI profiljaitok dinamikáját látjátok — nem típus-becslést.",
-      en: "Send a link to someone you work with. If they complete their own assessment and accept, you both see the dynamic of your REAL profiles — not a type estimate.",
+      hu: "Küldj egy linket valakinek, akivel rendszeresen közös helyzetekben vagytok. Ha ő is kitölti a saját tesztjét és elfogadja, mindketten a VALÓDI profiljaitok dinamikáját látjátok — nem típus-becslést.",
+      en: "Send a link to someone you regularly share situations with. If they complete their own assessment and accept, you both see the dynamic of your REAL profiles — not a type estimate.",
     },
     compareCreateCta: { hu: "Összehasonlító link készítése", en: "Create compare link" },
     compareLimitNote: {
@@ -801,8 +854,8 @@ export const resultsTranslations = {
     compareStateAccepted: { hu: "elfogadva", en: "accepted" },
     compareStateExpired: { hu: "lejárt", en: "expired" },
     compareStateRevoked: { hu: "visszavonva", en: "revoked" },
-    compareOpenPair: { hu: "Megnyitás", en: "Open" },
-    comparePartnerFallback: { hu: "partner", en: "partner" },
+    compareOpenPair: { hu: "Közös kép megnyitása", en: "Open shared picture" },
+    comparePartnerFallback: { hu: "másik személy", en: "other person" },
     compareListEmpty: {
       hu: "Még nincs aktív linked vagy elfogadott párod.",
       en: "No active links or accepted pairs yet.",
@@ -856,19 +909,25 @@ export const resultsTranslations = {
       en: "Two real self-assessments",
     },
     compareRelationLabel: { hu: "Kapcsolatotok", en: "Your relationship" },
-    compareRelationPeer: { hu: "Egyenrangú kollégák", en: "Peer colleagues" },
+    compareRelationPeer: {
+      hu: "Egyenrangú kapcsolat",
+      en: "Equal relationship",
+    },
     compareRelationOtherLeads: {
-      hu: "{name} vezet engem",
-      en: "{name} leads me",
+      hu: "{name} vezet vagy mentorál engem",
+      en: "{name} leads or mentors me",
     },
     compareRelationSelfLeadsNamed: {
-      hu: "Én vezetem őt: {name}",
-      en: "I lead {name}",
+      hu: "Én vezetem vagy mentorálom őt — {name}",
+      en: "I lead or mentor {name}",
     },
     compareCommonPicture: { hu: "Közös kép", en: "Shared picture" },
     compareConnects: { hu: "Ami összeköt", en: "What connects you" },
     compareAttention: { hu: "Amire figyeljetek", en: "What to watch" },
-    compareRelationSelfLeads: { hu: "Én vezetem őt", en: "I lead them" },
+    compareRelationSelfLeads: {
+      hu: "Én vezetem vagy mentorálom őt",
+      en: "I lead or mentor them",
+    },
     comparePairSourceNote: {
       hu: "Két valódi, megosztott önértékelés összevetése — pontosabb, mint a típus-becslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetés-indítónak készült.",
       en: "A comparison of two real, shared self-assessments — more precise than a type estimate, yet still based on self-report. A hypothesis, not a verdict: built to start a conversation.",
@@ -893,12 +952,12 @@ export const resultsTranslations = {
       en: "QR code for the compare link",
     },
     compareQrHint: {
-      hu: "Mutasd meg a kollégádnak — a telefonjával beolvasva egyből az elfogadó oldalra jut.",
-      en: "Show it to your colleague — scanning it takes them straight to the consent page.",
+      hu: "Mutasd meg neki — a telefonjával beolvasva egyből az elfogadó oldalra jut.",
+      en: "Show it to them — scanning it takes them straight to the consent page.",
     },
     compareEmailPlaceholder: {
-      hu: "kollega@ceg.hu (nem kötelező)",
-      en: "colleague@company.com (optional)",
+      hu: "email@pelda.hu (nem kötelező)",
+      en: "email@example.com (optional)",
     },
     compareEmailOptionalNote: {
       hu: "Ha megadsz egy címet, a linket emailben is kiküldjük.",

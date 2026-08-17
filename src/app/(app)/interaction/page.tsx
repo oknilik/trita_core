@@ -15,11 +15,8 @@ import { resolveGlyphPair } from "@/lib/type-glyph";
 import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
-import { InteractionSection } from "@/components/results/InteractionSection";
-import {
-  CompareInviteCard,
-  type SerializedCompareInvite,
-} from "@/components/results/CompareInviteCard";
+import type { SerializedCompareInvite } from "@/components/results/CompareInviteCard";
+import { InteractionComparisonChooser } from "@/components/results/InteractionComparisonChooser";
 import {
   PairInteractionView,
   type PairGlyphInfo,
@@ -127,8 +124,50 @@ export default async function InteractionPage({
       partner: { select: { username: true } },
     },
   });
+
+  const otherProfileIds = Array.from(
+    new Set(
+      rawInvites.flatMap((inv) => {
+        const otherId =
+          inv.inviterId === profile.id ? inv.partnerId : inv.inviterId;
+        return otherId ? [otherId] : [];
+      }),
+    ),
+  );
+  const otherResults = otherProfileIds.length
+    ? await prisma.assessmentResult.findMany({
+        where: {
+          userProfileId: { in: otherProfileIds },
+          isSelfAssessment: true,
+        },
+        orderBy: { createdAt: "desc" },
+        select: { userProfileId: true, scores: true },
+      })
+    : [];
+  const otherGlyphByProfileId = new Map<string, PairGlyphInfo>();
+  for (const result of otherResults) {
+    if (
+      !result.userProfileId ||
+      otherGlyphByProfileId.has(result.userProfileId)
+    ) {
+      continue;
+    }
+    const dimensionScores = extractDimensionScores(result.scores);
+    if (!dimensionScores) continue;
+    const dimensions = Object.entries(dimensionScores).map(([code, score]) => ({
+      code,
+      score,
+    }));
+    const glyph = resolveGlyphPair(dimensions);
+    const label = resolvePersonalityTypeFromScores(dimensions, lang);
+    if (glyph && label) {
+      otherGlyphByProfileId.set(result.userProfileId, { ...glyph, label });
+    }
+  }
+
   const compareInvites: SerializedCompareInvite[] = rawInvites.map((inv) => {
     const isInviter = inv.inviterId === profile.id;
+    const otherId = isInviter ? inv.partnerId : inv.inviterId;
     return {
       id: inv.id,
       token: isInviter ? inv.token : null,
@@ -140,6 +179,7 @@ export default async function InteractionPage({
       createdAt: inv.createdAt.toISOString(),
       acceptedAt: inv.acceptedAt?.toISOString() ?? null,
       expiresAt: inv.expiresAt.toISOString(),
+      otherGlyph: otherId ? (otherGlyphByProfileId.get(otherId) ?? null) : null,
     };
   });
 
@@ -233,16 +273,12 @@ export default async function InteractionPage({
           sim={pairView.sim}
         />
       ) : (
-        <>
-          <CompareInviteCard invites={compareInvites} />
-
-          <InteractionSection
-            simulations={simulations}
-            selfLabel={personalityType ?? undefined}
-            selfGlyph={selfGlyph ?? undefined}
-            hideHeader
-          />
-        </>
+        <InteractionComparisonChooser
+          invites={compareInvites}
+          simulations={simulations}
+          selfLabel={personalityType ?? undefined}
+          selfGlyph={selfGlyph ?? undefined}
+        />
       )}
     </PlatformPageShell>
   );
