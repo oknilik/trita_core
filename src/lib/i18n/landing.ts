@@ -348,7 +348,11 @@ export const landingTranslations = {
     },
     tryCta: { hu: "Teszt indítása →", en: "Start assessment →" },
     // ── Blog UX 2. kör (2026-07-24) ──
-    filterAll: { hu: "Mind", en: "All" },
+    filterLabel: { hu: "Téma szerint", en: "Filter by topic" },
+    filterAll: { hu: "Összes", en: "All" },
+    clearFilter: { hu: "Szűrés törlése", en: "Clear filter" },
+    resultOne: { hu: "cikk", en: "article" },
+    resultMany: { hu: "cikk", en: "articles" },
     newBadge: { hu: "Új", en: "New" },
     startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
     inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
