@@ -19,6 +19,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("profile");
 
@@ -237,14 +238,14 @@ export default function ProfilePage() {
   };
 
   const inputClass = (field: InvalidField, touched: boolean, valid: boolean, value: string) =>
-    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] outline-none transition-all md:text-caption ${
+    `min-h-[44px] rounded-lg border-[1.5px] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] transition-all md:text-caption ${FOCUS_RING_CLASS} ${
       touched && value !== "" && !valid
         ? "border-state-error-border bg-state-error-bg/50"
-        : "border-[var(--color-border-default)] bg-surface-card focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+        : "border-[var(--color-border-default)] bg-surface-card focus-visible:border-[var(--color-action-primary-bg)]"
     } ${invalidFieldFlash === field ? "ring-2 ring-state-error-border" : ""}`;
 
   const pillClass = (active: boolean) =>
-    `min-h-[44px] rounded-full border-[1.5px] px-[18px] py-2 text-xs transition-all ${
+    `min-h-[44px] rounded-full border-[1.5px] px-[18px] py-2 text-xs transition-all ${FOCUS_RING_CLASS} ${
       active
         ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/15"
         : "border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:border-[var(--color-accent-self)] hover:bg-[var(--color-surface-self-accent-soft)] hover:text-[var(--color-action-primary-bg)]"
@@ -311,7 +312,7 @@ export default function ProfilePage() {
                   <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-surface-card p-4">
                     <div className="flex flex-wrap items-center gap-2">
                       {canOpenOrg ? (
-                        <Link href={`/org/${m.orgId}`} className="text-caption font-semibold text-[var(--color-text-primary)] hover:underline">
+                        <Link href={`/org/${m.orgId}`} className={`rounded-md text-caption font-semibold text-[var(--color-text-primary)] hover:underline ${FOCUS_RING_CLASS}`}>
                           {m.orgName ?? m.orgId}
                         </Link>
                       ) : (
@@ -331,7 +332,7 @@ export default function ProfilePage() {
                             <Link
                               key={team.id}
                               href={`/team/${team.id}`}
-                              className="rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-[11px] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)]"
+                              className={`rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-[11px] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
                             >
                               {team.name}
                             </Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 // ─────────────────────────────────────────────────────────────────────
 // Közös mobilmenü-váz (2026-07-29, menü-konvergencia): a kijelentkezett
@@ -59,7 +60,7 @@ export function MobileMenuRow({
       href={href}
       onClick={onClick}
       aria-current={active ? "page" : undefined}
-      className={`group flex items-center gap-3.5 rounded-xl px-3.5 py-3.5 transition-colors hover:bg-[var(--color-surface-subtle)] ${
+      className={`group flex items-center gap-3.5 rounded-xl px-3.5 py-3.5 transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS} ${
         active ? "bg-[var(--color-surface-subtle)]" : ""
       }`}
     >

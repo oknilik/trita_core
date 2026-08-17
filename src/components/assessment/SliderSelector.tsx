@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useLocale } from '@/components/LocaleProvider'
 import { t } from '@/lib/i18n'
+import { FOCUS_RING_CLASS } from '@/lib/ui/focus'
 
 interface SliderSelectorProps {
   value: number | null
@@ -41,6 +42,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               whileTap={{ scale: 0.94 }}
               className={[
                 "flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-[2.5px] text-body font-medium transition-all md:h-14 md:w-14",
+                FOCUS_RING_CLASS,
                 isSelected
                   ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/25"
                   : isHovered

@@ -15,6 +15,7 @@ import { useAuthState } from '@/components/auth/auth-state'
 import { useLocale } from '@/components/LocaleProvider'
 import { t, tf } from '@/lib/i18n'
 import { JOURNEY_HOME_HANDOFF_PATH } from '@/lib/journey/routes'
+import { FOCUS_RING_CLASS } from '@/lib/ui/focus'
 import {
   clearAssessmentDraftFromStorage,
   getAssessmentDraftKey,
@@ -666,7 +667,7 @@ export function AssessmentClient({
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[12px] bg-[var(--color-action-primary-bg)] px-9 py-4 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto lg:text-base"
+                className={`w-full rounded-[12px] bg-[var(--color-action-primary-bg)] px-9 py-4 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto lg:text-base ${FOCUS_RING_CLASS}`}
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -778,7 +779,7 @@ export function AssessmentClient({
               <ThemeToggle variant="compact" />
               <a
                 href={guestMode ? "/" : "/profile/results"}
-                className="whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3"
+                className={`whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3 ${FOCUS_RING_CLASS}`}
               >
                 {t('assessment.continueLater', locale)}
               </a>
@@ -884,7 +885,7 @@ export function AssessmentClient({
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`col-start-1 row-start-1 min-h-[48px] w-full justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${
+          className={`col-start-1 row-start-1 min-h-[48px] w-full justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${FOCUS_RING_CLASS} ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -893,7 +894,7 @@ export function AssessmentClient({
           ← {t('assessment.prevCta', locale)}
         </button>
 
-        <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">
+        <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-state-focus-ring focus-within:ring-offset-2 focus-within:ring-offset-surface-canvas sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
@@ -919,7 +920,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleNextStep()}
             disabled={!canProceed}
-            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${
+            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               canProceed
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -932,7 +933,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleFinish()}
             disabled={isSubmitting}
-            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${
+            className={`col-start-2 row-start-1 min-h-[48px] w-full justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

@@ -14,6 +14,7 @@ import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { useSiteMode } from "@/components/landing/site-mode";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -91,6 +92,7 @@ function NavLink({
       aria-current={active ? "page" : undefined}
       className={[
         "inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption transition-[color,background-color,box-shadow]",
+        FOCUS_RING_CLASS,
         active
           ? "bg-[var(--color-surface-inverse)] font-semibold text-[var(--color-text-on-inverse)] shadow-[0_3px_10px_rgba(26,26,46,0.14)]"
           : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-card)] hover:text-[var(--color-text-primary)]",
@@ -153,14 +155,14 @@ export function NavBar({
           <Link
             href="/"
             aria-label="trita"
-            className="text-[var(--color-text-primary)]"
+            className={`rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
           >
             <TritaWordmark className="text-lg" />
           </Link>
           <div className="flex items-center">
             <Link
               href="/try"
-              className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06]"
+              className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
             >
               <span>{t("nav.ctaSharedOwnProfile", locale)}</span>
             </Link>
@@ -240,7 +242,7 @@ export function NavBar({
           <Link
             href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
-            className="pointer-events-auto justify-self-start text-[var(--color-text-primary)]"
+            className={`pointer-events-auto justify-self-start rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
           >
             <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
@@ -272,14 +274,14 @@ export function NavBar({
                     a fő CTA-val, és nem igényel magyarázó ikont. */}
                 <Link
                   href="/sign-in"
-                  className="hidden min-h-10 items-center rounded-[11px] px-3 text-caption font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-action-primary-bg-hover)] lg:inline-flex"
+                  className={`hidden min-h-10 items-center rounded-[11px] px-3 text-caption font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-action-primary-bg-hover)] lg:inline-flex ${FOCUS_RING_CLASS}`}
                 >
                   <span>{t("nav.signIn", locale)}</span>
                 </Link>
                 <Link
                   href={publicCtaHref}
                   aria-label={publicCtaText}
-                  className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption"
+                  className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption ${FOCUS_RING_CLASS}`}
                 >
                   <span>{publicCtaText}</span>
                 </Link>
@@ -296,7 +298,7 @@ export function NavBar({
               }}
               aria-label={t("nav.menu", locale)}
               aria-expanded={drawerOpen}
-              className="pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-border-default)] lg:hidden"
+              className={`pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-border-default)] lg:hidden ${FOCUS_RING_CLASS}`}
             >
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                 {drawerOpen ? (
@@ -316,7 +318,7 @@ export function NavBar({
             <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
-              className="shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className={`shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
             >
               {signedInHint.ctaLabel}
             </Link>
@@ -350,7 +352,7 @@ export function NavBar({
               <Link
                 href="/sign-out"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 {t("nav.signOut", locale)}
               </Link>
@@ -362,7 +364,7 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 <span>{t("nav.signIn", locale)}</span>
               </Link>
@@ -370,7 +372,7 @@ export function NavBar({
                 href={publicCtaHref}
                 aria-label={publicCtaText}
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
+                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
               >
                 <span>{publicCtaText}</span>
               </Link>

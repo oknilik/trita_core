@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/ui/cn";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export type PlatformSurface = "self" | "team" | "org";
 
@@ -130,7 +131,10 @@ export function PlatformPageShell({
                         {crumb.href && !isLast ? (
                           <Link
                             href={crumb.href}
-                            className="inline-flex min-h-[44px] items-center rounded-md px-1 transition-colors hover:text-text-primary"
+                            className={cn(
+                              "inline-flex min-h-[44px] items-center rounded-md px-1 transition-colors hover:text-text-primary",
+                              FOCUS_RING_CLASS,
+                            )}
                           >
                             <span className="max-w-[9rem] truncate md:max-w-[18rem]">
                               {crumb.label}
