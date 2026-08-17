@@ -8,6 +8,7 @@ import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TritaWordmark } from "@/components/TritaLogo";
 import {
   buildWorkspaceNavigation,
   resolveWorkspaceNavRole,
@@ -453,9 +454,9 @@ function NavHeaderContent({
           <Link
             href={homeHref}
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="text-[var(--color-text-primary)]"
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-lg" />
           </Link>
           <Link
             href={homeHref}
@@ -733,11 +734,11 @@ function NavHeaderContent({
           <Link
             href={homeHref}
             aria-label="trita"
-            className={`font-fraunces justify-self-start text-[22px] font-black tracking-[-0.04em] text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
+            className={`justify-self-start text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
               isWorkspaceHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
             }`}
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
 
           <span className={`truncate px-3 text-center text-[11px] font-semibold text-[var(--color-text-muted)] transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:hidden ${

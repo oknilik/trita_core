@@ -8,6 +8,7 @@ import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
@@ -205,9 +206,9 @@ export function NavBar({
           <Link
             href="/"
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="text-[var(--color-text-primary)]"
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-lg" />
           </Link>
           <div className="flex items-center gap-2">
             <LanguageSwitcher />
@@ -299,11 +300,11 @@ export function NavBar({
           <Link
             href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
-            className={`font-fraunces justify-self-start text-[22px] font-black tracking-[-0.04em] text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
+            className={`justify-self-start text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
               isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
             }`}
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}

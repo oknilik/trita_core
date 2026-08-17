@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { t } from "@/lib/i18n";
 import {
   hasAssessmentDraftInStorage,
@@ -118,9 +119,9 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
         {/* Logo */}
         <Link
           href="/"
-          className="font-fraunces mb-8 inline-flex text-2xl font-black tracking-tight text-ink"
+          className="mb-8 inline-flex text-ink"
         >
-          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          <TritaWordmark className="text-2xl tracking-tight" />
         </Link>
 
         {/* UX-A14: ünneplés csak TELJES kitöltésnél — félkész draftnál

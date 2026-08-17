@@ -9,6 +9,7 @@ import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -642,8 +643,8 @@ export function AssessmentClient({
         {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
         {!hasShellHeader && (
           <nav className="flex items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-            <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-              <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <Link href="/" className="text-[var(--color-text-primary)]">
+              <TritaWordmark className="text-2xl" />
             </Link>
             {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
                 ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
@@ -743,8 +744,8 @@ export function AssessmentClient({
         }`}
       >
         {!hasShellHeader && (
-          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+          <Link href="/" className="text-[var(--color-text-primary)]">
+            <TritaWordmark className="text-2xl" />
           </Link>
         )}
         <div className="flex items-center gap-3">
