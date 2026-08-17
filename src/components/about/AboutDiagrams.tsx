@@ -3,7 +3,7 @@
 //
 // MIÉRT SAJÁT, ÉS MIÉRT NEM `EditorialArt`: az `EditorialArt` szándékosan
 // SEMMIT nem állít — sorsolt kompozíció, dekoráció. Itt viszont az ábra a
-// mondanivaló hordozója (négy réteg → egy kép; táguló kör; rendezetlenből
+// mondanivaló hordozója (három alapréteg → egy kép; táguló kör; rendezetlenből
 // rendezett), tehát a geometriának kézzel meghatározottnak kell lennie.
 //
 // AMIT NEM SZABAD: a hat JELENTŐ alapformát (type-glyph.ts) használni. Az
@@ -86,26 +86,26 @@ function Star({ x, y, r, opacity = 0.85 }: { x: number; y: number; r: number; op
 
 // ── 1. Rétegábra — „hogyan épül fel" ──────────────────────────────────
 //
-// Négy mérési réteg fut össze EGY formába, és az összefutás pontját vékony
+// Három alapréteg fut össze EGY formába, és az összefutás pontját vékony
 // tintagyűrű zárja körbe: az a tanácsadói validálás. A gyűrű nem díszítés —
 // ez az egyetlen elem az ábrán, ami a „nem algoritmus dobja ki" állítást
 // vizuálisan is elmondja.
 
 const LAYER_VIEWBOX = { w: 300, h: 340 } as const;
 const LAYER_NODE_X = 62;
-const LAYER_NODE_YS = [46, 126, 206, 286] as const;
-const LAYER_SHAPES: readonly EditorialShapeId[] = ["blob", "crescent", "ladder", "arcs"] as const;
-const LAYER_TONES: readonly Tone[] = ["form", "counterweight", "form", "counterweight"] as const;
+const LAYER_NODE_YS = [70, 166, 262] as const;
+const LAYER_SHAPES: readonly EditorialShapeId[] = ["blob", "crescent", "arcs"] as const;
+const LAYER_TONES: readonly Tone[] = ["form", "counterweight", "form"] as const;
 /** Az összefutás középpontja és a validálás-gyűrű sugara. */
 const LAYER_HUB = { x: 232, y: 166, r: 62 } as const;
 
 /**
- * Az összekötők NEM egyetlen pontba futnak, hanem a gyűrű bal ívének négy
- * pontjára. Egy közös végpontnál a négy ív az utolsó ~30 pixelen egymásra
+ * Az összekötők NEM egyetlen pontba futnak, hanem a gyűrű bal ívének három
+ * pontjára. Egy közös végpontnál az ívek az utolsó ~30 pixelen egymásra
  * csúszott, és a csomó nyílhegynek látszott — az „összeér" helyett
  * „belefúródik" gesztus (előnézetből, 2026-08-09).
  */
-const LAYER_ARRIVALS = [-21, -7, 7, 21].map((dy) => ({
+const LAYER_ARRIVALS = [-16, 0, 16].map((dy) => ({
   x: r2(LAYER_HUB.x - Math.sqrt(LAYER_HUB.r * LAYER_HUB.r - dy * dy)),
   y: LAYER_HUB.y + dy,
 }));
@@ -123,7 +123,7 @@ export function LayerDiagram({ label, className }: { label: string; className?: 
       {/* Ellensúly a bal felső sarokban — a kompozíció nem dől jobbra. */}
       <circle cx={20} cy={20} r={5} fill={ART_COLORS.counterweight} />
 
-      {/* Összekötő ívek: mind a négy réteg a gyűrű bal szélén ér földet. */}
+      {/* Összekötő ívek: mind a három alapréteg a gyűrű bal szélén ér földet. */}
       <g fill="none" stroke={ART_COLORS.line} strokeWidth={2} strokeLinecap="round" opacity={0.55}>
         {LAYER_NODE_YS.map((y, i) => {
           const end = LAYER_ARRIVALS[i];

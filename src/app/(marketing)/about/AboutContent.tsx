@@ -32,12 +32,6 @@ export function AboutContent() {
       desc: t("about.layer3Desc", locale),
       tag: t("about.layer3Tag", locale),
     },
-    {
-      number: "04",
-      title: t("about.layer4Title", locale),
-      desc: t("about.layer4Desc", locale),
-      tag: t("about.layer4Tag", locale),
-    },
   ];
 
   const pathSteps = [
@@ -194,8 +188,8 @@ export function AboutContent() {
               </p>
 
               <div className="mt-9 grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-10">
-                {/* Az ábra asztalon együtt görget a listával — a négy kártya
-                    pont a négy csomópontot mondja el szavakkal. */}
+                {/* Az ábra asztalon együtt görget a listával — a három kártya
+                    pont a három alapréteget mondja el szavakkal. */}
                 <div className="rounded-[24px] border border-sand bg-warm px-6 py-7 lg:sticky lg:top-24">
                   <LayerDiagram
                     label={t("about.buildDiagramAlt", locale)}
@@ -222,6 +216,20 @@ export function AboutContent() {
                       <p className="mt-3 text-base leading-8 text-ink-body">{layer.desc}</p>
                     </article>
                   ))}
+
+                  <div className="flex flex-wrap items-center gap-2.5 rounded-[18px] border border-sand bg-warm px-5 py-4">
+                    <span className="mr-1 font-dm-sans text-label uppercase tracking-widest text-ink-body">
+                      {t("about.optionalLabel", locale)}
+                    </span>
+                    {["about.optionalObserver", "about.optionalPeer", "about.optionalRoles"].map((key) => (
+                      <span
+                        key={key}
+                        className="rounded-full border border-sand bg-surface-card px-3 py-1.5 text-caption text-ink-body"
+                      >
+                        {t(key, locale)}
+                      </span>
+                    ))}
+                  </div>
 
                   <article className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-6">
                     <SectionEyebrow tone="self">{t("about.buildOutcomeLabel", locale)}</SectionEyebrow>
