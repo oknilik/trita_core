@@ -4,6 +4,10 @@ import { useState, type CSSProperties } from "react";
 import { t, tf } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
+import {
+  RelationshipModeSelect,
+  type RelationshipMode,
+} from "@/components/results/RelationshipModeSelect";
 import type {
   InteractionTextLine,
   InteractionLeaderNote,
@@ -24,7 +28,6 @@ interface PairInteractionViewProps {
   sim: PairSimulationView;
 }
 
-type PairMode = "peer" | "other-leads" | "self-leads";
 type PanelId = "easy" | "friction" | "discuss";
 
 const HERO_GLYPH_TOKENS = {
@@ -116,25 +119,6 @@ function InsightPanel({
   );
 }
 
-function RelationIcon() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-      className="h-5 w-5"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="9" cy="8" r="3" />
-      <circle cx="17" cy="9" r="2.25" />
-      <path d="M3.5 19a5.5 5.5 0 0 1 11 0M14 14.5a4.5 4.5 0 0 1 6.5 4" />
-    </svg>
-  );
-}
-
 /**
  * Két valós, kölcsönösen megosztott profil közös működési képe.
  *
@@ -149,7 +133,7 @@ export function PairInteractionView({
   sim,
 }: PairInteractionViewProps) {
   const { locale } = useLocale();
-  const [mode, setMode] = useState<PairMode>("peer");
+  const [mode, setMode] = useState<RelationshipMode>("peer");
   const [openPanel, setOpenPanel] = useState<PanelId | null>("easy");
 
   const leaderNotes: InteractionLeaderNote[] =
@@ -159,7 +143,7 @@ export function PairInteractionView({
         ? sim.leaderNotesSelf
         : [];
 
-  const modeOptions: Array<{ value: PairMode; label: string }> = [
+  const modeOptions: Array<{ value: RelationshipMode; label: string }> = [
     { value: "peer", label: t("results.compareRelationPeer", locale) },
     {
       value: "other-leads",
@@ -275,41 +259,13 @@ export function PairInteractionView({
           </div>
         </div>
 
-        {/* A munkakapcsolat a hero része, de nem töri három hosszú pillre a mobilt. */}
-        <div className="relative z-10 mx-3 -mt-6 flex items-center gap-3 rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-3 shadow-[var(--ui-shadow-md)] sm:mx-8">
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]">
-            <RelationIcon />
-          </span>
-          <label className="min-w-0 flex-1">
-            <span className="block text-micro text-[var(--color-text-muted)]">
-              {t("results.compareRelationLabel", locale)}
-            </span>
-            <span className="relative block">
-              <select
-                value={mode}
-                onChange={(event) => setMode(event.target.value as PairMode)}
-                className="min-h-[32px] w-full appearance-none bg-transparent pr-7 text-caption font-semibold text-[var(--color-text-primary)] outline-none"
-              >
-                {modeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 16 16"
-                className="pointer-events-none absolute right-0 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-muted)]"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              >
-                <path d="m3 6 5 5 5-5" />
-              </svg>
-            </span>
-          </label>
-        </div>
+        {/* Saját listbox: mobilon sem a böngésző natív választóját nyitja meg. */}
+        <RelationshipModeSelect
+          label={t("results.compareRelationLabel", locale)}
+          value={mode}
+          options={modeOptions}
+          onChange={setMode}
+        />
       </div>
 
       {sim.sparse ? (

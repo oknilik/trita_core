@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { PairInteractionView } from "@/components/results/PairInteractionView";
@@ -121,13 +121,55 @@ describe("PairInteractionView", () => {
       />,
     );
 
-    const relation = screen.getByRole("combobox");
-    expect(
+    const relation = screen.getByRole("button", {
+      name: /Kapcsolatotok Egyenrangú kapcsolat/,
+    });
+    expect(relation).toHaveAttribute("aria-haspopup", "listbox");
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+
+    await user.click(relation);
+    expect(screen.getByRole("listbox", { name: "Kapcsolatotok" })).toBeInTheDocument();
+
+    await user.click(
       screen.getByRole("option", { name: "Anna vezet vagy mentorál engem" }),
+    );
+
+    expect(
+      screen.getByText("Anna vezetőként teret ad a közös mérlegelésnek."),
     ).toBeInTheDocument();
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 
-    await user.selectOptions(relation, "other-leads");
+  it("billentyűzettel is végigjárhatóvá teszi az egyedi kapcsolatválasztót", async () => {
+    const user = userEvent.setup();
+    render(
+      <PairInteractionView
+        self={self}
+        other={other}
+        otherName="Anna"
+        sim={sim}
+      />,
+    );
 
+    const relation = screen.getByRole("button", {
+      name: /Kapcsolatotok Egyenrangú kapcsolat/,
+    });
+    relation.focus();
+    await user.keyboard("{ArrowDown}");
+
+    const peer = screen.getByRole("option", { name: "Egyenrangú kapcsolat" });
+    expect(peer).toHaveFocus();
+
+    await user.keyboard("{ArrowDown}{Enter}");
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", {
+          name: /Kapcsolatotok Anna vezet vagy mentorál engem/,
+        }),
+      ).toHaveFocus(),
+    );
     expect(
       screen.getByText("Anna vezetőként teret ad a közös mérlegelésnek."),
     ).toBeInTheDocument();
