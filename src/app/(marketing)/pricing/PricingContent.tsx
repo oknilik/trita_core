@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n/public";
 import { PricingQuickAsk } from "@/components/pricing/PricingQuickAsk";
+import { useLocale } from "@/components/LocaleProvider";
 import { track } from "@/lib/analytics/client";
+import { t } from "@/lib/i18n/public";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -18,105 +19,130 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   );
 }
 
+const WORKFLOW_STEPS = [1, 2, 3] as const;
+const OFFER_FACTORS = [1, 2, 3] as const;
+
 export function PricingContent() {
   const { locale } = useLocale();
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      {/* ── Hero ── */}
-      <section className="px-6 pb-10 pt-14 text-center lg:px-16 lg:pt-20">
-        <p className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-          {t("pricing.heroEyebrow", locale)}
-        </p>
-        <h1 className="mx-auto mt-3 max-w-2xl font-fraunces text-fluid-title tracking-tight text-[var(--color-text-primary)]">
-          {t("pricing.heroHeading", locale)}
-          <em className="text-[var(--color-action-primary-bg)]">{t("pricing.heroHeadingEm", locale)}</em>
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-body leading-relaxed text-[var(--color-text-muted)]">
-          {t("pricing.heroSub", locale)}
-        </p>
+      <section className="px-6 pb-10 pt-14 lg:px-16 lg:pb-14 lg:pt-20">
+        <div className="mx-auto max-w-5xl">
+          <p className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            {t("pricing.heroEyebrow", locale)}
+          </p>
+          <h1 className="mt-3 max-w-3xl font-fraunces text-fluid-title tracking-tight text-[var(--color-text-primary)]">
+            {t("pricing.heroHeading", locale)}
+            <em className="text-[var(--color-action-primary-bg)]">
+              {t("pricing.heroHeadingEm", locale)}
+            </em>
+          </h1>
+          <p className="mt-5 max-w-2xl text-body leading-relaxed text-[var(--color-text-muted)]">
+            {t("pricing.heroSub", locale)}
+          </p>
+        </div>
       </section>
 
-      {/* ── Egyéni: ingyenes ── */}
       <section className="px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-7 lg:p-9">
-          <Eyebrow>{t("pricing.selfEyebrow", locale)}</Eyebrow>
-          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
-            {t("pricing.selfTitle", locale)}
-          </h2>
-          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
-            {t("pricing.selfBody", locale)}
-          </p>
-          <Link
-            href="/try"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-border-default)] bg-surface-card px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)]"
-          >
-            {t("pricing.selfCta", locale)}
-          </Link>
+        <div className="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[minmax(0,1.12fr)_minmax(18rem,0.88fr)] lg:items-start">
+          <div className="rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-6 sm:p-8">
+            <Eyebrow>{t("pricing.workflowEyebrow", locale)}</Eyebrow>
+            <ol className="mt-6 space-y-3">
+              {WORKFLOW_STEPS.map((step) => (
+                <li
+                  key={step}
+                  className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-4 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="flex size-11 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] font-fraunces text-lg text-[var(--color-accent-self-deep)]"
+                  >
+                    {step}
+                  </span>
+                  <div>
+                    <h2 className="font-dm-sans text-[15px] font-semibold text-[var(--color-text-primary)]">
+                      {t(`pricing.workflow${step}Title`, locale)}
+                    </h2>
+                    <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
+                      {t(`pricing.workflow${step}Body`, locale)}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <aside className="rounded-2xl border border-[var(--color-accent-primary)]/40 bg-[var(--color-surface-highlight-warm)] p-6 sm:p-8 lg:sticky lg:top-28">
+            <Eyebrow>{t("pricing.offerEyebrow", locale)}</Eyebrow>
+            <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+              {t("pricing.offerTitle", locale)}
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+              {t("pricing.offerBody", locale)}
+            </p>
+            <ul className="mt-5 flex flex-wrap gap-2">
+              {OFFER_FACTORS.map((factor) => (
+                <li
+                  key={factor}
+                  className="rounded-full border border-[var(--color-border-default)] bg-surface-card px-3 py-2 text-[12px] font-medium text-[var(--color-text-secondary)]"
+                >
+                  {t(`pricing.offerFactor${factor}`, locale)}
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/contact"
+              className={`mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-5 text-caption font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
+            >
+              {t("pricing.offerCta", locale)}
+            </Link>
+            <Link
+              href="/pilot"
+              className={`mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("pricing.offerPilotCta", locale)}
+            </Link>
+          </aside>
         </div>
       </section>
 
-      {/* ── Csapat & szervezet: program ── */}
       <section className="mt-6 px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-7 lg:p-9">
-          <Eyebrow>{t("pricing.teamEyebrow", locale)}</Eyebrow>
-          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
-            {t("pricing.teamTitle", locale)}
-          </h2>
-          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
-            {t("pricing.teamBody", locale)}
-          </p>
+        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+          <article className="rounded-2xl border border-[var(--color-border-soft)] bg-surface-card p-6 sm:p-8">
+            <Eyebrow>{t("pricing.selfEyebrow", locale)}</Eyebrow>
+            <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+              {t("pricing.selfTitle", locale)}
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+              {t("pricing.selfBody", locale)}
+            </p>
+            <Link
+              href="/try"
+              className={`mt-5 inline-flex min-h-11 items-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("pricing.selfCta", locale)}
+            </Link>
+          </article>
 
-          <ol className="mt-6 grid gap-3 sm:grid-cols-3">
-            {(["teamHow1", "teamHow2", "teamHow3"] as const).map((key, i) => (
-              <li
-                key={key}
-                className="rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-3.5"
-              >
-                <span className="font-fraunces text-lg text-[var(--color-action-primary-bg)]">{i + 1}</span>
-                <p className="mt-1 text-caption leading-snug text-[var(--color-text-secondary)]">
-                  {t(`pricing.${key}`, locale)}
-                </p>
-              </li>
-            ))}
-          </ol>
-
-          <p className="mt-6 rounded-xl bg-[var(--color-surface-self-accent-soft)]/60 px-4 py-3.5 text-caption leading-relaxed text-[var(--color-accent-self-deep)]">
-            {t("pricing.teamPriceNote", locale)}
-          </p>
-
-          <Link
-            href="/contact"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 transition hover:brightness-[1.06]"
-          >
-            {t("pricing.teamCta", locale)}
-          </Link>
-          <p className="mt-3 text-[11px] text-[var(--color-text-muted)]">
-            {t("pricing.ctaTrust", locale)}
-          </p>
+          <article className="rounded-2xl border border-[var(--color-accent-primary)]/40 bg-[var(--color-surface-highlight-warm)] p-6 sm:p-8">
+            <Eyebrow>{t("pricing.pilotEyebrow", locale)}</Eyebrow>
+            <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
+              {t("pricing.pilotTitle", locale)}
+            </h2>
+            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+              {t("pricing.pilotBody", locale)}
+            </p>
+            <Link
+              href="/pilot"
+              className={`mt-5 inline-flex min-h-11 items-center rounded-xl border border-[var(--color-accent-primary)]/50 bg-surface-card px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("pricing.pilotCta", locale)}
+            </Link>
+          </article>
         </div>
       </section>
 
-      {/* ── Pilot kiemelés ── */}
-      <section className="mt-6 px-6 lg:px-16">
-        <div className="mx-auto max-w-5xl rounded-2xl border border-[var(--color-accent-primary)]/40 bg-[var(--color-surface-highlight-warm)] p-7 lg:p-9">
-          <Eyebrow>{t("pricing.pilotEyebrow", locale)}</Eyebrow>
-          <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
-            {t("pricing.pilotTitle", locale)}
-          </h2>
-          <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-[var(--color-text-muted)]">
-            {t("pricing.pilotBody", locale)}
-          </p>
-          <Link
-            href="/pilot"
-            className="mt-5 inline-flex min-h-[44px] items-center rounded-lg border border-[var(--color-accent-primary)]/50 bg-surface-card px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)]"
-          >
-            {t("pricing.pilotCta", locale)}
-          </Link>
-        </div>
-      </section>
-
-      {/* ── GYIK ── */}
       <section className="mx-auto mt-14 max-w-3xl px-6 lg:px-0">
         <h2 className="text-center font-fraunces text-2xl text-[var(--color-text-primary)]">
           {t("pricing.faqHeading", locale)}
@@ -125,8 +151,6 @@ export function PricingContent() {
           {PRICING_FAQ_INDEXES.map((i) => (
             <details
               key={i}
-              // P4: melyik GYIK-tételt nyitják ki — ez mondja meg, mi a
-              // valódi vásárlói kétely. Csak a NYITÁS érdekes, a csukás nem.
               onToggle={(event) => {
                 if (event.currentTarget.open) {
                   track("faq.open", { faq_id: `pricing_q${i}`, surface: "pricing" });
@@ -134,9 +158,9 @@ export function PricingContent() {
               }}
               className="group rounded-xl border border-[var(--color-border-soft)] bg-surface-card"
             >
-              {/* A padding a summary-n van (AdvisoryPageClient FaqItem minta):
-                  a teljes kártyafelület a toggle érintőcélja, min. 44px */}
-              <summary className="flex min-h-[44px] cursor-pointer list-none items-center px-5 py-4 text-[14px] font-semibold text-[var(--color-text-primary)]">
+              <summary
+                className={`flex min-h-11 cursor-pointer list-none items-center rounded-xl px-5 py-4 text-[14px] font-semibold text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
+              >
                 {t(`pricing.faqQ${i}`, locale)}
               </summary>
               <p className="px-5 pb-4 text-caption leading-relaxed text-[var(--color-text-muted)]">
@@ -147,7 +171,6 @@ export function PricingContent() {
         </div>
       </section>
 
-      {/* ── Villámkérdés — súrlódásmentes kapcsolatfelvétel ── */}
       <section className="mx-5 mb-8 mt-14 lg:mx-14">
         <div className="mx-auto max-w-5xl rounded-2xl bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-6 py-10 lg:px-10 lg:py-12">
           <PricingQuickAsk locale={locale} />

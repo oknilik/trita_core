@@ -208,12 +208,39 @@ export const landingTranslations = {
       en: "The individual personality assessment is free; team and organizational program pricing depends on headcount and depth — an individual quote instead of list prices.",
     },
     heroEyebrow: { hu: "Együttműködés", en: "How we work" },
-    heroHeading: { hu: "Így dolgozunk ", en: "This is how we " },
-    heroHeadingEm: { hu: "együtt.", en: "work together." },
+    heroHeading: { hu: "Előbb értsük meg, ", en: "First, let's understand " },
+    heroHeadingEm: { hu: "mire van szükségetek.", en: "what you need." },
     heroSub: {
-      hu: "Egyszerű a képlet: az egyéni felmérés ingyen van, a csapatprogramok pedig hozzátok igazodnak — méretben, mélységben és árban is. Kérdezni pedig bármikor lehet, kötelezettség nélkül.",
-      en: "The formula is simple: the individual assessment is free, and team programs adapt to you — in size, depth and price. And you can always just ask, no strings attached.",
+      hu: "Nincs dobozos csomag és rejtett árlista. Egy rövid egyeztetés után pontosan látjátok, mit mérünk, mi készül el és mitől függ az ajánlat.",
+      en: "There is no off-the-shelf package or hidden price list. After a short conversation, you will know exactly what we measure, what you receive, and what shapes the quote.",
     },
+    workflowEyebrow: { hu: "Az együttműködés menete", en: "How the engagement works" },
+    workflow1Title: { hu: "Rövid egyeztetés", en: "Short conversation" },
+    workflow1Body: {
+      hu: "Megismerjük a csapatot, a helyzetet és azt, milyen döntéshez kell tisztább kép.",
+      en: "We learn about the team, the situation, and the decision that needs a clearer picture.",
+    },
+    workflow2Title: { hu: "Pilotkeret", en: "Pilot scope" },
+    workflow2Body: {
+      hu: "Közösen kijelöljük a résztvevőket, a mérési rétegeket és a közös értelmezés keretét.",
+      en: "Together we define participants, measurement layers, and the scope of the joint debrief.",
+    },
+    workflow3Title: { hu: "Első csapatkép", en: "First team picture" },
+    workflow3Body: {
+      hu: "A kitöltésekből tanácsadó által validált összkép és következő lépés készül.",
+      en: "The assessments become a consultant-validated team picture and a clear next step.",
+    },
+    offerEyebrow: { hu: "Egyedi ajánlat", en: "Individual quote" },
+    offerTitle: { hu: "A keret mindig a helyzetetekhez igazodik.", en: "The scope always fits your situation." },
+    offerBody: {
+      hu: "Az első beszélgetés után konkrét, átlátható ajánlatot kaptok. Ezek alakítják:",
+      en: "After the first conversation you receive a concrete, transparent quote. It is shaped by:",
+    },
+    offerFactor1: { hu: "Csapatok és résztvevők", en: "Teams and participants" },
+    offerFactor2: { hu: "Kiválasztott mérési rétegek", en: "Selected measurement layers" },
+    offerFactor3: { hu: "Közös értelmezés", en: "Joint debrief" },
+    offerCta: { hu: "Beszéljünk →", en: "Let's talk →" },
+    offerPilotCta: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
     selfTitle: { hu: "Ismerd meg magad — ingyen", en: "Get to know yourself — for free" },
     selfBody: {
@@ -506,7 +533,7 @@ export const landingTranslations = {
   // A gondolat-oldal: mire épül a termék, milyen rétegekből áll össze a
   // kép, és mi a célunk vele. A többi marketing-laptól az különbözteti
   // meg, hogy NEM árazó ajánlat-lap — magyaráz és irányba tesz; a
-  // részletes ajánlat a /pricing és a /pilot dolga.
+  // részletes ajánlat a /how-we-work és a /pilot dolga.
   //
   // Brand-kör (2026-08-09, 2. kör): a versenytárs-összevetés („miért más,
   // mint egy átlagos teszt/felmérés") NEM ennek a lapnak a dolga — az a

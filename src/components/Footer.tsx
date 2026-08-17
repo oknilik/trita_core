@@ -37,7 +37,7 @@ export function Footer() {
         ...(isPortfolioSurfaceActive("blog")
           ? [{ label: t("footer.blog", locale), href: "/blog" }]
           : []),
-        { label: t("footer.pricing", locale), href: "/pricing" },
+        { label: t("footer.pricing", locale), href: "/how-we-work" },
         ...(isPortfolioSurfaceActive("patternExplorer")
           ? [{ label: t("footer.patterns", locale), href: "/patterns" }]
           : []),

@@ -117,7 +117,7 @@ const TOPICS: HelpTopic[] = [
           en: "Pricing depends on team size and program scope, so we prepare an individual quote. The pricing page outlines the framework; for exact numbers, contact us.",
         },
         link: {
-          href: "/pricing",
+          href: "/how-we-work",
           label: { hu: "Árak és csomagok", en: "Pricing" },
         },
         audiences: ["public"],
