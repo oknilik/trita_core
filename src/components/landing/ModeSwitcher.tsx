@@ -33,9 +33,17 @@ export function ModeSwitcher() {
               "flex min-h-[44px] items-center gap-1.5 rounded-full px-5 py-2 text-xs font-medium transition-all duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-action-primary-bg)] focus-visible:ring-offset-2",
               isActive
-                ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm"
+                ? "shadow-sm"
                 : "text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]",
             ].join(" ")}
+            style={isActive ? {
+              background: m === "team"
+                ? "var(--color-layer-team-hero-from)"
+                : "var(--color-action-primary-bg)",
+              color: m === "team"
+                ? "var(--color-text-on-inverse)"
+                : "var(--color-action-primary-fg)",
+            } : undefined}
           >
             {m === "self" ? (
               <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0" stroke={isActive ? "var(--color-accent-primary-soft)" : "var(--color-accent-primary)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -43,7 +51,7 @@ export function ModeSwitcher() {
                 <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
               </svg>
             ) : (
-              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0" stroke={isActive ? "var(--color-accent-primary-soft)" : "var(--color-accent-primary)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg viewBox="0 0 16 16" fill="none" className="h-3.5 w-3.5 shrink-0" stroke={isActive ? "var(--color-layer-team-glow)" : "var(--color-accent-primary)"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="6" cy="5" r="2.5" />
                 <circle cx="11" cy="5" r="2.5" />
                 <path d="M1 14c0-2.5 2-4.5 5-4.5 1 0 1.8.2 2.5.6M8.5 14c0-2.5 2-4.5 5-4.5" />

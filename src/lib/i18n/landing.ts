@@ -46,8 +46,12 @@ export const landingTranslations = {
     teamHeadlineBefore: { hu: "Értsd meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatod működését.", en: "team's dynamics." },
     teamSub: { hu: "A Trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Még mielőtt a feszültségből konfliktus lenne.", en: "Trita reveals what was previously invisible — your team's true dynamics. Before tension turns into conflict." },
-    teamCta: { hu: "Mesélj a csapatodról — mi meséljük a többit →", en: "Tell us about your team — we'll take it from there →" },
+    teamCta: { hu: "Mesélj a csapatodról", en: "Tell us about your team" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
+    teamMetaOnboarding: { hu: "Személyes onboarding", en: "Personal onboarding" },
+    teamMetaTiming: { hu: "Néhány nap az első képig", en: "First picture within days" },
+    teamMetaOffer: { hu: "Egyedi ajánlat", en: "Custom offer" },
+    teamPilotQuiet: { hu: "Pilotprogram az első partnercsapatoknak", en: "Pilot program for our first partner teams" },
     // Team hero panel — a valódi publikált riport (TeamReportView) kicsinyített mása
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
     teamPanelTitle: { hu: "Sales csapat", en: "Sales team" },

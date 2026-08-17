@@ -5,11 +5,10 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
-import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon } from "@/components/landing/icons";
+import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 
 // A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
@@ -172,60 +171,69 @@ function TeamPanel() {
   ];
 
   return (
-    <>
-      {/* Publikált riport kártya */}
-      <div className="rounded-2xl border border-sand bg-surface-card p-5 shadow-lg shadow-black/[0.06] md:p-6">
-        <div className="flex flex-wrap items-start justify-between gap-2">
-          <div>
-            <SectionEyebrow>
-              {t("landing.teamPanelEyebrow", locale)}
-            </SectionEyebrow>
-            <p className="mt-1 font-fraunces text-xl text-ink">{t("landing.teamPanelTitle", locale)}</p>
-            <p className="mt-0.5 text-[11px] text-muted">{t("landing.teamPanelValidated", locale)}</p>
-          </div>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <span className="rounded border border-sand px-1.5 py-[2px] text-micro uppercase tracking-wide text-muted">
-              {t("landing.sampleBadge", locale)}
-            </span>
-            <span className="rounded-full bg-state-success-bg px-2.5 py-1 text-micro font-semibold text-state-success-fg">
-              {t("landing.teamPanelPublished", locale)}
-            </span>
-          </div>
+    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
+      {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
+      <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-micro uppercase tracking-widest text-white/70">
+            {t("landing.teamPanelEyebrow", locale)}
+          </p>
+          <span className="rounded border border-white/25 px-1.5 py-[2px] text-micro uppercase tracking-wide text-white/70">
+            {t("landing.sampleBadge", locale)}
+          </span>
         </div>
+        <p className="mt-2 font-fraunces text-[22px] font-medium text-white">
+          {t("landing.teamPanelTitle", locale)}
+        </p>
+        <div className="mt-0.5 flex flex-wrap items-center gap-2.5">
+          <p className="font-fraunces text-[20px] font-medium italic text-[var(--color-layer-team-glow)]">
+            {t("landing.teamPatternName", locale)}
+          </p>
+          <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
+            {t("landing.teamPanelPublished", locale)}
+          </span>
+        </div>
+        <p className="mt-2 text-[11px] leading-[1.55] text-white/75">
+          {t("landing.teamPanelValidated", locale)}
+        </p>
+      </div>
 
-        {/* Aggregált statok */}
-        <div className="mt-4 grid grid-cols-3 gap-3 border-t border-sand pt-4">
-          <div>
-            <p className="font-mono text-micro uppercase tracking-widest text-muted">
+      <div className="bg-surface-card px-5 pb-5 pt-5 md:flex-1">
+        {/* Ugyanaz a keretezett adatblokk-anatómia, mint a self mintakártyán. */}
+        <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-[var(--color-border-soft)]">
+          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
+            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
-            <p className="mt-0.5 font-fraunces text-xl text-ink">6</p>
+            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">6</p>
           </div>
-          <div>
-            <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
+            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatCompletionLabel", locale)}
             </p>
-            <p className="mt-0.5 font-fraunces text-xl text-ink">100%</p>
+            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">100%</p>
           </div>
-          <div>
-            <p className="font-mono text-micro uppercase tracking-widest text-muted">
+          <div className="min-w-0 px-2 py-3.5">
+            <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamPatternLabel", locale)}
             </p>
-            <p className="mt-0.5 font-fraunces text-body leading-tight text-ink">
+            <p className="mt-1 font-fraunces text-caption leading-tight text-ink">
               {t("landing.teamPatternName", locale)}
             </p>
           </div>
         </div>
 
-        {/* Dimenzió-átlagok */}
-        <div className="mt-4 flex flex-col gap-2.5 border-t border-sand pt-4">
+        <div className="mt-4 flex flex-col gap-2.5">
           {dims.map((d) => (
             <div key={d.name} className="flex items-center gap-2 md:gap-3">
               <span className="w-[92px] shrink-0 truncate text-[11px] text-ink-body md:w-[118px]">{d.name}</span>
               <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
-                <div className="h-full rounded-full bg-sage" style={{ width: `${d.mean}%` }} />
+                <div
+                  className="h-full rounded-full bg-[var(--color-layer-team-accent)]"
+                  style={{ width: `${d.mean}%` }}
+                />
               </div>
-              <span className="w-12 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink md:w-14">
+              <span className="w-8 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink">
                 {d.mean}
               </span>
             </div>
@@ -233,34 +241,22 @@ function TeamPanel() {
           <p className="mt-0.5 text-micro text-muted">{t("landing.teamPrivacyNote", locale)}</p>
         </div>
 
-        {/* Tanácsadói narratíva */}
-        <div className="mt-4 border-t border-sand pt-4">
-          <p className="font-mono text-micro uppercase tracking-widest text-muted">
+        <div
+          className="mt-4 rounded-r-[14px] p-3.5 px-4"
+          style={{
+            borderLeft: "4px solid var(--color-layer-team-accent)",
+            background: "color-mix(in srgb, var(--color-layer-team-accent) 10%, var(--color-surface-card))",
+          }}
+        >
+          <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
             {t("landing.teamNarrativeLabel", locale)}
           </p>
-          <p className="mt-1.5 text-[12px] leading-relaxed text-ink-body">
+          <p className="text-[11px] leading-relaxed text-ink-body">
             {t("landing.teamNarrativeText", locale)}
           </p>
         </div>
       </div>
-
-      {/* Pilot kártya */}
-      <Link
-        href="/pilot"
-        className="flex items-center justify-between gap-3 rounded-xl border border-bronze/20 bg-bronze/8 p-3.5 transition-colors hover:bg-bronze/15"
-      >
-        <div>
-          <p className="font-dm-sans text-micro uppercase tracking-wide text-[var(--color-accent-primary-strong)]">
-            {t("landing.teamPilotLabel", locale)}
-          </p>
-          <p className="text-caption font-semibold text-ink">{t("landing.teamPilotTitle", locale)}</p>
-          <p className="text-[11px] text-muted">{t("landing.teamPilotDesc", locale)}</p>
-        </div>
-        <span className="shrink-0 rounded-full bg-bronze px-3 py-1.5 text-micro font-semibold text-[var(--color-text-on-accent)]">
-          {t("landing.teamPilotCta", locale)}
-        </span>
-      </Link>
-    </>
+    </div>
   );
 }
 
@@ -269,19 +265,18 @@ function TeamPanel() {
 export function HeroSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
   const isSelf = mode === "self";
-  const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)";
+  const accentColor = isSelf ? "var(--color-accent-primary)" : "var(--color-layer-team-accent)";
   // Kontraszt (a11y): az alap bronz krém háttéren 3.0:1 — nagy szövegnek épp
   // a határon, 11px-es feliratnak bukó. Szöveghez ezért a bronz-skála
-  // sötétebb fokait használjuk (a zsálya team-módban 5.5:1, marad):
+  // sötétebb fokait használjuk; team módban a kanonikus réteg-akcent dolgozik:
   //   eyebrow (11px)  → accent-primary-strong (bronze-700) — 5.5:1
   //   H1 em (nagy)    → accent-primary-mid                 — 3.9:1
   const eyebrowColor = isSelf ? "var(--color-accent-primary-strong)" : accentColor;
   const headlineAccentColor = isSelf ? "var(--color-accent-primary-mid)" : accentColor;
-  // Tömör CTA-felület fehér szöveggel: bronze-dark (4.89:1) — ugyanaz a fok,
-  // amire a NavBar sticky CTA-ja és a CtaSection gombja is beállt. A sticky
-  // fejléc miatt a nav-CTA és a hero-CTA EGYSZERRE látszik: két különböző
-  // bronz ugyanarra a gombszerepre elszíneződésnek olvasódna.
-  const ctaBackground = isSelf ? "var(--color-bronze-dark)" : accentColor;
+  // Tömör CTA-felület fehér szöveggel: self módban bronze-dark, team módban
+  // a valódi team hero első gradiens-stopja. Így a CTA a megfelelő réteghez
+  // tartozik, de mindkét módban megtartja ugyanazt a gomb-anatómiát.
+  const ctaBackground = isSelf ? "var(--color-bronze-dark)" : "var(--color-layer-team-hero-from)";
 
   // Detect existing localStorage draft for guest users.
   // Must run in useEffect to avoid hydration mismatch (localStorage is client-only).
@@ -354,15 +349,24 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-xl px-8 py-4 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto"
+                className={`inline-flex min-h-[52px] w-full items-center rounded-xl px-5 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto ${isSelf ? "justify-center gap-2 sm:px-8 sm:py-4" : "justify-between gap-7 sm:min-w-[320px]"}`}
                 style={{
                   background: ctaBackground,
-                  boxShadow: `0 4px 14px ${isSelf ? "rgba(154,101,56,0.25)" : "rgba(61,107,94,0.25)"}`,
+                  boxShadow: isSelf
+                    ? "0 4px 14px rgba(154,101,56,0.25)"
+                    : "0 4px 14px color-mix(in srgb, var(--color-layer-team-hero-from) 28%, transparent)",
                 }}
               >
-                {isSelf
-                  ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
-                  : t("landing.teamCta", locale)}
+                <span>
+                  {isSelf
+                    ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
+                    : t("landing.teamCta", locale)}
+                </span>
+                {!isSelf ? (
+                  <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-white/15 text-xl leading-none">
+                    →
+                  </span>
+                ) : null}
               </Link>
             </div>
 
@@ -381,9 +385,26 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 ))}
               </div>
             ) : (
-              <p className={`${riseIn} text-center text-caption text-[var(--color-text-muted)] sm:text-left`} style={{ animationDelay: "0.2s" }}>
-                {t("landing.teamMicrocopy", locale)}
-              </p>
+              <div className={`${riseIn} flex flex-col items-start gap-3`} style={{ animationDelay: "0.2s" }}>
+                <div className="flex flex-wrap items-center gap-2">
+                  {[
+                    { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
+                    { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
+                    { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
+                  ].map((m) => (
+                    <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
+                      <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />
+                      {m.text}
+                    </span>
+                  ))}
+                </div>
+                <Link
+                  href="/pilot"
+                  className="text-[11px] font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-75"
+                >
+                  {t("landing.teamPilotQuiet", locale)} →
+                </Link>
+              </div>
             )}
           </div>
 
