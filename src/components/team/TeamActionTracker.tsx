@@ -6,6 +6,7 @@ import type { TeamReportActionItem } from "@/lib/team-report";
 import { actionStatus, summarizeTeamActions } from "@/lib/team-action-tracking";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { teamActionTargetLabel } from "@/lib/team-action-target";
 
 export function TeamActionTracker({
   teamId,
@@ -103,6 +104,14 @@ export function TeamActionTracker({
                 <div>
                   <p className="text-sm font-semibold text-ink">{item.title}</p>
                   <p className="mt-0.5 text-micro text-muted">{item.timeframe} {isHu ? "napos fókusz" : "day focus"}</p>
+                  {item.targetMetric ? (
+                    <p className="mt-1 text-micro text-[var(--color-accent-primary-strong)]">
+                      {isHu ? "Célmutató" : "Target"}: {teamActionTargetLabel(
+                        item.targetMetric,
+                        isHu ? "hu" : "en",
+                      )}
+                    </p>
+                  ) : null}
                 </div>
                 {!canManage ? (
                   <span className="rounded-full bg-cream px-2.5 py-1 text-micro font-semibold text-ink-body">

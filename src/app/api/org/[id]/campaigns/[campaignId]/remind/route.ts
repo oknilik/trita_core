@@ -73,8 +73,15 @@ export async function POST(
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
-      ...(campaign.requireFreshResults && campaign.activatedAt
-        ? { createdAt: { gte: campaign.activatedAt } }
+      ...(campaign.requireFreshResults
+        ? campaign.activatedAt
+          ? {
+              OR: [
+                { campaignId: campaign.id },
+                { campaignId: null, createdAt: { gte: campaign.activatedAt } },
+              ],
+            }
+          : { campaignId: campaign.id }
         : {}),
     },
     select: { userProfileId: true },

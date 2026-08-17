@@ -10,6 +10,7 @@ import type { CareerBackground } from "@/lib/industry-fit";
 import { computeCareerForProfile } from "@/lib/career/service";
 import { isCareerModuleHidden } from "@/lib/career/module-visibility";
 import { CAREER_MODULE_READY } from "@/lib/career/module-state";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { getSelfAccessLevel, type SelfAccess } from "@/lib/access";
@@ -92,6 +93,9 @@ export default async function ProfileResultsPage({
   });
   if (!profile) redirect("/sign-in");
 
+  const careerActive = isPortfolioSurfaceActive("career");
+  const publicSharingActive = isPortfolioSurfaceActive("publicSharing");
+
   const [
     latestResult,
     accessLevelRaw,
@@ -163,19 +167,21 @@ export default async function ProfileResultsPage({
     // Org-szintű karrier-modul kapcsoló — közös szabály a /career oldallal
     // és a navigációval (module-visibility.ts). Itt már csak a PDF
     // karrier-blokkjára hat, a fül 2026-07-31 óta külön oldal.
-    isCareerModuleHidden(profile.id),
+    careerActive ? isCareerModuleHidden(profile.id) : Promise.resolve(true),
     // Élő megosztás MINDEN self-eredményen, nem csak a legutóbbin: a
     // /share/[token] bármelyik eredmény tokenjével nyílik, és a DELETE is az
     // összeset vonja vissza. Újrakitöltés után a régi eredményhez tartozó link
     // marad kint — a visszavonást ezért erre kell kötni, nem a latestResult
     // tokenjére (különben a felületről nem lenne visszavonható).
-    prisma.assessmentResult.count({
-      where: {
-        userProfileId: profile.id,
-        isSelfAssessment: true,
-        shareToken: { not: null },
-      },
-    }),
+    publicSharingActive
+      ? prisma.assessmentResult.count({
+          where: {
+            userProfileId: profile.id,
+            isSelfAssessment: true,
+            shareToken: { not: null },
+          },
+        })
+      : Promise.resolve(0),
     prisma.compareInvite.findMany({
       where: { OR: [{ inviterId: profile.id }, { partnerId: profile.id }] },
       orderBy: { createdAt: "desc" },
@@ -198,7 +204,7 @@ export default async function ProfileResultsPage({
     | (CareerBackground & { status?: string })
     | null;
   const careerResult =
-    !CAREER_MODULE_READY || careerHiddenMembership || !storedCareerBackground?.status
+    !careerActive || !CAREER_MODULE_READY || careerHiddenMembership || !storedCareerBackground?.status
       ? null
       : await computeCareerForProfile(profile.id, {
           limit: 18,
@@ -545,7 +551,7 @@ export default async function ProfileResultsPage({
   // (a meghívó-kezelés a Külső kép fül része).
   // A karrier külön oldal lett — a régi `?tab=career` linkek (könyvjelző,
   // korábbi e-mail) ne fussanak zsákutcába.
-  if (tabParam === "career") redirect("/career");
+  if (careerActive && tabParam === "career") redirect("/career");
 
   const initialTab: ProfileViewId =
     tabParam === "comparison" || tabParam === "invites"
@@ -745,11 +751,11 @@ export default async function ProfileResultsPage({
           clarityFeedbackSubmitted={clarityFeedbackSubmitted}
           personalityType={personalityType}
           heroInsight={heroInsight}
-          shareToken={latestResult.shareToken}
+          shareToken={publicSharingActive ? latestResult.shareToken : null}
           hasActiveShare={activeShareCount > 0}
           plusContent={plusContent}
           careerResult={careerResult}
-          careerModuleHidden={Boolean(careerHiddenMembership)}
+          careerModuleHidden={!careerActive || Boolean(careerHiddenMembership)}
           bridgeNextStep={{
             stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
             explanation: selfDashboardVm.recommendedAction.description,

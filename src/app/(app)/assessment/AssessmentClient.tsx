@@ -73,6 +73,8 @@ interface AssessmentClientProps {
    * ahova a team-roles oldal kapuja amúgy is visszadobná).
    */
   hasTeamContext?: boolean
+  /** Explicit kampánykör, ha a self-kérdőív kampányfeladatból nyílt. */
+  campaignId?: string
 }
 
 export function AssessmentClient({
@@ -85,6 +87,7 @@ export function AssessmentClient({
   guestMode = false,
   draftScope,
   hasTeamContext = false,
+  campaignId,
 }: AssessmentClientProps) {
   const router = useRouter()
   const { showToast } = useToast()
@@ -456,6 +459,7 @@ export function AssessmentClient({
       const payload = {
         testType,
         answers: toAssessmentAnswerPayload(currentAnswers),
+        ...(campaignId ? { campaignId } : {}),
       }
       const response = await fetch('/api/assessment/submit', {
         method: 'POST',
@@ -482,7 +486,13 @@ export function AssessmentClient({
       // usernél a team-roles oldal kapuja úgyis a journey-fallbackra dobna,
       // ezért közvetlenül a journey-elosztóra megyünk (friss, submit utáni
       // állapotból dönt).
-      router.push(hasTeamContext ? '/assessment/team-roles' : JOURNEY_HOME_HANDOFF_PATH)
+      router.push(
+        campaignId
+          ? '/tasks'
+          : hasTeamContext
+            ? '/assessment/team-roles'
+            : JOURNEY_HOME_HANDOFF_PATH,
+      )
     } catch (error) {
       clearInterval(progressInterval)
       isSubmittingRef.current = false
@@ -491,7 +501,7 @@ export function AssessmentClient({
       log.warn({ event: "assessment.submit_failed", err: error }, "Submit failed")
       showToast(t('assessment.saveError', locale), 'error')
     }
-  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope, hasTeamContext])
+  }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope, hasTeamContext, campaignId])
 
   const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
     if (autoAdvanceTimerRef.current) {

@@ -142,6 +142,8 @@ export interface PsychSafetyAggregate {
   index: number;
   /** Itemenkénti normalizált átlag, 1–5 skálán (magas = biztonságos). */
   itemMeans: Record<string, number>;
+  /** Itemenkénti, válaszadók közti mintaszórás az 1–5 skálán. */
+  itemSds: Record<string, number>;
   /** A válaszadók közti szóródás az összpontszámban (0–100 skálán, szórás). */
   spread: number;
   band: "low" | "mid" | "high";
@@ -165,7 +167,11 @@ export function aggregatePsychSafety(
   if (valid.length < PSYCH_SAFETY_MIN_RESPONSES) return null;
 
   const itemSums: Record<string, number> = {};
-  for (const item of PSYCH_SAFETY_ITEMS) itemSums[item.id] = 0;
+  const itemValues: Record<string, number[]> = {};
+  for (const item of PSYCH_SAFETY_ITEMS) {
+    itemSums[item.id] = 0;
+    itemValues[item.id] = [];
+  }
   const personIndexes: number[] = [];
 
   for (const answers of valid) {
@@ -173,6 +179,7 @@ export function aggregatePsychSafety(
     for (const item of PSYCH_SAFETY_ITEMS) {
       const norm = normalizeAnswer(item, answers[item.id]);
       itemSums[item.id] += norm;
+      itemValues[item.id].push(norm);
       personSum += norm;
     }
     const personMean = personSum / PSYCH_SAFETY_ITEM_COUNT;
@@ -180,8 +187,10 @@ export function aggregatePsychSafety(
   }
 
   const itemMeans: Record<string, number> = {};
+  const itemSds: Record<string, number> = {};
   for (const item of PSYCH_SAFETY_ITEMS) {
     itemMeans[item.id] = Math.round((itemSums[item.id] / valid.length) * 100) / 100;
+    itemSds[item.id] = Math.round(sampleStdDev(itemValues[item.id]) * 100) / 100;
   }
 
   const index =
@@ -190,7 +199,14 @@ export function aggregatePsychSafety(
   // csapat egy mintája; n ≥ PSYCH_SAFETY_MIN_RESPONSES itt mindig teljesül).
   const spread = Math.round(sampleStdDev(personIndexes));
 
-  return { count: valid.length, index, itemMeans, spread, band: psychSafetyBand(index) };
+  return {
+    count: valid.length,
+    index,
+    itemMeans,
+    itemSds,
+    spread,
+    band: psychSafetyBand(index),
+  };
 }
 
 // ── Riport-réteg: mi gyenge, és mit lehet vele kezdeni ────────────────

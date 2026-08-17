@@ -4,18 +4,27 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { canManageMeasurements } from "@/lib/measurement-auth";
-import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_PRESET_IDS,
+  CAMPAIGN_STEP_ORDER,
+  getCampaignPresetSteps,
+  normalizeCampaignSteps,
+  resolveCampaignRequireFreshResults,
+} from "@/lib/campaign-steps-core";
 
 const createSchema = z.object({
   name: z.string().min(1).max(100),
   description: z.string().max(500).optional(),
-  type: z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]).default("OBSERVER_360"),
+  type: z.enum(CAMPAIGN_STEP_ORDER).default("OBSERVER_360"),
+  // Nevesített csomagnál a szerver oldja fel a lépéseket; a kliens nem
+  // módosíthatja észrevétlenül a Scan v1 mérési készletét.
+  presetId: z.enum(CAMPAIGN_PRESET_IDS).optional(),
   // Több-lépéses kampány: a kiválasztott mérések (kanonikus sorrendbe
-  // rendezzük). Nincs darab-limit — akár mind a 6 mehet egy körben.
+  // rendezzük). A felső korlát a teljes lépés-katalógus mérete.
   types: z
-    .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
+    .array(z.enum(CAMPAIGN_STEP_ORDER))
     .min(1)
-    .max(6)
+    .max(CAMPAIGN_STEP_ORDER.length)
     .optional(),
   teamId: z.string().min(1).optional(),
   // Több cél-csapat (2026-07-29): a teamId legacy — az első csapat.
@@ -57,6 +66,7 @@ export async function GET(
       id: true,
       name: true,
       description: true,
+      presetId: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -130,11 +140,18 @@ export async function POST(
       return NextResponse.json({ error: "INVALID_TEAM" }, { status: 400 });
     }
   }
-  // Lépések: a types-ból (vagy legacy type-ból), kanonikus sorrendben.
-  const steps = normalizeCampaignSteps(body.data.types ?? [body.data.type]);
+  // Presetnél a szerver-konstans az igazság; egyedi körnél a types (vagy a
+  // legacy type) kerül kanonikus sorrendbe.
+  const steps = body.data.presetId
+    ? getCampaignPresetSteps(body.data.presetId)
+    : normalizeCampaignSteps(body.data.types ?? [body.data.type]);
   if (steps.length === 0) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
+  const requireFreshResults = resolveCampaignRequireFreshResults(
+    body.data.presetId,
+    body.data.requireFreshResults,
+  );
 
   // Szerep-kört vagy pszich. biztonságot tartalmazó kampány csak csapatra
   // indítható (a kör a csapaton él, az anonim aggregátum csapatszintű).
@@ -157,6 +174,7 @@ export async function POST(
       orgId,
       name: body.data.name,
       description: body.data.description,
+      presetId: body.data.presetId ?? null,
       type: steps[0],
       steps,
       teamId: requestedTeamIds[0] ?? null,
@@ -164,13 +182,14 @@ export async function POST(
       allowExternalObservers: body.data.allowExternalObservers,
       stepIntervalHours: body.data.stepIntervalHours,
       peerFeedbackAnonymous: body.data.peerFeedbackAnonymous,
-      requireFreshResults: body.data.requireFreshResults,
+      requireFreshResults,
       createdBy: profile.id,
     },
     select: {
       id: true,
       name: true,
       description: true,
+      presetId: true,
       type: true,
       teamId: true,
       status: true,

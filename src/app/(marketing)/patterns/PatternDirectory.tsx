@@ -1,4 +1,8 @@
-import { AXIS_META, PATTERNS } from "@/lib/pattern-data";
+import {
+  AXIS_META,
+  PATTERNS,
+  TEAM_PATTERN_EVIDENCE_STATUS,
+} from "@/lib/pattern-data";
 
 /**
  * A 16 csapatmintázat SZERVER-OLDALON renderelt katalógusa.
@@ -42,13 +46,19 @@ export function PatternDirectory() {
         className="font-fraunces text-heading leading-tight"
         style={{ color: T.heading }}
       >
-        Mind a 16 csapatmintázat
+        A 16 minta mint értelmezési nyelv
       </h2>
       <p className="mt-2 max-w-2xl text-body leading-relaxed" style={{ color: T.muted }}>
         A mintázatokat négy tengely metszete adja:{" "}
         {AXIS_META.map((axis) => axis.name.toLowerCase()).join(", ")}. Minden
         működésnek van előnye és ára — nincs jó vagy rossz minta, csak olyan,
         ami illeszkedik a feladathoz, és olyan, ami nem.
+      </p>
+      <p
+        className="mt-3 max-w-2xl text-caption leading-relaxed"
+        style={{ color: T.muted }}
+      >
+        {TEAM_PATTERN_EVIDENCE_STATUS.framing.hu}
       </p>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">

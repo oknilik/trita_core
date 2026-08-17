@@ -4,7 +4,10 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { canManageMeasurements } from "@/lib/measurement-auth";
-import { normalizeCampaignSteps } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_STEP_ORDER,
+  normalizeCampaignSteps,
+} from "@/lib/campaign-steps-core";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 
@@ -12,15 +15,16 @@ const patchSchema = z.union([
   z.object({
     status: z.enum(["DRAFT", "ACTIVE", "CLOSED"]),
   }),
-  // DRAFT-kampány szerkesztése: mérések, cél-csapat, ütem, név — aktiválás
-  // előtt bármi módosítható; aktiválás után a kampány összetétele fix.
+  // DRAFT-kampány szerkesztése: custom körnél mérések, minden körnél
+  // cél-csapat, ütem és név. Nevesített preset lépéssora draftban is fix;
+  // aktiválás után a teljes kampányösszetétel rögzül.
   z.object({
     action: z.literal("edit_draft"),
-    // Nincs darab-limit — akár mind a 6 mérés mehet egy körben.
+    // Nincs termékoldali darab-limit — minden katalógus-lépés mehet.
     types: z
-      .array(z.enum(["OBSERVER_360", "TEAM_ROLE", "TEAM_ROLE_360", "TRUST_360", "PSYCH_SAFETY", "PEER_FEEDBACK"]))
+      .array(z.enum(CAMPAIGN_STEP_ORDER))
       .min(1)
-      .max(6)
+      .max(CAMPAIGN_STEP_ORDER.length)
       .optional(),
     teamId: z.string().min(1).nullable().optional(),
     // Több cél-csapat (2026-07-29): üres tömb = célzás törlése.
@@ -52,7 +56,17 @@ async function resolveContext(orgId: string, campaignId: string, userId: string)
     }),
     prisma.campaign.findUnique({
       where: { id: campaignId, orgId },
-      select: { id: true, orgId: true, status: true, type: true, teamId: true, teamIds: true, steps: true, activatedAt: true },
+      select: {
+        id: true,
+        orgId: true,
+        status: true,
+        presetId: true,
+        type: true,
+        teamId: true,
+        teamIds: true,
+        steps: true,
+        activatedAt: true,
+      },
     }),
   ]);
 
@@ -93,6 +107,7 @@ export async function GET(
       id: true,
       name: true,
       description: true,
+      presetId: true,
       status: true,
       createdAt: true,
       closedAt: true,
@@ -149,6 +164,15 @@ export async function PATCH(
       return NextResponse.json({ error: "CAMPAIGN_NOT_DRAFT" }, { status: 409 });
     }
     const edit = body.data;
+
+    // A nevesített preset mérési készlete szerződés, nem kiinduló sablon.
+    // Célzás és pacing tovább szerkeszthető, a steps csak CUSTOM körnél.
+    if (ctx.campaign.presetId && edit.types !== undefined) {
+      return NextResponse.json(
+        { error: "PRESET_STEPS_IMMUTABLE" },
+        { status: 409 },
+      );
+    }
 
     const steps = edit.types
       ? normalizeCampaignSteps(edit.types)
@@ -209,6 +233,7 @@ export async function PATCH(
         id: true,
         name: true,
         status: true,
+        presetId: true,
         type: true,
         steps: true,
         teamId: true,

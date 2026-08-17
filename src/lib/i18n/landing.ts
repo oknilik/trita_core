@@ -97,8 +97,8 @@ export const landingTranslations = {
     selfFeat3Title: { hu: "Fejlődési fókusz", en: "Growth Focus" },
     selfFeat3Desc: { hu: "Kapaszkodót kapsz ahhoz, hogy min érdemes tovább dolgoznod.", en: "Get a starting point for what's worth working on." },
     teamFeat1Badge: { hu: "Dinamika", en: "Dynamics" },
-    teamFeat1Title: { hu: "Csapatdinamika és szerepek", en: "Team Dynamics & Roles" },
-    teamFeat1Desc: { hu: "Ki kivel dolgozik jól, hol vannak ütközések — és ki milyen szerepet visz a csapatban.", en: "Who works well with whom, where friction points are — and who plays which role in the team." },
+    teamFeat1Title: { hu: "Mért bizalmi háló", en: "Measured trust network" },
+    teamFeat1Desc: { hu: "Páronkénti kapcsolati adatokból látszik, hol erős a bizalom, hol szakad a háló, és hol kevés még az evidencia.", en: "Pairwise relationship data shows where trust is strong, where the network breaks, and where evidence is still limited." },
     teamFeat2Badge: { hu: "Biztonság", en: "Safety" },
     teamFeat2Title: { hu: "Pszichológiai biztonság", en: "Psychological Safety" },
     teamFeat2Desc: { hu: "Névtelen pulzusmérés arról, mennyire biztonságos hibázni, kérdezni, ellentmondani.", en: "An anonymous pulse on how safe it feels to fail, ask, and disagree." },
@@ -119,10 +119,10 @@ export const landingTranslations = {
     // ProofSection — team mód ("Miért más?" megkülönböztető történet)
     proofTeamTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
     proofTeamTitleEm: { hu: "átlagos csapatfelmérés?", en: "average team survey?" },
-    proofTeam1Title: { hu: "Összetétel, nem klíma", en: "Composition, not climate" },
-    proofTeam1Desc: { hu: "Nem pillanatnyi hangulatot mérünk, hanem hogy kikből áll a csapat — a tartós személyiség-mintázatokat, amikre a működés épül.", en: "We don't measure momentary mood, but who the team is made of — the stable personality patterns your dynamics are built on." },
-    proofTeam2Title: { hu: "Nem önbevallásra épül", en: "Not just self-report" },
-    proofTeam2Desc: { hu: "Az önképet külső (observer) visszajelzéssel vetjük össze — a csapatkép így nem pusztán önbevalláson alapul.", en: "Self-image is checked against external (observer) feedback — so the team picture isn't based on self-report alone." },
+    proofTeam1Title: { hu: "Kapcsolatot is mér", en: "Measures relationships too" },
+    proofTeam1Desc: { hu: "Az engagement-átlag mellé páronkénti bizalmi háló kerül: nemcsak azt látjuk, mit gondol a csapat, hanem azt is, hogyan kapcsolódik.", en: "Pairwise trust data sits next to survey averages: we see not only what the team thinks, but how it connects." },
+    proofTeam2Title: { hu: "A változékony réteget méri vissza", en: "Remeasures what can change" },
+    proofTeam2Desc: { hu: "A pszichológiai biztonságot és a bizalmi hálót az akció után újramérjük; a stabil személyiségprofil kontroll, nem fejlődési címke.", en: "We remeasure psychological safety and the trust network after action; stable personality profiles are a control, not an improvement label." },
     proofTeam3Title: { hu: "Tanácsadó ellenőrzi", en: "Consultant-reviewed" },
     proofTeam3Desc: { hu: "A csapatképet nem algoritmus dobja ki: publikálás előtt tanácsadó ellenőrzi és értelmezi, a becsült adat pedig mindig jelölve van.", en: "The team picture isn't spit out by an algorithm: a consultant reviews and interprets it before publishing, and estimated data is always labeled." },
     // TrustBar
@@ -193,12 +193,12 @@ export const landingTranslations = {
     teamEyebrow: { hu: "csapat és szervezet · program", en: "team & organization · program" },
     teamTitle: { hu: "Csapatprogram tanácsadói kísérettel", en: "Team program with consultant guidance" },
     teamBody: {
-      hu: "A program három rétegben méri a csapatot: személyiség-alapú csapatkép, mért csapatszerep-térkép és a pszichológiai biztonság névtelen pulzusmérése. Az eredményekből tanácsadó által validált összkép készül, amit közös workshopon értelmezünk. Több csapatnál szervezeti szintű összehasonlítás is része a programnak.",
-      en: "The program measures your team on three layers: a personality-based team picture, a measured team role map, and an anonymous psychological safety pulse. A consultant validates the aggregated picture, and we interpret it together in a workshop. With multiple teams, an org-level comparison is part of the program.",
+      hu: "A Team Scan v1 három rétege az önértékelés, a mért bizalmi háló és a pszichológiai biztonság névtelen pulse-a. Az eredményekből tanácsadó által ellenőrzött összkép és célmutatóhoz kötött akció készül, amit a következő körben visszamérünk.",
+      en: "Team Scan v1 combines self-assessment, a measured trust network, and an anonymous psychological safety pulse. A consultant reviews the evidence, links an action to a target metric, and the next round measures the outcome again.",
     },
-    teamHow1: { hu: "Mérések — személyiség (~10 perc), csapatszerepek, pszichológiai biztonság pulzusmérése", en: "Measurements — personality (~10 min), team roles, safety pulse" },
-    teamHow2: { hu: "Validált csapatkép — néhány napon belül", en: "Validated team picture — within days" },
-    teamHow3: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
+    teamHow1: { hu: "Mérések — self, bizalmi háló, pszichológiai biztonság pulse", en: "Measurements — self, trust network, psychological safety pulse" },
+    teamHow2: { hu: "Forrásjelölt, tanácsadó által ellenőrzött csapatkép", en: "Source-labelled, consultant-reviewed team picture" },
+    teamHow3: { hu: "Akció és kapuzott visszamérés", en: "Action and gated remeasurement" },
     teamPriceNote: {
       hu: "Az árról őszintén: a csapat méretétől és a program mélységétől függ, ezért nem találsz itt ártáblát. Az első beszélgetés után konkrét ajánlatot kapsz — meglepetések nélkül. Az aktiválást mi intézzük, a számlázás átutalással megy.",
       en: "Honestly about pricing: it depends on team size and program depth, which is why there is no price table here. After the first conversation you get a concrete quote — no surprises. We handle activation; invoicing is by bank transfer.",
@@ -310,8 +310,8 @@ export const landingTranslations = {
     heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
     heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
     heroBody: {
-      hu: "A Trita csapatdiagnosztikai platform segít felismerni a rejtett mintázatokat, feszültségeket és potenciált a csapatodban — személyiség, csapatszerepek és pszichológiai biztonság mérésével. Az első partnercsapatokkal személyesen dolgozunk együtt, csapatra szabott feltételekkel.",
-      en: "The Trita team diagnostics platform helps you uncover hidden patterns, tensions, and potential within your team — by measuring personality, team roles, and psychological safety. We work personally with our first partner teams, on terms tailored to your team.",
+      hu: "Nem azt mondjuk meg, kik vagytok. Megmutatjuk, hol akad el a csapat, miből tudjuk, és mi legyen a következő vezetői lépés — önértékelésből, mért bizalmi hálóból és pszichológiai biztonság pulse-ból. Az első partnercsapatokkal személyesen dolgozunk együtt.",
+      en: "We do not tell you who you are. We show where the team gets stuck, what the evidence is, and the next leadership move — using self-assessment, a measured trust network, and a psychological safety pulse. We work personally with our first partner teams.",
     },
     heroCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
@@ -341,37 +341,37 @@ export const landingTranslations = {
     // Aside — "Mire jó ez a 90 nap"
     aside90Eyebrow: { hu: "Mire jó ez a 90 nap", en: "What the 90 days are for" },
     aside90Body: {
-      hu: "Látni fogjátok, milyen mintázatok támogatják a csapatot, hol vannak a súrlódások, és mennyire érzik a tagok biztonságosnak a közös munkát — és hogy mindezt hogyan használhatjátok a mindennapi együttműködésben és a vezetői döntésekben.",
-      en: "You'll see which patterns support the team, where the friction points are, and how safe the team feels working together — and how to use all of this in day-to-day collaboration and leadership decisions.",
+      hu: "Látni fogjátok, hogyan néz ki a tényleges bizalmi háló, mennyire biztonságos kérdezni, hibázni és ellentmondani, majd kijelölünk egy következő vezetői lépést. A következő körben ugyanazokat a változékony mutatókat mérjük vissza.",
+      en: "You will see the team's actual trust network and how safe it feels to ask, fail, and disagree, then choose one next leadership move. The follow-up round measures the same changeable outcomes again.",
     },
 
     // Benefits section
     benefitsEyebrow: { hu: "Mit kapsz", en: "What you get" },
     benefitsTitle: { hu: "90 nap teljes hozzáféréssel, személyes támogatással.", en: "90 days of full access with personal support." },
-    benefit1Title: { hu: "Teljes platform-hozzáférés", en: "Full platform access" },
+    benefit1Title: { hu: "Rögzített Team Scan v1", en: "Fixed Team Scan v1" },
     benefit1Desc: {
-      hu: "A pilot alatt a teljes szervezeti szintű platformot használjátok: korlátlan csapat, szerepkörök, minden elemzés. Az árazásról a pilot tapasztalatai alapján adunk csapatra szabott ajánlatot.",
-      en: "During the pilot you use the full organization-level platform: unlimited teams, roles, every analysis. Pricing comes as a custom offer based on what we learn in the pilot.",
+      hu: "Minden pilotcsapat ugyanazt a reprodukálható készletet kapja: self, bizalmi háló és névtelen pszichológiai biztonság pulse. Az observer- és peer-kör külön kiegészítő, nem rejtett alapteher.",
+      en: "Every pilot team gets the same reproducible set: self, trust network, and an anonymous psychological safety pulse. Observer and peer rounds are separate add-ons, not hidden baseline burden.",
     },
     benefit2Title: { hu: "Személyes bevezető alkalom", en: "Free onboarding session" },
     benefit2Desc: {
       hu: "Egy 60 perces közös workshop, ahol értelmezzük a csapatprofilotokat, azonosítjuk a feszültségpontokat, és konkrét következő lépéseket rakunk össze.",
       en: "A 60-minute joint workshop where we interpret your team profiles, identify tension points, and outline concrete next steps.",
     },
-    benefit3Title: { hu: "Observer-kör vezetői értelmezéssel", en: "Observer round with leadership debrief" },
+    benefit3Title: { hu: "Mért bizalmi háló", en: "Measured trust network" },
     benefit3Desc: {
-      hu: "A csapattagok külső (observer) visszajelzést is kaphatnak, és közösen értelmezzük, hol tér el az önkép a külső képtől — ez a csapatdinamika egyik legerősebb jelzése.",
-      en: "Team members can also receive external (observer) feedback, and together we interpret where self-image differs from how others see them — one of the strongest signals in team dynamics.",
+      hu: "Nem csak kérdőívátlagot kaptok: páronként mért kapcsolati adatokból látszik a háló lefedettsége, a kapcsolódási központok és a beágyazatlan pontok — anonimitási kapukkal.",
+      en: "You get more than survey averages: pairwise relationship evidence shows network coverage, connectors, and unembedded points — protected by anonymity gates.",
     },
     benefit4Title: { hu: "Beleszólás a fejlesztési irányokba", en: "Roadmap priority" },
     benefit4Desc: {
       hu: "A pilot-partnerek visszajelzése közvetlenül alakítja a termék irányát. Amit valóban használnátok, annak nagyobb esélye van gyorsan elkészülni.",
       en: "Pilot partners' feedback directly shapes the product direction. Features you actually need are more likely to ship fast.",
     },
-    benefit5Title: { hu: "Korai hozzáférés az új mérésekhez", en: "Early access to new measurements" },
+    benefit5Title: { hu: "Visszamérési kör", en: "Follow-up measurement round" },
     benefit5Desc: {
-      hu: "Az új mérések — például a pszichológiai biztonság névtelen pulzusmérése és a mért csapatszerep-kör — nálatok debütálnak: ti próbáljátok őket elsőként, és a ti visszajelzésetek csiszolja véglegesre.",
-      en: "New measurements — like the anonymous psychological safety pulse and the measured team role round — debut with you: you try them first, and your feedback shapes their final form.",
+      hu: "A vállalt akció után ugyanazokat a változékony mutatókat újramérjük. A rendszer a mérési hibán belüli eltérést nem nevezi fejlődésnek, és az összetétel-változást külön jelzi.",
+      en: "After the agreed action, we remeasure the same changeable outcomes. The system does not call movement within measurement error improvement, and flags composition changes separately.",
     },
     benefit6Title: { hu: "Korai partner státusz", en: "Early partner status" },
     benefit6Desc: {
@@ -384,18 +384,18 @@ export const landingTranslations = {
     stepsTitle: { hu: "Három lépés a jobb csapatdöntésekig.", en: "Three steps to better team decisions." },
     step1Title: { hu: "Felmérés", en: "Assessment" },
     step1Desc: {
-      hu: "A csapattagok online kitöltik a tudományosan validált személyiségtesztet, nagyjából 10 perc alatt. Ezt egészíti ki a csapatszerep-kör és a pszichológiai biztonság névtelen pulzusmérése — opcionálisan observer-visszajelzés is kérhető.",
-      en: "Team members complete the scientifically validated personality assessment online in about 10 minutes. This is complemented by the team role round and the anonymous psychological safety pulse — observer feedback is optionally available.",
+      hu: "A Scan v1 rögzített készlete: nagyjából 10 perces önértékelés, mért bizalmi háló és 8 állításos, névtelen pszichológiai biztonság pulse. Az observer és a peer-kör külön kiegészítő.",
+      en: "Scan v1 has a fixed set: an approximately 10-minute self-assessment, a measured trust network, and an anonymous 8-item psychological safety pulse. Observer and peer rounds are separate add-ons.",
     },
-    step2Title: { hu: "Mintázat", en: "Pattern" },
+    step2Title: { hu: "Bizonyíték", en: "Evidence" },
     step2Desc: {
-      hu: "A platform megmutatja a csapat heatmapjét, radar chartjait és az együttműködési összképet, így gyorsan láthatóvá válik, hol van összhang és hol csúszik a működés.",
-      en: "The platform shows your team's heatmap, radar charts, and collaboration overview, making it easy to spot where things align and where they don't.",
+      hu: "A riport külön jelöli, mi közvetlenül mért, mi becsült, és hol nincs elég adat. A 16 csapatminta csak értelmezési nyelv; a vezetői állítás a bizalmi hálóra és a pulse-ra épül.",
+      en: "The report separates direct measurement, estimates, and insufficient data. The 16 team patterns are only an interpretive language; leadership claims rest on the trust network and pulse.",
     },
     step3Title: { hu: "Akció", en: "Action" },
     step3Desc: {
-      hu: "Az onboarding session és a dashboard alapján közösen kijelöljük a kritikus feszültségeket, majd akciótervet építünk rájuk a következő 90 napra.",
-      en: "Based on the onboarding session and dashboard, we identify the critical tensions together and build an action plan for the next 90 days.",
+      hu: "Közösen kijelölünk egy célmutatóhoz kötött vezetői akciót, majd a következő körben visszamérjük a kimenetet — a mérési-hiba és a csapatösszetétel kapujával.",
+      en: "Together we choose a leadership action linked to a target metric, then remeasure the outcome in the next round — with measurement-error and team-composition gates.",
     },
 
     // Commitments section
@@ -557,12 +557,12 @@ export const landingTranslations = {
       en: "A roughly 9-minute questionnaire drawn from a freely usable item pool used in research. This is the foundation: which stable patterns drive someone in work situations.",
     },
     layer1Tag: { hu: "~9 perc · egyéni", en: "~9 min · individual" },
-    layer2Title: { hu: "Külső visszajelzés — ahogy mások látnak", en: "External feedback — how others see you" },
+    layer2Title: { hu: "Bizalmi háló — hogyan kapcsolódik a csapat", en: "Trust network — how the team connects" },
     layer2Desc: {
-      hu: "Kollégák és ismerősök adnak visszajelzést egy személyes linken, magabiztossági jelöléssel. Az önkép és a külső kép eltérése önmagában is az egyik legerősebb jelzés.",
-      en: "Colleagues and acquaintances give feedback through a personal link, with a confidence rating. The gap between self-image and outside view is one of the strongest signals on its own.",
+      hu: "Öt rövid kérdés csapattársanként arról, hogyan működik a tényleges együttműködés. A riport a lefedettséget, kapcsolódási központokat és beágyazatlan pontokat anonimitási kapukkal mutatja.",
+      en: "Five short questions per teammate about how collaboration actually works. The report shows coverage, connectors, and unembedded points behind anonymity gates.",
     },
-    layer2Tag: { hu: "opcionális · személyes link", en: "optional · personal link" },
+    layer2Tag: { hu: "mért reláció · csapatszint", en: "measured relation · team level" },
     layer3Title: { hu: "Csapatszerepek — ki mit visz a csapatban", en: "Team roles — what each person carries" },
     layer3Desc: {
       hu: "Saját, kilenc szerepből álló csapatszerep-kérdőív, önértékeléssel és csapattársi visszajelzéssel. A csapattársi kép mindig összesítve jelenik meg, legalább három értékelőtől.",
@@ -605,8 +605,8 @@ export const landingTranslations = {
     },
     path3Title: { hu: "A csapat", en: "The team" },
     path3Desc: {
-      hu: "Az egyéni profilokból csapatkép lesz: mintázat, erősségek, súrlódási pontok és a szerepek térképe.",
-      en: "Individual profiles become a team picture: pattern, strengths, friction points and a map of roles.",
+      hu: "Az egyéni profilok mellé mért bizalmi háló és pszichológiai biztonság kerül. A 16-as minta ezt értelmező nyelvként, nem bizonyítékként foglalja keretbe.",
+      en: "Measured trust network and psychological safety sit next to individual profiles. The 16-pattern model frames this as interpretive language, not as evidence itself.",
     },
     path4Title: { hu: "A szervezet", en: "The organization" },
     path4Desc: {

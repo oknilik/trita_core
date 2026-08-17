@@ -27,6 +27,7 @@ import {
   handleCrmQuoteExpiring,
 } from "./orchestrator";
 import { persistNotification } from "./repository";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export interface CrmSweepStats {
   /** Lejárt SENT ajánlatok, amelyeket a sweep EXPIRED-re zárt. */
@@ -471,12 +472,14 @@ export async function runNotificationSweep(): Promise<SweepResult> {
 
   // CRM napi kör (next-action esedékesség, ajánlat-lejárat) — szintén
   // hibatűrő: a CRM hibája a többi sweep-feladatot nem boríthatja.
-  try {
-    await runCrmSweep(result);
-  } catch (err) {
-    result.errors.push(
-      `crm sweep: ${err instanceof Error ? err.message : String(err)}`,
-    );
+  if (isPortfolioSurfaceActive("crm")) {
+    try {
+      await runCrmSweep(result);
+    } catch (err) {
+      result.errors.push(
+        `crm sweep: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
   }
 
   return result;

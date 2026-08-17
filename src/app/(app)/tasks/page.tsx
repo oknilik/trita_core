@@ -8,9 +8,10 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import {
   CAMPAIGN_STEP_LABELS,
-  CAMPAIGN_STEP_LINKS,
+  getCampaignStepLink,
   getCampaignSteps,
   isCampaignStepDone,
+  isSelfResultForCampaign,
   isCampaignStepType,
   isStepGateOpen,
 } from "@/lib/campaign-steps-core";
@@ -124,14 +125,14 @@ export default async function MyMeasurementsPage() {
       : [];
 
   // OBSERVER_360 legacy fallback-hoz: van-e (fresh-tudatos) self-eredmény.
-  const latestSelf =
+  const selfResults =
     participations.length > 0
-      ? await prisma.assessmentResult.findFirst({
+      ? await prisma.assessmentResult.findMany({
           where: { userProfileId: profile.id, isSelfAssessment: true },
           orderBy: { createdAt: "desc" },
-          select: { createdAt: true },
+          select: { campaignId: true, createdAt: true },
         })
-      : null;
+      : [];
 
   const dateLocale = loc === "en" ? "en-GB" : "hu-HU";
 
@@ -142,9 +143,8 @@ export default async function MyMeasurementsPage() {
         p.campaign.requireFreshResults && p.campaign.activatedAt
           ? p.campaign.activatedAt.getTime()
           : null;
-      const selfDone = Boolean(
-        latestSelf &&
-          (freshFrom === null || latestSelf.createdAt.getTime() >= freshFrom),
+      const selfDone = selfResults.some((result) =>
+        isSelfResultForCampaign(result, p.campaign),
       );
       const doneFlags = steps.map((_, idx) =>
         isCampaignStepDone(steps, idx, p, selfDone),
@@ -329,7 +329,7 @@ export default async function MyMeasurementsPage() {
                       const isDone = card.doneFlags[idx];
                       const isCurrent = idx === card.currentIdx;
                       const link = isCampaignStepType(stepType)
-                        ? CAMPAIGN_STEP_LINKS[stepType]
+                        ? getCampaignStepLink(stepType, card.id)
                         : "/dashboard";
                       const started = isCurrent && card.started;
                       // OBSERVER_360: a lépés a self-kitöltéssel teljesül, de a

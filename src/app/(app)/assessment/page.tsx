@@ -8,6 +8,7 @@ import { assignTestType } from "@/lib/assignTestType";
 import { getTestConfig } from "@/lib/questions";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { resolveActiveSelfAssessmentCampaign } from "@/lib/campaign-steps";
 import { AssessmentClient } from "./AssessmentClient";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AssessmentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ confirmed?: string }>;
+  searchParams: Promise<{ confirmed?: string; campaignId?: string }>;
 }) {
   const user = await currentUser();
   if (!user) redirect("/sign-in");
@@ -71,9 +72,19 @@ export default async function AssessmentPage({
 
   // If user already has results, no draft in progress, and hasn't confirmed retake → redirect
   const params = await searchParams;
+  const campaignStep = await resolveActiveSelfAssessmentCampaign(
+    profile.id,
+    params.campaignId ? { campaignId: params.campaignId } : undefined,
+  );
+  const campaignId = campaignStep?.campaignId ?? null;
+  // Ismeretlen, lezárt, más felhasználóhoz tartozó vagy még időzített körből
+  // nem fogadunk el self-beadást. A feladatsor megmutatja az aktuális lépést.
+  if (params.campaignId && campaignId !== params.campaignId) redirect("/tasks");
+
   if (
     profile.assessmentResults.length > 0 &&
     !draft &&
+    !campaignId &&
     params.confirmed !== "true"
   ) {
     redirect("/profile/results?retake=true");
@@ -96,7 +107,7 @@ export default async function AssessmentPage({
       : undefined;
 
   // Fresh retake: confirmed=true but no server draft → clear stale localStorage
-  const clearDraft = params.confirmed === "true" && !draft;
+  const clearDraft = (params.confirmed === "true" || Boolean(campaignId)) && !draft;
 
   const questions = config.questions.map((q) => ({ id: q.id, text: q.text }));
 
@@ -114,6 +125,7 @@ export default async function AssessmentPage({
       initialDraft={initialDraft}
       clearDraft={clearDraft}
       hasTeamContext={hasTeamContext}
+      campaignId={campaignId ?? undefined}
     />
   );
 }

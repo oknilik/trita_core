@@ -4,8 +4,9 @@
 // Jelenleg NINCS aktív norma-tábla (ACTIVE_NORM_TABLE = null): a felület
 // így semmit nem mutat, de a tábla feltöltésekor a percentilis-sorok
 // automatikusan élesednek (DimensionAccordion). A táblát a pilot után a
-// scripts/research/norms-from-results.ts kimenetéből kell tölteni
-// (version/source/n kötelező — a forrás-jelölés termék-alapelv).
+// scripts/research/norms-from-results.ts kapuzott kimenetéből kell tölteni.
+// A script csak explicit pilotkampány-scope, short forma, dokumentált forrás
+// és n≥200 mellett bocsát ki jelöltet (version/source/n kötelező).
 //
 // Bank-mentes, kliens-oldalról is importálható modul.
 // ─────────────────────────────────────────────────────────────────────

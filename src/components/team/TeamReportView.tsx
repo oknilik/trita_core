@@ -589,6 +589,9 @@ export function TeamReportView({
                       : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern — the label fits them less (no names; that belongs to individual reports).`}
                   </p>
                 ) : null}
+                <p className="mt-3 border-t border-sand pt-3 text-micro leading-relaxed text-muted">
+                  {t("teamComp.framingNote", loc)}
+                </p>
               </div>
             )}
 

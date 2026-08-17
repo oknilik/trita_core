@@ -553,19 +553,21 @@ export function ProfileHero({
             )}
             actions={(
         <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            onClick={onShare}
-            disabled={shareLoading}
-            variant="ghost"
-            onInverse
-            className="rounded-[9px] px-[18px] text-[11px] font-medium"
-          >
-            <span className="inline-flex items-center gap-2">
-              <ShareIcon />
-              {shareLoading ? "..." : t("results.heroShare", locale)}
-            </span>
-          </Button>
+          {onShare ? (
+            <Button
+              type="button"
+              onClick={onShare}
+              disabled={shareLoading}
+              variant="ghost"
+              onInverse
+              className="rounded-[9px] px-[18px] text-[11px] font-medium"
+            >
+              <span className="inline-flex items-center gap-2">
+                <ShareIcon />
+                {shareLoading ? "..." : t("results.heroShare", locale)}
+              </span>
+            </Button>
+          ) : null}
           <Button
             type="button"
             onClick={onDownloadPdf}

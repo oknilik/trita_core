@@ -55,6 +55,17 @@ async function callClaim(
   }
 }
 
+async function waitForCampaignStep(participantId: string, expectedStep: number) {
+  for (let attempt = 0; attempt < 50; attempt += 1) {
+    const participant = await prisma.campaignParticipant.findUniqueOrThrow({
+      where: { id: participantId },
+    });
+    if (participant.currentStep === expectedStep) return participant;
+    await new Promise((resolve) => setTimeout(resolve, 20));
+  }
+  return prisma.campaignParticipant.findUniqueOrThrow({ where: { id: participantId } });
+}
+
 test("A1 Guest claim (vendég-eredmény fiókhoz kapcsolása)", async (t) => {
   await t.test("bejelentkezés nélkül → 401", async () => {
     const res = await callClaim(null, { answers: buildShortAnswers() });
@@ -214,6 +225,74 @@ test("A1 Guest claim (vendég-eredmény fiókhoz kapcsolása)", async (t) => {
     });
     const scores = result?.scores as { questionCount?: number } | undefined;
     assert.equal(scores?.questionCount, SHORT_FORM_QUESTIONS.length);
+  });
+
+  await t.test("guest claim egyetlen aktív kört címkéz és léptet", async () => {
+    const clerkId = makeId("clerk_campaign_claim");
+    const profile = await prisma.userProfile.create({
+      data: {
+        id: makeId("campaign_claimer"),
+        clerkId,
+        testType: "TRITAN",
+        testTypeAssignedAt: new Date(),
+      },
+    });
+    const org = await prisma.organization.create({
+      data: {
+        id: makeId("claim_org"),
+        name: "Guest claim campaign org",
+        ownerId: profile.id,
+      },
+    });
+    const firstCampaign = await prisma.campaign.create({
+      data: {
+        orgId: org.id,
+        name: "Guest claim first",
+        type: "SELF_ASSESSMENT",
+        steps: ["SELF_ASSESSMENT", "TRUST_360"],
+        status: "ACTIVE",
+        createdBy: profile.id,
+        activatedAt: new Date(),
+        createdAt: new Date("2026-08-16T08:00:00.000Z"),
+        stepIntervalHours: 0,
+      },
+    });
+    const secondCampaign = await prisma.campaign.create({
+      data: {
+        orgId: org.id,
+        name: "Guest claim second",
+        type: "SELF_ASSESSMENT",
+        steps: ["SELF_ASSESSMENT", "TRUST_360"],
+        status: "ACTIVE",
+        createdBy: profile.id,
+        activatedAt: new Date(),
+        createdAt: new Date("2026-08-16T09:00:00.000Z"),
+        stepIntervalHours: 0,
+      },
+    });
+    const [firstParticipant, secondParticipant] = await Promise.all([
+      prisma.campaignParticipant.create({
+        data: { campaignId: firstCampaign.id, userId: profile.id },
+      }),
+      prisma.campaignParticipant.create({
+        data: { campaignId: secondCampaign.id, userId: profile.id },
+      }),
+    ]);
+
+    const response = await callClaim(clerkId, { answers: buildShortAnswers(4) });
+    const body = await response.json();
+    assert.equal(response.status, 200);
+    const result = await prisma.assessmentResult.findUniqueOrThrow({
+      where: { id: body.id },
+    });
+    assert.equal(result.campaignId, firstCampaign.id);
+    assert.equal((await waitForCampaignStep(firstParticipant.id, 1)).currentStep, 1);
+    assert.equal(
+      (await prisma.campaignParticipant.findUniqueOrThrow({
+        where: { id: secondParticipant.id },
+      })).currentStep,
+      0,
+    );
   });
 
   await t.test("érvénytelen érték (Likert-en kívül) → 400", async () => {

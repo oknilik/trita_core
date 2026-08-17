@@ -177,6 +177,9 @@ model AssessmentDraft {
 model AssessmentResult {
   id            String   @id @default(cuid())
   userProfileId String?
+  // Opcionális mérési-kör címke. A régi és self-serve eredményeknél null;
+  // kampányból indított beadásnál a konkrét kampányhoz kötjük.
+  campaignId    String?
   scores        Json
   createdAt     DateTime @default(now())
 
@@ -188,8 +191,10 @@ model AssessmentResult {
   shareToken String? @unique
 
   userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
+  campaign    Campaign?    @relation("AssessmentResultCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
 
   @@index([userProfileId])
+  @@index([campaignId])
 }
 
 // Observer invitation for peer assessment
@@ -533,7 +538,11 @@ model Campaign {
   orgId                  String
   name                   String
   description            String?
-  // Mérés-típus: "OBSERVER_360" | "TEAM_ROLE" | "PSYCH_SAFETY"
+  // A nevesített mérési csomag eredete. Nem a steps-ből következtetjük
+  // vissza: egy azonos lépéssorú CUSTOM kampány nem válhat észrevétlenül
+  // Scan v1 kohorsz- vagy kereskedelmi egységgé.
+  presetId               String?
+  // Mérés-típus: pl. "SELF_ASSESSMENT" | "OBSERVER_360" | "TRUST_360"
   // Több-lépéses kampánynál az első lépés típusa (kompatibilitás).
   type                   String    @default("OBSERVER_360")
   // Rendezett mérés-lépések. Üres tömbnél a `type` az egyetlen lépés.
@@ -576,10 +585,12 @@ model Campaign {
   observerInvitations  ObserverInvitation[]
   teamRoleAnswers      TeamRoleAnswer[]      @relation("TeamRoleAnswerCampaign")
   teamRoleScores       TeamRoleScore[]       @relation("TeamRoleScoreCampaign")
+  assessmentResults    AssessmentResult[]    @relation("AssessmentResultCampaign")
 
   @@index([orgId])
   @@index([createdBy])
   @@index([teamId])
+  @@index([presetId])
 }
 
 model CampaignParticipant {

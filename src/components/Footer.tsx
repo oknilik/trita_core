@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export function Footer() {
   const { locale } = useLocale();
@@ -30,9 +31,13 @@ export function Footer() {
       links: [
         { label: t("footer.about", locale), href: "/about" },
         { label: t("footer.aboutUs", locale), href: "/rolunk" },
-        { label: t("footer.blog", locale), href: "/blog" },
+        ...(isPortfolioSurfaceActive("blog")
+          ? [{ label: t("footer.blog", locale), href: "/blog" }]
+          : []),
         { label: t("footer.pricing", locale), href: "/pricing" },
-        { label: t("footer.patterns", locale), href: "/patterns" },
+        ...(isPortfolioSurfaceActive("patternExplorer")
+          ? [{ label: t("footer.patterns", locale), href: "/patterns" }]
+          : []),
         { label: t("footer.pilot", locale), href: "/pilot" },
       ],
     },

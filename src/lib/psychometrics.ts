@@ -180,3 +180,50 @@ export function bandFor(score: number, se: number): { low: number; high: number 
 export function diffStandardError(form: AssessmentForm, code?: string): number {
   return Math.SQRT2 * dimStandardError(form, code);
 }
+
+/**
+ * Két FÜGGETLEN átlag különbségének standard hibája az egyéni pontszámok
+ * SEM-jéből: √(SEM₁²/n₁ + SEM₂²/n₂).
+ *
+ * Érvénytelen vagy üres mintánál végtelent adunk, nem dobunk: a riport-
+ * összehasonlító így biztonságosan zárva marad, és sérült/örökölt
+ * pillanatképből sem állít mérési hibán túli változást.
+ */
+export function independentMeanDiffStandardError(
+  standardError1: number,
+  sampleSize1: number,
+  standardError2: number,
+  sampleSize2: number,
+): number {
+  if (
+    !Number.isFinite(standardError1) ||
+    standardError1 < 0 ||
+    !Number.isFinite(standardError2) ||
+    standardError2 < 0 ||
+    !Number.isFinite(sampleSize1) ||
+    sampleSize1 <= 0 ||
+    !Number.isFinite(sampleSize2) ||
+    sampleSize2 <= 0
+  ) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return Math.sqrt(
+    standardError1 ** 2 / sampleSize1 + standardError2 ** 2 / sampleSize2,
+  );
+}
+
+/**
+ * Két csapat dimenzió-ÁTLAGÁNAK különbségi hibája. A két kör jelenleg
+ * ugyanazt a kérdőív-formát használja; a dimenzió-kód opcionális, és a
+ * dimStandardError kanonikus mért kalibrációjára támaszkodik.
+ */
+export function teamMeanDiffStandardError(
+  form: AssessmentForm,
+  sampleSize1: number,
+  sampleSize2: number,
+  code?: string,
+): number {
+  const sem = dimStandardError(form, code);
+  return independentMeanDiffStandardError(sem, sampleSize1, sem, sampleSize2);
+}

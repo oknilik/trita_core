@@ -89,6 +89,7 @@ describe("aggregatePsychSafety — pontozás", () => {
     assert.equal(agg!.spread, 0);
     for (const item of PSYCH_SAFETY_ITEMS) {
       assert.equal(agg!.itemMeans[item.id], 5);
+      assert.equal(agg!.itemSds[item.id], 0);
     }
   });
 
@@ -120,6 +121,9 @@ describe("aggregatePsychSafety — pontozás", () => {
     assert.equal(agg!.count, 3);
     assert.equal(agg!.index, 50);
     assert.ok(agg!.spread > 30);
+    for (const item of PSYCH_SAFETY_ITEMS) {
+      assert.equal(agg!.itemSds[item.id], 2);
+    }
   });
 });
 

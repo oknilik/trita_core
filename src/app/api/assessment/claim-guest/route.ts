@@ -5,6 +5,10 @@ import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { resolveGuestClaimViewerClerkId } from "@/lib/guest-claim-auth";
+import {
+  advanceCampaignStepForUser,
+  resolveActiveSelfAssessmentCampaign,
+} from "@/lib/campaign-steps";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -119,10 +123,13 @@ export async function POST(req: Request) {
   }
 
   const scores = calculateScores(testType, typedAnswers);
+  const campaignStep = await resolveActiveSelfAssessmentCampaign(profile.id);
+  const campaignId = campaignStep?.campaignId ?? null;
 
   const result = await prisma.assessmentResult.create({
     data: {
       userProfileId: profile.id,
+      campaignId,
       testType,
       scores: {
         ...scores,
@@ -132,10 +139,14 @@ export async function POST(req: Request) {
     },
   });
 
-  // Több-lépéses kampány: a megszerzett self-eredmény lépteti az OBSERVER_360 lépést
-  import("@/lib/campaign-steps").then(({ advanceCampaignStepForUser }) =>
-    advanceCampaignStepForUser(profile.id, "OBSERVER_360").catch(() => {}),
-  );
+  // Ugyanazt az egy, determinisztikusan feloldott kört címkézzük és
+  // léptetjük, mint a normál self-submit út. Két átfedő kampányt egyetlen
+  // guest-claim soha nem zárhat le.
+  if (campaignStep) {
+    advanceCampaignStepForUser(profile.id, campaignStep.stepType, {
+      campaignId: campaignStep.campaignId,
+    }).catch(() => {});
+  }
 
   return NextResponse.json({ id: result.id });
 }

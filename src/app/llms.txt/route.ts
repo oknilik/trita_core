@@ -1,6 +1,7 @@
 import { getAllPosts } from "@/lib/blog";
 import { getSiteUrl } from "@/lib/seo";
 import { CONTACT_EMAIL, ORGANIZATION_NAME } from "@/lib/structured-data";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
  * `/llms.txt` — a site géppel olvasható „tartalomjegyzéke" nyelvi modelleknek.
@@ -37,8 +38,29 @@ function line(path: string, title: string, description: string, baseUrl: string)
 
 export function GET(): Response {
   const baseUrl = getSiteUrl();
-  const huPosts = getAllPosts("hu");
-  const enPosts = getAllPosts("en");
+  const blogActive = isPortfolioSurfaceActive("blog");
+  const huPosts = blogActive ? getAllPosts("hu") : [];
+  const enPosts = blogActive ? getAllPosts("en") : [];
+  const patternLine = isPortfolioSurfaceActive("patternExplorer")
+    ? line("/patterns", "16 értelmezési csapatminta", "Négy tengely lehetséges olvasatai erősségekkel és kockázatokkal; értelmezési nyelv, nem validált tipológia vagy diagnózis.", baseUrl)
+    : null;
+  const blogLine = blogActive
+    ? line("/blog", "Blog", "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.", baseUrl)
+    : null;
+  const optionalMainLines = [patternLine, blogLine].filter(Boolean).join("\n");
+  const blogSections = blogActive
+    ? `## Blogcikkek (magyar)
+
+${huPosts
+  .map((post) => line(`/blog/${post.slug}`, post.title, post.description, baseUrl))
+  .join("\n")}
+
+## Blog posts (English)
+
+${enPosts
+  .map((post) => line(`/blog/${post.slug}`, post.title, post.description, baseUrl))
+  .join("\n")}`
+    : "";
 
   const body = `# ${ORGANIZATION_NAME}
 
@@ -74,23 +96,12 @@ ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt 
 ${line("/about", "Mi az a Trita", "A gondolat és a felépítés: „Ami mérhető, az megbeszélhető.” Négy mérési réteg (személyiség, külső visszajelzés, csapatszerepek, pszichológiai biztonság), tanácsadói validálás; egyéneknek ingyenes, csapatoknak program.", baseUrl)}
 ${line("/rolunk", "Rólunk", "A Trita mögött tanácsadói műhely áll: a platformot a saját munkánkhoz építettük. Miért csináljuk, és hogyan dolgozunk a partnercsapatokkal.", baseUrl)}
 ${line("/pricing", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
-${line("/patterns", "16 csapatműködési mintázat", "Négy tengely (hajtóerő, kohézió, fegyelem, nyitottság) mentén leírt 16 csapatminta erősségekkel és kockázatokkal.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}
-${line("/blog", "Blog", "Cikkek csapatdinamikáról, személyiségpszichológiáról és tudatos HR-ről.", baseUrl)}
+${optionalMainLines}
 ${line("/contact", "Kapcsolat", "Kapcsolatfelvétel; egy munkanapon belüli válasz.", baseUrl)}
 ${line("/privacy", "Adatvédelem", "Milyen adatot kezelünk, meddig, és ki láthatja.", baseUrl)}
 
-## Blogcikkek (magyar)
-
-${huPosts
-  .map((post) => line(`/blog/${post.slug}`, post.title, post.description, baseUrl))
-  .join("\n")}
-
-## Blog posts (English)
-
-${enPosts
-  .map((post) => line(`/blog/${post.slug}`, post.title, post.description, baseUrl))
-  .join("\n")}
+${blogSections}
 
 ## Amit NE indexelj / ne idézz
 

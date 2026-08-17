@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import type { TeamPatternResult, AxisDetail } from "@/lib/team-pattern";
 import { AXIS_LABELS, PATTERN_NAMES, PATTERN_THRESHOLDS } from "@/lib/team-pattern";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 // Remap a team-pattern axis value (0–100, asymmetric threshold) to a
 // PatternExplorer slider value (0–100, symmetric 50 = midpoint).
@@ -236,12 +237,14 @@ export function TeamPatternCard({ patternResult: data, totalMembers, isHu }: Tea
                 </div>
               ))}
             </div>
-            <a
-              href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
-              className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage hover:text-[var(--color-action-primary-fg)]"
-            >
-              {t("teamComp.explorePattern", loc)}
-            </a>
+            {isPortfolioSurfaceActive("patternExplorer") ? (
+              <a
+                href={`/patterns?drive=${remapToSlider(data.axes.drive.value, PATTERN_THRESHOLDS.drive)}&cohesion=${remapToSlider(data.axes.cohesion.value, PATTERN_THRESHOLDS.cohesion)}&discipline=${remapToSlider(data.axes.discipline.value, PATTERN_THRESHOLDS.discipline)}&openness=${remapToSlider(data.axes.openness.value, PATTERN_THRESHOLDS.openness)}`}
+                className="mt-4 inline-flex min-h-[44px] items-center rounded-lg border border-sage/30 bg-surface-card px-5 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage hover:text-[var(--color-action-primary-fg)]"
+              >
+                {t("teamComp.explorePattern", loc)}
+              </a>
+            ) : null}
           </div>
         )}
 

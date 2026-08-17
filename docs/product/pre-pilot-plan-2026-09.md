@@ -1,5 +1,11 @@
 # Pilot-előtti zárási terv — 2026-08-04
 
+> **2026-08-16-i scope-frissítés:** ez a fájl a 2026-08-04-i gap-audit
+> történeti állapotát őrzi. Az aktuális végrehajtási forrás a
+> `docs/pilot/pilot-playbook.md`: Scan v1 = self + trust + pulse, az observer
+> és peer külön kiegészítő, a career/hiring/CRM/blog/pattern/share felületek
+> pedig parkolt állapotban vannak. Ütközésnél az új playbook az irányadó.
+>
 > Horizont: 2026-09-08 pilot-indulás. Forrás: teljes terv-vs-kód audit
 > (52 tétel, nyers adatok: `docs/product/data/gap-audit-2026-08-04.json`).
 > A „KÉSZ (ellenőrizve)" tételeket az audit kóddal igazolta — itt csak a

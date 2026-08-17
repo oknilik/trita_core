@@ -241,6 +241,7 @@ export default async function TeamDetailPage({
   // CTA-ja „kezdés" helyett „folytatás"-t mutat.
   const pendingMeasurement = pendingMeasurementBase
     ? {
+        campaignId: pendingMeasurementBase.campaign.id,
         campaignName: pendingMeasurementBase.campaignName,
         stepType: pendingMeasurementBase.stepType,
         opensAt: pendingMeasurementBase.opensAt,

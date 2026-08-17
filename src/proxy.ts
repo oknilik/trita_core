@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { normalizeLocale } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { parkedPortfolioSurfaceForPath } from "@/lib/portfolio-parking";
 
 function nextWithPathname(req: NextRequest) {
   // Request-korreláció: minden kérés kap egy x-request-id-t (a bejövőt
@@ -55,6 +56,20 @@ function isE2EAuthBypassEnabled(req: NextRequest): boolean {
 }
 
 const handler = clerkMiddleware(async (auth, req) => {
+  // P2.2 portfólió-parkolás: ugyanaz a központi kapu zárja le a publikus,
+  // belépett és API-belépőket. A modulok és adataik a repóban/adatbázisban
+  // maradnak, de rejtett mélylinkkel sem válhatnak véletlenül élő termékké.
+  const parkedSurface = parkedPortfolioSurfaceForPath(req.nextUrl.pathname);
+  if (parkedSurface) {
+    if (req.nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json(
+        { error: "FEATURE_PARKED" },
+        { status: 404, headers: { "Cache-Control": "no-store" } },
+      );
+    }
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
   // SSO-callback: semmilyen redirect-logika nem futhat (dev/tunnel loop-ok
   // ellen), DE a clerkMiddleware-en belül maradunk, hogy a downstream
   // auth()-hívások (pl. root layout) Clerk-kontextust kapjanak — enélkül

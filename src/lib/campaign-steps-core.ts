@@ -9,6 +9,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 export const CAMPAIGN_STEP_ORDER = [
+  "SELF_ASSESSMENT",
   "OBSERVER_360",
   "TEAM_ROLE",
   "TEAM_ROLE_360",
@@ -19,11 +20,69 @@ export const CAMPAIGN_STEP_ORDER = [
 
 export type CampaignStepType = (typeof CAMPAIGN_STEP_ORDER)[number];
 
+export const CAMPAIGN_PRESET_IDS = ["SCAN_V1"] as const;
+export type CampaignPresetId = (typeof CAMPAIGN_PRESET_IDS)[number];
+
+/**
+ * Nevesített, szerver által feloldott mérési csomagok. A preset nem csak
+ * kliensoldali kényelmi alapérték: ugyanaz az azonosító minden létrehozáskor
+ * ugyanarra a lépés-sorra oldódik, ezért a pilot Scanek összevethetők.
+ *
+ * A Scan v1-ben a self külön lépés. Az OBSERVER_360 szándékosan nincs benne:
+ * az observer-teher a második kör / külön kiegészítő része.
+ */
+export const CAMPAIGN_PRESETS: Record<
+  CampaignPresetId,
+  {
+    label: { hu: string; en: string };
+    description: { hu: string; en: string };
+    steps: readonly CampaignStepType[];
+    /** A preset minden self-eredménye ehhez a konkrét körhöz címkézett. */
+    requireFreshResults: boolean;
+  }
+> = {
+  SCAN_V1: {
+    label: { hu: "Trita Team Scan v1", en: "Trita Team Scan v1" },
+    description: {
+      hu: "Önértékelés, bizalmi háló és pszichológiai biztonság pulse.",
+      en: "Self-assessment, trust network and psychological safety pulse.",
+    },
+    steps: ["SELF_ASSESSMENT", "TRUST_360", "PSYCH_SAFETY"],
+    requireFreshResults: true,
+  },
+};
+
+export function getCampaignPresetSteps(
+  presetId: CampaignPresetId,
+): CampaignStepType[] {
+  return [...CAMPAIGN_PRESETS[presetId].steps];
+}
+
+/**
+ * Presetnél a szerver-konstans az igazság: a kliens nem kapcsolhatja ki a
+ * kör-címkézéshez szükséges fresh selfet. Egyedi körben a kért érték marad.
+ */
+export function resolveCampaignRequireFreshResults(
+  presetId: CampaignPresetId | undefined,
+  requested: boolean,
+): boolean {
+  return presetId
+    ? CAMPAIGN_PRESETS[presetId].requireFreshResults
+    : requested;
+}
+
+export function isSelfAssessmentCampaignStep(
+  stepType: string,
+): stepType is "SELF_ASSESSMENT" | "OBSERVER_360" {
+  return stepType === "SELF_ASSESSMENT" || stepType === "OBSERVER_360";
+}
+
 // Névtan (UX-audit #13): az OBSERVER_360 „külső visszajelzés" (kollégák
 // KÍVÜLRŐL jellemeznek), a PEER_FEEDBACK „elismerés-kör" (csapaton BELÜLI
 // köszönet + javaslat) — a két lépés neve korábban majdnem azonos volt
 // („kollégai visszajelzés…"), ami összetéveszthetővé tette őket.
 export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: string }> = {
+  SELF_ASSESSMENT: { hu: "Önértékelés", en: "Self-assessment" },
   OBSERVER_360: { hu: "Önértékelés + külső visszajelzés", en: "Self-assessment + external feedback" },
   TEAM_ROLE: { hu: "Csapatszerep-kérdőív", en: "Team role questionnaire" },
   TEAM_ROLE_360: { hu: "Csapattársak szerep-visszajelzése", en: "Team role peer feedback" },
@@ -34,6 +93,7 @@ export const CAMPAIGN_STEP_LABELS: Record<CampaignStepType, { hu: string; en: st
 
 /** Az adott lépés kitöltő-felülete (értesítés-link és banner-CTA). */
 export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
+  SELF_ASSESSMENT: "/assessment",
   OBSERVER_360: "/assessment",
   TEAM_ROLE: "/assessment/team-roles",
   TEAM_ROLE_360: "/assessment/team-roles/peers",
@@ -41,6 +101,19 @@ export const CAMPAIGN_STEP_LINKS: Record<CampaignStepType, string> = {
   PSYCH_SAFETY: "/assessment/psych-safety",
   PEER_FEEDBACK: "/assessment/peer-feedback",
 };
+
+/**
+ * Kampányból nyitott self-kérdőívnél a kör az URL része. A többi mérés
+ * saját beadási útja már kampányhoz kötött; náluk a kanonikus link marad.
+ */
+export function getCampaignStepLink(
+  stepType: CampaignStepType,
+  campaignId?: string | null,
+): string {
+  const base = CAMPAIGN_STEP_LINKS[stepType];
+  if (!isSelfAssessmentCampaignStep(stepType) || !campaignId) return base;
+  return `${base}?campaignId=${encodeURIComponent(campaignId)}`;
+}
 
 export function isCampaignStepType(value: string): value is CampaignStepType {
   return (CAMPAIGN_STEP_ORDER as readonly string[]).includes(value);
@@ -52,6 +125,9 @@ export function isCampaignStepType(value: string): value is CampaignStepType {
  */
 export function normalizeCampaignSteps(types: string[]): CampaignStepType[] {
   const set = new Set(types.filter(isCampaignStepType));
+  // Az observer-kör már magában foglalja a self kitöltést. Ha egy régi vagy
+  // kézzel írt kliens mindkettőt küldi, ne kérjük ugyanazt kétszer.
+  if (set.has("OBSERVER_360")) set.delete("SELF_ASSESSMENT");
   return CAMPAIGN_STEP_ORDER.filter((t) => set.has(t));
 }
 
@@ -96,8 +172,8 @@ export function isStepGateOpen(
 
 /**
  * Lépés-teljesítés egy résztvevőnél: túlhaladt rajta (currentStep) VAGY
- * lekönyvelt teljesítés (stepCompletions) VAGY — legacy OBSERVER_360
- * kampányoknál, ahol a léptetés még nem futott — kész (fresh-tudatosan
+ * lekönyvelt teljesítés (stepCompletions) VAGY — selfet tartalmazó
+ * kampánylépésnél, ahol a léptetés még nem futott — kész (fresh-tudatosan
  * szűrt) self-eredmény. A hasFreshSelfResult-ot a hívó számolja:
  * újrafelvételi körben (requireFreshResults) csak az aktiválás utáni
  * self-eredményre lehet igaz.
@@ -118,7 +194,7 @@ export function isCampaignStepDone(
   return (
     participant.currentStep > idx ||
     Boolean(completions[stepType]) ||
-    (stepType === "OBSERVER_360" && hasFreshSelfResult)
+    (isSelfAssessmentCampaignStep(stepType) && hasFreshSelfResult)
   );
 }
 
@@ -147,4 +223,24 @@ export function isStepOpenFor(
     getCurrentStepType(campaign, participant) === stepType &&
     isStepGateOpen(participant)
   );
+}
+
+/**
+ * Egy self-eredmény beleszámít-e az adott kampány OBSERVER_360 lépésébe?
+ * Fresh körben az explicit kampánycímke az elsődleges. A címke nélküli,
+ * aktiválás utáni eredmény csak a migráció előtti adatok kompatibilitási
+ * fallbackje; más kampány címkézett eredménye soha nem számít bele.
+ */
+export function isSelfResultForCampaign(
+  result: { campaignId?: string | null; createdAt: Date | string },
+  campaign: {
+    id: string;
+    requireFreshResults: boolean;
+    activatedAt?: Date | string | null;
+  },
+): boolean {
+  if (!campaign.requireFreshResults) return true;
+  if (result.campaignId === campaign.id) return true;
+  if (result.campaignId || !campaign.activatedAt) return false;
+  return new Date(result.createdAt).getTime() >= new Date(campaign.activatedAt).getTime();
 }

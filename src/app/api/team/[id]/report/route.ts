@@ -9,6 +9,7 @@ import {
   buildTeamReportAggregates,
   serializeTeamReport,
 } from "@/lib/team-report";
+import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
 
 // Csapatriport (TeamReport) írási API — kizárólag tanácsadónak.
 // Terv: docs/product/team-report-gating-plan.md
@@ -30,6 +31,7 @@ const narrativeFields = {
         owner: z.string().max(120).optional(),
         dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
         status: z.enum(["not_started", "in_progress", "blocked", "done"]).optional(),
+        targetMetric: teamActionTargetSchema.optional(),
       }),
     )
     .max(20)

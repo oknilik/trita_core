@@ -1,10 +1,11 @@
 import {
   CAMPAIGN_STEP_LABELS,
-  CAMPAIGN_STEP_LINKS,
+  getCampaignStepLink,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
 
 export interface TeamOverviewMeasurementTask {
+  campaignId: string;
   campaignName: string;
   stepType: CampaignStepType;
   opensAt: Date | null;
@@ -61,6 +62,7 @@ function measurementDescription(stepType: CampaignStepType, locale: Locale): str
       return hu
         ? "Adj rövid, jövőorientált visszajelzést a csapattársaidnak."
         : "Give your teammates short, future-focused feedback.";
+    case "SELF_ASSESSMENT":
     case "OBSERVER_360":
       return hu
         ? "Töltsd ki az önértékelést; ez alapozza meg a csapatképet."
@@ -123,7 +125,10 @@ export function resolveTeamOverviewFocus(input: {
             : hu
               ? "Kitöltöm most"
               : "Start now",
-        href: CAMPAIGN_STEP_LINKS[pendingMeasurement.stepType],
+        href: getCampaignStepLink(
+          pendingMeasurement.stepType,
+          pendingMeasurement.campaignId,
+        ),
       },
       secondary: secondary(true),
       scheduledAt: null,

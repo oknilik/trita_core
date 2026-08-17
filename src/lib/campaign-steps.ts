@@ -7,6 +7,8 @@ import { prisma } from "@/lib/prisma";
 import {
   getCampaignSteps,
   getCampaignTeamIds,
+  isSelfAssessmentCampaignStep,
+  isStepOpenFor,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { handleMeasurementStepOpened } from "@/lib/notifications";
@@ -82,7 +84,8 @@ export async function getStepPartialProgress(
 
 /**
  * Megkezdett-e a user az adott nyitott lépést? Értékelős lépésnél a
- * rész-haladásból, OBSERVER_360-nál a szerver-oldali felmérés-piszkozatból
+ * rész-haladásból, self / OBSERVER_360 lépésnél a szerver-oldali
+ * felmérés-piszkozatból
  * derül ki — a CTA erre vált „kezdés"-ről „folytatás"-ra.
  */
 export async function hasStartedStep(
@@ -90,7 +93,7 @@ export async function hasStartedStep(
   stepType: string,
   profileId: string,
 ): Promise<boolean> {
-  if (stepType === "OBSERVER_360") {
+  if (isSelfAssessmentCampaignStep(stepType)) {
     const draft = await prisma.assessmentDraft.findUnique({
       where: { userProfileId: profileId },
       select: { answers: true },
@@ -123,22 +126,32 @@ function withCompletion(
  * A user melyik AKTÍV kampányában áll épp a megadott típusú lépésnél?
  * A beküldő API-k kör-címkézésre használják (pl. TeamRoleAnswer.campaignId):
  * a beadás ahhoz a kampányhoz kötődik, amelyikben épp ez a lépés nyitott.
- * Több találatnál a legkorábban létrehozott kampány nyer (determinisztikus).
+ * Explicit campaignId esetén csak azt a kört fogadja el, és az ütemezési
+ * kaput is ellenőrzi. Az opció nélküli régi hívóknál a legkorábbi nyitott
+ * kampány nyer (determinisztikus).
  */
 export async function resolveActiveCampaignIdForStep(
   profileId: string,
   stepType: CampaignStepType,
+  options?: { campaignId?: string },
 ): Promise<string | null> {
   const participants = await prisma.campaignParticipant.findMany({
-    where: { userId: profileId, campaign: { status: "ACTIVE" } },
+    where: {
+      userId: profileId,
+      campaign: {
+        status: "ACTIVE",
+        ...(options?.campaignId ? { id: options.campaignId } : {}),
+      },
+    },
     orderBy: { campaign: { createdAt: "asc" } },
     select: {
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { id: true, type: true, steps: true } },
     },
   });
   for (const p of participants) {
-    if (getCampaignSteps(p.campaign)[p.currentStep] === stepType) {
+    if (isStepOpenFor(p.campaign, p, stepType)) {
       return p.campaign.id;
     }
   }
@@ -146,9 +159,32 @@ export async function resolveActiveCampaignIdForStep(
 }
 
 /**
- * Lépés-teljesítés lekönyvelése: minden AKTÍV kampányban, ahol a user
- * résztvevő és épp a most teljesített típusú lépésnél tart, léptetünk —
- * és ha van következő lépés, értesítjük róla.
+ * A személyiség-kérdőívet két kampánylépés nyithatja: az önálló self és a
+ * legacy self + observer kör. A beadó útvonalnak azt is tudnia kell, melyik
+ * konkrét lépést teljesítse, ezért az id mellett a típust is visszaadjuk.
+ */
+export async function resolveActiveSelfAssessmentCampaign(
+  profileId: string,
+  options?: { campaignId?: string },
+): Promise<{
+  campaignId: string;
+  stepType: "SELF_ASSESSMENT" | "OBSERVER_360";
+} | null> {
+  for (const stepType of ["SELF_ASSESSMENT", "OBSERVER_360"] as const) {
+    const campaignId = await resolveActiveCampaignIdForStep(
+      profileId,
+      stepType,
+      options,
+    );
+    if (campaignId) return { campaignId, stepType };
+  }
+  return null;
+}
+
+/**
+ * Lépés-teljesítés lekönyvelése: explicit campaignId-val csak a megadott,
+ * egyébként minden illeszkedő AKTÍV kampányban léptetünk. A zárt ütemezési
+ * kaput nem lehet egy közvetlen API-beadással megkerülni.
  *
  * A beküldő API-k hívják (self assessment, szerep-kérdőív, pulse) —
  * fire-and-forget jelleggel is biztonságos (idempotens: ha a user már
@@ -157,12 +193,20 @@ export async function resolveActiveCampaignIdForStep(
 export async function advanceCampaignStepForUser(
   profileId: string,
   completedType: CampaignStepType,
+  options?: { campaignId?: string },
 ): Promise<void> {
   const participants = await prisma.campaignParticipant.findMany({
-    where: { userId: profileId, campaign: { status: "ACTIVE" } },
+    where: {
+      userId: profileId,
+      campaign: {
+        status: "ACTIVE",
+        ...(options?.campaignId ? { id: options.campaignId } : {}),
+      },
+    },
     select: {
       id: true,
       currentStep: true,
+      nextStepOpensAt: true,
       stepCompletions: true,
       campaign: {
         select: { id: true, name: true, type: true, steps: true, stepIntervalHours: true },
@@ -172,7 +216,7 @@ export async function advanceCampaignStepForUser(
 
   for (const p of participants) {
     const steps = getCampaignSteps(p.campaign);
-    if (steps[p.currentStep] !== completedType) continue;
+    if (!isStepOpenFor(p.campaign, p, completedType)) continue;
 
     const nextStep = p.currentStep + 1;
     const nextType = steps[nextStep];
@@ -252,13 +296,14 @@ export async function releaseDueCampaignSteps(options?: {
 
 /**
  * Résztvevők haladásának inicializálása aktiváláskor (vagy utólagos
- * hozzáadáskor). Szabály: az OBSERVER_360 lépés "előre teljesítettnek"
- * számít, ha a usernek már van kész self-eredménye (a self teszt a
- * termékben egyszeri) — így nem ragad be az első lépésnél. Minden más
- * lépést a kampány alatt kell teljesíteni.
+ * hozzáadáskor). Szabály: a selfet tartalmazó lépés "előre teljesítettnek"
+ * számít, ha a usernek már van elfogadható self-eredménye — így a nem-fresh
+ * kör nem ragad be az első lépésnél. Minden más lépést a kampány alatt kell
+ * teljesíteni.
  *
- * Újrafelvételi kör (requireFreshResults): a fast-forward CSAK az
- * aktiválás után beadott self-eredményt fogadja el — mindenki újra kitölt.
+ * Újrafelvételi kör (requireFreshResults): a fast-forward a konkrét
+ * kampányhoz címkézett eredményt fogadja el. Migráció előtti, címke nélküli
+ * rekordnál megmarad az aktiválás utáni dátum-kompatibilitás.
  * (Az advanceCampaignStepForUser-nek nem kell külön ellenőrzés: azt mindig
  * egy épp most beadott eredmény hívja, ami definíció szerint friss.)
  *
@@ -290,15 +335,22 @@ export async function initializeCampaignProgress(
   const steps = getCampaignSteps(campaign);
   if (steps.length === 0 || campaign.participants.length === 0) return;
 
-  // Kinek van már kész self-eredménye? (OBSERVER_360 fast-forwardhoz)
+  // Kinek van már kész self-eredménye? (self-lépés fast-forwardhoz)
   // Újrafelvételi körben csak az aktiválás utáni eredmény számít.
   const userIds = campaign.participants.map((p) => p.userId);
   const selfDone = await prisma.assessmentResult.findMany({
     where: {
       userProfileId: { in: userIds },
       isSelfAssessment: true,
-      ...(campaign.requireFreshResults && campaign.activatedAt
-        ? { createdAt: { gte: campaign.activatedAt } }
+      ...(campaign.requireFreshResults
+        ? campaign.activatedAt
+          ? {
+              OR: [
+                { campaignId: campaign.id },
+                { campaignId: null, createdAt: { gte: campaign.activatedAt } },
+              ],
+            }
+          : { campaignId: campaign.id }
         : {}),
     },
     select: { userProfileId: true },
@@ -316,11 +368,14 @@ export async function initializeCampaignProgress(
         : {};
 
     while (
-      steps[currentStep] === "OBSERVER_360" &&
+      isSelfAssessmentCampaignStep(steps[currentStep] ?? "") &&
       selfDoneSet.has(p.userId) &&
-      !completions.OBSERVER_360
+      !completions[steps[currentStep]]
     ) {
-      completions = { ...completions, OBSERVER_360: new Date().toISOString() };
+      completions = {
+        ...completions,
+        [steps[currentStep]]: new Date().toISOString(),
+      };
       currentStep += 1;
     }
 

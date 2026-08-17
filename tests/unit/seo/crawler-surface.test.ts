@@ -9,6 +9,7 @@ import assert from "node:assert/strict";
 
 import robotsRoute from "@/app/robots";
 import { GET as llmsTxt } from "@/app/llms.txt/route";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
  * A robots.ts preview/dev környezetben MINDENT tilt (a preview-URL nem
@@ -30,12 +31,14 @@ function productionRobots() {
 const PRIVATE_PREFIXES = [
   "/admin",
   "/api/",
+  "/blog",
   "/dashboard",
   "/hiring/",
   "/join/",
   "/manager",
   "/observe/",
   "/org",
+  "/patterns",
   "/profile",
   "/share/",
   "/team",
@@ -103,11 +106,31 @@ test("az llms.txt nem sorol fel privát útvonalat linkként", async () => {
   }
 });
 
-test("az llms.txt a fő publikus lapokat és a kapcsolati címet tartalmazza", async () => {
+test("az llms.txt csak az aktív fő lapokat tartalmazza", async () => {
   const body = await llmsTxt().text();
 
-  for (const path of ["/try", "/pricing", "/patterns", "/pilot", "/blog"]) {
+  for (const path of ["/try", "/pricing", "/pilot"]) {
     assert.ok(body.includes(`${path})`), `hiányzó publikus lap az llms.txt-ből: ${path}`);
   }
+  for (const path of ["/patterns", "/blog"]) {
+    assert.equal(body.includes(`${path})`), false, `parkolt lap kint maradt: ${path}`);
+  }
   assert.ok(body.includes("hello@trita.io"));
+});
+
+test("az aktív publikus megosztás tokenútja továbbra sem crawler-belépő", async () => {
+  assert.equal(isPortfolioSurfaceActive("publicSharing"), true);
+  const body = await llmsTxt().text();
+  assert.equal(/\]\(https?:\/\/[^)]+\/share\//.test(body), false);
+
+  const result = productionRobots();
+  const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
+  for (const rule of rules) {
+    const disallow = Array.isArray(rule?.disallow)
+      ? rule.disallow
+      : rule?.disallow
+        ? [rule.disallow]
+        : [];
+    assert.ok(disallow.includes("/share/"));
+  }
 });

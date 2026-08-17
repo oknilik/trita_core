@@ -34,6 +34,7 @@ import {
   getCampaignTeamIds,
   isCampaignStepDone,
   isCampaignStepType,
+  type CampaignStepType,
 } from "@/lib/campaign-steps-core";
 import { DIMENSION_BASE } from "@/lib/color-system";
 import { extractDimensionScores } from "@/lib/scoring";
@@ -168,6 +169,7 @@ export default async function CampaignDetailPage({
         id: true,
         name: true,
         description: true,
+        presetId: true,
         status: true,
         type: true,
         steps: true,
@@ -257,6 +259,7 @@ export default async function CampaignDetailPage({
   const showStepSection =
     campaignSteps.length > 1 ||
     (campaignSteps.length === 1 &&
+      campaignSteps[0] !== "SELF_ASSESSMENT" &&
       campaignSteps[0] !== "OBSERVER_360" &&
       campaignSteps[0] !== "PSYCH_SAFETY");
   const hasPsychStep = campaignSteps.includes("PSYCH_SAFETY");
@@ -276,10 +279,11 @@ export default async function CampaignDetailPage({
       )
     : null;
 
-  // A self/observer statok csak akkor értelmezettek, ha a kampányban van
-  // OBSERVER_360 lépés — más mérésnél (szerep, bizalom, pulse) a lépés-
-  // haladás a mérvadó, a személyiség-teszt kitöltöttsége nem ide tartozik.
+  // A self stat az önálló és az observerrel kombinált self-lépésnél is
+  // értelmezett. Az observer stat csak a kombinált körhöz tartozik.
   const hasObserverStep = campaignSteps.includes("OBSERVER_360");
+  const hasSelfAssessmentStep =
+    campaignSteps.includes("SELF_ASSESSMENT") || hasObserverStep;
   // Újrafelvételi kör: csak az aktiválás UTÁNI kitöltés számít késznek.
   const freshFrom =
     campaign.requireFreshResults && campaign.activatedAt
@@ -293,7 +297,16 @@ export default async function CampaignDetailPage({
     where: {
       userProfileId: { in: participantUserIds },
       isSelfAssessment: true,
-      ...(freshFrom ? { createdAt: { gte: freshFrom } } : {}),
+      ...(campaign.requireFreshResults
+        ? freshFrom
+          ? {
+              OR: [
+                { campaignId: campaign.id },
+                { campaignId: null, createdAt: { gte: freshFrom } },
+              ],
+            }
+          : { campaignId: campaign.id }
+        : {}),
     },
     orderBy: { createdAt: "desc" },
     select: { userProfileId: true, scores: true },
@@ -658,10 +671,14 @@ export default async function CampaignDetailPage({
           </section>
         )}
 
-        {/* Self/observer statok — CSAK observer-lépéses kampánynál (más
-            mérésnél a lépés-haladás a mérvadó, a személyiség-teszt nem). */}
-        {hasObserverStep && totalCount > 0 && (
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+        {/* Self stat az önálló Scan-lépésnél is; observer oszlopok csak a
+            külső visszajelzést ténylegesen tartalmazó körben jelennek meg. */}
+        {hasSelfAssessmentStep && totalCount > 0 && (
+          <div
+            className={`grid grid-cols-1 gap-4 ${
+              hasObserverStep ? "md:grid-cols-3" : "md:grid-cols-1"
+            }`}
+          >
             {/* Self-assessment */}
             <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
               <div
@@ -687,52 +704,56 @@ export default async function CampaignDetailPage({
             </div>
 
             {/* Observer */}
-            <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
-              <div
-                className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "var(--color-state-success-solid)" }}
-              />
-              <p
-                className="font-mono text-micro uppercase tracking-widest"
-                style={{ color: "var(--color-muted)" }}
-              >
-                {t("org.campaign.observerDone", locale)}
-              </p>
-              <p className="mt-1 font-fraunces text-3xl text-ink">
-                {observerDoneCount}
-                <span className="ml-1 font-sans text-sm font-normal text-muted">
-                  / {totalCount}
-                </span>
-              </p>
-              <p className="mt-1 text-xs text-ink-body">
-                {Math.round((observerDoneCount / totalCount) * 100)}%{" "}
-                {t("org.campaign.receivedFeedback", locale)}
-              </p>
-            </div>
+            {hasObserverStep && (
+              <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
+                <div
+                  className="absolute left-0 right-0 top-0 h-[3px]"
+                  style={{ backgroundColor: "var(--color-state-success-solid)" }}
+                />
+                <p
+                  className="font-mono text-micro uppercase tracking-widest"
+                  style={{ color: "var(--color-muted)" }}
+                >
+                  {t("org.campaign.observerDone", locale)}
+                </p>
+                <p className="mt-1 font-fraunces text-3xl text-ink">
+                  {observerDoneCount}
+                  <span className="ml-1 font-sans text-sm font-normal text-muted">
+                    / {totalCount}
+                  </span>
+                </p>
+                <p className="mt-1 text-xs text-ink-body">
+                  {Math.round((observerDoneCount / totalCount) * 100)}%{" "}
+                  {t("org.campaign.receivedFeedback", locale)}
+                </p>
+              </div>
+            )}
 
             {/* Fully done */}
-            <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
-              <div
-                className="absolute left-0 right-0 top-0 h-[3px]"
-                style={{ backgroundColor: "var(--color-layer-org-bright)" }}
-              />
-              <p
-                className="font-mono text-micro uppercase tracking-widest"
-                style={{ color: "var(--color-muted)" }}
-              >
-                {t("org.campaign.fullyComplete", locale)}
-              </p>
-              <p className="mt-1 font-fraunces text-3xl text-ink">
-                {observerFullyDoneCount}
-                <span className="ml-1 font-sans text-sm font-normal text-muted">
-                  / {totalCount}
-                </span>
-              </p>
-              <p className="mt-1 text-xs text-ink-body">
-                {Math.round((observerFullyDoneCount / totalCount) * 100)}%{" "}
-                {t("org.campaign.bothDone", locale)}
-              </p>
-            </div>
+            {hasObserverStep && (
+              <div className="relative overflow-hidden rounded-2xl border border-sand bg-surface-card p-5 shadow-sm">
+                <div
+                  className="absolute left-0 right-0 top-0 h-[3px]"
+                  style={{ backgroundColor: "var(--color-layer-org-bright)" }}
+                />
+                <p
+                  className="font-mono text-micro uppercase tracking-widest"
+                  style={{ color: "var(--color-muted)" }}
+                >
+                  {t("org.campaign.fullyComplete", locale)}
+                </p>
+                <p className="mt-1 font-fraunces text-3xl text-ink">
+                  {observerFullyDoneCount}
+                  <span className="ml-1 font-sans text-sm font-normal text-muted">
+                    / {totalCount}
+                  </span>
+                </p>
+                <p className="mt-1 text-xs text-ink-body">
+                  {Math.round((observerFullyDoneCount / totalCount) * 100)}%{" "}
+                  {t("org.campaign.bothDone", locale)}
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -1049,15 +1070,11 @@ export default async function CampaignDetailPage({
           <DraftCampaignEditor
             orgId={orgId}
             campaignId={campaign.id}
+            initialPresetId={campaign.presetId}
             initialSteps={
-              (campaign.steps.length > 0 ? campaign.steps : [campaign.type]) as (
-                | "OBSERVER_360"
-                | "TEAM_ROLE"
-                | "TEAM_ROLE_360"
-                | "TRUST_360"
-                | "PSYCH_SAFETY"
-                | "PEER_FEEDBACK"
-              )[]
+              (campaign.steps.length > 0
+                ? campaign.steps
+                : [campaign.type]) as CampaignStepType[]
             }
             initialTeamIds={getCampaignTeamIds(campaign)}
             initialIntervalHours={campaign.stepIntervalHours}

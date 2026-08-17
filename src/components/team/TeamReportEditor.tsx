@@ -11,6 +11,11 @@ import { TeamReportView } from "@/components/team/TeamReportView";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { TeamWorkshopFacilitatorView } from "@/components/team/TeamWorkshopFacilitatorView";
 import { TeamReportComparison } from "@/components/team/TeamReportComparison";
+import {
+  teamActionTargetFromKey,
+  teamActionTargetKey,
+  teamActionTargetOptions,
+} from "@/lib/team-action-target";
 
 // Tanácsadói riport-szerkesztő. Csak ORG_CONSULTANT látja (a team page
 // szerver-oldalon kapuz). Vázlat → mentés → előnézet → publikálás; a
@@ -112,6 +117,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
   const latestPublished = publishedReports[0] ?? null;
   const olderPublished = publishedReports.slice(1);
+  const actionTargetOptions = teamActionTargetOptions(isHu ? "hu" : "en");
   const [values, setValues] = useState<Record<NarrativeKey, string>>({
     title: draft?.title ?? "",
     summary: draft?.summary ?? "",
@@ -617,6 +623,46 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
                     <option value="done">{isHu ? "Kész" : "Done"}</option>
                   </select>
                 </div>
+                <label className="flex flex-col gap-1">
+                  <span className="text-micro font-semibold text-ink-body">
+                    {isHu ? "Visszamérendő célmutató" : "Target metric for remeasurement"}
+                  </span>
+                  <select
+                    value={teamActionTargetKey(item.targetMetric)}
+                    onChange={(e) => {
+                      const targetMetric = teamActionTargetFromKey(e.target.value);
+                      setActionItems((items) =>
+                        items.map((it, i) => {
+                          if (i !== index) return it;
+                          if (targetMetric) return { ...it, targetMetric };
+                          const withoutTarget = { ...it };
+                          delete withoutTarget.targetMetric;
+                          return withoutTarget;
+                        }),
+                      );
+                    }}
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  >
+                    <option value="">
+                      {isHu ? "Nincs célmutató hozzárendelve" : "No target metric assigned"}
+                    </option>
+                    {([
+                      ["psych_safety", isHu ? "Pszichológiai biztonság" : "Psychological safety"],
+                      ["trust", isHu ? "Bizalmi háló" : "Trust network"],
+                      ["team_role", isHu ? "Csapatszerep" : "Team role"],
+                    ] as const).map(([group, label]) => (
+                      <optgroup key={group} label={label}>
+                        {actionTargetOptions
+                          .filter((option) => option.group === group)
+                          .map((option) => (
+                            <option key={option.key} value={option.key}>
+                              {option.label}
+                            </option>
+                          ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                </label>
               </div>
             ))}
           </div>

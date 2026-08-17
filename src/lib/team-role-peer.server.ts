@@ -12,10 +12,9 @@ import {
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 
 /**
- * Peer-profilok egy csapat minden értékelt tagjára (aboutUserId →
- * profil). MINDEN eddigi kampány-kör observationjeit összesíti; egy
- * (aboutUserId, raterUserId) párnál a legfrissebb kör számít, hogy az
- * ismételt körök felülírják a korábbit, ne duplázódjanak.
+ * Peer-profilok egy csapat minden értékelt tagjára (aboutUserId → profil).
+ * Alapból MINDEN eddigi kampány-kört összesít; explicit campaignId-nál csak
+ * az adott riportkört. Egy párnál a legfrissebb válasz számít.
  *
  * S4: mind az értékelő-, mind az értékelt-halmaz a JELENLEGI
  * csapattagokra szűkül (poolPeerSelectionsByRatedMember) — a kilépett
@@ -25,10 +24,14 @@ import type { TeamRoleSelections } from "@/lib/team-role-questions";
  */
 export async function buildTeamPeerRoleProfiles(
   teamId: string,
+  options?: { campaignId?: string },
 ): Promise<Map<string, PeerRoleProfile>> {
   const [observations, members] = await Promise.all([
     prisma.teamRoleObservation.findMany({
-      where: { teamId },
+      where: {
+        teamId,
+        ...(options?.campaignId ? { campaignId: options.campaignId } : {}),
+      },
       orderBy: { updatedAt: "asc" },
       select: {
         aboutUserId: true,

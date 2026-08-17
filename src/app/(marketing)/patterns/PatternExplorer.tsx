@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics/client";
 import {
   AXIS_META,
   PATTERNS,
+  TEAM_PATTERN_EVIDENCE_STATUS,
   getClosestPattern,
   getSecondClosest,
   getMatchLabel,
@@ -497,14 +498,14 @@ export function PatternExplorer() {
           className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
           style={{ color: T.heading }}
         >
-          16 csapatmintázat — melyik a tiéd?
+          16 értelmezési minta — hogyan olvasható a csapat?
         </h1>
         <p
           className="mt-3 max-w-2xl text-base leading-relaxed"
           style={{ color: T.muted }}
         >
-          Húzd a csúszkákat, hogy beállítsd a csapatod jellemzőit. A mintázat kártya
-          valós időben frissül — nézd meg, melyik működés illik legjobban a csapatodra.
+          Húzd a csúszkákat, és nézd meg, hogyan fordítja le a négy tengelyt
+          közös vezetői nyelvre a modell. Ez szemléltető eszköz, nem csapatdiagnózis.
         </p>
       </section>
 
@@ -597,9 +598,8 @@ export function PatternExplorer() {
               className="border-t pt-4 text-xs italic leading-relaxed"
               style={{ color: "var(--color-muted)", borderColor: T.border }}
             >
-              Ezek a mintázatok tudományos személyiségkutatáson alapuló csapat-szintű értelmezések. Nem fix
-              címkék — a csapat működése idővel változik, és ugyanaz a csapat különböző
-              kontextusokban eltérően viselkedhet.
+              {TEAM_PATTERN_EVIDENCE_STATUS.framing.hu} A működés idővel és
+              kontextusonként is változhat.
             </p>
 
             {/* Show all toggle */}
@@ -634,20 +634,21 @@ export function PatternExplorer() {
             className="text-label uppercase"
             style={{ color: T.accent }}
           >
-            tudományos személyiségmérés
+            mért csapatdiagnosztika
           </p>
           <h2
             className="mt-2 font-fraunces text-2xl leading-snug"
             style={{ color: T.heading }}
           >
-            Kíváncsi vagy a csapatod valódi mintázatára?
+            Kíváncsi vagy, hol akad el ténylegesen a csapatod?
           </h2>
 
           {!isSignedIn && (
             <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              A Trita felmérése ~10 perc — és az eredmény nem egy csúszka, hanem a
-              csapatod valódi adata. Csapatprofilok, heatmap, tension pair elemzés.
+              A Team Scan nem a fenti címkét adja el eredményként: önértékelést,
+              bizalmi hálót és pszichológiai biztonságot mér, majd közös vezetői
+              lépéssé fordítja az evidenciát.
             </p>
             <a
               href="/pilot"
@@ -671,8 +672,9 @@ export function PatternExplorer() {
           {isSignedIn && (
             <>
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
-              Ez az interaktív eszköz csak a lehetőségeket mutatja meg. A csapatod valódi
-              mintázatát objektív személyiségmérésből számoljuk — adatokból, nem becslésből.
+              Ez az interaktív eszköz csak egy értelmezési nyelvet mutat. A Team Scan
+              döntési alapja a mért bizalmi háló, a pszichológiai biztonság és a
+              forrásjelölt csapatkép — nem önmagában a 16-as címke.
             </p>
             <a
               href="/advisory"

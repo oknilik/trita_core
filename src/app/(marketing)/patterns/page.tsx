@@ -9,12 +9,12 @@ import { PatternExplorer } from "./PatternExplorer";
 
 export const metadata: Metadata = buildPageMetadata({
   path: "/patterns",
-  title: "16 csapatműködési mintázat — melyik a tiéd? | Trita",
+  title: "16 csapatminta mint értelmezési nyelv | Trita",
   description:
-    "A 16 csapatműködési mintázat négy tengely mentén: hajtóerő, kohézió, fegyelem, nyitottság. Nézd meg mindegyik erősségeit és kockázatait, és melyik illik a csapatodra.",
-  ogTitle: "16 csapatminta — Melyik a tiéd?",
+    "Négy csapattengely 16 lehetséges olvasata erősségekkel és kockázatokkal. Értelmezési nyelv, nem validált csapattipológia vagy diagnózis.",
+  ogTitle: "16 csapatminta — értelmezési nyelv",
   ogDescription:
-    "Interaktív csapatminta felfedező. 4 tengely, 16 mintázat, személyre szabott meglátások.",
+    "Interaktív szemléltető négy tengellyel és 16 lehetséges olvasattal — nem diagnózis.",
 });
 
 export default function PatternsPage() {
@@ -29,9 +29,9 @@ export default function PatternsPage() {
         data={[
           buildWebPageJsonLd({
             path: "/patterns",
-            title: "16 csapatműködési mintázat",
+            title: "16 csapatminta mint értelmezési nyelv",
             description:
-              "A 16 csapatműködési mintázat négy tengely mentén: hajtóerő, kohézió, fegyelem, nyitottság.",
+              "Négy csapattengely 16 lehetséges értelmezése; nem validált csapattipológia.",
             about: ["Csapatdinamika", "Csapatműködési mintázatok"],
             breadcrumb: [
               { name: "Főoldal", path: "/" },
@@ -39,9 +39,9 @@ export default function PatternsPage() {
             ],
           }),
           buildItemListJsonLd({
-            name: "A 16 csapatműködési mintázat",
+            name: "A négy csapattengely 16 értelmezési mintája",
             description:
-              "Négy tengely (hajtóerő, kohézió, fegyelem, nyitottság) metszetéből adódó 16 csapatműködési mintázat, erősségekkel és kockázatokkal.",
+              "Négy tengely metszetéből adódó 16 értelmezési minta erősségekkel és kockázatokkal; nem validált tipológia.",
             items: patternKeys.map((key) => ({
               name: PATTERNS[key].name,
               description: `${PATTERNS[key].description} Jellemzők: ${axisProfileLabels(key).join(", ")}. Erősségek: ${PATTERNS[key].strengths.join(", ")}. Kockázatok: ${PATTERNS[key].risks.join(", ")}.`,

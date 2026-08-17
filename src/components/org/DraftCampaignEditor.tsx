@@ -6,29 +6,21 @@ import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import {
+  CAMPAIGN_STEP_ORDER,
+  type CampaignStepType,
+} from "@/lib/campaign-steps-core";
 
-// DRAFT-kampány szerkesztő: amíg a kampány nincs aktiválva, a mérés-lépések,
-// a cél-csapat és a lépés-ütem szabadon módosítható. Aktiválás után a
-// kampány összetétele fix (az API is 409-cel véd).
+// DRAFT-kampány szerkesztő: custom kampánynál a mérés-lépések, minden
+// kampánynál a cél-csapat és a lépés-ütem módosítható. Nevesített presetnél a
+// lépéssor a termékszerződés része, ezért draftban is fix (az API is védi).
 
-type CampaignType =
-  | "OBSERVER_360"
-  | "TEAM_ROLE"
-  | "TEAM_ROLE_360"
-  | "TRUST_360"
-  | "PSYCH_SAFETY"
-  | "PEER_FEEDBACK";
+type CampaignType = CampaignStepType;
 
-const STEP_ORDER: CampaignType[] = [
-  "OBSERVER_360",
-  "TEAM_ROLE",
-  "TEAM_ROLE_360",
-  "TRUST_360",
-  "PSYCH_SAFETY",
-  "PEER_FEEDBACK",
-];
+const STEP_ORDER: CampaignType[] = [...CAMPAIGN_STEP_ORDER];
 
 const TYPE_NAME_KEYS: Record<CampaignType, string> = {
+  SELF_ASSESSMENT: "campaignWiz.typeSelfName",
   OBSERVER_360: "campaignWiz.typeObserverName",
   TEAM_ROLE: "campaignWiz.typeRoleName",
   TEAM_ROLE_360: "campaignWiz.typeRole360Name",
@@ -48,6 +40,7 @@ const TEAM_LOCKED = new Set<CampaignType>([
 export function DraftCampaignEditor({
   orgId,
   campaignId,
+  initialPresetId,
   initialSteps,
   initialTeamIds,
   initialIntervalHours,
@@ -56,6 +49,7 @@ export function DraftCampaignEditor({
 }: {
   orgId: string;
   campaignId: string;
+  initialPresetId: string | null;
   initialSteps: CampaignType[];
   initialTeamIds: string[];
   initialIntervalHours: number;
@@ -72,6 +66,7 @@ export function DraftCampaignEditor({
   // Elvetés kétfázisú, inline megerősítéssel — natív confirm() nélkül.
   const [confirmingDiscard, setConfirmingDiscard] = useState(false);
   const [notice, setNotice] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const hasFixedPreset = initialPresetId !== null;
 
   const chosenSteps = STEP_ORDER.filter((tp) => selected.has(tp));
   const needsTeam = chosenSteps.some((tp) => TEAM_LOCKED.has(tp));
@@ -81,7 +76,11 @@ export function DraftCampaignEditor({
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(tp)) next.delete(tp);
-      else next.add(tp);
+      else {
+        next.add(tp);
+        if (tp === "OBSERVER_360") next.delete("SELF_ASSESSMENT");
+        if (tp === "SELF_ASSESSMENT") next.delete("OBSERVER_360");
+      }
       return next;
     });
     setNotice(null);
@@ -96,7 +95,7 @@ export function DraftCampaignEditor({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           action: "edit_draft",
-          types: chosenSteps,
+          ...(hasFixedPreset ? {} : { types: chosenSteps }),
           teamIds: Array.from(teamIds),
           stepIntervalHours: intervalHours,
         }),
@@ -147,7 +146,14 @@ export function DraftCampaignEditor({
       <h2 className="mb-1 text-sm font-semibold text-ink">
         {t("org.campaign.editDraftTitle", locale)}
       </h2>
-      <p className="mb-4 text-xs text-ink-body/60">{t("org.campaign.editDraftHint", locale)}</p>
+      <p className="mb-4 text-xs text-ink-body/60">
+        {t(
+          hasFixedPreset
+            ? "org.campaign.editPresetDraftHint"
+            : "org.campaign.editDraftHint",
+          locale,
+        )}
+      </p>
 
       {/* Mérések */}
       <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
@@ -157,7 +163,7 @@ export function DraftCampaignEditor({
         {STEP_ORDER.map((tp) => {
           const checked = selected.has(tp);
           const orderIndex = chosenSteps.indexOf(tp);
-          const disabled = false;
+          const disabled = hasFixedPreset;
           return (
             <label
               key={tp}

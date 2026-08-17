@@ -447,6 +447,10 @@ export const orgTranslations = {
         hu: "Amíg a mérés piszkozat, a lépések, a cél-csapat és az ütem szabadon módosítható. Aktiválás után az összetétel rögzül.",
         en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
       },
+      editPresetDraftHint: {
+        hu: "A nevesített csomag mérési lépései rögzítettek; piszkozatként a cél-csapat és az ütem még módosítható.",
+        en: "The named package has fixed measurement steps; its target team and pacing can still be changed while it is a draft.",
+      },
       editTypesLabel: { hu: "Mérések (sorrendjük kanonikus)", en: "Measurements (canonical order)" },
       editTeamLabel: { hu: "Cél-csapat", en: "Target team" },
       editNoTeam: { hu: "Nincs csapat-célzás (egyénileg kiválasztott résztvevők)", en: "No team targeting (individually selected participants)" },
@@ -1116,6 +1120,26 @@ export const orgTranslations = {
     // Típusválasztó (0. lépés)
     stepType: { hu: "Mérés típusa", en: "Measurement type" },
     typeTitle: { hu: "Mit szeretnél mérni?", en: "What do you want to measure?" },
+    packageRecommended: { hu: "Ajánlott", en: "Recommended" },
+    scanV1Meta: {
+      hu: "Rögzített pilot-készlet · observer és peer kör nélkül",
+      en: "Fixed pilot set · without observer and peer rounds",
+    },
+    packageCustomName: { hu: "Egyedi mérési kör", en: "Custom measurement round" },
+    packageCustomDesc: {
+      hu: "Haladó összeállítás egycélú méréshez, második körhöz vagy kiegészítő modulhoz.",
+      en: "Advanced setup for a focused measurement, second round or add-on module.",
+    },
+    typeSelfName: { hu: "Önértékelés", en: "Self-assessment" },
+    typeSelfDesc: {
+      hu: "A tagok kitöltik a 60 állításos személyiség-kérdőívet, külső értékelők meghívása nélkül.",
+      en: "Members complete the 60-item personality questionnaire without inviting external observers.",
+    },
+    typeSelfMeta: { hu: "60 állítás · ~10 perc / fő", en: "60 items · ~10 min per member" },
+    typeSelfOut: {
+      hu: "Eredmény: körhöz címkézett self profil és csapatszintű dimenzió-kontroll",
+      en: "Output: round-labelled self profile and team-level dimension control",
+    },
     typeObserverName: { hu: "Külső visszajelzés (360°)", en: "External feedback (360°)" },
     typeObserverDesc: {
       hu: "A tagok kollégákat hívnak meg, akik kívülről jellemzik őket — az önkép és a külső kép összevethetővé válik.",
@@ -1169,6 +1193,14 @@ export const orgTranslations = {
     freshHint: {
       hu: "A korábbi eredmények ebben a körben nem számítanak — minden résztvevő újra kitölti a kérdőíveket. A régi eredmények megmaradnak, a kör a későbbi összehasonlítás alapja.",
       en: "Previous results don't count in this round — every participant fills in the questionnaires again. Old results are kept; the round becomes the basis for later comparison.",
+    },
+    scanV1FreshLabel: {
+      hu: "Körhöz kötött self-adat.",
+      en: "Round-labelled self data.",
+    },
+    scanV1FreshHint: {
+      hu: "A Scan v1-ben minden résztvevő friss self-kérdőívet tölt ki. Ettől lesz a baseline, a visszamérés és a pilotkohorsz pontosan ugyanahhoz a körhöz köthető.",
+      en: "In Scan v1 every participant completes a fresh self-assessment. This keeps the baseline, follow-up and pilot cohort tied to the exact measurement round.",
     },
     peerFbAnonLabel: { hu: "Anonim-aggregált javaslatok.", en: "Anonymous, aggregated suggestions." },
     peerFbAnonHint: {
@@ -1600,8 +1632,8 @@ export const orgTranslations = {
     memberAssessments: { hu: "tag értékelése alapján", en: "member assessments" },
     missingData: { hu: "hiányzó adat", en: "missing" },
     framingNote: {
-      hu: "A csapat jelenlegi önértékelés-alapú működési mintázatának értelmezése. Nem diagnózis, nem teljesítménycímke — idővel változhat.",
-      en: "This is an interpretation of the team's current self-assessment-based operating pattern. Not a diagnosis or performance label — it can change over time.",
+      hu: "Értelmezési nyelv a csapat jelenlegi, önértékelés-alapú tengelyeihez — nem validált tipológia, diagnózis vagy teljesítménycímke. A közvetlenül mért bizalmi háló és pszichológiai biztonság külön evidencia.",
+      en: "Interpretive language for the team's current self-assessment-based axes — not a validated typology, diagnosis, or performance label. The directly measured trust network and psychological safety are separate evidence.",
     },
 
     // TeamRoleSection

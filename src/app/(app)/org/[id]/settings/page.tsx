@@ -15,6 +15,7 @@ import { OrgMemberRoleEditor } from "@/components/org/OrgMemberRoleEditor";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +38,7 @@ export default async function OrgSettingsPage({
     orgRole: role,
   });
 
+  const hiringActive = isPortfolioSurfaceActive("hiring");
   const [members, creditBalance] = await Promise.all([
     prisma.organizationMember.findMany({
       where: { orgId, leftAt: null },
@@ -49,7 +51,7 @@ export default async function OrgSettingsPage({
     }),
     // CJ-CREDITS: read-only egyenleg — a kereteket a Trita tanácsadó kezeli,
     // a felület csak mutatja őket (consulting-led modell).
-    getCreditBalance(orgId),
+    hiringActive ? getCreditBalance(orgId) : Promise.resolve(null),
   ]);
 
   // Az előfizetés-adatok (státusz, csomag, férőhelyek) nem jelennek meg itt —
@@ -150,34 +152,36 @@ export default async function OrgSettingsPage({
             kezelése" linkjének célja. Read-only blokk: a kereteket a
             tanácsadó állítja be, a CTA a /contact-ra visz (consulting-led
             modell); read-only org-state-ben is változatlanul működik. */}
-        <Card as="section" spacing="lg" className="md:p-8">
-          <SectionEyebrow className="mb-1">
-            {t("org.settings.creditsEyebrow", locale)}
-          </SectionEyebrow>
-          <h2 className="font-fraunces text-xl text-ink mb-5">
-            {t("org.settings.creditsTitle", locale)}
-          </h2>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-micro font-semibold uppercase tracking-widest text-sage-dark">
-              {creditBalance.available} {t("hiring.creditsAvailable", locale)}
-            </span>
-            <span className="text-xs text-muted">
-              {tf("org.settings.creditsUsage", locale, {
-                used: creditBalance.totalUsed,
-                total: creditBalance.totalPurchased,
-              })}
-            </span>
-          </div>
-          <p className="mt-4 max-w-prose text-sm leading-relaxed text-ink-body">
-            {t("org.settings.creditsConsultantNote", locale)}
-          </p>
-          <Link
-            href="/contact"
-            className="mt-4 inline-flex min-h-[44px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
-          >
-            {t("org.settings.creditsContactCta", locale)}
-          </Link>
-        </Card>
+        {hiringActive && creditBalance ? (
+          <Card as="section" spacing="lg" className="md:p-8">
+            <SectionEyebrow className="mb-1">
+              {t("org.settings.creditsEyebrow", locale)}
+            </SectionEyebrow>
+            <h2 className="font-fraunces text-xl text-ink mb-5">
+              {t("org.settings.creditsTitle", locale)}
+            </h2>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-full border border-sage/20 bg-sage-soft px-3 py-1 text-micro font-semibold uppercase tracking-widest text-sage-dark">
+                {creditBalance.available} {t("hiring.creditsAvailable", locale)}
+              </span>
+              <span className="text-xs text-muted">
+                {tf("org.settings.creditsUsage", locale, {
+                  used: creditBalance.totalUsed,
+                  total: creditBalance.totalPurchased,
+                })}
+              </span>
+            </div>
+            <p className="mt-4 max-w-prose text-sm leading-relaxed text-ink-body">
+              {t("org.settings.creditsConsultantNote", locale)}
+            </p>
+            <Link
+              href="/contact"
+              className="mt-4 inline-flex min-h-[44px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
+            >
+              {t("org.settings.creditsContactCta", locale)}
+            </Link>
+          </Card>
+        ) : null}
 
         {/* Danger zone */}
         <section className="rounded-2xl border border-state-error-border bg-state-error-bg p-6 md:p-8">

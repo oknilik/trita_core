@@ -7,7 +7,17 @@ import {
   PATTERN_NAMES,
   type TritanScores,
 } from "@/lib/team-pattern";
-import { PATTERNS } from "@/lib/pattern-data";
+import { PATTERNS, TEAM_PATTERN_EVIDENCE_STATUS } from "@/lib/pattern-data";
+
+describe("team-pattern evidence contract", () => {
+  it("értelmezési nyelvként, nem validált tipológiaként deklarálja a 16 mintát", () => {
+    assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.status, "interpretive_language");
+    assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.validatedTypology, false);
+    assert.equal(TEAM_PATTERN_EVIDENCE_STATUS.calibrationUnit, "team");
+    assert.match(TEAM_PATTERN_EVIDENCE_STATUS.framing.hu, /nem validált/);
+    assert.match(TEAM_PATTERN_EVIDENCE_STATUS.framing.en, /not a validated/);
+  });
+});
 
 // Küszöbök a team-pattern.ts-ből: drive(X) 55 · cohesion((A+H)/2) 60 ·
 // discipline(C) 62.5 · openness(O) 57.5. A "high"/"low" értékek jó messze

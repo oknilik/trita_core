@@ -1,6 +1,6 @@
 # Riport-értelmezési sablonok — tanácsadói útmutató
 
-> Készült: 2026-07-20 · A csapatriport (TeamReport) validálásához és a
+> Készült: 2026-07-20 · Frissítve: 2026-08-16 (Team Scan v1). A csapatriport (TeamReport) validálásához és a
 > vezetői debriefhez. A riport szekciói a TeamReportView-t követik; a
 > narratíva-prefill jó kiindulás, de a tanácsadói hozzáadott érték a
 > KONTEXTUS: mit jelent ez ennél a csapatnál, ebben a helyzetben.
@@ -16,6 +16,11 @@
   egyéni eredményről csak az érintett saját riportja beszél.
 - **Minden megállapítás mellé akció.** Megfigyelés akció nélkül = zaj.
   A riport végén max 3 akció éljen — a több nem hajtódik végre.
+- **A változékony réteg az első.** A baseline vezetői állítás elsődleges
+  forrása a mért bizalmi háló és a pulse. A személyiség csapatkontextus és a
+  későbbi összehasonlítás kontrollja, nem fejlesztési kimenet.
+- **A vállalás célmutatót kap.** Legalább egy akció strukturált célja egyezzen
+  a következő körben valóban újramért mutatóval.
 
 ## 2. TRITAN-dimenziók tanácsadói olvasata (csapat-szinten)
 
@@ -36,18 +41,24 @@ Debrief-technika: dimenziónként max 1-2 mondat, és csak azt emeld ki, ami
 a csapatmintázathoz vagy a vezető által hozott helyzethez kapcsolódik.
 Hat dimenzió végigdarálása = elveszett hallgatóság.
 
-## 3. Csapatmintázat és dinamika-térkép
+## 3. Bizalmi háló, csapatmintázat és dinamika-térkép
 
-- A 16 csapatmintázat egyike címkézi a csapatot — ez **beszélgetésindító**,
-  nem diagnózis. Kérdezd meg a vezetőt: „ráismersz?" Ha nem, az is adat.
-- A dinamika-térkép súrlódás-jelzései profil-alapú **becslések** (ezt a
-  felület is jelzi). Úgy vezesd fel: „a profilok alapján itt ÉRDEMES
-  ránézni az együttműködésre" — nem „itt konfliktus van".
-- A TeamMap-elhelyezések confidence-szel súlyozottak; alacsony
-  confidence-nél (kevés observer-adat) mondd ki, hogy a kép önértékelés-
-  túlsúlyos.
+- A rendszer a 16 értelmezési mintanév egyikét javasolja — ez
+  **beszélgetésindító**, nem validált csapattípus vagy diagnózis. Kérdezd meg
+  a vezetőt: „ráismersz?" Ha nem, az is adat.
+- A Scan v1-ben a bizalmi háló **közvetlenül mért relációs evidencia**. Először
+  a lefedettséget és a mért él-számot mondd ki; hubot vagy beágyazatlanságot
+  csak a saját rater-küszöbe felett értelmezz.
+- Az egyéni, irányított trust-válasz soha nem kerül a vezetői beszélgetésbe.
+  A térkép nem személyértékelés: kapcsolódási mintát és elérési kockázatot
+  mutat.
+- A profil-alapú súrlódás/support továbbra is **becslés** és csak kiegészítő
+  kontextus. Ne mosd össze a mért trust-éllel; a forrásbadge-et szóban is
+  fordítsd le.
+- Kérdezd: „hol nehéz segítséget kérni vagy kényes témát behozni?” — ne
+  állítsd, hogy a háló önmagában konfliktust vagy bizalomhiányt bizonyít.
 
-## 4. Csapatszerep-fejezet (9 szerep, top 3 / fő)
+## 4. Csapatszerep-fejezet — csak külön kiegészítő körnél
 
 Értelmezési sorrend a debriefen:
 
@@ -61,7 +72,7 @@ Hat dimenzió végigdarálása = elveszett hallgatóság.
    a napi feladata elcsúszik, ott gyakran motivációs téma van — ezt
    óvatosan, egyéni adat kiteregetése nélkül, mintázat-szinten hozd szóba.
 
-## 4/b. Önkép vs. csapatkép (peer-szekció)
+## 4/b. Önkép vs. csapatkép — csak külön peer-kiegészítőnél
 
 A csapatszerep-fejezet peer-rétege (csapattársi szerep-visszajelzés,
 n ≥ 3 értékelő) a debrief legerősebb beszélgetésindítója: MÉRT eltérés az
@@ -106,13 +117,19 @@ akciójavaslattal.
 - **Közepes (55–74)**: normál működési sáv — a gyenge TERÜLETEKRE menj rá,
   ne az összpontszámra.
 - **Alacsony (<55)**: óvatosan és négyszemközt a vezetővel először. Itt a
-  debrief hangsúlya: ez nem ítélet, hanem kiindulópont; a javulás mérhető
-  lesz a következő pulse-körben.
+  debrief hangsúlya: ez nem ítélet, hanem kiindulópont; a területet a
+  következő pulse-körben újramérjük.
 - **Szórás ≥ 20**: megosztottság — a csapat egyik fele másképp éli meg.
   Ilyenkor az átlag félrevezet; mondd ki, hogy a kép nem egységes.
 - A platform akciójavaslatai területenként (pl. tanulság-fókuszú
   hibamegbeszélés, „elakadás"-kör, disagree-and-commit) — a debriefen
   ezekből VÁLASSZATOK, a vezető mondja ki, melyiket vállalja.
+
+A sávok és az itemküszöbök értelmezési keretek, nem normacsoport-percentilisek.
+A visszaméréskor csak a platform mérési-hiba kapuján túli index- vagy
+itemmozgást nevezz változásnak; a kapun belüli eltérés nem javulás és nem
+romlás. Kontrollcsoport nélkül még a kapun túli mozgás sem bizonyítja, hogy az
+akció okozta.
 
 Anonimitás-szabály a beszélgetésben: soha ne találgassátok, „ki húzhatta
 le" — ha a vezető elkezdi, állítsd le; ez maga a pszichológiai biztonság
@@ -151,13 +168,14 @@ A prefill ad vázat; a végleges narratíva szerkezete:
 
 ```
 1. Összkép (3-4 mondat)
-   – Mit mértünk, mekkora részvétellel (számokkal: self X%, observer Y fő,
-     szerep-kitöltés Z/N, pulse n).
-   – A csapat egy mondatban (mintázat + 1 megkülönböztető jegy).
+   – Mit mértünk, mekkora részvétellel (self X/N, trust X/N és mért
+     él-lefedettség, pulse n).
+   – A csapat egy mondatban, elsődlegesen mért trust/pulse jellel; a
+     mintázat csak értelmezési keret.
 
 2. Erősségek (2-3 pont)
-   – Mindig mért adatra hivatkozva („a csapat Tervezettség-átlaga magas,
-     és ezt az observer-visszajelzések is megerősítik").
+   – Mindig mért adatra hivatkozva („a trust-háló lefedettsége magas, és a
+     segítségkérés pulse-itemje sem gyenge").
 
 3. Figyelmi pontok (max 3)
    – Kockázat-nyelv helyett kérdés-nyelv („érdemes ránézni…").
@@ -167,10 +185,11 @@ A prefill ad vázat; a végleges narratíva szerkezete:
 4. 30 napos akciók (pontosan 3)
    – Konkrét, megfigyelhető, felelőssel („kéthetente 15 perces tanulság-kör
      a sprint-záráson — felelős: csapatvezető").
+   – Legalább egyhez strukturált targetMetric és kiinduló érték.
 
 5. Következő mérés
-   – Mikor ismételjük a pulse-t / mit mérünk legközelebb — a folytonosság
-     üzenete (és a folytatás üzleti horga).
+   – Mikor ismételjük a Scan v1 változékony rétegeit, és milyen
+     kompozícióváltozást kell addig figyelni.
 ```
 
 ## 7. Vezetői debrief forgatókönyv (90 perc)
@@ -180,13 +199,16 @@ A prefill ad vázat; a végleges narratíva szerkezete:
    a későbbi aha-élmények horgonya.
 3. (25') Riport végigjárása a 6. pont szerkezetében — összkép → erősségek
    → figyelmi pontok.
-4. (15') Pulse-blokk (az 5. pont szabályaival).
-5. (20') Akció-választás: a javaslatokból 3 vállalás, felelőssel,
+4. (15') Mért trust-háló: lefedettség, elérési minták, anonimitási korlát.
+5. (15') Pulse-blokk (az 5. pont szabályaival).
+6. (15') Akció-választás: a javaslatokból 1–3 vállalás, felelőssel,
    dátummal. Ez kerül a riport véglegesített akció-szekciójába.
-6. (10') Publikálás-egyeztetés: mit lát a csapat, mikor, milyen
-   felvezetéssel (sablon: `ugyfel-kommunikacio.md` 6. üzenet) + a
+   Legalább egy kapjon célmutatót.
+7. (5') Publikálás-egyeztetés: mit lát a csapat, mikor, milyen
+   felvezetéssel (sablon: `ugyfel-kommunikacio.md` 7. üzenet) + a
    csapat-ismertető alkalom időpontja.
-7. (5') Következő lépés + visszajelzés a folyamatra (roadmap-input).
+8. (5') Következő lépés + visszajelzés a folyamatra (roadmap-input).
 
-Debrief után 24 órán belül: írásos összefoglaló a vezetőnek (3 akció +
-határidők) — ez lesz a 8–11. heti kísérés referenciája.
+Debrief után 24 órán belül: írásos összefoglaló a vezetőnek (akciók +
+határidők). 48 órán belül az esetnapló workshop- és akcióblokkja is lezárul;
+ez lesz a kísérés és a későbbi playbook referenciája.
