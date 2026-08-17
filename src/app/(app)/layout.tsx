@@ -77,11 +77,6 @@ export default async function AppLayout({
                 <NavBar
                   signedInHomeHref={signedInHomeHref}
                   signedInExperienceHints={signedInExperienceHints}
-                  // Ez az ág a `.theme-scope`-on BELÜL van (publikus
-                  // app-oldalak: /try, /observe, /join, /share), tehát a sötét
-                  // mód itt hat — a választó kell. A marketing-fa NavBarja
-                  // nem kapja meg.
-                  showThemeToggle
                 />
                 <div>{children}</div>
                 <Footer />

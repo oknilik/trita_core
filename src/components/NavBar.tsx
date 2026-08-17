@@ -6,9 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { UserMenu } from "@/components/UserMenu";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "@/components/layout/mobile-menu";
+import { TritaWordmark } from "@/components/TritaLogo";
+import { MobileMenuShell, MobileMenuRow } from "@/components/layout/mobile-menu";
 import { t } from "@/lib/i18n/public";
 import { useLocale } from "@/components/LocaleProvider";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -89,14 +88,12 @@ function NavLink({
   return (
     <Link
       href={href}
+      aria-current={active ? "page" : undefined}
       className={[
-        "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-caption transition-all",
-        // Aktív állapot: accent-primary-STRONG a bronzon — a világosabb
-        // accent-primary a surface-subtle chipen csak 2.82:1 (13px szöveg,
-        // AA-bukó); a strong 5.27:1, ugyanabból a bronz-családból.
+        "inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption transition-[color,background-color,box-shadow]",
         active
-          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary-strong)]"
-          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]",
+          ? "bg-[var(--color-surface-inverse)] font-semibold text-[var(--color-text-on-inverse)] shadow-[0_3px_10px_rgba(26,26,46,0.14)]"
+          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-card)] hover:text-[var(--color-text-primary)]",
       ].join(" ")}
     >
       {icon}
@@ -110,21 +107,11 @@ function NavLink({
 interface NavBarProps {
   signedInHomeHref?: string;
   signedInExperienceHints?: JourneyExperienceHints | null;
-  /**
-   * Látszik-e a séma-választó. Alapból NEM: ezt a navot a marketing-fa is
-   * használja, ahol a sötét mód szándékosan nincs hatókörben — ott egy
-   * kapcsoló, ami láthatóan nem csinál semmit, hibának tűnne.
-   * Az (app) zóna kijelentkezett ága (`/try`, `/observe/[token]`,
-   * `/join/[token]`, `/share/[token]`) viszont `.theme-scope`-on belül van,
-   * ezért ott bekapcsoljuk.
-   */
-  showThemeToggle?: boolean;
 }
 
 export function NavBar({
   signedInHomeHref = "/profile/results",
   signedInExperienceHints = null,
-  showThemeToggle = false,
 }: NavBarProps) {
   const { locale } = useLocale();
   // Az auth-állapot a nav-context-ből jön (Clerk kliens-hook nélkül): a
@@ -153,28 +140,29 @@ export function NavBar({
     : hasDraft
       ? t("landing.selfCtaContinueShort", locale)
       : t("nav.ctaSelf", locale);
+  const publicCtaText = publicCtaLabel.replace(/\s*→\s*$/, "");
 
   // A megosztott profil nem marketing-belépőoldal, hanem egy személyes
   // artefaktum. Itt a teljes navigáció elvinné a figyelmet a tartalomról;
-  // csak a márka, a nyelv és az egyetlen releváns sajátprofil-CTA marad.
+  // csak a márka és az egyetlen releváns sajátprofil-CTA marad. A nyelv a
+  // footerben érhető el: az angol támogatás szándékosan csendes.
   if (currentPath.startsWith("/share/")) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 backdrop-blur-[12px]">
-        <div className="mx-auto flex h-14 max-w-4xl items-center justify-between gap-3 px-4 md:px-5">
+      <header className="sticky top-0 z-40 bg-transparent">
+        <div className="mx-auto mt-2 flex h-14 w-[calc(100%-1.5rem)] max-w-4xl items-center justify-between gap-3 rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-4 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] md:mt-3 md:px-5">
           <Link
             href="/"
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="text-[var(--color-text-primary)]"
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-lg" />
           </Link>
-          <div className="flex items-center gap-2">
-            <LanguageSwitcher />
+          <div className="flex items-center">
             <Link
               href="/try"
-              className="rounded-lg bg-[var(--color-bronze-dark)] px-3.5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] sm:px-4"
+              className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06]"
             >
-              {t("nav.ctaSharedOwnProfile", locale)}
+              <span>{t("nav.ctaSharedOwnProfile", locale)}</span>
             </Link>
           </div>
         </div>
@@ -239,20 +227,29 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
+      <header
+        data-testid="public-nav-header"
+        data-compact="false"
+        className="sticky top-0 z-40 bg-transparent"
+      >
+        <div
+          className="mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5"
+        >
 
           {/* ═══ LOGO ═══ */}
           <Link
             href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="pointer-events-auto justify-self-start text-[var(--color-text-primary)]"
           >
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+            <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav
+            aria-label={t("nav.menu", locale)}
+            className="pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
+          >
             {links.map((link) => {
               const Icon = LINK_ICONS[link.id] ?? HomeIcon;
               return (
@@ -268,47 +265,28 @@ export function NavBar({
           </nav>
 
           {/* ═══ RIGHT SIDE ═══ */}
-          <div className="flex items-center gap-2">
+          <div className="pointer-events-auto flex items-center gap-2 justify-self-end">
             {!isSignedIn && (
               <>
-                {/* Sign in — desktop only */}
-                {/* Másodlagos gomb a bronz CTA mellé. A korábbi „fehér kártya
-                    homok kerettel" gyakorlatilag láthatatlan volt: a
-                    kártya-felület a fejlécsávon 1,05:1, a homok keret 1,24:1
-                    — a gomb beleolvadt a sávba. Zsálya kontúr (5,8:1) + mély
-                    zsálya felirat (11,3:1): egyértelműen gomb, és a kitöltött
-                    bronz elsődlegessel világos párt alkot. */}
+                {/* Csendes másodlagos belépő: a tiszta felirat nem versenyez
+                    a fő CTA-val, és nem igényel magyarázó ikont. */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-action-primary-bg)] bg-transparent px-4 py-[7px] text-caption font-medium text-[var(--color-accent-self-deep)] transition-all hover:bg-[var(--color-surface-self-accent-soft)] lg:inline-flex"
+                  className="hidden min-h-10 items-center rounded-[11px] px-3 text-caption font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-action-primary-bg-hover)] lg:inline-flex"
                 >
-                  {t("nav.signIn", locale)}
+                  <span>{t("nav.signIn", locale)}</span>
                 </Link>
-                {/* CTA — always visible.
-                    Háttér: bronze-dark, NEM a világosabb accent-primary —
-                    fehér szöveggel az utóbbi csak 3.28:1 (12–13px normál
-                    szöveg → AA-bukó, Lighthouse color-contrast). A
-                    bronze-dark 4.89:1, és a bronz-család része (ugyanez a
-                    CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
                   href={publicCtaHref}
-                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                  aria-label={publicCtaText}
+                  className="inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption"
                 >
-                  {publicCtaLabel}
+                  <span>{publicCtaText}</span>
                 </Link>
               </>
             )}
 
             {isSignedIn && <UserMenu />}
-
-            {/* Separator + Language — always visible */}
-            <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
-            <LanguageSwitcher />
-            {showThemeToggle ? (
-              <div className="hidden lg:block">
-                <ThemeToggle variant="compact" />
-              </div>
-            ) : null}
 
             {/* Hamburger — mobile */}
             <button
@@ -317,7 +295,8 @@ export function NavBar({
                 setDrawerOpen((v) => !v);
               }}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-muted)] lg:hidden"
+              aria-expanded={drawerOpen}
+              className="pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-border-default)] lg:hidden"
             >
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                 {drawerOpen ? (
@@ -332,8 +311,8 @@ export function NavBar({
       </header>
 
       {shouldShowSignedInHint && signedInHint ? (
-        <div className="border-b border-[var(--color-border-default)] bg-[var(--color-surface-canvas)]">
-          <div className="mx-auto flex max-w-6xl items-start justify-between gap-3 px-5 py-2.5 lg:px-8">
+        <div className="bg-[var(--color-surface-canvas)]">
+          <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1180px] items-start justify-between gap-3 border-b border-[var(--color-border-default)] px-5 py-2.5 lg:px-8">
             <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
@@ -383,34 +362,19 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)]"
               >
-                {t("nav.signIn", locale)}
+                <span>{t("nav.signIn", locale)}</span>
               </Link>
               <Link
                 href={publicCtaHref}
+                aria-label={publicCtaText}
                 onClick={() => setDrawerOpen(false)}
-                className="flex min-h-[44px] flex-1 items-center justify-center rounded-lg bg-[var(--color-bronze-dark)] text-[14px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
+                className="flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06]"
               >
-                {publicCtaLabel}
+                <span>{publicCtaText}</span>
               </Link>
             </div>
-          ) : null}
-
-          <MobileMenuSectionLabel>
-            {locale === "hu" ? "Nyelv" : "Language"}
-          </MobileMenuSectionLabel>
-          <div className="px-3 pb-1">
-            <LanguageSwitcher variant="pills" />
-          </div>
-
-          {showThemeToggle ? (
-            <>
-              <MobileMenuSectionLabel>{t("theme.label", locale)}</MobileMenuSectionLabel>
-              <div className="px-3 pb-1">
-                <ThemeToggle />
-              </div>
-            </>
           ) : null}
 
         </div>

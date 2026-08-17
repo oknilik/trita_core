@@ -1,5 +1,4 @@
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
@@ -8,8 +7,8 @@ import { canViewMemberDossier } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { buildMemberDossier } from "@/lib/member-dossier.server";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { MemberDossierView } from "@/components/org/MemberDossierView";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -51,20 +50,20 @@ export default async function MemberDossierPage({
 
   return (
     <PlatformPageShell surface="org" contentClassName="max-w-4xl gap-6 px-4 py-8">
-      <div>
-        <Link
-          href={`/org/${orgId}?tab=members`}
-          className="inline-flex items-center gap-1.5 text-caption font-medium text-muted transition-colors hover:text-ink"
-        >
-          <span aria-hidden="true">←</span>
-          {isHu ? "Vissza a tagokhoz" : "Back to members"}
-        </Link>
-        <SectionEyebrow variant="clean" tone="org" className="mt-4">
-          {isHu ? "tag-dossié · bizalmas" : "member dossier · confidential"}
-        </SectionEyebrow>
-      </div>
+      <EditorialBackHeader
+        href={`/org/${orgId}?tab=members`}
+        backLabel={isHu ? "Vissza a tagokhoz" : "Back to members"}
+        eyebrow={isHu ? "tag-dossié · bizalmas" : "member dossier · confidential"}
+        title={dossier.header.displayName}
+        description={dossier.header.email}
+      />
 
-      <MemberDossierView dossier={dossier} orgId={orgId} isHu={isHu} />
+      <MemberDossierView
+        dossier={dossier}
+        orgId={orgId}
+        isHu={isHu}
+        hideIdentityHeader
+      />
     </PlatformPageShell>
   );
 }

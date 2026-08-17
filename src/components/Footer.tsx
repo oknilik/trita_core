@@ -6,6 +6,9 @@ import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
+import { TritaWordmark } from "@/components/TritaLogo";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Footer() {
   const { locale } = useLocale();
@@ -97,10 +100,9 @@ export function Footer() {
             <Link
               href="/"
               aria-label="trita"
-              className="font-fraunces inline-flex items-baseline text-xl font-black tracking-[-0.03em] text-[var(--color-text-on-inverse)]"
+              className="inline-flex text-[var(--color-text-on-inverse)]"
             >
-              <span style={{ color: "var(--color-accent-self)" }}>t</span>{"rit"}
-              <span style={{ color: "var(--color-accent-primary)" }}>a</span>
+              <TritaWordmark className="text-xl" />
             </Link>
             <p className="mt-2 max-w-[180px] text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
               {t("footer.tagline", locale)}
@@ -130,8 +132,12 @@ export function Footer() {
 
         </div>
 
-        <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-5">
+        <div className="mt-10 flex flex-col gap-4 border-t border-[var(--color-text-on-inverse)]/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-[12px] text-[var(--color-text-on-inverse-muted)]">{t("footer.copyright", locale)}</p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
+            <LanguageSwitcher variant="footer" />
+            <ThemeToggle variant="footer" />
+          </div>
         </div>
       </div>
       </div>

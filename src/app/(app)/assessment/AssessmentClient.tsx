@@ -4,11 +4,11 @@ import { estimateAssessmentMinutes } from "@/lib/questions/types";
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -92,13 +92,12 @@ export function AssessmentClient({
   const router = useRouter()
   const { showToast } = useToast()
   const { locale } = useLocale()
-  // Bejelentkezve az app-shell fókusz-fejléce (sticky, h-12 = 48px) már
-  // renderel a kitöltő fölött. Ilyenkor NEM ismételjük meg a logót, és a
-  // teljes-magasság számításából levonjuk a fejlécet — különben két
-  // trita-sáv eszi a mobil viewportot, és a lábléc a fold alá csúszik.
+  // A fő kitöltő saját kapszulát rajzol, mert a progressz valós időben itt
+  // érhető el. A shell ezért az exact /assessment és /try útvonalon nem
+  // renderel külön fejlécet; az alfolyamok továbbra is a shellt használják.
   const { isSignedIn } = useAuthState()
-  const hasShellHeader = isSignedIn
-  const shellMinHeight = hasShellHeader ? "min-h-[calc(100dvh-3rem)]" : "min-h-dvh"
+  const assessmentHomeHref = isSignedIn ? JOURNEY_HOME_HANDOFF_PATH : "/"
+  const shellMinHeight = "min-h-dvh"
   const orderedQuestionIds = useMemo(() => questions.map((question) => question.id), [questions])
   const questionIdSet = useMemo(() => new Set(orderedQuestionIds), [orderedQuestionIds])
   // A kulcs a scope-pal együtt épül (ahogy az írás/olvasás is): belépett
@@ -122,7 +121,6 @@ export function AssessmentClient({
   const [answers, setAnswers] = useState<Record<number, number>>(() => initialInFormAnswers)
   const [questionIndex, setQuestionIndex] = useState(0) // single flat index 0..totalQuestions-1
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSavingDraft, setIsSavingDraft] = useState(false)
   const [evaluationProgress, setEvaluationProgress] = useState(0)
   const [highlightQuestionId, setHighlightQuestionId] = useState<number | null>(null)
   const [autoAdvance, setAutoAdvance] = useState(true)
@@ -358,7 +356,6 @@ export function AssessmentClient({
       serverSaveAbortRef.current?.abort()
       const abortController = new AbortController()
       serverSaveAbortRef.current = abortController
-      setIsSavingDraft(true)
       try {
         await fetch('/api/assessment/draft', {
           method: 'POST',
@@ -374,7 +371,6 @@ export function AssessmentClient({
       } finally {
         if (serverSaveAbortRef.current === abortController) {
           serverSaveAbortRef.current = null
-          setIsSavingDraft(false)
         }
       }
     }, 2000)
@@ -383,9 +379,8 @@ export function AssessmentClient({
       serverSaveDebounce.current = null
       serverSaveAbortRef.current?.abort()
       serverSaveAbortRef.current = null
-      setIsSavingDraft(false)
     }
-  }, [answeredCount, guestMode, questionIndex, setIsSavingDraft])
+  }, [answeredCount, guestMode, questionIndex])
 
   useEffect(() => {
     return () => {
@@ -422,7 +417,6 @@ export function AssessmentClient({
     }
     serverSaveAbortRef.current?.abort()
     serverSaveAbortRef.current = null
-    setIsSavingDraft(false)
 
     const currentAnswers = latestAnswersRef.current
     const firstUnanswered = questions.findIndex((q) => currentAnswers[q.id] === undefined)
@@ -638,22 +632,16 @@ export function AssessmentClient({
       { name: t("landing.selfDim3", locale), val: 34 },
     ]
     return (
-      <div className={`${shellMinHeight} bg-[var(--color-surface-canvas)]`}>
-        {/* Minimal nav — csak ha a shell fókusz-fejléce nincs jelen. */}
-        {!hasShellHeader && (
-          <nav className="flex items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-            <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-              <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
-            </Link>
-            {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
-                ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
-            <ThemeToggle variant="compact" />
-          </nav>
-        )}
+      <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
+        <AssessmentFocusHeader homeHref={assessmentHomeHref}>
+          {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
+              ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
 
         {/* Two-column hero */}
-        <div className="mx-auto max-w-4xl px-5 lg:px-10">
-          <div className="grid grid-cols-1 items-start gap-8 py-10 lg:grid-cols-[1.2fr_1fr] lg:gap-10 lg:py-14">
+        <main className="mx-auto flex w-full max-w-5xl flex-1 items-center px-5 lg:px-10 2xl:max-w-6xl">
+          <div className="grid w-full grid-cols-1 items-center gap-8 py-10 lg:grid-cols-[1.15fr_1fr] lg:gap-14 lg:py-14 2xl:gap-20">
 
             {/* Left column */}
             <div>
@@ -663,22 +651,22 @@ export function AssessmentClient({
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
-              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-[var(--color-text-primary)] lg:text-[28px]">
+              <h1 className="mb-4 max-w-[620px] font-fraunces text-[28px] leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-[34px] 2xl:text-[40px]">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
-              <p className="mb-5 max-w-[360px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+              <p className="mb-6 max-w-[480px] text-sm leading-relaxed text-[var(--color-text-muted)] lg:text-base">
                 {t("assessment.introSub", locale)}
               </p>
-              <div className="mb-5 rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-3.5 py-3">
-                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)]">
+              <div className="mb-6 max-w-[520px] rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-4 py-3.5 lg:px-5 lg:py-4">
+                <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)] lg:text-sm">
                   {t("assessment.introInfo", locale)}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setShowIntro(false)}
-                className="w-full rounded-[10px] bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto"
+                className="w-full rounded-[12px] bg-[var(--color-action-primary-bg)] px-9 py-4 text-body font-semibold text-[var(--color-action-primary-fg)] shadow-md shadow-[var(--color-action-primary-bg)]/20 transition-all hover:-translate-y-px hover:brightness-[1.06] hover:shadow-lg lg:w-auto lg:text-base"
               >
                 {t("assessment.introStart", locale)}
               </button>
@@ -690,26 +678,26 @@ export function AssessmentClient({
             {/* Right column */}
             <div className="flex flex-col gap-2.5">
               {steps.map((s) => (
-                <div key={s.num} className="flex items-start gap-2.5 rounded-[10px] border border-[var(--color-border-default)] bg-surface-card p-3 px-3.5">
-                  <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium ${s.style}`}>
+                <div key={s.num} className="flex items-start gap-3 rounded-[12px] border border-[var(--color-border-default)] bg-surface-card px-4 py-3.5 lg:px-5 lg:py-4">
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full font-fraunces text-caption font-medium lg:h-9 lg:w-9 lg:text-sm ${s.style}`}>
                     {s.num}
                   </div>
                   <div>
-                    <p className="text-caption font-semibold text-[var(--color-text-primary)]">{s.title}</p>
-                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{s.sub}</p>
+                    <p className="text-caption font-semibold text-[var(--color-text-primary)] lg:text-sm">{s.title}</p>
+                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)] lg:text-xs">{s.sub}</p>
                   </div>
                 </div>
               ))}
               {/* Dekoratív miniatűr eredmény-teaser — a törpe, halvány szöveg
                   szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
                   ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
-              <div aria-hidden className="mt-1 rounded-[10px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5">
+              <div aria-hidden className="mt-1 rounded-[12px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5 lg:px-5 lg:py-4">
                 {/* eslint-disable-next-line no-restricted-syntax */}
                 <p className="text-[6px] uppercase tracking-widest text-white/20">
                   {t("assessment.introPreviewEyebrow", locale)}
                 </p>
                 <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
-                  {t("landing.selfPanelType", locale)}
+                  {t("assessment.introPreviewType", locale)}
                 </p>
                 <div className="mt-2 flex gap-1.5">
                   {previewDims.map((d) => (
@@ -728,78 +716,63 @@ export function AssessmentClient({
             </div>
 
           </div>
-        </div>
+        </main>
       </div>
     )
   }
 
   return (
     <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
-      {/* ═══ MINIMAL NAV ═══ — a logó csak akkor, ha a shell fejléce nem
-          renderel fölötte (különben két azonos márkasáv ülne egymáson). */}
-      <nav
-        className={`flex shrink-0 flex-wrap items-center gap-x-3 gap-y-1 bg-[var(--color-surface-header)]/95 px-4 backdrop-blur-[12px] sm:px-10 lg:px-16 ${
-          hasShellHeader ? "justify-end py-1.5" : "justify-between py-3"
-        }`}
-      >
-        {!hasShellHeader && (
-          <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-            <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
-          </Link>
-        )}
-        <div className="flex items-center gap-3">
-          {/* A kitöltés közben is elérhető: aki világosban indult és
-              zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
-          <ThemeToggle variant="compact" />
-          {/* UX-A5: vendégnél őszinte címke — csak ebben a böngészőben mentünk. */}
-          <span className="text-micro text-[var(--color-action-primary-bg)]">
-            ✓ {guestMode
-              ? t('assessment.savedStateGuest', locale)
-              : isSavingDraft ? t('actions.save', locale) : t('assessment.savedState', locale)}
-          </span>
-          <a
-            href={guestMode ? "/" : "/profile/results"}
-            className="rounded-md border border-[var(--color-border-default)] bg-surface-card px-3 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]"
-          >
-            {t('assessment.continueLater', locale)}
-          </a>
-        </div>
-      </nav>
-
-      {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-2.5 md:gap-4 md:px-7">
-        <div className="flex items-baseline gap-1">
-          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
-          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
-        </div>
-        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
-          {/* Answered reach — light sage: up to last answered question position */}
-          {(() => {
-            let lastAnsweredIdx = -1;
-            for (let i = questions.length - 1; i >= 0; i--) {
-              if (answers[questions[i].id] !== undefined) { lastAnsweredIdx = i; break; }
-            }
-            const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
-            return (
+      <AssessmentFocusHeader
+        homeHref={assessmentHomeHref}
+        center={(
+          <div className="flex w-full items-center gap-2.5 lg:gap-3">
+            <div className="flex shrink-0 items-baseline gap-1">
+              <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{questionIndex + 1}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+            </div>
+            <div className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
+              {/* Answered reach — light sage: up to last answered question position */}
+              {(() => {
+                let lastAnsweredIdx = -1;
+                for (let i = questions.length - 1; i >= 0; i--) {
+                  if (answers[questions[i].id] !== undefined) { lastAnsweredIdx = i; break; }
+                }
+                const answeredReach = Math.max(lastAnsweredIdx + 1, questionIndex + 1);
+                return (
+                  <div
+                    className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+                    style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
+                  />
+                );
+              })()}
               <div
-                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
-                style={{ width: `${(answeredReach / totalQuestions) * 100}%` }}
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+                style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
               />
-            );
-          })()}
-          {/* Current position — solid sage */}
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
-            style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
-          />
-        </div>
-        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
-          {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
-        </span>
-      </div>
+            </div>
+            <span className="shrink-0 whitespace-nowrap text-[10px] text-[var(--color-text-muted)] sm:text-[11px]">
+              {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
+            </span>
+          </div>
+        )}
+      >
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* A kitöltés közben is elérhető: aki világosban indult és
+                zavarónak találja, ne kelljen félbehagynia a kitöltést. */}
+            <ThemeToggle variant="compact" />
+            <a
+              href={guestMode ? "/" : "/profile/results"}
+              className="whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3"
+            >
+              <span className="sm:hidden">{locale === 'hu' ? 'Később' : 'Later'}</span>
+              <span className="hidden sm:inline">{t('assessment.continueLater', locale)}</span>
+            </a>
+          </div>
+      </AssessmentFocusHeader>
 
       {/* ═══ QUESTION AREA (centered) ═══ */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
+      <div className="flex flex-1 flex-col items-center justify-center px-5 py-6 sm:px-6 sm:py-8 lg:py-12">
         <div ref={questionAreaRef} className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -890,13 +863,13 @@ export function AssessmentClient({
         </p>
       </div>
 
-      {/* ═══ FOOTER BAR ═══ */}
-      <div className="flex shrink-0 flex-wrap items-center justify-between gap-x-3 gap-y-2 border-t border-[var(--color-border-default)] bg-surface-card px-4 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:flex-nowrap md:px-7">
+      {/* ═══ FLOATING CONTROL DOCK ═══ */}
+      <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] whitespace-nowrap rounded-lg border px-4 py-2.5 text-caption transition-all md:px-5 ${
+          className={`min-h-[44px] justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-[11px] transition-all sm:px-4 sm:text-caption md:px-5 ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "border-transparent bg-transparent text-transparent pointer-events-none"
@@ -905,9 +878,7 @@ export function AssessmentClient({
           ← {t('assessment.prevCta', locale)}
         </button>
 
-        {/* Mobilon saját sorba kerül (order-last + w-full), hogy a két
-            navigációs gomb ne préselődjön össze; asztalon a sorban marad. */}
-        <label className="order-last flex min-h-[44px] w-full cursor-pointer items-center justify-center gap-2 md:order-none md:w-auto md:justify-start">
+        <label className="flex min-h-[44px] min-w-0 cursor-pointer items-center justify-center gap-1.5">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
@@ -921,7 +892,12 @@ export function AssessmentClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          <span className="text-[11px] text-[var(--color-text-muted)]">{t('assessment.autoAdvance', locale)}</span>
+          <span className="whitespace-nowrap text-[10px] text-[var(--color-text-muted)] sm:hidden">
+            {locale === 'hu' ? 'Automatikus' : 'Auto'}
+          </span>
+          <span className="hidden whitespace-nowrap text-[11px] text-[var(--color-text-muted)] sm:inline">
+            {t('assessment.autoAdvance', locale)}
+          </span>
         </label>
 
         {/* UX-A7: az autosave fire-and-forget — a fő gombot nem tiltjuk le
@@ -931,7 +907,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleNextStep()}
             disabled={!canProceed}
-            className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`min-h-[44px] justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-[11px] font-semibold transition-all sm:px-4 sm:text-caption md:px-6 ${
               canProceed
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -944,7 +920,7 @@ export function AssessmentClient({
             type="button"
             onClick={() => void handleFinish()}
             disabled={isSubmitting}
-            className={`min-h-[44px] whitespace-nowrap rounded-lg px-5 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`min-h-[44px] justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-[11px] font-semibold transition-all sm:px-4 sm:text-caption md:px-6 ${
               !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

@@ -29,7 +29,7 @@ export const navigationTranslations = {
   },
   theme: {
     label: { hu: "Megjelenés", en: "Appearance" },
-    system: { hu: "Rendszerbeállítás", en: "System setting" },
+    system: { hu: "Rendszer", en: "System" },
     light: { hu: "Világos", en: "Light" },
     dark: { hu: "Sötét", en: "Dark" },
   },

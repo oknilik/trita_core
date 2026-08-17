@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { track } from "@/lib/analytics/client";
 import {
   AXIS_META,
@@ -626,9 +627,10 @@ export function PatternExplorer() {
 
       {/* ── CTA ──────────────────────────────────────── */}
       <section
-        className="mb-16 border-t"
-        style={{ backgroundColor: T.card, borderColor: T.border }}
+        className="mb-16"
+        style={{ backgroundColor: T.card }}
       >
+        <PageWidthDivider style={{ borderColor: T.border }} />
         <div className="mx-auto max-w-xl px-6 py-16 text-center">
           <p
             className="text-label uppercase"

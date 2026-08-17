@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
 import { ContactForm } from "./ContactForm";
 
@@ -11,7 +12,7 @@ export function ContactContent() {
   return (
     <main className="min-h-dvh bg-cream text-ink">
       {/* ── Hero ────────────────────────────────────────────────────────── */}
-      <section className="border-b border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-8 bg-bronze" />
@@ -51,7 +52,8 @@ export function ContactContent() {
       </section>
 
       {/* ── Form + info cards ───────────────────────────────────────────── */}
-      <section id="contact-form" className="border-t border-sand">
+      <section id="contact-form">
+        <PageWidthDivider />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
           {/* Left label */}
           <div>

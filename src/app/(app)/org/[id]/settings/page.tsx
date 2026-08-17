@@ -16,6 +16,7 @@ import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscription
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -64,26 +65,12 @@ export default async function OrgSettingsPage({
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pt-10 pb-20">
 
-        <div>
-          <Link
-            href={`/org/${orgId}`}
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body hover:text-[var(--color-accent-primary-strong)] mb-6 transition-colors"
-          >
-            <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M10 3L5 8l5 5" />
-            </svg>
-            {t("org.backToOrg", locale)}
-          </Link>
-
-          <div className="flex flex-col gap-1">
-            <SectionEyebrow>
-              {t("org.settings.eyebrow", locale)}
-            </SectionEyebrow>
-            <h1 className="font-fraunces text-3xl text-ink md:text-4xl">
-              {org.name}
-            </h1>
-          </div>
-        </div>
+        <EditorialBackHeader
+          href={`/org/${orgId}`}
+          backLabel={t("org.backToOrg", locale)}
+          eyebrow={t("org.settings.eyebrow", locale)}
+          title={org.name}
+        />
 
         {bannerState ? (
           <OrgSubscriptionBanner

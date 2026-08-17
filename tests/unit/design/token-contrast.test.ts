@@ -107,6 +107,8 @@ for (const layer of ["self", "team", "org", "candidate"]) {
   add("hero-felirat", "text", "text-on-inverse", `layer-${layer}-hero-from`);
   add("hero-felirat", "text", "text-on-inverse-muted", `layer-${layer}-hero-from`);
 }
+add("kiemelt self-felület", "text", "text-on-inverse", "surface-self-strong");
+add("kiemelt self-felület hover", "text", "text-on-inverse", "surface-self-strong-hover");
 
 const key = (p: Pair) => `${p.fg}|${p.bg}`;
 

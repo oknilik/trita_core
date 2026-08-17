@@ -13,6 +13,7 @@ export const assessmentTranslations = {
     introStep3: { hu: "Karrierkép", en: "Career profile" },
     introStep3Sub: { hu: "Illeszkedő szerepkörök, ideális környezet", en: "Matching roles, ideal environment" },
     introPreviewEyebrow: { hu: "Ilyen eredményt kapsz", en: "This is what you'll get" },
+    introPreviewType: { hu: "Stratégiai Innovátor", en: "Strategic Innovator" },
     introPreviewLabel: { hu: "Személyre szabott karrierprofil", en: "Personalized career profile" },
     introWelcome: { hu: "Örülünk, hogy itt vagy!", en: "We're glad you're here!", de: "Schön, dass du dabei bist!" },
     introBody: { hu: "Töltsd ki figyelmesen a következő kérdőívet — minden kérdésnél az első benyomásodra hagyatkozz, ne gondolkozz sokat.", en: "Please fill in the questionnaire carefully — go with your first impression on each question, don't overthink it." },

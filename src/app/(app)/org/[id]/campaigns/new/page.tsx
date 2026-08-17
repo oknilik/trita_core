@@ -6,7 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -139,34 +139,13 @@ export default async function NewCampaignPage({
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
-        {/* Back link */}
-        <Link
+        <EditorialBackHeader
           href={`/org/${orgId}?tab=campaigns`}
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
-        >
-          <svg
-            viewBox="0 0 16 16"
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {tf("org.campaign.backWithName", locale, { orgName: org.name })}
-        </Link>
-
-        {/* Header */}
-        <div className="mb-8">
-          <SectionEyebrow>
-            {t("org.campaign.newEyebrow", locale)}
-          </SectionEyebrow>
-          <h1 className="mt-1 font-fraunces text-3xl text-ink">
-            {t("org.campaign.newTitle", locale)}
-          </h1>
-        </div>
+          backLabel={tf("org.campaign.backWithName", locale, { orgName: org.name })}
+          eyebrow={t("org.campaign.newEyebrow", locale)}
+          title={t("org.campaign.newTitle", locale)}
+          className="mb-8"
+        />
 
         <CampaignWizard
           orgId={orgId}

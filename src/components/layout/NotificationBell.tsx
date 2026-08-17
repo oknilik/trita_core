@@ -31,7 +31,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
       // 44px érintőcél a mobil/tablet fejlécben (a hamburger mellett ez az
       // értesítések egyetlen belépési pontja); lg-től a desktop fejléc-ág
       // sűrűsége marad.
-      className="relative flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-[var(--color-surface-subtle)] lg:h-8 lg:w-8"
+      className="relative flex h-11 w-11 items-center justify-center rounded-xl transition-colors hover:bg-[var(--color-border-default)] lg:h-9 lg:w-9"
     >
       <svg
         className="h-[18px] w-[18px]"

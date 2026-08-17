@@ -11,16 +11,16 @@ test("P2.2: csak a fókuszon kívüli felületek parkoltak", () => {
     career: "parked",
     hiring: "parked",
     crm: "active",
-    blog: "parked",
+    blog: "active",
     fakedoor: "parked",
     patternExplorer: "parked",
     publicSharing: "active",
   });
 
-  for (const surface of ["career", "hiring", "blog", "fakedoor", "patternExplorer"] as const) {
+  for (const surface of ["career", "hiring", "fakedoor", "patternExplorer"] as const) {
     assert.equal(isPortfolioSurfaceActive(surface), false, surface);
   }
-  for (const surface of ["crm", "publicSharing"] as const) {
+  for (const surface of ["crm", "blog", "publicSharing"] as const) {
     assert.equal(isPortfolioSurfaceActive(surface), true, surface);
   }
 });
@@ -33,8 +33,6 @@ test("P2.2: a parkolt oldal- és API-belépők ugyanahhoz a kapuhoz tartoznak", 
     ["/hiring/org_1", "hiring"],
     ["/apply/token", "hiring"],
     ["/api/manager/candidates/id/resend", "hiring"],
-    ["/blog/example", "blog"],
-    ["/api/admin/blog", "blog"],
     ["/admin/fakedoor/career", "fakedoor"],
     ["/api/career/fakedoor/response", "fakedoor"],
     ["/patterns", "patternExplorer"],
@@ -59,6 +57,9 @@ test("P2.2: a zászlóshajó és a hasonló előtagú útvonalak nyitva maradnak
     "/api/profile/share/send",
     "/api/team-reports/report_1",
     "/api/profile/shareholder",
+    "/blog",
+    "/blog/example",
+    "/api/admin/blog",
     "/blogger",
     "/patterns-library",
   ]) {

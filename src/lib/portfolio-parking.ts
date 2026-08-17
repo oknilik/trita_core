@@ -11,7 +11,7 @@ export const PORTFOLIO_SURFACE_STATE = {
   hiring: "parked",
   // A fizetett pilotok intake → ajánlat → utánkövetés operációs gerince.
   crm: "active",
-  blog: "parked",
+  blog: "active",
   fakedoor: "parked",
   patternExplorer: "parked",
   // A vendég-teaser és az OG/share kimenet a Team Scan disztribúcióját szolgálja.

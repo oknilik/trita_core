@@ -27,7 +27,7 @@ describe("ThemeToggle", () => {
     render(<ThemeToggle />);
 
     expect(screen.getByRole("radiogroup", { name: "Megjelenés" })).toBeInTheDocument();
-    expect(screen.getByRole("radio", { name: "Rendszerbeállítás" })).toHaveAttribute(
+    expect(screen.getByRole("radio", { name: "Rendszer" })).toHaveAttribute(
       "aria-checked",
       "true",
     );
@@ -36,12 +36,30 @@ describe("ThemeToggle", () => {
     expect(setPreference).toHaveBeenCalledWith("dark");
   });
 
+  it("a footerben csendes, ikonos választóként jelenik meg", async () => {
+    const user = userEvent.setup();
+    render(<ThemeToggle variant="footer" />);
+
+    const group = screen.getByRole("radiogroup", { name: "Megjelenés" });
+    expect(group).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Rendszer" })).toHaveAttribute("title", "Rendszer");
+    expect(screen.getByRole("radio", { name: "Világos" })).toHaveAttribute("title", "Világos");
+    expect(screen.getByRole("radio", { name: "Sötét" })).toHaveAttribute("title", "Sötét");
+    expect(screen.getByRole("radio", { name: "Rendszer" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+
+    await user.click(screen.getByRole("radio", { name: "Világos" }));
+    expect(setPreference).toHaveBeenCalledWith("light");
+  });
+
   it("kompakt módban csak szándékos kattintásra nyitja ki a választót", async () => {
     const user = userEvent.setup();
     render(<ThemeToggle variant="compact" />);
 
     const trigger = screen.getByRole("button", {
-      name: "Megjelenés: Rendszerbeállítás",
+      name: "Megjelenés: Rendszer",
     });
     expect(screen.queryByRole("dialog", { name: "Megjelenés" })).not.toBeInTheDocument();
 
@@ -59,7 +77,7 @@ describe("ThemeToggle", () => {
     render(<ThemeToggle variant="compact" />);
 
     const trigger = screen.getByRole("button", {
-      name: "Megjelenés: Rendszerbeállítás",
+      name: "Megjelenés: Rendszer",
     });
     await user.click(trigger);
     fireEvent.keyDown(document, { key: "Escape" });

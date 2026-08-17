@@ -1,7 +1,6 @@
 "use client";
 
 import { HeroSection } from "@/components/landing/HeroSection";
-import { TrustBar } from "@/components/landing/TrustBar";
 import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Features } from "@/components/landing/Features";
 import { ProofSection } from "@/components/landing/ProofSection";
@@ -22,7 +21,6 @@ export function LandingContent() {
   return (
     <>
       <HeroSection mode={mode} />
-      <TrustBar mode={mode} />
       <HowItWorks mode={mode} />
       {/* Szerkesztői átkötő (formanyelv 2. szint) — a „hogyan működik"
           folyamat és a képesség-blokk közti levegő. Dekoráció, aria-hidden;

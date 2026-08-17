@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TritaWordmark } from "@/components/TritaLogo";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
 
@@ -703,8 +704,8 @@ export function ObserverClient({
     <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
       {/* ═══ MINIMAL NAV — a self-kitöltéssel azonos héj ═══ */}
       <nav className="flex shrink-0 items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <Link href="/" className="font-fraunces text-2xl font-black tracking-[-0.03em] text-[var(--color-text-primary)]">
-          <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
+        <Link href="/" className="text-[var(--color-text-primary)]">
+          <TritaWordmark className="text-2xl" />
         </Link>
         <div className="flex items-center gap-3">
           <span className="text-micro text-[var(--color-action-primary-bg)]">

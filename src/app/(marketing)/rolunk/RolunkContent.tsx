@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
@@ -20,7 +21,7 @@ export function RolunkContent() {
   return (
     <main className="bg-cream text-ink selection:bg-bronze/20">
       {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section className="border-b border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 pb-12 pt-12 md:pb-16 md:pt-20">
           <SectionEyebrow className="mb-6">{t("aboutUs.heroEyebrow", locale)}</SectionEyebrow>
 
@@ -79,12 +80,15 @@ export function RolunkContent() {
         </div>
       </EditorialSection>
 
-      <div className="border-t border-sand py-10 md:py-12">
-        <SectionTransition artKey={artKeyFrom("rolunk", "cta")} />
+      <div>
+        <PageWidthDivider />
+        <div className="py-10 md:py-12">
+          <SectionTransition artKey={artKeyFrom("rolunk", "cta")} />
+        </div>
       </div>
 
       {/* ── Záró CTA ───────────────────────────────────────────────── */}
-      <section className="border-t border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
             <h2 className="mx-auto max-w-[22ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
@@ -128,7 +132,8 @@ function EditorialSection({
   children: ReactNode;
 }) {
   return (
-    <section className="border-t border-sand">
+    <section>
+      <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow>{eyebrow}</SectionEyebrow>

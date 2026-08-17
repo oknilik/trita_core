@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import { CAREER_FAKE_DOOR_MODULE, formatPrice } from "@/lib/fakedoor/career";
 import { buildFakeDoorReport, type FakeDoorCell } from "@/lib/fakedoor/report";
 
@@ -131,22 +130,14 @@ export default async function CareerFakeDoorReportPage() {
   return (
     <main className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-10">
       <header>
-        <SectionEyebrow>
-          kereslet-mérés
-        </SectionEyebrow>
-        <h1 className="mt-1 font-fraunces text-2xl text-ink">
-          Karrier-iránytű — fake door
-        </h1>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-ink-body">
-          A funkció nem létezik. Ezek a számok azt mérik, érdemes-e megépíteni.
-          A kimondott szándék nem fizetés: a tényleges vásárlási arány
-          jellemzően ennél jóval alacsonyabb, ezért a számok irányt mutatnak,
-          nem bevételt.
-        </p>
-        <div className="mt-3 flex gap-4 text-sm">
-          <Link href="/admin?tab=feedback" className="text-[var(--color-accent-primary-strong)] underline underline-offset-2">
-            ← Admin
-          </Link>
+        <EditorialBackHeader
+          href="/admin?tab=feedback"
+          backLabel="Vissza az adminhoz"
+          eyebrow="kereslet-mérés"
+          title="Karrier-iránytű — fake door"
+          description="A funkció nem létezik. Ezek a számok azt mérik, érdemes-e megépíteni. A kimondott szándék nem fizetés: a tényleges vásárlási arány jellemzően ennél jóval alacsonyabb, ezért a számok irányt mutatnak, nem bevételt."
+        />
+        <div className="ml-14 mt-3 flex gap-4 text-sm">
           <a
             href="/api/admin/fakedoor/career/export"
             className="text-[var(--color-accent-primary-strong)] underline underline-offset-2"

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent, type ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
 
 export function PilotContent() {
@@ -60,7 +61,7 @@ export function PilotContent() {
 
   return (
     <main className="bg-cream text-ink selection:bg-bronze/20">
-      <section className="border-b border-sand">
+      <section>
         <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
             <div>
@@ -180,7 +181,8 @@ export function PilotContent() {
         </div>
       </EditorialSection>
 
-      <section id="jelentkezes" className="border-t border-sand">
+      <section id="jelentkezes">
+        <PageWidthDivider />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
             <div className="mb-4 flex items-center gap-3">
@@ -334,7 +336,8 @@ function EditorialSection({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="border-t border-sand">
+    <section id={id}>
+      <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
