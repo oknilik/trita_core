@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
@@ -392,7 +393,7 @@ export function OrgOnboardingWizard() {
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
 
           {/* ── Step 1: Profil ────────────────────────────────────────────── */}
           {step === 1 && (
@@ -778,7 +779,7 @@ export function OrgOnboardingWizard() {
             </div>
           )}
 
-        </div>
+        </Card>
 
         <p className="mt-6 text-center text-xs text-muted">
           {t("orgOnboarding.footerNote", locale)}

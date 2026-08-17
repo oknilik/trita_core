@@ -9,6 +9,7 @@ import type { Locale } from "@/lib/i18n";
 import type { CampaignWithStats } from "@/lib/org-stats";
 import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-core";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { Card } from "@/components/ui/primitives/Card";
 
 interface CampaignCardProps {
   campaign: CampaignWithStats;
@@ -197,7 +198,7 @@ export function CampaignCard({
   ];
 
   return (
-    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+    <Card spacing="lg" className="md:p-8">
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="min-w-0">
@@ -344,6 +345,6 @@ export function CampaignCard({
           <span className="text-xs text-ink-body">{remindResult}</span>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

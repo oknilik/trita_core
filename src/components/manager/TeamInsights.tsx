@@ -284,7 +284,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             {/* Strength */}
             {topStrength && teamAvg[topStrength.code] !== null && (
-              <div className="flex flex-col gap-2 rounded-xl border border-state-success-bg bg-state-success-bg/60 p-4">
+              <div className="flex flex-col gap-2 rounded-xl border border-state-success-border bg-state-success-bg/60 p-4">
                 <div className="flex items-center gap-2 text-state-success-fg">
                   <StrengthIcon />
                   <span className="text-xs font-semibold uppercase tracking-widest">
@@ -312,7 +312,7 @@ export function TeamInsights({ rows, dims, isHu }: TeamInsightsProps) {
 
             {/* Gap */}
             {topGap && topGap.code !== topStrength?.code && teamAvg[topGap.code] !== null && (
-              <div className="flex flex-col gap-2 rounded-xl border border-state-warning-bg bg-state-warning-bg/60 p-4">
+              <div className="flex flex-col gap-2 rounded-xl border border-state-warning-border bg-state-warning-bg/60 p-4">
                 <div className="flex items-center gap-2 text-state-warning-fg">
                   <GapIcon />
                   <span className="text-xs font-semibold uppercase tracking-widest">

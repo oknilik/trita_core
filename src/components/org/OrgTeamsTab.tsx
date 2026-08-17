@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import type { SerializedTeam } from "@/lib/org-stats";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { Card } from "@/components/ui/primitives/Card";
 
 interface OrgTeamsTabProps {
   teams: SerializedTeam[];
@@ -55,12 +56,12 @@ export function OrgTeamsTab({
       ) : null}
 
       {isManager && canCreateTeam && createOpen && (
-        <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
           <h3 className="mb-4 text-sm font-semibold text-ink">
             {t("org.teams.newTitle", loc)}
           </h3>
           <TeamCreateForm locale={locale as import("@/lib/i18n").Locale} orgId={orgId} />
-        </div>
+        </Card>
       )}
 
       {/* Teams grid */}
@@ -96,7 +97,7 @@ export function OrgTeamsTab({
       )}
 
       {isManager && !canCreateTeam && actionGateCopy && (
-        <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+        <Card spacing="lg" className="md:p-8">
           <SectionEyebrow className="mb-1">
             {t("org.teams.newEyebrow", loc)}
           </SectionEyebrow>
@@ -115,7 +116,7 @@ export function OrgTeamsTab({
               {actionGateCopy.ctaLabel}
             </a>
           </div>
-        </div>
+        </Card>
       )}
     </div>
   );
