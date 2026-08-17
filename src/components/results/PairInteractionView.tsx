@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useState, type CSSProperties } from "react";
 import { t, tf } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
+import {
+  RelationshipModeSelect,
+  type RelationshipMode,
+} from "@/components/results/RelationshipModeSelect";
+import { InteractionDynamicPanels } from "@/components/results/InteractionDynamicPanels";
+import { InteractionLeaderNotes } from "@/components/results/InteractionLeaderNotes";
 import type {
-  InteractionTextLine,
   InteractionLeaderNote,
   PairSimulationView,
 } from "@/lib/interaction-view";
@@ -26,36 +29,18 @@ interface PairInteractionViewProps {
   sim: PairSimulationView;
 }
 
-type PairMode = "peer" | "other-leads" | "self-leads";
-
-function LineList({ lines }: { lines: InteractionTextLine[] }) {
-  return (
-    <ul className="flex flex-col gap-3">
-      {lines.map((line) => (
-        <li key={line.atomId} className="text-caption leading-relaxed text-ink-body">
-          <span className="mb-1 flex flex-wrap gap-1.5">
-            {line.dimLabels.map((label) => (
-              <span
-                key={label}
-                className="rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body"
-              >
-                {label}
-              </span>
-            ))}
-          </span>
-          {line.text}
-        </li>
-      ))}
-    </ul>
-  );
-}
+/** A sötét hero-vásznon a glyph a világos tokeneket használja. */
+const HERO_GLYPH_TOKENS = {
+  "--color-ink": "var(--color-text-on-inverse)",
+  "--color-sage": "var(--color-sage-300)",
+} as CSSProperties;
 
 /**
- * Valódi páros mód (B1): két megosztott, valós profil dinamikája. A vizuális
- * szókincs az archetípus-szimulációéval azonos (easy/friction/discuss +
- * vezető-blokk), a forrás-jegyzet viszont a profil-profil szintet mondja ki.
- * A partner számszerű pontszámai itt sem jelennek meg — csak glyph + név +
- * a szimuláció szövege.
+ * Két valós, kölcsönösen megosztott profil közös működési képe.
+ *
+ * A partner számszerű pontszámai nem kerülnek a kliensre: a felület csak a
+ * két karakter-ábrát, a szerveren előállított szöveges dinamikát és a
+ * felhasználó által választott munkakapcsolatot mutatja.
  */
 export function PairInteractionView({
   self,
@@ -64,7 +49,7 @@ export function PairInteractionView({
   sim,
 }: PairInteractionViewProps) {
   const { locale } = useLocale();
-  const [mode, setMode] = useState<PairMode>("peer");
+  const [mode, setMode] = useState<RelationshipMode>("peer");
 
   const leaderNotes: InteractionLeaderNote[] =
     mode === "other-leads"
@@ -73,135 +58,123 @@ export function PairInteractionView({
         ? sim.leaderNotesSelf
         : [];
 
-  const modeOptions: Array<{ value: PairMode; label: string }> = [
-    { value: "peer", label: t("results.interactionRelationPeer", locale) },
-    { value: "other-leads", label: t("results.interactionRelationLeader", locale) },
-    { value: "self-leads", label: t("results.compareRelationSelfLeads", locale) },
+  const modeOptions: Array<{ value: RelationshipMode; label: string }> = [
+    { value: "peer", label: t("results.compareRelationPeer", locale) },
+    {
+      value: "other-leads",
+      label: tf("results.compareRelationOtherLeads", locale, { name: otherName }),
+    },
+    {
+      value: "self-leads",
+      label: tf("results.compareRelationSelfLeadsNamed", locale, { name: otherName }),
+    },
   ];
 
   return (
-    <section className="rounded-[22px] border border-sand bg-surface-card p-4 shadow-[0_12px_28px_rgba(26,26,46,0.05)] md:p-6">
-      <SectionEyebrow tone="muted">
-        {t("results.comparePairTitle", locale)}
-      </SectionEyebrow>
-      <p className="mt-1 text-caption text-ink-body">
-        {tf("results.comparePairWith", locale, { name: otherName })}
-      </p>
+    <section className="flex flex-col gap-7">
+      {/* Egyetlen közös vászon: mobilon is egymás mellett marad a két profil. */}
+      <div>
+        <div className="relative overflow-hidden rounded-[22px] border border-[var(--color-border-soft)] bg-[var(--color-surface-inverse)] px-3 pb-11 pt-6 shadow-[var(--ui-shadow-md)] sm:px-7 sm:pt-8">
+          <span
+            aria-hidden="true"
+            className="absolute -left-16 -top-20 h-52 w-52 rounded-full bg-[var(--color-action-primary-bg)]/15 blur-3xl"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute -bottom-24 -right-16 h-56 w-56 rounded-full bg-[var(--color-accent-primary)]/15 blur-3xl"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute right-5 top-5 h-px w-14 bg-[var(--color-accent-primary)]/60"
+          />
 
-      {/* Páros fejléc: két glyph-kártya — mindkét oldal ugyanazzal a
-          név-nyelvtannal (a saját profil-oldal szókincse). */}
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {[
-          { info: self, heading: t("results.interactionPairYou", locale) },
-          { info: other, heading: otherName },
-        ].map(({ info, heading }) => (
-          <div
-            key={`${heading}-${info.primaryCode}-${info.secondaryCode}`}
-            className="rounded-xl border border-sand bg-cream/45 p-3"
-          >
-            <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
-              {heading}
-            </p>
-            <div className="mt-2">
-              <TypeGlyph
-                primaryCode={info.primaryCode}
-                secondaryCode={info.secondaryCode}
-                typeLabel={info.label}
-                locale={locale === "hu" ? "hu" : "en"}
-                intensity={info.intensity}
-                variant="card"
-                canvas={false}
-              />
-            </div>
-            <p className="mt-2 text-caption font-semibold text-ink">{info.label}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Viszony-kapcsoló — a vezetői kiegészítők iránya. Hálózat nélkül
-          vált: mindkét irány kiegészítői előre ki vannak számolva. */}
-      <div className="mt-5">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
-          {t("results.interactionRelationQuestion", locale)}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {modeOptions.map((opt) => (
-            <button
-              key={opt.value}
-              type="button"
-              onClick={() => setMode(opt.value)}
-              aria-pressed={mode === opt.value}
-              className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-caption font-semibold transition-colors ${
-                mode === opt.value
-                  ? "border-[var(--color-accent-primary)] bg-[var(--color-accent-primary)]/10 text-ink"
-                  : "border-sand bg-surface-card text-ink-body hover:bg-cream"
-              }`}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {sim.sparse ? (
-        <p className="mt-5 rounded-xl border border-sand bg-cream/60 p-4 text-caption leading-relaxed text-ink-body">
-          {t("results.interactionSparse", locale)}
-        </p>
-      ) : (
-        <>
-          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-sand bg-cream/45 p-4">
-              <p className="mb-3 text-label uppercase text-sage-dark">
-                {t("results.interactionEasy", locale)}
-              </p>
-              <LineList lines={sim.easy} />
-            </div>
-            <div className="rounded-xl border border-state-warning-border bg-state-warning-bg/60 p-4">
-              <p className="mb-3 text-label uppercase text-state-warning-fg">
-                {t("results.interactionFriction", locale)}
-              </p>
-              <LineList lines={sim.friction} />
-            </div>
-          </div>
-
-          <div className="mt-4 rounded-xl border border-sand bg-surface-card p-4">
-            <SectionEyebrow tone="muted" dot={false} className="mb-3">
-              {t("results.interactionDiscuss", locale)}
-            </SectionEyebrow>
-            <LineList lines={sim.discuss} />
-          </div>
-        </>
-      )}
-
-      {leaderNotes.length > 0 ? (
-        <div className="mt-4 rounded-xl border border-sand bg-cream/45 p-4">
-          <SectionEyebrow tone="muted" dot={false} className="mb-3">
-            {t("results.interactionLeaderTitle", locale)}
-          </SectionEyebrow>
-          <ul className="flex flex-col gap-2">
-            {leaderNotes.map((note) => (
-              <li key={note.dim} className="text-caption leading-relaxed text-ink-body">
-                <span className="mr-2 rounded-full bg-warm-mid px-2 py-0.5 text-micro font-medium text-ink-body">
-                  {note.dimLabel}
-                </span>
-                {note.text}
-              </li>
+          <div className="relative grid grid-cols-[minmax(0,1fr)_32px_minmax(0,1fr)] items-center gap-1">
+            {[
+              {
+                info: self,
+                eyebrow: t("results.interactionPairYou", locale),
+              },
+              {
+                info: other,
+                eyebrow: otherName,
+              },
+            ].map(({ info, eyebrow }, index) => (
+              <div
+                key={`${eyebrow}-${info.primaryCode}-${info.secondaryCode}`}
+                className={index === 0 ? "col-start-1" : "col-start-3"}
+              >
+                <div
+                  className="mx-auto flex h-28 max-w-40 items-center justify-center sm:h-36"
+                  style={HERO_GLYPH_TOKENS}
+                >
+                  <TypeGlyph
+                    primaryCode={info.primaryCode}
+                    secondaryCode={info.secondaryCode}
+                    typeLabel={info.label}
+                    locale={locale === "hu" ? "hu" : "en"}
+                    intensity={info.intensity}
+                    variant="card"
+                    canvas={false}
+                    className="h-full w-full"
+                  />
+                </div>
+                {/* A név azonosít — nem címke: ezért nem 10px-es, nem
+                    verzálos (a „KATALIN" felirat úgy olvas, mint egy tag). */}
+                <p className="mx-auto mt-1.5 max-w-[12rem] break-words text-center text-caption font-semibold text-[var(--color-accent-primary)]">
+                  {eyebrow}
+                </p>
+                <p className="mx-auto mt-1 max-w-[12rem] text-center font-fraunces text-[15px] leading-snug text-[var(--color-text-on-inverse)] sm:text-[18px]">
+                  {info.label}
+                </p>
+              </div>
             ))}
-          </ul>
+
+            <div className="relative col-start-2 row-start-1 self-center">
+              <span
+                aria-hidden="true"
+                className="absolute left-1/2 top-1/2 h-px w-[72px] -translate-x-1/2 -translate-y-1/2 bg-[var(--color-text-on-inverse-muted)]/35 sm:w-28"
+              />
+              <span className="relative mx-auto flex h-8 w-8 items-center justify-center rounded-full border border-[var(--color-accent-primary)]/50 bg-[var(--color-surface-inverse)] font-fraunces text-lg text-[var(--color-accent-primary)]">
+                ×
+              </span>
+            </div>
+          </div>
+
+          <div className="relative mt-5 flex justify-center">
+            <span className="rounded-full border border-[var(--color-text-on-inverse-muted)]/35 px-3 py-1 text-micro text-[var(--color-text-on-inverse-muted)]">
+              {t("results.comparePairRealProfiles", locale)}
+            </span>
+          </div>
         </div>
-      ) : null}
 
-      <p className="mt-4 text-micro leading-relaxed text-muted">
-        {t("results.comparePairSourceNote", locale)}
-      </p>
+        {/* Saját listbox: mobilon sem a böngésző natív választóját nyitja meg.
+            A negatív margó a sötét hero alá lógatja be. */}
+        <RelationshipModeSelect
+          label={t("results.compareRelationLabel", locale)}
+          value={mode}
+          options={modeOptions}
+          onChange={setMode}
+          className="mx-3 -mt-6 sm:mx-8"
+        />
+      </div>
 
-      <div className="mt-4">
-        <Link
-          href="/interaction"
-          className="inline-flex min-h-[38px] items-center rounded-[10px] bg-cream px-3 text-[12px] font-semibold text-ink transition-colors hover:bg-warm-mid"
-        >
-          ← {t("results.comparePairBack", locale)}
-        </Link>
+      <InteractionLeaderNotes notes={leaderNotes} />
+
+      <InteractionDynamicPanels
+        easy={sim.easy}
+        friction={sim.friction}
+        discuss={sim.discuss}
+        sparse={sim.sparse}
+        thinNote={t("results.comparePairThinNote", locale)}
+      />
+
+      <div className="flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--color-accent-primary-strong)] text-caption text-[var(--color-accent-primary-strong)]">
+          i
+        </span>
+        <p className="text-caption leading-relaxed text-[var(--color-text-muted)]">
+          {t("results.comparePairSourceNote", locale)}
+        </p>
       </div>
     </section>
   );

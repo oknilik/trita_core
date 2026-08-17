@@ -2,19 +2,24 @@
 
 import { useMemo, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { t } from "@/lib/i18n";
+import { t, tf } from "@/lib/i18n";
 import { DashboardSectionHeader } from "@/components/dashboard/DashboardPrimitives";
-import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
+import { HEXACO_DIMENSIONS, HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
 import {
   personalityAdjective,
   personalityNoun,
 } from "@/lib/personality-type";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
 import { ArchetypePicker } from "@/components/results/ArchetypePicker";
+import { InteractionDynamicPanels } from "@/components/results/InteractionDynamicPanels";
+import { InteractionLeaderNotes } from "@/components/results/InteractionLeaderNotes";
+import {
+  RelationshipModeSelect,
+  type RelationshipMode,
+} from "@/components/results/RelationshipModeSelect";
 import {
   archetypeKey,
   type ArchetypeSimulationView,
-  type InteractionTextLine,
 } from "@/lib/interaction-view";
 
 interface InteractionSectionProps {
@@ -102,59 +107,6 @@ function ComparisonSide({
   );
 }
 
-/** Blokk-kártya — a HowYouWorkSection kártya-nyelvét követi. */
-function Block({
-  title,
-  lines,
-  tone,
-}: {
-  title: string;
-  lines: InteractionTextLine[];
-  tone: "easy" | "friction" | "discuss";
-}) {
-  if (lines.length === 0) return null;
-
-  const styles = {
-    easy: {
-      wrapper:
-        "border-[var(--color-action-primary-bg)]/20 bg-[var(--color-surface-self-accent-soft)]",
-      label: "text-[var(--color-accent-self-deep)]",
-      body: "text-[var(--color-accent-self-deep)]",
-    },
-    friction: {
-      wrapper:
-        "border-[var(--color-accent-primary)]/20 bg-[var(--color-surface-highlight-warm)]",
-      label: "text-[var(--color-accent-primary-strong)]",
-      body: "text-[var(--color-text-secondary)]",
-    },
-    discuss: {
-      wrapper: "border-[var(--color-border-soft)] bg-surface-card",
-      label: "text-[var(--color-text-muted)]",
-      body: "text-[var(--color-text-secondary)]",
-    },
-  }[tone];
-
-  return (
-    <div className={`rounded-xl border-[1.5px] p-[18px] ${styles.wrapper}`}>
-      <p
-        className={`mb-2 text-micro font-bold uppercase tracking-wide ${styles.label}`}
-      >
-        {title}
-      </p>
-      <ul className="flex flex-col gap-2.5">
-        {lines.map((line) => (
-          <li key={line.atomId} className="max-w-prose">
-            <p className={`text-body ${styles.body}`}>{line.text}</p>
-            <p className="mt-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-              {line.dimLabels.join(" · ")}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
 export function InteractionSection({
   simulations,
   selfLabel,
@@ -183,7 +135,7 @@ export function InteractionSection({
   );
   const [dominantSelected, setDominantSelected] = useState(false);
   const [secondarySelected, setSecondarySelected] = useState(false);
-  const [leaderMode, setLeaderMode] = useState(false);
+  const [mode, setMode] = useState<RelationshipMode>("peer");
 
   if (simulations.length === 0) return null;
 
@@ -205,6 +157,31 @@ export function InteractionSection({
   const current = dominantSelected && secondarySelected
     ? byKey.get(archetypeKey(dominant, secondary))
     : undefined;
+
+  // A kapcsolat-választó szövege ugyanaz, mint a valódi páros nézetben —
+  // ott a partner neve, itt a karakter neve kerül a helyére.
+  const characterName = current?.label ?? "";
+  const modeOptions: Array<{ value: RelationshipMode; label: string }> = [
+    { value: "peer", label: t("results.compareRelationPeer", locale) },
+    {
+      value: "other-leads",
+      label: tf("results.compareRelationOtherLeads", locale, {
+        name: characterName,
+      }),
+    },
+    {
+      value: "self-leads",
+      label: tf("results.compareRelationSelfLeadsNamed", locale, {
+        name: characterName,
+      }),
+    },
+  ];
+  const leaderNotes =
+    mode === "other-leads"
+      ? (current?.leaderNotesOther ?? [])
+      : mode === "self-leads"
+        ? (current?.leaderNotesSelf ?? [])
+        : [];
 
   // Ugyanaz az archetípus, mint a sajátod. Ez a leggyakoribb választás (a
   // felhasználó először magát nézi meg), és a legfélrevezethetőbb: a
@@ -308,104 +285,55 @@ export function InteractionSection({
             </div>
           )}
 
-          {/* Nézőpont-kapcsoló. Korábban egy magányos pill volt a blokkok
-              fölött, és elveszett a nézetben — most saját sávot kap, kimondott
-              kérdéssel és két egyenrangú állapottal, hogy látszódjon: ez egy
-              VÁLASZTÁS, ami átírja az alatta lévő tartalmat. */}
-          <div className="mb-5 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-3.5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-caption font-semibold text-[var(--color-text-primary)]">
-                  {t("results.interactionRelationQuestion", locale)}
-                </p>
-                <p className="mt-0.5 text-micro text-[var(--color-text-muted)]">
-                  {leaderMode
-                    ? t("results.interactionRelationLeaderHint", locale)
-                    : t("results.interactionRelationPeerHint", locale)}
-                </p>
-              </div>
-              <div
-                role="group"
-                aria-label={t("results.interactionRelationQuestion", locale)}
-                className="flex shrink-0 rounded-full border border-[var(--color-border-soft)] bg-surface-card p-0.5"
-              >
-                {[false, true].map((mode) => (
-                  <button
-                    key={String(mode)}
-                    type="button"
-                    onClick={() => setLeaderMode(mode)}
-                    aria-pressed={leaderMode === mode}
-                    className={`min-h-[40px] rounded-full px-4 text-caption font-medium transition ${
-                      leaderMode === mode
-                        ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
-                        : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]"
-                    }`}
-                  >
-                    {t(
-                      mode
-                        ? "results.interactionRelationLeader"
-                        : "results.interactionRelationPeer",
-                      locale,
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          {/* A kapcsolat-választó ugyanaz a kontroll, mint a valódi páros
+              nézetben — és most három állapotú: az „én vezetem őt" irány
+              korábban itt egyáltalán nem volt elérhető. */}
+          <RelationshipModeSelect
+            label={t("results.compareRelationLabel", locale)}
+            value={mode}
+            options={modeOptions}
+            onChange={setMode}
+            className="mb-5"
+          />
 
-          {current.sparse ? (
-            <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px]">
-              <p className="max-w-prose text-body text-[var(--color-text-secondary)]">
-                {t("results.interactionSparse", locale)}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <Block
-                title={t("results.interactionEasy", locale)}
-                lines={current.easy}
-                tone="easy"
-              />
-              <Block
-                title={t("results.interactionFriction", locale)}
-                lines={current.friction}
-                tone="friction"
-              />
-              <div className="md:col-span-2">
-                <Block
-                  title={t("results.interactionDiscuss", locale)}
-                  lines={current.discuss}
-                  tone="discuss"
-                />
-              </div>
-            </div>
-          )}
+          <InteractionLeaderNotes notes={leaderNotes} />
 
-          {leaderMode && current.leaderNotes.length > 0 && (
-            <div className="mt-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-highlight-warm)] p-[18px]">
-              <p className="mb-2 text-micro font-bold uppercase tracking-wide text-[var(--color-text-muted)]">
-                {t("results.interactionLeaderTitle", locale)}
-              </p>
-              <ul className="flex flex-col gap-2.5">
-                {current.leaderNotes.map((note) => (
-                  <li key={note.dim} className="max-w-prose">
-                    <p className="text-body text-[var(--color-text-secondary)]">
-                      {note.text}
-                    </p>
-                    <p className="mt-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-                      {note.dimLabel}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {/* A karakter-út tartalmi HATÁRA, a tartalom ELŐTT: a prototípus a
+              hat dimenzióból kettőt állít pólusosra, a másik négyet a
+              középvonalra — azokról tehát nem mondhat semmit. Enélkül a
+              valódi úthoz képesti eltérés hibának látszik, nem korlátnak.
+              A módszertani rész a lap alján van, ez csak a konkrét keret. */}
+          <p className="mb-5 max-w-prose text-caption leading-relaxed text-[var(--color-text-muted)]">
+            {tf("results.interactionTypeScopeNote", locale, {
+              dims: [dominant, secondary]
+                .map((dim) =>
+                  locale === "hu"
+                    ? HEXACO_DIMENSIONS[dim].hu
+                    : HEXACO_DIMENSIONS[dim].en,
+                )
+                .join(" · "),
+            })}
+          </p>
+
+          <InteractionDynamicPanels
+            easy={current.easy}
+            friction={current.friction}
+            discuss={current.discuss}
+            sparse={current.sparse}
+          />
         </>
       )}
 
-      <p className="mt-4 max-w-prose text-caption text-[var(--color-text-muted)]">
-        {t("results.interactionSourceNote", locale)}
-      </p>
+      {/* Módszertani jegyzet — a valódi páros nézettel azonos kezelésben,
+          hogy a két felület egy rendszerként olvasson. */}
+      <div className="mt-7 flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--color-accent-primary-strong)] text-caption text-[var(--color-accent-primary-strong)]">
+          i
+        </span>
+        <p className="text-caption leading-relaxed text-[var(--color-text-muted)]">
+          {t("results.interactionSourceNote", locale)}
+        </p>
+      </div>
     </section>
   );
 }

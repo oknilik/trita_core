@@ -36,6 +36,8 @@ describe("ProfileSummary", () => {
         sentInvitations={[]}
         observerCount={0}
         hasObserverData={false}
+        interactionEntry={{ state: "new" }}
+        personalityType="Újító"
         clarityFeedbackSubmitted={false}
         onOpenDetails={onOpenDetails}
         onOpenComparison={vi.fn()}
@@ -44,6 +46,7 @@ describe("ProfileSummary", () => {
     );
 
     expect(screen.getByRole("heading", { name: "Ezt érdemes elvinned az eredményedből." })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Mi történik, amikor két profil találkozik?" })).toBeInTheDocument();
     expect(screen.queryAllByRole("meter")).toHaveLength(0);
     expect(document.body.textContent).not.toContain("82%");
     expect(screen.getByRole("button", { name: /Külső nézőpont/ })).toBeInTheDocument();
