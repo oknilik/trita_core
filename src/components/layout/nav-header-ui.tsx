@@ -97,7 +97,7 @@ function OrgIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
 
 function ChevronDown() {
   return (
-    <svg className="ml-0.5 h-2.5 w-2.5 text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+    <svg className="ml-0.5 h-2.5 w-2.5 text-current opacity-70" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
       <path d="M2 4l4 4 4-4" />
     </svg>
   );
@@ -432,13 +432,13 @@ function NavHeaderContent({
     );
   }
 
+  // Egységes kapszula: minden célpont ugyanazt az aktív állapotot kapja.
+  // Korábban a Vezérlő sötét pill, a többi menüpont pedig világos, akcent
+  // feliratos chip volt, ezért egyszerre két aktív navigációs nyelv élt.
   const navItemBase =
-    "inline-flex items-center gap-1.5 px-3 py-1.5 text-caption font-medium transition-all cursor-pointer select-none rounded-lg";
-  // Aktív nav-elem: accent-primary-STRONG — a világosabb accent-primary a
-  // surface-subtle chipen csak 2.82:1 (13px szöveg, AA-bukó); a strong 5.27:1.
-  const navItemActive = `${navItemBase} bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary-strong)] font-semibold`;
-  const navItemInactive =
-    `${navItemBase} text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-surface-canvas)]`;
+    "inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption font-medium transition-[color,background-color,box-shadow] cursor-pointer select-none";
+  const navItemActive = `${navItemBase} bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] font-semibold shadow-[0_3px_10px_rgba(26,26,46,0.14)]`;
+  const navItemInactive = `${navItemBase} text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-card)] hover:text-[var(--color-text-primary)]`;
 
   function getItemIcon(itemId: WorkspaceNavItem["id"], className?: string) {
     switch (itemId) {
@@ -488,6 +488,9 @@ function NavHeaderContent({
         return item.matchPrefixes.some(matchesPrefix);
     }
   }
+
+  const currentNavLabel =
+    navItems.find((item) => isNavItemActive(item))?.label ?? homeLabel;
 
 
   // FONTOS: ez NEM komponens, hanem JSX-változó.
@@ -671,42 +674,49 @@ function NavHeaderContent({
     <>
       {openDropdown && <div className="fixed inset-0 z-30" onClick={closeAll} />}
 
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
-        <div className="mx-auto grid h-14 max-w-6xl grid-cols-[auto_1fr_auto] items-center px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_4px_rgba(0,0,0,0.05)] backdrop-blur-[14px]">
+        <div className="mx-auto grid h-14 max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 sm:px-5 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:px-8">
           <Link
             href={homeHref}
             aria-label="trita"
-            className="font-fraunces justify-self-start text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className="font-fraunces justify-self-start text-[22px] font-black tracking-[-0.04em] text-[var(--color-text-primary)]"
           >
             <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
 
-          <nav className="hidden items-center gap-1 lg:flex lg:justify-self-center">
+          <span className="truncate px-3 text-center text-[11px] font-semibold text-[var(--color-text-muted)] lg:hidden">
+            {currentNavLabel}
+          </span>
+
+          <nav
+            aria-label={t("nav.menu", locale)}
+            className="hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 shadow-[0_1px_2px_rgba(26,26,46,0.04)] lg:flex lg:justify-self-center"
+          >
             {navItems.map((item, index) => {
               const isActive = isNavItemActive(item);
-              const itemClass =
-                item.id === "home"
-                  ? `${isActive ? "rounded-lg bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] px-4 py-1.5 text-caption font-medium inline-flex items-center gap-2" : navItemInactive}`
-                  : isActive || openDropdown === item.id
-                    ? navItemActive
-                    : navItemInactive;
+              const isHighlighted = isActive || openDropdown === item.id;
+              const itemClass = isHighlighted ? navItemActive : navItemInactive;
+              const badgeClass = isHighlighted
+                ? "bg-[var(--color-surface-card)] text-[var(--color-text-primary)]"
+                : "bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]";
 
               return (
                 <div key={item.id} className="contents">
                   {index > 0 && item.id === "org" ? (
-                    <div className="mx-2 h-5 w-px bg-[var(--color-border-soft)]" />
+                    <div className="mx-1 h-6 w-px bg-[var(--color-border-default)]" />
                   ) : null}
 
                   {item.kind === "link" ? (
                     <Link
                       href={item.primaryHref}
                       data-testid={`nav-item-${item.id}`}
+                      aria-current={isActive ? "page" : undefined}
                       className={itemClass}
                     >
                       {getItemIcon(item.id, "h-3.5 w-3.5")}
                       {item.label}
                       {item.badge ? (
-                        <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
+                        <span className={`ml-0.5 rounded-full px-1.5 py-[1px] font-mono text-micro ${badgeClass}`}>
                           {item.badge}
                         </span>
                       ) : null}
@@ -716,13 +726,15 @@ function NavHeaderContent({
                       <button
                         type="button"
                         data-testid={`nav-item-${item.id}`}
+                        aria-expanded={openDropdown === item.id}
+                        aria-current={isActive ? "page" : undefined}
                         className={itemClass}
                         onClick={() => toggle(item.id)}
                       >
                         {getItemIcon(item.id, "h-3.5 w-3.5")}
                         {item.label}
                         {item.badge ? (
-                          <span className="ml-0.5 rounded-full bg-[var(--color-surface-inverse)] px-1.5 py-[1px] font-mono text-micro text-[var(--color-text-on-inverse)]">
+                          <span className={`ml-0.5 rounded-full px-1.5 py-[1px] font-mono text-micro ${badgeClass}`}>
                             {item.badge}
                           </span>
                         ) : null}
@@ -753,7 +765,6 @@ function NavHeaderContent({
           </nav>
 
           <div className="hidden items-center gap-2 lg:flex lg:justify-self-end">
-            <div className="h-5 w-px bg-[var(--color-border-default)]" />
             <div className="relative">
               <NotificationBell
                 isOpen={openDropdown === "notifications"}
@@ -775,13 +786,14 @@ function NavHeaderContent({
                 type="button"
                 onClick={() => toggle("user")}
                 data-testid="nav-user-menu-trigger"
-                className="flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-2.5 transition hover:border-[var(--color-text-muted)]"
+                aria-expanded={openDropdown === "user"}
+                className="flex min-h-10 items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-3 shadow-[0_1px_2px_rgba(26,26,46,0.03)] transition-[border-color,background-color] hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"
               >
                 {showIdentityLoader ? (
-                  <div className="h-7 w-7 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
+                  <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                 ) : (
                   <div
-                    className="flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold text-white"
                     style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
                   >
                     {initial}
@@ -800,7 +812,7 @@ function NavHeaderContent({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 justify-self-end lg:hidden">
+          <div className="flex items-center gap-1 justify-self-end lg:hidden">
             <div className="relative">
               <NotificationBell
                 isOpen={openDropdown === "notifications"}
@@ -812,12 +824,14 @@ function NavHeaderContent({
             </div>
             <button
               type="button"
+              aria-label={t("nav.menu", locale)}
+              aria-expanded={mobileMenu !== "closed"}
               onClick={() => {
                 // A mobil menü is mutatja az org-váltót — lusta betöltés.
                 ensureOrgMemberships();
                 setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"));
               }}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-primary)]"
+              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-border-default)]"
             >
               {mobileMenu !== "closed" ? (
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
