@@ -99,7 +99,7 @@ export function PricingContent() {
             </Link>
             <Link
               href="/pilot"
-              className={`mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-5 text-caption font-semibold text-[var(--color-text-secondary)] transition hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+              className={`mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-lg px-2 text-caption font-semibold text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
             >
               {t("pricing.offerPilotCta", locale)}
             </Link>

@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n/public";
 import type { SiteMode } from "@/components/landing/ModeSwitcher";
 import { track } from "@/lib/analytics/client";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export function CtaSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
@@ -27,9 +28,13 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
     : t("landing.ctaTeamCta", locale);
   const microcopy = isSelf ? t("landing.ctaSelfMicrocopy", locale) : t("landing.ctaTeamMicrocopy", locale);
   const ctaHref = isSelf ? "/try" : "/contact";
+  const secondaryHref = isSelf ? "/how-we-work" : "/try";
+  const secondaryLabel = isSelf
+    ? t("landing.ctaSelfSecondary", locale)
+    : t("landing.ctaTeamSecondary", locale);
 
   return (
-    <section className="px-7 py-12 md:py-20">
+    <section className="px-7 py-16 md:py-24">
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
           {headlineBefore}
@@ -41,27 +46,30 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
           </em>
         </h2>
         <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
-        <Link
-          href={ctaHref}
-          onClick={() =>
-            track("cta.click", {
-              cta_id: "closing",
-              surface: "landing",
-              mode: isSelf ? "self" : "team",
-            })
-          }
-          className={[
-            // A felirat FORDUL: a bronze-dark és a zsálya világosban sötét,
-            // sötéten világos — a fix fehér ott 2,0–2,1:1 lett volna.
-            "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
-            // Self CTA: bronze-dark (fehér szöveg mellett 4.89:1) — azonos a
-            // NavBar sticky CTA-jával és a hero gombjával; hover egy fokkal
-            // sötétebb (bronze-700), hogy a hover-visszajelzés megmaradjon.
-            isSelf ? "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
-          ].join(" ")}
-        >
-          {cta}
-        </Link>
+        <div className="flex flex-col items-stretch gap-2.5 sm:items-center">
+          <Link
+            href={ctaHref}
+            onClick={() =>
+              track("cta.click", {
+                cta_id: "closing",
+                surface: "landing",
+                mode: isSelf ? "self" : "team",
+              })
+            }
+            className={[
+              "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
+              isSelf ? "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
+            ].join(" ")}
+          >
+            {cta}
+          </Link>
+          <Link
+            href={secondaryHref}
+            className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
+          >
+            {secondaryLabel}
+          </Link>
+        </div>
         <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">{microcopy}</p>
       </div>
     </section>

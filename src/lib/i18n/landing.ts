@@ -186,11 +186,13 @@ export const landingTranslations = {
     ctaSelfHeadlineEm: { hu: "karrierképed.", en: "career picture." },
     ctaSelfSub: { hu: "Indítsd el most a tesztet, és nézd meg, milyen szerepekben működsz a legjobban.", en: "Start the test now and see which roles you perform best in." },
     ctaSelfCta: { hu: "Elindítom a tesztet →", en: "Start the test →" },
+    ctaSelfSecondary: { hu: "Együttműködés részletei →", en: "How we work →" },
     ctaSelfMicrocopy: { hu: "Ingyenes indulás · azonnali első eredmény", en: "Free start · instant first result" },
     ctaTeamHeadlineBefore: { hu: "Néhány napon belül meglátod, ami eddig ", en: "Within days you'll see what was previously " },
     ctaTeamHeadlineEm: { hu: "láthatatlan volt.", en: "invisible." },
     ctaTeamSub: { hu: "Beszéljünk a csapatodról — a kitöltések után tanácsadó által jóváhagyott csapatképet és közös értelmezést kaptok.", en: "Let's talk about your team — after the assessments you'll get a consultant-reviewed team picture and a joint debrief." },
     ctaTeamCta: { hu: "Kérek egy csapatelemzést →", en: "Request a team analysis →" },
+    ctaTeamSecondary: { hu: "Először kipróbálom magamon →", en: "Try it on myself first →" },
     ctaTeamMicrocopy: { hu: "Egyedi ajánlat · személyes onboarding", en: "Custom offer · personal onboarding" },
   },
   pricing: {

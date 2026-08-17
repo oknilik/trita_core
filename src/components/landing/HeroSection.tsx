@@ -10,6 +10,7 @@ import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
 import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon, EyeIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 // A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
 // ugyanaz a 0.5s / y:20px / cubic-bezier(0.16,1,0.3,1) mozgás, mint a korábbi
@@ -339,7 +340,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className="inline-flex min-h-[60px] w-full items-center justify-between gap-7 rounded-xl px-5 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[320px]"
+                className={`inline-flex min-h-[54px] w-full items-center justify-center gap-2 rounded-xl px-7 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[280px] ${FOCUS_RING_CLASS}`}
                 style={{
                   background: ctaBackground,
                   boxShadow: isSelf
@@ -352,9 +353,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
                     : t("landing.teamCta", locale)).replace(/\s*→\s*$/, "")}
                 </span>
-                <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-white/15 text-xl leading-none">
-                  →
-                </span>
+                <span aria-hidden="true">→</span>
               </Link>
             </div>
 
@@ -395,31 +394,21 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
         </div>
 
         {!isSelf ? (
-          <Link
-            href="/pilot"
-            onClick={() => track("cta.click", { cta_id: "hero_pilot", surface: "landing", mode: "team" })}
-            className={`${riseIn} mt-6 grid gap-4 rounded-2xl border p-4 transition-all duration-150 hover:-translate-y-px hover:shadow-md sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5`}
-            style={{
-              animationDelay: "0.25s",
-              borderColor: "color-mix(in srgb, var(--color-layer-team-accent) 24%, var(--color-border-default))",
-              background: "color-mix(in srgb, var(--color-layer-team-accent) 9%, var(--color-surface-card))",
-            }}
+          <div
+            className={`${riseIn} mt-5 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3`}
+            style={{ animationDelay: "0.25s" }}
           >
-            <div>
-              <p className="text-micro font-bold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-                {t("landing.teamPilotLabel", locale)}
-              </p>
-              <p className="mt-1 font-fraunces text-lg font-medium text-ink">
-                {t("landing.teamPilotTitle", locale)}
-              </p>
-              <p className="mt-1 text-[11px] text-muted">
-                {t("landing.teamPilotDesc", locale)}
-              </p>
-            </div>
-            <span className="inline-flex min-h-10 items-center justify-center justify-self-start rounded-full bg-[var(--color-layer-team-hero-from)] px-4 text-[11px] font-bold text-white sm:justify-self-end">
-              {t("landing.teamPilotCta", locale)}
+            <span className="text-micro font-bold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+              {t("landing.teamPilotLabel", locale)}
             </span>
-          </Link>
+            <Link
+              href="/pilot"
+              onClick={() => track("cta.click", { cta_id: "hero_pilot", surface: "landing", mode: "team" })}
+              className={`inline-flex min-h-11 items-center rounded-lg pr-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
+            >
+              {t("landing.teamPilotTitle", locale)}&nbsp;→
+            </Link>
+          </div>
         ) : null}
       </div>
     </section>

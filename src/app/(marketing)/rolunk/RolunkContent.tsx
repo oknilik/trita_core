@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { t } from "@/lib/i18n/public";
 
 export function RolunkContent() {
@@ -22,7 +21,7 @@ export function RolunkContent() {
     <main className="bg-cream text-ink selection:bg-bronze/20">
       {/* ── Hero ───────────────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-12 pt-12 md:pb-16 md:pt-20">
+        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <SectionEyebrow className="mb-6">{t("aboutUs.heroEyebrow", locale)}</SectionEyebrow>
 
           <h1 className="max-w-[24ch] font-fraunces text-[clamp(2.4rem,6vw,4.2rem)] leading-[1.02] tracking-tight text-ink">
@@ -89,7 +88,7 @@ export function RolunkContent() {
 
       {/* ── Záró CTA ───────────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
+        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
             <h2 className="mx-auto max-w-[22ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
               {t("aboutUs.ctaTitle", locale)}
@@ -97,24 +96,12 @@ export function RolunkContent() {
             <p className="mx-auto mt-5 max-w-[52ch] text-base leading-8 text-ink-body">
               {t("aboutUs.ctaBody", locale)}
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link
-                href="/contact"
-                className={getButtonClassName({ size: "lg", className: "min-h-[54px] px-7 text-base" })}
-              >
-                {t("aboutUs.ctaPrimary", locale)}
-              </Link>
-              <Link
-                href="/about"
-                className={getButtonClassName({
-                  variant: "secondary",
-                  size: "lg",
-                  className: "min-h-[54px] px-7 text-base",
-                })}
-              >
-                {t("aboutUs.ctaSecondary", locale)}
-              </Link>
-            </div>
+            <MarketingActions
+              className="mt-8"
+              align="center"
+              primary={{ href: "/contact", label: t("aboutUs.ctaPrimary", locale) }}
+              secondary={{ href: "/about", label: t("aboutUs.ctaSecondary", locale) }}
+            />
           </div>
         </div>
       </section>
@@ -134,7 +121,7 @@ function EditorialSection({
   return (
     <section>
       <PageWidthDivider />
-      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow>{eyebrow}</SectionEyebrow>
         </div>
