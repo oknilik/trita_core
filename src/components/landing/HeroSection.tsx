@@ -8,7 +8,7 @@ import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
-import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
+import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon, EyeIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 
 // A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
@@ -23,35 +23,28 @@ const riseIn = "animate-rise-in";
 function SelfPanel() {
   const { locale } = useLocale();
 
-  // A ProfileHero + DimensionStrip redukált változata, az élő paletta-
-  // tokenekkel. H E X A C O sorrend, mint a valódi riportban — a kód azért
-  // kell, mert a szín a DIMENZIÓT azonosítja, nem a pontszámot értékeli
-  // (ld. DimensionAccordion fejkomment).
+  // A kanonikus archetípus-prototípus (interaction-engine.ts) A-domináns,
+  // H-másodlagos változata: 86 / 74 / 50. A landing a domináns dimenzió
+  // közös főnévi címkéjét mutatja (Hídépítő), a teljes riport a mérési
+  // bizonytalanság alapján egészíti ki melléknévi színezettel.
   const dims = [
-    { code: "H", name: t("landing.selfDim1", locale), value: 58 },
-    { code: "E", name: t("landing.selfDim2", locale), value: 46 },
-    { code: "X", name: t("landing.selfDim3", locale), value: 72 },
-    { code: "A", name: t("landing.selfDim4", locale), value: 34 },
-    { code: "C", name: t("landing.selfDim5", locale), value: 61 },
-    { code: "O", name: t("landing.selfDim6", locale), value: 79 },
+    { code: "H", name: t("landing.selfDim1", locale), value: 74 },
+    { code: "E", name: t("landing.selfDim2", locale), value: 50 },
+    { code: "X", name: t("landing.selfDim3", locale), value: 50 },
+    { code: "A", name: t("landing.selfDim4", locale), value: 86 },
+    { code: "C", name: t("landing.selfDim5", locale), value: 50 },
+    { code: "O", name: t("landing.selfDim6", locale), value: 50 },
   ];
 
-  const strengths = [t("landing.selfDim6", locale), t("landing.selfDim3", locale)];
-  const watch = [t("landing.selfDim4", locale)];
+  const strengths = [t("landing.selfDim4", locale), t("landing.selfDim1", locale)];
 
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-micro uppercase tracking-widest text-white/70">
-            {t("landing.selfPanelEyebrow", locale)}
-          </p>
-          {/* Minta-jelölés — a kártya illusztráció, ne tűnjön valós adatnak */}
-          <span className="rounded border border-white/25 px-1.5 py-[2px] text-micro uppercase tracking-wide text-white/70">
-            {t("landing.sampleBadge", locale)}
-          </span>
-        </div>
+        <p className="text-micro uppercase tracking-widest text-white/70">
+          {t("landing.selfPanelEyebrow", locale)}
+        </p>
         <p className="mt-1.5 font-fraunces text-body text-white/80">
           {t("landing.selfPanelName", locale)}
         </p>
@@ -100,21 +93,14 @@ function SelfPanel() {
           </div>
         </div>
 
-        {/* Erősség / figyelendő chipek */}
+        {/* A prototípushoz ténylegesen rendelt két erősség. A négy 50-es
+            dimenzió semleges, ezért nem gyártunk melléjük „figyelendő” címkét. */}
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <span className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
             {t("landing.selfStrLabel", locale)}:
           </span>
           {strengths.map((d) => (
             <span key={d} className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-self-deep)]">
-              {d}
-            </span>
-          ))}
-          <span className="ml-1 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-            {t("landing.selfWatchLabel", locale)}:
-          </span>
-          {watch.map((d) => (
-            <span key={d} className="rounded bg-[var(--color-surface-highlight-warm)] px-2 py-0.5 text-micro font-medium text-[var(--color-accent-primary-strong)]">
               {d}
             </span>
           ))}
@@ -161,27 +147,23 @@ function SelfPanel() {
 function TeamPanel() {
   const { locale } = useLocale();
 
-  // A TeamReportView redukált változata: aggregált átlagok, egyéni adatok
-  // nélkül — a vezető a termékben is ezt a nézetet kapja. (A ±szórás-szám a
-  // termékből is kikerült, ezért a minta-kártya sem mutatja.)
+  // A showcase seed ötfős Értékesítés csapatának tényleges aggregátumai
+  // (scripts/seed-showcase-org.ts). A négy érték ugyanaz a mintázatmotor-
+  // bemenet, amely ECFP-re, vagyis „Családi Vállalkozásra” értékelődik.
   const dims = [
-    { name: t("landing.teamDim1", locale), mean: 78 },
-    { name: t("landing.teamDim2", locale), mean: 38 },
-    { name: t("landing.teamDim3", locale), mean: 55 },
+    { name: t("landing.teamAxisDrive", locale), mean: 81 },
+    { name: t("landing.teamAxisCohesion", locale), mean: 64 },
+    { name: t("landing.teamAxisDiscipline", locale), mean: 55 },
+    { name: t("landing.teamAxisOpenness", locale), mean: 56 },
   ];
 
   return (
     <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
       {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
       <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-micro uppercase tracking-widest text-white/70">
-            {t("landing.teamPanelEyebrow", locale)}
-          </p>
-          <span className="rounded border border-white/25 px-1.5 py-[2px] text-micro uppercase tracking-wide text-white/70">
-            {t("landing.sampleBadge", locale)}
-          </span>
-        </div>
+        <p className="text-micro uppercase tracking-widest text-white/70">
+          {t("landing.teamPanelEyebrow", locale)}
+        </p>
         <p className="mt-2 font-fraunces text-[22px] font-medium text-white">
           {t("landing.teamPanelTitle", locale)}
         </p>
@@ -205,7 +187,7 @@ function TeamPanel() {
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
-            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">6</p>
+            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">5</p>
           </div>
           <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
@@ -383,6 +365,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
                   { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
+                  { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                 ].map((m) => (
                   <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
@@ -397,6 +380,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
                     { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
                     { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
+                    { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                   ].map((m) => (
                     <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
                       <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />

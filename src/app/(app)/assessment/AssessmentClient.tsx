@@ -710,7 +710,7 @@ export function AssessmentClient({
                   {t("assessment.introPreviewEyebrow", locale)}
                 </p>
                 <p className="mt-0.5 font-fraunces text-sm font-medium italic text-[var(--color-accent-primary-soft)]">
-                  {t("landing.selfPanelType", locale)}
+                  {t("assessment.introPreviewType", locale)}
                 </p>
                 <div className="mt-2 flex gap-1.5">
                   {previewDims.map((d) => (
