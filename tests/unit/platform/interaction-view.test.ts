@@ -72,7 +72,7 @@ test("a dimenzió-címkék a kanonikus HEXACO-térképből jönnek", () => {
           );
         }
       }
-      for (const note of sim.leaderNotes) {
+      for (const note of [...sim.leaderNotesOther, ...sim.leaderNotesSelf]) {
         assert.ok(expected.has(note.dimLabel));
       }
     }
@@ -83,10 +83,23 @@ test("vezetői kiegészítő minden archetípushoz jár (a prototípus két pól
   const sims = buildArchetypeSimulations(PROFILE, "hu");
   for (const sim of sims) {
     assert.equal(
-      sim.leaderNotes.length,
+      sim.leaderNotesOther.length,
       2,
       `${sim.key}: a prototípusnak pontosan két pólusos dimenziója van`,
     );
+  }
+});
+
+test("mindkét vezető-irány elő van számolva — a karakter-úton is választható", () => {
+  const sims = buildArchetypeSimulations(PROFILE, "hu");
+  for (const sim of sims) {
+    // A self-irány a SAJÁT profiltól függ, tehát minden archetípusnál ugyanaz
+    // és nem üres — korábban ez az irány a felületen egyáltalán nem létezett.
+    assert.ok(
+      sim.leaderNotesSelf.length > 0,
+      `${sim.key}: az „én vezetem" irány kiegészítője hiányzik`,
+    );
+    assert.deepEqual(sim.leaderNotesSelf, sims[0].leaderNotesSelf);
   }
 });
 

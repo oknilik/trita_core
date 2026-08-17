@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { t, type Locale } from "@/lib/i18n";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
 export type LinearReportSectionId = "overview" | "dimensions" | "workstyle";
 
@@ -57,26 +58,15 @@ export function LinearReport({
 
   return (
     <div className="flex flex-col gap-8 md:gap-10">
-      <header className="border-b border-[var(--color-border-soft)] pb-7 md:pb-8">
-        <button
-          type="button"
-          onClick={onBack}
-          className="inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-ink-body transition hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
-        >
-          <span aria-hidden="true">←</span>
-          {t("results.reportBackToSummary", locale)}
-        </button>
-
-        <p className="mt-6 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-          {t("results.reportLinearEyebrow", locale)}
-        </p>
-        <h2 className="mt-2 max-w-2xl font-fraunces text-[28px] leading-tight text-ink md:text-[36px]">
-          {t("results.reportLinearTitle", locale)}
-        </h2>
-        <p className="mt-2 max-w-2xl text-caption leading-relaxed text-muted">
-          {t("results.reportLinearBody", locale)}
-        </p>
-      </header>
+      <EditorialBackHeader
+        onBack={onBack}
+        backLabel={t("results.reportBackToSummary", locale)}
+        eyebrow={t("results.reportLinearEyebrow", locale)}
+        title={t("results.reportLinearTitle", locale)}
+        description={t("results.reportLinearBody", locale)}
+        headingLevel={2}
+        className="border-b border-[var(--color-border-soft)] pb-7 md:pb-8"
+      />
 
       <div className="flex flex-col gap-3" aria-label={t("results.reportChaptersLabel", locale)}>
         {sections.map((section, index) => {

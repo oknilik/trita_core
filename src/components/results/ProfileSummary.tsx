@@ -14,6 +14,10 @@ import type {
 } from "@/components/profile/ProfileTabs";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { ResultClarityFeedback } from "@/components/results/ResultClarityFeedback";
+import {
+  InteractionEntryCard,
+  type InteractionEntryPreview,
+} from "@/components/results/InteractionEntryCard";
 
 interface ProfileSummaryProps {
   dimensions: SerializedDimension[];
@@ -25,6 +29,8 @@ interface ProfileSummaryProps {
   hasObserverData: boolean;
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
+  interactionEntry: InteractionEntryPreview;
+  personalityType: string;
   clarityFeedbackSubmitted: boolean;
   onOpenDetails: () => void;
   onOpenComparison: () => void;
@@ -188,6 +194,8 @@ export function ProfileSummary({
   hasObserverData,
   experienceHints,
   experienceHintDestination,
+  interactionEntry,
+  personalityType,
   clarityFeedbackSubmitted,
   onOpenDetails,
   onOpenComparison,
@@ -227,6 +235,15 @@ export function ProfileSummary({
           ))}
         </div>
       </section>
+
+      <InteractionEntryCard
+        dimensions={dimensions
+          .filter((dimension) => dimension.code !== "I")
+          .map((dimension) => ({ code: dimension.code, score: dimension.score }))}
+        personalityType={personalityType}
+        preview={interactionEntry}
+        locale={locale}
+      />
 
       <section aria-labelledby="summary-explore-heading">
         <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">

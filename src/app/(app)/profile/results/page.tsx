@@ -49,6 +49,9 @@ import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { DashboardAutoRefresh } from "@/components/dashboard/DashboardAutoRefresh";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { resolveCompareInviteState } from "@/lib/compare-invite";
+import { resolveGlyphPair } from "@/lib/type-glyph";
+import type { InteractionEntryPreview } from "@/components/results/InteractionEntryCard";
 
 export const dynamic = "force-dynamic";
 
@@ -104,6 +107,7 @@ export default async function ProfileResultsPage({
     journeySnapshot,
     careerHiddenMembership,
     activeShareCount,
+    rawCompareInvites,
   ] = await Promise.all([
     prisma.assessmentResult.findFirst({
       where: { userProfileId: profile.id, isSelfAssessment: true },
@@ -178,6 +182,19 @@ export default async function ProfileResultsPage({
           },
         })
       : Promise.resolve(0),
+    prisma.compareInvite.findMany({
+      where: { OR: [{ inviterId: profile.id }, { partnerId: profile.id }] },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        status: true,
+        expiresAt: true,
+        inviterId: true,
+        partnerId: true,
+        inviter: { select: { username: true } },
+        partner: { select: { username: true } },
+      },
+    }),
   ]);
 
   // Karrier-illeszkedés: a szerveren, EGY forrásból — a fül kezdeti nézete és
@@ -567,6 +584,60 @@ export default async function ProfileResultsPage({
       locale === "hu" ? "hu" : "en",
     ) ?? t("results.uniqueProfile", locale);
 
+  // A páros összehasonlítás belépőkártyája az első összképben már a valódi
+  // állapotot mutatja. Elfogadott kapcsolat előnyt élvez a függővel szemben:
+  // ilyenkor a CTA közvetlenül a kész közös képet nyitja meg. A partner
+  // pontszámai továbbra sem kerülnek a kliensre, csak a típus-glyph.
+  const compareNow = new Date();
+  const acceptedCompareInvite = rawCompareInvites.find(
+    (invite) => resolveCompareInviteState(invite, compareNow) === "ACCEPTED",
+  );
+  const pendingCompareInvite = rawCompareInvites.find(
+    (invite) => resolveCompareInviteState(invite, compareNow) === "PENDING",
+  );
+
+  let interactionEntry: InteractionEntryPreview = { state: "new" };
+  if (acceptedCompareInvite) {
+    const isInviter = acceptedCompareInvite.inviterId === profile.id;
+    const otherId = isInviter
+      ? acceptedCompareInvite.partnerId
+      : acceptedCompareInvite.inviterId;
+    const otherName = isInviter
+      ? acceptedCompareInvite.partner?.username ?? null
+      : acceptedCompareInvite.inviter.username ?? null;
+    const otherResult = otherId
+      ? await prisma.assessmentResult.findFirst({
+          where: { userProfileId: otherId, isSelfAssessment: true },
+          orderBy: { createdAt: "desc" },
+          select: { scores: true },
+        })
+      : null;
+    const otherDimensionScores = extractDimensionScores(otherResult?.scores);
+    const otherDimensions = otherDimensionScores
+      ? Object.entries(otherDimensionScores).map(([code, score]) => ({ code, score }))
+      : [];
+    const otherGlyph = resolveGlyphPair(otherDimensions);
+    const otherLabel = resolvePersonalityTypeFromScores(otherDimensions, locale);
+
+    interactionEntry = {
+      state: "ready",
+      otherName,
+      pairId: acceptedCompareInvite.id,
+      otherGlyph:
+        otherGlyph && otherLabel
+          ? { ...otherGlyph, label: otherLabel }
+          : null,
+    };
+  } else if (pendingCompareInvite) {
+    const isInviter = pendingCompareInvite.inviterId === profile.id;
+    interactionEntry = {
+      state: "pending",
+      otherName: isInviter
+        ? pendingCompareInvite.partner?.username ?? null
+        : pendingCompareInvite.inviter.username ?? null,
+    };
+  }
+
   // Observer-folyamat állapota (self/csapat szétválasztás): org-tagnál a
   // meghívó-tab állapot-kártyát mutat, az összevetés küszöbhöz kötött.
   const observerFlow = await resolveObserverFlowStatus(profile.id);
@@ -703,6 +774,7 @@ export default async function ProfileResultsPage({
           teamRolePeer={teamRolePeer}
           experienceHints={journeySnapshot.resolution.experienceHints}
           experienceHintDestination={journeySnapshot.resolution.destination}
+          interactionEntry={interactionEntry}
         />
 
         {/* Csapat-érdeklődés (meleg lead) — csak consulting-led módban,

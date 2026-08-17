@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
-import { t, type Locale } from "@/lib/i18n";
+import { t, tf, type Locale } from "@/lib/i18n";
 import {
   buildArchetypeSimulations,
   buildPairSimulation,
@@ -14,11 +14,9 @@ import { resolveGlyphPair } from "@/lib/type-glyph";
 import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
-import { InteractionSection } from "@/components/results/InteractionSection";
-import {
-  CompareInviteCard,
-  type SerializedCompareInvite,
-} from "@/components/results/CompareInviteCard";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import type { SerializedCompareInvite } from "@/components/results/CompareInviteCard";
+import { InteractionComparisonChooser } from "@/components/results/InteractionComparisonChooser";
 import {
   PairInteractionView,
   type PairGlyphInfo,
@@ -126,12 +124,58 @@ export default async function InteractionPage({
       partner: { select: { username: true } },
     },
   });
+
+  // Csak az ÉLŐ (elfogadott) párok profilját olvassuk ki: a visszavont
+  // párnál a partner adatai a szerveren sem kellenek.
+  const otherProfileIds = Array.from(
+    new Set(
+      rawInvites.flatMap((inv) => {
+        if (resolveCompareInviteState(inv, now) !== "ACCEPTED") return [];
+        const otherId =
+          inv.inviterId === profile.id ? inv.partnerId : inv.inviterId;
+        return otherId ? [otherId] : [];
+      }),
+    ),
+  );
+  const otherResults = otherProfileIds.length
+    ? await prisma.assessmentResult.findMany({
+        where: {
+          userProfileId: { in: otherProfileIds },
+          isSelfAssessment: true,
+        },
+        orderBy: { createdAt: "desc" },
+        select: { userProfileId: true, scores: true },
+      })
+    : [];
+  const otherGlyphByProfileId = new Map<string, PairGlyphInfo>();
+  for (const result of otherResults) {
+    if (
+      !result.userProfileId ||
+      otherGlyphByProfileId.has(result.userProfileId)
+    ) {
+      continue;
+    }
+    const dimensionScores = extractDimensionScores(result.scores);
+    if (!dimensionScores) continue;
+    const dimensions = Object.entries(dimensionScores).map(([code, score]) => ({
+      code,
+      score,
+    }));
+    const glyph = resolveGlyphPair(dimensions);
+    const label = resolvePersonalityTypeFromScores(dimensions, lang);
+    if (glyph && label) {
+      otherGlyphByProfileId.set(result.userProfileId, { ...glyph, label });
+    }
+  }
+
   const compareInvites: SerializedCompareInvite[] = rawInvites.map((inv) => {
     const isInviter = inv.inviterId === profile.id;
+    const otherId = isInviter ? inv.partnerId : inv.inviterId;
+    const state = resolveCompareInviteState(inv, now);
     return {
       id: inv.id,
       token: isInviter ? inv.token : null,
-      state: resolveCompareInviteState(inv, now),
+      state,
       role: isInviter ? "inviter" : "partner",
       otherName: isInviter
         ? (inv.partner?.username ?? null)
@@ -139,6 +183,14 @@ export default async function InteractionPage({
       createdAt: inv.createdAt.toISOString(),
       acceptedAt: inv.acceptedAt?.toISOString() ?? null,
       expiresAt: inv.expiresAt.toISOString(),
+      // A glyph a partner két legerősebb dimenzióját mutatja meg — ez CSAK
+      // élő, kölcsönös consent mellett mehet a kliensre. Egy elfogadott,
+      // majd visszavont párnál a payloadból is ki kell maradnia, nem csak a
+      // renderből (`compare-invite.ts`: bármelyik fél bármikor visszavonhat).
+      otherGlyph:
+        state === "ACCEPTED" && otherId
+          ? (otherGlyphByProfileId.get(otherId) ?? null)
+          : null,
     };
   });
 
@@ -146,6 +198,7 @@ export default async function InteractionPage({
   // a szerveren maradnak — a kliens a szimuláció szövegét + a glyph-párt kapja.
   const sp = (await searchParams) ?? {};
   const pairId = typeof sp.pair === "string" ? sp.pair : null;
+  const initialRoute = sp.mode === "real" || sp.mode === "type" ? sp.mode : undefined;
   let pairView: {
     self: PairGlyphInfo;
     other: PairGlyphInfo;
@@ -196,16 +249,26 @@ export default async function InteractionPage({
       surface="self"
       contentClassName="max-w-4xl gap-8 px-4 py-10 md:gap-10"
     >
-      <header>
-        <h1 className="font-fraunces text-title text-[var(--color-text-primary)]">
-          {t("results.sectionInteraction", lang)}
-        </h1>
-        {/* UX-B13: a saját, erre az oldalra írt intro — nem a CTA-kártya
-            szövegének ismétlése. */}
-        <p className="mt-2 max-w-prose text-body leading-relaxed text-[var(--color-text-secondary)]">
-          {t("results.interactionIntro", lang)}
-        </p>
-      </header>
+      {pairView ? (
+        <EditorialBackHeader
+          href="/interaction"
+          backLabel={t("results.comparePairBackToList", lang)}
+          eyebrow={t("results.comparePairBackContext", lang)}
+          title={tf("results.comparePairHeading", lang, {
+            name: pairView.otherName,
+          })}
+          description={t("results.comparePairIntro", lang)}
+        />
+      ) : (
+        <header>
+          <h1 className="font-fraunces text-title text-[var(--color-text-primary)]">
+            {t("results.sectionInteraction", lang)}
+          </h1>
+          <p className="mt-2 max-w-prose text-body leading-relaxed text-[var(--color-text-secondary)]">
+            {t("results.interactionIntro", lang)}
+          </p>
+        </header>
+      )}
 
       {pairView ? (
         <PairInteractionView
@@ -215,16 +278,13 @@ export default async function InteractionPage({
           sim={pairView.sim}
         />
       ) : (
-        <>
-          <CompareInviteCard invites={compareInvites} />
-
-          <InteractionSection
-            simulations={simulations}
-            selfLabel={personalityType ?? undefined}
-            selfGlyph={selfGlyph ?? undefined}
-            hideHeader
-          />
-        </>
+        <InteractionComparisonChooser
+          invites={compareInvites}
+          simulations={simulations}
+          selfLabel={personalityType ?? undefined}
+          selfGlyph={selfGlyph ?? undefined}
+          initialRoute={initialRoute}
+        />
       )}
     </PlatformPageShell>
   );

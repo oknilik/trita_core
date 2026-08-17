@@ -33,8 +33,6 @@ import { KeyTakeawaysSection } from "@/components/results/KeyTakeawaysSection";
 import { InvitationsTab } from "@/components/results/InvitationsTab";
 import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
-import { SectionCta } from "@/components/results/SectionCta";
-import { CAREER_MODULE_READY } from "@/lib/career/module-state";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
 import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
@@ -46,6 +44,8 @@ import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import type { InteractionEntryPreview } from "@/components/results/InteractionEntryCard";
 
 type ProfileLevel = "start" | "plus";
 export type ProfileViewId = "summary" | "details" | "comparison";
@@ -211,6 +211,8 @@ export interface ProfileTabsProps {
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
+  /** A kiemelt páros belépőkártya állapota az összképben. */
+  interactionEntry: InteractionEntryPreview;
   /** Szerver-oldalon számolt karrier-illeszkedés (motor v2) */
   careerResult?: CareerResultView | null;
   /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
@@ -578,6 +580,7 @@ export function ProfileTabs({
   careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
+  interactionEntry,
   careerResult = null,
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
@@ -613,7 +616,8 @@ export function ProfileTabs({
 
   const isHu = locale === "hu";
   const isPlus = accessLevel !== "start";
-  const careerActive = isPortfolioSurfaceActive("career");
+  // A karrier-modul parkolása a szerveren dől el (results/page.tsx →
+  // careerHiddenMembership), ezért itt csak a megosztás kapuja kell.
   const publicSharingActive = isPortfolioSurfaceActive("publicSharing");
   const [pdfLoading, setPdfLoading] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
@@ -951,6 +955,8 @@ export function ProfileTabs({
             hasObserverData={hasObserverData}
             experienceHints={experienceHints}
             experienceHintDestination={experienceHintDestination}
+            interactionEntry={interactionEntry}
+            personalityType={personalityType ?? t("content.personalityProfileFallback", locale)}
             clarityFeedbackSubmitted={clarityFeedbackSubmitted}
             onOpenDetails={() => handleTabChange("details")}
             onOpenComparison={() => handleTabChange("comparison")}
@@ -1031,54 +1037,6 @@ export function ProfileTabs({
                 },
               ]}
             />
-            {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
-                idáig eljutott, annak ez a következő logikus lépés. */}
-            <details
-              onToggle={(event) => {
-                if (event.currentTarget.open) track("results.section_open", { section: "extensions" });
-              }}
-              className="rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
-            >
-              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
-                <p className="font-fraunces text-xl text-ink">{t("results.detailsExtensionsTitle", locale)}</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">{t("results.detailsExtensionsBody", locale)}</p>
-              </summary>
-              <div className="flex flex-col gap-3 border-t border-[var(--color-border-soft)] p-4 md:p-5">
-                <SectionCta
-                  eyebrow={t("results.ctaInteractionEyebrow", locale)}
-                  title={t("results.ctaInteractionTitle", locale)}
-                  body={t("results.ctaInteractionBody", locale)}
-                  cta={t("results.ctaInteractionButton", locale)}
-                  href="/interaction"
-                  motif="pair"
-                />
-              {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
-                  működő iránytűre visz, amíg nincs kész, a kereslet-mérő
-                  oldalra. A `from=results` a mérésben a belépési pontot
-                  jelöli — a riportból érkező szándéka mást ér, mint a
-                  közvetlen látogatóé. */}
-              {careerActive && !careerModuleHidden &&
-                (CAREER_MODULE_READY ? (
-                  <SectionCta
-                    eyebrow={t("results.ctaCareerEyebrow", locale)}
-                    title={t("results.ctaCareerTitle", locale)}
-                    body={t("results.ctaCareerBody", locale)}
-                    cta={t("results.ctaCareerButton", locale)}
-                    href="/career"
-                    motif="compass"
-                  />
-                ) : (
-                  <SectionCta
-                    eyebrow={t("fakeDoor.badge", locale)}
-                    title={t("fakeDoor.ctaTitle", locale)}
-                    body={t("fakeDoor.ctaBody", locale)}
-                    cta={t("fakeDoor.ctaButton", locale)}
-                    href="/career?from=results"
-                    motif="compass"
-                  />
-                ))}
-              </div>
-            </details>
             <FeedbackForm
               initialSubmitted={feedbackSubmitted}
               hasObserverFeedback={hasObserverData}
@@ -1087,24 +1045,18 @@ export function ProfileTabs({
         )}
         {activeTab === "comparison" && (
           <>
-            <header className="border-b border-[var(--color-border-soft)] pb-5">
-              <button
-                type="button"
-                onClick={() => handleTabChange("summary")}
-                className="inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-ink-body transition hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
-              >
-                <span aria-hidden="true">←</span>
-                {t("results.reportBackToSummary", locale)}
-              </button>
-              <p className="mt-5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                {t("results.summaryComparisonTitle", locale)}
-              </p>
-              <h2 className="mt-2 max-w-2xl font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
-                {hasObserverData
+            <EditorialBackHeader
+              onBack={() => handleTabChange("summary")}
+              backLabel={t("results.reportBackToSummary", locale)}
+              eyebrow={t("results.summaryComparisonTitle", locale)}
+              title={
+                hasObserverData
                   ? t("results.summaryComparisonReadyBody", locale)
-                  : t("results.summaryComparisonStartBody", locale)}
-              </h2>
-            </header>
+                  : t("results.summaryComparisonStartBody", locale)
+              }
+              headingLevel={2}
+              className="border-b border-[var(--color-border-soft)] pb-5"
+            />
 
             {/* A külső nézőpont az összevetés és a meghívó-kezelés közös
                 célfelülete. Org-tagnál az összevetés a kampányküszöbig zárva

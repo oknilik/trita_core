@@ -17,6 +17,7 @@ import {
   resolvePersonalityTypeLabel,
 } from "@/lib/personality-type";
 import { t } from "@/lib/i18n";
+import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
 
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu", setLocale: vi.fn(), isChanging: false }),
@@ -118,42 +119,104 @@ describe("InteractionSection", () => {
     expect(screen.queryByText(hu("results.interactionDiscuss"))).not.toBeInTheDocument();
   });
 
-  it("a viszony-kapcsoló mutatja és elrejti a vezetői blokkot", async () => {
+  it("a kapcsolat-választó mindhárom irányt kínálja, a valódi páros nézettel azonos kontrollal", async () => {
     const user = userEvent.setup();
     const sims = marked();
     render(<InteractionSection simulations={sims} />);
 
     const initial = sims.find((sim) => !sim.sparse)!;
-    expect(initial.leaderNotes.length).toBeGreaterThan(0);
+    expect(initial.leaderNotesOther.length).toBeGreaterThan(0);
+    expect(initial.leaderNotesSelf.length).toBeGreaterThan(0);
     await user.click(dominantTile(initial.dominant));
     await user.click(secondaryTile(initial.secondary));
 
-    const peer = screen.getByRole("button", {
-      name: hu("results.interactionRelationPeer"),
+    const trigger = screen.getByRole("button", {
+      name: new RegExp(hu("results.compareRelationLabel")),
     });
-    const leader = screen.getByRole("button", {
-      name: hu("results.interactionRelationLeader"),
-    });
+    expect(trigger).toHaveAttribute("aria-haspopup", "listbox");
 
     // Alapból egyenrangú viszony — a vezetői blokk rejtve.
-    expect(peer).toHaveAttribute("aria-pressed", "true");
-    expect(leader).toHaveAttribute("aria-pressed", "false");
     expect(
       screen.queryByText(hu("results.interactionLeaderTitle")),
     ).not.toBeInTheDocument();
 
-    await user.click(leader);
-    expect(leader).toHaveAttribute("aria-pressed", "true");
-    expect(peer).toHaveAttribute("aria-pressed", "false");
+    // „A karakter vezet engem" irány.
+    await user.click(trigger);
+    await user.click(
+      screen.getByRole("option", {
+        name: t("results.compareRelationOtherLeads", "hu").replace(
+          "{name}",
+          initial.label,
+        ),
+      }),
+    );
     expect(
       screen.getByText(hu("results.interactionLeaderTitle")),
     ).toBeInTheDocument();
-    expect(screen.getByText(initial.leaderNotes[0].text)).toBeInTheDocument();
+    expect(
+      screen.getByText(initial.leaderNotesOther[0].text),
+    ).toBeInTheDocument();
 
-    await user.click(peer);
+    // „Én vezetem őt" irány — ez a karakter-úton korábban NEM létezett.
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(hu("results.compareRelationLabel")),
+      }),
+    );
+    await user.click(
+      screen.getByRole("option", {
+        name: t("results.compareRelationSelfLeadsNamed", "hu").replace(
+          "{name}",
+          initial.label,
+        ),
+      }),
+    );
+    expect(
+      screen.getByText(initial.leaderNotesSelf[0].text),
+    ).toBeInTheDocument();
+
+    // Vissza egyenrangúra: a blokk eltűnik.
+    await user.click(
+      screen.getByRole("button", {
+        name: new RegExp(hu("results.compareRelationLabel")),
+      }),
+    );
+    await user.click(
+      screen.getByRole("option", { name: hu("results.compareRelationPeer") }),
+    );
     expect(
       screen.queryByText(hu("results.interactionLeaderTitle")),
     ).not.toBeInTheDocument();
+  });
+
+  it("a tartalom előtt kimondja, hogy a karakter csak két dimenzióról állít valamit", async () => {
+    const user = userEvent.setup();
+    const sims = marked();
+    render(<InteractionSection simulations={sims} />);
+
+    const initial = sims.find((sim) => !sim.sparse)!;
+    await user.click(dominantTile(initial.dominant));
+    await user.click(secondaryTile(initial.secondary));
+
+    // A korlát a motor bemenetéből jön (a prototípus négy dimenziót a
+    // középvonalra tesz), ezért a felületnek ki kell mondania — különben a
+    // valódi úthoz képesti eltérés hibának látszik.
+    const dims = [initial.dominant, initial.secondary].map(
+      (dim) => HEXACO_DIMENSIONS[dim].hu,
+    );
+    expect(
+      screen.getByText(
+        t("results.interactionTypeScopeNote", "hu").replace(
+          "{dims}",
+          dims.join(" · "),
+        ),
+      ),
+    ).toBeInTheDocument();
+
+    // A módszertani jegyzet nem ismétli meg ugyanezt: az a lap alján áll.
+    expect(
+      screen.getByText(hu("results.interactionSourceNote")),
+    ).toBeInTheDocument();
   });
 
   // S3-hedge (motor-audit v4, FIX 5): főnév-only saját címkénél (a top-pár

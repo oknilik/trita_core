@@ -178,7 +178,7 @@ const translations = {
       body: (dimLabel: string) =>
         `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
       body2:
-        "Ha kíváncsi vagy, hogyan működnétek együtt egy kollégáddal, a páros összehasonlítással meg is nézhetitek.",
+        "Ha kíváncsi vagy, hogyan működnétek együtt valakivel, a páros összehasonlítással meg is nézhetitek.",
       cta: "Páros összehasonlítás megnyitása",
       optOut: "Nem kérsz több ilyen emailt? Leiratkozás itt:",
       thanks: "Üdvözlettel,",
@@ -190,7 +190,7 @@ const translations = {
       body: (dimLabel: string) =>
         `Your personality profile was completed a week ago. Your strongest dimension was ${dimLabel} — observe it deliberately in one concrete situation this week: when did it help, and when did it over-rev?`,
       body2:
-        "If you're curious how you'd work with a colleague, the pair comparison will show you.",
+        "If you're curious how you'd work with someone, the pair comparison will show you.",
       cta: "Open the pair comparison",
       optOut: "Don't want emails like this? Unsubscribe here:",
       thanks: "Best regards,",
