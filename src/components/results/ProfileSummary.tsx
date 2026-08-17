@@ -257,13 +257,13 @@ export function ProfileSummary({
           <button
             type="button"
             onClick={onOpenDetails}
-            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] bg-sage px-5 py-5 text-left text-[var(--color-action-primary-fg)] shadow-[var(--ui-shadow-sm)] transition hover:bg-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
+            className="group flex min-h-[116px] w-full items-center justify-between gap-5 rounded-[18px] bg-[var(--color-surface-self-strong)] px-5 py-5 text-left text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-sm)] transition hover:bg-[var(--color-surface-self-strong-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2 md:px-6"
           >
             <span>
               <strong className="block font-fraunces text-[22px] font-medium">
                 {t("results.summaryDetailsPrompt", locale)}
               </strong>
-              <span className="mt-1.5 block max-w-sm text-xs leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+              <span className="mt-1.5 block max-w-sm text-xs leading-relaxed text-[var(--color-text-on-inverse)]">
                 {t("results.summaryDetailsMeta", locale)}
               </span>
             </span>

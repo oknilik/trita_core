@@ -50,7 +50,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
       >
         <TeamHeroBlock ctx={ctx} active="intelligence" />
 
-        <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
+        <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
           <p className="font-mono text-micro uppercase tracking-widest text-muted">
             {t("teamComp.tabIntelligence", locale)}
           </p>
@@ -153,7 +153,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
       contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10 md:px-6"
     >
       <TeamHeroBlock ctx={ctx} active="intelligence" />
-      <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,#fffdf7_0%,#f6f1e8_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
+      <section className="rounded-[24px] border border-sand bg-[linear-gradient(140deg,var(--color-surface-card)_0%,var(--color-surface-muted)_100%)] p-5 shadow-[0_14px_32px_rgba(26,26,46,0.06)] md:p-6">
         <p className="font-mono text-micro uppercase tracking-widest text-muted">
           {t("teamComp.tabIntelligence", locale)}
         </p>

@@ -113,6 +113,10 @@
   --palette-surface-inverse: #1a1a2e;
   --palette-surface-inverse-soft: #4a4a5e;
   --palette-text-on-inverse: #f7f4ef;
+  /* Nagy, kiemelt self-felület. Nem azonos az akciószínnel: sötét
+     témában a világos sage gombszín nagy foltként túl harsány lenne. */
+  --palette-surface-self-strong: #3d6b5e;
+  --palette-surface-self-strong-hover: #2d5a4e;
   /* Akcent-háttéren ülő szöveg (bronz gomb, glow-sáv): az akcentek MINDKÉT
      témában világosak, ezért ott sötét felirat kell — a fehér ma AA-bukó. */
   --palette-text-on-accent: #1a1a2e;
@@ -303,6 +307,8 @@
   --palette-sage-ghost: #142924;
   --palette-sage-ring: #4d7f6e;
   --palette-sage-soft: #17302a;
+  --palette-surface-self-strong: #17302a;
+  --palette-surface-self-strong-hover: #1e3d34;
   --palette-sand: #34343d;
   --palette-state-error-bg: #381b21;
   --palette-state-error-border: #4d2b30;
@@ -386,6 +392,8 @@
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
   --color-surface-self-border:      var(--color-sage-ring);
+  --color-surface-self-strong: var(--palette-surface-self-strong);
+  --color-surface-self-strong-hover: var(--palette-surface-self-strong-hover);
   --color-surface-team-accent:      var(--color-layer-team-accent);
   --color-surface-team-accent-soft: var(--color-layer-team-soft);
   --color-surface-team-border:      var(--color-bronze-edge);
@@ -638,6 +646,8 @@
   --color-surface-self-accent:      var(--color-sage);
   --color-surface-self-accent-soft: var(--color-sage-soft);
   --color-surface-self-border:      var(--color-sage-ring);
+  --color-surface-self-strong: var(--palette-surface-self-strong);
+  --color-surface-self-strong-hover: var(--palette-surface-self-strong-hover);
   /* Alias-átmenet (2026-08 szín-rendszer): a surface-*-accent tokenek a
      layer-* readba mutatnak. Team: a korábbi #d48e62 barack glow világos
      felületen AA-bukó volt szövegként (2.68:1) — világos felületi team-szín
