@@ -129,7 +129,7 @@ function DimRow({
       ? HEXACO_DIMENSIONS[code].hu
       : HEXACO_DIMENSIONS[code].en
     : code;
-  const color = DIMENSION_BASE[code] ?? colors.sage;
+  const color = isHexacoCode(code) ? DIMENSION_BASE[code] : colors.sage;
   const lo = spread !== null ? Math.max(0, avg - spread) : avg;
   const hi = spread !== null ? Math.min(100, avg + spread) : avg;
   return (

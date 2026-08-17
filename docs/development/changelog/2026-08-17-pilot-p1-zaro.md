@@ -66,3 +66,13 @@ Client: 207/207; unit-őrök (i18n-szótár, analytics-katalógus +
 instrumentation-coverage) zölden; PDF-füstteszt zöld (HU/EN/üres-aggregátum);
 ESLint tiszta. Sandbox-korlát változatlan: Prisma-engine hiányában a teljes
 type-check és az integration kör CI-ben fut.
+
+## Utólagos type-fixup (a felvivő sessionből)
+
+A fenti sandbox-korlát egy hibát elrejtett: a `TeamReportPdf` `DimRow`-jában a
+`DIMENSION_BASE[code]` nyers `string`-gel indexelte a `Record<DimCode, string>`
+térképet (TS7053). A javítás a két sorral feljebb már meglévő `isHexacoCode`
+guard kiterjesztése a szín-kikeresésre — futásidejű viselkedés változatlan
+(nem-HEXACO kódra továbbra is `colors.sage` a fallback), nincs `as` cast.
+A teljes környezetben ellenőrizve: type-check 0 hiba, unit 1036/1036,
+client 207/207, `check:colors` zöld, PDF-füstteszt zöld.
