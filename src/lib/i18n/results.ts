@@ -940,6 +940,10 @@ export const resultsTranslations = {
       hu: "Vissza az összehasonlításokhoz",
       en: "Back to comparisons",
     },
+    comparePairBackContext: {
+      hu: "Összehasonlítások",
+      en: "Comparisons",
+    },
     // A3 — archetípus-kártya képként
     shareCardDownload: {
       hu: "Kártya letöltése képként",

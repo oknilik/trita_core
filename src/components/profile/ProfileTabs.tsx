@@ -45,6 +45,7 @@ import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
 type ProfileLevel = "start" | "plus";
 export type ProfileViewId = "summary" | "details" | "comparison";
@@ -1080,24 +1081,18 @@ export function ProfileTabs({
         )}
         {activeTab === "comparison" && (
           <>
-            <header className="border-b border-[var(--color-border-soft)] pb-5">
-              <button
-                type="button"
-                onClick={() => handleTabChange("summary")}
-                className="inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-ink-body transition hover:text-sage-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
-              >
-                <span aria-hidden="true">←</span>
-                {t("results.reportBackToSummary", locale)}
-              </button>
-              <p className="mt-5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                {t("results.summaryComparisonTitle", locale)}
-              </p>
-              <h2 className="mt-2 max-w-2xl font-fraunces text-[28px] leading-tight text-ink md:text-[34px]">
-                {hasObserverData
+            <EditorialBackHeader
+              onBack={() => handleTabChange("summary")}
+              backLabel={t("results.reportBackToSummary", locale)}
+              eyebrow={t("results.summaryComparisonTitle", locale)}
+              title={
+                hasObserverData
                   ? t("results.summaryComparisonReadyBody", locale)
-                  : t("results.summaryComparisonStartBody", locale)}
-              </h2>
-            </header>
+                  : t("results.summaryComparisonStartBody", locale)
+              }
+              headingLevel={2}
+              className="border-b border-[var(--color-border-soft)] pb-5"
+            />
 
             {/* A külső nézőpont az összevetés és a meghívó-kezelés közös
                 célfelülete. Org-tagnál az összevetés a kampányküszöbig zárva
