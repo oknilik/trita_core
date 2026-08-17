@@ -51,7 +51,7 @@ export const landingTranslations = {
     teamMetaOnboarding: { hu: "Személyes onboarding", en: "Personal onboarding" },
     teamMetaTiming: { hu: "Néhány nap az első képig", en: "First picture within days" },
     teamMetaOffer: { hu: "Egyedi ajánlat", en: "Custom offer" },
-    teamPilotQuiet: { hu: "Pilotprogram az első partnercsapatoknak", en: "Pilot program for our first partner teams" },
+    teamFadeCta: { hu: "Ízelítő a csapatképből", en: "A taste of your team picture" },
     // Team hero panel — a valódi publikált riport (TeamReportView) kicsinyített mása
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
     teamPanelTitle: { hu: "Sales csapat", en: "Sales team" },

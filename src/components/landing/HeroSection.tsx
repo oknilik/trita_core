@@ -40,7 +40,7 @@ function SelfPanel() {
   const watch = [t("landing.selfDim4", locale)];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
+    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
       {/* ═══ SÖTÉT HERO FEJLÉC ═══ */}
       <div className="relative bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 pb-6 pt-6">
         <div className="flex items-center justify-between gap-2">
@@ -171,7 +171,7 @@ function TeamPanel() {
   ];
 
   return (
-    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:h-full md:flex-col">
+    <div className="overflow-hidden rounded-2xl shadow-lg shadow-black/[0.08] md:flex md:min-h-[590px] md:flex-col">
       {/* A valódi team hero szilva-gradiensét használó közös riportfejléc. */}
       <div className="bg-gradient-to-br from-[var(--color-layer-team-hero-from)] via-[var(--color-layer-team-hero-mid)] to-[var(--color-layer-team-hero-to)] px-6 pb-6 pt-6 text-[var(--color-text-on-inverse)]">
         <div className="flex items-center justify-between gap-2">
@@ -256,6 +256,12 @@ function TeamPanel() {
           </p>
         </div>
       </div>
+
+      <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
+        <span className="text-[11px] font-medium text-[var(--color-layer-team-accent)]">
+          {t("landing.teamFadeCta", locale)}
+        </span>
+      </div>
     </div>
   );
 }
@@ -325,8 +331,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </div>
             </div>
           ) : (
-            <div className="order-2 flex flex-col gap-4 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
-              <TeamPanel />
+            <div className="order-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-8 md:self-stretch">
+              <div className="mx-auto w-full max-w-[460px] md:flex md:h-full md:flex-col">
+                <TeamPanel />
+              </div>
             </div>
           )}
 
@@ -349,7 +357,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     mode: isSelf ? "self" : "team",
                   })
                 }
-                className={`inline-flex min-h-[52px] w-full items-center rounded-xl px-5 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto ${isSelf ? "justify-center gap-2 sm:px-8 sm:py-4" : "justify-between gap-7 sm:min-w-[320px]"}`}
+                className="inline-flex min-h-[60px] w-full items-center justify-between gap-7 rounded-xl px-5 py-3 text-base font-bold text-white shadow-md transition-all duration-150 hover:-translate-y-px hover:shadow-lg hover:brightness-[1.06] sm:w-auto sm:min-w-[320px]"
                 style={{
                   background: ctaBackground,
                   boxShadow: isSelf
@@ -358,15 +366,13 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 }}
               >
                 <span>
-                  {isSelf
+                  {(isSelf
                     ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
-                    : t("landing.teamCta", locale)}
+                    : t("landing.teamCta", locale)).replace(/\s*→\s*$/, "")}
                 </span>
-                {!isSelf ? (
-                  <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-white/15 text-xl leading-none">
-                    →
-                  </span>
-                ) : null}
+                <span aria-hidden="true" className="grid h-9 w-9 shrink-0 place-items-center rounded-[10px] bg-white/15 text-xl leading-none">
+                  →
+                </span>
               </Link>
             </div>
 
@@ -385,7 +391,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 ))}
               </div>
             ) : (
-              <div className={`${riseIn} flex flex-col items-start gap-3`} style={{ animationDelay: "0.2s" }}>
+              <div className={`${riseIn} flex flex-wrap items-center gap-2`} style={{ animationDelay: "0.2s" }}>
                 <div className="flex flex-wrap items-center gap-2">
                   {[
                     { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
@@ -398,17 +404,39 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     </span>
                   ))}
                 </div>
-                <Link
-                  href="/pilot"
-                  className="text-[11px] font-semibold text-[var(--color-layer-team-accent)] transition-opacity hover:opacity-75"
-                >
-                  {t("landing.teamPilotQuiet", locale)} →
-                </Link>
               </div>
             )}
           </div>
 
         </div>
+
+        {!isSelf ? (
+          <Link
+            href="/pilot"
+            onClick={() => track("cta.click", { cta_id: "hero_pilot", surface: "landing", mode: "team" })}
+            className={`${riseIn} mt-6 grid gap-4 rounded-2xl border p-4 transition-all duration-150 hover:-translate-y-px hover:shadow-md sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:p-5`}
+            style={{
+              animationDelay: "0.25s",
+              borderColor: "color-mix(in srgb, var(--color-layer-team-accent) 24%, var(--color-border-default))",
+              background: "color-mix(in srgb, var(--color-layer-team-accent) 9%, var(--color-surface-card))",
+            }}
+          >
+            <div>
+              <p className="text-micro font-bold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
+                {t("landing.teamPilotLabel", locale)}
+              </p>
+              <p className="mt-1 font-fraunces text-lg font-medium text-ink">
+                {t("landing.teamPilotTitle", locale)}
+              </p>
+              <p className="mt-1 text-[11px] text-muted">
+                {t("landing.teamPilotDesc", locale)}
+              </p>
+            </div>
+            <span className="inline-flex min-h-10 items-center justify-center justify-self-start rounded-full bg-[var(--color-layer-team-hero-from)] px-4 text-[11px] font-bold text-white sm:justify-self-end">
+              {t("landing.teamPilotCta", locale)}
+            </span>
+          </Link>
+        ) : null}
       </div>
     </section>
   );
