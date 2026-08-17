@@ -7,6 +7,7 @@ import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
@@ -544,37 +545,16 @@ export default async function CampaignDetailPage({
           />
         ) : null}
 
-        {/* Back link */}
-        <Link
-          href={`/org/${orgId}?tab=campaigns`}
-          className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
-        >
-          <svg
-            viewBox="0 0 16 16"
-            className="h-3.5 w-3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {t("org.backToOrg", locale)}
-        </Link>
-
         {/* Header */}
         <div>
-          <SectionEyebrow>
-            {eyebrowLabel(campaign.status, locale)}
-          </SectionEyebrow>
-          <h1 className="mt-1 font-fraunces text-3xl text-ink md:text-4xl">
-            {campaign.name}
-          </h1>
-          {campaign.description && (
-            <p className="mt-1 text-sm text-ink-body">{campaign.description}</p>
-          )}
-          <div className="mt-3 flex flex-wrap items-center gap-3">
+          <EditorialBackHeader
+            href={`/org/${orgId}?tab=campaigns`}
+            backLabel={t("org.backToOrg", locale)}
+            eyebrow={eyebrowLabel(campaign.status, locale)}
+            title={campaign.name}
+            description={campaign.description}
+          />
+          <div className="ml-14 mt-3 flex flex-wrap items-center gap-3">
             <StatusChip variant={statusBadgeVariant(campaign.status)}>
               {statusLabel(campaign.status, locale)}
             </StatusChip>

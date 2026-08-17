@@ -20,6 +20,7 @@ import { ReadingProgress } from "@/components/blog/ReadingProgress";
 import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -349,17 +350,12 @@ export default async function BlogPostPage({
         postLocale={post.locale}
         translationSlug={post.translationSlug}
       />
-      {/* Header */}
+      {/* Vissza a cikkjegyzékhez */}
       <div className="mx-auto max-w-[1080px] px-7 pb-0 pt-6">
-        <Link
+        <EditorialBackControl
           href="/blog"
-          className="inline-flex items-center gap-1.5 text-caption text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
-        >
-          <svg viewBox="0 0 16 16" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {t("blog.backToBlog", locale)}
-        </Link>
+          backLabel={t("blog.backToBlog", locale)}
+        />
       </div>
 
       <div className="mx-auto max-w-[1080px] px-7 pb-14 pt-4 md:grid md:grid-cols-[minmax(0,1fr)_250px] md:items-start md:gap-10">

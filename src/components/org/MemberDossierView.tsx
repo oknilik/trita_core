@@ -73,10 +73,12 @@ export function MemberDossierView({
   dossier,
   orgId,
   isHu,
+  hideIdentityHeader = false,
 }: {
   dossier: SerializedMemberDossier;
   orgId: string;
   isHu: boolean;
+  hideIdentityHeader?: boolean;
 }) {
   const { header, participation, selfVsExternal: sx, embeddedness, feedback } = dossier;
   const locale: Locale = isHu ? "hu" : "en";
@@ -85,13 +87,19 @@ export function MemberDossierView({
     <div className="flex flex-col gap-6">
       {/* ═══ 1. FEJLÉC + RÉSZVÉTEL ═══ */}
       <section className={CARD}>
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h1 className="font-fraunces text-2xl text-ink">{header.displayName}</h1>
-            {header.email ? (
-              <p className="mt-0.5 text-caption text-muted">{header.email}</p>
-            ) : null}
-          </div>
+        <div
+          className={`flex flex-wrap items-start gap-3 ${
+            hideIdentityHeader ? "justify-end" : "justify-between"
+          }`}
+        >
+          {!hideIdentityHeader ? (
+            <div>
+              <h1 className="font-fraunces text-2xl text-ink">{header.displayName}</h1>
+              {header.email ? (
+                <p className="mt-0.5 text-caption text-muted">{header.email}</p>
+              ) : null}
+            </div>
+          ) : null}
           <span className="rounded-full border border-sand bg-cream px-3 py-1 text-micro font-semibold uppercase tracking-wide text-ink-body">
             {orgRoleLabel(header.orgRole, isHu)}
           </span>

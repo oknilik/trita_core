@@ -17,6 +17,11 @@ type EditorialBackHeaderProps = EditorialBackAction & {
   className?: string;
 };
 
+type EditorialBackControlProps = EditorialBackAction & {
+  backLabel: string;
+  className?: string;
+};
+
 function BackArrow() {
   return (
     <svg
@@ -37,6 +42,31 @@ function BackArrow() {
 const backControlClassName =
   "mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[var(--color-border-default)] bg-surface-card text-[var(--color-accent-primary-strong)] shadow-[var(--ui-shadow-sm)] transition-all hover:-translate-x-0.5 hover:border-[var(--color-accent-primary)] hover:bg-[var(--color-surface-highlight-warm)] hover:shadow-[var(--ui-shadow-md)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2";
 
+/** Az editorial visszavezérlő önálló változata olyan oldalakhoz,
+ * ahol a cím egy saját hero- vagy tartalomkártyában marad. */
+export function EditorialBackControl({
+  backLabel,
+  className,
+  ...action
+}: EditorialBackControlProps) {
+  const controlClassName = cn(backControlClassName, className);
+
+  return action.href ? (
+    <Link href={action.href} aria-label={backLabel} className={controlClassName}>
+      <BackArrow />
+    </Link>
+  ) : (
+    <button
+      type="button"
+      onClick={action.onBack}
+      aria-label={backLabel}
+      className={controlClassName}
+    >
+      <BackArrow />
+    </button>
+  );
+}
+
 /**
  * Oldalszintű visszanavigáció, a célkontextust és az aktuális címet egyetlen
  * editorial fejrészbe rendezve. Linkes és kliensállapotot váltó nézethez is jó.
@@ -50,25 +80,6 @@ export function EditorialBackHeader({
   className,
   ...action
 }: EditorialBackHeaderProps) {
-  const backControl = action.href ? (
-    <Link
-      href={action.href}
-      aria-label={backLabel}
-      className={backControlClassName}
-    >
-      <BackArrow />
-    </Link>
-  ) : (
-    <button
-      type="button"
-      onClick={action.onBack}
-      aria-label={backLabel}
-      className={backControlClassName}
-    >
-      <BackArrow />
-    </button>
-  );
-
   const headingClassName =
     "mt-1 max-w-2xl font-fraunces text-title text-[var(--color-text-primary)]";
 
@@ -79,7 +90,7 @@ export function EditorialBackHeader({
         className,
       )}
     >
-      {backControl}
+      <EditorialBackControl backLabel={backLabel} {...action} />
       <div className="min-w-0">
         <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
           {eyebrow}

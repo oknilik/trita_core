@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { loadRateCard } from "@/lib/quote/rate-card.server";
 import { quoteInputSchema } from "@/lib/quote/rate-card";
 import type { QuoteInput } from "@/lib/quote/calculate";
 import { formatQuoteNo } from "@/lib/crm/guards";
 import { QuoteCalculator } from "@/components/admin/quote/QuoteCalculator";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 
 // Ajánlat-kalkulátor — BELSŐ eszköz.
 //
@@ -89,33 +88,13 @@ export default async function QuoteCalculatorPage({
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-10">
-      <header>
-        <SectionEyebrow>
-          belső eszköz
-        </SectionEyebrow>
-        <h1 className="mt-1 font-fraunces text-2xl text-ink">Ajánlat-kalkulátor</h1>
-        <p className="mt-2 max-w-prose text-sm leading-relaxed text-ink-body">
-          Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt
-          összefoglaló a jobb alsó dobozban áll össze — belső számok (óradíj, padló,
-          kedvezmény-keret) nincsenek benne.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-4">
-          <Link
-            href="/admin"
-            className="inline-block text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
-          >
-            ← Admin
-          </Link>
-          {deal && (
-            <Link
-              href={`/admin/crm/${deal.id}`}
-              className="inline-block text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
-            >
-              ← Vissza a dealhez: {deal.title}
-            </Link>
-          )}
-        </div>
-      </header>
+      <EditorialBackHeader
+        href={deal ? `/admin/crm/${deal.id}` : "/admin"}
+        backLabel={deal ? `Vissza a dealhez: ${deal.title}` : "Vissza az adminhoz"}
+        eyebrow="belső eszköz"
+        title="Ajánlat-kalkulátor"
+        description="Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze — belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
+      />
 
       <QuoteCalculator
         initialRate={rate}

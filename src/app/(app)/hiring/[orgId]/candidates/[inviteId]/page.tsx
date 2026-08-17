@@ -28,6 +28,7 @@ import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/Surfac
 import { DIMENSION_STRONG, EVAL_RAMP, dimColors } from "@/lib/color-system";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -336,18 +337,10 @@ export default async function CandidateResultPage({
 
   return (
     <PlatformPageShell surface="team" contentClassName="max-w-5xl gap-6 px-4 py-10">
-      <div>
-        {/* Back */}
-        <Link
-          href={`/hiring/${orgId}`}
-          className="inline-flex min-h-[44px] items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-accent-candidate"
-        >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {t("hiring.backHiring", locale)}
-        </Link>
-      </div>
+      <EditorialBackControl
+        href={`/hiring/${orgId}`}
+        backLabel={t("hiring.backHiring", locale)}
+      />
 
       {/* ═══ HERO — candidate (terrakotta) variáns ═══ */}
       <SurfaceHero

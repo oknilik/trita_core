@@ -1,12 +1,11 @@
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
 import { getServerLocale } from "@/lib/i18n-server";
 import { isConsultingLed } from "@/lib/operating-mode";
 import { NewClientOrgForm } from "@/components/org/NewClientOrgForm";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 
 export const dynamic = "force-dynamic";
@@ -46,29 +45,18 @@ export default async function NewClientOrgPage() {
   return (
     <div className="min-h-dvh bg-cream">
       <main className="mx-auto w-full max-w-xl px-4 pt-10 pb-20">
-        <Link
+        <EditorialBackHeader
           href="/dashboard"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm font-semibold text-ink-body transition-colors hover:text-[var(--color-accent-primary-strong)]"
-        >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 3L5 8l5 5" />
-          </svg>
-          {isHu ? "Vissza" : "Back"}
-        </Link>
-
-        <div className="mb-8">
-          <SectionEyebrow>
-            {isHu ? "tanácsadói felület" : "consultant workspace"}
-          </SectionEyebrow>
-          <h1 className="mt-1 font-fraunces text-3xl text-ink">
-            {isHu ? "Új ügyfél-szervezet" : "New client organization"}
-          </h1>
-          <p className="mt-2 text-sm text-ink-body">
-            {isHu
+          backLabel={isHu ? "Vissza a vezérlőre" : "Back to dashboard"}
+          eyebrow={isHu ? "tanácsadói felület" : "consultant workspace"}
+          title={isHu ? "Új ügyfél-szervezet" : "New client organization"}
+          description={
+            isHu
               ? "A szervezetbe tanácsadóként lépsz be. Ezután te hívod meg a tagokat, sorolod őket csapatokba és indítod a méréseket — az ügyfél admin később is csatlakozhat."
-              : "You join the organization as its consultant. You then invite members, assign them to teams and launch measurements — the client admin can join later."}
-          </p>
-        </div>
+              : "You join the organization as its consultant. You then invite members, assign them to teams and launch measurements — the client admin can join later."
+          }
+          className="mb-8"
+        />
 
         <NewClientOrgForm isHu={isHu} />
       </main>

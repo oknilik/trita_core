@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import {
+  EditorialBackControl,
+  EditorialBackHeader,
+} from "@/components/ui/primitives/EditorialBackHeader";
 
 describe("EditorialBackHeader", () => {
   it("a visszautat az editorial fejrészbe integrált linkként mutatja", () => {
@@ -45,5 +48,18 @@ describe("EditorialBackHeader", () => {
         name: "Minden részlet, tiszta fejezetekben.",
       }),
     ).toBeInTheDocument();
+  });
+
+  it("hero előtt önálló, feliratozott linkként is használható", () => {
+    render(
+      <EditorialBackControl
+        href="/org/acme?tab=campaigns"
+        backLabel="Vissza a szervezethez"
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Vissza a szervezethez" }),
+    ).toHaveAttribute("href", "/org/acme?tab=campaigns");
   });
 });

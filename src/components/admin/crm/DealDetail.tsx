@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/primitives/Button";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 import {
   DEAL_SOURCES,
   DEAL_SOURCE_LABELS,
@@ -137,12 +137,10 @@ export function DealDetail({
     <div className="flex flex-col gap-4">
       {/* ── Fejléc ─────────────────────────────────────────────────── */}
       <DashboardPanel className="p-5 md:p-6">
-        <Link
+        <EditorialBackControl
           href="/admin?tab=crm"
-          className="inline-flex min-h-[44px] items-center text-sm text-[var(--color-accent-primary-strong)] underline underline-offset-2"
-        >
-          ← CRM
-        </Link>
+          backLabel="Vissza a CRM-hez"
+        />
         <div className="mt-2 flex flex-wrap items-center gap-2">
           <SectionEyebrow>deal</SectionEyebrow>
           <StatusChip
