@@ -32,6 +32,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testIgnore: /\/mobile\//,
       use: {
         ...devices["Desktop Chrome"],
         // A célpont mindig a helyi dev-szerver — host-oldali proxy env
@@ -41,6 +42,38 @@ export default defineConfig({
         // Playwright által várt böngésző-build nincs letöltve, de egy másik
         // elérhető (a PLAYWRIGHT_BASE_URL mintájára). Üresen hagyva a
         // Playwright a saját letöltését használja — CI-ben ez a helyes.
+        launchOptions: {
+          args: ["--no-proxy-server"],
+          ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+            : {}),
+        },
+      },
+    },
+    {
+      name: "mobile-compact",
+      testMatch: /\/mobile\/.*\.test\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 360, height: 800 },
+        hasTouch: true,
+        isMobile: true,
+        launchOptions: {
+          args: ["--no-proxy-server"],
+          ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+            : {}),
+        },
+      },
+    },
+    {
+      name: "mobile-standard",
+      testMatch: /\/mobile\/.*\.test\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 390, height: 844 },
+        hasTouch: true,
+        isMobile: true,
         launchOptions: {
           args: ["--no-proxy-server"],
           ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
