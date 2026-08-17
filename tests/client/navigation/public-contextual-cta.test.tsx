@@ -1,4 +1,4 @@
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NavBar } from "@/components/NavBar";
 import { setSiteMode } from "@/components/landing/site-mode";
@@ -23,6 +23,7 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
     window.scrollTo = vi.fn();
+    Object.defineProperty(window, "scrollY", { configurable: true, writable: true, value: 0 });
     window.localStorage.clear();
   });
 
@@ -40,5 +41,25 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
 
     const teamCtas = screen.getAllByRole("link", { name: "Egyeztetek →" });
     expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
+  });
+
+  it("lefelé görgetve minimalizál, felfelé görgetve visszaáll", async () => {
+    render(<NavBar />);
+
+    const header = screen.getByTestId("public-nav-header");
+    expect(header).toHaveAttribute("data-compact", "false");
+
+    window.scrollY = 120;
+    fireEvent.scroll(window);
+    await waitFor(() => expect(header).toHaveAttribute("data-compact", "true"));
+
+    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
+    expect(header).toHaveAttribute("data-compact", "false");
+
+    fireEvent.click(screen.getByRole("button", { name: "Menü" }));
+
+    window.scrollY = 80;
+    fireEvent.scroll(window);
+    await waitFor(() => expect(header).toHaveAttribute("data-compact", "false"));
   });
 });

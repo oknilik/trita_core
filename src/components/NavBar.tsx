@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isConsultingLed } from "@/lib/operating-mode";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -89,14 +89,12 @@ function NavLink({
   return (
     <Link
       href={href}
+      aria-current={active ? "page" : undefined}
       className={[
-        "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-caption transition-all",
-        // Aktív állapot: accent-primary-STRONG a bronzon — a világosabb
-        // accent-primary a surface-subtle chipen csak 2.82:1 (13px szöveg,
-        // AA-bukó); a strong 5.27:1, ugyanabból a bronz-családból.
+        "inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption transition-[color,background-color,box-shadow]",
         active
-          ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-accent-primary-strong)]"
-          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-canvas)] hover:text-[var(--color-text-primary)]",
+          ? "bg-[var(--color-surface-inverse)] font-semibold text-[var(--color-text-on-inverse)] shadow-[0_3px_10px_rgba(26,26,46,0.14)]"
+          : "font-medium text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-card)] hover:text-[var(--color-text-primary)]",
       ].join(" ")}
     >
       {icon}
@@ -134,6 +132,8 @@ export function NavBar({
   const currentPath = usePathname();
   const siteMode = useSiteMode();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [headerMinimized, setHeaderMinimized] = useState(false);
+  const lastScrollY = useRef(0);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
   // a szerver "Kipróbálom"-ot, a kliens "Folytatom"-ot adott) — a landing
   // komponensek useEffect-mintáját követjük.
@@ -142,6 +142,46 @@ export function NavBar({
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasDraft(hasAssessmentDraftInStorage("TRITAN"));
   }, []);
+
+  // Kijelentkezett marketing-fejléc: lefelé görgetve halkul, felfelé azonnal
+  // visszatér. A teljes eltüntetés helyett desktopon a navigációs kapszula,
+  // mobilon a hamburger marad — így a lap nem veszít menekülőútvonalat.
+  useEffect(() => {
+    if (
+      isSignedIn ||
+      currentPath.startsWith("/try") ||
+      currentPath.startsWith("/assessment") ||
+      currentPath.startsWith("/share/")
+    ) return;
+
+    lastScrollY.current = window.scrollY;
+    let animationFrame: number | null = null;
+
+    const handleScroll = () => {
+      if (animationFrame !== null) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        const nextScrollY = window.scrollY;
+        const delta = nextScrollY - lastScrollY.current;
+
+        if (nextScrollY <= 32) {
+          setHeaderMinimized(false);
+        } else if (delta > 6) {
+          setHeaderMinimized(true);
+        } else if (delta < -6) {
+          setHeaderMinimized(false);
+        }
+
+        lastScrollY.current = nextScrollY;
+        animationFrame = null;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
+    };
+  }, [currentPath, isSignedIn]);
 
   // Hide on assessment/try pages (they have their own minimal nav)
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
@@ -153,6 +193,7 @@ export function NavBar({
     : hasDraft
       ? t("landing.selfCtaContinueShort", locale)
       : t("nav.ctaSelf", locale);
+  const isPublicHeaderCompact = !isSignedIn && headerMinimized && !drawerOpen;
 
   // A megosztott profil nem marketing-belépőoldal, hanem egy személyes
   // artefaktum. Itt a teljes navigáció elvinné a figyelmet a tartalomról;
@@ -239,20 +280,41 @@ export function NavBar({
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_3px_rgba(0,0,0,0.04)] backdrop-blur-[12px]">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5 lg:px-8">
+      <header
+        data-testid="public-nav-header"
+        data-compact={isPublicHeaderCompact ? "true" : "false"}
+        className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 motion-reduce:transition-none ${
+          isPublicHeaderCompact
+            ? "pointer-events-none border-b border-transparent bg-transparent shadow-none"
+            : "border-b border-[var(--color-border-soft)] bg-[var(--color-surface-header)]/95 shadow-[0_1px_4px_rgba(0,0,0,0.05)] backdrop-blur-[14px]"
+        }`}
+      >
+        <div
+          className={`mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center px-4 transition-[height] duration-200 motion-reduce:transition-none sm:px-5 lg:grid-cols-[1fr_auto_1fr] lg:px-8 ${
+            isPublicHeaderCompact ? "h-14" : "h-14 lg:h-[68px]"
+          }`}
+        >
 
           {/* ═══ LOGO ═══ */}
           <Link
             href={isSignedIn ? signedInHomeHref : "/"}
             aria-label="trita"
-            className="font-fraunces text-lg font-black tracking-[-0.03em] text-[var(--color-text-primary)]"
+            className={`font-fraunces justify-self-start text-[22px] font-black tracking-[-0.04em] text-[var(--color-text-primary)] transition-[opacity,transform] duration-200 motion-reduce:transition-none ${
+              isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "pointer-events-auto translate-y-0 opacity-100"
+            }`}
           >
             <span className="text-[var(--color-action-primary-bg)]">t</span>rit<span className="text-[var(--color-accent-primary)]">a</span>
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}
-          <nav className="hidden items-center gap-1 lg:flex">
+          <nav
+            aria-label={t("nav.menu", locale)}
+            className={`pointer-events-auto hidden items-center gap-1 rounded-[15px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-1 transition-shadow duration-200 motion-reduce:transition-none lg:flex lg:justify-self-center ${
+              isPublicHeaderCompact
+                ? "shadow-[0_10px_28px_rgba(26,26,46,0.13)]"
+                : "shadow-[0_1px_2px_rgba(26,26,46,0.04)]"
+            }`}
+          >
             {links.map((link) => {
               const Icon = LINK_ICONS[link.id] ?? HomeIcon;
               return (
@@ -268,7 +330,7 @@ export function NavBar({
           </nav>
 
           {/* ═══ RIGHT SIDE ═══ */}
-          <div className="flex items-center gap-2">
+          <div className="pointer-events-auto flex items-center gap-2 justify-self-end">
             {!isSignedIn && (
               <>
                 {/* Sign in — desktop only */}
@@ -280,7 +342,9 @@ export function NavBar({
                     bronz elsődlegessel világos párt alkot. */}
                 <Link
                   href="/sign-in"
-                  className="hidden rounded-lg border border-[var(--color-action-primary-bg)] bg-transparent px-4 py-[7px] text-caption font-medium text-[var(--color-accent-self-deep)] transition-all hover:bg-[var(--color-surface-self-accent-soft)] lg:inline-flex"
+                  className={`hidden min-h-10 items-center rounded-[11px] border border-[var(--color-action-primary-bg)] bg-transparent px-4 text-caption font-medium text-[var(--color-accent-self-deep)] transition-[opacity,transform,background-color] duration-200 hover:bg-[var(--color-surface-self-accent-soft)] motion-reduce:transition-none lg:inline-flex ${
+                    isPublicHeaderCompact ? "lg:pointer-events-none lg:-translate-y-2 lg:opacity-0" : "lg:translate-y-0 lg:opacity-100"
+                  }`}
                 >
                   {t("nav.signIn", locale)}
                 </Link>
@@ -292,7 +356,9 @@ export function NavBar({
                     CtaSection hover-színe), így az identitás megmarad. */}
                 <Link
                   href={publicCtaHref}
-                  className="rounded-lg bg-[var(--color-bronze-dark)] px-4 py-[7px] text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] lg:px-5 lg:py-2 lg:text-caption"
+                  className={`inline-flex min-h-10 items-center rounded-[11px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_3px_10px_rgba(139,82,48,0.16)] transition-[opacity,transform,filter] duration-200 hover:brightness-[1.06] motion-reduce:transition-none lg:px-5 lg:text-caption ${
+                    isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+                  }`}
                 >
                   {publicCtaLabel}
                 </Link>
@@ -302,10 +368,12 @@ export function NavBar({
             {isSignedIn && <UserMenu />}
 
             {/* Separator + Language — always visible */}
-            <div className="hidden h-5 w-px bg-[var(--color-border-default)] lg:block" />
-            <LanguageSwitcher />
+            <div className={`hidden h-5 w-px bg-[var(--color-border-default)] transition-opacity duration-200 lg:block ${isPublicHeaderCompact ? "opacity-0" : "opacity-100"}`} />
+            <div className={`hidden transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:block ${isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"}`}>
+              <LanguageSwitcher />
+            </div>
             {showThemeToggle ? (
-              <div className="hidden lg:block">
+              <div className={`hidden transition-[opacity,transform] duration-200 motion-reduce:transition-none lg:block ${isPublicHeaderCompact ? "pointer-events-none -translate-y-2 opacity-0" : "translate-y-0 opacity-100"}`}>
                 <ThemeToggle variant="compact" />
               </div>
             ) : null}
@@ -317,7 +385,12 @@ export function NavBar({
                 setDrawerOpen((v) => !v);
               }}
               aria-label={t("nav.menu", locale)}
-              className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-[var(--color-text-muted)] lg:hidden"
+              aria-expanded={drawerOpen}
+              className={`pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-[var(--color-text-muted)] transition-[background-color,box-shadow] duration-200 motion-reduce:transition-none lg:hidden ${
+                isPublicHeaderCompact
+                  ? "bg-[var(--color-surface-card)] shadow-[0_8px_24px_rgba(26,26,46,0.14)]"
+                  : "bg-[var(--color-surface-subtle)] shadow-none"
+              }`}
             >
               <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
                 {drawerOpen ? (
