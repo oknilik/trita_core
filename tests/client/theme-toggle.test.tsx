@@ -36,14 +36,15 @@ describe("ThemeToggle", () => {
     expect(setPreference).toHaveBeenCalledWith("dark");
   });
 
-  it("a footerben csendes, szöveges választóként jelenik meg", async () => {
+  it("a footerben csendes, ikonos választóként jelenik meg", async () => {
     const user = userEvent.setup();
     render(<ThemeToggle variant="footer" />);
 
     const group = screen.getByRole("radiogroup", { name: "Megjelenés" });
-    expect(group).toHaveTextContent("Rendszer");
-    expect(group).toHaveTextContent("Világos");
-    expect(group).toHaveTextContent("Sötét");
+    expect(group).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "Rendszer" })).toHaveAttribute("title", "Rendszer");
+    expect(screen.getByRole("radio", { name: "Világos" })).toHaveAttribute("title", "Világos");
+    expect(screen.getByRole("radio", { name: "Sötét" })).toHaveAttribute("title", "Sötét");
     expect(screen.getByRole("radio", { name: "Rendszer" })).toHaveAttribute(
       "aria-checked",
       "true",

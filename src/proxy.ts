@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { normalizeLocale } from "@/lib/i18n";
+import { DEFAULT_LOCALE } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { parkedPortfolioSurfaceForPath } from "@/lib/portfolio-parking";
 
@@ -120,10 +120,8 @@ const handler = clerkMiddleware(async (auth, req) => {
 
   const cookieLocale = req.cookies.get("trita_locale")?.value;
   if (!cookieLocale) {
-    const accept = req.headers.get("accept-language");
-    const locale = normalizeLocale(accept);
     const res = nextWithPathname(req);
-    res.cookies.set("trita_locale", locale, { path: "/", maxAge: 60 * 60 * 24 * 365 });
+    res.cookies.set("trita_locale", DEFAULT_LOCALE, { path: "/", maxAge: 60 * 60 * 24 * 365 });
     return res;
   }
 

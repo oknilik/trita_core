@@ -89,19 +89,9 @@ export function LocaleProvider({
     }
   }, [applyLocale, locale, refreshServer]);
 
-  useEffect(() => {
-    const hasLocalLocale = window.localStorage.getItem("trita_locale");
-    if (hasLocalLocale) return;
-    const browserLocale = normalizeLocale(
-      navigator.languages?.[0] ?? navigator.language
-    );
-    const next = browserLocale ?? locale;
-    const timer = setTimeout(() => {
-      applyLocale(next);
-      if (next !== locale) refreshServer();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [applyLocale, locale, refreshServer]);
+  // Nyelvi alapállapot: magyar, függetlenül a böngésző vagy a belépési
+  // forrás nyelvétől. Csak egy korábbi, tudatos választást veszünk át a
+  // localStorage-ból; új látogatónál a DEFAULT_LOCALE marad érvényben.
 
   // Szerver-oldali nyelv-szinkron: a DB a mérvadó a belépett usernek, a
   // getServerLocale() viszont csak a sütit látja — ezért egyszer le kell

@@ -165,29 +165,31 @@ export function ThemeToggle({
       <div
         role="radiogroup"
         aria-label={t("theme.label", locale)}
-        className={`flex items-center gap-2 text-[11px] text-[var(--color-text-on-inverse-muted)] ${className}`}
+        className={`flex items-center gap-1.5 text-[var(--color-text-on-inverse-muted)] ${className}`}
       >
-        <span className="mr-1 text-micro uppercase tracking-[0.14em] opacity-70">
+        <span className="mr-1.5 text-micro uppercase tracking-[0.14em] opacity-70">
           {t("theme.label", locale)}
         </span>
-        {THEME_PREFERENCES.map((option, index) => {
+        {THEME_PREFERENCES.map((option) => {
           const active = preference === option;
+          const OptionIcon = ICON[option];
+          const optionLabel = t(`theme.${option}`, locale);
           return (
-            <div key={option} className="contents">
-              {index > 0 ? <span aria-hidden="true" className="opacity-40">·</span> : null}
-              <button
-                type="button"
-                role="radio"
-                aria-checked={active}
-                onClick={() => setPreference(option)}
-                className={`rounded px-1 py-1 transition-colors hover:text-[var(--color-text-on-inverse)] ${active
-                  ? "font-semibold text-[var(--color-text-on-inverse)]"
-                  : "text-[var(--color-text-on-inverse-muted)]"
-                }`}
-              >
-                {t(`theme.${option}`, locale)}
-              </button>
-            </div>
+            <button
+              key={option}
+              type="button"
+              role="radio"
+              aria-label={optionLabel}
+              aria-checked={active}
+              title={optionLabel}
+              onClick={() => setPreference(option)}
+              className={`flex h-10 w-10 items-center justify-center rounded-lg border transition-[color,background-color,border-color] ${active
+                ? "border-[var(--color-text-on-inverse)]/20 bg-[var(--color-text-on-inverse)]/10 text-[var(--color-text-on-inverse)]"
+                : "border-transparent text-[var(--color-text-on-inverse-muted)] hover:border-[var(--color-text-on-inverse)]/10 hover:bg-[var(--color-text-on-inverse)]/5 hover:text-[var(--color-text-on-inverse)]"
+              }`}
+            >
+              <OptionIcon className="h-[18px] w-[18px]" />
+            </button>
           );
         })}
       </div>
