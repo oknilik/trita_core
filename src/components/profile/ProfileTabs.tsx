@@ -46,6 +46,7 @@ import type { JourneyExperienceHints } from "@/lib/journey/types";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 import { track } from "@/lib/analytics/client";
 import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import type { InteractionEntryPreview } from "@/components/results/InteractionEntryCard";
 
 type ProfileLevel = "start" | "plus";
 export type ProfileViewId = "summary" | "details" | "comparison";
@@ -211,6 +212,8 @@ export interface ProfileTabsProps {
   /** Interakció-szimuláció: mind a 30 archetípus, szerver-oldalon számolva. */
   experienceHints?: JourneyExperienceHints;
   experienceHintDestination?: string;
+  /** A kiemelt páros belépőkártya állapota az összképben. */
+  interactionEntry: InteractionEntryPreview;
   /** Szerver-oldalon számolt karrier-illeszkedés (motor v2) */
   careerResult?: CareerResultView | null;
   /** Kérdőív-forma a karrier-modul konfidencia-sávjához. */
@@ -578,6 +581,7 @@ export function ProfileTabs({
   careerModuleHidden = false,
   experienceHints,
   experienceHintDestination,
+  interactionEntry,
   careerResult = null,
   teamRoleMeasuredScores = null,
   teamRolePeer = null,
@@ -945,6 +949,8 @@ export function ProfileTabs({
             hasObserverData={hasObserverData}
             experienceHints={experienceHints}
             experienceHintDestination={experienceHintDestination}
+            interactionEntry={interactionEntry}
+            personalityType={personalityType ?? t("content.personalityProfileFallback", locale)}
             clarityFeedbackSubmitted={clarityFeedbackSubmitted}
             onOpenDetails={() => handleTabChange("details")}
             onOpenComparison={() => handleTabChange("comparison")}
@@ -1025,34 +1031,25 @@ export function ProfileTabs({
                 },
               ]}
             />
-            {/* Átvezetők a különvált modulokra. A riport végén állnak: aki
-                idáig eljutott, annak ez a következő logikus lépés. */}
-            <details
-              onToggle={(event) => {
-                if (event.currentTarget.open) track("results.section_open", { section: "extensions" });
-              }}
-              className="rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
-            >
-              <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
-                <p className="font-fraunces text-xl text-ink">{t("results.detailsExtensionsTitle", locale)}</p>
-                <p className="mt-1 text-xs leading-relaxed text-muted">{t("results.detailsExtensionsBody", locale)}</p>
-              </summary>
-              <div className="flex flex-col gap-3 border-t border-[var(--color-border-soft)] p-4 md:p-5">
-                <SectionCta
-                  eyebrow={t("results.ctaInteractionEyebrow", locale)}
-                  title={t("results.ctaInteractionTitle", locale)}
-                  body={t("results.ctaInteractionBody", locale)}
-                  cta={t("results.ctaInteractionButton", locale)}
-                  href="/interaction"
-                  motif="pair"
-                />
-              {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
-                  működő iránytűre visz, amíg nincs kész, a kereslet-mérő
-                  oldalra. A `from=results` a mérésben a belépési pontot
-                  jelöli — a riportból érkező szándéka mást ér, mint a
-                  közvetlen látogatóé. */}
-              {!careerModuleHidden &&
-                (CAREER_MODULE_READY ? (
+            {/* A páros összehasonlítás már az első összkép után kap kiemelt
+                belépőt. A riport végén csak a külön karriermodul marad, így
+                ugyanazt a funkciót nem kínáljuk fel kétszer. */}
+            {!careerModuleHidden ? (
+              <details
+                onToggle={(event) => {
+                  if (event.currentTarget.open) track("results.section_open", { section: "extensions" });
+                }}
+                className="rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card"
+              >
+                <summary className="min-h-[64px] cursor-pointer list-none px-5 py-4 [&::-webkit-details-marker]:hidden">
+                  <p className="font-fraunces text-xl text-ink">{t("results.detailsExtensionsTitle", locale)}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">{t("results.detailsExtensionsBody", locale)}</p>
+                </summary>
+                <div className="flex flex-col gap-3 border-t border-[var(--color-border-soft)] p-4 md:p-5">
+                  {/* A karrier-átvezető két alakot vehet fel: kész modulnál a
+                      működő iránytűre visz, amíg nincs kész, a kereslet-mérő
+                      oldalra. */}
+                  {CAREER_MODULE_READY ? (
                   <SectionCta
                     eyebrow={t("results.ctaCareerEyebrow", locale)}
                     title={t("results.ctaCareerTitle", locale)}
@@ -1070,9 +1067,10 @@ export function ProfileTabs({
                     href="/career?from=results"
                     motif="compass"
                   />
-                ))}
-              </div>
-            </details>
+                  )}
+                </div>
+              </details>
+            ) : null}
             <FeedbackForm
               initialSubmitted={feedbackSubmitted}
               hasObserverFeedback={hasObserverData}

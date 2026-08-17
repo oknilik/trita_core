@@ -70,4 +70,20 @@ describe("InteractionComparisonChooser", () => {
 
     expect(screen.getByTestId("real-person-route")).toBeInTheDocument();
   });
+
+  it("a belépőkártya URL-je felülírhatja az adat alapú kezdő utat", () => {
+    render(
+      <InteractionComparisonChooser
+        invites={[]}
+        simulations={[]}
+        initialRoute="real"
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: /Valódi személlyel/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    expect(screen.getByTestId("real-person-route")).toBeInTheDocument();
+  });
 });

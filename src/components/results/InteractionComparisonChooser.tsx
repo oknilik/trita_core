@@ -14,6 +14,7 @@ interface InteractionComparisonChooserProps {
   simulations: ArchetypeSimulationView[];
   selfLabel?: string;
   selfGlyph?: { primaryCode: string; secondaryCode: string; intensity: number };
+  initialRoute?: ComparisonRoute;
 }
 
 function PeopleIcon() {
@@ -58,6 +59,7 @@ export function InteractionComparisonChooser({
   simulations,
   selfLabel,
   selfGlyph,
+  initialRoute,
 }: InteractionComparisonChooserProps) {
   const { locale } = useLocale();
   // A default az ADAT alapján dől el, nem elvi sorrend szerint: akinek van
@@ -67,7 +69,7 @@ export function InteractionComparisonChooser({
   // marad meg.
   const hasAcceptedInvite = invites.some((inv) => inv.state === "ACCEPTED");
   const [route, setRoute] = useState<ComparisonRoute>(
-    hasAcceptedInvite ? "real" : "type",
+    initialRoute ?? (hasAcceptedInvite ? "real" : "type"),
   );
 
   const choices: Array<{

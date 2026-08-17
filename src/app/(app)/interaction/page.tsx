@@ -198,6 +198,7 @@ export default async function InteractionPage({
   // a szerveren maradnak — a kliens a szimuláció szövegét + a glyph-párt kapja.
   const sp = (await searchParams) ?? {};
   const pairId = typeof sp.pair === "string" ? sp.pair : null;
+  const initialRoute = sp.mode === "real" || sp.mode === "type" ? sp.mode : undefined;
   let pairView: {
     self: PairGlyphInfo;
     other: PairGlyphInfo;
@@ -282,6 +283,7 @@ export default async function InteractionPage({
           simulations={simulations}
           selfLabel={personalityType ?? undefined}
           selfGlyph={selfGlyph ?? undefined}
+          initialRoute={initialRoute}
         />
       )}
     </PlatformPageShell>

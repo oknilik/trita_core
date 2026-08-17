@@ -209,3 +209,27 @@ motor-kimeneten futnak, nem fixture-ön.
 `tests/unit/platform/interaction-view.test.ts` — mindkét vezető-irány elő van
 számolva minden archetípusra, és a self-irány (ami csak a saját profiltól függ)
 mind a 30-nál azonos.
+
+## 9. A páros összehasonlítás az első összképben kap belépőt
+
+A funkció korábban csak a részletes riport legvégén, egy összecsukott
+„További felfedezési irányok" blokkban jelent meg. A felhasználó így könnyen
+végigolvashatta az eredményét anélkül, hogy észrevette volna a teljes páros
+összehasonlítást.
+
+Az összkép három fő felismerése után most egy teljes szélességű, sötét
+„Közös működés" kártya következik, még a részletes riport és a külső nézőpont
+előtt. A kártya állapotérzékeny:
+
+- új felhasználónál külön valódi személyes és karakteres belépőt ad;
+- függő meghívásnál névvel jelzi, kinek a válaszára vár;
+- elfogadott kapcsolatnál közvetlenül a kész közös képet nyitja, és csak a
+  partner glyph-jét küldi a kliensre, a pontszámait nem.
+
+A két CTA a `/interaction?mode=real|type` paraméterrel a megfelelő chooser-
+utat nyitja meg. A riport aljáról a páros CTA kikerült, hogy a funkció ne
+duplikálódjon; ott csak a karrier-átvezető marad.
+
+Tesztek: `interaction-entry-card.test.tsx` mindhárom állapotot és a cél-URL-eket,
+az `interaction-comparison-chooser.test.tsx` pedig az URL által választott
+kezdő utat ellenőrzi.
