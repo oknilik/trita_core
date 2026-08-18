@@ -55,7 +55,7 @@ export const commonTranslations = {
     ctaSelf: { hu: "Kipróbálom →", en: "Try it →" },
     /** A megosztott profil (/share/[token]) minimál fejlécének egyetlen CTA-ja. */
     ctaSharedOwnProfile: { hu: "Saját profil készítése", en: "Create my profile" },
-    ctaTeam: { hu: "Egyeztetek →", en: "Talk to us →" },
+    ctaTeam: { hu: "Pilotprogram →", en: "Pilot program →" },
     modeSelf: { hu: "Egyéneknek", en: "For individuals" },
     modeTeam: { hu: "Csapatoknak", en: "For teams" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },

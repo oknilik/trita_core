@@ -328,9 +328,12 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
-            <div className={`${riseIn} mb-4`} style={{ animationDelay: "0.1s" }}>
+            <div
+              className={`${riseIn} mb-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center`}
+              style={{ animationDelay: "0.1s" }}
+            >
               <Link
-                href={isSelf ? "/try" : "/contact"}
+                href={isSelf ? "/try" : "/pilot"}
                 // P2: a hero elsődleges CTA-ja módonként külön mérve — ebből
                 // derül ki, melyik ígéret működik.
                 onClick={() =>
@@ -355,6 +358,21 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 </span>
                 <span aria-hidden="true">→</span>
               </Link>
+              {!isSelf ? (
+                <Link
+                  href="/contact"
+                  onClick={() =>
+                    track("cta.click", {
+                      cta_id: "hero_secondary",
+                      surface: "landing",
+                      mode: "team",
+                    })
+                  }
+                  className={`inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
+                >
+                  {t("landing.teamSecondaryCta", locale)}
+                </Link>
+              ) : null}
             </div>
 
             {isSelf ? (
@@ -393,23 +411,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
 
         </div>
 
-        {!isSelf ? (
-          <div
-            className={`${riseIn} mt-5 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3`}
-            style={{ animationDelay: "0.25s" }}
-          >
-            <span className="text-micro font-bold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
-              {t("landing.teamPilotLabel", locale)}
-            </span>
-            <Link
-              href="/pilot"
-              onClick={() => track("cta.click", { cta_id: "hero_pilot", surface: "landing", mode: "team" })}
-              className={`inline-flex min-h-11 items-center rounded-lg pr-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-layer-team-accent)] ${FOCUS_RING_CLASS}`}
-            >
-              {t("landing.teamPilotTitle", locale)}&nbsp;→
-            </Link>
-          </div>
-        ) : null}
       </div>
     </section>
   );

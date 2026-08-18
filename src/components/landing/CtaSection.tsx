@@ -16,61 +16,85 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { setHasDraft(hasAssessmentDraftInStorage("TRITAN")); }, []);
 
-  const headlineBefore = isSelf
-    ? t("landing.ctaSelfHeadlineBefore", locale)
-    : t("landing.ctaTeamHeadlineBefore", locale);
-  const headlineEm = isSelf
-    ? t("landing.ctaSelfHeadlineEm", locale)
-    : t("landing.ctaTeamHeadlineEm", locale);
-  const sub = isSelf ? t("landing.ctaSelfSub", locale) : t("landing.ctaTeamSub", locale);
-  const cta = isSelf
-    ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.ctaSelfCta", locale))
-    : t("landing.ctaTeamCta", locale);
-  const microcopy = isSelf ? t("landing.ctaSelfMicrocopy", locale) : t("landing.ctaTeamMicrocopy", locale);
-  const ctaHref = isSelf ? "/try" : "/contact";
-  const secondaryHref = isSelf ? "/how-we-work" : "/try";
-  const secondaryLabel = isSelf
-    ? t("landing.ctaSelfSecondary", locale)
-    : t("landing.ctaTeamSecondary", locale);
+  if (!isSelf) {
+    return (
+      <section className="px-7 py-16 md:py-24">
+        <div className="mx-auto flex max-w-[960px] flex-col gap-6 rounded-2xl bg-[var(--color-surface-muted)] px-6 py-8 md:flex-row md:items-center md:justify-between md:px-9">
+          <div className="max-w-[610px]">
+            <h2 className="font-fraunces text-fluid-title font-medium tracking-tight text-ink">
+              {t("landing.ctaTeamHeadlineBefore", locale)}
+              <em className="italic text-[var(--color-layer-team-accent)]">
+                {t("landing.ctaTeamHeadlineEm", locale)}
+              </em>
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-ink-body">
+              {t("landing.ctaTeamSub", locale)}
+            </p>
+            <p className="mt-2 font-dm-sans text-xs text-ink-body/60">
+              {t("landing.ctaTeamMicrocopy", locale)}
+            </p>
+          </div>
+          <Link
+            href="/pilot"
+            onClick={() =>
+              track("cta.click", {
+                cta_id: "closing",
+                surface: "landing",
+                mode: "team",
+              })
+            }
+            className={`inline-flex min-h-[54px] shrink-0 items-center justify-center rounded-xl bg-[var(--color-layer-team-hero-from)] px-7 text-base font-semibold text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-md)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-[var(--ui-shadow-lg)] ${FOCUS_RING_CLASS}`}
+          >
+            {t("landing.ctaTeamCta", locale)}
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
+  const cta = hasDraft
+    ? t("landing.selfCtaContinue", locale)
+    : t("landing.ctaSelfCta", locale);
 
   return (
     <section className="px-7 py-16 md:py-24">
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
-          {headlineBefore}
-          <em
-            className="italic"
-            style={{ color: isSelf ? "var(--color-accent-primary)" : "var(--color-action-primary-bg)" }}
-          >
-            {headlineEm}
+          {t("landing.ctaSelfHeadlineBefore", locale)}
+          <em className="italic text-[var(--color-accent-primary)]">
+            {t("landing.ctaSelfHeadlineEm", locale)}
           </em>
         </h2>
-        <p className="mb-9 text-base leading-relaxed text-ink-body">{sub}</p>
+        <p className="mb-9 text-base leading-relaxed text-ink-body">
+          {t("landing.ctaSelfSub", locale)}
+        </p>
         <div className="flex flex-col items-stretch gap-2.5 sm:items-center">
           <Link
-            href={ctaHref}
+            href="/try"
             onClick={() =>
               track("cta.click", {
                 cta_id: "closing",
                 surface: "landing",
-                mode: isSelf ? "self" : "team",
+                mode: "self",
               })
             }
             className={[
               "inline-flex min-h-[54px] items-center justify-center rounded-xl px-9 text-[17px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:-translate-y-0.5 hover:shadow-lg",
-              isSelf ? "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]" : "bg-[var(--color-action-primary-bg)] hover:bg-[var(--color-sage-dark)]",
+              "bg-[var(--color-bronze-dark)] hover:bg-[var(--color-accent-primary-strong)]",
             ].join(" ")}
           >
             {cta}
           </Link>
           <Link
-            href={secondaryHref}
+            href="/how-we-work"
             className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
           >
-            {secondaryLabel}
+            {t("landing.ctaSelfSecondary", locale)}
           </Link>
         </div>
-        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">{microcopy}</p>
+        <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">
+          {t("landing.ctaSelfMicrocopy", locale)}
+        </p>
       </div>
     </section>
   );

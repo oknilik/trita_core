@@ -136,7 +136,7 @@ export function NavBar({
   if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
 
   const isTeamLanding = currentPath === "/" && siteMode === "team";
-  const publicCtaHref = isTeamLanding ? "/contact" : "/try";
+  const publicCtaHref = isTeamLanding ? "/pilot" : "/try";
   const publicCtaLabel = isTeamLanding
     ? t("nav.ctaTeam", locale)
     : hasDraft
