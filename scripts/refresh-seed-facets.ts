@@ -63,6 +63,7 @@ const clamp = (value: number) => Math.max(0, Math.min(100, value));
 
 type Shape =
   | "nincs facet-bontás"
+  | "csak kiegészítő skála (nincs fő dim.)"
   | "régi fix eltolás-minta"
   | "már az új minta"
   | "egyéb (pl. véletlen értékek)";
@@ -80,7 +81,8 @@ async function main() {
   // A prisma-kliens modul-szinten olvassa a DATABASE_URL-t, ezért csak az
   // env betöltése UTÁN importálható.
   const { PrismaClient } = await import("@prisma/client");
-  const { HEXACO_DIMENSION_FACETS } = await import("@/lib/hexaco");
+  const { HEXACO_DIMENSION_FACETS, LEGACY_DIM_CODE_MAP, ALTRUISM_CODE } =
+    await import("@/lib/hexaco");
   const { extractDimensionScores, extractFacetScores } = await import("@/lib/scoring");
   const { buildFacets } = await import("./personas.shared");
 
@@ -104,11 +106,18 @@ async function main() {
     return matched > 0;
   };
 
+  const isMainDim = (key: string): boolean => key in HEXACO_DIMENSION_FACETS;
+
   const classify = (
     dims: Record<string, number>,
     facets: Record<string, Record<string, number>> | undefined,
   ): Shape => {
     if (!facets || Object.keys(facets).length === 0) return "nincs facet-bontás";
+    // A kiegészítő altruizmus-skála (I) ÖNMAGÁBAN nem facet-bontás: a
+    // felületek a hat fő dimenzió alskáláiból dolgoznak.
+    if (!Object.keys(facets).some(isMainDim)) {
+      return "csak kiegészítő skála (nincs fő dim.)";
+    }
     if (matchesOffsets(dims, facets, (base, i) => clamp(base + LEGACY_OFFSETS[i % 4]))) {
       return "régi fix eltolás-minta";
     }
@@ -128,6 +137,7 @@ async function main() {
   let realFills = 0;
   let unknownOrigin = 0;
   let unreadableDims = 0;
+  let altruismKept = 0;
   const byShape = new Map<Shape, number>();
   const byKeyStyle = new Map<string, number>();
   const targets: Array<{ id: string; facets: Record<string, Record<string, number>> }> = [];
@@ -158,13 +168,22 @@ async function main() {
     const facets = scores.facets as Record<string, Record<string, number>> | undefined;
     // A facet-map KÜLSŐ kulcsa lehet örökség-kód (INTE/RESO/…) is — a
     // felismerés enélkül „egyéb"-nek látná a szabályos régi mintát is.
-    const keyStyle = !facets || Object.keys(facets).length === 0
-      ? "nincs"
-      : Object.keys(facets).every((key) => key in HEXACO_DIMENSION_FACETS)
-        ? "HEXACO (H/E/X/A/C/O)"
-        : Object.keys(facets).some((key) => key in HEXACO_DIMENSION_FACETS)
+    const keys = facets ? Object.keys(facets) : [];
+    const legacyKeys = keys.filter((key) => key in LEGACY_DIM_CODE_MAP);
+    // A kiegészítő `I` skála KANONIKUS kulcs — nem teszi a sort örökségivé.
+    const canonicalKeys = keys.filter(
+      (key) => isMainDim(key) || key === ALTRUISM_CODE,
+    );
+    const keyStyle =
+      keys.length === 0
+        ? "nincs"
+        : legacyKeys.length > 0 && canonicalKeys.length > 0
           ? "vegyes"
-          : "örökség (INTE/RESO/…)";
+          : legacyKeys.length > 0
+            ? "örökség (INTE/RESO/…)"
+            : canonicalKeys.length === keys.length
+              ? "kanonikus (HEXACO + I)"
+              : "ismeretlen kulcsok";
     byKeyStyle.set(keyStyle, (byKeyStyle.get(keyStyle) ?? 0) + 1);
 
     // Az ALAK felismerése a KANONIKUS olvasóból megy: az örökség-kulcsos
@@ -175,19 +194,28 @@ async function main() {
     if (shape === "már az új minta") continue;
 
     const fresh = buildFacets(dims as Record<string, number>);
-    targets.push({ id: row.id, facets: fresh });
+    // ÖSSZEFÉSÜLÉS, nem csere: a hat fő dimenzió alskálái újraszámolódnak, de
+    // ami ezen kívül van (a kiegészítő `I`/altruizmus skála), az megmarad —
+    // és a kulcsok közben kanonikusra fordulnak (INTE → H).
+    const merged = { ...(normalizedFacets ?? {}), ...fresh };
+    if (normalizedFacets && ALTRUISM_CODE in normalizedFacets) altruismKept++;
+    targets.push({ id: row.id, facets: merged });
 
     if (!sample) {
       // A példa ahhoz a dimenzióhoz szól, amelyikre a sorban VAN adat —
       // különben a „(nincs)" csak a kulcs-stílus eltérését mutatná.
-      const storedDim = facets ? Object.keys(facets)[0] : undefined;
-      const freshDim = Object.keys(fresh)[0];
+      // Lehetőleg FŐ dimenziós bejegyzést mutatunk — az altruizmus-sor
+      // önmagában nem árulja el, mi változik.
+      const storedDim =
+        Object.keys(normalizedFacets ?? {}).find(isMainDim) ??
+        (facets ? Object.keys(facets)[0] : undefined);
+      const freshDim = storedDim && isMainDim(storedDim) ? storedDim : Object.keys(fresh)[0];
       sample = {
         shape,
         before: storedDim
-          ? `${storedDim}: ${JSON.stringify(facets?.[storedDim])}`
+          ? `${storedDim}: ${JSON.stringify((normalizedFacets ?? facets)?.[storedDim])}`
           : "(nincs facet-bontás)",
-        after: `${freshDim}: ${JSON.stringify(fresh[freshDim])}`,
+        after: `${freshDim}: ${JSON.stringify(merged[freshDim])}`,
       };
     }
   }
@@ -209,6 +237,9 @@ async function main() {
     console.log(`      ${shape.padEnd(32)} ${count}`);
   }
   console.log(`\n  ÚJRASZÁMOLANDÓ: ${targets.length}`);
+  if (altruismKept > 0) {
+    console.log(`  (ebből ${altruismKept} sorban a kiegészítő altruizmus-skála MEGMARAD)`);
+  }
 
   if (sample) {
     console.log(`\n  Példa (${sample.shape}) — egy dimenzió facetjei:`);
