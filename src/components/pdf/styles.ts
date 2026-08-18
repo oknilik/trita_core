@@ -112,8 +112,16 @@ export const s = StyleSheet.create({
     padding: "20 32 14 32",
     borderBottom: `1 solid ${colors.sand}`,
   },
+  // A kártya-közöket a KONTÉNER gap-je adja, nem a kártyák marginBottom-ja.
+  // Ok: az utolsó kártya alsó margója túllóghat a tartalom-dobozon (a törzs
+  // 795 pt-nál ér véget, +12 pt margó = 808 = a doboz alja), és a react-pdf
+  // ilyenkor ÜRES folytatás-oldalt nyit — a szemmel látható hézag miatt
+  // indokolatlannak tűnő lebegő lap. Gap-pel az utolsó elem után nincs margó.
   body: {
     padding: "8 32 0 32",
+    display: "flex",
+    flexDirection: "column",
+    gap: cardShape.gap,
   },
   // Fehér kártya — az élő felület Card/DashboardPanel megfelelője.
   card: {
@@ -121,7 +129,6 @@ export const s = StyleSheet.create({
     borderRadius: cardShape.radius,
     border: `1 solid ${colors.sand}`,
     padding: cardShape.padding,
-    marginBottom: cardShape.gap,
   },
   // Kártya-fejléc: bronz vonal-jelzés + eyebrow (DashboardSectionHeader).
   cardEyebrowRow: {

@@ -44,9 +44,17 @@ export function PdfSectionHeader({
   );
 }
 
-// Alapértelmezetten wrap={false}: egy kártya (összetartozó blokk) nem
-// törik ketté oldalhatáron — ha nem fér ki, egyben csúszik a következő
-// oldalra. Több oldalt igénylő, hosszú tartalomnál wrap={true} kérhető.
+// Alapértelmezetten wrap={false}: egy kártya (összetartozó blokk) nem törik
+// ketté oldalhatáron — ha nem fér ki, EGYBEN csúszik a következő oldalra.
+//
+// Ez nem csak esztétika: a react-pdf a törhető konténernél a fejlécet még
+// kirakja a lap aljára, a tartalmat viszont már a következőre viszi
+// (`shouldBreak`: törhető gyereknél a `minPresenceAhead` nem érvényesül), így
+// árva, üres kártyahéj marad a lap alján. A riport minden kártyája bőven egy
+// lapnál kisebb, ezért a helyes viselkedés az egészben-lecsúszás.
+//
+// `wrap={true}` CSAK olyan blokknál indokolt, amely önmagában meghaladhat egy
+// teljes lapot — ilyen jelenleg nincs a riportban.
 export function PdfCard({
   eyebrow,
   title,

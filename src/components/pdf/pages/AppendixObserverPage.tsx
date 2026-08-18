@@ -78,7 +78,7 @@ export function AppendixObserverPage({ model }: { model: ProfileReportViewModel 
           description={t("pdf.appendixObserverNote", locale)}
         />
 
-        <PdfCard eyebrow={t("pdf.selfVsFeedback", locale)} wrap>
+        <PdfCard eyebrow={t("pdf.selfVsFeedback", locale)}>
           <PdfCalloutBox variant="sage">
             <Text style={{ fontSize: type.body, color: colors.sageDark, lineHeight: type.lineHeight.body }}>
               {summarySentence}
@@ -98,7 +98,7 @@ export function AppendixObserverPage({ model }: { model: ProfileReportViewModel 
           <PdfComparisonBars dimensions={observer.dimensions} locale={locale} />
         </PdfCard>
 
-        <PdfCard wrap>
+        <PdfCard>
           <PdfBlindspots blindspots={blindspots} noBlindspots={noBlindspots} locale={locale} />
         </PdfCard>
 

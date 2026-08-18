@@ -29,7 +29,7 @@ export function PdfChapterHeader({
   numberIsLabel = false,
 }: PdfChapterHeaderProps) {
   return (
-    <View wrap={false} style={{ marginBottom: 16 }}>
+    <View wrap={false}>
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
         <Text
           style={{

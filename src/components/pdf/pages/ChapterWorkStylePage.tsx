@@ -51,7 +51,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
         {/* Ideális környezet — a webes IdealEnvironmentSection; a PdfData
             korábban elejtette ezt a szekciót (P0/4). */}
         {workstyle.envItems.length > 0 ? (
-          <PdfCard eyebrow={t("pdf.idealEnvironment", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.idealEnvironment", locale)}>
             <PdfIdealEnvironment items={workstyle.envItems} locale={locale} />
             <Text style={{ ...s.caption, marginTop: 10 }}>
               {t("pdf.idealEnvironmentNote", locale)}
@@ -60,7 +60,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
         ) : null}
 
         {workstyle.roleFit ? (
-          <PdfCard eyebrow={t("pdf.roleFit", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.roleFit", locale)}>
             <PdfRoleFit roleFit={workstyle.roleFit} locale={locale} />
           </PdfCard>
         ) : null}

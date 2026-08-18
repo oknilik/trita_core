@@ -22,43 +22,9 @@
 import { execFileSync } from "node:child_process";
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { Font, renderToFile } from "@react-pdf/renderer";
-import React from "react";
 
 import { buildPdfScenarios } from "./pdf-report-scenarios";
-import { TritaReportDocument } from "../src/components/pdf/TritaPdf";
-
-// ─── Fontok: a styles.ts /fonts/-ra regisztrál (böngésző-origin) — node-ban
-//     abszolút fájlútra kell átregisztrálni, hogy a render ne bukjon el. ─────
-const FONT_DIR = join(process.cwd(), "public", "fonts");
-Font.clear();
-Font.register({
-  family: "Fraunces",
-  fonts: [
-    { src: join(FONT_DIR, "Fraunces-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "Fraunces-SemiBold.ttf"), fontWeight: 600 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontStyle: "italic" },
-  ],
-});
-Font.register({
-  family: "DM Sans",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-Medium.ttf"), fontWeight: 500 },
-    { src: join(FONT_DIR, "DMSans-SemiBold.ttf"), fontWeight: 600 },
-  ],
-});
-// Font.clear() a beépített Helvetica-fallbacket is törli — pótoljuk, hogy egy
-// variáns se hiányozzon (magyar glyphek, normal + italic).
-Font.register({
-  family: "Helvetica",
-  fonts: [
-    { src: join(FONT_DIR, "DMSans-Regular.ttf"), fontWeight: 400 },
-    { src: join(FONT_DIR, "DMSans-SemiBold.ttf"), fontWeight: 700 },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 400, fontStyle: "italic" },
-    { src: join(FONT_DIR, "Fraunces-Italic.ttf"), fontWeight: 700, fontStyle: "italic" },
-  ],
-});
+import { findBlankPages, renderReportBuffer } from "./pdf-report-render";
 
 function parseArgs(): Record<string, string> {
   const args = process.argv.slice(2);
@@ -118,22 +84,45 @@ async function main() {
     );
   }
 
-  const manifest: { id: string; covers: string; pdf: string }[] = [];
+  const manifest: { id: string; covers: string; pdf: string; pages: number }[] = [];
+  const blankPageFailures: string[] = [];
 
   for (const scenario of scenarios) {
     const pdfPath = join(outDir, `${scenario.id}.pdf`);
-    await renderToFile(<TritaReportDocument data={scenario.input} />, pdfPath);
-    manifest.push({ id: scenario.id, covers: scenario.covers, pdf: `${scenario.id}.pdf` });
+    const buffer = await renderReportBuffer(scenario.input);
+    writeFileSync(pdfPath, buffer);
+
+    // Üres, „lebegő" lap őre: ha egy elem alsó margója éppen túllóg a
+    // tartalom-dobozon, a react-pdf tartalom nélküli folytatás-lapot nyit.
+    const blanks = findBlankPages(buffer);
+    if (blanks.length > 0) {
+      blankPageFailures.push(`${scenario.id}: ${blanks.map((i) => `#${i}`).join(", ")}`);
+    }
+
+    manifest.push({
+      id: scenario.id,
+      covers: scenario.covers,
+      pdf: `${scenario.id}.pdf`,
+      pages: (buffer.toString("latin1").match(/\/Type\s*\/Page\b/g) ?? []).length,
+    });
 
     if (rasterizer) {
       execFileSync(rasterizer, ["-png", "-r", String(dpi), pdfPath, join(outDir, scenario.id)], {
         stdio: "pipe",
       });
     }
-    console.log(`  ✓ ${scenario.id} — ${scenario.covers}`);
+    console.log(`  ${blanks.length > 0 ? "✗" : "✓"} ${scenario.id} — ${scenario.covers}`);
   }
 
   writeFileSync(join(outDir, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+
+  if (blankPageFailures.length > 0) {
+    console.error(
+      `\n❌  Üres (tartalom nélküli) lap a riportban:\n   ${blankPageFailures.join("\n   ")}`,
+    );
+    process.exit(1);
+  }
+
   console.log(`🎉  Kész: ${outDir} (${scenarios.length} forgatókönyv)`);
 }
 

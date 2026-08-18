@@ -130,6 +130,29 @@ mellékletre.
 `PdfWordmark` / `PdfChapterHeader` / `PdfDimensionDetail` /
 `PdfIdealEnvironment` / `PdfTypeGlyph` építőelemek.
 
+## Tördelési javítások (éles riport-visszajelzés)
+
+Egy valódi Plus riport két hibát hozott vissza:
+
+**1. Üresen lebegő lap.** Az utolsó kártya `marginBottom`-ja éppen túllógott a
+tartalom-dobozon — a törzs 795,9 pt-nál ért véget, +12 pt margó = 808 pt = a
+doboz alja —, és a react-pdf tartalom nélküli folytatás-lapot nyitott: csak a
+fixed fejléc és lábléc látszott rajta. A kártya-közöket innentől a KONTÉNER
+`gap`-je adja (`styles.ts` → `s.body`), így az utolsó elem után nincs margó,
+ami túllóghatna. A hiba ezzel szerkezetileg kizárt, nem csak eltalált.
+
+**2. Árva kártyafejléc.** Egy törhető (`wrap`) kártya fejléce még kifért a lap
+aljára, a tartalma viszont már a következőre került — üres kártyahéj maradt a
+lap alján. A react-pdf a törhető gyereknél a `minPresenceAhead` orphan-védelmet
+NEM alkalmazza (`shouldBreak`: `shouldSplit && canWrap` ágon a jelenlét-
+számítás ki sem fut), tehát konténer-szinten nincs mód a fejléc megtartására.
+A riport minden kártyája bőven egy lapnál kisebb, ezért a helyes viselkedés az,
+hogy a kártya EGYBEN csúszik a következő lapra — a `wrap` mind a kilenc
+hívási helyről kivezetve.
+
+Mellékesen: a 02 fejezet záró blokkjai (kiegészítő skála + kulcstanulságok)
+egy nem törhető csoportba kerültek, így nem sodródik szét a fejezetzárás.
+
 ## Regressziós készlet
 
 `pnpm report:pdf-snapshots` — 11 forgatókönyv a VALÓDI dokumentum-komponensből
@@ -139,8 +162,18 @@ opcionális tartalmakkal). Két eset szándékosan karrier-adatot is átad — a
 védelmére, hogy parkolt felület mellett SEM készül karrier-melléklet. PDF mindig
 készül; PNG akkor, ha van `pdftoppm`/`pdftocairo` a PATH-on.
 
-Automatikus szerződés (`tests/unit/results/`):
-- `pdf-report-structure.test.ts` — fejezetsorrend, melléklet-pozíció, a három
+A snapshot-script minden renderelt PDF-et le is auditál: ha bármelyik lapon
+csak a fixed fejléc és lábléc van (üres lap), hibával áll le.
+
+Automatikus szerződés:
+- `tests/client/results/pdf-report-blank-pages.test.ts` — valódi rendereléssel
+  ellenőrzi, hogy nincs üres, lebegő lap. (A client rétegben fut: a unit réteg
+  `--conditions=react-server` alatt indul, ahol a react-pdf reconcilere nem
+  működik.)
+- `tests/unit/results/pdf-report-pagination.test.ts` — a két tördelési hiba
+  SZERKEZETI oka: a lap-törzs gap-pel tart közt (a kártya nem visz alsó
+  margót), és a riport kártyái nem törhetnek.
+- `tests/unit/results/pdf-report-structure.test.ts` — fejezetsorrend, melléklet-pozíció, a három
   insight szövegszintű egyezése a webes builderrel, TOC-oldalszámok, „nincs
   0% hiányzó adatból", oldalanként max. 3 dimenzió, Start-riport zártsága,
   a karrier-melléklet parkolás-követése.
@@ -150,7 +183,10 @@ Automatikus szerződés (`tests/unit/results/`):
 
 ## Verifikáció
 
-Type-check 0 hiba · ESLint tiszta · `check:colors` zöld · unit **1057/1057** ·
-client **211/211** · mind a 11 PDF-forgatókönyv renderel, a számozás a borító
-utáni `1 / N`-nel indul, a tartalomjegyzék oldalszámai a tényleges lapokra
-mutatnak.
+Type-check 0 hiba · ESLint tiszta · `check:colors` zöld · unit **1060/1060** ·
+client **215/215** · mind a 12 PDF-forgatókönyv renderel üres lap nélkül, a
+számozás a borító utáni `1 / N`-nel indul, és a tartalomjegyzék oldalszámai a
+tényleges lapokra mutatnak.
+
+A két tördelési őrt visszaellenőriztem a javítás ELŐTTI állapoton is: mindkettő
+bukik, és a blank-page teszt pontosan a bejelentett `#8` lapra mutat.

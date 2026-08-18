@@ -38,6 +38,11 @@ const BALANCED: Scores = { H: 52, E: 48, X: 55, A: 51, C: 49, O: 53 };
 const MANY_HIGH: Scores = { H: 88, E: 41, X: 84, A: 79, C: 91, O: 76 };
 const MANY_LOW: Scores = { H: 24, E: 71, X: 18, A: 31, C: 27, O: 22 };
 const MIXED: Scores = { H: 86, E: 52, X: 68, A: 48, C: 44, O: 30 };
+// Éles riportból visszavett profil (2026-08-18): az observer-átlagok VÉGIG a
+// mérési hibán belül vannak, tehát nincs egyetlen vakfolt sem. Ez a variáns
+// hozta elő az üres, lebegő folytatás-oldalt és az árva „Vakfoltok" fejlécet.
+const OBSERVER_ALIGNED: Scores = { H: 68, E: 46, X: 82, A: 62, C: 54, O: 91 };
+const OBSERVER_ALIGNED_EXTERNAL: Scores = { H: 63, E: 45, X: 83, A: 61, C: 51, O: 84 };
 
 function insightFor(score: number, insights: { low: string; mid: string; high: string }): string {
   return score < 40 ? insights.low : score < 70 ? insights.mid : insights.high;
@@ -58,6 +63,12 @@ interface BuildOptions {
   withFacets?: boolean;
   withObserver?: boolean;
   withCareer?: boolean;
+  /**
+   * Explicit külső (observer) átlagok dimenziókódonként. Enélkül a generált
+   * értékek mindig eltérést hoznak; valós riportokban gyakori, hogy MINDEN
+   * dimenzió a mérési hibán belül egyezik.
+   */
+  observerScores?: Scores;
   /** Csak a kötelező tartalom — nincs plusContent, nincs melléklet. */
   minimal?: boolean;
   userName?: string;
@@ -70,6 +81,7 @@ export function buildScenarioInput({
   altruismScore,
   withFacets = true,
   withObserver = false,
+  observerScores,
   withCareer = false,
   minimal = false,
   userName = "Teszt Elemér",
@@ -102,7 +114,8 @@ export function buildScenarioInput({
               }))
             : [],
         observerScore: withObserver
-          ? Math.max(0, Math.min(100, score + (score > 50 ? -14 : 11)))
+          ? (observerScores?.[dim.code] ??
+            Math.max(0, Math.min(100, score + (score > 50 ? -14 : 11))))
           : undefined,
       },
     ];
@@ -297,6 +310,20 @@ export function buildPdfScenarios(): PdfScenario[] {
         plan: "plus",
         scores: MIXED,
         altruismScore: 73,
+      }),
+    },
+    {
+      id: "plus-hu-observer-aligned",
+      covers:
+        "Observer-melléklet vakfolt NÉLKÜL (minden dimenzió a mérési hibán " +
+        "belül) — éles riportból visszavett profil",
+      input: buildScenarioInput({
+        locale: "hu",
+        plan: "plus",
+        scores: OBSERVER_ALIGNED,
+        withObserver: true,
+        observerScores: OBSERVER_ALIGNED_EXTERNAL,
+        userName: "Dani",
       }),
     },
     {

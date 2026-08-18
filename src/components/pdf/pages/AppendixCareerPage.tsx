@@ -52,7 +52,7 @@ export function AppendixCareerPage({ model }: { model: ProfileReportViewModel })
           description={t("pdf.appendixCareerNote", locale)}
         />
 
-        <PdfCard eyebrow={t("pdf.careerTopDirections", locale)} wrap>
+        <PdfCard eyebrow={t("pdf.careerTopDirections", locale)}>
           {career.roles.map((role, i) => {
             const tier = tierLabel(role.score, role.bandLow, locale);
             const isLast = i === career.roles.length - 1;

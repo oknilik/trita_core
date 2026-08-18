@@ -98,13 +98,13 @@ export function AppendixRelationalPage({ model }: { model: ProfileReportViewMode
         />
 
         {collab && collab.click.length > 0 ? (
-          <PdfCard eyebrow={t("pdf.collabClick", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.collabClick", locale)}>
             <ItemBlock items={collab.click} accent={colors.sage} background={colors.sage100} locale={locale} />
           </PdfCard>
         ) : null}
 
         {collab && collab.friction.length > 0 ? (
-          <PdfCard eyebrow={t("pdf.collabFriction", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.collabFriction", locale)}>
             <ItemBlock
               items={collab.friction}
               accent={colors.bronzeDark}
@@ -115,13 +115,13 @@ export function AppendixRelationalPage({ model }: { model: ProfileReportViewMode
         ) : null}
 
         {collab && collab.needs.length > 0 ? (
-          <PdfCard eyebrow={t("pdf.collabNeeds", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.collabNeeds", locale)}>
             <ItemBlock items={collab.needs} accent={colors.sage} background={colors.white} locale={locale} />
           </PdfCard>
         ) : null}
 
         {relational.pressure.length > 0 ? (
-          <PdfCard eyebrow={t("pdf.pressureTitle", locale)} wrap>
+          <PdfCard eyebrow={t("pdf.pressureTitle", locale)}>
             <ItemBlock
               items={relational.pressure}
               accent={colors.bronzeDark}

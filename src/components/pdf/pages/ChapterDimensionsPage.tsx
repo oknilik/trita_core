@@ -1,5 +1,5 @@
 import { Page, View, Text } from "@react-pdf/renderer";
-import { s, colors, type } from "../styles";
+import { s, colors, type, cardShape } from "../styles";
 import { PdfFooter } from "../components/PdfFooter";
 import { PdfMiniHeader } from "../components/PdfCard";
 import { PdfChapterHeader } from "../components/PdfChapterHeader";
@@ -82,17 +82,21 @@ export function ChapterDimensionsPage({ model, dims, isFirst, isLast }: Props) {
           <PdfDimensionDetail key={dim.code} dim={dim} locale={locale} />
         ))}
 
-        {isLast && dimensionsChapter.altruism ? (
-          <PdfAltruism
-            value={dimensionsChapter.altruism.value}
-            description={dimensionsChapter.altruism.description}
-            locale={locale}
-          />
-        ) : null}
-
-        {isLast && dimensionsChapter.takeaways.length > 0 ? (
-          <View wrap={false}>
-            <PdfTakeaways takeaways={dimensionsChapter.takeaways} locale={locale} />
+        {/* Fejezetzárás: a kiegészítő skála és a kulcstanulságok EGY blokként
+            mozognak. Külön-külön az egyik még kifért a lap aljára, a másik
+            pedig egy jóformán üres lapra csúszott át. */}
+        {isLast && (dimensionsChapter.altruism || dimensionsChapter.takeaways.length > 0) ? (
+          <View wrap={false} style={{ display: "flex", flexDirection: "column", gap: cardShape.gap }}>
+            {dimensionsChapter.altruism ? (
+              <PdfAltruism
+                value={dimensionsChapter.altruism.value}
+                description={dimensionsChapter.altruism.description}
+                locale={locale}
+              />
+            ) : null}
+            {dimensionsChapter.takeaways.length > 0 ? (
+              <PdfTakeaways takeaways={dimensionsChapter.takeaways} locale={locale} />
+            ) : null}
           </View>
         ) : null}
       </View>

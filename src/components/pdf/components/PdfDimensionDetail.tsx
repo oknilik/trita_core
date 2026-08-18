@@ -31,7 +31,6 @@ export function PdfDimensionDetail({
         borderRadius: 12,
         border: `1 solid ${colors.sand}`,
         padding: "14 16",
-        marginBottom: 12,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 7, marginBottom: 6 }}>

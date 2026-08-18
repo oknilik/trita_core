@@ -27,7 +27,6 @@ export function PdfAltruism({ value, description, locale = "hu" }: PdfAltruismPr
         borderRadius: 12,
         border: `1 solid ${colors.sand}`,
         padding: "14 16",
-        marginBottom: 12,
       }}
     >
       <Text

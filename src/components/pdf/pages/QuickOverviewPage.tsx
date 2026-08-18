@@ -38,7 +38,7 @@ export function QuickOverviewPage({ model, chapterStartPages }: Props) {
       />
 
       <View style={s.body}>
-        <View wrap={false} style={{ marginBottom: 18 }}>
+        <View wrap={false} style={{ marginBottom: 6 }}>
           <Text
             style={{
               fontSize: type.eyebrow,
@@ -83,7 +83,7 @@ export function QuickOverviewPage({ model, chapterStartPages }: Props) {
             borderRadius: 12,
             border: `1 solid ${colors.sand}`,
             padding: "4 18",
-            marginBottom: 16,
+            marginBottom: 4,
           }}
         >
           {quickOverview.insights.map((insight, index) => (
