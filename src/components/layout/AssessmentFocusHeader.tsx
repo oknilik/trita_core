@@ -30,7 +30,7 @@ export function AssessmentFocusHeader({
           aria-label="trita"
           className={`col-start-1 row-start-1 shrink-0 rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
         >
-          <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
+          <TritaWordmark className="text-heading tracking-[-0.04em]" />
         </Link>
         {center ? (
           <div className="col-span-3 row-start-2 min-w-0 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:w-full lg:max-w-[480px] lg:justify-self-center">

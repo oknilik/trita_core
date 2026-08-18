@@ -110,7 +110,7 @@ export function LinearReport({
                   <span className="block text-micro font-semibold uppercase tracking-wide text-muted">
                     {section.question}
                   </span>
-                  <span id={`report-${section.id}-heading`} className="mt-1 block font-fraunces text-[22px] leading-tight text-ink md:text-[25px]">
+                  <span id={`report-${section.id}-heading`} className="mt-1 block font-fraunces text-heading leading-tight text-ink md:text-title">
                     {section.title}
                   </span>
                   <span className="mt-1.5 block text-xs leading-relaxed text-muted">

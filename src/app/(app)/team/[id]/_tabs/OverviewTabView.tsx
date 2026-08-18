@@ -125,7 +125,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               <p className="text-micro font-medium uppercase tracking-widest text-ink-body">
                 {t("teamDetail.measurementBreakdownTitle", locale)}
               </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-muted">
+              <p className="mt-1 text-xs leading-relaxed text-muted">
                 {tf("teamDetail.measurementBreakdownHint", locale, {
                   name: teamData.activeCampaign.name,
                 })}
@@ -141,7 +141,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       key={step.type}
                       className="flex flex-col gap-1 md:flex-row md:items-center md:gap-3"
                     >
-                      <span className="truncate text-[12px] text-ink-body md:w-56 md:shrink-0">
+                      <span className="truncate text-xs text-ink-body md:w-56 md:shrink-0">
                         {label}
                       </span>
                       <div className="flex min-w-0 flex-1 items-center gap-3">
@@ -151,7 +151,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                             style={{ width: `${pct}%` }}
                           />
                         </div>
-                        <span className="w-16 shrink-0 text-right text-[11px] tabular-nums text-muted">
+                        <span className="w-16 shrink-0 text-right text-note tabular-nums text-muted">
                           {tf("teamDetail.measurementBreakdownDone", locale, {
                             done: step.done,
                             total: step.total,
@@ -215,17 +215,17 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                           befagyasztott aggregátumot mutatják — az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
-                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note text-ink-body">
                           {publishedReport.aggregates!.memberCount}{" "}
                           {isHu ? "tag a jóváhagyott képben" : "members in the approved picture"}
                         </span>
-                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-[11px] text-ink-body">
+                        <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note text-ink-body">
                           {publishedReport.aggregates!.completionPct}%{" "}
                           {isHu ? "kitöltöttség" : "completion"}
                         </span>
                         {typeof publishedReport.aggregates!.evidence?.measuredEdgeCount === "number" &&
                           publishedReport.aggregates!.evidence!.measuredEdgeCount > 0 && (
-                            <span className="rounded-full bg-sage/15 px-2.5 py-1 text-[11px] font-medium text-sage-dark">
+                            <span className="rounded-full bg-sage/15 px-2.5 py-1 text-note font-medium text-sage-dark">
                               {publishedReport.aggregates!.evidence!.measuredEdgeCount}{" "}
                               {isHu ? "mért kapcsolati adat" : "measured relationship data points"}
                             </span>
@@ -238,7 +238,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}
-                        className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
+                        className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                       >
                         {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
                       </Link>

@@ -469,7 +469,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
           {FIELDS.map((field) => (
             <label key={field.key} className="flex flex-col gap-1">
               <span
-                className={`text-[11px] font-medium ${
+                className={`text-note font-medium ${
                   field.internal ? "text-state-warning-fg" : "text-ink-body"
                 }`}
               >
@@ -501,7 +501,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
 
           <div className="flex flex-col gap-2 border-t border-sand pt-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-medium text-ink-body">
+              <span className="text-note font-medium text-ink-body">
                 {isHu ? "Akcióterv (30/60/90 nap)" : "Action plan (30/60/90 days)"}
               </span>
               <button

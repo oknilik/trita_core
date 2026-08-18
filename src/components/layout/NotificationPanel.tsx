@@ -291,7 +291,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           <button
             type="button"
             onClick={() => void markAllRead()}
-            className="text-[11px] font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:underline"
+            className="text-note font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:underline"
           >
             {t("notifications.markAllRead", loc)}
           </button>
@@ -306,12 +306,12 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
           </div>
         ) : items.length === 0 ? (
           <div className="px-6 py-10 text-center">
-            <p className="text-[12px] text-[var(--color-text-muted)]">
+            <p className="text-xs text-[var(--color-text-muted)]">
               {t("notifications.noNotifications", loc)}
             </p>
             {/* UX-B16: az üres állapot ne zsákutca legyen — mutassuk a
                 következő értelmes lépést. */}
-            <p className="mx-auto mt-1.5 max-w-[260px] text-[11px] leading-relaxed text-[var(--color-text-muted)] opacity-80">
+            <p className="mx-auto mt-1.5 max-w-[260px] text-note leading-relaxed text-[var(--color-text-muted)] opacity-80">
               {t("notifications.emptyHint", loc)}
             </p>
           </div>
@@ -328,14 +328,14 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                   tabIndex={-1}
                   className={`flex items-center justify-between gap-3 border-b border-[var(--color-border-default)]/50 px-4 py-1.5 last:border-b-0 ${rowFocusCls}`}
                 >
-                  <p className="text-[12px] text-[var(--color-text-muted)]">
+                  <p className="text-xs text-[var(--color-text-muted)]">
                     {t("notifications.dismissedLabel", loc)}
                   </p>
                   <button
                     type="button"
                     data-undo-for={item.id}
                     onClick={() => undoDismiss(item.id)}
-                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                    className="min-h-[44px] shrink-0 rounded-lg px-3 text-xs font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:bg-[var(--color-surface-subtle)]"
                   >
                     {t("notifications.undo", loc)}
                   </button>
@@ -364,7 +364,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
                     <p
-                      className={`text-[12px] leading-snug ${
+                      className={`text-xs leading-snug ${
                         item.read
                           ? "text-[var(--color-text-muted)]"
                           : "font-semibold text-[var(--color-text-primary)]"
@@ -376,7 +376,7 @@ export function NotificationPanel({ onClose }: NotificationPanelProps) {
                       <span className="inline-flex h-1.5 w-1.5 shrink-0 rounded-full bg-state-error-solid" />
                     )}
                   </div>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+                  <p className="mt-0.5 text-note leading-relaxed text-[var(--color-text-muted)]">
                     {body}
                   </p>
                   <p className="mt-1 text-micro text-[var(--color-text-faint)]">

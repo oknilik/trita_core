@@ -624,7 +624,7 @@ export default async function CampaignDetailPage({
                   // Mobilon két sorba törik (címke fent, sáv + számláló lent),
                   // md-től az eredeti egysoros elrendezés.
                   <div key={stepType} className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage/15 font-mono text-[11px] font-bold text-sage-dark">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage/15 font-mono text-note font-bold text-sage-dark">
                       {idx + 1}
                     </span>
                     <span className="min-w-0 flex-1 text-caption font-medium text-ink md:w-72 md:flex-none">

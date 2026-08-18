@@ -390,7 +390,7 @@ export function TeamReportMemberView({
       {/* Lábléc — módszertan + átláthatóság */}
       <DashboardPanel tone="cream" className="p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-body">
-          <span className="rounded-full bg-surface-card px-2.5 py-1 font-mono text-[11px] text-muted ring-1 ring-sand">
+          <span className="rounded-full bg-surface-card px-2.5 py-1 font-mono text-note text-muted ring-1 ring-sand">
             {isHu ? "min. 3 kitöltés" : "min. 3 responses"}
           </span>
           <span>

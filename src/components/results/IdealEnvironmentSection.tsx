@@ -117,7 +117,7 @@ export function IdealEnvironmentSection({
                   <span className="text-micro text-[var(--color-text-muted)]">{poles.high}</span>
                 </div>
               </div>
-              <span className="text-[11px] text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">
+              <span className="text-note text-[var(--color-text-muted)] sm:w-[180px] sm:shrink-0 sm:text-right">
                 <strong className="text-[var(--color-text-primary)]">{shortLabel}</strong> — {desc}
               </span>
             </div>

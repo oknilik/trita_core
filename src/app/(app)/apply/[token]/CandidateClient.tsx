@@ -361,7 +361,7 @@ export function CandidateClient({
               <SectionEyebrow tone="bronze" className="mb-2.5">
                 {t("candidate.introEyebrow", locale)}
               </SectionEyebrow>
-              <h1 className="mb-3 font-fraunces text-[26px] leading-[1.15] tracking-tight text-ink lg:text-[30px]">
+              <h1 className="mb-3 font-fraunces text-title leading-[1.15] tracking-tight text-ink lg:text-title">
                 {position
                   ? tf("candidate.introTitlePosition", locale, { position })
                   : t("candidate.introTitleGeneric", locale)}
@@ -417,7 +417,7 @@ export function CandidateClient({
                     </div>
                     <div>
                       <p className="text-caption font-semibold text-ink">{step.title}</p>
-                      <p className="text-[11px] leading-[1.4] text-muted">{step.sub}</p>
+                      <p className="text-note leading-[1.4] text-muted">{step.sub}</p>
                     </div>
                   </div>
                 );
@@ -518,10 +518,10 @@ export function CandidateClient({
         <div className="sticky top-16 z-20 mb-5 rounded-2xl border border-sand bg-[var(--color-surface-card)]/95 px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.05)] backdrop-blur">
           <div className="flex items-center gap-3">
             <div className="flex items-baseline gap-1 whitespace-nowrap">
-              <span className="font-fraunces text-[17px] font-medium leading-none text-ink">
+              <span className="font-fraunces text-heading font-medium leading-none text-ink">
                 {answeredCount}
               </span>
-              <span className="text-[11px] text-muted">/ {totalQuestions}</span>
+              <span className="text-note text-muted">/ {totalQuestions}</span>
             </div>
             <div
               className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-sand/80"
@@ -539,12 +539,12 @@ export function CandidateClient({
                 style={{ width: `${progressPct}%` }}
               />
             </div>
-            <span className="whitespace-nowrap rounded-full bg-accent-candidate-soft px-2.5 py-1 text-[11px] font-medium text-accent-candidate-strong">
+            <span className="whitespace-nowrap rounded-full bg-accent-candidate-soft px-2.5 py-1 text-note font-medium text-accent-candidate-strong">
               {tf("candidate.etaRemaining", locale, { minutes: etaMinutes })}
             </span>
           </div>
           {position && (
-            <p className="mt-1.5 truncate text-[11px] text-muted">{position}</p>
+            <p className="mt-1.5 truncate text-note text-muted">{position}</p>
           )}
         </div>
 
@@ -570,7 +570,7 @@ export function CandidateClient({
               onChange={(e) => setAutoAdvance(e.target.checked)}
               className="sr-only"
             />
-            <span className="text-[11px] text-muted">{t("candidate.autoAdvance", locale)}</span>
+            <span className="text-note text-muted">{t("candidate.autoAdvance", locale)}</span>
           </label>
         </div>
 

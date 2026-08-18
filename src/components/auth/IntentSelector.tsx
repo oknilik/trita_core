@@ -65,7 +65,7 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
             >
               {opt.label}
             </span>
-            <span className="mt-0.5 text-[11px] leading-snug text-[var(--color-text-muted)]">
+            <span className="mt-0.5 text-note leading-snug text-[var(--color-text-muted)]">
               {opt.desc}
             </span>
           </button>

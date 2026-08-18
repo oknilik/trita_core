@@ -217,7 +217,7 @@ export function ShareModal({
                       />
                     ) : null}
                     <div className="min-w-0 flex-1">
-                      <p className="font-fraunces text-[17px] text-white">{preview.userName}</p>
+                      <p className="font-fraunces text-heading text-white">{preview.userName}</p>
                       <p className="font-fraunces text-body italic text-[var(--color-accent-primary-soft)]">
                         {preview.personalityType}
                       </p>

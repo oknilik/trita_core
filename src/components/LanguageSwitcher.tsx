@@ -21,7 +21,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
 
   if (variant === "footer") {
     return (
-      <div className="flex items-center gap-2 text-[11px] text-[var(--color-text-on-inverse-muted)]">
+      <div className="flex items-center gap-2 text-note text-[var(--color-text-on-inverse-muted)]">
         <span className="mr-1 text-micro uppercase tracking-[0.14em] opacity-70">
           {t("locale.label", locale)}
         </span>
@@ -55,7 +55,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
             type="button"
             onClick={() => setLocale(loc as Locale)}
             className={[
-              "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
+              "rounded-full px-4 py-1.5 text-xs font-medium transition-all",
               FOCUS_RING_CLASS,
               loc === locale
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
@@ -81,7 +81,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         aria-label={`${locale.toUpperCase()} – ${t("locale.label", locale)}`}
         aria-expanded={open}
         className={[
-          "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] text-[var(--color-text-muted)] transition-all",
+          "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-[var(--color-text-muted)] transition-all",
           FOCUS_RING_CLASS,
           "hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]",
           open ? "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]" : "",

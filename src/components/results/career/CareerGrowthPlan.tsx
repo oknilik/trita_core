@@ -36,7 +36,7 @@ export function CareerGrowthPlan({
         <p className="text-caption font-semibold text-[var(--color-text-primary)]">
           {t("results.cfGrowthNoneTitle", locale)}
         </p>
-        <p className="mt-1 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-secondary)]">
           {t("results.cfGrowthNoneBody", locale)}
         </p>
       </div>
@@ -48,7 +48,7 @@ export function CareerGrowthPlan({
       <p className="text-caption font-semibold text-accent-earth-strong">
         {t("results.cfGrowthTitle", locale)}
       </p>
-      <p className="mt-1 text-[12px] leading-relaxed text-accent-earth-strong/80">
+      <p className="mt-1 text-xs leading-relaxed text-accent-earth-strong/80">
         {t("results.cfGrowthIntro", locale)}
       </p>
 
@@ -78,7 +78,7 @@ export function CareerGrowthPlan({
               <p className="mt-2 text-sm font-semibold text-[var(--color-text-primary)]">
                 {content.headline}
               </p>
-              <p className="mt-1 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+              <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 {content.action}
               </p>
             </div>

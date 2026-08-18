@@ -68,11 +68,11 @@ export function MobileMenuRow({
         {icon}
       </span>
       <div className="min-w-0 flex-1">
-        <p className={`text-[15px] text-[var(--color-text-primary)] ${active ? "font-semibold" : "font-medium"}`}>
+        <p className={`text-body text-[var(--color-text-primary)] ${active ? "font-semibold" : "font-medium"}`}>
           {title}
         </p>
         {desc ? (
-          <p className="truncate text-[12px] text-[var(--color-text-muted)]">{desc}</p>
+          <p className="truncate text-xs text-[var(--color-text-muted)]">{desc}</p>
         ) : null}
       </div>
       {active ? (
@@ -89,7 +89,7 @@ export function MobileMenuSectionLabel({ children }: { children: React.ReactNode
   // Fraunces szekció-cím (stílus-transzfer): a mono-eyebrow helyett a
   // marketing-oldal szerkesztőségi karaktere — a szerkezet utility marad.
   return (
-    <p className="px-4 pb-1.5 pt-4 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+    <p className="px-4 pb-1.5 pt-4 font-fraunces text-base text-[var(--color-text-primary)]">
       {children}
     </p>
   );

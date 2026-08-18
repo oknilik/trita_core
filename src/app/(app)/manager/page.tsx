@@ -168,7 +168,7 @@ export default async function ManagerCockpitPage() {
           </SectionEyebrow>
         }
         title={
-          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
+          <h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-hero">
             {isHu ? `Szia, ${profile.username?.split(" ")[0] ?? "Menedzser"}!` : `Hi, ${profile.username?.split(" ")[0] ?? "Manager"}!`}
           </h1>
         }
@@ -182,20 +182,20 @@ export default async function ManagerCockpitPage() {
                 : `You manage ${teamCount} teams with ${data.totalMembers} members total.`)
         }
         chips={[
-          <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="members" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalMembers} {isHu ? "tag" : "members"}
           </span>,
-          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {data.totalCompleted} {isHu ? "kitöltve" : "completed"}
           </span>,
-          <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="teams" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {teamCount} {isHu ? "csapat" : "teams"}
           </span>,
         ]}
         actions={
           <Link
             href={`/team/${data.teams[0].teamId}`}
-            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+            className="inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-xs font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
             style={{ backgroundColor: heroTheme.primary }}
           >
             {isSingleTeam
@@ -211,15 +211,15 @@ export default async function ManagerCockpitPage() {
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Kitöltöttség" : "Completion"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{totalCompletionPct}%</p>
+                <p className="mt-1 font-fraunces text-heading leading-none text-[var(--color-text-on-inverse)]">{totalCompletionPct}%</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Függő" : "Pending"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{data.totalMembers - data.totalCompleted}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none text-[var(--color-text-on-inverse)]">{data.totalMembers - data.totalCompleted}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{isHu ? "Meghívók" : "Invites"}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none text-[var(--color-text-on-inverse)]">{data.totalPendingInvites}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none text-[var(--color-text-on-inverse)]">{data.totalPendingInvites}</p>
               </div>
             </div>
             <div className="mt-4">
@@ -260,7 +260,7 @@ export default async function ManagerCockpitPage() {
             <Link key={team.teamId} href={`/team/${team.teamId}`} className="block">
               <DashboardPanel className="p-5 transition-shadow hover:shadow-md">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="font-fraunces text-[16px] text-ink">{team.teamName}</p>
+                  <p className="font-fraunces text-base text-ink">{team.teamName}</p>
                   <DashboardStatusChip
                     label={team.hasPattern ? (isHu ? "Csapatkép kész" : "Pattern ready") : `${team.completionPct}%`}
                     tone={team.hasPattern ? "sage" : team.completionPct >= 50 ? "warm" : "bronze"}
@@ -270,7 +270,7 @@ export default async function ManagerCockpitPage() {
                   {team.completedCount > 0 && <div className="h-1.5 rounded-full bg-sage" style={{ flex: team.completedCount }} />}
                   {team.memberCount - team.completedCount > 0 && <div className="h-1.5 rounded-full bg-bronze/40" style={{ flex: team.memberCount - team.completedCount }} />}
                 </div>
-                <p className="mt-2 text-[11px] text-ink-body">
+                <p className="mt-2 text-note text-ink-body">
                   {team.completedCount}/{team.memberCount} {isHu ? "tag kitöltötte" : "members completed"}
                   {team.pendingInviteCount > 0 && (
                     <> · {team.pendingInviteCount} {isHu ? "függő meghívó" : "pending invites"}</>
@@ -300,7 +300,7 @@ export default async function ManagerCockpitPage() {
               return (
                 <div key={member.id} className="flex items-center gap-3 px-5 py-3.5">
                   <div
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold text-white"
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-note font-semibold text-white"
                     style={{ background: `linear-gradient(135deg, ${from}, ${to})` }}
                   >
                     {initial}
@@ -372,7 +372,7 @@ export default async function ManagerCockpitPage() {
             </p>
             <Link
               href={`/team/${data.teams[0].teamId}?tab=intelligence`}
-              className="text-[12px] font-semibold text-sage transition-colors hover:text-sage-dark"
+              className="text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
             >
               {isHu ? "Részletes dinamika térkép →" : "Detailed dynamics map →"}
             </Link>
@@ -399,9 +399,9 @@ export default async function ManagerCockpitPage() {
 
               return (
                 <div key={`${event.kind}-${event.timestamp}-${i}`} className="flex items-center gap-3 px-5 py-3">
-                  <span className="text-[14px]">{icon}</span>
+                  <span className="text-sm">{icon}</span>
                   <div className="min-w-0 flex-1">
-                    <p className="text-[12px] text-ink">
+                    <p className="text-xs text-ink">
                       <span className="font-semibold">{event.memberName}</span>{" "}
                       {label}
                     </p>

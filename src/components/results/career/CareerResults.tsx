@@ -157,7 +157,7 @@ function OccupationCard({
             <p className="font-mono text-micro text-[var(--color-text-muted)]">
               {fit.band.low}–{fit.band.high}%
             </p>
-            <p className="text-[11px] text-[var(--color-text-secondary)]">
+            <p className="text-note text-[var(--color-text-secondary)]">
               {t("results.cfDemandLabel", locale)}
             </p>
           </div>
@@ -173,7 +173,7 @@ function OccupationCard({
         </div>
       </div>
 
-      <p className="mt-2 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+      <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-secondary)]">
         {fit.desc}
       </p>
 
@@ -246,7 +246,7 @@ function OccupationCard({
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className={`mt-2.5 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-ink ${TEXT_TAP_TARGET}`}
+        className={`mt-2.5 text-xs font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-ink ${TEXT_TAP_TARGET}`}
       >
         {t("results.cfWhy", locale)} {open ? "▴" : "▾"}
       </button>
@@ -255,7 +255,7 @@ function OccupationCard({
         <div className="mt-3 flex flex-col gap-2 border-t border-[var(--color-border-soft)] pt-3">
           {fit.components.map((component) => (
             <div key={component.dim} className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-44 sm:text-[11px]">
+              <span className="w-24 shrink-0 text-micro leading-tight text-[var(--color-text-secondary)] sm:w-44 sm:text-note">
                 {dimLabel(component.dim, isHu)}
                 <span className="block text-micro text-[var(--color-text-muted)]">
                   {/* A NYERS párt mutatjuk (userRaw/targetRaw): a „te {user}" így
@@ -328,26 +328,26 @@ function OccupationCard({
 
           <div className="mt-1 border-t border-[var(--color-border-soft)] pt-2.5">
             {feedback === "sent" ? (
-              <p className="text-[11px] text-state-success-fg">
+              <p className="text-note text-state-success-fg">
                 {t("results.industryFitFeedbackThanks", locale)}
               </p>
             ) : (
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <span className="text-[11px] text-[var(--color-text-secondary)]">
+                <span className="text-note text-[var(--color-text-secondary)]">
                   {t("results.industryFitFeedbackQ", locale)}
                 </span>
                 <div className="flex shrink-0 items-center gap-2">
                   <button
                     type="button"
                     onClick={() => sendFeedback("accurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-success-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-success-fg transition hover:bg-state-success-bg"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-success-border bg-surface-card px-3 py-1 text-note font-medium text-state-success-fg transition hover:bg-state-success-bg"
                   >
                     👍 {t("results.industryFitFeedbackYes", locale)}
                   </button>
                   <button
                     type="button"
                     onClick={() => sendFeedback("inaccurate")}
-                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-error-border bg-surface-card px-3 py-1 text-[11px] font-medium text-state-error-fg transition hover:bg-state-error-bg"
+                    className="inline-flex min-h-[36px] items-center rounded-full border border-state-error-border bg-surface-card px-3 py-1 text-note font-medium text-state-error-fg transition hover:bg-state-error-bg"
                   >
                     👎 {t("results.industryFitFeedbackNo", locale)}
                   </button>
@@ -394,7 +394,7 @@ function ClusterCards({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className={`self-start text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+          className={`self-start text-xs font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
         >
           {tf("results.cfClusterMore", locale, { count: hidden })} ▾
         </button>
@@ -403,7 +403,7 @@ function ClusterCards({
         <button
           type="button"
           onClick={() => setExpanded(false)}
-          className={`self-start text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+          className={`self-start text-xs font-semibold text-[var(--color-text-muted)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
         >
           {t("results.ccLessOptions", locale)} ▴
         </button>
@@ -447,7 +447,7 @@ function CareerSection({
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className={`text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+            className={`text-xs font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
           >
             {open ? `${t("results.ccLessOptions", locale)} ▴` : `${t("results.cfSectionShow", locale)} ▾`}
           </button>
@@ -525,7 +525,7 @@ export function CareerResults({
             <button
               type="button"
               onClick={onEditAnswers}
-              className={`text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+              className={`text-xs font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
             >
               {t("results.ccEditAnswers", locale)}
             </button>
@@ -534,7 +534,7 @@ export function CareerResults({
             <button
               type="button"
               onClick={() => setConfirmReset(true)}
-              className={`text-[12px] font-medium text-[var(--color-text-muted)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+              className={`text-xs font-medium text-[var(--color-text-muted)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
             >
               {t("results.cfReset", locale)}
             </button>
@@ -545,7 +545,7 @@ export function CareerResults({
       {/* Teljes visszaállítás — kétlépcsős, mert minden mentett választ töröl */}
       {onReset && confirmReset && (
         <div className="mt-3 rounded-[12px] border border-state-warning-border bg-state-warning-bg/70 p-3.5">
-          <p className="text-[12px] leading-relaxed text-accent-earth-strong">
+          <p className="text-xs leading-relaxed text-accent-earth-strong">
             {t("results.cfResetConfirm", locale)}
           </p>
           <div className="mt-2.5 flex flex-wrap items-center gap-2">
@@ -561,7 +561,7 @@ export function CareerResults({
                   setConfirmReset(false);
                 }
               }}
-              className="min-h-[36px] rounded-lg bg-[var(--color-accent-primary)] px-3.5 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110 disabled:opacity-50"
+              className="min-h-[36px] rounded-lg bg-[var(--color-accent-primary)] px-3.5 text-xs font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110 disabled:opacity-50"
             >
               {t(resetting ? "results.cfResetBusy" : "results.cfResetYes", locale)}
             </button>
@@ -569,7 +569,7 @@ export function CareerResults({
               type="button"
               disabled={resetting}
               onClick={() => setConfirmReset(false)}
-              className="min-h-[36px] rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3.5 text-[12px] font-semibold text-[var(--color-text-secondary)] transition hover:text-ink"
+              className="min-h-[36px] rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3.5 text-xs font-semibold text-[var(--color-text-secondary)] transition hover:text-ink"
             >
               {t("results.cfResetCancel", locale)}
             </button>
@@ -602,10 +602,10 @@ export function CareerResults({
       {result.interests && (
         <div className="mt-3 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-3.5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[12px] font-semibold text-[var(--color-text-primary)]">
+            <span className="text-xs font-semibold text-[var(--color-text-primary)]">
               {t("results.cfYourHolland", locale)}
             </span>
-            <span className="rounded-full bg-sage/15 px-2.5 py-0.5 font-mono text-[12px] font-semibold text-sage-dark">
+            <span className="rounded-full bg-sage/15 px-2.5 py-0.5 font-mono text-xs font-semibold text-sage-dark">
               {result.interests.top}
             </span>
             <span className="text-micro text-[var(--color-text-muted)]">
@@ -636,7 +636,7 @@ export function CareerResults({
 
       {/* Mi rendezi a listát — a jelszint-hierarchia kimondva */}
       <div className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
-        <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+        <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
           {result.scope.active
             ? tf(
                 // A motor scoped forrás- és differenciáltság-kapujának tükre:
@@ -673,7 +673,7 @@ export function CareerResults({
           <button
             type="button"
             onClick={onToggleScope}
-            className={`mt-1.5 text-[12px] font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
+            className={`mt-1.5 text-xs font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink ${TEXT_TAP_TARGET}`}
           >
             {t(
               result.scope.ignored
@@ -688,7 +688,7 @@ export function CareerResults({
       {/* Vétók — a kizárás LÁTHATÓ: mit zártál ki, és hány szerep esett ki miatta */}
       {result.veto.keys.length > 0 && (
         <div className="mt-2 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
-          <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+          <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
             🚫{" "}
             {tf("results.cfVetoActive", locale, {
               list: result.veto.keys

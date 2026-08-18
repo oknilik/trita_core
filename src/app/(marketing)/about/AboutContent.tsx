@@ -64,7 +64,7 @@ export function AboutContent() {
                 </em>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-[19px]">
+              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-heading">
                 {t("about.heroBody", locale)}
               </p>
               <p className="mt-4 max-w-[620px] text-base leading-8 text-ink-body/85">
@@ -97,7 +97,7 @@ export function AboutContent() {
               </div>
               <div className="px-6 py-6">
                 <SectionEyebrow>{t("about.asideEyebrow", locale)}</SectionEyebrow>
-                <p className="mt-3 font-fraunces text-[26px] leading-tight text-ink">
+                <p className="mt-3 font-fraunces text-title leading-tight text-ink">
                   {t("about.asideTitle", locale)}
                 </p>
                 <p className="mt-3 text-sm leading-7 text-ink-body">{t("about.asideBody", locale)}</p>
@@ -199,7 +199,7 @@ export function AboutContent() {
                           {layer.tag}
                         </span>
                       </div>
-                      <h3 className="font-fraunces text-[24px] leading-tight text-ink">{layer.title}</h3>
+                      <h3 className="font-fraunces text-title leading-tight text-ink">{layer.title}</h3>
                       <p className="mt-3 text-base leading-8 text-ink-body">{layer.desc}</p>
                     </article>
                   ))}
@@ -220,7 +220,7 @@ export function AboutContent() {
 
                   <article className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-6">
                     <SectionEyebrow tone="self">{t("about.buildOutcomeLabel", locale)}</SectionEyebrow>
-                    <h3 className="mt-2 font-fraunces text-[26px] leading-tight text-ink">
+                    <h3 className="mt-2 font-fraunces text-title leading-tight text-ink">
                       {t("about.buildOutcomeTitle", locale)}
                     </h3>
                     <p className="mt-3 text-base leading-8 text-ink-body">
@@ -253,7 +253,7 @@ export function AboutContent() {
               <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                 {`0${i + 1}`}
               </span>
-              <h3 className="mt-2 font-fraunces text-[22px] leading-tight text-ink">{step.title}</h3>
+              <h3 className="mt-2 font-fraunces text-heading leading-tight text-ink">{step.title}</h3>
               <p className="mt-2 text-caption leading-7 text-ink-body">{step.desc}</p>
             </li>
           ))}
@@ -265,7 +265,7 @@ export function AboutContent() {
         <div className="grid gap-4 md:grid-cols-2">
           {values.map((value) => (
             <article key={value.title} className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-              <h3 className="font-fraunces text-[24px] leading-tight text-ink">{value.title}</h3>
+              <h3 className="font-fraunces text-title leading-tight text-ink">{value.title}</h3>
               <p className="mt-3 text-base leading-8 text-ink-body">{value.desc}</p>
             </article>
           ))}

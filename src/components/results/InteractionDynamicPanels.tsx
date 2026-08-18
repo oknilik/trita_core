@@ -87,11 +87,11 @@ function InsightPanel({
         className="flex min-h-[60px] w-full items-center gap-3 py-2 text-left text-[var(--color-text-primary)]"
       >
         <span
-          className={`relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-fraunces text-[17px] ${markerClass}`}
+          className={`relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-fraunces text-heading ${markerClass}`}
         >
           {number}
         </span>
-        <span className="min-w-0 flex-1 font-fraunces text-[18px] leading-snug">
+        <span className="min-w-0 flex-1 font-fraunces text-heading leading-snug">
           {title}
         </span>
         <Chevron open={open} />

@@ -230,7 +230,7 @@ export function TeamRoleQuestionnaire({
               }`}
             >
               {phase === "highlight" && (
-                <span className="mr-1.5 font-mono text-[11px] text-[var(--color-accent-primary-strong)]">
+                <span className="mr-1.5 font-mono text-note text-[var(--color-accent-primary-strong)]">
                   {isTop ? "★" : "☆"}
                 </span>
               )}

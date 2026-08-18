@@ -55,10 +55,10 @@ export default async function AssessmentLayersPage() {
                 {layer.type}
               </span>
             </div>
-            <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+            <p className="mt-2 text-xs leading-relaxed text-ink-body">
               {layer.description[langKey]}
             </p>
-            <p className="mt-3 text-[11px] font-medium text-muted">
+            <p className="mt-3 text-note font-medium text-muted">
               {t("assessmentLayers.order", locale)}: {layer.order}
             </p>
           </Link>

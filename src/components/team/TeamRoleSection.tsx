@@ -507,7 +507,7 @@ function PeerComparison({
 
   return (
     <Card as="section" spacing="lg" className="md:p-8">
-      <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
+      <SectionEyebrow as="h3" className="mb-1 text-note tracking-widest">
         {t("teamComp.peerEyebrow", loc)}
       </SectionEyebrow>
       <h4 className="mb-1 font-fraunces text-xl text-ink">
@@ -534,7 +534,7 @@ function PeerComparison({
             <div key={m.userId} className="flex flex-col gap-2 py-4 first:pt-0 last:pb-0">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-ink">{m.displayName}</p>
-                <span className="font-mono text-[11px] text-muted">
+                <span className="font-mono text-note text-muted">
                   {t("teamComp.peerRaterCount", loc).replace(
                     "{n}",
                     String(peer.raterCount),
@@ -592,7 +592,7 @@ function PeerComparison({
           );
         })}
       </div>
-      <p className="mt-4 text-[11px] leading-relaxed text-muted">
+      <p className="mt-4 text-note leading-relaxed text-muted">
         {t("teamComp.peerFootnote", loc).replace(
           "{min}",
           String(TEAM_ROLE_PEER_MIN_RATERS),
@@ -654,7 +654,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
   return (
     <div className="flex flex-col gap-8 py-6">
       <div>
-        <SectionEyebrow className="text-[11px] tracking-widest">
+        <SectionEyebrow className="text-note tracking-widest">
           {t("teamComp.estimatedRolesEyebrow", loc)}
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-2xl text-ink">
@@ -677,7 +677,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
 
       {/* Role composition */}
       <Card as="section" spacing="lg" className="md:p-8">
-        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
+        <SectionEyebrow as="h3" className="mb-1 text-note tracking-widest">
           {t("teamComp.roleDistributionEyebrow", loc)}
         </SectionEyebrow>
         <h4 className="mb-2 font-fraunces text-xl text-ink">
@@ -690,7 +690,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
 
       {/* Alerts */}
       <section>
-        <SectionEyebrow as="h3" className="mb-3 text-[11px] tracking-widest">
+        <SectionEyebrow as="h3" className="mb-3 text-note tracking-widest">
           {t("teamComp.balanceAlertsEyebrow", loc)}
         </SectionEyebrow>
         <RoleAlerts members={membersWithTeamRole} isHu={isHu} />
@@ -698,7 +698,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
 
       {/* Cross-analysis */}
       <section>
-        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
+        <SectionEyebrow as="h3" className="mb-1 text-note tracking-widest">
           {t("teamComp.categoryAnalysisEyebrow", loc)}
         </SectionEyebrow>
         <p className="mb-2 text-sm text-ink-body">
@@ -711,7 +711,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
 
       {/* Individual table */}
       <section>
-        <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
+        <SectionEyebrow as="h3" className="mb-1 text-note tracking-widest">
           {t("teamComp.individualRolesEyebrow", loc)}
         </SectionEyebrow>
         <h4 className="mb-4 font-fraunces text-xl text-ink">

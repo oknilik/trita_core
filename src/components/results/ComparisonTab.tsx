@@ -346,14 +346,14 @@ export function ComparisonTab({
   if (!hasObserverData) {
     return (
       <div className="rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-8 text-center">
-        <span className="mb-2.5 inline-block text-[32px] opacity-20">📊</span>
-        <h3 className="mb-1.5 font-fraunces text-[18px] text-[var(--color-text-primary)]">
+        <span className="mb-2.5 inline-block text-display opacity-20">📊</span>
+        <h3 className="mb-1.5 font-fraunces text-heading text-[var(--color-text-primary)]">
           {t("comparison.noDataTitle", locale)}
         </h3>
         <p className="mx-auto max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.noDataBody", locale)}
         </p>
-        <p className="mx-auto mt-2 max-w-[380px] text-[12px] leading-relaxed text-[var(--color-ink-warm)]">
+        <p className="mx-auto mt-2 max-w-[380px] text-xs leading-relaxed text-[var(--color-ink-warm)]">
           {locale === "hu"
             ? "Következő lépés: kérj observer visszajelzést, vagy kapcsolódj csapathoz a közös kép felépítéséhez."
             : "Next step: request observer feedback or connect to a team to build a shared picture."}
@@ -368,7 +368,7 @@ export function ComparisonTab({
                 .getElementById("invitations")
                 ?.scrollIntoView({ behavior: "smooth", block: "start" })
             }
-            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+            className="inline-flex min-h-[42px] items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
           >
             {locale === "hu" ? "Observer meghívása" : "Invite observers"}
           </button>
@@ -387,20 +387,20 @@ export function ComparisonTab({
             {t("comparison.headerEyebrow", locale)}
           </span>
         </div>
-        <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
+        <h2 className="font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
           {t("comparison.headerTitle", locale)}
         </h2>
         <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
           {t("comparison.headerBody", locale)}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-accent-self-deep)]">
+          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-note font-medium text-[var(--color-accent-self-deep)]">
             {tf("comparison.observerBadge", locale, { count: observerCount })}
           </span>
           {avgConfidence != null && (
             <span
               title={t("comparison.confidenceLabel", locale)}
-              className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-[11px] font-medium text-[var(--color-text-muted)]"
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-note font-medium text-[var(--color-text-muted)]"
             >
               {tf("comparison.avgConfidence", locale, {
                 value:
@@ -440,18 +440,18 @@ export function ComparisonTab({
         </div>
         <div className="grid grid-cols-3 gap-2.5">
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
-            <p className="font-fraunces text-[22px] leading-none" style={{ color: "var(--color-action-primary-bg)" }}>{matchingCount}</p>
+            <p className="font-fraunces text-heading leading-none" style={{ color: "var(--color-action-primary-bg)" }}>{matchingCount}</p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.matchingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
-            <p className="font-fraunces text-[22px] leading-none" style={{ color: "var(--color-accent-primary)" }}>{differingCount}</p>
+            <p className="font-fraunces text-heading leading-none" style={{ color: "var(--color-accent-primary)" }}>{differingCount}</p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.differingDims", locale)}</p>
           </div>
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             {/* Skála-PONT, nem százalék: az átlagos |önkép−külső| gap 0–100-as
                 skálapontban értendő — a korábbi „%" suffix hamis mértékegység
                 volt (a kártya-szintű gap-ek is „pont"-ban jelennek meg). */}
-            <p className="font-fraunces text-[22px] leading-none text-[var(--color-text-primary)]">
+            <p className="font-fraunces text-heading leading-none text-[var(--color-text-primary)]">
               {avgGapPct} {t("comparison.pointsUnitShort", locale)}
             </p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
@@ -462,11 +462,11 @@ export function ComparisonTab({
       {/* 3. Dimension comparison cards */}
       <div>
         <div className="mb-4 flex gap-4">
-          <span className="flex items-center gap-1.5 text-[11px] text-[var(--color-text-muted)]">
+          <span className="flex items-center gap-1.5 text-note text-[var(--color-text-muted)]">
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
             {t("comparison.legendSelf", locale)}
           </span>
-          <span className="flex items-center gap-1.5 text-[11px] text-[var(--color-text-muted)]">
+          <span className="flex items-center gap-1.5 text-note text-[var(--color-text-muted)]">
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: "var(--color-accent-primary-soft)" }} />
             {t("comparison.legendObserver", locale)}
           </span>
@@ -497,7 +497,7 @@ export function ComparisonTab({
                     // „figyelemre érdemes vakfolt", nem hiba — a korábbi piros
                     // (state-error) szégyen-jelzés kivezetve.
                     <span
-                      className="rounded px-2 py-0.5 text-[11px] font-medium"
+                      className="rounded px-2 py-0.5 text-note font-medium"
                       style={{
                         backgroundColor: gap < DIFF_MIN_GAP ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-highlight-warm)",
                         color: gap < DIFF_MIN_GAP ? "var(--color-accent-self-deep)" : gap < 20 ? "var(--color-bronze-dark)" : "var(--color-accent-primary-strong)",
@@ -588,11 +588,11 @@ export function ComparisonTab({
                   <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-secondary)]">{insight}</p>
                 )}
                 <div className="mt-2 flex gap-3">
-                  <span className="flex items-center gap-1 text-[11px] text-[var(--color-text-muted)]">
+                  <span className="flex items-center gap-1 text-note text-[var(--color-text-muted)]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
                     {t("comparison.selfAssessment", locale)}: {bs.self}
                   </span>
-                  <span className="flex items-center gap-1 text-[11px] text-[var(--color-text-muted)]">
+                  <span className="flex items-center gap-1 text-note text-[var(--color-text-muted)]">
                     <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ backgroundColor: "var(--color-accent-primary-soft)" }} />
                     {t("comparison.others", locale)}: {bs.observer}
                   </span>

@@ -47,7 +47,7 @@ export function CompareConsentClient({ token, inviterName }: CompareConsentClien
       <SectionEyebrow tone="muted">
         {t("results.compareConsentTitle", locale)}
       </SectionEyebrow>
-      <h1 className="mt-2 font-fraunces text-[26px] leading-tight tracking-tight text-ink">
+      <h1 className="mt-2 font-fraunces text-title leading-tight tracking-tight text-ink">
         {tf("results.compareConsentBody", locale, { name: inviterName })}
       </h1>
       <p className="mt-4 rounded-xl border border-sand bg-cream/60 p-4 text-caption leading-relaxed text-ink-body">

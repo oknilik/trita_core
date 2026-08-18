@@ -94,7 +94,7 @@ function PackageCard({
 
       <div className="mt-2 flex flex-col gap-1">
         {features.map((f) => (
-          <span key={f} className="text-[11px] text-[var(--color-text-secondary)]">
+          <span key={f} className="text-note text-[var(--color-text-secondary)]">
             <span className="mr-1 font-bold text-[var(--color-accent-self)]">✓</span>
             {f}
           </span>
@@ -106,7 +106,7 @@ function PackageCard({
         onClick={onButtonClick}
         disabled={buttonStyle === "done"}
         className={[
-          "mt-3 min-h-[44px] w-full rounded-lg py-2 text-center text-[11px] font-semibold transition",
+          "mt-3 min-h-[44px] w-full rounded-lg py-2 text-center text-note font-semibold transition",
           buttonStyle === "bronze" &&
             "bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:brightness-110",
           buttonStyle === "ghost" &&
@@ -201,7 +201,7 @@ export function ProgressBar({
             <span className="text-xs font-semibold text-[var(--color-text-primary)]">
               {t("progress.title", locale)}
             </span>
-            <span className="text-[11px] text-[var(--color-text-muted)]">
+            <span className="text-note text-[var(--color-text-muted)]">
               {completed} / {total} {t("progress.done", locale)}
             </span>
           </div>
@@ -211,7 +211,7 @@ export function ProgressBar({
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+          <p className="mt-1.5 text-note text-[var(--color-text-muted)]">
             {nextStepText}:{" "}
             <strong className="font-semibold text-[var(--color-action-primary-bg)]">
               {nextStepName}
@@ -255,7 +255,7 @@ export function ProgressBar({
                     <p className="text-caption font-medium text-[var(--color-text-muted)] line-through">
                       {step.name}
                     </p>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">{step.desc}</p>
+                    <p className="text-note text-[var(--color-text-muted)]">{step.desc}</p>
                   </div>
                   <span className="rounded bg-[var(--color-surface-self-accent-soft)] px-2 py-0.5 text-micro font-semibold text-[var(--color-accent-self-deep)]">
                     {t("progress.stepDone", locale)}
@@ -318,7 +318,7 @@ export function ProgressBar({
                   <p className="text-caption font-medium text-[var(--color-text-primary)]">
                     {t("progress.sendInvitations", locale)}
                   </p>
-                  <p className="text-[11px] text-[var(--color-text-muted)]">
+                  <p className="text-note text-[var(--color-text-muted)]">
                     {hasSelfPlus
                       ? t("progress.sendInvitationsDesc", locale)
                       : t("progress.afterPlus", locale)}
@@ -328,7 +328,7 @@ export function ProgressBar({
                   <button
                     type="button"
                     onClick={onNavigateToInvites}
-                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-[var(--color-action-primary-fg)]"
+                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-note font-semibold text-[var(--color-action-primary-fg)]"
                   >
                     {t("progress.sendInvitationCta", locale)}
                   </button>
@@ -337,7 +337,7 @@ export function ProgressBar({
                   <button
                     type="button"
                     disabled
-                    className="shrink-0 rounded-lg bg-[var(--color-border-default)] px-3.5 py-1.5 text-[11px] font-semibold text-[var(--color-text-muted)]"
+                    className="shrink-0 rounded-lg bg-[var(--color-border-default)] px-3.5 py-1.5 text-note font-semibold text-[var(--color-text-muted)]"
                   >
                     {t("progress.availableAfterPlus", locale)}
                   </button>
@@ -366,14 +366,14 @@ export function ProgressBar({
                   <p className="text-caption font-medium text-[var(--color-text-primary)]">
                     {t("progress.receiveFeedback", locale)}
                   </p>
-                  <p className="text-[11px] text-[var(--color-text-muted)]">
+                  <p className="text-note text-[var(--color-text-muted)]">
                     {observersSent
                       ? `${receivedCount} / ${sentCount} ${t("progress.feedbackReceived", locale)}`
                       : t("progress.afterSending", locale)}
                   </p>
                 </div>
                 {observersSent && !observersCompleted && (
-                  <span className="text-[11px] font-medium text-[var(--color-accent-primary-strong)]">
+                  <span className="text-note font-medium text-[var(--color-accent-primary-strong)]">
                     {t("progress.waiting", locale)}
                   </span>
                 )}
@@ -381,7 +381,7 @@ export function ProgressBar({
                   <button
                     type="button"
                     onClick={onNavigateToComparison}
-                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-[11px] font-semibold text-[var(--color-action-primary-fg)]"
+                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-note font-semibold text-[var(--color-action-primary-fg)]"
                   >
                     {t("progress.viewResults", locale)}
                   </button>

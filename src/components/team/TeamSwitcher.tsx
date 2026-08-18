@@ -59,7 +59,7 @@ export function TeamSwitcher({
         disabled={busy}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-white/[0.08] px-3 py-1.5 text-[12px] font-medium text-white/[0.82] transition hover:bg-white/[0.14] disabled:opacity-60 md:min-h-[36px]"
+        className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-white/[0.08] px-3 py-1.5 text-xs font-medium text-white/[0.82] transition hover:bg-white/[0.14] disabled:opacity-60 md:min-h-[36px]"
       >
         <span className="text-micro uppercase tracking-widest text-white/[0.45]">
           {isHu ? "Csapat" : "Team"}

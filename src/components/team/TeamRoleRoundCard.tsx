@@ -60,7 +60,7 @@ export function TeamRoleRoundCard({
           <SectionEyebrow tone="muted">
             {isHu ? "csapat szerep teszt" : "team role assessment"}
           </SectionEyebrow>
-          <h3 className="mt-1 font-fraunces text-[18px] text-ink">
+          <h3 className="mt-1 font-fraunces text-heading text-ink">
             {isHu ? "Csapatszerep kör" : "Team role round"}
           </h3>
         </div>
@@ -78,7 +78,7 @@ export function TeamRoleRoundCard({
         />
       </div>
 
-      <p className="mt-2 text-[12px] leading-relaxed text-ink-body">
+      <p className="mt-2 text-xs leading-relaxed text-ink-body">
         {isHu
           ? "A TeamRole csapatszerep teszt feltérképezi, ki milyen szerepben erős a csapatmunkában. A személyiségprofilból becslés már elérhető, de a valódi kérdőív pontosabb képet ad."
           : "The TeamRole team role test maps out everyone's strengths in teamwork. Profile-based estimates are available, but the actual questionnaire gives a more accurate picture."}
@@ -87,19 +87,19 @@ export function TeamRoleRoundCard({
       {/* Progress */}
       <div className="mt-4 grid grid-cols-3 gap-2">
         <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
-          <p className="font-fraunces text-[20px] leading-none text-sage-dark">{completedCount}</p>
+          <p className="font-fraunces text-heading leading-none text-sage-dark">{completedCount}</p>
           <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "kitöltötte" : "completed"}
           </p>
         </div>
         <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
-          <p className="font-fraunces text-[20px] leading-none text-[var(--color-accent-primary-strong)]">{estimateCount}</p>
+          <p className="font-fraunces text-heading leading-none text-[var(--color-accent-primary-strong)]">{estimateCount}</p>
           <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "becslésből" : "estimated"}
           </p>
         </div>
         <div className="min-w-0 rounded-xl border border-sand bg-cream px-2 py-2.5 text-center md:px-3">
-          <p className="font-fraunces text-[20px] leading-none text-ink">{totalMembers - completedCount - estimateCount}</p>
+          <p className="font-fraunces text-heading leading-none text-ink">{totalMembers - completedCount - estimateCount}</p>
           <p className="mt-1 break-words text-micro uppercase tracking-wide text-muted md:tracking-widest">
             {isHu ? "hiányzik" : "missing"}
           </p>
@@ -111,7 +111,7 @@ export function TeamRoleRoundCard({
         <div className="mt-4 divide-y divide-sand rounded-xl border border-sand bg-surface-card">
           {members.map((m) => (
             <div key={m.userId} className="flex items-center justify-between px-3 py-2">
-              <span className="text-[12px] text-ink">{m.name}</span>
+              <span className="text-xs text-ink">{m.name}</span>
               {m.hasQuestionnaire ? (
                 <DashboardStatusChip label={isHu ? "Kitöltve" : "Done"} tone="sage" />
               ) : m.hasEstimate ? (
@@ -131,7 +131,7 @@ export function TeamRoleRoundCard({
             type="button"
             onClick={() => void toggleRound()}
             disabled={loading}
-            className={`min-h-[44px] rounded-lg px-5 text-[12px] font-semibold transition disabled:opacity-50 ${
+            className={`min-h-[44px] rounded-lg px-5 text-xs font-semibold transition disabled:opacity-50 ${
               isRoundActive
                 ? "border border-sand bg-surface-card text-ink-body hover:border-state-error-border hover:text-state-error-fg"
                 : "bg-sage text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
@@ -144,7 +144,7 @@ export function TeamRoleRoundCard({
                 : (isHu ? "Csapatszerep kör indítása" : "Start team role round")}
           </button>
           {isRoundActive && !allDone && (
-            <span className="text-[11px] text-muted">
+            <span className="text-note text-muted">
               {isHu
                 ? `${totalMembers - completedCount} tag még nem töltötte ki`
                 : `${totalMembers - completedCount} members haven't completed yet`}

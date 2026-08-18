@@ -402,7 +402,7 @@ export default async function OrgDetailPage({
           </SectionEyebrow>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
+          <h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-hero">
             {org.name}
           </h1>
         )}
@@ -439,7 +439,7 @@ export default async function OrgDetailPage({
                 // Sötét tinta a glow-hátterén: a fehér itt 2,3:1 volt (AA-bukás
                 // mindkét színsémán), a hero-gradiens viszont fix, ezért a
                 // kontrasztot a szövegszín fordításával nyerjük vissza.
-                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-xs font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: orgHeroTheme.primary }}
               >
                 {isHu ? "Új mérés indítása" : "Start a measurement"}
@@ -447,7 +447,7 @@ export default async function OrgDetailPage({
             ) : (
               <Link
                 href={`/org/${orgId}?tab=teams`}
-                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+                className="flex min-h-[44px] items-center rounded-[9px] px-5 py-2 text-xs font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
                 style={{ backgroundColor: orgHeroTheme.primary }}
               >
                 {isHu ? "Csapatok" : "Teams"}
@@ -455,7 +455,7 @@ export default async function OrgDetailPage({
             )}
             <Link
               href={`/org/${orgId}?tab=members`}
-              className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]"
+              className="flex min-h-[44px] items-center rounded-[9px] bg-white/[0.07] px-5 py-2 text-xs font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]"
             >
               {isHu ? "Tagok" : "Members"}
             </Link>
@@ -465,7 +465,7 @@ export default async function OrgDetailPage({
           isAdminForActions ? (
             <Link
               href={`/org/${orgId}/settings`}
-              className="inline-flex text-[12px] font-semibold text-[var(--color-text-on-inverse-muted)] transition hover:text-white"
+              className="inline-flex text-xs font-semibold text-[var(--color-text-on-inverse-muted)] transition hover:text-white"
             >
               {t("org.settingsLink", locale)} →
             </Link>
@@ -480,15 +480,15 @@ export default async function OrgDetailPage({
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.membersLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.memberCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.teamsLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.teamCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.teamCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.activeLabel", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.activeCampaignCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.activeCampaignCount}</p>
               </div>
             </div>
 
@@ -528,15 +528,15 @@ export default async function OrgDetailPage({
         <div className="mt-3 grid grid-cols-3 gap-2">
           <div className="rounded-xl bg-cream px-3 py-2">
             <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.memberCount}</p>
+            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.memberCount}</p>
           </div>
           <div className="rounded-xl bg-cream px-3 py-2">
             <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.teamCount}</p>
+            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.teamCount}</p>
           </div>
           <div className="rounded-xl bg-cream px-3 py-2">
             <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
+            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
           </div>
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">

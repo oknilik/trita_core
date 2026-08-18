@@ -491,10 +491,10 @@ export function ProfileHero({
         // másik oldalán, önálló vizuális fókuszként jelenik meg.
         <div id="profile-hero-profile-side" className="mb-0.5">
           <div className="min-w-0">
-            <h1 className="break-words font-fraunces text-[26px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[34px]">
+            <h1 className="break-words font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-display">
               {userName}
             </h1>
-            <p className="mt-1 text-[11px] text-[var(--color-text-on-inverse-muted)]">
+            <p className="mt-1 text-note text-[var(--color-text-on-inverse-muted)]">
               {t("results.heroAssessment", locale)} {completedAt}
             </p>
           </div>
@@ -504,7 +504,7 @@ export function ProfileHero({
         <div>
           {/* Az ál-percentilis badge végleg kivezetve (B17) — valós norma-
               adattal térhet vissza (terv P4.3). */}
-          <span className="font-fraunces text-[18px] italic text-[var(--color-accent-primary-soft)] md:text-[22px]">
+          <span className="font-fraunces text-heading italic text-[var(--color-accent-primary-soft)] md:text-heading">
             {personalityType}
           </span>
         </div>
@@ -560,7 +560,7 @@ export function ProfileHero({
               disabled={shareLoading}
               variant="ghost"
               onInverse
-              className="rounded-[9px] px-[18px] text-[11px] font-medium"
+              className="rounded-[9px] px-[18px] text-note font-medium"
             >
               <span className="inline-flex items-center gap-2">
                 <ShareIcon />
@@ -574,7 +574,7 @@ export function ProfileHero({
             disabled={pdfLoading}
             variant="primary"
             onInverse
-            className="rounded-[9px] px-[18px] text-[11px] font-medium transition-all duration-300 hover:brightness-110"
+            className="rounded-[9px] px-[18px] text-note font-medium transition-all duration-300 hover:brightness-110"
             style={{
               backgroundColor: "var(--color-accent-primary-soft)",
               color: "var(--color-text-on-accent)",
@@ -640,13 +640,13 @@ export function ProfileHero({
                   <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                     {t("results.heroGlyphEyebrow", locale)}
                   </p>
-                  <h1 className="mt-1.5 break-words font-fraunces text-[27px] leading-none tracking-tight text-[var(--color-text-on-inverse)] md:mt-2 md:text-[46px]">
+                  <h1 className="mt-1.5 break-words font-fraunces text-title leading-none tracking-tight text-[var(--color-text-on-inverse)] md:mt-2 md:text-hero">
                     {personalityType}
                   </h1>
-                  <p className="mt-2 font-fraunces text-[14px] leading-snug italic text-[var(--color-accent-primary-soft)] md:mt-4 md:text-[20px]">
+                  <p className="mt-2 font-fraunces text-sm leading-snug italic text-[var(--color-accent-primary-soft)] md:mt-4 md:text-heading">
                     {glyphPairLabel}
                   </p>
-                  <p className="mt-2 max-w-[420px] text-[11px] leading-[1.45] text-[var(--color-text-on-inverse-muted)] md:mt-3 md:text-[14px] md:leading-relaxed">
+                  <p className="mt-2 max-w-[420px] text-note leading-[1.45] text-[var(--color-text-on-inverse-muted)] md:mt-3 md:text-sm md:leading-relaxed">
                     {glyphGrammar}
                   </p>
                 </div>

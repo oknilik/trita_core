@@ -129,7 +129,7 @@ export function SurfaceHero({
                   // legvilágosabb gradiens-stopon 2,5–3,0:1-et adott, vagyis a
                   // mondat gyakorlatilag eltűnt a panelen. A saját token
                   // mindkét sémán ≥ 4,6:1, és halkabb marad a főcímnél.
-                  "mt-2 max-w-[620px] text-[14px] leading-relaxed text-[var(--color-text-on-inverse-muted)] md:mt-3",
+                  "mt-2 max-w-[620px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)] md:mt-3",
                   summaryClassName,
                 )}
               >

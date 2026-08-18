@@ -162,7 +162,7 @@ export function NavBar({
           <div className="flex items-center">
             <Link
               href="/try"
-              className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
+              className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-xs font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
             >
               <span>{t("nav.ctaSharedOwnProfile", locale)}</span>
             </Link>
@@ -244,7 +244,7 @@ export function NavBar({
             aria-label="trita"
             className={`pointer-events-auto justify-self-start rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
           >
-            <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
+            <TritaWordmark className="text-heading tracking-[-0.04em]" />
           </Link>
 
           {/* ═══ CENTER LINKS — desktop only ═══ */}
@@ -281,7 +281,7 @@ export function NavBar({
                 <Link
                   href={publicCtaHref}
                   aria-label={publicCtaText}
-                  className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-[12px] font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption ${FOCUS_RING_CLASS}`}
+                  className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-xs font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption ${FOCUS_RING_CLASS}`}
                 >
                   <span>{publicCtaText}</span>
                 </Link>
@@ -315,10 +315,10 @@ export function NavBar({
       {shouldShowSignedInHint && signedInHint ? (
         <div className="bg-[var(--color-surface-canvas)]">
           <div className="mx-auto flex w-[calc(100%-1.5rem)] max-w-[1180px] items-start justify-between gap-3 border-b border-[var(--color-border-default)] px-5 py-2.5 lg:px-8">
-            <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
+            <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">{signedInHint.body}</p>
             <Link
               href={signedInHint.ctaHref}
-              className={`shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-[11px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+              className={`shrink-0 rounded-md border border-[var(--color-border-soft)] bg-surface-card px-3 py-1.5 text-note font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
             >
               {signedInHint.ctaLabel}
             </Link>
@@ -352,7 +352,7 @@ export function NavBar({
               <Link
                 href="/sign-out"
                 onClick={() => setDrawerOpen(false)}
-                className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 {t("nav.signOut", locale)}
               </Link>
@@ -364,7 +364,7 @@ export function NavBar({
               <Link
                 href="/sign-in"
                 onClick={() => setDrawerOpen(false)}
-                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-[14px] font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-lg px-2 text-sm font-medium text-[var(--color-accent-self-deep)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 <span>{t("nav.signIn", locale)}</span>
               </Link>
@@ -372,7 +372,7 @@ export function NavBar({
                 href={publicCtaHref}
                 aria-label={publicCtaText}
                 onClick={() => setDrawerOpen(false)}
-                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-[13px] font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
+                className={`flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-caption font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
               >
                 <span>{publicCtaText}</span>
               </Link>

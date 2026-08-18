@@ -145,7 +145,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
         <div>
           {/* Nulla kapcsolatnál a „Válassz a kapcsolataid közül" cím
               értelmetlen — ott a meghívás maga a feladat. */}
-          <h2 className="font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] sm:text-[28px]">
+          <h2 className="font-fraunces text-title leading-tight text-[var(--color-text-primary)] sm:text-title">
             {hasAnyConnection
               ? t("results.compareConnectionsTitle", locale)
               : t("results.compareConnectionsEmptyTitle", locale)}
@@ -202,7 +202,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="truncate font-fraunces text-[20px] text-[var(--color-text-primary)]">
+                    <h3 className="truncate font-fraunces text-heading text-[var(--color-text-primary)]">
                       {otherName}
                     </h3>
                     <span className="flex items-center gap-1.5 text-micro font-medium text-[var(--color-accent-self-deep)]">
@@ -284,7 +284,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
             </svg>
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-fraunces text-[18px] text-[var(--color-text-primary)]">
+            <p className="font-fraunces text-heading text-[var(--color-text-primary)]">
               {hasAnyConnection
                 ? t("results.compareInvitePromptTitle", locale)
                 : t("results.compareInviteFirstTitle", locale)}
@@ -373,7 +373,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                     <button
                       type="button"
                       onClick={() => handleCopy(inv)}
-                      className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-highlight-warm)]"
+                      className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-highlight-warm)]"
                     >
                       {copiedId === inv.id
                         ? t("results.compareCopied", locale)
@@ -383,7 +383,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                       type="button"
                       onClick={() => setQrForId(qrForId === inv.id ? null : inv.id)}
                       aria-expanded={qrForId === inv.id}
-                      className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-[12px] font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-highlight-warm)]"
+                      className="inline-flex min-h-[38px] items-center rounded-[10px] bg-surface-card px-3 text-xs font-semibold text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-highlight-warm)]"
                     >
                       QR
                     </button>
@@ -393,7 +393,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                   type="button"
                   onClick={() => handleRevoke(inv.id)}
                   disabled={busy}
-                  className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-[12px] font-medium text-[var(--color-text-muted)] transition-colors hover:text-state-error-fg disabled:opacity-50"
+                  className="inline-flex min-h-[38px] items-center rounded-[10px] px-3 text-xs font-medium text-[var(--color-text-muted)] transition-colors hover:text-state-error-fg disabled:opacity-50"
                 >
                   {t("results.compareRevoke", locale)}
                 </button>

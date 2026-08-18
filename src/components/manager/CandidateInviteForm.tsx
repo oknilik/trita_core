@@ -181,7 +181,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
             <span className="block text-caption font-semibold text-ink">
               {isHu ? "Csapatszerep-kérdőív is" : "Include team-role questionnaire"}
             </span>
-            <span className="mt-0.5 block text-[12px] leading-relaxed text-ink-body">
+            <span className="mt-0.5 block text-xs leading-relaxed text-ink-body">
               {isHu
                 ? "A teszt után a jelölt egy rövid (~3 perces) csapatszerep-kérdőívet is kap — átugorhatja."
                 : "After the assessment the candidate also gets a short (~3 min) team-role questionnaire — they can skip it."}
@@ -196,7 +196,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
               type="button"
               onClick={() => setInviteLocale("hu")}
               className={[
-                "min-h-[44px] rounded-lg border text-[12px] font-semibold transition",
+                "min-h-[44px] rounded-lg border text-xs font-semibold transition",
                 inviteLocale === "hu"
                   ? "border-accent-candidate-border bg-accent-candidate-soft text-accent-candidate-strong"
                   : "border-sand bg-cream text-ink-body hover:border-accent-candidate-border hover:bg-surface-card",
@@ -208,7 +208,7 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
               type="button"
               onClick={() => setInviteLocale("en")}
               className={[
-                "min-h-[44px] rounded-lg border text-[12px] font-semibold transition",
+                "min-h-[44px] rounded-lg border text-xs font-semibold transition",
                 inviteLocale === "en"
                   ? "border-accent-candidate-border bg-accent-candidate-soft text-accent-candidate-strong"
                   : "border-sand bg-cream text-ink-body hover:border-accent-candidate-border hover:bg-surface-card",
@@ -226,13 +226,13 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3">
-          <p className="text-[12px] text-ink-body">
+          <p className="text-xs text-ink-body">
             {isHu ? "Meghívónként 1 credit kerül felhasználásra." : "Each invite uses 1 credit."}
           </p>
           <button
             type="submit"
             disabled={loading}
-            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-6 text-[12px] font-semibold text-[var(--color-text-on-candidate)] transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
+            className="min-h-[44px] rounded-[10px] bg-accent-candidate px-6 text-xs font-semibold text-[var(--color-text-on-candidate)] transition hover:bg-accent-candidate-strong disabled:cursor-not-allowed disabled:bg-sand disabled:text-ink-body/50"
           >
             {loading
               ? t("manager.candidateInvite.creating", loc)
@@ -249,17 +249,17 @@ export function CandidateInviteForm({ locale, teams, orgId, preselectedTeamId }:
           <p className="mb-2 text-body font-semibold text-sage-dark">
             {t("manager.candidateInvite.inviteCreated", loc)}
           </p>
-          <p className="mb-3 text-[12px] text-sage-dark/80">
+          <p className="mb-3 text-xs text-sage-dark/80">
             {t("manager.candidateInvite.copyInstruction", loc)}
           </p>
           <div className="flex items-center gap-2">
-            <code className="flex-1 truncate rounded-lg border border-sage/20 bg-surface-card px-3 py-2 text-[12px] text-ink-body">
+            <code className="flex-1 truncate rounded-lg border border-sage/20 bg-surface-card px-3 py-2 text-xs text-ink-body">
               {`${appUrl}/apply/${createdInvite.token}`}
             </code>
             <button
               type="button"
               onClick={handleCopy}
-              className="min-h-[44px] shrink-0 rounded-lg border border-sage/25 bg-surface-card px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage-soft"
+              className="min-h-[44px] shrink-0 rounded-lg border border-sage/25 bg-surface-card px-4 text-xs font-semibold text-sage-dark transition hover:bg-sage-soft"
             >
               {copied ? t("manager.candidateInvite.copied", loc) : t("manager.candidateInvite.copy", loc)}
             </button>

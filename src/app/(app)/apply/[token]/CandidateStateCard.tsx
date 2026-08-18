@@ -23,7 +23,7 @@ export function CandidateStateCard({
             aria-hidden
             className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-accent-candidate via-accent-candidate-mid to-accent-candidate-primary"
           />
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-candidate-soft text-[26px] leading-none">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-candidate-soft text-title leading-none">
             <span aria-hidden>{icon}</span>
           </div>
           <h1 className="mt-5 font-fraunces text-title tracking-tight text-ink">

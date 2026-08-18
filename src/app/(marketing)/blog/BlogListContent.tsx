@@ -194,7 +194,7 @@ export function BlogListContent({
         <div className="mx-auto max-w-5xl">
           <div className="mb-4 flex items-center gap-3">
             <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
               Blog
             </span>
           </div>
@@ -206,7 +206,7 @@ export function BlogListContent({
               {t("blog.heroTitleEm", displayLocale)}
             </em>
           </h1>
-          <p className="max-w-[560px] text-[16px] font-light leading-relaxed text-ink-body">
+          <p className="max-w-[560px] text-base font-light leading-relaxed text-ink-body">
             {t("blog.heroSub", displayLocale)}
           </p>
 
@@ -300,7 +300,7 @@ export function BlogListContent({
                     <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
                       {t("blog.featured", displayLocale)}
                     </span>
-                    <p className="relative font-fraunces text-[21px] font-light italic leading-[1.35] text-white">
+                    <p className="relative font-fraunces text-heading font-light italic leading-[1.35] text-white">
                       „{featured.heroQuote ?? featured.description.split(/(?<=[.!?])\s/)[0]}”
                     </p>
                   </div>
@@ -339,7 +339,7 @@ export function BlogListContent({
                         href={`/blog/${post.slug}`}
                         className="flex items-start gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3 transition-colors hover:border-[var(--color-surface-self-border)]"
                       >
-                        <span className="text-fluid-title font-fraunces text-[22px] italic leading-none text-[var(--color-accent-primary)]">
+                        <span className="text-fluid-title font-fraunces text-heading italic leading-none text-[var(--color-accent-primary)]">
                           {i + 1}
                         </span>
                         <span>

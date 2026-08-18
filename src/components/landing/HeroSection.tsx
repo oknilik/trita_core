@@ -50,7 +50,7 @@ function SelfPanel() {
           {t("landing.selfPanelName", locale)}
         </p>
         <div className="mt-0.5 flex items-center gap-2.5">
-          <p className="font-fraunces text-[22px] font-medium italic text-[var(--color-accent-primary-soft)]">
+          <p className="font-fraunces text-heading font-medium italic text-[var(--color-accent-primary-soft)]">
             {t("landing.selfPanelType", locale)}
           </p>
           {/* Valós riport-állítás: elsődleges csapatszerep-hajlam chip —
@@ -59,7 +59,7 @@ function SelfPanel() {
             {t("landing.selfPanelRole", locale)}
           </span>
         </div>
-        <p className="mt-2 max-w-[360px] text-[11px] leading-[1.55] text-white/75">
+        <p className="mt-2 max-w-[360px] text-note leading-[1.55] text-white/75">
           {t("landing.selfPanelInsight", locale)}
         </p>
       </div>
@@ -77,7 +77,7 @@ function SelfPanel() {
                 >
                   <p className="mb-1 truncate text-micro text-[var(--color-text-muted)]">{dim.name}</p>
                   <p
-                    className="mb-1 font-fraunces text-[20px] leading-none"
+                    className="mb-1 font-fraunces text-heading leading-none"
                     style={{ color: colors.strong }}
                   >
                     {dim.value}
@@ -135,7 +135,7 @@ function SelfPanel() {
 
       {/* ═══ FADE-OUT CTA ═══ */}
       <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
-        <span className="text-[11px] font-medium text-[var(--color-action-primary-bg)]">
+        <span className="text-note font-medium text-[var(--color-action-primary-bg)]">
           {t("landing.selfFadeCta", locale)}
         </span>
       </div>
@@ -165,18 +165,18 @@ function TeamPanel() {
         <p className="text-micro uppercase tracking-widest text-white/70">
           {t("landing.teamPanelEyebrow", locale)}
         </p>
-        <p className="mt-2 font-fraunces text-[22px] font-medium text-white">
+        <p className="mt-2 font-fraunces text-heading font-medium text-white">
           {t("landing.teamPanelTitle", locale)}
         </p>
         <div className="mt-0.5 flex flex-wrap items-center gap-2.5">
-          <p className="font-fraunces text-[20px] font-medium italic text-[var(--color-layer-team-glow)]">
+          <p className="font-fraunces text-heading font-medium italic text-[var(--color-layer-team-glow)]">
             {t("landing.teamPatternName", locale)}
           </p>
           <span className="rounded-md bg-white/15 px-2 py-0.5 text-micro font-medium text-white/85">
             {t("landing.teamPanelPublished", locale)}
           </span>
         </div>
-        <p className="mt-2 text-[11px] leading-[1.55] text-white/75">
+        <p className="mt-2 text-note leading-[1.55] text-white/75">
           {t("landing.teamPanelValidated", locale)}
         </p>
       </div>
@@ -188,13 +188,13 @@ function TeamPanel() {
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatMembersLabel", locale)}
             </p>
-            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">5</p>
+            <p className="mt-1 font-fraunces text-heading leading-none text-ink">5</p>
           </div>
           <div className="min-w-0 border-r border-[var(--color-border-soft)] px-2 py-3.5">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
               {t("landing.teamStatCompletionLabel", locale)}
             </p>
-            <p className="mt-1 font-fraunces text-[20px] leading-none text-ink">100%</p>
+            <p className="mt-1 font-fraunces text-heading leading-none text-ink">100%</p>
           </div>
           <div className="min-w-0 px-2 py-3.5">
             <p className="truncate font-mono text-micro uppercase tracking-widest text-muted">
@@ -209,14 +209,14 @@ function TeamPanel() {
         <div className="mt-4 flex flex-col gap-2.5">
           {dims.map((d) => (
             <div key={d.name} className="flex items-center gap-2 md:gap-3">
-              <span className="w-[92px] shrink-0 truncate text-[11px] text-ink-body md:w-[118px]">{d.name}</span>
+              <span className="w-[92px] shrink-0 truncate text-note text-ink-body md:w-[118px]">{d.name}</span>
               <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-sand">
                 <div
                   className="h-full rounded-full bg-[var(--color-layer-team-accent)]"
                   style={{ width: `${d.mean}%` }}
                 />
               </div>
-              <span className="w-8 shrink-0 text-right font-mono text-[11px] tabular-nums text-ink">
+              <span className="w-8 shrink-0 text-right font-mono text-note tabular-nums text-ink">
                 {d.mean}
               </span>
             </div>
@@ -234,14 +234,14 @@ function TeamPanel() {
           <p className="mb-1 text-micro font-bold uppercase tracking-wide text-[var(--color-layer-team-accent)]">
             {t("landing.teamNarrativeLabel", locale)}
           </p>
-          <p className="text-[11px] leading-relaxed text-ink-body">
+          <p className="text-note leading-relaxed text-ink-body">
             {t("landing.teamNarrativeText", locale)}
           </p>
         </div>
       </div>
 
       <div className="flex h-11 items-center justify-center rounded-b-2xl bg-gradient-to-b from-[var(--color-surface-card)] to-[var(--color-surface-subtle)]">
-        <span className="text-[11px] font-medium text-[var(--color-layer-team-accent)]">
+        <span className="text-note font-medium text-[var(--color-layer-team-accent)]">
           {t("landing.teamFadeCta", locale)}
         </span>
       </div>
@@ -291,7 +291,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   a világosabb vonal elszíneződésnek látszik. */}
               <div className="h-[1.5px] w-5 shrink-0" style={{ background: eyebrowColor }} />
               <span
-                className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest"
+                className="font-dm-sans text-label uppercase"
                 style={{ color: eyebrowColor }}
               >
                 {isSelf ? t("landing.selfEyebrow", locale) : t("landing.teamEyebrow", locale)}
@@ -324,7 +324,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
           {/* 3. Sub + CTA + Microcopy — a H1 alatt, itt megmarad a 0.1s-os
               lépcsőzés (nem az LCP-elem, nem késleltet festést). */}
           <div className="order-3 flex flex-col md:col-start-1 md:row-start-2">
-            <p className={`${riseIn} mb-7 text-[16px] font-light leading-relaxed text-ink-body`}>
+            <p className={`${riseIn} mb-7 text-base font-light leading-relaxed text-ink-body`}>
               {isSelf ? t("landing.selfSub", locale) : t("landing.teamSub", locale)}
             </p>
 
@@ -384,7 +384,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
                   { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                 ].map((m) => (
-                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
+                  <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
                     {m.text}
                   </span>
@@ -399,7 +399,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
                     { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                   ].map((m) => (
-                    <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-[11px] text-[var(--color-text-secondary)]">
+                    <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                       <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />
                       {m.text}
                     </span>

@@ -33,7 +33,7 @@ export function JourneyNextStepCard({
           {secondary ? (
             <Link
               href={secondary.href}
-              className="inline-flex text-[12px] font-semibold text-[var(--color-accent-primary-strong)] no-underline transition hover:text-bronze-dark"
+              className="inline-flex text-xs font-semibold text-[var(--color-accent-primary-strong)] no-underline transition hover:text-bronze-dark"
             >
               {secondary.label} →
             </Link>

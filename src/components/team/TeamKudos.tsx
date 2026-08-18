@@ -119,7 +119,7 @@ export function TeamKudos({
               key={candidate}
               type="button"
               onClick={() => setBadge(candidate)}
-              className={`flex h-9 w-9 items-center justify-center rounded-lg border text-[17px] transition ${
+              className={`flex h-9 w-9 items-center justify-center rounded-lg border text-heading transition ${
                 badge === candidate
                   ? "border-sage bg-sage-soft"
                   : "border-sand bg-surface-card hover:border-sage-ring"
@@ -172,7 +172,7 @@ export function TeamKudos({
         <ul className="flex flex-col divide-y divide-sand">
           {received.slice(0, 8).map((item) => (
             <li key={item.id} className="flex items-start gap-3 py-2.5">
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage-soft text-[17px]">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage-soft text-heading">
                 {item.emoji ?? "🙌"}
               </span>
               <span className="min-w-0">

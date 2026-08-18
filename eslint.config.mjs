@@ -5,8 +5,12 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // UI-egységesítés (2026-07-22, F2): a 10px alatti betűméret a11y-padló
-  // alá megy — tilos (a skála legkisebb szerepe a text-micro, 10px).
+  // UI-egységesítés (2026-08-18, F4): a típus-skála immár LEFEDI a teljes
+  // felületet (hero 42 · display 34 · title 26 · heading 20 · body 15 ·
+  // caption 13 · note 11 · micro 10) + a Tailwind alap-fokok (xs/sm/base) —
+  // ezért minden arbitrary text-[Npx] tilos, nem csak a 10px alattiak.
+  // Szándékos kivétel (dekoratív, aria-hidden miniatűr) csak sor-szintű
+  // lint-kikapcsolás + indoklás mellett.
   // Terv: docs/development/ui-unification-plan.md
   {
     files: ["src/**/*.tsx"],
@@ -14,14 +18,14 @@ const eslintConfig = defineConfig([
       "no-restricted-syntax": [
         "error",
         {
-          selector: "Literal[value=/text-\\[[1-9]px\\]/]",
+          selector: "Literal[value=/text-\\[[0-9]+px\\]/]",
           message:
-            "10px alatti betűméret tilos (a11y-padló). Használd a típus-skálát: text-micro (10px) a legkisebb — ld. docs/development/ui-unification-plan.md",
+            "Arbitrary betűméret tilos. Használd a típus-skálát (text-hero/display/title/heading/body/caption/note/label/micro) vagy a Tailwind alap-fokokat (text-xs/sm/base) — ld. docs/development/ui-unification-plan.md",
         },
         {
-          selector: "TemplateElement[value.raw=/text-\\[[1-9]px\\]/]",
+          selector: "TemplateElement[value.raw=/text-\\[[0-9]+px\\]/]",
           message:
-            "10px alatti betűméret tilos (a11y-padló). Használd a típus-skálát: text-micro (10px) a legkisebb — ld. docs/development/ui-unification-plan.md",
+            "Arbitrary betűméret tilos. Használd a típus-skálát (text-hero/display/title/heading/body/caption/note/label/micro) vagy a Tailwind alap-fokokat (text-xs/sm/base) — ld. docs/development/ui-unification-plan.md",
         },
       ],
     },

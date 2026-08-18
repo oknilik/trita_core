@@ -65,15 +65,15 @@ export function TeamMeasurementTimeline({
                 >
                   <span className="flex min-w-0 flex-col">
                     <span className="truncate text-sm font-medium text-ink">{item.name}</span>
-                    <span className="text-[11px] text-muted">{typeLabel}</span>
+                    <span className="text-note text-muted">{typeLabel}</span>
                   </span>
                   <span className="flex shrink-0 items-center gap-2">
-                    <span className="text-[11px] text-muted">
+                    <span className="text-note text-muted">
                       {dateStr}
                       {closedStr ? ` – ${closedStr}` : ""}
                     </span>
                     {chip && (
-                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${chip.cls}`}>
+                      <span className={`rounded-full px-2.5 py-0.5 text-note font-semibold ${chip.cls}`}>
                         {isHu ? chip.hu : chip.en}
                       </span>
                     )}

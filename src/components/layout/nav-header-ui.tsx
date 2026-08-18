@@ -129,7 +129,7 @@ function MegaItem({
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-caption font-semibold text-[var(--color-text-primary)]">{title}</p>
-        <p className="text-[11px] leading-snug text-[var(--color-text-muted)]">{desc}</p>
+        <p className="text-note leading-snug text-[var(--color-text-muted)]">{desc}</p>
       </div>
       <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
         <path d="M4 2l4 4-4 4" />
@@ -506,7 +506,7 @@ function NavHeaderContent({
           <p className="truncate text-caption font-semibold text-[var(--color-text-primary)]">
             {displayName ?? "Saját profil"}
           </p>
-          <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">{roleLabel}</p>
+          <p className="mt-0.5 text-note text-[var(--color-text-muted)]">{roleLabel}</p>
         </div>
 
         <div className="mt-1 rounded-xl bg-surface-card px-2 py-2">
@@ -548,7 +548,7 @@ function NavHeaderContent({
 
           {orgMemberships && orgMemberships.length > 1 ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
-              <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+              <p className="pb-2 text-label uppercase text-[var(--color-text-muted)]">
                 Szervezeteim ({orgMemberships.length})
               </p>
               <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1" data-testid="nav-org-switcher">
@@ -560,7 +560,7 @@ function NavHeaderContent({
                       type="button"
                       disabled={orgSwitchBusy}
                       onClick={() => switchOrg(m.orgId, m.role)}
-                      className={`flex min-h-[38px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[12px] transition-colors ${FOCUS_RING_CLASS} ${
+                      className={`flex min-h-[38px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition-colors ${FOCUS_RING_CLASS} ${
                         isActive
                           ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
                           : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
@@ -628,7 +628,7 @@ function NavHeaderContent({
 
           {showLanguageMenuItem ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
-              <p className="pb-2 text-[11px] font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
+              <p className="pb-2 text-label uppercase text-[var(--color-text-muted)]">
                 Nyelv
               </p>
               <LanguageSwitcher variant="pills" />
@@ -676,7 +676,7 @@ function NavHeaderContent({
             aria-label="trita"
             className={`pointer-events-auto justify-self-start rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
           >
-            <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
+            <TritaWordmark className="text-heading tracking-[-0.04em]" />
           </Link>
 
           <nav
@@ -784,7 +784,7 @@ function NavHeaderContent({
                   <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                 ) : (
                   <div
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-note font-bold text-white"
                     style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
                   >
                     {initial}
@@ -793,7 +793,7 @@ function NavHeaderContent({
                 {showIdentityLoader ? (
                   <span className="h-2.5 w-20 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
                 ) : (
-                  <span className="max-w-[90px] truncate text-[12px] font-medium text-[var(--color-text-secondary)]">
+                  <span className="max-w-[90px] truncate text-xs font-medium text-[var(--color-text-secondary)]">
                     {displayName ?? "Profil"}
                   </span>
                 )}
@@ -876,8 +876,8 @@ function NavHeaderContent({
                     </div>
                   ) : (
                     <div>
-                      <p className="text-[14px] font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
-                      <p className="text-[12px] text-[var(--color-text-muted)]">{roleLabel}</p>
+                      <p className="text-sm font-medium text-[var(--color-text-primary)]">{displayName ?? "Profil"}</p>
+                      <p className="text-xs text-[var(--color-text-muted)]">{roleLabel}</p>
                     </div>
                   )}
                 </div>
@@ -903,7 +903,7 @@ function NavHeaderContent({
                       </span>
                     ) : null}
                   </span>
-                  <span className="min-w-0 flex-1 text-[15px] font-medium text-[var(--color-text-primary)]">
+                  <span className="min-w-0 flex-1 text-body font-medium text-[var(--color-text-primary)]">
                     {t("notifications.bellLabel", locale)}
                   </span>
                   <svg className="h-3.5 w-3.5 shrink-0 text-[var(--color-border-soft)] transition-colors group-hover:text-[var(--color-text-muted)]" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -967,7 +967,7 @@ function NavHeaderContent({
 
                 {showProfileMenuItem || showLanguageMenuItem ? (
                   <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
-                    <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+                    <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
                       Fiók
                     </p>
                     {showProfileMenuItem ? (
@@ -975,7 +975,7 @@ function NavHeaderContent({
                         <Link
                           href="/profile"
                           onClick={() => setMobileMenu("closed")}
-                          className={`flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                          className={`flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                             <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -989,7 +989,7 @@ function NavHeaderContent({
                         <Link
                           href="/profile/results"
                           onClick={() => setMobileMenu("closed")}
-                          className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                          className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                             <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1009,7 +1009,7 @@ function NavHeaderContent({
                         váltani — a mobilmenüből teljesen hiányzott. */}
                     {orgMemberships && orgMemberships.length > 1 ? (
                       <div className="mt-1 rounded-lg px-3 py-3">
-                        <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+                        <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
                           Szervezeteim ({orgMemberships.length})
                         </p>
                         <div className="flex max-h-56 flex-col gap-0.5 overflow-y-auto pr-1">
@@ -1024,7 +1024,7 @@ function NavHeaderContent({
                                   setMobileMenu("closed");
                                   void switchOrg(m.orgId, m.role);
                                 }}
-                                className={`flex min-h-[44px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors ${FOCUS_RING_CLASS} ${
+                                className={`flex min-h-[44px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-caption transition-colors ${FOCUS_RING_CLASS} ${
                                   isActive
                                     ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
                                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
@@ -1057,7 +1057,7 @@ function NavHeaderContent({
                       <Link
                         href="/admin"
                         onClick={() => setMobileMenu("closed")}
-                        className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                        className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                       >
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                           <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1083,7 +1083,7 @@ function NavHeaderContent({
                             signOut({ redirectUrl: "/" });
                             setMobileMenu("closed");
                           }}
-                          className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
+                          className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           Kijelentkezés
                         </button>
@@ -1092,7 +1092,7 @@ function NavHeaderContent({
 
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
-                        <p className="pb-1.5 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+                        <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
                           Nyelv
                         </p>
                         <LanguageSwitcher variant="pills" />

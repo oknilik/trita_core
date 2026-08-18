@@ -144,13 +144,23 @@ CI:
 - Avatar truth: `src/lib/ui/avatar.ts`
 
 
-## Tipográfia és tokenek (2026-07-22, UI-egységesítés F1–F2)
+## Tipográfia és tokenek (2026-07-22 F1–F2, 2026-08-18 F4)
 
-- **Típus-skála**: új kódban a 7 szerep-utility használandó — `text-display`,
-  `text-title`, `text-heading`, `text-body`, `text-caption`, `text-label`,
-  `text-micro`. Arbitrary `text-[Npx]` új kódban kerülendő; 10px alatti méret
-  lint-errort dob (kivétel: dekoratív, `aria-hidden` miniatűr, indokolt
-  eslint-disable-lel).
+- **Típus-skála**: a 9 szerep-utility — `text-hero` (42) · `text-display`
+  (34) · `text-title` (26) · `text-heading` (20) · `text-body` (15) ·
+  `text-caption` (13) · `text-note` (11, sima kisbetűs) · `text-label` (11,
+  uppercase eyebrow: 0.14em + 600) · `text-micro` (10, a padló).
+  Mellettük a **Tailwind alap-fokok legitimek** (`text-xs` 12 · `text-sm` 14
+  · `text-base` 16): a szerep-utility a SZÁNDÉKOT jelöli (eyebrow, folyószöveg,
+  címsor), az alap-fok a semleges méretezést. Ha van rá szerep, azt használd.
+- **Arbitrary `text-[Npx]` tilos** — lint-error (`no-restricted-syntax`),
+  nem csak a 10px alattiakra. Egyetlen kivétel: dekoratív, `aria-hidden`
+  miniatűr, indokolt sor-szintű lint-kikapcsolással.
+- **A skála RECEPT, nem méret**: a `text-label` betűközt (0.14em) és súlyt
+  (600) is hoz, a `text-body`/`caption`/`note` line-height-ot. Cserénél a
+  mellette maradt kézi `tracking-*`/`font-*` törlendő — különben csak
+  átneveztük a problémát. (Explicit `leading-*`/`font-*` felülír: a Tailwind
+  v4 `var(--tw-leading, …)`-en át olvassa a recept-értéket.)
 - **Eyebrow (2026-08-05, modernizálás)**: `SectionEyebrow` primitív — az
   egységes alak mindenhol: tónus-színű pötty + `text-label` uppercase felirat.
   A korábbi mono „// szekció" stílus KIVEZETVE: új kódban se `font-mono`

@@ -201,7 +201,7 @@ function SignUpContent() {
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
               {t("auth.accountEyebrow", locale)}
             </p>
-            <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-[42px]">
+            <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-hero">
               {t("auth.verifyTitle", locale)}
             </h1>
             <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
@@ -286,7 +286,7 @@ function SignUpContent() {
           <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
             {t("auth.accountEyebrow", locale)}
           </p>
-          <h1 className="mb-3 font-fraunces text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-[42px]">
+          <h1 className="mb-3 font-fraunces text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-hero">
             {t("auth.signUpTitle", locale)}
           </h1>
           <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
@@ -296,7 +296,7 @@ function SignUpContent() {
           {/* Intent selector — self-serve módban él; consulting-led alatt rejtve */}
           {!isConsultingLed() && (
             <div className="mb-5">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
+              <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
                 {t("auth.intentQuestion", locale)}
               </p>
               <IntentSelector value={intent} onChange={setIntent} />

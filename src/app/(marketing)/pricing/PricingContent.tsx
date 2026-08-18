@@ -12,7 +12,7 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-3 flex items-center gap-2">
       <span className="h-[1.5px] w-5 bg-[var(--color-accent-primary)]" />
-      <span className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+      <span className="font-dm-sans text-label font-bold uppercase text-[var(--color-accent-primary-strong)]">
         {children}
       </span>
     </div>
@@ -29,7 +29,7 @@ export function PricingContent() {
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
       <section className="px-6 pb-10 pt-14 lg:px-16 lg:pb-14 lg:pt-20">
         <div className="mx-auto max-w-5xl">
-          <p className="font-dm-sans text-[11px] font-bold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+          <p className="font-dm-sans text-label font-bold uppercase text-[var(--color-accent-primary-strong)]">
             {t("pricing.heroEyebrow", locale)}
           </p>
           <h1 className="mt-3 max-w-3xl font-fraunces text-fluid-title tracking-tight text-[var(--color-text-primary)]">
@@ -61,7 +61,7 @@ export function PricingContent() {
                     {step}
                   </span>
                   <div>
-                    <h2 className="font-dm-sans text-[15px] font-semibold text-[var(--color-text-primary)]">
+                    <h2 className="font-dm-sans text-body font-semibold text-[var(--color-text-primary)]">
                       {t(`pricing.workflow${step}Title`, locale)}
                     </h2>
                     <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
@@ -78,14 +78,14 @@ export function PricingContent() {
             <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
               {t("pricing.offerTitle", locale)}
             </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-muted)]">
               {t("pricing.offerBody", locale)}
             </p>
             <ul className="mt-5 flex flex-wrap gap-2">
               {OFFER_FACTORS.map((factor) => (
                 <li
                   key={factor}
-                  className="rounded-full border border-[var(--color-border-default)] bg-surface-card px-3 py-2 text-[12px] font-medium text-[var(--color-text-secondary)]"
+                  className="rounded-full border border-[var(--color-border-default)] bg-surface-card px-3 py-2 text-xs font-medium text-[var(--color-text-secondary)]"
                 >
                   {t(`pricing.offerFactor${factor}`, locale)}
                 </li>
@@ -115,7 +115,7 @@ export function PricingContent() {
             <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
               {t("pricing.selfTitle", locale)}
             </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-muted)]">
               {t("pricing.selfBody", locale)}
             </p>
             <Link
@@ -131,7 +131,7 @@ export function PricingContent() {
             <h2 className="font-fraunces text-2xl text-[var(--color-text-primary)]">
               {t("pricing.pilotTitle", locale)}
             </h2>
-            <p className="mt-3 text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-muted)]">
               {t("pricing.pilotBody", locale)}
             </p>
             <Link
@@ -161,7 +161,7 @@ export function PricingContent() {
               className="group rounded-xl border border-[var(--color-border-soft)] bg-surface-card"
             >
               <summary
-                className={`flex min-h-11 cursor-pointer list-none items-center rounded-xl px-5 py-4 text-[14px] font-semibold text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
+                className={`flex min-h-11 cursor-pointer list-none items-center rounded-xl px-5 py-4 text-sm font-semibold text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
               >
                 {t(`pricing.faqQ${i}`, locale)}
               </summary>

@@ -79,7 +79,7 @@ export function DashboardMetricCard({
         {title}
       </p>
       <p
-        className="font-fraunces text-[30px] leading-none tracking-tight"
+        className="font-fraunces text-title leading-none tracking-tight"
         style={{ color: valueColor ?? "var(--color-sage-deep)" }}
       >
         {value}
@@ -91,7 +91,7 @@ export function DashboardMetricCard({
       </p>
       {children ? <div className="mt-3">{children}</div> : null}
       {sub ? (
-        <p className="mt-2 text-[11px] leading-[1.55] text-ink-body">{sub}</p>
+        <p className="mt-2 text-note leading-[1.55] text-ink-body">{sub}</p>
       ) : null}
       {progressPct != null && progressColor ? (
         <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-cream">
@@ -158,7 +158,7 @@ export function DashboardActionCard({
       <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
         {eyebrow}
       </p>
-      <h2 className="mt-2 font-fraunces text-[24px] leading-none tracking-tight text-ink">
+      <h2 className="mt-2 font-fraunces text-title leading-none tracking-tight text-ink">
         {title}
       </h2>
       <div className="mt-3 text-caption leading-[1.65] text-ink-body">{body}</div>
@@ -166,7 +166,7 @@ export function DashboardActionCard({
         <Link
           href={cta.href}
           className={cn(
-            "mt-4 inline-flex min-h-[42px] items-center rounded-[10px] px-4 py-2 text-[12px] font-semibold no-underline transition",
+            "mt-4 inline-flex min-h-[42px] items-center rounded-[10px] px-4 py-2 text-xs font-semibold no-underline transition",
             cta.tone === "solid" && "bg-[var(--color-accent-primary)] text-[var(--color-text-on-accent)] hover:brightness-110",
             cta.tone === "link" && "px-0 py-0 text-[var(--color-accent-primary-strong)] hover:text-bronze-dark",
             (!cta.tone || cta.tone === "soft") &&

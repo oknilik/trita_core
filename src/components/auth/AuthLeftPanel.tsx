@@ -112,7 +112,7 @@ export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps
             </p>
 
             {/* Headline */}
-            <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
+            <h2 className="mb-2 font-fraunces text-heading leading-snug text-white">
               {c.title}
             </h2>
 
@@ -131,7 +131,7 @@ export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps
                 </p>
                 <ul className="space-y-2">
                   {c.valueItems.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-[12px] leading-snug text-white/60">
+                    <li key={item} className="flex items-start gap-2 text-xs leading-snug text-white/60">
                       <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent-primary-soft)]" />
                       {item}
                     </li>
@@ -146,7 +146,7 @@ export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps
             <p className="mb-3 text-micro font-medium uppercase tracking-widest text-white/20">
               első lépés
             </p>
-            <h2 className="mb-2 font-fraunces text-[22px] leading-snug text-white">
+            <h2 className="mb-2 font-fraunces text-heading leading-snug text-white">
               Válaszd ki, mire{" "}
               <span className="text-[var(--color-accent-primary-soft)]">használnád.</span>
             </h2>
@@ -165,7 +165,7 @@ export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps
               <span className="font-fraunces text-2xl font-black text-[var(--color-accent-primary-soft)]">
                 {s.value}
               </span>
-              <span className="text-[11px] leading-snug text-white/30">
+              <span className="text-note leading-snug text-white/30">
                 {s.label}
               </span>
             </div>

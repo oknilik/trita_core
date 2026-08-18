@@ -56,7 +56,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
         {t("hiring.paywallDesc", locale)}
       </p>
 
-      <p className="mb-8 text-[12px] text-muted">
+      <p className="mb-8 text-xs text-muted">
         {isAddon
           ? t("hiring.addonPricing", locale)
           : t("hiring.noSubPricing", locale)}
@@ -71,7 +71,7 @@ export function HiringPaywall({ locale, variant, isAdmin = false }: HiringPaywal
             />
             <div aria-hidden className="mb-2 text-xl">{f.icon}</div>
             <p className="mb-1 text-caption font-semibold text-ink">{f.title}</p>
-            <p className="text-[11px] leading-relaxed text-muted">{f.desc}</p>
+            <p className="text-note leading-relaxed text-muted">{f.desc}</p>
           </DashboardPanel>
         ))}
       </div>

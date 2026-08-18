@@ -49,7 +49,7 @@ export function QuestionCard(props: QuestionCardProps) {
       >
         {format === 'likert' ? (
           <>
-            <p className="mb-8 max-w-[500px] text-center font-fraunces text-[22px] leading-[1.3] tracking-tight text-[var(--color-text-primary)] lg:text-[24px]">
+            <p className="mb-8 max-w-[500px] text-center font-fraunces text-heading leading-[1.3] tracking-tight text-[var(--color-text-primary)] lg:text-title">
               {props.question}
             </p>
             <SliderSelector value={props.value} onChange={props.onChange} />

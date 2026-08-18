@@ -33,16 +33,21 @@ Hét szerep, CSS-tokenként a globals.css `@theme`-be, Tailwind utility-vel:
 
 | Szerep | Méret | Betű | Megjegyzés |
 |---|---|---|---|
+| hero | 42px / 1.08 | Fraunces 500, −0.015em | landing/auth hero (F4, 2026-08-18) |
 | display | 34px / 1.1 | Fraunces 500, −0.01em | hero-címek (md: 40) |
 | title | 26px / 1.18 | Fraunces 500 | oldal/riport-címek |
 | heading | 20px / 1.25 | Fraunces 500 | szekció-címek |
 | body | 15px / 1.65 | DM Sans 400 | folyószöveg |
 | caption | 13px / 1.55 | DM Sans 400 | másodlagos szöveg |
+| note | 11px / 1.45 | DM Sans 400 | sima kisbetűs kis szöveg (F4, 2026-08-18) |
 | label | 11px / — | DM Sans 600, +0.14em, uppercase | eyebrow/badge — EGYETLEN tracking |
 | micro | 10px / 1.4 | DM Sans 400 | metaadat; ez a legkisebb — 8/9px tilos |
 
-Bevezetés: új kód csak skálát használ; meglévő fokozatosan (boy scout rule);
-lint-szabály az arbitrary `text-[Npx]`-re új fájlban.
+Bevezetés: **a migráció 2026-08-18-án (F4) lezárult** — a `src/` alatt nincs
+arbitrary `text-[Npx]` (3 szándékos dekoratív kivétellel), és a lint-szabály
+mindegyiket tiltja. A szerep-skála mellett a Tailwind alap-fokok
+(`text-xs` 12 · `text-sm` 14 · `text-base` 16) legitimek: a szerep-utility a
+szándékot jelöli, az alap-fok a semleges méretezést.
 
 ### 2. Eyebrow-primitív két hangfekvéssel
 
@@ -96,3 +101,15 @@ Emoji ki a CTA-kból (📤→share-ikon, 📄→doc-ikon); a szórt inline SVG-k
   tabular-nums a numerikus gócokon (AdminStatCard, DimensionStrip, org hero).
   Megjegyzés: a PDF belső 5–7pt explicit méretei külön, render-verifikált
   kört igényelnek; „eredmény kész" email nem létezik (chips-terv okafogyott).
+- **F4 — A típus-skála lezárása** ✅ (2026-08-18): a 614 arbitrary
+  `text-[Npx]` kivezetve (maradék: 3 szándékos dekoratív). Két új szerep
+  zárja a rendszer-hézagot: **`text-note` (11px, sima kisbetűs — a
+  `text-label` párja)** és **`text-hero` (42px)**. Felhasználói döntés: a
+  **Tailwind alap-fokok (`text-xs`/`sm`/`base`) legitimek** a szerep-skála
+  mellett — a szerep a szándékot, az alap-fok a semleges méretezést hordozza.
+  A címsorok a négy fokra (20/26/34/42) kerekedtek. A `no-restricted-syntax`
+  lint-kapu a sub-10px helyett MINDEN arbitrary betűméretre szól.
+  Részletek: `docs/development/changelog/2026-08-18-tipografia-egysegesites.md`.
+- **F5 — PDF-réteg** ⏳: a `src/components/pdf/` pt-alapú, 5–7pt explicit
+  méretei; render-verifikált kör kell hozzá (nem osztályalapú, a webes
+  skála nem alkalmazható rá közvetlenül).

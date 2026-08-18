@@ -293,7 +293,7 @@ export function PeerFeedbackClient({
             </span>
           </p>
           {draftSaved && (
-            <span className="text-[11px] text-muted">{t("peerFb.draftSaved", locale)}</span>
+            <span className="text-note text-muted">{t("peerFb.draftSaved", locale)}</span>
           )}
         </div>
         <div
@@ -346,7 +346,7 @@ export function PeerFeedbackClient({
             {current.name}
           </h2>
           {entryComplete(entry) && (
-            <span className="shrink-0 rounded-full bg-sage/15 px-2.5 py-0.5 text-[11px] font-semibold text-sage-dark">
+            <span className="shrink-0 rounded-full bg-sage/15 px-2.5 py-0.5 text-note font-semibold text-sage-dark">
               {t("peerFb.personDoneBadge", locale)}
             </span>
           )}
@@ -376,7 +376,7 @@ export function PeerFeedbackClient({
           aria-invalid={attempted && missingContinue}
         />
         {attempted && missingContinue && (
-          <p className="mt-1 text-[11px] text-state-error-fg">
+          <p className="mt-1 text-note text-state-error-fg">
             {t("peerFb.fieldMissing", locale)}
           </p>
         )}
@@ -393,7 +393,7 @@ export function PeerFeedbackClient({
           aria-invalid={attempted && missingTry}
         />
         {attempted && missingTry && (
-          <p className="mt-1 text-[11px] text-state-error-fg">
+          <p className="mt-1 text-note text-state-error-fg">
             {t("peerFb.fieldMissing", locale)}
           </p>
         )}

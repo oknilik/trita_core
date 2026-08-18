@@ -95,7 +95,7 @@ export function TeamRolePeersClient({
           {t("teamRolePeers.introTitle", locale)}
         </h1>
         <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-[14px] leading-relaxed text-ink-body">
+        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
           {tf("teamRolePeers.introBody", locale, { count: TEAM_ROLE_ITEM_COUNT })}
         </p>
         <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
@@ -178,7 +178,7 @@ export function TeamRolePeersClient({
         <SectionEyebrow>
           {t("teamRolePeers.eyebrow", locale)}
         </SectionEyebrow>
-        <p className="font-mono text-[11px] text-muted">
+        <p className="font-mono text-note text-muted">
           {tf("teamRolePeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
@@ -192,7 +192,7 @@ export function TeamRolePeersClient({
         </div>
         <div className="min-w-0">
           <p className="truncate font-fraunces text-lg text-ink">{current.name}</p>
-          <p className="text-[12px] text-muted">{campaignName}</p>
+          <p className="text-xs text-muted">{campaignName}</p>
         </div>
       </div>
 

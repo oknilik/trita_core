@@ -101,7 +101,7 @@ export function TrustPeersClient({
           {t("trustPeers.introTitle", locale)}
         </h1>
         <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-[14px] leading-relaxed text-ink-body">
+        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
           {tf("trustPeers.introBody", locale, { count: TRUST_QUESTION_COUNT })}
         </p>
         <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
@@ -185,7 +185,7 @@ export function TrustPeersClient({
         <SectionEyebrow>
           {t("trustPeers.eyebrow", locale)}
         </SectionEyebrow>
-        <p className="font-mono text-[11px] text-muted">
+        <p className="font-mono text-note text-muted">
           {tf("trustPeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
@@ -198,7 +198,7 @@ export function TrustPeersClient({
           {current.name.slice(0, 1).toUpperCase()}
         </div>
         <div className="min-w-0">
-          <p className="text-[11px] uppercase tracking-wide text-muted">
+          <p className="text-label uppercase text-muted">
             {t("trustPeers.aboutPerson", locale)}
           </p>
           <p className="truncate font-fraunces text-lg text-ink">{current.name}</p>
@@ -219,7 +219,7 @@ export function TrustPeersClient({
                 missing ? "border-state-warning-border" : "border-sand"
               }`}
             >
-              <p className="text-[14px] font-semibold leading-snug text-ink">
+              <p className="text-sm font-semibold leading-snug text-ink">
                 {q.text[locale]}
               </p>
               {isScale ? (
@@ -242,7 +242,7 @@ export function TrustPeersClient({
                       </button>
                     ))}
                   </div>
-                  <p className="mt-1.5 text-[11px] text-muted">
+                  <p className="mt-1.5 text-note text-muted">
                     {tf("trustPeers.scaleHint", locale, {
                       low: low[locale],
                       max: q.max,
@@ -276,7 +276,7 @@ export function TrustPeersClient({
       </div>
 
       {showMissing && !complete ? (
-        <p className="mt-3 text-center text-[12px] font-semibold text-state-warning-fg">
+        <p className="mt-3 text-center text-xs font-semibold text-state-warning-fg">
           {t("trustPeers.missingAnswers", locale)}
         </p>
       ) : null}
