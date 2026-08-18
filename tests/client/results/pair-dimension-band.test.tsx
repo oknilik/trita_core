@@ -30,8 +30,8 @@ describe("PairDimensionBand", () => {
 
   it("az egyezést és a két eltérés-irányt külön címkézi", () => {
     render(<PairDimensionBand rows={ROWS} otherName="Anna" />);
-    expect(screen.getAllByText("Nálad erősebb")).toHaveLength(2);
-    expect(screen.getAllByText("Nála erősebb")).toHaveLength(1);
+    expect(screen.getAllByText("Nálad magasabb")).toHaveLength(2);
+    expect(screen.getAllByText("Nála magasabb")).toHaveLength(1);
     expect(screen.getAllByText("Hasonló")).toHaveLength(3);
   });
 

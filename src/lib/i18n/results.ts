@@ -1012,26 +1012,31 @@ export const resultsTranslations = {
     },
     // ── Hat dimenziós összevetés-sáv (2026-08-18) ────────────────────
     // A sáv PONTSZÁMOT NEM MUTAT: a partner nyers értékei nem hagyják el a
-    // szervert. A „nála erősebb" dimenziónként egyetlen bit — beszélgetés-
+    // szervert. A „nála magasabb" dimenziónként egyetlen bit — beszélgetés-
     // indításhoz elég, a profil visszafejtéséhez nem.
+    //
+    // SZÓHASZNÁLAT: „magasabb", nem „erősebb". A 0–100 nem teljesítmény-skála
+    // — a magasabb érték nem jobb (2026-08-18, valencia-mentes szint-
+    // besorolás). Párösszevetésben ez különösen élesen igaz: itt a szó két
+    // EMBERT állítana sorrendbe, nem egy pontszámot minősítene.
     pairBandTitle: {
       hu: "Mind a hat dimenzió",
       en: "All six dimensions",
     },
     pairBandSubtitle: {
-      hu: "Nem csak a legerősebb vonásaitokat néztük meg — itt mind a hat dimenzió szerepel, azok is, amelyekről nem született külön bekezdés.",
-      en: "We didn't only look at your strongest traits — all six dimensions are listed here, including the ones that didn't get their own paragraph.",
+      hu: "Nem csak a legkifejezettebb vonásaitokat néztük meg — itt mind a hat dimenzió szerepel, azok is, amelyekről nem született külön bekezdés.",
+      en: "We didn't only look at your most pronounced traits — all six dimensions are listed here, including the ones that didn't get their own paragraph.",
     },
     pairBandAligned: { hu: "Hasonló", en: "Similar" },
-    pairBandSelfHigher: { hu: "Nálad erősebb", en: "Stronger with you" },
-    pairBandOtherHigher: { hu: "Nála erősebb", en: "Stronger with them" },
+    pairBandSelfHigher: { hu: "Nálad magasabb", en: "Higher with you" },
+    pairBandOtherHigher: { hu: "Nála magasabb", en: "Higher with them" },
     pairBandLegend: {
       hu: "„Nála” = {name}",
       en: "“With them” = {name}",
     },
     pairBandNote: {
-      hu: "Az „erősebb” azt jelenti, hogy a különbség meghaladja a mérés pontosságát; a „hasonló” azt, hogy azon belül marad. Pontszámokat szándékosan nem mutatunk: a másik profiljának számai nem hagyják el a szervert.",
-      en: "“Stronger” means the difference exceeds the precision of the measurement; “similar” means it stays within it. We deliberately show no scores: the other person's numbers never leave the server.",
+      hu: "A „magasabb” azt jelenti, hogy a különbség meghaladja a mérés pontosságát; a „hasonló” azt, hogy azon belül marad. Ez irány, nem rangsor: egyik érték sem jobb a másiknál. Pontszámokat szándékosan nem mutatunk — a másik profiljának számai nem hagyják el a szervert.",
+      en: "“Higher” means the difference exceeds the precision of the measurement; “similar” means it stays within it. This is direction, not ranking: neither value is better than the other. We deliberately show no scores — the other person's numbers never leave the server.",
     },
     // ── Facet-nüansz: „azonos címke, más működés" ────────────────────
     pairNuanceTitle: {

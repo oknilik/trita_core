@@ -7,7 +7,7 @@ import {
   LEADER_SUPPLEMENTS,
 } from "@/lib/interaction-atoms";
 import { hasHedge, findAbsoluteMarkers } from "@/lib/interaction-language";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
 
 // Nyelvi guardrail az interakció-szövegekre.
 //
@@ -113,4 +113,54 @@ test("minden atomnak van discuss blokkja mindkét nyelven", () => {
       assert.ok(blocks.discuss.en, `${atom.id}.${viewName}: hiányzó EN discuss`);
     }
   }
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// Valencia-mentesség a pár-összevetés sávján (2026-08-18).
+//
+// A 0–100 NEM teljesítmény-skála: a magasabb érték nem jobb. A tier-címkék
+// ezért „magas / közepes / alacsony"-ra váltottak (ld. a 2026-08-18-i
+// valencia-mentes szint-besorolás changelogot). A PÁR-összevetésben ez még
+// élesebb: ott az értékelő szó két EMBERT állítana sorrendbe, nem egy
+// pontszámot minősítene. Ez a guardrail azt őrzi, hogy az irány-címkék és a
+// hozzájuk tartozó magyarázó szövegek leíróak maradjanak.
+// ─────────────────────────────────────────────────────────────────────
+
+const BAND_KEYS = [
+  "results.pairBandTitle",
+  "results.pairBandSubtitle",
+  "results.pairBandAligned",
+  "results.pairBandSelfHigher",
+  "results.pairBandOtherHigher",
+  "results.pairBandNote",
+  "results.pairNuanceTitle",
+  "results.pairNuanceSelf",
+  "results.pairNuanceOther",
+  "results.pairBasisGap",
+] as const;
+
+/** Értékelő (rangsoroló) szótövek — a leíró „magasabb/alacsonyabb" helyett. */
+const VALENCE_MARKERS: Record<Locale, RegExp[]> = {
+  hu: [/erős/iu, /gyeng/iu, /\bjobb\b/iu, /rosszabb/iu, /kiválóbb/iu, /fejlettebb/iu],
+  en: [/stronger/iu, /weaker/iu, /\bbetter\b/iu, /\bworse\b/iu, /superior/iu],
+};
+
+test("a pár-összevetés címkéi nem rangsorolják a két embert", () => {
+  const hits: string[] = [];
+  for (const key of BAND_KEYS) {
+    for (const locale of LOCALES) {
+      const text = t(key, locale);
+      for (const marker of VALENCE_MARKERS[locale]) {
+        const match = text.match(marker);
+        // A módszertani jegyzet KIMONDJA a szabályt („egyik érték sem jobb a
+        // másiknál") — az a szabály idézése, nem megsértése. Szűk kivétel:
+        // csak erre a két konkrét fordulatra.
+        const statesTheRule = /sem jobb a másiknál|neither value is better/iu.test(text);
+        if (match && !statesTheRule) {
+          hits.push(`${key}.${locale}: „${match[0]}"`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(hits, [], `értékelő szóhasználat a pár-sávban:\n${hits.join("\n")}`);
 });

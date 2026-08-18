@@ -52,6 +52,15 @@ A próza válogat (max 4 atom), tehát önmagában nem különböztethető meg a
 hat dimenzióról nyilatkozik, két állapottal: *hasonló* (a különbség a
 mérési hibán belül) és *eltérés* (afölött), az utóbbinál iránnyal.
 
+**Szóhasználat: „Nálad magasabb", nem „Nálad erősebb".** Az első változat az
+értékelő szót használta — ugyanaz a hibaosztály, amit a valencia-mentes
+szint-besorolás (2026-08-18) a tier-címkéken kivezetett. Párösszevetésben ez
+még élesebb: ott az értékelő szó két EMBERT állítana sorrendbe, nem egy
+pontszámot minősítene. A módszertani jegyzet ezért ki is mondja: „ez irány,
+nem rangsor: egyik érték sem jobb a másiknál." Guardrail-teszt őrzi
+(`interaction-language.test.ts`), hogy a sáv címkéibe ne kerüljön vissza
+értékelő szótő.
+
 ### 3. Facet-nüansz — „azonos címke, más működés" (`PairFacetNuances`)
 
 Azt az egy kérdést válaszolja meg, amit a dimenzió-szint nem tud: miért
