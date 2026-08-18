@@ -43,6 +43,10 @@ function parseArgs(argv: string[]): Args {
   const args: Args = { envFile: "", confirm: null, yes: false };
   for (let i = 0; i < argv.length; i += 1) {
     const a = argv[i];
+    // A csupasz `--` konvencionális elválasztó, nem kapcsoló: a
+    // `pnpm <script> -- --flag` alak továbbadja a scriptnek, és enélkül
+    // „Ismeretlen kapcsoló"-val állna le.
+    if (a === "--") continue;
     if (a === "--env-file") args.envFile = argv[++i] ?? "";
     else if (a === "--confirm") args.confirm = argv[++i] ?? "";
     else if (a === "--yes") args.yes = true;

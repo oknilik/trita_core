@@ -31,7 +31,7 @@
  *
  * Futtatás (alapból SZÁRAZ futás, nem ír semmit):
  *   pnpm seed:facets:refresh
- *   pnpm seed:facets:refresh -- --apply
+ *   pnpm seed:facets:refresh --apply
  */
 
 import { readFileSync } from "fs";
@@ -255,7 +255,7 @@ async function main() {
 
   if (!apply) {
     console.log("\n🔍 SZÁRAZ FUTÁS — nem írtam semmit.");
-    console.log("   Íráshoz: pnpm seed:facets:refresh -- --apply\n");
+    console.log("   Íráshoz: pnpm seed:facets:refresh --apply\n");
     await prisma.$disconnect();
     return;
   }

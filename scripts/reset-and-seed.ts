@@ -24,11 +24,11 @@
  *   npx vercel env pull .env.preview --environment=preview --yes
  *
  *   # 2) SZÁRAZ FUTÁS — kiírja a tervet és a jelenlegi sortáblát, nem ír
- *   pnpm db:reset-and-seed -- --env-file .env.preview
+ *   pnpm db:reset-and-seed --env-file .env.preview
  *
  *   # 3) éles futás — a --confirm értéke a cél endpoint-azonosító, pontosan
  *   #    úgy, ahogy a száraz futás kiírta
- *   pnpm db:reset-and-seed -- --env-file .env.preview \
+ *   pnpm db:reset-and-seed --env-file .env.preview \
  *     --confirm ep-holy-morning-agjde634 --yes
  *
  * A `--confirm` szándékos súrlódás: rossz env-fájlnál a hostnév nem egyezik,
@@ -61,6 +61,10 @@ function parseArgs(argv: string[]): Args {
   };
   for (let i = 0; i < argv.length; i += 1) {
     const flag = argv[i];
+    // A csupasz `--` konvencionális elválasztó, nem kapcsoló: a
+    // `pnpm <script> -- --flag` alak továbbadja a scriptnek, és enélkül
+    // „Ismeretlen kapcsoló"-val állna le.
+    if (flag === "--") continue;
     if (flag === "--env-file") args.envFile = argv[++i] ?? "";
     else if (flag === "--confirm") args.confirm = argv[++i] ?? "";
     else if (flag === "--yes") args.yes = true;
@@ -187,7 +191,7 @@ function main(): void {
     console.log(`  npx tsx scripts/reset-remote-db.ts --env-file ${args.envFile}`);
     console.log("\nÉles futáshoz:");
     console.log(
-      `  pnpm db:reset-and-seed -- --env-file ${args.envFile} --confirm ${target} --yes` +
+      `  pnpm db:reset-and-seed --env-file ${args.envFile} --confirm ${target} --yes` +
         (args.personas ? " --personas" : ""),
     );
     return;
@@ -216,7 +220,7 @@ function main(): void {
       console.error(`\n❌ A(z) „${step.name}" lépés elbukott — a futás itt megáll.`);
       console.error(`   Eddig lefutott: ${done.join(", ") || "(semmi)"}`);
       console.error("   A hiba javítása után a már kész lépéseket átugorhatod:");
-      console.error(`     pnpm db:reset-and-seed -- --env-file ${args.envFile} --skip-reset --confirm ${target} --yes`);
+      console.error(`     pnpm db:reset-and-seed --env-file ${args.envFile} --skip-reset --confirm ${target} --yes`);
       process.exitCode = 1;
       return;
     }
