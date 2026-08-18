@@ -243,7 +243,7 @@ export function DraftCampaignEditor({
           </label>
         ))}
       </div>
-      <p className="mb-5 text-[11px] text-muted">{t("org.campaign.editTeamNote", locale)}</p>
+      <p className="mb-5 text-note text-muted">{t("org.campaign.editTeamNote", locale)}</p>
 
       {/* Lépés-ütem */}
       {chosenSteps.length > 1 && (
@@ -263,7 +263,7 @@ export function DraftCampaignEditor({
                 type="button"
                 onClick={() => setIntervalHours(opt.value)}
                 className={[
-                  "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
+                  "min-h-[36px] rounded-[10px] border px-3.5 text-xs font-semibold transition",
                   intervalHours === opt.value
                     ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                     : "border-sand bg-surface-card text-ink-body hover:border-ink/40",

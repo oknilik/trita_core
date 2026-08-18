@@ -360,7 +360,7 @@ export default async function CandidateResultPage({
           </span>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[36px]">
+          <h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-display">
             {displayName}
           </h1>
         )}
@@ -371,7 +371,7 @@ export default async function CandidateResultPage({
                 <span className="text-caption text-[var(--color-text-on-inverse-muted)]">{invite.position}</span>
               )}
               {invite.team && (
-                <span className="text-[11px] text-[var(--color-text-on-inverse-muted)]">
+                <span className="text-note text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.assignedTeam", locale)}{invite.team.name}
                 </span>
               )}
@@ -380,7 +380,7 @@ export default async function CandidateResultPage({
         }
         chips={
           measuredRoles && measuredRoles.length > 0 ? (
-            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+            <span className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
               {t("hiring.teamRolesTitle", locale)} · {t("hiring.measuredBadge", locale)}
             </span>
           ) : undefined
@@ -710,7 +710,7 @@ export default async function CandidateResultPage({
                   ))}
                 </div>
 
-                <p className="mt-4 text-[11px] leading-relaxed text-muted">
+                <p className="mt-4 text-note leading-relaxed text-muted">
                   {t("hiring.deviationExplanation", locale)}
                 </p>
               </div>
@@ -757,7 +757,7 @@ export default async function CandidateResultPage({
                     >
                       {roleRankLabels[idx]} · {score}%
                     </span>
-                    <p className={`font-fraunces text-ink ${isPrimary ? "text-[19px]" : "text-[17px]"}`}>
+                    <p className={`font-fraunces text-ink ${isPrimary ? "text-heading" : "text-heading"}`}>
                       {roleMeta[contentLocale]}
                     </p>
                   </div>

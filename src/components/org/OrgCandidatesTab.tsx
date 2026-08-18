@@ -73,15 +73,15 @@ export function OrgCandidatesTab({
           a szomszédra. md-től változatlan a hármas, középre zárt rács. */}
       <div className="mt-4 grid grid-cols-1 gap-2 md:grid-cols-3 md:gap-3">
         <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
-          <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{candidates.length}</p>
+          <p className="font-fraunces text-heading leading-none tabular-nums text-ink">{candidates.length}</p>
           <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Összes" : "Total"}</p>
         </div>
         <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
-          <p className="font-fraunces text-[22px] leading-none tabular-nums text-ink">{pending}</p>
+          <p className="font-fraunces text-heading leading-none tabular-nums text-ink">{pending}</p>
           <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Folyamatban" : "Pending"}</p>
         </div>
         <div className="flex items-center justify-between gap-2 rounded-xl border border-sand bg-cream p-3 md:block md:text-center">
-          <p className="font-fraunces text-[22px] leading-none tabular-nums text-sage">{completed}</p>
+          <p className="font-fraunces text-heading leading-none tabular-nums text-sage">{completed}</p>
           <p className="text-micro uppercase tracking-wide text-muted md:mt-1">{isHu ? "Kész" : "Done"}</p>
         </div>
       </div>
@@ -100,7 +100,7 @@ export function OrgCandidatesTab({
                 key={c.id}
                 className="flex flex-wrap items-center gap-2 rounded-xl border border-sand bg-surface-card px-4 py-3"
               >
-                <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${meta.className}`}>
+                <span className={`rounded-full px-2 py-0.5 text-note font-medium ${meta.className}`}>
                   {meta.label}
                 </span>
                 <span className="text-sm font-semibold text-ink">{display}</span>

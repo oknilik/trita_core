@@ -36,7 +36,7 @@ export default async function EmailPreferencesPage() {
         <SectionEyebrow tone="muted">
           {t("results.emailPrefsEyebrow", locale)}
         </SectionEyebrow>
-        <h1 className="mt-2 font-fraunces text-[26px] leading-tight tracking-tight text-ink">
+        <h1 className="mt-2 font-fraunces text-title leading-tight tracking-tight text-ink">
           {t("results.emailPrefsTitle", locale)}
         </h1>
         <p className="mt-3 text-caption leading-relaxed text-ink-body">

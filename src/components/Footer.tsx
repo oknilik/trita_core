@@ -133,7 +133,7 @@ export function Footer() {
         </div>
 
         <div className="mt-10 flex flex-col gap-4 border-t border-[var(--color-text-on-inverse)]/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
-          <p className="text-[12px] text-[var(--color-text-on-inverse-muted)]">{t("footer.copyright", locale)}</p>
+          <p className="text-xs text-[var(--color-text-on-inverse-muted)]">{t("footer.copyright", locale)}</p>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-5">
             <LanguageSwitcher variant="footer" />
             <ThemeToggle variant="footer" />

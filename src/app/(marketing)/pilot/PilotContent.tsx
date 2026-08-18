@@ -79,7 +79,7 @@ export function PilotContent() {
             <div>
               <div className="mb-5 flex items-center gap-3">
                 <div className="h-px w-8 bg-bronze" />
-                <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                   {t("pilot.eyebrow", locale)}
                 </span>
               </div>
@@ -92,7 +92,7 @@ export function PilotContent() {
                 {t("pilot.heroTitle", locale)}<em className="not-italic text-[var(--color-accent-primary-strong)]">{t("pilot.heroTitleEm", locale)}</em>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-[19px]">
+              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-heading">
                 {t("pilot.heroBody", locale)}
               </p>
 
@@ -111,10 +111,10 @@ export function PilotContent() {
 
             <aside className="overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
               <div className="border-b border-sand bg-warm px-6 py-6">
-                <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <p className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
-                <p className="mt-3 font-fraunces text-[28px] leading-tight text-ink">
+                <p className="mt-3 font-fraunces text-title leading-tight text-ink">
                   {t("pilot.asideTitle", locale)}
                 </p>
                 <p className="mt-3 text-sm leading-7 text-ink-body">
@@ -190,7 +190,7 @@ export function PilotContent() {
           <div>
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px w-8 bg-bronze" />
-              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+              <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                 {t("pilot.formEyebrow", locale)}
               </span>
             </div>
@@ -225,7 +225,7 @@ export function PilotContent() {
               <>
                 <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-b border-sand pb-5">
                   <div>
-                    <p className="font-fraunces text-[28px] leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
+                    <p className="font-fraunces text-title leading-tight text-ink">{t("pilot.formHeading", locale)}</p>
                     <p className="mt-1 text-sm leading-6 text-ink-body">
                       {t("pilot.formSubheading", locale)}
                     </p>
@@ -343,7 +343,7 @@ function EditorialSection({
       <PageWidthDivider />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
-          <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+          <p className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
             {eyebrow}
           </p>
         </div>
@@ -395,7 +395,7 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
         </span>
         <div className="h-px flex-1 bg-sand" />
       </div>
-      <h3 className="font-fraunces text-[27px] leading-tight text-ink">{title}</h3>
+      <h3 className="font-fraunces text-title leading-tight text-ink">{title}</h3>
       <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
     </article>
   );
@@ -408,7 +408,7 @@ function StepCard({ step, title, desc }: { step: string; title: string; desc: st
         {step}
       </div>
       <div>
-        <h3 className="font-fraunces text-[30px] leading-tight text-ink">{title}</h3>
+        <h3 className="font-fraunces text-title leading-tight text-ink">{title}</h3>
         <p className="mt-3 max-w-[56rem] text-base leading-8 text-ink-body">{desc}</p>
       </div>
     </article>
@@ -421,7 +421,7 @@ function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc:
       <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
         {commitmentLabel}
       </p>
-      <h3 className="mt-2 font-fraunces text-[28px] leading-tight text-ink">{title}</h3>
+      <h3 className="mt-2 font-fraunces text-title leading-tight text-ink">{title}</h3>
       <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
     </article>
   );

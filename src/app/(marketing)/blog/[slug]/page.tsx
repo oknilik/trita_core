@@ -83,7 +83,7 @@ function getTagStyle(tag: string): string {
 
 function Callout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-[19px] italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
+    <div className="my-7 rounded-r-lg border-l-[3px] border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-6 py-5 font-fraunces text-heading italic leading-[1.65] text-[var(--color-accent-self-deep)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-inherit [&_p]:leading-[1.65]">
       {children}
     </div>
   );
@@ -92,8 +92,8 @@ function Callout({ children }: { children: React.ReactNode }) {
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-1 flex-col items-center rounded-[10px] border border-[var(--color-border-default)] bg-surface-card px-6 py-5 text-center">
-      <span className="font-fraunces text-[22px] leading-none text-[var(--color-action-primary-bg)]">{value}</span>
-      <span className="mt-1.5 text-[11px] leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
+      <span className="font-fraunces text-heading leading-none text-[var(--color-action-primary-bg)]">{value}</span>
+      <span className="mt-1.5 text-note leading-[1.4] text-[var(--color-text-muted)]">{label}</span>
     </div>
   );
 }
@@ -131,7 +131,7 @@ function DimBadge({ code, label }: { code: string; label: string }) {
   return (
     <span
       style={{ backgroundColor: colors.bg, color: colors.text, borderColor: colors.border }}
-      className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[12px] font-semibold"
+      className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
     >
       <span className="font-dm-sans font-bold">{letter}</span>
       <span>{label}</span>
@@ -186,7 +186,7 @@ function CompareTable({
 function PullQuote({ children, source }: { children: React.ReactNode; source?: string }) {
   return (
     <div className="my-8 border-l-[2.5px] border-[var(--color-accent-primary)] py-1.5 pl-6">
-      <p className="font-fraunces text-[22px] italic leading-[1.45] text-ink">{children}</p>
+      <p className="font-fraunces text-heading italic leading-[1.45] text-ink">{children}</p>
       {source && (
         <span className="mt-2 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
           {source}
@@ -202,7 +202,7 @@ function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu
       <SectionEyebrow as="div" tone="onDark" className="mb-2">
         {isHu ? "kulcsgondolat" : "key insight"}
       </SectionEyebrow>
-      <div className="text-[16px] leading-[1.75] text-white/85">{children}</div>
+      <div className="text-base leading-[1.75] text-white/85">{children}</div>
     </div>
   );
 }
@@ -211,7 +211,7 @@ function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu
 
 const makeComponents = (isHu: boolean) => ({
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
-    <h1 className="mb-5 mt-14 font-fraunces text-[30px] leading-[1.22] tracking-tight text-ink" {...props} />
+    <h1 className="mb-5 mt-14 font-fraunces text-title leading-[1.22] tracking-tight text-ink" {...props} />
   ),
   h2: ({ children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => {
     // A TOC-hoz azonos módon képzett horgony-id (ld. slugifyHeading)
@@ -224,7 +224,7 @@ const makeComponents = (isHu: boolean) => ({
     return (
       <h2
         id={text ? slugifyHeading(text) : undefined}
-        className="mb-4 mt-12 scroll-mt-20 font-fraunces text-[25px] leading-[1.22] tracking-tight text-ink"
+        className="mb-4 mt-12 scroll-mt-20 font-fraunces text-title leading-[1.22] tracking-tight text-ink"
         {...props}
       >
         {children}
@@ -235,7 +235,7 @@ const makeComponents = (isHu: boolean) => ({
     <h3 className="mb-3 mt-10 text-xl font-semibold text-[var(--color-text-primary)]" {...props} />
   ),
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
-    <p className="mb-6 text-[17px] leading-[1.8] text-[var(--color-text-secondary)]" {...props} />
+    <p className="mb-6 text-heading leading-[1.8] text-[var(--color-text-secondary)]" {...props} />
   ),
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className="mb-6 space-y-2 pl-5" {...props} />
@@ -245,7 +245,7 @@ const makeComponents = (isHu: boolean) => ({
   ),
   li: (props: React.HTMLAttributes<HTMLLIElement>) => (
     <li
-      className="relative pl-2 text-[17px] leading-[1.8] text-[var(--color-text-secondary)] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[var(--color-accent-primary)] [ol>&]:before:content-none"
+      className="relative pl-2 text-heading leading-[1.8] text-[var(--color-text-secondary)] before:absolute before:-left-3 before:top-[0.85em] before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full before:bg-[var(--color-accent-primary)] [ol>&]:before:content-none"
       {...props}
     />
   ),
@@ -382,7 +382,7 @@ export default async function BlogPostPage({
         </h1>
 
         {/* Description */}
-        <p className="mb-4 text-[17px] font-light leading-relaxed text-ink-body">
+        <p className="mb-4 text-heading font-light leading-relaxed text-ink-body">
           {post.description}
         </p>
 
@@ -485,7 +485,7 @@ export default async function BlogPostPage({
           <div className="mt-10 border-t border-[var(--color-border-default)] pt-7">
             <div className="mb-4 flex items-center gap-3">
               <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-              <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+              <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                 {t("blog.readNext", locale)}
               </span>
             </div>

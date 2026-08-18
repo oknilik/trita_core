@@ -43,7 +43,7 @@ export function SectionCta({ eyebrow, title, body, cta, href, motif }: SectionCt
         <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
           {eyebrow}
         </p>
-        <p className="mt-2 font-fraunces text-[22px] leading-snug text-white md:text-[27px]">
+        <p className="mt-2 font-fraunces text-heading leading-snug text-white md:text-title">
           {title}
         </p>
         <p className="mt-2.5 text-caption leading-relaxed text-white/[0.62]">{body}</p>

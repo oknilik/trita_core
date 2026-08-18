@@ -203,7 +203,7 @@ function SignInContent() {
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
           {t("auth.accountEyebrow", locale)}
         </p>
-        <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-[42px]">
+        <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-hero">
           {t("auth.verifyTitle", locale)}
         </h1>
         <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
@@ -272,7 +272,7 @@ function SignInContent() {
       <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
         {t("auth.accountEyebrow", locale)}
       </p>
-      <h1 className="mb-3 max-w-md font-fraunces text-4xl leading-[1.02] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-[44px]">
+      <h1 className="mb-3 max-w-md font-fraunces text-4xl leading-[1.02] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-hero">
         {t("auth.signInTitle", locale)}
       </h1>
       <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">

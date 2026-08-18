@@ -671,7 +671,7 @@ export function AssessmentClient({
                   {t("assessment.introEyebrow", locale)}
                 </span>
               </div>
-              <h1 className="mb-4 max-w-[620px] font-fraunces text-[28px] leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-[34px] 2xl:text-[40px]">
+              <h1 className="mb-4 max-w-[620px] font-fraunces text-title leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-display 2xl:text-hero">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
                 <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
@@ -692,7 +692,7 @@ export function AssessmentClient({
               >
                 {t("assessment.introStart", locale)}
               </button>
-              <p className="mt-2.5 text-center text-[11px] text-[var(--color-text-muted)] lg:text-left">
+              <p className="mt-2.5 text-center text-note text-[var(--color-text-muted)] lg:text-left">
                 {tf("assessment.introMeta", locale, { count: totalQuestions, minutes: estimateAssessmentMinutes(totalQuestions) })}
               </p>
             </div>
@@ -706,7 +706,7 @@ export function AssessmentClient({
                   </div>
                   <div>
                     <p className="text-caption font-semibold text-[var(--color-text-primary)] lg:text-sm">{s.title}</p>
-                    <p className="text-[11px] leading-[1.4] text-[var(--color-text-muted)] lg:text-xs">{s.sub}</p>
+                    <p className="text-note leading-[1.4] text-[var(--color-text-muted)] lg:text-xs">{s.sub}</p>
                   </div>
                 </div>
               ))}
@@ -783,7 +783,7 @@ export function AssessmentClient({
                 style={{ width: `${((questionIndex + 1) / totalQuestions) * 100}%` }}
               />
             </div>
-            <span className="hidden shrink-0 whitespace-nowrap text-[11px] text-[var(--color-text-muted)] sm:inline">
+            <span className="hidden shrink-0 whitespace-nowrap text-note text-[var(--color-text-muted)] sm:inline">
               {tf('assessment.etaRemaining', locale, { minutes: etaMinutes })}
             </span>
           </div>
@@ -800,7 +800,7 @@ export function AssessmentClient({
               <ThemeToggle variant="compact" />
               <a
                 href={guestMode ? "/" : "/profile/results"}
-                className={`whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-[11px] text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3 ${FOCUS_RING_CLASS}`}
+                className={`whitespace-nowrap rounded-md border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1.5 text-note text-[var(--color-text-muted)] transition-all hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)] sm:px-3 ${FOCUS_RING_CLASS}`}
               >
                 {t('assessment.continueLater', locale)}
               </a>
@@ -823,18 +823,18 @@ export function AssessmentClient({
               {milestoneOpen ? (
                 <div className="flex flex-col items-center text-center">
                   {/* Sage pill badge */}
-                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-action-primary-bg)]">
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-label uppercase text-[var(--color-action-primary-bg)]">
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t('assessment.journeyMilestone', locale)}
                   </div>
 
                   {/* Title */}
-                  <h2 className="mb-3 font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] lg:text-[26px]">
+                  <h2 className="mb-3 font-fraunces text-title leading-tight text-[var(--color-text-primary)] lg:text-title">
                     {t('assessment.journeyMilestone50', locale)}
                   </h2>
 
                   {/* Subtitle */}
-                  <p className="mb-5 max-w-[400px] text-[14px] leading-relaxed text-[var(--color-text-muted)]">
+                  <p className="mb-5 max-w-[400px] text-sm leading-relaxed text-[var(--color-text-muted)]">
                     {t('assessment.journeyMilestone50Sub', locale)}
                   </p>
 
@@ -936,7 +936,7 @@ export function AssessmentClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
+          <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
             {t('assessment.autoAdvance', locale)}
           </span>
         </label>

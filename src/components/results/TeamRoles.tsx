@@ -110,7 +110,7 @@ export function TeamRoles({
         {t("results.teamRoleEyebrow", locale)}
       </p>
       <div className="mt-1.5 mb-2 flex flex-wrap items-center gap-2.5">
-        <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
+        <h2 className="font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
           {t("results.teamRoleTitle", locale)}
         </h2>
         {/* Forrás-badge: mért kitöltés vs. személyiség-alapú becslés. */}
@@ -141,7 +141,7 @@ export function TeamRoles({
           }`}
         >
           <span className="mt-0.5 text-sm">{personalityOverlap >= 2 ? "✓" : "↔"}</span>
-          <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+          <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
             {personalityOverlap >= 2
               ? t("results.teamRolePersonalityHarmony", locale)
               : tf("results.teamRolePersonalityDiverge", locale, {
@@ -187,14 +187,14 @@ export function TeamRoles({
               {/* Name */}
               <p
                 className={`mb-0.5 font-fraunces text-[var(--color-text-primary)] ${
-                  isPrimary ? "text-[19px]" : "text-[17px]"
+                  isPrimary ? "text-heading" : "text-heading"
                 }`}
               >
                 {roleMeta[lang]}
               </p>
 
               {/* Subtitle */}
-              <p className="mb-1.5 text-[11px] italic text-[var(--color-text-muted)]">
+              <p className="mb-1.5 text-note italic text-[var(--color-text-muted)]">
                 {subtitle[lang]}
               </p>
 
@@ -225,7 +225,7 @@ export function TeamRoles({
                 {peer.topRoles.slice(0, 3).map((r, idx) => (
                   <span
                     key={r.role}
-                    className={`rounded-lg px-3 py-1.5 text-[12px] font-semibold ${
+                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold ${
                       idx === 0
                         ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
                         : "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]"
@@ -239,20 +239,20 @@ export function TeamRoles({
               {/* Önösszevetés-verdikt CSAK mért önkép mellett; becslés-ágon
                   a TeamRoleSection „nincs saját kitöltés" mintáját követjük. */}
               {peerDelta === null ? (
-                <p className="mt-3 text-[12px] leading-relaxed text-[var(--color-text-muted)]">
+                <p className="mt-3 text-xs leading-relaxed text-[var(--color-text-muted)]">
                   {t("teamComp.peerNoSelf", locale)}
                 </p>
               ) : peerDelta.selfOnly.length === 0 && peerDelta.peerOnly.length === 0 ? (
                 <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/25 bg-[var(--color-surface-self-accent-soft)] px-4 py-3">
                   <span className="mt-0.5 text-sm">✓</span>
-                  <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                  <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
                     {t("results.teamRolePeerHarmony", locale)}
                   </p>
                 </div>
               ) : (
                 <div className="mt-3 flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-bronze-edge)] bg-[var(--color-bronze-100)] px-4 py-3">
                   <span className="mt-0.5 text-sm">↔</span>
-                  <div className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                  <div className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
                     <p className="font-semibold text-[var(--color-text-primary)]">
                       {t("results.teamRolePeerFrictionTitle", locale)}
                     </p>
@@ -270,7 +270,7 @@ export function TeamRoles({
                         })}
                       </p>
                     ) : null}
-                    <p className="mt-1.5 text-[11px] text-[var(--color-text-muted)]">
+                    <p className="mt-1.5 text-note text-[var(--color-text-muted)]">
                       {t("results.teamRolePeerFrictionHint", locale)}
                     </p>
                   </div>
@@ -278,7 +278,7 @@ export function TeamRoles({
               )}
             </>
           ) : (
-            <p className="mt-2 text-[12px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mt-2 text-xs leading-relaxed text-[var(--color-text-muted)]">
               {tf("results.teamRolePeerThreshold", locale, {
                 n: peer.raterCount,
                 min: TEAM_ROLE_PEER_MIN_RATERS,

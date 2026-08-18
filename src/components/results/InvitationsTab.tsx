@@ -57,8 +57,8 @@ function LockedInvitations() {
 
   return (
     <div className="rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-8 text-center">
-      <span className="mb-2.5 inline-block text-[32px] opacity-20">🔒</span>
-      <h3 className="mb-1.5 font-fraunces text-[18px] text-[var(--color-text-primary)]">
+      <span className="mb-2.5 inline-block text-display opacity-20">🔒</span>
+      <h3 className="mb-1.5 font-fraunces text-heading text-[var(--color-text-primary)]">
         {t("invitations.lockedTitle", locale)}
       </h3>
       <p className="mx-auto mb-4 max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
@@ -270,7 +270,7 @@ export function InvitationsTab({
             {t("invitations.eyebrow", locale)}
           </span>
         </div>
-        <h2 className="font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
+        <h2 className="font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
           {t("invitations.title", locale)}
         </h2>
         <p className="mt-1 max-w-[480px] text-caption leading-relaxed text-[var(--color-text-muted)]">
@@ -330,7 +330,7 @@ export function InvitationsTab({
           <p className="text-caption font-semibold text-[var(--color-text-primary)]">
             + {t("invitations.colleagueSectionTitle", locale)}
           </p>
-          <p className="mt-1 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mt-1 text-note leading-relaxed text-[var(--color-text-muted)]">
             {t("invitations.colleagueSectionHint", locale)}
           </p>
           {colleagues.length > 6 ? (
@@ -344,7 +344,7 @@ export function InvitationsTab({
           ) : null}
           <div className="mt-3 flex max-h-[260px] flex-col gap-1.5 overflow-y-auto">
             {filteredColleagues.length === 0 ? (
-              <p className="py-2 text-center text-[12px] text-[var(--color-text-muted)]">
+              <p className="py-2 text-center text-xs text-[var(--color-text-muted)]">
                 {t("invitations.colleagueEmpty", locale)}
               </p>
             ) : (
@@ -353,7 +353,7 @@ export function InvitationsTab({
                   key={c.userId}
                   className="flex items-center gap-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3 py-2"
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-[12px] font-bold text-[var(--color-action-primary-bg)]">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-xs font-bold text-[var(--color-action-primary-bg)]">
                     {c.name.slice(0, 1).toUpperCase()}
                   </div>
                   <span className="min-w-0 flex-1 truncate text-caption font-medium text-[var(--color-text-primary)]">
@@ -365,7 +365,7 @@ export function InvitationsTab({
                     </span>
                   ) : null}
                   {c.alreadyInvited ? (
-                    <span className="shrink-0 text-[11px] text-[var(--color-text-muted)]">
+                    <span className="shrink-0 text-note text-[var(--color-text-muted)]">
                       {t("invitations.colleagueInvitedBadge", locale)}
                     </span>
                   ) : (
@@ -373,7 +373,7 @@ export function InvitationsTab({
                       type="button"
                       onClick={() => handleInviteColleague(c.userId)}
                       disabled={invitingColleagueId !== null}
-                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-[11px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
+                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-note font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
                     >
                       {invitingColleagueId === c.userId ? "…" : t("invitations.colleagueInviteButton", locale)}
                     </button>
@@ -395,7 +395,7 @@ export function InvitationsTab({
             : t("invitations.formTitle", locale)}
         </p>
         {hasColleagueDirectory ? (
-          <p className="-mt-1 mb-3 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+          <p className="-mt-1 mb-3 text-note leading-relaxed text-[var(--color-text-muted)]">
             {t("invitations.externalApprovalHint", locale)}
           </p>
         ) : null}
@@ -424,10 +424,10 @@ export function InvitationsTab({
               <p className="mt-2 text-xs text-[var(--color-accent-primary-strong)]">{createError}</p>
             )}
             <div className="mt-2.5 flex flex-col gap-1">
-              <span className="text-[11px] text-[var(--color-text-muted)]">
+              <span className="text-note text-[var(--color-text-muted)]">
                 🔗 {t("invitations.formHintLink", locale)}
               </span>
-              <span className="text-[11px] text-[var(--color-text-muted)]">
+              <span className="text-note text-[var(--color-text-muted)]">
                 📧 {t("invitations.formHintEmail", locale)}
               </span>
             </div>
@@ -442,14 +442,14 @@ export function InvitationsTab({
       {/* 5. Invitation list or empty state */}
       {active.length === 0 ? (
         <div className="rounded-xl border-[1.5px] border-dashed border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-9 text-center">
-          <span className="mb-2 inline-block text-[28px] opacity-25" style={{ color: "var(--color-text-muted)" }}>👥</span>
+          <span className="mb-2 inline-block text-title opacity-25" style={{ color: "var(--color-text-muted)" }}>👥</span>
           <p className="text-sm font-medium text-[var(--color-text-secondary)]">
             {t("invitations.emptyTitle", locale)}
           </p>
           <p className="text-xs text-[var(--color-text-muted)]">
             {t("invitations.emptySub", locale)}
           </p>
-          <p className="mx-auto mt-2 max-w-[420px] text-[11px] leading-relaxed text-[var(--color-ink-warm)]">
+          <p className="mx-auto mt-2 max-w-[420px] text-note leading-relaxed text-[var(--color-ink-warm)]">
             {locale === "hu"
               ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
               : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
@@ -457,7 +457,7 @@ export function InvitationsTab({
           <div className="mt-3">
             <Link
               href={isConsultingLed() ? "/contact" : "/onboarding?intent=team"}
-              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-surface-card px-4 text-[11px] font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
+              className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-surface-card px-4 text-note font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
             >
               {isConsultingLed()
                 ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")
@@ -481,7 +481,7 @@ export function InvitationsTab({
               pilot-kalibrációt igényel (ld. results reveal-küszöb jegyzet). */}
           {completed.length > 0 && (
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+              <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
                 {`${t("invitations.groupReceived", locale)} (${completed.length})`}
               </p>
               {completed.map((inv) => (
@@ -491,7 +491,7 @@ export function InvitationsTab({
                     <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
                       {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                     </p>
-                    <p className="text-[11px] text-[var(--color-text-muted)]">
+                    <p className="text-note text-[var(--color-text-muted)]">
                       {t("invitations.receivedLabel", locale)}: {formatDate(inv.completedAt ?? inv.createdAt)}
                       {typeBadge(inv.observerType)
                         ? <>{" · "}{typeBadge(inv.observerType)}</>
@@ -509,7 +509,7 @@ export function InvitationsTab({
           {/* Pending group */}
           {pending.length > 0 && (
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+              <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
                 {`${t("invitations.groupPending", locale)} (${pending.length})`}
               </p>
               {pending.map((inv) => (
@@ -522,7 +522,7 @@ export function InvitationsTab({
                       <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
                         {inv.observerName ?? inv.observerEmail ?? t("invitations.linkInvite", locale)}
                       </p>
-                      <p className="text-[11px] text-[var(--color-text-muted)]">
+                      <p className="text-note text-[var(--color-text-muted)]">
                         {t("invitations.sentLabel", locale)}: {formatDate(inv.createdAt)}
                         {typeBadge(inv.observerType)
                           ? <>{" · "}{typeBadge(inv.observerType)}</>
@@ -538,7 +538,7 @@ export function InvitationsTab({
                       <button
                         type="button"
                         onClick={() => handleCopy(inv.token)}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                       </button>
@@ -548,7 +548,7 @@ export function InvitationsTab({
                         type="button"
                         onClick={() => setQrToken((prev) => (prev === inv.token ? null : inv.token))}
                         aria-expanded={qrToken === inv.token}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
                       >
                         QR
                       </button>
@@ -557,7 +557,7 @@ export function InvitationsTab({
                         onClick={() => handleDelete(inv.id)}
                         disabled={deletingId === inv.id}
                         aria-label={t("actions.delete", locale)}
-                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-2.5 py-1 text-[11px] font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
+                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-2.5 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
                       >
                         {deletingId === inv.id ? "..." : "✕"}
                       </button>
@@ -582,7 +582,7 @@ export function InvitationsTab({
       {/* 6. Received invitations (where others invited this user) */}
       {receivedInvitations.length > 0 && (
         <div className="border-t border-[var(--color-border-soft)] pt-5">
-          <p className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-text-muted)]">
+          <p className="mb-3 text-label uppercase text-[var(--color-text-muted)]">
             {t("invitations.receivedSection", locale)}
           </p>
           {receivedInvitations.map((inv) => {
@@ -601,7 +601,7 @@ export function InvitationsTab({
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-caption font-medium text-[var(--color-text-primary)]">{name}</p>
-                  <p className="text-[11px] text-[var(--color-text-muted)]">
+                  <p className="text-note text-[var(--color-text-muted)]">
                     {isDone
                       ? t("invitations.statusCompleted", locale)
                       : inv.status === "CANCELED"
@@ -612,7 +612,7 @@ export function InvitationsTab({
                   </p>
                 </div>
                 {isPending && !isExpired && (
-                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-[11px] font-semibold text-[var(--color-action-primary-fg)]">
+                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-note font-semibold text-[var(--color-action-primary-fg)]">
                     {t("invitations.fillIn", locale)}
                   </Link>
                 )}

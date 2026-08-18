@@ -94,7 +94,7 @@ function ComparisonSide({
         <p className="text-micro font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">
           {eyebrow}
         </p>
-        <p className="mt-0.5 break-words font-fraunces text-[17px] leading-snug text-[var(--color-text-primary)] md:text-[19px]">
+        <p className="mt-0.5 break-words font-fraunces text-heading leading-snug text-[var(--color-text-primary)] md:text-heading">
           {label}
         </p>
         {(adjectivePart || nounPart) && (

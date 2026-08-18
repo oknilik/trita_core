@@ -17,7 +17,7 @@ export function ContactContent() {
         <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-8 bg-bronze" />
-            <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
               {t("contact.eyebrow", locale)}
             </span>
           </div>
@@ -49,7 +49,7 @@ export function ContactContent() {
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
           {/* Left label */}
           <div>
-            <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <p className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
               {t("contact.sectionEyebrow", locale)}
             </p>
             <h2 className="mt-3 max-w-[12ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">

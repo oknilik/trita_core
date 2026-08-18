@@ -324,7 +324,7 @@ function ResultsTab({
             />
           </div>
           <div>
-            <p className="mb-1.5 text-[11px] font-medium text-[var(--color-text-muted)]">
+            <p className="mb-1.5 text-note font-medium text-[var(--color-text-muted)]">
               {t("content.stripLabel", locale)}
             </p>
             {/* Soros lista a radar mellett — a hosszú dimenziónevek nem

@@ -108,7 +108,7 @@ export function InteractionComparisonChooser({
           <p className="text-label uppercase text-[var(--color-accent-primary)]">
             {t("results.compareChooserEyebrow", locale)}
           </p>
-          <h2 className="mt-2 font-fraunces text-[28px] leading-tight text-[var(--color-text-on-inverse)] sm:text-[34px]">
+          <h2 className="mt-2 font-fraunces text-title leading-tight text-[var(--color-text-on-inverse)] sm:text-display">
             {t("results.compareChooserTitle", locale)}
           </h2>
           <p className="mt-2 max-w-xl text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">
@@ -145,7 +145,7 @@ export function InteractionComparisonChooser({
                   {choice.icon}
                 </span>
                 <span className="min-w-0">
-                  <span className="block font-fraunces text-[19px] leading-snug sm:text-[20px]">
+                  <span className="block font-fraunces text-heading leading-snug sm:text-heading">
                     {choice.title}
                   </span>
                   <span
@@ -180,7 +180,7 @@ export function InteractionComparisonChooser({
         ) : (
           <div>
             <div className="mb-5">
-              <h2 className="font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] sm:text-[28px]">
+              <h2 className="font-fraunces text-title leading-tight text-[var(--color-text-primary)] sm:text-title">
                 {t("results.compareTypePickerTitle", locale)}
               </h2>
               <p className="mt-1 text-caption text-[var(--color-text-muted)]">

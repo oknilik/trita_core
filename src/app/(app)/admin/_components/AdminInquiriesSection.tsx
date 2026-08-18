@@ -110,10 +110,10 @@ export function AdminInquiriesSection({
                 >
                   {/* Fejléc-sor */}
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${status.className}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-note font-medium ${status.className}`}>
                       {status.label}
                     </span>
-                    <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] text-ink-body">
+                    <span className="rounded-full bg-cream px-2 py-0.5 text-note text-ink-body">
                       {TOPIC_LABELS[row.topic] ?? row.topic}
                     </span>
                     <span className="text-sm font-semibold text-ink">{row.name}</span>

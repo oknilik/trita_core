@@ -76,14 +76,14 @@ export function PsychSafetyClient({
   if (phase === "intro") {
     return (
       <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        <p className="font-mono text-label uppercase text-[var(--color-accent-primary-strong)]">
           {t("psafety.eyebrow", locale)}
         </p>
         <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
           {t("psafety.introTitle", locale)}
         </h1>
         <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-[14px] leading-relaxed text-ink-body">
+        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
           {tf("psafety.introBody", locale, { count: PSYCH_SAFETY_ITEM_COUNT })}
         </p>
         <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
@@ -153,17 +153,17 @@ export function PsychSafetyClient({
   return (
     <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4 pt-8 pb-20">
       <div className="flex items-center justify-between">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        <p className="font-mono text-label uppercase text-[var(--color-accent-primary-strong)]">
           {t("psafety.eyebrow", locale)}
         </p>
-        <p className="font-mono text-[11px] text-muted">
+        <p className="font-mono text-note text-muted">
           {index + 1} / {PSYCH_SAFETY_ITEM_COUNT}
         </p>
       </div>
       <div className="mt-3">
         <ProgressBar current={index + 1} total={PSYCH_SAFETY_ITEM_COUNT} />
       </div>
-      <p className="mt-3 text-center text-[12px] text-muted">
+      <p className="mt-3 text-center text-xs text-muted">
         {t("psafety.anonStrip", locale)}
       </p>
 

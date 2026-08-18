@@ -125,7 +125,7 @@ function AccordionItem({
           {tf("results.scoreOutOfHundred", locale, { value })}
         </span>
         <span
-          className={`shrink-0 text-[11px] text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          className={`shrink-0 text-note text-[var(--color-text-muted)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         >
           ▾
         </span>
@@ -199,7 +199,7 @@ function AccordionItem({
                               />
                             </div>
                             <span
-                              className="w-6 shrink-0 text-right text-[11px] font-semibold tabular-nums"
+                              className="w-6 shrink-0 text-right text-note font-semibold tabular-nums"
                               style={{ color: colors.strong }}
                             >
                               {f.score}
@@ -261,7 +261,7 @@ export function DimensionAccordion({
       <p className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
         {t("results.dimSectionEyebrow", locale)}
       </p>
-      <h2 className="mt-1.5 font-fraunces text-[22px] tracking-tight text-[var(--color-text-primary)]">
+      <h2 className="mt-1.5 font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
         {t("results.dimSectionTitle", locale)}
       </h2>
       <p className="mb-6 mt-2 max-w-[540px] text-caption leading-relaxed text-[var(--color-text-muted)]">

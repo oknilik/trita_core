@@ -874,7 +874,7 @@ export function AdminBlogSection({
           {filtered.map((post) => (
             <li key={post.slug} className="flex flex-wrap items-center gap-3 px-6 py-4">
               <span
-                className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${
+                className={`rounded-full px-2.5 py-0.5 text-label uppercase ${
                   post.status === "draft"
                     ? "bg-state-warning-bg text-state-warning-fg"
                     : "bg-state-success-bg text-state-success-fg"
@@ -882,12 +882,12 @@ export function AdminBlogSection({
               >
                 {post.status === "draft" ? "Piszkozat" : "Publikált"}
               </span>
-              <span className="rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold uppercase text-ink-warm">
+              <span className="rounded-full bg-cream px-2 py-0.5 text-label uppercase text-ink-warm">
                 {post.locale}
               </span>
               {isFutureDated(post) && (
                 <span
-                  className="rounded-full bg-state-warning-bg px-2 py-0.5 text-[11px] font-semibold text-state-warning-fg"
+                  className="rounded-full bg-state-warning-bg px-2 py-0.5 text-note font-semibold text-state-warning-fg"
                   title="Publikált cikk jövőbeli dátummal — élesben már látszik."
                 >
                   jövő dátum

@@ -383,7 +383,7 @@ export function CampaignWizard({
             <div className="flex items-center gap-2">
               <div
                 className={[
-                  "flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-bold transition-colors",
+                  "flex h-7 w-7 items-center justify-center rounded-full text-note font-bold transition-colors",
                   step === s
                     ? "bg-sage text-[var(--color-action-primary-fg)]"
                     : step > s
@@ -510,7 +510,7 @@ export function CampaignWizard({
                           )}
                         </div>
                         {isSelected ? (
-                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-[11px] font-bold text-[var(--color-action-primary-fg)]">
+                          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sage text-note font-bold text-[var(--color-action-primary-fg)]">
                             {orderIndex + 1}
                           </span>
                         ) : card.comingSoon ? (
@@ -520,14 +520,14 @@ export function CampaignWizard({
                         ) : null}
                       </label>
                       <details className="border-t border-sand/60 px-3.5 pb-3">
-                        <summary className="cursor-pointer select-none pt-2 text-[11px] font-medium text-muted transition-colors hover:text-ink-body">
+                        <summary className="cursor-pointer select-none pt-2 text-note font-medium text-muted transition-colors hover:text-ink-body">
                           {locale === "hu" ? "Részletek" : "Details"}
                         </summary>
                         <p className="mt-1.5 text-caption leading-relaxed text-ink-body">
                           {t(card.descKey, locale)}
                         </p>
                         {card.outKey && (
-                          <p className="mt-1 text-[11px] text-[var(--color-accent-primary-strong)]">{t(card.outKey, locale)}</p>
+                          <p className="mt-1 text-note text-[var(--color-accent-primary-strong)]">{t(card.outKey, locale)}</p>
                         )}
                       </details>
                     </div>
@@ -595,7 +595,7 @@ export function CampaignWizard({
               label={
                 <>
                   {t("campaignWiz.descLabel", locale)}
-                  <span className="ml-1.5 text-[11px] font-normal text-muted">
+                  <span className="ml-1.5 text-note font-normal text-muted">
                     {t("campaignWiz.optional", locale)}
                   </span>
                 </>
@@ -614,7 +614,7 @@ export function CampaignWizard({
                 <p className="text-caption font-semibold text-ink">
                   {t("campaignWiz.intervalLabel", locale)}
                 </p>
-                <p className="mt-0.5 text-[12px] leading-relaxed text-ink-body">
+                <p className="mt-0.5 text-xs leading-relaxed text-ink-body">
                   {t("campaignWiz.intervalHint", locale)}
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-2">
@@ -629,7 +629,7 @@ export function CampaignWizard({
                       type="button"
                       onClick={() => setStepIntervalHours(opt.value)}
                       className={[
-                        "min-h-[36px] rounded-[10px] border px-3.5 text-[12px] font-semibold transition",
+                        "min-h-[36px] rounded-[10px] border px-3.5 text-xs font-semibold transition",
                         stepIntervalHours === opt.value
                           ? "border-[var(--color-surface-inverse)] bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]"
                           : "border-sand bg-surface-card text-ink-body hover:border-ink/40",
@@ -726,7 +726,7 @@ export function CampaignWizard({
                 onClick={toggleAll}
                 variant="ghost"
                 size="sm"
-                className="min-h-0 px-0 text-[12px] text-[var(--color-accent-primary-strong)] hover:bg-transparent hover:underline"
+                className="min-h-0 px-0 text-xs text-[var(--color-accent-primary-strong)] hover:bg-transparent hover:underline"
               >
                 {selectedIds.size === members.length
                   ? t("campaignWiz.deselectAll", locale)
@@ -852,7 +852,7 @@ export function CampaignWizard({
               {targetTeams.length > 0 && (
                 <p className="mt-2 text-label uppercase text-muted">
                   {t("campaignWiz.targetTeamLabel", locale)}{" "}
-                  <span className="font-sans text-[12px] normal-case tracking-normal text-ink-body">
+                  <span className="font-sans text-xs normal-case tracking-normal text-ink-body">
                     {targetTeams.map((tm) => tm.name).join(" · ")}
                   </span>
                 </p>
@@ -870,7 +870,7 @@ export function CampaignWizard({
                   {selectedMembers.map((m) => (
                     <span
                       key={m.userId}
-                      className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-[12px] text-ink-body"
+                      className="rounded-full border border-sand bg-surface-card px-2.5 py-0.5 text-xs text-ink-body"
                     >
                       {m.displayName}
                     </span>
@@ -912,7 +912,7 @@ export function CampaignWizard({
                   <path d="M8 5v3.5M8 11v.5" />
                 </svg>
               </span>
-              <p className="text-[11px] text-bronze-700">
+              <p className="text-note text-bronze-700">
                 {activateNow
                   ? t("campaignWiz.activateNowNote", locale)
                   : t("campaignWiz.draftNote", locale)}

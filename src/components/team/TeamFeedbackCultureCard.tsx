@@ -29,7 +29,7 @@ export function TeamFeedbackCultureCard({
       <SectionEyebrow tone="team">
         {t("teamComp.feedbackCultureEyebrow", locale)}
       </SectionEyebrow>
-      <h2 className="mt-1.5 font-fraunces text-[22px] leading-tight text-ink">
+      <h2 className="mt-1.5 font-fraunces text-heading leading-tight text-ink">
         {t("teamComp.feedbackCultureTitle", locale)}
       </h2>
       <p className="mt-2 max-w-2xl text-caption leading-relaxed text-ink-body">
@@ -41,24 +41,24 @@ export function TeamFeedbackCultureCard({
 
       <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
         <div className="rounded-[14px] border border-sand bg-cream px-4 py-3.5">
-          <p className="font-fraunces text-[26px] leading-none text-ink tabular-nums">
+          <p className="font-fraunces text-title leading-none text-ink tabular-nums">
             {alignedCount}
           </p>
-          <p className="mt-1.5 text-[12px] font-medium text-ink">
+          <p className="mt-1.5 text-xs font-medium text-ink">
             {t("teamComp.feedbackCultureAligned", locale)}
           </p>
-          <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
+          <p className="mt-1 text-note leading-relaxed text-ink-body">
             {t("teamComp.feedbackCultureAlignedHint", locale)}
           </p>
         </div>
         <div className="rounded-[14px] border border-sand bg-cream px-4 py-3.5">
-          <p className="font-fraunces text-[26px] leading-none text-ink tabular-nums">
+          <p className="font-fraunces text-title leading-none text-ink tabular-nums">
             {gapCount}
           </p>
-          <p className="mt-1.5 text-[12px] font-medium text-ink">
+          <p className="mt-1.5 text-xs font-medium text-ink">
             {t("teamComp.feedbackCultureGap", locale)}
           </p>
-          <p className="mt-1 text-[11px] leading-relaxed text-ink-body">
+          <p className="mt-1 text-note leading-relaxed text-ink-body">
             {t("teamComp.feedbackCultureGapHint", locale)}
           </p>
         </div>
@@ -66,7 +66,7 @@ export function TeamFeedbackCultureCard({
 
       {/* Forrás- és módszertani jegyzet — kötelező minden intelligence-
           kimeneten (termék-alapelv), itt az anonimitás-korlátot is kimondja. */}
-      <p className="mt-4 border-t border-sand pt-3 text-[11px] leading-relaxed text-muted">
+      <p className="mt-4 border-t border-sand pt-3 text-note leading-relaxed text-muted">
         {t("teamComp.feedbackCultureNote", locale)}
       </p>
     </section>

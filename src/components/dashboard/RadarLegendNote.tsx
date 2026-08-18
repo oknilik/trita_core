@@ -23,7 +23,7 @@ export function RadarLegendNote({
   const resolvedObserver = observerLabel ?? t("comparison.others", locale);
 
   return (
-    <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[11px] text-[var(--color-text-muted)]">
+    <p className="mt-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-note text-[var(--color-text-muted)]">
       <span className="inline-flex items-center gap-1.5">
         <span
           aria-hidden

@@ -64,7 +64,7 @@ export function ProofSection({ mode }: { mode: SiteMode }) {
             <p className="font-fraunces relative text-base italic leading-relaxed text-ink-body">
               {t("landing.proofTestimonial", locale)}
             </p>
-            <p className="mt-4 text-[11px] uppercase tracking-wide text-[var(--color-text-muted)]">
+            <p className="mt-4 text-label uppercase text-[var(--color-text-muted)]">
               {t("landing.proofTestimonialAuthor", locale)}
             </p>
           </div>

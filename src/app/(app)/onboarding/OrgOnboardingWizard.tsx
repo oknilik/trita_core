@@ -379,7 +379,7 @@ export function OrgOnboardingWizard() {
 
               return (
                 <div key={layer.id} className="flex items-center justify-between rounded-lg border border-sand/80 bg-cream px-3 py-2">
-                  <span className="text-[12px] font-medium text-ink">{layer.label}</span>
+                  <span className="text-xs font-medium text-ink">{layer.label}</span>
                   <span className={`rounded-full px-2 py-0.5 text-micro font-semibold ${statusClasses}`}>
                     {statusLabel}
                   </span>
@@ -387,7 +387,7 @@ export function OrgOnboardingWizard() {
               );
             })}
           </div>
-          <p className="mt-2 text-[11px] text-ink-body">
+          <p className="mt-2 text-note text-ink-body">
             {t("orgOnboarding.layerPlusNote", locale)}
           </p>
         </div>

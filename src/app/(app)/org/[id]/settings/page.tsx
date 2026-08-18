@@ -118,7 +118,7 @@ export default async function OrgSettingsPage({
                   )}
                 </div>
                 {isReadOnly ? (
-                  <span className="rounded-full bg-sand px-2.5 py-1 text-[11px] font-semibold text-muted">
+                  <span className="rounded-full bg-sand px-2.5 py-1 text-note font-semibold text-muted">
                     {m.role}
                   </span>
                 ) : (

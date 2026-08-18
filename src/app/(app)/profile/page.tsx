@@ -332,7 +332,7 @@ export default function ProfilePage() {
                             <Link
                               key={team.id}
                               href={`/team/${team.id}`}
-                              className={`rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-[11px] text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
+                              className={`rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-note text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
                             >
                               {team.name}
                             </Link>
@@ -353,7 +353,7 @@ export default function ProfilePage() {
           <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
 
           <div className="mb-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-            <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
+            <label className="flex flex-col gap-1 text-note font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.usernameLabel", locale)}
               <input
                 ref={usernameInputRef}
@@ -363,7 +363,7 @@ export default function ProfilePage() {
               />
               <span className="text-micro text-[var(--color-text-muted)]">{t("onboarding.usernameHint", locale)}</span>
             </label>
-            <label className="flex flex-col gap-1 text-[11px] font-medium text-[var(--color-text-secondary)]">
+            <label className="flex flex-col gap-1 text-note font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.birthYearLabel", locale)}
               <input
                 ref={birthYearInputRef}
@@ -378,7 +378,7 @@ export default function ProfilePage() {
           </div>
 
           <div className={`mt-5 rounded-lg p-1 transition ${invalidFieldFlash === "gender" ? "bg-state-error-bg/60 ring-2 ring-state-error-border" : ""}`}>
-            <span className="text-[11px] font-medium text-[var(--color-text-secondary)]">{t("onboarding.genderLabel", locale)}</span>
+            <span className="text-note font-medium text-[var(--color-text-secondary)]">{t("onboarding.genderLabel", locale)}</span>
             <div className="mt-1 flex flex-wrap gap-[5px]">
               {GENDER_OPTIONS.map((opt, idx) => (
                 <button key={opt.value} ref={idx === 0 ? genderFirstButtonRef : undefined} type="button" onClick={() => setGender(opt.value)} className={pillClass(gender === opt.value)}>
@@ -408,7 +408,7 @@ export default function ProfilePage() {
 
         {/* ═══ SAVE ROW ═══ */}
         <Card as="section" spacing="sm" className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-[5px] text-[11px] text-[var(--color-text-muted)]">
+          <div className="flex items-center gap-[5px] text-note text-[var(--color-text-muted)]">
             <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[var(--color-accent-primary)]" : "bg-[var(--color-action-primary-bg)]"}`} />
             {isDirty
               ? t("profile.saveUnsaved", locale)

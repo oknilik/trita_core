@@ -23,7 +23,7 @@ export default function AuthPageShell({ panelContext, children }: AuthPageShellP
           aria-label="trita"
           className="inline-flex min-h-11 items-center rounded-md text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
         >
-          <TritaWordmark className="text-[28px] tracking-[-0.04em]" />
+          <TritaWordmark className="text-title tracking-[-0.04em]" />
         </Link>
         <Link
           href="/"

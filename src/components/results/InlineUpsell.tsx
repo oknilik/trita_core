@@ -31,14 +31,14 @@ export function InlineUpsell() {
         </p>
         <div className="flex flex-wrap gap-4">
           {features.map((f) => (
-            <span key={f} className="text-[11px] text-white/[0.45]">
+            <span key={f} className="text-note text-white/[0.45]">
               <span className="font-bold text-[var(--color-accent-self)]">✓</span> {f}
             </span>
           ))}
         </div>
       </div>
       <div className="flex shrink-0 flex-col items-center gap-2">
-        <span className="font-fraunces text-[32px] tracking-tight text-white">€9</span>
+        <span className="font-fraunces text-display tracking-tight text-white">€9</span>
         <span className="text-micro text-white/[0.25]">
           {t("results.upsellOnetime", locale)}
         </span>

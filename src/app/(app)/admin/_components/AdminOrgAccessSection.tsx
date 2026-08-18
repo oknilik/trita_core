@@ -469,7 +469,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                                 }));
                               return (
                                 <label key={field.key} className="flex flex-col gap-1">
-                                  <span className="text-[11px] font-medium text-muted">
+                                  <span className="text-note font-medium text-muted">
                                     {field.label}
                                   </span>
                                   {field.type === "textarea" ? (

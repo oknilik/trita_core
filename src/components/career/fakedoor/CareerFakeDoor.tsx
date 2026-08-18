@@ -164,7 +164,7 @@ export function CareerFakeDoor({
           <h1 className="mt-3 max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
             {t("fakeDoor.heroTitle", locale)}
           </h1>
-          <p className="mt-4 max-w-[34rem] text-[17px] leading-relaxed text-ink-body md:text-[19px]">
+          <p className="mt-4 max-w-[34rem] text-heading leading-relaxed text-ink-body md:text-heading">
             {t("fakeDoor.heroLead", locale)}
           </p>
           {/* Kimondva, nem csak jelzésként: a bélyegzőt át lehet siklani, ezt
@@ -197,7 +197,7 @@ export function CareerFakeDoor({
 
       {/* ── „Wow" ────────────────────────────────────────────────── */}
       <section className="fd-rise fd-delay-1">
-        <p className="max-w-[46rem] border-l-[3px] border-bronze pl-5 font-fraunces text-[23px] leading-[1.35] text-ink md:pl-7 md:text-[30px]">
+        <p className="max-w-[46rem] border-l-[3px] border-bronze pl-5 font-fraunces text-title leading-[1.35] text-ink md:pl-7 md:text-title">
           {t("fakeDoor.wow", locale)}
         </p>
       </section>
@@ -225,10 +225,10 @@ export function CareerFakeDoor({
                 className="pointer-events-none absolute -bottom-6 -right-4 h-32 w-32 stroke-bronze opacity-[0.09] [&>g]:stroke-bronze"
               />
               <div className="relative">
-                <span className="font-fraunces text-[15px] text-[var(--color-accent-primary-strong)]">
+                <span className="font-fraunces text-body text-[var(--color-accent-primary-strong)]">
                   {String(index + 1).padStart(2, "0")}
                 </span>
-                <p className="mt-1 font-fraunces text-[19px] leading-snug text-ink md:text-[22px]">
+                <p className="mt-1 font-fraunces text-heading leading-snug text-ink md:text-heading">
                   {t(card.lead, locale)}
                 </p>
                 <p className="mt-1.5 max-w-prose text-caption leading-relaxed text-ink-body">
@@ -275,7 +275,7 @@ export function CareerFakeDoor({
             </p>
             {/* Nincs count-up: egy nem létező termék oldalán a numerikus
                 teátralitás pont a hitelességet vinné el. */}
-            <p className="mt-2 font-fraunces text-[40px] leading-none text-[var(--color-text-on-inverse)] md:text-[52px]">
+            <p className="mt-2 font-fraunces text-hero leading-none text-[var(--color-text-on-inverse)] md:text-hero">
               {price}
             </p>
             <p className="mt-3 max-w-prose text-caption leading-relaxed text-[var(--color-text-on-inverse-muted)]">

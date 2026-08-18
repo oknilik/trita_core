@@ -223,7 +223,7 @@ export function ThemeToggle({
           aria-label={t("theme.label", locale)}
           className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-card)] p-1.5 shadow-[var(--ui-shadow-lg)]"
         >
-          <p className="px-3 pb-2 pt-2 font-fraunces text-[16px] text-[var(--color-text-primary)]">
+          <p className="px-3 pb-2 pt-2 font-fraunces text-base text-[var(--color-text-primary)]">
             {t("theme.label", locale)}
           </p>
           <ThemeOptions

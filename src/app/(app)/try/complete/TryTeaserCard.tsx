@@ -61,14 +61,14 @@ export function TryTeaserCard({
       </div>
 
       <div className="mt-4">
-        <p className="text-[11px] font-medium uppercase tracking-wider text-muted">
+        <p className="text-label uppercase text-muted">
           {t("tryComplete.teaserTopDims", locale)}
         </p>
         <div className="mt-2 flex flex-wrap gap-2">
           {topDims.map((dim) => (
             <span
               key={dim.code}
-              className="inline-flex items-center gap-1.5 rounded-full border border-sand bg-cream/60 px-2.5 py-1 text-[12px] text-ink-body"
+              className="inline-flex items-center gap-1.5 rounded-full border border-sand bg-cream/60 px-2.5 py-1 text-xs text-ink-body"
             >
               <span className="font-semibold text-ink">{dim.letter}</span>
               {dim.label}

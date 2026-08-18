@@ -151,12 +151,12 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
     <div className="flex flex-col gap-3 rounded-xl border border-sand bg-surface-card p-4">
       <div className="flex items-center gap-3">
         <div
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-white text-[12px] font-bold"
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full border-2 border-white text-xs font-bold"
           style={{ background: member.color, color: member.textColor }}
         >
           {member.initials}
         </div>
-        <p className="text-[14px] font-bold text-ink">{member.name}</p>
+        <p className="text-sm font-bold text-ink">{member.name}</p>
       </div>
 
       {myEdges.length > 0 && (
@@ -190,7 +190,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
                       className="h-2 w-2 flex-shrink-0 rounded-full"
                       style={{ background: EDGE_COLORS[e.type] }}
                     />
-                    <span className="text-[11px] text-ink-body">{target.name}</span>
+                    <span className="text-note text-ink-body">{target.name}</span>
                     <span className="ml-auto text-micro text-muted">
                       {edgeLabel(e)}
                     </span>
@@ -263,7 +263,7 @@ function DynamicsDetailPanel({ member, edges, members, loc }: DynamicsDetailPane
         </div>
       )}
 
-      <div className="border-t border-sand pt-2 text-[11px] text-ink-body">
+      <div className="border-t border-sand pt-2 text-note text-ink-body">
         <span className="font-semibold text-ink">{myEdges.length}</span> {t("teamComp.incomingConnections", loc)}
       </div>
     </div>
@@ -283,10 +283,10 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
   if (edges.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-sand bg-[var(--color-surface-chip-neutral)] py-16 text-center">
-        <p className="text-[14px] font-semibold text-ink">
+        <p className="text-sm font-semibold text-ink">
           {t("teamComp.noDynamicsTitle", loc)}
         </p>
-        <p className="mt-1 text-[12px] text-muted">
+        <p className="mt-1 text-xs text-muted">
           {t("teamComp.noDynamicsDesc", loc)}
         </p>
       </div>
@@ -410,7 +410,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
             return (
               <div key={edgeType} className="flex items-center gap-2">
                 <div className="h-[3px] w-6 rounded" style={{ background: EDGE_COLORS[edgeType] }} />
-                <span className="text-[11px] text-ink-body">
+                <span className="text-note text-ink-body">
                   {t(legendKey, loc)}
                 </span>
               </div>
@@ -418,7 +418,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           })}
           <div className="ml-auto flex items-center gap-2">
             <div className="h-3 w-3 rounded-full bg-[var(--color-surface-warm-tint)] ring-1 ring-sage" />
-            <span className="text-[11px] text-ink-body">{t("teamComp.hubPerson", loc)}</span>
+            <span className="text-note text-ink-body">{t("teamComp.hubPerson", loc)}</span>
           </div>
         </div>
 
@@ -451,7 +451,7 @@ export function DynamicsMap({ members, edges, isHu = true }: DynamicsMapProps) {
           />
         ) : (
           <div className="flex h-full min-h-[200px] items-center justify-center rounded-xl border border-sand bg-surface-card p-6 text-center">
-            <p className="text-[12px] text-muted">
+            <p className="text-xs text-muted">
               {t("teamComp.clickPerson", loc)}
               <br />{t("teamComp.clickPersonConnections", loc)}
             </p>

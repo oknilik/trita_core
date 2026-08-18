@@ -31,7 +31,7 @@ export function RolunkContent() {
             </em>
           </h1>
 
-          <p className="mt-6 max-w-[640px] text-lg leading-[1.8] text-ink-body md:text-[19px]">
+          <p className="mt-6 max-w-[640px] text-lg leading-[1.8] text-ink-body md:text-heading">
             {t("aboutUs.heroLead", locale)}
           </p>
 
@@ -72,7 +72,7 @@ export function RolunkContent() {
               key={item.title}
               className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]"
             >
-              <h3 className="font-fraunces text-[24px] leading-tight text-ink">{item.title}</h3>
+              <h3 className="font-fraunces text-title leading-tight text-ink">{item.title}</h3>
               <p className="mt-3 text-base leading-8 text-ink-body">{item.desc}</p>
             </article>
           ))}

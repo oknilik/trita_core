@@ -69,7 +69,7 @@ function AxisSlider({
       </div>
 
       {/* Pole labels */}
-      <div className="mb-1 flex justify-between text-[11px]" style={{ color: T.muted }}>
+      <div className="mb-1 flex justify-between text-note" style={{ color: T.muted }}>
         <span>{axis.low}</span>
         <span>{axis.high}</span>
       </div>
@@ -352,7 +352,7 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
                     <p className="text-xs font-semibold leading-snug" style={{ color: T.heading }}>
                       {pattern.alias}
                     </p>
-                    <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed" style={{ color: T.muted }}>
+                    <p className="mt-1 line-clamp-2 text-note leading-relaxed" style={{ color: T.muted }}>
                       {pattern.description}
                     </p>
                     <p className="mt-1.5 font-mono text-micro uppercase tracking-wider" style={{ color: q.accent }}>

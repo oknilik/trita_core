@@ -290,7 +290,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
                     <th
                       key={h}
                       scope="col"
-                      className="pb-2 pr-4 font-mono text-[11px] uppercase tracking-widest text-muted last:pr-0"
+                      className="pb-2 pr-4 font-mono text-label uppercase text-muted last:pr-0"
                     >
                       {h}
                     </th>
@@ -312,7 +312,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
                     <td className="py-2 pr-4 align-top text-xs text-ink-body">
                       {row.deviceClass ?? "—"}
                     </td>
-                    <td className="py-2 align-top font-mono text-[11px] text-ink-body">
+                    <td className="py-2 align-top font-mono text-note text-ink-body">
                       {row.props ? JSON.stringify(row.props) : "—"}
                     </td>
                   </tr>

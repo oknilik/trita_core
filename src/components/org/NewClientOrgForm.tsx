@@ -79,7 +79,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
             <span>{billingOpen ? "▾" : "▸"}</span>
             {isHu ? "Cégadatok — opcionális" : "Company details — optional"}
           </button>
-          <p className="mt-1 text-[11px] leading-relaxed text-muted">
+          <p className="mt-1 text-note leading-relaxed text-muted">
             {isHu
               ? "Ha kéznél vannak, már most megadhatod a számlázási adatokat — de később, az admin felületen is kitöltheted."
               : "If you have them handy, add the billing details now — you can also fill them in later on the admin surface."}
@@ -95,7 +95,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
                     key={field.key}
                     className={field.type === "textarea" ? "flex flex-col gap-1 sm:col-span-2" : "flex flex-col gap-1"}
                   >
-                    <span className="text-[11px] font-medium text-muted">{field.label}</span>
+                    <span className="text-note font-medium text-muted">{field.label}</span>
                     {field.type === "textarea" ? (
                       <textarea
                         value={value}

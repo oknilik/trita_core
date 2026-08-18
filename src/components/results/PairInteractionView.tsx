@@ -123,7 +123,7 @@ export function PairInteractionView({
                 <p className="mx-auto mt-1.5 max-w-[12rem] break-words text-center text-caption font-semibold text-[var(--color-accent-primary)]">
                   {eyebrow}
                 </p>
-                <p className="mx-auto mt-1 max-w-[12rem] text-center font-fraunces text-[15px] leading-snug text-[var(--color-text-on-inverse)] sm:text-[18px]">
+                <p className="mx-auto mt-1 max-w-[12rem] text-center font-fraunces text-body leading-snug text-[var(--color-text-on-inverse)] sm:text-heading">
                   {info.label}
                 </p>
               </div>

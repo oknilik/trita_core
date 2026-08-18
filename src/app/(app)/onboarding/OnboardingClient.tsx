@@ -351,7 +351,7 @@ export function OnboardingClient({
 
                 {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
                 <div className="mt-2 border-t border-sand pt-4">
-                  <p className="mb-3 text-[11px] font-medium uppercase tracking-widest text-muted">
+                  <p className="mb-3 text-label uppercase text-muted">
                     {t("onboarding.careerSectionLabel", locale)}
                   </p>
                   <div className="flex flex-col gap-4">

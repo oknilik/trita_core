@@ -745,13 +745,13 @@ export function ObserverClient({
             style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
           />
         </div>
-        <span className="whitespace-nowrap text-[11px] text-[var(--color-text-muted)]">
+        <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
           {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
         </span>
       </div>
 
       {/* Observer-emlékeztető — kire gondolj válasz közben */}
-      <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-[12px] text-[var(--color-accent-self-deep)]">
+      <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-xs text-[var(--color-accent-self-deep)]">
         {thinkOfParts.length > 1 ? (
           thinkOfParts.map((part, index) => (
             <span key={`thinkof-${index}`}>
@@ -798,11 +798,11 @@ export function ObserverClient({
                 </>
               ) : checkpointActive ? (
                 <div className="flex flex-col items-center text-center">
-                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-widest text-[var(--color-action-primary-bg)]">
+                  <div className="mb-4 inline-flex items-center gap-[5px] rounded-full bg-[var(--color-surface-self-accent-soft)] px-3.5 py-1.5 text-label uppercase text-[var(--color-action-primary-bg)]">
                     <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-action-primary-bg)]" />
                     {t("assessment.journeyMilestone", locale)}
                   </div>
-                  <h2 className="mb-3 font-fraunces text-[24px] leading-tight text-[var(--color-text-primary)] lg:text-[26px]">
+                  <h2 className="mb-3 font-fraunces text-title leading-tight text-[var(--color-text-primary)] lg:text-title">
                     {t(
                       checkpoint === 25 ? "assessment.journeyMilestone25"
                       : checkpoint === 50 ? "assessment.journeyMilestone50"
@@ -893,7 +893,7 @@ export function ObserverClient({
           {/* Mobilon csak a jelölőnégyzet látszik (a felirat elférne, de a
               három vezérlőt szétnyomná) — a szöveg sr-only marad, hogy a
               kapcsolónak legyen elérhető neve. */}
-          <span className="sr-only whitespace-nowrap text-[11px] text-[var(--color-text-muted)] md:not-sr-only">
+          <span className="sr-only whitespace-nowrap text-note text-[var(--color-text-muted)] md:not-sr-only">
             {t("assessment.autoAdvance", locale)}
           </span>
         </label>

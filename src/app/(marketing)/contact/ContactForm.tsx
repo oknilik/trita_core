@@ -83,7 +83,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
           {t("contact.successTitle", locale)}
         </p>
-        <h3 className="mt-3 font-fraunces text-[32px] leading-tight text-ink">
+        <h3 className="mt-3 font-fraunces text-display leading-tight text-ink">
           {t("contact.successBody", locale)}
         </h3>
         <button
@@ -98,7 +98,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-[16px] tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-surface-card focus:ring-2 focus:ring-bronze/12";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-base tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-surface-card focus:ring-2 focus:ring-bronze/12";
   const labelClass = "block text-sm font-medium text-ink";
 
   return (
@@ -196,7 +196,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       ) : null}
 
       <div className="flex flex-col gap-3 border-t border-sand pt-5 sm:flex-row sm:items-center sm:justify-between">
-        <p className="font-dm-sans text-[11px] uppercase tracking-widest text-ink-body">
+        <p className="font-dm-sans text-label uppercase text-ink-body">
           {t("contact.requiredHint", locale)}
         </p>
         <button

@@ -235,7 +235,7 @@ export default async function MyMeasurementsPage() {
                   className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-bronze/40 bg-cream px-3.5 py-2.5"
                 >
                   <span className="flex min-w-0 items-center gap-2.5">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bronze text-[11px] font-bold text-[var(--color-text-on-accent)]">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-bronze text-note font-bold text-[var(--color-text-on-accent)]">
                       ★
                     </span>
                     <span className="text-caption font-medium text-ink">
@@ -357,7 +357,7 @@ export default async function MyMeasurementsPage() {
                           <span className="flex min-w-0 items-center gap-2.5">
                             <span
                               className={[
-                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold",
+                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-note font-bold",
                                 isDone
                                   ? "bg-sage text-[var(--color-action-primary-fg)]"
                                   : isCurrent

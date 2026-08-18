@@ -104,7 +104,7 @@ export default async function SharedProfilePage({
           <SectionEyebrow variant="clean" tone="muted" className="mb-3">
             {t("content.shareExpiredEyebrow", locale)}
           </SectionEyebrow>
-          <h1 className="mb-3 font-fraunces text-[26px] tracking-tight text-ink">
+          <h1 className="mb-3 font-fraunces text-title tracking-tight text-ink">
             {t("content.shareExpiredTitle", locale)}
           </h1>
           <p className="mb-7 text-sm leading-relaxed text-ink-body">
@@ -273,18 +273,18 @@ export default async function SharedProfilePage({
                   className="h-14 w-14 shrink-0 rounded-xl border border-white/20 md:h-16 md:w-16"
                 />
               ) : null}
-              <h1 className="break-words font-fraunces text-[30px] tracking-tight text-white md:text-[34px]">
+              <h1 className="break-words font-fraunces text-title tracking-tight text-white md:text-display">
                 {displayName}
               </h1>
             </div>
           )}
           meta={(
-            <p className="text-[11px] text-white/[0.45]">
+            <p className="text-note text-white/[0.45]">
               {t("results.heroAssessment", locale)} {formattedDate}
             </p>
           )}
           body={personalityType ? (
-            <p className="font-fraunces text-[20px] italic text-[var(--color-accent-primary-soft)]">
+            <p className="font-fraunces text-heading italic text-[var(--color-accent-primary-soft)]">
               {personalityType}
             </p>
           ) : null}
@@ -300,7 +300,7 @@ export default async function SharedProfilePage({
           <SectionEyebrow variant="clean" tone="bronze" className="mb-2">
             {t("results.shareSummaryEyebrow", locale)}
           </SectionEyebrow>
-          <h2 id="share-summary-heading" className="max-w-2xl font-fraunces text-[27px] leading-tight text-ink md:text-[31px]">
+          <h2 id="share-summary-heading" className="max-w-2xl font-fraunces text-title leading-tight text-ink md:text-display">
             {tf("results.shareSummaryTitle", locale, { name: displayName })}
           </h2>
           <p className="mt-2 max-w-2xl text-caption leading-relaxed text-muted">
@@ -325,7 +325,7 @@ export default async function SharedProfilePage({
           <SectionEyebrow variant="clean" tone="bronze" className="mb-2">
             {t("results.dimSectionEyebrow", locale)}
           </SectionEyebrow>
-          <h2 id="share-dimensions-heading" className="font-fraunces text-[25px] leading-tight text-ink md:text-[29px]">
+          <h2 id="share-dimensions-heading" className="font-fraunces text-title leading-tight text-ink md:text-title">
             {t("results.shareDimensionsTitle", locale)}
           </h2>
           <p className="mt-2 max-w-2xl text-caption leading-relaxed text-muted">
@@ -375,14 +375,14 @@ export default async function SharedProfilePage({
           <SectionEyebrow variant="clean" tone="bronze" className="mb-2">
             {t("results.shareExploreEyebrow", locale)}
           </SectionEyebrow>
-          <h2 id="share-deeper-heading" className="font-fraunces text-[25px] leading-tight text-ink md:text-[29px]">
+          <h2 id="share-deeper-heading" className="font-fraunces text-title leading-tight text-ink md:text-title">
             {t("results.shareExploreTitle", locale)}
           </h2>
           <div className="mt-5 flex flex-col gap-3">
             <details className="group overflow-hidden rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]">
               <summary className="flex min-h-[82px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
                 <span>
-                  <strong className="block font-fraunces text-[20px] font-medium text-ink">{t("results.shareChapterWork", locale)}</strong>
+                  <strong className="block font-fraunces text-heading font-medium text-ink">{t("results.shareChapterWork", locale)}</strong>
                   <span className="mt-1 block text-xs leading-relaxed text-muted">{t("results.shareChapterWorkBody", locale)}</span>
                 </span>
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
@@ -398,7 +398,7 @@ export default async function SharedProfilePage({
             <details className="group overflow-hidden rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]">
               <summary className="flex min-h-[82px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
                 <span>
-                  <strong className="block font-fraunces text-[20px] font-medium text-ink">{t("results.shareChapterEnvironment", locale)}</strong>
+                  <strong className="block font-fraunces text-heading font-medium text-ink">{t("results.shareChapterEnvironment", locale)}</strong>
                   <span className="mt-1 block text-xs leading-relaxed text-muted">{t("results.shareChapterEnvironmentBody", locale)}</span>
                 </span>
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
@@ -414,7 +414,7 @@ export default async function SharedProfilePage({
             <details className="group overflow-hidden rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]">
               <summary className="flex min-h-[82px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
                 <span>
-                  <strong className="block font-fraunces text-[20px] font-medium text-ink">{t("results.shareChapterRoleFit", locale)}</strong>
+                  <strong className="block font-fraunces text-heading font-medium text-ink">{t("results.shareChapterRoleFit", locale)}</strong>
                   <span className="mt-1 block text-xs leading-relaxed text-muted">{t("results.shareChapterRoleFitBody", locale)}</span>
                 </span>
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
@@ -438,7 +438,7 @@ export default async function SharedProfilePage({
               <details className="group overflow-hidden rounded-[18px] border border-[var(--color-border-soft)] bg-surface-card shadow-[var(--ui-shadow-sm)]">
                 <summary className="flex min-h-[82px] cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
                   <span>
-                    <strong className="block font-fraunces text-[20px] font-medium text-ink">{t("results.shareChapterRoles", locale)}</strong>
+                    <strong className="block font-fraunces text-heading font-medium text-ink">{t("results.shareChapterRoles", locale)}</strong>
                     <span className="mt-1 block text-xs leading-relaxed text-muted">{t("results.shareChapterRolesBody", locale)}</span>
                   </span>
                   <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
@@ -452,7 +452,7 @@ export default async function SharedProfilePage({
                     {teamRoleTop3.map(({ role }, index) => (
                       <div key={role} className={`rounded-xl p-4 ${index === 0 ? "border-2 border-sage bg-sage-soft" : "border border-[var(--color-border-soft)] bg-surface-card"}`}>
                         <span className="text-micro font-bold uppercase tracking-wide text-muted">{rankLabels[index][locale]}</span>
-                        <p className="mt-1 font-fraunces text-[18px] text-ink">{TEAM_ROLES[role][locale]}</p>
+                        <p className="mt-1 font-fraunces text-heading text-ink">{TEAM_ROLES[role][locale]}</p>
                       </div>
                     ))}
                   </div>
@@ -469,7 +469,7 @@ export default async function SharedProfilePage({
             <p aria-hidden="true" className="text-3xl leading-none">
               🧭
             </p>
-            <h2 className="mt-2 font-fraunces text-[22px] tracking-tight text-ink">
+            <h2 className="mt-2 font-fraunces text-heading tracking-tight text-ink">
               {t("content.shareCtaTitle", locale)}
             </h2>
             <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-ink-body">

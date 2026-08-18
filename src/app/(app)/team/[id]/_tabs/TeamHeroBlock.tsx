@@ -132,9 +132,9 @@ export function TeamHeroBlock({
   const showPatternCta = hasPattern && canViewRaw;
   const manageRoundIsPrimary = !isTeamMember && !showPatternCta;
   const heroCtaSolidClass =
-    "inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-[12px] font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110";
+    "inline-flex min-h-[44px] items-center rounded-[10px] px-5 py-2 text-xs font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110";
   const heroCtaGhostClass =
-    "inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]";
+    "inline-flex min-h-[44px] items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-xs font-medium text-[var(--color-text-on-inverse-muted)] transition hover:bg-white/[0.12]";
 
   return (
     <>
@@ -162,12 +162,12 @@ export function TeamHeroBlock({
             </span>
           ) : undefined
         }
-        title={<h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">{teamData.teamName}</h1>}
+        title={<h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-hero">{teamData.teamName}</h1>}
         summary={statusLine}
         chips={heroChips.map((chip) => (
           <span
             key={chip}
-            className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]"
+            className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]"
           >
             {chip}
           </span>
@@ -230,7 +230,7 @@ export function TeamHeroBlock({
               </Link>
             ) : null}
             {canViewRaw && !canManageTeamActions && isOrgManager && teamData.orgId ? (
-              <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-[12px] font-medium text-[var(--color-text-on-inverse-muted)]">
+              <span className="inline-flex min-h-[44px] cursor-not-allowed items-center rounded-[10px] bg-white/[0.08] px-5 py-2 text-xs font-medium text-[var(--color-text-on-inverse-muted)]">
                 {hasObserver
                   ? t("teamDetail.heroManageRound", locale)
                   : t("teamDetail.heroStartRound", locale)}
@@ -240,7 +240,7 @@ export function TeamHeroBlock({
         )}
         footer={
           manageGateCopy ? (
-            <p className="text-[12px] text-[var(--color-text-on-inverse-muted)]">
+            <p className="text-xs text-[var(--color-text-on-inverse-muted)]">
               {manageGateCopy.description}
             </p>
           ) : undefined
@@ -254,15 +254,15 @@ export function TeamHeroBlock({
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotMembers", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{teamData.memberCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{teamData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotDone", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{completedCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{completedCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("teamDetail.snapshotWait", locale)}</p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">{waitingCount}</p>
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{waitingCount}</p>
               </div>
             </div>
 

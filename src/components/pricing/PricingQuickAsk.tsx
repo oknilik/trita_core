@@ -113,7 +113,7 @@ export function PricingQuickAsk({ locale }: { locale: Locale }) {
             ? t("pricing.quickAskSending", locale)
             : t("pricing.quickAskSend", locale)}
         </button>
-        <p className="text-center text-[11px] text-white/[0.6]">
+        <p className="text-center text-note text-white/[0.6]">
           {t("pricing.ctaTrust", locale)}
         </p>
       </form>

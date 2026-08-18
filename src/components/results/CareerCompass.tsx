@@ -228,7 +228,7 @@ function RiasecProfiler({
         <button
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          className="mt-3 inline-flex min-h-[44px] items-center text-[12px] font-semibold text-[var(--color-text-muted)] hover:text-ink"
+          className="mt-3 inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-text-muted)] hover:text-ink"
         >
           ← {t("results.ccBack", locale)}
         </button>
@@ -250,7 +250,7 @@ function Chip({
     <button
       type="button"
       onClick={onClick}
-      className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-[12px] font-medium transition ${
+      className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
         active
           ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
           : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-sage/50 hover:text-[var(--color-text-primary)]"
@@ -583,7 +583,7 @@ export function CareerCompass({
       <p className="mt-2 text-sm font-semibold text-[var(--color-text-primary)]">
         {t(titleKey, locale)}
       </p>
-      <p className="mt-0.5 text-[11px] text-[var(--color-text-muted)]">
+      <p className="mt-0.5 text-note text-[var(--color-text-muted)]">
         {t(whyKey, locale)}
       </p>
     </div>
@@ -594,7 +594,7 @@ export function CareerCompass({
       <button
         type="button"
         onClick={() => goBack(from)}
-        className="inline-flex min-h-[44px] items-center text-[12px] font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
+        className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
       >
         {t("results.ccBack", locale)}
       </button>
@@ -662,7 +662,7 @@ export function CareerCompass({
                 A magyarázó-link külön sávot kap: korábban egy aláhúzott szó
                 volt a bekezdés végén, és észrevétlen maradt. */}
             <div className="mt-4 rounded-[12px] border border-dashed border-sage/50 bg-[var(--color-surface-card)]/70 px-4 py-3">
-              <p className="text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+              <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 {hasMeasuredRiasec
                   ? t("results.ccIntroRiasecDone", locale)
                   : tf("results.ccIntroRiasec", locale, {
@@ -689,7 +689,7 @@ export function CareerCompass({
                 >
                   {t("results.ccNeedsProfileCta", locale)}
                 </Link>
-                <p className="mt-2 max-w-xl text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                <p className="mt-2 max-w-xl text-xs leading-relaxed text-[var(--color-text-secondary)]">
                   {t("results.ccNeedsProfileNote", locale)}
                 </p>
               </div>
@@ -727,7 +727,7 @@ export function CareerCompass({
                 <p className="mt-1.5 text-sm font-semibold text-[var(--color-text-primary)]">
                   {t(titleKey, locale)}
                 </p>
-                <p className="mt-1 text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                <p className="mt-1 text-xs leading-relaxed text-[var(--color-text-secondary)]">
                   {t(bodyKey, locale)}
                 </p>
               </div>
@@ -748,7 +748,7 @@ export function CareerCompass({
               ].map((key) => (
                 <li
                   key={key}
-                  className="flex gap-2 text-[12px] leading-relaxed text-accent-earth-strong/85"
+                  className="flex gap-2 text-xs leading-relaxed text-accent-earth-strong/85"
                 >
                   <span aria-hidden>·</span>
                   <span>{t(key, locale)}</span>
@@ -817,7 +817,7 @@ export function CareerCompass({
             background.eduLevel === "higher" ||
             background.eduLevel === "specialized") && (
             <div style={{ animation: "cc-step-in 0.3s ease-out both" }}>
-              <p className="mt-4 text-[11px] font-medium text-[var(--color-text-muted)]">
+              <p className="mt-4 text-note font-medium text-[var(--color-text-muted)]">
                 {t("results.ccFieldLabelMulti", locale)}
               </p>
               <p className="mt-0.5 text-micro text-[var(--color-text-muted)]">
@@ -996,7 +996,7 @@ export function CareerCompass({
                   key={`${axis}-${v}`}
                   type="button"
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
-                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
+                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-note font-medium transition ${
                     value === v
                       ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
@@ -1033,7 +1033,7 @@ export function CareerCompass({
                   key={`${axis}-${v}`}
                   type="button"
                   onClick={() => setPrefs((prev) => ({ ...prev, [axis]: v }))}
-                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-[11px] font-medium transition ${
+                  className={`min-h-[36px] flex-1 rounded-lg px-3 py-1.5 text-note font-medium transition ${
                     value === v
                       ? "bg-sage text-[var(--color-action-primary-fg)] shadow-sm"
                       : "text-[var(--color-text-secondary)] hover:bg-surface-card hover:text-[var(--color-text-primary)]"
@@ -1105,7 +1105,7 @@ export function CareerCompass({
               <button
                 type="button"
                 onClick={() => fetchFit(background, prefs, leadIntent)}
-                className="mt-2 rounded-lg border border-state-error-border bg-surface-card px-3 py-1.5 text-[12px] font-semibold text-state-error-fg"
+                className="mt-2 rounded-lg border border-state-error-border bg-surface-card px-3 py-1.5 text-xs font-semibold text-state-error-fg"
               >
                 {t("results.cfRetry", locale)}
               </button>
@@ -1158,13 +1158,13 @@ export function CareerCompass({
                   ) : (
                     fitResult.interestSource !== "measured" && (
                       <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-dashed border-sage/50 bg-sage/5 px-4 py-3">
-                        <p className="max-w-xl text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                        <p className="max-w-xl text-xs leading-relaxed text-[var(--color-text-secondary)]">
                           🎯 {t("results.ccRiasecCta", locale)}
                         </p>
                         <button
                           type="button"
                           onClick={() => setProfilerOpen(true)}
-                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-[12px] font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
+                          className="inline-flex min-h-[36px] items-center rounded-lg bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                         >
                           {t("results.ccRiasecCtaBtn", locale)}
                         </button>
@@ -1175,13 +1175,13 @@ export function CareerCompass({
                   {/* Observer-pontosítás — ha még csak önértékelésen áll a kép */}
                   {fitResult.observerWeight === 0 && onRequestObserver && (
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
-                      <p className="max-w-xl text-[12px] leading-relaxed text-[var(--color-text-secondary)]">
+                      <p className="max-w-xl text-xs leading-relaxed text-[var(--color-text-secondary)]">
                         {t("results.ccObserverRefine", locale)}
                       </p>
                       <button
                         type="button"
                         onClick={onRequestObserver}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-surface-card px-4 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10"
+                        className="inline-flex min-h-[40px] items-center rounded-lg border border-sage/50 bg-surface-card px-4 text-xs font-semibold text-sage-dark transition hover:bg-sage/10"
                       >
                         {t("results.ccObserverRefineCta", locale)}
                       </button>
@@ -1215,12 +1215,12 @@ export function CareerCompass({
           {/* Hiányzó szakma */}
           <div className="mt-5 border-t border-[var(--color-border-soft)] pt-3">
             {missingState === "sent" ? (
-              <p className="text-[12px] text-state-success-fg">
+              <p className="text-xs text-state-success-fg">
                 {t("results.industryFitMissingThanks", locale)}
               </p>
             ) : (
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[12px] text-[var(--color-text-secondary)]">
+                <span className="text-xs text-[var(--color-text-secondary)]">
                   {t("results.industryFitMissingTitle", locale)}
                 </span>
                 {/* mobil: 16px betűméret, különben iOS Safari fókuszkor rázoomol */}
@@ -1230,13 +1230,13 @@ export function CareerCompass({
                   onChange={(e) => setMissingText(e.target.value)}
                   maxLength={200}
                   placeholder={t("results.industryFitMissingPlaceholder", locale)}
-                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-[12px]"
+                  className="min-h-[44px] min-w-[180px] flex-1 rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-base text-[var(--color-text-primary)] md:min-h-[36px] md:text-xs"
                 />
                 <button
                   type="button"
                   disabled={missingState === "busy" || !missingText.trim()}
                   onClick={sendMissing}
-                  className="min-h-[36px] rounded-lg border border-sage/50 bg-surface-card px-3.5 text-[12px] font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
+                  className="min-h-[36px] rounded-lg border border-sage/50 bg-surface-card px-3.5 text-xs font-semibold text-sage-dark transition hover:bg-sage/10 disabled:opacity-50"
                 >
                   {t("results.industryFitMissingSend", locale)}
                 </button>

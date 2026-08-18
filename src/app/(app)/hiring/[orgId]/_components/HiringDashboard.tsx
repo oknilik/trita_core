@@ -116,14 +116,14 @@ function CandidateRow({
   return (
     <div className="rounded-2xl border border-sand bg-surface-card px-4 py-3 shadow-[0_10px_26px_rgba(26,26,46,0.03)] transition-shadow hover:shadow-[0_12px_30px_rgba(26,26,46,0.06)]">
       <div className="flex items-start gap-3">
-        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-candidate-soft text-[11px] font-bold text-accent-candidate-strong">
+        <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-candidate-soft text-note font-bold text-accent-candidate-strong">
           {initial}
         </div>
         <div className="min-w-0 flex-1">
           <p className="truncate text-caption font-semibold text-ink">
             {displayName}
           </p>
-          <p className="truncate text-[11px] text-muted">
+          <p className="truncate text-note text-muted">
             {invite.position && `${invite.position} · `}
             {invite.teamName && `${invite.teamName} · `}
             {new Date(invite.createdAt).toLocaleDateString(dateLocale)}
@@ -162,7 +162,7 @@ function CandidateRow({
               className={getButtonClassName({
                 variant: "secondary",
                 size: "sm",
-                className: "px-3 text-[11px]",
+                className: "px-3 text-note",
               })}
             >
               {t("hiring.resultsLink", locale)}
@@ -173,7 +173,7 @@ function CandidateRow({
               type="button"
               onClick={() => void handleResend()}
               disabled={resendState !== "idle"}
-              className={`min-h-[36px] inline-flex items-center rounded-lg border px-3 text-[11px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+              className={`min-h-[36px] inline-flex items-center rounded-lg border px-3 text-note font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
                 resendState === "sent"
                   ? "border-state-success-border bg-state-success-bg text-state-success-fg"
                   : "border-sand bg-surface-card text-ink-body hover:border-accent-candidate-border hover:text-accent-candidate"
@@ -213,7 +213,7 @@ function CandidateSection({
       <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
         <div>
           <DashboardSectionHeader label={label} />
-          <p className="mt-1.5 text-[12px] text-ink-body">{description}</p>
+          <p className="mt-1.5 text-xs text-ink-body">{description}</p>
         </div>
         <span className={`rounded-full px-2.5 py-1 text-micro font-semibold ${countClass}`}>
           {count}
@@ -285,19 +285,19 @@ export function HiringDashboard({
           </span>
         )}
         title={(
-          <h1 className="font-fraunces text-[27px] tracking-tight text-[var(--color-text-on-inverse)] md:text-[40px]">
+          <h1 className="font-fraunces text-title tracking-tight text-[var(--color-text-on-inverse)] md:text-hero">
             {t("hiring.title", locale)}
           </h1>
         )}
         summary={t("hiring.heroSummary", locale)}
         chips={[
-          <span key="total" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="total" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {invites.length} {t("hiring.candidatesTotal", locale).toLowerCase()}
           </span>,
-          <span key="progress" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="progress" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {inProgressInvites.length} {t("hiring.inProgressLabel", locale).toLowerCase()}
           </span>,
-          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-[11px] font-medium text-[var(--color-text-on-inverse-muted)]">
+          <span key="done" className="rounded-full bg-white/[0.08] px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)]">
             {completed.length} {t("hiring.completedLabel", locale).toLowerCase()}
           </span>,
         ]}
@@ -315,7 +315,7 @@ export function HiringDashboard({
                 onClick={() => setShowForm((v) => !v)}
                 variant={showForm ? "ghost" : "primary"}
                 onInverse
-                className="rounded-[10px] px-5 text-[12px] font-semibold"
+                className="rounded-[10px] px-5 text-xs font-semibold"
                 style={
                   showForm
                     ? undefined
@@ -335,13 +335,13 @@ export function HiringDashboard({
                 disabled
                 variant="ghost"
                 onInverse
-                className="rounded-[10px] border px-5 text-[12px]"
+                className="rounded-[10px] border px-5 text-xs"
               >
                 {t("hiring.inviteCandidate", locale)}
               </Button>
             )}
             {!canInviteNew && (
-              <span className="inline-flex items-center text-[11px] text-[var(--color-text-on-inverse-muted)]">
+              <span className="inline-flex items-center text-note text-[var(--color-text-on-inverse-muted)]">
                 {isHu ? "Nincs elérhető credit új meghívóhoz." : "No credits available for new invites."}
               </span>
             )}
@@ -358,7 +358,7 @@ export function HiringDashboard({
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionInProgress", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {inProgressInvites.length}
                 </p>
               </div>
@@ -366,7 +366,7 @@ export function HiringDashboard({
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionSent", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {sentInvites.length}
                 </p>
               </div>
@@ -374,7 +374,7 @@ export function HiringDashboard({
                 <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
                   {t("hiring.sectionCompleted", locale)}
                 </p>
-                <p className="mt-1 font-fraunces text-[22px] leading-none tabular-nums text-[var(--color-text-on-inverse)]">
+                <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">
                   {completed.length}
                 </p>
               </div>
@@ -403,7 +403,7 @@ export function HiringDashboard({
             <span className="inline-flex items-center rounded-full border border-accent-candidate-border bg-accent-candidate-soft px-3 py-1 text-micro font-semibold uppercase tracking-widest text-accent-candidate-strong">
               {creditBalance.available} {t("hiring.creditsAvailable", locale)}
             </span>
-            <span className="text-[11px] text-muted">
+            <span className="text-note text-muted">
               {isHu
                 ? `${creditBalance.totalUsed} felhasznált · ${creditBalance.totalPurchased} összesen vásárolt`
                 : `${creditBalance.totalUsed} used · ${creditBalance.totalPurchased} total purchased`}
@@ -413,7 +413,7 @@ export function HiringDashboard({
             {isAdmin ? (
               <Link
                 href={`/org/${orgId}/settings`}
-                className="inline-flex min-h-[44px] items-center text-[11px] font-semibold text-accent-candidate transition-colors hover:text-accent-candidate-strong"
+                className="inline-flex min-h-[44px] items-center text-note font-semibold text-accent-candidate transition-colors hover:text-accent-candidate-strong"
               >
                 {isHu ? "Kreditek kezelése →" : "Manage credits →"}
               </Link>
@@ -441,7 +441,7 @@ export function HiringDashboard({
             <h2 className="mt-1.5 font-fraunces text-title leading-none text-ink">
               {t("hiring.inviteCandidate", locale)}
             </h2>
-            <p className="mt-2 text-[12px] text-ink-body">
+            <p className="mt-2 text-xs text-ink-body">
               {locale === "en"
                 ? "Set up candidate details and send an invite link in under a minute."
                 : "Add meg a jelölt adatait, és egy percen belül küldhető az egyedi meghívólink."}

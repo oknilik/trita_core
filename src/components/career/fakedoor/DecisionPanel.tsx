@@ -176,7 +176,7 @@ export function DecisionPanel({
   if (stage === "done") {
     return (
       <div>
-        <p className="font-fraunces text-[21px] leading-snug text-ink md:text-[25px]">
+        <p className="font-fraunces text-heading leading-snug text-ink md:text-title">
           {t("fakeDoor.thanksTitle", locale)}
         </p>
         <p className="mt-2 max-w-prose text-caption leading-relaxed text-ink-body">
@@ -208,7 +208,7 @@ export function DecisionPanel({
     const wantsPriceAlert = !isYes && choice === "price" && maxPrice > 0;
     return (
       <div>
-        <p className="font-fraunces text-[21px] leading-snug text-ink md:text-[25px]">
+        <p className="font-fraunces text-heading leading-snug text-ink md:text-title">
           {t(isYes ? "fakeDoor.goalTitle" : "fakeDoor.reasonTitle", locale)}
         </p>
 
@@ -227,7 +227,7 @@ export function DecisionPanel({
             <p className="mt-1 text-caption leading-relaxed text-ink-body">
               {t("fakeDoor.priceAskNote", locale)}
             </p>
-            <p className="mt-3 font-fraunces text-[26px] leading-none text-bronze-dark md:text-[32px]">
+            <p className="mt-3 font-fraunces text-title leading-none text-bronze-dark md:text-display">
               {maxPrice === 0 ? t("fakeDoor.priceZero", locale) : formatPrice(maxPrice, locale)}
             </p>
             <input
@@ -329,7 +329,7 @@ export function DecisionPanel({
 
   return (
     <div>
-      <p className="font-fraunces text-[22px] leading-snug text-ink md:text-[26px]">
+      <p className="font-fraunces text-heading leading-snug text-ink md:text-title">
         {t("fakeDoor.askTitle", locale)}
       </p>
       <p className="mt-2 max-w-prose text-caption leading-relaxed text-ink-body">

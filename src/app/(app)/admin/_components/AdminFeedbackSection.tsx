@@ -214,7 +214,7 @@ export function AdminFeedbackSection({
                   <tr key={row.id} className="border-b border-sand/60">
                     <td className="py-2 pr-4">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                        className={`rounded-full px-2 py-0.5 text-note font-medium ${
                           row.featureKey === "team"
                             ? "bg-sage/10 text-sage-dark"
                             : "bg-state-warning-bg text-state-warning-fg"

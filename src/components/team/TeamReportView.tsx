@@ -304,11 +304,11 @@ function SectionHead({
 }) {
   return (
     <div className="mb-4 flex items-start gap-3">
-      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-[11px] font-bold text-[var(--color-accent-primary-strong)] shadow-sm ring-1 ring-sand">
+      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-note font-bold text-[var(--color-accent-primary-strong)] shadow-sm ring-1 ring-sand">
         {no}
       </span>
       <div className="min-w-0 pt-0.5">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
           {label}
         </p>
         {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
@@ -707,17 +707,17 @@ export function TeamReportView({
                         </span>
                         {state === "primary" ? (
                           <span className="flex items-center gap-1">
-                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-[11px] font-semibold text-[var(--color-action-primary-fg)]">
+                            <span className="rounded-full bg-sage px-2 py-0.5 font-mono text-note font-semibold text-[var(--color-action-primary-fg)]">
                               {primaryCount}
                             </span>
                             {secondaryCount > 0 && (
-                              <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
+                              <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-note font-semibold text-layer-org-bright">
                                 +{secondaryCount}
                               </span>
                             )}
                           </span>
                         ) : state === "secondary" ? (
-                          <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-layer-org-bright">
+                          <span className="rounded-full bg-layer-org-soft px-2 py-0.5 font-mono text-note font-semibold text-layer-org-bright">
                             +{secondaryCount}
                           </span>
                         ) : (
@@ -732,7 +732,7 @@ export function TeamReportView({
               ))}
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-ink-body">
+            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-note text-ink-body">
               <span className="flex items-center gap-1.5">
                 <span className="h-3 w-3 rounded-[4px] border border-sage/35 bg-sage/10" />
                 {isHu ? "Elsődleges szerep a csapatban" : "Primary role in the team"}
@@ -807,7 +807,7 @@ export function TeamReportView({
                       .map(([role, count]) => (
                         <span
                           key={role}
-                          className="inline-flex items-center gap-1 rounded-full bg-cream px-2.5 py-1 text-[11px] font-semibold text-ink-body"
+                          className="inline-flex items-center gap-1 rounded-full bg-cream px-2.5 py-1 text-note font-semibold text-ink-body"
                         >
                           {TEAM_ROLES[role as keyof typeof TEAM_ROLES]
                             ? isHu
@@ -1382,7 +1382,7 @@ export function TeamReportView({
                 {isHu ? "Összefoglaló" : "Summary"}
               </p>
               {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}
-              <p className="whitespace-pre-wrap font-fraunces text-[16px] leading-relaxed text-ink">
+              <p className="whitespace-pre-wrap font-fraunces text-base leading-relaxed text-ink">
                 {report.summary}
               </p>
             </DashboardPanel>

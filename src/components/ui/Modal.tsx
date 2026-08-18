@@ -259,7 +259,7 @@ export function Modal({
                   id={titleId}
                   className={[
                     "text-lg font-semibold",
-                    isBrand ? "font-fraunces text-[28px] leading-[1.02] tracking-tight text-ink" : "",
+                    isBrand ? "font-fraunces text-title leading-[1.02] tracking-tight text-ink" : "",
                     variant === "danger"
                       ? (isBrand ? "text-ink" : "text-text-error-strong")
                       : (isBrand ? "text-ink" : "text-ink"),

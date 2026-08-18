@@ -83,7 +83,7 @@ export function TeamInterestBanner({ alreadySent }: { alreadySent: boolean }) {
       ) : (
         <div className="mt-4 flex flex-col gap-3">
           <label className="flex flex-col gap-1">
-            <span className="text-[11px] font-medium text-ink-body">
+            <span className="text-note font-medium text-ink-body">
               {t("results.teamInterestMessageLabel", locale)}
             </span>
             <textarea

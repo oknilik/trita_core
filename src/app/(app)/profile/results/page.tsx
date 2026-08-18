@@ -233,7 +233,7 @@ export default async function ProfileResultsPage({
             <p className="mx-auto mt-3 max-w-xs text-body leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressBody", locale)}
             </p>
-            <p className="mx-auto mt-2 max-w-xs text-[12px] leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mx-auto mt-2 max-w-xs text-xs leading-relaxed text-[var(--color-text-muted)]">
               {t("results.draftInProgressHint", locale)}
             </p>
             <Link

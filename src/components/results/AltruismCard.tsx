@@ -35,7 +35,7 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
           <p className="text-xs font-semibold text-[var(--color-text-primary)]">
             {t("content.altruismName", locale)} · {t("content.altruismTitle", locale)}
           </p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mt-0.5 text-note leading-relaxed text-[var(--color-text-muted)]">
             {t("content.altruismInfo", locale)}
           </p>
         </div>
