@@ -7,7 +7,11 @@
  *   · Start és Plus                       · magyar és angol
  *   · kiegyensúlyozott profil             · több magas / több alacsony dimenzió
  *   · hosszú magyar szövegek              · kiegészítő skála NÉLKÜL és valódival
- *   · observer- és karrier-melléklettel   · hiányzó opcionális tartalmakkal
+ *   · observer-melléklettel                · hiányzó opcionális tartalmakkal
+ *
+ * A `withCareer` eset SZÁNDÉKOSAN benne marad: a karrier-felület parkolva van
+ * (portfolio-parking), és azt is védeni akarjuk, hogy karrier-adat átadása
+ * mellett SEM készül karrier-melléklet — ld. a szerkezeti tesztet.
  *
  * Használják:
  *   · scripts/pdf-report-snapshots.tsx        — PDF/PNG snapshotok emberi nézésre
@@ -218,7 +222,9 @@ export function buildPdfScenarios(): PdfScenario[] {
   const scenarios: PdfScenario[] = [
     {
       id: "plus-hu-mixed-full",
-      covers: "Plus · HU · vegyes profil · alskálák · observer- és karrier-melléklet",
+      covers:
+        "Plus · HU · vegyes profil · alskálák · observer-melléklet " +
+        "(karrier-adattal, ami parkolt felület mellett NEM kerül a riportba)",
       input: buildScenarioInput({
         locale: "hu",
         plan: "plus",
@@ -229,7 +235,9 @@ export function buildPdfScenarios(): PdfScenario[] {
     },
     {
       id: "plus-en-mixed-full",
-      covers: "Plus · EN · vegyes profil · alskálák · observer- és karrier-melléklet",
+      covers:
+        "Plus · EN · vegyes profil · alskálák · observer-melléklet " +
+        "(karrier-adattal, ami parkolt felület mellett NEM kerül a riportba)",
       input: buildScenarioInput({
         locale: "en",
         plan: "plus",

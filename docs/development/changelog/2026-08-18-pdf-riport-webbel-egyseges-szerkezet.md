@@ -17,8 +17,10 @@ Ez a kör a **webes eredményoldalt tette a PDF tartalmi source of truth-jává*
 ```
 Borító → Gyors összkép → 01 · Áttekintés → 02 · Dimenziók
        → 03 · Munkastílus és fejlődés
-       → mellékletek: Külső nézőpont · Karrier-iránytű · Kapcsolati dinamika
+       → mellékletek: Külső nézőpont · Kapcsolati dinamika
 ```
+
+> A **Karrier-iránytű melléklet parkolva** — ld. lentebb.
 
 - **Gyors összkép**: ugyanaz a HÁROM insight, mint a weben („Ami természetesen
   megy" · „Ami több figyelmet kérhet" · „Ahol a legtöbbet fejlődhetsz"), szó
@@ -57,6 +59,23 @@ nem törik ketté, a fejezet viszont törhet.
 **Borító.** Rákerült a karakterábra (`PdfTypeGlyph` — ugyanaz a vizuális
 nyelvtan, mint a képernyőn és a megosztó-kártyán, a közös `type-glyph.ts`
 geometriából), a hero-insight és a kanonikus Trita szójel.
+
+## Karrier-iránytű: parkolva a riportban is
+
+A karrier-felület a `portfolio-parking.ts`-ben `parked` állapotú, és a webes
+eredményoldal már ma is elrejti (`careerModuleHidden`). A riport-réteg viszont
+nem tudott erről: ha a hívó bármilyen okból karrier-adatot adott át, a PDF
+legyártotta a mellékletet (a regressziós készlet éppen ezt csinálta).
+
+A kapu ezért a közös view-modelbe került (`careerAppendixEnabled()` →
+`isPortfolioSurfaceActive("career")`): parkolt felület mellett sem melléklet,
+sem PDF-könyvjelző, sem karrier-adat nem kerül a modellbe — hívótól függetlenül.
+
+**Ez parkolás, nem törlés.** Az `AppendixCareerPage`, a `pdf.career*` i18n-
+kulcsok és a `ProfileTabs` karrier-építő blokkja a repóban maradnak; a felület
+`active`-ra váltásával a melléklet magától visszatér, kód-változtatás nélkül.
+A szerkezeti teszt ehhez igazodik: a parkolási állapotot olvassa, tehát
+visszakapcsoláskor automatikusan a melléklet JELENLÉTÉT várja el.
 
 ## Javított hibák
 
@@ -115,14 +134,16 @@ mellékletre.
 
 `pnpm report:pdf-snapshots` — 11 forgatókönyv a VALÓDI dokumentum-komponensből
 (Start/Plus, HU/EN, kiegyensúlyozott, több magas, több alacsony, hosszú magyar
-szövegek, kiegészítő skálával és nélküle, observer- és karrier-melléklettel,
-hiányzó opcionális tartalmakkal). PDF mindig készül; PNG akkor, ha van
-`pdftoppm`/`pdftocairo` a PATH-on.
+szövegek, kiegészítő skálával és nélküle, observer-melléklettel, hiányzó
+opcionális tartalmakkal). Két eset szándékosan karrier-adatot is átad — annak
+védelmére, hogy parkolt felület mellett SEM készül karrier-melléklet. PDF mindig
+készül; PNG akkor, ha van `pdftoppm`/`pdftocairo` a PATH-on.
 
 Automatikus szerződés (`tests/unit/results/`):
 - `pdf-report-structure.test.ts` — fejezetsorrend, melléklet-pozíció, a három
   insight szövegszintű egyezése a webes builderrel, TOC-oldalszámok, „nincs
-  0% hiányzó adatból", oldalanként max. 3 dimenzió, Start-riport zártsága.
+  0% hiányzó adatból", oldalanként max. 3 dimenzió, Start-riport zártsága,
+  a karrier-melléklet parkolás-követése.
 - `pdf-typography-scale.test.ts` — nincs 8 pt alatti lényegi szöveg, a skála
   tokenjei a sávban maradnak, és minden leírt karakterre VAN glyph a
   regisztrált fontokban (a cmap-ot a teszt a TTF-ekből olvassa).

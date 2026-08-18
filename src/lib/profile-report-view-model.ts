@@ -23,6 +23,7 @@ import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension
 import { buildArchetypeStory } from "@/lib/profile-content";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "@/lib/team-role-scoring";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
 
@@ -119,6 +120,10 @@ export interface ProfileReportInput {
   /** Kitöltött csapatszerep-kérdőív eredménye; hiányában profil-alapú becslés. */
   teamRoleMeasuredScores?: Record<string, number> | null;
   observer?: ReportObserverInput;
+  /**
+   * Karrier-iránytű eredmény. CSAK akkor kerül a riportba, ha a karrier-felület
+   * NINCS parkolva (portfolio-parking) — ld. `careerAppendixEnabled`.
+   */
   career?: ReportCareerInput;
 }
 
@@ -234,6 +239,22 @@ const hexacoIndex = (code: string): number => {
   const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
   return i === -1 ? HEXACO_ORDER.length : i;
 };
+
+/**
+ * Mehet-e a Karrier-iránytű melléklet a riportba?
+ *
+ * A karrier-felület jelenleg PARKOLVA van (portfolio-parking.ts:
+ * `PORTFOLIO_SURFACE_STATE.career = "parked"`), ezért a riport sem generálja le
+ * — akkor sem, ha a hívó véletlenül átad karrier-adatot. A parkolás nem törlés:
+ * az `AppendixCareerPage` és a hozzá tartozó i18n a repóban marad, és a felület
+ * `active`-ra váltásával a melléklet magától visszatér, kód-változtatás nélkül.
+ *
+ * A felületi kapu (`results/page.tsx` → `careerModuleHidden`) ettől függetlenül
+ * megmarad; ez itt a riport-oldali, hívótól független biztosíték.
+ */
+export function careerAppendixEnabled(): boolean {
+  return isPortfolioSurfaceActive("career");
+}
 
 /** Fő dimenziók a kanonikus HEXACO-rendben (H·E·X·A·C·O) — az „I" nélkül. */
 export function orderedMainDimensions<T extends { code: string }>(dimensions: T[]): T[] {
@@ -425,7 +446,7 @@ export function buildProfileReportViewModel(
       note: t("pdf.appendixObserverNote", locale),
     });
   }
-  if (input.career && input.career.roles.length > 0) {
+  if (careerAppendixEnabled() && input.career && input.career.roles.length > 0) {
     appendices.push({
       id: "career",
       title: t("pdf.appendixCareerTitle", locale),
@@ -484,7 +505,10 @@ export function buildProfileReportViewModel(
     },
     appendices,
     observer: input.observer && input.observer.count > 0 ? input.observer : undefined,
-    career: input.career && input.career.roles.length > 0 ? input.career : undefined,
+    career:
+      careerAppendixEnabled() && input.career && input.career.roles.length > 0
+        ? input.career
+        : undefined,
     relational,
   };
 }

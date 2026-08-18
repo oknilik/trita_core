@@ -6,7 +6,9 @@ import { buildPdfScenarios } from "../../../scripts/pdf-report-scenarios";
 import {
   buildProfileReportViewModel,
   buildProfileSummaryInsights,
+  careerAppendixEnabled,
 } from "@/lib/profile-report-view-model";
+import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { TritaReportDocument, chapterStartPages } from "@/components/pdf/TritaPdf";
 import { chunkDimensions, DIMENSIONS_PER_PAGE } from "@/components/pdf/pages/ChapterDimensionsPage";
 
@@ -221,4 +223,37 @@ test("az „Ideális környezet” Plus-riportban ténylegesen átjut a modellbe
     model.workstyle.envItems.length > 0,
     "a webes IdealEnvironmentSection adata megint elveszett a riport-modellben",
   );
+});
+
+test("a Karrier-iránytű melléklet a felület parkolását követi", () => {
+  // A karrier-felület jelenleg parkolva van (portfolio-parking), ezért a riport
+  // akkor sem generálja le a mellékletet, ha a hívó átad karrier-adatot. Ez a
+  // teszt ÖNMAGÁT állítja át: ha a felület `active`-ra vált, a melléklet
+  // visszatérését várja el — nem kell hozzá a tesztet átírni.
+  const expected = isPortfolioSurfaceActive("career");
+  assert.equal(careerAppendixEnabled(), expected, "a riport-kapu eltér a parkolási állapottól");
+
+  const withCareerData = scenarios.filter((s) => Boolean(s.input.career?.roles.length));
+  assert.ok(withCareerData.length > 0, "nincs karrier-adatot vivő forgatókönyv a készletben");
+
+  for (const scenario of withCareerData) {
+    const model = buildProfileReportViewModel(scenario.input);
+    assert.equal(
+      model.appendices.some((a) => a.id === "career"),
+      expected,
+      `${scenario.id}: a karrier-melléklet nem követi a parkolási állapotot`,
+    );
+    assert.equal(
+      Boolean(model.career),
+      expected,
+      `${scenario.id}: a karrier-adat nem követi a parkolási állapotot`,
+    );
+
+    const names = pageComponentNames(TritaReportDocument({ data: scenario.input }));
+    assert.equal(
+      names.includes("AppendixCareerPage"),
+      expected,
+      `${scenario.id}: a karrier-lap jelenléte nem követi a parkolási állapotot`,
+    );
+  }
 });
