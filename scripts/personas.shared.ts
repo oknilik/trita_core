@@ -57,12 +57,64 @@ function buildArchetypeDimensions(primary: DimCode, secondary: DimCode): Record<
   return dimensions;
 }
 
-/** Facetek determinisztikusan a dimenzió-érték körül (±7 sávban). */
+// ── Facet-generálás ──────────────────────────────────────────────────
+//
+// 2026-08-18-ig FIX eltolás-sorrend futott (`[-6, -2, 3, 7]`), MINDEN
+// dimenzióra és MINDEN személyre ugyanabban a sorrendben. Ennek két
+// következménye volt, és mindkettő elrejtette a facet-szintű funkciókat a
+// demó- és persona-adatokon:
+//
+//   1. Két seedelt ember KÜLÖNBSÉGE facetenként pontosan ugyanannyi lett,
+//      mint a dimenzió-különbségük (az azonos eltolás kiesik a kivonásban).
+//      Így a pár-nézet facet-attribúciója („pontosan egy alskálán mérhető a
+//      különbség") SOHA nem tüzelhetett: vagy mind a négy facet átlépte a
+//      küszöböt, vagy egyik sem.
+//   2. A ±7-es sáv szűkebb, mint a facet-szintű mérési hiba (√2·SEM ≈ 17
+//      a rövid formán), tehát egyező dimenzión belül facet-eltérés
+//      egyáltalán nem keletkezhetett.
+//
+// A mostani változat DETERMINISZTIKUS marad (ugyanaz a profil ugyanazt a
+// facet-képet adja, futásról futásra — a seedek és a persona-PDF-ek
+// összehasonlíthatósága ezen múlik), de a sorrend személy- és
+// dimenzió-függő, a sáv pedig ±14. Az eltolások összege nulla, így a
+// facet-átlag továbbra is a dimenzió-pontszám marad.
+
+const FACET_OFFSETS = [-14, -5, 5, 14];
+
+/** FNV-1a — kis, stabil hash a determinisztikus permutációhoz. */
+function fnv1a(input: string): number {
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 0x01000193) >>> 0;
+  }
+  return hash;
+}
+
+/** Fisher–Yates egy hash-ből hajtott LCG-vel — bemenetre nézve stabil. */
+function permute<T>(values: readonly T[], seed: number): T[] {
+  const out = [...values];
+  let state = seed || 1;
+  for (let i = out.length - 1; i > 0; i--) {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    const j = state % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
+/**
+ * Facetek determinisztikusan a dimenzió-érték körül (±14 sávban), személy-
+ * és dimenzió-függő sorrendben. A „személy" azonosítója maga a
+ * dimenzió-vektor — így a hívónak nem kell kulcsot átadnia, és ugyanaz a
+ * profil ugyanazt a facet-képet kapja minden seedben és riportban.
+ */
 export function buildFacets(dimensions: Record<string, number>): Record<string, Record<string, number>> {
-  const offsets = [-6, -2, 3, 7];
+  const identity = DIMS.map((d) => Math.round(dimensions[d] ?? 50)).join(",");
   const facets: Record<string, Record<string, number>> = {};
   for (const [dim, facetList] of Object.entries(HEXACO_FACETS)) {
     const base = dimensions[dim] ?? 50;
+    const offsets = permute(FACET_OFFSETS, fnv1a(`${dim}|${identity}`));
     facets[dim] = {};
     facetList.forEach((facet, i) => {
       facets[dim][facet] = Math.max(0, Math.min(100, base + offsets[i % offsets.length]));

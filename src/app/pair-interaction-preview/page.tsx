@@ -71,8 +71,23 @@ function glyphFor(dims: DimScores, locale: Locale) {
   return glyph && label ? { ...glyph, label } : null;
 }
 
+/**
+ * Hol él az oldal: helyi fejlesztésben ÉS a Vercel preview-deployokon —
+ * élesben 404.
+ *
+ * A `NODE_ENV !== "development"` önmagában NEM elég: a Vercel preview-build
+ * is `production` NODE_ENV-vel fut, tehát a branch-preview-n is 404-et adna,
+ * pedig épp ott kellene megnézni. A `VERCEL_ENV` az, ami a preview-t
+ * megkülönbözteti az élestől.
+ */
+function isPreviewSurfaceEnabled(): boolean {
+  return (
+    process.env.NODE_ENV === "development" || process.env.VERCEL_ENV === "preview"
+  );
+}
+
 export default async function InteractionPairPreviewPage() {
-  if (process.env.NODE_ENV !== "development") notFound();
+  if (!isPreviewSurfaceEnabled()) notFound();
 
   const locale = await getServerLocale();
   const lang = (locale === "en" ? "en" : "hu") as Locale;
