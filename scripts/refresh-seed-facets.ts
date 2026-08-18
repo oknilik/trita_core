@@ -20,11 +20,14 @@
  * — dimenziók, forma-pecsét, observer-adatok, kapcsolatok — érintetlenül hagy.
  *
  * BIZTONSÁGI KAPU — valódi kitöltést SOHA nem ír át.
- * A jelölő az `answers` KULCS JELENLÉTE: a seedek explicit `answers: []`-t
- * írnak, a valódi kitöltés score-JSON-ja viszont EGYÁLTALÁN NEM tartalmaz
- * ilyen kulcsot (`calculateScores` → type/dimensions/facets/form/
- * bankVersion/bankHash/engineVersion). Amelyik sorban nincs `answers`
- * tömb, az érintetlen marad.
+ * A jelölő az `answers` tömb ÜRESSÉGE. A submit- és a guest-claim-útvonal a
+ * `calculateScores` eredményére RÁTESZI a tényleges válaszlistát
+ * (`answers: relevantAnswers`), tehát valódi kitöltésnél a tömb NEM üres.
+ * A seedek ezzel szemben explicit `answers: []`-t írnak.
+ *
+ * Amelyik sorban az `answers` nem üres tömb — vagy egyáltalán nincs
+ * `answers` kulcs, tehát az eredete nem dönthető el —, az ÉRINTETLEN marad,
+ * és a script külön kiírja a darabszámát.
  *
  * Futtatás (alapból SZÁRAZ futás, nem ír semmit):
  *   pnpm seed:facets:refresh
@@ -78,7 +81,7 @@ async function main() {
   // env betöltése UTÁN importálható.
   const { PrismaClient } = await import("@prisma/client");
   const { HEXACO_DIMENSION_FACETS } = await import("@/lib/hexaco");
-  const { extractDimensionScores } = await import("@/lib/scoring");
+  const { extractDimensionScores, extractFacetScores } = await import("@/lib/scoring");
   const { buildFacets } = await import("./personas.shared");
 
   const prisma = new PrismaClient();
@@ -123,8 +126,10 @@ async function main() {
   });
 
   let realFills = 0;
+  let unknownOrigin = 0;
   let unreadableDims = 0;
   const byShape = new Map<Shape, number>();
+  const byKeyStyle = new Map<string, number>();
   const targets: Array<{ id: string; facets: Record<string, Record<string, number>> }> = [];
   let sample: { shape: Shape; before: string; after: string } | null = null;
 
@@ -132,8 +137,13 @@ async function main() {
     const scores = row.scores as Record<string, unknown> | null;
     if (!scores || typeof scores !== "object") continue;
 
-    // A KAPU: `answers` tömb = seedelt sor. Valódi kitöltésben nincs ilyen kulcs.
+    // A KAPU: ÜRES `answers` tömb = seedelt sor. A valódi kitöltés a tényleges
+    // válaszlistát tárolja; a kulcs nélküli sor eredete nem dönthető el.
     if (!Array.isArray(scores.answers)) {
+      unknownOrigin++;
+      continue;
+    }
+    if (scores.answers.length > 0) {
       realFills++;
       continue;
     }
@@ -146,7 +156,21 @@ async function main() {
     }
 
     const facets = scores.facets as Record<string, Record<string, number>> | undefined;
-    const shape = classify(dims as Record<string, number>, facets);
+    // A facet-map KÜLSŐ kulcsa lehet örökség-kód (INTE/RESO/…) is — a
+    // felismerés enélkül „egyéb"-nek látná a szabályos régi mintát is.
+    const keyStyle = !facets || Object.keys(facets).length === 0
+      ? "nincs"
+      : Object.keys(facets).every((key) => key in HEXACO_DIMENSION_FACETS)
+        ? "HEXACO (H/E/X/A/C/O)"
+        : Object.keys(facets).some((key) => key in HEXACO_DIMENSION_FACETS)
+          ? "vegyes"
+          : "örökség (INTE/RESO/…)";
+    byKeyStyle.set(keyStyle, (byKeyStyle.get(keyStyle) ?? 0) + 1);
+
+    // Az ALAK felismerése a KANONIKUS olvasóból megy: az örökség-kulcsos
+    // facet-map így nem látszik „egyéb"-nek pusztán a kulcsstílus miatt.
+    const normalizedFacets = extractFacetScores(scores) ?? undefined;
+    const shape = classify(dims as Record<string, number>, normalizedFacets);
     byShape.set(shape, (byShape.get(shape) ?? 0) + 1);
     if (shape === "már az új minta") continue;
 
@@ -154,19 +178,31 @@ async function main() {
     targets.push({ id: row.id, facets: fresh });
 
     if (!sample) {
-      const dim = Object.keys(fresh)[0];
+      // A példa ahhoz a dimenzióhoz szól, amelyikre a sorban VAN adat —
+      // különben a „(nincs)" csak a kulcs-stílus eltérését mutatná.
+      const storedDim = facets ? Object.keys(facets)[0] : undefined;
+      const freshDim = Object.keys(fresh)[0];
       sample = {
         shape,
-        before: facets?.[dim] ? JSON.stringify(facets[dim]) : "(nincs)",
-        after: JSON.stringify(fresh[dim]),
+        before: storedDim
+          ? `${storedDim}: ${JSON.stringify(facets?.[storedDim])}`
+          : "(nincs facet-bontás)",
+        after: `${freshDim}: ${JSON.stringify(fresh[freshDim])}`,
       };
     }
   }
 
   console.log(`\nEredmény-sorok összesen: ${rows.length}`);
-  console.log(`  · valódi kitöltés (nincs answers kulcs) — ÉRINTETLEN: ${realFills}`);
+  console.log(`  · VALÓDI kitöltés (nem üres answers) — ÉRINTETLEN:  ${realFills}`);
+  if (unknownOrigin > 0) {
+    console.log(`  · nincs answers kulcs, eredete bizonytalan (kimarad): ${unknownOrigin}`);
+  }
   if (unreadableDims > 0) {
     console.log(`  · seedelt, de olvashatatlan dimenziók (kimarad):      ${unreadableDims}`);
+  }
+  console.log("  · seedelt sorok facet-kulcsai:");
+  for (const [style, count] of [...byKeyStyle.entries()].sort((a, b) => b[1] - a[1])) {
+    console.log(`      ${style.padEnd(32)} ${count}`);
   }
   console.log("  · seedelt sorok facet-alakja:");
   for (const [shape, count] of [...byShape.entries()].sort((a, b) => b[1] - a[1])) {
