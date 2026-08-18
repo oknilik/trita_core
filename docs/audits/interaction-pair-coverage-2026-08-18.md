@@ -12,6 +12,10 @@
 >
 > Mérés: `npx tsx scripts/diagnose-interaction-coverage.ts` (determinisztikus,
 > DB nélkül futtatható — a számok újraellenőrizhetők).
+>
+> **ÁLLAPOT (2026-08-18): az L1, L2 és L4 lépcső MEGVALÓSULT.** Az eredményt
+> a 7. szakasz rögzíti; az alábbi elemzés a bevezetés ELŐTTI állapotot írja
+> le, és úgy is olvasandó.
 
 ## 1. Mit csinál ma a motor
 
@@ -123,10 +127,15 @@ csak a hozzájuk vezető kapu változik.
 
 ### L2 — Teljes hat dimenziós összevetés-sáv (olcsó, azonnali „átfogóság")
 
-A narratíva mellé egy **mind a 6 dimenziót mindig megmutató** csík: két
-pontszám, a rés, és három állapot — *együtt* / *eltérés* / *mérési
-hibán belül*. Nem generál új állítást, csak láthatóvá teszi, hogy a
-rendszer mind a hatot megnézte.
+A narratíva mellé egy **mind a 6 dimenziót mindig megmutató** csík. Nem
+generál új állítást, csak láthatóvá teszi, hogy a rendszer mind a hatot
+megnézte.
+
+> Javítás a megvalósításkor: itt eredetileg három állapot szerepelt —
+> *együtt* / *eltérés* / *mérési hibán belül*. Ez pontatlan volt: az
+> „együtt" ÉS a „mérési hibán belül" ugyanaz az állítás, hiszen a kapu maga
+> a mérési hiba. A megvalósított sáv ezért **két** állapotot ismer
+> (*hasonló* / *eltérés*), az eltérésnél iránnyal.
 
 **Ehhez már van bevált minta a kódbázisban:** a
 `ComparisonTab.tsx` (önkép vs külső kép) pontosan ezt csinálja
@@ -139,6 +148,10 @@ komponens- és kapu-mintának a második fogyasztója lehet.
   számot mutató sáv ezt a határt átlépi. Vagy sáv/ikon szintre kell
   tompítani (szám nélkül), vagy tudatos termékdöntés kell róla. Ezt a
   kérdést a megvalósítás ELŐTT kell eldönteni.
+  → **DÖNTÉS (2026-08-18): a szám nem megy ki.** A szerver a KÉSZ
+  összevetést küldi (dimenziónként egy állapot + ki a magasabb), nem a
+  pontszámokat, amikből a kliens visszafejtené. Guardrail-teszt őrzi, hogy
+  a `PairSimulationView` egyetlen ága se hordozzon `number`-t.
 
 ### L3 — Kereszt-atomok pótlása (drága, de célzott)
 
@@ -179,8 +192,8 @@ pólus-kapu), és a KÉT fél ugyanabba a sávba esik, nézzük meg, melyik
 facet viszi az eredményt mindkettőjüknél. Ha a domináns facet más, és a
 facet-rés ≥ 17 pont:
 
-> „Mindkettőtöknél magas a Lelkiismeretesség, de nálad a Rendszerezettség
-> viszi, nála a Kitartás — ugyanaz a címke, más működés. Határidőnél ez
+> „Mindkettőtöknél magas a Lelkiismeretesség, de nálad a Szervezettség
+> viszi, nála a Szorgalom — ugyanaz a címke, más működés. Határidőnél ez
 > nem ütközik, minőség-vitánál igen."
 
 Ez **egy sablon** (dimenziónként 1 mondat + a facet-nevek behelyettesítése
@@ -207,15 +220,80 @@ Amit **ne** csináljunk: a `maxAtoms` emelését önmagában (mérés szerint
 hatástalan), és a pólus-küszöb általános lazítását (az a
 SAJÁT-profil-oldalt is elrontaná — a 65/35 ott kalibrált).
 
-## 6. Nyitott kérdések (döntést igényelnek)
+## 6. Nyitott kérdések — DÖNTÖTT (2026-08-18)
 
-1. **Adatvédelem:** a pár-nézet ma tudatosan nem küld nyers partner-
-   pontszámot a kliensre. Az L2-sáv ezt átlépi. Szám nélküli sáv, vagy
-   új termékdöntés?
-2. **Archetípus-út:** a 86/74/50×4 prototípus 4 dimenziója szerkezetileg
-   néma. Vállaljuk (és a felületen kiírjuk, mint ma), vagy a prototípus
-   kapjon differenciáltabb receptet? Utóbbi kockázata: a típuscímke
-   tényleg nem hordoz információt a másik négy dimenzióról — kitalált
-   adat lenne.
-3. **Rövid forma és facet:** engedjük-e a facet-nüanszt a TSFI-S-en
-   (17 pontos küszöb), vagy csak a teljes formán?
+1. ~~**Adatvédelem:** kimehet-e a partner pontszáma a kliensre?~~ →
+   **NEM.** A számítás a szerveren marad, és a KÉSZ összevetés megy ki:
+   dimenziónként egy állapot (*hasonló* / *eltérés*) és az irány. Ez
+   dimenziónként egyetlen bit — beszélgetés-indításhoz elég, a profil
+   visszafejtéséhez nem. Guardrail-teszt őrzi, hogy a `PairSimulationView`
+   egyetlen ága se hordozzon `number`-t (`pair-simulation.test.ts`).
+2. ~~**Archetípus-út:** kapjon-e differenciáltabb receptet a prototípus?~~
+   → **NEM, marad a jelenlegi út.** A 86/74/50×4 recept négy dimenziója
+   szerkezetileg néma, és ez így őszinte: a típuscímke tényleg nem hordoz
+   információt a másik négy dimenzióról. Következmény, amit a motor
+   KIKÉNYSZERÍT: a rés-alapú réteg, a dimenzió-sáv és a facet-nüansz
+   kizárólag `profile-profile` / `measured` szinten fut — archetípus ellen
+   a „rés" a kitalált 50-hez mérődne.
+3. ~~**Rövid forma és facet:** engedjük-e a facet-nüanszt a TSFI-S-en?~~ →
+   **IGEN, de a forma szerinti küszöbbel** (rövid: 17, teljes: 15 pont), és
+   a felületen kimondva, hogy ez a legbizonytalanabb réteg. Ugyanaz az
+   őszinte kezelés, amit az önkép–külső kép facet-összevetése már követ: a
+   jelzés ritkán tüzel, és ez nem hiba.
+
+## 7. Megvalósítás (2026-08-18)
+
+Az L1, L2 és L4 lépcső bekerült. Az L3 (kereszt-atomok pótlása) tudatosan
+kimaradt: content-nehéz, és a saját sorrendünk szerint is L1 UTÁN
+értékelendő újra — most már látszik, hogy a rés-réteg a lyuk nagy részét
+betölti.
+
+### Mit ad a mérés a bevezetés után
+
+| | előtte | utána |
+|---|---|---|
+| megszólaló dimenzió (valós pár) | 1,39 / 6 | **3,80 / 6** |
+| üres kimenet | 34,7 % | **0,1 %** |
+| elméleti plafon (mérési hibát meghaladó eltérés) | 3,83 / 6 | 3,83 / 6 |
+
+A próza tehát gyakorlatilag mindent elmond, ami psichometrikusan
+elmondható — a maradékot a hat dimenziós sáv fedi, ami akkor is nyilatkozik,
+ha szöveg nem született. Az archetípus-út változatlan (1,91 / 6): ott a
+prototípus szerkezeti korlátja köt, nem a motor.
+
+### Hol él
+
+| Réteg | Fájl |
+|---|---|
+| rés-atom content (6 × 2 nézőpont × 3 blokk × 2 nyelv) | `src/lib/interaction-atoms.ts` → `GAP_ATOMS` |
+| rés-aktiválás, dimenzió-összevetés, facet-nüansz | `src/lib/interaction-engine.ts` |
+| szerializálás (pontszám nélkül) | `src/lib/interaction-view.ts` |
+| facet-küszöb a formából | `src/app/(app)/interaction/page.tsx` |
+| felület | `PairDimensionBand.tsx`, `PairFacetNuances.tsx`, `InteractionDynamicPanels.tsx` |
+
+### Két döntés, ami menet közben derült ki
+
+- **A rés-erősséget ugyanarra a skálára kellett tenni, mint a
+  pólus-erősséget.** Az első változat a küszöbtől 50 pontig skálázott, és
+  emiatt egy 90 vs 10 páron a rés-atom KIÜTÖTTE a konkrétabb pólus-atomot
+  (a meglévő tükrözés-teszt fogta meg). A rés most `|Δ| / 100`, ahogy a
+  pólus `|pont − 50| / 50` — plusz egy 0,8-as diszkont, mert a rés
+  gyengébb bizonyíték. Ezen felül: ha ugyanarra a dimenzióra AZONOS
+  DIMENZIÓS pólus-atom is aktiválódott, a rés-jelölt eleve elmarad — a
+  döntést nem bízzuk két skála összemérésére.
+- **A `maxAtoms` plafon most már köt.** Az audit szerint korábban inert
+  volt (1,06 atom a 3-as keret mellett); a rés-réteg után 3,5–3,7, ezért
+  `DEFAULT_MAX_ATOMS = 4`. Az ennél szélesebb lefedettséget a sáv viszi,
+  nem a próza hossza.
+
+### Ami nyitva maradt
+
+- **L3 — kereszt-atomok.** A bank 12/60-as; a hiányzók élén az `A×C`,
+  `C×H`, `A×H`, `C×E` kombinációk állnak. ~150–190 mondat.
+- **Facet-küszöb újraértékelése a magyar pilot után.** A 17 pontos rövid
+  formás küszöb az IPIP-referencián áll (nemzetközi, angol, önszelektált
+  minta) — a pilot adata ezt felülírja, és vele a nüansz-réteg tüzelési
+  gyakorisága is változik.
+- **A `comparePairThinNote` szöveg** arra az esetre íródott, amikor a pár
+  egyetlen markáns ponton tér el. Ez a rés-réteg után ritka; a szöveg
+  helyes marad, de a következő copy-körben érdemes újraolvasni.

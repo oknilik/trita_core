@@ -27,15 +27,17 @@
  *   npx tsx scripts/diagnose-interaction-coverage.ts --samples 20000
  */
 
-import { HEXACO_ORDER, type HexacoCode } from "../src/lib/hexaco";
+import { HEXACO_ORDER } from "../src/lib/hexaco";
 import { DIFF_MIN_GAP } from "../src/lib/personality-type";
 import { MEASURED_SCORE_SD_BY_DIM } from "../src/lib/psychometrics";
 import {
   ARCHETYPE_PAIRS,
+  DEFAULT_MAX_ATOMS,
   archetypePrototype,
   polarSides,
   simulateInteraction,
   type DimScores,
+  type InteractionLevel,
 } from "../src/lib/interaction-engine";
 import {
   CROSS_DIMENSION_ATOMS,
@@ -87,10 +89,15 @@ interface Coverage {
   polarDims: number;
 }
 
-function measure(pairs: Array<[DimScores, DimScores]>): Coverage {
+function measure(
+  pairs: Array<[DimScores, DimScores]>,
+  // A szint NEM kozmetika: a rés-alapú réteg csak két VALÓS profilra
+  // aktiválódik, az archetípus-prototípus 50-es dimenzióira nem.
+  level: InteractionLevel,
+): Coverage {
   let atoms = 0, empty = 0, spoken = 0, gaps = 0, polar = 0;
   for (const [self, other] of pairs) {
-    const result = simulateInteraction({ self, other, level: "profile-profile" });
+    const result = simulateInteraction({ self, other, level });
     atoms += result.meta.atomIds.length;
     if (result.meta.sparse) empty++;
     spoken += new Set(result.discuss.flatMap((line) => line.dims)).size;
@@ -120,7 +127,7 @@ function report(title: string, note: string, coverage: Coverage): void {
   console.log(`   ${note}`);
   console.log(`   párok:                              ${coverage.pairs}`);
   console.log(`   pólusos dimenzió / profil:          ${coverage.polarDims.toFixed(2)} / 6`);
-  console.log(`   kiválasztott atom / pár:            ${coverage.atoms.toFixed(2)} (plafon: 3)`);
+  console.log(`   kiválasztott atom / pár:            ${coverage.atoms.toFixed(2)} (plafon: ${DEFAULT_MAX_ATOMS})`);
   console.log(`   ÜRES kimenet (egy atom sem szól):   ${pct(coverage.emptyRatio)}`);
   console.log(`   MOST megszólaló dimenzió:           ${coverage.dimsSpoken.toFixed(2)} / 6`);
   console.log(`   mérési hibát meghaladó eltérés:     ${coverage.dimsWithRealGap.toFixed(2)} / 6   ← ennyi VOLNA elmondható`);
@@ -146,7 +153,7 @@ function main(): void {
   report(
     "1. SZINTETIKUS pár — realisztikus eset",
     "mért dimenzió-szórásokból húzott profilok (IPIP-referencia)",
-    measure(synthetic),
+    measure(synthetic, "profile-profile"),
   );
 
   // ── 2. Persona-fixture (legjobb eset) ────────────────────────────────
@@ -163,7 +170,7 @@ function main(): void {
   report(
     "2. PERSONA pár — LEGJOBB eset",
     `${personas.length} sarkos fixture-profil minden párosítása (nem átlagos kitöltő)`,
-    measure(personaPairs),
+    measure(personaPairs, "profile-profile"),
   );
 
   // ── 3. Archetípus-út ─────────────────────────────────────────────────
@@ -174,7 +181,7 @@ function main(): void {
     const pair = ARCHETYPE_PAIRS[i % ARCHETYPE_PAIRS.length];
     archetypePairs.push([syntheticProfile(), archetypePrototype(pair)]);
   }
-  const archetypeCoverage = measure(archetypePairs);
+  const archetypeCoverage = measure(archetypePairs, "profile-archetype");
   report(
     "3. ARCHETÍPUS út — /interaction alapértelmezés",
     "valós saját profil × 86/74/50×4 prototípus",

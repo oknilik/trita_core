@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   SAME_DIMENSION_ATOMS,
   CROSS_DIMENSION_ATOMS,
+  GAP_ATOMS,
   LEADER_SUPPLEMENTS,
 } from "@/lib/interaction-atoms";
 import { hasHedge, findAbsoluteMarkers } from "@/lib/interaction-language";
@@ -23,7 +24,14 @@ import type { Locale } from "@/lib/i18n";
 // állítást, ezért hedge kötelező és abszolutizálás tilos.
 
 const LOCALES: Locale[] = ["hu", "en"];
-const ATOMS = [...SAME_DIMENSION_ATOMS, ...CROSS_DIMENSION_ATOMS];
+// A rés-atomok ugyanezt a nyelvi mércét tartják: gyengébb bizonyítékon állnak
+// (nem szélső értékek, csak a mérési hibát meghaladó különbség), tehát a
+// hedge-kötelezettség ott legalább annyira indokolt.
+const ATOMS = [
+  ...SAME_DIMENSION_ATOMS,
+  ...CROSS_DIMENSION_ATOMS,
+  ...Object.values(GAP_ATOMS),
+];
 
 type Entry = { label: string; text: string; locale: Locale; block: string };
 
@@ -63,6 +71,9 @@ const ALL_ENTRIES: Entry[] = [...ENTRIES, ...LEADER_ENTRIES];
 
 test("a guardrail ténylegesen lát szövegeket", () => {
   assert.ok(ENTRIES.length > 200, `csak ${ENTRIES.length} szöveget talált`);
+  // 6 dimenzió × 2 nézőpont × 3 blokk × 2 nyelv rés-atom szöveg
+  const gapEntries = ENTRIES.filter((entry) => entry.label.startsWith("gap-"));
+  assert.equal(gapEntries.length, 72, `csak ${gapEntries.length} rés-szöveget talált`);
   // 6 dimenzió × 2 pólus × 2 nyelv vezető-kiegészítő
   assert.equal(LEADER_ENTRIES.length, 24, `csak ${LEADER_ENTRIES.length} vezető-szöveget talált`);
 });

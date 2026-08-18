@@ -11,6 +11,7 @@ import {
   ARCHETYPE_DOMINANT_SCORE,
   ARCHETYPE_PAIRS,
   ARCHETYPE_SECONDARY_SCORE,
+  DEFAULT_MAX_ATOMS,
   archetypePrototype,
   polarSides,
   polarityOf,
@@ -193,11 +194,11 @@ test("maxAtoms korlátozza a kimenetet", () => {
     other: scores({ C: 5, A: 95, H: 5, X: 95, O: 95 }),
     level: "profile-profile" as const,
   };
-  const three = simulateInteraction(input);
+  const byDefault = simulateInteraction(input);
   const one = simulateInteraction({ ...input, maxAtoms: 1 });
-  assert.equal(three.meta.atomIds.length, 3);
+  assert.equal(byDefault.meta.atomIds.length, DEFAULT_MAX_ATOMS);
   assert.equal(one.meta.atomIds.length, 1);
-  assert.equal(one.meta.atomIds[0], three.meta.atomIds[0]);
+  assert.equal(one.meta.atomIds[0], byDefault.meta.atomIds[0]);
 });
 
 // ── Vezető-mód ───────────────────────────────────────────────────────

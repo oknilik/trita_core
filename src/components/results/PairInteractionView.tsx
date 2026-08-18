@@ -10,6 +10,8 @@ import {
 } from "@/components/results/RelationshipModeSelect";
 import { InteractionDynamicPanels } from "@/components/results/InteractionDynamicPanels";
 import { InteractionLeaderNotes } from "@/components/results/InteractionLeaderNotes";
+import { PairDimensionBand } from "@/components/results/PairDimensionBand";
+import { PairFacetNuances } from "@/components/results/PairFacetNuances";
 import type {
   InteractionLeaderNote,
   PairSimulationView,
@@ -167,6 +169,14 @@ export function PairInteractionView({
         sparse={sim.sparse}
         thinNote={t("results.comparePairThinNote", locale)}
       />
+
+      {/* A próza a legmarkánsabb néhány pontot mondja el, tehát válogat. A
+          sáv utána mind a hat dimenzióról nyilatkozik — enélkül a „megnéztük,
+          és nincs róla mit mondani" eset megkülönböztethetetlen volna a
+          „nem néztük meg"-től. */}
+      <PairDimensionBand rows={sim.dimensions} otherName={otherName} />
+
+      <PairFacetNuances rows={sim.facetNuances} />
 
       <div className="flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--color-accent-primary-strong)] text-caption text-[var(--color-accent-primary-strong)]">
