@@ -10,22 +10,25 @@
  * azonos eltolás kiesik a kivonásban), a ±7-es sáv pedig szűkebb volt, mint
  * a facet-szintű mérési hiba. Következmény: a facet-szintű felületek
  * (pár-nézet attribúció és nüansz, önkép–külső kép alskála-összevetés, PDF
- * facet-sorai) a demó-adaton SZERKEZETILEG nem tudtak megszólalni.
+ * facet-sorai) a demó-adaton SZERKEZETILEG nem tudtak megszólalni. Néhány
+ * seed ráadásul VÉLETLEN facet-értékeket írt, vagy facet-bontás nélküli
+ * sort hagyott — azok ugyanígy kezelendők.
  *
  * MIÉRT NEM ÚJRA-SEEDELÉS: a seed-scriptek Clerk dev-kulcsot követelnek, és
  * `deleteMany`-vel törlik a meglévő eredményeket (observer-válaszokkal
  * együtt). Ez a script CSAK a `scores.facets` mezőt írja felül, minden mást
- * — dimenziók, válaszok, observer-adatok, kapcsolatok — érintetlenül hagy.
+ * — dimenziók, forma-pecsét, observer-adatok, kapcsolatok — érintetlenül hagy.
  *
- * BIZTONSÁGI KAPU — valódi kitöltést SOHA nem ír át. Két feltétel EGYÜTT:
- *   1. `scores.answers` üres tömb (a seedek így írnak; valódi kitöltés a
- *      teljes válaszlistát tárolja),
- *   2. a tárolt facet-értékek pontosan a RÉGI, fix eltolás-mintát követik.
- * Amelyik sorra bármelyik nem teljesül, az kimarad.
+ * BIZTONSÁGI KAPU — valódi kitöltést SOHA nem ír át.
+ * A jelölő az `answers` KULCS JELENLÉTE: a seedek explicit `answers: []`-t
+ * írnak, a valódi kitöltés score-JSON-ja viszont EGYÁLTALÁN NEM tartalmaz
+ * ilyen kulcsot (`calculateScores` → type/dimensions/facets/form/
+ * bankVersion/bankHash/engineVersion). Amelyik sorban nincs `answers`
+ * tömb, az érintetlen marad.
  *
  * Futtatás (alapból SZÁRAZ futás, nem ír semmit):
- *   npx tsx scripts/refresh-seed-facets.ts
- *   npx tsx scripts/refresh-seed-facets.ts --apply
+ *   pnpm seed:facets:refresh
+ *   pnpm seed:facets:refresh -- --apply
  */
 
 import { readFileSync } from "fs";
@@ -55,6 +58,12 @@ function loadEnv() {
 const LEGACY_OFFSETS = [-6, -2, 3, 7];
 const clamp = (value: number) => Math.max(0, Math.min(100, value));
 
+type Shape =
+  | "nincs facet-bontás"
+  | "régi fix eltolás-minta"
+  | "már az új minta"
+  | "egyéb (pl. véletlen értékek)";
+
 async function main() {
   loadEnv();
 
@@ -69,68 +78,107 @@ async function main() {
   // env betöltése UTÁN importálható.
   const { PrismaClient } = await import("@prisma/client");
   const { HEXACO_DIMENSION_FACETS } = await import("@/lib/hexaco");
+  const { extractDimensionScores } = await import("@/lib/scoring");
   const { buildFacets } = await import("./personas.shared");
 
   const prisma = new PrismaClient();
 
-  /** Igaz, ha a tárolt facetek a RÉGI, fix eltolás-mintát követik. */
-  const hasLegacyFacetSignature = (
+  const matchesOffsets = (
     dimensions: Record<string, number>,
     facets: Record<string, Record<string, number>>,
+    expectedFor: (base: number, index: number) => number,
   ): boolean => {
-    let matchedDims = 0;
+    let matched = 0;
     for (const [dim, values] of Object.entries(facets)) {
       const codes = HEXACO_DIMENSION_FACETS[dim as keyof typeof HEXACO_DIMENSION_FACETS];
       const base = dimensions[dim];
       if (!codes || typeof base !== "number") return false;
       for (const [index, facet] of codes.entries()) {
-        const expected = clamp(base + LEGACY_OFFSETS[index % LEGACY_OFFSETS.length]);
-        if (values[facet] !== expected) return false;
+        if (values[facet] !== expectedFor(base, index)) return false;
       }
-      matchedDims++;
+      matched++;
     }
-    return matchedDims > 0;
+    return matched > 0;
+  };
+
+  const classify = (
+    dims: Record<string, number>,
+    facets: Record<string, Record<string, number>> | undefined,
+  ): Shape => {
+    if (!facets || Object.keys(facets).length === 0) return "nincs facet-bontás";
+    if (matchesOffsets(dims, facets, (base, i) => clamp(base + LEGACY_OFFSETS[i % 4]))) {
+      return "régi fix eltolás-minta";
+    }
+    // Az új generátor eltolásai dimenziónként permutáltak, ezért nincs egy
+    // fix mintája — a felismerés a referencia-kimenettel való összevetés.
+    const fresh = buildFacets(dims);
+    const alreadyFresh = Object.entries(fresh).every(([dim, values]) =>
+      Object.entries(values).every(([facet, value]) => facets[dim]?.[facet] === value),
+    );
+    return alreadyFresh ? "már az új minta" : "egyéb (pl. véletlen értékek)";
   };
 
   const rows = await prisma.assessmentResult.findMany({
     select: { id: true, scores: true, isSelfAssessment: true },
   });
-  console.log(`\nEredmény-sorok összesen: ${rows.length}`);
 
-  let skippedRealFill = 0;
-  let skippedNoSignature = 0;
+  let realFills = 0;
+  let unreadableDims = 0;
+  const byShape = new Map<Shape, number>();
   const targets: Array<{ id: string; facets: Record<string, Record<string, number>> }> = [];
+  let sample: { shape: Shape; before: string; after: string } | null = null;
 
   for (const row of rows) {
     const scores = row.scores as Record<string, unknown> | null;
     if (!scores || typeof scores !== "object") continue;
 
-    // 1. kapu: valódi kitöltés → érintetlen.
-    const answers = scores.answers;
-    if (!Array.isArray(answers) || answers.length > 0) {
-      skippedRealFill++;
+    // A KAPU: `answers` tömb = seedelt sor. Valódi kitöltésben nincs ilyen kulcs.
+    if (!Array.isArray(scores.answers)) {
+      realFills++;
       continue;
     }
 
-    const dimensions = scores.dimensions as Record<string, number> | undefined;
+    // Kanonikus olvasó: az örökség-kulcsos (INTE/RESO/…) sorok is átjönnek.
+    const dims = extractDimensionScores(scores);
+    if (!dims || Object.keys(dims).length === 0) {
+      unreadableDims++;
+      continue;
+    }
+
     const facets = scores.facets as Record<string, Record<string, number>> | undefined;
-    if (!dimensions || !facets) {
-      skippedNoSignature++;
-      continue;
-    }
+    const shape = classify(dims as Record<string, number>, facets);
+    byShape.set(shape, (byShape.get(shape) ?? 0) + 1);
+    if (shape === "már az új minta") continue;
 
-    // 2. kapu: csak a régi minta írható felül.
-    if (!hasLegacyFacetSignature(dimensions, facets)) {
-      skippedNoSignature++;
-      continue;
-    }
+    const fresh = buildFacets(dims as Record<string, number>);
+    targets.push({ id: row.id, facets: fresh });
 
-    targets.push({ id: row.id, facets: buildFacets(dimensions) });
+    if (!sample) {
+      const dim = Object.keys(fresh)[0];
+      sample = {
+        shape,
+        before: facets?.[dim] ? JSON.stringify(facets[dim]) : "(nincs)",
+        after: JSON.stringify(fresh[dim]),
+      };
+    }
   }
 
-  console.log(`  · valódi kitöltés (érintetlen):        ${skippedRealFill}`);
-  console.log(`  · nincs régi facet-minta (kimarad):    ${skippedNoSignature}`);
-  console.log(`  · ÚJRASZÁMOLANDÓ:                      ${targets.length}`);
+  console.log(`\nEredmény-sorok összesen: ${rows.length}`);
+  console.log(`  · valódi kitöltés (nincs answers kulcs) — ÉRINTETLEN: ${realFills}`);
+  if (unreadableDims > 0) {
+    console.log(`  · seedelt, de olvashatatlan dimenziók (kimarad):      ${unreadableDims}`);
+  }
+  console.log("  · seedelt sorok facet-alakja:");
+  for (const [shape, count] of [...byShape.entries()].sort((a, b) => b[1] - a[1])) {
+    console.log(`      ${shape.padEnd(32)} ${count}`);
+  }
+  console.log(`\n  ÚJRASZÁMOLANDÓ: ${targets.length}`);
+
+  if (sample) {
+    console.log(`\n  Példa (${sample.shape}) — egy dimenzió facetjei:`);
+    console.log(`    előtte: ${sample.before}`);
+    console.log(`    utána:  ${sample.after}`);
+  }
 
   if (targets.length === 0) {
     console.log("\nNincs mit tenni.");
@@ -140,7 +188,7 @@ async function main() {
 
   if (!apply) {
     console.log("\n🔍 SZÁRAZ FUTÁS — nem írtam semmit.");
-    console.log("   Íráshoz: npx tsx scripts/refresh-seed-facets.ts --apply\n");
+    console.log("   Íráshoz: pnpm seed:facets:refresh -- --apply\n");
     await prisma.$disconnect();
     return;
   }
