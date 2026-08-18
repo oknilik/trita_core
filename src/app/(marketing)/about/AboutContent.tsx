@@ -57,17 +57,17 @@ export function AboutContent() {
             <div>
               <SectionEyebrow className="mb-6">{t("about.heroEyebrow", locale)}</SectionEyebrow>
 
-              <h1 className="max-w-[13ch] font-fraunces text-[clamp(2.6rem,7vw,4.6rem)] leading-[1.0] tracking-tight text-ink">
+              <h1 className="max-w-[13ch] font-fraunces text-fluid-display tracking-tight text-ink">
                 {t("about.heroTitleBefore", locale)}
                 <em className="not-italic text-[var(--color-accent-primary-strong)]">
                   {t("about.heroTitleEm", locale)}
                 </em>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-heading">
+              <p className="mt-6 max-w-[620px] text-base leading-relaxed text-ink-body">
                 {t("about.heroBody", locale)}
               </p>
-              <p className="mt-4 max-w-[620px] text-base leading-8 text-ink-body/85">
+              <p className="mt-4 max-w-[620px] text-base leading-relaxed text-ink-body/85">
                 {t("about.heroLead", locale)}
               </p>
 
@@ -97,10 +97,10 @@ export function AboutContent() {
               </div>
               <div className="px-6 py-6">
                 <SectionEyebrow>{t("about.asideEyebrow", locale)}</SectionEyebrow>
-                <p className="mt-3 font-fraunces text-title leading-tight text-ink">
+                <p className="mt-3 font-fraunces text-heading text-ink">
                   {t("about.asideTitle", locale)}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-ink-body">{t("about.asideBody", locale)}</p>
+                <p className="mt-3 text-sm leading-relaxed text-ink-body">{t("about.asideBody", locale)}</p>
                 <Link
                   href="/rolunk"
                   className="mt-4 inline-flex min-h-[44px] items-center font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
@@ -124,7 +124,7 @@ export function AboutContent() {
         <div className="grid gap-5 md:grid-cols-2">
           <article className="flex flex-col rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-6">
             <SectionEyebrow tone="self">{t("about.audienceSelfTitle", locale)}</SectionEyebrow>
-            <p className="mt-3 flex-1 text-base leading-8 text-ink-body">
+            <p className="mt-3 flex-1 text-base leading-relaxed text-ink-body">
               {t("about.audienceSelfDesc", locale)}
             </p>
             {/* A soft-zsálya alapon a világosabb text-sage kontrasztja kevés —
@@ -139,7 +139,7 @@ export function AboutContent() {
 
           <article className="flex flex-col rounded-[24px] border border-sand bg-surface-card px-6 py-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
             <SectionEyebrow tone="team">{t("about.audienceTeamTitle", locale)}</SectionEyebrow>
-            <p className="mt-3 flex-1 text-base leading-8 text-ink-body">
+            <p className="mt-3 flex-1 text-base leading-relaxed text-ink-body">
               {t("about.audienceTeamDesc", locale)}
             </p>
             <Link
@@ -167,10 +167,10 @@ export function AboutContent() {
               <SectionEyebrow>{t("about.buildEyebrow", locale)}</SectionEyebrow>
             </div>
             <div>
-              <h2 className="max-w-[16ch] font-fraunces text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02] tracking-tight text-ink">
+              <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
                 {t("about.buildTitle", locale)}
               </h2>
-              <p className="mt-5 max-w-[58ch] text-base leading-8 text-ink-body">
+              <p className="mt-5 max-w-[58ch] text-base leading-relaxed text-ink-body">
                 {t("about.buildLead", locale)}
               </p>
 
@@ -199,8 +199,8 @@ export function AboutContent() {
                           {layer.tag}
                         </span>
                       </div>
-                      <h3 className="font-fraunces text-title leading-tight text-ink">{layer.title}</h3>
-                      <p className="mt-3 text-base leading-8 text-ink-body">{layer.desc}</p>
+                      <h3 className="font-fraunces text-heading text-ink">{layer.title}</h3>
+                      <p className="mt-3 text-base leading-relaxed text-ink-body">{layer.desc}</p>
                     </article>
                   ))}
 
@@ -220,10 +220,10 @@ export function AboutContent() {
 
                   <article className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-6">
                     <SectionEyebrow tone="self">{t("about.buildOutcomeLabel", locale)}</SectionEyebrow>
-                    <h3 className="mt-2 font-fraunces text-title leading-tight text-ink">
+                    <h3 className="mt-2 font-fraunces text-heading text-ink">
                       {t("about.buildOutcomeTitle", locale)}
                     </h3>
-                    <p className="mt-3 text-base leading-8 text-ink-body">
+                    <p className="mt-3 text-base leading-relaxed text-ink-body">
                       {t("about.buildOutcomeDesc", locale)}
                     </p>
                   </article>
@@ -236,7 +236,7 @@ export function AboutContent() {
 
       {/* ── Az út — táguló kör ─────────────────────────────────────── */}
       <EditorialSection eyebrow={t("about.pathEyebrow", locale)} title={t("about.pathTitle", locale)}>
-        <p className="-mt-3 mb-8 max-w-[58ch] text-base leading-8 text-ink-body">
+        <p className="-mt-3 mb-8 max-w-[58ch] text-base leading-relaxed text-ink-body">
           {t("about.pathLead", locale)}
         </p>
 
@@ -253,8 +253,8 @@ export function AboutContent() {
               <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
                 {`0${i + 1}`}
               </span>
-              <h3 className="mt-2 font-fraunces text-heading leading-tight text-ink">{step.title}</h3>
-              <p className="mt-2 text-caption leading-7 text-ink-body">{step.desc}</p>
+              <h3 className="mt-2 font-fraunces text-heading text-ink">{step.title}</h3>
+              <p className="mt-2 text-caption leading-relaxed text-ink-body">{step.desc}</p>
             </li>
           ))}
         </ol>
@@ -265,8 +265,8 @@ export function AboutContent() {
         <div className="grid gap-4 md:grid-cols-2">
           {values.map((value) => (
             <article key={value.title} className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-              <h3 className="font-fraunces text-title leading-tight text-ink">{value.title}</h3>
-              <p className="mt-3 text-base leading-8 text-ink-body">{value.desc}</p>
+              <h3 className="font-fraunces text-heading text-ink">{value.title}</h3>
+              <p className="mt-3 text-base leading-relaxed text-ink-body">{value.desc}</p>
             </article>
           ))}
         </div>
@@ -287,7 +287,7 @@ export function AboutContent() {
               <SectionEyebrow>{t("about.goalEyebrow", locale)}</SectionEyebrow>
             </div>
             <div>
-              <h2 className="max-w-[16ch] font-fraunces text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02] tracking-tight text-ink">
+              <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
                 {t("about.goalTitle", locale)}
               </h2>
 
@@ -299,20 +299,20 @@ export function AboutContent() {
                 <div className="mt-6 grid gap-4 border-t border-sand pt-6 md:grid-cols-2">
                   <div>
                     <SectionEyebrow tone="muted">{t("about.goalBeforeLabel", locale)}</SectionEyebrow>
-                    <p className="mt-2 text-base leading-8 text-ink-body">
+                    <p className="mt-2 text-base leading-relaxed text-ink-body">
                       {t("about.goalBeforeText", locale)}
                     </p>
                   </div>
                   <div>
                     <SectionEyebrow>{t("about.goalAfterLabel", locale)}</SectionEyebrow>
-                    <p className="mt-2 text-base leading-8 text-ink">{t("about.goalAfterText", locale)}</p>
+                    <p className="mt-2 text-base leading-relaxed text-ink">{t("about.goalAfterText", locale)}</p>
                   </div>
                 </div>
               </div>
 
               <div className="mt-8 grid gap-5 md:grid-cols-2">
-                <p className="text-base leading-8 text-ink-body">{t("about.goalBody1", locale)}</p>
-                <p className="text-base leading-8 text-ink-body">{t("about.goalBody2", locale)}</p>
+                <p className="text-base leading-relaxed text-ink-body">{t("about.goalBody1", locale)}</p>
+                <p className="text-base leading-relaxed text-ink-body">{t("about.goalBody2", locale)}</p>
               </div>
             </div>
           </div>
@@ -324,10 +324,10 @@ export function AboutContent() {
         <PageWidthDivider />
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
-            <h2 className="mx-auto max-w-[18ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
+            <h2 className="mx-auto max-w-[18ch] font-fraunces text-fluid-title tracking-tight text-ink">
               {t("about.ctaTitle", locale)}
             </h2>
-            <p className="mx-auto mt-5 max-w-[52ch] text-base leading-8 text-ink-body">
+            <p className="mx-auto mt-5 max-w-[52ch] text-base leading-relaxed text-ink-body">
               {t("about.ctaBody", locale)}
             </p>
             <MarketingActions
@@ -362,7 +362,7 @@ function EditorialSection({
           <SectionEyebrow>{eyebrow}</SectionEyebrow>
         </div>
         <div>
-          <h2 className="max-w-[16ch] font-fraunces text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02] tracking-tight text-ink">
+          <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
             {title}
           </h2>
           <div className="mt-8">{children}</div>
@@ -374,7 +374,7 @@ function EditorialSection({
 
 function MetaChip({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-sm text-ink-body">
+    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-caption text-ink-body">
       {children}
     </span>
   );
