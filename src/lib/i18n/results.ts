@@ -1038,6 +1038,19 @@ export const resultsTranslations = {
       hu: "A „magasabb” azt jelenti, hogy a különbség meghaladja a mérés pontosságát; a „hasonló” azt, hogy azon belül marad. Ez irány, nem rangsor: egyik érték sem jobb a másiknál. Pontszámokat szándékosan nem mutatunk — a másik profiljának számai nem hagyják el a szervert.",
       en: "“Higher” means the difference exceeds the precision of the measurement; “similar” means it stays within it. This is direction, not ranking: neither value is better than the other. We deliberately show no scores — the other person's numbers never leave the server.",
     },
+    // ── Facet-attribúció: „hol fut az eltérés" ───────────────────────
+    // Ez NEM önálló állítás, hanem egy dimenzió-szinten már megállapított
+    // eltérés hozzárendelése egyetlen alskálához — ezért nem növeli a
+    // hipotézis-tesztek számát. A szöveg iránytalan: az irányt a fölötte
+    // álló sáv sora már megadta, itt megismételni zaj volna.
+    pairDriverTitle: {
+      hu: "Hol fut az eltérés",
+      en: "Where the difference runs",
+    },
+    pairDriverBody: {
+      hu: "Ebben a dimenzióban egyedül ezen az alskálán mérhető a különbség — a többin a mérés pontosságán belül marad. Az eltérés tehát ide sűrűsödik, nem a dimenzió egészére terjed ki.",
+      en: "Within this dimension, only this facet shows a measurable difference — on the others it stays within the precision of the measurement. So the difference is concentrated here rather than spread across the dimension.",
+    },
     // ── Facet-nüansz: „azonos címke, más működés" ────────────────────
     pairNuanceTitle: {
       hu: "Azonos címke, más működés",
@@ -1052,8 +1065,8 @@ export const resultsTranslations = {
       en: "At dimension level you sit close together, but this facet weighs more with them — the same label can hide a different way of working.",
     },
     pairNuanceNote: {
-      hu: "Ez a legbizonytalanabb réteg: egy alskálát a rövid kérdőív 2–3 állítással mér, ezért csak a kifejezetten nagy eltérést jelezzük. Beszélgetés-indítónak jó, mérésnek gyenge.",
-      en: "This is the least certain layer: the short questionnaire measures a facet with 2–3 items, so we only flag clearly large differences. Good as a conversation starter, weak as a measurement.",
+      hu: "Ez a legbizonytalanabb réteg: egy alskálát a rövid kérdőív 2–3 állítással mér, ezért csak a kifejezetten nagy eltérést jelezzük, és dimenziónként legfeljebb egyet. Beszélgetés-indítónak jó, mérésnek gyenge.",
+      en: "This is the least certain layer: the short questionnaire measures a facet with 2–3 items, so we only flag clearly large differences, and at most one per dimension. Good as a conversation starter, weak as a measurement.",
     },
     // A rés-alapú sor gyengébb bizonyítékon áll, mint a kétoldali pólusos —
     // ezt a felületen jelölni kell (becsült vs mért, CLAUDE.md).

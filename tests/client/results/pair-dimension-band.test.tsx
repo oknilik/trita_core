@@ -64,6 +64,15 @@ const NUANCES: PairFacetNuanceView[] = [
     facet: "organization",
     facetLabel: "Szervezettség",
     higher: "self",
+    kind: "nuance",
+  },
+  {
+    dim: "X",
+    dimLabel: "Extraverzió",
+    facet: "sociability",
+    facetLabel: "Társaságkedvelés",
+    higher: "other",
+    kind: "driver",
   },
 ];
 
@@ -72,6 +81,22 @@ describe("PairFacetNuances", () => {
     render(<PairFacetNuances rows={NUANCES} />);
     expect(screen.getByText("Szervezettség")).toBeInTheDocument();
     expect(screen.getByText("Lelkiismeretesség")).toBeInTheDocument();
+  });
+
+  it("a két fajtát KÜLÖN blokkban mutatja", () => {
+    // Az attribúció („hol fut az eltérés") és az önálló állítás („azonos
+    // címke, más működés") episztemikusan más — egy listába keverve a
+    // gyengébbik státusza a másikra is átragadna.
+    render(<PairFacetNuances rows={NUANCES} />);
+    expect(screen.getByText("Hol fut az eltérés")).toBeInTheDocument();
+    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
+    expect(screen.getByText("Társaságkedvelés")).toBeInTheDocument();
+  });
+
+  it("csak a jelen lévő fajtának ad címet", () => {
+    render(<PairFacetNuances rows={NUANCES.filter((row) => row.kind === "nuance")} />);
+    expect(screen.queryByText("Hol fut az eltérés")).not.toBeInTheDocument();
+    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
   });
 
   it("kimondja, hogy ez a legbizonytalanabb réteg", () => {

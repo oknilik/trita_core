@@ -94,6 +94,21 @@ describe("buildPairSimulation — hat dimenziós sáv és facet-nüansz", () => 
     assert.equal(nuance.higher, "self");
   });
 
+  it("eltérő dimenzióra attribúciót ad, feloldott alskála-névvel", () => {
+    // A dimenzió-szint már megállapította az eltérést (85 vs 25) — a facet
+    // csak megmondja, hova sűrűsödik.
+    const sim = buildPairSimulation(STRUCTURED, EXPLORER, "hu", {
+      selfFacets: { C: { organization: 92, diligence: 80, perfectionism: 82, prudence: 84 } },
+      otherFacets: { C: { organization: 30, diligence: 76, perfectionism: 78, prudence: 80 } },
+      facetMinGap: 17,
+    });
+    const drivers = sim.facetNuances.filter((row) => row.kind === "driver");
+    assert.equal(drivers.length, 1);
+    assert.equal(drivers[0].dim, "C");
+    assert.equal(drivers[0].facetLabel, "Szervezettség");
+    assert.equal(drivers[0].higher, "self");
+  });
+
   it("ADATVÉDELEM: a kliensre menő nézetben EGYETLEN szám sincs", () => {
     // A pár-nézet határa, hogy a partner nyers pontszámai nem hagyják el a
     // szervert. A szerver a KÉSZ összevetést küldi — nem a számokat, amikből

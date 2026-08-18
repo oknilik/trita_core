@@ -23,6 +23,7 @@ import {
   simulateInteraction,
   type DimScores,
   type EvidenceBasis,
+  type FacetLineKind,
   type FacetScores,
   type InteractionResult,
 } from "@/lib/interaction-engine";
@@ -52,13 +53,20 @@ export interface PairDimensionView {
   higher: "self" | "other" | null;
 }
 
-/** Egy facet-nüansz sora — szintén pontszám nélkül. */
+/**
+ * Egy facet-szintű sor — szintén pontszám nélkül.
+ *
+ * A `kind` NEM kozmetika: a `driver` egy dimenzió-szinten már megállapított
+ * eltérés attribúciója, a `nuance` viszont önálló állítás egyező dimenzión
+ * belül. A felület ezért két külön blokkban mutatja őket.
+ */
 export interface PairFacetNuanceView {
   dim: HexacoCode;
   dimLabel: string;
   facet: string;
   facetLabel: string;
   higher: "self" | "other";
+  kind: FacetLineKind;
 }
 
 export interface InteractionLeaderNote {
@@ -141,6 +149,7 @@ function serializeFacetNuances(
         facet: row.facet,
         facetLabel: label,
         higher: row.higher,
+        kind: row.kind,
       },
     ];
   });

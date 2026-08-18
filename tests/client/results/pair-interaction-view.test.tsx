@@ -89,6 +89,7 @@ const sim: PairSimulationView = {
       facet: "patience",
       facetLabel: "Türelem",
       higher: "other",
+      kind: "nuance",
     },
   ],
   sparse: false,

@@ -297,3 +297,101 @@ prototípus szerkezeti korlátja köt, nem a motor.
 - **A `comparePairThinNote` szöveg** arra az esetre íródott, amikor a pár
   egyetlen markáns ponton tér el. Ez a rés-réteg után ritka; a szöveg
   helyes marad, de a következő copy-körben érdemes újraolvasni.
+
+## 8. Facet-szint — meddig mehetünk le? (2026-08-18)
+
+> Kérdés: le lehet-e vinni az összevetést facet-szintre, finomabb és
+> pontosabb riportért? **Finomabb igen, pontosabb nem** — a granularitás és
+> a pontosság itt egymás ellen dolgozik.
+
+### A mérés
+
+| | item/skála | α | √2·SEM | zaj-arány (1−α) |
+|---|---|---|---|---|
+| dimenzió (rövid) | 10 | 0,78 | 10,7 | 22 % |
+| **facet (rövid)** | 2,5 | **0,47** | 16,6 | **53 %** |
+| dimenzió (teljes) | 16 | 0,85 | 8,8 | 15 % |
+| **facet (teljes)** | 4 | **0,59** | 14,7 | **41 %** |
+
+A rövid formán egy alskála-pontszám **több mint fele mérési zaj**.
+
+Szimuláció **két olyan emberre, akiknek a valós profilja AZONOS**, és csak a
+mérési hiba különbözteti meg őket (a `psychometrics.ts` mért SEM-jével):
+
+```
+hamisan jelzett „mérhető eltérés"
+  dimenzió-szinten:  1,82 / 6
+  facet-szinten:     7,33 / 24   (a párok 100%-ánál legalább egy)
+```
+
+Egy ÖNÁLLÓ, 24 facetes összevetés tehát **7–8 „itt eltértek" mondatot adna
+két egyforma embernek**. A teljes forma nem menti meg (7,37): a kapu együtt
+nő a mérési hibával. A hosszabb kérdőív a DIMENZIÓT javítja (1,82 → 1,26),
+a facetet nem.
+
+### Miért nem a kérdőív hossza a szűk keresztmetszet — és mikor lenne az
+
+`r̄ = 0,264` mellett, facetenként:
+
+| cél | item/facet | teljes kérdőív | kitöltés |
+|---|---|---|---|
+| α ≥ 0,60 | 5 | 120 item | ~18 perc |
+| **α ≥ 0,70** (konvencionális minimum) | **7** | **168 item** | **~25 perc** |
+| α ≥ 0,75 | 9 | 216 item | ~32 perc |
+
+Önálló facet-riporthoz tehát ~170 item kellene a mai 60 helyett. Ez
+TERMÉKDÖNTÉS, nem mérnöki kérdés — és a tanácsadás-vezérelt modellben nem
+eleve abszurd. A jelenlegi 100 itemes teljes forma viszont nem elég hozzá
+(α = 0,59).
+
+### Amit ehelyett megvalósítottunk
+
+A kulcs nem a facetek haszontalansága, hanem a **hipotézisek száma**. Ha a
+facet csak azt bontja meg, amit a dimenzió-szint MÁR megállapított, akkor
+továbbra is 6 döntés van, nem 24.
+
+| | mit állít | státusz | kapu |
+|---|---|---|---|
+| **attribúció** (`driver`) | „ezen a dimenzión ide sűrűsödik az eltérés" | a dimenzió-szintű megállapítás hozzárendelése | 1×√2·SEM **+ pontosan egy alskála lépi át a dimenzió irányában** |
+| **nüansz** (`nuance`) | „dimenzió-szinten egyeztek, de ezen az alskálán nem" | ÖNÁLLÓ állítás | **2×√2·SEM** |
+
+Az attribúciónál nem a kapu a szűrő, hanem a koncentráció-feltétel: ha két
+alskála is átlépi a küszöböt, az eltérés nem sűrűsödik egy helyre, és a
+„főleg itt fut" mondat hamis volna — ilyenkor hallgatunk.
+
+### A nüansz kapuját menet közben szigorítani kellett
+
+A réteg először az 1×-es kapun állt, és a bevezetés utáni mérés megmutatta,
+hogy **zajra tüzel**: páronként 1,4–1,7 nüansz-sor, azaz majdnem minden pár
+két állítást kapott a legzajosabb rétegből. Az önálló nüansz sok facetre
+EGYSZERRE fut (egyező dimenziónként négy teszt), ezért a kapu 2× lett:
+
+```
+hamis jelzés két AZONOS profil között, facetenként
+  1× kapu (17 pont):   31,0 %
+  2× kapu (34 pont):    4,0 %
+```
+
+### Mit ad ez a gyakorlatban
+
+Modell-feltevés mellett (a facetek dimenzión belüli szórására nincs saját
+adatunk — a diagnosztika ezért három feltevés-értékre is lefut):
+
+```
+σ_W    attribúció / pár   nüansz / pár   van legalább egy facet-sor
+12          0,45               0,27              54 %
+20          0,40               1,05              84 %
+28          0,37               1,43              93 %
+```
+
+Ezek TÁJÉKOZÓDÓ számok, nem mérési eredmények — a feltevés-mentes szám a
+fenti hamis-jelzés tábla.
+
+### Ami nyitva marad
+
+- **A magyar pilot felülírja az `r̄ = 0,264`-et.** Ha magasabb, a szükséges
+  itemszám csökken — akkor a 168-as szám újraszámolandó.
+- **Önálló facet-riport** csak egy ~170 itemes formával, tanácsadói
+  opcióként. Addig a facet árnyalat, nem állítás.
+- **A facetek dimenzión belüli szórása** (σ_W) mérendő a pilot-adatból — az
+  a hiányzó paraméter, ami a réteg tüzelési gyakoriságát meghatározza.

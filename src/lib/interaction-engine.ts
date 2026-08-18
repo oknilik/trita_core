@@ -151,10 +151,21 @@ export interface DimensionComparison {
 }
 
 /**
- * Facet-nüansz: dimenzió-szinten EGYEZTEK, de az egyik alskálán mérhető a
- * különbség — „ugyanaz a címke, más működés". Ez a legbizonytalanabb réteg
- * (a rövid formán 2–3 item visz egy facetet), ezért dimenziónként legfeljebb
- * egy, összesen legfeljebb `MAX_FACET_NUANCES` darab.
+ * Facet-szintű sor. KÉT, episztemikusan KÜLÖNBÖZŐ fajta:
+ *
+ * · `nuance` — a dimenzió-szint EGYEZIK, de egy alskálán mérhető a
+ *   különbség: „ugyanaz a címke, más működés". Ez ÖNÁLLÓ állítás, tehát
+ *   saját kaput (facet-küszöb) kell átlépnie.
+ *
+ * · `driver` — a dimenzió-szint már ELTÉRÉST állapított meg, és ez a sor
+ *   csak megmondja, HOL fut az eltérés. Nem új hipotézis, hanem egy meglévő
+ *   megállapítás attribúciója — ezért nem növeli a tesztek számát.
+ *
+ * Miért számít a különbség: a rövid formán egy facet α ≈ 0,47 (a variancia
+ * több mint fele zaj), és 24 facet EGYIDEJŰ, önálló vizsgálata két azonos
+ * profilú ember között is ~7 hamis „eltérés"-jelzést adna. A `driver` ezt
+ * kerüli meg: 6 dimenzió-szintű döntés marad, a facet csak hozzárendel.
+ * Mérés és számok: docs/audits/interaction-pair-coverage-2026-08-18.md §8.
  */
 export interface FacetNuance {
   dim: HexacoCode;
@@ -162,7 +173,10 @@ export interface FacetNuance {
   facet: string;
   /** Melyik oldalon hangsúlyosabb ez az alskála. */
   higher: "self" | "other";
+  kind: FacetLineKind;
 }
+
+export type FacetLineKind = "nuance" | "driver";
 
 export interface LeaderNote {
   dim: HexacoCode;
@@ -468,50 +482,157 @@ function compareDimensions(
 // dimenzióban nézünk, dimenziónként a LEGNAGYOBB rést vesszük, és a teljes
 // kimenetet két sorra korlátozzuk.
 
-/** Legfeljebb ennyi facet-nüansz jelenhet meg egy páron. */
+/** Legfeljebb ennyi „ugyanaz a címke, más működés" sor jelenhet meg. */
 export const MAX_FACET_NUANCES = 2;
+/** Legfeljebb ennyi „hol fut az eltérés" attribúció jelenhet meg. */
+export const MAX_FACET_DRIVERS = 2;
 
-function collectFacetNuances(
+/**
+ * A `nuance` sor kapuja SZIGORÚBB, mint a `driver`-é: a hívótól kapott
+ * facet-küszöb KÉTSZERESE.
+ *
+ * Miért: a két sor episztemikus státusza más. A `driver` egy dimenzió-szinten
+ * MÁR MEGÁLLAPÍTOTT eltérést rendel hozzá egy alskálához — nem dönti el, hogy
+ * van-e különbség, csak azt, hol fut; ráadásul a „pontosan egy alskála lépi
+ * át a küszöböt" feltétel önmagában erősen szűr. A `nuance` viszont ÖNÁLLÓ
+ * állítás, és sok facetre EGYSZERRE fut: egyező dimenziónként négy teszt.
+ *
+ * A hívó küszöbe 1 × √2·SEM, azaz ~1 szórásnyi hibahatár — ott két AZONOS
+ * profilú ember is ~31% eséllyel „eltér" facetenként. Ennyi egyidejű teszt
+ * mellett ez azt jelentené, hogy a nüansz-sor gyakorlatilag mindig tüzel,
+ * zajra. A 2× (~2 szórás) ezt facetenként ~5%-ra viszi le. A mérés a
+ * bevezetés után is ezt igazolta: 1× kapuval 1,4–1,7 nüansz-sor jutott egy
+ * párra, azaz majdnem minden pár két állítást kapott a LEGZAJOSABB rétegből.
+ *
+ * Számok és futtatás: docs/audits/interaction-pair-coverage-2026-08-18.md §8,
+ * `npx tsx scripts/diagnose-interaction-coverage.ts`.
+ */
+export const NUANCE_GATE_MULTIPLIER = 2;
+
+interface ScoredFacet {
+  facet: string;
+  delta: number;
+}
+
+/** Egy dimenzió MINDKÉT oldalon mért facetjei, a kanonikus sorrendben. */
+function facetDeltas(
+  dim: HexacoCode,
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+): ScoredFacet[] {
+  const mine = selfFacets[dim];
+  const theirs = otherFacets[dim];
+  if (!mine || !theirs) return [];
+  const out: ScoredFacet[] = [];
+  for (const facet of HEXACO_DIMENSION_FACETS[dim]) {
+    const a = mine[facet];
+    const b = theirs[facet];
+    if (typeof a !== "number" || typeof b !== "number") continue;
+    out.push({ facet, delta: a - b });
+  }
+  return out;
+}
+
+type RankedLine = FacetNuance & { delta: number; weight: number };
+
+function rankAndCap(lines: RankedLine[], cap: number): FacetNuance[] {
+  return lines
+    .sort((a, b) => b.delta - a.delta || b.weight - a.weight || a.dim.localeCompare(b.dim))
+    .slice(0, cap)
+    .map(({ dim, facet, higher, kind }) => ({ dim, facet, higher, kind }));
+}
+
+/**
+ * „Ugyanaz a címke, más működés" — ÖNÁLLÓ facet-állítás egyező dimenzióban.
+ * Dimenziónként a legnagyobb rés, és csak a MEGSZIGORÍTOTT facet-küszöb
+ * felett (`NUANCE_GATE_MULTIPLIER`).
+ */
+function collectNuances(
+  dimensions: DimensionComparison[],
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+  facetMinGap: number,
+): RankedLine[] {
+  const found: RankedLine[] = [];
+  for (const row of dimensions) {
+    if (row.state !== "aligned") continue;
+    let best: ScoredFacet | null = null;
+    for (const candidate of facetDeltas(row.dim, selfFacets, otherFacets)) {
+      // Holtversenynél a kanonikus facet-sorrend dönt (szigorú >), hogy a
+      // kimenet determinisztikus legyen.
+      if (!best || Math.abs(candidate.delta) > Math.abs(best.delta)) best = candidate;
+    }
+    if (!best || Math.abs(best.delta) < facetMinGap * NUANCE_GATE_MULTIPLIER) {
+      continue;
+    }
+    found.push({
+      dim: row.dim,
+      facet: best.facet,
+      higher: best.delta > 0 ? "self" : "other",
+      kind: "nuance",
+      delta: Math.abs(best.delta),
+      weight: FRICTION_WEIGHTS[row.dim] ?? 0,
+    });
+  }
+  return found;
+}
+
+/**
+ * „Hol fut az eltérés" — a dimenzió-szinten MÁR MEGÁLLAPÍTOTT különbség
+ * attribúciója egyetlen alskálára.
+ *
+ * A kapu SZÁNDÉKOSAN nem „a legnagyobb rés", hanem „PONTOSAN EGY alskálán
+ * mérhető a különbség a dimenzió irányában". Ha kettő is átlépi a küszöböt,
+ * az eltérés nem koncentrálódik, és a „főleg itt fut" mondat hamis volna —
+ * ilyenkor inkább hallgatunk. Ez teszi a sort attribúcióvá és nem új
+ * hipotézis-teszté: a dimenzió-szintű döntés már megszületett, ez csak
+ * megmondja, hova sűrűsödik.
+ */
+function collectDrivers(
+  dimensions: DimensionComparison[],
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+  facetMinGap: number,
+): RankedLine[] {
+  const found: RankedLine[] = [];
+  for (const row of dimensions) {
+    if (row.state !== "differs" || !row.higher) continue;
+    const direction = row.higher === "self" ? 1 : -1;
+    const clearing = facetDeltas(row.dim, selfFacets, otherFacets).filter(
+      (candidate) =>
+        Math.sign(candidate.delta) === direction &&
+        Math.abs(candidate.delta) >= facetMinGap,
+    );
+    if (clearing.length !== 1) continue;
+    const [driver] = clearing;
+    found.push({
+      dim: row.dim,
+      facet: driver.facet,
+      higher: row.higher,
+      kind: "driver",
+      delta: Math.abs(driver.delta),
+      weight: FRICTION_WEIGHTS[row.dim] ?? 0,
+    });
+  }
+  return found;
+}
+
+function collectFacetLines(
   dimensions: DimensionComparison[],
   selfFacets: FacetScores,
   otherFacets: FacetScores,
   facetMinGap: number,
 ): FacetNuance[] {
-  const found: Array<FacetNuance & { delta: number; weight: number }> = [];
-
-  for (const row of dimensions) {
-    if (row.state !== "aligned") continue;
-    const mine = selfFacets[row.dim];
-    const theirs = otherFacets[row.dim];
-    if (!mine || !theirs) continue;
-
-    let best: { facet: string; delta: number } | null = null;
-    for (const facet of HEXACO_DIMENSION_FACETS[row.dim]) {
-      const a = mine[facet];
-      const b = theirs[facet];
-      if (typeof a !== "number" || typeof b !== "number") continue;
-      const delta = a - b;
-      // Holtversenynél a kanonikus facet-sorrend dönt (szigorú >), hogy a
-      // kimenet determinisztikus legyen.
-      if (!best || Math.abs(delta) > Math.abs(best.delta)) {
-        best = { facet, delta };
-      }
-    }
-    if (!best || Math.abs(best.delta) < facetMinGap) continue;
-
-    found.push({
-      dim: row.dim,
-      facet: best.facet,
-      higher: best.delta > 0 ? "self" : "other",
-      delta: Math.abs(best.delta),
-      weight: FRICTION_WEIGHTS[row.dim] ?? 0,
-    });
-  }
-
-  return found
-    .sort((a, b) => b.delta - a.delta || b.weight - a.weight || a.dim.localeCompare(b.dim))
-    .slice(0, MAX_FACET_NUANCES)
-    .map(({ dim, facet, higher }) => ({ dim, facet, higher }));
+  return [
+    ...rankAndCap(
+      collectDrivers(dimensions, selfFacets, otherFacets, facetMinGap),
+      MAX_FACET_DRIVERS,
+    ),
+    ...rankAndCap(
+      collectNuances(dimensions, selfFacets, otherFacets, facetMinGap),
+      MAX_FACET_NUANCES,
+    ),
+  ];
 }
 
 // ── Belépési pont ────────────────────────────────────────────────────
@@ -555,7 +676,7 @@ export function simulateInteraction(
   const dimensions = realPair ? compareDimensions(input.self, input.other) : [];
   const facetNuances =
     realPair && input.selfFacets && input.otherFacets && input.facetMinGap
-      ? collectFacetNuances(
+      ? collectFacetLines(
           dimensions,
           input.selfFacets,
           input.otherFacets,
