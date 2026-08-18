@@ -1,14 +1,14 @@
 import { View, Text } from "@react-pdf/renderer";
 import { colors, type } from "../styles";
 import { dimColors } from "@/lib/color-system";
-import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { ReportDimensionView } from "@/lib/profile-report-view-model";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Egy dimenzió részletesen — a webes DimensionAccordion nyitott állapotának
-// párja: érték, pólus-tudatos szint-címke, értelmezés, majd az alskálák.
+// párja: érték, valencia-mentes szint-szó, értelmezés, majd az alskálák.
 //
 // EGY kártya = EGY tartalmi egység (P1/11), és egy kártya nem törik ketté
 // oldalhatáron (wrap={false}) — a fejezet viszont törhet (P1/12).
@@ -48,7 +48,7 @@ export function PdfDimensionDetail({
             borderRadius: 3,
           }}
         >
-          {poleAwareDimensionLabel(dim.code, dim.value, locale)}
+          {getDimensionLabel(dim.value, locale)}
         </Text>
         <Text style={{ fontFamily: "Fraunces", fontSize: type.section, color: dc.strong }}>
           {dim.value}
@@ -108,9 +108,18 @@ export function PdfDimensionDetail({
                   borderRadius: 6,
                 }}
               >
-                <Text style={{ flex: 1, fontSize: type.caption, color: colors.ink500 }}>
-                  {facet.label}
-                </Text>
+                {/* Név + szint-szó egymás alatt — a web DimensionAccordion
+                    facet-sorának párja. A szint-szó a NÉV alá kerül (nem a
+                    szám mellé): a 48%-os hasábban a hosszú HU facet-nevek
+                    („Esztétikai fogékonyság") mellett nincs vízszintes hely. */}
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: type.caption, color: colors.ink500 }}>
+                    {facet.label}
+                  </Text>
+                  <Text style={{ fontSize: type.caption, color: colors.ink300 }}>
+                    {getDimensionLabel(facet.score, locale)}
+                  </Text>
+                </View>
                 <View
                   style={{
                     width: 34,

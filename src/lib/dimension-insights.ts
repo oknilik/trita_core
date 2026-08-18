@@ -93,7 +93,13 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
 };
 
 /**
- * Erősség-bullet kiegészítők („{dimenzió} — {leírás}" formához).
+ * Dimenzió-kiegészítők a MAGAS pólushoz („{dimenzió} — {leírás}" formához).
+ *
+ * JELENLEG NEM RENDERELŐDIK: az egyetlen fogyasztója a 2026-08-18-án
+ * kivezetett `buildInsightBullets` volt (halott kód, ld. az indoklást a
+ * profile-report-view-model.ts-ben). A térkép azért marad, mert a
+ * reso-valence-sweep teszt a TARTALMÁT őrzi, és egy jövőbeli felület
+ * felhasználhatja — de csak valencia-mentes keretben, NEM „erősség"-listaként.
  * Nyelvi dedup (P3.2): a bullet szándékosan MÁS szókinccsel írja le a
  * dimenziót, mint a hero-tagline — egy oldalon belül ne ismétlődjön
  * ugyanaz a fordulat („hiteles… / hiteles…").
@@ -111,7 +117,10 @@ export const DIMENSION_STRENGTH_DESCS: Record<string, Record<Locale, string>> = 
   O: { hu: "felfedező szemlélet, komplex gondolkodás", en: "explorer mindset, complex thinking" },
 };
 
-/** Figyelendő-bullet kiegészítők — a tagline gyenge-felétől eltérő szókinccsel (P3.2). */
+/**
+ * Dimenzió-kiegészítők az ALACSONY pólushoz — a tagline alsó felétől eltérő
+ * szókinccsel (P3.2). Ugyanúgy jelenleg nem renderelődik, ld. a párját fent.
+ */
 export const DIMENSION_WATCH_DESCS: Record<string, Record<Locale, string>> = {
   H: { hu: "erős versenyszellem, státusz-tudatosság", en: "strong competitive drive, status awareness" },
   // Szintén nem érhető el (deficitSlotEligible kizárja) — kétoldalúra írva:

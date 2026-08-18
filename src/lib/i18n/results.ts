@@ -498,19 +498,17 @@ export const resultsTranslations = {
     heroPdf: { hu: "PDF letöltés", en: "Download PDF" },
     heroGlyphEyebrow: { hu: "A te karakterábrád", en: "Your character visual" },
     heroGlyphGrammar: {
-      hu: "A nagy forma {primary}: {form}. A benne futó vonal {secondary}: {motif}. A kitöltés az erősséget követi.",
-      en: "The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}. The fill follows its strength.",
+      hu: "A nagy forma {primary}: {form}. A benne futó vonal {secondary}: {motif}. A kitöltés a pontszámot követi.",
+      en: "The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}. The fill follows the score.",
     },
     heroGlyphGrammarUncertain: {
-      hu: "A két dimenziód közel azonos erősségű. A nagy forma {form}, a benne futó vonal {motif}; a kitöltés az erősséget követi.",
-      en: "The two dimensions are close in strength. The large shape is the {form}, the line inside the {motif}; the fill follows their strength.",
+      hu: "A két dimenziód közel azonos szintű. A nagy forma {form}, a benne futó vonal {motif}; a kitöltés a pontszámot követi.",
+      en: "The two dimensions are at a similar level. The large shape is the {form}, the line inside the {motif}; the fill follows the score.",
     },
     heroGlyphOpen: { hu: "Karakterábra", en: "Character visual" },
     heroGlyphBack: { hu: "Profil", en: "Profile" },
     heroGlyphOpenA11y: { hu: "Karakterábra megjelenítése", en: "Show character visual" },
     heroGlyphBackA11y: { hu: "Profil megjelenítése", en: "Show profile" },
-    insightStrengths: { hu: "Erősségeid", en: "Your strengths" },
-    insightWatch: { hu: "Figyelendő", en: "Watch areas" },
     dimSectionEyebrow: { hu: "Dimenziók", en: "Dimensions" },
     dimSectionTitle: { hu: "Így működsz a fő dimenziók mentén", en: "How you work across key dimensions" },
     dimSectionDesc: { hu: "A dimenziók nem skatulyák, minősítések vagy percentilisek. A 0–100-as skálán kirajzolódó mintázatok azt mutatják meg, mi mozgat, mi ad stabilitást, és hol jöhet feszültség.", en: "Dimensions aren't boxes, grades or percentiles. Patterns on the 0–100 scale show what drives you, what keeps you steady, and where tension may arise." },
@@ -612,17 +610,19 @@ export const resultsTranslations = {
       en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you — it sheds light.",
     },
     uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
-    // A korábbi strengthsSuffix/watchPrefix/watchSuffix/noLowDim kulcsok
-    // kivezetve (2026-08-11): a PDF-be szánt legacy összefoglaló sorok
-    // (strengths/watchAreas) sehol nem renderelődtek — a bullet-alapú
-    // változat (strengthBullets/watchBullets) él helyettük.
-    balancedProfile: { hu: "Kiegyensúlyozott profil, nincs kiugró erősség.", en: "Balanced profile, no standout strength." },
+    // A legacy PDF-összefoglaló kulcsok (strengthsSuffix/watchPrefix/
+    // watchSuffix/noLowDim) 2026-08-11-én, az őket kiváltó bullet-kulcsok
+    // (insightStrengths/insightWatch, pdf.yourStrengths/watchAreas/
+    // summaryStrengths + content.noLowDimension) pedig 2026-08-18-án
+    // kivezetve: a bullet-változat (buildInsightBullets) sem renderelődött
+    // soha, és pontszám-sávhoz kötött valenciát keretezett.
+    balancedProfile: { hu: "Kiegyensúlyozott profil, nincs kiugró dimenzió.", en: "Balanced profile, no standout dimension." },
     // Lapos-profil hero-mondat: ha a hat dimenzió terjedelme a mérési zajon
     // belül van (HERO_RANGE_GATE_FACTOR·SEM), a hero nem állíthat legerősebbet
     // — a PDF „Kiegyensúlyozott profil" szövegével konzisztens keretezés.
     heroBalancedInsight: {
-      hu: "Kiegyensúlyozott profil — nincs kiugró erősség, a dimenzióid közel azonos szinten működnek.",
-      en: "Balanced profile — no standout strength; your dimensions operate at a similar level.",
+      hu: "Kiegyensúlyozott profil — nincs kiugró dimenzió, a dimenzióid közel azonos szinten működnek.",
+      en: "Balanced profile — no standout dimension; your dimensions operate at a similar level.",
     },
     sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
     shareHeroInsight: {
@@ -722,18 +722,18 @@ export const resultsTranslations = {
     // A név-behelyettesítések már névelővel jönnek (hu-grammar.ts) — a
     // sablonban ezért NINCS „a(z)”; ld. riport-javítási terv P1.2.
     glyphGrammar: {
-      hu: "A nagy forma a legerősebb dimenziód — {primary}: {form}. A benne futó vékony vonal a második legerősebb — {secondary}: {motif}. A forma kitöltése a pontszám erősségét követi.",
-      en: "The large shape is your strongest dimension — {primary}: the {form}. The thin line inside it is your second strongest — {secondary}: the {motif}. The fill weight follows the score.",
+      hu: "A nagy forma a legmagasabb pontszámú dimenziód — {primary}: {form}. A benne futó vékony vonal a második legmagasabb — {secondary}: {motif}. A forma kitöltése a pontszámot követi.",
+      en: "The large shape is your highest-scoring dimension — {primary}: the {form}. The thin line inside it is your second highest — {secondary}: the {motif}. The fill weight follows the score.",
     },
     // S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a mérési hibán
     // belül van, a próza nem állíthat sorrendet — a két dimenzió rendezetlen
     // párként jelenik meg, „a második legerősebb" formula nélkül.
     glyphGrammarUncertain: {
-      hu: "A két legerősebb dimenziód — {primary} és {secondary} — közel azonos erősségű, sorrendjük nem egyértelmű. A nagy forma {form}, a benne futó vékony vonal {motif}; a forma kitöltése a pontszám erősségét követi.",
-      en: "Your top two dimensions — {primary} and {secondary} — are close in strength, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
+      hu: "A két legmagasabb pontszámú dimenziód — {primary} és {secondary} — közel azonos szintű, sorrendjük nem egyértelmű. A nagy forma {form}, a benne futó vékony vonal {motif}; a forma kitöltése a pontszámot követi.",
+      en: "Your top two dimensions — {primary} and {secondary} — are at a similar level, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
     },
     glyphPairUncertain: {
-      hu: "a két legerősebb: {a} · {b}",
+      hu: "a két legmagasabb: {a} · {b}",
       en: "top two: {a} · {b}",
     },
     sectionDimensions: { hu: "Dimenziók részletesen", en: "Dimensions in detail" },
@@ -748,7 +748,7 @@ export const resultsTranslations = {
       hu: "Válaszd ki, kivel vagy milyen karakterrel szeretnéd megnézni a közös működéseteket.",
       en: "Choose who — or what kind of character — you'd like to explore your shared dynamic with.",
     },
-    interactionPickDominant: { hu: "A legerősebb vonása", en: "Their strongest trait" },
+    interactionPickDominant: { hu: "A legkifejezettebb vonása", en: "Their most pronounced trait" },
     interactionPickDominantHint: {
       hu: "Ez adja a nagy formát az ábrán — és a típusnév főnevét.",
       en: "This gives the large shape in the figure — and the noun in the type name.",
@@ -818,8 +818,8 @@ export const resultsTranslations = {
     },
     // Hitelességi jegyzet: enélkül a „típus-szintű becslés" üres udvariasság.
     interactionSourceNote: {
-      hu: "Típus-szintű becslés: a te valós pontszámaidat egy típus-prototípussal vetjük össze, amiről csak a két legerősebb dimenzió ismert — a másik négyről nem állítunk semmit. Hipotézis, nem jóslat; a valós méréshez a csapat-nézet kell.",
-      en: "Type-level estimate: your real scores are compared against a type prototype for which only the two strongest dimensions are known — we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
+      hu: "Típus-szintű becslés: a te valós pontszámaidat egy típus-prototípussal vetjük össze, amiről csak a két legmagasabb pontszámú dimenzió ismert — a másik négyről nem állítunk semmit. Hipotézis, nem jóslat; a valós méréshez a csapat-nézet kell.",
+      en: "Type-level estimate: your real scores are compared against a type prototype for which only the two highest-scoring dimensions are known — we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
     },
     // ── Valódi páros összehasonlítás (B1) ────────────────────────────
     compareChooserEyebrow: {
@@ -1836,12 +1836,10 @@ export const resultsTranslations = {
     altruismInfo: { hu: "Több fő dimenzióhoz is kapcsolódik, ezért nem számít bele a 6 főfaktor átlagába. Külön pontszámként érdemes nézni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
     // (content.altruismDetail törölve 2026-08-11 — egy sosem megépült
     //  facet-bontás felirata volt; a skálának egyetlen facetje van.)
-    // Semleges SZINT-szavak a nem-valenciált kiegészítő skálához: a saját
-    // bannere mondja ki, hogy nem erősség/gyengeség — a valenciás
-    // „erősség/figyelendő" badge (getDimensionLabel) ellentmondott neki.
-    altruismLevelHigh: { hu: "magas", en: "high" },
-    altruismLevelMid: { hu: "mérsékelt", en: "moderate" },
-    altruismLevelLow: { hu: "alacsony", en: "low" },
+    // A kártya saját szint-szótára (altruismLevelHigh/Mid/Low) 2026-08-18-án
+    // kivezetve: azért létezett, hogy a nem-valenciált kiegészítő skála
+    // elkerülje az akkor még valenciás badge-et. A kanonikus címke azóta maga
+    // szint-szó (dimension-utils), a különszótár csak drift volt.
     envLabelHigh: { hu: "Magas", en: "High" },
     envLabelLow: { hu: "Alacsony", en: "Low" },
     envLabelMedium: { hu: "Közepes", en: "Medium" },
@@ -1940,7 +1938,6 @@ export const resultsTranslations = {
     },
     shareCtaButton: { hu: "Elkészítem a sajátomat", en: "Create my own" },
     personalityProfileFallback: { hu: "Személyiségprofil", en: "Personality profile" },
-    noLowDimension: { hu: "nincs kritikusan alacsony dimenzió", en: "no critically low dimension" },
     // TeamRoleTeaser
     teamRoleTeaserEyebrow: { hu: "csapatszerepek", en: "team roles" },
     teamRoleTeaserEstimate: { hu: "becslés", en: "estimate" },
@@ -2070,7 +2067,6 @@ export const resultsTranslations = {
     growthChallenge: { hu: "Mérd le", en: "Measure it" },
     // ── SummaryPage (P3.1) ─────────────────────────────────────────────────
     summaryPageTitle: { hu: "Összefoglaló egy oldalon", en: "One-page summary" },
-    summaryStrengths: { hu: "Erősségek", en: "Strengths" },
     careerPageTitle: { hu: "Karrier-iránytű", en: "Career compass" },
     careerTopDirections: { hu: "A legerősebb irányaid", en: "Your strongest directions" },
     careerDevelop: { hu: "Fejlődési fókusz", en: "Development focus" },
@@ -2210,9 +2206,6 @@ export const resultsTranslations = {
     // Semleges („note") kártya a PDF-ben — ugyanaz a slot, mint a felületen.
     patternNote: { hu: "Jellemző mintázat", en: "Characteristic pattern" },
     context: { hu: "Kontextus", en: "Context" },
-    // ── PdfInsightPair ─────────────────────────────────────────────────────
-    yourStrengths: { hu: "Erősségeid", en: "Your strengths" },
-    watchAreas: { hu: "Figyelendő", en: "Watch areas" },
     // ── PdfAltruism ────────────────────────────────────────────────────────
     supplementaryScale: { hu: "Kiegészítő skála", en: "Supplementary scale" },
     altruism: { hu: "Segítőkészség", en: "Helpfulness" },

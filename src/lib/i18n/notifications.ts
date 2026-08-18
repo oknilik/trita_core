@@ -39,8 +39,8 @@ export const notificationTranslations = {
     reflectionPrompt: {
       title: { hu: "Egy hét telt el — mit láttál magadból?", en: "A week has passed — what did you notice?" },
       body: {
-        hu: "A legerősebb dimenziód: {dimLabelHu}. Figyeld meg tudatosan egy helyzetben ezen a héten — és ha kíváncsi vagy, hogyan működnétek együtt valakivel, nézd meg a páros összehasonlítást.",
-        en: "Your strongest dimension: {dimLabelEn}. Observe it deliberately in one situation this week — and if you're curious how you'd work with someone, try the pair comparison.",
+        hu: "A legmagasabb pontszámú dimenziód: {dimLabelHu}. Figyeld meg tudatosan egy helyzetben ezen a héten — és ha kíváncsi vagy, hogyan működnétek együtt valakivel, nézd meg a páros összehasonlítást.",
+        en: "Your highest-scoring dimension: {dimLabelEn}. Observe it deliberately in one situation this week — and if you're curious how you'd work with someone, try the pair comparison.",
       },
     },
     purchaseConfirmed: {

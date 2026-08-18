@@ -19,7 +19,6 @@
 import { t, tf, type Locale } from "@/lib/i18n";
 import { ALTRUISM_CODE, HEXACO_ORDER, hexLetter, type HexacoCode } from "@/lib/hexaco";
 import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
-import { DIMENSION_STRENGTH_DESCS, DIMENSION_WATCH_DESCS } from "@/lib/dimension-insights";
 import { buildArchetypeStory } from "@/lib/profile-content";
 import { isSecondaryUncertain } from "@/lib/personality-type";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
@@ -513,33 +512,15 @@ export function buildProfileReportViewModel(
   };
 }
 
-/**
- * Erősség-/figyelendő-bullet listák — a webes Áttekintés kártyájának és a PDF
- * borító-chipjeinek közös forrása. (Külön függvény, mert a bulletek csak a
- * PDF-ben és a hero-chipeknél kellenek, a view-modell magját nem terhelik.)
- */
-export function buildInsightBullets(
-  dimensions: ReportInputDimension[],
-  locale: Locale,
-): { strengthBullets: string[]; watchBullets: string[] } {
-  const mainDims = orderedMainDimensions(dimensions);
-  const highDims = mainDims.filter((d) => strengthSlotEligible(d.code, "self") && d.score >= 70);
-  const watchDims = mainDims.filter((d) => deficitSlotEligible(d.code) && d.score < 40);
-
-  const strengthBullets =
-    highDims.length > 0
-      ? highDims.map((d) => {
-          const desc = DIMENSION_STRENGTH_DESCS[d.code]?.[locale];
-          return desc ? `${d.label} — ${desc}` : d.label;
-        })
-      : [t("results.balancedProfile", locale)];
-  const watchBullets =
-    watchDims.length > 0
-      ? watchDims.map((d) => {
-          const desc = DIMENSION_WATCH_DESCS[d.code]?.[locale];
-          return desc ? `${d.label} — ${desc}` : d.label;
-        })
-      : [t("content.noLowDimension", locale)];
-
-  return { strengthBullets, watchBullets };
-}
+// A `buildInsightBullets` („Erősségeid" / „Figyelendő" bullet-listák)
+// 2026-08-18-án KIVEZETVE. Két oka volt:
+//  1. HALOTT VOLT — sem a web, sem a PDF nem hívta (a hozzá tartozó i18n
+//     kulcsok, results.insightStrengths/insightWatch és pdf.yourStrengths/
+//     watchAreas/summaryStrengths, szintén sehol nem renderelődtek);
+//  2. a keretezése a pontszámhoz kötött valencia volt („≥70 → erősség,
+//     <40 → figyelendő"), vagyis pontosan az a minta, amit a szint-szóra
+//     váltás elvet (dimension-utils.ts fejkomment). Halott kódként az volt a
+//     kockázata, hogy egy jövőbeli felület a RÉGI keretezéssel köti vissza.
+// A „mi visz előre / mire figyelj" ítélet helye a NARRATÍV slot marad
+// (workstyle-content HowYouWork mintázat-kártyái, a score-valence.ts
+// kapuján át) — az nem pontszám-sávból, hanem mintázatból következik.

@@ -646,7 +646,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // (bottomDim) slotba nem kerülhet — különben egy érzelmileg STABIL csapat
   // legalacsonyabb dimenziója (E) tévesen „kockázatként" jelenne meg.
   // E a semleges profil-mondatban (generateTeamSummary) marad,
-  // pólus-tudatos címkével.
+  // valencia-mentes szint-szóval.
   const strengthEligible = sorted.filter(([dim]) =>
     strengthSlotEligible(dim, "evaluative"),
   );
