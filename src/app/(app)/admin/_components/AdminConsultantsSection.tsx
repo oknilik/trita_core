@@ -189,7 +189,7 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       </section>
 
       {error && (
-        <div className="rounded-xl border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+        <div className="rounded-xl border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
           {error}
         </div>
       )}

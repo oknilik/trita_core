@@ -210,6 +210,16 @@ const serverEvents = {
     question: "P1 / A1",
   }),
 
+  "assessment.guest_claim": spec({
+    schema: z.object({}).strict(),
+    // A claim TÉNYE szerver-oldali igazság (a /api/assessment/claim-guest
+    // friss-claim sikerága írja) — a vendég-tölcsér záró konverziós lépése,
+    // e nélkül a /try → regisztráció út vakon futott.
+    origin: "server",
+    description: "Vendég-eredmény sikeres átemelése regisztrált profilba.",
+    question: "P1 / P3",
+  }),
+
   "inquiry.submit": spec({
     schema: z
       .object({
@@ -264,7 +274,14 @@ const appEvents = {
   }),
 
   "results.export": spec({
-    schema: z.object({ format: z.enum(["pdf", "image", "link"]) }).strict(),
+    schema: z
+      .object({
+        format: z.enum(["pdf", "image", "link"]),
+        // Melyik riport-felület exportál: hiányában az egyéni eredmény-oldal
+        // (történeti default), "team_report" = publikált csapatriport (P1.1).
+        surface: tag(32).optional(),
+      })
+      .strict(),
     origin: "client",
     description: "Riport exportálása vagy megosztása.",
     question: "A6",

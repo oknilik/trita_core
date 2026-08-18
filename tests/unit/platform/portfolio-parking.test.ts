@@ -62,6 +62,10 @@ test("P2.2: a zászlóshajó és a hasonló előtagú útvonalak nyitva maradnak
     "/api/admin/blog",
     "/blogger",
     "/patterns-library",
+    // Meleg-lead / kívánságlista végpont — élő felület hívja (TeamInterestBanner),
+    // nem eshet a fakedoor kapu alá.
+    "/api/features/interest",
+    "/api/feature-interest",
   ]) {
     assert.equal(parkedPortfolioSurfaceForPath(pathname), null, pathname);
   }

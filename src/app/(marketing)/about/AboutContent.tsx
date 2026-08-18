@@ -4,9 +4,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { LayerDiagram, PathDiagram, PurposeDiagram } from "@/components/about/AboutDiagrams";
 import { t } from "@/lib/i18n/public";
 
@@ -32,12 +32,6 @@ export function AboutContent() {
       desc: t("about.layer3Desc", locale),
       tag: t("about.layer3Tag", locale),
     },
-    {
-      number: "04",
-      title: t("about.layer4Title", locale),
-      desc: t("about.layer4Desc", locale),
-      tag: t("about.layer4Tag", locale),
-    },
   ];
 
   const pathSteps = [
@@ -58,7 +52,7 @@ export function AboutContent() {
     <main className="bg-cream text-ink selection:bg-bronze/20">
       {/* ── Hero ───────────────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
+        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
             <div>
               <SectionEyebrow className="mb-6">{t("about.heroEyebrow", locale)}</SectionEyebrow>
@@ -77,24 +71,11 @@ export function AboutContent() {
                 {t("about.heroLead", locale)}
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link
-                  href="/contact"
-                  className={getButtonClassName({ size: "lg", className: "min-h-[54px] px-7 text-base" })}
-                >
-                  {t("about.heroCtaPrimary", locale)}
-                </Link>
-                <Link
-                  href="/try"
-                  className={getButtonClassName({
-                    variant: "secondary",
-                    size: "lg",
-                    className: "min-h-[54px] px-7 text-base",
-                  })}
-                >
-                  {t("about.heroCtaSecondary", locale)}
-                </Link>
-              </div>
+              <MarketingActions
+                className="mt-8"
+                primary={{ href: "/contact", label: t("about.heroCtaPrimary", locale) }}
+                secondary={{ href: "/try", label: t("about.heroCtaSecondary", locale) }}
+              />
 
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <MetaChip>{t("about.heroChip1", locale)}</MetaChip>
@@ -180,7 +161,7 @@ export function AboutContent() {
 
       {/* ── Hogyan épül fel — rétegábra ────────────────────────────── */}
       <section id="felepites">
-        <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
+        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
             <div>
               <SectionEyebrow>{t("about.buildEyebrow", locale)}</SectionEyebrow>
@@ -194,8 +175,8 @@ export function AboutContent() {
               </p>
 
               <div className="mt-9 grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-10">
-                {/* Az ábra asztalon együtt görget a listával — a négy kártya
-                    pont a négy csomópontot mondja el szavakkal. */}
+                {/* Az ábra asztalon együtt görget a listával — a három kártya
+                    pont a három alapréteget mondja el szavakkal. */}
                 <div className="rounded-[24px] border border-sand bg-warm px-6 py-7 lg:sticky lg:top-24">
                   <LayerDiagram
                     label={t("about.buildDiagramAlt", locale)}
@@ -222,6 +203,20 @@ export function AboutContent() {
                       <p className="mt-3 text-base leading-8 text-ink-body">{layer.desc}</p>
                     </article>
                   ))}
+
+                  <div className="flex flex-wrap items-center gap-2.5 rounded-[18px] border border-sand bg-warm px-5 py-4">
+                    <span className="mr-1 font-dm-sans text-label uppercase tracking-widest text-ink-body">
+                      {t("about.optionalLabel", locale)}
+                    </span>
+                    {["about.optionalObserver", "about.optionalPeer", "about.optionalRoles"].map((key) => (
+                      <span
+                        key={key}
+                        className="rounded-full border border-sand bg-surface-card px-3 py-1.5 text-caption text-ink-body"
+                      >
+                        {t(key, locale)}
+                      </span>
+                    ))}
+                  </div>
 
                   <article className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-6">
                     <SectionEyebrow tone="self">{t("about.buildOutcomeLabel", locale)}</SectionEyebrow>
@@ -286,7 +281,7 @@ export function AboutContent() {
 
       {/* ── Mi a célunk ────────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
+        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
             <div>
               <SectionEyebrow>{t("about.goalEyebrow", locale)}</SectionEyebrow>
@@ -327,7 +322,7 @@ export function AboutContent() {
       {/* ── Záró CTA ───────────────────────────────────────────────── */}
       <section>
         <PageWidthDivider />
-        <div className="mx-auto max-w-[1120px] px-7 py-14 md:py-20">
+        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
             <h2 className="mx-auto max-w-[18ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
               {t("about.ctaTitle", locale)}
@@ -335,24 +330,12 @@ export function AboutContent() {
             <p className="mx-auto mt-5 max-w-[52ch] text-base leading-8 text-ink-body">
               {t("about.ctaBody", locale)}
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <Link
-                href="/contact"
-                className={getButtonClassName({ size: "lg", className: "min-h-[54px] px-7 text-base" })}
-              >
-                {t("about.ctaPrimary", locale)}
-              </Link>
-              <Link
-                href="/try"
-                className={getButtonClassName({
-                  variant: "secondary",
-                  size: "lg",
-                  className: "min-h-[54px] px-7 text-base",
-                })}
-              >
-                {t("about.ctaSecondary", locale)}
-              </Link>
-            </div>
+            <MarketingActions
+              className="mt-8"
+              align="center"
+              primary={{ href: "/contact", label: t("about.ctaPrimary", locale) }}
+              secondary={{ href: "/try", label: t("about.ctaSecondary", locale) }}
+            />
           </div>
         </div>
       </section>
@@ -374,7 +357,7 @@ function EditorialSection({
   return (
     <section id={id}>
       <PageWidthDivider />
-      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow>{eyebrow}</SectionEyebrow>
         </div>

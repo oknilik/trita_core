@@ -8,5 +8,7 @@ export const INQUIRY_TOPIC_LABELS: Record<string, string> = {
   support: "Terméktámogatás",
   partnership: "Partnerség",
   question: "Felhasználói kérdés",
+  pilot: "Pilot jelentkezés",
+  advisory: "Tanácsadói konzultáció",
   other: "Egyéb",
 };

@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -6,6 +5,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { EmailPreferencesClient } from "./EmailPreferencesClient";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 // Életciklus-email beállítások — a reflexiós (és jövőbeni hasonló) emailek
 // leiratkozó-linkje ide hoz. Auth-oldal: a címzett a termék belépett usere.
@@ -22,13 +22,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function EmailPreferencesPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in?redirect_url=/email-preferences");
+  if (!userId) return redirectToSignIn();
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { lifecycleEmailsOptOut: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">

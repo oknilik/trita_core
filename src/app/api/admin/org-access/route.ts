@@ -35,7 +35,13 @@ const postSchema = z.object({
     "remove_consultant",
     "update_billing",
     "set_career_module",
+    "set_org_status",
   ]),
+  // Szervezet-státusz (set_org_status) — az org-admin danger zone-ból indított
+  // INACTIVE állapot egyetlen admin-oldali visszakapcsolási útja. INACTIVE org
+  // tagjait az auth-réteg a /org/suspended oldalra tereli, ahonnan a felületen
+  // nincs visszaút — e nélkül az action nélkül csak SQL-lel volt éleszthető.
+  orgStatus: z.enum(["ACTIVE", "INACTIVE"]).optional(),
   // Cégadatok (update_billing) — a mezőket a sanitizeOrgBillingProfile szűri.
   billing: z.record(z.string(), z.string()).optional(),
   // Karrier-modul elrejtése az org tagjainak (set_career_module).
@@ -128,7 +134,7 @@ export async function POST(req: NextRequest) {
   }
   const { orgId, action, planType, months, candidateCredits, consultantEmail, billing } =
     parsed.data;
-  const { hideCareerModule } = parsed.data;
+  const { hideCareerModule, orgStatus } = parsed.data;
 
   const org = await prisma.organization.findUnique({
     where: { id: orgId },
@@ -162,6 +168,23 @@ export async function POST(req: NextRequest) {
       select: { hideCareerModule: true },
     });
     return NextResponse.json({ ok: true, hideCareerModule: updated.hideCareerModule });
+  }
+
+  // Szervezet-státusz átállítása (felfüggesztés / visszakapcsolás).
+  if (action === "set_org_status") {
+    if (!orgStatus) {
+      return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+    }
+    const updated = await prisma.organization.update({
+      where: { id: orgId },
+      data: { status: orgStatus },
+      select: { status: true },
+    });
+    log.info(
+      { event: "org_access.org_status_changed", orgId, status: orgStatus },
+      "Organization status changed by admin",
+    );
+    return NextResponse.json({ ok: true, status: updated.status });
   }
 
   if (action === "activate" || action === "extend") {

@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { FOCUS_RING_CLASS } from '@/lib/ui/focus'
 
 interface ABSelectorProps {
   optionA: string
@@ -15,7 +16,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
       <motion.button
         onClick={() => onChange('A')}
         className={`
-          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
+          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all ${FOCUS_RING_CLASS}
           ${
             value === 'A'
               ? 'border-sage bg-sage-soft text-ink shadow-md'
@@ -51,7 +52,7 @@ export function ABSelector({ optionA, optionB, value, onChange }: ABSelectorProp
       <motion.button
         onClick={() => onChange('B')}
         className={`
-          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all
+          min-h-[44px] rounded-lg border-2 p-5 text-left text-sm font-medium transition-all ${FOCUS_RING_CLASS}
           ${
             value === 'B'
               ? 'border-sage bg-[var(--color-sage-ghost)] text-ink shadow-md'

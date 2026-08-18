@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { TritaWordmark } from "@/components/TritaLogo";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 interface AssessmentFocusHeaderProps {
   children?: ReactNode;
@@ -27,7 +28,7 @@ export function AssessmentFocusHeader({
         <Link
           href={homeHref}
           aria-label="trita"
-          className="col-start-1 row-start-1 shrink-0 text-[var(--color-text-primary)]"
+          className={`col-start-1 row-start-1 shrink-0 rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
         >
           <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
         </Link>

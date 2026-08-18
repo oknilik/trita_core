@@ -1,14 +1,24 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
+import { track } from "@/lib/analytics/client";
 
 export function PilotContent() {
   const { locale } = useLocale();
   const [form, setForm] = useState({ name: "", email: "", company: "", size: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const formStarted = useRef(false);
+
+  // Űrlap első érintése — a pilot-tölcsér eddig mérétlen volt (P1.2).
+  const handleFormStart = () => {
+    if (formStarted.current) return;
+    formStarted.current = true;
+    track("form.start", { form_id: "pilot_apply" });
+  };
 
   const benefitGroups = [
     [
@@ -49,12 +59,14 @@ export function PilotContent() {
       const res = await fetch("/api/pilot-apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, locale }),
       });
 
       if (!res.ok) throw new Error("Failed");
+      track("form.submit", { form_id: "pilot_apply", outcome: "success" });
       setStatus("sent");
     } catch {
+      track("form.submit", { form_id: "pilot_apply", outcome: "error" });
       setStatus("error");
     }
   };
@@ -62,7 +74,7 @@ export function PilotContent() {
   return (
     <main className="bg-cream text-ink selection:bg-bronze/20">
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
+        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
             <div>
               <div className="mb-5 flex items-center gap-3">
@@ -84,20 +96,11 @@ export function PilotContent() {
                 {t("pilot.heroBody", locale)}
               </p>
 
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <a
-                  href="#jelentkezes"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
-                >
-                  {t("pilot.heroCta", locale)}
-                </a>
-                <a
-                  href="#mit-kapsz"
-                  className="inline-flex min-h-[54px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
-                >
-                  {t("pilot.heroCtaSecondary", locale)}
-                </a>
-              </div>
+              <MarketingActions
+                className="mt-8"
+                primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
+                secondary={{ href: "#mit-kapsz", label: t("pilot.heroCtaSecondary", locale) }}
+              />
 
               <div className="mt-6 flex flex-wrap gap-2.5">
                 <MetaChip>{t("pilot.metaChip1", locale)}</MetaChip>
@@ -183,7 +186,7 @@ export function PilotContent() {
 
       <section id="jelentkezes">
         <PageWidthDivider />
-        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[320px_minmax(0,1fr)]">
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
             <div className="mb-4 flex items-center gap-3">
               <div className="h-px w-8 bg-bronze" />
@@ -232,7 +235,7 @@ export function PilotContent() {
                   </span>
                 </div>
 
-                <form onSubmit={handleSubmit} className="grid gap-5">
+                <form onSubmit={handleSubmit} onFocus={handleFormStart} className="grid gap-5">
                   <div className="grid gap-5 md:grid-cols-2">
                     <FormField label={t("pilot.labelName", locale)} required>
                       <input
@@ -338,7 +341,7 @@ function EditorialSection({
   return (
     <section id={id}>
       <PageWidthDivider />
-      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
             {eyebrow}

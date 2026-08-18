@@ -156,6 +156,26 @@ function resolveDeniedCapability(
     };
   }
 
+  // Szerep-ellenőrzés az előfizetés-állapot ELŐTT: egy sima ORG_MEMBER, aki
+  // manager/admin capabilityt kér, ROLE_INSUFFICIENT-et kap akkor is, ha az
+  // org előfizetése éppen restricted/frozen. Fordított sorrendben (2026-08-17
+  // előtt) a tag „Előfizetés kezelése" CTA-t kapott — rossz üzenet annak, aki
+  // nem tehet ellene semmit, és kiszivárogtatta a billing-állapotot nem-admin
+  // szerepnek.
+  if (MANAGER_CAPABILITIES.has(capability) && !canRoleManage(derived.orgRole)) {
+    return {
+      reason: "ROLE_INSUFFICIENT",
+      upgradeHint: { code: "request_manager_access" },
+    };
+  }
+
+  if (ADMIN_ONLY_CAPABILITIES.has(capability) && !isAdmin(derived.orgRole)) {
+    return {
+      reason: "ROLE_INSUFFICIENT",
+      upgradeHint: { code: "request_admin_access" },
+    };
+  }
+
   if (derived.hasOrgMembership) {
     if (derived.policyState === "none") {
       return {
@@ -175,20 +195,6 @@ function resolveDeniedCapability(
         upgradeHint: { code: "reactivate_subscription" },
       };
     }
-  }
-
-  if (MANAGER_CAPABILITIES.has(capability) && !canRoleManage(derived.orgRole)) {
-    return {
-      reason: "ROLE_INSUFFICIENT",
-      upgradeHint: { code: "request_manager_access" },
-    };
-  }
-
-  if (ADMIN_ONLY_CAPABILITIES.has(capability) && !isAdmin(derived.orgRole)) {
-    return {
-      reason: "ROLE_INSUFFICIENT",
-      upgradeHint: { code: "request_admin_access" },
-    };
   }
 
   if (

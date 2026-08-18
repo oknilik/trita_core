@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
+import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
 import { ContactForm } from "./ContactForm";
@@ -13,7 +14,7 @@ export function ContactContent() {
     <main className="min-h-dvh bg-cream text-ink">
       {/* ── Hero ────────────────────────────────────────────────────────── */}
       <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-14 pt-12 md:pb-20 md:pt-20">
+        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <div className="mb-5 flex items-center gap-3">
             <div className="h-px w-8 bg-bronze" />
             <span className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
@@ -29,20 +30,11 @@ export function ContactContent() {
             {t("contact.subtitle", locale)}
           </p>
 
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a
-              href="#contact-form"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-7 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg"
-            >
-              {t("contact.heroCta", locale)}
-            </a>
-            <a
-              href="mailto:hello@trita.io"
-              className="inline-flex min-h-[52px] items-center justify-center rounded-xl border border-sand bg-surface-card px-7 py-3.5 text-base font-semibold text-ink transition-colors hover:border-sage/25 hover:text-sage"
-            >
-              hello@trita.io
-            </a>
-          </div>
+          <MarketingActions
+            className="mt-7"
+            primary={{ href: "#contact-form", label: t("contact.heroCta", locale) }}
+            secondary={{ href: "mailto:hello@trita.io", label: "hello@trita.io" }}
+          />
 
           <div className="mt-5 flex flex-wrap gap-2.5">
             <MetaChip>{t("contact.chipResponseTime", locale)}</MetaChip>
@@ -54,7 +46,7 @@ export function ContactContent() {
       {/* ── Form + info cards ───────────────────────────────────────────── */}
       <section id="contact-form">
         <PageWidthDivider />
-        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-14 md:py-20 lg:grid-cols-[220px_minmax(0,1fr)]">
+        <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
           {/* Left label */}
           <div>
             <p className="font-dm-sans text-[11px] font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">

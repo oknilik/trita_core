@@ -31,7 +31,7 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
     window.history.replaceState({}, "", "/");
   });
 
-  it("egyéni módban a mérésre, csapatmódban a kapcsolatfelvételre visz", () => {
+  it("egyéni módban a mérésre, csapatmódban a pilotprogramra visz", () => {
     render(<NavBar />);
 
     const selfCtas = screen.getAllByRole("link", { name: "Kipróbálom" });
@@ -39,8 +39,8 @@ describe("publikus fejléc — landing kontextusú CTA", () => {
 
     act(() => setSiteMode("team"));
 
-    const teamCtas = screen.getAllByRole("link", { name: "Egyeztetek" });
-    expect(teamCtas.every((link) => link.getAttribute("href") === "/contact")).toBe(true);
+    const teamCtas = screen.getAllByRole("link", { name: "Pilotprogram" });
+    expect(teamCtas.every((link) => link.getAttribute("href") === "/pilot")).toBe(true);
   });
 
   it("a blogot asztali és mobil navigációban is elérhetővé teszi", () => {

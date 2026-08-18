@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { PATTERN_NAMES } from "@/lib/team-pattern";
 import { t, tf, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { Card } from "@/components/ui/primitives/Card";
 
 // Tier mapping from getPlanTier() in src/lib/subscription.ts:
 //   nincs / lejárt → "none" · próbaidő → "trial" · aktív → "advisory"
@@ -219,7 +220,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
       </div>
 
       {/* ── Hogyan működik a negyedéves konzultáció ──────── */}
-      <div className="mb-10 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+      <Card spacing="lg" className="mb-10 md:p-8">
         <h2 className="mb-6 font-fraunces text-xl text-ink">
           {t("advisory.howItWorks", locale)}
         </h2>
@@ -255,7 +256,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
             </span>
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* ── CTA — tanácsadói konzultáció ──────────────────── */}
       {isAdvisory && !requestSent && (

@@ -1,69 +1,80 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
+import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { submitInquiry } from "@/lib/inquiries";
+import { sendPilotApplyConfirmationEmail } from "@/lib/emails";
 import { getRequestLogger } from "@/lib/logger.server";
-import {
-  buildEmailLayout,
-  escapeHtml,
-  renderInfoTable,
-  EMAIL_P,
-  EMAIL_P_MUTED,
-} from "@/lib/email-layout";
+import { trackServerEvent } from "@/lib/analytics/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const ADMIN_EMAIL = process.env.ADMIN_EMAILS?.split(",")[0] || "hello@trita.io";
+export const runtime = "nodejs";
+
+// Pilot-jelentkezés a publikus /pilot oldalról. A siker mércéje a perzisztált
+// inquiry (DB + admin-notif + CRM auto-attach a submitInquiry-n át) — az
+// emailek best effort. (Korábban a route csak két Resend-emailt küldött:
+// Resend-hiba esetén 500 ment vissza, és a pilot-lead nyomtalanul elveszett.)
+
+const pilotApplySchema = z
+  .object({
+    name: z.string().trim().min(2).max(100),
+    email: z.string().trim().email().max(320),
+    company: z.string().trim().min(1).max(120),
+    size: z.string().trim().max(60).optional().or(z.literal("")),
+    message: z.string().trim().max(4000).optional().or(z.literal("")),
+    locale: z.enum(["hu", "en"]).optional(),
+  })
+  .strict();
 
 export async function POST(req: NextRequest) {
   const log = await getRequestLogger("pilot");
   const rateLimitResult = await checkRateLimit("contact");
   if (rateLimitResult) return rateLimitResult;
 
-  try {
-    const body = await req.json();
-    const { name, email, company, size, message } = body as Record<string, string>;
-
-    if (!name?.trim() || !email?.trim() || !company?.trim()) {
-      return NextResponse.json({ error: "Hiányzó kötelező mezők." }, { status: 400 });
-    }
-
-    await resend.emails.send({
-      from: "Trita Pilot <noreply@trita.io>",
-      to: ADMIN_EMAIL,
-      subject: `Pilot jelentkezes: ${company} – ${name}`,
-      html: buildEmailLayout({
-        locale: "hu",
-        heading: "Új pilotprogram jelentkezés",
-        bodyContent: `
-          ${renderInfoTable([
-            ["Név", escapeHtml(name)],
-            ["Email", `<a href="mailto:${escapeHtml(email)}" style="color:#c17f4a">${escapeHtml(email)}</a>`],
-            ["Cég", escapeHtml(company)],
-            ["Csapatméret", size ? escapeHtml(size) : "Nem adta meg"],
-            ...(message ? [["Kérdés", escapeHtml(message)] as [string, string]] : []),
-          ])}
-          <p style="${EMAIL_P_MUTED};margin-bottom:0">Válaszolj 24 órán belül · trita.io/pilot</p>`,
-      }),
-    });
-
-    await resend.emails.send({
-      from: "Trita <hello@trita.io>",
-      to: email,
-      subject: "Megkaptuk a jelentkezésed – Trita Pilotprogram",
-      html: buildEmailLayout({
-        locale: "hu",
-        preheader: "Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!",
-        bodyContent: `
-          <p style="${EMAIL_P}">Kedves ${escapeHtml(name.split(" ")[0] ?? name)},</p>
-          <p style="${EMAIL_P}">Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!</p>
-          <p style="${EMAIL_P};margin-bottom:0">24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.</p>`,
-        thanks: "Üdvözlettel,",
-        team: "Leinad · Trita",
-      }),
-    });
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    log.error({ event: "pilot.pilot_application_error", err: error }, "Pilot application error");
-    return NextResponse.json({ error: "Szerverhiba. Próbáld újra." }, { status: 500 });
+  const body = await req.json().catch(() => ({}));
+  const parsed = pilotApplySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
   }
+
+  const { name, email, company, size, message, locale } = parsed.data;
+
+  const inquiryMessage = [
+    `Pilot-jelentkezés a /pilot oldalról.`,
+    `Csapatméret: ${size?.trim() || "nem adta meg"}`,
+    ...(message?.trim() ? ["", "Kérdés / üzenet:", message.trim()] : []),
+  ].join("\n");
+
+  try {
+    await submitInquiry({
+      name,
+      email,
+      company,
+      topic: "pilot",
+      message: inquiryMessage,
+      source: "pilot_form",
+    });
+  } catch (error) {
+    log.error(
+      { event: "pilot.pilot_application_error", err: error },
+      "Pilot application error",
+    );
+    return NextResponse.json({ error: "SUBMIT_FAILED" }, { status: 502 });
+  }
+
+  // Visszaigazoló email a jelentkezőnek — best effort, a lead már perzisztált.
+  try {
+    await sendPilotApplyConfirmationEmail({
+      to: email,
+      name,
+      locale: locale ?? "hu",
+    });
+  } catch (error) {
+    log.error(
+      { event: "pilot.confirmation_email_error", err: error },
+      "Pilot confirmation email error",
+    );
+  }
+
+  trackServerEvent("inquiry.submit", { topic: "pilot", source: "pilot_form" });
+
+  return NextResponse.json({ ok: true });
 }

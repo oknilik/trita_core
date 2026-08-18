@@ -24,7 +24,7 @@ export interface SubmitInquiryParams {
   company?: string | null;
   topic: string;
   message: string;
-  source: "contact_form" | "in_app";
+  source: "contact_form" | "in_app" | "pilot_form" | "advisory_request";
   /** Ha ismert (in-app), a session-ből — különben email-alapú auto-link. */
   userProfileId?: string | null;
   organizationId?: string | null;
@@ -108,7 +108,14 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
   try {
     const to = process.env.CONTACT_FORM_TO ?? "info@trita.io";
     const topicLabel = INQUIRY_TOPIC_LABELS[params.topic] ?? params.topic;
-    const sourceLabel = params.source === "in_app" ? "in-app kérdés" : "kapcsolat űrlap";
+    const sourceLabel =
+      params.source === "in_app"
+        ? "in-app kérdés"
+        : params.source === "pilot_form"
+          ? "pilot jelentkezés"
+          : params.source === "advisory_request"
+            ? "konzultáció-kérés"
+            : "kapcsolat űrlap";
     const text = [
       `Új megkeresés érkezett (${sourceLabel}).`,
       "",

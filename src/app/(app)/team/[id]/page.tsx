@@ -12,6 +12,7 @@ import {
   canViewRawTeamResults,
   getTeamMembershipRole,
 } from "@/lib/team-auth";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { hasOrgRole } from "@/lib/org-roles";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
 import {
@@ -101,7 +102,7 @@ export default async function TeamDetailPage({
   const activeTab: TeamTabKey = isTeamTab(requestedTab)
     ? requestedTab
     : "overview";
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 

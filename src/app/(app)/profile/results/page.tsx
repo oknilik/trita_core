@@ -19,6 +19,7 @@ import {
   extractFacetScores,
   type ScoreResult,
 } from "@/lib/scoring";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { InvitationStatus, type TestType } from "@prisma/client";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveObserverFlowStatus, OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
@@ -83,7 +84,7 @@ export default async function ProfileResultsPage({
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -91,7 +92,7 @@ export default async function ProfileResultsPage({
     where: { clerkId: userId },
     select: { id: true, username: true, email: true, careerBackground: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   const careerActive = isPortfolioSurfaceActive("career");
   const publicSharingActive = isPortfolioSurfaceActive("publicSharing");

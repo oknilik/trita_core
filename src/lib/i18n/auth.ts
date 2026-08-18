@@ -1,7 +1,9 @@
 export const authTranslations = {
   auth: {
-    signInTitle: { hu: "Bejelentkezés", en: "Sign in" },
-    signInSubtitle: { hu: "Küldünk egy egyszeri kódot az emailedre", en: "We'll send a one-time code to your email" },
+    accountEyebrow: { hu: "Fiók", en: "Account" },
+    backHome: { hu: "Főoldal", en: "Home" },
+    signInTitle: { hu: "Folytasd ott, ahol abbahagytad.", en: "Continue where you left off." },
+    signInSubtitle: { hu: "E-mailben küldünk egy egyszer használható, biztonságos belépési kódot.", en: "We'll email you a secure, one-time sign-in code." },
     signUpTitle: { hu: "Hozd létre a fiókodat", en: "Create your account" },
     signUpSubtitle: { hu: "Add meg az email címed, és küldünk egy kódot a folytatáshoz.", en: "Enter your email and we'll send you a code to continue." },
     observeTokenHint: {
@@ -12,7 +14,13 @@ export const authTranslations = {
     resendCodeLoading: { hu: "Küldés...", en: "Sending..." },
     resendCodeSent: { hu: "Kód elküldve.", en: "Code sent." },
     resendCodeWait: { hu: "Próbáld újra {seconds} mp múlva.", en: "Try again in {seconds}s." },
-    emailLabel: { hu: "Email cím", en: "Email" },
+    emailLabel: { hu: "E-mail-cím", en: "Email address" },
+    emailPlaceholder: { hu: "nev@pelda.hu", en: "name@example.com" },
+    codeNote: { hu: "Nincs jelszó. A kód rövid ideig érvényes, és csak egyszer használható.", en: "No password. The code expires shortly and can only be used once." },
+    requestSignInCode: { hu: "Belépési kód kérése", en: "Request sign-in code" },
+    requestSignUpCode: { hu: "Regisztrációs kód kérése", en: "Request sign-up code" },
+    helpPrompt: { hu: "Elakadtál?", en: "Need help?" },
+    helpLink: { hu: "Segítünk a belépésben", en: "Get sign-in help" },
     passwordLabel: { hu: "Jelszó", en: "Password" },
     passwordPlaceholder: { hu: "Jelszó", en: "Password" },
     passwordMinPlaceholder: { hu: "Legalább 8 karakter", en: "At least 8 characters" },

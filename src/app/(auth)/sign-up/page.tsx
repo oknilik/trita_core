@@ -9,8 +9,11 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import Link from "next/link";
 import IntentSelector, { type AuthIntent } from "@/components/auth/IntentSelector";
-import AuthLeftPanel from "@/components/auth/AuthLeftPanel";
+import AuthPageShell from "@/components/auth/AuthPageShell";
+import { Button } from "@/components/ui/primitives/Button";
+import { TextField } from "@/components/ui/primitives/TextField";
 import { createClientLogger } from "@/lib/client-logger";
+import { buildSignInPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
 
 const log = createClientLogger("auth");
 
@@ -60,7 +63,7 @@ function SignUpContent() {
   const searchParams = useSearchParams();
   const observeToken = searchParams.get("observeToken");
   const redirectUrl = searchParams.get("redirect_url");
-  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") ? redirectUrl : null;
+  const safeRedirectUrl = sanitizeInternalRedirect(redirectUrl);
   const { locale } = useLocale();
   // Consulting-led módban nincs intent-választó: minden regisztráció a
   // személyes (explore) úton indul, csapat/org kizárólag meghívóval vagy
@@ -85,7 +88,12 @@ function SignUpContent() {
     return () => window.clearInterval(timer);
   }, [resendCooldown]);
 
-  if (!isLoaded) return null;
+  // A clerk-js betöltésére NEM némítjuk el az egész oldalt (korábban
+  // `if (!isLoaded) return null` — fehér képernyő, h1 nélkül, amíg a
+  // Clerk meg nem érkezik). A statikus váz, a fejléc és az űrlap azonnal
+  // renderel; csak a Clerk-et ténylegesen hívó műveletek várnak. Így a
+  // lassú hálózaton is van mit olvasni, a heading-sorrend a11y-szerződése
+  // pedig az első festéstől teljesül.
 
   const canResend = resendCooldown <= 0 && !isSubmitting;
 
@@ -189,25 +197,27 @@ function SignUpContent() {
 
   if (isVerifying) {
     return (
-      <div className="flex min-h-[80dvh] items-center justify-center bg-[var(--color-surface-canvas)] px-4 py-10">
-        <div className="flex w-full max-w-[440px] lg:max-w-[800px] lg:overflow-hidden lg:rounded-xl lg:border lg:border-[var(--color-border-soft)] lg:bg-[var(--color-surface-canvas)] lg:shadow-sm">
-          <AuthLeftPanel context="verify" />
-          <div className="flex flex-1 flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
-            <h1 className="mb-1 font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)]">
+      <AuthPageShell panelContext="verify">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
+              {t("auth.accountEyebrow", locale)}
+            </p>
+            <h1 className="mb-2 font-fraunces text-4xl leading-[1.05] tracking-tight text-[var(--color-text-primary)] sm:text-[42px]">
               {t("auth.verifyTitle", locale)}
             </h1>
-            <p className="mb-5 text-sm leading-relaxed text-[var(--color-text-muted)]">
+            <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
               {tf("auth.verifySent", locale, { email })}
             </p>
 
             {error && (
-              <div className="mb-4 rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+              <div role="alert" className="mb-4 rounded-xl border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
                 {error}
               </div>
             )}
 
-            <form onSubmit={handleVerify} className="flex flex-col gap-3">
-              <input
+            <form onSubmit={handleVerify} className="flex flex-col gap-4">
+              <TextField
+                id="sign-up-code"
+                label={t("auth.verifyCodeLabel", locale)}
                 type="text"
                 inputMode="numeric"
                 value={code}
@@ -215,37 +225,42 @@ function SignUpContent() {
                 required
                 maxLength={6}
                 placeholder="000000"
+                autoComplete="one-time-code"
                 autoFocus
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3 text-center text-lg font-semibold tracking-widest text-[var(--color-text-primary)] outline-none transition-all focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                inputClassName="min-h-[56px] text-center text-lg font-semibold tracking-[0.28em]"
               />
 
-              <button
+              <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                size="lg"
+                fullWidth
+                disabled={!isLoaded}
+                loading={isSubmitting}
               >
-                {isSubmitting ? t("actions.verifying", locale) : t("actions.verify", locale)}
-              </button>
+                {t("actions.verify", locale)}
+              </Button>
             </form>
 
             <div className="mt-4 text-center">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 onClick={handleResendCode}
                 disabled={!canResend}
-                className="inline-flex min-h-[44px] items-center justify-center px-2 text-sm font-medium text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)] disabled:cursor-not-allowed disabled:text-[var(--color-text-muted)]"
               >
                 {resendCooldown > 0
                   ? tf("auth.resendCodeWait", locale, { seconds: resendCooldown })
                   : t("auth.resendCode", locale)}
-              </button>
+              </Button>
               {resendNote ? (
-                <p className="mt-2 text-xs text-[var(--color-text-muted)]">{resendNote}</p>
+                <p aria-live="polite" className="mt-2 text-xs text-[var(--color-text-muted)]">{resendNote}</p>
               ) : null}
             </div>
 
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              fullWidth
               onClick={() => {
                 setIsVerifying(false);
                 setCode("");
@@ -253,31 +268,28 @@ function SignUpContent() {
                 setResendCooldown(0);
                 setResendNote(null);
               }}
-              className="mt-4 inline-flex min-h-[44px] w-full items-center justify-center text-center text-sm text-[var(--color-text-muted)] hover:text-[var(--color-text-secondary)]"
+              className="mt-2 text-[var(--color-text-muted)]"
             >
               {t("actions.backToSignUp", locale)}
-            </button>
+            </Button>
 
             {/* A Clerk ide mountolja a Turnstile-t, ha újra kell a bot-check
                 (pl. kód-újraküldés). Az oszlopON BELÜL kell lennie — flex-sor
                 gyerekeként beékelődne a panel és az űrlap közé. */}
             <div id="clerk-captcha" className="mt-4" />
-          </div>
-        </div>
-      </div>
+      </AuthPageShell>
     );
   }
 
   return (
-    <div className="flex min-h-[80dvh] items-center justify-center bg-[var(--color-surface-canvas)] px-4 py-10">
-      <div className="flex w-full max-w-[440px] lg:max-w-[800px] lg:overflow-hidden lg:rounded-xl lg:border lg:border-[var(--color-border-soft)] lg:bg-[var(--color-surface-canvas)] lg:shadow-sm">
-        <AuthLeftPanel context={intent} />
-        <div className="flex flex-1 flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
-
-          <h1 className="mb-1 font-fraunces text-2xl tracking-tight text-[var(--color-text-primary)]">
+    <AuthPageShell panelContext={intent}>
+          <p className="mb-3 text-xs font-bold uppercase tracking-[0.17em] text-[var(--color-accent-self-deep)]">
+            {t("auth.accountEyebrow", locale)}
+          </p>
+          <h1 className="mb-3 font-fraunces text-4xl leading-[1.05] tracking-[-0.03em] text-[var(--color-text-primary)] sm:text-[42px]">
             {t("auth.signUpTitle", locale)}
           </h1>
-          <p className="mb-5 text-sm leading-relaxed text-[var(--color-text-muted)]">
+          <p className="mb-7 text-base leading-relaxed text-[var(--color-text-muted)]">
             {t("auth.signUpSubtitle", locale)}
           </p>
 
@@ -298,7 +310,7 @@ function SignUpContent() {
           )}
 
           {error && (
-            <div className="mb-4 rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+            <div role="alert" className="mb-4 rounded-xl border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
               {error}
             </div>
           )}
@@ -306,22 +318,19 @@ function SignUpContent() {
           {/* Form section — blurred until intent is chosen */}
           <div className={`transition-all duration-300 ${!intent ? "pointer-events-none select-none opacity-40 blur-[2px]" : ""}`}>
             {/* Google — primary action */}
-            <button
+            <Button
               type="button"
+              variant="secondary"
+              size="lg"
+              fullWidth
               onClick={handleGoogleSignUp}
-              disabled={isGoogleLoading || !intent}
-              className="mb-3 flex min-h-[48px] w-full items-center justify-center gap-3 rounded-lg border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 text-sm font-semibold text-[var(--color-text-primary)] shadow-sm transition-all hover:border-[var(--color-text-muted)] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!intent || !isLoaded}
+              loading={isGoogleLoading}
+              className="mb-3"
+              iconLeft={<GoogleIcon />}
             >
-              {isGoogleLoading ? (
-                <svg className="h-4 w-4 animate-spin text-[var(--color-text-muted)]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                </svg>
-              ) : (
-                <GoogleIcon />
-              )}
               {t("auth.googleContinue", locale)}
-            </button>
+            </Button>
 
             {/* Divider — compact */}
             <div className="mb-3 flex items-center gap-3">
@@ -332,25 +341,35 @@ function SignUpContent() {
 
             {/* Email form */}
             <form onSubmit={handleSubmit} className="mb-4 flex flex-col gap-3">
-              <input
+              <TextField
+                id="sign-up-email"
                 type="email"
+                label={t("auth.emailLabel", locale)}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={!intent}
                 autoComplete="email"
-                placeholder={t("auth.emailLabel", locale)}
-                className="min-h-[48px] rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-surface-card px-3.5 text-sm text-[var(--color-text-primary)] outline-none transition-all placeholder:text-[var(--color-text-muted)] focus:border-[var(--color-action-primary-bg)] focus:shadow-[0_0_0_3px_rgba(61,107,94,0.08)]"
+                placeholder={t("auth.emailPlaceholder", locale)}
+                inputClassName="min-h-[56px] px-4 text-base"
               />
 
-              <button
+              <Button
                 type="submit"
-                disabled={isSubmitting || !intent}
-                className="min-h-[48px] rounded-lg bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-px hover:brightness-[1.06] disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
+                size="lg"
+                fullWidth
+                disabled={!intent || !isLoaded}
+                loading={isSubmitting}
+                style={{ backgroundColor: "var(--color-bronze-dark)", color: "var(--color-text-on-accent-deep)" }}
+                className="min-h-[56px] justify-between rounded-[16px] pl-5 pr-2 shadow-[0_10px_24px_rgba(139,82,48,0.18)] hover:brightness-[1.06]"
+                iconRight={<span aria-hidden="true" className="grid size-10 place-items-center rounded-xl bg-white/15 text-xl">→</span>}
               >
-                {isSubmitting ? t("auth.submitSendCodeLoading", locale) : t("auth.submitSendCode", locale)}
-              </button>
+                {t("auth.requestSignUpCode", locale)}
+              </Button>
             </form>
+            <p className="mb-5 text-xs leading-relaxed text-[var(--color-text-muted)]">
+              {t("auth.codeNote", locale)}
+            </p>
 
             {/* Sign in link — close to CTA */}
             <p className="text-center text-sm text-[var(--color-text-muted)]">
@@ -360,10 +379,10 @@ function SignUpContent() {
                   observeToken
                     ? `/sign-in?observeToken=${observeToken}`
                     : safeRedirectUrl
-                    ? `/sign-in?redirect_url=${encodeURIComponent(safeRedirectUrl)}`
+                    ? buildSignInPath(safeRedirectUrl)
                     : "/sign-in"
                 }
-                className="font-medium text-[var(--color-action-primary-bg)] hover:text-[var(--color-accent-self-deep)]"
+                className="rounded-sm font-semibold text-[var(--color-action-primary-bg)] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)]"
               >
                 {t("actions.signInCta", locale)}
               </Link>
@@ -371,9 +390,7 @@ function SignUpContent() {
           </div>
 
           <div id="clerk-captcha" />
-        </div>
-      </div>
-    </div>
+    </AuthPageShell>
   );
 }
 

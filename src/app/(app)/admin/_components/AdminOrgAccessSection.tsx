@@ -121,8 +121,13 @@ export function AdminOrgAccessSection({ orgs }: Props) {
       | "deactivate"
       | "assign_consultant"
       | "remove_consultant"
-      | "set_career_module",
-    extra?: { consultantEmail?: string; hideCareerModule?: boolean },
+      | "set_career_module"
+      | "set_org_status",
+    extra?: {
+      consultantEmail?: string;
+      hideCareerModule?: boolean;
+      orgStatus?: "ACTIVE" | "INACTIVE";
+    },
   ) {
     setRowState((s) => ({ ...s, [orgId]: { loading: true, error: null } }));
     try {
@@ -221,6 +226,11 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold text-ink">
                         {org.name}
+                        {org.status === "INACTIVE" && (
+                          <span className="ml-2 rounded-full bg-state-error-bg px-2 py-0.5 font-mono text-micro uppercase tracking-widest text-state-error-fg">
+                            felfüggesztve
+                          </span>
+                        )}
                       </span>
                       <span className="block truncate text-xs text-muted">
                         {org.memberCount} tag ·{" "}
@@ -307,6 +317,35 @@ export function AdminOrgAccessSection({ orgs }: Props) {
                               className="min-h-[40px] rounded-lg border border-state-error-border bg-surface-card px-3 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
                             >
                               Lezárás
+                            </button>
+                          )}
+                          {org.status === "INACTIVE" ? (
+                            <button
+                              type="button"
+                              disabled={state.loading}
+                              onClick={() =>
+                                callAction(org.id, "set_org_status", { orgStatus: "ACTIVE" })
+                              }
+                              className="min-h-[40px] rounded-lg bg-sage px-3 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
+                            >
+                              Szervezet visszakapcsolása
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled={state.loading}
+                              onClick={() => {
+                                if (
+                                  window.confirm(
+                                    "Biztosan felfüggeszted a szervezetet? Minden tagja (a tanácsadót is beleértve) elveszti a hozzáférést, amíg vissza nem kapcsolod.",
+                                  )
+                                ) {
+                                  callAction(org.id, "set_org_status", { orgStatus: "INACTIVE" });
+                                }
+                              }}
+                              className="min-h-[40px] rounded-lg border border-state-error-border bg-surface-card px-3 text-xs font-semibold text-state-error-fg transition hover:bg-state-error-bg disabled:opacity-50"
+                            >
+                              Felfüggesztés
                             </button>
                           )}
                         </div>

@@ -4,10 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageMeasurements } from "@/lib/measurement-auth";
 import { countCampaignStepsDone, getCampaignSteps } from "@/lib/campaign-steps-core";
+import { sendMeasurementStepEmail } from "@/lib/emails";
+import { checkRateLimit } from "@/lib/rate-limit";
+import { getRequestLogger } from "@/lib/logger.server";
 
 // POST /api/org/[id]/campaigns/[campaignId]/remind
-// Counts participants who have not completed a self-assessment.
-// Returns { ok: true, remindedCount: number }.
+// Emlékeztető email a kampány saját lépéseiből semmit sem teljesítő
+// résztvevőknek (lépés-tudatos „nem kezdte" számítás). A CTA a /tasks
+// feladatlistára visz — az mutatja a user épp nyitott lépését.
+// Returns { ok: true, remindedCount: number } — a ténylegesen elküldött
+// emailek száma (a UI „{count} személynek küldtünk emlékeztetőt" szövege
+// ettől igaz).
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
@@ -40,11 +47,16 @@ export async function POST(
     return NextResponse.json({ error: "CONSULTANT_ONLY" }, { status: 403 });
   }
 
+  // Email-küldő végpont — rate limit a spam-kattintás ellen.
+  const rateLimited = await checkRateLimit("contact", `remind:${campaignId}`);
+  if (rateLimited) return rateLimited;
+
   // Check campaign exists and is ACTIVE
   const campaign = await prisma.campaign.findUnique({
     where: { id: campaignId, orgId },
     select: {
       id: true,
+      name: true,
       status: true,
       type: true,
       steps: true,
@@ -93,12 +105,49 @@ export async function POST(
   );
 
   const steps = getCampaignSteps(campaign);
-  const notStartedCount = campaign.participants.filter(
+  const notStarted = campaign.participants.filter(
     (p) => countCampaignStepsDone(steps, p, selfDoneSet.has(p.userId)) === 0,
+  );
+
+  if (notStarted.length === 0) {
+    return NextResponse.json({ ok: true, remindedCount: 0 });
+  }
+
+  const recipients = await prisma.userProfile.findMany({
+    where: {
+      id: { in: notStarted.map((p) => p.userId) },
+      deleted: false,
+      email: { not: null },
+    },
+    select: { id: true, email: true, locale: true },
+  });
+
+  const log = await getRequestLogger("campaign-remind");
+  const results = await Promise.allSettled(
+    recipients.map((r) =>
+      sendMeasurementStepEmail({
+        to: r.email as string,
+        campaignName: campaign.name,
+        link: "/tasks",
+        variant: "reminder",
+        locale: r.locale === "en" ? "en" : "hu",
+      }),
+    ),
+  );
+  const remindedCount = results.filter(
+    (r) => r.status === "fulfilled" && r.value === true,
   ).length;
 
-  // In a real implementation, you would send reminder emails here.
-  // For now we just count and return.
+  log.info(
+    {
+      event: "campaign.reminders_sent",
+      campaignId,
+      notStarted: notStarted.length,
+      attempted: recipients.length,
+      sent: remindedCount,
+    },
+    "Campaign reminder emails sent",
+  );
 
-  return NextResponse.json({ ok: true, remindedCount: notStartedCount });
+  return NextResponse.json({ ok: true, remindedCount });
 }

@@ -19,6 +19,7 @@
     "test:integration:seed": "npx tsx scripts/seed-test-db.ts",
     "test:client": "node scripts/run-tests.mjs client",
     "test:e2e": "node scripts/run-tests.mjs e2e",
+    "test:pilot": "node scripts/run-pilot-gate.mjs",
     "test:ci": "pnpm test:unit && pnpm test:integration && pnpm test:client && pnpm test:e2e",
     "test:watch": "node scripts/run-tests.mjs unit --watch",
     "test:e2e:ui": "node scripts/run-tests.mjs e2e --ui",

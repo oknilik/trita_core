@@ -14,6 +14,7 @@ import {
   localizeTeamReport,
 } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
+import { TeamReportPdfButton } from "@/components/team/TeamReportPdfButton";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { AXIS_LABELS } from "@/lib/team-pattern";
 import { TEAM_PRESSURE_CONTENT, TEAM_PRESSURE_POLARIZED_TEXT } from "@/lib/team-pressure";
@@ -411,8 +412,13 @@ export function TeamReportView({
                 {isHu ? "Vázlat-előnézet" : "Draft preview"}
               </span>
             ) : (
-              <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
-                {isHu ? "Publikált" : "Published"}
+              <span className="flex flex-wrap items-center gap-2">
+                {/* P1.1: nyomtatható riport a vezetői debriefhez — csak
+                    publikált állapotban, a lokalizált riport-objektumból. */}
+                <TeamReportPdfButton report={report} isHu={isHu} />
+                <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
+                  {isHu ? "Publikált" : "Published"}
+                </span>
               </span>
             )}
           </div>
@@ -1384,7 +1390,7 @@ export function TeamReportView({
           {(report.strengths || report.risks) && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {report.strengths && (
-                <DashboardPanel className="border-l-4 border-l-emerald-500/60 p-5">
+                <DashboardPanel className="border-l-4 border-l-state-success-solid p-5">
                   <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 8.5l3 3 7-7" />

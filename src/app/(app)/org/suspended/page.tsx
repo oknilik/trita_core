@@ -1,13 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { getServerLocale } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
-export const metadata: Metadata = {
-  title: "Szervezet inaktív | trita",
-  robots: { index: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getServerLocale();
+  return {
+    title: `${t("org.suspended.title", locale)} | trita`,
+    robots: { index: false },
+  };
+}
 
-export default function OrgSuspendedPage() {
+// Az INACTIVE org tagjait az auth-réteg ide tereli (auth.ts). A linkek
+// szándékosan NEM org-kontextusú oldalra mutatnak: a korábbi „Szervezetek"
+// gomb a /org-ra vitt, ami az aktív (inaktív) org miatt visszairányított ide —
+// hurok volt. A /profile/results és a /contact org-kontextus nélkül is él.
+export default async function OrgSuspendedPage() {
+  const locale = await getServerLocale();
+
   return (
     <div className="min-h-dvh bg-cream flex items-center justify-center px-4">
       <div className="mx-auto w-full max-w-md text-center">
@@ -29,15 +40,17 @@ export default function OrgSuspendedPage() {
           </span>
         </div>
 
-        <SectionEyebrow className="mb-3">inaktív</SectionEyebrow>
+        <SectionEyebrow className="mb-3">
+          {t("org.suspended.eyebrow", locale)}
+        </SectionEyebrow>
         <h1 className="font-fraunces text-2xl text-ink mb-3">
-          Szervezet inaktív
+          {t("org.suspended.title", locale)}
         </h1>
         <p className="text-sm text-ink-body/70 mb-2">
-          A szervezet, amelyhez tartozol, jelenleg inaktív.
+          {t("org.suspended.body1", locale)}
         </p>
         <p className="text-sm text-ink-body/70 mb-8">
-          Ha úgy gondolod, ez hiba, keresd a szervezet adminisztrátorát.
+          {t("org.suspended.body2", locale)}
         </p>
 
         <div className="flex flex-col gap-3 items-center">
@@ -45,13 +58,13 @@ export default function OrgSuspendedPage() {
             href="/profile/results"
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
           >
-            Vissza az irányítópulthoz
+            {t("org.suspended.ctaResults", locale)}
           </Link>
           <Link
-            href="/org"
+            href="/contact"
             className="inline-flex min-h-[44px] items-center rounded-lg border border-sand px-6 text-sm font-semibold text-ink-body transition hover:bg-surface-card"
           >
-            Szervezetek
+            {t("org.suspended.ctaContact", locale)}
           </Link>
         </div>
       </div>

@@ -8,6 +8,8 @@ import { t } from "@/lib/i18n";
 import type { ScoreResult } from "@/lib/scoring";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { CompareConsentClient } from "./CompareConsentClient";
+import { buildSignInPath } from "@/lib/navigation/auth-redirects";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 // A páros-összehasonlító meghívó fogadó oldala (B1).
 // Állapot-gépe: érvénytelen → barátságos hibalap · kijelentkezett →
@@ -67,7 +69,7 @@ export default async function CompareInvitePage({
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
 
   if (!userId) {
-    redirect(`/sign-in?redirect_url=/interaction/compare/${token}`);
+    redirect(buildSignInPath(`/interaction/compare/${token}`));
   }
 
   const invite = await prisma.compareInvite.findUnique({
@@ -97,7 +99,7 @@ export default async function CompareInvitePage({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Saját link megnyitása: nincs mit elfogadni — vissza a kezelő-kártyához.
   if (invite.inviterId === profile.id) {

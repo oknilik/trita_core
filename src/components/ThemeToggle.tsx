@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { useTheme } from "@/components/ThemeProvider";
 import { t } from "@/lib/i18n/public";
 import { THEME_PREFERENCES, type ThemePreference } from "@/lib/theme";
+import { FOCUS_RING_CLASS, FOCUS_RING_ON_INVERSE_CLASS } from "@/lib/ui/focus";
 
 type ThemeToggleVariant = "menu" | "compact" | "footer";
 
@@ -85,7 +86,7 @@ function ThemeOptions({
             role="radio"
             aria-checked={active}
             onClick={() => onSelect(option)}
-            className={`group flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 text-left text-caption transition-colors ${active
+            className={`group flex min-h-[44px] w-full items-center gap-3 rounded-lg px-3 text-left text-caption transition-colors ${FOCUS_RING_CLASS} ${active
               ? "bg-[var(--color-surface-self-accent-soft)] font-semibold text-[var(--color-text-primary)]"
               : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
             }`}
@@ -183,7 +184,7 @@ export function ThemeToggle({
               aria-checked={active}
               title={optionLabel}
               onClick={() => setPreference(option)}
-              className={`flex h-10 w-10 items-center justify-center rounded-lg border transition-[color,background-color,border-color] ${active
+              className={`flex h-10 w-10 items-center justify-center rounded-lg border transition-[color,background-color,border-color] ${FOCUS_RING_ON_INVERSE_CLASS} ${active
                 ? "border-[var(--color-text-on-inverse)]/20 bg-[var(--color-text-on-inverse)]/10 text-[var(--color-text-on-inverse)]"
                 : "border-transparent text-[var(--color-text-on-inverse-muted)] hover:border-[var(--color-text-on-inverse)]/10 hover:bg-[var(--color-text-on-inverse)]/5 hover:text-[var(--color-text-on-inverse)]"
               }`}
@@ -207,7 +208,7 @@ export function ThemeToggle({
         aria-expanded={open}
         aria-controls={open ? popoverId : undefined}
         onClick={() => setOpen((current) => !current)}
-        className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border transition-all ${open
+        className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg border transition-all ${FOCUS_RING_CLASS} ${open
           ? "border-[var(--color-border-default)] bg-[var(--color-surface-card)] text-[var(--color-accent-self-deep)] shadow-sm"
           : "border-transparent text-[var(--color-text-muted)] hover:border-[var(--color-border-soft)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
         }`}

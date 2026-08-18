@@ -3,6 +3,7 @@
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import Link from "next/link";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
 
 // Org cockpit „Jelöltek" fül (2026-07-23, jelölt-flow újraélesztés) —
 // kompakt áttekintés a tanácsadónak: állapot-számok + friss jelöltek,
@@ -44,7 +45,7 @@ export function OrgCandidatesTab({
   };
 
   return (
-    <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+    <Card spacing="lg">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <SectionEyebrow tone="bronze">
@@ -131,6 +132,6 @@ export function OrgCandidatesTab({
           ? `Jelölt-felület megnyitása (${candidates.length}) →`
           : `Open candidate workspace (${candidates.length}) →`}
       </Link>
-    </div>
+    </Card>
   );
 }

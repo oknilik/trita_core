@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
 export default async function OrgRedirectPage() {
   const { userId } = await getServerAuth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -17,7 +18,7 @@ export default async function OrgRedirectPage() {
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   const membership = await getActiveOrgMembership(profile.id);
 

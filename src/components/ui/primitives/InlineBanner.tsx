@@ -28,9 +28,9 @@ export function InlineBanner({
 }: InlineBannerProps) {
   return (
     <div
-      role="status"
+      role={variant === "error" ? "alert" : "status"}
       className={cn(
-        "rounded-[var(--ui-radius-lg)] border px-[var(--ui-space-4)] py-[var(--ui-space-3)] text-sm",
+        "rounded-r-[var(--ui-radius-xl)] border-l-[3px] px-[var(--ui-space-4)] py-[var(--ui-space-3)] text-sm",
         "transition duration-[var(--motion-duration-base)] ease-[var(--motion-ease-standard)]",
         VARIANT_STYLES[variant],
         className,

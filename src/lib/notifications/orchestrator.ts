@@ -18,6 +18,10 @@ import {
 import { NOTIFICATION_TYPE_META } from "./types";
 import { persistNotification, persistNotificationBatch } from "./repository";
 import { resolveOrgRecipients } from "./policy";
+import { sendMeasurementStepEmail, sendTeamReportPublishedEmail } from "@/lib/emails";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("notifications-orchestrator");
 
 // ── Observer events ─────────────────────────────────────────────────────────
 
@@ -235,6 +239,13 @@ export async function handleMeasurementStepOpened(params: {
   campaignId: string;
   campaignName: string;
   stepType: string;
+  /**
+   * Email-pár küldése az in-app értesítés mellé. Csak akkor true, ha a lépés
+   * a user JELENLÉTE NÉLKÜL nyílt ki (cron-release, „Küldés most" force) —
+   * a user-jelenlétű utak (oldalbetöltéses release, azonnali advance) nem
+   * emaileznek, mert a user épp a felületen van.
+   */
+  sendEmail?: boolean;
 }) {
   const meta = NOTIFICATION_TYPE_META.MEASUREMENT_STEP_OPENED;
   // OBSERVER_360: ha a self már kész, a teendő a MEGHÍVÓK küldése — a
@@ -273,6 +284,37 @@ export async function handleMeasurementStepOpened(params: {
       dedupeKey: `MEASUREMENT_STEP_OPENED:${params.campaignId}:${params.stepType}:${params.userId}`,
     },
   ]);
+
+  // Email-pár — best effort, MŰKÖDÉSI email (a lifecycle-kapcsoló nem érinti).
+  // Aki nem lép be magától, e nélkül soha nem tudja meg, hogy nyitott lépése
+  // van (playbook S1–S3 részvételi célok).
+  if (params.sendEmail) {
+    try {
+      const profile = await prisma.userProfile.findUnique({
+        where: { id: params.userId },
+        select: { email: true, locale: true, deleted: true },
+      });
+      if (profile?.email && !profile.deleted) {
+        await sendMeasurementStepEmail({
+          to: profile.email,
+          campaignName: params.campaignName,
+          link,
+          variant: "opened",
+          locale: profile.locale === "en" ? "en" : "hu",
+        });
+      }
+    } catch (error) {
+      log.error(
+        {
+          event: "notifications.measurement_step_email_failed",
+          campaignId: params.campaignId,
+          stepType: params.stepType,
+          err: error,
+        },
+        "Measurement step email failed",
+      );
+    }
+  }
 }
 
 export async function handleCampaignClosed(params: {
@@ -361,6 +403,36 @@ export async function handleTeamReportPublished(params: {
       dedupeKey: `TEAM_REPORT_PUBLISHED:${params.reportId}:${userId}`,
     })),
   );
+
+  // Email-pár az in-app értesítéshez: aki nem lép be, e nélkül nem tudja meg,
+  // hogy elkészült a riport. Best effort — az email-hiba nem törheti a
+  // publikálást. Eredmény-értesítő = MŰKÖDÉSI email (az email-preferences
+  // ígérete szerint a lifecycle-kapcsoló ezt nem érinti).
+  try {
+    const recipients = await prisma.userProfile.findMany({
+      where: {
+        id: { in: recipientIds },
+        deleted: false,
+        email: { not: null },
+      },
+      select: { email: true, locale: true },
+    });
+    await Promise.allSettled(
+      recipients.map((r) =>
+        sendTeamReportPublishedEmail({
+          to: r.email as string,
+          teamName: params.teamName,
+          teamId: params.teamId,
+          locale: r.locale === "en" ? "en" : "hu",
+        }),
+      ),
+    );
+  } catch (error) {
+    log.error(
+      { event: "notifications.team_report_email_failed", reportId: params.reportId, err: error },
+      "Team report published email batch failed",
+    );
+  }
 }
 
 // ── Trial events ────────────────────────────────────────────────────────────

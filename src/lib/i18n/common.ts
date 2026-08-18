@@ -1,4 +1,32 @@
 export const commonTranslations = {
+  // ── Hibahatár-oldalak (error.tsx) közös szövegei ────────────────────────
+  // A nyers error.message SOHA nem kerül a felhasználó elé (technikai,
+  // angol, és belső részletet szivárogtathat) — helyette semleges szöveg +
+  // opcionális digest-hibakód a support-azonosításhoz.
+  errors: {
+    eyebrow: { hu: "hiba történt", en: "something went wrong" },
+    genericTitle: { hu: "Valami félrement", en: "Something went wrong" },
+    dashboardTitle: { hu: "Hiba a betöltés közben", en: "Error while loading" },
+    teamTitle: {
+      hu: "Nem sikerült betölteni a csapat adatait",
+      en: "Couldn't load the team data",
+    },
+    orgTitle: {
+      hu: "Nem sikerült betölteni a szervezet adatait",
+      en: "Couldn't load the organization data",
+    },
+    assessmentTitle: {
+      hu: "Hiba a teszt betöltésekor",
+      en: "Error loading the assessment",
+    },
+    body: {
+      hu: "Próbáld újra — ha a hiba megmarad, írj nekünk a Kapcsolat oldalról.",
+      en: "Try again — if the problem persists, reach us via the Contact page.",
+    },
+    retry: { hu: "Újrapróbálás", en: "Try again" },
+    errorCode: { hu: "Hibakód", en: "Error code" },
+  },
+
   meta: {
     title: {
       hu: "Trita - Személyiség- és csapatintelligencia",
@@ -55,11 +83,26 @@ export const commonTranslations = {
     ctaSelf: { hu: "Kipróbálom →", en: "Try it →" },
     /** A megosztott profil (/share/[token]) minimál fejlécének egyetlen CTA-ja. */
     ctaSharedOwnProfile: { hu: "Saját profil készítése", en: "Create my profile" },
-    ctaTeam: { hu: "Egyeztetek →", en: "Talk to us →" },
+    ctaTeam: { hu: "Pilotprogram →", en: "Pilot program →" },
     modeSelf: { hu: "Egyéneknek", en: "For individuals" },
     modeTeam: { hu: "Csapatoknak", en: "For teams" },
     dropdownProfile: { hu: "Profilom", en: "My profile" },
     dropdownSignOut: { hu: "Kijelentkezés", en: "Sign out" },
+  },
+  pageState: {
+    loading: { hu: "Az oldal betöltése folyamatban", en: "Loading page" },
+    errorEyebrow: { hu: "Átmeneti hiba", en: "Temporary issue" },
+    errorTitle: {
+      hu: "Ezt most nem sikerült betölteni",
+      en: "We couldn't load this right now",
+    },
+    errorBody: {
+      hu: "Az adataid megmaradtak. Próbáld újra, vagy térj vissza a vezérlőhöz.",
+      en: "Your data is safe. Try again, or return to the dashboard.",
+    },
+    retry: { hu: "Újrapróbálás", en: "Try again" },
+    dashboard: { hu: "Vezérlő", en: "Dashboard" },
+    reference: { hu: "Hivatkozási azonosító", en: "Reference ID" },
   },
   footer: {
     tagline: { hu: "Személyiség és csapatintelligencia platform.", en: "Personality and team intelligence platform." },

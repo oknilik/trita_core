@@ -1,10 +1,10 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
-import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { resolveJourney } from "@/lib/journey/engine";
 import { resolveStaffDestination } from "@/lib/journey/guardrails.server";
 import { getServerAuth } from "@/lib/auth-server";
 import { ClientRedirect } from "@/components/navigation/ClientRedirect";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,7 @@ export default async function DashboardPage({
   const entryPoint = "dashboard_page";
 
   const { userId } = await getServerAuth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -24,7 +24,7 @@ export default async function DashboardPage({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Platform-stáb (admin/tanácsadó): egyből a munkafelületére — nincs teszt-kapu.
   // Kliens-oldali redirect: a page-szintű szerver-redirect() Next 16 alatt

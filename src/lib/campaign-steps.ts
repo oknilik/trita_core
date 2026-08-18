@@ -259,6 +259,12 @@ export async function releaseDueCampaignSteps(options?: {
   campaignId?: string;
   userId?: string;
   force?: boolean;
+  /**
+   * A lépés-nyitási értesítés email-párjának kérése. A cron- és a „Küldés
+   * most" (force) út adja meg — ott a user nincs jelen. Az oldalbetöltéses
+   * user-szintű release NEM emailez (a user épp a felületen van).
+   */
+  emailNotify?: boolean;
 }): Promise<number> {
   const due = await prisma.campaignParticipant.findMany({
     where: {
@@ -288,6 +294,7 @@ export async function releaseDueCampaignSteps(options?: {
         campaignId: p.campaign.id,
         campaignName: p.campaign.name,
         stepType: openType,
+        sendEmail: options?.emailNotify === true,
       }).catch(() => {});
     }
   }

@@ -52,6 +52,25 @@ test("org member cannot manage even in active subscription", () => {
   assert.equal(decision.upgradeHint?.code, "request_manager_access");
 });
 
+test("org member in restricted org gets ROLE_INSUFFICIENT, not billing state", () => {
+  // A szerep-ellenőrzés megelőzi az előfizetés-ellenőrzést: a tag ne kapjon
+  // billing-CTA-t (és billing-állapot-információt) olyan capabilityre,
+  // amelyhez a szerepe eleve kevés.
+  const decision = can(
+    {
+      isAuthenticated: true,
+      orgRole: "ORG_MEMBER",
+      membership: { hasOrgMembership: true, orgId: "org_1" },
+    },
+    "manage",
+    { subscriptionState: "restricted" },
+  );
+
+  assert.equal(decision.allowed, false);
+  assert.equal(decision.reason, "ROLE_INSUFFICIENT");
+  assert.equal(decision.upgradeHint?.code, "request_manager_access");
+});
+
 test("restricted subscription blocks write capabilities with reactivation hint", () => {
   const decision = can(
     {
