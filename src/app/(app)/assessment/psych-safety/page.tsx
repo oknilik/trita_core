@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
@@ -9,6 +8,7 @@ import type { Locale } from "@/lib/i18n";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
 import { releaseDueCampaignSteps } from "@/lib/campaign-steps";
 import { PsychSafetyClient } from "./PsychSafetyClient";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -21,13 +21,13 @@ export async function generateMetadata(): Promise<Metadata> {
 // (lásd /api/psych-safety/submit).
 export default async function PsychSafetyPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
   await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});

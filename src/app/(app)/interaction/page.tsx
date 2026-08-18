@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
 import { prisma } from "@/lib/prisma";
@@ -16,6 +15,7 @@ import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import type { SerializedCompareInvite } from "@/components/results/CompareInviteCard";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { InteractionComparisonChooser } from "@/components/results/InteractionComparisonChooser";
 import {
   PairInteractionView,
@@ -50,7 +50,7 @@ export default async function InteractionPage({
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -58,7 +58,7 @@ export default async function InteractionPage({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   const latestResult = await prisma.assessmentResult.findFirst({
     where: { userProfileId: profile.id, isSelfAssessment: true },

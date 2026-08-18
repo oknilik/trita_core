@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useOverlayTransition } from "./useOverlayTransition";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 /**
  * A panel be-/kicsúszásának hossza (a backdrop 200 ms-os fade-je ezen belül
@@ -134,7 +135,7 @@ export function Picker({
           <button
             type="button"
             onClick={handleClose}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink-body/40 transition hover:bg-[var(--color-surface-subtle)] hover:text-ink"
+            className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink-body/40 transition hover:bg-[var(--color-surface-subtle)] hover:text-ink ${FOCUS_RING_CLASS}`}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -156,7 +157,7 @@ export function Picker({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
-              className="min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-sm text-ink focus:border-[var(--color-accent-primary)] focus:outline-none"
+              className={`min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-sm text-ink focus-visible:border-[var(--color-accent-primary)] ${FOCUS_RING_CLASS}`}
             />
           </div>
         )}
@@ -179,7 +180,7 @@ export function Picker({
                   ref={isSelected ? selectedRef : undefined}
                   type="button"
                   onClick={() => handleSelect(option.value)}
-                  className={`flex min-h-[44px] w-full items-center rounded-xl px-3 text-sm font-medium transition ${
+                  className={`flex min-h-[44px] w-full items-center rounded-xl px-3 text-sm font-medium transition ${FOCUS_RING_CLASS} ${
                     isSelected
                       ? "bg-[var(--color-accent-primary)]/10 text-[var(--color-accent-primary)]"
                       : "text-ink-body hover:bg-[var(--color-surface-subtle)]"
@@ -231,7 +232,7 @@ export function PickerTrigger({
       <button
         type="button"
         onClick={onClick}
-        className="flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus:border-sage-ring focus:outline-none"
+        className={`flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus-visible:border-sage-ring ${FOCUS_RING_CLASS}`}
       >
         <span className={value ? "text-ink" : "text-muted"}>
           {value || placeholder}

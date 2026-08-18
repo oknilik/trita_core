@@ -351,10 +351,10 @@ export function getMatchLabel(distance: number): {
   // a literál bronz (#8a5530) sötét lapon 2,4:1-et adott. A fix médiumok
   // (PDF/OG) továbbra is az EVAL_RAMP literáljából dolgoznak.
   if (distance < 0.25)
-    return { label: "Jól kirajzolódó minta", color: "var(--color-eval-high-fg)", bg: "rgba(61,107,94,0.08)" };
+    return { label: "Jól kirajzolódó minta", color: "var(--color-eval-high-fg)", bg: "var(--color-eval-high-bg)" };
   if (distance < 0.45)
-    return { label: "Vegyes mintázat", color: "var(--color-eval-mid-fg)", bg: "rgba(193,127,74,0.08)" };
-  return { label: "Átmeneti működés", color: "var(--color-eval-low-fg)", bg: "rgba(110,110,128,0.08)" };
+    return { label: "Vegyes mintázat", color: "var(--color-eval-mid-fg)", bg: "var(--color-eval-mid-bg)" };
+  return { label: "Átmeneti működés", color: "var(--color-eval-low-fg)", bg: "var(--color-eval-low-bg)" };
 }
 
 /** A value (0–1) is "balanced" when it falls in the 35–65% zone. */

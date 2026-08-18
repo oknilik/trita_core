@@ -10,6 +10,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { resolveActiveSelfAssessmentCampaign } from "@/lib/campaign-steps";
 import { AssessmentClient } from "./AssessmentClient";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -34,7 +35,7 @@ export default async function AssessmentPage({
   searchParams: Promise<{ confirmed?: string; campaignId?: string }>;
 }) {
   const user = await currentUser();
-  if (!user) redirect("/sign-in");
+  if (!user) return redirectToSignIn();
 
   // Get or create user profile
   // UX-A10: a tagságokat is lekérjük — a submit utáni cél (team-roles lépés

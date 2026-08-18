@@ -49,3 +49,20 @@ test("resolveIntegrationTestDbEnv rejects when test DB matches dev DB", () => {
     /must not match DATABASE_URL/,
   );
 });
+
+test("resolveIntegrationTestDbEnv corrects reversed Neon pooled and direct URLs", () => {
+  const direct = "postgresql://user:pass@ep-test.eu-central-1.aws.neon.tech/neondb?sslmode=require";
+  const pooled =
+    "postgresql://user:pass@ep-test-pooler.eu-central-1.aws.neon.tech/neondb?sslmode=require";
+
+  const resolved = resolveIntegrationTestDbEnv({
+    processEnv: {
+      DATABASE_URL: "postgresql://user:pass@ep-dev-pooler.eu-central-1.aws.neon.tech/neondb",
+      TEST_DATABASE_URL: direct,
+      TEST_DIRECT_URL: pooled,
+    },
+  });
+
+  assert.equal(resolved.DATABASE_URL, pooled);
+  assert.equal(resolved.DIRECT_URL, direct);
+});

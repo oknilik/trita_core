@@ -4,7 +4,8 @@ import { defineConfig, devices } from "@playwright/test";
 // kimarad — CI-runneren előfordult, hogy a chromium a "localhost"-ra
 // ERR_NAME_NOT_RESOLVED-et adott, miközben a Node-oldali health-check
 // ugyanoda gond nélkül elért.
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4100";
+const serverPort = process.env.PLAYWRIGHT_PORT ?? "4100";
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${serverPort}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -24,14 +25,17 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "TRITA_E2E_AUTH_BYPASS=1 pnpm exec next dev -p 4100",
+    command: `TRITA_E2E_AUTH_BYPASS=1 pnpm exec next dev -p ${serverPort}`,
     url: baseURL,
     timeout: 120_000,
-    reuseExistingServer: true,
+    // A pilot gate soha nem használhat újra egy esetleg dev-DB-vel futó
+    // helyi szervert: saját porton, saját processzként indul.
+    reuseExistingServer: process.env.TRITA_PILOT_GATE !== "1",
   },
   projects: [
     {
       name: "chromium",
+      testIgnore: /\/mobile\//,
       use: {
         ...devices["Desktop Chrome"],
         // A célpont mindig a helyi dev-szerver — host-oldali proxy env
@@ -41,6 +45,38 @@ export default defineConfig({
         // Playwright által várt böngésző-build nincs letöltve, de egy másik
         // elérhető (a PLAYWRIGHT_BASE_URL mintájára). Üresen hagyva a
         // Playwright a saját letöltését használja — CI-ben ez a helyes.
+        launchOptions: {
+          args: ["--no-proxy-server"],
+          ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+            : {}),
+        },
+      },
+    },
+    {
+      name: "mobile-compact",
+      testMatch: /\/mobile\/.*\.test\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 360, height: 800 },
+        hasTouch: true,
+        isMobile: true,
+        launchOptions: {
+          args: ["--no-proxy-server"],
+          ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+            ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH }
+            : {}),
+        },
+      },
+    },
+    {
+      name: "mobile-standard",
+      testMatch: /\/mobile\/.*\.test\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 390, height: 844 },
+        hasTouch: true,
+        isMobile: true,
         launchOptions: {
           args: ["--no-proxy-server"],
           ...(process.env.PLAYWRIGHT_CHROMIUM_PATH

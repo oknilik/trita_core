@@ -4,6 +4,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
 import type { Locale } from "@/lib/i18n/public";
 import { useNotifications } from "./NotificationsProvider";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 interface NotificationBellProps {
   isOpen: boolean;
@@ -31,7 +32,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
       // 44px érintőcél a mobil/tablet fejlécben (a hamburger mellett ez az
       // értesítések egyetlen belépési pontja); lg-től a desktop fejléc-ág
       // sűrűsége marad.
-      className="relative flex h-11 w-11 items-center justify-center rounded-xl transition-colors hover:bg-[var(--color-border-default)] lg:h-9 lg:w-9"
+      className={`relative flex h-11 w-11 items-center justify-center rounded-xl transition-colors hover:bg-[var(--color-border-default)] lg:h-9 lg:w-9 ${FOCUS_RING_CLASS}`}
     >
       <svg
         className="h-[18px] w-[18px]"

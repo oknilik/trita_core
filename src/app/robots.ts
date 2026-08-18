@@ -16,7 +16,7 @@ const PUBLIC_PATHS = [
   "/founding",
   ...(isPortfolioSurfaceActive("patternExplorer") ? ["/patterns"] : []),
   "/pilot",
-  "/pricing",
+  "/how-we-work",
   // A /privacy tervezet-állapotban is BEJÁRHATÓ marad (nem tesszük a
   // disallow-listára): a `noindex` meta csak akkor tud érvényesülni, ha a
   // robot le tudja tölteni a lapot. A sitemapból viszont kimarad, amíg

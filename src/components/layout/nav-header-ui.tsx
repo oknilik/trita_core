@@ -21,6 +21,7 @@ import { MobileMenuShell, MobileMenuRow, MobileMenuSectionLabel } from "./mobile
 import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
 import { NotificationsProvider, useNotifications } from "./NotificationsProvider";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -121,7 +122,7 @@ function MegaItem({
     <Link
       href={href}
       onClick={onClick}
-      className="group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[var(--color-surface-canvas)]"
+      className={`group flex items-center gap-3 rounded-lg px-3 py-2.5 transition-colors hover:bg-[var(--color-surface-canvas)] ${FOCUS_RING_CLASS}`}
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
         {icon}
@@ -422,7 +423,7 @@ function NavHeaderContent({
       <AssessmentFocusHeader homeHref={homeHref}>
         <Link
           href={homeHref}
-          className="inline-flex min-h-10 items-center gap-1.5 rounded-[11px] px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+          className={`inline-flex min-h-10 items-center gap-1.5 rounded-[11px] px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
         >
           <span aria-hidden="true">←</span>
           <span className="hidden sm:inline">{t("nav.backToHome", locale)}</span>
@@ -435,7 +436,7 @@ function NavHeaderContent({
   // Korábban a Vezérlő sötét pill, a többi menüpont pedig világos, akcent
   // feliratos chip volt, ezért egyszerre két aktív navigációs nyelv élt.
   const navItemBase =
-    "inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption font-medium transition-[color,background-color,box-shadow] cursor-pointer select-none";
+    `inline-flex min-h-9 items-center gap-1.5 rounded-[10px] px-3 text-caption font-medium transition-[color,background-color,box-shadow] cursor-pointer select-none ${FOCUS_RING_CLASS}`;
   const navItemActive = `${navItemBase} bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)] font-semibold shadow-[0_3px_10px_rgba(26,26,46,0.14)]`;
   const navItemInactive = `${navItemBase} text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-card)] hover:text-[var(--color-text-primary)]`;
 
@@ -515,7 +516,7 @@ function NavHeaderContent({
                 href="/profile"
                 onClick={closeAll}
                 data-testid="nav-user-menu-profile"
-                className="flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className={`flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -530,7 +531,7 @@ function NavHeaderContent({
                 href="/profile/results"
                 onClick={closeAll}
                 data-testid="nav-user-menu-results"
-                className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                className={`mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -559,7 +560,7 @@ function NavHeaderContent({
                       type="button"
                       disabled={orgSwitchBusy}
                       onClick={() => switchOrg(m.orgId, m.role)}
-                      className={`flex min-h-[38px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[12px] transition-colors ${
+                      className={`flex min-h-[38px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[12px] transition-colors ${FOCUS_RING_CLASS} ${
                         isActive
                           ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
                           : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
@@ -593,7 +594,7 @@ function NavHeaderContent({
               href="/admin"
               onClick={closeAll}
               data-testid="nav-admin-dashboard"
-              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className={`mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -614,7 +615,7 @@ function NavHeaderContent({
               href="/org/new"
               onClick={closeAll}
               data-testid="nav-new-client-org"
-              className="mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+              className={`mt-1 flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-caption font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
             >
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                 <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -643,7 +644,7 @@ function NavHeaderContent({
                   clearLocaleSyncFlag();
                   signOut({ redirectUrl: "/" });
                 }}
-                className="flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-caption font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+                className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-caption font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                   <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -673,7 +674,7 @@ function NavHeaderContent({
           <Link
             href={homeHref}
             aria-label="trita"
-            className="pointer-events-auto justify-self-start text-[var(--color-text-primary)]"
+            className={`pointer-events-auto justify-self-start rounded-md text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
           >
             <TritaWordmark className="text-[22px] tracking-[-0.04em]" />
           </Link>
@@ -777,7 +778,7 @@ function NavHeaderContent({
                 onClick={() => toggle("user")}
                 data-testid="nav-user-menu-trigger"
                 aria-expanded={openDropdown === "user"}
-                className="flex min-h-10 items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-3 shadow-[0_1px_2px_rgba(26,26,46,0.03)] transition-[border-color,background-color] hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)]"
+                className={`flex min-h-10 items-center gap-2 rounded-full border border-[var(--color-border-default)] bg-surface-card py-0.5 pl-1 pr-3 shadow-[0_1px_2px_rgba(26,26,46,0.03)] transition-[border-color,background-color] hover:border-[var(--color-text-muted)] hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
               >
                 {showIdentityLoader ? (
                   <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--color-surface-subtle)]" />
@@ -815,7 +816,7 @@ function NavHeaderContent({
                 ensureOrgMemberships();
                 setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"));
               }}
-              className="pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-border-default)]"
+              className={`pointer-events-auto flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[var(--color-surface-subtle)] text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-border-default)] ${FOCUS_RING_CLASS}`}
             >
               {mobileMenu !== "closed" ? (
                 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" className="h-5 w-5">
@@ -840,7 +841,7 @@ function NavHeaderContent({
                   <Link
                     href={homeDestination}
                     onClick={() => setMobileMenu("closed")}
-                    className="inline-flex items-center gap-2 rounded-lg bg-[var(--color-surface-inverse)] px-4 py-2 text-caption font-medium text-[var(--color-text-on-inverse)]"
+                    className={`inline-flex items-center gap-2 rounded-lg bg-[var(--color-surface-inverse)] px-4 py-2 text-caption font-medium text-[var(--color-text-on-inverse)] ${FOCUS_RING_CLASS}`}
                   >
                     <GridIcon className="h-3.5 w-3.5" />
                     {homeLabel}
@@ -848,7 +849,7 @@ function NavHeaderContent({
                   <button
                     type="button"
                     onClick={() => setMobileMenu("closed")}
-                    className="flex min-h-[44px] items-center gap-1.5 px-2 text-caption text-[var(--color-text-muted)]"
+                    className={`flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-caption text-[var(--color-text-muted)] ${FOCUS_RING_CLASS}`}
                   >
                     Bezárás
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -889,7 +890,7 @@ function NavHeaderContent({
                     setMobileMenu("closed");
                     setOpenDropdown("notifications");
                   }}
-                  className="group mx-4 mt-3 flex w-[calc(100%-2rem)] items-center gap-3.5 rounded-xl px-3.5 py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)]"
+                  className={`group mx-4 mt-3 flex w-[calc(100%-2rem)] items-center gap-3.5 rounded-xl px-3.5 py-3.5 text-left transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                 >
                   <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)] transition-colors group-hover:bg-[var(--color-border-default)] group-hover:text-[var(--color-text-secondary)]">
                     <svg className="h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -974,7 +975,7 @@ function NavHeaderContent({
                         <Link
                           href="/profile"
                           onClick={() => setMobileMenu("closed")}
-                          className="flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                          className={`flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                             <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -988,7 +989,7 @@ function NavHeaderContent({
                         <Link
                           href="/profile/results"
                           onClick={() => setMobileMenu("closed")}
-                          className="mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                          className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                             <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1023,7 +1024,7 @@ function NavHeaderContent({
                                   setMobileMenu("closed");
                                   void switchOrg(m.orgId, m.role);
                                 }}
-                                className={`flex min-h-[44px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors ${
+                                className={`flex min-h-[44px] items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-[13px] transition-colors ${FOCUS_RING_CLASS} ${
                                   isActive
                                     ? "bg-[var(--color-surface-subtle)] font-semibold text-[var(--color-text-primary)]"
                                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
@@ -1056,7 +1057,7 @@ function NavHeaderContent({
                       <Link
                         href="/admin"
                         onClick={() => setMobileMenu("closed")}
-                        className="mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                        className={`mt-1 flex items-center gap-3 rounded-lg px-3 py-3 text-[14px] font-medium text-[var(--color-text-primary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                       >
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--color-surface-canvas)] text-[var(--color-text-muted)]">
                           <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -1082,7 +1083,7 @@ function NavHeaderContent({
                             signOut({ redirectUrl: "/" });
                             setMobileMenu("closed");
                           }}
-                          className="flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)]"
+                          className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-[14px] font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
                           Kijelentkezés
                         </button>

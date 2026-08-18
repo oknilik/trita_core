@@ -1,6 +1,11 @@
 export const assessmentTranslations = {
   assessment: {
     introEyebrow: { hu: "Személyiségfelmérés", en: "Personality assessment" },
+    // A kitöltő haladás-sávjának képernyőolvasó-címkéje. A kulcs korábban
+    // hiányzott az `assessment` névtérből (a hasonló nevű `myTasks.progressLabel`
+    // nem oldotta fel), ezért a `tf` a NYERS kulcsot adta vissza — a
+    // képernyőolvasó szó szerint az "assessment.progressLabel" szöveget mondta be.
+    progressLabel: { hu: "{done}. kérdés a(z) {total}-ból", en: "Question {done} of {total}" },
     // P1.5: a szerver-oldali draft-mentés hibája többé nem néma.
     saveErrorHint: {
       hu: "A mentés most nem jut el a szerverre — a haladásod ezen az eszközön biztonságban van, a következő válasznál automatikusan újrapróbáljuk.",

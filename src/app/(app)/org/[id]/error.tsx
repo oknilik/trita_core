@@ -1,13 +1,7 @@
 "use client";
 
-import { ErrorScreen } from "@/components/ui/ErrorScreen";
+import { PageErrorState } from "@/components/ui/patterns/PageErrorState";
 
-export default function OrgError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  return <ErrorScreen error={error} reset={reset} titleKey="errors.orgTitle" surface="org" />;
+export default function OrgError({ error, reset }: { error: Error; reset: () => void }) {
+  return <PageErrorState error={error} reset={reset} surface="org" />;
 }

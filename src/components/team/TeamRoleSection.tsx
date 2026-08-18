@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { Card } from "@/components/ui/primitives/Card";
 import { hasCompleteTritanDims, resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import { TEAM_ROLE_FAMILIES, teamRoleColors } from "@/lib/color-system";
 import { TEAM_ROLES, getTopRoles } from "@/lib/team-role-scoring";
@@ -505,7 +506,7 @@ function PeerComparison({
   ).length;
 
   return (
-    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+    <Card as="section" spacing="lg" className="md:p-8">
       <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
         {t("teamComp.peerEyebrow", loc)}
       </SectionEyebrow>
@@ -597,7 +598,7 @@ function PeerComparison({
           String(TEAM_ROLE_PEER_MIN_RATERS),
         )}
       </p>
-    </section>
+    </Card>
   );
 }
 
@@ -675,7 +676,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       />
 
       {/* Role composition */}
-      <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+      <Card as="section" spacing="lg" className="md:p-8">
         <SectionEyebrow as="h3" className="mb-1 text-[11px] tracking-widest">
           {t("teamComp.roleDistributionEyebrow", loc)}
         </SectionEyebrow>
@@ -685,7 +686,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
         {/* S1: az aggregátum forrás-összetétele (mért vs becsült) */}
         <RoleSourceMixChips members={membersWithTeamRole} isHu={isHu} />
         <RoleComposition members={membersWithTeamRole} isHu={isHu} />
-      </section>
+      </Card>
 
       {/* Alerts */}
       <section>

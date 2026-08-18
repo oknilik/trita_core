@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/public";
+import { FOCUS_RING_CLASS, FOCUS_RING_ON_INVERSE_CLASS } from "@/lib/ui/focus";
 
 export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown" | "pills" | "footer" }) {
   const { locale, setLocale } = useLocale();
@@ -31,7 +32,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
               type="button"
               aria-pressed={loc === locale}
               onClick={() => setLocale(loc as Locale)}
-              className={`rounded px-1 py-1 transition-colors hover:text-[var(--color-text-on-inverse)] ${
+              className={`rounded px-1 py-1 transition-colors hover:text-[var(--color-text-on-inverse)] ${FOCUS_RING_ON_INVERSE_CLASS} ${
                 loc === locale
                   ? "font-semibold text-[var(--color-text-on-inverse)]"
                   : "text-[var(--color-text-on-inverse-muted)]"
@@ -55,6 +56,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
             onClick={() => setLocale(loc as Locale)}
             className={[
               "rounded-full px-4 py-1.5 text-[12px] font-medium transition-all",
+              FOCUS_RING_CLASS,
               loc === locale
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
                 : "bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] hover:bg-[var(--color-border-default)]",
@@ -80,6 +82,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         aria-expanded={open}
         className={[
           "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-[12px] text-[var(--color-text-muted)] transition-all",
+          FOCUS_RING_CLASS,
           "hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-secondary)]",
           open ? "bg-[var(--color-surface-subtle)] text-[var(--color-text-secondary)]" : "",
         ].join(" ")}
@@ -102,6 +105,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
                 onClick={() => { setLocale(loc as Locale); setOpen(false); }}
                 className={[
                   "flex w-full items-center justify-between px-3.5 py-2.5 text-left text-caption transition-colors",
+                  FOCUS_RING_CLASS,
                   isActive
                     ? "bg-[var(--color-surface-self-accent-soft)] font-medium text-[var(--color-action-primary-bg)]"
                     : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]",

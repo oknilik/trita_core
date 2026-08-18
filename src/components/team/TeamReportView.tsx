@@ -1390,7 +1390,7 @@ export function TeamReportView({
           {(report.strengths || report.risks) && (
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {report.strengths && (
-                <DashboardPanel className="border-l-4 border-l-emerald-500/60 p-5">
+                <DashboardPanel className="border-l-4 border-l-state-success-solid p-5">
                   <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 8.5l3 3 7-7" />

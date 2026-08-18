@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   CAMPAIGN_STEP_ORDER,
@@ -139,7 +140,7 @@ export function DraftCampaignEditor({
   };
 
   return (
-    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
+    <Card as="section" spacing="lg" className="md:p-8">
       <SectionEyebrow className="mb-1">
         {t("org.campaign.editDraftEyebrow", locale)}
       </SectionEyebrow>
@@ -346,6 +347,6 @@ export function DraftCampaignEditor({
           </>
         )}
       </div>
-    </section>
+    </Card>
   );
 }

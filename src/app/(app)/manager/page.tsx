@@ -16,6 +16,7 @@ import {
   DashboardSectionHeader,
   DashboardStatusChip,
 } from "@/components/dashboard/DashboardPrimitives";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getActiveOrgMembership } from "@/lib/org-context";
@@ -51,7 +52,7 @@ export default async function ManagerCockpitPage() {
   // getServerAuth (nem nyers Clerk auth()): a /dashboard elosztóval és a
   // requireOrgContext-tel azonos auth-út — az e2e bypass is így működik itt.
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 

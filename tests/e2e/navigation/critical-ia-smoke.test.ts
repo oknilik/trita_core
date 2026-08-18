@@ -320,6 +320,20 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
     await expect(
       page.getByRole("heading", { name: /IA Admin/i }),
     ).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-platform-surface="self"]')).toBeVisible();
+
+    await page.goto("/tasks", { waitUntil: "domcontentloaded" });
+    await expectPathname(page, "/tasks");
+    await expect(
+      page.getByRole("heading", { name: /Mérési feladataim/i }),
+    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-platform-surface="self"]')).toBeVisible();
+
+    const taskPageWidth = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
+    }));
+    expect(taskPageWidth.content).toBeLessThanOrEqual(taskPageWidth.viewport);
   });
 
   test("manager dashboard keeps simplified role navigation", async ({

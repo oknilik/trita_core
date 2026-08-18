@@ -1,11 +1,11 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
+import { getServerAuth } from "@/lib/auth-server";
 import {
   CAMPAIGN_STEP_LABELS,
   getCampaignStepLink,
@@ -25,6 +25,12 @@ import { OBSERVER_MIN_FOR_REVEAL } from "@/lib/observer-flow";
 import { sentObserverInviteWhere } from "@/lib/observer/invite-policy";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
+import { getButtonClassName } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { StatusChip } from "@/components/ui/primitives/StatusChip";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
+import { CheckIcon } from "@/components/ui/icons";
 
 export const dynamic = "force-dynamic";
 
@@ -36,15 +42,15 @@ export async function generateMetadata(): Promise<Metadata> {
 // állapottal (kész / nyitott / ütemezett / hátralévő), rész-haladással
 // (pl. „2/5 értékelés kész") és vissza-linkkel a kitöltő-felületre.
 export default async function MyMeasurementsPage() {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
-  if (!userId) redirect("/sign-in");
+  const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
+  if (!userId) return redirectToSignIn();
   const loc = locale as Locale;
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Esedékes ütemezett lépések kinyitása (a látogatás maga a trigger).
   await releaseDueCampaignSteps({ userId: profile.id }).catch(() => {});
@@ -200,21 +206,22 @@ export default async function MyMeasurementsPage() {
   );
 
   return (
-    <main className="min-h-dvh bg-cream">
-      <div className="mx-auto w-full max-w-3xl px-4 pt-10 pb-20">
-        <p className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-          {t("myTasks.eyebrow", loc)}
-        </p>
-        <h1 className="mt-1 font-fraunces text-3xl text-ink">
-          {t("myTasks.title", loc)}
-        </h1>
-        <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-body">
-          {t("myTasks.intro", loc)}
-        </p>
-
+    <PlatformPageShell
+      surface="self"
+      contentClassName="max-w-3xl gap-8 px-4 py-10"
+      chrome={{
+        breadcrumb: [
+          { label: t("nav.home", loc), href: "/dashboard" },
+          { label: t("myTasks.title", loc) },
+        ],
+        eyebrow: t("myTasks.eyebrow", loc),
+        title: t("myTasks.title", loc),
+        subtitle: t("myTasks.intro", loc),
+      }}
+    >
         {/* Tőlem kért visszajelzések (belsős observer-meghívók) */}
         {feedbackRequests.length > 0 && (
-          <section className="mt-8 rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7">
+          <Card as="section" surface="self" spacing="lg" className="md:p-7">
             <p className="font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
               {t("myTasks.feedbackRequestsEyebrow", loc)}
             </p>
@@ -245,7 +252,7 @@ export default async function MyMeasurementsPage() {
                   </span>
                   <Link
                     href={`/observe/${req.token}`}
-                    className="inline-flex min-h-[44px] shrink-0 items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+                    className={getButtonClassName({ size: "sm" })}
                   >
                     {req.answered > 0
                       ? t("myTasks.stepOpen", loc)
@@ -254,35 +261,35 @@ export default async function MyMeasurementsPage() {
                 </div>
               ))}
             </div>
-          </section>
+          </Card>
         )}
 
         {cards.length === 0 && feedbackRequests.length === 0 ? (
-          <div className="mt-8 rounded-2xl border border-sand bg-surface-card p-8 text-center shadow-sm">
-            <h2 className="font-fraunces text-xl text-ink">
-              {t("myTasks.noneTitle", loc)}
-            </h2>
-            <p className="mt-2 text-sm text-ink-body">
-              {t("myTasks.noneBody", loc)}
-            </p>
-            <Link
-              href="/dashboard"
-              className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-            >
-              {t("myTasks.backToDashboard", loc)}
-            </Link>
-          </div>
+          <EmptyState
+            variant="action"
+            icon={<CheckIcon className="size-5" />}
+            title={t("myTasks.noneTitle", loc)}
+            description={t("myTasks.noneBody", loc)}
+            cta={(
+              <Link href="/dashboard" className={getButtonClassName({ size: "sm" })}>
+                {t("myTasks.backToDashboard", loc)}
+              </Link>
+            )}
+          />
         ) : (
-          <div className="mt-8 flex flex-col gap-5">
+          <div className="flex flex-col gap-5">
             {cards.map((card) => {
               const allDone = card.doneCount >= card.steps.length;
               // Observer-gyűjtés még fut → a kártya ne mondja, hogy minden kész.
               const gathering =
                 card.observer !== null && card.observer.received < card.observer.min;
               return (
-                <section
+                <Card
+                  as="section"
+                  surface="self"
+                  spacing="lg"
                   key={card.id}
-                  className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-7"
+                  className="md:p-7"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0">
@@ -291,15 +298,8 @@ export default async function MyMeasurementsPage() {
                         <p className="mt-1 text-xs text-ink-body/70">{card.description}</p>
                       )}
                     </div>
-                    <span
-                      className={[
-                        "rounded-full px-2.5 py-1 text-xs font-semibold",
-                        allDone && !gathering
-                          ? "bg-sage/15 text-sage-dark"
-                          : allDone
-                            ? "bg-bronze/10 text-[var(--color-accent-primary-strong)]"
-                            : "bg-sand text-ink-body",
-                      ].join(" ")}
+                    <StatusChip
+                      variant={allDone && !gathering ? "success" : allDone ? "warning" : "neutral"}
                     >
                       {allDone && !gathering
                         ? t("myTasks.allDoneBadge", loc)
@@ -309,12 +309,12 @@ export default async function MyMeasurementsPage() {
                               done: card.doneCount,
                               total: card.steps.length,
                             })}
-                    </span>
+                    </StatusChip>
                   </div>
 
-                  <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-sand">
+                  <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-muted">
                     <div
-                      className="h-full rounded-full bg-sage transition-all duration-500"
+                      className="h-full rounded-full bg-surface-self-accent transition-all duration-500"
                       style={{
                         width: `${(card.doneCount / Math.max(card.steps.length, 1)) * 100}%`,
                       }}
@@ -395,7 +395,7 @@ export default async function MyMeasurementsPage() {
                             {observerGathering ? (
                               <Link
                                 href="/profile/results?tab=comparison#observer-flow"
-                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+                                className={getButtonClassName({ size: "sm" })}
                               >
                                 {observerGathering.sent < observerGathering.min
                                   ? tf("myTasks.observerAskCta", loc, {
@@ -410,7 +410,7 @@ export default async function MyMeasurementsPage() {
                             ) : isCurrent && card.gateOpen ? (
                               <Link
                                 href={link}
-                                className="inline-flex min-h-[44px] items-center rounded-lg bg-action-primary-bg px-3.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+                                className={getButtonClassName({ size: "sm" })}
                               >
                                 {started
                                   ? t("myTasks.stepOpen", loc)
@@ -442,12 +442,11 @@ export default async function MyMeasurementsPage() {
                       );
                     })}
                   </div>
-                </section>
+                </Card>
               );
             })}
           </div>
         )}
-      </div>
-    </main>
+    </PlatformPageShell>
   );
 }

@@ -207,7 +207,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
 
       <form onSubmit={handleNext} className="mt-6 flex flex-col gap-5">
         {error && (
-          <div className="rounded-lg border border-state-error-bg bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
+          <div className="rounded-lg border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
             {error}
           </div>
         )}

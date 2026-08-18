@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/ui/cn";
+
 export type AuthLeftPanelContext =
   | "explore"
   | "team"
@@ -10,6 +12,7 @@ export type AuthLeftPanelContext =
 
 interface AuthLeftPanelProps {
   context: AuthLeftPanelContext;
+  className?: string;
 }
 
 const CONTENT: Record<
@@ -95,11 +98,11 @@ const CONTENT: Record<
   },
 };
 
-export default function AuthLeftPanel({ context }: AuthLeftPanelProps) {
+export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps) {
   const c = context ? CONTENT[context] : null;
 
   return (
-    <div className="hidden w-[280px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-8 py-10 lg:flex">
+    <div className={cn("hidden min-h-full w-[300px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-8 py-10 lg:flex", className)}>
       <div>
         {c ? (
           <>

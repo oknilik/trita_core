@@ -47,6 +47,15 @@ function normalizeConnectionUrl(url) {
   }
 }
 
+function isPooledPostgresUrl(url) {
+  if (!url) return false;
+  try {
+    return new URL(url).hostname.includes("-pooler.");
+  } catch {
+    return false;
+  }
+}
+
 function resolveEnvFromFiles(cwd) {
   const env = {};
   const orderedFiles = [".env", ".env.test", ".env.test.local"];
@@ -75,16 +84,27 @@ export function resolveIntegrationTestDbEnv(options = {}) {
     );
   }
 
-  const testDirectUrl =
-    processEnv.TEST_DIRECT_URL ??
-    processEnv.DIRECT_URL_TEST ??
-    fileEnv.TEST_DIRECT_URL ??
-    fileEnv.DIRECT_URL_TEST ??
-    testDatabaseUrl;
+  const testDatabaseComesFromProcess = Boolean(
+    processEnv.TEST_DATABASE_URL ?? processEnv.DATABASE_URL_TEST,
+  );
+  // Egy explicit process-level TEST_DATABASE_URL mellé ne keverjünk be
+  // véletlenül fájlból egy másik branchhez tartozó direct URL-t.
+  const configuredTestDirectUrl = testDatabaseComesFromProcess
+    ? (processEnv.TEST_DIRECT_URL ?? processEnv.DIRECT_URL_TEST ?? testDatabaseUrl)
+    : (fileEnv.TEST_DIRECT_URL ?? fileEnv.DIRECT_URL_TEST ?? testDatabaseUrl);
+
+  // Neon esetén a runtime DATABASE_URL a pooler, a migrációs DIRECT_URL a
+  // közvetlen endpoint. Régebbi lokális env-ekben ez a két érték felcserélve
+  // szerepelt; csak a feloldott tesztfolyamatban korrigáljuk, a fájlt nem
+  // írjuk át. Más szolgáltatóknál/localhoston a sorrendet érintetlenül hagyjuk.
+  const urlsAreReversed =
+    !isPooledPostgresUrl(testDatabaseUrl) && isPooledPostgresUrl(configuredTestDirectUrl);
+  const resolvedTestDatabaseUrl = urlsAreReversed ? configuredTestDirectUrl : testDatabaseUrl;
+  const resolvedTestDirectUrl = urlsAreReversed ? testDatabaseUrl : configuredTestDirectUrl;
 
   const devDatabaseUrl = processEnv.DATABASE_URL ?? fileEnv.DATABASE_URL;
   const normalizedDev = normalizeConnectionUrl(devDatabaseUrl);
-  const normalizedTest = normalizeConnectionUrl(testDatabaseUrl);
+  const normalizedTest = normalizeConnectionUrl(resolvedTestDatabaseUrl);
 
   if (normalizedDev && normalizedDev === normalizedTest) {
     throw new Error(
@@ -93,10 +113,10 @@ export function resolveIntegrationTestDbEnv(options = {}) {
   }
 
   return {
-    DATABASE_URL: testDatabaseUrl,
-    DIRECT_URL: testDirectUrl,
-    TEST_DATABASE_URL: testDatabaseUrl,
-    TEST_DIRECT_URL: testDirectUrl,
+    DATABASE_URL: resolvedTestDatabaseUrl,
+    DIRECT_URL: resolvedTestDirectUrl,
+    TEST_DATABASE_URL: resolvedTestDatabaseUrl,
+    TEST_DIRECT_URL: resolvedTestDirectUrl,
     TRITA_INTEGRATION_TEST_DB: "1",
   };
 }

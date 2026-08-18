@@ -15,6 +15,10 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
+import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { PlusIcon } from "@/components/ui/icons";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TeamListPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);
 
@@ -123,14 +127,17 @@ export default async function TeamListPage() {
           </div>
 
           {teams.length === 0 && (
-            <Card
-              spacing="lg"
-              className="border-dashed p-10 text-center"
-            >
-              <p className="text-sm text-muted">
-                {t("team.noTeams", locale)}
-              </p>
-            </Card>
+            <EmptyState
+              variant="action"
+              icon={<PlusIcon className="size-5" />}
+              title={t("team.noTeamsTitle", locale)}
+              description={t(canCreateTeam ? "team.noTeams" : "team.noTeamsMember", locale)}
+              cta={canCreateTeam ? (
+                <Link href="#create-team" className={getButtonClassName({ size: "sm" })}>
+                  {t("team.createNew", locale)}
+                </Link>
+              ) : undefined}
+            />
           )}
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -138,7 +145,7 @@ export default async function TeamListPage() {
               <Link
                 key={team.id}
                 href={`/team/${team.id}`}
-                className="group rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:border-sage/40 hover:shadow-md hover:shadow-sage/5"
+                className={`group rounded-2xl border border-sand bg-surface-card p-5 transition-all hover:border-sage/40 hover:shadow-md hover:shadow-sage/5 ${FOCUS_RING_CLASS}`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="truncate font-semibold text-ink transition-colors group-hover:text-sage">

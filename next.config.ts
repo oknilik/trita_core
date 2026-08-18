@@ -128,6 +128,16 @@ const nextConfig: NextConfig = {
     ],
   },
 
+  async redirects() {
+    return [
+      {
+        source: "/pricing",
+        destination: "/how-we-work",
+        permanent: true,
+      },
+    ];
+  },
+
   // HTTP headers: resource hints + biztonsági alapkészlet + CSP (report-only).
   async headers() {
     return [

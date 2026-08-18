@@ -6,6 +6,7 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { getServerAuth } from "@/lib/auth-server";
 import { getProfileCoreByClerkId } from "@/lib/profile.server";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export type { UserRole };
 
@@ -26,7 +27,7 @@ export function getAdminEmails(): string[] {
 
 export async function requireAdmin() {
   const { userId } = await getServerAuth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   // Közös, kérés-szinten memoizált profil-lekérő (ld. profile.server.ts) —
   // a kapu-logika változatlan, csak a lekérés esik össze a többi hívóéval.
@@ -42,7 +43,7 @@ export async function requireAdmin() {
 // Requires the user to have a specific role. Redirects to journey home handoff if not.
 export async function requireRole(role: UserRole) {
   const { userId } = await getServerAuth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await getProfileCoreByClerkId(userId);
 
@@ -79,7 +80,7 @@ export async function requireOrgContext(orgId: string): Promise<{
   org: { id: string; name: string; status: string };
 }> {
   const { userId } = await getServerAuth();
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await getProfileCoreByClerkId(userId);
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);

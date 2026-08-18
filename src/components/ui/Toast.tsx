@@ -10,6 +10,8 @@ import {
   useRef,
   ReactNode,
 } from "react";
+import { usePathname } from "next/navigation";
+import { isFocusRoute } from "@/lib/navigation/focus-routes";
 
 type ToastType = "success" | "error" | "info";
 
@@ -45,6 +47,8 @@ interface ToastProviderProps {
 }
 
 export function ToastProvider({ children }: ToastProviderProps) {
+  const pathname = usePathname();
+  const focusRoute = isFocusRoute(pathname);
   const [toasts, setToasts] = useState<Toast[]>([]);
   // Élő időzítők — unmountkor takarítunk, hogy ne írjunk halott fába.
   const timersRef = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
@@ -118,7 +122,13 @@ export function ToastProvider({ children }: ToastProviderProps) {
       {/* Mobilon a jobb szélhez kötött, fix szélességű toast a bal viewport-
           szélen túllógna — <md-en két oldalt 16px margóval feszül ki,
           md-től marad a jobb alsó sarok. */}
-      <div className="fixed inset-x-4 bottom-4 z-50 flex flex-col gap-2 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-4">
+      <div
+        className={`fixed inset-x-4 z-50 flex flex-col gap-2 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-4 ${
+          focusRoute
+            ? "bottom-[calc(7.5rem+env(safe-area-inset-bottom))] md:bottom-4"
+            : "bottom-4"
+        }`}
+      >
         {toasts.map((toast) => (
           <ToastItem
             key={toast.id}

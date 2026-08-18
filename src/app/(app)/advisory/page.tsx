@@ -7,6 +7,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { AdvisoryPageClient, type AdvisoryTier } from "./AdvisoryPageClient";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AdvisoryPage() {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
 
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },

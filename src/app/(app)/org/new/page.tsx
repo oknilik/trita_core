@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { getServerAuth } from "@/lib/auth-server";
@@ -7,6 +7,7 @@ import { isConsultingLed } from "@/lib/operating-mode";
 import { NewClientOrgForm } from "@/components/org/NewClientOrgForm";
 import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
 import { isPlatformAdminEmail } from "@/lib/measurement-auth";
+import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
@@ -20,13 +21,13 @@ export default async function NewClientOrgPage() {
   if (!isConsultingLed()) notFound();
 
   const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
-  if (!userId) redirect("/sign-in");
+  if (!userId) return redirectToSignIn();
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
     select: { id: true, email: true, isConsultant: true },
   });
-  if (!profile) redirect("/sign-in");
+  if (!profile) return redirectToSignIn();
 
   // Org-ot a platform-admin, a platform-tanácsadó vagy egy már kiosztott
   // ORG_CONSULTANT hozhat létre.

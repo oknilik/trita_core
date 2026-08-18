@@ -1,13 +1,7 @@
 "use client";
 
-import { ErrorScreen } from "@/components/ui/ErrorScreen";
+import { PageErrorState } from "@/components/ui/patterns/PageErrorState";
 
-export default function TeamError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
-  return <ErrorScreen error={error} reset={reset} titleKey="errors.teamTitle" surface="team" />;
+export default function TeamError({ error, reset }: { error: Error; reset: () => void }) {
+  return <PageErrorState error={error} reset={reset} surface="team" />;
 }

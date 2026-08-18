@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { hasJudgmentTone } from "@/lib/feedback-tone";
@@ -165,7 +166,7 @@ export function TeamFeedbackRequests({
   const judgy = hasJudgmentTone(continueText) || hasJudgmentTone(tryText) || hasJudgmentTone(comment);
 
   return (
-    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+    <Card as="section" spacing="lg">
       <SectionEyebrow className="mb-1">
         {t("team.fb.eyebrow", locale)}
       </SectionEyebrow>
@@ -395,6 +396,6 @@ export function TeamFeedbackRequests({
           )}
         </div>
       )}
-    </section>
+    </Card>
   );
 }

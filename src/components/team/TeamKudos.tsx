@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
+import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SuccessCheck } from "@/components/ui/primitives/SuccessCheck";
 import { EmojiRow, KUDOS_BADGES, type KudosBadge } from "@/components/team/EmojiRow";
@@ -84,7 +85,7 @@ export function TeamKudos({
   };
 
   return (
-    <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
+    <Card as="section" spacing="lg">
       <SectionEyebrow className="mb-1">
         {t("team.kudos.eyebrow", locale)}
       </SectionEyebrow>
@@ -187,6 +188,6 @@ export function TeamKudos({
           ))}
         </ul>
       )}
-    </section>
+    </Card>
   );
 }

@@ -6,6 +6,12 @@ import { useLocale } from "@/components/LocaleProvider";
 import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n/public";
 import type { BlogPost } from "@/lib/blog";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import {
+  BLOG_TOPIC_QUERY_KEY,
+  resolveBlogTopic,
+  toBlogTopicParam,
+} from "@/lib/blog-filter";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 type PostMeta = Omit<BlogPost, "content">;
 
@@ -99,6 +105,41 @@ export function BlogListContent({
       .map(([tag, count]) => ({ tag, count }));
   }, [posts]);
 
+  const availableTags = useMemo(
+    () => tagChips.map(({ tag }) => tag),
+    [tagChips],
+  );
+
+  // A szűrő megosztható URL-állapot. A szerver-HTML továbbra is a teljes
+  // magyar listával készül; mount után olvassuk az URL-t, de csak akkor,
+  // amikor a tényleges locale már beállt. Így egy angol mélylinket nem töröl
+  // ki a hydration első, még magyar renderje.
+  useEffect(() => {
+    if (displayLocale !== locale) return;
+
+    const syncFromUrl = () => {
+      const url = new URL(window.location.href);
+      const param = url.searchParams.get(BLOG_TOPIC_QUERY_KEY);
+      const resolved = resolveBlogTopic(param, availableTags);
+      setActiveTag(resolved);
+
+      // Ismeretlen/régi téma-paraméter ne hagyjon hazug, üres szűrőállapotot
+      // az URL-ben. Replace: a hibás állapot ne kapjon külön history-lépést.
+      if (param && !resolved) {
+        url.searchParams.delete(BLOG_TOPIC_QUERY_KEY);
+        window.history.replaceState(
+          window.history.state,
+          "",
+          `${url.pathname}${url.search}${url.hash}`,
+        );
+      }
+    };
+
+    syncFromUrl();
+    window.addEventListener("popstate", syncFromUrl);
+    return () => window.removeEventListener("popstate", syncFromUrl);
+  }, [availableTags, displayLocale, locale]);
+
   const filtered = activeTag
     ? posts.filter((p) => p.tags.some((tag) => tag.toLowerCase() === activeTag))
     : posts;
@@ -118,11 +159,33 @@ export function BlogListContent({
   );
 
   const chipClass = (active: boolean) =>
-    `inline-flex min-h-[44px] items-center gap-1 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${
+    `inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${FOCUS_RING_CLASS} ${
       active
         ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
         : "border-sand bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]"
     }`;
+
+  const setTopic = (tag: string | null) => {
+    setActiveTag(tag);
+    const url = new URL(window.location.href);
+    if (tag) {
+      url.searchParams.set(BLOG_TOPIC_QUERY_KEY, toBlogTopicParam(tag));
+    } else {
+      url.searchParams.delete(BLOG_TOPIC_QUERY_KEY);
+    }
+    window.history.pushState(
+      window.history.state,
+      "",
+      `${url.pathname}${url.search}${url.hash}`,
+    );
+  };
+
+  const resultNoun =
+    displayLocale === "hu"
+      ? t("blog.resultMany", displayLocale)
+      : filtered.length === 1
+        ? t("blog.resultOne", displayLocale)
+        : t("blog.resultMany", displayLocale);
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
@@ -147,35 +210,76 @@ export function BlogListContent({
             {t("blog.heroSub", displayLocale)}
           </p>
 
-          {/* Téma-szűrő chipek darabszámmal */}
+          {/* Téma-szűrő: natív fieldset + pressed állapot, hogy a csoport és
+              a kiválasztás képernyőolvasóval is egyértelmű legyen. */}
           {tagChips.length > 1 && (
-            <div className="mt-6 flex flex-wrap gap-2">
-              <button type="button" onClick={() => setActiveTag(null)} className={chipClass(activeTag === null)}>
-                {t("blog.filterAll", displayLocale)}{" "}
-                <span className={activeTag === null ? "opacity-70" : "text-[var(--color-text-muted)]"}>
-                  {posts.length}
-                </span>
-              </button>
-              {tagChips.map(({ tag, count }) => (
+            <fieldset className="mt-6">
+              <legend className="mb-2.5 text-caption font-semibold text-[var(--color-text-muted)]">
+                {t("blog.filterLabel", displayLocale)}
+              </legend>
+              <div className="flex flex-wrap gap-2">
                 <button
-                  key={tag}
                   type="button"
-                  onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                  className={chipClass(activeTag === tag)}
+                  aria-pressed={activeTag === null}
+                  aria-controls="blog-results"
+                  onClick={() => setTopic(null)}
+                  className={chipClass(activeTag === null)}
                 >
-                  {tag}{" "}
-                  <span className={activeTag === tag ? "opacity-70" : "text-[var(--color-text-muted)]"}>
-                    {count}
+                  {activeTag === null ? <span aria-hidden="true">✓</span> : null}
+                  {t("blog.filterAll", displayLocale)}
+                  <span className={activeTag === null ? "opacity-70" : "text-[var(--color-text-muted)]"}>
+                    {posts.length}
                   </span>
                 </button>
-              ))}
-            </div>
+                {tagChips.map(({ tag, count }) => {
+                  const active = activeTag === tag;
+                  return (
+                    <button
+                      key={tag}
+                      type="button"
+                      aria-pressed={active}
+                      aria-controls="blog-results"
+                      onClick={() => setTopic(active ? null : tag)}
+                      className={chipClass(active)}
+                    >
+                      {active ? <span aria-hidden="true">✓</span> : null}
+                      {tag}
+                      <span className={active ? "opacity-70" : "text-[var(--color-text-muted)]"}>
+                        {count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </fieldset>
           )}
         </div>
       </section>
 
-      <section className="px-7 pb-14">
+      <section id="blog-results" className="px-7 pb-14">
         <div className="mx-auto max-w-5xl">
+          <div className="mb-5 flex min-h-11 flex-wrap items-center justify-between gap-3 border-b border-sand pb-3">
+            <p
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+              className="text-caption text-[var(--color-text-muted)]"
+            >
+              <span className="font-semibold text-[var(--color-text-primary)]">
+                {filtered.length} {resultNoun}
+              </span>
+              {activeTag ? <> · {activeTag}</> : null}
+            </p>
+            {activeTag ? (
+              <button
+                type="button"
+                onClick={() => setTopic(null)}
+                className={`inline-flex min-h-10 items-center rounded-lg px-1 text-caption font-semibold text-[var(--color-action-primary-bg)] transition-colors hover:text-[var(--color-accent-self-deep)] ${FOCUS_RING_CLASS}`}
+              >
+                {t("blog.clearFilter", displayLocale)}
+              </button>
+            ) : null}
+          </div>
           {filtered.length === 0 ? (
             <p className="text-sm text-[var(--color-text-muted)]">
               {t("blog.empty", displayLocale)}

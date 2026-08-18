@@ -2,6 +2,7 @@
 
 import { useEffect, useCallback, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { useOverlayTransition } from "./useOverlayTransition";
 
 /**
@@ -195,6 +196,7 @@ export function Modal({
               // 44px érintőcél az ikon optikai közepének megtartásával
               // (a korábbi p-1 + 20px ikon ≈ 28px volt).
               "absolute right-2 top-3 flex h-11 w-11 items-center justify-center rounded-lg transition",
+              FOCUS_RING_CLASS,
               isBrand
                 ? "text-ink-body/55 hover:bg-cream hover:text-ink-body"
                 : "text-muted hover:bg-sand/50 hover:text-ink-body",
@@ -374,7 +376,7 @@ export function ConfirmModal({
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="min-h-[44px] rounded-[10px] border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50"
+          className={`min-h-[44px] rounded-[10px] border border-sand bg-surface-card px-5 text-sm font-semibold text-ink-body transition hover:bg-cream disabled:cursor-not-allowed disabled:opacity-50 ${FOCUS_RING_CLASS}`}
         >
           {cancelText}
         </button>
@@ -382,7 +384,7 @@ export function ConfirmModal({
           type="button"
           onClick={onConfirm}
           disabled={isLoading}
-          className={`min-h-[44px] rounded-[10px] px-5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${
+          className={`min-h-[44px] rounded-[10px] px-5 text-sm font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-50 ${FOCUS_RING_CLASS} ${
             variant === "danger"
               ? "bg-[var(--color-action-destructive-bg)] hover:bg-[var(--color-action-destructive-bg-hover)]"
               : "bg-sage hover:bg-sage-dark"

@@ -133,7 +133,7 @@ function renderAssessmentClient(
 async function startAssessmentIfIntroVisible(user: ReturnType<typeof userEvent.setup>) {
   await waitFor(() => {
     const introCta = screen.queryByRole("button", { name: INTRO_START_CTA });
-    const questionVisible = screen.queryByText(new RegExp(`/\\s*${TOTAL_QUESTIONS}`));
+    const questionVisible = screen.queryByRole("progressbar");
     expect(Boolean(introCta || questionVisible)).toBe(true);
   });
 
@@ -144,10 +144,8 @@ async function startAssessmentIfIntroVisible(user: ReturnType<typeof userEvent.s
 }
 
 function getCurrentQuestionNumber(): number {
-  const totalNode = screen.getByText(new RegExp(`/\\s*${TOTAL_QUESTIONS}`));
-  const counterContainer = totalNode.parentElement;
-  const currentNode = counterContainer?.querySelector("span");
-  return Number.parseInt(currentNode?.textContent ?? "", 10);
+  const progress = screen.getByRole("progressbar");
+  return Number.parseInt(progress.getAttribute("aria-valuenow") ?? "", 10);
 }
 
 async function expectCurrentQuestionNumber(expected: number) {
