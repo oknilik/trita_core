@@ -11,7 +11,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
 import type { TestType } from "@prisma/client";
 import { dimColorsCss } from "@/lib/color-system";
-import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import { resolveDisplayRoleScores } from "@/lib/team-role-estimate";
 import {
   isSecondaryUncertain,
@@ -353,7 +353,7 @@ export default async function SharedProfilePage({
                   </summary>
                   <div className="border-t border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-4 py-4 md:px-5">
                     <span className="inline-flex rounded-full px-2.5 py-1 text-micro font-semibold" style={{ backgroundColor: colors.soft, color: colors.strong }}>
-                      {poleAwareDimensionLabel(dimension.code, dimension.score, locale)}
+                      {getDimensionLabel(dimension.score, locale)}
                     </span>
                     {/* Előbb a személyre szabott értelmezés (ez a megosztás
                         tétje), utána halkabban a dimenzió definíciója —

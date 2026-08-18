@@ -2,7 +2,7 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
-import { getDimensionTier } from "@/lib/dimension-utils";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
 
 interface AltruismCardProps {
@@ -10,21 +10,15 @@ interface AltruismCardProps {
   description: string;
 }
 
-// Semleges SZINT-címke a nem-valenciált kiegészítő skálához: a kártya saját
-// bannere mondja ki, hogy a Segítőkészség nem számít bele a hat főfaktorba —
-// a valenciás getDimensionLabel („erősség"/„figyelendő") ennek ellentmondott.
-const LEVEL_KEYS = {
-  high: "content.altruismLevelHigh",
-  mid: "content.altruismLevelMid",
-  low: "content.altruismLevelLow",
-} as const;
-
+// A Segítőkészség kiegészítő skála: a kártya saját bannere mondja ki, hogy
+// nem számít bele a hat főfaktorba. A szint-címke a kanonikus szótárból jön
+// (getDimensionLabel) — 2026-08-18 óta az maga is valencia-mentes, ezért a
+// kártyának nincs többé szüksége saját szint-szavakra.
 export function AltruismCard({ value, description }: AltruismCardProps) {
   const { locale } = useLocale();
-  // A tier CSAK a semleges SZINT-szóhoz kell (LEVEL_KEYS). A SZÍN nem
-  // értékel: a Segítőkészség nem a hat főfaktor egyike, ezért nincs saját
-  // identitás-hue-ja sem — semleges tintát kap (dimColorsCss fallback).
-  const tier = getDimensionTier(value);
+  // A SZÍN nem értékel: a Segítőkészség nem a hat főfaktor egyike, ezért
+  // nincs saját identitás-hue-ja sem — semleges tintát kap (dimColorsCss
+  // fallback).
   const colors = dimColorsCss("I");
 
   return (
@@ -50,10 +44,14 @@ export function AltruismCard({ value, description }: AltruismCardProps) {
             {t("content.altruismName", locale)}
           </span>
           {/* Szöveges besorolás — 0 közeli értéknél a szám önmagában
-              adathibának tűnne (design-akciólista #13). Semleges szint-szó
-              és semleges stílus: nem erősség/figyelendő ítélet. */}
+              adathibának tűnne (design-akciólista #13). A KANONIKUS szint-szó
+              (getDimensionLabel), semleges stílussal. A kártya korábbi saját
+              szótára (content.altruismLevel*) azért létezett, hogy elkerülje a
+              valenciás badge-et — 2026-08-18 óta a kanonikus címke maga
+              valencia-mentes, a különszótár csak szó-driftet okozott
+              („mérsékelt" vs. „közepes"). */}
           <span className="shrink-0 rounded bg-[var(--color-surface-subtle)] px-1.5 py-[2px] text-micro font-semibold text-[var(--color-text-muted)]">
-            {t(LEVEL_KEYS[tier], locale)}
+            {getDimensionLabel(value, locale)}
           </span>
           <div className="h-1.5 w-14 shrink-0 overflow-hidden rounded-sm bg-[var(--color-border-default)] md:w-[120px]">
             {/* Min. 2% sávszélesség, hogy a 0 is szándékos értéknek látsszon */}

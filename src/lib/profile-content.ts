@@ -1,27 +1,15 @@
 import type { ProfileCategory } from "./profile-engine";
-import { getDimensionTier, getDimensionLabel } from "./dimension-utils";
-import { isReverseValenced } from "./score-valence";
+import { getDimensionTier, DIMENSION_LEVEL_LABELS } from "./dimension-utils";
 
 export type Locale = "hu" | "en";
 type LocalizedText = Record<Locale, string>;
 
-/**
- * Pólus-tudatos tier-címke (motor-audit v4, FIX 2): az Emocionalitás (E)
- * fordított skála — az alacsony sáv ott stabilitást jelent, nem hiányt. A
- * sima getDimensionLabel „figyelendő"-je helyett E-nál az alacsony sáv
- * „stabil" címkét kap; minden más dimenzión a kanonikus címke megy ki.
- * Közös forrás a képernyő-strip, a share-oldal és a PDF-strip számára.
- */
-export function poleAwareDimensionLabel(
-  code: string | undefined,
-  score: number,
-  locale: string = "hu",
-): string {
-  if (code && isReverseValenced(code) && getDimensionTier(score) === "low") {
-    return locale === "hu" ? "stabil" : "stable";
-  }
-  return getDimensionLabel(score, locale);
-}
+// A korábbi `poleAwareDimensionLabel` 2026-08-18-án KIVEZETVE. Azért létezett,
+// mert a valenciás tier-címke („figyelendő") a fordított kódolású
+// Emocionalitás alacsony sávján hamis volt, és „stabil"-ra kellett foltozni.
+// A címke azóta valencia-mentes szint-szó (dimension-utils.getDimensionLabel:
+// magas/közepes/alacsony), amelyik minden dimenzión igaz — a folt tárgytalan.
+// A hívási helyek közvetlenül a `getDimensionLabel`-t használják.
 
 // ─── Block 1 – Bevezető framing ───────────────────────────────────────────────
 
@@ -49,10 +37,14 @@ export const DIM_LABELS: Record<string, LocalizedText> = {
   O: { hu: "Nyitottság", en: "Openness" },
 };
 
+// Ugyanaz a három szint-szó, mint a pontszám melletti címkéé — a kanonikus
+// térképből származtatva (dimension-utils DIMENSION_LEVEL_LABELS), hogy ne
+// fusson kétféle szóhasználat ugyanarra a sávra. A kulcsnév tér csak el:
+// ProfileCategory „medium", DimensionTier „mid".
 export const CATEGORY_LABELS: Record<ProfileCategory, LocalizedText> = {
-  high: { hu: "magas", en: "high" },
-  medium: { hu: "közepes", en: "medium" },
-  low: { hu: "alacsony", en: "low" },
+  high: DIMENSION_LEVEL_LABELS.high,
+  medium: DIMENSION_LEVEL_LABELS.mid,
+  low: DIMENSION_LEVEL_LABELS.low,
 };
 
 // ─── Block 3 – Működési narratíva (tension-specifikus szövegek) ───────────────

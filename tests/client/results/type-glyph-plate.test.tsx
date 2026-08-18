@@ -1,7 +1,7 @@
 /**
  * TypeGlyphPlate client tests (Vitest + RTL)
  *
- * Covers: a zárt/nyitott állapot, a helyes dimenzió-pár (a legerősebb adja a
+ * Covers: a zárt/nyitott állapot, a helyes dimenzió-pár (a legmagasabb pontszámú adja a
  * formát, a második a motívumot), a névelős magyar magyarázat („a(z)”
  * sablon-műtermék nélkül), és az ábra szöveges leírása (a11y).
  */
@@ -28,7 +28,7 @@ describe("TypeGlyphPlate", () => {
     const toggle = screen.getByRole("button", { expanded: false });
     expect(toggle).toHaveTextContent("Módszeres újító");
     expect(toggle).toHaveTextContent("Nyitottság × Lelkiismeretesség");
-    expect(screen.queryByText(/A nagy forma a legerősebb dimenziód/)).toBeNull();
+    expect(screen.queryByText(/A nagy forma a legmagasabb pontszámú dimenziód/)).toBeNull();
   });
 
   it("megnyitva a nyelvtant a helyes forma-motívum párral írja le", async () => {
@@ -37,7 +37,7 @@ describe("TypeGlyphPlate", () => {
 
     await user.click(screen.getByRole("button", { expanded: false }));
 
-    const explanation = screen.getByText(/A nagy forma a legerősebb dimenziód/);
+    const explanation = screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/);
     // Névelő a hu-grammar.ts-ből; a sablonban nincs „a(z)” műtermék
     expect(explanation).toHaveTextContent("a Nyitottság: a szem");
     expect(explanation).toHaveTextContent("a Lelkiismeretesség: a létrafokok");
@@ -64,7 +64,7 @@ describe("TypeGlyphPlate", () => {
     expect(screen.getByRole("button", { expanded: true })).toHaveTextContent(
       "Mit jelent a karakter-ábrám?",
     );
-    expect(screen.getByText(/A nagy forma a legerősebb dimenziód/)).toBeInTheDocument();
+    expect(screen.getByText(/A nagy forma a legmagasabb pontszámú dimenziód/)).toBeInTheDocument();
   });
 
   it("két érvényes dimenzió alatt nem renderel semmit", () => {
@@ -76,7 +76,7 @@ describe("TypeGlyphPlate", () => {
 
   // S3-hedge (motor-audit v4, FIX 5): mérési hibán belüli top-2 sorrendnél
   // a felirat nem sugallhat sorrendet („X × Y"), a nyelvtan nem mondhat
-  // „második legerősebb"-et — a pár rendezetlenül jelenik meg.
+  // „második legmagasabb"-et — a pár rendezetlenül jelenik meg.
   it("bizonytalan top-párnál rendezetlen pár-felirat és hedge-elt nyelvtan", () => {
     // O 78 vs C 74: a különbség (4) a mérési hibán belül (< 15).
     const uncertain = [
@@ -95,13 +95,13 @@ describe("TypeGlyphPlate", () => {
     expect(screen.queryByText(/Nyitottság × Lelkiismeretesség/)).toBeNull();
     // …helyette rendezetlen felsorolás.
     expect(
-      screen.getAllByText(/a két legerősebb: Nyitottság · Lelkiismeretesség/).length,
+      screen.getAllByText(/a két legmagasabb: Nyitottság · Lelkiismeretesség/).length,
     ).toBeGreaterThan(0);
-    // A nyelvtan nem állít „második legerősebb"-et, hanem a közel azonos
+    // A nyelvtan nem állít „második legmagasabb"-et, hanem a közel azonos
     // erősséget mondja ki.
-    expect(screen.queryByText(/a második legerősebb/)).toBeNull();
+    expect(screen.queryByText(/a második legmagasabb/)).toBeNull();
     expect(
-      screen.getByText(/A két legerősebb dimenziód — a Nyitottság és a Lelkiismeretesség/),
+      screen.getByText(/A két legmagasabb pontszámú dimenziód — a Nyitottság és a Lelkiismeretesség/),
     ).toBeInTheDocument();
     // Mérési-hiba SZÁM nem jelenik meg a hedge-szövegben sem.
     expect(document.body.textContent).not.toContain("±");
@@ -110,7 +110,7 @@ describe("TypeGlyphPlate", () => {
   it("határozott sorrendnél változatlan a „×” felirat és a sima nyelvtan", () => {
     render(<TypeGlyphPlate dimensions={DIMENSIONS} locale="hu" defaultOpen />);
     expect(screen.getAllByText(/Nyitottság × Lelkiismeretesség/).length).toBeGreaterThan(0);
-    expect(screen.getByText(/a második legerősebb/)).toBeInTheDocument();
+    expect(screen.getByText(/a második legmagasabb/)).toBeInTheDocument();
   });
 
   // Motor-audit v6, F1: a próza kapuja a CÍMKE-lefokozás kapuja
@@ -132,15 +132,15 @@ describe("TypeGlyphPlate", () => {
     // A címke ilyenkor főnév-only („Újító") — a próza nem mondhat többet.
     expect(screen.queryByText(/Módszeres újító/)).toBeNull();
     expect(screen.getAllByText(/Újító/).length).toBeGreaterThan(0);
-    // Nincs sorrendet állító „×" felirat, sem „második legerősebb" formula…
+    // Nincs sorrendet állító „×" felirat, sem „második legmagasabb" formula…
     expect(screen.queryByText(/Nyitottság × Lelkiismeretesség/)).toBeNull();
-    expect(screen.queryByText(/a második legerősebb/)).toBeNull();
+    expect(screen.queryByText(/a második legmagasabb/)).toBeNull();
     // …helyette a rendezetlen felsorolás és a hedge-elt nyelvtan.
     expect(
-      screen.getAllByText(/a két legerősebb: Nyitottság · Lelkiismeretesség/).length,
+      screen.getAllByText(/a két legmagasabb: Nyitottság · Lelkiismeretesség/).length,
     ).toBeGreaterThan(0);
     expect(
-      screen.getByText(/A két legerősebb dimenziód — a Nyitottság és a Lelkiismeretesség/),
+      screen.getByText(/A két legmagasabb pontszámú dimenziód — a Nyitottság és a Lelkiismeretesség/),
     ).toBeInTheDocument();
   });
 });

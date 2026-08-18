@@ -33,7 +33,7 @@ describe("TryTeaserCard", () => {
     expect(card).toHaveTextContent("Ízelítő az eredményedből");
     // a hero-glyph vésett felirata nagybetűsít — kis-nagybetű-független ellenőrzés
     expect(card).toHaveTextContent(/kísérletező hajtóerő/i);
-    expect(card).toHaveTextContent("Legerősebb dimenzióid");
+    expect(card).toHaveTextContent("A legmagasabb pontszámaid");
     expect(card).toHaveTextContent("Extraverzió");
     expect(card).toHaveTextContent("88%");
     expect(card).toHaveTextContent("Nyitottság");
@@ -59,7 +59,7 @@ describe("TryTeaserCard", () => {
 
     const card = screen.getByTestId("try-teaser-card");
     expect(card).toHaveTextContent("A taste of your result");
-    expect(card).toHaveTextContent("Your strongest dimensions");
+    expect(card).toHaveTextContent("Your highest scores");
     expect(card).toHaveTextContent(/inventive driving force/i);
   });
 });

@@ -33,7 +33,7 @@ import { AltruismCard } from "@/components/results/AltruismCard";
 import { ComparisonTab as ComparisonTabNew } from "@/components/results/ComparisonTab";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { GrowthFocus } from "@/components/profile/GrowthFocus";
-import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
 import type { PairTone } from "@/lib/profile-engine";
 import type { JourneyExperienceHints } from "@/lib/journey/types";
@@ -335,7 +335,7 @@ function ResultsTab({
                   // Szín = dimenzió-identitás (a pötty és a szám eddig is ezt
                   // vitte); a badge ezzel átáll a saját hue soft/strong
                   // párjára, így a soron egyetlen színrendszer fut. A badge
-                  // SZÖVEGE továbbra is a pólus-tudatos tier-címke.
+                  // SZÖVEGE a valencia-mentes szint-szó.
                   const colors = dimColorsCss(d.code);
                   return (
                     <div key={d.code}>
@@ -351,9 +351,9 @@ function ResultsTab({
                           className="shrink-0 rounded px-[7px] py-[2px] text-micro font-semibold"
                           style={{ backgroundColor: colors.soft, color: colors.strong }}
                         >
-                          {/* Pólus-tudatos címke: E alacsony sávja „stabil",
-                              nem „figyelendő" (fordított skála, FIX 2). */}
-                          {poleAwareDimensionLabel(d.code, d.score, locale)}
+                          {/* Valencia-mentes szint-szó (magas/közepes/
+                              alacsony) — a pontszám nem kap minősítést. */}
+                          {getDimensionLabel(d.score, locale)}
                         </span>
                         <span
                           className="w-8 shrink-0 text-right font-fraunces text-sm"

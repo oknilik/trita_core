@@ -281,7 +281,7 @@ export const assessmentTranslations = {
       hu: "Az eredményed ebben a böngészőben van elmentve — regisztráció után automatikusan a fiókodba kerül.",
       en: "Your result is saved in this browser — after sign-up it moves to your account automatically.",
     },
-    teaserTopDims: { hu: "Legerősebb dimenzióid", en: "Your strongest dimensions" },
+    teaserTopDims: { hu: "A legmagasabb pontszámaid", en: "Your highest scores" },
     // UX-A14: félkész draftnál nem ünneplünk — folytatásra hívunk.
     partialTitle: { hu: "Majdnem kész!", en: "Almost there!" },
     partialBody: {

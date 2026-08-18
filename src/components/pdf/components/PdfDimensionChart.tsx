@@ -1,7 +1,7 @@
 import { View, Text, Svg, Polygon, Line, Circle, Text as SvgText } from "@react-pdf/renderer";
 import { colors, type } from "../styles";
 import { dimColors } from "@/lib/color-system";
-import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import type { ReportDimensionView } from "@/lib/profile-report-view-model";
 
 // Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a hat
@@ -71,7 +71,7 @@ export function PdfRadarChart({ dims, size = 190 }: { dims: ReportDimensionView[
 
 /**
  * A radar melletti soros lista — a webes áttekintő fejezet 1:1 párja:
- * dimenziónév · pólus-tudatos szint-badge · pontszám · sáv.
+ * dimenziónév · valencia-mentes szint-szó · pontszám · sáv.
  */
 export function PdfDimensionList({
   dims,
@@ -101,7 +101,7 @@ export function PdfDimensionList({
                   borderRadius: 3,
                 }}
               >
-                {poleAwareDimensionLabel(d.code, d.value, locale)}
+                {getDimensionLabel(d.value, locale)}
               </Text>
               <Text
                 style={{

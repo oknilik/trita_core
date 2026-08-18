@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { dimColorsCss } from "@/lib/color-system";
+import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimensionFacetNames } from "@/lib/hexaco";
 import { percentileForScore } from "@/lib/norms";
 import { useLocale } from "@/components/LocaleProvider";
@@ -30,8 +31,14 @@ import { UpgradeButton } from "@/components/profile/UpgradeButton";
 //     mégis ugyanazt a zöld/bronz/homok kezelést kapta).
 // Mostantól a szín a DIMENZIÓT azonosítja (DIMENSION_COLORS, ugyanaz a
 // paletta, amit a radar és a strip használ), az ÉRTÉKET a sáv hossza és a
-// szám hordozza. A tier-alapú SZÖVEGES címke (erősség/mérsékelt/figyelendő)
-// ettől függetlenül él tovább a stripen — az külön termék-kérdés.
+// szám hordozza.
+//
+// A tier-alapú SZÖVEGES címke (korábban erősség/mérsékelt/figyelendő) fentebb
+// nyitva hagyott „külön termék-kérdése" 2026-08-18-án lezárva: a címke is
+// valencia-mentes szint-szó lett (magas/közepes/alacsony), ld.
+// dimension-utils.ts fejkomment. A FACET-sorok ugyanezt a szint-szót kapják:
+// egy csupasz „Szorongás 82" horgony nélkül lóg, és a facet ugyanazon a
+// 0–100-as POMP-skálán mozog, mint a dimenzió — ugyanaz a sáv, ugyanaz a szó.
 
 interface FacetEntry {
   code: string;
@@ -185,6 +192,13 @@ function AccordionItem({
                             <span className="min-w-0 flex-1">
                               <span className="block text-xs font-medium text-[var(--color-text-primary)]">
                                 {f.label}
+                              </span>
+                              {/* Szint-szó a NÉV alatt, nem a szám mellett: a
+                                  sorban nincs vízszintes hely (a hosszú HU
+                                  facet-nevek elhasalnának), és a meglévő
+                                  glossza-slot már ezt a ritmust hozza. */}
+                              <span className="mt-0.5 block text-micro leading-snug text-[var(--color-text-muted)]">
+                                {getDimensionLabel(f.score, locale)}
                               </span>
                               {f.code === ANXIETY_FACET_CODE && (
                                 <span className="mt-0.5 block text-micro leading-snug text-[var(--color-text-muted)]">
