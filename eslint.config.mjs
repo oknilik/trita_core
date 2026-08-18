@@ -30,6 +30,43 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  // Fluid címsor-lépték (2026-08-18): a `text-[clamp(...)]` átcsúszott a fenti
+  // px-mintán, ezért a marketing-lapok 8 kézi clamp-képlete visszaszivárgott
+  // (tipográfiai audit #7). A közös lépték a `text-fluid-title` (28→42) és a
+  // `text-fluid-display` (44→60) @utility a globals.css-ben.
+  // Kivétel: a /pilot és a /contact hero-léptéke SZÁNDÉKOSAN egyedi maradt
+  // (audit #7 lezáró döntése) — ezt a két lapot a szabály kihagyja.
+  {
+    files: ["src/**/*.tsx"],
+    ignores: ["src/app/(marketing)/pilot/**", "src/app/(marketing)/contact/**"],
+    rules: {
+      // FIGYELEM: a flat config nem fűzi össze a rule-opciókat — ez a blokk
+      // teljesen felülírja a fentit, ezért a px-szelektorokat is viszi.
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value=/text-\\[[0-9]+px\\]/]",
+          message:
+            "Arbitrary betűméret tilos. Használd a típus-skálát (text-hero/display/title/heading/body/caption/note/label/micro) vagy a Tailwind alap-fokokat (text-xs/sm/base) — ld. docs/development/ui-unification-plan.md",
+        },
+        {
+          selector: "TemplateElement[value.raw=/text-\\[[0-9]+px\\]/]",
+          message:
+            "Arbitrary betűméret tilos. Használd a típus-skálát (text-hero/display/title/heading/body/caption/note/label/micro) vagy a Tailwind alap-fokokat (text-xs/sm/base) — ld. docs/development/ui-unification-plan.md",
+        },
+        {
+          selector: "Literal[value=/text-\\[clamp\\(/]",
+          message:
+            "Kézi clamp() betűméret tilos. Használd a közös fluid léptéket (text-fluid-title / text-fluid-display) vagy a típus-skálát — ld. docs/tipografiai-audit.md #7",
+        },
+        {
+          selector: "TemplateElement[value.raw=/text-\\[clamp\\(/]",
+          message:
+            "Kézi clamp() betűméret tilos. Használd a közös fluid léptéket (text-fluid-title / text-fluid-display) vagy a típus-skálát — ld. docs/tipografiai-audit.md #7",
+        },
+      ],
+    },
+  },
   // Logging (2026-07-29): console-hívás tilos az src alatt — szerveren a
   // @/lib/logger (getRequestLogger), kliensen a @/lib/client-logger a
   // belépési pont. A két logger-fájl belső console-sink-je eslint-disable

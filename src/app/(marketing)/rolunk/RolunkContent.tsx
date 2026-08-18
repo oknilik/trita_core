@@ -24,14 +24,14 @@ export function RolunkContent() {
         <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
           <SectionEyebrow className="mb-6">{t("aboutUs.heroEyebrow", locale)}</SectionEyebrow>
 
-          <h1 className="max-w-[24ch] font-fraunces text-[clamp(2.4rem,6vw,4.2rem)] leading-[1.02] tracking-tight text-ink">
+          <h1 className="max-w-[24ch] font-fraunces text-fluid-display tracking-tight text-ink">
             {t("aboutUs.heroTitleBefore", locale)}
             <em className="not-italic text-[var(--color-accent-primary-strong)]">
               {t("aboutUs.heroTitleEm", locale)}
             </em>
           </h1>
 
-          <p className="mt-6 max-w-[640px] text-lg leading-[1.8] text-ink-body md:text-heading">
+          <p className="mt-6 max-w-[640px] text-base leading-relaxed text-ink-body">
             {t("aboutUs.heroLead", locale)}
           </p>
 
@@ -52,13 +52,13 @@ export function RolunkContent() {
         title={t("aboutUs.storyTitle", locale)}
       >
         <div className="grid max-w-[62ch] gap-6">
-          <p className="text-base leading-8 text-ink-body md:text-lg md:leading-[1.85]">
+          <p className="text-base leading-relaxed text-ink-body">
             {t("aboutUs.storyP1", locale)}
           </p>
-          <p className="text-base leading-8 text-ink-body md:text-lg md:leading-[1.85]">
+          <p className="text-base leading-relaxed text-ink-body">
             {t("aboutUs.storyP2", locale)}
           </p>
-          <p className="text-base leading-8 text-ink-body md:text-lg md:leading-[1.85]">
+          <p className="text-base leading-relaxed text-ink-body">
             {t("aboutUs.storyP3", locale)}
           </p>
         </div>
@@ -72,8 +72,8 @@ export function RolunkContent() {
               key={item.title}
               className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]"
             >
-              <h3 className="font-fraunces text-title leading-tight text-ink">{item.title}</h3>
-              <p className="mt-3 text-base leading-8 text-ink-body">{item.desc}</p>
+              <h3 className="font-fraunces text-heading text-ink">{item.title}</h3>
+              <p className="mt-3 text-base leading-relaxed text-ink-body">{item.desc}</p>
             </article>
           ))}
         </div>
@@ -90,10 +90,10 @@ export function RolunkContent() {
       <section>
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
-            <h2 className="mx-auto max-w-[22ch] font-fraunces text-[clamp(2rem,4vw,3rem)] leading-[1.05] tracking-tight text-ink">
+            <h2 className="mx-auto max-w-[22ch] font-fraunces text-fluid-title tracking-tight text-ink">
               {t("aboutUs.ctaTitle", locale)}
             </h2>
-            <p className="mx-auto mt-5 max-w-[52ch] text-base leading-8 text-ink-body">
+            <p className="mx-auto mt-5 max-w-[52ch] text-base leading-relaxed text-ink-body">
               {t("aboutUs.ctaBody", locale)}
             </p>
             <MarketingActions
@@ -126,7 +126,7 @@ function EditorialSection({
           <SectionEyebrow>{eyebrow}</SectionEyebrow>
         </div>
         <div>
-          <h2 className="max-w-[20ch] font-fraunces text-[clamp(2.1rem,4.5vw,3.2rem)] leading-[1.04] tracking-tight text-ink">
+          <h2 className="max-w-[20ch] font-fraunces text-fluid-title tracking-tight text-ink">
             {title}
           </h2>
           <div className="mt-8">{children}</div>
