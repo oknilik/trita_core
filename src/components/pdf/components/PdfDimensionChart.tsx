@@ -1,30 +1,20 @@
 import { View, Text, Svg, Polygon, Line, Circle, Text as SvgText } from "@react-pdf/renderer";
-import { colors } from "../styles";
+import { colors, type } from "../styles";
 import { dimColors } from "@/lib/color-system";
+import { poleAwareDimensionLabel } from "@/lib/profile-content";
+import type { ReportDimensionView } from "@/lib/profile-report-view-model";
 
-// Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a
-// TRITAN-dimenziókkal + kompakt sávok. A dims tömb a kanonikus
-// TRITAN-sorrendben érkezik (X · E · H · C · A · O).
+// Az élő riport radar-chartjának PDF-megfelelője: hatszög-háló a hat
+// dimenzióval, a kanonikus HEXACO-sorrendben (H · E · X · A · C · O).
+//
+// SZÍN = IDENTITÁS (2026-08-11): a sáv és az érték-szám a dimenzió kanonikus
+// hue-ját viseli; a korábbi tier-rámpa értékelést vitt egy leíró skálára.
 
-interface Dim {
-  name: string;
-  shortName: string;
-  value: number;
-  /** Belső dimenziókód (H/E/…) — a kanonikus hue lookupjához. */
-  code?: string;
-}
-
-// A sáv ÉS az érték-szám is a dimenzió kanonikus színét kapja (print-en is
-// ≥4.5 fehéren). A korábbi tier-szín (sage/bronz/ink300) a SZÁMON értékelést
-// vitt egy leíró skálára, és a 70-es vágása a mérési hibán belül járt —
-// 2026-08-11-én kivezetve (ld. DimensionAccordion fejkomment).
-const barColor = (code: string | undefined) => dimColors(code ?? "").strong;
-
-function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
+export function PdfRadarChart({ dims, size = 190 }: { dims: ReportDimensionView[]; size?: number }) {
   const n = dims.length || 6;
   const cx = size / 2;
   const cy = size / 2;
-  const R = size / 2 - 15;
+  const R = size / 2 - 18;
 
   const point = (i: number, r: number): [number, number] => {
     const a = -Math.PI / 2 + (i * 2 * Math.PI) / n;
@@ -33,7 +23,11 @@ function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
   const ringPoints = (r: number) =>
     dims.map((_, i) => point(i, r).map((v) => v.toFixed(2)).join(",")).join(" ");
   const valuePoints = dims
-    .map((d, i) => point(i, (R * Math.max(0, Math.min(100, d.value))) / 100).map((v) => v.toFixed(2)).join(","))
+    .map((d, i) =>
+      point(i, (R * Math.max(0, Math.min(100, d.value))) / 100)
+        .map((v) => v.toFixed(2))
+        .join(","),
+    )
     .join(" ");
 
   return (
@@ -49,29 +43,23 @@ function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
         return <Line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke={colors.sand} strokeWidth={0.6} />;
       })}
       {/* Érték-poligon */}
-      <Polygon
-        points={valuePoints}
-        fill={colors.sage}
-        fillOpacity={0.16}
-        stroke={colors.sage}
-        strokeWidth={1.2}
-      />
+      <Polygon points={valuePoints} fill={colors.sage} fillOpacity={0.16} stroke={colors.sage} strokeWidth={1.4} />
       {/* Csúcspontok */}
       {dims.map((d, i) => {
         const [x, y] = point(i, (R * Math.max(0, Math.min(100, d.value))) / 100);
-        return <Circle key={i} cx={x} cy={y} r={1.6} fill={colors.sage} />;
+        return <Circle key={i} cx={x} cy={y} r={1.8} fill={colors.sage} />;
       })}
       {/* Tengely-címkék — a felület radarjának egybetűs HEXACO-jelei */}
       {dims.map((d, i) => {
-        const [x, y] = point(i, R + 10);
+        const [x, y] = point(i, R + 11);
         return (
           <SvgText
             key={i}
             x={x}
-            y={y + 2.5}
+            y={y + 3}
             textAnchor="middle"
             fill={colors.ink500}
-            style={{ fontFamily: "Fraunces", fontSize: 8, fontWeight: 600 }}
+            style={{ fontFamily: "Fraunces", fontSize: 9, fontWeight: 600 }}
           >
             {d.shortName}
           </SvgText>
@@ -81,29 +69,73 @@ function RadarSvg({ dims, size }: { dims: Dim[]; size: number }) {
   );
 }
 
-export function PdfDimensionChart({ dims }: { dims: Dim[] }) {
+/**
+ * A radar melletti soros lista — a webes áttekintő fejezet 1:1 párja:
+ * dimenziónév · pólus-tudatos szint-badge · pontszám · sáv.
+ */
+export function PdfDimensionList({
+  dims,
+  locale = "hu",
+}: {
+  dims: ReportDimensionView[];
+  locale?: "hu" | "en";
+}) {
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 4 }}>
-      {/* Radar — látványelem, az élő riporttal azonos */}
-      <RadarSvg dims={dims} size={150} />
-
-      {/* Kompakt sávok — dimenziónként érték + szint-szín */}
-      <View style={{ flex: 1 }}>
-        {dims.map((d) => {
-          const tc = barColor(d.code);
-          return (
-            <View key={d.name} style={{ flexDirection: "row", alignItems: "center", gap: 5, marginBottom: 5 }}>
-              <Text style={{ width: 62, fontSize: 6.5, color: colors.ink500 }}>{d.name}</Text>
-              <View style={{ flex: 1, height: 3, backgroundColor: colors.cream300, borderRadius: 1.5 }}>
-                <View style={{ width: `${Math.max(0, Math.min(100, d.value))}%`, height: 3, backgroundColor: tc, borderRadius: 1.5 }} />
-              </View>
-              <Text style={{ width: 16, fontFamily: "Fraunces", fontSize: 8, color: tc, textAlign: "right" }}>
+    <View style={{ flexDirection: "column", gap: 9 }}>
+      {dims.map((d) => {
+        const dc = dimColors(d.code);
+        return (
+          <View key={d.code}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+              <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: dc.base }} />
+              <Text style={{ flex: 1, fontSize: type.cardTitle, fontWeight: 500, color: colors.ink }}>
+                {d.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: type.caption,
+                  fontWeight: 600,
+                  backgroundColor: dc.soft,
+                  color: dc.strong,
+                  padding: "2 6",
+                  borderRadius: 3,
+                }}
+              >
+                {poleAwareDimensionLabel(d.code, d.value, locale)}
+              </Text>
+              <Text
+                style={{
+                  width: 22,
+                  textAlign: "right",
+                  fontFamily: "Fraunces",
+                  fontSize: type.subhead,
+                  color: dc.strong,
+                }}
+              >
                 {d.value}
               </Text>
             </View>
-          );
-        })}
-      </View>
+            <View
+              style={{
+                marginLeft: 11,
+                marginTop: 4,
+                height: 3,
+                borderRadius: 1.5,
+                backgroundColor: colors.cream500,
+              }}
+            >
+              <View
+                style={{
+                  width: `${Math.max(0, Math.min(100, d.value))}%`,
+                  height: 3,
+                  borderRadius: 1.5,
+                  backgroundColor: dc.base,
+                }}
+              />
+            </View>
+          </View>
+        );
+      })}
     </View>
   );
 }

@@ -103,10 +103,8 @@ const DIMENSION_SURFACES = [
   "src/components/profile/ProfileTabs.tsx",
   "src/components/landing/HeroSection.tsx",
   "src/app/(app)/share/[token]/page.tsx",
-  "src/components/pdf/components/PdfDimStrip.tsx",
-  "src/components/pdf/components/PdfDimDetails.tsx",
-  "src/components/pdf/components/PdfFacets.tsx",
   "src/components/pdf/components/PdfDimensionChart.tsx",
+  "src/components/pdf/components/PdfDimensionDetail.tsx",
 ];
 
 test("a dimenzió-felületek nem használnak értékelő színt", () => {

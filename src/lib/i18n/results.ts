@@ -2218,6 +2218,43 @@ export const resultsTranslations = {
     altruism: { hu: "Segítőkészség", en: "Helpfulness" },
     // ── PdfTakeaways ───────────────────────────────────────────────────────
     keyTakeaways: { hu: "A legfontosabbak", en: "Key takeaways" },
+    // ── Riport-szerkezet (PDF ↔ web egységesítés, 2026-08-18) ─────────────
+    // A fejezetcímek/kérdések/leírások a webes kulcsokból jönnek
+    // (results.report*Title|Question|Body) — itt csak a PDF-specifikus
+    // navigációs és melléklet-szövegek élnek.
+    contentsTitle: { hu: "Mi van a riportban?", en: "What's in this report?" },
+    contentsAppendices: { hu: "Mellékletek", en: "Appendices" },
+    quickOverviewTitle: { hu: "Gyors összkép", en: "Quick overview" },
+    appendixEyebrow: { hu: "Melléklet", en: "Appendix" },
+    appendixObserverTitle: { hu: "Külső nézőpont", en: "Outside view" },
+    appendixObserverNote: {
+      hu: "Mért adat: a visszajelzőid válaszainak összesített átlaga, az önképeddel összevetve.",
+      en: "Measured data: the aggregated average of your observers' answers, compared with your self-image.",
+    },
+    appendixCareerTitle: { hu: "Karrier-iránytű", en: "Career compass" },
+    appendixCareerNote: {
+      hu: "A kitöltött Karrier-iránytű eredménye — illeszkedési becslés konfidencia-sávval.",
+      en: "The result of the Career compass you completed — a fit estimate with a confidence band.",
+    },
+    appendixRelationalTitle: { hu: "Kapcsolati dinamika", en: "Relational dynamics" },
+    appendixRelationalNote: {
+      hu: "Profil-alapú BECSLÉS, nem mérés: a saját pontszámaidból vezetett hipotézisek arról, kikkel működsz jellemzően jól, hol súrlódhatsz, és mi jelenhet meg nyomás alatt.",
+      en: "A profile-based ESTIMATE, not a measurement: hypotheses derived from your own scores about who you typically work well with, where friction may appear, and what may show up under pressure.",
+    },
+    // ── 01 · Áttekintés ────────────────────────────────────────────────────
+    overviewRadarTitle: { hu: "A profilod egy ábrán", en: "Your profile at a glance" },
+    // ── 02 · Dimenziók ─────────────────────────────────────────────────────
+    dimensionSubscales: { hu: "Alskálák", en: "Subscales" },
+    dimensionNoSubscales: {
+      hu: "Ehhez a dimenzióhoz nincs alskála-bontás ebben a kitöltésben.",
+      en: "No subscale breakdown is available for this dimension in this completion.",
+    },
+    // ── 03 · Munkastílus és fejlődés ───────────────────────────────────────
+    idealEnvironment: { hu: "Ideális környezet", en: "Ideal environment" },
+    idealEnvironmentNote: {
+      hu: "A sorok azt mutatják, milyen munkakörnyezet mellett működsz jellemzően a legjobban. A pólusok között nincs jobb és rosszabb — a különbség az, mit igényelnek tőled.",
+      en: "These rows show the working environment you typically operate best in. Neither pole is better — they simply ask different things of you.",
+    },
     // ── PdfFooter ──────────────────────────────────────────────────────────
     footerTagline: { hu: "Személyiség és csapatintelligencia", en: "Personality and team intelligence" },
   },

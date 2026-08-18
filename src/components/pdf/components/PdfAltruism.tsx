@@ -1,6 +1,5 @@
 import { View, Text } from "@react-pdf/renderer";
-// Note: unicode icons like ℹ don't render in react-pdf; use View-based icons instead
-import { colors } from "../styles";
+import { colors, type } from "../styles";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -10,43 +9,75 @@ interface PdfAltruismProps {
   locale?: Locale;
 }
 
+// Kiegészítő (intersticiális) skála — a webes AltruismCard párja.
+//
+// A komponens CSAK akkor kerül a riportba, ha valódi, kitöltésből származó
+// „I" érték létezik: a view-model kapuzza (profile-report-view-model.altruism).
+// A rövid TSFI-S formában nincs ilyen item, ezért ott a szekció EL SEM
+// KÉSZÜL — nem 0%-ként jelenik meg (PDF-audit 2026-08-18, P0/7).
 export function PdfAltruism({ value, description, locale = "hu" }: PdfAltruismProps) {
   const dotColor = value >= 70 ? colors.sage : value >= 40 ? colors.bronze : colors.ink300;
-  // A webes AltruismCard-dal azonos sávpadló: 0%-nál a nulla szélességű sáv
-  // adathibának/renderelési hibának látszik, nem szándékos alacsony értéknek.
-  // (A pontozás 2026-08-11 óta nem ír koholt 0-t, de egy VALÓDI 0 továbbra is
-  // előfordulhat — annak is látszania kell.)
   const barWidth = Math.max(0, Math.min(100, value));
 
   return (
-    <View style={{ marginBottom: 6 }}>
-      <Text style={{ fontSize: 6.5, letterSpacing: 1.5, textTransform: "uppercase", color: colors.ink300, fontWeight: 600, marginBottom: 3 }}>
+    <View
+      wrap={false}
+      style={{
+        backgroundColor: colors.cream300,
+        borderRadius: 12,
+        border: `1 solid ${colors.sand}`,
+        padding: "14 16",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: type.eyebrow,
+          letterSpacing: type.eyebrowTracking,
+          textTransform: "uppercase",
+          color: colors.ink300,
+          fontWeight: 600,
+          marginBottom: 8,
+        }}
+      >
         {t("pdf.supplementaryScale", locale)}
       </Text>
-      <View style={{ backgroundColor: colors.cream300, borderRadius: 4, padding: "5 8", border: `1 solid ${colors.cream500}` }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 4, marginBottom: 2 }}>
-          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.cream500, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontSize: 5.5, fontWeight: 700, color: colors.ink300 }}>i</Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4, flex: 1 }}>
-            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: dotColor }} />
-            <Text style={{ fontSize: 8, fontWeight: 500, color: colors.ink }}>
-              {t("pdf.altruism", locale)}
-            </Text>
-          </View>
-          <View style={{ width: 50, height: 3, backgroundColor: colors.cream500, borderRadius: 2, overflow: "hidden" }}>
-            <View style={{ width: `${Math.max(barWidth, 2)}%`, height: 3, backgroundColor: dotColor, borderRadius: 2 }} />
-          </View>
-          <Text style={{ fontSize: 7.5, fontWeight: 600, color: dotColor, width: 20, textAlign: "right" }}>{value}%</Text>
-        </View>
-        {/* A webes AltruismCard info-bannerével azonos keretezés: a skála nem
-            része a hat főfaktornak, ezért nem is számít bele az átlagukba.
-            Enélkül a PDF-ben egy hetedik dimenziónak látszott. */}
-        <Text style={{ fontSize: 6, color: colors.ink300, lineHeight: 1.35, marginBottom: 2 }}>
-          {t("content.altruismInfo", locale)}
+
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginBottom: 7 }}>
+        <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: dotColor }} />
+        <Text style={{ flex: 1, fontSize: type.cardTitle, fontWeight: 500, color: colors.ink }}>
+          {t("pdf.altruism", locale)}
         </Text>
-        <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.35 }}>{description}</Text>
+        <View style={{ width: 60, height: 3, backgroundColor: colors.cream500, borderRadius: 1.5, overflow: "hidden" }}>
+          <View style={{ width: `${barWidth}%`, height: 3, backgroundColor: dotColor, borderRadius: 1.5 }} />
+        </View>
+        <Text
+          style={{
+            fontFamily: "Fraunces",
+            fontSize: type.subhead,
+            color: dotColor,
+            width: 24,
+            textAlign: "right",
+          }}
+        >
+          {value}
+        </Text>
       </View>
+
+      {/* A webes AltruismCard info-bannerével azonos keretezés: a skála nem
+          része a hat főfaktornak, ezért nem is számít bele az átlagukba. */}
+      <Text style={{ fontSize: type.body, color: colors.ink500, lineHeight: type.lineHeight.body }}>
+        {description}
+      </Text>
+      <Text
+        style={{
+          fontSize: type.caption,
+          color: colors.ink300,
+          lineHeight: type.lineHeight.caption,
+          marginTop: 6,
+        }}
+      >
+        {t("content.altruismInfo", locale)}
+      </Text>
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import { View, Text } from "@react-pdf/renderer";
-import { colors } from "../styles";
+import { colors, type } from "../styles";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 
@@ -8,22 +8,45 @@ interface PdfTakeawaysProps {
   locale?: Locale;
 }
 
-// Meleg sage zárókártya — a korábbi sötét doboz helyett, az élő
-// riport világos design-nyelvéhez igazítva.
-//
-// A `closer` (záró „iránytű"-bekezdés) 2026-08-11-én kivezetve — a prop is,
-// hogy ne maradjon holt vezeték. Indoklás: profile-content.ts, Block 8.
-
+// Meleg sage zárókártya — az élő riport KeyTakeawaysSection párja.
 export function PdfTakeaways({ takeaways, locale = "hu" }: PdfTakeawaysProps) {
   return (
-    <View style={{ backgroundColor: colors.sage100, borderRadius: 8, border: `1 solid rgba(61,107,94,0.18)`, padding: "10 12" }}>
-      <Text style={{ fontSize: 5.5, letterSpacing: 1.2, textTransform: "uppercase", color: colors.bronzeDark, fontWeight: 600, marginBottom: 4 }}>
+    <View
+      style={{
+        backgroundColor: colors.sage100,
+        borderRadius: 12,
+        border: `1 solid ${colors.sage200}`,
+        padding: "14 16",
+      }}
+    >
+      <Text
+        style={{
+          fontSize: type.eyebrow,
+          letterSpacing: type.eyebrowTracking,
+          textTransform: "uppercase",
+          color: colors.bronzeDark,
+          fontWeight: 600,
+          marginBottom: 8,
+        }}
+      >
         {t("pdf.keyTakeaways", locale)}
       </Text>
       {takeaways.map((tw, i) => (
-        <View key={i} style={{ flexDirection: "row", gap: 4, marginBottom: 3 }}>
-          <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.sage, marginTop: 2.5 }} />
-          <Text style={{ flex: 1, fontSize: 6.5, color: colors.sageDark, lineHeight: 1.4 }}>{tw}</Text>
+        <View
+          key={i}
+          style={{ flexDirection: "row", gap: 7, marginBottom: i === takeaways.length - 1 ? 0 : 6 }}
+        >
+          <View style={{ width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.sage, marginTop: 5 }} />
+          <Text
+            style={{
+              flex: 1,
+              fontSize: type.body,
+              color: colors.sageDark,
+              lineHeight: type.lineHeight.body,
+            }}
+          >
+            {tw}
+          </Text>
         </View>
       ))}
     </View>

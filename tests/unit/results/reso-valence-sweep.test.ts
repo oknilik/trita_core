@@ -266,21 +266,24 @@ test("jelölt-felület: a valencia-szűrés a kanonikus kapuból jön, nem kézi
   assert.ok(!EMPATHY_RE.test(code), "empátia-keretezés maradt a jelölt-oldal szövegeiben");
 });
 
-test("PDF facet-oldal: az erősség-pillek és a magas-összegzés a kanonikus kapun mennek", () => {
-  const source = read("src/components/pdf/pages/PlusFacetsPage.tsx");
-  assert.ok(
-    source.includes('strengthSlotEligible(f.dimCode, "self")'),
-    "a facet-pillek nem a kanonikus erősség-kapun szűrnek",
-  );
+test("riport-view-model: az erősség- és deficit-slotok a kanonikus kapun mennek", () => {
+  // 2026-08-18: a PDF tartalmi összeállítása a közös view-modelbe költözött
+  // (a korábbi PlusFacetsPage kivezetve), ezért a kapu-szerződés is ott él —
+  // egy helyen a web, a PDF és a persona-dosszié számára.
+  const source = read("src/lib/profile-report-view-model.ts");
   assert.ok(
     source.includes('strengthSlotEligible(d.code, "self")'),
-    "a magas-összegzés nem a kanonikus erősség-kapun szűr",
+    "az erősség-lista nem a kanonikus erősség-kapun szűr",
   );
-  // Üres-szekció veszély: ha se magas, se alacsony tétel nem marad,
-  // a kártya a kiegyensúlyozott-profil szöveget adja (nem üres címet).
   assert.ok(
-    source.includes('t("pdf.facetBalanced", locale)'),
-    "hiányzik a kiegyensúlyozott-profil fallback a facet-összegzőből",
+    source.includes("deficitSlotEligible(d.code)"),
+    "a figyelendő-lista nem a kanonikus deficit-kapun szűr",
+  );
+  // Üres-szekció veszély: ha nem marad ≥70-es dimenzió, a kiegyensúlyozott-
+  // profil szöveg megy ki — nem üres felsorolás.
+  assert.ok(
+    source.includes('t("results.balancedProfile", locale)'),
+    "hiányzik a kiegyensúlyozott-profil fallback a bullet-építőből",
   );
 });
 

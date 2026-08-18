@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
-import { HEXACO_ORDER } from "@/lib/hexaco";
-import { deficitSlotEligible, strengthSlotEligible } from "@/lib/score-valence";
+import { buildProfileSummaryInsights } from "@/lib/profile-report-view-model";
 import { t, type Locale } from "@/lib/i18n";
 import type {
   BridgeNextStep,
@@ -37,62 +36,11 @@ interface ProfileSummaryProps {
   locale: Locale;
 }
 
-interface SummaryInsight {
-  label: string;
-  text: string;
-  tone: "strength" | "attention" | "work";
-}
-
-function orderedMainDimensions(dimensions: SerializedDimension[]): SerializedDimension[] {
-  return HEXACO_ORDER
-    .map((code) => dimensions.find((dimension) => dimension.code === code))
-    .filter((dimension): dimension is SerializedDimension => Boolean(dimension));
-}
-
-export function buildProfileSummaryInsights(
-  dimensions: SerializedDimension[],
-  plusContent: ProfileTabsProps["plusContent"] | undefined,
-  locale: Locale,
-): SummaryInsight[] {
-  const ordered = orderedMainDimensions(dimensions);
-  const ranked = [...ordered].sort((a, b) => b.score - a.score);
-  const strongest =
-    ranked.find((dimension) => strengthSlotEligible(dimension.code, "self") && dimension.score >= 70) ??
-    ranked[0];
-  const attention = [...ordered]
-    .filter((dimension) => deficitSlotEligible(dimension.code) && dimension.score < 40)
-    .sort((a, b) => a.score - b.score)[0];
-
-  const mainText = strongest?.insight ?? plusContent?.howYouWorkParts.main ?? "";
-  const attentionText =
-    plusContent?.howYouWorkParts.watch ??
-    attention?.insight ??
-    t("results.summaryBalancedAttention", locale);
-  const growthText =
-    plusContent?.growthTip ??
-    attention?.description ??
-    strongest?.description ??
-    strongest?.insight ??
-    "";
-
-  return [
-    {
-      label: t("results.summaryNatural", locale),
-      text: mainText,
-      tone: "strength",
-    },
-    {
-      label: t("results.summaryAttention", locale),
-      text: attentionText,
-      tone: "attention",
-    },
-    {
-      label: t("results.summaryGrowth", locale),
-      text: growthText,
-      tone: "work",
-    },
-  ];
-}
+// A három összkép-insight buildere a KÖZÖS riport-view-modelben él
+// (src/lib/profile-report-view-model.ts) — így a PDF „Gyors összkép" oldala
+// szó szerint ugyanazt a három insightot hozza, ugyanabban a sorrendben.
+// Re-export a visszafelé kompatibilitásért (a fogyasztók innen importálják).
+export { buildProfileSummaryInsights };
 
 function NextStepSummary({
   bridgeNextStep,
