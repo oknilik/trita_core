@@ -72,9 +72,14 @@ export const PDF_COLORS = {
   sageDark: "#2d4f46",
   sageLight: "#4a8b78",
   sage100: "#e8f0ed",
+  // Kártya-keret tintek a PDF-hez: a react-pdf `border` shorthand-parsere nem
+  // old fel rgba()-t (a keret ilyenkor a bronz alapértelmezettre esik vissza),
+  // ezért a 30%-os sage/bronze tintek IT T élnek, előre keverve fehérre.
+  sage200: "#c5d3cf",
   bronze: COLORS.bronze,
   bronzeLight: "#d4a67a",
   bronze100: "#faf0e6",
+  bronze200: "#ecd9c9",
   bronzeDark: "#a0623a",
   bronze700: "#8a5530", // gap/magnitúdó-rámpa legmélyebb foka (= --color-bronze-700)
   ink: COLORS.ink,

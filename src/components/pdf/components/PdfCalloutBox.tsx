@@ -33,15 +33,15 @@ export function PdfCalloutBox({ variant, title, children }: PdfCalloutBoxProps) 
       style={{
         backgroundColor: st.bg,
         borderLeft: `3 solid ${st.border}`,
-        borderRadius: 4,
-        padding: "6 8",
-        marginBottom: 6,
+        borderRadius: 8,
+        padding: "10 12",
+        marginBottom: 10,
       }}
     >
       {title && (
         <Text
           style={{
-            fontSize: 6.5,
+            fontSize: 8,
             fontWeight: 700,
             letterSpacing: 0.8,
             textTransform: "uppercase",

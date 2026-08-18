@@ -1,5 +1,5 @@
 import { View, Text } from "@react-pdf/renderer";
-import { colors } from "../styles";
+import { colors, type } from "../styles";
 import { t } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import type { HowYouWorkParts } from "@/lib/workstyle-content";
@@ -13,8 +13,51 @@ interface PdfHowYouWorkProps {
   locale?: Locale;
 }
 
+function Block({
+  label,
+  text,
+  labelColor,
+  textColor,
+  background,
+  border,
+}: {
+  label: string;
+  text: string;
+  labelColor: string;
+  textColor: string;
+  background: string;
+  border: string;
+}) {
+  return (
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: background,
+        borderRadius: 10,
+        padding: "12 14",
+        border: `1 solid ${border}`,
+      }}
+    >
+      <Text
+        style={{
+          fontSize: type.eyebrow,
+          letterSpacing: type.eyebrowTracking,
+          textTransform: "uppercase",
+          fontWeight: 600,
+          color: labelColor,
+          marginBottom: 5,
+        }}
+      >
+        {label}
+      </Text>
+      <Text style={{ fontSize: type.body, color: textColor, lineHeight: type.lineHeight.body }}>
+        {text}
+      </Text>
+    </View>
+  );
+}
+
 export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
-  const main = parts.main;
   const watch = parts.watch ?? "";
   // Semleges „Jellemző mintázat" kártya (tone: "note", fordított skála) — a
   // felülettel azonos slot, hogy a PDF és a képernyő ne csússzon szét.
@@ -22,37 +65,49 @@ export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
   const context = parts.context.join(" ");
 
   return (
-    <View style={{ marginBottom: 10 }}>
-      <View style={{ flexDirection: "row", gap: 4 }}>
-        <View style={{ flex: 1, backgroundColor: colors.sage100, borderRadius: 4, padding: "6 8", border: `1 solid rgba(61,107,94,0.15)` }}>
-          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.sageDark, marginBottom: 2 }}>
-            {t("pdf.keyPattern", locale)}
-          </Text>
-          <Text style={{ fontSize: 6.5, color: colors.sageDark, lineHeight: 1.4 }}>{main}</Text>
-        </View>
+    <View>
+      <View style={{ flexDirection: "row", gap: 8 }}>
+        <Block
+          label={t("pdf.keyPattern", locale)}
+          text={parts.main}
+          labelColor={colors.sageDark}
+          textColor={colors.sageDark}
+          background={colors.sage100}
+          border={colors.sage200}
+        />
         {watch ? (
-          <View style={{ flex: 1, backgroundColor: colors.bronze100, borderRadius: 4, padding: "6 8", border: `1 solid rgba(193,127,74,0.15)` }}>
-            <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.bronzeDark, marginBottom: 2 }}>
-              {t("pdf.watchArea", locale)}
-            </Text>
-            <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>{watch}</Text>
-          </View>
+          <Block
+            label={t("pdf.watchArea", locale)}
+            text={watch}
+            labelColor={colors.bronzeDark}
+            textColor={colors.ink500}
+            background={colors.bronze100}
+            border={colors.bronze200}
+          />
         ) : null}
       </View>
       {notes ? (
-        <View style={{ marginTop: 4, backgroundColor: colors.cream300, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.sand}` }}>
-          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink500, marginBottom: 2 }}>
-            {t("pdf.patternNote", locale)}
-          </Text>
-          <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>{notes}</Text>
+        <View style={{ marginTop: 8 }}>
+          <Block
+            label={t("pdf.patternNote", locale)}
+            text={notes}
+            labelColor={colors.ink500}
+            textColor={colors.ink500}
+            background={colors.cream300}
+            border={colors.sand}
+          />
         </View>
       ) : null}
       {context ? (
-        <View style={{ marginTop: 4, backgroundColor: colors.white, borderRadius: 4, padding: "6 8", border: `1 solid ${colors.cream500}` }}>
-          <Text style={{ fontSize: 5.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 600, color: colors.ink300, marginBottom: 2 }}>
-            {t("pdf.context", locale)}
-          </Text>
-          <Text style={{ fontSize: 6.5, color: colors.ink500, lineHeight: 1.4 }}>{context}</Text>
+        <View style={{ marginTop: 8 }}>
+          <Block
+            label={t("pdf.context", locale)}
+            text={context}
+            labelColor={colors.ink300}
+            textColor={colors.ink500}
+            background={colors.white}
+            border={colors.cream500}
+          />
         </View>
       ) : null}
     </View>

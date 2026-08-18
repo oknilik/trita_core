@@ -1,111 +1,97 @@
 import { Document, pdf } from "@react-pdf/renderer";
 import { saveAs } from "file-saver";
-import type { HowYouWorkParts } from "@/lib/workstyle-content";
+import { t } from "@/lib/i18n";
+import {
+  buildProfileReportViewModel,
+  type ProfileReportInput,
+  type ProfileReportViewModel,
+  type ReportChapterId,
+} from "@/lib/profile-report-view-model";
 import { CoverPage } from "./pages/CoverPage";
-import { SummaryPage } from "./pages/SummaryPage";
-import { StartPage } from "./pages/StartPage";
-import { PlusFacetsPage } from "./pages/PlusFacetsPage";
-import { PlusWorkStylePage } from "./pages/PlusWorkStylePage";
-import { CollabPage } from "./pages/CollabPage";
-import { ReflectPage } from "./pages/ReflectPage";
-import { CareerPage } from "./pages/CareerPage";
+import { QuickOverviewPage } from "./pages/QuickOverviewPage";
+import { ChapterOverviewPage } from "./pages/ChapterOverviewPage";
+import { ChapterDimensionsPage, chunkDimensions } from "./pages/ChapterDimensionsPage";
+import { ChapterWorkStylePage } from "./pages/ChapterWorkStylePage";
+import { AppendixRelationalPage } from "./pages/AppendixRelationalPage";
+import { AppendixObserverPage } from "./pages/AppendixObserverPage";
+import { AppendixCareerPage } from "./pages/AppendixCareerPage";
 
-// ─── Data interface ──────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// A riport dokumentum-szerkezete. A TARTALMI source of truth a webes
+// eredményoldal (ProfileTabs / LinearReport), ezért a sorrend:
+//
+//   Borító → Gyors összkép → 01 Áttekintés → 02 Dimenziók →
+//   03 Munkastílus és fejlődés → opcionális mellékletek
+//   (külső nézőpont · karrier · kapcsolati dinamika)
+//
+// A `PdfData` bemenet-alak megmaradt (a hívók kompatibilisek), de a tartalmi
+// összeállítás a közös view-modelbe költözött (profile-report-view-model.ts) —
+// a PDF innentől csak MEGJELENÍT.
+// ─────────────────────────────────────────────────────────────────────────────
 
-export interface PdfData {
-  userName: string;
-  completedAt: string;
-  personalityType: string;
-  heroInsight: string;
-  /** Archetípus-történet felütés a summary-oldalra (P5.6). */
-  archetypeStory?: string;
-  plan: "start" | "plus";
-  locale?: "hu" | "en";
-  // Bullet-based insights
-  strengthBullets: string[];
-  watchBullets: string[];
-  // Profile character callout
-  profileCharacter?: string;
-  // Hero dimension chips
-  topDimensions?: string[];
-  watchDimensions?: string[];
-  // Dimensions
-  dimensions: { name: string; shortName: string; value: number; description: string; code?: string }[];
-  teamRoleRoles: { name: string; subtitle: string; score: number; rank: number; why?: string }[];
-  /** true = profil-alapú becslés (pontszám rejtve, csak sáv-címke); false = mért kérdőíves eredmény. */
-  teamRoleEstimated?: boolean;
-  // Altruism
-  altruism?: { value: number; description: string };
-  /** Karrier-iránytű export — csak kitöltött wizard után kerül a riportba. */
-  career?: {
-    roles: { name: string; industry: string; score: number; bandLow: number; bandHigh: number; why?: string }[];
-    developNote?: string;
-  };
-  // Plus content
-  plusContent?: {
-    /** „Ahogy működsz" nevesített slotokkal (FIX 3) — a watch csak valódi
-     *  risk-párnál létezik, a pozicionális [0]/[1] találgatás kivezetve. */
-    howYouWorkParts: HowYouWorkParts;
-    /** Vakfolt + nyomás alatti működés hipotézisek (P2.1). */
-    pressure?: string[];
-    /** Strukturált stress/vakfolt párok + forrás-dimenzió (P3.1, P5.2). */
-    pressureParts?: { stress: string; blindspot: string; source?: string }[];
-    /** Konkrét viselkedéses fejlődési javaslat a legalacsonyabb dimenzióhoz (P2.4). */
-    growthTip?: string;
-    /** Háromlépcsős fejlődési ív (P5.5). */
-    growthPlan?: { behavior: string; reflection: string; challenge: string; source?: string };
-    /** „Csapatban működve" fejezet (P4.2); source = forrás-dimenzió chip (P5.2). */
-    collaboration?: {
-      click: { text: string; source?: string }[];
-      friction: { text: string; source?: string }[];
-      needs: { text: string; source?: string }[];
-    };
-    roleFit: {
-      strong: string;
-      might: string;
-      prep: string;
-      /** A második legerősebb dimenzió árnyaló mondata (P2.2). */
-      secondary?: string;
-      strongRoles?: string[];
-      mightRoles?: string[];
-      prepRoles?: string[];
-    };
-    takeaways: string[];
-  };
-  facetDimensions?: { name: string; value: number; insight?: string; description?: string; code?: string; facets: { label: string; score: number }[] }[];
-  // Reflect observer data
-  observerData?: {
-    count: number;
-    dimensions: { name: string; self: number; observer: number }[];
-    summaryPoints: string[];
+/** A letöltés bemenete — a közös view-model inputja. */
+export type PdfData = ProfileReportInput;
+
+export { type ProfileReportInput };
+
+/**
+ * A tartalomjegyzék oldalszámai. A szerkezet determinisztikus: a Gyors összkép
+ * és a 01 fejezet egy-egy lap, a 02 fejezet lapjainak száma a dimenziók
+ * számából adódik (3 / lap), így a 03 fejezet kezdő oldala előre ismert.
+ * A borító számozáson kívül van, ezért az első tartalmi oldal az 1.
+ */
+export function chapterStartPages(
+  model: ProfileReportViewModel,
+): Record<ReportChapterId, number> {
+  const dimensionPages = chunkDimensions(model.dimensionsChapter.dimensions).length;
+  return {
+    overview: 2,
+    dimensions: 3,
+    workstyle: 3 + dimensionPages,
   };
 }
 
-// ─── Document ────────────────────────────────────────────────────────────────
-
-function TritaDocument({ data }: { data: PdfData }) {
-  const hasPlus = data.plan === "plus";
-  const hasObservers = hasPlus && data.observerData && data.observerData.count > 0;
-  const locale = data.locale ?? "hu";
-
-  // Start: 1; Plus: 5 (summary + start + facets + workstyle + collab);
-  // observerekkel: 6. A summary- és collab-oldal csak plus riportban él.
-  const hasCareer = hasPlus && Boolean(data.career?.roles.length);
-  const totalPages = (hasObservers ? 6 : hasPlus ? 5 : 1) + (hasCareer ? 1 : 0);
-  let pageNum = 0;
-  const nextPage = () => ++pageNum;
+export function TritaReportDocument({ data }: { data: PdfData }) {
+  const model = buildProfileReportViewModel(data);
+  const dimensionChunks = chunkDimensions(model.dimensionsChapter.dimensions);
+  const hasAppendix = (id: "observer" | "career" | "relational") =>
+    model.appendices.some((a) => a.id === id);
 
   return (
-    <Document>
-      {/* Archetípus-borító — számozáson kívül, a riport „arca" */}
-      <CoverPage data={data} />
-      {hasPlus && <SummaryPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
-      <StartPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />
-      {hasPlus && <PlusFacetsPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
-      {hasPlus && <PlusWorkStylePage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
-      {hasPlus && <CollabPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
-      {hasCareer && <CareerPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
-      {hasObservers && <ReflectPage data={data} pageNum={nextPage()} totalPages={totalPages} locale={locale} />}
+    <Document
+      title={`${model.identity.userName} — ${t("pdf.personalityProfile", model.locale)}`}
+      author="Trita"
+      subject={t("pdf.footerTagline", model.locale)}
+      creator="Trita"
+      producer="Trita"
+      language={model.locale}
+    >
+      {/* Borító — számozáson kívül, a riport „arca" */}
+      <CoverPage
+        model={model}
+        bookmark={{ title: model.identity.personalityType || model.identity.userName, expanded: true }}
+      />
+
+      <QuickOverviewPage model={model} chapterStartPages={chapterStartPages(model)} />
+
+      <ChapterOverviewPage model={model} />
+
+      {dimensionChunks.map((dims, i) => (
+        <ChapterDimensionsPage
+          key={`dims-${i}`}
+          model={model}
+          dims={dims}
+          isFirst={i === 0}
+          isLast={i === dimensionChunks.length - 1}
+        />
+      ))}
+
+      <ChapterWorkStylePage model={model} />
+
+      {/* Opcionális mellékletek — a riport VÉGÉN, világosan megnevezve */}
+      {hasAppendix("observer") ? <AppendixObserverPage model={model} /> : null}
+      {hasAppendix("career") ? <AppendixCareerPage model={model} /> : null}
+      {hasAppendix("relational") ? <AppendixRelationalPage model={model} /> : null}
     </Document>
   );
 }
@@ -113,7 +99,7 @@ function TritaDocument({ data }: { data: PdfData }) {
 // ─── Download trigger ────────────────────────────────────────────────────────
 
 export async function downloadPdf(data: PdfData) {
-  const blob = await pdf(<TritaDocument data={data} />).toBlob();
+  const blob = await pdf(<TritaReportDocument data={data} />).toBlob();
   const firstName = data.userName.toLowerCase().replace(/\s+/g, "-");
   const dateStr = new Date().toISOString().slice(0, 10);
   const fileName = `trita-profil-${firstName}-${dateStr}.pdf`;

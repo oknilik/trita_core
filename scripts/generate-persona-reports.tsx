@@ -3,8 +3,9 @@
  * típusonként csoportosítva, tartalomjegyzékkel és PDF-könyvjelzőkkel (outline)
  * a lapozgatáshoz.
  *
- * A riportok a VALÓDI react-pdf komponensekből (CoverPage/StartPage/…) épülnek,
- * ugyanabból a PdfData-ból, amit az eredmény-oldal PDF-exportja használ — a
+ * A riportok a VALÓDI react-pdf komponensekből (CoverPage / QuickOverviewPage /
+ * Chapter*Page) épülnek, ugyanabból a KÖZÖS riport-view-modelből, amit az
+ * eredmény-oldal PDF-exportja is használ (profile-report-view-model.ts) — a
  * content-pipeline (dimenzió-insightok, feszültség-pár narratívák, munkastílus,
  * csapatszerep-becslés) a valós lib-függvényekből fordul, így a dosszié azt
  * mutatja, amit a felhasználók is látnának a saját riportjukban.
@@ -12,7 +13,7 @@
  * Futtatás:
  *   pnpm report:personas                 # mind a 48, HU, plus (teljes) riport
  *   pnpm report:personas --locale en
- *   pnpm report:personas --plan start    # csak az alap (1 oldal / persona)
+ *   pnpm report:personas --plan start    # csak az alap (Start) riport
  *   pnpm report:personas --only inte-open,pair-supported-visibility
  *   pnpm report:personas --out /abs/path.pdf
  *
@@ -27,28 +28,23 @@ import React from "react";
 import { buildAllPersonas, buildFacets, type Persona } from "./personas.shared";
 import { getTestConfig } from "../src/lib/questions";
 import { buildWorkstyleContent } from "../src/lib/workstyle-content";
-import { buildArchetypeStory } from "../src/lib/profile-content";
-import {
-  isTopPairUncertain,
-  resolvePersonalityTypeFromScores,
-} from "../src/lib/personality-type";
+import { resolvePersonalityTypeFromScores } from "../src/lib/personality-type";
 import {
   DIMENSION_STRENGTH_VERBS,
   DIMENSION_WEAK_VERBS,
-  DIMENSION_STRENGTH_DESCS,
-  DIMENSION_WATCH_DESCS,
 } from "../src/lib/dimension-insights";
-import { estimateTeamRolesFromTritan } from "../src/lib/team-role-estimate";
-import { TEAM_ROLES, TEAM_ROLE_WHY, getTopRoles } from "../src/lib/team-role-scoring";
-import { HEXACO_ORDER, hexLetter, type HexacoCode } from "../src/lib/hexaco";
-import { t, tf, type Locale } from "../src/lib/i18n";
-import type { PdfData } from "../src/components/pdf/TritaPdf";
+import { t, type Locale } from "../src/lib/i18n";
+import {
+  buildProfileReportViewModel,
+  type ProfileReportInput,
+} from "../src/lib/profile-report-view-model";
 import { CoverPage } from "../src/components/pdf/pages/CoverPage";
-import { SummaryPage } from "../src/components/pdf/pages/SummaryPage";
-import { StartPage } from "../src/components/pdf/pages/StartPage";
-import { PlusFacetsPage } from "../src/components/pdf/pages/PlusFacetsPage";
-import { PlusWorkStylePage } from "../src/components/pdf/pages/PlusWorkStylePage";
-import { CollabPage } from "../src/components/pdf/pages/CollabPage";
+import { QuickOverviewPage } from "../src/components/pdf/pages/QuickOverviewPage";
+import { ChapterOverviewPage } from "../src/components/pdf/pages/ChapterOverviewPage";
+import { ChapterDimensionsPage, chunkDimensions } from "../src/components/pdf/pages/ChapterDimensionsPage";
+import { ChapterWorkStylePage } from "../src/components/pdf/pages/ChapterWorkStylePage";
+import { AppendixRelationalPage } from "../src/components/pdf/pages/AppendixRelationalPage";
+import { chapterStartPages } from "../src/components/pdf/TritaPdf";
 import { colors } from "../src/components/pdf/styles";
 
 // ─── Fontok: a styles.ts /fonts/-ra regisztrál (böngésző-origin) — node-ban
@@ -86,9 +82,9 @@ Font.register({
   ],
 });
 
-// ─── PdfData összeállítás — az eredmény-oldal (results/page.tsx) és a
-//     ProfileTabs export-glue tükre. A tartalom a valós lib-függvényekből
-//     jön; itt csak a nem-exportált inline logikát reprodukáljuk. ────────────
+// ─── Riport-bemenet (ProfileReportInput) összeállítása. A tartalmi szabályok
+//     a közös view-modelben élnek; itt csak a persona-specifikus NYERS adatot
+//     állítjuk elő (pontszámok, facetek, típusnév, hero-tagline). ────────────
 
 const isHuLoc = (l: Locale) => l === "hu";
 
@@ -97,45 +93,49 @@ function getInsight(score: number, insights: { low: string; mid: string; high: s
   return insights[range];
 }
 
-// Hero-tagline és bullet-térképek — közös forrásból (dimension-insights.ts),
-// a results-oldallal és a ProfileTabs-szal szinkronban (javítási terv P1.5).
+// Hero-tagline térképek — közös forrásból (dimension-insights.ts). A többi
+// tartalmi szabály (bulletek, profil-karakter, archetípus-sztori, csapatszerep-
+// precedencia, összkép-insightok) a KÖZÖS view-modelben él, nem itt.
 const strengthVerbs = DIMENSION_STRENGTH_VERBS;
 const weakVerbs = DIMENSION_WEAK_VERBS;
-const strengthDescs = DIMENSION_STRENGTH_DESCS;
-const watchDescs = DIMENSION_WATCH_DESCS;
 
-function tritanIndex(code: string): number {
-  const i = (HEXACO_ORDER as readonly string[]).indexOf(code);
-  return i === -1 ? HEXACO_ORDER.length : i;
-}
-
-function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"): PdfData {
+function buildReportInput(
+  persona: Persona,
+  locale: Locale,
+  plan: "start" | "plus",
+): ProfileReportInput {
   const config = getTestConfig("TRITAN", locale);
   const facetScores = buildFacets(persona.dimensions);
 
-  const dimensions = config.dimensions.map((dim) => {
-    const score = persona.dimensions[dim.code] ?? 0;
+  // „Nincs mérve" ≠ 0 pont: a persona csak a hat fő dimenziót definiálja, ezért
+  // a kiegészítő „I" skála KIMARAD — a korábbi `?? 0` fallback egy 0%-os
+  // „Segítőkészség" sort renderelt a mintariportokba (PDF-audit P0/7).
+  const dimensions = config.dimensions.flatMap((dim) => {
+    const score = persona.dimensions[dim.code];
+    if (typeof score !== "number") return [];
     const insights = (dim.insightsByLocale?.[locale] ?? dim.insights) as {
       low: string; mid: string; high: string;
     };
-    return {
+    return [{
       code: dim.code,
       label: (dim.labelByLocale?.[locale] ?? dim.label) as string,
       score,
       insight: getInsight(score, insights),
       description: (dim.descriptionByLocale?.[locale] ?? dim.description) as string,
-      facets: (dim.facets ?? []).map((f) => ({
-        code: f.code,
-        label: (f.labelByLocale?.[locale] ?? f.label) as string,
-        score: facetScores[dim.code]?.[f.code] ?? 0,
-      })),
-    };
+      facets: (dim.facets ?? []).flatMap((f) => {
+        const facetScore = facetScores[dim.code]?.[f.code];
+        if (typeof facetScore !== "number") return [];
+        return [{
+          code: f.code,
+          label: (f.labelByLocale?.[locale] ?? f.label) as string,
+          score: facetScore,
+        }];
+      }),
+    }];
   });
 
-  const mainDims = dimensions.filter((d) => d.code !== "I").sort((a, b) => tritanIndex(a.code) - tritanIndex(b.code));
+  const mainDims = dimensions.filter((d) => d.code !== "I");
   const sortedDims = [...mainDims].sort((a, b) => b.score - a.score);
-  const highDims = mainDims.filter((d) => d.score >= 70);
-  const lowDims = mainDims.filter((d) => d.score < 40);
 
   const personalityType =
     resolvePersonalityTypeFromScores(mainDims.map((d) => ({ code: d.code, score: d.score })), locale) ??
@@ -145,102 +145,29 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
     const strongest = sortedDims[0];
     const weakest = sortedDims[sortedDims.length - 1];
     if (!strongest || !weakest) return "";
-    const s = strengthVerbs[strongest.code]?.[locale] ?? strongest.label;
-    const w = weakVerbs[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
-    return `${s} — ${w}.`;
-  })();
-
-  // Pólus-tudatos watch-lista (motor-audit v4, FIX 2, a ProfileTabs tükre):
-  // a fordított Emocionalitás alacsony sávja stabilitás, nem figyelendő.
-  const watchDims = lowDims.filter((d) => d.code !== "E");
-
-  const strengthBullets = (highDims.length > 0 ? highDims : sortedDims.slice(0, 2)).map((d) => {
-    const desc = strengthDescs[d.code]?.[locale];
-    return desc ? `${d.label} — ${desc}` : d.label;
-  });
-  const watchBullets = watchDims.length > 0
-    ? watchDims.map((d) => {
-        const desc = watchDescs[d.code]?.[locale];
-        return desc ? `${d.label} — ${desc}` : d.label;
-      })
-    : [t("content.noLowDimension", locale)];
-
-  // Kapuzott profil-karakter (FIX 2): „magas X" csak ≥70-re, alatta a
-  // balanced-fallback; fejlődés-mondat csak valóban alacsony, nem-E dimre.
-  const profileCharacter = (() => {
-    const top2High = [...highDims].sort((a, b) => b.score - a.score).slice(0, 2);
-    const highPart = top2High[0]
-      ? tf("content.profileCharacterHigh", locale, {
-          top1: top2High[0].label.toLowerCase(),
-          top2Suffix: top2High[1]
-            ? tf("content.profileCharacterTop2Suffix", locale, { label: top2High[1].label.toLowerCase() })
-            : "",
-        })
-      : t("results.balancedProfile", locale);
-    const growthDim = [...watchDims].sort((a, b) => a.score - b.score)[0];
-    const growthPart = growthDim
-      ? tf("content.profileCharacterGrowth", locale, { bottom: growthDim.label })
-      : "";
-    return `${highPart}${growthPart}`;
+    const sv = strengthVerbs[strongest.code]?.[locale] ?? strongest.label;
+    const wv = weakVerbs[weakest.code]?.[locale] ?? weakest.label.toLowerCase();
+    return `${sv} — ${wv}.`;
   })();
 
   const dimScores = Object.fromEntries(mainDims.map((d) => [d.code, d.score]));
   const workstyle = buildWorkstyleContent(dimScores, "TRITAN", locale);
 
-  const teamRoleRoles = (() => {
-    const scores = estimateTeamRolesFromTritan(dimScores as Record<HexacoCode, number>);
-    const top3 = getTopRoles(scores, 3);
-    const sourceLabel = locale === "hu" ? "profil-alapú becslés" : "profile-based estimate";
-    return top3.map((r, i) => ({
-      name: TEAM_ROLES[r.role][locale],
-      subtitle: i === 0 ? sourceLabel : "",
-      score: r.score,
-      rank: i,
-      // P5.3: egy mondatos indoklás az elsődleges BECSÜLT szerephez
-      why: i === 0 ? TEAM_ROLE_WHY[r.role][locale] : undefined,
-    }));
-  })();
-
-  const altruism = (() => {
-    const alt = dimensions.find((d) => d.code === "I");
-    return alt ? { value: alt.score, description: alt.insight } : undefined;
-  })();
-
   return {
     locale,
+    plan,
     userName: persona.label,
     completedAt: new Date().toLocaleDateString(isHuLoc(locale) ? "hu-HU" : "en-GB", {
       year: "numeric", month: "long", day: "numeric",
     }),
     personalityType,
     heroInsight,
-    // S3-hedge (FIX 5): mérési hibán belüli top-2 sorrendnél főnév-only
-    // történet — a második dimenziót nem állítjuk.
-    archetypeStory:
-      sortedDims[0] && sortedDims[1]
-        ? buildArchetypeStory(
-            sortedDims[0].code,
-            isTopPairUncertain(mainDims) ? null : sortedDims[1].code,
-            locale,
-          ) ?? undefined
-        : undefined,
-    plan,
-    strengthBullets,
-    watchBullets,
-    profileCharacter,
-    topDimensions: highDims.map((d) => d.label),
-    watchDimensions: watchDims.map((d) => d.label),
-    altruism,
-    dimensions: mainDims.map((d) => ({
-      name: d.label,
-      shortName: hexLetter(d.code) ??
-        (d.label.length > 10 ? d.label.slice(0, 10) + "." : d.label),
-      value: d.score,
-      description: d.insight,
-      code: d.code,
-    })),
-    teamRoleRoles,
-    teamRoleEstimated: true, // persona-riport mindig profil-alapú becslés → sáv-címke, pontszám nélkül
+    dimensions: plan === "plus"
+      ? dimensions
+      : dimensions.map((d) => ({ ...d, facets: [] })),
+    // Persona-riport: nincs kitöltött csapatszerep-kérdőív → profil-alapú
+    // becslés, sáv-címkével és pontszám nélkül (a view-model dönti el).
+    teamRoleMeasuredScores: null,
     plusContent: plan === "plus" ? {
       howYouWorkParts: workstyle.howYouWorkParts,
       pressure: workstyle.pressure,
@@ -248,17 +175,10 @@ function buildPdfData(persona: Persona, locale: Locale, plan: "start" | "plus"):
       growthTip: workstyle.growthTip,
       growthPlan: workstyle.growthPlan,
       collaboration: workstyle.collaboration,
+      envItems: workstyle.envItems,
       roleFit: workstyle.roleFit,
       takeaways: workstyle.takeaways,
     } : undefined,
-    facetDimensions: plan === "plus" ? mainDims.map((d) => ({
-      name: d.label,
-      value: d.score,
-      insight: d.insight,
-      description: d.description,
-      code: d.code,
-      facets: d.facets,
-    })) : undefined,
   };
 }
 
@@ -352,20 +272,39 @@ async function main() {
   const hu = isHuLoc(locale);
 
   const renderReport = (p: Persona) => {
-    const data = buildPdfData(p, locale, plan);
+    const model = buildProfileReportViewModel(buildReportInput(p, locale, plan));
     const bookmark = { title: `${p.label} · ${p.slug}`, expanded: false } as const;
-    const totalPages = plan === "plus" ? 5 : 1;
-    const pages = [<CoverPage key={`${p.slug}-c`} data={data} bookmark={bookmark} />];
+    const dimensionChunks = chunkDimensions(model.dimensionsChapter.dimensions);
+    // A dosszié minden persona-riportot EGY dokumentumba fűz, ezért a
+    // riporton belüli oldalszámozás itt nem értelmezhető — a lábléc a
+    // dokumentum-szintű számot mutatja, a lapozás a könyvjelzőkkel megy.
+    const pages: React.ReactElement[] = [
+      <CoverPage key={`${p.slug}-cover`} model={model} bookmark={bookmark} />,
+    ];
     if (plan === "plus") {
-      // Executive summary a riport elejére (P3.1) + Csapatban működve (P4.2)
-      // — a TritaPdf dokumentum-sorrendjével szinkronban.
-      pages.push(<SummaryPage key={`${p.slug}-x`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
-      pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={2} totalPages={totalPages} locale={locale} />);
-      pages.push(<PlusFacetsPage key={`${p.slug}-f`} data={data} pageNum={3} totalPages={totalPages} locale={locale} />);
-      pages.push(<PlusWorkStylePage key={`${p.slug}-w`} data={data} pageNum={4} totalPages={totalPages} locale={locale} />);
-      pages.push(<CollabPage key={`${p.slug}-t`} data={data} pageNum={5} totalPages={totalPages} locale={locale} />);
-    } else {
-      pages.push(<StartPage key={`${p.slug}-s`} data={data} pageNum={1} totalPages={totalPages} locale={locale} />);
+      pages.push(
+        <QuickOverviewPage
+          key={`${p.slug}-quick`}
+          model={model}
+          chapterStartPages={chapterStartPages(model)}
+        />,
+      );
+    }
+    pages.push(<ChapterOverviewPage key={`${p.slug}-ch1`} model={model} />);
+    dimensionChunks.forEach((dims, i) => {
+      pages.push(
+        <ChapterDimensionsPage
+          key={`${p.slug}-ch2-${i}`}
+          model={model}
+          dims={dims}
+          isFirst={i === 0}
+          isLast={i === dimensionChunks.length - 1}
+        />,
+      );
+    });
+    pages.push(<ChapterWorkStylePage key={`${p.slug}-ch3`} model={model} />);
+    if (model.appendices.some((a) => a.id === "relational")) {
+      pages.push(<AppendixRelationalPage key={`${p.slug}-appx`} model={model} />);
     }
     return pages;
   };
