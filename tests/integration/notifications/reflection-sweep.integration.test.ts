@@ -56,7 +56,7 @@ async function createUserWithSelfResult(
     dimensions?: Record<string, number>;
     lifecycleEmailsOptOut?: boolean;
     clerkId?: string | null;
-    locale?: string;
+    locale?: string | null;
     scores?: unknown;
   } = {},
 ) {
@@ -68,7 +68,7 @@ async function createUserWithSelfResult(
         overrides.clerkId === undefined ? makeId("clerk") : overrides.clerkId,
       email: `${id}@test.trita.app`,
       username: `${prefix} ${id}`,
-      locale: overrides.locale ?? "hu",
+      locale: overrides.locale === undefined ? "hu" : overrides.locale,
       testType: "TRITAN",
       onboardedAt: new Date(),
       lifecycleEmailsOptOut: overrides.lifecycleEmailsOptOut ?? false,
@@ -237,6 +237,70 @@ test("D1 Reflection sweep", async (t) => {
     await runNotificationSweep();
     assert.equal((await reflectionNotificationsFor(user.id)).length, 0);
   });
+
+  await t.test(
+    "a levél nyelvét a profil TÁROLT beállítása dönti el, alapértelmezésben magyar",
+    async () => {
+      // 2026-08-19: magyar felhasználók angol levelet kaptak. A küldő-réteg
+      // több helyen a címzett e-mail-TLD-jéből tippelt vagy `?? "en"`-re
+      // esett; a feloldás mostantól egyetlen `normalizeLocale()`, aminek az
+      // alapértelmezése a DEFAULT_LOCALE (magyar). Ez az eset a VALÓDI
+      // DB-értéktől a kimenő levél tárgyáig húzza a láncot.
+      const english = await createUserWithSelfResult("refl_loc_en", {
+        resultCreatedAt: daysAgo(8),
+        locale: "en",
+      });
+      // Régió-kódos érték: a korábbi `=== "en"` ternárius ezt MAGYARRA
+      // ejtette, a normalizeLocale angolnak ismeri fel.
+      const regional = await createUserWithSelfResult("refl_loc_engb", {
+        resultCreatedAt: daysAgo(8),
+        locale: "en-GB",
+      });
+      // Nincs beállított nyelv → a platform alapértelmezése, magyar.
+      const unset = await createUserWithSelfResult("refl_loc_null", {
+        resultCreatedAt: daysAgo(8),
+        locale: null,
+      });
+
+      // A kimenő levelet a Resend fetch-hívásának elkapásával olvassuk —
+      // hálózat és kulcs nélkül. A modul-szintű üres kulcsot csak erre az
+      // esetre írjuk felül, és utána visszaállítjuk.
+      const originalKey = process.env.RESEND_API_KEY;
+      const originalFetch = globalThis.fetch;
+      const sent: Array<{ to: string; subject: string }> = [];
+
+      process.env.RESEND_API_KEY = "integration-no-network";
+      globalThis.fetch = (async (_input: unknown, init?: { body?: unknown }) => {
+        if (typeof init?.body === "string") {
+          const payload = JSON.parse(init.body) as { to?: string | string[]; subject?: string };
+          const to = Array.isArray(payload.to) ? payload.to[0] : payload.to;
+          if (to && payload.subject) sent.push({ to, subject: payload.subject });
+        }
+        return new Response(JSON.stringify({ id: "test" }), {
+          status: 200,
+          headers: { "content-type": "application/json" },
+        });
+      }) as typeof globalThis.fetch;
+
+      try {
+        await runNotificationSweep();
+      } finally {
+        globalThis.fetch = originalFetch;
+        process.env.RESEND_API_KEY = originalKey;
+      }
+
+      const subjectFor = (email: string | null) => {
+        assert.ok(email, "a fixture-nek van email-címe");
+        const hit = sent.find((entry) => entry.to === email);
+        assert.ok(hit, `nem ment levél ${email} címre (küldött: ${sent.length})`);
+        return hit.subject;
+      };
+
+      assert.match(subjectFor(english.email), /A week has passed/);
+      assert.match(subjectFor(regional.email), /A week has passed/);
+      assert.match(subjectFor(unset.email), /Egy hét telt el/);
+    },
+  );
 
   await t.test("lifecycleEmailsOptOut: in-app értesítés jön, email-kísérlet nincs", async () => {
     const mailed = await createUserWithSelfResult("refl_mailed", {
