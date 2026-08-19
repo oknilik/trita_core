@@ -23,15 +23,22 @@ import {
   PROFILE_LOW_THRESHOLD,
 } from "@/lib/profile-engine";
 import {
+  GAP_ATOMS,
   LEADER_SUPPLEMENTS,
   atomBlocksFor,
   findAtom,
+  type AtomBlocks,
   type AtomSide,
   type LocalizedText,
   type Pole,
   type RelationAtom,
 } from "@/lib/interaction-atoms";
-import { HEXACO_ORDER, type HexacoCode } from "@/lib/hexaco";
+import { DIFF_MIN_GAP } from "@/lib/personality-type";
+import {
+  HEXACO_DIMENSION_FACETS,
+  HEXACO_ORDER,
+  type HexacoCode,
+} from "@/lib/hexaco";
 
 // ── Pólus-küszöbök ───────────────────────────────────────────────────
 // A `profile-engine.ts` házi konvenciója (szigorú összehasonlítással):
@@ -42,6 +49,18 @@ const LOW_THRESHOLD = PROFILE_LOW_THRESHOLD;
 
 /** A pólus-erősség referenciapontja: az 50-es középérték. */
 const MIDPOINT = 50;
+
+/**
+ * Hány szöveges dinamika-sor jelenhet meg egy páron.
+ *
+ * A rés-alapú réteg (2026-08-18) előtt ez a plafon SOHA nem telt be valós
+ * profilokon — a mérés szerint átlagosan 1,06 atom aktiválódott a 3-as
+ * keret mellett, tehát a korlát inert volt. Utána már köt, ezért 4:
+ * a három blokk (megy magától · súrlódás · beszéljétek meg) még
+ * végigolvasható, a szélesebb lefedettséget pedig a hat dimenziós
+ * összevetés-sáv viszi, nem a próza hossza.
+ */
+export const DEFAULT_MAX_ATOMS = 4;
 
 export type Polarity = Pole | "medium";
 export type DimScores = Partial<Record<HexacoCode, number>>;
@@ -71,6 +90,20 @@ export interface InteractionInput {
   maxAtoms?: number;
   /** Hány vezetői kiegészítő jelenjen meg. Alapértelmezés 2. */
   maxLeaderNotes?: number;
+  /**
+   * Facet-bontás a két félről (dimenziókód → facetkód → 0–100). Csak a
+   * facet-nüanszhoz (L4) kell; hiányában az a réteg némán kimarad —
+   * örökség-eredményben nincs facet-bontás, és koholt értéket nem gyártunk.
+   */
+  selfFacets?: FacetScores;
+  otherFacets?: FacetScores;
+  /**
+   * Facet-szintű különbség-küszöb (√2 · facet-SEM, kerekítve). A HÍVÓ
+   * számolja a kérdőív-formából (`facetStandardError`) és adja át — a motor
+   * szándékosan nem húzza be a psychometrics modult (az a teljes
+   * kérdésbankot importálja). Hiányában a facet-réteg kimarad.
+   */
+  facetMinGap?: number;
 }
 
 export interface InteractionLine {
@@ -78,8 +111,72 @@ export interface InteractionLine {
   atomId: string;
   /** Az érintett dimenziók (azonos atomnál egy, keresztnél kettő). */
   dims: HexacoCode[];
+  /**
+   * Milyen bizonyítékon áll a sor:
+   *  · `pole` — MINDKÉT fél a szélső sávban (>65 / <35): markáns dinamika;
+   *  · `gap`  — a két pontszám különbsége meghaladja a mérési hibát, de
+   *    egyik fél sem szélsőséges: mérhető, de halkabb állítás.
+   * A felület ezt jelöli — a becsült/mért megkülönböztetés a termék
+   * hitelességi alapelve (CLAUDE.md).
+   */
+  basis: EvidenceBasis;
   text: LocalizedText;
 }
+
+export type EvidenceBasis = "pole" | "gap";
+
+/** Facet-bontás: dimenziókód → facetkód → 0–100. */
+export type FacetScores = Record<string, Record<string, number>>;
+
+/**
+ * Egy dimenzió összevetése a két fél között — ez a réteg MINDIG mind a hat
+ * dimenzióról nyilatkozik (amennyiben mindkét oldalon mért), függetlenül
+ * attól, hogy született-e róla szöveges atom.
+ *
+ * SZÁNDÉKOSAN NEM HORDOZ PONTSZÁMOT. A pár-nézet adatvédelmi határa az,
+ * hogy a partner nyers értékei nem hagyják el a szervert; a `higher` mező
+ * dimenziónként egyetlen bit (ki a magasabb), ami a beszélgetés-indításhoz
+ * elég, a profil visszafejtéséhez nem.
+ */
+export interface DimensionComparison {
+  dim: HexacoCode;
+  /**
+   * `differs` — a különbség eléri a dimenzió-szintű mérési hibát
+   * (`DIFF_MIN_GAP` = √2·SEM); `aligned` — a különbség ez alatt van, tehát
+   * a két pontszám a mérés felbontásán belül egyezőnek tekintendő.
+   */
+  state: "aligned" | "differs";
+  /** Csak `differs` esetén: melyik oldal a magasabb. */
+  higher: "self" | "other" | null;
+}
+
+/**
+ * Facet-szintű sor. KÉT, episztemikusan KÜLÖNBÖZŐ fajta:
+ *
+ * · `nuance` — a dimenzió-szint EGYEZIK, de egy alskálán mérhető a
+ *   különbség: „ugyanaz a címke, más működés". Ez ÖNÁLLÓ állítás, tehát
+ *   saját kaput (facet-küszöb) kell átlépnie.
+ *
+ * · `driver` — a dimenzió-szint már ELTÉRÉST állapított meg, és ez a sor
+ *   csak megmondja, HOL fut az eltérés. Nem új hipotézis, hanem egy meglévő
+ *   megállapítás attribúciója — ezért nem növeli a tesztek számát.
+ *
+ * Miért számít a különbség: a rövid formán egy facet α ≈ 0,47 (a variancia
+ * több mint fele zaj), és 24 facet EGYIDEJŰ, önálló vizsgálata két azonos
+ * profilú ember között is ~7 hamis „eltérés"-jelzést adna. A `driver` ezt
+ * kerüli meg: 6 dimenzió-szintű döntés marad, a facet csak hozzárendel.
+ * Mérés és számok: docs/audits/interaction-pair-coverage-2026-08-18.md §8.
+ */
+export interface FacetNuance {
+  dim: HexacoCode;
+  /** Facet-kód (pl. "organization") — a címkét a nézet-réteg oldja fel. */
+  facet: string;
+  /** Melyik oldalon hangsúlyosabb ez az alskála. */
+  higher: "self" | "other";
+  kind: FacetLineKind;
+}
+
+export type FacetLineKind = "nuance" | "driver";
 
 export interface LeaderNote {
   dim: HexacoCode;
@@ -96,6 +193,15 @@ export interface InteractionResult {
   discuss: InteractionLine[];
   /** Vezető-módban a vezető pólusos dimenzióihoz tartozó kiegészítők. */
   leaderNotes: LeaderNote[];
+  /**
+   * Mind a hat (mindkét oldalon mért) dimenzió összevetése, a kanonikus
+   * HEXACO-sorrendben. Üres, ha a szint nem két valós profilt hasonlít
+   * össze — archetípus-prototípus ellen ez a réteg kitalált adatot
+   * állítana.
+   */
+  dimensions: DimensionComparison[];
+  /** Facet-szintű nüanszok (L4). Üres, ha nincs facet-adat vagy küszöb. */
+  facetNuances: FacetNuance[];
   meta: {
     level: InteractionLevel;
     mode: InteractionMode;
@@ -109,6 +215,8 @@ export interface InteractionResult {
     sparse: boolean;
     /** Hány jelölt atom volt a válogatás előtt — diagnosztika. */
     candidateCount: number;
+    /** Hány kiválasztott sor áll rés-alapon (a többi pólusos). */
+    gapLineCount: number;
   };
 }
 
@@ -145,10 +253,13 @@ export function polarSides(scores: DimScores): AtomSide[] {
 // ── Jelölt-atomok és markánsság ──────────────────────────────────────
 
 interface Candidate {
-  atom: RelationAtom;
-  mirrored: boolean;
+  /** Atom-azonosító: a determinisztikus holtverseny-döntés kulcsa is. */
+  id: string;
+  basis: EvidenceBasis;
   dims: HexacoCode[];
   salience: number;
+  /** A KÉRDEZŐ nézőpontjára már feloldott szöveg-blokkok. */
+  blocks: AtomBlocks;
 }
 
 /**
@@ -193,10 +304,11 @@ function collectCandidates(self: DimScores, other: DimScores): Candidate[] {
           : [found.atom.a.dim, found.atom.b.dim];
 
       const candidate: Candidate = {
-        atom: found.atom,
-        mirrored: found.mirrored,
+        id: found.atom.id,
+        basis: "pole",
         dims,
         salience: baseWeight(found.atom) * strength,
+        blocks: atomBlocksFor(found.atom, found.mirrored),
       };
       const existing = byAtomId.get(found.atom.id);
       if (!existing || candidate.salience > existing.salience) {
@@ -208,15 +320,86 @@ function collectCandidates(self: DimScores, other: DimScores): Candidate[] {
   return [...byAtomId.values()];
 }
 
+// ── Rés-alapú jelöltek ───────────────────────────────────────────────
+//
+// A pólus-kapu MINDKÉT féltől szélső értéket vár, ezért egy 62 vs 38 pár
+// (24 pont, a mérési hiba több mint kétszerese) néma marad. Ez a réteg a
+// KÜLÖNBSÉGRE aktivál — ugyanarra a modellre, amin a `friction-model.ts`
+// súrlódás-számítása és a csapat-nézet dinamika-élei már állnak.
+//
+// Mérés a bevezetés előtti állapotról:
+// docs/audits/interaction-pair-coverage-2026-08-18.md
+
+/**
+ * A rés-alapú bizonyíték GYENGÉBB a pólusosnál: azonos nyers erősségnél a
+ * pólus-atom kerül előre. Enélkül egy nagy, de középsávos rés kiszoríthatná
+ * a valóban markáns, kétoldali pólus-dinamikát.
+ */
+const GAP_SALIENCE_DISCOUNT = 0.8;
+
+/**
+ * Rés-erősség 0–1 között, SZÁNDÉKOSAN ugyanazon a skálán, mint a
+ * `poleStrength`: ott a középértéktől mért távolság a maximális 50-hez, itt
+ * a két pontszám távolsága a maximális 100-hoz viszonyul. Egy 80 vs 20 pár
+ * így mindkét mérőszámon 0,6-ot kap, és a rangsort a diszkont dönti el — nem
+ * a két skála véletlen meredeksége.
+ */
+function gapStrength(delta: number): number {
+  return Math.min(1, Math.abs(delta) / 100);
+}
+
+/**
+ * Rés-jelöltek: minden olyan dimenzió, ahol MINDKÉT oldalon van mért érték,
+ * és a különbség eléri a dimenzió-szintű mérési hibát (`DIFF_MIN_GAP`).
+ * A szöveg iránya a relatív helyzetből jön — a magasabb pontszámú fél
+ * olvassa a `view`-t, az alacsonyabb a `viewB`-t.
+ *
+ * KIZÁRÁS: ha ugyanarra a dimenzióra AZONOS DIMENZIÓS pólus-atom is
+ * aktiválódott, a rés-jelölt elmarad. A pólus-atom ugyanarról a dimenzióról
+ * beszél, csak erősebb bizonyítékon és konkrétabb szöveggel — a kettő közül
+ * a válogatás úgyis egyet engedne be, de a döntést nem bízzuk két, eltérő
+ * meredekségű erősség-skála összemérésére. A KERESZT-atom nem zár ki: az a
+ * dimenziót egy másikkal való viszonyában tárgyalja, nem önmagában.
+ */
+function collectGapCandidates(
+  self: DimScores,
+  other: DimScores,
+  poleCandidates: Candidate[],
+): Candidate[] {
+  const coveredBySameDimAtom = new Set(
+    poleCandidates.filter((c) => c.dims.length === 1).map((c) => c.dims[0]),
+  );
+  const candidates: Candidate[] = [];
+  for (const dim of HEXACO_ORDER) {
+    if (coveredBySameDimAtom.has(dim)) continue;
+    const mine = self[dim];
+    const theirs = other[dim];
+    if (typeof mine !== "number" || typeof theirs !== "number") continue;
+    const delta = mine - theirs;
+    if (Math.abs(delta) < DIFF_MIN_GAP) continue;
+    const atom = GAP_ATOMS[dim];
+    candidates.push({
+      id: atom.id,
+      basis: "gap",
+      dims: [dim],
+      salience:
+        (FRICTION_WEIGHTS[dim] ?? 0) * gapStrength(delta) * GAP_SALIENCE_DISCOUNT,
+      blocks: delta > 0 ? atom.view : atom.viewB,
+    });
+  }
+  return candidates;
+}
+
 /**
  * Válogatás: markánsság szerint csökkenően, de egy atom csak akkor kerül
  * be, ha ÚJ dimenziót hoz — különben három egymás alatti C-szöveget
- * kapna a felhasználó. Azonos markánsságnál az atom-ID dönt, hogy a
- * kimenet determinisztikus legyen.
+ * kapna a felhasználó. Ez zárja ki azt is, hogy ugyanarról a dimenzióról
+ * egy pólus- ÉS egy rés-sor is megszólaljon. Azonos markánsságnál az
+ * atom-ID dönt, hogy a kimenet determinisztikus legyen.
  */
 function selectAtoms(candidates: Candidate[], maxAtoms: number): Candidate[] {
   const sorted = [...candidates].sort(
-    (a, b) => b.salience - a.salience || a.atom.id.localeCompare(b.atom.id),
+    (a, b) => b.salience - a.salience || a.id.localeCompare(b.id),
   );
   const usedDims = new Set<HexacoCode>();
   const picked: Candidate[] = [];
@@ -249,16 +432,226 @@ function leaderNotesFor(
     .map(({ dim, pole, text }) => ({ dim, pole, text }));
 }
 
+// ── Hat dimenziós összevetés ─────────────────────────────────────────
+
+/**
+ * Két VALÓS profil szintjei — ezeken a szinteken a másik oldal mért adat,
+ * tehát a különbség-alapú rétegek (rés-atomok, dimenzió-összevetés,
+ * facet-nüansz) értelmezhetők. Archetípus-prototípus ellen NEM: ott a
+ * „másik" négy dimenziója szerkezetileg 50, a rés a kitalált középértékhez
+ * mérődne.
+ */
+function isRealPair(level: InteractionLevel): boolean {
+  return level === "profile-profile" || level === "measured";
+}
+
+/**
+ * Minden (mindkét oldalon mért) dimenzió összevetése, kanonikus
+ * HEXACO-sorrendben — ugyanabban, amiben a radar és a dimenzió-akkordeon
+ * is fut, hogy a felhasználó felismerje a sorrendet.
+ */
+function compareDimensions(
+  self: DimScores,
+  other: DimScores,
+): DimensionComparison[] {
+  const rows: DimensionComparison[] = [];
+  for (const dim of HEXACO_ORDER) {
+    const mine = self[dim];
+    const theirs = other[dim];
+    if (typeof mine !== "number" || typeof theirs !== "number") continue;
+    const delta = mine - theirs;
+    if (Math.abs(delta) < DIFF_MIN_GAP) {
+      rows.push({ dim, state: "aligned", higher: null });
+      continue;
+    }
+    rows.push({ dim, state: "differs", higher: delta > 0 ? "self" : "other" });
+  }
+  return rows;
+}
+
+// ── Facet-nüansz ─────────────────────────────────────────────────────
+//
+// „Ugyanaz a címke, más működés": ahol a két profil DIMENZIÓ-szinten
+// egyezik, ott is elválhat, MELYIK alskála viszi az eredményt. Ez az a
+// kérdés, amit a dimenzió-szint nem tud megválaszolni — miért súrlódik
+// két, papíron egyforma ember.
+//
+// Miért ilyen szűk a réteg: a rövid formán 2–3 item visz egy facetet, így
+// a facet-szintű különbség-küszöb ~17 pont, és 24 facet egyidejű vizsgálata
+// többszörös-összehasonlítási problémát is jelent. Ezért CSAK egyező
+// dimenzióban nézünk, dimenziónként a LEGNAGYOBB rést vesszük, és a teljes
+// kimenetet két sorra korlátozzuk.
+
+/** Legfeljebb ennyi „ugyanaz a címke, más működés" sor jelenhet meg. */
+export const MAX_FACET_NUANCES = 2;
+/** Legfeljebb ennyi „hol fut az eltérés" attribúció jelenhet meg. */
+export const MAX_FACET_DRIVERS = 2;
+
+/**
+ * A `nuance` sor kapuja SZIGORÚBB, mint a `driver`-é: a hívótól kapott
+ * facet-küszöb KÉTSZERESE.
+ *
+ * Miért: a két sor episztemikus státusza más. A `driver` egy dimenzió-szinten
+ * MÁR MEGÁLLAPÍTOTT eltérést rendel hozzá egy alskálához — nem dönti el, hogy
+ * van-e különbség, csak azt, hol fut; ráadásul a „pontosan egy alskála lépi
+ * át a küszöböt" feltétel önmagában erősen szűr. A `nuance` viszont ÖNÁLLÓ
+ * állítás, és sok facetre EGYSZERRE fut: egyező dimenziónként négy teszt.
+ *
+ * A hívó küszöbe 1 × √2·SEM, azaz ~1 szórásnyi hibahatár — ott két AZONOS
+ * profilú ember is ~31% eséllyel „eltér" facetenként. Ennyi egyidejű teszt
+ * mellett ez azt jelentené, hogy a nüansz-sor gyakorlatilag mindig tüzel,
+ * zajra. A 2× (~2 szórás) ezt facetenként ~5%-ra viszi le. A mérés a
+ * bevezetés után is ezt igazolta: 1× kapuval 1,4–1,7 nüansz-sor jutott egy
+ * párra, azaz majdnem minden pár két állítást kapott a LEGZAJOSABB rétegből.
+ *
+ * Számok és futtatás: docs/audits/interaction-pair-coverage-2026-08-18.md §8,
+ * `npx tsx scripts/diagnose-interaction-coverage.ts`.
+ */
+export const NUANCE_GATE_MULTIPLIER = 2;
+
+interface ScoredFacet {
+  facet: string;
+  delta: number;
+}
+
+/** Egy dimenzió MINDKÉT oldalon mért facetjei, a kanonikus sorrendben. */
+function facetDeltas(
+  dim: HexacoCode,
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+): ScoredFacet[] {
+  const mine = selfFacets[dim];
+  const theirs = otherFacets[dim];
+  if (!mine || !theirs) return [];
+  const out: ScoredFacet[] = [];
+  for (const facet of HEXACO_DIMENSION_FACETS[dim]) {
+    const a = mine[facet];
+    const b = theirs[facet];
+    if (typeof a !== "number" || typeof b !== "number") continue;
+    out.push({ facet, delta: a - b });
+  }
+  return out;
+}
+
+type RankedLine = FacetNuance & { delta: number; weight: number };
+
+function rankAndCap(lines: RankedLine[], cap: number): FacetNuance[] {
+  return lines
+    .sort((a, b) => b.delta - a.delta || b.weight - a.weight || a.dim.localeCompare(b.dim))
+    .slice(0, cap)
+    .map(({ dim, facet, higher, kind }) => ({ dim, facet, higher, kind }));
+}
+
+/**
+ * „Ugyanaz a címke, más működés" — ÖNÁLLÓ facet-állítás egyező dimenzióban.
+ * Dimenziónként a legnagyobb rés, és csak a MEGSZIGORÍTOTT facet-küszöb
+ * felett (`NUANCE_GATE_MULTIPLIER`).
+ */
+function collectNuances(
+  dimensions: DimensionComparison[],
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+  facetMinGap: number,
+): RankedLine[] {
+  const found: RankedLine[] = [];
+  for (const row of dimensions) {
+    if (row.state !== "aligned") continue;
+    let best: ScoredFacet | null = null;
+    for (const candidate of facetDeltas(row.dim, selfFacets, otherFacets)) {
+      // Holtversenynél a kanonikus facet-sorrend dönt (szigorú >), hogy a
+      // kimenet determinisztikus legyen.
+      if (!best || Math.abs(candidate.delta) > Math.abs(best.delta)) best = candidate;
+    }
+    if (!best || Math.abs(best.delta) < facetMinGap * NUANCE_GATE_MULTIPLIER) {
+      continue;
+    }
+    found.push({
+      dim: row.dim,
+      facet: best.facet,
+      higher: best.delta > 0 ? "self" : "other",
+      kind: "nuance",
+      delta: Math.abs(best.delta),
+      weight: FRICTION_WEIGHTS[row.dim] ?? 0,
+    });
+  }
+  return found;
+}
+
+/**
+ * „Hol fut az eltérés" — a dimenzió-szinten MÁR MEGÁLLAPÍTOTT különbség
+ * attribúciója egyetlen alskálára.
+ *
+ * A kapu SZÁNDÉKOSAN nem „a legnagyobb rés", hanem „PONTOSAN EGY alskálán
+ * mérhető a különbség a dimenzió irányában". Ha kettő is átlépi a küszöböt,
+ * az eltérés nem koncentrálódik, és a „főleg itt fut" mondat hamis volna —
+ * ilyenkor inkább hallgatunk. Ez teszi a sort attribúcióvá és nem új
+ * hipotézis-teszté: a dimenzió-szintű döntés már megszületett, ez csak
+ * megmondja, hova sűrűsödik.
+ */
+function collectDrivers(
+  dimensions: DimensionComparison[],
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+  facetMinGap: number,
+): RankedLine[] {
+  const found: RankedLine[] = [];
+  for (const row of dimensions) {
+    if (row.state !== "differs" || !row.higher) continue;
+    const direction = row.higher === "self" ? 1 : -1;
+    const clearing = facetDeltas(row.dim, selfFacets, otherFacets).filter(
+      (candidate) =>
+        Math.sign(candidate.delta) === direction &&
+        Math.abs(candidate.delta) >= facetMinGap,
+    );
+    if (clearing.length !== 1) continue;
+    const [driver] = clearing;
+    found.push({
+      dim: row.dim,
+      facet: driver.facet,
+      higher: row.higher,
+      kind: "driver",
+      delta: Math.abs(driver.delta),
+      weight: FRICTION_WEIGHTS[row.dim] ?? 0,
+    });
+  }
+  return found;
+}
+
+function collectFacetLines(
+  dimensions: DimensionComparison[],
+  selfFacets: FacetScores,
+  otherFacets: FacetScores,
+  facetMinGap: number,
+): FacetNuance[] {
+  return [
+    ...rankAndCap(
+      collectDrivers(dimensions, selfFacets, otherFacets, facetMinGap),
+      MAX_FACET_DRIVERS,
+    ),
+    ...rankAndCap(
+      collectNuances(dimensions, selfFacets, otherFacets, facetMinGap),
+      MAX_FACET_NUANCES,
+    ),
+  ];
+}
+
 // ── Belépési pont ────────────────────────────────────────────────────
 
 export function simulateInteraction(
   input: InteractionInput,
 ): InteractionResult {
   const mode = input.mode ?? "peer";
-  const maxAtoms = input.maxAtoms ?? 3;
+  const maxAtoms = input.maxAtoms ?? DEFAULT_MAX_ATOMS;
   const maxLeaderNotes = input.maxLeaderNotes ?? 2;
+  const realPair = isRealPair(input.level);
 
-  const candidates = collectCandidates(input.self, input.other);
+  const poleCandidates = collectCandidates(input.self, input.other);
+  const candidates = [
+    ...poleCandidates,
+    ...(realPair
+      ? collectGapCandidates(input.self, input.other, poleCandidates)
+      : []),
+  ];
   const picked = selectAtoms(candidates, maxAtoms);
 
   const easy: InteractionLine[] = [];
@@ -266,31 +659,45 @@ export function simulateInteraction(
   const discuss: InteractionLine[] = [];
 
   for (const candidate of picked) {
-    const blocks = atomBlocksFor(candidate.atom, candidate.mirrored);
     const line = (text: LocalizedText): InteractionLine => ({
-      atomId: candidate.atom.id,
+      atomId: candidate.id,
       dims: candidate.dims,
+      basis: candidate.basis,
       text,
     });
-    if (blocks.easy) easy.push(line(blocks.easy));
-    if (blocks.friction) friction.push(line(blocks.friction));
-    discuss.push(line(blocks.discuss));
+    if (candidate.blocks.easy) easy.push(line(candidate.blocks.easy));
+    if (candidate.blocks.friction) friction.push(line(candidate.blocks.friction));
+    discuss.push(line(candidate.blocks.discuss));
   }
 
   const leaderScores =
     mode === "self-leads" ? input.self : mode === "other-leads" ? input.other : null;
+
+  const dimensions = realPair ? compareDimensions(input.self, input.other) : [];
+  const facetNuances =
+    realPair && input.selfFacets && input.otherFacets && input.facetMinGap
+      ? collectFacetLines(
+          dimensions,
+          input.selfFacets,
+          input.otherFacets,
+          input.facetMinGap,
+        )
+      : [];
 
   return {
     easy,
     friction,
     discuss,
     leaderNotes: leaderScores ? leaderNotesFor(leaderScores, maxLeaderNotes) : [],
+    dimensions,
+    facetNuances,
     meta: {
       level: input.level,
       mode,
-      atomIds: picked.map((candidate) => candidate.atom.id),
+      atomIds: picked.map((candidate) => candidate.id),
       sparse: picked.length === 0,
       candidateCount: candidates.length,
+      gapLineCount: picked.filter((candidate) => candidate.basis === "gap").length,
     },
   };
 }

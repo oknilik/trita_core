@@ -948,6 +948,237 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────
+// RÉS-ATOMOK — a mérési hibát meghaladó, de nem pólusos eltérésre.
+//
+// MIÉRT KELL: a fenti atomok PÓLUS-alapúak — csak akkor szólalnak meg, ha
+// MINDKÉT fél a szélső sávban van (>65 / <35). Egy 62 vs 38 pár viszont
+// 24 pontra van egymástól, ami a dimenzió-szintű mérési hiba (√2·SEM = 11)
+// több mint kétszerese — valós, elmondható különbség, amiről ma néma volt a
+// motor. A lefedettség-mérés szerint emiatt a valós párok ~35%-a EGYETLEN
+// mondatot sem kapott (docs/audits/interaction-pair-coverage-2026-08-18.md).
+//
+// MIÉRT KÜLÖN SZÖVEG, nem a `same-*-high-low` atom újrahasznosítása: az a
+// szöveg két SZÉLSŐ értékre íródott („te hozod a lendületet, ő a nyugalmat"),
+// és egy 58 vs 44 résre hamisan erős. Ezek a változatok szándékosan
+// halkabbak: RELATÍV állítást tesznek („a kettőtök közül te vagy a …-abb"),
+// nem sávba sorolnak, és sosem címkézik a másikat.
+//
+// EPISZTEMIKUS STÁTUSZ: gyengébb, mint a pólus-atomé. A motor `basis: "gap"`
+// jelöléssel adja tovább, a felület pedig ennek megfelelően jelöli — a
+// becsült/mért megkülönböztetés a termék hitelességi alapelve (CLAUDE.md).
+//
+// CSAK KÉT VALÓS PROFILRA: az archetípus-úton a prototípus négy dimenziója
+// szerkezetileg 50 (`ARCHETYPE_NEUTRAL_SCORE`), tehát a „rés" ott a kitalált
+// középértékhez képest mérődne. A motor ezért a rés-atomokat kizárólag
+// `profile-profile` / `measured` szinten aktiválja.
+// ─────────────────────────────────────────────────────────────────────
+
+export interface GapAtom {
+  /** Stabil azonosító: "gap-C". */
+  id: string;
+  dim: HexacoCode;
+  /** Az olvasó a MAGASABB pontszámú fél. */
+  view: AtomBlocks;
+  /** Az olvasó az ALACSONYABB pontszámú fél. */
+  viewB: AtomBlocks;
+}
+
+export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
+  H: {
+    id: "gap-H",
+    dim: "H",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te mozogsz szigorúbb belső szabályok szerint — a közös munkában ez kiszámítható, egyenes vonalat adhat.",
+        en: "Of the two of you, you typically move by stricter internal rules — in shared work this can give a predictable, straight line.",
+      },
+      friction: {
+        hu: "Ahol ő rugalmasan taktikázna, ott te már határt érzékelhetsz — és ez ítélkezésnek tűnhet, ha nem beszélitek ki.",
+        en: "Where they would manoeuvre flexibly, you may already sense a boundary — and that can read as judgement if you don't talk it through.",
+      },
+      discuss: {
+        hu: "Járjátok körbe előre, hol húzódik nálatok a határ az érdekérvényesítés és a megalkuvás között — utólag ez nehezebb beszélgetés.",
+        en: "Map out in advance where each of you draws the line between pushing your interest and compromising — that conversation is harder after the fact.",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te vagy a pragmatikusabb az érdekérvényesítésben — versengő helyzetben ez a párosnak előnyt adhat.",
+        en: "Of the two of you, you typically take the more pragmatic line on advancing your interests — in a competitive setting this can be an advantage for the pair.",
+      },
+      friction: {
+        hu: "Ami neked természetes taktika, azt ő könnyen elvi kérdésként élheti meg — a súrlódás ilyenkor nem a szándékról szól, hanem a mércéről.",
+        en: "What feels like natural tactics to you, they may readily experience as a matter of principle — the friction is then about the standard, not the intent.",
+      },
+      discuss: {
+        hu: "Tisztázzátok előre, mi az, amiben nem alkusztok — így nem menet közben derül ki, hogy máshol van a határotok.",
+        en: "Clarify up front what neither of you will trade away — so it doesn't surface mid-task that your lines sit in different places.",
+      },
+    },
+  },
+  E: {
+    id: "gap-E",
+    dim: "E",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te reagálsz érzékenyebben a helyzetek emberi oldalára — ez korán jelezheti, ha valami nem stimmel körülöttetek.",
+        en: "Of the two of you, you typically respond more sensitively to the human side of a situation — this can flag early when something is off around you.",
+      },
+      friction: {
+        hu: "Ami neked jelzés, az nála még lehet, hogy csak zaj: előfordulhat, hogy túlreagálásnak látja, amit te jogos aggodalomnak.",
+        en: "What reads as a signal to you may still be noise to them: they might see as overreaction what you experience as warranted concern.",
+      },
+      discuss: {
+        hu: "Beszéljétek meg, hogyan jelzitek egymásnak a nyugtalanságot úgy, hogy az ne minősítés legyen — és mikor van szükség tényleg gyors megnyugtatásra.",
+        en: "Agree on how you flag unease to each other without it landing as a verdict — and when quick reassurance is genuinely what's needed.",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te viseled nyugodtabban a bizonytalan helyzeteket — feszült pillanatokban ez horgony lehet a párosnak.",
+        en: "Of the two of you, you typically carry uncertainty more calmly — in tense moments this can be an anchor for the pair.",
+      },
+      friction: {
+        hu: "A nyugalmad kívülről közömbösségnek is látszhat: előfordulhat, hogy ő azt éli meg, nem veszed komolyan, ami őt nyomasztja.",
+        en: "Your calm can look like indifference from the outside: they may experience it as you not taking seriously what weighs on them.",
+      },
+      discuss: {
+        hu: "Egyezzetek meg abban, hogy nem kell azonnal megoldani, amit ő felvet — sokszor elég visszajelezni, hogy hallottad.",
+        en: "Agree that what they raise doesn't need solving on the spot — often it's enough to signal that you heard it.",
+      },
+    },
+  },
+  X: {
+    id: "gap-X",
+    dim: "X",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te viszed inkább a szót és a lendületet — a közös indulásokat így ritkán kell külön elindítani.",
+        en: "Of the two of you, you typically carry more of the talking and the momentum — so shared starts rarely need a separate push.",
+      },
+      friction: {
+        hu: "Könnyen előfordulhat, hogy a közös egyeztetéseken te töltöd ki a csendeket, és emiatt kevesebb tér marad annak, amit ő gondol.",
+        en: "You may readily end up filling the silences in your shared conversations, leaving less room for what they're thinking.",
+      },
+      discuss: {
+        hu: "Kérdezzetek rá egyszer: jut-e elég hely neki a közös beszélgetésekben, vagy jobb lenne bizonyos témákat előre, írásban körbejárni.",
+        en: "Check in once: is there enough room for them in your shared conversations, or would some topics be better circled in writing beforehand?",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te hozod a nyugodtabb, fókuszáltabb tempót — a mély munka általában nálad talál helyet.",
+        en: "Of the two of you, you typically bring the calmer, more focused pace — deep work usually finds its place with you.",
+      },
+      friction: {
+        hu: "Ha nem jelzed, hogy több feldolgozási időre van szükséged, ő ezt könnyen nem veszi észre — csak azt látja, hogy kevesebbet szólsz hozzá.",
+        en: "If you don't say that you need more processing time, they may easily miss it — they only see that you speak up less.",
+      },
+      discuss: {
+        hu: "Mondd ki, mikor van szükséged előzetes felkészülésre, és egyezzetek meg, mi mehet írásban a közös döntések előtt.",
+        en: "Name when you need preparation time, and agree on what can go in writing ahead of joint decisions.",
+      },
+    },
+  },
+  A: {
+    id: "gap-A",
+    dim: "A",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te vagy a megengedőbb: könnyebben adsz második esélyt, és ritkábban viszed konfliktusba a nézeteltérést.",
+        en: "Of the two of you, you're typically the more accommodating: you give second chances more readily and less often take a disagreement into conflict.",
+      },
+      friction: {
+        hu: "Előfordulhat, hogy elnyeled azt, ami zavar — ő pedig ebből keveset érzékel, mert nála inkább a nyílt kimondás a természetes út.",
+        en: "You may swallow what bothers you — and they'll sense little of it, because naming things openly tends to be their natural route.",
+      },
+      discuss: {
+        hu: "Beszéljétek meg, hogyan jeleztek egymásnak, ha valami nem stimmel — nálad ez könnyen csendben marad, és utólag nehezebb elővenni.",
+        en: "Agree on how you'll flag it when something isn't right — with you it can easily stay unsaid, and it's harder to raise later.",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te vagy az egyenesebb: kimondod, ha valami nem stimmel, és ettől a dolgok gyorsabban tisztázódhatnak.",
+        en: "Of the two of you, you're typically the more direct: you say when something isn't right, and things can clear up faster for it.",
+      },
+      friction: {
+        hu: "Ami neked tárgyszerű visszajelzés, azt ő élesebbnek hallhatja, mint ahogy szántad — és inkább visszahúzódik, mint hogy visszaszóljon.",
+        en: "What is matter-of-fact feedback to you, they may hear as sharper than you meant — and they'll tend to withdraw rather than push back.",
+      },
+      discuss: {
+        hu: "Kérdezzetek rá időnként, hogyan érkezik meg a visszajelzésetek — a szándék és a hatás itt könnyen elválik egymástól.",
+        en: "Check now and then how your feedback actually lands — intent and effect can easily come apart here.",
+      },
+    },
+  },
+  C: {
+    id: "gap-C",
+    dim: "C",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te viszed inkább a struktúrát és a végigvitelt — a közös munkában valószínűleg nálad futnak össze a szálak.",
+        en: "Of the two of you, you typically carry more of the structure and follow-through — in shared work the threads are likely to meet at your end.",
+      },
+      friction: {
+        hu: "Előfordulhat, hogy a részletek és a határidők rendre nálad landolnak, miközben ő lazábban kezeli őket — ez idővel fárasztó egyoldalúságot hozhat.",
+        en: "Details and deadlines may keep landing with you while they hold them more loosely — over time that can build a tiring one-sidedness.",
+      },
+      discuss: {
+        hu: "Rögzítsétek, mit jelent nálatok a „kész”, és ki mit visz végig — a kimondatlan mérce a leggyakoribb súrlódás-forrás.",
+        en: "Write down what “done” means between you and who carries what to the end — an unspoken standard is the most common source of friction.",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te vagy a rugalmasabb: könnyebben módosítasz menet közben, és ritkábban akadsz fenn a részleteken.",
+        en: "Of the two of you, you're typically the more flexible: you adjust more easily mid-course and get caught on details less often.",
+      },
+      friction: {
+        hu: "Ami neked elég jó, az nála még lehet, hogy nincs kész — és ha nem beszélitek ki, könnyen csendben átveszi a maradékot.",
+        en: "What's good enough for you may not yet be finished for them — and if you don't talk about it, they may quietly pick up the remainder.",
+      },
+      discuss: {
+        hu: "Egyezzetek meg egy közös „kész” definícióban, és abban, mikor szóltok, ha valami csúszik — a jelzés hiánya általában többet ront, mint maga a csúszás.",
+        en: "Agree on a shared definition of “done” and on when you'll speak up if something slips — the missing signal usually does more damage than the slip.",
+      },
+    },
+  },
+  O: {
+    id: "gap-O",
+    dim: "O",
+    view: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te hozod inkább az új ötleteket és a máshogy-csinálás lehetőségét.",
+        en: "Of the two of you, you typically bring more of the new ideas and the option of doing it differently.",
+      },
+      friction: {
+        hu: "Ami neked izgalmas irányváltás, az nála könnyen felesleges kör lehet — főleg, ha a meglévő megoldás még működik.",
+        en: "What is an exciting change of direction to you may easily be a needless detour to them — especially while the current solution still works.",
+      },
+      discuss: {
+        hu: "Egyezzetek meg, mikor van tere a kísérletezésnek és mikor a bevált útnak — a kettő ritkán jó ugyanabban a fázisban.",
+        en: "Agree on when there's room for experimenting and when for the proven path — the two are rarely right in the same phase.",
+      },
+    },
+    viewB: {
+      easy: {
+        hu: "A kettőtök közül jellemzően te ragaszkodsz inkább a bevált megoldásokhoz — ez tarthatja földön a közös munkát.",
+        en: "Of the two of you, you typically hold more to proven solutions — this can keep the shared work grounded.",
+      },
+      friction: {
+        hu: "Ami neked felesleges kör, az nála lehet, hogy a lényeg — és ha rendre lezárod, könnyen azt élheti meg, hogy nincs helye a gondolkodásnak.",
+        en: "What is a needless detour to you may be the point for them — and if you keep closing it down, they may experience it as having no room to think.",
+      },
+      discuss: {
+        hu: "Adjatok külön időt az ötletelésnek és a döntésnek — így nem a döntés pillanatában ütközik a két üzemmód.",
+        en: "Give ideation and decision-making separate time — so the two modes don't collide at the moment of deciding.",
+      },
+    },
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────
 // Vezető-kiegészítők — mit jelent, ha a POLARIZÁLT dimenzió a vezetőnél
 // van. Az olvasó a beosztott; a szöveg a vezető-mód kapcsolóval jelenik
 // meg az atomok mellett.

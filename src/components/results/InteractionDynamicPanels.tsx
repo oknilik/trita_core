@@ -21,7 +21,26 @@ interface InteractionDynamicPanelsProps {
   thinNote?: string;
 }
 
+/**
+ * A rés-alapú sor gyengébb bizonyítékon áll, mint a kétoldali pólusos (nem
+ * szélső értékek, csak a mérési hibát meghaladó különbség) — ezt jelölni
+ * kell. A pólusos sor NEM kap külön címkét: az az alapeset, ott a
+ * jelöletlenség nem félrevezet.
+ */
+function BasisNote({
+  line,
+  className,
+}: {
+  line: InteractionTextLine;
+  className: string;
+}) {
+  const { locale } = useLocale();
+  if (line.basis !== "gap") return null;
+  return <p className={className}>{t("results.pairBasisGap", locale)}</p>;
+}
+
 function LineList({ lines }: { lines: InteractionTextLine[] }) {
+  const { locale } = useLocale();
   return (
     <ul className="flex flex-col gap-4">
       {lines.map((line) => (
@@ -30,7 +49,10 @@ function LineList({ lines }: { lines: InteractionTextLine[] }) {
             {line.text}
           </p>
           <p className="mt-1.5 text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-            {line.dimLabels.join(" · ")}
+            {[
+              ...line.dimLabels,
+              ...(line.basis === "gap" ? [t("results.pairBasisGap", locale)] : []),
+            ].join(" · ")}
           </p>
         </li>
       ))}
@@ -130,7 +152,8 @@ export function InteractionDynamicPanels({
   const summaryFriction = friction[0] ?? null;
   const hasSummary = Boolean(summaryEasy || summaryFriction);
 
-  // A motor összesen max 3 atomot választ, és a „Közös kép" már kimondja az
+  // A motor legfeljebb `DEFAULT_MAX_ATOMS` atomot választ, és a „Közös kép"
+  // már kimondja az
   // első erősség- és súrlódásjelzést. A panelek ezért csak azt hozzák, ami
   // AZON TÚL van — különben a nyitott első panel szó szerint megismételné a
   // fentebb olvasott mondatot. A `discuss` külön szövegblokk, az egészben jön.
@@ -206,6 +229,12 @@ export function InteractionDynamicPanels({
                 <p className="mt-2 text-body leading-relaxed text-[var(--color-accent-self-deep)]">
                   {summaryEasy.text}
                 </p>
+                {/* A legkiemeltebb mondat sem maradhat jelöletlen, ha
+                    rés-alapon áll — épp ezt olvassa el mindenki. */}
+                <BasisNote
+                  line={summaryEasy}
+                  className="mt-2 text-micro uppercase tracking-wide text-[var(--color-accent-self-deep)]/70"
+                />
               </div>
             ) : null}
             {summaryFriction ? (
@@ -222,6 +251,10 @@ export function InteractionDynamicPanels({
                 <p className="mt-2 text-body leading-relaxed text-[var(--color-text-secondary)]">
                   {summaryFriction.text}
                 </p>
+                <BasisNote
+                  line={summaryFriction}
+                  className="mt-2 text-micro uppercase tracking-wide text-[var(--color-text-muted)]"
+                />
               </div>
             ) : null}
             {summaryEasy && summaryFriction ? (

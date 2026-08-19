@@ -22,11 +22,13 @@ const sim: PairSimulationView = {
     {
       atomId: "a1",
       dimLabels: ["Nyitottság", "Extraverzió"],
+      basis: "pole",
       text: "Gyorsan megértitek egymás szándékát.",
     },
     {
       atomId: "a2",
       dimLabels: ["Barátságosság"],
+      basis: "pole",
       text: "Konfliktusban is megmaradtok tárgyilagosnak.",
     },
   ],
@@ -34,11 +36,13 @@ const sim: PairSimulationView = {
     {
       atomId: "a1",
       dimLabels: ["Lelkiismeretesség"],
+      basis: "pole",
       text: "Más ritmusban hozhatjátok meg a döntéseket.",
     },
     {
       atomId: "a3",
       dimLabels: ["Emocionalitás"],
+      basis: "pole",
       text: "A visszajelzés élességét máshol húzzátok meg.",
     },
   ],
@@ -46,11 +50,13 @@ const sim: PairSimulationView = {
     {
       atomId: "a1",
       dimLabels: ["Együttműködés"],
+      basis: "pole",
       text: "Egyezzetek meg a döntési tempóban.",
     },
     {
       atomId: "a2",
       dimLabels: ["Barátságosság"],
+      basis: "pole",
       text: "Beszéljétek meg, mikor kell élesebb visszajelzés.",
     },
   ],
@@ -66,6 +72,24 @@ const sim: PairSimulationView = {
       dim: "A",
       dimLabel: "Együttműködés",
       text: "Anna vezetőként teret ad a közös mérlegelésnek.",
+    },
+  ],
+  dimensions: [
+    { dim: "H", dimLabel: "Becsületesség-Alázat", state: "aligned", higher: null },
+    { dim: "E", dimLabel: "Emocionalitás", state: "differs", higher: "other" },
+    { dim: "X", dimLabel: "Extraverzió", state: "differs", higher: "self" },
+    { dim: "A", dimLabel: "Barátságosság", state: "aligned", higher: null },
+    { dim: "C", dimLabel: "Lelkiismeretesség", state: "differs", higher: "self" },
+    { dim: "O", dimLabel: "Nyitottság", state: "aligned", higher: null },
+  ],
+  facetNuances: [
+    {
+      dim: "A",
+      dimLabel: "Barátságosság",
+      facet: "patience",
+      facetLabel: "Türelem",
+      higher: "other",
+      kind: "nuance",
     },
   ],
   sparse: false,
@@ -113,6 +137,29 @@ describe("PairInteractionView", () => {
     expect(screen.getByRole("heading", { name: "Közös kép" })).toBeInTheDocument();
     expect(screen.getByText("Ami összeköt")).toBeInTheDocument();
     expect(screen.getByText("Amire figyeljetek")).toBeInTheDocument();
+  });
+
+  it("a hat dimenziós sávot és a facet-nüanszt a próza UTÁN mutatja", () => {
+    // A próza válogat (max 4 atom), a sáv mind a hatról nyilatkozik — enélkül
+    // a „megnéztük, és nincs róla mit mondani" eset hibának látszana.
+    render(<PairInteractionView self={self} other={other} otherName="Anna" sim={sim} />);
+    expect(screen.getByText("Mind a hat dimenzió")).toBeInTheDocument();
+    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
+    expect(screen.getByText("Türelem")).toBeInTheDocument();
+  });
+
+  it("a rés-alapú sort „Mérhető különbség”-ként jelöli, a pólusosat nem", () => {
+    // Becsült vs mért: a gyengébb bizonyítékon álló sort jelölni kell.
+    const gapSim = {
+      ...sim,
+      easy: [{ ...sim.easy[0], basis: "gap" as const }],
+      friction: [],
+      discuss: [{ ...sim.discuss[0], basis: "pole" as const }],
+    };
+    render(
+      <PairInteractionView self={self} other={other} otherName="Anna" sim={gapSim} />,
+    );
+    expect(screen.getAllByText(/Mérhető különbség/).length).toBeGreaterThan(0);
   });
 
   it("a nevet olvasható méretben, nem verzál mikro-címkeként írja ki", () => {

@@ -10,7 +10,12 @@ import {
 } from "@/lib/interaction-view";
 import { resolvePersonalityTypeFromScores } from "@/lib/personality-type";
 import { resolveGlyphPair } from "@/lib/type-glyph";
-import { extractDimensionScores, type ScoreResult } from "@/lib/scoring";
+import {
+  extractDimensionScores,
+  extractFacetScores,
+  type ScoreResult,
+} from "@/lib/scoring";
+import { facetStandardError } from "@/lib/psychometrics";
 import { resolveCompareInviteState } from "@/lib/compare-invite";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
@@ -224,6 +229,17 @@ export default async function InteractionPage({
       const otherScores = otherResult?.scores as ScoreResult | undefined;
       const otherDimScores = extractDimensionScores(otherResult?.scores);
       if (otherScores && otherScores.type === "likert" && otherDimScores) {
+        // Facet-szintű különbség-küszöb: KÉT pontszám KÜLÖNBSÉGÉNEK hibája
+        // √2·SEM (ugyanaz a szabály, mint a dimenzió-oldali DIFF_MIN_GAP-nél
+        // és az önkép–külső kép facet-összevetésnél). Pecsét nélküli
+        // (örökség) sorra a konzervatívabb rövid formával számolunk, és ha a
+        // két fél FORMÁJA eltér, a nagyobb hibájú (rövid) dönt — a küszöb
+        // csak úgy védhető, ha a gyengébbik mérésre van szabva.
+        const pairForm =
+          (scores.form ?? "short") === "full" && (otherScores.form ?? "short") === "full"
+            ? "full"
+            : "short";
+        const facetMinGap = Math.round(Math.SQRT2 * facetStandardError(pairForm));
         const otherDims = Object.entries(otherDimScores).map(
           ([code, score]) => ({ code, score }),
         );
@@ -237,7 +253,11 @@ export default async function InteractionPage({
             otherName:
               (isInviter ? pair.partner?.username : pair.inviter?.username) ??
               t("results.comparePartnerFallback", lang),
-            sim: buildPairSimulation(selfDims, otherDimScores, lang),
+            sim: buildPairSimulation(selfDims, otherDimScores, lang, {
+              selfFacets: extractFacetScores(latestResult.scores),
+              otherFacets: extractFacetScores(otherResult?.scores),
+              facetMinGap,
+            }),
           };
         }
       }

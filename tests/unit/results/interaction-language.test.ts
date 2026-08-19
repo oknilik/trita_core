@@ -3,10 +3,11 @@ import assert from "node:assert/strict";
 import {
   SAME_DIMENSION_ATOMS,
   CROSS_DIMENSION_ATOMS,
+  GAP_ATOMS,
   LEADER_SUPPLEMENTS,
 } from "@/lib/interaction-atoms";
 import { hasHedge, findAbsoluteMarkers } from "@/lib/interaction-language";
-import type { Locale } from "@/lib/i18n";
+import { t, type Locale } from "@/lib/i18n";
 
 // Nyelvi guardrail az interakció-szövegekre.
 //
@@ -23,7 +24,14 @@ import type { Locale } from "@/lib/i18n";
 // állítást, ezért hedge kötelező és abszolutizálás tilos.
 
 const LOCALES: Locale[] = ["hu", "en"];
-const ATOMS = [...SAME_DIMENSION_ATOMS, ...CROSS_DIMENSION_ATOMS];
+// A rés-atomok ugyanezt a nyelvi mércét tartják: gyengébb bizonyítékon állnak
+// (nem szélső értékek, csak a mérési hibát meghaladó különbség), tehát a
+// hedge-kötelezettség ott legalább annyira indokolt.
+const ATOMS = [
+  ...SAME_DIMENSION_ATOMS,
+  ...CROSS_DIMENSION_ATOMS,
+  ...Object.values(GAP_ATOMS),
+];
 
 type Entry = { label: string; text: string; locale: Locale; block: string };
 
@@ -63,6 +71,9 @@ const ALL_ENTRIES: Entry[] = [...ENTRIES, ...LEADER_ENTRIES];
 
 test("a guardrail ténylegesen lát szövegeket", () => {
   assert.ok(ENTRIES.length > 200, `csak ${ENTRIES.length} szöveget talált`);
+  // 6 dimenzió × 2 nézőpont × 3 blokk × 2 nyelv rés-atom szöveg
+  const gapEntries = ENTRIES.filter((entry) => entry.label.startsWith("gap-"));
+  assert.equal(gapEntries.length, 72, `csak ${gapEntries.length} rés-szöveget talált`);
   // 6 dimenzió × 2 pólus × 2 nyelv vezető-kiegészítő
   assert.equal(LEADER_ENTRIES.length, 24, `csak ${LEADER_ENTRIES.length} vezető-szöveget talált`);
 });
@@ -102,4 +113,54 @@ test("minden atomnak van discuss blokkja mindkét nyelven", () => {
       assert.ok(blocks.discuss.en, `${atom.id}.${viewName}: hiányzó EN discuss`);
     }
   }
+});
+
+// ─────────────────────────────────────────────────────────────────────
+// Valencia-mentesség a pár-összevetés sávján (2026-08-18).
+//
+// A 0–100 NEM teljesítmény-skála: a magasabb érték nem jobb. A tier-címkék
+// ezért „magas / közepes / alacsony"-ra váltottak (ld. a 2026-08-18-i
+// valencia-mentes szint-besorolás changelogot). A PÁR-összevetésben ez még
+// élesebb: ott az értékelő szó két EMBERT állítana sorrendbe, nem egy
+// pontszámot minősítene. Ez a guardrail azt őrzi, hogy az irány-címkék és a
+// hozzájuk tartozó magyarázó szövegek leíróak maradjanak.
+// ─────────────────────────────────────────────────────────────────────
+
+const BAND_KEYS = [
+  "results.pairBandTitle",
+  "results.pairBandSubtitle",
+  "results.pairBandAligned",
+  "results.pairBandSelfHigher",
+  "results.pairBandOtherHigher",
+  "results.pairBandNote",
+  "results.pairNuanceTitle",
+  "results.pairNuanceSelf",
+  "results.pairNuanceOther",
+  "results.pairBasisGap",
+] as const;
+
+/** Értékelő (rangsoroló) szótövek — a leíró „magasabb/alacsonyabb" helyett. */
+const VALENCE_MARKERS: Record<Locale, RegExp[]> = {
+  hu: [/erős/iu, /gyeng/iu, /\bjobb\b/iu, /rosszabb/iu, /kiválóbb/iu, /fejlettebb/iu],
+  en: [/stronger/iu, /weaker/iu, /\bbetter\b/iu, /\bworse\b/iu, /superior/iu],
+};
+
+test("a pár-összevetés címkéi nem rangsorolják a két embert", () => {
+  const hits: string[] = [];
+  for (const key of BAND_KEYS) {
+    for (const locale of LOCALES) {
+      const text = t(key, locale);
+      for (const marker of VALENCE_MARKERS[locale]) {
+        const match = text.match(marker);
+        // A módszertani jegyzet KIMONDJA a szabályt („egyik érték sem jobb a
+        // másiknál") — az a szabály idézése, nem megsértése. Szűk kivétel:
+        // csak erre a két konkrét fordulatra.
+        const statesTheRule = /sem jobb a másiknál|neither value is better/iu.test(text);
+        if (match && !statesTheRule) {
+          hits.push(`${key}.${locale}: „${match[0]}"`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(hits, [], `értékelő szóhasználat a pár-sávban:\n${hits.join("\n")}`);
 });

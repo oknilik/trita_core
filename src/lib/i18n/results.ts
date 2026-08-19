@@ -1010,6 +1010,70 @@ export const resultsTranslations = {
       hu: "Két valódi, megosztott önértékelés összevetése — pontosabb, mint a típus-becslés, de továbbra is önbeszámolón alapul. Hipotézis, nem ítélet: beszélgetés-indítónak készült.",
       en: "A comparison of two real, shared self-assessments — more precise than a type estimate, yet still based on self-report. A hypothesis, not a verdict: built to start a conversation.",
     },
+    // ── Hat dimenziós összevetés-sáv (2026-08-18) ────────────────────
+    // A sáv PONTSZÁMOT NEM MUTAT: a partner nyers értékei nem hagyják el a
+    // szervert. A „nála magasabb" dimenziónként egyetlen bit — beszélgetés-
+    // indításhoz elég, a profil visszafejtéséhez nem.
+    //
+    // SZÓHASZNÁLAT: „magasabb", nem „erősebb". A 0–100 nem teljesítmény-skála
+    // — a magasabb érték nem jobb (2026-08-18, valencia-mentes szint-
+    // besorolás). Párösszevetésben ez különösen élesen igaz: itt a szó két
+    // EMBERT állítana sorrendbe, nem egy pontszámot minősítene.
+    pairBandTitle: {
+      hu: "Mind a hat dimenzió",
+      en: "All six dimensions",
+    },
+    pairBandSubtitle: {
+      hu: "Nem csak a legkifejezettebb vonásaitokat néztük meg — itt mind a hat dimenzió szerepel, azok is, amelyekről nem született külön bekezdés.",
+      en: "We didn't only look at your most pronounced traits — all six dimensions are listed here, including the ones that didn't get their own paragraph.",
+    },
+    pairBandAligned: { hu: "Hasonló", en: "Similar" },
+    pairBandSelfHigher: { hu: "Nálad magasabb", en: "Higher with you" },
+    pairBandOtherHigher: { hu: "Nála magasabb", en: "Higher with them" },
+    pairBandLegend: {
+      hu: "„Nála” = {name}",
+      en: "“With them” = {name}",
+    },
+    pairBandNote: {
+      hu: "A „magasabb” azt jelenti, hogy a különbség meghaladja a mérés pontosságát; a „hasonló” azt, hogy azon belül marad. Ez irány, nem rangsor: egyik érték sem jobb a másiknál. Pontszámokat szándékosan nem mutatunk — a másik profiljának számai nem hagyják el a szervert.",
+      en: "“Higher” means the difference exceeds the precision of the measurement; “similar” means it stays within it. This is direction, not ranking: neither value is better than the other. We deliberately show no scores — the other person's numbers never leave the server.",
+    },
+    // ── Facet-attribúció: „hol fut az eltérés" ───────────────────────
+    // Ez NEM önálló állítás, hanem egy dimenzió-szinten már megállapított
+    // eltérés hozzárendelése egyetlen alskálához — ezért nem növeli a
+    // hipotézis-tesztek számát. A szöveg iránytalan: az irányt a fölötte
+    // álló sáv sora már megadta, itt megismételni zaj volna.
+    pairDriverTitle: {
+      hu: "Hol fut az eltérés",
+      en: "Where the difference runs",
+    },
+    pairDriverBody: {
+      hu: "Ebben a dimenzióban egyedül ezen az alskálán mérhető a különbség — a többin a mérés pontosságán belül marad. Az eltérés tehát ide sűrűsödik, nem a dimenzió egészére terjed ki.",
+      en: "Within this dimension, only this facet shows a measurable difference — on the others it stays within the precision of the measurement. So the difference is concentrated here rather than spread across the dimension.",
+    },
+    // ── Facet-nüansz: „azonos címke, más működés" ────────────────────
+    pairNuanceTitle: {
+      hu: "Azonos címke, más működés",
+      en: "Same label, different engine",
+    },
+    pairNuanceSelf: {
+      hu: "Dimenzió-szinten hasonlóan álltok, de ez az alskála nálad hangsúlyosabb — azonos címke mögött eltérő működés lehet.",
+      en: "At dimension level you sit close together, but this facet weighs more with you — the same label can hide a different way of working.",
+    },
+    pairNuanceOther: {
+      hu: "Dimenzió-szinten hasonlóan álltok, de ez az alskála nála hangsúlyosabb — azonos címke mögött eltérő működés lehet.",
+      en: "At dimension level you sit close together, but this facet weighs more with them — the same label can hide a different way of working.",
+    },
+    pairNuanceNote: {
+      hu: "Ez a legbizonytalanabb réteg: egy alskálát a rövid kérdőív 2–3 állítással mér, ezért csak a kifejezetten nagy eltérést jelezzük, és dimenziónként legfeljebb egyet. Beszélgetés-indítónak jó, mérésnek gyenge.",
+      en: "This is the least certain layer: the short questionnaire measures a facet with 2–3 items, so we only flag clearly large differences, and at most one per dimension. Good as a conversation starter, weak as a measurement.",
+    },
+    // A rés-alapú sor gyengébb bizonyítékon áll, mint a kétoldali pólusos —
+    // ezt a felületen jelölni kell (becsült vs mért, CLAUDE.md).
+    pairBasisGap: {
+      hu: "Mérhető különbség",
+      en: "Measurable difference",
+    },
     comparePairBack: {
       hu: "Vissza a típus-választóhoz",
       en: "Back to the type picker",
