@@ -896,7 +896,7 @@ export const PATTERN_NAMES: Record<string, PatternContent> = Object.fromEntries(
 export const AXIS_LABELS = {
   drive:      { name: "Hajtóerő",  low: "Visszafogott", high: "Energikus" },
   cohesion:   { name: "Kohézió",   low: "Versengő",     high: "Összetartó",
-    tooltip: "A barátságosság és a méltányosság dimenzióinak átlagából képzett közelítő jelző." },
+    tooltip: "A barátságosság és a becsületesség-alázat dimenziók átlagából képzett közelítő mutató." },
   discipline: { name: "Fegyelem",  low: "Rugalmas",     high: "Strukturált" },
   openness:   { name: "Nyitottság",low: "Pragmatikus",  high: "Felfedező" },
 } as const;

@@ -38,7 +38,7 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
     en: "You tend to pick up a situation's emotional charge early, and carry a lot of it with you",
   },
   X: {
-    hu: "Jellemzően energikusan és inspirálóan vagy jelen",
+    hu: "Jellemzően energiát és lendületet viszel a közös munkába",
     en: "You typically bring energy and inspiration to your interactions",
   },
   A: {
@@ -67,7 +67,7 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
  */
 export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   H: {
-    hu: "a státusz és pozíció természetesebb tereped",
+    hu: "a versengés és a pozíciószerzés természetesebb terep számodra",
     en: "status and positioning come more naturally to you",
   },
   E: {

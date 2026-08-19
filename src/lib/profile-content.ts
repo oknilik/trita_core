@@ -720,7 +720,7 @@ export const DEFAULT_NARRATIVE: LocalizedText = {
 
 export const SOLO_DIM_NARRATIVES: Record<string, LocalizedText> = {
   H_high: {
-    hu: "Válaszaid alapján a nyílt, játszmamentes működés az egyik legdominánsabb preferenciád: az egyenes kommunikációt választod akkor is, amikor a taktikázás kifizetődőbb lenne – ez a munkakapcsolataidban erős, bizalomépítő alapot ad.",
+    hu: "Válaszaid alapján a nyílt, játszmamentes működés az egyik legmeghatározóbb vonásod: az egyenes kommunikációt választod akkor is, amikor a taktikázás kifizetődőbb lenne – ez a munkakapcsolataidban erős, bizalomépítő alapot ad.",
     en: "Based on your responses, open, game-free operation is one of your most dominant preferences: you choose direct communication even when manoeuvring would pay better — a strong, trust-building foundation in your working relationships.",
   },
   H_low: {
@@ -863,7 +863,7 @@ export const SOLO_DIM_PRESSURE: Record<string, Record<Locale, PressureText>> = {
   H_low: {
     hu: {
       stress: "Nyomás alatt az eredmény-fókusz felerősödhet, és a kapcsolati költségek könnyebben kicsúszhatnak a látóteredből.",
-      blindspot: "A környezeted óvatosabbá válhat veled, mielőtt ezt bármi jelezné.",
+      blindspot: "A környezeted óvatosabbá válhat veled szemben, mielőtt ezt bármi jelezné.",
     },
     en: {
       stress: "Under pressure the focus on results can intensify, and relational costs slip out of view more easily.",
@@ -1076,7 +1076,7 @@ export const COLLAB_CLICK: Record<string, LocalizedText> = {
     en: "You're in your element alongside people who say what they think and honour what they commit to — collaboration played with open cards quickly becomes mutual trust. Next to highly tactical operators, much of your energy goes into second-guessing motives.",
   },
   H_low: {
-    hu: "Jól kattansz az ambiciózus, eredményre hajtó kollégákkal — a közös célszám és a gyors tempó összekapcsol. Egy elvhűbb társ jó ellensúly lehet: ő tartja a hosszú távú bizalmat, amíg te a lehetőségekre ugrasz.",
+    hu: "Könnyen megtalálod a közös hangot az ambiciózus, eredményre hajtó kollégákkal — a közös célszám és a gyors tempó összekapcsol. Egy elvhűbb társ jó ellensúly lehet: ő tartja a hosszú távú bizalmat, amíg te a lehetőségekre ugrasz.",
     en: "You click with ambitious, results-driven colleagues — shared targets and fast tempo connect you. A more principled partner can be a good counterweight: they hold long-term trust while you jump on opportunities.",
   },
   E_high: {
@@ -1192,7 +1192,7 @@ export const COLLAB_NEEDS: Record<string, LocalizedText> = {
     en: "For you, autonomy is the signal of trust: you work well when constant emotional reassurance isn't required in either direction. It helps when those around you know your calm isn't indifference — so it doesn't get misread.",
   },
   X_high: {
-    hu: "Az energiád a közös térből jön: akkor virulsz, ha van élő munka, látható szerep és gyors visszacsatolás. Sokaknak hasonló profillal az segít, ha a vezetőjük teret ad a színpadra — miközben a csendes munkát is elismeri, nem csak a hangosat.",
+    hu: "Az energiád a közös térből jön: akkor virulsz, ha van élő munka, látható szerep és gyors visszacsatolás. Sokaknak hasonló profillal az segít, ha a vezetőjük teret enged a látható szereplésnek — miközben a csendes munkát is elismeri, nem csak a hangosat.",
     en: "Your energy comes from shared space: you thrive with live collaboration, a visible role, and fast feedback. For many with this profile it helps when their leader gives stage room — while also recognising quiet work, not just the loud kind.",
   },
   X_low: {
@@ -1301,7 +1301,7 @@ export const DIMENSION_GROWTH_TIPS: Record<string, Record<Locale, GrowthPlan>> =
   },
   C: {
     hu: {
-      behavior: "Válassz egyetlen visszatérő bosszúságot (pl. csúszó határidő), és építs rá egy minimális rendszert: heti 15 perc tervezés vagy egy közös checklist.",
+      behavior: "Válassz egyetlen visszatérő bosszúságot (pl. csúszó határidő), és építs rá egy minimális rendszert: heti 15 perc tervezés vagy egy közös ellenőrzőlista.",
       reflection: "Melyik elmaradt részlet okozta a legtöbb utómunkát az elmúlt hónapban?",
       challenge: "Két hétig tartsd a heti 15 perces tervezőt — a végén nézd meg, hány vállalás csúszott a korábbi időszakhoz képest.",
     },
@@ -1449,7 +1449,7 @@ export const SOLO_DIM_ROLE_TEXTS: Record<string, Record<Locale, { strong: string
     hu: {
       strong: "Mély fókuszt adó, önálló szerepek: elemzés, fejlesztés, kutatás, stratégia, technikai szakértői munka.",
       medium: "Kis csapat, aszinkron együttműködés is jól működhet, ha marad elég csendes/időzített fókuszidő.",
-      watchOut: "Sok szerepléssel és állandó kapcsolatépítéssel járó szerepek kimeríthetnek. Legyenek határaid a megbeszélések és a nyilvános jelenlét körül.",
+      watchOut: "A sok szerepléssel és folyamatos kapcsolatépítéssel járó munkakörök kimeríthetnek. Legyenek határaid a megbeszélések és a nyilvános jelenlét körül.",
     },
     en: {
       strong: "Deep-focus, autonomous roles: analysis, engineering, research, strategy, technical expertise.",

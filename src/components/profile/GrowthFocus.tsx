@@ -33,7 +33,7 @@ interface GrowthFocusProps {
 // hint biztonsági háló, ha E-tétel mégis ide kerülne.
 const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
   H: {
-    hu: "Tudatos értékek mentén való döntéshozatal és átlátható kommunikáció.",
+    hu: "Értékek mentén hozott, tudatos döntések és átlátható kommunikáció.",
     en: "Value-aligned decision-making and transparent communication.",
   },
   E: {
@@ -57,7 +57,7 @@ const GROWTH_HINT: Record<string, Record<"hu" | "en", string>> = {
     en: "Encouraging curiosity, a learning mindset, and creative thinking.",
   },
   I: {
-    hu: "Mások iránt való figyelem és altruista viselkedés erősítése.",
+    hu: "A mások iránti figyelem és a segítőkész viselkedés erősítése.",
     en: "Strengthening attention to others and altruistic behavior.",
   },
 };

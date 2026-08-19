@@ -43,9 +43,9 @@ const translations = {
       features: "Amit most elérsz:",
       featureList: [
         "Részletes, személyre szabott kiértékelés",
-        "Személyiségtípus meghatározás",
-        "Fejlődés követés",
-        "PDF export",
+        "Személyiségtípus-meghatározás",
+        "Fejlődéskövetés",
+        "PDF-export",
       ],
       cta: "Ugrás a vezérlőre",
       footer:
@@ -78,7 +78,7 @@ const translations = {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
       greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
-        `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások.\n\nA te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
+        `${inviter} arra kér, hogy töltsd ki róla az alábbi rövid kérdőívet — így megtudhatja, hogyan látják őt mások.\n\nA te nézőpontod sokat számít. A válaszaid névtelenek maradnak, és az eredmények csak összesítve (több értékelés átlagaként) jelennek meg.`,
       cta: "Visszajelzés kitöltése",
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
@@ -1114,7 +1114,7 @@ const teamInviteTranslations = {
   hu: {
     subject: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba – Trita`,
     heading: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba`,
-    body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadunk!",
+    body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan a csapat tagjává válsz.",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
     thanks: "Üdvözlettel,",

@@ -52,7 +52,7 @@ const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
     en: "Emotional sensitivity, tendency toward worry, strong emotional attachments",
   },
   X: {
-    hu: "Szociabilitás, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
+    hu: "Társaságkedvelés, magabiztosság, energikusság — mennyire tölt fel a társas közeg",
     en: "Sociability, confidence, energy — degree to which social settings are energizing",
   },
   A: {
@@ -68,7 +68,7 @@ const DIM_DESCRIPTIONS: Record<string, { hu: string; en: string }> = {
     en: "Openness, creativity, intellectual curiosity — tendency to seek novel ideas and approaches",
   },
   N: {
-    hu: "Érzelmi instabilitás, stressz-érzékenység — reakció nyomáshelyzetre",
+    hu: "Érzelmi instabilitás, stressz-érzékenység — hogyan reagál valaki nyomás alatt",
     en: "Emotional instability, stress sensitivity — response to pressure situations",
   },
 };

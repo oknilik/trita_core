@@ -9,7 +9,7 @@ export const resultsTranslations = {
     latestEvaluation: { hu: "Legutóbbi kiértékelés", en: "Latest evaluation" },
     guidedTag: { hu: "A te utad", en: "Your journey" },
     nextStepTitle: { hu: "Következő lépés", en: "Next step" },
-    guidedPraise: { hu: "Nem vagy egyedül, lépésről lépésre vezetünk.", en: "You are not alone. We will guide you step by step." },
+    guidedPraise: { hu: "Nem vagy egyedül: lépésről lépésre végigvezetünk.", en: "You are not alone. We will guide you step by step." },
     journeyProgress: { hu: "Haladás", en: "Progress" },
     journeyStepSelf: { hu: "Saját eredmény", en: "Self result" },
     journeyStepInvite: { hu: "Meghívások", en: "Invitations" },
@@ -270,7 +270,7 @@ export const resultsTranslations = {
   invite: {
     title: { hu: "Ismerős meghívása", en: "Invite someone" },
     body: {
-      hu: "Kérd meg kollégáidat, barátaidat vagy családtagjaidat egy rövid értékelésre.",
+      hu: "Kérd meg kollégáidat, barátaidat vagy családtagjaidat, hogy adjanak rólad egy rövid értékelést.",
       en: "Ask colleagues, friends, or family for a quick rating.",
     },
     createNew: { hu: "Új meghívó létrehozása", en: "Create new invitation" },
@@ -355,7 +355,7 @@ export const resultsTranslations = {
     overviewGoodMatch: { hu: "Összességében jó egyezés", en: "Overall good match" },
     overviewMixed: { hu: "Vegyes kép — van mit felfedezni", en: "Mixed picture — worth exploring" },
     overviewGoodMatchBody: { hu: "Az önképed és az observer visszajelzések a legtöbb dimenzióban közel azonosak. Ez ritka és értékes — azt jelenti, hogy reálisan látod magad.", en: "Your self-image and observer feedback are close in most dimensions. This is rare and valuable — it means you see yourself realistically." },
-    overviewMixedBody: { hu: "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma — hanem lehetőség a mélyebb önismeretre.", en: "There are significant differences in some dimensions. This isn't a problem — it's an opportunity for deeper self-awareness." },
+    overviewMixedBody: { hu: "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma, hanem lehetőség a mélyebb önismeretre.", en: "There are significant differences in some dimensions. This isn't a problem — it's an opportunity for deeper self-awareness." },
     matchingDims: { hu: "egyező dimenzió", en: "matching dims" },
     differingDims: { hu: "eltérő dimenzió", en: "differing dims" },
     avgGap: { hu: "átlagos eltérés", en: "avg. gap" },
@@ -542,7 +542,7 @@ export const resultsTranslations = {
     teamRolePeerFrictionTitle: { hu: "Önkép–csapatkép eltérés", en: "Self-image vs. team view gap" },
     teamRolePeerSelfOnly: { hu: "Te látod magadban, a csapat kevésbé: {roles}.", en: "You see it in yourself, the team less so: {roles}." },
     teamRolePeerPeerOnly: { hu: "A csapat látja benned, te kevésbé: {roles}.", en: "The team sees it in you, you less so: {roles}." },
-    teamRolePeerFrictionHint: { hu: "Az eltérés nem hiba, hanem beszélgetésindító — a debriefen érdemes ránézni, mi takarja el az egyiket vagy hívja elő a másikat.", en: "The gap isn't a flaw but a conversation starter — worth exploring in the debrief what hides one role or calls out the other." },
+    teamRolePeerFrictionHint: { hu: "Az eltérés nem hiba, hanem beszélgetésindító — a közös átbeszélésen érdemes ránézni, mi takarja el az egyiket, és mi hívja elő a másikat.", en: "The gap isn't a flaw but a conversation starter — worth exploring in the debrief what hides one role or calls out the other." },
     teamRolePrimary: { hu: "Elsődleges", en: "Primary" },
     teamRoleSecondary: { hu: "Másodlagos", en: "Secondary" },
     teamRoleTertiary: { hu: "Harmadlagos", en: "Tertiary" },
@@ -1464,7 +1464,7 @@ export const resultsTranslations = {
     ctaInteractionButton: { hu: "Dinamika megnézése", en: "See the dynamics" },
     ccIntroTitle: { hu: "Merre tovább? Nézzük meg együtt.", en: "Where next? Let's look at it together." },
     ccIntroLead: {
-      hu: "A személyiségprofilod és pár rövid kérdés alapján a rendszer megkísérli összerendelni, mely szakmai irányok illeszkednek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",
+      hu: "A személyiségprofilod és néhány rövid kérdés alapján a rendszer felvázolja, mely szakmai irányok illeszkedhetnek a természetes működésedhez. Nem jóslat és nem minősítés — kiindulópont a gondolkodáshoz.",
       en: "Using your personality profile and a few short questions, the system attempts to map which career directions align with how you naturally operate. Not a prediction and not a verdict — a starting point for thinking.",
     },
     ccIntroHowLabel: { hu: "Hogyan áll össze", en: "How it comes together" },
@@ -2189,7 +2189,7 @@ export const resultsTranslations = {
       en: " It's worth looking deeper at {name}.",
     },
     summaryMixed: {
-      hu: "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma — hanem lehetőség a mélyebb önismeretre.",
+      hu: "Néhány dimenzióban jelentős eltérés van az önképed és mások visszajelzése között. Ez nem probléma, hanem lehetőség a mélyebb önismeretre.",
       en: "There are significant gaps in some dimensions between your self-image and others' feedback. This isn't a problem — it's an opportunity for deeper self-awareness.",
     },
     // ── PlusFacetsPage ─────────────────────────────────────────────────────

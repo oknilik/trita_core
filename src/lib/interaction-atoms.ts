@@ -748,7 +748,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "A", pole: "low" },
     view: {
       easy: {
-        hu: "Mindketten kimondjátok az igazat — nálad elvből, nála vérmérsékletből. A kettőtök közelében ritkán élnek meg hazugságok.",
+        hu: "Mindketten kimondjátok az igazat — nálad elvből, nála vérmérsékletből. A kettőtök közelében ritkán marad meg egy hazugság.",
         en: "You both speak the truth — you on principle, they by temperament. Lies rarely survive near the two of you.",
       },
       friction: {
@@ -762,7 +762,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
     viewB: {
       easy: {
-        hu: "Mindketten kimondjátok az igazat — te vérmérsékletből, ő elvből. A kettőtök közelében ritkán élnek meg hazugságok.",
+        hu: "Mindketten kimondjátok az igazat — te vérmérsékletből, ő elvből. A kettőtök közelében ritkán marad meg egy hazugság.",
         en: "You both speak the truth — you by temperament, they on principle. Lies rarely survive near the two of you.",
       },
       friction: {
@@ -1219,7 +1219,7 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader is strongly principled, they tend to be predictable and fair, bound by their word — usually expecting the same in return. Manoeuvring and polished reports risk a lot with them, while honest admission of error earns points: naming bad news early can build trust.",
     },
     low: {
-      hu: "Ha a vezetőd rugalmas prioritású, alkuképes típus, jellemzően gyorsan és pragmatikusan dönt, a hangsúlyai pedig a helyzettel együtt mozognak. A megállapodásaitokat érdemes írásban rögzíteni, mert a fókusza gyorsan mozdulhat tovább — és figyeld a kimondatlan szempontjait is.",
+      hu: "Ha a vezetőd pragmatikus, alkukban gondolkodó típus, jellemzően gyorsan és gyakorlatiasan dönt, a hangsúlyai pedig a helyzettel együtt mozdulnak. A megállapodásaitokat érdemes írásban rögzíteni, mert a fókusza gyorsan továbbléphet — és figyeld a ki nem mondott szempontjait is.",
       en: "If your leader has flexible priorities and a deal-making style, they tend to decide fast and pragmatically, with emphases that move with the situation. It's worth putting your agreements in writing, because their focus can move on quickly — and watch for their unstated considerations too.",
     },
   },

@@ -87,7 +87,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Patient, low-conflict team — lenient with each other's mistakes and quick to compromise. In exchange, disagreement rarely reaches the table: intentionally building a direct feedback culture is worthwhile.",
     },
     mid: {
-      hu: "Egészséges assertivitás és engedékenység aránya — a csapat képes az egyenes vitára és a kompromisszumra is.",
+      hu: "Az önérvényesítés és az engedékenység egészséges arányban van jelen — a csapat az egyenes vitára és a kompromisszumra is képes.",
       en: "Healthy balance of assertiveness and accommodation — the team can handle both straight debate and compromise.",
     },
     low: {
@@ -105,7 +105,7 @@ const DIM_INSIGHTS: Record<string, Record<Level, { hu: string; en: string }>> = 
       en: "Good balance between organization and flexibility — the team is reliable while remaining adaptable.",
     },
     low: {
-      hu: "Rugalmas, kreatív munkavégzési stílus. Strukturális keretek, prioritizálási eszközök és folyamatkövetés erősítése javasolt.",
+      hu: "Rugalmas, kreatív munkastílus. Érdemes enyhe kereteket bevezetni: közös priorizálás és folyamatkövetés adja hozzá a kiszámíthatóságot.",
       en: "Flexible, creative working style. Strengthening structural frameworks, prioritization tools, and process tracking is recommended.",
     },
   },

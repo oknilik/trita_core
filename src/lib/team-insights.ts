@@ -27,7 +27,7 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   // pólus pozitív címkéjét adta „fejlesztési irányként" — szemantikai
   // inverzió, nyelvi kör 2026-08).
   const dimNames: Record<string, string> = {
-    H: "fairness-érzékenység",
+    H: "méltányosság-érzékenység",
     E: "érzelmi érzékenység",
     X: "társas energia",
     A: "együttműködési készség",
@@ -51,7 +51,7 @@ export function generateTeamSummary(scores: Record<string, number>): string {
 // teljessége miatt marad, jellemző-keretezésben, hozadékkal ÉS árral.
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "A csapat ösztönösen méltányos döntéseket hoz — használd ki a belső mediátorok erejét.",
+    H: "A csapat ösztönösen méltányos döntéseket hoz — bizalmi és elosztási kérdésekben erre nyugodtan építhetsz.",
     E: "Érzelmileg ráhangolódó csapat — a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
     X: "Társas helyzetekben gyorsan aktiválható — workshopokon, prezentációknál kiváló.",
     A: "Erős együttműködés — komplex projekteknél kevesebb koordinációra lehet szükség.",

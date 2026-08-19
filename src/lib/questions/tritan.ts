@@ -68,10 +68,10 @@ export const tritanConfig: TestConfig = {
         hu: "Becsületesség-Alázat",
       },
       color: DIMENSION_COLORS.H.base,
-      description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy facetje az Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és korrupció kerülése), a Mohóságkerülés (az anyagi javak és státusz iránti közömbösség) és a Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
+      description: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki attól, hogy másokat a saját céljaira használjon, mennyire kerüli a szabályszegést, és mennyire hagyja hidegen a vagyon és a kiemelt társadalmi státusz. Négy facetje az Őszinteség (valódi, manipulációtól mentes viszonyulás másokhoz), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (közömbösség az anyagi javak és a státusz iránt) és a Szerénység (nem tartja magát másoknál különbnek vagy többre jogosultnak).",
       descriptionByLocale: {
         en: "The Honesty-Humility (H) dimension reflects the extent to which a person avoids manipulating others for personal gain, feels little temptation to break rules, is uninterested in lavish wealth and luxury, and feels no special sense of entitlement. Its four facets are Sincerity (genuine, non-manipulative engagement with others), Fairness (avoidance of fraud and exploitation), Greed Avoidance (indifference to material wealth and social status), and Modesty (not viewing oneself as superior or deserving of special treatment).",
-        hu: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki mások manipulálásától, a szabályszegéstől, az anyagi javak hajhászásától és a kiemelt társadalmi státusz hajszolásától. Négy facetje az Őszinteség (valódi, nem manipulatív viszonyulás másokhoz), a Méltányosság (a csalás és korrupció kerülése), a Mohóságkerülés (az anyagi javak és státusz iránti közömbösség) és a Szerénység (nem tekinti magát privilegizáltnak vagy különlegesnek).",
+        hu: "A becsületesség-alázat (H) dimenzió azt tükrözi, mennyire tartózkodik valaki attól, hogy másokat a saját céljaira használjon, mennyire kerüli a szabályszegést, és mennyire hagyja hidegen a vagyon és a kiemelt társadalmi státusz. Négy facetje az Őszinteség (valódi, manipulációtól mentes viszonyulás másokhoz), a Méltányosság (a csalás és a korrupció kerülése), a Mohóságkerülés (közömbösség az anyagi javak és a státusz iránt) és a Szerénység (nem tartja magát másoknál különbnek vagy többre jogosultnak).",
       },
       insights: {
         low: "Az eredmény, az anyagi elismerés és a státusz erős motiváció számodra, és az érdekérvényesítésben rugalmasan válogatsz az eszközök között — a szabályokat inkább keretnek látod, mint korlátnak. Versengő közegben ez előny; a bizalmi kapcsolatok tudatosabb ápolást igényelnek.",
@@ -111,9 +111,9 @@ export const tritanConfig: TestConfig = {
         hu: "Az emocionalitás (E) dimenzió azt méri, mennyire érzékeny valaki a fizikai veszélyekre és a stresszes helyzetekre, mennyire igényli mások érzelmi támogatását, és mennyire erős az érzelmi kötődése és empátiája. Négy facetje a Félelem (a fizikai sérülés elkerülésére való hajlam), a Szorongás (aggódásra való hajlam különféle nehézségekkel szemben), a Dependencia (mások érzelmi támogatásának igénye) és a Szentimentalitás (erős érzelmi kötődés és empatikus érzékenység mások iránt).",
       },
       insights: {
-        low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, és ritkán van szükséged mások érzelmi támogatására. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+        low: "A fizikai veszély nem nagyon riaszt el, stresszhelyzetben is ritkán fog el az aggodalom, és ritkán érzed szükségét, hogy a gondjaidat másokkal oszd meg. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
         mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és eljutnak hozzád a helyzetek érzelmi jelzései, de általában önállóan is megbirkózol a kihívásokkal.",
-        high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, és fontos számodra a közel állókkal való érzelmi megosztás. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
+        high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmet és a stresszt, és fontos, hogy ami nyomaszt, azt megoszthasd a hozzád közel állókkal. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
       },
       insightsByLocale: {
         en: {
@@ -122,9 +122,9 @@ export const tritanConfig: TestConfig = {
           high: "You are strongly emotionally connected: intensely affected by fears and stress, and you feel a real need to share your concerns with those close to you. A lot of early signal reaches you this way — and you carry a lot of it with you.",
         },
         hu: {
-          low: "Nem tántorítanak el a fizikai veszélyek, ritkán aggódsz stresszes helyzetekben, és ritkán van szükséged mások érzelmi támogatására. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
+          low: "A fizikai veszély nem nagyon riaszt el, stresszhelyzetben is ritkán fog el az aggodalom, és ritkán érzed szükségét, hogy a gondjaidat másokkal oszd meg. Cserébe mások érzelmi jelzései ritkábban jutnak el hozzád, és a nyugalmadat távolságtartásnak is olvashatják.",
           mid: "Mérsékelt érzelmi intenzitás jellemez: alkalmanként keresed mások támogatását, és eljutnak hozzád a helyzetek érzelmi jelzései, de általában önállóan is megbirkózol a kihívásokkal.",
-          high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmeket és a stresszt, és fontos számodra a közel állókkal való érzelmi megosztás. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
+          high: "Erős érzelmi kötődés és fogékonyság jellemez: mélyen megéled a félelmet és a stresszt, és fontos, hogy ami nyomaszt, azt megoszthasd a hozzád közel állókkal. Sok korai jelzés jut így el hozzád — és sok terhet is viszel magaddal belőle.",
         },
       },
       facets: [
@@ -142,15 +142,15 @@ export const tritanConfig: TestConfig = {
         hu: "Extraverzió",
       },
       color: DIMENSION_COLORS.X.base,
-      description: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
+      description: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle társas helyzetekben való otthonosságot, a beszélgetések és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosság előtt), a Társaságkedvelés (a beszélgetések, a közös programok és az összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       descriptionByLocale: {
         en: "The Extraversion (X) dimension reflects social self-confidence, comfort across social situations, enjoyment of conversation and social gatherings, and overall enthusiasm and energy. Its four facets are Social Self-Esteem (positive self-regard, especially in social contexts), Social Boldness (confidence in group or public settings), Sociability (enjoyment of conversation, interaction, and social gatherings), and Liveliness (general sense of enthusiasm and optimism).",
-        hu: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle szociális helyzetekben való komfortot, a társalgás és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosan), a Társaságkedvelés (a társalgás, interakciók és összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
+        hu: "Az extraverzió (X) dimenzió a társas önbizalmat, a különféle társas helyzetekben való otthonosságot, a beszélgetések és összejövetelek élvezetét, valamint az általános lelkesedést és energiát tükrözi. Négy facetje a Társas önértékelés (pozitív önkép, különösen társas helyzetekben), a Társas merészség (magabiztosság csoportban vagy nyilvánosság előtt), a Társaságkedvelés (a beszélgetések, a közös programok és az összejövetelek élvezete) és az Élénkség (általános lelkesedés és optimizmus).",
       },
       insights: {
-        low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és hajlamos lehetsz kevésbé népszerűnek látni magad. Az egyéni tevékenységeket részesíted előnyben, és a lelkesedés és az optimizmus pedig ritkábban jellemez.",
-        mid: "Társas helyzetekben általában magabiztosnak érzed magad, és tudsz vezető szerepet vállalni, miközben az egyéni tevékenységeket és a csendesebb pillanatokat is értékeled.",
-        high: "Magabiztosnak és energikusnak érzed magad társas közegben, élvezed a társalgást, az összejöveteleket és a csoporthelyzeteket, pozitívan gondolsz magadra, és lelkesedéssel és optimizmussal tekintesz a mindennapokra.",
+        low: "A figyelem középpontjában kényelmetlenül érezheted magad, és hajlamos lehetsz úgy érezni, hogy kevésbé vagy népszerű. Szívesebben foglalkozol egyéni tevékenységekkel, a hangos lelkesedés és a túláradó optimizmus pedig kevésbé jellemző rád.",
+        mid: "Társas helyzetekben általában magabiztos vagy, és vezető szerepet is tudsz vállalni, miközben az egyedül végzett munkát és a csendesebb pillanatokat is értékeled.",
+        high: "Társas közegben magabiztos és energikus vagy: élvezed a beszélgetéseket, az összejöveteleket és a csoporthelyzeteket, jó véleménnyel vagy magadról, a mindennapokhoz pedig lelkesedéssel és derűlátással állsz.",
       },
       insightsByLocale: {
         en: {
@@ -159,9 +159,9 @@ export const tritanConfig: TestConfig = {
           high: "You feel confident and energized in social settings, enjoy conversation, gatherings, and group situations, hold a positive view of yourself, and approach daily life with enthusiasm and optimism.",
         },
         hu: {
-          low: "Kényelmetlenül érezheted magad a figyelem középpontjában, és hajlamos lehetsz kevésbé népszerűnek látni magad. Az egyéni tevékenységeket részesíted előnyben, és a lelkesedés és az optimizmus pedig ritkábban jellemez.",
-          mid: "Társas helyzetekben általában magabiztosnak érzed magad, és tudsz vezető szerepet vállalni, miközben az egyéni tevékenységeket és a csendesebb pillanatokat is értékeled.",
-          high: "Magabiztosnak és energikusnak érzed magad társas közegben, élvezed a társalgást, az összejöveteleket és a csoporthelyzeteket, pozitívan gondolsz magadra, és lelkesedéssel és optimizmussal tekintesz a mindennapokra.",
+          low: "A figyelem középpontjában kényelmetlenül érezheted magad, és hajlamos lehetsz úgy érezni, hogy kevésbé vagy népszerű. Szívesebben foglalkozol egyéni tevékenységekkel, a hangos lelkesedés és a túláradó optimizmus pedig kevésbé jellemző rád.",
+          mid: "Társas helyzetekben általában magabiztos vagy, és vezető szerepet is tudsz vállalni, miközben az egyedül végzett munkát és a csendesebb pillanatokat is értékeled.",
+          high: "Társas közegben magabiztos és energikus vagy: élvezed a beszélgetéseket, az összejöveteleket és a csoporthelyzeteket, jó véleménnyel vagy magadról, a mindennapokhoz pedig lelkesedéssel és derűlátással állsz.",
         },
       },
       facets: [
@@ -179,10 +179,10 @@ export const tritanConfig: TestConfig = {
         hu: "Barátságosság",
       },
       color: DIMENSION_COLORS.A.base,
-      description: "A barátságosság (A) dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Gyengédség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
+      description: "A barátságosság (A) dimenzió — a harag ellenpólusa — azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni, és megőrizni a nyugalmát, ha provokálják. Négy facetje a Megbocsátás (a bizalom és a jóindulat helyreállítása azok felé, akik megbántották), a Gyengédség (enyhe, elnéző ítéletalkotás másokról), a Rugalmasság (készség az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       descriptionByLocale: {
         en: "The Agreeableness (A) dimension (versus Anger) reflects the tendency to forgive wrongs, judge others with leniency, willingness to compromise and cooperate, and the ability to keep one's temper even when mistreated. Its four facets are Forgivingness (restoring trust and goodwill toward those who have caused harm), Gentleness (mild and lenient judgment of others), Flexibility (willingness to adapt and compromise), and Patience (restraining anger and irritation).",
-        hu: "A barátságosság (A) dimenzió (a harag ellenpontjaként) azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően ítélni meg másokat, kompromisszumra törekedni, és megőrizni a nyugalmát provokáció esetén. Négy facetje a Megbocsátás (a bizalom és a szívélyesség helyreállítása az őt megbántókkal szemben), a Gyengédség (enyhe, toleráns ítélkezés másokról), a Rugalmasság (hajlandóság az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
+        hu: "A barátságosság (A) dimenzió — a harag ellenpólusa — azt tükrözi, mennyire hajlamos valaki megbocsátani a sérelmeket, elnézően megítélni másokat, kompromisszumra törekedni, és megőrizni a nyugalmát, ha provokálják. Négy facetje a Megbocsátás (a bizalom és a jóindulat helyreállítása azok felé, akik megbántották), a Gyengédség (enyhe, elnéző ítéletalkotás másokról), a Rugalmasság (készség az alkalmazkodásra és a kompromisszumra) és a Türelem (a harag és az ingerültség visszafogása).",
       },
       // 2026-08-11, valencia-revízió (a E-döntés kiterjesztése): a skála-LEÍRÁS
       // fent irodalom-hű marad (az a konstruktum definíciója), a VERDIKT-
@@ -222,15 +222,15 @@ export const tritanConfig: TestConfig = {
         hu: "Lelkiismeretesség",
       },
       color: DIMENSION_COLORS.C.base,
-      description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolja át alaposan a döntéseit. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Körültekintés (impulzusok kontrollja, a döntések átgondolása).",
+      description: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és rendszerezetten éli valaki a mindennapjait, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra és alaposságra, és mennyire gondolja át a döntéseit. Négy facetje a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság, figyelem a részletekre) és a Körültekintés (az impulzusok kordában tartása, a döntések átgondolása).",
       descriptionByLocale: {
         en: "The Conscientiousness (C) dimension measures how organized and structured a person is, how persistently and disciplinedly they work toward goals, their drive for accuracy and thoroughness, and how carefully they deliberate before making decisions. Its four facets are Organization (preference for tidy surroundings and structured schedules), Diligence (strong work ethic and motivation to achieve), Perfectionism (thoroughness and attention to detail), and Prudence (impulse control and careful deliberation).",
-        hu: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezett és rendszeres valaki a mindennapi élete terén, mennyire kitartóan és fegyelmezetten törekszik a céljai elérésére, mennyire törekszik pontosságra és tökéletességre, és mennyire gondolja át alaposan a döntéseit. Négy facetje a Szervezettség (rendezett fizikai környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság és a részletekre való odafigyelés) és a Körültekintés (impulzusok kontrollja, a döntések átgondolása).",
+        hu: "A lelkiismeretesség (C) dimenzió azt méri, mennyire szervezetten és rendszerezetten éli valaki a mindennapjait, milyen kitartóan és fegyelmezetten dolgozik a céljaiért, mennyire törekszik pontosságra és alaposságra, és mennyire gondolja át a döntéseit. Négy facetje a Szervezettség (a rendezett környezet és időbeosztás igénye), a Szorgalom (erős munkamotiváció és kitartás), a Perfekcionizmus (aprólékosság, figyelem a részletekre) és a Körültekintés (az impulzusok kordában tartása, a döntések átgondolása).",
       },
       insights: {
-        low: "Kevésbé foglalkoztat a rend és a struktúra: hajlamos vagy elkerülni a nehéz feladatokat, megelégedni a nem tökéletes eredményekkel, és inkább impulzívan, mint alapos mérlegelés után dönteni.",
-        mid: "Megbízhatóan hajtod végre a feladatokat, és általában rendszerezetten végzed a munkát, de nem hajszolod túl magad a tökéletesség érdekében. Rugalmasan alkalmazkodsz a változásokhoz anélkül, hogy elveszítenéd a fókuszodat.",
-        high: "Gondosan szervezed az idődet és a fizikai környezetedet, fegyelmezetten és kitartóan dolgozol a céljaidért, alaposan odafigyelve a részletekre és a pontosságra, és döntés előtt mindig körültekintően mérlegelsz.",
+        low: "A rend és a struktúra kevésbé foglalkoztat: a nehéz feladatokat hajlamos vagy elkerülni, beéred a nem tökéletes eredménnyel is, és inkább ösztönösen döntesz, mint hosszas mérlegelés után.",
+        mid: "Megbízhatóan viszed végig a feladataidat, és általában rendszerezetten dolgozol, de nem hajszolod magad a tökéletességig. A változásokhoz rugalmasan alkalmazkodsz, anélkül hogy elveszítenéd a fókuszt.",
+        high: "Gondosan beosztod az idődet és rendben tartod a környezetedet, fegyelmezetten és kitartóan dolgozol a céljaidért, ügyelsz a részletekre és a pontosságra, döntés előtt pedig alaposan mérlegelsz.",
       },
       insightsByLocale: {
         en: {
@@ -239,9 +239,9 @@ export const tritanConfig: TestConfig = {
           high: "You organize your time and surroundings carefully, work toward your goals with discipline and persistence, pay close attention to accuracy and detail, and deliberate carefully before making decisions.",
         },
         hu: {
-          low: "Kevésbé foglalkoztat a rend és a struktúra: hajlamos vagy elkerülni a nehéz feladatokat, megelégedni a nem tökéletes eredményekkel, és inkább impulzívan, mint alapos mérlegelés után dönteni.",
-          mid: "Megbízhatóan hajtod végre a feladatokat, és általában rendszerezetten végzed a munkát, de nem hajszolod túl magad a tökéletesség érdekében. Rugalmasan alkalmazkodsz a változásokhoz anélkül, hogy elveszítenéd a fókuszodat.",
-          high: "Gondosan szervezed az idődet és a fizikai környezetedet, fegyelmezetten és kitartóan dolgozol a céljaidért, alaposan odafigyelve a részletekre és a pontosságra, és döntés előtt mindig körültekintően mérlegelsz.",
+          low: "A rend és a struktúra kevésbé foglalkoztat: a nehéz feladatokat hajlamos vagy elkerülni, beéred a nem tökéletes eredménnyel is, és inkább ösztönösen döntesz, mint hosszas mérlegelés után.",
+          mid: "Megbízhatóan viszed végig a feladataidat, és általában rendszerezetten dolgozol, de nem hajszolod magad a tökéletességig. A változásokhoz rugalmasan alkalmazkodsz, anélkül hogy elveszítenéd a fókuszt.",
+          high: "Gondosan beosztod az idődet és rendben tartod a környezetedet, fegyelmezetten és kitartóan dolgozol a céljaidért, ügyelsz a részletekre és a pontosságra, döntés előtt pedig alaposan mérlegelsz.",
         },
       },
       facets: [
@@ -265,9 +265,9 @@ export const tritanConfig: TestConfig = {
         hu: "A nyitottság (O) dimenzió az esztétikai fogékonyságot, az intellektuális kíváncsiságot, a kreativitást és a szokatlan ötletek iránti befogadóképességet méri. Négy facetje az Esztétikai fogékonyság (elmerülés a természet és a művészet szépségében), a Kíváncsiság (ismeretek és tapasztalatok aktív keresése), a Kreativitás (az innováció és a kísérletezés iránti preferencia, eredeti megoldások keresése) és a Konvenciómentesség (nyitottság a szokatlan, esetleg radikális ötletekre).",
       },
       insights: {
-        low: "Kevéssé ragadnak meg a műalkotások vagy a természeti csodák, nem különösebben foglalkoztat az intellektuális felfedezés, a kreatív tevékenységektől inkább tartózkodol, és a radikális vagy szokatlan ötletek nem vonzanak.",
+        low: "A műalkotások és a természet látványa kevésbé ragad magával, az intellektuális felfedezés nem különösebben vonz, a kreatív tevékenységektől inkább tartózkodsz, és a radikális, szokatlan ötletek is hidegen hagynak.",
         mid: "Nyitott vagy néhány új ötletre és kreatív élményre, miközben a praktikus, bevált megközelítések is vonzanak. A kíváncsiság és a pragmatizmus egyensúlyban van benned.",
-        high: "Elmerülsz a természet és a művészet szépségében, aktívan keresed az ismereteket és az új tapasztalatokat, szívesen kísérletezel eredeti megközelítésekkel, és nyitott vagy a szokatlan, esetleg radikális ötletekre.",
+        high: "Elmerülsz a természet és a művészet szépségében, aktívan keresed az új ismereteket és tapasztalatokat, szívesen kísérletezel eredeti megközelítésekkel, és nyitott vagy a szokatlan, akár radikális ötletekre is.",
       },
       insightsByLocale: {
         en: {
@@ -276,9 +276,9 @@ export const tritanConfig: TestConfig = {
           high: "You become absorbed in the beauty of art and nature, actively seek knowledge and new experiences, enjoy experimenting with original approaches, and are receptive to ideas that may seem strange or radical to others.",
         },
         hu: {
-          low: "Kevéssé ragadnak meg a műalkotások vagy a természeti csodák, nem különösebben foglalkoztat az intellektuális felfedezés, a kreatív tevékenységektől inkább tartózkodol, és a radikális vagy szokatlan ötletek nem vonzanak.",
+          low: "A műalkotások és a természet látványa kevésbé ragad magával, az intellektuális felfedezés nem különösebben vonz, a kreatív tevékenységektől inkább tartózkodsz, és a radikális, szokatlan ötletek is hidegen hagynak.",
           mid: "Nyitott vagy néhány új ötletre és kreatív élményre, miközben a praktikus, bevált megközelítések is vonzanak. A kíváncsiság és a pragmatizmus egyensúlyban van benned.",
-          high: "Elmerülsz a természet és a művészet szépségében, aktívan keresed az ismereteket és az új tapasztalatokat, szívesen kísérletezel eredeti megközelítésekkel, és nyitott vagy a szokatlan, esetleg radikális ötletekre.",
+          high: "Elmerülsz a természet és a művészet szépségében, aktívan keresed az új ismereteket és tapasztalatokat, szívesen kísérletezel eredeti megközelítésekkel, és nyitott vagy a szokatlan, akár radikális ötletekre is.",
         },
       },
       facets: [
@@ -296,13 +296,13 @@ export const tritanConfig: TestConfig = {
         hu: "Altruizmus",
       },
       color: DIMENSION_COLORS.A.strong,
-      description: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
+      description: "Az altruizmus kiegészítő skála azt méri, mennyire érez valaki őszinte együttérzést a nehéz helyzetben lévők iránt, és mennyire kész nagylelkűen segíteni. Az alacsony pontszámúakat kevésbé rendíti meg mások baja, a magas pontszámúak viszont belső késztetést éreznek a rászorulók tevőleges támogatására.",
       descriptionByLocale: {
         en: "The Altruism (Interstitial) scale measures the extent to which a person feels genuine sympathy for the less fortunate and is motivated to give generously to those in need. Low scorers are relatively unmoved by others' hardship, while high scorers feel a strong inner drive to help and support those who are weak or in difficulty.",
-        hu: "Az altruizmus közbülső skála azt méri, mennyire érez valaki valódi együttérzést a hátrányos helyzetűek iránt, és mennyire motivált a nagylelkű segítségnyújtásra. Az alacsony értékű személyek kevéssé aggódnak mások baján, míg a magasak belső késztetést éreznek a rászoruló emberek aktív támogatására.",
+        hu: "Az altruizmus kiegészítő skála azt méri, mennyire érez valaki őszinte együttérzést a nehéz helyzetben lévők iránt, és mennyire kész nagylelkűen segíteni. Az alacsony pontszámúakat kevésbé rendíti meg mások baja, a magas pontszámúak viszont belső késztetést éreznek a rászorulók tevőleges támogatására.",
       },
       insights: {
-        low: "Nem az azonnali érzelmi bevonódás jellemző rád — inkább megfontoltan döntesz arról, mikor és hogyan segíts. Racionális hozzáállással közelítesz mások nehézségeihez.",
+        low: "Nem az azonnali érzelmi bevonódás jellemző rád — megfontoltan döntöd el, mikor és hogyan segíts. Mások nehézségeihez inkább a józan mérlegelés felől közelítesz.",
         mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
         high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
       },
@@ -313,7 +313,7 @@ export const tritanConfig: TestConfig = {
           high: "You are deeply moved by others' situations and feel a natural drive to help. Empathy and action are naturally connected for you.",
         },
         hu: {
-          low: "Nem az azonnali érzelmi bevonódás jellemző rád — inkább megfontoltan döntesz arról, mikor és hogyan segíts. Racionális hozzáállással közelítesz mások nehézségeihez.",
+          low: "Nem az azonnali érzelmi bevonódás jellemző rád — megfontoltan döntöd el, mikor és hogyan segíts. Mások nehézségeihez inkább a józan mérlegelés felől közelítesz.",
           mid: "Helyzetfüggően hajlandó vagy segíteni másokon. Nem a pillanatnyi érzelem, hanem a helyzet mérlegelése vezérel.",
           high: "Mélyen érint mások helyzete, és természetes késztetést érzel a segítésre. Az empátia és a cselekvés nálad összekapcsolódik.",
         },
