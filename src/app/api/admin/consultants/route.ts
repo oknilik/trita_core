@@ -8,6 +8,7 @@ import {
 } from "@/lib/consultant-invites";
 import { sendConsultantInviteEmail } from "@/lib/emails";
 import { createLogger } from "@/lib/logger";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 const log = createLogger("admin-consultants");
 
@@ -139,7 +140,7 @@ export async function POST(req: NextRequest) {
       emailSent = await sendConsultantInviteEmail({
         to: email,
         hasAccount: Boolean(existing),
-        locale: existing?.locale === "en" ? "en" : "hu",
+        locale: normalizeLocale(existing?.locale),
       });
     } catch (error) {
       log.error(

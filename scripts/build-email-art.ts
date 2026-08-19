@@ -3,8 +3,8 @@
  *
  * Futtatás: pnpm build:email-art
  *
- * Két PNG-t állít elő a `public/email/` alá, és melléjük egy generált
- * konstans-modult (`src/lib/email-art.ts`) a megjelenítési méretekkel:
+ * Két PNG-t renderel, és egyetlen generált modulba (`src/lib/email-art.ts`)
+ * írja őket base64-ben, a megjelenítési méretükkel együtt:
  *
  *   · wordmark.png — a KANONIKUS Trita szójel: egyszínű „trıta" Fraunces-ben,
  *     egyetlen bronz akcentussal a pontatlan i fölött. Ugyanaz a jel, mint a
@@ -13,30 +13,40 @@
  *     ellensúly. A geometria a KÖZÖS `miro-primitives.ts`-ből jön, tehát a
  *     levél jele nem tud elcsúszni a felület jelétől.
  *
- * MIÉRT KÉP, ÉS MIÉRT HOSZTOLT:
+ * MIÉRT KÉP:
+ *   A szójelet élő szövegként nem lehet hűen kirakni — a bronz i-pont
+ *   `position:absolute`-ot igényelne, amit a Gmail eltávolít, a Fraunces
+ *   pedig a kliensek többségében nem töltődik be (Georgia renderelne).
+ *   Kikapcsolt képeknél a szójel `alt` szövege lép a helyére a `<img>`-en
+ *   megadott betű- és színstílusokkal; a dekoratív jel (`alt=""`) eltűnik.
  *
- *   · A szójelet élő szövegként nem lehet hűen kirakni: a bronz i-pont
- *     `position:absolute`-ot igényelne, amit a Gmail eltávolít, a Fraunces
- *     pedig a kliensek többségében nem töltődik be (Georgia renderelne).
- *   · A `data:` URI-t a Gmail kidobja képforrásként, az inline SVG-t sem
- *     rendereli — marad a hosztolt PNG vagy a cid-melléklet. A melléklet
- *     minden levélre gemkapcsot tenne, ezért hosztolt fájl.
- *   · Kikapcsolt képeknél a szójel `alt` szövege lép a helyére, a
- *     `<img>`-en megadott betű- és színstílusokkal; a dekoratív jel
- *     (`alt=""`) nyomtalanul eltűnik.
+ * MIÉRT BASE64 A MODULBAN, ÉS MIÉRT NEM HOSZTOLT FÁJL (2026-08-19 javítás):
+ *
+ *   · A hosztolt URL-es változat élesben NEM töltődött be. Két néma
+ *     buktatója van, és mindkettő elég egyedül is: a küldéskor kiszámolt
+ *     `NEXT_PUBLIC_APP_URL` nem feltétlenül az a hoszt, ahová az eszköz
+ *     kikerült (preview-deploy vs. produkció), és a Vercel deployment
+ *     protection a preview-domainen a képkérést is elutasítja.
+ *   · A `data:` URI sem járható: a Gmail eltávolítja a data-URI képforrásokat.
+ *   · Marad a `cid:` INLINE csatolmány. A Resend a `contentId` megadásakor
+ *     `content_disposition: "inline"`-t küld, tehát nem lesz belőle gemkapocs;
+ *     a levél viszont magával hozza a képet, tehát nincs hoszt-, deploy- vagy
+ *     env-függése. A projekt a megosztó-levél QR-kódját is így viszi.
+ *   · A bájtok azért a JS-modulba égnek, és nem a `public/`-ból olvasódnak
+ *     futásidőben: a `public/` NEM része a szerverless bundle-nek, tehát egy
+ *     `readFileSync` élesben elszállna.
  *
  * A renderelés Chromiumban megy (Playwright), a helyi TTF-ekkel — nincs
  * hálózati függés, és a kimenet determinisztikus.
  */
 
 import { chromium } from "@playwright/test";
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { COLORS } from "../src/lib/design-tokens";
 import { starArms, r2 } from "../src/lib/miro-primitives";
 
 const ROOT = process.cwd();
-const OUT_DIR = join(ROOT, "public", "email");
 const MODULE_PATH = join(ROOT, "src", "lib", "email-art.ts");
 
 /** A PNG-k 2× felbontásban készülnek a retina-inboxokhoz. */
@@ -143,8 +153,6 @@ function markHtml(): string {
 // ─── Futtatás ────────────────────────────────────────────────────────────────
 
 async function main() {
-  mkdirSync(OUT_DIR, { recursive: true });
-
   const fontDataUri =
     "data:font/ttf;base64,"
     + readFileSync(join(ROOT, "public", "fonts", "Fraunces-SemiBold.ttf")).toString("base64");
@@ -158,43 +166,60 @@ async function main() {
   );
   const page = await browser.newPage({ viewport: { width: 800, height: 400 } });
 
-  async function shoot(html: string, selector: string, file: string) {
+  async function shoot(html: string, selector: string, cid: string) {
     await page.setContent(html, { waitUntil: "load" });
     await page.evaluate(() => document.fonts.ready);
     const element = page.locator(selector);
     const box = await element.boundingBox();
     if (!box) throw new Error(`Nem mérhető elem: ${selector}`);
-    await element.screenshot({ path: join(OUT_DIR, file), omitBackground: true });
+    const png = await element.screenshot({ omitBackground: true });
     return {
-      file,
+      cid,
+      filename: `${cid}.png`,
+      base64: png.toString("base64"),
       // A PNG 2×-es; a levélben a FELE méreten jelenik meg.
       width: Math.round(box.width / SCALE),
       height: Math.round(box.height / SCALE),
     };
   }
 
-  const wordmark = await shoot(wordmarkHtml(fontDataUri), "#wm", "wordmark.png");
-  const mark = await shoot(markHtml(), "#mark", "mark.png");
+  const wordmark = await shoot(wordmarkHtml(fontDataUri), "#wm", "trita-wordmark");
+  const mark = await shoot(markHtml(), "#mark", "trita-mark");
 
   await browser.close();
+
+  const asset = (a: Awaited<ReturnType<typeof shoot>>) =>
+    `{\n    cid: ${JSON.stringify(a.cid)},\n    filename: ${JSON.stringify(a.filename)},\n`
+    + `    width: ${a.width},\n    height: ${a.height},\n`
+    + `    base64:\n      ${JSON.stringify(a.base64)},\n  }`;
 
   const generated = `/**
  * GENERÁLT FÁJL — ne szerkeszd kézzel.
  * Forrás: \`scripts/build-email-art.ts\` (futtatás: pnpm build:email-art)
  *
- * A levél-eszközök megjelenítési mérete. Az \`<img>\` width/height attribútuma
- * ezekből jön: az arány elrontása minden levélben látszana, és a kliens-oldali
+ * A levél-eszközök: a kanonikus szójel és a formanyelvi jel, base64-ben.
+ *
+ * A bájtok azért a modulban élnek, mert a levél \`cid:\` INLINE csatolmányként
+ * viszi őket — így nincs hoszt-, deploy- vagy env-függés, ami élesben némán
+ * eltüntetné a képeket. A \`public/\` mappa nem része a szerverless
+ * bundle-nek, tehát futásidejű fájlolvasás sem járható út.
+ *
+ * A width/height a MEGJELENÍTÉSI méret (a PNG 2×-es). Az \`<img>\`-en kötelező
+ * megadni: az arány elrontása minden levélben látszana, és a kliens-oldali
  * átméretezés a leggyakoribb forrása a homályos logónak.
  */
 export const EMAIL_ART = {
-  wordmark: { file: ${JSON.stringify(wordmark.file)}, width: ${wordmark.width}, height: ${wordmark.height} },
-  mark: { file: ${JSON.stringify(mark.file)}, width: ${mark.width}, height: ${mark.height} },
+  wordmark: ${asset(wordmark)},
+  mark: ${asset(mark)},
 } as const;
+
+export type EmailArtAsset = (typeof EMAIL_ART)[keyof typeof EMAIL_ART];
 `;
   writeFileSync(MODULE_PATH, generated, "utf8");
 
-  console.log(`✓ ${wordmark.file} — ${wordmark.width}×${wordmark.height} (2× PNG)`);
-  console.log(`✓ ${mark.file} — ${mark.width}×${mark.height} (2× PNG)`);
+  const kb = (a: { base64: string }) => Math.round((a.base64.length * 3) / 4 / 102.4) / 10;
+  console.log(`✓ ${wordmark.cid} — ${wordmark.width}×${wordmark.height} · ${kb(wordmark)} kB`);
+  console.log(`✓ ${mark.cid} — ${mark.width}×${mark.height} · ${kb(mark)} kB`);
   console.log(`✓ ${MODULE_PATH.replace(`${ROOT}/`, "")}`);
 }
 

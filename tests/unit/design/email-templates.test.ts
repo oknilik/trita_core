@@ -14,7 +14,12 @@
  *   5. arculat — kanonikus szójel, és a kivezetett elemek nem térnek vissza;
  *   6. család — formanyelvi jel csak az ügyfél-levélen;
  *   7. aláírás — egyetlen kanonikus alak, egyetlen dokumentált kivétellel;
- *   8. leiratkozás — minden életciklus-levél láblécében ott a link.
+ *   8. leiratkozás — minden életciklus-levél láblécében ott a link;
+ *   9. képek — minden `cid:` hivatkozáshoz tartozik inline csatolmány;
+ *  10. nyelv — locale nélkül hívva MAGYARUL megy ki.
+ *
+ * A 9. és a 10. két ÉLES hibára válasz (2026-08-19): a képek hosztolt URL-en
+ * mentek és nem töltődtek be, a magyar felhasználók pedig angol levelet kaptak.
  */
 
 import test from "node:test";
@@ -23,7 +28,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { EMAIL_COLORS } from "@/lib/design-tokens";
 import { EMAIL_ART } from "@/lib/email-art";
-import { renderEmailSamples, type EmailSample } from "../../../scripts/email-samples";
+import { renderEmailSamples, withCapturedSend, type EmailSample } from "../../../scripts/email-samples";
 
 /**
  * A minták renderelése egyszer fut, és a tesztek `await`-elik. Nem
@@ -192,7 +197,7 @@ test("a kanonikus szójel megy ki, a kivezetett elemek nem térnek vissza", asyn
   for (const s of samples) {
     const label = `${s.id} (${s.locale})`;
     assert.ok(
-      s.html.includes(`/email/${EMAIL_ART.wordmark.file}`),
+      s.html.includes(`cid:${EMAIL_ART.wordmark.cid}`),
       `${label}: nincs kanonikus szójel`,
     );
     assert.match(s.html, /alt="trita"/, `${label}: a szójelnek alt-szöveg kell (kikapcsolt kép)`);
@@ -233,7 +238,7 @@ test("a webfont-réteg mso-feltételes (az Outlook különben Times-ra esik)", a
 test("formanyelvi jel csak az ügyfél-levélen, és dekorációként", async () => {
   const samples = await samplesPromise;
   for (const s of samples) {
-    const hasMark = s.html.includes(`/email/${EMAIL_ART.mark.file}`);
+    const hasMark = s.html.includes(`cid:${EMAIL_ART.mark.cid}`);
     assert.equal(
       hasMark,
       s.family === "client",
@@ -282,6 +287,92 @@ test("minden életciklus-levél láblécében ott a leiratkozó-link", async () 
       );
     }
   }
+});
+
+// ─── 9. Képek: a levél MAGÁVAL VISZI őket ────────────────────────────────────
+
+test("minden cid-hivatkozáshoz tartozik inline csatolmány (és fordítva)", async () => {
+  const samples = await samplesPromise;
+  for (const s of samples) {
+    const referenced = new Set(
+      [...s.html.matchAll(/src="cid:([^"]+)"/g)].map((m) => m[1]),
+    );
+    const attached = new Set(
+      s.attachments.map((a) => a.content_id).filter((id): id is string => Boolean(id)),
+    );
+
+    for (const cid of referenced) {
+      assert.ok(attached.has(cid), `${s.id} (${s.locale}): a "${cid}" képhez nincs csatolmány`);
+    }
+    for (const cid of attached) {
+      assert.ok(referenced.has(cid), `${s.id} (${s.locale}): a "${cid}" csatolmányra semmi nem hivatkozik`);
+    }
+    assert.ok(referenced.size > 0, `${s.id} (${s.locale}): egyetlen kép sincs a levélben`);
+
+    // A bájtok tényleg ott vannak, nem csak a fejléc.
+    for (const a of s.attachments) {
+      // 50 base64-karakter alatt már a PNG-fejléc sem férne el. (A megosztó
+      // levél mintája szándékosan 1×1-es kép, ezért nem a méret a küszöb.)
+      assert.ok((a.content?.length ?? 0) > 50, `${s.id}: üres csatolmány (${a.content_id})`);
+      assert.equal(a.content_type, "image/png", `${s.id}: nem PNG csatolmány (${a.content_id})`);
+    }
+  }
+});
+
+test("a levél NEM hivatkozik külső képre (hoszt- és deploy-függés nélkül)", async () => {
+  const samples = await samplesPromise;
+  for (const s of samples) {
+    const external = [...s.html.matchAll(/<img[^>]+src="((?!cid:)[^"]*)"/g)].map((m) => m[1]);
+    assert.deepEqual(
+      external,
+      [],
+      `${s.id} (${s.locale}): külső képforrás (${external.join(", ")}) — élesben nem töltődik be`,
+    );
+  }
+});
+
+// ─── 10. Nyelv ───────────────────────────────────────────────────────────────
+
+test("locale nélkül hívva magyarul megy ki a levél", async () => {
+  // A 2026-08-19-i hiba: a küldők egy része `?? "en"`-re esett, egy másik
+  // része a címzett e-mail-TLD-jéből tippelt (`gmail.com` → angol). Az
+  // alapértelmezés mostantól a DEFAULT_LOCALE.
+  const emails = await import("@/lib/emails");
+
+  const welcome = await withCapturedSend(() =>
+    emails.sendWelcomeEmail({ to: "valaki@gmail.com" }),
+  );
+  assert.match(String(welcome.subject), /Üdvözlünk/, "a welcome levél nem magyarul ment");
+  assert.match(String(welcome.html), /lang="hu"/, "a welcome levél nyelvi jelölése nem hu");
+
+  const code = await withCapturedSend(() =>
+    emails.sendVerificationCodeEmail({ to: "valaki@gmail.com", code: "123456" }),
+  );
+  assert.match(String(code.subject), /kódod/, "a kód-levél nem magyarul ment");
+
+  const invite = await withCapturedSend(() =>
+    emails.sendTeamInviteEmail({
+      to: "valaki@gmail.com",
+      teamName: "Termék",
+      signUpUrl: "https://trita.io/join/x",
+    }),
+  );
+  assert.match(String(invite.subject), /Meghívtak/, "a csapat-meghívó nem magyarul ment");
+});
+
+test("a küldő-modulban nincs angolra eső alapértelmezés", () => {
+  // Kommentek nélkül: a modul fejléce SZÁNDÉKOSAN idézi a kivezetett mintát.
+  const source = readFileSync(join(process.cwd(), "src/lib/emails.ts"), "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/^\s*\/\/.*$/gm, "");
+  assert.ok(
+    !/\?\?\s*"en"/.test(source),
+    'emails.ts: `?? "en"` alapértelmezés — a feloldás a normalizeLocale dolga',
+  );
+  assert.ok(
+    !source.includes("endsWith(\".hu\")"),
+    "emails.ts: a levélcím TLD-je nem nyelvi jelzés — a heurisztika kivezetve",
+  );
 });
 
 // ─── Sima szöveges változat ──────────────────────────────────────────────────

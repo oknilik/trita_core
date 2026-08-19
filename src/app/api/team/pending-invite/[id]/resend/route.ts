@@ -51,7 +51,7 @@ export async function POST(
     to: invite.email,
     teamName: invite.team.name,
     signUpUrl: `${appUrl}/sign-up?redirect_url=${encodeURIComponent(joinPath)}`,
-    locale: (locale === "hu" || locale === "en") ? locale : "en",
+    locale,
   });
 
   return NextResponse.json({ ok: true });

@@ -9,6 +9,7 @@ import { normalizeJourneyIntent, setJourneyIntentForProfile } from "@/lib/journe
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import { scrubProfileData } from "@/lib/account-scrub";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 const clerkUserSchema = z.object({
   id: z.string(),
@@ -140,10 +141,10 @@ export async function POST(req: Request) {
       // (Clerk nem-2xx-re újrapróbál, és a profil-szinkron a fontosabb).
       // A locale a sign-up unsafeMetadata-jából jön (sign-up/page.tsx).
       try {
-        const metadataLocale = user.unsafe_metadata?.locale;
+        const metadataLocale = user.unsafe_metadata?.locale as string | undefined;
         await sendWelcomeEmail({
           to: email,
-          locale: metadataLocale === "en" ? "en" : "hu",
+          locale: normalizeLocale(metadataLocale),
         });
       } catch (error) {
         log.error(
@@ -224,7 +225,10 @@ export async function POST(req: Request) {
           }
         }
 
-        const resolvedLocale: "hu" | "en" = locale ?? "en";
+        // A feloldás alapértelmezése a DEFAULT_LOCALE (magyar). Korábban itt
+        // `?? "en"` állt: ha a DB-olvasás hibázott vagy a profil még nem
+        // létezett, a belépési kód angolul ment ki.
+        const resolvedLocale = normalizeLocale(locale);
 
         if (magicLink) {
           await sendMagicLinkEmail({ to, magicLinkUrl: magicLink, locale: resolvedLocale });

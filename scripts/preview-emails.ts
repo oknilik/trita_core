@@ -7,26 +7,32 @@
  * (`scripts/email-samples.ts`) — a korábbi változat 12 kézzel másolt, csak
  * magyar mintát ismert, és a törzsszövegei már nem egyeztek az élessel.
  *
- * A lábléc-eszközök (szójel, formanyelvi jel) a helyi `public/email/` mappából
- * töltődnek be, hogy a böngészőben futó app nélkül is látszódjanak.
+ * A levél `cid:` inline csatolmányokkal viszi a szójelet és a formanyelvi
+ * jelet — ezt egy böngésző nem tudja feloldani, ezért az előnézetben a
+ * csatolmány bájtjait `data:` URI-ba írjuk. A kimenő HTML tehát EGY ponton
+ * tér el az élestől, és pont ott, ahol a böngésző amúgy sem tudná megmutatni.
  */
 import { writeFileSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { pathToFileURL } from "node:url";
 
 async function main() {
   const outDir = process.argv[2] ?? join(process.cwd(), ".email-previews");
   mkdirSync(outDir, { recursive: true });
-
-  // A modul-szintű APP_URL-t a betöltés pillanata rögzíti, ezért ELŐBB állítjuk.
-  process.env.NEXT_PUBLIC_APP_URL = pathToFileURL(join(process.cwd(), "public")).href;
 
   const { renderEmailSamples } = await import("./email-samples");
 
   const samples = await renderEmailSamples();
 
   for (const sample of samples) {
-    writeFileSync(join(outDir, `${sample.id}.${sample.locale}.html`), sample.html, "utf8");
+    let html = sample.html;
+    for (const a of sample.attachments) {
+      if (!a.content_id || !a.content) continue;
+      html = html.replaceAll(
+        `cid:${a.content_id}`,
+        `data:${a.content_type ?? "image/png"};base64,${a.content}`,
+      );
+    }
+    writeFileSync(join(outDir, `${sample.id}.${sample.locale}.html`), html, "utf8");
   }
 
   const rows = samples
@@ -66,7 +72,7 @@ async function main() {
   <body>
     <main>
       <h1>Email-előnézetek</h1>
-      <p class="lede">${samples.length} renderelés a valódi küldő-útról. A lábléc-eszközök a helyi <code>public/email/</code> mappából töltődnek.</p>
+      <p class="lede">${samples.length} renderelés a valódi küldő-útról. A képek a levél inline csatolmányai — az előnézetben <code>data:</code> URI-ként.</p>
       <table>
         <thead><tr><th>Sablon</th><th>Nyelv</th><th>Család</th><th>Tárgy</th></tr></thead>
         <tbody>${rows}</tbody>

@@ -103,7 +103,7 @@ export async function POST(
       to: email,
       teamName: team.name,
       signUpUrl: `${appUrl}/join/${invite.token}`,
-      locale: (locale === "hu" || locale === "en") ? locale : "en",
+      locale,
     });
 
     return NextResponse.json({ pending: true }, { status: 201 });

@@ -24,12 +24,22 @@ export type EmailSample = {
   subject: string;
   html: string;
   text: string;
+  /** A levéllel utazó inline képek (szójel, formanyelvi jel, QR). */
+  attachments: CapturedAttachment[];
+};
+
+type CapturedAttachment = {
+  filename?: string;
+  content?: string;
+  content_type?: string;
+  content_id?: string;
 };
 
 type CapturedPayload = {
   subject?: string;
   html?: string;
   text?: string;
+  attachments?: CapturedAttachment[];
 };
 
 /**
@@ -37,7 +47,7 @@ type CapturedPayload = {
  * törzséből olvassuk ki a levelet. Így nincs szükség hálózatra, kulcsra vagy
  * a küldő-függvények megbontására.
  */
-async function withCapturedSend<T>(run: () => Promise<T>): Promise<CapturedPayload> {
+export async function withCapturedSend<T>(run: () => Promise<T>): Promise<CapturedPayload> {
   const originalFetch = globalThis.fetch;
   let captured: CapturedPayload = {};
 
@@ -58,6 +68,12 @@ async function withCapturedSend<T>(run: () => Promise<T>): Promise<CapturedPaylo
   }
   return captured;
 }
+
+/**
+ * Nyelv: a minták EXPLICIT locale-lal futnak, hogy mindkét nyelv rendereljen.
+ * A küldők ALAPÉRTELMEZÉSÉT (locale nélküli hívás → magyar) a guardrail külön
+ * eseteként ellenőrizzük — az volt a 2026-08-19-i angol-nyelvű hiba oka.
+ */
 
 /** 1×1 png — a profil-megosztó QR-ágának bekapcsolásához elég. */
 const STUB_PNG = Buffer.from(
@@ -93,6 +109,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       subject: payload.subject,
       html: payload.html,
       text: payload.text ?? "",
+      attachments: payload.attachments ?? [],
     });
   }
 

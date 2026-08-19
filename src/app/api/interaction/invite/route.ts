@@ -10,6 +10,7 @@ import {
   resolveCompareInviteState,
 } from "@/lib/compare-invite";
 import { resolveCompareInviteViewerClerkId } from "@/lib/compare-invite-auth";
+import { getServerLocale } from "@/lib/i18n-server";
 
 const createSchema = z.object({
   // Opcionális: a linket emailben is kiküldjük a címzettnek.
@@ -93,6 +94,9 @@ export async function POST(req: Request) {
         to: parsed.data.email,
         senderName: profile.username ?? "—",
         token: invite.token,
+        // A címzettnek nincs fiókja, tehát tárolt nyelve sincs — a küldő
+        // felületi nyelve a legjobb elérhető tudás.
+        locale: await getServerLocale(),
       });
       emailSent = true;
     } catch {

@@ -9,6 +9,7 @@ import { getAcceptedAnswerIds, isCompleteFormAnswerSet } from "@/lib/questions";
 import { calculateScores } from "@/lib/scoring";
 import { isSharedAcceptanceServiceEnabled } from "@/lib/rollout-guards.server";
 import { createLogger } from "@/lib/logger";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 const log = createLogger("acceptance");
 
@@ -819,7 +820,7 @@ async function notifyCandidateCompleted(inviteId: string): Promise<void> {
           candidateName,
           position: invite.position,
           resultUrl,
-          locale: u.locale === "en" ? "en" : "hu",
+          locale: normalizeLocale(u.locale),
         }),
       ),
   );

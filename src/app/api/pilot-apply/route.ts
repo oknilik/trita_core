@@ -5,6 +5,7 @@ import { submitInquiry } from "@/lib/inquiries";
 import { sendPilotApplyConfirmationEmail } from "@/lib/emails";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 export const runtime = "nodejs";
 
@@ -65,7 +66,7 @@ export async function POST(req: NextRequest) {
     await sendPilotApplyConfirmationEmail({
       to: email,
       name,
-      locale: locale ?? "hu",
+      locale: normalizeLocale(locale),
     });
   } catch (error) {
     log.error(

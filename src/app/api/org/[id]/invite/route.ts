@@ -7,6 +7,7 @@ import { sendOrgInviteEmail } from "@/lib/emails";
 import { hasOrgRole } from "@/lib/auth";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { getRequestLogger } from "@/lib/logger.server";
+import { getServerLocale } from "@/lib/i18n-server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -102,6 +103,8 @@ export async function POST(
       orgName: org.name,
       role,
       signUpUrl: `${APP_URL}/join/org/${invite.token}`,
+      // A meghívott még nem tag, tárolt nyelve nincs — a meghívó nyelvét vesszük.
+      locale: await getServerLocale(),
     });
 
     return NextResponse.json({ pending: true, emailSent }, { status: 201 });

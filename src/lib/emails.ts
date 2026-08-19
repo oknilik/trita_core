@@ -5,16 +5,92 @@ import { EMAIL_COLORS } from "./design-tokens";
 import {
   APP_URL,
   buildEmailLayout,
+  emailArtAttachments,
   escapeHtml,
   renderCtaButton,
   renderCodeBox,
   EMAIL_P,
   EMAIL_P_MUTED,
+  type EmailFamily,
 } from "./email-layout";
+// A `core`-ból, nem az i18n indexéből: az a TELJES szótárat behúzná (436 kB
+// forrás) egy kétértékű enum és egy alapértelmezés kedvéért.
+import { normalizeLocale, type Locale } from "./i18n/core";
 
 const log = createLogger("email");
 
-type Locale = "hu" | "en";
+/**
+ * NYELV-FELOLDÁS — egyetlen szabály, egyetlen alapértelmezés (2026-08-19).
+ *
+ * Élesben angolul mentek ki a levelek magyar felhasználóknak. Három ok
+ * versengett egymással:
+ *
+ *   1. `getLocale(email)` a címzett e-mail-TLD-jéből tippelt: `.hu` → magyar,
+ *      MINDEN MÁS → angol. Egy gmail.com-os magyar felhasználó tehát angolul
+ *      kapta. Ez a heurisztika elvben rossz — a levélcím nem nyelvi jelzés —,
+ *      ezért kivezetve, nem javítva.
+ *   2. Hat küldő `?? "en"`-re esett vissza, hat másik `?? "hu"`-ra.
+ *   3. A hívási helyek saját ternáriusai közül több `: "en"`-nel zárt.
+ *
+ * Mostantól MINDEN küldő a `normalizeLocale()`-t hívja, aminek az
+ * alapértelmezése a `DEFAULT_LOCALE` — ugyanaz a „hu", amit az app minden más
+ * felülete használ. A hívó felelőssége a felhasználó TÁROLT beállítását
+ * (`UserProfile.locale`) átadni; ahol nincs fiók (külső meghívott), ott a
+ * magyar az alapértelmezés.
+ */
+
+type ResendAttachment = {
+  filename: string;
+  content: string;
+  contentType: string;
+  contentId?: string;
+};
+
+/**
+ * MINDEN kimenő levél ezen a kapun megy át.
+ *
+ * A `family` kötelező, mert a levél-eszközök (szójel, formanyelvi jel) `cid:`
+ * INLINE csatolmányként utaznak, és a család dönti el, melyik kell. Ez a kapu
+ * teszi szerkezetileg lehetetlenné, hogy egy sablon csatolmány nélkül menjen
+ * ki — abból ugyanis törött kép lesz minden fogadónál, némán.
+ *
+ * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
+ * `email-layout.ts` → `emailArtAttachments`.)
+ */
+async function sendEmail(params: {
+  template: string;
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  family: EmailFamily;
+  /** Sablon-specifikus extra (ma: a megosztó-levél QR-kódja). */
+  attachments?: ResendAttachment[];
+  /** Extra log-mezők (variant, qrAttached…). */
+  logFields?: Record<string, unknown>;
+}): Promise<boolean> {
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: params.subject,
+    html: params.html,
+    text: params.text,
+    attachments: [...emailArtAttachments(params.family), ...(params.attachments ?? [])],
+  });
+
+  if (error) {
+    log.error(
+      { event: "email.send_failed", template: params.template, to: params.to, ...params.logFields, err: error },
+      `Failed to send ${params.template}`,
+    );
+    return false;
+  }
+  log.info(
+    { event: "email.sent", template: params.template, to: params.to, ...params.logFields },
+    `${params.template} sent`,
+  );
+  return true;
+}
 
 /**
  * Kanonikus aláírás (2026-08-19).
@@ -324,12 +400,6 @@ const translations = {
   },
 } as const;
 
-function getLocale(email: string): Locale {
-  const lower = email.toLowerCase();
-  if (lower.endsWith(".hu")) return "hu";
-  return "en";
-}
-
 function buildObserverInviteHtml(params: {
   locale: Locale;
   inviterName: string;
@@ -376,7 +446,7 @@ export async function sendObserverInviteEmail(params: {
   locale?: Locale;
   isReminder?: boolean;
 }) {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend" };
   const recipientName = params.recipientName ?? fallbackNames[locale];
 
@@ -403,19 +473,14 @@ export async function sendObserverInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "observer_invite",
+    family: "client",
     to: params.to,
     subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "observer_invite", to: params.to, err: error }, "Failed to send observer invite");
-  } else {
-    log.info({ event: "email.sent", template: "observer_invite", to: params.to }, "Observer invite sent");
-  }
 }
 
 export async function sendCandidateCompletedEmail(params: {
@@ -425,7 +490,7 @@ export async function sendCandidateCompletedEmail(params: {
   resultUrl: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.candidateCompleted[locale];
 
   const cta = renderCtaButton({ href: params.resultUrl, label: t.cta });
@@ -459,17 +524,14 @@ export async function sendCandidateCompletedEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "candidate_completed",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "candidate_completed", to: params.to, err: error }, "Failed to send candidate completed");
-  }
 }
 
 /** A megosztott profil publikus URL-je — a levél CTA-ja és a QR ugyanezt kódolja. */
@@ -543,7 +605,7 @@ export async function sendProfileShareEmail(params: {
   /** Szerver-oldalon generált QR PNG (best-effort) — null/undefined: QR nélkül. */
   qrPng?: Buffer | null;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.profileShare[locale];
   const link = profileShareUrl(params.token);
 
@@ -561,8 +623,10 @@ export async function sendProfileShareEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "profile_share",
+    family: "client",
+    logFields: { qrAttached: Boolean(params.qrPng) },
     to: params.to,
     subject: t.subject,
     html: buildProfileShareHtml({
@@ -588,11 +652,7 @@ export async function sendProfileShareEmail(params: {
       : {}),
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "profile_share", to: params.to, err: error }, "Failed to send profile share");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "profile_share", to: params.to, qrAttached: Boolean(params.qrPng) }, "Profile share sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 function buildCompareInviteHtml(params: {
@@ -635,7 +695,7 @@ export async function sendReflectionPromptEmail(params: {
   dimLabel: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.reflectionPrompt[locale];
   const ctaLink = `${APP_URL}/interaction`;
 
@@ -661,8 +721,9 @@ export async function sendReflectionPromptEmail(params: {
     <p style="${EMAIL_P};margin-bottom:26px">${t.body2}</p>
     ${cta}`;
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "reflection_prompt",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html: buildEmailLayout({
@@ -679,11 +740,7 @@ export async function sendReflectionPromptEmail(params: {
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "reflection_prompt", to: params.to, err: error }, "Failed to send reflection prompt");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "reflection_prompt", to: params.to }, "Reflection prompt sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 // Páros összehasonlítás meghívó (B1 follow-up) — a profil-megosztó email
@@ -694,7 +751,7 @@ export async function sendCompareInviteEmail(params: {
   token: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.compareInvite[locale];
   const link = `${APP_URL}/interaction/compare/${params.token}`;
 
@@ -711,19 +768,16 @@ export async function sendCompareInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "compare_invite",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html: buildCompareInviteHtml({ locale, senderName: params.senderName, token: params.token }),
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "compare_invite", to: params.to, err: error }, "Failed to send compare invite");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "compare_invite", to: params.to }, "Compare invite sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 function buildObserverCompletionHtml(params: {
@@ -759,7 +813,7 @@ export async function sendObserverCompletionEmail(params: {
   inviterName: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.observerCompletion[locale];
 
   const html = buildObserverCompletionHtml({
@@ -778,19 +832,14 @@ export async function sendObserverCompletionEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "observer_completion",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "observer_completion", to: params.to, err: error }, "Failed to send observer completion");
-  } else {
-    log.info({ event: "email.sent", template: "observer_completion", to: params.to }, "Observer completion email sent");
-  }
 }
 
 function buildVerificationCodeHtml(params: {
@@ -829,7 +878,7 @@ export async function sendVerificationCodeEmail(params: {
   ttlSeconds?: number | null;
   context?: "signUp" | "signIn";
 }) {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const context = params.context ?? "signUp";
   const ttlMinutes =
     params.ttlSeconds != null ? Math.max(1, Math.round(params.ttlSeconds / 60)) : undefined;
@@ -855,19 +904,14 @@ export async function sendVerificationCodeEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "verification_code",
+    family: "system",
     to: params.to,
     subject: translationBlock.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "verification_code", to: params.to, err: error }, "Failed to send verification code");
-  } else {
-    log.info({ event: "email.sent", template: "verification_code", to: params.to }, "Verification code sent");
-  }
 }
 
 function buildAssessmentDraftReminderHtml(params: {
@@ -915,7 +959,7 @@ export async function sendAssessmentDraftReminderEmail(params: {
   totalCount: number;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.assessmentDraftReminder[locale];
   const html = buildAssessmentDraftReminderHtml({
     locale,
@@ -938,19 +982,14 @@ export async function sendAssessmentDraftReminderEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "draft_reminder",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "draft_reminder", to: params.to, err: error }, "Failed to send draft reminder");
-  } else {
-    log.info({ event: "email.sent", template: "draft_reminder", to: params.to }, "Draft reminder sent");
-  }
 }
 
 function buildMagicLinkHtml(params: {
@@ -984,7 +1023,7 @@ export async function sendMagicLinkEmail(params: {
   magicLinkUrl: string;
   locale?: Locale;
 }) {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = translations.magicLink[locale];
   const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
 
@@ -999,19 +1038,14 @@ export async function sendMagicLinkEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "magic_link",
+    family: "system",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "magic_link", to: params.to, err: error }, "Failed to send magic link");
-  } else {
-    log.info({ event: "email.sent", template: "magic_link", to: params.to }, "Magic link sent");
-  }
 }
 
 // ─── Team invite email (for users without an account) ────────────────────────
@@ -1082,7 +1116,7 @@ export async function sendCandidateInviteEmail(params: {
   applyUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const tr = candidateInviteTranslations[locale];
 
   const html = buildEmailLayout({
@@ -1114,20 +1148,16 @@ export async function sendCandidateInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "candidate_invite",
+    family: "client",
     to: params.to,
     subject: tr.subject(params.position),
     html,
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "candidate_invite", to: params.to, err: error }, "Failed to send candidate invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "candidate_invite", to: params.to }, "Candidate invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Team invite email (for users without an account) ────────────────────────
@@ -1138,7 +1168,7 @@ export async function sendTeamInviteEmail(params: {
   signUpUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = teamInviteTranslations[locale];
 
   const html = buildEmailLayout({
@@ -1155,20 +1185,16 @@ export async function sendTeamInviteEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "team_invite",
+    family: "client",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
     text: `${t.heading(params.teamName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "team_invite", to: params.to, err: error }, "Failed to send team invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "team_invite", to: params.to }, "Team invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Org invite email ─────────────────────────────────────────────────────────
@@ -1201,7 +1227,7 @@ export async function sendOrgInviteEmail(params: {
   signUpUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = orgInviteTranslations[locale];
 
   const html = buildEmailLayout({
@@ -1218,20 +1244,16 @@ export async function sendOrgInviteEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "org_invite",
+    family: "client",
     to: params.to,
     subject: t.subject(params.orgName),
     html,
     text: `${t.heading(params.orgName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "org_invite", to: params.to, err: error }, "Failed to send org invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "org_invite", to: params.to }, "Org invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Consultant invite email ─────────────────────────────────────────────────
@@ -1277,7 +1299,7 @@ export async function sendConsultantInviteEmail(params: {
   hasAccount: boolean;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = consultantInviteTranslations[locale];
   const heading = params.hasAccount ? t.headingExisting : t.headingNew;
   const body = params.hasAccount ? t.bodyExisting : t.bodyNew;
@@ -1298,20 +1320,16 @@ export async function sendConsultantInviteEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "consultant_invite",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text: `${heading}\n\n${body}\n\n${cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "consultant_invite", to: params.to, err: error }, "Failed to send consultant invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "consultant_invite", to: params.to }, "Consultant invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Measurement step email (lépés-nyitás / emlékeztető) ─────────────────────
@@ -1363,7 +1381,7 @@ export async function sendMeasurementStepEmail(params: {
   variant: "opened" | "reminder";
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = measurementStepTranslations[locale];
   const subject =
     params.variant === "opened"
@@ -1394,20 +1412,17 @@ export async function sendMeasurementStepEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "measurement_step",
+    family: "client",
+    logFields: { variant: params.variant },
     to: params.to,
     subject,
     html,
     text: `${heading}\n\n${bodyText}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "measurement_step", variant: params.variant, to: params.to, err: error }, "Failed to send measurement step email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "measurement_step", variant: params.variant, to: params.to }, "Measurement step email sent");
-  return true;
+  return ok;
 }
 
 // ─── Welcome email (regisztráció után) ───────────────────────────────────────
@@ -1447,7 +1462,7 @@ export async function sendWelcomeEmail(params: {
   to: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = welcomeTranslations[locale];
   const ctaLink = `${APP_URL}/dashboard`;
 
@@ -1466,20 +1481,16 @@ export async function sendWelcomeEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "welcome",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text: `${t.heading}\n\n${t.body1}\n\n${t.body2}\n\n${t.cta}: ${ctaLink}\n\n${t.optOut} ${OPT_OUT[locale].href}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "welcome", to: params.to, err: error }, "Failed to send welcome email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "welcome", to: params.to }, "Welcome email sent");
-  return true;
+  return ok;
 }
 
 // ─── Team report published email ─────────────────────────────────────────────
@@ -1517,7 +1528,7 @@ export async function sendTeamReportPublishedEmail(params: {
   teamId: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = teamReportPublishedTranslations[locale];
   const ctaLink = `${APP_URL}/team/${params.teamId}?tab=report`;
 
@@ -1535,20 +1546,16 @@ export async function sendTeamReportPublishedEmail(params: {
     signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "team_report_published",
+    family: "client",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
     text: `${t.heading(params.teamName)}\n\n${t.body1}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "team_report_published", to: params.to, err: error }, "Failed to send team report published email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "team_report_published", to: params.to }, "Team report published email sent");
-  return true;
+  return ok;
 }
 
 // ─── Pilot application confirmation email ────────────────────────────────────
@@ -1583,7 +1590,7 @@ export async function sendPilotApplyConfirmationEmail(params: {
   name: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = pilotApplyConfirmationTranslations[locale];
   const firstName = params.name.split(" ")[0] ?? params.name;
 
@@ -1601,20 +1608,16 @@ export async function sendPilotApplyConfirmationEmail(params: {
     signOff: PERSONAL_SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "pilot_apply_confirmation",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text: `${t.greeting(firstName)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "pilot_apply_confirmation", to: params.to, err: error }, "Failed to send pilot apply confirmation");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "pilot_apply_confirmation", to: params.to }, "Pilot apply confirmation sent");
-  return true;
+  return ok;
 }
 
 // ─── Advisory request confirmation email ─────────────────────────────────────
@@ -1651,7 +1654,7 @@ export async function sendAdvisoryConfirmationEmail(params: {
   name: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = advisoryConfirmationTranslations[locale];
 
   const html = buildEmailLayout({
@@ -1668,20 +1671,16 @@ export async function sendAdvisoryConfirmationEmail(params: {
     signOff: PERSONAL_SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "advisory_confirmation",
+    family: "client",
     to: params.to,
     subject: t.subject,
     html,
     text: `${t.greeting(params.name)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "advisory_confirmation", to: params.to, err: error }, "Failed to send advisory confirmation");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "advisory_confirmation", to: params.to }, "Advisory confirmation sent");
-  return true;
+  return ok;
 }
 
 // ─── Jelölt-kredit igénylés (org adminnak) ───────────────────────────────────
@@ -1718,18 +1717,14 @@ export async function sendHiringCreditsRequestEmail(params: {
     signOff: SIGN_OFF.hu,
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "hiring_credits_request",
+    family: "system",
     to: params.to,
     subject: `Jelölt kredit igénylés – ${params.orgName}`,
     html,
     text: `${params.requesterName} jelölt értékelési krediteket kér a(z) ${params.orgName} szervezethez.\n\nKreditek feltöltése: ${ctaLink}\n\n${SIGN_OFF.hu.thanks}\n${SIGN_OFF.hu.team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "hiring_credits_request", to: params.to, err: error }, "Failed to send hiring credits request");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "hiring_credits_request", to: params.to }, "Hiring credits request sent");
-  return true;
+  return ok;
 }

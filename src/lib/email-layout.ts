@@ -27,7 +27,7 @@
  */
 
 import { EMAIL_COLORS } from "./design-tokens";
-import { EMAIL_ART } from "./email-art";
+import { EMAIL_ART, type EmailArtAsset } from "./email-art";
 
 /**
  * Az abszolút URL-ek bázisa (CTA-linkek és a lábléc-eszközök).
@@ -83,9 +83,38 @@ export function escapeHtml(input: string): string {
     .replaceAll("'", "&#39;");
 }
 
-/** Abszolút URL a levél-eszközökhöz (`public/email/*`). */
-function emailAssetUrl(file: string): string {
-  return `${APP_URL}/email/${file}`;
+/**
+ * A levél-eszközök `cid:` INLINE csatolmányként utaznak, nem hosztolt URL-en.
+ *
+ * A hosztolt változat (2026-08-19 első kör) élesben NEM töltődött be: a
+ * küldéskor kiszámolt `NEXT_PUBLIC_APP_URL` nem feltétlenül az a hoszt, ahová
+ * az eszköz kikerült, a preview-deployt pedig a Vercel deployment protection
+ * amúgy sem engedi kép-kérésre. A `data:` URI-t a Gmail eltávolítja. A `cid:`
+ * az egyetlen forma, amit a levél MAGÁVAL VISZ — nincs hoszt-, deploy- vagy
+ * env-függése.
+ *
+ * A csatolmányokat a küldő rakja a levélre (`emailArtAttachments`); a
+ * guardrail-teszt őrzi, hogy minden `cid:` hivatkozáshoz tartozzon csatolmány.
+ */
+function cidRef(asset: EmailArtAsset): string {
+  return `cid:${asset.cid}`;
+}
+
+/** Resend-csatolmányok a levél eszközeihez. A `system` család nem visz jelet. */
+export function emailArtAttachments(family: EmailFamily): Array<{
+  filename: string;
+  content: string;
+  contentType: string;
+  contentId: string;
+}> {
+  const assets: EmailArtAsset[] =
+    family === "client" ? [EMAIL_ART.wordmark, EMAIL_ART.mark] : [EMAIL_ART.wordmark];
+  return assets.map((a) => ({
+    filename: a.filename,
+    content: a.base64,
+    contentType: "image/png",
+    contentId: a.cid,
+  }));
 }
 
 /**
@@ -208,7 +237,7 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
   // kikapcsolt képeknél nyomtalanul eltűnik, ahogy dekorációnak illik.
   const artMark =
     params.family === "client"
-      ? `<img src="${emailAssetUrl(EMAIL_ART.mark.file)}" width="${EMAIL_ART.mark.width}" height="${EMAIL_ART.mark.height}" alt="" role="presentation" style="display:block;margin:0 auto 16px;border:0;width:${EMAIL_ART.mark.width}px;height:${EMAIL_ART.mark.height}px">`
+      ? `<img src="${cidRef(EMAIL_ART.mark)}" width="${EMAIL_ART.mark.width}" height="${EMAIL_ART.mark.height}" alt="" role="presentation" style="display:block;margin:0 auto 16px;border:0;width:${EMAIL_ART.mark.width}px;height:${EMAIL_ART.mark.height}px">`
       : "";
 
   const optOut = params.optOut
@@ -285,7 +314,7 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
                 <tr>
                   <td align="left" valign="middle">
                     <a href="${APP_URL}" style="text-decoration:none">
-                      <img src="${emailAssetUrl(EMAIL_ART.wordmark.file)}" width="${EMAIL_ART.wordmark.width}" height="${EMAIL_ART.wordmark.height}" alt="trita"
+                      <img src="${cidRef(EMAIL_ART.wordmark)}" width="${EMAIL_ART.wordmark.width}" height="${EMAIL_ART.wordmark.height}" alt="trita"
                            style="display:block;border:0;width:${EMAIL_ART.wordmark.width}px;height:${EMAIL_ART.wordmark.height}px;font-family:${DISPLAY_STACK};font-size:26px;font-weight:700;color:${EMAIL_COLORS.wordmark};text-decoration:none">
                     </a>
                   </td>

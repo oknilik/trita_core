@@ -103,31 +103,46 @@ Kártya **20px** (`--ui-radius-2xl`, a `Card` primitív), gomb **12px**
 (`--ui-radius-lg`, a `Button` primitív), kód-doboz **16px**
 (`--ui-radius-xl`). Az átállás előtt a kártya és a gomb fel volt cserélve.
 
-## 7. Eszközök (`public/email/`)
+## 7. Eszközök — `cid:` inline csatolmány
 
-Két PNG, generátorral: `pnpm build:email-art`
-(`scripts/build-email-art.ts` → `public/email/*.png` +
-`src/lib/email-art.ts`).
+Két PNG, generátorral: `pnpm build:email-art` (`scripts/build-email-art.ts` →
+`src/lib/email-art.ts`, base64-ben).
 
-- **`wordmark.png`** — a kanonikus `trıta` Fraunces-ben, bronz i-ponttal.
-- **`mark.png`** — a formanyelv 3. szintje: tinta-csillag, bronz nap,
-  zsálya ellensúly. A geometria a közös `miro-primitives.ts`-ből jön, tehát
-  a levél jele nem tud elcsúszni a felületétől.
+- **szójel** — a kanonikus `trıta` Fraunces-ben, bronz i-ponttal.
+- **formanyelvi jel** — a 3. szint: tinta-csillag, bronz nap, zsálya
+  ellensúly. A geometria a közös `miro-primitives.ts`-ből jön, tehát a levél
+  jele nem tud elcsúszni a felületétől.
 
-**Miért kép, és miért hosztolt:**
+**Miért kép.** A szójel élő szövegként nem rakható ki hűen: a bronz i-pont
+`position:absolute`-ot igényelne (a Gmail eltávolítja), a Fraunces pedig a
+kliensek többségében nem töltődik be. Kikapcsolt képnél a szójel `alt`
+szövege lép a helyére (a `<img>`-en megadott betű- és színstílusokkal), a
+dekoratív jel (`alt=""` `role="presentation"`) nyomtalanul eltűnik.
 
-- A szójel élő szövegként nem rakható ki hűen: a bronz i-pont
-  `position:absolute`-ot igényelne (a Gmail eltávolítja), a Fraunces pedig a
-  kliensek többségében nem töltődik be.
-- A `data:` URI-t a Gmail kidobja képforrásként, az inline SVG-t sem
-  rendereli. Marad a hosztolt fájl vagy a cid-melléklet — utóbbi minden
-  levélre gemkapcsot tenne.
-- Kikapcsolt képnél a szójel `alt` szövege lép a helyére (a `<img>`-en
-  megadott betű- és színstílusokkal), a dekoratív jel (`alt=""`
-  `role="presentation"`) pedig nyomtalanul eltűnik.
+**Miért `cid:`, és nem hosztolt URL (2026-08-19 javítás).** Az első kör
+hosztolt URL-t használt (`${APP_URL}/email/…`), és **élesben nem töltődött
+be**. Két néma buktatója van, mindkettő elég önmagában is:
 
-**Az eszközök abszolút URL-lel mennek**, a `NEXT_PUBLIC_APP_URL`-ből. Az
-előnézet-generátor `file://`-ra állítja, hogy futó app nélkül is látszódjon.
+- a küldéskor kiszámolt `NEXT_PUBLIC_APP_URL` nem feltétlenül az a hoszt,
+  ahová az eszköz kikerült (preview-deploy vs. produkció, illetve a még nem
+  deployolt ág);
+- a Vercel deployment protection a preview-domainen a kép-kérést is
+  elutasítja, tehát a Gmail proxyja 401-et kap.
+
+A `data:` URI sem járható: a Gmail eltávolítja a data-URI képforrásokat. Marad
+a `cid:` INLINE csatolmány — a Resend a `contentId` megadásakor
+`content_disposition: "inline"`-t küld, tehát nem lesz belőle gemkapocs, a
+levél viszont **magával viszi a képet**. Nincs hoszt-, deploy- vagy
+env-függés. (A megosztó-levél QR-kódja is így utazik.)
+
+A bájtok azért a JS-modulban élnek, és nem a `public/`-ból olvasódnak
+futásidőben: a `public/` **nem része a szerverless bundle-nek**, tehát egy
+`readFileSync` élesben elszállna. Együtt ~4,3 kB.
+
+**A csatolást a küldő-kapu végzi** (`sendEmail` az `emails.ts`-ben), nem a
+hívó — így egy sablon nem tud kép nélkül kimenni. A guardrail két oldalról
+zárja: minden `cid:` hivatkozáshoz kell csatolmány, és a levélben **nem
+lehet külső képforrás**.
 
 ## 8. Betűkép
 
@@ -149,7 +164,33 @@ sötét módban saját inverziót futtat, amit a `color-scheme` önmagában nem
 esik. Valódi sötét levél-változat készítése önálló kör lenne, saját
 kliens-mátrixszal.
 
-## 10. Aláírás és leiratkozás
+## 10. Nyelv
+
+**Egyetlen szabály: `normalizeLocale()`, aminek az alapértelmezése a
+`DEFAULT_LOCALE` — magyar.** Ugyanaz, amit az app minden más felülete használ.
+
+Ez 2026-08-19-én javítás volt: magyar felhasználók angol leveleket kaptak.
+Három ok versengett egymással.
+
+1. `getLocale(email)` a címzett **e-mail-TLD-jéből tippelt** (`.hu` → magyar,
+   minden más → angol), tehát egy gmail.com-os magyar felhasználó angolul
+   kapta. A heurisztika elvben rossz — a levélcím nem nyelvi jelzés —, ezért
+   kivezetve, nem javítva.
+2. Hat küldő `?? "en"`-re esett vissza, hat másik `?? "hu"`-ra.
+3. A hívási helyek saját ternáriusai közül több `: "en"`-nel zárt — köztük a
+   Clerk-webhook `resolvedLocale`-ja, ami a **belépési kódot és a magic
+   linket** viszi: ha a DB-olvasás hibázott vagy a profil még nem létezett,
+   az első levél angolul ment ki.
+
+**A hívó felelőssége** a felhasználó TÁROLT beállítását (`UserProfile.locale`)
+átadni. Ahol a címzettnek nincs fiókja (külső meghívott: observer, csapat-,
+org-, jelölt-meghívó), ott a **küldő felületi nyelve** (`getServerLocale()`) a
+legjobb elérhető tudás; ha az sincs, marad a magyar.
+
+Guardrail: locale nélkül hívva a levél magyarul megy ki, és a küldő-modulban
+nem lehet angolra eső alapértelmezés.
+
+## 11. Aláírás és leiratkozás
 
 Egyetlen kanonikus aláírás locale-onként (`SIGN_OFF`). **Egyetlen dokumentált
 kivétel**: a pilot- és advisory-visszaigazolás `Leinad · Trita`-val megy —
@@ -161,11 +202,11 @@ URL-ként a törzsbe. Kötelező minden ÉLETCIKLUS-levélen (`welcome`,
 `reflection_prompt`, `draft_reminder`); a működési levelekre (kód, meghívó,
 eredmény, kampány-lépés) nem vonatkozik, mert azokról nem a platform dönt.
 
-## 11. Előnézet és guardrail
+## 12. Előnézet és guardrail
 
 ```bash
-pnpm preview:emails        # mind a 21 sablon × HU/EN → .email-previews/index.html
-pnpm build:email-art       # a két PNG + a méret-modul újragenerálása
+pnpm preview:emails        # mind a 19 sablon × HU/EN → .email-previews/index.html
+pnpm build:email-art       # a két eszköz újragenerálása (src/lib/email-art.ts)
 ```
 
 Mindkettő — és a guardrail-teszt is — **ugyanabból a listából** dolgozik
@@ -174,16 +215,23 @@ Mindkettő — és a guardrail-teszt is — **ugyanabból a listából** dolgozi
 is az, ami élesben kimenne. A korábbi előnézet kézzel másolt mintákat vitt,
 és ezért folyamatosan szétcsúszott a valósággal.
 
+Az előnézet a `cid:` hivatkozásokat `data:` URI-ra írja át — ezt egy böngésző
+nem tudná feloldani. Ez az EGYETLEN pont, ahol az előnézet eltér az élestől.
+
 A `tests/unit/design/email-templates.test.ts` őrzi: szerkezet · számolt
 kontraszt · token-tisztaság · fok-létra · kanonikus szójel · család-szabály ·
-aláírás · leiratkozás · text/plain megléte.
+aláírás · leiratkozás · **kép-csatolmányok** · **nyelvi alapértelmezés** ·
+text/plain megléte.
 
-## 12. Új sablon felvétele
+## 13. Új sablon felvétele
 
 1. Fordítás-blokk `subject` · `kind` · `eyebrow` · `heading` · `preheader`
    mezőkkel, HU **és** EN.
 2. Küldő függvény `src/lib/emails.ts`-ben (sehol máshol — a levél-HTML nem
-   route-ban komponálódik).
-3. Család kiválasztása (`client` / `system`).
-4. Felvétel a `scripts/email-samples.ts` listájába.
-5. `pnpm preview:emails` — szemre; `pnpm test:unit` — a guardrail.
+   route-ban komponálódik), és a küldés a közös `sendEmail()` kapun megy.
+3. Család kiválasztása (`client` / `system`) — ez dönti el az eyebrow tónusát
+   és azt, hogy a levél viszi-e a formanyelvi jelet.
+4. A hívási hely adja át a címzett tárolt nyelvét; ha nincs fiókja, a küldő
+   felületi nyelvét (`getServerLocale()`).
+5. Felvétel a `scripts/email-samples.ts` listájába.
+6. `pnpm preview:emails` — szemre; `pnpm test:unit` — a guardrail.

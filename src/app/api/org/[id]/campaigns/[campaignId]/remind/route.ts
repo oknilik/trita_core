@@ -7,6 +7,7 @@ import { countCampaignStepsDone, getCampaignSteps } from "@/lib/campaign-steps-c
 import { sendMeasurementStepEmail } from "@/lib/emails";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 // POST /api/org/[id]/campaigns/[campaignId]/remind
 // Emlékeztető email a kampány saját lépéseiből semmit sem teljesítő
@@ -130,7 +131,7 @@ export async function POST(
         campaignName: campaign.name,
         link: "/tasks",
         variant: "reminder",
-        locale: r.locale === "en" ? "en" : "hu",
+        locale: normalizeLocale(r.locale),
       }),
     ),
   );

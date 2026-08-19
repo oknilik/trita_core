@@ -200,5 +200,13 @@ megbízhatatlan). Teljes szabály-készlet: `docs/development/email-design.md`.
   elsődleges akció zsálya.
 - **Fok-létra**: 34 · 26 · 16 · 14 · 13 · 12 · 11. A 16px törzs a skála
   egyetlen dokumentált levél-kivétele (mobil-inbox, zoom-kontextus nélkül).
+- **Nyelv**: a küldők alapértelmezése a `DEFAULT_LOCALE` (magyar), a
+  feloldás egyetlen helyen (`normalizeLocale`). A hívó adja át a címzett
+  TÁROLT nyelvét (`UserProfile.locale`); fiók nélküli címzettnél a küldő
+  felületi nyelvét (`getServerLocale()`). Angolra eső alapértelmezést ne írj
+  — lint helyett guardrail-teszt fogja.
+- **Kép a levélben csak `cid:` inline csatolmányként.** Hosztolt URL és
+  `data:` URI egyaránt kiesik (deploy/env-függés, illetve Gmail-szűrés); a
+  csatolást a közös `sendEmail()` kapu végzi, nem a hívó.
 - Új sablon után: felvétel a `scripts/email-samples.ts` listájába, majd
   `pnpm preview:emails` (szemre) és `pnpm test:unit` (guardrail).
