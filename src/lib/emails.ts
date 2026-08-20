@@ -3,141 +3,206 @@ import { createLogger } from "@/lib/logger";
 import { withHuArticle } from "@/lib/hu-grammar";
 import { EMAIL_COLORS } from "./design-tokens";
 import {
+  APP_URL,
   buildEmailLayout,
+  emailArtAttachments,
   escapeHtml,
   renderCtaButton,
   renderCodeBox,
-  renderInfoTable,
   EMAIL_P,
   EMAIL_P_MUTED,
-  EMAIL_EYEBROW,
-  EMAIL_UL,
-  EMAIL_LI,
 } from "./email-layout";
+// A `core`-ból, nem az i18n indexéből: az a TELJES szótárat behúzná (436 kB
+// forrás) egy kétértékű enum és egy alapértelmezés kedvéért.
+import { normalizeLocale, type Locale } from "./i18n/core";
 
 const log = createLogger("email");
 
-type Locale = "hu" | "en";
+/**
+ * NYELV-FELOLDÁS — egyetlen szabály, egyetlen alapértelmezés (2026-08-19).
+ *
+ * Élesben angolul mentek ki a levelek magyar felhasználóknak. Három ok
+ * versengett egymással:
+ *
+ *   1. `getLocale(email)` a címzett e-mail-TLD-jéből tippelt: `.hu` → magyar,
+ *      MINDEN MÁS → angol. Egy gmail.com-os magyar felhasználó tehát angolul
+ *      kapta. Ez a heurisztika elvben rossz — a levélcím nem nyelvi jelzés —,
+ *      ezért kivezetve, nem javítva.
+ *   2. Hat küldő `?? "en"`-re esett vissza, hat másik `?? "hu"`-ra.
+ *   3. A hívási helyek saját ternáriusai közül több `: "en"`-nel zárt.
+ *
+ * Mostantól MINDEN küldő a `normalizeLocale()`-t hívja, aminek az
+ * alapértelmezése a `DEFAULT_LOCALE` — ugyanaz a „hu", amit az app minden más
+ * felülete használ. A hívó felelőssége a felhasználó TÁROLT beállítását
+ * (`UserProfile.locale`) átadni; ahol nincs fiók (külső meghívott), ott a
+ * magyar az alapértelmezés.
+ */
 
-// Single module-level constant — avoids the Turbopack inlining bug where
-// local `const appUrl` declarations inside functions are dropped.
-function normalizeBaseUrl(url: string): string {
-  return url.replace(/\/+$/, "");
+type ResendAttachment = {
+  filename: string;
+  content: string;
+  contentType: string;
+  contentId?: string;
+};
+
+/**
+ * MINDEN kimenő levél ezen a kapun megy át.
+ *
+ * A `family` kötelező, mert a levél-eszközök (szójel, formanyelvi jel) `cid:`
+ * INLINE csatolmányként utaznak, és a család dönti el, melyik kell. Ez a kapu
+ * teszi szerkezetileg lehetetlenné, hogy egy sablon csatolmány nélkül menjen
+ * ki — abból ugyanis törött kép lesz minden fogadónál, némán.
+ *
+ * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
+ * `email-layout.ts` → `emailArtAttachments`.)
+ */
+async function sendEmail(params: {
+  template: string;
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  /** Sablon-specifikus extra (ma: a megosztó-levél QR-kódja). */
+  attachments?: ResendAttachment[];
+  /** Extra log-mezők (variant, qrAttached…). */
+  logFields?: Record<string, unknown>;
+}): Promise<boolean> {
+  const { error } = await resend.emails.send({
+    from: EMAIL_FROM,
+    to: params.to,
+    subject: params.subject,
+    html: params.html,
+    text: params.text,
+    attachments: [...emailArtAttachments(), ...(params.attachments ?? [])],
+  });
+
+  if (error) {
+    log.error(
+      { event: "email.send_failed", template: params.template, to: params.to, ...params.logFields, err: error },
+      `Failed to send ${params.template}`,
+    );
+    return false;
+  }
+  log.info(
+    { event: "email.sent", template: params.template, to: params.to, ...params.logFields },
+    `${params.template} sent`,
+  );
+  return true;
 }
 
-const APP_URL = normalizeBaseUrl(
-  process.env.NEXT_PUBLIC_APP_URL
-    ?? process.env.APP_URL
-    ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://trita.io"),
-);
+/**
+ * Kanonikus aláírás (2026-08-19).
+ *
+ * Négy variáns élt párhuzamosan — „a trita csapata" · „a Trita csapat" ·
+ * „a Trita csapata" · „a trita rendszer" —, ami sablononként más hangot adott
+ * ugyanannak a feladónak. A szójel kisbetűs, az aláírás ezt követi.
+ *
+ * Egyetlen dokumentált kivétel a `Leinad · Trita` a pilot- és advisory-
+ * visszaigazoláson: azok SZEMÉLYES követő levelek („24 órán belül személyesen
+ * kereslek"), ott a csapat-aláírás rendszerüzenetté hűtené a hangot.
+ */
+const SIGN_OFF: Record<Locale, { thanks: string; team: string }> = {
+  hu: { thanks: "Üdvözlettel,", team: "a trita csapata" },
+  en: { thanks: "Best regards,", team: "the trita team" },
+};
 
+/**
+ * A dokumentált kivétel: SZEMÉLYES követő levél aláírása. Ld. a `SIGN_OFF`
+ * megjegyzését — a pilot- és advisory-visszaigazolás nem rendszerüzenet.
+ */
+const PERSONAL_SIGN_OFF: Record<Locale, { thanks: string; team: string }> = {
+  hu: { thanks: "Üdvözlettel,", team: "Leinad · Trita" },
+  en: { thanks: "Best regards,", team: "Leinad · Trita" },
+};
+
+/** Életciklus-levelek leiratkozó-linkje — a láblécbe kerül, nem a törzsbe. */
+const OPT_OUT: Record<Locale, { href: string; label: string }> = {
+  hu: { href: `${APP_URL}/email-preferences`, label: "Levélbeállítások" },
+  en: { href: `${APP_URL}/email-preferences`, label: "Email preferences" },
+};
 
 const translations = {
-  orderConfirmation: {
-    hu: {
-      subject: "Köszönjük a vásárlást! – Trita",
-      heading: "Köszönjük a vásárlást!",
-      greeting: (name: string) =>
-        `Kedves ${name},`,
-      body: "A fizetésedet feldolgoztuk. A Pro funkcióid azonnal elérhetők.",
-      features: "Amit most elérsz:",
-      featureList: [
-        "Részletes, személyre szabott kiértékelés",
-        "Személyiségtípus meghatározás",
-        "Fejlődés követés",
-        "PDF export",
-      ],
-      cta: "Ugrás a vezérlőre",
-      footer:
-        "Ha kérdésed van, válaszolj erre az emailre. Szívesen segítünk!",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
-    },
-    en: {
-      subject: "Thank you for your purchase! – Trita",
-      heading: "Thank you for your purchase!",
-      greeting: (name: string) =>
-        `Dear ${name},`,
-      body: "Your payment has been successfully processed. Your Pro features are now available.",
-      features: "What you can access now:",
-      featureList: [
-        "Detailed, personalized assessment",
-        "Personality type identification",
-        "Progress tracking",
-        "PDF export",
-      ],
-      cta: "Go to Dashboard",
-      footer:
-        "If you have any questions, reply to this email. We're happy to help!",
-      thanks: "Best regards,",
-      team: "the trita team",
-    },
-  },
   observerInvite: {
     hu: {
       subject: "Meghívó személyiségteszt kitöltésére – Trita",
+      kind: "Meghívó",
+      eyebrow: "Külső nézőpont",
+      heading: (inviter: string) => `${inviter} a te nézőpontodra kíváncsi`,
+      preheader: "Néhány perc, és a válaszaid anonimak maradnak.",
       greeting: (_name: string) => "Szia,",
       body: (inviter: string) =>
         `${inviter} arra kér, hogy tölts ki róla egy rövid személyiségtesztet, hogy képet kapjon arról, hogyan látják őt mások.\n\nA te nézőpontod nagyon fontos. A válaszaid anonimak maradnak, és az eredmények csak összesítve (több értékelés átlaga alapján) jelennek meg.`,
       cta: "Visszajelzés kitöltése",
       footer:
         "Ha nem ismered a meghívót, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Invitation to a personality assessment – Trita",
+      kind: "Invitation",
+      eyebrow: "Outside view",
+      heading: (inviter: string) => `${inviter} would like your perspective`,
+      preheader: "A few minutes, and your answers stay anonymous.",
       greeting: (_name: string) => "Hi,",
       body: (inviter: string) =>
         `${inviter} is asking you to complete a short personality questionnaire about them, to understand how others see them.\n\nYour perspective matters. Your answers stay anonymous, and results are shown only in aggregate (as an average across multiple responses).`,
       cta: "Open the feedback form",
       footer:
         "If you don't recognize this invitation, you can ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   observerCompletion: {
     hu: {
       subject: "Megérkezett egy visszajelzés – trita",
+      kind: "Eredmény",
+      eyebrow: "Visszajelzés érkezett",
+      heading: "Megérkezett egy visszajelzés rólad",
+      preheader: "Az egyik meghívottad kitöltötte a kérdőívet.",
       greeting: (name: string) => `Szia, ${name}!`,
       body: "Jó hír: az egyik meghívottad kitöltötte a kérdőívet. Nézd meg, hogyan látnak téged mások!",
       cta: "Megnézem az eredményeket",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "New feedback received – trita",
+      kind: "Results",
+      eyebrow: "Feedback received",
+      heading: "New feedback about you has arrived",
+      preheader: "One of the people you invited completed the questionnaire.",
       greeting: (name: string) => `Hi ${name}!`,
       body: "Great news: one of the people you invited completed the questionnaire. See how others perceive you!",
       cta: "View my results",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   candidateCompleted: {
     hu: {
       subject: "Jelölt-felmérés elkészült – trita",
+      kind: "Jelölt",
+      eyebrow: "Jelölt-felmérés",
+      heading: "Elkészült egy jelölt-felmérés",
+      preheader: "Az eredmény és a csapat-illesztés megnyitható.",
       greeting: "Szia,",
       body: (name: string, position: string | null) =>
         `${name}${position ? ` (${position})` : ""} kitöltötte a jelölt-felmérést. Az eredmény és a csapat-illesztés megnyitható a jelölt-részletezőn.`,
       cta: "Eredmény megnyitása",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Candidate assessment completed – trita",
+      kind: "Candidate",
+      eyebrow: "Candidate assessment",
+      heading: "A candidate assessment is complete",
+      preheader: "The result and team fit are ready to review.",
       greeting: "Hi,",
       body: (name: string, position: string | null) =>
         `${name}${position ? ` (${position})` : ""} completed the candidate assessment. The result and team fit are ready to review.`,
       cta: "Open the result",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   profileShare: {
     hu: {
       subject: "Megosztott személyiségprofil – trita",
+      kind: "Megosztás",
+      eyebrow: "Megosztott profil",
+      heading: (sender: string) => `${sender} megosztotta veled a profilját`,
+      preheader: "Fő dimenziók, munkastílus és valószínű csapatszerepek.",
       greeting: "Szia,",
       body: (sender: string) =>
         `${sender} megosztotta veled a személyiségprofilját a tritán. A profil bemutatja a fő dimenzióit, a munkastílusát és a valószínű csapatszerepeit.`,
@@ -150,11 +215,13 @@ const translations = {
       qrFilename: "qr-kod.png",
       footer:
         "A linket a küldő bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "A personality profile was shared with you – trita",
+      kind: "Shared",
+      eyebrow: "Shared profile",
+      heading: (sender: string) => `${sender} shared their profile with you`,
+      preheader: "Main dimensions, work style, and likely team roles.",
       greeting: "Hi,",
       body: (sender: string) =>
         `${sender} shared their personality profile with you on trita. The profile shows their main dimensions, work style, and likely team roles.`,
@@ -167,13 +234,15 @@ const translations = {
       qrFilename: "qr-code.png",
       footer:
         "The sender can revoke this link at any time. If you don't recognize the sender, you can ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   reflectionPrompt: {
     hu: {
       subject: "Egy hét telt el — mit láttál magadból?",
+      kind: "Emlékeztető",
+      eyebrow: "Egy hét telt el",
+      heading: "Mit láttál magadból ezen a héten?",
+      preheader: "Figyeld meg a legerősebb dimenziódat egy konkrét helyzetben.",
       greeting: "Szia,",
       body: (dimLabel: string) =>
         `Egy hete készült el a személyiségprofilod. A legerősebb dimenziód ${withHuArticle(dimLabel)} volt — figyeld meg tudatosan egy konkrét helyzetben ezen a héten: mikor segített, és mikor pörgött túl?`,
@@ -181,11 +250,13 @@ const translations = {
         "Ha kíváncsi vagy, hogyan működnétek együtt valakivel, a páros összehasonlítással meg is nézhetitek.",
       cta: "Páros összehasonlítás megnyitása",
       optOut: "Nem kérsz több ilyen emailt? Leiratkozás itt:",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "A week has passed — what did you notice?",
+      kind: "Reminder",
+      eyebrow: "One week on",
+      heading: "What did you notice about yourself?",
+      preheader: "Watch your strongest dimension in one concrete situation.",
       greeting: "Hi,",
       body: (dimLabel: string) =>
         `Your personality profile was completed a week ago. Your strongest dimension was ${dimLabel} — observe it deliberately in one concrete situation this week: when did it help, and when did it over-rev?`,
@@ -193,204 +264,139 @@ const translations = {
         "If you're curious how you'd work with someone, the pair comparison will show you.",
       cta: "Open the pair comparison",
       optOut: "Don't want emails like this? Unsubscribe here:",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   compareInvite: {
     hu: {
       subject: "Hogyan működnétek együtt? – meghívó a tritán",
+      kind: "Meghívó",
+      eyebrow: "Páros összehasonlítás",
+      heading: "Hogyan működnétek együtt?",
+      preheader: "A számszerű pontszámaid nem jelennek meg a másik félnek.",
       greeting: "Szia,",
       body: (sender: string) =>
         `${sender} meghívott egy páros összehasonlításra a tritán: a saját kitöltésed után mindketten látjátok, mi menne köztetek magától, hol várható súrlódás, és mit érdemes előre megbeszélni. A számszerű pontszámaid nem jelennek meg neki.`,
       cta: "Meghívó megnyitása",
       footer:
         "A meghívó 30 napig él, és bármelyik fél bármikor visszavonhatja. Ha nem ismered a küldőt, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "How would you work together? – an invite on trita",
+      kind: "Invitation",
+      eyebrow: "Pair comparison",
+      heading: "How would you work together?",
+      preheader: "Your numeric scores are not shown to the other person.",
       greeting: "Hi,",
       body: (sender: string) =>
         `${sender} invited you to a pair comparison on trita: after completing your own assessment, you both see what would come easily between you, where friction is likely, and what to agree on up front. Your numeric scores are not shown to them.`,
       cta: "Open the invite",
       footer:
         "The invite lives for 30 days, and either side can revoke it at any time. If you don't recognize the sender, you can ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   verificationCode: {
     hu: {
       subject: "A regisztrációs kódod – trita",
-      codeLabel: "A kódod:",
+      kind: "Biztonság",
+      eyebrow: "Regisztrációs kód",
+      heading: "Írd be ezt a kódot a folytatáshoz",
+      preheader: "A kód rövid ideig érvényes, és csak egyszer használható fel.",
+      codeLabel: "A kódod",
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Your verification code – trita",
-      codeLabel: "Your code:",
+      kind: "Security",
+      eyebrow: "Verification code",
+      heading: "Enter this code to continue",
+      preheader: "The code is valid for a short time and can be used once.",
+      codeLabel: "Your code",
       ttl: (minutes?: number) =>
         minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
       footer:
         "If you didn't request this code, you can safely ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   signInCode: {
     hu: {
       subject: "A bejelentkezési kódod – trita",
-      codeLabel: "A kódod:",
+      kind: "Biztonság",
+      eyebrow: "Belépési kód",
+      heading: "Írd be ezt a kódot a belépéshez",
+      preheader: "A kód rövid ideig érvényes, és csak egyszer használható fel.",
+      codeLabel: "A kódod",
       ttl: (minutes?: number) =>
         minutes ? `A kód ${minutes} percig érvényes.` : "A kód rövid ideig érvényes.",
       footer:
         "Ha nem te kérted a kódot, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in code – trita",
-      codeLabel: "Your code:",
+      kind: "Security",
+      eyebrow: "Sign-in code",
+      heading: "Enter this code to sign in",
+      preheader: "The code is valid for a short time and can be used once.",
+      codeLabel: "Your code",
       ttl: (minutes?: number) =>
         minutes ? `This code is valid for ${minutes} minutes.` : "This code is valid for a short time.",
       footer:
         "If you didn't request this code, you can safely ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   magicLink: {
     hu: {
       subject: "Bejelentkezési link – Trita",
-      heading: "Bejelentkezési link",
+      kind: "Biztonság",
+      eyebrow: "Bejelentkezési link",
+      heading: "Lépj be egy kattintással",
+      preheader: "A link 10 percig érvényes.",
       body: "Kattints az alábbi gombra a bejelentkezéshez. A link 10 percig érvényes.",
       cta: "Bejelentkezés",
       footer:
         "Ha nem te kérted ezt a linket, nyugodtan hagyd figyelmen kívül ezt az emailt.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Your sign-in link – Trita",
-      heading: "Sign in to Trita",
+      kind: "Security",
+      eyebrow: "Sign-in link",
+      heading: "Sign in with one click",
+      preheader: "This link expires in 10 minutes.",
       body: "Click the button below to sign in to your account. This link expires in 10 minutes.",
       cta: "Sign in",
       footer:
         "If you didn't request this link, you can safely ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
   assessmentDraftReminder: {
     hu: {
       subject: "Már majdnem kész vagy a teszttel – folytasd itt",
+      kind: "Emlékeztető",
+      eyebrow: "Félbehagyott kitöltés",
+      heading: "Már majdnem kész vagy",
+      preheader: "Néhány kérdés, és látod a részletes eredményedet.",
       greeting: (name: string) => `Szia, ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
         `Láttuk, hogy elkezdted ${withHuArticle(testName)} kitöltését a Tritán, de még nem fejezted be. Már ${answeredCount} kérdésen túl vagy a ${totalCount}-ból, szóval tényleg csak egy kis lépés választ el az eredményektől.\n\nHa befejezed, egy rövid visszajelzést kapsz arról, hogyan látod magad a fő személyiségdimenziók mentén. Ha szeretnéd, később másoktól is kérhetsz visszajelzést, így azt is láthatod, mennyire egyezik a saját képed azzal, ahogyan a környezeted lát.`,
       cta: "Folytatom a tesztet",
       footer: "Ha már befejezted a tesztet, nyugodtan hagyd figyelmen kívül ezt az üzenetet.",
-      thanks: "Üdvözlettel,",
-      team: "a trita csapata",
     },
     en: {
       subject: "Continue your assessment – you're almost there! – trita",
+      kind: "Reminder",
+      eyebrow: "Unfinished assessment",
+      heading: "You're almost there",
+      preheader: "A few more questions and your detailed results are ready.",
       greeting: (name: string) => `Hi ${name}!`,
       body: (testName: string, answeredCount: number, totalCount: number) =>
         `We noticed you started the ${testName} personality assessment but haven't finished yet. You're already ${answeredCount} questions in out of ${totalCount} — you're almost there!\n\nYour results will show how you see yourself across the ${testName} dimensions, and you'll also get the chance to invite observers to compare their view with yours. Click below to pick up where you left off.`,
       cta: "Continue my assessment",
       footer: "If you've already completed the test, feel free to ignore this email.",
-      thanks: "Best regards,",
-      team: "the trita team",
     },
   },
 } as const;
-
-function getLocale(email: string): Locale {
-  const lower = email.toLowerCase();
-  if (lower.endsWith(".hu")) return "hu";
-  return "en";
-}
-
-// A vizuális keret és a bekezdés-stílusok a közös email-layout modulból
-// jönnek (2026-07-23 egységesítés) — palettacsere a design-tokens.ts-ben.
-
-function buildOrderConfirmationHtml(locale: Locale, name: string): string {
-  const t = translations.orderConfirmation[locale];
-  const features = t.featureList
-    .map((f) => `<li style="${EMAIL_LI}">${f}</li>`)
-    .join("");
-  const cta = renderCtaButton({ href: `${APP_URL}/dashboard`, label: t.cta });
-
-  const bodyContent = `
-    <p style="${EMAIL_P}">
-      ${t.greeting(name)}
-    </p>
-    <p style="${EMAIL_P}">
-      ${t.body}
-    </p>
-    <p style="${EMAIL_EYEBROW}">
-      ${t.features}
-    </p>
-    <ul style="${EMAIL_UL};margin-bottom:24px">
-      ${features}
-    </ul>
-    ${cta}`;
-
-  return buildEmailLayout({
-    locale,
-    heading: t.heading,
-    bodyContent,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
-  });
-}
-
-export async function sendOrderConfirmationEmail(params: {
-  to: string;
-  name: string;
-  locale?: Locale;
-}) {
-  const locale = params.locale ?? getLocale(params.to);
-  const t = translations.orderConfirmation[locale];
-  const html = buildOrderConfirmationHtml(locale, params.name);
-
-  const text = [
-    t.greeting(params.name),
-    "",
-    t.body,
-    "",
-    t.features,
-    t.featureList.map((f) => `- ${f}`).join("\n"),
-    "",
-    `${t.cta}: ${APP_URL}/dashboard`,
-    "",
-    t.footer,
-    "",
-    t.thanks,
-    t.team,
-  ].join("\n");
-
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
-    to: params.to,
-    subject: t.subject,
-    html,
-    text,
-  });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "order_confirmation", to: params.to, err: error }, "Failed to send order confirmation");
-  } else {
-    log.info({ event: "email.sent", template: "order_confirmation", to: params.to }, "Order confirmation sent");
-  }
-}
 
 function buildObserverInviteHtml(params: {
   locale: Locale;
@@ -412,17 +418,20 @@ function buildObserverInviteHtml(params: {
     <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.recipientName))}
     </p>
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${bodyHtml}
     </p>
     ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading(escapeHtml(params.inviterName)),
+    preheader: t.preheader,
     bodyContent,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -434,7 +443,7 @@ export async function sendObserverInviteEmail(params: {
   locale?: Locale;
   isReminder?: boolean;
 }) {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const fallbackNames: Record<Locale, string> = { hu: "Barátom", en: "Friend" };
   const recipientName = params.recipientName ?? fallbackNames[locale];
 
@@ -457,23 +466,17 @@ export async function sendObserverInviteEmail(params: {
     "",
     t.footer,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "observer_invite",
     to: params.to,
     subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "observer_invite", to: params.to, err: error }, "Failed to send observer invite");
-  } else {
-    log.info({ event: "email.sent", template: "observer_invite", to: params.to }, "Observer invite sent");
-  }
 }
 
 export async function sendCandidateCompletedEmail(params: {
@@ -483,7 +486,7 @@ export async function sendCandidateCompletedEmail(params: {
   resultUrl: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.candidateCompleted[locale];
 
   const cta = renderCtaButton({ href: params.resultUrl, label: t.cta });
@@ -498,9 +501,12 @@ export async function sendCandidateCompletedEmail(params: {
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    thanks: t.thanks,
-    team: t.team,
+    signOff: SIGN_OFF[locale],
   });
   const text = [
     t.greeting,
@@ -509,21 +515,17 @@ export async function sendCandidateCompletedEmail(params: {
     "",
     `${t.cta}: ${params.resultUrl}`,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "candidate_completed",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "candidate_completed", to: params.to, err: error }, "Failed to send candidate completed");
-  }
 }
 
 /** A megosztott profil publikus URL-je — a levél CTA-ja és a QR ugyanezt kódolja. */
@@ -551,22 +553,20 @@ export function buildProfileShareHtml(params: {
     label: t.cta,
   });
 
-  // QR-blokk a CTA alatt: fehér dobozban, hogy sötét módú kliensben is
-  // biztosan beolvasható maradjon; alatta a rövid használati magyarázat.
+  // QR-blokk a CTA alatt: FEHÉR dobozban, hogy sötét módú kliensben is
+  // biztosan beolvasható maradjon (a kód kontrasztja a beolvashatóság
+  // feltétele — itt a krém felület sem elég). A fehér a `card` tokenből jön,
+  // nem beégetett hexből.
   const qrBlock = params.qrCid
     ? `
-    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin:24px auto 0">
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" width="184" style="margin:24px auto 0;width:184px">
       <tr>
-        <td align="center" bgcolor="#ffffff" style="background-color:#ffffff;border:1px solid ${EMAIL_COLORS.border};border-radius:12px;padding:12px">
+        <td align="center" bgcolor="${EMAIL_COLORS.card}" style="background-color:${EMAIL_COLORS.card};border:1px solid ${EMAIL_COLORS.border};border-radius:16px;padding:12px">
           <img src="cid:${params.qrCid}" width="160" height="160" alt="${escapeHtml(t.qrAlt)}" style="display:block;width:160px;height:160px">
         </td>
       </tr>
-      <tr>
-        <td align="center" style="padding-top:10px">
-          <p class="em-muted" style="${EMAIL_P_MUTED};margin:0;text-align:center">${t.qrHint}</p>
-        </td>
-      </tr>
-    </table>`
+    </table>
+    <p class="em-muted" style="${EMAIL_P_MUTED};margin:10px 0 0;text-align:center">${t.qrHint}</p>`
     : "";
 
   const bodyContent = `
@@ -580,10 +580,13 @@ export function buildProfileShareHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading(escapeHtml(params.senderName)),
+    preheader: t.preheader,
     bodyContent,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -595,7 +598,7 @@ export async function sendProfileShareEmail(params: {
   /** Szerver-oldalon generált QR PNG (best-effort) — null/undefined: QR nélkül. */
   qrPng?: Buffer | null;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.profileShare[locale];
   const link = profileShareUrl(params.token);
 
@@ -609,12 +612,13 @@ export async function sendProfileShareEmail(params: {
     "",
     t.footer,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "profile_share",
+    logFields: { qrAttached: Boolean(params.qrPng) },
     to: params.to,
     subject: t.subject,
     html: buildProfileShareHtml({
@@ -640,11 +644,7 @@ export async function sendProfileShareEmail(params: {
       : {}),
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "profile_share", to: params.to, err: error }, "Failed to send profile share");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "profile_share", to: params.to, qrAttached: Boolean(params.qrPng) }, "Profile share sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 function buildCompareInviteHtml(params: {
@@ -662,19 +662,20 @@ function buildCompareInviteHtml(params: {
     <p style="${EMAIL_P}">
       ${t.greeting}
     </p>
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${t.body(params.senderName)}
     </p>
-    ${cta}
-    <p style="${EMAIL_P};margin-top:24px;font-size:13px;color:${EMAIL_COLORS.faint}">
-      ${t.footer}
-    </p>`;
+    ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -685,10 +686,9 @@ export async function sendReflectionPromptEmail(params: {
   dimLabel: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.reflectionPrompt[locale];
   const ctaLink = `${APP_URL}/interaction`;
-  const optOutLink = `${APP_URL}/email-preferences`;
 
   const text = [
     t.greeting,
@@ -699,35 +699,37 @@ export async function sendReflectionPromptEmail(params: {
     "",
     `${t.cta}: ${ctaLink}`,
     "",
-    `${t.optOut} ${optOutLink}`,
+    `${t.optOut} ${OPT_OUT[locale].href}`,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
   const cta = renderCtaButton({ href: ctaLink, label: t.cta });
   const bodyContent = `
     <p style="${EMAIL_P}">${t.greeting}</p>
     <p style="${EMAIL_P}">${t.body(params.dimLabel)}</p>
-    <p style="${EMAIL_P};margin-bottom:24px">${t.body2}</p>
-    ${cta}
-    <p style="${EMAIL_P};margin-top:28px;font-size:12px;color:${EMAIL_COLORS.faint}">
-      ${t.optOut} <a href="${optOutLink}" style="color:${EMAIL_COLORS.faint}">${optOutLink}</a>
-    </p>`;
+    <p style="${EMAIL_P};margin-bottom:26px">${t.body2}</p>
+    ${cta}`;
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "reflection_prompt",
     to: params.to,
     subject: t.subject,
-    html: buildEmailLayout({ locale, bodyContent, thanks: t.thanks, team: t.team }),
+    html: buildEmailLayout({
+      locale,
+      kind: t.kind,
+      eyebrow: t.eyebrow,
+      heading: t.heading,
+      preheader: t.preheader,
+      bodyContent,
+      optOut: OPT_OUT[locale],
+      signOff: SIGN_OFF[locale],
+    }),
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "reflection_prompt", to: params.to, err: error }, "Failed to send reflection prompt");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "reflection_prompt", to: params.to }, "Reflection prompt sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 // Páros összehasonlítás meghívó (B1 follow-up) — a profil-megosztó email
@@ -738,7 +740,7 @@ export async function sendCompareInviteEmail(params: {
   token: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.compareInvite[locale];
   const link = `${APP_URL}/interaction/compare/${params.token}`;
 
@@ -751,23 +753,19 @@ export async function sendCompareInviteEmail(params: {
     "",
     t.footer,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "compare_invite",
     to: params.to,
     subject: t.subject,
     html: buildCompareInviteHtml({ locale, senderName: params.senderName, token: params.token }),
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "compare_invite", to: params.to, err: error }, "Failed to send compare invite");
-    throw new Error("EMAIL_SEND_FAILED");
-  }
-  log.info({ event: "email.sent", template: "compare_invite", to: params.to }, "Compare invite sent");
+  if (!ok) throw new Error("EMAIL_SEND_FAILED");
 }
 
 function buildObserverCompletionHtml(params: {
@@ -781,16 +779,19 @@ function buildObserverCompletionHtml(params: {
     <p style="${EMAIL_P}">
       ${t.greeting(params.inviterName)}
     </p>
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${t.body}
     </p>
     ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    thanks: t.thanks,
-    team: t.team,
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -799,7 +800,7 @@ export async function sendObserverCompletionEmail(params: {
   inviterName: string;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.observerCompletion[locale];
 
   const html = buildObserverCompletionHtml({
@@ -814,23 +815,17 @@ export async function sendObserverCompletionEmail(params: {
     "",
     `${t.cta}: ${APP_URL}/dashboard`,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "observer_completion",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "observer_completion", to: params.to, err: error }, "Failed to send observer completion");
-  } else {
-    log.info({ event: "email.sent", template: "observer_completion", to: params.to }, "Observer completion email sent");
-  }
 }
 
 function buildVerificationCodeHtml(params: {
@@ -845,18 +840,19 @@ function buildVerificationCodeHtml(params: {
 
   const bodyContent = `
     ${renderCodeBox({ label: t.codeLabel, code: params.code })}
-    <p style="${EMAIL_P_MUTED}">
+    <p style="${EMAIL_P};margin-bottom:0">
       ${t.ttl(params.ttlMinutes)}
-    </p>
-    <p style="${EMAIL_P_MUTED};margin-bottom:0">
-      ${t.footer}
     </p>`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -867,7 +863,7 @@ export async function sendVerificationCodeEmail(params: {
   ttlSeconds?: number | null;
   context?: "signUp" | "signIn";
 }) {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const context = params.context ?? "signUp";
   const ttlMinutes =
     params.ttlSeconds != null ? Math.max(1, Math.round(params.ttlSeconds / 60)) : undefined;
@@ -889,23 +885,17 @@ export async function sendVerificationCodeEmail(params: {
     "",
     translationBlock.footer,
     "",
-    translationBlock.thanks,
-    translationBlock.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "verification_code",
     to: params.to,
     subject: translationBlock.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "verification_code", to: params.to, err: error }, "Failed to send verification code");
-  } else {
-    log.info({ event: "email.sent", template: "verification_code", to: params.to }, "Verification code sent");
-  }
 }
 
 function buildAssessmentDraftReminderHtml(params: {
@@ -926,17 +916,21 @@ function buildAssessmentDraftReminderHtml(params: {
     <p style="${EMAIL_P}">
       ${t.greeting(escapeHtml(params.name))}
     </p>
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${bodyHtml}
     </p>
     ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    optOut: OPT_OUT[params.locale],
+    signOff: SIGN_OFF[params.locale],
   });
 }
 
@@ -948,7 +942,7 @@ export async function sendAssessmentDraftReminderEmail(params: {
   totalCount: number;
   locale?: Locale;
 }): Promise<void> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const t = translations.assessmentDraftReminder[locale];
   const html = buildAssessmentDraftReminderHtml({
     locale,
@@ -967,23 +961,17 @@ export async function sendAssessmentDraftReminderEmail(params: {
     "",
     t.footer,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "draft_reminder",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "draft_reminder", to: params.to, err: error }, "Failed to send draft reminder");
-  } else {
-    log.info({ event: "email.sent", template: "draft_reminder", to: params.to }, "Draft reminder sent");
-  }
 }
 
 function buildMagicLinkHtml(params: {
@@ -994,83 +982,21 @@ function buildMagicLinkHtml(params: {
   const cta = renderCtaButton({ href: params.magicLinkUrl, label: t.cta });
 
   const bodyContent = `
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${t.body}
     </p>
     ${cta}`;
 
   return buildEmailLayout({
     locale: params.locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading: t.heading,
+    preheader: t.preheader,
     bodyContent,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[params.locale],
   });
-}
-
-export async function sendCoachApplicationNotification(params: {
-  applicantName: string;
-  applicantEmail: string;
-  background: string;
-  motivation: string;
-  specializations?: string | null;
-}) {
-  const adminEmail = process.env.ADMIN_EMAIL;
-  if (!adminEmail) {
-    log.warn({ event: "email.skipped", template: "coach_application", reason: "ADMIN_EMAIL not configured" }, "Coach application notification skipped");
-    return;
-  }
-
-  const bodyContent = `
-    ${renderInfoTable([
-      ["Név", escapeHtml(params.applicantName)],
-      ["Email", escapeHtml(params.applicantEmail)],
-      ["Szakterületek", escapeHtml(params.specializations ?? "–")],
-    ])}
-    <p style="${EMAIL_EYEBROW}">Szakmai háttér</p>
-    <p style="${EMAIL_P};white-space:pre-line">${escapeHtml(params.background)}</p>
-    <p style="${EMAIL_EYEBROW}">Motiváció</p>
-    <p style="${EMAIL_P};margin-bottom:24px;white-space:pre-line">${escapeHtml(params.motivation)}</p>
-    ${renderCtaButton({ href: `${APP_URL}/admin`, label: "Admin felület megnyitása" })}`;
-
-  const html = buildEmailLayout({
-    locale: "hu",
-    heading: "Új coach jelentkezés érkezett",
-    bodyContent,
-    thanks: "Üdvözlettel,",
-    team: "a trita rendszer",
-  });
-
-  const text = [
-    "Új coach jelentkezés érkezett",
-    "",
-    `Név: ${params.applicantName}`,
-    `Email: ${params.applicantEmail}`,
-    `Szakterületek: ${params.specializations ?? "–"}`,
-    "",
-    "Szakmai háttér:",
-    params.background,
-    "",
-    "Motiváció:",
-    params.motivation,
-    "",
-    `Admin: ${APP_URL}/admin`,
-  ].join("\n");
-
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
-    to: adminEmail,
-    subject: `Új coach jelentkezés – ${params.applicantName}`,
-    html,
-    text,
-  });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "coach_application", to: adminEmail, err: error }, "Failed to send coach application notification");
-  } else {
-    log.info({ event: "email.sent", template: "coach_application", to: adminEmail }, "Coach application notification sent");
-  }
 }
 
 export async function sendMagicLinkEmail(params: {
@@ -1078,7 +1004,7 @@ export async function sendMagicLinkEmail(params: {
   magicLinkUrl: string;
   locale?: Locale;
 }) {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = translations.magicLink[locale];
   const html = buildMagicLinkHtml({ locale, magicLinkUrl: params.magicLinkUrl });
 
@@ -1089,23 +1015,17 @@ export async function sendMagicLinkEmail(params: {
     "",
     t.footer,
     "",
-    t.thanks,
-    t.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  await sendEmail({
+    template: "magic_link",
     to: params.to,
     subject: t.subject,
     html,
     text,
   });
-
-  if (error) {
-    log.error({ event: "email.send_failed", template: "magic_link", to: params.to, err: error }, "Failed to send magic link");
-  } else {
-    log.info({ event: "email.sent", template: "magic_link", to: params.to }, "Magic link sent");
-  }
 }
 
 // ─── Team invite email (for users without an account) ────────────────────────
@@ -1113,21 +1033,21 @@ export async function sendMagicLinkEmail(params: {
 const teamInviteTranslations = {
   hu: {
     subject: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba – Trita`,
+    kind: "Meghívó",
+    eyebrow: "Csapat",
     heading: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba`,
     body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a Tritára, és automatikusan hozzáadunk!",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: (teamName: string) => `You've been invited to join ${teamName} – Trita`,
+    kind: "Invitation",
+    eyebrow: "Team",
     heading: (teamName: string) => `You've been invited to join ${teamName}`,
     body: "Share your personality profile with your team by joining Trita. Register and you'll be added automatically!",
     cta: "Register and join",
     footer: "If you don't want to join, simply ignore this email.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1139,6 +1059,9 @@ const candidateInviteTranslations = {
       position
         ? `Meghívó személyiségfelmérésre – ${position} pozíció`
         : "Meghívó személyiségfelmérésre",
+    kind: "Meghívó",
+    eyebrow: "Jelölt-felmérés",
+    preheader: "Körülbelül 10–15 perc, regisztráció nélkül elvégezhető.",
     heading: (position?: string) =>
       position ? `Személyiségfelmérés – ${position}` : "Személyiségfelmérés",
     body: (managerName: string) =>
@@ -1146,23 +1069,22 @@ const candidateInviteTranslations = {
     cta: "Felmérés megkezdése",
     footer:
       "Ha nem számítottál erre az emailre, egyszerűen hagyd figyelmen kívül.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: (position?: string) =>
       position
         ? `Invitation to personality assessment – ${position}`
         : "Invitation to complete a personality assessment",
+    kind: "Invitation",
+    eyebrow: "Candidate assessment",
+    preheader: "About 10–15 minutes, no registration needed.",
     heading: (position?: string) =>
-      position ? `Personality Assessment – ${position}` : "Personality Assessment",
+      position ? `Personality assessment – ${position}` : "Personality assessment",
     body: (managerName: string) =>
       `${managerName} has invited you to complete a personality assessment. The questionnaire takes about 10–15 minutes and requires no registration.`,
     cta: "Start assessment",
     footer:
       "If you did not expect this email, you can safely ignore it.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1174,20 +1096,22 @@ export async function sendCandidateInviteEmail(params: {
   applyUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? getLocale(params.to);
+  const locale = normalizeLocale(params.locale);
   const tr = candidateInviteTranslations[locale];
 
   const html = buildEmailLayout({
     locale,
-    heading: tr.heading(params.position),
+    kind: tr.kind,
+    eyebrow: tr.eyebrow,
+    heading: escapeHtml(tr.heading(params.position)),
+    preheader: tr.preheader,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">
+    <p style="${EMAIL_P};margin-bottom:26px">
       ${escapeHtml(tr.body(params.managerName))}
     </p>
     ${renderCtaButton({ href: params.applyUrl, label: tr.cta })}`,
-    footerDisclaimer: tr.footer,
-    thanks: tr.thanks,
-    team: tr.team,
+    quietNote: tr.footer,
+    signOff: SIGN_OFF[locale],
   });
 
   const text = [
@@ -1199,24 +1123,19 @@ export async function sendCandidateInviteEmail(params: {
     "",
     tr.footer,
     "",
-    tr.thanks,
-    tr.team,
+    SIGN_OFF[locale].thanks,
+    SIGN_OFF[locale].team,
   ].join("\n");
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "candidate_invite",
     to: params.to,
     subject: tr.subject(params.position),
     html,
     text,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "candidate_invite", to: params.to, err: error }, "Failed to send candidate invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "candidate_invite", to: params.to }, "Candidate invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Team invite email (for users without an account) ────────────────────────
@@ -1227,35 +1146,31 @@ export async function sendTeamInviteEmail(params: {
   signUpUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = teamInviteTranslations[locale];
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.teamName)),
     preheader: t.body,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    <p style="${EMAIL_P};margin-bottom:26px">${t.body}</p>
     ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "team_invite",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
-    text: `${t.heading(params.teamName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.heading(params.teamName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "team_invite", to: params.to, err: error }, "Failed to send team invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "team_invite", to: params.to }, "Team invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Org invite email ─────────────────────────────────────────────────────────
@@ -1263,21 +1178,21 @@ export async function sendTeamInviteEmail(params: {
 const orgInviteTranslations = {
   hu: {
     subject: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe – Trita`,
+    kind: "Meghívó",
+    eyebrow: "Szervezet",
     heading: (orgName: string) => `Meghívtak ${withHuArticle(orgName)} szervezetbe`,
     body: "Regisztrálj a Tritára, és automatikusan csatlakozol a szervezethez. Kitöltheted a személyiségtesztet, és láthatod, hogyan illesz a csapatba.",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: (orgName: string) => `You've been invited to join ${orgName} – Trita`,
+    kind: "Invitation",
+    eyebrow: "Organization",
     heading: (orgName: string) => `You've been invited to join ${orgName}`,
     body: "Register on Trita and you'll automatically join the organization. Complete the personality assessment to see how you fit with your team.",
     cta: "Register and join",
     footer: "If you don't want to join, simply ignore this email.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1288,35 +1203,31 @@ export async function sendOrgInviteEmail(params: {
   signUpUrl: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "en";
+  const locale = normalizeLocale(params.locale);
   const t = orgInviteTranslations[locale];
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.orgName)),
     preheader: t.body,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">${t.body}</p>
+    <p style="${EMAIL_P};margin-bottom:26px">${t.body}</p>
     ${renderCtaButton({ href: params.signUpUrl, label: t.cta })}`,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "org_invite",
     to: params.to,
     subject: t.subject(params.orgName),
     html,
-    text: `${t.heading(params.orgName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.heading(params.orgName)}\n\n${t.body}\n\n${t.cta}: ${params.signUpUrl}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "org_invite", to: params.to, err: error }, "Failed to send org invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "org_invite", to: params.to }, "Org invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Consultant invite email ─────────────────────────────────────────────────
@@ -1328,6 +1239,8 @@ export async function sendOrgInviteEmail(params: {
 const consultantInviteTranslations = {
   hu: {
     subject: "Tanácsadói hozzáférés a Tritán",
+    kind: "Meghívó",
+    eyebrow: "Tanácsadói hozzáférés",
     headingExisting: "Tanácsadói hozzáférést kaptál",
     headingNew: "Meghívtak a Tritára tanácsadóként",
     bodyExisting:
@@ -1337,11 +1250,11 @@ const consultantInviteTranslations = {
     ctaExisting: "Belépés",
     ctaNew: "Regisztráció",
     footer: "Ha nem számítottál erre a meghívóra, hagyd figyelmen kívül ezt az emailt.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: "Consultant access on Trita",
+    kind: "Invitation",
+    eyebrow: "Consultant access",
     headingExisting: "You've been granted consultant access",
     headingNew: "You've been invited to Trita as a consultant",
     bodyExisting:
@@ -1351,8 +1264,6 @@ const consultantInviteTranslations = {
     ctaExisting: "Sign in",
     ctaNew: "Register",
     footer: "If you weren't expecting this invitation, simply ignore this email.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1362,7 +1273,7 @@ export async function sendConsultantInviteEmail(params: {
   hasAccount: boolean;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = consultantInviteTranslations[locale];
   const heading = params.hasAccount ? t.headingExisting : t.headingNew;
   const body = params.hasAccount ? t.bodyExisting : t.bodyNew;
@@ -1371,30 +1282,26 @@ export async function sendConsultantInviteEmail(params: {
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading,
     preheader: body,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">${body}</p>
+    <p style="${EMAIL_P};margin-bottom:26px">${body}</p>
     ${renderCtaButton({ href: ctaLink, label: cta })}`,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "consultant_invite",
     to: params.to,
     subject: t.subject,
     html,
-    text: `${heading}\n\n${body}\n\n${cta}: ${ctaLink}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+    text: `${heading}\n\n${body}\n\n${cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "consultant_invite", to: params.to, err: error }, "Failed to send consultant invite");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "consultant_invite", to: params.to }, "Consultant invite sent");
-  return true;
+  return ok;
 }
 
 // ─── Measurement step email (lépés-nyitás / emlékeztető) ─────────────────────
@@ -1406,6 +1313,9 @@ export async function sendConsultantInviteEmail(params: {
 const measurementStepTranslations = {
   hu: {
     openedSubject: (campaignName: string) => `Új lépés vár rád – ${campaignName}`,
+    kind: "Mérés",
+    openedEyebrow: "Kampány-lépés",
+    reminderEyebrow: "Emlékeztető",
     openedHeading: "Kinyílt a következő lépésed",
     openedBody: (campaignName: string) =>
       `A(z) „${campaignName}" mérésben kinyílt a következő lépésed. Néhány perc az egész — a többiek eredménye is akkor áll össze, ha mindenki kitölt.`,
@@ -1416,11 +1326,12 @@ const measurementStepTranslations = {
     cta: "Kitöltés megnyitása",
     footer:
       "Ezt az emailt azért kaptad, mert a szervezeted mérési körének résztvevője vagy.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     openedSubject: (campaignName: string) => `A new step is waiting for you – ${campaignName}`,
+    kind: "Measurement",
+    openedEyebrow: "Campaign step",
+    reminderEyebrow: "Reminder",
     openedHeading: "Your next step is open",
     openedBody: (campaignName: string) =>
       `Your next step in the "${campaignName}" measurement is now open. It only takes a few minutes — the team's results come together once everyone completes it.`,
@@ -1431,8 +1342,6 @@ const measurementStepTranslations = {
     cta: "Open the step",
     footer:
       "You received this email because you are a participant in your organization's measurement round.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1444,7 +1353,7 @@ export async function sendMeasurementStepEmail(params: {
   variant: "opened" | "reminder";
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = measurementStepTranslations[locale];
   const subject =
     params.variant === "opened"
@@ -1463,30 +1372,27 @@ export async function sendMeasurementStepEmail(params: {
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: params.variant === "opened" ? t.openedEyebrow : t.reminderEyebrow,
     heading,
     preheader: bodyText,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">${body}</p>
+    <p style="${EMAIL_P};margin-bottom:26px">${body}</p>
     ${renderCtaButton({ href: ctaLink, label: t.cta })}`,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "measurement_step",
+    logFields: { variant: params.variant },
     to: params.to,
     subject,
     html,
-    text: `${heading}\n\n${bodyText}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+    text: `${heading}\n\n${bodyText}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "measurement_step", variant: params.variant, to: params.to, err: error }, "Failed to send measurement step email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "measurement_step", variant: params.variant, to: params.to }, "Measurement step email sent");
-  return true;
+  return ok;
 }
 
 // ─── Welcome email (regisztráció után) ───────────────────────────────────────
@@ -1496,6 +1402,8 @@ export async function sendMeasurementStepEmail(params: {
 const welcomeTranslations = {
   hu: {
     subject: "Üdvözlünk a Tritán!",
+    kind: "Üdvözlet",
+    eyebrow: "Első lépés",
     preheader: "Az első lépés egy ~9 perces kitöltés — utána azonnal látod az eredményed.",
     heading: "Üdvözlünk a Tritán!",
     body1:
@@ -1504,11 +1412,11 @@ const welcomeTranslations = {
       "Az első lépés egy rövid, ~9 perces kitöltés. A válaszaid alapján azonnal megkapod a részletes eredményedet.",
     cta: "Kezdés",
     optOut: "Ha nem szeretnél ilyen emaileket kapni:",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: "Welcome to Trita!",
+    kind: "Welcome",
+    eyebrow: "First step",
     preheader: "The first step is a ~9-minute assessment — you'll see your results right away.",
     heading: "Welcome to Trita!",
     body1:
@@ -1517,8 +1425,6 @@ const welcomeTranslations = {
       "The first step is a short, ~9-minute assessment. You'll get your detailed results immediately based on your answers.",
     cta: "Get started",
     optOut: "If you'd rather not receive emails like this:",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1526,40 +1432,33 @@ export async function sendWelcomeEmail(params: {
   to: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = welcomeTranslations[locale];
   const ctaLink = `${APP_URL}/dashboard`;
-  const optOutLink = `${APP_URL}/email-preferences`;
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading: t.heading,
     preheader: t.preheader,
     bodyContent: `
     <p style="${EMAIL_P}">${t.body1}</p>
-    <p style="${EMAIL_P};margin-bottom:24px">${t.body2}</p>
-    ${renderCtaButton({ href: ctaLink, label: t.cta })}
-    <p style="${EMAIL_P};margin-top:28px;font-size:12px;color:${EMAIL_COLORS.faint}">
-      ${t.optOut} <a href="${optOutLink}" style="color:${EMAIL_COLORS.faint}">${optOutLink}</a>
-    </p>`,
-    thanks: t.thanks,
-    team: t.team,
+    <p style="${EMAIL_P};margin-bottom:26px">${t.body2}</p>
+    ${renderCtaButton({ href: ctaLink, label: t.cta })}`,
+    optOut: OPT_OUT[locale],
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "welcome",
     to: params.to,
     subject: t.subject,
     html,
-    text: `${t.heading}\n\n${t.body1}\n\n${t.body2}\n\n${t.cta}: ${ctaLink}\n\n${t.optOut} ${optOutLink}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.heading}\n\n${t.body1}\n\n${t.body2}\n\n${t.cta}: ${ctaLink}\n\n${t.optOut} ${OPT_OUT[locale].href}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "welcome", to: params.to, err: error }, "Failed to send welcome email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "welcome", to: params.to }, "Welcome email sent");
-  return true;
+  return ok;
 }
 
 // ─── Team report published email ─────────────────────────────────────────────
@@ -1571,23 +1470,23 @@ export async function sendWelcomeEmail(params: {
 const teamReportPublishedTranslations = {
   hu: {
     subject: (teamName: string) => `Elkészült a csapatriport – ${teamName}`,
+    kind: "Eredmény",
+    eyebrow: "Csapatriport",
     heading: (teamName: string) => `Elkészült ${withHuArticle(teamName)} csapat riportja`,
     body1:
       "A tanácsadó által validált csapatriport mostantól elérhető a platformon. A riport külön jelöli, mi mért, mi becsült és mi értelmezési nyelv.",
     cta: "Riport megnyitása",
     footer: "Ezt az emailt azért kaptad, mert a csapat riportjának címzettje vagy.",
-    thanks: "Üdvözlettel,",
-    team: "a Trita csapat",
   },
   en: {
     subject: (teamName: string) => `Your team report is ready – ${teamName}`,
+    kind: "Results",
+    eyebrow: "Team report",
     heading: (teamName: string) => `The report for ${teamName} is ready`,
     body1:
       "The consultant-validated team report is now available on the platform. The report clearly marks what is measured, what is estimated, and what is interpretive language.",
     cta: "Open the report",
     footer: "You received this email because you are a recipient of this team's report.",
-    thanks: "Best regards,",
-    team: "the Trita team",
   },
 };
 
@@ -1597,36 +1496,32 @@ export async function sendTeamReportPublishedEmail(params: {
   teamId: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = teamReportPublishedTranslations[locale];
   const ctaLink = `${APP_URL}/team/${params.teamId}?tab=report`;
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.teamName)),
     preheader: t.body1,
     bodyContent: `
-    <p style="${EMAIL_P};margin-bottom:24px">${t.body1}</p>
+    <p style="${EMAIL_P};margin-bottom:26px">${t.body1}</p>
     ${renderCtaButton({ href: ctaLink, label: t.cta })}`,
-    footerDisclaimer: t.footer,
-    thanks: t.thanks,
-    team: t.team,
+    quietNote: t.footer,
+    signOff: SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "team_report_published",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
-    text: `${t.heading(params.teamName)}\n\n${t.body1}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.heading(params.teamName)}\n\n${t.body1}\n\n${t.cta}: ${ctaLink}\n\n${t.footer}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "team_report_published", to: params.to, err: error }, "Failed to send team report published email");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "team_report_published", to: params.to }, "Team report published email sent");
-  return true;
+  return ok;
 }
 
 // ─── Pilot application confirmation email ────────────────────────────────────
@@ -1634,23 +1529,25 @@ export async function sendTeamReportPublishedEmail(params: {
 const pilotApplyConfirmationTranslations = {
   hu: {
     subject: "Megkaptuk a jelentkezésed – Trita Pilotprogram",
-    preheader: "Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!",
+    kind: "Visszaigazolás",
+    eyebrow: "Pilotprogram",
+    heading: "Megkaptuk a jelentkezésed",
+    preheader: "24 órán belül személyesen kereslek a részletekkel.",
     greeting: (name: string) => `Kedves ${name},`,
     body1: "Köszönjük, hogy jelentkeztél a Trita Pilotprogramba!",
     body2:
       "24 órán belül személyesen kereslek, hogy megbeszéljük a részleteket és egyeztessünk egy rövid, kötelezettségmentes bevezető beszélgetést.",
-    thanks: "Üdvözlettel,",
-    team: "Leinad · Trita",
   },
   en: {
     subject: "We received your application – Trita Pilot Program",
-    preheader: "Thank you for applying to the Trita Pilot Program!",
+    kind: "Confirmation",
+    eyebrow: "Pilot program",
+    heading: "We received your application",
+    preheader: "I will personally reach out within 24 hours.",
     greeting: (name: string) => `Dear ${name},`,
     body1: "Thank you for applying to the Trita Pilot Program!",
     body2:
       "I will personally reach out within 24 hours to discuss the details and set up a short, no-obligation intro conversation.",
-    thanks: "Best regards,",
-    team: "Leinad · Trita",
   },
 };
 
@@ -1659,35 +1556,32 @@ export async function sendPilotApplyConfirmationEmail(params: {
   name: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = pilotApplyConfirmationTranslations[locale];
   const firstName = params.name.split(" ")[0] ?? params.name;
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
     preheader: t.preheader,
     bodyContent: `
     <p style="${EMAIL_P}">${t.greeting(escapeHtml(firstName))}</p>
     <p style="${EMAIL_P}">${t.body1}</p>
     <p style="${EMAIL_P};margin-bottom:0">${t.body2}</p>`,
-    thanks: t.thanks,
-    team: t.team,
+    signOff: PERSONAL_SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "pilot_apply_confirmation",
     to: params.to,
     subject: t.subject,
     html,
-    text: `${t.greeting(firstName)}\n\n${t.body1}\n\n${t.body2}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.greeting(firstName)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "pilot_apply_confirmation", to: params.to, err: error }, "Failed to send pilot apply confirmation");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "pilot_apply_confirmation", to: params.to }, "Pilot apply confirmation sent");
-  return true;
+  return ok;
 }
 
 // ─── Advisory request confirmation email ─────────────────────────────────────
@@ -1695,25 +1589,27 @@ export async function sendPilotApplyConfirmationEmail(params: {
 const advisoryConfirmationTranslations = {
   hu: {
     subject: "Megkaptuk a konzultáció-igényed — Trita Advisory",
+    kind: "Visszaigazolás",
+    eyebrow: "Trita Advisory",
+    heading: "Megkaptuk a konzultáció-igényed",
     preheader: "24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
     greeting: (name: string) => `Kedves ${name},`,
     body1:
       "Megkaptuk a jelentkezésedet a tanácsadói konzultációra! 24 órán belül személyesen kereslek az időpont-egyeztetéssel.",
     body2:
       "A konzultáción a csapataid aktuális mintázataiból indulunk ki — nem kell semmit előkészítened.",
-    thanks: "Üdvözlettel,",
-    team: "Leinad · Trita",
   },
   en: {
     subject: "We received your consultation request — Trita Advisory",
+    kind: "Confirmation",
+    eyebrow: "Trita Advisory",
+    heading: "We received your consultation request",
     preheader: "I will personally reach out within 24 hours to schedule a time.",
     greeting: (name: string) => `Dear ${name},`,
     body1:
       "We received your request for an advisory consultation! I will personally reach out within 24 hours to schedule a time.",
     body2:
       "The consultation starts from your teams' current patterns — no preparation needed on your side.",
-    thanks: "Best regards,",
-    team: "Leinad · Trita",
   },
 };
 
@@ -1722,32 +1618,73 @@ export async function sendAdvisoryConfirmationEmail(params: {
   name: string;
   locale?: Locale;
 }): Promise<boolean> {
-  const locale = params.locale ?? "hu";
+  const locale = normalizeLocale(params.locale);
   const t = advisoryConfirmationTranslations[locale];
 
   const html = buildEmailLayout({
     locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
     preheader: t.preheader,
     bodyContent: `
     <p style="${EMAIL_P}">${t.greeting(escapeHtml(params.name))}</p>
     <p style="${EMAIL_P}">${t.body1}</p>
     <p style="${EMAIL_P};margin-bottom:0">${t.body2}</p>`,
-    thanks: t.thanks,
-    team: t.team,
+    signOff: PERSONAL_SIGN_OFF[locale],
   });
 
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
+  const ok = await sendEmail({
+    template: "advisory_confirmation",
     to: params.to,
     subject: t.subject,
     html,
-    text: `${t.greeting(params.name)}\n\n${t.body1}\n\n${t.body2}\n\n${t.thanks}\n${t.team}`,
+    text: `${t.greeting(params.name)}\n\n${t.body1}\n\n${t.body2}\n\n${PERSONAL_SIGN_OFF[locale].thanks}\n${PERSONAL_SIGN_OFF[locale].team}`,
   });
 
-  if (error) {
-    log.error({ event: "email.send_failed", template: "advisory_confirmation", to: params.to, err: error }, "Failed to send advisory confirmation");
-    return false;
-  }
-  log.info({ event: "email.sent", template: "advisory_confirmation", to: params.to }, "Advisory confirmation sent");
-  return true;
+  return ok;
+}
+
+// ─── Jelölt-kredit igénylés (org adminnak) ───────────────────────────────────
+// Korábban a `/api/hiring/request-credits` route-ban komponálódott inline — ez
+// volt az EGYETLEN sablon az email-modulon kívül, saját (rossz domainre mutató)
+// APP_URL-fallbackkel. RENDSZER-levél: admin-értesítő, textúra-jel nélkül.
+
+export async function sendHiringCreditsRequestEmail(params: {
+  to: string;
+  requesterName: string;
+  orgName: string;
+  orgId: string;
+}): Promise<boolean> {
+  const ctaLink = `${APP_URL}/hiring/${params.orgId}`;
+
+  const html = buildEmailLayout({
+    locale: "hu",
+    kind: "Rendszer",
+    eyebrow: "Kredit-igénylés",
+    heading: "Elfogyott a jelölt-kreditkeret",
+    preheader: `${params.requesterName} krediteket kér a(z) ${params.orgName} szervezethez.`,
+    bodyContent: `
+    <p style="${EMAIL_P}">
+      <strong>${escapeHtml(params.requesterName)}</strong> jelölt értékelési krediteket kér
+      a(z) <strong>${escapeHtml(params.orgName)}</strong> szervezethez.
+    </p>
+    <p style="${EMAIL_P};margin-bottom:26px">
+      A jelenlegi kreditkeret üres. Tölts fel krediteket, hogy a csapat folytathassa
+      a jelöltértékelést.
+    </p>
+    ${renderCtaButton({ href: ctaLink, label: "Kreditek feltöltése" })}`,
+    quietNote: "Ezt a levelet azért kaptad, mert a szervezet adminisztrátora vagy.",
+    signOff: SIGN_OFF.hu,
+  });
+
+  const ok = await sendEmail({
+    template: "hiring_credits_request",
+    to: params.to,
+    subject: `Jelölt kredit igénylés – ${params.orgName}`,
+    html,
+    text: `${params.requesterName} jelölt értékelési krediteket kér a(z) ${params.orgName} szervezethez.\n\nKreditek feltöltése: ${ctaLink}\n\n${SIGN_OFF.hu.thanks}\n${SIGN_OFF.hu.team}`,
+  });
+
+  return ok;
 }

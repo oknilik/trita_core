@@ -41,27 +41,66 @@ export const COLORS = {
 
 export type ColorKey = keyof typeof COLORS;
 
-// ─── Email-paletta (2026-07-22 UI-egységesítés, F2) ─────────────────────────
+// ─── Email-paletta ──────────────────────────────────────────────────────────
 // Az email inline-style HTML — CSS-var kliens-támogatás megbízhatatlan, ezért
 // hexben fordul, de EBBŐL a modulból (nem kézzel szórt konstansokból).
+//
+// 2026-08-19 arculati átállás: a készlet ÉRTÉK-listából SZEREP-listává vált,
+// és a szerepek az app szemantikus rétegét tükrözik (globals.css @theme).
+// Ami változott és miért:
+//
+//  · canvas: fehér → krém. Az app viszonya `surface-canvas` (krém) +
+//    `surface-card` (fehér); a levél eddig kártya nélkül, tiszta fehérre írt.
+//  · actionPrimary: bronz → ZSÁLYA. Az elsődleges akció szerepszíne a
+//    2026-08-05-i szín-rendszer óta `--color-action-primary-bg` = sage. A
+//    fehér felirat a bronzon ráadásul 3,28:1 volt (AA-bukó); zsályán 6,06:1.
+//    A bronz akcentnek szabadult fel (i-pont, eyebrow, másodlagos gomb).
+//  · muted: inkWarm/mutedWarm → muted. A `mutedWarm` 4,40:1-et adott fehéren,
+//    és pont a 12px-es lábléc- és disclaimer-sorokat vitte — AA alatt. A
+//    `muted` fehéren 5,30:1, a krém vásznon 4,82:1.
+//  · headerBg + wordmarkT/Body/A KIVEZETVE: a homok fejléc-plakett és a
+//    háromszínű szójel a kanonikus egyszínű `trıta` + bronz i-pont jelre
+//    cserélődött (TritaLogo.tsx / PdfWordmark.tsx paritás).
 export const EMAIL_COLORS = {
-  // 2026-07-23 egységesítés: fehér canvas + homok fejléc-kártya a színes
-  // wordmarkkal (sage t · ink rit · bronz a) — a főoldali brand képe.
-  canvas: "#ffffff",
-  headerBg: COLORS.sand,
-  /** Wordmark-betűszínek a fejléc-kártyán (NavBar-paritás) */
-  wordmarkT: COLORS.sage,
-  wordmarkBody: COLORS.ink,
-  wordmarkA: COLORS.bronze,
-  /** CTA: a főoldali bronz gomb (rounded-xl, fehér felirat, nyíl) */
-  ctaBg: COLORS.bronze,
-  heading: COLORS.ink,
-  body: COLORS.inkBody,
-  muted: COLORS.inkWarm,
-  faint: COLORS.mutedWarm,
-  border: COLORS.sand,
-  /** Kód-doboz / kiemelt felület háttere a fehér canvason */
+  // ── Felületek ─────────────────────────────────────────────────────────────
+  /** Lap-alap. Az app `surface-canvas`-a — a levél nem fehér lapra ír. */
+  canvas: COLORS.cream,
+  /** A tartalom kártyája a vásznon (`surface-card`). */
+  card: "#ffffff",
+  /** Kiemelt felület a FEHÉR kártyán belül: kód-doboz, QR-keret. */
   surface: COLORS.cream,
+  /** Keret és hajszálvonal — az app `border-default`-ja (= sand). */
+  border: COLORS.sand,
+
+  // ── Szöveg-szerepek ───────────────────────────────────────────────────────
+  /** Címsor és kiemelt érték. */
+  heading: COLORS.ink,
+  /** Folyószöveg. */
+  body: COLORS.inkBody,
+  /** Halk kísérőszöveg, lábléc, disclaimer. A kis fokok padlója. */
+  muted: COLORS.muted,
+
+  // ── Akció ─────────────────────────────────────────────────────────────────
+  /** Elsődleges gomb — `action-primary`. Fehér felirattal 6,06:1. */
+  actionPrimaryBg: COLORS.sage,
+  actionPrimaryFg: "#ffffff",
+  /**
+   * Másodlagos gomb — bronz felület TINTA felirattal (5,20:1). A fehér itt
+   * 3,28:1 lenne; a web ugyanezért tartja a `--palette-text-on-accent`-et
+   * sötéten („az akcentek MINDKÉT témában világosak").
+   */
+  actionSecondaryBg: COLORS.bronze,
+  actionSecondaryFg: COLORS.ink,
+
+  // ── Akcent ────────────────────────────────────────────────────────────────
+  /** Grafikai akcent: eyebrow-pötty, szójel i-pontja. */
+  accent: COLORS.bronze,
+  /** Akcent-SZÖVEG (eyebrow felirata) — a brand-bronz 11px-en 2,9:1 lenne. */
+  accentText: COLORS.bronzeDark,
+
+  // ── Szójel ────────────────────────────────────────────────────────────────
+  wordmark: COLORS.ink,
+  wordmarkDot: COLORS.bronze,
 } as const;
 
 // ─── PDF-paletta (react-pdf Node-ban renderel, CSS-var nem működik) ────────

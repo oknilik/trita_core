@@ -7,6 +7,7 @@ import { sendAdvisoryConfirmationEmail } from "@/lib/emails";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 // Konzultáció-kérés (advisory oldal) — bejelentkezett usernek.
 // A siker mércéje a perzisztált inquiry (DB + admin-notif + CRM auto-attach a
@@ -92,7 +93,7 @@ export async function POST(req: NextRequest) {
       await sendAdvisoryConfirmationEmail({
         to: userEmail,
         name: firstName,
-        locale: profile.locale === "en" ? "en" : "hu",
+        locale: normalizeLocale(profile.locale),
       });
     } catch (error) {
       log.error(

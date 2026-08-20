@@ -47,6 +47,8 @@
     "seed:facets:refresh": "npx tsx scripts/refresh-seed-facets.ts",
     "report:personas": "npx tsx scripts/generate-persona-reports.tsx",
     "report:pdf-snapshots": "npx tsx scripts/pdf-report-snapshots.tsx",
+    "build:email-art": "npx tsx scripts/build-email-art.ts",
+    "preview:emails": "npx tsx scripts/preview-emails.ts",
     "seed:org-team": "npx tsx scripts/seed-org-team.ts",
     "seed:banan": "npx tsx scripts/seed-banan-demo.ts",
     "seed:psych-safety": "npx tsx scripts/seed-psych-safety.ts",

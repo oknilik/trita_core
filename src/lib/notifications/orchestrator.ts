@@ -20,6 +20,7 @@ import { persistNotification, persistNotificationBatch } from "./repository";
 import { resolveOrgRecipients } from "./policy";
 import { sendMeasurementStepEmail, sendTeamReportPublishedEmail } from "@/lib/emails";
 import { createLogger } from "@/lib/logger";
+import { normalizeLocale } from "@/lib/i18n/core";
 
 const log = createLogger("notifications-orchestrator");
 
@@ -300,7 +301,7 @@ export async function handleMeasurementStepOpened(params: {
           campaignName: params.campaignName,
           link,
           variant: "opened",
-          locale: profile.locale === "en" ? "en" : "hu",
+          locale: normalizeLocale(profile.locale),
         });
       }
     } catch (error) {

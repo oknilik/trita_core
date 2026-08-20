@@ -28,7 +28,9 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
 - Auth: Clerk (custom sign-in/up flow-k `useSignIn`/`useSignUp` hookokkal,
   Google SSO, webhook-szinkron a `UserProfile`-lal)
 - DB: Neon PostgreSQL + Prisma 6 (30+ modell)
-- Email: Resend (wrapper: `src/lib/resend.ts`, sablonok: `src/lib/emails.ts`)
+- Email: Resend (wrapper: `src/lib/resend.ts`, sablonok: `src/lib/emails.ts`,
+  közös keret: `src/lib/email-layout.ts`) — arculati szabályok:
+  `docs/development/email-design.md`; előnézet: `pnpm preview:emails`
 - i18n: HU/EN (`src/lib/i18n/` modul; `Locale = "hu" | "en"`)
 - Design: CSS-variable token rendszer (`src/app/globals.css` +
   `docs/development/ui-token-map.md`); tipikus osztályok: `bg-cream`,

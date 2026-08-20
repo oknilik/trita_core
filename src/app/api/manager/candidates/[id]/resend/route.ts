@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { sendCandidateInviteEmail } from "@/lib/emails";
 import { isConsultantSurface } from "@/lib/measurement-auth";
+import { getServerLocale } from "@/lib/i18n-server";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
@@ -73,6 +74,9 @@ export async function POST(
     token: invite.token,
     position: invite.position ?? undefined,
     applyUrl: `${APP_URL}/apply/${invite.token}`,
+    // A CandidateInvite nem tárol nyelvet; az újraküldést indító menedzser
+    // felületi nyelve ugyanaz, amit a létrehozáskor is átadott.
+    locale: await getServerLocale(),
   });
 
   return NextResponse.json({ ok: true, emailSent });

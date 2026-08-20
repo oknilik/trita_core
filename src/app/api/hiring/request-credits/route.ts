@@ -4,18 +4,9 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { hasOrgRole } from "@/lib/auth";
-import { resend, EMAIL_FROM } from "@/lib/resend";
-import {
-  buildEmailLayout,
-  escapeHtml,
-  renderCtaButton,
-  EMAIL_P,
-  EMAIL_P_MUTED,
-} from "@/lib/email-layout";
+import { sendHiringCreditsRequestEmail } from "@/lib/emails";
 
 const schema = z.object({ orgId: z.string() });
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
 
 export async function POST(req: Request) {
   // A végpont minden ORG_ADMIN-nak e-mailt küld — rate limit nélkül egy
@@ -67,25 +58,11 @@ export async function POST(req: Request) {
     const adminEmail = admin.user.email;
     if (!adminEmail) continue;
 
-    await resend.emails.send({
-      from: EMAIL_FROM,
+    await sendHiringCreditsRequestEmail({
       to: adminEmail,
-      subject: `Jelölt kredit igénylés – ${orgName}`,
-      html: buildEmailLayout({
-        locale: "hu",
-        heading: "Jelölt kredit igénylés",
-        bodyContent: `
-          <p style="${EMAIL_P}">
-            <strong>${escapeHtml(requesterName)}</strong> jelölt értékelési krediteket kér a
-            <strong>${escapeHtml(orgName)}</strong> szervezethez.
-          </p>
-          <p style="${EMAIL_P_MUTED};margin-bottom:24px">
-            A jelenlegi kreditkeret üres. Tölts fel krediteket, hogy a csapat
-            folytathassa a jelöltértékelést.
-          </p>
-          ${renderCtaButton({ href: `${APP_URL}/hiring/${orgId}`, label: "Kreditek vásárlása" })}`,
-      }),
-      text: `${requesterName} jelölt értékelési krediteket kér a ${orgName} szervezethez. Töltsd fel a poolt: ${APP_URL}/hiring/${orgId}`,
+      requesterName,
+      orgName,
+      orgId,
     });
   }
 

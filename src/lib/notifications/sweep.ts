@@ -187,7 +187,7 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
     const profile = profileById.get(candidate.userId);
     if (profile?.email && !profile.lifecycleEmailsOptOut) {
       try {
-        const emailLocale = profile.locale === "en" ? "en" : "hu";
+        const emailLocale = normalizeLocale(profile.locale);
         await sendReflectionPromptEmail({
           to: profile.email,
           dimLabel: HEXACO_DIMENSIONS[candidate.topDim][emailLocale],

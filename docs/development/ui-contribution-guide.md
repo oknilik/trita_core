@@ -182,3 +182,31 @@ CI:
   PDF_COLORS) — a globals.css-sel a szinkront unit-teszt őrzi
   (tests/unit/design/design-tokens-sync.test.ts). PDF és email SOHA nem kap
   kézzel szórt hexet.
+
+## Levél (2026-08-19)
+
+A levél a **harmadik médium** a web és a PDF mellett: ugyanaz a rendszer,
+saját fordítással (inline hex, mert a CSS-változó kliens-támogatása
+megbízhatatlan). Teljes szabály-készlet: `docs/development/email-design.md`.
+
+- **Levél-HTML csak `src/lib/emails.ts`-ben komponálódik** — route-ban, action-ben
+  soha. A közös keret a `buildEmailLayout`; saját `<html>` váz tilos.
+- **Az `EmailLayoutParams` kötelezővé teszi** az `eyebrow` · `heading` ·
+  `preheader` · `kind` · `family` · `signOff` mezőt. Ez a szerződés a
+  típusban él: a korábbi szórás (21 hívásból 8 címsor) abból állt elő, hogy
+  ezek opcionálisak voltak.
+- **Bronz felületre TINTA felirat kerül, sosem fehér** (3,28:1 vs. 5,20:1) —
+  ugyanaz a szabály, mint a weben a `--palette-text-on-accent`-nél. Az
+  elsődleges akció zsálya.
+- **Fok-létra**: 34 · 26 · 16 · 14 · 13 · 12 · 11. A 16px törzs a skála
+  egyetlen dokumentált levél-kivétele (mobil-inbox, zoom-kontextus nélkül).
+- **Nyelv**: a küldők alapértelmezése a `DEFAULT_LOCALE` (magyar), a
+  feloldás egyetlen helyen (`normalizeLocale`). A hívó adja át a címzett
+  TÁROLT nyelvét (`UserProfile.locale`); fiók nélküli címzettnél a küldő
+  felületi nyelvét (`getServerLocale()`). Angolra eső alapértelmezést ne írj
+  — lint helyett guardrail-teszt fogja.
+- **Kép a levélben csak `cid:` inline csatolmányként.** Hosztolt URL és
+  `data:` URI egyaránt kiesik (deploy/env-függés, illetve Gmail-szűrés); a
+  csatolást a közös `sendEmail()` kapu végzi, nem a hívó.
+- Új sablon után: felvétel a `scripts/email-samples.ts` listájába, majd
+  `pnpm preview:emails` (szemre) és `pnpm test:unit` (guardrail).

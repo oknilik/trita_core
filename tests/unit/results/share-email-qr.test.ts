@@ -36,7 +36,9 @@ describe("buildProfileShareHtml — QR-blokk a levélben", () => {
       senderName: "Kate",
       token: "tok123",
     });
-    assert.ok(!html.includes("cid:"), "QR nélkül nem lehet cid-hivatkozás");
+    // A szójel és a formanyelvi jel MINDIG cid:-en megy (2026-08-19), ezért
+    // itt a QR SAJÁT hivatkozását nézzük, nem a `cid:` puszta jelenlétét.
+    assert.ok(!html.includes("cid:share-qr"), "QR nélkül nem lehet QR-cid");
     assert.ok(!html.includes("QR code"), "QR nélkül nem lehet QR-szöveg");
     assert.ok(html.includes(profileShareUrl("tok123")));
   });
