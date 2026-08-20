@@ -233,22 +233,22 @@ test("a webfont-réteg mso-feltételes (az Outlook különben Times-ra esik)", a
   }
 });
 
-// ─── 6. Család ───────────────────────────────────────────────────────────────
+// ─── 6. Formanyelvi jel ──────────────────────────────────────────────────────
 
-test("formanyelvi jel csak az ügyfél-levélen, és dekorációként", async () => {
+// 2026-08-20: korábban a jel csak az „ügyfél" családon volt ott, a kód- és
+// magic-link-levélen nem. Ez a felületen egyenetlenségként jelentkezett, ezért
+// a család-fogalom kivezetve. Ez a teszt KIVÉTEL NÉLKÜL kéri a jelet — ha
+// bárki visszavezetne egy feltételt, itt bukik.
+test("formanyelvi jel MINDEN levélen ott van, és dekorációként", async () => {
   const samples = await samplesPromise;
   for (const s of samples) {
-    const hasMark = s.html.includes(`cid:${EMAIL_ART.mark.cid}`);
-    assert.equal(
-      hasMark,
-      s.family === "client",
-      `${s.id} (${s.locale}): a ${s.family} család jele hibás`,
+    assert.ok(
+      s.html.includes(`cid:${EMAIL_ART.mark.cid}`),
+      `${s.id} (${s.locale}): hiányzik a formanyelvi jel`,
     );
-    if (hasMark) {
-      // 3. szintű jel: nem állít mérési tartalmat, tehát a képernyőolvasónak
-      // nincs mondanivalója.
-      assert.match(s.html, /alt="" role="presentation"/, `${s.id}: a jel nem dekorációként megy`);
-    }
+    // 3. szintű jel: nem állít mérési tartalmat, tehát a képernyőolvasónak
+    // nincs mondanivalója.
+    assert.match(s.html, /alt="" role="presentation"/, `${s.id}: a jel nem dekorációként megy`);
   }
 });
 

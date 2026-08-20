@@ -49,18 +49,27 @@ krém vászon (surface-canvas)
 ```
 
 Az `EmailLayoutParams` típus **kötelezővé teszi** az `eyebrow`, `heading`,
-`preheader`, `kind`, `family` és `signOff` mezőt. Ez szándékos: a korábbi
+`preheader`, `kind` és `signOff` mezőt. Ez szándékos: a korábbi
 szórás azért állhatott elő, mert ezek opcionálisak voltak. A szerződés a
 típusban él, nem konvencióban.
 
-## 3. Két család
+## 3. Egy keret, kivétel nélkül
 
-| | `client` (ügyfél) | `system` (rendszer) |
-|---|---|---|
-| Mikor | meghívó, eredmény, emlékeztető, üdvözlő | kód, magic link, admin-értesítő |
-| Eyebrow | bronz pötty + `accentText` felirat | halk `muted` pötty és felirat |
-| Formanyelvi jel | van (lábléc) | nincs |
-| Miért | a márka jelen lehet | a kód megtalálása a feladat, nem a márka |
+**Minden levél ugyanazt kapja**: bronz eyebrow-pötty, `accentText` felirat, és
+a formanyelvi jel a láblécben, az aláírás fölött. Sablononkénti eltérés nincs.
+
+Az első kör két családot vezetett be (`client` / `system`): a kód-, magic-link-
+és admin-levél halk eyebrow-t kapott, formanyelvi jel nélkül. Az indoklás
+elvben állt („a kód megtalálása a feladat, nem a márka"), a gyakorlatban
+viszont **egyenetlenségként** jelentkezett — 19 sablonból 3 nézett ki
+másképp, ok nélkül, hiszen a levél minden más eleme azonos maradt. Egy szabály,
+ami egyetlen apró különbséget hordoz, de látható szórást okoz, rosszul fizet.
+
+**2026-08-20-án a család-fogalom kivezetve** (`EmailFamily` típus, a
+`buildEmailLayout` és a `sendEmail` `family` paramétere, a doksi-szabály és a
+hozzá tartozó guardrail). Nincs feltétel, tehát nincs mit elrontani: a jelet
+a `buildEmailLayout` teszi a láblécbe, a csatolást az `emailArtAttachments()`
+végzi, mindkettő feltétel nélkül.
 
 ## 4. Színek — `EMAIL_COLORS`
 
@@ -219,8 +228,8 @@ Az előnézet a `cid:` hivatkozásokat `data:` URI-ra írja át — ezt egy bön
 nem tudná feloldani. Ez az EGYETLEN pont, ahol az előnézet eltér az élestől.
 
 A `tests/unit/design/email-templates.test.ts` őrzi: szerkezet · számolt
-kontraszt · token-tisztaság · fok-létra · kanonikus szójel · család-szabály ·
-aláírás · leiratkozás · **kép-csatolmányok** · **nyelvi alapértelmezés** ·
+kontraszt · token-tisztaság · fok-létra · kanonikus szójel · **formanyelvi
+jel minden levélen** · aláírás · leiratkozás · **kép-csatolmányok** · **nyelvi alapértelmezés** ·
 text/plain megléte.
 
 ## 13. Új sablon felvétele
@@ -229,9 +238,7 @@ text/plain megléte.
    mezőkkel, HU **és** EN.
 2. Küldő függvény `src/lib/emails.ts`-ben (sehol máshol — a levél-HTML nem
    route-ban komponálódik), és a küldés a közös `sendEmail()` kapun megy.
-3. Család kiválasztása (`client` / `system`) — ez dönti el az eyebrow tónusát
-   és azt, hogy a levél viszi-e a formanyelvi jelet.
-4. A hívási hely adja át a címzett tárolt nyelvét; ha nincs fiókja, a küldő
+3. A hívási hely adja át a címzett tárolt nyelvét; ha nincs fiókja, a küldő
    felületi nyelvét (`getServerLocale()`).
-5. Felvétel a `scripts/email-samples.ts` listájába.
-6. `pnpm preview:emails` — szemre; `pnpm test:unit` — a guardrail.
+4. Felvétel a `scripts/email-samples.ts` listájába.
+5. `pnpm preview:emails` — szemre; `pnpm test:unit` — a guardrail.

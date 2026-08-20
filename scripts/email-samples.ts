@@ -19,8 +19,6 @@ export type EmailSample = {
   /** Sablon-azonosító — a log `template` mezőjével egyezik. */
   id: string;
   locale: "hu" | "en";
-  /** Család: az `ügyfél` kap formanyelvi jelet, a `rendszer` nem. */
-  family: "client" | "system";
   subject: string;
   html: string;
   text: string;
@@ -95,7 +93,6 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   async function capture(
     id: string,
     locale: "hu" | "en",
-    family: "client" | "system",
     run: () => Promise<unknown>,
   ) {
     const payload = await withCapturedSend(run);
@@ -105,7 +102,6 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
     samples.push({
       id,
       locale,
-      family,
       subject: payload.subject,
       html: payload.html,
       text: payload.text ?? "",
@@ -114,7 +110,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   }
 
   for (const locale of locales) {
-    await capture("observer_invite", locale, "client", () =>
+    await capture("observer_invite", locale, () =>
       m.sendObserverInviteEmail({
         to: "nezopont@example.com",
         inviterName: "Nagy Kata",
@@ -124,11 +120,11 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("observer_completion", locale, "client", () =>
+    await capture("observer_completion", locale, () =>
       m.sendObserverCompletionEmail({ to: "kata@example.com", inviterName: "Kata", locale }),
     );
 
-    await capture("candidate_completed", locale, "client", () =>
+    await capture("candidate_completed", locale, () =>
       m.sendCandidateCompletedEmail({
         to: "vezeto@example.com",
         candidateName: "Kovács Péter",
@@ -138,7 +134,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("profile_share", locale, "client", () =>
+    await capture("profile_share", locale, () =>
       m.sendProfileShareEmail({
         to: "kolleg@example.com",
         senderName: "Nagy Kata",
@@ -148,11 +144,11 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("reflection_prompt", locale, "client", () =>
+    await capture("reflection_prompt", locale, () =>
       m.sendReflectionPromptEmail({ to: "user@example.com", dimLabel: "Lelkiismeretesség", locale }),
     );
 
-    await capture("compare_invite", locale, "client", () =>
+    await capture("compare_invite", locale, () =>
       m.sendCompareInviteEmail({
         to: "masik@example.com",
         senderName: "Nagy Kata",
@@ -161,7 +157,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("verification_code", locale, "system", () =>
+    await capture("verification_code", locale, () =>
       m.sendVerificationCodeEmail({
         to: "user@example.com",
         code: "482913",
@@ -171,7 +167,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("sign_in_code", locale, "system", () =>
+    await capture("sign_in_code", locale, () =>
       m.sendVerificationCodeEmail({
         to: "user@example.com",
         code: "704255",
@@ -181,7 +177,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("magic_link", locale, "system", () =>
+    await capture("magic_link", locale, () =>
       m.sendMagicLinkEmail({
         to: "user@example.com",
         magicLinkUrl: "https://trita.io/sign-in?token=magic",
@@ -189,7 +185,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("draft_reminder", locale, "client", () =>
+    await capture("draft_reminder", locale, () =>
       m.sendAssessmentDraftReminderEmail({
         to: "user@example.com",
         name: "Anna",
@@ -200,7 +196,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("candidate_invite", locale, "client", () =>
+    await capture("candidate_invite", locale, () =>
       m.sendCandidateInviteEmail({
         to: "jelolt@example.com",
         managerName: "Szabó Márk",
@@ -211,7 +207,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("team_invite", locale, "client", () =>
+    await capture("team_invite", locale, () =>
       m.sendTeamInviteEmail({
         to: "uj@example.com",
         teamName: "Termék csapat",
@@ -220,7 +216,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("org_invite", locale, "client", () =>
+    await capture("org_invite", locale, () =>
       m.sendOrgInviteEmail({
         to: "uj@example.com",
         orgName: "Banán Kft.",
@@ -230,11 +226,11 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("consultant_invite", locale, "client", () =>
+    await capture("consultant_invite", locale, () =>
       m.sendConsultantInviteEmail({ to: "tanacsado@example.com", hasAccount: false, locale }),
     );
 
-    await capture("measurement_step_opened", locale, "client", () =>
+    await capture("measurement_step_opened", locale, () =>
       m.sendMeasurementStepEmail({
         to: "tag@example.com",
         campaignName: "Őszi mérési kör",
@@ -244,7 +240,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("measurement_step_reminder", locale, "client", () =>
+    await capture("measurement_step_reminder", locale, () =>
       m.sendMeasurementStepEmail({
         to: "tag@example.com",
         campaignName: "Őszi mérési kör",
@@ -254,11 +250,11 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("welcome", locale, "client", () =>
+    await capture("welcome", locale, () =>
       m.sendWelcomeEmail({ to: "uj@example.com", locale }),
     );
 
-    await capture("team_report_published", locale, "client", () =>
+    await capture("team_report_published", locale, () =>
       m.sendTeamReportPublishedEmail({
         to: "tag@example.com",
         teamName: "Termék csapat",
@@ -267,17 +263,17 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       }),
     );
 
-    await capture("pilot_apply_confirmation", locale, "client", () =>
+    await capture("pilot_apply_confirmation", locale, () =>
       m.sendPilotApplyConfirmationEmail({ to: "erdeklodo@example.com", name: "Tóth Anna", locale }),
     );
 
-    await capture("advisory_confirmation", locale, "client", () =>
+    await capture("advisory_confirmation", locale, () =>
       m.sendAdvisoryConfirmationEmail({ to: "erdeklodo@example.com", name: "Tóth Anna", locale }),
     );
   }
 
   // Admin-értesítő: csak magyarul megy (a szervezet adminisztrátorának).
-  await capture("hiring_credits_request", "hu", "system", () =>
+  await capture("hiring_credits_request", "hu", () =>
     m.sendHiringCreditsRequestEmail({
       to: "admin@example.com",
       requesterName: "Szabó Márk",

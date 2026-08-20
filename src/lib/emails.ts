@@ -11,7 +11,6 @@ import {
   renderCodeBox,
   EMAIL_P,
   EMAIL_P_MUTED,
-  type EmailFamily,
 } from "./email-layout";
 // A `core`-ból, nem az i18n indexéből: az a TELJES szótárat behúzná (436 kB
 // forrás) egy kétértékű enum és egy alapértelmezés kedvéért.
@@ -63,7 +62,6 @@ async function sendEmail(params: {
   subject: string;
   html: string;
   text: string;
-  family: EmailFamily;
   /** Sablon-specifikus extra (ma: a megosztó-levél QR-kódja). */
   attachments?: ResendAttachment[];
   /** Extra log-mezők (variant, qrAttached…). */
@@ -75,7 +73,7 @@ async function sendEmail(params: {
     subject: params.subject,
     html: params.html,
     text: params.text,
-    attachments: [...emailArtAttachments(params.family), ...(params.attachments ?? [])],
+    attachments: [...emailArtAttachments(), ...(params.attachments ?? [])],
   });
 
   if (error) {
@@ -427,7 +425,6 @@ function buildObserverInviteHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.inviterName)),
@@ -475,7 +472,6 @@ export async function sendObserverInviteEmail(params: {
 
   await sendEmail({
     template: "observer_invite",
-    family: "client",
     to: params.to,
     subject,
     html,
@@ -505,7 +501,6 @@ export async function sendCandidateCompletedEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -526,7 +521,6 @@ export async function sendCandidateCompletedEmail(params: {
 
   await sendEmail({
     template: "candidate_completed",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -586,7 +580,6 @@ export function buildProfileShareHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.senderName)),
@@ -625,7 +618,6 @@ export async function sendProfileShareEmail(params: {
 
   const ok = await sendEmail({
     template: "profile_share",
-    family: "client",
     logFields: { qrAttached: Boolean(params.qrPng) },
     to: params.to,
     subject: t.subject,
@@ -677,7 +669,6 @@ function buildCompareInviteHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -723,12 +714,10 @@ export async function sendReflectionPromptEmail(params: {
 
   const ok = await sendEmail({
     template: "reflection_prompt",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html: buildEmailLayout({
       locale,
-      family: "client",
       kind: t.kind,
       eyebrow: t.eyebrow,
       heading: t.heading,
@@ -770,7 +759,6 @@ export async function sendCompareInviteEmail(params: {
 
   const ok = await sendEmail({
     template: "compare_invite",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html: buildCompareInviteHtml({ locale, senderName: params.senderName, token: params.token }),
@@ -798,7 +786,6 @@ function buildObserverCompletionHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -834,7 +821,6 @@ export async function sendObserverCompletionEmail(params: {
 
   await sendEmail({
     template: "observer_completion",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -860,7 +846,6 @@ function buildVerificationCodeHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "system",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -906,7 +891,6 @@ export async function sendVerificationCodeEmail(params: {
 
   await sendEmail({
     template: "verification_code",
-    family: "system",
     to: params.to,
     subject: translationBlock.subject,
     html,
@@ -939,7 +923,6 @@ function buildAssessmentDraftReminderHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -984,7 +967,6 @@ export async function sendAssessmentDraftReminderEmail(params: {
 
   await sendEmail({
     template: "draft_reminder",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -1007,7 +989,6 @@ function buildMagicLinkHtml(params: {
 
   return buildEmailLayout({
     locale: params.locale,
-    family: "system",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -1040,7 +1021,6 @@ export async function sendMagicLinkEmail(params: {
 
   await sendEmail({
     template: "magic_link",
-    family: "system",
     to: params.to,
     subject: t.subject,
     html,
@@ -1121,7 +1101,6 @@ export async function sendCandidateInviteEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: tr.kind,
     eyebrow: tr.eyebrow,
     heading: escapeHtml(tr.heading(params.position)),
@@ -1150,7 +1129,6 @@ export async function sendCandidateInviteEmail(params: {
 
   const ok = await sendEmail({
     template: "candidate_invite",
-    family: "client",
     to: params.to,
     subject: tr.subject(params.position),
     html,
@@ -1173,7 +1151,6 @@ export async function sendTeamInviteEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.teamName)),
@@ -1187,7 +1164,6 @@ export async function sendTeamInviteEmail(params: {
 
   const ok = await sendEmail({
     template: "team_invite",
-    family: "client",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
@@ -1232,7 +1208,6 @@ export async function sendOrgInviteEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.orgName)),
@@ -1246,7 +1221,6 @@ export async function sendOrgInviteEmail(params: {
 
   const ok = await sendEmail({
     template: "org_invite",
-    family: "client",
     to: params.to,
     subject: t.subject(params.orgName),
     html,
@@ -1308,7 +1282,6 @@ export async function sendConsultantInviteEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading,
@@ -1322,7 +1295,6 @@ export async function sendConsultantInviteEmail(params: {
 
   const ok = await sendEmail({
     template: "consultant_invite",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -1400,7 +1372,6 @@ export async function sendMeasurementStepEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: params.variant === "opened" ? t.openedEyebrow : t.reminderEyebrow,
     heading,
@@ -1414,7 +1385,6 @@ export async function sendMeasurementStepEmail(params: {
 
   const ok = await sendEmail({
     template: "measurement_step",
-    family: "client",
     logFields: { variant: params.variant },
     to: params.to,
     subject,
@@ -1468,7 +1438,6 @@ export async function sendWelcomeEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -1483,7 +1452,6 @@ export async function sendWelcomeEmail(params: {
 
   const ok = await sendEmail({
     template: "welcome",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -1534,7 +1502,6 @@ export async function sendTeamReportPublishedEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading(escapeHtml(params.teamName)),
@@ -1548,7 +1515,6 @@ export async function sendTeamReportPublishedEmail(params: {
 
   const ok = await sendEmail({
     template: "team_report_published",
-    family: "client",
     to: params.to,
     subject: t.subject(params.teamName),
     html,
@@ -1596,7 +1562,6 @@ export async function sendPilotApplyConfirmationEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -1610,7 +1575,6 @@ export async function sendPilotApplyConfirmationEmail(params: {
 
   const ok = await sendEmail({
     template: "pilot_apply_confirmation",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -1659,7 +1623,6 @@ export async function sendAdvisoryConfirmationEmail(params: {
 
   const html = buildEmailLayout({
     locale,
-    family: "client",
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: t.heading,
@@ -1673,7 +1636,6 @@ export async function sendAdvisoryConfirmationEmail(params: {
 
   const ok = await sendEmail({
     template: "advisory_confirmation",
-    family: "client",
     to: params.to,
     subject: t.subject,
     html,
@@ -1698,7 +1660,6 @@ export async function sendHiringCreditsRequestEmail(params: {
 
   const html = buildEmailLayout({
     locale: "hu",
-    family: "system",
     kind: "Rendszer",
     eyebrow: "Kredit-igénylés",
     heading: "Elfogyott a jelölt-kreditkeret",
@@ -1719,7 +1680,6 @@ export async function sendHiringCreditsRequestEmail(params: {
 
   const ok = await sendEmail({
     template: "hiring_credits_request",
-    family: "system",
     to: params.to,
     subject: `Jelölt kredit igénylés – ${params.orgName}`,
     html,

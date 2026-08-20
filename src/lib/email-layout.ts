@@ -100,15 +100,21 @@ function cidRef(asset: EmailArtAsset): string {
   return `cid:${asset.cid}`;
 }
 
-/** Resend-csatolmányok a levél eszközeihez. A `system` család nem visz jelet. */
-export function emailArtAttachments(family: EmailFamily): Array<{
+/**
+ * Resend-csatolmányok a levél eszközeihez.
+ *
+ * MINDEN levél mindkét eszközt viszi. A korábbi „két család" szabály (a
+ * kód- és magic-link-levél jel nélkül ment) 2026-08-20-án kivezetve: a
+ * felületen látható egyenetlenséget okozott, cserébe egyetlen valódi
+ * különbséget hordozott. Ha nincs feltétel, nincs mit elrontani.
+ */
+export function emailArtAttachments(): Array<{
   filename: string;
   content: string;
   contentType: string;
   contentId: string;
 }> {
-  const assets: EmailArtAsset[] =
-    family === "client" ? [EMAIL_ART.wordmark, EMAIL_ART.mark] : [EMAIL_ART.wordmark];
+  const assets: EmailArtAsset[] = [EMAIL_ART.wordmark, EMAIL_ART.mark];
   return assets.map((a) => ({
     filename: a.filename,
     content: a.base64,
@@ -165,9 +171,9 @@ function renderButton(params: {
  * színezett cella — a `border-radius`-t nem támogató kliensben apró négyzet
  * lesz belőle, ami ezen a méreten nem megkülönböztethető.
  */
-function renderEyebrow(params: { label: string; family: EmailFamily }): string {
-  const dot = params.family === "client" ? EMAIL_COLORS.accent : EMAIL_COLORS.muted;
-  const fg = params.family === "client" ? EMAIL_COLORS.accentText : EMAIL_COLORS.muted;
+function renderEyebrow(params: { label: string }): string {
+  const dot = EMAIL_COLORS.accent;
+  const fg = EMAIL_COLORS.accentText;
   return `
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:0 0 12px">
       <tr>
@@ -199,17 +205,8 @@ export function renderCodeBox(params: { label: string; code: string }): string {
     </table>`.trim();
 }
 
-/** A levél két családja — ld. a fájl fejlécét. */
-export type EmailFamily = "client" | "system";
-
 export interface EmailLayoutParams {
   locale: string;
-  /**
-   * `client` (meghívó, eredmény, életciklus): bronz eyebrow + formanyelvi
-   * jel a láblécben. `system` (kód, magic link, admin-értesítő): halk
-   * eyebrow, jel nélkül — gyorsabban átfutható, kevesebb márka-zaj.
-   */
-  family: EmailFamily;
   /** A fejléc jobb oldalán álló típus-felirat (1–2 szó). */
   kind: string;
   /** Eyebrow a kártya tetején. Kötelező: ez mondja meg, MILYEN levél. */
@@ -229,16 +226,13 @@ export interface EmailLayoutParams {
 export function buildEmailLayout(params: EmailLayoutParams): string {
   const preheader = `<div style="display:none!important;visibility:hidden;mso-hide:all;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${escapeHtml(params.preheader)}${"&nbsp;&zwnj;".repeat(90)}</div>`;
 
-  // A formanyelv 3. szintje: csillag + bronz nap + zsálya ellensúly. Csak az
-  // ügyfél-családon; a rendszer-levélben a jel csak késleltetné az olvasást.
+  // A formanyelv 3. szintje: csillag + bronz nap + zsálya ellensúly. MINDEN
+  // levél láblécében, kivétel nélkül — az aláírás fölött.
   //
-  // Hosztolt PNG, NEM data: URI — a Gmail eltávolítja a data-URI képforrásokat,
-  // és az inline SVG-t sem rendereli. `alt=""` + `role="presentation"`:
-  // kikapcsolt képeknél nyomtalanul eltűnik, ahogy dekorációnak illik.
-  const artMark =
-    params.family === "client"
-      ? `<img src="${cidRef(EMAIL_ART.mark)}" width="${EMAIL_ART.mark.width}" height="${EMAIL_ART.mark.height}" alt="" role="presentation" style="display:block;margin:0 auto 16px;border:0;width:${EMAIL_ART.mark.width}px;height:${EMAIL_ART.mark.height}px">`
-      : "";
+  // `cid:` inline csatolmány, NEM data: URI — a Gmail eltávolítja a data-URI
+  // képforrásokat, és az inline SVG-t sem rendereli. `alt=""` +
+  // `role="presentation"`: kikapcsolt képeknél nyomtalanul eltűnik.
+  const artMark = `<img src="${cidRef(EMAIL_ART.mark)}" width="${EMAIL_ART.mark.width}" height="${EMAIL_ART.mark.height}" alt="" role="presentation" style="display:block;margin:0 auto 16px;border:0;width:${EMAIL_ART.mark.width}px;height:${EMAIL_ART.mark.height}px">`;
 
   const optOut = params.optOut
     ? `<span class="em-sep" style="color:${EMAIL_COLORS.border}">&nbsp;·&nbsp;</span><a href="${params.optOut.href}" class="em-foot-link" style="color:${EMAIL_COLORS.muted};text-decoration:underline">${escapeHtml(params.optOut.label)}</a>`
@@ -332,7 +326,7 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
                      style="background-color:${EMAIL_COLORS.card};border:1px solid ${EMAIL_COLORS.border};border-radius:20px">
                 <tr>
                   <td class="em-card-pad em-body" style="padding:34px 36px 32px;font-family:${SANS_STACK};font-size:16px;line-height:26px;color:${EMAIL_COLORS.body}">
-                    ${renderEyebrow({ label: params.eyebrow, family: params.family })}
+                    ${renderEyebrow({ label: params.eyebrow })}
                     <h1 class="em-heading em-display" style="font-family:${DISPLAY_STACK};font-size:26px;line-height:32px;font-weight:600;letter-spacing:-0.012em;color:${EMAIL_COLORS.heading};margin:0 0 16px">${params.heading}</h1>
                     ${params.bodyContent}
                     ${quietNote}

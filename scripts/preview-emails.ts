@@ -41,7 +41,6 @@ async function main() {
         <tr>
           <td><a href="${s.id}.${s.locale}.html">${s.id}</a></td>
           <td><span class="loc">${s.locale}</span></td>
-          <td><span class="fam fam-${s.family}">${s.family === "client" ? "ügyfél" : "rendszer"}</span></td>
           <td class="subj">${s.subject.replaceAll("&", "&amp;").replaceAll("<", "&lt;")}</td>
         </tr>`,
     )
@@ -74,7 +73,7 @@ async function main() {
       <h1>Email-előnézetek</h1>
       <p class="lede">${samples.length} renderelés a valódi küldő-útról. A képek a levél inline csatolmányai — az előnézetben <code>data:</code> URI-ként.</p>
       <table>
-        <thead><tr><th>Sablon</th><th>Nyelv</th><th>Család</th><th>Tárgy</th></tr></thead>
+        <thead><tr><th>Sablon</th><th>Nyelv</th><th>Tárgy</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
     </main>
