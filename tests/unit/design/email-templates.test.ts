@@ -338,7 +338,20 @@ test("külső kép csak a hírlevél trita.io-s cikkborítója lehet", async () 
       const url = new URL(src);
       assert.equal(url.protocol, "https:", `${s.id}: a cikkborító nem HTTPS`);
       assert.equal(url.hostname, "trita.io", `${s.id}: idegen kép-host (${url.hostname})`);
-      assert.match(url.pathname, /^\/blog\/[a-z0-9-]+\/opengraph-image$/);
+      // STABIL route kell, nem a blog metadata-image útja: azt a Next
+      // build-generált utótaggal szolgálja ki (`…/opengraph-image-<hash>`),
+      // az utótag nélküli alak pedig 404 — a levélben törött kép lenne belőle
+      // (2026-08-21, mérve prod buildon).
+      assert.match(
+        url.pathname,
+        /^\/api\/newsletter\/cover\/[a-z0-9-]+$/,
+        `${s.id}: a cikkborító nem a stabil hírlevél-route-ról jön (${url.pathname})`,
+      );
+      assert.doesNotMatch(
+        url.pathname,
+        /opengraph-image/,
+        `${s.id}: a metadata-image route build-hashelt, levélben 404-et ad`,
+      );
     }
   }
 });

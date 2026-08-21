@@ -89,6 +89,9 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   // Dinamikus import: a hívó a modul betöltése ELŐTT állíthatja a
   // NEXT_PUBLIC_APP_URL-t (az előnézet helyi eszköz-útvonalakat kér).
   const m = await import("../src/lib/emails");
+  // A borító-URL-t a VALÓDI építővel kérjük, nem kézzel másolt stringgel: így
+  // a guardrail-teszt azt az URL-t látja, ami élesben kimenne.
+  const { blogImageUrl } = await import("../src/lib/newsletter");
 
   const locales = ["hu", "en"] as const;
   const samples: EmailSample[] = [];
@@ -294,7 +297,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
             ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
             : "What a team reveals through the way its members react to each other's feedback.",
         postUrl: "https://trita.io/blog/csapatdinamika-olvasasa",
-        postImageUrl: "https://trita.io/blog/csapatdinamika-olvasasa/opengraph-image",
+        postImageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
         readingMinutes: 7,
         unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
         unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
@@ -322,7 +325,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
                 ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
                 : "What a team reveals through the way its members react to each other's feedback.",
             url: "https://trita.io/blog/csapatdinamika-olvasasa",
-            imageUrl: "https://trita.io/blog/csapatdinamika-olvasasa/opengraph-image",
+            imageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
             readingMinutes: 7,
           },
           {
@@ -335,7 +338,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
                 ? "Miért marad tovább az, aki házon belül tud lépni egyet."
                 : "Why people stay longer when they can move within the company.",
             url: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere",
-            imageUrl: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere/opengraph-image",
+            imageUrl: blogImageUrl("https://trita.io", "belso-mobilitas-a-megtartas-csendes-fegyvere"),
             readingMinutes: 6,
           },
         ],

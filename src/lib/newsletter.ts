@@ -347,9 +347,16 @@ export function confirmUrl(appUrl: string, confirmToken: string): string {
   return `${appUrl.replace(/\/+$/, "")}/newsletter/confirm?token=${encodeURIComponent(confirmToken)}`;
 }
 
-/** A cikk saját, publikus OG-képe — e-mailben távoli képként használjuk. */
+/**
+ * A cikk borítója a levélben — STABIL, nem build-hashelt route-ról.
+ *
+ * NE a blog `…/opengraph-image` útját használd: azt a Next build-generált
+ * utótaggal szolgálja ki, az utótag nélküli alak 404 (mérve; a
+ * `blog/[slug]/page.tsx` JSON-LD-megjegyzése is ezt rögzíti). A levél
+ * hónapokkal a küldés után tölti be a képet, ezért kell neki saját route.
+ */
 export function blogImageUrl(appUrl: string, slug: string): string {
-  return `${appUrl.replace(/\/+$/, "")}/blog/${encodeURIComponent(slug)}/opengraph-image`;
+  return `${appUrl.replace(/\/+$/, "")}/api/newsletter/cover/${encodeURIComponent(slug)}`;
 }
 
 /**

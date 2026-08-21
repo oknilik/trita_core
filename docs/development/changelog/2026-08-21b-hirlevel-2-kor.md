@@ -131,3 +131,29 @@ továbbra is tesztben tiltott; a szójel és a formanyelvi jel inline CID.
       beállítva; nélkülük a feliratkozás szándékosan 503.
 - [ ] A `20260821170000_newsletter_delivery_safety` migráció és a
       `/api/cron/newsletter-maintenance` napi futása ellenőrizve.
+
+## Utólagos javítás: a levél cikkborítója 404 volt
+
+A borító a blog metadata-image útjára mutatott
+(`/blog/<slug>/opengraph-image`). Ez az URL **nem létezik**: a Next
+build-generált utótagot tesz rá (`…-<hash>`), amit oldalkódból nem lehet
+kiolvasni — a `blog/[slug]/page.tsx` JSON-LD-megjegyzése pontosan ezért kerüli
+is. Prod buildon mérve: 404. Vagyis minden `newsletter_blog_post` és
+`newsletter_issue` levélben törött kép ült, és az admin HTML-előnézetében is.
+
+A guardrail nem fogta meg, mert az URL ALAKJÁT ellenőrizte, nem azt, hogy
+feloldható-e.
+
+**Javítás:** a rajz átkerült a `src/lib/og/blog-cover.tsx`-be, és két hívója
+van — a meglévő `opengraph-image.tsx` (link-előnézetek) és az új, STABIL
+`/api/newsletter/cover/[slug]` (levél). A levélnek azért kell saját route,
+mert a levél hónapokig ott ül a postafiókban, és a képet a megnyitáskor tölti
+be, jóval a küldés és a következő deploy után.
+
+Ismeretlen vagy visszavont slugra nem 404 megy, hanem a cím nélküli
+márka-vászon: egy régi levélben se legyen törött kép.
+
+A guardrail mostantól a stabil route-ot követeli, és külön kizárja az
+`opengraph-image` utat; a levél-minták pedig a valódi `blogImageUrl()`
+építőt hívják, nem kézzel másolt stringet — így a teszt azt látja, ami
+élesben kimenne.

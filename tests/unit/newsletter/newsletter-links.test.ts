@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
-  NEWSLETTER_SOURCES,
   blogImageUrl,
+  NEWSLETTER_SOURCES,
   confirmUrl,
   normalizeEmail,
   unsubscribeUrl,
@@ -41,7 +41,7 @@ test("a bazis-URL zaro perjele nem duplazodik", () => {
   );
   assert.equal(
     blogImageUrl("https://trita.io///", "egy-cikk"),
-    "https://trita.io/blog/egy-cikk/opengraph-image",
+    "https://trita.io/api/newsletter/cover/egy-cikk",
   );
 });
 
@@ -53,4 +53,15 @@ test("a forras-ertekkeszlet a beillesztesi pontokat fedi", () => {
     [...NEWSLETTER_SOURCES].sort(),
     ["account", "blog_index", "blog_post", "footer", "try_complete"],
   );
+});
+
+// A levél-borító a saját, STABIL route-járól jön. A blog metadata-image útját
+// a Next build-generált utótaggal szolgálja ki (`…/opengraph-image-<hash>`),
+// az utótag nélküli alak 404 — abból a levélben törött kép lenne, és a
+// postafiókban hónapokig ott marad. Ezt a hibát 2026-08-21-én prod buildon
+// mérve találtuk meg; a teszt azért van, hogy ne térhessen vissza.
+test("a level-borito a stabil hirlevel-route-rol jon, nem az OG-kepbol", () => {
+  const url = new URL(blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"));
+  assert.equal(url.pathname, "/api/newsletter/cover/csapatdinamika-olvasasa");
+  assert.ok(!url.pathname.includes("opengraph-image"));
 });

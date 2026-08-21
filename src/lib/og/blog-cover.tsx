@@ -1,0 +1,140 @@
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import { ImageResponse } from "next/og";
+import { getPostBySlug } from "@/lib/blog";
+import { COLORS } from "@/lib/design-tokens";
+
+/**
+ * A cikk-borító VÁSZNA — két hívóval, egyetlen rajzzal.
+ *
+ *   1. `blog/[slug]/opengraph-image.tsx` — a link-előnézetek (közösségi média,
+ *      üzenetküldők) fájl-konvenciós route-ja.
+ *   2. `/api/newsletter/cover/[slug]` — a HÍRLEVÉL borítója.
+ *
+ * MIÉRT KELL A MÁSODIK, HA AZ ELSŐ UGYANEZ (2026-08-21): a Next a metadata-
+ * image route-nak build-generált utótagot ad (`…/opengraph-image-<hash>`), és
+ * ez az utótag oldalkódból nem olvasható ki. Az utótag nélküli
+ * `/blog/<slug>/opengraph-image` **404** — ezt a `blog/[slug]/page.tsx`
+ * JSON-LD-megjegyzése is rögzíti, és mérve is így viselkedik. A levélbe
+ * viszont a küldéskor kell egy STABIL, kívülről is betölthető URL, mert a
+ * levél hónapokig él a postafiókban. Ezért van a hírlevélnek saját, nem
+ * hashelt route-ja, ami ugyanezt a vásznat rendereli.
+ */
+
+export const BLOG_COVER_SIZE = { width: 1200, height: 630 };
+export const BLOG_COVER_CONTENT_TYPE = "image/png";
+export const BLOG_COVER_ALT = "trita blog";
+
+export async function renderBlogCoverImage(slug: string): Promise<ImageResponse> {
+  const post = getPostBySlug(slug);
+  // Ismeretlen vagy piszkozat slug: NEM 404, hanem a márka-vászon cím nélkül.
+  // Így egy visszavont cikk régi levelében sem lesz törött kép, és tetszőleges
+  // slugra sem lehet egyedi tartalmú képet generáltatni.
+  const published = post?.status === "published" ? post : null;
+  const title = published?.title ?? "trita blog";
+  const tag = published?.tags[0];
+  const isHu = published?.locale !== "en";
+
+  // Statikus (nem variable) font-példányok: a satori nem tud variable TTF-et.
+  const [fraunces, dmSans] = await Promise.all([
+    readFile(path.join(process.cwd(), "assets/og/Fraunces-400.ttf")),
+    readFile(path.join(process.cwd(), "assets/og/DMSans-400.ttf")),
+  ]);
+
+  // Hosszú címnél kisebb betű, hogy ne csorduljon ki a vászonról.
+  const fontSize = title.length > 70 ? 52 : title.length > 45 ? 60 : 68;
+
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          backgroundColor: COLORS.cream,
+          padding: "72px 80px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div
+            style={{
+              width: 14,
+              height: 14,
+              borderRadius: 9999,
+              backgroundColor: COLORS.bronze,
+            }}
+          />
+          <div
+            style={{
+              fontFamily: "DM Sans",
+              fontSize: 26,
+              letterSpacing: 4,
+              textTransform: "uppercase",
+              color: COLORS.sage,
+            }}
+          >
+            trita blog
+          </div>
+          {tag ? (
+            <div
+              style={{
+                marginLeft: 12,
+                fontFamily: "DM Sans",
+                fontSize: 22,
+                textTransform: "uppercase",
+                letterSpacing: 2,
+                color: COLORS.bronze,
+                border: `2px solid ${COLORS.bronzeEdge}`,
+                borderRadius: 9999,
+                padding: "6px 18px",
+              }}
+            >
+              {tag}
+            </div>
+          ) : null}
+        </div>
+        <div
+          style={{
+            fontFamily: "Fraunces",
+            fontSize,
+            lineHeight: 1.18,
+            color: COLORS.ink,
+            maxWidth: 1000,
+          }}
+        >
+          {title}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ fontFamily: "DM Sans", fontSize: 26, color: COLORS.inkBody }}>
+            {isHu
+              ? "Csapatdinamika, személyiség, tudatos HR"
+              : "Team dynamics, personality, intentional HR"}
+          </div>
+          <div
+            style={{
+              width: 120,
+              height: 6,
+              borderRadius: 9999,
+              backgroundColor: COLORS.bronze,
+            }}
+          />
+        </div>
+      </div>
+    ),
+    {
+      ...BLOG_COVER_SIZE,
+      fonts: [
+        { name: "Fraunces", data: fraunces, style: "normal", weight: 400 },
+        { name: "DM Sans", data: dmSans, style: "normal", weight: 400 },
+      ],
+    },
+  );
+}
