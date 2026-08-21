@@ -294,6 +294,45 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
         locale,
       }),
     );
+
+    await capture("newsletter_issue", locale, () =>
+      m.sendNewsletterIssueEmail({
+        to: "olvaso@example.com",
+        subject:
+          locale === "hu"
+            ? "Trita hírlevél — amiről ebben a hónapban írtunk"
+            : "Trita newsletter — what we wrote this month",
+        intro:
+          locale === "hu"
+            ? "Szia,\n\nEbben a hónapban két témát jártunk körbe: hogyan olvasható ki a csapatdinamika a visszajelzésekből, és mit árul el a fluktuációról a belső mobilitás."
+            : "Hi,\n\nThis month we covered two topics: how team dynamics show up in feedback, and what internal mobility reveals about turnover.",
+        items: [
+          {
+            title: locale === "hu" ? "A csapatdinamika olvasása" : "Reading team dynamics",
+            description:
+              locale === "hu"
+                ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
+                : "What a team reveals through the way its members react to each other's feedback.",
+            url: "https://trita.io/blog/csapatdinamika-olvasasa",
+            readingMinutes: 7,
+          },
+          {
+            title:
+              locale === "hu"
+                ? "Belső mobilitás: a megtartás csendes fegyvere"
+                : "Internal mobility: the quiet retention weapon",
+            description:
+              locale === "hu"
+                ? "Miért marad tovább az, aki házon belül tud lépni egyet."
+                : "Why people stay longer when they can move within the company.",
+            url: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere",
+            readingMinutes: 6,
+          },
+        ],
+        unsubUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        locale,
+      }),
+    );
   }
 
   // Admin-értesítő: csak magyarul megy (a szervezet adminisztrátorának).

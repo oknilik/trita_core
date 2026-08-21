@@ -163,6 +163,18 @@ const publicEvents = {
     question: "P5",
   }),
 
+  "newsletter.click": spec({
+    schema: z
+      .object({
+        // Tartalom-azonosító (cikk-slug vagy `issue:<id>`), nem személyes adat.
+        slug: tag(120),
+      })
+      .strict(),
+    origin: "server",
+    description: "Kattintás a hírlevélben lévő cikk-linkre (az első, címzettenként).",
+    question: "P6",
+  }),
+
   "newsletter.unsubscribe": spec({
     schema: z.object({}).strict(),
     origin: "server",

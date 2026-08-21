@@ -17,6 +17,7 @@ import {
   formatDateTime,
 } from "@/components/admin/crm/crm-ui";
 import type { CrmIntakeRow, CrmOpenDealOption } from "@/components/admin/crm/types";
+import { NewsletterEngagementBadge } from "@/components/admin/crm/NewsletterEngagementBadge";
 
 // ─────────────────────────────────────────────────────────────────────
 // Beérkező — kvalifikációs kapu: NEW státuszú, deal nélküli inquiry-k.
@@ -181,6 +182,7 @@ export function CrmInboxPanel({
                     {row.email}
                   </a>
                   {row.company && <span className="text-xs text-muted">· {row.company}</span>}
+                  <NewsletterEngagementBadge engagement={row.newsletter} />
                   <span className="ml-auto text-xs text-muted">{formatDateTime(row.createdAt)}</span>
                 </div>
 

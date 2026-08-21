@@ -1163,8 +1163,12 @@ model NewsletterSubscriber {
 
   // PENDING | ACTIVE | UNSUBSCRIBED | BOUNCED
   status String   @default("PENDING")
-  // Tartalom-típusok: "blog" (új cikk értesítő) | "newsletter" (időszaki).
-  topics String[] @default(["blog"])
+  // Tartalom-típusok: "blog" (új cikk értesítő) | "newsletter" (szerkesztett,
+  // időszaki szám). MINDKETTŐ az alapértelmezés: a megerősítő levél is ezt
+  // ígéri („új blogbejegyzésnél és időnként egy-egy összefoglalónál"), tehát
+  // a hozzájárulás mindkettőre kiterjed. Aki csak az egyiket kéri, a
+  // levélbeállításain szűkítheti.
+  topics String[] @default(["blog", "newsletter"])
   // Honnan érkezett: blog_post | blog_index | footer | try_complete | account
   source String   @default("blog")
 
@@ -1204,14 +1208,52 @@ model NewsletterSubscriber {
 // `@@unique([subscriberId, slug])` a versenyhelyzet ellen is véd (párhuzamos
 // cron-futás vagy kézi „küldés most").
 model NewsletterDelivery {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   subscriberId String
-  // A blogbejegyzés slugja (a digest egyszerre egy cikket küld).
+  // Dedupe-kulcs. Cikk-értesítőnél a blogbejegyzés slugja, szerkesztett
+  // számnál `issue:<id>` — a lényeg, hogy EGY küldési egységet azonosítson.
   slug         String
-  sentAt       DateTime @default(now())
+  sentAt       DateTime  @default(now())
+  // Az ELSŐ kattintás ideje a levélben lévő linkre. Nyitást szándékosan NEM
+  // mérünk (követő pixel + a Mail Privacy Protection amúgy is hazudik) —
+  // a kattintás az egyetlen tiszta jelzés arról, hogy a levél elért valakit.
+  clickedAt    DateTime?
 
   subscriber NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
 
   @@unique([subscriberId, slug])
   @@index([slug, sentAt])
+  @@index([slug, clickedAt])
+}
+
+// Szerkesztett hírlevél-szám (2026-08-21).
+//
+// A cikk-értesítő gépi: megjelent egy cikk, megy egy levél. Ez a másik forma:
+// TE írod a kísérőszöveget, és kiválasztod, melyik 2-3 cikk kerüljön bele.
+// Havi 4-5 cikknél a cikkenkénti levél sok — ez váltja ki, ha úgy döntesz.
+//
+// A kiküldés ugyanazon a naplón (`NewsletterDelivery`) megy át, `issue:<id>`
+// dedupe-kulccsal: ugyanaz az idempotencia-garancia védi, mint a digestet.
+model NewsletterIssue {
+  id        String   @id @default(cuid())
+  // Egy szám EGY nyelvre szól — a kísérőszöveg fordítása szerkesztői munka,
+  // nem gépi, ezért a két nyelv két külön szám.
+  locale    String   @default("hu")
+  subject   String
+  // A levél nyitó bekezdése(i) — sima szöveg, üres sorral tagolva. Nincs
+  // markdown: a levél-HTML-t a sablon állítja elő, a szerkesztő nem ír bele.
+  intro     String
+  // A beválogatott cikkek slugjai, a levélben ebben a sorrendben.
+  postSlugs String[] @default([])
+
+  // DRAFT | SENT — a SENT visszafordíthatatlan (a levél kiment).
+  status     String    @default("DRAFT")
+  sentAt     DateTime?
+  // Hány címzettnek ment ki ténylegesen (a küldés eredménye, nem becslés).
+  recipients Int       @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
 }

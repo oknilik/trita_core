@@ -7,6 +7,8 @@ import { schemaOutOfSyncDetail } from "@/lib/crm/errors";
 import { DealDetail } from "@/components/admin/crm/DealDetail";
 import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
 import type { CrmDealDetailData } from "@/components/admin/crm/types";
+import { getEngagementByEmail, toEngagementDto } from "@/lib/newsletter-engagement";
+import { normalizeEmail } from "@/lib/newsletter";
 
 // ─────────────────────────────────────────────────────────────────────
 // Deal-részletnézet (szerver) — requireAdmin + getDealDetail, szerializálva
@@ -63,6 +65,8 @@ export default async function DealDetailPage({
         }),
   ]);
 
+  const engagement = await getEngagementByEmail([deal.contactEmail]);
+
   const data: CrmDealDetailData = {
     id: deal.id,
     title: deal.title,
@@ -83,6 +87,7 @@ export default async function DealDetailPage({
     createdAt: deal.createdAt.toISOString(),
     organization: deal.organization,
     userProfile: deal.userProfile,
+    newsletter: toEngagementDto(engagement.get(normalizeEmail(deal.contactEmail))),
     activities: deal.activities.map((activity) => ({
       id: activity.id,
       kind: activity.kind,

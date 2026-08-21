@@ -1857,3 +1857,110 @@ export async function sendNewBlogPostEmail(params: {
     headers: newsletterUnsubHeaders(params.unsubUrl),
   });
 }
+
+// ─── Szerkesztett hírlevél-szám ──────────────────────────────────────────────
+//
+// A cikk-értesítő gépi (megjelent egy cikk → megy egy levél). Ez a másik
+// forma: a szerkesztő ír egy nyitó bekezdést, és beválogat 2-3 cikket. Havi
+// 4-5 cikknél ez váltja ki a cikkenkénti levelet.
+//
+// Ugyanaz a tömeges-levél szabálykészlet vonatkozik rá, mint a cikk-értesítőre:
+// `List-Unsubscribe` fejléc + látható leiratkozó link a láblécben.
+
+const newsletterIssueTranslations = {
+  hu: {
+    kind: "Hírlevél",
+    eyebrow: "Trita hírlevél",
+    greeting: "Szia,",
+    itemsHeading: "Amiről írtunk",
+    readingTime: (minutes: number) => `${minutes} perc olvasás`,
+    quiet: "Ezt a levelet azért kaptad, mert feliratkoztál a Trita értesítőjére.",
+    unsubLabel: "Leiratkozás",
+  },
+  en: {
+    kind: "Newsletter",
+    eyebrow: "Trita newsletter",
+    greeting: "Hi,",
+    itemsHeading: "What we wrote about",
+    readingTime: (minutes: number) => `${minutes} min read`,
+    quiet: "You're receiving this because you subscribed to Trita updates.",
+    unsubLabel: "Unsubscribe",
+  },
+};
+
+export interface NewsletterIssueItem {
+  title: string;
+  description: string;
+  url: string;
+  readingMinutes: number;
+}
+
+export async function sendNewsletterIssueEmail(params: {
+  to: string;
+  subject: string;
+  /** A szerkesztő nyitó szövege — SIMA szöveg, üres sorral tagolt bekezdések. */
+  intro: string;
+  items: NewsletterIssueItem[];
+  unsubUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = normalizeLocale(params.locale);
+  const t = newsletterIssueTranslations[locale];
+
+  // A bevezető a szerkesztőtől jön, tehát NEM megbízható HTML: escape-eljük,
+  // és csak a bekezdés-tördelést értelmezzük. Ez a sablon egyetlen helye,
+  // ahol ember által írt szöveg kerül a levélbe.
+  const introHtml = params.intro
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p style="${EMAIL_P}">${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`)
+    .join("");
+
+  const itemsHtml = params.items
+    .map(
+      (item) => `
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 18px">
+      <tr>
+        <td style="padding:14px 16px;border:1px solid ${EMAIL_COLORS.border};border-radius:12px">
+          <a href="${item.url}" style="font-size:16px;line-height:24px;font-weight:700;color:${EMAIL_COLORS.heading};text-decoration:none">${escapeHtml(item.title)}</a>
+          <p style="${EMAIL_P};margin:6px 0 8px">${escapeHtml(item.description)}</p>
+          <p style="${EMAIL_P_MUTED};margin:0">${t.readingTime(item.readingMinutes)}</p>
+        </td>
+      </tr>
+    </table>`,
+    )
+    .join("");
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: params.subject,
+    preheader: params.items[0]?.title ?? params.subject,
+    bodyContent: `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    ${introHtml}
+    ${
+      params.items.length > 0
+        ? `<p style="${EMAIL_P};font-weight:700;margin-top:26px">${t.itemsHeading}</p>${itemsHtml}`
+        : ""
+    }`,
+    quietNote: t.quiet,
+    optOut: { href: params.unsubUrl, label: t.unsubLabel },
+    signOff: SIGN_OFF[locale],
+  });
+
+  const textItems = params.items
+    .map((item) => `- ${item.title}\n  ${item.description}\n  ${item.url}`)
+    .join("\n\n");
+
+  return sendEmail({
+    template: "newsletter_issue",
+    to: params.to,
+    subject: params.subject,
+    html,
+    text: `${t.greeting}\n\n${params.intro}\n\n${t.itemsHeading}:\n\n${textItems}\n\n${t.quiet}\n${t.unsubLabel}: ${params.unsubUrl}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+    headers: newsletterUnsubHeaders(params.unsubUrl),
+  });
+}

@@ -33,6 +33,7 @@ import { DealTimeline } from "@/components/admin/crm/DealTimeline";
 import { DealQuotesPanel } from "@/components/admin/crm/DealQuotesPanel";
 import { DealLinksPanel } from "@/components/admin/crm/DealLinksPanel";
 import type { CrmDealDetailData } from "@/components/admin/crm/types";
+import { NewsletterEngagementBadge } from "@/components/admin/crm/NewsletterEngagementBadge";
 
 // ─────────────────────────────────────────────────────────────────────
 // Deal-részletnézet — fejléc (cím, kontakt tel:/mailto:, stage-váltó),
@@ -195,6 +196,7 @@ export function DealDetail({
               {deal.contactPhone}
             </a>
           )}
+          <NewsletterEngagementBadge engagement={deal.newsletter} />
           <span className="text-xs text-muted">
             létrehozva: {formatDay(deal.createdAt)}
             {deal.closedAt ? ` · lezárva: ${formatDay(deal.closedAt)}` : ""}

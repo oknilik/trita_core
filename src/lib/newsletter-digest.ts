@@ -5,8 +5,11 @@ import { createLogger } from "@/lib/logger";
 import { sendNewBlogPostEmail } from "@/lib/emails";
 import { APP_URL } from "@/lib/email-layout";
 import {
+  clickUrl,
   listSendableSubscribers,
-  recordDeliveries,
+  markSent,
+  releaseDelivery,
+  reserveDeliveries,
   unsubscribeUrl,
   type SendableSubscriber,
 } from "@/lib/newsletter";
@@ -103,28 +106,46 @@ export async function runBlogDigest(options: DigestOptions = {}): Promise<Digest
         continue;
       }
 
-      const delivered: string[] = [];
+      let deliveredCount = 0;
 
       for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
         const batch = recipients.slice(i, i + BATCH_SIZE);
+
+        // FOGLALÁS a küldés ELŐTT: a levélbe kerülő kattintás-követő link a
+        // delivery id-jét hordozza, tehát az id-nek már léteznie kell. Aki
+        // nem kap foglalást, azt egy korábbi futás már elvitte — kimarad.
+        const reserved = await reserveDeliveries(post.slug, batch.map((r) => r.id));
+        const sendable = batch.filter((r) => reserved.has(r.id));
+        if (sendable.length === 0) continue;
+
         const outcomes = await Promise.all(
-          batch.map((subscriber) => sendOne(subscriber, post, locale)),
+          sendable.map((subscriber) =>
+            sendOne(subscriber, post, locale, reserved.get(subscriber.id)!),
+          ),
         );
 
-        outcomes.forEach((ok, index) => {
-          if (ok) delivered.push(batch[index]!.id);
-          else result.failed += 1;
-        });
+        const succeeded: string[] = [];
+        for (const [index, ok] of outcomes.entries()) {
+          const subscriber = sendable[index]!;
+          if (ok) {
+            succeeded.push(subscriber.id);
+            continue;
+          }
+          // A küldés elhasalt → a foglalást eldobjuk, hogy a következő futás
+          // újrapróbálja. (Ez az egyetlen hely, ahol napló-sor törlődik.)
+          result.failed += 1;
+          await releaseDelivery(reserved.get(subscriber.id)!);
+        }
 
-        // A naplózás KÖTEGENKÉNT történik, nem a végén: ha a futás félbeszakad
-        // (időkorlát, deploy), a már kiment levelek naplózva vannak, és a
-        // következő futás nem küldi ki őket újra.
-        await recordDeliveries(post.slug, delivered.splice(0, delivered.length));
+        await markSent(succeeded);
+        deliveredCount += succeeded.length;
       }
 
-      result.sent.push({ slug: post.slug, locale, recipients: recipients.length });
+      if (deliveredCount === 0) continue;
+
+      result.sent.push({ slug: post.slug, locale, recipients: deliveredCount });
       log.info(
-        { event: "newsletter.digest_sent", slug: post.slug, locale, recipients: recipients.length },
+        { event: "newsletter.digest_sent", slug: post.slug, locale, recipients: deliveredCount },
         "Blog digest sent",
       );
     }
@@ -137,23 +158,23 @@ async function sendOne(
   subscriber: SendableSubscriber,
   post: ReturnType<typeof getAllPosts>[number],
   locale: Locale,
+  deliveryId: string,
 ): Promise<boolean> {
   const ok = await sendNewBlogPostEmail({
     to: subscriber.email,
     postTitle: post.title,
     postDescription: post.description,
-    postUrl: `${APP_URL}/blog/${post.slug}`,
+    // Kattintás-követő link: a végpont rögzíti az első kattintást, majd
+    // továbbdob a cikkre. A cél-URL-t a végpont építi, nem a paraméter.
+    postUrl: clickUrl(APP_URL, deliveryId, post.slug),
     readingMinutes: post.readingMinutes,
     unsubUrl: unsubscribeUrl(APP_URL, subscriber.unsubToken),
     locale,
   });
 
   // Sikertelen küldésnél NEM tesszük a címet BOUNCED-ra: egy Resend
-  // API-hiba jellemzően átmeneti, és a `BOUNCED` állapotból nincs
-  // visszaút a felületről (a feliratkozó űrlap csendben elnyeli). A
-  // kézbesíthetetlenség megállapítása a szolgáltató bounce-jelzésének
-  // dolga — arra való a `markBounced`, ha egyszer webhookot kötünk rá.
-  // Itt a hívó számolja a hibát, és a napló nélkül a következő futás
-  // úgyis újrapróbálja.
+  // API-hiba jellemzően átmeneti. A kézbesíthetetlenség megállapítása a
+  // szolgáltató bounce-jelzésének dolga (`/api/webhooks/resend`). Itt a
+  // hívó dobja el a foglalást, és a következő futás újrapróbálja.
   return ok;
 }

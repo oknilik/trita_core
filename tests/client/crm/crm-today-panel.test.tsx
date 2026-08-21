@@ -68,6 +68,7 @@ function makeDeal(overrides: Partial<CrmDealRow> = {}): CrmDealRow {
     createdAt: "2026-07-20T10:00:00.000Z",
     quotes: [],
     inquiryCount: 1,
+    newsletter: null,
     activityCount: 3,
     ...overrides,
   };

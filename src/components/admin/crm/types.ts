@@ -26,6 +26,8 @@ export interface CrmQuoteSummary {
   createdAt: string;
 }
 
+import type { NewsletterEngagementDto } from "@/lib/newsletter-engagement";
+
 /** Deal-sor a Ma/Pipeline/Lezártak nézetekhez. */
 export interface CrmDealRow {
   id: string;
@@ -47,6 +49,8 @@ export interface CrmDealRow {
   quotes: CrmQuoteSummary[];
   inquiryCount: number;
   activityCount: number;
+  /** Hírlevél-elköteleződés a kapcsolattartó címére (null, ha nem feliratkozó). */
+  newsletter: NewsletterEngagementDto | null;
 }
 
 /** Beérkező (NEW, deal nélküli) inquiry a kvalifikációs kapuhoz. */
@@ -60,6 +64,8 @@ export interface CrmIntakeRow {
   createdAt: string;
   /** Email-match nyitott dealre → „már pipeline-ban” jelzés + csatolás-ajánlat. */
   openDealMatch: { id: string; title: string } | null;
+  /** Hírlevél-elköteleződés a beküldő címére (null, ha nem feliratkozó). */
+  newsletter: NewsletterEngagementDto | null;
 }
 
 export interface CrmStageGroup {
@@ -137,4 +143,6 @@ export interface CrmDealDetailData {
   activities: CrmActivityRow[];
   quotes: CrmDetailQuoteRow[];
   inquiries: CrmDetailInquiryRow[];
+  /** Hírlevél-elköteleződés a kapcsolattartó címére (null, ha nem feliratkozó). */
+  newsletter: NewsletterEngagementDto | null;
 }

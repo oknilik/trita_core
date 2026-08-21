@@ -29,6 +29,15 @@ export type SubscriberStatus = "PENDING" | "ACTIVE" | "UNSUBSCRIBED" | "BOUNCED"
 export const NEWSLETTER_TOPICS = ["blog", "newsletter"] as const;
 export type NewsletterTopic = (typeof NEWSLETTER_TOPICS)[number];
 
+/**
+ * Alapértelmezett topic-készlet: MINDKETTŐ.
+ *
+ * A megerősítő levél szövege is mindkettőt ígéri („új blogbejegyzésnél és
+ * időnként egy-egy gyakorlati összefoglalónál"), tehát a hozzájárulás
+ * mindkettőre szól. Aki csak az egyiket kéri, a levélbeállításain szűkíti.
+ */
+export const DEFAULT_TOPICS: NewsletterTopic[] = ["blog", "newsletter"];
+
 /** Honnan érkezett a feliratkozás — zárt értékkészlet (analitika is ezt viszi). */
 export const NEWSLETTER_SOURCES = [
   "blog_post",
@@ -90,7 +99,7 @@ export async function requestSubscription(params: {
 }): Promise<SubscribeResult> {
   const email = normalizeEmail(params.email);
   const locale = normalizeLocale(params.locale ?? undefined);
-  const topics = params.topics?.length ? params.topics : (["blog"] as NewsletterTopic[]);
+  const topics = params.topics?.length ? params.topics : DEFAULT_TOPICS;
 
   const existing = await prisma.newsletterSubscriber.findUnique({
     where: { email },
@@ -241,6 +250,17 @@ export function unsubscribeUrl(appUrl: string, unsubToken: string): string {
   return `${appUrl.replace(/\/+$/, "")}/api/newsletter/unsubscribe?token=${encodeURIComponent(unsubToken)}`;
 }
 
+/**
+ * Kattintás-követő link a levélbeli cikk-hivatkozásokhoz.
+ *
+ * A `to` a cikk SLUGJA, nem teljes URL — a cél-URL-t a végpont építi fel a
+ * publikált cikkek közül. Így a paraméter nem tud nyílt átirányítássá válni.
+ */
+export function clickUrl(appUrl: string, deliveryId: string, slug: string): string {
+  const base = appUrl.replace(/\/+$/, "");
+  return `${base}/api/newsletter/click?d=${encodeURIComponent(deliveryId)}&to=${encodeURIComponent(slug)}`;
+}
+
 /** A megerősítő link — a double opt-in levél egyetlen gombja. */
 export function confirmUrl(appUrl: string, confirmToken: string): string {
   return `${appUrl.replace(/\/+$/, "")}/api/newsletter/confirm?token=${encodeURIComponent(confirmToken)}`;
@@ -283,7 +303,7 @@ export async function setAccountSubscription(params: {
       email,
       locale,
       status: "ACTIVE",
-      topics: ["blog"],
+      topics: DEFAULT_TOPICS,
       source: "account",
       confirmToken: generateToken(),
       // A token itt már fel van használva — lejárt értékkel hozzuk létre, hogy
@@ -364,16 +384,58 @@ export async function listSendableSubscribers(params: {
 }
 
 /**
- * Kiküldés naplózása. `createMany` + `skipDuplicates`: ha két futás
- * versenyez ugyanazon a címzetten, a második némán nem ír — a
- * `@@unique([subscriberId, slug])` a szerkezeti garancia.
+ * Kiküldés FOGLALÁSA — a levél elküldése ELŐTT.
+ *
+ * MIÉRT ELŐBB, ÉS NEM UTÁNA (2026-08-21): a levélbe kattintás-követő link
+ * kerül, ami a `NewsletterDelivery` id-jét hordozza. Az id tehát a küldés
+ * pillanatában már kell. Cserébe a hibaág fordul meg: ha a küldés elhasal, a
+ * foglalást ELDOBJUK (`releaseDelivery`), így a következő futás újrapróbálja.
+ *
+ * `createMany` + `skipDuplicates`: ha két futás versenyez ugyanazon a
+ * címzetten, a második némán nem ír — a `@@unique([subscriberId, slug])` a
+ * szerkezeti garancia. A visszaolvasás ezért CSAK azokat adja vissza, akiket
+ * ez a futás foglalt le… kivéve, ha egy korábbi futás félbeszakadt: az ilyen
+ * sor már létezik, tehát a címzett kimarad — pontosan ezt akarjuk, mert a
+ * kettős küldés a rosszabbik hiba.
  */
-export async function recordDeliveries(slug: string, subscriberIds: string[]): Promise<void> {
-  if (subscriberIds.length === 0) return;
+export async function reserveDeliveries(
+  slug: string,
+  subscriberIds: string[],
+): Promise<Map<string, string>> {
+  if (subscriberIds.length === 0) return new Map();
+
+  const before = await prisma.newsletterDelivery.findMany({
+    where: { slug, subscriberId: { in: subscriberIds } },
+    select: { subscriberId: true },
+  });
+  const alreadyLogged = new Set(before.map((r) => r.subscriberId));
+
   await prisma.newsletterDelivery.createMany({
-    data: subscriberIds.map((subscriberId) => ({ subscriberId, slug })),
+    data: subscriberIds
+      .filter((id) => !alreadyLogged.has(id))
+      .map((subscriberId) => ({ subscriberId, slug })),
     skipDuplicates: true,
   });
+
+  const rows = await prisma.newsletterDelivery.findMany({
+    where: {
+      slug,
+      subscriberId: { in: subscriberIds.filter((id) => !alreadyLogged.has(id)) },
+    },
+    select: { id: true, subscriberId: true },
+  });
+
+  return new Map(rows.map((r) => [r.subscriberId, r.id]));
+}
+
+/** Sikertelen küldés után a foglalás eldobása — hogy a következő futás vigye. */
+export async function releaseDelivery(deliveryId: string): Promise<void> {
+  await prisma.newsletterDelivery.delete({ where: { id: deliveryId } }).catch(() => {});
+}
+
+/** A ténylegesen kiment levelek után a feliratkozó „utoljára kapott" ideje. */
+export async function markSent(subscriberIds: string[]): Promise<void> {
+  if (subscriberIds.length === 0) return;
   await prisma.newsletterSubscriber.updateMany({
     where: { id: { in: subscriberIds } },
     data: { lastSentAt: new Date() },
@@ -381,12 +443,38 @@ export async function recordDeliveries(slug: string, subscriberIds: string[]): P
 }
 
 /**
+ * Kattintás rögzítése — CSAK az elsőé.
+ *
+ * A `clickedAt` nem számláló: azt mérjük, hogy a levél elért-e valakit, nem
+ * azt, hányszor nyitotta meg ugyanazt a cikket. Az `updateMany` a `null`
+ * feltétellel egyben a versenyhelyzetet is kezeli (két gyors kattintás).
+ *
+ * Visszaadja a cikk slugját, ha a foglalás létezik — a hívó ebből építi a
+ * cél-URL-t, tehát a paraméterből SOHA nem lesz nyílt átirányítás.
+ */
+export async function registerClick(deliveryId: string): Promise<boolean> {
+  const row = await prisma.newsletterDelivery.findUnique({
+    where: { id: deliveryId },
+    select: { id: true, clickedAt: true },
+  });
+  if (!row) return false;
+
+  if (!row.clickedAt) {
+    await prisma.newsletterDelivery.updateMany({
+      where: { id: deliveryId, clickedAt: null },
+      data: { clickedAt: new Date() },
+    });
+  }
+  return true;
+}
+
+/**
  * Kézbesíthetetlen cím kivezetése a küldésből.
  *
- * MA NINCS AUTOMATA HÍVÓJA: a `BOUNCED` állapotból nincs visszaút a
- * felületről (a feliratkozó űrlap csendben elnyeli az ilyen címet), ezért
- * egyetlen átmeneti Resend-hiba nem elég ok rá. Ez a kapcsoló a szolgáltató
- * bounce-jelzésének (webhook) és a kézi lista-higiéniának a helye.
+ * A hívója a Resend bounce-webhookja (`/api/webhooks/resend`) — NEM a küldő
+ * kód hibaága: egyetlen átmeneti API-hiba nem elég ok rá, mert a `BOUNCED`
+ * állapotból nincs visszaút a felületről (a feliratkozó űrlap csendben
+ * elnyeli az ilyen címet).
  */
 export async function markBounced(subscriberId: string): Promise<void> {
   await prisma.newsletterSubscriber.update({
@@ -395,12 +483,49 @@ export async function markBounced(subscriberId: string): Promise<void> {
   });
 }
 
+/**
+ * Kézbesítési visszajelzés feldolgozása cím alapján (webhook).
+ *
+ * A két eset szándékosan KÜLÖNBÖZŐ állapotba visz:
+ *   · `bounce`    → BOUNCED — a cím nem létezik; technikai tény.
+ *   · `complaint` → UNSUBSCRIBED — a címzett spamnek jelölte; ez SZÁNDÉK.
+ *     Ilyenkor a leiratkozás a helyes válasz, nem a „hibás cím" könyvelése.
+ */
+export async function applyDeliveryFeedback(
+  email: string,
+  kind: "bounce" | "complaint",
+): Promise<boolean> {
+  const row = await prisma.newsletterSubscriber.findUnique({
+    where: { email: normalizeEmail(email) },
+    select: { id: true, status: true },
+  });
+  if (!row) return false;
+
+  if (kind === "complaint") {
+    if (row.status !== "UNSUBSCRIBED") {
+      await prisma.newsletterSubscriber.update({
+        where: { id: row.id },
+        data: { status: "UNSUBSCRIBED", unsubscribedAt: new Date() },
+      });
+    }
+    log.info({ event: "newsletter.complaint", subscriberId: row.id }, "Spam complaint — unsubscribed");
+    return true;
+  }
+
+  if (row.status !== "BOUNCED") await markBounced(row.id);
+  log.info({ event: "newsletter.bounce", subscriberId: row.id }, "Hard bounce — suppressed");
+  return true;
+}
+
 export interface NewsletterStats {
   active: number;
   pending: number;
   unsubscribed: number;
   bounced: number;
   lastSentAt: Date | null;
+  /** Összes kiment levél és az ELSŐ kattintások száma — kattintási arányhoz. */
+  delivered: number;
+  clicked: number;
 }
 
 /**
@@ -408,9 +533,11 @@ export interface NewsletterStats {
  * mintázatra való (ld. CLAUDE.md analitika-szabály).
  */
 export async function getNewsletterStats(): Promise<NewsletterStats> {
-  const [grouped, last] = await Promise.all([
+  const [grouped, last, delivered, clicked] = await Promise.all([
     prisma.newsletterSubscriber.groupBy({ by: ["status"], _count: { _all: true } }),
     prisma.newsletterSubscriber.aggregate({ _max: { lastSentAt: true } }),
+    prisma.newsletterDelivery.count(),
+    prisma.newsletterDelivery.count({ where: { clickedAt: { not: null } } }),
   ]);
 
   const byStatus = new Map(grouped.map((g) => [g.status, g._count._all]));
@@ -420,5 +547,42 @@ export async function getNewsletterStats(): Promise<NewsletterStats> {
     unsubscribed: byStatus.get("UNSUBSCRIBED") ?? 0,
     bounced: byStatus.get("BOUNCED") ?? 0,
     lastSentAt: last._max.lastSentAt ?? null,
+    delivered,
+    clicked,
   };
+}
+
+export interface SlugEngagement {
+  slug: string;
+  delivered: number;
+  clicked: number;
+}
+
+/**
+ * Küldési egységenkénti kattintási arány (cikk-slug vagy `issue:<id>`).
+ *
+ * EZ az egyetlen visszacsatolás arról, hogy melyik cím és melyik téma
+ * működik — a feliratkozó-szám csak azt mondja, hányan mondtak igent egyszer.
+ */
+export async function getDeliveryEngagement(limit = 20): Promise<SlugEngagement[]> {
+  const grouped = await prisma.newsletterDelivery.groupBy({
+    by: ["slug"],
+    _count: { _all: true },
+    _max: { sentAt: true },
+    orderBy: { _max: { sentAt: "desc" } },
+    take: limit,
+  });
+
+  const clicks = await prisma.newsletterDelivery.groupBy({
+    by: ["slug"],
+    where: { slug: { in: grouped.map((g) => g.slug) }, clickedAt: { not: null } },
+    _count: { _all: true },
+  });
+  const clickBySlug = new Map(clicks.map((c) => [c.slug, c._count._all]));
+
+  return grouped.map((g) => ({
+    slug: g.slug,
+    delivered: g._count._all,
+    clicked: clickBySlug.get(g.slug) ?? 0,
+  }));
 }

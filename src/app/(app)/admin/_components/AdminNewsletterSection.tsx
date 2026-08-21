@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/primitives/Button";
 import { SelectField } from "@/components/ui/primitives/SelectField";
-import type { NewsletterStats } from "@/lib/newsletter";
+import type { NewsletterStats, SlugEngagement } from "@/lib/newsletter";
 
 /**
  * Admin hírlevél-blokk a Blog fül tetején.
@@ -21,9 +21,15 @@ interface AdminNewsletterSectionProps {
   stats: NewsletterStats;
   /** Publikált cikkek (slug + cím) a küldés-választóhoz. */
   posts: Array<{ slug: string; title: string; locale: "hu" | "en" }>;
+  /** Küldési egységenkénti kattintási arány (legutóbbiak elöl). */
+  engagement: SlugEngagement[];
 }
 
-export function AdminNewsletterSection({ stats, posts }: AdminNewsletterSectionProps) {
+export function AdminNewsletterSection({
+  stats,
+  posts,
+  engagement,
+}: AdminNewsletterSectionProps) {
   const [slug, setSlug] = useState(posts[0]?.slug ?? "");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -72,6 +78,13 @@ export function AdminNewsletterSection({ stats, posts }: AdminNewsletterSectionP
       </div>
 
       <p className="mt-3 text-micro text-muted">
+        Kattintási arány összesen:{" "}
+        <strong className="text-ink-body">
+          {stats.delivered > 0
+            ? `${Math.round((stats.clicked / stats.delivered) * 100)}% (${stats.clicked}/${stats.delivered})`
+            : "még nincs adat"}
+        </strong>
+        {" · "}
         Utolsó kiküldés:{" "}
         {stats.lastSentAt
           ? new Date(stats.lastSentAt).toLocaleString("hu-HU")
@@ -103,6 +116,43 @@ export function AdminNewsletterSection({ stats, posts }: AdminNewsletterSectionP
       </div>
 
       {message ? <p className="mt-3 text-caption text-ink-body">{message}</p> : null}
+
+      {engagement.length > 0 ? (
+        <div className="mt-5 overflow-x-auto">
+          <p className="mb-2 font-dm-mono text-micro font-semibold uppercase tracking-widest text-muted">
+            Kattintás küldésenként
+          </p>
+          <table className="w-full min-w-[420px] text-caption">
+            <thead>
+              <tr className="text-left text-micro uppercase tracking-wide text-muted">
+                <th className="pb-1 font-medium">Küldés</th>
+                <th className="pb-1 font-medium">Kiment</th>
+                <th className="pb-1 font-medium">Kattintott</th>
+                <th className="pb-1 font-medium">Arány</th>
+              </tr>
+            </thead>
+            <tbody>
+              {engagement.map((row) => (
+                <tr key={row.slug} className="border-t border-sand">
+                  <td className="py-1.5 pr-3 text-ink-body">{row.slug}</td>
+                  <td className="py-1.5 pr-3 text-ink-body">{row.delivered}</td>
+                  <td className="py-1.5 pr-3 text-ink-body">{row.clicked}</td>
+                  <td className="py-1.5 text-ink-body">
+                    {row.delivered > 0
+                      ? `${Math.round((row.clicked / row.delivered) * 100)}%`
+                      : "—"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="mt-2 text-micro leading-relaxed text-muted">
+            Nyitást szándékosan nem mérünk (követő pixel), csak kattintást — ez
+            tehát ALSÓ becslés: aki elolvasta a levelet, de nem kattintott, itt
+            nem látszik.
+          </p>
+        </div>
+      ) : null}
 
       <p className="mt-4 text-micro leading-relaxed text-muted">
         A napi cron (06:00 UTC) magától kiküldi az elmúlt 14 napban megjelent

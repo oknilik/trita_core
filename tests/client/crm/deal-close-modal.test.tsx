@@ -71,6 +71,7 @@ function makeDeal(overrides: Partial<CrmDealDetailData> = {}): CrmDealDetailData
     activities: [],
     quotes: [],
     inquiries: [],
+    newsletter: null,
     ...overrides,
   };
 }
