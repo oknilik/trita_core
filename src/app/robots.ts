@@ -47,6 +47,9 @@ const PRIVATE_PATHS = [
   "/interaction",
   "/join/",
   "/manager",
+  // A hírlevél-visszajelző oldalak tranzakciósak (a levélből érkező link
+  // céloldalai) — nincs kereső-értékük.
+  "/newsletter/",
   "/observe/",
   "/onboarding",
   "/org",

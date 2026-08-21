@@ -44,13 +44,18 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     // eseményt (lapváltás, tölcsér-lépések), ezért bőkezűbb keret. A cél
     // nem a felhasználó fékezése, hanem a szemét-forgalom kizárása.
     analytics: { requests: 60, window: "60 s", prefix: "rl:analytics" },
+    // Hírlevél-feliratkozás: szűk keret. A végpont e-mailt küld egy
+    // TETSZŐLEGES címre, tehát fékezetlenül levél-ágyúként volna használható
+    // idegen postafiókok ellen. A megerősítő levél emiatt is rövid és
+    // semleges hangú.
+    newsletter: { requests: 3, window: "60 s", prefix: "rl:newsletter" },
   };
   const cfg = configs[tier];
   limiters[tier] = makeRatelimit(cfg.requests, cfg.window, cfg.prefix);
   return limiters[tier];
 }
 
-export type RateLimitTier = "api" | "billing" | "auth" | "contact" | "analytics";
+export type RateLimitTier = "api" | "billing" | "auth" | "contact" | "analytics" | "newsletter";
 
 export async function checkRateLimit(
   tier: RateLimitTier,

@@ -163,6 +163,11 @@ const HU: PolicyDocument = {
                 "Ha írsz nekünk a kapcsolati űrlapon: név, e-mail-cím, cégnév, a megkeresés témája és az üzenet szövege.",
             },
             {
+              term: "Feliratkozási adatok",
+              description:
+                "Ha feliratkozol a hírlevelünkre vagy az új blogbejegyzés-értesítőre: e-mail-cím, nyelv, a feliratkozás forrása (melyik oldalról), a megerősítés és az esetleges leiratkozás időpontja. A megerősítés időpontja a hozzájárulásod igazolása.",
+            },
+            {
               term: "Technikai adatok",
               description:
                 "Nyelvi beállítás (süti), munkamenet-azonosítók, hibanaplók, valamint süti nélküli, összesített látogatottsági és teljesítmény-statisztikák.",
@@ -211,6 +216,11 @@ const HU: PolicyDocument = {
               "Kapcsolatfelvétel megválaszolása, ajánlatadás",
               "Kapcsolatfelvételi adatok",
               "Szerződéskötést megelőző lépések / jogos érdek — 6. cikk (1) b) és f)",
+            ],
+            [
+              "Hírlevél és új blogbejegyzés-értesítő küldése",
+              "Feliratkozási adatok",
+              "Hozzájárulás — 6. cikk (1) a); kétlépcsős (megerősítő linkes) feliratkozás, bármikor, egy kattintással visszavonható",
             ],
             [
               "Szolgáltatás- és módszertan-fejlesztés összesített adatokon",
@@ -356,6 +366,10 @@ const HU: PolicyDocument = {
             [
               "Kapcsolatfelvételi üzenetek",
               "A megkeresés lezárásától számított 12 hónap.",
+            ],
+            [
+              "Hírlevél-feliratkozás",
+              "A leiratkozásig. Leiratkozás után a címet a hozzájárulás igazolása és az ismételt megkeresés elkerülése végett további 12 hónapig megőrizzük, majd töröljük. A meg nem erősített feliratkozás 7 nap után magától érvénytelenné válik.",
             ],
             [
               "Számlázási és számviteli bizonylatok",
@@ -627,6 +641,11 @@ const EN: PolicyDocument = {
                 "If you write to us through the contact form: name, email address, company name, topic and the message itself.",
             },
             {
+              term: "Subscription data",
+              description:
+                "If you subscribe to our newsletter or new-article updates: email address, language, the source of the subscription (which page), the time of confirmation and of any later unsubscribe. The confirmation timestamp is the proof of your consent.",
+            },
+            {
               term: "Technical data",
               description:
                 "Language preference (cookie), session identifiers, error logs, and cookie-free aggregated traffic and performance statistics.",
@@ -675,6 +694,11 @@ const EN: PolicyDocument = {
               "Responding to enquiries and preparing quotes",
               "Contact data",
               "Steps prior to entering into a contract / legitimate interest — Art. 6(1)(b) and (f)",
+            ],
+            [
+              "Sending the newsletter and new-article updates",
+              "Subscription data",
+              "Consent — Art. 6(1)(a); double opt-in subscription, withdrawable at any time with one click",
             ],
             [
               "Improving the service and the methodology on aggregated data",
@@ -815,6 +839,10 @@ const EN: PolicyDocument = {
               "For the term of the contract with the client organization; afterwards deleted or returned within 90 days, as the organization instructs.",
             ],
             ["Contact form messages", "12 months from closing the enquiry."],
+            [
+              "Newsletter subscription",
+              "Until you unsubscribe. After unsubscribing we keep the address for a further 12 months to evidence the consent and to avoid contacting you again, then delete it. An unconfirmed subscription expires on its own after 7 days.",
+            ],
             [
               "Invoices and accounting records",
               "8 years (Section 169 of Hungarian Act C of 2000 on Accounting).",

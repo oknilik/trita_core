@@ -64,6 +64,13 @@ async function sendEmail(params: {
   text: string;
   /** Sablon-specifikus extra (ma: a megosztó-levél QR-kódja). */
   attachments?: ResendAttachment[];
+  /**
+   * Extra SMTP-fejlécek. Ma egyetlen fogyasztója van: a hírlevél-levelek
+   * `List-Unsubscribe` + `List-Unsubscribe-Post` párosa. A Gmail és a Yahoo
+   * tömeges-küldő szabályai megkövetelik az egykattintásos leiratkozást; e
+   * nélkül a levél a spam felé csúszik, akkor is, ha a tartalom rendben van.
+   */
+  headers?: Record<string, string>;
   /** Extra log-mezők (variant, qrAttached…). */
   logFields?: Record<string, unknown>;
 }): Promise<boolean> {
@@ -73,6 +80,7 @@ async function sendEmail(params: {
     subject: params.subject,
     html: params.html,
     text: params.text,
+    ...(params.headers ? { headers: params.headers } : {}),
     attachments: [...emailArtAttachments(), ...(params.attachments ?? [])],
   });
 
@@ -1687,4 +1695,165 @@ export async function sendHiringCreditsRequestEmail(params: {
   });
 
   return ok;
+}
+
+// ─── Hírlevél / blog-feliratkozás ────────────────────────────────────────────
+//
+// KÉT SABLON, KÉT SZEREP:
+//   · a MEGERŐSÍTŐ levél tranzakcionális (a látogató kérte, egy gombja van),
+//   · az ÚJ CIKK levél tömeges — ez az egyetlen levélcsaládunk, ami
+//     `List-Unsubscribe` fejlécet visz és leiratkozó linket tesz a láblécbe.
+//
+// A leiratkozó link SOSEM a `/email-preferences`-re megy (az belépést kér, a
+// feliratkozók többségének pedig nincs fiókja), hanem a token-alapú,
+// auth nélküli `/api/newsletter/unsubscribe`-ra.
+
+/**
+ * Egykattintásos leiratkozás fejlécei (RFC 8058).
+ *
+ * A `List-Unsubscribe-Post` jelenti be, hogy a levelező ELŐZETES megerősítés
+ * nélkül POST-olhat a linkre — ezért kell a végpontnak idempotensnek lennie
+ * és GET-re is működnie.
+ */
+function newsletterUnsubHeaders(unsubUrl: string): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${unsubUrl}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
+}
+
+const newsletterConfirmTranslations = {
+  hu: {
+    subject: "Erősítsd meg a feliratkozásod – Trita",
+    kind: "Megerősítés",
+    eyebrow: "Feliratkozás",
+    heading: "Már csak egy kattintás",
+    preheader: "Erősítsd meg, hogy tényleg te kérted az értesítőt.",
+    greeting: "Szia,",
+    body: "Valaki (feltehetően te) feliratkozott a Trita értesítőjére ezzel az email címmel. Ha tényleg te voltál, erősítsd meg az alábbi gombbal — enélkül nem küldünk semmit.",
+    what: "Ezután új blogbejegyzésnél és időnként egy-egy gyakorlati összefoglalónál keresünk meg. Nem gyakran, és bármikor leiratkozhatsz.",
+    cta: "Feliratkozás megerősítése",
+    quiet: "Ha nem te kérted, nincs teendőd — a link 7 nap múlva magától lejár, és addig sem küldünk semmit.",
+  },
+  en: {
+    subject: "Confirm your subscription – Trita",
+    kind: "Confirmation",
+    eyebrow: "Subscription",
+    heading: "One click to go",
+    preheader: "Confirm that you really asked for our updates.",
+    greeting: "Hi,",
+    body: "Someone (probably you) subscribed to Trita updates with this email address. If it was you, confirm with the button below — without it we won't send anything.",
+    what: "After that we'll write when a new article goes live, plus the occasional practical summary. Not often, and you can unsubscribe any time.",
+    cta: "Confirm subscription",
+    quiet: "If this wasn't you, there's nothing to do — the link expires on its own in 7 days, and we won't send anything in the meantime.",
+  },
+};
+
+/**
+ * Double opt-in megerősítő levél.
+ *
+ * Nincs benne leiratkozó link és `List-Unsubscribe` fejléc: még nincs mihez
+ * képest leiratkozni — a nem-megerősített feliratkozás magától elévül.
+ */
+export async function sendNewsletterConfirmEmail(params: {
+  to: string;
+  confirmUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = normalizeLocale(params.locale);
+  const t = newsletterConfirmTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
+    bodyContent: `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    <p style="${EMAIL_P}">${t.body}</p>
+    <p style="${EMAIL_P_MUTED};margin-bottom:26px">${t.what}</p>
+    ${renderCtaButton({ href: params.confirmUrl, label: t.cta })}`,
+    quietNote: t.quiet,
+    signOff: SIGN_OFF[locale],
+  });
+
+  return sendEmail({
+    template: "newsletter_confirm",
+    to: params.to,
+    subject: t.subject,
+    html,
+    text: `${t.greeting}\n\n${t.body}\n\n${t.what}\n\n${t.cta}: ${params.confirmUrl}\n\n${t.quiet}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+  });
+}
+
+const newBlogPostTranslations = {
+  hu: {
+    subject: (title: string) => `Új cikk: ${title}`,
+    kind: "Értesítő",
+    eyebrow: "Új a blogon",
+    greeting: "Szia,",
+    intro: "Új cikk jelent meg a Trita blogon:",
+    cta: "Cikk elolvasása",
+    readingTime: (minutes: number) => `${minutes} perc olvasás`,
+    quiet: "Ezt a levelet azért kaptad, mert feliratkoztál a Trita értesítőjére.",
+    unsubLabel: "Leiratkozás",
+  },
+  en: {
+    subject: (title: string) => `New article: ${title}`,
+    kind: "Update",
+    eyebrow: "New on the blog",
+    greeting: "Hi,",
+    intro: "A new article is up on the Trita blog:",
+    cta: "Read the article",
+    readingTime: (minutes: number) => `${minutes} min read`,
+    quiet: "You're receiving this because you subscribed to Trita updates.",
+    unsubLabel: "Unsubscribe",
+  },
+};
+
+/**
+ * Új blogbejegyzés értesítő — az EGYETLEN tömeges levelünk.
+ *
+ * Amit a tranzakcionális sablonoktól eltérően kötelezően visz:
+ *   · `List-Unsubscribe` + `List-Unsubscribe-Post` fejléc,
+ *   · látható leiratkozó link a láblécben (token-alapú, belépés nélküli).
+ */
+export async function sendNewBlogPostEmail(params: {
+  to: string;
+  postTitle: string;
+  postDescription: string;
+  postUrl: string;
+  readingMinutes: number;
+  unsubUrl: string;
+  locale?: Locale;
+}): Promise<boolean> {
+  const locale = normalizeLocale(params.locale);
+  const t = newBlogPostTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: params.postTitle,
+    preheader: params.postDescription,
+    bodyContent: `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    <p style="${EMAIL_P}">${t.intro}</p>
+    <p style="${EMAIL_P}"><strong>${escapeHtml(params.postTitle)}</strong><br>${escapeHtml(params.postDescription)}</p>
+    <p style="${EMAIL_P_MUTED};margin-bottom:26px">${t.readingTime(params.readingMinutes)}</p>
+    ${renderCtaButton({ href: params.postUrl, label: t.cta })}`,
+    quietNote: t.quiet,
+    optOut: { href: params.unsubUrl, label: t.unsubLabel },
+    signOff: SIGN_OFF[locale],
+  });
+
+  return sendEmail({
+    template: "newsletter_blog_post",
+    to: params.to,
+    subject: t.subject(params.postTitle),
+    html,
+    text: `${t.greeting}\n\n${t.intro}\n\n${params.postTitle}\n${params.postDescription}\n${t.readingTime(params.readingMinutes)}\n\n${t.cta}: ${params.postUrl}\n\n${t.quiet}\n${t.unsubLabel}: ${params.unsubUrl}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+    headers: newsletterUnsubHeaders(params.unsubUrl),
+  });
 }

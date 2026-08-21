@@ -23,6 +23,7 @@ import {
 import { intensityFromScore } from "@/lib/type-glyph";
 import { HEXACO_DIMENSIONS, type HexacoCode } from "@/lib/hexaco";
 import { TryTeaserCard, type TeaserTopDim } from "./TryTeaserCard";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 interface TryCompleteClientProps {
   /** Item-id → dimenzió + fordítottság a szerverről — a kérdésbank maga nem kerül a kliensre. */
@@ -201,6 +202,12 @@ export function TryCompleteClient({ scoringMeta }: TryCompleteClientProps) {
             <p className="mt-4 text-center text-xs text-[var(--color-text-muted)]">
               {t("tryComplete.teaserBrowserNote", locale)}
             </p>
+
+            {/* Feliratkozás — aki kitöltötte a vendég-tesztet, de nem
+                regisztrál, ma nyomtalanul elveszik. Ez a legértékesebb
+                lista, ezért van itt, közvetlenül a regisztrációs CTA-k
+                alatt (nem helyettük). */}
+            <NewsletterForm source="try_complete" variant="compact" className="mt-6" />
           </>
         ) : null}
 

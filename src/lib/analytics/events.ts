@@ -138,6 +138,37 @@ const publicEvents = {
     description: "A csapatminta-felfedezőben megjelenített mintázat.",
     question: "P6",
   }),
+
+  // ── Hírlevél / blog-feliratkozás (2026-08-21) ──────────────────────
+  // A tölcsér három lépése külön esemény, mert a lemorzsolódás HELYE üzleti
+  // kérdés: aki beküldi a címét, de nem erősíti meg, azt a megerősítő levél
+  // veszíti el (kézbesítés, szövegezés), nem az űrlap. E-mail természetesen
+  // sehol nem kerül eseménybe — a `.strict()` séma szerkezetileg zárja ki.
+  "newsletter.submit": spec({
+    schema: z
+      .object({
+        // blog_post | blog_index | footer | try_complete | account
+        source: tag(24),
+      })
+      .strict(),
+    origin: "server",
+    description: "Feliratkozás beküldve (megerősítő levél kiment).",
+    question: "P5",
+  }),
+
+  "newsletter.confirm": spec({
+    schema: z.object({}).strict(),
+    origin: "server",
+    description: "Double opt-in megerősítés — a feliratkozás aktívvá vált.",
+    question: "P5",
+  }),
+
+  "newsletter.unsubscribe": spec({
+    schema: z.object({}).strict(),
+    origin: "server",
+    description: "Leiratkozás a token-alapú linkkel.",
+    question: "P5",
+  }),
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────

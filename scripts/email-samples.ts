@@ -270,6 +270,30 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
     await capture("advisory_confirmation", locale, () =>
       m.sendAdvisoryConfirmationEmail({ to: "erdeklodo@example.com", name: "Tóth Anna", locale }),
     );
+
+    await capture("newsletter_confirm", locale, () =>
+      m.sendNewsletterConfirmEmail({
+        to: "olvaso@example.com",
+        confirmUrl: "https://trita.io/api/newsletter/confirm?token=confirm-token",
+        locale,
+      }),
+    );
+
+    await capture("newsletter_blog_post", locale, () =>
+      m.sendNewBlogPostEmail({
+        to: "olvaso@example.com",
+        postTitle:
+          locale === "hu" ? "A csapatdinamika olvasása" : "Reading team dynamics",
+        postDescription:
+          locale === "hu"
+            ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
+            : "What a team reveals through the way its members react to each other's feedback.",
+        postUrl: "https://trita.io/blog/csapatdinamika-olvasasa",
+        readingMinutes: 7,
+        unsubUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        locale,
+      }),
+    );
   }
 
   // Admin-értesítő: csak magyarul megy (a szervezet adminisztrátorának).

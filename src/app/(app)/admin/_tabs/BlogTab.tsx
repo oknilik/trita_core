@@ -1,11 +1,13 @@
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { blogStoreMode, githubConfigured } from "@/lib/blog-store";
 import { AdminBlogSection } from "@/app/(app)/admin/_components/AdminBlogSection";
+import { AdminNewsletterSection } from "@/app/(app)/admin/_components/AdminNewsletterSection";
+import { getNewsletterStats } from "@/lib/newsletter";
 
 // Blog fül — cikkek listája (piszkozatokkal) + szerkesztő. A tartalom a
 // content/blog .mdx fájlokból jön; élesben a lista a legutóbbi deploy
 // állapotát mutatja (a git az igazság — ld. blog-store.ts).
-export function BlogTab() {
+export async function BlogTab() {
   const metas = [
     ...getAllPosts("hu", { includeDrafts: true }),
     ...getAllPosts("en", { includeDrafts: true }),
@@ -31,11 +33,21 @@ export function BlogTab() {
     };
   });
 
+  // A hírlevél-blokk a Blog fül tetején él: ugyanaz a munkamenet („megjelent
+  // egy cikk"), nem érdemes külön fülre szórni.
+  const stats = await getNewsletterStats();
+  const publishedPosts = posts
+    .filter((p) => p.status === "published")
+    .map((p) => ({ slug: p.slug, title: p.title, locale: p.locale }));
+
   return (
-    <AdminBlogSection
-      posts={posts}
-      storeMode={blogStoreMode()}
-      githubReady={githubConfigured()}
-    />
+    <>
+      <AdminNewsletterSection stats={stats} posts={publishedPosts} />
+      <AdminBlogSection
+        posts={posts}
+        storeMode={blogStoreMode()}
+        githubReady={githubConfigured()}
+      />
+    </>
   );
 }

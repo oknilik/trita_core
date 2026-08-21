@@ -69,7 +69,23 @@ adatvédelmi tájékoztató is kimond) nem tartható.
 
 Doksi: `docs/development/analytics.md`, 5. fejezet.
 
-## 5. Valós cégadatok a jogi oldalakra
+## 5. Hírlevél-feladó elkülönítése
+
+**Állapot: AJÁNLOTT a hírlevél élesítése előtt, KÖTELEZŐ a lista növekedésével.**
+
+A blog-feliratkozás (2026-08-21) az első TÖMEGES levelünk. Ha ugyanarról a
+feladó-aldomainről megy, mint a meghívók és a belépési kódok, egy
+spam-panasz-hullám azok kézbesítését is rontja.
+
+- [ ] Külön Resend-domain a hírlevélnek (`news.trita.io`), MX/SPF/DKIM
+      rekordokkal.
+- [ ] A `newsletter_*` sablonok feladója erre állítva.
+- [ ] A `CRON_SECRET` be van állítva — enélkül a `/api/cron/blog-digest`
+      élesben fail-closed (401), tehát NEM megy ki értesítő.
+
+Doksi: `docs/development/resend-domain-ops.md`.
+
+## 6. Valós cégadatok a jogi oldalakra
 
 **Állapot: BLOKKOLT — üzleti adat kell hozzá.**
 

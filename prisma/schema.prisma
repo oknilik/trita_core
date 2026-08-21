@@ -155,6 +155,9 @@ model UserProfile {
   // CRM (admin-only): a profilhoz kézzel linkelt értékesítési folyamatok
   deals Deal[]
 
+  // Hírlevél/blog-feliratkozás — a cím alapján összekötve (opcionális)
+  newsletterSubscriptions NewsletterSubscriber[]
+
   @@index([activeOrgId])
   @@index([activeTeamId])
 }
@@ -480,17 +483,17 @@ model CandidateCredit {
 }
 
 model Subscription {
-  id                     String    @id @default(cuid())
-  orgId                  String    @unique
-  planType               String? // "team" | "org" | "scale"
-  status                 String    @default("trialing")
-  trialEndsAt            DateTime?
-  currentPeriodStart     DateTime?
-  currentPeriodEnd       DateTime?
-  cancelAtPeriodEnd      Boolean   @default(false)
-  candidateCredits       Int       @default(0)
-  createdAt              DateTime  @default(now())
-  updatedAt              DateTime  @updatedAt
+  id                 String    @id @default(cuid())
+  orgId              String    @unique
+  planType           String? // "team" | "org" | "scale"
+  status             String    @default("trialing")
+  trialEndsAt        DateTime?
+  currentPeriodStart DateTime?
+  currentPeriodEnd   DateTime?
+  cancelAtPeriodEnd  Boolean   @default(false)
+  candidateCredits   Int       @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   org Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
 
@@ -1136,4 +1139,79 @@ model AnalyticsEvent {
   @@index([occurredAt])
   @@index([visitorRef, occurredAt])
   @@index([userProfileId, occurredAt])
+}
+
+// ============================================
+// HÍRLEVÉL / BLOG-FELIRATKOZÁS
+// ============================================
+//
+// KÜLÖN TÁBLA, nem a UserProfile mezője: a feliratkozók többségének NINCS
+// fiókja (blog-olvasó, vendég-teszt kitöltő). A fiókos felhasználó
+// életciklus-levél beállítása marad a `UserProfile.lifecycleEmailsOptOut`;
+// ez a két dolog nem ugyanaz, és nem is keverhető össze.
+//
+// DOUBLE OPT-IN: a sor `PENDING`-ként jön létre, és csak a levélben lévő
+// `confirmToken` megnyitásával lesz `ACTIVE`. Küldeni KIZÁRÓLAG `ACTIVE`
+// sorra szabad. Ez egyszerre GDPR-követelmény (bizonyítható, önkéntes
+// hozzájárulás: `confirmedAt`) és kézbesíthetőségi kérdés (idegen címre
+// küldött levél = spam-panasz).
+model NewsletterSubscriber {
+  id     String @id @default(cuid())
+  // Normalizált (kisbetűs, trimmelt) cím — a `@unique` erre az alakra áll.
+  email  String @unique
+  locale String @default("hu")
+
+  // PENDING | ACTIVE | UNSUBSCRIBED | BOUNCED
+  status String   @default("PENDING")
+  // Tartalom-típusok: "blog" (új cikk értesítő) | "newsletter" (időszaki).
+  topics String[] @default(["blog"])
+  // Honnan érkezett: blog_post | blog_index | footer | try_complete | account
+  source String   @default("blog")
+
+  // A megerősítő link tokenje — LEJÁR (tokenExpiresAt). Újra-küldéskor új
+  // token generálódik, a régi azonnal érvénytelen.
+  confirmToken   String   @unique
+  tokenExpiresAt DateTime
+  // A leiratkozó link tokenje — SOHA nem jár le, és nem igényel belépést.
+  // Minden kimenő levél ezzel a tokennel viszi a `List-Unsubscribe` fejlécet.
+  unsubToken     String   @unique
+
+  confirmedAt    DateTime?
+  unsubscribedAt DateTime?
+  // Az utolsó tényleges kiküldés ideje — a digest-futás naplózza.
+  lastSentAt     DateTime?
+
+  // Ha a cím egy meglévő fiókhoz tartozik, összekötjük (mint az Inquiry).
+  // Nem kötelező, és a profil törlése nem törli a feliratkozást.
+  userProfileId String?
+  userProfile   UserProfile? @relation(fields: [userProfileId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deliveries NewsletterDelivery[]
+
+  @@index([status, locale])
+  @@index([userProfileId])
+  @@index([createdAt])
+}
+
+// Kiküldés-napló — EZ teszi a digestet idempotenssé.
+//
+// A blog forrásigazsága a git (`content/blog/*.mdx`), nincs „publikálva"
+// DB-esemény, amire akaszkodni lehetne. A digest-cron ezért minden futáskor
+// a napló alapján dönt: amire van sor, arra nem küld újra. Az
+// `@@unique([subscriberId, slug])` a versenyhelyzet ellen is véd (párhuzamos
+// cron-futás vagy kézi „küldés most").
+model NewsletterDelivery {
+  id           String   @id @default(cuid())
+  subscriberId String
+  // A blogbejegyzés slugja (a digest egyszerre egy cikket küld).
+  slug         String
+  sentAt       DateTime @default(now())
+
+  subscriber NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+
+  @@unique([subscriberId, slug])
+  @@index([slug, sentAt])
 }

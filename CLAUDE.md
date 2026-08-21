@@ -47,6 +47,7 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
 | **Team intelligence** | `src/lib/team-intelligence.ts`, `team-pattern.ts`, `components/team/` | Evidencia + prioritás-motor confidence-szel, profil-alapú dinamika-becslés (`friction-model.ts` súlyozott \|Δ\|, trust-kör felülír), csapatszerepek (valódi kitöltés > HEXACO-becslés, forrás-badge kötelező). A korábbi contribution-placement (TeamMap) modell 2026-08-10-én kivezetve (halott számítás volt). |
 | **Observer flow** | `/observe/[token]`, `src/lib/observer/` | Publikus (auth nélkül), token-alapú, 30 nap lejárat, max 5 aktív meghívó, confidence rating, szerver-oldali draft. |
 | **Notification hub** | `src/lib/notifications/` | Orchestrator + repository + policy rétegek, dedupe kulcs, role-aware címzés. |
+| **Hírlevél/blog-feliratkozás** | `src/lib/newsletter.ts`, `newsletter-digest.ts`, `/api/newsletter/*` | Double opt-in feliratkozás (PENDING→ACTIVE), token-alapú, belépés nélküli leiratkozás `List-Unsubscribe` fejléccel. Kiküldés napi cronból (`/api/cron/blog-digest`), 14 napos ablakkal; a `NewsletterDelivery` napló teszi idempotenssé. Admin: `/admin?tab=blog`. |
 | **Analitika** | `src/lib/analytics/`, `/api/e`, `/admin?tab=analytics` | Saját, first-party esemény-követés. ZÁRT katalógus (`events.ts`) zod `.strict()` sémákkal — PII szerkezetileg nem kerülhet bele. Nincs süti és semmilyen eszköz-tárolás: napi rotáló látogató-álnév. Üzleti szám mindig DB-ből, esemény csak mintázatra. Doksi: `docs/development/analytics.md` |
 | **Admin** | `/admin` (+ `/api/admin/*`) | Csak `ADMIN_EMAILS` env-ben listázott emailek (nincs nav-link, beírt URL). Tabok: Áttekintés/Kutatás/Emlékeztetők/Szervezetek. |
 
@@ -120,6 +121,8 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 PUBLIKUS:  / (landing, self/team mód) · /try (vendég teszt) · /pricing
            (tanácsadói ajánlat) · /founding · /contact · /blog · /patterns
            · /observe/[token] · /join/[token] · /join/org/[inviteId]
+           · /newsletter/confirmed · /newsletter/unsubscribed (noindex,
+             a feliratkozás-visszajelző oldalak)
 BELÉPVE:   /dashboard → journey elosztó (soha nem renderel tartalmat)
   user:    /profile/results (tabok: results/comparison/invites) · /profile
            · /assessment · /team/[id] (ha tag)

@@ -6,6 +6,7 @@ import { t } from "@/lib/i18n";
 import { EmailPreferencesClient } from "./EmailPreferencesClient";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
+import { getAccountSubscriptionState } from "@/lib/newsletter";
 
 // Életciklus-email beállítások — a reflexiós (és jövőbeni hasonló) emailek
 // leiratkozó-linkje ide hoz. Auth-oldal: a címzett a termék belépett usere.
@@ -26,9 +27,13 @@ export default async function EmailPreferencesPage() {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { lifecycleEmailsOptOut: true },
+    select: { lifecycleEmailsOptOut: true, email: true },
   });
   if (!profile) return redirectToSignIn();
+
+  const newsletterSubscribed = profile.email
+    ? await getAccountSubscriptionState(profile.email)
+    : false;
 
   return (
     <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
@@ -43,7 +48,10 @@ export default async function EmailPreferencesPage() {
           {t("results.emailPrefsBody", locale)}
         </p>
         <div className="mt-6">
-          <EmailPreferencesClient initialOptOut={profile.lifecycleEmailsOptOut} />
+          <EmailPreferencesClient
+            initialOptOut={profile.lifecycleEmailsOptOut}
+            initialNewsletter={newsletterSubscribed}
+          />
         </div>
       </div>
     </main>

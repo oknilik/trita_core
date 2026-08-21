@@ -43,3 +43,22 @@ kint vannak), a trita.hu-ról nem. A kód default feladója emiatt 2026-07-24-é
 - Ha később trita.hu-ról is akarunk küldeni (HU-piaci feladó), ugyanez a
   három rekord kell a telconetes DNS-be a `send.trita.hu` aldomainre —
   külön Resend-domain felvétellel.
+
+## Hírlevél: külön feladó-aldomain (2026-08-21)
+
+A blog-feliratkozás bevezetésével először küldünk **tömeges** levelet
+(`newsletter_blog_post`). Ez más kockázati osztály, mint a tranzakcionális
+levél: egyetlen spam-panasz-hullám ronthatja a `send.trita.io` hírnevét, és
+azzal együtt a MEGHÍVÓK és a BELÉPÉSI KÓDOK kézbesítését is.
+
+Ezért élesítés előtt:
+
+- [ ] Külön Resend-domain a `news.trita.io` (vagy `send-news.trita.io`)
+      aldomainre, ugyanazzal a három rekorddal (MX/SPF/DKIM).
+- [ ] A hírlevél-sablonok feladója erre az aldomainre állítva
+      (`sendEmail` → `from` felülbírálás a `newsletter_*` sablonokon).
+- [ ] A `List-Unsubscribe` fejléc élesben is átmegy — a Gmail „Show original"
+      nézetében ellenőrizhető. Ezt a kód már küldi (`emails.ts`).
+
+Amíg ez nincs kész, a hírlevél a közös `EMAIL_FROM`-ról megy — kis listánál
+ez vállalható, de a lista növekedésével nem az.
