@@ -10,14 +10,14 @@ export const dynamic = "force-dynamic";
  * Leiratkozás — belépés nélkül, egyetlen kattintással.
  *
  * KÉT METÓDUS, KÉT HÍVÓ:
- *   · GET  — az ember kattint a levélben lévő linkre → redirect egy emberi
- *            visszajelző oldalra.
+ *   · GET  — az ember kattint a levélben lévő linkre → redirect a megerősítő
+ *            oldalra, állapotváltozás nélkül.
  *   · POST — a LEVELEZŐ hívja a `List-Unsubscribe-Post` fejléc alapján
  *            (RFC 8058, egykattintásos leiratkozás). Itt nincs ember, ezért
  *            sima 200 a válasz, redirect nélkül.
  *
- * Mindkét ág IDEMPOTENS: a levelezők előzetesen és ismételten is behívhatják,
- * a már leiratkozott sorra érkező hívás is siker.
+ * A POST idempotens: a levelezők ismételten is behívhatják, és a már
+ * leiratkozott sorra érkező hívás is siker.
  */
 async function handle(token: string, log: Awaited<ReturnType<typeof getRequestLogger>>) {
   if (!token) return { ok: false };
@@ -32,11 +32,10 @@ async function handle(token: string, log: Awaited<ReturnType<typeof getRequestLo
 }
 
 export async function GET(req: NextRequest) {
-  const log = await getRequestLogger("newsletter");
-  const result = await handle(req.nextUrl.searchParams.get("token") ?? "", log);
-
-  const url = new URL("/newsletter/unsubscribed", req.nextUrl.origin);
-  url.searchParams.set("state", result.ok ? "ok" : "invalid");
+  // GET soha nem mutál: a látható link egy emberi megerősítő oldalra visz.
+  const url = new URL("/newsletter/unsubscribe", req.nextUrl.origin);
+  const token = req.nextUrl.searchParams.get("token");
+  if (token) url.searchParams.set("token", token);
   return NextResponse.redirect(url, { status: 303 });
 }
 

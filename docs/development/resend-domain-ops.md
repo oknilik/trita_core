@@ -47,7 +47,7 @@ kint vannak), a trita.hu-ról nem. A kód default feladója emiatt 2026-07-24-é
 ## Hírlevél: külön feladó-aldomain (2026-08-21)
 
 A blog-feliratkozás bevezetésével először küldünk **tömeges** levelet
-(`newsletter_blog_post`). Ez más kockázati osztály, mint a tranzakcionális
+(`newsletter_blog_post`, `newsletter_issue`). Ez más kockázati osztály, mint a tranzakcionális
 levél: egyetlen spam-panasz-hullám ronthatja a `send.trita.io` hírnevét, és
 azzal együtt a MEGHÍVÓK és a BELÉPÉSI KÓDOK kézbesítését is.
 

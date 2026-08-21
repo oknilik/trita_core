@@ -22,8 +22,10 @@ test("a szerkesztoi bevezetot escape-eljuk, a bekezdes-tordelest ertelmezzuk", a
       subject: "Teszt szám",
       intro: '<script>alert("xss")</script>\n\nMásodik bekezdés',
       items: [],
-      unsubUrl: "https://trita.io/api/newsletter/unsubscribe?token=t",
+      unsubUrl: "https://trita.io/newsletter/unsubscribe?token=t",
+      unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=t",
       locale: "hu",
+      idempotencyKey: "test-issue-escape",
     }),
   );
 
@@ -36,7 +38,8 @@ test("a szerkesztoi bevezetot escape-eljuk, a bekezdes-tordelest ertelmezzuk", a
 // Tömeges levél: a leiratkozás egy kattintás, és a levelezőnek is látnia kell
 // a fejlécből (RFC 8058) — e nélkül a Gmail/Yahoo bulk-szabályai büntetnek.
 test("a szerkesztett szam viszi a leiratkozo linket a torzsben es a fejlecben", async () => {
-  const unsubUrl = "https://trita.io/api/newsletter/unsubscribe?token=abc";
+  const unsubUrl = "https://trita.io/newsletter/unsubscribe?token=abc";
+  const unsubPostUrl = "https://trita.io/api/newsletter/unsubscribe?token=abc";
   const { sendNewsletterIssueEmail } = await loadEmails();
   const payload = await withCapturedSend(() =>
     sendNewsletterIssueEmail({
@@ -48,14 +51,18 @@ test("a szerkesztett szam viszi a leiratkozo linket a torzsben es a fejlecben", 
           title: "Cikk",
           description: "Leírás",
           url: "https://trita.io/api/newsletter/click?d=1&to=cikk",
+          imageUrl: "https://trita.io/blog/cikk/opengraph-image",
           readingMinutes: 5,
         },
       ],
       unsubUrl,
+      unsubPostUrl,
       locale: "hu",
+      idempotencyKey: "test-issue-unsubscribe",
     }),
   );
 
   assert.ok((payload.html ?? "").includes(unsubUrl), "a láblécben ott a leiratkozó link");
   assert.ok((payload.text ?? "").includes(unsubUrl), "a sima szöveges változatban is");
+  assert.ok((payload.html ?? "").includes("/blog/cikk/opengraph-image"), "a cikk képe bekerül");
 });

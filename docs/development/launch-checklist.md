@@ -81,10 +81,15 @@ spam-panasz-hullám azok kézbesítését is rontja.
       rekordokkal.
 - [ ] A `newsletter_*` sablonok feladója erre állítva.
 - [ ] A `CRON_SECRET` be van állítva — enélkül a `/api/cron/blog-digest`
-      élesben fail-closed (401), tehát NEM megy ki értesítő.
+      és `/api/cron/newsletter-maintenance` élesben fail-closed (401).
+- [ ] `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` beállítva —
+      enélkül a publikus feliratkozás productionben fail-closed (503).
 - [ ] `RESEND_WEBHOOK_SECRET` + a webhook felvéve a Resendben
-      (`email.bounced`, `email.complained` → `/api/webhooks/resend`). E nélkül
-      a visszapattant címek a listán maradnak, és rontják a feladó-hírnevet.
+      (`email.delivered`, `email.failed`, `email.suppressed`, `email.bounced`,
+      `email.complained` → `/api/webhooks/resend`). E nélkül nincs valós
+      kézbesítési státusz, és a visszapattant címek a listán maradnak.
+- [ ] A napi maintenance cron futása ellenőrizve: outbox-retry, stale-claim
+      recovery és a tájékoztató szerinti 12 hónapos törlés.
 
 Doksi: `docs/development/resend-domain-ops.md`.
 

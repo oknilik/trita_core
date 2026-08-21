@@ -328,15 +328,15 @@ export const landingTranslations = {
   newsletter: {
     eyebrow: { hu: "Értesítő", en: "Updates" },
     title: {
-      hu: "Szólunk, ha új cikk jelenik meg",
-      en: "We'll let you know when a new article is up",
+      hu: "Új cikkek és ritka, válogatott összefoglalók",
+      en: "New articles and occasional curated digests",
     },
     sub: {
-      hu: "Gyakorlati írások csapatdinamikáról és emberekről szóló döntésekről. Ritkán, egy kattintással leiratkozhatsz.",
-      en: "Practical writing on team dynamics and decisions about people. Rarely, and one click to unsubscribe.",
+      hu: "Minden új blogbejegyzésről értesítünk, és időnként több cikkből álló szerkesztett hírlevelet küldünk. Bármikor leiratkozhatsz.",
+      en: "We notify you about each new article and occasionally send a curated multi-article newsletter. Unsubscribe any time.",
     },
     // Rövid változat a lábléchez és az oldalsávhoz — ott nincs hely a fentire.
-    compactTitle: { hu: "Új cikkeknél szólunk", en: "New articles, in your inbox" },
+    compactTitle: { hu: "Cikkek és Trita-hírlevél", en: "Articles and the Trita newsletter" },
     emailLabel: { hu: "Email cím", en: "Email address" },
     emailPlaceholder: { hu: "te@pelda.hu", en: "you@example.com" },
     submit: { hu: "Feliratkozom", en: "Subscribe" },
@@ -344,8 +344,8 @@ export const landingTranslations = {
     // A hozzájárulás szövege — a beküldés GOMBJÁNÁL kell állnia, hogy a
     // hozzájárulás tájékozott legyen (nem elég az adatkezelési tájékoztatóban).
     consent: {
-      hu: "A feliratkozással hozzájárulsz, hogy a megadott címre értesítőt küldjünk. Bármikor leiratkozhatsz.",
-      en: "By subscribing you agree that we may send updates to this address. You can unsubscribe any time.",
+      hu: "A feliratkozással hozzájárulsz az új cikkekről szóló értesítésekhez és az időszaki Trita-hírlevélhez. A kézbesítést és az első linkkérést mérjük, megnyitást nem. Bármikor leiratkozhatsz.",
+      en: "By subscribing you agree to new-article notifications and the occasional Trita newsletter. We measure delivery and the first link request, but not opens. You can unsubscribe any time.",
     },
     privacyLink: { hu: "Adatkezelés", en: "Privacy" },
     // A siker-üzenet SZÁNDÉKOSAN nem árulja el, hogy a cím már fent volt-e a
@@ -355,6 +355,24 @@ export const landingTranslations = {
       hu: "Küldtünk egy megerősítő levelet. Amíg rá nem kattintasz, nem küldünk semmit.",
       en: "We sent you a confirmation email. Until you click it, we won't send anything.",
     },
+    confirmActionTitle: {
+      hu: "Erősítsd meg a feliratkozásod",
+      en: "Confirm your subscription",
+    },
+    confirmActionBody: {
+      hu: "A feliratkozás csak az alábbi gomb megnyomásával válik aktívvá; a levélben lévő link puszta megnyitása nem elég.",
+      en: "Your subscription only becomes active after pressing the button below; merely opening the link in the email is not enough.",
+    },
+    confirmActionCta: { hu: "Igen, feliratkozom", en: "Yes, subscribe me" },
+    unsubscribeActionTitle: {
+      hu: "Leiratkozol a Trita leveleiről?",
+      en: "Unsubscribe from Trita emails?",
+    },
+    unsubscribeActionBody: {
+      hu: "A gomb megnyomása után nem küldünk több blogértesítőt vagy szerkesztett hírlevelet erre a címre.",
+      en: "After pressing the button, we will stop sending article notifications and curated newsletters to this address.",
+    },
+    unsubscribeActionCta: { hu: "Igen, leiratkozom", en: "Yes, unsubscribe" },
     errorInvalid: {
       hu: "Ez az email cím nem tűnik érvényesnek.",
       en: "That email address doesn't look valid.",

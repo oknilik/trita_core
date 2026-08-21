@@ -319,15 +319,41 @@ test("minden cid-hivatkozáshoz tartozik inline csatolmány (és fordítva)", as
   }
 });
 
-test("a levél NEM hivatkozik külső képre (hoszt- és deploy-függés nélkül)", async () => {
+test("külső kép csak a hírlevél trita.io-s cikkborítója lehet", async () => {
   const samples = await samplesPromise;
+  const imageTemplates = new Set(["newsletter_blog_post", "newsletter_issue"]);
   for (const s of samples) {
     const external = [...s.html.matchAll(/<img[^>]+src="((?!cid:)[^"]*)"/g)].map((m) => m[1]);
-    assert.deepEqual(
-      external,
-      [],
-      `${s.id} (${s.locale}): külső képforrás (${external.join(", ")}) — élesben nem töltődik be`,
+    if (!imageTemplates.has(s.id)) {
+      assert.deepEqual(
+        external,
+        [],
+        `${s.id} (${s.locale}): nem engedélyezett külső képforrás (${external.join(", ")})`,
+      );
+      continue;
+    }
+
+    assert.ok(external.length > 0, `${s.id} (${s.locale}): hiányzik a cikkborító`);
+    for (const src of external) {
+      const url = new URL(src);
+      assert.equal(url.protocol, "https:", `${s.id}: a cikkborító nem HTTPS`);
+      assert.equal(url.hostname, "trita.io", `${s.id}: idegen kép-host (${url.hostname})`);
+      assert.match(url.pathname, /^\/blog\/[a-z0-9-]+\/opengraph-image$/);
+    }
+  }
+});
+
+test("a hírlevél látható leiratkozása megerősítő oldal, a fejlécé RFC 8058 POST", async () => {
+  const samples = await samplesPromise;
+  for (const s of samples.filter((sample) =>
+    ["newsletter_blog_post", "newsletter_issue"].includes(sample.id))) {
+    assert.match(s.html, /\/newsletter\/unsubscribe\?token=/, `${s.id}: nincs látható leiratkozás`);
+    assert.equal(
+      s.headers["List-Unsubscribe"],
+      "<https://trita.io/api/newsletter/unsubscribe?token=unsub-token>",
+      `${s.id}: rossz List-Unsubscribe cél`,
     );
+    assert.equal(s.headers["List-Unsubscribe-Post"], "List-Unsubscribe=One-Click");
   }
 });
 

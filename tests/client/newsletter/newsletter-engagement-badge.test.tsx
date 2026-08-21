@@ -15,14 +15,15 @@ describe("NewsletterEngagementBadge", () => {
           status: "ACTIVE",
           confirmedAt: "2026-03-14T10:00:00.000Z",
           source: "blog_post",
-          delivered: 6,
-          clicked: 4,
+          accepted: 6,
+          delivered: 5,
+          linkRequests: 4,
         }}
       />,
     );
 
     expect(screen.getByText(/Olvasó/)).toBeInTheDocument();
-    expect(screen.getByText(/4\/6 kattintás/)).toBeInTheDocument();
+    expect(screen.getByText(/4\/6 linkkérés/)).toBeInTheDocument();
   });
 
   // A leiratkozott állapot is információ: megelőzi a kínos „nem kaptad meg a
@@ -34,8 +35,9 @@ describe("NewsletterEngagementBadge", () => {
           status: "UNSUBSCRIBED",
           confirmedAt: "2026-03-14T10:00:00.000Z",
           source: "footer",
+          accepted: 2,
           delivered: 2,
-          clicked: 0,
+          linkRequests: 0,
         }}
       />,
     );

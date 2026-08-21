@@ -26,7 +26,7 @@ export function NewsletterStatusCard({
   const { locale } = useLocale();
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-16">
+    <main className="flex min-h-[60vh] items-center justify-center bg-cream px-4 py-16 md:py-24">
       <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 md:p-10">
         <SectionEyebrow tone="muted">{t("newsletter.eyebrow", locale)}</SectionEyebrow>
         <h1 className="mt-2 font-fraunces text-title leading-tight tracking-tight text-ink">

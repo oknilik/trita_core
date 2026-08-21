@@ -33,6 +33,8 @@ export function AdminNewsletterSection({
   const [slug, setSlug] = useState(posts[0]?.slug ?? "");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [previewedSlug, setPreviewedSlug] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   const run = async (dryRun: boolean) => {
     if (!slug) return;
@@ -55,8 +57,13 @@ export function AdminNewsletterSection({
       setMessage(
         dryRun
           ? `Próbafutás: ${recipients} címzettnek menne ki.`
-          : `Kiküldve ${recipients} címzettnek${data.failed ? ` (${data.failed} hiba)` : ""}.`,
+          : `A szolgáltató ${recipients} címzett levelét átvette${data.failed ? ` (${data.failed} hiba)` : ""}.`,
       );
+      if (dryRun) setPreviewedSlug(slug);
+      else {
+        setPreviewedSlug(null);
+        setConfirming(false);
+      }
     } catch {
       setMessage("A küldés nem sikerült — nézd meg a szerver-naplót.");
     } finally {
@@ -78,12 +85,16 @@ export function AdminNewsletterSection({
       </div>
 
       <p className="mt-3 text-micro text-muted">
-        Kattintási arány összesen:{" "}
+        Szolgáltató által átvett: <strong className="text-ink-body">{stats.accepted}</strong>
+        {" · "}Mail-szerver által kézbesített: <strong className="text-ink-body">{stats.delivered}</strong>
+        {" · "}Linkkérés / átvett:{" "}
         <strong className="text-ink-body">
-          {stats.delivered > 0
-            ? `${Math.round((stats.clicked / stats.delivered) * 100)}% (${stats.clicked}/${stats.delivered})`
+          {stats.accepted > 0
+            ? `${Math.round((stats.clicked / stats.accepted) * 100)}% (${stats.clicked}/${stats.accepted})`
             : "még nincs adat"}
         </strong>
+        {stats.failed > 0 ? ` · ${stats.failed} újrapróbálható hiba` : ""}
+        {stats.unknown > 0 ? ` · ${stats.unknown} ellenőrizendő UNKNOWN` : ""}
         {" · "}
         Utolsó kiküldés:{" "}
         {stats.lastSentAt
@@ -95,7 +106,11 @@ export function AdminNewsletterSection({
         <SelectField
           label="Cikk"
           value={slug}
-          onChange={(e) => setSlug(e.target.value)}
+          onChange={(e) => {
+            setSlug(e.target.value);
+            setPreviewedSlug(null);
+            setConfirming(false);
+          }}
           containerClassName="flex-1"
         >
           {posts.map((post) => (
@@ -109,13 +124,28 @@ export function AdminNewsletterSection({
           <Button variant="secondary" disabled={busy || !slug} onClick={() => void run(true)}>
             Próbafutás
           </Button>
-          <Button disabled={busy || !slug} loading={busy} onClick={() => void run(false)}>
-            Küldés most
+          <Button
+            disabled={busy || !slug || previewedSlug !== slug}
+            onClick={() => setConfirming(true)}
+          >
+            Küldés ellenőrzése
           </Button>
         </div>
       </div>
 
-      {message ? <p className="mt-3 text-caption text-ink-body">{message}</p> : null}
+      {confirming && previewedSlug === slug ? (
+        <div className="mt-3 flex flex-wrap items-center gap-3 rounded-xl border border-state-warning-border bg-state-warning-bg p-3">
+          <p className="text-caption text-ink-body">A próbafuttatott cikk értesítőjének kiküldése végleges.</p>
+          <Button size="sm" loading={busy} disabled={busy} onClick={() => void run(false)}>
+            Igen, kiküldöm
+          </Button>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => setConfirming(false)}>
+            Mégsem
+          </Button>
+        </div>
+      ) : null}
+
+      {message ? <p role="status" aria-live="polite" className="mt-3 text-caption text-ink-body">{message}</p> : null}
 
       {engagement.length > 0 ? (
         <div className="mt-5 overflow-x-auto">
@@ -126,8 +156,9 @@ export function AdminNewsletterSection({
             <thead>
               <tr className="text-left text-micro uppercase tracking-wide text-muted">
                 <th className="pb-1 font-medium">Küldés</th>
-                <th className="pb-1 font-medium">Kiment</th>
-                <th className="pb-1 font-medium">Kattintott</th>
+                <th className="pb-1 font-medium">Átvette</th>
+                <th className="pb-1 font-medium">Kézbesült</th>
+                <th className="pb-1 font-medium">Linkkérés</th>
                 <th className="pb-1 font-medium">Arány</th>
               </tr>
             </thead>
@@ -135,11 +166,12 @@ export function AdminNewsletterSection({
               {engagement.map((row) => (
                 <tr key={row.slug} className="border-t border-sand">
                   <td className="py-1.5 pr-3 text-ink-body">{row.slug}</td>
+                  <td className="py-1.5 pr-3 text-ink-body">{row.accepted}</td>
                   <td className="py-1.5 pr-3 text-ink-body">{row.delivered}</td>
                   <td className="py-1.5 pr-3 text-ink-body">{row.clicked}</td>
                   <td className="py-1.5 text-ink-body">
-                    {row.delivered > 0
-                      ? `${Math.round((row.clicked / row.delivered) * 100)}%`
+                    {row.accepted > 0
+                      ? `${Math.round((row.clicked / row.accepted) * 100)}%`
                       : "—"}
                   </td>
                 </tr>
@@ -147,9 +179,9 @@ export function AdminNewsletterSection({
             </tbody>
           </table>
           <p className="mt-2 text-micro leading-relaxed text-muted">
-            Nyitást szándékosan nem mérünk (követő pixel), csak kattintást — ez
-            tehát ALSÓ becslés: aki elolvasta a levelet, de nem kattintott, itt
-            nem látszik.
+            Nyitást nem mérünk. A linkkérés alacsony bizonyosságú jel: aki
+            olvasott, de nem kattintott, nem látszik; scanner vagy továbbított
+            levél viszont kiválthatja. CRM-döntésnél csak kontextusként használd.
           </p>
         </div>
       ) : null}

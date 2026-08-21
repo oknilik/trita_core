@@ -1170,7 +1170,7 @@ model NewsletterSubscriber {
   // levélbeállításain szűkítheti.
   topics String[] @default(["blog", "newsletter"])
   // Honnan érkezett: blog_post | blog_index | footer | try_complete | account
-  source String   @default("blog")
+  source String   @default("blog_index")
 
   // A megerősítő link tokenje — LEJÁR (tokenExpiresAt). Újra-küldéskor új
   // token generálódik, a régi azonnal érvénytelen.
@@ -1182,8 +1182,18 @@ model NewsletterSubscriber {
 
   confirmedAt    DateTime?
   unsubscribedAt DateTime?
-  // Az utolsó tényleges kiküldés ideje — a digest-futás naplózza.
+  // Az utolsó szolgáltatói átvétel ideje — a tényleges kézbesítés külön adat.
   lastSentAt     DateTime?
+
+  // A double opt-in levél egy kicsi, DB-alapú outboxon megy át. Így egy
+  // átmeneti Resend-hiba nem lesz néma: a route hibát jelez, a maintenance
+  // cron pedig ugyanazzal az idempotency key-jel újrapróbálhatja.
+  // QUEUED | SENDING | SENT | FAILED | NOT_REQUIRED
+  confirmationEmailStatus        String    @default("QUEUED")
+  confirmationEmailAttempts      Int       @default(0)
+  confirmationEmailLastAttemptAt DateTime?
+  confirmationEmailSentAt        DateTime?
+  confirmationEmailLastError     String?
 
   // Ha a cím egy meglévő fiókhoz tartozik, összekötjük (mint az Inquiry).
   // Nem kötelező, és a profil törlése nem törli a feliratkozást.
@@ -1213,7 +1223,20 @@ model NewsletterDelivery {
   // Dedupe-kulcs. Cikk-értesítőnél a blogbejegyzés slugja, szerkesztett
   // számnál `issue:<id>` — a lényeg, hogy EGY küldési egységet azonosítson.
   slug         String
+  // A sor létrejöttének / legutóbbi újrafoglalásának ideje. Nem állítjuk
+  // róla, hogy kézbesítés: azt a `deliveredAt` Resend-webhook tölti ki.
   sentAt       DateTime  @default(now())
+  // CLAIMED | ACCEPTED | DELIVERED | FAILED | UNKNOWN | SUPPRESSED |
+  // BOUNCED | COMPLAINED. A foglalás és az állapotváltások külön időbélyegei
+  // teszik auditálhatóvá, hol állt meg egy levél.
+  status          String   @default("CLAIMED")
+  claimedAt       DateTime @default(now())
+  acceptedAt      DateTime?
+  deliveredAt     DateTime?
+  failedAt        DateTime?
+  providerEmailId String?  @unique
+  attemptCount    Int      @default(1)
+  lastError       String?
   // Az ELSŐ kattintás ideje a levélben lévő linkre. Nyitást szándékosan NEM
   // mérünk (követő pixel + a Mail Privacy Protection amúgy is hazudik) —
   // a kattintás az egyetlen tiszta jelzés arról, hogy a levél elért valakit.
@@ -1224,6 +1247,8 @@ model NewsletterDelivery {
   @@unique([subscriberId, slug])
   @@index([slug, sentAt])
   @@index([slug, clickedAt])
+  @@index([status, claimedAt])
+  @@index([slug, status])
 }
 
 // Szerkesztett hírlevél-szám (2026-08-21).
@@ -1246,11 +1271,21 @@ model NewsletterIssue {
   // A beválogatott cikkek slugjai, a levélben ebben a sorrendben.
   postSlugs String[] @default([])
 
-  // DRAFT | SENT — a SENT visszafordíthatatlan (a levél kiment).
+  // DRAFT | READY | SENDING | PARTIAL | SENT | FAILED. A tartalom a
+  // részleges kiküldéstől kezdve változtathatatlan; csak a kimaradt címzettek
+  // felé folytatható.
   status     String    @default("DRAFT")
   sentAt     DateTime?
-  // Hány címzettnek ment ki ténylegesen (a küldés eredménye, nem becslés).
+  // Hány címzett felé vette át a Resend a levelet. A valódi kézbesítést a
+  // NewsletterDelivery.deliveredAt jelzi.
   recipients Int       @default(0)
+  failures   Int       @default(0)
+
+  // Küldeni csak a legutóbb elmentett tartalom tényleges HTML-előnézete
+  // után lehet. A hash a tárgy+bevezető+nyelv+cikklista lenyomata.
+  previewHash   String?
+  previewedAt   DateTime?
+  sendStartedAt DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

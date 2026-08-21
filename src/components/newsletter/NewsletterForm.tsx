@@ -103,7 +103,7 @@ export function NewsletterForm({
 
   if (done) {
     return (
-      <div className={wrapperClass(variant, onInverse, className)}>
+      <div role="status" aria-live="polite" className={wrapperClass(variant, onInverse, className)}>
         <div className="flex items-start gap-3">
           <SuccessCheck className="mt-0.5 shrink-0" />
           <div>
@@ -201,6 +201,9 @@ export function NewsletterForm({
         </p>
       )}
       {form}
+      <span className="sr-only" aria-live="polite">
+        {busy ? t("newsletter.submitting", locale) : ""}
+      </span>
     </div>
   );
 }

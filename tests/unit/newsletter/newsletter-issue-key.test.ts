@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { clickUrl, DEFAULT_TOPICS } from "@/lib/newsletter";
-import { issueDeliveryKey } from "@/lib/newsletter-issue";
+import { issueCompletionStatus, issueDeliveryKey } from "@/lib/newsletter-issue";
 
 // A szerkesztett szám ugyanazt a naplót használja, mint a cikk-értesítő —
 // a dedupe-kulcs névtere választja szét a kettőt. Ha ez a prefix elromlik,
@@ -30,4 +30,11 @@ test("a kattintas-koveto link a slugot es az id-t kodolva viszi", () => {
 // hozzájárulás is mindkettőre szól — az alapértelmezésnek ezt kell tükröznie.
 test("az alapertelmezett topic-keszlet mindket tartalom-tipust tartalmazza", () => {
   assert.deepEqual([...DEFAULT_TOPICS].sort(), ["blog", "newsletter"]);
+});
+
+test("a szam csak legalabb egy szolgaltatoi atvetellel lehet SENT", () => {
+  assert.equal(issueCompletionStatus(2, 0), "SENT");
+  assert.equal(issueCompletionStatus(2, 1), "PARTIAL");
+  assert.equal(issueCompletionStatus(0, 1), "FAILED");
+  assert.equal(issueCompletionStatus(0, 0), "FAILED");
 });

@@ -6,7 +6,7 @@ import { t } from "@/lib/i18n";
 import { EmailPreferencesClient } from "./EmailPreferencesClient";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
-import { getAccountSubscriptionState } from "@/lib/newsletter";
+import { getAccountSubscriptionTopics } from "@/lib/newsletter";
 
 // Életciklus-email beállítások — a reflexiós (és jövőbeni hasonló) emailek
 // leiratkozó-linkje ide hoz. Auth-oldal: a címzett a termék belépett usere.
@@ -31,12 +31,12 @@ export default async function EmailPreferencesPage() {
   });
   if (!profile) return redirectToSignIn();
 
-  const newsletterSubscribed = profile.email
-    ? await getAccountSubscriptionState(profile.email)
-    : false;
+  const newsletterTopics = profile.email
+    ? await getAccountSubscriptionTopics(profile.email)
+    : [];
 
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-cream px-4 py-10">
+    <main className="flex min-h-[60vh] items-center justify-center bg-cream px-4 py-10">
       <div className="w-full max-w-md rounded-2xl border border-sand bg-surface-card p-8 md:p-10">
         <SectionEyebrow tone="muted">
           {t("results.emailPrefsEyebrow", locale)}
@@ -50,7 +50,7 @@ export default async function EmailPreferencesPage() {
         <div className="mt-6">
           <EmailPreferencesClient
             initialOptOut={profile.lifecycleEmailsOptOut}
-            initialNewsletter={newsletterSubscribed}
+            initialNewsletterTopics={newsletterTopics}
           />
         </div>
       </div>

@@ -3,15 +3,17 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import {
-  getAccountSubscriptionState,
-  setAccountSubscription,
+  getAccountSubscriptionTopics,
+  NEWSLETTER_TOPICS,
+  setAccountSubscriptionTopics,
 } from "@/lib/newsletter";
 
-// Levélbeállítások egy helyen — KÉT, egymástól független kapcsolóval:
+// Levélbeállítások egy helyen — három, egymástól független kapcsolóval:
 //
 //  1. Életciklus-emailek (reflexiós utókövetés és hasonlók). A tranzakcionális
 //     emaileket (meghívók, eredmény-értesítők) NEM érinti.
-//  2. Hírlevél / új blogbejegyzés értesítő. Külön tábla (NewsletterSubscriber),
+//  2–3. Új blogbejegyzés értesítő és szerkesztett hírlevél. Külön tábla
+//     (NewsletterSubscriber),
 //     mert a feliratkozók többségének nincs fiókja — a fiókos felhasználónál a
 //     kapcsoló a saját címére szóló feliratkozást állítja.
 //
@@ -21,12 +23,12 @@ import {
 const updateSchema = z
   .object({
     lifecycleEmailsOptOut: z.boolean().optional(),
-    newsletterSubscribed: z.boolean().optional(),
+    newsletterTopics: z.array(z.enum(NEWSLETTER_TOPICS)).max(2).optional(),
   })
   .strict()
   .refine(
     (data) =>
-      data.lifecycleEmailsOptOut !== undefined || data.newsletterSubscribed !== undefined,
+      data.lifecycleEmailsOptOut !== undefined || data.newsletterTopics !== undefined,
     { message: "EMPTY_UPDATE" },
   );
 
@@ -40,13 +42,13 @@ export async function GET() {
   });
   if (!profile) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
-  const newsletterSubscribed = profile.email
-    ? await getAccountSubscriptionState(profile.email)
-    : false;
+  const newsletterTopics = profile.email
+    ? await getAccountSubscriptionTopics(profile.email)
+    : [];
 
   return NextResponse.json({
     lifecycleEmailsOptOut: profile.lifecycleEmailsOptOut,
-    newsletterSubscribed,
+    newsletterTopics,
   });
 }
 
@@ -72,18 +74,21 @@ export async function POST(req: Request) {
     });
   }
 
-  if (parsed.data.newsletterSubscribed !== undefined) {
+  if (parsed.data.newsletterTopics !== undefined) {
     // Cím nélküli profil (elméleti eset: a Clerk-szinkron még nem futott le)
     // esetén nincs mire feliratkozni — a kérés nem hiba, csak nem történik semmi.
     if (!profile.email) {
       return NextResponse.json({ error: "NO_EMAIL" }, { status: 409 });
     }
-    await setAccountSubscription({
+    const updated = await setAccountSubscriptionTopics({
       email: profile.email,
       locale: profile.locale,
       userProfileId: profile.id,
-      subscribed: parsed.data.newsletterSubscribed,
+      topics: parsed.data.newsletterTopics,
     });
+    if (!updated) {
+      return NextResponse.json({ error: "EMAIL_SUPPRESSED" }, { status: 409 });
+    }
   }
 
   return NextResponse.json({ ok: true });

@@ -13,6 +13,7 @@ function safeEqual(a: string, b: string): boolean {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 /**
  * GET /api/cron/blog-digest — új blogbejegyzés-értesítő kiküldése.

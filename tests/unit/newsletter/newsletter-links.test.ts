@@ -2,9 +2,11 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   NEWSLETTER_SOURCES,
+  blogImageUrl,
   confirmUrl,
   normalizeEmail,
   unsubscribeUrl,
+  unsubscribePostUrl,
 } from "@/lib/newsletter";
 
 // A cím-normalizálás nem kozmetika: a `@unique` EBBEN az alakban áll, tehát
@@ -20,18 +22,26 @@ test("a token URL-kodolva kerul a linkbe", () => {
   // egy jövőbeni token-formátum nem törheti el némán a leiratkozó linket.
   assert.equal(
     unsubscribeUrl("https://trita.io", "a+b/c="),
+    "https://trita.io/newsletter/unsubscribe?token=a%2Bb%2Fc%3D",
+  );
+  assert.equal(
+    unsubscribePostUrl("https://trita.io", "a+b/c="),
     "https://trita.io/api/newsletter/unsubscribe?token=a%2Bb%2Fc%3D",
   );
   assert.equal(
     confirmUrl("https://trita.io", "tok"),
-    "https://trita.io/api/newsletter/confirm?token=tok",
+    "https://trita.io/newsletter/confirm?token=tok",
   );
 });
 
 test("a bazis-URL zaro perjele nem duplazodik", () => {
   assert.equal(
     confirmUrl("https://trita.io///", "tok"),
-    "https://trita.io/api/newsletter/confirm?token=tok",
+    "https://trita.io/newsletter/confirm?token=tok",
+  );
+  assert.equal(
+    blogImageUrl("https://trita.io///", "egy-cikk"),
+    "https://trita.io/blog/egy-cikk/opengraph-image",
   );
 });
 

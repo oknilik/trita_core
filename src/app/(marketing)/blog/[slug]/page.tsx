@@ -572,7 +572,6 @@ export default async function BlogPostPage({
               {t("blog.tryCta", locale)}
             </Link>
           </div>
-          <NewsletterForm source="blog_post" variant="compact" />
         </div>
       </aside>
       </div>

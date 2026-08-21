@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Webhook } from "svix";
 import { z } from "zod";
 import { getRequestLogger } from "@/lib/logger.server";
-import { applyDeliveryFeedback } from "@/lib/newsletter";
+import { applyProviderDeliveryEvent, type ProviderDeliveryEvent } from "@/lib/newsletter";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -16,7 +16,8 @@ export const dynamic = "force-dynamic";
  * halott címekkel, ami a feladó-hírnevet (és így a MEGHÍVÓK kézbesítését is)
  * rontja.
  *
- * KÉT ESEMÉNYT dolgozunk fel, szándékosan MÁS következménnyel:
+ * A kézbesítési eseményeket külön állapotban könyveljük; a cím-higiéniát két
+ * végleges visszajelzés módosítja, szándékosan MÁS következménnyel:
  *   · `email.bounced`   → BOUNCED (a cím nem létezik — technikai tény)
  *   · `email.complained` → UNSUBSCRIBED (spamnek jelölte — ez SZÁNDÉK, és a
  *     helyes válasz a leiratkoztatás, nem a „hibás cím" könyvelése)
@@ -35,6 +36,7 @@ const resendEventSchema = z.object({
     .object({
       to: z.union([z.string(), z.array(z.string())]).optional(),
       email: z.string().optional(),
+      email_id: z.string().optional(),
       subject: z.string().optional(),
       bounce: z
         .object({
@@ -42,6 +44,10 @@ const resendEventSchema = z.object({
           type: z.string().optional(),
           subType: z.string().optional(),
         })
+        .optional(),
+      failed: z.object({ reason: z.string().optional() }).optional(),
+      suppressed: z
+        .object({ message: z.string().optional(), type: z.string().optional() })
         .optional(),
     })
     .passthrough(),
@@ -92,7 +98,14 @@ export async function POST(req: Request) {
   }
 
   const { type, data } = parsed.data;
-  if (type !== "email.bounced" && type !== "email.complained") {
+  const supported = [
+    "email.delivered",
+    "email.failed",
+    "email.suppressed",
+    "email.bounced",
+    "email.complained",
+  ];
+  if (!supported.includes(type)) {
     return NextResponse.json({ ok: true, ignored: true });
   }
 
@@ -102,15 +115,31 @@ export async function POST(req: Request) {
   }
 
   const recipient = firstRecipient(data);
-  if (!recipient) return NextResponse.json({ ok: true, ignored: true });
+  const kind: ProviderDeliveryEvent =
+    type === "email.delivered"
+      ? "delivered"
+      : type === "email.failed"
+        ? "failed"
+        : type === "email.suppressed"
+          ? "suppressed"
+          : type === "email.complained"
+            ? "complaint"
+            : "bounce";
+  const detail = data.failed?.reason
+    ?? data.suppressed?.message
+    ?? data.bounce?.subType
+    ?? data.bounce?.type
+    ?? null;
 
   try {
-    const applied = await applyDeliveryFeedback(
-      recipient,
-      type === "email.complained" ? "complaint" : "bounce",
-    );
-    // A cím lehet, hogy nem is feliratkozó (tranzakcionális levél pattant
-    // vissza) — az nem hiba, csak nincs mit tenni vele.
+    const applied = await applyProviderDeliveryEvent({
+      providerEmailId: data.email_id,
+      email: recipient,
+      kind,
+      detail,
+    });
+    // Lehet tranzakcionális levél, amelyhez nincs NewsletterDelivery; ez nem
+    // hiba, a cím-alapú bounce/complaint védelem attól még lefuthat.
     return NextResponse.json({ ok: true, applied });
   } catch (error) {
     log.error({ event: "resend_webhook.apply_failed", type, err: error }, "Feedback apply failed");

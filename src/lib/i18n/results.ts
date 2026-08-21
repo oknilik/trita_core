@@ -1139,13 +1139,21 @@ export const resultsTranslations = {
     // Hírlevél-kapcsoló ugyanezen az oldalon (2026-08-21). A fiókos
     // felhasználónak nincs külön feliratkozó űrlap — a levélbeállításai
     // között billenti át.
-    emailPrefsNewsletterLabel: {
+    emailPrefsBlogLabel: {
       hu: "Értesítés új blogbejegyzésről",
       en: "Notify me about new articles",
     },
-    emailPrefsNewsletterHint: {
-      hu: "Ritkán írunk, és minden levél alján van egykattintásos leiratkozás.",
-      en: "We write rarely, and every email has a one-click unsubscribe.",
+    emailPrefsBlogHint: {
+      hu: "Külön értesítés minden új Trita-cikk megjelenésekor.",
+      en: "A separate notification whenever a new Trita article is published.",
+    },
+    emailPrefsDigestLabel: {
+      hu: "Időszaki, szerkesztett Trita-hírlevél",
+      en: "Occasional curated Trita newsletter",
+    },
+    emailPrefsDigestHint: {
+      hu: "Ritka, válogatott összefoglaló több cikkel és gyakorlati gondolattal.",
+      en: "An occasional curated digest with several articles and practical notes.",
     },
     shareVisibleSummary: {
       hu: "A link megnyitója ezt látja: mind a hat dimenziód pontszámmal és személyre szabott értelmezéssel, a munkastílus-leírásod, az ideális környezeted és szerep-illeszkedésed, valamint a becsült csapatszerepeid. A megosztást bármikor visszavonhatod.",

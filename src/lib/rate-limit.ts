@@ -9,7 +9,7 @@ const log = createLogger("rate-limit");
 let redis: Redis | null = null;
 
 function getRedis(): Redis | null {
-  if (!process.env.UPSTASH_REDIS_REST_URL) return null;
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
   if (!redis) {
     redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -63,8 +63,20 @@ export async function checkRateLimit(
 ): Promise<NextResponse | null> {
   const limiter = getLimiter(tier);
 
-  // Upstash not configured — skip in dev, warn in prod
+  // A hírlevél-végpont idegen címre küld levelet, ezért productionben
+  // védelem nélkül fail-closed. Más tiernél a régi működés marad, hogy egy
+  // konfigurációs hiba ne állítsa le az egész alkalmazást.
   if (!limiter) {
+    if (process.env.NODE_ENV === "production" && tier === "newsletter") {
+      log.error(
+        { event: "rate_limit.required_but_missing", tier },
+        "Newsletter rate limit is not configured — request rejected",
+      );
+      return NextResponse.json(
+        { error: "RATE_LIMIT_UNAVAILABLE" },
+        { status: 503, headers: { "Retry-After": "300" } },
+      );
+    }
     if (process.env.NODE_ENV !== "development") {
       log.warn({ event: "rate_limit.not_configured", tier }, "UPSTASH_REDIS_REST_URL not configured — check skipped");
     }

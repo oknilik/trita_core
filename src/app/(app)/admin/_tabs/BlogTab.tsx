@@ -5,6 +5,7 @@ import { AdminNewsletterSection } from "@/app/(app)/admin/_components/AdminNewsl
 import { getDeliveryEngagement, getNewsletterStats } from "@/lib/newsletter";
 import { AdminNewsletterIssueSection } from "@/app/(app)/admin/_components/AdminNewsletterIssueSection";
 import { prisma } from "@/lib/prisma";
+import { DIGEST_LOOKBACK_DAYS } from "@/lib/newsletter-digest";
 
 // Blog fül — cikkek listája (piszkozatokkal) + szerkesztő. A tartalom a
 // content/blog .mdx fájlokból jön; élesben a lista a legutóbbi deploy
@@ -37,21 +38,30 @@ export async function BlogTab() {
 
   // A hírlevél-blokk a Blog fül tetején él: ugyanaz a munkamenet („megjelent
   // egy cikk"), nem érdemes külön fülre szórni.
-  const [stats, engagement, issues] = await Promise.all([
+  const [stats, engagement, issues, databaseClock] = await Promise.all([
     getNewsletterStats(),
     getDeliveryEngagement(),
     prisma.newsletterIssue.findMany({
       orderBy: [{ status: "asc" }, { createdAt: "desc" }],
       take: 20,
     }),
+    prisma.$queryRaw<Array<{ now: Date }>>`SELECT NOW() AS now`,
   ]);
   const publishedPosts = posts
     .filter((p) => p.status === "published")
     .map((p) => ({ slug: p.slug, title: p.title, locale: p.locale }));
+  const digestCutoff = databaseClock[0]!.now.getTime()
+    - DIGEST_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
+  const digestPosts = posts
+    .filter((post) =>
+      post.status === "published"
+      && new Date(`${post.publishedAt}T23:59:59.999Z`).getTime() >= digestCutoff,
+    )
+    .map((post) => ({ slug: post.slug, title: post.title, locale: post.locale }));
 
   return (
     <>
-      <AdminNewsletterSection stats={stats} posts={publishedPosts} engagement={engagement} />
+      <AdminNewsletterSection stats={stats} posts={digestPosts} engagement={engagement} />
       <AdminNewsletterIssueSection
         issues={issues.map((issue) => ({
           id: issue.id,
@@ -59,9 +69,10 @@ export async function BlogTab() {
           subject: issue.subject,
           intro: issue.intro,
           postSlugs: issue.postSlugs,
-          status: issue.status as "DRAFT" | "SENT",
+          status: issue.status as "DRAFT" | "READY" | "SENDING" | "PARTIAL" | "SENT" | "FAILED",
           sentAt: issue.sentAt?.toISOString() ?? null,
           recipients: issue.recipients,
+          failures: issue.failures,
           createdAt: issue.createdAt.toISOString(),
         }))}
         posts={publishedPosts}

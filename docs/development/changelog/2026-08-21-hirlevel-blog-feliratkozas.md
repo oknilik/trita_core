@@ -78,11 +78,12 @@ mint a cron.
 
 ## Új felületek
 
-- `POST /api/newsletter/subscribe` · `GET /api/newsletter/confirm` ·
-  `GET|POST /api/newsletter/unsubscribe`
-- `GET|POST /api/admin/newsletter` · `GET /api/cron/blog-digest`
-- `/newsletter/confirmed` · `/newsletter/unsubscribed` (mindkettő `noindex`,
-  robots-disallow)
+- `POST /api/newsletter/subscribe` · `POST /api/newsletter/confirm` ·
+  `POST /api/newsletter/unsubscribe` (az API GET csak oldalra irányít)
+- `GET|POST /api/admin/newsletter` · `GET /api/cron/blog-digest` ·
+  `GET /api/cron/newsletter-maintenance`
+- `/newsletter/confirm` · `/newsletter/unsubscribe` · `/newsletter/confirmed`
+  · `/newsletter/unsubscribed` (mind `noindex`, robots-disallow)
 - `src/lib/newsletter.ts` (állapotgép) · `src/lib/newsletter-digest.ts` (kiküldés)
 - `NewsletterSubscriber` + `NewsletterDelivery` modell
   (migráció: `20260821120000_add_newsletter_subscription`)

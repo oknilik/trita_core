@@ -24,6 +24,8 @@ export type EmailSample = {
   text: string;
   /** A levéllel utazó inline képek (szójel, formanyelvi jel, QR). */
   attachments: CapturedAttachment[];
+  /** A levél provider-payloadjában átadott extra fejlécek. */
+  headers: Record<string, string>;
 };
 
 type CapturedAttachment = {
@@ -38,6 +40,7 @@ type CapturedPayload = {
   html?: string;
   text?: string;
   attachments?: CapturedAttachment[];
+  headers?: Record<string, string>;
 };
 
 /**
@@ -106,6 +109,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       html: payload.html,
       text: payload.text ?? "",
       attachments: payload.attachments ?? [],
+      headers: payload.headers ?? {},
     });
   }
 
@@ -274,8 +278,9 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
     await capture("newsletter_confirm", locale, () =>
       m.sendNewsletterConfirmEmail({
         to: "olvaso@example.com",
-        confirmUrl: "https://trita.io/api/newsletter/confirm?token=confirm-token",
+        confirmUrl: "https://trita.io/newsletter/confirm?token=confirm-token",
         locale,
+        idempotencyKey: `preview-confirm-${locale}`,
       }),
     );
 
@@ -289,9 +294,12 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
             ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
             : "What a team reveals through the way its members react to each other's feedback.",
         postUrl: "https://trita.io/blog/csapatdinamika-olvasasa",
+        postImageUrl: "https://trita.io/blog/csapatdinamika-olvasasa/opengraph-image",
         readingMinutes: 7,
-        unsubUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
+        unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
         locale,
+        idempotencyKey: `preview-blog-${locale}`,
       }),
     );
 
@@ -314,6 +322,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
                 ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
                 : "What a team reveals through the way its members react to each other's feedback.",
             url: "https://trita.io/blog/csapatdinamika-olvasasa",
+            imageUrl: "https://trita.io/blog/csapatdinamika-olvasasa/opengraph-image",
             readingMinutes: 7,
           },
           {
@@ -326,11 +335,14 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
                 ? "Miért marad tovább az, aki házon belül tud lépni egyet."
                 : "Why people stay longer when they can move within the company.",
             url: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere",
+            imageUrl: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere/opengraph-image",
             readingMinutes: 6,
           },
         ],
-        unsubUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
+        unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
         locale,
+        idempotencyKey: `preview-issue-${locale}`,
       }),
     );
   }

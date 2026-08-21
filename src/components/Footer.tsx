@@ -136,7 +136,7 @@ export function Footer() {
         {/* Feliratkozás — halkan, a link-oszlopok alatt. Minden publikus
             oldalon ott van, de nem szakít félbe semmit. Az `onInverse` azért
             kötelező, mert a lábléc MINDKÉT színsémán sötét. */}
-        {isPortfolioSurfaceActive("blog") ? (
+        {isPortfolioSurfaceActive("blog") && !currentPath.startsWith("/newsletter") ? (
           <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-6">
             <NewsletterForm source="footer" variant="inline" onInverse className="max-w-[420px]" />
           </div>

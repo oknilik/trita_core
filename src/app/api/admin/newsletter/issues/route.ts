@@ -4,9 +4,11 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getRequestLogger } from "@/lib/logger.server";
 import { previewIssue, sendIssue } from "@/lib/newsletter-issue";
+import { getPostBySlug } from "@/lib/blog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 /**
  * Szerkesztett hírlevél-szám admin API-ja.
@@ -31,12 +33,23 @@ const draftSchema = z.object({
   postSlugs: z.array(z.string().regex(SLUG_RE).max(120)).max(6),
 });
 
+function validArticleSelection(locale: "hu" | "en", postSlugs: string[]): boolean {
+  if (new Set(postSlugs).size !== postSlugs.length) return false;
+  return postSlugs.every((slug) => {
+    const post = getPostBySlug(slug);
+    return post?.status === "published" && post.locale === locale;
+  });
+}
+
 export async function POST(req: Request) {
   await requireAdmin();
 
   const parsed = draftSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
+  }
+  if (!validArticleSelection(parsed.data.locale, parsed.data.postSlugs)) {
+    return NextResponse.json({ error: "INVALID_ARTICLES" }, { status: 400 });
   }
 
   const issue = await prisma.newsletterIssue.create({
@@ -49,7 +62,12 @@ export async function POST(req: Request) {
 
 const patchSchema = z.union([
   draftSchema.partial().extend({ id: z.string().min(1), action: z.undefined().optional() }),
-  z.object({ id: z.string().min(1), action: z.enum(["preview", "send"]) }),
+  z.object({ id: z.string().min(1), action: z.literal("preview") }),
+  z.object({
+    id: z.string().min(1),
+    action: z.literal("send"),
+    previewHash: z.string().regex(/^[a-f0-9]{64}$/),
+  }),
 ]);
 
 export async function PATCH(req: Request) {
@@ -64,12 +82,15 @@ export async function PATCH(req: Request) {
   const body = parsed.data;
   const existing = await prisma.newsletterIssue.findUnique({
     where: { id: body.id },
-    select: { status: true },
+    select: { status: true, locale: true, postSlugs: true },
   });
   if (!existing) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
   if ("action" in body && body.action === "preview") {
     const preview = await previewIssue(body.id);
+    if (!preview) {
+      return NextResponse.json({ error: "PREVIEW_UNAVAILABLE" }, { status: 409 });
+    }
     return NextResponse.json({ ok: true, ...preview });
   }
 
@@ -77,7 +98,7 @@ export async function PATCH(req: Request) {
     if (existing.status === "SENT") {
       return NextResponse.json({ error: "ALREADY_SENT" }, { status: 409 });
     }
-    const result = await sendIssue(body.id);
+    const result = await sendIssue(body.id, body.previewHash);
     if (result.blocked) {
       return NextResponse.json({ error: result.blocked.toUpperCase() }, { status: 409 });
     }
@@ -88,9 +109,10 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ ok: true, ...result });
   }
 
-  // Mentés — csak piszkozaton.
-  if (existing.status === "SENT") {
-    return NextResponse.json({ error: "ALREADY_SENT" }, { status: 409 });
+  // Mentés — csak ki nem küldött tartalmon. PARTIAL/FAILED már kiment
+  // legalább egy címzettnek vagy megkezdődött, ezért tartalmilag immutable.
+  if (!["DRAFT", "READY"].includes(existing.status)) {
+    return NextResponse.json({ error: "ISSUE_IMMUTABLE" }, { status: 409 });
   }
 
   const { id, action: _action, ...fields } = body as { id: string; action?: undefined } & Partial<
@@ -98,7 +120,21 @@ export async function PATCH(req: Request) {
   >;
   void _action;
 
-  await prisma.newsletterIssue.update({ where: { id }, data: fields });
+  const nextLocale = fields.locale ?? (existing.locale as "hu" | "en");
+  const nextPostSlugs = fields.postSlugs ?? existing.postSlugs;
+  if (!validArticleSelection(nextLocale, nextPostSlugs)) {
+    return NextResponse.json({ error: "INVALID_ARTICLES" }, { status: 400 });
+  }
+
+  await prisma.newsletterIssue.update({
+    where: { id },
+    data: {
+      ...fields,
+      status: "DRAFT",
+      previewHash: null,
+      previewedAt: null,
+    },
+  });
   return NextResponse.json({ ok: true });
 }
 
@@ -117,8 +153,8 @@ export async function DELETE(req: Request) {
     select: { status: true },
   });
   if (!existing) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
-  if (existing.status === "SENT") {
-    return NextResponse.json({ error: "ALREADY_SENT" }, { status: 409 });
+  if (!["DRAFT", "READY"].includes(existing.status)) {
+    return NextResponse.json({ error: "ISSUE_IMMUTABLE" }, { status: 409 });
   }
 
   await prisma.newsletterIssue.delete({ where: { id: parsed.data.id } });

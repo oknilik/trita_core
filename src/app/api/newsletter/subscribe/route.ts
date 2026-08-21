@@ -1,18 +1,18 @@
 import { NextResponse } from "next/server";
+import crypto from "crypto";
 import { z } from "zod";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
-import { sendNewsletterConfirmEmail } from "@/lib/emails";
-import { APP_URL } from "@/lib/email-layout";
 import {
-  confirmUrl,
+  normalizeEmail,
   requestSubscription,
   NEWSLETTER_SOURCES,
   NEWSLETTER_TOPICS,
 } from "@/lib/newsletter";
+import { sendQueuedConfirmation } from "@/lib/newsletter-confirmation";
 
 export const runtime = "nodejs";
 
@@ -55,16 +55,28 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  // Ha épp be van jelentkezve, kötjük a profilhoz — de a feliratkozás
-  // ATTÓL FÜGGETLENÜL a megadott címre szól (a kettő eltérhet).
+  // IP mellett cím-cooldown is kell: elosztott bot-háló ugyanarra a címre
+  // különben korlátlan megerősítő levelet kérhetne. A Redis-kulcsbe nem kerül
+  // személyes adat, csak a normalizált cím SHA-256 lenyomata.
+  const emailHash = crypto
+    .createHash("sha256")
+    .update(normalizeEmail(parsed.data.email))
+    .digest("hex");
+  const emailRateLimitResponse = await checkRateLimit("newsletter", `email:${emailHash}`);
+  if (emailRateLimitResponse) return emailRateLimitResponse;
+
+  // Csak a profil SAJÁT, verifikált címével egyező beküldést kötjük a
+  // profilhoz. Egy eltérő, kézzel beírt cím nem válhat CRM-kapcsolattá.
   let userProfileId: string | null = null;
   const { userId } = await auth();
   if (userId) {
     const profile = await prisma.userProfile.findUnique({
       where: { clerkId: userId },
-      select: { id: true },
+      select: { id: true, email: true },
     });
-    userProfileId = profile?.id ?? null;
+    if (profile?.email && normalizeEmail(profile.email) === normalizeEmail(parsed.data.email)) {
+      userProfileId = profile.id;
+    }
   }
 
   try {
@@ -77,16 +89,16 @@ export async function POST(req: Request) {
     });
 
     if (result.outcome === "confirmation_sent" && result.confirmToken) {
-      // A levél best effort: ha a Resend elhasal, a feliratkozás attól még
-      // PENDING marad, és az újra-beküldés friss tokennel új levelet küld.
-      await sendNewsletterConfirmEmail({
-        to: parsed.data.email,
-        confirmUrl: confirmUrl(APP_URL, result.confirmToken),
-        locale: result.locale,
-      });
-
-      trackServerEvent("newsletter.submit", { source: parsed.data.source });
+      const sent = await sendQueuedConfirmation(result.subscriberId);
+      if (!sent) {
+        log.error(
+          { event: "newsletter.confirmation_not_sent", subscriberId: result.subscriberId },
+          "Confirmation email remained in outbox",
+        );
+        return NextResponse.json({ error: "NEWSLETTER_CONFIRMATION_FAILED" }, { status: 502 });
+      }
     }
+    trackServerEvent("newsletter.submit", { source: parsed.data.source });
   } catch (error) {
     log.error(
       { event: "newsletter.subscribe_failed", source: parsed.data.source, err: error },

@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { t } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
+import type { NewsletterTopic } from "@/lib/newsletter";
 
 /**
- * Levélbeállítások — KÉT független kapcsoló:
+ * Levélbeállítások — három független kapcsoló:
  *   · életciklus-emailek (reflexiós utókövetés és hasonlók),
- *   · hírlevél / új blogbejegyzés értesítő.
+ *   · új blogbejegyzés értesítő,
+ *   · időszaki, szerkesztett hírlevél.
  *
  * A kettő szándékosan külön áll: az első a termék működéséhez tartozó,
  * személyre szóló érintés, a második tartalom-marketing. Aki az egyiket
@@ -18,19 +20,19 @@ import { useLocale } from "@/components/LocaleProvider";
  */
 export function EmailPreferencesClient({
   initialOptOut,
-  initialNewsletter,
+  initialNewsletterTopics,
 }: {
   initialOptOut: boolean;
-  initialNewsletter: boolean;
+  initialNewsletterTopics: NewsletterTopic[];
 }) {
   const { locale } = useLocale();
   const [optOut, setOptOut] = useState(initialOptOut);
-  const [newsletter, setNewsletter] = useState(initialNewsletter);
+  const [newsletterTopics, setNewsletterTopics] = useState<NewsletterTopic[]>(initialNewsletterTopics);
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(false);
 
-  const save = async (payload: Record<string, boolean>, apply: () => void) => {
+  const save = async (payload: Record<string, unknown>, apply: () => void) => {
     setBusy(true);
     setError(false);
     setSaved(false);
@@ -48,6 +50,13 @@ export function EmailPreferencesClient({
     } finally {
       setBusy(false);
     }
+  };
+
+  const toggleNewsletterTopic = (topic: NewsletterTopic, enabled: boolean) => {
+    const next = enabled
+      ? Array.from(new Set([...newsletterTopics, topic]))
+      : newsletterTopics.filter((value) => value !== topic);
+    void save({ newsletterTopics: next }, () => setNewsletterTopics(next));
   };
 
   return (
@@ -76,31 +85,46 @@ export function EmailPreferencesClient({
       <label className="flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/45 p-4">
         <input
           type="checkbox"
-          checked={newsletter}
+          checked={newsletterTopics.includes("blog")}
           disabled={busy}
-          onChange={(e) => {
-            const next = e.target.checked;
-            void save({ newsletterSubscribed: next }, () => setNewsletter(next));
-          }}
+          onChange={(e) => toggleNewsletterTopic("blog", e.target.checked)}
           className="mt-0.5 h-5 w-5 accent-[var(--color-accent-primary)]"
         />
         <span>
           <span className="block text-caption font-semibold text-ink">
-            {t("results.emailPrefsNewsletterLabel", locale)}
+            {t("results.emailPrefsBlogLabel", locale)}
           </span>
           <span className="mt-0.5 block text-micro leading-relaxed text-muted">
-            {t("results.emailPrefsNewsletterHint", locale)}
+            {t("results.emailPrefsBlogHint", locale)}
+          </span>
+        </span>
+      </label>
+
+      <label className="flex min-h-[44px] cursor-pointer items-start gap-3 rounded-xl border border-sand bg-cream/45 p-4">
+        <input
+          type="checkbox"
+          checked={newsletterTopics.includes("newsletter")}
+          disabled={busy}
+          onChange={(e) => toggleNewsletterTopic("newsletter", e.target.checked)}
+          className="mt-0.5 h-5 w-5 accent-[var(--color-accent-primary)]"
+        />
+        <span>
+          <span className="block text-caption font-semibold text-ink">
+            {t("results.emailPrefsDigestLabel", locale)}
+          </span>
+          <span className="mt-0.5 block text-micro leading-relaxed text-muted">
+            {t("results.emailPrefsDigestHint", locale)}
           </span>
         </span>
       </label>
 
       {saved ? (
-        <p className="rounded-lg bg-sage/10 px-3 py-2 text-xs text-sage-dark">
+        <p role="status" aria-live="polite" className="rounded-lg bg-sage/10 px-3 py-2 text-xs text-sage-dark">
           {t("results.emailPrefsSaved", locale)}
         </p>
       ) : null}
       {error ? (
-        <p className="rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
+        <p role="alert" className="rounded-lg border border-state-error-border bg-state-error-bg px-3 py-2 text-xs text-state-error-fg">
           {t("results.compareError", locale)}
         </p>
       ) : null}

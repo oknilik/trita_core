@@ -7,36 +7,40 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/newsletter/confirm?token=… — a double opt-in második fele.
+ * POST /api/newsletter/confirm?token=… — a double opt-in második fele.
  *
- * Levélből érkező link, tehát GET, és a válasz REDIRECT egy emberi oldalra
- * (`/newsletter/confirmed`) — a levelező-kliensben megnyíló nyers JSON
- * használhatatlan visszajelzés lenne.
+ * A levél linkje GET-tel csak a megerősítő oldalra visz. Az állapotot az ott
+ * megnyomott gomb POST-ja módosítja, így a linket előre megnyitó levélszkenner
+ * nem tud feliratkoztatni.
  *
- * A `state` query-paraméter mondja meg a céloldalnak, mit mutasson:
- * `ok` | `expired` | `invalid`. Tokent SOHA nem viszünk tovább a redirectben:
- * a céloldal URL-je böngésző-előzménybe és referrerbe is bekerül.
+ * A POST JSON `state` mezője mondja meg a kliensnek, mit mutasson:
+ * `ok` | `expired` | `invalid`. Siker/hiba után a kliens token nélküli
+ * státusz-URL-re cseréli az előzményt.
  */
 export async function GET(req: NextRequest) {
+  // Régi levél-link kompatibilitás: GET csak az emberi megerősítő oldalra
+  // visz, állapotot nem módosít. Így levélszkenner nem aktivál feliratkozást.
+  const url = new URL("/newsletter/confirm", req.nextUrl.origin);
+  const token = req.nextUrl.searchParams.get("token");
+  if (token) url.searchParams.set("token", token);
+  return NextResponse.redirect(url, { status: 303 });
+}
+
+export async function POST(req: NextRequest) {
   const log = await getRequestLogger("newsletter");
   const token = req.nextUrl.searchParams.get("token") ?? "";
-
-  const target = (state: string) => {
-    const url = new URL("/newsletter/confirmed", req.nextUrl.origin);
-    url.searchParams.set("state", state);
-    return NextResponse.redirect(url, { status: 303 });
-  };
-
-  if (!token) return target("invalid");
+  if (!token) return NextResponse.json({ ok: false, state: "invalid" }, { status: 400 });
 
   try {
     const result = await confirmSubscription(token);
-    if (!result.ok) return target(result.reason ?? "invalid");
+    if (!result.ok) {
+      return NextResponse.json({ ok: false, state: result.reason ?? "invalid" });
+    }
 
     trackServerEvent("newsletter.confirm", {});
-    return target("ok");
+    return NextResponse.json({ ok: true, state: "ok" });
   } catch (error) {
     log.error({ event: "newsletter.confirm_failed", err: error }, "Newsletter confirm failed");
-    return target("invalid");
+    return NextResponse.json({ ok: false, state: "invalid" }, { status: 500 });
   }
 }

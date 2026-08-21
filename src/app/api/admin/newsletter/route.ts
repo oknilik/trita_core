@@ -4,10 +4,12 @@ import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getRequestLogger } from "@/lib/logger.server";
 import { getNewsletterStats } from "@/lib/newsletter";
-import { runBlogDigest } from "@/lib/newsletter-digest";
+import { DIGEST_LOOKBACK_DAYS, runBlogDigest } from "@/lib/newsletter-digest";
+import { getPostBySlug } from "@/lib/blog";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 /**
  * Admin hírlevél-kezelés (`/admin?tab=blog`).
@@ -66,6 +68,19 @@ export async function POST(req: Request) {
   const parsed = sendSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "INVALID_PAYLOAD" }, { status: 400 });
+  }
+
+  // A delivery-retention 12 hónap után törli a személyhez kötött naplót.
+  // Régi cikk kézi újraküldését ezért tiltjuk: különben évekkel később a
+  // dedupe-adat hiánya miatt ismét megkaphatná ugyanazt a lista.
+  const post = getPostBySlug(parsed.data.slug);
+  const oldestAllowed = Date.now() - DIGEST_LOOKBACK_DAYS * 24 * 60 * 60 * 1000;
+  if (
+    !post
+    || post.status !== "published"
+    || new Date(`${post.publishedAt}T23:59:59.999Z`).getTime() < oldestAllowed
+  ) {
+    return NextResponse.json({ error: "POST_OUTSIDE_SEND_WINDOW" }, { status: 409 });
   }
 
   try {

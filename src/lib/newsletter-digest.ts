@@ -2,17 +2,20 @@ import "server-only";
 
 import { getAllPosts } from "@/lib/blog";
 import { createLogger } from "@/lib/logger";
-import { sendNewBlogPostEmail } from "@/lib/emails";
+import { sendNewBlogPostEmail, type EmailSendResult } from "@/lib/emails";
 import { APP_URL } from "@/lib/email-layout";
 import {
+  blogImageUrl,
   clickUrl,
   listSendableSubscribers,
-  markSent,
-  releaseDelivery,
+  markDeliveryAccepted,
+  markDeliveryFailure,
   reserveDeliveries,
+  unsubscribePostUrl,
   unsubscribeUrl,
   type SendableSubscriber,
 } from "@/lib/newsletter";
+import { runNewsletterSendQueue } from "@/lib/newsletter-send";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/core";
 
 const log = createLogger("newsletter-digest");
@@ -42,14 +45,13 @@ const log = createLogger("newsletter-digest");
 export const DIGEST_LOOKBACK_DAYS = 14;
 
 /**
- * Resend-köteg mérete. A batch-végpont 100-at enged; 50-nel megyünk, mert a
- * levelek `cid:` csatolmányokat visznek, és a kisebb köteg hibánál kevesebbet
- * kockáztat.
+ * DB-claim kötegméret. A levélküldések ezen belül is 8/s start-limiteren
+ * mennek; ez csak azt szabja meg, egyszerre hány claimet írunk/értékelünk.
  */
 const BATCH_SIZE = 50;
 
 export interface DigestResult {
-  /** Slugonként hány címzettnek ment ki. */
+  /** Slugonként hány címzetthez vette át a szolgáltató. */
   sent: Array<{ slug: string; locale: Locale; recipients: number }>;
   /** Hány cím esett ki kézbesítési hiba miatt. */
   failed: number;
@@ -106,7 +108,7 @@ export async function runBlogDigest(options: DigestOptions = {}): Promise<Digest
         continue;
       }
 
-      let deliveredCount = 0;
+      let acceptedCount = 0;
 
       for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
         const batch = recipients.slice(i, i + BATCH_SIZE);
@@ -118,34 +120,39 @@ export async function runBlogDigest(options: DigestOptions = {}): Promise<Digest
         const sendable = batch.filter((r) => reserved.has(r.id));
         if (sendable.length === 0) continue;
 
-        const outcomes = await Promise.all(
-          sendable.map((subscriber) =>
-            sendOne(subscriber, post, locale, reserved.get(subscriber.id)!),
+        const outcomes = await runNewsletterSendQueue(
+          sendable,
+          (subscriber) => sendOne(
+            subscriber,
+            post,
+            locale,
+            reserved.get(subscriber.id)!.id,
+            reserved.get(subscriber.id)!.attemptCount,
           ),
         );
 
-        const succeeded: string[] = [];
-        for (const [index, ok] of outcomes.entries()) {
-          const subscriber = sendable[index]!;
-          if (ok) {
-            succeeded.push(subscriber.id);
+        for (const outcome of outcomes) {
+          const subscriber = outcome.item;
+          const deliveryId = reserved.get(subscriber.id)!.id;
+          if (outcome.result.ok) {
+            await markDeliveryAccepted(
+              deliveryId,
+              subscriber.id,
+              outcome.result.providerEmailId,
+            );
+            acceptedCount += 1;
             continue;
           }
-          // A küldés elhasalt → a foglalást eldobjuk, hogy a következő futás
-          // újrapróbálja. (Ez az egyetlen hely, ahol napló-sor törlődik.)
           result.failed += 1;
-          await releaseDelivery(reserved.get(subscriber.id)!);
+          await markDeliveryFailure(deliveryId, outcome.result);
         }
-
-        await markSent(succeeded);
-        deliveredCount += succeeded.length;
       }
 
-      if (deliveredCount === 0) continue;
+      if (acceptedCount === 0) continue;
 
-      result.sent.push({ slug: post.slug, locale, recipients: deliveredCount });
+      result.sent.push({ slug: post.slug, locale, recipients: acceptedCount });
       log.info(
-        { event: "newsletter.digest_sent", slug: post.slug, locale, recipients: deliveredCount },
+        { event: "newsletter.digest_accepted", slug: post.slug, locale, recipients: acceptedCount },
         "Blog digest sent",
       );
     }
@@ -159,22 +166,22 @@ async function sendOne(
   post: ReturnType<typeof getAllPosts>[number],
   locale: Locale,
   deliveryId: string,
-): Promise<boolean> {
-  const ok = await sendNewBlogPostEmail({
+  deliveryAttempt: number,
+): Promise<EmailSendResult> {
+  return sendNewBlogPostEmail({
     to: subscriber.email,
     postTitle: post.title,
     postDescription: post.description,
     // Kattintás-követő link: a végpont rögzíti az első kattintást, majd
     // továbbdob a cikkre. A cél-URL-t a végpont építi, nem a paraméter.
     postUrl: clickUrl(APP_URL, deliveryId, post.slug),
+    postImageUrl: blogImageUrl(APP_URL, post.slug),
     readingMinutes: post.readingMinutes,
     unsubUrl: unsubscribeUrl(APP_URL, subscriber.unsubToken),
+    unsubPostUrl: unsubscribePostUrl(APP_URL, subscriber.unsubToken),
     locale,
+    // Egy processzen belüli HTTP-retry ugyanazt a kulcsot használja. Csak
+    // egy már BIZTOSAN FAILED delivery új DB-claimje kap új sorszámot/kulcsot.
+    idempotencyKey: `newsletter-delivery/${deliveryId}/attempt/${deliveryAttempt}`,
   });
-
-  // Sikertelen küldésnél NEM tesszük a címet BOUNCED-ra: egy Resend
-  // API-hiba jellemzően átmeneti. A kézbesíthetetlenség megállapítása a
-  // szolgáltató bounce-jelzésének dolga (`/api/webhooks/resend`). Itt a
-  // hívó dobja el a foglalást, és a következő futás újrapróbálja.
-  return ok;
 }

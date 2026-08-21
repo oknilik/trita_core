@@ -4,9 +4,9 @@ import type { NewsletterEngagementDto } from "@/lib/newsletter-engagement";
  * „Ez a lead olvas minket" jelzés a CRM- és Beérkező-nézetekben.
  *
  * MIT MOND, ÉS MIT NEM: azt mutatja, mióta van a listán, hány levelet kapott,
- * és hányra kattintott. A kattintás ALSÓ becslés (nyitást nem mérünk), tehát
- * a nulla kattintás nem jelenti, hogy nem olvassa — a nem-nulla viszont
- * biztos jelzés arról, hogy foglalkozik velünk.
+ * és hány levél-linkre érkezett kérés. Ez alacsony bizonyosságú jel: a nulla
+ * nem jelenti, hogy nem olvassa, a nem-nulla pedig linkscannerből vagy
+ * továbbított levélből is jöhet — értékesítési tényként nem kezelhető.
  *
  * Miért számít a tanácsadói hívásnál: aki fél éve olvassa a blogot, azzal
  * nem ugyanaz a beszélgetés kezdődik, mint egy hideg érdeklődővel.
@@ -42,9 +42,9 @@ export function NewsletterEngagementBadge({
             ? "Kézbesíthetetlen"
             : "Megerősítésre vár"
         : `Olvasó${since ? ` ${since} óta` : ""}`}
-      {engagement.delivered > 0 ? (
+      {engagement.accepted > 0 ? (
         <span className="opacity-70">
-          · {engagement.clicked}/{engagement.delivered} kattintás
+          · {engagement.linkRequests}/{engagement.accepted} linkkérés
         </span>
       ) : null}
     </span>

@@ -11,10 +11,9 @@ import { normalizeEmail } from "@/lib/newsletter";
  * email-alapú auto-linkjének mintájára, ugyanazon a kulcson (normalizált
  * e-mail-cím).
  *
- * MIT AD A TANÁCSADÓI BESZÉLGETÉSNEK: ha a beérkező megkeresésnél látod, hogy
- * a feladó fél éve olvassa a blogot és 6 levélből 4-re kattintott, az nem
- * ugyanaz a hívás, mint egy hideg érdeklődőé. A megnyitást nem mérjük, a
- * kattintást igen — ez a szám tehát alsó becslés, nem felső.
+ * MIT AD A TANÁCSADÓI BESZÉLGETÉSNEK: jelzi, hogy a megkereső régóta a
+ * listán van-e, és érkezett-e kérés levélbeli linkre. Nem bizonyít olvasást:
+ * scanner és továbbított levél is kiválthatja, ezért csak kontextus.
  *
  * ADATVÉDELEM: kizárólag ADMIN felületen hívjuk. Nem hoz létre új adatot,
  * csak összeolvassa azt, ami már megvan.
@@ -26,9 +25,11 @@ export interface NewsletterEngagement {
   confirmedAt: Date | null;
   /** Honnan iratkozott fel (blog_post, footer, try_complete…). */
   source: string;
-  /** Hány levelet kapott, és ezek közül hányra kattintott. */
+  /** Szolgáltató által átvett / mail-szerver által kézbesített levelek. */
+  accepted: number;
   delivered: number;
-  clicked: number;
+  /** Első linkkérések; scanner vagy továbbított levél is kiválthatja. */
+  linkRequests: number;
   lastSentAt: Date | null;
 }
 
@@ -50,7 +51,7 @@ export async function getEngagementByEmail(
       confirmedAt: true,
       source: true,
       lastSentAt: true,
-      deliveries: { select: { clickedAt: true } },
+      deliveries: { select: { acceptedAt: true, deliveredAt: true, clickedAt: true } },
     },
   });
 
@@ -61,8 +62,9 @@ export async function getEngagementByEmail(
         status: row.status as NewsletterEngagement["status"],
         confirmedAt: row.confirmedAt,
         source: row.source,
-        delivered: row.deliveries.length,
-        clicked: row.deliveries.filter((d) => d.clickedAt !== null).length,
+        accepted: row.deliveries.filter((delivery) => delivery.acceptedAt !== null).length,
+        delivered: row.deliveries.filter((delivery) => delivery.deliveredAt !== null).length,
+        linkRequests: row.deliveries.filter((delivery) => delivery.clickedAt !== null).length,
         lastSentAt: row.lastSentAt,
       },
     ]),
@@ -74,8 +76,9 @@ export interface NewsletterEngagementDto {
   status: NewsletterEngagement["status"];
   confirmedAt: string | null;
   source: string;
+  accepted: number;
   delivered: number;
-  clicked: number;
+  linkRequests: number;
 }
 
 export function toEngagementDto(
@@ -86,7 +89,8 @@ export function toEngagementDto(
     status: engagement.status,
     confirmedAt: engagement.confirmedAt?.toISOString() ?? null,
     source: engagement.source,
+    accepted: engagement.accepted,
     delivered: engagement.delivered,
-    clicked: engagement.clicked,
+    linkRequests: engagement.linkRequests,
   };
 }
