@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { AdminListControls } from "@/app/(app)/admin/_components/AdminListControls";
+import { normalizeUserErrorCode } from "@/lib/user-errors";
 
 // ─────────────────────────────────────────────────────────────────────
 // Admin → Tanácsadók fül: platform-szintű tanácsadók kezelése.
@@ -99,7 +100,8 @@ export function AdminConsultantsSection({ orgs }: { orgs: ConsultantOrg[] }) {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error ?? "ACTION_FAILED");
+        const code = normalizeUserErrorCode(data.error);
+        throw new Error(code === "HAS_REAL_MEMBERSHIP" ? code : "ACTION_FAILED");
       }
       await load();
     } catch (err) {

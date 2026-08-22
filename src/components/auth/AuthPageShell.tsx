@@ -35,10 +35,10 @@ export default function AuthPageShell({ panelContext, children }: AuthPageShellP
       </header>
 
       <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-center justify-center py-8 sm:py-12">
-        <div className="grid w-full max-w-[440px] lg:max-w-[860px] lg:grid-cols-[300px_minmax(0,1fr)] lg:overflow-hidden lg:rounded-[24px] lg:border lg:border-[var(--color-border-soft)] lg:bg-[var(--color-surface-card)] lg:shadow-[var(--ui-shadow-lg)]">
+        <div className="grid w-full max-w-[440px] lg:max-w-[960px] lg:grid-cols-[320px_minmax(0,1fr)] lg:overflow-hidden lg:rounded-[24px] lg:border lg:border-[var(--color-border-soft)] lg:bg-[var(--color-surface-card)] lg:shadow-[var(--ui-shadow-lg)]">
           {/* A fő tartalom van előbb a DOM-ban, így a h1 mindig megelőzi a
               dekoratív oldalsáv h2-jét; desktopon csak vizuálisan kerül jobbra. */}
-          <section className="flex min-w-0 flex-col justify-center px-2 py-5 sm:px-6 lg:col-start-2 lg:row-start-1 lg:px-10 lg:py-12">
+          <section className="flex min-w-0 flex-col justify-center px-2 py-5 sm:px-6 lg:col-start-2 lg:row-start-1 lg:px-12 lg:py-12">
             {children}
           </section>
           <AuthLeftPanel
@@ -48,7 +48,7 @@ export default function AuthPageShell({ panelContext, children }: AuthPageShellP
         </div>
       </main>
 
-      <p className="mx-auto w-full max-w-[440px] border-t border-[var(--color-border-default)] pt-5 text-center text-xs text-[var(--color-text-muted)] lg:max-w-[860px]">
+      <p className="mx-auto w-full max-w-[440px] border-t border-[var(--color-border-default)] pt-5 text-center text-xs text-[var(--color-text-muted)] lg:max-w-[960px]">
         {t("auth.helpPrompt", locale)}{" "}
         <Link
           href="/contact"

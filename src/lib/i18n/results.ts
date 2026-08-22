@@ -597,7 +597,7 @@ export const resultsTranslations = {
     draftInProgressTitle: { hu: "A teszted folyamatban van", en: "Your assessment is in progress" },
     draftInProgressBody: { hu: "Mentettük a haladásodat — ott folytathatod, ahol abbahagytad.", en: "We saved your progress — you can continue where you left off." },
     draftInProgressHint: {
-      hu: "A válaszaid automatikusan mentődnek, nem veszik el semmi — nyugodtan folytathatod később is.",
+      hu: "A válaszaidat automatikusan mentjük, így semmi nem vész el — nyugodtan folytathatod később is.",
       en: "Your answers are saved automatically, nothing is lost — feel free to continue later.",
     },
     draftInProgressCta: { hu: "Folytatom a tesztet →", en: "Continue assessment →" },

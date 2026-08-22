@@ -11,7 +11,7 @@ export async function POST(
   try {
     await requireAdmin();
   } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
   const { id } = await params;
@@ -24,16 +24,16 @@ export async function POST(
   });
 
   if (!invitation) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
   if (invitation.status !== "PENDING") {
-    return NextResponse.json({ error: "Invitation is not pending" }, { status: 400 });
+    return NextResponse.json({ error: "INVITATION_NOT_PENDING" }, { status: 400 });
   }
   if (!invitation.observerEmail) {
-    return NextResponse.json({ error: "No email on invitation" }, { status: 400 });
+    return NextResponse.json({ error: "EMAIL_MISSING" }, { status: 400 });
   }
   if (invitation.expiresAt < new Date()) {
-    return NextResponse.json({ error: "Invitation expired" }, { status: 400 });
+    return NextResponse.json({ error: "INVITATION_EXPIRED" }, { status: 400 });
   }
 
   const inviterName =

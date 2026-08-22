@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 
 interface IncompleteDraft {
   id: string;
@@ -108,16 +110,28 @@ export function AdminDraftReminderSection({ drafts }: Props) {
       const res = await fetch(`/api/admin/send-draft-reminder/${id}`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        const isCompleted = data.error === "User already completed assessment";
+        const isCompleted = data.error === "ASSESSMENT_ALREADY_COMPLETED";
+        const message = t(
+          presentUserError({ code: data.error, status: res.status, fallbackKey: "userErrors.sendFailed" }),
+          "hu",
+        );
         setStates((prev) => ({
           ...prev,
-          [id]: { sending: false, sentAt: null, error: isCompleted ? null : (data.error ?? "Hiba történt"), completed: isCompleted },
+          [id]: { sending: false, sentAt: null, error: isCompleted ? null : message, completed: isCompleted },
         }));
         return;
       }
       setStates((prev) => ({ ...prev, [id]: { sending: false, sentAt: data.sentAt, error: null, completed: false } }));
-    } catch (err) {
-      setStates((prev) => ({ ...prev, [id]: { sending: false, sentAt: null, error: (err as Error).message, completed: false } }));
+    } catch {
+      setStates((prev) => ({
+        ...prev,
+        [id]: {
+          sending: false,
+          sentAt: null,
+          error: t(presentUserError({ code: "NETWORK_ERROR" }), "hu"),
+          completed: false,
+        },
+      }));
     }
   }
 

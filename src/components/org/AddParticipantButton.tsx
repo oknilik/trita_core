@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 interface Member {
@@ -53,15 +54,15 @@ export function AddParticipantButton({
         body: JSON.stringify({ userIds: Array.from(selected) }),
       });
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error ?? "ERROR");
+        const data = await res.json().catch(() => ({}));
+        setError(t(presentUserError({ code: data.error, status: res.status }), loc));
         return;
       }
       setOpen(false);
       setSelected(new Set());
       router.refresh();
     } catch {
-      setError("ERROR");
+      setError(t(presentUserError({ code: "NETWORK_ERROR" }), loc));
     } finally {
       setLoading(false);
     }

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { t, type Locale } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 import type { SerializedTeamReport, TeamReportActionItem } from "@/lib/team-report";
 import type { ReportTranslationEn } from "@/lib/team-report-i18n";
 import { DashboardPanel } from "@/components/dashboard/DashboardPrimitives";
@@ -81,8 +83,8 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     en: "Translation failed — try again in a moment.",
   },
   TRANSLATE_NOT_CONFIGURED: {
-    hu: "A fordítás-szolgáltatás nincs konfigurálva (hiányzó API-kulcs).",
-    en: "The translation service is not configured (missing API key).",
+    hu: "A fordítás most nem érhető el. Próbáld újra később.",
+    en: "Translation isn't available right now. Please try again later.",
   },
 };
 
@@ -111,6 +113,7 @@ const TRANSLATION_FIELDS: Array<{
 
 export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props) {
   const router = useRouter();
+  const locale: Locale = isHu ? "hu" : "en";
   const draft = reports.find((r) => r.status === "DRAFT") ?? null;
   const publishedReports = [...reports]
     .filter((r) => r.status === "PUBLISHED")
@@ -143,6 +146,16 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     draft?.translationsEn?.en ?? null,
   );
   const [translating, setTranslating] = useState(false);
+
+  function reportErrorMessage(error: unknown): string {
+    const code = error instanceof Error ? error.message : null;
+    const known = code ? ERROR_LABELS[code] : undefined;
+    if (known) return known[locale];
+    return t(
+      presentUserError({ code, fallbackKey: "userErrors.actionFailed" }),
+      locale,
+    );
+  }
 
   // A state-et a szervertől visszakapott riportból seedeljük, mert a
   // router.refresh() a már mountolt komponens useState-jét nem inicializálja
@@ -179,9 +192,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       };
       setTranslation(generated);
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setTranslating(false);
     }
@@ -212,9 +223,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       setTranslation(payload);
       setSavedAt(new Date().toLocaleTimeString(isHu ? "hu-HU" : "en-GB"));
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -230,9 +239,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       seedFromReport(report);
       router.refresh();
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -278,9 +285,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       }
       router.refresh();
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -310,9 +315,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
       setPreview(null);
       router.refresh();
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -364,9 +367,7 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
         router.refresh();
       }
     } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      const known = ERROR_LABELS[code];
-      setError(known ? (isHu ? known.hu : known.en) : code || "Hiba történt");
+      setError(reportErrorMessage(err));
     } finally {
       setBusy(false);
     }

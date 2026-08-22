@@ -1,5 +1,3 @@
-"use client";
-
 import { cn } from "@/lib/ui/cn";
 
 export type AuthLeftPanelContext =
@@ -15,163 +13,33 @@ interface AuthLeftPanelProps {
   className?: string;
 }
 
-const CONTENT: Record<
-  NonNullable<AuthLeftPanelContext>,
-  {
-    tag: string;
-    title: React.ReactNode;
-    valueItems?: string[];
-    valueLabel?: string;
-    subtitle?: string;
-    stats?: { value: string; label: string }[];
-  }
-> = {
-  explore: {
-    tag: "önismeret",
-    title: (
-      <>
-        Lásd tisztábban,{" "}
-        <span className="text-[var(--color-accent-primary-soft)]">hogyan működsz.</span>
-      </>
-    ),
-    subtitle: "Hat dimenzión keresztül, tudományos alapokon.",
-    valueLabel: "Mit fogsz látni a végén?",
-    valueItems: [
-      "6 dimenziós személyiségprofil",
-      "Erősségek és figyelendő területek",
-      "Illeszkedő szerepkörök és karrierkép",
-    ],
-    stats: [
-      { value: "6", label: "dimenzió" },
-      { value: "~10", label: "perc" },
-    ],
-  },
-  team: {
-    tag: "csapatfejlesztés",
-    title: (
-      <>
-        Értsd meg a csapatod{" "}
-        <span className="text-[var(--color-accent-primary-soft)]">dinamikáját.</span>
-      </>
-    ),
-    subtitle: "Adatvezérelt csapatépítés, személyiségprofil alapján.",
-    valueLabel: "Mit kapsz?",
-    valueItems: [
-      "Csapat heatmap és dinamika",
-      "Observer összehasonlítás",
-      "Szerepillesztés és vakfoltok",
-    ],
-    stats: [
-      { value: "14", label: "nap próbaidő" },
-      { value: "0", label: "kártyaadat" },
-    ],
-  },
-  observer: {
-    tag: "observer visszajelzés",
-    title: (
-      <>
-        Adj visszajelzést —{" "}
-        <span className="text-[var(--color-accent-primary-soft)]">névtelenül, őszintén.</span>
-      </>
-    ),
-    subtitle: "Az observer értékelés segít a meghívónak megismerni, hogyan látják mások.",
-  },
-  signin: {
-    tag: "örülünk, hogy újra itt vagy",
-    title: (
-      <>
-        Folytasd ott,{" "}
-        <span className="text-[var(--color-accent-primary-soft)]">ahol abbahagytad.</span>
-      </>
-    ),
-    subtitle: "Az eredményeid, visszajelzéseid és csapatod állapota várja.",
-  },
-  verify: {
-    tag: "megerősítés",
-    title: (
-      <>
-        Már majdnem{" "}
-        <span className="text-[var(--color-accent-primary-soft)]">kész vagy.</span>
-      </>
-    ),
-    subtitle: "Ellenőrizd az e-mail fiókodat és add meg a kódot.",
-  },
-};
-
-export default function AuthLeftPanel({ context, className }: AuthLeftPanelProps) {
-  const c = context ? CONTENT[context] : null;
-
+export default function AuthLeftPanel({ className }: AuthLeftPanelProps) {
   return (
-    <div className={cn("hidden min-h-full w-[300px] shrink-0 flex-col justify-between bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] px-8 py-10 lg:flex", className)}>
-      <div>
-        {c ? (
-          <>
-            {/* Tag */}
-            <p className="mb-3 text-micro font-medium uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
-              {c.tag}
-            </p>
-
-            {/* Headline */}
-            <h2 className="mb-2 font-fraunces text-heading leading-snug text-white">
-              {c.title}
-            </h2>
-
-            {/* Subtitle */}
-            {c.subtitle && (
-              <p className="mb-6 text-caption leading-relaxed text-white/40">
-                {c.subtitle}
-              </p>
-            )}
-
-            {/* Value preview */}
-            {c.valueLabel && c.valueItems && (
-              <div className="rounded-lg border border-white/[0.08] bg-white/[0.04] px-4 py-3.5">
-                <p className="mb-2.5 text-micro font-semibold uppercase tracking-widest text-white/30">
-                  {c.valueLabel}
-                </p>
-                <ul className="space-y-2">
-                  {c.valueItems.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-xs leading-snug text-white/60">
-                      <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-[var(--color-accent-primary-soft)]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </>
-        ) : (
-          /* No intent selected yet */
-          <>
-            <p className="mb-3 text-micro font-medium uppercase tracking-widest text-white/20">
-              első lépés
-            </p>
-            <h2 className="mb-2 font-fraunces text-heading leading-snug text-white">
-              Válaszd ki, mire{" "}
-              <span className="text-[var(--color-accent-primary-soft)]">használnád.</span>
-            </h2>
-            <p className="text-caption leading-relaxed text-white/40">
-              A választásod alapján személyre szabjuk a regisztrációt és az első lépéseket.
-            </p>
-          </>
-        )}
-      </div>
-
-      {/* Bottom stats */}
-      {c?.stats && (
-        <div className="mt-8 flex gap-5 border-t border-white/[0.06] pt-5">
-          {c.stats.map((s) => (
-            <div key={s.label} className="flex flex-col">
-              <span className="font-fraunces text-2xl font-black text-[var(--color-accent-primary-soft)]">
-                {s.value}
-              </span>
-              <span className="text-note leading-snug text-white/30">
-                {s.label}
-              </span>
-            </div>
-          ))}
-        </div>
+    <div
+      aria-hidden="true"
+      className={cn(
+        "relative hidden min-h-full w-[320px] shrink-0 items-center justify-center overflow-hidden bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] lg:flex",
+        className,
       )}
+    >
+      <div className="absolute size-[250px] rounded-full border border-white/[0.035] bg-black/[0.05]" />
+      <svg viewBox="0 0 320 520" className="relative h-auto w-full" focusable="false">
+        <circle cx="160" cy="260" r="94" fill="rgba(0,0,0,0.07)" />
+        <g
+          transform="translate(160 260)"
+          stroke="var(--color-accent-primary-soft)"
+          strokeWidth="12"
+          strokeLinecap="round"
+        >
+          <line x1="0" y1="-72" x2="0" y2="72" />
+          <line x1="-72" y1="0" x2="72" y2="0" />
+          <line x1="-51" y1="-51" x2="51" y2="51" />
+          <line x1="51" y1="-51" x2="-51" y2="51" />
+        </g>
+        <circle cx="226" cy="154" r="25" fill="var(--color-accent-primary)" />
+        <circle cx="85" cy="376" r="15" fill="var(--color-sage-300)" />
+        <circle cx="160" cy="260" r="6" fill="var(--color-text-on-inverse)" />
+      </svg>
     </div>
   );
 }
