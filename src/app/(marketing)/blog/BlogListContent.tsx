@@ -296,7 +296,17 @@ export function BlogListContent({
                   {/* Bal: generatív vizuál + kulcs-állítás (a nagy percszám helyett) */}
                   <div className="relative flex min-h-[220px] flex-col justify-end overflow-hidden p-6 md:min-h-[250px]">
                     <div className="absolute inset-0">
-                      <BlogArtVisual slug={featured.slug} tags={featured.tags} seed={featured.artSeed} motif={featured.artMotif} variant="featured" />
+                      <BlogArtVisual
+                        slug={featured.slug}
+                        title={featured.title}
+                        tags={featured.tags}
+                        seed={featured.artSeed}
+                        motif={featured.artMotif}
+                        family={featured.artFamily}
+                        concept={featured.artConcept}
+                        lineMode={featured.artLineMode}
+                        variant="featured"
+                      />
                     </div>
                     <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
                       {t("blog.featured", displayLocale)}
@@ -367,7 +377,17 @@ export function BlogListContent({
                       className="group overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/[0.05]"
                     >
                       <div className="h-[120px] overflow-hidden">
-                        <BlogArtVisual slug={post.slug} tags={post.tags} seed={post.artSeed} motif={post.artMotif} variant="card" />
+                        <BlogArtVisual
+                          slug={post.slug}
+                          title={post.title}
+                          tags={post.tags}
+                          seed={post.artSeed}
+                          motif={post.artMotif}
+                          family={post.artFamily}
+                          concept={post.artConcept}
+                          lineMode={post.artLineMode}
+                          variant="card"
+                        />
                       </div>
                       <div className="p-5">
                         <TagRow tags={post.tags} />
@@ -397,7 +417,17 @@ export function BlogListContent({
                   className="group flex items-center gap-5 border-t border-[var(--color-border-default)] py-6 transition-all hover:pl-2"
                 >
                   <span className="hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
-                    <BlogArtVisual slug={post.slug} tags={post.tags} seed={post.artSeed} motif={post.artMotif} variant="mini" />
+                    <BlogArtVisual
+                      slug={post.slug}
+                      title={post.title}
+                      tags={post.tags}
+                      seed={post.artSeed}
+                      motif={post.artMotif}
+                      family={post.artFamily}
+                      concept={post.artConcept}
+                      lineMode={post.artLineMode}
+                      variant="mini"
+                    />
                   </span>
                   <span className="min-w-0 flex-1">
                     <TagRow tags={post.tags} />

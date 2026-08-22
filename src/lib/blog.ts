@@ -2,6 +2,16 @@ import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
 import readingTime from "reading-time";
+import {
+  isBlogArtConcept,
+  isBlogArtFamily,
+  isBlogArtLineMode,
+  isLegacyBlogArtMotif,
+  type BlogArtConcept,
+  type BlogArtFamily,
+  type BlogArtLineMode,
+  type LegacyBlogArtMotif,
+} from "@/lib/blog-art";
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 
@@ -25,7 +35,13 @@ export interface BlogPost {
   /** Generatív vizuál variáció-seedje (frontmatter artSeed). */
   artSeed?: number;
   /** Generatív vizuál motívum-felülbírálása (frontmatter artMotif). */
-  artMotif?: "radar" | "network" | "bars" | "waves";
+  artMotif?: LegacyBlogArtMotif;
+  /** Vizuális kézírás: konstelláció, lágy Bauhaus vagy élő vonal. */
+  artFamily?: BlogArtFamily;
+  /** Szerkesztői jelentésréteg — nem mérési állítás. */
+  artConcept?: BlogArtConcept;
+  /** Dekoratív tintavonal mennyisége. */
+  artLineMode?: BlogArtLineMode;
   content: string;
 }
 
@@ -61,7 +77,10 @@ export function getAllPosts(
         startHere: data.startHere as number | undefined,
         status: (data.status === "draft" ? "draft" : "published") as "draft" | "published",
         artSeed: data.artSeed as number | undefined,
-        artMotif: data.artMotif as "radar" | "network" | "bars" | "waves" | undefined,
+        artMotif: isLegacyBlogArtMotif(data.artMotif) ? data.artMotif : undefined,
+        artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
+        artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
+        artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
       };
     })
     .filter(Boolean)
@@ -129,7 +148,10 @@ export function getPostBySlug(slug: string): BlogPost | null {
     startHere: data.startHere as number | undefined,
     status: (data.status === "draft" ? "draft" : "published") as "draft" | "published",
     artSeed: data.artSeed as number | undefined,
-    artMotif: data.artMotif as "radar" | "network" | "bars" | "waves" | undefined,
+    artMotif: isLegacyBlogArtMotif(data.artMotif) ? data.artMotif : undefined,
+    artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
+    artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
+    artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
     content,
   };
 }

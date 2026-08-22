@@ -56,3 +56,24 @@ Felülírás: `BLOG_STORE=fs|github` env.
 `title`, `description`, `publishedAt` (YYYY-MM-DD), `locale` (hu/en),
 `tags` (max 6), `translationSlug`, `heroQuote` (featured-idézet),
 `startHere` (1–3, „Kezdd itt" sáv), `status` (csak draftnál).
+
+### Cikk-vizuál
+
+A vizuál négy külön kézírást támogat: `collage`, `modular`, `constellation`,
+`flow`. Ettől független a jelenet szerkesztői fogalma: `connection`,
+`balance`, `tension`, `threshold`, `signal`, `growth`, valamint a dekoratív
+vonal mennyisége: `none`, `minimal`, `expressive`.
+
+| Mező | Jelentés | Ha hiányzik |
+|---|---|---|
+| `artFamily` | a vizuális család | stabilan következik a slugból |
+| `artConcept` | a jelenet jelentése | cím + tag + slug alapján becsült |
+| `artLineMode` | vonal nélkül / kevés / expresszív | `minimal` |
+| `artSeed` | a családon belüli variáció (1–9999) | stabilan következik a slugból |
+| `artMotif` | régi `radar/network/bars/waves` rajzoló | csak kompatibilitási mező; új mentés nem használja |
+
+Az admin egyszerre nyolc variációt mutat (családonként kettőt), és újabb stabil
+nyolcast kérhet. A kiválasztás ugyanazt a jelenetet adja a bloglistán, a
+cikkoldalon, a közösségi OG-képen és a hírlevél borítóján. Ha semmit nem
+választunk, a rendszer automatikus, de determinisztikus: egy deploy vagy
+újrarenderelés önmagában nem változtatja meg a képet.
