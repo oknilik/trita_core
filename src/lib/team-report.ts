@@ -711,16 +711,16 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
   // közt épül, a kapcsolat nélküli (disconnected) mért pár pedig kimarad.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
-    summary += ` A ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} kiegészítő, ${agg.dynamics.frictionCount} pedig súrlódási potenciált mutat.`;
+    summary += ` A ${dynamicsTotal} felmért kapcsolatból ${agg.dynamics.alignedCount} összehangolt, ${agg.dynamics.complementaryCount} egymást kiegészítő, ${agg.dynamics.frictionCount} esetében pedig súrlódás alakulhat ki.`;
   }
 
   const strengths = bullets([
     ...topDims.map((dim) => getStrengthInsight(dim)),
     profileHomogeneitySignal
-      ? "A hasonló munkastílusok gyors összecsiszolódást és alacsony koordinációs költséget adnak."
+      ? "A hasonló munkastílusok gyors összecsiszolódást tehetnek lehetővé, és kevesebb egyeztetést igényelhetnek."
       : "",
     highTrustSignal
-      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat — stabil együttműködési alap."
+      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat — ezek biztos alapot adhatnak az együttműködéshez."
       : "",
   ]);
 
@@ -728,19 +728,19 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
-      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílus-különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül visszatérő feszültségforrás.`
+      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílusbeli különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül ez visszatérő feszültség forrásává válhat.`
       : "",
     profileHomogeneitySignal
-      ? "A homogén profil közös vakfoltokat hordozhat — amit senki nem vesz észre, az kimarad."
+      ? "A hasonló profilok közös vakfoltokat hordozhatnak — egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
       : "",
     gapRoleNames
-      ? `Lefedetlen csapatszerep: ${gapRoleNames} — ezekre se elsődleges, se tartalék lefedettség nincs.`
+      ? `Lefedetlen csapatszerepek: ${gapRoleNames} — ezeket senki sem viszi elsődlegesen, és kijelölt helyettes sincs.`
       : "",
     ps && psWeakAreas.length > 0
-      ? `A pszichológiai biztonság pulse (${ps.index}/100, ${ps.count} névtelen válasz) gyenge pontjai: ${psWeakAreas.join(", ")} — ezeken a területeken a tagok visszatarthatják a valós véleményüket, ami torzítja a többi mérést is.`
+      ? `A pszichológiai biztonsági pulzusmérés (${ps.index}/100, ${ps.count} névtelen válasz) leggyengébb területei: ${psWeakAreas.join(", ")} — ezeken a területeken a tagok nem feltétlenül mondják ki őszintén a véleményüket, ami a többi mérés eredményét is torzíthatja.`
       : "",
     ps && ps.spread >= 20
-      ? "A biztonság-élmény erősen megosztott a csapaton belül — az átlag mögött nagyon eltérő egyéni tapasztalatok állnak."
+      ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül — az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
       : "",
     agg.pressure && agg.pressure.concentrations.length > 0
       ? `Nyomás alatti kollektív minta: ${agg.pressure.concentrations
@@ -760,16 +760,16 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
   const recommendations = bullets([
     frictionShare >= 0.4 || frictionDimLabels
-      ? `Közös működési normák rögzítése (döntéshozatal, határidő-kezelés, kommunikáció)${frictionDimLabels ? ` — elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
+      ? `Közös működési normák rögzítése (döntéshozatal, a határidők kezelése, kommunikáció)${frictionDimLabels ? ` — elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
       : "",
     gapRoleNames
       ? `A hiányzó szerepek (${gapRoleNames}) tudatos pótlása: felelős kijelölése a csapaton belül vagy külső támogatás bevonása.`
       : "",
     measuredMissing
-      ? "Mért bizalmi kör (360°) indítása — a jelenlegi kapcsolati kép profil-alapú becslésen áll, a mért adat megerősíti vagy árnyalja."
+      ? "Mért bizalmi kör (360°) indítása — a jelenlegi kapcsolati kép a profilokból számolt becslés, amelyet az új mérés megerősíthet vagy árnyalhat."
       : "",
     profileHomogeneitySignal
-      ? "Külső visszajelzés tudatos behozása (más csapat, ügyfél, mentor) a közös vakfoltok ellensúlyozására."
+      ? "Külső visszajelzés tudatos bevonása — például másik csapattól, ügyféltől vagy mentortól — a közös vakfoltok ellensúlyozására."
       : "",
     ...(ps && psWeakAreas.length > 0
       ? ps.weakItemIds.map(
@@ -780,7 +780,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást —
     // a mérés fut, csak csapat-szintre nem bontható (psychSafetyMultiTeam).
     !ps && !agg.psychSafetyMultiTeam
-      ? "Pszichológiai biztonság pulse indítása — névtelen, ~2 perces mérés; enélkül a csapatkép a kimondott véleményekre épül, a visszatartottakra nem."
+      ? "Pszichológiai biztonsági pulzusmérés indítása — névtelen, körülbelül kétperces mérés; enélkül a csapatkép csak a kimondott véleményekre épül, a visszatartott véleményekre viszont nem."
       : "",
   ]);
 
@@ -799,16 +799,16 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
 
   const actionItems: TeamReportActionItem[] = [
     {
-      title: "Csapatkép-átbeszélő workshop",
+      title: "A csapatkép közös átbeszélése",
       description:
-        "A riport közös értelmezése a csapattal: erősségek megerősítése, kockázatok nyílt megbeszélése, kérdések tisztázása.",
+        "A riport közös értelmezése a csapattal: az erősségek megerősítése, a kockázatok nyílt megbeszélése és a kérdések tisztázása.",
       timeframe: "30",
     },
     ...(frictionShare >= 0.4 || frictionDimLabels
       ? [
           {
             title: "Működési normák rögzítése",
-            description: `Közös minimum-szabályok a legnagyobb eltérésű területekre${frictionDimLabels ? ` (${frictionDimLabels})` : ""}: hogyan döntünk, hogyan kezeljük a határidőket, melyik csatornán kommunikálunk.`,
+            description: `Rögzítsetek néhány közös szabályt a legnagyobb eltérést mutató területeken${frictionDimLabels ? ` (${frictionDimLabels})` : ""}: hogyan döntötök, hogyan kezelitek a határidőket, és melyik csatornán kommunikáltok.`,
             timeframe: "30" as const,
           },
         ]
@@ -816,8 +816,8 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     ...(gapRoleNames
       ? [
           {
-            title: "Szerep-tisztázás",
-            description: `A lefedetlen szerepek (${gapRoleNames}) pótlásának megtervezése: belső felelős kijelölése, folyamat-támasz vagy külső erőforrás.`,
+            title: "Szerepek tisztázása",
+            description: `Tervezzétek meg, hogyan feditek le a hiányzó szerepeket (${gapRoleNames}): jelöljetek ki belső felelőst, alakítsátok át a folyamatokat, vagy vonjatok be külső támogatást.`,
             timeframe: "60" as const,
             ...(singleRoleGapTarget
               ? { targetMetric: singleRoleGapTarget }
@@ -830,7 +830,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
           {
             title: "Mért bizalmi kör",
             description:
-              "Bizalmi kör (360°) indítása a csapatban — a becsült kapcsolati elemek megerősítése mért adattal, a következő riport pontosabb képet ad.",
+              "Bizalmi kör (360°) indítása a csapatban — a becsült kapcsolati elemek ellenőrzése mért adatokkal, hogy a következő riport pontosabb képet adhasson.",
             timeframe: "60" as const,
             targetMetric: { kind: "trust_coverage" as const },
           },
@@ -851,7 +851,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
         })
       : []),
     {
-      title: "Utánkövetés és riport-frissítés",
+      title: "Utánkövetés és a riport frissítése",
       description:
         "A bevezetett normák és szerepek működésének áttekintése; új riport készítése a változás mérésére.",
       timeframe: "90",

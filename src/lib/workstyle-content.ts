@@ -102,24 +102,24 @@ export interface WorkstyleContent {
 // Minden TENSION_PAIRS contentKey-hez kell bejegyzés (guardrail-teszt őrzi).
 export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszú egyéni fókusz", "Izolált munkakörök"] },
-    supportedVisibility: { strong: ["Ügyfélkapcsolat", "Tréning", "HR"], might: ["Prezentáció", "Facilitáció"], prep: ["Izolált munka", "Magas nyomás"] },
-    structuredStability: { strong: ["Minőségbiztosítás", "Adminisztráció", "Compliance"], might: ["Projektmenedzsment", "Tanácsadás"], prep: ["Startup", "Változékony környezet"] },
-    safeExperimentation: { strong: ["Design Thinking", "Prototípus-készítés", "Innováció"], might: ["Tanácsadás", "Stratégia"], prep: ["Határidő-kritikus végrehajtás"] },
-    deepCollaboration: { strong: ["Kiscsapatos kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati networking"] },
-    solitaryInnovator: { strong: ["Kutató", "Elemző", "Architect"], might: ["Tanácsadás", "Design"], prep: ["Csapatmunka", "Gyakori meetingek"] },
-    facilitatedInnovation: { strong: ["Workshop-facilitálás", "Design Thinking", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Top-down döntéshozatal"] },
+    resilientLeader: { strong: ["Vezető", "Értékesítési vezető", "Kríziskoordinátor", "Változásmenedzsment"], might: ["Projektvezetés", "Ügyfélkapcsolat"], prep: ["Hosszan tartó önálló fókusz", "Elszigetelt munkakörök"] },
+    supportedVisibility: { strong: ["Ügyfélkapcsolat", "Tréning", "HR"], might: ["Prezentáció", "Facilitáció"], prep: ["Elszigetelt munka", "Nagy nyomás"] },
+    structuredStability: { strong: ["Minőségbiztosítás", "Adminisztráció", "Megfelelőség"], might: ["Projektmenedzsment", "Tanácsadás"], prep: ["Induló vállalkozás", "Változékony környezet"] },
+    safeExperimentation: { strong: ["Tervezői gondolkodás", "Prototípuskészítés", "Innováció"], might: ["Tanácsadás", "Stratégia"], prep: ["Szoros határidejű végrehajtás"] },
+    deepCollaboration: { strong: ["Kiscsapatos kutatás", "Mentorálás", "Páros munka"], might: ["Tanácsadás", "Szakértő"], prep: ["Vállalati kapcsolatépítés"] },
+    solitaryInnovator: { strong: ["Kutató", "Elemző", "Rendszertervező"], might: ["Tanácsadás", "Tervezés"], prep: ["Csapatmunka", "Gyakori megbeszélések"] },
+    facilitatedInnovation: { strong: ["Műhelyvezetés", "Tervezői gondolkodás", "Változásmenedzsment"], might: ["Projektmenedzsment", "Oktatás"], prep: ["Felülről vezérelt döntéshozatal"] },
     responsibleInnovator: { strong: ["Fenntarthatóság", "K+F", "Társadalmi innováció"], might: ["Stratégia", "Termékfejlesztés"], prep: ["Gyors kompromisszum"] },
-    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Compliance", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Erős politikai játszmák"] },
+    ethicalLeader: { strong: ["Értékvezérelt vezetés", "Megfelelőség", "Közszféra", "Nonprofit"], might: ["Tanácsadás", "HR"], prep: ["Erős politikai játszmák"] },
     principledConfronter: { strong: ["Audit", "Minőségbiztosítás", "Jog", "Szabályozás"], might: ["Vezetés", "Tárgyalás"], prep: ["Diplomáciai közvetítés"] },
-    structuredCompetitor: { strong: ["Értékesítés", "Üzletfejlesztés", "Teljesítménymenedzsment"], might: ["Projektvezetés", "Műveletek"], prep: ["Konszenzusos kultúra"] },
-    structuredInnovator: { strong: ["Termékfejlesztés", "K+F vezetés", "Rendszertervezés"], might: ["Stratégia", "Tanácsadás"], prep: ["Improvizatív közeg"] },
-    calmExecution: { strong: ["Üzemeltetés", "Programvezetés", "Minőségbiztosítás"], might: ["Projektmenedzsment", "Compliance"], prep: ["Gyors pivotok"] },
-    exploratoryAnalyst: { strong: ["Kutató", "Stratégiai elemző", "Innováció"], might: ["Tanácsadás", "Design"], prep: ["Rutin végrehajtás"] },
+    structuredCompetitor: { strong: ["Értékesítés", "Üzletfejlesztés", "Teljesítménymenedzsment"], might: ["Projektvezetés", "Operatív működés"], prep: ["Konszenzusos kultúra"] },
+    structuredInnovator: { strong: ["Termékfejlesztés", "K+F-vezetés", "Rendszertervezés"], might: ["Stratégia", "Tanácsadás"], prep: ["Improvizációra épülő közeg"] },
+    calmExecution: { strong: ["Üzemeltetés", "Programvezetés", "Minőségbiztosítás"], might: ["Projektmenedzsment", "Megfelelőség"], prep: ["Gyakori irányváltás"] },
+    exploratoryAnalyst: { strong: ["Kutató", "Stratégiai elemző", "Innováció"], might: ["Tanácsadás", "Tervezés"], prep: ["Rutinszerű végrehajtás"] },
     organizedLeader: { strong: ["Projektvezetés", "Csapatvezetés", "Operatív irányítás"], might: ["Programvezetés", "Oktatás"], prep: ["Strukturálatlan közeg"] },
-    harmoniousConnector: { strong: ["Csapatépítés", "Facilitáció", "Ügyfélkapcsolat", "Coaching"], might: ["HR", "Partnerség"], prep: ["Konfliktusintenzív szerepek"] },
-    performanceDriver: { strong: ["Értékesítés", "Üzletfejlesztés", "Growth"], might: ["Vezetés", "Stratégia"], prep: ["Lassú, konszenzusos döntéshozatal"] },
-    disruptiveInnovator: { strong: ["Innovációs vezető", "Vállalkozó", "Stratégiai tanácsadó"], might: ["Termékfejlesztés", "Design"], prep: ["Erősen szabályozott közeg"] },
+    harmoniousConnector: { strong: ["Csapatépítés", "Facilitáció", "Ügyfélkapcsolat", "Coaching"], might: ["HR", "Partnerség"], prep: ["Sok konfliktussal járó szerepek"] },
+    performanceDriver: { strong: ["Értékesítés", "Üzletfejlesztés", "Növekedés"], might: ["Vezetés", "Stratégia"], prep: ["Lassú, konszenzusos döntéshozatal"] },
+    disruptiveInnovator: { strong: ["Innovációs vezető", "Vállalkozó", "Stratégiai tanácsadó"], might: ["Termékfejlesztés", "Tervezés"], prep: ["Erősen szabályozott közeg"] },
   },
   en: {
     resilientLeader: { strong: ["Leader", "Sales Lead", "Crisis Coordinator", "Change Management"], might: ["Project Management", "Client Relations"], prep: ["Long solo focus", "Isolated roles"] },
@@ -147,21 +147,21 @@ export const ROLE_TAGS: Record<string, Record<string, { strong: string[]; might:
 // (guardrail-teszt őrzi a lefedettséget).
 export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; might: string[]; prep: string[] }>> = {
   hu: {
-    H_high: { strong: ["Compliance", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzlet"] },
-    H_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Growth", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
-    E_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Magas nyomás", "Krízis"] },
+    H_high: { strong: ["Megfelelőség", "Etika", "Nonprofit", "Közszféra"], might: ["Vezetés", "Szakértő"], prep: ["Versengő üzleti közeg"] },
+    H_low: { strong: ["Üzletfejlesztés", "Értékesítés", "Növekedés", "Vállalkozás"], might: ["Vezetés", "Stratégia"], prep: ["Csapatépítés"] },
+    E_high: { strong: ["HR", "Coaching", "Egészségügy", "Ügyfélélmény"], might: ["Oktatás", "Tárgyalás"], prep: ["Nagy nyomás", "Krízis"] },
     // A prep-címke korábban „Empatikus közeg" volt — az alacsony
     // Emocionalitást empátia-hiánynak keretezte (2026-08-11 valencia-döntés:
     // ez a skála nem empátiát mér). A közeg jellemzője az érzelmi intenzitás.
-    E_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Startup"], prep: ["Érzelmileg intenzív közeg"] },
-    X_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Egyéni mélyülés"] },
-    X_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Networking", "Prezentáció"] },
+    E_low: { strong: ["Krízismenedzsment", "Döntéshozatal", "Vezetés"], might: ["Változásvezetés", "Induló vállalkozás"], prep: ["Érzelmileg intenzív közeg"] },
+    X_high: { strong: ["Értékesítés", "Csapatvezetés", "PR", "Facilitáció"], might: ["Projektvezetés", "Oktatás"], prep: ["Önálló, elmélyült munka"] },
+    X_low: { strong: ["Kutatás", "Elemzés", "Tervezés", "Írás"], might: ["Tanácsadás", "Szakértő"], prep: ["Kapcsolatépítés", "Prezentáció"] },
     A_high: { strong: ["Csapatépítés", "Facilitáció", "Coaching"], might: ["Értékesítés", "Partnerség"], prep: ["Konfliktusos közeg"] },
     A_low: { strong: ["Tárgyalás", "Stratégia", "Döntéshozatal"], might: ["Kutatás", "Elemzés"], prep: ["Harmonikus csapat"] },
-    C_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Műveletek"], might: ["Compliance", "Szakértő"], prep: ["Improvizáció"] },
-    C_low: { strong: ["Innováció", "Startup", "Design"], might: ["Tanácsadás", "Stratégia"], prep: ["Strukturált végrehajtás"] },
-    O_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Design"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutin feladatok"] },
-    O_low: { strong: ["Végrehajtás", "Adminisztráció", "Műveletek"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
+    C_high: { strong: ["Projektvezetés", "Minőségbiztosítás", "Operatív működés"], might: ["Megfelelőség", "Szakértő"], prep: ["Improvizáció"] },
+    C_low: { strong: ["Innováció", "Induló vállalkozás", "Tervezés"], might: ["Tanácsadás", "Stratégia"], prep: ["Rendezett végrehajtás"] },
+    O_high: { strong: ["Kutatás", "Innováció", "Stratégia", "Tervezés"], might: ["Tanácsadás", "Oktatás"], prep: ["Rutinfeladatok"] },
+    O_low: { strong: ["Végrehajtás", "Adminisztráció", "Operatív működés"], might: ["Vezetés", "Projektmenedzsment"], prep: ["Kísérletezés"] },
   },
   en: {
     H_high: { strong: ["Compliance", "Ethics", "Nonprofit", "Public Service"], might: ["Leadership", "Expert"], prep: ["Competitive business"] },
@@ -183,9 +183,9 @@ export const SOLO_ROLE_TAGS: Record<string, Record<string, { strong: string[]; m
 // generikus, de értelmes szerep-illeszkedési szöveg üres szekció helyett.
 const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOut: string }> = {
   hu: {
-    strong: "Kiegyensúlyozott profiloddal sokféle szerepben megállod a helyed: generalista, koordináló és hídszerepek, ahol az alkalmazkodóképesség és a stabilitás az érték.",
-    medium: "Specializált, egyetlen erős vonásra épülő szerepek is működhetnek — ott a motivációd és a tapasztalatod dönt, nem a személyiségprofilod.",
-    watchOut: "Szélsőséges közegek (extrém nyomás, teljes izoláció vagy folyamatos rivaldafény) kevésbé építenek a kiegyensúlyozottságodra — ezekhez tudatos felkészülés kell.",
+    strong: "Kiegyensúlyozott profiloddal sokféle szerepben megállhatod a helyed, különösen az általános, koordináló és összekötő munkakörökben, ahol az alkalmazkodóképesség és a stabilitás érték.",
+    medium: "Az egyetlen erős vonásra épülő, szakosodott szerepek is működhetnek; ezeknél inkább a motivációd és a tapasztalatod dönt, nem a személyiségprofilod.",
+    watchOut: "A nagyon nagy nyomással, tartós elszigeteltséggel vagy folyamatos szerepléssel járó közegek kevésbé építenek a kiegyensúlyozottságodra. Ezekhez tudatos felkészülésre lehet szükséged.",
   },
   en: {
     strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where flexibility and stability are the value.",

@@ -119,18 +119,18 @@ test("prefill: rich aggregates produce every narrative field + action items", ()
   assert.ok(!prefill!.summary.includes("tagpár"));
   assert.ok(prefill!.strengths.startsWith("• "));
   // friction 50% → norma-kockázat + ajánlás
-  assert.ok(prefill!.risks.includes("munkastílus-különbség"));
+  assert.ok(prefill!.risks.includes("munkastílusbeli különbség"));
   assert.ok(prefill!.recommendations.includes("működési normák"));
   // szerep-hiány bekerül név szerint
   assert.ok(prefill!.risks.includes("Ötletgazda"));
   // mért kapcsolati adat hiányzik → bizalmi kör ajánlás + akció
   assert.ok(prefill!.recommendations.includes("bizalmi kör"));
   const titles = prefill!.actionItems.map((item) => item.title);
-  assert.ok(titles.includes("Csapatkép-átbeszélő workshop"));
+  assert.ok(titles.includes("A csapatkép közös átbeszélése"));
   assert.ok(titles.includes("Működési normák rögzítése"));
-  assert.ok(titles.includes("Szerep-tisztázás"));
+  assert.ok(titles.includes("Szerepek tisztázása"));
   assert.ok(titles.includes("Mért bizalmi kör"));
-  assert.ok(titles.includes("Utánkövetés és riport-frissítés"));
+  assert.ok(titles.includes("Utánkövetés és a riport frissítése"));
   assert.deepEqual(
     prefill!.actionItems.find((item) => item.title === "Mért bizalmi kör")?.targetMetric,
     { kind: "trust_coverage" },
@@ -179,7 +179,7 @@ test("prefill: high aligned share from TRUST data does NOT claim homogeneity (D2
   const prefill = buildDraftNarrativePrefill(trustAligned);
   assert.ok(prefill);
   // A magas bizalom NEM homogenitás — a vakfolt/hasonló-profil szöveg kimarad.
-  assert.ok(!prefill!.risks.includes("homogén profil"));
+  assert.ok(!prefill!.risks.includes("hasonló profilok"));
   assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
   assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
   // Helyette a mért bizalmat pozitívan nevezi meg.
@@ -200,8 +200,8 @@ test("prefill: high aligned share from PROFILE estimate keeps the homogeneity no
   };
   const prefill = buildDraftNarrativePrefill(profileAligned);
   assert.ok(prefill);
-  // Profil-hasonlóság → a homogén-vakfolt értelmezés jogos.
-  assert.ok(prefill!.risks.includes("homogén profil"));
+  // Profil-hasonlóság → a közös vakfoltok értelmezése jogos.
+  assert.ok(prefill!.risks.includes("hasonló profilok"));
   assert.ok(prefill!.strengths.includes("hasonló munkastílus"));
   // Becslésből nem állítunk mért bizalmat.
   assert.ok(!prefill!.strengths.includes("bizalmi kapcsolat"));
@@ -224,7 +224,7 @@ test("prefill: MIXED-source dynamics claims neither homogeneity nor measured-tru
   };
   const prefill = buildDraftNarrativePrefill(mixedAligned);
   assert.ok(prefill);
-  assert.ok(!prefill!.risks.includes("homogén profil"));
+  assert.ok(!prefill!.risks.includes("hasonló profilok"));
   assert.ok(!prefill!.strengths.includes("hasonló munkastílus"));
   assert.ok(!prefill!.recommendations.includes("Külső visszajelzés"));
   // A „mért bizalmi kör alapján…" erősség-mondat is csak tiszta trust_round-nál jár.
@@ -241,7 +241,7 @@ test("prefill: E legalacsonyabb átlagnál sem kerül a figyelendő (deficit) sl
   // Az érzelmi stabilitás nem kockázat — a E figyelendő-szövege kimarad,
   // a legalacsonyabb ELIGIBLE dimenzió (O) figyelendője kerül be.
   assert.ok(!prefill!.risks.includes("Érzelmileg ráhangolódóbb"));
-  assert.ok(prefill!.risks.includes("Pragmatikus fókusz"));
+  assert.ok(prefill!.risks.includes("gyakorlatias szemlélet"));
 });
 
 test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javaslat (FIX 2)", () => {
@@ -258,7 +258,7 @@ test("prefill: több-csapatos futó pulse mellett nincs 'pulse indítása' javas
 test("prefill: se pulse-adat, se lefedő kör → marad a pulse-indítás javaslat", () => {
   const prefill = buildDraftNarrativePrefill(richAggregates);
   assert.ok(prefill);
-  assert.ok(prefill!.recommendations.includes("Pszichológiai biztonság pulse indítása"));
+  assert.ok(prefill!.recommendations.includes("Pszichológiai biztonsági pulzusmérés indítása"));
 });
 
 test("prefill: no dimension averages returns null", () => {

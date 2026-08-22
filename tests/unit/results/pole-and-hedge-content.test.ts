@@ -121,7 +121,7 @@ test("getEnvRows: X=33 (épphogy pólus-low, tükör-sáv) → hedged; 25-nél n
 });
 
 test("getEnvRows: fordított tengelyű sor (load) — a kiváltó E-pólus sávja dönt", () => {
-  // E 67 (high pólus a sávban) → a „Terhelés-kezelés" low-verdikt hedged.
+  // E 67 (high pólus a sávban) → a „Terhelhetőség" low-verdikt hedged.
   const rows = getEnvRows(CATS({ E: "high" }), { E: 67 });
   const load = rows.find((r) => r.key === "load");
   assert.equal(load?.hedged, true);

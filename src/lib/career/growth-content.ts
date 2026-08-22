@@ -20,7 +20,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Kiszámíthatóság és átláthatóság",
         action:
-          "Egy hónapig minden ígéretedet írd fel, és jelöld, teljesült-e. Ahol csúszik, te szólj előbb — a bizalom ebből épül.",
+          "Egy hónapig írd fel minden vállalásodat, és jelöld, hogy teljesült-e. Ha csúszás várható, te jelezd először — a bizalom az ilyen kiszámítható lépésekből épül.",
       },
       en: {
         headline: "Predictability and transparency",
@@ -44,9 +44,9 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
   E: {
     under: {
       hu: {
-        headline: "Ráhangolódás mások érzéseire",
+        headline: "Az érzelmi jelzések tudatosítása",
         action:
-          "Nehéz beszélgetés előtt kérdezd meg magadtól: mit érezhet most a másik? A találgatást mondd is ki — „úgy tűnik, ez frusztráló neked”.",
+          "Nehéz beszélgetés előtt figyeld meg, milyen érzelmi jelzéseket látsz a másikon, majd kérdezz vissza: „Jól érzem, hogy ez most frusztráló számodra?”.",
       },
       en: {
         headline: "Tuning in to how others feel",
@@ -58,7 +58,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Nyomás alatti stabilitás",
         action:
-          "Éles helyzetben adj magadnak 10 perc késleltetést, mielőtt reagálsz. Írd le, mi a legrosszabb reális kimenet — általában kezelhetőbb, mint amilyennek elsőre tűnik.",
+          "Éles helyzetben várj tíz percet, mielőtt reagálsz. Írd le a legrosszabb reális következményt — általában kezelhetőbb, mint amilyennek elsőre tűnik.",
       },
       en: {
         headline: "Steadiness under pressure",
@@ -110,7 +110,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Határok és nemet mondás",
         action:
-          "Az engedékenységed itt fékez: a szerep alkuhelyzeteket kíván. Gyakorold, hogy előre eldöntöd a határaidat, és egy mondatban kimondod, mi az, amiben nem engedsz.",
+          "A túlzott engedékenység itt hátráltathat, mert a szerepben gyakoriak az alkuhelyzetek. Határozd meg előre a határaidat, és gyakorold egy mondatban kimondani, miben nem engedsz.",
       },
       en: {
         headline: "Boundaries and saying no",
@@ -124,7 +124,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Következetesség és lezárás",
         action:
-          "Válassz egy visszatérő feladatot, és készíts hozzá kétperces ellenőrzőlistát. Egy hónapig minden alkalommal használd — a rendszer pótolja a lendületet.",
+          "Válassz egy visszatérő feladatot, és készíts hozzá kétperces ellenőrzőlistát. Egy hónapig minden alkalommal használd — a kialakított rendszer akkor is továbbvisz, amikor kevésbé érzed a lendületet.",
       },
       en: {
         headline: "Consistency and finishing",
@@ -136,7 +136,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "A tökéletesség ára",
         action:
-          "A szerep gyors, jó döntéseket kíván, nem hibátlanokat. Egy feladatnál előre írd le, mi a „elég jó”, és állj meg ott — mérd, mennyi időt nyertél.",
+          "A szerep gyors, kellően megalapozott döntéseket kíván, nem hibátlanokat. Egy feladatnál előre írd le, mit jelent az, hogy „elég jó”, és állj meg ezen a ponton — mérd meg, mennyi időt nyertél.",
       },
       en: {
         headline: "The cost of perfection",
@@ -150,7 +150,7 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Kísérletezés és új nézőpontok",
         action:
-          "Havonta egy bevált folyamatodat próbáld ki másképp, kis téttel. A cél nem a jobb megoldás, hanem hogy legyen összehasonlítási alapod.",
+          "Havonta egyszer végezz el másképp egy bevált folyamatot, alacsony kockázattal. A cél nem feltétlenül a jobb megoldás, hanem az, hogy legyen összehasonlítási alapod.",
       },
       en: {
         headline: "Experimenting and new angles",
@@ -160,9 +160,9 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
     },
     over: {
       hu: {
-        headline: "Az ötletek földet érése",
+        headline: "Az ötletek megvalósítása",
         action:
-          "A szerep stabilitást kíván. Válaszd ki a legjobb ötletedet, és három hétig CSAK azt vidd — a többit írd egy „később” listára, hogy ne vesszen el.",
+          "A szerep stabilitást kíván. Válaszd ki a legjobb ötletedet, és három hétig csak annak megvalósításával foglalkozz — a többit írd egy „később” listára, hogy ne vesszen el.",
       },
       en: {
         headline: "Landing the ideas",
