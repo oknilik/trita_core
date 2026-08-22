@@ -11,11 +11,14 @@ import {
   BLOG_ART_CONCEPTS,
   BLOG_ART_CONCEPT_LABELS_HU,
   BLOG_ART_FAMILY_LABELS_HU,
+  BLOG_ART_LINE_MODES,
+  BLOG_ART_LINE_MODE_LABELS_HU,
   blogArtCandidates,
   inferBlogArtConcept,
   resolveBlogArt,
   type BlogArtConcept,
   type BlogArtFamily,
+  type BlogArtLineMode,
 } from "@/lib/blog-art";
 
 // Admin Blog szekció: a cikk-lista a fő nézet (státusz-szűrők + keresés),
@@ -39,6 +42,7 @@ interface AdminBlogPost {
   artMotif?: BlogArtMotif;
   artFamily?: BlogArtFamily;
   artConcept?: BlogArtConcept;
+  artLineMode?: BlogArtLineMode;
   readingTime: string;
   body: string;
 }
@@ -57,6 +61,7 @@ interface FormState {
   artMotif: "" | BlogArtMotif;
   artFamily: "" | BlogArtFamily;
   artConcept: "" | BlogArtConcept;
+  artLineMode: "" | BlogArtLineMode;
   body: string;
 }
 
@@ -74,6 +79,7 @@ const EMPTY_FORM: FormState = {
   artMotif: "",
   artFamily: "",
   artConcept: "",
+  artLineMode: "",
   body: "",
 };
 
@@ -203,9 +209,10 @@ export function AdminBlogSection({
       seed: form.artSeed ? Number(form.artSeed) : undefined,
       family: form.artFamily || undefined,
       concept: form.artConcept || undefined,
+      lineMode: form.artLineMode || undefined,
       motif: form.artMotif || undefined,
     }),
-    [artPreviewSlug, form.title, formTags, form.artSeed, form.artFamily, form.artConcept, form.artMotif],
+    [artPreviewSlug, form.title, formTags, form.artSeed, form.artFamily, form.artConcept, form.artLineMode, form.artMotif],
   );
   const artCandidates = useMemo(
     () => blogArtCandidates(artPreviewSlug, artPreviewRound),
@@ -263,6 +270,7 @@ export function AdminBlogSection({
       artMotif: post.artMotif ?? "",
       artFamily: post.artFamily ?? "",
       artConcept: post.artConcept ?? "",
+      artLineMode: post.artLineMode ?? "",
       body: post.body,
     });
     setArtPreviewRound(0);
@@ -368,7 +376,8 @@ export function AdminBlogSection({
       ...(form.artSeed ? { artSeed: Number(form.artSeed) } : {}),
       ...(form.artFamily ? { artFamily: form.artFamily } : {}),
       ...(form.artConcept ? { artConcept: form.artConcept } : {}),
-      ...(!form.artFamily && !form.artConcept && form.artMotif ? { artMotif: form.artMotif } : {}),
+      ...(form.artLineMode ? { artLineMode: form.artLineMode } : {}),
+      ...(!form.artFamily && !form.artConcept && !form.artLineMode && form.artMotif ? { artMotif: form.artMotif } : {}),
       body: form.body,
       status,
     };
@@ -635,15 +644,15 @@ export function AdminBlogSection({
                 />
               </div>
 
-              {/* Cikk-vizuál: jelentésréteg + három közös Trita-kézírás. */}
+              {/* Cikk-vizuál: jelentésréteg + négy közös Trita-kézírás. */}
               <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold text-text-primary">Cikk-vizuál</span>
                   <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-xs text-ink-body">
-                    {BLOG_ART_FAMILY_LABELS_HU[currentArt.family]} · {BLOG_ART_CONCEPT_LABELS_HU[currentArt.concept]}
+                    {BLOG_ART_FAMILY_LABELS_HU[currentArt.family]} · {BLOG_ART_CONCEPT_LABELS_HU[currentArt.concept]} · {BLOG_ART_LINE_MODE_LABELS_HU[currentArt.lineMode]}
                   </span>
                   <span className="text-xs text-muted">
-                    {form.artFamily || form.artConcept || form.artSeed || form.artMotif ? "kiválasztva" : "automatikus"}
+                    {form.artFamily || form.artConcept || form.artLineMode || form.artSeed || form.artMotif ? "kiválasztva" : "automatikus"}
                   </span>
                 </div>
 
@@ -660,6 +669,7 @@ export function AdminBlogSection({
                         motif={form.artMotif || undefined}
                         family={form.artFamily || undefined}
                         concept={form.artConcept || undefined}
+                        lineMode={form.artLineMode || undefined}
                         variant="featured"
                       />
                     </div>
@@ -675,6 +685,7 @@ export function AdminBlogSection({
                         motif={form.artMotif || undefined}
                         family={form.artFamily || undefined}
                         concept={form.artConcept || undefined}
+                        lineMode={form.artLineMode || undefined}
                         variant="card"
                       />
                     </div>
@@ -712,13 +723,33 @@ export function AdminBlogSection({
                   </div>
                 </div>
 
+                <div className="mb-3">
+                  <span className="mb-2 block text-xs font-semibold text-text-primary">Mennyi tintavonal maradjon?</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BLOG_ART_LINE_MODES.map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => set({ artLineMode: value, artMotif: "" })}
+                        className={`rounded-full border px-3 py-1 text-xs transition ${
+                          currentArt.lineMode === value
+                            ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+                            : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
+                        }`}
+                      >
+                        {BLOG_ART_LINE_MODE_LABELS_HU[value]}{value === "minimal" ? " · alap" : ""}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-text-primary">Válassz a hat változatból</span>
+                  <span className="text-xs font-semibold text-text-primary">Válassz a nyolc változatból</span>
                   <Button variant="secondary" size="sm" onClick={() => setArtPreviewRound((round) => round + 1)}>
-                    Új hat variáció
+                    Új nyolc variáció
                   </Button>
                 </div>
-                <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+                <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
                   {artCandidates.map((candidate) => {
                     const selected = form.artFamily === candidate.family
                       && Number(form.artSeed) === candidate.seed;
@@ -727,7 +758,7 @@ export function AdminBlogSection({
                         key={`${candidate.family}-${candidate.seed}`}
                         type="button"
                         aria-pressed={selected}
-                        aria-label={`${BLOG_ART_FAMILY_LABELS_HU[candidate.family]}, ${BLOG_ART_CONCEPT_LABELS_HU[previewConcept]}, ${candidate.seed}. variáció`}
+                        aria-label={`${BLOG_ART_FAMILY_LABELS_HU[candidate.family]}, ${BLOG_ART_CONCEPT_LABELS_HU[previewConcept]}, ${BLOG_ART_LINE_MODE_LABELS_HU[currentArt.lineMode]}, ${candidate.seed}. variáció`}
                         onClick={() => set({
                           artFamily: candidate.family,
                           artConcept: previewConcept,
@@ -748,6 +779,7 @@ export function AdminBlogSection({
                             seed={candidate.seed}
                             family={candidate.family}
                             concept={previewConcept}
+                            lineMode={currentArt.lineMode}
                             variant="card"
                           />
                         </span>
@@ -761,11 +793,11 @@ export function AdminBlogSection({
                 </div>
 
                 <div className="mt-3 flex flex-wrap items-center gap-2">
-                  {(form.artSeed || form.artFamily || form.artConcept || form.artMotif) && (
+                  {(form.artSeed || form.artFamily || form.artConcept || form.artLineMode || form.artMotif) && (
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => set({ artSeed: "", artMotif: "", artFamily: "", artConcept: "" })}
+                      onClick={() => set({ artSeed: "", artMotif: "", artFamily: "", artConcept: "", artLineMode: "" })}
                     >
                       Automatikus választás
                     </Button>

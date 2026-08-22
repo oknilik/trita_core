@@ -10,7 +10,7 @@ import {
   saveBlogSource,
   deleteBlogSource,
 } from "@/lib/blog-store";
-import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES } from "@/lib/blog-art";
+import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES, BLOG_ART_LINE_MODES } from "@/lib/blog-art";
 
 export const runtime = "nodejs";
 
@@ -38,6 +38,7 @@ const postSchema = z.object({
   artMotif: z.enum(["radar", "network", "bars", "waves"]).optional(),
   artFamily: z.enum(BLOG_ART_FAMILIES).optional(),
   artConcept: z.enum(BLOG_ART_CONCEPTS).optional(),
+  artLineMode: z.enum(BLOG_ART_LINE_MODES).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
 });
@@ -64,7 +65,8 @@ function buildMdx(p: PostInput): string {
   if (p.artSeed) data.artSeed = p.artSeed;
   if (p.artFamily) data.artFamily = p.artFamily;
   if (p.artConcept) data.artConcept = p.artConcept;
-  if (p.artMotif && !p.artFamily && !p.artConcept) data.artMotif = p.artMotif;
+  if (p.artLineMode) data.artLineMode = p.artLineMode;
+  if (p.artMotif && !p.artFamily && !p.artConcept && !p.artLineMode) data.artMotif = p.artMotif;
   if (p.status === "draft") data.status = "draft";
 
   return matter.stringify("\n" + p.body.trim() + "\n", data);
@@ -195,6 +197,7 @@ export async function PUT(req: NextRequest) {
     ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
     ...(typeof data.artFamily === "string" ? { artFamily: data.artFamily } : {}),
     ...(typeof data.artConcept === "string" ? { artConcept: data.artConcept } : {}),
+    ...(typeof data.artLineMode === "string" ? { artLineMode: data.artLineMode } : {}),
     body: content,
     status: "draft" as const,
   });

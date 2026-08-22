@@ -5,9 +5,11 @@ import readingTime from "reading-time";
 import {
   isBlogArtConcept,
   isBlogArtFamily,
+  isBlogArtLineMode,
   isLegacyBlogArtMotif,
   type BlogArtConcept,
   type BlogArtFamily,
+  type BlogArtLineMode,
   type LegacyBlogArtMotif,
 } from "@/lib/blog-art";
 
@@ -38,6 +40,8 @@ export interface BlogPost {
   artFamily?: BlogArtFamily;
   /** Szerkesztői jelentésréteg — nem mérési állítás. */
   artConcept?: BlogArtConcept;
+  /** Dekoratív tintavonal mennyisége. */
+  artLineMode?: BlogArtLineMode;
   content: string;
 }
 
@@ -76,6 +80,7 @@ export function getAllPosts(
         artMotif: isLegacyBlogArtMotif(data.artMotif) ? data.artMotif : undefined,
         artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
         artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
+        artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
       };
     })
     .filter(Boolean)
@@ -146,6 +151,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     artMotif: isLegacyBlogArtMotif(data.artMotif) ? data.artMotif : undefined,
     artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
     artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
+    artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
     content,
   };
 }

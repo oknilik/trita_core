@@ -14,7 +14,7 @@ const palette: ArtPalette = {
   counterweight: COLORS.sage,
 };
 
-test("mindhárom család valódi, eltérő PNG-vé raszterizálható", async () => {
+test("mind a négy család valódi, eltérő PNG-vé raszterizálható", async () => {
   const hashes = new Set<string>();
 
   for (const family of BLOG_ART_FAMILIES) {

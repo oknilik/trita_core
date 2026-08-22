@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 
 describe("BlogArtVisual", () => {
-  it("a három család különböző, de determinisztikus SVG-t ad", () => {
+  it("a négy család különböző, de determinisztikus SVG-t ad", () => {
     const common = {
       slug: "csapatdinamika-olvasasa",
       title: "A csapatdinamika olvasása",
@@ -20,9 +20,29 @@ describe("BlogArtVisual", () => {
 
     const modular = render(<BlogArtVisual {...common} family="modular" />);
     const flow = render(<BlogArtVisual {...common} family="flow" />);
+    const collage = render(<BlogArtVisual {...common} family="collage" />);
     expect(modular.container.innerHTML).not.toBe(firstMarkup);
     expect(flow.container.innerHTML).not.toBe(firstMarkup);
+    expect(collage.container.innerHTML).not.toBe(firstMarkup);
     expect(flow.container.innerHTML).not.toBe(modular.container.innerHTML);
+    expect(collage.container.innerHTML).not.toBe(modular.container.innerHTML);
+  });
+
+  it("a vonalmentes mód minden dekoratív tintavonalat eltávolít", () => {
+    for (const family of ["collage", "modular", "constellation", "flow"] as const) {
+      const { container, unmount } = render(
+        <BlogArtVisual
+          slug={`vonalmentes-${family}`}
+          family={family}
+          concept="connection"
+          lineMode="none"
+          seed={12}
+        />,
+      );
+      expect(container.querySelector("line")).not.toBeInTheDocument();
+      expect(container.querySelector('path[fill="none"]')).not.toBeInTheDocument();
+      unmount();
+    }
   });
 
   it("dekorációként rejtett marad a képernyőolvasó elől", () => {

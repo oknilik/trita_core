@@ -142,6 +142,7 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
                 motif={published.artMotif}
                 family={published.artFamily}
                 concept={published.artConcept}
+                lineMode={published.artLineMode}
                 variant="card"
                 palette={OG_ART_PALETTE}
                 background={COLORS.warm}

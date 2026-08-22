@@ -33,6 +33,7 @@ export async function BlogTab() {
       artMotif: meta.artMotif,
       artFamily: meta.artFamily,
       artConcept: meta.artConcept,
+      artLineMode: meta.artLineMode,
       readingTime: meta.readingTime,
       body: full?.content?.trim() ?? "",
     };

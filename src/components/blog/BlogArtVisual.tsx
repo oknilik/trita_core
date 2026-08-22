@@ -1,9 +1,10 @@
 // Generatív cikk-vizuál — determinisztikus SVG a cikk szemantikai adatai és
 // a választott seed alapján.
 //
-// 2026-08-22 — három párhuzamos kézírás ugyanazon szerkesztői rendszeren:
-// konstelláció, lágy Bauhaus és élő vonal. A `concept` mondja meg, miről szól
-// a kompozíció; a `family`, hogyan rajzoljuk meg. A régi
+// 2026-08-22 — négy párhuzamos kézírás ugyanazon szerkesztői rendszeren:
+// relációs kollázs, konstelláció, lágy Bauhaus és élő vonal. A `concept`
+// mondja meg, miről szól a kompozíció; a `family`, hogyan rajzoljuk meg;
+// a `lineMode`, mennyi tintavonal maradjon benne. A régi
 // radar/háló/sávok/hullám motívumok csak explicit régi frontmatter esetén
 // futnak, hogy a korábbi kézi választások vizuálisan stabilak maradjanak.
 //
@@ -30,6 +31,7 @@ import {
   resolveBlogArt,
   type BlogArtConcept,
   type BlogArtFamily,
+  type BlogArtLineMode,
   type LegacyBlogArtMotif,
 } from "@/lib/blog-art";
 import {
@@ -328,6 +330,7 @@ function ConstellationSubject({
   h,
   sw,
   p,
+  lineMode,
 }: {
   seed: number;
   concept: BlogArtConcept;
@@ -336,16 +339,20 @@ function ConstellationSubject({
   h: number;
   sw: number;
   p: ArtPalette;
+  lineMode: BlogArtLineMode;
 }) {
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
   const slots = CONCEPT_SLOTS[concept];
   const count = scale === "compact" ? 1 : 3;
   const base = Math.min(z.h, z.w * 0.34);
+  const shapePool = lineMode === "expressive"
+    ? EDITORIAL_SHAPE_ORDER
+    : EDITORIAL_SHAPE_ORDER.filter((id) => EDITORIAL_SHAPES[id].kind !== "line");
 
   return (
     <g>
-      {scale !== "compact" && (
+      {scale !== "compact" && lineMode !== "none" && (
         <path
           d={conceptSpine(concept, z, seed + 19)}
           fill="none"
@@ -358,8 +365,8 @@ function ConstellationSubject({
       {Array.from({ length: count }, (_, index) => {
         const slot = slots[index];
         const shapeIndex = (hashString(`${seed}:${concept}:shape:${index}`) >>> 3)
-          % EDITORIAL_SHAPE_ORDER.length;
-        const id = EDITORIAL_SHAPE_ORDER[shapeIndex];
+          % shapePool.length;
+        const id = shapePool[shapeIndex];
         const size = scale === "compact"
           ? base * 0.82
           : base * (0.46 + slot[2] + rnd() * 0.14);
@@ -390,6 +397,7 @@ function ModularSubject({
   h,
   sw,
   p,
+  lineMode,
 }: {
   seed: number;
   concept: BlogArtConcept;
@@ -398,6 +406,7 @@ function ModularSubject({
   h: number;
   sw: number;
   p: ArtPalette;
+  lineMode: BlogArtLineMode;
 }) {
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
@@ -405,6 +414,7 @@ function ModularSubject({
   const x = (n: number) => r2(z.x + z.w * n + j(z.w * 0.025));
   const y = (n: number) => r2(z.y + z.h * n + j(z.h * 0.035));
   const lineWidth = r2(sw * (scale === "compact" ? 0.8 : 0.7));
+  const showLine = lineMode !== "none";
 
   if (scale === "compact") {
     return (
@@ -413,10 +423,12 @@ function ModularSubject({
           d={`M ${x(0.14)} ${y(0.75)} L ${x(0.5)} ${y(0.16)} L ${x(0.82)} ${y(0.75)} Z`}
           fill={p.form}
         />
-        <path
-          d={`M ${x(0.14)} ${y(0.83)} H ${x(0.9)}`}
-          fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round"
-        />
+        {showLine && (
+          <path
+            d={`M ${x(0.14)} ${y(0.83)} H ${x(0.9)}`}
+            fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round"
+          />
+        )}
       </g>
     );
   }
@@ -427,13 +439,13 @@ function ModularSubject({
         <g>
           <path d={`M ${x(0.06)} ${y(0.8)} Q ${x(0.08)} ${y(0.2)} ${x(0.35)} ${y(0.22)} L ${x(0.35)} ${y(0.8)} Z`} fill={p.form} />
           <path d={`M ${x(0.68)} ${y(0.18)} L ${x(0.96)} ${y(0.18)} L ${x(0.96)} ${y(0.78)} Q ${x(0.7)} ${y(0.76)} ${x(0.68)} ${y(0.18)} Z`} fill={p.counterweight} />
-          <path d={`M ${x(0.25)} ${y(0.58)} C ${x(0.45)} ${y(0.28)}, ${x(0.58)} ${y(0.78)}, ${x(0.78)} ${y(0.46)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+          {showLine && <path d={`M ${x(0.25)} ${y(0.58)} C ${x(0.45)} ${y(0.28)}, ${x(0.58)} ${y(0.78)}, ${x(0.78)} ${y(0.46)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />}
         </g>
       );
     case "balance":
       return (
         <g>
-          <path d={`M ${x(0.08)} ${y(0.64)} H ${x(0.92)}`} fill="none" stroke={p.line} strokeWidth={r2(sw)} strokeLinecap="round" />
+          {showLine && <path d={`M ${x(0.08)} ${y(0.64)} H ${x(0.92)}`} fill="none" stroke={p.line} strokeWidth={r2(sw)} strokeLinecap="round" />}
           <path d={`M ${x(0.12)} ${y(0.62)} A ${r2(z.h * 0.3)} ${r2(z.h * 0.3)} 0 0 1 ${x(0.42)} ${y(0.62)} Z`} fill={p.form} />
           <path d={`M ${x(0.6)} ${y(0.62)} A ${r2(z.h * 0.22)} ${r2(z.h * 0.22)} 0 0 1 ${x(0.86)} ${y(0.62)} Z`} fill={p.counterweight} />
           <circle cx={x(0.51)} cy={y(0.35)} r={r2(z.h * 0.11)} fill={p.sun} />
@@ -444,7 +456,7 @@ function ModularSubject({
         <g>
           <path d={`M ${x(0.02)} ${y(0.08)} H ${x(0.34)} Q ${x(0.38)} ${y(0.5)} ${x(0.1)} ${y(0.92)} H ${x(0.02)} Z`} fill={p.form} />
           <path d={`M ${x(0.98)} ${y(0.02)} V ${y(0.92)} H ${x(0.72)} Q ${x(0.58)} ${y(0.46)} ${x(0.98)} ${y(0.02)} Z`} fill={p.counterweight} />
-          <path d={`M ${x(0.24)} ${y(0.82)} L ${x(0.82)} ${y(0.2)}`} fill="none" stroke={p.line} strokeWidth={r2(sw * 1.05)} strokeLinecap="round" />
+          {showLine && <path d={`M ${x(0.24)} ${y(0.82)} L ${x(0.82)} ${y(0.2)}`} fill="none" stroke={p.line} strokeWidth={r2(sw * 1.05)} strokeLinecap="round" />}
         </g>
       );
     case "threshold":
@@ -452,13 +464,13 @@ function ModularSubject({
         <g>
           <path d={`M ${x(0.03)} ${y(0.03)} H ${x(0.28)} V ${y(0.35)} Q ${x(0.39)} ${y(0.5)} ${x(0.28)} ${y(0.65)} V ${y(0.97)} H ${x(0.03)} Z`} fill={p.form} />
           <path d={`M ${x(0.97)} ${y(0.03)} H ${x(0.72)} V ${y(0.35)} Q ${x(0.61)} ${y(0.5)} ${x(0.72)} ${y(0.65)} V ${y(0.97)} H ${x(0.97)} Z`} fill={p.counterweight} />
-          <path d={`M ${x(0.18)} ${y(0.64)} C ${x(0.4)} ${y(0.64)}, ${x(0.44)} ${y(0.28)}, ${x(0.52)} ${y(0.28)} S ${x(0.62)} ${y(0.64)}, ${x(0.84)} ${y(0.64)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+          {showLine && <path d={`M ${x(0.18)} ${y(0.64)} C ${x(0.4)} ${y(0.64)}, ${x(0.44)} ${y(0.28)}, ${x(0.52)} ${y(0.28)} S ${x(0.62)} ${y(0.64)}, ${x(0.84)} ${y(0.64)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />}
         </g>
       );
     case "signal":
       return (
         <g>
-          {[0.2, 0.34, 0.48, 0.62].map((n, index) => (
+          {showLine && [0.2, 0.34, 0.48, 0.62].map((n, index) => (
             <path key={n} d={`M ${x(0.06)} ${y(n)} H ${x(0.38 + index * 0.08)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
           ))}
           <path d={`M ${x(0.56)} ${y(0.78)} L ${x(0.56)} ${y(0.5)} L ${x(0.68)} ${y(0.5)} L ${x(0.68)} ${y(0.34)} L ${x(0.8)} ${y(0.34)} L ${x(0.8)} ${y(0.18)} L ${x(0.94)} ${y(0.18)} L ${x(0.94)} ${y(0.78)} Z`} fill={p.counterweight} />
@@ -469,7 +481,7 @@ function ModularSubject({
       return (
         <g>
           <path d={`M ${x(0.08)} ${y(0.84)} H ${x(0.28)} V ${y(0.68)} H ${x(0.45)} V ${y(0.5)} H ${x(0.62)} V ${y(0.3)} H ${x(0.82)} V ${y(0.12)} H ${x(0.96)} V ${y(0.84)} Z`} fill={p.counterweight} />
-          <path d={`M ${x(0.08)} ${y(0.82)} C ${x(0.34)} ${y(0.76)}, ${x(0.58)} ${y(0.44)}, ${x(0.9)} ${y(0.1)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+          {showLine && <path d={`M ${x(0.08)} ${y(0.82)} C ${x(0.34)} ${y(0.76)}, ${x(0.58)} ${y(0.44)}, ${x(0.9)} ${y(0.1)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />}
           <circle cx={x(0.18)} cy={y(0.54)} r={r2(z.h * 0.15)} fill={p.form} />
         </g>
       );
@@ -484,6 +496,7 @@ function FlowSubject({
   h,
   sw,
   p,
+  lineMode,
 }: {
   seed: number;
   concept: BlogArtConcept;
@@ -492,6 +505,7 @@ function FlowSubject({
   h: number;
   sw: number;
   p: ArtPalette;
+  lineMode: BlogArtLineMode;
 }) {
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
@@ -501,14 +515,26 @@ function FlowSubject({
 
   return (
     <g>
-      <path
-        d={flowPath(concept, z, seed + 71)}
-        fill="none"
-        stroke={p.line}
-        strokeWidth={lineWidth}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      {lineMode !== "none" && (
+        <path
+          d={flowPath(concept, z, seed + 71)}
+          fill="none"
+          stroke={p.line}
+          strokeWidth={lineWidth}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      )}
+      {lineMode === "expressive" && scale !== "compact" && (
+        <path
+          d={flowPath(concept, { ...z, y: z.y + z.h * 0.08 }, seed + 137)}
+          fill="none"
+          stroke={p.form}
+          strokeWidth={r2(lineWidth * 0.54)}
+          strokeLinecap="round"
+          opacity={0.56}
+        />
+      )}
       {scale === "compact" ? (
         <circle cx={r2(z.x + z.w * 0.72)} cy={r2(z.y + z.h * 0.35)} r={r2(z.h * 0.12)} fill={p.form} />
       ) : (
@@ -544,6 +570,77 @@ function FlowSubject({
   );
 }
 
+/**
+ * Tömör, kivágott papírra emlékeztető jelenet. Alaphelyzetben egyáltalán
+ * nincs összekötő vonala: a formák távolsága, átfedése és méretaránya mondja
+ * el a fogalmat. Ez a negyedik irány oldja a vonalas családok túlsúlyát.
+ */
+function CollageSubject({
+  seed,
+  concept,
+  scale,
+  w,
+  h,
+  sw,
+  p,
+  lineMode,
+}: {
+  seed: number;
+  concept: BlogArtConcept;
+  scale: ArtScale;
+  w: number;
+  h: number;
+  sw: number;
+  p: ArtPalette;
+  lineMode: BlogArtLineMode;
+}) {
+  const z = artZone(scale, w, h);
+  const rnd = mulberry32(seed);
+  const slots = CONCEPT_SLOTS[concept];
+  const ids: readonly EditorialShapeId[] = ["blob", "crescent", "wedge", "lens", "trail"];
+  const count = scale === "compact" ? 1 : 4;
+  const base = Math.min(z.h, z.w * 0.34);
+  const extraSlot: ConceptSlot = [0.55, concept === "growth" ? 0.68 : 0.52, 0.24];
+  const collageSlots = [...slots, extraSlot];
+
+  return (
+    <g>
+      {Array.from({ length: count }, (_, index) => {
+        const slot = collageSlots[index];
+        const id = ids[(hashString(`${seed}:collage:${concept}:${index}`) >>> 2) % ids.length];
+        const size = scale === "compact"
+          ? base * 0.9
+          : base * (0.48 + slot[2] + rnd() * 0.2);
+        const overlap = index === 3 ? -z.w * 0.055 : 0;
+        return (
+          <g key={`collage-${id}-${index}`}>
+            {EditorialMark({
+              id,
+              x: z.x + z.w * slot[0] + overlap + (rnd() - 0.5) * z.w * 0.045,
+              y: z.y + z.h * slot[1] + (rnd() - 0.5) * z.h * 0.075,
+              size,
+              rotation: (rnd() - 0.5) * 42,
+              tone: index % 3 === 1 ? "counterweight" : "form",
+              p,
+              strokeWidth: sw,
+            })}
+          </g>
+        );
+      })}
+      {lineMode === "expressive" && scale !== "compact" && (
+        <path
+          d={conceptSpine(concept, z, seed + 211)}
+          fill="none"
+          stroke={p.line}
+          strokeWidth={r2(sw * 0.42)}
+          strokeLinecap="round"
+          opacity={0.5}
+        />
+      )}
+    </g>
+  );
+}
+
 export type BlogArtMotif = Motif;
 
 export function BlogArtVisual({
@@ -555,6 +652,7 @@ export function BlogArtVisual({
   motif: motifOverride,
   family,
   concept,
+  lineMode,
   palette,
   background,
   className,
@@ -570,6 +668,8 @@ export function BlogArtVisual({
   motif?: Motif;
   family?: BlogArtFamily;
   concept?: BlogArtConcept;
+  /** Vonalhasználat: új képeknél alapértelmezetten kevés. */
+  lineMode?: BlogArtLineMode;
   /** Fix paletta szerveroldali raszterhez (OG/hírlevél); weben CSS-tokenes. */
   palette?: ArtPalette;
   /** Fix háttér szerveroldali raszterhez; weben a szemantikus token dönt. */
@@ -583,6 +683,7 @@ export function BlogArtVisual({
     seed,
     family,
     concept,
+    lineMode,
     motif: motifOverride,
   });
   // Régi explicit motívumnál bitre a korábbi seed-kulcsot tartjuk. Az új
@@ -636,11 +737,13 @@ export function BlogArtVisual({
         : resolved.legacyMotif === "bars"
           ? BarsSubject({ seed: subjectSeed, cx, cy, R: radius, sw: strokeWidth, p })
           : WavesSubject({ seed: subjectSeed, w, cx, cy, R: radius, sw: strokeWidth, p })
-    : resolved.family === "constellation"
-      ? ConstellationSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p })
+    : resolved.family === "collage"
+      ? CollageSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p, lineMode: resolved.lineMode })
+      : resolved.family === "constellation"
+        ? ConstellationSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p, lineMode: resolved.lineMode })
       : resolved.family === "modular"
-        ? ModularSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p })
-        : FlowSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p });
+        ? ModularSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p, lineMode: resolved.lineMode })
+        : FlowSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p, lineMode: resolved.lineMode });
 
   const subjectHasGroundGesture = resolved.legacyMotif === "waves" || (!resolved.legacyMotif && resolved.family === "flow");
 
@@ -658,11 +761,13 @@ export function BlogArtVisual({
       {parts && (
         <g>
           <circle cx={parts.sun.x} cy={parts.sun.y} r={parts.sun.r} fill={p.sun} />
-          <g stroke={p.line} strokeWidth={r2(strokeWidth * 0.7)} strokeLinecap="round" opacity={0.9}>
-            {starGeometry(parts.star.x, parts.star.y, parts.star.r).lines.map((l) => (
-              <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
-            ))}
-          </g>
+          {resolved.lineMode === "expressive" && (
+            <g stroke={p.line} strokeWidth={r2(strokeWidth * 0.7)} strokeLinecap="round" opacity={0.9}>
+              {starGeometry(parts.star.x, parts.star.y, parts.star.r).lines.map((l) => (
+                <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+              ))}
+            </g>
+          )}
         </g>
       )}
 
@@ -678,7 +783,7 @@ export function BlogArtVisual({
               – hero: a panel alsó sávjában az idézet ül, a vonal átvágná;
               – hullám-motívum: ott a hullám MAGA a talaj-gesztus, egymás
                 mellett három közel párhuzamos vonallá esne szét. */}
-          {scale !== "hero" && !subjectHasGroundGesture && (
+          {resolved.lineMode === "expressive" && scale !== "hero" && !subjectHasGroundGesture && (
             <path
               d={groundPath(artSeed + 7, w, parts.groundY, radius * 0.3)}
               fill="none" stroke={p.line} strokeWidth={r2(strokeWidth * 0.62)}

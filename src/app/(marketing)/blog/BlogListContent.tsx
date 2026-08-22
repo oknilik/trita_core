@@ -304,6 +304,7 @@ export function BlogListContent({
                         motif={featured.artMotif}
                         family={featured.artFamily}
                         concept={featured.artConcept}
+                        lineMode={featured.artLineMode}
                         variant="featured"
                       />
                     </div>
@@ -384,6 +385,7 @@ export function BlogListContent({
                           motif={post.artMotif}
                           family={post.artFamily}
                           concept={post.artConcept}
+                          lineMode={post.artLineMode}
                           variant="card"
                         />
                       </div>
@@ -423,6 +425,7 @@ export function BlogListContent({
                       motif={post.artMotif}
                       family={post.artFamily}
                       concept={post.artConcept}
+                      lineMode={post.artLineMode}
                       variant="mini"
                     />
                   </span>

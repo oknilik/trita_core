@@ -1,18 +1,22 @@
 import { hashString } from "@/lib/miro-primitives";
 
 /**
- * A blog-vizuál két független tengelye.
+ * A blog-vizuál három független tengelye.
  *
  *  - family: HOGYAN rajzolunk (kézírás / kompozíciós rendszer)
  *  - concept: MIRŐL szól a jelenet (szerkesztői jelentés, nem mérési adat)
+ *  - lineMode: MENNYIRE legyen jelen a tintavonal
  *
- * A kettő szétválasztása ad változatosságot anélkül, hogy négy egymástól
+ * A tengelyek szétválasztása ad változatosságot anélkül, hogy négy egymástól
  * független arculatot építenénk. Egy "tension" jelenet például lehet
  * konstelláció vagy élő vonal, miközben mindkettő ugyanazt a Trita-palettát
  * és kísérőjeleket használja.
  */
-export const BLOG_ART_FAMILIES = ["constellation", "modular", "flow"] as const;
+export const BLOG_ART_FAMILIES = ["collage", "modular", "constellation", "flow"] as const;
 export type BlogArtFamily = (typeof BLOG_ART_FAMILIES)[number];
+
+export const BLOG_ART_LINE_MODES = ["none", "minimal", "expressive"] as const;
+export type BlogArtLineMode = (typeof BLOG_ART_LINE_MODES)[number];
 
 export const BLOG_ART_CONCEPTS = [
   "connection",
@@ -32,10 +36,21 @@ export function isBlogArtConcept(value: unknown): value is BlogArtConcept {
   return typeof value === "string" && BLOG_ART_CONCEPTS.includes(value as BlogArtConcept);
 }
 
+export function isBlogArtLineMode(value: unknown): value is BlogArtLineMode {
+  return typeof value === "string" && BLOG_ART_LINE_MODES.includes(value as BlogArtLineMode);
+}
+
 export const BLOG_ART_FAMILY_LABELS_HU: Record<BlogArtFamily, string> = {
+  collage: "Relációs kollázs",
   constellation: "Konstelláció",
   modular: "Lágy Bauhaus",
   flow: "Élő vonal",
+};
+
+export const BLOG_ART_LINE_MODE_LABELS_HU: Record<BlogArtLineMode, string> = {
+  none: "Vonal nélkül",
+  minimal: "Kevés vonal",
+  expressive: "Expresszív vonal",
 };
 
 export const BLOG_ART_CONCEPT_LABELS_HU: Record<BlogArtConcept, string> = {
@@ -70,6 +85,7 @@ export interface BlogArtSource {
   seed?: number;
   family?: BlogArtFamily;
   concept?: BlogArtConcept;
+  lineMode?: BlogArtLineMode;
   /** Régi frontmatter támogatása. Új választásnál már nem írjuk ki. */
   motif?: LegacyBlogArtMotif;
 }
@@ -77,6 +93,7 @@ export interface BlogArtSource {
 export interface ResolvedBlogArt {
   family: BlogArtFamily;
   concept: BlogArtConcept;
+  lineMode: BlogArtLineMode;
   seed: number;
   /** Igaz, ha explicit régi motívumot kell bitre az előző módon rajzolni. */
   legacyMotif?: LegacyBlogArtMotif;
@@ -123,19 +140,30 @@ export function inferBlogArtConcept(
 }
 
 export function inferBlogArtFamily(slug: string): BlogArtFamily {
-  return BLOG_ART_FAMILIES[hashString(`${slug}:family`) % BLOG_ART_FAMILIES.length];
+  // A kitöltött formákra épülő családok gyakrabban jönnek automatikusan;
+  // az Élő vonal ritkább, karakteres ellenpont marad.
+  const weighted: readonly BlogArtFamily[] = [
+    "collage",
+    "collage",
+    "modular",
+    "modular",
+    "constellation",
+    "flow",
+  ];
+  return weighted[hashString(`${slug}:family`) % weighted.length];
 }
 
 export function resolveBlogArt(source: BlogArtSource): ResolvedBlogArt {
   // Az explicit új mezők mindig elsőbbséget élveznek. Ha CSAK régi artMotif
   // van, a komponens a legacy rajzolót használja, így egy korábban kézzel
   // kiválasztott cikk képe nem változik meg egy deploytól.
-  const legacy = source.motif && !source.family && !source.concept
+  const legacy = source.motif && !source.family && !source.concept && !source.lineMode
     ? LEGACY_SELECTION[source.motif]
     : undefined;
 
   const family = source.family ?? legacy?.family ?? inferBlogArtFamily(source.slug);
   const concept = source.concept ?? legacy?.concept ?? inferBlogArtConcept(source);
+  const lineMode = source.lineMode ?? (legacy ? "expressive" : "minimal");
   const seed = Number.isInteger(source.seed) && Number(source.seed) > 0
     ? Math.min(9999, Number(source.seed))
     : 1 + (hashString(`${source.slug}:blog-art-v2`) % 9999);
@@ -143,6 +171,7 @@ export function resolveBlogArt(source: BlogArtSource): ResolvedBlogArt {
   return {
     family,
     concept,
+    lineMode,
     seed,
     ...(legacy && source.motif ? { legacyMotif: source.motif } : {}),
   };
@@ -153,7 +182,7 @@ export interface BlogArtCandidate {
   seed: number;
 }
 
-/** Hat stabil előnézet: családonként kettő. Az új kör más hat seedet ad. */
+/** Nyolc stabil előnézet: családonként kettő. Az új kör más nyolc seedet ad. */
 export function blogArtCandidates(slug: string, round = 0): BlogArtCandidate[] {
   const usedSeeds = new Set<number>();
   const candidates: BlogArtCandidate[] = [];

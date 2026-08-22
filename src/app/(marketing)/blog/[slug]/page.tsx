@@ -422,7 +422,7 @@ export default async function BlogPostPage({
         {/* Cikk-fejléc vizuál. Eddig a cikkoldal teljesen kép nélkül indult,
             pedig itt tölti az olvasó a 4–8 percet, és innen készül a
             képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
-            kompozíció, mint a listán (azonos slug + family + concept + seed),
+            kompozíció, mint a listán (azonos slug + family + concept + lineMode + seed),
             így a kártya és a cikk ugyanazt az arcot mutatja. */}
         <div className="mb-8 h-[150px] overflow-hidden rounded-2xl border border-sand md:h-[190px]">
           <BlogArtVisual
@@ -433,6 +433,7 @@ export default async function BlogPostPage({
             motif={post.artMotif}
             family={post.artFamily}
             concept={post.artConcept}
+            lineMode={post.artLineMode}
             variant="card"
           />
         </div>

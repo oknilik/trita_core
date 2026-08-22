@@ -44,7 +44,9 @@ test("azonos forrás azonos családot, fogalmat és seedet ad", () => {
     title: "A csapat kapcsolatai",
     tags: ["csapatdinamika"],
   };
-  assert.deepEqual(resolveBlogArt(source), resolveBlogArt(source));
+  const resolved = resolveBlogArt(source);
+  assert.deepEqual(resolved, resolveBlogArt(source));
+  assert.equal(resolved.lineMode, "minimal");
 });
 
 test("az explicit új mezők felülírják az automatikát", () => {
@@ -53,10 +55,12 @@ test("az explicit új mezők felülírják az automatikát", () => {
     family: "flow",
     concept: "threshold",
     seed: 420,
+    lineMode: "none",
   });
   assert.equal(selected.family, "flow");
   assert.equal(selected.concept, "threshold");
   assert.equal(selected.seed, 420);
+  assert.equal(selected.lineMode, "none");
   assert.equal(selected.legacyMotif, undefined);
 });
 
@@ -66,12 +70,13 @@ test("a régi artMotif explicit választása legacy rajzolón marad", () => {
   assert.equal(selected.family, "constellation");
   assert.equal(selected.concept, "connection");
   assert.equal(selected.seed, 73);
+  assert.equal(selected.lineMode, "expressive");
 });
 
-test("az admin hat egyedi előnézetet kap, családonként kettőt", () => {
+test("az admin nyolc egyedi előnézetet kap, családonként kettőt", () => {
   const candidates = blogArtCandidates("egy-cikk", 0);
-  assert.equal(candidates.length, 6);
-  assert.equal(new Set(candidates.map((candidate) => candidate.seed)).size, 6);
+  assert.equal(candidates.length, 8);
+  assert.equal(new Set(candidates.map((candidate) => candidate.seed)).size, 8);
   for (const family of BLOG_ART_FAMILIES) {
     assert.equal(candidates.filter((candidate) => candidate.family === family).length, 2);
   }
