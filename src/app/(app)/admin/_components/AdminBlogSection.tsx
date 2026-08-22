@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
 import { BlogArtVisual, type BlogArtMotif } from "@/components/blog/BlogArtVisual";
+import {
+  BLOG_ART_CONCEPTS,
+  BLOG_ART_CONCEPT_LABELS_HU,
+  BLOG_ART_FAMILY_LABELS_HU,
+  blogArtCandidates,
+  inferBlogArtConcept,
+  resolveBlogArt,
+  type BlogArtConcept,
+  type BlogArtFamily,
+} from "@/lib/blog-art";
 
 // Admin Blog szekció: a cikk-lista a fő nézet (státusz-szűrők + keresés),
 // a szerkesztő gombra nyíló oldalpanelben jön elő — a lista nem mozdul.
@@ -27,6 +37,8 @@ interface AdminBlogPost {
   status: "draft" | "published";
   artSeed?: number;
   artMotif?: BlogArtMotif;
+  artFamily?: BlogArtFamily;
+  artConcept?: BlogArtConcept;
   readingTime: string;
   body: string;
 }
@@ -43,6 +55,8 @@ interface FormState {
   startHere: string;
   artSeed: string;
   artMotif: "" | BlogArtMotif;
+  artFamily: "" | BlogArtFamily;
+  artConcept: "" | BlogArtConcept;
   body: string;
 }
 
@@ -58,6 +72,8 @@ const EMPTY_FORM: FormState = {
   startHere: "",
   artSeed: "",
   artMotif: "",
+  artFamily: "",
+  artConcept: "",
   body: "",
 };
 
@@ -132,6 +148,7 @@ export function AdminBlogSection({
   const fileRef = useRef<HTMLInputElement | null>(null);
   // A portál csak kliensen létezik (SSR-en nincs document).
   const [mounted, setMounted] = useState(false);
+  const [artPreviewRound, setArtPreviewRound] = useState(0);
 
   const sorted = useMemo(
     () =>
@@ -168,6 +185,33 @@ export function AdminBlogSection({
     });
   }, [sorted, statusFilter, localeFilter, query]);
 
+  const formTags = useMemo(
+    () => form.tags.split(",").map((tag) => tag.trim()).filter(Boolean),
+    [form.tags],
+  );
+  const artPreviewSlug = form.slug || slugify(form.title) || "uj-cikk";
+  const inferredArtConcept = useMemo(
+    () => inferBlogArtConcept({ slug: artPreviewSlug, title: form.title, tags: formTags }),
+    [artPreviewSlug, form.title, formTags],
+  );
+  const previewConcept = form.artConcept || inferredArtConcept;
+  const currentArt = useMemo(
+    () => resolveBlogArt({
+      slug: artPreviewSlug,
+      title: form.title,
+      tags: formTags,
+      seed: form.artSeed ? Number(form.artSeed) : undefined,
+      family: form.artFamily || undefined,
+      concept: form.artConcept || undefined,
+      motif: form.artMotif || undefined,
+    }),
+    [artPreviewSlug, form.title, formTags, form.artSeed, form.artFamily, form.artConcept, form.artMotif],
+  );
+  const artCandidates = useMemo(
+    () => blogArtCandidates(artPreviewSlug, artPreviewRound),
+    [artPreviewSlug, artPreviewRound],
+  );
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -192,6 +236,7 @@ export function AdminBlogSection({
     setEditingSlug(null);
     setSlugTouched(false);
     setForm(EMPTY_FORM);
+    setArtPreviewRound(0);
     setConfirmEditorDiscard(false);
   };
 
@@ -216,8 +261,11 @@ export function AdminBlogSection({
       startHere: post.startHere ? String(post.startHere) : "",
       artSeed: post.artSeed ? String(post.artSeed) : "",
       artMotif: post.artMotif ?? "",
+      artFamily: post.artFamily ?? "",
+      artConcept: post.artConcept ?? "",
       body: post.body,
     });
+    setArtPreviewRound(0);
     setNotice(null);
     setConfirmEditorDiscard(false);
     setEditorOpen(true);
@@ -318,7 +366,9 @@ export function AdminBlogSection({
       ...(form.heroQuote.trim() ? { heroQuote: form.heroQuote.trim() } : {}),
       ...(form.startHere ? { startHere: Number(form.startHere) } : {}),
       ...(form.artSeed ? { artSeed: Number(form.artSeed) } : {}),
-      ...(form.artMotif ? { artMotif: form.artMotif } : {}),
+      ...(form.artFamily ? { artFamily: form.artFamily } : {}),
+      ...(form.artConcept ? { artConcept: form.artConcept } : {}),
+      ...(!form.artFamily && !form.artConcept && form.artMotif ? { artMotif: form.artMotif } : {}),
       body: form.body,
       status,
     };
@@ -585,78 +635,150 @@ export function AdminBlogSection({
                 />
               </div>
 
-              {/* Cikk-vizuál előkép + variáció */}
+              {/* Cikk-vizuál: jelentésréteg + három közös Trita-kézírás. */}
               <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold text-text-primary">Cikk-vizuál</span>
+                  <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-xs text-ink-body">
+                    {BLOG_ART_FAMILY_LABELS_HU[currentArt.family]} · {BLOG_ART_CONCEPT_LABELS_HU[currentArt.concept]}
+                  </span>
                   <span className="text-xs text-muted">
-                    generált — a slugból és a variációból determinisztikus, minden felületen ugyanez jelenik meg
+                    {form.artFamily || form.artConcept || form.artSeed || form.artMotif ? "kiválasztva" : "automatikus"}
                   </span>
                 </div>
-                <div className="flex flex-wrap items-start gap-4">
-                  <div className="h-[110px] w-[220px] overflow-hidden rounded-lg border border-sand">
-                    <BlogArtVisual
-                      slug={form.slug || "uj-cikk"}
-                      tags={form.tags.split(",").map((tag) => tag.trim()).filter(Boolean)}
-                      seed={form.artSeed ? Number(form.artSeed) : 0}
-                      motif={form.artMotif || undefined}
-                      variant="featured"
-                    />
-                  </div>
-                  <div className="h-[110px] w-[220px] overflow-hidden rounded-lg border border-sand">
-                    <BlogArtVisual
-                      slug={form.slug || "uj-cikk"}
-                      tags={form.tags.split(",").map((tag) => tag.trim()).filter(Boolean)}
-                      seed={form.artSeed ? Number(form.artSeed) : 0}
-                      motif={form.artMotif || undefined}
-                      variant="card"
-                    />
-                  </div>
-                  <div className="flex min-w-[220px] flex-1 flex-col gap-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {([
-                        ["", "Auto"],
-                        ["radar", "Radar"],
-                        ["network", "Háló"],
-                        ["bars", "Sávok"],
-                        ["waves", "Hullám"],
-                      ] as Array<["" | BlogArtMotif, string]>).map(([value, label]) => (
-                        <button
-                          key={label}
-                          type="button"
-                          onClick={() => set({ artMotif: value })}
-                          className={`rounded-full border px-3 py-1 text-xs transition ${
-                            form.artMotif === value
-                              ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
-                              : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
+
+                {/* A mentett/automatikus kép két valódi felületi méretben. */}
+                <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <span className="mb-1.5 block text-xs font-medium text-muted">Kiemelt kártya</span>
+                    <div className="h-[120px] overflow-hidden rounded-lg border border-sand">
+                      <BlogArtVisual
+                        slug={artPreviewSlug}
+                        title={form.title}
+                        tags={formTags}
+                        seed={form.artSeed ? Number(form.artSeed) : 0}
+                        motif={form.artMotif || undefined}
+                        family={form.artFamily || undefined}
+                        concept={form.artConcept || undefined}
+                        variant="featured"
+                      />
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={() => set({ artSeed: String(1 + Math.floor(Math.random() * 9999)) })}
+                  </div>
+                  <div>
+                    <span className="mb-1.5 block text-xs font-medium text-muted">Lista és cikkfejléc</span>
+                    <div className="h-[120px] overflow-hidden rounded-lg border border-sand">
+                      <BlogArtVisual
+                        slug={artPreviewSlug}
+                        title={form.title}
+                        tags={formTags}
+                        seed={form.artSeed ? Number(form.artSeed) : 0}
+                        motif={form.artMotif || undefined}
+                        family={form.artFamily || undefined}
+                        concept={form.artConcept || undefined}
+                        variant="card"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <span className="mb-2 block text-xs font-semibold text-text-primary">Miről szóljon a kompozíció?</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => set({ artConcept: "", artMotif: "" })}
+                      className={`rounded-full border px-3 py-1 text-xs transition ${
+                        !form.artConcept
+                          ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+                          : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
+                      }`}
+                    >
+                      Auto: {BLOG_ART_CONCEPT_LABELS_HU[inferredArtConcept]}
+                    </button>
+                    {BLOG_ART_CONCEPTS.map((value) => (
+                      <button
+                        key={value}
+                        type="button"
+                        onClick={() => set({ artConcept: value, artMotif: "" })}
+                        className={`rounded-full border px-3 py-1 text-xs transition ${
+                          form.artConcept === value
+                            ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+                            : "border-sand bg-surface-card text-ink-body hover:border-sage-ring"
+                        }`}
                       >
-                        Új variáció
-                      </Button>
-                      {(form.artSeed || form.artMotif) && (
-                        <Button variant="ghost" size="sm" onClick={() => set({ artSeed: "", artMotif: "" })}>
-                          Alaphelyzet
-                        </Button>
-                      )}
-                      {form.artSeed && (
-                        <span className="text-xs text-muted">variáció #{form.artSeed}</span>
-                      )}
-                    </div>
-                    <span className="text-xs text-muted">
-                      Bal: kiemelt (sötét) · jobb: kártya/lista változat. A választás a
-                      mentéskor a cikkbe kerül (artSeed/artMotif).
-                    </span>
+                        {BLOG_ART_CONCEPT_LABELS_HU[value]}
+                      </button>
+                    ))}
                   </div>
+                </div>
+
+                <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-xs font-semibold text-text-primary">Válassz a hat változatból</span>
+                  <Button variant="secondary" size="sm" onClick={() => setArtPreviewRound((round) => round + 1)}>
+                    Új hat variáció
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+                  {artCandidates.map((candidate) => {
+                    const selected = form.artFamily === candidate.family
+                      && Number(form.artSeed) === candidate.seed;
+                    return (
+                      <button
+                        key={`${candidate.family}-${candidate.seed}`}
+                        type="button"
+                        aria-pressed={selected}
+                        aria-label={`${BLOG_ART_FAMILY_LABELS_HU[candidate.family]}, ${BLOG_ART_CONCEPT_LABELS_HU[previewConcept]}, ${candidate.seed}. variáció`}
+                        onClick={() => set({
+                          artFamily: candidate.family,
+                          artConcept: previewConcept,
+                          artSeed: String(candidate.seed),
+                          artMotif: "",
+                        })}
+                        className={`overflow-hidden rounded-lg border bg-surface-card text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-ring ${
+                          selected
+                            ? "border-sage ring-2 ring-sage-ring"
+                            : "border-sand hover:border-sage-ring"
+                        }`}
+                      >
+                        <span className="block h-[72px] overflow-hidden">
+                          <BlogArtVisual
+                            slug={artPreviewSlug}
+                            title={form.title}
+                            tags={formTags}
+                            seed={candidate.seed}
+                            family={candidate.family}
+                            concept={previewConcept}
+                            variant="card"
+                          />
+                        </span>
+                        <span className="flex items-center justify-between gap-2 px-2.5 py-2 text-xs">
+                          <span className="font-medium text-ink-body">{BLOG_ART_FAMILY_LABELS_HU[candidate.family]}</span>
+                          <span className="text-muted">#{candidate.seed}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {(form.artSeed || form.artFamily || form.artConcept || form.artMotif) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => set({ artSeed: "", artMotif: "", artFamily: "", artConcept: "" })}
+                    >
+                      Automatikus választás
+                    </Button>
+                  )}
+                  {currentArt.legacyMotif ? (
+                    <span className="text-xs text-muted">
+                      Korábbi motívum megőrizve. Új kártya választásával kerül át a többcsaládos rendszerbe.
+                    </span>
+                  ) : (
+                    <span className="text-xs text-muted">
+                      A választás ugyanígy jelenik meg a blogban, az OG-képen és a hírlevélben.
+                    </span>
+                  )}
                 </div>
               </div>
 

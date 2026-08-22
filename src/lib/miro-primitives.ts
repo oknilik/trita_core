@@ -26,12 +26,19 @@
  * kéri — ott a fix ink olvashatatlan lenne. Ez a hiba a réteg-hero
  * tokeneknél egyszer már megvolt (UX-audit 2026-08-07).
  */
+export interface ArtPalette {
+  line: string;
+  form: string;
+  sun: string;
+  counterweight: string;
+}
+
 export const ART_COLORS = {
   line: "var(--color-text-primary)",
   form: "var(--color-accent-primary)",
   sun: "var(--color-accent-primary-soft)",
   counterweight: "var(--color-action-primary-bg)",
-} as const;
+} as const satisfies ArtPalette;
 
 /** Ugyanaz a készlet olyan panelen, ami MINDKÉT sémán sötét. */
 export const ART_COLORS_ON_INVERSE = {
@@ -40,9 +47,7 @@ export const ART_COLORS_ON_INVERSE = {
   sun: "var(--color-accent-primary-soft)",
   // A brand-zsálya a sage-deep gradiensen gyakorlatilag eltűnne.
   counterweight: "var(--color-sage-300)",
-} as const;
-
-export type ArtPalette = typeof ART_COLORS | typeof ART_COLORS_ON_INVERSE;
+} as const satisfies ArtPalette;
 
 /**
  * Méret-mód. A kompozíció nem skálázódik lineárisan: 72 pixelen a

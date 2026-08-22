@@ -3,6 +3,8 @@ import path from "node:path";
 import { ImageResponse } from "next/og";
 import { getPostBySlug } from "@/lib/blog";
 import { COLORS } from "@/lib/design-tokens";
+import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import type { ArtPalette } from "@/lib/miro-primitives";
 
 /**
  * A cikk-borító VÁSZNA — két hívóval, egyetlen rajzzal.
@@ -24,6 +26,13 @@ import { COLORS } from "@/lib/design-tokens";
 export const BLOG_COVER_SIZE = { width: 1200, height: 630 };
 export const BLOG_COVER_CONTENT_TYPE = "image/png";
 export const BLOG_COVER_ALT = "trita blog";
+
+const OG_ART_PALETTE: ArtPalette = {
+  line: COLORS.ink,
+  form: COLORS.bronze,
+  sun: COLORS.bronzeSoft,
+  counterweight: COLORS.sage,
+};
 
 /**
  * ISMERETLEN SLUG: a rajzolás DRÁGA (két fontfájl + 1200×630 raszter), a CDN
@@ -99,16 +108,46 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
             </div>
           ) : null}
         </div>
-        <div
-          style={{
-            fontFamily: "Fraunces",
-            fontSize,
-            lineHeight: 1.18,
-            color: COLORS.ink,
-            maxWidth: 1000,
-          }}
-        >
-          {title}
+        <div style={{ display: "flex", alignItems: "center", gap: 30, width: "100%" }}>
+          <div
+            style={{
+              display: "flex",
+              fontFamily: "Fraunces",
+              fontSize,
+              lineHeight: 1.18,
+              color: COLORS.ink,
+              maxWidth: 670,
+              flexGrow: 1,
+            }}
+          >
+            {title}
+          </div>
+          {published ? (
+            <div
+              style={{
+                display: "flex",
+                width: 340,
+                height: 168,
+                borderRadius: 26,
+                overflow: "hidden",
+                border: `2px solid ${COLORS.sand}`,
+                flexShrink: 0,
+              }}
+            >
+              <BlogArtVisual
+                slug={published.slug}
+                title={published.title}
+                tags={published.tags}
+                seed={published.artSeed}
+                motif={published.artMotif}
+                family={published.artFamily}
+                concept={published.artConcept}
+                variant="card"
+                palette={OG_ART_PALETTE}
+                background={COLORS.warm}
+              />
+            </div>
+          ) : null}
         </div>
         <div
           style={{

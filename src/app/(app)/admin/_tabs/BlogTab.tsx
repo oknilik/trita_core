@@ -31,6 +31,8 @@ export async function BlogTab() {
       status: meta.status,
       artSeed: meta.artSeed,
       artMotif: meta.artMotif,
+      artFamily: meta.artFamily,
+      artConcept: meta.artConcept,
       readingTime: meta.readingTime,
       body: full?.content?.trim() ?? "",
     };

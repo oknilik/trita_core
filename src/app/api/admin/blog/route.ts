@@ -10,6 +10,7 @@ import {
   saveBlogSource,
   deleteBlogSource,
 } from "@/lib/blog-store";
+import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES } from "@/lib/blog-art";
 
 export const runtime = "nodejs";
 
@@ -33,8 +34,10 @@ const postSchema = z.object({
   translationSlug: z.string().regex(SLUG_RE).max(120).optional(),
   heroQuote: z.string().max(300).optional(),
   startHere: z.number().int().min(1).max(3).optional(),
-  artSeed: z.number().int().min(0).max(9999).optional(),
+  artSeed: z.number().int().min(1).max(9999).optional(),
   artMotif: z.enum(["radar", "network", "bars", "waves"]).optional(),
+  artFamily: z.enum(BLOG_ART_FAMILIES).optional(),
+  artConcept: z.enum(BLOG_ART_CONCEPTS).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
 });
@@ -59,7 +62,9 @@ function buildMdx(p: PostInput): string {
   if (p.heroQuote) data.heroQuote = p.heroQuote;
   if (p.startHere) data.startHere = p.startHere;
   if (p.artSeed) data.artSeed = p.artSeed;
-  if (p.artMotif) data.artMotif = p.artMotif;
+  if (p.artFamily) data.artFamily = p.artFamily;
+  if (p.artConcept) data.artConcept = p.artConcept;
+  if (p.artMotif && !p.artFamily && !p.artConcept) data.artMotif = p.artMotif;
   if (p.status === "draft") data.status = "draft";
 
   return matter.stringify("\n" + p.body.trim() + "\n", data);
@@ -188,6 +193,8 @@ export async function PUT(req: NextRequest) {
       ? { artSeed: Number(data.artSeed) }
       : {}),
     ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
+    ...(typeof data.artFamily === "string" ? { artFamily: data.artFamily } : {}),
+    ...(typeof data.artConcept === "string" ? { artConcept: data.artConcept } : {}),
     body: content,
     status: "draft" as const,
   });

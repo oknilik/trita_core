@@ -1,18 +1,18 @@
-// Generatív cikk-vizuál — determinisztikus SVG a slug + tagek alapján.
+// Generatív cikk-vizuál — determinisztikus SVG a cikk szemantikai adatai és
+// a választott seed alapján.
 //
-// 2026-08-09 — „színpad" kompozíció (a formanyelv 2. szintje). A kép TÁRGYA
-// változatlanul a cikk témája (radar/háló/sávok/hullám), tehát a vizuál nem
-// állít semmit, amit eddig ne állított volna. Ami változott, az a KÉZÍRÁS:
-// tömör bronz felület a korábbi áttetsző kitöltés helyett, 3–5px tinta az
-// 1,2px hajszálvonal helyett, és köré a formanyelv kísérete (csillag, nap,
-// zsálya ellensúly, vándorló talajvonal).
+// 2026-08-22 — három párhuzamos kézírás ugyanazon szerkesztői rendszeren:
+// konstelláció, lágy Bauhaus és élő vonal. A `concept` mondja meg, miről szól
+// a kompozíció; a `family`, hogyan rajzoljuk meg. A régi
+// radar/háló/sávok/hullám motívumok csak explicit régi frontmatter esetén
+// futnak, hogy a korábbi kézi választások vizuálisan stabilak maradjanak.
 //
 // A hat JELENTŐ alapforma (type-glyph.ts) itt szándékosan nem szerepel —
 // azok csak valódi mérési eredmény mellett rajzolhatók. Ld. a szintbesorolást
 // a miro-primitives.ts fejlécében.
 //
-// Szín kizárólag CSS-varból (ui-hex-guardrail), így palettacserénél és
-// színsémaváltásnál együtt mozog a felülettel.
+// Weben a szín CSS-varból jön (ui-hex-guardrail); OG/hírlevél rendernél a
+// hívó ugyanennek a palettának a feloldott tokenjeit adja át.
 
 import {
   ART_COLORS,
@@ -26,21 +26,19 @@ import {
   type ArtPalette,
   type ArtScale,
 } from "@/lib/miro-primitives";
+import {
+  resolveBlogArt,
+  type BlogArtConcept,
+  type BlogArtFamily,
+  type LegacyBlogArtMotif,
+} from "@/lib/blog-art";
+import {
+  EDITORIAL_SHAPES,
+  EDITORIAL_SHAPE_ORDER,
+  type EditorialShapeId,
+} from "@/lib/editorial-art";
 
-type Motif = "radar" | "network" | "bars" | "waves";
-
-// A motívum lehetőség szerint a témához igazodik, különben a slug dönt.
-// (Változatlan a 2026-08-09 áttervezés előttihez képest — a frontmatter
-// `artMotif` felülbírálás és az admin-előnézet erre épül.)
-function pickMotif(slug: string, tags: string[]): Motif {
-  const joined = tags.join(" ").toLowerCase();
-  if (/dinamika|dynamics|csapatszerep|team role|mobilit|bizalom|trust/.test(joined)) return "network";
-  if (/pszichometria|psychometrics|tritan|mbti|mérés|measurement/.test(joined)) return "radar";
-  if (/fluktuáció|turnover|hr|toborzás|recruitment|megtartás|retention/.test(joined)) return "bars";
-  if (/önértékelés|self|vezetés|leadership|biztonság|safety/.test(joined)) return "waves";
-  const motifs: Motif[] = ["radar", "network", "bars", "waves"];
-  return motifs[hashString(slug) % motifs.length];
-}
+type Motif = LegacyBlogArtMotif;
 
 const VIEWBOX: Record<ArtScale, { w: number; h: number }> = {
   hero: { w: 420, h: 260 },
@@ -75,7 +73,7 @@ function RadarSubject({
     points.push([r2(cx + Math.cos(angle) * r), r2(cy + Math.sin(angle) * r)]);
   }
   return (
-    <>
+    <g>
       <circle
         cx={r2(cx)} cy={r2(cy)} r={r2(R * 1.02)}
         fill="none" stroke={p.line} strokeWidth={r2(sw * 0.55)} opacity={0.55}
@@ -84,7 +82,7 @@ function RadarSubject({
       {points.map(([x, y], i) =>
         i % 2 === 0 ? <circle key={`${x}-${y}`} cx={x} cy={y} r={r2(sw * 0.85)} fill={p.line} /> : null,
       )}
-    </>
+    </g>
   );
 }
 
@@ -99,7 +97,7 @@ function NetworkSubject({
     r: r2(R * (0.22 + rnd() * 0.36)),
   }));
   return (
-    <>
+    <g>
       {nodes.slice(1).map((node, i) => (
         <line
           key={`edge-${node.x}-${node.y}`}
@@ -120,7 +118,7 @@ function NetworkSubject({
           />
         ),
       )}
-    </>
+    </g>
   );
 }
 
@@ -134,7 +132,7 @@ function BarsSubject({
   const x0 = cx - (count * barWidth + (count - 1) * gap) / 2;
   const base = cy + R * 0.95;
   return (
-    <>
+    <g>
       <line
         x1={r2(x0 - R * 0.3)} y1={r2(base)} x2={r2(x0 + count * (barWidth + gap))} y2={r2(base)}
         stroke={p.line} strokeWidth={r2(sw * 0.7)} strokeLinecap="round" opacity={0.9}
@@ -155,7 +153,7 @@ function BarsSubject({
           />
         );
       })}
-    </>
+    </g>
   );
 }
 
@@ -171,11 +169,378 @@ function WavesSubject({
     return d;
   };
   return (
-    <>
+    <g>
       <path d={wave(cy - R * 0.4, R * 0.78)} fill="none" stroke={p.line} strokeWidth={r2(sw * 0.85)} strokeLinecap="round" />
       <path d={wave(cy + R * 0.5, R * 0.62)} fill="none" stroke={p.form} strokeWidth={r2(sw * 2.1)} strokeLinecap="round" />
       <circle cx={r2(cx + R * 0.5)} cy={r2(cy - R * 0.15)} r={r2(R * 0.16)} fill={p.counterweight} />
-    </>
+    </g>
+  );
+}
+
+// ── Új, többcsaládos szerkesztői rendszer ────────────────────────────
+
+interface ArtZone {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+type ConceptSlot = readonly [x: number, y: number, size: number];
+
+const CONCEPT_SLOTS: Record<BlogArtConcept, readonly ConceptSlot[]> = {
+  connection: [
+    [0.16, 0.6, 0.28],
+    [0.5, 0.38, 0.46],
+    [0.84, 0.58, 0.3],
+  ],
+  balance: [
+    [0.22, 0.43, 0.42],
+    [0.78, 0.43, 0.42],
+    [0.5, 0.72, 0.2],
+  ],
+  tension: [
+    [0.12, 0.52, 0.48],
+    [0.88, 0.34, 0.5],
+    [0.52, 0.7, 0.2],
+  ],
+  threshold: [
+    [0.18, 0.58, 0.46],
+    [0.82, 0.58, 0.46],
+    [0.5, 0.24, 0.22],
+  ],
+  signal: [
+    [0.16, 0.72, 0.18],
+    [0.38, 0.57, 0.28],
+    [0.78, 0.34, 0.5],
+  ],
+  growth: [
+    [0.14, 0.76, 0.18],
+    [0.43, 0.58, 0.3],
+    [0.79, 0.3, 0.5],
+  ],
+};
+
+function artZone(scale: ArtScale, w: number, h: number): ArtZone {
+  if (scale === "compact") return { x: 9, y: 9, w: w - 18, h: h - 18 };
+  // A featured-kártyán a kép felső-jobb sávban marad: alatta szabad szövegmező
+  // kell a tetszőleges hosszúságú heroQuote-nak.
+  if (scale === "hero") return { x: w * 0.5, y: h * 0.035, w: w * 0.43, h: h * 0.36 };
+  return { x: w * 0.16, y: h * 0.13, w: w * 0.7, h: h * 0.64 };
+}
+
+function conceptSpine(concept: BlogArtConcept, z: ArtZone, seed: number): string {
+  const rnd = mulberry32(seed);
+  const jx = (rnd() - 0.5) * z.w * 0.05;
+  const jy = (rnd() - 0.5) * z.h * 0.1;
+  const x = (n: number) => r2(z.x + z.w * n + jx);
+  const y = (n: number) => r2(z.y + z.h * n + jy);
+
+  switch (concept) {
+    case "connection":
+      return `M ${x(0.03)} ${y(0.68)} C ${x(0.27)} ${y(0.12)}, ${x(0.62)} ${y(0.9)}, ${x(0.97)} ${y(0.35)}`;
+    case "balance":
+      return `M ${x(0.04)} ${y(0.58)} Q ${x(0.5)} ${y(0.4)}, ${x(0.96)} ${y(0.58)}`;
+    case "tension":
+      return `M ${x(0.02)} ${y(0.78)} C ${x(0.3)} ${y(0.02)}, ${x(0.68)} ${y(0.98)}, ${x(0.98)} ${y(0.18)}`;
+    case "threshold":
+      return `M ${x(0.03)} ${y(0.66)} C ${x(0.34)} ${y(0.66)}, ${x(0.34)} ${y(0.22)}, ${x(0.5)} ${y(0.22)} S ${x(0.66)} ${y(0.66)}, ${x(0.97)} ${y(0.66)}`;
+    case "signal":
+      return `M ${x(0.02)} ${y(0.78)} C ${x(0.28)} ${y(0.78)}, ${x(0.5)} ${y(0.32)}, ${x(0.98)} ${y(0.32)}`;
+    case "growth":
+      return `M ${x(0.03)} ${y(0.84)} C ${x(0.34)} ${y(0.8)}, ${x(0.56)} ${y(0.5)}, ${x(0.97)} ${y(0.08)}`;
+  }
+}
+
+/** Az élő-vonal család saját, hurkokat és keresztezéseket is használó gerince. */
+function flowPath(concept: BlogArtConcept, z: ArtZone, seed: number): string {
+  const rnd = mulberry32(seed);
+  const dx = (rnd() - 0.5) * z.w * 0.035;
+  const dy = (rnd() - 0.5) * z.h * 0.08;
+  const x = (n: number) => r2(z.x + z.w * n + dx);
+  const y = (n: number) => r2(z.y + z.h * n + dy);
+
+  switch (concept) {
+    case "connection":
+      return `M ${x(0.01)} ${y(0.66)} C ${x(0.18)} ${y(0.04)}, ${x(0.36)} ${y(0.04)}, ${x(0.37)} ${y(0.5)} C ${x(0.38)} ${y(0.92)}, ${x(0.24)} ${y(0.92)}, ${x(0.28)} ${y(0.56)} C ${x(0.33)} ${y(0.18)}, ${x(0.55)} ${y(0.2)}, ${x(0.57)} ${y(0.58)} C ${x(0.6)} ${y(0.94)}, ${x(0.5)} ${y(0.94)}, ${x(0.57)} ${y(0.52)} C ${x(0.66)} ${y(0.02)}, ${x(0.82)} ${y(0.18)}, ${x(0.99)} ${y(0.34)}`;
+    case "balance":
+      return `M ${x(0.01)} ${y(0.58)} C ${x(0.22)} ${y(0.18)}, ${x(0.34)} ${y(0.18)}, ${x(0.42)} ${y(0.52)} C ${x(0.5)} ${y(0.86)}, ${x(0.62)} ${y(0.86)}, ${x(0.67)} ${y(0.5)} C ${x(0.72)} ${y(0.16)}, ${x(0.86)} ${y(0.22)}, ${x(0.99)} ${y(0.54)}`;
+    case "tension":
+      return `M ${x(0.01)} ${y(0.78)} C ${x(0.24)} ${y(0.02)}, ${x(0.46)} ${y(0.02)}, ${x(0.53)} ${y(0.5)} C ${x(0.6)} ${y(0.96)}, ${x(0.34)} ${y(0.96)}, ${x(0.42)} ${y(0.5)} C ${x(0.51)} ${y(0.04)}, ${x(0.76)} ${y(0.08)}, ${x(0.99)} ${y(0.2)}`;
+    case "threshold":
+      return `M ${x(0.01)} ${y(0.68)} C ${x(0.3)} ${y(0.68)}, ${x(0.34)} ${y(0.18)}, ${x(0.5)} ${y(0.18)} C ${x(0.67)} ${y(0.18)}, ${x(0.67)} ${y(0.82)}, ${x(0.5)} ${y(0.82)} C ${x(0.36)} ${y(0.82)}, ${x(0.39)} ${y(0.45)}, ${x(0.55)} ${y(0.48)} C ${x(0.72)} ${y(0.52)}, ${x(0.77)} ${y(0.66)}, ${x(0.99)} ${y(0.66)}`;
+    case "signal":
+      return `M ${x(0.01)} ${y(0.76)} C ${x(0.12)} ${y(0.76)}, ${x(0.12)} ${y(0.54)}, ${x(0.2)} ${y(0.54)} C ${x(0.28)} ${y(0.54)}, ${x(0.25)} ${y(0.28)}, ${x(0.36)} ${y(0.28)} C ${x(0.48)} ${y(0.28)}, ${x(0.44)} ${y(0.62)}, ${x(0.58)} ${y(0.62)} C ${x(0.72)} ${y(0.62)}, ${x(0.76)} ${y(0.3)}, ${x(0.99)} ${y(0.3)}`;
+    case "growth":
+      return `M ${x(0.01)} ${y(0.84)} C ${x(0.28)} ${y(0.82)}, ${x(0.46)} ${y(0.62)}, ${x(0.58)} ${y(0.46)} C ${x(0.7)} ${y(0.28)}, ${x(0.58)} ${y(0.08)}, ${x(0.7)} ${y(0.08)} C ${x(0.82)} ${y(0.08)}, ${x(0.85)} ${y(0.2)}, ${x(0.99)} ${y(0.03)}`;
+  }
+}
+
+function EditorialMark({
+  id,
+  x,
+  y,
+  size,
+  rotation,
+  tone,
+  p,
+  strokeWidth,
+}: {
+  id: EditorialShapeId;
+  x: number;
+  y: number;
+  size: number;
+  rotation: number;
+  tone: "form" | "counterweight";
+  p: ArtPalette;
+  strokeWidth: number;
+}) {
+  const def = EDITORIAL_SHAPES[id];
+  const fill = tone === "counterweight" ? p.counterweight : p.form;
+  const k = size / 100;
+  const localStroke = r2(strokeWidth / Math.max(k, 0.01));
+  return (
+    <g transform={`translate(${r2(x)},${r2(y)}) rotate(${r2(rotation)}) scale(${r2(k)})`}>
+      {def.kind === "fill" && <path d={def.path} fill={fill} />}
+      {def.kind === "line" && def.paths.map((d) => (
+        <path
+          key={d}
+          d={d}
+          fill="none"
+          stroke={p.line}
+          strokeWidth={localStroke}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      ))}
+      {def.kind === "dots" && def.dots.map((dot) => (
+        <circle key={`${dot.cx}-${dot.cy}`} cx={dot.cx} cy={dot.cy} r={dot.r} fill={fill} />
+      ))}
+    </g>
+  );
+}
+
+function ConstellationSubject({
+  seed,
+  concept,
+  scale,
+  w,
+  h,
+  sw,
+  p,
+}: {
+  seed: number;
+  concept: BlogArtConcept;
+  scale: ArtScale;
+  w: number;
+  h: number;
+  sw: number;
+  p: ArtPalette;
+}) {
+  const z = artZone(scale, w, h);
+  const rnd = mulberry32(seed);
+  const slots = CONCEPT_SLOTS[concept];
+  const count = scale === "compact" ? 1 : 3;
+  const base = Math.min(z.h, z.w * 0.34);
+
+  return (
+    <g>
+      {scale !== "compact" && (
+        <path
+          d={conceptSpine(concept, z, seed + 19)}
+          fill="none"
+          stroke={p.line}
+          strokeWidth={r2(sw * 0.64)}
+          strokeLinecap="round"
+          opacity={0.76}
+        />
+      )}
+      {Array.from({ length: count }, (_, index) => {
+        const slot = slots[index];
+        const shapeIndex = (hashString(`${seed}:${concept}:shape:${index}`) >>> 3)
+          % EDITORIAL_SHAPE_ORDER.length;
+        const id = EDITORIAL_SHAPE_ORDER[shapeIndex];
+        const size = scale === "compact"
+          ? base * 0.82
+          : base * (0.46 + slot[2] + rnd() * 0.14);
+        return (
+          <g key={`${id}-${index}`}>
+            {EditorialMark({
+              id,
+              x: z.x + z.w * slot[0] + (rnd() - 0.5) * z.w * 0.035,
+              y: z.y + z.h * slot[1] + (rnd() - 0.5) * z.h * 0.06,
+              size,
+              rotation: (rnd() - 0.5) * 34,
+              tone: index === 1 ? "counterweight" : "form",
+              p,
+              strokeWidth: sw,
+            })}
+          </g>
+        );
+      })}
+    </g>
+  );
+}
+
+function ModularSubject({
+  seed,
+  concept,
+  scale,
+  w,
+  h,
+  sw,
+  p,
+}: {
+  seed: number;
+  concept: BlogArtConcept;
+  scale: ArtScale;
+  w: number;
+  h: number;
+  sw: number;
+  p: ArtPalette;
+}) {
+  const z = artZone(scale, w, h);
+  const rnd = mulberry32(seed);
+  const j = (amount: number) => (rnd() - 0.5) * amount;
+  const x = (n: number) => r2(z.x + z.w * n + j(z.w * 0.025));
+  const y = (n: number) => r2(z.y + z.h * n + j(z.h * 0.035));
+  const lineWidth = r2(sw * (scale === "compact" ? 0.8 : 0.7));
+
+  if (scale === "compact") {
+    return (
+      <g>
+        <path
+          d={`M ${x(0.14)} ${y(0.75)} L ${x(0.5)} ${y(0.16)} L ${x(0.82)} ${y(0.75)} Z`}
+          fill={p.form}
+        />
+        <path
+          d={`M ${x(0.14)} ${y(0.83)} H ${x(0.9)}`}
+          fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round"
+        />
+      </g>
+    );
+  }
+
+  switch (concept) {
+    case "connection":
+      return (
+        <g>
+          <path d={`M ${x(0.06)} ${y(0.8)} Q ${x(0.08)} ${y(0.2)} ${x(0.35)} ${y(0.22)} L ${x(0.35)} ${y(0.8)} Z`} fill={p.form} />
+          <path d={`M ${x(0.68)} ${y(0.18)} L ${x(0.96)} ${y(0.18)} L ${x(0.96)} ${y(0.78)} Q ${x(0.7)} ${y(0.76)} ${x(0.68)} ${y(0.18)} Z`} fill={p.counterweight} />
+          <path d={`M ${x(0.25)} ${y(0.58)} C ${x(0.45)} ${y(0.28)}, ${x(0.58)} ${y(0.78)}, ${x(0.78)} ${y(0.46)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+        </g>
+      );
+    case "balance":
+      return (
+        <g>
+          <path d={`M ${x(0.08)} ${y(0.64)} H ${x(0.92)}`} fill="none" stroke={p.line} strokeWidth={r2(sw)} strokeLinecap="round" />
+          <path d={`M ${x(0.12)} ${y(0.62)} A ${r2(z.h * 0.3)} ${r2(z.h * 0.3)} 0 0 1 ${x(0.42)} ${y(0.62)} Z`} fill={p.form} />
+          <path d={`M ${x(0.6)} ${y(0.62)} A ${r2(z.h * 0.22)} ${r2(z.h * 0.22)} 0 0 1 ${x(0.86)} ${y(0.62)} Z`} fill={p.counterweight} />
+          <circle cx={x(0.51)} cy={y(0.35)} r={r2(z.h * 0.11)} fill={p.sun} />
+        </g>
+      );
+    case "tension":
+      return (
+        <g>
+          <path d={`M ${x(0.02)} ${y(0.08)} H ${x(0.34)} Q ${x(0.38)} ${y(0.5)} ${x(0.1)} ${y(0.92)} H ${x(0.02)} Z`} fill={p.form} />
+          <path d={`M ${x(0.98)} ${y(0.02)} V ${y(0.92)} H ${x(0.72)} Q ${x(0.58)} ${y(0.46)} ${x(0.98)} ${y(0.02)} Z`} fill={p.counterweight} />
+          <path d={`M ${x(0.24)} ${y(0.82)} L ${x(0.82)} ${y(0.2)}`} fill="none" stroke={p.line} strokeWidth={r2(sw * 1.05)} strokeLinecap="round" />
+        </g>
+      );
+    case "threshold":
+      return (
+        <g>
+          <path d={`M ${x(0.03)} ${y(0.03)} H ${x(0.28)} V ${y(0.35)} Q ${x(0.39)} ${y(0.5)} ${x(0.28)} ${y(0.65)} V ${y(0.97)} H ${x(0.03)} Z`} fill={p.form} />
+          <path d={`M ${x(0.97)} ${y(0.03)} H ${x(0.72)} V ${y(0.35)} Q ${x(0.61)} ${y(0.5)} ${x(0.72)} ${y(0.65)} V ${y(0.97)} H ${x(0.97)} Z`} fill={p.counterweight} />
+          <path d={`M ${x(0.18)} ${y(0.64)} C ${x(0.4)} ${y(0.64)}, ${x(0.44)} ${y(0.28)}, ${x(0.52)} ${y(0.28)} S ${x(0.62)} ${y(0.64)}, ${x(0.84)} ${y(0.64)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+        </g>
+      );
+    case "signal":
+      return (
+        <g>
+          {[0.2, 0.34, 0.48, 0.62].map((n, index) => (
+            <path key={n} d={`M ${x(0.06)} ${y(n)} H ${x(0.38 + index * 0.08)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+          ))}
+          <path d={`M ${x(0.56)} ${y(0.78)} L ${x(0.56)} ${y(0.5)} L ${x(0.68)} ${y(0.5)} L ${x(0.68)} ${y(0.34)} L ${x(0.8)} ${y(0.34)} L ${x(0.8)} ${y(0.18)} L ${x(0.94)} ${y(0.18)} L ${x(0.94)} ${y(0.78)} Z`} fill={p.counterweight} />
+          <circle cx={x(0.49)} cy={y(0.25)} r={r2(z.h * 0.12)} fill={p.sun} />
+        </g>
+      );
+    case "growth":
+      return (
+        <g>
+          <path d={`M ${x(0.08)} ${y(0.84)} H ${x(0.28)} V ${y(0.68)} H ${x(0.45)} V ${y(0.5)} H ${x(0.62)} V ${y(0.3)} H ${x(0.82)} V ${y(0.12)} H ${x(0.96)} V ${y(0.84)} Z`} fill={p.counterweight} />
+          <path d={`M ${x(0.08)} ${y(0.82)} C ${x(0.34)} ${y(0.76)}, ${x(0.58)} ${y(0.44)}, ${x(0.9)} ${y(0.1)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />
+          <circle cx={x(0.18)} cy={y(0.54)} r={r2(z.h * 0.15)} fill={p.form} />
+        </g>
+      );
+  }
+}
+
+function FlowSubject({
+  seed,
+  concept,
+  scale,
+  w,
+  h,
+  sw,
+  p,
+}: {
+  seed: number;
+  concept: BlogArtConcept;
+  scale: ArtScale;
+  w: number;
+  h: number;
+  sw: number;
+  p: ArtPalette;
+}) {
+  const z = artZone(scale, w, h);
+  const rnd = mulberry32(seed);
+  const slots = CONCEPT_SLOTS[concept];
+  const markerShapes: readonly EditorialShapeId[] = ["blob", "crescent", "wedge"];
+  const lineWidth = r2(sw * (scale === "compact" ? 0.72 : 0.66));
+
+  return (
+    <g>
+      <path
+        d={flowPath(concept, z, seed + 71)}
+        fill="none"
+        stroke={p.line}
+        strokeWidth={lineWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      {scale === "compact" ? (
+        <circle cx={r2(z.x + z.w * 0.72)} cy={r2(z.y + z.h * 0.35)} r={r2(z.h * 0.12)} fill={p.form} />
+      ) : (
+        slots.slice(0, 3).map((slot, index) => {
+          const cx = z.x + z.w * slot[0] + (rnd() - 0.5) * z.w * 0.03;
+          const cy = z.y + z.h * slot[1] + (rnd() - 0.5) * z.h * 0.05;
+          if (index === 2) {
+            return (
+              <circle
+                key="flow-dot"
+                cx={r2(cx)} cy={r2(cy)} r={r2(Math.max(3.5, z.h * 0.1))}
+                fill={p.sun}
+              />
+            );
+          }
+          return (
+            <g key={`flow-${index}`}>
+              {EditorialMark({
+                id: markerShapes[(hashString(`${seed}:flow:${index}`) >>> 2) % markerShapes.length],
+                x: cx,
+                y: cy,
+                size: Math.min(z.h, z.w * 0.3) * (0.42 + slot[2]),
+                rotation: (rnd() - 0.5) * 28,
+                tone: index === 1 ? "counterweight" : "form",
+                p,
+                strokeWidth: sw,
+              })}
+            </g>
+          );
+        })
+      )}
+    </g>
   );
 }
 
@@ -183,24 +548,49 @@ export type BlogArtMotif = Motif;
 
 export function BlogArtVisual({
   slug,
+  title,
   tags = [],
   variant = "card",
   seed = 0,
   motif: motifOverride,
+  family,
+  concept,
+  palette,
+  background,
   className,
 }: {
   slug: string;
+  title?: string;
   tags?: string[];
   /** featured: sötét sage háttéren · card/mini: világos (warm/sage-soft) háttéren */
   variant?: "featured" | "card" | "mini";
-  /** Variáció-seed (frontmatter artSeed) — az admin „Új variáció" gombja lépteti. */
+  /** Variáció-seed (frontmatter artSeed). */
   seed?: number;
-  /** Motívum-felülbírálás (frontmatter artMotif) — enélkül téma/slug szerint. */
+  /** Régi motívum-felülbírálás — kizárólag visszafelé kompatibilitáshoz. */
   motif?: Motif;
+  family?: BlogArtFamily;
+  concept?: BlogArtConcept;
+  /** Fix paletta szerveroldali raszterhez (OG/hírlevél); weben CSS-tokenes. */
+  palette?: ArtPalette;
+  /** Fix háttér szerveroldali raszterhez; weben a szemantikus token dönt. */
+  background?: string;
   className?: string;
 }) {
-  const seededKey = seed ? `${slug}#${seed}` : slug;
-  const motif = motifOverride ?? pickMotif(slug, tags);
+  const resolved = resolveBlogArt({
+    slug,
+    title,
+    tags,
+    seed,
+    family,
+    concept,
+    motif: motifOverride,
+  });
+  // Régi explicit motívumnál bitre a korábbi seed-kulcsot tartjuk. Az új
+  // rendszerben a család és a fogalom is része a kulcsnak: ugyanaz a seed
+  // másik családban szándékosan más kompozíció.
+  const seededKey = resolved.legacyMotif
+    ? seed ? `${slug}#${seed}` : slug
+    : `${slug}#${resolved.seed}:${resolved.family}:${resolved.concept}`;
   // SEEDET adunk át, nem generátort — ld. mulberry32() a miro-primitives-ben.
   const artSeed = hashString(seededKey);
 
@@ -209,13 +599,13 @@ export function BlogArtVisual({
   const { strokeWidth, radius } = metrics(scale, w, h);
   // A kiemelt panel MINDKÉT színsémán sötét (fehér idézet ül rajta), ezért
   // ott a fix ink olvashatatlan lenne — külön készlet kell.
-  const p: ArtPalette = variant === "featured" ? ART_COLORS_ON_INVERSE : ART_COLORS;
+  const p: ArtPalette = palette ?? (variant === "featured" ? ART_COLORS_ON_INVERSE : ART_COLORS);
 
   const cx = w * (scale === "compact" ? 0.5 : scale === "hero" ? 0.66 : 0.54);
   const cy = h * (scale === "compact" ? 0.5 : scale === "hero" ? 0.28 : 0.44);
   const parts = accompanimentLayout(artSeed, w, h, radius, scale);
 
-  const bg =
+  const bg = background ?? (
     variant === "featured"
       // A kiemelt vizuál SZÁNDÉKOSAN sötét alap (fehér felirat ül rajta),
       // ezért a réteg-hero tokenekből dolgozik: azok mindkét színsémán
@@ -224,7 +614,8 @@ export function BlogArtVisual({
       ? "linear-gradient(135deg, var(--color-layer-self-hero-from), var(--color-layer-self-hero-to))"
       : hashString(seededKey) % 2 === 0
         ? "var(--color-surface-muted)"
-        : "var(--color-surface-self-accent-soft)";
+        : "var(--color-surface-self-accent-soft)"
+  );
 
   // A gradiens-id-nek dokumentumon belül egyedinek ÉS szerver/kliens
   // azonosnak kell lennie — ezért a magból képezzük, nem futásidejű
@@ -233,11 +624,25 @@ export function BlogArtVisual({
   const scrimBottomId = `art-scrim-y-${artSeed.toString(36)}`;
 
   const subjectSeed = artSeed + 101;
-  const subject =
-    motif === "radar" ? <RadarSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
-    : motif === "network" ? <NetworkSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
-    : motif === "bars" ? <BarsSubject seed={subjectSeed} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />
-    : <WavesSubject seed={subjectSeed} w={w} cx={cx} cy={cy} R={radius} sw={strokeWidth} p={p} />;
+  // Satori az SVG-n belüli komponenseket nem oldja fel, hanem szó szerint
+  // szerializálná őket az OG-kép data URL-jébe. Ezért a tiszta renderer-
+  // függvényeket itt közvetlenül futtatjuk, és már csak natív SVG-elemeket
+  // adunk a fához. A böngészős és a raszteres kimenet így ugyanaz.
+  const subject = resolved.legacyMotif
+    ? resolved.legacyMotif === "radar"
+      ? RadarSubject({ seed: subjectSeed, cx, cy, R: radius, sw: strokeWidth, p })
+      : resolved.legacyMotif === "network"
+        ? NetworkSubject({ seed: subjectSeed, cx, cy, R: radius, sw: strokeWidth, p })
+        : resolved.legacyMotif === "bars"
+          ? BarsSubject({ seed: subjectSeed, cx, cy, R: radius, sw: strokeWidth, p })
+          : WavesSubject({ seed: subjectSeed, w, cx, cy, R: radius, sw: strokeWidth, p })
+    : resolved.family === "constellation"
+      ? ConstellationSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p })
+      : resolved.family === "modular"
+        ? ModularSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p })
+        : FlowSubject({ seed: subjectSeed, concept: resolved.concept, scale, w, h, sw: strokeWidth, p });
+
+  const subjectHasGroundGesture = resolved.legacyMotif === "waves" || (!resolved.legacyMotif && resolved.family === "flow");
 
   return (
     <svg
@@ -245,27 +650,26 @@ export function BlogArtVisual({
       preserveAspectRatio="xMidYMid slice"
       className={className}
       style={{ background: bg, display: "block", width: "100%", height: "100%" }}
-      role="img"
       aria-hidden
     >
       {/* Színpad — a formanyelv kísérete. Kis méreten (mini) elmarad: 72
           pixelen a csillag, a nap és a talajvonal masszává olvad, és a
           tárgy sem marad felismerhető. */}
       {parts && (
-        <>
+        <g>
           <circle cx={parts.sun.x} cy={parts.sun.y} r={parts.sun.r} fill={p.sun} />
           <g stroke={p.line} strokeWidth={r2(strokeWidth * 0.7)} strokeLinecap="round" opacity={0.9}>
             {starGeometry(parts.star.x, parts.star.y, parts.star.r).lines.map((l) => (
               <line key={`${l.x1}-${l.y1}-${l.x2}`} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
             ))}
           </g>
-        </>
+        </g>
       )}
 
       {subject}
 
       {parts && (
-        <>
+        <g>
           <circle
             cx={parts.counterweight.x} cy={parts.counterweight.y} r={parts.counterweight.r}
             fill={p.counterweight}
@@ -274,14 +678,14 @@ export function BlogArtVisual({
               – hero: a panel alsó sávjában az idézet ül, a vonal átvágná;
               – hullám-motívum: ott a hullám MAGA a talaj-gesztus, egymás
                 mellett három közel párhuzamos vonallá esne szét. */}
-          {scale !== "hero" && motif !== "waves" && (
+          {scale !== "hero" && !subjectHasGroundGesture && (
             <path
               d={groundPath(artSeed + 7, w, parts.groundY, radius * 0.3)}
               fill="none" stroke={p.line} strokeWidth={r2(strokeWidth * 0.62)}
               strokeLinecap="round" opacity={0.85}
             />
           )}
-        </>
+        </g>
       )}
 
       {/* A kiemelt panel szabálya: az ábra FELSŐ SÁV, a szöveg alatta kap
@@ -295,7 +699,7 @@ export function BlogArtVisual({
           nem változik, csak elmélyül; a felső sávban a stop 0-ra fut, így az
           ábra ott sértetlen marad. */}
       {variant === "featured" && (
-        <>
+        <g>
           <defs>
             <linearGradient id={scrimSideId} x1="0" y1="0" x2="1" y2="0">
               <stop offset="0" stopColor="var(--color-layer-self-hero-to)" stopOpacity="0.5" />
@@ -310,7 +714,7 @@ export function BlogArtVisual({
           </defs>
           <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimSideId})`} />
           <rect x="0" y="0" width={w} height={h} fill={`url(#${scrimBottomId})`} />
-        </>
+        </g>
       )}
     </svg>
   );
