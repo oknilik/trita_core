@@ -1,12 +1,5 @@
-import { AuthenticateWithRedirectCallback } from "@clerk/nextjs";
+import AuthSsoCallback from "@/components/auth/AuthSsoCallback";
 
 export default function SignInSSOCallbackPage() {
-  return (
-    <>
-      {/* A Clerk Smart CAPTCHA ide renderel az OAuth-transfer sign-up alatt —
-          enélkül Invisible CAPTCHA fallback + konzol-figyelmeztetés jönne. */}
-      <div id="clerk-captcha" />
-      <AuthenticateWithRedirectCallback />
-    </>
-  );
+  return <AuthSsoCallback />;
 }
