@@ -157,3 +157,41 @@ A guardrail mostantól a stabil route-ot követeli, és külön kizárja az
 `opengraph-image` utat; a levél-minták pedig a valódi `blogImageUrl()`
 építőt hívják, nem kézzel másolt stringet — így a teszt azt látja, ami
 élesben kimenne.
+
+### Review-kör a borító-javításon (P1–P3)
+
+**P1 — korlátlanul generálható fallback képek.** Az első javítás minden
+ismeretlen slugra RENDERELT (két fontfájl + 1200×630 raszter), és mivel a CDN
+cache-kulcsa az URL, végtelen sok slug végtelen sok cache-misst kényszerített
+volna ki. Mérve: 40 slug × 8 párhuzamos kérés ≈ 2,25 s renderidő.
+
+Mostantól az ismeretlen és a visszavont cikk **302-vel a prerendelt
+`/opengraph-image`-re megy**, renderelés nélkül — ugyanaz a 40 kérés 0,22 s, és
+a CDN egyetlen objektumon fogja meg a szemét-forgalmat. A `renderBlogCoverImage`
+így csak publikált cikkre hívódik; a „rajzoljunk-e" kérdés egy helyen dől el.
+
+**P2 — path traversal a slugon át.** A dekódolt slug közvetlenül ment a
+`path.join`-ba, így a `placeholder%2f..%2f<slug>` alak kilépett a
+`content/blog` mappából (igazolva: bájtazonos képet adott a kanonikus URL-lel).
+Ma nem szivárgott adat, mert nincs máshol csomagolt `.mdx` — de a lehetőség
+valódi volt, és nem csak a hírlevél-route-ot érintette.
+
+A kapu a `getPostBySlug`-ba került, két egymástól független rétegben:
+alak- és hosszellenőrzés (`SLUG_RE`, 120 karakter), majd `path.resolve` utáni
+könyvtárhatár-vizsgálat — ez akkor is tart, ha a minta valaha megengedőbb lesz.
+
+**P3 — valódi route-regresszióteszt.** Az eddigi tesztek az URL-sztringet
+nézték, sosem hívták meg a route-ot; pont az eredeti 404-et nem fogták volna
+meg. Az új `tests/e2e/newsletter/newsletter-cover.test.ts` azt az URL-t kéri
+le, amit a levél-építő ténylegesen a levélbe írna, és ellenőrzi a fallback
+átirányítást meg a traversal-védelmet is.
+
+Igazolva: a `blogImageUrl` visszaállításával az eredeti (törött) URL-re a teszt
+BUKIK — `image/png` helyett `text/html`-t kap. A régi, törött fixture a
+szerkesztett szám render-tesztjéből is kikerült.
+
+**Mellékhatás:** a tiszta linképítők átkerültek a `newsletter-links.ts`-be
+(`server-only` nélkül), mert a `server-only` modult a Playwright nem tudja
+importálni — enélkül a regressziós teszt kézzel másolt útvonalat használna,
+vagyis épp azt nem ellenőrizné, amit kell. A `newsletter.ts` re-exportál, a
+hívási helyek változatlanok.

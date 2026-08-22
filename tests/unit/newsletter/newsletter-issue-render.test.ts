@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { withCapturedSend } from "../../../scripts/email-samples";
+import { blogImageUrl } from "@/lib/newsletter";
 
 // A küldő-modul induláskor kulcsot vár; a hálózatra nem megyünk ki, a
 // `withCapturedSend` elkapja a kérést (ugyanaz a minta, mint a levél-mintáknál).
@@ -51,7 +52,7 @@ test("a szerkesztett szam viszi a leiratkozo linket a torzsben es a fejlecben", 
           title: "Cikk",
           description: "Leírás",
           url: "https://trita.io/api/newsletter/click?d=1&to=cikk",
-          imageUrl: "https://trita.io/blog/cikk/opengraph-image",
+          imageUrl: blogImageUrl("https://trita.io", "cikk"),
           readingMinutes: 5,
         },
       ],
@@ -64,5 +65,8 @@ test("a szerkesztett szam viszi a leiratkozo linket a torzsben es a fejlecben", 
 
   assert.ok((payload.html ?? "").includes(unsubUrl), "a láblécben ott a leiratkozó link");
   assert.ok((payload.text ?? "").includes(unsubUrl), "a sima szöveges változatban is");
-  assert.ok((payload.html ?? "").includes("/blog/cikk/opengraph-image"), "a cikk képe bekerül");
+  assert.ok(
+    (payload.html ?? "").includes(blogImageUrl("https://trita.io", "cikk")),
+    "a cikk képe bekerül",
+  );
 });

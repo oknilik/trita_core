@@ -25,11 +25,15 @@ export const BLOG_COVER_SIZE = { width: 1200, height: 630 };
 export const BLOG_COVER_CONTENT_TYPE = "image/png";
 export const BLOG_COVER_ALT = "trita blog";
 
+/**
+ * ISMERETLEN SLUG: a rajzolás DRÁGA (két fontfájl + 1200×630 raszter), a CDN
+ * cache-kulcsa pedig az URL — ezért ismeretlen slugra SOHA nem rajzolunk,
+ * hanem a hívó irányít át a prerendelt márka-képre. A metadata-image route
+ * ezt nem tudja megtenni (fix Response-alakja van), ott marad a cím nélküli
+ * vászon; oda viszont csak a saját `generateStaticParams` slugjai jutnak el.
+ */
 export async function renderBlogCoverImage(slug: string): Promise<ImageResponse> {
   const post = getPostBySlug(slug);
-  // Ismeretlen vagy piszkozat slug: NEM 404, hanem a márka-vászon cím nélkül.
-  // Így egy visszavont cikk régi levelében sem lesz törött kép, és tetszőleges
-  // slugra sem lehet egyedi tartalmú képet generáltatni.
   const published = post?.status === "published" ? post : null;
   const title = published?.title ?? "trita blog";
   const tag = published?.tags[0];
