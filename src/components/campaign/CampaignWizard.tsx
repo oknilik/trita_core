@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 import { Button } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
@@ -285,6 +286,7 @@ export function CampaignWizard({
     if (!type) return;
     setLoading(true);
     setError(null);
+    let errorKey = "userErrors.network";
     try {
       let campaignId = createdRef.current?.campaignId ?? null;
 
@@ -306,7 +308,12 @@ export function CampaignWizard({
         });
         if (!createRes.ok) {
           const data = await createRes.json().catch(() => ({}));
-          throw new Error(data.error ?? "CREATE_FAILED");
+          errorKey = presentUserError({
+            code: data.error,
+            status: createRes.status,
+            fallbackKey: "userErrors.saveFailed",
+          });
+          throw new Error("CAMPAIGN_CREATE_FAILED");
         }
         const { campaign } = await createRes.json();
         campaignId = campaign.id as string;
@@ -321,7 +328,12 @@ export function CampaignWizard({
         });
         if (!addRes.ok) {
           const data = await addRes.json().catch(() => ({}));
-          throw new Error(data.error ?? "ADD_PARTICIPANTS_FAILED");
+          errorKey = presentUserError({
+            code: data.error,
+            status: addRes.status,
+            fallbackKey: "userErrors.saveFailed",
+          });
+          throw new Error("CAMPAIGN_PARTICIPANTS_FAILED");
         }
         if (createdRef.current) createdRef.current.participantsAdded = true;
       }
@@ -336,19 +348,15 @@ export function CampaignWizard({
           body: JSON.stringify({ status: "ACTIVE" }),
         });
         if (!activateRes.ok) {
-          throw new Error("ACTIVATE_FAILED");
+          errorKey = "campaignWiz.activateFailed";
+          throw new Error("CAMPAIGN_ACTIVATE_FAILED");
         }
       }
 
       router.push(`/org/${orgId}?tab=campaigns`);
       router.refresh();
-    } catch (err) {
-      const code = err instanceof Error ? err.message : "";
-      setError(
-        code === "ACTIVATE_FAILED"
-          ? t("campaignWiz.activateFailed", locale)
-          : code || t("campaignWiz.unknownError", locale),
-      );
+    } catch {
+      setError(t(errorKey, locale));
       setLoading(false);
     }
   }

@@ -1,7 +1,6 @@
 "use client";
 
-import { Component, Suspense, useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale } from "@/components/LocaleProvider";
@@ -9,43 +8,19 @@ import { t, tf } from "@/lib/i18n";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import Link from "next/link";
 import AuthPageShell from "@/components/auth/AuthPageShell";
+import AuthAlert from "@/components/auth/AuthAlert";
+import AuthErrorBoundary from "@/components/auth/AuthErrorBoundary";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { createClientLogger } from "@/lib/client-logger";
 import { buildSignUpPath, sanitizeInternalRedirect } from "@/lib/navigation/auth-redirects";
+import { presentAuthError, type AuthErrorContext, type AuthErrorTarget } from "@/lib/auth-errors";
 
 const log = createClientLogger("auth");
 
-class SignInErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-  componentDidCatch() {
-    try { window.sessionStorage.clear(); } catch { /* ignore */ }
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex min-h-dvh items-center justify-center bg-cream px-4">
-          <div className="w-full max-w-md rounded border border-sand bg-surface-card p-8 text-center">
-            <p className="text-sm text-ink-body">Hiba történt. Frissítsd az oldalt.</p>
-            <button
-              type="button"
-              onClick={() => window.location.reload()}
-              className="mt-4 rounded bg-sage px-6 py-2.5 text-sm font-medium text-[var(--color-action-primary-fg)] hover:bg-sage-dark"
-            >
-              Újratöltés
-            </button>
-          </div>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
+interface AuthUiError {
+  target: AuthErrorTarget;
+  translationKey: string;
 }
 
 const GoogleIcon = () => (
@@ -67,13 +42,17 @@ function SignInContent() {
   const { locale } = useLocale();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<AuthUiError | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [emailAddressId, setEmailAddressId] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState(0);
   const [resendNote, setResendNote] = useState<string | null>(null);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+
+  const showAuthError = (err: unknown, context: AuthErrorContext) => {
+    setError(presentAuthError(err, context));
+  };
 
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -99,8 +78,9 @@ function SignInContent() {
     try {
       await signIn.prepareFirstFactor({ strategy: "email_code", emailAddressId });
       setResendNote(t("auth.resendCodeSent", locale));
-    } catch {
-      setResendNote(t("auth.errorSignInGeneric", locale));
+    } catch (err: unknown) {
+      log.warn({ event: "auth.sign_in_resend_failed", err }, "Sign-in resend error");
+      showAuthError(err, "resend");
       setResendCooldown(0);
     }
   };
@@ -127,17 +107,14 @@ function SignInContent() {
         setResendCooldown(30);
         setResendNote(null);
       } else {
-        setError(t("auth.errorSignInGeneric", locale));
+        setError({
+          target: "global",
+          translationKey: "auth.errors.signInGeneric",
+        });
       }
     } catch (err: unknown) {
       log.warn({ event: "auth.sign_in_failed", err }, "Sign-in error");
-      const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
-      const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
-      if (message?.includes("Identifier") || message?.includes("identifier")) {
-        setError(t("auth.errorNoAccount", locale));
-      } else {
-        setError(message || t("auth.errorSignInGeneric", locale));
-      }
+      showAuthError(err, "sign-in");
     } finally {
       setIsSubmitting(false);
     }
@@ -168,13 +145,14 @@ function SignInContent() {
         }
         router.push(safeRedirectUrl ?? JOURNEY_HOME_HANDOFF_PATH);
       } else {
-        setError(t("auth.errorVerificationIncomplete", locale));
+        setError({
+          target: "code",
+          translationKey: "auth.errors.verificationGeneric",
+        });
       }
     } catch (err: unknown) {
       log.warn({ event: "auth.sign_in_verify_failed", err }, "Sign-in verify error");
-      const clerkError = err as { errors?: { longMessage?: string; message?: string }[] };
-      const message = clerkError?.errors?.[0]?.longMessage || clerkError?.errors?.[0]?.message;
-      setError(message || t("auth.errorVerificationInvalid", locale));
+      showAuthError(err, "verify");
     } finally {
       setIsSubmitting(false);
     }
@@ -191,8 +169,9 @@ function SignInContent() {
           ? `/observe/${observeToken}`
           : safeRedirectUrl ?? JOURNEY_HOME_HANDOFF_PATH,
       });
-    } catch {
-      setError(t("auth.errorGoogleSignIn", locale));
+    } catch (err: unknown) {
+      log.warn({ event: "auth.google_sign_in_failed", err }, "Google sign-in error");
+      showAuthError(err, "google-sign-in");
       setIsGoogleLoading(false);
     }
   };
@@ -210,10 +189,8 @@ function SignInContent() {
           {tf("auth.verifySent", locale, { email })}
         </p>
 
-        {error ? (
-          <div role="alert" className="mb-4 rounded-xl border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
-            {error}
-          </div>
+        {error?.target === "global" ? (
+          <AuthAlert message={t(error.translationKey, locale)} />
         ) : null}
 
         <form onSubmit={handleVerify} className="flex flex-col gap-4">
@@ -223,7 +200,11 @@ function SignInContent() {
             type="text"
             inputMode="numeric"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
+            onChange={(e) => {
+              setCode(e.target.value);
+              if (error?.target === "code") setError(null);
+            }}
+            error={error?.target === "code" ? t(error.translationKey, locale) : undefined}
             required
             maxLength={6}
             placeholder="000000"
@@ -285,10 +266,8 @@ function SignInContent() {
         </div>
       ) : null}
 
-      {error ? (
-        <div role="alert" className="mb-4 rounded-xl border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
-          {error}
-        </div>
+      {error?.target === "global" ? (
+        <AuthAlert message={t(error.translationKey, locale)} />
       ) : null}
 
       <form onSubmit={handleRequestCode} className="flex flex-col gap-3">
@@ -297,7 +276,11 @@ function SignInContent() {
           type="email"
           label={t("auth.emailLabel", locale)}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error?.target === "email") setError(null);
+          }}
+          error={error?.target === "email" ? t(error.translationKey, locale) : undefined}
           required
           autoComplete="email"
           placeholder={t("auth.emailPlaceholder", locale)}
@@ -360,10 +343,10 @@ function SignInContent() {
 
 export default function SignInPage() {
   return (
-    <SignInErrorBoundary>
+    <AuthErrorBoundary>
       <Suspense fallback={<div className="min-h-dvh bg-cream" />}>
         <SignInContent />
       </Suspense>
-    </SignInErrorBoundary>
+    </AuthErrorBoundary>
   );
 }

@@ -1087,6 +1087,7 @@ export default async function CampaignDetailPage({
               nextStatus={nextStatus}
               label={nextStatusLabel(nextStatus, locale)}
               isDanger={nextStatus === "CLOSED"}
+              locale={locale}
               confirmMessage={t(
                 nextStatus === "CLOSED"
                   ? "campaignWiz.closeConfirm"

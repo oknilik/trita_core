@@ -76,6 +76,69 @@ export const authTranslations = {
       en: "Something went wrong. Please refresh the page.",
     },
     errorBoundaryReload: { hu: "Újratöltés", en: "Reload" },
+    ssoTitle: { hu: "Beléptetünk", en: "Signing you in" },
+    ssoSubtitle: {
+      hu: "Egy pillanat, befejezzük a Google-belépést.",
+      en: "One moment while we finish your Google sign-in.",
+    },
+    errors: {
+      invalidEmail: {
+        hu: "Ellenőrizd az e-mail-címet.",
+        en: "Check the email address.",
+      },
+      accountUnavailable: {
+        hu: "Ezzel az e-mail-címmel nem sikerült belépni. Ellenőrizd a címet, vagy regisztrálj.",
+        en: "We couldn't sign you in with this email. Check the address or create an account.",
+      },
+      emailExists: {
+        hu: "Ehhez az e-mail-címhez már tartozik fiók. Jelentkezz be.",
+        en: "An account already exists for this email. Sign in instead.",
+      },
+      incorrectCode: {
+        hu: "A megadott kód nem megfelelő.",
+        en: "That code isn't correct.",
+      },
+      expiredCode: {
+        hu: "Ez a kód már lejárt. Kérj egy újat.",
+        en: "This code has expired. Request a new one.",
+      },
+      rateLimited: {
+        hu: "Túl sokszor próbálkoztál. Várj egy kicsit, majd próbáld újra.",
+        en: "Too many attempts. Wait a moment, then try again.",
+      },
+      network: {
+        hu: "Nem sikerült kapcsolódni. Ellenőrizd az internetkapcsolatot.",
+        en: "We couldn't connect. Check your internet connection.",
+      },
+      captcha: {
+        hu: "Nem sikerült az ellenőrzés. Frissítsd az oldalt, majd próbáld újra.",
+        en: "The security check didn't complete. Refresh the page and try again.",
+      },
+      signInGeneric: {
+        hu: "Most nem sikerült belépni. Próbáld újra.",
+        en: "We couldn't sign you in just now. Please try again.",
+      },
+      signUpGeneric: {
+        hu: "Most nem sikerült létrehozni a fiókot. Próbáld újra.",
+        en: "We couldn't create your account just now. Please try again.",
+      },
+      verificationGeneric: {
+        hu: "Nem sikerült ellenőrizni a kódot. Ellenőrizd, majd próbáld újra.",
+        en: "We couldn't verify the code. Check it and try again.",
+      },
+      resendGeneric: {
+        hu: "Nem sikerült új kódot küldeni. Próbáld újra egy kicsit később.",
+        en: "We couldn't send a new code. Try again in a moment.",
+      },
+      googleSignIn: {
+        hu: "A Google-belépés nem indult el. Próbáld újra.",
+        en: "Google sign-in didn't start. Please try again.",
+      },
+      googleSignUp: {
+        hu: "A Google-regisztráció nem indult el. Próbáld újra.",
+        en: "Google sign-up didn't start. Please try again.",
+      },
+    },
   },
   onboarding: {
     claimTitle: {

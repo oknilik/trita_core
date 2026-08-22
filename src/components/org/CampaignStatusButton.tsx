@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { t, type Locale } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 
 interface CampaignStatusButtonProps {
   orgId: string;
@@ -9,6 +11,7 @@ interface CampaignStatusButtonProps {
   nextStatus: string;
   label: string;
   isDanger: boolean;
+  locale: Locale;
   /** Megerősítő szöveg a következményekkel — a szerver adja lokalizálva. */
   confirmMessage?: string;
 }
@@ -19,6 +22,7 @@ export function CampaignStatusButton({
   nextStatus,
   label,
   isDanger,
+  locale,
   confirmMessage,
 }: CampaignStatusButtonProps) {
   const router = useRouter();
@@ -36,13 +40,13 @@ export function CampaignStatusButton({
         body: JSON.stringify({ status: nextStatus }),
       });
       if (!res.ok) {
-        const data = await res.json();
-        setError(data.error ?? "ERROR");
+        const data = await res.json().catch(() => ({}));
+        setError(t(presentUserError({ code: data.error, status: res.status }), locale));
         return;
       }
       router.refresh();
     } catch {
-      setError("ERROR");
+      setError(t(presentUserError({ code: "NETWORK_ERROR" }), locale));
     } finally {
       setLoading(false);
     }

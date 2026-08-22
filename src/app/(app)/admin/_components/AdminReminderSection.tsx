@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { t } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 
 interface ReminderInvitation {
   id: string;
@@ -105,16 +107,28 @@ export function AdminReminderSection({ invitations }: Props) {
       const res = await fetch(`/api/admin/send-reminder/${id}`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        const isCompleted = data.error === "Invitation is not pending";
+        const isCompleted = data.error === "INVITATION_NOT_PENDING";
+        const message = t(
+          presentUserError({ code: data.error, status: res.status, fallbackKey: "userErrors.sendFailed" }),
+          "hu",
+        );
         setStates((prev) => ({
           ...prev,
-          [id]: { sending: false, sentAt: null, error: isCompleted ? null : (data.error ?? "Hiba történt"), completed: isCompleted },
+          [id]: { sending: false, sentAt: null, error: isCompleted ? null : message, completed: isCompleted },
         }));
         return;
       }
       setStates((prev) => ({ ...prev, [id]: { sending: false, sentAt: data.sentAt, error: null, completed: false } }));
-    } catch (err) {
-      setStates((prev) => ({ ...prev, [id]: { sending: false, sentAt: null, error: (err as Error).message, completed: false } }));
+    } catch {
+      setStates((prev) => ({
+        ...prev,
+        [id]: {
+          sending: false,
+          sentAt: null,
+          error: t(presentUserError({ code: "NETWORK_ERROR" }), "hu"),
+          completed: false,
+        },
+      }));
     }
   }
 

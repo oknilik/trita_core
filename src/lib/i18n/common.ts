@@ -27,6 +27,75 @@ export const commonTranslations = {
     errorCode: { hu: "Hibakód", en: "Error code" },
   },
 
+  // Kliensoldali műveletek egységes, emberi hangú hibaüzenetei. Az API
+  // technikai hibakódját a user-errors.ts fordítja ezekre a kulcsokra.
+  userErrors: {
+    actionFailed: {
+      hu: "A művelet most nem sikerült. Próbáld újra.",
+      en: "We couldn't complete that. Please try again.",
+    },
+    temporary: {
+      hu: "Átmeneti hiba történt. Próbáld újra egy kicsit később.",
+      en: "There's a temporary problem. Please try again in a moment.",
+    },
+    network: {
+      hu: "Nem sikerült kapcsolódni. Ellenőrizd az internetkapcsolatot, majd próbáld újra.",
+      en: "We couldn't connect. Check your internet connection and try again.",
+    },
+    sessionExpired: {
+      hu: "A munkameneted lejárt. Jelentkezz be újra.",
+      en: "Your session has expired. Please sign in again.",
+    },
+    forbidden: {
+      hu: "Ehhez a művelethez nincs jogosultságod.",
+      en: "You don't have permission to do this.",
+    },
+    notFound: {
+      hu: "A keresett adat már nem elérhető. Frissítsd az oldalt.",
+      en: "This item is no longer available. Refresh the page.",
+    },
+    invalidInput: {
+      hu: "Ellenőrizd a megadott adatokat, majd próbáld újra.",
+      en: "Check the information you entered and try again.",
+    },
+    conflict: {
+      hu: "Az adat időközben megváltozott. Frissítsd az oldalt, majd próbáld újra.",
+      en: "This item changed in the meantime. Refresh the page and try again.",
+    },
+    rateLimited: {
+      hu: "Túl sok próbálkozás történt. Várj egy kicsit, majd próbáld újra.",
+      en: "Too many attempts. Wait a moment and try again.",
+    },
+    loadFailed: {
+      hu: "Nem sikerült betölteni az adatokat. Próbáld újra.",
+      en: "We couldn't load the data. Please try again.",
+    },
+    saveFailed: {
+      hu: "Nem sikerült menteni a módosításokat. Próbáld újra.",
+      en: "We couldn't save your changes. Please try again.",
+    },
+    sendFailed: {
+      hu: "Nem sikerült elküldeni. Próbáld újra.",
+      en: "We couldn't send it. Please try again.",
+    },
+    emailMissing: {
+      hu: "Ehhez a felhasználóhoz nincs email-cím beállítva.",
+      en: "This user doesn't have an email address yet.",
+    },
+    invitationNotPending: {
+      hu: "Ez a meghívó már nem vár kiküldésre.",
+      en: "This invitation is no longer waiting to be sent.",
+    },
+    invitationExpired: {
+      hu: "Ez a meghívó lejárt, ezért már nem küldhető el.",
+      en: "This invitation has expired and can no longer be sent.",
+    },
+    assessmentAlreadyCompleted: {
+      hu: "A tesztet időközben már kitöltötték.",
+      en: "The assessment was completed in the meantime.",
+    },
+  },
+
   meta: {
     title: {
       hu: "Trita - Személyiség- és csapatintelligencia",
