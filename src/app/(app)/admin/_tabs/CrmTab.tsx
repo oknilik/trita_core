@@ -5,6 +5,8 @@ import {
 } from "@/lib/crm/service";
 import { schemaOutOfSyncDetail } from "@/lib/crm/errors";
 import { AdminCrmSection } from "@/components/admin/crm/AdminCrmSection";
+import { getEngagementByEmail, toEngagementDto } from "@/lib/newsletter-engagement";
+import { normalizeEmail } from "@/lib/newsletter";
 import { CrmMigrationPendingCard } from "@/components/admin/crm/CrmMigrationPendingCard";
 import { isCrmView } from "@/components/admin/crm/types";
 import type {
@@ -21,7 +23,9 @@ import type {
 
 type DealWithIncludes = Awaited<ReturnType<typeof getDueDeals>>[number];
 
-function toDealRow(deal: DealWithIncludes): CrmDealRow {
+type EngagementMap = Awaited<ReturnType<typeof getEngagementByEmail>>;
+
+function toDealRow(deal: DealWithIncludes, engagement: EngagementMap): CrmDealRow {
   return {
     id: deal.id,
     title: deal.title,
@@ -49,6 +53,7 @@ function toDealRow(deal: DealWithIncludes): CrmDealRow {
     })),
     inquiryCount: deal._count.inquiries,
     activityCount: deal._count.activities,
+    newsletter: toEngagementDto(engagement.get(normalizeEmail(deal.contactEmail))),
   };
 }
 
@@ -72,6 +77,15 @@ export async function CrmTab({ view }: { view?: string }) {
 
   const openDealsFlat = snapshot.byStage.flatMap((group) => group.deals);
 
+  // Hírlevél-elköteleződés MINDEN itt látszó címre, egyetlen lekérdezésben
+  // (N+1 nélkül): a Beérkező beküldői + a deal-kapcsolattartók.
+  const engagement = await getEngagementByEmail([
+    ...intakeInquiries.map((inquiry) => inquiry.email),
+    ...dueDeals.map((deal) => deal.contactEmail),
+    ...openDealsFlat.map((deal) => deal.contactEmail),
+    ...snapshot.closedRecent.map((deal) => deal.contactEmail),
+  ]);
+
   // Email-match nyitott dealre: a Beérkezőben „már pipeline-ban” jelzés +
   // egykattintásos csatolás-ajánlat (az auto-attach logikájával összhangban
   // a legfrissebb nyitott deal nyer).
@@ -93,22 +107,23 @@ export async function CrmTab({ view }: { view?: string }) {
       message: inquiry.message,
       createdAt: inquiry.createdAt.toISOString(),
       openDealMatch: match ? { id: match.id, title: match.title } : null,
+      newsletter: toEngagementDto(engagement.get(normalizeEmail(inquiry.email))),
     };
   });
 
   return (
     <AdminCrmSection
       initialView={isCrmView(view) ? view : undefined}
-      due={dueDeals.map(toDealRow)}
+      due={dueDeals.map((deal) => toDealRow(deal, engagement))}
       intake={intake}
       stageGroups={snapshot.byStage.map((group) => ({
         stage: group.stage,
         count: group.count,
         valueTotal: group.valueTotal,
-        deals: group.deals.map(toDealRow),
+        deals: group.deals.map((deal) => toDealRow(deal, engagement)),
       }))}
       metrics={snapshot.metrics}
-      closedRecent={snapshot.closedRecent.map(toDealRow)}
+      closedRecent={snapshot.closedRecent.map((deal) => toDealRow(deal, engagement))}
       openDealOptions={openDealsFlat.map((deal) => ({ id: deal.id, title: deal.title }))}
     />
   );

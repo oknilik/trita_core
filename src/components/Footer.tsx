@@ -9,6 +9,7 @@ import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { TritaWordmark } from "@/components/TritaLogo";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 export function Footer() {
   const { locale } = useLocale();
@@ -131,6 +132,15 @@ export function Footer() {
           ))}
 
         </div>
+
+        {/* Feliratkozás — halkan, a link-oszlopok alatt. Minden publikus
+            oldalon ott van, de nem szakít félbe semmit. Az `onInverse` azért
+            kötelező, mert a lábléc MINDKÉT színsémán sötét. */}
+        {isPortfolioSurfaceActive("blog") && !currentPath.startsWith("/newsletter") ? (
+          <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-6">
+            <NewsletterForm source="footer" variant="inline" onInverse className="max-w-[420px]" />
+          </div>
+        ) : null}
 
         <div className="mt-10 flex flex-col gap-4 border-t border-[var(--color-text-on-inverse)]/10 pt-5 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-xs text-[var(--color-text-on-inverse-muted)]">{t("footer.copyright", locale)}</p>

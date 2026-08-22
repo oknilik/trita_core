@@ -60,8 +60,8 @@ const NAIH_LINE_EN = `${SUPERVISORY_AUTHORITY.nameEn} · ${SUPERVISORY_AUTHORITY
 const HU: PolicyDocument = {
   title: "Adatvédelmi tájékoztató",
   lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg — és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszod soha nem jelenik meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
-  lastUpdated: "Utoljára frissítve: 2026. augusztus 6.",
-  effectiveFrom: "Hatályos: 2026. augusztus 6-tól",
+  lastUpdated: "Utoljára frissítve: 2026. augusztus 21.",
+  effectiveFrom: "Hatályos: 2026. augusztus 21-től",
   draftBadge: "Tervezet",
   draftNote:
     "Ez a tájékoztató tartalmilag kész, de az adatkezelő cégadatai (cégnév, székhely, cégjegyzékszám, adószám) még véglegesítés alatt állnak — a lenti értékek helykitöltők. A végleges adatok bevezetéséig a dokumentumot tervezetként kezeld. Az adatkezelési gyakorlat, amit leír, a valós működésünk.",
@@ -163,6 +163,11 @@ const HU: PolicyDocument = {
                 "Ha írsz nekünk a kapcsolati űrlapon: név, e-mail-cím, cégnév, a megkeresés témája és az üzenet szövege.",
             },
             {
+              term: "Feliratkozási adatok",
+              description:
+                "Ha feliratkozol a hírlevelünkre vagy az új blogbejegyzés-értesítőre: e-mail-cím, nyelv, választott témák, a feliratkozás forrása, a megerősítés és leiratkozás időpontja; továbbá a kiküldési kísérlet, a szolgáltatói átvétel, a mail-szerveri kézbesítés vagy hiba, valamint a levélbeli link első lekérésének időpontja. Az admin CRM-ben normalizált e-mail-egyezéssel jelezzük, ha egy érdeklődő feliratkozó is. A linkkérést automata levélszkenner vagy továbbított levél is kiválthatja, ezért nem tekintjük biztos emberi olvasásnak.",
+            },
+            {
               term: "Technikai adatok",
               description:
                 "Nyelvi beállítás (süti), munkamenet-azonosítók, hibanaplók, valamint süti nélküli, összesített látogatottsági és teljesítmény-statisztikák.",
@@ -211,6 +216,16 @@ const HU: PolicyDocument = {
               "Kapcsolatfelvétel megválaszolása, ajánlatadás",
               "Kapcsolatfelvételi adatok",
               "Szerződéskötést megelőző lépések / jogos érdek — 6. cikk (1) b) és f)",
+            ],
+            [
+              "Hírlevél és új blogbejegyzés-értesítő küldése",
+              "Feliratkozási adatok",
+              "Hozzájárulás — 6. cikk (1) a); kétlépcsős feliratkozás, bármikor visszavonható",
+            ],
+            [
+              "Hírlevél-kézbesíthetőség ellenőrzése, linkkérések mérése és feliratkozói kontextus megjelenítése a beérkező megkeresés mellett",
+              "Kiküldési/kézbesítési állapot, első linkkérés, normalizált e-mail-egyezés",
+              "Jogos érdek — 6. cikk (1) f): a feladói hírnév védelme, hibák feltárása és a tartalom hasznosságának megértése; nyitópixelt nem használunk, a jel bizonytalanságát feltüntetjük, az adatkezelés ellen tiltakozhatsz",
             ],
             [
               "Szolgáltatás- és módszertan-fejlesztés összesített adatokon",
@@ -356,6 +371,14 @@ const HU: PolicyDocument = {
             [
               "Kapcsolatfelvételi üzenetek",
               "A megkeresés lezárásától számított 12 hónap.",
+            ],
+            [
+              "Hírlevél-feliratkozás",
+              "Az aktív feliratkozás a leiratkozásig él. A meg nem erősített sort a 7 napos token lejárata után automatikusan töröljük. Leiratkozott vagy visszapattant címet 12 hónapig őrzünk, majd automatikusan törlünk.",
+            ],
+            [
+              "Hírlevél-kiküldési, kézbesítési és linkkérés-adatok",
+              "A kiküldéstől számított 12 hónap, utána automatikus törlés.",
             ],
             [
               "Számlázási és számviteli bizonylatok",
@@ -524,8 +547,8 @@ const HU: PolicyDocument = {
 const EN: PolicyDocument = {
   title: "Privacy Policy",
   lead: "This policy explains what personal data we process, why, on what legal basis, for how long, and who we share it with — and what you can do if you disagree with something. In short: your assessment results are yours, your individual answers never appear in a team-level view, and you can delete your profile at any time.",
-  lastUpdated: "Last updated: 6 August 2026",
-  effectiveFrom: "Effective from: 6 August 2026",
+  lastUpdated: "Last updated: 21 August 2026",
+  effectiveFrom: "Effective from: 21 August 2026",
   draftBadge: "Draft",
   draftNote:
     "The content of this policy is complete, but the controller's company details (legal name, registered address, company registration and tax numbers) are still being finalised — the values below are placeholders. Until the final details are in place, treat this document as a draft. The processing practices it describes are how we actually operate.",
@@ -627,6 +650,11 @@ const EN: PolicyDocument = {
                 "If you write to us through the contact form: name, email address, company name, topic and the message itself.",
             },
             {
+              term: "Subscription data",
+              description:
+                "If you subscribe to our newsletter or new-article updates: email address, language, selected topics, subscription source, confirmation and unsubscribe timestamps; plus send attempts, provider acceptance, mail-server delivery or failure, and the first request for a link in the email. In the admin CRM we indicate, through normalized email matching, when an enquirer is also a subscriber. A link request may come from an automated email scanner or a forwarded message, so we do not treat it as certain human reading.",
+            },
+            {
               term: "Technical data",
               description:
                 "Language preference (cookie), session identifiers, error logs, and cookie-free aggregated traffic and performance statistics.",
@@ -675,6 +703,16 @@ const EN: PolicyDocument = {
               "Responding to enquiries and preparing quotes",
               "Contact data",
               "Steps prior to entering into a contract / legitimate interest — Art. 6(1)(b) and (f)",
+            ],
+            [
+              "Sending the newsletter and new-article updates",
+              "Subscription data",
+              "Consent — Art. 6(1)(a); double opt-in subscription, withdrawable at any time",
+            ],
+            [
+              "Checking newsletter deliverability, measuring link requests and showing subscriber context beside an incoming enquiry",
+              "Send/delivery state, first link request, normalized email match",
+              "Legitimate interest — Art. 6(1)(f): protecting sender reputation, diagnosing failures and understanding content usefulness; we use no open pixel, disclose the signal's uncertainty, and you may object",
             ],
             [
               "Improving the service and the methodology on aggregated data",
@@ -815,6 +853,14 @@ const EN: PolicyDocument = {
               "For the term of the contract with the client organization; afterwards deleted or returned within 90 days, as the organization instructs.",
             ],
             ["Contact form messages", "12 months from closing the enquiry."],
+            [
+              "Newsletter subscription",
+              "An active subscription lasts until you unsubscribe. We automatically delete an unconfirmed row when its 7-day token expires. An unsubscribed or bounced address is kept for 12 months and then automatically deleted.",
+            ],
+            [
+              "Newsletter send, delivery and link-request data",
+              "12 months from sending, followed by automatic deletion.",
+            ],
             [
               "Invoices and accounting records",
               "8 years (Section 169 of Hungarian Act C of 2000 on Accounting).",

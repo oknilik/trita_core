@@ -24,6 +24,8 @@ export type EmailSample = {
   text: string;
   /** A levéllel utazó inline képek (szójel, formanyelvi jel, QR). */
   attachments: CapturedAttachment[];
+  /** A levél provider-payloadjában átadott extra fejlécek. */
+  headers: Record<string, string>;
 };
 
 type CapturedAttachment = {
@@ -38,6 +40,7 @@ type CapturedPayload = {
   html?: string;
   text?: string;
   attachments?: CapturedAttachment[];
+  headers?: Record<string, string>;
 };
 
 /**
@@ -86,6 +89,9 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
   // Dinamikus import: a hívó a modul betöltése ELŐTT állíthatja a
   // NEXT_PUBLIC_APP_URL-t (az előnézet helyi eszköz-útvonalakat kér).
   const m = await import("../src/lib/emails");
+  // A borító-URL-t a VALÓDI építővel kérjük, nem kézzel másolt stringgel: így
+  // a guardrail-teszt azt az URL-t látja, ami élesben kimenne.
+  const { blogImageUrl } = await import("../src/lib/newsletter");
 
   const locales = ["hu", "en"] as const;
   const samples: EmailSample[] = [];
@@ -106,6 +112,7 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
       html: payload.html,
       text: payload.text ?? "",
       attachments: payload.attachments ?? [],
+      headers: payload.headers ?? {},
     });
   }
 
@@ -269,6 +276,77 @@ export async function renderEmailSamples(): Promise<EmailSample[]> {
 
     await capture("advisory_confirmation", locale, () =>
       m.sendAdvisoryConfirmationEmail({ to: "erdeklodo@example.com", name: "Tóth Anna", locale }),
+    );
+
+    await capture("newsletter_confirm", locale, () =>
+      m.sendNewsletterConfirmEmail({
+        to: "olvaso@example.com",
+        confirmUrl: "https://trita.io/newsletter/confirm?token=confirm-token",
+        locale,
+        idempotencyKey: `preview-confirm-${locale}`,
+      }),
+    );
+
+    await capture("newsletter_blog_post", locale, () =>
+      m.sendNewBlogPostEmail({
+        to: "olvaso@example.com",
+        postTitle:
+          locale === "hu" ? "A csapatdinamika olvasása" : "Reading team dynamics",
+        postDescription:
+          locale === "hu"
+            ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
+            : "What a team reveals through the way its members react to each other's feedback.",
+        postUrl: "https://trita.io/blog/csapatdinamika-olvasasa",
+        postImageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
+        readingMinutes: 7,
+        unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
+        unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        locale,
+        idempotencyKey: `preview-blog-${locale}`,
+      }),
+    );
+
+    await capture("newsletter_issue", locale, () =>
+      m.sendNewsletterIssueEmail({
+        to: "olvaso@example.com",
+        subject:
+          locale === "hu"
+            ? "Trita hírlevél — amiről ebben a hónapban írtunk"
+            : "Trita newsletter — what we wrote this month",
+        intro:
+          locale === "hu"
+            ? "Szia,\n\nEbben a hónapban két témát jártunk körbe: hogyan olvasható ki a csapatdinamika a visszajelzésekből, és mit árul el a fluktuációról a belső mobilitás."
+            : "Hi,\n\nThis month we covered two topics: how team dynamics show up in feedback, and what internal mobility reveals about turnover.",
+        items: [
+          {
+            title: locale === "hu" ? "A csapatdinamika olvasása" : "Reading team dynamics",
+            description:
+              locale === "hu"
+                ? "Mit árul el a csapatról az, ahogyan a tagjai egymás visszajelzésére reagálnak."
+                : "What a team reveals through the way its members react to each other's feedback.",
+            url: "https://trita.io/blog/csapatdinamika-olvasasa",
+            imageUrl: blogImageUrl("https://trita.io", "csapatdinamika-olvasasa"),
+            readingMinutes: 7,
+          },
+          {
+            title:
+              locale === "hu"
+                ? "Belső mobilitás: a megtartás csendes fegyvere"
+                : "Internal mobility: the quiet retention weapon",
+            description:
+              locale === "hu"
+                ? "Miért marad tovább az, aki házon belül tud lépni egyet."
+                : "Why people stay longer when they can move within the company.",
+            url: "https://trita.io/blog/belso-mobilitas-a-megtartas-csendes-fegyvere",
+            imageUrl: blogImageUrl("https://trita.io", "belso-mobilitas-a-megtartas-csendes-fegyvere"),
+            readingMinutes: 6,
+          },
+        ],
+        unsubUrl: "https://trita.io/newsletter/unsubscribe?token=unsub-token",
+        unsubPostUrl: "https://trita.io/api/newsletter/unsubscribe?token=unsub-token",
+        locale,
+        idempotencyKey: `preview-issue-${locale}`,
+      }),
     );
   }
 

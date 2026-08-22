@@ -320,6 +320,101 @@ export const landingTranslations = {
       en: "Couldn't send — try again, or email info@trita.io.",
     },
   },
+  // ── Hírlevél / blog-feliratkozás (2026-08-21) ───────────────────────────
+  // Saját névtér, mert négy különböző felületen jelenik meg ugyanaz az
+  // űrlap (blog-lista, cikk vége, lábléc, vendég-teszt záróoldal), plusz a
+  // két visszajelző oldal. A hangnem szándékosan halk: nem „iratkozz fel
+  // most!", hanem egy ajánlat, aminek az ára látszik (mit és milyen gyakran).
+  newsletter: {
+    eyebrow: { hu: "Értesítő", en: "Updates" },
+    title: {
+      hu: "Új cikkek és ritka, válogatott összefoglalók",
+      en: "New articles and occasional curated digests",
+    },
+    sub: {
+      hu: "Minden új blogbejegyzésről értesítünk, és időnként több cikkből álló szerkesztett hírlevelet küldünk. Bármikor leiratkozhatsz.",
+      en: "We notify you about each new article and occasionally send a curated multi-article newsletter. Unsubscribe any time.",
+    },
+    // Rövid változat a lábléchez és az oldalsávhoz — ott nincs hely a fentire.
+    compactTitle: { hu: "Cikkek és Trita-hírlevél", en: "Articles and the Trita newsletter" },
+    emailLabel: { hu: "Email cím", en: "Email address" },
+    emailPlaceholder: { hu: "te@pelda.hu", en: "you@example.com" },
+    submit: { hu: "Feliratkozom", en: "Subscribe" },
+    submitting: { hu: "Küldés...", en: "Sending..." },
+    // A hozzájárulás szövege — a beküldés GOMBJÁNÁL kell állnia, hogy a
+    // hozzájárulás tájékozott legyen (nem elég az adatkezelési tájékoztatóban).
+    consent: {
+      hu: "A feliratkozással hozzájárulsz az új cikkekről szóló értesítésekhez és az időszaki Trita-hírlevélhez. A kézbesítést és az első linkkérést mérjük, megnyitást nem. Bármikor leiratkozhatsz.",
+      en: "By subscribing you agree to new-article notifications and the occasional Trita newsletter. We measure delivery and the first link request, but not opens. You can unsubscribe any time.",
+    },
+    privacyLink: { hu: "Adatkezelés", en: "Privacy" },
+    // A siker-üzenet SZÁNDÉKOSAN nem árulja el, hogy a cím már fent volt-e a
+    // listán — a végpont sem teszi (ld. api/newsletter/subscribe/route.ts).
+    successTitle: { hu: "Nézd meg a postafiókod", en: "Check your inbox" },
+    successBody: {
+      hu: "Küldtünk egy megerősítő levelet. Amíg rá nem kattintasz, nem küldünk semmit.",
+      en: "We sent you a confirmation email. Until you click it, we won't send anything.",
+    },
+    confirmActionTitle: {
+      hu: "Erősítsd meg a feliratkozásod",
+      en: "Confirm your subscription",
+    },
+    confirmActionBody: {
+      hu: "A feliratkozás csak az alábbi gomb megnyomásával válik aktívvá; a levélben lévő link puszta megnyitása nem elég.",
+      en: "Your subscription only becomes active after pressing the button below; merely opening the link in the email is not enough.",
+    },
+    confirmActionCta: { hu: "Igen, feliratkozom", en: "Yes, subscribe me" },
+    unsubscribeActionTitle: {
+      hu: "Leiratkozol a Trita leveleiről?",
+      en: "Unsubscribe from Trita emails?",
+    },
+    unsubscribeActionBody: {
+      hu: "A gomb megnyomása után nem küldünk több blogértesítőt vagy szerkesztett hírlevelet erre a címre.",
+      en: "After pressing the button, we will stop sending article notifications and curated newsletters to this address.",
+    },
+    unsubscribeActionCta: { hu: "Igen, leiratkozom", en: "Yes, unsubscribe" },
+    errorInvalid: {
+      hu: "Ez az email cím nem tűnik érvényesnek.",
+      en: "That email address doesn't look valid.",
+    },
+    errorRateLimited: {
+      hu: "Túl sok próbálkozás. Várj egy percet, és próbáld újra.",
+      en: "Too many attempts. Wait a minute and try again.",
+    },
+    errorGeneric: {
+      hu: "Nem sikerült a feliratkozás. Kérlek próbáld újra.",
+      en: "Subscription failed. Please try again.",
+    },
+    // ── Megerősítő oldal (/newsletter/confirmed) ──
+    confirmedTitle: { hu: "Kész, feliratkoztál", en: "You're subscribed" },
+    confirmedBody: {
+      hu: "Szólunk, amint új cikk jelenik meg. Minden levél alján találsz egyetlen kattintásos leiratkozó linket.",
+      en: "We'll write when a new article goes live. Every email has a one-click unsubscribe link at the bottom.",
+    },
+    confirmExpiredTitle: { hu: "A link lejárt", en: "This link has expired" },
+    confirmExpiredBody: {
+      hu: "A megerősítő link 7 napig él. Iratkozz fel újra — küldünk egy friss levelet.",
+      en: "Confirmation links live for 7 days. Subscribe again and we'll send a fresh one.",
+    },
+    confirmInvalidTitle: { hu: "Ezt a linket nem ismerjük", en: "We don't recognise this link" },
+    confirmInvalidBody: {
+      hu: "Lehet, hogy a leveleződ megtörte a linket. Próbáld meg újra a feliratkozást.",
+      en: "Your email client may have broken the link. Try subscribing again.",
+    },
+    // ── Leiratkozó oldal (/newsletter/unsubscribed) ──
+    unsubscribedTitle: { hu: "Leiratkoztál", en: "You're unsubscribed" },
+    unsubscribedBody: {
+      hu: "Nem küldünk több értesítőt erre a címre. Ha meggondolod magad, bármikor visszajöhetsz.",
+      en: "We won't send any more updates to this address. If you change your mind, you're welcome back.",
+    },
+    unsubscribeInvalidTitle: { hu: "Ezt a linket nem ismerjük", en: "We don't recognise this link" },
+    unsubscribeInvalidBody: {
+      hu: "Lehet, hogy már leiratkoztál. Ha továbbra is kapsz leveleket, írj nekünk a Kapcsolat oldalról.",
+      en: "You may already be unsubscribed. If emails keep arriving, reach us via the Contact page.",
+    },
+    backToBlog: { hu: "Vissza a blogra", en: "Back to the blog" },
+  },
+
   blog: {
     heroTitle: {
       hu: "Csapatintelligencia. Pszichológia. ",

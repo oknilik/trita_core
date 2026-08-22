@@ -45,6 +45,30 @@ type ResendAttachment = {
   contentId?: string;
 };
 
+export type EmailSendResult =
+  | { ok: true; providerEmailId: string }
+  | {
+      ok: false;
+      /** `true`: a válasz elveszhetett, ezért csak azonos idempotency key-jel szabad próbálni. */
+      uncertain: boolean;
+      retryable: boolean;
+      code: string;
+      message: string;
+    };
+
+type EmailSendParams = {
+  template: string;
+  to: string;
+  subject: string;
+  html: string;
+  text: string;
+  attachments?: ResendAttachment[];
+  headers?: Record<string, string>;
+  logFields?: Record<string, unknown>;
+  /** Resend-idempotencia; tömeges/újrapróbálható levélnél kötelező. */
+  idempotencyKey?: string;
+};
+
 /**
  * MINDEN kimenő levél ezen a kapun megy át.
  *
@@ -56,38 +80,77 @@ type ResendAttachment = {
  * (Az első kör hosztolt URL-eket használt; élesben nem töltődtek be. Ld.
  * `email-layout.ts` → `emailArtAttachments`.)
  */
-async function sendEmail(params: {
-  template: string;
-  to: string;
-  subject: string;
-  html: string;
-  text: string;
-  /** Sablon-specifikus extra (ma: a megosztó-levél QR-kódja). */
-  attachments?: ResendAttachment[];
-  /** Extra log-mezők (variant, qrAttached…). */
-  logFields?: Record<string, unknown>;
-}): Promise<boolean> {
-  const { error } = await resend.emails.send({
-    from: EMAIL_FROM,
-    to: params.to,
-    subject: params.subject,
-    html: params.html,
-    text: params.text,
-    attachments: [...emailArtAttachments(), ...(params.attachments ?? [])],
-  });
-
-  if (error) {
-    log.error(
-      { event: "email.send_failed", template: params.template, to: params.to, ...params.logFields, err: error },
-      `Failed to send ${params.template}`,
+async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
+  try {
+    const { data, error } = await resend.emails.send(
+      {
+        from: EMAIL_FROM,
+        to: params.to,
+        subject: params.subject,
+        html: params.html,
+        text: params.text,
+        ...(params.headers ? { headers: params.headers } : {}),
+        attachments: [...emailArtAttachments(), ...(params.attachments ?? [])],
+      },
+      params.idempotencyKey ? { idempotencyKey: params.idempotencyKey } : undefined,
     );
-    return false;
+
+    if (error) {
+      const code = String(error.name ?? "resend_error");
+      const retryable = [
+        "rate_limit_exceeded",
+        "application_error",
+        "internal_server_error",
+        "concurrent_idempotent_requests",
+      ].includes(code);
+      log.error(
+        { event: "email.send_failed", template: params.template, to: params.to, ...params.logFields, err: error },
+        `Failed to send ${params.template}`,
+      );
+      return {
+        ok: false,
+        uncertain: false,
+        retryable,
+        code,
+        message: String(error.message ?? code),
+      };
+    }
+
+    if (!data?.id) {
+      return {
+        ok: false,
+        uncertain: true,
+        retryable: true,
+        code: "missing_provider_id",
+        message: "Resend accepted the request without returning an email id",
+      };
+    }
+
+    log.info(
+      { event: "email.accepted", template: params.template, to: params.to, providerEmailId: data.id, ...params.logFields },
+      `${params.template} accepted by provider`,
+    );
+    return { ok: true, providerEmailId: data.id };
+  } catch (error) {
+    // Hálózati kivételnél nem tudjuk, hogy a szolgáltató átvette-e a kérést.
+    // Az eredményt ezért UNKNOWN-ként kezeljük; retry csak UGYANAZZAL az
+    // idempotency key-jel történhet.
+    log.error(
+      { event: "email.send_unknown", template: params.template, to: params.to, ...params.logFields, err: error },
+      `Unknown outcome while sending ${params.template}`,
+    );
+    return {
+      ok: false,
+      uncertain: true,
+      retryable: true,
+      code: "network_or_sdk_exception",
+      message: error instanceof Error ? error.message : "Unknown send exception",
+    };
   }
-  log.info(
-    { event: "email.sent", template: params.template, to: params.to, ...params.logFields },
-    `${params.template} sent`,
-  );
-  return true;
+}
+
+async function sendEmail(params: EmailSendParams): Promise<boolean> {
+  return (await sendEmailDetailed(params)).ok;
 }
 
 /**
@@ -1687,4 +1750,319 @@ export async function sendHiringCreditsRequestEmail(params: {
   });
 
   return ok;
+}
+
+// ─── Hírlevél / blog-feliratkozás ────────────────────────────────────────────
+//
+// KÉT SABLON, KÉT SZEREP:
+//   · a MEGERŐSÍTŐ levél tranzakcionális (a látogató kérte, egy gombja van),
+//   · az ÚJ CIKK és a SZERKESZTETT SZÁM tömeges — ez a levélcsalád
+//     `List-Unsubscribe` fejlécet visz és leiratkozó linket tesz a láblécbe.
+//
+// A leiratkozó link SOSEM a `/email-preferences`-re megy (az belépést kér, a
+// feliratkozók többségének pedig nincs fiókja), hanem a token-alapú,
+// auth nélküli `/newsletter/unsubscribe` megerősítő oldalra.
+
+/**
+ * Egykattintásos leiratkozás fejlécei (RFC 8058).
+ *
+ * A `List-Unsubscribe-Post` jelenti be, hogy a levelező ELŐZETES megerősítés
+ * nélkül POST-olhat a linkre — ezért kell a POST-végpontnak idempotensnek
+ * lennie. A GET szándékosan csak emberi megerősítő oldalt nyit.
+ */
+function newsletterUnsubHeaders(unsubPostUrl: string): Record<string, string> {
+  return {
+    "List-Unsubscribe": `<${unsubPostUrl}>`,
+    "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+  };
+}
+
+const newsletterConfirmTranslations = {
+  hu: {
+    subject: "Erősítsd meg a feliratkozásod – Trita",
+    kind: "Megerősítés",
+    eyebrow: "Feliratkozás",
+    heading: "Erősítsd meg a kérésed",
+    preheader: "Nyisd meg a megerősítő oldalt, és hagyd jóvá a feliratkozást.",
+    greeting: "Szia,",
+    body: "Valaki (feltehetően te) feliratkozott a Trita értesítőjére ezzel az email címmel. Az alábbi gomb megnyitja a megerősítő oldalt, ahol jóváhagyhatod a kérést — enélkül nem küldünk semmit.",
+    what: "Ezután új blogbejegyzésnél és időnként egy-egy gyakorlati összefoglalónál keresünk meg. Nem gyakran, és bármikor leiratkozhatsz.",
+    cta: "Megerősítő oldal megnyitása",
+    quiet: "Ha nem te kérted, nincs teendőd — a link 7 nap múlva magától lejár, és addig sem küldünk semmit.",
+  },
+  en: {
+    subject: "Confirm your subscription – Trita",
+    kind: "Confirmation",
+    eyebrow: "Subscription",
+    heading: "Confirm your request",
+    preheader: "Open the confirmation page and approve your subscription.",
+    greeting: "Hi,",
+    body: "Someone (probably you) subscribed to Trita updates with this email address. The button below opens a confirmation page where you can approve the request — without it we won't send anything.",
+    what: "After that we'll write when a new article goes live, plus the occasional practical summary. Not often, and you can unsubscribe any time.",
+    cta: "Open confirmation page",
+    quiet: "If this wasn't you, there's nothing to do — the link expires on its own in 7 days, and we won't send anything in the meantime.",
+  },
+};
+
+/**
+ * Double opt-in megerősítő levél.
+ *
+ * Nincs benne leiratkozó link és `List-Unsubscribe` fejléc: még nincs mihez
+ * képest leiratkozni — a nem-megerősített feliratkozás magától elévül.
+ */
+export async function sendNewsletterConfirmEmail(params: {
+  to: string;
+  confirmUrl: string;
+  locale?: Locale;
+  idempotencyKey: string;
+}): Promise<EmailSendResult> {
+  const locale = normalizeLocale(params.locale);
+  const t = newsletterConfirmTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: t.heading,
+    preheader: t.preheader,
+    bodyContent: `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    <p style="${EMAIL_P}">${t.body}</p>
+    <p style="${EMAIL_P_MUTED};margin-bottom:26px">${t.what}</p>
+    ${renderCtaButton({ href: params.confirmUrl, label: t.cta })}`,
+    quietNote: t.quiet,
+    signOff: SIGN_OFF[locale],
+  });
+
+  return sendEmailDetailed({
+    template: "newsletter_confirm",
+    to: params.to,
+    subject: t.subject,
+    html,
+    text: `${t.greeting}\n\n${t.body}\n\n${t.what}\n\n${t.cta}: ${params.confirmUrl}\n\n${t.quiet}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+    idempotencyKey: params.idempotencyKey,
+  });
+}
+
+const newBlogPostTranslations = {
+  hu: {
+    subject: (title: string) => `Új cikk: ${title}`,
+    kind: "Értesítő",
+    eyebrow: "Új a blogon",
+    greeting: "Szia,",
+    intro: "Új cikk jelent meg a Trita blogon:",
+    cta: "Cikk elolvasása",
+    readingTime: (minutes: number) => `${minutes} perc olvasás`,
+    quiet: "Ezt a levelet azért kaptad, mert feliratkoztál a Trita értesítőjére.",
+    unsubLabel: "Leiratkozás",
+  },
+  en: {
+    subject: (title: string) => `New article: ${title}`,
+    kind: "Update",
+    eyebrow: "New on the blog",
+    greeting: "Hi,",
+    intro: "A new article is up on the Trita blog:",
+    cta: "Read the article",
+    readingTime: (minutes: number) => `${minutes} min read`,
+    quiet: "You're receiving this because you subscribed to Trita updates.",
+    unsubLabel: "Unsubscribe",
+  },
+};
+
+/**
+ * Új blogbejegyzés értesítő — az EGYETLEN tömeges levelünk.
+ *
+ * Amit a tranzakcionális sablonoktól eltérően kötelezően visz:
+ *   · `List-Unsubscribe` + `List-Unsubscribe-Post` fejléc,
+ *   · látható leiratkozó link a láblécben (token-alapú, belépés nélküli).
+ */
+export async function sendNewBlogPostEmail(params: {
+  to: string;
+  postTitle: string;
+  postDescription: string;
+  postUrl: string;
+  postImageUrl?: string;
+  readingMinutes: number;
+  unsubUrl: string;
+  /** RFC 8058 POST-végpont; a látható link szándékosan külön, megerősítő oldal. */
+  unsubPostUrl?: string;
+  locale?: Locale;
+  idempotencyKey: string;
+}): Promise<EmailSendResult> {
+  const locale = normalizeLocale(params.locale);
+  const t = newBlogPostTranslations[locale];
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: escapeHtml(params.postTitle),
+    preheader: params.postDescription,
+    bodyContent: `
+    <p style="${EMAIL_P}">${t.greeting}</p>
+    <p style="${EMAIL_P}">${t.intro}</p>
+    ${
+      params.postImageUrl
+        ? `<a href="${escapeHtml(params.postUrl)}" style="display:block;margin:0 0 18px;text-decoration:none">
+             <img src="${escapeHtml(params.postImageUrl)}" width="496" alt="${escapeHtml(params.postTitle)}"
+                  style="display:block;width:100%;max-width:496px;height:auto;border-radius:12px;border:1px solid ${EMAIL_COLORS.border}">
+           </a>`
+        : ""
+    }
+    <p style="${EMAIL_P}"><strong>${escapeHtml(params.postTitle)}</strong><br>${escapeHtml(params.postDescription)}</p>
+    <p style="${EMAIL_P_MUTED};margin-bottom:26px">${t.readingTime(params.readingMinutes)}</p>
+    ${renderCtaButton({ href: params.postUrl, label: t.cta })}`,
+    quietNote: t.quiet,
+    optOut: { href: params.unsubUrl, label: t.unsubLabel },
+    signOff: SIGN_OFF[locale],
+  });
+
+  return sendEmailDetailed({
+    template: "newsletter_blog_post",
+    to: params.to,
+    subject: t.subject(params.postTitle),
+    html,
+    text: `${t.greeting}\n\n${t.intro}\n\n${params.postTitle}\n${params.postDescription}\n${t.readingTime(params.readingMinutes)}\n\n${t.cta}: ${params.postUrl}\n\n${t.quiet}\n${t.unsubLabel}: ${params.unsubUrl}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+    headers: newsletterUnsubHeaders(params.unsubPostUrl ?? params.unsubUrl),
+    idempotencyKey: params.idempotencyKey,
+  });
+}
+
+// ─── Szerkesztett hírlevél-szám ──────────────────────────────────────────────
+//
+// A cikk-értesítő gépi (megjelent egy cikk → megy egy levél). Ez a másik
+// forma: a szerkesztő ír egy nyitó bekezdést, és beválogat 2-3 cikket. Havi
+// 4-5 cikknél ez váltja ki a cikkenkénti levelet.
+//
+// Ugyanaz a tömeges-levél szabálykészlet vonatkozik rá, mint a cikk-értesítőre:
+// `List-Unsubscribe` fejléc + látható leiratkozó link a láblécben.
+
+const newsletterIssueTranslations = {
+  hu: {
+    kind: "Hírlevél",
+    eyebrow: "Trita hírlevél",
+    itemsHeading: "Amiről írtunk",
+    readingTime: (minutes: number) => `${minutes} perc olvasás`,
+    quiet: "Ezt a levelet azért kaptad, mert feliratkoztál a Trita értesítőjére.",
+    unsubLabel: "Leiratkozás",
+  },
+  en: {
+    kind: "Newsletter",
+    eyebrow: "Trita newsletter",
+    itemsHeading: "What we wrote about",
+    readingTime: (minutes: number) => `${minutes} min read`,
+    quiet: "You're receiving this because you subscribed to Trita updates.",
+    unsubLabel: "Unsubscribe",
+  },
+};
+
+export interface NewsletterIssueItem {
+  title: string;
+  description: string;
+  url: string;
+  imageUrl?: string;
+  readingMinutes: number;
+}
+
+export interface NewsletterIssueRenderParams {
+  subject: string;
+  /** A szerkesztő nyitó szövege — SIMA szöveg, üres sorral tagolt bekezdések. */
+  intro: string;
+  items: NewsletterIssueItem[];
+  unsubUrl: string;
+  unsubPostUrl?: string;
+  locale?: Locale;
+}
+
+/** Ugyanaz a render az admin-előnézethez és a tényleges küldéshez. */
+export function renderNewsletterIssueEmail(params: NewsletterIssueRenderParams): {
+  subject: string;
+  html: string;
+  text: string;
+} {
+  const locale = normalizeLocale(params.locale);
+  const t = newsletterIssueTranslations[locale];
+
+  // A bevezető a szerkesztőtől jön, tehát NEM megbízható HTML: escape-eljük,
+  // és csak a bekezdés-tördelést értelmezzük. Ez a sablon egyetlen helye,
+  // ahol ember által írt szöveg kerül a levélbe.
+  const introHtml = params.intro
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p style="${EMAIL_P}">${escapeHtml(paragraph).replaceAll("\n", "<br>")}</p>`)
+    .join("");
+
+  const itemsHtml = params.items
+    .map((item) => `
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 18px">
+      <tr>
+        <td style="padding:14px 16px;border:1px solid ${EMAIL_COLORS.border};border-radius:12px">
+          <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+            <tr>
+              ${
+                item.imageUrl
+                  ? `<td class="em-article-image" width="154" valign="top" style="width:154px;padding:0 16px 0 0">
+                       <a href="${escapeHtml(item.url)}" style="display:block;text-decoration:none">
+                         <img src="${escapeHtml(item.imageUrl)}" width="154" alt="${escapeHtml(item.title)}"
+                              style="display:block;width:154px;max-width:100%;height:auto;border-radius:9px">
+                       </a>
+                     </td>`
+                  : ""
+              }
+              <td class="em-article-copy" valign="top">
+                <a href="${escapeHtml(item.url)}" style="font-size:16px;line-height:24px;font-weight:700;color:${EMAIL_COLORS.heading};text-decoration:none">${escapeHtml(item.title)}</a>
+                <p style="${EMAIL_P};margin:6px 0 8px">${escapeHtml(item.description)}</p>
+                <p style="${EMAIL_P_MUTED};margin:0">${t.readingTime(item.readingMinutes)}</p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>`)
+    .join("");
+
+  const html = buildEmailLayout({
+    locale,
+    kind: t.kind,
+    eyebrow: t.eyebrow,
+    heading: escapeHtml(params.subject),
+    preheader: params.items[0]?.title ?? params.subject,
+    bodyContent: `
+    ${introHtml}
+    ${
+      params.items.length > 0
+        ? `<p style="${EMAIL_P};font-weight:700;margin-top:26px">${t.itemsHeading}</p>${itemsHtml}`
+        : ""
+    }`,
+    quietNote: t.quiet,
+    optOut: { href: params.unsubUrl, label: t.unsubLabel },
+    signOff: SIGN_OFF[locale],
+  });
+
+  const textItems = params.items
+    .map((item) => `- ${item.title}\n  ${item.description}\n  ${item.url}`)
+    .join("\n\n");
+
+  return {
+    subject: params.subject,
+    html,
+    text: `${params.intro}\n\n${t.itemsHeading}:\n\n${textItems}\n\n${t.quiet}\n${t.unsubLabel}: ${params.unsubUrl}\n\n${SIGN_OFF[locale].thanks}\n${SIGN_OFF[locale].team}`,
+  };
+}
+
+export async function sendNewsletterIssueEmail(
+  params: NewsletterIssueRenderParams & {
+    to: string;
+    idempotencyKey: string;
+  },
+): Promise<EmailSendResult> {
+  const rendered = renderNewsletterIssueEmail(params);
+  return sendEmailDetailed({
+    template: "newsletter_issue",
+    to: params.to,
+    ...rendered,
+    headers: newsletterUnsubHeaders(params.unsubPostUrl ?? params.unsubUrl),
+    idempotencyKey: params.idempotencyKey,
+  });
 }

@@ -71,8 +71,42 @@ export function getAllPosts(
     ) as Omit<BlogPost, "content">[];
 }
 
+/**
+ * Kanonikus slug-alak: kisbetűs szó-darabok kötőjellel. Ugyanaz a minta, amit
+ * az admin blog-API és a hírlevél-szám validál — itt is kimondjuk, mert ez az
+ * EGYETLEN hely, ahol slugból fájlrendszer-út lesz.
+ */
+const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_MAX_LENGTH = 120;
+
+/**
+ * Slug → fájlút, KÖNYVTÁRHATÁRRAL.
+ *
+ * MIÉRT KELL (2026-08-21): a slug útvonal-paraméterből jön, és a Next
+ * dekódolja — a `placeholder%2f..%2fvalodi-cikk` alak tehát `../`-ként ér ide,
+ * és a `path.join` engedelmesen kilép a `content/blog` mappából. Ma nincs
+ * máshol becsomagolt `.mdx`, ezért nem szivárgott adat, de a lehetőség valódi
+ * volt. Két, egymástól független kapu:
+ *
+ *   1. alak- és hosszellenőrzés (a `/`, `.` és `\` szerkezetileg kizárva),
+ *   2. `path.resolve` utáni prefix-vizsgálat — ez akkor is tart, ha a minta
+ *      valaha megengedőbbre változik.
+ */
+function resolvePostPath(slug: string): string | null {
+  if (typeof slug !== "string") return null;
+  if (slug.length === 0 || slug.length > SLUG_MAX_LENGTH) return null;
+  if (!SLUG_RE.test(slug)) return null;
+
+  const resolved = path.resolve(BLOG_DIR, `${slug}.mdx`);
+  const root = path.resolve(BLOG_DIR);
+  if (path.dirname(resolved) !== root) return null;
+
+  return resolved;
+}
+
 export function getPostBySlug(slug: string): BlogPost | null {
-  const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
+  const filePath = resolvePostPath(slug);
+  if (!filePath) return null;
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");

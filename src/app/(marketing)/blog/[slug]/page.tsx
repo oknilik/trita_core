@@ -21,6 +21,7 @@ import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -541,6 +542,11 @@ export default async function BlogPostPage({
             {t("blog.tryCta", locale)}
           </Link>
         </div>
+
+        {/* Feliratkozás — a cikk VÉGÉN, mert itt a legmagasabb a szándék:
+            aki idáig eljutott, annak az „szólunk, ha új cikk jön" valódi
+            ajánlat, nem megszakítás. */}
+        <NewsletterForm source="blog_post" className="mt-6" />
       </article>
 
       {/* Oldalsáv: sticky TOC + halk mini-CTA */}

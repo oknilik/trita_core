@@ -12,6 +12,7 @@ import {
   toBlogTopicParam,
 } from "@/lib/blog-filter";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 type PostMeta = Omit<BlogPost, "content">;
 
@@ -419,6 +420,10 @@ export function BlogListContent({
               ))}
             </>
           )}
+
+          {/* Feliratkozás a lista alján — aki végigpörgette a listát, de nem
+              nyitott meg cikket, itt még megfogható. */}
+          <NewsletterForm source="blog_index" className="mt-12" />
         </div>
       </section>
     </main>

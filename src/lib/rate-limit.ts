@@ -9,7 +9,7 @@ const log = createLogger("rate-limit");
 let redis: Redis | null = null;
 
 function getRedis(): Redis | null {
-  if (!process.env.UPSTASH_REDIS_REST_URL) return null;
+  if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) return null;
   if (!redis) {
     redis = new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -44,13 +44,18 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     // eseményt (lapváltás, tölcsér-lépések), ezért bőkezűbb keret. A cél
     // nem a felhasználó fékezése, hanem a szemét-forgalom kizárása.
     analytics: { requests: 60, window: "60 s", prefix: "rl:analytics" },
+    // Hírlevél-feliratkozás: szűk keret. A végpont e-mailt küld egy
+    // TETSZŐLEGES címre, tehát fékezetlenül levél-ágyúként volna használható
+    // idegen postafiókok ellen. A megerősítő levél emiatt is rövid és
+    // semleges hangú.
+    newsletter: { requests: 3, window: "60 s", prefix: "rl:newsletter" },
   };
   const cfg = configs[tier];
   limiters[tier] = makeRatelimit(cfg.requests, cfg.window, cfg.prefix);
   return limiters[tier];
 }
 
-export type RateLimitTier = "api" | "billing" | "auth" | "contact" | "analytics";
+export type RateLimitTier = "api" | "billing" | "auth" | "contact" | "analytics" | "newsletter";
 
 export async function checkRateLimit(
   tier: RateLimitTier,
@@ -58,8 +63,20 @@ export async function checkRateLimit(
 ): Promise<NextResponse | null> {
   const limiter = getLimiter(tier);
 
-  // Upstash not configured — skip in dev, warn in prod
+  // A hírlevél-végpont idegen címre küld levelet, ezért productionben
+  // védelem nélkül fail-closed. Más tiernél a régi működés marad, hogy egy
+  // konfigurációs hiba ne állítsa le az egész alkalmazást.
   if (!limiter) {
+    if (process.env.NODE_ENV === "production" && tier === "newsletter") {
+      log.error(
+        { event: "rate_limit.required_but_missing", tier },
+        "Newsletter rate limit is not configured — request rejected",
+      );
+      return NextResponse.json(
+        { error: "RATE_LIMIT_UNAVAILABLE" },
+        { status: 503, headers: { "Retry-After": "300" } },
+      );
+    }
     if (process.env.NODE_ENV !== "development") {
       log.warn({ event: "rate_limit.not_configured", tier }, "UPSTASH_REDIS_REST_URL not configured — check skipped");
     }

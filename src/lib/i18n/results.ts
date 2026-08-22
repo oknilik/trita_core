@@ -1136,6 +1136,25 @@ export const resultsTranslations = {
       en: "When off, you only receive operational emails.",
     },
     emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
+    // Hírlevél-kapcsoló ugyanezen az oldalon (2026-08-21). A fiókos
+    // felhasználónak nincs külön feliratkozó űrlap — a levélbeállításai
+    // között billenti át.
+    emailPrefsBlogLabel: {
+      hu: "Értesítés új blogbejegyzésről",
+      en: "Notify me about new articles",
+    },
+    emailPrefsBlogHint: {
+      hu: "Külön értesítés minden új Trita-cikk megjelenésekor.",
+      en: "A separate notification whenever a new Trita article is published.",
+    },
+    emailPrefsDigestLabel: {
+      hu: "Időszaki, szerkesztett Trita-hírlevél",
+      en: "Occasional curated Trita newsletter",
+    },
+    emailPrefsDigestHint: {
+      hu: "Ritka, válogatott összefoglaló több cikkel és gyakorlati gondolattal.",
+      en: "An occasional curated digest with several articles and practical notes.",
+    },
     shareVisibleSummary: {
       hu: "A link megnyitója ezt látja: mind a hat dimenziód pontszámmal és személyre szabott értelmezéssel, a munkastílus-leírásod, az ideális környezeted és szerep-illeszkedésed, valamint a becsült csapatszerepeid. A megosztást bármikor visszavonhatod.",
       en: "Whoever opens the link sees: all six of your dimensions with scores and personalized interpretation, your work-style narrative, your ideal environment and role fit, and your estimated team roles. You can revoke sharing at any time.",

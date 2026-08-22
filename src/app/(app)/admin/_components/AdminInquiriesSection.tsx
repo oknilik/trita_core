@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import type { NewsletterEngagementDto } from "@/lib/newsletter-engagement";
+import { NewsletterEngagementBadge } from "@/components/admin/crm/NewsletterEngagementBadge";
 
 // Kérdések / érdeklődések admin-nézet: contact formról érkező megkeresések
 // listája státusz-kezeléssel, jegyzettel és user/org hozzákötéssel.
@@ -21,6 +23,8 @@ export interface InquiryRow {
   adminNote: string | null;
   createdAt: string;
   user: { id: string; username: string | null; email: string | null } | null;
+  /** Hírlevél-elköteleződés a beküldő címére (null, ha nem feliratkozó). */
+  newsletter: NewsletterEngagementDto | null;
   org: { id: string; name: string } | null;
 }
 
@@ -126,6 +130,7 @@ export function AdminInquiriesSection({
                     {row.company && (
                       <span className="text-xs text-muted">· {row.company}</span>
                     )}
+                    <NewsletterEngagementBadge engagement={row.newsletter} />
                     <span className="ml-auto text-xs text-muted">
                       {new Date(row.createdAt).toLocaleString("hu-HU")}
                     </span>

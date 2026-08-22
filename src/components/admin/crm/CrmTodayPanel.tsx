@@ -23,6 +23,7 @@ import {
 } from "@/components/admin/crm/crm-ui";
 import { QuickLogForm } from "@/components/admin/crm/QuickLogForm";
 import type { CrmDealRow } from "@/components/admin/crm/types";
+import { NewsletterEngagementBadge } from "@/components/admin/crm/NewsletterEngagementBadge";
 
 // ─────────────────────────────────────────────────────────────────────
 // „Ma” panel — lejárt + ma esedékes next actionű nyitott dealek, a napi
@@ -118,6 +119,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
                     {deal.title}
                   </Link>
                   {deal.company && <span className="text-xs text-muted">· {deal.company}</span>}
+                  <NewsletterEngagementBadge engagement={deal.newsletter} />
                 </div>
 
                 <p className="mt-2 text-sm text-ink-body">

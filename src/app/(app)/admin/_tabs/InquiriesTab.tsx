@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { AdminInquiriesSection } from "@/app/(app)/admin/_components/AdminInquiriesSection";
+import { getEngagementByEmail, toEngagementDto } from "@/lib/newsletter-engagement";
+import { normalizeEmail } from "@/lib/newsletter";
 
 // Kérdések fül — beérkezett megkeresések (contact form + in-app csatorna)
 export async function InquiriesTab() {
@@ -27,6 +29,9 @@ export async function InquiriesTab() {
     }),
   ]);
 
+  // Hírlevél-elköteleződés minden beküldőre, egyetlen lekérdezésben.
+  const engagement = await getEngagementByEmail(inquiries.map((row) => row.email));
+
   return (
     <AdminInquiriesSection
       inquiries={inquiries.map((row) => ({
@@ -41,6 +46,7 @@ export async function InquiriesTab() {
         createdAt: row.createdAt.toISOString(),
         user: row.userProfile,
         org: row.organization,
+        newsletter: toEngagementDto(engagement.get(normalizeEmail(row.email))),
       }))}
       orgs={orgs}
     />

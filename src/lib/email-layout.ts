@@ -273,6 +273,9 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
       .email-container { width: 100% !important; max-width: 100% !important; }
       .padding-mobile { padding-left: 16px !important; padding-right: 16px !important; }
       .em-card-pad { padding: 28px 22px 26px !important; }
+      .em-article-image, .em-article-copy { display: block !important; width: 100% !important; }
+      .em-article-image { padding: 0 0 12px 0 !important; }
+      .em-article-image img { width: 100% !important; max-width: 100% !important; }
     }
     /* Több kliens (Apple Mail, Outlook.com) sötét módban SAJÁT inverziót futtat
        a levélen. A color-scheme:light only ezt nem mindenhol állítja meg,
