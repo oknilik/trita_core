@@ -391,33 +391,33 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Innovátor Gépezet",
     subtitle: "Energikus · Összetartó · Strukturált · Felfedező",
     description:
-      "Gyorsan mozgó, jól szervezett csapat, amely szeret új utakat keresni és közben egymásra számít. Az innováció és a végrehajtás ritka kombinációja.",
+      "Gyors tempójú, jól szervezett csapat, amely szeret új utakat keresni, miközben a tagok számítanak egymásra. Az újítás és a fegyelmezett végrehajtás egyszerre van jelen a működésében.",
     strengths: [
       "Új ötleteket gyorsan, rendszeresen képes megvalósítani",
       "Erős belső kohézió — a tagok egymást támogatják",
       "Strukturált munkavégzés, mégis nyitott a változásra",
-      "Magas energia, ami magával ragadja a külső partnereket is",
+      "Lendületes jelenlét, amely a külső partnereket is magával ragadhatja",
     ],
     blindSpots: [
       "A tempó kiégéshez vezethet — a csapat nem mindig ismeri fel a saját korlátait",
       "Az újdonság iránti vonzalom elterelheti a fókuszt az alapfeladatokról",
-      "A magas kohézió csoportgondolkodást (groupthink) okozhat: előfordulhat, hogy senki nem mond ellent",
-      "A struktúra rugalmatlansággá válhat, ha a folyamatok túlterheltek",
+      "A nagy összetartás csoportgondolkodáshoz vezethet: előfordulhat, hogy senki nem mond ellent",
+      "A struktúra rugalmatlanná válhat, ha túl sok szabállyal terhelik a folyamatokat",
     ],
     communicationStyle:
       // A kohézió-tengely a Barátságosság + Becsületesség-Alázat átlaga — az
       // „empatikus" ezen a tengelyen ugyanaz a túl-ígéret, amit a pattern-data
       // két sorából is kivezettünk (2026-08-11): a Barátságosság türelmet és
       // megbocsátást mér, nem empátiát.
-      "Gyors, közvetlen, de türelmes. Szeretik a standupokat és a vizuális terveket. Az ötletelés szabad, de a döntés utáni végrehajtás fegyelmezett.",
+      "Gyors, közvetlen, de türelmes. Szeretik a rövid napi egyeztetéseket és a vizuális terveket. Az ötletelés szabad, a döntés utáni végrehajtás viszont fegyelmezett.",
     idealTasks:
-      "Új termékek fejlesztése, innovációs sprint, stratégiai pivot — ahol egyszerre kell kreativitás és megvalósítási képesség.",
+      "Új termékek fejlesztése, rövid fejlesztési ciklusok, stratégiai irányváltás — minden olyan helyzet, ahol egyszerre kell kreativitás és megvalósítási képesség.",
     riskSituations:
       "Hosszú, monoton projektek; konfliktuskerülés, ami elfojtott feszültséghez vezet; túl sok párhuzamos kezdeményezés.",
     leaderActions: [
-      "Építs be rendszeres „lassító napokat” a sprintek közé — reflexiós idő",
+      "Építs be rendszeres „lassító napokat” az intenzív munkaszakaszok közé, hogy legyen idő az áttekintésre és a tanulásra",
       "Jelölj ki egy „ördög ügyvédjét” a nagyobb döntéseknél a csoportgondolkodás ellen",
-      "Korlátozd a párhuzamos projektek számát — maximum 2 aktív kezdeményezés egyszerre",
+      "Korlátozd a párhuzamos projektek számát — egyszerre legfeljebb két kezdeményezés legyen aktív",
     ],
   },
 
@@ -427,27 +427,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Fegyelmezett, összetartó csapat, amely a bevált módszereket hatékonyan alkalmazza. A megbízhatóság és a kiszámíthatóság az erősségük.",
     strengths: [
-      "Kiváló végrehajtás — amit megígérnek, azt leszállítják",
+      "Megbízható végrehajtás — amit megígérnek, azt teljesítik",
       "Erős csapatszellem, alacsony belső súrlódás",
       "Jól működő folyamatok és rutinok",
       "Megbízható, kiszámítható teljesítmény",
     ],
     blindSpots: [
-      "Az új megközelítések ritkábban jelennek meg — a komfortzónából kilépés külső impulzust igényelhet",
-      "A pragmatizmus ellenállást szülhet új eszközök, módszerek iránt",
+      "Az új megközelítések ritkábban jelennek meg — a megszokott keretekből való kilépéshez külső ösztönzésre lehet szükség",
+      "A gyakorlatias szemlélet mellett ellenállás alakulhat ki az új eszközökkel és módszerekkel szemben",
       "A harmonikus felszín alatt elfojtott feszültségek halmozódhatnak",
       "Külső változásokra lassabban reagálhatnak",
     ],
     communicationStyle:
-      "Világos, strukturált, feladatorientált. Szeretik a napirendeket, a rövid egyeztetéseket és a dokumentált döntéseket.",
+      "Világos, rendezett és feladatközpontú. Szeretik a napirendeket, a rövid egyeztetéseket és a dokumentált döntéseket.",
     idealTasks:
-      "Ismétlődő, magas minőségű szállítás; operatív működés; ügyfélkiszolgálás; compliance-igényes projektek.",
+      "Ismétlődő, magas minőségű teljesítés; operatív működés; ügyfélkiszolgálás; szigorú szabályozási követelményű projektek.",
     riskSituations:
-      "Piaci változás, ami gyors adaptációt igényel; új vezető, aki felborítja a rutint; nincs egyértelmű „hogyan”.",
+      "Gyors alkalmazkodást igénylő piaci változás; a rutint átalakító új vezető; olyan helyzet, amelyben nincs egyértelmű válasz a megvalósítás módjára.",
     leaderActions: [
-      "Negyedévente szervezz egy „mi lenne ha” workshopot — kényszerítsd a csapatot alternatív szcenáriókra",
-      "Hozz be külső impulzust: vendégelőadó, csapatközi projekt, iparági benchmark",
-      "Jutalmazz meg látványosan egy sikeres kísérletet — jelzés, hogy az újításnak értéke van",
+      "Negyedévente tarts „mi lenne, ha?” műhelymunkát, és dolgozzatok ki több lehetséges forgatókönyvet",
+      "Hozz be külső nézőpontot: vendégelőadót, csapatok közötti projektet vagy iparági összehasonlítást",
+      "Ismerj el láthatóan egy sikeres kísérletet — ezzel jelzed, hogy az újításnak értéke van",
     ],
   },
 
@@ -455,29 +455,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Kreatív Kommuna",
     subtitle: "Energikus · Összetartó · Rugalmas · Felfedező",
     description:
-      "Szabadon áramló, innovatív csapat, amelyben erős az összetartás, és szeretik a kísérletezést. A kreativitás és az összetartozás hajtja őket.",
+      "Kötetlenül működő, újító csapat, amelyben erős az összetartás, és a tagok szívesen kísérleteznek. A kreativitás és az összetartozás ad lendületet a munkájuknak.",
     strengths: [
-      "Rendkívüli kreativitás — az ötletelés a természetes állapotuk",
+      "Erős kreatív energia — könnyen elindul az ötletelés",
       "Erős bizalom és pszichológiai biztonság",
       "Gyorsan alkalmazkodnak változó körülményekhez",
       "Vonzó kultúra — a tagok szívesen maradnak",
     ],
     blindSpots: [
       "A struktúra hiánya kaotikus végrehajtáshoz vezethet",
-      "Nehéz lehet priorizálni — minden ötlet egyformán vonzónak tűnhet",
+      "Nehéz lehet fontossági sorrendet kialakítani — minden ötlet egyformán vonzónak tűnhet",
       "A határidők jellemzően nem a legfontosabb értékük",
-      "A harmonikus légkör miatt nehéz lehet negatív visszajelzést adni",
+      "A harmonikus légkör miatt nehéz lehet kritikus visszajelzést adni",
     ],
     communicationStyle:
-      "Informális, szabad asszociációs, gyakran spontán. Sok ötletelés, kevés formális megbeszélés.",
+      "Informális, szabad asszociációkra épülő és gyakran spontán. Sok az ötletelés, kevés a formális megbeszélés.",
     idealTasks:
-      "Koncepció-fázis, brainstorming, design sprint, márkaépítés — divergens gondolkodás.",
+      "Korai koncepcióalkotás, ötletelés, tervezési műhelyek és márkaépítés — minden olyan feladat, amely szerteágazó gondolkodást kíván.",
     riskSituations:
-      "Komplex, többlépéses projekt szoros határidővel; compliance-feladatok; szállítás > ötlet.",
+      "Összetett, többlépéses projekt szoros határidővel; szabályozott feladatok; olyan helyzetek, ahol a befejezés fontosabb az ötletelésnél.",
     leaderActions: [
-      "Vezess be enyhe struktúrát: heti egy prioritás-áttekintés, de ne kontrollálj túl sokat",
+      "Vezess be könnyű kereteket: hetente egyszer tekintsétek át a prioritásokat, de ne szabályozd túl a működést",
       "Használj „ötletparkolót” — az ötleteket rögzítsd, de ne fusson mind egyszerre",
-      "Párosítsd a csapatot egy strukturáltabb csapattal a végrehajtási fázisban",
+      "A megvalósítási szakaszban szervezz közös munkát egy szervezettebben működő csapattal",
     ],
   },
 
@@ -488,22 +488,22 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Aktív, lojális csapat, amely a bevált utakon halad, de rugalmasan alkalmazkodik. Az elkötelezettség az összetartó erő.",
     strengths: [
       "Erős lojalitás és csapatidentitás",
-      "Pragmatikus döntéshozatal",
+      "Gyakorlatias döntéshozatal",
       "Rugalmasan kezelik a váratlan helyzeteket",
-      "Alacsony fluktuáció, magas elköteleződés",
+      "Tartósabb elköteleződés alakulhat ki",
     ],
     blindSpots: [
       "A lojalitás akadályozhatja a szükséges változásokat",
-      "A pragmatizmus rövidtávú gondolkodást szülhet",
-      "Külső perspektívák kizárása fordulhat elő — „mi tudjuk, hogyan kell”",
+      "A gyakorlatias szemlélet mellett háttérbe szorulhatnak a hosszabb távú szempontok",
+      "Kizárhatják a külső nézőpontokat — „mi tudjuk, hogyan kell”",
       "A rugalmasság néha tervezetlenséget jelenthet",
     ],
     communicationStyle:
       "Közvetlen, személyes, néha informális a kelleténél. A döntések gyakran a folyosón születnek.",
     idealTasks:
-      "Ügyfélkapcsolat, sales, operatív működés, tűzoltás — személyes kapcsolat és gyors reagálás.",
+      "Ügyfélkapcsolat, értékesítés, operatív működés és gyors problémamegoldás — minden olyan feladat, ahol számít a személyes kapcsolat és a gyors reagálás.",
     riskSituations:
-      "Skálázás; új tagok beillesztése; stratégiai tervezés; technikai modernizáció.",
+      "Gyors növekedés; új tagok beillesztése; stratégiai tervezés; technológiai korszerűsítés.",
     leaderActions: [
       "Formalizáld a döntéshozatalt: a fontos döntéseket dokumentáld",
       "Tudatosan hozz be új tagokat és gondoskodj beilleszkedésükről",
@@ -517,27 +517,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Versenygép",
     subtitle: "Energikus · Versengő · Strukturált · Felfedező",
     description:
-      "Magas intenzitású, teljesítményorientált csapat, amely szervezett keretek között versenyez és innovál.",
+      "Nagy intenzitással működő, teljesítményközpontú csapat, amely szervezett keretek között versenyez és újít.",
     strengths: [
-      "Kiemelkedő individuális teljesítmény",
+      "Erős egyéni teljesítmény",
       "Erős belső motiváció",
-      "Strukturált keretek között hatékony innováció",
+      "Szervezett keretek között gyorsan viszik végig az újításokat",
       "Gyorsan reagál piaci lehetőségekre",
     ],
     blindSpots: [
-      "A versengés alááshatja az együttműködést — tudásmegosztás hiánya",
-      "Magas stressz-szint, kiégés veszélye",
+      "A versengés alááshatja az együttműködést, és csökkentheti a tudásmegosztást",
+      "Nagy terhelés és a kimerülés veszélye",
       "„Nyertes–vesztes” dinamika",
       "Az egyéni siker fontosabbá válhat a csapatcélnál",
     ],
     communicationStyle:
-      "Direkt, eredményközpontú, néha konfrontatív. Az adatok és eredmények beszélnek.",
+      "Közvetlen, eredményközpontú, néha konfrontatív. A vitákban az adatokra és az eredményekre támaszkodnak.",
     idealTasks:
-      "Sales versenyek, hackathon, gyors prototípus, piaci versenyhelyzetek.",
+      "Értékesítési versenyek, fejlesztői ötletversenyek, gyors prototípuskészítés és éles piaci versenyhelyzetek.",
     riskSituations:
-      "Hosszú kooperáció-igényes projektek; mentoring; csapatépítés.",
+      "Hosszan tartó, szoros együttműködést igénylő projektek; mentorálás; csapatépítés.",
     leaderActions: [
-      "Vezess be csapatszintű KPI-kat az egyéni metrikák mellé",
+      "Az egyéni mutatók mellett vezess be közös, csapatszintű teljesítménymutatókat is",
       "Strukturálj páros feladatokat, ahol a siker kölcsönös",
       "Figyelj a kiégés jeleire — a nagy energia mögött gyakran kimerülés van",
     ],
@@ -549,27 +549,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Fegyelmezett, eredményorientált csapat, erős hierarchiával és gyors végrehajtással.",
     strengths: [
-      "Kiváló végrehajtási sebesség",
+      "Gyors végrehajtás",
       "Egyértelmű felelősségek és elvárások",
-      "Nincs kétértelműség — a tagok tudják, mit várnak tőlük",
-      "Kiszámítható, magas output",
+      "Kevés a bizonytalanság az elvárások körül — a tagok tudják, mit várnak tőlük",
+      "Kiszámítható, magas teljesítmény",
     ],
     blindSpots: [
       "A profil alapján felmerülhet, hogy a hibák kimondása nehezebb — ezt a pszichológiai biztonság pulzusmérése tudja megerősíteni vagy cáfolni",
       "A hierarchia elfojthatja az alulról jövő ötleteket",
       "Rövid távú gondolkodás",
-      "Magas fluktuáció fordulhat elő — aki nem bírja a tempót, könnyen továbbáll",
+      "Nagyobb lehet a fluktuáció — aki nehezen tartja a tempót, könnyebben továbbállhat",
     ],
     communicationStyle:
       "Felülről lefelé, tömör, utasításjellegű. A megbeszélések rövidek és döntésközpontúak.",
     idealTasks:
-      "Operatív kihívások szoros határidővel, turnaround, válságkezelés.",
+      "Operatív kihívások szoros határidővel, gyors helyreállítás és válságkezelés.",
     riskSituations:
-      "Innovációs projektek; tehetségmegtartás; kollektív bölcsesség igénye.",
+      "Innovációs projektek; tehetségmegtartás; olyan döntések, amelyekhez a teljes csapat tudására szükség van.",
     leaderActions: [
       "Hozz létre biztonságos fórumot, ahol a tagok névtelenül jelezhetnek problémákat",
-      "Rotáld a vezetői szerepeket projekt-szinten",
-      "Havi tanulság-kör: a hibákat tanulságként, nem kudarcként kezelitek",
+      "Váltogasd a vezetői szerepeket az egyes projektekben",
+      "Tartsatok havi tanulságkört, amelyben a hibákat tanulási lehetőségként, nem kudarcként kezelitek",
     ],
   },
 
@@ -577,29 +577,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Kreatív Káosz",
     subtitle: "Energikus · Versengő · Rugalmas · Felfedező",
     description:
-      "Szikrázó, impulzív csapat, ahol mindenki a saját ötletét hajtja, de a kollektív energia előre visz.",
+      "Lendületes, ösztönösen reagáló csapat, amelyben mindenki a saját ötletét hajtja, a közös energia mégis előreviszi a munkát.",
     strengths: [
-      "Rendkívül magas kreativitás és energia",
+      "Nagy kreatív energia és lendület",
       "Bátor, konvenciókon túllépő ötletek",
-      "Gyors adaptáció",
+      "Gyors alkalmazkodás",
       "Vonzó kreatív tehetségek számára",
     ],
     blindSpots: [
-      "A priorizálás jellemzően nehezen megy",
+      "A fontossági sorrend kialakítása jellemzően nehéz",
       "Kaotikus végrehajtás",
       "Az összetartás hiányozhat — az egyéni ambíciók dominálhatnak",
-      "Döntések születnek, de a betartásuk elmaradhat",
+      "Döntések születnek, de a megvalósításuk elmaradhat",
     ],
     communicationStyle:
-      "Hangos, gyors, egymásba vágnak. Spontán ötletelés, ad hoc döntéshozatal.",
+      "Hangos és gyors: a tagok gyakran egymás szavába vágnak. Az ötletelés spontán, a döntések pedig gyakran kevés előkészítéssel születnek.",
     idealTasks:
-      "Korai ötletgenerálás, kreatív kampányok, hackathon.",
+      "Korai ötletalkotás, kreatív kampányok és fejlesztői ötletversenyek.",
     riskSituations:
-      "Bármi, ami tartós, szervezett kooperatív végrehajtást igényel.",
+      "Minden olyan feladat, amely tartós, szervezett együttműködést és fegyelmezett végrehajtást igényel.",
     leaderActions: [
-      "Adj egyértelmű keretet: „ezen a héten EZT fejezzük be” — a hogyan szabad",
+      "Adj egyértelmű keretet: „ezen a héten ezt fejezzük be” — a megvalósítás módját bízd rájuk",
       "Párosíts minden projektet egy végrehajtó partnerrel",
-      "Hetente: „mi az 1 dolog, amit közösen eldöntöttünk és betartottunk?”",
+      "Hetente kérdezzétek meg: „mi az az egy dolog, amelyet közösen eldöntöttünk és végig is vittünk?”",
     ],
   },
 
@@ -609,27 +609,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Erős egyéniségek laza szövetségben, akik a saját területükön vadásznak, de szükség esetén összezárnak.",
     strengths: [
-      "Rendkívül agilis",
+      "Gyorsan alkalmazkodnak",
       "Erős egyéni teljesítmény és felelősségvállalás",
-      "Önszerveződők — nem igényelnek sok irányítást",
+      "Önállóan szervezik a munkájukat, ezért kevés közvetlen irányítást igényelnek",
       "Jól kezelik a bizonytalanságot",
     ],
     blindSpots: [
       "Gyenge csapatidentitás",
-      "Minimális tudásmegosztás",
-      "Rövid távú pragmatizmus → stratégiai vakság",
-      "Új tagok nehezebben integrálódhatnak",
+      "Kevés tudásmegosztás",
+      "A rövid távú, gyakorlatias szemlélet háttérbe szoríthatja a hosszabb távú célokat",
+      "Az új tagok nehezebben illeszkedhetnek be",
     ],
     communicationStyle:
-      "Tömör, eredményközpontú, szükségalapú. Csak akkor kommunikálnak, ha kell.",
+      "Tömör és eredményközpontú. Többnyire csak akkor kommunikálnak, amikor arra a feladat elvégzéséhez szükség van.",
     idealTasks:
-      "Sales, üzletfejlesztés, egyéni ügyfélkezelés.",
+      "Értékesítés, üzletfejlesztés és önálló ügyfélkezelés.",
     riskSituations:
-      "Összetett kooperáció; csapatépítés; tudásmegosztás; vezetőváltás.",
+      "Összetett együttműködés; csapatépítés; tudásmegosztás; vezetőváltás.",
     leaderActions: [
       "Heti 30 perces tudásmegosztó kör — mindenki 5 percben elmondja, mit tanult",
-      "1-2 közös csapatcél, ami csak együtt érhető el",
-      "Tudatos onboarding új tagoknál — mentorpárosítás első 30 napra",
+      "Jelöljetek ki 1–2 olyan közös csapatcélt, amelyet csak együtt érhettek el",
+      "Tervezzétek meg tudatosan az új tagok beillesztését, és az első 30 napra jelöljetek ki melléjük mentort",
     ],
   },
 
@@ -639,29 +639,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Kutatólabor",
     subtitle: "Visszafogott · Összetartó · Strukturált · Felfedező",
     description:
-      "Csendes, mélyen gondolkodó csapat, amely szisztematikusan fedez fel új területeket. Minőség és alaposság.",
+      "Csendes, elmélyülten gondolkodó csapat, amely módszeresen fedez fel új területeket. Működése a minőségre és az alaposságra épül.",
     strengths: [
       "Mély, alapos munkavégzés",
       "Erős belső bizalom és kölcsönös tisztelet",
-      "Szisztematikus innováció — átgondolt, nem impulzív",
+      "Módszeres újítás — átgondolt, nem kapkodó",
       "Alacsony hibaarány, magas minőség",
     ],
     blindSpots: [
-      "Lassú döntéshozatal — perfekcionizmus béníthat",
-      "Kifelé nehezebben megy a kommunikáció — a munka könnyen „láthatatlan” marad",
-      "Konfrontáció-kerülés → felgyülemlett feszültség",
+      "A túlzott tökéletességre törekvés megakaszthatja a döntéseket",
+      "A csapat munkája kifelé nehezen látható, ezért könnyen észrevétlen maradhat",
+      "A konfliktusok kerülése felgyülemlett feszültséghez vezethet",
       "Kívülről passzivitásnak tűnhet",
     ],
     communicationStyle:
       "Átgondolt, írásos, részletes. Ritka, de alapos megbeszélések.",
     idealTasks:
-      "Kutatás, komplex analízis, termékfejlesztés korai fázis, minőségbiztosítás.",
+      "Kutatás, összetett elemzés, a termékfejlesztés korai szakasza és minőségbiztosítás.",
     riskSituations:
-      "Szoros határidők; prezentációk; stakeholder-kezelés; gyors kommunikáció.",
+      "Szoros határidők; prezentációk; egyeztetés az érintettekkel; gyors kommunikáció.",
     leaderActions: [
       "Adj elegendő időt a mélymunkához — védd meg a felesleges megbeszélésektől",
-      "Segítsd a csapatot a munkájuk „eladásában”",
-      "Rendszeres „show & tell” — ez láthatóságot ad",
+      "Segíts a csapatnak érthetően bemutatni és láthatóvá tenni a munkáját",
+      "Tartsatok rendszeres bemutatót az elkészült munkáról — ez növeli a csapat láthatóságát",
     ],
   },
 
@@ -671,27 +671,27 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     description:
       "Megbízható, csendes csapat, amely stabilan, kiszámíthatóan teljesít. „Nem szól, de megcsinálja.”",
     strengths: [
-      "Rendkívüli megbízhatóság",
+      "Nagy megbízhatóság",
       "Erős belső összetartás és lojalitás",
-      "Alacsony dráma, magas stabilitás",
+      "Nyugodt, stabil működés",
       "Jól kezelik a rutinfeladatokat",
     ],
     blindSpots: [
-      "Változás-ellenállás — „eddig is így csináltuk”",
+      "Ellenállás a változással szemben — „eddig is így csináltuk”",
       "Kívülről könnyen láthatatlanok maradnak",
       "A csapat zárt lehet kívülállók felé",
       "Az innováció háttérbe szorulhat",
     ],
     communicationStyle:
-      "Halk, strukturált, ritka. Szükségalapú. Írásban jobbak, mint szóban.",
+      "Halk, rendezett és ritka. Többnyire akkor kommunikálnak, amikor szükséges; írásban könnyebben fejezik ki magukat, mint szóban.",
     idealTasks:
-      "Operatív működés, karbantartás, minőségbiztosítás, back-office.",
+      "Operatív működés, karbantartás, minőségbiztosítás és háttérirodai feladatok.",
     riskSituations:
       "Hirtelen piaci változás; szervezeti átalakulás; „hangos” érdekképviselet.",
     leaderActions: [
-      "Tedd láthatóvá a csapat munkáját — heti összefoglaló a stakeholdereknek",
-      "Évente: „mi az 1 dolog, amit megváltoztatnátok?”",
-      "Apró, biztonságos kísérletek — „próbáljuk ki ezt az eszközt két hétig”",
+      "Tedd láthatóvá a csapat munkáját — küldjetek heti összefoglalót az érintetteknek",
+      "Évente egyszer kérdezd meg: „Mi az az egy dolog, amelyen változtatnátok?”",
+      "Indíts apró, biztonságos kísérleteket — például: „Próbáljuk ki ezt az eszközt két hétig.”",
     ],
   },
 
@@ -699,7 +699,7 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Művésztelep",
     subtitle: "Visszafogott · Összetartó · Rugalmas · Felfedező",
     description:
-      "Introvertált, kreatív közösség, mély bizalomban és szabadságban alkot.",
+      "Visszafogott, kreatív közösség, amely erős bizalommal és nagy szabadságban alkot.",
     strengths: [
       "Magas pszichológiai biztonság",
       "Mély, eredeti gondolkodás",
@@ -713,15 +713,15 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "A külső nyomást és a határidőket nehezebben kezelhetik",
     ],
     communicationStyle:
-      "Mély, személyes, gyakran nonverbális. Kívülállóknak nehéz csatlakozni.",
+      "Mély és személyes; a tagok kevés szóból is érthetik egymást. Kívülállóként nehezebb lehet bekapcsolódni.",
     idealTasks:
-      "Koncepciófejlesztés, UX-kutatás, stratégiai gondolkodás, tartalom.",
+      "Koncepciófejlesztés, UX-kutatás, stratégiai gondolkodás és tartalomkészítés.",
     riskSituations:
-      "Szoros határidők; nagy prezentáció; konfliktusos stakeholderek; gyors skálázás.",
+      "Szoros határidők; nagy téttel járó prezentáció; nehéz egyeztetés az érintettekkel; gyors létszám- vagy feladatbővülés.",
     leaderActions: [
-      "Havonta 1 „kifelé fordulás”: mutassák be munkájukat más csapatnak",
-      "Enyhe mérföldkövek — nem kontroll, hanem ritmus",
-      "Fordítsd le a munkát „üzleti nyelvre” a stakeholderek felé",
+      "Havonta egyszer forduljatok kifelé: mutassátok be a munkátokat egy másik csapatnak",
+      "Jelöljetek ki néhány könnyen követhető mérföldkövet — ne ellenőrzésként, hanem a közös ritmust adó kapaszkodóként",
+      "Segíts üzleti szempontból is érthetően bemutatni a munkát az érintetteknek",
     ],
   },
 
@@ -729,29 +729,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Támogató Kör",
     subtitle: "Visszafogott · Összetartó · Rugalmas · Pragmatikus",
     description:
-      "Csendes, gondoskodó csapat, egymásra figyel és gyakorlati megoldásokat keres.",
+      "Csendes, gondoskodó csapat, amely egymásra figyel, és gyakorlatias megoldásokat keres.",
     strengths: [
-      "Kiváló belső támogatás — senki nem marad egyedül",
-      "Pragmatikus, „földre tett” gondolkodás",
-      "Alacsony konfliktus, magas bizalom",
+      "Erős belső támogatás — a tagok számíthatnak egymásra",
+      "Gyakorlatias, kézzelfogható megoldásokra építő gondolkodás",
+      "Kevés nyílt konfliktus és erős bizalom",
       "Jó alkalmazkodóképesség",
     ],
     blindSpots: [
       "A csapat ritkábban keresi magától a kihívást — a nagyobb célok külső kijelölést igényelhetnek",
       "A kemény döntések meghozatala nehezükre eshet",
-      "Kívülről „láthatatlan”",
-      "Az innováció háttérbe szorulhat — a pragmatizmus konzervativizmusba fordulhat",
+      "A munkájuk kívülről könnyen láthatatlan maradhat",
+      "Az újítás háttérbe szorulhat, ha a gyakorlatias szemlélet a megszokotthoz való ragaszkodássá válik",
     ],
     communicationStyle:
       "Meleg, személyes, támogató. Sok informális beszélgetés, kevés formális megbeszélés.",
     idealTasks:
-      "HR, ügyfélszolgálat, belső támogatás, mentoring.",
+      "HR, ügyfélszolgálat, belső támogatás és mentorálás.",
     riskSituations:
-      "Teljesítményértékelés; nehéz visszajelzés; ambiciózus célok; kompetitív környezet.",
+      "Teljesítményértékelés; nehéz visszajelzés; nagyra törő célok; versengő környezet.",
     leaderActions: [
-      "Mérhető célokat hozz be — látható eredmények az önbizalomhoz",
+      "Határozzatok meg mérhető célokat — a látható eredmények erősíthetik a csapat önbizalmát",
       "Gyakoroljátok a konstruktív visszajelzést — kis, biztonságos témákkal",
-      "Keress egy „ambíció-hordozót” a csapatban",
+      "Keress valakit a csapatban, aki vállalja a nagyobb célok képviseletét",
     ],
   },
 
@@ -761,12 +761,12 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Sakktábla",
     subtitle: "Visszafogott · Versengő · Strukturált · Felfedező",
     description:
-      "Analitikus, stratégiai gondolkodású csapat, mindenki csendben, de intenzíven a saját területét építi.",
+      "Elemző, stratégiai gondolkodású csapat, amelyben mindenki csendben, de intenzíven építi a saját területét.",
     strengths: [
-      "Rendkívüli szakmai mélység",
+      "Nagy szakmai mélység",
       "Stratégiai gondolkodás — több lépéssel előre",
-      "Adatvezérelt döntéshozatal",
-      "Magas innovációs potenciál a szakterületen belül",
+      "Adatokra épülő döntéshozatal",
+      "Jelentős tér a szakterületen belüli újításra",
     ],
     blindSpots: [
       "Silók alakulhatnak ki — a tudásmegosztás akadozhat",
@@ -775,15 +775,15 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
       "Kívülről hidegnek, elérhetetlennek tűnhetnek",
     ],
     communicationStyle:
-      "Precíz, adatgazdag, formális. Vitaközpontú, de civilizált. Írásos preferencia.",
+      "Pontos, adatokra építő és formális. A viták tárgyszerűek; az egyeztetést inkább írásban végzik.",
     idealTasks:
-      "Stratégiai tervezés, adatelemzés, komplex problémamegoldás, technikai architektúra.",
+      "Stratégiai tervezés, adatelemzés, összetett problémamegoldás és műszaki rendszertervezés.",
     riskSituations:
-      "Csapatépítés; ügyfélkommunikáció; „jó elég” vs „tökéletes” helyzetek.",
+      "Csapatépítés; ügyfélkommunikáció; az „elég jó” és a „tökéletes” közötti döntési helyzetek.",
     leaderActions: [
-      "Strukturált tudásmegosztó fórum — heti szakmai bemutató vagy tanulság-kör",
-      "Közös csapatcélok, amik csak együttműködéssel érhetők el",
-      "1:1-ben kérdezd meg, hogyan érzik magukat a csapatban",
+      "Tartsatok strukturált tudásmegosztást — például heti szakmai bemutatót vagy tanulságkört",
+      "Jelöljetek ki olyan közös csapatcélokat, amelyeket csak együttműködéssel érhettek el",
+      "Négyszemközt kérdezd meg a tagokat, hogyan érzik magukat a csapatban",
     ],
   },
 
@@ -791,29 +791,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Mérnöki Műhely",
     subtitle: "Visszafogott · Versengő · Strukturált · Pragmatikus",
     description:
-      "Precíz, feladatorientált csapat, mindenki a saját területén a legjobb.",
+      "Precíz, feladatközpontú csapat, amelyben mindenki a saját szakterületére összpontosít.",
     strengths: [
-      "Kiváló technikai/szakmai kompetencia",
-      "Hatékony, nem pazarolják az időt",
+      "Erős műszaki és szakmai felkészültség",
+      "Hatékonyan bánnak az idővel",
       "Egyértelmű felelősségi körök",
-      "Magas minőségű, megbízható output",
+      "Magas minőségű, megbízható eredmények",
     ],
     blindSpots: [
-      "Alacsony érzelmi kapcsolódás — „csak a munka számít”",
+      "Kevés tér maradhat az érzelmi kapcsolódásra — „csak a munka számít”",
       "Kiégés veszélye",
       "Új ötletek nehezebben kaphatnak teret",
-      "Inkább egyéni hozzájárulókként működhetnek, mint valódi csapatként",
+      "Inkább egymás mellett dolgozó szakértőkként működhetnek, mint összehangolt csapatként",
     ],
     communicationStyle:
-      "Tömör, technikai, szükségalapú. Részletes dokumentáció, minimális csevegés.",
+      "Tömör és szakmai. Részletesen dokumentálnak, a kötetlen beszélgetés viszont ritka.",
     idealTasks:
-      "Fejlesztés, engineering, pénzügy, audit.",
+      "Fejlesztés, mérnöki munka, pénzügy és ellenőrzés.",
     riskSituations:
-      "Csapatépítés; változásmenedzsment; ügyfélprezentáció; „soft skills”.",
+      "Csapatépítés; változások kezelése; ügyfélprezentáció; az emberi kapcsolatokra épülő helyzetek.",
     leaderActions: [
-      "Negyedéves informális esemény — ebéd, séta, nem-munka",
-      "Rendszeresen: „miben segíthetek?” — itt nem szokás segítséget kérni",
-      "Heti 2 óra saját ötletre — tér a kísérletezésnek",
+      "Negyedévente szervezzetek kötetlen közös programot — például ebédet vagy sétát",
+      "Kérdezd meg rendszeresen: „Miben segíthetek?” Itt a tagok ritkán kérnek maguktól segítséget",
+      "Hetente biztosíts két órát a saját ötletekre és a kísérletezésre",
     ],
   },
 
@@ -821,29 +821,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Szabad Elektronok",
     subtitle: "Visszafogott · Versengő · Rugalmas · Felfedező",
     description:
-      "Független, kreatív egyéniségek laza hálózatban, a kíváncsiság és az intellektuális izgalom köti össze.",
+      "Független, kreatív egyéniségek laza hálózata, amelyet a kíváncsiság és az intellektuális izgalom köt össze.",
     strengths: [
-      "Rendkívüli egyéni kreativitás és autonómia",
+      "Erős egyéni kreativitás és önállóság",
       "Mély, eredeti gondolkodás",
       "Rugalmasan kezelik a bizonytalanságot",
-      "Vonzó autonómiát kereső tehetségek számára",
+      "Vonzó lehet az önállóságot kereső tehetségek számára",
     ],
     blindSpots: [
       "A csapatidentitás jelei gyengék lehetnek",
-      "Minimális koordináció — párhuzamos munkák",
-      "Versengés + autonómia → izoláció",
+      "Kevés az összehangolás, ezért egymást átfedő munkák indulhatnak",
+      "A versengés és a nagy önállóság elszigetelődéshez vezethet",
       "Nehéz lehet őket közös irányba terelni",
     ],
     communicationStyle:
-      "Ritka, mély, 1:1 alapú. Gyenge csoportos kommunikáció.",
+      "Ritka, de elmélyült és többnyire négyszemközti. A csoportos kommunikáció kevésbé gördülékeny.",
     idealTasks:
       "Kutatás, korai innováció, kreatív fejlesztés.",
     riskSituations:
-      "Csapatszintű koordináció; szoros határidők; ügyfélkiszolgálás; skálázás.",
+      "Csapatszintű összehangolás; szoros határidők; ügyfélkiszolgálás; a működés gyors bővítése.",
     leaderActions: [
-      "1 közös „északi csillag” — egyetlen cél, szabad út",
-      "Heti 15 perces standup — nem kontroll, hanem „tudjunk egymásról”",
-      "Párosítsd össze a tagokat projektekre — kényszerített együttműködés",
+      "Jelöljetek ki egyetlen közös iránytűt: legyen világos a cél, az odavezető út pedig maradjon szabad",
+      "Tartsatok heti 15 perces rövid egyeztetést — nem ellenőrzésként, hanem azért, hogy tudjatok egymás munkájáról",
+      "Párosítsd a tagokat közös projektekre, hogy természetes együttműködési helyzetek alakuljanak ki",
     ],
   },
 
@@ -851,29 +851,29 @@ const PATTERN_CONTENT: Record<string, PatternContent> = {
     name: "Szabadúszók",
     subtitle: "Visszafogott · Versengő · Rugalmas · Pragmatikus",
     description:
-      "Független, gyakorlatias egyéniségek; az elköteleződés inkább a feladathoz, mint a csapathoz kötődik. A tranzakciós logika dominál.",
+      "Független, gyakorlatias egyéniségek; az elköteleződésük inkább a feladathoz, mint a csapathoz kötődik. A kapcsolódásukat elsősorban az elvégzendő munka határozza meg.",
     strengths: [
       "Erős egyéni teljesítmény és önállóság",
-      "Pragmatikus, gyors egyéni döntéshozatal",
-      "Kevés vezetői ráfordítást igényelnek",
-      "Jól kezelik a nyomást",
+      "Gyors, gyakorlatias egyéni döntések",
+      "Kevés közvetlen irányítással is működhetnek",
+      "Nagy egyéni mozgástér",
     ],
     blindSpots: [
       "A közös csapatidentitás jelei gyengék",
       "A tudásmegosztás jellemzően alkalomszerű — ha valaki elmegy, a tudása is vele mehet",
       "Az elköteleződés inkább a feladathoz, mint a csapathoz kötődik",
-      "A vezetői visszajelzésre kevésbé lehetnek fogékonyak",
+      "A vezetői visszajelzés nehezebben épülhet be a működésükbe",
     ],
     communicationStyle:
-      "Minimális, tranzakciós. Csak a szükséges info cserélődik.",
+      "Minimális és feladatközpontú. Csak a szükséges információt osztják meg egymással.",
     idealTasks:
-      "Egyéni feladatok párhuzamos végrehajtása — freelancer-logika szervezeti kereten belül.",
+      "Egyéni feladatok párhuzamos végrehajtása — önálló szakértők működése szervezeti keretek között.",
     riskSituations:
-      "Minden, ami valódi csapatmunkát igényel. Kultúraépítés. Hosszú távú tervezés.",
+      "Valódi csapatmunkát igénylő feladatok, kultúraépítés és hosszú távú tervezés.",
     leaderActions: [
-      "Kérdezd meg: „kell ennek csapatnak lennie?” — ha igen, intenzív kultúraépítés",
-      "1 közös rituálé — heti standup vagy havi retro — következetesen",
-      "Projektek úgy legyenek kiosztva, hogy A eredménye kell B-nek — egymásrautaltság",
+      "Tedd fel a kérdést: „Valóban csapatként kell működniük?” — ha igen, építsd tudatosan a közös kultúrát",
+      "Vezessetek be egy közös szokást — heti rövid egyeztetést vagy havi visszatekintést —, és tartsátok következetesen",
+      "Úgy osszátok ki a projekteket, hogy a tagok eredményei egymásra épüljenek — ez valódi egymásrautaltságot teremt",
     ],
   },
 };

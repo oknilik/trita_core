@@ -34,7 +34,7 @@ export const MEMBER_DIM_LABELS: Record<string, { hu: string; en: string }> = {
 // Tag-szemszögű „hogyan kamatoztasd" tipp dimenziónként — pozitív keret.
 const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
   C: {
-    hu: "Használd a lelkiismeretességedet: te tudod a csapat ötleteit határidős, lezárt eredménnyé formálni — vállald be tudatosan ezt a szerepet.",
+    hu: "Építs a lelkiismeretességedre: sokat tehetsz azért, hogy a csapat ötleteiből határidőre kézzelfogható eredmény szülessen — vállald tudatosan ezt a szerepet.",
     en: "Use your conscientiousness: you can turn the team's ideas into on-time, finished results — deliberately take on that role.",
   },
   H: {
@@ -46,7 +46,7 @@ const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
     en: "Your agreeableness bridges different styles — take a connecting role where things get tense.",
   },
   E: {
-    hu: "Ráérzel mások állapotára — gyakran te veszed észre elsőként, ha valaki elakad; ilyenkor szólalj meg.",
+    hu: "Érzékenyen reagálsz a feszültebb helyzetekre — korán észlelheted, ha valaki elakad; ilyenkor érdemes megszólalnod.",
     en: "You sense how others are doing — you often notice first when someone is stuck; speak up then.",
   },
   X: {
@@ -54,7 +54,7 @@ const DIM_MEMBER_TIP: Record<string, { hu: string; en: string }> = {
     en: "Your energy drives the team — you can kick off shared work and keep up the pace.",
   },
   O: {
-    hu: "Az újra való nyitottságod frissíti a csapatot — hozz be tudatosan külső perspektívát, ötletet.",
+    hu: "Az új iránti nyitottságod új lendületet adhat a csapat működésének — hozz be tudatosan külső nézőpontokat és új ötleteket.",
     en: "Your openness to new things refreshes the team — deliberately bring in outside perspectives and ideas.",
   },
 };
@@ -188,7 +188,7 @@ export function buildMemberReportViewModel(
   }
   tips.push(
     loc === "hu"
-      ? "Építs tudatosan az erősségeidre a közös munkában, és hozz be külső nézőpontot a közös vakfoltok ellen."
+      ? "Építs tudatosan az erősségeidre a közös munkában, és vonj be külső nézőpontot a közös vakfoltok ellensúlyozására."
       : "Build deliberately on your strengths in shared work, and bring in an outside perspective to guard against shared blind spots.",
   );
 

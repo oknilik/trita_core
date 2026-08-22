@@ -114,11 +114,11 @@ test("env-sorok TRITAN kategóriákból dolgoznak (extrém profil extra sorokat 
   const extremeRows = getEnvRows(
     runProfileEngine(scores({ H: 90, E: 10, C: 90, X: 90, O: 90 }), "TRITAN").categories,
   );
-  // Kultúra (H) és Terhelés-kezelés (E) csak high/low esetén jelenik meg.
+  // Kultúra (H) és Terhelhetőség (E) csak high/low esetén jelenik meg.
   assert.ok(extremeRows.length > mediumRows.length);
   const labels = extremeRows.map((r) => r.label.hu);
   assert.ok(labels.includes("Kultúra"));
-  assert.ok(labels.includes("Terhelés-kezelés"));
+  assert.ok(labels.includes("Terhelhetőség"));
 });
 
 const ENV_KEYS = new Set<EnvRowKey>([

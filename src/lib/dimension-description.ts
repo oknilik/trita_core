@@ -1,8 +1,8 @@
 /**
  * A kérdésbank dimenzió-leírása két részből áll: egy definíciós mondatból és
- * egy facet-felsorolásból („Négy facetje …" / „Its four facets are …"). A
- * publikus, megosztott nézet csak a definíciót adja ki — a facet-lista ott
- * zaj, a facetek amúgy is strukturáltan élnek (`dimension.facets`).
+ * egy alskála-felsorolásból („Négy alskálája …" / „Its four facets are …"). A
+ * publikus, megosztott nézet csak a definíciót adja ki — az alskálák listája
+ * ott zaj, és amúgy is strukturáltan él (`dimension.facets`).
  *
  * A szétvágás SZÖVEGHEZ kötött, ezért nem a megjelenítőben él: a markert egy
  * helyen tartjuk, és unit-teszt őrzi, hogy a bank mind a hat dimenziójában,
@@ -11,9 +11,9 @@
  * publikus oldalra csúszik ki némán a teljes facet-felsorolás.
  */
 
-const FACET_MARKERS = [" Négy facetje ", " Its four facets "] as const;
+const FACET_MARKERS = [" Négy alskálája ", " Négy facetje ", " Its four facets "] as const;
 
-/** A leírás definíciós fele (facet-felsorolás nélkül). */
+/** A leírás definíciós fele (alskála-felsorolás nélkül). */
 export function dimensionDefinition(description: string): string {
   for (const marker of FACET_MARKERS) {
     const index = description.indexOf(marker);
@@ -22,7 +22,7 @@ export function dimensionDefinition(description: string): string {
   return description.trim();
 }
 
-/** Teszt-guardrail: felismerhető-e a facet-felsorolás a leírásban. */
+/** Teszt-guardrail: felismerhető-e az alskála-felsorolás a leírásban. */
 export function hasFacetMarker(description: string): boolean {
   return FACET_MARKERS.some((marker) => description.includes(marker));
 }

@@ -71,11 +71,11 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Shared momentum can build: fast pace, lots of communication, energy that pulls you both forward — initiative rarely stalls with either of you.",
       },
       friction: {
-        hu: "Mindketten viszitek a szót — előfordulhat, hogy egymás mondataira vártok sort, és a csendesebb kollégák kiszorulnak a közös terekből.",
+        hu: "Mindketten viszitek a szót — előfordulhat, hogy egymás szavába vágtok, a csendesebb kollégáknak pedig kevés tér marad a közös beszélgetésekben.",
         en: "You both carry the conversation — you may end up talking over each other, and quieter colleagues can get crowded out of shared spaces.",
       },
       discuss: {
-        hu: "Beszéljétek meg, ki moderál a közös egyeztetéseken, és hogyan kap teret a környezetetek — a kettőtök dinamikája könnyen betölti a szobát.",
+        hu: "Beszéljétek meg, ki moderálja a közös egyeztetéseket, és hogyan adtok teret másoknak — a kettőtök lendülete könnyen betöltheti a szobát.",
         en: "Agree on who moderates your shared meetings and how the people around you get airtime — the dynamic between you can easily fill the room.",
       },
     },
@@ -87,7 +87,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "X", pole: "low" },
     view: {
       easy: {
-        hu: "Jó kiegészítő páros lehettek: jellemzően te hozod a lendületet és a kifelé irányuló energiát, ő a nyugodt mélységet és a fókuszált munkát.",
+        hu: "Jól kiegészíthetitek egymást: jellemzően te hozod a társas lendületet, ő pedig a nyugodt, elmélyült figyelmet.",
         en: "You may make a complementary pair: you typically bring momentum and outward energy, they bring calm depth and focused work.",
       },
       friction: {
@@ -95,13 +95,13 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "You may feel you're pulling the relationship alone; meanwhile they may find the volume of interaction draining and struggle to get a word in.",
       },
       discuss: {
-        hu: "Egyezzetek meg a kommunikáció adagolásában: mikor kell élő egyeztetés, mi mehet írásban, és mennyi felkészülési időt kap a közös döntések előtt.",
+        hu: "Egyezzetek meg a kommunikáció ritmusában: mikor kell élő egyeztetés, mi intézhető írásban, és mennyi felkészülési időre van szüksége a közös döntések előtt.",
         en: "Agree on how to dose communication: what needs a live conversation, what can go async, and how much preparation time they get before joint decisions.",
       },
     },
     viewB: {
       easy: {
-        hu: "Jó kiegészítő páros lehettek: jellemzően te hozod a nyugodt mélységet és a fókuszt, ő a lendületet és a kifelé irányuló energiát.",
+        hu: "Jól kiegészíthetitek egymást: jellemzően te hozod a nyugodt, elmélyült figyelmet, ő pedig a társas lendületet.",
         en: "You may make a complementary pair: you typically bring calm depth and focus, they bring momentum and outward energy.",
       },
       friction: {
@@ -109,7 +109,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their pace and the volume of interaction can wear you down — and if you don't say so, they won't notice, only that you're withdrawing.",
       },
       discuss: {
-        hu: "Kérj feldolgozási időt a döntések előtt, és egyezzetek meg, mi mehet írásban — a csended neki nem adat, amíg ki nem mondod.",
+        hu: "Kérj gondolkodási időt a döntések előtt, és egyezzetek meg, mi intézhető írásban — a hallgatásodból önmagában nem tudja, mire van szükséged.",
         en: "Ask for processing time before decisions and agree on what can go async — your silence isn't data for them until you name it.",
       },
     },
@@ -130,7 +130,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Communication can stall: if neither of you initiates, important things stay unsaid — and nobody outside will notice.",
       },
       discuss: {
-        hu: "Tegyetek be egy rendszeres, rövid szinkronpontot, és egyezzetek meg: ki jelez, ha elakadás van — magától egyik irányból sem fog megtörténni.",
+        hu: "Tartsatok rendszeres, rövid egyeztetést, és beszéljétek meg, ki jelez, ha elakadás van — különben könnyen mindketten a másik kezdeményezésére várhattok.",
         en: "Set a regular short sync point and agree on who raises a blocker — it won't happen spontaneously from either side.",
       },
     },
@@ -157,7 +157,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Under pressure you can amplify each other's worries: a shared spiral where the risk looks bigger to both of you with every loop.",
       },
       discuss: {
-        hu: "Egyezzetek meg egy jelben, amivel bármelyikőtök megállíthatja a közös aggodalom-kört, és keressetek egy külső, tárgyilagos viszonyítási pontot.",
+        hu: "Egyezzetek meg egy jelben, amellyel bármelyikőtök megszakíthatja az egymást erősítő aggodalmak körét, és keressetek egy külső, tárgyilagos viszonyítási pontot.",
         en: "Agree on a signal either of you can use to stop the shared worry loop, and pick an outside, matter-of-fact reference point.",
       },
     },
@@ -169,7 +169,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "E", pole: "low" },
     view: {
       easy: {
-        hu: "Nehéz helyzetben ő a horgony: stabil marad, amikor benned hullámzik a feszültség — ez kettőtöknek jól kiosztott szerep lehet.",
+        hu: "Nehéz helyzetben ő lehet a biztos pont: nyugodt maradhat, amikor benned erősödik a feszültség. Ez jól működő szerepmegosztást adhat kettőtöknek.",
         en: "In hard moments they can be the anchor: steady while tension surges in you — a well-cast pairing if you use it deliberately.",
       },
       friction: {
@@ -177,7 +177,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "You may read their calm as indifference; they may read your reactions as too much — and both readings are unfair.",
       },
       discuss: {
-        hu: "Tisztázzátok, mit jelent nálatok a támogatás: meghallgatást vársz vagy megoldást — és ő melyiket tudja természetesen adni.",
+        hu: "Tisztázzátok, mit jelent nálatok a támogatás: meghallgatást vagy megoldást vársz-e, és neki melyik jön könnyebben.",
         en: "Clarify what support means between you: are you looking to be heard or to get a fix — and which one comes naturally to them.",
       },
     },
@@ -212,7 +212,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Emotional signals can slip through: if tension builds in either of you, it stays invisible for a long time — to others and to each other.",
       },
       discuss: {
-        hu: "Iktassatok be időnként egy explicit visszajelző kört arról, hogy vagytok — nálatok ez magától nem kerül szóba, pedig kellhet.",
+        hu: "Időnként tartsatok tudatos visszajelző kört arról, hogy vagytok — ez nálatok könnyen kimaradhat, pedig szükség lehet rá.",
         en: "Schedule an occasional explicit check-in on how you're doing — between you it won't come up on its own, and sometimes it needs to.",
       },
     },
@@ -227,11 +227,11 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     symmetric: true,
     view: {
       easy: {
-        hu: "Kölcsönös alap-bizalom épülhet: ritkán kell a másik hátsó szándékait fürkésznetek, és az adott szó nálatok jellemzően szerződés.",
+        hu: "Kölcsönös alapbizalom épülhet ki: ritkán kell a másik hátsó szándékait keresnetek, és jellemzően számíthattok egymás szavára.",
         en: "Baseline mutual trust can form: you rarely have to scan for hidden agendas, and a given word typically works as a contract between you.",
       },
       friction: {
-        hu: "Ha elvi kérdésben kerültök szembe, mindketten nehezen engedtek: az elv-elv viták nálatok tovább tarthatnak, mint az érdek-viták másoknál.",
+        hu: "Ha elvi kérdésben kerültök szembe, mindketten nehezen engedhettek: az elvekről szóló vita nálatok tovább tarthat, mint egy egyszerű érdekellentét rendezése.",
         en: "When you clash on principle, neither of you yields easily: principle-vs-principle debates can outlast anyone else's interest disputes.",
       },
       discuss: {
@@ -247,11 +247,11 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "H", pole: "low" },
     view: {
       easy: {
-        hu: "Erős munkamegosztás lehet: ő ügyesen navigál érdekek és emberek között, te őrzöd a kereteket — együtt hatékonyak ÉS hitelesek lehettek.",
+        hu: "Erős munkamegosztás alakulhat ki: ő ügyesen igazodik el az eltérő érdekek között, te pedig őrzöd a kereteket — együtt egyszerre lehettek hatékonyak és hitelesek.",
         en: "A strong division of labour: they navigate interests and people deftly, you guard the boundaries — together you can be effective AND credible.",
       },
       friction: {
-        hu: "Te taktikázásnak láthatod az ő pragmatizmusát, ő naivitásnak a te elvhűségedet — és ez a kölcsönös gyanú lassan mérgezi a bizalmat.",
+        hu: "Te taktikázásnak láthatod az ő gyakorlatias szemléletét, ő pedig naivitásnak a te elvhűségedet — ez a kölcsönös gyanú lassan ronthatja a bizalmat.",
         en: "You may read their pragmatism as scheming; they may read your principles as naivety — and that mutual suspicion slowly poisons trust.",
       },
       discuss: {
@@ -261,15 +261,15 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     },
     viewB: {
       easy: {
-        hu: "Erős munkamegosztás lehet: te gyorsan mozogsz az érdekek terében, ő stabilan tartja a kereteket — a párosotok hatékony ÉS hiteles lehet.",
+        hu: "Erős munkamegosztás alakulhat ki: te gyorsan igazodsz el az eltérő érdekek között, ő pedig stabilan tartja a kereteket — a párosotok egyszerre lehet hatékony és hiteles.",
         en: "A strong division of labour: you move fast through the space of interests, they hold the frame steady — your pairing can be effective AND credible.",
       },
       friction: {
-        hu: "Az ő elvhűsége neked időnként merevségnek tűnhet — közben pont ez adja a párosotok külső hitelét, amire te is építesz.",
+        hu: "Az ő elvhűsége neked időnként merevségnek tűnhet — közben éppen ez adja a párosotok külső hitelességét, amelyre te is építhetsz.",
         en: "Their principles may sometimes look like rigidity to you — yet that's exactly what gives your pairing the outside credibility you build on.",
       },
       discuss: {
-        hu: "Kezeld az elveit horgonynak, ne féknek — és jelezd előre, ha egy megoldásod a kereteit súrolja, mielőtt kész tények elé állítod.",
+        hu: "Tekints az elveire horgonyként, ne fékként, és jelezd előre, ha egy megoldásod a határait súrolja — még mielőtt kész tények elé állítod.",
         en: "Treat their principles as an anchor, not a brake — and flag in advance when a solution of yours grazes their boundaries, before presenting a fait accompli.",
       },
     },
@@ -290,7 +290,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Trust can stay fragile: you both watch each other's next move, and one broken deal echoes for a long time.",
       },
       discuss: {
-        hu: "Rögzítsétek a megállapodásaitokat explicit módon, lehetőleg írásban — a kimondatlan feltételezés nálatok a leggyorsabb út a konfliktushoz.",
+        hu: "Rögzítsétek egyértelműen, lehetőleg írásban a megállapodásaitokat — a ki nem mondott feltételezések könnyen konfliktushoz vezethetnek.",
         en: "Make your agreements explicit, preferably in writing — unstated assumptions are your fastest route to conflict.",
       },
     },
@@ -305,7 +305,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     symmetric: true,
     view: {
       easy: {
-        hu: "Megbízható működés: közös a minőségi mérce, a határidő nálatok tartható ígéret — egymás munkájára nyugodtan építhettek.",
+        hu: "Megbízható együttműködés alakulhat ki: közös a minőségi mércétek, a határidőt pedig mindketten komoly vállalásnak tekintitek. Nyugodtan építhettek egymás munkájára.",
         en: "Reliable operation: a shared quality bar, deadlines that hold — you can build on each other's work with confidence.",
       },
       friction: {
@@ -325,7 +325,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "C", pole: "low" },
     view: {
       easy: {
-        hu: "Jó vészhelyzet-páros: te struktúrát és minőséget adsz, ő gyorsan mozdul és rögtönöz — együtt rugalmas ÉS megbízható a működésetek.",
+        hu: "Sürgető helyzetben jól kiegészíthetitek egymást: te struktúrát és minőséget adsz, ő gyorsan reagál és rögtönöz — együtt rugalmas és megbízható lehet a működésetek.",
         en: "You may make a good crisis pair: you typically bring structure and quality, they move fast and improvise — together you can be flexible AND reliable.",
       },
       friction: {
@@ -333,13 +333,13 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "This is one of the strongest predictors of workplace friction: their spontaneity can look like chaos to you, your system like shackles to them.",
       },
       discuss: {
-        hu: "Osszátok fel a terepet: hol kell a te precizitásod (és ott ő igazodik), hol elég az ő tempója — plusz egy közös határidő-protokoll.",
+        hu: "Osszátok fel a feladatokat aszerint, hol van szükség a te precizitásodra, és hol elég az ő tempója. A határidők kezelésében is alakítsatok ki közös szabályokat.",
         en: "Divide the terrain: where your precision rules (and they adapt), where their pace is enough — plus a shared deadline protocol.",
       },
     },
     viewB: {
       easy: {
-        hu: "Jó vészhelyzet-páros: te hozod a mozgékonyságot és a gyors reagálást, ő a struktúrát — együtt rugalmas ÉS megbízható a működésetek.",
+        hu: "Sürgető helyzetben jól kiegészíthetitek egymást: te hozod a gyors reagálást, ő pedig a struktúrát — együtt rugalmas és megbízható lehet a működésetek.",
         en: "You may make a good crisis pair: you typically bring agility and fast response, they bring structure — together you can be flexible AND reliable.",
       },
       friction: {
@@ -347,7 +347,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "This is one of the strongest predictors of workplace friction: their system can feel like shackles to you, your spontaneity like risk to them.",
       },
       discuss: {
-        hu: "Kérd, hogy a kereteket együtt lőjétek be, ne készen kapd — az ő rendszere biztonsági háló is, amire vészhelyzetben te támaszkodsz.",
+        hu: "Kérd, hogy együtt alakítsátok ki a kereteket, ne készen kapd őket — az ő rendszere biztonsági háló is lehet, amelyre vészhelyzetben te is támaszkodhatsz.",
         en: "Ask to set the guardrails together rather than receiving them ready-made — their system is also the safety net you lean on in a crisis.",
       },
     },
@@ -383,15 +383,15 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     symmetric: true,
     view: {
       easy: {
-        hu: "Harmonikus, türelmes páros: könnyen engedtek egymásnak, ritka a nyílt konfliktus, és kellemes veletek egy térben dolgozni.",
+        hu: "Harmonikus, türelmes párost alkothattok: könnyen engedtek egymásnak, ritka lehet a nyílt konfliktus, és másoknak is kellemes lehet veletek együtt dolgozni.",
         en: "You may make a harmonious, patient pair: you typically yield to each other easily, open conflict stays rare, and you can be pleasant to share a room with.",
       },
       friction: {
-        hu: "A valódi nézeteltérések a szőnyeg alá kerülhetnek: mindketten kerülitek az élt, ezért a döntések elodázódnak, a feszültség pedig gyűlik.",
+        hu: "A valódi nézeteltérések a szőnyeg alá kerülhetnek: mindketten kerülhetitek a nyílt ütközést, ezért a döntések elodázódhatnak, a feszültség pedig felgyűlhet.",
         en: "Real disagreements can get swept under the rug: you both avoid the edge, so decisions get postponed and tension quietly builds.",
       },
       discuss: {
-        hu: "Találjatok egy strukturált formát a vitának — pró-kontra kör, írásos érvelés —, hogy az ellenvélemény ne udvariasságból haljon el.",
+        hu: "Adjatok keretet a vitának — például az érvek és ellenérvek külön körével vagy írásos véleményezéssel —, hogy az ellenvélemény ne maradjon ki puszta udvariasságból.",
         en: "Find a structured format for disagreement — a pro-con round, written arguments — so dissent doesn't die of politeness.",
       },
     },
@@ -403,7 +403,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "A", pole: "low" },
     view: {
       easy: {
-        hu: "Ő gyakran kimondja, amit te lenyelnél, te pedig tompíthatod, amit ő élezne — jól kalibrálva ez a páros őszinte ÉS emberséges lehet.",
+        hu: "Ő gyakran kimondja, amit te inkább magadban tartanál, te pedig tompíthatod, amit ő élesen fogalmazna meg — jól összehangolva ez a páros egyszerre lehet őszinte és emberséges.",
         en: "They say what you'd swallow; you soften what they'd sharpen — well calibrated, this pair can be honest AND humane.",
       },
       friction: {
@@ -411,21 +411,21 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their directness can feel hurtful, while your diplomacy can feel evasive to them — and you each consider your own style the normal one.",
       },
       discuss: {
-        hu: "Kössetek kritika-protokollt: mikor, milyen formában, milyen éllel — és mi az a mondat, amivel bármelyikőtök jelezheti, hogy ez most sok volt.",
+        hu: "Állapodjatok meg a visszajelzés szabályaiban: mikor, milyen formában és milyen hangnemben szóltok egymásnak, illetve hogyan jelzitek, ha egy megfogalmazás túl éles volt.",
         en: "Agree a feedback protocol: when, in what form, with how much edge — and the sentence either of you can use to say that was too much.",
       },
     },
     viewB: {
       easy: {
-        hu: "Jellemzően te hozod az egyenességet, ő a tapintatot — jól kalibrálva ez a páros őszinte ÉS emberséges lehet.",
+        hu: "Jellemzően te hozod az egyenességet, ő pedig a tapintatot — jól összehangolva ez a páros egyszerre lehet őszinte és emberséges.",
         en: "You bring the directness, they bring the tact — well calibrated, this pair can be honest AND humane.",
       },
       friction: {
-        hu: "Az ő visszafogottsága neked kertelésnek tűnhet — pedig a türelme kapcsolati tőke, amiből a párosotok is gazdálkodik.",
+        hu: "Az ő visszafogottsága neked kertelésnek tűnhet — pedig a türelme segíthet megőrizni a kapcsolatotok egyensúlyát.",
         en: "Their restraint can look like evasion to you — yet their patience is relational capital your pairing also spends.",
       },
       discuss: {
-        hu: "Kérdezd meg, hogyan esik jól neki a kritika, és tartsd magad hozzá — az éles megfogalmazásod nála nem hatékonyabb, csak drágább.",
+        hu: "Kérdezd meg, milyen formában tudja jól fogadni a kritikát, és tartsd magad ehhez — az élesebb megfogalmazás nála nem feltétlenül hatékonyabb, viszont nagyobb terhet róhat a kapcsolatra.",
         en: "Ask how they best receive criticism and stick to it — with them, your sharpest phrasing isn't more effective, just more costly.",
       },
     },
@@ -438,15 +438,15 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     symmetric: true,
     view: {
       easy: {
-        hu: "Egyenes beszéd alakulhat mindkét irányban: jellemzően gyorsan kimondjátok a bajt, kevés a rejtett feszültség, és a vitáitok legalább tiszták.",
+        hu: "Egyenes kommunikáció alakulhat ki köztetek: jellemzően gyorsan kimondjátok, ha baj van, így kevés rejtett feszültség marad, a vitáitok pedig átláthatóbbak lehetnek.",
         en: "Straight talk can go both ways: problems typically get named fast, hidden tension stays rare, and your arguments are at least clean.",
       },
       friction: {
-        hu: "A viták eszkalálódhatnak: mindketten élesen fogalmaztok és nehezen engedtek — a tárgyi vita könnyen presztízs-kérdéssé válik.",
+        hu: "A viták elmérgesedhetnek: mindketten élesen fogalmaztok és nehezen engedtek — a tárgyi nézeteltérés könnyen presztízskérdéssé válhat.",
         en: "Arguments can escalate: you both phrase things sharply and yield reluctantly — a factual debate easily turns into a matter of pride.",
       },
       discuss: {
-        hu: "Vezessetek be vita-szabályokat: a téma és a személy szétválasztása, plusz egy time-out jel, amit bármelyikőtök bemondhat.",
+        hu: "Vezessetek be közös vitaszabályokat: válasszátok szét a témát és a személyt, és legyen egy szünetjelzés, amelyet bármelyikőtök használhat.",
         en: "Set debate rules: separate the issue from the person, plus a time-out signal either of you can call.",
       },
     },
@@ -469,7 +469,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Many launches, few landings: the new idea often beats finishing, and neither of you tends to hold focus naturally.",
       },
       discuss: {
-        hu: "Vezessetek ötlet-parkolót és egy explicit döntési pontot: mikor váltotok ötletelésből kivitelezésbe — és ki mondja ki a váltást.",
+        hu: "Vezessetek közös ötletlistát, és jelöljetek ki egy döntési pontot: mikor váltotok ötletelésből megvalósításba, és ki mondja ki a váltást.",
         en: "Keep an idea parking lot and an explicit decision point: when you switch from ideation to execution — and who calls the switch.",
       },
     },
@@ -481,29 +481,29 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "O", pole: "low" },
     view: {
       easy: {
-        hu: "Jó szűrőpáros: te hozod az új irányokat, ő a bevált módszerek erejét — ami kettőtök rostáján átmegy, az általában életképes.",
+        hu: "Jó szűrőpáros lehettek: te hozod az új irányokat, ő pedig a bevált módszerek erejét — ami átmegy a közös szűrőtökön, az általában életképes.",
         en: "A good filtering pair: you bring new directions, they bring the strength of proven methods — what passes both your sieves tends to be viable.",
       },
       friction: {
-        hu: "A szkepszise falnak érződhet, miközben ő a kísérletezésedet érezheti felesleges kockázatnak — és mindketten fárasztónak a másik reflexét.",
+        hu: "Az ő fenntartásai falnak érződhetnek, miközben ő felesleges kockázatnak láthatja a kísérletezésedet — és mindkettőtöket fáraszthatja a másik ösztönös reakciója.",
         en: "Their scepticism can feel like a wall, while your experimenting can feel like needless risk to them — and each finds the other's reflex tiring.",
       },
       discuss: {
-        hu: "Jelöljetek ki kísérleti sávot: mekkora téttel szabad próbálkozni jóváhagyás nélkül — és mi az a bizonyíték, ami őt is meggyőzi.",
+        hu: "Jelöljétek ki a kísérletezés kereteit: mekkora téttel próbálkozhattok külön jóváhagyás nélkül, és milyen bizonyíték győzné meg őt is.",
         en: "Mark out an experimentation lane: how much stake can be risked without sign-off — and what evidence would convince them too.",
       },
     },
     viewB: {
       easy: {
-        hu: "Jó szűrőpáros: te a működő megoldások őre vagy, ő az új irányok forrása — ami kettőtök rostáján átmegy, az általában életképes.",
+        hu: "Jó szűrőpáros lehettek: te a működő megoldásokat őrzöd, ő pedig az új irányokat hozza — ami átmegy a közös szűrőtökön, az általában életképes.",
         en: "A good filtering pair: you guard what works, they source new directions — what passes both your sieves tends to be viable.",
       },
       friction: {
-        hu: "Az ötletzuhataga fárasztó lehet, és úgy érezheted, a stabilitást egyedül te véded — miközben ő a kérdéseidet érzi falnak.",
+        hu: "A sok ötlete fárasztó lehet, és úgy érezheted, egyedül te őrzöd a stabilitást — miközben ő a kérdéseidet élheti meg akadályként.",
         en: "Their cascade of ideas can be tiring, and you may feel you alone defend stability — while they experience your questions as a wall.",
       },
       discuss: {
-        hu: "Kezeld az ötleteit nyersanyagnak, ne javaslatnak: közös szűrőt kérj, ne azonnali döntést — és mondd ki, milyen bizonyíték győzne meg.",
+        hu: "Kezeld az ötleteit nyersanyagként, ne kész javaslatként: azonnali döntés helyett kérjetek közös szűrést, és mondd ki, milyen bizonyíték győzne meg.",
         en: "Treat their ideas as raw material, not proposals: ask for a shared filter rather than an instant verdict — and name the evidence that would win you over.",
       },
     },
@@ -524,7 +524,7 @@ export const SAME_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Innovation can stall: when your environment shifts, neither of you brings in the new impulse in time.",
       },
       discuss: {
-        hu: "Egyezzetek meg, honnan jön a friss input: kinek a dolga körülnézni — konferencia, versenytárs-figyelés, külső szem — és milyen ütemben.",
+        hu: "Egyezzetek meg, honnan érkeznek új nézőpontok: kinek és milyen rendszerességgel a feladata körülnézni — például konferenciákon, a versenytársaknál vagy külső szakértők bevonásával.",
         en: "Agree where fresh input comes from: whose job it is to scan — conferences, competitor watch, an outside eye — and how often.",
       },
     },
@@ -544,7 +544,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "C", pole: "high" },
     view: {
       easy: {
-        hu: "Kettőtökben meglehet a teljes lánc: jellemzően te hozod az ötletet és az irányt, ő a kivitelezés fegyelmét — az ilyen párosok gyakran szállítanak.",
+        hu: "Együtt végigvihetitek az ötlettől a megvalósításig tartó teljes folyamatot: jellemzően te hozod az irányt, ő pedig a kivitelezés fegyelmét. Az ilyen párosok gyakran érnek el kézzelfogható eredményt.",
         en: "Between you the whole chain can exist: you typically bring the idea and direction, they bring execution discipline — pairs like this often ship.",
       },
       friction: {
@@ -552,13 +552,13 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "By their bar your ideas may arrive half-baked, and their clarifying questions can feel like brakes to you — though both serve the same goal.",
       },
       discuss: {
-        hu: "Definiáljátok az átadási pontot: mikor lép egy ötlet a rendszerébe — és addig milyen kidolgozottságot vár el tőled jogosan.",
+        hu: "Határozzátok meg az átadási pontot: mikor kerül egy ötlet az ő rendszerébe, és addig milyen kidolgozottságra van szüksége tőled.",
         en: "Define the handover point: when an idea enters their system — and what level of polish they can fairly expect from you until then.",
       },
     },
     viewB: {
       easy: {
-        hu: "Kettőtökben meglehet a teljes lánc: jellemzően ő hozza az irányt és a nyersanyagot, te teszed megvalósíthatóvá — az ilyen párosok gyakran szállítanak.",
+        hu: "Együtt végigvihetitek az ötlettől a megvalósításig tartó teljes folyamatot: jellemzően ő hozza az irányt és a nyersanyagot, te pedig megvalósíthatóvá teszed. Az ilyen párosok gyakran érnek el kézzelfogható eredményt.",
         en: "Between you the whole chain can exist: they typically bring direction and raw material, you make it buildable — pairs like this often ship.",
       },
       friction: {
@@ -566,7 +566,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Half-baked ideas can disturb your system, and they may experience your questions as deflating — when in fact you're taking them seriously.",
       },
       discuss: {
-        hu: "Kérj korai bevonást a kész tervek helyett: ha az ötlet-fázisban ott vagy, a rendszered nem utólagos szűrő lesz, hanem közös eszköz.",
+        hu: "Kérd, hogy már az ötletelésbe vonjon be, ne csak a kész terveket hozza eléd. Így a rendszered nem utólagos szűrő, hanem a közös gondolkodás eszköze lesz.",
         en: "Ask for early involvement instead of finished plans: if you're there at idea stage, your system becomes a shared tool, not an after-the-fact filter.",
       },
     },
@@ -578,15 +578,15 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "C", pole: "low" },
     view: {
       easy: {
-        hu: "Gyors, lelkes indulás: ő azonnal vevő az ötleteidre, és nem lassít adminisztrációval — minden új dolog könnyen elstartol nálatok.",
+        hu: "Gyors, lelkes indulás alakulhat ki: ő hamar lendületet ad az ötleteidnek, és ritkán lassít benneteket adminisztrációval, így az új kezdeményezések könnyen elindulhatnak.",
         en: "Fast, enthusiastic starts are likely: they typically get on board with your ideas and rarely slow things with admin — new things can launch easily.",
       },
       friction: {
-        hu: "Könnyen előfordulhat, hogy senki nem zárja le a köröket: nyitott szálak maradhatnak utánatok, és a környezetetek tanulja meg, hogy nálatok az ígéret nem terv.",
+        hu: "Könnyen előfordulhat, hogy egyikőtök sem zárja le a megkezdett feladatokat: nyitott szálak maradhatnak utánatok, a környezetetek pedig azt tapasztalhatja, hogy a közös ígéret még nem jelent kész tervet.",
         en: "Nobody may close the loops: open threads can pile up behind you, and people around you learn that with you two a promise isn't a plan.",
       },
       discuss: {
-        hu: "Nevezzetek meg befejezés-felelőst minden közös kezdeményezéshez, és kössétek külső határidőhöz — belső magától nem lesz.",
+        hu: "Minden közös kezdeményezésnél nevezzetek meg valakit, aki felel a lezárásért, és rendeljetek hozzá mások számára is látható határidőt — a csak kettőtök között rögzített időpont könnyebben elcsúszhat.",
         en: "Name a finishing owner for every joint initiative and tie it to an external deadline — an internal one won't emerge on its own.",
       },
     },
@@ -620,7 +620,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their criticism sometimes hits your system too: you feel your framework challenged, they find your rules unnecessary.",
       },
       discuss: {
-        hu: "Tisztázzátok, mi a kritika terepe: a kimenet vitatható, a futó folyamat kerete nem — utólagos retró igen, menet közbeni borítás nem.",
+        hu: "Tisztázzátok, mire terjedhet ki a kritika: az eredmény menet közben is vitatható, a már elindult folyamat kereteit viszont csak közös döntéssel írjátok felül. A módszert utólag külön is tekintsétek át.",
         en: "Clarify the arena for criticism: output is debatable, the frame of a running process is not — retro afterwards yes, mid-flight overturn no.",
       },
     },
@@ -630,11 +630,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Your straight feedback may land well: they typically take quality seriously and improve from your signals rather than sulking.",
       },
       friction: {
-        hu: "A szabályai neked kontrollnak érződhetnek, és amikor a rendszerét kritizálod, ő azt személyes találatként éli meg.",
+        hu: "A szabályai neked túlzott korlátozásnak érződhetnek, a rendszerét érő kritikát pedig ő személyes támadásként élheti meg.",
         en: "Their rules can feel like control to you, and when you criticise their system they experience it as a personal hit.",
       },
       discuss: {
-        hu: "Válaszd szét a jelzéseidben a kimenetet és a módszert: a módszer-kritikát időzítsd retróra — ott nyitott rá, menet közben védekezik.",
+        hu: "Válaszd szét a visszajelzésedben az eredményt és a módszert. A módszer kritikáját az utólagos áttekintésre időzítsd — ott várhatóan nyitottabb lesz rá, mint munka közben.",
         en: "Separate output from method in your feedback: schedule method critique for the retro — they're open to it there, defensive mid-flight.",
       },
     },
@@ -654,7 +654,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "They may launch three new things by the time you'd close the first — and the loose threads typically land in your system.",
       },
       discuss: {
-        hu: "Vezessetek közös WIP-limitet: mennyi futhat párhuzamosan, és mit kell lezárni, mielőtt új indul — ezt neki is látnia kell, ne csak neked.",
+        hu: "Szabjátok meg közösen, hány feladat futhat párhuzamosan, és mit kell lezárni, mielőtt újba kezdtek. Ez a korlát mindkettőtök számára legyen látható.",
         en: "Keep a shared WIP limit: how much runs in parallel, and what must close before something new starts — visible to them, not just you.",
       },
     },
@@ -668,7 +668,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Your pace can queue up inside their system: what you see as a new opportunity may be, for them, another open obligation in the backlog.",
       },
       discuss: {
-        hu: "Kérdezd meg indítás előtt, mi fér bele a közös sávba — a lelkesedésed így szövetségest kap, nem szűk keresztmetszetet.",
+        hu: "Mielőtt új feladatot indítasz, kérdezd meg, mi fér bele a közös munkába — így a lelkesedésed támogatást kaphat, nem akadályba ütközik.",
         en: "Before launching, ask what fits the shared lane — that way your enthusiasm gains an ally instead of a bottleneck.",
       },
     },
@@ -680,7 +680,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "E", pole: "high" },
     view: {
       easy: {
-        hu: "Élénk, érzelmileg jelenlévő kapcsolat alakulhat: ő jellemzően hamar észreveszi, ha valami nincs rendben — veled vagy a csapattal —, te pedig gyorsan tudsz rá mozdulni.",
+        hu: "Élénk, érzelmileg jelen lévő kapcsolat alakulhat ki: ő jellemzően hamar észreveszi, ha veled vagy a csapattal valami nincs rendben, te pedig gyorsan tudsz cselekedni.",
         en: "A lively, emotionally present relationship can form: they typically notice quickly when something's off — with you or the team — and you can act on it fast.",
       },
       friction: {
@@ -688,13 +688,13 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Your pace and intensity can weigh on them emotionally: they're not slower than you, more just reaches them — and without feedback you won't see it.",
       },
       discuss: {
-        hu: "Vezessetek be tempó-checket: egy egyszerű jelzést, amivel szólhat, hogy most sok — mielőtt a terhelés tünetekben jelentkezne.",
+        hu: "Vezessetek be egy egyszerű terhelésjelzést, amellyel szólhat, ha túl gyors a tempó vagy túl sok az inger — még mielőtt kimerülne.",
         en: "Introduce a pace check: a simple signal they can use to say it's too much right now — before the load shows up as symptoms.",
       },
     },
     viewB: {
       easy: {
-        hu: "Élénk, érzelmileg jelenlévő kapcsolat alakulhat: te jellemzően hamar megérzed, ha valami nincs rendben, ő pedig gyorsan mozdul rá — jó korai-jelzőrendszer lehettek.",
+        hu: "Élénk, érzelmileg jelen lévő kapcsolat alakulhat ki: te jellemzően hamar megérzed, ha valami nincs rendben, ő pedig gyorsan reagálhat rá — együtt korán jelezhetitek a problémákat.",
         en: "A lively, emotionally present relationship can form: you typically sense early when something's off, and they move on it fast — together you may make a good early-warning system.",
       },
       friction: {
@@ -702,7 +702,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their energy is infectious but can also drain you — and if you don't say so, they may read your withdrawal as disinterest.",
       },
       discuss: {
-        hu: "Állapodjatok meg egy jelben, amivel kérhetsz lassítást vagy szünetet — nála ez működik, csak explicitté kell tenni.",
+        hu: "Állapodjatok meg egy jelben, amellyel lassítást vagy szünetet kérhetsz — ezt elég előre egyértelművé tenni.",
         en: "Agree on a signal you can use to ask for a slowdown or a break — it works with them, it just has to be explicit.",
       },
     },
@@ -722,7 +722,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Unspoken feelings meet sparse communication: they feel a lot, you say little — tension can grow silently between you.",
       },
       discuss: {
-        hu: "Iktassatok be rendszeres kétszemélyes check-int: neki tér kell, hogy kimondja, amit érez, neked pedig keret, amiben ez nem teher.",
+        hu: "Tartsatok rendszeres négyszemközti egyeztetést: neki tér kellhet ahhoz, hogy kimondja, amit érez, neked pedig kiszámítható alkalom, amikor valóban rá tudsz figyelni.",
         en: "Schedule a regular one-on-one check-in: they need space to voice what they feel, you need a frame in which that isn't a burden.",
       },
     },
@@ -732,11 +732,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "You may make an attentive, gentle pair: they can give you calm space where your sensitivity works as a resource rather than an overload.",
       },
       friction: {
-        hu: "A csendje kiszámíthatatlannak érződhet: keveset jelez vissza, te pedig hajlamos lehetsz a hallgatását rossz hírként olvasni.",
+        hu: "A csendje kiszámíthatatlannak érződhet: keveset jelez vissza, te pedig a hallgatását könnyen rossz hírként értelmezheted.",
         en: "Their quiet can feel unreadable: they signal little back, and you may tend to read their silence as bad news.",
       },
       discuss: {
-        hu: "Kérj tőle explicit visszajelzést fix pontokon — nála a csend nem elégedetlenség, de ezt hallanod is kell, nem csak tudnod.",
+        hu: "Kérj tőle egyértelmű visszajelzést előre egyeztetett pontokon — nála a csend nem feltétlenül elégedetlenség, de ezt időnként hallanod is kell, nem elég csupán feltételezned.",
         en: "Ask them for explicit feedback at fixed points — with them silence isn't displeasure, but you need to hear that, not just know it.",
       },
     },
@@ -748,21 +748,21 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "A", pole: "low" },
     view: {
       easy: {
-        hu: "Mindketten kimondjátok az igazat — nálad elvből, nála vérmérsékletből. A kettőtök közelében ritkán élnek meg hazugságok.",
+        hu: "Mindketten kimondhatjátok, amit igaznak tartotok — te inkább elvből, ő inkább vérmérsékletből. A mellébeszélés ritkán marad észrevétlen kettőtök között.",
         en: "You both speak the truth — you on principle, they by temperament. Lies rarely survive near the two of you.",
       },
       friction: {
-        hu: "A kritikája időnként embereket találhat, nem csak hibákat — és ez a te fair-play-mércédet sértheti, akkor is, ha tartalmilag igaza van.",
+        hu: "A kritikája időnként nemcsak a hibákat, hanem az embereket is célozhatja — ez akkor is sértheti a méltányosságérzetedet, ha tartalmilag igaza van.",
         en: "Their criticism sometimes hits people, not just faults — and that violates your fair-play standard even when they're factually right.",
       },
       discuss: {
-        hu: "Egyezzetek meg, hogyan marad a vita tényeknél: mi a megengedett él, és ki jelezheti, ha a kritika személybe fordult.",
+        hu: "Egyezzetek meg, hogyan tartjátok a vitát a tényeknél: milyen hangnem fér bele, és hogyan jelzitek, ha a kritika személyeskedővé vált.",
         en: "Agree how debate stays factual: how much edge is allowed, and who may call it when criticism turns personal.",
       },
     },
     viewB: {
       easy: {
-        hu: "Mindketten kimondjátok az igazat — te vérmérsékletből, ő elvből. A kettőtök közelében ritkán élnek meg hazugságok.",
+        hu: "Mindketten kimondhatjátok, amit igaznak tartotok — te inkább vérmérsékletből, ő inkább elvből. A mellébeszélés ritkán marad észrevétlen kettőtök között.",
         en: "You both speak the truth — you by temperament, they on principle. Lies rarely survive near the two of you.",
       },
       friction: {
@@ -770,7 +770,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their principles may sometimes look like squeamishness to you — but they're not avoiding conflict, they're avoiding unfairness; for them that line is sharp.",
       },
       discuss: {
-        hu: "Tartsd a kritikát a teljesítményen és a tényeken — nála így a legélesebb mondatod is partner marad, személyeskedve a leghalkabb is ellenfél.",
+        hu: "Tartsd a kritikát a teljesítmény és a tények szintjén — így az együttműködést szolgálhatja, míg a személyeskedés könnyen védekezést válthat ki belőle.",
         en: "Keep criticism on performance and facts — that way even your sharpest sentence stays an ally with them; personal, even your quietest becomes an adversary.",
       },
     },
@@ -782,7 +782,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "O", pole: "high" },
     view: {
       easy: {
-        hu: "Felelős kísérletezés: ő újít, te őrzöd a kereteket — a párosotok mer is, meg megbízható is marad.",
+        hu: "Felelős kísérletezés alakulhat ki: ő újít, te pedig őrzöd a kereteket — a párosotok egyszerre lehet bátor és megbízható.",
         en: "Responsible experimentation: they innovate, you guard the boundaries — your pairing dares and stays trustworthy at once.",
       },
       friction: {
@@ -790,13 +790,13 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Some of their ideas may push at your rules and ethical lines: an exciting grey zone for them can be a hard boundary for you.",
       },
       discuss: {
-        hu: "Rajzoljátok fel együtt a kísérletezés kereteit: mi a szabad sáv, mi az egyeztetés-köteles, és mi az, ami nálad nem játszik.",
+        hu: "Határozzátok meg együtt a kísérletezés kereteit: miben dönthettek szabadon, mi igényel előzetes egyeztetést, és mi az, ami számodra nem fér bele.",
         en: "Map the experimentation frame together: what's a free lane, what needs sign-off, and what isn't in play for you.",
       },
     },
     viewB: {
       easy: {
-        hu: "Felelős kísérletezés: te újítasz, ő a keretek őre — a párosotok mer is, meg megbízható is marad.",
+        hu: "Felelős kísérletezés alakulhat ki: te újítasz, ő pedig őrzi a kereteket — a párosotok egyszerre lehet bátor és megbízható.",
         en: "Responsible experimentation: you innovate, they guard the boundaries — your pairing dares and stays trustworthy at once.",
       },
       friction: {
@@ -804,7 +804,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their limits may sometimes feel like drag — but the credibility they build is exactly the capital that gets your bolder ideas funded.",
       },
       discuss: {
-        hu: "Vidd hozzá korán a határeseteket: ha az aggályát tervezési inputként kezeled, szövetséges lesz — utólag szembesítve vétójátékos.",
+        hu: "A határeseteket már korán beszéld át vele. Ha az aggályait tervezési szempontként kezeled, szövetségessé válhat; ha csak utólag szembesíted a döntéssel, könnyen ellenállást válthatsz ki belőle.",
         en: "Bring edge cases to them early: treat their concern as design input and they're an ally — confront them after the fact and they're a veto player.",
       },
     },
@@ -834,7 +834,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "You typically say out loud what they sense — your pairing can surface in days what would fester elsewhere for months.",
       },
       friction: {
-        hu: "A jelzéseid nála könnyen mélyebbre hatolhatnak, mint gondolnád: nem sértődékeny — érzékeny; a különbség neked apró, neki minden.",
+        hu: "A jelzéseid erősebben hathatnak rá, mint gondolnád. Nem feltétlenül sértődékeny, egyszerűen érzékenyebben reagálhat a megfogalmazásodra.",
         en: "Your signals may land deeper with them than you think: they're not touchy — they're sensitive; a small difference to you, everything to them.",
       },
       discuss: {
@@ -854,11 +854,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Calm, balanced operation is likely: you tend to be steady, they patient — drama stays rare anywhere near the two of you.",
       },
       friction: {
-        hu: "Mindketten kerülitek a mély egyeztetést: te nem érzed szükségét, ő nem meri felhozni — a kényes témák így könnyen elmaradhatnak.",
+        hu: "Mindketten kerülhetitek a mélyebb egyeztetést: te kevésbé érzed szükségét, ő pedig nehezebben hozhatja fel a kényes témákat. Így ezek a beszélgetések könnyen elmaradhatnak.",
         en: "You both avoid deeper alignment: you don't feel the need, they don't dare raise it — so delicate topics can stay buried.",
       },
       discuss: {
-        hu: "Nevezzétek meg, ki hozza fel a kényes témákat és milyen ritmusban — nálatok ez a szerep magától betöltetlen marad.",
+        hu: "Beszéljétek meg, ki és milyen rendszerességgel hozza fel a kényes témákat — különben könnyen egyikőtök sem vállalja ezt a szerepet.",
         en: "Name who raises the delicate topics and at what rhythm — between you, that role stays vacant by default.",
       },
     },
@@ -888,11 +888,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "The predictability you build can give them safety: your system typically reduces the very uncertainty they're most sensitive to.",
       },
       friction: {
-        hu: "Határidő-nyomás alatt az aggodalma a te feszültségedet is emelheti — és a te szigorodó kontrollod az övét: könnyen pörgetitek fel egymást.",
+        hu: "Szoros határidő mellett az ő aggodalma a te feszültségedet is növelheti, a te egyre szorosabb ellenőrzésed pedig az övét — így könnyen tovább erősíthetitek egymás feszültségét.",
         en: "Under deadline pressure their worry can raise your tension — and your tightening control theirs: you may wind each other up.",
       },
       discuss: {
-        hu: "Készítsetek terv B-t nyugodt időben, és egyezzetek meg, ki mondja ki, hogy csúszunk — a kimondott csúszás nálatok kisebb kár, mint a néma pánik.",
+        hu: "Nyugodt időszakban készítsetek tartaléktervet, és egyezzetek meg, ki jelzi a csúszást — a korán kimondott késés kevesebb kárt okozhat, mint a felgyűlő, kimondatlan feszültség.",
         en: "Make a plan B in calm times and agree who calls the slip — a named delay costs you two less than silent panic.",
       },
     },
@@ -902,7 +902,7 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
         en: "Their system can give you safety: inside predictable frames your sensitivity tends to work as a resource rather than a load.",
       },
       friction: {
-        hu: "Amikor nála feszül a határidő, a kontrollja szigorodik — te ezt könnyen magadra veszed, pedig a helyzetnek szól, nem neked.",
+        hu: "Amikor szorossá válik a határidő, ő szigorúbban ellenőrizhet — te ezt könnyen magadra veheted, pedig jellemzően a helyzetnek szól, nem neked.",
         en: "When their deadline tightens, so can their control — you may easily take that personally, though it's typically aimed at the situation, not you.",
       },
       discuss: {
@@ -918,11 +918,11 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     b: { dim: "O", pole: "high" },
     view: {
       easy: {
-        hu: "Ti lehettek a kezdeményező motor: az ő ötletei a te lendületeddel párosulva gyorsan mozgásba hozhatnak bármit — és bárkit.",
+        hu: "Ti lehettek a kezdeményező páros: az ő ötletei a te lendületeddel együtt gyorsan mozgásba hozhatnak új ügyeket és embereket.",
         en: "You two can be the initiative engine: their ideas paired with your momentum may set anything — and anyone — in motion fast.",
       },
       friction: {
-        hu: "Sok indítás, kevés érkezés: a környezetetek nem tudja követni a tempót, és a lelkesedésetek kifelé kapkodásnak tűnhet.",
+        hu: "Sok kezdeményezés és kevés lezárás alakulhat ki: a környezetetek nehezen követheti a tempót, a közös lelkesedésetek pedig kívülről kapkodásnak tűnhet.",
         en: "Many launches, few landings: people around you can't track the pace, and your shared enthusiasm can read as scatter from outside.",
       },
       discuss: {
@@ -932,15 +932,15 @@ export const CROSS_DIMENSION_ATOMS: RelationAtom[] = [
     },
     viewB: {
       easy: {
-        hu: "Ti lehettek a kezdeményező motor: a te ötleteid az ő lendületével párosulva gyorsan mozgásba hozhatnak bármit — és bárkit.",
+        hu: "Ti lehettek a kezdeményező páros: a te ötleteid az ő lendületével együtt gyorsan mozgásba hozhatnak új ügyeket és embereket.",
         en: "You two can be the initiative engine: your ideas paired with their momentum may set anything — and anyone — in motion fast.",
       },
       friction: {
-        hu: "Az energiája az éretlen ötleteidet is azonnal terjesztheti — mire átgondolnád, könnyen már hárman dolgoznak rajta.",
+        hu: "Az energiája a még kiforratlan ötleteidet is gyorsan továbbviheti — mire alaposabban átgondolnád őket, könnyen már többen dolgozhatnak rajtuk.",
         en: "Their energy can broadcast even your unripe ideas instantly — by the time you'd think it through, three people may already be working on it.",
       },
       discuss: {
-        hu: "Jelöld meg az ötleteidet: „hangosan gondolkodom” vagy „ezt tényleg csináljuk” — nála enélkül minden felvetés startjel.",
+        hu: "Jelöld egyértelműen az ötleteidet: „hangosan gondolkodom” vagy „ezt valóban megcsináljuk”. Enélkül ő minden felvetést indítási jelzésnek vehet.",
         en: "Label your ideas: 'thinking out loud' versus 'let's actually do this' — without the label, every musing is a starting gun to them.",
       },
     },
@@ -989,7 +989,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
     dim: "H",
     view: {
       easy: {
-        hu: "A kettőtök közül jellemzően te mozogsz szigorúbb belső szabályok szerint — a közös munkában ez kiszámítható, egyenes vonalat adhat.",
+        hu: "A kettőtök közül jellemzően te igazodsz szigorúbb belső szabályokhoz — ez kiszámítható keretet adhat a közös munkának.",
         en: "Of the two of you, you typically move by stricter internal rules — in shared work this can give a predictable, straight line.",
       },
       friction: {
@@ -1053,7 +1053,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
     dim: "X",
     view: {
       easy: {
-        hu: "A kettőtök közül jellemzően te viszed inkább a szót és a lendületet — a közös indulásokat így ritkán kell külön elindítani.",
+        hu: "A kettőtök közül jellemzően te viszed inkább a szót és a lendületet — így a közös kezdeményezések könnyebben kapnak kezdő lendületet.",
         en: "Of the two of you, you typically carry more of the talking and the momentum — so shared starts rarely need a separate push.",
       },
       friction: {
@@ -1061,7 +1061,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
         en: "You may readily end up filling the silences in your shared conversations, leaving less room for what they're thinking.",
       },
       discuss: {
-        hu: "Kérdezzetek rá egyszer: jut-e elég hely neki a közös beszélgetésekben, vagy jobb lenne bizonyos témákat előre, írásban körbejárni.",
+        hu: "Időnként kérdezz rá, jut-e neki elég tér a közös beszélgetésekben, és mely témákat lenne jobb előre, írásban körbejárni.",
         en: "Check in once: is there enough room for them in your shared conversations, or would some topics be better circled in writing beforehand?",
       },
     },
@@ -1117,7 +1117,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
     dim: "C",
     view: {
       easy: {
-        hu: "A kettőtök közül jellemzően te viszed inkább a struktúrát és a végigvitelt — a közös munkában valószínűleg nálad futnak össze a szálak.",
+        hu: "A kettőtök közül jellemzően te viszed inkább a szervezettséget és a végrehajtást — a közös munkában valószínűleg nálad futnak össze a szálak.",
         en: "Of the two of you, you typically carry more of the structure and follow-through — in shared work the threads are likely to meet at your end.",
       },
       friction: {
@@ -1125,7 +1125,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
         en: "Details and deadlines may keep landing with you while they hold them more loosely — over time that can build a tiring one-sidedness.",
       },
       discuss: {
-        hu: "Rögzítsétek, mit jelent nálatok a „kész”, és ki mit visz végig — a kimondatlan mérce a leggyakoribb súrlódás-forrás.",
+        hu: "Rögzítsétek, mit jelent nálatok a „kész”, és ki mit visz végig — a ki nem mondott mérce gyakran a súrlódás fő forrása.",
         en: "Write down what “done” means between you and who carries what to the end — an unspoken standard is the most common source of friction.",
       },
     },
@@ -1149,7 +1149,7 @@ export const GAP_ATOMS: Record<HexacoCode, GapAtom> = {
     dim: "O",
     view: {
       easy: {
-        hu: "A kettőtök közül jellemzően te hozod inkább az új ötleteket és a máshogy-csinálás lehetőségét.",
+        hu: "A kettőtök közül jellemzően te hozod inkább az új ötleteket és a másféle megközelítések lehetőségét.",
         en: "Of the two of you, you typically bring more of the new ideas and the option of doing it differently.",
       },
       friction: {
@@ -1195,7 +1195,7 @@ export const LEADER_SUPPLEMENTS: Record<
 > = {
   X: {
     high: {
-      hu: "Ha a vezetőd erősen extravertált, a meetingjei jellemzően pörögnek, és aki hangosabb, könnyebben kap teret. Kérj strukturált szót — napirendi pontot, írásos felvezetést —, mert a csend nála könnyen egyetértésnek látszhat.",
+      hu: "Ha a vezetőd erősen extravertált, a megbeszélései jellemzően gyors tempójúak, és aki hangosabb, könnyebben kap teret. Kérj előre biztosított megszólalási lehetőséget — például külön napirendi pontot vagy írásos felvezetést —, mert a csendet könnyen egyetértésnek értelmezheti.",
       en: "If your leader is strongly extraverted, their meetings typically move fast, and louder voices get the floor more easily. Ask for structured airtime — an agenda item, a written brief — because silence can easily look like agreement to them.",
     },
     low: {
@@ -1209,17 +1209,17 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader is highly emotionally attuned, their mood typically carries through the team, and they take burdens seriously — including yours. They usually value honest signals, but time them: in a tense moment, bad news can amplify with them.",
     },
     low: {
-      hu: "Ha a vezetőd érzelmileg visszafogottabb, jellemzően kevés érzelmi visszaigazolást ad, és a „nincs hír” nála általában jó hír. Ha megerősítésre van szükséged, kérd explicit módon — magától ritkán jut eszébe, de jellemzően szívesen megadja.",
+      hu: "Ha a vezetőd érzelmileg visszafogottabb, jellemzően kevés érzelmi megerősítést ad, és a „nincs hír” nála általában jó hír. Ha megerősítésre van szükséged, kérd egyértelműen — magától ritkán jut eszébe, de jellemzően szívesen megadja.",
       en: "If your leader is more emotionally reserved, they typically give little emotional affirmation, and with them no news is usually good news. If you need reassurance, ask for it explicitly — it rarely occurs to them on their own, but they'll usually give it gladly.",
     },
   },
   H: {
     high: {
-      hu: "Ha a vezetőd erősen elvhű, jellemzően kiszámítható és fair, a szava kötelez — cserébe általában ugyanezt várja. A taktikázás és a szépített beszámoló nála sokat kockáztat, az őszinte hibabevallás viszont pontot ér: a rossz hír korai kimondása bizalmat építhet.",
+      hu: "Ha a vezetőd erősen elvhű, jellemzően kiszámítható és méltányos, tartja a szavát, és általában ugyanezt várja tőled is. A taktikázás és a szépített beszámoló könnyen rombolhatja a bizalmát, míg a hiba vagy a rossz hír korai, őszinte jelzése erősítheti azt.",
       en: "If your leader is strongly principled, they tend to be predictable and fair, bound by their word — usually expecting the same in return. Manoeuvring and polished reports risk a lot with them, while honest admission of error earns points: naming bad news early can build trust.",
     },
     low: {
-      hu: "Ha a vezetőd rugalmas prioritású, alkuképes típus, jellemzően gyorsan és pragmatikusan dönt, a hangsúlyai pedig a helyzettel együtt mozognak. A megállapodásaitokat érdemes írásban rögzíteni, mert a fókusza gyorsan mozdulhat tovább — és figyeld a kimondatlan szempontjait is.",
+      hu: "Ha a vezetőd pragmatikusan és rugalmasan kezeli a prioritásokat, jellemzően gyorsan dönt, a hangsúlyai pedig a helyzettel együtt változhatnak. Érdemes írásban rögzíteni a megállapodásaitokat, és rákérdezni a ki nem mondott szempontokra is.",
       en: "If your leader has flexible priorities and a deal-making style, they tend to decide fast and pragmatically, with emphases that move with the situation. It's worth putting your agreements in writing, because their focus can move on quickly — and watch for their unstated considerations too.",
     },
   },
@@ -1239,17 +1239,17 @@ export const LEADER_SUPPLEMENTS: Record<
       en: "If your leader leans strongly toward harmony, they tend to be patient and rarely sharp in criticism — watch for subtle signals, because their 'perhaps it might be worth' is often a firm request. Ask for concrete feedback, or you may only ever hear the good part.",
     },
     low: {
-      hu: "Ha a vezetőd nagyon direkt stílusú, az éle jellemzően nem személyes, hanem üzemmód — a vitát általában jól bírja, és sokra tartja, aki érvekkel szól vissza. Amit nehezebben kezel: a ki nem mondott sérelem és a néma visszahúzódás; nála a nyílt ellentmondás lehet a biztonságosabb út.",
+      hu: "Ha a vezetőd nagyon közvetlen stílusú, az éles hangnem jellemzően nem személyes, hanem a működésmódja része. A vitát általában jól bírja, és sokra tarthatja, ha érvekkel vitatkozol vele. A ki nem mondott sérelmet és a csendes visszahúzódást nehezebben érzékeli, ezért a nyílt ellentmondás lehet a biztonságosabb út.",
       en: "If your leader has a very direct style, the edge is typically a mode, not personal — they usually handle debate well and respect those who push back with arguments. What they handle less well is unspoken hurt and silent withdrawal; open disagreement may be the safer route with them.",
     },
   },
   O: {
     high: {
-      hu: "Ha a vezetőd erősen újító, az irányok nála gyakran váltanak, és a legutóbbi ötlet hangosabb lehet, mint a tavalyi stratégia. Kérdezd meg rendszeresen, mi fix és mi kísérlet — enélkül könnyen elköteleződésnek hallod a hangos gondolkodást is.",
+      hu: "Ha a vezetőd erősen újító, az irányok nála gyakran változhatnak, és a legfrissebb ötlet könnyen előtérbe kerülhet a korábbi stratégiához képest. Kérdezd meg rendszeresen, mi rögzített irány és mi csupán kísérlet — különben a hangos gondolkodást is elköteleződésként értelmezheted.",
       en: "If your leader is a strong innovator, directions tend to change often, and the latest idea can speak louder than last year's strategy. Regularly ask what's fixed and what's an experiment — otherwise you may hear every musing as a commitment.",
     },
     low: {
-      hu: "Ha a vezetőd inkább a bevált utakat követi, az újításról jellemzően bizonyíték győzi meg, nem lelkesedés. Vidd az ötleteidet számokkal és kis téttel — a „próbáljuk ki kicsiben” nála jellemzően kaput nyit, a „forradalmasítsuk” inkább bezárja.",
+      hu: "Ha a vezetőd inkább a bevált utakat követi, az újításról jellemzően a bizonyíték győzi meg, nem a lelkesedés. Az ötleteidet adatokkal és kis léptékű próbával vidd elé — a „próbáljuk ki kicsiben” várhatóan nyitottságot teremt, a „forradalmasítsuk” inkább ellenállást válthat ki.",
       en: "If your leader prefers proven paths, evidence typically persuades them where enthusiasm won't. Bring your ideas with numbers and low stakes — 'let's pilot it small' tends to open their door, while 'let's revolutionise' tends to close it.",
     },
   },

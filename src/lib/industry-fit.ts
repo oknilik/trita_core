@@ -21,17 +21,17 @@ export const INDUSTRIES: Industry[] = [
   { key: "education", hu: "Oktatás / képzés", en: "Education / training" },
   { key: "finance", hu: "Pénzügy / számvitel", en: "Finance / accounting" },
   { key: "sales", hu: "Értékesítés / ügyfélkapcsolat", en: "Sales / client relations" },
-  { key: "creative", hu: "Marketing / kreatív", en: "Marketing / creative" },
+  { key: "creative", hu: "Marketing / kreatív területek", en: "Marketing / creative" },
   { key: "operations", hu: "Gyártás / logisztika", en: "Manufacturing / logistics" },
   { key: "people", hu: "HR / szervezetfejlesztés", en: "HR / people" },
   { key: "public", hu: "Jog / közszféra", en: "Legal / public sector" },
-  { key: "engineering", hu: "Építőipar / mérnöki", en: "Construction / engineering" },
+  { key: "engineering", hu: "Építőipar / mérnöki területek", en: "Construction / engineering" },
   { key: "hospitality", hu: "Vendéglátás / turizmus", en: "Hospitality / tourism" },
   { key: "media", hu: "Média / kommunikáció", en: "Media / communications" },
   { key: "science", hu: "Tudomány / kutatás", en: "Science / research" },
-  { key: "trades", hu: "Szakmák / ipar", en: "Skilled trades" },
+  { key: "trades", hu: "Szakmunkák / ipar", en: "Skilled trades" },
   { key: "transport", hu: "Közlekedés / szállítmányozás", en: "Transport / logistics" },
-  { key: "services", hu: "Személyi szolgáltatás / wellness", en: "Personal services / wellness" },
+  { key: "services", hu: "Személyes szolgáltatások / jóllét", en: "Personal services / wellness" },
 ];
 
 export type CareerStatus = "studying" | "working" | "switching";
@@ -102,11 +102,11 @@ export interface InterestTag {
 }
 
 export const INTEREST_TAGS: InterestTag[] = [
-  { key: "nature", emoji: "🌿", hu: "Természet / kint lét", en: "Nature / outdoors", letters: ["R", "I"], industries: ["science", "trades"] },
+  { key: "nature", emoji: "🌿", hu: "Természet / szabadtéri tevékenységek", en: "Nature / outdoors", letters: ["R", "I"], industries: ["science", "trades"] },
   { key: "numbers", emoji: "🔢", hu: "Számok / elemzés", en: "Numbers / analysis", letters: ["I", "C"], industries: ["finance", "tech", "science"] },
   { key: "helping", emoji: "🧑‍🤝‍🧑", hu: "Emberek segítése", en: "Helping people", letters: ["S"], industries: ["health", "education", "people", "public"] },
   { key: "building", emoji: "🛠️", hu: "Építés / szerelés", en: "Building / fixing", letters: ["R"], industries: ["trades", "engineering", "transport"] },
-  { key: "design", emoji: "🎨", hu: "Alkotás / design", en: "Creating / design", letters: ["A"], industries: ["creative", "media"] },
+  { key: "design", emoji: "🎨", hu: "Alkotás / tervezés", en: "Creating / design", letters: ["A"], industries: ["creative", "media"] },
   { key: "teaching", emoji: "📚", hu: "Tanítás / tudásátadás", en: "Teaching / sharing knowledge", letters: ["S", "A"], industries: ["education"] },
   { key: "business", emoji: "💼", hu: "Üzlet / tárgyalás", en: "Business / negotiation", letters: ["E", "C"], industries: ["sales", "finance", "operations"] },
   { key: "research", emoji: "🧪", hu: "Kutatás / kísérletezés", en: "Research / experimenting", letters: ["I"], industries: ["science", "tech", "health"] },

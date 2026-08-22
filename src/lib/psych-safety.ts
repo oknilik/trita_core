@@ -220,15 +220,15 @@ export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = 
     en: "Create a regular, protected forum for sensitive topics — e.g. a monthly “what isn't working?” round that the leader opens with their own item. Hard topics surface when they have a designated place.",
   },
   PS2: {
-    hu: "Vezess be tanulság-fókuszú hibamegbeszélést: a „ki hibázott?” helyett „mit tanultunk, mit változtatunk?” — és a vezető ossza meg elsőként a saját hibáját.",
+    hu: "Vezess be olyan hibamegbeszélést, amely a tanulságokra összpontosít: a „ki hibázott?” helyett azt kérdezzétek: „Mit tanultunk, és min változtatunk?” A vezető ossza meg elsőként a saját hibáját.",
     en: "Introduce lesson-focused mistake reviews: replace “who failed?” with “what did we learn, what do we change?” — and have the leader share their own mistake first.",
   },
   PS3: {
-    hu: "Normalizáld a segítségkérést: legyen látható, ki min dolgozik és hol akadt el — például külön „elakadás” kör a heti megbeszélésen. Így a kérdezés rutin, nem kudarcjelzés.",
+    hu: "Tedd természetessé a segítségkérést: legyen látható, ki min dolgozik és hol akadt el — például tartsatok külön elakadáskört a heti megbeszélésen. Így a kérdezés a munka része, nem a kudarc jele.",
     en: "Normalize asking for help: make it visible who works on what and where they are stuck — e.g. a dedicated “blockers” round in the weekly meeting. Asking becomes routine, not a distress signal.",
   },
   PS4: {
-    hu: "Adj strukturált teret a kisebbségi véleménynek: döntések előtt kérj kifejezetten ellenvéleményt (kijelölt vitapartner-szerep, körkérdés) — így az eltérő nézet feladat, nem kockázat.",
+    hu: "Adj strukturált teret a kisebbségi véleménynek: döntések előtt kérj kifejezetten ellenvéleményt — például kijelölt vitapartnerrel vagy körkérdéssel. Így az eltérő nézet feladat lesz, nem személyes kockázat.",
     en: "Give structured space to minority views: before decisions, explicitly ask for dissent (a designated challenger role, a round-robin) — differing views become a task, not a risk.",
   },
   PS5: {
@@ -236,15 +236,15 @@ export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = 
     en: "Separate ideation from evaluation: hold sessions for raw ideas, and respond to every idea first with “what's good about it?” — filtering comes after.",
   },
   PS6: {
-    hu: "Tisztázd a szerep- és felelősséghatárokat, és kezeld nyíltan a rivalizálást: az aláásás jeleit a vezető négyszemközt, de következetesen címezze.",
+    hu: "Tisztázd a szerepek és felelősségek határait, és kezeld nyíltan a rivalizálást. A vezető az egymás munkáját aláásó viselkedést négyszemközt, de következetesen tegye szóvá.",
     en: "Clarify role and responsibility boundaries, and address rivalry openly: the leader should handle signs of undermining privately but consistently.",
   },
   PS7: {
-    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős (a trita-profilok erre valók), és delegáláskor mondd ki, miért pont ő kapja — a megbecsültség konkrétumokból épül.",
+    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős — a Trita-profilok ebben segítenek —, és a feladat kiosztásakor mondd ki, miért éppen ő kapja. A megbecsültség konkrét visszajelzésekből épül.",
     en: "Connect tasks to strengths: map who is strong at what (trita profiles serve this), and when delegating, say why this person gets it — feeling valued is built from specifics.",
   },
   PS8: {
-    hu: "Válaszd szét a vitát és a döntést: döntés előtt az egyet-nem-értés kötelező munka, döntés után közös képviselet („disagree and commit”).",
+    hu: "Válaszd szét a vitát és a döntést: döntés előtt legyen kötelező az ellenvélemények ütköztetése, döntés után pedig közösen képviseljétek és hajtsátok végre a döntést.",
     en: "Separate debate from decision: before the decision, disagreement is required work; after it, everyone represents the outcome (“disagree and commit”).",
   },
 };
@@ -291,7 +291,7 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
       en: "The leader reacts to dissent or a sensitive point instantly and emotionally — with defensiveness, edge or impatience. The team learns: raising hard topics is risky.",
     },
     antidote: {
-      hu: "Iktass be egy tudatos szünetet a reakció elé, és vitában térj vissza a tisztelethez: először ismerd el a felvetés jogosságát, csak utána vitatkozz a tartalmával. A saját trigger-helyzeteid ismerete (mikor csúszol reakcióba) az első lépés.",
+      hu: "Tarts tudatos szünetet, mielőtt reagálsz, és a vitában térj vissza a kölcsönös tisztelethez: először ismerd el, hogy a felvetésnek helye van, és csak utána vitatkozz a tartalmával. Első lépésként ismerd fel azokat a helyzeteket, amelyekben könnyen ösztönösen reagálsz.",
       en: "Insert a deliberate pause before reacting, and in conflict return to respect: first acknowledge the legitimacy of the point, only then debate its content. Knowing your own triggers (when you slip into reaction) is step one.",
     },
     itemIds: ["PS1", "PS8"],
@@ -304,7 +304,7 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
       en: "The leader is so sure of their own read that differing viewpoints feel like noise. The team unlearns thinking differently — why bother, if the answer is already fixed.",
     },
     antidote: {
-      hu: "Döntés előtt szerezd meg a teljes képet: kérdezz rá célzottan a hiányzó nézőpontokra („mit nem látok?”), és oszd meg a döntés gazdáját is — ahol közös a felelősség, ott az eltérő nézet erőforrás, nem támadás.",
+      hu: "Döntés előtt törekedj a teljes képre: kérdezz rá célzottan a hiányzó nézőpontokra — „mit nem látok?” —, és oszd meg a döntési felelősséget is. Ahol közös a felelősség, ott az eltérő nézet erőforrás lehet, nem támadás.",
       en: "Before deciding, get the full story: explicitly ask for the missing perspectives (“what am I not seeing?”), and share ownership of the decision — where responsibility is shared, a differing view is a resource, not an attack.",
     },
     itemIds: ["PS4", "PS5"],
@@ -313,11 +313,11 @@ export const PSYCH_SAFETY_LEADER_TRAPS: PsychSafetyLeaderTrap[] = [
     id: "SAY_DO_GAP",
     title: { hu: "Szó–tett rés", en: "Say–do gap" },
     trap: {
-      hu: "A kimondott értékek és a napi gyakorlat elcsúszik: a vezető nyíltságot hirdet, de a hibázást felrója, vagy szó nélkül hagyja, ha valaki mások munkáját aláássa. A csapat nem a szavaknak hisz, hanem annak, amit következmények szintjén lát.",
+      hu: "A kimondott értékek és a napi gyakorlat eltávolodhatnak egymástól: a vezető nyíltságot hirdet, de felrója a hibákat, vagy szó nélkül hagyja, ha valaki aláássa mások munkáját. A csapat nem a szavaknak hisz, hanem annak, amit a gyakorlatban tapasztal.",
       en: "Stated values and daily practice drift apart: the leader preaches openness but holds mistakes against people, or lets undermining pass without a word. The team believes not the words but what it sees at the level of consequences.",
     },
     antidote: {
-      hu: "A biztonságot tettekkel kell hitelesíteni: ha hibát tanulságként kezelni ígértél, az első éles helyzetben pontosan azt tedd; az aláásást pedig következetesen, minden alkalommal címezd. Egyetlen ellenpélda többet rombol, mint tíz jó kijelentés.",
+      hu: "A biztonságot tettekkel kell hitelesíteni: ha azt ígérted, hogy a hibákat tanulságként kezelitek, az első éles helyzetben is így járj el; az egymás munkáját aláásó viselkedést pedig minden alkalommal következetesen kezeld. Egyetlen ellenpélda többet rombolhat, mint amennyit tíz jó kijelentés épít.",
       en: "Safety must be validated by action: if you promised to treat mistakes as lessons, do exactly that in the first live case; and address undermining consistently, every single time. One counterexample destroys more than ten good statements build.",
     },
     itemIds: ["PS2", "PS6"],

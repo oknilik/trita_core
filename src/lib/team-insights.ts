@@ -27,7 +27,7 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   // pólus pozitív címkéjét adta „fejlesztési irányként" — szemantikai
   // inverzió, nyelvi kör 2026-08).
   const dimNames: Record<string, string> = {
-    H: "fairness-érzékenység",
+    H: "méltányosság iránti érzékenység",
     E: "érzelmi érzékenység",
     X: "társas energia",
     A: "együttműködési készség",
@@ -39,7 +39,7 @@ export function generateTeamSummary(scores: Record<string, number>): string {
   const h2 = dimNames[secondHighest[0]] ?? secondHighest[0];
   const l = dimNames[lowest[0]] ?? lowest[0];
 
-  return `A csapatprofil két legmagasabb átlagú dimenziója ${withHuArticle(h)} (${highest[1]}%) és ${withHuArticle(h2)} (${secondHighest[1]}%). A legalacsonyabb csapatátlag ${withHuArticle(l)} (${lowest[1]}%) — érdemes megnézni, hogy a szerep igényeihez ez elég-e.`;
+  return `A csapatprofil két legmagasabb átlagú dimenziója ${withHuArticle(h)} (${highest[1]}%) és ${withHuArticle(h2)} (${secondHighest[1]}%). A legalacsonyabb csapatátlagot ${withHuArticle(l)} területén mértük (${lowest[1]}%) — érdemes megvizsgálni, hogy ez mennyire felel meg a csapat feladatainak.`;
 }
 
 // ── Kulcs jellemzők actionable insight-ok ─────────────────
@@ -51,12 +51,12 @@ export function generateTeamSummary(scores: Record<string, number>): string {
 // teljessége miatt marad, jellemző-keretezésben, hozadékkal ÉS árral.
 export function getStrengthInsight(dimension: string): string {
   const insights: Record<string, string> = {
-    H: "A csapat ösztönösen méltányos döntéseket hoz — használd ki a belső mediátorok erejét.",
+    H: "A csapat jellemzően méltányosságra törekszik a döntésekben — építs erre a nehezebb egyeztetéseknél is.",
     E: "Érzelmileg ráhangolódó csapat — a feszültséget korán érzik, és tartós nyomás alatt gyorsabban is fáradnak.",
-    X: "Társas helyzetekben gyorsan aktiválható — workshopokon, prezentációknál kiváló.",
-    A: "Erős együttműködés — komplex projekteknél kevesebb koordinációra lehet szükség.",
+    X: "A csapat társas helyzetekben gyorsan lendületbe jön — műhelymunkákon és prezentációknál ez különösen hasznos lehet.",
+    A: "A csapat erősen törekszik az együttműködésre — ez összetett projekteknél csökkentheti az egyeztetési terhet.",
     C: "Fegyelmezett végrehajtás — határidős projekteknél ez jellemzően erőforrás.",
-    O: "Nyitott az újra — innovációs sprintek és kísérletezés természetes közeg nekik.",
+    O: "A csapat nyitott az újra — a rövid kísérleti szakaszok és az új megoldások kipróbálása természetes közeget jelenthetnek számára.",
   };
   return insights[dimension] ?? "";
 }
@@ -65,10 +65,10 @@ export function getWatchAreaInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "Figyelj a csapaton belüli méltányosságérzetre — érdemes rendszeres visszajelző kört tartani.",
     E: "Érzelmileg ráhangolódóbb dinamika — konfliktushelyzetben érdemes lassabb tempót tartani.",
-    X: "Visszafogottabb csapat — az aktiváláshoz tudatos energizálás kell a megbeszéléseken.",
-    A: "Direkt kommunikáció — konfliktusnál gyorsabban eszkalálódhat. Strukturált vitaformátum segít.",
-    C: "Rugalmas, de kaotikus lehet — enyhe struktúra bevezetése javít a kiszámíthatóságon.",
-    O: "Pragmatikus fókusz — az innovációhoz külső impulzus (workshop, vendégelőadó) kell.",
+    X: "A csapat visszafogottabb — a megbeszéléseken tudatos bevonás és az egyeztetések egyértelmű indítása segíthet.",
+    A: "A közvetlen kommunikáció miatt a konfliktusok gyorsabban kiéleződhetnek. Egy előre kialakított vitakeret segíthet.",
+    C: "A csapat rugalmas, de könnyen széttartóvá válhat — egyszerű közös keretekkel javítható a kiszámíthatóság.",
+    O: "A gyakorlatias szemlélet mellett külső nézőpont adhat lendületet az újításnak, például műhelymunka vagy vendégelőadó bevonása.",
   };
   return insights[dimension] ?? "";
 }
@@ -77,9 +77,9 @@ export function getDiversityInsight(dimension: string): string {
   const insights: Record<string, string> = {
     H: "Eltérő igazságérzet — érdemes tudatosan tisztázni a csapat normáit.",
     E: "Eltérő érzelmi ráhangolódás — érdemes személyre szabottan támogatnod a tagokat.",
-    X: "Eltérő energiaszintek — az introvertáltak és extravertáltak külön figyelmet igényelnek a megbeszélések formátumánál.",
-    A: "Eltérő együttműködési stílusok — a páros munkában érdemes tudatosan keverni.",
-    C: "Eltérő szervezettség — közös minimum-szabályok kellenek a koordinációhoz.",
+    X: "A csapaton belül eltérnek az energiaszintek — a visszafogottabb és az energikusabb tagok igényeit is érdemes figyelembe venni a megbeszélések kialakításakor.",
+    A: "A csapaton belül eltérnek az együttműködési stílusok — páros munkában érdemes tudatosan különböző működésű tagokat összekapcsolni.",
+    C: "A csapaton belül eltér a tagok szervezettsége — a koordinációhoz néhány közös alapszabályra van szükség.",
     O: "Eltérő nyitottság új megközelítésekre — az innováció és a stabilitás igénye egyaránt jelen van.",
   };
   return insights[dimension] ?? "";

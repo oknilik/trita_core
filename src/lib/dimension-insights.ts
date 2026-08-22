@@ -27,18 +27,18 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
   // P5.1: viselkedési preferencia, nem erkölcsi ítélet — a „manipulációmentes"
   // implicit módon morálisan minősítette az alacsonyabb pólust.
   H: {
-    hu: "Jellemzően nyílt lapokkal, közvetlen eszközökkel dolgozol",
+    hu: "Jellemzően nyíltan és egyenesen működsz",
     en: "You tend to work with open cards and direct means",
   },
   // Jellemző-keretezés, nem erősség-keretezés (ld. fejléc): a mondat leír,
   // nem dicsér, és a hozadék mellett az árát is kimondja — így a hero nem
   // mond ellent a lentebbi facet-bontásnak (Szorongás/Félelem).
   E: {
-    hu: "Többnyire hamar megérzed a helyzetek érzelmi töltetét, és sokat viszel magaddal belőle",
+    hu: "Többnyire hamar megérzed a helyzetek érzelmi töltetét, és sokáig viszed magaddal a hatásukat",
     en: "You tend to pick up a situation's emotional charge early, and carry a lot of it with you",
   },
   X: {
-    hu: "Jellemzően energikusan és inspirálóan vagy jelen",
+    hu: "Jellemzően energiát és lendületet viszel a közös munkába",
     en: "You typically bring energy and inspiration to your interactions",
   },
   A: {
@@ -50,7 +50,7 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
     en: "You tend to work systematically and responsibly",
   },
   O: {
-    hu: "Többnyire kísérletezően és stratégiailag gondolkodsz",
+    hu: "Szívesen kísérletezel, és összefüggésekben gondolkodsz",
     en: "You tend to think experimentally and strategically",
   },
 };
@@ -67,11 +67,11 @@ export const DIMENSION_STRENGTH_VERBS: Record<string, Record<Locale, string>> = 
  */
 export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
   H: {
-    hu: "a státusz és pozíció természetesebb tereped",
+    hu: "a verseny és az önérvényesítés természetesebb tereped",
     en: "status and positioning come more naturally to you",
   },
   E: {
-    hu: "a higgadtság megőrzése természetesebb, mint mások érzelmi jelzéseinek olvasása",
+    hu: "könnyebben őrzöd meg a higgadtságodat, miközben a finom érzelmi jelzéseket ritkábban veszed észre",
     en: "staying level comes more naturally than reading others' emotional signals",
   },
   X: {
@@ -79,7 +79,7 @@ export const DIMENSION_WEAK_VERBS: Record<string, Record<Locale, string>> = {
     en: "social visibility is less natural for you",
   },
   A: {
-    hu: "a konfliktusos helyzetekben élesebb reakciók jellemzőek",
+    hu: "konfliktusban gyorsabban és élesebben reagálhatsz",
     en: "you tend to react more sharply in conflict",
   },
   C: {
