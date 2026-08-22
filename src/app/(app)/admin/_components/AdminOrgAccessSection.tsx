@@ -7,6 +7,8 @@ import {
   type OrgBillingProfile,
 } from "@/lib/org-billing";
 import { AdminListControls } from "@/app/(app)/admin/_components/AdminListControls";
+import { t } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 
 interface OrgRow {
   id: string;
@@ -130,6 +132,7 @@ export function AdminOrgAccessSection({ orgs }: Props) {
     },
   ) {
     setRowState((s) => ({ ...s, [orgId]: { loading: true, error: null } }));
+    let userMessage = t(presentUserError({ code: "NETWORK_ERROR" }), "hu");
     try {
       const res = await fetch("/api/admin/org-access", {
         method: "POST",
@@ -145,22 +148,25 @@ export function AdminOrgAccessSection({ orgs }: Props) {
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
         const code = data.error as string | undefined;
-        const message =
-          code === "USER_NOT_FOUND"
-            ? "Nincs ilyen email-című felhasználó."
-            : code === "ALREADY_MEMBER"
-              ? "Ez a felhasználó már tagja a szervezetnek más szerepben."
-              : code ?? "Hiba történt";
-        throw new Error(message);
+        const key = presentUserError({
+          code,
+          status: res.status,
+          overrides: {
+            USER_NOT_FOUND: "userErrors.notFound",
+            ALREADY_MEMBER: "userErrors.conflict",
+          },
+        });
+        userMessage = t(key, "hu");
+        throw new Error("ORG_ACCESS_REQUEST_FAILED");
       }
       setRowState((s) => ({ ...s, [orgId]: { loading: false, error: null } }));
       router.refresh();
-    } catch (err) {
+    } catch {
       setRowState((s) => ({
         ...s,
         [orgId]: {
           loading: false,
-          error: err instanceof Error ? err.message : "Hiba történt",
+          error: userMessage,
         },
       }));
     }

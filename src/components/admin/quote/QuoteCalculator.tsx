@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { t } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import {
   calculateQuote,
@@ -247,17 +249,24 @@ export function QuoteCalculator({
   async function saveRates() {
     setSaving(true);
     setSaveError(null);
+    let userMessage = t(presentUserError({ code: "NETWORK_ERROR" }), "hu");
     try {
       const res = await fetch("/api/admin/quote/rates", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(rate),
       });
-      const body = (await res.json()) as { issues?: string[] };
-      if (!res.ok) throw new Error(body.issues?.join(", ") || "Sikertelen mentés");
+      await res.json();
+      if (!res.ok) {
+        userMessage = t(
+          presentUserError({ status: res.status, fallbackKey: "userErrors.saveFailed" }),
+          "hu",
+        );
+        throw new Error("RATE_SAVE_FAILED");
+      }
       setSaved(true);
-    } catch (error) {
-      setSaveError(error instanceof Error ? error.message : "Sikertelen mentés");
+    } catch {
+      setSaveError(userMessage);
     } finally {
       setSaving(false);
     }

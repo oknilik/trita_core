@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
 import { SelectField } from "@/components/ui/primitives/SelectField";
+import { t } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 
 export type IssueStatus = "DRAFT" | "READY" | "SENDING" | "PARTIAL" | "SENT" | "FAILED";
 
@@ -117,7 +119,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
       }
       return data;
     } catch {
-      setMessage("A művelet nem sikerült — nézd meg a szerver-naplót.");
+      setMessage(t(presentUserError({ code: "NETWORK_ERROR" }), "hu"));
       return null;
     } finally {
       setBusy(false);

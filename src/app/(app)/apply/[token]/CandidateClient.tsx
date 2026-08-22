@@ -299,7 +299,7 @@ export function CandidateClient({
           setPhase("done");
           return;
         }
-        throw new Error(data.error ?? "SUBMIT_ERROR");
+        throw new Error("SUBMIT_ERROR");
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* noop */ }
       // Opcionális 2. lépés: csapatszerep-kérdőív (átugorható) — a
@@ -444,7 +444,7 @@ export function CandidateClient({
           // Már beküldött / visszavont állapotnál csendben zárunk —
           // a jelölt szempontjából a folyamat kész.
           if (data.error !== "ALREADY_USED" && data.error !== "REVOKED") {
-            throw new Error(data.error ?? "SUBMIT_ERROR");
+            throw new Error("SUBMIT_ERROR");
           }
         }
         setPhase("done");

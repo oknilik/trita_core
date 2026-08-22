@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { t, type Locale } from "@/lib/i18n";
+import { presentUserError } from "@/lib/user-errors";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
 
@@ -30,13 +31,13 @@ export function TeamCreateForm({ locale, orgId }: TeamCreateFormProps) {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error ?? "ERROR");
+        setError(t(presentUserError({ code: data.error, status: res.status }), locale));
         return;
       }
       const { team } = await res.json();
       router.push(`/team/${team.id}`);
     } catch {
-      setError("ERROR");
+      setError(t(presentUserError({ code: "NETWORK_ERROR" }), locale));
     } finally {
       setLoading(false);
     }
@@ -52,7 +53,7 @@ export function TeamCreateForm({ locale, orgId }: TeamCreateFormProps) {
         placeholder={t("manager.teamCreate.placeholder", locale)}
         maxLength={80}
         disabled={loading}
-        error={error ? t("manager.teamCreate.error", locale) : undefined}
+        error={error ?? undefined}
       />
       <Button
         type="submit"

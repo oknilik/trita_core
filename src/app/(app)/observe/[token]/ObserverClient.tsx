@@ -488,6 +488,7 @@ export function ObserverClient({
     }
     if (isSubmitting) return;
     setIsSubmitting(true);
+    let userMessage = t("observer.saveError", locale);
     try {
       const payload = {
         token,
@@ -512,9 +513,9 @@ export function ObserverClient({
           return;
         }
         const message = t(`error.${code}`, locale);
-        throw new Error(
-          message !== `error.${code}` ? message : t("observer.genericError", locale),
-        );
+        userMessage =
+          message !== `error.${code}` ? message : t("observer.genericError", locale);
+        throw new Error("OBSERVER_SUBMIT_FAILED");
       }
       try { localStorage.removeItem(DRAFT_KEY); } catch {}
       fetch("/api/observer/draft", {
@@ -525,10 +526,7 @@ export function ObserverClient({
       setPhase("done");
     } catch (error) {
       log.warn({ event: "observer.submit_failed", err: error }, "Observer flow error");
-      showToast(
-        error instanceof Error ? error.message : t("observer.saveError", locale),
-        "error",
-      );
+      showToast(userMessage, "error");
     } finally {
       setIsSubmitting(false);
     }

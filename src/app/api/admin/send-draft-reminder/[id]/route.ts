@@ -14,7 +14,7 @@ export async function POST(
   try {
     await requireAdmin();
   } catch {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
   const { id } = await params;
@@ -27,10 +27,10 @@ export async function POST(
   });
 
   if (!draft) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
   if (!draft.userProfile.email) {
-    return NextResponse.json({ error: "User has no email" }, { status: 400 });
+    return NextResponse.json({ error: "EMAIL_MISSING" }, { status: 400 });
   }
 
   // Verify user has no completed assessment already
@@ -38,7 +38,7 @@ export async function POST(
     where: { userProfileId: draft.userProfileId },
   });
   if (hasResult) {
-    return NextResponse.json({ error: "User already completed assessment" }, { status: 400 });
+    return NextResponse.json({ error: "ASSESSMENT_ALREADY_COMPLETED" }, { status: 400 });
   }
 
   const locale = normalizeLocale(draft.userProfile.locale);
