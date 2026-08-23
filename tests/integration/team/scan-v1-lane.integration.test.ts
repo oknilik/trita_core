@@ -39,6 +39,7 @@ import { buildTeamTrustNetwork, hasRaterCoveredTeamTrust } from "@/lib/trust-net
 import { TRUST_MIN_RATERS, type TrustAnswerSet } from "@/lib/trust-network";
 import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
 import { CAMPAIGN_PRESETS } from "@/lib/campaign-steps-core";
+import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
 
 function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 12)}`;
@@ -176,7 +177,7 @@ test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => 
 });
 
 test("a kitöltöttség a résztvevő-rekordon jelenik meg, ÉRTÉK nélkül", async () => {
-  const { campaign, teamId, members } = await createScanV1Fixture(3);
+  const { campaign, members } = await createScanV1Fixture(3);
   const filler = members[0];
 
   await prisma.psychSafetyResponse.create({
@@ -201,8 +202,32 @@ test("a kitöltöttség a résztvevő-rekordon jelenik meg, ÉRTÉK nélkül", a
   assert.ok(!JSON.stringify(participantColumns).includes("PS1"), "válaszérték szivárgott a résztvevőre");
 });
 
+test("két párhuzamos pulse-beküldésből pontosan egy anonim válasz jön létre", async () => {
+  const { campaign, members } = await createScanV1Fixture(3);
+  const participant = await prisma.campaignParticipant.update({
+    where: { campaignId_userId: { campaignId: campaign.id, userId: members[0].id } },
+    data: { currentStep: 2 },
+    select: { id: true },
+  });
+
+  const submit = () =>
+    recordAnonymousPsychSafetyResponse({
+      participantId: participant.id,
+      campaignId: campaign.id,
+      answers: pulseAnswers(4),
+      submittedOn: dayTruncated(),
+    });
+  const outcomes = await Promise.all([submit(), submit()]);
+
+  assert.deepEqual(outcomes.sort(), [false, true]);
+  assert.equal(
+    await prisma.psychSafetyResponse.count({ where: { campaignId: campaign.id } }),
+    1,
+  );
+});
+
 test("az anonimitás-padló a valódi adatbázis-adatból is áll", async () => {
-  const { campaign, teamId } = await createScanV1Fixture(5);
+  const { campaign } = await createScanV1Fixture(5);
 
   // Padló ALATT: PSYCH_SAFETY_MIN_RESPONSES − 1 válasz.
   for (let index = 0; index < PSYCH_SAFETY_MIN_RESPONSES - 1; index += 1) {
@@ -428,12 +453,53 @@ test("egy nem soron lévő lépés teljesítése nem lépteti előre a résztvev
   assert.equal(currentStep, 0, "sorrenden kívüli teljesítés léptette a résztvevőt");
 });
 
+test("egy lépésteljesítés nem léptet másik aktív kampányt", async () => {
+  const { orgId, teamId, campaign, members, ownerId } = await createScanV1Fixture(3);
+  const participant = members[0];
+  await prisma.campaignParticipant.update({
+    where: { campaignId_userId: { campaignId: campaign.id, userId: participant.id } },
+    data: { currentStep: 1 },
+  });
+  const other = await prisma.campaign.create({
+    data: {
+      orgId,
+      name: `Parallel ${makeId("c")}`,
+      presetId: "SCAN_V1",
+      type: CAMPAIGN_PRESETS.SCAN_V1.steps[0],
+      steps: [...CAMPAIGN_PRESETS.SCAN_V1.steps],
+      teamId,
+      teamIds: [teamId],
+      status: "ACTIVE",
+      activatedAt: new Date(),
+      stepIntervalHours: 0,
+      createdBy: ownerId,
+      participants: { create: { userId: participant.id, currentStep: 1 } },
+    },
+    select: { id: true },
+  });
+
+  await advanceCampaignStepForUser(participant.id, "TRUST_360", {
+    campaignId: campaign.id,
+  });
+
+  const states = await prisma.campaignParticipant.findMany({
+    where: { userId: participant.id, campaignId: { in: [campaign.id, other.id] } },
+    select: { campaignId: true, currentStep: true },
+  });
+  assert.equal(states.find((row) => row.campaignId === campaign.id)?.currentStep, 2);
+  assert.equal(states.find((row) => row.campaignId === other.id)?.currentStep, 1);
+});
+
 // ─────────────────────────────────────────────────────────────────────
 // 4. Riport — a publikált pillanatkép befagy
 // ─────────────────────────────────────────────────────────────────────
 
 test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástól", async () => {
   const { campaign, teamId, ownerId } = await createScanV1Fixture(4);
+  await prisma.campaign.update({
+    where: { id: campaign.id },
+    data: { status: "CLOSED", closedAt: new Date() },
+  });
 
   for (let index = 0; index < 3; index += 1) {
     await prisma.psychSafetyResponse.create({
@@ -451,6 +517,7 @@ test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástó
   const report = await prisma.teamReport.create({
     data: {
       teamId,
+      campaignId: campaign.id,
       status: "PUBLISHED",
       title: "Baseline",
       aggregates: { psychSafety: { index: snapshot.index, count: snapshot.count } },
@@ -493,10 +560,20 @@ test("a publikált riport aggregátuma nem mozdul az utólagos adatváltozástó
 });
 
 test("a Scan v1 riport-lánc: DRAFT → PUBLISHED, akcióelem célmutatóval", async () => {
-  const { teamId, ownerId } = await createScanV1Fixture(3);
+  const { campaign, teamId, ownerId } = await createScanV1Fixture(3);
+  await prisma.campaign.update({
+    where: { id: campaign.id },
+    data: { status: "CLOSED", closedAt: new Date() },
+  });
 
   const draft = await prisma.teamReport.create({
-    data: { teamId, status: "DRAFT", title: "Vázlat", createdById: ownerId },
+    data: {
+      teamId,
+      campaignId: campaign.id,
+      status: "DRAFT",
+      title: "Vázlat",
+      createdById: ownerId,
+    },
     select: { id: true, status: true, publishedAt: true },
   });
   assert.equal(draft.status, "DRAFT");
@@ -514,7 +591,7 @@ test("a Scan v1 riport-lánc: DRAFT → PUBLISHED, akcióelem célmutatóval", a
           title: "Heti retró bevezetése",
           description: "Minden pénteken 30 perc.",
           timeframe: "30",
-          targetMetric: "psych_safety_index",
+          targetMetric: { kind: "psych_safety_index" },
         },
       ],
     },
@@ -524,7 +601,7 @@ test("a Scan v1 riport-lánc: DRAFT → PUBLISHED, akcióelem célmutatóval", a
   assert.equal(published.status, "PUBLISHED");
   assert.ok(published.publishedAt, "publikáláskor nem került rá időbélyeg");
 
-  const actions = published.actionItems as Array<{ targetMetric?: string }>;
+  const actions = published.actionItems as Array<{ targetMetric?: { kind?: string } }>;
   assert.equal(actions.length, 1);
-  assert.equal(actions[0].targetMetric, "psych_safety_index");
+  assert.equal(actions[0].targetMetric?.kind, "psych_safety_index");
 });

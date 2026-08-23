@@ -8,7 +8,7 @@ import {
   createCandidateApplyInvite,
 } from "@/lib/candidate-apply/service";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
 const bodySchema = z.object({
   email: z.string().email().optional(),

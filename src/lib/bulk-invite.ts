@@ -61,30 +61,41 @@ export const bulkInviteSchema = z.object({
  * valódi problémákat.
  */
 export function parseEmailList(raw: string): { emails: string[]; invalid: string[] } {
-  const tokens = raw
-    .split(/[\s,;]+/)
-    .map((token) => token.trim())
-    .filter(Boolean);
-
   const emails: string[] = [];
   const invalid: string[] = [];
   const seen = new Set<string>();
 
-  for (const token of tokens) {
-    // `Név <cim@pelda.hu>` → `cim@pelda.hu`
-    const angled = token.match(/<([^>]+)>/);
-    const candidate = (angled ? angled[1] : token).replace(/^[<"']+|[>"',.]+$/g, "").toLowerCase();
+  const addCandidate = (rawCandidate: string, invalidLabel = rawCandidate) => {
+    const candidate = rawCandidate.replace(/^[<"']+|[>"',.]+$/g, "").toLowerCase();
 
-    if (!candidate) continue;
+    if (!candidate) return;
 
     if (!z.string().email().safeParse(candidate).success) {
-      if (!invalid.includes(token)) invalid.push(token);
+      if (!invalid.includes(invalidLabel)) invalid.push(invalidLabel);
+      return;
+    }
+
+    if (seen.has(candidate)) return;
+    seen.add(candidate);
+    emails.push(candidate);
+  };
+
+  // Előbb a valódi listaelválasztók mentén bontunk. Ha egy szegmensben van
+  // `Név <email>` alak, a szögletes részeket kivesszük, a körülöttük lévő
+  // több szavas megjelenítési nevet pedig nem jelentjük hibás címként.
+  for (const segment of raw.split(/[,;\n\r\t]+/).map((part) => part.trim()).filter(Boolean)) {
+    const angled = [...segment.matchAll(/<([^>]+)>/gu)];
+    if (angled.length > 0) {
+      for (const match of angled) addCandidate(match[1], match[0]);
+      const remainder = segment.replace(/<[^>]+>/gu, " ");
+      const standaloneEmails = remainder.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/giu) ?? [];
+      for (const email of standaloneEmails) addCandidate(email);
       continue;
     }
 
-    if (seen.has(candidate)) continue;
-    seen.add(candidate);
-    emails.push(candidate);
+    for (const token of segment.split(/\s+/u).filter(Boolean)) {
+      addCandidate(token);
+    }
   }
 
   return { emails, invalid };

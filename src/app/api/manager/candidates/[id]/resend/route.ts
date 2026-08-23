@@ -6,7 +6,7 @@ import { sendCandidateInviteEmail } from "@/lib/emails";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getServerLocale } from "@/lib/i18n-server";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
 // POST /api/manager/candidates/[id]/resend — jelölt-meghívó újraküldése.
 // Guard (2026-07-23): csak a tanácsadói kör (ORG_CONSULTANT / platform-

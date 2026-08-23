@@ -13,7 +13,7 @@ import { sendErrorAlert } from "@/lib/error-alert";
 
 const log = createLogger("unhandled");
 
-export const onRequestError: Instrumentation.onRequestError = (
+export const onRequestError: Instrumentation.onRequestError = async (
   err,
   request,
   context,
@@ -37,10 +37,11 @@ export const onRequestError: Instrumentation.onRequestError = (
     "Unhandled server error",
   );
 
-  // Fire-and-forget: a riasztás sem késleltetni, sem elrontani nem tudja a
-  // kérés kiszolgálását (a modul maga nyeli a hibáit).
+  // Az instrumentation hook Promise-át a runtime életben tartja. A modul a
+  // webhook hibáját továbbra is elnyeli, de a serverless request nem ér véget
+  // a kézbesítési kísérlet előtt.
   const error = err as { name?: string; message?: string; digest?: string };
-  void sendErrorAlert({
+  await sendErrorAlert({
     event: "server.unhandled_error",
     origin: "server",
     // A `routePath` a minta (`/team/[id]`), nem a konkrét URL — így az

@@ -8,13 +8,14 @@ import { hasOrgRole } from "@/lib/auth";
 import { resolveOrgCapabilityDecision, resolveOrgPolicySnapshot } from "@/lib/policy-service";
 import { getRequestLogger } from "@/lib/logger.server";
 import { getServerLocale } from "@/lib/i18n-server";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   BULK_INVITE_BATCH_SIZE,
   type BulkInviteResult,
   type BulkInviteStatus,
 } from "@/lib/bulk-invite";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
 const ORG_ROLE = z.enum(["ORG_ADMIN", "ORG_MANAGER", "ORG_MEMBER"]);
 
@@ -80,6 +81,9 @@ export async function POST(
       { status: 403 },
     );
   }
+
+  const rateLimited = await checkRateLimit("contact", `org-invite:${orgId}:${profile.id}`);
+  if (rateLimited) return rateLimited;
 
   // Verify org exists and is active
   const org = await prisma.organization.findUnique({

@@ -8,6 +8,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { resolveOrgCapabilityDecision, resolveTeamPolicySnapshot } from "@/lib/policy-service";
 import { hasOrgRole } from "@/lib/org-roles";
 import { getRequestLogger } from "@/lib/logger.server";
+import { checkRateLimit } from "@/lib/rate-limit";
 import {
   BULK_INVITE_BATCH_SIZE,
   type BulkInviteResult,
@@ -83,6 +84,9 @@ export async function POST(
       { status: 403 },
     );
   }
+
+  const rateLimited = await checkRateLimit("contact", `team-invite:${teamId}:${profile.id}`);
+  if (rateLimited) return rateLimited;
 
   // Kemény szerep-háló (defense-in-depth): a policy-enforcement kill-switch
   // kikapcsolása ne engedje az e-mailes meghívót admin-paritás alatt.

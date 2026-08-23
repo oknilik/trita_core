@@ -8,6 +8,7 @@ import {
   buildDraftNarrativePrefill,
   buildTeamReportAggregates,
   serializeTeamReport,
+  validateTeamReportForPublish,
 } from "@/lib/team-report";
 import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
 
@@ -77,6 +78,22 @@ const patchSchema = z.object({
   ...narrativeFields,
 });
 
+const createSchema = z.object({ campaignId: z.string().min(1) });
+
+async function validateReportCampaign(teamId: string, orgId: string, campaignId: string) {
+  const campaign = await prisma.campaign.findFirst({
+    where: { id: campaignId, orgId },
+    select: { id: true, status: true, presetId: true, teamId: true, teamIds: true },
+  });
+  if (!campaign) return "REPORT_CAMPAIGN_NOT_FOUND" as const;
+  if (campaign.status !== "CLOSED") return "REPORT_CAMPAIGN_NOT_CLOSED" as const;
+  if (campaign.presetId !== "SCAN_V1") return "REPORT_CAMPAIGN_NOT_SCAN_V1" as const;
+  if (campaign.teamId !== teamId && !campaign.teamIds.includes(teamId)) {
+    return "REPORT_CAMPAIGN_TEAM_MISMATCH" as const;
+  }
+  return null;
+}
+
 async function requireConsultant(teamId: string) {
   const { userId } = await auth();
   if (!userId) return { error: "UNAUTHORIZED" as const, status: 401 };
@@ -107,7 +124,7 @@ async function requireConsultant(teamId: string) {
 
 // POST /api/team/[id]/report — új riport-vázlat (aggregátum-előnézettel)
 export async function POST(
-  _req: Request,
+  req: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id: teamId } = await params;
@@ -116,19 +133,39 @@ export async function POST(
     return NextResponse.json({ error: ctx.error }, { status: ctx.status });
   }
 
-  // Idempotens: ha már van vázlat, azt adjuk vissza — nem nyitunk másodikat.
-  const existingDraft = await prisma.teamReport.findFirst({
-    where: { teamId, status: "DRAFT" },
-    orderBy: { createdAt: "desc" },
-  });
-  if (existingDraft) {
-    return NextResponse.json({
-      ok: true,
-      report: serializeTeamReport(existingDraft, { includeInternalNotes: true }),
-    });
+  const parsed = createSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: "REPORT_CAMPAIGN_REQUIRED" }, { status: 400 });
+  }
+  const { campaignId } = parsed.data;
+  const campaignError = await validateReportCampaign(teamId, ctx.orgId, campaignId);
+  if (campaignError) {
+    return NextResponse.json({ error: campaignError }, { status: 409 });
   }
 
-  const aggregates = await buildTeamReportAggregates(teamId);
+  // Kampányonként és csapatonként egyetlen riport lehet. Másik nyitott
+  // vázlatot nem veszünk át csendben, mert az másik mérési körből származhat.
+  const existingReport = await prisma.teamReport.findFirst({
+    where: { teamId, campaignId },
+    orderBy: { createdAt: "desc" },
+  });
+  if (existingReport) {
+    return NextResponse.json({
+      ok: true,
+      report: serializeTeamReport(existingReport, { includeInternalNotes: true }),
+    });
+  }
+  const otherDraft = await prisma.teamReport.findFirst({
+    where: { teamId, status: "DRAFT" },
+    select: { id: true },
+  });
+  if (otherDraft) {
+    return NextResponse.json({ error: "DRAFT_EXISTS" }, { status: 409 });
+  }
+
+  const aggregates = await buildTeamReportAggregates(teamId, {
+    assessmentCampaignId: campaignId,
+  });
   if (!aggregates) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
@@ -137,9 +174,12 @@ export async function POST(
   // szerkeszthető kiindulópontot kap, nem üres űrlapot.
   const prefill = buildDraftNarrativePrefill(aggregates);
 
-  const report = await prisma.teamReport.create({
-    data: {
+  const report = await prisma.teamReport.upsert({
+    where: { campaignId_teamId: { campaignId, teamId } },
+    update: {},
+    create: {
       teamId,
+      campaignId,
       orgId: ctx.orgId,
       status: "DRAFT",
       aggregates: aggregates as object,
@@ -222,7 +262,15 @@ export async function PATCH(
 
   const existing = await prisma.teamReport.findFirst({
     where: { id: reportId, teamId },
-    select: { id: true, status: true },
+    select: {
+      id: true,
+      status: true,
+      campaignId: true,
+      title: true,
+      summary: true,
+      recommendations: true,
+      actionItems: true,
+    },
   });
   if (!existing) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
@@ -278,13 +326,33 @@ export async function PATCH(
   }
 
   if (action === "publish") {
+    if (!existing.campaignId) {
+      return NextResponse.json({ error: "REPORT_CAMPAIGN_REQUIRED" }, { status: 409 });
+    }
+    const campaignError = await validateReportCampaign(teamId, ctx.orgId, existing.campaignId);
+    if (campaignError) {
+      return NextResponse.json({ error: campaignError }, { status: 409 });
+    }
     // Publikáláskor frissítjük ÉS befagyasztjuk az aggregátumokat.
-    const aggregates = await buildTeamReportAggregates(teamId);
+    const aggregates = await buildTeamReportAggregates(teamId, {
+      assessmentCampaignId: existing.campaignId,
+    });
+    const publishError = validateTeamReportForPublish({
+      campaignId: existing.campaignId,
+      aggregates,
+      title: fields.title ?? existing.title,
+      summary: fields.summary ?? existing.summary,
+      recommendations: fields.recommendations ?? existing.recommendations,
+      actionItems: fields.actionItems ?? existing.actionItems,
+    });
+    if (publishError) {
+      return NextResponse.json({ error: publishError }, { status: 409 });
+    }
     const report = await prisma.teamReport.update({
       where: { id: reportId },
       data: {
         ...narrativeData,
-        aggregates: (aggregates ?? undefined) as object | undefined,
+        aggregates: aggregates as object,
         status: "PUBLISHED",
         publishedAt: new Date(),
         publishedById: ctx.profileId,
@@ -313,7 +381,11 @@ export async function PATCH(
   // "preview" mentéskor az aggregátumokat is újraépítjük, hogy az előnézet
   // pontosan azt mutassa, amit a publikálás rögzítene.
   const aggregates =
-    action === "preview" ? await buildTeamReportAggregates(teamId) : null;
+    action === "preview" && existing.campaignId
+      ? await buildTeamReportAggregates(teamId, {
+          assessmentCampaignId: existing.campaignId,
+        })
+      : null;
 
   const report = await prisma.teamReport.update({
     where: { id: reportId },

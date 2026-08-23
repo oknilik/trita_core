@@ -72,15 +72,28 @@ const throttle: ThrottleState = {
   fingerprints: new Set(),
 };
 
-function clip(value: unknown, max = MAX_MESSAGE_LEN): string | null {
+export function sanitizeDiagnosticText(value: unknown, max = MAX_MESSAGE_LEN): string | null {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   if (!trimmed) return null;
-  return trimmed.length > max ? `${trimmed.slice(0, max)}…` : trimmed;
+  const redacted = trimmed
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/giu, "[email]")
+    .replace(/\bBearer\s+[^\s]+/giu, "Bearer [redacted]")
+    .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/gu, "[token]")
+    .replace(/\b(token|secret|password|api[_-]?key)=([^\s&]+)/giu, "$1=[redacted]")
+    .replace(/([?&][^=\s]+)=([^&#\s]+)/gu, "$1=[redacted]");
+  return redacted.length > max ? `${redacted.slice(0, max)}…` : redacted;
+}
+
+export function sanitizeDiagnosticPath(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const path = value.trim().split(/[?#]/u, 1)[0];
+  if (!path.startsWith("/")) return null;
+  return path.slice(0, 200);
 }
 
 function fingerprint(alert: ErrorAlert): string {
-  return [alert.origin, alert.event, alert.path ?? "-", alert.name ?? "-", clip(alert.message, 80) ?? "-"].join("|");
+  return [alert.origin, alert.event, sanitizeDiagnosticPath(alert.path) ?? "-", alert.name ?? "-", sanitizeDiagnosticText(alert.message, 80) ?? "-"].join("|");
 }
 
 /**
@@ -127,9 +140,11 @@ export function __shouldSendErrorAlert(alert: ErrorAlert, now: number = Date.now
 }
 
 function buildBody(alert: ErrorAlert, appUrl: string | undefined) {
-  const where = alert.path ? ` @ ${alert.path}` : "";
+  const safePath = sanitizeDiagnosticPath(alert.path);
+  const safeMessage = sanitizeDiagnosticText(alert.message);
+  const where = safePath ? ` @ ${safePath}` : "";
   const summary = `🔴 trita ${alert.origin} hiba${where}: ${alert.name ?? "Error"} — ${
-    clip(alert.message) ?? "(nincs üzenet)"
+    safeMessage ?? "(nincs üzenet)"
   }`;
 
   return {
@@ -140,9 +155,9 @@ function buildBody(alert: ErrorAlert, appUrl: string | undefined) {
     // Bármi más
     event: alert.event,
     origin: alert.origin,
-    path: alert.path ?? null,
+    path: safePath,
     name: alert.name ?? null,
-    message: clip(alert.message),
+    message: safeMessage,
     digest: alert.digest ?? null,
     requestId: alert.requestId ?? null,
     app: appUrl ?? null,

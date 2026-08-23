@@ -1,6 +1,7 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
+import { sendErrorAlert } from "@/lib/error-alert";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,38 @@ const MAX_FIELD_LEN = 300;
 function clip(value: unknown): string | null {
   if (typeof value !== "string" || value.length === 0) return null;
   return value.length > MAX_FIELD_LEN ? `${value.slice(0, MAX_FIELD_LEN)}…` : value;
+}
+
+async function readLimitedBody(req: Request): Promise<string | null> {
+  const declaredLength = Number(req.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) return null;
+  if (!req.body) return null;
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let bytes = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      bytes += value.byteLength;
+      if (bytes > MAX_BODY_BYTES) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return null;
+  }
+
+  const joined = new Uint8Array(bytes);
+  let offset = 0;
+  for (const chunk of chunks) {
+    joined.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(joined);
 }
 
 interface ExtractedViolation {
@@ -71,8 +104,8 @@ export async function POST(req: Request) {
 
   const log = await getRequestLogger("csp");
 
-  const raw = await req.text().catch(() => "");
-  if (!raw || raw.length > MAX_BODY_BYTES) return new NextResponse(null, { status: 204 });
+  const raw = await readLimitedBody(req);
+  if (!raw) return new NextResponse(null, { status: 204 });
 
   let payload: unknown;
   try {
@@ -81,9 +114,25 @@ export async function POST(req: Request) {
     return new NextResponse(null, { status: 204 });
   }
 
-  for (const violation of extractViolations(payload)) {
+  const violations = extractViolations(payload).filter((violation) => violation.directive);
+  for (const violation of violations) {
     if (!violation.directive) continue;
     log.warn({ event: "csp.violation", ...violation }, "CSP violation reported");
+  }
+  if (violations.length > 0) {
+    after(async () => {
+      await Promise.all(
+        violations.map((violation) =>
+          sendErrorAlert({
+            event: "csp.violation",
+            origin: "client",
+            name: "ContentSecurityPolicyViolation",
+            path: violation.documentUri,
+            message: `${violation.directive}: ${violation.blockedUri ?? "unknown"}`,
+          }),
+        ),
+      );
+    });
   }
 
   // 204 mindig — a böngésző nem vár tartalmat, és a hallgatás nem ad

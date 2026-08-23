@@ -1123,7 +1123,7 @@ export default async function CampaignDetailPage({
               return (
                 <Link
                   key={tid}
-                  href={`/team/${tid}?tab=report`}
+                  href={`/team/${tid}?tab=report&campaignId=${encodeURIComponent(campaign.id)}`}
                   className="text-sm font-semibold text-sage-dark transition hover:text-ink"
                 >
                   {t("campaignWiz.closedReportCta", locale)}

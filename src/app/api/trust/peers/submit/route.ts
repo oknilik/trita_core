@@ -112,7 +112,7 @@ export async function POST(req: NextRequest) {
   // Lefedettség-ellenőrzés → lépés-teljesítés (idempotens).
   const covered = await hasRaterCoveredTeamTrust(campaignId, teamId, profile.id);
   if (covered) {
-    await advanceCampaignStepForUser(profile.id, "TRUST_360").catch(() => {});
+    await advanceCampaignStepForUser(profile.id, "TRUST_360", { campaignId }).catch(() => {});
   }
 
   return NextResponse.json({ ok: true, covered });

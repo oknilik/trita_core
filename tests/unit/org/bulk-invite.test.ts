@@ -35,10 +35,17 @@ test("vessző, pontosvessző, tabulátor és szóköz is elválasztó", () => {
 });
 
 test("a levelezőből másolt `Név <cím>` alakból a címet veszi", () => {
-  // A szóköz a névben elválasztó lenne, ezért a darabolás után a `<cím>`
-  // token hordozza a valódi értéket — a névtöredékek nem címek.
-  const { emails } = parseEmailList("Kovacs Bela <bela@ceg.hu>");
-  assert.ok(emails.includes("bela@ceg.hu"));
+  const { emails, invalid } = parseEmailList("Kovacs Bela <bela@ceg.hu>");
+  assert.deepEqual(emails, ["bela@ceg.hu"]);
+  assert.deepEqual(invalid, []);
+});
+
+test("több megjelenítési neves címet nem jelez fals hibának", () => {
+  const { emails, invalid } = parseEmailList(
+    "Kovács Béla <bela@ceg.hu>; Nagy Anna <anna@ceg.hu>",
+  );
+  assert.deepEqual(emails, ["bela@ceg.hu", "anna@ceg.hu"]);
+  assert.deepEqual(invalid, []);
 });
 
 test("kisbetűsít és duplikátumot szűr", () => {

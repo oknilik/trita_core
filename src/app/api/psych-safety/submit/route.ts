@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { isCompletePsychSafetyAnswerSet } from "@/lib/psych-safety";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
 import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
 
 const bodySchema = z.object({
   campaignId: z.string().min(1),
@@ -69,22 +70,20 @@ export async function POST(req: NextRequest) {
   const submittedOn = new Date();
   submittedOn.setUTCHours(0, 0, 0, 0);
 
-  await prisma.$transaction([
-    prisma.psychSafetyResponse.create({
-      data: {
-        campaignId: body.data.campaignId,
-        answers: body.data.answers,
-        submittedOn,
-      },
-    }),
-    prisma.campaignParticipant.update({
-      where: { id: participant.id },
-      data: { completedAt: new Date() },
-    }),
-  ]);
+  const created = await recordAnonymousPsychSafetyResponse({
+    participantId: participant.id,
+    campaignId: body.data.campaignId,
+    answers: body.data.answers,
+    submittedOn,
+  });
+  if (!created) {
+    return NextResponse.json({ error: "ALREADY_SUBMITTED" }, { status: 409 });
+  }
 
   // Lépés-léptetés (következő mérés megnyitása + értesítés)
-  await advanceCampaignStepForUser(profile.id, "PSYCH_SAFETY").catch(() => {});
+  await advanceCampaignStepForUser(profile.id, "PSYCH_SAFETY", {
+    campaignId: body.data.campaignId,
+  }).catch(() => {});
 
   return NextResponse.json({ ok: true });
 }

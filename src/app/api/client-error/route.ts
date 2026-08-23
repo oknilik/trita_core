@@ -1,8 +1,12 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
-import { sendErrorAlert } from "@/lib/error-alert";
+import {
+  sanitizeDiagnosticPath,
+  sanitizeDiagnosticText,
+  sendErrorAlert,
+} from "@/lib/error-alert";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,19 +53,23 @@ export async function POST(req: Request) {
   if (!parsed.success) return new NextResponse(null, { status: 204 });
 
   const { surface, name, message, digest, path } = parsed.data;
+  const safeMessage = sanitizeDiagnosticText(message);
+  const safePath = sanitizeDiagnosticPath(path);
 
   log.error(
-    { event: "client.boundary_error", surface, name, message, digest, path },
+    { event: "client.boundary_error", surface, name, message: safeMessage, digest, path: safePath },
     "Client error boundary reported an error",
   );
 
-  void sendErrorAlert({
-    event: "client.boundary_error",
-    origin: "client",
-    path: path ?? null,
-    name: name ?? null,
-    message: message ?? null,
-    digest: digest ?? null,
+  after(async () => {
+    await sendErrorAlert({
+      event: "client.boundary_error",
+      origin: "client",
+      path: safePath,
+      name: name ?? null,
+      message: safeMessage,
+      digest: digest ?? null,
+    });
   });
 
   return new NextResponse(null, { status: 204 });
