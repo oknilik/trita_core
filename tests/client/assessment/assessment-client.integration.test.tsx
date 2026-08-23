@@ -154,6 +154,38 @@ async function expectCurrentQuestionNumber(expected: number) {
   });
 }
 
+/**
+ * Lépés-váltás megbízhatóan, fix várakozás nélkül.
+ *
+ * A komponens `runStepTransition`-je 120 ms-os záron engedi át a lépést, és a
+ * záron BELÜL érkező kattintást SZÁNDÉKOSAN eldobja (ez védi a dupla-lépés
+ * ellen — épp ezt méri a „next/back spam" eset). Egy fix `setTimeout(140)`
+ * ezért versenyhelyzet volt: 20 ms tartalék egy 120 ms-os valós idejű timerhez.
+ * Terhelt gépen a felszabadító timer később fut le, a kattintás némán elveszik,
+ * és a teszt olyan képernyőn állít, ahova el sem jutott. Így bukott a CI
+ * 2026-08-23-án: a `toHaveClass` a KÖVETKEZŐ kérdés nem kiválasztott gombján
+ * futott. Helyben 10/10 zöld volt, CPU-terhelés alatt 6-ból 1 bukás.
+ *
+ * Ezért nem időre várunk, hanem a KIMENETRE: addig kattintunk, amíg a lépés
+ * tényleg megtörtént. Egy eldobott kattintás így egy újabb kör, nem bukás — a
+ * valódi regressziót (a lépés SOHA nem történik meg) a timeout elkapja, és
+ * túllépés sem lehet, mert a cél elérése után már nem kattintunk.
+ */
+async function stepUntilQuestion(
+  // `unknown`, mert a `fireEvent.click` boolean-t ad vissza, a `user.click`
+  // Promise-t — a visszatérési érték itt egyikből sem érdekes.
+  clickStep: () => unknown,
+  expected: number,
+): Promise<void> {
+  await waitFor(
+    async () => {
+      if (getCurrentQuestionNumber() !== expected) await clickStep();
+      expect(getCurrentQuestionNumber()).toBe(expected);
+    },
+    { timeout: 3_000, interval: 60 },
+  );
+}
+
 async function disableAutoAdvance(user: ReturnType<typeof userEvent.setup>) {
   const autoAdvanceCheckbox = screen.getByRole("checkbox", {
     name: new RegExp(AUTO_ADVANCE_LABEL, "i"),
@@ -219,28 +251,16 @@ describe("AssessmentClient integration behavior", () => {
     await expectCurrentQuestionNumber(2);
     fireEvent.keyDown(window, { key: "4" });
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 140));
-    });
-    fireEvent.click(nextButton);
-    await expectCurrentQuestionNumber(3);
+    await stepUntilQuestion(() => fireEvent.click(nextButton), 3);
 
     for (let i = 0; i < 5; i += 1) {
       fireEvent.click(prevButton);
     }
     await expectCurrentQuestionNumber(3);
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 140));
-    });
-    fireEvent.click(prevButton);
-    await expectCurrentQuestionNumber(2);
+    await stepUntilQuestion(() => fireEvent.click(prevButton), 2);
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 140));
-    });
-    fireEvent.click(prevButton);
-    await expectCurrentQuestionNumber(1);
+    await stepUntilQuestion(() => fireEvent.click(prevButton), 1);
   });
 
   it("updates progress bar on forward/back navigation and keeps width clamped", async () => {
@@ -254,10 +274,10 @@ describe("AssessmentClient integration behavior", () => {
     await user.click(screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }));
     const widthAfterNext = getCurrentProgressBarWidth();
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 140));
-    });
-    await user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") }));
+    await stepUntilQuestion(
+      () => user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") })),
+      1,
+    );
     const widthAfterBack = getCurrentProgressBarWidth();
 
     expect(widthAfterNext).toBeGreaterThan(initialWidth);
@@ -282,11 +302,10 @@ describe("AssessmentClient integration behavior", () => {
     await user.click(screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }));
     await expectCurrentQuestionNumber(2);
 
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 140));
-    });
-    await user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") }));
-    await expectCurrentQuestionNumber(1);
+    await stepUntilQuestion(
+      () => user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") })),
+      1,
+    );
     const selected = screen.getByRole("button", { name: /^4 - / });
     expect(selected).toHaveClass("bg-[var(--color-action-primary-bg)]");
   });
