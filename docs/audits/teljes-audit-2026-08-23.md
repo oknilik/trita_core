@@ -22,9 +22,10 @@ kapu) rendben van, és a Scan v1 mérési lánc kódszinten hiánytalan. Az indu
 ma **nem a termék hiányossága blokkolja, hanem hét darab kód- és ops-tétel**,
 amelyek közül öt egy-két órás munka, kettő üzleti/jogi döntést igényel.
 
-**A javító kör után:** a nyolc indulási blokkolóból **hat javítva**, kettő
-(valós cégadatok, ÁSZF) üzleti/jogi bemenetre vár. A tizennyolc P1 tételből
-tíz kész. A maradék listája az 5. fejezetben.
+**A javító kör után:** a 28 tételből **17 javítva**, 2 nem bizonyult
+defektnek (visszavonva), **9 marad nyitva**. A nyolc indulási blokkolóból hat
+kész; a maradék kettő (valós cégadatok, ÁSZF/DPA) üzleti és jogi bemenetre
+vár — kódoldalról mindkettő egy commit. Tételes állapot az 5. fejezetben.
 
 ---
 
