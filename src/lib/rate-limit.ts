@@ -52,6 +52,10 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     // a szűkebb, tokenenkénti `api` limitet a checkTokenRateLimit adja mellé.
     public:  { requests: 120, window: "10 s", prefix: "rl:public" },
     contact: { requests: 3,  window: "60 s", prefix: "rl:contact" },
+    // Bulk invite: 20 × 25 cím = egy teljes, 500 fős pilotlista egy
+    // ötperces ablakban. Külön tier kell, mert a 3/perc contact-limit a 4.
+    // kötegnél megszakította volna a dokumentált pilot-forgatókönyvet.
+    invite:  { requests: 20, window: "5 m", prefix: "rl:invite" },
     // Analitika: egy valódi munkamenet legitim módon küld sok KÖTEGELT
     // eseményt (lapváltás, tölcsér-lépések), ezért bőkezűbb keret. A cél
     // nem a felhasználó fékezése, hanem a szemét-forgalom kizárása.
@@ -78,6 +82,7 @@ export type RateLimitTier =
   | "auth"
   | "public"
   | "contact"
+  | "invite"
   | "analytics"
   | "newsletter"
   | "diagnostics";
@@ -116,6 +121,8 @@ export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
   public: true,
   // Levelet küld (admin-értesítő, megosztás) — erősítő.
   contact: true,
+  // Belépett, jogosult admin/tanácsadó küldi, de kérésenként 25 levél lehet.
+  invite: true,
   // Auth nélküli írás az AnalyticsEvent táblába. Egy elveszett esemény
   // olcsóbb, mint egy korlátlan író-csatorna.
   analytics: true,

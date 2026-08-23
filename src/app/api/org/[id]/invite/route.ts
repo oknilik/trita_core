@@ -82,7 +82,7 @@ export async function POST(
     );
   }
 
-  const rateLimited = await checkRateLimit("contact", `org-invite:${orgId}:${profile.id}`);
+  const rateLimited = await checkRateLimit("invite", `org-invite:${orgId}:${profile.id}`);
   if (rateLimited) return rateLimited;
 
   // Verify org exists and is active

@@ -32,6 +32,7 @@ test("a belépés nélkül hívható / erősítő tierek élesben fail-closed-ok
     auth: true,
     public: true,
     contact: true,
+    invite: true,
     analytics: true,
     newsletter: true,
     // A diagnosztika kivétel: hibajelentés és CSP-sértés akkor kell a
@@ -193,6 +194,17 @@ test("az ismételhető e-mail route-ok a fail-closed contact tiert használják"
   for (const route of routes) {
     const source = readFileSync(join(process.cwd(), route), "utf8");
     assert.match(source, /checkRateLimit\([\s\S]{0,80}"contact"/, `${route} nem contact tier`);
+  }
+});
+
+test("a bulk invite saját fail-closed tierben fut, nem a 3/perces contact keretben", () => {
+  const routes = [
+    "src/app/api/org/[id]/invite/route.ts",
+    "src/app/api/team/[id]/invite/route.ts",
+  ];
+  for (const route of routes) {
+    const source = readFileSync(join(process.cwd(), route), "utf8");
+    assert.match(source, /checkRateLimit\("invite"/, `${route} nem invite tier`);
   }
 });
 

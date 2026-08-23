@@ -85,7 +85,7 @@ export async function POST(
     );
   }
 
-  const rateLimited = await checkRateLimit("contact", `team-invite:${teamId}:${profile.id}`);
+  const rateLimited = await checkRateLimit("invite", `team-invite:${teamId}:${profile.id}`);
   if (rateLimited) return rateLimited;
 
   // Kemény szerep-háló (defense-in-depth): a policy-enforcement kill-switch
