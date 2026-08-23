@@ -6,6 +6,7 @@ import { t, type Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { BulkInvitePanel } from "@/components/org/BulkInvitePanel";
 
 interface TeamInviteFormProps {
   teamId: string;
@@ -14,6 +15,9 @@ interface TeamInviteFormProps {
 
 export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
   const [email, setEmail] = useState("");
+  // Az egyelemű alak marad az alapértelmezés; a tömeges nézet a pilot-setup
+  // (5–30 fős csapat egyben történő felvétele) útja.
+  const [bulkMode, setBulkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<"added" | "pending" | false>(false);
@@ -48,6 +52,27 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
     } finally {
       setLoading(false);
     }
+  }
+
+  const modeToggle = (
+    <button
+      type="button"
+      onClick={() => setBulkMode((current) => !current)}
+      className="self-start text-caption font-semibold text-[var(--color-accent-primary)] underline underline-offset-2"
+    >
+      {bulkMode
+        ? t("org.forms.bulkToggleOff", locale)
+        : t("org.forms.bulkToggleOn", locale)}
+    </button>
+  );
+
+  if (bulkMode) {
+    return (
+      <div className="flex flex-col gap-3">
+        <BulkInvitePanel endpoint={`/api/team/${teamId}/invite`} locale={locale} />
+        {modeToggle}
+      </div>
+    );
   }
 
   return (
@@ -87,6 +112,7 @@ export function TeamInviteForm({ teamId, locale }: TeamInviteFormProps) {
           {t("manager.teamInvite.inviteSent", locale)}
         </InlineBanner>
       )}
+      {modeToggle}
     </form>
   );
 }

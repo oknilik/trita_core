@@ -4,7 +4,26 @@ import { spawn } from "node:child_process";
 import { resolveE2eRuntimeEnv } from "./e2e-runtime-env.mjs";
 import { resolveIntegrationTestDbEnv } from "./test-db-env.mjs";
 
-const PILOT_TESTS = [
+// A kapu KÉT rétegből áll.
+//
+// MIÉRT VÁLTOZOTT (2026-08-23-i audit, P1-12): a kapu korábban CSAK a három
+// e2e-t futtatta — közülük az observer a playbook szerint NEM része a Scan
+// v1-nek, a Scan v1 három rétege (self → bizalmi háló → pulse) és a rá épülő
+// riport-lépések viszont egyáltalán nem szerepeltek benne. A kapu tehát nem
+// azt védte, amit a pilot ténylegesen futtat.
+//
+// A Scan v1 lánc integrációs fedése ezért BEKERÜL a kapuba. Az observer marad:
+// előre egyeztetett kiegészítőként ma is élő út, és a tokenes flow törése
+// ügyfél előtt derülne ki.
+
+/** Adatbázis-szintű lánc (node:test) — a mérési út perzisztenciája. */
+const PILOT_INTEGRATION_TESTS = [
+  "tests/integration/team/scan-v1-lane.integration.test.ts",
+  "tests/integration/campaigns/step-release.integration.test.ts",
+];
+
+/** Böngésző-szintű kritikus utak (Playwright). */
+const PILOT_E2E_TESTS = [
   "tests/e2e/assessment/assessment-flow.test.ts",
   "tests/e2e/observer/observer-flow.test.ts",
   "tests/e2e/analytics/analytics-write-smoke.test.ts",
@@ -44,10 +63,19 @@ async function main() {
   await run("node", ["scripts/test-integration-bootstrap.mjs"], env);
 
   try {
+    // Előbb a lánc: ha a mérési út perzisztenciája törött, a böngésző-szintű
+    // futtatás percei feleslegesek — és a hibát is nehezebb lokalizálni.
+    console.log("[pilot-gate] Scan v1 measurement lane (integration)");
+    await run(
+      "npx",
+      ["tsx", "--test", ...PILOT_INTEGRATION_TESTS],
+      { ...env, NODE_OPTIONS: [process.env.NODE_OPTIONS, "--conditions=react-server"].filter(Boolean).join(" ") },
+    );
+
     console.log("[pilot-gate] assessment + observer + analytics critical paths");
     await run(
       "npx",
-      ["playwright", "test", "--project=chromium", ...PILOT_TESTS],
+      ["playwright", "test", "--project=chromium", ...PILOT_E2E_TESTS],
       env,
     );
     console.log("[pilot-gate] PASS — pilot release gate is green");

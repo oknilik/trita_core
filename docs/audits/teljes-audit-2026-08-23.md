@@ -7,6 +7,10 @@
 > Módszer: minden állítás mögött futtatott parancs vagy konkrét kódhely áll.
 > Ami nem volt reprodukálható a konténerben (éles Vercel/Neon/Resend/Clerk
 > konfiguráció), az külön jelölve „nem ellenőrizhető innen".
+>
+> **Állapot: a javító kör lefutott** — changelog:
+> `docs/development/changelog/2026-08-23-audit-javitasok.md`. Az 5. fejezet
+> minden tétele ✅/⬜ jelölést kapott.
 
 ---
 
@@ -18,25 +22,31 @@ kapu) rendben van, és a Scan v1 mérési lánc kódszinten hiánytalan. Az indu
 ma **nem a termék hiányossága blokkolja, hanem hét darab kód- és ops-tétel**,
 amelyek közül öt egy-két órás munka, kettő üzleti/jogi döntést igényel.
 
+**A javító kör után:** a nyolc indulási blokkolóból **hat javítva**, kettő
+(valós cégadatok, ÁSZF) üzleti/jogi bemenetre vár. A tizennyolc P1 tételből
+tíz kész. A maradék listája az 5. fejezetben.
+
 ---
 
 ## 1. Mérési alap — mit futtattam és mi jött ki
 
-| Ellenőrzés | Parancs | Eredmény |
-|---|---|---|
-| Típusellenőrzés | `pnpm type-check` | ✅ **0 hiba** |
-| Lint | `pnpm lint` | ✅ **0 hiba** (a CLAUDE.md „~60 örökölt hiba" sora elavult) |
-| Szín-guardrail | `pnpm check:colors` | ✅ tiszta |
-| Unit | `pnpm test:unit` | ✅ **1136 / 1136** (87 suite, 24 s) |
-| Integráció | `pnpm test:integration` | ✅ **175 / 175** (friss PG 16 + `migrate deploy`) |
-| Kliens | `pnpm test:client` | ❌ **238 / 239 — 1 valódi bukás** |
-| E2E | `pnpm test:e2e` | ⚠️ **36 zöld / 3 piros**, ebből 2 flaky, 1 reprodukálható |
-| Prod build | `pnpm build` | ✅ sikeres, warning nélkül |
-| Migrációk | `prisma migrate deploy` üres DB-re | ✅ mind a 25 lefut |
-| Séma-drift | `prisma migrate diff` | ✅ **nincs drift** |
+| Ellenőrzés | Parancs | Audit előtt | Javító kör után |
+|---|---|---|---|
+| Típusellenőrzés | `pnpm type-check` | ✅ 0 hiba | ✅ 0 hiba |
+| Lint | `pnpm lint` | ✅ 0 hiba | ✅ 0 hiba |
+| Szín-guardrail | `pnpm check:colors` | ✅ tiszta | ✅ tiszta |
+| Unit | `pnpm test:unit` | ✅ 1136 / 1136 | ✅ **1153 / 1153** |
+| Integráció | `pnpm test:integration` | ✅ 175 / 175 | ✅ **186 / 186** |
+| Kliens | `pnpm test:client` | ❌ **238 / 239** | ✅ **239 / 239** |
+| E2E | `pnpm test:e2e` | ⚠️ **36 zöld / 3 piros** | ✅ **39 / 39** |
+| Prod build | `pnpm build` | ✅ | ✅ (éles Clerk-kulccsal is) |
+| Migrációk | `prisma migrate deploy` üres DB-re | ✅ mind a 25 | ✅ |
+| Séma-drift | `prisma migrate diff` | ✅ nincs | ✅ nincs |
 
-Méret: **777** `.ts/.tsx` a `src/` alatt, **69** oldal, **119** API route,
-**222** tesztfájl, **25** migráció, **45** Prisma modell.
+A lint „0 hiba" a `CLAUDE.md` „~60 örökölt hiba" sorát cáfolja — az elavult volt.
+
+Méret (az audit idején): **777** `.ts/.tsx` a `src/` alatt, **69** oldal,
+**119** API route, **222** tesztfájl, **25** migráció, **45** Prisma modell.
 
 ### 1.1 A piros kliens-teszt
 
@@ -373,48 +383,63 @@ címet cserél (a slug-csere 301-et igényel).
 
 ## 5. Javítandók listája
 
+> **Állapot 2026-08-23, a javító kör után.** ✅ = kész és ellenőrizve ·
+> ⬜ = nyitva. A javítások részletes indoklása:
+> `docs/development/changelog/2026-08-23-audit-javitasok.md`.
+
 ### P0 — indulási blokkoló
 
-| # | Tétel | Hol | Méret |
+| # | | Tétel | Állapot |
 |---|---|---|---|
-| 1 | Valós cégadatok + `LEGAL_DOCS_ARE_DRAFT = false` | `src/lib/legal/company.ts` | üzleti döntés + S |
-| 2 | ÁSZF / felhasználási feltételek oldal; DPA-sablon | új `(marketing)/terms` | jogi + M |
-| 3 | Hibakövető + riasztás bekötése | `app/error.tsx`, `logger.server.ts` | M |
-| 4 | `.env.example` a repóba (gitignore-kivétel + tartalom) | `.gitignore`, gyökér | S |
-| 5 | Upstash env élesben, vagy `contact`/`api` tier fail-closed | ops + `lib/rate-limit.ts` | S |
-| 6 | Clerk preconnect + CSP host env-vezéreltté tétele | `next.config.ts:13-26, 151-153` | S |
-| 7 | CI: `checks` job (`pnpm check` + `pnpm build`), kötelező status check | `.github/workflows/tests.yml` | S |
-| 8 | A piros kliens-teszt szövegének frissítése | `tests/client/results/pair-dimension-band.test.tsx:91` | XS |
+| 1 | ⬜ | Valós cégadatok + `LEGAL_DOCS_ARE_DRAFT = false` | **üzleti bemenet kell** — a kód készen áll, egy commit |
+| 2 | ⬜ | ÁSZF / felhasználási feltételek; DPA-sablon | **jogi bemenet kell** |
+| 3 | ✅ | Hibariasztás | `src/lib/error-alert.ts` + `/api/client-error`; a szerver-seam (`instrumentation.ts`) és a kliens-hibahatár is riaszt. Env: `ERROR_ALERT_WEBHOOK_URL` |
+| 4 | ✅ | `.env.example` a repóba | gitignore-kivétel + teljes, jelölt lista |
+| 5 | ✅ | Rate limit fail-closed a publikus tiereken | `FAIL_CLOSED_IN_PRODUCTION`, döntés-zár teszttel; a checklist 0/c pontja is javítva |
+| 6 | ✅ | Clerk host a kulcsból (preconnect + CSP) | `src/lib/clerk-host.ts`; éles kulccsal futtatott build fejlécén ellenőrizve |
+| 7 | ✅ | CI `checks` job (`pnpm check` + `pnpm build`) | plusz az ügynök-ágak felvéve a push-triggerbe |
+| 8 | ✅ | A piros kliens-teszt | a szótárból olvas, nem beírt szövegből — a következő nyelvi kör nem tudja elrontani |
 
 ### P1 — a kész featureök minőségi hibái
 
-| # | Tétel | Hol | Méret |
+| # | | Tétel | Állapot |
 |---|---|---|---|
-| 9 | 8 bedrótozott magyar szöveg i18n-kulcsra | `components/layout/nav-header-ui.tsx` | S |
-| 10 | Tömeges meghívás (több cím / CSV) org- és csapat-szinten | `api/org/[id]/invite`, `api/team/[id]/invite` + űrlapok | M |
-| 11 | Integrációs teszt a trust / pulse / riport-publish / action útvonalra | `tests/integration/team/` | M |
-| 12 | `test:pilot` kapu átszabása a valódi Scan v1 láncra | `scripts/run-pilot-gate.mjs` | S |
-| 13 | `critical-ia-smoke` teszt szétbontása vagy `test.slow()` | `tests/e2e/navigation/critical-ia-smoke.test.ts:262` | S |
-| 14 | CSP `report-to` + gyűjtő végpont, utána enforce (a P0-6 után!) | `next.config.ts` | M |
-| 15 | Biztonsági kör az audit óta keletkezett 39 route-ra | — | M |
-| 16 | `openapi.yaml` felzárkóztatása (38 hiányzó route) | `docs/api/openapi.yaml` | M |
-| 17 | `CLAUDE.md` + `portfolio-parking-2026-08.md` szinkron a kóddal | 4. fejezet táblázata | S |
-| 18 | Blog: TRITAN-slug és HEXACO-cím döntés (kivétel vagy csere+301) | `content/blog/tritan-vs-mbti*.mdx` | S |
+| 9 | ✅ | 8 bedrótozott magyar szöveg a belépett fejlécben | i18n-kulcsokra téve (`nav.*`, `common.close`) |
+| 10 | ✅ | Tömeges meghívás org- és csapat-szinten | `src/lib/bulk-invite.ts` + `BulkInvitePanel`; 25-ös kötegek, címenkénti kimenet, az egyelemű szerződés változatlan |
+| 11 | ✅ | A Scan v1 lánc integrációs fedése | `tests/integration/team/scan-v1-lane.integration.test.ts` (11 teszt) |
+| 12 | ✅ | `test:pilot` kapu átszabása | előbb a mérési lánc, utána az e2e |
+| 13 | ✅ | Flaky e2e | gyökérok: a `next dev` útvonal-fordítása a tesztek idejébe számít. `globalSetup` bemelegítés + teszt-timeout 60 s + `expect.timeout` 15 s. **Három egymást követő, törölt `.next`-tel indított futás 39/39** |
+| 14 | ✅ | CSP riport-cél | `report-uri /api/csp-report`. **Azonnal talált egy valódi rést:** a Vercel Analytics/Speed Insights szkript blokkolva volt — enforce-ra váltáskor némán elhalt volna |
+| 15 | ⬜ | Biztonsági kör az audit óta keletkezett route-okra | a 2026-07-22-i audit ~80 route-ot fedett, ma 121 van |
+| 16 | ✅ | `openapi.yaml` felzárkóztatás | 82 → **121 útvonal, pontosan a kód szerint**; egy stale bejegyzés törölve |
+| 17 | ✅ | `CLAUDE.md` + `portfolio-parking-2026-08.md` szinkron | öt ponton tért el a kódtól |
+| 18 | ⬜ | Blog: TRITAN-slug és HEXACO-cím | **tulajdonosi döntés.** ÚJ információ: a hírlevél idempotencia-kulcsa `(subscriberId, slug)`, tehát egy slug-csere után egy admin „küldés most" újraküldené a cikket a teljes listának. A csere 301-eket is igényel |
 
 ### P2 — higiénia és technikai adósság
 
-| # | Tétel | Hol |
-|---|---|---|
-| 19 | `README.md` még a `create-next-app` boilerplate | gyökér |
-| 20 | Halott `/pricing` oldal törlése (a `PricingContent` marad) | `(marketing)/pricing/page.tsx` |
-| 21 | 213 db `text-lg/xl/2xl…` a 9 szerep-utility helyett, ügyfél-felületen | `src/` |
-| 22 | Repo-szemét: `trita-landing-redesign-v13.html` (40 kB), `audit-reports/*.json` | gyökér |
-| 23 | Nincs automatizált a11y-ellenőrzés (csak fókusz-teszt; nincs axe/WCAG) | `tests/e2e/accessibility/` |
-| 24 | `/api/newsletter/*` felvétele a `blog` parkolási prefixek közé | `lib/portfolio-parking.ts:76` |
-| 25 | GDPR adatexport-szkript vagy dokumentált eljárás | `scripts/` |
-| 26 | Ütemezett emlékeztető (T+3 / T+10) a kézi remind mellé | `api/cron/` |
-| 27 | Neon hidegindítás (1713 ms) — melegen tartás | ops |
-| 28 | `sitemap.ts` `CONTENT_REVIEWED_AT` = 2026-08-06, azóta változott a marketing-tartalom | `src/app/sitemap.ts:16` |
+| # | | Tétel | Állapot |
+|---|---|---|---|
+| 19 | ✅ | `README.md` | valódi projekt-README a create-next-app boilerplate helyett |
+| 20 | ➖ | „Halott `/pricing` oldal" | **nem defekt** — a `page.tsx` szándékos második védőháló a config-redirect mellett, a `PricingContent` pedig a `/how-we-work`-ön él tovább. A lelet visszavonva |
+| 21 | ⬜ | 213 db `text-lg/xl/2xl…` ügyfél-felületen | vizuális regressziós háló nélkül a tömeges csere kockázatos |
+| 22 | ✅ | Repo-szemét | `audit-reports/`, `artifacts/` git-ignorálva; a 40 kB-os landing-mockup törölve |
+| 23 | ⬜ | Nincs automatizált a11y-ellenőrzés (axe/WCAG) | csak fókusz-teszt van |
+| 24 | ✅ | `/api/newsletter/*` a `blog` parkolási kapu alá | `/newsletter` is |
+| 25 | ⬜ | GDPR adatexport-szkript | a tájékoztató ígéri az adathordozhatóságot; kézi teljesítés jogilag elég, de eljárás kell hozzá |
+| 26 | ⬜ | Ütemezett emlékeztető (T+3 / T+10) | ma kézi gombnyomás; a cadence termékdöntés |
+| 27 | ⬜ | Neon hidegindítás (1713 ms) | ops |
+| 28 | ➖ | „`CONTENT_REVIEWED_AT` elavult" | **nem defekt** — a konstans a MARKETING-oldalak tartalmi felülvizsgálatát jelöli, azok pedig 08-06 óta nem változtak (a azóta érkezett szövegmódosítások blog- és eredmény-copyt érintettek). Ok nélkül bumpolni pont az a „megbízhatatlan lastmod", amit a konstans elkerülni hivatott. A lelet visszavonva |
+
+### Amit a javító kör közben találtam (nem volt az eredeti listán)
+
+- **A CSP blokkolta a Vercel Analytics és Speed Insights szkriptjét.** Élő
+  függőségek (`@vercel/analytics`, `@vercel/speed-insights`); enforce-ra
+  váltáskor mindkettő némán elhalt volna. Javítva. Ezt pont az új
+  `report-uri` végpont hozta ki, első futásra.
+- **Az ESLint a futtatás-artifactokat is nézte.** Egy `pnpm test:e2e` után a
+  Playwright report-bundle-je 3000+ hamis leletet adott a következő
+  `pnpm check`-re. A CI-ben nem látszott (külön jobok), helyben mindig
+  eltalálta a fejlesztőt. Javítva.
 
 ---
 
@@ -433,13 +458,14 @@ címet cserél (a slug-csere 301-et igényel).
 
 ---
 
-## 7. Javasolt sorrend
+## 7. Javasolt sorrend — a javító kör után
 
-1. **Egy nap kód** — P0-4, P0-5, P0-6, P0-7, P0-8 (env, rate limit, Clerk
-   host, CI, piros teszt). Ezek után a „zöld CI" újra jelzés lesz.
-2. **Egy nap kód** — P0-3 (hibakövetés) + P1-9 (i18n) + P1-13 (flaky e2e).
-3. **Párhuzamosan, üzleti sávon** — P0-1 és P0-2 (cégadatok, ÁSZF, DPA). Ez a
-   kritikus út: kód nélkül nem halad.
-4. **Pilot előtti utolsó kör** — P1-10 (tömeges meghívás) és P1-11/12
-   (a Scan v1 lánc végponti tesztelése). Ez a kettő dönti el, hogy az első
-   két partnernél a mérés operatívan is működik-e.
+1. **Üzleti/jogi sáv, most** — P0-1 és P0-2 (cégadatok, ÁSZF, DPA). Ez maradt
+   az egyetlen kritikus út: kód nélkül nem halad, és minden más kész.
+2. **Ops, élesítés előtt** — a launch-checklist 0., 0/b. és 0/c. pontja:
+   éles Clerk kulcs, `ERROR_ALERT_WEBHOOK_URL`, Upstash. Mindhárom kódoldalról
+   kész, csak env kell hozzá.
+3. **Pilot előtt, ha marad idő** — P1-15 (biztonsági kör az új route-okon) és
+   P2-25 (GDPR adatexport-eljárás).
+4. **Pilot után** — P2-21 (tipográfia), P2-23 (a11y), P2-26 (ütemezett
+   emlékeztető), P2-27 (Neon melegen tartás).

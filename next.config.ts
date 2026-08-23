@@ -1,28 +1,54 @@
 import type { NextConfig } from "next";
+import { resolveClerkCspOrigins, resolveClerkFrontendApiHost } from "./src/lib/clerk-host";
+
+// A Clerk Frontend API hostja a publishable key-ből oldódik fel (dev
+// instance-nál `*.clerk.accounts.dev`, élesben a saját domainünk). Bedrótozott
+// host mellett a prod build a fejlesztői instance-ra mutatna — ld.
+// src/lib/clerk-host.ts.
+const CLERK_ORIGINS = resolveClerkCspOrigins().join(" ");
+const CLERK_FRONTEND_API_HOST = resolveClerkFrontendApiHost();
 
 // Content-Security-Policy — REPORT-ONLY módban vezetjük be. A böngésző jelenti
-// a sértéseket (console + report-to), de NEM blokkol, így élesben figyelhető,
-// mielőtt enforce-ra váltunk. Élesítés: a Content-Security-Policy-Report-Only
-// kulcsot Content-Security-Policy-ra átnevezni (a reportok kitisztulása után).
+// a sértéseket a `report-uri`-n (`/api/csp-report`), de NEM blokkol, így
+// élesben figyelhető, mielőtt enforce-ra váltunk. Élesítés: a
+// Content-Security-Policy-Report-Only kulcsot Content-Security-Policy-ra
+// átnevezni (a reportok kitisztulása után).
 //
-// Clerk igényei: script/connect/frame a *.clerk.accounts.dev + *.clerk.com
-// felé, worker: blob (web worker), img: img.clerk.com + data:. A Turnstile
-// bot-védelem a challenges.cloudflare.com-ot használja. A Next.js + Tailwind
-// inline stílust/scriptet igényel ('unsafe-inline') — nonce-alapúra szűkítés
+// Clerk igényei: script/connect/frame a feloldott instance-host + a
+// *.clerk.accounts.dev / *.clerk.com wildcardok felé, worker: blob (web
+// worker), img: img.clerk.com + data:. A Turnstile bot-védelem a
+// challenges.cloudflare.com-ot használja. A Next.js + Tailwind inline
+// stílust/scriptet igényel ('unsafe-inline') — nonce-alapúra szűkítés
 // későbbi kör.
+// A Vercel Analytics és a Speed Insights innen tölti a mérő-szkriptjét
+// (`@vercel/analytics`, `@vercel/speed-insights`). A mért adat ezután
+// AZONOS ORIGINRE megy (`/_vercel/insights/*`), tehát a `connect-src 'self'`
+// fedi — csak a szkript-forrást kell engedni.
+//
+// 2026-08-23: ezt a rést az ÚJ `report-uri` végpont találta meg, első
+// futásra. A CSP eddig report-only volt riport-cél nélkül, tehát a sértés
+// csak a látogató konzoljára ment: enforce-ra váltáskor a Vercel Analytics és
+// a Speed Insights némán elhalt volna élesben.
+const VERCEL_INSIGHTS_ORIGIN = "https://va.vercel-scripts.com";
+
 const CSP_REPORT_ONLY = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+  `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${CLERK_ORIGINS} ${VERCEL_INSIGHTS_ORIGIN} https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://img.clerk.com https://doodleipsum.com",
   "font-src 'self' data:",
-  "connect-src 'self' https://*.clerk.accounts.dev https://*.clerk.com",
-  "frame-src 'self' https://*.clerk.accounts.dev https://challenges.cloudflare.com",
+  `connect-src 'self' ${CLERK_ORIGINS}`,
+  `frame-src 'self' ${CLERK_ORIGINS} https://challenges.cloudflare.com`,
   "worker-src 'self' blob:",
   "form-action 'self'",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "object-src 'none'",
+  // A report-uri nélkül a report-only mód GYAKORLATILAG HATÁSTALAN: a
+  // sértés csak a látogató konzoljára kerül, tehát az „élesben figyeljük,
+  // aztán enforce-ra váltunk" terv nem hajtható végre. A végpont a szerver-
+  // loggerbe ír (src/app/api/csp-report).
+  "report-uri /api/csp-report",
 ].join("; ");
 
 // ---------------------------------------------------------------------------
@@ -144,14 +170,20 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          {
-            key: "Link",
-            value: [
-              // Preconnect to Clerk for faster auth script loading
-              '<https://perfect-elf-67.clerk.accounts.dev>; rel=preconnect; crossorigin',
-              '<https://perfect-elf-67.clerk.accounts.dev>; rel=dns-prefetch',
-            ].join(", "),
-          },
+          // Preconnect a Clerk Frontend API-ra — a kulcsból feloldott hostra.
+          // Ismeretlen host (hiányzó/rossz kulcs) esetén a fejléc KIMARAD:
+          // egy rossz hostra nyitott TLS-kapcsolat lassít, nem gyorsít.
+          ...(CLERK_FRONTEND_API_HOST
+            ? [
+                {
+                  key: "Link",
+                  value: [
+                    `<https://${CLERK_FRONTEND_API_HOST}>; rel=preconnect; crossorigin`,
+                    `<https://${CLERK_FRONTEND_API_HOST}>; rel=dns-prefetch`,
+                  ].join(", "),
+                },
+              ]
+            : []),
           // CSP — report-only: figyel, nem blokkol (ld. fenti megjegyzés)
           { key: "Content-Security-Policy-Report-Only", value: CSP_REPORT_ONLY },
           // Clickjacking-védelem — a felület nem ágyazódik be sehova

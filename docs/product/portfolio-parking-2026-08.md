@@ -27,14 +27,26 @@ mindig aktuális ágon kell feloldani a központi kaput.
 |---|---|---|---|
 | Karrier-motor és katalógus | `career` | `/career`, career/industry/profile API-k, riport-CTA | katalógus, algoritmus, `careerBackground`, feedback |
 | Jelölt/hiring flow | `hiring` | `/hiring`, `/apply`, candidate/hiring API-k, nav és org-fül | meghívók, eredmények, kreditek |
-| Blog | `blog` | publikus blog, admin API/fül, nav, sitemap, `llms.txt` | MDX tartalom és szerkesztő |
+| ~~Blog~~ | `blog` | **AKTÍV 2026-08-21 óta** — a blog-feliratkozás és a hírlevél mellé visszakapcsolva; a kapu alá azóta a `/newsletter` és `/api/newsletter` is beletartozik | MDX tartalom és szerkesztő |
 | Fake door | `fakedoor` | publikus mérő API-k, admin riport/export | view/response és korábbi interest adatok |
 | `/patterns` felfedező | `patternExplorer` | oldal, team-riport CTA, footer, sitemap, `llms.txt` | a mintamotor és riportbeli értelmezés élő marad |
 
-A blog és a `/patterns` felfedező parkolása tudatos **lead-gen döntés**, nem
-pusztán karbantartási higiénia. Ezek az inbound/SEO felületek a pilot fókusza
-érdekében kerülnek ki ideiglenesen; a disztribúciós stratégia felülvizsgálatakor
-külön döntéssel kell visszatérni rájuk.
+A `/patterns` felfedező parkolása tudatos **lead-gen döntés**, nem pusztán
+karbantartási higiénia. Ez az inbound/SEO felület a pilot fókusza érdekében
+kerül ki ideiglenesen; a disztribúciós stratégia felülvizsgálatakor külön
+döntéssel kell visszatérni rá.
+
+> **2026-08-21 — a BLOG VISSZAKAPCSOLVA.** A double opt-in hírlevél és a
+> blog-digest köré épült disztribúciós kör miatt a `blog` kulcs `active`.
+> A táblázat fenti sora ezt jelöli; a kód mindig a
+> `PORTFOLIO_SURFACE_STATE` (`src/lib/portfolio-parking.ts`) — ha a kettő
+> eltér, a kód az igazság.
+>
+> **2026-08-23 —** a `blog` kapu prefixei kiegészültek a `/newsletter` és
+> `/api/newsletter` utakkal. Enélkül egy visszaparkolás elrejtette volna a
+> feliratkozó FELÜLETET (Footer/NavBar kapuzott), de a feliratkozó API-t
+> nyitva hagyta volna: parkolt felület nem tarthat fenn élő adatgyűjtő
+> végpontot.
 
 ## Aktív támogató felületek
 

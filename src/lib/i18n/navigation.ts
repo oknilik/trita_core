@@ -26,6 +26,14 @@ export const navigationTranslations = {
     org: { hu: "Szervezet", en: "Organization" },
     adminConsole: { hu: "Admin vezérlő", en: "Admin console" },
     backToHome: { hu: "Vissza a vezérlőre", en: "Back to dashboard" },
+    // Felhasználó-menü (a fejléc avatár-dropdownja). Ezek 2026-08-23-ig
+    // bedrótozott magyar szövegek voltak — a legláthatóbb felületen, tehát
+    // az EN-re váltott felhasználó a saját menüjében magyarul látott mindent.
+    account: { hu: "Fiók", en: "Account" },
+    profileSettings: { hu: "Profil beállítások", en: "Profile settings" },
+    signOut: { hu: "Kijelentkezés", en: "Sign out" },
+    language: { hu: "Nyelv", en: "Language" },
+    newClientOrg: { hu: "Új ügyfél-szervezet", en: "New client organization" },
   },
   theme: {
     label: { hu: "Megjelenés", en: "Appearance" },

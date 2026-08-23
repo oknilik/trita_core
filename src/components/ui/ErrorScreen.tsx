@@ -42,6 +42,30 @@ export function ErrorScreen({
       { event: "error_boundary.caught", surface, err: error, digest: error.digest },
       "Route error boundary caught an error",
     );
+
+    // …és jelentés a szervernek. A konzol-log a LÁTOGATÓ gépén marad: enélkül
+    // a felhasználó hibaképernyőt lát, mi pedig semmit sem tudunk róla.
+    // Best effort: ha a jelentés elbukik (offline, blokkolt kérés), a
+    // hibaképernyő ettől még működik — a hibát nem tetézzük.
+    //
+    // A `keepalive` azért kell, mert a felhasználó tipikusan azonnal
+    // továbblép vagy frissít: enélkül a böngésző eldobná a kérést.
+    const payload = JSON.stringify({
+      surface,
+      name: error.name,
+      // Csak az üzenet feje, stack nélkül — a szerver-oldali séma is csonkol.
+      message: error.message?.slice(0, 500),
+      ...(error.digest ? { digest: error.digest } : {}),
+      // Query és hash nélkül: azok azonosítót vihetnének (token, invite id).
+      path: window.location.pathname,
+    });
+
+    void fetch("/api/client-error", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+      keepalive: true,
+    }).catch(() => undefined);
   }, [error, surface]);
 
   return (

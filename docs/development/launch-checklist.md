@@ -4,7 +4,57 @@
 > külső fiók, üzleti adat. Ezek nélkül a kód működik, de valamit rosszul
 > vagy hiányosan csinál, és erre semmilyen teszt nem fog figyelmeztetni.
 >
-> Utolsó frissítés: 2026-08-06.
+> Utolsó frissítés: 2026-08-23 (teljes audit — `docs/audits/teljes-audit-2026-08-23.md`).
+>
+> A teljes, magyarázatos env-lista a repóban: **`.env.example`**.
+
+---
+
+## 0. Clerk — ÉLES instance kulcsa (ÚJ, 2026-08-23)
+
+**Állapot: KÖTELEZŐ, ellenőrizendő.**
+
+A `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` kódolva tartalmazza a Clerk Frontend API
+hostját, és a CSP + a `preconnect` fejléc **ebből oldódik fel**
+(`src/lib/clerk-host.ts`). Korábban a preconnect a fejlesztői instance hostját
+(`perfect-elf-67.clerk.accounts.dev`) drótozta be minden válaszba; ez javítva,
+de a helyes működés a helyes kulcson múlik.
+
+- [ ] A Vercel **production** környezetében `pk_live_…` kulcs áll (nem `pk_test_`).
+- [ ] Ellenőrzés élesítés után:
+      `curl -sI https://trita.io | grep -i '^link:'` — az éles Clerk hostra
+      mutasson, ne `*.clerk.accounts.dev`-re.
+- [ ] A CSP `script-src`/`connect-src`/`frame-src` ugyanezt a hostot tartalmazza
+      (a `Content-Security-Policy-Report-Only` fejlécből olvasható).
+
+## 0/b. Hibariasztás — `ERROR_ALERT_WEBHOOK_URL` (ÚJ, 2026-08-23)
+
+**Állapot: KÖTELEZŐ élesben.**
+
+A kezeletlen szerver-hibák (`instrumentation.ts`) és a kliens-oldali
+hibahatár-jelentések (`/api/client-error`) enélkül CSAK a Vercel stdout-jába
+kerülnek. A pilot-playbook „munkanapon 24 órán belüli reakciót" ígér a
+partnernek — ehhez tudni kell, hogy egyáltalán történt hiba.
+
+- [ ] Slack (vagy Discord) incoming webhook létrehozva, az URL a Vercel
+      env-jében `ERROR_ALERT_WEBHOOK_URL` néven.
+- [ ] Füst-teszt: egy szándékos 500 után megérkezik-e a riasztás.
+- [ ] A riasztás fojtott (10 perces ablakban max. 10, ismétlés kiszűrve) —
+      ha zajos, a `src/lib/error-alert.ts` konstansai hangolhatók.
+
+## 0/c. Rate limit — az Upstash a TELJES publikus felület előfeltétele
+
+**Állapot: KÖTELEZŐ élesben.** *(2026-08-23: a korábbi „csak a hírlevélhez kell"
+olvasat téves volt.)*
+
+`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` nélkül productionben a
+belépés nélkül hívható és levelet küldő tierek (`contact`, `auth`, `analytics`,
+`newsletter`) **fail-closed 503-at** adnak, a `api`/`billing` tier pedig
+korlátozás nélkül fut. A tierenkénti döntés: `FAIL_CLOSED_IN_PRODUCTION`
+(`src/lib/rate-limit.ts`), unit-teszt zárja.
+
+- [ ] Mindkét Upstash env beállítva.
+- [ ] Ellenőrzés: a `/contact` űrlap beküldése működik (nem 503).
 
 ---
 
@@ -83,7 +133,7 @@ spam-panasz-hullám azok kézbesítését is rontja.
 - [ ] A `CRON_SECRET` be van állítva — enélkül a `/api/cron/blog-digest`
       és `/api/cron/newsletter-maintenance` élesben fail-closed (401).
 - [ ] `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` beállítva —
-      enélkül a publikus feliratkozás productionben fail-closed (503).
+      ld. a 0/c pontot: ez nem csak a feliratkozásra vonatkozik.
 - [ ] `RESEND_WEBHOOK_SECRET` + a webhook felvéve a Resendben
       (`email.delivered`, `email.failed`, `email.suppressed`, `email.bounced`,
       `email.complained` → `/api/webhooks/resend`). E nélkül nincs valós

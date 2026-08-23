@@ -524,7 +524,7 @@ function NavHeaderContent({
                     <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
                   </svg>
                 </span>
-                <span>Profil beállítások</span>
+                <span>{t("nav.profileSettings", locale)}</span>
               </Link>
 
               <Link
@@ -541,7 +541,7 @@ function NavHeaderContent({
                     <path d="M12 10V8" />
                   </svg>
                 </span>
-                <span>Eredményeim</span>
+                <span>{t("nav.results", locale)}</span>
               </Link>
             </>
           ) : null}
@@ -622,14 +622,14 @@ function NavHeaderContent({
                   <path d="M8 3v10M3 8h10" />
                 </svg>
               </span>
-              <span>Új ügyfél-szervezet</span>
+              <span>{t("nav.newClientOrg", locale)}</span>
             </Link>
           ) : null}
 
           {showLanguageMenuItem ? (
             <div className="mt-1 rounded-lg px-2.5 py-2.5">
               <p className="pb-2 text-label uppercase text-[var(--color-text-muted)]">
-                Nyelv
+                {t("nav.language", locale)}
               </p>
               <LanguageSwitcher variant="pills" />
             </div>
@@ -651,7 +651,7 @@ function NavHeaderContent({
                     <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M11 11l3-3-3-3M14 8H6" />
                   </svg>
                 </span>
-                <span>Kijelentkezés</span>
+                <span>{t("nav.signOut", locale)}</span>
               </button>
             </div>
           ) : null}
@@ -851,7 +851,7 @@ function NavHeaderContent({
                     onClick={() => setMobileMenu("closed")}
                     className={`flex min-h-[44px] items-center gap-1.5 rounded-lg px-2 text-caption text-[var(--color-text-muted)] ${FOCUS_RING_CLASS}`}
                   >
-                    Bezárás
+                    {t("common.close", locale)}
                     <svg className="h-3 w-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
                       <path d="M2 8l4-4 4 4" />
                     </svg>
@@ -968,7 +968,7 @@ function NavHeaderContent({
                 {showProfileMenuItem || showLanguageMenuItem ? (
                   <div className="mt-4 border-t border-[var(--color-border-soft)] px-4 pb-1 pt-4">
                     <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
-                      Fiók
+                      {t("nav.account", locale)}
                     </p>
                     {showProfileMenuItem ? (
                       <>
@@ -983,7 +983,7 @@ function NavHeaderContent({
                               <path d="M2.5 14a5.5 5.5 0 0 1 11 0" />
                             </svg>
                           </span>
-                          <span>Profil beállítások</span>
+                          <span>{t("nav.profileSettings", locale)}</span>
                         </Link>
 
                         <Link
@@ -999,7 +999,7 @@ function NavHeaderContent({
                               <path d="M12 10V8" />
                             </svg>
                           </span>
-                          <span>Eredményeim</span>
+                          <span>{t("nav.results", locale)}</span>
                         </Link>
                       </>
                     ) : null}
@@ -1085,7 +1085,7 @@ function NavHeaderContent({
                           }}
                           className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                         >
-                          Kijelentkezés
+                          {t("nav.signOut", locale)}
                         </button>
                       </div>
                     ) : null}
@@ -1093,7 +1093,7 @@ function NavHeaderContent({
                     {showLanguageMenuItem ? (
                       <div className="rounded-lg px-3 py-3">
                         <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
-                          Nyelv
+                          {t("nav.language", locale)}
                         </p>
                         <LanguageSwitcher variant="pills" />
                       </div>

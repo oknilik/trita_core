@@ -2,9 +2,14 @@
 // (route handler, server component, server action) egységes, strukturált
 // logsort kap request-korrelációval. A kezelt hibákat a hívó helyek
 // logolják; ez az utolsó védőháló.
+//
+// A logsor mellé riasztás is megy (`sendErrorAlert`), ha az
+// ERROR_ALERT_WEBHOOK_URL be van állítva — enélkül a hiba a Vercel
+// stdout-jában maradna, ahova senki nem néz.
 
 import type { Instrumentation } from "next";
 import { createLogger } from "@/lib/logger";
+import { sendErrorAlert } from "@/lib/error-alert";
 
 const log = createLogger("unhandled");
 
@@ -13,17 +18,37 @@ export const onRequestError: Instrumentation.onRequestError = (
   request,
   context,
 ) => {
+  const requestId =
+    typeof request.headers?.["x-request-id"] === "string"
+      ? (request.headers["x-request-id"] as string)
+      : undefined;
+
   log.error(
     {
       event: "server.unhandled_error",
       err,
       method: request.method,
       path: request.path,
-      requestId: request.headers["x-request-id"] ?? undefined,
+      requestId,
       routerKind: context.routerKind,
       routePath: context.routePath,
       routeType: context.routeType,
     },
     "Unhandled server error",
   );
+
+  // Fire-and-forget: a riasztás sem késleltetni, sem elrontani nem tudja a
+  // kérés kiszolgálását (a modul maga nyeli a hibáit).
+  const error = err as { name?: string; message?: string; digest?: string };
+  void sendErrorAlert({
+    event: "server.unhandled_error",
+    origin: "server",
+    // A `routePath` a minta (`/team/[id]`), nem a konkrét URL — így az
+    // azonosítók nem kerülnek a riasztásba.
+    path: context.routePath ?? request.path ?? null,
+    name: error?.name ?? null,
+    message: error?.message ?? null,
+    digest: error?.digest ?? null,
+    requestId: requestId ?? null,
+  });
 };
