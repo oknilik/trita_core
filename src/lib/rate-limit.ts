@@ -2,9 +2,16 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { createHash } from "node:crypto";
 import { createLogger } from "@/lib/logger";
 
 const log = createLogger("rate-limit");
+
+// A library alapértelmezése 5 másodperc után fail-open választ ad. Ez túl
+// hosszú egy interaktív route-nál, és a publikus/erősítő tiereknél ellentmond
+// a saját fail-closed policy-nknak. A `reason: timeout` választ lent külön
+// policy szerint kezeljük.
+export const RATE_LIMIT_TIMEOUT_MS = 1_500;
 
 let redis: Redis | null = null;
 
@@ -27,6 +34,7 @@ function makeRatelimit(requests: number, window: `${number} ${"s" | "m" | "h" | 
     limiter: Ratelimit.slidingWindow(requests, window),
     analytics: true,
     prefix,
+    timeout: RATE_LIMIT_TIMEOUT_MS,
   });
 }
 
@@ -39,6 +47,10 @@ function getLimiter(tier: RateLimitTier): Ratelimit | null {
     api:     { requests: 30, window: "10 s", prefix: "rl:api" },
     billing: { requests: 5,  window: "60 s", prefix: "rl:billing" },
     auth:    { requests: 10, window: "60 s", prefix: "rl:auth" },
+    // Publikus capability-tokenes route-ok közös IP-abúzus plafonja. Magas,
+    // hogy egy 20–50 fős, közös irodai NAT mögötti pilot ne akadjon össze;
+    // a szűkebb, tokenenkénti `api` limitet a checkTokenRateLimit adja mellé.
+    public:  { requests: 120, window: "10 s", prefix: "rl:public" },
     contact: { requests: 3,  window: "60 s", prefix: "rl:contact" },
     // Analitika: egy valódi munkamenet legitim módon küld sok KÖTEGELT
     // eseményt (lapváltás, tölcsér-lépések), ezért bőkezűbb keret. A cél
@@ -64,6 +76,7 @@ export type RateLimitTier =
   | "api"
   | "billing"
   | "auth"
+  | "public"
   | "contact"
   | "analytics"
   | "newsletter"
@@ -99,6 +112,8 @@ export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
   billing: false,
   // Belépés-közeli, auth nélkül hívható.
   auth: true,
+  // Auth nélküli token-végpontok közös IP-védelme.
+  public: true,
   // Levelet küld (admin-értesítő, megosztás) — erősítő.
   contact: true,
   // Auth nélküli írás az AnalyticsEvent táblába. Egy elveszett esemény
@@ -119,6 +134,19 @@ export const FAIL_CLOSED_IN_PRODUCTION: Record<RateLimitTier, boolean> = {
  * az fojtaná el, amiért naplózunk.
  */
 const missingConfigLogged = new Set<RateLimitTier>();
+const runtimeFailureLogged = new Set<RateLimitTier>();
+type RateLimitResult = Awaited<ReturnType<Ratelimit["limit"]>>;
+type RateLimitExecutor = (tier: RateLimitTier, identifier: string) => Promise<RateLimitResult>;
+let testExecutor: RateLimitExecutor | null = null;
+
+/** Teszt-seam: valódi hálózati hívás nélkül ellenőrizhető minden válaszág. */
+export function __setRateLimitExecutorForTests(executor: RateLimitExecutor | null): void {
+  testExecutor = executor;
+  runtimeFailureLogged.clear();
+  missingConfigLogged.clear();
+  redis = null;
+  for (const tier of Object.keys(limiters)) delete limiters[tier];
+}
 
 function logMissingConfigOnce(tier: RateLimitTier, failClosed: boolean): void {
   if (missingConfigLogged.has(tier)) return;
@@ -141,9 +169,9 @@ export async function checkRateLimit(
   tier: RateLimitTier,
   identifier?: string
 ): Promise<NextResponse | null> {
-  const limiter = getLimiter(tier);
+  const limiter = testExecutor ? null : getLimiter(tier);
 
-  if (!limiter) {
+  if (!limiter && !testExecutor) {
     const failClosed =
       process.env.NODE_ENV === "production" && FAIL_CLOSED_IN_PRODUCTION[tier];
 
@@ -160,14 +188,34 @@ export async function checkRateLimit(
     return null;
   }
 
-  const headersList = await headers();
-  const ip =
-    headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-    headersList.get("x-real-ip") ??
-    "anonymous";
+  let key = identifier;
+  if (!key) {
+    const headersList = await headers();
+    key =
+      headersList.get("x-vercel-forwarded-for")?.split(",")[0]?.trim() ??
+      headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+      headersList.get("x-real-ip") ??
+      "anonymous";
+  }
 
-  const key = identifier ?? ip;
-  const { success, limit, remaining, reset } = await limiter.limit(key);
+  let result: RateLimitResult;
+  try {
+    result = testExecutor
+      ? await testExecutor(tier, key)
+      : await limiter!.limit(key);
+  } catch (err) {
+    return handleRuntimeFailure(tier, "error", err);
+  }
+
+  // Az Upstash kliens a timeoutot technikailag `success: true` válaszként
+  // adja vissza. A veszélyes tiereknél ezt nem szabad valódi engedélynek
+  // tekinteni; ugyanaz a policy érvényes rá, mint konfigurációs hibánál.
+  if (result.reason === "timeout") {
+    return handleRuntimeFailure(tier, "timeout");
+  }
+
+  runtimeFailureLogged.delete(tier);
+  const { success, limit, remaining, reset } = result;
 
   if (!success) {
     return NextResponse.json(
@@ -178,11 +226,61 @@ export async function checkRateLimit(
           "X-RateLimit-Limit": limit.toString(),
           "X-RateLimit-Remaining": remaining.toString(),
           "X-RateLimit-Reset": reset.toString(),
-          "Retry-After": Math.ceil((reset - Date.now()) / 1000).toString(),
+          "Retry-After": Math.max(1, Math.ceil((reset - Date.now()) / 1000)).toString(),
         },
       }
     );
   }
 
   return null;
+}
+
+function handleRuntimeFailure(
+  tier: RateLimitTier,
+  reason: "error" | "timeout",
+  err?: unknown,
+): NextResponse | null {
+  const failClosed =
+    process.env.NODE_ENV === "production" && FAIL_CLOSED_IN_PRODUCTION[tier];
+
+  if (!runtimeFailureLogged.has(tier)) {
+    runtimeFailureLogged.add(tier);
+    const context = { event: "rate_limit.runtime_failure", tier, reason, err };
+    if (failClosed) {
+      log.error(context, "Rate limit backend unavailable — request rejected");
+    } else {
+      log.warn(context, "Rate limit backend unavailable — check skipped");
+    }
+  }
+
+  if (!failClosed) return null;
+  return NextResponse.json(
+    { error: "RATE_LIMIT_UNAVAILABLE" },
+    { status: 503, headers: { "Retry-After": "30" } },
+  );
+}
+
+/**
+ * Publikus capability-tokeneket soha nem küldünk nyersen az Upstashnak.
+ * A hash stabil rate-limit kulcsot ad, de Redis-hozzáférésből nem állítható
+ * vissza a meghívó/kitöltő token.
+ */
+export function hashRateLimitIdentifier(namespace: string, value: string): string {
+  const digest = createHash("sha256").update(value).digest("hex").slice(0, 32);
+  return `${namespace}:${digest}`;
+}
+
+/**
+ * Kétrétegű védelem publikus capability-tokenes route-okhoz:
+ * 1. magas IP-plafon a véletlen tokenekkel indított DB-flood ellen;
+ * 2. szűk tokenenkénti keret, hogy a legitim közös NAT ne legyen közös bucket.
+ */
+export async function checkTokenRateLimit(
+  namespace: string,
+  token: string,
+  publicIdentifier?: string,
+): Promise<NextResponse | null> {
+  const publicLimit = await checkRateLimit("public", publicIdentifier);
+  if (publicLimit) return publicLimit;
+  return checkRateLimit("api", hashRateLimitIdentifier(namespace, token));
 }

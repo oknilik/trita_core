@@ -36,14 +36,13 @@ const schema = z.object({
 });
 
 export async function POST(req: Request) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   // A mérőoldal bejelentkezés mögött van, tehát a végpont is: nyitva hagyva
   // bárki tetszőleges számú sort írhatna, és a minta megmérgezhető lenne. Az
   // "anon" közönség a modellben marad — egy későbbi publikus változathoz.
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  const rateLimitResponse = await checkRateLimit("api", userId);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const parsed = schema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {

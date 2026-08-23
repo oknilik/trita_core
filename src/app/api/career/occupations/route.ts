@@ -19,11 +19,10 @@ function normalize(value: string): string {
 }
 
 export async function GET(req: Request) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  const rateLimitResponse = await checkRateLimit("api", userId);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },

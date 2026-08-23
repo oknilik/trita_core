@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import type { TestType } from "@prisma/client";
 import { resolveAcceptance } from "@/lib/acceptance/service";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 import { getTestConfig } from "@/lib/questions";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { prisma } from "@/lib/prisma";
@@ -15,11 +15,9 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ token: string }> },
 ) {
-  // Publikus (token-alapú) végpont — rate limit a testvér-route-ok mintájára.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { token } = await params;
+  const rateLimitResponse = await checkTokenRateLimit("candidate", token);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);

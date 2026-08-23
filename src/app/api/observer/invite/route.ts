@@ -62,9 +62,6 @@ async function resolveInviteCampaignContext(profileId: string, activeOrgId: stri
 
 export async function POST(req: Request) {
   const log = await getRequestLogger("observer");
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const body = await req.json().catch(() => ({}));
   const parsed = inviteSchema.safeParse(body);
   if (!parsed.success) {
@@ -78,6 +75,12 @@ export async function POST(req: Request) {
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const rateLimitResponse = await checkRateLimit(
+    parsed.data.email ? "contact" : "api",
+    userId,
+  );
+  if (rateLimitResponse) return rateLimitResponse;
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },

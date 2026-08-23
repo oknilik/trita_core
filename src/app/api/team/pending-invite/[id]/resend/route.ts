@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { sendTeamInviteEmail } from "@/lib/emails";
 import { getServerLocale } from "@/lib/i18n-server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 // POST /api/team/pending-invite/[id]/resend — resend invite email to a pending member
 export async function POST(
@@ -43,6 +44,9 @@ export async function POST(
   if (!membership || membership.leftAt || !hasOrgRole(membership.role, "ORG_MANAGER")) {
     return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
   }
+
+  const rateLimited = await checkRateLimit("contact", `team-resend:${profile.id}`);
+  if (rateLimited) return rateLimited;
 
   const locale = await getServerLocale();
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";

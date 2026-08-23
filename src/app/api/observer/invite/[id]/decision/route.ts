@@ -10,6 +10,7 @@ import { canManageMeasurements } from "@/lib/measurement-auth";
 import { OBSERVER_INVITE_TTL_DAYS } from "@/lib/observer/invite-policy";
 import { handleObserverInviteDecision } from "@/lib/notifications";
 import { getRequestLogger } from "@/lib/logger.server";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const bodySchema = z.object({ action: z.enum(["approve", "decline"]) });
 
@@ -71,6 +72,8 @@ export async function POST(
   if (!mayDecide) return NextResponse.json({ error: "FORBIDDEN" }, { status: 403 });
 
   const approved = body.data.action === "approve";
+  const rateLimited = await checkRateLimit(approved ? "contact" : "api", approver.id);
+  if (rateLimited) return rateLimited;
   const targetLabel = invite.observerName ?? invite.observerEmail ?? "külső értékelő";
 
   await prisma.observerInvitation.update({

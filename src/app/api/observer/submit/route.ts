@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { calculateScores } from "@/lib/scoring";
 import { sendObserverCompletionEmail } from "@/lib/emails";
 import { getRequestLogger } from "@/lib/logger.server";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 import {
   resolveObserverTokenLifecycle,
   toObserverTokenErrorCode,
@@ -34,9 +34,6 @@ const submitSchema = z.object({
 
 export async function POST(req: Request) {
   const log = await getRequestLogger("observer");
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const body = await req.json();
   const parsed = submitSchema.safeParse(body);
   if (!parsed.success) {
@@ -47,6 +44,8 @@ export async function POST(req: Request) {
   }
 
   const { token, relationshipType, knownDuration, answers, confidence } = parsed.data;
+  const rateLimitResponse = await checkTokenRateLimit("observer", token);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },

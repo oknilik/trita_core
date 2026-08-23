@@ -9,6 +9,7 @@ import {
 import { sendConsultantInviteEmail } from "@/lib/emails";
 import { createLogger } from "@/lib/logger";
 import { normalizeLocale } from "@/lib/i18n/core";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 const log = createLogger("admin-consultants");
 
@@ -114,6 +115,9 @@ export async function POST(req: NextRequest) {
         })
       : null;
     if (!adminProfile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+    const rateLimited = await checkRateLimit("contact", `consultant-invite:${adminProfile.id}`);
+    if (rateLimited) return rateLimited;
 
     const invite = await prisma.consultantInvite.upsert({
       where: { email },

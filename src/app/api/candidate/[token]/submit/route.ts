@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { completeAcceptance } from "@/lib/acceptance/service";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 
 const answerSchema = z.object({
   questionId: z.number().int().positive(),
@@ -20,10 +20,9 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ token: string }> }
 ) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { token } = await params;
+  const rateLimitResponse = await checkTokenRateLimit("candidate", token);
+  if (rateLimitResponse) return rateLimitResponse;
   const { userId } = await auth();
 
   const body = submitSchema.safeParse(await req.json());

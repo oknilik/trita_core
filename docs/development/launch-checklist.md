@@ -48,13 +48,21 @@ partnernek — ehhez tudni kell, hogy egyáltalán történt hiba.
 olvasat téves volt.)*
 
 `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` nélkül productionben a
-belépés nélkül hívható és levelet küldő tierek (`contact`, `auth`, `analytics`,
-`newsletter`) **fail-closed 503-at** adnak, a `api`/`billing` tier pedig
+belépés nélkül hívható és levelet küldő tierek (`public`, `contact`, `auth`,
+`analytics`, `newsletter`) **fail-closed 503-at** adnak, az `api`/`billing` tier pedig
 korlátozás nélkül fut. A tierenkénti döntés: `FAIL_CLOSED_IN_PRODUCTION`
 (`src/lib/rate-limit.ts`), unit-teszt zárja.
 
+A publikus capability-tokenes route-ok két keretet kapnak: magas, közös IP-
+abúzus plafont (`public`) és külön, hash-elt tokenenkénti `api` keretet. Így a
+közös irodai NAT nem fogja össze a pilot résztvevőit, a nyers token pedig nem
+kerül az Upstashba.
+
 - [ ] Mindkét Upstash env beállítva.
+- [ ] Az Upstash adatbázis EU-régióban fut; DPA és retention ellenőrizve.
 - [ ] Ellenőrzés: a `/contact` űrlap beküldése működik (nem 503).
+- [ ] Füst-teszt: a 4. azonos kulcsú contact-kérés 429-et ad, majd a reset
+      után ismét átmegy (a sikeres build önmagában nem ellenőrzi a Redis-elérést).
 
 ---
 

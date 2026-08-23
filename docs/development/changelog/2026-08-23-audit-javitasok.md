@@ -26,7 +26,7 @@ miközben Redis nélkül egyik sem korlátozott.
 
 Mostantól a besorolás a valós kockázat mentén megy
 (`FAIL_CLOSED_IN_PRODUCTION`): a belépés nélkül hívható és **levelet küldő**
-tierek (`auth`, `contact`, `analytics`, `newsletter`) élesben fail-closed
+tierek (`auth`, `public`, `contact`, `analytics`, `newsletter`) élesben fail-closed
 503-at adnak; a belépéshez kötött `api`/`billing` marad fail-open, mert ott a
 visszaélés felülete eleve korlátos, a leállás viszont az egész appot elvinné.
 A hiányzó konfigurációt tierenként **egyszer** naplózzuk — enélkül egy
