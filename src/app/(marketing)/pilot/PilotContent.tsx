@@ -27,12 +27,10 @@ export function PilotContent() {
     [
       { number: "01", title: t("pilot.benefit1Title", locale), desc: t("pilot.benefit1Desc", locale) },
       { number: "02", title: t("pilot.benefit2Title", locale), desc: t("pilot.benefit2Desc", locale) },
-      { number: "03", title: t("pilot.benefit3Title", locale), desc: t("pilot.benefit3Desc", locale) },
     ],
     [
-      { number: "04", title: t("pilot.benefit4Title", locale), desc: t("pilot.benefit4Desc", locale) },
-      { number: "05", title: t("pilot.benefit5Title", locale), desc: t("pilot.benefit5Desc", locale) },
-      { number: "06", title: t("pilot.benefit6Title", locale), desc: t("pilot.benefit6Desc", locale) },
+      { number: "03", title: t("pilot.benefit5Title", locale), desc: t("pilot.benefit5Desc", locale) },
+      { number: "04", title: t("pilot.benefit6Title", locale), desc: t("pilot.benefit6Desc", locale) },
     ],
   ];
 

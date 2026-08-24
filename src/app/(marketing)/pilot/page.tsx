@@ -10,10 +10,10 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/pilot",
   title: "Pilotprogram — az első partnercsapatainknak | trita",
   description:
-    "Csatlakozz a trita pilotprogramjához: mérhető csapatdinamika, személyiség- és 360°-os visszajelzés az első partnercsapatoknak, egyedi feltételekkel.",
+    "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
   ogTitle: "Pilotprogram — az első partnercsapatainknak",
   ogDescription:
-    "Csatlakozz a trita pilotprogramjához: mérhető csapatdinamika, személyiség- és 360°-os visszajelzés az első partnercsapatoknak.",
+    "90 napos, személyesen kísért csapatprogram az első partnercsapatoknak.",
 });
 
 export default function PilotPage() {
