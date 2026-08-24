@@ -17,7 +17,8 @@ const log = createLogger("blog-store");
 // Vercelen github (ha van token), helyben fs. A github módhoz kell:
 //   GITHUB_TOKEN — fine-grained PAT, CSAK erre a repóra, Contents: read+write
 //   GITHUB_REPO  — "owner/repo" formában
-//   GITHUB_BRANCH — opcionális, default: main
+//   GITHUB_BRANCH — opcionális; enélkül a futó deploy saját ága
+//                   (VERCEL_GIT_COMMIT_REF), végső fallback: main
 
 const BLOG_DIR = path.join(process.cwd(), "content/blog");
 const GITHUB_API = "https://api.github.com";
@@ -30,11 +31,26 @@ interface GithubConfig {
   branch: string;
 }
 
+/**
+ * Melyik ágra commitoljon a szerkesztő.
+ *
+ * Sorrend: explicit `GITHUB_BRANCH` → a FUTÓ DEPLOY saját ága
+ * (`VERCEL_GIT_COMMIT_REF`) → `main`.
+ *
+ * A középső lépés a lényeg: egy preview deployment adminjából mentett cikk
+ * korábban a `main`-re ment, vagyis egy ág-előnézetből szerkesztve azonnal
+ * az ÉLES tartalom változott — meglepetés, nem szándék. Így viszont az ág
+ * előnézete a saját ágára ír, és a merge viszi élesbe.
+ */
+export function blogStoreBranch(): string {
+  return process.env.GITHUB_BRANCH || process.env.VERCEL_GIT_COMMIT_REF || "main";
+}
+
 function githubConfig(): GithubConfig | null {
   const token = process.env.GITHUB_TOKEN;
   const repo = process.env.GITHUB_REPO;
   if (!token || !repo) return null;
-  return { token, repo, branch: process.env.GITHUB_BRANCH ?? "main" };
+  return { token, repo, branch: blogStoreBranch() };
 }
 
 export function blogStoreMode(): BlogStoreMode {

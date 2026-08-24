@@ -1,6 +1,6 @@
 import test, { afterEach, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { BLOG_CONFLICT, readBlogRevision, saveBlogSource } from "@/lib/blog-store";
+import { BLOG_CONFLICT, blogStoreBranch, readBlogRevision, saveBlogSource } from "@/lib/blog-store";
 
 // A szerkesztő a tároló sha-jával tölt, és azzal is ment. Ha a tároló
 // időközben megváltozott (jellemzően: egy korábbi mentés commitja, aminek a
@@ -43,6 +43,8 @@ function stubGithub(remote: { content: string; sha: string } | null): void {
 }
 
 beforeEach(() => {
+  delete process.env.GITHUB_BRANCH;
+  delete process.env.VERCEL_GIT_COMMIT_REF;
   process.env.BLOG_STORE = "github";
   process.env.GITHUB_TOKEN = "token";
   process.env.GITHUB_REPO = "owner/repo";
@@ -112,4 +114,36 @@ test("baseSha nelkul nincs utkozes-ellenorzes", async () => {
 
   assert.equal(result.mode, "github");
   assert.equal(calls.filter((call) => call.method === "PUT").length, 1);
+});
+
+// ── Cél-ág ────────────────────────────────────────────────────────────
+//
+// A preview deployment adminjából mentett cikk korábban a `main`-re ment:
+// egy ág-előnézetből szerkesztve azonnal az ÉLES tartalom változott. A futó
+// deploy saját ága a helyes default, az explicit env pedig felülbírálja.
+
+test("a cel-ag alapbol a futo deploy sajat aga", () => {
+  process.env.VERCEL_GIT_COMMIT_REF = "claude/blog-szerkeszto";
+  assert.equal(blogStoreBranch(), "claude/blog-szerkeszto");
+});
+
+test("az explicit GITHUB_BRANCH felulbir", () => {
+  process.env.VERCEL_GIT_COMMIT_REF = "feature/valami";
+  process.env.GITHUB_BRANCH = "main";
+  assert.equal(blogStoreBranch(), "main");
+});
+
+test("ag-informacio nelkul main a fallback", () => {
+  assert.equal(blogStoreBranch(), "main");
+});
+
+test("a commit a cel-agra megy", async () => {
+  process.env.VERCEL_GIT_COMMIT_REF = "feature/blog";
+  stubGithub({ content: "regi", sha: "sha-1" });
+
+  await saveBlogSource({ slug: "cikk", content: "uj", message: "teszt", baseSha: "sha-1" });
+
+  const put = calls.find((call) => call.method === "PUT");
+  assert.equal(put?.body?.branch, "feature/blog");
+  assert.match(calls[0]!.url, /ref=feature\/blog/);
 });

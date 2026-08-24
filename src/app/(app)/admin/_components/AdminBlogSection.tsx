@@ -129,10 +129,13 @@ export function AdminBlogSection({
   posts,
   storeMode,
   githubReady,
+  branch,
 }: {
   posts: AdminBlogPost[];
   storeMode: "fs" | "github";
   githubReady: boolean;
+  /** Melyik ágra megy a commit — a futó deploy sajátja, ha nincs felülírva. */
+  branch: string;
 }) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
@@ -562,7 +565,18 @@ export function AdminBlogSection({
       <div className="rounded-xl border border-sand bg-surface-card p-4 text-sm text-ink-body">
         <span className="font-semibold text-ink">Mentési mód: </span>
         {storeMode === "github" ? (
-          <>GitHub-commit → automatikus Vercel deploy (~pár perc a megjelenésig).</>
+          <>
+            GitHub-commit a{" "}
+            <span className="font-dm-mono text-caption text-ink">{branch}</span> ágra →
+            automatikus Vercel deploy (~pár perc a megjelenésig).
+            {branch !== "main" && (
+              <span className="text-muted">
+                {" "}
+                Ez nem az éles ág: a cikk a publikus blogon csak a main-be olvasztás
+                után jelenik meg.
+              </span>
+            )}
+          </>
         ) : (
           <>
             helyi fájlírás (content/blog) — dev-ben azonnal látszik, élesítés git push-sal.
