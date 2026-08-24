@@ -28,16 +28,24 @@ type EditorialBackControlProps = EditorialBackAction & {
 export function EditorialBackControl(props: EditorialBackControlProps) {
   const { backLabel, className, labelClassName } = props;
 
-  return props.href ? (
+  if (props.onBack) {
+    return (
+      <BackControl
+        onBack={props.onBack}
+        label={backLabel}
+        className={className}
+        labelClassName={labelClassName}
+      />
+    );
+  }
+
+  if (!props.href) {
+    throw new Error("EditorialBackControl requires href or onBack");
+  }
+
+  return (
     <BackControl
       href={props.href}
-      label={backLabel}
-      className={className}
-      labelClassName={labelClassName}
-    />
-  ) : (
-    <BackControl
-      onBack={props.onBack}
       label={backLabel}
       className={className}
       labelClassName={labelClassName}
