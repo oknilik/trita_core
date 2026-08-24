@@ -1,5 +1,9 @@
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import {
+  advanceCampaignStepForUser,
+  type CampaignStepOpening,
+} from "@/lib/campaign-steps";
 
 /**
  * Egy anonim pulse-válasz atomi rögzítése.
@@ -12,11 +16,13 @@ import { prisma } from "@/lib/prisma";
  */
 export async function recordAnonymousPsychSafetyResponse(input: {
   participantId: string;
+  profileId: string;
   campaignId: string;
+  teamId: string;
   answers: Prisma.InputJsonValue;
   submittedOn: Date;
   completedAt?: Date;
-}): Promise<boolean> {
+}): Promise<{ created: boolean; openings: CampaignStepOpening[] }> {
   return prisma.$transaction(async (tx) => {
     const claimed = await tx.campaignParticipant.updateMany({
       where: {
@@ -27,15 +33,21 @@ export async function recordAnonymousPsychSafetyResponse(input: {
       data: { completedAt: input.completedAt ?? new Date() },
     });
 
-    if (claimed.count !== 1) return false;
+    if (claimed.count !== 1) return { created: false, openings: [] };
 
     await tx.psychSafetyResponse.create({
       data: {
         campaignId: input.campaignId,
+        teamId: input.teamId,
         answers: input.answers,
         submittedOn: input.submittedOn,
       },
     });
-    return true;
+    const openings = await advanceCampaignStepForUser(input.profileId, "PSYCH_SAFETY", {
+      campaignId: input.campaignId,
+      db: tx,
+      emitNotifications: false,
+    });
+    return { created: true, openings };
   });
 }

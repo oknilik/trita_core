@@ -4,7 +4,10 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isCompletePsychSafetyAnswerSet } from "@/lib/psych-safety";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import {
+  notifyCampaignStepOpenings,
+  resolveCampaignTeamIdForUser,
+} from "@/lib/campaign-steps";
 import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
 
 const bodySchema = z.object({
@@ -48,7 +51,9 @@ export async function POST(req: NextRequest) {
       completedAt: true,
       currentStep: true,
       nextStepOpensAt: true,
-      campaign: { select: { type: true, status: true, steps: true } },
+      campaign: {
+        select: { id: true, type: true, status: true, steps: true, teamId: true, teamIds: true },
+      },
     },
   });
 
@@ -58,32 +63,48 @@ export async function POST(req: NextRequest) {
   if (participant.campaign.status !== "ACTIVE") {
     return NextResponse.json({ error: "CAMPAIGN_NOT_ACTIVE" }, { status: 409 });
   }
+  if (participant.completedAt) {
+    // A korábbi anonim válasz már biztonságban van. A retry sikert ad; a
+    // léptetés idempotens, ezért egy régi részleges tranzakciót is reconciliál.
+    const { advanceCampaignStepForUser } = await import("@/lib/campaign-steps");
+    const openings = await advanceCampaignStepForUser(profile.id, "PSYCH_SAFETY", {
+      campaignId: body.data.campaignId,
+      emitNotifications: false,
+    });
+    await notifyCampaignStepOpenings(openings);
+    return NextResponse.json({ ok: true, replayed: true });
+  }
   // Több-lépéses kampány: a pulse csak akkor tölthető, ha épp ez a nyitott lépés.
   if (!isStepOpenFor(participant.campaign, participant, "PSYCH_SAFETY")) {
     return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
-  if (participant.completedAt) {
-    return NextResponse.json({ error: "ALREADY_SUBMITTED" }, { status: 409 });
-  }
+  const teamId = await resolveCampaignTeamIdForUser(participant.campaign, profile.id);
+  if (!teamId) return NextResponse.json({ error: "NO_TARGET_TEAM" }, { status: 409 });
 
   // Nap pontosságúra csonkolt beküldési dátum (anonimitás).
   const submittedOn = new Date();
   submittedOn.setUTCHours(0, 0, 0, 0);
 
-  const created = await recordAnonymousPsychSafetyResponse({
+  const recorded = await recordAnonymousPsychSafetyResponse({
     participantId: participant.id,
+    profileId: profile.id,
     campaignId: body.data.campaignId,
+    teamId,
     answers: body.data.answers,
     submittedOn,
   });
-  if (!created) {
-    return NextResponse.json({ error: "ALREADY_SUBMITTED" }, { status: 409 });
+  if (!recorded.created) {
+    const { advanceCampaignStepForUser } = await import("@/lib/campaign-steps");
+    const openings = await advanceCampaignStepForUser(profile.id, "PSYCH_SAFETY", {
+      campaignId: body.data.campaignId,
+      emitNotifications: false,
+    });
+    await notifyCampaignStepOpenings(openings);
+    return NextResponse.json({ ok: true, replayed: true });
   }
-
-  // Lépés-léptetés (következő mérés megnyitása + értesítés)
-  await advanceCampaignStepForUser(profile.id, "PSYCH_SAFETY", {
-    campaignId: body.data.campaignId,
-  }).catch(() => {});
+  await notifyCampaignStepOpenings(recorded.openings);
+  const { handleCampaignProgressMilestone } = await import("@/lib/notifications");
+  await handleCampaignProgressMilestone(body.data.campaignId);
 
   return NextResponse.json({ ok: true });
 }

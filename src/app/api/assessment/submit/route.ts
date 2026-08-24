@@ -1,4 +1,4 @@
-import type { TestType } from "@prisma/client";
+import { Prisma, type TestType } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { assignTestType } from "@/lib/assignTestType";
@@ -10,6 +10,7 @@ import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 import {
   advanceCampaignStepForUser,
+  notifyCampaignStepOpenings,
   resolveActiveSelfAssessmentCampaign,
 } from "@/lib/campaign-steps";
 import { resolveAssessmentSubmitViewerClerkId } from "@/lib/assessment-submit-auth";
@@ -24,6 +25,27 @@ const submissionSchema = z.object({
   answers: z.array(answerSchema),
   campaignId: z.string().min(1).max(191).optional(),
 });
+
+function canonicalAnswers(answers: Array<{ questionId: number; value: number }>): string {
+  return JSON.stringify([...answers].sort((a, b) => a.questionId - b.questionId));
+}
+
+function persistedAnswers(scores: unknown): string | null {
+  if (!scores || typeof scores !== "object" || Array.isArray(scores)) return null;
+  const answers = (scores as { answers?: unknown }).answers;
+  if (!Array.isArray(answers)) return null;
+  return canonicalAnswers(
+    answers.flatMap((entry): Array<{ questionId: number; value: number }> => {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
+      const item = entry as Record<string, unknown>;
+      const questionId = Number(item.questionId);
+      const value = Number(item.value);
+      return Number.isInteger(questionId) && Number.isInteger(value)
+        ? [{ questionId, value }]
+        : [];
+    }),
+  );
+}
 
 export async function POST(req: Request) {
   const log = await getRequestLogger("assessment");
@@ -122,38 +144,92 @@ export async function POST(req: Request) {
 
   const scores = calculateScores(testType as TestType, typedAnswers);
 
-  const [result] = await prisma.$transaction([
-    prisma.assessmentResult.create({
-      data: {
-        userProfileId: profile.id,
-        campaignId,
-        testType: testType as TestType,
-        scores: {
-          ...scores,
-          answers: relevantAnswers,
-          questionCount: relevantAnswers.length,
+  let created = false;
+  let openings: Awaited<ReturnType<typeof advanceCampaignStepForUser>> = [];
+  let result: { id: string };
+  const scopedCampaignId = campaignId;
+  try {
+    result = await prisma.$transaction(async (tx) => {
+      const existing = campaignId
+        ? await tx.assessmentResult.findUnique({
+            where: { userProfileId_campaignId: { userProfileId: profile.id, campaignId: scopedCampaignId! } },
+            select: { id: true, scores: true },
+          })
+        : null;
+      if (existing) {
+        if (persistedAnswers(existing.scores) !== canonicalAnswers(relevantAnswers)) {
+          throw new Error("CAMPAIGN_ALREADY_SUBMITTED_DIFFERENT");
+        }
+        openings = campaignStep
+          ? await advanceCampaignStepForUser(profile.id, campaignStep.stepType, {
+              campaignId: scopedCampaignId!,
+              db: tx,
+              emitNotifications: false,
+            })
+          : [];
+        return { id: existing.id };
+      }
+
+      const saved = await tx.assessmentResult.create({
+        data: {
+          userProfileId: profile.id,
+          campaignId: scopedCampaignId,
+          testType: testType as TestType,
+          scores: {
+            ...scores,
+            answers: relevantAnswers,
+            questionCount: relevantAnswers.length,
+          },
         },
-      },
-    }),
-    prisma.assessmentDraft.deleteMany({
-      where: { userProfileId: profile.id },
-    }),
-  ]);
+        select: { id: true },
+      });
+      created = true;
+      await tx.assessmentDraft.deleteMany({
+        where: {
+          userProfileId: profile.id,
+          scope: scopedCampaignId ? `campaign:${scopedCampaignId}` : "self",
+        },
+      });
+      openings = campaignStep
+        ? await advanceCampaignStepForUser(profile.id, campaignStep.stepType, {
+            campaignId: scopedCampaignId!,
+            db: tx,
+            emitNotifications: false,
+          })
+        : [];
+      return saved;
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "CAMPAIGN_ALREADY_SUBMITTED_DIFFERENT") {
+      return NextResponse.json({ error: "ALREADY_SUBMITTED" }, { status: 409 });
+    }
+    if (campaignId && error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      const existing = await prisma.assessmentResult.findUnique({
+        where: { userProfileId_campaignId: { userProfileId: profile.id, campaignId } },
+        select: { id: true, scores: true },
+      });
+      if (existing && persistedAnswers(existing.scores) === canonicalAnswers(relevantAnswers)) {
+        result = { id: existing.id };
+      } else {
+        return NextResponse.json({ error: "ALREADY_SUBMITTED" }, { status: 409 });
+      }
+    } else {
+      throw error;
+    }
+  }
+
+  await notifyCampaignStepOpenings(openings).catch((err) =>
+    log.error({ event: "assessment.step_notification_failed", err }, "Step notification failed"),
+  );
 
   // Analitika: a kitöltés BEFEJEZÉSE szerver-oldali igazság — a kliens
   // oldali „kész" esemény ad-blockolható és hamisítható lenne, ez pedig a
   // tölcsér legfontosabb lépése.
-  trackServerEvent(
-    "assessment.complete",
-    { mode: "user" },
-    { userProfileId: profile.id },
-  );
-
-  // Csak azt a kampánykört léptetjük, amelyből a kérdőív ténylegesen
-  // megnyílt. Így két átfedő kampányt egyetlen self-beadás nem zár le.
-  if (campaignId && campaignStep) {
-    advanceCampaignStepForUser(profile.id, campaignStep.stepType, { campaignId }).catch(
-      () => {},
+  if (created) {
+    trackServerEvent(
+      "assessment.complete",
+      { mode: "user" },
+      { userProfileId: profile.id },
     );
   }
 

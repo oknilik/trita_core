@@ -36,6 +36,7 @@ interface ProfileHeroProps {
   accessLevel?: AccessLevel;
   onDownloadPdf?: () => void;
   pdfLoading?: boolean;
+  pdfError?: boolean;
   onShare?: () => void;
   shareLoading?: boolean;
   topDimensions?: string[];
@@ -51,6 +52,7 @@ export function ProfileHero({
   accessLevel = "start",
   onDownloadPdf,
   pdfLoading,
+  pdfError,
   onShare,
   shareLoading,
   topDimensions = [],
@@ -85,13 +87,13 @@ export function ProfileHero({
   useEffect(() => {
     const was = wasPdfLoading.current;
     wasPdfLoading.current = Boolean(pdfLoading);
-    if (was && !pdfLoading) {
+    if (was && !pdfLoading && !pdfError) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setPdfDone(true);
       const id = setTimeout(() => setPdfDone(false), 2600);
       return () => clearTimeout(id);
     }
-  }, [pdfLoading]);
+  }, [pdfLoading, pdfError]);
 
   const glyphPair = glyphDimensions ? resolveGlyphPair(glyphDimensions) : null;
   // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
@@ -600,6 +602,11 @@ export function ProfileHero({
               </span>
             )}
           </Button>
+          {pdfError ? (
+            <span role="alert" className="self-center text-note text-white">
+              {locale === "hu" ? "A PDF nem készült el. Próbáld újra." : "PDF generation failed. Please try again."}
+            </span>
+          ) : null}
         </div>
             )}
           />

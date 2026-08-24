@@ -201,6 +201,8 @@ export interface TeamReportAggregates {
 }
 
 export interface TeamReportActionItem {
+  /** Stabil azonosító az append-only változástörténethez. */
+  id?: string;
   title: string;
   description: string;
   /** Időtáv napokban: 30 / 60 / 90 */
@@ -212,6 +214,8 @@ export interface TeamReportActionItem {
   status?: "not_started" | "in_progress" | "blocked" | "done";
   /** A következő mérési körben visszamérendő, strukturált célmutató. */
   targetMetric?: TeamActionTarget;
+  evidenceUrl?: string;
+  note?: string;
 }
 
 export interface SerializedTeamReport {
@@ -247,6 +251,7 @@ export type TeamReportPublishBlockReason =
   | "REPORT_SELF_DATA_INSUFFICIENT"
   | "REPORT_TRUST_DATA_INSUFFICIENT"
   | "REPORT_PULSE_DATA_INSUFFICIENT"
+  | "REPORT_PULSE_MULTI_TEAM_UNSCOPED"
   | "REPORT_NARRATIVE_INCOMPLETE"
   | "REPORT_TARGET_ACTION_REQUIRED";
 
@@ -277,6 +282,7 @@ export function validateTeamReportForPublish(input: {
   if (!input.aggregates.evidence || input.aggregates.evidence.measuredEdgeCount < 1) {
     return "REPORT_TRUST_DATA_INSUFFICIENT";
   }
+  if (input.aggregates.psychSafetyMultiTeam) return "REPORT_PULSE_MULTI_TEAM_UNSCOPED";
   if (!input.aggregates.psychSafety) return "REPORT_PULSE_DATA_INSUFFICIENT";
 
   const hasText = (value: string | null | undefined) => Boolean(value?.trim());
@@ -501,9 +507,8 @@ export async function buildTeamReportAggregates(
   // Csapat-célzás a kanonikus szabállyal (getCampaignTeamIds): a teamIds az
   // igazság, üresnél a legacy teamId. A korábbi, csak-teamId szűrő két hibát
   // hordozott: (1) a csak teamIds-ben célzott csapat SEMMIT nem talált;
-  // (2) több-csapatos kampánynál MÁS csapatok válaszai is beleszámoltak —
-  // a PsychSafetyResponse-on nincs csapat-oszlop, ezért több-csapatos körből
-  // csapat-szintű aggregátum NEM képezhető (psychSafety null + jelzőbit).
+  // (2) több-csapatos kampánynál MÁS csapatok válaszai is beleszámoltak.
+  // Az új response.teamId izolál; régi, nem feloldható adatra fail-closed.
   let psychSafety: TeamReportAggregates["psychSafety"] = null;
   let psychSafetyMultiTeam = false;
   const psCandidates = await prisma.campaign.findMany({
@@ -527,18 +532,15 @@ export async function buildTeamReportAggregates(
       createdAt: true,
       teamId: true,
       teamIds: true,
-      psychSafetyResponses: { select: { answers: true, submittedOn: true } },
+      psychSafetyResponses: { select: { teamId: true, answers: true, submittedOn: true } },
     },
   });
   const psCovering = psCandidates.filter((c) =>
     getCampaignTeamIds(c).includes(teamId),
   );
-  const psSingleTeam = psCovering.filter(
-    (c) => getCampaignTeamIds(c).length === 1,
-  );
   // A LEZÁRT kör a stabil mérés: előnyt kap egy újabb, félúton lévő aktív
   // körrel szemben (az félkész, torzított képet fagyasztana a riportba).
-  const psLatestClosed = [...psSingleTeam]
+  const psLatestClosed = [...psCovering]
     .filter((c) => c.status === "CLOSED")
     .sort(
       (a, b) =>
@@ -546,19 +548,26 @@ export async function buildTeamReportAggregates(
         (a.closedAt ?? a.createdAt).getTime(),
     )[0];
   const psCampaign =
-    psLatestClosed ?? psSingleTeam.find((c) => c.status === "ACTIVE") ?? null;
-  // Csak több-csapatos pulse fedi a csapatot → nincs aggregátum, de a
-  // prefill ne javasoljon „új pulse indítást" — az fut, csak nem bontható.
-  psychSafetyMultiTeam = !psCampaign && psCovering.length > 0;
+    psLatestClosed ?? psCovering.find((c) => c.status === "ACTIVE") ?? null;
   if (psCampaign) {
+    const campaignTeamIds = getCampaignTeamIds(psCampaign);
+    const scopedResponses = psCampaign.psychSafetyResponses.filter((response) =>
+      campaignTeamIds.length === 1
+        ? response.teamId === null || response.teamId === teamId
+        : response.teamId === teamId,
+    );
+    psychSafetyMultiTeam =
+      campaignTeamIds.length > 1 &&
+      psCampaign.psychSafetyResponses.length > 0 &&
+      scopedResponses.length === 0;
     const psAgg = aggregatePsychSafety(
-      psCampaign.psychSafetyResponses.map((r) => r.answers),
+      scopedResponses.map((r) => r.answers),
     );
     if (psAgg) {
       // measuredAt: lezárt körnél a zárás napja; AKTÍV körnél a legutóbbi
       // beérkezett válasz napja — a kampány createdAt a kör indítása, nem a
       // mérés ideje lenne.
-      const latestResponseAt = psCampaign.psychSafetyResponses.reduce<Date | null>(
+      const latestResponseAt = scopedResponses.reduce<Date | null>(
         (acc, r) => (!acc || r.submittedOn > acc ? r.submittedOn : acc),
         null,
       );
@@ -933,6 +942,7 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
         : undefined;
     const targetMetric = parseTeamActionTarget(item.targetMetric);
     return [{
+      ...(typeof item.id === "string" && item.id.trim() ? { id: item.id.trim() } : {}),
       title: item.title,
       description: item.description,
       timeframe: item.timeframe as TeamReportActionItem["timeframe"],
@@ -942,6 +952,10 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
       ...(dueDate ? { dueDate } : {}),
       ...(status ? { status } : {}),
       ...(targetMetric ? { targetMetric } : {}),
+      ...(typeof item.evidenceUrl === "string" && item.evidenceUrl.trim()
+        ? { evidenceUrl: item.evidenceUrl.trim() }
+        : {}),
+      ...(typeof item.note === "string" && item.note.trim() ? { note: item.note.trim() } : {}),
     }];
   });
   return items.length > 0 ? items : null;

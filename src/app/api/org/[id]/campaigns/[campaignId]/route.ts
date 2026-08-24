@@ -202,6 +202,16 @@ export async function PATCH(
     if (steps.some((st) => TEAM_LOCKED_STEPS.has(st)) && nextTeamIds.length === 0) {
       return NextResponse.json({ error: "TEAM_REQUIRED" }, { status: 400 });
     }
+    if (
+      ctx.campaign.presetId === "SCAN_V1" &&
+      steps.includes("PSYCH_SAFETY") &&
+      nextTeamIds.length !== 1
+    ) {
+      return NextResponse.json(
+        { error: "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED" },
+        { status: 409 },
+      );
+    }
     const newIds = nextTeamIds.filter((id) => !currentTeamIds.includes(id));
     if (newIds.length > 0) {
       const teams = await prisma.team.findMany({
@@ -244,27 +254,27 @@ export async function PATCH(
     return NextResponse.json({ campaign: updated });
   }
 
+  if (!("status" in body.data)) {
+    return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
+  }
+  const nextStatus = body.data.status;
+
   // Vázlat nem zárható le közvetlenül: az elvetés útja a DELETE — így a
   // „Lezárt körök" listába csak ténylegesen futott mérés kerülhet.
-  if (body.data.status === "CLOSED" && ctx.campaign.status === "DRAFT") {
+  if (nextStatus === "CLOSED" && ctx.campaign.status === "DRAFT") {
     return NextResponse.json({ error: "DRAFT_CANNOT_CLOSE" }, { status: 409 });
   }
 
-  const campaign = await prisma.campaign.update({
-    where: { id: campaignId },
-    data: {
-      status: body.data.status,
-      ...(body.data.status === "CLOSED" ? { closedAt: new Date() } : {}),
-      // A fresh-ellenőrzés referencia-pontja; az első aktiválás számít.
-      ...(body.data.status === "ACTIVE" && !ctx.campaign.activatedAt
-        ? { activatedAt: new Date() }
-        : {}),
-    },
-    select: { id: true, name: true, status: true, closedAt: true },
-  });
+  if (nextStatus === ctx.campaign.status) {
+    return NextResponse.json({ campaign: ctx.campaign });
+  }
+  const validTransition =
+    (ctx.campaign.status === "DRAFT" && nextStatus === "ACTIVE") ||
+    (ctx.campaign.status === "ACTIVE" && nextStatus === "CLOSED");
+  if (!validTransition) {
+    return NextResponse.json({ error: "INVALID_CAMPAIGN_TRANSITION" }, { status: 409 });
+  }
 
-  // Szerep-kört tartalmazó kampány: az aktiválás/zárás a csapat(ok)
-  // kérdőív-körét vezérli — több-csapatos kampánynál mindegyiken.
   const campaignSteps =
     ctx.campaign.steps.length > 0 ? ctx.campaign.steps : [ctx.campaign.type];
   const campaignTeamIds =
@@ -273,33 +283,82 @@ export async function PATCH(
       : ctx.campaign.teamId
         ? [ctx.campaign.teamId]
         : [];
-  if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
-    if (body.data.status === "ACTIVE") {
-      await prisma.team.updateMany({
+
+  if (nextStatus === "ACTIVE") {
+    if (
+      ctx.campaign.presetId === "SCAN_V1" &&
+      campaignSteps.includes("PSYCH_SAFETY") &&
+      campaignTeamIds.length !== 1
+    ) {
+      return NextResponse.json(
+        { error: "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED" },
+        { status: 409 },
+      );
+    }
+    const participants = await prisma.campaignParticipant.findMany({
+      where: { campaignId },
+      select: { userId: true },
+    });
+    if (participants.length === 0) {
+      return NextResponse.json({ error: "CAMPAIGN_PARTICIPANTS_REQUIRED" }, { status: 409 });
+    }
+    if (campaignSteps.includes("PSYCH_SAFETY") && participants.length < 3) {
+      return NextResponse.json({ error: "ANONYMITY_THRESHOLD_NOT_MET" }, { status: 409 });
+    }
+    if (campaignTeamIds.length > 0) {
+      const targetMembers = await prisma.teamMember.findMany({
+        where: {
+          teamId: { in: campaignTeamIds },
+          userId: { in: participants.map((p) => p.userId) },
+        },
+        select: { userId: true },
+        distinct: ["userId"],
+      });
+      if (targetMembers.length !== participants.length) {
+        return NextResponse.json({ error: "PARTICIPANT_OUTSIDE_TARGET_TEAMS" }, { status: 409 });
+      }
+    }
+  }
+
+  const { campaign, openings } = await prisma.$transaction(async (tx) => {
+    const updated = await tx.campaign.update({
+      where: { id: campaignId },
+      data: {
+        status: nextStatus,
+        ...(nextStatus === "CLOSED" ? { closedAt: new Date() } : {}),
+        ...(nextStatus === "ACTIVE" && !ctx.campaign.activatedAt
+          ? { activatedAt: new Date() }
+          : {}),
+      },
+      select: { id: true, name: true, status: true, closedAt: true },
+    });
+    if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
+      await tx.team.updateMany({
         where: { id: { in: campaignTeamIds } },
-        data: { teamRoleRoundActive: true, teamRoleRoundStartedAt: new Date() },
+        data:
+          nextStatus === "ACTIVE"
+            ? { teamRoleRoundActive: true, teamRoleRoundStartedAt: new Date() }
+            : { teamRoleRoundActive: false },
       });
     }
-    if (body.data.status === "CLOSED") {
-      await prisma.team.updateMany({
-        where: { id: { in: campaignTeamIds } },
-        data: { teamRoleRoundActive: false },
-      });
-    }
+    const stepOpenings =
+      nextStatus === "ACTIVE"
+        ? await (await import("@/lib/campaign-steps")).initializeCampaignProgress(
+            campaignId,
+            undefined,
+            { db: tx, emitNotifications: false },
+          )
+        : [];
+    return { campaign: updated, openings: stepOpenings };
+  });
+  if (openings.length > 0) {
+    await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(openings);
   }
 
   // Analitika: a kampány élesítése az ügyfélsiker-tölcsér mérföldköve (A7).
   // Sem a szervezet, sem a kampány neve nem kerül eseménybe.
-  if (body.data.status === "ACTIVE") {
+  if (nextStatus === "ACTIVE") {
     trackServerEvent("campaign.step_launch", { step_type: "campaign_activated" });
-  }
-
-  // Több-lépéses kampány: résztvevők haladásának inicializálása +
-  // lépés-nyitó értesítések (fire-and-forget).
-  if (body.data.status === "ACTIVE") {
-    import("@/lib/campaign-steps").then(({ initializeCampaignProgress }) =>
-      initializeCampaignProgress(campaignId).catch(() => {}),
-    );
   }
 
   // Notify org members about campaign status change via orchestrator (fire-and-forget)
@@ -434,20 +493,38 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
-  await prisma.campaignParticipant.createMany({
-    data: body.data.userIds.map((uid) => ({
-      campaignId,
-      userId: uid,
-    })),
-    skipDuplicates: true,
-  });
+  const targetTeamIds =
+    ctx.campaign.teamIds.length > 0
+      ? ctx.campaign.teamIds
+      : ctx.campaign.teamId
+        ? [ctx.campaign.teamId]
+        : [];
+  if (targetTeamIds.length > 0) {
+    const targetMembers = await prisma.teamMember.findMany({
+      where: { teamId: { in: targetTeamIds }, userId: { in: body.data.userIds } },
+      select: { userId: true },
+      distinct: ["userId"],
+    });
+    const targetMemberIds = new Set(targetMembers.map((member) => member.userId));
+    if (body.data.userIds.some((id) => !targetMemberIds.has(id))) {
+      return NextResponse.json({ error: "PARTICIPANT_OUTSIDE_TARGET_TEAMS" }, { status: 409 });
+    }
+  }
 
-  // Aktív kampánynál az új résztvevők azonnal megkapják az első nyitott
-  // lépésüket (fast-forward + értesítés).
-  if (ctx.campaign.status === "ACTIVE") {
-    import("@/lib/campaign-steps").then(({ initializeCampaignProgress }) =>
-      initializeCampaignProgress(campaignId, body.data.userIds).catch(() => {}),
+  const openings = await prisma.$transaction(async (tx) => {
+    await tx.campaignParticipant.createMany({
+      data: body.data.userIds.map((uid) => ({ campaignId, userId: uid })),
+      skipDuplicates: true,
+    });
+    if (ctx.campaign.status !== "ACTIVE") return [];
+    return (await import("@/lib/campaign-steps")).initializeCampaignProgress(
+      campaignId,
+      body.data.userIds,
+      { db: tx, emitNotifications: false },
     );
+  });
+  if (openings.length > 0) {
+    await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(openings);
   }
 
   return NextResponse.json({ ok: true });

@@ -3,8 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
-import { hasRaterCoveredTeam } from "@/lib/team-role-peer.server";
+import {
+  advanceCampaignStepForUser,
+  notifyCampaignStepOpenings,
+  resolveCampaignTeamIdForUser,
+} from "@/lib/campaign-steps";
 import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 
 const bodySchema = z.object({
@@ -89,9 +92,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  await prisma.$transaction(
-    observations.map((obs) =>
-      prisma.teamRoleObservation.upsert({
+  const totalTargets = [...memberIds].filter((id) => id !== profile.id).length;
+  const { covered, openings } = await prisma.$transaction(async (tx) => {
+    for (const obs of observations) {
+      await tx.teamRoleObservation.upsert({
         where: {
           campaignId_aboutUserId_raterUserId: {
             campaignId,
@@ -111,15 +115,22 @@ export async function POST(req: NextRequest) {
         // beküldés különben a RÉGI csapathoz ragadna — a friss értékelés az
         // új csapat aggregátumából hiányozna, és a min-3 padló alá vihetné.
         update: { teamId, selections: obs.selections },
-      }),
-    ),
-  );
-
-  // Lefedettség-ellenőrzés → lépés-teljesítés (idempotens).
-  const covered = await hasRaterCoveredTeam(campaignId, teamId, profile.id);
-  if (covered) {
-    await advanceCampaignStepForUser(profile.id, "TEAM_ROLE_360", { campaignId }).catch(() => {});
-  }
+      });
+    }
+    const count = await tx.teamRoleObservation.count({
+      where: { campaignId, teamId, raterUserId: profile.id },
+    });
+    const isCovered = totalTargets > 0 && count >= totalTargets;
+    const stepOpenings = isCovered
+      ? await advanceCampaignStepForUser(profile.id, "TEAM_ROLE_360", {
+          campaignId,
+          db: tx,
+          emitNotifications: false,
+        })
+      : [];
+    return { covered: isCovered, openings: stepOpenings };
+  });
+  await notifyCampaignStepOpenings(openings);
 
   return NextResponse.json({ ok: true, covered });
 }

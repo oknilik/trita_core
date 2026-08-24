@@ -34,11 +34,12 @@ const ORG_NOTIFICATION_MIN_ROLE: Partial<Record<NotificationType, MinRole>> = {
 
 // ── Resolve recipients for an org notification ──────────────────────────────
 
-const ROLE_HIERARCHY = ["ORG_MEMBER", "ORG_MANAGER", "ORG_ADMIN"];
-
 function rolesAtOrAbove(minRole: MinRole): string[] {
-  const idx = ROLE_HIERARCHY.indexOf(minRole);
-  return idx >= 0 ? ROLE_HIERARCHY.slice(idx) : ROLE_HIERARCHY;
+  // A consultant kampány-operátor: lifecycle és milestone értesítést kap,
+  // admin-only számlázási/biztonsági eseményt nem.
+  if (minRole === "ORG_ADMIN") return ["ORG_ADMIN"];
+  if (minRole === "ORG_MANAGER") return ["ORG_MANAGER", "ORG_CONSULTANT", "ORG_ADMIN"];
+  return ["ORG_MEMBER", "ORG_MANAGER", "ORG_CONSULTANT", "ORG_ADMIN"];
 }
 
 export async function resolveOrgRecipients(

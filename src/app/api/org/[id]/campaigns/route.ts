@@ -148,6 +148,16 @@ export async function POST(
   if (steps.length === 0) {
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
+  if (
+    body.data.presetId === "SCAN_V1" &&
+    steps.includes("PSYCH_SAFETY") &&
+    requestedTeamIds.length !== 1
+  ) {
+    return NextResponse.json(
+      { error: "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED" },
+      { status: 409 },
+    );
+  }
   const requireFreshResults = resolveCampaignRequireFreshResults(
     body.data.presetId,
     body.data.requireFreshResults,

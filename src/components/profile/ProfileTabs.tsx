@@ -615,6 +615,7 @@ export function ProfileTabs({
   // careerHiddenMembership), ezért itt csak a megosztás kapuja kell.
   const publicSharingActive = isPortfolioSurfaceActive("publicSharing");
   const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfError, setPdfError] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
 
   const handleTabChange = useCallback(
@@ -656,6 +657,7 @@ export function ProfileTabs({
           // generálás megszakadása is a szándékról szól.
           track("results.export", { format: "pdf" });
           setPdfLoading(true);
+          setPdfError(false);
           try {
             const { downloadPdf } = await import("@/components/pdf/TritaPdf");
             const mainDims = dimensions.filter((d) => d.code !== "I");
@@ -781,11 +783,14 @@ export function ProfileTabs({
                 summaryPoints: [],
               } : undefined,
             });
+          } catch {
+            setPdfError(true);
           } finally {
             setPdfLoading(false);
           }
         }}
         pdfLoading={pdfLoading}
+        pdfError={pdfError}
       />
 
       {publicSharingActive ? (

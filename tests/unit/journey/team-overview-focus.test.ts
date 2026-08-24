@@ -19,7 +19,7 @@ test("open measurement wins over feedback and observer tasks", () => {
   });
 
   assert.equal(focus?.kind, "measurement");
-  assert.equal(focus?.primary.href, "/assessment/psych-safety");
+  assert.equal(focus?.primary.href, "/assessment/psych-safety?campaignId=autumn-round");
   assert.equal(focus?.secondary?.href, "/tasks");
   assert.match(focus?.secondary?.label ?? "", /További 2/);
 });

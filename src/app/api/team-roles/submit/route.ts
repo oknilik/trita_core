@@ -10,6 +10,7 @@ import {
 
 const bodySchema = z.object({
   selections: z.record(z.string(), z.number()),
+  campaignId: z.string().min(1).max(191).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -37,29 +38,39 @@ export async function POST(req: NextRequest) {
   // összehasonlításhoz), kör-címkével arra a kampányra, ahol a lépés nyitott.
   const { advanceCampaignStepForUser, resolveActiveCampaignIdForStep } =
     await import("@/lib/campaign-steps");
-  const campaignId = await resolveActiveCampaignIdForStep(
-    profile.id,
-    "TEAM_ROLE",
-  ).catch(() => null);
-
-  const teamRoleAnswer = await prisma.teamRoleAnswer.create({
-    data: { userProfileId: profile.id, campaignId, answers: selections as object },
-  });
-
-  await prisma.teamRoleScore.create({
-    data: {
-      userProfileId: profile.id,
-      campaignId,
-      scores: scores as object,
-      source: "questionnaire",
-      teamRoleAnswerId: teamRoleAnswer.id,
-    },
-  });
-
-  // Több-lépéses kampány: a szerep-kérdőív teljesítése lépteti a TEAM_ROLE lépést
-  if (campaignId) {
-    advanceCampaignStepForUser(profile.id, "TEAM_ROLE", { campaignId }).catch(() => {});
+  const campaignId = body.data.campaignId
+    ? await resolveActiveCampaignIdForStep(profile.id, "TEAM_ROLE", {
+        campaignId: body.data.campaignId,
+      })
+    : null;
+  if (body.data.campaignId && campaignId !== body.data.campaignId) {
+    return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
 
-  return NextResponse.json({ ok: true });
+  const { answerId, openings } = await prisma.$transaction(async (tx) => {
+    const teamRoleAnswer = await tx.teamRoleAnswer.create({
+      data: { userProfileId: profile.id, campaignId, answers: selections as object },
+    });
+    await tx.teamRoleScore.create({
+      data: {
+        userProfileId: profile.id,
+        campaignId,
+        scores: scores as object,
+        source: "questionnaire",
+        teamRoleAnswerId: teamRoleAnswer.id,
+      },
+    });
+    const stepOpenings = campaignId
+      ? await advanceCampaignStepForUser(profile.id, "TEAM_ROLE", {
+          campaignId,
+          db: tx,
+          emitNotifications: false,
+        })
+      : [];
+    return { answerId: teamRoleAnswer.id, openings: stepOpenings };
+  });
+  const { notifyCampaignStepOpenings } = await import("@/lib/campaign-steps");
+  await notifyCampaignStepOpenings(openings);
+
+  return NextResponse.json({ ok: true, id: answerId });
 }

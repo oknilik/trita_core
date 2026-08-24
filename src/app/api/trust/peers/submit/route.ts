@@ -3,8 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
-import { hasRaterCoveredTeamTrust } from "@/lib/trust-network.server";
+import {
+  advanceCampaignStepForUser,
+  notifyCampaignStepOpenings,
+  resolveCampaignTeamIdForUser,
+} from "@/lib/campaign-steps";
 import { isValidTrustAnswerSet } from "@/lib/trust-network";
 
 const bodySchema = z.object({
@@ -87,9 +90,10 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  await prisma.$transaction(
-    observations.map((obs) =>
-      prisma.trustObservation.upsert({
+  const totalTargets = [...memberIds].filter((id) => id !== profile.id).length;
+  const { covered, openings } = await prisma.$transaction(async (tx) => {
+    for (const obs of observations) {
+      await tx.trustObservation.upsert({
         where: {
           campaignId_aboutUserId_raterUserId: {
             campaignId,
@@ -105,15 +109,22 @@ export async function POST(req: NextRequest) {
           answers: obs.answers,
         },
         update: { answers: obs.answers },
-      }),
-    ),
-  );
-
-  // Lefedettség-ellenőrzés → lépés-teljesítés (idempotens).
-  const covered = await hasRaterCoveredTeamTrust(campaignId, teamId, profile.id);
-  if (covered) {
-    await advanceCampaignStepForUser(profile.id, "TRUST_360", { campaignId }).catch(() => {});
-  }
+      });
+    }
+    const count = await tx.trustObservation.count({
+      where: { campaignId, teamId, raterUserId: profile.id },
+    });
+    const isCovered = totalTargets > 0 && count >= totalTargets;
+    const stepOpenings = isCovered
+      ? await advanceCampaignStepForUser(profile.id, "TRUST_360", {
+          campaignId,
+          db: tx,
+          emitNotifications: false,
+        })
+      : [];
+    return { covered: isCovered, openings: stepOpenings };
+  });
+  await notifyCampaignStepOpenings(openings);
 
   return NextResponse.json({ ok: true, covered });
 }

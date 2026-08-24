@@ -4,6 +4,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 import {
   getCampaignSteps,
   getCampaignTeamIds,
@@ -11,7 +12,7 @@ import {
   isStepOpenFor,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
-import { handleMeasurementStepOpened } from "@/lib/notifications";
+import { handleCampaignProgressMilestone, handleMeasurementStepOpened } from "@/lib/notifications";
 
 /**
  * Több-csapatos kampányban a tag SAJÁT cél-csapata: az a kampány-csapat,
@@ -95,7 +96,12 @@ export async function hasStartedStep(
 ): Promise<boolean> {
   if (isSelfAssessmentCampaignStep(stepType)) {
     const draft = await prisma.assessmentDraft.findUnique({
-      where: { userProfileId: profileId },
+      where: {
+        userProfileId_scope: {
+          userProfileId: profileId,
+          scope: `campaign:${campaign.id}`,
+        },
+      },
       select: { answers: true },
     });
     return Boolean(
@@ -195,9 +201,15 @@ export async function resolveActiveSelfAssessmentCampaign(
 export async function advanceCampaignStepForUser(
   profileId: string,
   completedType: CampaignStepType,
-  options: { campaignId: string },
-): Promise<void> {
-  const participants = await prisma.campaignParticipant.findMany({
+  options: {
+    campaignId: string;
+    db?: Prisma.TransactionClient;
+    emitNotifications?: boolean;
+  },
+): Promise<CampaignStepOpening[]> {
+  const db = options.db ?? prisma;
+  const openings: CampaignStepOpening[] = [];
+  const participants = await db.campaignParticipant.findMany({
     where: {
       userId: profileId,
       campaign: {
@@ -231,7 +243,7 @@ export async function advanceCampaignStepForUser(
         ? new Date(Date.now() + intervalHours * 60 * 60 * 1000)
         : null;
 
-    await prisma.campaignParticipant.update({
+    await db.campaignParticipant.update({
       where: { id: p.id },
       data: {
         currentStep: nextStep,
@@ -241,13 +253,36 @@ export async function advanceCampaignStepForUser(
     });
 
     if (nextType && !gateUntil) {
-      await handleMeasurementStepOpened({
+      const opening = {
         userId: profileId,
         campaignId: p.campaign.id,
         campaignName: p.campaign.name,
         stepType: nextType,
-      }).catch(() => {});
+      };
+      openings.push(opening);
+      if (options.emitNotifications !== false) {
+        await handleMeasurementStepOpened(opening);
+      }
     }
+  }
+  return openings;
+}
+
+export interface CampaignStepOpening {
+  userId: string;
+  campaignId: string;
+  campaignName: string;
+  stepType: string;
+}
+
+export async function notifyCampaignStepOpenings(
+  openings: CampaignStepOpening[],
+): Promise<void> {
+  for (const opening of openings) {
+    await handleMeasurementStepOpened(opening);
+  }
+  for (const campaignId of new Set(openings.map((opening) => opening.campaignId))) {
+    await handleCampaignProgressMilestone(campaignId);
   }
 }
 
@@ -322,8 +357,11 @@ export async function releaseDueCampaignSteps(options?: {
 export async function initializeCampaignProgress(
   campaignId: string,
   onlyUserIds?: string[],
-): Promise<void> {
-  const campaign = await prisma.campaign.findUnique({
+  options?: { db?: Prisma.TransactionClient; emitNotifications?: boolean },
+): Promise<CampaignStepOpening[]> {
+  const db = options?.db ?? prisma;
+  const openings: CampaignStepOpening[] = [];
+  const campaign = await db.campaign.findUnique({
     where: { id: campaignId },
     select: {
       id: true,
@@ -339,15 +377,15 @@ export async function initializeCampaignProgress(
       },
     },
   });
-  if (!campaign || campaign.status !== "ACTIVE") return;
+  if (!campaign || campaign.status !== "ACTIVE") return openings;
 
   const steps = getCampaignSteps(campaign);
-  if (steps.length === 0 || campaign.participants.length === 0) return;
+  if (steps.length === 0 || campaign.participants.length === 0) return openings;
 
   // Kinek van már kész self-eredménye? (self-lépés fast-forwardhoz)
   // Újrafelvételi körben csak az aktiválás utáni eredmény számít.
   const userIds = campaign.participants.map((p) => p.userId);
-  const selfDone = await prisma.assessmentResult.findMany({
+  const selfDone = await db.assessmentResult.findMany({
     where: {
       userProfileId: { in: userIds },
       isSelfAssessment: true,
@@ -389,7 +427,7 @@ export async function initializeCampaignProgress(
     }
 
     if (currentStep !== p.currentStep) {
-      await prisma.campaignParticipant.update({
+      await db.campaignParticipant.update({
         where: { id: p.id },
         data: { currentStep, stepCompletions: completions },
       });
@@ -397,12 +435,17 @@ export async function initializeCampaignProgress(
 
     const openType = steps[currentStep];
     if (openType) {
-      await handleMeasurementStepOpened({
+      const opening = {
         userId: p.userId,
         campaignId: campaign.id,
         campaignName: campaign.name,
         stepType: openType,
-      }).catch(() => {});
+      };
+      openings.push(opening);
+      if (options?.emitNotifications !== false) {
+        await handleMeasurementStepOpened(opening);
+      }
     }
   }
+  return openings;
 }

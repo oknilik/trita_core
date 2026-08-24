@@ -145,9 +145,16 @@ export async function POST(req: Request) {
 
   const scores = calculateScores(invitation.testType as TestType, typedAnswers);
 
-  // Save observer assessment + update invitation status
-  await prisma.$transaction([
-    prisma.observerAssessment.create({
+  // Save observer assessment + consume invitation atomically. The conditional
+  // claim turns concurrent double submit into a stable ALREADY_USED response
+  // instead of a unique-constraint 500.
+  const saved = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.observerInvitation.updateMany({
+      where: { id: invitation.id, status: "PENDING", completedAt: null },
+      data: { status: "COMPLETED", completedAt: new Date() },
+    });
+    if (claimed.count !== 1) return false;
+    await tx.observerAssessment.create({
       data: {
         invitationId: invitation.id,
         relationshipType,
@@ -159,20 +166,13 @@ export async function POST(req: Request) {
           questionCount: relevantAnswers.length,
         },
       },
-    }),
-    prisma.observerInvitation.update({
-      where: { id: invitation.id },
-      data: {
-        status: "COMPLETED",
-        completedAt: new Date(),
-      },
-    }),
-    // A szerver-oldali draft a beadással okafogyottá válik — bent hagyva
-    // örökre árválkodna (a COMPLETED meghívóhoz draft többé nem olvasható).
-    prisma.observerDraft.deleteMany({
-      where: { invitationId: invitation.id },
-    }),
-  ]);
+    });
+    await tx.observerDraft.deleteMany({ where: { invitationId: invitation.id } });
+    return true;
+  });
+  if (!saved) {
+    return NextResponse.json({ error: "ALREADY_USED" }, { status: 409 });
+  }
 
   // Analitika: a meghívó-lánc utolsó lépése (A3). A kitöltő ANONIM marad —
   // az esemény nem hordoz sem meghívó-tokent, sem személy-azonosítót.

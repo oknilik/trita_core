@@ -99,6 +99,7 @@ describe("mergeTrustEdges — kilépett tag mért párjai (a szűrt trust-háló
         { raterUserId: "u1", aboutUserId: "gone", answers: maxAnswers() },
         { raterUserId: "gone", aboutUserId: "u1", answers: maxAnswers() },
         { raterUserId: "u1", aboutUserId: "u2", answers: maxAnswers() },
+        { raterUserId: "u2", aboutUserId: "u1", answers: maxAnswers() },
       ],
       ["u1", "u2"],
     );

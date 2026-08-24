@@ -104,7 +104,7 @@ model UserProfile {
   lifecycleEmailsOptOut Boolean @default(false)
 
   assessmentResults       AssessmentResult[]
-  assessmentDraft         AssessmentDraft?
+  assessmentDrafts        AssessmentDraft[]
   consultantInvitesSent   ConsultantInvite[]   @relation("ConsultantInviter")
   sentInvitations         ObserverInvitation[] @relation("InviterInvitations")
   receivedInvitations     ObserverInvitation[] @relation("ObserverInvitations")
@@ -164,7 +164,10 @@ model UserProfile {
 
 model AssessmentDraft {
   id            String   @id @default(cuid())
-  userProfileId String   @unique
+  userProfileId String
+  // "self" vagy "campaign:<campaignId>". A scope a szerver- és a
+  // böngésző-draftot ugyanahhoz a mérési körhöz köti.
+  scope         String   @default("self")
   testType      TestType
   answers       Json // Record<number, number> — questionId → value
   currentPage   Int      @default(0)
@@ -175,6 +178,9 @@ model AssessmentDraft {
   lastDraftReminderSentAt DateTime?
 
   userProfile UserProfile @relation(fields: [userProfileId], references: [id])
+
+  @@unique([userProfileId, scope])
+  @@index([userProfileId])
 }
 
 model AssessmentResult {
@@ -196,6 +202,9 @@ model AssessmentResult {
   userProfile UserProfile? @relation(fields: [userProfileId], references: [id])
   campaign    Campaign?    @relation("AssessmentResultCampaign", fields: [campaignId], references: [id], onDelete: SetNull)
 
+  // Egy kampány self-lépésének retry-ja ugyanazt az üzleti eredményt jelenti.
+  // PostgreSQL-ben a null campaignId továbbra is több self-serve retake-et enged.
+  @@unique([userProfileId, campaignId])
   @@index([userProfileId])
   @@index([campaignId])
 }
@@ -350,13 +359,32 @@ model TeamReport {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+  team         Team              @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign     Campaign?         @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+  actionEvents TeamActionEvent[]
 
   @@unique([campaignId, teamId])
   @@index([campaignId])
-
   @@index([teamId, status])
+}
+
+// Append-only változástörténet a riport strukturált akcióihoz. A payload
+// az eseménykori teljes item snapshot, így az előző értékek exportálhatók.
+model TeamActionEvent {
+  id          String   @id @default(cuid())
+  reportId    String
+  actionKey   String
+  eventType   String
+  actorUserId String
+  payload     Json
+  evidenceUrl String?
+  note        String?
+  createdAt   DateTime @default(now())
+
+  report TeamReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId, actionKey, createdAt])
+  @@index([actorUserId, createdAt])
 }
 
 model TeamMember {
@@ -651,6 +679,9 @@ model ConsultantInvite {
 model PsychSafetyResponse {
   id          String   @id @default(uuid())
   campaignId  String
+  // Privacy-safe aggregációs kulcs: nincs user-kapcsolat, de a válasz egy
+  // és csak egy célcsapat aggregátumába tartozik.
+  teamId      String?
   // itemId → 1..5 nyers válasz (PS1..PS8)
   answers     Json
   submittedOn DateTime
@@ -658,6 +689,7 @@ model PsychSafetyResponse {
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 
   @@index([campaignId])
+  @@index([campaignId, teamId])
 }
 
 // ============================================
@@ -1227,29 +1259,29 @@ model NewsletterSubscriber {
 // `@@unique([subscriberId, slug])` a versenyhelyzet ellen is véd (párhuzamos
 // cron-futás vagy kézi „küldés most").
 model NewsletterDelivery {
-  id           String    @id @default(cuid())
-  subscriberId String
+  id              String    @id @default(cuid())
+  subscriberId    String
   // Dedupe-kulcs. Cikk-értesítőnél a blogbejegyzés slugja, szerkesztett
   // számnál `issue:<id>` — a lényeg, hogy EGY küldési egységet azonosítson.
-  slug         String
+  slug            String
   // A sor létrejöttének / legutóbbi újrafoglalásának ideje. Nem állítjuk
   // róla, hogy kézbesítés: azt a `deliveredAt` Resend-webhook tölti ki.
-  sentAt       DateTime  @default(now())
+  sentAt          DateTime  @default(now())
   // CLAIMED | ACCEPTED | DELIVERED | FAILED | UNKNOWN | SUPPRESSED |
   // BOUNCED | COMPLAINED. A foglalás és az állapotváltások külön időbélyegei
   // teszik auditálhatóvá, hol állt meg egy levél.
-  status          String   @default("CLAIMED")
-  claimedAt       DateTime @default(now())
+  status          String    @default("CLAIMED")
+  claimedAt       DateTime  @default(now())
   acceptedAt      DateTime?
   deliveredAt     DateTime?
   failedAt        DateTime?
-  providerEmailId String?  @unique
-  attemptCount    Int      @default(1)
+  providerEmailId String?   @unique
+  attemptCount    Int       @default(1)
   lastError       String?
   // Az ELSŐ kattintás ideje a levélben lévő linkre. Nyitást szándékosan NEM
   // mérünk (követő pixel + a Mail Privacy Protection amúgy is hazudik) —
   // a kattintás az egyetlen tiszta jelzés arról, hogy a levél elért valakit.
-  clickedAt    DateTime?
+  clickedAt       DateTime?
 
   subscriber NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
 

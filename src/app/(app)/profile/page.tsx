@@ -426,6 +426,15 @@ export default function ProfilePage() {
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </Button>
         </Card>
+        {saveState === "saved" ? (
+          <p role="status" className="text-note text-[var(--color-state-success-text)]">
+            {locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}
+          </p>
+        ) : saveState === "error" ? (
+          <p role="alert" className="text-note text-[var(--color-state-error-text)]">
+            {locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}
+          </p>
+        ) : null}
 
         {/* ═══ DANGER BOX ═══ */}
         <Card

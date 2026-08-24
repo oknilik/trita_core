@@ -111,7 +111,7 @@ export function getCampaignStepLink(
   campaignId?: string | null,
 ): string {
   const base = CAMPAIGN_STEP_LINKS[stepType];
-  if (!isSelfAssessmentCampaignStep(stepType) || !campaignId) return base;
+  if (!campaignId) return base;
   return `${base}?campaignId=${encodeURIComponent(campaignId)}`;
 }
 

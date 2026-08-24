@@ -10,11 +10,12 @@ import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 
 interface TeamRolesClientProps {
   locale: Locale;
+  campaignId?: string;
 }
 
 type Phase = "form" | "error";
 
-export function TeamRolesClient({ locale }: TeamRolesClientProps) {
+export function TeamRolesClient({ locale, campaignId }: TeamRolesClientProps) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("form");
   const [submitting, setSubmitting] = useState(false);
@@ -27,7 +28,7 @@ export function TeamRolesClient({ locale }: TeamRolesClientProps) {
         const res = await fetch("/api/team-roles/submit", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ selections }),
+          body: JSON.stringify({ selections, ...(campaignId ? { campaignId } : {}) }),
         });
         if (!res.ok) throw new Error("TEAM_ROLE_SUBMIT_FAILED");
         // Siker: a submitting állapot marad, amíg a navigáció megtörténik.
@@ -43,7 +44,7 @@ export function TeamRolesClient({ locale }: TeamRolesClientProps) {
         setSubmitting(false);
       }
     },
-    [router],
+    [campaignId, router],
   );
 
   const handleSkip = useCallback(() => {

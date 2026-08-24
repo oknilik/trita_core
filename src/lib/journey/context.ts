@@ -164,7 +164,7 @@ async function resolveJourneyContextUncached(
         orderBy: { createdAt: "desc" },
       }),
       prisma.assessmentDraft.findUnique({
-        where: { userProfileId: profileId },
+        where: { userProfileId_scope: { userProfileId: profileId, scope: "self" } },
         select: { id: true },
       }),
       prisma.observerInvitation.count({

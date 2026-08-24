@@ -154,7 +154,7 @@ export default async function ProfileResultsPage({
       orderBy: { createdAt: "desc" },
     }),
     prisma.assessmentDraft.findUnique({
-      where: { userProfileId: profile.id },
+      where: { userProfileId_scope: { userProfileId: profile.id, scope: "self" } },
       select: { answers: true, testType: true },
     }),
     prisma.feedback.findMany({

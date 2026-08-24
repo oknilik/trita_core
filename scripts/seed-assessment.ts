@@ -296,9 +296,13 @@ Példák:
 
     // ── Clean up existing results ───────────────────────────────────────────
     if (clean) {
-      const draft = await prisma.assessmentDraft.findUnique({ where: { userProfileId: profile.id } });
+      const draft = await prisma.assessmentDraft.findUnique({
+        where: { userProfileId_scope: { userProfileId: profile.id, scope: "self" } },
+      });
       if (draft) {
-        await prisma.assessmentDraft.delete({ where: { userProfileId: profile.id } });
+        await prisma.assessmentDraft.delete({
+          where: { userProfileId_scope: { userProfileId: profile.id, scope: "self" } },
+        });
         console.log(`🧹  Törölve AssessmentDraft`);
       }
 

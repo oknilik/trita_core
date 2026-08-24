@@ -98,9 +98,8 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
   felületen „szabadon felhasználható, kutatásban használt kérdésbank".
   A DIMENZIÓ-CÍMKÉK (Becsületesség-Alázat, Emocionalitás, …) változatlanul
   a HEXACO terminológiát követik — ez nem márkanév, hanem a skálák neve.
-  Kanonikus térkép: `src/lib/tritan.ts` (a fájlnév és a TRITAN_*
-  export-azonosítók history-okból maradtak — az ÉRTÉKEK HEXACO-k). Új
-  felületen NE vezess be saját dimenzió-címkét — a tritan.ts-ből dolgozz.
+  Kanonikus térkép: `src/lib/hexaco.ts`. Új felületen NE vezess be saját
+  dimenzió-címkét — a `hexaco.ts` exportjaiból dolgozz.
   A kérdőív-név TSFI maradt.
 - BELSŐ dimenziókódok (DB score-JSON-ok, számítások): TEMP/RESO/INTE/THOR/
   ADAP/OPEN — NEM változtak (INTE→H, RESO→E, TEMP→X, ADAP→A, THOR→C,
@@ -178,7 +177,9 @@ A CI a `checks` jobban ugyanezt futtatja, plusz egy éles buildet.
 - API route-okon Zod-validáció; hibakód-minta: rövid kód a szerverről
   (pl. `INVITE_LIMIT_REACHED`), kliens lokalizálja.
 - Mutáció után `router.refresh()`.
-- Mobile-first, `min-h-[44px]` touch targetek, csak `md:` breakpoint.
+- Mobile-first, `min-h-[44px]` touch targetek. A meglévő reszponzív rendszer
+  `sm:`, `md:` és `lg:` breakpointot használ; új kód a tartalom természetes
+  töréspontjához igazodjon, ne vezessen be egyedi pixel-breakpointot.
 - Tipográfia: a 9 szerep-utility (`text-hero/display/title/heading/body/
   caption/note/label/micro`) + a Tailwind alap-fokok (`text-xs/sm/base`).
   Arbitrary `text-[Npx]` TILOS — lint-error (2026-08-18, F4).

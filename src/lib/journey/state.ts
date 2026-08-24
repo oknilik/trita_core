@@ -3,6 +3,7 @@ import "server-only";
 import { prisma } from "@/lib/prisma";
 import { resolveJourneyContext } from "@/lib/journey/context";
 import { isConsultingLed } from "@/lib/operating-mode";
+import { hasOrgRole } from "@/lib/org-roles";
 import {
   MIN_MEMBERS_FOR_ORG_INSIGHTS,
   MIN_MEMBERS_FOR_TEAM_INSIGHTS,
@@ -182,8 +183,7 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
   const { self, team, org } = context.completionSummary;
   const actionMap = buildActionMap(context);
   const orgRole = context.orgMembership?.role ?? null;
-  const canManageOrg =
-    orgRole === "ORG_MANAGER" || orgRole === "ORG_ADMIN" || orgRole === "ORG_CONSULTANT";
+  const canManageOrg = Boolean(orgRole && hasOrgRole(orgRole, "ORG_MANAGER"));
   const canManageTeam =
     canManageOrg ||
     context.teamMembership?.role === "manager" ||

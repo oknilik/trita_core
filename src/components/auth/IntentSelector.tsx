@@ -1,6 +1,7 @@
 "use client";
 
 import type React from "react";
+import { useLocale } from "@/components/LocaleProvider";
 
 export type AuthIntent = "explore" | "team";
 
@@ -40,8 +41,9 @@ const ICONS: Record<AuthIntent, (active: boolean) => React.ReactNode> = {
 };
 
 export default function IntentSelector({ value, onChange }: IntentSelectorProps) {
+  const { locale } = useLocale();
   return (
-    <div className="grid grid-cols-1 gap-2 md:grid-cols-2">
+    <div className="grid grid-cols-1 gap-2 md:grid-cols-2" role="radiogroup" aria-label={locale === "hu" ? "Regisztráció célja" : "Sign-up goal"}>
       {OPTIONS.map((opt) => {
         const active = value === opt.value;
         return (
@@ -49,6 +51,8 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
             key={opt.value}
             type="button"
             onClick={() => onChange(opt.value)}
+            role="radio"
+            aria-checked={active}
             className={[
               "flex flex-col items-start rounded-xl border-[1.5px] px-4 py-3 text-left transition-all",
               active
@@ -63,10 +67,10 @@ export default function IntentSelector({ value, onChange }: IntentSelectorProps)
                 active ? "text-[var(--color-action-primary-bg)]" : "text-[var(--color-text-secondary)]",
               ].join(" ")}
             >
-              {opt.label}
+              {locale === "hu" ? opt.label : opt.labelEn}
             </span>
             <span className="mt-0.5 text-note leading-snug text-[var(--color-text-muted)]">
-              {opt.desc}
+              {locale === "hu" ? opt.desc : opt.descEn}
             </span>
           </button>
         );

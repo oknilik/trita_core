@@ -136,6 +136,10 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "Az anonimitási minimumot elérő pulse-adat szükséges a publikáláshoz.",
     en: "Pulse data meeting the anonymity floor is required to publish.",
   },
+  REPORT_PULSE_MULTI_TEAM_UNSCOPED: {
+    hu: "A régi többcsapatos pulse-válaszok nem bonthatók biztonságosan csapatra; ebből a körből riport nem publikálható.",
+    en: "Legacy multi-team pulse responses cannot be safely separated by team, so this cycle cannot be published.",
+  },
 };
 
 // A fordítás-panel szerkeszthető mezői (a belső jegyzet nem publikálódik,
@@ -589,7 +593,7 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
               </p>
             )}
             {actionItems.map((item, index) => (
-              <div key={index} className="flex flex-col gap-2 rounded-lg border border-sand bg-cream/40 p-3">
+              <div key={item.id ?? index} className="flex flex-col gap-2 rounded-lg border border-sand bg-cream/40 p-3">
                 <div className="flex flex-wrap gap-2">
                   <input
                     type="text"
@@ -727,6 +731,26 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
                     ))}
                   </select>
                 </label>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <input
+                    type="url"
+                    value={item.evidenceUrl ?? ""}
+                    placeholder={isHu ? "Bizonyíték linkje (https://…)" : "Evidence link (https://…)"}
+                    onChange={(e) => setActionItems((items) => items.map((it, i) =>
+                      i === index ? { ...it, evidenceUrl: e.target.value } : it,
+                    ))}
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  />
+                  <input
+                    type="text"
+                    value={item.note ?? ""}
+                    placeholder={isHu ? "Bizonyíték vagy változás megjegyzése" : "Evidence or change note"}
+                    onChange={(e) => setActionItems((items) => items.map((it, i) =>
+                      i === index ? { ...it, note: e.target.value } : it,
+                    ))}
+                    className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink"
+                  />
+                </div>
               </div>
             ))}
           </div>
