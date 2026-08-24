@@ -16,6 +16,9 @@ import type {
   JourneyResolution,
   JourneyStage,
 } from "@/lib/journey/types";
+import { createLogger } from "@/lib/logger";
+
+const log = createLogger("journey-engine");
 
 const STAGE_LABELS: Record<JourneyStage, JourneyProgressLabel> = {
   SELF_NOT_STARTED: {
@@ -95,12 +98,19 @@ export function resolveJourneyFromContext(
       reason: rawHomeDecision.home.reason,
     },
   });
-  void assertJourneyInvariants({
+  const invariantViolations = assertJourneyInvariants({
     context,
     state: guardrailed.state,
     home: guardrailed.home,
     restrictionFlags: guardrailed.restrictionFlags,
   });
+  if (invariantViolations.length > 0) {
+    const detail = JSON.stringify(invariantViolations);
+    if (process.env.NODE_ENV === "test") {
+      throw new Error(`JOURNEY_INVARIANT_VIOLATION:${detail}`);
+    }
+    log.error({ event: "journey.invariant_violation", violations: invariantViolations }, detail);
+  }
 
   const scopeProgress = computeScopeProgress(context, {
     activeSurface: guardrailed.home.activeSurface,

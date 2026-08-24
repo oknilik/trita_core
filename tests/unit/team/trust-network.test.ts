@@ -95,12 +95,9 @@ describe("computeTrustNetwork — élek", () => {
     assert.equal(edge.type, "weak_trust");
   });
 
-  it("builds a one-directional edge as non-mutual", () => {
+  it("withholds a one-directional edge from identified output", () => {
     const net = computeTrustNetwork([obs("u1", "u2", answersAt("max"))]);
-    assert.equal(net.edges.length, 1);
-    assert.equal(net.edges[0].mutual, false);
-    assert.equal(net.edges[0].score, 100);
-    assert.equal(net.edges[0].type, "strong_trust");
+    assert.equal(net.edges.length, 0);
   });
 
   it("ignores invalid answer sets defensively", () => {
@@ -163,7 +160,7 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
     assert.equal(net.coverage, 1);
   });
 
-  it("flags an unembedded member: 2+ measured edges, none reaching moderate", () => {
+  it("flags an unembedded member only with 3+ raters and mutual weak edges", () => {
     const weak = answersAt("min");
     const strong = answersAt("max");
     const net = computeTrustNetwork(
@@ -171,9 +168,10 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
         // u4 mindenkivel gyenge, a többiek egymással erősek
         obs("u1", "u4", weak), obs("u4", "u1", weak),
         obs("u2", "u4", weak), obs("u4", "u2", weak),
+        obs("u3", "u4", weak), obs("u4", "u3", weak),
         obs("u1", "u2", strong), obs("u2", "u1", strong),
       ],
-      ["u1", "u2", "u4"],
+      ["u1", "u2", "u3", "u4"],
     );
     assert.deepEqual(net.isolatedUserIds, ["u4"]);
   });
@@ -216,7 +214,7 @@ describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () =>
     assert.equal(net.nodes.find((n) => n.userId === "rater")?.strongEdgeCount, 0);
   });
 
-  it("egyoldalú él az ÉRTÉKELT oldalán evidencia: két bejövő gyenge él beágyazatlanságot jelez", () => {
+  it("egyoldalú bejövő élek nem szivárogtatnak személyszintű minősítést", () => {
     const net = computeTrustNetwork(
       [
         obs("u1", "u4", answersAt("min")),
@@ -226,10 +224,10 @@ describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () =>
       ],
       ["u1", "u2", "u4"],
     );
-    assert.deepEqual(net.isolatedUserIds, ["u4"]);
+    assert.deepEqual(net.isolatedUserIds, []);
   });
 
-  it("egyoldalú erős élek a hub-fokba is csak az értékelt oldalán számítanak", () => {
+  it("egyoldalú erős élek sem képeznek azonosítható hub-minősítést", () => {
     // u1-et hárman értékelik erősre — u1 hub; az értékelők kifelé-élei
     // nekik nem adnak erős-él-fokot.
     const net = computeTrustNetwork(
@@ -240,7 +238,7 @@ describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () =>
       ],
       ["u1", "u2", "u3", "u4"],
     );
-    assert.deepEqual(net.hubUserIds, ["u1"]);
+    assert.deepEqual(net.hubUserIds, []);
     assert.equal(net.nodes.find((n) => n.userId === "u2")?.strongEdgeCount, 0);
   });
 });
@@ -283,6 +281,7 @@ describe("computeTrustNetwork — kilépett tagok szűrése", () => {
     const net = computeTrustNetwork(
       [
         obs("u1", "u2", strong()),
+        obs("u2", "u1", strong()),
         obs("u1", "gone", strong()),
         obs("u2", "gone", strong()),
         obs("gone", "u1", strong()),

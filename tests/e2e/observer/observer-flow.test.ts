@@ -143,8 +143,8 @@ async function completeObserverViaUi(
   await prefillObserverDraft(page, token, questionIds);
   await page.goto(`/observe/${token}`, { waitUntil: "domcontentloaded" });
 
-  await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
-  await page.getByRole("button", { name: /^4 - / }).first().click();
+  await expect(page.getByRole("radio", { name: /^4 - / }).first()).toBeVisible();
+  await page.getByRole("radio", { name: /^4 - / }).first().click();
 
   // Az utolsó válasz után az auto-advance (~130 ms) magától a confidence-
   // lépésre visz; ha mégsem, a Tovább gomb visz át. A korábbi poll az
@@ -162,8 +162,8 @@ async function completeObserverViaUi(
   }
   await expect(confidenceLabel).toBeVisible();
 
-  await expect(page.getByRole("button", { name: /^4 - / }).first()).toBeVisible();
-  await page.getByRole("button", { name: /^4 - / }).first().click();
+  await expect(page.getByRole("radio", { name: /^4 - / }).first()).toBeVisible();
+  await page.getByRole("radio", { name: /^4 - / }).first().click();
 
   await page.getByRole("button", { name: /submit|küldés/i }).click();
   await expect(

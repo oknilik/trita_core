@@ -1,20 +1,68 @@
 "use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
-import { t } from "@/lib/i18n/public";
+import { t, type Locale } from "@/lib/i18n/public";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
 
 const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
+type PilotFormValues = { name: string; email: string; company: string; size: string; message: string };
+type PilotField = keyof PilotFormValues;
+type PilotFieldErrors = Partial<Record<PilotField, string>>;
+
+const PILOT_VALIDATION_COPY: Record<
+  Locale,
+  Record<"name" | "email" | "company" | "size" | "message", string>
+> = {
+  hu: {
+    name: "Adj meg egy 2–100 karakteres nevet.",
+    email: "Adj meg egy érvényes email címet.",
+    company: "A cégnév 1–120 karakter lehet.",
+    size: "A csapatméret legfeljebb 60 karakter lehet.",
+    message: "A kérdés legfeljebb 4000 karakter lehet.",
+  },
+  en: {
+    name: "Enter a name between 2 and 100 characters.",
+    email: "Enter a valid email address.",
+    company: "The company name must be between 1 and 120 characters.",
+    size: "The team size can be at most 60 characters.",
+    message: "The question can be at most 4000 characters.",
+  },
+};
+
+const PILOT_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function PilotContent() {
   const { locale } = useLocale();
-  const [form, setForm] = useState({ name: "", email: "", company: "", size: "", message: "" });
+  const fieldIdPrefix = useId().replaceAll(":", "");
+  const [form, setForm] = useState<PilotFormValues>({ name: "", email: "", company: "", size: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [fieldErrors, setFieldErrors] = useState<PilotFieldErrors>({});
   const formStarted = useRef(false);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const companyRef = useRef<HTMLInputElement>(null);
+  const sizeRef = useRef<HTMLSelectElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
+
+  // Az async hiba state commitja utan a gomb mar biztosan nincs disabled
+  // allapotban. A catch-bol inditott rAF React concurrent render mellett
+  // megelozhette ezt a commitot, ilyenkor a focus() csendben hatastalan volt.
+  useEffect(() => {
+    if (status === "error") submitRef.current?.focus();
+  }, [status]);
 
   // Űrlap első érintése — a pilot-tölcsér eddig mérétlen volt (P1.2).
   const handleFormStart = () => {
@@ -54,6 +102,25 @@ export function PilotContent() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (status === "sending") return;
+    if (status === "error") setStatus("idle");
+
+    const nextFieldErrors = validatePilotFields(form, locale);
+    setFieldErrors(nextFieldErrors);
+    const firstInvalidField = (["name", "email", "company", "size", "message"] as const).find(
+      (field) => nextFieldErrors[field],
+    );
+    if (firstInvalidField) {
+      ({
+        name: nameRef,
+        email: emailRef,
+        company: companyRef,
+        size: sizeRef,
+        message: messageRef,
+      })[firstInvalidField].current?.focus();
+      return;
+    }
+
     setStatus("sending");
 
     try {
@@ -70,6 +137,14 @@ export function PilotContent() {
       track("form.submit", { form_id: "pilot_apply", outcome: "error" });
       setStatus("error");
     }
+  };
+
+  const updateFormField = (field: PilotField, value: string) => {
+    const nextForm = { ...form, [field]: value };
+    setForm(nextForm);
+    if (!fieldErrors[field]) return;
+    const nextError = validatePilotFields(nextForm, locale)[field];
+    setFieldErrors((current) => ({ ...current, [field]: nextError }));
   };
 
   return (
@@ -118,13 +193,13 @@ export function PilotContent() {
               <div className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
               <div className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
               <div className="relative border-b border-white/10 pb-5">
-                <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
+                <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
                 <p className="mt-3 font-fraunces text-title leading-tight">
                   {t("pilot.asideTitle", locale)}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
                   {t("pilot.asideBody", locale)}
                 </p>
               </div>
@@ -133,17 +208,17 @@ export function PilotContent() {
                 <div className="grid grid-cols-3 gap-2.5">
                   {signals.map((signal) => (
                     <div key={signal.label} className="rounded-2xl border border-white/15 bg-white/[0.08] px-3 py-4">
-                      <div className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-badge)]">{signal.value}</div>
-                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">{signal.label}</div>
+                      <div className="font-fraunces text-3xl leading-none text-[var(--color-text-on-inverse)]">{signal.value}</div>
+                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse)]">{signal.label}</div>
                     </div>
                   ))}
                 </div>
 
                 <div className="rounded-2xl border border-[var(--color-layer-team-glow)]/35 bg-white/10 px-5 py-5">
-                  <p className="text-label uppercase text-[var(--color-layer-team-badge)]">
+                  <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
                     {t("pilot.aside90Eyebrow", locale)}
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
                     {t("pilot.aside90Body", locale)}
                   </p>
                 </div>
@@ -215,7 +290,11 @@ export function PilotContent() {
 
           <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_70px_rgba(26,26,46,0.08)] md:p-8">
             {status === "sent" ? (
-              <div className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center">
+              <div
+                role="status"
+                aria-live="polite"
+                className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center"
+              >
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
                 <h3 className="mt-4 font-fraunces text-3xl leading-tight text-ink">
                   {t("pilot.successTitle", locale)}
@@ -238,46 +317,107 @@ export function PilotContent() {
                   </span>
                 </div>
 
-                <form onSubmit={handleSubmit} onFocus={handleFormStart} className="grid gap-5">
+                <form
+                  onSubmit={handleSubmit}
+                  noValidate
+                  onFocus={handleFormStart}
+                  aria-busy={status === "sending" || undefined}
+                  aria-describedby={status === "error" ? `${fieldIdPrefix}-pilot-api-error` : undefined}
+                  className="grid gap-5"
+                >
                   <div className="grid gap-5 md:grid-cols-2">
-                    <FormField label={t("pilot.labelName", locale)} required>
+                    <FormField
+                      id={`${fieldIdPrefix}-pilot-name`}
+                      label={t("pilot.labelName", locale)}
+                      required
+                      error={fieldErrors.name}
+                      errorId={`${fieldIdPrefix}-pilot-name-error`}
+                    >
                       <input
+                        ref={nameRef}
+                        id={`${fieldIdPrefix}-pilot-name`}
+                        name="name"
                         required
+                        minLength={2}
+                        maxLength={100}
                         type="text"
+                        autoComplete="name"
+                        disabled={status === "sending"}
+                        aria-invalid={Boolean(fieldErrors.name) || undefined}
+                        aria-describedby={fieldErrors.name ? `${fieldIdPrefix}-pilot-name-error` : undefined}
                         value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        onChange={(e) => updateFormField("name", e.target.value)}
                         placeholder={t("pilot.placeholderName", locale)}
                         className={INPUT_CLASS}
                       />
                     </FormField>
 
-                    <FormField label={t("pilot.labelEmail", locale)} required>
+                    <FormField
+                      id={`${fieldIdPrefix}-pilot-email`}
+                      label={t("pilot.labelEmail", locale)}
+                      required
+                      error={fieldErrors.email}
+                      errorId={`${fieldIdPrefix}-pilot-email-error`}
+                    >
                       <input
+                        ref={emailRef}
+                        id={`${fieldIdPrefix}-pilot-email`}
+                        name="email"
                         required
+                        maxLength={320}
                         type="email"
+                        autoComplete="email"
+                        disabled={status === "sending"}
+                        aria-invalid={Boolean(fieldErrors.email) || undefined}
+                        aria-describedby={fieldErrors.email ? `${fieldIdPrefix}-pilot-email-error` : undefined}
                         value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
+                        onChange={(e) => updateFormField("email", e.target.value)}
                         placeholder={t("pilot.placeholderEmail", locale)}
                         className={INPUT_CLASS}
                       />
                     </FormField>
                   </div>
 
-                  <FormField label={t("pilot.labelCompany", locale)} required>
+                  <FormField
+                    id={`${fieldIdPrefix}-pilot-company`}
+                    label={t("pilot.labelCompany", locale)}
+                    required
+                    error={fieldErrors.company}
+                    errorId={`${fieldIdPrefix}-pilot-company-error`}
+                  >
                     <input
+                      ref={companyRef}
+                      id={`${fieldIdPrefix}-pilot-company`}
+                      name="company"
                       required
+                      maxLength={120}
                       type="text"
+                      autoComplete="organization"
+                      disabled={status === "sending"}
+                      aria-invalid={Boolean(fieldErrors.company) || undefined}
+                      aria-describedby={fieldErrors.company ? `${fieldIdPrefix}-pilot-company-error` : undefined}
                       value={form.company}
-                      onChange={(e) => setForm({ ...form, company: e.target.value })}
+                      onChange={(e) => updateFormField("company", e.target.value)}
                       placeholder={t("pilot.placeholderCompany", locale)}
                       className={INPUT_CLASS}
                     />
                   </FormField>
 
-                  <FormField label={t("pilot.labelSize", locale)}>
+                  <FormField
+                    id={`${fieldIdPrefix}-pilot-size`}
+                    label={t("pilot.labelSize", locale)}
+                    error={fieldErrors.size}
+                    errorId={`${fieldIdPrefix}-pilot-size-error`}
+                  >
                     <select
+                      ref={sizeRef}
+                      id={`${fieldIdPrefix}-pilot-size`}
+                      name="size"
+                      disabled={status === "sending"}
+                      aria-invalid={Boolean(fieldErrors.size) || undefined}
+                      aria-describedby={fieldErrors.size ? `${fieldIdPrefix}-pilot-size-error` : undefined}
                       value={form.size}
-                      onChange={(e) => setForm({ ...form, size: e.target.value })}
+                      onChange={(e) => updateFormField("size", e.target.value)}
                       className={INPUT_CLASS}
                     >
                       <option value="">{t("pilot.sizeOption0", locale)}</option>
@@ -289,10 +429,22 @@ export function PilotContent() {
                     </select>
                   </FormField>
 
-                  <FormField label={t("pilot.labelQuestion", locale)}>
+                  <FormField
+                    id={`${fieldIdPrefix}-pilot-message`}
+                    label={t("pilot.labelQuestion", locale)}
+                    error={fieldErrors.message}
+                    errorId={`${fieldIdPrefix}-pilot-message-error`}
+                  >
                     <textarea
+                      ref={messageRef}
+                      id={`${fieldIdPrefix}-pilot-message`}
+                      name="message"
+                      maxLength={4000}
+                      disabled={status === "sending"}
+                      aria-invalid={Boolean(fieldErrors.message) || undefined}
+                      aria-describedby={fieldErrors.message ? `${fieldIdPrefix}-pilot-message-error` : undefined}
                       value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      onChange={(e) => updateFormField("message", e.target.value)}
                       rows={4}
                       placeholder={t("pilot.placeholderQuestion", locale)}
                       className={`${INPUT_CLASS} resize-none`}
@@ -301,6 +453,7 @@ export function PilotContent() {
 
                   <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
                     <button
+                      ref={submitRef}
                       type="submit"
                       disabled={status === "sending"}
                       className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
@@ -316,7 +469,11 @@ export function PilotContent() {
                   </div>
 
                   {status === "error" && (
-                    <p className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg">
+                    <p
+                      id={`${fieldIdPrefix}-pilot-api-error`}
+                      role="alert"
+                      className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg"
+                    >
                       {t("pilot.errorMessage", locale)}
                     </p>
                   )}
@@ -370,23 +527,63 @@ function MetaChip({ children }: { children: ReactNode }) {
 }
 
 function FormField({
+  id,
   label,
   required,
+  error,
+  errorId,
   children,
 }: {
+  id: string;
   label: string;
   required?: boolean;
+  error?: string;
+  errorId: string;
   children: ReactNode;
 }) {
   return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-medium text-ink">
-        {label}
-        {required && <span className="ml-1 text-[var(--color-accent-primary-strong)]">*</span>}
-      </span>
+    <div className="block">
+      <label htmlFor={id} className="mb-2 block text-sm font-medium text-ink">
+        <span>
+          {label}
+          {required && (
+            <span
+              aria-hidden="true"
+              className="ml-1 text-[var(--color-accent-primary-strong)]"
+            >
+              *
+            </span>
+          )}
+        </span>
+      </label>
       {children}
-    </label>
+      {error ? (
+        <span id={errorId} className="mt-2 block text-xs text-state-error-fg">
+          {error}
+        </span>
+      ) : null}
+    </div>
   );
+}
+
+function validatePilotFields(values: PilotFormValues, locale: Locale): PilotFieldErrors {
+  const copy = PILOT_VALIDATION_COPY[locale];
+  const errors: PilotFieldErrors = {};
+  const trimmedName = values.name.trim();
+  const trimmedEmail = values.email.trim();
+  const trimmedCompany = values.company.trim();
+
+  if (trimmedName.length < 2 || trimmedName.length > 100) errors.name = copy.name;
+  if (!PILOT_EMAIL_PATTERN.test(trimmedEmail) || trimmedEmail.length > 320) {
+    errors.email = copy.email;
+  }
+  if (trimmedCompany.length < 1 || trimmedCompany.length > 120) {
+    errors.company = copy.company;
+  }
+  if (values.size.trim().length > 60) errors.size = copy.size;
+  if (values.message.trim().length > 4000) errors.message = copy.message;
+
+  return errors;
 }
 
 function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {

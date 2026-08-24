@@ -3,9 +3,15 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { isStepOpenFor } from "@/lib/campaign-steps-core";
-import { advanceCampaignStepForUser, resolveCampaignTeamIdForUser } from "@/lib/campaign-steps";
-import { hasRaterCoveredTeam } from "@/lib/team-role-peer.server";
+import {
+  advanceCampaignStepForUser,
+  notifyCampaignStepOpenings,
+} from "@/lib/campaign-steps";
 import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
+import {
+  hasCoveredCurrentPeerTargets,
+  lockAndValidatePeerSubmission,
+} from "@/lib/peer-submission-coverage";
 
 const bodySchema = z.object({
   campaignId: z.string().min(1),
@@ -60,7 +66,7 @@ export async function POST(req: NextRequest) {
     select: {
       currentStep: true,
       nextStepOpensAt: true,
-      campaign: { select: { status: true, type: true, steps: true, teamId: true, teamIds: true } },
+      campaign: { select: { status: true, type: true, steps: true } },
     },
   });
   if (!participant) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
@@ -70,28 +76,36 @@ export async function POST(req: NextRequest) {
   if (!isStepOpenFor(participant.campaign, participant, "TEAM_ROLE_360")) {
     return NextResponse.json({ error: "STEP_LOCKED" }, { status: 409 });
   }
-  // Több-csapatos kampányban a tag SAJÁT csapata a cél.
-  const teamId = await resolveCampaignTeamIdForUser(participant.campaign, profile.id);
-  if (!teamId) return NextResponse.json({ error: "NO_TARGET_TEAM" }, { status: 409 });
+  const result = await prisma.$transaction(async (tx) => {
+    // A zar a teljes upsert + coverage + advance kritikus szakaszt
+    // serializalja kampany + ertekelo szinten. Kulonben ket egyideju,
+    // kulon celra irt observation egyike sem feltetlenul latna a masikat.
+    const guard = await lockAndValidatePeerSubmission(
+      tx,
+      campaignId,
+      profile.id,
+      "TEAM_ROLE_360",
+    );
+    if (!guard.ok) return { ok: false as const, error: guard.error };
 
-  // Minden értékelt legyen a cél-csapat tagja.
-  const memberIds = new Set(
-    (
-      await prisma.teamMember.findMany({
-        where: { teamId },
-        select: { userId: true },
-      })
-    ).map((m) => m.userId),
-  );
-  for (const obs of observations) {
-    if (!memberIds.has(obs.aboutUserId)) {
-      return NextResponse.json({ error: "NOT_A_TEAM_MEMBER" }, { status: 400 });
+    // A célcsapatot és annak tagságát a sorzár megszerzése után olvassuk:
+    // egy záron váró, időközben stale-lé vált kérés így nem írhat régi
+    // csapatra, és nem értékelhet már kilépett tagot.
+    const currentMembers = await tx.teamMember.findMany({
+      where: { teamId: guard.teamId },
+      select: { userId: true },
+    });
+    const memberIds = new Set(currentMembers.map((member) => member.userId));
+    if (
+      observations.some(
+        (observation) => !memberIds.has(observation.aboutUserId),
+      )
+    ) {
+      return { ok: false as const, error: "NOT_A_TEAM_MEMBER" as const };
     }
-  }
 
-  await prisma.$transaction(
-    observations.map((obs) =>
-      prisma.teamRoleObservation.upsert({
+    for (const obs of observations) {
+      await tx.teamRoleObservation.upsert({
         where: {
           campaignId_aboutUserId_raterUserId: {
             campaignId,
@@ -100,7 +114,7 @@ export async function POST(req: NextRequest) {
           },
         },
         create: {
-          teamId,
+          teamId: guard.teamId,
           campaignId,
           aboutUserId: obs.aboutUserId,
           raterUserId: profile.id,
@@ -110,16 +124,43 @@ export async function POST(req: NextRequest) {
         // menet közben változott (resolveCampaignTeamIdForUser), az ismételt
         // beküldés különben a RÉGI csapathoz ragadna — a friss értékelés az
         // új csapat aggregátumából hiányozna, és a min-3 padló alá vihetné.
-        update: { teamId, selections: obs.selections },
-      }),
-    ),
-  );
+        update: { teamId: guard.teamId, selections: obs.selections },
+      });
+    }
+    const rated = await tx.teamRoleObservation.findMany({
+      where: { campaignId, teamId: guard.teamId, raterUserId: profile.id },
+      select: { aboutUserId: true },
+    });
+    const isCovered = hasCoveredCurrentPeerTargets(
+      currentMembers.map((member) => member.userId),
+      profile.id,
+      rated.map((observation) => observation.aboutUserId),
+    );
+    const stepOpenings = isCovered
+      ? await advanceCampaignStepForUser(profile.id, "TEAM_ROLE_360", {
+          campaignId,
+          db: tx,
+          emitNotifications: false,
+        })
+      : [];
+    return {
+      ok: true as const,
+      covered: isCovered,
+      openings: stepOpenings,
+    };
+  });
 
-  // Lefedettség-ellenőrzés → lépés-teljesítés (idempotens).
-  const covered = await hasRaterCoveredTeam(campaignId, teamId, profile.id);
-  if (covered) {
-    await advanceCampaignStepForUser(profile.id, "TEAM_ROLE_360", { campaignId }).catch(() => {});
+  if (!result.ok) {
+    const status =
+      result.error === "NOT_A_TEAM_MEMBER"
+        ? 400
+        : result.error === "NOT_FOUND"
+          ? 404
+          : 409;
+    return NextResponse.json({ error: result.error }, { status });
   }
 
-  return NextResponse.json({ ok: true, covered });
+  await notifyCampaignStepOpenings(result.openings);
+
+  return NextResponse.json({ ok: true, covered: result.covered });
 }

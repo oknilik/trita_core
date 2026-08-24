@@ -54,9 +54,28 @@ function applyWriteRestrictions(
 ): JourneyState {
   if (!restrictionFlags.disableOrgWriteActions) return state;
 
-  const availableNextActions = state.availableNextActions.filter(
+  let availableNextActions = state.availableNextActions.filter(
     (action) => !WRITE_BLOCKED_ACTION_IDS.has(action.id),
   );
+
+  // Restricted/frozen orgs must still expose one honest read-only outcome.
+  // Without this fallback the next-best-action resolver reconstructed a write
+  // CTA from the stage even though the guardrail had removed every action.
+  if (availableNextActions.length === 0 && state.completionSummary.org.joined) {
+    const orgId = state.completionSummary.org.orgId;
+    availableNextActions = [{
+      id: "VIEW_ORG_INSIGHTS",
+      href: orgId ? `/org/${orgId}` : "/org",
+      scope: "org",
+    }];
+  } else if (availableNextActions.length === 0 && state.completionSummary.team.joined) {
+    const teamId = state.completionSummary.team.teamId;
+    availableNextActions = [{
+      id: "VIEW_TEAM_INSIGHTS",
+      href: teamId ? `/team/${teamId}` : "/team",
+      scope: "team",
+    }];
+  }
 
   return {
     ...state,
@@ -198,4 +217,3 @@ export function assertJourneyInvariants(input: {
 
   return violations;
 }
-

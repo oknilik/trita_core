@@ -476,6 +476,7 @@ export function OrgOnboardingWizard() {
                   value={countryLabel}
                   placeholder={t("orgOnboarding.countryPlaceholder", locale)}
                   onClick={() => setCountryPickerOpen(true)}
+                  isOpen={countryPickerOpen}
                 />
                 {errors.country && (
                   <span className="pl-1 text-xs text-[var(--color-accent-primary-strong)]">{errors.country}</span>
@@ -804,6 +805,7 @@ export function OrgOnboardingWizard() {
         selectedValue={state.country}
         searchable
         title={t("orgOnboarding.countryPickerTitle", locale)}
+        closeLabel={t("common.close", locale)}
         searchPlaceholder={t("orgOnboarding.countryPickerSearch", locale)}
       />
     </div>

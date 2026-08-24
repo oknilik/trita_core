@@ -46,7 +46,7 @@ test("a vendég kitöltés fő vezérlői Tab-bal elérhetők és látható fók
   await start.press("Space");
 
   await expect(page.getByRole("progressbar")).toBeVisible({ timeout: 15_000 });
-  const firstAnswer = page.getByRole("button", { name: /^1 - / }).first();
+  const firstAnswer = page.getByRole("radio", { name: /^1 - / }).first();
   await tabTo(page, firstAnswer);
   await expectVisibleKeyboardFocus(firstAnswer);
 });

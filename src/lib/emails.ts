@@ -69,6 +69,18 @@ type EmailSendParams = {
   idempotencyKey?: string;
 };
 
+function alertEmailFailure(template: string, code: string, message: string): void {
+  void import("@/lib/error-alert").then(({ sendErrorAlert }) =>
+    sendErrorAlert({
+      event: "email.send_failed",
+      origin: "server",
+      path: `email-template/${template}`,
+      name: code,
+      message,
+    }),
+  );
+}
+
 /**
  * MINDEN kimenő levél ezen a kapun megy át.
  *
@@ -81,6 +93,22 @@ type EmailSendParams = {
  * `email-layout.ts` → `emailArtAttachments`.)
  */
 async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResult> {
+  if (
+    process.env.VERCEL_ENV === "preview" &&
+    !/@(?:example\.com|test\.trita\.app)$/i.test(params.to.trim())
+  ) {
+    log.warn(
+      { event: "email.preview_recipient_blocked", template: params.template },
+      "Preview deployment blocked an external recipient",
+    );
+    return {
+      ok: false,
+      uncertain: false,
+      retryable: false,
+      code: "preview_recipient_blocked",
+      message: "Preview deployments cannot send to external recipients",
+    };
+  }
   try {
     const { data, error } = await resend.emails.send(
       {
@@ -107,6 +135,7 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
         { event: "email.send_failed", template: params.template, to: params.to, ...params.logFields, err: error },
         `Failed to send ${params.template}`,
       );
+      alertEmailFailure(params.template, code, String(error.message ?? code));
       return {
         ok: false,
         uncertain: false,
@@ -117,6 +146,11 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
     }
 
     if (!data?.id) {
+      alertEmailFailure(
+        params.template,
+        "missing_provider_id",
+        "Resend accepted the request without returning an email id",
+      );
       return {
         ok: false,
         uncertain: true,
@@ -139,6 +173,11 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
       { event: "email.send_unknown", template: params.template, to: params.to, ...params.logFields, err: error },
       `Unknown outcome while sending ${params.template}`,
     );
+    alertEmailFailure(
+      params.template,
+      "network_or_sdk_exception",
+      error instanceof Error ? error.message : "Unknown send exception",
+    );
     return {
       ok: false,
       uncertain: true,
@@ -151,6 +190,16 @@ async function sendEmailDetailed(params: EmailSendParams): Promise<EmailSendResu
 
 async function sendEmail(params: EmailSendParams): Promise<boolean> {
   return (await sendEmailDetailed(params)).ok;
+}
+
+async function sendEmailOrThrow(params: EmailSendParams): Promise<EmailSendResult> {
+  const result = await sendEmailDetailed(params);
+  if (!result.ok) {
+    const error = new Error(`EMAIL_SEND_FAILED:${result.code}:${result.message}`);
+    Object.assign(error, { emailSendResult: result });
+    throw error;
+  }
+  return result;
 }
 
 /**
@@ -533,7 +582,7 @@ export async function sendObserverInviteEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "observer_invite",
     to: params.to,
     subject,
@@ -582,7 +631,7 @@ export async function sendCandidateCompletedEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "candidate_completed",
     to: params.to,
     subject: t.subject,
@@ -882,7 +931,7 @@ export async function sendObserverCompletionEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "observer_completion",
     to: params.to,
     subject: t.subject,
@@ -952,7 +1001,7 @@ export async function sendVerificationCodeEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "verification_code",
     to: params.to,
     subject: translationBlock.subject,
@@ -1028,7 +1077,7 @@ export async function sendAssessmentDraftReminderEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "draft_reminder",
     to: params.to,
     subject: t.subject,
@@ -1082,7 +1131,7 @@ export async function sendMagicLinkEmail(params: {
     SIGN_OFF[locale].team,
   ].join("\n");
 
-  await sendEmail({
+  await sendEmailOrThrow({
     template: "magic_link",
     to: params.to,
     subject: t.subject,

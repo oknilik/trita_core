@@ -228,6 +228,7 @@ export async function POST(req: Request) {
 
   const inviterName = profile.username ?? profile.email ?? "Trita";
   const emailLocale = normalizeLocale(profile.locale);
+  let emailSent = false;
 
   if (needsApproval) {
     // E-mail NEM megy ki — a jóváhagyók kapnak értesítést.
@@ -248,22 +249,30 @@ export async function POST(req: Request) {
     const token = invitation.token;
     const colleagueUserId = observerProfileId;
 
+    try {
+      const existingUser = await prisma.userProfile.findFirst({
+        where: { email: { equals: emailTo, mode: "insensitive" } },
+        select: { username: true },
+      });
+      await sendObserverInviteEmail({
+        to: emailTo,
+        inviterName,
+        recipientName: existingUser?.username ?? recipientName ?? undefined,
+        token,
+        locale: emailLocale,
+      });
+      emailSent = true;
+    } catch (err) {
+      log.error(
+        { event: "observer.failed_to_send_observer_invite_email", invitationId: invitation.id, err },
+        "Failed to send observer invite email",
+      );
+      return NextResponse.json(
+        { error: "EMAIL_DELIVERY_FAILED", invitationId: invitation.id, emailSent: false },
+        { status: 502 },
+      );
+    }
     after(async () => {
-      try {
-        const existingUser = await prisma.userProfile.findFirst({
-          where: { email: { equals: emailTo, mode: "insensitive" } },
-          select: { username: true },
-        });
-        await sendObserverInviteEmail({
-          to: emailTo,
-          inviterName,
-          recipientName: existingUser?.username ?? recipientName ?? undefined,
-          token,
-          locale: emailLocale,
-        });
-      } catch (err) {
-        log.error({ event: "observer.failed_to_send_observer_invite_email", err: err }, "Failed to send observer invite email");
-      }
       // Belső kolléga: app-értesítés is (notification hub).
       if (colleagueUserId) {
         await handleObserverColleagueInvited({
@@ -283,7 +292,7 @@ export async function POST(req: Request) {
     status: invitation.status,
     observerType: invitation.observerType,
     awaitingApproval: needsApproval,
-    emailSent: Boolean(targetEmail) && !needsApproval,
+    emailSent,
   });
 }
 

@@ -1,13 +1,40 @@
 "use client";
 
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useId, useMemo, useRef, useState, type FormEvent } from "react";
 import type { Locale } from "@/lib/i18n/public";
 import { t } from "@/lib/i18n/public";
 import { track } from "@/lib/analytics/client";
 
 type Topic = "demo" | "pricing" | "support" | "partnership" | "other";
+type ContactField = "name" | "email" | "company" | "message";
+type ContactFieldErrors = Partial<Record<ContactField, string>>;
+
+const CONTACT_VALIDATION_COPY: Record<
+  Locale,
+  Record<"nameRequired" | "nameLong" | "email" | "companyLong" | "messageRequired" | "messageLong", string>
+> = {
+  hu: {
+    nameRequired: "Adj meg egy legalább 2 karakteres nevet.",
+    nameLong: "A név legfeljebb 100 karakter lehet.",
+    email: "Adj meg egy érvényes email címet.",
+    companyLong: "A cégnév legfeljebb 120 karakter lehet.",
+    messageRequired: "Az üzenet legalább 20 karakter legyen.",
+    messageLong: "Az üzenet legfeljebb 4000 karakter lehet.",
+  },
+  en: {
+    nameRequired: "Enter a name with at least 2 characters.",
+    nameLong: "The name can be at most 100 characters.",
+    email: "Enter a valid email address.",
+    companyLong: "The company name can be at most 120 characters.",
+    messageRequired: "The message must be at least 20 characters.",
+    messageLong: "The message can be at most 4000 characters.",
+  },
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ContactForm({ locale }: { locale: Locale }) {
+  const fieldIdPrefix = useId().replaceAll(":", "");
   const topicOptions: Array<{ value: Topic; label: string }> = useMemo(
     () => [
       { value: "demo", label: t("contact.topicDemo", locale) },
@@ -28,6 +55,12 @@ export function ContactForm({ locale }: { locale: Locale }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
+  const nameRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const companyRef = useRef<HTMLInputElement>(null);
+  const messageRef = useRef<HTMLTextAreaElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
 
   // P5: az űrlap ELKEZDÉSE (első fókusz) — az elkezdett/beküldött arány
   // mutatja meg, hogy az űrlap maga tántorít-e el. Csak egyszer tüzel.
@@ -40,7 +73,24 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (loading) return;
     setError(null);
+
+    const nextFieldErrors = validateContactFields({ name, email, company, message }, locale);
+    setFieldErrors(nextFieldErrors);
+    const firstInvalidField = (["name", "email", "company", "message"] as const).find(
+      (field) => nextFieldErrors[field],
+    );
+    if (firstInvalidField) {
+      ({
+        name: nameRef,
+        email: emailRef,
+        company: companyRef,
+        message: messageRef,
+      })[firstInvalidField].current?.focus();
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -72,6 +122,10 @@ export function ContactForm({ locale }: { locale: Locale }) {
     } catch {
       track("form.submit", { form_id: "contact", outcome: "error" });
       setError(t("contact.errorGeneric", locale));
+      // A beküldés alatt a gomb disabled, ezért a böngésző leveszi róla a
+      // fókuszt. Hiba után tegyük vissza, hogy billentyűzettel azonnal
+      // újrapróbálható legyen az adatvesztés nélkül megmaradt űrlap.
+      window.requestAnimationFrame(() => submitRef.current?.focus());
     } finally {
       setLoading(false);
     }
@@ -79,7 +133,11 @@ export function ContactForm({ locale }: { locale: Locale }) {
 
   if (success) {
     return (
-      <div className="rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-8">
+      <div
+        role="status"
+        aria-live="polite"
+        className="rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-8"
+      >
         <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
           {t("contact.successTitle", locale)}
         </p>
@@ -89,7 +147,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-        className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105"
+          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105"
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -101,56 +159,125 @@ export function ContactForm({ locale }: { locale: Locale }) {
     "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-base tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
   const labelClass = "block text-sm font-medium text-ink";
 
+  function updateField(field: ContactField, value: string) {
+    if (field === "name") setName(value);
+    else if (field === "email") setEmail(value);
+    else if (field === "company") setCompany(value);
+    else setMessage(value);
+
+    if (!fieldErrors[field]) return;
+    const nextValues = { name, email, company, message, [field]: value };
+    const nextError = validateContactFields(nextValues, locale)[field];
+    setFieldErrors((current) => ({ ...current, [field]: nextError }));
+  }
+
   return (
-    <form onSubmit={handleSubmit} onFocusCapture={handleFormStart} className="grid gap-5">
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      onFocusCapture={handleFormStart}
+      aria-busy={loading || undefined}
+      aria-describedby={error ? `${fieldIdPrefix}-contact-error` : undefined}
+      className="grid gap-5"
+    >
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <label className={labelClass}>
-          <span className="mb-2 block">
-            {t("contact.name", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
-          </span>
+        <div>
+          <label htmlFor={`${fieldIdPrefix}-contact-name`} className={labelClass}>
+            <span className="mb-2 block">
+              {t("contact.name", locale)}{" "}
+              <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
+            </span>
+          </label>
           <input
+            ref={nameRef}
+            id={`${fieldIdPrefix}-contact-name`}
+            name="name"
             required
             minLength={2}
             maxLength={100}
             type="text"
+            autoComplete="name"
+            disabled={loading}
+            aria-invalid={Boolean(fieldErrors.name) || undefined}
+            aria-describedby={fieldErrors.name ? `${fieldIdPrefix}-contact-name-error` : undefined}
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => updateField("name", e.target.value)}
             className={inputClass}
           />
-        </label>
+          {fieldErrors.name ? (
+            <span id={`${fieldIdPrefix}-contact-name-error`} className="mt-2 block text-xs text-state-error-fg">
+              {fieldErrors.name}
+            </span>
+          ) : null}
+        </div>
 
-        <label className={labelClass}>
-          <span className="mb-2 block">
-            {t("contact.email", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
-          </span>
+        <div>
+          <label htmlFor={`${fieldIdPrefix}-contact-email`} className={labelClass}>
+            <span className="mb-2 block">
+              {t("contact.email", locale)}{" "}
+              <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
+            </span>
+          </label>
           <input
+            ref={emailRef}
+            id={`${fieldIdPrefix}-contact-email`}
+            name="email"
             required
             type="email"
+            autoComplete="email"
+            disabled={loading}
+            aria-invalid={Boolean(fieldErrors.email) || undefined}
+            aria-describedby={fieldErrors.email ? `${fieldIdPrefix}-contact-email-error` : undefined}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => updateField("email", e.target.value)}
             className={inputClass}
           />
-        </label>
+          {fieldErrors.email ? (
+            <span id={`${fieldIdPrefix}-contact-email-error`} className="mt-2 block text-xs text-state-error-fg">
+              {fieldErrors.email}
+            </span>
+          ) : null}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-        <label className={labelClass}>
-          <span className="mb-2 block">{t("contact.company", locale)}</span>
+        <div>
+          <label htmlFor={`${fieldIdPrefix}-contact-company`} className={labelClass}>
+            <span className="mb-2 block">{t("contact.company", locale)}</span>
+          </label>
           <input
+            ref={companyRef}
+            id={`${fieldIdPrefix}-contact-company`}
+            name="company"
             maxLength={120}
             type="text"
+            autoComplete="organization"
+            disabled={loading}
+            aria-invalid={Boolean(fieldErrors.company) || undefined}
+            aria-describedby={fieldErrors.company ? `${fieldIdPrefix}-contact-company-error` : undefined}
             value={company}
-            onChange={(e) => setCompany(e.target.value)}
+            onChange={(e) => updateField("company", e.target.value)}
             className={inputClass}
           />
-        </label>
+          {fieldErrors.company ? (
+            <span id={`${fieldIdPrefix}-contact-company-error`} className="mt-2 block text-xs text-state-error-fg">
+              {fieldErrors.company}
+            </span>
+          ) : null}
+        </div>
 
-        <label className={labelClass}>
-          <span className="mb-2 block">
-            {t("contact.topic", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
-          </span>
+        <div>
+          <label htmlFor={`${fieldIdPrefix}-contact-topic`} className={labelClass}>
+            <span className="mb-2 block">
+              {t("contact.topic", locale)}{" "}
+              <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
+            </span>
+          </label>
           <select
+            id={`${fieldIdPrefix}-contact-topic`}
+            name="topic"
             required
+            disabled={loading}
             value={topic}
             onChange={(e) => setTopic(e.target.value as Topic)}
             className={inputClass}
@@ -161,26 +288,43 @@ export function ContactForm({ locale }: { locale: Locale }) {
               </option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
 
-      <label className={labelClass}>
-        <span className="mb-2 block">
-          {t("contact.message", locale)} <span className="text-[var(--color-accent-primary-strong)]">*</span>
-        </span>
+      <div>
+        <label htmlFor={`${fieldIdPrefix}-contact-message`} className={labelClass}>
+          <span className="mb-2 block">
+            {t("contact.message", locale)}{" "}
+            <span aria-hidden="true" className="text-[var(--color-accent-primary-strong)]">*</span>
+          </span>
+        </label>
         <textarea
+          ref={messageRef}
+          id={`${fieldIdPrefix}-contact-message`}
+          name="message"
           required
           minLength={20}
           maxLength={4000}
           rows={7}
+          disabled={loading}
+          aria-invalid={Boolean(fieldErrors.message) || undefined}
+          aria-describedby={fieldErrors.message ? `${fieldIdPrefix}-contact-message-error` : undefined}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => updateField("message", e.target.value)}
           className={`${inputClass} min-h-[180px] resize-y py-3.5 leading-relaxed`}
         />
-      </label>
+        {fieldErrors.message ? (
+          <span id={`${fieldIdPrefix}-contact-message-error`} className="mt-2 block text-xs text-state-error-fg">
+            {fieldErrors.message}
+          </span>
+        ) : null}
+      </div>
 
       <input
+        id={`${fieldIdPrefix}-contact-website`}
+        name="website"
         type="text"
+        disabled={loading}
         value={website}
         onChange={(e) => setWebsite(e.target.value)}
         className="hidden"
@@ -190,7 +334,11 @@ export function ContactForm({ locale }: { locale: Locale }) {
       />
 
       {error ? (
-        <p className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg">
+        <p
+          id={`${fieldIdPrefix}-contact-error`}
+          role="alert"
+          className="rounded-xl border border-state-error-border bg-state-error-soft px-4 py-3 text-sm text-state-error-fg"
+        >
           {error}
         </p>
       ) : null}
@@ -200,6 +348,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
           {t("contact.requiredHint", locale)}
         </p>
         <button
+          ref={submitRef}
           type="submit"
           disabled={loading}
           className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
@@ -209,4 +358,25 @@ export function ContactForm({ locale }: { locale: Locale }) {
       </div>
     </form>
   );
+}
+
+function validateContactFields(
+  values: { name: string; email: string; company: string; message: string },
+  locale: Locale,
+): ContactFieldErrors {
+  const copy = CONTACT_VALIDATION_COPY[locale];
+  const errors: ContactFieldErrors = {};
+  const trimmedName = values.name.trim();
+  const trimmedEmail = values.email.trim();
+  const trimmedCompany = values.company.trim();
+  const trimmedMessage = values.message.trim();
+
+  if (trimmedName.length < 2) errors.name = copy.nameRequired;
+  else if (trimmedName.length > 100) errors.name = copy.nameLong;
+  if (!EMAIL_PATTERN.test(trimmedEmail) || trimmedEmail.length > 320) errors.email = copy.email;
+  if (trimmedCompany.length > 120) errors.company = copy.companyLong;
+  if (trimmedMessage.length < 20) errors.message = copy.messageRequired;
+  else if (trimmedMessage.length > 4000) errors.message = copy.messageLong;
+
+  return errors;
 }

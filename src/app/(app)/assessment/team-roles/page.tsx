@@ -9,7 +9,11 @@ import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 
 export const dynamic = "force-dynamic";
 
-export default async function TeamRoleAssessmentPage() {
+export default async function TeamRoleAssessmentPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ campaignId?: string }>;
+}) {
   const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
   if (!userId) return redirectToSignIn();
 
@@ -32,9 +36,11 @@ export default async function TeamRoleAssessmentPage() {
     redirect(fallback);
   }
 
+  const { campaignId } = await searchParams;
+
   return (
     <main className="min-h-dvh bg-cream">
-      <TeamRolesClient locale={locale as Locale} />
+      <TeamRolesClient locale={locale as Locale} campaignId={campaignId} />
     </main>
   );
 }

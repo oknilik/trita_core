@@ -43,7 +43,12 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       {label ? (
         <label htmlFor={fieldId} className={cn("text-sm font-semibold text-text-primary", labelClassName)}>
           {label}
-          {required ? <span className="ml-1 text-action-primary-bg">*</span> : null}
+          {required ? (
+            <span
+              aria-hidden="true"
+              className="ml-1 text-action-primary-bg after:content-['*']"
+            />
+          ) : null}
         </label>
       ) : null}
       <input

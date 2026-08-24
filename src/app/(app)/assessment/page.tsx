@@ -66,12 +66,6 @@ export default async function AssessmentPage({
   // Központi onboarding-guard (org-tag kivétellel) — ld. lib/onboarding-guard
   await requireOnboarded(profile);
 
-  // Load existing draft (if any)
-  const draft = await prisma.assessmentDraft.findUnique({
-    where: { userProfileId: profile.id },
-  });
-
-  // If user already has results, no draft in progress, and hasn't confirmed retake → redirect
   const params = await searchParams;
   const campaignStep = await resolveActiveSelfAssessmentCampaign(
     profile.id,
@@ -81,6 +75,15 @@ export default async function AssessmentPage({
   // Ismeretlen, lezárt, más felhasználóhoz tartozó vagy még időzített körből
   // nem fogadunk el self-beadást. A feladatsor megmutatja az aktuális lépést.
   if (params.campaignId && campaignId !== params.campaignId) redirect("/tasks");
+
+  // A szerver-draft ugyanahhoz a mérési körhöz tartozik, mint a megnyitott
+  // kérdőív; másik kampány vagy self-serve draftja nem tölthető be.
+  const scope = campaignId ? `campaign:${campaignId}` : "self";
+  const draft = await prisma.assessmentDraft.findUnique({
+    where: { userProfileId_scope: { userProfileId: profile.id, scope } },
+  });
+
+  // If user already has results, no draft in progress, and hasn't confirmed retake → redirect
 
   if (
     profile.assessmentResults.length > 0 &&
@@ -104,6 +107,7 @@ export default async function AssessmentPage({
       ? {
           answers: draft.answers as Record<string, number>,
           currentPage: draft.currentPage,
+          updatedAt: draft.updatedAt.getTime(),
         }
       : undefined;
 
@@ -121,7 +125,7 @@ export default async function AssessmentPage({
       testType={testType}
       testName={config.name}
       totalQuestions={config.questions.length}
-      draftScope={profile.id}
+      draftScope={`${profile.id}:${scope}`}
       questions={questions}
       initialDraft={initialDraft}
       clearDraft={clearDraft}

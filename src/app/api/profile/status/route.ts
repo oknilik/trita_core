@@ -30,7 +30,7 @@ export async function GET() {
   const [draft, latestResult, sentInvites, pendingInvites, completedObserver] =
     await Promise.all([
       prisma.assessmentDraft.findUnique({
-        where: { userProfileId: profile.id },
+        where: { userProfileId_scope: { userProfileId: profile.id, scope: "self" } },
         select: { id: true },
       }),
       prisma.assessmentResult.findFirst({

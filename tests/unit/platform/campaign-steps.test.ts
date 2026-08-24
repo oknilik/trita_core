@@ -134,10 +134,10 @@ describe("getCampaignStepLink", () => {
     );
   });
 
-  it("a többi kitöltő kanonikus linkjét nem módosítja", () => {
+  it("minden kampánylépés explicit kampánylinket kap", () => {
     assert.equal(
       getCampaignStepLink("PSYCH_SAFETY", "campaign-2"),
-      "/assessment/psych-safety",
+      "/assessment/psych-safety?campaignId=campaign-2",
     );
   });
 });

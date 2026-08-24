@@ -3,14 +3,19 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { canViewRawTeamResults } from "@/lib/team-auth";
+import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
   buildDraftNarrativePrefill,
   buildTeamReportAggregates,
+  parseActionItems,
   serializeTeamReport,
+  type TeamReportActionItem,
   validateTeamReportForPublish,
 } from "@/lib/team-report";
 import { teamActionTargetSchema } from "@/lib/team-action-target-schema";
+import crypto from "node:crypto";
+import type { Prisma } from "@prisma/client";
 
 // Csapatriport (TeamReport) írási API — kizárólag tanácsadónak.
 // Terv: docs/product/team-report-gating-plan.md
@@ -26,6 +31,7 @@ const narrativeFields = {
   actionItems: z
     .array(
       z.object({
+        id: z.string().min(1).max(191).optional(),
         title: z.string().max(200),
         description: z.string().max(2000),
         timeframe: z.enum(["30", "60", "90"]),
@@ -33,6 +39,8 @@ const narrativeFields = {
         dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/u).optional(),
         status: z.enum(["not_started", "in_progress", "blocked", "done"]).optional(),
         targetMetric: teamActionTargetSchema.optional(),
+        evidenceUrl: z.string().url().max(2000).optional(),
+        note: z.string().max(2000).optional(),
       }),
     )
     .max(20)
@@ -80,6 +88,75 @@ const patchSchema = z.object({
 
 const createSchema = z.object({ campaignId: z.string().min(1) });
 
+type ActionItem = TeamReportActionItem;
+
+function normalizeActionIds(incoming: ActionItem[], previous: ActionItem[]): ActionItem[] {
+  return incoming.map((item, index) => ({
+    ...item,
+    id: item.id ?? previous[index]?.id ?? `action:${crypto.randomUUID()}`,
+  }));
+}
+
+function buildActionEvents(previous: ActionItem[], next: ActionItem[]) {
+  const before = new Map(previous.filter((item) => item.id).map((item) => [item.id!, item]));
+  const after = new Map(next.filter((item) => item.id).map((item) => [item.id!, item]));
+  const events: Array<{
+    actionKey: string;
+    eventType: string;
+    payload: Prisma.InputJsonValue;
+    evidenceUrl?: string;
+    note?: string;
+  }> = [];
+  for (const [actionKey, item] of after) {
+    const old = before.get(actionKey);
+    if (!old || JSON.stringify(old) !== JSON.stringify(item)) {
+      events.push({
+        actionKey,
+        eventType: old ? "UPDATED" : "CREATED",
+        payload: item as unknown as Prisma.InputJsonValue,
+        ...(item.evidenceUrl ? { evidenceUrl: item.evidenceUrl } : {}),
+        ...(item.note ? { note: item.note } : {}),
+      });
+    }
+  }
+  for (const [actionKey, item] of before) {
+    if (!after.has(actionKey)) {
+      events.push({
+        actionKey,
+        eventType: "REMOVED",
+        payload: item as unknown as Prisma.InputJsonValue,
+      });
+    }
+  }
+  return events;
+}
+
+async function updateReportWithHistory(input: {
+  reportId: string;
+  actorUserId: string;
+  data: Prisma.TeamReportUpdateInput;
+  previous: ActionItem[];
+  next: ActionItem[];
+}) {
+  const events = buildActionEvents(input.previous, input.next);
+  return prisma.$transaction(async (tx) => {
+    const report = await tx.teamReport.update({
+      where: { id: input.reportId },
+      data: input.data,
+    });
+    if (events.length > 0) {
+      await tx.teamActionEvent.createMany({
+        data: events.map((event) => ({
+          reportId: input.reportId,
+          actorUserId: input.actorUserId,
+          ...event,
+        })),
+      });
+    }
+    return report;
+  });
+}
+
 async function validateReportCampaign(teamId: string, orgId: string, campaignId: string) {
   const campaign = await prisma.campaign.findFirst({
     where: { id: campaignId, orgId },
@@ -100,7 +177,7 @@ async function requireConsultant(teamId: string) {
 
   const profile = await prisma.userProfile.findUnique({
     where: { clerkId: userId },
-    select: { id: true },
+    select: { id: true, email: true, isConsultant: true },
   });
   if (!profile) return { error: "UNAUTHORIZED" as const, status: 401 };
 
@@ -115,11 +192,42 @@ async function requireConsultant(teamId: string) {
     where: { orgId_userId: { orgId: team.orgId, userId: profile.id } },
     select: { role: true, leftAt: true },
   });
-  if (!membership || membership.leftAt || !canViewRawTeamResults(membership.role)) {
+  if (
+    !membership ||
+    membership.leftAt ||
+    !(
+      canViewRawTeamResults(membership.role) ||
+      isConsultantSurface(membership.role, profile.email, profile.isConsultant)
+    )
+  ) {
     return { error: "FORBIDDEN" as const, status: 403 };
   }
 
   return { profileId: profile.id, orgId: team.orgId };
+}
+
+// GET /api/team/[id]/report?reportId=... — append-only akciótörténet.
+export async function GET(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id: teamId } = await params;
+  const ctx = await requireConsultant(teamId);
+  if ("error" in ctx) {
+    return NextResponse.json({ error: ctx.error }, { status: ctx.status });
+  }
+  const reportId = new URL(req.url).searchParams.get("reportId");
+  if (!reportId) return NextResponse.json({ error: "REPORT_ID_REQUIRED" }, { status: 400 });
+  const report = await prisma.teamReport.findFirst({
+    where: { id: reportId, teamId },
+    select: { id: true },
+  });
+  if (!report) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+  const events = await prisma.teamActionEvent.findMany({
+    where: { reportId },
+    orderBy: { createdAt: "asc" },
+  });
+  return NextResponse.json({ events });
 }
 
 // POST /api/team/[id]/report — új riport-vázlat (aggregátum-előnézettel)
@@ -173,6 +281,7 @@ export async function POST(
   // A narratív mezőket generált javaslattal töltjük elő — a tanácsadó
   // szerkeszthető kiindulópontot kap, nem üres űrlapot.
   const prefill = buildDraftNarrativePrefill(aggregates);
+  const initialActions = normalizeActionIds(prefill?.actionItems ?? [], []);
 
   const report = await prisma.teamReport.upsert({
     where: { campaignId_teamId: { campaignId, teamId } },
@@ -188,11 +297,25 @@ export async function POST(
         ? {
             ...prefill,
             // Prisma Json input: a típusos tömböt plain JSON-ként adjuk át.
-            actionItems: prefill.actionItems as unknown as object[],
+            actionItems: initialActions as unknown as object[],
           }
         : {}),
     },
   });
+  if (initialActions.length > 0) {
+    const existingEvents = await prisma.teamActionEvent.count({ where: { reportId: report.id } });
+    if (existingEvents === 0) {
+      await prisma.teamActionEvent.createMany({
+        data: initialActions.map((item) => ({
+          reportId: report.id,
+          actionKey: item.id!,
+          eventType: "CREATED",
+          actorUserId: ctx.profileId,
+          payload: item as unknown as Prisma.InputJsonValue,
+        })),
+      });
+    }
+  }
 
   return NextResponse.json({
     ok: true,
@@ -275,6 +398,11 @@ export async function PATCH(
   if (!existing) {
     return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   }
+  const previousActions = parseActionItems(existing.actionItems) ?? [];
+  const nextActions = fields.actionItems
+    ? normalizeActionIds(fields.actionItems, previousActions)
+    : previousActions;
+  if (fields.actionItems) fields.actionItems = nextActions;
 
   // Publikálás visszavonása: a riport vázlatként újra szerkeszthető, a
   // szervezet felé eltűnik. Csak a legutolsó publikált riport vonható
@@ -348,8 +476,11 @@ export async function PATCH(
     if (publishError) {
       return NextResponse.json({ error: publishError }, { status: 409 });
     }
-    const report = await prisma.teamReport.update({
-      where: { id: reportId },
+    const report = await updateReportWithHistory({
+      reportId,
+      actorUserId: ctx.profileId,
+      previous: previousActions,
+      next: nextActions,
       data: {
         ...narrativeData,
         aggregates: aggregates as object,
@@ -387,8 +518,11 @@ export async function PATCH(
         })
       : null;
 
-  const report = await prisma.teamReport.update({
-    where: { id: reportId },
+  const report = await updateReportWithHistory({
+    reportId,
+    actorUserId: ctx.profileId,
+    previous: previousActions,
+    next: nextActions,
     data: {
       ...narrativeData,
       ...(aggregates ? { aggregates: aggregates as object } : {}),

@@ -9,9 +9,10 @@ import { FOCUS_RING_CLASS } from '@/lib/ui/focus'
 interface SliderSelectorProps {
   value: number | null
   onChange: (value: number) => void
+  ariaLabel: string
 }
 
-export function SliderSelector({ value, onChange }: SliderSelectorProps) {
+export function SliderSelector({ value, onChange, ariaLabel }: SliderSelectorProps) {
   const { locale } = useLocale()
   const [hoveredMark, setHoveredMark] = useState<number | null>(null)
 
@@ -28,7 +29,7 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
   return (
     <div className="flex w-full flex-col items-center">
       {/* Circles */}
-      <div className="mb-3 flex gap-1.5 md:gap-2.5 lg:gap-3">
+      <div className="mb-3 flex gap-1.5 md:gap-2.5 lg:gap-3" role="radiogroup" aria-label={ariaLabel}>
         {[1, 2, 3, 4, 5].map((mark) => {
           const isSelected = value === mark
           const isHovered = hoveredMark === mark
@@ -37,6 +38,19 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               key={mark}
               type="button"
               onClick={() => onChange(mark)}
+              onKeyDown={(event) => {
+                const delta = event.key === 'ArrowRight' || event.key === 'ArrowDown'
+                  ? 1
+                  : event.key === 'ArrowLeft' || event.key === 'ArrowUp'
+                    ? -1
+                    : 0
+                if (!delta) return
+                event.preventDefault()
+                const next = Math.max(1, Math.min(5, (value ?? mark) + delta))
+                onChange(next)
+                const group = event.currentTarget.parentElement
+                group?.querySelector<HTMLElement>(`[data-mark="${next}"]`)?.focus()
+              }}
               onMouseEnter={() => setHoveredMark(mark)}
               onMouseLeave={() => setHoveredMark(null)}
               whileTap={{ scale: 0.94 }}
@@ -52,6 +66,10 @@ export function SliderSelector({ value, onChange }: SliderSelectorProps) {
               animate={{ scale: isSelected ? 1.08 : 1 }}
               transition={{ duration: 0.15 }}
               aria-label={`${mark} - ${labels[mark - 1]}`}
+              role="radio"
+              aria-checked={isSelected}
+              tabIndex={isSelected || (value === null && mark === 1) ? 0 : -1}
+              data-mark={mark}
             >
               {mark}
             </motion.button>

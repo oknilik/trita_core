@@ -270,7 +270,7 @@ describe("AssessmentClient integration behavior", () => {
     await disableAutoAdvance(user);
 
     const initialWidth = getCurrentProgressBarWidth();
-    await user.click(screen.getByRole("button", { name: /^2 - / }));
+    await user.click(screen.getByRole("radio", { name: /^2 - / }));
     await user.click(screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }));
     const widthAfterNext = getCurrentProgressBarWidth();
 
@@ -292,7 +292,7 @@ describe("AssessmentClient integration behavior", () => {
     await startAssessmentIfIntroVisible(user);
     await disableAutoAdvance(user);
 
-    await user.click(screen.getByRole("button", { name: /^4 - / }));
+    await user.click(screen.getByRole("radio", { name: /^4 - / }));
     await waitFor(() => {
       const payload = window.localStorage.getItem(DRAFT_KEY);
       expect(payload).not.toBeNull();
@@ -306,7 +306,7 @@ describe("AssessmentClient integration behavior", () => {
       () => user.click(screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") })),
       1,
     );
-    const selected = screen.getByRole("button", { name: /^4 - / });
+    const selected = screen.getByRole("radio", { name: /^4 - / });
     expect(selected).toHaveClass("bg-[var(--color-action-primary-bg)]");
   });
 
@@ -345,6 +345,7 @@ describe("AssessmentClient integration behavior", () => {
       initialDraft: {
         answers: { "101": 3 },
         currentPage: 0,
+        updatedAt: Date.now(),
       },
     });
 
@@ -366,6 +367,7 @@ describe("AssessmentClient integration behavior", () => {
           "901": 5, "902": 4, "903": 2,
         },
         currentPage: 0,
+        updatedAt: Date.now(),
       },
     });
 
@@ -388,7 +390,7 @@ describe("AssessmentClient integration behavior", () => {
     await startAssessmentIfIntroVisible(user);
     await disableAutoAdvance(user);
 
-    await user.click(screen.getByRole("button", { name: /^1 - / }));
+    await user.click(screen.getByRole("radio", { name: /^1 - / }));
     await waitFor(() => {
       const payload = window.localStorage.getItem(DRAFT_KEY);
       expect(payload).not.toBeNull();
@@ -451,7 +453,7 @@ describe("AssessmentClient integration behavior", () => {
     await startAssessmentIfIntroVisible(user);
 
     vi.useFakeTimers();
-    fireEvent.click(screen.getByRole("button", { name: /^3 - / }));
+    fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
     expect(getCurrentQuestionNumber()).toBe(1);
 
     act(() => {

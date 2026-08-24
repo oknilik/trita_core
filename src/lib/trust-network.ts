@@ -14,12 +14,11 @@
 // - Csomópont-szintű aggregátum (befelé irányuló bizalom átlaga) csak
 //   TRUST_MIN_RATERS (3) értékelőtől létezik — alatta null, a pulse- és
 //   peer-küszöb mintája.
-// - Hub- és beágyazatlan-jelölés (névvel a riportban!) CSAK BEFELÉ
-//   EVIDENCIÁLT élekből számolódik: kölcsönös él, vagy egyoldalú él,
-//   ahol a csomópont az ÉRTÉKELT fél. A tisztán kifelé irányuló
-//   (a csomópont csak RATER) él nem evidencia a csomópontról — különben
-//   két csapattárs szigorú megítélése magát az értékelőt bélyegezné
-//   „beágyazatlan tagnak", két magas értékelés pedig hubbá tenné.
+// - Pár-él kizárólag mindkét irány meglétekor látható. Egyirányú válasz
+//   csak a küszöbölt csomópont-aggregátumba számít, se UI/API/export élként,
+//   se tooltipben nem jelenhet meg.
+// - Hub- és beágyazatlan-jelölés csak legalább három külön bejövő
+//   értékelőnél, kölcsönös élekből számolható.
 // ─────────────────────────────────────────────────────────────────────
 
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "./anonymity";
@@ -145,8 +144,8 @@ export type TrustEdgeType =
 // ehhez köt: aki alatta marad minden élén, annak nincs ≥ moderate kapcsolata.
 export const TRUST_EDGE_MODERATE_MIN = 55;
 
-// Mért pár-él confidence-e a dinamika-térképen: mindkét irányból van válasz
-// (mutual) vs csak az egyikből — a felület az egyoldalút külön jelöli.
+// A publikus mért él mindig kölcsönös. A one-sided konstans csak régi
+// snapshotok deszerializálásához marad meg.
 export const EDGE_CONFIDENCE_MUTUAL = 100;
 export const EDGE_CONFIDENCE_ONE_SIDED = 50;
 
@@ -263,13 +262,13 @@ export function computeTrustNetwork(
     const [a, b] = [obs.aboutUserId, obs.raterUserId].sort();
     pairKeys.add(`${a}|${b}`);
   }
-  const edges: TrustEdge[] = [...pairKeys].sort().map((key) => {
+  const edges: TrustEdge[] = [...pairKeys].sort().flatMap((key) => {
     const [a, b] = key.split("|");
     const ab = directed.get(`${a}→${b}`);
     const ba = directed.get(`${b}→${a}`);
-    const parts = [ab, ba].filter((v): v is number => typeof v === "number");
-    const score = Math.round(parts.reduce((x, y) => x + y, 0) / parts.length);
-    return { a, b, score, type: trustEdgeType(score), mutual: parts.length === 2 };
+    if (typeof ab !== "number" || typeof ba !== "number") return [];
+    const score = Math.round((ab + ba) / 2);
+    return [{ a, b, score, type: trustEdgeType(score), mutual: true }];
   });
 
   // Csomópont-statisztikák — minden érintett (vagy megadott) tagra.
@@ -280,10 +279,7 @@ export function computeTrustNetwork(
       nodeIds.add(obs.raterUserId);
     }
   }
-  // BEFELÉ evidenciált élek egy csomópontra: kölcsönös él, vagy egyoldalú
-  // él, ahol a csomópont az ÉRTÉKELT fél (van `másik→ő` irányított válasz).
-  // A csak-kifelé (a csomópont kizárólag RATER) él nem evidencia róla —
-  // hub/beágyazatlan jelölés nem épülhet a saját kiosztott értékeléseire.
+  // A látható élhalmaz eleve csak kölcsönös párokat tartalmaz.
   const inboundEvidencedEdgesFor = (userId: string): TrustEdge[] =>
     edges.filter(
       (e) =>
@@ -306,11 +302,14 @@ export function computeTrustNetwork(
   const maxStrong = Math.max(0, ...nodes.map((n) => n.strongEdgeCount));
   const hubUserIds =
     maxStrong >= 2
-      ? nodes.filter((n) => n.strongEdgeCount === maxStrong).map((n) => n.userId)
+      ? nodes
+          .filter((n) => n.inboundCount >= TRUST_MIN_RATERS && n.strongEdgeCount === maxStrong)
+          .map((n) => n.userId)
       : [];
 
   const isolatedUserIds = nodes
     .filter((n) => {
+      if (n.inboundCount < TRUST_MIN_RATERS) return false;
       const myEdges = inboundEvidencedEdgesFor(n.userId);
       return myEdges.length >= 2 && myEdges.every((e) => e.score < TRUST_EDGE_MODERATE_MIN);
     })

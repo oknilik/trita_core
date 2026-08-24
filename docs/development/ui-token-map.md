@@ -19,7 +19,13 @@ A jelenlegi `src/app/globals.css` `@theme` blokk auditja, és a hiányzó tokenk
   - `src/lib/design-tokens.ts`
   - `src/app` + `src/components` használati minták (`rg` audit)
 
-## Rövid állapotkép
+## Rövid állapotkép (történeti, nem normatív)
+
+Az alábbi 2026-04-es tábla nem az aktuális implementáció állapota. Az élő,
+normatív tokenleltár és migrációs státusz a
+[`color-system-2026-08.md`](./color-system-2026-08.md) dokumentumban van;
+új fejlesztési döntést kizárólag abból és a `globals.css` aktuális tartalmából
+szabad levezetni.
 
 | Kategória | Állapot | Megjegyzés |
 |---|---|---|

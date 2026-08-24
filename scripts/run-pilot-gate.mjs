@@ -27,6 +27,10 @@ const PILOT_E2E_TESTS = [
   "tests/e2e/assessment/assessment-flow.test.ts",
   "tests/e2e/observer/observer-flow.test.ts",
   "tests/e2e/analytics/analytics-write-smoke.test.ts",
+  "tests/e2e/accessibility/keyboard-focus.test.ts",
+  "tests/e2e/accessibility/axe-critical-routes.test.ts",
+  "tests/e2e/policy/capability-gate.test.ts",
+  "tests/e2e/team/team-intelligence-visual.test.ts",
 ];
 
 function run(command, args, env) {

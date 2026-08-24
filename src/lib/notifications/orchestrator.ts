@@ -8,6 +8,7 @@
 import { prisma } from "@/lib/prisma";
 import {
   getCampaignStepLink,
+  getCampaignSteps,
   isCampaignStepType,
   isSelfResultForCampaign,
 } from "@/lib/campaign-steps-core";
@@ -338,6 +339,39 @@ export async function handleCampaignClosed(params: {
       dedupeKey: `CAMPAIGN_CLOSED:${params.campaignId}:${userId}`,
     })),
   );
+}
+
+export async function handleCampaignProgressMilestone(campaignId: string) {
+  const campaign = await prisma.campaign.findUnique({
+    where: { id: campaignId },
+    select: {
+      id: true,
+      orgId: true,
+      name: true,
+      type: true,
+      steps: true,
+      participants: { select: { currentStep: true } },
+    },
+  });
+  if (!campaign || campaign.participants.length === 0) return;
+  const stepCount = getCampaignSteps(campaign).length;
+  const completed = campaign.participants.filter((participant) => participant.currentStep >= stepCount).length;
+  const percent = Math.floor((completed / campaign.participants.length) * 100);
+  const milestone = percent >= 100 ? 100 : percent >= 50 ? 50 : null;
+  if (!milestone) return;
+  const meta = NOTIFICATION_TYPE_META.CAMPAIGN_MILESTONE;
+  const recipients = await resolveOrgRecipients(campaign.orgId, "CAMPAIGN_MILESTONE");
+  await persistNotificationBatch(recipients.map((userId) => ({
+    userId,
+    type: "CAMPAIGN_MILESTONE" as const,
+    category: meta.category,
+    priority: meta.defaultPriority,
+    vars: { percent: milestone, campaignName: campaign.name },
+    link: `/org/${campaign.orgId}?tab=campaigns`,
+    sourceType: "campaign" as const,
+    sourceId: campaign.id,
+    dedupeKey: `CAMPAIGN_MILESTONE:${campaign.id}:${milestone}:${userId}`,
+  })));
 }
 
 /**

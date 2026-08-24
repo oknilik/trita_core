@@ -24,7 +24,7 @@ describe("TeamOverviewNextAction", () => {
     expect(screen.getByRole("heading", { name: "Pszichológiai biztonság pulse" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Kitöltöm most" })).toHaveAttribute(
       "href",
-      "/assessment/psych-safety",
+      "/assessment/psych-safety?campaignId=campaign-autumn",
     );
     expect(screen.getByRole("link", { name: "További 2 teendő" })).toHaveAttribute(
       "href",

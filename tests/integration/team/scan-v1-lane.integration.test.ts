@@ -36,8 +36,12 @@ import {
   type PsychSafetyAnswers,
 } from "@/lib/psych-safety";
 import { buildTeamTrustNetwork, hasRaterCoveredTeamTrust } from "@/lib/trust-network.server";
+import { hasRaterCoveredTeam } from "@/lib/team-role-peer.server";
 import { TRUST_MIN_RATERS, type TrustAnswerSet } from "@/lib/trust-network";
-import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import {
+  advanceCampaignStepForUser,
+  getStepPartialProgress,
+} from "@/lib/campaign-steps";
 import { CAMPAIGN_PRESETS } from "@/lib/campaign-steps-core";
 import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
 
@@ -122,7 +126,7 @@ async function createScanV1Fixture(memberCount: number) {
       requireFreshResults: CAMPAIGN_PRESETS.SCAN_V1.requireFreshResults,
       createdBy: owner.id,
     },
-    select: { id: true, steps: true },
+    select: { id: true, steps: true, teamId: true },
   });
 
   for (const member of members) {
@@ -142,7 +146,7 @@ test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => 
   const { campaign, teamId, members } = await createScanV1Fixture(3);
 
   await prisma.psychSafetyResponse.create({
-    data: { campaignId: campaign.id, submittedOn: dayTruncated(), answers: pulseAnswers(4) },
+    data: { campaignId: campaign.id, teamId, submittedOn: dayTruncated(), answers: pulseAnswers(4) },
   });
 
   const stored = await prisma.psychSafetyResponse.findFirst({
@@ -152,7 +156,7 @@ test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => 
 
   // A kitöltő azonosítója SEMMILYEN néven nem szerepelhet a rekordon: ez a
   // névtelenség egyetlen strukturális garanciája. A séma ma a `teamId`-t sem
-  // tartalmazza — ha bárki felvenne egy ilyen mezőt, ez a teszt bukik.
+  // tartalmazza. A teamId az aggregációs határ, nem személyazonosító adat.
   const serialized = JSON.stringify(stored);
   for (const member of members) {
     assert.ok(
@@ -162,10 +166,10 @@ test("a pulse-válasz user-referencia NÉLKÜL kerül a táblába", async () => 
   }
   assert.deepEqual(
     Object.keys(stored).sort(),
-    ["answers", "campaignId", "id", "submittedOn"],
+    ["answers", "campaignId", "id", "submittedOn", "teamId"],
     "a pulse-rekord mezőkészlete bővült — minden új mező azonosíthatóságot vihet be",
   );
-  assert.ok(!serialized.includes(teamId), "a pulse-rekord csapat-azonosítót hordoz");
+  assert.equal(stored.teamId, teamId, "a pulse-rekord csapat-határa hiányzik");
 
   // Az anonimitás MÁSODIK rétege: nap pontosságúra csonkolt dátum. Pontos
   // időbélyeggel a válasz párosítható volna a résztvevő `completedAt`
@@ -207,19 +211,21 @@ test("két párhuzamos pulse-beküldésből pontosan egy anonim válasz jön lé
   const participant = await prisma.campaignParticipant.update({
     where: { campaignId_userId: { campaignId: campaign.id, userId: members[0].id } },
     data: { currentStep: 2 },
-    select: { id: true },
+    select: { id: true, userId: true },
   });
 
   const submit = () =>
     recordAnonymousPsychSafetyResponse({
       participantId: participant.id,
+      profileId: participant.userId,
       campaignId: campaign.id,
+      teamId: campaign.teamId!,
       answers: pulseAnswers(4),
       submittedOn: dayTruncated(),
     });
   const outcomes = await Promise.all([submit(), submit()]);
 
-  assert.deepEqual(outcomes.sort(), [false, true]);
+  assert.deepEqual(outcomes.map((outcome) => outcome.created).sort(), [false, true]);
   assert.equal(
     await prisma.psychSafetyResponse.count({ where: { campaignId: campaign.id } }),
     1,
@@ -405,6 +411,82 @@ test("a TRUST_360 lépés csak a TELJES csapat-lefedettségtől számít teljes�
     },
   });
   assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), true);
+});
+
+test("kilépett tag stale sora nem pótolhat hiányzó aktuális célt egyik peer körben sem", async () => {
+  const { campaign, teamId, members } = await createScanV1Fixture(4);
+  const [rater, currentA, currentB, missingCurrent] = members;
+  const formerMember = await createProfile();
+
+  // A sorok létrejöttekor még valódi csapattag volt, majd kilépett. A három
+  // observation darabszáma így eléri az aktuális három cél számát, de az
+  // egyik célpont stale, a valódi aktuális tag pedig hiányzik.
+  const formerMembership = await prisma.teamMember.create({
+    data: { teamId, userId: formerMember.id },
+    select: { id: true },
+  });
+  for (const about of [currentA, currentB, formerMember]) {
+    await prisma.trustObservation.create({
+      data: {
+        campaignId: campaign.id,
+        teamId,
+        aboutUserId: about.id,
+        raterUserId: rater.id,
+        answers: TRUST_ANSWERS,
+      },
+    });
+    await prisma.teamRoleObservation.create({
+      data: {
+        campaignId: campaign.id,
+        teamId,
+        aboutUserId: about.id,
+        raterUserId: rater.id,
+        selections: { OG1: 2 },
+      },
+    });
+  }
+  await prisma.teamMember.delete({ where: { id: formerMembership.id } });
+
+  assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), false);
+  assert.equal(await hasRaterCoveredTeam(campaign.id, teamId, rater.id), false);
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TRUST_360", rater.id),
+    { done: 2, total: 3 },
+  );
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TEAM_ROLE_360", rater.id),
+    { done: 2, total: 3 },
+  );
+
+  await prisma.trustObservation.create({
+    data: {
+      campaignId: campaign.id,
+      teamId,
+      aboutUserId: missingCurrent.id,
+      raterUserId: rater.id,
+      answers: TRUST_ANSWERS,
+    },
+  });
+  await prisma.teamRoleObservation.create({
+    data: {
+      campaignId: campaign.id,
+      teamId,
+      aboutUserId: missingCurrent.id,
+      raterUserId: rater.id,
+      selections: { OG1: 2 },
+    },
+  });
+
+  assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), true);
+  assert.equal(await hasRaterCoveredTeam(campaign.id, teamId, rater.id), true);
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TRUST_360", rater.id),
+    { done: 3, total: 3 },
+  );
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TEAM_ROLE_360", rater.id),
+    { done: 3, total: 3 },
+  );
 });
 
 // ─────────────────────────────────────────────────────────────────────

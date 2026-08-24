@@ -64,7 +64,7 @@ interface AssessmentClientProps {
   testName: string
   totalQuestions: number
   questions: AssessmentQuestion[]
-  initialDraft?: { answers: Record<string, number>; currentPage: number }
+  initialDraft?: { answers: Record<string, number>; currentPage: number; updatedAt: number }
   clearDraft?: boolean
   guestMode?: boolean
   /** Bejelentkezett user profil-id-ja — a localStorage-draft userhez kötéséhez */
@@ -269,19 +269,20 @@ export function AssessmentClient({
       clearAssessmentDraftFromStorage(testType, draftScope)
       return
     }
-    if (initialDraft?.answers && Object.keys(initialDraft.answers).length > 0) {
-      clearAssessmentDraftFromStorage(testType, draftScope)
-      localDraftRevisionRef.current = 0
-      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, initialInFormAnswers)
-      setQuestionIndexSafe(resumeIndex)
-      return
-    }
     const localDraft = readAssessmentDraftFromStorage({
       testType,
       scope: draftScope,
       questionIds: questionIdSet,
       totalQuestions,
     })
+    const hasServerDraft = Boolean(initialDraft?.answers && Object.keys(initialDraft.answers).length > 0)
+    if (hasServerDraft && (!localDraft || localDraft.updatedAt <= (initialDraft?.updatedAt ?? 0))) {
+      clearAssessmentDraftFromStorage(testType, draftScope)
+      localDraftRevisionRef.current = 0
+      const resumeIndex = getResumeQuestionIndex(orderedQuestionIds, initialInFormAnswers)
+      setQuestionIndexSafe(resumeIndex)
+      return
+    }
     if (!localDraft) return
 
     setAnswers(localDraft.answers)
@@ -296,6 +297,7 @@ export function AssessmentClient({
     clearDraft,
     draftScope,
     initialDraft?.answers,
+    initialDraft?.updatedAt,
     initialInFormAnswers,
     orderedQuestionIds,
     questionIdSet,
@@ -369,6 +371,7 @@ export function AssessmentClient({
           body: JSON.stringify({
             answers: latestAnswersRef.current,
             currentPage: questionIndexRef.current,
+            ...(campaignId ? { campaignId } : {}),
           }),
           signal: abortController.signal,
         })
@@ -402,7 +405,7 @@ export function AssessmentClient({
       serverSaveAbortRef.current?.abort()
       serverSaveAbortRef.current = null
     }
-  }, [answeredCount, guestMode, questionIndex])
+  }, [answeredCount, campaignId, guestMode, questionIndex])
 
   useEffect(() => {
     return () => {
@@ -675,7 +678,7 @@ export function AssessmentClient({
               </div>
               <h1 className="mb-4 max-w-[620px] font-fraunces text-title leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-display 2xl:text-hero">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
-                <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
+                <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
               <p className="mb-6 max-w-[480px] text-sm leading-relaxed text-[var(--color-text-muted)] lg:text-base">
                 {t("assessment.introSub", locale)}

@@ -348,7 +348,7 @@ describe("C5.5 ObserverClient integration", () => {
       });
 
       // Click Likert value 4
-      const btn = screen.getByRole("button", { name: /^4 - / });
+      const btn = screen.getByRole("radio", { name: /^4 - / });
       await user.click(btn);
 
       await waitFor(() => {
@@ -388,7 +388,7 @@ describe("C5.5 ObserverClient integration", () => {
       }
 
       // Answer question
-      await user.click(screen.getByRole("button", { name: /^3 - / }));
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
 
       // Click next
       const nextBtn = screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") });
@@ -434,7 +434,7 @@ describe("C5.5 ObserverClient integration", () => {
 
       // Auto-advance is on by default
       vi.useFakeTimers();
-      fireEvent.click(screen.getByRole("button", { name: /^3 - / }));
+      fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
 
       act(() => {
         vi.advanceTimersByTime(150);
@@ -566,7 +566,7 @@ describe("C5.5 ObserverClient integration", () => {
       });
 
       // Select confidence
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
 
       // Submit
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
@@ -601,7 +601,7 @@ describe("C5.5 ObserverClient integration", () => {
       });
 
       // Select confidence
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
 
       const submitBtn = screen.getByRole("button", { name: SUBMIT_CTA });
 
@@ -670,7 +670,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -697,7 +697,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^3 - / }));
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -719,7 +719,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^3 - / }));
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -740,7 +740,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^3 - / }));
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -768,7 +768,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -792,7 +792,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -823,7 +823,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^4 - / }));
+      await user.click(screen.getByRole("radio", { name: /^4 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
@@ -849,7 +849,7 @@ describe("C5.5 ObserverClient integration", () => {
         }),
       });
 
-      await user.click(screen.getByRole("button", { name: /^3 - / }));
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {

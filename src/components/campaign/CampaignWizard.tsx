@@ -251,10 +251,16 @@ export function CampaignWizard({
     });
   }
 
-  // Csapathoz kötött mérésnél is TÖBB csapat választható — a résztvevők a
-  // kiválasztott csapatok uniója; kikapcsoláskor a csapat tagjai kikerülnek.
+  // Pulse nélküli csapatmérésnél több csapat választható. Pulse esetén az
+  // anonimitási aggregáció egyetlen csapathatárt követel.
   function toggleRoleTeam(team: TeamOption) {
     const isOn = targetTeamIds.has(team.id);
+    if (chosenSteps.includes("PSYCH_SAFETY")) {
+      setTargetTeamIds(isOn ? new Set() : new Set([team.id]));
+      setSelectedIds(isOn ? new Set() : new Set(team.members.map((member) => member.userId)));
+      if (!nameTouched && !isOn) setName(buildSuggestedName(chosenSteps, team.name));
+      return;
+    }
     setTargetTeamIds((prev) => {
       const next = new Set(prev);
       if (isOn) next.delete(team.id);

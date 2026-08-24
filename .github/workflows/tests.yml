@@ -11,6 +11,7 @@ on:
       - "claude/**"
       - "chore/**"
       - "fix/**"
+      - "codex/**"
   pull_request:
   workflow_dispatch:
 

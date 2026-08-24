@@ -1372,6 +1372,12 @@ paths:
 
   # ── Admin: blog, hírlevél, ajánlat-díjszabás ───────────────────────
   /api/admin/blog:
+    get:
+      tags: [Admin]
+      summary: Blogbejegyzés forrásának és tárolói revíziójának betöltése
+      parameters:
+        - { name: slug, in: query, required: true, schema: { type: string } }
+      responses: { "200": { description: OK }, "400": { description: Invalid slug }, "401": { description: Unauthorized }, "404": { description: Not found } }
     post: { tags: [Admin], summary: Blogbejegyzés létrehozása, responses: { "201": { description: Created } } }
     put: { tags: [Admin], summary: Blogbejegyzés felülírása, responses: { "200": { description: OK } } }
     patch: { tags: [Admin], summary: Blogbejegyzés részleges módosítása (pl. piszkozat-állapot), responses: { "200": { description: OK } } }
