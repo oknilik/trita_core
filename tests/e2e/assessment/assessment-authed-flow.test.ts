@@ -57,13 +57,17 @@ async function createAuthedFixture() {
 }
 
 async function readCurrentQuestionNumber(page: Page): Promise<number> {
-  return page.evaluate(() => {
-    const totalNode = Array.from(document.querySelectorAll("span")).find((node) =>
-      /\d+\s*\/\s*\d+/.test(node.textContent ?? ""),
-    );
-    const match = totalNode?.textContent?.match(/(\d+)\s*\/\s*\d+/);
-    return match ? Number(match[1]) : Number.NaN;
-  });
+  // Navigáció közben az evaluate kontextusa megsemmisülhet — az a poll
+  // számára "még nincs kérdés" állapot, nem hiba.
+  return page
+    .evaluate(() => {
+      const totalNode = Array.from(document.querySelectorAll("span")).find((node) =>
+        /\d+\s*\/\s*\d+/.test(node.textContent ?? ""),
+      );
+      const match = totalNode?.textContent?.match(/(\d+)\s*\/\s*\d+/);
+      return match ? Number(match[1]) : Number.NaN;
+    })
+    .catch(() => Number.NaN);
 }
 
 test("authenticated member resumes server draft, submits and reaches results", async ({

@@ -207,7 +207,9 @@ export function NewsletterForm({
     <div className={wrapperClass(variant, onInverse, className)}>
       {variant === "panel" ? (
         <>
-          <SectionEyebrow tone="muted">{t("newsletter.eyebrow", locale)}</SectionEyebrow>
+          <SectionEyebrow tone={onInverse ? "onDark" : "muted"}>
+            {t("newsletter.eyebrow", locale)}
+          </SectionEyebrow>
           <h2 className={`mt-2 font-fraunces text-heading leading-tight tracking-tight ${strongText}`}>
             {t("newsletter.title", locale)}
           </h2>
