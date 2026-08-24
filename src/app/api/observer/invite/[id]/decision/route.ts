@@ -88,7 +88,7 @@ export async function POST(
       : { status: "CANCELED", approvedById: approver.id, approvedAt: new Date() },
   });
 
-  const inviterName = invite.inviter.username ?? invite.inviter.email ?? "trita";
+  const inviterName = invite.inviter.username ?? invite.inviter.email ?? "Trita";
   const emailTo = invite.observerEmail;
   const recipientName = invite.observerName;
   const token = invite.token;

@@ -226,7 +226,7 @@ export async function POST(req: Request) {
     { userProfileId: profile.id },
   );
 
-  const inviterName = profile.username ?? profile.email ?? "trita";
+  const inviterName = profile.username ?? profile.email ?? "Trita";
   const emailLocale = normalizeLocale(profile.locale);
   let emailSent = false;
 

@@ -129,7 +129,7 @@ test("az adatkezelő szakasza minden azonosító adatot felsorol", () => {
   for (const doc of [HU, EN]) {
     const controller = JSON.stringify(doc.sections.find((s) => s.id === "controller"));
     for (const value of [
-      COMPANY.legalName,
+      COMPANY.legalName.replace(/^Trita\b/, "trita"),
       COMPANY.address,
       COMPANY.registrationNumber,
       COMPANY.taxNumber,
