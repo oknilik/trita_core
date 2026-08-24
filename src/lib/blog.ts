@@ -69,10 +69,34 @@ export function isBlogCoverImage(value: unknown): value is string {
   return typeof value === "string" && COVER_IMAGE_RE.test(value);
 }
 
+/**
+ * A fókuszpont mindig 0–100 közötti EGÉSZ százalék — ugyanaz az alak, amit a
+ * mentő végpont zod-sémája elfogad. A kézzel írt frontmatter törtszámát
+ * kerekítjük, nem dobjuk el: a szándék egyértelmű.
+ */
 export function blogCoverFocalPoint(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100
-    ? value
+    ? Math.round(value)
     : undefined;
+}
+
+/**
+ * A slughoz TARTOZÓ, generált borító felismerése.
+ *
+ * A takarítás csak azt a fájlt törölheti, amit ehhez a cikkhez generáltunk
+ * (`<slug>-<10 hex>.webp`). Puszta prefix-egyezés nem elég: a slugok között
+ * van prefix-viszony (`tritan-vs-mbti` ⊂ `tritan-vs-mbti-why-it-matters`),
+ * és a HU–EN párok kézzel felvett, közös illusztráción osztozhatnak — azokhoz
+ * egy cikk törlése sem nyúlhat.
+ */
+export function isOwnedBlogCover(coverImage: unknown, slug: string): coverImage is string {
+  if (!isBlogCoverImage(coverImage)) return false;
+  const fileName = coverImage.slice("/blog-covers/".length);
+  return new RegExp(`^${escapeRegExp(slug)}-[0-9a-f]{10}\\.webp$`).test(fileName);
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export function getAllPosts(

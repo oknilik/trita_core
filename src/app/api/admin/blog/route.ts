@@ -16,7 +16,7 @@ import {
   deleteBlogCover,
   saveBlogCover,
 } from "@/lib/blog-store";
-import { blogCoverFocalPoint, isBlogCoverImage } from "@/lib/blog";
+import { blogCoverFocalPoint, isBlogCoverImage, isOwnedBlogCover } from "@/lib/blog";
 import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES, BLOG_ART_LINE_MODES } from "@/lib/blog-art";
 import {
   BLOG_COVER_MAX_BYTES,
@@ -239,7 +239,7 @@ export async function POST(req: NextRequest) {
     if (
       previousCover
       && previousCover !== p.coverImage
-      && previousCover.startsWith(`/blog-covers/${p.slug}`)
+      && isOwnedBlogCover(previousCover, p.slug)
     ) {
       const oldFileName = previousCover.slice("/blog-covers/".length);
       try {
@@ -503,10 +503,7 @@ export async function DELETE(req: NextRequest) {
     });
     if (!result) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-    if (
-      isBlogCoverImage(coverImage)
-      && coverImage.startsWith(`/blog-covers/${parsed.data.slug}`)
-    ) {
+    if (isOwnedBlogCover(coverImage, parsed.data.slug)) {
       try {
         await deleteBlogCover({
           fileName: coverImage.slice("/blog-covers/".length),

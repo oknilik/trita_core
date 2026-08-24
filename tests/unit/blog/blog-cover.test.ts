@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import sharp from "sharp";
-import { blogCoverFocalPoint, isBlogCoverImage } from "@/lib/blog";
+import { blogCoverFocalPoint, isBlogCoverImage, isOwnedBlogCover } from "@/lib/blog";
 import { optimizeBlogCover, sniffCoverExtension } from "@/lib/blog-cover-format";
 
 // A borító-út frontmatterből jön (admin-mentés, .mdx-feltöltés), és
@@ -34,6 +34,28 @@ test("a fokuszpont csak a 0-100 tartomanyban ervenyes", () => {
   assert.equal(blogCoverFocalPoint(-1), undefined);
   assert.equal(blogCoverFocalPoint(101), undefined);
   assert.equal(blogCoverFocalPoint("50"), undefined);
+  // Kézzel írt frontmatter törtszáma: a mentő séma egészet vár, ezért kerekítünk.
+  assert.equal(blogCoverFocalPoint(46.4), 46);
+  assert.equal(blogCoverFocalPoint(99.7), 100);
+});
+
+// ── Takarítás: melyik fájl tartozik a cikkhez ─────────────────────────
+//
+// A cikk törlése/borítócseréje csak a hozzá GENERÁLT fájlt viheti el. Puszta
+// prefix-egyezés kevés: a slugok között van prefix-viszony, a HU–EN párok
+// pedig kézzel felvett, közös illusztráción osztozhatnak.
+
+test("csak a slughoz generalt boritot ismerjuk sajatnak", () => {
+  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.webp", "tritan-vs-mbti"), true);
+  // Másik cikk generált borítója, aminek a slugja prefixként tartalmazza az enyémet.
+  assert.equal(
+    isOwnedBlogCover("/blog-covers/tritan-vs-mbti-why-it-matters-0123456789.webp", "tritan-vs-mbti"),
+    false,
+  );
+  // Kézzel felvett, HU–EN páron megosztott illusztráció.
+  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-illustrated.webp", "tritan-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.png", "tritan-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover(undefined, "tritan-vs-mbti"), false);
 });
 
 // ── Formátum-felismerés ───────────────────────────────────────────────

@@ -1064,6 +1064,14 @@ export function AdminBlogSection({
                     1600 px széles WebP-vé optimalizálja. A fókuszpont tartja a fontos részletet
                     a kiemelt, 16:9 és négyzetes kivágásban is. Csak a cikk mentésekor lép életbe.
                   </p>
+                  {/* A HU–EN pár két külön fájl: a borító nem öröklődik át. */}
+                  {form.translationSlug.trim() && (pendingCover || form.coverImage) ? (
+                    <p className="mt-2 text-xs text-ink-body">
+                      A párcikk (<span className="font-dm-mono">{form.translationSlug.trim()}</span>)
+                      borítója ettől NEM változik — ha ugyanazt a képet szeretnéd ott is, töltsd fel
+                      külön, és állítsd be ugyanezt a fókuszpontot.
+                    </p>
+                  ) : null}
                 </div>
 
                 {activeCoverImage ? (

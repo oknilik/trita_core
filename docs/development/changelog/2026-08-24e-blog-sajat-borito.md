@@ -1,5 +1,10 @@
 # 2026-08-24 — Blog: feltölthető saját borítókép
 
+> **ELAVULT RÉSZ (ld. `2026-08-24f-blog-szerkesztoi-boritok.md`):** az itt
+> leírt külön `POST|DELETE /api/admin/blog/cover` végpont megszűnt. A borító
+> ma a cikk mentésével EGY kérésben (`POST /api/admin/blog`) megy fel, és a
+> szerver 1600 px széles WebP-vé optimalizálja. A dokumentum többi része áll.
+
 ## Miért
 
 A cikkeknek eddig csak generatív vizuáljuk lehetett. Fotós vagy kézzel
