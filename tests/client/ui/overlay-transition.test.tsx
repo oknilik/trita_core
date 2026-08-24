@@ -12,8 +12,13 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Modal } from "@/components/ui/Modal";
-import { LocaleProvider } from "@/components/LocaleProvider";
 import { Picker } from "@/components/ui/Picker";
+
+// A Picker (P1-UX-03 óta) a bezáró gomb címkéjéhez lokálot olvas — a
+// claim-activation teszt mock-mintája.
+vi.mock("@/components/LocaleProvider", () => ({
+  useLocale: () => ({ locale: "hu", setLocale: () => {}, isChanging: false }),
+}));
 
 beforeEach(() => {
   vi.useFakeTimers();
@@ -95,7 +100,7 @@ describe("Picker", () => {
 
   it("nyitáskor fókuszálja a keresőt, záráskor kivárja a 300 ms-os kicsúszást", async () => {
     const { rerender } = render(
-      <LocaleProvider initialLocale="hu"><Picker
+      <Picker
         isOpen={false}
         onClose={() => {}}
         onSelect={() => {}}
@@ -103,12 +108,12 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      /></LocaleProvider>,
+      />,
     );
     expect(screen.queryByText("Ausztria")).not.toBeInTheDocument();
 
     rerender(
-      <LocaleProvider initialLocale="hu"><Picker
+      <Picker
         isOpen
         onClose={() => {}}
         onSelect={() => {}}
@@ -116,7 +121,7 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      /></LocaleProvider>,
+      />,
     );
     await act(async () => {
       vi.advanceTimersByTime(300);
@@ -124,7 +129,7 @@ describe("Picker", () => {
     expect(document.activeElement).toBe(screen.getByPlaceholderText("Keresés"));
 
     rerender(
-      <LocaleProvider initialLocale="hu"><Picker
+      <Picker
         isOpen={false}
         onClose={() => {}}
         onSelect={() => {}}
@@ -132,7 +137,7 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      /></LocaleProvider>,
+      />,
     );
     // 299 ms-nél még bent van — a kicsúszás nem vágódhat félbe.
     await act(async () => {
