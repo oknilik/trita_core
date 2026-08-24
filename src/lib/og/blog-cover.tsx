@@ -172,7 +172,12 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
                   alt=""
                   width={340}
                   height={168}
-                  style={{ width: 340, height: 168, objectFit: "cover" }}
+                  style={{
+                    width: 340,
+                    height: 168,
+                    objectFit: "cover",
+                    objectPosition: `${published.coverFocalX ?? 50}% ${published.coverFocalY ?? 50}%`,
+                  }}
                 />
               ) : (
                 <BlogArtVisual

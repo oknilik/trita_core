@@ -48,6 +48,9 @@ export interface BlogPost {
    * OG-képen és a hírlevél borítóján is.
    */
   coverImage?: string;
+  /** A fontos képrész helye százalékban; minden eltérő crop ezt követi. */
+  coverFocalX?: number;
+  coverFocalY?: number;
   content: string;
 }
 
@@ -64,6 +67,12 @@ const COVER_IMAGE_RE = /^\/blog-covers\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|web
 
 export function isBlogCoverImage(value: unknown): value is string {
   return typeof value === "string" && COVER_IMAGE_RE.test(value);
+}
+
+export function blogCoverFocalPoint(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100
+    ? value
+    : undefined;
 }
 
 export function getAllPosts(
@@ -103,6 +112,8 @@ export function getAllPosts(
         artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
         artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
         coverImage: isBlogCoverImage(data.coverImage) ? data.coverImage : undefined,
+        coverFocalX: blogCoverFocalPoint(data.coverFocalX),
+        coverFocalY: blogCoverFocalPoint(data.coverFocalY),
       };
     })
     .filter(Boolean)
@@ -175,6 +186,8 @@ export function getPostBySlug(slug: string): BlogPost | null {
     artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
     artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
     coverImage: isBlogCoverImage(data.coverImage) ? data.coverImage : undefined,
+    coverFocalX: blogCoverFocalPoint(data.coverFocalX),
+    coverFocalY: blogCoverFocalPoint(data.coverFocalY),
     content,
   };
 }

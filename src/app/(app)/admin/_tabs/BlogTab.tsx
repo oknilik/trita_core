@@ -35,6 +35,8 @@ export async function BlogTab() {
       artConcept: meta.artConcept,
       artLineMode: meta.artLineMode,
       coverImage: meta.coverImage,
+      coverFocalX: meta.coverFocalX,
+      coverFocalY: meta.coverFocalY,
       readingTime: meta.readingTime,
       body: full?.content?.trim() ?? "",
     };

@@ -10,6 +10,7 @@ import { BlogArtVisual, type BlogArtMotif } from "@/components/blog/BlogArtVisua
 import {
   BLOG_ART_CONCEPTS,
   BLOG_ART_CONCEPT_LABELS_HU,
+  BLOG_ART_FAMILIES,
   BLOG_ART_FAMILY_LABELS_HU,
   BLOG_ART_LINE_MODES,
   BLOG_ART_LINE_MODE_LABELS_HU,
@@ -44,6 +45,8 @@ interface AdminBlogPost {
   artConcept?: BlogArtConcept;
   artLineMode?: BlogArtLineMode;
   coverImage?: string;
+  coverFocalX?: number;
+  coverFocalY?: number;
   readingTime: string;
   body: string;
 }
@@ -65,7 +68,15 @@ interface FormState {
   artLineMode: "" | BlogArtLineMode;
   /** Feltöltött borító publikus útja — üresen a generatív vizuál megy. */
   coverImage: string;
+  coverFocalX: number;
+  coverFocalY: number;
   body: string;
+}
+
+interface PendingCover {
+  filename: string;
+  dataBase64: string;
+  previewUrl: string;
 }
 
 const EMPTY_FORM: FormState = {
@@ -84,6 +95,8 @@ const EMPTY_FORM: FormState = {
   artConcept: "",
   artLineMode: "",
   coverImage: "",
+  coverFocalX: 50,
+  coverFocalY: 50,
   body: "",
 };
 
@@ -129,6 +142,40 @@ function slugify(title: string): string {
     .slice(0, 80);
 }
 
+function CoverCropPreview({
+  src,
+  label,
+  className,
+  focalX,
+  focalY,
+}: {
+  src: string;
+  label: string;
+  className: string;
+  focalX: number;
+  focalY: number;
+}) {
+  return (
+    <div>
+      <span className="mb-1.5 block text-xs font-medium text-muted">{label}</span>
+      <div className={`relative overflow-hidden rounded-lg border border-sand bg-cream ${className}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: `${focalX}% ${focalY}%` }}
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-[var(--color-accent-primary)] shadow"
+          style={{ left: `${focalX}%`, top: `${focalY}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function AdminBlogSection({
   posts,
   storeMode,
@@ -163,6 +210,8 @@ export function AdminBlogSection({
   const [overwriteUploads, setOverwriteUploads] = useState(false);
   const [uploadBusy, setUploadBusy] = useState(false);
   const [coverBusy, setCoverBusy] = useState(false);
+  const [pendingCover, setPendingCover] = useState<PendingCover | null>(null);
+  const [removeCoverOnSave, setRemoveCoverOnSave] = useState(false);
   const coverFileRef = useRef<HTMLInputElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   // A portál csak kliensen létezik (SSR-en nincs document).
@@ -231,6 +280,8 @@ export function AdminBlogSection({
     () => blogArtCandidates(artPreviewSlug, artPreviewRound),
     [artPreviewSlug, artPreviewRound],
   );
+  const activeCoverImage = pendingCover?.previewUrl
+    ?? (removeCoverOnSave ? "" : form.coverImage);
 
   useEffect(() => {
     setMounted(true);
@@ -257,6 +308,8 @@ export function AdminBlogSection({
     setBaseSha(null);
     setSlugTouched(false);
     setForm(EMPTY_FORM);
+    setPendingCover(null);
+    setRemoveCoverOnSave(false);
     setArtPreviewRound(0);
     setConfirmEditorDiscard(false);
   };
@@ -284,6 +337,8 @@ export function AdminBlogSection({
       artConcept: post.artConcept ?? "",
       artLineMode: post.artLineMode ?? "",
       coverImage: post.coverImage ?? "",
+      coverFocalX: post.coverFocalX ?? 50,
+      coverFocalY: post.coverFocalY ?? 50,
       body: post.body,
     });
   };
@@ -330,9 +385,29 @@ export function AdminBlogSection({
         heroQuote: str(fm.heroQuote) || undefined,
         startHere: Number(fm.startHere) > 0 ? Number(fm.startHere) : undefined,
         artSeed: Number(fm.artSeed) > 0 ? Number(fm.artSeed) : undefined,
+        artMotif: ["radar", "network", "bars", "waves"].includes(str(fm.artMotif))
+          ? str(fm.artMotif) as BlogArtMotif
+          : undefined,
+        artFamily: BLOG_ART_FAMILIES.includes(str(fm.artFamily) as BlogArtFamily)
+          ? str(fm.artFamily) as BlogArtFamily
+          : undefined,
+        artConcept: BLOG_ART_CONCEPTS.includes(str(fm.artConcept) as BlogArtConcept)
+          ? str(fm.artConcept) as BlogArtConcept
+          : undefined,
+        artLineMode: BLOG_ART_LINE_MODES.includes(str(fm.artLineMode) as BlogArtLineMode)
+          ? str(fm.artLineMode) as BlogArtLineMode
+          : undefined,
         coverImage: str(fm.coverImage) || undefined,
+        coverFocalX: Number(fm.coverFocalX) >= 0 && Number(fm.coverFocalX) <= 100
+          ? Number(fm.coverFocalX)
+          : undefined,
+        coverFocalY: Number(fm.coverFocalY) >= 0 && Number(fm.coverFocalY) <= 100
+          ? Number(fm.coverFocalY)
+          : undefined,
         body: String(json.body ?? ""),
       });
+      setPendingCover(null);
+      setRemoveCoverOnSave(false);
       setBaseSha((json.sha as string | null) ?? null);
       setEditingSlug(post.slug);
       setSlugTouched(true);
@@ -470,17 +545,22 @@ export function AdminBlogSection({
   };
 
   /**
-   * Saját borító feltöltése.
-   *
-   * A kép AZONNAL a tárolóba kerül (külön commit), a frontmatter `coverImage`
-   * mezőjét viszont a cikk következő mentése írja be — így a cikk állapota
-   * egyetlen helyen dől el, és egy feltöltés önmagában nem változtat a
-   * megjelenő cikken.
+   * Borító kiválasztása. A fájl csak helyi előnézet: a cikkel EGY mentési
+   * műveletben kerül a szerverre, így a félbehagyott szerkesztés nem hagy
+   * árva fájlt a repóban.
    */
-  const uploadCover = async (file: File) => {
+  const stageCover = async (file: File) => {
     const slug = form.slug.trim() || slugify(form.title);
     if (slug.length < 3) {
       setNotice({ kind: "error", text: "Előbb adj címet vagy slugot — a borító fájlneve abból lesz." });
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setNotice({ kind: "error", text: "A kép túl nagy (max. 3 MB). Kicsinyítsd le — 1600 px széles bőven elég." });
+      return;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setNotice({ kind: "error", text: "Csak JPG, PNG vagy WebP tölthető fel." });
       return;
     }
 
@@ -488,77 +568,49 @@ export function AdminBlogSection({
     setCoverBusy(true);
     try {
       const bytes = new Uint8Array(await file.arrayBuffer());
-      let binary = "";
-      for (const byte of bytes) binary += String.fromCharCode(byte);
-
-      const res = await fetch("/api/admin/blog/cover", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, filename: file.name, dataBase64: btoa(binary) }),
+      const chunks: string[] = [];
+      for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+        chunks.push(String.fromCharCode(...bytes.subarray(offset, offset + 0x8000)));
+      }
+      const dataBase64 = btoa(chunks.join(""));
+      const previewUrl = `data:${file.type};base64,${dataBase64}`;
+      const dimensions = await new Promise<{ width: number; height: number }>((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight });
+        image.onerror = () => reject(new Error("INVALID_IMAGE"));
+        image.src = previewUrl;
       });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setNotice({
-          kind: "error",
-          text: json.error === "TOO_LARGE"
-            ? "A kép túl nagy (max. 3 MB). Kicsinyítsd le — 1600 px széles bőven elég."
-            : json.error === "UNSUPPORTED_FORMAT"
-              ? "Csak JPG, PNG vagy WebP tölthető fel. (A fájl tartalma dönt, nem a kiterjesztés.)"
-              : json.error === "SAVE_FAILED"
-                ? storeErrorText(json, res.status)
-                : `A borító feltöltése nem sikerült: ${json.error ?? res.status}`,
-        });
+      const ratio = dimensions.width / dimensions.height;
+      if (dimensions.width < 1200 || dimensions.height < 630) {
+        setNotice({ kind: "error", text: "A borító legalább 1200×630 px legyen, hogy minden felületen éles maradjon." });
+        return;
+      }
+      if (ratio < 1.4 || ratio > 2.15) {
+        setNotice({ kind: "error", text: "A kép legyen fekvő, nagyjából 16:9 vagy 1,91:1 arányú." });
         return;
       }
 
-      set({ coverImage: String(json.path), slug });
+      setPendingCover({ filename: file.name, dataBase64, previewUrl });
+      setRemoveCoverOnSave(false);
+      set({ slug });
       setSlugTouched(true);
       setNotice({
         kind: "ok",
-        text: "Borító feltöltve. A cikk mentésével lép életbe — addig a régi kép megy ki.",
+        text: "Borító előkészítve. A cikk mentésekor optimalizálva kerül fel; addig a publikus kép nem változik.",
       });
     } catch {
-      setNotice({ kind: "error", text: "Hálózati hiba a borító feltöltésekor." });
+      setNotice({ kind: "error", text: "A képfájl nem olvasható. Próbálj másik JPG, PNG vagy WebP fájlt." });
     } finally {
       setCoverBusy(false);
       if (coverFileRef.current) coverFileRef.current.value = "";
     }
   };
 
-  /** Borító eltávolítása: a fájl törlődik, a cikk visszakapja a generatív vizuált. */
-  const removeCover = async () => {
-    const current = form.coverImage;
-    const match = /^\/blog-covers\/(.+)\.(jpg|png|webp)$/.exec(current);
-    if (!match) {
-      set({ coverImage: "" });
-      return;
-    }
-
-    setNotice(null);
-    setCoverBusy(true);
-    try {
-      const res = await fetch("/api/admin/blog/cover", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: match[1], extension: match[2] }),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setNotice({
-          kind: "error",
-          text: json.error === "SAVE_FAILED"
-            ? storeErrorText(json, res.status)
-            : `A borító törlése nem sikerült: ${json.error ?? res.status}`,
-        });
-        return;
-      }
-      set({ coverImage: "" });
-      setNotice({ kind: "ok", text: "Borító eltávolítva. A cikk mentésével lép életbe." });
-    } catch {
-      setNotice({ kind: "error", text: "Hálózati hiba a borító törlésekor." });
-    } finally {
-      setCoverBusy(false);
-    }
+  /** A törlés is csak a cikk mentésekor lép életbe. */
+  const stageCoverRemoval = () => {
+    setPendingCover(null);
+    setRemoveCoverOnSave(Boolean(form.coverImage));
+    setNotice({ kind: "ok", text: "A borító eltávolítása előkészítve. A cikk mentésével lép életbe." });
   };
 
   const successText = (mode: "fs" | "github", extra?: string) =>
@@ -580,7 +632,13 @@ export function AdminBlogSection({
       ...(form.publishedAt ? { publishedAt: form.publishedAt } : {}),
       ...(form.translationSlug.trim() ? { translationSlug: form.translationSlug.trim() } : {}),
       ...(form.heroQuote.trim() ? { heroQuote: form.heroQuote.trim() } : {}),
-      ...(form.coverImage ? { coverImage: form.coverImage } : {}),
+      ...(form.coverImage && !removeCoverOnSave ? { coverImage: form.coverImage } : {}),
+      ...(pendingCover
+        ? { coverUpload: { filename: pendingCover.filename, dataBase64: pendingCover.dataBase64 } }
+        : {}),
+      ...(removeCoverOnSave ? { removeCover: true } : {}),
+      coverFocalX: form.coverFocalX,
+      coverFocalY: form.coverFocalY,
       ...(form.startHere ? { startHere: Number(form.startHere) } : {}),
       ...(form.artSeed ? { artSeed: Number(form.artSeed) } : {}),
       ...(form.artFamily ? { artFamily: form.artFamily } : {}),
@@ -611,6 +669,12 @@ export function AdminBlogSection({
                     : "Ezen a sluggal már van cikk a tárolóban. Válassz másik slugot, vagy a listából nyisd meg a meglévőt.")
                 : json.error === "SAVE_FAILED"
                   ? storeErrorText(json, res.status)
+                  : json.error === "IMAGE_TOO_SMALL"
+                    ? "A borító legalább 1200×630 px legyen."
+                    : json.error === "INVALID_ASPECT_RATIO"
+                      ? "A borító legyen fekvő, nagyjából 16:9 vagy 1,91:1 arányú."
+                      : json.error === "INVALID_IMAGE"
+                        ? "A kiválasztott fájl nem feldolgozható kép."
                   : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
         });
         return;
@@ -618,8 +682,17 @@ export function AdminBlogSection({
       setNotice({ kind: "ok", text: successText(json.mode) });
       setEditingSlug(payload.slug);
       setBaseSha((json.sha as string | null) ?? null);
+      if (typeof json.coverImage === "string") {
+        set({ coverImage: json.coverImage });
+      } else if (removeCoverOnSave) {
+        set({ coverImage: "" });
+      }
+      setPendingCover(null);
+      setRemoveCoverOnSave(false);
       setSlugTouched(true);
       router.refresh();
+    } catch {
+      setNotice({ kind: "error", text: "Hálózati hiba a cikk mentésekor — a módosítás nem veszett el." });
     } finally {
       setBusy(null);
     }
@@ -891,34 +964,84 @@ export function AdminBlogSection({
                   </span>
                 </div>
 
-                {/* Saját borító — ha van, MINDEN felületen ez megy a rajz helyett. */}
+                {/* A feltöltés az elsődleges szerkesztői út; a generatív kép tartalék. */}
                 <div className="mb-4 rounded-lg border border-sand bg-surface-card p-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-semibold text-text-primary">Saját borítókép</span>
+                    <span className="text-xs font-semibold text-text-primary">Szerkesztői borítókép</span>
                     <span className="text-xs text-muted">
-                      {form.coverImage ? "feltöltve — a generatív vizuál helyett ez megy" : "nincs — a generatív vizuál megy"}
+                      {pendingCover
+                        ? "új kép előkészítve — mentéskor kerül fel"
+                        : activeCoverImage
+                          ? "feltöltve — minden blogfelületen ez jelenik meg"
+                          : "nincs — a Trita generatív tartalékképe jelenik meg"}
                     </span>
                   </div>
 
-                  {form.coverImage ? (
+                  {activeCoverImage ? (
                     <div className="mt-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={form.coverImage}
-                        alt=""
-                        className="h-[150px] w-full rounded-lg border border-sand object-cover"
-                      />
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1.35fr_1fr_0.62fr]">
+                        <CoverCropPreview
+                          src={activeCoverImage}
+                          label="Kiemelt · 16:10"
+                          className="aspect-[16/10]"
+                          focalX={form.coverFocalX}
+                          focalY={form.coverFocalY}
+                        />
+                        <CoverCropPreview
+                          src={activeCoverImage}
+                          label="Kártya és cikk · 16:9"
+                          className="aspect-video"
+                          focalX={form.coverFocalX}
+                          focalY={form.coverFocalY}
+                        />
+                        <CoverCropPreview
+                          src={activeCoverImage}
+                          label="Mini · 1:1"
+                          className="aspect-square"
+                          focalX={form.coverFocalX}
+                          focalY={form.coverFocalY}
+                        />
+                      </div>
+
+                      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        <label className="text-xs text-ink-body">
+                          <span className="mb-1 block">Fókusz vízszintesen · {form.coverFocalX}%</span>
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={form.coverFocalX}
+                            onChange={(event) => set({ coverFocalX: Number(event.target.value) })}
+                            className="min-h-11 w-full accent-[var(--color-accent-primary)]"
+                          />
+                        </label>
+                        <label className="text-xs text-ink-body">
+                          <span className="mb-1 block">Fókusz függőlegesen · {form.coverFocalY}%</span>
+                          <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={form.coverFocalY}
+                            onChange={(event) => set({ coverFocalY: Number(event.target.value) })}
+                            className="min-h-11 w-full accent-[var(--color-accent-primary)]"
+                          />
+                        </label>
+                      </div>
+
                       <div className="mt-2 flex flex-wrap items-center gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
-                          loading={coverBusy}
                           disabled={coverBusy}
-                          onClick={() => void removeCover()}
+                          onClick={stageCoverRemoval}
                         >
                           Borító eltávolítása
                         </Button>
-                        <span className="font-dm-mono text-xs text-muted">{form.coverImage}</span>
+                        {pendingCover ? (
+                          <span className="text-xs text-muted">{pendingCover.filename}</span>
+                        ) : form.coverImage ? (
+                          <span className="font-dm-mono text-xs text-muted">{form.coverImage}</span>
+                        ) : null}
                       </div>
                     </div>
                   ) : null}
@@ -931,22 +1054,22 @@ export function AdminBlogSection({
                       disabled={coverBusy}
                       onChange={(event) => {
                         const file = event.target.files?.[0];
-                        if (file) void uploadCover(file);
+                        if (file) void stageCover(file);
                       }}
                       className="text-xs text-ink-body file:mr-3 file:min-h-[44px] file:rounded-full file:border file:border-sand file:bg-cream file:px-4 file:text-xs file:text-ink-body"
                     />
                   </div>
                   <p className="mt-2 text-xs text-muted">
-                    JPG, PNG vagy WebP, legfeljebb 3 MB. Fekvő, ~1600×840 arányú kép a jó:
-                    ugyanez megy a listára, a cikk fejlécére, a link-előnézetre és a hírlevélbe.
-                    A kép a cikk mellé, a repóba kerül, és a cikk mentésekor lép életbe.
+                    JPG, PNG vagy WebP, legalább 1200×630 px, legfeljebb 3 MB. A szerver
+                    1600 px széles WebP-vé optimalizálja. A fókuszpont tartja a fontos részletet
+                    a kiemelt, 16:9 és négyzetes kivágásban is. Csak a cikk mentésekor lép életbe.
                   </p>
                 </div>
 
-                {form.coverImage ? (
+                {activeCoverImage ? (
                   <p className="text-xs text-muted">
-                    A generatív vizuál beállításai el vannak rejtve, amíg saját borító van
-                    a cikken. Vedd le a borítót, ha vissza szeretnél térni a rajzolt képhez.
+                    A generatív beállítások el vannak rejtve, amíg szerkesztői borító van
+                    a cikken. A borító eltávolítása után a stabil tartalékkép tér vissza.
                   </p>
                 ) : (
                   <>

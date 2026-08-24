@@ -12,6 +12,8 @@ describe("BlogCoverVisual", () => {
     const { container } = render(
       <BlogCoverVisual
         coverImage="/blog-covers/csapatdinamika.jpg"
+        coverFocalX={46}
+        coverFocalY={58}
         slug="csapatdinamika"
         title="Csapatdinamika olvasása"
       />,
@@ -22,6 +24,7 @@ describe("BlogCoverVisual", () => {
     expect(image?.getAttribute("src")).toContain("csapatdinamika.jpg");
     // Dekoratív: a cím minden hívóhelyen ott áll mellette.
     expect(image?.getAttribute("alt")).toBe("");
+    expect(image?.style.objectPosition).toBe("46% 58%");
     expect(container.querySelector("svg")).toBeNull();
   });
 

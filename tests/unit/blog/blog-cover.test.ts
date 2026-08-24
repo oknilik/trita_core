@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isBlogCoverImage } from "@/lib/blog";
-import { sniffCoverExtension } from "@/lib/blog-cover-format";
+import sharp from "sharp";
+import { blogCoverFocalPoint, isBlogCoverImage } from "@/lib/blog";
+import { optimizeBlogCover, sniffCoverExtension } from "@/lib/blog-cover-format";
 
 // A borító-út frontmatterből jön (admin-mentés, .mdx-feltöltés), és
 // `<img src>`-ként ÉS fájlútként is landol. Ezért nem elég, hogy „string" —
@@ -24,6 +25,15 @@ test("kulso URL, konyvtar-kilepes es rossz formatum elbukik", () => {
   assert.equal(isBlogCoverImage("/blog-covers/Kep.JPG"), false);
   assert.equal(isBlogCoverImage(undefined), false);
   assert.equal(isBlogCoverImage(42), false);
+});
+
+test("a fokuszpont csak a 0-100 tartomanyban ervenyes", () => {
+  assert.equal(blogCoverFocalPoint(0), 0);
+  assert.equal(blogCoverFocalPoint(46), 46);
+  assert.equal(blogCoverFocalPoint(100), 100);
+  assert.equal(blogCoverFocalPoint(-1), undefined);
+  assert.equal(blogCoverFocalPoint(101), undefined);
+  assert.equal(blogCoverFocalPoint("50"), undefined);
 });
 
 // ── Formátum-felismerés ───────────────────────────────────────────────
@@ -61,4 +71,28 @@ test("az atnevezett SVG es a szemet nem megy at", () => {
     ),
     null,
   );
+});
+
+test("a feltoltott borito normalizalt, meretezett WebP lesz", async () => {
+  const source = await sharp({
+    create: { width: 1800, height: 1000, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+
+  const result = await optimizeBlogCover(source);
+
+  assert.equal(result.width, 1600);
+  assert.equal(result.height, 889);
+  assert.equal(sniffCoverExtension(result.bytes), "webp");
+});
+
+test("a tul kicsi es rossz aranyu kep elbukik", async () => {
+  const small = await sharp({
+    create: { width: 800, height: 500, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+  const portrait = await sharp({
+    create: { width: 1200, height: 1200, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+
+  await assert.rejects(() => optimizeBlogCover(small), /IMAGE_TOO_SMALL/);
+  await assert.rejects(() => optimizeBlogCover(portrait), /INVALID_ASPECT_RATIO/);
 });
