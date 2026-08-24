@@ -76,10 +76,7 @@ export function PlatformPageShell({
   return (
     <div
       data-platform-surface={surface}
-      // pb-16: a hullámos footer -mt-10-zel EBBE a sávba húzódik — az él
-      // mögött így a lap saját háttere látszik (footer-varrat fix). A sáv
-      // most már mindenhol krém, de a párnázás továbbra is kell.
-      className={cn("min-h-dvh pb-16", SURFACE_ROOT_CLASS[surface], className)}
+      className={cn("min-h-dvh", SURFACE_ROOT_CLASS[surface], className)}
       style={rootStyle}
     >
       <main

@@ -59,23 +59,19 @@ export function Footer() {
   ];
 
   return (
-    // ── Hullám-él: FIX magasságú SVG (nem arányos clip-path!) ────────────
-    // A korábbi objectBoundingBox-os kivágás a footer MAGASSÁGÁVAL skálázott:
-    // mobilon (magas footer) a hullám-zóna nagyobb lett, mint az átfedés, és
-    // a különbözet body-krém sávként látszott az oldal háttere és a hullám
-    // között. Most a hullám fix px-magasságú SVG, a footer pontosan ennyivel
-    // (-mt) húzódik az oldal saját háttere fölé — a hullám fölött MINDIG az
-    // oldal valódi háttere van, minden viewporton. A varrat-mentességhez a
-    // footer-háttér FÜGGŐLEGES gradiens (to-b): így az SVG tömör ink-kitöltése
-    // pixelre egyezik a törzs tetejével.
-    // pointer-events-none a KONTÉNEREN is, nem csak az SVG-n: a hullám a
-    // megelőző oldal fölé húzódik (-mt), és az elem-szintű hit-test a
-    // pointer-events-none SVG alatt magát a <footer>-t találta el — az
-    // átfedett sávban az oldal gombjai (pl. az observer-kitöltő „Tovább"
-    // gombja) nem kaptak kattintást. A tényleges footer-tartalom a lenti
-    // dividen pointer-events-auto-val újra kattintható.
-    <footer className="pointer-events-none relative -mt-10 w-full md:-mt-14">
+    // A footer saját, route-független védősávot kap. Korábban -mt-10/-mt-14
+    // negatív margóval az oldal fölé húztuk a hullámot, ezért minden egyes
+    // route-nak külön legalább 56 px alsó paddinget kellett biztosítania.
+    // Amelyik oldal ezt elmulasztotta (pl. /how-we-work), annak az utolsó
+    // kártyájába belecsúszott a footer. A hullám most normál dokumentum-
+    // folyamban él, előtte pedig a közös vászonból képzett fix védősáv van:
+    // így sem viewport-, sem oldaltartalom-függő átfedés nem lehetséges.
+    <footer
+      data-site-footer
+      className="relative w-full bg-[var(--color-surface-canvas)] pt-8 md:pt-10"
+    >
       <svg
+        data-footer-wave
         viewBox="0 0 1440 56"
         preserveAspectRatio="none"
         aria-hidden="true"
@@ -92,7 +88,13 @@ export function Footer() {
         />
       </svg>
 
-      <div className="pointer-events-auto w-full bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14">
+      {/* Az 1 px-es átfedés ugyanazzal a kezdőszínnel fedi az SVG és a
+          gradiens közti szubpixel-varratot. Ez akadályozza meg a korábban
+          egyes zoomszinteken/sémákban felvillanó világos hajszálvonalat. */}
+      <div
+        data-footer-surface
+        className="relative -mt-px w-full bg-gradient-to-b from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] pt-6 pb-[calc(env(safe-area-inset-bottom)+2rem)] md:pb-14"
+      >
       <div className="mx-auto w-full max-w-[1120px] px-7">
         <div className="grid grid-cols-2 gap-10 pt-4 sm:grid-cols-4 md:pt-8">
 
