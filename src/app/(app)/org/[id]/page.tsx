@@ -19,6 +19,7 @@ import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
@@ -467,7 +468,8 @@ export default async function OrgDetailPage({
               href={`/org/${orgId}/settings`}
               className="inline-flex text-xs font-semibold text-[var(--color-text-on-inverse-muted)] transition hover:text-white"
             >
-              {t("org.settingsLink", locale)} →
+              {t("org.settingsLink", locale)}
+              <ChevronRightIcon className="ml-1 h-3.5 w-3.5" />
             </Link>
           ) : undefined
         }

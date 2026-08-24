@@ -8,6 +8,7 @@ import type { SerializedTeam } from "@/lib/org-stats";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface OrgTeamsTabProps {
   teams: SerializedTeam[];
@@ -88,9 +89,7 @@ export function OrgTeamsTab({
                   {t(team._count.members === 1 ? "org.teams.memberCount" : "org.teams.membersCount", loc)}
                 </p>
               </div>
-              <span className="font-mono text-xs text-[var(--color-accent-primary-strong)] opacity-0 transition-opacity group-hover:opacity-100">
-                →
-              </span>
+              <ChevronRightIcon className="h-4 w-4 shrink-0 text-[var(--color-text-muted)] transition-colors group-hover:text-[var(--color-accent-primary-strong)]" />
             </Link>
           ))}
         </div>

@@ -13,6 +13,7 @@ import {
 } from "@/lib/blog-filter";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 type PostMeta = Omit<BlogPost, "content">;
 
@@ -441,8 +442,9 @@ export function BlogListContent({
                       <span className="text-xs text-[var(--color-text-muted)]">
                         {formatDate(post.publishedAt, displayLocale)} · {post.readingTime}
                       </span>
-                      <span className="text-xs font-medium text-[var(--color-action-primary-bg)] opacity-0 transition-opacity group-hover:opacity-100">
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-[var(--color-action-primary-bg)] opacity-0 transition-opacity group-hover:opacity-100">
                         {t("blog.readCta", displayLocale)}
+                        <ChevronRightIcon className="h-3.5 w-3.5" />
                       </span>
                     </span>
                   </span>

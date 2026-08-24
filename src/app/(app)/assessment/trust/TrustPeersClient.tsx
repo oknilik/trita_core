@@ -15,6 +15,7 @@ import {
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface Teammate {
   userId: string;
@@ -291,13 +292,14 @@ export function TrustPeersClient({
           }
           void submitOne(current.userId, answers);
         }}
-        className="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:opacity-60"
+        className="mt-6 inline-flex min-h-[48px] items-center justify-center gap-1.5 rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 disabled:opacity-60"
       >
         {submitting
           ? t("trustPeers.submitting", locale)
           : isLast
             ? t("trustPeers.finish", locale)
             : t("trustPeers.next", locale)}
+        {!isLast && !submitting ? <ChevronRightIcon /> : null}
       </button>
     </div>
   );

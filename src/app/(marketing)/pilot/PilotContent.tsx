@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { track } from "@/lib/analytics/client";
 
 export function PilotContent() {
@@ -99,7 +100,11 @@ export function PilotContent() {
               <MarketingActions
                 className="mt-8"
                 primary={{ href: "#jelentkezes", label: t("pilot.heroCta", locale) }}
-                secondary={{ href: "#mit-kapsz", label: t("pilot.heroCtaSecondary", locale) }}
+                secondary={{
+                  href: "#mit-kapsz",
+                  label: t("pilot.heroCtaSecondary", locale),
+                  iconRight: <ChevronRightIcon />,
+                }}
               />
 
               <div className="mt-6 flex flex-wrap gap-2.5">

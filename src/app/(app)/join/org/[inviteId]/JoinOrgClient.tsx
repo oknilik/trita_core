@@ -7,6 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { ExternalLinkIcon } from "@/components/ui/icons";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { toggleBtn } from "@/lib/onboarding-styles";
@@ -257,9 +258,10 @@ export function JoinOrgClient({
                       href="/privacy"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
+                      className="inline-flex items-center gap-1 font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                     >
                       {copy.privacyLabel}
+                      <ExternalLinkIcon className="h-3.5 w-3.5" />
                     </a>{" "}
                     {copy.consentSuffix}
                   </span>

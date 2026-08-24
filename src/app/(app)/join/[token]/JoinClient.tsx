@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon, ExternalLinkIcon } from "@/components/ui/icons";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { toggleBtn } from "@/lib/onboarding-styles";
@@ -419,9 +420,10 @@ export function JoinClient({
               <button
                 type="button"
                 onClick={handleStep1Next}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="mt-2 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {copy.continueCta}
+                <ChevronRightIcon />
               </button>
             </div>
           )}
@@ -452,9 +454,10 @@ export function JoinClient({
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
+                    className="inline-flex items-center gap-1 font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                   >
                     {copy.privacyLabel}
+                    <ExternalLinkIcon className="h-3.5 w-3.5" />
                   </a>{" "}
                   {copy.consentSuffix}
                 </span>

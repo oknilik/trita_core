@@ -4,6 +4,7 @@ import { useState } from "react";
 import { t } from "@/lib/i18n";
 import { presentUserError } from "@/lib/user-errors";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface IncompleteDraft {
   id: string;
@@ -328,9 +329,10 @@ export function AdminDraftReminderSection({ drafts }: Props) {
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages - 1}
-              className="inline-flex min-h-[40px] items-center rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Következő →
+              Következő
+              <ChevronRightIcon className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>

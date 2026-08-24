@@ -63,6 +63,15 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
+export function ExternalLinkIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M11 3h6v6M9 11l8-8" />
+      <path d="M15.5 11.5v4A1.5 1.5 0 0 1 14 17H4.5A1.5 1.5 0 0 1 3 15.5V6A1.5 1.5 0 0 1 4.5 4h4" />
+    </svg>
+  );
+}
+
 export function MailIcon(props: IconProps) {
   return (
     <svg {...base(props)}>

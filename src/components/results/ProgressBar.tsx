@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface ProgressBarProps {
   hasSelfPlus: boolean;
@@ -381,9 +382,10 @@ export function ProgressBar({
                   <button
                     type="button"
                     onClick={onNavigateToComparison}
-                    className="min-h-[44px] shrink-0 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-note font-semibold text-[var(--color-action-primary-fg)]"
+                    className="inline-flex min-h-[44px] shrink-0 items-center gap-1 rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1.5 text-note font-semibold text-[var(--color-action-primary-fg)]"
                   >
                     {t("progress.viewResults", locale)}
+                    <ChevronRightIcon className="h-3.5 w-3.5" />
                   </button>
                 )}
               </div>

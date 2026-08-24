@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { DashboardActionCard } from "@/components/dashboard/DashboardPrimitives";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 export interface JourneyNextStepCta {
   label: string;
@@ -35,7 +36,8 @@ export function JourneyNextStepCard({
               href={secondary.href}
               className="inline-flex text-xs font-semibold text-[var(--color-accent-primary-strong)] no-underline transition hover:text-bronze-dark"
             >
-              {secondary.label} →
+              {secondary.label}
+              <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
             </Link>
           ) : null}
         </div>

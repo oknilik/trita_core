@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { useLocale } from "@/components/LocaleProvider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import {
   getHelpTopics,
   type HelpAudience,
@@ -97,11 +99,9 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                 type="button"
                 onClick={goBack}
                 aria-label={isHu ? "Vissza" : "Back"}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-body transition hover:bg-sand/60 hover:text-ink"
+                className="group flex h-11 w-11 shrink-0 items-center justify-center text-ink-body transition hover:text-ink"
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+                <BackChevronIcon size="sm" />
               </button>
             )}
             <div className="min-w-0 flex-1">
@@ -205,9 +205,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                       className="flex min-h-[44px] w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm text-ink-body transition hover:bg-cream hover:text-ink"
                     >
                       <span>{isHu ? item.question.hu : item.question.en}</span>
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0 text-muted">
-                        <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
+                      <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-muted" />
                     </button>
                   </li>
                 ))}
@@ -222,9 +220,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                       className="flex min-h-[44px] w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-ink transition hover:bg-cream"
                     >
                       <span>{isHu ? item.label.hu : item.label.en}</span>
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="shrink-0 text-muted">
-                        <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
+                      <ChevronRightIcon className="h-3.5 w-3.5 shrink-0 text-muted" />
                     </button>
                   </li>
                 ))}

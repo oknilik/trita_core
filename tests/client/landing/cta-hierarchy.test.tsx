@@ -33,7 +33,7 @@ describe("landing CTA-hierarchia", () => {
       "/contact",
     );
     expect(
-      screen.getByRole("link", { name: "Jelentkezem a pilotprogramba →" }),
+      screen.getByRole("link", { name: "Jelentkezem a pilotprogramba" }),
     ).toHaveAttribute("href", "/pilot");
     expect(screen.queryByText("Legyetek az első partnercsapataink között")).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /kipróbál/i })).not.toBeInTheDocument();
@@ -50,7 +50,7 @@ describe("landing CTA-hierarchia", () => {
     expect(screen.getAllByRole("link", { name: /teszt/i }).every((link) =>
       link.getAttribute("href") === "/try"
     )).toBe(true);
-    expect(screen.getByRole("link", { name: "Együttműködés részletei →" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Együttműködés részletei" })).toHaveAttribute(
       "href",
       "/how-we-work",
     );

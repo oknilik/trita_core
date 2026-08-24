@@ -15,6 +15,7 @@ import {
   DashboardSectionHeader,
 } from "@/components/dashboard/DashboardPrimitives";
 import { EmptyState } from "@/components/ui/primitives/EmptyState";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // ─────────────────────────────────────────────────────────────────────
 // Tanácsadói jelölt-kezelő (2026-08-05 vizuális frissítés): a self/team
@@ -415,7 +416,8 @@ export function HiringDashboard({
                 href={`/org/${orgId}/settings`}
                 className="inline-flex min-h-[44px] items-center text-note font-semibold text-accent-candidate transition-colors hover:text-accent-candidate-strong"
               >
-                {isHu ? "Kreditek kezelése →" : "Manage credits →"}
+                {isHu ? "Kreditek kezelése" : "Manage credits"}
+                <ChevronRightIcon className="ml-1 h-3.5 w-3.5" />
               </Link>
             ) : creditBalance.available === 0 ? (
               <RequestCreditsButton orgId={orgId} locale={locale} />

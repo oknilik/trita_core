@@ -22,6 +22,7 @@ import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 export async function generateStaticParams() {
@@ -476,8 +477,9 @@ export default async function BlogPostPage({
                 href={`/blog/${newerPost.slug}`}
                 className="rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="mb-1.5 flex items-center justify-end gap-1 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
+                  <ChevronRightIcon className="h-3.5 w-3.5" />
                 </span>
                 <span className="font-fraunces text-body leading-[1.3] text-ink">
                   {newerPost.title}

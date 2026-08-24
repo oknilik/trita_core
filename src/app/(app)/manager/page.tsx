@@ -21,6 +21,7 @@ import { JourneyNextStepCard } from "@/components/journey/JourneyNextStepCard";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { getActiveOrgMembership } from "@/lib/org-context";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
+import { ChevronRightIcon } from "@/components/ui/icons";
 // A dimenzió-badge a HEXACO-betűt mutatja (H/E/X/A/C/O), nem a belső kódot —
 // a közös feloldó a tritan.ts-ből jön (egy definíció, minden felület).
 import { hexLetter } from "@/lib/hexaco";
@@ -372,9 +373,10 @@ export default async function ManagerCockpitPage() {
             </p>
             <Link
               href={`/team/${data.teams[0].teamId}?tab=intelligence`}
-              className="text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
             >
-              {isHu ? "Részletes dinamika térkép →" : "Detailed dynamics map →"}
+              {isHu ? "Részletes dinamika térkép" : "Detailed dynamics map"}
+              <ChevronRightIcon className="h-3.5 w-3.5" />
             </Link>
           </div>
         </section>

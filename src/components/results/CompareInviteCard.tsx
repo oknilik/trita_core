@@ -7,6 +7,7 @@ import { t, tf } from "@/lib/i18n";
 import { useLocale } from "@/components/LocaleProvider";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { TypeGlyph } from "@/components/type/TypeGlyph";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 export interface SerializedCompareInvite {
   id: string;
@@ -219,9 +220,10 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
                 <div className="flex flex-wrap gap-2 sm:justify-end">
                   <Link
                     href={`/interaction?pair=${inv.id}`}
-                    className="inline-flex min-h-[44px] flex-1 items-center justify-center rounded-xl bg-[var(--color-accent-primary)] px-4 text-caption font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] sm:flex-none"
+                    className="inline-flex min-h-[44px] flex-1 items-center justify-center gap-1.5 rounded-xl bg-[var(--color-accent-primary)] px-4 text-caption font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06] sm:flex-none"
                   >
-                    {t("results.compareOpenPair", locale)} →
+                    {t("results.compareOpenPair", locale)}
+                    <ChevronRightIcon />
                   </Link>
                   {/* Két lépés: a visszavonás a MÁSIK félnél is megszünteti a
                       közös képet, és közvetlenül a primary CTA mellett áll. */}

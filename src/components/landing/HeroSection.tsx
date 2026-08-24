@@ -352,11 +352,10 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                 }}
               >
                 <span>
-                  {(isSelf
+                  {isSelf
                     ? (hasDraft ? t("landing.selfCtaContinue", locale) : t("landing.selfCta", locale))
-                    : t("landing.teamCta", locale)).replace(/\s*→\s*$/, "")}
+                    : t("landing.teamCta", locale)}
                 </span>
-                <span aria-hidden="true">→</span>
               </Link>
               {!isSelf ? (
                 <Link

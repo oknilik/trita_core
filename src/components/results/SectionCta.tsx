@@ -49,12 +49,6 @@ export function SectionCta({ eyebrow, title, body, cta, href, motif }: SectionCt
         <p className="mt-2.5 text-caption leading-relaxed text-white/[0.62]">{body}</p>
         <span className="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-lg bg-[var(--color-action-primary-bg)] px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition group-hover:bg-[var(--color-action-primary-bg-hover)]">
           {cta}
-          <span
-            aria-hidden
-            className="transition-transform duration-300 group-hover:translate-x-0.5"
-          >
-            →
-          </span>
         </span>
       </div>
     </Link>

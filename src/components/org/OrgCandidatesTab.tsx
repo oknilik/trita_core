@@ -4,6 +4,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import Link from "next/link";
 import { getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // Org cockpit „Jelöltek" fül (2026-07-23, jelölt-flow újraélesztés) —
 // kompakt áttekintés a tanácsadónak: állapot-számok + friss jelöltek,
@@ -64,7 +65,7 @@ export function OrgCandidatesTab({
           href={`/hiring/${orgId}`}
           className={getButtonClassName({ variant: "primary", size: "sm" })}
         >
-          {isHu ? "Jelölt meghívása →" : "Invite candidate →"}
+          {isHu ? "Jelölt meghívása" : "Invite candidate"}
         </Link>
       </div>
 
@@ -112,9 +113,10 @@ export function OrgCandidatesTab({
                 {c.hasResult && (
                   <Link
                     href={`/hiring/${orgId}/candidates/${c.id}`}
-                    className="text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
                   >
-                    {isHu ? "Eredmény →" : "Result →"}
+                    {isHu ? "Eredmény" : "Result"}
+                    <ChevronRightIcon className="h-3.5 w-3.5" />
                   </Link>
                 )}
               </div>
@@ -126,11 +128,12 @@ export function OrgCandidatesTab({
       {/* A kanonikus jelölt-munkafelület a /hiring — innen mindig egy link visz oda. */}
       <Link
         href={`/hiring/${orgId}`}
-        className="mt-3 inline-flex text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
+        className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
       >
         {isHu
-          ? `Jelölt-felület megnyitása (${candidates.length}) →`
-          : `Open candidate workspace (${candidates.length}) →`}
+          ? `Jelölt-felület megnyitása (${candidates.length})`
+          : `Open candidate workspace (${candidates.length})`}
+        <ChevronRightIcon className="h-3.5 w-3.5" />
       </Link>
     </Card>
   );

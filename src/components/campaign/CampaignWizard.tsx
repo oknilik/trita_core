@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import { presentUserError } from "@/lib/user-errors";
 import { Button } from "@/components/ui/primitives/Button";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
@@ -574,6 +575,7 @@ export function CampaignWizard({
               }}
               variant="primary"
               className="shrink-0"
+              iconRight={<ChevronRightIcon />}
             >
               {t("campaignWiz.next", locale)}
             </Button>
@@ -721,6 +723,7 @@ export function CampaignWizard({
               disabled={!name.trim()}
               onClick={() => setStep(3)}
               variant="primary"
+              iconRight={<ChevronRightIcon />}
             >
               {t("campaignWiz.next", locale)}
             </Button>
@@ -842,6 +845,7 @@ export function CampaignWizard({
               disabled={!canProceedTargeting}
               onClick={() => setStep(4)}
               variant="primary"
+              iconRight={<ChevronRightIcon />}
             >
               {t("campaignWiz.next", locale)}
             </Button>
