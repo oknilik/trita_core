@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { usesTeamMarketingChrome } from "@/lib/navigation/marketing-chrome";
+import { getMarketingChromeTone } from "@/lib/navigation/marketing-chrome";
 import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
@@ -201,7 +201,7 @@ function NavHeaderContent({
   isPlatformAdmin = false,
 }: Omit<NavHeaderUIProps, "unreadNotificationCount">) {
   const pathname = usePathname();
-  const useTeamChrome = usesTeamMarketingChrome(pathname);
+  const marketingChromeTone = getMarketingChromeTone(pathname);
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
   const { locale } = useLocale();
@@ -667,10 +667,22 @@ function NavHeaderContent({
       <header
         data-testid="workspace-nav-header"
         data-compact="false"
-        className={`sticky top-0 z-40 ${useTeamChrome ? "bg-[var(--color-layer-team-soft)]/65" : "bg-transparent"}`}
+        className={`sticky top-0 z-40 ${
+          marketingChromeTone === "team"
+            ? "bg-[var(--color-layer-team-soft)]/65"
+            : marketingChromeTone === "editorial"
+              ? "bg-[var(--color-surface-highlight-warm)]/65"
+              : "bg-transparent"
+        }`}
       >
         <div
-          className={`mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1280px] grid-cols-[1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5 ${useTeamChrome ? "bg-[var(--color-layer-team-soft)]/90" : "bg-[var(--color-surface-header)]/95"}`}
+          className={`mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1280px] grid-cols-[1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5 ${
+            marketingChromeTone === "team"
+              ? "bg-[var(--color-layer-team-soft)]/90"
+              : marketingChromeTone === "editorial"
+                ? "bg-[var(--color-surface-highlight-warm)]/90"
+                : "bg-[var(--color-surface-header)]/95"
+          }`}
         >
           <Link
             href={homeHref}

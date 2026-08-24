@@ -417,6 +417,7 @@ export const landingTranslations = {
   },
 
   blog: {
+    editorialEyebrow: { hu: "Trita jegyzetek", en: "Trita notes" },
     heroTitle: {
       hu: "Csapatintelligencia. Pszichológia. ",
       en: "Team intelligence. Psychology. ",
@@ -460,6 +461,7 @@ export const landingTranslations = {
     resultMany: { hu: "cikk", en: "articles" },
     newBadge: { hu: "Új", en: "New" },
     startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
+    selectedReads: { hu: "Válogatott olvasmányok", en: "Selected reads" },
     inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
     minutesLeft: { hu: "még ~{m} perc olvasás", en: "~{m} min left" },
     authorTeam: { hu: "a Trita módszertani csapata", en: "the Trita methodology team" },
