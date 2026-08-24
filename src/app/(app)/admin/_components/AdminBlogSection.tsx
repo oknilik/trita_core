@@ -300,7 +300,9 @@ export function AdminBlogSection({
           kind: "error",
           text: json.error === "NOT_FOUND"
             ? "A cikk nincs meg a tárolóban — lehet, hogy időközben törölték."
-            : `Nem sikerült betölteni a cikket a tárolóból: ${json.error ?? res.status}. A biztonság kedvéért nem nyitom meg szerkesztésre.`,
+            : json.error === "LOAD_FAILED"
+              ? `${storeErrorText(json, res.status)} A biztonság kedvéért nem nyitom meg szerkesztésre.`
+              : `Nem sikerült betölteni a cikket a tárolóból: ${json.error ?? res.status}. A biztonság kedvéért nem nyitom meg szerkesztésre.`,
         });
         return;
       }
@@ -413,6 +415,52 @@ export function AdminBlogSection({
     });
   };
 
+  /**
+   * A tároló hibájának emberi fordítása. A szerver `detail` mezője a
+   * whitelistelt kód (pl. GITHUB_WRITE_FAILED_401) — ebből itt lesz
+   * cselekvési utasítás, hogy ne a Vercel-logban kelljen kezdeni.
+   */
+  const storeErrorText = (json: Record<string, unknown>, fallbackStatus: number): string => {
+    const detail = typeof json.detail === "string" ? json.detail : "";
+    const target = (json.target ?? {}) as { repo?: string | null; branch?: string };
+    const where = target.repo
+      ? `${target.repo}${target.branch ? `@${target.branch}` : ""}`
+      : "a beállított repó";
+
+    if (detail === "BLOG_STORE_READ_ONLY") {
+      return "A szerver fájlrendszerbe próbált írni, ami élesben csak olvasható — "
+        + "vagyis hiányzik a GITHUB_TOKEN vagy a GITHUB_REPO env. Állítsd be őket a "
+        + "Vercelen, és indíts egy redeployt (az env-változás csak új deployban él).";
+    }
+    if (detail === "GITHUB_NOT_CONFIGURED") {
+      return "A GitHub-mentés nincs beállítva (GITHUB_TOKEN + GITHUB_REPO env kell).";
+    }
+
+    const httpMatch = /^GITHUB_(?:READ|WRITE|DELETE)_FAILED_(\d{3})$/.exec(detail);
+    if (httpMatch) {
+      const status = httpMatch[1];
+      if (status === "401") {
+        return `A GitHub elutasította a tokent (401) — jellemzően lejárt vagy visszavont `
+          + `GITHUB_TOKEN. Generálj újat, cseréld a Vercelen, és deployolj újra. (${where})`;
+      }
+      if (status === "403") {
+        return `A token nem kapott írásjogot (403) — a fine-grained PAT-on a `
+          + `Contents: Read and write engedély kell erre a repóra. (${where})`;
+      }
+      if (status === "404") {
+        return `A GitHub nem találja a célt (404) — vagy a GITHUB_REPO hibás, vagy a `
+          + `cél-ág nem létezik a repóban, vagy a token nem látja ezt a repót. (${where})`;
+      }
+      if (status === "409" || status === "422") {
+        return `A GitHub visszautasította az írást (${status}) — jellemzően időközbeni `
+          + `módosítás. Nyisd meg újra a cikket, és mentsd újra. (${where})`;
+      }
+      return `A GitHub hibát adott (${status}). (${where})`;
+    }
+
+    return `Mentés sikertelen: ${detail || fallbackStatus}`;
+  };
+
   const successText = (mode: "fs" | "github", extra?: string) =>
     mode === "github"
       ? `Commit létrehozva — a Vercel buildel, a változás pár percen belül él.${extra ? ` (${extra})` : ""}`
@@ -460,7 +508,9 @@ export function AdminBlogSection({
                 ? (editingSlug
                     ? "A cikk a tárolóban időközben megváltozott (jellemzően egy korábbi mentés commitja). A mentés NEM történt meg, hogy ne írja felül. Zárd be a szerkesztőt, nyisd meg újra a cikket, és vidd át a módosítást."
                     : "Ezen a sluggal már van cikk a tárolóban. Válassz másik slugot, vagy a listából nyisd meg a meglévőt.")
-                : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
+                : json.error === "SAVE_FAILED"
+                  ? storeErrorText(json, res.status)
+                  : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
         });
         return;
       }
@@ -489,7 +539,9 @@ export function AdminBlogSection({
           kind: "error",
           text: json.error === "CONFLICT"
             ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
-            : `Nem sikerült: ${json.error ?? res.status}`,
+            : json.error === "SAVE_FAILED"
+              ? storeErrorText(json, res.status)
+              : `Nem sikerült: ${json.error ?? res.status}`,
         });
         return;
       }

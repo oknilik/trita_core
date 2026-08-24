@@ -1,6 +1,12 @@
 import test, { afterEach, beforeEach } from "node:test";
 import assert from "node:assert/strict";
-import { BLOG_CONFLICT, blogStoreBranch, readBlogRevision, saveBlogSource } from "@/lib/blog-store";
+import {
+  BLOG_CONFLICT,
+  BLOG_STORE_READ_ONLY,
+  blogStoreBranch,
+  readBlogRevision,
+  saveBlogSource,
+} from "@/lib/blog-store";
 
 // A szerkesztő a tároló sha-jával tölt, és azzal is ment. Ha a tároló
 // időközben megváltozott (jellemzően: egy korábbi mentés commitja, aminek a
@@ -44,6 +50,7 @@ function stubGithub(remote: { content: string; sha: string } | null): void {
 
 beforeEach(() => {
   delete process.env.GITHUB_BRANCH;
+  delete process.env.VERCEL;
   delete process.env.VERCEL_GIT_COMMIT_REF;
   process.env.BLOG_STORE = "github";
   process.env.GITHUB_TOKEN = "token";
@@ -146,4 +153,22 @@ test("a commit a cel-agra megy", async () => {
   const put = calls.find((call) => call.method === "PUT");
   assert.equal(put?.body?.branch, "feature/blog");
   assert.match(calls[0]!.url, /ref=feature\/blog/);
+});
+
+// ── Beszédes hiba fs-mód + Vercel esetén ──────────────────────────────
+//
+// Hiányzó GITHUB_TOKEN/GITHUB_REPO mellett a mód `fs`-re esik vissza, az
+// API github-kapuja tehát nem lép be, és a mentés élesben egy csak olvasható
+// fájlrendszerbe futott — a felületre ebből csak „SAVE_FAILED" jutott ki.
+
+test("fs modban Vercelen beszedes hibaval allunk meg, nem EROFS-szal", async () => {
+  delete process.env.BLOG_STORE;
+  delete process.env.GITHUB_TOKEN;
+  delete process.env.GITHUB_REPO;
+  process.env.VERCEL = "1";
+
+  await assert.rejects(
+    () => saveBlogSource({ slug: "cikk", content: "torzs", message: "teszt" }),
+    (error: Error) => error.message === BLOG_STORE_READ_ONLY,
+  );
 });

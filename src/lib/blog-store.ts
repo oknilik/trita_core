@@ -59,6 +59,11 @@ export function blogStoreMode(): BlogStoreMode {
   return process.env.VERCEL && githubConfig() ? "github" : "fs";
 }
 
+/** Diagnosztika az adminnak — a token SOHA nem kerül bele. */
+export function blogStoreTarget(): { repo: string | null; branch: string } {
+  return { repo: process.env.GITHUB_REPO ?? null, branch: blogStoreBranch() };
+}
+
 /** Igaz, ha a github mód elérhető LENNE (token+repo beállítva). */
 export function githubConfigured(): boolean {
   return githubConfig() !== null;
@@ -99,6 +104,15 @@ async function githubGetFile(
  * egyezik a tároló pillanatnyi állapotával.
  */
 export const BLOG_CONFLICT = "BLOG_CONFLICT";
+
+/**
+ * `fs` módban futunk Vercelen, ahol a fájlrendszer csak olvasható.
+ *
+ * Ez a némán rossz állapot: hiányzó `GITHUB_TOKEN`/`GITHUB_REPO` mellett a
+ * `blogStoreMode()` `fs`-t ad, az API `github`-kapuja tehát nem lép be, és a
+ * mentés egy EROFS-ba futott, amiből a felületre csak `SAVE_FAILED` jutott.
+ */
+export const BLOG_STORE_READ_ONLY = "BLOG_STORE_READ_ONLY";
 
 export interface BlogRevision {
   content: string;
@@ -141,6 +155,19 @@ export interface SaveBlogResult {
    * menteni ütközés-hiba nélkül.
    */
   sha?: string;
+}
+
+/**
+ * `fs` mód + Vercel = biztos kudarc: a futó példány fájlrendszere csak
+ * olvasható. Beszédes hibával állunk meg, mielőtt EROFS-ba futnánk.
+ */
+function assertWritableFs(): void {
+  if (!process.env.VERCEL) return;
+  log.error(
+    { event: "blog_store.read_only_fs", githubConfigured: githubConfigured() },
+    "Blog write attempted in fs mode on Vercel",
+  );
+  throw new Error(BLOG_STORE_READ_ONLY);
 }
 
 /** Cikk mentése — fs módban fájlírás, github módban commit (create vagy update). */
@@ -193,6 +220,7 @@ export async function saveBlogSource(params: {
     return { mode, commitUrl: json.commit?.html_url, sha: json.content?.sha };
   }
 
+  assertWritableFs();
   if (!fs.existsSync(BLOG_DIR)) fs.mkdirSync(BLOG_DIR, { recursive: true });
   fs.writeFileSync(path.join(BLOG_DIR, `${params.slug}.mdx`), params.content, "utf-8");
   return { mode };
@@ -232,6 +260,7 @@ export async function deleteBlogSource(params: {
     return { mode, commitUrl: json.commit?.html_url };
   }
 
+  assertWritableFs();
   const filePath = path.join(BLOG_DIR, `${params.slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
   fs.unlinkSync(filePath);

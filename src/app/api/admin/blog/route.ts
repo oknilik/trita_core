@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
   BLOG_CONFLICT,
+  blogStoreTarget,
   blogStoreMode,
   githubConfigured,
   readBlogRevision,
@@ -80,6 +81,24 @@ function isConflict(error: unknown): boolean {
   return error instanceof Error && error.message === BLOG_CONFLICT;
 }
 
+/**
+ * A tároló hibájának BESZÉDES, de biztonságos kódja a felületre.
+ *
+ * Korábban minden hiba `SAVE_FAILED`-ként ért ki: lejárt token, hiányzó
+ * repo-jog, nem létező ág és csak olvasható fájlrendszer ugyanúgy nézett ki,
+ * úgyhogy a hibakeresés a Vercel-logokban kezdődött. A kódok whitelistről
+ * jönnek — a hibaüzenet más részét nem adjuk vissza, hogy semmilyen
+ * belső részlet ne szivárogjon.
+ */
+function storeFailure(error: unknown): { detail: string; target: ReturnType<typeof blogStoreTarget> } {
+  const message = error instanceof Error ? error.message : "";
+  const known = /^(GITHUB_(READ|WRITE|DELETE)_FAILED_\d{3}|GITHUB_NOT_CONFIGURED|BLOG_STORE_READ_ONLY)$/;
+  return {
+    detail: known.test(message) ? message : "UNKNOWN",
+    target: blogStoreTarget(),
+  };
+}
+
 // ── Szerkesztésre betöltés (GET) ──────────────────────────────────────
 // A szerkesztő NEM a lista prop-jából tölt: github módban a futó példány
 // fájlrendszere a legutóbbi DEPLOY állapotát őrzi, a tároló igazsága
@@ -114,7 +133,7 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     log.error({ event: "admin-blog.load_failed", err: error, slug }, "Load failed");
-    return NextResponse.json({ error: "LOAD_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "LOAD_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -155,7 +174,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "CONFLICT", slug: p.slug }, { status: 409 });
     }
     log.error({ event: "admin-blog.save_failed", err: error }, "Save failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -278,7 +297,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ ok: true, slug, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.upload_failed", err: error, slug }, "Upload failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -333,7 +352,7 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: "CONFLICT", slug }, { status: 409 });
     }
     log.error({ event: "admin-blog.status_change_failed", err: error }, "Status change failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -368,6 +387,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.delete_failed", err: error }, "Delete failed");
-    return NextResponse.json({ error: "DELETE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "DELETE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
