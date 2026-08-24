@@ -24,6 +24,7 @@ import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHe
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
+import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -455,38 +456,41 @@ export default async function BlogPostPage({
 
         {/* Előző / következő cikk */}
         {(olderPost || newerPost) && (
-          <div className="mt-10 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <nav
+            aria-label={t("blog.articleNavigation", locale)}
+            className="mt-10 grid grid-cols-1 gap-3 lg:grid-cols-2"
+          >
             {olderPost ? (
               <Link
                 href={`/blog/${olderPost.slug}`}
-                className="rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="group mb-1.5 inline-flex items-center gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="mb-3 flex items-center gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   <BackChevronIcon size="sm" />
                   <span>{t("blog.prevArticle", locale)}</span>
                 </span>
-                <span className="font-fraunces text-body leading-[1.3] text-ink">
+                <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
                   {olderPost.title}
                 </span>
               </Link>
             ) : (
-              <span className="hidden md:block" />
+              <span className="hidden lg:block" />
             )}
             {newerPost && (
               <Link
                 href={`/blog/${newerPost.slug}`}
-                className="rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
+                className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-1.5 flex items-center justify-end gap-1 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="mb-3 flex items-center justify-end gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
                   <ChevronRightIcon className="h-3.5 w-3.5" />
                 </span>
-                <span className="font-fraunces text-body leading-[1.3] text-ink">
+                <span className="block text-pretty font-fraunces text-body leading-[1.35] text-ink">
                   {newerPost.title}
                 </span>
               </Link>
             )}
-          </div>
+          </nav>
         )}
 
         {/* Related posts */}
@@ -530,26 +534,9 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* CTA block */}
-        <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
-          <div className="flex-1 text-center sm:text-left">
-            <p className="mb-1.5 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
-              {t("blog.tryEyebrow", locale)}
-            </p>
-            <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-white">
-              {t("blog.tryTitle", locale)}
-            </h3>
-            <p className="text-caption leading-relaxed text-white/[0.45]">
-              {t("blog.trySub", locale)}
-            </p>
-          </div>
-          <Link
-            href="/try"
-            className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-7 py-3.5 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06]"
-          >
-            {t("blog.tryCta", locale)}
-          </Link>
-        </div>
+        {/* A CTA belépve nem új tesztet kínál, hanem a journey aktuális
+            pontjára visz; kijelentkezve megmarad a kipróbálási ajánlat. */}
+        <BlogJourneyCta locale={locale} variant="banner" />
 
         {/* Feliratkozás — a cikk VÉGÉN, mert itt a legmagasabb a szándék:
             aki idáig eljutott, annak az „szólunk, ha új cikk jön" valódi
@@ -566,20 +553,7 @@ export default async function BlogPostPage({
             totalMinutes={post.readingMinutes}
             labels={tocLabels}
           />
-          <div className="rounded-xl border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] px-5 py-4">
-            <p className="mb-1 text-caption font-semibold text-[var(--color-accent-self-deep)]">
-              {t("blog.tryTitle", locale)}
-            </p>
-            <p className="mb-3 text-micro leading-relaxed text-[var(--color-text-secondary)]">
-              {t("blog.trySub", locale)}
-            </p>
-            <Link
-              href="/try"
-              className="inline-block rounded-lg bg-[var(--color-action-primary-bg)] px-4 py-2 text-caption font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-[var(--color-action-primary-bg-hover)]"
-            >
-              {t("blog.tryCta", locale)}
-            </Link>
-          </div>
+          <BlogJourneyCta locale={locale} variant="sidebar" />
         </div>
       </aside>
       </div>
