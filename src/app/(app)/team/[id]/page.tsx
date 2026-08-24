@@ -87,7 +87,7 @@ export default async function TeamDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; campaignId?: string }>;
 }) {
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
     getServerLocale(), getServerAuth(), params, searchParams,
@@ -471,7 +471,7 @@ export default async function TeamDetailPage({
       return (
         <>
           {tabTracker}
-          <ReportTabView ctx={ctx} />
+          <ReportTabView ctx={ctx} campaignId={resolvedSearchParams.campaignId} />
         </>
       );
     case "overview":

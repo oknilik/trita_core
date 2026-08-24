@@ -23,13 +23,12 @@ const claimSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const userId = await resolveGuestClaimViewerClerkId();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+  const rateLimitResponse = await checkRateLimit("api", userId);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const body = await req.json();
   const parsed = claimSchema.safeParse(body);

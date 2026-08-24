@@ -6,6 +6,11 @@ on:
       - main
       - develop
       - "feature/**"
+      # Ügynök-ágak: enélkül a pusholt munka CI nélkül maradt, és a PR
+      # megnyitásáig semmi sem ellenőrizte.
+      - "claude/**"
+      - "chore/**"
+      - "fix/**"
   pull_request:
   workflow_dispatch:
 
@@ -77,6 +82,70 @@ jobs:
           --base "${{ github.event.pull_request.base.sha }}"
           --head "${{ github.event.pull_request.head.sha }}"
 
+  # Statikus ellenőrzés + éles build.
+  #
+  # MIÉRT KÜLÖN JOB: a teszt-jobok NEM fordítják le az alkalmazást, ezért egy
+  # típushiba vagy egy nem forduló build korábban először a Vercel deploynál
+  # derült ki — éles ágon. A `pnpm check` (type-check + lint + check:colors) és
+  # a `pnpm build` ugyanazt futtatja, amit a fejlesztő helyben.
+  #
+  # A build-hez kellenek env-ek (Clerk/Prisma a modul-betöltéskor olvassa
+  # őket). Ezek SZÁNDÉKOSAN hermetikus, működésképtelen tesztértékek: a build
+  # nem hív külső szolgáltatást, és éles titok nem kerülhet a CI-be. A
+  # publishable key a `clerk.example.com` hostot kódolja.
+  checks:
+    name: Checks (types, lint, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check, lint, color guardrail
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s check 2>&1 | tee artifacts/checks.log
+
+      - name: Production build
+        env:
+          NEXT_PUBLIC_APP_URL: https://trita.io
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_live_Y2xlcmsuZXhhbXBsZS5jb20k
+          CLERK_SECRET_KEY: sk_live_dummy_ci_only
+          RESEND_API_KEY: re_dummy_ci_only
+          ADMIN_EMAILS: ci@example.com
+          DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+          DIRECT_URL: postgresql://ci:ci@localhost:5432/ci
+        run: |
+          set -o pipefail
+          pnpm -s build 2>&1 | tee artifacts/build.log
+
+      - name: Upload check logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checks-logs
+          path: |
+            artifacts/checks.log
+            artifacts/build.log
+          if-no-files-found: ignore
+          retention-days: 14
+
   unit:
     name: Unit
     runs-on: ubuntu-latest
@@ -89,7 +158,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -155,7 +224,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -202,7 +271,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -237,6 +306,69 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  # A teljes suite-ok mellett név szerint is fut a release-szerződés. Így a
+  # pilotkritikus fájllista módosítása vagy a gate script törése önálló,
+  # branch protectionben required checkként kijelölhető státuszt ad.
+  pilot-gate:
+    name: Pilot Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: trita_integration_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d trita_integration_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+      TEST_DIRECT_URL: postgresql://postgres:postgres@127.0.0.1:5432/trita_integration_test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.15.9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run pilot release gate
+        run: |
+          mkdir -p artifacts
+          set -o pipefail
+          pnpm -s test:pilot 2>&1 | tee artifacts/pilot-gate.log
+
+      - name: Upload pilot gate logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilot-gate-logs
+          path: artifacts/pilot-gate.log
+          if-no-files-found: ignore
+          retention-days: 14
+
   e2e:
     name: E2E
     runs-on: ubuntu-latest
@@ -268,7 +400,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 9
+          version: 9.15.9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4

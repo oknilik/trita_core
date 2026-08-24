@@ -217,6 +217,7 @@ export interface TeamReportActionItem {
 export interface SerializedTeamReport {
   id: string;
   teamId: string;
+  campaignId?: string | null;
   status: "DRAFT" | "PUBLISHED";
   title: string | null;
   aggregates: TeamReportAggregates | null;
@@ -237,6 +238,57 @@ export interface SerializedTeamReport {
   publishedAt: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export type TeamReportPublishBlockReason =
+  | "REPORT_CAMPAIGN_REQUIRED"
+  | "REPORT_CAMPAIGN_MISMATCH"
+  | "REPORT_AGGREGATES_REQUIRED"
+  | "REPORT_SELF_DATA_INSUFFICIENT"
+  | "REPORT_TRUST_DATA_INSUFFICIENT"
+  | "REPORT_PULSE_DATA_INSUFFICIENT"
+  | "REPORT_NARRATIVE_INCOMPLETE"
+  | "REPORT_TARGET_ACTION_REQUIRED";
+
+/**
+ * A publikálás fail-closed tartalmi kapuja. A szerkesztő kliensoldali
+ * állapota nem biztonsági vagy mérési határ: minden invariáns itt, a
+ * szerver által újraépített aggregátumon dől el.
+ */
+export function validateTeamReportForPublish(input: {
+  campaignId: string | null;
+  aggregates: TeamReportAggregates | null;
+  title: string | null | undefined;
+  summary: string | null | undefined;
+  recommendations: string | null | undefined;
+  actionItems: unknown;
+}): TeamReportPublishBlockReason | null {
+  if (!input.campaignId) return "REPORT_CAMPAIGN_REQUIRED";
+  if (!input.aggregates) return "REPORT_AGGREGATES_REQUIRED";
+  if (input.aggregates.assessmentCampaignId !== input.campaignId) {
+    return "REPORT_CAMPAIGN_MISMATCH";
+  }
+  if (
+    input.aggregates.completedCount < MIN_INTELLIGENCE_ASSESSMENTS ||
+    !input.aggregates.dimensionAverages
+  ) {
+    return "REPORT_SELF_DATA_INSUFFICIENT";
+  }
+  if (!input.aggregates.evidence || input.aggregates.evidence.measuredEdgeCount < 1) {
+    return "REPORT_TRUST_DATA_INSUFFICIENT";
+  }
+  if (!input.aggregates.psychSafety) return "REPORT_PULSE_DATA_INSUFFICIENT";
+
+  const hasText = (value: string | null | undefined) => Boolean(value?.trim());
+  if (!hasText(input.title) || !hasText(input.summary) || !hasText(input.recommendations)) {
+    return "REPORT_NARRATIVE_INCOMPLETE";
+  }
+
+  const actions = parseActionItems(input.actionItems);
+  if (!actions?.some((item) => item.title.trim() && item.targetMetric)) {
+    return "REPORT_TARGET_ACTION_REQUIRED";
+  }
+  return null;
 }
 
 const DIMS = ["H", "E", "X", "A", "C", "O"] as const;
@@ -898,6 +950,7 @@ export function parseActionItems(value: unknown): TeamReportActionItem[] | null 
 type TeamReportRecord = {
   id: string;
   teamId: string;
+  campaignId?: string | null;
   status: string;
   title: string | null;
   aggregates: unknown;
@@ -933,6 +986,7 @@ export function serializeTeamReport(
   return {
     id: report.id,
     teamId: report.teamId,
+    campaignId: report.campaignId ?? null,
     status: report.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT",
     title: report.title,
     aggregates,

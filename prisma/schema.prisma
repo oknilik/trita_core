@@ -319,6 +319,10 @@ model Team {
 model TeamReport {
   id                String    @id @default(cuid())
   teamId            String
+  // A riport mérési forrásköre. Új pilot-riportnál kötelező a runtime-ban;
+  // adatbázisban azért nullable, hogy a korábbi, kampány nélküli riportok
+  // migrálhatók és archiválhatók maradjanak.
+  campaignId        String?
   orgId             String?
   status            String    @default("DRAFT") // "DRAFT" | "PUBLISHED"
   title             String?
@@ -346,7 +350,11 @@ model TeamReport {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
-  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team     Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  campaign Campaign? @relation(fields: [campaignId], references: [id], onDelete: Restrict)
+
+  @@unique([campaignId, teamId])
+  @@index([campaignId])
 
   @@index([teamId, status])
 }
@@ -589,6 +597,7 @@ model Campaign {
   teamRoleAnswers      TeamRoleAnswer[]      @relation("TeamRoleAnswerCampaign")
   teamRoleScores       TeamRoleScore[]       @relation("TeamRoleScoreCampaign")
   assessmentResults    AssessmentResult[]    @relation("AssessmentResultCampaign")
+  reports              TeamReport[]
 
   @@index([orgId])
   @@index([createdBy])

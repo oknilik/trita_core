@@ -175,7 +175,9 @@ export async function POST(req: Request) {
   ]);
   const covered = teamMemberCount > 0 && coveredTargets.length >= teamMemberCount;
   if (covered) {
-    await advanceCampaignStepForUser(profile.id, "PEER_FEEDBACK").catch(() => {});
+    await advanceCampaignStepForUser(profile.id, "PEER_FEEDBACK", {
+      campaignId: participant.campaign.id,
+    }).catch(() => {});
   }
 
   return NextResponse.json({ ok: true, created: fresh.length, covered });

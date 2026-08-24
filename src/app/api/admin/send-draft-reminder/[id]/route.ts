@@ -6,16 +6,21 @@ import { sendAssessmentDraftReminderEmail } from "@/lib/emails";
 import { normalizeLocale } from "@/lib/i18n";
 import { getTestConfig } from "@/lib/questions";
 import type { TestType } from "@prisma/client";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let adminUserId: string;
   try {
-    await requireAdmin();
+    ({ userId: adminUserId } = await requireAdmin());
   } catch {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
+
+  const rateLimited = await checkRateLimit("contact", adminUserId);
+  if (rateLimited) return rateLimited;
 
   const { id } = await params;
 

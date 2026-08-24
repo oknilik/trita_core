@@ -5,10 +5,32 @@ import { TeamReportView } from "@/components/team/TeamReportView";
 import { TeamReportMemberView } from "@/components/team/TeamReportMemberView";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
+import { prisma } from "@/lib/prisma";
 
-export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
+export async function ReportTabView({
+  ctx,
+  campaignId: requestedCampaignId,
+}: {
+  ctx: TeamTabContext;
+  campaignId?: string;
+}) {
   const { teamId, teamData, isHu, canViewRaw, isOrgManager, publishedReport, profile } = ctx;
-  const consultantReports = canViewRaw ? await listTeamReports(teamId) : [];
+  const [consultantReports, reportCampaign] = canViewRaw
+    ? await Promise.all([
+        listTeamReports(teamId),
+        prisma.campaign.findFirst({
+          where: {
+            ...(requestedCampaignId ? { id: requestedCampaignId } : {}),
+            orgId: teamData.orgId ?? undefined,
+            status: "CLOSED",
+            presetId: "SCAN_V1",
+            OR: [{ teamId }, { teamIds: { has: teamId } }],
+          },
+          orderBy: { closedAt: "desc" },
+          select: { id: true },
+        }),
+      ])
+    : [[], null];
 
   return (
     <PlatformPageShell
@@ -22,6 +44,7 @@ export async function ReportTabView({ ctx }: { ctx: TeamTabContext }) {
           teamId={teamId}
           orgId={teamData.orgId}
           reports={consultantReports}
+          campaignId={reportCampaign?.id ?? null}
           isHu={isHu}
         />
       ) : publishedReport ? (

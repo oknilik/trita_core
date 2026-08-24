@@ -182,9 +182,11 @@ export async function resolveActiveSelfAssessmentCampaign(
 }
 
 /**
- * Lépés-teljesítés lekönyvelése: explicit campaignId-val csak a megadott,
- * egyébként minden illeszkedő AKTÍV kampányban léptetünk. A zárt ütemezési
- * kaput nem lehet egy közvetlen API-beadással megkerülni.
+ * Lépés-teljesítés lekönyvelése kizárólag az explicit megadott kampányban.
+ * A kampányazonosító kötelező: egy résztvevőnek több párhuzamos aktív köre
+ * is lehet, ezért a globális "minden illeszkedő kampány" léptetés mérési
+ * adatot hamisítana. A zárt ütemezési kaput közvetlen API-beadással sem
+ * lehet megkerülni.
  *
  * A beküldő API-k hívják (self assessment, szerep-kérdőív, pulse) —
  * fire-and-forget jelleggel is biztonságos (idempotens: ha a user már
@@ -193,14 +195,14 @@ export async function resolveActiveSelfAssessmentCampaign(
 export async function advanceCampaignStepForUser(
   profileId: string,
   completedType: CampaignStepType,
-  options?: { campaignId?: string },
+  options: { campaignId: string },
 ): Promise<void> {
   const participants = await prisma.campaignParticipant.findMany({
     where: {
       userId: profileId,
       campaign: {
         status: "ACTIVE",
-        ...(options?.campaignId ? { id: options.campaignId } : {}),
+        id: options.campaignId,
       },
     },
     select: {

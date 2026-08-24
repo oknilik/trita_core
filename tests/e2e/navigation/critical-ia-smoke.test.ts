@@ -264,6 +264,17 @@ test.describe("WORKSTREAM G — critical IA smoke", () => {
     context,
     baseURL,
   }) => {
+    // Ez a teszt HÉT különböző útvonalat tölt be egymás után (org cockpit,
+    // csapat, org settings, assessment-layers, profil, /tasks). A webServer
+    // `next dev`, tehát MINDEGYIK útvonal első betöltése fordítással jár —
+    // ez összeadódva rendszeresen átlépte a 30 s-os alap-timeoutot, miközben
+    // meleg szerverrel ugyanez ~20 s alatt lefut.
+    //
+    // A CI-ben a `retries: 2` eddig elfedte a bukást (a második futásra a
+    // szerver már meleg volt) — csak a jelzés veszett el vele: egy VALÓDI
+    // lassulás is „flaky retry"-ként ment volna át.
+    test.slow();
+
     if (!fixture) throw new Error("fixture setup failed");
     await setSessionCookies(context, baseURL, fixture.admin.clerkId);
 

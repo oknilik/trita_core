@@ -6,7 +6,7 @@ import { sendCandidateInviteEmail } from "@/lib/emails";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { getServerLocale } from "@/lib/i18n-server";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
 // POST /api/manager/candidates/[id]/resend — jelölt-meghívó újraküldése.
 // Guard (2026-07-23): csak a tanácsadói kör (ORG_CONSULTANT / platform-
@@ -15,10 +15,6 @@ export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // E-mailt küldő végpont — rate limit a testvér-route-ok mintájára.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -27,6 +23,9 @@ export async function POST(
     select: { id: true, username: true, email: true, isConsultant: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  const rateLimitResponse = await checkRateLimit("contact", `candidate-resend:${profile.id}`);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const { id } = await params;
 

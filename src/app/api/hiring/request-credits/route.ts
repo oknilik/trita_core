@@ -9,11 +9,6 @@ import { sendHiringCreditsRequestEmail } from "@/lib/emails";
 const schema = z.object({ orgId: z.string() });
 
 export async function POST(req: Request) {
-  // A végpont minden ORG_ADMIN-nak e-mailt küld — rate limit nélkül egy
-  // hívó korlátlan levél-sokszorozót kapott volna.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -22,6 +17,11 @@ export async function POST(req: Request) {
     select: { id: true, username: true, email: true },
   });
   if (!profile) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+
+  // Egy kérés több adminnak is küldhet levelet, ezért az erősítő (`contact`)
+  // policy érvényes rá, felhasználó-alapú kerettel.
+  const rateLimitResponse = await checkRateLimit("contact", userId);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const body = schema.safeParse(await req.json());
   if (!body.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });

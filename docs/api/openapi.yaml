@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Trita API
-  version: "2026-08-16"
+  version: "2026-08-23"
   description: |
     Trita platform belső API-leírója — kézzel karbantartott, a route-fájlok
     Zod-sémáiból származtatva. Auth: Clerk session cookie (böngésző-hívások),
@@ -868,8 +868,9 @@ paths:
               properties: { role: { type: string, enum: [ORG_ADMIN, ORG_MANAGER, ORG_MEMBER] } }
       responses: { "200": { description: OK } }
     delete: { tags: [Org], summary: Tag eltávolítása, responses: { "200": { description: OK } } }
-  /api/org/{id}/remind:
-    post: { tags: [Org], summary: Kitöltési emlékeztetők (stub), responses: { "200": { description: OK } } }
+  # A korábbi `/api/org/{id}/remind` bejegyzés törölve (2026-08-23): ilyen
+  # route nincs a kódban — az emlékeztetőt a kampány-szintű
+  # `/api/org/{id}/campaigns/{campaignId}/remind` küldi.
   /api/org/{id}/inquiries:
     patch:
       tags: [Org, Inquiry]
@@ -1106,3 +1107,348 @@ paths:
       summary: Clerk webhook (user-szinkron, email-küldés) — Svix-aláírással
       security: [{ svixSignature: [] }]
       responses: { "200": { description: OK }, "400": { description: Bad signature } }
+
+  # ───────────────────────────────────────────────────────────────────
+  # 2026-08-23 — a teljes audit (P1-16) leletje alapján pótolt végpontok.
+  #
+  # A leíró 82 útvonalat írt le, a kódban 120 volt: a hírlevél, a CRM, az
+  # analitika, a peer-feedback és a pilot-kritikus riport-akció végpont
+  # teljesen hiányzott. Egy hiányos leíró rosszabb a hiányzónál: úgy néz ki,
+  # mintha teljes volna.
+  #
+  # Az alábbi bejegyzések a route-fájlok Zod-sémáiból származnak. Ahol a
+  # kérés-törzs bonyolult (CRM, blog-szerkesztő), a leírás a mezőkészletet
+  # nevesíti a séma helyett — a forrás mindig a route-fájl.
+  # ───────────────────────────────────────────────────────────────────
+
+  # ── Analitika és diagnosztika ──────────────────────────────────────
+  /api/e:
+    post:
+      tags: [System]
+      summary: Első feles esemény-beküldés (kötegelt)
+      description: |
+        ZÁRT esemény-katalógus (`src/lib/analytics/events.ts`), zod `.strict()`
+        sémákkal — PII szerkezetileg nem kerülhet bele. Nincs süti és semmilyen
+        eszköz-tárolás; a látogató-álnév naponta rotál. GPC/DNT jelzésre elnyeli
+        a beküldést. Rate limit: `analytics` tier.
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                events:
+                  type: array
+                  items:
+                    type: object
+                    required: [name]
+                    properties:
+                      name: { type: string, description: "A zárt katalógus egy kulcsa" }
+                      props: { type: object, description: "Esemény-specifikus, sémával zárt mezők" }
+      responses:
+        "204": { description: "Elfogadva (a válasz sosem mond semmit a feldolgozásról)" }
+        "503": { description: "RATE_LIMIT_UNAVAILABLE — nincs beállított rate limit (fail-closed)" }
+  /api/client-error:
+    post:
+      tags: [System]
+      summary: Kliens-oldali hibahatár jelentése
+      description: |
+        A `ErrorScreen` hibahatár küldi. Zárt séma, csonkolt mezők, stacket NEM
+        fogad. A jelentés a szerver-loggerbe kerül, és riasztást indít, ha az
+        `ERROR_ALERT_WEBHOOK_URL` be van állítva. Válasz mindig 204.
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [surface]
+              properties:
+                surface: { type: string, maxLength: 40, description: "Melyik hibahatár fogta (pl. root, team)" }
+                name: { type: string, maxLength: 80 }
+                message: { type: string, maxLength: 500 }
+                digest: { type: string, maxLength: 120 }
+                path: { type: string, maxLength: 200, description: "Query és hash NÉLKÜL" }
+      responses:
+        "204": { description: Elfogadva }
+  /api/csp-report:
+    post:
+      tags: [System]
+      summary: Content-Security-Policy sértés-jelentés (report-uri)
+      description: |
+        A CSP report-only mód célpontja. Mindkét böngésző-formátumot fogadja
+        (`application/csp-report` és Reporting API). Csak a sértés három
+        azonosító mezőjét naplózza — a `script-sample` felhasználói szöveget
+        tartalmazhat, ezért a teljes reportot nem írjuk ki. Válasz mindig 204.
+      security: []
+      responses:
+        "204": { description: Elfogadva }
+  /api/nav/context:
+    get:
+      tags: [System]
+      summary: Munkaterület-fejléc adatcsomagja (marketing zóna kliens-oldali hívása)
+      responses:
+        "200": { description: "{ navData, helpAudience }" }
+        "401": { description: Unauthorized }
+        "404": { description: "No profile (belépve, de profil nélkül)" }
+  /api/team/context:
+    get:
+      tags: [Team]
+      summary: Aktív csapat-kontextus lekérése
+      responses: { "200": { description: OK }, "401": { description: Unauthorized } }
+    post:
+      tags: [Team]
+      summary: Aktív csapat-kontextus váltása
+      responses: { "200": { description: OK }, "403": { description: Forbidden } }
+
+  # ── Csapat: riport-akciók, kudos, visszajelzés-kérés ───────────────
+  /api/team/{id}/report/actions:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    patch:
+      tags: [Team]
+      summary: Riport-akcióelem státusz és célmutató frissítése
+      description: |
+        A pilot S5/S6 kritériumának végpontja: az akcióelem `targetMetric`
+        mezője (`psych_safety_index`, `psych_safety_item:PS1…PS8`,
+        `trust_coverage`, `trust_isolated_count`) köti a vállalást mért
+        mutatóhoz, a visszamérés ehhez hasonlít.
+      responses: { "200": { description: OK }, "403": { description: Forbidden } }
+  /api/team/{id}/kudos:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get: { tags: [Team], summary: Elismerések listája, responses: { "200": { description: OK } } }
+    post: { tags: [Team], summary: Elismerés küldése csapattársnak, responses: { "201": { description: Created } } }
+  /api/team/{id}/feedback-requests:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get: { tags: [Team], summary: Visszajelzés-kérések listája, responses: { "200": { description: OK } } }
+    post: { tags: [Team], summary: Visszajelzés-kérés indítása, responses: { "201": { description: Created } } }
+  /api/team/{id}/feedback-requests/{requestId}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+      - { name: requestId, in: path, required: true, schema: { type: string } }
+    post: { tags: [Team], summary: Válasz a visszajelzés-kérésre, responses: { "201": { description: Created } } }
+    patch: { tags: [Team], summary: Kérés lezárása / visszavonása, responses: { "200": { description: OK } } }
+  /api/peer-feedback/submit:
+    post:
+      tags: [TeamRoles/Trust/PsychSafety]
+      summary: Elismerés-kör (peer feedback) beküldése
+      description: |
+        Kampány-lépés (`PEER_FEEDBACK`). Anonim-aggregált módban a címzett
+        csak n ≥ 3 értékelőtől lát összesítést (anonimitás-padló).
+      responses: { "200": { description: OK }, "409": { description: "STEP_LOCKED / ALREADY_SUBMITTED" } }
+  /api/feedback/result-clarity:
+    post:
+      tags: [Feedback]
+      summary: „Mennyire volt érthető az eredményed?" visszajelzés
+      responses: { "200": { description: OK } }
+  /api/profile/email-preferences:
+    get: { tags: [Profile], summary: Email-értesítési beállítások, responses: { "200": { description: OK } } }
+    post: { tags: [Profile], summary: Email-értesítési beállítások mentése, responses: { "200": { description: OK } } }
+
+  # ── Páros összehasonlítás (interaction) ────────────────────────────
+  /api/interaction/invite:
+    post: { tags: [Profile], summary: Összehasonlítás-meghívó létrehozása, responses: { "201": { description: Created } } }
+    get: { tags: [Profile], summary: Saját meghívók listája, responses: { "200": { description: OK } } }
+    delete: { tags: [Profile], summary: Meghívó visszavonása, responses: { "200": { description: OK } } }
+  /api/interaction/invite/{token}:
+    parameters:
+      - { name: token, in: path, required: true, schema: { type: string } }
+    get:
+      tags: [Public]
+      summary: Meghívó feloldása token alapján
+      security: []
+      responses: { "200": { description: OK }, "404": { description: Not found / expired } }
+  /api/interaction/invite/{token}/accept:
+    parameters:
+      - { name: token, in: path, required: true, schema: { type: string } }
+    post:
+      tags: [Public]
+      summary: Meghívó elfogadása (kölcsönös összehasonlítás nyitása)
+      security: []
+      responses: { "200": { description: OK }, "403": { description: "INVITE_EMAIL_MISMATCH" } }
+
+  # ── Hírlevél ───────────────────────────────────────────────────────
+  /api/newsletter/subscribe:
+    post:
+      tags: [Public]
+      summary: Feliratkozás (double opt-in — PENDING állapot + megerősítő levél)
+      description: |
+        Rate limit: `newsletter` tier, productionben Redis nélkül FAIL-CLOSED
+        (503) — a végpont tetszőleges címre küld levelet, tehát védelem nélkül
+        levél-ágyúként volna használható.
+      security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+                locale: { type: string, enum: [hu, en] }
+                source: { type: string, description: "Melyik felületről jött a feliratkozás" }
+      responses:
+        "200": { description: "OK (a válasz nem árulja el, létezett-e már a cím)" }
+        "503": { description: "RATE_LIMIT_UNAVAILABLE" }
+  /api/newsletter/confirm:
+    get:
+      tags: [Public]
+      summary: Feliratkozás megerősítése (PENDING → ACTIVE) — a levél linkje
+      security: []
+      parameters:
+        - { name: token, in: query, required: true, schema: { type: string } }
+      responses: { "302": { description: "Átirányítás a /newsletter/confirmed oldalra" } }
+    post:
+      tags: [Public]
+      summary: Megerősítés űrlapból
+      security: []
+      responses: { "200": { description: OK } }
+  /api/newsletter/unsubscribe:
+    get:
+      tags: [Public]
+      summary: Leiratkozás belépés nélkül (List-Unsubscribe és a levél lábléce)
+      security: []
+      parameters:
+        - { name: token, in: query, required: true, schema: { type: string } }
+      responses: { "302": { description: "Átirányítás a /newsletter/unsubscribed oldalra" } }
+    post:
+      tags: [Public]
+      summary: Leiratkozás (List-Unsubscribe=One-Click)
+      security: []
+      responses: { "200": { description: OK } }
+  /api/newsletter/click:
+    get:
+      tags: [Public]
+      summary: Kattintás-követő átirányítás
+      description: |
+        Kattintás IGEN, nyitás SOHA (nincs követő pixel). A `NewsletterDelivery`
+        sor a küldés ELŐTT jön létre, mert ez a link az id-jét viszi.
+      security: []
+      parameters:
+        - { name: d, in: query, required: true, schema: { type: string, description: "delivery id" } }
+      responses: { "302": { description: "Átirányítás a cikkre" } }
+  /api/newsletter/cover/{slug}:
+    parameters:
+      - { name: slug, in: path, required: true, schema: { type: string } }
+    get:
+      tags: [Public]
+      summary: A levélbe ágyazott borítókép
+      description: Ismeretlen slug a statikus márka-képre irányít; a slug nem léphet ki a blog könyvtárból.
+      security: []
+      responses: { "200": { description: "image/*" }, "302": { description: Fallback kép } }
+  /api/webhooks/resend:
+    post:
+      tags: [System]
+      summary: Resend kézbesítési webhook (delivered / failed / suppressed / bounced / complained)
+      description: |
+        Enélkül nincs valós kézbesítési státusz, és a visszapattant címek a
+        listán maradnak. Aláírás-ellenőrzés `RESEND_WEBHOOK_SECRET`-tel.
+      security: [{ svixSignature: [] }]
+      responses: { "200": { description: OK }, "400": { description: Bad signature } }
+
+  # ── Cron ───────────────────────────────────────────────────────────
+  /api/cron/blog-digest:
+    get:
+      tags: [System]
+      summary: Napi blog-digest kiküldése (14 napos ablak, idempotens)
+      security: [{ cronBearer: [] }]
+      responses: { "200": { description: "{ ok, sent }" }, "401": { description: Unauthorized } }
+  /api/cron/newsletter-maintenance:
+    get:
+      tags: [System]
+      summary: Hírlevél-karbantartás (outbox-retry, stale-claim recovery, 12 hónapos törlés)
+      security: [{ cronBearer: [] }]
+      responses: { "200": { description: OK }, "401": { description: Unauthorized } }
+  /api/cron/analytics-retention:
+    get:
+      tags: [System]
+      summary: Analitika megőrzési takarítás (heti)
+      security: [{ cronBearer: [] }]
+      responses: { "200": { description: OK }, "401": { description: Unauthorized } }
+
+  # ── Admin: blog, hírlevél, ajánlat-díjszabás ───────────────────────
+  /api/admin/blog:
+    post: { tags: [Admin], summary: Blogbejegyzés létrehozása, responses: { "201": { description: Created } } }
+    put: { tags: [Admin], summary: Blogbejegyzés felülírása, responses: { "200": { description: OK } } }
+    patch: { tags: [Admin], summary: Blogbejegyzés részleges módosítása (pl. piszkozat-állapot), responses: { "200": { description: OK } } }
+    delete: { tags: [Admin], summary: Blogbejegyzés törlése, responses: { "200": { description: OK } } }
+  /api/admin/newsletter:
+    get: { tags: [Admin], summary: Feliratkozók és kézbesítési statisztika, responses: { "200": { description: OK } } }
+    post: { tags: [Admin], summary: Küldés most / teszt-küldés, responses: { "200": { description: OK } } }
+  /api/admin/newsletter/issues:
+    post: { tags: [Admin], summary: Szerkesztett hírlevél-szám létrehozása, responses: { "201": { description: Created } } }
+    patch: { tags: [Admin], summary: Szám szerkesztése / publikálása, responses: { "200": { description: OK } } }
+    delete: { tags: [Admin], summary: Szám törlése, responses: { "200": { description: OK } } }
+  /api/admin/quote/rates:
+    get: { tags: [Admin], summary: Ajánlat-díjszabás lekérése, responses: { "200": { description: OK } } }
+    put: { tags: [Admin], summary: Ajánlat-díjszabás mentése, responses: { "200": { description: OK } } }
+
+  # ── Admin: CRM ─────────────────────────────────────────────────────
+  /api/admin/crm/deals:
+    get: { tags: [Admin], summary: Deal-lista (pipeline), responses: { "200": { description: OK } } }
+    post: { tags: [Admin], summary: Deal létrehozása (intake), responses: { "201": { description: Created } } }
+  /api/admin/crm/deals/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    get: { tags: [Admin], summary: Deal részletei, responses: { "200": { description: OK } } }
+    patch: { tags: [Admin], summary: Deal módosítása (státusz, érték, következő lépés), responses: { "200": { description: OK } } }
+  /api/admin/crm/deals/{id}/activities:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    post: { tags: [Admin], summary: Aktivitás rögzítése a dealhez, responses: { "201": { description: Created } } }
+  /api/admin/crm/activities/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    patch: { tags: [Admin], summary: Aktivitás módosítása, responses: { "200": { description: OK } } }
+    delete: { tags: [Admin], summary: Aktivitás törlése, responses: { "200": { description: OK } } }
+  /api/admin/crm/quotes:
+    post: { tags: [Admin], summary: Ajánlat létrehozása, responses: { "201": { description: Created } } }
+  /api/admin/crm/quotes/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    patch: { tags: [Admin], summary: Ajánlat módosítása, responses: { "200": { description: OK } } }
+    delete: { tags: [Admin], summary: Ajánlat törlése, responses: { "200": { description: OK } } }
+  /api/admin/crm/quotes/{id}/duplicate:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+    post: { tags: [Admin], summary: Ajánlat duplikálása, responses: { "201": { description: Created } } }
+
+  # ── Parkolt felületek (a kapu 404 FEATURE_PARKED-et ad) ────────────
+  # Ezek a route-ok LÉTEZNEK, de a `PORTFOLIO_SURFACE_STATE` jelenleg
+  # parkolja őket. A leíróban azért szerepelnek, hogy a visszaállításkor ne
+  # kelljen újra felderíteni a szerződésüket.
+  /api/candidate/{token}/team-role:
+    parameters:
+      - { name: token, in: path, required: true, schema: { type: string } }
+    post:
+      tags: [Manager/Hiring]
+      summary: "[PARKOLT: hiring] Jelölt csapatszerep-lépésének beküldése"
+      security: []
+      responses: { "200": { description: OK }, "404": { description: "FEATURE_PARKED" } }
+  /api/career/occupations:
+    get:
+      tags: [Public]
+      summary: "[PARKOLT: career] Foglalkozás-katalógus"
+      security: []
+      responses: { "200": { description: OK }, "404": { description: "FEATURE_PARKED" } }
+  /api/career/fakedoor/view:
+    post:
+      tags: [Public]
+      summary: "[PARKOLT: fakedoor] Ajánlat-megjelenítés mérése"
+      security: []
+      responses: { "200": { description: OK }, "404": { description: "FEATURE_PARKED" } }
+  /api/career/fakedoor/response:
+    post:
+      tags: [Public]
+      summary: "[PARKOLT: fakedoor] Szándék-válasz mérése"
+      security: []
+      responses: { "200": { description: OK }, "404": { description: "FEATURE_PARKED" } }
+  /api/admin/fakedoor/career/export:
+    get:
+      tags: [Admin]
+      summary: "[PARKOLT: fakedoor] Mérési adatok exportja"
+      responses: { "200": { description: "text/csv" }, "404": { description: "FEATURE_PARKED" } }

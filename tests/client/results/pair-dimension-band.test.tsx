@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { PairDimensionBand } from "@/components/results/PairDimensionBand";
 import { PairFacetNuances } from "@/components/results/PairFacetNuances";
+import { t } from "@/lib/i18n";
 import type {
   PairDimensionView,
   PairFacetNuanceView,
@@ -10,6 +11,13 @@ import type {
 vi.mock("@/components/LocaleProvider", () => ({
   useLocale: () => ({ locale: "hu" }),
 }));
+
+// A címeket a szótárból olvassuk, nem beírt szövegként: az állítás az, hogy
+// a KÉT FAJTA külön blokkot kap — nem az, hogy épp hogyan van fogalmazva.
+// (Nyelvi átnézéskor a bedrótozott másolat némán elavul: a 608a7d8 pont így
+// tette pirosra ezt a fájlt.)
+const DRIVER_TITLE = t("results.pairDriverTitle", "hu");
+const NUANCE_TITLE = t("results.pairNuanceTitle", "hu");
 
 const ROWS: PairDimensionView[] = [
   { dim: "H", dimLabel: "Becsületesség-Alázat", state: "differs", higher: "self" },
@@ -88,15 +96,15 @@ describe("PairFacetNuances", () => {
     // címke, más működés") episztemikusan más — egy listába keverve a
     // gyengébbik státusza a másikra is átragadna.
     render(<PairFacetNuances rows={NUANCES} />);
-    expect(screen.getByText("Hol fut az eltérés")).toBeInTheDocument();
-    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
+    expect(screen.getByText(DRIVER_TITLE)).toBeInTheDocument();
+    expect(screen.getByText(NUANCE_TITLE)).toBeInTheDocument();
     expect(screen.getByText("Társaságkedvelés")).toBeInTheDocument();
   });
 
   it("csak a jelen lévő fajtának ad címet", () => {
     render(<PairFacetNuances rows={NUANCES.filter((row) => row.kind === "nuance")} />);
-    expect(screen.queryByText("Hol fut az eltérés")).not.toBeInTheDocument();
-    expect(screen.getByText("Azonos címke, más működés")).toBeInTheDocument();
+    expect(screen.queryByText(DRIVER_TITLE)).not.toBeInTheDocument();
+    expect(screen.getByText(NUANCE_TITLE)).toBeInTheDocument();
   });
 
   it("kimondja, hogy ez a legbizonytalanabb réteg", () => {

@@ -13,8 +13,9 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
 **Üzleti modell (2026-07 óta):**
 - A fizetés a platformon KÍVÜL történik (tanácsadói számlázás).
 - A Stripe/Billingo billing réteg eltávolítva — visszaállítható a
-  `billing-v1-parked` git tagből. A Prisma sémában a Subscription/Purchase/
-  BillingEventLog modellek megmaradtak.
+  `billing-v1-parked` git tagből. A Prisma sémában a **Subscription** modell
+  maradt meg (a `Purchase` és a `BillingEventLog` a
+  `20260731090000_drop_legacy_billing` migrációval kikerült).
 - Org-hozzáférést a platform admin ad kézzel: `/admin?tab=orgs` →
   `POST /api/admin/org-access` (activate/trial/extend/deactivate/set_credits,
   assign_consultant/remove_consultant).
@@ -49,7 +50,7 @@ az ügyfelek és csapataik visszanézhetik az eredményeket.
 | **Notification hub** | `src/lib/notifications/` | Orchestrator + repository + policy rétegek, dedupe kulcs, role-aware címzés. |
 | **Hírlevél/blog-feliratkozás** | `src/lib/newsletter.ts`, `newsletter-digest.ts`, `newsletter-issue.ts`, `newsletter-engagement.ts`, `/api/newsletter/*` | Double opt-in feliratkozás (PENDING→ACTIVE), token-alapú, belépés nélküli leiratkozás `List-Unsubscribe` fejléccel. Kiküldés napi cronból (`/api/cron/blog-digest`), 14 napos ablakkal; a `NewsletterDelivery` napló teszi idempotenssé (a sor a küldés ELŐTT jön létre, mert a kattintás-követő link az id-jét viszi). Szerkesztett szám (`NewsletterIssue`) `issue:<id>` kulccsal. Kattintás igen, nyitás SOHA. Bounce/panasz: `/api/webhooks/resend`. A feliratkozó a CRM-ben leadként is látszik (badge). Admin: `/admin?tab=blog`. |
 | **Analitika** | `src/lib/analytics/`, `/api/e`, `/admin?tab=analytics` | Saját, first-party esemény-követés. ZÁRT katalógus (`events.ts`) zod `.strict()` sémákkal — PII szerkezetileg nem kerülhet bele. Nincs süti és semmilyen eszköz-tárolás: napi rotáló látogató-álnév. Üzleti szám mindig DB-ből, esemény csak mintázatra. Doksi: `docs/development/analytics.md` |
-| **Admin** | `/admin` (+ `/api/admin/*`) | Csak `ADMIN_EMAILS` env-ben listázott emailek (nincs nav-link, beírt URL). Tabok: Áttekintés/Kutatás/Emlékeztetők/Szervezetek. |
+| **Admin** | `/admin` (+ `/api/admin/*`) | Csak `ADMIN_EMAILS` env-ben listázott emailek (nincs nav-link, beírt URL). Tabok (`AdminNav.tsx`): Vezérlő · Analitika · CRM · Kérdések · Szervezetek · Tanácsadók · Blog · Rendszer · Visszajelzések · Emlékeztetők. A CRM és a Blog fül a parkolási kaputól függ. |
 
 ## Szerepek
 
@@ -118,24 +119,30 @@ Szerep-döntési pontok (mindig EZEKET bővítsd, ne írj literal összehasonlí
 ## Route-térkép (fő felületek)
 
 ```
-PUBLIKUS:  / (landing, self/team mód) · /try (vendég teszt) · /pricing
-           (tanácsadói ajánlat) · /founding · /contact · /blog · /patterns
-           · /observe/[token] · /join/[token] · /join/org/[inviteId]
+PUBLIKUS:  / (landing, self/team mód) · /try (vendég teszt) · /how-we-work
+           (a tanácsadói ajánlat — a /pricing PERMANENSEN ide irányít,
+            next.config.ts; a PricingContent komponens itt él tovább)
+           · /about · /rolunk · /founding (307 → /pilot) · /pilot · /contact
+           · /blog (parkolható) · /observe/[token] · /join/[token]
+           · /join/org/[inviteId] · /privacy (tervezet: noindex)
            · /newsletter/confirmed · /newsletter/unsubscribed (noindex,
              a feliratkozás-visszajelző oldalak)
+           PARKOLT: /patterns (ld. lentebb)
 BELÉPVE:   /dashboard → journey elosztó (soha nem renderel tartalmat)
   user:    /profile/results (tabok: results/comparison/invites) · /profile
            · /assessment · /team/[id] (ha tag)
   manager: /manager (cockpit) · /team/[id] (tabok: overview/intelligence/
            profile/members/teamRole) · org?tab=campaigns (observer körök)
   admin:   /org/[id] (cockpit; tabok: overview/campaigns/teams/members)
-           · /org/[id]/settings · /hiring/[orgId] (fagyasztott réteg)
+           · /org/[id]/settings · /hiring/[orgId] (PARKOLT — 404/redirect)
   trita:   /admin (ADMIN_EMAILS guard)
 ```
 
 Fejléc-nav szerepenként (`src/lib/navigation/config.ts` + `visibility.ts`):
-admin: Vezérlő·Csapatok·Jelöltek·Szervezet·Analitika; manager:
-Vezérlő·Csapatom·Jelöltek·Riportok; member: Vezérlő·Eredményeim·Csapatok.
+admin: Vezérlő·Csapatok·Szervezet·Analitika; manager: Vezérlő·Csapatom·
+Riportok; member: Vezérlő·Eredményeim·Csapatok. A „Jelöltek" és a „Karrier"
+belépő a parkolási kapu mögött van (`hiring`, `career`) — parkolt állapotban
+a builder `null`-t ad, tehát a menüpont NEM épül fel.
 
 ## Tesztelés
 
@@ -147,9 +154,13 @@ pnpm test:integration # test DB kell (bootstrap: test:integration:bootstrap)
 pnpm test:e2e         # Playwright
 ```
 
-Elvárás: type-check 0 hiba (2026-07-10 óta tiszta), unit+client zölden.
-Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
-új kódban ne szaporítsd.
+```bash
+pnpm test:pilot       # pilot-kiadási kapu: Scan v1 lánc + kritikus e2e utak
+```
+
+Elvárás: **type-check 0 hiba, lint 0 hiba** (2026-08-23 óta mindkettő tiszta —
+a korábbi „~60 örökölt hiba" megjegyzés elavult volt), unit + client zölden.
+A CI a `checks` jobban ugyanezt futtatja, plusz egy éles buildet.
 
 ## Konvenciók és szabályok
 
@@ -157,8 +168,12 @@ Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
   env-lista: **`.env.example`** (kötelező/éles/opcionális jelöléssel).
   Kötelező: Clerk kulcsok, DATABASE_URL + DIRECT_URL, RESEND_API_KEY,
   `ADMIN_EMAILS` (admin felület!), NEXT_PUBLIC_APP_URL; élesben ezeken felül
-  `ANALYTICS_SALT`, `CRON_SECRET`, Upstash. Kódból nem intézhető élesítési
-  teendők (DNS, Search Console, cégadatok): `docs/development/launch-checklist.md`.
+  `ANALYTICS_SALT`, `CRON_SECRET`, `ERROR_ALERT_WEBHOOK_URL` és **Upstash — ez
+  utóbbi a TELJES publikus felület előfeltétele**, nem csak a hírlevélé:
+  nélküle a belépés nélkül hívható és levelet küldő végpontok fail-closed
+  503-at adnak (`FAIL_CLOSED_IN_PRODUCTION`, `src/lib/rate-limit.ts`).
+  Kódból nem intézhető élesítési teendők (DNS, Search Console, cégadatok):
+  `docs/development/launch-checklist.md`.
 - Minden user-facing szöveg i18n kulcson át (`t`/`tf`), HU+EN.
 - API route-okon Zod-validáció; hibakód-minta: rövid kód a szerverről
   (pl. `INVITE_LIMIT_REACHED`), kliens lokalizálja.
@@ -177,11 +192,26 @@ Lint: ~60 örökölt hiba van (no-explicit-any, `// eyebrow` jsx-comment) —
 
 ## Fagyasztott / parkolt rétegek
 
-- ~~Hiring/candidate flow~~ — **2026-07-23-tól ÚJRA AKTÍV** (nem fagyasztott):
-  kapu ki (`CANDIDATE_GATING_ENABLED=false`, operating-mode), hozzáférés a
-  tanácsadói körnek (isConsultantSurface); opcionális csapatszerep-lépés a
-  jelöltnek, kitöltés-értesítés a tanácsadónak/org adminnak. Részletek:
-  changelog 2026-07-23.
+**A parkolás EGYETLEN forrása: `src/lib/portfolio-parking.ts`
+(`PORTFOLIO_SURFACE_STATE`).** Ez zár le oldalt, API-t, navigációs belépőt,
+admin-fület, `robots.txt`-et, sitemapet, `llms.txt`-et és értesítés-típust.
+Aktuális állapot (2026-08-23):
+
+| Felület | Kulcs | Állapot |
+|---|---|---|
+| Karrier-motor és katalógus | `career` | parkolt |
+| Jelölt/hiring flow | `hiring` | **parkolt** |
+| Fake door | `fakedoor` | parkolt |
+| `/patterns` felfedező | `patternExplorer` | parkolt |
+| Blog + hírlevél | `blog` | **aktív** |
+| CRM és ajánlat | `crm` | aktív |
+| Publikus profilmegosztás/OG | `publicSharing` | aktív |
+
+- **Hiring/candidate flow** — a *funkció* 2026-07-23-tól kész és kapu nélküli
+  (`CANDIDATE_GATING_ENABLED=false`), de a *felület* a P2.2 portfólió-szűkítés
+  óta **parkolt**: `/hiring`, `/apply` és a candidate API-k 404/redirect.
+  Visszaállítás: `PORTFOLIO_SURFACE_STATE.hiring = "active"` + a
+  `docs/product/portfolio-parking-2026-08.md` checklistje.
 - **Billing (Stripe/Billingo)**: teljes implementáció a `billing-v1-parked`
   tagben; visszaállítási terv: `docs/development/billing-v1-launch-checklist.md`.
 - **Advisory oldal** (`/advisory`): él, CTA-k `/contact`-ra mutatnak.

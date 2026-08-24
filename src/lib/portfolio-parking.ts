@@ -78,7 +78,13 @@ const PARKED_ROUTE_RULES: readonly ParkedRouteRule[] = [
   },
   {
     surface: "blog",
-    prefixes: ["/blog", "/api/admin/blog"],
+    // A hírlevél a blog disztribúciós rétege: a feliratkozás a bloglistán és
+    // a cikkek alján él, a digest pedig blogbejegyzéseket küld. Ha a blog
+    // visszaparkol, a FELÜLET eltűnne (Footer/NavBar kapuzott), de a
+    // feliratkozó API nyitva maradt volna — egy parkolt felület nem tarthat
+    // fenn élő adatgyűjtő végpontot. A `/newsletter/*` visszajelző oldalak
+    // ugyanezért kerülnek ide.
+    prefixes: ["/blog", "/api/admin/blog", "/api/newsletter", "/newsletter"],
   },
   {
     surface: "patternExplorer",

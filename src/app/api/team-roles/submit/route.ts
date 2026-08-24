@@ -57,7 +57,9 @@ export async function POST(req: NextRequest) {
   });
 
   // Több-lépéses kampány: a szerep-kérdőív teljesítése lépteti a TEAM_ROLE lépést
-  advanceCampaignStepForUser(profile.id, "TEAM_ROLE").catch(() => {});
+  if (campaignId) {
+    advanceCampaignStepForUser(profile.id, "TEAM_ROLE", { campaignId }).catch(() => {});
+  }
 
   return NextResponse.json({ ok: true });
 }

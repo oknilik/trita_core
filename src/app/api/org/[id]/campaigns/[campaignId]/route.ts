@@ -357,6 +357,16 @@ export async function DELETE(
       { status: 403 },
     );
   }
+  // A riportált mérési kör auditbizonyíték: nem törölhető úgy, hogy a
+  // publikált snapshot forráskapcsolata megszűnjön. A riportot (ha vázlat)
+  // előbb explicit törölni kell; publikált kör a pilot auditnyom része.
+  const linkedReport = await prisma.teamReport.findFirst({
+    where: { campaignId },
+    select: { id: true },
+  });
+  if (linkedReport) {
+    return NextResponse.json({ error: "CAMPAIGN_HAS_REPORT" }, { status: 409 });
+  }
   // Futó szerep-körös kampány törlésekor a csapat(ok) kör-flagje ne
   // ragadjon be.
   const delSteps =

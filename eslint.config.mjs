@@ -102,6 +102,15 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Agent-worktree-k (saját .next build-artifactokkal) nem lint-célpontok
     ".claude/**",
+    // Futtatás-artifactok. Ezek git-ignoráltak, de az ESLint nem a
+    // .gitignore-ból dolgozik: egy `pnpm test:e2e` után a Playwright
+    // report-bundle-je (minifikált JS) 3000+ hamis leletet adott a következő
+    // `pnpm check`-re. A CI-ben ez azért nem látszott, mert ott külön jobban
+    // fut a lint és az e2e — helyben viszont mindig eltalálta a fejlesztőt.
+    "playwright-report/**",
+    "test-results/**",
+    "artifacts/**",
+    "coverage/**",
   ]),
 ]);
 

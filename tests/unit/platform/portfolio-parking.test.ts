@@ -60,7 +60,12 @@ test("P2.2: a zászlóshajó és a hasonló előtagú útvonalak nyitva maradnak
     "/blog",
     "/blog/example",
     "/api/admin/blog",
+    // A hírlevél a blog kapuja alatt van (aktív blognál nyitva) — a hasonló
+    // előtagú, de NEM modulhoz tartozó utak viszont nem záródhatnak le.
+    "/api/newsletter/subscribe",
+    "/newsletter/confirmed",
     "/blogger",
+    "/newsletters-archive",
     "/patterns-library",
     // Meleg-lead / kívánságlista végpont — élő felület hívja (TeamInterestBanner),
     // nem eshet a fakedoor kapu alá.

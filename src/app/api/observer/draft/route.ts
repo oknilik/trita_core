@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 import { resolveObserverSubmitViewerClerkId } from "@/lib/observer/submit-auth";
 import {
   resolveObserverTokenLifecycle,
@@ -62,9 +62,6 @@ const draftSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const body = await req.json().catch(() => null);
   const parsed = draftSchema.safeParse(body);
   if (!parsed.success) {
@@ -72,6 +69,8 @@ export async function POST(req: Request) {
   }
 
   const { token, phase, relationshipType, knownDuration, answers, currentPage } = parsed.data;
+  const rateLimitResponse = await checkTokenRateLimit("observer", token);
+  if (rateLimitResponse) return rateLimitResponse;
   if (Object.keys(answers).length > 150) {
     return NextResponse.json({ error: "TOO_MANY_ANSWERS" }, { status: 400 });
   }
@@ -142,14 +141,13 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const body = await req.json().catch(() => null);
   const token = body?.token;
   if (!token || typeof token !== "string") {
     return NextResponse.json({ error: "Missing token" }, { status: 400 });
   }
+  const rateLimitResponse = await checkTokenRateLimit("observer", token);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const invitation = await prisma.observerInvitation.findUnique({
     where: { token },

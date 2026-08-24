@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { checkTokenRateLimit } from "@/lib/rate-limit";
 import { isValidTeamRoleSelectionSet } from "@/lib/team-role-questions";
 
 // POST /api/candidate/[token]/team-role — a jelölt opcionális csapatszerep-
@@ -18,11 +18,9 @@ export async function POST(
   req: Request,
   { params }: { params: Promise<{ token: string }> },
 ) {
-  // Publikus (token-alapú) végpont — rate limit a testvér-route-ok mintájára.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { token } = await params;
+  const rateLimitResponse = await checkTokenRateLimit("candidate", token);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const body = await req.json().catch(() => ({}));
   const parsed = bodySchema.safeParse(body);

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/primitives/Button";
 import { InlineBanner } from "@/components/ui/primitives/InlineBanner";
 import { SelectField } from "@/components/ui/primitives/SelectField";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { BulkInvitePanel } from "@/components/org/BulkInvitePanel";
 
 type OrgRole = "ORG_ADMIN" | "ORG_MANAGER" | "ORG_MEMBER";
 
@@ -22,6 +23,9 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
   const loc = locale as Locale;
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<OrgRole>("ORG_MEMBER");
+  // Az egyelemű alak marad az alapértelmezés: a napi művelet egy-egy tag
+  // felvétele. A tömeges nézet a pilot-setup (5–30 fős csapat egyben) útja.
+  const [bulkMode, setBulkMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<"success" | "pending" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,6 +66,37 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
     } finally {
       setLoading(false);
     }
+  }
+
+  const modeToggle = (
+    <button
+      type="button"
+      onClick={() => setBulkMode((current) => !current)}
+      className="self-start text-caption font-semibold text-[var(--color-accent-primary)] underline underline-offset-2"
+    >
+      {bulkMode ? t("org.forms.bulkToggleOff", loc) : t("org.forms.bulkToggleOn", loc)}
+    </button>
+  );
+
+  if (bulkMode) {
+    return (
+      <div className="flex flex-col gap-3">
+        {canInviteManager && (
+          <SelectField
+            label={t("org.forms.roleLabel", loc)}
+            containerClassName="w-full sm:w-[220px]"
+            value={role}
+            onChange={(e) => setRole(e.target.value as OrgRole)}
+          >
+            <option value="ORG_MEMBER">{t("org.forms.roleMember", loc)}</option>
+            <option value="ORG_MANAGER">{t("org.forms.roleManager", loc)}</option>
+            <option value="ORG_ADMIN">Admin</option>
+          </SelectField>
+        )}
+        <BulkInvitePanel endpoint={`/api/org/${orgId}/invite`} locale={loc} role={role} />
+        {modeToggle}
+      </div>
+    );
   }
 
   return (
@@ -114,6 +149,8 @@ export function OrgInviteForm({ orgId, locale, canInviteManager = false }: OrgIn
           {error}
         </InlineBanner>
       ) : null}
+
+      {modeToggle}
     </div>
   );
 }

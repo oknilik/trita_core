@@ -10,14 +10,12 @@ const linkSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  // A testvér-route-okkal (submit/draft/invite) azonos standard rate-limit.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId } = await auth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
+  const rateLimitResponse = await checkRateLimit("api", userId);
+  if (rateLimitResponse) return rateLimitResponse;
 
   const body = await req.json().catch(() => ({}));
   const parsed = linkSchema.safeParse(body);

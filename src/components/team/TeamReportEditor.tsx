@@ -27,6 +27,7 @@ import {
 
 interface Props {
   teamId: string;
+  campaignId: string | null;
   orgId?: string | null;
   reports: SerializedTeamReport[];
   isHu: boolean;
@@ -86,6 +87,54 @@ const ERROR_LABELS: Record<string, { hu: string; en: string }> = {
     hu: "A fordítás most nem érhető el. Próbáld újra később.",
     en: "Translation isn't available right now. Please try again later.",
   },
+  REPORT_CAMPAIGN_REQUIRED: {
+    hu: "A riport csak egy lezárt Team Scan mérési körből hozható létre.",
+    en: "A report can only be created from a closed Team Scan cycle.",
+  },
+  REPORT_CAMPAIGN_NOT_CLOSED: {
+    hu: "A mérési kört a riport elkészítése előtt le kell zárni.",
+    en: "Close the measurement cycle before creating its report.",
+  },
+  REPORT_CAMPAIGN_NOT_FOUND: {
+    hu: "A kiválasztott mérési kör nem található vagy nem ehhez a szervezethez tartozik.",
+    en: "The selected measurement cycle was not found or belongs to another organization.",
+  },
+  REPORT_CAMPAIGN_NOT_SCAN_V1: {
+    hu: "Pilot-riport csak Team Scan v1 mérési körből készíthető.",
+    en: "Pilot reports can only be created from a Team Scan v1 cycle.",
+  },
+  REPORT_CAMPAIGN_TEAM_MISMATCH: {
+    hu: "A kiválasztott mérési kör nem ehhez a csapathoz tartozik.",
+    en: "The selected measurement cycle does not belong to this team.",
+  },
+  REPORT_CAMPAIGN_MISMATCH: {
+    hu: "A riport aggregátuma nem a kiválasztott mérési körből származik.",
+    en: "The report aggregate does not come from the selected measurement cycle.",
+  },
+  REPORT_AGGREGATES_REQUIRED: {
+    hu: "A riporthoz még nem áll rendelkezésre érvényes aggregált csapatkép.",
+    en: "A valid aggregate team view is not available for this report yet.",
+  },
+  REPORT_NARRATIVE_INCOMPLETE: {
+    hu: "A publikáláshoz cím, összefoglaló és ajánlások szükségesek.",
+    en: "A title, summary, and recommendations are required to publish.",
+  },
+  REPORT_TARGET_ACTION_REQUIRED: {
+    hu: "A publikáláshoz legalább egy mérhető célmutatóval rendelkező akció szükséges.",
+    en: "At least one action with a measurable target is required to publish.",
+  },
+  REPORT_SELF_DATA_INSUFFICIENT: {
+    hu: "Nincs elegendő kampányhoz kötött egyéni mérés a riporthoz.",
+    en: "There is not enough campaign-bound self-assessment data for the report.",
+  },
+  REPORT_TRUST_DATA_INSUFFICIENT: {
+    hu: "Nincs elegendő mért bizalmi adat a riport publikálásához.",
+    en: "There is not enough measured trust data to publish the report.",
+  },
+  REPORT_PULSE_DATA_INSUFFICIENT: {
+    hu: "Az anonimitási minimumot elérő pulse-adat szükséges a publikáláshoz.",
+    en: "Pulse data meeting the anonymity floor is required to publish.",
+  },
 };
 
 // A fordítás-panel szerkeszthető mezői (a belső jegyzet nem publikálódik,
@@ -111,7 +160,7 @@ const TRANSLATION_FIELDS: Array<{
   { key: "leadershipGuide", label: "How to lead this team", rows: 4 },
 ];
 
-export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props) {
+export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, isHu }: Props) {
   const router = useRouter();
   const locale: Locale = isHu ? "hu" : "en";
   const draft = reports.find((r) => r.status === "DRAFT") ?? null;
@@ -233,7 +282,12 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/team/${teamId}/report`, { method: "POST" });
+      if (!campaignId) throw new Error("REPORT_CAMPAIGN_REQUIRED");
+      const res = await fetch(`/api/team/${teamId}/report`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ campaignId }),
+      });
       if (!res.ok) throw new Error((await res.json()).error ?? "Hiba");
       const { report } = (await res.json()) as { report: SerializedTeamReport };
       seedFromReport(report);
@@ -436,9 +490,16 @@ export function TeamReportEditor({ teamId, orgId = null, reports, isHu }: Props)
               ? "Nyiss egy riport-vázlatot: a rendszer elkészíti az aggregátum-pillanatképet, te pedig hozzáadod a narratív értékelést és az interjúk tanulságait."
               : "Open a report draft: the system captures the aggregate snapshot, and you add the narrative assessment and interview insights."}
           </p>
+          {!campaignId && (
+            <p className="mb-4 rounded-lg border border-state-warning-border bg-state-warning-bg px-3 py-2 text-xs text-state-warning-fg">
+              {isHu
+                ? "Nincs lezárt Team Scan mérési kör ehhez a csapathoz. Előbb zárd le a kampányt."
+                : "There is no closed Team Scan cycle for this team. Close the campaign first."}
+            </p>
+          )}
           <button
             type="button"
-            disabled={busy}
+            disabled={busy || !campaignId}
             onClick={createDraft}
             className="inline-flex min-h-[44px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-50"
           >

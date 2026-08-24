@@ -14,6 +14,31 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: [["html", { open: "never" }], ["list"]],
+  // A dev-szerver útvonal-fordítását kiviszi a tesztek idejéből — ld. a fájl
+  // fejlécét. Enélkül az első néhány teszt fizeti ki az összes többi
+  // fordítását, és hideg `.next`-tel (CI: friss checkout) bele is fut a
+  // timeoutba.
+  globalSetup: "./tests/e2e/global-setup.ts",
+  // A webServer `next dev`: MINDEN útvonal első betöltése fordítással jár, és
+  // ez a fordítás a teszt idejébe számít. A Playwright 30 s-os alapértéke egy
+  // előre lefordított appra van szabva — nálunk a hideg útvonalakat érintő
+  // tesztek rendszeresen belefutottak, és a `retries: 2` fedte el (a második
+  // futásra a szerver már meleg volt). Ez a jelzést is elnyelte: egy valódi
+  // lassulás ugyanúgy „flaky retry"-ként ment volna át.
+  //
+  // 60 s bőven a meleg futásidők (2–20 s) felett van, tehát valódi
+  // regressziót továbbra is elkap — csak a hidegindítást nem bünteti.
+  timeout: 60_000,
+  // Az `expect(...)` SAJÁT időkorláttal dolgozik (alapból 5 s), amit a fenti
+  // teszt-timeout NEM fed. Ez az 5 s meleg alkalmazásra van szabva: ha egy
+  // állítás olyan képernyőt vár, amit a dev-szerver épp most fordít, a
+  // várakozás lejár, mielőtt a nézet megjelenne — a teszt pedig „element not
+  // found"-ot jelent, ami valódi hibának LÁTSZIK.
+  //
+  // A suite több tesztje eddig egyenként írt ki `{ timeout: 15_000 }`-et
+  // ugyanezért; ez a sor ugyanazt teszi alapértékké. Valódi regressziót
+  // továbbra is elkap: egy meglévő nézet másodpercek alatt megjelenik.
+  expect: { timeout: 15_000 },
   use: {
     baseURL,
     headless: true,

@@ -717,6 +717,35 @@ export const orgTranslations = {
       inviteGenericError: { hu: "Hiba történt. Próbáld újra.", en: "Something went wrong. Please try again." },
       inviteNetworkError: { hu: "Hálózati hiba. Próbáld újra.", en: "Network error. Please try again." },
 
+      // Tömeges meghívás (BulkInviteForm). A pilot 200–500 kitöltője
+      // egyesével felvive a program legdrágább kézi munkaóráját jelentette.
+      bulkToggleOn: { hu: "Több cím egyszerre", en: "Invite several at once" },
+      bulkToggleOff: { hu: "Egy cím megadása", en: "Invite a single address" },
+      bulkLabel: { hu: "Email címek", en: "Email addresses" },
+      bulkPlaceholder: {
+        hu: "Illeszd be a címeket — soronként, vesszővel vagy a levelezőből másolva.\n\nanna@ceg.hu\nBela Kovacs <bela@ceg.hu>",
+        en: "Paste the addresses — one per line, comma-separated, or copied from your mail client.\n\nanna@company.com\nBella Smith <bella@company.com>",
+      },
+      bulkHint: {
+        hu: "Bármilyen elválasztó jó (sortörés, vessző, pontosvessző). Az ismétlődő címeket kiszűrjük.",
+        en: "Any separator works (line break, comma, semicolon). Duplicate addresses are filtered out.",
+      },
+      bulkParsed: { hu: "{count} cím felismerve", en: "{count} addresses recognized" },
+      bulkInvalid: { hu: "{count} nem értelmezhető: {list}", en: "{count} could not be read: {list}" },
+      bulkSubmit: { hu: "{count} cím meghívása", en: "Invite {count} addresses" },
+      bulkProgress: { hu: "Küldés… {done}/{total}", en: "Sending… {done}/{total}" },
+      bulkDone: { hu: "Kész — {total} cím feldolgozva.", en: "Done — {total} addresses processed." },
+      // Az összegzés sorai. Csak a nem nulla tételek jelennek meg.
+      bulkAdded: { hu: "{count} azonnal tag lett (már volt fiókjuk)", en: "{count} joined immediately (they already had an account)" },
+      bulkInvited: { hu: "{count} meghívót kapott emailben", en: "{count} received an email invite" },
+      bulkNoEmail: {
+        hu: "{count} meghívó létrejött, de a levél NEM ment ki — küldj nekik linket kézzel",
+        en: "{count} invites created, but the email did NOT go out — send them a link manually",
+      },
+      bulkAlready: { hu: "{count} már tag volt", en: "{count} were already members" },
+      bulkSelf: { hu: "{count} a saját címed volt", en: "{count} was your own address" },
+      bulkFailed: { hu: "{count} címnél hiba történt", en: "{count} addresses failed" },
+
       // OrgRenameForm
       renameLabel: { hu: "Szervezet neve", en: "Organization name" },
       save: { hu: "Mentés", en: "Save" },

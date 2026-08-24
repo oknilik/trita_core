@@ -8,7 +8,7 @@ import {
   createCandidateApplyInvite,
 } from "@/lib/candidate-apply/service";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://trita.io";
 
 const bodySchema = z.object({
   email: z.string().email().optional(),
@@ -24,10 +24,6 @@ const bodySchema = z.object({
 
 // POST /api/manager/candidates — create a candidate invite link (+ optionally send email)
 export async function POST(req: Request) {
-  // E-mailt küldő végpont — rate limit a testvér-route-ok mintájára.
-  const rateLimitResponse = await checkRateLimit("api");
-  if (rateLimitResponse) return rateLimitResponse;
-
   const { userId } = await auth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
@@ -35,6 +31,8 @@ export async function POST(req: Request) {
   if (!parsed.success) return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
 
   const { email, name, position, orgId, teamId, includeTeamRole, inviteLocale } = parsed.data;
+  const rateLimitResponse = await checkRateLimit(email ? "contact" : "api", userId);
+  if (rateLimitResponse) return rateLimitResponse;
   let serviceResult;
   try {
     serviceResult = await createCandidateApplyInvite({

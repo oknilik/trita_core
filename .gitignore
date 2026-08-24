@@ -31,7 +31,11 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
+# A két *.example fájl SZÁNDÉKOSAN verziókövetett: ezek a magyarázatos
+# env-listák (a CLAUDE.md és a launch-checklist is rájuk hivatkozik).
+# Valódi titok EGYIKBE SEM kerülhet — csak placeholder értékek.
 .env*
+!.env.example
 !.env.test.example
 
 # vercel
@@ -47,6 +51,14 @@ next-env.d.ts
 # Playwright artifacts
 /playwright-report/
 /test-results/
+
+# Futtatás-kimenetek (regenerálhatók, nem forrás):
+#   audit-reports/ — pnpm audit:ui, pnpm audit:outputs
+#   artifacts/     — a CI és a helyi teszt-futtatás naplói/riportjai
+# Korábban commitolva voltak: egy régi futás pillanatképe így a repóban
+# maradt, és úgy nézett ki, mintha a jelenlegi állapotot írná le.
+/audit-reports/
+/artifacts/
 
 # email előnézet-generátor kimenete (scripts/preview-emails.ts)
 .email-previews/
