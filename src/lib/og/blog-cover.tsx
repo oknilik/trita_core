@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 import { getPostBySlug, isBlogCoverImage } from "@/lib/blog";
 import { COLORS } from "@/lib/design-tokens";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
@@ -51,18 +52,45 @@ const OG_ART_PALETTE: ArtPalette = {
  * fájlnál `null`, és a hívó visszaesik a generatív vizuálra: egy törölt kép
  * miatt ne legyen üres lyuk a link-előnézetben.
  */
+/**
+ * Beolvasott (és WebP esetén PNG-vé konvertált) borítók gyorsítótára.
+ *
+ * A konverzió minden OG- és hírlevél-kérésen lefutna, pedig a fájlnév
+ * tartalom-hasht visz (`<slug>-<hash>.webp`), tehát a kulcs stabil: új kép =
+ * új fájlnév. A kis felső korlát a futó példány memóriáját védi; a törlés
+ * FIFO, mert a borítók száma amúgy is a cikkek számával nő.
+ */
+const COVER_DATA_URI_CACHE = new Map<string, string>();
+const COVER_DATA_URI_CACHE_MAX = 32;
+
 async function readCoverDataUri(coverImage: string): Promise<string | null> {
   if (!isBlogCoverImage(coverImage)) return null;
   const fileName = coverImage.slice("/blog-covers/".length);
+  const cached = COVER_DATA_URI_CACHE.get(fileName);
+  if (cached) return cached;
+
   const filePath = path.join(process.cwd(), "public", "blog-covers", fileName);
   try {
     const bytes = await readFile(filePath);
-    const mime = fileName.endsWith(".png")
-      ? "image/png"
-      : fileName.endsWith(".webp")
-        ? "image/webp"
-        : "image/jpeg";
-    return `data:${mime};base64,${bytes.toString("base64")}`;
+    let dataUri: string;
+    // A Satori / @vercel/og WebP data URI-kat nem minden futtatókörnyezetben
+    // tud stabilan dekódolni (a route ilyenkor `u2 is not iterable` hibával
+    // megszakad). A szerkesztő továbbra is WebP-t tárolhat, az OG-vászonnak
+    // viszont PNG-t adunk, amit a renderer natívan és determinisztikusan kezel.
+    if (fileName.endsWith(".webp")) {
+      const png = await sharp(bytes).png().toBuffer();
+      dataUri = `data:image/png;base64,${png.toString("base64")}`;
+    } else {
+      const mime = fileName.endsWith(".png") ? "image/png" : "image/jpeg";
+      dataUri = `data:${mime};base64,${bytes.toString("base64")}`;
+    }
+
+    if (COVER_DATA_URI_CACHE.size >= COVER_DATA_URI_CACHE_MAX) {
+      const oldest = COVER_DATA_URI_CACHE.keys().next().value;
+      if (oldest !== undefined) COVER_DATA_URI_CACHE.delete(oldest);
+    }
+    COVER_DATA_URI_CACHE.set(fileName, dataUri);
+    return dataUri;
   } catch {
     return null;
   }
@@ -172,7 +200,12 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
                   alt=""
                   width={340}
                   height={168}
-                  style={{ width: 340, height: 168, objectFit: "cover" }}
+                  style={{
+                    width: 340,
+                    height: 168,
+                    objectFit: "cover",
+                    objectPosition: `${published.coverFocalX ?? 50}% ${published.coverFocalY ?? 50}%`,
+                  }}
                 />
               ) : (
                 <BlogArtVisual

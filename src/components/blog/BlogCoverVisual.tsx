@@ -14,6 +14,8 @@ import type { BlogArtConcept, BlogArtFamily, BlogArtLineMode, LegacyBlogArtMotif
  */
 export function BlogCoverVisual({
   coverImage,
+  coverFocalX = 50,
+  coverFocalY = 50,
   slug,
   title,
   tags,
@@ -27,6 +29,8 @@ export function BlogCoverVisual({
   priority,
 }: {
   coverImage?: string;
+  coverFocalX?: number;
+  coverFocalY?: number;
   slug: string;
   title?: string;
   tags?: string[];
@@ -49,6 +53,7 @@ export function BlogCoverVisual({
         priority={priority}
         sizes={variant === "mini" ? "160px" : "(min-width: 768px) 720px, 100vw"}
         className={`object-cover ${className ?? ""}`}
+        style={{ objectPosition: `${coverFocalX}% ${coverFocalY}%` }}
       />
     );
   }

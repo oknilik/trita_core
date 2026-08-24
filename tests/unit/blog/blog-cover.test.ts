@@ -1,7 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { isBlogCoverImage } from "@/lib/blog";
-import { sniffCoverExtension } from "@/lib/blog-cover-format";
+import sharp from "sharp";
+import { blogCoverFocalPoint, isBlogCoverImage, isOwnedBlogCover } from "@/lib/blog";
+import { optimizeBlogCover, sniffCoverExtension } from "@/lib/blog-cover-format";
 
 // A borító-út frontmatterből jön (admin-mentés, .mdx-feltöltés), és
 // `<img src>`-ként ÉS fájlútként is landol. Ezért nem elég, hogy „string" —
@@ -24,6 +25,37 @@ test("kulso URL, konyvtar-kilepes es rossz formatum elbukik", () => {
   assert.equal(isBlogCoverImage("/blog-covers/Kep.JPG"), false);
   assert.equal(isBlogCoverImage(undefined), false);
   assert.equal(isBlogCoverImage(42), false);
+});
+
+test("a fokuszpont csak a 0-100 tartomanyban ervenyes", () => {
+  assert.equal(blogCoverFocalPoint(0), 0);
+  assert.equal(blogCoverFocalPoint(46), 46);
+  assert.equal(blogCoverFocalPoint(100), 100);
+  assert.equal(blogCoverFocalPoint(-1), undefined);
+  assert.equal(blogCoverFocalPoint(101), undefined);
+  assert.equal(blogCoverFocalPoint("50"), undefined);
+  // Kézzel írt frontmatter törtszáma: a mentő séma egészet vár, ezért kerekítünk.
+  assert.equal(blogCoverFocalPoint(46.4), 46);
+  assert.equal(blogCoverFocalPoint(99.7), 100);
+});
+
+// ── Takarítás: melyik fájl tartozik a cikkhez ─────────────────────────
+//
+// A cikk törlése/borítócseréje csak a hozzá GENERÁLT fájlt viheti el. Puszta
+// prefix-egyezés kevés: a slugok között van prefix-viszony, a HU–EN párok
+// pedig kézzel felvett, közös illusztráción osztozhatnak.
+
+test("csak a slughoz generalt boritot ismerjuk sajatnak", () => {
+  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.webp", "tritan-vs-mbti"), true);
+  // Másik cikk generált borítója, aminek a slugja prefixként tartalmazza az enyémet.
+  assert.equal(
+    isOwnedBlogCover("/blog-covers/tritan-vs-mbti-why-it-matters-0123456789.webp", "tritan-vs-mbti"),
+    false,
+  );
+  // Kézzel felvett, HU–EN páron megosztott illusztráció.
+  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-illustrated.webp", "tritan-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.png", "tritan-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover(undefined, "tritan-vs-mbti"), false);
 });
 
 // ── Formátum-felismerés ───────────────────────────────────────────────
@@ -61,4 +93,28 @@ test("az atnevezett SVG es a szemet nem megy at", () => {
     ),
     null,
   );
+});
+
+test("a feltoltott borito normalizalt, meretezett WebP lesz", async () => {
+  const source = await sharp({
+    create: { width: 1800, height: 1000, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+
+  const result = await optimizeBlogCover(source);
+
+  assert.equal(result.width, 1600);
+  assert.equal(result.height, 889);
+  assert.equal(sniffCoverExtension(result.bytes), "webp");
+});
+
+test("a tul kicsi es rossz aranyu kep elbukik", async () => {
+  const small = await sharp({
+    create: { width: 800, height: 500, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+  const portrait = await sharp({
+    create: { width: 1200, height: 1200, channels: 3, background: "#e8dec9" },
+  }).png().toBuffer();
+
+  await assert.rejects(() => optimizeBlogCover(small), /IMAGE_TOO_SMALL/);
+  await assert.rejects(() => optimizeBlogCover(portrait), /INVALID_ASPECT_RATIO/);
 });

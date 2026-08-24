@@ -59,6 +59,10 @@ Felülírás: `BLOG_STORE=fs|github` env.
 
 ### Cikk-vizuál
 
+A szerkesztői főút a **feltöltött borító**. A generatív rendszer stabil
+tartalék marad a régi vagy kép nélküli cikkekhez; a négy kézírás részletes
+vezérlése csak akkor látszik, ha nincs feltöltött kép.
+
 A vizuál négy külön kézírást támogat: `collage`, `modular`, `constellation`,
 `flow`. Ettől független a jelenet szerkesztői fogalma: `connection`,
 `balance`, `tension`, `threshold`, `signal`, `growth`, valamint a dekoratív
@@ -88,24 +92,25 @@ feltöltött borító.
 
 | Mező | Érték |
 |---|---|
-| `coverImage` | `/blog-covers/<slug>.<jpg\|png\|webp>` — más alak érvénytelen, a cikk ilyenkor a rajzolt képet kapja |
+| `coverImage` | `/blog-covers/<slug>-<tartalom-hash>.webp` — más alak érvénytelen, a cikk ilyenkor a rajzolt képet kapja |
 
 **Hol tárolódik.** A kép a cikkel egy helyre, a repóba kerül
 (`public/blog-covers/`): `github` módban commitként, `fs` módban fájlírással.
 Így a borító a cikkel egy deployban élesedik, és ugyanúgy visszaállítható a
 git-történelemből — nem kell külön objektumtároló egy pár tucat képes bloghoz.
 
-**Menete.** A feltöltés (`POST /api/admin/blog/cover`) azonnal külön commitot
-csinál, de a frontmatter `coverImage` mezőjét a **cikk következő mentése**
-írja be. Amíg nem mentesz, a publikus felületen a régi kép megy. Az
-eltávolítás (`DELETE`) törli a fájlt, és a mentés után a cikk visszakapja a
-generatív vizuált.
+**Menete.** A fájl kiválasztás után csak a böngészőben él, három valódi
+kivágásban (16:10, 16:9, 1:1) látható. A két fókuszcsúszka minden felületen
+azonos `object-position` értéket ad. A kép a cikk mentésekor kerül a szerverre:
+előbb optimalizált, tartalom-hashsel verziózott WebP készül, utána a cikk
+erre a már létező fájlra hivatkozva mentődik. Sikertelen cikkmentéskor az új
+fájl visszatakarításra kerül; siker után a korábbi slughoz tartozó borító
+törlődik. Az eltávolítás is csak a cikk mentésekor lép életbe.
 
-**Korlátok.** JPG, PNG vagy WebP, legfeljebb 3 MB. A formátumot a fájl első
-bájtjai döntik el, nem a kiterjesztés: egy `.jpg`-re átnevezett SVG elutasítva
-(különben a saját domainünkről szolgálnánk ki tetszőleges tartalmat).
-Cikkenként egy borító van — az újabb feltöltés lecseréli a régit, tehát a
-fájlnév mindig a slugból jön.
+**Korlátok.** JPG, PNG vagy WebP, legalább 1200×630 px, 1,4–2,15 közötti
+képarány és legfeljebb 3 MB. A formátumot a fájl első bájtjai döntik el, nem a
+kiterjesztés. A szerver automatikusan legfeljebb 1600 px széles, 86-os
+minőségű WebP-t készít; a fájlnév a slugot és a tartalom rövid hashét viszi.
 
-Ajánlott méret: fekvő, ~1600×840. Ugyanez a kép kerül a 1200×630-as OG-vászon
-jobb oldali paneljébe is.
+Ajánlott méret: fekvő, ~1600×900 vagy 1600×840. Ugyanez a kép kerül a
+1200×630-as OG-vászon jobb oldali paneljébe is, azonos fókuszponttal.

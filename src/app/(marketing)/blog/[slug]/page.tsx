@@ -427,9 +427,11 @@ export default async function BlogPostPage({
             képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
             kompozíció, mint a listán (azonos slug + family + concept + lineMode + seed),
             így a kártya és a cikk ugyanazt az arcot mutatja. */}
-        <div className="relative mb-8 h-[150px] overflow-hidden rounded-2xl border border-sand md:h-[190px]">
+        <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-sand">
           <BlogCoverVisual
             coverImage={post.coverImage}
+            coverFocalX={post.coverFocalX}
+            coverFocalY={post.coverFocalY}
             priority
             slug={post.slug}
             title={post.title}

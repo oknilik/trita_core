@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import matter from "gray-matter";
+import { createHash } from "node:crypto";
 import { requireAdmin } from "@/lib/auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
@@ -12,9 +13,16 @@ import {
   readBlogSource,
   saveBlogSource,
   deleteBlogSource,
+  deleteBlogCover,
+  saveBlogCover,
 } from "@/lib/blog-store";
-import { isBlogCoverImage } from "@/lib/blog";
+import { blogCoverFocalPoint, isBlogCoverImage, isOwnedBlogCover } from "@/lib/blog";
 import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES, BLOG_ART_LINE_MODES } from "@/lib/blog-art";
+import {
+  BLOG_COVER_MAX_BYTES,
+  optimizeBlogCover,
+  sniffCoverExtension,
+} from "@/lib/blog-cover-format";
 
 export const runtime = "nodejs";
 
@@ -45,10 +53,22 @@ const postSchema = z.object({
   artLineMode: z.enum(BLOG_ART_LINE_MODES).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
-  /** Feltöltött borító publikus útja — a /api/admin/blog/cover adja vissza. */
+  /** A már mentett, repóban tárolt borító publikus útja. */
   coverImage: z.string().regex(/^\/blog-covers\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/).optional(),
+  coverFocalX: z.number().int().min(0).max(100).optional(),
+  coverFocalY: z.number().int().min(0).max(100).optional(),
+  /** Mentésig a kliensben maradó új borító. A szerver WebP-vé alakítja. */
+  coverUpload: z.object({
+    filename: z.string().min(1).max(200),
+    dataBase64: z.string().min(32).max(8 * 1024 * 1024),
+  }).optional(),
+  removeCover: z.boolean().optional(),
   /** A szerkesztésre betöltéskor kapott sha; `null` = új cikk. */
   baseSha: z.string().min(1).max(120).nullable().optional(),
+}).superRefine((value, ctx) => {
+  if (value.coverUpload && value.removeCover) {
+    ctx.addIssue({ code: "custom", message: "coverUpload and removeCover are mutually exclusive" });
+  }
 });
 
 type PostInput = z.infer<typeof postSchema>;
@@ -67,7 +87,11 @@ function buildMdx(p: PostInput): string {
     locale: p.locale,
     tags: p.tags,
   };
-  if (p.coverImage) data.coverImage = p.coverImage;
+  if (p.coverImage) {
+    data.coverImage = p.coverImage;
+    data.coverFocalX = p.coverFocalX ?? 50;
+    data.coverFocalY = p.coverFocalY ?? 50;
+  }
   if (p.translationSlug) data.translationSlug = p.translationSlug;
   if (p.heroQuote) data.heroQuote = p.heroQuote;
   if (p.startHere) data.startHere = p.startHere;
@@ -157,23 +181,100 @@ export async function POST(req: NextRequest) {
       { status: 400 },
     );
   }
-  const p = parsed.data;
+  let p = parsed.data;
 
   if (blogStoreMode() === "github" && !githubConfigured()) {
     return NextResponse.json({ error: "GITHUB_NOT_CONFIGURED" }, { status: 501 });
   }
 
-  const mdx = buildMdx(p);
-
+  let stagedCover: string | null = null;
+  let previousCover: string | undefined;
   try {
+    if (p.coverUpload || p.removeCover) {
+      const previousRevision = await readBlogRevision(p.slug);
+      if (previousRevision) {
+        const previousData = matter(previousRevision.content).data;
+        previousCover = isBlogCoverImage(previousData.coverImage)
+          ? previousData.coverImage
+          : undefined;
+      }
+    }
+
+    if (p.coverUpload) {
+      const source = Buffer.from(p.coverUpload.dataBase64, "base64");
+      if (source.length === 0 || !sniffCoverExtension(source)) {
+        return NextResponse.json({ error: "INVALID_IMAGE" }, { status: 415 });
+      }
+      if (source.length > BLOG_COVER_MAX_BYTES) {
+        return NextResponse.json(
+          { error: "TOO_LARGE", maxBytes: BLOG_COVER_MAX_BYTES },
+          { status: 413 },
+        );
+      }
+
+      const optimized = await optimizeBlogCover(source);
+      const digest = createHash("sha256").update(optimized.bytes).digest("hex").slice(0, 10);
+      const fileName = `${p.slug}-${digest}.webp`;
+      stagedCover = `/blog-covers/${fileName}`;
+      await saveBlogCover({
+        fileName,
+        bytes: optimized.bytes,
+        message: `content(blog): ${p.slug} optimalizált borító előkészítése`,
+      });
+      p = { ...p, coverImage: stagedCover, removeCover: false };
+    } else if (p.removeCover) {
+      p = { ...p, coverImage: undefined };
+    }
+
+    const mdx = buildMdx(p);
     const result = await saveBlogSource({
       slug: p.slug,
       content: mdx,
       message: `content(blog): ${p.slug} (${p.status === "draft" ? "piszkozat" : "publikálás"})`,
       ...(p.baseSha !== undefined ? { baseSha: p.baseSha } : {}),
     });
-    return NextResponse.json({ ok: true, ...result });
+
+    // Az új cikk már biztosan a helyén van; csak ezután takarítjuk a korábbi,
+    // slughoz tartozó borítót. A cleanup hibája nem fordítja vissza a mentést.
+    if (
+      previousCover
+      && previousCover !== p.coverImage
+      && isOwnedBlogCover(previousCover, p.slug)
+    ) {
+      const oldFileName = previousCover.slice("/blog-covers/".length);
+      try {
+        await deleteBlogCover({
+          fileName: oldFileName,
+          message: `content(blog): ${p.slug} korábbi borító takarítása`,
+        });
+      } catch (cleanupError) {
+        log.warn(
+          { event: "admin-blog.cover_cleanup_failed", err: cleanupError, slug: p.slug },
+          "Old cover cleanup failed after article save",
+        );
+      }
+    }
+
+    return NextResponse.json({ ok: true, coverImage: p.coverImage ?? null, ...result });
   } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    if (["INVALID_IMAGE", "IMAGE_TOO_SMALL", "INVALID_ASPECT_RATIO"].includes(message)) {
+      return NextResponse.json({ error: message }, { status: 422 });
+    }
+    if (stagedCover && stagedCover !== previousCover) {
+      const stagedFileName = stagedCover.slice("/blog-covers/".length);
+      try {
+        await deleteBlogCover({
+          fileName: stagedFileName,
+          message: `content(blog): ${p.slug} sikertelen mentés borítótakarítása`,
+        });
+      } catch (cleanupError) {
+        log.warn(
+          { event: "admin-blog.cover_rollback_failed", err: cleanupError, slug: p.slug },
+          "Staged cover rollback failed",
+        );
+      }
+    }
     if (isConflict(error)) {
       return NextResponse.json({ error: "CONFLICT", slug: p.slug }, { status: 409 });
     }
@@ -270,6 +371,12 @@ export async function PUT(req: NextRequest) {
     // Érvénytelen borító-út esetén NEM buktatjuk el a feltöltést: a mező
     // kimarad, a cikk a generatív vizuált kapja.
     ...(isBlogCoverImage(data.coverImage) ? { coverImage: data.coverImage } : {}),
+    ...(blogCoverFocalPoint(data.coverFocalX) !== undefined
+      ? { coverFocalX: blogCoverFocalPoint(data.coverFocalX) }
+      : {}),
+    ...(blogCoverFocalPoint(data.coverFocalY) !== undefined
+      ? { coverFocalY: blogCoverFocalPoint(data.coverFocalY) }
+      : {}),
     ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
     ...(typeof data.artFamily === "string" ? { artFamily: data.artFamily } : {}),
     ...(typeof data.artConcept === "string" ? { artConcept: data.artConcept } : {}),
@@ -386,11 +493,29 @@ export async function DELETE(req: NextRequest) {
   }
 
   try {
+    const revision = await readBlogRevision(parsed.data.slug);
+    const coverImage = revision
+      ? matter(revision.content).data.coverImage
+      : undefined;
     const result = await deleteBlogSource({
       slug: parsed.data.slug,
       message: `content(blog): ${parsed.data.slug} törlése (elvetés)`,
     });
     if (!result) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+    if (isOwnedBlogCover(coverImage, parsed.data.slug)) {
+      try {
+        await deleteBlogCover({
+          fileName: coverImage.slice("/blog-covers/".length),
+          message: `content(blog): ${parsed.data.slug} borítójának törlése`,
+        });
+      } catch (cleanupError) {
+        log.warn(
+          { event: "admin-blog.cover_delete_after_post_failed", err: cleanupError, slug: parsed.data.slug },
+          "Cover cleanup failed after article delete",
+        );
+      }
+    }
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.delete_failed", err: error }, "Delete failed");
