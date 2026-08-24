@@ -79,10 +79,11 @@ export function PilotContent() {
         <div className="relative mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_410px] lg:items-center">
             <div>
-              <SectionEyebrow tone="team" className="mb-6">{t("pilot.eyebrow", locale)}</SectionEyebrow>
-
-              <div className="mb-6 inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/70 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
-                {t("pilot.badge", locale)}
+              <div className="mb-6 flex flex-wrap items-center gap-3">
+                <SectionEyebrow tone="team">{t("pilot.eyebrow", locale)}</SectionEyebrow>
+                <span className="inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/70 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
+                  {t("pilot.badge", locale)}
+                </span>
               </div>
 
               <h1 className="max-w-[12ch] font-fraunces text-fluid-display tracking-tight text-ink">
