@@ -57,14 +57,13 @@ async function createAuthedFixture() {
 }
 
 async function readCurrentQuestionNumber(page: Page): Promise<number> {
-  // Navigáció közben az evaluate kontextusa megsemmisülhet — az a poll
-  // számára "még nincs kérdés" állapot, nem hiba.
+  // A belépett fejlécben a szám és a "/ 60" KÜLÖN elemekben áll (a vendég
+  // fejléc egy spanben tartja) — ezért a body szövegéből olvasunk, ahol az
+  // innerText sortöréssel fűzi össze őket. Navigáció közben az evaluate
+  // kontextusa megsemmisülhet — az a poll számára "még nincs kérdés", nem hiba.
   return page
     .evaluate(() => {
-      const totalNode = Array.from(document.querySelectorAll("span")).find((node) =>
-        /\d+\s*\/\s*\d+/.test(node.textContent ?? ""),
-      );
-      const match = totalNode?.textContent?.match(/(\d+)\s*\/\s*\d+/);
+      const match = document.body?.innerText?.match(/(\d+)\s*\/\s*\d+/);
       return match ? Number(match[1]) : Number.NaN;
     })
     .catch(() => Number.NaN);
