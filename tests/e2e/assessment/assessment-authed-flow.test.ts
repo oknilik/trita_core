@@ -113,8 +113,13 @@ test("authenticated member resumes server draft, submits and reaches results", a
   });
   expect(results).toHaveLength(1);
 
-  // Az eredményoldal a hat dimenzióval renderel.
-  await page.goto("/profile/results");
+  // Az eredményoldal a hat dimenzióval renderel. A submit utáni journey-
+  // átirányítás még futhat — előbb hagyjuk leérni, és az egyszeri ERR_ABORTED
+  // (a SPA-navigáció megszakítja a goto-t) egy ismétléssel feloldódik.
+  await page.waitForLoadState("networkidle").catch(() => {});
+  await page
+    .goto("/profile/results", { waitUntil: "domcontentloaded" })
+    .catch(() => page.goto("/profile/results", { waitUntil: "domcontentloaded" }));
   await expect(
     page.getByText(/Honesty|Becsületesség/i).first(),
   ).toBeVisible({ timeout: 20_000 });
