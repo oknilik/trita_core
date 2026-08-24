@@ -4,6 +4,8 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { track } from "@/lib/analytics/client";
 import {
   AXIS_META,
@@ -270,8 +272,9 @@ function HybridCard({
               <p className="mt-1.5 text-xs leading-relaxed" style={{ color: T.muted }}>
                 {pattern.description}
               </p>
-              <p className="mt-2 font-mono text-micro uppercase tracking-wider" style={{ color: T.accent }}>
-                Részletek →
+              <p className="mt-2 inline-flex items-center gap-1 font-mono text-micro uppercase tracking-wider" style={{ color: T.accent }}>
+                Részletek
+                <ChevronRightIcon className="h-3.5 w-3.5" />
               </p>
             </button>
           ))}
@@ -355,8 +358,9 @@ function AllPatternsGrid({ onSelect }: { onSelect: (code: string) => void }) {
                     <p className="mt-1 line-clamp-2 text-note leading-relaxed" style={{ color: T.muted }}>
                       {pattern.description}
                     </p>
-                    <p className="mt-1.5 font-mono text-micro uppercase tracking-wider" style={{ color: q.accent }}>
-                      Részletek →
+                    <p className="mt-1.5 inline-flex items-center gap-1 font-mono text-micro uppercase tracking-wider" style={{ color: q.accent }}>
+                      Részletek
+                      <ChevronRightIcon className="h-3.5 w-3.5" />
                     </p>
                   </button>
                 );
@@ -574,10 +578,11 @@ export function PatternExplorer() {
                 {isHybridState && activeCode && (
                   <button
                     onClick={() => setSelectedHybridCode(null)}
-                    className="flex min-h-[44px] items-center gap-1 self-start text-xs font-semibold"
+                    className="group flex min-h-[44px] items-center gap-2 self-start text-xs font-semibold"
                     style={{ color: T.muted }}
                   >
-                    ← Vissza a határesethez
+                    <BackChevronIcon size="sm" />
+                    <span>Vissza a határesethez</span>
                   </button>
                 )}
                 <PatternCard
@@ -663,7 +668,7 @@ export function PatternExplorer() {
                 (e.currentTarget.style.backgroundColor = T.accent)
               }
             >
-              Ingyenes próba →
+              Ingyenes próba
             </a>
             <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
               Nincs kártyaadathoz kötés. Az első felmérés ingyenes.
@@ -689,7 +694,7 @@ export function PatternExplorer() {
                 (e.currentTarget.style.backgroundColor = T.accent)
               }
             >
-              Megnézem a fejlesztési lehetőségeket →
+              Megnézem a fejlesztési lehetőségeket
             </a>
             </>
           )}

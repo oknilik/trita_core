@@ -7,6 +7,8 @@ import { useLocale } from "@/components/LocaleProvider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon, ExternalLinkIcon } from "@/components/ui/icons";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
@@ -483,9 +485,10 @@ export function OrgOnboardingWizard() {
               <button
                 type="button"
                 onClick={handleStep1Next}
-                className="mt-2 min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="mt-2 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {t("orgOnboarding.continueBtn", locale)}
+                <ChevronRightIcon />
               </button>
             </div>
           )}
@@ -588,19 +591,21 @@ export function OrgOnboardingWizard() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                  className="group inline-flex min-h-[48px] items-center gap-2 rounded-lg border border-sand px-3 pr-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
-                  {t("orgOnboarding.backBtn", locale)}
+                  <BackChevronIcon size="sm" />
+                  <span>{t("orgOnboarding.backBtn", locale)}</span>
                 </button>
                 <button
                   type="button"
                   onClick={handleStep2Next}
                   disabled={isSubmitting}
-                  className="min-h-[48px] flex-1 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
+                  className="inline-flex min-h-[48px] flex-1 items-center justify-center gap-1.5 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
                 >
                   {isSubmitting
                     ? t("orgOnboarding.creatingBtn", locale)
                     : t("orgOnboarding.continueBtn", locale)}
+                  {!isSubmitting ? <ChevronRightIcon /> : null}
                 </button>
               </div>
             </div>
@@ -641,9 +646,10 @@ export function OrgOnboardingWizard() {
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                      className="group inline-flex min-h-[48px] items-center gap-2 rounded-lg border border-sand px-3 pr-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                     >
-                      {t("orgOnboarding.backBtn", locale)}
+                      <BackChevronIcon size="sm" />
+                      <span>{t("orgOnboarding.backBtn", locale)}</span>
                     </button>
                     <button
                       type="button"
@@ -717,9 +723,10 @@ export function OrgOnboardingWizard() {
                   <button
                     type="button"
                     onClick={() => setStep(4)}
-                    className="min-h-[48px] w-full rounded-lg bg-[var(--color-surface-inverse)] text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
+                    className="inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-lg bg-[var(--color-surface-inverse)] text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
                   >
                     {t("orgOnboarding.goToDashboard", locale)}
+                    <ChevronRightIcon />
                   </button>
                 </div>
               )}
@@ -754,9 +761,10 @@ export function OrgOnboardingWizard() {
                     href="/privacy"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
+                    className="inline-flex items-center gap-1 font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                   >
                     {t("orgOnboarding.privacyPolicy", locale)}
+                    <ExternalLinkIcon className="h-3.5 w-3.5" />
                   </a>{" "}
                   {t("orgOnboarding.consentSuffix", locale)}
                 </span>
@@ -770,11 +778,12 @@ export function OrgOnboardingWizard() {
                 type="button"
                 onClick={handleStep4Finish}
                 disabled={isSubmitting || !state.consent}
-                className="min-h-[48px] w-full rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
+                className="inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 rounded-lg bg-sage text-sm font-semibold text-[var(--color-action-primary-fg)] transition-colors hover:bg-sage-dark disabled:opacity-50"
               >
                 {isSubmitting
                   ? t("orgOnboarding.savingBtn", locale)
                   : t("orgOnboarding.saveAndContinueBtn", locale)}
+                {!isSubmitting ? <ChevronRightIcon /> : null}
               </button>
             </div>
           )}

@@ -7,7 +7,7 @@ import { calculateScores } from "../../../src/lib/scoring";
 
 const NOW = new Date("2026-04-01T10:00:00.000Z");
 const DAY_MS = 24 * 60 * 60 * 1000;
-const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
+const NEXT_BUTTON_LABEL = /^(next|tovább)$/i;
 
 function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;
@@ -269,4 +269,3 @@ test.describe("C5.6 Observer E2E happy path", () => {
     }
   });
 });
-

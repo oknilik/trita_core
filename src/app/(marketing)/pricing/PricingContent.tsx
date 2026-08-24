@@ -6,6 +6,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { track } from "@/lib/analytics/client";
 import { t } from "@/lib/i18n/public";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { PRICING_FAQ_INDEXES } from "./faq";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
@@ -140,6 +141,7 @@ export function PricingContent() {
               className={`mt-5 inline-flex min-h-11 items-center rounded-xl border border-[var(--color-accent-primary)]/50 bg-surface-card px-5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)] ${FOCUS_RING_CLASS}`}
             >
               {t("pricing.pilotCta", locale)}
+              <ChevronRightIcon className="ml-1" />
             </Link>
           </article>
         </div>

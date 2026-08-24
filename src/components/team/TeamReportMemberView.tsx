@@ -23,6 +23,7 @@ import {
 // Dimenzió-színek — a kanonikus HEXACO-paletta (color-system.ts), a team
 // oldal / TeamReportView palettájával azonos forrásból (mark = base).
 import { DIMENSION_BASE } from "@/lib/color-system";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 const DIM_COLORS: Record<string, string> = DIMENSION_BASE;
 
@@ -229,7 +230,7 @@ export function TeamReportMemberView({
               href="/assessment"
               className="mt-3 inline-flex min-h-[38px] items-center rounded-lg bg-sage px-4 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
             >
-              {isHu ? "A felmérésem kitöltése →" : "Complete my assessment →"}
+              {isHu ? "A felmérésem kitöltése" : "Complete my assessment"}
             </Link>
           </DashboardPanel>
         </section>
@@ -396,7 +397,8 @@ export function TeamReportMemberView({
           <span>
             {isHu ? "Ez a csapat tanácsadó által jóváhagyott, összesített képe. A részletes egyéni eredményed: " : "This is the team's consultant-approved aggregate picture. Your detailed individual result: "}
             <Link href="/profile/results" className="font-semibold text-sage-dark hover:underline">
-              {isHu ? "Profil › Eredmények →" : "Profile › Results →"}
+              {isHu ? "Profil › Eredmények" : "Profile › Results"}
+              <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
             </Link>
           </span>
         </div>

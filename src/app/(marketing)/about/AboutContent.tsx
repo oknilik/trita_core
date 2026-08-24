@@ -9,6 +9,7 @@ import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/Edi
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { LayerDiagram, PathDiagram, PurposeDiagram } from "@/components/about/AboutDiagrams";
 import { t } from "@/lib/i18n/public";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 export function AboutContent() {
   const { locale } = useLocale();
@@ -106,6 +107,7 @@ export function AboutContent() {
                   className="mt-4 inline-flex min-h-[44px] items-center font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
                 >
                   {t("about.asideLink", locale)}
+                  <ChevronRightIcon className="ml-1 h-4 w-4" />
                 </Link>
               </div>
             </aside>

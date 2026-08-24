@@ -341,8 +341,7 @@ function SignUpContent() {
                 disabled={!intent || !isLoaded}
                 loading={isSubmitting}
                 style={{ backgroundColor: "var(--color-bronze-dark)", color: "var(--color-text-on-accent-deep)" }}
-                className="min-h-[56px] justify-between rounded-[16px] pl-5 pr-2 shadow-[0_10px_24px_rgba(139,82,48,0.18)] hover:brightness-[1.06]"
-                iconRight={<span aria-hidden="true" className="grid size-10 place-items-center rounded-xl bg-white/15 text-xl">→</span>}
+                className="min-h-[56px] justify-center rounded-[16px] px-5 shadow-[0_10px_24px_rgba(139,82,48,0.18)] hover:brightness-[1.06]"
               >
                 {t("auth.requestSignUpCode", locale)}
               </Button>

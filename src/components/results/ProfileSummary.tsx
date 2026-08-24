@@ -17,6 +17,7 @@ import {
   InteractionEntryCard,
   type InteractionEntryPreview,
 } from "@/components/results/InteractionEntryCard";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface ProfileSummaryProps {
   dimensions: SerializedDimension[];
@@ -215,12 +216,7 @@ export function ProfileSummary({
                 {t("results.summaryDetailsMeta", locale)}
               </span>
             </span>
-            <span
-              aria-hidden="true"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-lg transition group-hover:translate-x-0.5 group-hover:bg-white/15"
-            >
-              →
-            </span>
+            <ChevronRightIcon className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5" />
           </button>
 
           <button
@@ -236,9 +232,7 @@ export function ProfileSummary({
                 {t(hasObserverData ? "results.summaryComparisonReadyBody" : "results.summaryComparisonStartBody", locale)}
               </span>
             </span>
-            <span aria-hidden="true" className="shrink-0 text-lg text-sage-dark transition group-hover:translate-x-0.5">
-              →
-            </span>
+            <ChevronRightIcon className="h-5 w-5 shrink-0 text-sage-dark transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
       </section>
@@ -262,7 +256,8 @@ export function ProfileSummary({
                 href={experienceHintDestination ?? "/profile/results"}
                 className="font-semibold text-[var(--color-accent-primary-strong)] no-underline"
               >
-                {t("results.summaryOpenInvitation", locale)} →
+                {t("results.summaryOpenInvitation", locale)}
+                <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
               </Link>
             </p>
           ) : null}
@@ -270,7 +265,8 @@ export function ProfileSummary({
             <p>
               {t("results.summaryAssessmentInProgress", locale)}{" "}
               <Link href="/assessment" className="font-semibold text-[var(--color-accent-primary-strong)] no-underline">
-                {t("results.summaryContinue", locale)} →
+                {t("results.summaryContinue", locale)}
+                <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
               </Link>
             </p>
           ) : null}

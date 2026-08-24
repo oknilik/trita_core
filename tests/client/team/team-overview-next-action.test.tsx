@@ -26,7 +26,7 @@ describe("TeamOverviewNextAction", () => {
       "href",
       "/assessment/psych-safety",
     );
-    expect(screen.getByRole("link", { name: "További 2 teendő →" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "További 2 teendő" })).toHaveAttribute(
       "href",
       "/tasks",
     );

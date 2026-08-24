@@ -13,6 +13,7 @@ import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn } from "@/lib/onboarding-styles";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { ExternalLinkIcon } from "@/components/ui/icons";
 
 
 
@@ -413,9 +414,10 @@ export function OnboardingClient({
                             href="/privacy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
+                            className="inline-flex items-center gap-1 font-medium text-[var(--color-accent-primary-strong)] underline hover:text-bronze-dark"
                           >
                             {t("onboarding.consentLinkText", locale)}
+                            <ExternalLinkIcon className="h-3.5 w-3.5" />
                           </a>
                         </span>
                       ) : (

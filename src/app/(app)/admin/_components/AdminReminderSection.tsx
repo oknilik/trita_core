@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { t } from "@/lib/i18n";
 import { presentUserError } from "@/lib/user-errors";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface ReminderInvitation {
   id: string;
@@ -302,16 +304,18 @@ export function AdminReminderSection({ invitations }: Props) {
             <button
               onClick={() => goToPage(safePage - 1)}
               disabled={safePage === 0}
-              className="inline-flex min-h-[40px] items-center rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="group inline-flex min-h-[40px] items-center gap-2 rounded-lg border border-sand px-2 py-1.5 pr-3 text-xs font-semibold text-ink-body transition-colors hover:bg-surface-subtle disabled:cursor-not-allowed disabled:opacity-40"
             >
-              ← Előző
+              <BackChevronIcon size="sm" />
+              <span>Előző</span>
             </button>
             <button
               onClick={() => goToPage(safePage + 1)}
               disabled={safePage >= totalPages - 1}
-              className="inline-flex min-h-[40px] items-center rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg border border-sand px-3 py-1.5 text-xs font-semibold text-ink-body hover:bg-surface-subtle disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
-              Következő →
+              Következő
+              <ChevronRightIcon className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>

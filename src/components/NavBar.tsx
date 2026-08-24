@@ -142,7 +142,6 @@ export function NavBar({
     : hasDraft
       ? t("landing.selfCtaContinueShort", locale)
       : t("nav.ctaSelf", locale);
-  const publicCtaText = publicCtaLabel.replace(/\s*→\s*$/, "");
 
   // A megosztott profil nem marketing-belépőoldal, hanem egy személyes
   // artefaktum. Itt a teljes navigáció elvinné a figyelmet a tartalomról;
@@ -280,10 +279,10 @@ export function NavBar({
                 </Link>
                 <Link
                   href={publicCtaHref}
-                  aria-label={publicCtaText}
+                  aria-label={publicCtaLabel}
                   className={`inline-flex min-h-10 items-center rounded-[13px] bg-[var(--color-bronze-dark)] px-4 text-xs font-semibold text-[var(--color-text-on-accent-deep)] shadow-[0_5px_14px_rgba(139,82,48,0.18)] transition-[filter,transform] hover:-translate-y-px hover:brightness-[1.06] lg:px-5 lg:text-caption ${FOCUS_RING_CLASS}`}
                 >
-                  <span>{publicCtaText}</span>
+                  <span>{publicCtaLabel}</span>
                 </Link>
               </>
             )}
@@ -370,11 +369,11 @@ export function NavBar({
               </Link>
               <Link
                 href={publicCtaHref}
-                aria-label={publicCtaText}
+                aria-label={publicCtaLabel}
                 onClick={() => setDrawerOpen(false)}
                 className={`flex min-h-[44px] flex-1 items-center justify-center rounded-[13px] bg-[var(--color-bronze-dark)] px-3 text-caption font-semibold text-[var(--color-text-on-accent-deep)] transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
               >
-                <span>{publicCtaText}</span>
+                <span>{publicCtaLabel}</span>
               </Link>
             </div>
           ) : null}

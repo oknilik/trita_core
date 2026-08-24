@@ -166,7 +166,7 @@ export function InteractionComparisonChooser({
                       : "border-[var(--color-text-on-inverse-muted)]/30 text-[var(--color-accent-primary)]"
                   }`}
                 >
-                  {selected ? "✓" : "→"}
+                  {selected ? "✓" : null}
                 </span>
               </button>
             );

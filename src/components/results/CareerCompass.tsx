@@ -19,6 +19,8 @@ import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { CareerResults } from "@/components/results/career/CareerResults";
 import { CareerGrowthPlan } from "@/components/results/career/CareerGrowthPlan";
 import { CurrentRolePicker } from "@/components/results/career/CurrentRolePicker";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import type { CareerResultView } from "@/lib/career/service";
 
 // Karrier-iránytű — rövid kérdéssor (lépés-számlálóval, auto-továbblépéssel),
@@ -228,9 +230,10 @@ function RiasecProfiler({
         <button
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          className="mt-3 inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-text-muted)] hover:text-ink"
+          className="group mt-3 inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)] hover:text-ink"
         >
-          ← {t("results.ccBack", locale)}
+          <BackChevronIcon size="sm" />
+          <span>{t("results.ccBack", locale)}</span>
         </button>
       )}
     </div>
@@ -594,20 +597,22 @@ export function CareerCompass({
       <button
         type="button"
         onClick={() => goBack(from)}
-        className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
+        className="group inline-flex min-h-[44px] items-center gap-2 text-xs font-semibold text-[var(--color-text-muted)] transition hover:text-[var(--color-text-primary)]"
       >
-        {t("results.ccBack", locale)}
+        <BackChevronIcon size="sm" />
+        <span>{t("results.ccBack", locale)}</span>
       </button>
       {showNext && (
         <button
           type="button"
           disabled={nextDisabled}
           onClick={() => goNext(from)}
-          className="inline-flex min-h-[40px] items-center rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-40"
+          className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:opacity-40"
         >
           {flow.indexOf(from) === flow.length - 1
             ? t("results.ccFinish", locale)
             : t("results.ccNext", locale)}
+          {flow.indexOf(from) === flow.length - 1 ? null : <ChevronRightIcon />}
         </button>
       )}
     </div>

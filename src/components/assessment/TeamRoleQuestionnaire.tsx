@@ -22,6 +22,7 @@ import {
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface TeamRoleQuestionnaireProps {
   locale: Locale;
@@ -262,6 +263,7 @@ export function TeamRoleQuestionnaire({
             className="inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark disabled:cursor-not-allowed disabled:opacity-40"
           >
             {t("teamRole.toHighlight", resolvedLocale)}
+            <ChevronRightIcon />
           </button>
         ) : (
           <button

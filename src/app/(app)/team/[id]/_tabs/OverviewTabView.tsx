@@ -20,6 +20,7 @@ import { TeamOverviewNextAction } from "@/components/team/TeamOverviewNextAction
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // ── Overview: hero + állapotkép + szerep-függő szekciók ────────────────────
 export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
@@ -240,7 +241,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                         href={`/team/${teamId}?tab=report`}
                         className="mt-3 inline-flex min-h-[38px] items-center rounded-[10px] bg-sage px-4 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
                       >
-                        {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
+                        {isHu ? "Csapatkép megnyitása" : "Open team picture"}
+                        <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
                       </Link>
                     </div>
                   </div>
@@ -264,7 +266,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                         href={`/team/${teamId}?tab=report`}
                         className="mt-2 inline-flex text-xs font-semibold text-sage transition-colors hover:text-sage-dark"
                       >
-                        {isHu ? "Csapatkép megnyitása →" : "Open team picture →"}
+                        {isHu ? "Csapatkép megnyitása" : "Open team picture"}
+                        <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
                       </Link>
                     </div>
                   </div>

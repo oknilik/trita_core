@@ -58,7 +58,7 @@ test.describe("Mobil pilot minőségkapu", () => {
 
     await expectFocusRouteWithoutHelp(page);
     await expect(page.getByText(/Automatikus továbblépés/i)).toBeVisible();
-    await expectTouchTarget(page.getByRole("button", { name: /Tovább.*→/i }));
+    await expectTouchTarget(page.getByRole("button", { name: /^Tovább$/i }));
     await expectNoHorizontalOverflow(page);
 
     const progress = page.getByRole("progressbar");

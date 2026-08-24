@@ -7,6 +7,7 @@ import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { t } from "@/lib/i18n/public";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 export function RolunkContent() {
   const { locale } = useLocale();
@@ -100,7 +101,11 @@ export function RolunkContent() {
               className="mt-8"
               align="center"
               primary={{ href: "/contact", label: t("aboutUs.ctaPrimary", locale) }}
-              secondary={{ href: "/about", label: t("aboutUs.ctaSecondary", locale) }}
+              secondary={{
+                href: "/about",
+                label: t("aboutUs.ctaSecondary", locale),
+                iconRight: <ChevronRightIcon />,
+              }}
             />
           </div>
         </div>

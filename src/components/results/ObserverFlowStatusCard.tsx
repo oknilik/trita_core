@@ -2,6 +2,7 @@
 
 import { huArticle } from "@/lib/hu-grammar";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // A külső visszajelzés állapot-kártyája szervezeti tagoknak (self/csapat
 // szétválasztás, 2026-07-22). Állapot-nyelvet beszél, nem hiány-nyelvet:
@@ -48,7 +49,8 @@ export function ObserverFlowStatusCard({
                 onClick={onOpenComparison}
                 className="mt-3 inline-flex min-h-[42px] items-center rounded-[10px] bg-sage px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
               >
-                {isHu ? "Összevetés megnyitása →" : "Open comparison →"}
+                {isHu ? "Összevetés megnyitása" : "Open comparison"}
+                <ChevronRightIcon className="ml-1.5" />
               </button>
             ) : null}
           </div>
@@ -184,8 +186,9 @@ export function ObserverFlowStrip({
         className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
       >
         {isHu
-          ? `Külső visszajelzés megérkezett (${flow.receivedCount}) — összevetés →`
-          : `Outside feedback arrived (${flow.receivedCount}) — comparison →`}
+          ? `Külső visszajelzés megérkezett (${flow.receivedCount}) — összevetés`
+          : `Outside feedback arrived (${flow.receivedCount}) — comparison`}
+        <ChevronRightIcon className="h-3.5 w-3.5" />
       </button>
     ) : flow.state === "in_progress" ? (
       <button

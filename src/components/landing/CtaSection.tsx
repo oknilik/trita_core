@@ -7,6 +7,7 @@ import type { SiteMode } from "@/components/landing/ModeSwitcher";
 import { track } from "@/lib/analytics/client";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 export function CtaSection({ mode }: { mode: SiteMode }) {
   const { locale } = useLocale();
@@ -90,6 +91,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
             className={`inline-flex min-h-11 items-center justify-center rounded-lg px-2 text-sm font-semibold text-[var(--color-action-secondary-fg)] transition-colors hover:text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}
           >
             {t("landing.ctaSelfSecondary", locale)}
+            <ChevronRightIcon className="ml-1 h-4 w-4" />
           </Link>
         </div>
         <p className="mt-3.5 font-dm-sans text-xs text-ink-body/60">

@@ -17,7 +17,7 @@ import { isConsultantSurface } from "@/lib/measurement-auth";
 import { resolveJourneyFallbackForProfileId } from "@/lib/journey/guardrails.server";
 import { redirectToSignIn } from "@/lib/navigation/auth-redirects.server";
 import { EmptyState } from "@/components/ui/primitives/EmptyState";
-import { PlusIcon } from "@/components/ui/icons";
+import { ChevronRightIcon, PlusIcon } from "@/components/ui/icons";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 export const dynamic = "force-dynamic";
@@ -159,8 +159,9 @@ export default async function TeamListPage() {
                   <p className="text-xs text-muted">
                     {t("team.createdPrefix", locale)}{team.createdAt.toLocaleDateString(dateLocale)}
                   </p>
-                  <span className="text-xs font-semibold text-sage opacity-0 transition-opacity group-hover:opacity-100">
-                    {t("team.open", locale)} →
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-sage opacity-0 transition-opacity group-hover:opacity-100">
+                    {t("team.open", locale)}
+                    <ChevronRightIcon />
                   </span>
                 </div>
               </Link>

@@ -3,7 +3,7 @@ import { getTestConfig } from "../../../src/lib/questions";
 import { DEFAULT_ASSESSMENT_FORM } from "../../../src/lib/operating-mode";
 
 const DRAFT_KEY = "trita_draft_TRITAN";
-const NEXT_BUTTON_LABEL = /^(next|tovább)\s*→$/i;
+const NEXT_BUTTON_LABEL = /^(next|tovább)$/i;
 
 // A /try a mindenkori alapértelmezett formát szolgálja ki (TSFI-S, 60 item,
 // nem-folytonos item-id-kkal) — a fixture a VALÓDI kérdés-id-kból építkezik,

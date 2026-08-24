@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // Működés gyűjtőfül — üzemeltetési nézetek belépői
 const OPS_CARDS = [
@@ -23,8 +24,9 @@ export function OpsTab() {
           href={card.href}
           className="group rounded-2xl border border-sand bg-surface-card p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-sage/40"
         >
-          <p className="text-body font-semibold text-ink group-hover:text-[var(--color-accent-primary-strong)]">
-            {card.title} →
+          <p className="inline-flex items-center gap-1 text-body font-semibold text-ink group-hover:text-[var(--color-accent-primary-strong)]">
+            {card.title}
+            <ChevronRightIcon />
           </p>
           <p className="mt-1.5 text-sm leading-relaxed text-ink-body">{card.desc}</p>
         </Link>

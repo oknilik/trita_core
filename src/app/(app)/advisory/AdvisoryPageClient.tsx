@@ -5,6 +5,7 @@ import { PATTERN_NAMES } from "@/lib/team-pattern";
 import { t, tf, type Locale } from "@/lib/i18n";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 // Tier mapping from getPlanTier() in src/lib/subscription.ts:
 //   nincs / lejárt → "none" · próbaidő → "trial" · aktív → "advisory"
@@ -158,9 +159,10 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
                   </div>
                   <a
                     href={`/team/${p.teamId}`}
-                    className="shrink-0 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark"
+                    className="inline-flex shrink-0 items-center gap-1 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark"
                   >
                     {t("advisory.details", locale)}
+                    <ChevronRightIcon />
                   </a>
                 </div>
               );

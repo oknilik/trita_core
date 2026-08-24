@@ -380,7 +380,7 @@ export async function OverviewTab({ locale, range, segment }: { locale: Locale; 
             href="/assessment"
             className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg border border-sand bg-surface-card px-4 text-caption font-semibold text-ink-body transition hover:border-sage/40 hover:text-ink"
           >
-            Teszt indítása →
+            Teszt indítása
           </Link>
         </div>
       )}

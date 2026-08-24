@@ -137,7 +137,7 @@ export default async function CareerFakeDoorReportPage() {
           title="Karrier-iránytű — fake door"
           description="A funkció nem létezik. Ezek a számok azt mérik, érdemes-e megépíteni. A kimondott szándék nem fizetés: a tényleges vásárlási arány jellemzően ennél jóval alacsonyabb, ezért a számok irányt mutatnak, nem bevételt."
         />
-        <div className="ml-14 mt-3 flex gap-4 text-sm">
+        <div className="mt-3 flex gap-4 text-sm">
           <a
             href="/api/admin/fakedoor/career/export"
             className="text-[var(--color-accent-primary-strong)] underline underline-offset-2"

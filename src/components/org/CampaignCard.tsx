@@ -10,6 +10,7 @@ import type { CampaignWithStats } from "@/lib/org-stats";
 import { CAMPAIGN_STEP_LABELS, isCampaignStepType } from "@/lib/campaign-steps-core";
 import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { Card } from "@/components/ui/primitives/Card";
+import { ChevronRightIcon } from "@/components/ui/icons";
 
 interface CampaignCardProps {
   campaign: CampaignWithStats;
@@ -136,6 +137,7 @@ export function CampaignCard({
             className="inline-flex min-h-[44px] items-center text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline whitespace-nowrap md:min-h-0"
           >
             {t("org.card.summaryLink", loc)}
+            <ChevronRightIcon className="ml-1 h-3.5 w-3.5" />
           </Link>
         </div>
       </div>
@@ -174,9 +176,10 @@ export function CampaignCard({
         </p>
         <Link
           href={`/org/${orgId}/campaigns/${campaign.id}`}
-          className="text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
+          className="inline-flex items-center text-xs font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
         >
           {t("org.card.editLink", loc)}
+          <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
         </Link>
       </div>
     );
@@ -323,9 +326,10 @@ export function CampaignCard({
       <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-sand">
         <Link
           href={`/org/${orgId}/campaigns/${campaign.id}`}
-          className="text-sm font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
+          className="inline-flex items-center text-sm font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
         >
           {t("org.card.viewLink", loc)}
+          <ChevronRightIcon className="ml-1 inline h-3.5 w-3.5" />
         </Link>
 
         {isManager && notStartedCount > 0 && (

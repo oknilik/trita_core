@@ -13,6 +13,7 @@ import { TeamReportView } from "@/components/team/TeamReportView";
 import { CelebrationBurst } from "@/components/ui/CelebrationBurst";
 import { TeamWorkshopFacilitatorView } from "@/components/team/TeamWorkshopFacilitatorView";
 import { TeamReportComparison } from "@/components/team/TeamReportComparison";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import {
   teamActionTargetFromKey,
   teamActionTargetKey,
@@ -517,9 +518,10 @@ export function TeamReportEditor({ teamId, campaignId, orgId = null, reports, is
               </p>
               <Link
                 href={`/org/${orgId}/campaigns/new?team=${teamId}`}
-                className="text-xs font-semibold text-bronze-700 underline transition hover:text-accent-earth-strong"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-bronze-700 underline transition hover:text-accent-earth-strong"
               >
-                {isHu ? "Bizalmi kör indítása →" : "Start a trust round →"}
+                {isHu ? "Bizalmi kör indítása" : "Start a trust round"}
+                <ChevronRightIcon className="h-3.5 w-3.5" />
               </Link>
             </div>
           )}
