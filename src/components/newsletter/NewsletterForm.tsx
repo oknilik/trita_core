@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
@@ -64,6 +64,12 @@ export function NewsletterForm({
   const emailRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
 
+  // Csak a busy=false DOM commit utan fokuszalunk: a korabbi rAF callback
+  // concurrent renderben meg futhatott ugy, hogy a gomb disabled maradt.
+  useEffect(() => {
+    if (!busy && error) submitRef.current?.focus();
+  }, [busy, error]);
+
   const handleFirstTouch = () => {
     if (touched) return;
     setTouched(true);
@@ -83,7 +89,6 @@ export function NewsletterForm({
 
     setValidationError(null);
     setBusy(true);
-    let restoreSubmitFocus = false;
 
     try {
       const res = await fetch("/api/newsletter/subscribe", {
@@ -102,17 +107,12 @@ export function NewsletterForm({
       if (res.status === 429) setError(t("newsletter.errorRateLimited", locale));
       else if (res.status === 400) setError(t("newsletter.errorInvalid", locale));
       else setError(t("newsletter.errorGeneric", locale));
-      restoreSubmitFocus = true;
       track("form.submit", { form_id: "newsletter", outcome: "error" });
     } catch {
       setError(t("newsletter.errorGeneric", locale));
-      restoreSubmitFocus = true;
       track("form.submit", { form_id: "newsletter", outcome: "error" });
     } finally {
       setBusy(false);
-      if (restoreSubmitFocus) {
-        window.requestAnimationFrame(() => submitRef.current?.focus());
-      }
     }
   };
 

@@ -1,6 +1,13 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
 import { t, type Locale } from "@/lib/i18n/public";
@@ -49,6 +56,13 @@ export function PilotContent() {
   const sizeRef = useRef<HTMLSelectElement>(null);
   const messageRef = useRef<HTMLTextAreaElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
+
+  // Az async hiba state commitja utan a gomb mar biztosan nincs disabled
+  // allapotban. A catch-bol inditott rAF React concurrent render mellett
+  // megelozhette ezt a commitot, ilyenkor a focus() csendben hatastalan volt.
+  useEffect(() => {
+    if (status === "error") submitRef.current?.focus();
+  }, [status]);
 
   // Űrlap első érintése — a pilot-tölcsér eddig mérétlen volt (P1.2).
   const handleFormStart = () => {
@@ -122,7 +136,6 @@ export function PilotContent() {
     } catch {
       track("form.submit", { form_id: "pilot_apply", outcome: "error" });
       setStatus("error");
-      window.requestAnimationFrame(() => submitRef.current?.focus());
     }
   };
 
