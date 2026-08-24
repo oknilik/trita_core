@@ -3,10 +3,12 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
-import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { t } from "@/lib/i18n/public";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { track } from "@/lib/analytics/client";
+
+const INPUT_CLASS = "w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
 
 export function PilotContent() {
   const { locale } = useLocale();
@@ -73,27 +75,23 @@ export function PilotContent() {
   };
 
   return (
-    <main className="bg-cream text-ink selection:bg-bronze/20">
-      <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
+    <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
+      <section className="relative">
+        <div className="absolute inset-x-0 top-0 h-[520px] bg-gradient-to-b from-[var(--color-layer-team-soft)]/65 to-transparent" />
+        <div className="relative mx-auto max-w-[1120px] px-7 pb-20 pt-12 md:pb-28 md:pt-20">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_410px] lg:items-center">
             <div>
-              <div className="mb-5 flex items-center gap-3">
-                <div className="h-px w-8 bg-bronze" />
-                <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-                  {t("pilot.eyebrow", locale)}
-                </span>
-              </div>
+              <SectionEyebrow tone="team" className="mb-6">{t("pilot.eyebrow", locale)}</SectionEyebrow>
 
-              <div className="mb-6 inline-flex items-center rounded-full border border-bronze/15 bg-bronze/8 px-4 py-1.5 text-sm font-medium text-[var(--color-accent-primary-strong)]">
+              <div className="mb-6 inline-flex items-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-surface-card/70 px-4 py-1.5 text-caption font-medium text-[var(--color-layer-team-accent)] backdrop-blur-sm">
                 {t("pilot.badge", locale)}
               </div>
 
-              <h1 className="max-w-[11ch] font-fraunces text-[clamp(3rem,8vw,5.2rem)] leading-[0.98] tracking-tight text-ink">
-                {t("pilot.heroTitle", locale)}<em className="not-italic text-[var(--color-accent-primary-strong)]">{t("pilot.heroTitleEm", locale)}</em>
+              <h1 className="max-w-[12ch] font-fraunces text-fluid-display tracking-tight text-ink">
+                {t("pilot.heroTitle", locale)}<em className="not-italic text-[var(--color-layer-team-accent)]">{t("pilot.heroTitleEm", locale)}</em>
               </h1>
 
-              <p className="mt-6 max-w-[620px] text-lg leading-[1.8] text-ink-body md:text-heading">
+              <p className="mt-6 max-w-[620px] text-base leading-relaxed text-ink-body">
                 {t("pilot.heroBody", locale)}
               </p>
 
@@ -114,34 +112,36 @@ export function PilotContent() {
               </div>
             </div>
 
-            <aside className="overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
-              <div className="border-b border-sand bg-warm px-6 py-6">
-                <p className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
+            <aside className="relative overflow-hidden rounded-[28px] bg-[var(--color-layer-team-hero-from)] p-6 text-[var(--color-text-on-inverse)] shadow-[0_28px_80px_rgba(26,26,46,0.16)] md:p-7">
+              <div className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
+              <div className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
+              <div className="relative border-b border-white/10 pb-5">
+                <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
-                <p className="mt-3 font-fraunces text-title leading-tight text-ink">
+                <p className="mt-3 font-fraunces text-title leading-tight">
                   {t("pilot.asideTitle", locale)}
                 </p>
-                <p className="mt-3 text-sm leading-7 text-ink-body">
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
                   {t("pilot.asideBody", locale)}
                 </p>
               </div>
 
-              <div className="grid gap-3 p-5">
-                <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              <div className="relative grid gap-4 pt-5">
+                <div className="grid grid-cols-3 gap-2.5">
                   {signals.map((signal) => (
-                    <div key={signal.label} className="rounded-2xl border border-sand bg-cream px-4 py-4">
-                      <div className="font-fraunces text-4xl leading-none text-bronze">{signal.value}</div>
-                      <div className="mt-2 text-sm leading-6 text-ink-body">{signal.label}</div>
+                    <div key={signal.label} className="rounded-2xl border border-white/15 bg-white/[0.08] px-3 py-4">
+                      <div className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-badge)]">{signal.value}</div>
+                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">{signal.label}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="rounded-2xl border border-sage/15 bg-sage-soft px-5 py-5">
-                  <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
+                <div className="rounded-2xl border border-[var(--color-layer-team-glow)]/35 bg-white/10 px-5 py-5">
+                  <p className="text-label uppercase text-[var(--color-layer-team-badge)]">
                     {t("pilot.aside90Eyebrow", locale)}
                   </p>
-                  <p className="mt-2 text-sm leading-7 text-ink-body">
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
                     {t("pilot.aside90Body", locale)}
                   </p>
                 </div>
@@ -170,6 +170,7 @@ export function PilotContent() {
       <EditorialSection
         eyebrow={t("pilot.stepsEyebrow", locale)}
         title={t("pilot.stepsTitle", locale)}
+        tone="warm"
       >
         <div className="grid gap-5">
           {steps.map((item) => (
@@ -182,31 +183,25 @@ export function PilotContent() {
         eyebrow={t("pilot.commitmentsEyebrow", locale)}
         title={t("pilot.commitmentsTitle", locale)}
       >
-        <div className="grid gap-4">
+        <div className="grid gap-4 md:grid-cols-3">
           {commitments.map((item) => (
             <CommitmentCard key={item.title} {...item} commitmentLabel={t("pilot.commitmentLabel", locale)} />
           ))}
         </div>
       </EditorialSection>
 
-      <section id="jelentkezes">
-        <PageWidthDivider />
+      <section id="jelentkezes" className="border-t border-sand bg-[var(--color-layer-team-soft)]/45">
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
-            <div className="mb-4 flex items-center gap-3">
-              <div className="h-px w-8 bg-bronze" />
-              <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-                {t("pilot.formEyebrow", locale)}
-              </span>
-            </div>
-            <h2 className="font-fraunces text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02] tracking-tight text-ink">
+            <SectionEyebrow tone="team" className="mb-4">{t("pilot.formEyebrow", locale)}</SectionEyebrow>
+            <h2 className="font-fraunces text-fluid-title tracking-tight text-ink">
               {t("pilot.formTitle", locale)}
             </h2>
             <p className="mt-5 max-w-[28rem] text-base leading-8 text-ink-body">
               {t("pilot.formBody", locale)}
             </p>
-            <div className="mt-7 rounded-2xl border border-sand bg-warm px-5 py-5">
-              <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
+            <div className="mt-7 rounded-[20px] border border-[var(--color-layer-team-accent)]/20 bg-surface-card/65 px-5 py-5">
+              <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
                 {t("pilot.fitEyebrow", locale)}
               </p>
               <p className="mt-2 text-sm leading-7 text-ink-body">
@@ -215,7 +210,7 @@ export function PilotContent() {
             </div>
           </div>
 
-          <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:p-8">
+          <div className="rounded-[28px] border border-sand bg-surface-card p-6 shadow-[0_24px_70px_rgba(26,26,46,0.08)] md:p-8">
             {status === "sent" ? (
               <div className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-10 text-center">
                 <div className="font-fraunces text-5xl leading-none text-bronze">+</div>
@@ -235,7 +230,7 @@ export function PilotContent() {
                       {t("pilot.formSubheading", locale)}
                     </p>
                   </div>
-                  <span className="rounded-full border border-bronze/15 bg-bronze/8 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                  <span className="rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] px-3 py-1 text-xs font-semibold uppercase tracking-widest text-[var(--color-layer-team-accent)]">
                     {t("pilot.formSpotsLabel", locale)}
                   </span>
                 </div>
@@ -249,7 +244,7 @@ export function PilotContent() {
                         value={form.name}
                         onChange={(e) => setForm({ ...form, name: e.target.value })}
                         placeholder={t("pilot.placeholderName", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className={INPUT_CLASS}
                       />
                     </FormField>
 
@@ -260,7 +255,7 @@ export function PilotContent() {
                         value={form.email}
                         onChange={(e) => setForm({ ...form, email: e.target.value })}
                         placeholder={t("pilot.placeholderEmail", locale)}
-                        className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                        className={INPUT_CLASS}
                       />
                     </FormField>
                   </div>
@@ -272,7 +267,7 @@ export function PilotContent() {
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
                       placeholder={t("pilot.placeholderCompany", locale)}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className={INPUT_CLASS}
                     />
                   </FormField>
 
@@ -280,7 +275,7 @@ export function PilotContent() {
                     <select
                       value={form.size}
                       onChange={(e) => setForm({ ...form, size: e.target.value })}
-                      className="w-full rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className={INPUT_CLASS}
                     >
                       <option value="">{t("pilot.sizeOption0", locale)}</option>
                       <option value="5-10">{t("pilot.sizeOption1", locale)}</option>
@@ -297,7 +292,7 @@ export function PilotContent() {
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       rows={4}
                       placeholder={t("pilot.placeholderQuestion", locale)}
-                      className="w-full resize-none rounded-xl border border-sand bg-cream px-4 py-3.5 text-ink placeholder:text-ink-body/45 transition-all focus:border-bronze/45 focus:bg-surface-card focus:outline-none focus:ring-2 focus:ring-bronze/15"
+                      className={`${INPUT_CLASS} resize-none`}
                     />
                   </FormField>
 
@@ -305,7 +300,7 @@ export function PilotContent() {
                     <button
                       type="submit"
                       disabled={status === "sending"}
-                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-bronze px-8 py-3.5 text-base font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-[54px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-8 py-3.5 text-base font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {status === "sending" ? t("pilot.submitSending", locale) : t("pilot.submitDefault", locale)}
                     </button>
@@ -337,23 +332,22 @@ function EditorialSection({
   eyebrow,
   title,
   children,
+  tone = "default",
 }: {
   id?: string;
   eyebrow: string;
   title: string;
   children: ReactNode;
+  tone?: "default" | "warm";
 }) {
   return (
-    <section id={id}>
-      <PageWidthDivider />
+    <section id={id} className={`border-t border-sand ${tone === "warm" ? "bg-warm" : "bg-cream"}`}>
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
-          <p className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-            {eyebrow}
-          </p>
+          <SectionEyebrow tone={tone === "warm" ? "team" : "bronze"}>{eyebrow}</SectionEyebrow>
         </div>
         <div>
-          <h2 className="max-w-[13ch] font-fraunces text-[clamp(2.1rem,4.5vw,3.4rem)] leading-[1.02] tracking-tight text-ink">
+          <h2 className="max-w-[13ch] font-fraunces text-fluid-title tracking-tight text-ink">
             {title}
           </h2>
           <div className="mt-8">{children}</div>
@@ -393,9 +387,9 @@ function FormField({
 
 function FeatureCard({ number, title, desc }: { number: string; title: string; desc: string }) {
   return (
-    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
+    <article className="rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] transition-transform hover:-translate-y-0.5">
       <div className="mb-4 flex items-center gap-3">
-        <span className="font-dm-sans text-xs font-semibold uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+        <span className="flex size-9 items-center justify-center rounded-full bg-[var(--color-layer-team-soft)] font-fraunces text-sm text-[var(--color-layer-team-accent)]">
           {number}
         </span>
         <div className="h-px flex-1 bg-sand" />
@@ -409,7 +403,7 @@ function FeatureCard({ number, title, desc }: { number: string; title: string; d
 function StepCard({ step, title, desc }: { step: string; title: string; desc: string }) {
   return (
     <article className="grid gap-5 rounded-[24px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)] md:grid-cols-[88px_minmax(0,1fr)] md:items-start">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-bronze/10 font-fraunces text-2xl text-bronze">
+      <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[var(--color-layer-team-accent)]/20 bg-[var(--color-layer-team-soft)] font-fraunces text-2xl text-[var(--color-layer-team-accent)]">
         {step}
       </div>
       <div>
@@ -422,8 +416,8 @@ function StepCard({ step, title, desc }: { step: string; title: string; desc: st
 
 function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc: string; commitmentLabel: string }) {
   return (
-    <article className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-      <p className="font-dm-sans text-micro font-semibold uppercase tracking-widest text-sage-dark/70">
+    <article className="rounded-[24px] border border-[var(--color-layer-team-accent)]/15 bg-[var(--color-layer-team-soft)] px-6 py-6">
+      <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
         {commitmentLabel}
       </p>
       <h3 className="mt-2 font-fraunces text-title leading-tight text-ink">{title}</h3>
