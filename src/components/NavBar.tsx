@@ -15,7 +15,6 @@ import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { useSiteMode } from "@/components/landing/site-mode";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
-import { getMarketingChromeTone } from "@/lib/navigation/marketing-chrome";
 
 // ─── Active link helper ───────────────────────────────────────────────────────
 
@@ -122,7 +121,6 @@ export function NavBar({
   // adja — így a marketing-fa nem szállít clerk-js bundle-t.
   const { isSignedIn } = useAuthState();
   const currentPath = usePathname();
-  const marketingChromeTone = getMarketingChromeTone(currentPath);
   const siteMode = useSiteMode();
   const [drawerOpen, setDrawerOpen] = useState(false);
   // UX-A18: localStorage-t nem olvasunk render közben (hydration mismatch:
@@ -233,22 +231,10 @@ export function NavBar({
       <header
         data-testid="public-nav-header"
         data-compact="false"
-        className={`sticky top-0 z-40 ${
-          marketingChromeTone === "team"
-            ? "bg-[var(--color-layer-team-soft)]/65"
-            : marketingChromeTone === "editorial"
-              ? "bg-[var(--color-surface-highlight-warm)]/65"
-              : "bg-transparent"
-        }`}
+        className="sticky top-0 z-40 bg-transparent"
       >
         <div
-          className={`mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5 ${
-            marketingChromeTone === "team"
-              ? "bg-[var(--color-layer-team-soft)]/90"
-              : marketingChromeTone === "editorial"
-                ? "bg-[var(--color-surface-highlight-warm)]/90"
-                : "bg-[var(--color-surface-header)]/95"
-          }`}
+          className="mx-auto mt-2 grid h-14 w-[calc(100%-1.5rem)] max-w-[1180px] grid-cols-[auto_1fr_auto] items-center rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:mt-3 lg:h-[68px] lg:grid-cols-[1fr_auto_1fr] lg:rounded-[22px] lg:px-5"
         >
 
           {/* ═══ LOGO ═══ */}

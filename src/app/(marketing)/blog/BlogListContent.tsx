@@ -241,8 +241,8 @@ export function BlogListContent({
 
       {/* A szűrő külön editorial sávban marad látható és könnyen olvasható. */}
       {tagChips.length > 1 && (
-        <section className="border-b border-sand bg-surface-card px-7">
-          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 py-5">
+        <section className="bg-surface-card px-7">
+          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 border-b border-sand py-5">
             <legend className="sr-only">{t("blog.filterLabel", displayLocale)}</legend>
             <span className="mr-2 text-label uppercase tracking-[0.13em] text-[var(--color-text-muted)]" aria-hidden="true">
               {t("blog.filterLabel", displayLocale)}

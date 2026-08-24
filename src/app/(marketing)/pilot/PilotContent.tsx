@@ -189,7 +189,8 @@ export function PilotContent() {
         </div>
       </EditorialSection>
 
-      <section id="jelentkezes" className="border-t border-sand bg-[var(--color-layer-team-soft)]/45">
+      <section id="jelentkezes" className="bg-[var(--color-layer-team-soft)]/45">
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[320px_minmax(0,1fr)]">
           <div>
             <SectionEyebrow tone="team" className="mb-4">{t("pilot.formEyebrow", locale)}</SectionEyebrow>
@@ -340,7 +341,8 @@ function EditorialSection({
   tone?: "default" | "warm";
 }) {
   return (
-    <section id={id} className={`border-t border-sand ${tone === "warm" ? "bg-warm" : "bg-cream"}`}>
+    <section id={id} className={tone === "warm" ? "bg-warm" : "bg-cream"}>
+      <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
       <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
         <div>
           <SectionEyebrow tone={tone === "warm" ? "team" : "bronze"}>{eyebrow}</SectionEyebrow>

@@ -40,7 +40,8 @@ export function ContactContent() {
         </div>
       </section>
 
-      <section id="contact-form" className="border-y border-sand bg-warm">
+      <section id="contact-form" className="bg-warm">
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="grid gap-10 lg:grid-cols-[250px_minmax(0,1fr)]">
             <div>
@@ -66,6 +67,7 @@ export function ContactContent() {
             </div>
           </div>
         </div>
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
       </section>
     </main>
   );

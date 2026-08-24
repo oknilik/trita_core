@@ -127,7 +127,8 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="border-y border-sand bg-warm">
+      <section className="bg-warm">
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center">
             <SectionEyebrow>{t("pricing.workflowEyebrow", locale)}</SectionEyebrow>
@@ -137,6 +138,7 @@ export function PricingContent() {
           </div>
           <Workflow locale={locale} />
         </div>
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
       </section>
 
       <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
@@ -197,8 +199,9 @@ export function PricingContent() {
         </div>
       </section>
 
-      <section className="border-t border-sand bg-warm px-7 py-16 md:py-24">
-        <div className="mx-auto max-w-3xl">
+      <section className="bg-warm">
+        <div className="mx-auto h-px w-[calc(100%-1.5rem)] max-w-[1180px] bg-sand" />
+        <div className="mx-auto max-w-3xl px-7 py-16 md:py-24">
           <div className="text-center">
             <SectionEyebrow>{locale === "hu" ? "Mielőtt belevágunk" : "Before we begin"}</SectionEyebrow>
             <h2 className="mt-4 font-fraunces text-fluid-title text-ink">{t("pricing.faqHeading", locale)}</h2>
