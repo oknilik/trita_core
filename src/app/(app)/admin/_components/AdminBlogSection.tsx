@@ -137,6 +137,10 @@ export function AdminBlogSection({
   const router = useRouter();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  // A betöltéskori tároló-sha. Ezt visszük mentéskor: ha a tároló időközben
+  // megváltozott (pl. egy korábbi mentés commitja), a szerver 409-et ad
+  // némán felülíró commit helyett. `null` = új cikk (még nem létezhet).
+  const [baseSha, setBaseSha] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -241,6 +245,7 @@ export function AdminBlogSection({
 
   const resetForm = () => {
     setEditingSlug(null);
+    setBaseSha(null);
     setSlugTouched(false);
     setForm(EMPTY_FORM);
     setArtPreviewRound(0);
@@ -253,9 +258,7 @@ export function AdminBlogSection({
     setEditorOpen(true);
   };
 
-  const startEdit = (post: AdminBlogPost) => {
-    setEditingSlug(post.slug);
-    setSlugTouched(true);
+  const applyPost = (post: AdminBlogPost) => {
     setForm({
       slug: post.slug,
       title: post.title,
@@ -273,10 +276,64 @@ export function AdminBlogSection({
       artLineMode: post.artLineMode ?? "",
       body: post.body,
     });
-    setArtPreviewRound(0);
+  };
+
+  /**
+   * Szerkesztésre nyitás — a tartalom a TÁROLÓBÓL jön, nem a listából.
+   *
+   * A lista a futó példány fájlrendszeréből épül, ami github módban a
+   * legutóbbi DEPLOY állapota. Ha a mentés utáni build még fut, ez a régi
+   * szöveg — abból mentve az imént mentett módosítás némán visszaíródna.
+   * A sha ugyanitt jön, és mentéskor zárja a kört.
+   */
+  const startEdit = async (post: AdminBlogPost) => {
     setNotice(null);
-    setConfirmEditorDiscard(false);
-    setEditorOpen(true);
+    setBusy(`load:${post.slug}`);
+    try {
+      const res = await fetch(`/api/admin/blog?slug=${encodeURIComponent(post.slug)}`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice({
+          kind: "error",
+          text: json.error === "NOT_FOUND"
+            ? "A cikk nincs meg a tárolóban — lehet, hogy időközben törölték."
+            : `Nem sikerült betölteni a cikket a tárolóból: ${json.error ?? res.status}. A biztonság kedvéért nem nyitom meg szerkesztésre.`,
+        });
+        return;
+      }
+
+      const fm = (json.frontmatter ?? {}) as Record<string, unknown>;
+      const str = (value: unknown): string =>
+        typeof value === "string" ? value : typeof value === "number" ? String(value) : "";
+      const rawTags = fm.tags;
+
+      applyPost({
+        ...post,
+        title: str(fm.title) || post.title,
+        description: str(fm.description) || post.description,
+        locale: fm.locale === "en" ? "en" : "hu",
+        tags: Array.isArray(rawTags) ? rawTags.map(String) : post.tags,
+        publishedAt: str(fm.publishedAt) || post.publishedAt,
+        translationSlug: str(fm.translationSlug) || undefined,
+        heroQuote: str(fm.heroQuote) || undefined,
+        startHere: Number(fm.startHere) > 0 ? Number(fm.startHere) : undefined,
+        artSeed: Number(fm.artSeed) > 0 ? Number(fm.artSeed) : undefined,
+        body: String(json.body ?? ""),
+      });
+      setBaseSha((json.sha as string | null) ?? null);
+      setEditingSlug(post.slug);
+      setSlugTouched(true);
+      setArtPreviewRound(0);
+      setConfirmEditorDiscard(false);
+      setEditorOpen(true);
+    } catch {
+      setNotice({
+        kind: "error",
+        text: "Hálózati hiba a cikk betöltésekor — nem nyitom meg szerkesztésre.",
+      });
+    } finally {
+      setBusy(null);
+    }
   };
 
   // Kész .mdx (vagy .md) fájlok feltöltése — a szerver olvassa a
@@ -380,6 +437,7 @@ export function AdminBlogSection({
       ...(!form.artFamily && !form.artConcept && !form.artLineMode && form.artMotif ? { artMotif: form.artMotif } : {}),
       body: form.body,
       status,
+      baseSha: editingSlug ? baseSha : null,
     };
     setBusy(status === "draft" ? "save-draft" : "save-publish");
     try {
@@ -395,12 +453,17 @@ export function AdminBlogSection({
           text:
             json.error === "GITHUB_NOT_CONFIGURED"
               ? "A GitHub-mentés nincs beállítva (GITHUB_TOKEN + GITHUB_REPO env kell)."
-              : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
+              : json.error === "CONFLICT"
+                ? (editingSlug
+                    ? "A cikk a tárolóban időközben megváltozott (jellemzően egy korábbi mentés commitja). A mentés NEM történt meg, hogy ne írja felül. Zárd be a szerkesztőt, nyisd meg újra a cikket, és vidd át a módosítást."
+                    : "Ezen a sluggal már van cikk a tárolóban. Válassz másik slugot, vagy a listából nyisd meg a meglévőt.")
+                : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
         });
         return;
       }
       setNotice({ kind: "ok", text: successText(json.mode) });
       setEditingSlug(payload.slug);
+      setBaseSha((json.sha as string | null) ?? null);
       setSlugTouched(true);
       router.refresh();
     } finally {
@@ -419,7 +482,12 @@ export function AdminBlogSection({
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setNotice({ kind: "error", text: `Nem sikerült: ${json.error ?? res.status}` });
+        setNotice({
+          kind: "error",
+          text: json.error === "CONFLICT"
+            ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
+            : `Nem sikerült: ${json.error ?? res.status}`,
+        });
         return;
       }
       setNotice({
@@ -1054,7 +1122,13 @@ export function AdminBlogSection({
                 </span>
               </span>
               <span className="flex shrink-0 items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => startEdit(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  loading={busy === `load:${post.slug}`}
+                  disabled={busy !== null}
+                  onClick={() => void startEdit(post)}
+                >
                   Szerkesztés
                 </Button>
                 {post.status === "draft" ? (

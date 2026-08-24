@@ -77,23 +77,54 @@ async function githubGetFile(
   };
 }
 
-/** A cikk nyers .mdx tartalma (frontmatter + törzs) — módnak megfelelő forrásból. */
-export async function readBlogSource(slug: string): Promise<string | null> {
+/**
+ * Ütközés a mentésnél: a tároló tartalma megváltozott azóta, hogy a
+ * szerkesztő betöltötte. `saveBlogSource` dobja, ha a kapott `baseSha` nem
+ * egyezik a tároló pillanatnyi állapotával.
+ */
+export const BLOG_CONFLICT = "BLOG_CONFLICT";
+
+export interface BlogRevision {
+  content: string;
+  /** github módban a blob sha (ütközés-ellenőrzéshez), fs módban null. */
+  sha: string | null;
+}
+
+/**
+ * A cikk nyers .mdx tartalma a tároló SHA-jával együtt.
+ *
+ * A szerkesztő ezen az úton töltsön (ne a build-időben becsomagolt
+ * `content/blog` fájlrendszerről): github módban a legutóbbi commit
+ * számít igazságnak, a futó példány fájlrendszere pedig a legutóbbi
+ * DEPLOY állapotát őrzi — a kettő a build ideje alatt eltér.
+ */
+export async function readBlogRevision(slug: string): Promise<BlogRevision | null> {
   if (blogStoreMode() === "github") {
     const cfg = githubConfig();
     if (!cfg) throw new Error("GITHUB_NOT_CONFIGURED");
     const file = await githubGetFile(cfg, slug);
-    return file?.content ?? null;
+    return file ? { content: file.content, sha: file.sha } : null;
   }
   const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
   if (!fs.existsSync(filePath)) return null;
-  return fs.readFileSync(filePath, "utf-8");
+  return { content: fs.readFileSync(filePath, "utf-8"), sha: null };
+}
+
+/** A cikk nyers .mdx tartalma (frontmatter + törzs) — módnak megfelelő forrásból. */
+export async function readBlogSource(slug: string): Promise<string | null> {
+  return (await readBlogRevision(slug))?.content ?? null;
 }
 
 export interface SaveBlogResult {
   mode: BlogStoreMode;
   /** github módban a commit weblinkje (admin-visszajelzéshez). */
   commitUrl?: string;
+  /**
+   * A MENTÉS UTÁNI blob sha (github mód). A szerkesztő ezt viszi tovább
+   * `baseSha`-ként, így ugyanabban a munkamenetben többször is lehet
+   * menteni ütközés-hiba nélkül.
+   */
+  sha?: string;
 }
 
 /** Cikk mentése — fs módban fájlírás, github módban commit (create vagy update). */
@@ -101,6 +132,12 @@ export async function saveBlogSource(params: {
   slug: string;
   content: string;
   message: string;
+  /**
+   * A betöltéskori sha — ütközés-ellenőrzéshez. `null` = a hívó úgy tudja,
+   * a cikk még nem létezik. Ha nincs megadva, nincs ellenőrzés (feltöltés,
+   * migrációs utak). fs módban nincs sha, ott az ellenőrzés kimarad.
+   */
+  baseSha?: string | null;
 }): Promise<SaveBlogResult> {
   const mode = blogStoreMode();
 
@@ -108,6 +145,13 @@ export async function saveBlogSource(params: {
     const cfg = githubConfig();
     if (!cfg) throw new Error("GITHUB_NOT_CONFIGURED");
     const existing = await githubGetFile(cfg, params.slug);
+    if (params.baseSha !== undefined && (existing?.sha ?? null) !== params.baseSha) {
+      log.warn(
+        { event: "blog_store.conflict", slug: params.slug },
+        "Blog save rejected: source changed since load",
+      );
+      throw new Error(BLOG_CONFLICT);
+    }
     const res = await fetch(
       `${GITHUB_API}/repos/${cfg.repo}/contents/${repoPath(params.slug)}`,
       {
@@ -126,8 +170,11 @@ export async function saveBlogSource(params: {
       log.error({ event: "blog_store.github_commit_failed", status: res.status, detail: detail.slice(0, 500) }, "GitHub commit failed");
       throw new Error(`GITHUB_WRITE_FAILED_${res.status}`);
     }
-    const json = (await res.json()) as { commit?: { html_url?: string } };
-    return { mode, commitUrl: json.commit?.html_url };
+    const json = (await res.json()) as {
+      commit?: { html_url?: string };
+      content?: { sha?: string };
+    };
+    return { mode, commitUrl: json.commit?.html_url, sha: json.content?.sha };
   }
 
   if (!fs.existsSync(BLOG_DIR)) fs.mkdirSync(BLOG_DIR, { recursive: true });

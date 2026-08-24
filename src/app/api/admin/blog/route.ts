@@ -4,8 +4,10 @@ import matter from "gray-matter";
 import { requireAdmin } from "@/lib/auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
+  BLOG_CONFLICT,
   blogStoreMode,
   githubConfigured,
+  readBlogRevision,
   readBlogSource,
   saveBlogSource,
   deleteBlogSource,
@@ -41,6 +43,8 @@ const postSchema = z.object({
   artLineMode: z.enum(BLOG_ART_LINE_MODES).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
+  /** A szerkesztésre betöltéskor kapott sha; `null` = új cikk. */
+  baseSha: z.string().min(1).max(120).nullable().optional(),
 });
 
 type PostInput = z.infer<typeof postSchema>;
@@ -72,6 +76,48 @@ function buildMdx(p: PostInput): string {
   return matter.stringify("\n" + p.body.trim() + "\n", data);
 }
 
+function isConflict(error: unknown): boolean {
+  return error instanceof Error && error.message === BLOG_CONFLICT;
+}
+
+// ── Szerkesztésre betöltés (GET) ──────────────────────────────────────
+// A szerkesztő NEM a lista prop-jából tölt: github módban a futó példány
+// fájlrendszere a legutóbbi DEPLOY állapotát őrzi, a tároló igazsága
+// viszont a legutóbbi commit. A kettő a build alatt eltér, és a régiből
+// mentve az időközbeni módosítás némán visszaíródna. A `sha` a mentéskor
+// visszaküldve zárja a kört.
+export async function GET(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
+
+  const slug = req.nextUrl.searchParams.get("slug") ?? "";
+  if (!SLUG_RE.test(slug) || slug.length > 120) {
+    return NextResponse.json({ error: "INVALID_SLUG" }, { status: 400 });
+  }
+
+  try {
+    const revision = await readBlogRevision(slug);
+    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+    const { data, content } = matter(revision.content);
+    return NextResponse.json({
+      ok: true,
+      slug,
+      sha: revision.sha,
+      mode: blogStoreMode(),
+      frontmatter: data,
+      body: content.trim(),
+    });
+  } catch (error) {
+    log.error({ event: "admin-blog.load_failed", err: error, slug }, "Load failed");
+    return NextResponse.json({ error: "LOAD_FAILED" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   const log = await getRequestLogger("admin-blog");
   try {
@@ -101,9 +147,13 @@ export async function POST(req: NextRequest) {
       slug: p.slug,
       content: mdx,
       message: `content(blog): ${p.slug} (${p.status === "draft" ? "piszkozat" : "publikálás"})`,
+      ...(p.baseSha !== undefined ? { baseSha: p.baseSha } : {}),
     });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
+    if (isConflict(error)) {
+      return NextResponse.json({ error: "CONFLICT", slug: p.slug }, { status: 409 });
+    }
     log.error({ event: "admin-blog.save_failed", err: error }, "Save failed");
     return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
   }
@@ -257,10 +307,10 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const source = await readBlogSource(slug);
-    if (!source) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    const revision = await readBlogRevision(slug);
+    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-    const { data, content } = matter(source);
+    const { data, content } = matter(revision.content);
     const wasDraft = data.status === "draft";
 
     if (action === "publish") {
@@ -275,9 +325,13 @@ export async function PATCH(req: NextRequest) {
       slug,
       content: matter.stringify(content, data),
       message: `content(blog): ${slug} (${action === "publish" ? "publikálás" : "visszavonás"})`,
+      baseSha: revision.sha,
     });
     return NextResponse.json({ ok: true, status: action === "publish" ? "published" : "draft", ...result });
   } catch (error) {
+    if (isConflict(error)) {
+      return NextResponse.json({ error: "CONFLICT", slug }, { status: 409 });
+    }
     log.error({ event: "admin-blog.status_change_failed", err: error }, "Status change failed");
     return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
   }
