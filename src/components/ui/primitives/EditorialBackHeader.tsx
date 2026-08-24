@@ -1,10 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import {
-  BackControl,
-  type BackControlProps,
-} from "@/components/ui/primitives/BackControl";
+import { BackControl } from "@/components/ui/primitives/BackControl";
 import { cn } from "@/lib/ui/cn";
 
 type EditorialBackAction =
@@ -20,13 +17,32 @@ type EditorialBackHeaderProps = EditorialBackAction & {
   className?: string;
 };
 
+type EditorialBackControlProps = EditorialBackAction & {
+  backLabel: string;
+  className?: string;
+  labelClassName?: string;
+};
+
 /** Az editorial visszavezérlő önálló változata olyan oldalakhoz,
  * ahol a cím egy saját hero- vagy tartalomkártyában marad. */
-export function EditorialBackControl({
-  backLabel,
-  ...action
-}: Omit<BackControlProps, "label"> & { backLabel: string }) {
-  return <BackControl label={backLabel} {...action} />;
+export function EditorialBackControl(props: EditorialBackControlProps) {
+  const { backLabel, className, labelClassName } = props;
+
+  return props.href ? (
+    <BackControl
+      href={props.href}
+      label={backLabel}
+      className={className}
+      labelClassName={labelClassName}
+    />
+  ) : (
+    <BackControl
+      onBack={props.onBack}
+      label={backLabel}
+      className={className}
+      labelClassName={labelClassName}
+    />
+  );
 }
 
 /**
