@@ -9,8 +9,10 @@
 export type AssessmentSubmitViewerResolver = () => Promise<string | null>;
 
 const defaultResolver: AssessmentSubmitViewerResolver = async () => {
-  const { auth } = await import("@clerk/nextjs/server");
-  const { userId } = await auth();
+  // A bypass-tudatos helper élesben ugyanarra a Clerk auth()-ra esik vissza;
+  // e2e-ben a trita_e2e_user_id cookie-t oldja fel (ld. auth-server.ts).
+  const { getServerAuth } = await import("@/lib/auth-server");
+  const { userId } = await getServerAuth();
   return userId;
 };
 

@@ -1,5 +1,5 @@
 import { requireOnboardedByClerkId } from "@/lib/onboarding-guard";
-import { auth } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
@@ -83,7 +83,9 @@ export default async function ProfileResultsPage({
 }: {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const [locale, { userId }] = await Promise.all([getServerLocale(), auth()]);
+  // Bypass-tudatos identitás (élesben ugyanaz a Clerk auth()) — a belépett
+  // e2e lane e nélkül nem éri el az eredményoldalt.
+  const [locale, { userId }] = await Promise.all([getServerLocale(), getServerAuth()]);
   if (!userId) return redirectToSignIn();
 
   await requireOnboardedByClerkId(userId);

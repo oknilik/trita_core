@@ -1,5 +1,6 @@
 import { requireOnboarded } from "@/lib/onboarding-guard";
 import { currentUser } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import { DEFAULT_ASSESSMENT_FORM } from "@/lib/operating-mode";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
@@ -34,8 +35,10 @@ export default async function AssessmentPage({
 }: {
   searchParams: Promise<{ confirmed?: string; campaignId?: string }>;
 }) {
-  const user = await currentUser();
-  if (!user) return redirectToSignIn();
+  // Identitás a bypass-tudatos helperből (élesben ugyanaz a Clerk auth());
+  // a teljes Clerk-user csak az öngyógyító create-ágban kell.
+  const { userId: clerkUserId } = await getServerAuth();
+  if (!clerkUserId) return redirectToSignIn();
 
   // Get or create user profile
   // UX-A10: a tagságokat is lekérjük — a submit utáni cél (team-roles lépés
@@ -47,16 +50,17 @@ export default async function AssessmentPage({
     teamMemberships: { select: { id: true }, take: 1 },
   } as const;
   let profile = await prisma.userProfile.findUnique({
-    where: { clerkId: user.id },
+    where: { clerkId: clerkUserId },
     include: profileInclude,
   });
 
   if (!profile) {
+    const user = await currentUser();
     profile = await prisma.userProfile.upsert({
-      where: { clerkId: user.id },
+      where: { clerkId: clerkUserId },
       create: {
-        clerkId: user.id,
-        email: user.primaryEmailAddress?.emailAddress,
+        clerkId: clerkUserId,
+        email: user?.primaryEmailAddress?.emailAddress,
       },
       update: {},
       include: profileInclude,
