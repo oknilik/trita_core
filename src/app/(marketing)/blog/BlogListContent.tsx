@@ -185,10 +185,14 @@ export function BlogListContent({
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      {/* Editorial hero: a blog saját, meleg tere és egyetlen hangsúlyos
-          belépési pontja. A kiemelt cikk itt él, ezért lent nem ismételjük. */}
-      <section className="bg-[linear-gradient(135deg,var(--color-surface-highlight-warm)_0%,var(--color-surface-warm-tint)_58%,var(--color-surface-soft-warm)_100%)] px-7 pb-10 pt-10 md:pb-14 md:pt-16">
-        <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
+      {/* Az első szekció az oldal alapszínén marad, így a semleges headerből
+          nincs kemény színváltás. A meleg editorial tónus csak belső fény. */}
+      <section className="relative overflow-hidden bg-cream px-7 pb-10 pt-10 md:pb-14 md:pt-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[7%] top-[12%] h-[72%] w-[48%] rounded-full bg-[var(--color-surface-highlight-warm)]/35 blur-3xl"
+        />
+        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
           <div>
             <div className="mb-5 flex items-center gap-3">
               <div className="h-px w-7 shrink-0 bg-[var(--color-accent-primary-strong)]" />
@@ -239,10 +243,11 @@ export function BlogListContent({
         </div>
       </section>
 
-      {/* A szűrő külön editorial sávban marad látható és könnyen olvasható. */}
+      {/* A szűrő ugyanazon a vásznon folytatódik; csak egy halk, tartalmi
+          szélességű vonal jelzi a következő ritmusegységet. */}
       {tagChips.length > 1 && (
-        <section className="bg-surface-card px-7">
-          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 border-b border-sand py-5">
+        <section className="bg-cream px-7">
+          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 border-b border-sand/60 py-5">
             <legend className="sr-only">{t("blog.filterLabel", displayLocale)}</legend>
             <span className="mr-2 text-label uppercase tracking-[0.13em] text-[var(--color-text-muted)]" aria-hidden="true">
               {t("blog.filterLabel", displayLocale)}
