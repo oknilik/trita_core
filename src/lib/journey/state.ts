@@ -181,6 +181,15 @@ function computeBlockingReasons(
 function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): JourneyAction[] {
   const { self, team, org } = context.completionSummary;
   const actionMap = buildActionMap(context);
+  const orgRole = context.orgMembership?.role ?? null;
+  const canManageOrg =
+    orgRole === "ORG_MANAGER" || orgRole === "ORG_ADMIN" || orgRole === "ORG_CONSULTANT";
+  const canManageTeam =
+    canManageOrg ||
+    context.teamMembership?.role === "manager" ||
+    context.teamMembership?.role === "admin";
+  const hasOrgInsights =
+    org.teamCount > 0 && org.completedMemberCount >= MIN_MEMBERS_FOR_ORG_INSIGHTS;
   const hasPendingMembershipInvite = self.pendingTeamInvites > 0 || self.pendingOrgInvites > 0;
   const hasTeamRelevantContext =
     self.explicitTeamIntent || hasPendingMembershipInvite || team.joined || org.joined;
@@ -206,11 +215,34 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
     TEAM_NOT_JOINED: hasTeamRelevantContext
       ? [...teamBridgeActions, "REVIEW_SELF_RESULTS", "INVITE_OBSERVERS"]
       : ["INVITE_OBSERVERS", "REVIEW_SELF_RESULTS"],
-    TEAM_PENDING_MEMBERS: ["INVITE_TEAM_MEMBERS", "VIEW_TEAM_INSIGHTS", "REVIEW_SELF_RESULTS"],
-    TEAM_PARTIAL: ["COMPLETE_TEAM_ASSESSMENTS", "INVITE_TEAM_MEMBERS", "VIEW_TEAM_INSIGHTS"],
-    TEAM_READY: ["VIEW_TEAM_INSIGHTS", "LAUNCH_ORG_CAMPAIGN", "INVITE_TEAM_MEMBERS"],
-    ORG_PARTIAL: ["INVITE_ORG_MEMBERS", "CREATE_ORG_TEAM", "LAUNCH_ORG_CAMPAIGN", "VIEW_ORG_INSIGHTS"],
-    ORG_READY: ["VIEW_ORG_INSIGHTS", "LAUNCH_ORG_CAMPAIGN", "INVITE_ORG_MEMBERS"],
+    TEAM_PENDING_MEMBERS: canManageTeam
+      ? ["INVITE_TEAM_MEMBERS", "REVIEW_SELF_RESULTS"]
+      : ["REVIEW_SELF_RESULTS"],
+    TEAM_PARTIAL: canManageTeam
+      ? ["COMPLETE_TEAM_ASSESSMENTS", "INVITE_TEAM_MEMBERS"]
+      : ["REVIEW_SELF_RESULTS"],
+    TEAM_READY: canManageTeam
+      ? [
+          "VIEW_TEAM_INSIGHTS",
+          ...(canManageOrg ? (["LAUNCH_ORG_CAMPAIGN"] as JourneyActionId[]) : []),
+          "INVITE_TEAM_MEMBERS",
+        ]
+      : ["VIEW_TEAM_INSIGHTS"],
+    ORG_PARTIAL: canManageOrg
+      ? [
+          "INVITE_ORG_MEMBERS",
+          "CREATE_ORG_TEAM",
+          "LAUNCH_ORG_CAMPAIGN",
+          ...(hasOrgInsights ? (["VIEW_ORG_INSIGHTS"] as JourneyActionId[]) : []),
+        ]
+      : team.ready
+        ? ["VIEW_TEAM_INSIGHTS"]
+        : ["REVIEW_SELF_RESULTS"],
+    ORG_READY: canManageOrg
+      ? ["VIEW_ORG_INSIGHTS", "LAUNCH_ORG_CAMPAIGN", "INVITE_ORG_MEMBERS"]
+      : team.ready
+        ? ["VIEW_TEAM_INSIGHTS"]
+        : ["REVIEW_SELF_RESULTS"],
   };
 
   const ids = byStage[stage];

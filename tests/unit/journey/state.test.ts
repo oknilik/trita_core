@@ -45,6 +45,8 @@ test("team intent without membership resolves TEAM_NOT_JOINED", () => {
 test("org-ready context resolves ORG_READY stage", () => {
   const state = computeJourneyState(
     buildJourneyContext({
+      currentContext: "org-admin",
+      orgMembership: { orgId: "o1", role: "ORG_ADMIN", joinedAt: new Date() },
       assessment: { started: true, completed: true, hasResult: true },
       completionSummary: {
         self: { started: true, completed: true },
@@ -55,4 +57,69 @@ test("org-ready context resolves ORG_READY stage", () => {
 
   assert.equal(state.currentStage, "ORG_READY");
   assert.equal(state.recommendedNextAction?.id, "VIEW_ORG_INSIGHTS");
+});
+
+test("plain team member only sees team insights after the team result is ready", () => {
+  const context = buildJourneyContext({
+    currentContext: "org-member",
+    orgId: "o1",
+    teamId: "t1",
+    orgMembership: { orgId: "o1", role: "ORG_MEMBER", joinedAt: new Date() },
+    teamMembership: { teamId: "t1", role: "member", joinedAt: new Date(), orgId: "o1" },
+    assessment: { started: true, completed: true, hasResult: true },
+    completionSummary: {
+      self: { started: true, completed: true },
+      team: { joined: true, teamId: "t1", completedMemberCount: 2, ready: false },
+      org: { joined: true, orgId: "o1", teamCount: 1, completedMemberCount: 2, ready: false },
+    },
+  });
+
+  const state = computeJourneyState(context);
+
+  assert.equal(state.currentStage, "ORG_PARTIAL");
+  assert.deepEqual(state.availableNextActions.map((action) => action.id), ["REVIEW_SELF_RESULTS"]);
+});
+
+test("plain member never receives organization management CTAs", () => {
+  const state = computeJourneyState(
+    buildJourneyContext({
+      currentContext: "org-member",
+      orgId: "o1",
+      teamId: "t1",
+      orgMembership: { orgId: "o1", role: "ORG_MEMBER", joinedAt: new Date() },
+      teamMembership: { teamId: "t1", role: "member", joinedAt: new Date(), orgId: "o1" },
+      assessment: { started: true, completed: true, hasResult: true },
+      completionSummary: {
+        self: { started: true, completed: true },
+        team: { joined: true, teamId: "t1", completedMemberCount: 3, ready: true },
+        org: {
+          joined: true,
+          orgId: "o1",
+          teamCount: 1,
+          completedMemberCount: 3,
+          activeCampaignCount: 1,
+          ready: true,
+        },
+      },
+    }),
+  );
+
+  assert.deepEqual(state.availableNextActions.map((action) => action.id), ["VIEW_TEAM_INSIGHTS"]);
+});
+
+test("organization insights stay hidden until the result threshold is met", () => {
+  const state = computeJourneyState(
+    buildJourneyContext({
+      currentContext: "org-admin",
+      orgId: "o1",
+      orgMembership: { orgId: "o1", role: "ORG_ADMIN", joinedAt: new Date() },
+      assessment: { started: true, completed: true, hasResult: true },
+      completionSummary: {
+        self: { started: true, completed: true },
+        org: { joined: true, orgId: "o1", teamCount: 1, completedMemberCount: 2, ready: false },
+      },
+    }),
+  );
+
+  assert.equal(state.availableNextActions.some((action) => action.id === "VIEW_ORG_INSIGHTS"), false);
 });
