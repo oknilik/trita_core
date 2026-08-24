@@ -14,8 +14,8 @@ const OPTIONS: { value: AuthIntent; label: string; labelEn: string; desc: string
     value: "explore",
     label: "Önismeret",
     labelEn: "Self-awareness",
-    desc: "Saját profilod és karrierképed feltérképezéséhez",
-    descEn: "To map out your own profile and career fit",
+    desc: "Saját működésed és természetes csapatszerepeid megértéséhez",
+    descEn: "To understand how you work and the team roles that come naturally to you",
   },
   {
     value: "team",

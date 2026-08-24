@@ -481,15 +481,15 @@ export default async function OrgDetailPage({
 
             <div className="mt-3 grid grid-cols-3 gap-2">
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.membersLabel", locale)}</p>
+                <p className="min-h-10 text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.membersLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.memberCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.teamsLabel", locale)}</p>
+                <p className="min-h-10 text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.teamsLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.teamCount}</p>
               </div>
               <div className="rounded-xl bg-white/[0.08] px-3 py-2">
-                <p className="text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.activeLabel", locale)}</p>
+                <p className="min-h-10 text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">{t("orgHero.activeLabel", locale)}</p>
                 <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-[var(--color-text-on-inverse)]">{pageData.activeCampaignCount}</p>
               </div>
             </div>
@@ -499,7 +499,7 @@ export default async function OrgDetailPage({
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
                 <CompletionIndicator percent={orgCompletionPct} size={76} color="var(--color-sage-300)" />
-                <p className="text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
+                <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
                   {t("orgHero.orgCompletion", locale)}
                 </p>
                 <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
@@ -508,7 +508,7 @@ export default async function OrgDetailPage({
               </div>
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
                 <CompletionIndicator percent={completionPct} size={76} color={orgHeroTheme.primary} />
-                <p className="text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
+                <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
                   {t("orgHero.activeCampaignCompletion", locale)}
                 </p>
                 <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
@@ -529,15 +529,15 @@ export default async function OrgDetailPage({
         </p>
         <div className="mt-3 grid grid-cols-3 gap-2">
           <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
+            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
             <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.memberCount}</p>
           </div>
           <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
+            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
             <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.teamCount}</p>
           </div>
           <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
+            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
             <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
           </div>
         </div>
@@ -551,7 +551,7 @@ export default async function OrgDetailPage({
               trackColor="var(--color-sand)"
               labelClassName="fill-ink"
             />
-            <p className="text-micro leading-tight text-ink-body">
+            <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-ink-body">
               {t("orgHero.orgCompletion", locale)}
             </p>
             <p className="text-micro text-muted">
@@ -567,7 +567,7 @@ export default async function OrgDetailPage({
               trackColor="var(--color-sand)"
               labelClassName="fill-ink"
             />
-            <p className="text-micro leading-tight text-ink-body">
+            <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-ink-body">
               {t("orgHero.activeCampaignCompletion", locale)}
             </p>
             <p className="text-micro text-muted">

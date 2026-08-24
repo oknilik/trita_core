@@ -208,7 +208,7 @@ const FIXTURES: SmokeFixture[] = [
       destination: "/team/team_1",
       activeSurface: "team",
       stage: "TEAM_PARTIAL",
-      primaryCtaId: "COMPLETE_TEAM_ASSESSMENTS",
+      primaryCtaId: "REVIEW_SELF_RESULTS",
       progressScope: "team",
       progressValue: 44,
     },

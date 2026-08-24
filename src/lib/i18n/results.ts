@@ -554,10 +554,10 @@ export const resultsTranslations = {
     upsellFeature1: { hu: "25 alskála", en: "25 subscales" },
     upsellFeature2: { hu: "Korlátlan számú observer", en: "Unlimited observers" },
     upsellFeature3: { hu: "Vakfolt-elemzés", en: "Blind spot analysis" },
-    upsellFeature4: { hu: "Karrierillesztés", en: "Career fit" },
-    lockPlus: { hu: "Mi áll a dimenziók mögött? · Milyen szerepkörök illenek hozzád? · Hol fejlődhetsz a leggyorsabban?", en: "What's behind your dimensions? · Which roles fit you? · Where can you grow fastest?" },
+    upsellFeature4: { hu: "Működésed és szereped a csapatban", en: "How you work and contribute in a team" },
+    lockPlus: { hu: "Mi áll a dimenziók mögött? · Milyen szerepet veszel fel a csapatban? · Hol fejlődhetsz a leggyorsabban?", en: "What's behind your dimensions? · Which role do you take on in a team? · Where can you grow fastest?" },
     lockReflect: { hu: "Hogyan látnak mások? · Mik a vakfoltjaid? · Observer-visszajelzések elemzése", en: "How do others see you? · What are your blind spots? · Observer feedback analysis" },
-    lockPreviewText: { hu: "Mi áll a dimenziók mögött? · Milyen szerepkörök illenek hozzád? · Observer-visszajelzés · Vakfolt-elemzés", en: "What's behind your dimensions? · Which roles fit you? · Observer feedback · Blind spot analysis" },
+    lockPreviewText: { hu: "Mi áll a dimenziók mögött? · Milyen szerepet veszel fel a csapatban? · Observer-visszajelzés · Vakfolt-elemzés", en: "What's behind your dimensions? · Which role do you take on in a team? · Observer feedback · Blind spot analysis" },
     heroAssessment: { hu: "Teszt:", en: "Assessment:" },
 
     // Csapat-érdeklődés banner (results oldal alja)
@@ -1896,7 +1896,7 @@ export const resultsTranslations = {
     plusFeature1: { hu: "25 alskála részletesen", en: "25 facets in detail" },
     plusFeature2: { hu: "Korlátlan számú observer", en: "Unlimited observers" },
     plusFeature3: { hu: "Vakfolt-elemzés", en: "Blind spot analysis" },
-    plusFeature4: { hu: "Karrierillesztés", en: "Career fit" },
+    plusFeature4: { hu: "Működésed és szereped a csapatban", en: "How you work and contribute in a team" },
     plusFeature5: { hu: "PDF letöltése", en: "PDF export" },
     buttonActive: { hu: "Aktív", en: "Active" },
     buttonUnlock: { hu: "Plus feloldása — €9", en: "Unlock Plus — €9" },
@@ -2131,8 +2131,8 @@ export const resultsTranslations = {
     teamRoles: { hu: "Csapatszerepek", en: "Team roles" },
     wantToGoDeeper: { hu: "Mélyebbre mennél?", en: "Want to go deeper?" },
     upsellDescription: {
-      hu: "Értsd meg, mi van a fő dimenzióid mögött — alskálák, observer-visszajelzés, vakfoltelemzés és karrierillesztés.",
-      en: "Understand what's behind your dimensions — subscales, observer feedback, blind spot analysis, career fit.",
+      hu: "Értsd meg, mi van a fő dimenzióid mögött — alskálák, observer-visszajelzés, vakfoltelemzés, valamint a működésed és szereped a csapatban.",
+      en: "Understand what's behind your dimensions — subscales, observer feedback, blind spot analysis, and how you work and contribute in a team.",
     },
     upsellUnlock: { hu: "feloldás", en: "unlock" },
     // ── PlusWorkStylePage ──────────────────────────────────────────────────

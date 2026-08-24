@@ -50,7 +50,7 @@ export default function HowWeWorkPage() {
               {
                 name: "Egyéni személyiségfelmérés",
                 description:
-                  "Személyiségfelmérés hat dimenzió mentén, dimenziószintű riporttal, munkastílus- és karrierképpel. Ingyenes.",
+                  "Személyiségfelmérés hat dimenzió mentén, dimenziószintű riporttal, munkastílus- és csapatszerep-elemzéssel. Ingyenes.",
               },
               {
                 name: "360°-os observer-visszajelzés",

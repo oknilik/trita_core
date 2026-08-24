@@ -757,20 +757,24 @@ export default async function ProfileResultsPage({
           plusContent={plusContent}
           careerResult={careerResult}
           careerModuleHidden={!careerActive || Boolean(careerHiddenMembership)}
-          bridgeNextStep={{
-            stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
-            explanation: selfDashboardVm.recommendedAction.description,
-            primary: {
-              label: selfDashboardVm.recommendedAction.primary.label,
-              href: selfDashboardVm.recommendedAction.primary.href,
-            },
-            secondary: selfDashboardVm.recommendedAction.secondary
-              ? {
-                  label: selfDashboardVm.recommendedAction.secondary.label,
-                  href: selfDashboardVm.recommendedAction.secondary.href,
+          bridgeNextStep={
+            selfDashboardVm.recommendedAction.primary.href === "/profile/results"
+              ? undefined
+              : {
+                  stage: selfDashboardVm.journeyStage ?? journeySnapshot.state.currentStage,
+                  explanation: selfDashboardVm.recommendedAction.description,
+                  primary: {
+                    label: selfDashboardVm.recommendedAction.primary.label,
+                    href: selfDashboardVm.recommendedAction.primary.href,
+                  },
+                  secondary: selfDashboardVm.recommendedAction.secondary
+                    ? {
+                        label: selfDashboardVm.recommendedAction.secondary.label,
+                        href: selfDashboardVm.recommendedAction.secondary.href,
+                      }
+                    : null,
                 }
-              : null,
-          }}
+          }
           teamRoleMeasuredScores={teamRoleMeasuredScores}
           teamRolePeer={teamRolePeer}
           experienceHints={journeySnapshot.resolution.experienceHints}
