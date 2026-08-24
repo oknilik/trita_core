@@ -7,6 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { t, tf } from "@/lib/i18n";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
 import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
@@ -588,9 +589,10 @@ export function OrgOnboardingWizard() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                  className="group inline-flex min-h-[48px] items-center gap-2 rounded-lg border border-sand px-3 pr-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
-                  {t("orgOnboarding.backBtn", locale)}
+                  <BackChevronIcon size="sm" />
+                  <span>{t("orgOnboarding.backBtn", locale)}</span>
                 </button>
                 <button
                   type="button"
@@ -641,9 +643,10 @@ export function OrgOnboardingWizard() {
                     <button
                       type="button"
                       onClick={() => setStep(2)}
-                      className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                      className="group inline-flex min-h-[48px] items-center gap-2 rounded-lg border border-sand px-3 pr-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                     >
-                      {t("orgOnboarding.backBtn", locale)}
+                      <BackChevronIcon size="sm" />
+                      <span>{t("orgOnboarding.backBtn", locale)}</span>
                     </button>
                     <button
                       type="button"

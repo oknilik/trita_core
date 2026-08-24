@@ -455,7 +455,7 @@ export const landingTranslations = {
     share: { hu: "Megosztás", en: "Share" },
     copyLink: { hu: "Link másolása", en: "Copy link" },
     linkCopied: { hu: "Másolva", en: "Copied" },
-    prevArticle: { hu: "← Előző cikk", en: "← Previous article" },
+    prevArticle: { hu: "Előző cikk", en: "Previous article" },
     nextArticle: { hu: "Következő cikk →", en: "Next article →" },
   },
   pilot: {

@@ -4,6 +4,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useAuthState } from "@/components/auth/auth-state";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { track } from "@/lib/analytics/client";
 import {
   AXIS_META,
@@ -574,10 +575,11 @@ export function PatternExplorer() {
                 {isHybridState && activeCode && (
                   <button
                     onClick={() => setSelectedHybridCode(null)}
-                    className="flex min-h-[44px] items-center gap-1 self-start text-xs font-semibold"
+                    className="group flex min-h-[44px] items-center gap-2 self-start text-xs font-semibold"
                     style={{ color: T.muted }}
                   >
-                    ← Vissza a határesethez
+                    <BackChevronIcon size="sm" />
+                    <span>Vissza a határesethez</span>
                   </button>
                 )}
                 <PatternCard

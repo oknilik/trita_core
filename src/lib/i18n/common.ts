@@ -228,7 +228,7 @@ export const commonTranslations = {
   actions: {
     startTest: { hu: "Teszt kitöltése", en: "Start test" },
     next: { hu: "Következő →", en: "Next →" },
-    prev: { hu: "← Előző", en: "← Previous" },
+    prev: { hu: "Előző", en: "Previous" },
     save: { hu: "Mentés...", en: "Saving..." },
     viewResults: { hu: "Eredmények megtekintése", en: "View results" },
     submit: { hu: "Küldés", en: "Submit" },

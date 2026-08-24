@@ -554,7 +554,7 @@ export default async function CampaignDetailPage({
             title={campaign.name}
             description={campaign.description}
           />
-          <div className="ml-14 mt-3 flex flex-wrap items-center gap-3">
+          <div className="mt-3 flex flex-wrap items-center gap-3">
             <StatusChip variant={statusBadgeVariant(campaign.status)}>
               {statusLabel(campaign.status, locale)}
             </StatusChip>

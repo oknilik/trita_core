@@ -21,6 +21,7 @@ import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 
 export async function generateStaticParams() {
@@ -459,8 +460,9 @@ export default async function BlogPostPage({
                 href={`/blog/${olderPost.slug}`}
                 className="rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-1.5 block text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
-                  {t("blog.prevArticle", locale)}
+                <span className="group mb-1.5 inline-flex items-center gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                  <BackChevronIcon size="sm" />
+                  <span>{t("blog.prevArticle", locale)}</span>
                 </span>
                 <span className="font-fraunces text-body leading-[1.3] text-ink">
                   {olderPost.title}

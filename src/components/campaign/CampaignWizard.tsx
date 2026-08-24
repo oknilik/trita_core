@@ -6,6 +6,7 @@ import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { presentUserError } from "@/lib/user-errors";
 import { Button } from "@/components/ui/primitives/Button";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { Card } from "@/components/ui/primitives/Card";
 import { TextField } from "@/components/ui/primitives/TextField";
 import { TextareaField } from "@/components/ui/primitives/TextareaField";
@@ -706,7 +707,13 @@ export function CampaignWizard({
             ) : null}
           </div>
           <div className="mt-6 flex items-center justify-between gap-4">
-            <Button type="button" onClick={() => setStep(1)} variant="secondary" iconLeft="←">
+            <Button
+              type="button"
+              onClick={() => setStep(1)}
+              variant="secondary"
+              iconLeft={<BackChevronIcon size="sm" />}
+              className="group"
+            >
               {t("campaignWiz.back", locale)}
             </Button>
             <Button
@@ -821,7 +828,13 @@ export function CampaignWizard({
           )}
 
           <div className="mt-6 flex items-center justify-between gap-4">
-            <Button type="button" onClick={() => setStep(2)} variant="secondary" iconLeft="←">
+            <Button
+              type="button"
+              onClick={() => setStep(2)}
+              variant="secondary"
+              iconLeft={<BackChevronIcon size="sm" />}
+              className="group"
+            >
               {t("campaignWiz.back", locale)}
             </Button>
             <Button
@@ -940,7 +953,8 @@ export function CampaignWizard({
               onClick={() => setStep(3)}
               disabled={loading}
               variant="secondary"
-              iconLeft="←"
+              iconLeft={<BackChevronIcon size="sm" />}
+              className="group"
             >
               {t("campaignWiz.back", locale)}
             </Button>

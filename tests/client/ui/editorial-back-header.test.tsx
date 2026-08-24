@@ -18,9 +18,16 @@ describe("EditorialBackHeader", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("link", { name: "Vissza az összehasonlításokhoz" }),
-    ).toHaveAttribute("href", "/interaction");
+    const backLink = screen.getByRole("link", {
+      name: "Vissza az összehasonlításokhoz",
+    });
+    expect(backLink).toHaveAttribute("href", "/interaction");
+    expect(backLink).toHaveTextContent("Vissza az összehasonlításokhoz");
+    expect(backLink).not.toHaveTextContent(String.fromCodePoint(0x2190));
+    expect(backLink.querySelector("path")).toHaveAttribute(
+      "d",
+      "M12.5 4.5 7 10l5.5 5.5",
+    );
     expect(screen.getByRole("heading", { level: 1, name: "Te és Dani" })).toBeInTheDocument();
     expect(screen.getByText("Összehasonlítások")).toBeInTheDocument();
   });

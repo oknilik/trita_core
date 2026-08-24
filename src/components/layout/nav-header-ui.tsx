@@ -22,6 +22,7 @@ import { NotificationBell } from "./NotificationBell";
 import { NotificationPanel } from "./NotificationPanel";
 import { NotificationsProvider, useNotifications } from "./NotificationsProvider";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { BackControl } from "@/components/ui/primitives/BackControl";
 
 function GridIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
@@ -421,13 +422,11 @@ function NavHeaderContent({
   if (pathname.startsWith("/try") || pathname.startsWith("/assessment")) {
     return (
       <AssessmentFocusHeader homeHref={homeHref}>
-        <Link
+        <BackControl
           href={homeHref}
-          className={`inline-flex min-h-10 items-center gap-1.5 rounded-[11px] px-3 text-caption font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
-        >
-          <span aria-hidden="true">←</span>
-          <span className="hidden sm:inline">{t("nav.backToHome", locale)}</span>
-        </Link>
+          label={t("nav.backToHome", locale)}
+          labelClassName="hidden sm:inline"
+        />
       </AssessmentFocusHeader>
     );
   }

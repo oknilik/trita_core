@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { QuestionCard } from '@/components/assessment/QuestionCard'
 import { EvaluatingScreen } from '@/components/assessment/EvaluatingScreen'
 import { Button } from '@/components/ui/primitives/Button'
+import { BackChevronIcon } from '@/components/ui/primitives/BackChevronIcon'
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
 import { useToast } from '@/components/ui/Toast'
@@ -913,13 +914,14 @@ export function AssessmentClient({
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`col-start-1 row-start-1 min-h-[48px] w-full justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${FOCUS_RING_CLASS} ${
+          className={`group col-start-1 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-2 justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${FOCUS_RING_CLASS} ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
-              : "border-transparent bg-transparent text-transparent pointer-events-none"
+              : "pointer-events-none border-transparent bg-transparent opacity-0"
           }`}
         >
-          ← {t('assessment.prevCta', locale)}
+          <BackChevronIcon size="sm" />
+          <span>{t('assessment.prevCta', locale)}</span>
         </button>
 
         <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-state-focus-ring focus-within:ring-offset-2 focus-within:ring-offset-surface-canvas sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">

@@ -7,6 +7,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { TextField } from "@/components/ui/primitives/TextField";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { toggleBtn } from "@/lib/onboarding-styles";
@@ -471,9 +472,10 @@ export function JoinClient({
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="min-h-[48px] rounded-lg border border-sand px-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
+                  className="group inline-flex min-h-[48px] items-center gap-2 rounded-lg border border-sand px-3 pr-5 text-sm font-medium text-ink-body transition-colors hover:border-sage/40"
                 >
-                  {copy.backCta}
+                  <BackChevronIcon size="sm" />
+                  <span>{copy.backCta}</span>
                 </button>
                 <button
                   type="button"

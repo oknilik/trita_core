@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { TritaWordmark } from "@/components/TritaLogo";
 import AuthLeftPanel, { type AuthLeftPanelContext } from "@/components/auth/AuthLeftPanel";
+import { BackControl } from "@/components/ui/primitives/BackControl";
 import { t } from "@/lib/i18n";
 
 interface AuthPageShellProps {
@@ -25,13 +26,7 @@ export default function AuthPageShell({ panelContext, children }: AuthPageShellP
         >
           <TritaWordmark className="text-heading tracking-[-0.04em]" />
         </Link>
-        <Link
-          href="/"
-          className="inline-flex min-h-11 items-center rounded-xl px-2 text-sm font-semibold text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-state-hover-bg)] hover:text-[var(--color-state-hover-fg)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
-        >
-          <span aria-hidden="true" className="mr-1.5">←</span>
-          {t("auth.backHome", locale)}
-        </Link>
+        <BackControl href="/" label={t("auth.backHome", locale)} />
       </header>
 
       <main className="mx-auto flex w-full max-w-[1180px] flex-1 items-center justify-center px-4 py-8 sm:px-6 sm:py-12">

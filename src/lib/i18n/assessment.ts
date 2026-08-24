@@ -203,7 +203,7 @@ export const assessmentTranslations = {
       en: "Don't forget: {inviter} asked you for this assessment. Keep them in mind as you answer the questions. ✨",
     },
     next: { hu: "Következő →", en: "Next →" },
-    prev: { hu: "← Előző", en: "← Previous" },
+    prev: { hu: "Előző", en: "Previous" },
     submitLoading: { hu: "Mentés...", en: "Saving..." },
     submit: { hu: "Küldés", en: "Submit" },
     genericError: { hu: "Hiba történt.", en: "Something went wrong." },

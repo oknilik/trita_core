@@ -10,6 +10,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { TritaWordmark } from "@/components/TritaLogo";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
 
@@ -865,13 +866,14 @@ export function ObserverClient({
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`min-h-[44px] whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
+          className={`group inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
-              : "border-transparent bg-transparent text-transparent pointer-events-none"
+              : "pointer-events-none border-transparent bg-transparent opacity-0"
           }`}
         >
-          ← {t("assessment.prevCta", locale)}
+          <BackChevronIcon size="sm" />
+          <span>{t("assessment.prevCta", locale)}</span>
         </button>
 
         <label className="flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 px-1">
