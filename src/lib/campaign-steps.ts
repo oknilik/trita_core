@@ -12,6 +12,12 @@ import {
   isStepOpenFor,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
+import {
+  CAMPAIGN_ACTIVATION_PRECONDITION_CODES,
+  getCampaignActivationPreconditionFailure,
+  type CampaignActivationPreconditionCode,
+} from "@/lib/campaign-activation-core";
+import { countCoveredCurrentPeerTargets } from "@/lib/peer-submission-coverage";
 import { handleCampaignProgressMilestone, handleMeasurementStepOpened } from "@/lib/notifications";
 
 /**
@@ -59,28 +65,43 @@ export async function getStepPartialProgress(
   }
   const teamId = await resolveCampaignTeamIdForUser(campaign, profileId);
   if (!teamId) return null;
-  const total = await prisma.teamMember.count({
-    where: { teamId, userId: { not: profileId } },
+  const currentMembers = await prisma.teamMember.findMany({
+    where: { teamId },
+    select: { userId: true },
   });
-  if (total === 0) return null;
-  let done = 0;
+  const currentMemberIds = currentMembers.map((member) => member.userId);
+  let ratedUserIds: string[] = [];
   if (stepType === "TEAM_ROLE_360") {
-    done = await prisma.teamRoleObservation.count({
-      where: { campaignId: campaign.id, raterUserId: profileId },
+    const rows = await prisma.teamRoleObservation.findMany({
+      where: { campaignId: campaign.id, teamId, raterUserId: profileId },
+      select: { aboutUserId: true },
     });
+    ratedUserIds = rows.map((row) => row.aboutUserId);
   } else if (stepType === "TRUST_360") {
-    done = await prisma.trustObservation.count({
-      where: { campaignId: campaign.id, raterUserId: profileId },
+    const rows = await prisma.trustObservation.findMany({
+      where: { campaignId: campaign.id, teamId, raterUserId: profileId },
+      select: { aboutUserId: true },
     });
+    ratedUserIds = rows.map((row) => row.aboutUserId);
   } else {
     const rows = await prisma.peerFeedbackItem.findMany({
-      where: { campaignId: campaign.id, fromUserId: profileId, kind: "feedforward" },
+      where: {
+        campaignId: campaign.id,
+        teamId,
+        fromUserId: profileId,
+        kind: "feedforward",
+      },
       select: { toUserId: true },
       distinct: ["toUserId"],
     });
-    done = rows.length;
+    ratedUserIds = rows.map((row) => row.toUserId);
   }
-  return { done: Math.min(done, total), total };
+  const coverage = countCoveredCurrentPeerTargets(
+    currentMemberIds,
+    profileId,
+    ratedUserIds,
+  );
+  return coverage.total > 0 ? coverage : null;
 }
 
 /**
@@ -275,6 +296,210 @@ export interface CampaignStepOpening {
   stepType: string;
 }
 
+export interface CampaignActivationResult {
+  outcome: "activated" | "already_active" | "conflict";
+  campaign: {
+    id: string;
+    name: string;
+    status: string;
+    activatedAt: Date | null;
+    closedAt: Date | null;
+  };
+  openings: CampaignStepOpening[];
+}
+
+export class CampaignActivationPreconditionError extends Error {
+  readonly code: CampaignActivationPreconditionCode;
+
+  constructor(code: CampaignActivationPreconditionCode) {
+    super(code);
+    this.name = "CampaignActivationPreconditionError";
+    this.code = code;
+  }
+}
+
+export function isCampaignActivationPreconditionError(
+  error: unknown,
+): error is CampaignActivationPreconditionError {
+  if (error instanceof CampaignActivationPreconditionError) return true;
+  if (!error || typeof error !== "object" || !("code" in error)) return false;
+  return CAMPAIGN_ACTIVATION_PRECONDITION_CODES.includes(
+    (error as { code: CampaignActivationPreconditionCode }).code,
+  );
+}
+
+export interface DraftCampaignUpdateInput {
+  steps: string[];
+  type: string;
+  teamId: string | null;
+  teamIds: string[];
+  stepIntervalHours?: number;
+  peerFeedbackAnonymous?: boolean;
+  name?: string;
+  description?: string | null;
+}
+
+/**
+ * Resztvevo hozzaadasa/torlese ugyanazon Campaign sor kizarolagos zarja
+ * mogott fut, mint a DRAFT -> ACTIVE claim. Igy az aktivacios precondition-
+ * olvasas vagy a teljes participant mutacio elott, vagy teljesen utana fut;
+ * felig alkalmazott resztvevo-listat nem inicializalhat.
+ */
+export async function lockCampaignForParticipantMutation(
+  db: Prisma.TransactionClient,
+  campaignId: string,
+  orgId: string,
+): Promise<boolean> {
+  const rows = await db.$queryRaw<Array<{ id: string }>>`
+    SELECT "id"
+    FROM "Campaign"
+    WHERE "id" = ${campaignId}
+      AND "orgId" = ${orgId}
+    FOR UPDATE
+  `;
+  return rows.length === 1;
+}
+
+/**
+ * A draft szerkesztes ugyanazert foglalja feltetelesen a Campaign sort,
+ * mint az aktivalas: ha az ACTIVE claim nyert, egy stale route-context mar
+ * nem irhatja at a meresi lepessorozatot vagy a celcsapatot. Ha a szerkesztes
+ * nyer, az aktivalas a commit utan az uj konfiguraciot olvassa es validalja.
+ */
+export async function updateDraftCampaignAtomically(
+  campaignId: string,
+  data: DraftCampaignUpdateInput,
+) {
+  return prisma.$transaction(async (tx) => {
+    const claimed = await tx.campaign.updateMany({
+      where: { id: campaignId, status: "DRAFT" },
+      data,
+    });
+    const campaign = await tx.campaign.findUnique({
+      where: { id: campaignId },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        presetId: true,
+        type: true,
+        steps: true,
+        teamId: true,
+        teamIds: true,
+        stepIntervalHours: true,
+      },
+    });
+    return {
+      outcome: claimed.count === 1 ? ("updated" as const) : ("not_draft" as const),
+      campaign,
+    };
+  });
+}
+
+/**
+ * DRAFT → ACTIVE állapotfoglalás egyetlen feltételes DB update-tel.
+ *
+ * Két párhuzamos aktiválás közül csak az a tranzakció inicializálhatja a
+ * résztvevőket és a team-role kört, amelyik ténylegesen DRAFT sort váltott.
+ * A második kérés ugyanazt a már aktív kampányt kapja vissza változtatás
+ * nélkül; az activatedAt és a teamRoleRoundStartedAt ezért stabil marad.
+ */
+export async function activateCampaignAtomically(
+  campaignId: string,
+): Promise<CampaignActivationResult> {
+  const activatedAt = new Date();
+  return prisma.$transaction(async (tx) => {
+    const claimed = await tx.campaign.updateMany({
+      where: { id: campaignId, status: "DRAFT" },
+      data: { status: "ACTIVE", activatedAt },
+    });
+
+    const campaign = await tx.campaign.findUnique({
+      where: { id: campaignId },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        activatedAt: true,
+        closedAt: true,
+        presetId: true,
+        type: true,
+        steps: true,
+        teamId: true,
+        teamIds: true,
+      },
+    });
+    if (!campaign) throw new Error("CAMPAIGN_NOT_FOUND_DURING_ACTIVATION");
+
+    const responseCampaign = {
+      id: campaign.id,
+      name: campaign.name,
+      status: campaign.status,
+      activatedAt: campaign.activatedAt,
+      closedAt: campaign.closedAt,
+    };
+    if (claimed.count === 0) {
+      return {
+        outcome: campaign.status === "ACTIVE" ? "already_active" : "conflict",
+        campaign: responseCampaign,
+        openings: [],
+      };
+    }
+
+    const campaignSteps = getCampaignSteps(campaign);
+    const campaignTeamIds = getCampaignTeamIds(campaign);
+    const participants = await tx.campaignParticipant.findMany({
+      where: { campaignId },
+      select: { userId: true },
+    });
+    const targetMembers =
+      campaignTeamIds.length > 0
+        ? await tx.teamMember.findMany({
+            where: {
+              teamId: { in: campaignTeamIds },
+              userId: { in: participants.map((participant) => participant.userId) },
+            },
+            select: { userId: true },
+            distinct: ["userId"],
+          })
+        : [];
+    const preconditionFailure = getCampaignActivationPreconditionFailure({
+      presetId: campaign.presetId,
+      steps: campaignSteps,
+      teamIds: campaignTeamIds,
+      participantUserIds: participants.map((participant) => participant.userId),
+      targetMemberUserIds: targetMembers.map((member) => member.userId),
+    });
+    if (preconditionFailure) {
+      // A throw a korabbi ACTIVE update-et is rollbackolja. Igy a kliens a
+      // konkret, javithato okot kapja, a kampany pedig DRAFT marad.
+      throw new CampaignActivationPreconditionError(preconditionFailure);
+    }
+
+    if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
+      await tx.team.updateMany({
+        where: { id: { in: campaignTeamIds } },
+        data: {
+          teamRoleRoundActive: true,
+          // Ugyanaz az időpont, mint a kampány aktiválásánál: nemcsak egyszer
+          // íródik, hanem az audit-idővonalon is egy eseményt jelent.
+          teamRoleRoundStartedAt: activatedAt,
+        },
+      });
+    }
+
+    const openings = await initializeCampaignProgress(campaignId, undefined, {
+      db: tx,
+      emitNotifications: false,
+    });
+    return {
+      outcome: "activated",
+      campaign: responseCampaign,
+      openings,
+    };
+  });
+}
+
 export async function notifyCampaignStepOpenings(
   openings: CampaignStepOpening[],
 ): Promise<void> {
@@ -284,6 +509,51 @@ export async function notifyCampaignStepOpenings(
   for (const campaignId of new Set(openings.map((opening) => opening.campaignId))) {
     await handleCampaignProgressMilestone(campaignId);
   }
+}
+
+/**
+ * A DB szerint jelenleg nyitott lépések értesítéseinek újraépítése.
+ *
+ * Az értesítés dedupe-kulcsos, ezért ez biztonságosan hívható egy korábbi
+ * post-commit hiba után, kérés-retryból, oldalbetöltésből vagy cronból is.
+ * Csak a nem kapuzott aktuális lépést veszi figyelembe; lezárt kampányt és
+ * teljesen végigért résztvevőt nem érint.
+ */
+export async function reconcileCampaignStepOpenings(options?: {
+  campaignId?: string;
+  userId?: string;
+}): Promise<number> {
+  const participants = await prisma.campaignParticipant.findMany({
+    where: {
+      ...(options?.campaignId ? { campaignId: options.campaignId } : {}),
+      ...(options?.userId ? { userId: options.userId } : {}),
+      nextStepOpensAt: null,
+      campaign: { status: "ACTIVE" },
+    },
+    select: {
+      userId: true,
+      currentStep: true,
+      campaign: {
+        select: { id: true, name: true, type: true, steps: true },
+      },
+    },
+  });
+
+  const openings = participants.flatMap((participant) => {
+    const stepType = getCampaignSteps(participant.campaign)[participant.currentStep];
+    return stepType
+      ? [
+          {
+            userId: participant.userId,
+            campaignId: participant.campaign.id,
+            campaignName: participant.campaign.name,
+            stepType,
+          },
+        ]
+      : [];
+  });
+  if (openings.length > 0) await notifyCampaignStepOpenings(openings);
+  return openings.length;
 }
 
 /**
@@ -303,27 +573,48 @@ export async function releaseDueCampaignSteps(options?: {
    */
   emailNotify?: boolean;
 }): Promise<number> {
+  // Ugyanazt a határidőt használja a keresés és a feltételes update is. Ha
+  // két cron/force kérés egyszerre találja meg ugyanazt a kaput, az első
+  // update nullázza; a második updateMany így már 0 sort foglal le.
+  const releaseCutoff = new Date();
+  const gatePredicate: Prisma.DateTimeNullableFilter = options?.force
+    ? { not: null }
+    : { lte: releaseCutoff };
   const due = await prisma.campaignParticipant.findMany({
     where: {
       campaign: { status: "ACTIVE", ...(options?.campaignId ? { id: options.campaignId } : {}) },
       ...(options?.userId ? { userId: options.userId } : {}),
-      nextStepOpensAt: options?.force ? { not: null } : { lte: new Date() },
+      nextStepOpensAt: gatePredicate,
     },
     select: {
       id: true,
       userId: true,
       currentStep: true,
+      nextStepOpensAt: true,
       campaign: { select: { id: true, name: true, type: true, steps: true } },
     },
   });
 
   let released = 0;
   for (const p of due) {
+    // A findMany csak nem-null kaput adhat vissza, de a guard a típust is
+    // leszűkíti. Az eredeti gate-időpont és currentStep összevetése azt is
+    // megakadályozza, hogy egy közben újraütemezett, újabb kaput nyissunk ki.
+    if (!p.nextStepOpensAt) continue;
     const openType = getCampaignSteps(p.campaign)[p.currentStep];
-    await prisma.campaignParticipant.update({
-      where: { id: p.id },
+    const claimed = await prisma.campaignParticipant.updateMany({
+      where: {
+        id: p.id,
+        currentStep: p.currentStep,
+        campaign: { status: "ACTIVE" },
+        AND: [
+          { nextStepOpensAt: gatePredicate },
+          { nextStepOpensAt: p.nextStepOpensAt },
+        ],
+      },
       data: { nextStepOpensAt: null },
     });
+    if (claimed.count === 0) continue;
     released += 1;
     if (openType) {
       await handleMeasurementStepOpened({
@@ -335,6 +626,13 @@ export async function releaseDueCampaignSteps(options?: {
       }).catch(() => {});
     }
   }
+  // A release egyben olcsó reconciliation-pont is. Ez helyreállítja azt az
+  // in-app értesítést is, amelynek lépése egy korábbi tranzakcióban már
+  // megnyílt, de a commit utáni notification írás akkor elhasalt.
+  await reconcileCampaignStepOpenings({
+    campaignId: options?.campaignId,
+    userId: options?.userId,
+  });
   return released;
 }
 

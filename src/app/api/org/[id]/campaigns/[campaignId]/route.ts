@@ -8,6 +8,7 @@ import {
   CAMPAIGN_STEP_ORDER,
   normalizeCampaignSteps,
 } from "@/lib/campaign-steps-core";
+import type { CampaignActivationResult } from "@/lib/campaign-steps";
 import { getRequestLogger } from "@/lib/logger.server";
 import { trackServerEvent } from "@/lib/analytics/server";
 
@@ -86,6 +87,29 @@ async function resolveManageCapabilityDecision(orgId: string, role: string) {
     orgRole: role,
   });
   return resolveOrgCapabilityDecision(snapshot, "manage");
+}
+
+async function notifyCampaignLaunch(params: {
+  orgId: string;
+  campaignId: string;
+  campaignName: string;
+}) {
+  const { handleCampaignLaunched } = await import("@/lib/notifications");
+  await handleCampaignLaunched(params);
+}
+
+/**
+ * ACTIVE retry recovery: both notification families are rebuilt from the
+ * committed campaign state. Their DB dedupe keys make repeated calls safe.
+ */
+async function reconcileActiveCampaignNotifications(params: {
+  orgId: string;
+  campaignId: string;
+  campaignName: string;
+}) {
+  const { reconcileCampaignStepOpenings } = await import("@/lib/campaign-steps");
+  await reconcileCampaignStepOpenings({ campaignId: params.campaignId });
+  await notifyCampaignLaunch(params);
 }
 
 // GET /api/org/[id]/campaigns/[campaignId] — campaign detail
@@ -223,35 +247,29 @@ export async function PATCH(
       }
     }
 
-    const updated = await prisma.campaign.update({
-      where: { id: campaignId },
-      data: {
-        steps,
-        type: steps[0],
-        teamId: nextTeamIds[0] ?? null,
-        teamIds: nextTeamIds,
-        ...(edit.stepIntervalHours !== undefined
-          ? { stepIntervalHours: edit.stepIntervalHours }
-          : {}),
-        ...(edit.peerFeedbackAnonymous !== undefined
-          ? { peerFeedbackAnonymous: edit.peerFeedbackAnonymous }
-          : {}),
-        ...(edit.name ? { name: edit.name } : {}),
-        ...(edit.description !== undefined ? { description: edit.description } : {}),
-      },
-      select: {
-        id: true,
-        name: true,
-        status: true,
-        presetId: true,
-        type: true,
-        steps: true,
-        teamId: true,
-        teamIds: true,
-        stepIntervalHours: true,
-      },
+    const draftUpdate = await (
+      await import("@/lib/campaign-steps")
+    ).updateDraftCampaignAtomically(campaignId, {
+      steps,
+      type: steps[0],
+      teamId: nextTeamIds[0] ?? null,
+      teamIds: nextTeamIds,
+      ...(edit.stepIntervalHours !== undefined
+        ? { stepIntervalHours: edit.stepIntervalHours }
+        : {}),
+      ...(edit.peerFeedbackAnonymous !== undefined
+        ? { peerFeedbackAnonymous: edit.peerFeedbackAnonymous }
+        : {}),
+      ...(edit.name ? { name: edit.name } : {}),
+      ...(edit.description !== undefined ? { description: edit.description } : {}),
     });
-    return NextResponse.json({ campaign: updated });
+    if (draftUpdate.outcome !== "updated") {
+      return NextResponse.json(
+        { error: "CAMPAIGN_NOT_DRAFT", campaign: draftUpdate.campaign },
+        { status: 409 },
+      );
+    }
+    return NextResponse.json({ campaign: draftUpdate.campaign });
   }
 
   if (!("status" in body.data)) {
@@ -266,7 +284,45 @@ export async function PATCH(
   }
 
   if (nextStatus === ctx.campaign.status) {
-    return NextResponse.json({ campaign: ctx.campaign });
+    const campaign = await prisma.campaign.findUniqueOrThrow({
+      where: { id: campaignId },
+      select: {
+        id: true,
+        name: true,
+        status: true,
+        activatedAt: true,
+        closedAt: true,
+      },
+    });
+    if (campaign.status !== nextStatus) {
+      return NextResponse.json(
+        { error: "INVALID_CAMPAIGN_TRANSITION", campaign },
+        { status: 409 },
+      );
+    }
+    // Egy aktiválás DB-commitja és az értesítés írása nem lehet közös
+    // tranzakció. Az azonos ACTIVE kérés ezért nem üres no-op: a DB-ből
+    // újraépíti a nyitott lépések és a kampányindítás deduplikált
+    // értesítéseit.
+    if (nextStatus === "ACTIVE") {
+      try {
+        await reconcileActiveCampaignNotifications({
+          orgId,
+          campaignId,
+          campaignName: campaign.name ?? "",
+        });
+      } catch (err) {
+        log.error(
+          { event: "campaign.notification_reconcile_error", campaignId, err },
+          "Campaign notification reconciliation failed",
+        );
+        return NextResponse.json(
+          { error: "CAMPAIGN_NOTIFICATION_PENDING", campaign },
+          { status: 503 },
+        );
+      }
+    }
+    return NextResponse.json({ campaign });
   }
   const validTransition =
     (ctx.campaign.status === "DRAFT" && nextStatus === "ACTIVE") ||
@@ -284,93 +340,96 @@ export async function PATCH(
         ? [ctx.campaign.teamId]
         : [];
 
+  let transition:
+    | CampaignActivationResult
+    | {
+        outcome: "closed";
+        campaign: {
+          id: string;
+          name: string;
+          status: string;
+          activatedAt: Date | null;
+          closedAt: Date | null;
+        };
+        openings: [];
+      };
   if (nextStatus === "ACTIVE") {
-    if (
-      ctx.campaign.presetId === "SCAN_V1" &&
-      campaignSteps.includes("PSYCH_SAFETY") &&
-      campaignTeamIds.length !== 1
-    ) {
+    const campaignStepModule = await import("@/lib/campaign-steps");
+    try {
+      transition = await campaignStepModule.activateCampaignAtomically(campaignId);
+    } catch (error) {
+      if (campaignStepModule.isCampaignActivationPreconditionError(error)) {
+        return NextResponse.json({ error: error.code }, { status: 409 });
+      }
+      throw error;
+    }
+    if (transition.outcome === "conflict") {
       return NextResponse.json(
-        { error: "PSYCH_SAFETY_SINGLE_TEAM_REQUIRED" },
+        { error: "INVALID_CAMPAIGN_TRANSITION", campaign: transition.campaign },
         { status: 409 },
       );
     }
-    const participants = await prisma.campaignParticipant.findMany({
-      where: { campaignId },
-      select: { userId: true },
-    });
-    if (participants.length === 0) {
-      return NextResponse.json({ error: "CAMPAIGN_PARTICIPANTS_REQUIRED" }, { status: 409 });
-    }
-    if (campaignSteps.includes("PSYCH_SAFETY") && participants.length < 3) {
-      return NextResponse.json({ error: "ANONYMITY_THRESHOLD_NOT_MET" }, { status: 409 });
-    }
-    if (campaignTeamIds.length > 0) {
-      const targetMembers = await prisma.teamMember.findMany({
-        where: {
-          teamId: { in: campaignTeamIds },
-          userId: { in: participants.map((p) => p.userId) },
+  } else {
+    transition = await prisma.$transaction(async (tx) => {
+      const campaign = await tx.campaign.update({
+        where: { id: campaignId },
+        data: { status: "CLOSED", closedAt: new Date() },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          activatedAt: true,
+          closedAt: true,
         },
-        select: { userId: true },
-        distinct: ["userId"],
       });
-      if (targetMembers.length !== participants.length) {
-        return NextResponse.json({ error: "PARTICIPANT_OUTSIDE_TARGET_TEAMS" }, { status: 409 });
+      if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
+        await tx.team.updateMany({
+          where: { id: { in: campaignTeamIds } },
+          data: { teamRoleRoundActive: false },
+        });
       }
-    }
+      return { outcome: "closed" as const, campaign, openings: [] as const };
+    });
   }
 
-  const { campaign, openings } = await prisma.$transaction(async (tx) => {
-    const updated = await tx.campaign.update({
-      where: { id: campaignId },
-      data: {
-        status: nextStatus,
-        ...(nextStatus === "CLOSED" ? { closedAt: new Date() } : {}),
-        ...(nextStatus === "ACTIVE" && !ctx.campaign.activatedAt
-          ? { activatedAt: new Date() }
-          : {}),
-      },
-      select: { id: true, name: true, status: true, closedAt: true },
-    });
-    if (campaignSteps.includes("TEAM_ROLE") && campaignTeamIds.length > 0) {
-      await tx.team.updateMany({
-        where: { id: { in: campaignTeamIds } },
-        data:
-          nextStatus === "ACTIVE"
-            ? { teamRoleRoundActive: true, teamRoleRoundStartedAt: new Date() }
-            : { teamRoleRoundActive: false },
+  const { campaign, openings } = transition;
+  let notificationPending = false;
+  try {
+    if (transition.outcome === "already_active") {
+      // Párhuzamos aktiválás vesztes kérése: ugyanazt az állapotot adja
+      // vissza, közben biztosítja, hogy a nyertes mindkét post-commit
+      // értesítése akkor se vesszen el, ha annak folyamata hibázik.
+      await reconcileActiveCampaignNotifications({
+        orgId,
+        campaignId,
+        campaignName: campaign.name ?? "",
+      });
+    } else if (transition.outcome === "activated") {
+      if (openings.length > 0) {
+        await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(openings);
+      }
+      // Nem fire-and-forget: hibánál 503 jelzi, hogy az ACTIVE állapot már
+      // commitált, de az idempotens értesítési retry még szükséges.
+      await notifyCampaignLaunch({
+        orgId,
+        campaignId,
+        campaignName: campaign.name ?? "",
       });
     }
-    const stepOpenings =
-      nextStatus === "ACTIVE"
-        ? await (await import("@/lib/campaign-steps")).initializeCampaignProgress(
-            campaignId,
-            undefined,
-            { db: tx, emitNotifications: false },
-          )
-        : [];
-    return { campaign: updated, openings: stepOpenings };
-  });
-  if (openings.length > 0) {
-    await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(openings);
+  } catch (err) {
+    notificationPending = true;
+    log.error(
+      { event: "campaign.notification_error", campaignId, err },
+      "Campaign notification failed",
+    );
   }
 
   // Analitika: a kampány élesítése az ügyfélsiker-tölcsér mérföldköve (A7).
   // Sem a szervezet, sem a kampány neve nem kerül eseménybe.
-  if (nextStatus === "ACTIVE") {
+  if (nextStatus === "ACTIVE" && transition.outcome === "activated") {
     trackServerEvent("campaign.step_launch", { step_type: "campaign_activated" });
   }
 
-  // Notify org members about campaign status change via orchestrator (fire-and-forget)
-  if (body.data.status === "ACTIVE") {
-    import("@/lib/notifications").then(({ handleCampaignLaunched }) =>
-      handleCampaignLaunched({
-        orgId,
-        campaignId,
-        campaignName: campaign.name ?? "",
-      }).catch((err) => log.error({ event: "campaign.campaign_launched_error", err: err }, "Campaign launched error")),
-    );
-  }
   if (body.data.status === "CLOSED") {
     import("@/lib/notifications").then(({ handleCampaignClosed }) =>
       handleCampaignClosed({
@@ -378,6 +437,13 @@ export async function PATCH(
         campaignId,
         campaignName: campaign.name ?? "",
       }).catch((err) => log.error({ event: "campaign.campaign_closed_error", err: err }, "Campaign closed error")),
+    );
+  }
+
+  if (notificationPending) {
+    return NextResponse.json(
+      { error: "CAMPAIGN_NOTIFICATION_PENDING", campaign },
+      { status: 503 },
     );
   }
 
@@ -493,38 +559,94 @@ export async function POST(
     return NextResponse.json({ error: "INVALID_INPUT" }, { status: 400 });
   }
 
-  const targetTeamIds =
-    ctx.campaign.teamIds.length > 0
-      ? ctx.campaign.teamIds
-      : ctx.campaign.teamId
-        ? [ctx.campaign.teamId]
-        : [];
-  if (targetTeamIds.length > 0) {
-    const targetMembers = await prisma.teamMember.findMany({
-      where: { teamId: { in: targetTeamIds }, userId: { in: body.data.userIds } },
-      select: { userId: true },
-      distinct: ["userId"],
-    });
-    const targetMemberIds = new Set(targetMembers.map((member) => member.userId));
-    if (body.data.userIds.some((id) => !targetMemberIds.has(id))) {
-      return NextResponse.json({ error: "PARTICIPANT_OUTSIDE_TARGET_TEAMS" }, { status: 409 });
-    }
-  }
+  const campaignStepsModule = await import("@/lib/campaign-steps");
+  const participantMutation = await prisma.$transaction(async (tx) => {
+    const locked = await campaignStepsModule.lockCampaignForParticipantMutation(
+      tx,
+      campaignId,
+      orgId,
+    );
+    if (!locked) return { ok: false as const, error: "NOT_FOUND" as const };
 
-  const openings = await prisma.$transaction(async (tx) => {
+    // A campaign config es status csak a kozos sorzar utan autoritativ. Ha
+    // az aktivalas nyert, az uj tag ugyanebben a tranzakcioban inicializalva
+    // lesz; ha a POST nyert, az aktivalas mar a kibovitett listat validalja.
+    const campaign = await tx.campaign.findUnique({
+      where: { id: campaignId },
+      select: { status: true, teamId: true, teamIds: true },
+    });
+    if (!campaign) return { ok: false as const, error: "NOT_FOUND" as const };
+    if (campaign.status === "CLOSED") {
+      return { ok: false as const, error: "CAMPAIGN_CLOSED" as const };
+    }
+
+    const currentMemberships = await tx.organizationMember.findMany({
+      where: { orgId, userId: { in: body.data.userIds }, leftAt: null },
+      select: { userId: true },
+    });
+    const currentOrgMemberIds = new Set(
+      currentMemberships.map((membership) => membership.userId),
+    );
+    if (body.data.userIds.some((id) => !currentOrgMemberIds.has(id))) {
+      return { ok: false as const, error: "INVALID_INPUT" as const };
+    }
+
+    const targetTeamIds =
+      campaign.teamIds.length > 0
+        ? campaign.teamIds
+        : campaign.teamId
+          ? [campaign.teamId]
+          : [];
+    if (targetTeamIds.length > 0) {
+      const targetMembers = await tx.teamMember.findMany({
+        where: {
+          teamId: { in: targetTeamIds },
+          userId: { in: body.data.userIds },
+        },
+        select: { userId: true },
+        distinct: ["userId"],
+      });
+      const targetMemberIds = new Set(
+        targetMembers.map((member) => member.userId),
+      );
+      if (body.data.userIds.some((id) => !targetMemberIds.has(id))) {
+        return {
+          ok: false as const,
+          error: "PARTICIPANT_OUTSIDE_TARGET_TEAMS" as const,
+        };
+      }
+    }
+
     await tx.campaignParticipant.createMany({
       data: body.data.userIds.map((uid) => ({ campaignId, userId: uid })),
       skipDuplicates: true,
     });
-    if (ctx.campaign.status !== "ACTIVE") return [];
-    return (await import("@/lib/campaign-steps")).initializeCampaignProgress(
-      campaignId,
-      body.data.userIds,
-      { db: tx, emitNotifications: false },
-    );
+    const openings =
+      campaign.status === "ACTIVE"
+        ? await campaignStepsModule.initializeCampaignProgress(
+            campaignId,
+            body.data.userIds,
+            { db: tx, emitNotifications: false },
+          )
+        : [];
+    return { ok: true as const, openings };
   });
-  if (openings.length > 0) {
-    await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(openings);
+  if (!participantMutation.ok) {
+    const status =
+      participantMutation.error === "NOT_FOUND"
+        ? 404
+        : participantMutation.error === "INVALID_INPUT"
+          ? 400
+          : 409;
+    return NextResponse.json(
+      { error: participantMutation.error },
+      { status },
+    );
+  }
+  if (participantMutation.openings.length > 0) {
+    await (await import("@/lib/campaign-steps")).notifyCampaignStepOpenings(
+      participantMutation.openings,
+    );
   }
 
   return NextResponse.json({ ok: true });

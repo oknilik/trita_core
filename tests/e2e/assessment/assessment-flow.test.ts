@@ -113,7 +113,7 @@ test("self assessment happy path reaches results gate", async ({ page }) => {
 
   // Az utolsó válasz auto-advance mellett a kiértékelésre és a vendég
   // eredmény-kapura visz (guest mód: /try/complete).
-  await page.getByRole("button", { name: /^4 - / }).click();
+  await page.getByRole("radio", { name: /^4 - / }).click();
   await page.waitForURL("**/try/complete", { timeout: 20_000 });
 
   await expect(page.getByRole("heading", { name: /you're done|kész vagy/i })).toBeVisible();
@@ -124,11 +124,11 @@ test("draft interruption resumes correctly then reaches results gate", async ({ 
 
   await page.getByText(/auto-advance|automatikus/i).click();
 
-  await page.getByRole("button", { name: /^2 - / }).click();
+  await page.getByRole("radio", { name: /^2 - / }).click();
   await page.getByRole("button", { name: NEXT_BUTTON_LABEL }).click();
   await expectCurrentQuestion(page, 2);
 
-  await page.getByRole("button", { name: /^3 - / }).click();
+  await page.getByRole("radio", { name: /^3 - / }).click();
   await page.getByRole("button", { name: NEXT_BUTTON_LABEL }).click();
   await expectCurrentQuestion(page, 3);
 
@@ -157,7 +157,7 @@ test("draft interruption resumes correctly then reaches results gate", async ({ 
   await setDraft(page, { answeredCount: TOTAL_QUESTIONS - 1, revision: 90 });
   await expectCurrentQuestion(page, TOTAL_QUESTIONS);
 
-  await page.getByRole("button", { name: /^5 - / }).click();
+  await page.getByRole("radio", { name: /^5 - / }).click();
   await page.waitForURL("**/try/complete", { timeout: 20_000 });
   await expect(page.getByRole("heading", { name: /you're done|kész vagy/i })).toBeVisible();
 });

@@ -389,7 +389,7 @@ export default function ProfilePage() {
           </div>
 
           <div ref={countryFieldRef} className={`mt-5 rounded-lg transition ${invalidFieldFlash === "country" ? "bg-state-error-bg/60 p-1 ring-2 ring-state-error-border" : ""}`}>
-            <PickerTrigger label={t("onboarding.countryLabel", locale)} value={countryLabel} placeholder={t("onboarding.countryPlaceholder", locale)} onClick={() => setCountryPickerOpen(true)} />
+            <PickerTrigger label={t("onboarding.countryLabel", locale)} value={countryLabel} placeholder={t("onboarding.countryPlaceholder", locale)} onClick={() => setCountryPickerOpen(true)} isOpen={countryPickerOpen} />
           </div>
         </Card>
 
@@ -483,6 +483,7 @@ export default function ProfilePage() {
 
       <Picker isOpen={countryPickerOpen} onClose={() => setCountryPickerOpen(false)} onSelect={setCountry}
         options={countryOptions} selectedValue={country} title={t("onboarding.countryLabel", locale)}
+        closeLabel={t("common.close", locale)}
         searchable searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
       />
     </PlatformPageShell>

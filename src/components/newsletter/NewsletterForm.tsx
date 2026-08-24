@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useId, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n/public";
@@ -53,12 +53,16 @@ export function NewsletterForm({
   className,
 }: NewsletterFormProps) {
   const { locale } = useLocale();
+  const fieldIdPrefix = useId().replaceAll(":", "");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // mézesbödön
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [touched, setTouched] = useState(false);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
 
   const handleFirstTouch = () => {
     if (touched) return;
@@ -69,8 +73,17 @@ export function NewsletterForm({
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (busy) return;
-    setBusy(true);
     setError(null);
+
+    if (!isValidNewsletterEmail(email)) {
+      setValidationError(t("newsletter.errorInvalid", locale));
+      emailRef.current?.focus();
+      return;
+    }
+
+    setValidationError(null);
+    setBusy(true);
+    let restoreSubmitFocus = false;
 
     try {
       const res = await fetch("/api/newsletter/subscribe", {
@@ -89,17 +102,23 @@ export function NewsletterForm({
       if (res.status === 429) setError(t("newsletter.errorRateLimited", locale));
       else if (res.status === 400) setError(t("newsletter.errorInvalid", locale));
       else setError(t("newsletter.errorGeneric", locale));
+      restoreSubmitFocus = true;
       track("form.submit", { form_id: "newsletter", outcome: "error" });
     } catch {
       setError(t("newsletter.errorGeneric", locale));
+      restoreSubmitFocus = true;
       track("form.submit", { form_id: "newsletter", outcome: "error" });
     } finally {
       setBusy(false);
+      if (restoreSubmitFocus) {
+        window.requestAnimationFrame(() => submitRef.current?.focus());
+      }
     }
   };
 
   const strongText = onInverse ? "text-[var(--color-text-on-inverse)]" : "text-ink";
   const mutedText = onInverse ? "text-[var(--color-text-on-inverse-muted)]" : "text-muted";
+  const displayError = validationError ?? error;
 
   if (done) {
     return (
@@ -123,6 +142,7 @@ export function NewsletterForm({
     <form
       onSubmit={handleSubmit}
       noValidate
+      aria-busy={busy || undefined}
       className={
         variant === "inline"
           ? "mt-3"
@@ -139,33 +159,73 @@ export function NewsletterForm({
         }
       >
         <TextField
+          ref={emailRef}
+          id={`${fieldIdPrefix}-newsletter-email`}
           type="email"
           name="email"
           required
+          maxLength={320}
+          disabled={busy}
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            const nextEmail = e.target.value;
+            setEmail(nextEmail);
+            if (validationError) {
+              setValidationError(
+                isValidNewsletterEmail(nextEmail)
+                  ? null
+                  : t("newsletter.errorInvalid", locale),
+              );
+            }
+          }}
           onFocus={handleFirstTouch}
           autoComplete="email"
-          label={variant === "panel" ? t("newsletter.emailLabel", locale) : undefined}
-          aria-label={variant === "panel" ? undefined : t("newsletter.emailLabel", locale)}
+          label={t("newsletter.emailLabel", locale)}
           placeholder={t("newsletter.emailPlaceholder", locale)}
-          error={error ?? undefined}
+          error={
+            displayError ? (
+              <span
+                role="alert"
+                style={onInverse ? { color: "var(--color-text-on-inverse)" } : undefined}
+              >
+                {displayError}
+              </span>
+            ) : undefined
+          }
           containerClassName={variant === "panel" ? "flex-1" : undefined}
-          labelClassName={onInverse ? "!text-[var(--color-text-on-inverse)]" : undefined}
+          labelClassName={[
+            variant === "panel" ? "" : "sr-only",
+            onInverse ? "!text-[var(--color-text-on-inverse)]" : "",
+          ]
+            .filter(Boolean)
+            .join(" ") || undefined}
           inputClassName={[
             variant === "panel" ? "min-h-[48px]" : "",
             onInverse
-              ? "border-white/20 bg-white/[0.06] text-[var(--color-text-on-inverse)] placeholder:text-[var(--color-text-on-inverse-muted)]"
+              ? "border-white/20 bg-white/[0.06] !text-[var(--color-text-on-inverse)] placeholder:!text-[var(--color-text-on-inverse)]"
               : "",
           ]
             .filter(Boolean)
             .join(" ")}
+          style={
+            onInverse
+              ? {
+                  color: "var(--color-text-on-inverse)",
+                  backgroundColor: "rgba(255,255,255,0.06)",
+                  borderColor: displayError
+                    ? "var(--color-state-error-solid)"
+                    : "rgba(255,255,255,0.2)",
+                }
+              : undefined
+          }
         />
 
         {/* Mézesbödön — a botok kitöltik, az emberek nem látják. */}
         <input
+          id={`${fieldIdPrefix}-newsletter-website`}
           type="text"
           name="website"
+          disabled={busy}
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
           tabIndex={-1}
@@ -175,6 +235,7 @@ export function NewsletterForm({
         />
 
         <Button
+          ref={submitRef}
           type="submit"
           loading={busy}
           disabled={busy}
@@ -204,7 +265,9 @@ export function NewsletterForm({
     <div className={wrapperClass(variant, onInverse, className)}>
       {variant === "panel" ? (
         <>
-          <SectionEyebrow tone="muted">{t("newsletter.eyebrow", locale)}</SectionEyebrow>
+          <SectionEyebrow tone={onInverse ? "onDark" : "muted"}>
+            {t("newsletter.eyebrow", locale)}
+          </SectionEyebrow>
           <h2 className={`mt-2 font-fraunces text-heading leading-tight tracking-tight ${strongText}`}>
             {t("newsletter.title", locale)}
           </h2>
@@ -227,6 +290,11 @@ export function NewsletterForm({
       </span>
     </div>
   );
+}
+
+function isValidNewsletterEmail(value: string): boolean {
+  const normalized = value.trim();
+  return normalized.length <= 320 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
 }
 
 function wrapperClass(

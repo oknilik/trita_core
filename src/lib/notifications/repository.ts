@@ -86,7 +86,6 @@ export async function persistNotificationBatch(intents: NotificationIntent[]) {
   if (filtered.length === 0) return;
 
   await prisma.notification.createMany({
-
     data: filtered.map((intent) => {
       const meta = NOTIFICATION_TYPE_META[intent.type];
       return {
@@ -104,5 +103,10 @@ export async function persistNotificationBatch(intents: NotificationIntent[]) {
         dedupeKey: intent.dedupeKey ?? null,
       };
     }),
+    // A read-before-write szűrés önmagában nem zárja ki, hogy két
+    // párhuzamos reconciliation ugyanazt a dedupe-kulcsot egyszerre lássa
+    // hiányzónak. A DB unique indexe az igazság; a vesztes insertet ezért
+    // sikeres, idempotens ismétlésként kezeljük.
+    skipDuplicates: true,
   });
 }

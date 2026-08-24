@@ -36,8 +36,12 @@ import {
   type PsychSafetyAnswers,
 } from "@/lib/psych-safety";
 import { buildTeamTrustNetwork, hasRaterCoveredTeamTrust } from "@/lib/trust-network.server";
+import { hasRaterCoveredTeam } from "@/lib/team-role-peer.server";
 import { TRUST_MIN_RATERS, type TrustAnswerSet } from "@/lib/trust-network";
-import { advanceCampaignStepForUser } from "@/lib/campaign-steps";
+import {
+  advanceCampaignStepForUser,
+  getStepPartialProgress,
+} from "@/lib/campaign-steps";
 import { CAMPAIGN_PRESETS } from "@/lib/campaign-steps-core";
 import { recordAnonymousPsychSafetyResponse } from "@/lib/psych-safety-submit.server";
 
@@ -407,6 +411,82 @@ test("a TRUST_360 lépés csak a TELJES csapat-lefedettségtől számít teljes�
     },
   });
   assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), true);
+});
+
+test("kilépett tag stale sora nem pótolhat hiányzó aktuális célt egyik peer körben sem", async () => {
+  const { campaign, teamId, members } = await createScanV1Fixture(4);
+  const [rater, currentA, currentB, missingCurrent] = members;
+  const formerMember = await createProfile();
+
+  // A sorok létrejöttekor még valódi csapattag volt, majd kilépett. A három
+  // observation darabszáma így eléri az aktuális három cél számát, de az
+  // egyik célpont stale, a valódi aktuális tag pedig hiányzik.
+  const formerMembership = await prisma.teamMember.create({
+    data: { teamId, userId: formerMember.id },
+    select: { id: true },
+  });
+  for (const about of [currentA, currentB, formerMember]) {
+    await prisma.trustObservation.create({
+      data: {
+        campaignId: campaign.id,
+        teamId,
+        aboutUserId: about.id,
+        raterUserId: rater.id,
+        answers: TRUST_ANSWERS,
+      },
+    });
+    await prisma.teamRoleObservation.create({
+      data: {
+        campaignId: campaign.id,
+        teamId,
+        aboutUserId: about.id,
+        raterUserId: rater.id,
+        selections: { OG1: 2 },
+      },
+    });
+  }
+  await prisma.teamMember.delete({ where: { id: formerMembership.id } });
+
+  assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), false);
+  assert.equal(await hasRaterCoveredTeam(campaign.id, teamId, rater.id), false);
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TRUST_360", rater.id),
+    { done: 2, total: 3 },
+  );
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TEAM_ROLE_360", rater.id),
+    { done: 2, total: 3 },
+  );
+
+  await prisma.trustObservation.create({
+    data: {
+      campaignId: campaign.id,
+      teamId,
+      aboutUserId: missingCurrent.id,
+      raterUserId: rater.id,
+      answers: TRUST_ANSWERS,
+    },
+  });
+  await prisma.teamRoleObservation.create({
+    data: {
+      campaignId: campaign.id,
+      teamId,
+      aboutUserId: missingCurrent.id,
+      raterUserId: rater.id,
+      selections: { OG1: 2 },
+    },
+  });
+
+  assert.equal(await hasRaterCoveredTeamTrust(campaign.id, teamId, rater.id), true);
+  assert.equal(await hasRaterCoveredTeam(campaign.id, teamId, rater.id), true);
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TRUST_360", rater.id),
+    { done: 3, total: 3 },
+  );
+  assert.deepEqual(
+    await getStepPartialProgress(campaign, "TEAM_ROLE_360", rater.id),
+    { done: 3, total: 3 },
+  );
 });
 
 // ─────────────────────────────────────────────────────────────────────

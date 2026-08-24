@@ -157,7 +157,7 @@ export function BlogListContent({
   const chipClass = (active: boolean) =>
     `inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${FOCUS_RING_CLASS} ${
       active
-        ? "border-[var(--color-accent-primary-strong)] bg-[var(--color-accent-primary-strong)] text-white"
+        ? "border-[var(--color-accent-primary-strong)] bg-[var(--color-accent-primary-strong)] text-[var(--color-text-on-accent-deep)]"
         : "border-sand bg-transparent text-[var(--color-text-secondary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-accent-primary-strong)]"
     }`;
 
@@ -202,7 +202,7 @@ export function BlogListContent({
             </div>
             <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium leading-[0.98] tracking-[-0.045em] text-ink">
               {t("blog.heroTitle", displayLocale)}
-              <em className="italic text-[var(--color-accent-primary)]">
+              <em className="italic text-[var(--color-accent-primary-strong)]">
                 {t("blog.heroTitleEm", displayLocale)}
               </em>
             </h1>
@@ -342,7 +342,7 @@ export function BlogListContent({
                         href={`/blog/${post.slug}`}
                         className={`group flex items-start gap-3 rounded-2xl border border-sand bg-surface-card px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-[var(--color-accent-primary)] ${FOCUS_RING_CLASS}`}
                       >
-                        <span className="text-fluid-title font-fraunces text-heading italic leading-none text-[var(--color-accent-primary)]">
+                        <span className="text-fluid-title font-fraunces text-heading italic leading-none text-[var(--color-accent-primary-strong)]">
                           {i + 1}
                         </span>
                         <span>

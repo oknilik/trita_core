@@ -101,26 +101,23 @@ export function Modal({
   }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      const previouslyFocused = document.activeElement as HTMLElement | null;
-      document.addEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "hidden";
-      const frame = window.requestAnimationFrame(() => {
-        const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
-          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        );
-        (firstFocusable ?? modalRef.current)?.focus();
-      });
-      return () => {
-        window.cancelAnimationFrame(frame);
-        document.removeEventListener("keydown", handleKeyDown);
-        document.body.style.overflow = "";
-        previouslyFocused?.focus();
-      };
-    }
+    if (!isOpen) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+    const frame = window.requestAnimationFrame(() => {
+      const firstFocusable = modalRef.current?.querySelector<HTMLElement>(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      (firstFocusable ?? modalRef.current)?.focus();
+    });
     return () => {
+      window.cancelAnimationFrame(frame);
       document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
     };
   }, [isOpen, handleKeyDown]);
 
@@ -137,6 +134,7 @@ export function Modal({
     >
       {/* Backdrop */}
       <div
+        aria-hidden="true"
         onClick={onClose}
         className={[
           "absolute inset-0 transition-opacity duration-200 motion-reduce:transition-none",
@@ -150,7 +148,7 @@ export function Modal({
         ref={modalRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={hideHeader ? undefined : titleId}
+        aria-labelledby={title ? titleId : undefined}
         aria-describedby={descriptionId}
         tabIndex={-1}
         className={[
@@ -220,6 +218,10 @@ export function Modal({
               ? "min-h-0 flex-1 overflow-y-auto p-4 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7"
               : "min-h-0 flex-1 overflow-y-auto p-4 pr-12 pb-[max(18px,env(safe-area-inset-bottom))] sm:p-7 sm:pr-14"}
         >
+          {hideHeader && title ? <h2 id={titleId} className="sr-only">{title}</h2> : null}
+          {hideHeader && description ? (
+            <p id={descriptionId} className="sr-only">{description}</p>
+          ) : null}
           {!hideHeader && (
             <div
               className={
@@ -270,7 +272,9 @@ export function Modal({
                 {description && (
                   isBrand && variant === "danger" ? (
                     <div className="mt-3 rounded-xl border border-sand bg-cream px-3 py-2.5">
-                      <p className="text-sm leading-relaxed text-ink-body">{description}</p>
+                      <p id={descriptionId} className="text-sm leading-relaxed text-ink-body">
+                        {description}
+                      </p>
                     </div>
                   ) : (
                     <p
@@ -338,7 +342,7 @@ export function ConfirmModal({
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        title=""
+        title={loadingNote}
         variant="default"
         design="brand"
         hideCloseButton

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useCallback, useEffect, useRef } from "react";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 // ─────────────────────────────────────────────────────────────────────
@@ -15,22 +16,107 @@ export function MobileMenuShell({
   open,
   onClose,
   children,
+  label = "Menu",
 }: {
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  label?: string;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      onCloseRef.current();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+
+    const focusable = Array.from(
+      panelRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      ) ?? [],
+    ).filter((element) => !element.hasAttribute("hidden"));
+
+    if (focusable.length === 0) {
+      event.preventDefault();
+      panelRef.current?.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const desktopQuery =
+      typeof window.matchMedia === "function"
+        ? window.matchMedia("(min-width: 64rem)")
+        : null;
+    if (desktopQuery?.matches) {
+      onCloseRef.current();
+      return;
+    }
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    const closeAtDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) onCloseRef.current();
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    desktopQuery?.addEventListener("change", closeAtDesktop);
+    document.body.style.overflow = "hidden";
+
+    const frame = window.requestAnimationFrame(() => {
+      const firstFocusable = panelRef.current?.querySelector<HTMLElement>(
+        'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      (firstFocusable ?? panelRef.current)?.focus();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      document.removeEventListener("keydown", handleKeyDown);
+      desktopQuery?.removeEventListener("change", closeAtDesktop);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
+    };
+  }, [open, handleKeyDown]);
+
   if (!open) return null;
   return (
     <>
       {/* Puha backdrop (stílus-transzfer a marketing-menüből): finom blur,
           kevesebb sötétítés — a lap érezhetően "mögötte" marad. */}
       <div
+        aria-hidden="true"
         className="fixed inset-0 z-30 bg-[rgba(26,26,46,0.12)] backdrop-blur-[2px] lg:hidden"
         onClick={onClose}
       />
       <div className="animate-menu-in fixed inset-x-0 top-14 z-40 lg:hidden">
-        <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07]">
+        <div
+          ref={panelRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={label}
+          tabIndex={-1}
+          className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07]"
+        >
           {children}
         </div>
       </div>

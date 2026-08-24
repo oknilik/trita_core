@@ -14,9 +14,15 @@ for (const route of routes) {
       test(`axe: ${route} · ${viewport.name} · ${theme}`, async ({ page }, testInfo) => {
         await page.setViewportSize(viewport);
         await page.goto("/");
-        await page.evaluate((selectedTheme) => localStorage.setItem("trita_theme", selectedTheme), theme);
+        // A témapreferencia cookie-alapú (ThemeProvider), nem localStorage-os.
+        // A korábbi beállítás ezért mindkét névleges témát light módban
+        // futtatta, és hamis lefedettséget adott a dark felületre.
+        await page.evaluate((selectedTheme) => {
+          document.cookie = `trita_theme=${selectedTheme};path=/;samesite=lax`;
+        }, theme);
         await page.goto(route);
         await page.waitForLoadState("networkidle");
+        await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
 
         const result = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])

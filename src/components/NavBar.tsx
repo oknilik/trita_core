@@ -327,7 +327,11 @@ export function NavBar({
 
       {/* ═══ MOBIL MENÜ — közös kártya-panel (menü-konvergencia): ugyanaz a
           váz, mint a belépett NavHeaderUI menüje. ═══ */}
-      <MobileMenuShell open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+      <MobileMenuShell
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        label={t("nav.menu", locale)}
+      >
         <div className="p-3">
           <div className="flex flex-col gap-0.5">
             {links.map((link) => {

@@ -6,6 +6,7 @@ import {
   resolveOrgCapabilityDecision,
   resolveOrgPolicySnapshot,
 } from "@/lib/policy-service";
+import { lockCampaignForParticipantMutation } from "@/lib/campaign-steps";
 
 export async function DELETE(
   _req: Request,
@@ -46,9 +47,18 @@ export async function DELETE(
     return NextResponse.json({ error: "CAPABILITY_DENIED" }, { status: 403 });
   }
 
-  const removed = await prisma.campaignParticipant.deleteMany({
-    where: { campaignId, userId: participantUserId },
+  const removed = await prisma.$transaction(async (tx) => {
+    const locked = await lockCampaignForParticipantMutation(
+      tx,
+      campaignId,
+      orgId,
+    );
+    if (!locked) return null;
+    return tx.campaignParticipant.deleteMany({
+      where: { campaignId, userId: participantUserId },
+    });
   });
+  if (!removed) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
   if (removed.count === 0) {
     return NextResponse.json({ error: "PARTICIPANT_NOT_FOUND" }, { status: 404 });
   }

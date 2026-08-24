@@ -10,6 +10,7 @@ import {
   type TrustAnswerSet,
   type TrustNetwork,
 } from "@/lib/trust-network";
+import { hasCoveredCurrentPeerTargets } from "@/lib/peer-submission-coverage";
 
 /**
  * A csapat bizalmi hálója. Alapból MINDEN eddigi kampány-kört összesít;
@@ -66,13 +67,14 @@ export async function hasRaterCoveredTeamTrust(
       select: { userId: true },
     }),
     prisma.trustObservation.findMany({
-      where: { campaignId, raterUserId },
+      where: { campaignId, teamId, raterUserId },
       select: { aboutUserId: true },
     }),
   ]);
 
-  const ratedSet = new Set(rated.map((r) => r.aboutUserId));
-  const targets = members.map((m) => m.userId).filter((id) => id !== raterUserId);
-  if (targets.length === 0) return true;
-  return targets.every((id) => ratedSet.has(id));
+  return hasCoveredCurrentPeerTargets(
+    members.map((member) => member.userId),
+    raterUserId,
+    rated.map((observation) => observation.aboutUserId),
+  );
 }

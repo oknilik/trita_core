@@ -40,7 +40,7 @@ describe("OnboardingClient — claim aktiválás", () => {
     expect(screen.queryByText("Nem")).not.toBeInTheDocument();
     expect(screen.queryByText("Ország")).not.toBeInTheDocument();
 
-    await user.type(screen.getByLabelText("Hogy szólíthatunk?"), "Anna");
+    await user.type(screen.getByRole("textbox", { name: "Hogy szólíthatunk?" }), "Anna");
     await user.click(screen.getByRole("checkbox"));
     await user.click(screen.getByRole("button", { name: "Megnézem az eredményem" }));
 
@@ -60,7 +60,7 @@ describe("OnboardingClient — claim aktiválás", () => {
     render(<OnboardingClient variant="full" />);
 
     expect(screen.getByRole("heading", { name: "Személyes adatok" })).toBeInTheDocument();
-    expect(screen.getByLabelText("Születési év")).toBeInTheDocument();
+    expect(screen.getByRole("spinbutton", { name: "Születési év" })).toBeInTheDocument();
     expect(screen.getByText("Nem")).toBeInTheDocument();
     expect(screen.getByText("Ország")).toBeInTheDocument();
   });

@@ -834,7 +834,11 @@ function NavHeaderContent({
       {/* Egyetlen menüszint (UX-audit #26) — a közös MobileMenuShell
           kártya-panelben (menü-konvergencia: a kijelentkezett NavBar
           ugyanezt a vázat használja). */}
-      <MobileMenuShell open={mobileMenu !== "closed"} onClose={() => setMobileMenu("closed")}>
+      <MobileMenuShell
+        open={mobileMenu !== "closed"}
+        onClose={() => setMobileMenu("closed")}
+        label={t("nav.menu", locale)}
+      >
         <>
                 <div className="flex items-center gap-3 border-b border-[var(--color-border-default)] px-4 py-3">
                   <Link

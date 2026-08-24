@@ -10,6 +10,7 @@ import {
   type PeerRoleProfile,
 } from "@/lib/team-role-peer";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
+import { hasCoveredCurrentPeerTargets } from "@/lib/peer-submission-coverage";
 
 /**
  * Peer-profilok egy csapat minden értékelt tagjára (aboutUserId → profil).
@@ -77,13 +78,14 @@ export async function hasRaterCoveredTeam(
       select: { userId: true },
     }),
     prisma.teamRoleObservation.findMany({
-      where: { campaignId, raterUserId },
+      where: { campaignId, teamId, raterUserId },
       select: { aboutUserId: true },
     }),
   ]);
 
-  const ratedSet = new Set(rated.map((r) => r.aboutUserId));
-  const targets = members.map((m) => m.userId).filter((id) => id !== raterUserId);
-  if (targets.length === 0) return true;
-  return targets.every((id) => ratedSet.has(id));
+  return hasCoveredCurrentPeerTargets(
+    members.map((member) => member.userId),
+    raterUserId,
+    rated.map((observation) => observation.aboutUserId),
+  );
 }

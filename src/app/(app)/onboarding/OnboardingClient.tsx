@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
 import { useLocale } from "@/components/LocaleProvider";
 import { useToast } from "@/components/ui/Toast";
 import { Picker, PickerTrigger } from "@/components/ui/Picker";
@@ -50,16 +50,8 @@ export function OnboardingClient({
 
   const [usernameTouched, setUsernameTouched] = useState(false);
   const [birthYearTouched, setBirthYearTouched] = useState(false);
-  const [invalidFieldFlash, setInvalidFieldFlash] = useState<
-    | "username"
-    | "birthYear"
-    | "gender"
-    | "country"
-    | null
-  >(null);
+  const [validationAttempted, setValidationAttempted] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
-
-  const invalidFlashTimerRef = useRef<number | null>(null);
 
   const usernameInputRef = useRef<HTMLInputElement>(null);
   const birthYearInputRef = useRef<HTMLInputElement>(null);
@@ -69,15 +61,12 @@ export function OnboardingClient({
   const countryFieldRef = useRef<HTMLDivElement>(null);
   const consentFieldRef = useRef<HTMLLabelElement>(null);
   const consentCheckboxRef = useRef<HTMLInputElement>(null);
-  const genderFirstButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    return () => {
-      if (invalidFlashTimerRef.current !== null) {
-        window.clearTimeout(invalidFlashTimerRef.current);
-      }
-    };
-  }, []);
+  const genderButtonRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const fieldId = useId().replaceAll(":", "");
+  const genderLabelId = `onboarding-gender-${fieldId}`;
+  const genderErrorId = `onboarding-gender-error-${fieldId}`;
+  const countryErrorId = `onboarding-country-error-${fieldId}`;
+  const consentErrorId = `onboarding-consent-error-${fieldId}`;
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
 
@@ -125,52 +114,67 @@ export function OnboardingClient({
     ? usernameValid
     : usernameValid && birthYearValid && gender !== "" && country !== "";
 
-  // ── Flash + focus logic ──────────────────────────────────────────────────
-
-  const flashField = (
-    field: "username" | "birthYear" | "gender" | "country",
-  ) => {
-    setInvalidFieldFlash(field);
-    if (invalidFlashTimerRef.current !== null) window.clearTimeout(invalidFlashTimerRef.current);
-    invalidFlashTimerRef.current = window.setTimeout(() => {
-      setInvalidFieldFlash(null);
-      invalidFlashTimerRef.current = null;
-    }, 1000);
-
+  const focusField = (field: "username" | "birthYear" | "gender" | "country" | "consent") => {
     const target =
       field === "username" ? usernameFieldRef.current :
       field === "birthYear" ? birthYearFieldRef.current :
       field === "gender" ? genderFieldRef.current :
-      countryFieldRef.current;
+      field === "country" ? countryFieldRef.current :
+      consentFieldRef.current;
 
-    target?.scrollIntoView({ behavior: "smooth", block: "center" });
+    target?.scrollIntoView({ block: "center" });
 
-    window.setTimeout(() => {
+    window.requestAnimationFrame(() => {
       if (field === "username") usernameInputRef.current?.focus();
       if (field === "birthYear") birthYearInputRef.current?.focus();
-      if (field === "gender") genderFirstButtonRef.current?.focus();
+      if (field === "gender") genderButtonRefs.current[0]?.focus();
       if (field === "country") countryFieldRef.current?.querySelector("button")?.focus();
-    }, 180);
+      if (field === "consent") consentCheckboxRef.current?.focus();
+    });
   };
 
   const focusFirstInvalid = () => {
-    if (!usernameValid) { flashField("username"); return; }
-    if (isClaimActivation) return;
-    if (!birthYearValid) { flashField("birthYear"); return; }
-    if (gender === "") { flashField("gender"); return; }
-    if (country === "") { flashField("country"); }
+    if (!usernameValid) { focusField("username"); return; }
+    if (!isClaimActivation) {
+      if (!birthYearValid) { focusField("birthYear"); return; }
+      if (gender === "") { focusField("gender"); return; }
+      if (country === "") { focusField("country"); return; }
+    }
+    if (!consent) focusField("consent");
+  };
+
+  const handleGenderKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % GENDER_OPTIONS.length;
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + GENDER_OPTIONS.length) % GENDER_OPTIONS.length;
+    } else if (event.key === "Home") {
+      nextIndex = 0;
+    } else if (event.key === "End") {
+      nextIndex = GENDER_OPTIONS.length - 1;
+    }
+
+    if (nextIndex === null) return;
+    event.preventDefault();
+    setGender(GENDER_OPTIONS[nextIndex].value);
+    genderButtonRefs.current[nextIndex]?.focus();
   };
 
   // ── Submit ───────────────────────────────────────────────────────────────
 
   const handleSubmit = async () => {
-    if (isSubmitting || !consent) return;
+    if (isSubmitting) return;
 
     // UX-A11: egyképernyős onboarding — a korábbi 1. lépés mezővalidációja
     // a submitra került. A mentés + Clerk-szinkron logika változatlan.
     setUsernameTouched(true);
     if (!isClaimActivation) setBirthYearTouched(true);
-    if (!basicsValid) {
+    setValidationAttempted(true);
+    if (!basicsValid || !consent) {
       focusFirstInvalid();
       return;
     }
@@ -212,6 +216,11 @@ export function OnboardingClient({
     }
   };
 
+  const handleFormSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void handleSubmit();
+  };
+
   // ── Render ───────────────────────────────────────────────────────────────
   // UX-A11: egyetlen képernyő — nincs lépés-szerkezet, se step-progress jelző;
   // a consent-checkbox közvetlenül a submit gomb felett van.
@@ -234,7 +243,11 @@ export function OnboardingClient({
         </div>
 
         {/* Card */}
-        <div className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
+        <form
+          noValidate
+          onSubmit={handleFormSubmit}
+          className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm"
+        >
 
           <div className="flex flex-col gap-6">
               <div>
@@ -253,6 +266,8 @@ export function OnboardingClient({
                   <TextField
                     ref={usernameInputRef}
                     label={t("onboarding.usernameLabel", locale)}
+                    name="username"
+                    required
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -261,18 +276,17 @@ export function OnboardingClient({
                     minLength={2}
                     maxLength={20}
                     error={
-                      usernameTouched && username.trim() !== "" && !usernameValid
+                      (usernameTouched || validationAttempted) && !usernameValid
                         ? t("onboarding.usernameError", locale)
                         : undefined
                     }
                     helpText={
-                      usernameTouched && username.trim() !== "" && !usernameValid
+                      (usernameTouched || validationAttempted) && !usernameValid
                         ? undefined
                         : t("onboarding.usernameHint", locale)
                     }
                     helpTextClassName="pl-1 italic text-xs text-muted"
                     errorClassName="pl-1 italic text-xs text-[var(--color-accent-primary-strong)]"
-                    inputClassName={invalidFieldFlash === "username" ? "ring-2 ring-sage/30" : undefined}
                   />
                 </div>
 
@@ -283,6 +297,8 @@ export function OnboardingClient({
                   <TextField
                     ref={birthYearInputRef}
                     label={t("onboarding.birthYearLabel", locale)}
+                    name="birthYear"
+                    required
                     type="number"
                     inputMode="numeric"
                     value={birthYear}
@@ -294,52 +310,67 @@ export function OnboardingClient({
                     min={minBirthYear}
                     max={maxBirthYear}
                     error={
-                      birthYearTouched && birthYear !== "" && !birthYearValid
+                      (birthYearTouched || validationAttempted) && !birthYearValid
                         ? t("onboarding.birthYearError", locale)
                         : undefined
                     }
                     helpText={`${t("onboarding.validRangeLabel", locale)}: ${minBirthYear} – ${maxBirthYear}`}
                     helpTextClassName={`pl-1 italic text-xs ${
-                      birthYearTouched && birthYear !== "" && !birthYearValid
+                      (birthYearTouched || validationAttempted) && !birthYearValid
                         ? "text-[var(--color-accent-primary-strong)]"
                         : "text-muted"
                     }`}
-                    inputClassName={`[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none${
-                      invalidFieldFlash === "birthYear" ? " ring-2 ring-sage/30" : ""
-                    }`}
+                    inputClassName="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   />
                 </div>
 
                 {/* Gender */}
                 <div
                   ref={genderFieldRef}
-                  className={`flex flex-col gap-2 rounded-lg p-1 transition ${
-                    invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-bronze-100/40" : ""
+                  className={`flex flex-col gap-2 rounded-lg p-1 ${
+                    validationAttempted && gender === "" ? "ring-2 ring-state-error-border" : ""
                   }`}
                 >
-                  <span className="text-sm font-semibold text-ink">
+                  <span id={genderLabelId} className="text-sm font-semibold text-ink">
                     {t("onboarding.genderLabel", locale)}
                   </span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div
+                    role="radiogroup"
+                    aria-labelledby={genderLabelId}
+                    aria-describedby={validationAttempted && gender === "" ? genderErrorId : undefined}
+                    aria-invalid={validationAttempted && gender === "" ? "true" : undefined}
+                    className="grid grid-cols-2 gap-2"
+                  >
                     {GENDER_OPTIONS.map((opt, idx) => (
                       <button
                         key={opt.value}
-                        ref={idx === 0 ? genderFirstButtonRef : undefined}
+                        ref={(node) => {
+                          genderButtonRefs.current[idx] = node;
+                        }}
                         type="button"
+                        role="radio"
+                        aria-checked={gender === opt.value}
+                        tabIndex={gender === opt.value || (gender === "" && idx === 0) ? 0 : -1}
                         onClick={() => setGender(opt.value)}
+                        onKeyDown={(event) => handleGenderKeyDown(event, idx)}
                         className={toggleBtn(gender === opt.value)}
                       >
                         {t(opt.labelKey, locale)}
                       </button>
                     ))}
                   </div>
+                  {validationAttempted && gender === "" ? (
+                    <p id={genderErrorId} role="alert" className="pl-1 text-xs text-state-error-fg">
+                      {t("onboarding.genderRequired", locale)}
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Country */}
                 <div
                   ref={countryFieldRef}
-                  className={`rounded-lg transition ${
-                    invalidFieldFlash === "country" ? "ring-2 ring-sage/30 bg-bronze-100/40 p-1" : ""
+                  className={`rounded-lg ${
+                    validationAttempted && country === "" ? "ring-2 ring-state-error-border p-1" : ""
                   }`}
                 >
                   <PickerTrigger
@@ -347,7 +378,15 @@ export function OnboardingClient({
                     value={countryLabel}
                     placeholder={t("onboarding.countryPlaceholder", locale)}
                     onClick={() => setCountryPickerOpen(true)}
+                    isOpen={countryPickerOpen}
+                    ariaInvalid={validationAttempted && country === ""}
+                    ariaDescribedBy={validationAttempted && country === "" ? countryErrorId : undefined}
                   />
+                  {validationAttempted && country === "" ? (
+                    <p id={countryErrorId} role="alert" className="mt-2 pl-1 text-xs text-state-error-fg">
+                      {t("onboarding.countryRequired", locale)}
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
@@ -361,6 +400,7 @@ export function OnboardingClient({
                       value={eduOptions.find((o) => o.value === eduLevel)?.label ?? ""}
                       placeholder={t("onboarding.optionalPlaceholder", locale)}
                       onClick={() => setEduPickerOpen(true)}
+                      isOpen={eduPickerOpen}
                     />
                     {eduLevel && eduLevel !== "primary" && (
                       <PickerTrigger
@@ -368,6 +408,7 @@ export function OnboardingClient({
                         value={eduFieldOptions.find((o) => o.value === eduField)?.label ?? ""}
                         placeholder={t("onboarding.optionalPlaceholder", locale)}
                         onClick={() => setEduFieldPickerOpen(true)}
+                        isOpen={eduFieldPickerOpen}
                       />
                     )}
                     <PickerTrigger
@@ -375,6 +416,7 @@ export function OnboardingClient({
                       value={industryOptions.find((o) => o.value === currentIndustry && o.value !== "")?.label ?? ""}
                       placeholder={t("onboarding.optionalPlaceholder", locale)}
                       onClick={() => setIndustryPickerOpen(true)}
+                      isOpen={industryPickerOpen}
                     />
                   </div>
                 </div>
@@ -394,13 +436,21 @@ export function OnboardingClient({
                   submit gomb felett. */}
               <label
                 ref={consentFieldRef}
-                className="flex cursor-pointer items-start gap-3 rounded-lg border-t border-sand p-2 pt-5"
+                className={`flex cursor-pointer items-start gap-3 rounded-lg border-t p-2 pt-5 ${
+                  validationAttempted && !consent
+                    ? "border-state-error-border ring-2 ring-state-error-border"
+                    : "border-sand"
+                }`}
               >
                 <input
                   ref={consentCheckboxRef}
+                  name="consent"
+                  required
                   type="checkbox"
                   checked={consent}
                   onChange={(e) => setConsent(e.target.checked)}
+                  aria-invalid={validationAttempted && !consent ? "true" : undefined}
+                  aria-describedby={validationAttempted && !consent ? consentErrorId : undefined}
                   className="mt-0.5 h-5 w-5 shrink-0 rounded border-sand accent-sage focus:ring-sage/30"
                 />
                 <span className="text-sm text-ink-body">
@@ -426,11 +476,15 @@ export function OnboardingClient({
                     )}
                 </span>
               </label>
+              {validationAttempted && !consent ? (
+                <p id={consentErrorId} role="alert" className="-mt-4 pl-2 text-xs text-state-error-fg">
+                  {t("onboarding.consentRequired", locale)}
+                </p>
+              ) : null}
 
               <Button
-                type="button"
-                onClick={handleSubmit}
-                disabled={isSubmitting || !consent}
+                type="submit"
+                disabled={isSubmitting}
                 loading={isSubmitting}
                 fullWidth
                 size="lg"
@@ -439,7 +493,7 @@ export function OnboardingClient({
               </Button>
           </div>
 
-        </div>
+        </form>
 
         {/* Footer hint */}
         <p className="mt-6 text-center text-xs text-muted">
@@ -459,6 +513,7 @@ export function OnboardingClient({
         options={countryOptions}
         selectedValue={country}
         title={t("onboarding.countryLabel", locale)}
+        closeLabel={t("common.close", locale)}
         searchable
         searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
       />
@@ -469,6 +524,7 @@ export function OnboardingClient({
         options={eduOptions}
         selectedValue={eduLevel}
         title={t("onboarding.eduLabel", locale)}
+        closeLabel={t("common.close", locale)}
       />
       <Picker
         isOpen={eduFieldPickerOpen}
@@ -477,6 +533,7 @@ export function OnboardingClient({
         options={eduFieldOptions}
         selectedValue={eduField}
         title={t("onboarding.eduFieldLabel", locale)}
+        closeLabel={t("common.close", locale)}
       />
       <Picker
         isOpen={industryPickerOpen}
@@ -485,6 +542,7 @@ export function OnboardingClient({
         options={industryOptions}
         selectedValue={currentIndustry}
         title={t("onboarding.industryLabel", locale)}
+        closeLabel={t("common.close", locale)}
       />
         </>
       ) : null}

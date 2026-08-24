@@ -418,6 +418,18 @@ export const authTranslations = {
       hu: "Az életkornak 16-100 év közé kell esnie",
       en: "Age must be between 16-100 years",
     },
+    genderRequired: {
+      hu: "Válassz egy lehetőséget",
+      en: "Select an option",
+    },
+    countryRequired: {
+      hu: "Válassz országot",
+      en: "Select a country",
+    },
+    consentRequired: {
+      hu: "A folytatáshoz fogadd el az adatvédelmi tájékoztatót",
+      en: "Accept the Privacy Policy to continue",
+    },
     validationError: {
       hu: "Kérlek javítsd a következő hibákat:",
       en: "Please correct the following errors:",
