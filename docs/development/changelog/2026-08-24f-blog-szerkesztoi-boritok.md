@@ -43,3 +43,6 @@ motívumot.
 A tárolóból szerkesztésre betöltött cikk most már a legfrissebb `artFamily`,
 `artConcept`, `artLineMode`, `artMotif` és fókuszmezőket kapja, nem a futó
 deploy esetleg elavult listapéldányát.
+
+A hírlevél- és Open Graph-borító renderelője a feltöltött WebP-ket PNG-re
+normalizálja, így az illusztrációk a Satori képgenerátorban is stabilak.

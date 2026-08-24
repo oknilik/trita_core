@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
+import sharp from "sharp";
 import { getPostBySlug, isBlogCoverImage } from "@/lib/blog";
 import { COLORS } from "@/lib/design-tokens";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
@@ -57,11 +58,17 @@ async function readCoverDataUri(coverImage: string): Promise<string | null> {
   const filePath = path.join(process.cwd(), "public", "blog-covers", fileName);
   try {
     const bytes = await readFile(filePath);
+    // A Satori / @vercel/og WebP data URI-kat nem minden futtatókörnyezetben
+    // tud stabilan dekódolni (a route ilyenkor `u2 is not iterable` hibával
+    // megszakad). A szerkesztő továbbra is WebP-t tárolhat, az OG-vászonnak
+    // viszont PNG-t adunk, amit a renderer natívan és determinisztikusan kezel.
+    if (fileName.endsWith(".webp")) {
+      const png = await sharp(bytes).png().toBuffer();
+      return `data:image/png;base64,${png.toString("base64")}`;
+    }
     const mime = fileName.endsWith(".png")
       ? "image/png"
-      : fileName.endsWith(".webp")
-        ? "image/webp"
-        : "image/jpeg";
+      : "image/jpeg";
     return `data:${mime};base64,${bytes.toString("base64")}`;
   } catch {
     return null;
