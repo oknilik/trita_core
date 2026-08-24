@@ -151,7 +151,7 @@ export function PricingContent() {
                 <h3 className="mt-4 font-fraunces text-2xl text-ink">{t("pricing.selfTitle", locale)}</h3>
                 <p className="mt-3 flex-1 text-sm leading-relaxed text-ink-body">{t("pricing.selfBody", locale)}</p>
                 <Link href="/try" className={`mt-6 inline-flex min-h-11 items-center self-start font-semibold text-sage-dark transition-colors hover:text-sage ${FOCUS_RING_CLASS}`}>
-                  {t("pricing.selfCta", locale)}<ChevronRightIcon className="ml-1" />
+                  {t("pricing.selfCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
                 </Link>
               </article>
 
@@ -191,7 +191,7 @@ export function PricingContent() {
             <h2 className="mt-4 font-fraunces text-3xl text-ink">{t("pricing.pilotTitle", locale)}</h2>
             <p className="mt-4 text-sm leading-relaxed text-ink-body">{t("pricing.pilotBody", locale)}</p>
             <Link href="/pilot" onClick={() => track("cta.click", { cta_id: "pricing_pilot", surface: "pricing" })} className={`mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--color-layer-team-accent)] transition-colors hover:text-[var(--color-layer-team-bright)] ${FOCUS_RING_CLASS}`}>
-              {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1" />
+              {t("pricing.pilotCta", locale)}<ChevronRightIcon className="ml-1 h-4 w-4 shrink-0" />
             </Link>
           </div>
         </div>
