@@ -37,6 +37,14 @@ const WARMUP_PATHS = [
   "/observe/warmup-invalid-token",
   "/join/warmup-invalid-token",
   "/apply/warmup-invalid-token",
+  // A kibővített pilot-kapu (axe + belépett lane) útvonalai: auth nélkül
+  // redirectre futnak, de a route-modul így is lefordul — pont ez kell.
+  "/sign-up",
+  "/blog",
+  "/assessment",
+  "/onboarding",
+  "/profile/results",
+  "/team/warmup-invalid-id",
 ];
 
 /** Egy útvonal bemelegítésének felső ideje. */

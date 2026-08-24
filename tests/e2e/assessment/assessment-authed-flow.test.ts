@@ -75,6 +75,9 @@ test("authenticated member resumes server draft, submits and reaches results", a
   context,
   baseURL,
 }) => {
+  // A belépett route-fa első dev-fordítása párhuzamos terhelés alatt a
+  // szokásos keretet túllépheti — a lane-nek bővebb büdzsé jár.
+  test.setTimeout(120_000);
   const fixture = await createAuthedFixture();
   await context.addCookies([
     { name: E2E_AUTH_COOKIE_NAME, value: fixture.clerkId, url: baseURL ?? "http://localhost:3000" },
