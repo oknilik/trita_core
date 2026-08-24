@@ -295,7 +295,9 @@ test.describe("Team intelligence structural snapshots", () => {
     const lowDataSection = page.locator("section").filter({
       has: page.getByRole("heading", { name: "Még nincs elég adat a csapatintelligenciához" }),
     });
-    await expect(lowDataSection).toBeVisible({ timeout: 15_000 });
+    // A low-data ág kliens-chunkja dev-módban itt fordul először — a
+    // bemelegítő a 404-es team-shellt éri csak el, ezt a chunkot nem.
+    await expect(lowDataSection).toBeVisible({ timeout: 45_000 });
 
     // Kitöltöttség-chip: 5 tagból 2-nek van önértékelése (admin + Low One).
     await expect(lowDataSection.getByText(/Kitöltött assessmentek/)).toBeVisible();
