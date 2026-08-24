@@ -120,9 +120,9 @@ test("authenticated member resumes server draft, submits and reaches results", a
   await page
     .goto("/profile/results", { waitUntil: "domcontentloaded" })
     .catch(() => page.goto("/profile/results", { waitUntil: "domcontentloaded" }));
-  await expect(
-    page.getByText(/Honesty|Becsületesség/i).first(),
-  ).toBeVisible({ timeout: 20_000 });
+  // Hajtás feletti, locale-stabil horgony: a hero PDF-gombja csak kész
+  // eredménnyel renderel (a dimenzió-címkék mélyebb nézetben élnek).
+  await expect(page.getByText(/PDF/i).first()).toBeVisible({ timeout: 20_000 });
 
   // A scope-olt self-draft a beadással törlődött.
   const draftCount = await prisma.assessmentDraft.count({
