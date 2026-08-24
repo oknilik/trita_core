@@ -16,14 +16,17 @@ export default function AuthPageShell({ panelContext, children }: AuthPageShellP
   const { locale } = useLocale();
 
   return (
-    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)] px-4 pb-6 pt-4 sm:px-6">
-      <header className="mx-auto flex h-16 w-full max-w-[1180px] items-center justify-between rounded-[22px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-5 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px]">
+    <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)] px-3 pb-6 pt-2 sm:px-6 lg:pt-3">
+      {/* A fejléc-geometria a publikus NavBar-ral egyezik (magasság, sarok,
+          belső padding, logó-fokozat) — a belépő-fa nem lóghat ki a
+          többi oldal fejlécéből, főleg mobilon. */}
+      <header className="mx-auto flex h-14 w-full max-w-[1180px] items-center justify-between rounded-[19px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 px-3 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:px-4 lg:h-[68px] lg:rounded-[22px] lg:px-5">
         <Link
           href="/"
           aria-label="trita"
           className="inline-flex min-h-11 items-center rounded-md text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-state-focus-ring)] focus-visible:ring-offset-2"
         >
-          <TritaWordmark className="text-title tracking-[-0.04em]" />
+          <TritaWordmark className="text-heading tracking-[-0.04em]" />
         </Link>
         <Link
           href="/"
