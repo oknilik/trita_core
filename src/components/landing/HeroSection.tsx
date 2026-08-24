@@ -110,7 +110,7 @@ function SelfPanel() {
         {/* Szerepkör-illeszkedés — a valódi RoleFitSection "erős" sora */}
         <div className="mb-1 mt-4">
           <p className="mb-2 text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-            {t("results.roleFitEyebrow", locale)}
+            {t("landing.selfRoleFitEyebrow", locale)}
           </p>
           <div
             className="rounded-r-[14px] bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4"

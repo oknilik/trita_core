@@ -45,10 +45,10 @@ export const landingTranslations = {
 
     // ─── New landing page (self/team) ────────────────────────────────
     // HeroSection — self
-    selfEyebrow: { hu: "SZEMÉLYISÉG-ALAPÚ KARRIERPROFIL", en: "PERSONALITY-BASED CAREER PROFILE" },
-    selfHeadlineBefore: { hu: "Derítsd ki, milyen szerepben tudsz igazán ", en: "Find out what role you can truly " },
-    selfHeadlineEm: { hu: "kibontakozni.", en: "thrive in." },
-    selfSub: { hu: "Megmutatjuk, milyen szerepek illenek hozzád, miben vagy erős, és min érdemes dolgoznod — érthetően, egy helyen.", en: "We show you which roles fit you, where you're strong, and what's worth working on — clearly, in one place." },
+    selfEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
+    selfHeadlineBefore: { hu: "Értsd meg, hogyan működsz — és mit viszel a ", en: "Understand how you work — and what you bring to the " },
+    selfHeadlineEm: { hu: "csapatba.", en: "team." },
+    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben vagy erős, és hogyan jelenik meg mindez a közös munkában — érthetően, egy helyen.", en: "See which patterns drive you, where your strengths lie, and how they show up when you work with others — clearly, in one place." },
     selfCta: { hu: "Ingyenes teszt indítása", en: "Start free assessment" },
     selfCtaContinue: { hu: "Folytasd a tesztet", en: "Continue assessment" },
     selfCtaContinueShort: { hu: "Folytatom", en: "Continue" },
@@ -72,6 +72,7 @@ export const landingTranslations = {
     selfDim6: { hu: "Nyitottság", en: "Openness" },
     selfStrLabel: { hu: "Erősségeid", en: "Your strengths" },
     // Szerepkör-illeszkedés teaser — a valódi RoleFitSection "erős" sora
+    selfRoleFitEyebrow: { hu: "Természetes csapatszerepeid", en: "Team roles that come naturally" },
     selfRole1: { hu: "Csapatépítés", en: "Team Building" },
     selfRole2: { hu: "Facilitáció", en: "Facilitation" },
     selfRole3: { hu: "Coaching", en: "Coaching" },
@@ -113,8 +114,8 @@ export const landingTranslations = {
     howSelf1Desc: { hu: "Végigmész a kérdéseken ~10 perc alatt — készülni nem kell rá.", en: "Done in ~10 minutes. No preparation needed." },
     howSelf2Title: { hu: "Megkapod a profilodat", en: "Get your profile" },
     howSelf2Desc: { hu: "Azonnal látod a fő mintázataidat és az erősségeidet.", en: "See your key patterns and strengths right away." },
-    howSelf3Title: { hu: "Megérted a karrierképedet", en: "Understand your career picture" },
-    howSelf3Desc: { hu: "Kiderül, milyen szerepek és munkastílusok illenek hozzád.", en: "Discover which roles and work styles suit you." },
+    howSelf3Title: { hu: "Látod, mit viszel a csapatba", en: "See what you bring to the team" },
+    howSelf3Desc: { hu: "Kiderül, milyen csapatszerepek állnak közel hozzád, és milyen közegben működsz jól.", en: "Discover which team roles come naturally to you and what kind of environment helps you thrive." },
     howTeam1Title: { hu: "Meghívod a csapatot", en: "Invite your team" },
     howTeam1Desc: { hu: "Az első egyeztetés után egy linket küldesz, mindenki kitölti egyénileg.", en: "After the first conversation you send a link, and everyone fills it out individually." },
     howTeam2Title: { hu: "Tanácsadói ellenőrzés", en: "Consultant review" },
@@ -127,9 +128,9 @@ export const landingTranslations = {
     selfFeat1Badge: { hu: "Profil", en: "Profile" },
     selfFeat1Title: { hu: "Személyiségprofil", en: "Personality Profile" },
     selfFeat1Desc: { hu: "Látod, milyen mintázatok mozgatnak a munkahelyi helyzetekben.", en: "See which patterns drive you in workplace situations." },
-    selfFeat2Badge: { hu: "Karrierkép", en: "Career" },
-    selfFeat2Title: { hu: "Karrierkép", en: "Career Picture" },
-    selfFeat2Desc: { hu: "Megérted, milyen szerepek és munkakörnyezetek illenek hozzád.", en: "Understand which roles and environments suit you." },
+    selfFeat2Badge: { hu: "Csapatszerep", en: "Team role" },
+    selfFeat2Title: { hu: "Működésed a csapatban", en: "How you work in a team" },
+    selfFeat2Desc: { hu: "Látod, milyen szerepet veszel fel természetesen, és hol tudsz a legtöbbet hozzátenni.", en: "See which role you naturally take on and where you can contribute the most." },
     selfFeat3Badge: { hu: "Fejlődés", en: "Growth" },
     selfFeat3Title: { hu: "Fejlődési fókusz", en: "Growth Focus" },
     selfFeat3Desc: { hu: "Kapaszkodót kapsz ahhoz, hogy min érdemes tovább dolgoznod.", en: "Get a starting point for what's worth working on." },
@@ -148,10 +149,10 @@ export const landingTranslations = {
     proof1Title: { hu: "Tudományos alap", en: "Scientific foundation" },
     proof1Desc: { hu: "Tudományos személyiségmodellekre épül, nem egy internetes kvíz.", en: "Built on scientific personality models, not an internet quiz." },
     proof2Title: { hu: "Nem csak címkéz", en: "Not just labels" },
-    proof2Desc: { hu: "Nem áll meg egy típusnévnél — használható karrierirányokat mutat.", en: "It doesn't stop at a type name — it shows actionable career directions." },
+    proof2Desc: { hu: "Nem áll meg egy típusnévnél — megmutatja, hogyan jelennek meg a mintáid a közös munkában.", en: "It doesn't stop at a type name — it shows how your patterns shape the way you work with others." },
     proof3Title: { hu: "Gyakorlati nyelven", en: "Practical language" },
     proof3Desc: { hu: "Nem pszichológiai zsargonban beszél, hanem úgy, ahogy te gondolkodsz a munkádról.", en: "Speaks how you think about work, not psychological jargon." },
-    proofTestimonial: { hu: "Most értettem meg először, miért nem illenek hozzám bizonyos szerepek.", en: "For the first time, I understood why certain roles don't suit me." },
+    proofTestimonial: { hu: "Most értettem meg először, miért vállalom mindig ugyanazt a szerepet a csapatban.", en: "For the first time, I understood why I keep taking on the same role in a team." },
     proofTestimonialAuthor: { hu: "— Korai felhasználó, 31 éves termékmenedzser", en: "— Early user, 31-year-old Product Manager" },
     // ProofSection — team mód ("Miért más?" megkülönböztető történet)
     proofTeamTitleBefore: { hu: "Miért más ez, mint egy ", en: "Why is this different from an " },
@@ -171,8 +172,8 @@ export const landingTranslations = {
     statDimLabel: { hu: "személyiség dimenzió", en: "personality dimensions" },
     statResultValue: { hu: "azonnali", en: "instant" },
     statResultLabel: { hu: "eredmény, várakozás nélkül", en: "result, no waiting" },
-    statSelfValue: { hu: "önismeret + karrierkép", en: "self-knowledge + career" },
-    statSelfLabel: { hu: "egy helyen", en: "in one place" },
+    statSelfValue: { hu: "önismerettől a csapatműködésig", en: "from self-awareness to teamwork" },
+    statSelfLabel: { hu: "egy közös rendszerben", en: "in one connected system" },
     // StatsBar — team mód
     statTeamMinLabel: { hu: "tagonkénti kitöltés", en: "per-member completion" },
     statTeamPictureValue: { hu: "néhány nap", en: "days" },
@@ -182,9 +183,9 @@ export const landingTranslations = {
     // validált csapattípus" — a stat a Scan v1 tényleges rétegeit mondja.
     statTeamLayersLabel: { hu: "mérési réteg a Team Scan v1-ben", en: "measurement layers in Team Scan v1" },
     // CtaSection
-    ctaSelfHeadlineBefore: { hu: "~10 perc, és megvan az első, használható ", en: "In ~10 minutes you get a first, actionable " },
-    ctaSelfHeadlineEm: { hu: "karrierképed.", en: "career picture." },
-    ctaSelfSub: { hu: "Indítsd el most a tesztet, és nézd meg, milyen szerepekben működsz a legjobban.", en: "Start the test now and see which roles you perform best in." },
+    ctaSelfHeadlineBefore: { hu: "~10 perc, és jobban érted, ", en: "In ~10 minutes, understand " },
+    ctaSelfHeadlineEm: { hu: "mit viszel a csapatba.", en: "what you bring to the team." },
+    ctaSelfSub: { hu: "Indítsd el most a tesztet, és lásd, milyen mintázatok mozgatnak, és milyen szerepet veszel fel természetesen a közös munkában.", en: "Start the assessment and see which patterns drive you and which role you naturally take on when working with others." },
     ctaSelfCta: { hu: "Elindítom a tesztet", en: "Start the test" },
     ctaSelfSecondary: { hu: "Együttműködés részletei", en: "How we work" },
     ctaSelfMicrocopy: { hu: "Ingyenes indulás · azonnali első eredmény", en: "Free start · instant first result" },
@@ -245,8 +246,8 @@ export const landingTranslations = {
     selfEyebrow: { hu: "egyéni · ingyenes", en: "individual · free" },
     selfTitle: { hu: "Ismerd meg magad — ingyen", en: "Get to know yourself — for free" },
     selfBody: {
-      hu: "Teljes személyiségfelmérés (~10 perc), dimenziószintű riport, munkastílus- és karrierkép, observer-visszajelzések. Nincs rejtett fizetős szint — az egyéni út ingyenes.",
-      en: "Full personality assessment (~10 minutes), dimension-level report, work style and career fit, observer feedback. No hidden paid tier — the individual path is free.",
+      hu: "Teljes személyiségfelmérés (~10 perc), dimenziószintű riport, munkastílus- és csapatszerep-elemzés, observer-visszajelzések. Nincs rejtett fizetős szint — az egyéni út ingyenes.",
+      en: "Full personality assessment (~10 minutes), dimension-level report, work style and team-role analysis, plus observer feedback. No hidden paid tier — the individual path is free.",
     },
     selfCta: { hu: "Kipróbálom most — regisztráció nélkül", en: "Try it now — no sign-up needed" },
     teamEyebrow: { hu: "csapat és szervezet · program", en: "team & organization · program" },
@@ -437,8 +438,8 @@ export const landingTranslations = {
       en: "See what your results look like.",
     },
     trySub: {
-      hu: "~10 perc, és megkapod az első karrierképedet — ingyenesen.",
-      en: "~10 minutes to your first career profile — for free.",
+      hu: "~10 perc, és használható képet kapsz arról, mit viszel a csapatba — ingyenesen.",
+      en: "In ~10 minutes, get a useful picture of what you bring to a team — for free.",
     },
     tryCta: { hu: "Teszt indítása", en: "Start assessment" },
     // ── Blog UX 2. kör (2026-07-24) ──
@@ -684,8 +685,8 @@ export const landingTranslations = {
     },
     audienceSelfTitle: { hu: "Egyéni kitöltőknek", en: "For individuals" },
     audienceSelfDesc: {
-      hu: "Teljes egyéni felmérés nagyjából 10 perc alatt, dimenziószintű riport, karrierkép és külső visszajelzés — ingyen, rejtett fizetős szint nélkül. Az eredményed a tiéd: ha egy szervezet hívott meg, a csapatképben akkor is csak összesítve jelensz meg.",
-      en: "The full individual assessment in about 10 minutes, a dimension-level report, a career picture and external feedback — free, with no hidden paid tier. Your result is yours: even if an organization invited you, you only ever appear in the team picture in aggregate.",
+      hu: "Teljes egyéni felmérés nagyjából 10 perc alatt, dimenziószintű riport, munkastílus, csapatszerepek és külső visszajelzés — ingyen, rejtett fizetős szint nélkül. Az eredményed a tiéd: ha egy szervezet hívott meg, a csapatképben akkor is csak összesítve jelensz meg.",
+      en: "The full individual assessment in about 10 minutes, with a dimension-level report, work style, team roles and external feedback — free, with no hidden paid tier. Your result is yours: even if an organization invited you, you only ever appear in the team picture in aggregate.",
     },
     audienceSelfCta: { hu: "Kipróbálom ingyen", en: "Try it for free" },
     audienceTeamTitle: { hu: "Csapatoknak és vezetőknek", en: "For teams and leaders" },
@@ -736,8 +737,8 @@ export const landingTranslations = {
     },
     path1Title: { hu: "Magad", en: "Yourself" },
     path1Desc: {
-      hu: "A saját profilod, karrierképed és fejlődési fókuszod. Ez a réteg ingyenes, és önmagában is teljes.",
-      en: "Your own profile, career picture and growth focus. This layer is free, and complete in itself.",
+      hu: "A saját profilod, munkastílusod, csapatszerepeid és fejlődési fókuszod. Ez a réteg ingyenes, és önmagában is teljes.",
+      en: "Your own profile, work style, team roles and growth focus. This layer is free, and complete in itself.",
     },
     path2Title: { hu: "Ahogy mások látnak", en: "How others see you" },
     path2Desc: {
