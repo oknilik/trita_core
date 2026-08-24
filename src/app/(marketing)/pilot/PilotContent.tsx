@@ -118,13 +118,13 @@ export function PilotContent() {
               <div className="absolute -right-20 -top-24 size-72 rounded-full border border-white/10" />
               <div className="absolute -right-8 -top-12 size-48 rounded-full border border-white/10" />
               <div className="relative border-b border-white/10 pb-5">
-                <p className="text-label uppercase text-[var(--color-text-on-inverse-muted)]">
+                <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
                   {t("pilot.asideEyebrow", locale)}
                 </p>
                 <p className="mt-3 font-fraunces text-title leading-tight">
                   {t("pilot.asideTitle", locale)}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
                   {t("pilot.asideBody", locale)}
                 </p>
               </div>
@@ -134,16 +134,16 @@ export function PilotContent() {
                   {signals.map((signal) => (
                     <div key={signal.label} className="rounded-2xl border border-white/15 bg-white/[0.08] px-3 py-4">
                       <div className="font-fraunces text-3xl leading-none text-[var(--color-layer-team-badge)]">{signal.value}</div>
-                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">{signal.label}</div>
+                      <div className="mt-2 text-note leading-relaxed text-[var(--color-text-on-inverse)]">{signal.label}</div>
                     </div>
                   ))}
                 </div>
 
                 <div className="rounded-2xl border border-[var(--color-layer-team-glow)]/35 bg-white/10 px-5 py-5">
-                  <p className="text-label uppercase text-[var(--color-layer-team-badge)]">
+                  <p className="text-label uppercase text-[var(--color-text-on-inverse)]">
                     {t("pilot.aside90Eyebrow", locale)}
                   </p>
-                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse)]">
                     {t("pilot.aside90Body", locale)}
                   </p>
                 </div>

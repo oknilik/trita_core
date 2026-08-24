@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 // ─────────────────────────────────────────────────────────────────────
 // Közös mobilmenü-váz (2026-07-29, menü-konvergencia): a kijelentkezett
@@ -9,6 +12,10 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 // formát használja — backdrop + fejléc alatti lekerekített kártya + ikonos
 // sorok. Így a belépés előtti/utáni élmény nem törik meg, és a menü-stílus
 // egy helyen él.
+//
+// P1-UX-03: a váz egyben a dialog-szerződés hordozója is — role=dialog,
+// Escape-zárás, háttér-scroll zár, fókusz-csapda és fókusz-visszaadás.
+// Mindkét menü ezen keresztül örökli, egy helyen.
 // ─────────────────────────────────────────────────────────────────────
 
 export function MobileMenuShell({
@@ -20,6 +27,55 @@ export function MobileMenuShell({
   onClose: () => void;
   children: React.ReactNode;
 }) {
+  const { locale } = useLocale();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = Array.from(
+          panelRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button, input, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => !el.hasAttribute("disabled"));
+        if (focusable.length === 0) {
+          e.preventDefault();
+          panelRef.current.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    const focusTimer = window.setTimeout(() => {
+      if (!panelRef.current?.contains(document.activeElement)) {
+        panelRef.current?.focus();
+      }
+    }, 50);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+      previouslyFocusedRef.current?.focus();
+    };
+  }, [open, onClose]);
+
   if (!open) return null;
   return (
     <>
@@ -29,7 +85,14 @@ export function MobileMenuShell({
         className="fixed inset-0 z-30 bg-[rgba(26,26,46,0.12)] backdrop-blur-[2px] lg:hidden"
         onClick={onClose}
       />
-      <div className="animate-menu-in fixed inset-x-0 top-14 z-40 lg:hidden">
+      <div
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t("nav.menu", locale)}
+        tabIndex={-1}
+        className="animate-menu-in fixed inset-x-0 top-14 z-40 outline-none lg:hidden"
+      >
         <div className="mx-4 mt-2 max-h-[calc(100dvh-80px)] overflow-y-auto rounded-2xl border border-[var(--color-border-default)] bg-[var(--color-surface-card-soft)] shadow-xl shadow-black/[0.07]">
           {children}
         </div>

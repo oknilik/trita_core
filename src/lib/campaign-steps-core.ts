@@ -244,3 +244,68 @@ export function isSelfResultForCampaign(
   if (result.campaignId || !campaign.activatedAt) return false;
   return new Date(result.createdAt).getTime() >= new Date(campaign.activatedAt).getTime();
 }
+
+// ─── P1-OPS-02 · Lépés-célzott emlékeztető kohorsz ───────────────────────────
+
+/** Ugyanarra a lépésre ennyi időn belül nem megy második emlékeztető. */
+export const STEP_REMINDER_COOLDOWN_MS = 48 * 60 * 60 * 1000;
+
+export interface StepReminderParticipant {
+  userId: string;
+  currentStep: number;
+  nextStepOpensAt?: Date | string | null;
+  lastRemindedAt?: Date | string | null;
+  lastRemindedStep?: number | null;
+}
+
+export interface StepReminderCohort {
+  /** Nyitott lépésen álló, cooldown-on kívüli címzettek. */
+  pending: Array<{ userId: string; stepIndex: number; stepType: string }>;
+  /** Cooldown miatt kihagyottak (idempotens ismétlés — nem hiba). */
+  skippedRecent: number;
+  /** Ütemezett (még zárt) lépésen állók — nem az ő késésük. */
+  gated: number;
+  /** Minden lépést teljesítők. */
+  done: number;
+}
+
+/**
+ * Emlékeztető-célzás az AKTUÁLIS befejezetlen lépésből: a self-kész/
+ * trust-függő és a trust-kész/pulse-függő résztvevő is a saját nyitott
+ * lépéséhez kap emlékeztetőt — nem csak a semmit-sem-kezdők. Tiszta
+ * függvény: a route és egy jövőbeli cron ugyanazt a kaput használja.
+ */
+export function selectStepReminderCohort(
+  campaign: { type: string; steps: string[] },
+  participants: StepReminderParticipant[],
+  now: Date = new Date(),
+  cooldownMs: number = STEP_REMINDER_COOLDOWN_MS,
+): StepReminderCohort {
+  const steps = getCampaignSteps(campaign);
+  const cohort: StepReminderCohort = { pending: [], skippedRecent: 0, gated: 0, done: 0 };
+  for (const participant of participants) {
+    const stepType = steps[participant.currentStep];
+    if (!stepType) {
+      cohort.done += 1;
+      continue;
+    }
+    if (!isStepGateOpen(participant, now)) {
+      cohort.gated += 1;
+      continue;
+    }
+    const remindedThisStep =
+      participant.lastRemindedStep === participant.currentStep &&
+      participant.lastRemindedAt != null &&
+      now.getTime() - new Date(participant.lastRemindedAt).getTime() < cooldownMs;
+    if (remindedThisStep) {
+      cohort.skippedRecent += 1;
+      continue;
+    }
+    cohort.pending.push({
+      userId: participant.userId,
+      stepIndex: participant.currentStep,
+      stepType,
+    });
+  }
+  return cohort;
+}

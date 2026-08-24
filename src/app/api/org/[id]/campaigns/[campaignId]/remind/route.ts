@@ -3,19 +3,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hasOrgRole } from "@/lib/auth";
 import { canManageMeasurements } from "@/lib/measurement-auth";
-import { countCampaignStepsDone, getCampaignSteps } from "@/lib/campaign-steps-core";
+import {
+  getCampaignStepLink,
+  isCampaignStepType,
+  selectStepReminderCohort,
+} from "@/lib/campaign-steps-core";
 import { sendMeasurementStepEmail } from "@/lib/emails";
 import { checkRateLimit } from "@/lib/rate-limit";
 import { getRequestLogger } from "@/lib/logger.server";
 import { normalizeLocale } from "@/lib/i18n/core";
 
 // POST /api/org/[id]/campaigns/[campaignId]/remind
-// Emlékeztető email a kampány saját lépéseiből semmit sem teljesítő
-// résztvevőknek (lépés-tudatos „nem kezdte" számítás). A CTA a /tasks
-// feladatlistára visz — az mutatja a user épp nyitott lépését.
-// Returns { ok: true, remindedCount: number } — a ténylegesen elküldött
-// emailek száma (a UI „{count} személynek küldtünk emlékeztetőt" szövege
-// ettől igaz).
+// P1-OPS-02: lépés-célzott emlékeztető. Minden befejezetlen résztvevő a
+// SAJÁT nyitott lépéséhez kap emailt (a self-kész/trust-függő és a
+// trust-kész/pulse-függő kohorsz is), közvetlen lépés-linkkel. Ugyanarra a
+// lépésre 48 órán belül nem megy második levél (lastRemindedAt/-Step), így a
+// kézi gomb — és egy jövőbeli cron — idempotens. A számláló csak a provider
+// által elfogadott küldést lépteti; a bukott küldés a következő futásban
+// újrapróbálható.
+// Returns { ok, remindedCount, failedCount, skippedRecent, gated, done }.
 export async function POST(
   _req: Request,
   { params }: { params: Promise<{ id: string; campaignId: string }> }
@@ -64,7 +70,13 @@ export async function POST(
       requireFreshResults: true,
       activatedAt: true,
       participants: {
-        select: { userId: true, currentStep: true, stepCompletions: true },
+        select: {
+          userId: true,
+          currentStep: true,
+          nextStepOpensAt: true,
+          lastRemindedAt: true,
+          lastRemindedStep: true,
+        },
       },
     },
   });
@@ -73,82 +85,97 @@ export async function POST(
     return NextResponse.json({ error: "CAMPAIGN_NOT_ACTIVE" }, { status: 400 });
   }
 
-  const participantUserIds = campaign.participants.map((p) => p.userId);
-
-  if (participantUserIds.length === 0) {
-    return NextResponse.json({ ok: true, remindedCount: 0 });
+  if (campaign.participants.length === 0) {
+    return NextResponse.json({
+      ok: true,
+      remindedCount: 0,
+      failedCount: 0,
+      skippedRecent: 0,
+      gated: 0,
+      done: 0,
+    });
   }
 
-  // Lépés-tudatos „nem kezdte" számítás (2026-07-29): a kampány SAJÁT
-  // lépéseiből semmit sem teljesítők — nem a self-teszt kitöltetlensége.
-  // Újrafelvételi körben csak az aktiválás utáni self-eredmény számít.
-  const selfDoneResults = await prisma.assessmentResult.findMany({
-    where: {
-      userProfileId: { in: participantUserIds },
-      isSelfAssessment: true,
-      ...(campaign.requireFreshResults
-        ? campaign.activatedAt
-          ? {
-              OR: [
-                { campaignId: campaign.id },
-                { campaignId: null, createdAt: { gte: campaign.activatedAt } },
-              ],
-            }
-          : { campaignId: campaign.id }
-        : {}),
-    },
-    select: { userProfileId: true },
-    distinct: ["userProfileId"],
-  });
+  const now = new Date();
+  const cohort = selectStepReminderCohort(campaign, campaign.participants, now);
 
-  const selfDoneSet = new Set(
-    selfDoneResults.map((r) => r.userProfileId).filter(Boolean) as string[]
-  );
-
-  const steps = getCampaignSteps(campaign);
-  const notStarted = campaign.participants.filter(
-    (p) => countCampaignStepsDone(steps, p, selfDoneSet.has(p.userId)) === 0,
-  );
-
-  if (notStarted.length === 0) {
-    return NextResponse.json({ ok: true, remindedCount: 0 });
+  if (cohort.pending.length === 0) {
+    return NextResponse.json({
+      ok: true,
+      remindedCount: 0,
+      failedCount: 0,
+      skippedRecent: cohort.skippedRecent,
+      gated: cohort.gated,
+      done: cohort.done,
+    });
   }
 
   const recipients = await prisma.userProfile.findMany({
     where: {
-      id: { in: notStarted.map((p) => p.userId) },
+      id: { in: cohort.pending.map((p) => p.userId) },
       deleted: false,
       email: { not: null },
     },
     select: { id: true, email: true, locale: true },
   });
+  const recipientById = new Map(recipients.map((r) => [r.id, r]));
 
   const log = await getRequestLogger("campaign-remind");
-  const results = await Promise.allSettled(
-    recipients.map((r) =>
-      sendMeasurementStepEmail({
-        to: r.email as string,
+  let remindedCount = 0;
+  let failedCount = 0;
+  for (const pending of cohort.pending) {
+    const recipient = recipientById.get(pending.userId);
+    if (!recipient) continue;
+    const link = isCampaignStepType(pending.stepType)
+      ? getCampaignStepLink(pending.stepType, campaign.id)
+      : "/tasks";
+    let sent = false;
+    try {
+      sent = await sendMeasurementStepEmail({
+        to: recipient.email as string,
         campaignName: campaign.name,
-        link: "/tasks",
+        link,
         variant: "reminder",
-        locale: normalizeLocale(r.locale),
-      }),
-    ),
-  );
-  const remindedCount = results.filter(
-    (r) => r.status === "fulfilled" && r.value === true,
-  ).length;
+        locale: normalizeLocale(recipient.locale),
+      });
+    } catch (err) {
+      log.error(
+        { event: "campaign.reminder_send_failed", campaignId, err },
+        "Campaign reminder email failed",
+      );
+    }
+    if (!sent) {
+      failedCount += 1;
+      continue;
+    }
+    remindedCount += 1;
+    // Az idempotencia-ablak CSAK sikeres küldés után záródik — bukott
+    // küldésre a következő futás újrapróbál.
+    await prisma.campaignParticipant.update({
+      where: { campaignId_userId: { campaignId, userId: pending.userId } },
+      data: { lastRemindedAt: now, lastRemindedStep: pending.stepIndex },
+    });
+  }
 
   log.info(
     {
       event: "campaign.reminders_sent",
       campaignId,
-      notStarted: notStarted.length,
-      attempted: recipients.length,
+      attempted: cohort.pending.length,
       sent: remindedCount,
+      failed: failedCount,
+      skippedRecent: cohort.skippedRecent,
+      gated: cohort.gated,
     },
     "Campaign reminder emails sent",
   );
 
-  return NextResponse.json({ ok: true, remindedCount });
+  return NextResponse.json({
+    ok: true,
+    remindedCount,
+    failedCount,
+    skippedRecent: cohort.skippedRecent,
+    gated: cohort.gated,
+    done: cohort.done,
+  });
 }

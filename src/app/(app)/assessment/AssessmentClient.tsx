@@ -678,7 +678,7 @@ export function AssessmentClient({
               </div>
               <h1 className="mb-4 max-w-[620px] font-fraunces text-title leading-[1.12] tracking-tight text-[var(--color-text-primary)] lg:text-display 2xl:text-hero">
                 {tf("assessment.introHeadline1", locale, { minutes: estimateAssessmentMinutes(totalQuestions) })}
-                <em className="not-italic text-[var(--color-accent-primary)]">{t("assessment.introHeadlineEm", locale)}</em>
+                <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("assessment.introHeadlineEm", locale)}</em>
               </h1>
               <p className="mb-6 max-w-[480px] text-sm leading-relaxed text-[var(--color-text-muted)] lg:text-base">
                 {t("assessment.introSub", locale)}

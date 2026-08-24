@@ -422,6 +422,10 @@ export const authTranslations = {
       hu: "Kérlek javítsd a következő hibákat:",
       en: "Please correct the following errors:",
     },
+    requiredChoice: {
+      hu: "Válassz egy lehetőséget a folytatáshoz.",
+      en: "Choose an option to continue.",
+    },
     usernameHint: {
       hu: "2-20 karakter",
       en: "2-20 characters",

@@ -50,6 +50,9 @@ export function OnboardingClient({
 
   const [usernameTouched, setUsernameTouched] = useState(false);
   const [birthYearTouched, setBirthYearTouched] = useState(false);
+  // P1-UX-04: sikertelen submit után a hibák TARTÓSAN látszanak (nem csak az
+  // 1 mp-es flash), üres mezőre is — aria-invalid/aria-describedby kapcsolattal.
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const [invalidFieldFlash, setInvalidFieldFlash] = useState<
     | "username"
     | "birthYear"
@@ -168,6 +171,7 @@ export function OnboardingClient({
 
     // UX-A11: egyképernyős onboarding — a korábbi 1. lépés mezővalidációja
     // a submitra került. A mentés + Clerk-szinkron logika változatlan.
+    setSubmitAttempted(true);
     setUsernameTouched(true);
     if (!isClaimActivation) setBirthYearTouched(true);
     if (!basicsValid) {
@@ -233,8 +237,16 @@ export function OnboardingClient({
           </div>
         </div>
 
-        {/* Card */}
-        <div className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm">
+        {/* Card — valódi form: az Enter is beküld, a hibák a submit után
+            tartósan látszanak (P1-UX-04). */}
+        <form
+          noValidate
+          onSubmit={(e) => {
+            e.preventDefault();
+            void handleSubmit();
+          }}
+          className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm"
+        >
 
           <div className="flex flex-col gap-6">
               <div>
@@ -261,12 +273,14 @@ export function OnboardingClient({
                     minLength={2}
                     maxLength={20}
                     error={
-                      usernameTouched && username.trim() !== "" && !usernameValid
+                      (submitAttempted || (usernameTouched && username.trim() !== "")) &&
+                      !usernameValid
                         ? t("onboarding.usernameError", locale)
                         : undefined
                     }
                     helpText={
-                      usernameTouched && username.trim() !== "" && !usernameValid
+                      (submitAttempted || (usernameTouched && username.trim() !== "")) &&
+                      !usernameValid
                         ? undefined
                         : t("onboarding.usernameHint", locale)
                     }
@@ -294,13 +308,15 @@ export function OnboardingClient({
                     min={minBirthYear}
                     max={maxBirthYear}
                     error={
-                      birthYearTouched && birthYear !== "" && !birthYearValid
+                      (submitAttempted || (birthYearTouched && birthYear !== "")) &&
+                      !birthYearValid
                         ? t("onboarding.birthYearError", locale)
                         : undefined
                     }
                     helpText={`${t("onboarding.validRangeLabel", locale)}: ${minBirthYear} – ${maxBirthYear}`}
                     helpTextClassName={`pl-1 italic text-xs ${
-                      birthYearTouched && birthYear !== "" && !birthYearValid
+                      (submitAttempted || (birthYearTouched && birthYear !== "")) &&
+                      !birthYearValid
                         ? "text-[var(--color-accent-primary-strong)]"
                         : "text-muted"
                     }`}
@@ -310,22 +326,32 @@ export function OnboardingClient({
                   />
                 </div>
 
-                {/* Gender */}
+                {/* Gender — címkézett radiogroup, submit után tartós hibával */}
                 <div
                   ref={genderFieldRef}
                   className={`flex flex-col gap-2 rounded-lg p-1 transition ${
                     invalidFieldFlash === "gender" ? "ring-2 ring-sage/30 bg-bronze-100/40" : ""
                   }`}
                 >
-                  <span className="text-sm font-semibold text-ink">
+                  <span id="onboarding-gender-label" className="text-sm font-semibold text-ink">
                     {t("onboarding.genderLabel", locale)}
                   </span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div
+                    role="radiogroup"
+                    aria-labelledby="onboarding-gender-label"
+                    aria-invalid={submitAttempted && gender === "" ? true : undefined}
+                    aria-describedby={
+                      submitAttempted && gender === "" ? "onboarding-gender-error" : undefined
+                    }
+                    className="grid grid-cols-2 gap-2"
+                  >
                     {GENDER_OPTIONS.map((opt, idx) => (
                       <button
                         key={opt.value}
                         ref={idx === 0 ? genderFirstButtonRef : undefined}
                         type="button"
+                        role="radio"
+                        aria-checked={gender === opt.value}
                         onClick={() => setGender(opt.value)}
                         className={toggleBtn(gender === opt.value)}
                       >
@@ -333,9 +359,18 @@ export function OnboardingClient({
                       </button>
                     ))}
                   </div>
+                  {submitAttempted && gender === "" ? (
+                    <p
+                      id="onboarding-gender-error"
+                      role="alert"
+                      className="pl-1 text-xs italic text-[var(--color-accent-primary-strong)]"
+                    >
+                      {t("onboarding.requiredChoice", locale)}
+                    </p>
+                  ) : null}
                 </div>
 
-                {/* Country */}
+                {/* Country — submit után tartós hibával */}
                 <div
                   ref={countryFieldRef}
                   className={`rounded-lg transition ${
@@ -348,6 +383,14 @@ export function OnboardingClient({
                     placeholder={t("onboarding.countryPlaceholder", locale)}
                     onClick={() => setCountryPickerOpen(true)}
                   />
+                  {submitAttempted && country === "" ? (
+                    <p
+                      role="alert"
+                      className="mt-1 pl-1 text-xs italic text-[var(--color-accent-primary-strong)]"
+                    >
+                      {t("onboarding.requiredChoice", locale)}
+                    </p>
+                  ) : null}
                 </div>
 
                 {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
@@ -428,8 +471,7 @@ export function OnboardingClient({
               </label>
 
               <Button
-                type="button"
-                onClick={handleSubmit}
+                type="submit"
                 disabled={isSubmitting || !consent}
                 loading={isSubmitting}
                 fullWidth
@@ -439,7 +481,7 @@ export function OnboardingClient({
               </Button>
           </div>
 
-        </div>
+        </form>
 
         {/* Footer hint */}
         <p className="mt-6 text-center text-xs text-muted">

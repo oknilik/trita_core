@@ -25,6 +25,7 @@ const PILOT_INTEGRATION_TESTS = [
 /** Böngésző-szintű kritikus utak (Playwright). */
 const PILOT_E2E_TESTS = [
   "tests/e2e/assessment/assessment-flow.test.ts",
+  "tests/e2e/assessment/assessment-authed-flow.test.ts",
   "tests/e2e/observer/observer-flow.test.ts",
   "tests/e2e/analytics/analytics-write-smoke.test.ts",
   "tests/e2e/accessibility/keyboard-focus.test.ts",

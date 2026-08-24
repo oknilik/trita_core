@@ -647,6 +647,11 @@ model CampaignParticipant {
   // Ütemezett lépés-nyitás: amíg a jövőben van, az aktuális lépés zárva
   // (nem tölthető ki, értesítés sem ment még). null = nyitva.
   nextStepOpensAt DateTime?
+  // P1-OPS-02: lépés-célzott emlékeztető idempotencia-ablaka. Csak sikeres
+  // küldés után frissül; ugyanarra a lépésre a cooldown-on belül nem megy
+  // újabb levél (a kézi gomb és egy jövőbeli cron ugyanazt a kaput használja).
+  lastRemindedAt   DateTime?
+  lastRemindedStep Int?
 
   campaign Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   user     UserProfile @relation(fields: [userId], references: [id])

@@ -981,7 +981,9 @@ paths:
                   properties: { action: { type: string, const: release_now } }
       responses: { "200": { description: OK } }
   /api/org/{id}/campaigns/{campaignId}/remind:
-    post: { tags: [Org], summary: Kampány-emlékeztetők küldése, responses: { "200": { description: OK } } }
+    # P1-OPS-02: lépés-célzott emlékeztető 48 órás idempotencia-ablakkal;
+    # a válasz a valós kézbesítési kimenetet bontja (sent/failed/skipped).
+    post: { tags: [Org], summary: Lépés-célzott kampány-emlékeztetők küldése (idempotens időablakkal), responses: { "200": { description: "OK — { remindedCount, failedCount, skippedRecent, gated, done }" } } }
 
   # ── Manager / Hiring ──────────────────────────────────────────────────────
   /api/manager/candidates:

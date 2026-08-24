@@ -7,6 +7,14 @@ CREATE INDEX "AssessmentDraft_userProfileId_idx"
   ON "AssessmentDraft"("userProfileId");
 
 -- P0-CORE-01: a campaign self-step has one idempotent result per participant.
+-- A korábbi, nem idempotens submit duplikált (userProfileId, campaignId)
+-- sorokat hagyhatott; az index csak a legutolsó megtartása után épülhet fel.
+DELETE FROM "AssessmentResult" older
+USING "AssessmentResult" newer
+WHERE older."userProfileId" = newer."userProfileId"
+  AND older."campaignId" = newer."campaignId"
+  AND older."campaignId" IS NOT NULL
+  AND (older."createdAt", older."id") < (newer."createdAt", newer."id");
 CREATE UNIQUE INDEX "AssessmentResult_userProfileId_campaignId_key"
   ON "AssessmentResult"("userProfileId", "campaignId");
 
@@ -41,3 +49,7 @@ CREATE INDEX "TeamActionEvent_reportId_actionKey_createdAt_idx"
   ON "TeamActionEvent"("reportId", "actionKey", "createdAt");
 CREATE INDEX "TeamActionEvent_actorUserId_createdAt_idx"
   ON "TeamActionEvent"("actorUserId", "createdAt");
+
+-- P1-OPS-02: step-targeted reminder idempotency window.
+ALTER TABLE "CampaignParticipant" ADD COLUMN "lastRemindedAt" TIMESTAMP(3);
+ALTER TABLE "CampaignParticipant" ADD COLUMN "lastRemindedStep" INTEGER;

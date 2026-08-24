@@ -4,6 +4,7 @@
 // menüpontok kulcsosítottak.
 export const navigationTranslations = {
   nav: {
+    menu: { hu: "Menü", en: "Menu" },
     home: { hu: "Vezérlő", en: "Dashboard" },
     results: { hu: "Eredményeim", en: "My results" },
     interaction: { hu: "Összehasonlítás", en: "Comparison" },

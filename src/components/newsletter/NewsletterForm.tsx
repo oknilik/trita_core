@@ -155,7 +155,10 @@ export function NewsletterForm({
           inputClassName={[
             variant === "panel" ? "min-h-[48px]" : "",
             onInverse
-              ? "border-white/20 bg-white/[0.06] text-[var(--color-text-on-inverse)] placeholder:text-[var(--color-text-on-inverse-muted)]"
+              ? // A `!` szükséges: a TextField alap text/placeholder utilityjével
+                // az arbitrary variánsok sorrendje nem determinisztikus — sötét
+                // kártyán a tinta-szöveg olvashatatlan lenne (axe: 1.32).
+                "!border-white/20 !bg-white/[0.06] !text-[var(--color-text-on-inverse)] placeholder:!text-[var(--color-text-on-inverse-muted)]"
               : "",
           ]
             .filter(Boolean)

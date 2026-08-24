@@ -12,6 +12,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Modal } from "@/components/ui/Modal";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import { Picker } from "@/components/ui/Picker";
 
 beforeEach(() => {
@@ -94,7 +95,7 @@ describe("Picker", () => {
 
   it("nyitáskor fókuszálja a keresőt, záráskor kivárja a 300 ms-os kicsúszást", async () => {
     const { rerender } = render(
-      <Picker
+      <LocaleProvider initialLocale="hu"><Picker
         isOpen={false}
         onClose={() => {}}
         onSelect={() => {}}
@@ -102,12 +103,12 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      />,
+      /></LocaleProvider>,
     );
     expect(screen.queryByText("Ausztria")).not.toBeInTheDocument();
 
     rerender(
-      <Picker
+      <LocaleProvider initialLocale="hu"><Picker
         isOpen
         onClose={() => {}}
         onSelect={() => {}}
@@ -115,7 +116,7 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      />,
+      /></LocaleProvider>,
     );
     await act(async () => {
       vi.advanceTimersByTime(300);
@@ -123,7 +124,7 @@ describe("Picker", () => {
     expect(document.activeElement).toBe(screen.getByPlaceholderText("Keresés"));
 
     rerender(
-      <Picker
+      <LocaleProvider initialLocale="hu"><Picker
         isOpen={false}
         onClose={() => {}}
         onSelect={() => {}}
@@ -131,7 +132,7 @@ describe("Picker", () => {
         title="Ország"
         searchable
         searchPlaceholder="Keresés"
-      />,
+      /></LocaleProvider>,
     );
     // 299 ms-nél még bent van — a kicsúszás nem vágódhat félbe.
     await act(async () => {

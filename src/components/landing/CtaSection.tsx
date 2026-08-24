@@ -62,7 +62,7 @@ export function CtaSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[640px] text-center">
         <h2 className="font-fraunces mb-5 text-fluid-title font-medium tracking-tight text-ink">
           {t("landing.ctaSelfHeadlineBefore", locale)}
-          <em className="italic text-[var(--color-accent-primary)]">
+          <em className="italic text-[var(--color-accent-primary-strong)]">
             {t("landing.ctaSelfHeadlineEm", locale)}
           </em>
         </h2>

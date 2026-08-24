@@ -202,7 +202,7 @@ export function BlogListContent({
             </div>
             <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium leading-[0.98] tracking-[-0.045em] text-ink">
               {t("blog.heroTitle", displayLocale)}
-              <em className="italic text-[var(--color-accent-primary)]">
+              <em className="italic text-[var(--color-accent-primary-strong)]">
                 {t("blog.heroTitleEm", displayLocale)}
               </em>
             </h1>

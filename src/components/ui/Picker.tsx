@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useId } from "react";
 import { createPortal } from "react-dom";
 import { useOverlayTransition } from "./useOverlayTransition";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { useLocale } from "@/components/LocaleProvider";
+import { t } from "@/lib/i18n";
 
 /**
  * A panel be-/kicsúszásának hossza (a backdrop 200 ms-os fade-je ezen belül
@@ -39,15 +41,20 @@ export function Picker({
   searchable = false,
   searchPlaceholder = "",
 }: PickerProps) {
+  const { locale } = useLocale();
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false);
   const { shouldRender, isEntered } = useOverlayTransition(
     isOpen,
     PICKER_TRANSITION_MS,
   );
+  const titleId = useId();
   const listRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const selectedRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
+  // P1-UX-03: dialog-szerződés — bezáráskor a fókusz a nyitó elemre tér vissza.
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -67,15 +74,55 @@ export function Picker({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
+      if (e.key === "Escape") {
+        handleClose();
+        return;
+      }
+      // Fókusz-csapda (a Modal mintája): Tab nem hagyhatja el a panelt.
+      if (e.key === "Tab" && panelRef.current) {
+        const focusable = Array.from(
+          panelRef.current.querySelectorAll<HTMLElement>(
+            'button, input, [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => !el.hasAttribute("disabled"));
+        if (focusable.length === 0) {
+          e.preventDefault();
+          panelRef.current.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     },
     [handleClose],
   );
 
   useEffect(() => {
     if (isOpen) {
+      previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
       document.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      // Kezdő fókusz a panelbe (kereshetőnél a keresőmező kapja külön).
+      const timer = setTimeout(() => {
+        if (document.activeElement === document.body || document.activeElement === null) {
+          panelRef.current?.focus();
+        } else if (!panelRef.current?.contains(document.activeElement)) {
+          panelRef.current?.focus();
+        }
+      }, 50);
+      return () => {
+        clearTimeout(timer);
+        document.removeEventListener("keydown", handleKeyDown);
+        document.body.style.overflow = "";
+        previouslyFocusedRef.current?.focus();
+      };
     }
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -123,18 +170,25 @@ export function Picker({
         }`}
       />
 
-      {/* Panel */}
+      {/* Panel — címkézett dialog, témázott felülettel (fix világos háttér
+          helyett token: sötét témában is a saját felület-színét kapja). */}
       <div
-        className={`relative z-50 w-full max-w-lg overflow-hidden rounded-t-2xl bg-[#faf9f6] pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none md:mb-0 md:rounded-2xl ${
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className={`relative z-50 w-full max-w-lg overflow-hidden rounded-t-2xl bg-[var(--color-surface-header)] pb-[env(safe-area-inset-bottom)] outline-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none md:mb-0 md:rounded-2xl ${
           isEntered ? "translate-y-0" : "translate-y-full"
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-[var(--color-border-default)] px-4 py-3">
-          <h3 className="font-dm-sans text-sm font-semibold text-ink">{title}</h3>
+          <h3 id={titleId} className="font-dm-sans text-sm font-semibold text-ink">{title}</h3>
           <button
             type="button"
             onClick={handleClose}
+            aria-label={t("common.close", locale)}
             className={`flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-ink-body/40 transition hover:bg-[var(--color-surface-subtle)] hover:text-ink ${FOCUS_RING_CLASS}`}
           >
             <svg
@@ -157,6 +211,7 @@ export function Picker({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder || title}
               className={`min-h-[44px] w-full rounded-lg border border-[var(--color-border-default)] bg-surface-card px-3 text-sm text-ink focus-visible:border-[var(--color-accent-primary)] ${FOCUS_RING_CLASS}`}
             />
           </div>
@@ -232,6 +287,7 @@ export function PickerTrigger({
       <button
         type="button"
         onClick={onClick}
+        aria-haspopup="dialog"
         className={`flex min-h-[44px] items-center justify-between rounded-lg border-2 border-sand bg-surface-subtle px-3 text-left text-sm transition hover:border-sand focus-visible:border-sage-ring ${FOCUS_RING_CLASS}`}
       >
         <span className={value ? "text-ink" : "text-muted"}>
