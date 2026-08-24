@@ -181,7 +181,7 @@ export function PilotContent() {
         eyebrow={t("pilot.commitmentsEyebrow", locale)}
         title={t("pilot.commitmentsTitle", locale)}
       >
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-3">
           {commitments.map((item) => (
             <CommitmentCard key={item.title} {...item} commitmentLabel={t("pilot.commitmentLabel", locale)} />
           ))}
@@ -418,7 +418,7 @@ function CommitmentCard({ title, desc, commitmentLabel }: { title: string; desc:
       <p className="text-label uppercase text-[var(--color-layer-team-accent)]">
         {commitmentLabel}
       </p>
-      <h3 className="mt-2 font-fraunces text-title leading-tight text-ink">{title}</h3>
+      <h3 className="mt-2 break-words font-fraunces text-heading leading-tight text-ink [hyphens:auto]">{title}</h3>
       <p className="mt-3 text-base leading-8 text-ink-body">{desc}</p>
     </article>
   );
