@@ -86,7 +86,7 @@ test("pilot: EN keyboard validation, retained API error and successful retry", a
   await page.goto("/pilot");
 
   const form = page.locator("#jelentkezes form");
-  const name = form.getByRole("textbox", { name: "Name" });
+  const name = form.getByRole("textbox", { name: "Name", exact: true });
   const email = form.getByRole("textbox", { name: "Email" });
   const company = form.getByRole("textbox", { name: "Company name" });
   const size = form.getByRole("combobox", { name: "Team size" });
