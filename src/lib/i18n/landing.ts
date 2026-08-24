@@ -442,6 +442,16 @@ export const landingTranslations = {
       en: "In ~10 minutes, get a useful picture of what you bring to a team — for free.",
     },
     tryCta: { hu: "Teszt indítása", en: "Start assessment" },
+    returnEyebrow: { hu: "Saját felületed", en: "Your space" },
+    returnTitle: {
+      hu: "Folytasd ott, ahol tartasz.",
+      en: "Continue where you left off.",
+    },
+    returnSub: {
+      hu: "Megmutatjuk a profilodhoz illő következő lépést.",
+      en: "We’ll show the next step that fits your profile.",
+    },
+    returnCta: { hu: "Saját felület megnyitása", en: "Open my space" },
     // ── Blog UX 2. kör (2026-07-24) ──
     filterLabel: { hu: "Téma szerint", en: "Filter by topic" },
     filterAll: { hu: "Összes", en: "All" },
@@ -458,6 +468,7 @@ export const landingTranslations = {
     linkCopied: { hu: "Másolva", en: "Copied" },
     prevArticle: { hu: "Előző cikk", en: "Previous article" },
     nextArticle: { hu: "Következő cikk", en: "Next article" },
+    articleNavigation: { hu: "További cikkek", en: "More articles" },
   },
   pilot: {
     // Hero
