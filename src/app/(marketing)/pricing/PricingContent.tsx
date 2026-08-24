@@ -102,8 +102,11 @@ export function PricingContent() {
 
   return (
     <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
-      <section className="relative">
-        <div className="absolute inset-x-0 top-0 h-[480px] bg-gradient-to-b from-[var(--color-layer-team-soft)]/65 to-transparent" />
+      <section className="relative overflow-hidden bg-cream">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[6%] top-[10%] h-[72%] w-[46%] rounded-full bg-[var(--color-layer-team-soft)]/55 blur-3xl"
+        />
         <div className="relative mx-auto grid max-w-[1120px] gap-12 px-7 pb-20 pt-12 md:pb-28 md:pt-20 lg:grid-cols-[minmax(0,1.05fr)_420px] lg:items-center">
           <div>
             <SectionEyebrow tone="team" className="mb-6">{t("pricing.heroEyebrow", locale)}</SectionEyebrow>
