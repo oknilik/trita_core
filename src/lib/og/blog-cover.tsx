@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
-import { getPostBySlug } from "@/lib/blog";
+import { getPostBySlug, isBlogCoverImage } from "@/lib/blog";
 import { COLORS } from "@/lib/design-tokens";
 import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
 import type { ArtPalette } from "@/lib/miro-primitives";
@@ -41,6 +41,33 @@ const OG_ART_PALETTE: ArtPalette = {
  * ezt nem tudja megtenni (fix Response-alakja van), ott marad a cím nélküli
  * vászon; oda viszont csak a saját `generateStaticParams` slugjai jutnak el.
  */
+
+/**
+ * Feltöltött borító beolvasása data URI-ként.
+ *
+ * MIÉRT NEM URL-LEL: a satori tudna távoli képet tölteni, de ez a vászon
+ * build-időben is renderelődik (metadata-image route), amikor a saját
+ * domain még nem szolgál ki semmit — a kép tehát a lemezről jön. Hiányzó
+ * fájlnál `null`, és a hívó visszaesik a generatív vizuálra: egy törölt kép
+ * miatt ne legyen üres lyuk a link-előnézetben.
+ */
+async function readCoverDataUri(coverImage: string): Promise<string | null> {
+  if (!isBlogCoverImage(coverImage)) return null;
+  const fileName = coverImage.slice("/blog-covers/".length);
+  const filePath = path.join(process.cwd(), "public", "blog-covers", fileName);
+  try {
+    const bytes = await readFile(filePath);
+    const mime = fileName.endsWith(".png")
+      ? "image/png"
+      : fileName.endsWith(".webp")
+        ? "image/webp"
+        : "image/jpeg";
+    return `data:${mime};base64,${bytes.toString("base64")}`;
+  } catch {
+    return null;
+  }
+}
+
 export async function renderBlogCoverImage(slug: string): Promise<ImageResponse> {
   const post = getPostBySlug(slug);
   const published = post?.status === "published" ? post : null;
@@ -53,6 +80,10 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
     readFile(path.join(process.cwd(), "assets/og/Fraunces-400.ttf")),
     readFile(path.join(process.cwd(), "assets/og/DMSans-400.ttf")),
   ]);
+
+  const coverDataUri = published?.coverImage
+    ? await readCoverDataUri(published.coverImage)
+    : null;
 
   // Hosszú címnél kisebb betű, hogy ne csorduljon ki a vászonról.
   const fontSize = title.length > 70 ? 52 : title.length > 45 ? 60 : 68;
@@ -134,19 +165,30 @@ export async function renderBlogCoverImage(slug: string): Promise<ImageResponse>
                 flexShrink: 0,
               }}
             >
-              <BlogArtVisual
-                slug={published.slug}
-                title={published.title}
-                tags={published.tags}
-                seed={published.artSeed}
-                motif={published.artMotif}
-                family={published.artFamily}
-                concept={published.artConcept}
-                lineMode={published.artLineMode}
-                variant="card"
-                palette={OG_ART_PALETTE}
-                background={COLORS.warm}
-              />
+              {coverDataUri ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coverDataUri}
+                  alt=""
+                  width={340}
+                  height={168}
+                  style={{ width: 340, height: 168, objectFit: "cover" }}
+                />
+              ) : (
+                <BlogArtVisual
+                  slug={published.slug}
+                  title={published.title}
+                  tags={published.tags}
+                  seed={published.artSeed}
+                  motif={published.artMotif}
+                  family={published.artFamily}
+                  concept={published.artConcept}
+                  lineMode={published.artLineMode}
+                  variant="card"
+                  palette={OG_ART_PALETTE}
+                  background={COLORS.warm}
+                />
+              )}
             </div>
           ) : null}
         </div>

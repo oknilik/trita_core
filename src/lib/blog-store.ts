@@ -73,6 +73,9 @@ function repoPath(slug: string): string {
   return `content/blog/${slug}.mdx`;
 }
 
+/** A feltöltött borítók helye — a repóban és a publikus úton is. */
+export const BLOG_COVER_DIR = "public/blog-covers";
+
 function githubHeaders(cfg: GithubConfig): Record<string, string> {
   return {
     Authorization: `Bearer ${cfg.token}`,
@@ -118,6 +121,27 @@ export interface BlogRevision {
   content: string;
   /** github módban a blob sha (ütközés-ellenőrzéshez), fs módban null. */
   sha: string | null;
+}
+
+/**
+ * Csak a sha egy tetszőleges repó-útra (bináris fájlokhoz).
+ *
+ * A tartalmat szándékosan nem dekódoljuk: egy borítókép base64-ben
+ * fölöslegesen nagy, és 1 MB fölött a GitHub amúgy sem adja vissza inline —
+ * a sha viszont mindig ott van, és az írásnak csak az kell.
+ */
+async function githubGetFileMeta(
+  cfg: GithubConfig,
+  target: string,
+): Promise<{ sha: string } | null> {
+  const res = await fetch(
+    `${GITHUB_API}/repos/${cfg.repo}/contents/${target}?ref=${cfg.branch}`,
+    { headers: githubHeaders(cfg), cache: "no-store" },
+  );
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GITHUB_READ_FAILED_${res.status}`);
+  const json = (await res.json()) as { sha?: string };
+  return json.sha ? { sha: json.sha } : null;
 }
 
 /**
@@ -262,6 +286,85 @@ export async function deleteBlogSource(params: {
 
   assertWritableFs();
   const filePath = path.join(BLOG_DIR, `${params.slug}.mdx`);
+  if (!fs.existsSync(filePath)) return null;
+  fs.unlinkSync(filePath);
+  return { mode };
+}
+
+// ── Borítóképek ───────────────────────────────────────────────────────
+//
+// A kép ugyanazon az úton megy, mint a cikk: `github` módban commit,
+// `fs` módban fájlírás. Így a borító a cikkel EGY deployban élesedik, és
+// ugyanúgy visszaállítható a git-történelemből — nem kell külön
+// objektumtároló egy blogra, aminek pár tucat képe lesz.
+
+/** Feltöltött borító mentése. `fileName` már ellenőrzött alak. */
+export async function saveBlogCover(params: {
+  fileName: string;
+  bytes: Buffer;
+  message: string;
+}): Promise<SaveBlogResult> {
+  const mode = blogStoreMode();
+  const target = `${BLOG_COVER_DIR}/${params.fileName}`;
+
+  if (mode === "github") {
+    const cfg = githubConfig();
+    if (!cfg) throw new Error("GITHUB_NOT_CONFIGURED");
+    const existing = await githubGetFileMeta(cfg, target);
+    const res = await fetch(`${GITHUB_API}/repos/${cfg.repo}/contents/${target}`, {
+      method: "PUT",
+      headers: { ...githubHeaders(cfg), "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: params.message,
+        content: params.bytes.toString("base64"),
+        branch: cfg.branch,
+        ...(existing ? { sha: existing.sha } : {}),
+      }),
+    });
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      log.error(
+        { event: "blog_store.cover_write_failed", status: res.status, detail: detail.slice(0, 500) },
+        "GitHub cover upload failed",
+      );
+      throw new Error(`GITHUB_WRITE_FAILED_${res.status}`);
+    }
+    const json = (await res.json()) as { commit?: { html_url?: string } };
+    return { mode, commitUrl: json.commit?.html_url };
+  }
+
+  assertWritableFs();
+  const dir = path.join(process.cwd(), BLOG_COVER_DIR);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, params.fileName), params.bytes);
+  return { mode };
+}
+
+/** Borító eltávolítása. Hiányzó fájl nem hiba: a végállapot a lényeg. */
+export async function deleteBlogCover(params: {
+  fileName: string;
+  message: string;
+}): Promise<SaveBlogResult | null> {
+  const mode = blogStoreMode();
+  const target = `${BLOG_COVER_DIR}/${params.fileName}`;
+
+  if (mode === "github") {
+    const cfg = githubConfig();
+    if (!cfg) throw new Error("GITHUB_NOT_CONFIGURED");
+    const existing = await githubGetFileMeta(cfg, target);
+    if (!existing) return null;
+    const res = await fetch(`${GITHUB_API}/repos/${cfg.repo}/contents/${target}`, {
+      method: "DELETE",
+      headers: { ...githubHeaders(cfg), "Content-Type": "application/json" },
+      body: JSON.stringify({ message: params.message, sha: existing.sha, branch: cfg.branch }),
+    });
+    if (!res.ok) throw new Error(`GITHUB_DELETE_FAILED_${res.status}`);
+    const json = (await res.json()) as { commit?: { html_url?: string } };
+    return { mode, commitUrl: json.commit?.html_url };
+  }
+
+  assertWritableFs();
+  const filePath = path.join(process.cwd(), BLOG_COVER_DIR, params.fileName);
   if (!fs.existsSync(filePath)) return null;
   fs.unlinkSync(filePath);
   return { mode };

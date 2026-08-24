@@ -13,6 +13,7 @@ import {
   saveBlogSource,
   deleteBlogSource,
 } from "@/lib/blog-store";
+import { isBlogCoverImage } from "@/lib/blog";
 import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES, BLOG_ART_LINE_MODES } from "@/lib/blog-art";
 
 export const runtime = "nodejs";
@@ -44,6 +45,8 @@ const postSchema = z.object({
   artLineMode: z.enum(BLOG_ART_LINE_MODES).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
+  /** Feltöltött borító publikus útja — a /api/admin/blog/cover adja vissza. */
+  coverImage: z.string().regex(/^\/blog-covers\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/).optional(),
   /** A szerkesztésre betöltéskor kapott sha; `null` = új cikk. */
   baseSha: z.string().min(1).max(120).nullable().optional(),
 });
@@ -64,6 +67,7 @@ function buildMdx(p: PostInput): string {
     locale: p.locale,
     tags: p.tags,
   };
+  if (p.coverImage) data.coverImage = p.coverImage;
   if (p.translationSlug) data.translationSlug = p.translationSlug;
   if (p.heroQuote) data.heroQuote = p.heroQuote;
   if (p.startHere) data.startHere = p.startHere;
@@ -263,6 +267,9 @@ export async function PUT(req: NextRequest) {
     ...(Number.isInteger(Number(data.artSeed)) && Number(data.artSeed) > 0
       ? { artSeed: Number(data.artSeed) }
       : {}),
+    // Érvénytelen borító-út esetén NEM buktatjuk el a feltöltést: a mező
+    // kimarad, a cikk a generatív vizuált kapja.
+    ...(isBlogCoverImage(data.coverImage) ? { coverImage: data.coverImage } : {}),
     ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
     ...(typeof data.artFamily === "string" ? { artFamily: data.artFamily } : {}),
     ...(typeof data.artConcept === "string" ? { artConcept: data.artConcept } : {}),
