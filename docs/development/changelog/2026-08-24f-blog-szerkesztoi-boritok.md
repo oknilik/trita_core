@@ -4,8 +4,17 @@
 
 A feltöltött, tudatosan szerkesztett kép lett a blog elsődleges borítóútja.
 A négycsaládos generatív rendszer nem tűnt el: stabil fallback a régi és a
-kép nélküli cikkekhez. Első mintaként a „Mérhető-e a pszichológiai
-biztonság?” cikk taktilis tárgyfotós borítót kapott.
+kép nélküli cikkekhez.
+
+A hét HU–EN cikkpár hét közös, témaspecifikus szerkesztői illusztrációt kapott.
+A képcsalád közös nyelve a kivágott papírra és gouache-ra emlékeztető geometria,
+a finom szitanyomat-textúra, a meleg irányfény és a Trita erdőzöld–olíva–bordó–
+krém–sárgaréz palettája. A fordításpárok ugyanazt a képet használják, így a
+nyelvváltás nem változtatja meg a cikk vizuális identitását.
+
+A belső mobilitás borítóján négy külön ember négy külön, folytonos
+kéz–csukló–ruhaujj kapcsolattal épít közös útvonalat; egyetlen végtagon belül
+sincs kevert bőrtónus. A többi jelenet kéz nélkül, tárgyi metaforával dolgozik.
 
 ## Feltöltési folyamat
 
