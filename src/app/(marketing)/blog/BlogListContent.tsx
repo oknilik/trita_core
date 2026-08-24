@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n/public";
 import type { BlogPost } from "@/lib/blog";
-import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import { BlogCoverVisual } from "@/components/blog/BlogCoverVisual";
 import {
   BLOG_TOPIC_QUERY_KEY,
   resolveBlogTopic,
@@ -217,7 +217,8 @@ export function BlogListContent({
               className={`group relative min-h-[290px] overflow-hidden rounded-[28px] shadow-[0_22px_54px_rgba(75,44,52,0.16)] md:min-h-[360px] ${FOCUS_RING_CLASS}`}
             >
               <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.025]">
-                <BlogArtVisual
+                <BlogCoverVisual
+                  coverImage={heroPost.coverImage}
                   slug={heroPost.slug}
                   title={heroPost.title}
                   tags={heroPost.tags}
@@ -365,8 +366,9 @@ export function BlogListContent({
                       href={`/blog/${post.slug}`}
                       className={`group overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.05] ${FOCUS_RING_CLASS}`}
                     >
-                      <div className="h-[170px] overflow-hidden">
-                        <BlogArtVisual
+                      <div className="relative h-[170px] overflow-hidden">
+                        <BlogCoverVisual
+                          coverImage={post.coverImage}
                           slug={post.slug}
                           title={post.title}
                           tags={post.tags}
@@ -405,8 +407,9 @@ export function BlogListContent({
                   href={`/blog/${post.slug}`}
                   className={`group flex items-center gap-5 border-t border-[var(--color-border-default)] py-7 transition-all hover:pl-2 ${FOCUS_RING_CLASS}`}
                 >
-                  <span className="hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
-                    <BlogArtVisual
+                  <span className="relative hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
+                    <BlogCoverVisual
+                      coverImage={post.coverImage}
                       slug={post.slug}
                       title={post.title}
                       tags={post.tags}

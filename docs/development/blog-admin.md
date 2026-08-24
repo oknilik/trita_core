@@ -77,3 +77,35 @@ nyolcast kérhet. A kiválasztás ugyanazt a jelenetet adja a bloglistán, a
 cikkoldalon, a közösségi OG-képen és a hírlevél borítóján. Ha semmit nem
 választunk, a rendszer automatikus, de determinisztikus: egy deploy vagy
 újrarenderelés önmagában nem változtatja meg a képet.
+
+### Saját borítókép
+
+A generatív vizuál helyett feltölthető saját kép is. Ilyenkor a `coverImage`
+frontmatter-mező mutat a képre, és **minden felületen** az megy: bloglista
+(kiemelt, kártya, mini), cikkfejléc, közösségi OG-kép és a hírlevél borítója.
+Az `art*` mezők ilyenkor nem számítanak — az admin el is rejti őket, amíg van
+feltöltött borító.
+
+| Mező | Érték |
+|---|---|
+| `coverImage` | `/blog-covers/<slug>.<jpg\|png\|webp>` — más alak érvénytelen, a cikk ilyenkor a rajzolt képet kapja |
+
+**Hol tárolódik.** A kép a cikkel egy helyre, a repóba kerül
+(`public/blog-covers/`): `github` módban commitként, `fs` módban fájlírással.
+Így a borító a cikkel egy deployban élesedik, és ugyanúgy visszaállítható a
+git-történelemből — nem kell külön objektumtároló egy pár tucat képes bloghoz.
+
+**Menete.** A feltöltés (`POST /api/admin/blog/cover`) azonnal külön commitot
+csinál, de a frontmatter `coverImage` mezőjét a **cikk következő mentése**
+írja be. Amíg nem mentesz, a publikus felületen a régi kép megy. Az
+eltávolítás (`DELETE`) törli a fájlt, és a mentés után a cikk visszakapja a
+generatív vizuált.
+
+**Korlátok.** JPG, PNG vagy WebP, legfeljebb 3 MB. A formátumot a fájl első
+bájtjai döntik el, nem a kiterjesztés: egy `.jpg`-re átnevezett SVG elutasítva
+(különben a saját domainünkről szolgálnánk ki tetszőleges tartalmat).
+Cikkenként egy borító van — az újabb feltöltés lecseréli a régit, tehát a
+fájlnév mindig a slugból jön.
+
+Ajánlott méret: fekvő, ~1600×840. Ugyanez a kép kerül a 1200×630-as OG-vászon
+jobb oldali paneljébe is.

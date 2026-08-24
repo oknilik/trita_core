@@ -146,6 +146,10 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/admin": ["./content/blog/**/*"],
     "/api/admin/blog": ["./content/blog/**/*"],
+    // A hírlevél-borító futásidőben rendereli a cikk vásznát: kell hozzá a
+    // frontmatter és — feltöltött borítónál — maga a képfájl is.
+    "/api/newsletter/cover/[slug]": ["./content/blog/**/*", "./public/blog-covers/**/*"],
+    "/blog/[slug]/opengraph-image": ["./public/blog-covers/**/*"],
   },
 
   images: {
