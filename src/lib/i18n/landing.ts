@@ -417,6 +417,7 @@ export const landingTranslations = {
   },
 
   blog: {
+    editorialEyebrow: { hu: "Trita jegyzetek", en: "Trita notes" },
     heroTitle: {
       hu: "Csapatintelligencia. Pszichológia. ",
       en: "Team intelligence. Psychology. ",
@@ -460,6 +461,7 @@ export const landingTranslations = {
     resultMany: { hu: "cikk", en: "articles" },
     newBadge: { hu: "Új", en: "New" },
     startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
+    selectedReads: { hu: "Válogatott olvasmányok", en: "Selected reads" },
     inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
     minutesLeft: { hu: "még ~{m} perc olvasás", en: "~{m} min left" },
     authorTeam: { hu: "a Trita módszertani csapata", en: "the Trita methodology team" },
@@ -473,28 +475,28 @@ export const landingTranslations = {
   pilot: {
     // Hero
     eyebrow: { hu: "Pilotprogram", en: "Pilot program" },
-    badge: { hu: "Pilotprogram az első partnercsapatoknak", en: "Pilot program for our first partner teams" },
+    badge: { hu: "Az első partnercsapatoknak", en: "For our first partner teams" },
     heroTitle: { hu: "Tedd láthatóvá, hogyan ", en: "Make visible how your " },
     heroTitleEm: { hu: "működik a csapatod.", en: "team really works." },
     heroBody: {
-      hu: "Nem azt mondjuk meg, kik vagytok. Megmutatjuk, hol akad el a csapat, miből tudjuk, és mi legyen a következő vezetői lépés — önértékelésből, mért bizalmi hálóból és pszichológiai biztonság pulse-ból. Az első partnercsapatokkal személyesen dolgozunk együtt.",
-      en: "We do not tell you who you are. We show where the team gets stuck, what the evidence is, and the next leadership move — using self-assessment, a measured trust network, and a psychological safety pulse. We work personally with our first partner teams.",
+      hu: "A 90 napos pilotban közös, mérhető képet készítünk a csapat működéséről. Megnézzük, mire lehet építeni, hol érdemes változtatni, majd kijelölünk és visszamérünk egy konkrét vezetői lépést. Végig személyesen dolgozunk veletek.",
+      en: "During the 90-day pilot, we build a shared, measurable picture of how your team works. We identify what to build on, where change would help, then choose and remeasure one concrete leadership action. We work with you personally throughout.",
     },
     heroCta: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     heroCtaSecondary: { hu: "Mit kapsz pontosan?", en: "What do you get exactly?" },
     metaChip1: { hu: "90 nap teljes hozzáférés", en: "90 days full access" },
-    metaChip2: { hu: "Egyedi, csapatra szabott ajánlat", en: "Custom offer tailored to your team" },
-    metaChip3: { hu: "Személyes onboarding", en: "Personal onboarding" },
+    metaChip2: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
+    metaChip3: { hu: "Konkrét akció és visszamérés", en: "Concrete action and follow-up" },
 
     // Aside — "Miért most"
-    asideEyebrow: { hu: "Miért most", en: "Why now" },
+    asideEyebrow: { hu: "Kinek szól", en: "Who it is for" },
     asideTitle: {
-      hu: "Nem még egy kérdőív, hanem egy közös pilot a csapatműködésre.",
-      en: "Not just another survey — a joint pilot for team collaboration.",
+      hu: "Közös munka, nem még egy kérdőív.",
+      en: "A shared process, not just another survey.",
     },
     asideBody: {
-      hu: "Olyan cégeket keresünk, akik nemcsak kipróbálni akarják a platformot, hanem tényleg szeretnék érteni, mi zajlik a csapatukban.",
-      en: "We're looking for companies that don't just want to try the platform, but genuinely want to understand what's happening within their team.",
+      hu: "Olyan csapatokat keresünk, amelyek szeretnék jobban érteni a saját működésüket, és készek egy konkrét változtatást is kipróbálni.",
+      en: "We are looking for teams that want to understand how they work and are ready to try one concrete change.",
     },
 
     // Signals
@@ -502,121 +504,111 @@ export const landingTranslations = {
     signal1Label: { hu: "nap közös munka", en: "days of collaboration" },
     signal2Value: { hu: "60′", en: "60′" },
     signal2Label: { hu: "közös értelmező workshop", en: "joint interpretation workshop" },
-    signal3Value: { hu: "24h", en: "24h" },
-    signal3Label: { hu: "válaszidő", en: "response time" },
+    signal3Value: { hu: "1", en: "1" },
+    signal3Label: { hu: "munkanap válaszidő", en: "business day to reply" },
 
     // Aside — "Mire jó ez a 90 nap"
     aside90Eyebrow: { hu: "Mire jó ez a 90 nap", en: "What the 90 days are for" },
     aside90Body: {
-      hu: "Látni fogjátok, hogyan néz ki a tényleges bizalmi háló, mennyire biztonságos kérdezni, hibázni és ellentmondani, majd kijelölünk egy következő vezetői lépést. A következő körben ugyanazokat a változékony mutatókat mérjük vissza.",
-      en: "You will see the team's actual trust network and how safe it feels to ask, fail, and disagree, then choose one next leadership move. The follow-up round measures the same changeable outcomes again.",
+      hu: "Feltérképezzük a csapat kapcsolatait és azt, mennyire biztonságos kérdezni, hibázni vagy ellentmondani. Ezután választunk egy vezetői lépést, amelynek hatását a program végén újra megmérjük.",
+      en: "We map the team's relationships and how safe it feels to ask, make mistakes, or disagree. We then choose one leadership action and measure its effect again at the end of the program.",
     },
 
     // Benefits section
     benefitsEyebrow: { hu: "Mit kapsz", en: "What you get" },
-    benefitsTitle: { hu: "90 nap teljes hozzáféréssel, személyes támogatással.", en: "90 days of full access with personal support." },
-    benefit1Title: { hu: "Rögzített Team Scan v1", en: "Fixed Team Scan v1" },
+    benefitsTitle: { hu: "Mérés, közös értelmezés és egy követhető következő lépés.", en: "Measurement, shared interpretation, and a next step you can follow." },
+    benefit1Title: { hu: "Egységes induló mérés", en: "A consistent baseline" },
     benefit1Desc: {
-      hu: "Minden pilotcsapat ugyanazt a reprodukálható három alapréteget kapja: önértékelést, mért bizalmi hálót és névtelen pszichológiai biztonság pulse-t. Az observer-, peer- és csapatszerep-kör külön kiegészítő, nem rejtett alapteher.",
-      en: "Every pilot team gets the same reproducible three core layers: self-assessment, a measured trust network, and an anonymous psychological safety pulse. Observer, peer, and team-role rounds are separate add-ons, not hidden baseline burden.",
+      hu: "Minden csapat ugyanazzal a három alapréteggel indul: önértékeléssel, mért bizalmi hálóval és névtelen pszichológiai biztonság-felméréssel. Az observer-, peer- és csapatszerep-kör külön kiegészítő.",
+      en: "Every team starts with the same three core layers: self-assessment, a measured trust network, and an anonymous psychological safety survey. Observer, peer, and team-role rounds are separate add-ons.",
     },
-    benefit2Title: { hu: "Személyes bevezető alkalom", en: "Free onboarding session" },
+    benefit2Title: { hu: "Közös értelmező workshop", en: "Joint interpretation workshop" },
     benefit2Desc: {
-      hu: "Egy 60 perces közös workshop, ahol értelmezzük a csapatprofilotokat, azonosítjuk a feszültségpontokat, és konkrét következő lépéseket rakunk össze.",
-      en: "A 60-minute joint workshop where we interpret your team profiles, identify tension points, and outline concrete next steps.",
-    },
-    benefit3Title: { hu: "Mért bizalmi háló", en: "Measured trust network" },
-    benefit3Desc: {
-      hu: "Nem csak kérdőívátlagot kaptok: páronként mért kapcsolati adatokból látszik a háló lefedettsége, a kapcsolódási központok és a beágyazatlan pontok — anonimitási kapukkal.",
-      en: "You get more than survey averages: pairwise relationship evidence shows network coverage, connectors, and unembedded points — protected by anonymity gates.",
-    },
-    benefit4Title: { hu: "Beleszólás a fejlesztési irányokba", en: "Roadmap priority" },
-    benefit4Desc: {
-      hu: "A pilot-partnerek visszajelzése közvetlenül alakítja a termék irányát. Amit valóban használnátok, annak nagyobb esélye van gyorsan elkészülni.",
-      en: "Pilot partners' feedback directly shapes the product direction. Features you actually need are more likely to ship fast.",
+      hu: "Egy 60 perces alkalmon együtt olvassuk a csapatképet. Megnevezzük a legfontosabb erősséget és feszültségpontot, majd kiválasztjuk, min érdemes először változtatni.",
+      en: "In a 60-minute session, we read the team picture together. We identify the most important strength and point of tension, then choose what to change first.",
     },
     benefit5Title: { hu: "Visszamérési kör", en: "Follow-up measurement round" },
     benefit5Desc: {
-      hu: "A vállalt akció után ugyanazokat a változékony mutatókat újramérjük. A rendszer a mérési hibán belüli eltérést nem nevezi fejlődésnek, és az összetétel-változást külön jelzi.",
-      en: "After the agreed action, we remeasure the same changeable outcomes. The system does not call movement within measurement error improvement, and flags composition changes separately.",
+      hu: "A vállalt akció után újra megmérjük a változtatható mutatókat. Csak olyan elmozdulást nevezünk fejlődésnek, amelyet az adatok valóban alátámasztanak.",
+      en: "After the agreed action, we measure the changeable outcomes again. We only call it progress when the data genuinely supports that conclusion.",
     },
     benefit6Title: { hu: "Korai partner státusz", en: "Early partner status" },
     benefit6Desc: {
-      hu: "A pilotban kialakított egyedi feltételek hosszú távon is megmaradnak — a legkorábbi körhöz tartozol, és ez a közös munkában is látszani fog.",
-      en: "The custom terms we set in the pilot stay with you long-term — you're part of the earliest cohort, and the collaboration reflects that.",
+      hu: "Közvetlenül alakíthatjátok, hogyan fejlődjön a program. A pilotban kialakított egyedi feltételeket a későbbi együttműködésben is megőrizzük.",
+      en: "You can directly shape how the program develops. We preserve the individual terms agreed during the pilot in our future work together.",
     },
 
     // Steps section
     stepsEyebrow: { hu: "Hogyan működik", en: "How it works" },
-    stepsTitle: { hu: "Három lépés a jobb csapatdöntésekig.", en: "Three steps to better team decisions." },
+    stepsTitle: { hu: "Három jól követhető szakasz 90 nap alatt.", en: "Three clear stages over 90 days." },
     step1Title: { hu: "Felmérés", en: "Assessment" },
     step1Desc: {
-      hu: "A Scan v1 rögzített készlete: nagyjából 10 perces önértékelés, mért bizalmi háló és 8 állításos, névtelen pszichológiai biztonság pulse. Az observer-, peer- és csapatszerep-kör külön kiegészítő.",
-      en: "Scan v1 has a fixed set: an approximately 10-minute self-assessment, a measured trust network, and an anonymous 8-item psychological safety pulse. Observer, peer, and team-role rounds are separate add-ons.",
+      hu: "A csapattagok kitöltik az önértékelést és a rövid, névtelen csapatfelméréseket. Mi közben figyeljük a részvételt, és segítünk, ha valaki elakad.",
+      en: "Team members complete the self-assessment and the short, anonymous team surveys. We monitor participation and help if anyone gets stuck.",
     },
-    step2Title: { hu: "Bizonyíték", en: "Evidence" },
+    step2Title: { hu: "Közös kép", en: "Shared picture" },
     step2Desc: {
-      hu: "A riport külön jelöli, mi közvetlenül mért, mi becsült, és hol nincs elég adat. A 16 csapatminta csak értelmezési nyelv; a vezetői állítás a bizalmi hálóra és a pulse-ra épül.",
-      en: "The report separates direct measurement, estimates, and insufficient data. The 16 team patterns are only an interpretive language; leadership claims rest on the trust network and pulse.",
+      hu: "Elkészítjük és közösen értelmezzük a csapatképet. A riport egyértelműen jelzi, mi mért adat, mi becslés, és hol nincs még elég információ.",
+      en: "We prepare and interpret the team picture together. The report clearly distinguishes measured data, estimates, and areas where there is not yet enough information.",
     },
-    step3Title: { hu: "Akció", en: "Action" },
+    step3Title: { hu: "Akció és visszamérés", en: "Action and follow-up" },
     step3Desc: {
-      hu: "Közösen kijelölünk egy célmutatóhoz kötött vezetői akciót, majd a következő körben visszamérjük a kimenetet — a mérési-hiba és a csapatösszetétel kapujával.",
-      en: "Together we choose a leadership action linked to a target metric, then remeasure the outcome in the next round — with measurement-error and team-composition gates.",
+      hu: "Kiválasztunk egy konkrét vezetői lépést, amelyet a mindennapi munkában is ki lehet próbálni. A program végén megnézzük, hozott-e mérhető változást.",
+      en: "We choose one concrete leadership action that can be tried in day-to-day work. At the end of the program, we check whether it produced measurable change.",
     },
 
     // Commitments section
     commitmentsEyebrow: { hu: "Mit kérünk cserébe", en: "What we ask in return" },
-    commitmentsTitle: { hu: "Őszinte visszajelzést, valódi használat mellett.", en: "Honest feedback with genuine usage." },
-    commitmentLabel: { hu: "Elvárás", en: "Expectation" },
+    commitmentsTitle: { hu: "Valódi használatot és őszinte visszajelzést.", en: "Genuine use and honest feedback." },
+    commitmentLabel: { hu: "Amit vállaltok", en: "Your commitment" },
     commitment1Title: { hu: "Aktív használat", en: "Active usage" },
     commitment1Desc: {
-      hu: "A csapatod kitölti a felmérést, te pedig a 90 nap alatt ténylegesen használod a platformot döntéselőkészítésre és csapatfejlesztésre.",
-      en: "Your team completes the assessment, and you actively use the platform for decision-making and team development over the 90 days.",
+      hu: "A csapat kitölti a felméréseket, a kijelölt vezető pedig kipróbálja a közösen választott akciót a mindennapi munkában.",
+      en: "The team completes the surveys, and the designated leader tries the jointly selected action in day-to-day work.",
     },
     commitment2Title: { hu: "Két visszajelző beszélgetés", en: "Two feedback conversations" },
     commitment2Desc: {
-      hu: "A 30. és 60. napon egy-egy 20-30 perces beszélgetésben átmegyünk azon, mi működött, mi akadt el, és mit érdemes fejlesztenünk.",
-      en: "On days 30 and 60, a brief 20–30 minute conversation to review what worked, what got stuck, and what we should improve.",
+      hu: "A 30. és 60. nap környékén 20–30 percben átbeszéljük, mi működik, hol akadtatok el, és min érdemes változtatnunk.",
+      en: "Around days 30 and 60, we spend 20–30 minutes discussing what works, where you got stuck, and what we should change.",
     },
-    commitment3Title: { hu: "Vélemény és továbbajánlás", en: "Testimonial and referral" },
+    commitment3Title: { hu: "Tapasztalatmegosztás", en: "Sharing your experience" },
     commitment3Desc: {
-      hu: "Ha valódi értéket adtunk, egy rövid ajánlást és 1-2 releváns bemutatást kérünk hasonló cégek felé.",
-      en: "If we delivered real value, we ask for a short testimonial and 1–2 relevant introductions to similar companies.",
+      hu: "Ha a program valódi értéket adott, engedélyt kérünk egy rövid, egyeztetett visszajelzés vagy anonimizált tapasztalat megosztására.",
+      en: "If the program delivered real value, we ask permission to share a short, agreed testimonial or anonymized account of your experience.",
     },
 
     // Application form section
     formEyebrow: { hu: "Jelentkezés", en: "Apply" },
     formTitle: { hu: "Beszéljünk a csapatodról.", en: "Let's talk about your team." },
     formBody: {
-      hu: "Töltsd ki az alábbi formot, és 24 órán belül visszajelzünk. Egy rövid beszélgetéssel kezdünk, kötelezettség nélkül.",
-      en: "Fill out the form below and we'll get back to you within 24 hours. We start with a short conversation, no strings attached.",
+      hu: "Töltsd ki a rövid űrlapot, és egy munkanapon belül jelentkezünk. Először kötelezettség nélkül átbeszéljük, mire van szükségetek.",
+      en: "Complete the short form and we will get back to you within one business day. We begin with a no-obligation conversation about what your team needs.",
     },
     fitEyebrow: { hu: "Nektek való, ha", en: "Good fit if" },
     fitBody: {
-      hu: "van legalább egy kisebb csapatod, nyitott vagy a viselkedésminták feltárására, és érdekel, hogyan lehet ezt a fejlesztésben és a mindennapi együttműködésben használni.",
-      en: "you have at least a small team, you're open to exploring behavioral patterns, and you're interested in using this for development and day-to-day collaboration.",
+      hu: "van egy együtt dolgozó csapatotok, szeretnétek tisztábban látni a működését, és készek vagytok egy közösen választott változtatást kipróbálni.",
+      en: "you have a team that works together, want a clearer picture of how it operates, and are ready to try one jointly selected change.",
     },
 
     // Form fields
     formHeading: { hu: "Rövid jelentkezés", en: "Quick application" },
     formSubheading: {
-      hu: "2 perc alatt kitölthető, és elég egy mondat is, ha most ennyi fér bele.",
-      en: "Takes 2 minutes, and a single sentence is enough if that's all you have time for.",
+      hu: "Két perc alatt kitölthető. A csapatról szóló kérdéshez egy mondat is elég.",
+      en: "It takes two minutes. One sentence about your team is enough.",
     },
     formSpotsLabel: { hu: "Első kör", en: "Early cohort" },
     labelName: { hu: "Név", en: "Name" },
-    placeholderName: { hu: "Vezetéknév Keresztnév", en: "Full name" },
+    placeholderName: { hu: "Teljes neved", en: "Full name" },
     labelEmail: { hu: "Email", en: "Email" },
     placeholderEmail: { hu: "nev@ceg.hu", en: "name@company.com" },
     labelCompany: { hu: "Cég neve", en: "Company name" },
     placeholderCompany: { hu: "Pl. Innovate Kft.", en: "e.g. Innovate Ltd." },
     labelSize: { hu: "Csapatméret", en: "Team size" },
     sizeOption0: { hu: "Válassz...", en: "Select..." },
-    sizeOption1: { hu: "5-10 fő", en: "5–10 people" },
-    sizeOption2: { hu: "11-25 fő", en: "11–25 people" },
-    sizeOption3: { hu: "26-50 fő", en: "26–50 people" },
-    sizeOption4: { hu: "51-80 fő", en: "51–80 people" },
+    sizeOption1: { hu: "5–10 fő", en: "5–10 people" },
+    sizeOption2: { hu: "11–25 fő", en: "11–25 people" },
+    sizeOption3: { hu: "26–50 fő", en: "26–50 people" },
+    sizeOption4: { hu: "51–80 fő", en: "51–80 people" },
     sizeOption5: { hu: "80+ fő", en: "80+ people" },
     labelQuestion: {
       hu: "Mi a legfontosabb kérdésed a csapatoddal kapcsolatban?",
@@ -630,15 +622,15 @@ export const landingTranslations = {
     submitDefault: { hu: "Jelentkezem a pilotprogramba", en: "Apply to the pilot program" },
     preferEmail: { hu: "Inkább emailben?", en: "Prefer email?" },
     errorMessage: {
-      hu: "Hiba történt. Kérlek próbáld újra, vagy írj közvetlenül az info@trita.io címre.",
-      en: "Something went wrong. Please try again, or email us directly at info@trita.io.",
+      hu: "Nem sikerült elküldeni. Próbáld újra, vagy írj a hello@trita.io címre.",
+      en: "We could not send your application. Try again, or email hello@trita.io.",
     },
 
     // Success state
-    successTitle: { hu: "Köszönöm a jelentkezést.", en: "Thank you for applying." },
+    successTitle: { hu: "Köszönjük a jelentkezést.", en: "Thank you for applying." },
     successBody: {
-      hu: "24 órán belül személyesen keresünk az általad megadott email címen.",
-      en: "We'll personally reach out to you within 24 hours at the email address you provided.",
+      hu: "Egy munkanapon belül személyesen jelentkezünk a megadott email-címen.",
+      en: "We will contact you personally at the provided email address within one business day.",
     },
   },
   // ── /about — „Mi az a Trita" ────────────────────────────────────────

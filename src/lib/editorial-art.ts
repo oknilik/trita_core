@@ -18,8 +18,11 @@ export type EditorialShapeId =
   | "blob"
   | "crescent"
   | "wedge"
+  | "portal"
+  | "seed"
   | "ladder"
   | "arcs"
+  | "orbit"
   | "trail"
   | "lens";
 
@@ -27,8 +30,11 @@ export const EDITORIAL_SHAPE_ORDER: readonly EditorialShapeId[] = [
   "blob",
   "crescent",
   "wedge",
+  "portal",
+  "seed",
   "ladder",
   "arcs",
+  "orbit",
   "trail",
   "lens",
 ] as const;
@@ -59,6 +65,19 @@ export const EDITORIAL_SHAPES: Record<EditorialShapeId, EditorialShape> = {
   // szabály a ≠0 winding-ot festi, nem a pozitívat).
   crescent: { kind: "fill", path: "M 0 -50 A 50 50 0 0 0 0 50 A 74 74 0 0 1 0 -50 Z" },
   wedge: { kind: "fill", path: "M -44 44 L 0 -48 L 44 44 Z" },
+  // Kapuív — a Bauhaus szerkesztettségét egy kézzel rajzolt, kissé
+  // aszimmetrikus nyílással oldja. Nem szabályos félkör, ezért nem válik
+  // piktogrammá a kollázsokban.
+  portal: {
+    kind: "fill",
+    path: "M -48 46 L -48 2 C -48 -34, -24 -52, 4 -50 C 35 -48, 50 -25, 48 7 L 48 46 L 20 46 L 20 5 C 20 -12, 12 -23, 1 -24 C -12 -25, -21 -14, -21 5 L -21 46 Z",
+  },
+  // Mag / szem — egyetlen organikus hangsúly, amely a szabályos köröket
+  // Miró-szerű, élőbb ellenponttal váltja fel.
+  seed: {
+    kind: "fill",
+    path: "M -4 -51 C 21 -48, 48 -23, 45 5 C 42 31, 19 51, -9 47 C -35 43, -52 19, -46 -7 C -40 -31, -24 -48, -4 -51 Z",
+  },
   lens: { kind: "fill", path: "M -48 0 Q 0 -44 48 0 Q 0 44 -48 0 Z" },
   ladder: {
     kind: "line",
@@ -76,6 +95,13 @@ export const EDITORIAL_SHAPES: Record<EditorialShapeId, EditorialShape> = {
       "M -46 30 A 46 46 0 0 1 46 30",
       "M -30 30 A 30 30 0 0 1 30 30",
       "M -14 30 A 14 14 0 0 1 14 30",
+    ],
+  },
+  orbit: {
+    kind: "line",
+    paths: [
+      "M -48 12 C -31 -34, 20 -47, 48 -8",
+      "M -40 30 C -8 48, 29 36, 43 10",
     ],
   },
   trail: {

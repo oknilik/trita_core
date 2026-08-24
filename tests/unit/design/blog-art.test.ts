@@ -36,6 +36,20 @@ test("a cikk témája szerkesztői fogalommá fordul", () => {
     }),
     "growth",
   );
+  assert.equal(
+    inferBlogArtConcept({
+      slug: "merheto-e-a-pszichologiai-biztonsag",
+      tags: ["pszichológiai biztonság", "mérés"],
+    }),
+    "balance",
+  );
+  assert.equal(
+    inferBlogArtConcept({
+      slug: "pszichometriai-ertekeles-bevezetese",
+      tags: ["pszichometria", "változáskezelés"],
+    }),
+    "threshold",
+  );
 });
 
 test("azonos forrás azonos családot, fogalmat és seedet ad", () => {

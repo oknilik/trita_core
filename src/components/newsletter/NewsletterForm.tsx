@@ -120,8 +120,24 @@ export function NewsletterForm({
   }
 
   const form = (
-    <form onSubmit={handleSubmit} noValidate className={variant === "inline" ? "mt-3" : "mt-4"}>
-      <div className={variant === "panel" ? "flex flex-col gap-3 md:flex-row md:items-end" : "flex flex-col gap-3"}>
+    <form
+      onSubmit={handleSubmit}
+      noValidate
+      className={
+        variant === "inline"
+          ? "mt-3"
+          : variant === "panel"
+            ? "mt-5 max-w-[860px]"
+            : "mt-4"
+      }
+    >
+      <div
+        className={
+          variant === "panel"
+            ? "grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_180px] md:items-end"
+            : "flex flex-col gap-3"
+        }
+      >
         <TextField
           type="email"
           name="email"
@@ -135,11 +151,15 @@ export function NewsletterForm({
           placeholder={t("newsletter.emailPlaceholder", locale)}
           error={error ?? undefined}
           containerClassName={variant === "panel" ? "flex-1" : undefined}
-          inputClassName={
+          labelClassName={onInverse ? "!text-[var(--color-text-on-inverse)]" : undefined}
+          inputClassName={[
+            variant === "panel" ? "min-h-[48px]" : "",
             onInverse
               ? "border-white/20 bg-white/[0.06] text-[var(--color-text-on-inverse)] placeholder:text-[var(--color-text-on-inverse-muted)]"
-              : undefined
-          }
+              : "",
+          ]
+            .filter(Boolean)
+            .join(" ")}
         />
 
         {/* Mézesbödön — a botok kitöltik, az emberek nem látják. */}
@@ -159,6 +179,7 @@ export function NewsletterForm({
           loading={busy}
           disabled={busy}
           onInverse={onInverse}
+          size={variant === "panel" ? "lg" : "md"}
           fullWidth={variant !== "panel"}
         >
           {busy ? t("newsletter.submitting", locale) : t("newsletter.submit", locale)}

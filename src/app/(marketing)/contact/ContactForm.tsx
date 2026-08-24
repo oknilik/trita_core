@@ -89,7 +89,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => setSuccess(false)}
-          className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-action-primary-bg px-6 text-sm font-semibold text-[var(--color-text-on-inverse)] transition-colors hover:bg-[var(--color-surface-inverse-soft)]"
+        className="mt-6 inline-flex min-h-[50px] items-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] transition-all hover:-translate-y-0.5 hover:brightness-105"
         >
           {t("contact.sendAnother", locale)}
         </button>
@@ -98,7 +98,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
   }
 
   const inputClass =
-    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-base tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-bronze/40 focus:bg-surface-card focus:ring-2 focus:ring-bronze/12";
+    "min-h-[52px] w-full rounded-xl border border-sand bg-cream px-4 font-fraunces text-base tracking-[-0.012em] text-ink outline-none transition-all md:text-body focus:border-[var(--color-layer-team-accent)]/40 focus:bg-surface-card focus:ring-2 focus:ring-[var(--color-layer-team-accent)]/10";
   const labelClass = "block text-sm font-medium text-ink";
 
   return (
@@ -202,7 +202,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
         <button
           type="submit"
           disabled={loading}
-          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-bronze px-6 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-0.5 hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex min-h-[52px] items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-105 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
         >
           {loading ? t("contact.submitting", locale) : t("contact.submit", locale)}
         </button>

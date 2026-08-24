@@ -223,12 +223,26 @@ const CONCEPT_SLOTS: Record<BlogArtConcept, readonly ConceptSlot[]> = {
   ],
 };
 
+/** Kis méreten egyetlen, de fogalom-specifikus jel marad. Így a sűrű
+ * listanézetben sem válik minden cikk ugyanazzá a véletlen háromszöggé. */
+const COMPACT_CONCEPT_SHAPES: Record<BlogArtConcept, EditorialShapeId> = {
+  connection: "lens",
+  balance: "crescent",
+  tension: "wedge",
+  threshold: "portal",
+  signal: "orbit",
+  growth: "trail",
+};
+
 function artZone(scale: ArtScale, w: number, h: number): ArtZone {
   if (scale === "compact") return { x: 9, y: 9, w: w - 18, h: h - 18 };
-  // A featured-kártyán a kép felső-jobb sávban marad: alatta szabad szövegmező
-  // kell a tetszőleges hosszúságú heroQuote-nak.
-  if (scale === "hero") return { x: w * 0.5, y: h * 0.035, w: w * 0.43, h: h * 0.36 };
-  return { x: w * 0.16, y: h * 0.13, w: w * 0.7, h: h * 0.64 };
+  // A featured-kártyán a kép a teljes felső kétharmadot használja. A lenti
+  // szövegmezőt nem üres vászonnal, hanem a már meglévő sötét fátyollal
+  // védjük: így a kép látványos marad, az idézet pedig továbbra is olvasható.
+  if (scale === "hero") return { x: w * 0.08, y: h * 0.035, w: w * 0.84, h: h * 0.57 };
+  // A listakártyákon szándékosan majdnem szélig ér a kompozíció. Az enyhe
+  // levágás papírkollázs-hatást ad, és megszünteti a korábbi bélyegképszerűséget.
+  return { x: w * 0.055, y: h * 0.075, w: w * 0.89, h: h * 0.78 };
 }
 
 function conceptSpine(concept: BlogArtConcept, z: ArtZone, seed: number): string {
@@ -344,7 +358,7 @@ function ConstellationSubject({
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
   const slots = CONCEPT_SLOTS[concept];
-  const count = scale === "compact" ? 1 : 3;
+  const count = scale === "compact" ? 1 : scale === "hero" ? 5 : 4;
   const base = Math.min(z.h, z.w * 0.34);
   const shapePool = lineMode === "expressive"
     ? EDITORIAL_SHAPE_ORDER
@@ -363,10 +377,14 @@ function ConstellationSubject({
         />
       )}
       {Array.from({ length: count }, (_, index) => {
-        const slot = slots[index];
+        const slot = index < 3
+          ? slots[index]
+          : index === 3
+            ? ([0.58, 0.18, 0.2] as const)
+            : ([0.34, 0.76, 0.16] as const);
         const shapeIndex = (hashString(`${seed}:${concept}:shape:${index}`) >>> 3)
           % shapePool.length;
-        const id = shapePool[shapeIndex];
+        const id = scale === "compact" ? COMPACT_CONCEPT_SHAPES[concept] : shapePool[shapeIndex];
         const size = scale === "compact"
           ? base * 0.82
           : base * (0.46 + slot[2] + rnd() * 0.14);
@@ -417,12 +435,49 @@ function ModularSubject({
   const showLine = lineMode !== "none";
 
   if (scale === "compact") {
+    const compactFill = concept === "balance" || concept === "growth"
+      ? p.counterweight
+      : p.form;
+    if (concept === "connection") {
+      return (
+        <g>
+          <circle cx={x(0.32)} cy={y(0.52)} r={r2(z.w * 0.2)} fill={p.form} />
+          <circle cx={x(0.68)} cy={y(0.52)} r={r2(z.w * 0.2)} fill={p.counterweight} />
+          {showLine && <path d={`M ${x(0.43)} ${y(0.52)} H ${x(0.57)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />}
+        </g>
+      );
+    }
+    if (concept === "signal") {
+      return (
+        <g>
+          {[0.28, 0.5, 0.72].map((n, index) => (
+            <rect key={n} x={x(n - 0.06)} y={y(0.68 - index * 0.17)} width={r2(z.w * 0.12)} height={r2(z.h * (0.2 + index * 0.17))} rx={r2(z.w * 0.04)} fill={index === 1 ? p.counterweight : p.form} />
+          ))}
+        </g>
+      );
+    }
+    if (concept === "threshold") {
+      return EditorialMark({ id: "portal", x: x(0.5), y: y(0.52), size: z.w * 0.7, rotation: 0, tone: "form", p, strokeWidth: sw });
+    }
+    if (concept === "growth") {
+      return (
+        <g>
+          <path d={`M ${x(0.15)} ${y(0.78)} H ${x(0.42)} V ${y(0.58)} H ${x(0.65)} V ${y(0.36)} H ${x(0.86)} V ${y(0.78)} Z`} fill={compactFill} />
+          {showLine && <path d={`M ${x(0.18)} ${y(0.68)} L ${x(0.78)} ${y(0.22)}`} fill="none" stroke={p.line} strokeWidth={lineWidth} strokeLinecap="round" />}
+        </g>
+      );
+    }
+    if (concept === "tension") {
+      return (
+        <g>
+          <path d={`M ${x(0.08)} ${y(0.18)} L ${x(0.46)} ${y(0.5)} L ${x(0.08)} ${y(0.82)} Z`} fill={p.form} />
+          <path d={`M ${x(0.92)} ${y(0.18)} L ${x(0.54)} ${y(0.5)} L ${x(0.92)} ${y(0.82)} Z`} fill={p.counterweight} />
+        </g>
+      );
+    }
     return (
       <g>
-        <path
-          d={`M ${x(0.14)} ${y(0.75)} L ${x(0.5)} ${y(0.16)} L ${x(0.82)} ${y(0.75)} Z`}
-          fill={p.form}
-        />
+        <path d={`M ${x(0.1)} ${y(0.62)} Q ${x(0.5)} ${y(0.16)} ${x(0.9)} ${y(0.62)} Q ${x(0.5)} ${y(0.86)} ${x(0.1)} ${y(0.62)} Z`} fill={compactFill} />
         {showLine && (
           <path
             d={`M ${x(0.14)} ${y(0.83)} H ${x(0.9)}`}
@@ -510,7 +565,7 @@ function FlowSubject({
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
   const slots = CONCEPT_SLOTS[concept];
-  const markerShapes: readonly EditorialShapeId[] = ["blob", "crescent", "wedge"];
+  const markerShapes: readonly EditorialShapeId[] = ["blob", "crescent", "portal", "seed"];
   const lineWidth = r2(sw * (scale === "compact" ? 0.72 : 0.66));
 
   return (
@@ -538,7 +593,9 @@ function FlowSubject({
       {scale === "compact" ? (
         <circle cx={r2(z.x + z.w * 0.72)} cy={r2(z.y + z.h * 0.35)} r={r2(z.h * 0.12)} fill={p.form} />
       ) : (
-        slots.slice(0, 3).map((slot, index) => {
+        [...slots, [0.56, 0.18, 0.18] as const]
+          .slice(0, scale === "hero" ? 4 : 3)
+          .map((slot, index) => {
           const cx = z.x + z.w * slot[0] + (rnd() - 0.5) * z.w * 0.03;
           const cy = z.y + z.h * slot[1] + (rnd() - 0.5) * z.h * 0.05;
           if (index === 2) {
@@ -597,11 +654,15 @@ function CollageSubject({
   const z = artZone(scale, w, h);
   const rnd = mulberry32(seed);
   const slots = CONCEPT_SLOTS[concept];
-  const ids: readonly EditorialShapeId[] = ["blob", "crescent", "wedge", "lens", "trail"];
-  const count = scale === "compact" ? 1 : 4;
+  const ids: readonly EditorialShapeId[] = ["blob", "crescent", "wedge", "portal", "seed", "lens", "trail"];
+  const count = scale === "compact" ? 1 : scale === "hero" ? 6 : 5;
   const base = Math.min(z.h, z.w * 0.34);
-  const extraSlot: ConceptSlot = [0.55, concept === "growth" ? 0.68 : 0.52, 0.24];
-  const collageSlots = [...slots, extraSlot];
+  const collageSlots: readonly ConceptSlot[] = [
+    ...slots,
+    [0.55, concept === "growth" ? 0.7 : 0.54, 0.24],
+    [0.42, 0.16, 0.18],
+    [0.92, 0.72, 0.14],
+  ];
 
   return (
     <g>
@@ -691,7 +752,11 @@ export function BlogArtVisual({
   // másik családban szándékosan más kompozíció.
   const seededKey = resolved.legacyMotif
     ? seed ? `${slug}#${seed}` : slug
-    : `${slug}#${resolved.seed}:${resolved.family}:${resolved.concept}`;
+    // Explicit seed esetén a slug nem része a kulcsnak: a magyar–angol
+    // cikkpár ugyanazzal a szerkesztői beállítással valóban ugyanazt a
+    // borítóképet kapja. Automatikus módban a slugból képzett seed továbbra
+    // is egyedivé teszi a cikkeket.
+    : `${seed ? "curated" : slug}#${resolved.seed}:${resolved.family}:${resolved.concept}`;
   // SEEDET adunk át, nem generátort — ld. mulberry32() a miro-primitives-ben.
   const artSeed = hashString(seededKey);
 

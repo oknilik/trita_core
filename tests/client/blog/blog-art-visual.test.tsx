@@ -28,6 +28,28 @@ describe("BlogArtVisual", () => {
     expect(collage.container.innerHTML).not.toBe(modular.container.innerHTML);
   });
 
+  it("az azonos seedű fordításpár ugyanazt a szerkesztői képet kapja", () => {
+    const hu = render(
+      <BlogArtVisual
+        slug="belso-mobilitas-a-megtartas-csendes-fegyvere"
+        family="flow"
+        concept="growth"
+        lineMode="expressive"
+        seed={1847}
+      />,
+    );
+    const en = render(
+      <BlogArtVisual
+        slug="internal-mobility-quiet-retention-weapon"
+        family="flow"
+        concept="growth"
+        lineMode="expressive"
+        seed={1847}
+      />,
+    );
+    expect(en.container.innerHTML).toBe(hu.container.innerHTML);
+  });
+
   it("a vonalmentes mód minden dekoratív tintavonalat eltávolít", () => {
     for (const family of ["collage", "modular", "constellation", "flow"] as const) {
       const { container, unmount } = render(

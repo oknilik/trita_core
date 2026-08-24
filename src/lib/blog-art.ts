@@ -117,15 +117,9 @@ export function inferBlogArtConcept(
 ): BlogArtConcept {
   const text = searchable(source);
 
-  if (/pszichometri|psychometr|meres|merhet|measure|assessment|tritan|mbti|profil|profile|adat|data/.test(text)) {
-    return "signal";
-  }
-  if (/csapatdinam|team dynamics|bizalom|trust|kapcsol|connect|egyuttmuk|collabor|team role|csapatszerep/.test(text)) {
-    return "connection";
-  }
-  if (/hazud|lies|fluktu|turnover|konflikt|conflict|kockazat|risk|tor(es|ik)|gap/.test(text)) {
-    return "tension";
-  }
+  // Előbb a cikk valódi témáját keressük, és csak utána az általános
+  // „mérés / profil” szavakat. A régi sorrend szinte minden pszichometriai
+  // cikket ugyanabba a jel-kompozícióba terelt.
   if (/bevezetes|introduc|valtoz|change|rollout|atmenet|transition|implement|adopt/.test(text)) {
     return "threshold";
   }
@@ -134,6 +128,15 @@ export function inferBlogArtConcept(
   }
   if (/biztonsag|safety|vezetes|leadership|stabil|egyensuly|balance/.test(text)) {
     return "balance";
+  }
+  if (/hazud|lies|fluktu|turnover|konflikt|conflict|kockazat|risk|tor(es|ik)|gap/.test(text)) {
+    return "tension";
+  }
+  if (/csapatdinam|team dynamics|bizalom|trust|kapcsol|connect|egyuttmuk|collabor|team role|csapatszerep/.test(text)) {
+    return "connection";
+  }
+  if (/pszichometri|psychometr|meres|merhet|measure|assessment|tritan|mbti|profil|profile|adat|data/.test(text)) {
+    return "signal";
   }
 
   return BLOG_ART_CONCEPTS[hashString(`${source.slug}:concept`) % BLOG_ART_CONCEPTS.length];

@@ -41,20 +41,14 @@ function formatDate(dateStr: string, locale: string): string {
   });
 }
 
-function TagRow({ tags, firstAccent = false }: { tags: string[]; firstAccent?: boolean }) {
+function TagRow({ tags }: { tags: string[] }) {
   if (tags.length === 0) return null;
   return (
     <span className="mb-2 flex flex-wrap gap-1.5">
-      {tags.map((tag, i) => (
+      {tags.map((tag) => (
         <span
           key={tag}
-          className={`rounded-full px-2.5 py-0.5 text-micro font-medium uppercase tracking-wide ${
-            firstAccent
-              ? i === 0
-                ? "bg-[var(--color-surface-self-accent-soft)] text-[var(--color-accent-self-deep)]"
-                : "bg-[var(--color-surface-highlight-warm)] text-[var(--color-accent-primary-strong)]"
-              : getTagStyle(tag)
-          }`}
+          className={`rounded-full px-2.5 py-0.5 text-micro font-medium uppercase tracking-wide ${getTagStyle(tag)}`}
         >
           {tag}
         </span>
@@ -146,7 +140,7 @@ export function BlogListContent({
     ? posts.filter((p) => p.tags.some((tag) => tag.toLowerCase() === activeTag))
     : posts;
 
-  const featured = activeTag ? null : posts[0];
+  const heroPost = posts[0];
   const rest = activeTag ? filtered : posts.slice(1);
   const gridPosts = rest.slice(0, 2);
   const rowPosts = rest.slice(2);
@@ -163,8 +157,8 @@ export function BlogListContent({
   const chipClass = (active: boolean) =>
     `inline-flex min-h-[44px] items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-caption transition-colors ${FOCUS_RING_CLASS} ${
       active
-        ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)]"
-        : "border-sand bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-surface-self-border)] hover:text-[var(--color-accent-self-deep)]"
+        ? "border-[var(--color-accent-primary-strong)] bg-[var(--color-accent-primary-strong)] text-white"
+        : "border-sand bg-transparent text-[var(--color-text-secondary)] hover:border-[var(--color-accent-primary)] hover:text-[var(--color-accent-primary-strong)]"
     }`;
 
   const setTopic = (tag: string | null) => {
@@ -191,76 +185,117 @@ export function BlogListContent({
 
   return (
     <main className="min-h-dvh bg-[var(--color-surface-canvas)]">
-      {/* Hero — a landing eyebrow + headline idiómájával */}
-      <section className="px-7 pb-6 pt-12">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-4 flex items-center gap-3">
-            <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-            <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-              Blog
-            </span>
+      {/* Az első szekció az oldal alapszínén marad, így a semleges headerből
+          nincs kemény színváltás. A meleg editorial tónus csak belső fény. */}
+      <section className="relative overflow-hidden bg-cream px-7 pb-10 pt-10 md:pb-14 md:pt-16">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[7%] top-[12%] h-[72%] w-[48%] rounded-full bg-[var(--color-surface-highlight-warm)]/35 blur-3xl"
+        />
+        <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
+          <div>
+            <div className="mb-5 flex items-center gap-3">
+              <div className="h-px w-7 shrink-0 bg-[var(--color-accent-primary-strong)]" />
+              <span className="font-dm-sans text-label uppercase tracking-[0.15em] text-[var(--color-accent-primary-strong)]">
+                {t("blog.editorialEyebrow", displayLocale)}
+              </span>
+            </div>
+            <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium leading-[0.98] tracking-[-0.045em] text-ink">
+              {t("blog.heroTitle", displayLocale)}
+              <em className="italic text-[var(--color-accent-primary)]">
+                {t("blog.heroTitleEm", displayLocale)}
+              </em>
+            </h1>
+            <p className="mt-6 max-w-[580px] text-base font-light leading-relaxed text-ink-body md:text-lg">
+              {t("blog.heroSub", displayLocale)}
+            </p>
           </div>
-          <h1
-            className="mb-4 font-fraunces text-fluid-title font-medium tracking-tight text-ink"
-          >
-            {t("blog.heroTitle", displayLocale)}
-            <em className="italic text-[var(--color-accent-primary)]">
-              {t("blog.heroTitleEm", displayLocale)}
-            </em>
-          </h1>
-          <p className="max-w-[560px] text-base font-light leading-relaxed text-ink-body">
-            {t("blog.heroSub", displayLocale)}
-          </p>
 
-          {/* Téma-szűrő: natív fieldset + pressed állapot, hogy a csoport és
-              a kiválasztás képernyőolvasóval is egyértelmű legyen. */}
-          {tagChips.length > 1 && (
-            <fieldset className="mt-6">
-              <legend className="mb-2.5 text-caption font-semibold text-[var(--color-text-muted)]">
-                {t("blog.filterLabel", displayLocale)}
-              </legend>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  aria-pressed={activeTag === null}
-                  aria-controls="blog-results"
-                  onClick={() => setTopic(null)}
-                  className={chipClass(activeTag === null)}
-                >
-                  {activeTag === null ? <span aria-hidden="true">✓</span> : null}
-                  {t("blog.filterAll", displayLocale)}
-                  <span className={activeTag === null ? "opacity-70" : "text-[var(--color-text-muted)]"}>
-                    {posts.length}
-                  </span>
-                </button>
-                {tagChips.map(({ tag, count }) => {
-                  const active = activeTag === tag;
-                  return (
-                    <button
-                      key={tag}
-                      type="button"
-                      aria-pressed={active}
-                      aria-controls="blog-results"
-                      onClick={() => setTopic(active ? null : tag)}
-                      className={chipClass(active)}
-                    >
-                      {active ? <span aria-hidden="true">✓</span> : null}
-                      {tag}
-                      <span className={active ? "opacity-70" : "text-[var(--color-text-muted)]"}>
-                        {count}
-                      </span>
-                    </button>
-                  );
-                })}
+          {heroPost ? (
+            <Link
+              href={`/blog/${heroPost.slug}`}
+              className={`group relative min-h-[290px] overflow-hidden rounded-[28px] shadow-[0_22px_54px_rgba(75,44,52,0.16)] md:min-h-[360px] ${FOCUS_RING_CLASS}`}
+            >
+              <div className="absolute inset-0 transition-transform duration-500 group-hover:scale-[1.025]">
+                <BlogCoverVisual
+                  coverImage={heroPost.coverImage}
+                  slug={heroPost.slug}
+                  title={heroPost.title}
+                  tags={heroPost.tags}
+                  seed={heroPost.artSeed}
+                  motif={heroPost.artMotif}
+                  family={heroPost.artFamily}
+                  concept={heroPost.artConcept}
+                  lineMode={heroPost.artLineMode}
+                  variant="featured"
+                />
               </div>
-            </fieldset>
-          )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-8">
+                <span className="mb-2 block text-micro font-bold uppercase tracking-[0.16em] text-white/75">
+                  {t("blog.featured", displayLocale)} · {heroPost.readingTime}
+                </span>
+                <h2 className="max-w-[420px] font-fraunces text-fluid-heading font-normal leading-[1.08] tracking-tight">
+                  {heroPost.title}
+                </h2>
+              </div>
+            </Link>
+          ) : null}
         </div>
       </section>
 
-      <section id="blog-results" className="px-7 pb-14">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-5 flex min-h-11 flex-wrap items-center justify-between gap-3 border-b border-sand pb-3">
+      {/* A szűrő ugyanazon a vásznon folytatódik; csak egy halk, tartalmi
+          szélességű vonal jelzi a következő ritmusegységet. */}
+      {tagChips.length > 1 && (
+        <section className="bg-cream px-7">
+          <fieldset className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 border-b border-sand/60 py-5">
+            <legend className="sr-only">{t("blog.filterLabel", displayLocale)}</legend>
+            <span className="mr-2 text-label uppercase tracking-[0.13em] text-[var(--color-text-muted)]" aria-hidden="true">
+              {t("blog.filterLabel", displayLocale)}
+            </span>
+            <button
+              type="button"
+              aria-pressed={activeTag === null}
+              aria-controls="blog-results"
+              onClick={() => setTopic(null)}
+              className={chipClass(activeTag === null)}
+            >
+              {t("blog.filterAll", displayLocale)}
+              <span className={activeTag === null ? "opacity-70" : "text-[var(--color-text-muted)]"}>
+                {posts.length}
+              </span>
+            </button>
+            {tagChips.map(({ tag, count }) => {
+              const active = activeTag === tag;
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  aria-pressed={active}
+                  aria-controls="blog-results"
+                  onClick={() => setTopic(active ? null : tag)}
+                  className={chipClass(active)}
+                >
+                  {tag}
+                  <span className={active ? "opacity-70" : "text-[var(--color-text-muted)]"}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </fieldset>
+        </section>
+      )}
+
+      <section id="blog-results" className="px-7 pb-20 pt-14 md:pt-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-7 flex min-h-11 flex-wrap items-end justify-between gap-3">
+            <div>
+              {!activeTag ? (
+                <h2 className="mb-2 font-fraunces text-fluid-heading font-normal tracking-tight text-ink">
+                  {t("blog.startHere", displayLocale)}
+                </h2>
+              ) : null}
             <p
               role="status"
               aria-live="polite"
@@ -272,6 +307,7 @@ export function BlogListContent({
               </span>
               {activeTag ? <> · {activeTag}</> : null}
             </p>
+            </div>
             {activeTag ? (
               <button
                 type="button"
@@ -288,61 +324,13 @@ export function BlogListContent({
             </p>
           ) : (
             <>
-              {/* Featured article — generatív vizuál + kulcs-állítás */}
-              {featured && (
-                <Link
-                  href={`/blog/${featured.slug}`}
-                  className="group mb-8 grid grid-cols-1 overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.05] md:grid-cols-[1fr_1.3fr]"
-                >
-                  {/* Bal: generatív vizuál + kulcs-állítás (a nagy percszám helyett) */}
-                  <div className="relative flex min-h-[220px] flex-col justify-end overflow-hidden p-6 md:min-h-[250px]">
-                    <div className="absolute inset-0">
-                      <BlogCoverVisual
-                        coverImage={featured.coverImage}
-                        slug={featured.slug}
-                        title={featured.title}
-                        tags={featured.tags}
-                        seed={featured.artSeed}
-                        motif={featured.artMotif}
-                        family={featured.artFamily}
-                        concept={featured.artConcept}
-                        lineMode={featured.artLineMode}
-                        variant="featured"
-                      />
-                    </div>
-                    <span className="relative mb-3 inline-flex self-start rounded-full bg-white/10 px-3 py-1 text-micro font-semibold uppercase tracking-widest text-white/70">
-                      {t("blog.featured", displayLocale)}
-                    </span>
-                    <p className="relative font-fraunces text-heading font-light italic leading-[1.35] text-white">
-                      „{featured.heroQuote ?? featured.description.split(/(?<=[.!?])\s/)[0]}”
-                    </p>
-                  </div>
-                  {/* Jobb: tartalom */}
-                  <div className="flex flex-col justify-center p-6 md:p-8">
-                    <TagRow tags={featured.tags} firstAccent />
-                    <h2 className="mb-2 font-fraunces text-2xl leading-[1.2] tracking-tight text-ink">
-                      {featured.title}
-                    </h2>
-                    <p className="mb-3 text-sm leading-relaxed text-ink-body">
-                      {featured.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
-                      {isNew(featured.publishedAt) && <NewBadge locale={displayLocale} />}
-                      <span>{formatDate(featured.publishedAt, displayLocale)}</span>
-                      <span className="h-[3px] w-[3px] rounded-full bg-[var(--color-border-default)]" />
-                      <span>{featured.readingTime}</span>
-                    </div>
-                  </div>
-                </Link>
-              )}
-
               {/* „Kezdd itt" sáv az új olvasónak */}
               {!activeTag && startHerePosts.length >= 2 && (
-                <div className="mb-8 rounded-2xl border border-sand bg-[var(--color-surface-muted)] p-5">
+                <div className="mb-10 rounded-[26px] border border-sand bg-[var(--color-surface-muted)] p-5 md:p-6">
                   <div className="mb-3.5 flex items-center gap-2.5">
-                    <span className="h-[1.5px] w-4 bg-[var(--color-action-primary-bg)]" />
-                    <span className="text-label uppercase tracking-widest text-[var(--color-accent-self-deep)]">
-                      {t("blog.startHere", displayLocale)}
+                    <span className="h-px w-5 bg-[var(--color-accent-primary)]" />
+                    <span className="text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                      {t("blog.selectedReads", displayLocale)}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -350,7 +338,7 @@ export function BlogListContent({
                       <Link
                         key={post.slug}
                         href={`/blog/${post.slug}`}
-                        className="flex items-start gap-3 rounded-xl border border-sand bg-surface-card px-4 py-3 transition-colors hover:border-[var(--color-surface-self-border)]"
+                        className={`group flex items-start gap-3 rounded-2xl border border-sand bg-surface-card px-4 py-4 transition-all hover:-translate-y-0.5 hover:border-[var(--color-accent-primary)] ${FOCUS_RING_CLASS}`}
                       >
                         <span className="text-fluid-title font-fraunces text-heading italic leading-none text-[var(--color-accent-primary)]">
                           {i + 1}
@@ -371,14 +359,14 @@ export function BlogListContent({
 
               {/* 2 vizuális kártya */}
               {gridPosts.length > 0 && (
-                <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="mb-10 grid grid-cols-1 gap-5 md:grid-cols-2">
                   {gridPosts.map((post) => (
                     <Link
                       key={post.slug}
                       href={`/blog/${post.slug}`}
-                      className="group overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/[0.05]"
+                      className={`group overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/[0.05] ${FOCUS_RING_CLASS}`}
                     >
-                      <div className="relative h-[120px] overflow-hidden">
+                      <div className="relative h-[170px] overflow-hidden">
                         <BlogCoverVisual
                           coverImage={post.coverImage}
                           slug={post.slug}
@@ -392,9 +380,9 @@ export function BlogListContent({
                           variant="card"
                         />
                       </div>
-                      <div className="p-5">
+                      <div className="p-6">
                         <TagRow tags={post.tags} />
-                        <h3 className="mb-1.5 font-fraunces text-lg leading-tight tracking-tight text-ink">
+                        <h3 className="mb-2 font-fraunces text-2xl font-normal leading-tight tracking-tight text-ink">
                           {post.title}
                         </h3>
                         <p className="mb-2.5 text-caption leading-relaxed text-ink-body">
@@ -417,7 +405,7 @@ export function BlogListContent({
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  className="group flex items-center gap-5 border-t border-[var(--color-border-default)] py-6 transition-all hover:pl-2"
+                  className={`group flex items-center gap-5 border-t border-[var(--color-border-default)] py-7 transition-all hover:pl-2 ${FOCUS_RING_CLASS}`}
                 >
                   <span className="relative hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
                     <BlogCoverVisual
@@ -458,7 +446,9 @@ export function BlogListContent({
 
           {/* Feliratkozás a lista alján — aki végigpörgette a listát, de nem
               nyitott meg cikket, itt még megfogható. */}
-          <NewsletterForm source="blog_index" className="mt-12" />
+          <div className="mt-16 rounded-[28px] bg-[var(--color-surface-inverse)] p-2 md:p-3">
+            <NewsletterForm source="blog_index" onInverse className="rounded-[22px] md:p-8" />
+          </div>
         </div>
       </section>
     </main>
