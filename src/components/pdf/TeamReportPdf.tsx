@@ -260,7 +260,7 @@ export function TeamReportDocument({ report, isHu }: TeamReportPdfData) {
   return (
     <Document
       title={`${title} — ${isHu ? "Csapatriport" : "Team report"}`}
-      author="Trita"
+      author="trita"
       language={isHu ? "hu" : "en"}
     >
       {/* ── 1. oldal: áttekintés ─────────────────────────────────────────── */}

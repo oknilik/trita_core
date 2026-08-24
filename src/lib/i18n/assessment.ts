@@ -176,7 +176,7 @@ export const assessmentTranslations = {
     retry: { hu: "Újrapróbálom", en: "Retry" },
   },
   observer: {
-    metadataTitle: { hu: "Visszajelzés kitöltése | Trita", en: "Observer assessment | Trita" },
+    metadataTitle: { hu: "Visszajelzés kitöltése | trita", en: "Observer assessment | trita" },
     completeTitle: { hu: "Már kitöltötted ezt az értékelést", en: "This assessment is already completed" },
     completeBody: { hu: "Ez a meghívó már fel lett használva. Köszönjük a részvételt!", en: "This invite link has already been used. Thank you for participating!" },
     inactiveTitle: { hu: "A meghívó már nem aktív", en: "Invite is no longer active" },

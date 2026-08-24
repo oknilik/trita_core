@@ -10,7 +10,7 @@ import {
 } from "@/lib/type-glyph";
 
 // ─────────────────────────────────────────────────────────────────────
-// Típus-ábra (Miró-nyelvtan, Trita paletta) — ld. src/lib/type-glyph.ts.
+// Típus-ábra (Miró-nyelvtan, trita paletta) — ld. src/lib/type-glyph.ts.
 //
 //   nagy bronz alapforma = DOMINÁNS dimenzió (ki vagy)
 //   vékony tinta-motívum = MÁSODIK legerősebb dimenzió (hogyan)

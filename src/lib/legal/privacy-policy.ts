@@ -75,12 +75,12 @@ const HU: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "A Trita platformot az alábbi társaság üzemelteti. Adatvédelmi kérdésben bármikor fordulhatsz hozzánk a megadott e-mail-címen.",
+          text: "A trita platformot az alábbi társaság üzemelteti. Adatvédelmi kérdésben bármikor fordulhatsz hozzánk a megadott e-mail-címen.",
         },
         {
           kind: "dl",
           items: [
-            { term: "Adatkezelő", description: COMPANY.legalName },
+            { term: "Adatkezelő", description: COMPANY.legalName.replace(/^Trita\b/, "trita") },
             { term: "Székhely", description: COMPANY.address },
             { term: "Cégjegyzékszám", description: COMPANY.registrationNumber },
             { term: "Adószám", description: COMPANY.taxNumber },
@@ -562,12 +562,12 @@ const EN: PolicyDocument = {
       blocks: [
         {
           kind: "p",
-          text: "The Trita platform is operated by the company below. You can reach us at the email address given here with any privacy question.",
+          text: "The trita platform is operated by the company below. You can reach us at the email address given here with any privacy question.",
         },
         {
           kind: "dl",
           items: [
-            { term: "Controller", description: COMPANY.legalName },
+            { term: "Controller", description: COMPANY.legalName.replace(/^Trita\b/, "trita") },
             { term: "Registered address", description: COMPANY.address },
             { term: "Company registration number", description: COMPANY.registrationNumber },
             { term: "Tax number", description: COMPANY.taxNumber },

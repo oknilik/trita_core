@@ -42,7 +42,7 @@ export async function POST(
   }
 
   const inviterName =
-    invitation.inviter.username ?? invitation.inviter.email ?? "Trita";
+    invitation.inviter.username ?? invitation.inviter.email ?? "trita";
   const locale = normalizeLocale(invitation.inviter.locale);
 
   await sendObserverInviteEmail({

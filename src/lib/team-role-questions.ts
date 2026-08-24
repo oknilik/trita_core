@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────
-// Trita csapatszerep-itembank v1 (2026-07-20)
+// trita csapatszerep-itembank v1 (2026-07-20)
 //
 // 27 saját megfogalmazású viselkedés-állítás (9 szerep × 3), két
 // perspektívában: self (E/1, önkitöltés) és peer (E/3, csapattársi

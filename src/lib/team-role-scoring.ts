@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────
-// Trita csapatszerep-modell — 9 szerep, saját névtér és scoring.
+// trita csapatszerep-modell — 9 szerep, saját névtér és scoring.
 //
 // A korábbi 7×8-as pontelosztásos SPI-scoring kivezetve (jogi kiváltás,
 // ld. docs/product/team-role-instrument-replacement-plan.md). Az új

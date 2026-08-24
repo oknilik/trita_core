@@ -61,7 +61,7 @@ export default async function TryPage() {
       <JsonLd
         data={[
           buildAssessmentAppJsonLd({
-            name: "Trita személyiségteszt (TSFI)",
+            name: "trita személyiségteszt (TSFI)",
             description:
               "Ingyenes online személyiségteszt magyarul: 60 kérdés, kb. 10 perc, azonnali visszajelzés hat személyiségdimenzió mentén. Regisztráció nélkül indítható.",
             path: "/try",

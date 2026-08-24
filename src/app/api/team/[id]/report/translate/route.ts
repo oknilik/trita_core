@@ -98,7 +98,7 @@ export async function POST(
 Rules:
 - Preserve the exact structure inside each field: keep "• " bullet prefixes and line breaks as-is.
 - Keep the tone: professional, warm, non-clinical; this is a consultant's assessment for leaders.
-- Do NOT translate proper nouns (team names, person names, product names like Trita, TRITAN).
+- Do NOT translate proper nouns (team names, person names, product names like trita, TRITAN).
 - Translate psychological/management terminology precisely (e.g. „pszichológiai biztonság" → "psychological safety").
 - Respond with ONLY the tags below, in this exact format, nothing else. Empty input fields → empty tag content.
 

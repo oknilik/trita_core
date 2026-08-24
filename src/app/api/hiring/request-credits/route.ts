@@ -52,7 +52,7 @@ export async function POST(req: Request) {
   ]);
 
   const requesterName = profile.username ?? profile.email ?? "Egy menedzser";
-  const orgName = org?.name ?? "Trita";
+  const orgName = org?.name ?? "trita";
 
   for (const admin of admins) {
     const adminEmail = admin.user.email;

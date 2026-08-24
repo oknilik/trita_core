@@ -952,7 +952,7 @@ export function AdminBlogSection({
                 />
               </div>
 
-              {/* Cikk-vizuál: jelentésréteg + négy közös Trita-kézírás. */}
+              {/* Cikk-vizuál: jelentésréteg + négy közös trita-kézírás. */}
               <div className="mt-4 rounded-xl border border-sand bg-cream p-4">
                 <div className="mb-3 flex flex-wrap items-center gap-2">
                   <span className="text-sm font-semibold text-text-primary">Cikk-vizuál</span>
@@ -973,7 +973,7 @@ export function AdminBlogSection({
                         ? "új kép előkészítve — mentéskor kerül fel"
                         : activeCoverImage
                           ? "feltöltve — minden blogfelületen ez jelenik meg"
-                          : "nincs — a Trita generatív tartalékképe jelenik meg"}
+                          : "nincs — a trita generatív tartalékképe jelenik meg"}
                     </span>
                   </div>
 

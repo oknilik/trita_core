@@ -60,10 +60,10 @@ export function TritaReportDocument({ data }: { data: PdfData }) {
   return (
     <Document
       title={`${model.identity.userName} — ${t("pdf.personalityProfile", model.locale)}`}
-      author="Trita"
+      author="trita"
       subject={t("pdf.footerTagline", model.locale)}
-      creator="Trita"
-      producer="Trita"
+      creator="trita"
+      producer="trita"
       language={model.locale}
     >
       {/* Borító — számozáson kívül, a riport „arca" */}

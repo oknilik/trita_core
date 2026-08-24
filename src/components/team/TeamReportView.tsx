@@ -1333,8 +1333,8 @@ export function TeamReportView({
                         ))}
                         <p className="text-micro text-muted">
                           {isHu
-                            ? "Keret: Harvard Business Review (2026/07), a Trita saját adaptációjában."
-                            : "Framework: Harvard Business Review (2026/07), in Trita's own adaptation."}
+                            ? "Keret: Harvard Business Review (2026/07), a trita saját adaptációjában."
+                            : "Framework: Harvard Business Review (2026/07), in trita's own adaptation."}
                         </p>
                       </div>
                     </details>

@@ -1,2341 +1,64 @@
-export const orgTranslations = {
-  advisory: {
-    eyebrow: {
-      hu: "tanÃ¡csadÃ³i konzultÃ¡ciÃ³",
-      en: "advisory consultation",
-    },
-    headingAdvisory: {
-      hu: ", a csapataid kÃ©szen Ã¡llnak a kÃ¶vetkezÅ‘ lÃ©pÃ©sre.",
-      en: ", your teams are ready for the next step.",
-    },
-    headingUpgrade: {
-      hu: "LÃ¡sd, amit az adatok nem mondanak el.",
-      en: "See what the data doesn't tell you.",
-    },
-    subtitleAdvisory: {
-      hu: "A negyedÃ©ves tanÃ¡csadÃ³i konzultÃ¡ciÃ³n szemÃ©lyesen Ã©rtelmezzÃ¼k a csapataid mintÃ¡zatait, Ã©s konkrÃ©t akciÃ³terveket dolgozunk ki.",
-      en: "In the quarterly advisory consultation we personally interpret your team patterns and develop concrete action plans.",
-    },
-    subtitleUpgrade: {
-      hu: "A szemÃ©lyisÃ©gmÃ©rÃ©si adatok mutatjÃ¡k a mintÃ¡zatot. A tanÃ¡csadÃ³i konzultÃ¡ciÃ³n megÃ©rtjÃ¼k, miÃ©rt â€” Ã©s megtervezzÃ¼k, mit lÃ©pj.",
-      en: "The personality assessment data shows the pattern. The advisory consultation helps you understand why â€” and plan what to do next.",
-    },
-    teamsNow: {
-      hu: "A te csapataid most",
-      en: "Your teams right now",
-    },
-    members: {
-      hu: "fÅ‘",
-      en: "members",
-    },
-    details: {
-      hu: "RÃ©szletek",
-      en: "Details",
-    },
-    whatYouGet: {
-      hu: "Mit kapsz a tanÃ¡csadÃ³i konzultÃ¡ciÃ³n",
-      en: "What you get in the advisory consultation",
-    },
-    whatYouGetSubtitle: {
-      hu: "A konzultÃ¡ciÃ³ szervezeti szintÅ± â€” nem egy csapatrÃ³l szÃ³l, hanem arrÃ³l, hogyan mÅ±kÃ¶dnek a csapataid egyÃ¼tt Ã©s kÃ¼lÃ¶n-kÃ¼lÃ¶n.",
-      en: "The consultation is org-level â€” not about one team, but how your teams work together and individually.",
-    },
-    feature1Title: {
-      hu: "Szervezeti hÅ‘tÃ©rkÃ©p",
-      en: "Organisational heat map",
-    },
-    feature1Desc: {
-      hu: "ÃtnÃ©zzÃ¼k az Ã¶sszes csapatod mintÃ¡zatÃ¡t egyÃ¼tt: hol van Ã¶sszhang a csapatok kÃ¶zÃ¶tt, hol vannak szervezeti szintÅ± feszÃ¼ltsÃ©gek, Ã©s melyik csapat mintÃ¡zata jelent kockÃ¡zatot a stratÃ©giÃ¡tok szempontjÃ¡bÃ³l.",
-      en: "We review all your team patterns together: where there is alignment, where there are org-level tensions, and which pattern poses a strategic risk.",
-    },
-    feature1ExampleTwo: {
-      hu: "PÃ©ldÃ¡ul: a \u201E{first}\u201D Ã©s a \u201E{second}\u201D csapatok kÃ¶zÃ¶tti dinamika Ã©rtelmezÃ©se.",
-      en: "E.g.: interpreting the dynamics between the \u201C{first}\u201D and \u201C{second}\u201D teams.",
-    },
-    feature1ExampleOne: {
-      hu: "PÃ©ldÃ¡ul: a \u201E{pattern}\u201D mintÃ¡zat szervezeti hatÃ¡sai Ã©s rejtett kockÃ¡zatai.",
-      en: "E.g.: the organisational impact and hidden risks of the \u201C{pattern}\u201D pattern.",
-    },
-    feature2Title: {
-      hu: "Cross-team feszÃ¼ltsÃ©gek",
-      en: "Cross-team tensions",
-    },
-    feature2Desc: {
-      hu: "AzonosÃ­tjuk, hol Ã¼tkÃ¶znek a csapatok mÅ±kÃ¶dÃ©si mintÃ¡zatai â€” Ã©s hol Ã©ppen a kÃ¼lÃ¶nbÃ¶zÅ‘sÃ©g az erÅ‘. Ez az, amit a platform Ã¶nmagÃ¡ban nem tud megmutatni.",
-      en: "We identify where team operating patterns clash â€” and where the difference is actually a strength. This is what the platform alone can't show.",
-    },
-    feature2Example: {
-      hu: "PÃ©ldÃ¡ul: miÃ©rt kommunikÃ¡l nehezen a sales Ã©s a product csapat, Ã©s mit lÃ©phetsz vezetÅ‘kÃ©nt.",
-      en: "E.g.: why the sales and product teams struggle to communicate, and what you can do as a leader.",
-    },
-    feature3Title: {
-      hu: "Szervezeti akciÃ³terv",
-      en: "Organisational action plan",
-    },
-    feature3Desc: {
-      hu: "3-5 konkrÃ©t, vÃ©grehajthatÃ³ lÃ©pÃ©s a kÃ¶vetkezÅ‘ negyedÃ©vre â€” nem csapatszintÅ± tippek, hanem szervezeti dÃ¶ntÃ©sek: kit hova rendelj, hol vÃ¡ltoztass folyamatot, hol avatkozz be szemÃ©lyesen.",
-      en: "3-5 concrete, executable steps for the next quarter â€” not team-level tips, but organisational decisions: who goes where, where to change process, where to intervene personally.",
-    },
-    feature3ExamplePrefix: {
-      hu: "PÃ©ldÃ¡ul",
-      en: "E.g.",
-    },
-    feature4Title: {
-      hu: "ÃrÃ¡sos Ã¶sszefoglalÃ³ + csapat-riportok",
-      en: "Written summary + team reports",
-    },
-    feature4Desc: {
-      hu: "48 Ã³rÃ¡n belÃ¼l kapsz egy PDF-et: szervezeti hÅ‘tÃ©rkÃ©p vizualizÃ¡ciÃ³, csapatonkÃ©nti 2-3 soros Ã©rtÃ©kelÃ©s, a megbeszÃ©lt akciÃ³k listÃ¡ja felelÅ‘ssel Ã©s hatÃ¡ridÅ‘vel, Ã©s a kÃ¶vetkezÅ‘ mÃ©rÃ©si pont javaslat.",
-      en: "Within 48 hours you receive a PDF: org heat map visualisation, 2-3 sentence team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation.",
-    },
-    howItWorks: {
-      hu: "Hogyan mÅ±kÃ¶dik a negyedÃ©ves konzultÃ¡ciÃ³",
-      en: "How the quarterly consultation works",
-    },
-    step1Title: {
-      hu: "ElÅ‘kÃ©szÃ­tÃ©s (aszinkron)",
-      en: "Preparation (async)",
-    },
-    step1Body: {
-      hu: "ÃtnÃ©zzÃ¼k a szervezeted Ã¶sszes csapatÃ¡nak mintÃ¡zatÃ¡t, a cross-team feszÃ¼ltsÃ©geket, Ã©s a vÃ¡ltozÃ¡sokat az elÅ‘zÅ‘ negyedÃ©vhez kÃ©pest. EbbÅ‘l kÃ©szÃ¼l a szervezeti hÅ‘tÃ©rkÃ©p, ami a konzultÃ¡ciÃ³ kiindulÃ³pontja.",
-      en: "We review all your org's team patterns, cross-team tensions, and changes since the last quarter. This produces the org heat map that serves as the consultation's starting point.",
-    },
-    step2Title: {
-      hu: "KonzultÃ¡ciÃ³s hÃ­vÃ¡s (60â€“90 perc)",
-      en: "Consultation call (60â€“90 minutes)",
-    },
-    step2Body: {
-      hu: "SzemÃ©lyes videÃ³hÃ­vÃ¡s veled (vezetÅ‘ / HR). Szervezeti szintÅ± mintÃ¡zat-Ã©rtelmezÃ©s, cross-team dinamikÃ¡k, feszÃ¼ltsÃ©gpontok okai, 3-5 konkrÃ©t akciÃ³ a kÃ¶vetkezÅ‘ negyedÃ©vre. Ha van konkrÃ©t kÃ©rdÃ©sed â€” arra mÃ©lyen vÃ¡laszolunk.",
-      en: "Personal video call with you (leader / HR). Org-level pattern interpretation, cross-team dynamics, root causes of tension points, 3-5 concrete actions for the next quarter. If you have a specific question â€” we go deep.",
-    },
-    step3Title: {
-      hu: "ÃrÃ¡sos Ã¶sszefoglalÃ³ (48 Ã³rÃ¡n belÃ¼l)",
-      en: "Written summary (within 48 hours)",
-    },
-    step3Body: {
-      hu: "PDF dokumentum: szervezeti hÅ‘tÃ©rkÃ©p, csapatonkÃ©nti rÃ¶vid Ã©rtÃ©kelÃ©s, a megbeszÃ©lt akciÃ³k listÃ¡ja felelÅ‘ssel Ã©s hatÃ¡ridÅ‘vel, kÃ¶vetkezÅ‘ mÃ©rÃ©si pont javaslat. Azonnal tovÃ¡bbÃ­thatÃ³ a menedzsment meetingre.",
-      en: "PDF document: org heat map, short team-by-team evaluation, action list with owners and deadlines, next measurement point recommendation. Ready to share in your next management meeting.",
-    },
-    // IdÅ‘tartam-Ã¡llÃ­tÃ¡s szÃ¡ndÃ©kosan nincs a cÃ­mben: az ajÃ¡nlat egyedi
-    // (â€egyedi ajÃ¡nlat szerint" Ã¡r), a korÃ¡bbi 60 perc vs 2â€“3 Ã³ra
-    // ellentmondÃ¡st Ã­gy oldjuk fel.
-    deepDiveTitle: {
-      hu: "Csapat-mÃ©lymerÃ¼lÃ©s mÅ±hely",
-      en: "Team deep-dive workshop",
-    },
-    deepDiveDesc: {
-      hu: "Ha egy konkrÃ©t csapat mÃ©lyebb elemzÃ©st igÃ©nyel â€” szemÃ©lyre szabott mÅ±hely a csapatmenedzserrel.",
-      en: "If a specific team needs deeper analysis â€” a personalised workshop with the team manager.",
-    },
-    deepDivePrice: { hu: "egyedi ajÃ¡nlat szerint", en: "individually quoted" },
-    ctaCustomEyebrow: {
-      hu: "egyedi program",
-      en: "custom programme",
-    },
-    ctaAdvisoryEyebrow: {
-      hu: "advisory csomag",
-      en: "advisory plan",
-    },
-    ctaCustomHeading: {
-      hu: "EgyeztessÃ¼nk idÅ‘pontot",
-      en: "Let's schedule a session",
-    },
-    ctaAdvisoryHeading: {
-      hu: "KÃ©rd a kÃ¶vetkezÅ‘ negyedÃ©ves konzultÃ¡ciÃ³t",
-      en: "Request your next quarterly consultation",
-    },
-    ctaCustomBody: {
-      hu: "Az egyedi programod keretÃ©ben szemÃ©lyre szabott Ã¼temtervet dolgozunk ki â€” kattints, Ã©s koordinÃ¡lunk.",
-      en: "Within your custom programme we create a bespoke schedule â€” click and we'll coordinate.",
-    },
-    ctaAdvisoryBody: {
-      hu: "A programodhoz tartozik szervezeti szintÅ± tanÃ¡csadÃ³i konzultÃ¡ciÃ³. Kattints az alÃ¡bbi gombra, Ã©s 24 Ã³rÃ¡n belÃ¼l egyeztetÃ¼nk idÅ‘pontot. A csapataid adatai automatikusan rendelkezÃ©sre Ã¡llnak â€” nem kell semmit elÅ‘kÃ©szÃ­tened.",
-      en: "Your programme includes org-level advisory consultations. Click and we'll confirm a time within 24 hours. Your team data is automatically available â€” no preparation needed.",
-    },
-    sending: {
-      hu: "KÃ¼ldÃ©s...",
-      en: "Sending...",
-    },
-    requestConsultation: {
-      hu: "KonzultÃ¡ciÃ³t kÃ©rek",
-      en: "Request consultation",
-    },
-    requestReceived: {
-      hu: "Megkaptuk a kÃ©rÃ©sed!",
-      en: "We received your request!",
-    },
-    requestFollowUp: {
-      hu: "24 Ã³rÃ¡n belÃ¼l szemÃ©lyesen keresÃ¼nk az idÅ‘pont-egyeztetÃ©ssel.",
-      en: "We'll reach out within 24 hours to schedule a time.",
-    },
-    upgradeDesc: {
-      hu: "NegyedÃ©ves szemÃ©lyes tanÃ¡csadÃ³i konzultÃ¡ciÃ³ + teljes platform hozzÃ¡fÃ©rÃ©s. A csapatod adataibÃ³l konkrÃ©t, vÃ©grehajthatÃ³ akciÃ³terveket kÃ©szÃ­tÃ¼nk egyÃ¼tt.",
-      en: "Quarterly personal advisory consultation + full platform access. We build concrete, executable action plans from your team data together.",
-    },
-    upgradeFeature1: {
-      hu: "NegyedÃ©ves 90 perces szervezeti szintÅ± tanÃ¡csadÃ³i konzultÃ¡ciÃ³",
-      en: "Quarterly 90-minute org-level advisory consultation",
-    },
-    upgradeFeature2: {
-      hu: "Szervezeti hÅ‘tÃ©rkÃ©p + csapatonkÃ©nti Ã­rÃ¡sos Ã©rtÃ©kelÃ©s (PDF)",
-      en: "Org heat map + written team-by-team evaluation (PDF)",
-    },
-    upgradeFeature3: {
-      hu: "Cross-team dinamikÃ¡k Ã©s feszÃ¼ltsÃ©gpontok elemzÃ©se",
-      en: "Cross-team dynamics and tension point analysis",
-    },
-    upgradeFeature4: {
-      hu: "3-5 konkrÃ©t szervezeti szintÅ± akciÃ³terv negyedÃ©venkÃ©nt",
-      en: "3-5 concrete org-level action plans per quarter",
-    },
-    upgradeFeature5: {
-      hu: "Teljes platform-hozzÃ¡fÃ©rÃ©s (hÅ‘tÃ©rkÃ©p, csapatmintÃ¡zat, feszÃ¼ltsÃ©gpÃ¡rok)",
-      en: "Full platform access (heat map, team patterns, tension pairs)",
-    },
-    upgradeFeature6: {
-      hu: "OpcionÃ¡lis csapat-mÃ©lyelemzÃ©s (egyedi ajÃ¡nlat szerint)",
-      en: "Optional team deep-dive session (individually quoted)",
-    },
-    pricePerMonth: { hu: "Egyedi ajÃ¡nlat â€” a program terjedelme szerint", en: "Individual quote â€” based on program scope" },
-    foundingCustomer: {
-      hu: "A pilotprogram partnerei kiemelt feltÃ©telekkel indulnak.",
-      en: "Pilot program partners start with preferential terms.",
-    },
-    upgradeButton: {
-      hu: "VÃ¡ltÃ¡s Advisory-ra",
-      en: "Upgrade to Advisory",
-    },
-    testimonial: {
-      hu: "\u201EA konzultÃ¡ciÃ³n vÃ©gre megÃ©rtettem, miÃ©rt van feszÃ¼ltsÃ©g a sales Ã©s a product csapat kÃ¶zÃ¶tt â€” Ã©s kaptam 3 konkrÃ©t lÃ©pÃ©st, amit azonnal elkezdtÃ¼nk.\u201D",
-      en: "\u201CAt the consultation I finally understood why there was tension between the sales and product teams â€” and I got 3 concrete steps we started immediately.\u201D",
-    },
-    testimonialAuthor: {
-      hu: "â€” Egy jÃ¶vÅ‘beli founding customer",
-      en: "â€” A future founding customer",
-    },
-    faqTitle: {
-      hu: "Gyakori kÃ©rdÃ©sek",
-      en: "Frequently asked questions",
-    },
-    faqQ1: {
-      hu: "Kell valamit elÅ‘kÃ©szÃ­tenem a konzultÃ¡ciÃ³ elÅ‘tt?",
-      en: "Do I need to prepare anything?",
-    },
-    faqA1: {
-      hu: "Nem â€” a szervezeted Ã¶sszes csapatÃ¡nak mÃ©rÃ©si adatai, mintÃ¡zatai Ã©s feszÃ¼ltsÃ©gpÃ¡rjai automatikusan rendelkezÃ©sre Ã¡llnak. Ha van konkrÃ©t kÃ©rdÃ©sed vagy helyzeted, azt elÅ‘re jelezheted, de nem kÃ¶telezÅ‘.",
-      en: "No â€” all your org's teams' assessment data, patterns and tension pairs are automatically available. If you have a specific question or situation, you can flag it in advance, but it's not required.",
-    },
-    faqQ2: {
-      hu: "A konzultÃ¡ciÃ³ az egÃ©sz szervezetrÅ‘l szÃ³l, vagy egy csapatrÃ³l?",
-      en: "Is the consultation about the whole org or one team?",
-    },
-    faqA2: {
-      hu: "A negyedÃ©ves konzultÃ¡ciÃ³ szervezeti szintÅ±: az Ã¶sszes csapat mintÃ¡zatÃ¡t Ã¡ttekintjÃ¼k, a cross-team dinamikÃ¡kat, Ã©s szervezeti szintÅ± akciÃ³terveket kÃ©szÃ­tÃ¼nk. Ha egy konkrÃ©t csapat mÃ©lyebb elemzÃ©st igÃ©nyel, ahhoz kÃ¼lÃ¶n csapat-mÃ©lyelemzÃ©s kÃ©rhetÅ‘ (egyedi ajÃ¡nlat szerint).",
-      en: "The quarterly consultation is org-level: we review all team patterns, cross-team dynamics, and create org-level action plans. If a specific team needs deeper analysis, a separate team deep-dive can be requested (individually quoted).",
-    },
-    faqQ3: {
-      hu: "Ki vesz rÃ©szt a konzultÃ¡ciÃ³n?",
-      en: "Who participates in the consultation?",
-    },
-    faqA3: {
-      hu: "ÃltalÃ¡ban te (vezetÅ‘, HR, vagy az Ã¼gyvezetÅ‘) Ã©s a Trita tanÃ¡csadÃ³. A csapatmenedzsereket nem kell bevonni â€” Å‘k a platformon kapjÃ¡k meg a sajÃ¡t csapatuk elemzÃ©seit.",
-      en: "Usually you (leader, HR, or CEO) and the Trita advisor. Team managers don't need to join â€” they receive their team's insights directly through the platform.",
-    },
-    faqQ4: {
-      hu: "Mit kapok a konzultÃ¡ciÃ³ utÃ¡n?",
-      en: "What do I receive after the consultation?",
-    },
-    faqA4: {
-      hu: "48 Ã³rÃ¡n belÃ¼l egy Ã­rÃ¡sos Ã¶sszefoglalÃ³t Ã©s akciÃ³tervet kÃ¼ldÃ¼nk PDF-ben: szervezeti hÅ‘tÃ©rkÃ©p, csapatonkÃ©nti rÃ¶vid Ã©rtÃ©kelÃ©s, a megbeszÃ©lt akciÃ³k felelÅ‘ssel Ã©s hatÃ¡ridÅ‘vel, Ã©s a kÃ¶vetkezÅ‘ mÃ©rÃ©si pont javaslat. Azonnal tovÃ¡bbÃ­thatÃ³ a menedzsment meetingre.",
-      en: "Within 48 hours we send a written summary and action plan PDF: org heat map, short team-by-team evaluation, action list with owners and deadlines, and next measurement point recommendation. Ready to share in your next management meeting.",
-    },
-    faqQ5: {
-      hu: "Milyen gyakran van konzultÃ¡ciÃ³?",
-      en: "How often is the consultation?",
-    },
-    faqA5: {
-      hu: "A programod terjedelmÃ©tÅ‘l fÃ¼gg â€” jellemzÅ‘en negyedÃ©vente egy szervezeti szintÅ± alkalom. Ezen felÃ¼l csapat-szintÅ± mÃ©lyelemzÃ©s Ã©s extra alkalmak igÃ©ny szerint egyeztethetÅ‘k.",
-      en: "It depends on your programme â€” typically one org-level session per quarter. Team-level deep dives and extra sessions can be arranged on request.",
-    },
-    faqQ6: {
-      hu: "KonzultÃ¡ciÃ³ nÃ©lkÃ¼l is hasznÃ¡lhatÃ³ a platform?",
-      en: "Can I use the platform without consultations?",
-    },
-    faqA6: {
-      hu: "Igen. A platform Ã¶nmagÃ¡ban is teljes kÃ©pet ad â€” csapatminta, hÅ‘tÃ©rkÃ©p, feszÃ¼ltsÃ©gpÃ¡rok. A tanÃ¡csadÃ³i konzultÃ¡ciÃ³ ezt Ã©rtelmezi Ã©s fordÃ­tja le lÃ©pÃ©sekre; bÃ¡rmikor kÃ©rheted, kÃ¼lÃ¶n egyeztetÃ©ssel.",
-      en: "Yes. The platform alone gives the full picture â€” team pattern, heatmap, tension pairs. Advisory consultations interpret it and turn it into concrete steps; you can request them at any time.",
-    },
-  },
-  admin: {
-    title: { hu: "Admin Dashboard", en: "Admin Dashboard" },
-    subtitle: {
-      hu: "RendszerstatisztikÃ¡k Ã©s elemzÃ©sek",
-      en: "System statistics and analytics",
-    },
-    totalUsers: { hu: "Ã–sszes felhasznÃ¡lÃ³", en: "Total users" },
-    totalAssessments: { hu: "Ã–sszes teszt", en: "Total assessments" },
-    totalInvitations: { hu: "Ã–sszes meghÃ­vÃ³", en: "Total invitations" },
-    totalFeedback: { hu: "VisszajelzÃ©sek", en: "Feedback submissions" },
-    usersTitle: { hu: "FelhasznÃ¡lÃ³k", en: "Users" },
-    assessmentsTitle: { hu: "TesztkitÃ¶ltÃ©sek", en: "Test completions" },
-    invitationsTitle: { hu: "MeghÃ­vÃ³k", en: "Invitations" },
-    feedbackTitle: { hu: "VisszajelzÃ©sek", en: "Feedback" },
-    new7days: { hu: "Ãšj (7 nap)", en: "New (7 days)" },
-    new30days: { hu: "Ãšj (30 nap)", en: "New (30 days)" },
-    byTestType: { hu: "TeszttÃ­pusonkÃ©nt", en: "By test type" },
-    conversionRate: { hu: "KonverziÃ³", en: "Conversion rate" },
-    avgAge: { hu: "Ãtlag Ã©letkor", en: "Avg age" },
-    medianAge: { hu: "MediÃ¡n Ã©letkor", en: "Median age" },
-    ageRange: { hu: "Kor tartomÃ¡ny", en: "Age range" },
-  },
-
-  // â”€â”€ Org detail page (/org/[id]) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  org: {
-    eyebrow: { hu: "szervezet", en: "organization" },
-
-    // â”€â”€ /org/suspended â€” inaktÃ­v szervezet zsÃ¡kutca-oldala â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    suspended: {
-      eyebrow: { hu: "inaktÃ­v", en: "inactive" },
-      title: { hu: "Szervezet inaktÃ­v", en: "Organization inactive" },
-      body1: {
-        hu: "A szervezet, amelyhez tartozol, jelenleg inaktÃ­v.",
-        en: "The organization you belong to is currently inactive.",
-      },
-      body2: {
-        hu: "Ha Ãºgy gondolod, ez hiba, keresd a szervezet adminisztrÃ¡torÃ¡t â€” vagy Ã­rj nekÃ¼nk, Ã©s segÃ­tÃ¼nk.",
-        en: "If you think this is a mistake, contact your organization's administrator â€” or write to us and we'll help.",
-      },
-      ctaResults: { hu: "Vissza az eredmÃ©nyeimhez", en: "Back to my results" },
-      ctaContact: { hu: "KapcsolatfelvÃ©tel", en: "Contact us" },
-    },
-
-    setupPending: { hu: "BeÃ¡llÃ­tÃ¡s folyamatban", en: "Setup pending" },
-    settingsLink: { hu: "BeÃ¡llÃ­tÃ¡sok", en: "Settings" },
-    membersLabel: { hu: "Tagok", en: "Members" },
-    pendingSuffix: { hu: "fÃ¼ggÅ‘ben", en: "pending" },
-    teamsLabel: { hu: "Csapatok", en: "Teams" },
-    activeCampaigns: { hu: "AktÃ­v mÃ©rÃ©s", en: "Active measurements" },
-    closedSuffix: { hu: "lezÃ¡rt", en: "closed" },
-    completionRate: { hu: "BefejezÃ©si arÃ¡ny", en: "Completion rate" },
-
-    // â”€â”€ Org story dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    heroSub: { hu: "A szervezeted pillanatkÃ©pe", en: "Your organization at a glance" },
-    heroCta1: { hu: "Ãšj Ã©rtÃ©kelÃ©s indÃ­tÃ¡sa", en: "Start new assessment" },
-    heroCta2: { hu: "Csapatok Ã¡ttekintÃ©se", en: "View teams" },
-
-    insightEyebrow: { hu: "Most Ã©rdemes figyelni", en: "Worth your attention" },
-    insightActivityTitle: { hu: "Legfrissebb aktivitÃ¡s", en: "Latest activity" },
-    insightActivityNone: { hu: "MÃ©g nincs rÃ¶gzÃ­tett aktivitÃ¡s", en: "No recorded activity yet" },
-    insightFeedbackTitle: { hu: "VisszajelzÃ©si kÃ¶rÃ¶k", en: "Feedback rounds" },
-    insightFeedbackActive: { hu: "{count} aktÃ­v visszajelzÃ©si kÃ¶r fut", en: "{count} active feedback round(s) running" },
-    insightFeedbackNone: { hu: "Nincs futÃ³ visszajelzÃ©si kÃ¶r â€” Ã©rdemes Ãºjat indÃ­tani", en: "No active feedback round â€” consider starting one" },
-    insightActionTitle: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    insightActionInvite: { hu: "MeghÃ­vÃ³ra vÃ¡rÃ³ tagok: {count}", en: "Members awaiting invitation: {count}" },
-    insightActionStart: { hu: "IndÃ­ts Ãºj mÃ©rÃ©st vagy hÃ­vj meg tagokat", en: "Start a new measurement or invite members" },
-
-    stateEyebrow: { hu: "Szervezeti Ã¡llapot", en: "Organization status" },
-    stateMembersTitle: { hu: "AktÃ­v tagok", en: "Active members" },
-    stateMembersSub: { hu: "{count} tag a szervezetben", en: "{count} members in the organization" },
-    stateTeamsTitle: { hu: "Csapatok", en: "Teams" },
-    stateTeamsSub: { hu: "{count} csapat regisztrÃ¡lva", en: "{count} teams registered" },
-    stateCompletionTitle: { hu: "KitÃ¶ltÃ¶ttsÃ©g", en: "Completion" },
-    stateCompletionSub: { hu: "{done}/{total} tag fejezte be az Ã©rtÃ©kelÃ©st", en: "{done}/{total} members completed their assessment" },
-    stateCampaignsTitle: { hu: "MÃ©rÃ©sek", en: "Measurements" },
-    stateCampaignsSub: { hu: "{active} aktÃ­v, {closed} lezÃ¡rt", en: "{active} active, {closed} closed" },
-
-    teamsEyebrow: { hu: "Csapatok Ã¡ttekintÃ©se", en: "Teams overview" },
-    teamCardMembers: { hu: "{count} tag", en: "{count} members" },
-    teamCardOpen: { hu: "MegnyitÃ¡s", en: "Open" },
-    teamCardNoTeams: { hu: "MÃ©g nincs csapat â€” hozz lÃ©tre egyet a csapat oldalon.", en: "No teams yet â€” create one on the teams page." },
-
-    ctaBandTitle: { hu: "KÃ©szen Ã¡lltok a kÃ¶vetkezÅ‘ kÃ¶rre?", en: "Ready for the next round?" },
-    ctaBandSub: { hu: "IndÃ­ts Ãºj visszajelzÃ©si kÃ¶rt vagy adj hozzÃ¡ Ãºj csapatot.", en: "Start a new feedback round or add a new team." },
-    ctaBandCta1: { hu: "Ãšj kÃ¶r indÃ­tÃ¡sa", en: "Start new round" },
-    ctaBandCta2: { hu: "Ãšj csapat", en: "New team" },
-
-    // â”€â”€ Org settings page (/org/[id]/settings) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    backToOrg: { hu: "Vissza a szervezethez", en: "Back to organization" },
-    settings: {
-      eyebrow: { hu: "beÃ¡llÃ­tÃ¡sok", en: "settings" },
-      orgNameEyebrow: { hu: "szervezet neve", en: "organization name" },
-      orgNameTitle: { hu: "Szervezet neve", en: "Organization name" },
-      subscriptionEyebrow: { hu: "elÅ‘fizetÃ©s", en: "subscription" },
-      subscriptionTitle: { hu: "ElÅ‘fizetÃ©s", en: "Subscription" },
-      statusActive: { hu: "AktÃ­v", en: "Active" },
-      statusPastDue: { hu: "FizetÃ©si hiba", en: "Past due" },
-      statusCanceled: { hu: "Lemondva", en: "Canceled" },
-      statusNone: { hu: "Nincs elÅ‘fizetÃ©s", en: "No subscription" },
-      trialDaysLeft: { hu: "{days} nap van hÃ¡tra", en: "{days} days left" },
-      trialExpiresToday: { hu: "Ma jÃ¡r le", en: "Expires today" },
-      accessActive: { hu: "A hozzÃ¡fÃ©rÃ©s aktÃ­v.", en: "Access is active." },
-      trialInfo: { hu: "14 napos prÃ³baidÅ‘szak â€“ kÃ¡rtyaadat nÃ©lkÃ¼l.", en: "14-day trial â€“ no credit card required." },
-      activatePrompt: { hu: "Az elÅ‘fizetÃ©s aktivÃ¡lÃ¡sÃ¡hoz kattints az alÃ¡bbi gombra.", en: "Activate your subscription using the button below." },
-      activateBtn: { hu: "AktivÃ¡lÃ¡s", en: "Activate" },
-      reactivateBtn: { hu: "ÃšjraaktivÃ¡lÃ¡s", en: "Reactivate" },
-      seatsEyebrow: { hu: "lÃ©tszÃ¡m", en: "seats" },
-      seatsTitle: { hu: "AktÃ­v helyek", en: "Active seats" },
-      includedSeats: { hu: "alap hely", en: "included seats" },
-      extraSeatsInfo: { hu: "+{extra} extra hely", en: "+{extra} extra seat{plural}" },
-      seatsAvailable: { hu: "{available} hely elÃ©rhetÅ‘", en: "{available} seat{plural} available" },
-      pendingInvites: { hu: "+{count} meghÃ­vÃ¡s fÃ¼ggÅ‘ben", en: "+{count} invitation{plural} pending" },
-      needMoreSeats: { hu: "TÃ¶bb hely kell?", en: "Need more seats?" },
-      upgradeHint: { hu: "Az Org csomag 40 helyet tartalmaz â€” a feltÃ©telekrÅ‘l egyeztess a tanÃ¡csadÃ³ddal.", en: "The Org plan includes 40 seats â€” discuss terms with your consultant." },
-      upgradeLink: { hu: "Upgrade", en: "Upgrade" },
-      rolesEyebrow: { hu: "szerepkÃ¶rÃ¶k", en: "roles" },
-      rolesTitle: { hu: "Tagok szerepkÃ¶rei", en: "Member roles" },
-      // CJ-CREDITS â€” jelÃ¶ltkeret-blokk (consulting-led: a tanÃ¡csadÃ³ kezeli)
-      creditsEyebrow: { hu: "jelÃ¶ltkeretek", en: "candidate credits" },
-      creditsTitle: { hu: "JelÃ¶ltkeretek", en: "Candidate credits" },
-      creditsUsage: {
-        hu: "{used} felhasznÃ¡lt Â· {total} Ã¶sszesen jÃ³vÃ¡Ã­rt",
-        en: "{used} used Â· {total} granted in total",
-      },
-      creditsConsultantNote: {
-        hu: "A jelÃ¶lt-felmÃ©rÃ©si kereteket a Trita tanÃ¡csadÃ³d kezeli: a consulting-egyÃ¼ttmÅ±kÃ¶dÃ©s rÃ©szekÃ©nt Ã¡llÃ­tja be Ã©s tÃ¶lti fel Å‘ket. Ha Ãºj keretre van szÃ¼ksÃ©getek, vagy kÃ©rdÃ©sed van az egyenlegrÅ‘l, jelezd nekÃ¼nk.",
-        en: "Candidate assessment credits are managed by your Trita consultant â€” they are set up and topped up as part of the consulting engagement. If you need more credits or have a question about the balance, get in touch.",
-      },
-      creditsContactCta: { hu: "KapcsolatfelvÃ©tel", en: "Contact us" },
-      dangerEyebrow: { hu: "veszÃ©lyes zÃ³na", en: "danger zone" },
-      dangerTitle: { hu: "VeszÃ©lyes zÃ³na", en: "Danger zone" },
-      dangerDescription: { hu: "A szervezet deaktivÃ¡lÃ¡sa utÃ¡n tagjai nem tudnak bejelentkezni az org-hoz kÃ¶tÃ¶tt felÃ¼letekre.", en: "Deactivating the organization will block members from accessing org-scoped pages." },
-      alreadyInactive: { hu: "A szervezet mÃ¡r inaktÃ­v.", en: "Organization is already inactive." },
-    },
-
-    // â”€â”€ Campaign pages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    campaign: {
-      // New campaign page
-      backWithName: { hu: "Vissza Â· {orgName}", en: "Back Â· {orgName}" },
-      newEyebrow: { hu: "Ãºj mÃ©rÃ©s", en: "new measurement" },
-      newTitle: { hu: "MÃ©rÃ©s lÃ©trehozÃ¡sa", en: "Create measurement" },
-
-      // Campaign detail page
-      eyebrowActive: { hu: "aktÃ­v mÃ©rÃ©s", en: "active measurement" },
-      eyebrowClosed: { hu: "lezÃ¡rt mÃ©rÃ©s", en: "closed measurement" },
-      eyebrowDraft: { hu: "mÃ©rÃ©s â€“ tervezÃ©s alatt", en: "measurement â€“ draft" },
-      statusActive: { hu: "AktÃ­v", en: "Active" },
-      statusClosed: { hu: "LezÃ¡rva", en: "Closed" },
-      statusDraft: { hu: "VÃ¡zlat", en: "Draft" },
-      createdAt: { hu: "LÃ©trehozva:", en: "Created:" },
-      closedAt: { hu: "LezÃ¡rva:", en: "Closed:" },
-      participant: { hu: "rÃ©sztvevÅ‘", en: "participant" },
-      participants: { hu: "rÃ©sztvevÅ‘", en: "participants" },
-      complete: { hu: "kitÃ¶ltve", en: "complete" },
-      selfAssessment: { hu: "Ã–nÃ©rtÃ©kelÃ©s", en: "Self-assessment" },
-      completed: { hu: "befejezett", en: "completed" },
-      observerDone: { hu: "KÃ¼lsÅ‘ visszajelzÃ©s kÃ©sz", en: "Observer done" },
-      receivedFeedback: { hu: "kapott visszajelzÃ©st", en: "received feedback" },
-      fullyComplete: { hu: "Teljes befejezÃ©s", en: "Fully complete" },
-      bothDone: { hu: "mindkettÅ‘ kÃ©sz", en: "both done" },
-
-      // PszicholÃ³giai biztonsÃ¡g pulse (anonim aggregÃ¡tum)
-      psEyebrow: { hu: "PszicholÃ³giai biztonsÃ¡g", en: "Psychological safety" },
-      psIndexTitle: { hu: "BiztonsÃ¡g-index", en: "Safety index" },
-      psCompleted: { hu: "kitÃ¶ltÃ¶tte", en: "completed" },
-      psAnonNote: {
-        hu: "A vÃ¡laszok nÃ©vtelenek: csak a csapatszintÅ± Ã¶sszesÃ­tÃ©s lÃ¡tszik, egyÃ©ni vÃ¡lasz nem kereshetÅ‘ vissza. Az eredmÃ©ny legalÃ¡bb 3 kitÃ¶ltÃ©stÅ‘l jelenik meg.",
-        en: "Responses are anonymous: only the team-level aggregate is shown, individual answers cannot be traced back. Results appear from at least 3 responses.",
-      },
-      psBelowThreshold: {
-        hu: "Az eredmÃ©ny legalÃ¡bb {min} kitÃ¶ltÃ©s utÃ¡n jelenik meg â€” Ã­gy senki vÃ¡lasza nem beazonosÃ­thatÃ³. EmlÃ©keztesd a csapatot, ha megakadt a kitÃ¶ltÃ©s.",
-        en: "Results appear after at least {min} responses â€” so nobody's answers can be identified. Remind the team if completion has stalled.",
-      },
-      psBandHigh: { hu: "ErÅ‘s biztonsÃ¡g-Ã©lmÃ©ny", en: "Strong sense of safety" },
-      psBandMid: { hu: "KÃ¶zepes biztonsÃ¡g-Ã©lmÃ©ny", en: "Moderate sense of safety" },
-      psBandLow: { hu: "TÃ¶rÃ©keny biztonsÃ¡g-Ã©lmÃ©ny", en: "Fragile sense of safety" },
-      psResponses: { hu: "{count} vÃ¡lasz", en: "{count} responses" },
-      // Â±-jel nÃ©lkÃ¼l (2026-08-11 termÃ©kdÃ¶ntÃ©s: Â± jelÃ¶lÃ©s nem kerÃ¼l a UI-ra).
-      psSpread: { hu: "szÃ³rÃ³dÃ¡s: {spread} pont", en: "spread: {spread} points" },
-      psItemsTitle: { hu: "ÃllÃ­tÃ¡sonkÃ©nt", en: "By statement" },
-      devArcEyebrow: { hu: "fejlÅ‘dÃ©si Ã­v", en: "development arc" },
-      devArcTitle: { hu: "FejlÅ‘dÃ©si Ã­v", en: "Development arc" },
-      devArcCompare: { hu: "Ã–sszehasonlÃ­tÃ¡s: \"{name}\" kampÃ¡nyhoz kÃ©pest", en: "Compared to: \"{name}\" campaign" },
-      participantsEyebrow: { hu: "rÃ©sztvevÅ‘k", en: "participants" },
-      participantsTitle: { hu: "RÃ©sztvevÅ‘k", en: "Participants" },
-      noParticipants: { hu: "MÃ©g nincs rÃ©sztvevÅ‘.", en: "No participants yet." },
-      participantDone: { hu: "KÃ©sz", en: "Done" },
-      participantSelfDone: { hu: "Ã–nÃ©rtÃ©kelÃ©s kÃ©sz", en: "Self done" },
-      participantNotStarted: { hu: "Nem kezdte", en: "Not started" },
-      statusEyebrow: { hu: "stÃ¡tusz", en: "status" },
-      managementTitle: { hu: "MÃ©rÃ©s kezelÃ©se", en: "Measurement management" },
-      activateDescription: { hu: "Az aktivÃ¡lÃ¡s utÃ¡n a rÃ©sztvevÅ‘k Ã©rtesÃ­tÃ©st kapnak Ã©s megkezdhetik az Ã©rtÃ©kelÃ©seket.", en: "After activation, participants will be notified and can begin evaluations." },
-      editDraftEyebrow: { hu: "piszkozat", en: "draft" },
-      editDraftTitle: { hu: "MÃ©rÃ©sek Ã©s cÃ©lzÃ¡s szerkesztÃ©se", en: "Edit measurements and targeting" },
-      editDraftHint: {
-        hu: "AmÃ­g a mÃ©rÃ©s piszkozat, a lÃ©pÃ©sek, a cÃ©l-csapat Ã©s az Ã¼tem szabadon mÃ³dosÃ­thatÃ³. AktivÃ¡lÃ¡s utÃ¡n az Ã¶sszetÃ©tel rÃ¶gzÃ¼l.",
-        en: "While the campaign is a draft, its measurement steps, target team and pacing can be changed freely. After activation the campaign composition is locked.",
-      },
-      editPresetDraftHint: {
-        hu: "A nevesÃ­tett csomag mÃ©rÃ©si lÃ©pÃ©sei rÃ¶gzÃ­tettek; piszkozatkÃ©nt a cÃ©l-csapat Ã©s az Ã¼tem mÃ©g mÃ³dosÃ­thatÃ³.",
-        en: "The named package has fixed measurement steps; its target team and pacing can still be changed while it is a draft.",
-      },
-      editTypesLabel: { hu: "MÃ©rÃ©sek (sorrendjÃ¼k kanonikus)", en: "Measurements (canonical order)" },
-      editTeamLabel: { hu: "CÃ©l-csapat", en: "Target team" },
-      editNoTeam: { hu: "Nincs csapat-cÃ©lzÃ¡s (egyÃ©nileg kivÃ¡lasztott rÃ©sztvevÅ‘k)", en: "No team targeting (individually selected participants)" },
-      editTeamNote: {
-        hu: "A csapat mÃ³dosÃ­tÃ¡sa nem Ã­rja Ã¡t a rÃ©sztvevÅ‘-listÃ¡t â€” a tagokat a RÃ©sztvevÅ‘k blokkban add hozzÃ¡.",
-        en: "Changing the team does not rewrite the participant list â€” add members in the Participants block.",
-      },
-      editSave: { hu: "MÃ³dosÃ­tÃ¡sok mentÃ©se", en: "Save changes" },
-      editSaved: { hu: "Elmentve.", en: "Saved." },
-      editFailed: { hu: "MentÃ©s sikertelen â€” prÃ³bÃ¡ld Ãºjra.", en: "Save failed â€” try again." },
-      discardDraft: { hu: "VÃ¡zlat elvetÃ©se", en: "Discard draft" },
-      discarding: { hu: "ElvetÃ©sâ€¦", en: "Discardingâ€¦" },
-      discardConfirm: {
-        hu: "Biztosan elveted ezt a mÃ©rÃ©s-vÃ¡zlatot? A vÃ¡zlat Ã©s a hozzÃ¡adott rÃ©sztvevÅ‘-lista vÃ©glegesen tÃ¶rlÅ‘dik.",
-        en: "Discard this measurement draft? The draft and its participant list will be permanently deleted.",
-      },
-      discardFailed: { hu: "Az elvetÃ©s nem sikerÃ¼lt â€” prÃ³bÃ¡ld Ãºjra.", en: "Discard failed â€” try again." },
-      discardConfirmCta: { hu: "VÃ©gleges elvetÃ©s", en: "Discard permanently" },
-      discardCancel: { hu: "MÃ©gse", en: "Cancel" },
-      deleteCampaign: { hu: "MÃ©rÃ©s tÃ¶rlÃ©se", en: "Delete measurement" },
-      deleting: { hu: "TÃ¶rlÃ©sâ€¦", en: "Deletingâ€¦" },
-      deleteConfirm: {
-        hu: "Biztosan tÃ¶rlÃ¶d ezt a mÃ©rÃ©st? A kÃ¶r MINDEN beadott Ã©rtÃ©kelÃ©se (bizalmi, szerep-visszajelzÃ©s, elismerÃ©s, pulzusmÃ©rÃ©s) vÃ©glegesen tÃ¶rlÅ‘dik, Ã©s a mÃ©rÃ©s a lezÃ¡rt kÃ¶rÃ¶k kÃ¶zt sem jelenik meg tÃ¶bbÃ©. A tagok sajÃ¡t eredmÃ©nyei (szemÃ©lyisÃ©g-teszt, szerep-kÃ©rdÅ‘Ã­v) megmaradnak.",
-        en: "Delete this measurement? ALL submitted ratings in this round (trust, role feedback, recognition, pulse) are permanently deleted, and the round will no longer appear among closed rounds. Members' own results (personality test, role questionnaire) are kept.",
-      },
-      deleteConfirmCta: { hu: "VÃ©gleges tÃ¶rlÃ©s", en: "Delete permanently" },
-      deleteFailed: { hu: "A tÃ¶rlÃ©s nem sikerÃ¼lt â€” prÃ³bÃ¡ld Ãºjra.", en: "Delete failed â€” try again." },
-      deleteHint: {
-        hu: "VÃ©gleges: a kÃ¶r beadott Ã©rtÃ©kelÃ©sei is tÃ¶rlÅ‘dnek, Ã©s a mÃ©rÃ©s a lezÃ¡rt listÃ¡bÃ³l is eltÅ±nik.",
-        en: "Permanent: the round's submitted ratings are deleted too, and the measurement disappears from the closed list.",
-      },
-      discardHint: {
-        hu: "Csak vÃ¡zlat vethetÅ‘ el â€” aktivÃ¡lt mÃ©rÃ©st lezÃ¡rni lehet, tÃ¶rÃ¶lni nem.",
-        en: "Only drafts can be discarded â€” an activated measurement can be closed, not deleted.",
-      },
-      peerFbStatsEyebrow: { hu: "kollÃ©gai visszajelzÃ©s kÃ¶r", en: "peer feedback round" },
-      peerFbStatsTitle: { hu: "RÃ©szvÃ©tel", en: "Participation" },
-      peerFbStatsBody: {
-        hu: "{givers} tag kÃ¼ldÃ¶tt be, Ã¶sszesen {items} javaslat; {covered} cÃ­mzettnÃ©l van meg a legalÃ¡bb 3 bekÃ¼ldÅ‘s kÃ¼szÃ¶b.",
-        en: "{givers} members submitted, {items} suggestions in total; {covered} recipients have reached the 3-sender threshold.",
-      },
-      peerFbStatsNote: {
-        hu: "A tartalmat a tanÃ¡csadÃ³i felÃ¼let nem mutatja â€” a visszajelzÃ©s a tagok kÃ¶zti kommunikÃ¡ciÃ³, itt csak a rÃ©szvÃ©tel kÃ¶vethetÅ‘.",
-        en: "Content is not shown on the consultant surface â€” feedback is member-to-member communication; only participation is tracked here.",
-      },
-      editTeamRequired: {
-        hu: "A kivÃ¡lasztott mÃ©rÃ©sekhez cÃ©l-csapat kell (a szerep-kÃ¶r, a bizalmi kÃ¶r Ã©s a pulzusmÃ©rÃ©s csapaton Ã©l).",
-        en: "The selected measurements need a target team (role, trust and pulse rounds live on a team).",
-      },
-      closeDescription: { hu: "A lezÃ¡rÃ¡s vÃ©gleges â€” az Ã©rtÃ©kelÃ©sek leÃ¡llnak Ã©s az eredmÃ©nyek rÃ¶gzÃ¼lnek.", en: "Closing is permanent â€” evaluations stop and results are recorded." },
-      activateCampaign: { hu: "MÃ©rÃ©s aktivÃ¡lÃ¡sa", en: "Activate measurement" },
-      closeCampaign: { hu: "MÃ©rÃ©s lezÃ¡rÃ¡sa", en: "Close measurement" },
-
-      // Personality dimension labels (campaign detail)
-      tritanINTE: { hu: "BecsÃ¼letessÃ©g-AlÃ¡zat", en: "Honesty-Humility" },
-      tritanRESO: { hu: "EmocionalitÃ¡s", en: "Emotionality" },
-      tritanTEMP: { hu: "ExtraverziÃ³", en: "Extraversion" },
-      tritanADAP: { hu: "BarÃ¡tsÃ¡gossÃ¡g", en: "Agreeableness" },
-      tritanTHOR: { hu: "LelkiismeretessÃ©g", en: "Conscientiousness" },
-      tritanOPEN: { hu: "NyitottsÃ¡g", en: "Openness" },
-    },
-
-    // â”€â”€ Shell / tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    shell: {
-      tabOverview: { hu: "ÃttekintÃ©s", en: "Overview" },
-      tabCampaigns: { hu: "MÃ©rÃ©sek", en: "Measurements" },
-      tabTeams: { hu: "Csapatok", en: "Teams" },
-      tabMembers: { hu: "Tagok", en: "Members" },
-      tabInquiries: { hu: "KÃ©rdÃ©sek", en: "Inquiries" },
-      tabCandidates: { hu: "JelÃ¶ltek", en: "Candidates" },
-      tabBilling: { hu: "SzÃ¡mlÃ¡zÃ¡s", en: "Billing" },
-    },
-
-    // â”€â”€ Billing tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    billing: {
-      statusActive: { hu: "AktÃ­v", en: "Active" },
-      statusCanceled: { hu: "Lemondva", en: "Canceled" },
-      trialDays: { hu: "{days} nap van hÃ¡tra", en: "{days} days remaining" },
-
-      monthly: { hu: "Havi", en: "Monthly" },
-
-
-
-      readOnly: { hu: "A szÃ¡mlÃ¡zÃ¡s megtekintÃ©se csak admin szÃ¡mÃ¡ra szerkeszthetÅ‘.", en: "Billing management requires admin access." },
-
-
-    },
-
-    // â”€â”€ Overview tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    overview: {
-      activeCampaignSingle: { hu: "AktÃ­v mÃ©rÃ©s: {name}", en: "Active measurement: {name}" },
-      activeCampaignMultiple: { hu: "{count} aktÃ­v mÃ©rÃ©s folyamatban", en: "{count} active measurements in progress" },
-      selfAssessmentsDone: { hu: "Ã¶nÃ©rtÃ©kelÃ©s kÃ©sz", en: "self-assessments done" },
-      participantsAllStepsDone: { hu: "rÃ©sztvevÅ‘ vÃ©gzett minden lÃ©pÃ©ssel", en: "participants finished all steps" },
-      campaignsLink: { hu: "MÃ©rÃ©sek", en: "Measurements" },
-      profileEyebrow: { hu: "szervezeti profil", en: "org profile" },
-      profileTitle: { hu: "Szervezeti szemÃ©lyisÃ©g", en: "Org personality" },
-      completionProgress: { hu: "{count} / 3 kitÃ¶ltÃ©s", en: "{count} / 3 completions" },
-      profileHint: { hu: "A szervezeti szemÃ©lyisÃ©gprofil 3 befejezett Ã©rtÃ©kelÃ©s utÃ¡n jelenik meg.", en: "The org personality profile appears after 3 completed assessments." },
-      teamsEyebrow: { hu: "csapatok", en: "teams" },
-      teamsTitle: { hu: "Csapatok", en: "Teams" },
-      noTeams: { hu: "MÃ©g nincs csapat. Hozz lÃ©tre egyet a Csapatok fÃ¼lÃ¶n!", en: "No teams yet. Create one in the Teams tab!" },
-      teamMemberCount: { hu: "tag", en: "member" },
-      teamMembersCount: { hu: "tag", en: "members" },
-    },
-
-    // â”€â”€ Members tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    members: {
-      eyebrow: { hu: "tagok", en: "members" },
-      title: { hu: "Tagok", en: "Members" },
-      invitePending: { hu: "MeghÃ­vÃ³ fÃ¼ggÅ‘ben", en: "Invite pending" },
-      pendingBadge: { hu: "FÃ¼ggÅ‘ben", en: "Pending" },
-      noMembers: { hu: "MÃ©g nincs tag.", en: "No members yet." },
-      inviteEyebrow: { hu: "meghÃ­vÃ¡s", en: "invite" },
-      inviteTitle: { hu: "Tag hozzÃ¡adÃ¡sa", en: "Add a member" },
-      inviteDescription: { hu: "Add meg az emailcÃ­met. RegisztrÃ¡lt felhasznÃ¡lÃ³ azonnal csatlakozik; Ãºj felhasznÃ¡lÃ³ meghÃ­vÃ³-emailt kap, Ã©s regisztrÃ¡ciÃ³ utÃ¡n lÃ©p be.", en: "Enter the email address. A registered user joins immediately; a new user gets an invite email and joins after signing up." },
-      roleAdmin: { hu: "Admin", en: "Admin" },
-      roleConsultant: { hu: "TanÃ¡csadÃ³", en: "Consultant" },
-      roleManager: { hu: "Menedzser", en: "Manager" },
-      roleMember: { hu: "Tag", en: "Member" },
-    },
-
-    // â”€â”€ Teams tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    teams: {
-      noTeams: { hu: "MÃ©g nincs csapat. Hozz lÃ©tre egyet lentebb!", en: "No teams yet. Create one below!" },
-      memberCount: { hu: "tag", en: "member" },
-      membersCount: { hu: "tag", en: "members" },
-      newEyebrow: { hu: "Ãºj csapat", en: "new team" },
-      newTitle: { hu: "Ãšj csapat lÃ©trehozÃ¡sa", en: "Create a new team" },
-    },
-
-    // â”€â”€ Campaigns tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    campaigns: {
-      activeEyebrow: { hu: "aktÃ­v mÃ©rÃ©sek", en: "active measurements" },
-      activeTitle: { hu: "AktÃ­v mÃ©rÃ©sek", en: "Active measurements" },
-      noActive: { hu: "Nincs aktÃ­v mÃ©rÃ©s. IndÃ­ts egy vÃ¡zlatbÃ³l, vagy hozz lÃ©tre Ãºjat!", en: "No active measurements. Activate a draft or create a new one!" },
-      draftsDivider: { hu: "vÃ¡zlatok", en: "drafts" },
-      closedDivider: { hu: "lezÃ¡rt kÃ¶rÃ¶k", en: "closed rounds" },
-      newCta: { hu: "Ãšj mÃ©rÃ©s", en: "New measurement" },
-      newCtaDesc: { hu: "Szervezett 360Â° visszajelzÃ©si kÃ¶r indÃ­tÃ¡sa a csapatban", en: "Launch a structured 360Â° feedback round for your team" },
-      createLink: { hu: "LÃ©trehozÃ¡s", en: "Create" },
-      newEyebrow: { hu: "Ãºj mÃ©rÃ©s", en: "new measurement" },
-      createTitle: { hu: "MÃ©rÃ©s lÃ©trehozÃ¡sa", en: "Create measurement" },
-      nameLabel: { hu: "MÃ©rÃ©s neve", en: "Measurement name" },
-      namePlaceholder: { hu: "pl. Q1 2026 Ã©rtÃ©kelÃ©s", en: "e.g. Q1 2026 review" },
-      descLabel: { hu: "LeÃ­rÃ¡s (opcionÃ¡lis)", en: "Description (optional)" },
-      descPlaceholder: { hu: "RÃ¶vid leÃ­rÃ¡s a mÃ©rÃ©srÅ‘lâ€¦", en: "Brief descriptionâ€¦" },
-      creating: { hu: "LÃ©trehozÃ¡sâ€¦", en: "Creatingâ€¦" },
-      createButton: { hu: "MÃ©rÃ©s lÃ©trehozÃ¡sa", en: "Create measurement" },
-      cancel: { hu: "MÃ©gse", en: "Cancel" },
-      networkError: { hu: "HÃ¡lÃ³zati hiba. PrÃ³bÃ¡ld Ãºjra.", en: "Network error. Please try again." },
-    },
-
-    // â”€â”€ Campaign card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    card: {
-      closed: { hu: "LezÃ¡rt", en: "Closed" },
-      freshRound: { hu: "ÃšjrafelvÃ©teli kÃ¶r", en: "Re-measurement round" },
-      complete: { hu: "teljes", en: "complete" },
-      summaryLink: { hu: "Ã–sszesÃ­tÅ‘", en: "Summary" },
-      draft: { hu: "VÃ¡zlat", en: "Draft" },
-      participantsAdded: { hu: "rÃ©sztvevÅ‘ hozzÃ¡adva", en: "participant added" },
-      participantsAddedPlural: { hu: "rÃ©sztvevÅ‘ hozzÃ¡adva", en: "participants added" },
-      editLink: { hu: "SzerkesztÃ©s", en: "Edit" },
-      active: { hu: "AktÃ­v", en: "Active" },
-      started: { hu: "IndÃ­tva:", en: "Started:" },
-      participantSingular: { hu: "rÃ©sztvevÅ‘", en: "participant" },
-      participantPlural: { hu: "rÃ©sztvevÅ‘", en: "participants" },
-      selfDone: { hu: "Ã–nÃ©rtÃ©kelÃ©s kÃ©sz", en: "Self-assessment done" },
-      observerDone: { hu: "KÃ¼lsÅ‘ visszajelzÃ©s kÃ©sz", en: "Observer done" },
-      fullyComplete: { hu: "Teljes befejezÃ©s", en: "Fully complete" },
-      fullyDoneLabel: { hu: "teljes", en: "complete" },
-      inProgress: { hu: "folyamatban", en: "in progress" },
-      notStarted: { hu: "nem kezdte", en: "not started" },
-      viewLink: { hu: "MÃ©rÃ©s megnyitÃ¡sa", en: "Open measurement" },
-      sending: { hu: "KÃ¼ldÃ©sâ€¦", en: "Sendingâ€¦" },
-      remindButton: { hu: "EmlÃ©keztetÅ‘ ({count})", en: "Remind ({count})" },
-      remindedResult: { hu: "{count} szemÃ©lynek kÃ¼ldtÃ¼nk emlÃ©keztetÅ‘t", en: "Reminded {count} participant" },
-      remindedResultPlural: { hu: "{count} szemÃ©lynek kÃ¼ldtÃ¼nk emlÃ©keztetÅ‘t", en: "Reminded {count} participants" },
-      remindError: { hu: "Hiba tÃ¶rtÃ©nt", en: "Something went wrong" },
-      remindNetworkError: { hu: "HÃ¡lÃ³zati hiba", en: "Network error" },
-    },
-
-    // â”€â”€ Campaign list (legacy) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    list: {
-      noCampaigns: { hu: "MÃ©g nincs mÃ©rÃ©s. Hozz lÃ©tre egyet lentebb!", en: "No measurements yet. Create one below!" },
-      participantCount: { hu: "rÃ©sztvevÅ‘", en: "participant" },
-      participantsCount: { hu: "rÃ©sztvevÅ‘", en: "participants" },
-      manageTitle: { hu: "RÃ©sztvevÅ‘k kezelÃ©se", en: "Manage participants" },
-      addEyebrow: { hu: "rÃ©sztvevÅ‘k hozzÃ¡adÃ¡sa", en: "add participants" },
-      noMembers: { hu: "Nincsenek tagok.", en: "No members." },
-      adding: { hu: "HozzÃ¡adÃ¡sâ€¦", en: "Addingâ€¦" },
-      addButton: { hu: "HozzÃ¡adÃ¡s ({count})", en: "Add ({count})" },
-      cancel: { hu: "MÃ©gse", en: "Cancel" },
-      newEyebrow: { hu: "Ãºj mÃ©rÃ©s", en: "new measurement" },
-      newTitle: { hu: "Ãšj mÃ©rÃ©s", en: "New measurement" },
-      namePlaceholder: { hu: "MÃ©rÃ©s neve", en: "Measurement name" },
-      descPlaceholder: { hu: "LeÃ­rÃ¡s (opcionÃ¡lis)", en: "Description (optional)" },
-      creating: { hu: "LÃ©trehozÃ¡sâ€¦", en: "Creatingâ€¦" },
-      createButton: { hu: "MÃ©rÃ©s lÃ©trehozÃ¡sa", en: "Create measurement" },
-      statusActive: { hu: "AktÃ­v", en: "Active" },
-      statusClosed: { hu: "LezÃ¡rva", en: "Closed" },
-      statusDraft: { hu: "VÃ¡zlat", en: "Draft" },
-    },
-
-    // â”€â”€ Setup wizard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    setup: {
-      step1Eyebrow: { hu: "1. lÃ©pÃ©s", en: "step 1" },
-      step1Title: { hu: "Szervezet neve", en: "Organization name" },
-      step1Subtitle: { hu: "ErÅ‘sÃ­tsd meg vagy mÃ³dosÃ­tsd a szervezet nevÃ©t.", en: "Confirm or update your organization name." },
-      nameLabel: { hu: "Szervezet neve", en: "Name" },
-      nameSaveError: { hu: "Nem sikerÃ¼lt menteni a nevet.", en: "Failed to save name." },
-      next: { hu: "TovÃ¡bb", en: "Next" },
-      step2Title: { hu: "VÃ¡lassz avatart", en: "Choose an avatar" },
-      showAll: { hu: "+ Ã–sszes megjelenÃ­tÃ©se ({count})", en: "+ Show all ({count})" },
-      back: { hu: "Vissza", en: "Back" },
-      step3Eyebrow: { hu: "2. lÃ©pÃ©s", en: "step 2" },
-      step3Title: { hu: "Tagok meghÃ­vÃ¡sa", en: "Invite members" },
-      step3Subtitle: { hu: "HÃ­vj meg tagokat az indulÃ¡shoz (opcionÃ¡lis). EmailcÃ­mek, akik mÃ©g nem regisztrÃ¡ltak, meghÃ­vÃ³t kapnak.", en: "Invite members to get started (optional). Unregistered emails will receive an invite." },
-      finish: { hu: "BefejezÃ©s", en: "Finish setup" },
-      networkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-    },
-
-    // â”€â”€ Forms â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    forms: {
-      // OrgCreateForm
-      createOrgName: { hu: "Szervezet neve", en: "Organization name" },
-      createPlaceholder: { hu: "pl. Trita Kft.", en: "e.g. Acme Corp" },
-      createLoading: { hu: "LÃ©trehozÃ¡s...", en: "Creating..." },
-      createButton: { hu: "LÃ©trehozÃ¡s", en: "Create" },
-      alreadyInOrg: { hu: "MÃ¡r tagja vagy egy szervezetnek.", en: "You already belong to an organization." },
-      createGenericError: { hu: "Hiba tÃ¶rtÃ©nt. PrÃ³bÃ¡ld Ãºjra.", en: "Something went wrong. Please try again." },
-      createNetworkError: { hu: "HÃ¡lÃ³zati hiba. PrÃ³bÃ¡ld Ãºjra.", en: "Network error. Please try again." },
-
-      // OrgInviteForm
-      emailLabel: { hu: "Email cÃ­m", en: "Email address" },
-      emailPlaceholder: { hu: "kollÃ©ga@cÃ©g.hu", en: "colleague@company.com" },
-      roleLabel: { hu: "SzerepkÃ¶r", en: "Role" },
-      roleMember: { hu: "Tag", en: "Member" },
-      roleManager: { hu: "Menedzser", en: "Manager" },
-      inviteLoading: { hu: "HozzÃ¡adÃ¡s...", en: "Adding..." },
-      inviteButton: { hu: "HozzÃ¡adÃ¡s", en: "Add" },
-      memberAdded: { hu: "Tag hozzÃ¡adva!", en: "Member added!" },
-      inviteSent: { hu: "MeghÃ­vÃ³ elkÃ¼ldve â€” amint regisztrÃ¡lnak, automatikusan csatlakoznak.", en: "Invite sent â€” they'll join automatically once they register." },
-      alreadyMember: { hu: "Ez az emailcÃ­m mÃ¡r tag.", en: "This email is already a member." },
-      alreadyInOrgInvite: { hu: "Ez a felhasznÃ¡lÃ³ mÃ¡r tagja egy szervezetnek.", en: "This user already belongs to an organization." },
-      selfInvite: { hu: "SajÃ¡t magadat nem hÃ­vhatod meg.", en: "You cannot invite yourself." },
-      inviteGenericError: { hu: "Hiba tÃ¶rtÃ©nt. PrÃ³bÃ¡ld Ãºjra.", en: "Something went wrong. Please try again." },
-      inviteNetworkError: { hu: "HÃ¡lÃ³zati hiba. PrÃ³bÃ¡ld Ãºjra.", en: "Network error. Please try again." },
-
-      // TÃ¶meges meghÃ­vÃ¡s (BulkInviteForm). A pilot 200â€“500 kitÃ¶ltÅ‘je
-      // egyesÃ©vel felvive a program legdrÃ¡gÃ¡bb kÃ©zi munkaÃ³rÃ¡jÃ¡t jelentette.
-      bulkToggleOn: { hu: "TÃ¶bb cÃ­m egyszerre", en: "Invite several at once" },
-      bulkToggleOff: { hu: "Egy cÃ­m megadÃ¡sa", en: "Invite a single address" },
-      bulkLabel: { hu: "Email cÃ­mek", en: "Email addresses" },
-      bulkPlaceholder: {
-        hu: "Illeszd be a cÃ­meket â€” soronkÃ©nt, vesszÅ‘vel vagy a levelezÅ‘bÅ‘l mÃ¡solva.\n\nanna@ceg.hu\nBela Kovacs <bela@ceg.hu>",
-        en: "Paste the addresses â€” one per line, comma-separated, or copied from your mail client.\n\nanna@company.com\nBella Smith <bella@company.com>",
-      },
-      bulkHint: {
-        hu: "BÃ¡rmilyen elvÃ¡lasztÃ³ jÃ³ (sortÃ¶rÃ©s, vesszÅ‘, pontosvesszÅ‘). Az ismÃ©tlÅ‘dÅ‘ cÃ­meket kiszÅ±rjÃ¼k.",
-        en: "Any separator works (line break, comma, semicolon). Duplicate addresses are filtered out.",
-      },
-      bulkParsed: { hu: "{count} cÃ­m felismerve", en: "{count} addresses recognized" },
-      bulkInvalid: { hu: "{count} nem Ã©rtelmezhetÅ‘: {list}", en: "{count} could not be read: {list}" },
-      bulkSubmit: { hu: "{count} cÃ­m meghÃ­vÃ¡sa", en: "Invite {count} addresses" },
-      bulkProgress: { hu: "KÃ¼ldÃ©sâ€¦ {done}/{total}", en: "Sendingâ€¦ {done}/{total}" },
-      bulkDone: { hu: "KÃ©sz â€” {total} cÃ­m feldolgozva.", en: "Done â€” {total} addresses processed." },
-      // Az Ã¶sszegzÃ©s sorai. Csak a nem nulla tÃ©telek jelennek meg.
-      bulkAdded: { hu: "{count} azonnal tag lett (mÃ¡r volt fiÃ³kjuk)", en: "{count} joined immediately (they already had an account)" },
-      bulkInvited: { hu: "{count} meghÃ­vÃ³t kapott emailben", en: "{count} received an email invite" },
-      bulkNoEmail: {
-        hu: "{count} meghÃ­vÃ³ lÃ©trejÃ¶tt, de a levÃ©l NEM ment ki â€” kÃ¼ldj nekik linket kÃ©zzel",
-        en: "{count} invites created, but the email did NOT go out â€” send them a link manually",
-      },
-      bulkAlready: { hu: "{count} mÃ¡r tag volt", en: "{count} were already members" },
-      bulkSelf: { hu: "{count} a sajÃ¡t cÃ­med volt", en: "{count} was your own address" },
-      bulkFailed: { hu: "{count} cÃ­mnÃ©l hiba tÃ¶rtÃ©nt", en: "{count} addresses failed" },
-
-      // OrgRenameForm
-      renameLabel: { hu: "Szervezet neve", en: "Organization name" },
-      save: { hu: "MentÃ©s", en: "Save" },
-      saved: { hu: "Mentve.", en: "Saved." },
-      renameError: { hu: "Hiba tÃ¶rtÃ©nt.", en: "Something went wrong." },
-      renameNetworkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-
-      // OrgMemberRoleEditor
-      lastAdminError: { hu: "Nem mÃ³dosÃ­thatÃ³ â€” utolsÃ³ admin.", en: "Cannot change â€” last admin." },
-      roleChangeError: { hu: "Hiba tÃ¶rtÃ©nt.", en: "Something went wrong." },
-      roleNetworkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-      teamPermissionsHint: { hu: "Csapat jogosultsÃ¡gok kÃ¼lÃ¶n Ã¡llÃ­thatÃ³k.", en: "Team permissions set per team." },
-    },
-
-    // â”€â”€ Action buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    actions: {
-      // OrgRemoveMemberButton
-      removeButton: { hu: "EltÃ¡volÃ­t", en: "Remove" },
-      removeLastAdmin: { hu: "Nem tÃ¡volÃ­thatÃ³ el â€” utolsÃ³ admin.", en: "Cannot remove â€” last admin." },
-      removeError: { hu: "Hiba tÃ¶rtÃ©nt.", en: "Something went wrong." },
-      removeNetworkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-
-      // OrgDeactivateButton
-      deactivateButton: { hu: "Szervezet deaktivÃ¡lÃ¡sa", en: "Deactivate organization" },
-      deactivateConfirm: { hu: "Biztosan deaktivÃ¡lod a szervezetet?", en: "Are you sure you want to deactivate?" },
-      deactivateYes: { hu: "Igen, deaktivÃ¡lÃ¡s", en: "Yes, deactivate" },
-      deactivateCancel: { hu: "MÃ©gse", en: "Cancel" },
-      deactivateError: { hu: "Hiba tÃ¶rtÃ©nt.", en: "Something went wrong." },
-      deactivateNetworkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-
-      // OrgPendingInviteCancelButton
-      cancelInviteYes: { hu: "Igen", en: "Yes" },
-      cancelInviteNo: { hu: "Nem", en: "No" },
-      cancelInviteButton: { hu: "TÃ¶rlÃ©s", en: "Cancel" },
-
-      // RemindPendingButton
-      reminderSent: { hu: "EmlÃ©keztetÅ‘ elkÃ¼ldve", en: "Reminders sent" },
-      reminderSending: { hu: "KÃ¼ldÃ©s...", en: "Sending..." },
-      reminderButton: { hu: "EmlÃ©keztetÅ‘ kÃ¼ldÃ©se", en: "Send reminders" },
-
-      // AddParticipantButton
-      addParticipants: { hu: "+ RÃ©sztvevÅ‘k hozzÃ¡adÃ¡sa", en: "+ Add participants" },
-      selectEyebrow: { hu: "rÃ©sztvevÅ‘k kivÃ¡lasztÃ¡sa", en: "select participants" },
-      addingParticipants: { hu: "HozzÃ¡adÃ¡sâ€¦", en: "Addingâ€¦" },
-      addCount: { hu: "HozzÃ¡adÃ¡s ({count})", en: "Add ({count})" },
-      addCancel: { hu: "MÃ©gse", en: "Cancel" },
-    },
-
-    // â”€â”€ NextStepBanner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    nextStep: {
-      inviteTitle: { hu: "HÃ­vj meg legalÃ¡bb 3 tagot a szervezetbe", en: "Invite at least 3 members to your org" },
-      inviteSub: { hu: "Minimum 3 kitÃ¶ltÃ©s szÃ¼ksÃ©ges a szervezeti profil megjelenÃ­tÃ©sÃ©hez.", en: "At least 3 completions are needed to display the org personality profile." },
-      inviteCta: { hu: "Tagok", en: "Members" },
-      campaignTitle: { hu: "Hozz lÃ©tre egy mÃ©rÃ©st", en: "Create your first measurement" },
-      campaignSub: { hu: "IndÃ­ts egy mÃ©rÃ©st, hogy a tagok megkezdhessÃ©k a kitÃ¶ltÃ©st.", en: "Start a measurement so members can begin their assessments." },
-      campaignCta: { hu: "MÃ©rÃ©s", en: "Measurement" },
-      awaitTitle: { hu: "VÃ¡rakozÃ¡s kitÃ¶ltÃ©sekre Â· {completed}/3", en: "Waiting for completions Â· {completed}/3" },
-      awaitSub: { hu: "A szervezeti profil 3 befejezett Ã©rtÃ©kelÃ©s utÃ¡n jelenik meg.", en: "The org personality profile appears after 3 completed assessments." },
-    },
-  },
-
-  // â”€â”€ Org detail page: remaining hardcoded strings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  orgRisk: {
-    pendingTitle: { hu: "FÃ¼ggÅ‘ meghÃ­vÃ¡sok", en: "Pending invites" },
-    pendingDesc: { hu: "{count} meghÃ­vÃ¡s mÃ©g visszaigazolÃ¡sra vÃ¡r.", en: "{count} invites are still awaiting acceptance." },
-    pendingCta: { hu: "Tagok kezelÃ©se", en: "Manage members" },
-    noActiveTitle: { hu: "Nincs aktÃ­v kÃ¶r", en: "No active round" },
-    noActiveDesc: { hu: "A szervezeti trendekhez Ã©rdemes aktÃ­v visszajelzÃ©si kÃ¶rt futtatni.", en: "Run an active feedback round to track org-level trends." },
-    noActiveCta: { hu: "KÃ¶r indÃ­tÃ¡sa", en: "Start round" },
-    recommendedTitle: { hu: "AjÃ¡nlott kÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Recommended next step" },
-    recommendedPendingDesc: { hu: "ZÃ¡rd le a fÃ¼ggÅ‘ meghÃ­vÃ¡sokat, hogy stabilabb legyen a szervezeti kÃ©p.", en: "Close pending invites to improve org-level signal quality." },
-    recommendedPendingPrimary: { hu: "Tagok kezelÃ©se", en: "Manage members" },
-    recommendedPendingSecondary: { hu: "Csapatok Ã¡ttekintÃ©se", en: "Review teams" },
-    recommendedCampaignDesc: { hu: "A kÃ¶vetkezÅ‘ szervezeti mÃ©rÃ©si ciklushoz indÃ­ts Ãºj mÃ©rÃ©st.", en: "Launch a new measurement for the next org insight cycle." },
-    recommendedCampaignPrimary: { hu: "Ãšj mÃ©rÃ©s indÃ­tÃ¡sa", en: "Start new measurement" },
-    recommendedCampaignSecondary: { hu: "Csapatok Ã¡ttekintÃ©se", en: "Review teams" },
-    teamUpdated: { hu: "Csapat frissÃ­tve: {name}", en: "Team updated: {name}" },
-    teamMembersMeta: { hu: "{count} tag", en: "{count} members" },
-  },
-  orgHero: {
-    liveSnapshot: { hu: "Ã‰lÅ‘ pillanatkÃ©p", en: "Live snapshot" },
-    membersLabel: { hu: "Tag", en: "Members" },
-    teamsLabel: { hu: "Csapat", en: "Teams" },
-    activeLabel: { hu: "AktÃ­v kÃ¶r", en: "Active" },
-    orgCompletion: { hu: "Szervezeti kitÃ¶ltÃ©s", en: "Org completion" },
-    done: { hu: "kÃ©sz", en: "done" },
-    remaining: { hu: "hÃ¡tra", en: "remaining" },
-    activeCampaignCompletion: { hu: "AktÃ­v mÃ©rÃ©s kitÃ¶ltÃ©s", en: "Active measurement completion" },
-  },
-  orgLayers: {
-    eyebrow: { hu: "4+2 rÃ©tegkÃ©szÃ¼ltsÃ©g", en: "4+2 layer readiness" },
-    layersTitle: { hu: "Szervezeti mÃ©lyÃ­tÅ‘ rÃ©tegek", en: "Org deepening layers" },
-    statusCompleted: { hu: "KÃ©sz", en: "Completed" },
-    statusInProgress: { hu: "Folyamatban", en: "In progress" },
-    statusAvailable: { hu: "ElÃ©rhetÅ‘", en: "Available" },
-    statusLocked: { hu: "ZÃ¡rolt", en: "Locked" },
-  },
-
-  // â”€â”€ Admin dashboard (/dashboard AdminDashboard.tsx) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  dashboard: {
-    loading: { hu: "BetÃ¶ltÃ©s...", en: "Loading..." },
-    loadError: { hu: "Nem sikerÃ¼lt betÃ¶lteni az adatokat.", en: "Could not load data." },
-    retry: { hu: "ÃšjraprÃ³bÃ¡lom", en: "Retry" },
-    missingAssessments: { hu: "HiÃ¡nyzÃ³ kitÃ¶ltÃ©sek", en: "Missing assessments" },
-    sendReminder: { hu: "EmlÃ©keztetÅ‘ kÃ¼ldÃ©se", en: "Send reminder" },
-    feedbackNotStarted: { hu: "VisszajelzÃ©si kÃ¶r nem indult", en: "Feedback round not started" },
-    feedbackNotStartedDesc: { hu: "CsapatkÃ©p utÃ¡n indÃ­thatÃ³", en: "Available after team pattern unlock" },
-    teamPatternAvailable: { hu: "CsapatkÃ©p megtekinthetÅ‘", en: "Team pattern available" },
-    teamPatternAvailableCount: { hu: "{count} csapatnÃ¡l elÃ©rhetÅ‘", en: "Available for {count} team(s)" },
-    teamPatternView: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team insight" },
-    activityCompleted: { hu: "kitÃ¶ltÃ¶tte a szemÃ©lyisÃ©gtesztet", en: "completed the assessment" },
-    activityJoined: { hu: "csatlakozott", en: "joined" },
-    bestNextStep: { hu: "Most ez a legfontosabb", en: "Most important now" },
-    reminderFallbackDesc: { hu: "Most a {teamName} csapat hiÃ¡nyzÃ³ tagjait kell emlÃ©keztetni, hogy lezÃ¡rhatÃ³ legyen a csapatkÃ©p.", en: "Right now, remind missing members in {teamName} so the team insight can be completed." },
-    reminderFallbackPrimary: { hu: "Tagok emlÃ©keztetÃ©se", en: "Remind members" },
-    snapshotFallbackDesc: { hu: "A csapatkÃ©p mÃ¡r elÃ©rhetÅ‘. KÃ¶vetkezÅ‘ lÃ©pÃ©skÃ©nt nyisd meg Ã©s egyeztesd a csapattal.", en: "Team insight is available. Next step: open it and align with the team." },
-    snapshotFallbackPrimary: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team insight" },
-    campaignFallbackDesc: { hu: "A kÃ¶vetkezÅ‘ kÃ¶r mÃ¡r indÃ­thatÃ³. KÃ¶vetkezÅ‘ lÃ©pÃ©skÃ©nt indÃ­ts Ãºj visszajelzÃ©si kÃ¶rt.", en: "The next round can be launched now. Next step: start a new feedback round." },
-    campaignFallbackPrimary: { hu: "KÃ¶r indÃ­tÃ¡sa", en: "Start round" },
-    recommendedNextStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    openOrgCockpit: { hu: "Szervezeti nÃ©zet", en: "Open organization view" },
-    firstTeamCreated: { hu: "ElsÅ‘ csapat lÃ©trehozva", en: "First team created" },
-    teamCreatedDetail: { hu: "{name} lÃ©trehozva", en: "{name} created" },
-    teamCreateNeeded: { hu: "Csapat lÃ©trehozÃ¡sa szÃ¼ksÃ©ges", en: "Create your first team" },
-    openTeam: { hu: "Csapat megnyitÃ¡sa", en: "Open team" },
-    createTeam: { hu: "Csapat lÃ©trehozÃ¡sa", en: "Create team" },
-    completeProfile: { hu: "SajÃ¡t profil kitÃ¶ltÃ©se", en: "Complete your profile" },
-    profileDone: { hu: "KÃ©sz", en: "Done" },
-    profileMissing: { hu: "A vezetÅ‘i profil mÃ©g hiÃ¡nyzik", en: "Leader profile is still missing" },
-    viewProfile: { hu: "MegtekintÃ©s", en: "View" },
-    startAssessment: { hu: "KitÃ¶ltÃ©s indÃ­tÃ¡sa", en: "Start assessment" },
-    inviteMembers: { hu: "Tagok meghÃ­vÃ¡sa", en: "Invite members" },
-    activeMembersCount: { hu: "Jelenleg {count} aktÃ­v tag", en: "Currently {count} active members" },
-    manageMembers: { hu: "Tagok kezelÃ©se", en: "Manage members" },
-    unlockTeamPattern: { hu: "ElsÅ‘ csapatkÃ©p feloldÃ¡sa", en: "Unlock first team pattern" },
-    completionCount: { hu: "{count}/3 kitÃ¶ltÃ©s", en: "{count}/3 completed" },
-    trackProgress: { hu: "HaladÃ¡s kÃ¶vetÃ©se", en: "Track progress" },
-    updated: { hu: "FrissÃ­tve", en: "Updated" },
-    openAttentionPoints: { hu: "{count} nyitott teendÅ‘", en: "{count} open task(s)" },
-    inviteMembersForPattern: { hu: "Tagok meghÃ­vÃ¡sa a csapatkÃ©phez", en: "Invite members for team pattern" },
-    openOrgReport: { hu: "Szervezeti riport megnyitÃ¡sa", en: "Open organization report" },
-    liveSnapshot: { hu: "Ã‰lÅ‘ pillanatkÃ©p", en: "Live snapshot" },
-    membersLabel: { hu: "Tag", en: "Members" },
-    teamsLabel: { hu: "Csapat", en: "Teams" },
-    doneLabel: { hu: "KÃ©sz", en: "Done" },
-    orgCompletion: { hu: "Szervezeti kitÃ¶ltÃ©s", en: "Org completion" },
-    teamPatternReadiness: { hu: "CsapatkÃ©p kÃ©szÃ¼ltsÃ©g", en: "Team pattern readiness" },
-    onboardingEyebrow: { hu: "bevezetÃ©s", en: "onboarding" },
-    firstTeamKickoff: { hu: "ElsÅ‘ csapat indulÃ¡sa", en: "First team kickoff" },
-    onboardingDesc: { hu: "Az elsÅ‘ csapat mÃ¡r lÃ©trejÃ¶tt. Ezen a listÃ¡n vÃ©gighaladva gyorsan eljuttok az elsÅ‘ Ã©rtelmezhetÅ‘ csapatkÃ©pig.", en: "Your first team is already created. Follow this checklist to quickly unlock the first meaningful team pattern." },
-    nextStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    upcomingModules: { hu: "KÃ¶vetkezÅ‘ modulok (hamarosan)", en: "Upcoming modules (soon)" },
-    onboardingFocus: { hu: "bevezetÃ©si fÃ³kusz", en: "onboarding focus" },
-    onboardingFocusDesc: { hu: "AmÃ­g a bevezetÅ‘ lÃ©pÃ©sek nincsenek kÃ©sz, a tÃ¶bbi modul elÅ‘nÃ©zet mÃ³dban marad.", en: "Until the starter onboarding steps are done, the remaining dashboard modules stay in preview mode." },
-    recommendedStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    secondaryStep: { hu: "MÃ¡sodlagos lÃ©pÃ©s", en: "Secondary step" },
-    moreActionsOrg: { hu: "TovÃ¡bbi mÅ±veletek a szervezeti oldalon", en: "More actions on organization page" },
-    activeMembersTitle: { hu: "AktÃ­v tagok", en: "Active members" },
-    notStartedCount: { hu: "{count} fÅ‘ mÃ©g nem kezdte el", en: "{count} members have not started" },
-    everyoneStarted: { hu: "Mindenki elindult", en: "Everyone has started" },
-    layerReadiness: { hu: "4+2 rÃ©tegkÃ©szÃ¼ltsÃ©g", en: "4+2 layer readiness" },
-    layerStatusCompleted: { hu: "KÃ©sz", en: "Completed" },
-    layerStatusInProgress: { hu: "Folyamatban", en: "In progress" },
-    layerStatusAvailable: { hu: "ElÃ©rhetÅ‘", en: "Available" },
-    layerStatusLocked: { hu: "ZÃ¡rolt", en: "Locked" },
-    leadershipFocus: { hu: "VezetÅ‘i fÃ³kusz", en: "Leadership focus" },
-    orgPersonalityProfile: { hu: "Szervezeti szemÃ©lyisÃ©gprofil", en: "Organization personality profile" },
-    assessedMembersAvg: { hu: "{count} Ã©rtÃ©kelt tag Â· szervezeti Ã¡tlag", en: "{count} assessed members Â· organization average" },
-    detailedView: { hu: "RÃ©szletes nÃ©zet", en: "Detailed view" },
-    dominantPattern: { hu: "DominÃ¡ns csapatminta", en: "Dominant team pattern" },
-    structuredInnovator: { hu: "StrukturÃ¡lt InnovÃ¡tor", en: "Structured Innovator" },
-    patternDesc: { hu: "Nyitott, de keretek kÃ¶zÃ¶tt mÅ±kÃ¶dÅ‘ csapat. Magas {top} Ã©s {conscientiousness}, alacsonyabb {low}.", en: "An open but structured team dynamic. Higher {top} and {conscientiousness}, with lower {low}." },
-    openTeamPattern: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team pattern" },
-    watchNow: { hu: "Most Ã©rdemes figyelni", en: "Watch now" },
-    highLow: { hu: "Magas {top}, alacsony {low}", en: "Higher {top}, lower {low}" },
-    frictionDesc: { hu: "A szervezet kreatÃ­v lendÃ¼lettel dolgozik, de az alacsony {low} ({pct}%) nÃ¶velheti a belsÅ‘ zajt csapatkÃ¶zi helyzetekben.", en: "The organization works with strong creative momentum, but lower {low} ({pct}%) may increase friction in cross-team situations." },
-    detailedAnalysis: { hu: "RÃ©szletes elemzÃ©s", en: "Detailed analysis" },
-    needsAttention: { hu: "Figyelmet igÃ©nyel", en: "Needs attention" },
-    noOpenActions: { hu: "Nincs azonnali teendÅ‘.", en: "No immediate actions." },
-    teamMovement: { hu: "CsapatmozgÃ¡s", en: "Team movement" },
-    teamStatus: { hu: "Csapatok Ã¡llapota", en: "Team status" },
-    teamStatusDesc: { hu: "Melyik csapat hol tart most a kÃ¶zÃ¶s kÃ©pen", en: "See where each team currently stands in the shared journey" },
-    allTeams: { hu: "Minden csapat", en: "All teams" },
-    teamMemberCount: { hu: "{count} tag", en: "{count} members" },
-    insightAlmostReady: { hu: "A csapatkÃ©p majdnem kÃ©sz â€” {count} emlÃ©keztetÅ‘ mÃ©g szÃ¼ksÃ©ges a befejezÃ©shez.", en: "Team pattern is almost ready â€” {count} reminder(s) are still needed to complete it." },
-    insightReady: { hu: "CsapatkÃ©p elÃ©rhetÅ‘ â€” minden tag teljesÃ­tette a kitÃ¶ltÃ©st.", en: "Team pattern is available â€” every member has completed assessment." },
-    insightNeeded: { hu: "{count} kitÃ¶ltÃ©s szÃ¼ksÃ©ges a csapatkÃ©phez.", en: "{count} completion(s) needed for team pattern." },
-    patternReady: { hu: "CsapatkÃ©p kÃ©sz", en: "Pattern ready" },
-    patternBuilding: { hu: "CsapatkÃ©p Ã©pÃ¼l", en: "Pattern building" },
-    pending: { hu: "FÃ¼ggÅ‘ben", en: "Pending" },
-    open: { hu: "MegnyitÃ¡s", en: "Open" },
-    recentActivity: { hu: "LegutÃ³bbi aktivitÃ¡s", en: "Recent activity" },
-    last2Weeks: { hu: "ElmÃºlt 2 hÃ©t", en: "Last 2 weeks" },
-    noActivity: { hu: "MÃ©g nincs aktivitÃ¡s.", en: "No activity yet." },
-  },
-
-  billing: {
-    checkoutMetaTitle: { hu: "ElÅ‘fizetÃ©s | Trita", en: "Subscription | Trita" },
-    checkoutEyebrow: { hu: "elÅ‘fizetÃ©s", en: "subscription" },
-    checkoutTitle: { hu: "ElÅ‘fizetÃ©s aktivÃ¡lÃ¡sa", en: "Activate subscription" },
-    checkoutSubtitle: {
-      hu: "A fizetÃ©s biztonsÃ¡gos â€” a Stripe kezeli az adataidat.",
-      en: "Payment is secure â€” handled by Stripe.",
-    },
-    returnMetaTitle: { hu: "FizetÃ©s eredmÃ©nye | Trita", en: "Payment result | Trita" },
-    returnSuccessEyebrow: { hu: "siker", en: "success" },
-    returnSuccessTitle: { hu: "KÃ¶szÃ¶njÃ¼k!", en: "Thank you!" },
-    returnCandidateBody: {
-      hu: "A jelÃ¶ltkereteket hozzÃ¡adtuk. MeghÃ­vhatod a kÃ¶vetkezÅ‘ jelÃ¶lteket.",
-      en: "Candidate credits have been added. You can now invite new candidates.",
-    },
-    returnCandidateCta: { hu: "Vissza a felvÃ©telhez", en: "Back to hiring" },
-    returnSubBody: {
-      hu: "Az elÅ‘fizetÃ©s aktivÃ¡lva. A csapatod most mÃ¡r hozzÃ¡fÃ©r az Ã¶sszes funkciÃ³hoz.",
-      en: "Your subscription is now active. Your team has access to all features.",
-    },
-    returnSubCta: { hu: "Vissza a vezÃ©rlÅ‘re", en: "Go to dashboard" },
-    returnExpiredTitle: { hu: "A munkamenet lejÃ¡rt", en: "Session expired" },
-    returnExpiredBody: {
-      hu: "PrÃ³bÃ¡ld Ãºjra az elÅ‘fizetÃ©s aktivÃ¡lÃ¡sÃ¡t.",
-      en: "Please try activating your subscription again.",
-    },
-    returnExpiredCta: { hu: "ÃšjraprÃ³bÃ¡lom", en: "Try again" },
-  },
-  candidate: {
-    metaTitle: { hu: "SzemÃ©lyisÃ©gfelmÃ©rÃ©s | Trita", en: "Personality Assessment | Trita" },
-    introEyebrow: { hu: "szemÃ©lyisÃ©gfelmÃ©rÃ©s", en: "personality assessment" },
-    introTitlePosition: { hu: "{position} pozÃ­ciÃ³", en: "{position} position" },
-    introTitleGeneric: { hu: "SzemÃ©lyisÃ©gfelmÃ©rÃ©s", en: "Personality Assessment" },
-    introBody: {
-      hu: "Ez a felmÃ©rÃ©s {count} kÃ©rdÃ©sbÅ‘l Ã¡ll, kb. {minutes} percet vesz igÃ©nybe. VÃ¡laszolj Å‘szintÃ©n, az elsÅ‘ benyomÃ¡sod alapjÃ¡n.",
-      en: "This assessment contains {count} questions and takes about {minutes} minutes. Please answer honestly, based on your first impression.",
-    },
-    introAutoSave: {
-      hu: "A vÃ¡laszaidat automatikusan mentjÃ¼k â€” ha megszakad a kitÃ¶ltÃ©s, onnan folytathatod, ahol abbahagytad.",
-      en: "Your answers are saved automatically â€” if you stop and return, you can continue where you left off.",
-    },
-    introNoReg: { hu: "RegisztrÃ¡ciÃ³ nem szÃ¼ksÃ©ges", en: "No registration required" },
-    introScale: {
-      hu: "{count} kÃ©rdÃ©s, 1â€“5-Ã¶s skÃ¡lÃ¡n",
-      en: "{count} questions, rated on a 1â€“5 scale",
-    },
-    introConfidential: { hu: "Bizalmas adatkezelÃ©s", en: "Confidential data handling" },
-    introStartCta: { hu: "FelmÃ©rÃ©s megkezdÃ©se", en: "Start assessment" },
-    // Intro â€” lÃ©pÃ©skÃ¡rtyÃ¡k (2026-08-05 vizuÃ¡lis frissÃ­tÃ©s)
-    introStepsLabel: { hu: "Ãgy zajlik", en: "How it works" },
-    introStep1Title: { hu: "KÃ©rdÅ‘Ã­v kitÃ¶ltÃ©se", en: "Fill in the questionnaire" },
-    introStep1Sub: {
-      hu: "{count} Ã¡llÃ­tÃ¡s 1â€“5 skÃ¡lÃ¡n, kb. {minutes} perc.",
-      en: "{count} statements on a 1â€“5 scale, about {minutes} minutes.",
-    },
-    introStepTeamRoleTitle: { hu: "RÃ¶vid csapatszerep-kÃ©rdÅ‘Ã­v", en: "Short team-role questionnaire" },
-    introStepTeamRoleSub: {
-      hu: "OpcionÃ¡lis mÃ¡sodik lÃ©pÃ©s (~3 perc) â€” ki is hagyhatod.",
-      en: "Optional second step (~3 min) â€” you can skip it.",
-    },
-    introStepSubmitTitle: { hu: "BekÃ¼ldÃ©s", en: "Submit" },
-    introStepSubmitSub: {
-      hu: "A kitÃ¶ltÃ©st a meghÃ­vÃ³ szervezet kapja meg.",
-      en: "Your responses go to the inviting organisation.",
-    },
-    // HÃ­d a felmÃ©rÃ©s Ã©s az opcionÃ¡lis csapatszerep-lÃ©pÃ©s kÃ¶zÃ¶tt
-    teamRoleBridge: {
-      hu: "KÃ¶szÃ¶njÃ¼k â€” a felmÃ©rÃ©sed megÃ©rkezett! Egy opcionÃ¡lis lÃ©pÃ©s maradt: egy rÃ¶vid csapatszerep-kÃ©rdÅ‘Ã­v (~3 perc). Ki is hagyhatod.",
-      en: "Thanks â€” your assessment is in! One optional step remains: a short team-role questionnaire (~3 minutes). You can skip it.",
-    },
-    answeredCounter: { hu: "{answered}/{total} megvÃ¡laszolva", en: "{answered}/{total} answered" },
-    doneTitle: { hu: "KÃ¶szÃ¶njÃ¼k a kitÃ¶ltÃ©st!", en: "Thank you for completing the assessment!" },
-    doneBody: {
-      hu: "A vÃ¡laszaidat bekÃ¼ldtÃ¼k. A szervezÅ‘ hamarosan Ã©rtesÃ­tÃ©st kap az eredmÃ©nyekrÅ‘l.",
-      en: "Your answers have been successfully submitted. The organiser will be notified of the results shortly.",
-    },
-    revokedTitle: { hu: "A meghÃ­vÃ³ visszavonva", en: "Invitation revoked" },
-    revokedBody: {
-      hu: "Ezt a meghÃ­vÃ³t visszavontÃ¡k. Ha kÃ©rdÃ©sed van, vedd fel a kapcsolatot a szervezÅ‘vel.",
-      en: "This invitation has been revoked. Please contact the organiser if you have any questions.",
-    },
-    etaRemaining: { hu: "~{minutes} perc hÃ¡tra", en: "~{minutes} min remaining" },
-    answerHint: {
-      hu: "VÃ¡laszolj Ãºgy, ahogy Ã¡ltalÃ¡ban gondolkodsz Ã©s viselkedsz.",
-      en: "Answer based on how you generally think and behave.",
-    },
-    autoAdvance: { hu: "Automatikus tovÃ¡bblÃ©pÃ©s", en: "Auto-advance" },
-    back: { hu: "Vissza", en: "Back" },
-    next: { hu: "TovÃ¡bb", en: "Next" },
-    submitting: { hu: "BekÃ¼ldÃ©s...", en: "Submitting..." },
-    submit: { hu: "BekÃ¼ldÃ©s", en: "Submit" },
-    scaleHint: {
-      hu: "Az 1â€“5 skÃ¡lÃ¡n: 1 = EgyÃ¡ltalÃ¡n nem Ã©rtek egyet, 5 = Teljes mÃ©rtÃ©kben egyetÃ©rtek",
-      en: "On the 1â€“5 scale: 1 = Strongly disagree, 5 = Strongly agree",
-    },
-    answerAllError: {
-      hu: "VÃ¡laszolj minden kÃ©rdÃ©sre.",
-      en: "Please answer all questions.",
-    },
-    submitError: {
-      hu: "Hiba tÃ¶rtÃ©nt a bekÃ¼ldÃ©s sorÃ¡n. PrÃ³bÃ¡ld Ãºjra.",
-      en: "An error occurred while submitting. Please try again.",
-    },
-    pageCompletedTitle: { hu: "MÃ¡r kitÃ¶ltÃ¶tted!", en: "Already completed!" },
-    pageCompletedBody: {
-      hu: "Ezt a felmÃ©rÃ©st mÃ¡r korÃ¡bban bekÃ¼ldted. KÃ¶szÃ¶njÃ¼k a rÃ©szvÃ©telt!",
-      en: "You have already submitted this assessment. Thank you for your participation!",
-    },
-    pageCanceledTitle: { hu: "A meghÃ­vÃ³ visszavonva", en: "Invitation revoked" },
-    pageCanceledBody: {
-      hu: "Ezt a meghÃ­vÃ³t visszavontÃ¡k. Ha kÃ©rdÃ©sed van, vedd fel a kapcsolatot a szervezÅ‘vel.",
-      en: "This invitation has been revoked. Please contact the organiser if you have any questions.",
-    },
-    pageExpiredTitle: { hu: "A meghÃ­vÃ³ lejÃ¡rt", en: "Invitation expired" },
-    pageExpiredBody: {
-      hu: "Ez a meghÃ­vÃ³ link sajnos mÃ¡r nem Ã©rvÃ©nyes. KÃ©rj Ãºj linket a szervezÅ‘tÅ‘l.",
-      en: "This invitation link is no longer valid. Please request a new link from the organiser.",
-    },
-  },
-
-  // â”€â”€ Campaign Wizard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  peerFb: {
-    title: { hu: "ElismerÃ©s-kÃ¶r", en: "Recognition round" },
-    introNamed: {
-      hu: "Adj minden csapattÃ¡rsadnak egy rÃ¶vid, jÃ¶vÅ‘-irÃ¡nyÃº visszajelzÃ©st â€” Ã©s ha van, egy elismerÃ©st. A visszajelzÃ©sek nevesÃ­tettek: a cÃ­mzett lÃ¡tja, kitÅ‘l jÃ¶ttek.",
-      en: "Give each teammate a short, forward-looking piece of feedback â€” and, if you have one, an appreciation. Feedback is named: recipients see who it came from.",
-    },
-    introAnon: {
-      hu: "Adj minden csapattÃ¡rsadnak egy rÃ¶vid, jÃ¶vÅ‘-irÃ¡nyÃº visszajelzÃ©st. A javaslatok nÃ©v nÃ©lkÃ¼l, Ã¶sszesÃ­tve jutnak el a cÃ­mzetthez (legalÃ¡bb 3 bekÃ¼ldÅ‘nÃ©l); az elismerÃ©sek nevesÃ­tettek.",
-      en: "Give each teammate a short, forward-looking piece of feedback. Suggestions reach recipients anonymously and aggregated (with at least 3 senders); appreciations are named.",
-    },
-    alreadyDone: { hu: "{count} csapattÃ¡rsnak mÃ¡r bekÃ¼ldted.", en: "Already submitted for {count} teammates." },
-    appreciationLabel: { hu: "ElismerÃ©s", en: "Appreciation" },
-    appreciationPlaceholder: { hu: "Pl. â€KÃ¶szÃ¶nÃ¶m, hogy a demÃ³ elÅ‘tt Ã¡tnÃ©zted a prezimet.â€", en: "E.g. \"Thanks for reviewing my deck before the demo.\"" },
-    continueLabel: { hu: "Folytasd, mertâ€¦", en: "Keep doing, becauseâ€¦" },
-    continuePlaceholder: { hu: "Egy konkrÃ©t viselkedÃ©s, ami mÅ±kÃ¶dik â€” Ã©s miÃ©rt.", en: "A specific behaviour that works â€” and why." },
-    tryLabel: { hu: "JÃ¶vÅ‘re prÃ³bÃ¡ldâ€¦", en: "Next time, tryâ€¦" },
-    tryPlaceholder: { hu: "Egy konkrÃ©t, jÃ¶vÅ‘-irÃ¡nyÃº javaslat.", en: "One specific, forward-looking suggestion." },
-    optional: { hu: "(opcionÃ¡lis)", en: "(optional)" },
-    toneNudge: {
-      hu: "Tipp: a visszajelzÃ©s akkor hasznosul, ha konkrÃ©t helyzetrÅ‘l Ã©s viselkedÃ©srÅ‘l szÃ³l â€” a â€mindig/sohaâ€ Ã©s a szemÃ©lyre irÃ¡nyulÃ³ Ã­tÃ©let jellemzÅ‘en vÃ©dekezÃ©st vÃ¡lt ki.",
-      en: "Tip: feedback lands when it is about a specific situation and behaviour â€” \"always/never\" and person-level judgements typically trigger defensiveness.",
-    },
-    submit: { hu: "BekÃ¼ldÃ©s", en: "Submit" },
-    fillAllHint: { hu: "Minden csapattÃ¡rsnÃ¡l tÃ¶ltsd ki a kÃ©t visszajelzÃ©s-mezÅ‘t.", en: "Fill in both feedback fields for every teammate." },
-    submitError: { hu: "A bekÃ¼ldÃ©s nem sikerÃ¼lt â€” prÃ³bÃ¡ld Ãºjra.", en: "Submitting failed â€” try again." },
-    doneTitle: { hu: "KÃ©sz â€” kÃ¶szÃ¶njÃ¼k!", en: "Done â€” thank you!" },
-    doneBody: {
-      hu: "A visszajelzÃ©seidet rÃ¶gzÃ­tettÃ¼k. Az elismerÃ©sek azonnal megjelennek a cÃ­mzetteknÃ©l; a javaslatok a kÃ¶r szabÃ¡lyai szerint jutnak el hozzÃ¡juk.",
-      en: "Your feedback has been recorded. Appreciations appear immediately; suggestions reach recipients according to the round's rules.",
-    },
-    nonePendingTitle: { hu: "Nincs nyitott visszajelzÃ©s-kÃ¶rÃ¶d", en: "No open feedback round" },
-    nonePendingBody: {
-      hu: "Most nincs olyan aktÃ­v mÃ©rÃ©sed, ahol az elismerÃ©s-kÃ¶r lenne az aktuÃ¡lis lÃ©pÃ©s.",
-      en: "You have no active campaign where the peer feedback round is your current step.",
-    },
-    backToDashboard: { hu: "Vissza a vezÃ©rlÅ‘re", en: "Back to dashboard" },
-    progressLabel: { hu: "KÃ©sz: {done}/{total}", en: "Done: {done}/{total}" },
-    stepLabel: { hu: "{current}. / {total} csapattÃ¡rs", en: "Teammate {current} of {total}" },
-    nextPerson: { hu: "TovÃ¡bb", en: "Next" },
-    prevPerson: { hu: "Vissza", en: "Back" },
-    nextPersonHint: {
-      hu: "A tovÃ¡bblÃ©pÃ©shez tÃ¶ltsd ki a kÃ©t visszajelzÃ©s-mezÅ‘t.",
-      en: "Fill in both feedback fields to continue.",
-    },
-    personDoneBadge: { hu: "KÃ©sz", en: "Done" },
-    personMissingBadge: { hu: "{count} mezÅ‘ hiÃ¡nyzik", en: "{count} fields missing" },
-    jumpToMissing: { hu: "UgrÃ¡s a kÃ¶vetkezÅ‘ hiÃ¡nyzÃ³hoz", en: "Jump to next incomplete" },
-    draftSaved: { hu: "Piszkozat mentve ezen az eszkÃ¶zÃ¶n", en: "Draft saved on this device" },
-    fieldMissing: { hu: "Ez a mezÅ‘ mÃ©g kitÃ¶ltÃ©sre vÃ¡r.", en: "This field still needs to be filled in." },
-    missingSummary: {
-      hu: "MÃ©g {count} csapattÃ¡rsnÃ¡l hiÃ¡nyzik a kÃ©t kÃ¶telezÅ‘ mezÅ‘: {names}",
-      en: "Both required fields are still missing for {count} teammates: {names}",
-    },
-  },
-  campaignWiz: {
-    stepDetails: { hu: "RÃ©szletek", en: "Details" },
-    stepMembers: { hu: "Tagok", en: "Members" },
-    stepConfirm: { hu: "MegerÅ‘sÃ­tÃ©s", en: "Confirm" },
-    unknownError: { hu: "Ismeretlen hiba", en: "Unknown error" },
-    detailsTitle: { hu: "MÃ©rÃ©s adatai", en: "Measurement details" },
-    nameLabel: { hu: "MÃ©rÃ©s neve", en: "Measurement name" },
-    namePlaceholder: { hu: "pl. Q2 360Â° visszajelzÃ©s", en: "e.g. Q2 360Â° feedback" },
-    descLabel: { hu: "LeÃ­rÃ¡s", en: "Description" },
-    optional: { hu: "(opcionÃ¡lis)", en: "(optional)" },
-    descPlaceholder: { hu: "RÃ¶vid leÃ­rÃ¡s a mÃ©rÃ©srÅ‘l...", en: "Brief description..." },
-    next: { hu: "TovÃ¡bb", en: "Next" },
-    selectParticipants: { hu: "RÃ©sztvevÅ‘k kivÃ¡lasztÃ¡sa", en: "Select participants" },
-    deselectAll: { hu: "Mind tÃ¶rlÃ©se", en: "Deselect all" },
-    selectAll: { hu: "Mindenki", en: "Select all" },
-    noMembers: { hu: "Nincsenek tagok a szervezetben.", en: "No members in this organization." },
-    back: { hu: "Vissza", en: "Back" },
-    summary: { hu: "Ã–sszefoglalÃ¡s", en: "Summary" },
-    campaignNameLabel: { hu: "mÃ©rÃ©s neve", en: "measurement name" },
-    participantsLabel: { hu: "rÃ©sztvevÅ‘k Â· {count} fÅ‘", en: "participants Â· {count}" },
-    noneSelected: { hu: "Nincs kivÃ¡lasztva â€” kÃ©sÅ‘bb is hozzÃ¡adhatÃ³k.", en: "None selected â€” can be added later." },
-    draftNote: {
-      hu: "A mÃ©rÃ©s piszkozatkÃ©nt jÃ¶n lÃ©tre. Az aktivÃ¡lÃ¡st a mÃ©rÃ©s oldalÃ¡n vÃ©gezheted el.",
-      en: "Campaign is created in DRAFT status. You can activate it from the campaign page.",
-    },
-    creating: { hu: "LÃ©trehozÃ¡s...", en: "Creating..." },
-    createCampaign: { hu: "MÃ©rÃ©s lÃ©trehozÃ¡sa", en: "Create measurement" },
-    createAndActivate: { hu: "LÃ©trehozÃ¡s Ã©s aktivÃ¡lÃ¡s", en: "Create and activate" },
-    activateNowLabel: { hu: "AktivÃ¡lÃ¡s azonnal a lÃ©trehozÃ¡s utÃ¡n.", en: "Activate immediately after creation." },
-    activateNowHint: {
-      hu: "A rÃ©sztvevÅ‘k azonnal lÃ©pÃ©s-nyitÃ³ Ã©rtesÃ­tÃ©st kapnak, Ã©s indul az elsÅ‘ kÃ©rdÅ‘Ã­v. Csak akkor pipÃ¡ld be, ha a nÃ©vsor vÃ©gleges â€” az aktivÃ¡lÃ¡s nem vonhatÃ³ vissza.",
-      en: "Participants get their step-opening notification right away and the first questionnaire starts. Only check this if the roster is final â€” activation cannot be undone.",
-    },
-    activateNowNoParticipants: {
-      hu: "RÃ©sztvevÅ‘ nÃ©lkÃ¼l nem aktivÃ¡lhatÃ³ â€” elÅ‘bb vÃ¡lassz rÃ©sztvevÅ‘ket, vagy aktivÃ¡ld kÃ©sÅ‘bb a mÃ©rÃ©s oldalÃ¡rÃ³l.",
-      en: "Cannot activate without participants â€” select participants first, or activate later from the campaign page.",
-    },
-    activateNowNote: {
-      hu: "A mÃ©rÃ©s lÃ©trejÃ¶n Ã‰S azonnal aktivÃ¡lÃ³dik: mindenki Ã©rtesÃ­tÃ©st kap, az Ã©letciklus (piszkozat â†’ aktÃ­v â†’ lezÃ¡rt) nem fordÃ­thatÃ³ vissza.",
-      en: "The campaign is created AND activated immediately: everyone is notified, and the lifecycle (DRAFT â†’ ACTIVE â†’ CLOSED) cannot be reversed.",
-    },
-    activateFailed: {
-      hu: "A mÃ©rÃ©s lÃ©trejÃ¶tt (piszkozatkÃ©nt), de az aktivÃ¡lÃ¡s nem sikerÃ¼lt â€” aktivÃ¡ld a mÃ©rÃ©s oldalÃ¡rÃ³l.",
-      en: "The campaign was created (as draft), but activation failed â€” activate it from the campaign page.",
-    },
-
-    // TÃ­pusvÃ¡lasztÃ³ (0. lÃ©pÃ©s)
-    stepType: { hu: "MÃ©rÃ©s tÃ­pusa", en: "Measurement type" },
-    typeTitle: { hu: "Mit szeretnÃ©l mÃ©rni?", en: "What do you want to measure?" },
-    packageRecommended: { hu: "AjÃ¡nlott", en: "Recommended" },
-    scanV1Meta: {
-      hu: "RÃ¶gzÃ­tett pilot-kÃ©szlet Â· observer Ã©s peer kÃ¶r nÃ©lkÃ¼l",
-      en: "Fixed pilot set Â· without observer and peer rounds",
-    },
-    packageCustomName: { hu: "Egyedi mÃ©rÃ©si kÃ¶r", en: "Custom measurement round" },
-    packageCustomDesc: {
-      hu: "HaladÃ³ Ã¶sszeÃ¡llÃ­tÃ¡s egycÃ©lÃº mÃ©rÃ©shez, mÃ¡sodik kÃ¶rhÃ¶z vagy kiegÃ©szÃ­tÅ‘ modulhoz.",
-      en: "Advanced setup for a focused measurement, second round or add-on module.",
-    },
-    typeSelfName: { hu: "Ã–nÃ©rtÃ©kelÃ©s", en: "Self-assessment" },
-    typeSelfDesc: {
-      hu: "A tagok kitÃ¶ltik a 60 Ã¡llÃ­tÃ¡sos szemÃ©lyisÃ©g-kÃ©rdÅ‘Ã­vet, kÃ¼lsÅ‘ Ã©rtÃ©kelÅ‘k meghÃ­vÃ¡sa nÃ©lkÃ¼l.",
-      en: "Members complete the 60-item personality questionnaire without inviting external observers.",
-    },
-    typeSelfMeta: { hu: "60 Ã¡llÃ­tÃ¡s Â· ~10 perc / fÅ‘", en: "60 items Â· ~10 min per member" },
-    typeSelfOut: {
-      hu: "EredmÃ©ny: kÃ¶rhÃ¶z cÃ­mkÃ©zett self profil Ã©s csapatszintÅ± dimenziÃ³-kontroll",
-      en: "Output: round-labelled self profile and team-level dimension control",
-    },
-    typeObserverName: { hu: "KÃ¼lsÅ‘ visszajelzÃ©s (360Â°)", en: "External feedback (360Â°)" },
-    typeObserverDesc: {
-      hu: "A tagok kollÃ©gÃ¡kat hÃ­vnak meg, akik kÃ­vÃ¼lrÅ‘l jellemzik Å‘ket â€” az Ã¶nkÃ©p Ã©s a kÃ¼lsÅ‘ kÃ©p Ã¶sszevethetÅ‘vÃ© vÃ¡lik.",
-      en: "Members invite colleagues who describe them from the outside â€” self-image and outside image become comparable.",
-    },
-    typeObserverMeta: { hu: "~10 perc / megfigyelÅ‘ Â· nÃ©v szerinti meghÃ­vÃ¡s", en: "~10 min per observer Â· named invitations" },
-    typeObserverOut: { hu: "EredmÃ©ny: Ã¶nkÃ©p Ã©s kÃ¼lsÅ‘ kÃ©p Ã¶sszehasonlÃ­tÃ¡sa, mÃ©rt kapcsolati adatok a riportban", en: "Output: self vs. outside comparison, measured relationship data in the report" },
-    typeRoleName: { hu: "Csapatszerep-kÃ¶r", en: "Team role round" },
-    typeRoleDesc: {
-      hu: "A csapat tagjai kitÃ¶ltik a szerep-kÃ©rdÅ‘Ã­vet â€” a becsÃ¼lt szerepek helyett mÃ©rt szerep-tÃ©rkÃ©p kÃ©szÃ¼l.",
-      en: "Team members fill out the role questionnaire â€” a measured role map replaces estimates.",
-    },
-    typeRoleMeta: { hu: "~4 perc / fÅ‘ Â· egy csapatra indÃ­thatÃ³", en: "~4 min per member Â· launched for one team" },
-    typeRoleOut: { hu: "EredmÃ©ny: mÃ©rt szerep-lefedettsÃ©g a csapatoldalon Ã©s a riportban", en: "Output: measured role coverage on the team page and in the report" },
-    typeRole360Name: { hu: "CsapattÃ¡rsi szerep-visszajelzÃ©s", en: "Team role peer feedback" },
-    typeRole360Desc: {
-      hu: "A tagok egymÃ¡srÃ³l jelÃ¶lik ki a legjellemzÅ‘bb viselkedÃ©seket â€” az Ã¶nkÃ©p mellÃ© mÃ©rt csapatkÃ©p kerÃ¼l.",
-      en: "Members pick each other's most characteristic behaviours â€” a measured team view lands next to the self-image.",
-    },
-    typeRole360Meta: { hu: "~3-4 perc / Ã©rtÃ©kelt fÅ‘ Â· nÃ©vtelen, Ã¶sszesÃ­tett kÃ©p (min. 3 Ã©rtÃ©kelÅ‘)", en: "~3-4 min per teammate Â· anonymous, aggregated view (min. 3 raters)" },
-    typeRole360Out: { hu: "EredmÃ©ny: Ã¶nkÃ©p vs. csapatkÃ©p Ã¶sszevetÃ©s a csapatoldalon Ã©s a riportban", en: "Output: self-image vs. team view comparison on the team page and in the report" },
-    intervalLabel: { hu: "KÃ©rdÅ‘Ã­vek Ã¼teme", en: "Questionnaire pacing" },
-    intervalHint: { hu: "A teljesÃ­tett kÃ©rdÅ‘Ã­v utÃ¡n ennyivel kÃ©sÅ‘bb nyÃ­lik (Ã©s Ã©rkezik Ã©rtesÃ­tÃ©s) a kÃ¶vetkezÅ‘ â€” Ã­gy nem egyszerre zÃºdul a tagokra. BÃ¡rmikor felÃ¼lbÃ­rÃ¡lhatÃ³ a â€KÃ¼ldÃ©s most\u201d gombbal.", en: "The next questionnaire opens (and notifies) this long after the previous one is completed â€” so members aren't flooded at once. You can override anytime with \u201cSend now\u201d." },
-    intervalNone: { hu: "EgymÃ¡s utÃ¡n", en: "Back-to-back" },
-    interval12h: { hu: "12 Ã³rÃ¡nkÃ©nt", en: "Every 12h" },
-    interval24h: { hu: "Naponta egy (ajÃ¡nlott)", en: "One per day (recommended)" },
-    interval48h: { hu: "KÃ©tnaponta", en: "Every 2 days" },
-    allowExternalLabel: { hu: "KÃ¼lsÅ‘ Ã©rtÃ©kelÅ‘k jÃ³vÃ¡hagyÃ¡s nÃ©lkÃ¼l.", en: "External observers without approval." },
-    allowExternalHint: { hu: "Ha bekapcsolod, a tagok szabadon hÃ­vhatnak meg szervezeten kÃ­vÃ¼li Ã©rtÃ©kelÅ‘t. Kikapcsolva a kÃ¼lsÅ‘ meghÃ­vÃ³kat a menedzser / org admin / tanÃ¡csadÃ³ hagyja jÃ³vÃ¡.", en: "If enabled, members can freely invite observers from outside the organization. If disabled, external invites need manager / org admin / consultant approval." },
-    typeTrustName: { hu: "Bizalmi hÃ¡lÃ³ kÃ¶r", en: "Trust network round" },
-    typeTrustDesc: {
-      hu: "RÃ¶vid pÃ¡ronkÃ©nti kÃ©rdÃ©ssor az egyÃ¼ttmÅ±kÃ¶dÃ©s tÃ©nyleges mÅ±kÃ¶dÃ©sÃ©rÅ‘l â€” a dinamika-tÃ©rkÃ©p becslÃ©sei helyÃ©re mÃ©rt kapcsolati adat kerÃ¼l.",
-      en: "Short pairwise questions on how collaboration actually works â€” measured relationship data replaces the dynamics map estimates.",
-    },
-    typeTrustMeta: { hu: "5 kÃ©rdÃ©s / csapattÃ¡rs Â· ~2-3 perc / fÅ‘", en: "5 questions per teammate Â· ~2-3 min per member" },
-    typeTrustOut: {
-      hu: "EredmÃ©ny: mÃ©rt kapcsolati kÃ©p a dinamika-tÃ©rkÃ©pen (pÃ¡ronkÃ©nt Ã¶sszevonva), Ã¶sszekÃ¶tÅ‘ Ã©s beÃ¡gyazatlan tagok jelzÃ©se",
-      en: "Output: measured relationship view on the dynamics map (combined per pair), highlighting connectors and unembedded members",
-    },
-    typePeerFbName: { hu: "ElismerÃ©s-kÃ¶r", en: "Recognition round" },
-    typePeerFbDesc: {
-      hu: "A tagok strukturÃ¡lt lapon adnak egymÃ¡snak elismerÃ©st Ã©s egy jÃ¶vÅ‘-irÃ¡nyÃº javaslatot â€” a kÃ¶r zÃ¡rja a mÃ©rÃ©s-sorozatot, amikor mÃ¡r felÃ©pÃ¼lt a bizalom.",
-      en: "Members give each other structured appreciation and one forward-looking suggestion â€” this round closes the series, once trust has been built.",
-    },
-    typePeerFbMeta: { hu: "tagonkÃ©nt ~1-2 perc / csapattÃ¡rs Â· a sor vÃ©gÃ©n nyÃ­lik", en: "~1-2 min per teammate Â· opens at the end of the sequence" },
-    typePeerFbOut: {
-      hu: "Kimenet: nevesÃ­tett kÃ¶szÃ¶netek + fejlesztÅ‘ javaslatok (anonim-aggregÃ¡lt opciÃ³val)",
-      en: "Output: named kudos + development suggestions (with anonymous-aggregated option)",
-    },
-    freshLabel: { hu: "ÃšjrafelvÃ©teli kÃ¶r.", en: "Re-measurement round." },
-    freshHint: {
-      hu: "A korÃ¡bbi eredmÃ©nyek ebben a kÃ¶rben nem szÃ¡mÃ­tanak â€” minden rÃ©sztvevÅ‘ Ãºjra kitÃ¶lti a kÃ©rdÅ‘Ã­veket. A rÃ©gi eredmÃ©nyek megmaradnak, a kÃ¶r a kÃ©sÅ‘bbi Ã¶sszehasonlÃ­tÃ¡s alapja.",
-      en: "Previous results don't count in this round â€” every participant fills in the questionnaires again. Old results are kept; the round becomes the basis for later comparison.",
-    },
-    scanV1FreshLabel: {
-      hu: "KÃ¶rhÃ¶z kÃ¶tÃ¶tt self-adat.",
-      en: "Round-labelled self data.",
-    },
-    scanV1FreshHint: {
-      hu: "A Scan v1-ben minden rÃ©sztvevÅ‘ friss self-kÃ©rdÅ‘Ã­vet tÃ¶lt ki. EttÅ‘l lesz a baseline, a visszamÃ©rÃ©s Ã©s a pilotkohorsz pontosan ugyanahhoz a kÃ¶rhÃ¶z kÃ¶thetÅ‘.",
-      en: "In Scan v1 every participant completes a fresh self-assessment. This keeps the baseline, follow-up and pilot cohort tied to the exact measurement round.",
-    },
-    peerFbAnonLabel: { hu: "Anonim-aggregÃ¡lt javaslatok.", en: "Anonymous, aggregated suggestions." },
-    peerFbAnonHint: {
-      hu: "A fejlesztÅ‘ javaslatok a cÃ­mzettnÃ©l nÃ©v nÃ©lkÃ¼l, Ã¶sszekeverve jelennek meg, Ã©s csak legalÃ¡bb 3 bekÃ¼ldÅ‘nÃ©l. Az elismerÃ©sek mindig nevesÃ­tettek.",
-      en: "Development suggestions appear to the recipient without names, shuffled, and only with at least 3 senders. Appreciations are always named.",
-    },
-    typePsychName: { hu: "PszicholÃ³giai biztonsÃ¡g pulzusmÃ©rÃ©se", en: "Psychological safety pulse" },
-    typePsychDesc: {
-      hu: "RÃ¶vid, anonim csapat-kÃ©rdÅ‘Ã­v arrÃ³l, mennyire biztonsÃ¡gos hibÃ¡zni, kÃ©rdezni, ellentmondani.",
-      en: "Short, anonymous team survey on how safe it feels to fail, ask, and disagree.",
-    },
-    typePsychMeta: { hu: "8 Ã¡llÃ­tÃ¡s Â· ~2 perc / fÅ‘ Â· nÃ©vtelen", en: "8 statements Â· ~2 min per member Â· anonymous" },
-    typePsychOut: {
-      hu: "EredmÃ©ny: csapatszintÅ± biztonsÃ¡g-index Ã©s Ã¡llÃ­tÃ¡sonkÃ©nti kÃ©p â€” egyÃ©ni vÃ¡laszok nÃ©lkÃ¼l",
-      en: "Output: team-level safety index and per-statement view â€” without individual answers",
-    },
-    typeComingSoon: { hu: "Hamarosan", en: "Coming soon" },
-    typeMultiHint: {
-      hu: "TÃ¶bb mÃ©rÃ©st is kivÃ¡laszthatsz â€” a tagoknak sorban nyÃ­lnak meg: amikor valaki vÃ©gez az egyikkel, szÃ¡mÃ¡ra megnyÃ­lik a kÃ¶vetkezÅ‘, Ã©s Ã©rtesÃ­tÃ©st kap rÃ³la.",
-      en: "You can select multiple measurements â€” they open for members one at a time: when someone finishes one, the next opens for them, with a notification.",
-    },
-    seriesName: { hu: "MÃ©rÃ©s-sorozat", en: "Measurement series" },
-
-    // CÃ©lzÃ¡s (csapat-alapÃº)
-    stepTargeting: { hu: "RÃ©sztvevÅ‘k", en: "Participants" },
-    teamsTitle: { hu: "Csapatok", en: "Teams" },
-    teamMemberCount: { hu: "{count} tag", en: "{count} members" },
-    noTeams: { hu: "Nincs csapat a szervezetben â€” vÃ¡lassz tagokat egyÃ©nileg.", en: "No teams in this organization â€” pick members individually." },
-    individualTitle: { hu: "EgyÃ©ni kivÃ¡lasztÃ¡s", en: "Individual selection" },
-    roleTeamHint: {
-      hu: "A csapat-kÃ¶tÃ¶tt mÃ©rÃ©sek teljes csapat(ok)ra indulnak â€” tÃ¶bb csapatot is kivÃ¡laszthatsz, mindenki a sajÃ¡t csapatÃ¡ban Ã©rtÃ©kel.",
-      en: "Team-bound measurements run for whole teams â€” you can pick multiple teams; everyone rates within their own team.",
-    },
-    targetTeamLabel: { hu: "cÃ©l-csapat(ok)", en: "target team(s)" },
-    typeSummaryLabel: { hu: "mÃ©rÃ©s tÃ­pusa", en: "measurement type" },
-    autoNameHint: { hu: "A nevet mi javasoltuk â€” Ã¡tÃ­rhatod.", en: "We suggested the name â€” feel free to change it." },
-
-    // Ã‰letciklus megerÅ‘sÃ­tÃ©sek
-    activateConfirm: {
-      hu: "AktivÃ¡lod a mÃ©rÃ©st?\n\nâ€¢ A rÃ©sztvevÅ‘k e-mail Ã©rtesÃ­tÃ©st kapnak.\nâ€¢ AktÃ­v mÃ©rÃ©shez kÃ©sÅ‘bb is adhatsz rÃ©sztvevÅ‘t.\nâ€¢ A kÃ©sÅ‘bbi lezÃ¡rÃ¡s vÃ©gleges â€” a mÃ©rÃ©s nem nyithatÃ³ Ãºjra.",
-      en: "Activate this campaign?\n\nâ€¢ Participants will receive an email notification.\nâ€¢ You can still add participants while active.\nâ€¢ Closing later is final â€” the campaign cannot be reopened.",
-    },
-    closeConfirm: {
-      hu: "LezÃ¡rod a mÃ©rÃ©st?\n\nâ€¢ A kitÃ¶ltÃ©s leÃ¡ll, tÃ¶bb visszajelzÃ©s nem Ã©rkezik.\nâ€¢ A lezÃ¡rÃ¡s vÃ©gleges â€” a mÃ©rÃ©s nem nyithatÃ³ Ãºjra.\nâ€¢ Az eddig beÃ©rkezett adatok megmaradnak Ã©s a riportban felhasznÃ¡lhatÃ³k.",
-      en: "Close this campaign?\n\nâ€¢ Filling stops; no more responses will arrive.\nâ€¢ Closing is final â€” the campaign cannot be reopened.\nâ€¢ Data collected so far is kept and usable in the report.",
-    },
-    closedReportCta: { hu: "MÃ©rt adat Ã©rkezett â€” riport frissÃ­tÃ©se", en: "Measured data arrived â€” update the report" },
-  },
-
-  // â”€â”€ Hiring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  hiring: {
-    // page.tsx
-    back: { hu: "Vissza", en: "Back" },
-
-    // HiringDashboard â€” status labels
-    statusExpired: { hu: "LejÃ¡rt", en: "Expired" },
-    statusCompleted: { hu: "KitÃ¶ltve", en: "Completed" },
-    statusCanceled: { hu: "Visszavonva", en: "Canceled" },
-    statusInProgress: { hu: "Folyamatban", en: "In progress" },
-    statusSent: { hu: "ElkÃ¼ldve", en: "Sent" },
-
-    // HiringDashboard â€” candidate row
-    unnamedCandidate: { hu: "NÃ©vtelen jelÃ¶lt", en: "Unnamed candidate" },
-    resultsLink: { hu: "EredmÃ©nyek", en: "Results" },
-    resendSent: { hu: "ElkÃ¼ldve âœ“", en: "Sent âœ“" },
-    resendButton: { hu: "ÃšjrakÃ¼ldÃ©s", en: "Resend" },
-
-    // HiringDashboard â€” header
-    eyebrow: { hu: "felvÃ©teli", en: "hiring" },
-    // A hero cÃ­me. NEM â€trita FelvÃ©tel": a felÃ¼let a felhasznÃ¡lÃ³ sajÃ¡t
-    // munkÃ¡jÃ¡rÃ³l szÃ³l, nem a termÃ©krÅ‘l â€” a mÃ¡rkanÃ©v a fejlÃ©cben mÃ¡r ott van.
-    // A â€FelvÃ©tel" pedig HR-folyamatot nevez meg; a cÃ©l viszont az, hogy Ãºj
-    // ember Ã©rkezik a csapatba.
-    title: { hu: "Ãšj csapattagok", en: "New teammates" },
-    heroSummary: {
-      hu: "Kezeld egy helyen a jelÃ¶ltfolyamatot: meghÃ­vÃ¡s, stÃ¡tusz Ã©s eredmÃ©nykÃ¶vetÃ©s.",
-      en: "Manage the full candidate flow in one place: invites, status, and results.",
-    },
-    snapshotLabel: { hu: "Ã‰lÅ‘ pillanatkÃ©p", en: "Live snapshot" },
-    completionRate: { hu: "LezÃ¡rt arÃ¡ny", en: "Completion rate" },
-    candidatesTotal: { hu: "jelÃ¶lt Ã¶sszesen", en: "candidates total" },
-    completedLabel: { hu: "kitÃ¶ltve", en: "completed" },
-    inProgressLabel: { hu: "folyamatban", en: "in progress" },
-    cancelButton: { hu: "MÃ©gse", en: "Cancel" },
-    inviteCandidate: { hu: "JelÃ¶lt meghÃ­vÃ¡sa", en: "Invite candidate" },
-
-    // HiringDashboard â€” credit pool
-    creditEyebrow: { hu: "jelÃ¶lt kreditek", en: "candidate credits" },
-    creditsAvailable: { hu: "kredit elÃ©rhetÅ‘", en: "credits available" },
-    creditsPurchased: { hu: "vÃ¡sÃ¡rolt", en: "purchased" },
-    creditsUsed: { hu: "felhasznÃ¡lt", en: "used" },
-
-    // HiringDashboard â€” no-credits warning
-    noCreditsWarning: {
-      hu: "Nincs elÃ©rhetÅ‘ kredit. KÃ©rd az admint, hogy vÃ¡sÃ¡roljon Ãºjabb krediteket.",
-      en: "No credits available. Ask your admin to purchase more credits.",
-    },
-
-    // HiringDashboard â€” invite form
-    inviteFormEyebrow: { hu: "Ãºj jelÃ¶lt meghÃ­vÃ¡sa", en: "invite new candidate" },
-
-    // HiringDashboard â€” stat strip
-    statInProgress: { hu: "Folyamatban", en: "In progress" },
-    statCompleted: { hu: "KitÃ¶ltve", en: "Completed" },
-    statExpired: { hu: "LejÃ¡rt", en: "Expired" },
-
-    // HiringDashboard â€” section headings
-    sectionInProgress: { hu: "Folyamatban", en: "In progress" },
-    sectionSent: { hu: "ElkÃ¼ldve", en: "Sent" },
-    sectionCompleted: { hu: "KitÃ¶ltve", en: "Completed" },
-    candidatesSuffix: { hu: "jelÃ¶lt", en: "candidates" },
-    candidateSuffix: { hu: "jelÃ¶lt", en: "candidate" },
-
-    // HiringDashboard â€” credit history
-    creditLogEyebrow: { hu: "kredit naplÃ³", en: "credit log" },
-    creditPurchase: { hu: "Kredit vÃ¡sÃ¡rlÃ¡s", en: "Credit purchase" },
-    creditUsage: { hu: "Kredit felhasznÃ¡lÃ¡s", en: "Credit usage" },
-
-    // HiringDashboard â€” empty state
-    noCandidatesTitle: { hu: "MÃ©g nincs jelÃ¶lt", en: "No candidates yet" },
-    noCandidatesDesc: {
-      hu: "HÃ­vd meg az elsÅ‘ jelÃ¶ltedet, hogy elkezdhesd a felvÃ©teli folyamatot.",
-      en: "Invite your first candidate to start the hiring process.",
-    },
-
-    // HiringPaywall â€” features
-    featureEmailTitle: { hu: "E-mail meghÃ­vÃ³", en: "Email invitation" },
-    featureEmailDesc: {
-      hu: "KÃ¼ldj szemÃ©lyre szabott meghÃ­vÃ³t a jelÃ¶lteknek egyetlen kattintÃ¡ssal.",
-      en: "Send personalised invitations to candidates with a single click.",
-    },
-    featureComparisonTitle: { hu: "Ã–sszehasonlÃ­tÃ¡s", en: "Comparison" },
-    featureComparisonDesc: {
-      hu: "HasonlÃ­tsd Ã¶ssze a jelÃ¶ltek szemÃ©lyisÃ©gprofiljÃ¡t a csapatod mintÃ¡zatÃ¡val.",
-      en: "Compare candidate personality profiles against your team patterns.",
-    },
-    featureRoleFitTitle: { hu: "Szerep-illeszkedÃ©s", en: "Role fit" },
-    featureRoleFitDesc: {
-      hu: "LÃ¡sd, mennyire illik a jelÃ¶lt a pozÃ­ciÃ³hoz a szemÃ©lyisÃ©gprofil alapjÃ¡n.",
-      en: "See how well a candidate fits the role based on their personality profile.",
-    },
-
-    // HiringPaywall â€” general
-    premiumFeature: { hu: "prÃ©mium funkciÃ³", en: "premium feature" },
-    addonEyebrow: { hu: "kiegÃ©szÃ­tÅ‘ modul", en: "add-on" },
-    paywallDesc: {
-      hu: "HasznÃ¡ld a Trita szemÃ©lyisÃ©gmÃ©rÃ©sÃ©t a felvÃ©teli folyamatban â€” hÃ­vj meg jelÃ¶lteket, hasonlÃ­tsd Ã¶ssze a profiljukat, Ã©s hozz adatalapÃº dÃ¶ntÃ©seket.",
-      en: "Use Trita personality assessments in your hiring process â€” invite candidates, compare their profiles, and make data-driven decisions.",
-    },
-    addonPricing: {
-      hu: "A jelÃ¶lt-kreditek Ã¡ra a program rÃ©szekÃ©nt, egyedi ajÃ¡nlatban szerepel.",
-      en: "Candidate credit pricing is part of your individual program quote.",
-    },
-    noSubPricing: {
-      hu: "AktÃ­v elÅ‘fizetÃ©s szÃ¼ksÃ©ges a Hiring modul hasznÃ¡latÃ¡hoz.",
-      en: "An active subscription is required to use the Hiring module.",
-    },
-
-    // HiringPaywall â€” actions
-    activateAddon: { hu: "Kreditek vÃ¡sÃ¡rlÃ¡sa", en: "Purchase credits" },
-    upgradeToOrg: {
-      hu: "Vagy vÃ¡lts Org csomagra a korlÃ¡tlan jelÃ¶lt-hozzÃ¡fÃ©rÃ©sÃ©rt:",
-      en: "Or upgrade to the Org plan for unlimited candidate access:",
-    },
-    orgPlanDetails: { hu: "Org csomag rÃ©szletek", en: "Org plan details" },
-    addonAdminRequired: {
-      hu: "A Hiring kreditek aktivÃ¡lÃ¡sÃ¡hoz keresd a szervezeted adminisztrÃ¡torÃ¡t.",
-      en: "Contact your organisation admin to activate Hiring credits.",
-    },
-    activateSubscription: { hu: "ElÅ‘fizetÃ©s aktivÃ¡lÃ¡sa", en: "Activate subscription" },
-
-    // Candidate result page (/hiring/[orgId]/candidates/[inviteId])
-    backHiring: { hu: "Vissza Â· FelvÃ©tel", en: "Back Â· Hiring" },
-    candidateResultEyebrow: { hu: "jelÃ¶lt eredmÃ©nye", en: "candidate result" },
-    unnamedCandidateFull: { hu: "NÃ©vtelen jelÃ¶lt", en: "Unnamed candidate" },
-    assignedTeam: { hu: "HozzÃ¡rendelt csapat: ", en: "Assigned team: " },
-    compareWithTeam: { hu: "Ã–sszehasonlÃ­tÃ¡s csapattal", en: "Compare with team" },
-    noAssessments: {
-      hu: "Nincs befejezett Ã©rtÃ©kelÃ©s a csapatban: â€{name}â€.",
-      en: "{name} has no completed assessments.",
-    },
-    managerSummaryEyebrow: { hu: "vezetÅ‘i Ã¶sszefoglalÃ³", en: "manager summary" },
-    quickOverview: { hu: "Gyors Ã¡ttekintÃ©s", en: "Quick overview" },
-    strengthsEyebrow: { hu: "erÅ‘ssÃ©gek", en: "strengths" },
-    balancedProfile: {
-      hu: "KiegyensÃºlyozott profil, nincs kiemelkedÅ‘ dimenziÃ³",
-      en: "Balanced profile, no standout dimension",
-    },
-    watchAreasEyebrow: { hu: "figyelendÅ‘", en: "watch areas" },
-    noLowArea: { hu: "Nincs kritikusan alacsony terÃ¼let", en: "No critically low area" },
-    teamFitEyebrow: { hu: "hasonlÃ³sÃ¡g a csapathoz", en: "team similarity" },
-    teamComparisonNA: {
-      hu: "Csapat Ã¶sszehasonlÃ­tÃ¡s nem elÃ©rhetÅ‘",
-      en: "Team comparison not available",
-    },
-    notEnoughTeamData: {
-      hu: "Nincs elÃ©g csapat-adat az Ã¶sszehasonlÃ­tÃ¡shoz â€” legalÃ¡bb {min} kitÃ¶ltÃ¶tt Ã¶nÃ©rtÃ©kelÃ©s szÃ¼ksÃ©ges.",
-      en: "Not enough team data for a comparison â€” at least {min} completed self-assessments are needed.",
-    },
-    // A cÃ­mke a csapatÃ¡tlaghoz mÃ©rt HASONLÃ“SÃG, nem alkalmassÃ¡g â€” az eltÃ©rÅ‘
-    // profil kiegÃ©szÃ­tÅ‘ is lehet, ezÃ©rt nem kap minÅ‘sÃ­tÃ©st.
-    // A zaj-padlÃ³ alatti hasonlÃ³sÃ¡g a mÃ©rÃ©si hibÃ¡n belÃ¼li EGYEZÃ‰S â€” nem
-    // â€kivÃ¡lÃ³ egyezÃ©s" (hamis precizitÃ¡s lenne â€” a mÃ©rt SEMâ‰ˆ7,6 mellett is).
-    similarityWithinError: {
-      hu: "A mÃ©rÃ©si hibÃ¡n belÃ¼l egyezik a csapatÃ¡tlaggal",
-      en: "Matches the team average within measurement error",
-    },
-    similarityHigh: { hu: "Nagyon hasonlÃ³ a csapatÃ¡tlaghoz", en: "Very similar to the team average" },
-    similarityMid: { hu: "HasonlÃ³ a csapatÃ¡tlaghoz", en: "Similar to the team average" },
-    similarityLow: {
-      hu: "EltÃ©r a csapatÃ¡tlagtÃ³l â€” kiegÃ©szÃ­tÅ‘ profil lehet",
-      en: "Differs from the team average â€” may be complementary",
-    },
-    // Az Ã¡tlagos eltÃ©rÃ©s-szÃ¡m marad, a Â±-jel nem (2026-08-11 termÃ©kdÃ¶ntÃ©s).
-    avgDeviation: { hu: "Ãtlagos eltÃ©rÃ©s: {points} pont", en: "Average deviation: {points} points" },
-    largestGap: { hu: "Legnagyobb: {label} ({gap})", en: "Largest: {label} ({gap})" },
-    tritanProfileEyebrow: { hu: "szemÃ©lyisÃ©gprofil", en: "personality profile" },
-    personalityProfile: { hu: "SzemÃ©lyisÃ©gprofil", en: "Personality profile" },
-    teamAvgTooltip: { hu: "CsapatÃ¡tlag", en: "Team avg" },
-    candidateInTeam: { hu: "JelÃ¶lt a csapatban", en: "Candidate in the team" },
-    deviationsFromTeam: { hu: "EltÃ©rÃ©sek a csapatÃ¡tlagtÃ³l", en: "Deviations from team average" },
-    deviationExplanation: {
-      hu: "A pozitÃ­v eltÃ©rÃ©s azt jelenti, hogy a jelÃ¶lt pontszÃ¡ma a csapatÃ¡tlag fÃ¶lÃ¶tt van, a negatÃ­v, hogy alatta. Az eltÃ©rÃ©s Ã¶nmagÃ¡ban nem minÅ‘sÃ­tÃ©s: a csapatÃ¡tlagtÃ³l eltÃ©rÅ‘ profil kiegÃ©szÃ­tÅ‘ szerepet is betÃ¶lthet.",
-      en: "A positive deviation means the candidate scores above the team average, a negative one below it. Deviation by itself is not a judgement: a profile that differs from the team average can also play a complementary role.",
-    },
-    behavioralPatternsEyebrow: { hu: "mÅ±kÃ¶dÃ©si mintÃ¡k", en: "behavioral patterns" },
-    characteristicDynamics: { hu: "JellemzÅ‘ mÅ±kÃ¶dÃ©si dinamikÃ¡k", en: "Characteristic dynamics" },
-    strengthBadge: { hu: "ErÅ‘ssÃ©g", en: "Strength" },
-    watchAreaBadge: { hu: "FigyelendÅ‘", en: "Watch area" },
-    // MÃ©rt csapatszerep-blokk (forrÃ¡s-jelÃ¶lÃ©ssel)
-    teamRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
-    teamRolesTitle: { hu: "Csapatszerep-kÃ©rdÅ‘Ã­v eredmÃ©nye", en: "Team-role questionnaire result" },
-    measuredBadge: { hu: "MÃ©rt", en: "Measured" },
-
-    subscriptionAdminRequired: {
-      hu: "Az elÅ‘fizetÃ©s aktivÃ¡lÃ¡sÃ¡hoz keresd a szervezeted adminisztrÃ¡torÃ¡t.",
-      en: "Contact your organisation admin to activate a subscription.",
-    },
-
-    // RequestCreditsButton
-    requestSent: { hu: "âœ“ KÃ©rÃ©s elkÃ¼ldve", en: "âœ“ Request sent" },
-    requestCredits: { hu: "Kredit igÃ©nylÃ©se az admintÃ³l", en: "Request credits from admin" },
-  },
-
-  // â”€â”€ Manager components (/components/manager/) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  manager: {
-    // TeamCreateForm
-    teamCreate: {
-      teamName: { hu: "Csapat neve", en: "Team name" },
-      placeholder: { hu: "pl. Marketing csapat", en: "e.g. Marketing team" },
-      error: { hu: "Hiba. PrÃ³bÃ¡ld Ãºjra.", en: "Something went wrong. Please try again." },
-      creating: { hu: "LÃ©trehozÃ¡sâ€¦", en: "Creatingâ€¦" },
-      create: { hu: "LÃ©trehozÃ¡s", en: "Create team" },
-    },
-
-    // TeamInviteForm
-    teamInvite: {
-      alreadyMember: { hu: "Ez a szemÃ©ly mÃ¡r tagja a csapatnak (vagy meghÃ­vÃ³ kÃ¼ldve).", en: "This person is already a member or has a pending invite." },
-      error: { hu: "Hiba. PrÃ³bÃ¡ld Ãºjra.", en: "Something went wrong." },
-      emailLabel: { hu: "EmailcÃ­m", en: "Email address" },
-      emailPlaceholder: { hu: "kollÃ©ga@cÃ©g.hu", en: "colleague@company.com" },
-      adding: { hu: "HozzÃ¡adÃ¡sâ€¦", en: "Addingâ€¦" },
-      add: { hu: "HozzÃ¡adÃ¡s", en: "Add member" },
-      memberAdded: { hu: "A tagot hozzÃ¡adtuk.", en: "Member added successfully." },
-      inviteSent: { hu: "MeghÃ­vÃ³ elkÃ¼ldve. Automatikusan csatlakozik, ha regisztrÃ¡l.", en: "Invite sent. They'll join automatically once they register." },
-    },
-
-    // TeamInsights
-    teamInsights: {
-      avgByDimension: { hu: "CsapatÃ¡tlag dimenziÃ³kÃ©nt", en: "Team average by dimension" },
-      // A korÃ¡bbi â€Â±: szÃ³rÃ¡sâ€¦" jelmagyarÃ¡zat a kivezetett Â±-szÃ¡mot magyarÃ¡zta;
-      // az Ãºj sor azt mondja el, amit a blokk tÃ©nylegesen mutat.
-      stdDevHint: { hu: "CsapatÃ¡tlagok â€” egyÃ©ni Ã©rtÃ©kek nem jelennek meg.", en: "Team averages â€” individual values are not shown." },
-      teamDynamics: { hu: "Csapatdinamika", en: "Team dynamics" },
-      teamStrength: { hu: "Csapat erÅ‘ssÃ©ge", en: "Team strength" },
-      growthArea: { hu: "FejlesztÃ©si terÃ¼let", en: "Growth area" },
-      mostDiverse: { hu: "Legnagyobb sokszÃ­nÅ±sÃ©g", en: "Most diverse" },
-      diversityDesc: { hu: "A csapattagok eltÃ©rÅ‘ megkÃ¶zelÃ­tÃ©seket Ã©s perspektÃ­vÃ¡kat hoznak erre a terÃ¼letre â€” ez gazdag vita- Ã©s kreatÃ­v potenciÃ¡lt jelent.", en: "Team members bring diverse approaches and perspectives to this area â€” this represents rich discussion and creative potential." },
-      analysisBasis: { hu: "Az elemzÃ©s {scored} kitÃ¶ltÃ¶tt teszten alapul ({remaining} tag mÃ©g nem tÃ¶ltÃ¶tte ki).", en: "Analysis based on {scored} completed assessments ({remaining} members haven't completed yet)." },
-    },
-
-    // TeamHeatmap
-    teamHeatmap: {
-      member: { hu: "Csapattag", en: "Member" },
-      notCompleted: { hu: "Nincs kitÃ¶ltve", en: "Not completed" },
-      scoreHigh: { hu: "Magas", en: "High" },
-      scoreMid: { hu: "KÃ¶zÃ©p", en: "Mid" },
-      scoreLow: { hu: "Alacsony", en: "Low" },
-      legendRange: { hu: "Alacsony â†’ Magas pontszÃ¡m", en: "Low â†’ High score" },
-      legendNoAssessment: { hu: "Nincs kitÃ¶ltÃ¶tt teszt", en: "No assessment yet" },
-      dimensionGuide: { hu: "DimenziÃ³k magyarÃ¡zata", en: "Dimension guide" },
-    },
-
-    // CandidateInviteForm
-    candidateInvite: {
-      emailLabel: { hu: "Email cÃ­m (opcionÃ¡lis)", en: "Email address (optional)" },
-      emailPlaceholder: { hu: "jelolt@pelda.hu", en: "candidate@example.com" },
-      nameLabel: { hu: "JelÃ¶lt neve", en: "Candidate name" },
-      namePlaceholder: { hu: "KovÃ¡cs Anna", en: "Jane Smith" },
-      nameRequired: { hu: "A jelÃ¶lt neve kÃ¶telezÅ‘.", en: "Candidate name is required." },
-      positionLabel: { hu: "PozÃ­ciÃ³ (opcionÃ¡lis)", en: "Position (optional)" },
-      positionPlaceholder: { hu: "pl. Frontend fejlesztÅ‘, CTO, Sales manager", en: "e.g. Frontend dev, CTO, Sales manager" },
-      teamLabel: { hu: "Csapat (opcionÃ¡lis)", en: "Team (optional)" },
-      noTeam: { hu: "â€” Nincs csapat â€”", en: "â€” No team â€”" },
-      emailLang: { hu: "Email nyelve", en: "Email language" },
-      createError: { hu: "Hiba tÃ¶rtÃ©nt a meghÃ­vÃ³ lÃ©trehozÃ¡sa sorÃ¡n.", en: "An error occurred while creating the invite." },
-      genericError: { hu: "Hiba tÃ¶rtÃ©nt. PrÃ³bÃ¡ld Ãºjra.", en: "An error occurred. Please try again." },
-      creating: { hu: "LÃ©trehozÃ¡sâ€¦", en: "Creatingâ€¦" },
-      createInvite: { hu: "MeghÃ­vÃ³ lÃ©trehozÃ¡sa", en: "Create invite" },
-      inviteCreated: { hu: "MeghÃ­vÃ³ lÃ©trehozva!", en: "Invite created!" },
-      copyInstruction: { hu: "MÃ¡sold ki az alÃ¡bbi linket Ã©s kÃ¼ldd el a jelÃ¶ltnek:", en: "Copy the link below and send it to the candidate:" },
-      copied: { hu: "MÃ¡solva!", en: "Copied!" },
-      copy: { hu: "MÃ¡solÃ¡s", en: "Copy" },
-    },
-
-    // CandidateTeamPicker
-    candidateTeamPicker: {
-      noTeam: { hu: "â€” Nincs csapat â€”", en: "â€” No team â€”" },
-      saving: { hu: "MentÃ©sâ€¦", en: "Savingâ€¦" },
-      save: { hu: "MentÃ©s", en: "Save" },
-      saved: { hu: "Mentve!", en: "Saved!" },
-      error: { hu: "Hiba tÃ¶rtÃ©nt. PrÃ³bÃ¡ld Ãºjra.", en: "Something went wrong. Please try again." },
-    },
-
-    // CandidateRevokeButton
-    candidateRevoke: {
-      revoke: { hu: "Visszavon", en: "Revoke" },
-      revokeTitle: { hu: "MeghÃ­vÃ³ visszavonÃ¡sa", en: "Revoke invite" },
-      revokeDescription: { hu: "A meghÃ­vÃ³link Ã©rvÃ©nytelennÃ© vÃ¡lik, a jelÃ¶lt nem tudja majd kitÃ¶lteni a felmÃ©rÃ©st. Ez a mÅ±velet nem visszavonhatÃ³.", en: "The invite link will become invalid and the candidate will no longer be able to complete the assessment. This cannot be undone." },
-      cancel: { hu: "MÃ©gse", en: "Cancel" },
-      revoking: { hu: "VisszavonÃ¡sâ€¦", en: "Revokingâ€¦" },
-    },
-
-    // TeamMemberRemoveButton
-    teamMemberRemove: {
-      remove: { hu: "EltÃ¡volÃ­tÃ¡s", en: "Remove" },
-      confirmYes: { hu: "Igen", en: "Yes" },
-      confirmNo: { hu: "Nem", en: "No" },
-    },
-
-    // PendingInviteResendButton
-    pendingInviteResend: {
-      sent: { hu: "ElkÃ¼ldve âœ“", en: "Sent âœ“" },
-      errorRetry: { hu: "Hiba â€“ Ãºjra?", en: "Error â€“ retry?" },
-      sending: { hu: "KÃ¼ldÃ©sâ€¦", en: "Sendingâ€¦" },
-      resend: { hu: "ÃšjrakÃ¼ld", en: "Resend" },
-    },
-
-    // PendingInviteCancelButton
-    pendingInviteCancel: {
-      cancelInvite: { hu: "TÃ¶rlÃ©s", en: "Cancel" },
-      confirmYes: { hu: "Igen", en: "Yes" },
-      confirmNo: { hu: "Nem", en: "No" },
-    },
-  },
-
-  // â”€â”€ Team components (src/components/team/) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  teamComp: {
-    // TeamPageShell â€” tabs
-    tabOverview: { hu: "ÃttekintÃ©s", en: "Overview" },
-    tabIntelligence: { hu: "Csapatintelligencia", en: "Team Intelligence" },
-    tabIntelligenceShort: { hu: "Intelligencia", en: "Intelligence" },
-    tabProfile: { hu: "SzemÃ©lyisÃ©gprofil", en: "Personality" },
-    tabMembers: { hu: "Tagok", en: "Members" },
-
-    // TeamOverviewTab â€” campaign banner
-    activeBadge: { hu: "AktÃ­v", en: "Active" },
-    selfAssessmentLabel: { hu: "Ã¶nÃ©rtÃ©kelÃ©s", en: "self-assessment" },
-    observerLabel: { hu: "observer", en: "observer" },
-    daysLabel: { hu: "nap", en: "days" },
-    viewCampaign: { hu: "MÃ©rÃ©s megnyitÃ¡sa", en: "Open measurement" },
-
-    // TeamOverviewTab â€” empty state
-    noDataEyebrow: { hu: "nincs adat", en: "no data yet" },
-    noAssessmentsTitle: { hu: "MÃ©g nincs kitÃ¶ltÃ¶tt Ã©rtÃ©kelÃ©s", en: "No completed assessments yet" },
-    noAssessmentsDesc: {
-      hu: "IndÃ­ts egy mÃ©rÃ©st, hogy a csapattagok megkezdhessÃ©k az Ã©rtÃ©kelÃ©seket.",
-      en: "Start a 360Â° campaign so team members can begin their assessments.",
-    },
-    startCampaign: { hu: "MÃ©rÃ©s indÃ­tÃ¡sa", en: "Start a measurement" },
-
-    // TeamOverviewTab â€” personality profile card
-    teamAvgSelfEyebrow: { hu: "csapat Ã¡tlag Â· Ã¶nkÃ©p", en: "team avg Â· self" },
-    tritanProfile: { hu: "SzemÃ©lyisÃ©gprofil", en: "Personality profile" },
-    membersSelf: { hu: "fÅ‘ Â· Ã¶nÃ©rtÃ©kelÃ©s", en: "members Â· self" },
-    noAssessmentsProfile: {
-      hu: "MÃ©g nincs kitÃ¶ltÃ¶tt felmÃ©rÃ©s. A profilok megjelenÃ­tÃ©sÃ©hez legalÃ¡bb 1 tag tÃ¶ltse ki.",
-      en: "No completed assessments yet. At least one member needs to complete one to show the profiles.",
-    },
-
-    // TeamOverviewTab â€” dynamics card
-    teamDynamicsEyebrow: { hu: "csapatdinamika", en: "team dynamics" },
-    keyCharacteristics: { hu: "Kulcs jellemzÅ‘k", en: "Key characteristics" },
-    notEnoughData: { hu: "Nincs elÃ©g adat az elemzÃ©shez.", en: "Not enough data for analysis." },
-    teamStrengthEyebrow: { hu: "csapat erÅ‘ssÃ©ge", en: "team strength" },
-    growthAreaEyebrow: { hu: "fejlesztÃ©si terÃ¼let", en: "growth area" },
-    mostDiverseEyebrow: { hu: "legnagyobb sokszÃ­nÅ±sÃ©g", en: "most diverse" },
-    diversePerspectives: {
-      hu: "A csapattagok eltÃ©rÅ‘ megkÃ¶zelÃ­tÃ©seket Ã©s perspektÃ­vÃ¡kat hoznak erre a terÃ¼letre.",
-      en: "Team members bring diverse perspectives to this area.",
-    },
-
-    // TeamOverviewTab â€” members mini list
-    membersEyebrow: { hu: "tagok", en: "members" },
-    teamMembersTitle: { hu: "Csapattagok", en: "Members" },
-    noMembersYet: { hu: "MÃ©g nincsenek tagok.", en: "No members yet." },
-    doneBadge: { hu: "âœ“ KÃ©sz", en: "âœ“ Done" },
-    pendingBadge: { hu: "â—Œ FÃ¼ggÅ‘ben", en: "â—Œ Pending" },
-
-    // TeamPatternCard
-    teamPatternEyebrow: { hu: "csapatminta", en: "team pattern" },
-    dominantPattern: { hu: "DominÃ¡ns mÅ±kÃ¶dÃ©si mintÃ¡zat", en: "Dominant operating pattern" },
-    patternRequiresData: {
-      hu: "A mintÃ¡zat kiszÃ¡mÃ­tÃ¡sÃ¡hoz legalÃ¡bb 3 kitÃ¶ltÃ¶tt Ã©rtÃ©kelÃ©s szÃ¼ksÃ©ges. Jelenleg: {total} tagbÃ³l {completed} tÃ¶ltÃ¶tte ki.",
-      en: "Pattern calculation requires at least 3 completed assessments.",
-    },
-    sampleLabel: { hu: "Minta", en: "Sample" },
-    stabilityLabel: { hu: "StabilitÃ¡s", en: "Stability" },
-    patternClarityLabel: { hu: "MintÃ¡zat-tisztasÃ¡g", en: "Pattern clarity" },
-    confidenceLabel: { hu: "pontossÃ¡g", en: "confidence" },
-    strengthsEyebrow: { hu: "erÅ‘ssÃ©gek", en: "strengths" },
-    blindSpotsEyebrow: { hu: "vakfoltok", en: "blind spots" },
-    nextStepsEyebrow: { hu: "ajÃ¡nlott kÃ¶vetkezÅ‘ lÃ©pÃ©sek", en: "recommended next steps" },
-    thisWeek: { hu: "Ezen a hÃ©ten", en: "This week" },
-    thisMonth: { hu: "Ezen a hÃ³napban", en: "This month" },
-    ongoing: { hu: "Rendszeresen", en: "Ongoing" },
-    explorePattern: { hu: "MegnÃ©zem a csapatmintÃ¡t", en: "Explore team pattern" },
-    alternativePattern: { hu: "KÃ¶zeli alternatÃ­v mintÃ¡zat:", en: "Closest alternative pattern:" },
-    memberAssessments: { hu: "tag Ã©rtÃ©kelÃ©se alapjÃ¡n", en: "member assessments" },
-    missingData: { hu: "hiÃ¡nyzÃ³ adat", en: "missing" },
-    framingNote: {
-      hu: "Ã‰rtelmezÃ©si nyelv a csapat jelenlegi, Ã¶nÃ©rtÃ©kelÃ©s-alapÃº tengelyeihez â€” nem validÃ¡lt tipolÃ³gia, diagnÃ³zis vagy teljesÃ­tmÃ©nycÃ­mke. A kÃ¶zvetlenÃ¼l mÃ©rt bizalmi hÃ¡lÃ³ Ã©s pszicholÃ³giai biztonsÃ¡g kÃ¼lÃ¶n evidencia.",
-      en: "Interpretive language for the team's current self-assessment-based axes â€” not a validated typology, diagnosis, or performance label. The directly measured trust network and psychological safety are separate evidence.",
-    },
-
-    // TeamRoleSection
-    estimatedRolesEyebrow: { hu: "csapatszerepek", en: "team roles" },
-    peerEyebrow: { hu: "Ã¶nkÃ©p vs. csapatkÃ©p", en: "self-image vs. team view" },
-    peerTitle: { hu: "Ãgy lÃ¡tja a csapat", en: "How the team sees it" },
-    peerDesc: {
-      hu: "A csapattÃ¡rsi visszajelzÃ©s-kÃ¶r Ã¶sszesÃ­tett kÃ©pe tagonkÃ©nt â€” az Ã¶nkitÃ¶ltÃ©s mellÃ© mÃ©rt csapatkÃ©p kerÃ¼l. A pÃ¶tty a csapatkÃ©p azon szerepÃ©t jelÃ¶li, amely az Ã¶nkÃ©pben nem szerepel.",
-      en: "The aggregated view from the peer feedback round, per member â€” a measured team view next to the self-report. The dot marks roles in the team view that don't appear in the self-image.",
-    },
-    // Az anonimitÃ¡s-padlÃ³ ({min} = MIN_RATERS_FOR_ANONYMOUS_AGGREGATE) a
-    // hÃ­vÃ³bÃ³l interpolÃ¡lÃ³dik â€” literÃ¡l szÃ¡mot ide ne Ã©gess be.
-    peerCoverage: { hu: "{above} / {total} tagnÃ¡l Ã¡ll Ã¶ssze a csapatkÃ©p (legalÃ¡bb {min} Ã©rtÃ©kelÅ‘)", en: "team view available for {above} / {total} members (at least {min} raters)" },
-    peerRaterCount: { hu: "{n} Ã©rtÃ©kelÅ‘", en: "{n} raters" },
-    peerBelowThreshold: {
-      hu: "MÃ©g kevesebb mint {min} csapattÃ¡rs adott visszajelzÃ©st â€” az Ã¶sszesÃ­tett kÃ©p a nÃ©vtelensÃ©g vÃ©delmÃ©ben csak a kÃ¼szÃ¶b felett jelenik meg.",
-      en: "Fewer than {min} teammates have responded so far â€” to protect anonymity, the aggregated view only appears above the threshold.",
-    },
-    peerSelfLabel: { hu: "Ã–nkÃ©p (sajÃ¡t kitÃ¶ltÃ©s)", en: "Self-image (own answers)" },
-    peerTeamLabel: { hu: "CsapatkÃ©p (tÃ¡rsak szerint)", en: "Team view (per teammates)" },
-    peerNoSelf: { hu: "Nincs sajÃ¡t kitÃ¶ltÃ©s â€” az Ã¶sszevetÃ©shez tÃ¶ltsd ki a szerep-kÃ©rdÅ‘Ã­vet.", en: "No self-report yet â€” fill in the role questionnaire to compare." },
-    peerDiff: { hu: "Az Ã¶nkÃ©pben nem szerepel", en: "Not in the self-image" },
-    peerFootnote: {
-      hu: "A csapatkÃ©p nÃ©vtelen: senki egyÃ©ni jelÃ¶lÃ©se nem visszakereshetÅ‘, Ã©s {min} Ã©rtÃ©kelÅ‘ alatt nem jelenik meg.",
-      en: "The team view is anonymous: no individual's answers can be traced, and nothing is shown below {min} raters.",
-    },
-    teamRoleTitle: { hu: "Csapatszerep-elemzÃ©s", en: "Team role analysis" },
-    teamRoleDesc: {
-      hu: "TagonkÃ©nti csapatszerep-profilok. A kitÃ¶ltÃ¶tt csapatszerep-kÃ©rdÅ‘Ã­v mÃ©rt adat; ahol mÃ©g nincs kitÃ¶ltÃ©s, a szemÃ©lyisÃ©gprofilbÃ³l becslÃ¼nk â€” a forrÃ¡st minden tagnÃ¡l kÃ¼lÃ¶n jelÃ¶ljÃ¼k.",
-      en: "Per-member team-role profiles. A completed team-role questionnaire is measured data; where it is missing, we estimate from the personality profile â€” the source is badged for every member.",
-    },
-    profileStatus: { hu: "SzemÃ©lyisÃ©gprofil stÃ¡tusz", en: "Personality profile status" },
-    profileStatusDesc: {
-      hu: "{done} / {total} tagnak van szemÃ©lyisÃ©gprofilja â€” a csapatszerep-becslÃ©sek erre Ã©pÃ¼lnek",
-      en: "{done} / {total} members have personality data â€” team-role estimates are derived from this",
-    },
-    roleDistributionEyebrow: { hu: "szerepkÃ¶r-eloszlÃ¡s", en: "role distribution" },
-    roleCompositionTitle: { hu: "Csapatszerepek megoszlÃ¡sa", en: "Team role composition" },
-    noRoleData: { hu: "Nincs elÃ©g adat a csapatszerep-eloszlÃ¡shoz.", en: "Not enough data for role distribution." },
-    balanceAlertsEyebrow: { hu: "egyensÃºly-figyelmeztetÃ©sek", en: "balance alerts" },
-    wellDiversified: {
-      hu: "A csapat jÃ³l diverzifikÃ¡lt â€” minden fÅ‘ szerepkÃ¶r kÃ©pviselt.",
-      en: "The team is well-diversified â€” all key roles are represented.",
-    },
-    missingRoles: { hu: "HiÃ¡nyzÃ³ szerepkÃ¶rÃ¶k", en: "Missing roles" },
-    overrepresentedRoles: { hu: "TÃºlreprezentÃ¡lt szerepkÃ¶rÃ¶k", en: "Overrepresented roles" },
-    categoryAnalysisEyebrow: { hu: "kategÃ³ria-elemzÃ©s", en: "category analysis" },
-    categoryAnalysisDesc: {
-      hu: "A csapat tagjai hogyan oszlanak meg a hÃ¡rom fÅ‘ szerepkategÃ³ria kÃ¶zÃ¶tt.",
-      en: "How team members distribute across the three core role categories.",
-    },
-    actionOriented: { hu: "CselekvÅ‘", en: "Action-oriented" },
-    peopleOriented: { hu: "Kapcsolati", en: "People-oriented" },
-    thoughtOriented: { hu: "GondolkodÃ³", en: "Thought-oriented" },
-    individualRolesEyebrow: { hu: "egyÃ©ni szerepkÃ¶rÃ¶k", en: "individual roles" },
-    memberRoleProfiles: { hu: "Tagok szerep-profilja", en: "Member role profiles" },
-    thMember: { hu: "Tag", en: "Member" },
-    thPrimary: { hu: "ElsÅ‘dleges", en: "Primary" },
-    thSecondary: { hu: "MÃ¡sodlagos", en: "Secondary" },
-    thSupporting: { hu: "KiegÃ©szÃ­tÅ‘", en: "Supporting" },
-    noData: { hu: "Nincs adat", en: "No data" },
-    // ForrÃ¡s-jelÃ¶lÃ©s (S1) â€” mÃ©rt kitÃ¶ltÃ©s vs profil-alapÃº becslÃ©s. A vizuÃ¡lis
-    // konvenciÃ³ a TeamIntelligence-Ã©vel azonos: sage = mÃ©rt, amber = becsÃ¼lt.
-    sourceMeasuredBadge: { hu: "kitÃ¶ltÃ¶tt", en: "measured" },
-    sourceEstimateBadge: { hu: "becslÃ©s", en: "estimate" },
-    roleSourceMixLine: {
-      hu: "{measured} valÃ³di kitÃ¶ltÃ©s Â· {estimated} profil-alapÃº becslÃ©s",
-      en: "{measured} real fill-outs Â· {estimated} profile-based estimates",
-    },
-    sourceMixMeasured: { hu: "{n} mÃ©rt kitÃ¶ltÃ©sbÅ‘l", en: "{n} from measured fill-outs" },
-    sourceMixEstimated: { hu: "{n} profil-alapÃº becslÃ©sbÅ‘l", en: "{n} from profile-based estimates" },
-
-    // TeamMembersTab
-    membersTabEyebrow: { hu: "tagok", en: "members" },
-    membersTabTitle: { hu: "Tagok", en: "Members" },
-    doneTest: { hu: "KitÃ¶ltve", en: "Completed" },
-    noTest: { hu: "Nincs teszt", en: "No test" },
-    inviteSent: { hu: "MeghÃ­vÃ³ elkÃ¼ldve", en: "Invite sent" },
-    pendingStatus: { hu: "FÃ¼ggÅ‘ben", en: "Pending" },
-    noMembersInvite: {
-      hu: "MÃ©g nincs csapattag. HÃ­vj meg valakit lentebb!",
-      en: "No team members yet. Invite someone below!",
-    },
-    addMember: { hu: "Tag hozzÃ¡adÃ¡sa", en: "Add a member" },
-    addMemberDesc: {
-      hu: "Add meg a csapattag emailcÃ­mÃ©t. A felhasznÃ¡lÃ³nak regisztrÃ¡lva kell lennie.",
-      en: "Enter the member's email. They must already be registered on Trita.",
-    },
-
-    // TeamMemberRoleEditor
-    roleManagerLabel: { hu: "Menedzser", en: "Manager" },
-    roleMemberLabel: { hu: "Tag", en: "Member" },
-    cannotChangeSelf: { hu: "SajÃ¡t role nem mÃ³dosÃ­thatÃ³.", en: "Cannot change own role." },
-    somethingWentWrong: { hu: "Hiba tÃ¶rtÃ©nt.", en: "Something went wrong." },
-    networkError: { hu: "HÃ¡lÃ³zati hiba.", en: "Network error." },
-
-    // TeamProfileTab
-    personalityProfileEyebrow: { hu: "szemÃ©lyisÃ©gprofil", en: "personality profile" },
-    teamHeatmapTitle: { hu: "Csapat szemÃ©lyisÃ©gprofil", en: "Team Personality Heatmap" },
-    heatmapDesc: {
-      hu: "Minden oszlop egy szemÃ©lyisÃ©gdimenziÃ³t mutat â€” minÃ©l mÃ©lyebb a szÃ­n, annÃ¡l magasabb a pontszÃ¡m.",
-      en: "Each column represents a personality dimension â€” deeper color means a higher score.",
-    },
-    analysisEyebrow: { hu: "elemzÃ©s", en: "analysis" },
-    teamAnalysis: { hu: "CsapatelemzÃ©s", en: "Team Analysis" },
-    noMembersProfile: {
-      hu: "MÃ©g nincs csapattag. HÃ­vj meg valakit a Tagok fÃ¼lÃ¶n!",
-      en: "No team members yet. Invite someone on the Members tab!",
-    },
-    noAssessmentProfile: {
-      hu: "MÃ©g egyik csapattag sem tÃ¶ltÃ¶tte ki a felmÃ©rÃ©st.",
-      en: "No team members have completed an assessment yet.",
-    },
-
-    // DynamicsMap
-    noDynamicsTitle: { hu: "MÃ©g nincs kapcsolati adat", en: "No dynamics data yet" },
-    noDynamicsDesc: {
-      hu: "IndÃ­ts szakmai visszajelzÃ©si kÃ¶rt a dinamika-tÃ©rkÃ©p feltÃ¶ltÃ©sÃ©hez",
-      en: "Run a peer feedback round to populate the dynamics map",
-    },
-    dynamicsHiddenHint: {
-      hu: "A kapcsolati dinamika nÃ©zet csak akkor jelenik meg, ha van observer vagy peer kapcsolat-adat.",
-      en: "The dynamics view is available only when observer or peer relationship data exists.",
-    },
-    connectionsEyebrow: { hu: "kapcsolatok", en: "connections" },
-    edgeGood: { hu: "jÃ³ egyÃ¼ttmÅ±.", en: "good collab." },
-    edgeTension: { hu: "feszÃ¼ltsÃ©g", en: "tension" },
-    edgeNeutral: { hu: "semleges", en: "neutral" },
-    edgeAligned: { hu: "hasonlÃ³ profil", en: "aligned" },
-    // MÃ‰RT (trust) aligned Ã©lre: az erÅ‘s bizalom nem profil-hasonlÃ³sÃ¡g â€”
-    // ott a semleges cÃ­mke jÃ¡r, nem az edgeAligned.
-    edgeAlignedNeutral: { hu: "Ã¶sszehangolt", en: "aligned" },
-    edgeFriction: { hu: "lehetsÃ©ges sÃºrlÃ³dÃ¡s", en: "potential friction" },
-    edgeComplementary: { hu: "kiegÃ©szÃ­tÅ‘", en: "complementary" },
-    incomingConnections: { hu: "kapcsolat ebben a hÃ¡lÃ³ban", en: "connections in this network" },
-    legendGood: { hu: "JÃ³ egyÃ¼ttmÅ±.", en: "Good collab." },
-    legendNeutral: { hu: "Semleges", en: "Neutral" },
-    legendTension: { hu: "FeszÃ¼ltsÃ©g", en: "Tension" },
-    legendAligned: { hu: "HasonlÃ³ profil", en: "Similar profile" },
-    // Ha a tÃ©rkÃ©pen mÃ©rt (trust) Ã©l is van, az aligned szÃ­n jelentÃ©se vegyes
-    // (erÅ‘s bizalom VAGY hasonlÃ³ profil) â€” a jelmagyarÃ¡zat ilyenkor semleges.
-    legendAlignedNeutral: { hu: "Ã–sszehangolt", en: "Aligned" },
-    legendComplementary: { hu: "KiegÃ©szÃ­tÅ‘", en: "Complementary" },
-    legendFriction: { hu: "PotenciÃ¡lis sÃºrlÃ³dÃ¡s", en: "Potential friction" },
-    hubPerson: { hu: "Hub szemÃ©ly", en: "Hub person" },
-    clickPerson: { hu: "Kattints egy szemÃ©lyre", en: "Click on a person" },
-    clickPersonConnections: { hu: "a kapcsolatai megtekintÃ©sÃ©hez", en: "to view their connections" },
-    edgeOneSided: { hu: "egyoldalÃº visszajelzÃ©s", en: "one-sided feedback" },
-    // DimenziÃ³-bontÃ¡s elrejtve, ha a pÃ¡ros valamelyik tagjÃ¡nak nincs valÃ³di
-    // profil-adata â€” kitalÃ¡lt (50-es default) Ã©rtÃ©kek ellen nem szÃ¡molunk gap-et.
-    breakdownNoProfile: {
-      hu: "Nincs profiladat a bontÃ¡shoz â€” a pÃ¡ros legalÃ¡bb egyik tagja mÃ©g nem tÃ¶ltÃ¶tte ki a szemÃ©lyisÃ©g-felmÃ©rÃ©st.",
-      en: "No profile data for this breakdown â€” at least one member of the pair hasn't completed the personality assessment yet.",
-    },
-
-    // Dinamika-forrÃ¡s Ã¡llapotcÃ­mkÃ©k (mÃ©rt/becsÃ¼lt Ã©l-arÃ¡ny szerint)
-    dynamicsStateMeasured: { hu: "mÃ©rt", en: "measured" },
-    dynamicsStateMixed: { hu: "vegyes", en: "mixed" },
-    dynamicsStateEstimated: { hu: "profil-becslÃ©s", en: "profile estimate" },
-    dynamicsStateNone: { hu: "nincs adat", en: "no data" },
-
-    // TÃ©rkÃ©p-minÅ‘sÃ©g cÃ­mkÃ©k (kitÃ¶ltÃ¶ttsÃ©g szerint)
-    mapStateSufficient: { hu: "elegendÅ‘ adat", en: "sufficient data" },
-    mapStatePartial: { hu: "rÃ©szleges adat", en: "partial data" },
-    mapStateNone: { hu: "nincs adat", en: "no data" },
-
-    // â€Csapat nyomÃ¡s alatt" pÃ³lus-cÃ­mkÃ©k
-    polePolarized: { hu: "kÃ©t ellentÃ©tes pÃ³lus", en: "two opposite poles" },
-    poleHigh: { hu: "magas pÃ³lus", en: "high pole" },
-    poleLow: { hu: "alacsony pÃ³lus", en: "low pole" },
-
-    // RoleFitMap
-    dominantDimsEyebrow: { hu: "dominÃ¡ns dimenziÃ³k", en: "dominant dimensions" },
-    noRoleFitDataTitle: { hu: "MÃ©g nincs elegendÅ‘ adat", en: "Not enough data yet" },
-    noRoleFitDataDesc: {
-      hu: "A szerepilleszkedÃ©shez legalÃ¡bb egy kitÃ¶ltÃ¶tt felmÃ©rÃ©s szÃ¼ksÃ©ges.",
-      en: "Role fit requires at least one completed assessment.",
-    },
-    roleFitScore: { hu: "IlleszkedÃ©si pontszÃ¡m", en: "Fit score" },
-    roleFitConfidence: { hu: "MegbÃ­zhatÃ³sÃ¡g", en: "Confidence" },
-    roleFitConfidenceHigh: { hu: "magas", en: "high" },
-    roleFitConfidenceMedium: { hu: "kÃ¶zepes", en: "medium" },
-    roleFitConfidenceLow: { hu: "alacsony", en: "low" },
-    missingRoleLabel: { hu: "HiÃ¡nyzÃ³ szerep:", en: "Missing role:" },
-    missingRoleTag: { hu: "âš  hiÃ¡nyzik", en: "âš  missing" },
-    clickPersonRole: { hu: "Kattints egy szemÃ©lyre", en: "Click on a person" },
-    clickPersonRoleDesc: { hu: "a szerepe megtekintÃ©sÃ©hez", en: "to view their role" },
-
-    // RoleFitMap â€” zone labels
-    zoneMediatorLabel: { hu: "MediÃ¡tor", en: "Mediator" },
-    zoneInnovatorLabel: { hu: "InnovÃ¡tor", en: "Innovator" },
-    zoneExecutorLabel: { hu: "KivitelezÅ‘", en: "Executor" },
-    zoneAnalyzerLabel: { hu: "ElemzÅ‘", en: "Analyzer" },
-    zoneEnergizerLabel: { hu: "EnergizÃ¡lÃ³", en: "Energizer" },
-    zoneStrategistLabel: { hu: "StratÃ©ga", en: "Strategist" },
-
-    // TeamIntelligence â€” sub-tab labels
-    subMap: { hu: "â‘  CsapattÃ©rkÃ©p", en: "â‘  Team Map" },
-    subDynamics: { hu: "â‘¡ Dinamika", en: "â‘¡ Dynamics Map" },
-    subRoles: { hu: "â‘¢ Szerep illeszkedÃ©s", en: "â‘¢ Role Fit" },
-    evidenceEyebrow: { hu: "adatminÅ‘sÃ©g", en: "data quality" },
-    evidenceSource: { hu: "ForrÃ¡s", en: "Source" },
-    evidenceQuality: { hu: "MinÅ‘sÃ©g", en: "Quality" },
-    evidenceConfidence: { hu: "MegbÃ­zhatÃ³sÃ¡g", en: "Confidence" },
-    evidenceSourceSelf: { hu: "Ã–nÃ©rtÃ©kelÃ©s", en: "Self assessment" },
-    // A dinamika-nÃ©zet mÃ©rt Ã©le a BIZALMI KÃ–RBÅL jÃ¶n, nem az observer-
-    // kÃ¶rbÅ‘l (friction-model isMeasuredDynamicsSource). A korÃ¡bbi
-    // â€Ã–nÃ©rtÃ©kelÃ©s + kÃ¼lsÅ‘ visszajelzÃ©s" cÃ­mke olyan forrÃ¡st Ã¡llÃ­tott, ami
-    // nem jÃ¡rult hozzÃ¡ â€” ld. team-intelligence.ts.
-    evidenceSourceSelfTrust: { hu: "Ã–nÃ©rtÃ©kelÃ©s + bizalmi kÃ¶r", en: "Self + trust round" },
-    evidenceSourceInferred: { hu: "BecsÃ¼lt modell", en: "Inferred model" },
-    // â”€â”€ VisszajelzÃ©si kultÃºra (csapat observer-blokk) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    // A hangnem tudatos: az eltÃ©rÃ©s nem hiba, hanem a visszajelzÃ©s
-    // Ã¡ramlÃ¡sÃ¡rÃ³l szÃ³lÃ³ jel. Semmilyen szÃ¶veg nem minÅ‘sÃ­theti a csapatot.
-    feedbackCultureEyebrow: { hu: "VisszajelzÃ©si kultÃºra", en: "Feedback culture" },
-    feedbackCultureTitle: {
-      hu: "Mennyire egyezik az Ã¶nkÃ©p azzal, ahogy mÃ¡sok lÃ¡tnak",
-      en: "How closely self-image matches how others see you",
-    },
-    feedbackCultureLead: {
-      hu: "{covered} tagnak van mÃ©rt kÃ¼lsÅ‘ kÃ©pe a {total} fÅ‘bÅ‘l â€” az alÃ¡bbi bontÃ¡s csak rÃ¡juk vonatkozik.",
-      en: "{covered} of {total} members have a measured external view â€” the breakdown below covers only them.",
-    },
-    feedbackCultureAligned: { hu: "egybevÃ¡gÃ³ Ã¶nkÃ©p", en: "matching self-image" },
-    feedbackCultureAlignedHint: {
-      hu: "Az Ã¶nÃ©rtÃ©kelÃ©s a mÃ©rÃ©si hibÃ¡n belÃ¼l egyezik a kollÃ©gÃ¡k kÃ©pÃ©vel.",
-      en: "Self-assessment matches colleagues' view within measurement error.",
-    },
-    feedbackCultureGap: { hu: "Ã©rdemi eltÃ©rÃ©s", en: "meaningful difference" },
-    feedbackCultureGapHint: {
-      hu: "LegalÃ¡bb egy dimenziÃ³n a mÃ©rÃ©si hibÃ¡t meghaladÃ³ a kÃ¼lÃ¶nbsÃ©g. Ez nem hiba â€” jelzÃ©s, hogy ott Ã©rdemes beszÃ©lgetni.",
-      en: "On at least one dimension the difference exceeds measurement error. Not a fault â€” a cue that a conversation is worth having.",
-    },
-    feedbackCultureNote: {
-      hu: "ForrÃ¡s: a szervezet kampÃ¡nyaiban gyÅ±jtÃ¶tt kÃ¼lsÅ‘ visszajelzÃ©s (a szemÃ©lyes, kampÃ¡nyon kÃ­vÃ¼li visszajelzÃ©s nem szerepel benne). TagonkÃ©nt legalÃ¡bb 3 Ã©rtÃ©kelÅ‘ kell hozzÃ¡, Ã©s csak Ã¶sszesÃ­tett darabszÃ¡m lÃ¡tszik â€” sem nÃ©v, sem egyÃ©ni Ã©rtÃ©k, sem dimenziÃ³-bontÃ¡s.",
-      en: "Source: external feedback collected in this organisation's campaigns (personal, non-campaign feedback is excluded). At least 3 raters per member are required, and only aggregate counts are shown â€” no names, individual values, or dimension breakdown.",
-    },
-    evidenceQualityNone: { hu: "nincs", en: "none" },
-    evidenceQualityPartial: { hu: "rÃ©szleges", en: "partial" },
-    evidenceQualitySufficient: { hu: "elegendÅ‘", en: "sufficient" },
-    evidenceConfidenceLow: { hu: "alacsony", en: "low" },
-    evidenceConfidenceMedium: { hu: "kÃ¶zepes", en: "medium" },
-    evidenceConfidenceHigh: { hu: "magas", en: "high" },
-
-    // Szerep-hiÃ¡ny prioritÃ¡s indoklÃ¡sa â€” forrÃ¡s-tudatos vÃ¡ltozatok
-    // (hitelessÃ©gi alapelv: mÃ©rt szerepkÃ©pre nem Ã­rhatjuk, hogy â€becsÃ¼lt").
-    roleGapReasonMeasured: {
-      hu: "A mÃ©rt szerepkÃ©pben nem lÃ¡tszik: {roles}.",
-      en: "The measured role map is missing: {roles}.",
-    },
-    roleGapReasonMixed: {
-      hu: "A rÃ©szben mÃ©rt, rÃ©szben becsÃ¼lt szerepkÃ©pben nem lÃ¡tszik: {roles}.",
-      en: "The partly measured, partly estimated role map is missing: {roles}.",
-    },
-    roleGapReasonEstimated: {
-      hu: "A becsÃ¼lt szerepkÃ©pben nem lÃ¡tszik: {roles}.",
-      en: "Estimated role map is missing: {roles}.",
-    },
-  },
-
-  // â”€â”€ Team pages (/team, /team/[id]) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  team: {
-    fb: {
-      eyebrow: { hu: "visszajelzÃ©s", en: "feedback" },
-      title: { hu: "FejlesztÅ‘ visszajelzÃ©s", en: "Development feedback" },
-      hint: {
-        hu: "KÃ©rj visszajelzÃ©st a csapattÃ¡rsaidtÃ³l egy konkrÃ©t tÃ©mÃ¡ban â€” te dÃ¶ntesz, ki Ã©s nÃ©v nÃ©lkÃ¼l vÃ¡laszolhat-e. A vÃ¡laszok csak neked jelennek meg.",
-        en: "Ask your teammates for feedback on a specific topic â€” you decide who can answer and whether anonymously. Responses are visible only to you.",
-      },
-      forMeLabel: { hu: "RÃ¡d vÃ¡rÃ³ kÃ©rÃ©sek ({count})", en: "Requests waiting for you ({count})" },
-      asksAbout: { hu: "visszajelzÃ©st kÃ©r:", en: "asks for feedback on:" },
-      respond: { hu: "VÃ¡laszolok", en: "Respond" },
-      cancel: { hu: "MÃ©gse", en: "Cancel" },
-      continueLabel: { hu: "Folytasd, mertâ€¦", en: "Keep doing, becauseâ€¦" },
-      tryLabel: { hu: "JÃ¶vÅ‘re prÃ³bÃ¡ldâ€¦", en: "Next time, tryâ€¦" },
-      commentLabel: { hu: "Szabad megjegyzÃ©s", en: "Free comment" },
-      optional: { hu: "(opcionÃ¡lis)", en: "(optional)" },
-      respondAnonymously: { hu: "NÃ©v nÃ©lkÃ¼l vÃ¡laszolok", en: "Respond anonymously" },
-      sendResponse: { hu: "VÃ¡lasz kÃ¼ldÃ©se", en: "Send response" },
-      respondError: { hu: "A vÃ¡lasz kÃ¼ldÃ©se nem sikerÃ¼lt â€” prÃ³bÃ¡ld Ãºjra.", en: "Sending the response failed â€” try again." },
-      newRequestTitle: { hu: "KÃ©rek visszajelzÃ©st", en: "Request feedback" },
-      topicPlaceholder: { hu: "MirÅ‘l kÃ©rsz visszajelzÃ©st? Pl. â€Hasznosak a meetingjeim?â€", en: "What do you want feedback on? E.g. \"Are my meetings useful?\"" },
-      allowAnonymous: { hu: "NÃ©v nÃ©lkÃ¼li vÃ¡laszokat is elfogadok", en: "I also accept anonymous responses" },
-      create: { hu: "KÃ©rÃ©s elkÃ¼ldÃ©se", en: "Send request" },
-      createdOk: { hu: "ElkÃ¼ldve", en: "Sent" },
-      createError: { hu: "A kÃ©rÃ©s lÃ©trehozÃ¡sa nem sikerÃ¼lt.", en: "Creating the request failed." },
-      mineLabel: { hu: "KÃ©rÃ©seim Ã©s a vÃ¡laszok", en: "My requests and responses" },
-      requestMeta: { hu: "{count}/{total} vÃ¡lasz Ã©rkezett", en: "{count}/{total} responses received" },
-      anonBadge: { hu: "nÃ©v nÃ©lkÃ¼li vÃ¡laszok engedÃ©lyezve", en: "anonymous responses allowed" },
-      continueShort: { hu: "Folytasd", en: "Keep" },
-      tryShort: { hu: "PrÃ³bÃ¡ld", en: "Try" },
-      anonymousResponder: { hu: "nÃ©vtelen vÃ¡laszadÃ³", en: "anonymous responder" },
-      suggestionsLabel: { hu: "MÃ©rÃ©s-kÃ¶rbÅ‘l kapott javaslataid", en: "Suggestions from measurement rounds" },
-      pendingAnonymous: {
-        hu: "{count} nÃ©v nÃ©lkÃ¼li javaslat vÃ¡r mÃ©g â€” legalÃ¡bb 3 bekÃ¼ldÅ‘nÃ©l jelenik meg, Ã¶sszesÃ­tve.",
-        en: "{count} anonymous suggestions pending â€” shown aggregated once there are at least 3 senders.",
-      },
-    },
-    kudos: {
-      eyebrow: { hu: "kÃ¶szÃ¶net", en: "kudos" },
-      title: { hu: "KÃ¶szÃ¶netek", en: "Kudos" },
-      hint: {
-        hu: "KÃ¼ldj nevesÃ­tett kÃ¶szÃ¶netet egy csapattÃ¡rsadnak â€” egy konkrÃ©t helyzetÃ©rt vagy viselkedÃ©sÃ©rt. A kÃ¶szÃ¶net csak a cÃ­mzettnek jelenik meg.",
-        en: "Send named kudos to a teammate â€” for a specific situation or behaviour. Kudos are visible only to the recipient.",
-      },
-      pickMember: { hu: "VÃ¡lassz csapattÃ¡rsatâ€¦", en: "Pick a teammateâ€¦" },
-      badgeLabel: { hu: "JelvÃ©ny", en: "Badge" },
-      placeholder: { hu: "Pl. â€KÃ¶szÃ¶nÃ¶m, hogy a keddi demÃ³ elÅ‘tt Ã¡tnÃ©zted a prezimet â€” sokat dobott rajta.â€", en: "E.g. \"Thanks for reviewing my deck before Tuesday's demo â€” it made a real difference.\"" },
-      send: { hu: "KÃ¶szÃ¶net kÃ¼ldÃ©se", en: "Send kudos" },
-      sentOk: { hu: "ElkÃ¼ldve", en: "Sent" },
-      sendError: { hu: "A kÃ¼ldÃ©s nem sikerÃ¼lt â€” prÃ³bÃ¡ld Ãºjra.", en: "Sending failed â€” try again." },
-      receivedLabel: { hu: "Kapott kÃ¶szÃ¶neteid ({count})", en: "Kudos you received ({count})" },
-      empty: { hu: "MÃ©g nincs kapott kÃ¶szÃ¶neted â€” lehet, hogy te kÃ¼ldesz elsÅ‘kÃ©nt?", en: "No kudos received yet â€” maybe you'll be the first to send one?" },
-    },
-    eyebrow: { hu: "HR & Csapat", en: "HR & Team" },
-    title: { hu: "Csapataim", en: "My Teams" },
-    createNew: { hu: "Ãšj csapat lÃ©trehozÃ¡sa", en: "Create a new team" },
-    createNewDesc: {
-      hu: "Adj nevet a csapatnak, majd add hozzÃ¡ a tagokat emailcÃ­m alapjÃ¡n.",
-      en: "Give your team a name, then add members by their email address.",
-    },
-    teamsLabel: { hu: "Csapatok", en: "Teams" },
-    noTeams: {
-      hu: "MÃ©g nincs csapatod. Hozz lÃ©tre egyet fentebb!",
-      en: "No teams yet. Create one above!",
-    },
-    noTeamsTitle: { hu: "MÃ©g nincs csapatod", en: "You don't have a team yet" },
-    noTeamsMember: {
-      hu: "MÃ©g nem kerÃ¼ltÃ©l csapatba. A szervezeti menedzser tud hozzÃ¡adni egyhez.",
-      en: "You haven't been added to a team yet. An organization manager can add you.",
-    },
-    memberTag: { hu: "tag", en: "member" },
-    membersTag: { hu: "tag", en: "members" },
-    createdPrefix: { hu: "LÃ©trehozva: ", en: "Created " },
-    open: { hu: "MegnyitÃ¡s", en: "Open" },
-
-    // team/[id] â€” detail page
-    detailEyebrowPrefix: { hu: "csapat", en: "team" },
-    roleManager: { hu: "Menedzser", en: "Manager" },
-    roleMember: { hu: "Tag", en: "Member" },
-    campaignButton: { hu: "MÃ©rÃ©s", en: "Measurement" },
-
-    // stat strip labels
-    statMembers: { hu: "Tagok", en: "Members" },
-    statCompleted: { hu: "kitÃ¶ltÃ¶tte", en: "completed" },
-    statObserverCoverage: { hu: "Observer lefedettsÃ©g", en: "Observer coverage" },
-    statNoCampaign: { hu: "nincs aktÃ­v mÃ©rÃ©s", en: "no active measurement" },
-    statCampaignDaysActive: { hu: "{days} napja aktÃ­v", en: "Active for {days} days" },
-    statStartCampaign: {
-      hu: "IndÃ­ts mÃ©rÃ©st az Ã¶sszehasonlÃ­tÃ¡shoz",
-      en: "Start a 360Â° campaign to compare",
-    },
-    statTeamStrength: { hu: "Csapat erÅ‘ssÃ©ge", en: "Team strength" },
-    statGrowthArea: { hu: "FejlesztÃ©si terÃ¼let", en: "Growth area" },
-    statActiveCampaign: { hu: "AktÃ­v mÃ©rÃ©s", en: "Active measurement" },
-    statInProgress: { hu: "folyamatban", en: "in progress" },
-  },
-
-  // â”€â”€ Join pages (/join/[token], /join/org/[inviteId]) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  join: {
-    // â”€â”€ Shared â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    inviteEyebrow: { hu: "meghÃ­vÃ³", en: "invite" },
-    profileHint: {
-      hu: "Ezeket az adatokat bÃ¡rmikor mÃ³dosÃ­thatod a profil oldalon.",
-      en: "You can edit these details anytime on your profile page.",
-    },
-    usernameLabel: { hu: "MegjelenÃ­tÃ©si nÃ©v", en: "Display name" },
-    usernamePlaceholder: { hu: "pl. KovÃ¡cs PÃ©ter", en: "e.g. Alex Walker" },
-    birthYearLabel: { hu: "SzÃ¼letÃ©si Ã©v", en: "Birth year" },
-    birthYearPlaceholder: { hu: "pl. {example}", en: "e.g. {example}" },
-    birthYearHint: { hu: "{min}â€“{max} kÃ¶zÃ¶tt", en: "Between {min} and {max}" },
-    genderLabel: { hu: "Nem", en: "Gender" },
-    consentText: {
-      hu: "HozzÃ¡jÃ¡rulok adataim kezelÃ©sÃ©hez a",
-      en: "I consent to the processing of my data according to the",
-    },
-    privacyLabel: { hu: "AdatvÃ©delmi tÃ¡jÃ©koztatÃ³", en: "Privacy Policy" },
-    consentSuffix: { hu: "alapjÃ¡n.", en: "." },
-    submitting: { hu: "CsatlakozÃ¡s...", en: "Joining..." },
-    submitErrorGeneric: {
-      hu: "Hiba tÃ¶rtÃ©nt, prÃ³bÃ¡ld Ãºjra.",
-      en: "Something went wrong. Please try again.",
-    },
-    joinEyebrow: { hu: "csatlakozÃ¡s", en: "join" },
-    welcomePrefix: { hu: "Szia", en: "Welcome" },
-    submitNew: {
-      hu: "CsatlakozÃ¡s Ã©s felmÃ©rÃ©s indÃ­tÃ¡sa",
-      en: "Join and start assessment",
-    },
-    submitExisting: { hu: "CsatlakozÃ¡s", en: "Join" },
-
-    // â”€â”€ /join/[token] â€” team invite â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    teamTitle: { hu: "Csatlakozz a csapathoz", en: "Join the team" },
-    stepProfile: { hu: "Profil", en: "Profile" },
-    stepDone: { hu: "KÃ©sz", en: "Done" },
-    switchEyebrow: { hu: "szervezetvÃ¡ltÃ¡s", en: "switch context" },
-    switchTitle: {
-      hu: "MÃ¡r tartozol egy szervezethez",
-      en: "You already belong to an organization",
-    },
-    switchDescription: {
-      hu: "Jelenleg a {existingOrg} az aktÃ­v szervezeti kontextusod. Ha csatlakozol a {orgName} szervezethez, a korÃ¡bbi tagsÃ¡god megmarad, csak az aktÃ­v kontextus vÃ¡lt Ã¡t.",
-      en: "Your active org context is {existingOrg}. If you join {orgName}, your previous memberships remain intact and only your active context changes.",
-    },
-    switchPrimaryLoading: { hu: "VÃ¡ltÃ¡s...", en: "Switching..." },
-    switchPrimary: {
-      hu: "ÃtvÃ¡ltÃ¡s: {orgName}",
-      en: "Switch to {orgName}",
-    },
-    switchSecondary: {
-      hu: "Maradok a jelenlegi szervezetben",
-      en: "Stay in current organization",
-    },
-    readySameOrg: {
-      hu: "Csatlakozol a {teamName} csapathoz a meglÃ©vÅ‘ szervezeti tagsÃ¡goddal.",
-      en: "You are joining {teamName} with your existing organization membership.",
-    },
-    readyNewOrg: {
-      hu: "Csatlakozol a {orgName} szervezethez Ã©s a {teamName} csapathoz. A meglÃ©vÅ‘ eredmÃ©nyeid megmaradnak.",
-      en: "You are joining {orgName} and the {teamName} team. Your existing results stay with you.",
-    },
-    joinLoading: { hu: "CsatlakozÃ¡s...", en: "Joining..." },
-    joinCta: { hu: "CsatlakozÃ¡s", en: "Join" },
-    step1Eyebrow: { hu: "01", en: "01" },
-    step1Title: { hu: "SzemÃ©lyes adatok", en: "Basic profile" },
-    step1Sub: {
-      hu: "Ezek szÃ¼ksÃ©gesek a szemÃ©lyre szabott csapatkÃ©phez.",
-      en: "These details are required for personalized team insight.",
-    },
-    continueCta: { hu: "TovÃ¡bb", en: "Continue" },
-    step2Eyebrow: { hu: "02", en: "02" },
-    step2Title: { hu: "Egy utolsÃ³ lÃ©pÃ©s", en: "One final step" },
-    backCta: { hu: "Vissza", en: "Back" },
-
-    // â”€â”€ /join/org/[inviteId] â€” org invite â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-    orgTitle: { hu: "Csatlakozz a szervezethez", en: "Join organization" },
-    profileEyebrow: { hu: "01", en: "01" },
-    profileTitle: { hu: "NÃ©hÃ¡ny alap adat", en: "A few basic details" },
-    profileSub: {
-      hu: "Ezek szÃ¼ksÃ©gesek a szemÃ©lyre szabott csapatkÃ©phez.",
-      en: "These details are required for personalized team insight.",
-    },
-    readyText: {
-      hu: "KÃ©szen Ã¡llsz csatlakozni a {orgName} szervezethez. A meglÃ©vÅ‘ szemÃ©lyes eredmÃ©nyeid megmaradnak.",
-      en: "You're ready to join {orgName}. Your existing personal results remain available.",
-    },
-  },
-
-  // â”€â”€ Team detail page (/team/[id]) â€” server page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  teamDetail: {
-    metaTitle: { hu: "Csapat | Trita", en: "Team | Trita" },
-
-    // Hero
-    heroEyebrow: { hu: "CsapatnÃ©zet", en: "Team view" },
-    heroPatternReady: { hu: "CsapatkÃ©p elÃ©rhetÅ‘", en: "Pattern ready" },
-    heroViewPattern: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team picture" },
-    heroManageRound: { hu: "VisszajelzÃ©si kÃ¶r kezelÃ©se", en: "Manage feedback round" },
-    heroStartRound: { hu: "KÃ¶r indÃ­tÃ¡sa", en: "Start round" },
-
-    // Live snapshot aside
-    snapshotLabel: { hu: "Ã‰lÅ‘ pillanatkÃ©p", en: "Live snapshot" },
-    snapshotMembers: { hu: "Tag", en: "Members" },
-    // A KÃ‰SZ/VÃR Ã©s a bal oldali gyÅ±rÅ± a SZEMÃ‰LYISÃ‰G-PROFILRA vonatkozik
-    // (Ã¶nÃ©rtÃ©kelÃ©s) â€” a tÃ¶bbi mÃ©rÃ©s haladÃ¡sa a lenti mÃ©rÃ©s-bontÃ¡sban Ã©l.
-    snapshotDone: { hu: "Profil kÃ©sz", en: "Profile done" },
-    snapshotWait: { hu: "Profil vÃ¡r", en: "Profile pending" },
-    snapshotCompletionRate: { hu: "SzemÃ©lyisÃ©g-profil", en: "Personality profile" },
-    snapshotDoneInProgress: { hu: "{done} kÃ©sz Â· {inProgress} folyamatban", en: "{done} done Â· {inProgress} in progress" },
-
-    // Secondary progress
-    secondaryFeedbackRound: { hu: "VisszajelzÃ©si kÃ¶r", en: "Feedback round" },
-    secondaryPatternReadiness: { hu: "CsapatkÃ©p kÃ©szÃ¼ltsÃ©g", en: "Pattern readiness" },
-    secondaryObserverProgress: { hu: "{done} kÃ©sz Â· {remaining} hÃ¡tra", en: "{done} done Â· {remaining} remaining" },
-    secondaryPatternAvailable: { hu: "A csapatkÃ©p elÃ©rhetÅ‘", en: "Team pattern is available" },
-    secondaryPatternProgress: { hu: "{done}/{target} kÃ©sz", en: "{done}/{target} done" },
-
-    // MÃ©rÃ©s-bontÃ¡s (aktÃ­v kampÃ¡ny lÃ©pÃ©sei a csapat-Ã¡llapotkÃ©pben)
-    measurementBreakdownTitle: { hu: "MÃ©rÃ©sek Ã¡llÃ¡sa", en: "Measurement progress" },
-    measurementBreakdownHint: {
-      hu: "MÃ©rÃ©senkÃ©nti Ã¡llÃ¡s ebben a kÃ¶rben: â€{name}â€. A fenti kitÃ¶ltÃ©si arÃ¡ny csak a szemÃ©lyisÃ©g-profilra vonatkozik.",
-      en: "Per measurement in the \"{name}\" round â€” the completion rate above covers the personality profile only.",
-    },
-    measurementBreakdownDone: { hu: "{done}/{total} kÃ©sz", en: "{done}/{total} done" },
-
-    // Recommended action
-    nextStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    actionObserverActive: { hu: "A visszajelzÃ©si kÃ¶r fut, kÃ¶vesd Ã©s zÃ¡rd le a hiÃ¡nyzÃ³ visszajelzÃ©seket.", en: "The feedback round is active. Track and close remaining feedback." },
-    actionPatternReady: { hu: "A csapatkÃ©p kÃ©sz, most Ã©rdemes elindÃ­tani a visszajelzÃ©si kÃ¶rt.", en: "Team pattern is ready. Launch the feedback round now." },
-    actionCloseMissing: { hu: "ElÅ‘bb zÃ¡rjÃ¡tok le a hiÃ¡nyzÃ³ kitÃ¶ltÃ©seket, utÃ¡na indÃ­tsatok kÃ¶rt.", en: "Close missing assessments first, then launch the round." },
-    actionManageRound: { hu: "KÃ¶r kezelÃ©se", en: "Manage round" },
-    actionStartRound: { hu: "KÃ¶r indÃ­tÃ¡sa", en: "Start round" },
-    actionViewPattern: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team picture" },
-    actionPatternAvailable: { hu: "A csapatkÃ©p mÃ¡r elÃ©rhetÅ‘, nÃ©zd Ã¡t a mintÃ¡zatokat a kÃ¶vetkezÅ‘ dÃ¶ntÃ©s elÅ‘tt.", en: "Team pattern is available. Review it before your next decision." },
-    actionNeedMore: { hu: "A csapatkÃ©p feloldÃ¡sÃ¡hoz mÃ©g kitÃ¶ltÃ©sek szÃ¼ksÃ©gesek.", en: "More completed assessments are needed to unlock team pattern." },
-    actionViewPatternAlt: { hu: "CsapatkÃ©p megnyitÃ¡sa", en: "Open team picture" },
-    actionOpenMembers: { hu: "Tagok megnyitÃ¡sa", en: "Open members" },
-
-    // Summary section
-    sectionSnapshot: { hu: "ÃllapotkÃ©p", en: "Snapshot" },
-    summaryLabel: { hu: "Ã–SSZEFOGLALÃ“", en: "SUMMARY" },
-    // A kÃ¡rtya a SZEMÃ‰LYISÃ‰G-PROFIL (Ã¶nÃ©rtÃ©kelÃ©s) kitÃ¶ltÃ¶ttsÃ©gÃ©t mutatja â€”
-    // a cÃ­m ezt kimondja, hogy ne tÅ±njÃ¶n a teljes mÃ©rÃ©s-kÃ¶r arÃ¡nyÃ¡nak.
-    completionRateTitle: { hu: "SZEMÃ‰LYISÃ‰G-PROFIL KITÃ–LTÃ–TTSÃ‰G", en: "PERSONALITY PROFILE COMPLETION" },
-    completionRateSub: { hu: "{done} kÃ©sz Â· {inProgress} folyamatban Â· {waiting} vÃ¡rakozik", en: "{done} done Â· {inProgress} in progress Â· {waiting} waiting" },
-    teamPatternTitle: { hu: "CSAPATMINTÃZAT", en: "TEAM PATTERN" },
-    teamPatternAvailable: { hu: "ElÃ©rhetÅ‘", en: "Available" },
-    teamPatternNotYet: { hu: "MÃ©g nem", en: "Not yet" },
-    teamPatternProgress: { hu: "A kitÃ¶ltÃ©sek {pct}%-Ã¡nÃ¡l tart. Minimum 3 kitÃ¶ltÃ©s szÃ¼ksÃ©ges.", en: "{pct}% complete. Minimum 3 assessments required." },
-    teamPatternViewCta: { hu: "CsapatkÃ©p megtekintÃ©se", en: "View team pattern" },
-
-    // Journey checklist section
-    sectionJourney: { hu: "BevezetÃ©si lÃ©pÃ©sek", en: "Journey checklist" },
-    journeyProgress: { hu: "haladÃ¡s", en: "progress" },
-    journeyTitle: { hu: "CsapatÃºt kÃ¶vetÃ©se", en: "Track team journey" },
-    journeyDescription: { hu: "Ugyanarra a journey logikÃ¡ra Ã©pÃ­tve lÃ¡tod, hol tart a csapat Ã©s mi hiÃ¡nyzik a kÃ¶vetkezÅ‘ szinthez.", en: "Built on the same journey logic, this shows where the team stands and what is missing for the next level." },
-    journeyNextStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-
-    // Checklist items
-    checkCoreTeam: { hu: "Magcsapat kialakÃ­tÃ¡sa", en: "Core team in place" },
-    checkCoreTeamDetail: { hu: "{count} tag aktÃ­v a csapatban", en: "{count} active members in the team" },
-    checkCoreTeamCta: { hu: "Tagok kezelÃ©se", en: "Manage members" },
-    checkAssessments: { hu: "KitÃ¶ltÃ©sek lezÃ¡rÃ¡sa", en: "Assessments completed" },
-    checkAssessmentsDetail: { hu: "{done}/3 szÃ¼ksÃ©ges az elsÅ‘ csapatkÃ©phez", en: "{done}/3 needed for first team pattern" },
-    checkAssessmentsCta: { hu: "HiÃ¡nyzÃ³k kÃ¶vetÃ©se", en: "Track missing members" },
-    checkFeedbackRound: { hu: "VisszajelzÃ©si kÃ¶r", en: "Feedback round" },
-    checkFeedbackActive: { hu: "AktÃ­v kÃ¶r fut a csapaton.", en: "An active round is running." },
-    checkFeedbackNone: { hu: "MÃ©g nincs aktÃ­v observer kÃ¶r.", en: "No active observer round yet." },
-    checkFeedbackCta: { hu: "KÃ¶r indÃ­tÃ¡sa", en: "Start round" },
-
-    // 4+2 layer section
-    sectionLayers: { hu: "4+2 rÃ©tegkÃ©szÃ¼ltsÃ©g", en: "4+2 layer readiness" },
-    layersLabel: { hu: "CsapatszintÅ± rÃ©tegek", en: "Team-level layers" },
-    layersDoneSuffix: { hu: "kÃ©sz", en: "done" },
-    statusCompleted: { hu: "KÃ©sz", en: "Completed" },
-    statusInProgress: { hu: "Folyamatban", en: "In progress" },
-    statusAvailable: { hu: "ElÃ©rhetÅ‘", en: "Available" },
-    statusLocked: { hu: "ZÃ¡rolt", en: "Locked" },
-
-    // People section
-    sectionPeople: { hu: "Emberek", en: "People" },
-    membersLabel: { hu: "TAGOK", en: "MEMBERS" },
-    memberDone: { hu: "KÃ©sz", en: "Done" },
-    memberInProgress: { hu: "Folyamatban", en: "In progress" },
-    memberWaiting: { hu: "VÃ¡rakozik", en: "Waiting" },
-    memberProfileCta: { hu: "Profil", en: "Profile" },
-    memberRemindCta: { hu: "Eml.", en: "Remind" },
-
-    // Next step section
-    sectionNextStep: { hu: "KÃ¶vetkezÅ‘ lÃ©pÃ©s", en: "Next step" },
-    nextStepActiveFeedback: { hu: "{count} aktÃ­v visszajelzÃ©s", en: "{count} active feedback" },
-    nextStepFocusInsight: { hu: "FÃ³kuszban a csapatkÃ©p", en: "Focus on team insight" },
-  },
-
-  // â”€â”€ Org onboarding wizard (/onboarding) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  orgOnboarding: {
-    // Heading
-    welcomeTitle: { hu: "ÃœdvÃ¶zlÃ¼nk a TritÃ¡ban.", en: "Welcome to Trita." },
-    welcomeSubtitle: { hu: "3 perc Ã©s lÃ¡tod az elsÅ‘ csapatkÃ©pet.", en: "In 3 minutes you'll unlock your first team snapshot." },
-
-    // Step labels
-    stepProfile: { hu: "Profil", en: "Profile" },
-    stepCompany: { hu: "CÃ©g", en: "Company" },
-    stepTeam: { hu: "Csapat", en: "Team" },
-    stepDone: { hu: "KÃ©sz", en: "Done" },
-
-    // Layer roadmap
-    layerRoadmap: { hu: "MÃ©rÃ©si Ãºtiterv", en: "Measurement roadmap" },
-    statusCompleted: { hu: "KÃ©sz", en: "Completed" },
-    statusInProgress: { hu: "Folyamatban", en: "In progress" },
-    statusAvailable: { hu: "ElÃ©rhetÅ‘", en: "Available" },
-    statusLocked: { hu: "ZÃ¡rolt", en: "Locked" },
-    layerPlusNote: { hu: "A +2 rÃ©teg opcionÃ¡lis mÃ©lyÃ­tÃ©skÃ©nt jelenik meg, amikor az alap self Ã©s team rÃ©tegek kÃ©szen Ã¡llnak.", en: "The +2 layers appear as optional deepening once the core self and team layers are ready." },
-
-    // Step 1
-    step01: { hu: "LÃ©pÃ©s 01", en: "Step 01" },
-    step01Title: { hu: "SzemÃ©lyes adatok", en: "Personal details" },
-    step01Subtitle: { hu: "Ezek szÃ¼ksÃ©gesek a szemÃ©lyre szabott csapatkÃ©phez.", en: "These details are required for personalized team insight." },
-    displayName: { hu: "MegjelenÃ­tÃ©si nÃ©v", en: "Display name" },
-    displayNamePlaceholder: { hu: "pl. KovÃ¡cs PÃ©ter", en: "e.g. Alex Walker" },
-    birthYear: { hu: "SzÃ¼letÃ©si Ã©v", en: "Birth year" },
-    birthYearPlaceholder: { hu: "pl. {year}", en: "e.g. {year}" },
-    birthYearRange: { hu: "{min}â€“{max} kÃ¶zÃ¶tt", en: "Between {min} and {max}" },
-    gender: { hu: "Nem", en: "Gender" },
-    country: { hu: "OrszÃ¡g", en: "Country" },
-    countryPlaceholder: { hu: "VÃ¡lassz orszÃ¡got", en: "Select country" },
-    continueBtn: { hu: "TovÃ¡bb", en: "Continue" },
-
-    // Validation
-    valMinChars: { hu: "LegalÃ¡bb 2 karakter szÃ¼ksÃ©ges", en: "At least 2 characters are required" },
-    valMaxChars20: { hu: "Maximum 20 karakter", en: "Maximum 20 characters" },
-    valPleaseChoose: { hu: "VÃ¡lassz egyet", en: "Please choose one" },
-    valOrgNameRequired: { hu: "A cÃ©g neve kÃ¶telezÅ‘", en: "Company name is required" },
-    valMaxChars100: { hu: "Maximum 100 karakter", en: "Maximum 100 characters" },
-    valTeamNameRequired: { hu: "A csapat neve kÃ¶telezÅ‘", en: "Team name is required" },
-    valMaxChars60: { hu: "Maximum 60 karakter", en: "Maximum 60 characters" },
-    valGenericError: { hu: "Hiba tÃ¶rtÃ©nt, prÃ³bÃ¡ld Ãºjra", en: "Something went wrong. Please try again." },
-    valConsentError: { hu: "Hiba tÃ¶rtÃ©nt, prÃ³bÃ¡ld Ãºjra.", en: "Something went wrong. Please try again." },
-
-    // Step 2
-    step02: { hu: "LÃ©pÃ©s 02", en: "Step 02" },
-    step02Title: { hu: "A cÃ©ged", en: "Your company" },
-    step02Subtitle: { hu: "Ezek az adatok segÃ­tenek szemÃ©lyre szabni a csapatkÃ©pet.", en: "These details help us tailor the team insight." },
-    roleLabel: { hu: "Mi a szerepkÃ¶rÃ¶d?", en: "What is your role?" },
-    optional: { hu: "(opcionÃ¡lis)", en: "(optional)" },
-    companyName: { hu: "CÃ©g neve", en: "Company name" },
-    companyNamePlaceholder: { hu: "pl. KovÃ¡cs Ã©s TÃ¡rsa Kft.", en: "e.g. Acme Inc." },
-    industryLabel: { hu: "IparÃ¡g", en: "Industry" },
-    teamSizeLabel: { hu: "Csapat mÃ©rete", en: "Team size" },
-    backBtn: { hu: "Vissza", en: "Back" },
-    creatingBtn: { hu: "LÃ©trehozÃ¡s...", en: "Creating..." },
-
-    // Step 3
-    step03: { hu: "LÃ©pÃ©s 03", en: "Step 03" },
-    step03Title: { hu: "Az elsÅ‘ csapatod", en: "Your first team" },
-    step03Subtitle: { hu: "Adj nevet a csapatnak, majd oszd meg a meghÃ­vÃ³ linket a tagokkal.", en: "Name your team, then share the invite link with members." },
-    teamName: { hu: "Csapat neve", en: "Team name" },
-    teamNamePlaceholder: { hu: "pl. Ã‰rtÃ©kesÃ­tÃ©si csapat", en: "e.g. Sales Team" },
-    createTeamBtn: { hu: "Csapat lÃ©trehozÃ¡sa", en: "Create team" },
-    skipForNow: { hu: "Kihagyom most, beÃ¡llÃ­tom kÃ©sÅ‘bb", en: "Skip for now, set up later" },
-    defaultTeamName: { hu: "ElsÅ‘ csapatom", en: "My first team" },
-
-    // Invite link
-    inviteLinkLabel: { hu: "MeghÃ­vÃ³ link", en: "Invite link" },
-    copiedBtn: { hu: "âœ“ MÃ¡solva!", en: "âœ“ Copied!" },
-    copyBtn: { hu: "MÃ¡solÃ¡s", en: "Copy" },
-    inviteLinkDescription: { hu: "KÃ¼ldd el ezt a linket a csapattagjaidnak. RegisztrÃ¡ciÃ³ utÃ¡n automatikusan csatlakoznak a csapathoz Ã©s elkezdhetik a felmÃ©rÃ©st.", en: "Share this link with your teammates. After registration they will join the team automatically and can start the assessment." },
-    inviteQrAlt: { hu: "QR-kÃ³d a csapat-meghÃ­vÃ³ linkhez", en: "QR code for the team invite link" },
-    inviteQrHint: {
-      hu: "Ha egy teremben Ã¼ltÃ¶k: a csapattÃ¡rsad a telefonjÃ¡val beolvasva egybÅ‘l a csatlakozÃ¡si oldalra jut.",
-      en: "If you're in the same room: your teammate scans it with their phone and lands straight on the join page.",
-    },
-    goToDashboard: { hu: "TovÃ¡bb a vezÃ©rlÅ‘re", en: "Go to dashboard" },
-
-    // Step 4
-    step04: { hu: "LÃ©pÃ©s 04", en: "Step 04" },
-    step04Title: { hu: "Egy utolsÃ³ lÃ©pÃ©s", en: "One final step" },
-    consentPrefix: { hu: "HozzÃ¡jÃ¡rulok adataim kezelÃ©sÃ©hez az", en: "I consent to the processing of my data according to the" },
-    privacyPolicy: { hu: "AdatvÃ©delmi tÃ¡jÃ©koztatÃ³", en: "Privacy Policy" },
-    consentSuffix: { hu: "alapjÃ¡n.", en: "." },
-    savingBtn: { hu: "MentÃ©s...", en: "Saving..." },
-    saveAndContinueBtn: { hu: "BeÃ¡llÃ­tÃ¡sok mentÃ©se Ã©s tovÃ¡bb", en: "Save settings and continue" },
-
-    // Footer
-    footerNote: { hu: "BÃ¡rmikor mÃ³dosÃ­thatod ezeket a beÃ¡llÃ­tÃ¡sokat a profil oldalon.", en: "You can update these settings anytime on your profile page." },
-
-    // Country picker
-    countryPickerTitle: { hu: "OrszÃ¡g", en: "Country" },
-    countryPickerSearch: { hu: "KeresÃ©s...", en: "Search..." },
-  },
-
-  // â”€â”€ Tag-dossiÃ© (/org/[id]/members/[userId]) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-  memberDossier: {
-    // Rater-minÅ‘sÃ©g aggregÃ¡tum â€” csak darabszÃ¡m, raterenkÃ©nti flag soha.
-    observerQualityNote: {
-      hu: "{n} kÃ¼lsÅ‘ Ã©rtÃ©kelÃ©s alacsony differenciÃ¡ltsÃ¡gÃº â€” az eltÃ©rÃ©seket Ã³vatosan Ã©rdemes olvasni.",
-      en: "{n} external rating(s) show low differentiation â€” read the differences with caution.",
-    },
-  },
-} as const;
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíç]yõ:-jZ.¶›­–)Ş³VW‡÷'B6öç7B÷&uG&ç6ÆF–öç2Ò°¢Gf—6÷'“¢°¢W–V'&÷s¢°¢‡S¢'Fì:76L;6’¶öç§VÇL:6œ;2"À¢Vã¢&Gf—6÷'’6öç7VÇFF–öâ"À¢ÒÀ¢†VF–ætGf—6÷'“¢°¢‡S¢"Â76F–B¼:—7¦Vâ:ÆÆæ²¼;gfWF¶W¬YÌ:—:—7&Râ"À¢Vã¢"Â–÷W"FV×2&R&VG’f÷"F†RæW‡B7FWâ"À¢ÒÀ¢†VF–æuWw&FS¢°¢‡S¢$Ì:6BÂÖ—B¢FFö²æVÒÖöæFæ²VÂâ"À¢Vã¢%6VRv†BF†RFFFöW6âwBFVÆÂ–÷Râ"À¢ÒÀ¢7V'F—FÆTGf—6÷'“¢°¢‡S¢$æVw–VL:—fW2Fì:76L;6’¶öç§VÇL:6œ;6â7¦VÜ:–Ç–W6Vâ:—'FVÆÖW§¬;Æ²76F–BÖ–çL:¦F—BÂ:—2¶öæ·,:—B¶6œ;7FW'fV¶WBFöÆv÷§Væ²¶’â"À¢Vã¢$–âF†RV'FW&Ç’Gf—6÷'’6öç7VÇFF–öâvRW'6öæÆÇ’–çFW'&WB–÷W"FVÒGFW&ç2æBFWfVÆ÷6öæ7&WFR7F–öâÆç2â"À¢ÒÀ¢7V'F—FÆUWw&FS¢°¢‡S¢$7¦VÜ:–Ç–—<:–vÜ:—,:—6’FFö²×WFF¬:²Ö–çL:¦F÷BâFì:76L;6’¶öç§VÇL:6œ;6âÖV|:—'F¬;Æ²ÂÖœ:—'B(	B:—2ÖVwFW'fW§¬;Æ²ÂÖ—BÌ:—¢â"À¢Vã¢%F†RW'6öæÆ—G’76W76ÖVçBFF6†÷w2F†RGFW&ââF†RGf—6÷'’6öç7VÇFF–öâ†VÇ2–÷RVæFW'7FæBv‡’(	BæBÆâv†BFòFòæW‡Bâ"À¢ÒÀ¢FV×4æ÷s¢°¢‡S¢$FR76F–BÖ÷7B"À¢Vã¢%–÷W"FV×2&–v‡Bæ÷r"À¢ÒÀ¢ÖVÖ&W'3¢°¢‡S¢&lY"À¢Vã¢&ÖVÖ&W'2"À¢ÒÀ¢FWF–Ç3¢°¢‡S¢%,:—7¦ÆWFV²"À¢Vã¢$FWF–Ç2"À¢ÒÀ¢v†E–÷TvWC¢°¢‡S¢$Ö—B¶7¢Fì:76L;6’¶öç§VÇL:6œ;6â"À¢Vã¢%v†B–÷RvWB–âF†RGf—6÷'’6öç7VÇFF–öâ"À¢ÒÀ¢v†E–÷TvWE7V'F—FÆS¢°¢‡S¢$¶öç§VÇL:6œ;27¦W'fW¦WF’7¦–çL[(	BæVÒVw’76G,;6Â7¬;6ÂÂ†æVÒ',;6ÂÂ†öw–âÜ[¼;fFæV²76F–BVwœ;ÇGB:—2¼;ÆÌ;fâÖ¼;ÆÌ;fââ"À¢Vã¢%F†R6öç7VÇFF–öâ—2÷&rÖÆWfVÂ(	Bæ÷B&÷WBöæRFVÒÂ'WB†÷r–÷W"FV×2v÷&²FövWF†W"æB–æF—f–GVÆÇ’â"À¢ÒÀ¢fVGW&SF—FÆS¢°¢‡S¢%7¦W'fW¦WF’ŒYL:—&¼:—"À¢Vã¢$÷&væ—6F–öæÂ†VBÖ"À¢ÒÀ¢fVGW&SFW63¢°¢‡S¢,8Fì:—§¬;Æ²¢;g77¦W276FöBÖ–çL:¦L:BVwœ;ÇGC¢†öÂfâ;g77¦†ær76Fö²¼;g¬;gGBÂ†öÂfææ²7¦W'fW¦WF’7¦–çL[fW7¬;ÆÇG<:–vV²Â:—2ÖVÇ––²76BÖ–çL:¦F¦VÆVçB¶ö6¼:¦F÷B7G&L:–vœ:Fö²7¦V×öçF¬:,;6Ââ"À¢Vã¢%vR&Wf–WrÆÂ–÷W"FVÒGFW&ç2FövWF†W#¢v†W&RF†W&R—2Æ–væÖVçBÂv†W&RF†W&R&R÷&rÖÆWfVÂFVç6–öç2ÂæBv†–6‚GFW&â÷6W27G&FVv–2&—6²â"À¢ÒÀ¢fVGW&SW†×ÆUGvó¢°¢‡S¢%:–ÆL:VÃ¢ÇS#W¶f—'7GÕÇS#B:—2ÇS#W·6V6öæGÕÇS#B76Fö²¼;g¬;gGF’F–æÖ–¶:—'FVÆÖW¬:—6Râ"À¢Vã¢$Rærã¢–çFW'&WF–ærF†RG–æÖ–72&WGvVVâF†RÇS#7¶f—'7GÕÇS#BæBÇS#7·6V6öæGÕÇS#BFV×2â"À¢ÒÀ¢fVGW&SW†×ÆTöæS¢°¢‡S¢%:–ÆL:VÃ¢ÇS#W·GFW&çÕÇS#BÖ–çL:¦B7¦W'fW¦WF’†L:6’:—2&V§FWGB¶ö6¼:¦F’â"À¢Vã¢$Rærã¢F†R÷&væ—6F–öæÂ–×7BæB†–FFVâ&—6·2öbF†RÇS#7·GFW&çÕÇS#BGFW&ââ"À¢ÒÀ¢fVGW&S%F—FÆS¢°¢‡S¢$7&÷72×FVÒfW7¬;ÆÇG<:–vV²"À¢Vã¢$7&÷72×FVÒFVç6–öç2"À¢ÒÀ¢fVGW&S$FW63¢°¢‡S¢$¦öæ÷<:×F§V²Â†öÂ;ÇF¼;g¦æV²76Fö²Ü[¼;fL:—6’Ö–çL:¦F’(	B:—2†öÂ:—Vâ¼;ÆÌ;fæ,;g¬Y<:–r¢W,YâW¢¢ÂÖ—BÆFf÷&Ò;fæÖ|:&âæVÒGVBÖVv×WFFæ’â"À¢Vã¢%vR–FVçF–g’v†W&RFVÒ÷W&F–ærGFW&ç26Æ6‚(	BæBv†W&RF†RF–ffW&Væ6R—27GVÆÇ’7G&VæwF‚âF†—2—2v†BF†RÆFf÷&ÒÆöæR6âwB6†÷râ"À¢ÒÀ¢fVGW&S$W†×ÆS¢°¢‡S¢%:–ÆL:VÃ¢Öœ:—'B¶öÖ×Væ–¼:ÂæV†W¦Vâ6ÆW2:—2&öGV7B76BÂ:—2Ö—BÌ:—†WG7¢fW¦WLY¼:–çBâ"À¢Vã¢$Rærã¢v‡’F†R6ÆW2æB&öGV7BFV×27G'VvvÆRFò6öÖ×Væ–6FRÂæBv†B–÷R6âFò2ÆVFW"â"À¢ÒÀ¢fVGW&S5F—FÆS¢°¢‡S¢%7¦W'fW¦WF’¶6œ;7FW'b"À¢Vã¢$÷&væ—6F–öæÂ7F–öâÆâ"À¢ÒÀ¢fVGW&S4FW63¢°¢‡S¢#2ÓR¶öæ·,:—BÂl:–w&V†§F†L;2Ì:—:—2¼;gfWF¶W¬YæVw–VL:—g&R(	BæVÒ76G7¦–çL[F—V²Â†æVÒ7¦W'fW¦WF’L;fçL:—6V³¢¶—B†÷f&VæFVÆ¢Â†öÂl:ÇF÷§F72föÇ–ÖF÷BÂ†öÂfF¶÷§¢&R7¦VÜ:–Ç–W6Vââ"À¢Vã¢#2ÓR6öæ7&WFRÂW†V7WF&ÆR7FW2f÷"F†RæW‡BV'FW"(	Bæ÷BFVÒÖÆWfVÂF—2Â'WB÷&væ—6F–öæÂFV6—6–öç3¢v†òvöW2v†W&RÂv†W&RFò6†ævR&ö6W72Âv†W&RFò–çFW'fVæRW'6öæÆÇ’â"À¢ÒÀ¢fVGW&S4W†×ÆU&Vf—ƒ¢°¢‡S¢%:–ÆL:VÂ"À¢Vã¢$Rærâ"À¢ÒÀ¢fVGW&SEF—FÆS¢°¢‡S¢,8×,:6÷2;g77¦VfövÆÌ;2²76B×&—÷'Fö²"À¢Vã¢%w&—GFVâ7VÖÖ'’²FVÒ&W÷'G2"À¢ÒÀ¢fVGW&SDFW63¢°¢‡S¢#C‚;7,:â&VÌ;ÆÂ¶7¢Vw’DbÖWC¢7¦W'fW¦WF’ŒYL:—&¼:—f—§VÆ—¬:6œ;2Â76Föæ¼:–çF’"Ó26÷&÷2:—'L:–¶VÌ:—2ÂÖVv&W7¬:–ÇB¶6œ;6²Æ—7L:¦fVÆVÌY76VÂ:—2†L:&–LYfVÂÂ:—2¼;gfWF¶W¬YÜ:—,:—6’öçB¦f6ÆBâ"À¢Vã¢%v—F†–âC‚†÷W'2–÷R&V6V—fRDc¢÷&r†VBÖf—7VÆ—6F–öâÂ"Ó26VçFVæ6RFVÒÖ'’×FVÒWfÇVF–öâÂ7F–öâÆ—7Bv—F‚÷væW'2æBFVFÆ–æW2ÂæBæW‡BÖV7W&VÖVçBö–çB&V6öÖÖVæFF–öââ"À¢ÒÀ¢†÷t—Ev÷&·3¢°¢‡S¢$†öw–âÜ[¼;fF–²æVw–VL:—fW2¶öç§VÇL:6œ;2"À¢Vã¢$†÷rF†RV'FW&Ç’6öç7VÇFF–öâv÷&·2"À¢ÒÀ¢7FWF—FÆS¢°¢‡S¢$VÌY¼:—7¬:×L:—2†7¦–æ·&öâ’"À¢Vã¢%&W&F–öâ†7–æ2’"À¢ÒÀ¢7FW&öG“¢°¢‡S¢,8Fì:—§¬;Æ²7¦W'fW¦WFVB;g77¦W276L:æ²Ö–çL:¦L:BÂ7&÷72×FVÒfW7¬;ÆÇG<:–vV¶WBÂ:—2l:ÇF÷¬:6ö¶B¢VÌY¬YæVw–VL:—f†W¢¼:—W7BâV&,YÂ¼:—7¬;ÆÂ7¦W'fW¦WF’ŒYL:—&¼:—ÂÖ’¶öç§VÇL:6œ;2¶––æGVÌ;7öçF¦â"À¢Vã¢%vR&Wf–WrÆÂ–÷W"÷&rw2FVÒGFW&ç2Â7&÷72×FVÒFVç6–öç2ÂæB6†ævW26–æ6RF†RÆ7BV'FW"âF†—2&öGV6W2F†R÷&r†VBÖF†B6W'fW22F†R6öç7VÇFF–öâw27F'F–ærö–çBâ"À¢ÒÀ¢7FW%F—FÆS¢°¢‡S¢$¶öç§VÇL:6œ;72Œ:×l:2ƒc(	3“W&2’"À¢Vã¢$6öç7VÇFF–öâ6ÆÂƒc(	3“Ö–çWFW2’"À¢ÒÀ¢7FW$&öG“¢°¢‡S¢%7¦VÜ:–Ç–W2f–F\;6Œ:×l:2fVÆVB‡fW¦WLYò…"’â7¦W'fW¦WF’7¦–çL[Ö–çL:¦BÜ:—'FVÆÖW¬:—2Â7&÷72×FVÒF–æÖ–¼:²ÂfW7¬;ÆÇG<:–wöçFö²ö¶’Â2ÓR¶öæ·,:—B¶6œ;2¼;gfWF¶W¬YæVw–VL:—g&Râ†fâ¶öæ·,:—B¼:—&L:—6VB(	B'&Ü:–Ç–Vâl:Æ7¦öÇVæ²â"À¢Vã¢%W'6öæÂf–FVò6ÆÂv—F‚–÷R†ÆVFW"ò…"’â÷&rÖÆWfVÂGFW&â–çFW'&WFF–öâÂ7&÷72×FVÒG–æÖ–72Â&ö÷B6W6W2öbFVç6–öâö–çG2Â2ÓR6öæ7&WFR7F–öç2f÷"F†RæW‡BV'FW"â–b–÷R†fR7V6–f–2VW7F–öâ(	BvRvòFVWâ"À¢ÒÀ¢7FW5F—FÆS¢°¢‡S¢,8×,:6÷2;g77¦VfövÆÌ;2ƒC‚;7,:â&VÌ;ÆÂ’"À¢Vã¢%w&—GFVâ7VÖÖ'’‡v—F†–âC‚†÷W'2’"À¢ÒÀ¢7FW4&öG“¢°¢‡S¢%DbFö·VÖVçGVÓ¢7¦W'fW¦WF’ŒYL:—&¼:—Â76Föæ¼:–çF’,;gf–B:—'L:–¶VÌ:—2ÂÖVv&W7¬:–ÇB¶6œ;6²Æ—7L:¦fVÆVÌY76VÂ:—2†L:&–LYfVÂÂ¼;gfWF¶W¬YÜ:—,:—6’öçB¦f6ÆBâ¦öææÂF÷l:&,:×F†L;2ÖVæVG§6ÖVçBÖVWF–æw&Râ"À¢Vã¢%DbFö7VÖVçC¢÷&r†VBÖÂ6†÷'BFVÒÖ'’×FVÒWfÇVF–öâÂ7F–öâÆ—7Bv—F‚÷væW'2æBFVFÆ–æW2ÂæW‡BÖV7W&VÖVçBö–çB&V6öÖÖVæFF–öââ&VG’Fò6†&R–â–÷W"æW‡BÖævVÖVçBÖVWF–ærâ"À¢ÒÀ¢òò–LYF'FÒÜ:ÆÌ:×L:27¬:æL:–¶÷6âæ–æ72<:ÖÖ&Vã¢¢¬:æÆBVw–VF¢òò(	æVw–VF’¬:æÆB7¦W&–çB":"’Â¶÷,:&&’cW&2g2.(	32;7&¢òòVÆÆVçFÖöæL:7B:Öw’öÆF§V²fVÂà¢FVWF—fUF—FÆS¢°¢‡S¢$76BÖÜ:–Ç–ÖW,;ÆÌ:—2Ü[†VÇ’"À¢Vã¢%FVÒFVWÖF—fRv÷&·6†÷"À¢ÒÀ¢FVWF—fTFW63¢°¢‡S¢$†Vw’¶öæ·,:—B76BÜ:–Ç–V&"VÆV×¬:—7B–|:–ç–VÂ(	B7¦VÜ:–Ç—&R7¦&÷GBÜ[†VÇ’76FÖVæVG§6W'&VÂâ"À¢Vã¢$–b7V6–f–2FVÒæVVG2FVWW"æÇ—6—2(	BW'6öæÆ—6VBv÷&·6†÷v—F‚F†RFVÒÖævW"â"À¢ÒÀ¢FVWF—fU&–6S¢²‡S¢&Vw–VF’¬:æÆB7¦W&–çB"ÂVã¢&–æF—f–GVÆÇ’V÷FVB"ÒÀ¢7F7W7FöÔW–V'&÷s¢°¢‡S¢&Vw–VF’&öw&Ò"À¢Vã¢&7W7FöÒ&öw&ÖÖR"À¢ÒÀ¢7FGf—6÷'”W–V'&÷s¢°¢‡S¢&Gf—6÷'’76öÖr"À¢Vã¢&Gf—6÷'’Æâ"À¢ÒÀ¢7F7W7FöÔ†VF–æs¢°¢‡S¢$Vw–W§FW7<;Ææ²–LYöçF÷B"À¢Vã¢$ÆWBw266†VGVÆR6W76–öâ"À¢ÒÀ¢7FGf—6÷'”†VF–æs¢°¢‡S¢$¼:—&B¼;gfWF¶W¬YæVw–VL:—fW2¶öç§VÇL:6œ;7B"À¢Vã¢%&WVW7B–÷W"æW‡BV'FW&Ç’6öç7VÇFF–öâ"À¢ÒÀ¢7F7W7FöÔ&öG“¢°¢‡S¢$¢Vw–VF’&öw&ÖöB¶W&WL:–&Vâ7¦VÜ:–Ç—&R7¦&÷GB;ÇFV×FW'fWBFöÆv÷§Væ²¶’(	B¶GF–çG2Â:—2¶ö÷&F–ì:ÇVæ²â"À¢Vã¢%v—F†–â–÷W"7W7FöÒ&öw&ÖÖRvR7&VFR&W7ö¶R66†VGVÆR(	B6Æ–6²æBvRvÆÂ6ö÷&F–æFRâ"À¢ÒÀ¢7FGf—6÷'”&öG“¢°¢‡S¢$&öw&ÖöF†÷¢F'F÷¦–²7¦W'fW¦WF’7¦–çL[Fì:76L;6’¶öç§VÇL:6œ;2â¶GF–çG2¢Ì:&&’vöÖ'&Â:—2#B;7,:â&VÌ;ÆÂVw–W§FWL;Ææ²–LYöçF÷Bâ76F–BFF’WFöÖF–·W6â&VæFVÆ¶W¬:—7&R:ÆÆæ²(	BæVÒ¶VÆÂ6VÖÖ—BVÌY¼:—7¬:×FVæVBâ"À¢Vã¢%–÷W"&öw&ÖÖR–æ6ÇVFW2÷&rÖÆWfVÂGf—6÷'’6öç7VÇFF–öç2â6Æ–6²æBvRvÆÂ6öæf—&ÒF–ÖRv—F†–â#B†÷W'2â–÷W"FVÒFF—2WFöÖF–6ÆÇ’f–Æ&ÆR(	Bæò&W&F–öâæVVFVBâ"À¢ÒÀ¢6VæF–æs¢°¢‡S¢$¼;ÆÆL:—2âââ"À¢Vã¢%6VæF–ærâââ"À¢ÒÀ¢&WVW7D6öç7VÇFF–öã¢°¢‡S¢$¶öç§VÇL:6œ;7B¼:—&V²"À¢Vã¢%&WVW7B6öç7VÇFF–öâ"À¢ÒÀ¢&WVW7E&V6V—fVC¢°¢‡S¢$ÖVv¶GV²¼:—,:—6VB"À¢Vã¢%vR&V6V—fVB–÷W"&WVW7B"À¢ÒÀ¢&WVW7DföÆÆ÷uW¢°¢‡S¢##B;7,:â&VÌ;ÆÂ7¦VÜ:–Ç–W6Vâ¶W&W<;Ææ²¢–LYöçBÖVw–W§FWL:—76VÂâ"À¢Vã¢%vRvÆÂ&V6‚÷WBv—F†–â#B†÷W'2Fò66†VGVÆRF–ÖRâ"À¢ÒÀ¢Ww&FTFW63¢°¢‡S¢$æVw–VL:—fW27¦VÜ:–Ç–W2Fì:76L;6’¶öç§VÇL:6œ;2²FVÆ¦W2ÆFf÷&Ò†÷§¬:l:—,:—2â76FöBFF–,;6Â¶öæ·,:—BÂl:–w&V†§F†L;2¶6œ;7FW'fV¶WB¼:—7¬:×L;Ææ²Vwœ;ÇGBâ"À¢Vã¢%V'FW&Ç’W'6öæÂGf—6÷'’6öç7VÇFF–öâ²gVÆÂÆFf÷&Ò66W72âvR'V–ÆB6öæ7&WFRÂW†V7WF&ÆR7F–öâÆç2g&öÒ–÷W"FVÒFFFövWF†W"â"À¢ÒÀ¢Ww&FTfVGW&S¢°¢‡S¢$æVw–VL:—fW2“W&6W27¦W'fW¦WF’7¦–çL[Fì:76L;6’¶öç§VÇL:6œ;2"À¢Vã¢%V'FW&Ç’“ÖÖ–çWFR÷&rÖÆWfVÂGf—6÷'’6öç7VÇFF–öâ"À¢ÒÀ¢Ww&FTfVGW&S#¢°¢‡S¢%7¦W'fW¦WF’ŒYL:—&¼:—²76Föæ¼:–çF’:×,:6÷2:—'L:–¶VÌ:—2…Db’"À¢Vã¢$÷&r†VBÖ²w&—GFVâFVÒÖ'’×FVÒWfÇVF–öâ…Db’"À¢ÒÀ¢Ww&FTfVGW&S3¢°¢‡S¢$7&÷72×FVÒF–æÖ–¼:²:—2fW7¬;ÆÇG<:–wöçFö²VÆV×¬:—6R"À¢Vã¢$7&÷72×FVÒG–æÖ–72æBFVç6–öâö–çBæÇ—6—2"À¢ÒÀ¢Ww&FTfVGW&SC¢°¢‡S¢#2ÓR¶öæ·,:—B7¦W'fW¦WF’7¦–çL[¶6œ;7FW'bæVw–VL:—fVæ¼:–çB"À¢Vã¢#2ÓR6öæ7&WFR÷&rÖÆWfVÂ7F–öâÆç2W"V'FW""À¢ÒÀ¢Ww&FTfVGW&SS¢°¢‡S¢%FVÆ¦W2ÆFf÷&ÒÖ†÷§¬:l:—,:—2†ŒYL:—&¼:—Â76FÖ–çL:¦BÂfW7¬;ÆÇG<:–w:&ö²’"À¢Vã¢$gVÆÂÆFf÷&Ò66W72††VBÖÂFVÒGFW&ç2ÂFVç6–öâ—'2’"À¢ÒÀ¢Ww&FTfVGW&Sc¢°¢‡S¢$÷6–öì:Æ—276BÖÜ:–Ç–VÆV×¬:—2†Vw–VF’¬:æÆB7¦W&–çB’"À¢Vã¢$÷F–öæÂFVÒFVWÖF—fR6W76–öâ†–æF—f–GVÆÇ’V÷FVB’"À¢ÒÀ¢&–6UW$ÖöçFƒ¢²‡S¢$Vw–VF’¬:æÆB(	B&öw&ÒFW&¦VFVÆÖR7¦W&–çB"ÂVã¢$–æF—f–GVÂV÷FR(	B&6VBöâ&öw&Ò66÷R"ÒÀ¢f÷VæF–æt7W7FöÖW#¢°¢‡S¢$–Æ÷G&öw&Ò'FæW&V’¶–VÖVÇBfVÇL:—FVÆV¶¶VÂ–æGVÆæ²â"À¢Vã¢%–Æ÷B&öw&Ò'FæW'27F'Bv—F‚&VfW&VçF–ÂFW&×2â"À¢ÒÀ¢Ww&FT'WGFöã¢°¢‡S¢%l:ÇL:2Gf—6÷'’×&"À¢Vã¢%Ww&FRFòGf—6÷'’"À¢ÒÀ¢FW7F–Ööæ–Ã¢°¢‡S¢%ÇS#T¶öç§VÇL:6œ;6âl:–w&RÖV|:—'FWGFVÒÂÖœ:—'BfâfW7¬;ÆÇG<:–r6ÆW2:—2&öGV7B76B¼;g¬;gGB(	B:—2¶FÒ2¶öæ·,:—BÌ:—:—7BÂÖ—B¦öææÂVÆ¶W¦GL;Ææ²åÇS#B"À¢Vã¢%ÇS#4BF†R6öç7VÇFF–öâ’f–æÆÇ’VæFW'7FööBv‡’F†W&Rv2FVç6–öâ&WGvVVâF†R6ÆW2æB&öGV7BFV×2(	BæB’v÷B26öæ7&WFR7FW2vR7F'FVB–ÖÖVF–FVÇ’åÇS#B"À¢ÒÀ¢FW7F–Ööæ–ÄWF†÷#¢°¢‡S¢.(	BVw’¬;glY&VÆ’f÷VæF–ær7W7FöÖW""À¢Vã¢.(	BgWGW&Rf÷VæF–ær7W7FöÖW""À¢ÒÀ¢fF—FÆS¢°¢‡S¢$w–¶÷&’¼:—&L:—6V²"À¢Vã¢$g&WVVçFÇ’6¶VBVW7F–öç2"À¢ÒÀ¢f¢°¢‡S¢$¶VÆÂfÆÖ—BVÌY¼:—7¬:×FVæVÒ¶öç§VÇL:6œ;2VÌYGCò"À¢Vã¢$Fò’æVVBFò&W&Rç—F†–æsò"À¢ÒÀ¢f¢°¢‡S¢$æVÒ(	B7¦W'fW¦WFVB;g77¦W276L:æ²Ü:—,:—6’FF’ÂÖ–çL:¦F’:—2fW7¬;ÆÇG<:–w:&¦’WFöÖF–·W6â&VæFVÆ¶W¬:—7&R:ÆÆæ²â†fâ¶öæ·,:—B¼:—&L:—6VBfw’†VÇ—¦WFVBÂ§BVÌY&R¦VÆW¦†WFVBÂFRæVÒ¼;gFVÆW¬Yâ"À¢Vã¢$æò(	BÆÂ–÷W"÷&rw2FV×2r76W76ÖVçBFFÂGFW&ç2æBFVç6–öâ—'2&RWFöÖF–6ÆÇ’f–Æ&ÆRâ–b–÷R†fR7V6–f–2VW7F–öâ÷"6—GVF–öâÂ–÷R6âfÆr—B–âGfæ6RÂ'WB—Bw2æ÷B&WV—&VBâ"À¢ÒÀ¢f#¢°¢‡S¢$¶öç§VÇL:6œ;2¢V|:—7¢7¦W'fW¦WG,YÂ7¬;6ÂÂfw’Vw’76G,;6Ãò"À¢Vã¢$—2F†R6öç7VÇFF–öâ&÷WBF†Rv†öÆR÷&r÷"öæRFVÓò"À¢ÒÀ¢f#¢°¢‡S¢$æVw–VL:—fW2¶öç§VÇL:6œ;27¦W'fW¦WF’7¦–çL[¢¢;g77¦W276BÖ–çL:¦L:B:GFV¶–çF¬;Æ²Â7&÷72×FVÒF–æÖ–¼:¶BÂ:—27¦W'fW¦WF’7¦–çL[¶6œ;7FW'fV¶WB¼:—7¬:×L;Ææ²â†Vw’¶öæ·,:—B76BÜ:–Ç–V&"VÆV×¬:—7B–|:–ç–VÂÂ††÷¢¼;ÆÌ;fâ76BÖÜ:–Ç–VÆV×¬:—2¼:—&†WLY†Vw–VF’¬:æÆB7¦W&–çB’â"À¢Vã¢%F†RV'FW&Ç’6öç7VÇFF–öâ—2÷&rÖÆWfVÃ¢vR&Wf–WrÆÂFVÒGFW&ç2Â7&÷72×FVÒG–æÖ–72ÂæB7&VFR÷&rÖÆWfVÂ7F–öâÆç2â–b7V6–f–2FVÒæVVG2FVWW"æÇ—6—2Â6W&FRFVÒFVWÖF—fR6â&R&WVW7FVB†–æF—f–GVÆÇ’V÷FVB’â"À¢ÒÀ¢f3¢°¢‡S¢$¶’fW7¢,:—7§B¶öç§VÇL:6œ;6ãò"À¢Vã¢%v†ò'F–6—FW2–âF†R6öç7VÇFF–öãò"À¢ÒÀ¢f3¢°¢‡S¢,8ÇFÌ:&âFR‡fW¦WLYÂ…"Âfw’¢;Æw—fW¦WLY’:—2G&—FFì:76L;2â76FÖVæVG§6W&V¶WBæVÒ¶VÆÂ&Wföææ’(	BY²ÆFf÷&Ööâ¶¬:²ÖVr6¬:B76GV²VÆV×¬:—6V—Bâ"À¢Vã¢%W7VÆÇ’–÷R†ÆVFW"Â…"Â÷"4Tò’æBF†RG&—FGf—6÷"âFVÒÖævW'2FöâwBæVVBFò¦ö–â(	BF†W’&V6V—fRF†V—"FVÒw2–ç6–v‡G2F—&V7FÇ’F‡&÷Vv‚F†RÆFf÷&Òâ"À¢ÒÀ¢fC¢°¢‡S¢$Ö—B¶ö²¶öç§VÇL:6œ;2WL:ãò"À¢Vã¢%v†BFò’&V6V—fRgFW"F†R6öç7VÇFF–öãò"À¢ÒÀ¢fC¢°¢‡S¢#C‚;7,:â&VÌ;ÆÂVw’:×,:6÷2;g77¦VfövÆÌ;7B:—2¶6œ;7FW'fWB¼;ÆÆL;Ææ²DbÖ&Vã¢7¦W'fW¦WF’ŒYL:—&¼:—Â76Föæ¼:–çF’,;gf–B:—'L:–¶VÌ:—2ÂÖVv&W7¬:–ÇB¶6œ;6²fVÆVÌY76VÂ:—2†L:&–LYfVÂÂ:—2¼;gfWF¶W¬YÜ:—,:—6’öçB¦f6ÆBâ¦öææÂF÷l:&,:×F†L;2ÖVæVG§6ÖVçBÖVWF–æw&Râ"À¢Vã¢%v—F†–âC‚†÷W'2vR6VæBw&—GFVâ7VÖÖ'’æB7F–öâÆâDc¢÷&r†VBÖÂ6†÷'BFVÒÖ'’×FVÒWfÇVF–öâÂ7F–öâÆ—7Bv—F‚÷væW'2æBFVFÆ–æW2ÂæBæW‡BÖV7W&VÖVçBö–çB&V6öÖÖVæFF–öââ&VG’Fò6†&R–â–÷W"æW‡BÖævVÖVçBÖVWF–ærâ"À¢ÒÀ¢fS¢°¢‡S¢$Ö–Ç–Vâw–·&âfâ¶öç§VÇL:6œ;3ò"À¢Vã¢$†÷rögFVâ—2F†R6öç7VÇFF–öãò"À¢ÒÀ¢fS¢°¢‡S¢$&öw&ÖöBFW&¦VFVÆÜ:—LYÂl;Ævr(	B¦VÆÆV×¬YVâæVw–VL:—fVçFRVw’7¦W'fW¦WF’7¦–çL[Æ¶ÆöÒâW¦VâfVÌ;ÆÂ76B×7¦–çL[Ü:–Ç–VÆV×¬:—2:—2W‡G&Æ¶ÆÖ²–|:–ç’7¦W&–çBVw–W§FWF†WLY²â"À¢Vã¢$—BFWVæG2öâ–÷W"&öw&ÖÖR(	BG—–6ÆÇ’öæR÷&rÖÆWfVÂ6W76–öâW"V'FW"âFVÒÖÆWfVÂFVWF—fW2æBW‡G&6W76–öç26â&R'&ævVBöâ&WVW7Bâ"À¢ÒÀ¢fc¢°¢‡S¢$¶öç§VÇL:6œ;2ì:–Æ¼;ÆÂ—2†7¦ì:Æ†L;2ÆFf÷&Óò"À¢Vã¢$6â’W6RF†RÆFf÷&Òv—F†÷WB6öç7VÇFF–öç3ò"À¢ÒÀ¢fc¢°¢‡S¢$–vVââÆFf÷&Ò;fæÖ|:&â—2FVÆ¦W2¼:—WBB(	B76FÖ–çFÂŒYL:—&¼:—ÂfW7¬;ÆÇG<:–w:&ö²âFì:76L;6’¶öç§VÇL:6œ;2W§B:—'FVÆÖW¦’:—2f÷&L:×F¦ÆRÌ:—:—6V·&S²,:&Ö–¶÷"¼:—&†WFVBÂ¼;ÆÌ;fâVw–W§FWL:—76VÂâ"À¢Vã¢%–W2âF†RÆFf÷&ÒÆöæRv—fW2F†RgVÆÂ–7GW&R(	BFVÒGFW&âÂ†VFÖÂFVç6–öâ—'2âGf—6÷'’6öç7VÇFF–öç2–çFW'&WB—BæBGW&â—B–çFò6öæ7&WFR7FW3²–÷R6â&WVW7BF†VÒBç’F–ÖRâ"À¢ÒÀ¢ÒÀ¢FÖ–ã¢°¢F—FÆS¢²‡S¢$FÖ–âF6†&ö&B"ÂVã¢$FÖ–âF6†&ö&B"ÒÀ¢7V'F—FÆS¢°¢‡S¢%&VæG7¦W'7FF—7§F–¼:²:—2VÆV×¬:—6V²"À¢Vã¢%7—7FVÒ7FF—7F–72æBæÇ—F–72"À¢ÒÀ¢F÷FÅW6W'3¢²‡S¢,9g77¦W2fVÆ†7¦ì:Ì;2"ÂVã¢%F÷FÂW6W'2"ÒÀ¢F÷FÄ76W76ÖVçG3¢²‡S¢,9g77¦W2FW7§B"ÂVã¢%F÷FÂ76W76ÖVçG2"ÒÀ¢F÷FÄ–çf—FF–öç3¢²‡S¢,9g77¦W2ÖVvŒ:×l;2"ÂVã¢%F÷FÂ–çf—FF–öç2"ÒÀ¢F÷FÄfVVF&6³¢²‡S¢%f—77¦¦VÇ¬:—6V²"ÂVã¢$fVVF&6²7V&Ö—76–öç2"ÒÀ¢W6W'5F—FÆS¢²‡S¢$fVÆ†7¦ì:Ì;6²"ÂVã¢%W6W'2"ÒÀ¢76W76ÖVçG5F—FÆS¢²‡S¢%FW7§F¶—L;fÇL:—6V²"ÂVã¢%FW7B6ö×ÆWF–öç2"ÒÀ¢–çf—FF–öç5F—FÆS¢²‡S¢$ÖVvŒ:×l;6²"ÂVã¢$–çf—FF–öç2"ÒÀ¢fVVF&6µF—FÆS¢²‡S¢%f—77¦¦VÇ¬:—6V²"ÂVã¢$fVVF&6²"ÒÀ¢æWsvF—3¢²‡S¢,9¦¢ƒræ’"ÂVã¢$æWrƒrF—2’"ÒÀ¢æWs3F—3¢²‡S¢,9¦¢ƒ3æ’"ÂVã¢$æWrƒ3F—2’"ÒÀ¢'•FW7EG—S¢²‡S¢%FW7§GL:×W6öæ¼:–çB"ÂVã¢$'’FW7BG—R"ÒÀ¢6öçfW'6–öå&FS¢²‡S¢$¶öçfW'¦œ;2"ÂVã¢$6öçfW'6–öâ&FR"ÒÀ¢ftvS¢²‡S¢,8FÆr:–ÆWF¶÷""ÂVã¢$frvR"ÒÀ¢ÖVF–ävS¢²‡S¢$ÖVFœ:â:–ÆWF¶÷""ÂVã¢$ÖVF–âvR"ÒÀ¢vU&ævS¢²‡S¢$¶÷"F'FöÜ:ç’"ÂVã¢$vR&ævR"ÒÀ¢ÒÀ ¢òò)H)H÷&rFWF–ÂvR‚ö÷&rõ¶–EÒ’)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢÷&s¢°¢W–V'&÷s¢²‡S¢'7¦W'fW¦WB"ÂVã¢&÷&væ—¦F–öâ"ÒÀ ¢òò)H)Hö÷&r÷7W7VæFVB(	B–æ·L:×b7¦W'fW¦WB§<:·WF6ÖöÆFÆ)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢7W7VæFVC¢°¢W–V'&÷s¢²‡S¢&–æ·L:×b"ÂVã¢&–æ7F—fR"ÒÀ¢F—FÆS¢²‡S¢%7¦W'fW¦WB–æ·L:×b"ÂVã¢$÷&væ—¦F–öâ–æ7F—fR"ÒÀ¢&öG“¢°¢‡S¢$7¦W'fW¦WBÂÖVÇ–†W¢F'F÷¦öÂÂ¦VÆVæÆVr–æ·L:×bâ"À¢Vã¢%F†R÷&væ—¦F–öâ–÷R&VÆöærFò—27W'&VçFÇ’–æ7F—fRâ"À¢ÒÀ¢&öG“#¢°¢‡S¢$†;¦w’vöæFöÆöBÂW¢†–&Â¶W&W6B7¦W'fW¦WBFÖ–æ—7§G,:F÷,:B(	Bfw’:×&¢æV¼;Ææ²Â:—26V|:×L;Ææ²â"À¢Vã¢$–b–÷RF†–æ²F†—2—2Ö—7F¶RÂ6öçF7B–÷W"÷&væ—¦F–öâw2FÖ–æ—7G&F÷"(	B÷"w&—FRFòW2æBvRvÆÂ†VÇâ"À¢ÒÀ¢7F&W7VÇG3¢²‡S¢%f—77¦¢W&VFÜ:–ç–V–Ö†W¢"ÂVã¢$&6²Fò×’&W7VÇG2"ÒÀ¢7F6öçF7C¢²‡S¢$¶76öÆFfVÇl:—FVÂ"ÂVã¢$6öçF7BW2"ÒÀ¢ÒÀ ¢6WGWVæF–æs¢²‡S¢$&\:ÆÌ:×L:2föÇ–ÖF&â"ÂVã¢%6WGWVæF–ær"ÒÀ¢6WGF–æw4Æ–æ³¢²‡S¢$&\:ÆÌ:×L:6ö²"ÂVã¢%6WGF–æw2"ÒÀ¢ÖVÖ&W'4Æ&VÃ¢²‡S¢%Fvö²"ÂVã¢$ÖVÖ&W'2"ÒÀ¢VæF–æu7Vff—ƒ¢²‡S¢&l;Æv|Y&Vâ"ÂVã¢'VæF–ær"ÒÀ¢FV×4Æ&VÃ¢²‡S¢$76Fö²"ÂVã¢%FV×2"ÒÀ¢7F—fT6×–vç3¢²‡S¢$·L:×bÜ:—,:—2"ÂVã¢$7F—fRÖV7W&VÖVçG2"ÒÀ¢6Æ÷6VE7Vff—ƒ¢²‡S¢&ÆW¬:'B"ÂVã¢&6Æ÷6VB"ÒÀ¢6ö×ÆWF–öå&FS¢²‡S¢$&VfV¦W¬:—6’,:ç’"ÂVã¢$6ö×ÆWF–öâ&FR"ÒÀ ¢òò)H)H÷&r7F÷'’F6†&ö&B)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢†W&õ7V#¢²‡S¢$7¦W'fW¦WFVB–ÆÆæF¼:—R"ÂVã¢%–÷W"÷&væ—¦F–öâBvÆæ6R"ÒÀ¢†W&ô7F¢²‡S¢,9¦¢:—'L:–¶VÌ:—2–æL:×L:6"ÂVã¢%7F'BæWr76W76ÖVçB"ÒÀ¢†W&ô7F#¢²‡S¢$76Fö²:GFV¶–çL:—6R"ÂVã¢%f–WrFV×2"ÒÀ ¢–ç6–v‡DW–V'&÷s¢²‡S¢$Ö÷7B:—&FVÖW2f–w–VÆæ’"ÂVã¢%v÷'F‚–÷W"GFVçF–öâ"ÒÀ¢–ç6–v‡D7F—f—G•F—FÆS¢²‡S¢$ÆVvg&—76V&"·F—f—L:2"ÂVã¢$ÆFW7B7F—f—G’"ÒÀ¢–ç6–v‡D7F—f—G”æöæS¢²‡S¢$Ü:–ræ–æ72,;fw¬:×FWGB·F—f—L:2"ÂVã¢$æò&V6÷&FVB7F—f—G’–WB"ÒÀ¢–ç6–v‡DfVVF&6µF—FÆS¢²‡S¢%f—77¦¦VÇ¬:—6’¼;g,;f²"ÂVã¢$fVVF&6²&÷VæG2"ÒÀ¢–ç6–v‡DfVVF&6´7F—fS¢²‡S¢'¶6÷VçGÒ·L:×bf—77¦¦VÇ¬:—6’¼;g"gWB"ÂVã¢'¶6÷VçGÒ7F—fRfVVF&6²&÷VæB‡2’'Vææ–ær"ÒÀ¢–ç6–v‡DfVVF&6´æöæS¢²‡S¢$æ–æ72gWL;2f—77¦¦VÇ¬:—6’¼;g"(	B:—&FVÖW2;¦¦B–æL:×Fæ’"ÂVã¢$æò7F—fRfVVF&6²&÷VæB(	B6öç6–FW"7F'F–æröæR"ÒÀ¢–ç6–v‡D7F–öåF—FÆS¢²‡S¢$¼;gfWF¶W¬YÌ:—:—2"ÂVã¢$æW‡B7FW"ÒÀ¢–ç6–v‡D7F–öä–çf—FS¢²‡S¢$ÖVvŒ:×l;7&l:,;2Fvö³¢¶6÷VçGÒ"ÂVã¢$ÖVÖ&W'2v—F–ær–çf—FF–öã¢¶6÷VçGÒ"ÒÀ¢–ç6–v‡D7F–öå7F'C¢²‡S¢$–æL:×G2;¦¢Ü:—,:—7Bfw’Œ:×f¢ÖVrFvö¶B"ÂVã¢%7F'BæWrÖV7W&VÖVçB÷"–çf—FRÖVÖ&W'2"ÒÀ ¢7FFTW–V'&÷s¢²‡S¢%7¦W'fW¦WF’:ÆÆ÷B"ÂVã¢$÷&væ—¦F–öâ7FGW2"ÒÀ¢7FFTÖVÖ&W'5F—FÆS¢²‡S¢$·L:×bFvö²"ÂVã¢$7F—fRÖVÖ&W'2"ÒÀ¢7FFTÖVÖ&W'57V#¢²‡S¢'¶6÷VçGÒFr7¦W'fW¦WF&Vâ"ÂVã¢'¶6÷VçGÒÖVÖ&W'2–âF†R÷&væ—¦F–öâ"ÒÀ¢7FFUFV×5F—FÆS¢²‡S¢$76Fö²"ÂVã¢%FV×2"ÒÀ¢7FFUFV×57V#¢²‡S¢'¶6÷VçGÒ76B&Vv—7§G,:Çf"ÂVã¢'¶6÷VçGÒFV×2&Vv—7FW&VB"ÒÀ¢7FFT6ö×ÆWF–öåF—FÆS¢²‡S¢$¶—L;fÇL;gGG<:–r"ÂVã¢$6ö×ÆWF–öâ"ÒÀ¢7FFT6ö×ÆWF–öå7V#¢²‡S¢'¶FöæWÒ÷·F÷FÇÒFrfV¦W§FR&R¢:—'L:–¶VÌ:—7B"ÂVã¢'¶FöæWÒ÷·F÷FÇÒÖVÖ&W'26ö×ÆWFVBF†V—"76W76ÖVçB"ÒÀ¢7FFT6×–vç5F—FÆS¢²‡S¢$Ü:—,:—6V²"ÂVã¢$ÖV7W&VÖVçG2"ÒÀ¢7FFT6×–vç57V#¢²‡S¢'¶7F—fWÒ·L:×bÂ¶6Æ÷6VGÒÆW¬:'B"ÂVã¢'¶7F—fWÒ7F—fRÂ¶6Æ÷6VGÒ6Æ÷6VB"ÒÀ ¢FV×4W–V'&÷s¢²‡S¢$76Fö²:GFV¶–çL:—6R"ÂVã¢%FV×2÷fW'f–Wr"ÒÀ¢FVÔ6&DÖVÖ&W'3¢²‡S¢'¶6÷VçGÒFr"ÂVã¢'¶6÷VçGÒÖVÖ&W'2"ÒÀ¢FVÔ6&D÷Vã¢²‡S¢$ÖVvç–—L:2"ÂVã¢$÷Vâ"ÒÀ¢FVÔ6&DæõFV×3¢²‡S¢$Ü:–ræ–æ7276B(	B†÷§¢Ì:—G&RVw–WB76BöÆFÆöââ"ÂVã¢$æòFV×2–WB(	B7&VFRöæRöâF†RFV×2vRâ"ÒÀ ¢7F&æEF—FÆS¢²‡S¢$¼:—7¦Vâ:ÆÇFö²¼;gfWF¶W¬Y¼;g'&Sò"ÂVã¢%&VG’f÷"F†RæW‡B&÷VæCò"ÒÀ¢7F&æE7V#¢²‡S¢$–æL:×G2;¦¢f—77¦¦VÇ¬:—6’¼;g'Bfw’F¢†÷§¬:;¦¢76F÷Bâ"ÂVã¢%7F'BæWrfVVF&6²&÷VæB÷"FBæWrFVÒâ"ÒÀ¢7F&æD7F¢²‡S¢,9¦¢¼;g"–æL:×L:6"ÂVã¢%7F'BæWr&÷VæB"ÒÀ¢7F&æD7F#¢²‡S¢,9¦¢76B"ÂVã¢$æWrFVÒ"ÒÀ ¢òò)H)H÷&r6WGF–æw2vR‚ö÷&rõ¶–EÒ÷6WGF–æw2’)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢&6µFô÷&s¢²‡S¢%f—77¦7¦W'fW¦WF†W¢"ÂVã¢$&6²Fò÷&væ—¦F–öâ"ÒÀ¢6WGF–æw3¢°¢W–V'&÷s¢²‡S¢&&\:ÆÌ:×L:6ö²"ÂVã¢'6WGF–æw2"ÒÀ¢÷&tæÖTW–V'&÷s¢²‡S¢'7¦W'fW¦WBæWfR"ÂVã¢&÷&væ—¦F–öâæÖR"ÒÀ¢÷&tæÖUF—FÆS¢²‡S¢%7¦W'fW¦WBæWfR"ÂVã¢$÷&væ—¦F–öâæÖR"ÒÀ¢7V'67&—F–öäW–V'&÷s¢²‡S¢&VÌYf—¦WL:—2"ÂVã¢'7V'67&—F–öâ"ÒÀ¢7V'67&—F–öåF—FÆS¢²‡S¢$VÌYf—¦WL:—2"ÂVã¢%7V'67&—F–öâ"ÒÀ¢7FGW47F—fS¢²‡S¢$·L:×b"ÂVã¢$7F—fR"ÒÀ¢7FGW57DGVS¢²‡S¢$f—¦WL:—6’†–&"ÂVã¢%7BGVR"ÒÀ¢7FGW46æ6VÆVC¢²‡S¢$ÆVÖöæGf"ÂVã¢$6æ6VÆVB"ÒÀ¢7FGW4æöæS¢²‡S¢$æ–æ72VÌYf—¦WL:—2"ÂVã¢$æò7V'67&—F–öâ"ÒÀ¢G&–ÄF—4ÆVgC¢²‡S¢'¶F—7ÒæfâŒ:G&"ÂVã¢'¶F—7ÒF—2ÆVgB"ÒÀ¢G&–ÄW‡—&W5FöF“¢²‡S¢$Ö¬:"ÆR"ÂVã¢$W‡—&W2FöF’"ÒÀ¢66W747F—fS¢²‡S¢$†÷§¬:l:—,:—2·L:×bâ"ÂVã¢$66W72—27F—fRâ"ÒÀ¢G&–Ä–æfó¢²‡S¢#Bæ÷2,;6&–LY7¦²(	2¼:'G–FBì:–Æ¼;ÆÂâ"ÂVã¢#BÖF’G&–Â(	2æò7&VF—B6&B&WV—&VBâ"ÒÀ¢7F—fFU&ö×C¢²‡S¢$¢VÌYf—¦WL:—2·F—l:Ì:<:†÷¢¶GF–çG2¢Ì:&&’vöÖ'&â"ÂVã¢$7F—fFR–÷W"7V'67&—F–öâW6–ærF†R'WGFöâ&VÆ÷râ"ÒÀ¢7F—fFT'Fã¢²‡S¢$·F—l:Ì:2"ÂVã¢$7F—fFR"ÒÀ¢&V7F—fFT'Fã¢²‡S¢,9¦§&·F—l:Ì:2"ÂVã¢%&V7F—fFR"ÒÀ¢6VG4W–V'&÷s¢²‡S¢&Ì:—G7¬:Ò"ÂVã¢'6VG2"ÒÀ¢6VG5F—FÆS¢²‡S¢$·L:×b†VÇ–V²"ÂVã¢$7F—fR6VG2"ÒÀ¢–æ6ÇVFVE6VG3¢²‡S¢&Æ†VÇ’"ÂVã¢&–æ6ÇVFVB6VG2"ÒÀ¢W‡G&6VG4–æfó¢²‡S¢"·¶W‡G&ÒW‡G&†VÇ’"ÂVã¢"·¶W‡G&ÒW‡G&6VG·ÇW&ÇÒ"ÒÀ¢6VG4f–Æ&ÆS¢²‡S¢'¶f–Æ&ÆWÒ†VÇ’VÌ:—&†WLY"ÂVã¢'¶f–Æ&ÆWÒ6VG·ÇW&ÇÒf–Æ&ÆR"ÒÀ¢VæF–æt–çf—FW3¢²‡S¢"·¶6÷VçGÒÖVvŒ:×l:2l;Æv|Y&Vâ"ÂVã¢"·¶6÷VçGÒ–çf—FF–öç·ÇW&ÇÒVæF–ær"ÒÀ¢æVVDÖ÷&U6VG3¢²‡S¢%L;f&"†VÇ’¶VÆÃò"ÂVã¢$æVVBÖ÷&R6VG3ò"ÒÀ¢Ww&FT†–çC¢²‡S¢$¢÷&r76öÖrC†VÇ–WBF'FÆÖ¢(	BfVÇL:—FVÆV·,YÂVw–W§FW72Fì:76L;6FFÂâ"ÂVã¢%F†R÷&rÆâ–æ6ÇVFW2C6VG2(	BF—67W72FW&×2v—F‚–÷W"6öç7VÇFçBâ"ÒÀ¢Ww&FTÆ–æ³¢²‡S¢%Ww&FR"ÂVã¢%Ww&FR"ÒÀ¢&öÆW4W–V'&÷s¢²‡S¢'7¦W&W¼;g,;f²"ÂVã¢'&öÆW2"ÒÀ¢&öÆW5F—FÆS¢²‡S¢%Fvö²7¦W&W¼;g&V’"ÂVã¢$ÖVÖ&W"&öÆW2"ÒÀ¢òò4¢Ô5$TD•E2(	B¦VÌ;fÇF¶W&WBÖ&Æö¶²†6öç7VÇF–ærÖÆVC¢Fì:76L;2¶W¦VÆ’¢7&VF—G4W–V'&÷s¢²‡S¢&¦VÌ;fÇF¶W&WFV²"ÂVã¢&6æF–FFR7&VF—G2"ÒÀ¢7&VF—G5F—FÆS¢²‡S¢$¦VÌ;fÇF¶W&WFV²"ÂVã¢$6æF–FFR7&VF—G2"ÒÀ¢7&VF—G5W6vS¢°¢‡S¢'·W6VGÒfVÆ†7¦ì:ÇB+r·F÷FÇÒ;g77¦W6Vâ¬;7l::×'B"À¢Vã¢'·W6VGÒW6VB+r·F÷FÇÒw&çFVB–âF÷FÂ"À¢ÒÀ¢7&VF—G46öç7VÇFçDæ÷FS¢°¢‡S¢$¦VÌ;fÇBÖfVÆÜ:—,:—6’¶W&WFV¶WBG&—FFì:76L;6B¶W¦VÆ“¢6öç7VÇF–ærÖVwœ;ÇGFÜ[¼;fL:—2,:—7¦V¼:–çB:ÆÌ:×F¦&R:—2L;fÇF’fVÂY¶WBâ†;¦¢¶W&WG&Rfâ7¬;Æ·<:–vWFV²Âfw’¼:—&L:—6VBfâ¢Vw–VæÆVw,YÂÂ¦VÆW¦BæV¼;Ææ²â"À¢Vã¢$6æF–FFR76W76ÖVçB7&VF—G2&RÖævVB'’–÷W"G&—F6öç7VÇFçB(	BF†W’&R6WBWæBF÷VBW2'BöbF†R6öç7VÇF–ærVævvVÖVçBâ–b–÷RæVVBÖ÷&R7&VF—G2÷"†fRVW7F–öâ&÷WBF†R&Ææ6RÂvWB–âF÷V6‚â"À¢ÒÀ¢7&VF—G46öçF7D7F¢²‡S¢$¶76öÆFfVÇl:—FVÂ"ÂVã¢$6öçF7BW2"ÒÀ¢FævW$W–V'&÷s¢²‡S¢'fW7¬:–Ç–W2¬;6æ"ÂVã¢&FævW"¦öæR"ÒÀ¢FævW%F—FÆS¢²‡S¢%fW7¬:–Ç–W2¬;6æ"ÂVã¢$FævW"¦öæR"ÒÀ¢FævW$FW67&—F–öã¢²‡S¢$7¦W'fW¦WBFV·F—l:Ì:6WL:âFv¦’æVÒGVFæ²&V¦VÆVçF¶W¦æ’¢÷&rÖ†÷¢¼;gL;gGBfVÌ;ÆÆWFV·&Râ"ÂVã¢$FV7F—fF–ærF†R÷&væ—¦F–öâv–ÆÂ&Æö6²ÖVÖ&W'2g&öÒ66W76–ær÷&r×66÷VBvW2â"ÒÀ¢Ç&VG”–æ7F—fS¢²‡S¢$7¦W'fW¦WBÜ:"–æ·L:×bâ"ÂVã¢$÷&væ—¦F–öâ—2Ç&VG’–æ7F—fRâ"ÒÀ¢ÒÀ ¢òò)H)H6×–vâvW2)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6×–vã¢°¢òòæWr6×–vâvP¢&6µv—F„æÖS¢²‡S¢%f—77¦+r¶÷&tæÖWÒ"ÂVã¢$&6²+r¶÷&tæÖWÒ"ÒÀ¢æWtW–V'&÷s¢²‡S¢,;¦¢Ü:—,:—2"ÂVã¢&æWrÖV7W&VÖVçB"ÒÀ¢æWuF—FÆS¢²‡S¢$Ü:—,:—2Ì:—G&V†÷¬:6"ÂVã¢$7&VFRÖV7W&VÖVçB"ÒÀ ¢òò6×–vâFWF–ÂvP¢W–V'&÷t7F—fS¢²‡S¢&·L:×bÜ:—,:—2"ÂVã¢&7F—fRÖV7W&VÖVçB"ÒÀ¢W–V'&÷t6Æ÷6VC¢²‡S¢&ÆW¬:'BÜ:—,:—2"ÂVã¢&6Æ÷6VBÖV7W&VÖVçB"ÒÀ¢W–V'&÷tG&gC¢²‡S¢&Ü:—,:—2(	2FW'fW¬:—2ÆGB"ÂVã¢&ÖV7W&VÖVçB(	2G&gB"ÒÀ¢7FGW47F—fS¢²‡S¢$·L:×b"ÂVã¢$7F—fR"ÒÀ¢7FGW46Æ÷6VC¢²‡S¢$ÆW¬:'f"ÂVã¢$6Æ÷6VB"ÒÀ¢7FGW4G&gC¢²‡S¢%l:¦ÆB"ÂVã¢$G&gB"ÒÀ¢7&VFVDC¢²‡S¢$Ì:—G&V†÷§f¢"ÂVã¢$7&VFVC¢"ÒÀ¢6Æ÷6VDC¢²‡S¢$ÆW¬:'f¢"ÂVã¢$6Æ÷6VC¢"ÒÀ¢'F–6—çC¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çB"ÒÀ¢'F–6—çG3¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çG2"ÒÀ¢6ö×ÆWFS¢²‡S¢&¶—L;fÇGfR"ÂVã¢&6ö×ÆWFR"ÒÀ¢6VÆd76W76ÖVçC¢²‡S¢,9fì:—'L:–¶VÌ:—2"ÂVã¢%6VÆbÖ76W76ÖVçB"ÒÀ¢6ö×ÆWFVC¢²‡S¢&&VfV¦W¦WGB"ÂVã¢&6ö×ÆWFVB"ÒÀ¢ö'6W'fW$FöæS¢²‡S¢$¼;ÆÇ<Yf—77¦¦VÇ¬:—2¼:—7¢"ÂVã¢$ö'6W'fW"FöæR"ÒÀ¢&V6V—fVDfVVF&6³¢²‡S¢&¶÷GBf—77¦¦VÇ¬:—7B"ÂVã¢'&V6V—fVBfVVF&6²"ÒÀ¢gVÆÇ”6ö×ÆWFS¢²‡S¢%FVÆ¦W2&VfV¦W¬:—2"ÂVã¢$gVÆÇ’6ö×ÆWFR"ÒÀ¢&÷F„FöæS¢²‡S¢&Ö–æF¶WGLY¼:—7¢"ÂVã¢&&÷F‚FöæR"ÒÀ ¢òò7¦–6†öÌ;6v–’&—§Föç<:rVÇ6R†æöæ–Òvw&V|:GVÒ¢4W–V'&÷s¢²‡S¢%7¦–6†öÌ;6v–’&—§Föç<:r"ÂVã¢%7–6†öÆöv–6Â6fWG’"ÒÀ¢4–æFW…F—FÆS¢²‡S¢$&—§Föç<:rÖ–æFW‚"ÂVã¢%6fWG’–æFW‚"ÒÀ¢46ö×ÆWFVC¢²‡S¢&¶—L;fÇL;gGFR"ÂVã¢&6ö×ÆWFVB"ÒÀ¢4æöäæ÷FS¢°¢‡S¢$l:Æ7¦ö²ì:—gFVÆVæV³¢76²76G7¦–çL[;g77¦W<:×L:—2Ì:G7¦–²ÂVwœ:–æ’l:Æ7¢æVÒ¶W&W6†WLYf—77¦â¢W&VFÜ:–ç’ÆVvÌ:&"2¶—L;fÇL:—7LYÂ¦VÆVæ–²ÖVrâ"À¢Vã¢%&W7öç6W2&Ræöç–Ö÷W3¢öæÇ’F†RFVÒÖÆWfVÂvw&VvFR—26†÷vâÂ–æF—f–GVÂç7vW'26ææ÷B&RG&6VB&6²â&W7VÇG2V"g&öÒBÆV7B2&W7öç6W2â"À¢ÒÀ¢4&VÆ÷uF‡&W6†öÆC¢°¢‡S¢$¢W&VFÜ:–ç’ÆVvÌ:&"¶Ö–çÒ¶—L;fÇL:—2WL:â¦VÆVæ–²ÖVr(	B:Öw’6Væ¶’l:Æ7¦æVÒ&V¦öæ÷<:×F†L;2âVÖÌ:–¶W§FW6B76F÷BÂ†ÖVv¶GB¶—L;fÇL:—2â"À¢Vã¢%&W7VÇG2V"gFW"BÆV7B¶Ö–çÒ&W7öç6W2(	B6òæö&öG’w2ç7vW'26â&R–FVçF–f–VBâ&VÖ–æBF†RFVÒ–b6ö×ÆWF–öâ†27FÆÆVBâ"À¢ÒÀ¢4&æD†–vƒ¢²‡S¢$W,Y2&—§Föç<:rÜ:–ÆÜ:–ç’"ÂVã¢%7G&öær6Vç6Röb6fWG’"ÒÀ¢4&æDÖ–C¢²‡S¢$¼;g¦WW2&—§Föç<:rÜ:–ÆÜ:–ç’"ÂVã¢$ÖöFW&FR6Vç6Röb6fWG’"ÒÀ¢4&æDÆ÷s¢²‡S¢%L;g,:–¶Vç’&—§Föç<:rÜ:–ÆÜ:–ç’"ÂVã¢$g&v–ÆR6Vç6Röb6fWG’"ÒÀ¢5&W7öç6W3¢²‡S¢'¶6÷VçGÒl:Æ7¢"ÂVã¢'¶6÷VçGÒ&W7öç6W2"ÒÀ¢òò+Ö¦VÂì:–Æ¼;ÆÂƒ##bÓ‚ÓFW&Ü:–¶L;fçL:—3¢+¦VÌ;fÌ:—2æVÒ¶W,;ÆÂT’×&’à¢57&VC¢²‡S¢'7¬;7,;6L:3¢·7&VGÒöçB"ÂVã¢'7&VC¢·7&VGÒö–çG2"ÒÀ¢4—FV×5F—FÆS¢²‡S¢,8ÆÌ:×L:6öæ¼:–çB"ÂVã¢$'’7FFVÖVçB"ÒÀ¢FWd&4W–V'&÷s¢²‡S¢&fV¦ÌYL:—6’:×b"ÂVã¢&FWfVÆ÷ÖVçB&2"ÒÀ¢FWd&5F—FÆS¢²‡S¢$fV¦ÌYL:—6’:×b"ÂVã¢$FWfVÆ÷ÖVçB&2"ÒÀ¢FWd&46ö×&S¢²‡S¢,9g77¦V†6öæÌ:×L:3¢Â'¶æÖWÕÂ"¶×:ç–†÷¢¼:—W7B"ÂVã¢$6ö×&VBFó¢Â'¶æÖWÕÂ"6×–vâ"ÒÀ¢'F–6—çG4W–V'&÷s¢²‡S¢',:—7§GfWlY²"ÂVã¢''F–6—çG2"ÒÀ¢'F–6—çG5F—FÆS¢²‡S¢%,:—7§GfWlY²"ÂVã¢%'F–6—çG2"ÒÀ¢æõ'F–6—çG3¢²‡S¢$Ü:–ræ–æ72,:—7§GfWlYâ"ÂVã¢$æò'F–6—çG2–WBâ"ÒÀ¢'F–6—çDFöæS¢²‡S¢$¼:—7¢"ÂVã¢$FöæR"ÒÀ¢'F–6—çE6VÆdFöæS¢²‡S¢,9fì:—'L:–¶VÌ:—2¼:—7¢"ÂVã¢%6VÆbFöæR"ÒÀ¢'F–6—çDæ÷E7F'FVC¢²‡S¢$æVÒ¶W¦GFR"ÂVã¢$æ÷B7F'FVB"ÒÀ¢7FGW4W–V'&÷s¢²‡S¢'7L:GW7¢"ÂVã¢'7FGW2"ÒÀ¢ÖævVÖVçEF—FÆS¢²‡S¢$Ü:—,:—2¶W¦VÌ:—6R"ÂVã¢$ÖV7W&VÖVçBÖævVÖVçB"ÒÀ¢7F—fFTFW67&—F–öã¢²‡S¢$¢·F—l:Ì:2WL:â,:—7§GfWlY²:—'FW<:×L:—7B¶æ²:—2ÖVv¶W¦F†WF–²¢:—'L:–¶VÌ:—6V¶WBâ"ÂVã¢$gFW"7F—fF–öâÂ'F–6—çG2v–ÆÂ&Ræ÷F–f–VBæB6â&Vv–âWfÇVF–öç2â"ÒÀ¢VF—DG&gDW–V'&÷s¢²‡S¢'—7¦¶÷¦B"ÂVã¢&G&gB"ÒÀ¢VF—DG&gEF—FÆS¢²‡S¢$Ü:—,:—6V²:—2<:–Ç¬:27¦W&¶W7§L:—6R"ÂVã¢$VF—BÖV7W&VÖVçG2æBF&vWF–ær"ÒÀ¢VF—DG&gD†–çC¢°¢‡S¢$Ü:ÖrÜ:—,:—2—7¦¶÷¦BÂÌ:—:—6V²Â<:–ÂÖ76B:—2¢;ÇFVÒ7¦&FöâÜ;6F÷<:×F†L;2â·F—l:Ì:2WL:â¢;g77¦WL:—FVÂ,;fw¬;ÆÂâ"À¢Vã¢%v†–ÆRF†R6×–vâ—2G&gBÂ—G2ÖV7W&VÖVçB7FW2ÂF&vWBFVÒæB6–ær6â&R6†ævVBg&VVÇ’âgFW"7F—fF–öâF†R6×–vâ6ö×÷6—F–öâ—2Æö6¶VBâ"À¢ÒÀ¢VF—E&W6WDG&gD†–çC¢°¢‡S¢$æWfW<:×FWGB76öÖrÜ:—,:—6’Ì:—:—6V’,;fw¬:×FWGFV³²—7¦¶÷¦F¼:–çB<:–ÂÖ76B:—2¢;ÇFVÒÜ:–rÜ;6F÷<:×F†L;2â"À¢Vã¢%F†RæÖVB6¶vR†2f—†VBÖV7W&VÖVçB7FW3²—G2F&vWBFVÒæB6–ær6â7F–ÆÂ&R6†ævVBv†–ÆR—B—2G&gBâ"À¢ÒÀ¢VF—EG—W4Æ&VÃ¢²‡S¢$Ü:—,:—6V²‡6÷'&VæF¬;Æ²¶æöæ–·W2’"ÂVã¢$ÖV7W&VÖVçG2†6æöæ–6Â÷&FW"’"ÒÀ¢VF—EFVÔÆ&VÃ¢²‡S¢$<:–ÂÖ76B"ÂVã¢%F&vWBFVÒ"ÒÀ¢VF—DæõFVÓ¢²‡S¢$æ–æ7276BÖ<:–Ç¬:2†Vwœ:–æ–ÆVr¶—l:Æ7§F÷GB,:—7§GfWlY²’"ÂVã¢$æòFVÒF&vWF–ær†–æF—f–GVÆÇ’6VÆV7FVB'F–6—çG2’"ÒÀ¢VF—EFVÔæ÷FS¢°¢‡S¢$76BÜ;6F÷<:×L:6æVÒ:×&¦:B,:—7§GfWlYÖÆ—7L:B(	BFvö¶B,:—7§GfWlY²&Æö¶¶&âFB†÷§¬:â"À¢Vã¢$6†æv–ærF†RFVÒFöW2æ÷B&Ww&—FRF†R'F–6—çBÆ—7B(	BFBÖVÖ&W'2–âF†R'F–6—çG2&Æö6²â"À¢ÒÀ¢VF—E6fS¢²‡S¢$Ü;6F÷<:×L:6ö²ÖVçL:—6R"ÂVã¢%6fR6†ævW2"ÒÀ¢VF—E6fVC¢²‡S¢$VÆÖVçGfRâ"ÂVã¢%6fVBâ"ÒÀ¢VF—Df–ÆVC¢²‡S¢$ÖVçL:—26–¶W'FVÆVâ(	B,;6,:ÆB;¦§&â"ÂVã¢%6fRf–ÆVB(	BG'’v–ââ"ÒÀ¢F—66&DG&gC¢²‡S¢%l:¦ÆBVÇfWL:—6R"ÂVã¢$F—66&BG&gB"ÒÀ¢F—66&F–æs¢²‡S¢$VÇfWL:—>(
+b"ÂVã¢$F—66&F–æ~(
+b"ÒÀ¢F—66&D6öæf—&Ó¢°¢‡S¢$&—§F÷6âVÇfWFVBW§BÜ:—,:—2×l:¦ÆF÷Còl:¦ÆB:—2†÷§¬:F÷GB,:—7§GfWlYÖÆ—7Fl:–vÆVvW6VâL;g&ÌYF–²â"À¢Vã¢$F—66&BF†—2ÖV7W&VÖVçBG&gCòF†RG&gBæB—G2'F–6—çBÆ—7Bv–ÆÂ&RW&ÖæVçFÇ’FVÆWFVBâ"À¢ÒÀ¢F—66&Df–ÆVC¢²‡S¢$¢VÇfWL:—2æVÒ6–¶W,;ÆÇB(	B,;6,:ÆB;¦§&â"ÂVã¢$F—66&Bf–ÆVB(	BG'’v–ââ"ÒÀ¢F—66&D6öæf—&Ô7F¢²‡S¢%l:–vÆVvW2VÇfWL:—2"ÂVã¢$F—66&BW&ÖæVçFÇ’"ÒÀ¢F—66&D6æ6VÃ¢²‡S¢$Ü:–w6R"ÂVã¢$6æ6VÂ"ÒÀ¢FVÆWFT6×–vã¢²‡S¢$Ü:—,:—2L;g&Ì:—6R"ÂVã¢$FVÆWFRÖV7W&VÖVçB"ÒÀ¢FVÆWF–æs¢²‡S¢%L;g&Ì:—>(
+b"ÂVã¢$FVÆWF–æ~(
+b"ÒÀ¢FVÆWFT6öæf—&Ó¢°¢‡S¢$&—§F÷6âL;g&Ì;fBW§BÜ:—,:—7Cò¼;g"Ô”äDTâ&VF÷GB:—'L:–¶VÌ:—6R†&—¦ÆÖ’Â7¦W&W×f—77¦¦VÇ¬:—2ÂVÆ—6ÖW,:—2ÂVÇ§W6Ü:—,:—2’l:–vÆVvW6VâL;g&ÌYF–²Â:—2Ü:—,:—2ÆW¬:'B¼;g,;f²¼;g§B6VÒ¦VÆVæ–²ÖVrL;f&,:’âFvö²6¬:BW&VFÜ:–ç–V’‡7¦VÜ:–Ç–—<:–r×FW7§BÂ7¦W&WÖ¼:—&LY:×b’ÖVvÖ&Fæ²â"À¢Vã¢$FVÆWFRF†—2ÖV7W&VÖVçCòÄÂ7V&Ö—GFVB&F–æw2–âF†—2&÷VæB‡G'W7BÂ&öÆRfVVF&6²Â&V6övæ—F–öâÂVÇ6R’&RW&ÖæVçFÇ’FVÆWFVBÂæBF†R&÷VæBv–ÆÂæòÆöævW"V"Ööær6Æ÷6VB&÷VæG2âÖVÖ&W'2r÷vâ&W7VÇG2‡W'6öæÆ—G’FW7BÂ&öÆRVW7F–öææ—&R’&R¶WBâ"À¢ÒÀ¢FVÆWFT6öæf—&Ô7F¢²‡S¢%l:–vÆVvW2L;g&Ì:—2"ÂVã¢$FVÆWFRW&ÖæVçFÇ’"ÒÀ¢FVÆWFTf–ÆVC¢²‡S¢$L;g&Ì:—2æVÒ6–¶W,;ÆÇB(	B,;6,:ÆB;¦§&â"ÂVã¢$FVÆWFRf–ÆVB(	BG'’v–ââ"ÒÀ¢FVÆWFT†–çC¢°¢‡S¢%l:–vÆVvW3¢¼;g"&VF÷GB:—'L:–¶VÌ:—6V’—2L;g&ÌYFæV²Â:—2Ü:—,:—2ÆW¬:'BÆ—7L:,;6Â—2VÇL[æ–²â"À¢Vã¢%W&ÖæVçC¢F†R&÷VæBw27V&Ö—GFVB&F–æw2&RFVÆWFVBFöòÂæBF†RÖV7W&VÖVçBF—6V'2g&öÒF†R6Æ÷6VBÆ—7Bâ"À¢ÒÀ¢F—66&D†–çC¢°¢‡S¢$76²l:¦ÆBfWF†WLYVÂ(	B·F—l:ÇBÜ:—,:—7BÆW¬:&æ’ÆV†WBÂL;g,;fÆæ’æVÒâ"À¢Vã¢$öæÇ’G&gG26â&RF—66&FVB(	Bâ7F—fFVBÖV7W&VÖVçB6â&R6Æ÷6VBÂæ÷BFVÆWFVBâ"À¢ÒÀ¢VW$f%7FG4W–V'&÷s¢²‡S¢&¶öÆÌ:–v’f—77¦¦VÇ¬:—2¼;g""ÂVã¢'VW"fVVF&6²&÷VæB"ÒÀ¢VW$f%7FG5F—FÆS¢²‡S¢%,:—7§l:—FVÂ"ÂVã¢%'F–6—F–öâ"ÒÀ¢VW$f%7FG4&öG“¢°¢‡S¢'¶v—fW'7ÒFr¼;ÆÆL;gGB&RÂ;g77¦W6Vâ¶—FV×7Ò¦f6ÆC²¶6÷fW&VGÒ<:Ö×¦WGFì:–ÂfâÖVrÆVvÌ:&"2&V¼;ÆÆLY2¼;Ç7¬;f"â"À¢Vã¢'¶v—fW'7ÒÖVÖ&W'27V&Ö—GFVBÂ¶—FV×7Ò7VvvW7F–öç2–âF÷FÃ²¶6÷fW&VGÒ&V6—–VçG2†fR&V6†VBF†R2×6VæFW"F‡&W6†öÆBâ"À¢ÒÀ¢VW$f%7FG4æ÷FS¢°¢‡S¢$F'FÆÖBFì:76L;6’fVÌ;ÆÆWBæVÒ×WFF¦(	Bf—77¦¦VÇ¬:—2Fvö²¼;g§F’¶öÖ×Væ–¼:6œ;2Â—GB76²,:—7§l:—FVÂ¼;gfWF†WLYâ"À¢Vã¢$6öçFVçB—2æ÷B6†÷vâöâF†R6öç7VÇFçB7W&f6R(	BfVVF&6²—2ÖVÖ&W"×FòÖÖVÖ&W"6öÖ×Væ–6F–öã²öæÇ’'F–6—F–öâ—2G&6¶VB†W&Râ"À¢ÒÀ¢VF—EFVÕ&WV—&VC¢°¢‡S¢$¶—l:Æ7§F÷GBÜ:—,:—6V¶†W¢<:–ÂÖ76B¶VÆÂ†7¦W&WÖ¼;g"Â&—¦ÆÖ’¼;g":—2VÇ§W6Ü:—,:—276Föâ:–Â’â"À¢Vã¢%F†R6VÆV7FVBÖV7W&VÖVçG2æVVBF&vWBFVÒ‡&öÆRÂG'W7BæBVÇ6R&÷VæG2Æ—fRöâFVÒ’â"À¢ÒÀ¢6Æ÷6TFW67&—F–öã¢²‡S¢$ÆW¬:,:2l:–vÆVvW2(	B¢:—'L:–¶VÌ:—6V²Æ\:ÆÆæ²:—2¢W&VFÜ:–ç–V²,;fw¬;ÆÆæV²â"ÂVã¢$6Æ÷6–ær—2W&ÖæVçB(	BWfÇVF–öç27F÷æB&W7VÇG2&R&V6÷&FVBâ"ÒÀ¢7F—fFT6×–vã¢²‡S¢$Ü:—,:—2·F—l:Ì:6"ÂVã¢$7F—fFRÖV7W&VÖVçB"ÒÀ¢6Æ÷6T6×–vã¢²‡S¢$Ü:—,:—2ÆW¬:,:6"ÂVã¢$6Æ÷6RÖV7W&VÖVçB"ÒÀ ¢òòW'6öæÆ—G’F–ÖVç6–öâÆ&VÇ2†6×–vâFWF–Â¢G&—Fä”åDS¢²‡S¢$&V7<;ÆÆWFW7<:–rÔÌ:¦B"ÂVã¢$†öæW7G’Ô‡VÖ–Æ—G’"ÒÀ¢G&—Få$U4ó¢²‡S¢$VÖö6–öæÆ—L:2"ÂVã¢$VÖ÷F–öæÆ—G’"ÒÀ¢G&—FåDTÕ¢²‡S¢$W‡G&fW'¦œ;2"ÂVã¢$W‡G&fW'6–öâ"ÒÀ¢G&—FäD¢²‡S¢$&,:G<:v÷7<:r"ÂVã¢$w&VV&ÆVæW72"ÒÀ¢G&—FåD„õ#¢²‡S¢$ÆVÆ¶–—6ÖW&WFW7<:–r"ÂVã¢$6öç66–VçF–÷W6æW72"ÒÀ¢G&—FäõTã¢²‡S¢$ç–—F÷GG<:r"ÂVã¢$÷VææW72"ÒÀ¢ÒÀ ¢òò)H)H6†VÆÂòF'2)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6†VÆÃ¢°¢F$÷fW'f–Ws¢²‡S¢,8GFV¶–çL:—2"ÂVã¢$÷fW'f–Wr"ÒÀ¢F$6×–vç3¢²‡S¢$Ü:—,:—6V²"ÂVã¢$ÖV7W&VÖVçG2"ÒÀ¢F%FV×3¢²‡S¢$76Fö²"ÂVã¢%FV×2"ÒÀ¢F$ÖVÖ&W'3¢²‡S¢%Fvö²"ÂVã¢$ÖVÖ&W'2"ÒÀ¢F$–çV—&–W3¢²‡S¢$¼:—&L:—6V²"ÂVã¢$–çV—&–W2"ÒÀ¢F$6æF–FFW3¢²‡S¢$¦VÌ;fÇFV²"ÂVã¢$6æF–FFW2"ÒÀ¢F$&–ÆÆ–æs¢²‡S¢%7¬:ÖÌ:¬:2"ÂVã¢$&–ÆÆ–ær"ÒÀ¢ÒÀ ¢òò)H)H&–ÆÆ–ærF")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢&–ÆÆ–æs¢°¢7FGW47F—fS¢²‡S¢$·L:×b"ÂVã¢$7F—fR"ÒÀ¢7FGW46æ6VÆVC¢²‡S¢$ÆVÖöæGf"ÂVã¢$6æ6VÆVB"ÒÀ¢G&–ÄF—3¢²‡S¢'¶F—7ÒæfâŒ:G&"ÂVã¢'¶F—7ÒF—2&VÖ–æ–ær"ÒÀ ¢ÖöçF†Ç“¢²‡S¢$†f’"ÂVã¢$ÖöçF†Ç’"ÒÀ   ¢&VDöæÇ“¢²‡S¢$7¬:ÖÌ:¬:2ÖVwFV¶–çL:—6R76²FÖ–â7¬:Ü:&7¦W&¶W7§F†WLYâ"ÂVã¢$&–ÆÆ–ærÖævVÖVçB&WV—&W2FÖ–â66W72â"ÒÀ  ¢ÒÀ ¢òò)H)H÷fW'f–WrF")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢÷fW'f–Ws¢°¢7F—fT6×–vå6–ævÆS¢²‡S¢$·L:×bÜ:—,:—3¢¶æÖWÒ"ÂVã¢$7F—fRÖV7W&VÖVçC¢¶æÖWÒ"ÒÀ¢7F—fT6×–vä×VÇF—ÆS¢²‡S¢'¶6÷VçGÒ·L:×bÜ:—,:—2föÇ–ÖF&â"ÂVã¢'¶6÷VçGÒ7F—fRÖV7W&VÖVçG2–â&öw&W72"ÒÀ¢6VÆd76W76ÖVçG4FöæS¢²‡S¢,;fì:—'L:–¶VÌ:—2¼:—7¢"ÂVã¢'6VÆbÖ76W76ÖVçG2FöæR"ÒÀ¢'F–6—çG4ÆÅ7FW4FöæS¢²‡S¢',:—7§GfWlYl:–w¦WGBÖ–æFVâÌ:—:—76VÂ"ÂVã¢''F–6—çG2f–æ—6†VBÆÂ7FW2"ÒÀ¢6×–vç4Æ–æ³¢²‡S¢$Ü:—,:—6V²"ÂVã¢$ÖV7W&VÖVçG2"ÒÀ¢&öf–ÆTW–V'&÷s¢²‡S¢'7¦W'fW¦WF’&öf–Â"ÂVã¢&÷&r&öf–ÆR"ÒÀ¢&öf–ÆUF—FÆS¢²‡S¢%7¦W'fW¦WF’7¦VÜ:–Ç–—<:–r"ÂVã¢$÷&rW'6öæÆ—G’"ÒÀ¢6ö×ÆWF–öå&öw&W73¢²‡S¢'¶6÷VçGÒò2¶—L;fÇL:—2"ÂVã¢'¶6÷VçGÒò26ö×ÆWF–öç2"ÒÀ¢&öf–ÆT†–çC¢²‡S¢$7¦W'fW¦WF’7¦VÜ:–Ç–—<:–w&öf–Â2&VfV¦W¦WGB:—'L:–¶VÌ:—2WL:â¦VÆVæ–²ÖVrâ"ÂVã¢%F†R÷&rW'6öæÆ—G’&öf–ÆRV'2gFW"26ö×ÆWFVB76W76ÖVçG2â"ÒÀ¢FV×4W–V'&÷s¢²‡S¢&76Fö²"ÂVã¢'FV×2"ÒÀ¢FV×5F—FÆS¢²‡S¢$76Fö²"ÂVã¢%FV×2"ÒÀ¢æõFV×3¢²‡S¢$Ü:–ræ–æ7276Bâ†÷§¢Ì:—G&RVw–WB76Fö²l;ÆÌ;fâ"ÂVã¢$æòFV×2–WBâ7&VFRöæR–âF†RFV×2F""ÒÀ¢FVÔÖVÖ&W$6÷VçC¢²‡S¢'Fr"ÂVã¢&ÖVÖ&W""ÒÀ¢FVÔÖVÖ&W'46÷VçC¢²‡S¢'Fr"ÂVã¢&ÖVÖ&W'2"ÒÀ¢ÒÀ ¢òò)H)HÖVÖ&W'2F")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢ÖVÖ&W'3¢°¢W–V'&÷s¢²‡S¢'Fvö²"ÂVã¢&ÖVÖ&W'2"ÒÀ¢F—FÆS¢²‡S¢%Fvö²"ÂVã¢$ÖVÖ&W'2"ÒÀ¢–çf—FUVæF–æs¢²‡S¢$ÖVvŒ:×l;2l;Æv|Y&Vâ"ÂVã¢$–çf—FRVæF–ær"ÒÀ¢VæF–æt&FvS¢²‡S¢$l;Æv|Y&Vâ"ÂVã¢%VæF–ær"ÒÀ¢æôÖVÖ&W'3¢²‡S¢$Ü:–ræ–æ72Frâ"ÂVã¢$æòÖVÖ&W'2–WBâ"ÒÀ¢–çf—FTW–V'&÷s¢²‡S¢&ÖVvŒ:×l:2"ÂVã¢&–çf—FR"ÒÀ¢–çf—FUF—FÆS¢²‡S¢%Fr†÷§¬:L:6"ÂVã¢$FBÖVÖ&W""ÒÀ¢–çf—FTFW67&—F–öã¢²‡S¢$FBÖVr¢VÖ–Æ<:ÖÖWBâ&Vv—7§G,:ÇBfVÆ†7¦ì:Ì;2¦öææÂ76FÆ¶÷¦–³²;¦¢fVÆ†7¦ì:Ì;2ÖVvŒ:×l;2ÖVÖ–ÇB¶Â:—2&Vv—7§G,:6œ;2WL:âÌ:—&Râ"ÂVã¢$VçFW"F†RVÖ–ÂFG&W72â&Vv—7FW&VBW6W"¦ö–ç2–ÖÖVF–FVÇ“²æWrW6W"vWG2â–çf—FRVÖ–ÂæB¦ö–ç2gFW"6–væ–ærWâ"ÒÀ¢&öÆTFÖ–ã¢²‡S¢$FÖ–â"ÂVã¢$FÖ–â"ÒÀ¢&öÆT6öç7VÇFçC¢²‡S¢%Fì:76L;2"ÂVã¢$6öç7VÇFçB"ÒÀ¢&öÆTÖævW#¢²‡S¢$ÖVæVG§6W""ÂVã¢$ÖævW""ÒÀ¢&öÆTÖVÖ&W#¢²‡S¢%Fr"ÂVã¢$ÖVÖ&W""ÒÀ¢ÒÀ ¢òò)H)HFV×2F")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢FV×3¢°¢æõFV×3¢²‡S¢$Ü:–ræ–æ7276Bâ†÷§¢Ì:—G&RVw–WBÆVçFV&""ÂVã¢$æòFV×2–WBâ7&VFRöæR&VÆ÷r"ÒÀ¢ÖVÖ&W$6÷VçC¢²‡S¢'Fr"ÂVã¢&ÖVÖ&W""ÒÀ¢ÖVÖ&W'46÷VçC¢²‡S¢'Fr"ÂVã¢&ÖVÖ&W'2"ÒÀ¢æWtW–V'&÷s¢²‡S¢,;¦¢76B"ÂVã¢&æWrFVÒ"ÒÀ¢æWuF—FÆS¢²‡S¢,9¦¢76BÌ:—G&V†÷¬:6"ÂVã¢$7&VFRæWrFVÒ"ÒÀ¢ÒÀ ¢òò)H)H6×–vç2F")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6×–vç3¢°¢7F—fTW–V'&÷s¢²‡S¢&·L:×bÜ:—,:—6V²"ÂVã¢&7F—fRÖV7W&VÖVçG2"ÒÀ¢7F—fUF—FÆS¢²‡S¢$·L:×bÜ:—,:—6V²"ÂVã¢$7F—fRÖV7W&VÖVçG2"ÒÀ¢æô7F—fS¢²‡S¢$æ–æ72·L:×bÜ:—,:—2â–æL:×G2Vw’l:¦ÆF,;6ÂÂfw’†÷§¢Ì:—G&R;¦¦B"ÂVã¢$æò7F—fRÖV7W&VÖVçG2â7F—fFRG&gB÷"7&VFRæWröæR"ÒÀ¢G&gG4F—f–FW#¢²‡S¢'l:¦ÆFö²"ÂVã¢&G&gG2"ÒÀ¢6Æ÷6VDF—f–FW#¢²‡S¢&ÆW¬:'B¼;g,;f²"ÂVã¢&6Æ÷6VB&÷VæG2"ÒÀ¢æWt7F¢²‡S¢,9¦¢Ü:—,:—2"ÂVã¢$æWrÖV7W&VÖVçB"ÒÀ¢æWt7FFW63¢²‡S¢%7¦W'fW¦WGB3c+f—77¦¦VÇ¬:—6’¼;g"–æL:×L:676F&â"ÂVã¢$ÆVæ6‚7G'V7GW&VB3c+fVVF&6²&÷VæBf÷"–÷W"FVÒ"ÒÀ¢7&VFTÆ–æ³¢²‡S¢$Ì:—G&V†÷¬:2"ÂVã¢$7&VFR"ÒÀ¢æWtW–V'&÷s¢²‡S¢,;¦¢Ü:—,:—2"ÂVã¢&æWrÖV7W&VÖVçB"ÒÀ¢7&VFUF—FÆS¢²‡S¢$Ü:—,:—2Ì:—G&V†÷¬:6"ÂVã¢$7&VFRÖV7W&VÖVçB"ÒÀ¢æÖTÆ&VÃ¢²‡S¢$Ü:—,:—2æWfR"ÂVã¢$ÖV7W&VÖVçBæÖR"ÒÀ¢æÖUÆ6V†öÆFW#¢²‡S¢'Ââ##b:—'L:–¶VÌ:—2"ÂVã¢&Rærâ##b&Wf–Wr"ÒÀ¢FW64Æ&VÃ¢²‡S¢$Æ\:×,:2†÷6–öì:Æ—2’"ÂVã¢$FW67&—F–öâ†÷F–öæÂ’"ÒÀ¢FW65Æ6V†öÆFW#¢²‡S¢%,;gf–BÆ\:×,:2Ü:—,:—7,YÎ(
+b"ÂVã¢$'&–VbFW67&—F–öî(
+b"ÒÀ¢7&VF–æs¢²‡S¢$Ì:—G&V†÷¬:>(
+b"ÂVã¢$7&VF–æ~(
+b"ÒÀ¢7&VFT'WGFöã¢²‡S¢$Ü:—,:—2Ì:—G&V†÷¬:6"ÂVã¢$7&VFRÖV7W&VÖVçB"ÒÀ¢6æ6VÃ¢²‡S¢$Ü:–w6R"ÂVã¢$6æ6VÂ"ÒÀ¢æWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â,;6,:ÆB;¦§&â"ÂVã¢$æWGv÷&²W'&÷"âÆV6RG'’v–ââ"ÒÀ¢ÒÀ ¢òò)H)H6×–vâ6&B)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6&C¢°¢6Æ÷6VC¢²‡S¢$ÆW¬:'B"ÂVã¢$6Æ÷6VB"ÒÀ¢g&W6…&÷VæC¢²‡S¢,9¦§&fVÇl:—FVÆ’¼;g""ÂVã¢%&RÖÖV7W&VÖVçB&÷VæB"ÒÀ¢6ö×ÆWFS¢²‡S¢'FVÆ¦W2"ÂVã¢&6ö×ÆWFR"ÒÀ¢7VÖÖ'”Æ–æ³¢²‡S¢,9g77¦W<:×LY"ÂVã¢%7VÖÖ'’"ÒÀ¢G&gC¢²‡S¢%l:¦ÆB"ÂVã¢$G&gB"ÒÀ¢'F–6—çG4FFVC¢²‡S¢',:—7§GfWlY†÷§¬:Gf"ÂVã¢''F–6—çBFFVB"ÒÀ¢'F–6—çG4FFVEÇW&Ã¢²‡S¢',:—7§GfWlY†÷§¬:Gf"ÂVã¢''F–6—çG2FFVB"ÒÀ¢VF—DÆ–æ³¢²‡S¢%7¦W&¶W7§L:—2"ÂVã¢$VF—B"ÒÀ¢7F—fS¢²‡S¢$·L:×b"ÂVã¢$7F—fR"ÒÀ¢7F'FVC¢²‡S¢$–æL:×Gf¢"ÂVã¢%7F'FVC¢"ÒÀ¢'F–6—çE6–æwVÆ#¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çB"ÒÀ¢'F–6—çEÇW&Ã¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çG2"ÒÀ¢6VÆdFöæS¢²‡S¢,9fì:—'L:–¶VÌ:—2¼:—7¢"ÂVã¢%6VÆbÖ76W76ÖVçBFöæR"ÒÀ¢ö'6W'fW$FöæS¢²‡S¢$¼;ÆÇ<Yf—77¦¦VÇ¬:—2¼:—7¢"ÂVã¢$ö'6W'fW"FöæR"ÒÀ¢gVÆÇ”6ö×ÆWFS¢²‡S¢%FVÆ¦W2&VfV¦W¬:—2"ÂVã¢$gVÆÇ’6ö×ÆWFR"ÒÀ¢gVÆÇ”FöæTÆ&VÃ¢²‡S¢'FVÆ¦W2"ÂVã¢&6ö×ÆWFR"ÒÀ¢–å&öw&W73¢²‡S¢&föÇ–ÖF&â"ÂVã¢&–â&öw&W72"ÒÀ¢æ÷E7F'FVC¢²‡S¢&æVÒ¶W¦GFR"ÂVã¢&æ÷B7F'FVB"ÒÀ¢f–WtÆ–æ³¢²‡S¢$Ü:—,:—2ÖVvç–—L:6"ÂVã¢$÷VâÖV7W&VÖVçB"ÒÀ¢6VæF–æs¢²‡S¢$¼;ÆÆL:—>(
+b"ÂVã¢%6VæF–æ~(
+b"ÒÀ¢&VÖ–æD'WGFöã¢²‡S¢$VÖÌ:–¶W§FWLY‡¶6÷VçGÒ’"ÂVã¢%&VÖ–æB‡¶6÷VçGÒ’"ÒÀ¢&VÖ–æFVE&W7VÇC¢²‡S¢'¶6÷VçGÒ7¦VÜ:–Ç–æV²¼;ÆÆGL;Ææ²VÖÌ:–¶W§FWLYB"ÂVã¢%&VÖ–æFVB¶6÷VçGÒ'F–6—çB"ÒÀ¢&VÖ–æFVE&W7VÇEÇW&Ã¢²‡S¢'¶6÷VçGÒ7¦VÜ:–Ç–æV²¼;ÆÆGL;Ææ²VÖÌ:–¶W§FWLYB"ÂVã¢%&VÖ–æFVB¶6÷VçGÒ'F–6—çG2"ÒÀ¢&VÖ–æDW'&÷#¢²‡S¢$†–&L;g'L:–çB"ÂVã¢%6öÖWF†–ærvVçBw&öær"ÒÀ¢&VÖ–æDæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&"ÂVã¢$æWGv÷&²W'&÷""ÒÀ¢ÒÀ ¢òò)H)H6×–vâÆ—7B†ÆVv7’’)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢Æ—7C¢°¢æô6×–vç3¢²‡S¢$Ü:–ræ–æ72Ü:—,:—2â†÷§¢Ì:—G&RVw–WBÆVçFV&""ÂVã¢$æòÖV7W&VÖVçG2–WBâ7&VFRöæR&VÆ÷r"ÒÀ¢'F–6—çD6÷VçC¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çB"ÒÀ¢'F–6—çG46÷VçC¢²‡S¢',:—7§GfWlY"ÂVã¢''F–6—çG2"ÒÀ¢ÖævUF—FÆS¢²‡S¢%,:—7§GfWlY²¶W¦VÌ:—6R"ÂVã¢$ÖævR'F–6—çG2"ÒÀ¢FDW–V'&÷s¢²‡S¢',:—7§GfWlY²†÷§¬:L:6"ÂVã¢&FB'F–6—çG2"ÒÀ¢æôÖVÖ&W'3¢²‡S¢$æ–æ76VæV²Fvö²â"ÂVã¢$æòÖVÖ&W'2â"ÒÀ¢FF–æs¢²‡S¢$†÷§¬:L:>(
+b"ÂVã¢$FF–æ~(
+b"ÒÀ¢FD'WGFöã¢²‡S¢$†÷§¬:L:2‡¶6÷VçGÒ’"ÂVã¢$FB‡¶6÷VçGÒ’"ÒÀ¢6æ6VÃ¢²‡S¢$Ü:–w6R"ÂVã¢$6æ6VÂ"ÒÀ¢æWtW–V'&÷s¢²‡S¢,;¦¢Ü:—,:—2"ÂVã¢&æWrÖV7W&VÖVçB"ÒÀ¢æWuF—FÆS¢²‡S¢,9¦¢Ü:—,:—2"ÂVã¢$æWrÖV7W&VÖVçB"ÒÀ¢æÖUÆ6V†öÆFW#¢²‡S¢$Ü:—,:—2æWfR"ÂVã¢$ÖV7W&VÖVçBæÖR"ÒÀ¢FW65Æ6V†öÆFW#¢²‡S¢$Æ\:×,:2†÷6–öì:Æ—2’"ÂVã¢$FW67&—F–öâ†÷F–öæÂ’"ÒÀ¢7&VF–æs¢²‡S¢$Ì:—G&V†÷¬:>(
+b"ÂVã¢$7&VF–æ~(
+b"ÒÀ¢7&VFT'WGFöã¢²‡S¢$Ü:—,:—2Ì:—G&V†÷¬:6"ÂVã¢$7&VFRÖV7W&VÖVçB"ÒÀ¢7FGW47F—fS¢²‡S¢$·L:×b"ÂVã¢$7F—fR"ÒÀ¢7FGW46Æ÷6VC¢²‡S¢$ÆW¬:'f"ÂVã¢$6Æ÷6VB"ÒÀ¢7FGW4G&gC¢²‡S¢%l:¦ÆB"ÂVã¢$G&gB"ÒÀ¢ÒÀ ¢òò)H)H6WGWv—¦&B)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6WGW¢°¢7FWW–V'&÷s¢²‡S¢#âÌ:—:—2"ÂVã¢'7FW"ÒÀ¢7FWF—FÆS¢²‡S¢%7¦W'fW¦WBæWfR"ÂVã¢$÷&væ—¦F–öâæÖR"ÒÀ¢7FW7V'F—FÆS¢²‡S¢$W,Y<:×G6BÖVrfw’Ü;6F÷<:×G6B7¦W'fW¦WBæWl:—Bâ"ÂVã¢$6öæf—&Ò÷"WFFR–÷W"÷&væ—¦F–öâæÖRâ"ÒÀ¢æÖTÆ&VÃ¢²‡S¢%7¦W'fW¦WBæWfR"ÂVã¢$æÖR"ÒÀ¢æÖU6fTW'&÷#¢²‡S¢$æVÒ6–¶W,;ÆÇBÖVçFVæ’æWfWBâ"ÂVã¢$f–ÆVBFò6fRæÖRâ"ÒÀ¢æW‡C¢²‡S¢%F÷l:&""ÂVã¢$æW‡B"ÒÀ¢7FW%F—FÆS¢²‡S¢%l:Æ77¢fF'B"ÂVã¢$6†ö÷6RâfF""ÒÀ¢6†÷tÆÃ¢²‡S¢"²9g77¦W2ÖVv¦VÆVì:×L:—6R‡¶6÷VçGÒ’"ÂVã¢"²6†÷rÆÂ‡¶6÷VçGÒ’"ÒÀ¢&6³¢²‡S¢%f—77¦"ÂVã¢$&6²"ÒÀ¢7FW4W–V'&÷s¢²‡S¢#"âÌ:—:—2"ÂVã¢'7FW""ÒÀ¢7FW5F—FÆS¢²‡S¢%Fvö²ÖVvŒ:×l:6"ÂVã¢$–çf—FRÖVÖ&W'2"ÒÀ¢7FW57V'F—FÆS¢²‡S¢$Œ:×f¢ÖVrFvö¶B¢–æGVÌ:6†÷¢†÷6–öì:Æ—2’âVÖ–Æ<:ÖÖV²Â¶–²Ü:–ræVÒ&Vv—7§G,:ÇF²ÂÖVvŒ:×l;7B¶æ²â"ÂVã¢$–çf—FRÖVÖ&W'2FòvWB7F'FVB†÷F–öæÂ’âVç&Vv—7FW&VBVÖ–Ç2v–ÆÂ&V6V—fRâ–çf—FRâ"ÒÀ¢f–æ—6ƒ¢²‡S¢$&VfV¦W¬:—2"ÂVã¢$f–æ—6‚6WGW"ÒÀ¢æWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â"ÂVã¢$æWGv÷&²W'&÷"â"ÒÀ¢ÒÀ ¢òò)H)Hf÷&×2)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢f÷&×3¢°¢òò÷&t7&VFTf÷&Ğ¢7&VFT÷&tæÖS¢²‡S¢%7¦W'fW¦WBæWfR"ÂVã¢$÷&væ—¦F–öâæÖR"ÒÀ¢7&VFUÆ6V†öÆFW#¢²‡S¢'ÂâG&—F¶gBâ"ÂVã¢&Rærâ6ÖR6÷'"ÒÀ¢7&VFTÆöF–æs¢²‡S¢$Ì:—G&V†÷¬:2âââ"ÂVã¢$7&VF–ærâââ"ÒÀ¢7&VFT'WGFöã¢²‡S¢$Ì:—G&V†÷¬:2"ÂVã¢$7&VFR"ÒÀ¢Ç&VG”–ä÷&s¢²‡S¢$Ü:"Fv¦fw’Vw’7¦W'fW¦WFæV²â"ÂVã¢%–÷RÇ&VG’&VÆöærFòâ÷&væ—¦F–öââ"ÒÀ¢7&VFTvVæW&–4W'&÷#¢²‡S¢$†–&L;g'L:–çBâ,;6,:ÆB;¦§&â"ÂVã¢%6öÖWF†–ærvVçBw&öærâÆV6RG'’v–ââ"ÒÀ¢7&VFTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â,;6,:ÆB;¦§&â"ÂVã¢$æWGv÷&²W'&÷"âÆV6RG'’v–ââ"ÒÀ ¢òò÷&t–çf—FTf÷&Ğ¢VÖ–ÄÆ&VÃ¢²‡S¢$VÖ–Â<:ÖÒ"ÂVã¢$VÖ–ÂFG&W72"ÒÀ¢VÖ–ÅÆ6V†öÆFW#¢²‡S¢&¶öÆÌ:–v<:–ræ‡R"ÂVã¢&6öÆÆVwVT6ö×ç’æ6öÒ"ÒÀ¢&öÆTÆ&VÃ¢²‡S¢%7¦W&W¼;g""ÂVã¢%&öÆR"ÒÀ¢&öÆTÖVÖ&W#¢²‡S¢%Fr"ÂVã¢$ÖVÖ&W""ÒÀ¢&öÆTÖævW#¢²‡S¢$ÖVæVG§6W""ÂVã¢$ÖævW""ÒÀ¢–çf—FTÆöF–æs¢²‡S¢$†÷§¬:L:2âââ"ÂVã¢$FF–ærâââ"ÒÀ¢–çf—FT'WGFöã¢²‡S¢$†÷§¬:L:2"ÂVã¢$FB"ÒÀ¢ÖVÖ&W$FFVC¢²‡S¢%Fr†÷§¬:Gf"ÂVã¢$ÖVÖ&W"FFVB"ÒÀ¢–çf—FU6VçC¢²‡S¢$ÖVvŒ:×l;2VÆ¼;ÆÆGfR(	BÖ–çB&Vv—7§G,:Ææ²ÂWFöÖF–·W6â76FÆ¶÷¦æ²â"ÂVã¢$–çf—FR6VçB(	BF†W’vÆÂ¦ö–âWFöÖF–6ÆÇ’öæ6RF†W’&Vv—7FW"â"ÒÀ¢Ç&VG”ÖVÖ&W#¢²‡S¢$W¢¢VÖ–Æ<:ÖÒÜ:"Frâ"ÂVã¢%F†—2VÖ–Â—2Ç&VG’ÖVÖ&W"â"ÒÀ¢Ç&VG”–ä÷&t–çf—FS¢²‡S¢$W¢fVÆ†7¦ì:Ì;2Ü:"Fv¦Vw’7¦W'fW¦WFæV²â"ÂVã¢%F†—2W6W"Ç&VG’&VÆöæw2Fòâ÷&væ—¦F–öââ"ÒÀ¢6VÆd–çf—FS¢²‡S¢%6¬:BÖvFBæVÒŒ:×f†FöBÖVrâ"ÂVã¢%–÷R6ææ÷B–çf—FR–÷W'6VÆbâ"ÒÀ¢–çf—FTvVæW&–4W'&÷#¢²‡S¢$†–&L;g'L:–çBâ,;6,:ÆB;¦§&â"ÂVã¢%6öÖWF†–ærvVçBw&öærâÆV6RG'’v–ââ"ÒÀ¢–çf—FTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â,;6,:ÆB;¦§&â"ÂVã¢$æWGv÷&²W'&÷"âÆV6RG'’v–ââ"ÒÀ ¢òòL;fÖVvW2ÖVvŒ:×l:2„'VÆ´–çf—FTf÷&Ò’â–Æ÷B#(	3S¶—L;fÇLY¦P¢òòVw–W<:—fVÂfVÇf—fR&öw&ÒÆVvG,:|:&"¼:—¦’×Væ¶;7,:¬:B¦VÆVçFWGFRà¢'VÆµFövvÆTöã¢²‡S¢%L;f&"<:ÖÒVw—7¦W'&R"ÂVã¢$–çf—FR6WfW&ÂBöæ6R"ÒÀ¢'VÆµFövvÆTöfc¢²‡S¢$Vw’<:ÖÒÖVvL:6"ÂVã¢$–çf—FR6–ævÆRFG&W72"ÒÀ¢'VÆ´Æ&VÃ¢²‡S¢$VÖ–Â<:ÖÖV²"ÂVã¢$VÖ–ÂFG&W76W2"ÒÀ¢'VÆµÆ6V†öÆFW#¢°¢‡S¢$–ÆÆW7¦B&R<:ÖÖV¶WB(	B6÷&öæ¼:–çBÂfW77¬YfVÂfw’ÆWfVÆW¬Y,YÂÜ:6öÇfåÆåÆæææ6Vræ‡UÆä&VÆ¶÷f72Æ&VÆ6Vræ‡Sâ"À¢Vã¢%7FRF†RFG&W76W2(	BöæRW"Æ–æRÂ6öÖÖ×6W&FVBÂ÷"6÷–VBg&öÒ–÷W"Ö–Â6Æ–VçBåÆåÆæææ6ö×ç’æ6öÕÆä&VÆÆ6Ö—F‚Æ&VÆÆ6ö×ç’æ6öÓâ"À¢ÒÀ¢'VÆ´†–çC¢°¢‡S¢$,:&Ö–Ç–VâVÇl:Æ7§L;2¬;2‡6÷'L;g,:—2ÂfW77¬YÂöçF÷7fW77¬Y’â¢—6Ü:—FÌYLY<:ÖÖV¶WB¶—7¬[&¬;Æ²â"À¢Vã¢$ç’6W&F÷"v÷&·2†Æ–æR'&V²Â6öÖÖÂ6VÖ–6öÆöâ’âGWÆ–6FRFG&W76W2&Rf–ÇFW&VB÷WBâ"À¢ÒÀ¢'VÆµ'6VC¢²‡S¢'¶6÷VçGÒ<:ÖÒfVÆ—6ÖW'fR"ÂVã¢'¶6÷VçGÒFG&W76W2&V6övæ—¦VB"ÒÀ¢'VÆ´–çfÆ–C¢²‡S¢'¶6÷VçGÒæVÒ:—'FVÆÖW¦†WLY¢¶Æ—7GÒ"ÂVã¢'¶6÷VçGÒ6÷VÆBæ÷B&R&VC¢¶Æ—7GÒ"ÒÀ¢'VÆµ7V&Ö—C¢²‡S¢'¶6÷VçGÒ<:ÖÒÖVvŒ:×l:6"ÂVã¢$–çf—FR¶6÷VçGÒFG&W76W2"ÒÀ¢'VÆµ&öw&W73¢²‡S¢$¼;ÆÆL:—>(
+b¶FöæWÒ÷·F÷FÇÒ"ÂVã¢%6VæF–æ~(
+b¶FöæWÒ÷·F÷FÇÒ"ÒÀ¢'VÆ´FöæS¢²‡S¢$¼:—7¢(	B·F÷FÇÒ<:ÖÒfVÆFöÆv÷§fâ"ÂVã¢$FöæR(	B·F÷FÇÒFG&W76W2&ö6W76VBâ"ÒÀ¢òò¢;g77¦Vw¬:—26÷&’â76²æVÒçVÆÆL:—FVÆV²¦VÆVææV²ÖVrà¢'VÆ´FFVC¢²‡S¢'¶6÷VçGÒ¦öææÂFrÆWGB†Ü:"föÇBfœ;6¶§V²’"ÂVã¢'¶6÷VçGÒ¦ö–æVB–ÖÖVF–FVÇ’‡F†W’Ç&VG’†Bâ66÷VçB’"ÒÀ¢'VÆ´–çf—FVC¢²‡S¢'¶6÷VçGÒÖVvŒ:×l;7B¶÷GBVÖ–Æ&Vâ"ÂVã¢'¶6÷VçGÒ&V6V—fVBâVÖ–Â–çf—FR"ÒÀ¢'VÆ´æôVÖ–Ã¢°¢‡S¢'¶6÷VçGÒÖVvŒ:×l;2Ì:—G&V¬;gGBÂFRÆWl:–ÂäTÒÖVçB¶’(	B¼;ÆÆF¢æV¶–²Æ–æ¶WB¼:—§¦VÂ"À¢Vã¢'¶6÷VçGÒ–çf—FW27&VFVBÂ'WBF†RVÖ–ÂF–BäõBvò÷WB(	B6VæBF†VÒÆ–æ²ÖçVÆÇ’"À¢ÒÀ¢'VÆ´Ç&VG“¢²‡S¢'¶6÷VçGÒÜ:"FrföÇB"ÂVã¢'¶6÷VçGÒvW&RÇ&VG’ÖVÖ&W'2"ÒÀ¢'VÆµ6VÆc¢²‡S¢'¶6÷VçGÒ6¬:B<:ÖÖVBföÇB"ÂVã¢'¶6÷VçGÒv2–÷W"÷vâFG&W72"ÒÀ¢'VÆ´f–ÆVC¢²‡S¢'¶6÷VçGÒ<:ÖÖì:–Â†–&L;g'L:–çB"ÂVã¢'¶6÷VçGÒFG&W76W2f–ÆVB"ÒÀ ¢òò÷&u&VæÖTf÷&Ğ¢&VæÖTÆ&VÃ¢²‡S¢%7¦W'fW¦WBæWfR"ÂVã¢$÷&væ—¦F–öâæÖR"ÒÀ¢6fS¢²‡S¢$ÖVçL:—2"ÂVã¢%6fR"ÒÀ¢6fVC¢²‡S¢$ÖVçGfRâ"ÂVã¢%6fVBâ"ÒÀ¢&VæÖTW'&÷#¢²‡S¢$†–&L;g'L:–çBâ"ÂVã¢%6öÖWF†–ærvVçBw&öærâ"ÒÀ¢&VæÖTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â"ÂVã¢$æWGv÷&²W'&÷"â"ÒÀ ¢òò÷&tÖVÖ&W%&öÆTVF—F÷ ¢Æ7DFÖ–äW'&÷#¢²‡S¢$æVÒÜ;6F÷<:×F†L;2(	BWFöÇ<;2FÖ–ââ"ÂVã¢$6ææ÷B6†ævR(	BÆ7BFÖ–ââ"ÒÀ¢&öÆT6†ævTW'&÷#¢²‡S¢$†–&L;g'L:–çBâ"ÂVã¢%6öÖWF†–ærvVçBw&öærâ"ÒÀ¢&öÆTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â"ÂVã¢$æWGv÷&²W'&÷"â"ÒÀ¢FVÕW&Ö—76–öç4†–çC¢²‡S¢$76B¦öv÷7VÇG<:vö²¼;ÆÌ;fâ:ÆÌ:×F†L;6²â"ÂVã¢%FVÒW&Ö—76–öç26WBW"FVÒâ"ÒÀ¢ÒÀ ¢òò)H)H7F–öâ'WGFöç2)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢7F–öç3¢°¢òò÷&u&VÖ÷fTÖVÖ&W$'WGFöà¢&VÖ÷fT'WGFöã¢²‡S¢$VÇL:föÌ:×B"ÂVã¢%&VÖ÷fR"ÒÀ¢&VÖ÷fTÆ7DFÖ–ã¢²‡S¢$æVÒL:föÌ:×F†L;2VÂ(	BWFöÇ<;2FÖ–ââ"ÂVã¢$6ææ÷B&VÖ÷fR(	BÆ7BFÖ–ââ"ÒÀ¢&VÖ÷fTW'&÷#¢²‡S¢$†–&L;g'L:–çBâ"ÂVã¢%6öÖWF†–ærvVçBw&öærâ"ÒÀ¢&VÖ÷fTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â"ÂVã¢$æWGv÷&²W'&÷"â"ÒÀ ¢òò÷&tFV7F—fFT'WGFöà¢FV7F—fFT'WGFöã¢²‡S¢%7¦W'fW¦WBFV·F—l:Ì:6"ÂVã¢$FV7F—fFR÷&væ—¦F–öâ"ÒÀ¢FV7F—fFT6öæf—&Ó¢²‡S¢$&—§F÷6âFV·F—l:ÆöB7¦W'fW¦WFWCò"ÂVã¢$&R–÷R7W&R–÷RvçBFòFV7F—fFSò"ÒÀ¢FV7F—fFU–W3¢²‡S¢$–vVâÂFV·F—l:Ì:2"ÂVã¢%–W2ÂFV7F—fFR"ÒÀ¢FV7F—fFT6æ6VÃ¢²‡S¢$Ü:–w6R"ÂVã¢$6æ6VÂ"ÒÀ¢FV7F—fFTW'&÷#¢²‡S¢$†–&L;g'L:–çBâ"ÂVã¢%6öÖWF†–ærvVçBw&öærâ"ÒÀ¢FV7F—fFTæWGv÷&´W'&÷#¢²‡S¢$Œ:Ì;7¦F’†–&â"ÂVã¢$æWGv÷&²W'&÷"â"ÒÀ ¢òò÷&uVæF–æt–çf—FT6æ6VÄ'WGFöà¢6æ6VÄ–çf—FU–W3¢²‡S¢$–vVâ"ÂVã¢%–W2"ÒÀ¢6æ6VÄ–çf—FTæó¢²‡S¢$æVÒ"ÂVã¢$æò"ÒÀ¢6æ6VÄ–çf—FT'WGFöã¢²‡S¢%L;g&Ì:—2"ÂVã¢$6æ6VÂ"ÒÀ ¢òò&VÖ–æEVæF–æt'WGFöà¢&VÖ–æFW%6VçC¢²‡S¢$VÖÌ:–¶W§FWLYVÆ¼;ÆÆGfR"ÂVã¢%&VÖ–æFW'26VçB"ÒÀ¢&VÖ–æFW%6VæF–æs¢²‡S¢$¼;ÆÆL:—2âââ"ÂVã¢%6VæF–ærâââ"ÒÀ¢&VÖ–æFW$'WGFöã¢²‡S¢$VÖÌ:–¶W§FWLY¼;ÆÆL:—6R"ÂVã¢%6VæB&VÖ–æFW'2"ÒÀ ¢òòFE'F–6—çD'WGFöà¢FE'F–6—çG3¢²‡S¢"²,:—7§GfWlY²†÷§¬:L:6"ÂVã¢"²FB'F–6—çG2"ÒÀ¢6VÆV7DW–V'&÷s¢²‡S¢',:—7§GfWlY²¶—l:Æ7§L:6"ÂVã¢'6VÆV7B'F–6—çG2"ÒÀ¢FF–æu'F–6—çG3¢²‡S¢$†÷§¬:L:>(
+b"ÂVã¢$FF–æ~(
+b"ÒÀ¢FD6÷VçC¢²‡S¢$†÷§¬:L:2‡¶6÷VçGÒ’"ÂVã¢$FB‡¶6÷VçGÒ’"ÒÀ¢FD6æ6VÃ¢²‡S¢$Ü:–w6R"ÂVã¢$6æ6VÂ"ÒÀ¢ÒÀ ¢òò)H)HæW‡E7FW&ææW")H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢æW‡E7FW¢°¢–çf—FUF—FÆS¢²‡S¢$Œ:×f¢ÖVrÆVvÌ:&"2Fv÷B7¦W'fW¦WF&R"ÂVã¢$–çf—FRBÆV7B2ÖVÖ&W'2Fò–÷W"÷&r"ÒÀ¢–çf—FU7V#¢²‡S¢$Ö–æ–×VÒ2¶—L;fÇL:—27¬;Æ·<:–vW27¦W'fW¦WF’&öf–ÂÖVv¦VÆVì:×L:—<:–†W¢â"ÂVã¢$BÆV7B26ö×ÆWF–öç2&RæVVFVBFòF—7Æ’F†R÷&rW'6öæÆ—G’&öf–ÆRâ"ÒÀ¢–çf—FT7F¢²‡S¢%Fvö²"ÂVã¢$ÖVÖ&W'2"ÒÀ¢6×–våF—FÆS¢²‡S¢$†÷§¢Ì:—G&RVw’Ü:—,:—7B"ÂVã¢$7&VFR–÷W"f—'7BÖV7W&VÖVçB"ÒÀ¢6×–vå7V#¢²‡S¢$–æL:×G2Vw’Ü:—,:—7BÂ†öw’Fvö²ÖVv¶W¦F†W7<:–²¶—L;fÇL:—7Bâ"ÂVã¢%7F'BÖV7W&VÖVçB6òÖVÖ&W'26â&Vv–âF†V—"76W76ÖVçG2â"ÒÀ¢6×–vä7F¢²‡S¢$Ü:—,:—2"ÂVã¢$ÖV7W&VÖVçB"ÒÀ¢v—EF—FÆS¢²‡S¢%l:&¶÷¬:2¶—L;fÇL:—6V·&R+r¶6ö×ÆWFVGÒó2"ÂVã¢%v—F–ærf÷"6ö×ÆWF–öç2+r¶6ö×ÆWFVGÒó2"ÒÀ¢v—E7V#¢²‡S¢$7¦W'fW¦WF’&öf–Â2&VfV¦W¦WGB:—'L:–¶VÌ:—2WL:â¦VÆVæ–²ÖVrâ"ÂVã¢%F†R÷&rW'6öæÆ—G’&öf–ÆRV'2gFW"26ö×ÆWFVB76W76ÖVçG2â"ÒÀ¢ÒÀ¢ÒÀ ¢òò)H)H÷&rFWF–ÂvS¢&VÖ–æ–ær†&F6öFVB7G&–æw2)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢÷&u&—6³¢°¢VæF–æuF—FÆS¢²‡S¢$l;Æv|YÖVvŒ:×l:6ö²"ÂVã¢%VæF–ær–çf—FW2"ÒÀ¢VæF–ætFW63¢²‡S¢'¶6÷VçGÒÖVvŒ:×l:2Ü:–rf—77¦–v¦öÌ:7&l:"â"ÂVã¢'¶6÷VçGÒ–çf—FW2&R7F–ÆÂv—F–ær66WFæ6Râ"ÒÀ¢VæF–æt7F¢²‡S¢%Fvö²¶W¦VÌ:—6R"ÂVã¢$ÖævRÖVÖ&W'2"ÒÀ¢æô7F—fUF—FÆS¢²‡S¢$æ–æ72·L:×b¼;g""ÂVã¢$æò7F—fR&÷VæB"ÒÀ¢æô7F—fTFW63¢²‡S¢$7¦W'fW¦WF’G&VæFV¶†W¢:—&FVÖW2·L:×bf—77¦¦VÇ¬:—6’¼;g'BgWGFFæ’â"ÂVã¢%'Vââ7F—fRfVVF&6²&÷VæBFòG&6²÷&rÖÆWfVÂG&VæG2â"ÒÀ¢æô7F—fT7F¢²‡S¢$¼;g"–æL:×L:6"ÂVã¢%7F'B&÷VæB"ÒÀ¢&V6öÖÖVæFVEF—FÆS¢²‡S¢$¬:æÆ÷GB¼;gfWF¶W¬YÌ:—:—2"ÂVã¢%&V6öÖÖVæFVBæW‡B7FW"ÒÀ¢&V6öÖÖVæFVEVæF–ætFW63¢²‡S¢%¬:&BÆRl;Æv|YÖVvŒ:×l:6ö¶BÂ†öw’7F&–Æ&"ÆVw–Vâ7¦W'fW¦WF’¼:—â"ÂVã¢$6Æ÷6RVæF–ær–çf—FW2Fò–×&÷fR÷&rÖÆWfVÂ6–væÂVÆ—G’â"ÒÀ¢&V6öÖÖVæFVEVæF–æu&–Ö'“¢²‡S¢%Fvö²¶W¦VÌ:—6R"ÂVã¢$ÖævRÖVÖ&W'2"ÒÀ¢&V6öÖÖVæFVEVæF–æu6V6öæF'“¢²‡S¢$76Fö²:GFV¶–çL:—6R"ÂVã¢%&Wf–WrFV×2"ÒÀ¢&V6öÖÖVæFVD6×–väFW63¢²‡S¢$¼;gfWF¶W¬Y7¦W'fW¦WF’Ü:—,:—6’6–¶ÇW6†÷¢–æL:×G2;¦¢Ü:—,:—7Bâ"ÂVã¢$ÆVæ6‚æWrÖV7W&VÖVçBf÷"F†RæW‡B÷&r–ç6–v‡B7–6ÆRâ"ÒÀ¢&V6öÖÖVæFVD6×–vå&–Ö'“¢²‡S¢,9¦¢Ü:—,:—2–æL:×L:6"ÂVã¢%7F'BæWrÖV7W&VÖVçB"ÒÀ¢&V6öÖÖVæFVD6×–vå6V6öæF'“¢²‡S¢$76Fö²:GFV¶–çL:—6R"ÂVã¢%&Wf–WrFV×2"ÒÀ¢FVÕWFFVC¢²‡S¢$76Bg&—7<:×GfS¢¶æÖWÒ"ÂVã¢%FVÒWFFVC¢¶æÖWÒ"ÒÀ¢FVÔÖVÖ&W'4ÖWF¢²‡S¢'¶6÷VçGÒFr"ÂVã¢'¶6÷VçGÒÖVÖ&W'2"ÒÀ¢ÒÀ¢÷&t†W&ó¢°¢Æ—fU6æ6†÷C¢²‡S¢,8–ÌY–ÆÆæF¼:—"ÂVã¢$Æ—fR6æ6†÷B"ÒÀ¢ÖVÖ&W'4Æ&VÃ¢²‡S¢%Fr"ÂVã¢$ÖVÖ&W'2"ÒÀ¢FV×4Æ&VÃ¢²‡S¢$76B"ÂVã¢%FV×2"ÒÀ¢7F—fTÆ&VÃ¢²‡S¢$·L:×b¼;g""ÂVã¢$7F—fR"ÒÀ¢÷&t6ö×ÆWF–öã¢²‡S¢%7¦W'fW¦WF’¶—L;fÇL:—2"ÂVã¢$÷&r6ö×ÆWF–öâ"ÒÀ¢FöæS¢²‡S¢&¼:—7¢"ÂVã¢&FöæR"ÒÀ¢&VÖ–æ–æs¢²‡S¢&Œ:G&"ÂVã¢'&VÖ–æ–ær"ÒÀ¢7F—fT6×–vä6ö×ÆWF–öã¢²‡S¢$·L:×bÜ:—,:—2¶—L;fÇL:—2"ÂVã¢$7F—fRÖV7W&VÖVçB6ö×ÆWF–öâ"ÒÀ¢ÒÀ¢÷&tÆ–W'3¢°¢W–V'&÷s¢²‡S¢#B³",:—FVv¼:—7¬;ÆÇG<:–r"ÂVã¢#B³"Æ–W"&VF–æW72"ÒÀ¢Æ–W'5F—FÆS¢²‡S¢%7¦W'fW¦WF’Ü:–Çœ:×LY,:—FVvV²"ÂVã¢$÷&rFVWVæ–ærÆ–W'2"ÒÀ¢7FGW46ö×ÆWFVC¢²‡S¢$¼:—7¢"ÂVã¢$6ö×ÆWFVB"ÒÀ¢7FGW4–å&öw&W73¢²‡S¢$föÇ–ÖF&â"ÂVã¢$–â&öw&W72"ÒÀ¢7FGW4f–Æ&ÆS¢²‡S¢$VÌ:—&†WLY"ÂVã¢$f–Æ&ÆR"ÒÀ¢7FGW4Æö6¶VC¢²‡S¢%¬:&öÇB"ÂVã¢$Æö6¶VB"ÒÀ¢ÒÀ ¢òò)H)HFÖ–âF6†&ö&B‚öF6†&ö&BFÖ–äF6†&ö&BçG7‚’)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢F6†&ö&C¢°¢ÆöF–æs¢²‡S¢$&WL;fÇL:—2âââ"ÂVã¢$ÆöF–ærâââ"ÒÀ¢ÆöDW'&÷#¢²‡S¢$æVÒ6–¶W,;ÆÇB&WL;fÇFVæ’¢FFö¶Bâ"ÂVã¢$6÷VÆBæ÷BÆöBFFâ"ÒÀ¢&WG'“¢²‡S¢,9¦§&,;6,:ÆöÒ"ÂVã¢%&WG'’"ÒÀ¢Ö—76–æt76W76ÖVçG3¢²‡S¢$†œ:ç—¬;2¶—L;fÇL:—6V²"ÂVã¢$Ö—76–ær76W76ÖVçG2"ÒÀ¢6VæE&VÖ–æFW#¢²‡S¢$VÖÌ:–¶W§FWLY¼;ÆÆL:—6R"ÂVã¢%6VæB&VÖ–æFW""ÒÀ¢fVVF&6´æ÷E7F'FVC¢²‡S¢%f—77¦¦VÇ¬:—6’¼;g"æVÒ–æGVÇB"ÂVã¢$fVVF&6²&÷VæBæ÷B7F'FVB"ÒÀ¢fVVF&6´æ÷E7F'FVDFW63¢²‡S¢$76F¼:—WL:â–æL:×F†L;2"ÂVã¢$f–Æ&ÆRgFW"FVÒGFW&âVæÆö6²"ÒÀ¢FVÕGFW&äf–Æ&ÆS¢²‡S¢$76F¼:—ÖVwFV¶–çF†WLY"ÂVã¢%FVÒGFW&âf–Æ&ÆR"ÒÀ¢FVÕGFW&äf–Æ&ÆT6÷VçC¢²‡S¢'¶6÷VçGÒ76Fì:ÂVÌ:—&†WLY"ÂVã¢$f–Æ&ÆRf÷"¶6÷VçGÒFVÒ‡2’"ÒÀ¢FVÕGFW&åf–Ws¢²‡S¢$76F¼:—ÖVvç–—L:6"ÂVã¢$÷VâFVÒ–ç6–v‡B"ÒÀ¢7F—f—G”6ö×ÆWFVC¢²‡S¢&¶—L;fÇL;gGFR7¦VÜ:–Ç–—<:–wFW7§FWB"ÂVã¢&6ö×ÆWFVBF†R76W76ÖVçB"ÒÀ¢7F—f—G”¦ö–æVC¢²‡S¢&76FÆ¶÷¦÷GB"ÂVã¢&¦ö–æVB"ÒÀ¢&W7DæW‡E7FW¢²‡S¢$Ö÷7BW¢ÆVvföçF÷6&""ÂVã¢$Ö÷7B–×÷'FçBæ÷r"ÒÀ¢&VÖ–æFW$fÆÆ&6´FW63¢²‡S¢$Ö÷7B·FVÔæÖWÒ76B†œ:ç—¬;2Fv¦—B¶VÆÂVÖÌ:–¶W§FWFæ’Â†öw’ÆW¬:&†L;2ÆVw–Vâ76F¼:—â"ÂVã¢%&–v‡Bæ÷rÂ&VÖ–æBÖ—76–ærÖVÖ&W'2–â·FVÔæÖWÒ6òF†RFVÒ–ç6–v‡B6â&R6ö×ÆWFVBâ"ÒÀ¢&VÖ–æFW$fÆÆ&6µ&–Ö'“¢²‡S¢%Fvö²VÖÌ:–¶W§FWL:—6R"ÂVã¢%&VÖ–æBÖVÖ&W'2"ÒÀ¢6æ6†÷DfÆÆ&6´FW63¢²‡S¢$76F¼:—Ü:"VÌ:—&†WLYâ¼;gfWF¶W¬YÌ:—:—6¼:–çBç–—6BÖVr:—2Vw–W§FW6B76GFÂâ"ÂVã¢%FVÒ–ç6–v‡B—2f–Æ&ÆRâæW‡B7FW¢÷Vâ—BæBÆ–vâv—F‚F†RFVÒâ"ÒÀ¢6æ6†÷DfÆÆ&6µ&–Ö'“¢²‡S¢$76F¼:—ÖVvç–—L:6"ÂVã¢$÷VâFVÒ–ç6–v‡B"ÒÀ¢6×–väfÆÆ&6´FW63¢²‡S¢$¼;gfWF¶W¬Y¼;g"Ü:"–æL:×F†L;2â¼;gfWF¶W¬YÌ:—:—6¼:–çB–æL:×G2;¦¢f—77¦¦VÇ¬:—6’¼;g'Bâ"ÂVã¢%F†RæW‡B&÷VæB6â&RÆVæ6†VBæ÷râæW‡B7FW¢7F'BæWrfVVF&6²&÷VæBâ"ÒÀ¢6×–väfÆÆ&6µ&–Ö'“¢²‡S¢$¼;g"–æL:×L:6"ÂVã¢%7F'B&÷VæB"ÒÀ¢&V6öÖÖVæFVDæW‡E7FW¢²‡S¢$¼;gfWF¶W¬YÌ:—:—2"ÂVã¢$æW‡B7FW"ÒÀ¢÷Vä÷&t6ö6·—C¢²‡S¢%7¦W'fW¦WF’ì:—¦WB"ÂVã¢$÷Vâ÷&væ—¦F–öâf–Wr"ÒÀ¢f—'7EFVÔ7&VFVC¢²‡S¢$VÇ<Y76BÌ:—G&V†÷§f"ÂVã¢$f—'7BFVÒ7&VFVB"ÒÀ¢FVÔ7&VFVDFWF–Ã¢²‡S¢'¶æÖWÒÌ:—G&V†÷§f"ÂVã¢'¶æÖWÒ7&VFVB"ÒÀ¢FVÔ7&VFTæVVFVC¢²‡S¢$76BÌ:—G&V†÷¬:67¬;Æ·<:–vW2"ÂVã¢$7&VFR–÷W"f—'7BFVÒ"ÒÀ¢÷VåFVÓ¢²‡S¢$76BÖVvç–—L:6"ÂVã¢$÷VâFVÒ"ÒÀ¢7&VFUFVÓ¢²‡S¢$76BÌ:—G&V†÷¬:6"ÂVã¢$7&VFRFVÒ"ÒÀ¢6ö×ÆWFU&öf–ÆS¢²‡S¢%6¬:B&öf–Â¶—L;fÇL:—6R"ÂVã¢$6ö×ÆWFR–÷W"&öf–ÆR"ÒÀ¢&öf–ÆTFöæS¢²‡S¢$¼:—7¢"ÂVã¢$FöæR"ÒÀ¢&öf–ÆTÖ—76–æs¢²‡S¢$fW¦WLY’&öf–ÂÜ:–r†œ:ç—¦–²"ÂVã¢$ÆVFW"&öf–ÆR—27F–ÆÂÖ—76–ær"ÒÀ¢f–Wu&öf–ÆS¢²‡S¢$ÖVwFV¶–çL:—2"ÂVã¢%f–Wr"ÒÀ¢7F'D76W76ÖVçC¢²‡S¢$¶—L;fÇL:—2–æL:×L:6"ÂVã¢%7F'B76W76ÖVçB"ÒÀ¢–çf—FTÖVÖ&W'3¢²‡S¢%Fvö²ÖVvŒ:×l:6"ÂVã¢$–çf—FRÖVÖ&W'2"ÒÀ¢7F—fTÖVÖ&W'46÷VçC¢²‡S¢$¦VÆVæÆVr¶6÷VçGÒ·L:×bFr"ÂVã¢$7W'&VçFÇ’¶6÷VçGÒ7F—fRÖVÖ&W'2"ÒÀ¢ÖævTÖVÖ&W'3¢²‡S¢%Fvö²¶W¦VÌ:—6R"ÂVã¢$ÖævRÖVÖ&W'2"ÒÀ¢VæÆö6µFVÕGFW&ã¢²‡S¢$VÇ<Y76F¼:—fVÆöÆL:6"ÂVã¢%VæÆö6²f—'7BFVÒGFW&â"ÒÀ¢6ö×ÆWF–öä6÷VçC¢²‡S¢'¶6÷VçGÒó2¶—L;fÇL:—2"ÂVã¢'¶6÷VçGÒó26ö×ÆWFVB"ÒÀ¢G&6µ&öw&W73¢²‡S¢$†ÆL:2¼;gfWL:—6R"ÂVã¢%G&6²&öw&W72"ÒÀ¢WFFVC¢²‡S¢$g&—7<:×GfR"ÂVã¢%WFFVB"ÒÀ¢÷VäGFVçF–öåö–çG3¢²‡S¢'¶6÷VçGÒç–—F÷GBFVVæLY"ÂVã¢'¶6÷VçGÒ÷VâF6²‡2’"ÒÀ¢–çf—FTÖVÖ&W'4f÷%GFW&ã¢²‡S¢%Fvö²ÖVvŒ:×l:676F¼:—†W¢"ÂVã¢$–çf—FRÖVÖ&W'2f÷"FVÒGFW&â"ÒÀ¢÷Vä÷&u&W÷'C¢²‡S¢%7¦W'fW¦WF’&—÷'BÖVvç–—L:6"ÂVã¢$÷Vâ÷&væ—¦F–öâ&W÷'B"ÒÀ¢Æ—fU6æ6†÷C¢²‡S¢,8–ÌY–ÆÆæF¼:—"ÂVã¢$Æ—fR6æ6†÷B"ÒÀ¢ÖVÖ&W'4Æ&VÃ¢²‡S¢%Fr"ÂVã¢$ÖVÖ&W'2"ÒÀ¢FV×4Æ&VÃ¢²‡S¢$76B"ÂVã¢%FV×2"ÒÀ¢FöæTÆ&VÃ¢²‡S¢$¼:—7¢"ÂVã¢$FöæR"ÒÀ¢÷&t6ö×ÆWF–öã¢²‡S¢%7¦W'fW¦WF’¶—L;fÇL:—2"ÂVã¢$÷&r6ö×ÆWF–öâ"ÒÀ¢FVÕGFW&å&VF–æW73¢²‡S¢$76F¼:—¼:—7¬;ÆÇG<:–r"ÂVã¢%FVÒGFW&â&VF–æW72"ÒÀ¢öæ&ö&F–ætW–V'&÷s¢²‡S¢&&WfW¦WL:—2"ÂVã¢&öæ&ö&F–ær"ÒÀ¢f—'7EFVÔ¶–6¶öfc¢²‡S¢$VÇ<Y76B–æGVÌ:6"ÂVã¢$f—'7BFVÒ¶–6¶öfb"ÒÀ¢öæ&ö&F–ætFW63¢²‡S¢$¢VÇ<Y76BÜ:"Ì:—G&V¬;gGBâW¦VâÆ—7L:âl:–v–v†ÆGfw–÷'6âVÆ§WGFö²¢VÇ<Y:—'FVÆÖW¦†WLY76F¼:—–râ"ÂVã¢%–÷W"f—'7BFVÒ—2Ç&VG’7&VFVBâföÆÆ÷rF†—26†V6¶Æ—7BFòV–6¶Ç’VæÆö6²F†Rf—'7BÖVæ–ævgVÂFVÒGFW&ââ"ÒÀ¢æW‡E7FW¢²‡S¢$¼;gfWF¶W¬YÌ:—:—2"ÂVã¢$æW‡B7FW"ÒÀ¢W6öÖ–ætÖöGVÆW3¢²‡S¢$¼;gfWF¶W¬YÖöGVÆö²††Ö&÷6â’"ÂVã¢%W6öÖ–ærÖöGVÆW2‡6ööâ’"ÒÀ¢öæ&ö&F–ætfö7W3¢²‡S¢&&WfW¦WL:—6’l;6·W7¢"ÂVã¢&öæ&ö&F–ærfö7W2"ÒÀ¢öæ&ö&F–ætfö7W4FW63¢²‡S¢$Ü:Ör&WfW¦WLYÌ:—:—6V²æ–æ76VæV²¼:—7¢ÂL;f&&’ÖöGVÂVÌYì:—¦WBÜ;6F&âÖ&Bâ"ÂVã¢%VçF–ÂF†R7F'FW"öæ&ö&F–ær7FW2&RFöæRÂF†R&VÖ–æ–ærF6†&ö&BÖöGVÆW27F’–â&Wf–WrÖöFRâ"ÒÀ¢&V6öÖÖVæFVE7FW¢²‡S¢$¼;gfWF¶W¬YÌ:—:—2"ÂVã¢$æW‡B7FW"ÒÀ¢6V6öæF'•7FW¢²‡S¢$Ü:6öFÆv÷2Ì:—:—2"ÂVã¢%6V6öæF'’7FW"ÒÀ¢Ö÷&T7F–öç4÷&s¢²‡S¢%F÷l:&&’Ü[fVÆWFV²7¦W'fW¦WF’öÆFÆöâ"ÂVã¢$Ö÷&R7F–öç2öâ÷&væ—¦F–öâvR"ÒÀ¢7F—fTÖVÖ&W'5F—FÆS¢²‡S¢$·L:×bFvö²"ÂVã¢$7F—fRÖVÖ&W'2"ÒÀ¢æ÷E7F'FVD6÷VçC¢²‡S¢'¶6÷VçGÒlYÜ:–ræVÒ¶W¦GFRVÂ"ÂVã¢'¶6÷VçGÒÖVÖ&W'2†fRæ÷B7F'FVB"ÒÀ¢WfW'–öæU7F'FVC¢²‡S¢$Ö–æFVæ¶’VÆ–æGVÇB"ÂVã¢$WfW'–öæR†27F'FVB"ÒÀ¢Æ–W%&VF–æW73¢²‡S¢#B³",:—FVv¼:—7¬;ÆÇG<:–r"ÂVã¢#B³"Æ–W"&VF–æW72"ÒÀ¢Æ–W%7FGW46ö×ÆWFVC¢²‡S¢$¼:—7¢"ÂVã¢$6ö×ÆWFVB"ÒÀ¢Æ–W%7FGW4–å&öw&W73¢²‡S¢$föÇ–ÖF&â"ÂVã¢$–â&öw&W72"ÒÀ¢Æ–W%7FGW4f–Æ&ÆS¢²‡S¢$VÌ:—&†WLY"ÂVã¢$f–Æ&ÆR"ÒÀ¢Æ–W%7FGW4Æö6¶VC¢²‡S¢%¬:&öÇB"ÂVã¢$Æö6¶VB"ÒÀ¢ÆVFW'6†—fö7W3¢²‡S¢%fW¦WLY’l;6·W7¢"ÂVã¢$ÆVFW'6†—fö7W2"ÒÀ¢÷&uW'6öæÆ—G•&öf–ÆS¢²‡S¢%7¦W'fW¦WF’7¦VÜ:–Ç–—<:–w&öf–Â"ÂVã¢$÷&væ—¦F–öâW'6öæÆ—G’&öf–ÆR"ÒÀ¢76W76VDÖVÖ&W'4fs¢²‡S¢'¶6÷VçGÒ:—'L:–¶VÇBFr+r7¦W'fW¦WF’:FÆr"ÂVã¢'¶6÷VçGÒ76W76VBÖVÖ&W'2+r÷&væ—¦F–öâfW&vR"ÒÀ¢FWF–ÆVEf–Ws¢²‡S¢%,:—7¦ÆWFW2ì:—¦WB"ÂVã¢$FWF–ÆVBf–Wr"ÒÀ¢FöÖ–æçEGFW&ã¢²‡S¢$FöÖ–ì:ç276FÖ–çF"ÂVã¢$FöÖ–æçBFVÒGFW&â"ÒÀ¢7G'V7GW&VD–ææ÷fF÷#¢²‡S¢%7G'V·GW,:ÇB–ææ÷l:F÷""ÂVã¢%7G'V7GW&VB–ææ÷fF÷""ÒÀ¢GFW&äFW63¢²‡S¢$ç–—F÷GBÂFR¶W&WFV²¼;g¬;gGBÜ[¼;fLY76BâÖv2·F÷Ò:—2¶6öç66–VçF–÷W6æW77ÒÂÆ76öç–&"¶Æ÷wÒâ"ÂVã¢$â÷Vâ'WB7G'V7GW&VBFVÒG–æÖ–2â†–v†W"·F÷ÒæB¶6öç66–VçF–÷W6æW77ÒÂv—F‚Æ÷vW"¶Æ÷wÒâ"ÒÀ¢÷VåFVÕGFW&ã¢²‡S¢$76F¼:—ÖVvç–—L:6"ÂVã¢$÷VâFVÒGFW&â"ÒÀ¢vF6„æ÷s¢²‡S¢$Ö÷7B:—&FVÖW2f–w–VÆæ’"ÂVã¢%vF6‚æ÷r"ÒÀ¢†–v„Æ÷s¢²‡S¢$Öv2·F÷ÒÂÆ76öç’¶Æ÷wÒ"ÂVã¢$†–v†W"·F÷ÒÂÆ÷vW"¶Æ÷wÒ"ÒÀ¢g&–7F–öäFW63¢²‡S¢$7¦W'fW¦WB·&VL:×bÆVæL;ÆÆWGFVÂFöÆv÷¦–²ÂFR¢Æ76öç’¶Æ÷wÒ‡·7GÒR’ì;gfVÆ†WF’&VÇ<Y¦§B76F¼;g¦’†VÇ—¦WFV¶&Vââ"ÂVã¢%F†R÷&væ—¦F–öâv÷&·2v—F‚7G&öær7&VF—fRÖöÖVçGVÒÂ'WBÆ÷vW"¶Æ÷wÒ‡·7GÒR’Ö’–æ7&V6Rg&–7F–öâ–â7&÷72×FVÒ6—GVF–öç2â"ÒÀ¢FWF–ÆVDæÇ—6—3¢²‡S¢%,:—7¦ÆWFW2VÆV×¬:—2"ÂVã¢$FWF–ÆVBæÇ—6—2"ÒÀ¢æVVG4GFVçF–öã¢²‡S¢$f–w–VÆÖWB–|:–ç–VÂ"ÂVã¢$æVVG2GFVçF–öâ"ÒÀ¢æô÷Vä7F–öç3¢²‡S¢$æ–æ72¦öææÆ’FVVæLYâ"ÂVã¢$æò–ÖÖVF–FR7F–öç2â"ÒÀ¢FVÔÖ÷fVÖVçC¢²‡S¢$76FÖ÷¦|:2"ÂVã¢%FVÒÖ÷fVÖVçB"ÒÀ¢FVÕ7FGW3¢²‡S¢$76Fö²:ÆÆ÷F"ÂVã¢%FVÒ7FGW2"ÒÀ¢FVÕ7FGW4FW63¢²‡S¢$ÖVÇ––²76B†öÂF'BÖ÷7B¼;g¬;g2¼:—Vâ"ÂVã¢%6VRv†W&RV6‚FVÒ7W'&VçFÇ’7FæG2–âF†R6†&VB¦÷W&æW’"ÒÀ¢ÆÅFV×3¢²‡S¢$Ö–æFVâ76B"ÂVã¢$ÆÂFV×2"ÒÀ¢FVÔÖVÖ&W$6÷VçC¢²‡S¢'¶6÷VçGÒFr"ÂVã¢'¶6÷VçGÒÖVÖ&W'2"ÒÀ¢–ç6–v‡DÆÖ÷7E&VG“¢²‡S¢$76F¼:—Ö¦FæVÒ¼:—7¢(	B¶6÷VçGÒVÖÌ:–¶W§FWLYÜ:–r7¬;Æ·<:–vW2&VfV¦W¬:—6†W¢â"ÂVã¢%FVÒGFW&â—2ÆÖ÷7B&VG’(	B¶6÷VçGÒ&VÖ–æFW"‡2’&R7F–ÆÂæVVFVBFò6ö×ÆWFR—Bâ"ÒÀ¢–ç6–v‡E&VG“¢²‡S¢$76F¼:—VÌ:—&†WLY(	BÖ–æFVâFrFVÆ¦W<:×FWGFR¶—L;fÇL:—7Bâ"ÂVã¢%FVÒGFW&â—2f–Æ&ÆR(	BWfW'’ÖVÖ&W"†26ö×ÆWFVB76W76ÖVçBâ"ÒÀ¢–ç6–v‡DæVVFVC¢²‡S¢'¶6÷VçGÒ¶—L;fÇL:—27¬;Æ·<:–vW276F¼:—†W¢â"ÂVã¢'¶6÷VçGÒ6ö×ÆWF–öâ‡2’æVVFVBf÷"FVÒGFW&ââ"ÒÀ¢GFW&å&VG“¢²‡S¢$76F¼:—¼:—7¢"ÂVã¢%GFW&â&VG’"ÒÀ¢GFW&ä'V–ÆF–æs¢²‡S¢$76F¼:—:—;ÆÂ"ÂVã¢%GFW&â'V–ÆF–ær"ÒÀ¢VæF–æs¢²‡S¢$l;Æv|Y&Vâ"ÂVã¢%VæF–ær"ÒÀ¢÷Vã¢²‡S¢$ÖVvç–—L:2"ÂVã¢$÷Vâ"ÒÀ¢&V6VçD7F—f—G“¢²‡S¢$ÆVwWL;6&&’·F—f—L:2"ÂVã¢%&V6VçB7F—f—G’"ÒÀ¢Æ7C%vVV·3¢²‡S¢$VÆÜ;¦ÇB"Œ:—B"ÂVã¢$Æ7B"vVV·2"ÒÀ¢æô7F—f—G“¢²‡S¢$Ü:–ræ–æ72·F—f—L:2â"ÂVã¢$æò7F—f—G’–WBâ"ÒÀ¢ÒÀ ¢&–ÆÆ–æs¢°¢6†V6¶÷WDÖWFF—FÆS¢²‡S¢$VÌYf—¦WL:—2ÂG&—F"ÂVã¢%7V'67&—F–öâÂG&—F"ÒÀ¢6†V6¶÷WDW–V'&÷s¢²‡S¢&VÌYf—¦WL:—2"ÂVã¢'7V'67&—F–öâ"ÒÀ¢6†V6¶÷WEF—FÆS¢²‡S¢$VÌYf—¦WL:—2·F—l:Ì:6"ÂVã¢$7F—fFR7V'67&—F–öâ"ÒÀ¢6†V6¶÷WE7V'F—FÆS¢°¢‡S¢$f—¦WL:—2&—§Föç<:v÷2(	B7G&—R¶W¦VÆ’¢FF–FBâ"À¢Vã¢%–ÖVçB—26V7W&R(	B†æFÆVB'’7G&—Râ"À¢ÒÀ¢&WGW&äÖWFF—FÆS¢²‡S¢$f—¦WL:—2W&VFÜ:–ç–RÂG&—F"ÂVã¢%–ÖVçB&W7VÇBÂG&—F"ÒÀ¢&WGW&å7V66W74W–V'&÷s¢²‡S¢'6–¶W""ÂVã¢'7V66W72"ÒÀ¢&WGW&å7V66W75F—FÆS¢²‡S¢$¼;g7¬;fæ¬;Æ²"ÂVã¢%F†æ²–÷R"ÒÀ¢&WGW&ä6æF–FFT&öG“¢°¢‡S¢$¦VÌ;fÇF¶W&WFV¶WB†÷§¬:GGV²âÖVvŒ:×f†FöB¼;gfWF¶W¬Y¦VÌ;fÇFV¶WBâ"À¢Vã¢$6æF–FFR7&VF—G2†fR&VVâFFVBâ–÷R6âæ÷r–çf—FRæWr6æF–FFW2â"À¢ÒÀ¢&WGW&ä6æF–FFT7F¢²‡S¢%f—77¦fVÇl:—FVÆ†W¢"ÂVã¢$&6²Fò†—&–ær"ÒÀ¢&WGW&å7V$&öG“¢°¢‡S¢$¢VÌYf—¦WL:—2·F—l:Çfâ76FöBÖ÷7BÜ:"†÷§¬:l:—"¢;g77¦W2gVæ¶6œ;6†÷¢â"À¢Vã¢%–÷W"7V'67&—F–öâ—2æ÷r7F—fRâ–÷W"FVÒ†266W72FòÆÂfVGW&W2â"À¢ÒÀ¢&WGW&å7V$7F¢²‡S¢%f—77¦fW¬:—&ÌY&R"ÂVã¢$vòFòF6†&ö&B"ÒÀ¢&WGW&äW‡—&VEF—FÆS¢²‡S¢$×Væ¶ÖVæWBÆV¬:'B"ÂVã¢%6W76–öâW‡—&VB"ÒÀ¢&WGW&äW‡—&VD&öG“¢°¢‡S¢%,;6,:ÆB;¦§&¢VÌYf—¦WL:—2·F—l:Ì:<:Bâ"À¢Vã¢%ÆV6RG'’7F—fF–ær–÷W"7V'67&—F–öâv–ââ"À¢ÒÀ¢&WGW&äW‡—&VD7F¢²‡S¢,9¦§&,;6,:ÆöÒ"ÂVã¢%G'’v–â"ÒÀ¢ÒÀ¢6æF–FFS¢°¢ÖWFF—FÆS¢²‡S¢%7¦VÜ:–Ç–—<:–vfVÆÜ:—,:—2ÂG&—F"ÂVã¢%W'6öæÆ—G’76W76ÖVçBÂG&—F"ÒÀ¢–çG&ôW–V'&÷s¢²‡S¢'7¦VÜ:–Ç–—<:–vfVÆÜ:—,:—2"ÂVã¢'W'6öæÆ—G’76W76ÖVçB"ÒÀ¢–çG&õF—FÆU÷6—F–öã¢²‡S¢'·÷6—F–öçÒ÷¬:Ö6œ;2"ÂVã¢'·÷6—F–öçÒ÷6—F–öâ"ÒÀ¢–çG&õF—FÆTvVæW&–3¢²‡S¢%7¦VÜ:–Ç–—<:–vfVÆÜ:—,:—2"ÂVã¢%W'6öæÆ—G’76W76ÖVçB"ÒÀ¢–çG&ô&öG“¢°¢‡S¢$W¢fVÆÜ:—,:—2¶6÷VçGÒ¼:—&L:—6,YÂ:ÆÂÂ¶"â¶Ö–çWFW7ÒW&6WBfW7¢–|:–ç–&Râl:Æ7¦öÆ¢Y7¦–çL:–âÂ¢VÇ<Y&Vç–öÜ:6öBÆ¬:ââ"À¢Vã¢%F†—276W76ÖVçB6öçF–ç2¶6÷VçGÒVW7F–öç2æBF¶W2&÷WB¶Ö–çWFW7ÒÖ–çWFW2âÆV6Rç7vW"†öæW7FÇ’Â&6VBöâ–÷W"f—'7B–×&W76–öââ"À¢ÒÀ¢–çG&ôWFõ6fS¢°¢‡S¢$l:Æ7¦–FBWFöÖF–·W6âÖVçF¬;Æ²(	B†ÖVw7¦¶B¶—L;fÇL:—2ÂöææâföÇ—FF†FöBÂ†öÂ&&†w—FBâ"À¢Vã¢%–÷W"ç7vW'2&R6fVBWFöÖF–6ÆÇ’(	B–b–÷R7F÷æB&WGW&âÂ–÷R6â6öçF–çVRv†W&R–÷RÆVgBöfbâ"À¢ÒÀ¢–çG&ôæõ&Vs¢²‡S¢%&Vv—7§G,:6œ;2æVÒ7¬;Æ·<:–vW2"ÂVã¢$æò&Vv—7G&F–öâ&WV—&VB"ÒÀ¢–çG&õ66ÆS¢°¢‡S¢'¶6÷VçGÒ¼:—&L:—2Â(	3RÜ;g26¼:Ì:â"À¢Vã¢'¶6÷VçGÒVW7F–öç2Â&FVBöâ(	3R66ÆR"À¢ÒÀ¢–çG&ô6öæf–FVçF–Ã¢²‡S¢$&—¦ÆÖ2FF¶W¦VÌ:—2"ÂVã¢$6öæf–FVçF–ÂFF†æFÆ–ær"ÒÀ¢–çG&õ7F'D7F¢²‡S¢$fVÆÜ:—,:—2ÖVv¶W¦L:—6R"ÂVã¢%7F'B76W76ÖVçB"ÒÀ¢òò–çG&ò(	BÌ:—:—6¼:'Gœ:²ƒ##bÓ‚ÓRf—§\:Æ—2g&—7<:×L:—2¢–çG&õ7FW4Æ&VÃ¢²‡S¢,8Öw’¦¦Æ–²"ÂVã¢$†÷r—Bv÷&·2"ÒÀ¢–çG&õ7FWF—FÆS¢²‡S¢$¼:—&LY:×b¶—L;fÇL:—6R"ÂVã¢$f–ÆÂ–âF†RVW7F–öææ—&R"ÒÀ¢–çG&õ7FW7V#¢°¢‡S¢'¶6÷VçGÒ:ÆÌ:×L:2(	3R6¼:Ì:âÂ¶"â¶Ö–çWFW7ÒW&2â"À¢Vã¢'¶6÷VçGÒ7FFVÖVçG2öâ(	3R66ÆRÂ&÷WB¶Ö–çWFW7ÒÖ–çWFW2â"À¢ÒÀ¢–çG&õ7FWFVÕ&öÆUF—FÆS¢²‡S¢%,;gf–B76G7¦W&WÖ¼:—&LY:×b"ÂVã¢%6†÷'BFVÒ×&öÆRVW7F–öææ—&R"ÒÀ¢–çG&õ7FWFVÕ&öÆU7V#¢°¢‡S¢$÷6–öì:Æ—2Ü:6öF–²Ì:—:—2‡ã2W&2’(	B¶’—2†w–†FöBâ"À¢Vã¢$÷F–öæÂ6V6öæB7FW‡ã2Ö–â’(	B–÷R6â6¶——Bâ"À¢ÒÀ¢–çG&õ7FW7V&Ö—EF—FÆS¢²‡S¢$&V¼;ÆÆL:—2"ÂVã¢%7V&Ö—B"ÒÀ¢–çG&õ7FW7V&Ö—E7V#¢°¢‡S¢$¶—L;fÇL:—7BÖVvŒ:×l;27¦W'fW¦WB¶¦ÖVrâ"À¢Vã¢%–÷W"&W7öç6W2vòFòF†R–çf—F–ær÷&væ—6F–öââ"À¢ÒÀ¢òòŒ:ÖBfVÆÜ:—,:—2:—2¢÷6–öì:Æ—276G7¦W&WÖÌ:—:—2¼;g¬;gG@¢FVÕ&öÆT'&–FvS¢°¢‡S¢$¼;g7¬;fæ¬;Æ²(	BfVÆÜ:—,:—6VBÖV|:—&¶W¦WGBVw’÷6–öì:Æ—2Ì:—:—2Ö&GC¢Vw’,;gf–B76G7¦W&WÖ¼:—&LY:×b‡ã2W&2’â¶’—2†w–†FöBâ"À¢Vã¢%F†æ·2(	B–÷W"76W76ÖVçB—2–âöæR÷F–öæÂ7FW&VÖ–ç3¢6†÷'BFVÒ×&öÆRVW7F–öææ—&R‡ã2Ö–çWFW2’â–÷R6â6¶——Bâ"À¢ÒÀ¢ç7vW&VD6÷VçFW#¢²‡S¢'¶ç7vW&VGÒ÷·F÷FÇÒÖVwl:Æ7¦öÇf"ÂVã¢'¶ç7vW&VGÒ÷·F÷FÇÒç7vW&VB"ÒÀ¢FöæUF—FÆS¢²‡S¢$¼;g7¬;fæ¬;Æ²¶—L;fÇL:—7B"ÂVã¢%F†æ²–÷Rf÷"6ö×ÆWF–ærF†R76W76ÖVçB"ÒÀ¢FöæT&öG“¢°¢‡S¢$l:Æ7¦–FB&V¼;ÆÆGL;Æ²â7¦W'fW¬Y†Ö&÷6â:—'FW<:×L:—7B¶¢W&VFÜ:–ç–V·,YÂâ"À¢Vã¢%–÷W"ç7vW'2†fR&VVâ7V66W76gVÆÇ’7V&Ö—GFVBâF†R÷&væ—6W"v–ÆÂ&Ræ÷F–f–VBöbF†R&W7VÇG26†÷'FÇ’â"À¢ÒÀ¢&Wfö¶VEF—FÆS¢²‡S¢$ÖVvŒ:×l;2f—77¦föçf"ÂVã¢$–çf—FF–öâ&Wfö¶VB"ÒÀ¢&Wfö¶VD&öG“¢°¢‡S¢$W§BÖVvŒ:×l;7Bf—77¦föçL:²â†¼:—&L:—6VBfâÂfVFBfVÂ¶76öÆF÷B7¦W'fW¬YfVÂâ"À¢Vã¢%F†—2–çf—FF–öâ†2&VVâ&Wfö¶VBâÆV6R6öçF7BF†R÷&væ—6W"–b–÷R†fRç’VW7F–öç2â"À¢ÒÀ¢WF&VÖ–æ–æs¢²‡S¢'ç¶Ö–çWFW7ÒW&2Œ:G&"ÂVã¢'ç¶Ö–çWFW7ÒÖ–â&VÖ–æ–ær"ÒÀ¢ç7vW$†–çC¢°¢‡S¢%l:Æ7¦öÆ¢;¦w’Â†öw’:ÇFÌ:&âvöæFöÆ¶öG7¢:—2f—6VÆ¶VG7¢â"À¢Vã¢$ç7vW"&6VBöâ†÷r–÷RvVæW&ÆÇ’F†–æ²æB&V†fRâ"À¢ÒÀ¢WFôGfæ6S¢²‡S¢$WFöÖF–·W2F÷l:&&Ì:—:—2"ÂVã¢$WFòÖGfæ6R"ÒÀ¢&6³¢²‡S¢%f—77¦"ÂVã¢$&6²"ÒÀ¢æW‡C¢²‡S¢%F÷l:&""ÂVã¢$æW‡B"ÒÀ¢7V&Ö—GF–æs¢²‡S¢$&V¼;ÆÆL:—2âââ"ÂVã¢%7V&Ö—GF–ærâââ"ÒÀ¢7V&Ö—C¢²‡S¢$&V¼;ÆÆL:—2"ÂVã¢%7V&Ö—B"ÒÀ¢66ÆT†–çC¢°¢‡S¢$¢(	3R6¼:Ì:ã¢ÒVwœ:ÇFÌ:âæVÒ:—'FV²Vw–WBÂRÒFVÆ¦W2Ü:—'L:–¶&VâVw–WL:—'FV²"À¢Vã¢$öâF†R(	3R66ÆS¢Ò7G&öævÇ’F—6w&VRÂRÒ7G&öævÇ’w&VR"À¢ÒÀ¢ç7vW$ÆÄW'&÷#¢°¢‡S¢%l:Æ7¦öÆ¢Ö–æFVâ¼:—&L:—7&Râ"À¢Vã¢%ÆV6Rç7vW"ÆÂVW7F–öç2â"À¢ÒÀ¢7V&Ö—DW'&÷#¢°¢‡S¢$†–&L;g'L:–çB&V¼;ÆÆL:—26÷,:ââ,;6,:ÆB;¦§&â"À¢Vã¢$âW'&÷"ö67W'&VBv†–ÆR7V&Ö—GF–ærâÆV6RG'’v–ââ"À¢ÒÀ¢vT6ö×ÆWFVEF—FÆS¢²‡S¢$Ü:"¶—L;fÇL;gGFVB"ÂVã¢$Ç&VG’6ö×ÆWFVB"ÒÀ¢vT6ö×ÆWFVD&öG“¢°¢‡S¢$W§BfVÆÜ:—,:—7BÜ:"¶÷,:&&â&V¼;ÆÆGFVBâ¼;g7¬;fæ¬;Æ²,:—7§l:—FVÇB"À¢Vã¢%–÷R†fRÇ&VG’7V&Ö—GFVBF†—276W76ÖVçBâF†æ²–÷Rf÷"–÷W"'F–6—F–öâ"À¢ÒÀ¢vT6æ6VÆVEF—FÆS¢²‡S¢$ÖVvŒ:×l;2f—77¦föçf"ÂVã¢$–çf—FF–öâ&Wfö¶VB"ÒÀ¢vT6æ6VÆVD&öG“¢°¢‡S¢$W§BÖVvŒ:×l;7Bf—77¦föçL:²â†¼:—&L:—6VBfâÂfVFBfVÂ¶76öÆF÷B7¦W'fW¬YfVÂâ"À¢Vã¢%F†—2–çf—FF–öâ†2&VVâ&Wfö¶VBâÆV6R6öçF7BF†R÷&væ—6W"–b–÷R†fRç’VW7F–öç2â"À¢ÒÀ¢vTW‡—&VEF—FÆS¢²‡S¢$ÖVvŒ:×l;2ÆV¬:'B"ÂVã¢$–çf—FF–öâW‡—&VB"ÒÀ¢vTW‡—&VD&öG“¢°¢‡S¢$W¢ÖVvŒ:×l;2Æ–æ²6¦æ÷2Ü:"æVÒ:—'l:–ç–W2â¼:—&¢;¦¢Æ–æ¶WB7¦W'fW¬YLYÂâ"À¢Vã¢%F†—2–çf—FF–öâÆ–æ²—2æòÆöævW"fÆ–BâÆV6R&WVW7BæWrÆ–æ²g&öÒF†R÷&væ—6W"â"À¢ÒÀ¢ÒÀ ¢òò)H)H6×–vâv—¦&B)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢VW$f#¢°¢F—FÆS¢²‡S¢$VÆ—6ÖW,:—2Ö¼;g""ÂVã¢%&V6övæ—F–öâ&÷VæB"ÒÀ¢–çG&ôæÖVC¢°¢‡S¢$F¢Ö–æFVâ76GL:'6Fæ²Vw’,;gf–BÂ¬;glYÖ—,:çœ;¢f—77¦¦VÇ¬:—7B(	B:—2†fâÂVw’VÆ—6ÖW,:—7Bâf—77¦¦VÇ¬:—6V²æWfW<:×FWGFV³¢<:Ö×¦WGBÌ:F¦Â¶—LYÂ¬;gGFV²â"À¢Vã¢$v—fRV6‚FVÖÖFR6†÷'BÂf÷'v&BÖÆöö¶–ær–V6RöbfVVF&6²(	BæBÂ–b–÷R†fRöæRÂâ&V6–F–öââfVVF&6²—2æÖVC¢&V6—–VçG26VRv†ò—B6ÖRg&öÒâ"À¢ÒÀ¢–çG&ôæöã¢°¢‡S¢$F¢Ö–æFVâ76GL:'6Fæ²Vw’,;gf–BÂ¬;glYÖ—,:çœ;¢f—77¦¦VÇ¬:—7Bâ¦f6ÆFö²ì:—bì:–Æ¼;ÆÂÂ;g77¦W<:×GfR§WFæ²VÂ<:Ö×¦WGF†W¢†ÆVvÌ:&"2&V¼;ÆÆLYì:–Â“²¢VÆ—6ÖW,:—6V²æWfW<:×FWGFV²â"À¢Vã¢$v—fRV6‚FVÖÖFR6†÷'BÂf÷'v&BÖÆöö¶–ær–V6RöbfVVF&6²â7VvvW7F–öç2&V6‚&V6—–VçG2æöç–Ö÷W6Ç’æBvw&VvFVB‡v—F‚BÆV7B26VæFW'2“²&V6–F–öç2&RæÖVBâ"À¢ÒÀ¢Ç&VG”FöæS¢²‡S¢'¶6÷VçGÒ76GL:'6æ²Ü:"&V¼;ÆÆGFVBâ"ÂVã¢$Ç&VG’7V&Ö—GFVBf÷"¶6÷VçGÒFVÖÖFW2â"ÒÀ¢&V6–F–öäÆ&VÃ¢²‡S¢$VÆ—6ÖW,:—2"ÂVã¢$&V6–F–öâ"ÒÀ¢&V6–F–öåÆ6V†öÆFW#¢²‡S¢%Ââ(	ä¼;g7¬;fì;fÒÂ†öw’FVÜ;2VÌYGB:Fì:—§FVB&W¦–ÖWBî(	Ò"ÂVã¢$RærâÂ%F†æ·2f÷"&Wf–Wv–ær×’FV6²&Vf÷&RF†RFVÖòåÂ""ÒÀ¢6öçF–çVTÆ&VÃ¢²‡S¢$föÇ—F6BÂÖW'N(
+b"ÂVã¢$¶VWFö–ærÂ&V6W6^(
+b"ÒÀ¢6öçF–çVUÆ6V†öÆFW#¢²‡S¢$Vw’¶öæ·,:—Bf—6VÆ¶VL:—2ÂÖ’Ü[¼;fF–²(	B:—2Öœ:—'Bâ"ÂVã¢$7V6–f–2&V†f–÷W"F†Bv÷&·2(	BæBv‡’â"ÒÀ¢G'”Æ&VÃ¢²‡S¢$¬;glY&R,;6,:ÆN(
+b"ÂVã¢$æW‡BF–ÖRÂG'(
+b"ÒÀ¢G'•Æ6V†öÆFW#¢²‡S¢$Vw’¶öæ·,:—BÂ¬;glYÖ—,:çœ;¢¦f6ÆBâ"ÂVã¢$öæR7V6–f–2Âf÷'v&BÖÆöö¶–ær7VvvW7F–öââ"ÒÀ¢÷F–öæÃ¢²‡S¢"†÷6–öì:Æ—2’"ÂVã¢"†÷F–öæÂ’"ÒÀ¢FöæTçVFvS¢°¢‡S¢%F—¢f—77¦¦VÇ¬:—2¶¶÷"†7¦æ÷7VÂÂ†¶öæ·,:—B†VÇ—¦WG,YÂ:—2f—6VÆ¶VL:—7,YÂ7¬;6Â(	B(	æÖ–æF–r÷6ö†(	Ò:—27¦VÜ:–Ç—&R—,:ç—VÌ;2:×L:–ÆWB¦VÆÆV×¬YVâl:–FV¶W¬:—7Bl:ÇB¶’â"À¢Vã¢%F—¢fVVF&6²ÆæG2v†Vâ—B—2&÷WB7V6–f–26—GVF–öâæB&V†f–÷W"(	BÂ&Çv—2öæWfW%Â"æBW'6öâÖÆWfVÂ§VFvVÖVçG2G—–6ÆÇ’G&–vvW"FVfVç6—fVæW72â"À¢ÒÀ¢7V&Ö—C¢²‡S¢$&V¼;ÆÆL:—2"ÂVã¢%7V&Ö—B"ÒÀ¢f–ÆÄÆÄ†–çC¢²‡S¢$Ö–æFVâ76GL:'6ì:ÂL;fÇG6B¶’¼:—Bf—77¦¦VÇ¬:—2ÖÖW¬YBâ"ÂVã¢$f–ÆÂ–â&÷F‚fVVF&6²f–VÆG2f÷"WfW'’FVÖÖFRâ"ÒÀ¢7V&Ö—DW'&÷#¢²‡S¢$&V¼;ÆÆL:—2æVÒ6–¶W,;ÆÇB(	B,;6,:ÆB;¦§&â"ÂVã¢%7V&Ö—GF–ærf–ÆVB(	BG'’v–ââ"ÒÀ¢FöæUF—FÆS¢²‡S¢$¼:—7¢(	B¼;g7¬;fæ¬;Æ²"ÂVã¢$FöæR(	BF†æ²–÷R"ÒÀ¢FöæT&öG“¢°¢‡S¢$f—77¦¦VÇ¬:—6V–FWB,;fw¬:×FWGL;Æ²â¢VÆ—6ÖW,:—6V²¦öææÂÖVv¦VÆVææV²<:Ö×¦WGFV¶ì:–Ã²¦f6ÆFö²¼;g"7¦,:Ç–’7¦W&–çB§WFæ²VÂ†÷§¬:§V²â"À¢Vã¢%–÷W"fVVF&6²†2&VVâ&V6÷&FVBâ&V6–F–öç2V"–ÖÖVF–FVÇ“²7VvvW7F–öç2&V6‚&V6—–VçG266÷&F–ærFòF†R&÷VæBw2'VÆW2â"À¢ÒÀ¢æöæUVæF–æuF—FÆS¢²‡S¢$æ–æ72ç–—F÷GBf—77¦¦VÇ¬:—2Ö¼;g,;fB"ÂVã¢$æò÷VâfVVF&6²&÷VæB"ÒÀ¢æöæUVæF–æt&öG“¢°¢‡S¢$Ö÷7Bæ–æ72öÇ–â·L:×bÜ:—,:—6VBÂ†öÂ¢VÆ—6ÖW,:—2Ö¼;g"ÆVææR¢·G\:Æ—2Ì:—:—2â"À¢Vã¢%–÷R†fRæò7F—fR6×–vâv†W&RF†RVW"fVVF&6²&÷VæB—2–÷W"7W'&VçB7FWâ"À¢ÒÀ¢&6µFôF6†&ö&C¢²‡S¢%f—77¦fW¬:—&ÌY&R"ÂVã¢$&6²FòF6†&ö&B"ÒÀ¢&öw&W74Æ&VÃ¢²‡S¢$¼:—7£¢¶FöæWÒ÷·F÷FÇÒ"ÂVã¢$FöæS¢¶FöæWÒ÷·F÷FÇÒ"ÒÀ¢7FWÆ&VÃ¢²‡S¢'¶7W'&VçGÒâò·F÷FÇÒ76GL:'2"ÂVã¢%FVÖÖFR¶7W'&VçGÒöb·F÷FÇÒ"ÒÀ¢æW‡EW'6öã¢²‡S¢%F÷l:&""ÂVã¢$æW‡B"ÒÀ¢&WeW'6öã¢²‡S¢%f—77¦"ÂVã¢$&6²"ÒÀ¢æW‡EW'6öä†–çC¢°¢‡S¢$F÷l:&&Ì:—:—6†W¢L;fÇG6B¶’¼:—Bf—77¦¦VÇ¬:—2ÖÖW¬YBâ"À¢Vã¢$f–ÆÂ–â&÷F‚fVVF&6²f–VÆG2Fò6öçF–çVRâ"À¢ÒÀ¢W'6öäFöæT&FvS¢²‡S¢$¼:—7¢"ÂVã¢$FöæR"ÒÀ¢W'6öäÖ—76–æt&FvS¢½uçÛh‘éì¶»§q«^u¥…Ñ•±äè•Ù•Éå½¹”¥Ì¹½Ñ¥™¥•°…¹Ñ¡”±¥™•å±”€¡IPƒŠHQ%YƒŠH1=M¤…¹¹½Ğ‰”É•Ù•ÉÍ•¸ˆ°(€€€ô°(€€€…Ñ¥Ù…Ñ•…¥±•èì(€€€€€¡Ôè€‰·¥Ë¥Ì³¥ÑÉ•«ÙÑĞ€¡Á¥Íé­½é…Ñ¯¥¹Ğ¤°‘”…è…­Ñ¥Û…³…Ì¹•´Í¥­•Ëñ±ĞƒŠP…­Ñ¥Û…±„·¥Ë¥Ì½±‘…³…ËÍ°¸ˆ°(€€€€€•¸è€‰Q¡”…µÁ…¥¸İ…ÌÉ•…Ñ•€¡…Ì‘É…™Ğ¤°‰ÕĞ…Ñ¥Ù…Ñ¥½¸™…¥±•ƒŠP…Ñ¥Ù…Ñ”¥Ğ™É½´Ñ¡”…µÁ…¥¸Á…”¸ˆ°(€€€ô°((€€€€¼¼SµÁÕÍÛ…±…ÍéÓÌ€ À¸³¥Ã¥Ì¤(€€€ÍÑ•ÁQåÁ”èì¡Ôè€‰7¥Ë¥ÌÓµÁÕÍ„ˆ°•¸è€‰5•…ÍÕÉ•µ•¹ĞÑåÁ”ˆô°(€€€ÑåÁ•Q¥Ñ±”èì¡Ôè€‰5¥ĞÍé•É•Ñ»¥°·¥É¹¤üˆ°•¸è€‰]¡…Ğ‘¼å½Ôİ…¹ĞÑ¼µ•…ÍÕÉ”üˆô°(€€€Á…­…•I•½µµ•¹‘•èì¡Ôè€‰«…¹±½ÑĞˆ°•¸è€‰I•½µµ•¹‘•ˆô°(€€€Í…¹XÅ5•Ñ„èì(€€€€€¡Ôè€‰KÙëµÑ•ÑĞÁ¥±½Ğµ¯¥Íé±•Ğƒ
+Ü½‰Í•ÉÙ•Èƒ¥ÌÁ••È¯ÙÈ»¥±¯ñ°ˆ°(€€€€€•¸è€‰¥á•Á¥±½ĞÍ•Ğƒ
+Üİ¥Ñ¡½ÕĞ½‰Í•ÉÙ•È…¹Á••ÈÉ½Õ¹‘Ìˆ°(€€€ô°(€€€Á…­…•ÕÍÑ½µ9…µ”èì¡Ôè€‰å•‘¤·¥Ë¥Í¤¯ÙÈˆ°•¸è€‰ÕÍÑ½´µ•…ÍÕÉ•µ•¹ĞÉ½Õ¹ˆô°(€€€Á…­…•ÕÍÑ½µ•ÍŒèì(€€€€€¡Ôè€‰!…±…“ÌƒÙÍÍé—…±³µÓ…Ì•å¥³è·¥Ë¥Í¡•è°·…Í½‘¥¬¯ÙÉ£ÙèÙ…ä­¥•Ÿ¥ÍëµÓDµ½‘Õ±¡½è¸ˆ°(€€€€€•¸è€‰‘Ù…¹•Í•ÑÕÀ™½È„™½ÕÍ•µ•…ÍÕÉ•µ•¹Ğ°Í•½¹É½Õ¹½È…‘µ½¸µ½‘Õ±”¸ˆ°(€€€ô°(€€€ÑåÁ•M•±™9…µ”èì¡Ôè€‹Y»¥ÉÓ¥­•³¥Ìˆ°•¸è€‰M•±˜µ…ÍÍ•ÍÍµ•¹Ğˆô°(€€€ÑåÁ•M•±™•ÍŒèì(€€€€€¡Ôè€‰Ñ…½¬­¥ÓÙ±Ñ¥¬„€ØÀƒ…±³µÓ…Í½ÌÍé•·¥±å¥Ï¥œµ¯¥É“GµÙ•Ğ°¯ñ±ÏDƒ¥ÉÓ¥­•³E¬µ•£µÛ…Í„»¥±¯ñ°¸ˆ°(€€€€€•¸è€‰5•µ‰•ÉÌ½µÁ±•Ñ”Ñ¡”€ØÀµ¥Ñ•´Á•ÉÍ½¹…±¥ÑäÅÕ•ÍÑ¥½¹¹…¥É”İ¥Ñ¡½ÕĞ¥¹Ù¥Ñ¥¹œ•áÑ•É¹…°½‰Í•ÉÙ•ÉÌ¸ˆ°(€€€ô°(€€€ÑåÁ•M•±™5•Ñ„èì¡Ôè€ˆØÀƒ…±³µÓ…Ìƒ
+ÜøÄÀÁ•ÉŒ€¼›Dˆ°•¸è€ˆØÀ¥Ñ•µÌƒ
+ÜøÄÀµ¥¸Á•Èµ•µ‰•Èˆô°(€€€ÑåÁ•M•±™=ÕĞèì(€€€€€¡Ôè€‰É•‘·¥¹äè¯ÙÉ£Ùèµµ¯¥é•ÑĞÍ•±˜ÁÉ½™¥°ƒ¥ÌÍ…Á…ÑÍé¥¹ÓÄ‘¥µ•¹é§Ìµ­½¹ÑÉ½±°ˆ°(€€€€€•¸è€‰=ÕÑÁÕĞèÉ½Õ¹µ±…‰•±±•Í•±˜ÁÉ½™¥±”…¹Ñ•…´µ±•Ù•°‘¥µ•¹Í¥½¸½¹ÑÉ½°ˆ°(€€€ô°(€€€ÑåÁ•=‰Í•ÉÙ•É9…µ”èì¡Ôè€‰/ñ±ÏDÙ¥ÍÍé…©•±ë¥Ì€ ÌØÃ
+À¤ˆ°•¸è€‰áÑ•É¹…°™••‘‰…¬€ ÌØÃ
+À¤ˆô°(€€€ÑåÁ•=‰Í•ÉÙ•É•ÍŒèì(€€€€€¡Ôè€‰Ñ…½¬­½±³¥Ÿ…­…Ğ£µÙ¹…¬µ•œ°…­¥¬¯µÛñ±ËE°©•±±•µé¥¬ƒE­•ĞƒŠP…èƒÙ¹¯¥Àƒ¥Ì„¯ñ±ÏD¯¥ÀƒÙÍÍé•Ù•Ñ¡•ÓEÛ¤Û…±¥¬¸ˆ°(€€€€€•¸è€‰5•µ‰•ÉÌ¥¹Ù¥Ñ”½±±•…Õ•Ìİ¡¼‘•ÍÉ¥‰”Ñ¡•´™É½´Ñ¡”½ÕÑÍ¥‘”ƒŠPÍ•±˜µ¥µ…”…¹½ÕÑÍ¥‘”¥µ…”‰•½µ”½µÁ…É…‰±”¸ˆ°(€€€ô°(€€€ÑåÁ•=‰Í•ÉÙ•É5•Ñ„èì¡Ôè€‰øÄÀÁ•ÉŒ€¼µ•™¥å•³Dƒ
+Ü»¥ØÍé•É¥¹Ñ¤µ•£µÛ…Ìˆ°•¸è€‰øÄÀµ¥¸Á•È½‰Í•ÉÙ•Èƒ
+Ü¹…µ•¥¹Ù¥Ñ…Ñ¥½¹Ìˆô°(€€€ÑåÁ•=‰Í•ÉÙ•É=ÕĞèì¡Ôè€‰É•‘·¥¹äèƒÙ¹¯¥Àƒ¥Ì¯ñ±ÏD¯¥ÀƒÙÍÍé•¡…Í½¹³µÓ…Í„°·¥ÉĞ­…ÁÍ½±…Ñ¤…‘…Ñ½¬„É¥Á½ÉÑ‰…¸ˆ°•¸è€‰=ÕÑÁÕĞèÍ•±˜ÙÌ¸½ÕÑÍ¥‘”½µÁ…É¥Í½¸°µ•…ÍÕÉ•É•±…Ñ¥½¹Í¡¥À‘…Ñ„¥¸Ñ¡”É•Á½ÉĞˆô°(€€€ÑåÁ•I½±•9…µ”èì¡Ôè€‰Í…Á…ÑÍé•É•Àµ¯ÙÈˆ°•¸è€‰Q•…´É½±”É½Õ¹ˆô°(€€€ÑåÁ•I½±••ÍŒèì(€€€€€¡Ôè€‰Í…Á…ĞÑ…©…¤­¥ÓÙ±Ñ¥¬„Íé•É•Àµ¯¥É“GµÙ•ĞƒŠP„‰•Ïñ±ĞÍé•É•Á•¬¡•±å•ÑĞ·¥ÉĞÍé•É•ÀµÓ¥É¯¥À¯¥Íëñ°¸ˆ°(€€€€€•¸è€‰Q•…´µ•µ‰•ÉÌ™¥±°½ÕĞÑ¡”É½±”ÅÕ•ÍÑ¥½¹¹…¥É”ƒŠP„µ•…ÍÕÉ•É½±”µ…ÀÉ•Á±…•Ì•ÍÑ¥µ…Ñ•Ì¸ˆ°(€€€ô°(€€€ÑåÁ•I½±•5•Ñ„èì¡Ôè€‰øĞÁ•ÉŒ€¼›Dƒ
+Ü•äÍ…Á…ÑÉ„¥¹“µÑ¡…ÓÌˆ°•¸è€‰øĞµ¥¸Á•Èµ•µ‰•Èƒ
+Ü±…Õ¹¡•™½È½¹”Ñ•…´ˆô°(€€€ÑåÁ•I½±•=ÕĞèì¡Ôè€‰É•‘·¥¹äè·¥ÉĞÍé•É•Àµ±•™•‘•ÑÑÏ¥œ„Í…Á…Ñ½±‘…±½¸ƒ¥Ì„É¥Á½ÉÑ‰…¸ˆ°•¸è€‰=ÕÑÁÕĞèµ•…ÍÕÉ•É½±”½Ù•É…”½¸Ñ¡”Ñ•…´Á…”…¹¥¸Ñ¡”É•Á½ÉĞˆô°(€€€ÑåÁ•I½±”ÌØÁ9…µ”èì¡Ôè€‰Í…Á…ÑÓ…ÉÍ¤Íé•É•ÀµÙ¥ÍÍé…©•±ë¥Ìˆ°•¸è€‰Q•…´É½±”Á••È™••‘‰…¬ˆô°(€€€ÑåÁ•I½±”ÌØÁ•ÍŒèì(€€€€€¡Ôè€‰Ñ…½¬•å·…ÍËÍ°©•³Ù±¥¬­¤„±•©•±±•µëE‰ˆÙ¥Í•±­•“¥Í•­•ĞƒŠP…èƒÙ¹¯¥Àµ•±³¤·¥ÉĞÍ…Á…Ñ¯¥À­•Ëñ°¸ˆ°(€€€€€•¸è€‰5•µ‰•ÉÌÁ¥¬•… ½Ñ¡•ÈÌµ½ÍĞ¡…É…Ñ•É¥ÍÑ¥Œ‰•¡…Ù¥½ÕÉÌƒŠP„µ•…ÍÕÉ•Ñ•…´Ù¥•Ü±…¹‘Ì¹•áĞÑ¼Ñ¡”Í•±˜µ¥µ…”¸ˆ°(€€€ô°(€€€ÑåÁ•I½±”ÌØÁ5•Ñ„èì¡Ôè€‰øÌ´ĞÁ•ÉŒ€¼ƒ¥ÉÓ¥­•±Ğ›Dƒ
+Ü»¥ÙÑ•±•¸°ƒÙÍÍé•ÏµÑ•ÑĞ¯¥À€¡µ¥¸¸€Ìƒ¥ÉÓ¥­•³D¤ˆ°•¸è€‰øÌ´Ğµ¥¸Á•ÈÑ•…µµ…Ñ”ƒ
+Ü…¹½¹åµ½ÕÌ°…É•…Ñ•Ù¥•Ü€¡µ¥¸¸€ÌÉ…Ñ•ÉÌ¤ˆô°(€€€ÑåÁ•I½±”ÌØÁ=ÕĞèì¡Ôè€‰É•‘·¥¹äèƒÙ¹¯¥ÀÙÌ¸Í…Á…Ñ¯¥ÀƒÙÍÍé•Ù•Ó¥Ì„Í…Á…Ñ½±‘…±½¸ƒ¥Ì„É¥Á½ÉÑ‰…¸ˆ°•¸è€‰=ÕÑÁÕĞèÍ•±˜µ¥µ…”ÙÌ¸Ñ•…´Ù¥•Ü½µÁ…É¥Í½¸½¸Ñ¡”Ñ•…´Á…”…¹¥¸Ñ¡”É•Á½ÉĞˆô°(€€€¥¹Ñ•ÉÙ…±1…‰•°èì¡Ôè€‰/¥É“GµÙ•¬ƒñÑ•µ”ˆ°•¸è€‰EÕ•ÍÑ¥½¹¹…¥É”Á…¥¹œˆô°(€€€¥¹Ñ•ÉÙ…±!¥¹Ğèì¡Ôè€‰Ñ•±©•ÏµÑ•ÑĞ¯¥É“GµØÕÓ…¸•¹¹å¥Ù•°¯¥ÏE‰ˆ¹çµ±¥¬€£¥Ìƒ¥É­•é¥¬ƒ¥ÉÑ•ÏµÓ¥Ì¤„¯ÙÙ•Ñ­•ëDƒŠPƒµä¹•´•åÍé•ÉÉ”ëé‘Õ°„Ñ…½­É„¸…Éµ¥­½È™•³ñ±‹µË…±¡…ÓÌ„ƒŠy/ñ±“¥Ìµ½ÍÑqÔÈÀÅ½µ‰‰…°¸ˆ°•¸è€‰Q¡”¹•áĞÅÕ•ÍÑ¥½¹¹…¥É”½Á•¹Ì€¡…¹¹½Ñ¥™¥•Ì¤Ñ¡¥Ì±½¹œ…™Ñ•ÈÑ¡”ÁÉ•Ù¥½ÕÌ½¹”¥Ì½µÁ±•Ñ•ƒŠPÍ¼µ•µ‰•ÉÌ…É•¸Ğ™±½½‘•…Ğ½¹”¸e½Ô…¸½Ù•ÉÉ¥‘”…¹åÑ¥µ”İ¥Ñ qÔÈÀÅM•¹¹½İqÔÈÀÅ¸ˆô°(€€€¥¹Ñ•ÉÙ…±9½¹”èì¡Ôè€‰å·…ÌÕÓ…¸ˆ°•¸è€‰	…¬µÑ¼µ‰…¬ˆô°(€€€¥¹Ñ•ÉÙ…°ÄÉ èì¡Ôè€ˆÄÈƒÍË…¹¯¥¹Ğˆ°•¸è€‰Ù•Éä€ÄÉ ˆô°(€€€¥¹Ñ•ÉÙ…°ÈÑ èì¡Ôè€‰9…Á½¹Ñ„•ä€¡…«…¹±½ÑĞ¤ˆ°•¸è€‰=¹”Á•È‘…ä€¡É•½µµ•¹‘•¤ˆô°(€€€¥¹Ñ•ÉÙ…°Ğá èì¡Ôè€‰/¥Ñ¹…Á½¹Ñ„ˆ°•¸è€‰Ù•Éä€È‘…åÌˆô°(€€€…±±½İáÑ•É¹…±1…‰•°èì¡Ôè€‰/ñ±ÏDƒ¥ÉÓ¥­•³E¬«ÍÛ…¡…ç…Ì»¥±¯ñ°¸ˆ°•¸è€‰áÑ•É¹…°½‰Í•ÉÙ•ÉÌİ¥Ñ¡½ÕĞ…ÁÁÉ½Ù…°¸ˆô°(€€€…±±½İáÑ•É¹…±!¥¹Ğèì¡Ôè€‰!„‰•­…ÁÍ½±½°„Ñ…½¬Íé…‰…‘½¸£µÙ¡…Ñ¹…¬µ•œÍé•ÉÙ•é•Ñ•¸¯µÛñ±¤ƒ¥ÉÓ¥­•³EĞ¸-¥­…ÁÍ½±Ù„„¯ñ±ÏDµ•£µÛÍ­…Ğ„µ•¹•‘éÍ•È€¼½Éœ…‘µ¥¸€¼Ñ…»…Í…“Ì¡…å©„«ÍÛ„¸ˆ°•¸è€‰%˜•¹…‰±•°µ•µ‰•ÉÌ…¸™É••±ä¥¹Ù¥Ñ”½‰Í•ÉÙ•ÉÌ™É½´½ÕÑÍ¥‘”Ñ¡”½É…¹¥é…Ñ¥½¸¸%˜‘¥Í…‰±•°•áÑ•É¹…°¥¹Ù¥Ñ•Ì¹••µ…¹…•È€¼½Éœ…‘µ¥¸€¼½¹ÍÕ±Ñ…¹Ğ…ÁÁÉ½Ù…°¸ˆô°(€€€ÑåÁ•QÉÕÍÑ9…µ”èì¡Ôè€‰	¥é…±µ¤£…³Ì¯ÙÈˆ°•¸è€‰QÉÕÍĞ¹•Ñİ½É¬É½Õ¹ˆô°(€€€ÑåÁ•QÉÕÍÑ•ÍŒèì(€€€€€¡Ôè€‰KÙÙ¥Ã…É½¹¯¥¹Ñ¤¯¥É“¥ÍÍ½È…è•çñÑÑ·Å¯Ù“¥ÌÓ¥¹å±••Ì·Å¯Ù“¥Ï¥ËE°ƒŠP„‘¥¹…µ¥­„µÓ¥É¯¥À‰•Í³¥Í•¤¡•±ç¥É”·¥ÉĞ­…ÁÍ½±…Ñ¤…‘…Ğ­•Ëñ°¸ˆ°(€€€€€•¸è€‰M¡½ÉĞÁ…¥Éİ¥Í”ÅÕ•ÍÑ¥½¹Ì½¸¡½Ü½±±…‰½É…Ñ¥½¸…ÑÕ…±±äİ½É­ÌƒŠPµ•…ÍÕÉ•É•±…Ñ¥½¹Í¡¥À‘…Ñ„É•Á±…•ÌÑ¡”‘å¹…µ¥Ìµ…À•ÍÑ¥µ…Ñ•Ì¸ˆ°(€€€ô°(€€€ÑåÁ•QÉÕÍÑ5•Ñ„èì¡Ôè€ˆÔ¯¥É“¥Ì€¼Í…Á…ÑÓ…ÉÌƒ
+ÜøÈ´ÌÁ•ÉŒ€¼›Dˆ°•¸è€ˆÔÅÕ•ÍÑ¥½¹ÌÁ•ÈÑ•…µµ…Ñ”ƒ
+ÜøÈ´Ìµ¥¸Á•Èµ•µ‰•Èˆô°(€€€ÑåÁ•QÉÕÍÑ=ÕĞèì(€€€€€¡Ôè€‰É•‘·¥¹äè·¥ÉĞ­…ÁÍ½±…Ñ¤¯¥À„‘¥¹…µ¥­„µÓ¥É¯¥Á•¸€¡Ã…É½¹¯¥¹ĞƒÙÍÍé•Ù½¹Ù„¤°ƒÙÍÍé•¯ÙÓDƒ¥Ì‰—…å…é…Ñ±…¸Ñ…½¬©•±ë¥Í”ˆ°(€€€€€•¸è€‰=ÕÑÁÕĞèµ•…ÍÕÉ•É•±…Ñ¥½¹Í¡¥ÀÙ¥•Ü½¸Ñ¡”‘å¹…µ¥Ìµ…À€¡½µ‰¥¹•Á•ÈÁ…¥È¤°¡¥¡±¥¡Ñ¥¹œ½¹¹•Ñ½ÉÌ…¹Õ¹•µ‰•‘‘•µ•µ‰•ÉÌˆ°(€€€ô°(€€€ÑåÁ•A••É‰9…µ”èì¡Ôè€‰±¥Íµ•Ë¥Ìµ¯ÙÈˆ°•¸è€‰I•½¹¥Ñ¥½¸É½Õ¹ˆô°(€€€ÑåÁ•A••É‰•ÍŒèì(€€€€€¡Ôè€‰Ñ…½¬ÍÑÉÕ­ÑÕË…±Ğ±…Á½¸…‘¹…¬•å·…Í¹…¬•±¥Íµ•Ë¥ÍĞƒ¥Ì•ä«ÙÛDµ¥Ë…¹çè©…Ù…Í±…Ñ½ĞƒŠP„¯ÙÈë…É©„„·¥Ë¥ÌµÍ½É½é…Ñ½Ğ°…µ¥­½È·…È™•³¥Ãñ±Ğ„‰¥é…±½´¸ˆ°(€€€€€•¸è€‰5•µ‰•ÉÌ¥Ù”•… ½Ñ¡•ÈÍÑÉÕÑÕÉ•…ÁÁÉ•¥…Ñ¥½¸…¹½¹”™½Éİ…Éµ±½½­¥¹œÍÕ•ÍÑ¥½¸ƒŠPÑ¡¥ÌÉ½Õ¹±½Í•ÌÑ¡”Í•É¥•Ì°½¹”ÑÉÕÍĞ¡…Ì‰••¸‰Õ¥±Ğ¸ˆ°(€€€ô°(€€€ÑåÁ•A••É‰5•Ñ„èì¡Ôè€‰Ñ…½¹¯¥¹ĞøÄ´ÈÁ•ÉŒ€¼Í…Á…ÑÓ…ÉÌƒ
+Ü„Í½ÈÛ¥Ÿ¥¸¹çµ±¥¬ˆ°•¸è€‰øÄ´Èµ¥¸Á•ÈÑ•…µµ…Ñ”ƒ
+Ü½Á•¹Ì…ĞÑ¡”•¹½˜Ñ¡”Í•ÅÕ•¹”ˆô°(€€€ÑåÁ•A••É‰=ÕĞèì(€€€€€¡Ôè€‰-¥µ•¹•Ğè¹•Ù•ÏµÑ•ÑĞ¯ÙÍëÙ¹•Ñ•¬€¬™•©±•ÍéÓD©…Ù…Í±…Ñ½¬€¡…¹½¹¥´µ…É•Ÿ…±Ğ½Á§ÍÙ…°¤ˆ°(€€€€€•¸è€‰=ÕÑÁÕĞè¹…µ•­Õ‘½Ì€¬‘•Ù•±½Áµ•¹ĞÍÕ•ÍÑ¥½¹Ì€¡İ¥Ñ …¹½¹åµ½ÕÌµ…É•…Ñ•½ÁÑ¥½¸¤ˆ°(€€€ô°(€€€™É•Í¡1…‰•°èì¡Ôè€‹i©É…™•±Û¥Ñ•±¤¯ÙÈ¸ˆ°•¸è€‰I”µµ•…ÍÕÉ•µ•¹ĞÉ½Õ¹¸ˆô°(€€€™É•Í¡!¥¹Ğèì(€€€€€¡Ôè€‰­½Ë…‰‰¤•É•‘·¥¹å•¬•‰‰•¸„¯ÙÉ‰•¸¹•´Íë…·µÑ…¹…¬ƒŠPµ¥¹‘•¸Ë¥ÍéÑÙ•ÛDƒé©É„­¥ÓÙ±Ñ¤„¯¥É“GµÙ•­•Ğ¸Ë¥¤•É•‘·¥¹å•¬µ•µ…É…‘¹…¬°„¯ÙÈ„¯¥ÏE‰‰¤ƒÙÍÍé•¡…Í½¹³µÓ…Ì…±…Á©„¸ˆ°(€€€€€•¸è€‰AÉ•Ù¥½ÕÌÉ•ÍÕ±ÑÌ‘½¸Ğ½Õ¹Ğ¥¸Ñ¡¥ÌÉ½Õ¹ƒŠP•Ù•ÉäÁ…ÉÑ¥¥Á…¹Ğ™¥±±Ì¥¸Ñ¡”ÅÕ•ÍÑ¥½¹¹…¥É•Ì……¥¸¸=±É•ÍÕ±ÑÌ…É”­•ÁĞìÑ¡”É½Õ¹‰•½µ•ÌÑ¡”‰…Í¥Ì™½È±…Ñ•È½µÁ…É¥Í½¸¸ˆ°(€€€ô°(€€€Í…¹XÅÉ•Í¡1…‰•°èì(€€€€€¡Ôè€‰/ÙÉ£Ùè¯ÙÓÙÑĞÍ•±˜µ…‘…Ğ¸ˆ°(€€€€€•¸è€‰I½Õ¹µ±…‰•±±•Í•±˜‘…Ñ„¸ˆ°(€€€ô°(€€€Í…¹XÅÉ•Í¡!¥¹Ğèì(€€€€€¡Ôè€‰M…¸ØÄµ‰•¸µ¥¹‘•¸Ë¥ÍéÑÙ•ÛD™É¥ÍÌÍ•±˜µ¯¥É“GµÙ•ĞÓÙ±Ğ­¤¸ÑÓE°±•Íè„‰…Í•±¥¹”°„Ù¥ÍÍé…·¥Ë¥Ìƒ¥Ì„Á¥±½Ñ­½¡½ÉÍèÁ½¹Ñ½Í…¸Õå…¹…¡¡½è„¯ÙÉ£Ùè¯ÙÑ¡•ÓD¸ˆ°(€€€€€•¸è€‰%¸M…¸ØÄ•Ù•ÉäÁ…ÉÑ¥¥Á…¹Ğ½µÁ±•Ñ•Ì„™É•Í Í•±˜µ…ÍÍ•ÍÍµ•¹Ğ¸Q¡¥Ì­••ÁÌÑ¡”‰…Í•±¥¹”°™½±±½ÜµÕÀ…¹Á¥±½Ğ½¡½ÉĞÑ¥•Ñ¼Ñ¡”•á…Ğµ•…ÍÕÉ•µ•¹ĞÉ½Õ¹¸ˆ°(€€€ô°(€€€Á••É‰¹½¹1…‰•°èì¡Ôè€‰¹½¹¥´µ…É•Ÿ…±Ğ©…Ù…Í±…Ñ½¬¸ˆ°•¸è€‰¹½¹åµ½ÕÌ°…É•…Ñ•ÍÕ•ÍÑ¥½¹Ì¸ˆô°(€€€Á••É‰¹½¹!¥¹Ğèì(€€€€€¡Ôè€‰™•©±•ÍéÓD©…Ù…Í±…Ñ½¬„µµé•ÑÑ»¥°»¥Ø»¥±¯ñ°°ƒÙÍÍé•­•Ù•ÉÙ”©•±•¹¹•¬µ•œ°ƒ¥ÌÍ…¬±•…³…‰ˆ€Ì‰•¯ñ±“E»¥°¸è•±¥Íµ•Ë¥Í•¬µ¥¹‘¥œ¹•Ù•ÏµÑ•ÑÑ•¬¸ˆ°(€€€€€•¸è€‰•Ù•±½Áµ•¹ĞÍÕ•ÍÑ¥½¹Ì…ÁÁ•…ÈÑ¼Ñ¡”É•¥Á¥•¹Ğİ¥Ñ¡½ÕĞ¹…µ•Ì°Í¡Õ™™±•°…¹½¹±äİ¥Ñ …Ğ±•…ÍĞ€ÌÍ•¹‘•ÉÌ¸ÁÁÉ•¥…Ñ¥½¹Ì…É”…±İ…åÌ¹…µ•¸ˆ°(€€€ô°(€€€ÑåÁ•AÍå¡9…µ”èì¡Ôè€‰AÍé¥¡½³Í¥…¤‰¥éÑ½¹Ï…œÁÕ±éÕÍ·¥Ë¥Í”ˆ°•¸è€‰AÍå¡½±½¥…°Í…™•ÑäÁÕ±Í”ˆô°(€€€ÑåÁ•AÍå¡•ÍŒèì(€€€€€¡Ôè€‰KÙÙ¥°…¹½¹¥´Í…Á…Ğµ¯¥É“GµØ…ÉËÍ°°µ•¹¹å¥É”‰¥éÑ½¹Ï…½Ì¡¥‹…é¹¤°¯¥É‘•é¹¤°•±±•¹Ñµ½¹‘…¹¤¸ˆ°(€€€€€•¸è€‰M¡½ÉĞ°…¹½¹åµ½ÕÌÑ•…´ÍÕÉÙ•ä½¸¡½ÜÍ…™”¥Ğ™••±ÌÑ¼™…¥°°…Í¬°…¹‘¥Í…É•”¸ˆ°(€€€ô°(€€€ÑåÁ•AÍå¡5•Ñ„èì¡Ôè€ˆàƒ…±³µÓ…Ìƒ
+ÜøÈÁ•ÉŒ€¼›Dƒ
+Ü»¥ÙÑ•±•¸ˆ°•¸è€ˆàÍÑ…Ñ•µ•¹ÑÌƒ
+ÜøÈµ¥¸Á•Èµ•µ‰•Èƒ
+Ü…¹½¹åµ½ÕÌˆô°(€€€ÑåÁ•AÍå¡=ÕĞèì(€€€€€¡Ôè€‰É•‘·¥¹äèÍ…Á…ÑÍé¥¹ÓÄ‰¥éÑ½¹Ï…œµ¥¹‘•àƒ¥Ìƒ…±³µÓ…Í½¹¯¥¹Ñ¤¯¥ÀƒŠP•ç¥¹¤Û…±…Íé½¬»¥±¯ñ°ˆ°(€€€€€•¸è€‰=ÕÑÁÕĞèÑ•…´µ±•Ù•°Í…™•Ñä¥¹‘•à…¹Á•ÈµÍÑ…Ñ•µ•¹ĞÙ¥•ÜƒŠPİ¥Ñ¡½ÕĞ¥¹‘¥Ù¥‘Õ…°…¹Íİ•ÉÌˆ°(€€€ô°(€€€ÑåÁ•½µ¥¹M½½¸èì¡Ôè€‰!…µ…É½Í…¸ˆ°•¸è€‰½µ¥¹œÍ½½¸ˆô°(€€€ÑåÁ•5Õ±Ñ¥!¥¹Ğèì(€€€€€¡Ôè€‰SÙ‰ˆ·¥Ë¥ÍĞ¥Ì­¥Û…±…ÍéÑ¡…ÑÍèƒŠP„Ñ…½­¹…¬Í½É‰…¸¹çµ±¹…¬µ•œè…µ¥­½ÈÙ…±…­¤Û¥•è…è•å¥­­•°°Íë…·…É„µ•¹çµ±¥¬„¯ÙÙ•Ñ­•ëD°ƒ¥Ìƒ¥ÉÑ•ÏµÓ¥ÍĞ­…ÀËÍ±„¸ˆ°(€€€€€•¸è€‰e½Ô…¸Í•±•ĞµÕ±Ñ¥Á±”µ•…ÍÕÉ•µ•¹ÑÌƒŠPÑ¡•ä½Á•¸™½Èµ•µ‰•ÉÌ½¹”…Ğ„Ñ¥µ”èİ¡•¸Í½µ•½¹”™¥¹¥Í¡•Ì½¹”°Ñ¡”¹•áĞ½Á•¹Ì™½ÈÑ¡•´°İ¥Ñ „¹½Ñ¥™¥…Ñ¥½¸¸ˆ°(€€€ô°(€€€Í•É¥•Í9…µ”èì¡Ôè€‰7¥Ë¥ÌµÍ½É½é…Ğˆ°•¸è€‰5•…ÍÕÉ•µ•¹ĞÍ•É¥•Ìˆô°((€€€€¼¼¥±ë…Ì€¡Í…Á…Ğµ…±…Ãè¤(€€€ÍÑ•ÁQ…É•Ñ¥¹œèì¡Ôè€‰K¥ÍéÑÙ•ÛE¬ˆ°•¸è€‰A…ÉÑ¥¥Á…¹ÑÌˆô°(€€€Ñ•…µÍQ¥Ñ±”èì¡Ôè€‰Í…Á…Ñ½¬ˆ°•¸è€‰Q•…µÌˆô°(€€€Ñ•…µ5•µ‰•É½Õ¹Ğèì¡Ôè€‰í½Õ¹ÑôÑ…œˆ°•¸è€‰í½Õ¹Ñôµ•µ‰•ÉÌˆô°(€€€¹½Q•…µÌèì¡Ôè€‰9¥¹ÌÍ…Á…Ğ„Íé•ÉÙ•é•Ñ‰•¸ƒŠPÛ…±…ÍÍèÑ…½­…Ğ•ç¥¹¥±•œ¸ˆ°•¸è€‰9¼Ñ•…µÌ¥¸Ñ¡¥Ì½É…¹¥é…Ñ¥½¸ƒŠPÁ¥¬µ•µ‰•ÉÌ¥¹‘¥Ù¥‘Õ…±±ä¸ˆô°(€€€¥¹‘¥Ù¥‘Õ…±Q¥Ñ±”èì¡Ôè€‰ç¥¹¤­¥Û…±…ÍéÓ…Ìˆ°•¸è€‰%¹‘¥Ù¥‘Õ…°Í•±•Ñ¥½¸ˆô°(€€€É½±•Q•…µ!¥¹Ğèì(€€€€€¡Ôè€‰Í…Á…Ğµ¯ÙÓÙÑĞ·¥Ë¥Í•¬Ñ•±©•ÌÍ…Á…Ğ¡½¬¥É„¥¹‘Õ±¹…¬ƒŠPÓÙ‰ˆÍ…Á…Ñ½Ğ¥Ì­¥Û…±…ÍéÑ¡…ÑÍè°µ¥¹‘•¹­¤„Í…«…ĞÍ…Á…Ó…‰…¸ƒ¥ÉÓ¥­•°¸ˆ°(€€€€€•¸è€‰Q•…´µ‰½Õ¹µ•…ÍÕÉ•µ•¹ÑÌÉÕ¸™½Èİ¡½±”Ñ•…µÌƒŠPå½Ô…¸Á¥¬µÕ±Ñ¥Á±”Ñ•…µÌì•Ù•Éå½¹”É…Ñ•Ìİ¥Ñ¡¥¸Ñ¡•¥È½İ¸Ñ•…´¸ˆ°(€€€ô°(€€€Ñ…É•ÑQ•…µ1…‰•°èì¡Ôè€‰¥°µÍ…Á…Ğ¡½¬¤ˆ°•¸è€‰Ñ…É•ĞÑ•…´¡Ì¤ˆô°(€€€ÑåÁ•MÕµµ…Éå1…‰•°èì¡Ôè€‰·¥Ë¥ÌÓµÁÕÍ„ˆ°•¸è€‰µ•…ÍÕÉ•µ•¹ĞÑåÁ”ˆô°(€€€…ÕÑ½9…µ•!¥¹Ğèì¡Ôè€‰¹•Ù•Ğµ¤©…Ù…Í½±ÑÕ¬ƒŠPƒ…ÓµÉ¡…Ñ½¸ˆ°•¸è€‰]”ÍÕ•ÍÑ•Ñ¡”¹…µ”ƒŠP™••°™É•”Ñ¼¡…¹”¥Ğ¸ˆô°((€€€€¼¼ƒ%±•Ñ¥­±ÕÌµ••ËEÏµÓ¥Í•¬(€€€…Ñ¥Ù…Ñ•½¹™¥É´èì(€€€€€¡Ôè€‰­Ñ¥Û…±½„·¥Ë¥ÍĞıq¹q»ŠˆË¥ÍéÑÙ•ÛE¬”µµ…¥°ƒ¥ÉÑ•ÏµÓ¥ÍĞ­…Á¹…¬¹q»Šˆ­ÓµØ·¥Ë¥Í¡•è¯¥ÏE‰ˆ¥Ì…‘¡…ÑÍèË¥ÍéÑÙ•ÛEĞ¹q»Šˆ¯¥ÏE‰‰¤±•ë…Ë…ÌÛ¥±••ÌƒŠP„·¥Ë¥Ì¹•´¹å¥Ñ¡…ÓÌƒé©É„¸ˆ°(€€€€€•¸è€‰Ñ¥Ù…Ñ”Ñ¡¥Ì…µÁ…¥¸ıq¹q»ŠˆA…ÉÑ¥¥Á…¹ÑÌİ¥±°É••¥Ù”…¸•µ…¥°¹½Ñ¥™¥…Ñ¥½¸¹q»Šˆe½Ô…¸ÍÑ¥±°…‘Á…ÉÑ¥¥Á…¹ÑÌİ¡¥±”…Ñ¥Ù”¹q»Šˆ±½Í¥¹œ±…Ñ•È¥Ì™¥¹…°ƒŠPÑ¡”…µÁ…¥¸…¹¹½Ğ‰”É•½Á•¹•¸ˆ°(€€€ô°(€€€±½Í•½¹™¥É´èì(€€€€€¡Ôè€‰1•ë…É½„·¥Ë¥ÍĞıq¹q»Šˆ­¥ÓÙ±Ó¥Ì±—…±°°ÓÙ‰ˆÙ¥ÍÍé…©•±ë¥Ì¹•´ƒ¥É­•é¥¬¹q»Šˆ±•ë…Ë…ÌÛ¥±••ÌƒŠP„·¥Ë¥Ì¹•´¹å¥Ñ¡…ÓÌƒé©É„¹q»Šˆè•‘‘¥œ‰—¥É­•é•ÑĞ…‘…Ñ½¬µ•µ…É…‘¹…¬ƒ¥Ì„É¥Á½ÉÑ‰…¸™•±¡…Íé»…±¡…ÓÍ¬¸ˆ°(€€€€€•¸è€‰±½Í”Ñ¡¥Ì…µÁ…¥¸ıq¹q»Šˆ¥±±¥¹œÍÑ½ÁÌì¹¼µ½É”É•ÍÁ½¹Í•Ìİ¥±°…ÉÉ¥Ù”¹q»Šˆ±½Í¥¹œ¥Ì™¥¹…°ƒŠPÑ¡”…µÁ…¥¸…¹¹½Ğ‰”É•½Á•¹•¹q»Šˆ…Ñ„½±±•Ñ•Í¼™…È¥Ì­•ÁĞ…¹ÕÍ…‰±”¥¸Ñ¡”É•Á½ÉĞ¸ˆ°(€€€ô°(€€€±½Í•‘I•Á½ÉÑÑ„èì¡Ôè€‰7¥ÉĞ…‘…Ğƒ¥É­•é•ÑĞƒŠPÉ¥Á½ÉĞ™É¥ÍÏµÓ¥Í”ˆ°•¸è€‰5•…ÍÕÉ•‘…Ñ„…ÉÉ¥Ù•ƒŠPÕÁ‘…Ñ”Ñ¡”É•Á½ÉĞˆô°(€ô°((€€¼¼ƒŠRŠR !¥É¥¹œƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€¡¥É¥¹œèì(€€€€¼¼Á…”¹ÑÍà(€€€‰…¬èì¡Ôè€‰Y¥ÍÍé„ˆ°•¸è€‰	…¬ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠPÍÑ…ÑÕÌ±…‰•±Ì(€€€ÍÑ…ÑÕÍáÁ¥É•èì¡Ôè€‰1•«…ÉĞˆ°•¸è€‰áÁ¥É•ˆô°(€€€ÍÑ…ÑÕÍ½µÁ±•Ñ•èì¡Ôè€‰-¥ÓÙ±ÑÙ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€ÍÑ…ÑÕÍ…¹•±•èì¡Ôè€‰Y¥ÍÍé…Ù½¹Ù„ˆ°•¸è€‰…¹•±•ˆô°(€€€ÍÑ…ÑÕÍ%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€ÍÑ…ÑÕÍM•¹Ğèì¡Ôè€‰±¯ñ±‘Ù”ˆ°•¸è€‰M•¹Ğˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠP…¹‘¥‘…Ñ”É½Ü(€€€Õ¹¹…µ•‘…¹‘¥‘…Ñ”èì¡Ôè€‰;¥ÙÑ•±•¸©•³Ù±Ğˆ°•¸è€‰U¹¹…µ•…¹‘¥‘…Ñ”ˆô°(€€€É•ÍÕ±ÑÍ1¥¹¬èì¡Ôè€‰É•‘·¥¹å•¬ˆ°•¸è€‰I•ÍÕ±ÑÌˆô°(€€€É•Í•¹‘M•¹Ğèì¡Ôè€‰±¯ñ±‘Ù”ƒŠrLˆ°•¸è€‰M•¹ĞƒŠrLˆô°(€€€É•Í•¹‘	ÕÑÑ½¸èì¡Ôè€‹i©É…¯ñ±“¥Ìˆ°•¸è€‰I•Í•¹ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠP¡•…‘•È(€€€•å•‰É½Üèì¡Ôè€‰™•±Û¥Ñ•±¤ˆ°•¸è€‰¡¥É¥¹œˆô°(€€€€¼¼¡•É¼µµ”¸94ƒŠyÑÉ¥Ñ„•±Û¥Ñ•°ˆè„™•³ñ±•Ğ„™•±¡…Íé»…³ÌÍ…«…Ğ(€€€€¼¼µÕ¹¯…«…ËÍ°ÍëÍ°°¹•´„Ñ•É·¥­ËE°ƒŠP„·…É­…»¥Ø„™•©³¥‰•¸·…È½ÑĞÙ…¸¸(€€€€¼¼ƒŠy•±Û¥Ñ•°ˆÁ•‘¥œ!Hµ™½±å…µ…Ñ½Ğ¹•Ù•èµ•œì„¥°Ù¥Íé½¹Ğ…è°¡½äƒé¨(€€€€¼¼•µ‰•Èƒ¥É­•é¥¬„Í…Á…Ñ‰„¸(€€€Ñ¥Ñ±”èì¡Ôè€‹i¨Í…Á…ÑÑ…½¬ˆ°•¸è€‰9•ÜÑ•…µµ…Ñ•Ìˆô°(€€€¡•É½MÕµµ…Éäèì(€€€€€¡Ôè€‰-•é•±•ä¡•±å•¸„©•³Ù±Ñ™½±å…µ…Ñ½Ğèµ•£µÛ…Ì°ÍÓ…ÑÕÍèƒ¥Ì•É•‘·¥¹å¯ÙÙ•Ó¥Ì¸ˆ°(€€€€€•¸è€‰5…¹…”Ñ¡”™Õ±°…¹‘¥‘…Ñ”™±½Ü¥¸½¹”Á±…”è¥¹Ù¥Ñ•Ì°ÍÑ…ÑÕÌ°…¹É•ÍÕ±ÑÌ¸ˆ°(€€€ô°(€€€Í¹…ÁÍ¡½Ñ1…‰•°èì¡Ôè€‹%³DÁ¥±±…¹…Ñ¯¥Àˆ°•¸è€‰1¥Ù”Í¹…ÁÍ¡½Ğˆô°(€€€½µÁ±•Ñ¥½¹I…Ñ”èì¡Ôè€‰1•ë…ÉĞ…Ë…¹äˆ°•¸è€‰½µÁ±•Ñ¥½¸É…Ñ”ˆô°(€€€…¹‘¥‘…Ñ•ÍQ½Ñ…°èì¡Ôè€‰©•³Ù±ĞƒÙÍÍé•Í•¸ˆ°•¸è€‰…¹‘¥‘…Ñ•ÌÑ½Ñ…°ˆô°(€€€½µÁ±•Ñ•‘1…‰•°èì¡Ôè€‰­¥ÓÙ±ÑÙ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€¥¹AÉ½É•ÍÍ1…‰•°èì¡Ôè€‰™½±å…µ…Ñ‰…¸ˆ°•¸è€‰¥¸ÁÉ½É•ÍÌˆô°(€€€…¹•±	ÕÑÑ½¸èì¡Ôè€‰7¥Í”ˆ°•¸è€‰…¹•°ˆô°(€€€¥¹Ù¥Ñ•…¹‘¥‘…Ñ”èì¡Ôè€‰)•³Ù±Ğµ•£µÛ…Í„ˆ°•¸è€‰%¹Ù¥Ñ”…¹‘¥‘…Ñ”ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠPÉ•‘¥ĞÁ½½°(€€€É•‘¥Ñå•‰É½Üèì¡Ôè€‰©•³Ù±Ğ­É•‘¥Ñ•¬ˆ°•¸è€‰…¹‘¥‘…Ñ”É•‘¥ÑÌˆô°(€€€É•‘¥ÑÍÙ…¥±…‰±”èì¡Ôè€‰­É•‘¥Ğ•³¥É¡•ÓDˆ°•¸è€‰É•‘¥ÑÌ…Ù…¥±…‰±”ˆô°(€€€É•‘¥ÑÍAÕÉ¡…Í•èì¡Ôè€‰Û…Ï…É½±Ğˆ°•¸è€‰ÁÕÉ¡…Í•ˆô°(€€€É•‘¥ÑÍUÍ•èì¡Ôè€‰™•±¡…Íé»…±Ğˆ°•¸è€‰ÕÍ•ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠP¹¼µÉ•‘¥ÑÌİ…É¹¥¹œ(€€€¹½É•‘¥ÑÍ]…É¹¥¹œèì(€€€€€¡Ôè€‰9¥¹Ì•³¥É¡•ÓD­É•‘¥Ğ¸/¥É…è…‘µ¥¹Ğ°¡½äÛ…Ï…É½±©½¸ƒé©…‰ˆ­É•‘¥Ñ•­•Ğ¸ˆ°(€€€€€•¸è€‰9¼É•‘¥ÑÌ…Ù…¥±…‰±”¸Í¬å½ÕÈ…‘µ¥¸Ñ¼ÁÕÉ¡…Í”µ½É”É•‘¥ÑÌ¸ˆ°(€€€ô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠP¥¹Ù¥Ñ”™½É´(€€€¥¹Ù¥Ñ•½Éµå•‰É½Üèì¡Ôè€‹é¨©•³Ù±Ğµ•£µÛ…Í„ˆ°•¸è€‰¥¹Ù¥Ñ”¹•Ü…¹‘¥‘…Ñ”ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠPÍÑ…ĞÍÑÉ¥À(€€€ÍÑ…Ñ%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€ÍÑ…Ñ½µÁ±•Ñ•èì¡Ôè€‰-¥ÓÙ±ÑÙ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€ÍÑ…ÑáÁ¥É•èì¡Ôè€‰1•«…ÉĞˆ°•¸è€‰áÁ¥É•ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠPÍ•Ñ¥½¸¡•…‘¥¹Ì(€€€Í•Ñ¥½¹%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€Í•Ñ¥½¹M•¹Ğèì¡Ôè€‰±¯ñ±‘Ù”ˆ°•¸è€‰M•¹Ğˆô°(€€€Í•Ñ¥½¹½µÁ±•Ñ•èì¡Ôè€‰-¥ÓÙ±ÑÙ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€…¹‘¥‘…Ñ•ÍMÕ™™¥àèì¡Ôè€‰©•³Ù±Ğˆ°•¸è€‰…¹‘¥‘…Ñ•Ìˆô°(€€€…¹‘¥‘…Ñ•MÕ™™¥àèì¡Ôè€‰©•³Ù±Ğˆ°•¸è€‰…¹‘¥‘…Ñ”ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠPÉ•‘¥Ğ¡¥ÍÑ½Éä(€€€É•‘¥Ñ1½å•‰É½Üèì¡Ôè€‰­É•‘¥Ğ¹…Á³Ìˆ°•¸è€‰É•‘¥Ğ±½œˆô°(€€€É•‘¥ÑAÕÉ¡…Í”èì¡Ôè€‰-É•‘¥ĞÛ…Ï…É³…Ìˆ°•¸è€‰É•‘¥ĞÁÕÉ¡…Í”ˆô°(€€€É•‘¥ÑUÍ…”èì¡Ôè€‰-É•‘¥Ğ™•±¡…Íé»…³…Ìˆ°•¸è€‰É•‘¥ĞÕÍ…”ˆô°((€€€€¼¼!¥É¥¹…Í¡‰½…ÉƒŠP•µÁÑäÍÑ…Ñ”(€€€¹½…¹‘¥‘…Ñ•ÍQ¥Ñ±”èì¡Ôè€‰7¥œ¹¥¹Ì©•³Ù±Ğˆ°•¸è€‰9¼…¹‘¥‘…Ñ•Ìå•Ğˆô°(€€€¹½…¹‘¥‘…Ñ•Í•ÍŒèì(€€€€€¡Ôè€‰#µÙµ•œ…è•±ÏD©•³Ù±Ñ•‘•Ğ°¡½ä•±­•é‘¡•Í„™•±Û¥Ñ•±¤™½±å…µ…Ñ½Ğ¸ˆ°(€€€€€•¸è€‰%¹Ù¥Ñ”å½ÕÈ™¥ÉÍĞ…¹‘¥‘…Ñ”Ñ¼ÍÑ…ÉĞÑ¡”¡¥É¥¹œÁÉ½•ÍÌ¸ˆ°(€€€ô°((€€€€¼¼!¥É¥¹A…åİ…±°ƒŠP™•…ÑÕÉ•Ì(€€€™•…ÑÕÉ•µ…¥±Q¥Ñ±”èì¡Ôè€‰µµ…¥°µ•£µÛÌˆ°•¸è€‰µ…¥°¥¹Ù¥Ñ…Ñ¥½¸ˆô°(€€€™•…ÑÕÉ•µ…¥±•ÍŒèì(€€€€€¡Ôè€‰/ñ±‘¨Íé•·¥±åÉ”Íé…‰½ÑĞµ•£µÛÍĞ„©•³Ù±Ñ•­¹•¬•å•Ñ±•¸­…ÑÑ¥¹Ó…ÍÍ…°¸ˆ°(€€€€€•¸è€‰M•¹Á•ÉÍ½¹…±¥Í•¥¹Ù¥Ñ…Ñ¥½¹ÌÑ¼…¹‘¥‘…Ñ•Ìİ¥Ñ „Í¥¹±”±¥¬¸ˆ°(€€€ô°(€€€™•…ÑÕÉ•½µÁ…É¥Í½¹Q¥Ñ±”èì¡Ôè€‹YÍÍé•¡…Í½¹³µÓ…Ìˆ°•¸è€‰½µÁ…É¥Í½¸ˆô°(€€€™•…ÑÕÉ•½µÁ…É¥Í½¹•ÍŒèì(€€€€€¡Ôè€‰!…Í½¹³µÑÍƒÙÍÍé”„©•³Ù±Ñ•¬Íé•·¥±å¥Ï¥ÁÉ½™¥±«…Ğ„Í…Á…Ñ½µ¥¹Ó…é…Ó…Ù…°¸ˆ°(€€€€€•¸è€‰½µÁ…É”…¹‘¥‘…Ñ”Á•ÉÍ½¹…±¥ÑäÁÉ½™¥±•Ì……¥¹ÍĞå½ÕÈÑ•…´Á…ÑÑ•É¹Ì¸ˆ°(€€€ô°(€€€™•…ÑÕÉ•I½±•¥ÑQ¥Ñ±”èì¡Ôè€‰Mé•É•Àµ¥±±•Íé­•“¥Ìˆ°•¸è€‰I½±”™¥Ğˆô°(€€€™•…ÑÕÉ•I½±•¥Ñ•ÍŒèì(€€€€€¡Ôè€‰3…Í°µ•¹¹å¥É”¥±±¥¬„©•³Ù±Ğ„Á½ëµ§Í¡½è„Íé•·¥±å¥Ï¥ÁÉ½™¥°…±…Á«…¸¸ˆ°(€€€€€•¸è€‰M•”¡½Üİ•±°„…¹‘¥‘…Ñ”™¥ÑÌÑ¡”É½±”‰…Í•½¸Ñ¡•¥ÈÁ•ÉÍ½¹…±¥ÑäÁÉ½™¥±”¸ˆ°(€€€ô°((€€€€¼¼!¥É¥¹A…åİ…±°ƒŠP•¹•É…°(€€€ÁÉ•µ¥Õµ•…ÑÕÉ”èì¡Ôè€‰ÁË¥µ¥Õ´™Õ¹­§Ìˆ°•¸è€‰ÁÉ•µ¥Õ´™•…ÑÕÉ”ˆô°(€€€…‘‘½¹å•‰É½Üèì¡Ôè€‰­¥•Ÿ¥ÍëµÓDµ½‘Õ°ˆ°•¸è€‰…‘µ½¸ˆô°(€€€Á…åİ…±±•ÍŒèì(€€€€€¡Ôè€‰!…Íé»…±„ÑÉ¥Ñ„Íé•·¥±å¥Ï¥·¥Ë¥Ï¥Ğ„™•±Û¥Ñ•±¤™½±å…µ…Ñ‰…¸ƒŠP£µÙ¨µ•œ©•³Ù±Ñ•­•Ğ°¡…Í½¹³µÑÍƒÙÍÍé”„ÁÉ½™¥±©Õ­…Ğ°ƒ¥Ì¡½éè…‘…Ñ…±…Ãè“Ù¹Ó¥Í•­•Ğ¸ˆ°(€€€€€•¸è€‰UÍ”ÑÉ¥Ñ„Á•ÉÍ½¹…±¥Ñä…ÍÍ•ÍÍµ•¹ÑÌ¥¸å½ÕÈ¡¥É¥¹œÁÉ½•ÍÌƒŠP¥¹Ù¥Ñ”…¹‘¥‘…Ñ•Ì°½µÁ…É”Ñ¡•¥ÈÁÉ½™¥±•Ì°…¹µ…­”‘…Ñ„µ‘É¥Ù•¸‘•¥Í¥½¹Ì¸ˆ°(€€€ô°(€€€…‘‘½¹AÉ¥¥¹œèì(€€€€€¡Ôè€‰©•³Ù±Ğµ­É•‘¥Ñ•¬ƒ…É„„ÁÉ½É…´Ë¥Íé•¯¥¹Ğ°•å•‘¤…«…¹±…Ñ‰…¸Íé•É•Á•°¸ˆ°(€€€€€•¸è€‰…¹‘¥‘…Ñ”É•‘¥ĞÁÉ¥¥¹œ¥ÌÁ…ÉĞ½˜å½ÕÈ¥¹‘¥Ù¥‘Õ…°ÁÉ½É…´ÅÕ½Ñ”¸ˆ°(€€€ô°(€€€¹½MÕ‰AÉ¥¥¹œèì(€€€€€¡Ôè€‰­ÓµØ•³E™¥é•Ó¥ÌÍëñ­Ï¥•Ì„!¥É¥¹œµ½‘Õ°¡…Íé»…±…Ó…¡½è¸ˆ°(€€€€€•¸è€‰¸…Ñ¥Ù”ÍÕ‰ÍÉ¥ÁÑ¥½¸¥ÌÉ•ÅÕ¥É•Ñ¼ÕÍ”Ñ¡”!¥É¥¹œµ½‘Õ±”¸ˆ°(€€€ô°((€€€€¼¼!¥É¥¹A…åİ…±°ƒŠP…Ñ¥½¹Ì(€€€…Ñ¥Ù…Ñ•‘‘½¸èì¡Ôè€‰-É•‘¥Ñ•¬Û…Ï…É³…Í„ˆ°•¸è€‰AÕÉ¡…Í”É•‘¥ÑÌˆô°(€€€ÕÁÉ…‘•Q½=Éœèì(€€€€€¡Ôè€‰Y…äÛ…±ÑÌ=ÉœÍ½µ…É„„­½É³…Ñ±…¸©•³Ù±Ğµ¡½éë…›¥Ë¥Ï¥ÉĞèˆ°(€€€€€•¸è€‰=ÈÕÁÉ…‘”Ñ¼Ñ¡”=ÉœÁ±…¸™½ÈÕ¹±¥µ¥Ñ•…¹‘¥‘…Ñ”…•ÍÌèˆ°(€€€ô°(€€€½ÉA±…¹•Ñ…¥±Ìèì¡Ôè€‰=ÉœÍ½µ…œË¥Íé±•Ñ•¬ˆ°•¸è€‰=ÉœÁ±…¸‘•Ñ…¥±Ìˆô°(€€€…‘‘½¹‘µ¥¹I•ÅÕ¥É•èì(€€€€€¡Ôè€‰!¥É¥¹œ­É•‘¥Ñ•¬…­Ñ¥Û…³…Ï…¡½è­•É•Í„Íé•ÉÙ•é•Ñ•…‘µ¥¹¥ÍéÑË…Ñ½Ë…Ğ¸ˆ°(€€€€€•¸è€‰½¹Ñ…Ğå½ÕÈ½É…¹¥Í…Ñ¥½¸…‘µ¥¸Ñ¼…Ñ¥Ù…Ñ”!¥É¥¹œÉ•‘¥ÑÌ¸ˆ°(€€€ô°(€€€…Ñ¥Ù…Ñ•MÕ‰ÍÉ¥ÁÑ¥½¸èì¡Ôè€‰³E™¥é•Ó¥Ì…­Ñ¥Û…³…Í„ˆ°•¸è€‰Ñ¥Ù…Ñ”ÍÕ‰ÍÉ¥ÁÑ¥½¸ˆô°((€€€€¼¼…¹‘¥‘…Ñ”É•ÍÕ±ĞÁ…”€ ½¡¥É¥¹œ½m½É%‘t½…¹‘¥‘…Ñ•Ì½m¥¹Ù¥Ñ•%‘t¤(€€€‰…­!¥É¥¹œèì¡Ôè€‰Y¥ÍÍé„ƒ
+Ü•±Û¥Ñ•°ˆ°•¸è€‰	…¬ƒ
+Ü!¥É¥¹œˆô°(€€€…¹‘¥‘…Ñ•I•ÍÕ±Ñå•‰É½Üèì¡Ôè€‰©•³Ù±Ğ•É•‘·¥¹å”ˆ°•¸è€‰…¹‘¥‘…Ñ”É•ÍÕ±Ğˆô°(€€€Õ¹¹…µ•‘…¹‘¥‘…Ñ•Õ±°èì¡Ôè€‰;¥ÙÑ•±•¸©•³Ù±Ğˆ°•¸è€‰U¹¹…µ•…¹‘¥‘…Ñ”ˆô°(€€€…ÍÍ¥¹•‘Q•…´èì¡Ôè€‰!½éë…É•¹‘•±ĞÍ…Á…Ğè€ˆ°•¸è€‰ÍÍ¥¹•Ñ•…´è€ˆô°(€€€½µÁ…É•]¥Ñ¡Q•…´èì¡Ôè€‹YÍÍé•¡…Í½¹³µÓ…ÌÍ…Á…ÑÑ…°ˆ°•¸è€‰½µÁ…É”İ¥Ñ Ñ•…´ˆô°(€€€¹½ÍÍ•ÍÍµ•¹ÑÌèì(€€€€€¡Ôè€‰9¥¹Ì‰•™•©•é•ÑĞƒ¥ÉÓ¥­•³¥Ì„Í…Á…Ñ‰…¸èƒŠyí¹…µ•÷Št¸ˆ°(€€€€€•¸è€‰í¹…µ•ô¡…Ì¹¼½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌ¸ˆ°(€€€ô°(€€€µ…¹…•ÉMÕµµ…Éåå•‰É½Üèì¡Ôè€‰Ù•é•ÓE¤ƒÙÍÍé•™½±…³Ìˆ°•¸è€‰µ…¹…•ÈÍÕµµ…Éäˆô°(€€€ÅÕ¥­=Ù•ÉÙ¥•Üèì¡Ôè€‰å½ÉÌƒ…ÑÑ•­¥¹Ó¥Ìˆ°•¸è€‰EÕ¥¬½Ù•ÉÙ¥•Üˆô°(€€€ÍÑÉ•¹Ñ¡Íå•‰É½Üèì¡Ôè€‰•ËEÍÏ¥•¬ˆ°•¸è€‰ÍÑÉ•¹Ñ¡Ìˆô°(€€€‰…±…¹•‘AÉ½™¥±”èì(€€€€€¡Ôè€‰-¥•å•¹Ïé±å½é½ÑĞÁÉ½™¥°°¹¥¹Ì­¥•µ•±­•“D‘¥µ•¹é§Ìˆ°(€€€€€•¸è€‰	…±…¹•ÁÉ½™¥±”°¹¼ÍÑ…¹‘½ÕĞ‘¥µ•¹Í¥½¸ˆ°(€€€ô°(€€€İ…Ñ¡É•…Íå•‰É½Üèì¡Ôè€‰™¥å•±•¹“Dˆ°•¸è€‰İ…Ñ …É•…Ìˆô°(€€€¹½1½İÉ•„èì¡Ôè€‰9¥¹Ì­É¥Ñ¥­ÕÍ…¸…±…Í½¹äÑ•Ëñ±•Ğˆ°•¸è€‰9¼É¥Ñ¥…±±ä±½Ü…É•„ˆô°(€€€Ñ•…µ¥Ñå•‰É½Üèì¡Ôè€‰¡…Í½¹³ÍÏ…œ„Í…Á…Ñ¡½èˆ°•¸è€‰Ñ•…´Í¥µ¥±…É¥Ñäˆô°(€€€Ñ•…µ½µÁ…É¥Í½¹9èì(€€€€€¡Ôè€‰Í…Á…ĞƒÙÍÍé•¡…Í½¹³µÓ…Ì¹•´•³¥É¡•ÓDˆ°(€€€€€•¸è€‰Q•…´½µÁ…É¥Í½¸¹½Ğ…Ù…¥±…‰±”ˆ°(€€€ô°(€€€¹½Ñ¹½Õ¡Q•…µ…Ñ„èì(€€€€€¡Ôè€‰9¥¹Ì•³¥œÍ…Á…Ğµ…‘…Ğ…èƒÙÍÍé•¡…Í½¹³µÓ…Í¡½èƒŠP±•…³…‰ˆíµ¥¹ô­¥ÓÙ±ÓÙÑĞƒÙ»¥ÉÓ¥­•³¥ÌÍëñ­Ï¥•Ì¸ˆ°(€€€€€•¸è€‰9½Ğ•¹½Õ Ñ•…´‘…Ñ„™½È„½µÁ…É¥Í½¸ƒŠP…Ğ±•…ÍĞíµ¥¹ô½µÁ±•Ñ•Í•±˜µ…ÍÍ•ÍÍµ•¹ÑÌ…É”¹••‘•¸ˆ°(€€€ô°(€€€€¼¼µµ­”„Í…Á…Ó…Ñ±…¡½è·¥ÉĞ!M=93MO°¹•´…±­…±µ…ÍÏ…œƒŠP…è•±Ó¥ËD(€€€€¼¼ÁÉ½™¥°­¥•Ÿ¥ÍëµÓD¥Ì±•¡•Ğ°•ë¥ÉĞ¹•´­…Àµ¥»EÏµÓ¥ÍĞ¸(€€€€¼¼é…¨µÁ…‘³Ì…±…ÑÑ¤¡…Í½¹³ÍÏ…œ„·¥Ë¥Í¤¡¥‹…¸‰•³ñ±¤ek%LƒŠP¹•´(€€€€¼¼ƒŠy­¥Û…³Ì•å•ë¥Ìˆ€¡¡…µ¥ÌÁÉ•¥é¥Ó…Ì±•¹¹”ƒŠP„·¥ÉĞM7Š& Ü°Øµ•±±•ÑĞ¥Ì¤¸(€€€Í¥µ¥±…É¥Ñå]¥Ñ¡¥¹ÉÉ½Èèì(€€€€€¡Ôè€‰·¥Ë¥Í¤¡¥‹…¸‰•³ñ°•å•é¥¬„Í…Á…Ó…Ñ±……°ˆ°(€€€€€•¸è€‰5…Ñ¡•ÌÑ¡”Ñ•…´…Ù•É…”İ¥Ñ¡¥¸µ•…ÍÕÉ•µ•¹Ğ•ÉÉ½Èˆ°(€€€ô°(€€€Í¥µ¥±…É¥Ñå!¥ èì¡Ôè€‰9…å½¸¡…Í½¹³Ì„Í…Á…Ó…Ñ±…¡½èˆ°•¸è€‰Y•ÉäÍ¥µ¥±…ÈÑ¼Ñ¡”Ñ•…´…Ù•É…”ˆô°(€€€Í¥µ¥±…É¥Ñå5¥èì¡Ôè€‰!…Í½¹³Ì„Í…Á…Ó…Ñ±…¡½èˆ°•¸è€‰M¥µ¥±…ÈÑ¼Ñ¡”Ñ•…´…Ù•É…”ˆô°(€€€Í¥µ¥±…É¥Ñå1½Üèì(€€€€€¡Ôè€‰±Ó¥È„Í…Á…Ó…Ñ±…ÓÍ°ƒŠP­¥•Ÿ¥ÍëµÓDÁÉ½™¥°±•¡•Ğˆ°(€€€€€•¸è€‰¥™™•ÉÌ™É½´Ñ¡”Ñ•…´…Ù•É…”ƒŠPµ…ä‰”½µÁ±•µ•¹Ñ…Éäˆ°(€€€ô°(€€€€¼¼èƒ…Ñ±…½Ì•±Ó¥Ë¥ÌµÍë…´µ…É…°„ƒ
+Äµ©•°¹•´€ ÈÀÈØ´Àà´ÄÄÑ•É·¥­“Ù¹Ó¥Ì¤¸(€€€…Ù•Ù¥…Ñ¥½¸èì¡Ôè€‹Ñ±…½Ì•±Ó¥Ë¥ÌèíÁ½¥¹ÑÍôÁ½¹Ğˆ°•¸è€‰Ù•É…”‘•Ù¥…Ñ¥½¸èíÁ½¥¹ÑÍôÁ½¥¹ÑÌˆô°(€€€±…É•ÍÑ…Àèì¡Ôè€‰1•¹…å½‰ˆèí±…‰•±ô€¡í…Áô¤ˆ°•¸è€‰1…É•ÍĞèí±…‰•±ô€¡í…Áô¤ˆô°(€€€ÑÉ¥Ñ…¹AÉ½™¥±•å•‰É½Üèì¡Ôè€‰Íé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰Á•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ˆô°(€€€Á•ÉÍ½¹…±¥ÑåAÉ½™¥±”èì¡Ôè€‰Mé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰A•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ˆô°(€€€Ñ•…µÙQ½½±Ñ¥Àèì¡Ôè€‰Í…Á…Ó…Ñ±…œˆ°•¸è€‰Q•…´…Ùœˆô°(€€€…¹‘¥‘…Ñ•%¹Q•…´èì¡Ôè€‰)•³Ù±Ğ„Í…Á…Ñ‰…¸ˆ°•¸è€‰…¹‘¥‘…Ñ”¥¸Ñ¡”Ñ•…´ˆô°(€€€‘•Ù¥…Ñ¥½¹ÍÉ½µQ•…´èì¡Ôè€‰±Ó¥Ë¥Í•¬„Í…Á…Ó…Ñ±…ÓÍ°ˆ°•¸è€‰•Ù¥…Ñ¥½¹Ì™É½´Ñ•…´…Ù•É…”ˆô°(€€€‘•Ù¥…Ñ¥½¹áÁ±…¹…Ñ¥½¸èì(€€€€€¡Ôè€‰Á½é¥ÓµØ•±Ó¥Ë¥Ì…éĞ©•±•¹Ñ¤°¡½ä„©•³Ù±ĞÁ½¹ÑÍë…µ„„Í…Á…Ó…Ñ±…œ›Ù³ÙÑĞÙ…¸°„¹•…ÓµØ°¡½ä…±…ÑÑ„¸è•±Ó¥Ë¥ÌƒÙ¹µ…Ÿ…‰…¸¹•´µ¥»EÏµÓ¥Ìè„Í…Á…Ó…Ñ±…ÓÍ°•±Ó¥ËDÁÉ½™¥°­¥•Ÿ¥ÍëµÓDÍé•É•Á•Ğ¥Ì‰•ÓÙ±Ñ¡•Ğ¸ˆ°(€€€€€•¸è€‰Á½Í¥Ñ¥Ù”‘•Ù¥…Ñ¥½¸µ•…¹ÌÑ¡”…¹‘¥‘…Ñ”Í½É•Ì…‰½Ù”Ñ¡”Ñ•…´…Ù•É…”°„¹•…Ñ¥Ù”½¹”‰•±½Ü¥Ğ¸•Ù¥…Ñ¥½¸‰ä¥ÑÍ•±˜¥Ì¹½Ğ„©Õ‘•µ•¹Ğè„ÁÉ½™¥±”Ñ¡…Ğ‘¥™™•ÉÌ™É½´Ñ¡”Ñ•…´…Ù•É…”…¸…±Í¼Á±…ä„½µÁ±•µ•¹Ñ…ÉäÉ½±”¸ˆ°(€€€ô°(€€€‰•¡…Ù¥½É…±A…ÑÑ•É¹Íå•‰É½Üèì¡Ôè€‰·Å¯Ù“¥Í¤µ¥¹Ó…¬ˆ°•¸è€‰‰•¡…Ù¥½É…°Á…ÑÑ•É¹Ìˆô°(€€€¡…É…Ñ•É¥ÍÑ¥å¹…µ¥Ìèì¡Ôè€‰)•±±•µëD·Å¯Ù“¥Í¤‘¥¹…µ¥¯…¬ˆ°•¸è€‰¡…É…Ñ•É¥ÍÑ¥Œ‘å¹…µ¥Ìˆô°(€€€ÍÑÉ•¹Ñ¡	…‘”èì¡Ôè€‰ËEÍÏ¥œˆ°•¸è€‰MÑÉ•¹Ñ ˆô°(€€€İ…Ñ¡É•…	…‘”èì¡Ôè€‰¥å•±•¹“Dˆ°•¸è€‰]…Ñ …É•„ˆô°(€€€€¼¼7¥ÉĞÍ…Á…ÑÍé•É•Àµ‰±½­¬€¡™½ÉË…Ìµ©•³Ù³¥ÍÍ•°¤(€€€Ñ•…µI½±•Íå•‰É½Üèì¡Ôè€‰Í…Á…ÑÍé•É•Á•¬ˆ°•¸è€‰Ñ•…´É½±•Ìˆô°(€€€Ñ•…µI½±•ÍQ¥Ñ±”èì¡Ôè€‰Í…Á…ÑÍé•É•Àµ¯¥É“GµØ•É•‘·¥¹å”ˆ°•¸è€‰Q•…´µÉ½±”ÅÕ•ÍÑ¥½¹¹…¥É”É•ÍÕ±Ğˆô°(€€€µ•…ÍÕÉ•‘	…‘”èì¡Ôè€‰7¥ÉĞˆ°•¸è€‰5•…ÍÕÉ•ˆô°((€€€ÍÕ‰ÍÉ¥ÁÑ¥½¹‘µ¥¹I•ÅÕ¥É•èì(€€€€€¡Ôè€‰è•³E™¥é•Ó¥Ì…­Ñ¥Û…³…Ï…¡½è­•É•Í„Íé•ÉÙ•é•Ñ•…‘µ¥¹¥ÍéÑË…Ñ½Ë…Ğ¸ˆ°(€€€€€•¸è€‰½¹Ñ…Ğå½ÕÈ½É…¹¥Í…Ñ¥½¸…‘µ¥¸Ñ¼…Ñ¥Ù…Ñ”„ÍÕ‰ÍÉ¥ÁÑ¥½¸¸ˆ°(€€€ô°((€€€€¼¼I•ÅÕ•ÍÑÉ•‘¥ÑÍ	ÕÑÑ½¸(€€€É•ÅÕ•ÍÑM•¹Ğèì¡Ôè€‹ŠrL/¥Ë¥Ì•±¯ñ±‘Ù”ˆ°•¸è€‹ŠrLI•ÅÕ•ÍĞÍ•¹Ğˆô°(€€€É•ÅÕ•ÍÑÉ•‘¥ÑÌèì¡Ôè€‰-É•‘¥Ğ¥Ÿ¥¹å³¥Í”…è…‘µ¥¹ÓÍ°ˆ°•¸è€‰I•ÅÕ•ÍĞÉ•‘¥ÑÌ™É½´…‘µ¥¸ˆô°(€ô°((€€¼¼ƒŠRŠR 5…¹…•È½µÁ½¹•¹ÑÌ€ ½½µÁ½¹•¹ÑÌ½µ…¹…•È¼¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€µ…¹…•Èèì(€€€€¼¼Q•…µÉ•…Ñ•½É´(€€€Ñ•…µÉ•…Ñ”èì(€€€€€Ñ•…µ9…µ”èì¡Ôè€‰Í…Á…Ğ¹•Ù”ˆ°•¸è€‰Q•…´¹…µ”ˆô°(€€€€€Á±…•¡½±‘•Èèì¡Ôè€‰Á°¸5…É­•Ñ¥¹œÍ…Á…Ğˆ°•¸è€‰”¹œ¸5…É­•Ñ¥¹œÑ•…´ˆô°(€€€€€•ÉÉ½Èèì¡Ôè€‰!¥‰„¸AËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸A±•…Í”ÑÉä……¥¸¸ˆô°(€€€€€É•…Ñ¥¹œèì¡Ôè€‰3¥ÑÉ•¡½ë…ÏŠ˜ˆ°•¸è€‰É•…Ñ¥¹ŸŠ˜ˆô°(€€€€€É•…Ñ”èì¡Ôè€‰3¥ÑÉ•¡½ë…Ìˆ°•¸è€‰É•…Ñ”Ñ•…´ˆô°(€€€ô°((€€€€¼¼Q•…µ%¹Ù¥Ñ•½É´(€€€Ñ•…µ%¹Ù¥Ñ”èì(€€€€€…±É•…‘å5•µ‰•Èèì¡Ôè€‰è„Íé•·¥±ä·…ÈÑ…©„„Í…Á…Ñ¹…¬€¡Ù…äµ•£µÛÌ¯ñ±‘Ù”¤¸ˆ°•¸è€‰Q¡¥ÌÁ•ÉÍ½¸¥Ì…±É•…‘ä„µ•µ‰•È½È¡…Ì„Á•¹‘¥¹œ¥¹Ù¥Ñ”¸ˆô°(€€€€€•ÉÉ½Èèì¡Ôè€‰!¥‰„¸AËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸ˆô°(€€€€€•µ…¥±1…‰•°èì¡Ôè€‰µ…¥±µ´ˆ°•¸è€‰µ…¥°…‘‘É•ÍÌˆô°(€€€€€•µ…¥±A±…•¡½±‘•Èèì¡Ôè€‰­½±³¥…¥œ¹¡Ôˆ°•¸è€‰½±±•…Õ•½µÁ…¹ä¹½´ˆô°(€€€€€…‘‘¥¹œèì¡Ôè€‰!½éë……“…ÏŠ˜ˆ°•¸è€‰‘‘¥¹ŸŠ˜ˆô°(€€€€€…‘èì¡Ôè€‰!½éë……“…Ìˆ°•¸è€‰‘µ•µ‰•Èˆô°(€€€€€µ•µ‰•É‘‘•èì¡Ôè€‰Ñ…½Ğ¡½éë……‘ÑÕ¬¸ˆ°•¸è€‰5•µ‰•È…‘‘•ÍÕ•ÍÍ™Õ±±ä¸ˆô°(€€€€€¥¹Ù¥Ñ•M•¹Ğèì¡Ôè€‰5•£µÛÌ•±¯ñ±‘Ù”¸ÕÑ½µ…Ñ¥­ÕÍ…¸Í…Ñ±…­½é¥¬°¡„É•¥ÍéÑË…°¸ˆ°•¸è€‰%¹Ù¥Ñ”Í•¹Ğ¸Q¡•ä±°©½¥¸…ÕÑ½µ…Ñ¥…±±ä½¹”Ñ¡•äÉ•¥ÍÑ•È¸ˆô°(€€€ô°((€€€€¼¼Q•…µ%¹Í¥¡ÑÌ(€€€Ñ•…µ%¹Í¥¡ÑÌèì(€€€€€…Ù	å¥µ•¹Í¥½¸èì¡Ôè€‰Í…Á…Ó…Ñ±…œ‘¥µ•¹é§Í¯¥¹Ğˆ°•¸è€‰Q•…´…Ù•É…”‰ä‘¥µ•¹Í¥½¸ˆô°(€€€€€€¼¼­½Ë…‰‰¤ƒŠ{
+ÄèÍëÍË…ÏŠ˜ˆ©•±µ…å…Ë…é…Ğ„­¥Ù•é•Ñ•ÑĞƒ
+ÄµÍë…µ½Ğµ…å…Ë…éÑ„ì(€€€€€€¼¼…èƒé¨Í½È…éĞµ½¹‘©„•°°…µ¥Ğ„‰±½­¬Ó¥¹å±••Í•¸µÕÑ…Ğ¸(€€€€€ÍÑ‘•Ù!¥¹Ğèì¡Ôè€‰Í…Á…Ó…Ñ±…½¬ƒŠP•ç¥¹¤ƒ¥ÉÓ¥­•¬¹•´©•±•¹¹•¬µ•œ¸ˆ°•¸è€‰Q•…´…Ù•É…•ÌƒŠP¥¹‘¥Ù¥‘Õ…°Ù…±Õ•Ì…É”¹½ĞÍ¡½İ¸¸ˆô°(€€€€€Ñ•…µå¹…µ¥Ìèì¡Ôè€‰Í…Á…Ñ‘¥¹…µ¥­„ˆ°•¸è€‰Q•…´‘å¹…µ¥Ìˆô°(€€€€€Ñ•…µMÑÉ•¹Ñ èì¡Ôè€‰Í…Á…Ğ•ËEÍÏ¥”ˆ°•¸è€‰Q•…´ÍÑÉ•¹Ñ ˆô°(€€€€€É½İÑ¡É•„èì¡Ôè€‰•©±•ÍéÓ¥Í¤Ñ•Ëñ±•Ğˆ°•¸è€‰É½İÑ …É•„ˆô°(€€€€€µ½ÍÑ¥Ù•ÉÍ”èì¡Ôè€‰1•¹…å½‰ˆÍ½­Íëµ»ÅÏ¥œˆ°•¸è€‰5½ÍĞ‘¥Ù•ÉÍ”ˆô°(€€€€€‘¥Ù•ÉÍ¥Ñå•ÍŒèì¡Ôè€‰Í…Á…ÑÑ…½¬•±Ó¥ËDµ•¯Ùé•³µÓ¥Í•­•Ğƒ¥ÌÁ•ÉÍÁ•­ÓµÛ…­…Ğ¡½é¹…¬•ÉÉ”„Ñ•Ëñ±•ÑÉ”ƒŠP•è…é‘…œÙ¥Ñ„´ƒ¥Ì­É•…ÓµØÁ½Ñ•¹§…±Ğ©•±•¹Ğ¸ˆ°•¸è€‰Q•…´µ•µ‰•ÉÌ‰É¥¹œ‘¥Ù•ÉÍ”…ÁÁÉ½…¡•Ì…¹Á•ÉÍÁ•Ñ¥Ù•ÌÑ¼Ñ¡¥Ì…É•„ƒŠPÑ¡¥ÌÉ•ÁÉ•Í•¹ÑÌÉ¥ ‘¥ÍÕÍÍ¥½¸…¹É•…Ñ¥Ù”Á½Ñ•¹Ñ¥…°¸ˆô°(€€€€€…¹…±åÍ¥Í	…Í¥Ìèì¡Ôè€‰è•±•µë¥ÌíÍ½É•‘ô­¥ÓÙ±ÓÙÑĞÑ•ÍéÑ•¸…±…ÁÕ°€¡íÉ•µ…¥¹¥¹ôÑ…œ·¥œ¹•´ÓÙ±ÓÙÑÑ”­¤¤¸ˆ°•¸è€‰¹…±åÍ¥Ì‰…Í•½¸íÍ½É•‘ô½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌ€¡íÉ•µ…¥¹¥¹ôµ•µ‰•ÉÌ¡…Ù•¸Ğ½µÁ±•Ñ•å•Ğ¤¸ˆô°(€€€ô°((€€€€¼¼Q•…µ!•…Ñµ…À(€€€Ñ•…µ!•…Ñµ…Àèì(€€€€€µ•µ‰•Èèì¡Ôè€‰Í…Á…ÑÑ…œˆ°•¸è€‰5•µ‰•Èˆô°(€€€€€¹½Ñ½µÁ±•Ñ•èì¡Ôè€‰9¥¹Ì­¥ÓÙ±ÑÙ”ˆ°•¸è€‰9½Ğ½µÁ±•Ñ•ˆô°(€€€€€Í½É•!¥ èì¡Ôè€‰5……Ìˆ°•¸è€‰!¥ ˆô°(€€€€€Í½É•5¥èì¡Ôè€‰/Ùë¥Àˆ°•¸è€‰5¥ˆô°(€€€€€Í½É•1½Üèì¡Ôè€‰±…Í½¹äˆ°•¸è€‰1½Üˆô°(€€€€€±••¹‘I…¹”èì¡Ôè€‰±…Í½¹äƒŠH5……ÌÁ½¹ÑÍë…´ˆ°•¸è€‰1½ÜƒŠH!¥ Í½É”ˆô°(€€€€€±••¹‘9½ÍÍ•ÍÍµ•¹Ğèì¡Ôè€‰9¥¹Ì­¥ÓÙ±ÓÙÑĞÑ•ÍéĞˆ°•¸è€‰9¼…ÍÍ•ÍÍµ•¹Ğå•Ğˆô°(€€€€€‘¥µ•¹Í¥½¹Õ¥‘”èì¡Ôè€‰¥µ•¹é§Í¬µ…å…Ë…é…Ñ„ˆ°•¸è€‰¥µ•¹Í¥½¸Õ¥‘”ˆô°(€€€ô°((€€€€¼¼…¹‘¥‘…Ñ•%¹Ù¥Ñ•½É´(€€€…¹‘¥‘…Ñ•%¹Ù¥Ñ”èì(€€€€€•µ…¥±1…‰•°èì¡Ôè€‰µ…¥°µ´€¡½Á¥½»…±¥Ì¤ˆ°•¸è€‰µ…¥°…‘‘É•ÍÌ€¡½ÁÑ¥½¹…°¤ˆô°(€€€€€•µ…¥±A±…•¡½±‘•Èèì¡Ôè€‰©•±½±ÑÁ•±‘„¹¡Ôˆ°•¸è€‰…¹‘¥‘…Ñ••á…µÁ±”¹½´ˆô°(€€€€€¹…µ•1…‰•°èì¡Ôè€‰)•³Ù±Ğ¹•Ù”ˆ°•¸è€‰…¹‘¥‘…Ñ”¹…µ”ˆô°(€€€€€¹…µ•A±…•¡½±‘•Èèì¡Ôè€‰-½Û…Ì¹¹„ˆ°•¸è€‰)…¹”Mµ¥Ñ ˆô°(€€€€€¹…µ•I•ÅÕ¥É•èì¡Ôè€‰©•³Ù±Ğ¹•Ù”¯ÙÑ•±•ëD¸ˆ°•¸è€‰…¹‘¥‘…Ñ”¹…µ”¥ÌÉ•ÅÕ¥É•¸ˆô°(€€€€€Á½Í¥Ñ¥½¹1…‰•°èì¡Ôè€‰A½ëµ§Ì€¡½Á¥½»…±¥Ì¤ˆ°•¸è€‰A½Í¥Ñ¥½¸€¡½ÁÑ¥½¹…°¤ˆô°(€€€€€Á½Í¥Ñ¥½¹A±…•¡½±‘•Èèì¡Ôè€‰Á°¸É½¹Ñ•¹™•©±•ÍéÓD°Q<°M…±•Ìµ…¹…•Èˆ°•¸è€‰”¹œ¸É½¹Ñ•¹‘•Ø°Q<°M…±•Ìµ…¹…•Èˆô°(€€€€€Ñ•…µ1…‰•°èì¡Ôè€‰Í…Á…Ğ€¡½Á¥½»…±¥Ì¤ˆ°•¸è€‰Q•…´€¡½ÁÑ¥½¹…°¤ˆô°(€€€€€¹½Q•…´èì¡Ôè€‹ŠP9¥¹ÌÍ…Á…ĞƒŠPˆ°•¸è€‹ŠP9¼Ñ•…´ƒŠPˆô°(€€€€€•µ…¥±1…¹œèì¡Ôè€‰µ…¥°¹å•±Ù”ˆ°•¸è€‰µ…¥°±…¹Õ…”ˆô°(€€€€€É•…Ñ•ÉÉ½Èèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ„µ•£µÛÌ³¥ÑÉ•¡½ë…Í„Í½Ë…¸¸ˆ°•¸è€‰¸•ÉÉ½È½ÕÉÉ•İ¡¥±”É•…Ñ¥¹œÑ¡”¥¹Ù¥Ñ”¸ˆô°(€€€€€•¹•É¥ÉÉ½Èèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ¸AËÍ‹…±ƒé©É„¸ˆ°•¸è€‰¸•ÉÉ½È½ÕÉÉ•¸A±•…Í”ÑÉä……¥¸¸ˆô°(€€€€€É•…Ñ¥¹œèì¡Ôè€‰3¥ÑÉ•¡½ë…ÏŠ˜ˆ°•¸è€‰É•…Ñ¥¹ŸŠ˜ˆô°(€€€€€É•…Ñ•%¹Ù¥Ñ”èì¡Ôè€‰5•£µÛÌ³¥ÑÉ•¡½ë…Í„ˆ°•¸è€‰É•…Ñ”¥¹Ù¥Ñ”ˆô°(€€€€€¥¹Ù¥Ñ•É•…Ñ•èì¡Ôè€‰5•£µÛÌ³¥ÑÉ•¡½éÙ„„ˆ°•¸è€‰%¹Ù¥Ñ”É•…Ñ•„ˆô°(€€€€€½Áå%¹ÍÑÉÕÑ¥½¸èì¡Ôè€‰7…Í½±­¤…è…³…‰‰¤±¥¹­•Ğƒ¥Ì¯ñ±‘•°„©•³Ù±Ñ¹•¬èˆ°•¸è€‰½ÁäÑ¡”±¥¹¬‰•±½Ü…¹Í•¹¥ĞÑ¼Ñ¡”…¹‘¥‘…Ñ”èˆô°(€€€€€½Á¥•èì¡Ôè€‰7…Í½±Ù„„ˆ°•¸è€‰½Á¥•„ˆô°(€€€€€½Áäèì¡Ôè€‰7…Í½³…Ìˆ°•¸è€‰½Áäˆô°(€€€ô°((€€€€¼¼…¹‘¥‘…Ñ•Q•…µA¥­•È(€€€…¹‘¥‘…Ñ•Q•…µA¥­•Èèì(€€€€€¹½Q•…´èì¡Ôè€‹ŠP9¥¹ÌÍ…Á…ĞƒŠPˆ°•¸è€‹ŠP9¼Ñ•…´ƒŠPˆô°(€€€€€Í…Ù¥¹œèì¡Ôè€‰5•¹Ó¥ÏŠ˜ˆ°•¸è€‰M…Ù¥¹ŸŠ˜ˆô°(€€€€€Í…Ù”èì¡Ôè€‰5•¹Ó¥Ìˆ°•¸è€‰M…Ù”ˆô°(€€€€€Í…Ù•èì¡Ôè€‰5•¹ÑÙ”„ˆ°•¸è€‰M…Ù•„ˆô°(€€€€€•ÉÉ½Èèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ¸AËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸A±•…Í”ÑÉä……¥¸¸ˆô°(€€€ô°((€€€€¼¼…¹‘¥‘…Ñ•I•Ù½­•	ÕÑÑ½¸(€€€…¹‘¥‘…Ñ•I•Ù½­”èì(€€€€€É•Ù½­”èì¡Ôè€‰Y¥ÍÍé…Ù½¸ˆ°•¸è€‰I•Ù½­”ˆô°(€€€€€É•Ù½­•Q¥Ñ±”èì¡Ôè€‰5•£µÛÌÙ¥ÍÍé…Ù½»…Í„ˆ°•¸è€‰I•Ù½­”¥¹Ù¥Ñ”ˆô°(€€€€€É•Ù½­••ÍÉ¥ÁÑ¥½¸èì¡Ôè€‰µ•£µÛÍ±¥¹¬ƒ¥ÉÛ¥¹åÑ•±•¹»¤Û…±¥¬°„©•³Ù±Ğ¹•´ÑÕ‘©„µ…©­¥ÓÙ±Ñ•¹¤„™•±·¥Ë¥ÍĞ¸è„·ÅÙ•±•Ğ¹•´Ù¥ÍÍé…Ù½¹¡…ÓÌ¸ˆ°•¸è€‰Q¡”¥¹Ù¥Ñ”±¥¹¬İ¥±°‰•½µ”¥¹Ù…±¥…¹Ñ¡”…¹‘¥‘…Ñ”İ¥±°¹¼±½¹•È‰”…‰±”Ñ¼½µÁ±•Ñ”Ñ¡”…ÍÍ•ÍÍµ•¹Ğ¸Q¡¥Ì…¹¹½Ğ‰”Õ¹‘½¹”¸ˆô°(€€€€€…¹•°èì¡Ôè€‰7¥Í”ˆ°•¸è€‰…¹•°ˆô°(€€€€€É•Ù½­¥¹œèì¡Ôè€‰Y¥ÍÍé…Ù½»…ÏŠ˜ˆ°•¸è€‰I•Ù½­¥¹ŸŠ˜ˆô°(€€€ô°((€€€€¼¼Q•…µ5•µ‰•ÉI•µ½Ù•	ÕÑÑ½¸(€€€Ñ•…µ5•µ‰•ÉI•µ½Ù”èì(€€€€€É•µ½Ù”èì¡Ôè€‰±Ó…Ù½³µÓ…Ìˆ°•¸è€‰I•µ½Ù”ˆô°(€€€€€½¹™¥Éµe•Ìèì¡Ôè€‰%•¸ˆ°•¸è€‰e•Ìˆô°(€€€€€½¹™¥Éµ9¼èì¡Ôè€‰9•´ˆ°•¸è€‰9¼ˆô°(€€€ô°((€€€€¼¼A•¹‘¥¹%¹Ù¥Ñ•I•Í•¹‘	ÕÑÑ½¸(€€€Á•¹‘¥¹%¹Ù¥Ñ•I•Í•¹èì(€€€€€Í•¹Ğèì¡Ôè€‰±¯ñ±‘Ù”ƒŠrLˆ°•¸è€‰M•¹ĞƒŠrLˆô°(€€€€€•ÉÉ½ÉI•ÑÉäèì¡Ôè€‰!¥‰„ƒŠLƒé©É„üˆ°•¸è€‰ÉÉ½ÈƒŠLÉ•ÑÉäüˆô°(€€€€€Í•¹‘¥¹œèì¡Ôè€‰/ñ±“¥ÏŠ˜ˆ°•¸è€‰M•¹‘¥¹ŸŠ˜ˆô°(€€€€€É•Í•¹èì¡Ôè€‹i©É…¯ñ±ˆ°•¸è€‰I•Í•¹ˆô°(€€€ô°((€€€€¼¼A•¹‘¥¹%¹Ù¥Ñ•…¹•±	ÕÑÑ½¸(€€€Á•¹‘¥¹%¹Ù¥Ñ•…¹•°èì(€€€€€…¹•±%¹Ù¥Ñ”èì¡Ôè€‰SÙÉ³¥Ìˆ°•¸è€‰…¹•°ˆô°(€€€€€½¹™¥Éµe•Ìèì¡Ôè€‰%•¸ˆ°•¸è€‰e•Ìˆô°(€€€€€½¹™¥Éµ9¼èì¡Ôè€‰9•´ˆ°•¸è€‰9¼ˆô°(€€€ô°(€ô°((€€¼¼ƒŠRŠR Q•…´½µÁ½¹•¹ÑÌ€¡ÍÉŒ½½µÁ½¹•¹ÑÌ½Ñ•…´¼¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€Ñ•…µ½µÀèì(€€€€¼¼Q•…µA…•M¡•±°ƒŠPÑ…‰Ì(€€€Ñ…‰=Ù•ÉÙ¥•Üèì¡Ôè€‹ÑÑ•­¥¹Ó¥Ìˆ°•¸è€‰=Ù•ÉÙ¥•Üˆô°(€€€Ñ…‰%¹Ñ•±±¥•¹”èì¡Ôè€‰Í…Á…Ñ¥¹Ñ•±±¥•¹¥„ˆ°•¸è€‰Q•…´%¹Ñ•±±¥•¹”ˆô°(€€€Ñ…‰%¹Ñ•±±¥•¹•M¡½ÉĞèì¡Ôè€‰%¹Ñ•±±¥•¹¥„ˆ°•¸è€‰%¹Ñ•±±¥•¹”ˆô°(€€€Ñ…‰AÉ½™¥±”èì¡Ôè€‰Mé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰A•ÉÍ½¹…±¥Ñäˆô°(€€€Ñ…‰5•µ‰•ÉÌèì¡Ôè€‰Q…½¬ˆ°•¸è€‰5•µ‰•ÉÌˆô°((€€€€¼¼Q•…µ=Ù•ÉÙ¥•İQ…ˆƒŠP…µÁ…¥¸‰…¹¹•È(€€€…Ñ¥Ù•	…‘”èì¡Ôè€‰­ÓµØˆ°•¸è€‰Ñ¥Ù”ˆô°(€€€Í•±™ÍÍ•ÍÍµ•¹Ñ1…‰•°èì¡Ôè€‹Ù»¥ÉÓ¥­•³¥Ìˆ°•¸è€‰Í•±˜µ…ÍÍ•ÍÍµ•¹Ğˆô°(€€€½‰Í•ÉÙ•É1…‰•°èì¡Ôè€‰½‰Í•ÉÙ•Èˆ°•¸è€‰½‰Í•ÉÙ•Èˆô°(€€€‘…åÍ1…‰•°èì¡Ôè€‰¹…Àˆ°•¸è€‰‘…åÌˆô°(€€€Ù¥•İ…µÁ…¥¸èì¡Ôè€‰7¥Ë¥Ìµ•¹å¥Ó…Í„ˆ°•¸è€‰=Á•¸µ•…ÍÕÉ•µ•¹Ğˆô°((€€€€¼¼Q•…µ=Ù•ÉÙ¥•İQ…ˆƒŠP•µÁÑäÍÑ…Ñ”(€€€¹½…Ñ…å•‰É½Üèì¡Ôè€‰¹¥¹Ì…‘…Ğˆ°•¸è€‰¹¼‘…Ñ„å•Ğˆô°(€€€¹½ÍÍ•ÍÍµ•¹ÑÍQ¥Ñ±”èì¡Ôè€‰7¥œ¹¥¹Ì­¥ÓÙ±ÓÙÑĞƒ¥ÉÓ¥­•³¥Ìˆ°•¸è€‰9¼½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌå•Ğˆô°(€€€¹½ÍÍ•ÍÍµ•¹ÑÍ•ÍŒèì(€€€€€¡Ôè€‰%¹“µÑÌ•ä·¥Ë¥ÍĞ°¡½ä„Í…Á…ÑÑ…½¬µ•­•é‘¡•ÍÏ¥¬…èƒ¥ÉÓ¥­•³¥Í•­•Ğ¸ˆ°(€€€€€•¸è€‰MÑ…ÉĞ„€ÌØÃ
+À…µÁ…¥¸Í¼Ñ•…´µ•µ‰•ÉÌ…¸‰•¥¸Ñ¡•¥È…ÍÍ•ÍÍµ•¹ÑÌ¸ˆ°(€€€ô°(€€€ÍÑ…ÉÑ…µÁ…¥¸èì¡Ôè€‰7¥Ë¥Ì¥¹“µÓ…Í„ˆ°•¸è€‰MÑ…ÉĞ„µ•…ÍÕÉ•µ•¹Ğˆô°((€€€€¼¼Q•…µ=Ù•ÉÙ¥•İQ…ˆƒŠPÁ•ÉÍ½¹…±¥ÑäÁÉ½™¥±”…É(€€€Ñ•…µÙM•±™å•‰É½Üèì¡Ôè€‰Í…Á…Ğƒ…Ñ±…œƒ
+ÜƒÙ¹¯¥Àˆ°•¸è€‰Ñ•…´…Ùœƒ
+ÜÍ•±˜ˆô°(€€€ÑÉ¥Ñ…¹AÉ½™¥±”èì¡Ôè€‰Mé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰A•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ˆô°(€€€µ•µ‰•ÉÍM•±˜èì¡Ôè€‰›Dƒ
+ÜƒÙ»¥ÉÓ¥­•³¥Ìˆ°•¸è€‰µ•µ‰•ÉÌƒ
+ÜÍ•±˜ˆô°(€€€¹½ÍÍ•ÍÍµ•¹ÑÍAÉ½™¥±”èì(€€€€€¡Ôè€‰7¥œ¹¥¹Ì­¥ÓÙ±ÓÙÑĞ™•±·¥Ë¥Ì¸ÁÉ½™¥±½¬µ•©•±•»µÓ¥Ï¥¡•è±•…³…‰ˆ€ÄÑ…œÓÙ±ÑÍ”­¤¸ˆ°(€€€€€•¸è€‰9¼½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌå•Ğ¸Ğ±•…ÍĞ½¹”µ•µ‰•È¹••‘ÌÑ¼½µÁ±•Ñ”½¹”Ñ¼Í¡½ÜÑ¡”ÁÉ½™¥±•Ì¸ˆ°(€€€ô°((€€€€¼¼Q•…µ=Ù•ÉÙ¥•İQ…ˆƒŠP‘å¹…µ¥Ì…É(€€€Ñ•…µå¹…µ¥Íå•‰É½Üèì¡Ôè€‰Í…Á…Ñ‘¥¹…µ¥­„ˆ°•¸è€‰Ñ•…´‘å¹…µ¥Ìˆô°(€€€­•å¡…É…Ñ•É¥ÍÑ¥Ìèì¡Ôè€‰-Õ±Ì©•±±•µëE¬ˆ°•¸è€‰-•ä¡…É…Ñ•É¥ÍÑ¥Ìˆô°(€€€¹½Ñ¹½Õ¡…Ñ„èì¡Ôè€‰9¥¹Ì•³¥œ…‘…Ğ…è•±•µë¥Í¡•è¸ˆ°•¸è€‰9½Ğ•¹½Õ ‘…Ñ„™½È…¹…±åÍ¥Ì¸ˆô°(€€€Ñ•…µMÑÉ•¹Ñ¡å•‰É½Üèì¡Ôè€‰Í…Á…Ğ•ËEÍÏ¥”ˆ°•¸è€‰Ñ•…´ÍÑÉ•¹Ñ ˆô°(€€€É½İÑ¡É•…å•‰É½Üèì¡Ôè€‰™•©±•ÍéÓ¥Í¤Ñ•Ëñ±•Ğˆ°•¸è€‰É½İÑ …É•„ˆô°(€€€µ½ÍÑ¥Ù•ÉÍ•å•‰É½Üèì¡Ôè€‰±•¹…å½‰ˆÍ½­Íëµ»ÅÏ¥œˆ°•¸è€‰µ½ÍĞ‘¥Ù•ÉÍ”ˆô°(€€€‘¥Ù•ÉÍ•A•ÉÍÁ•Ñ¥Ù•Ìèì(€€€€€¡Ôè€‰Í…Á…ÑÑ…½¬•±Ó¥ËDµ•¯Ùé•³µÓ¥Í•­•Ğƒ¥ÌÁ•ÉÍÁ•­ÓµÛ…­…Ğ¡½é¹…¬•ÉÉ”„Ñ•Ëñ±•ÑÉ”¸ˆ°(€€€€€•¸è€‰Q•…´µ•µ‰•ÉÌ‰É¥¹œ‘¥Ù•ÉÍ”Á•ÉÍÁ•Ñ¥Ù•ÌÑ¼Ñ¡¥Ì…É•„¸ˆ°(€€€ô°((€€€€¼¼Q•…µ=Ù•ÉÙ¥•İQ…ˆƒŠPµ•µ‰•ÉÌµ¥¹¤±¥ÍĞ(€€€µ•µ‰•ÉÍå•‰É½Üèì¡Ôè€‰Ñ…½¬ˆ°•¸è€‰µ•µ‰•ÉÌˆô°(€€€Ñ•…µ5•µ‰•ÉÍQ¥Ñ±”èì¡Ôè€‰Í…Á…ÑÑ…½¬ˆ°•¸è€‰5•µ‰•ÉÌˆô°(€€€¹½5•µ‰•ÉÍe•Ğèì¡Ôè€‰7¥œ¹¥¹Í•¹•¬Ñ…½¬¸ˆ°•¸è€‰9¼µ•µ‰•ÉÌå•Ğ¸ˆô°(€€€‘½¹•	…‘”èì¡Ôè€‹ŠrL/¥Íèˆ°•¸è€‹ŠrL½¹”ˆô°(€€€Á•¹‘¥¹	…‘”èì¡Ôè€‹Š^0ñŸE‰•¸ˆ°•¸è€‹Š^0A•¹‘¥¹œˆô°((€€€€¼¼Q•…µA…ÑÑ•É¹…É(€€€Ñ•…µA…ÑÑ•É¹å•‰É½Üèì¡Ôè€‰Í…Á…Ñµ¥¹Ñ„ˆ°•¸è€‰Ñ•…´Á…ÑÑ•É¸ˆô°(€€€‘½µ¥¹…¹ÑA…ÑÑ•É¸èì¡Ôè€‰½µ¥»…¹Ì·Å¯Ù“¥Í¤µ¥¹Ó…é…Ğˆ°•¸è€‰½µ¥¹…¹Ğ½Á•É…Ñ¥¹œÁ…ÑÑ•É¸ˆô°(€€€Á…ÑÑ•É¹I•ÅÕ¥É•Í…Ñ„èì(€€€€€¡Ôè€‰µ¥¹Ó…é…Ğ­¥Íë…·µÓ…Ï…¡½è±•…³…‰ˆ€Ì­¥ÓÙ±ÓÙÑĞƒ¥ÉÓ¥­•³¥ÌÍëñ­Ï¥•Ì¸)•±•¹±•œèíÑ½Ñ…±ôÑ…‹Í°í½µÁ±•Ñ•‘ôÓÙ±ÓÙÑÑ”­¤¸ˆ°(€€€€€•¸è€‰A…ÑÑ•É¸…±Õ±…Ñ¥½¸É•ÅÕ¥É•Ì…Ğ±•…ÍĞ€Ì½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌ¸ˆ°(€€€ô°(€€€Í…µÁ±•1…‰•°èì¡Ôè€‰5¥¹Ñ„ˆ°•¸è€‰M…µÁ±”ˆô°(€€€ÍÑ…‰¥±¥Ñå1…‰•°èì¡Ôè€‰MÑ…‰¥±¥Ó…Ìˆ°•¸è€‰MÑ…‰¥±¥Ñäˆô°(€€€Á…ÑÑ•É¹±…É¥Ñå1…‰•°èì¡Ôè€‰5¥¹Ó…é…ĞµÑ¥ÍéÑ…Ï…œˆ°•¸è€‰A…ÑÑ•É¸±…É¥Ñäˆô°(€€€½¹™¥‘•¹•1…‰•°èì¡Ôè€‰Á½¹Ñ½ÍÏ…œˆ°•¸è€‰½¹™¥‘•¹”ˆô°(€€€ÍÑÉ•¹Ñ¡Íå•‰É½Üèì¡Ôè€‰•ËEÍÏ¥•¬ˆ°•¸è€‰ÍÑÉ•¹Ñ¡Ìˆô°(€€€‰±¥¹‘MÁ½ÑÍå•‰É½Üèì¡Ôè€‰Ù…­™½±Ñ½¬ˆ°•¸è€‰‰±¥¹ÍÁ½ÑÌˆô°(€€€¹•áÑMÑ•ÁÍå•‰É½Üèì¡Ôè€‰…«…¹±½ÑĞ¯ÙÙ•Ñ­•ëD³¥Ã¥Í•¬ˆ°•¸è€‰É•½µµ•¹‘•¹•áĞÍÑ•ÁÌˆô°(€€€Ñ¡¥Í]••¬èì¡Ôè€‰é•¸„£¥Ñ•¸ˆ°•¸è€‰Q¡¥Ìİ••¬ˆô°(€€€Ñ¡¥Í5½¹Ñ èì¡Ôè€‰é•¸„£Í¹…Á‰…¸ˆ°•¸è€‰Q¡¥Ìµ½¹Ñ ˆô°(€€€½¹½¥¹œèì¡Ôè€‰I•¹‘Íé•É•Í•¸ˆ°•¸è€‰=¹½¥¹œˆô°(€€€•áÁ±½É•A…ÑÑ•É¸èì¡Ôè€‰5•»¥é•´„Í…Á…Ñµ¥¹Ó…Ğˆ°•¸è€‰áÁ±½É”Ñ•…´Á…ÑÑ•É¸ˆô°(€€€…±Ñ•É¹…Ñ¥Ù•A…ÑÑ•É¸èì¡Ôè€‰/Ùé•±¤…±Ñ•É¹…ÓµØµ¥¹Ó…é…Ğèˆ°•¸è€‰±½Í•ÍĞ…±Ñ•É¹…Ñ¥Ù”Á…ÑÑ•É¸èˆô°(€€€µ•µ‰•ÉÍÍ•ÍÍµ•¹ÑÌèì¡Ôè€‰Ñ…œƒ¥ÉÓ¥­•³¥Í”…±…Á«…¸ˆ°•¸è€‰µ•µ‰•È…ÍÍ•ÍÍµ•¹ÑÌˆô°(€€€µ¥ÍÍ¥¹…Ñ„èì¡Ôè€‰¡§…¹åëÌ…‘…Ğˆ°•¸è€‰µ¥ÍÍ¥¹œˆô°(€€€™É…µ¥¹9½Ñ”èì(€€€€€¡Ôè€‹%ÉÑ•±µ•ë¥Í¤¹å•±Ø„Í…Á…Ğ©•±•¹±•¤°ƒÙ»¥ÉÓ¥­•³¥Ìµ…±…ÃèÑ•¹•±å•¥¡•èƒŠP¹•´Ù…±¥“…±ĞÑ¥Á½³Í¥„°‘¥…»Íé¥ÌÙ…äÑ•±©•ÏµÑ·¥¹åµµ­”¸¯ÙéÙ•Ñ±•»ñ°·¥ÉĞ‰¥é…±µ¤£…³Ìƒ¥ÌÁÍé¥¡½³Í¥…¤‰¥éÑ½¹Ï…œ¯ñ³Ù¸•Ù¥‘•¹¥„¸ˆ°(€€€€€•¸è€‰%¹Ñ•ÉÁÉ•Ñ¥Ù”±…¹Õ…”™½ÈÑ¡”Ñ•…´ÌÕÉÉ•¹ĞÍ•±˜µ…ÍÍ•ÍÍµ•¹Ğµ‰…Í•…á•ÌƒŠP¹½Ğ„Ù…±¥‘…Ñ•ÑåÁ½±½ä°‘¥…¹½Í¥Ì°½ÈÁ•É™½Éµ…¹”±…‰•°¸Q¡”‘¥É•Ñ±äµ•…ÍÕÉ•ÑÉÕÍĞ¹•Ñİ½É¬…¹ÁÍå¡½±½¥…°Í…™•Ñä…É”Í•Á…É…Ñ”•Ù¥‘•¹”¸ˆ°(€€€ô°((€€€€¼¼Q•…µI½±•M•Ñ¥½¸(€€€•ÍÑ¥µ…Ñ•‘I½±•Íå•‰É½Üèì¡Ôè€‰Í…Á…ÑÍé•É•Á•¬ˆ°•¸è€‰Ñ•…´É½±•Ìˆô°(€€€Á••Éå•‰É½Üèì¡Ôè€‹Ù¹¯¥ÀÙÌ¸Í…Á…Ñ¯¥Àˆ°•¸è€‰Í•±˜µ¥µ…”ÙÌ¸Ñ•…´Ù¥•Üˆô°(€€€Á••ÉQ¥Ñ±”èì¡Ôè€‹5ä³…Ñ©„„Í…Á…Ğˆ°•¸è€‰!½ÜÑ¡”Ñ•…´Í••Ì¥Ğˆô°(€€€Á••É•ÍŒèì(€€€€€¡Ôè€‰Í…Á…ÑÓ…ÉÍ¤Ù¥ÍÍé…©•±ë¥Ìµ¯ÙÈƒÙÍÍé•ÏµÑ•ÑĞ¯¥Á”Ñ…½¹¯¥¹ĞƒŠP…èƒÙ¹­¥ÓÙ±Ó¥Ìµ•±³¤·¥ÉĞÍ…Á…Ñ¯¥À­•Ëñ°¸ÃÙÑÑä„Í…Á…Ñ¯¥À…é½¸Íé•É•Ã¥Ğ©•³Ù±¤°…µ•±ä…èƒÙ¹¯¥Á‰•¸¹•´Íé•É•Á•°¸ˆ°(€€€€€•¸è€‰Q¡”…É•…Ñ•Ù¥•Ü™É½´Ñ¡”Á••È™••‘‰…¬É½Õ¹°Á•Èµ•µ‰•ÈƒŠP„µ•…ÍÕÉ•Ñ•…´Ù¥•Ü¹•áĞÑ¼Ñ¡”Í•±˜µÉ•Á½ÉĞ¸Q¡”‘½Ğµ…É­ÌÉ½±•Ì¥¸Ñ¡”Ñ•…´Ù¥•ÜÑ¡…Ğ‘½¸Ğ…ÁÁ•…È¥¸Ñ¡”Í•±˜µ¥µ…”¸ˆ°(€€€ô°(€€€€¼¼è…¹½¹¥µ¥Ó…ÌµÁ…‘³Ì€¡íµ¥¹ô€ô5%9}IQIM}=I}9=9e5=UM}IQ¤„(€€€€¼¼£µÛÍ‹Í°¥¹Ñ•ÉÁ½³…³Í‘¥¬ƒŠP±¥Ñ•Ë…°Íë…µ½Ğ¥‘”¹”ƒ¥•ÍÌ‰”¸(€€€Á••É½Ù•É…”èì¡Ôè€‰í…‰½Ù•ô€¼íÑ½Ñ…±ôÑ…»…°ƒ…±°ƒÙÍÍé”„Í…Á…Ñ¯¥À€¡±•…³…‰ˆíµ¥¹ôƒ¥ÉÓ¥­•³D¤ˆ°•¸è€‰Ñ•…´Ù¥•Ü…Ù…¥±…‰±”™½Èí…‰½Ù•ô€¼íÑ½Ñ…±ôµ•µ‰•ÉÌ€¡…Ğ±•…ÍĞíµ¥¹ôÉ…Ñ•ÉÌ¤ˆô°(€€€Á••ÉI…Ñ•É½Õ¹Ğèì¡Ôè€‰í¹ôƒ¥ÉÓ¥­•³Dˆ°•¸è€‰í¹ôÉ…Ñ•ÉÌˆô°(€€€Á••É	•±½İQ¡É•Í¡½±èì(€€€€€¡Ôè€‰7¥œ­•Ù•Í•‰ˆµ¥¹Ğíµ¥¹ôÍ…Á…ÑÓ…ÉÌ…‘½ÑĞÙ¥ÍÍé…©•±ë¥ÍĞƒŠP…èƒÙÍÍé•ÏµÑ•ÑĞ¯¥À„»¥ÙÑ•±•¹Ï¥œÛ¥‘•±·¥‰•¸Í…¬„¯ñÍëÙˆ™•±•ÑĞ©•±•¹¥¬µ•œ¸ˆ°(€€€€€•¸è€‰•İ•ÈÑ¡…¸íµ¥¹ôÑ•…µµ…Ñ•Ì¡…Ù”É•ÍÁ½¹‘•Í¼™…ÈƒŠPÑ¼ÁÉ½Ñ•Ğ…¹½¹åµ¥Ñä°Ñ¡”…É•…Ñ•Ù¥•Ü½¹±ä…ÁÁ•…ÉÌ…‰½Ù”Ñ¡”Ñ¡É•Í¡½±¸ˆ°(€€€ô°(€€€Á••ÉM•±™1…‰•°èì¡Ôè€‹Y¹¯¥À€¡Í…«…Ğ­¥ÓÙ±Ó¥Ì¤ˆ°•¸è€‰M•±˜µ¥µ…”€¡½İ¸…¹Íİ•ÉÌ¤ˆô°(€€€Á••ÉQ•…µ1…‰•°èì¡Ôè€‰Í…Á…Ñ¯¥À€¡Ó…ÉÍ…¬Íé•É¥¹Ğ¤ˆ°•¸è€‰Q•…´Ù¥•Ü€¡Á•ÈÑ•…µµ…Ñ•Ì¤ˆô°(€€€Á••É9½M•±˜èì¡Ôè€‰9¥¹ÌÍ…«…Ğ­¥ÓÙ±Ó¥ÌƒŠP…èƒÙÍÍé•Ù•Ó¥Í¡•èÓÙ±ÑÍ­¤„Íé•É•Àµ¯¥É“GµÙ•Ğ¸ˆ°•¸è€‰9¼Í•±˜µÉ•Á½ÉĞå•ĞƒŠP™¥±°¥¸Ñ¡”É½±”ÅÕ•ÍÑ¥½¹¹…¥É”Ñ¼½µÁ…É”¸ˆô°(€€€Á••É¥™˜èì¡Ôè€‰èƒÙ¹¯¥Á‰•¸¹•´Íé•É•Á•°ˆ°•¸è€‰9½Ğ¥¸Ñ¡”Í•±˜µ¥µ…”ˆô°(€€€Á••É½½Ñ¹½Ñ”èì(€€€€€¡Ôè€‰Í…Á…Ñ¯¥À»¥ÙÑ•±•¸èÍ•¹­¤•ç¥¹¤©•³Ù³¥Í”¹•´Ù¥ÍÍé…­•É•Í¡•ÓD°ƒ¥Ìíµ¥¹ôƒ¥ÉÓ¥­•³D…±…ÑĞ¹•´©•±•¹¥¬µ•œ¸ˆ°(€€€€€•¸è€‰Q¡”Ñ•…´Ù¥•Ü¥Ì…¹½¹åµ½ÕÌè¹¼¥¹‘¥Ù¥‘Õ…°Ì…¹Íİ•ÉÌ…¸‰”ÑÉ…•°…¹¹½Ñ¡¥¹œ¥ÌÍ¡½İ¸‰•±½Üíµ¥¹ôÉ…Ñ•ÉÌ¸ˆ°(€€€ô°(€€€Ñ•…µI½±•Q¥Ñ±”èì¡Ôè€‰Í…Á…ÑÍé•É•Àµ•±•µë¥Ìˆ°•¸è€‰Q•…´É½±”…¹…±åÍ¥Ìˆô°(€€€Ñ•…µI½±••ÍŒèì(€€€€€¡Ôè€‰Q…½¹¯¥¹Ñ¤Í…Á…ÑÍé•É•ÀµÁÉ½™¥±½¬¸­¥ÓÙ±ÓÙÑĞÍ…Á…ÑÍé•É•Àµ¯¥É“GµØ·¥ÉĞ…‘…Ğì…¡½°·¥œ¹¥¹Ì­¥ÓÙ±Ó¥Ì°„Íé•·¥±å¥Ï¥ÁÉ½™¥±‹Í°‰•Í³ñ¹¬ƒŠP„™½ÉË…ÍĞµ¥¹‘•¸Ñ…»…°¯ñ³Ù¸©•³Ù±«ñ¬¸ˆ°(€€€€€•¸è€‰A•Èµµ•µ‰•ÈÑ•…´µÉ½±”ÁÉ½™¥±•Ì¸½µÁ±•Ñ•Ñ•…´µÉ½±”ÅÕ•ÍÑ¥½¹¹…¥É”¥Ìµ•…ÍÕÉ•‘…Ñ„ìİ¡•É”¥Ğ¥Ìµ¥ÍÍ¥¹œ°İ”•ÍÑ¥µ…Ñ”™É½´Ñ¡”Á•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ƒŠPÑ¡”Í½ÕÉ”¥Ì‰…‘•™½È•Ù•Éäµ•µ‰•È¸ˆ°(€€€ô°(€€€ÁÉ½™¥±•MÑ…ÑÕÌèì¡Ôè€‰Mé•·¥±å¥Ï¥ÁÉ½™¥°ÍÓ…ÑÕÍèˆ°•¸è€‰A•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ÍÑ…ÑÕÌˆô°(€€€ÁÉ½™¥±•MÑ…ÑÕÍ•ÍŒèì(€€€€€¡Ôè€‰í‘½¹•ô€¼íÑ½Ñ…±ôÑ…¹…¬Ù…¸Íé•·¥±å¥Ï¥ÁÉ½™¥±©„ƒŠP„Í…Á…ÑÍé•É•Àµ‰•Í³¥Í•¬•ÉÉ”ƒ¥Ãñ±¹•¬ˆ°(€€€€€•¸è€‰í‘½¹•ô€¼íÑ½Ñ…±ôµ•µ‰•ÉÌ¡…Ù”Á•ÉÍ½¹…±¥Ñä‘…Ñ„ƒŠPÑ•…´µÉ½±”•ÍÑ¥µ…Ñ•Ì…É”‘•É¥Ù•™É½´Ñ¡¥Ìˆ°(€€€ô°(€€€É½±•¥ÍÑÉ¥‰ÕÑ¥½¹å•‰É½Üèì¡Ôè€‰Íé•É•Á¯ÙÈµ•±½Íé³…Ìˆ°•¸è€‰É½±”‘¥ÍÑÉ¥‰ÕÑ¥½¸ˆô°(€€€É½±•½µÁ½Í¥Ñ¥½¹Q¥Ñ±”èì¡Ôè€‰Í…Á…ÑÍé•É•Á•¬µ•½Íé³…Í„ˆ°•¸è€‰Q•…´É½±”½µÁ½Í¥Ñ¥½¸ˆô°(€€€¹½I½±•…Ñ„èì¡Ôè€‰9¥¹Ì•³¥œ…‘…Ğ„Í…Á…ÑÍé•É•Àµ•±½Íé³…Í¡½è¸ˆ°•¸è€‰9½Ğ•¹½Õ ‘…Ñ„™½ÈÉ½±”‘¥ÍÑÉ¥‰ÕÑ¥½¸¸ˆô°(€€€‰…±…¹•±•ÉÑÍå•‰É½Üèì¡Ôè€‰•å•¹Ïé±äµ™¥å•±µ•éÑ•Ó¥Í•¬ˆ°•¸è€‰‰…±…¹”…±•ÉÑÌˆô°(€€€İ•±±¥Ù•ÉÍ¥™¥•èì(€€€€€¡Ôè€‰Í…Á…Ğ«Í°‘¥Ù•Éé¥™¥¯…±ĞƒŠPµ¥¹‘•¸›DÍé•É•Á¯ÙÈ¯¥ÁÙ¥Í•±Ğ¸ˆ°(€€€€€•¸è€‰Q¡”Ñ•…´¥Ìİ•±°µ‘¥Ù•ÉÍ¥™¥•ƒŠP…±°­•äÉ½±•Ì…É”É•ÁÉ•Í•¹Ñ•¸ˆ°(€€€ô°(€€€µ¥ÍÍ¥¹I½±•Ìèì¡Ôè€‰!§…¹åëÌÍé•É•Á¯ÙËÙ¬ˆ°•¸è€‰5¥ÍÍ¥¹œÉ½±•Ìˆô°(€€€½Ù•ÉÉ•ÁÉ•Í•¹Ñ•‘I½±•Ìèì¡Ôè€‰Sé±É•ÁÉ•é•¹Ó…±ĞÍé•É•Á¯ÙËÙ¬ˆ°•¸è€‰=Ù•ÉÉ•ÁÉ•Í•¹Ñ•É½±•Ìˆô°(€€€…Ñ•½Éå¹…±åÍ¥Íå•‰É½Üèì¡Ôè€‰­…Ñ•ŸÍÉ¥„µ•±•µë¥Ìˆ°•¸è€‰…Ñ•½Éä…¹…±åÍ¥Ìˆô°(€€€…Ñ•½Éå¹…±åÍ¥Í•ÍŒèì(€€€€€¡Ôè€‰Í…Á…ĞÑ…©…¤¡½å…¸½Íé±…¹…¬µ•œ„£…É½´›DÍé•É•Á­…Ñ•ŸÍÉ¥„¯ÙëÙÑĞ¸ˆ°(€€€€€•¸è€‰!½ÜÑ•…´µ•µ‰•ÉÌ‘¥ÍÑÉ¥‰ÕÑ”…É½ÍÌÑ¡”Ñ¡É•”½É”É½±”…Ñ•½É¥•Ì¸ˆ°(€€€ô°(€€€…Ñ¥½¹=É¥•¹Ñ•èì¡Ôè€‰Í•±•­ÛDˆ°•¸è€‰Ñ¥½¸µ½É¥•¹Ñ•ˆô°(€€€Á•½Á±•=É¥•¹Ñ•èì¡Ôè€‰-…ÁÍ½±…Ñ¤ˆ°•¸è€‰A•½Á±”µ½É¥•¹Ñ•ˆô°(€€€Ñ¡½Õ¡Ñ=É¥•¹Ñ•èì¡Ôè€‰½¹‘½±­½“Ìˆ°•¸è€‰Q¡½Õ¡Ğµ½É¥•¹Ñ•ˆô°(€€€¥¹‘¥Ù¥‘Õ…±I½±•Íå•‰É½Üèì¡Ôè€‰•ç¥¹¤Íé•É•Á¯ÙËÙ¬ˆ°•¸è€‰¥¹‘¥Ù¥‘Õ…°É½±•Ìˆô°(€€€µ•µ‰•ÉI½±•AÉ½™¥±•Ìèì¡Ôè€‰Q…½¬Íé•É•ÀµÁÉ½™¥±©„ˆ°•¸è€‰5•µ‰•ÈÉ½±”ÁÉ½™¥±•Ìˆô°(€€€Ñ¡5•µ‰•Èèì¡Ôè€‰Q…œˆ°•¸è€‰5•µ‰•Èˆô°(€€€Ñ¡AÉ¥µ…Éäèì¡Ôè€‰±ÏE‘±••Ìˆ°•¸è€‰AÉ¥µ…Éäˆô°(€€€Ñ¡M•½¹‘…Éäèì¡Ôè€‰7…Í½‘±…½Ìˆ°•¸è€‰M•½¹‘…Éäˆô°(€€€Ñ¡MÕÁÁ½ÉÑ¥¹œèì¡Ôè€‰-¥•Ÿ¥ÍëµÓDˆ°•¸è€‰MÕÁÁ½ÉÑ¥¹œˆô°(€€€¹½…Ñ„èì¡Ôè€‰9¥¹Ì…‘…Ğˆ°•¸è€‰9¼‘…Ñ„ˆô°(€€€€¼¼½ÉË…Ìµ©•³Ù³¥Ì€¡LÄ¤ƒŠP·¥ÉĞ­¥ÓÙ±Ó¥ÌÙÌÁÉ½™¥°µ…±…Ãè‰•Í³¥Ì¸Ù¥é×…±¥Ì(€€€€¼¼­½¹Ù•¹§Ì„Q•…µ%¹Ñ•±±¥•¹”·¥Ù•°…é½¹½ÌèÍ…”€ô·¥ÉĞ°…µ‰•È€ô‰•Ïñ±Ğ¸(€€€Í½ÕÉ•5•…ÍÕÉ•‘	…‘”èì¡Ôè€‰­¥ÓÙ±ÓÙÑĞˆ°•¸è€‰µ•…ÍÕÉ•ˆô°(€€€Í½ÕÉ•ÍÑ¥µ…Ñ•	…‘”èì¡Ôè€‰‰•Í³¥Ìˆ°•¸è€‰•ÍÑ¥µ…Ñ”ˆô°(€€€É½±•M½ÕÉ•5¥á1¥¹”èì(€€€€€¡Ôè€‰íµ•…ÍÕÉ•‘ôÙ…³Í‘¤­¥ÓÙ±Ó¥Ìƒ
+Üí•ÍÑ¥µ…Ñ•‘ôÁÉ½™¥°µ…±…Ãè‰•Í³¥Ìˆ°(€€€€€•¸è€‰íµ•…ÍÕÉ•‘ôÉ•…°™¥±°µ½ÕÑÌƒ
+Üí•ÍÑ¥µ…Ñ•‘ôÁÉ½™¥±”µ‰…Í••ÍÑ¥µ…Ñ•Ìˆ°(€€€ô°(€€€Í½ÕÉ•5¥á5•…ÍÕÉ•èì¡Ôè€‰í¹ô·¥ÉĞ­¥ÓÙ±Ó¥Í‹E°ˆ°•¸è€‰í¹ô™É½´µ•…ÍÕÉ•™¥±°µ½ÕÑÌˆô°(€€€Í½ÕÉ•5¥áÍÑ¥µ…Ñ•èì¡Ôè€‰í¹ôÁÉ½™¥°µ…±…Ãè‰•Í³¥Í‹E°ˆ°•¸è€‰í¹ô™É½´ÁÉ½™¥±”µ‰…Í••ÍÑ¥µ…Ñ•Ìˆô°((€€€€¼¼Q•…µ5•µ‰•ÉÍQ…ˆ(€€€µ•µ‰•ÉÍQ…‰å•‰É½Üèì¡Ôè€‰Ñ…½¬ˆ°•¸è€‰µ•µ‰•ÉÌˆô°(€€€µ•µ‰•ÉÍQ…‰Q¥Ñ±”èì¡Ôè€‰Q…½¬ˆ°•¸è€‰5•µ‰•ÉÌˆô°(€€€‘½¹•Q•ÍĞèì¡Ôè€‰-¥ÓÙ±ÑÙ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€¹½Q•ÍĞèì¡Ôè€‰9¥¹ÌÑ•ÍéĞˆ°•¸è€‰9¼Ñ•ÍĞˆô°(€€€¥¹Ù¥Ñ•M•¹Ğèì¡Ôè€‰5•£µÛÌ•±¯ñ±‘Ù”ˆ°•¸è€‰%¹Ù¥Ñ”Í•¹Ğˆô°(€€€Á•¹‘¥¹MÑ…ÑÕÌèì¡Ôè€‰ñŸE‰•¸ˆ°•¸è€‰A•¹‘¥¹œˆô°(€€€¹½5•µ‰•ÉÍ%¹Ù¥Ñ”èì(€€€€€¡Ôè€‰7¥œ¹¥¹ÌÍ…Á…ÑÑ…œ¸#µÙ¨µ•œÙ…±…­¥Ğ±•¹Ñ•‰ˆ„ˆ°(€€€€€•¸è€‰9¼Ñ•…´µ•µ‰•ÉÌå•Ğ¸%¹Ù¥Ñ”Í½µ•½¹”‰•±½Ü„ˆ°(€€€ô°(€€€…‘‘5•µ‰•Èèì¡Ôè€‰Q…œ¡½éë……“…Í„ˆ°•¸è€‰‘„µ•µ‰•Èˆô°(€€€…‘‘5•µ‰•É•ÍŒèì(€€€€€¡Ôè€‰‘µ•œ„Í…Á…ÑÑ…œ•µ…¥±µ·¥Ğ¸™•±¡…Íé»…³Í¹…¬É•¥ÍéÑË…±Ù„­•±°±•¹¹¥”¸ˆ°(€€€€€•¸è€‰¹Ñ•ÈÑ¡”µ•µ‰•ÈÌ•µ…¥°¸Q¡•äµÕÍĞ…±É•…‘ä‰”É•¥ÍÑ•É•½¸ÑÉ¥Ñ„¸ˆ°(€€€ô°((€€€€¼¼Q•…µ5•µ‰•ÉI½±•‘¥Ñ½È(€€€É½±•5…¹…•É1…‰•°èì¡Ôè€‰5•¹•‘éÍ•Èˆ°•¸è€‰5…¹…•Èˆô°(€€€É½±•5•µ‰•É1…‰•°èì¡Ôè€‰Q…œˆ°•¸è€‰5•µ‰•Èˆô°(€€€…¹¹½Ñ¡…¹•M•±˜èì¡Ôè€‰M…«…ĞÉ½±”¹•´·Í‘½ÏµÑ¡…ÓÌ¸ˆ°•¸è€‰…¹¹½Ğ¡…¹”½İ¸É½±”¸ˆô°(€€€Í½µ•Ñ¡¥¹]•¹Ñ]É½¹œèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ¸ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸ˆô°(€€€¹•Ñİ½É­ÉÉ½Èèì¡Ôè€‰#…³Íé…Ñ¤¡¥‰„¸ˆ°•¸è€‰9•Ñİ½É¬•ÉÉ½È¸ˆô°((€€€€¼¼Q•…µAÉ½™¥±•Q…ˆ(€€€Á•ÉÍ½¹…±¥ÑåAÉ½™¥±•å•‰É½Üèì¡Ôè€‰Íé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰Á•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ˆô°(€€€Ñ•…µ!•…Ñµ…ÁQ¥Ñ±”èì¡Ôè€‰Í…Á…ĞÍé•·¥±å¥Ï¥ÁÉ½™¥°ˆ°•¸è€‰Q•…´A•ÉÍ½¹…±¥Ñä!•…Ñµ…Àˆô°(€€€¡•…Ñµ…Á•ÍŒèì(€€€€€¡Ôè€‰5¥¹‘•¸½Íé±½À•äÍé•·¥±å¥Ï¥‘¥µ•¹é§ÍĞµÕÑ…ĞƒŠPµ¥»¥°·¥±å•‰ˆ„Íëµ¸°…¹»…°µ……Í…‰ˆ„Á½¹ÑÍë…´¸ˆ°(€€€€€•¸è€‰… ½±Õµ¸É•ÁÉ•Í•¹ÑÌ„Á•ÉÍ½¹…±¥Ñä‘¥µ•¹Í¥½¸ƒŠP‘••Á•È½±½Èµ•…¹Ì„¡¥¡•ÈÍ½É”¸ˆ°(€€€ô°(€€€…¹…±åÍ¥Íå•‰É½Üèì¡Ôè€‰•±•µë¥Ìˆ°•¸è€‰…¹…±åÍ¥Ìˆô°(€€€Ñ•…µ¹…±åÍ¥Ìèì¡Ôè€‰Í…Á…Ñ•±•µë¥Ìˆ°•¸è€‰Q•…´¹…±åÍ¥Ìˆô°(€€€¹½5•µ‰•ÉÍAÉ½™¥±”èì(€€€€€¡Ôè€‰7¥œ¹¥¹ÌÍ…Á…ÑÑ…œ¸#µÙ¨µ•œÙ…±…­¥Ğ„Q…½¬›ñ³Ù¸„ˆ°(€€€€€•¸è€‰9¼Ñ•…´µ•µ‰•ÉÌå•Ğ¸%¹Ù¥Ñ”Í½µ•½¹”½¸Ñ¡”5•µ‰•ÉÌÑ…ˆ„ˆ°(€€€ô°(€€€¹½ÍÍ•ÍÍµ•¹ÑAÉ½™¥±”èì(€€€€€¡Ôè€‰7¥œ•å¥¬Í…Á…ÑÑ…œÍ•´ÓÙ±ÓÙÑÑ”­¤„™•±·¥Ë¥ÍĞ¸ˆ°(€€€€€•¸è€‰9¼Ñ•…´µ•µ‰•ÉÌ¡…Ù”½µÁ±•Ñ•…¸…ÍÍ•ÍÍµ•¹Ğå•Ğ¸ˆ°(€€€ô°((€€€€¼¼å¹…µ¥Í5…À(€€€¹½å¹…µ¥ÍQ¥Ñ±”èì¡Ôè€‰7¥œ¹¥¹Ì­…ÁÍ½±…Ñ¤…‘…Ğˆ°•¸è€‰9¼‘å¹…µ¥Ì‘…Ñ„å•Ğˆô°(€€€¹½å¹…µ¥Í•ÍŒèì(€€€€€¡Ôè€‰%¹“µÑÌÍé…­µ…¤Ù¥ÍÍé…©•±ë¥Í¤¯ÙÉĞ„‘¥¹…µ¥­„µÓ¥É¯¥À™•±ÓÙ±Ó¥Ï¥¡•èˆ°(€€€€€•¸è€‰IÕ¸„Á••È™••‘‰…¬É½Õ¹Ñ¼Á½ÁÕ±…Ñ”Ñ¡”‘å¹…µ¥Ìµ…Àˆ°(€€€ô°(€€€‘å¹…µ¥Í!¥‘‘•¹!¥¹Ğèì(€€€€€¡Ôè€‰­…ÁÍ½±…Ñ¤‘¥¹…µ¥­„»¥é•ĞÍ…¬…­­½È©•±•¹¥¬µ•œ°¡„Ù…¸½‰Í•ÉÙ•ÈÙ…äÁ••È­…ÁÍ½±…Ğµ…‘…Ğ¸ˆ°(€€€€€•¸è€‰Q¡”‘å¹…µ¥ÌÙ¥•Ü¥Ì…Ù…¥±…‰±”½¹±äİ¡•¸½‰Í•ÉÙ•È½ÈÁ••ÈÉ•±…Ñ¥½¹Í¡¥À‘…Ñ„•á¥ÍÑÌ¸ˆ°(€€€ô°(€€€½¹¹•Ñ¥½¹Íå•‰É½Üèì¡Ôè€‰­…ÁÍ½±…Ñ½¬ˆ°•¸è€‰½¹¹•Ñ¥½¹Ìˆô°(€€€•‘•½½èì¡Ôè€‰«Ì•çñÑÑ·Ä¸ˆ°•¸è€‰½½½±±…ˆ¸ˆô°(€€€•‘•Q•¹Í¥½¸èì¡Ôè€‰™•Íëñ±ÑÏ¥œˆ°•¸è€‰Ñ•¹Í¥½¸ˆô°(€€€•‘•9•ÕÑÉ…°èì¡Ôè€‰Í•µ±••Ìˆ°•¸è€‰¹•ÕÑÉ…°ˆô°(€€€•‘•±¥¹•èì¡Ôè€‰¡…Í½¹³ÌÁÉ½™¥°ˆ°•¸è€‰…±¥¹•ˆô°(€€€€¼¼7%IP€¡ÑÉÕÍĞ¤…±¥¹•ƒ¥±É”è…è•ËEÌ‰¥é…±½´¹•´ÁÉ½™¥°µ¡…Í½¹³ÍÏ…œƒŠP(€€€€¼¼½ÑĞ„Í•µ±••Ìµµ­”«…È°¹•´…è•‘•±¥¹•¸(€€€•‘•±¥¹•‘9•ÕÑÉ…°èì¡Ôè€‹ÙÍÍé•¡…¹½±Ğˆ°•¸è€‰…±¥¹•ˆô°(€€€•‘•É¥Ñ¥½¸èì¡Ôè€‰±•¡•ÑÏ¥•ÌÏéÉ³Í“…Ìˆ°•¸è€‰Á½Ñ•¹Ñ¥…°™É¥Ñ¥½¸ˆô°(€€€•‘•½µÁ±•µ•¹Ñ…Éäèì¡Ôè€‰­¥•Ÿ¥ÍëµÓDˆ°•¸è€‰½µÁ±•µ•¹Ñ…Éäˆô°(€€€¥¹½µ¥¹½¹¹•Ñ¥½¹Ìèì¡Ôè€‰­…ÁÍ½±…Ğ•‰‰•¸„£…³Í‰…¸ˆ°•¸è€‰½¹¹•Ñ¥½¹Ì¥¸Ñ¡¥Ì¹•Ñİ½É¬ˆô°(€€€±••¹‘½½èì¡Ôè€‰+Ì•çñÑÑ·Ä¸ˆ°•¸è€‰½½½±±…ˆ¸ˆô°(€€€±••¹‘9•ÕÑÉ…°èì¡Ôè€‰M•µ±••Ìˆ°•¸è€‰9•ÕÑÉ…°ˆô°(€€€±••¹‘Q•¹Í¥½¸èì¡Ôè€‰•Íëñ±ÑÏ¥œˆ°•¸è€‰Q•¹Í¥½¸ˆô°(€€€±••¹‘±¥¹•èì¡Ôè€‰!…Í½¹³ÌÁÉ½™¥°ˆ°•¸è€‰M¥µ¥±…ÈÁÉ½™¥±”ˆô°(€€€€¼¼!„„Ó¥É¯¥Á•¸·¥ÉĞ€¡ÑÉÕÍĞ¤ƒ¥°¥ÌÙ…¸°…è…±¥¹•Íëµ¸©•±•¹Ó¥Í”Ù•å•Ì(€€€€¼¼€¡•ËEÌ‰¥é…±½´Yd¡…Í½¹³ÌÁÉ½™¥°¤ƒŠP„©•±µ…å…Ë…é…Ğ¥±å•¹­½ÈÍ•µ±••Ì¸(€€€±••¹‘±¥¹•‘9•ÕÑÉ…°èì¡Ôè€‹YÍÍé•¡…¹½±Ğˆ°•¸è€‰±¥¹•ˆô°(€€€±••¹‘½µÁ±•µ•¹Ñ…Éäèì¡Ôè€‰-¥•Ÿ¥ÍëµÓDˆ°•¸è€‰½µÁ±•µ•¹Ñ…Éäˆô°(€€€±••¹‘É¥Ñ¥½¸èì¡Ôè€‰A½Ñ•¹§…±¥ÌÏéÉ³Í“…Ìˆ°•¸è€‰A½Ñ•¹Ñ¥…°™É¥Ñ¥½¸ˆô°(€€€¡Õ‰A•ÉÍ½¸èì¡Ôè€‰!ÕˆÍé•·¥±äˆ°•¸è€‰!ÕˆÁ•ÉÍ½¸ˆô°(€€€±¥­A•ÉÍ½¸èì¡Ôè€‰-…ÑÑ¥¹ÑÌ•äÍé•·¥±åÉ”ˆ°•¸è€‰±¥¬½¸„Á•ÉÍ½¸ˆô°(€€€±¥­A•ÉÍ½¹½¹¹•Ñ¥½¹Ìèì¡Ôè€‰„­…ÁÍ½±…Ñ…¤µ•Ñ•­¥¹Ó¥Ï¥¡•èˆ°•¸è€‰Ñ¼Ù¥•ÜÑ¡•¥È½¹¹•Ñ¥½¹Ìˆô°(€€€•‘•=¹•M¥‘•èì¡Ôè€‰•å½±‘…³èÙ¥ÍÍé…©•±ë¥Ìˆ°•¸è€‰½¹”µÍ¥‘•™••‘‰…¬ˆô°(€€€€¼¼¥µ•¹é§Ìµ‰½¹Ó…Ì•±É•©ÑÙ”°¡„„Ã…É½ÌÙ…±…µ•±å¥¬Ñ…«…¹…¬¹¥¹ÌÙ…³Í‘¤(€€€€¼¼ÁÉ½™¥°µ…‘…Ñ„ƒŠP­¥Ñ…³…±Ğ€ ÔÀµ•Ì‘•™…Õ±Ğ¤ƒ¥ÉÓ¥­•¬•±±•¸¹•´Íë…µ½±Õ¹¬…Àµ•Ğ¸(€€€‰É•…­‘½İ¹9½AÉ½™¥±”èì(€€€€€¡Ôè€‰9¥¹ÌÁÉ½™¥±…‘…Ğ„‰½¹Ó…Í¡½èƒŠP„Ã…É½Ì±•…³…‰ˆ•å¥¬Ñ…©„·¥œ¹•´ÓÙ±ÓÙÑÑ”­¤„Íé•·¥±å¥Ï¥œµ™•±·¥Ë¥ÍĞ¸ˆ°(€€€€€•¸è€‰9¼ÁÉ½™¥±”‘…Ñ„™½ÈÑ¡¥Ì‰É•…­‘½İ¸ƒŠP…Ğ±•…ÍĞ½¹”µ•µ‰•È½˜Ñ¡”Á…¥È¡…Í¸Ğ½µÁ±•Ñ•Ñ¡”Á•ÉÍ½¹…±¥Ñä…ÍÍ•ÍÍµ•¹Ğå•Ğ¸ˆ°(€€€ô°((€€€€¼¼¥¹…µ¥­„µ™½ÉË…Ìƒ…±±…Á½Ñµµ¯¥¬€¡·¥ÉĞ½‰•Ïñ±Ğƒ¥°µ…Ë…¹äÍé•É¥¹Ğ¤(€€€‘å¹…µ¥ÍMÑ…Ñ•5•…ÍÕÉ•èì¡Ôè€‰·¥ÉĞˆ°•¸è€‰µ•…ÍÕÉ•ˆô°(€€€‘å¹…µ¥ÍMÑ…Ñ•5¥á•èì¡Ôè€‰Ù•å•Ìˆ°•¸è€‰µ¥á•ˆô°(€€€‘å¹…µ¥ÍMÑ…Ñ•ÍÑ¥µ…Ñ•èì¡Ôè€‰ÁÉ½™¥°µ‰•Í³¥Ìˆ°•¸è€‰ÁÉ½™¥±”•ÍÑ¥µ…Ñ”ˆô°(€€€‘å¹…µ¥ÍMÑ…Ñ•9½¹”èì¡Ôè€‰¹¥¹Ì…‘…Ğˆ°•¸è€‰¹¼‘…Ñ„ˆô°((€€€€¼¼S¥É¯¥Àµµ¥»EÏ¥œµµ¯¥¬€¡­¥ÓÙ±ÓÙÑÑÏ¥œÍé•É¥¹Ğ¤(€€€µ…ÁMÑ…Ñ•MÕ™™¥¥•¹Ğèì¡Ôè€‰•±••¹“D…‘…Ğˆ°•¸è€‰ÍÕ™™¥¥•¹Ğ‘…Ñ„ˆô°(€€€µ…ÁMÑ…Ñ•A…ÉÑ¥…°èì¡Ôè€‰Ë¥Íé±••Ì…‘…Ğˆ°•¸è€‰Á…ÉÑ¥…°‘…Ñ„ˆô°(€€€µ…ÁMÑ…Ñ•9½¹”èì¡Ôè€‰¹¥¹Ì…‘…Ğˆ°•¸è€‰¹¼‘…Ñ„ˆô°((€€€€¼¼ƒŠyÍ…Á…Ğ¹å½·…Ì…±…ÑĞˆÃÍ±ÕÌµµµ¯¥¬(€€€Á½±•A½±…É¥é•èì¡Ôè€‰¯¥Ğ•±±•¹Ó¥Ñ•ÌÃÍ±ÕÌˆ°•¸è€‰Ñİ¼½ÁÁ½Í¥Ñ”Á½±•Ìˆô°(€€€Á½±•!¥ èì¡Ôè€‰µ……ÌÃÍ±ÕÌˆ°•¸è€‰¡¥ Á½±”ˆô°(€€€Á½±•1½Üèì¡Ôè€‰…±…Í½¹äÃÍ±ÕÌˆ°•¸è€‰±½ÜÁ½±”ˆô°((€€€€¼¼I½±•¥Ñ5…À(€€€‘½µ¥¹…¹Ñ¥µÍå•‰É½Üèì¡Ôè€‰‘½µ¥»…¹Ì‘¥µ•¹é§Í¬ˆ°•¸è€‰‘½µ¥¹…¹Ğ‘¥µ•¹Í¥½¹Ìˆô°(€€€¹½I½±•¥Ñ…Ñ…Q¥Ñ±”èì¡Ôè€‰7¥œ¹¥¹Ì•±••¹“D…‘…Ğˆ°•¸è€‰9½Ğ•¹½Õ ‘…Ñ„å•Ğˆô°(€€€¹½I½±•¥Ñ…Ñ…•ÍŒèì(€€€€€¡Ôè€‰Íé•É•Á¥±±•Íé­•“¥Í¡•è±•…³…‰ˆ•ä­¥ÓÙ±ÓÙÑĞ™•±·¥Ë¥ÌÍëñ­Ï¥•Ì¸ˆ°(€€€€€•¸è€‰I½±”™¥ĞÉ•ÅÕ¥É•Ì…Ğ±•…ÍĞ½¹”½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹Ğ¸ˆ°(€€€ô°(€€€É½±•¥ÑM½É”èì¡Ôè€‰%±±•Íé­•“¥Í¤Á½¹ÑÍë…´ˆ°•¸è€‰¥ĞÍ½É”ˆô°(€€€É½±•¥Ñ½¹™¥‘•¹”èì¡Ôè€‰5•‹µé¡…ÓÍÏ…œˆ°•¸è€‰½¹™¥‘•¹”ˆô°(€€€É½±•¥Ñ½¹™¥‘•¹•!¥ èì¡Ôè€‰µ……Ìˆ°•¸è€‰¡¥ ˆô°(€€€É½±•¥Ñ½¹™¥‘•¹•5•‘¥Õ´èì¡Ôè€‰¯Ùé•Á•Ìˆ°•¸è€‰µ•‘¥Õ´ˆô°(€€€É½±•¥Ñ½¹™¥‘•¹•1½Üèì¡Ôè€‰…±…Í½¹äˆ°•¸è€‰±½Üˆô°(€€€µ¥ÍÍ¥¹I½±•1…‰•°èì¡Ôè€‰!§…¹åëÌÍé•É•Àèˆ°•¸è€‰5¥ÍÍ¥¹œÉ½±”èˆô°(€€€µ¥ÍÍ¥¹I½±•Q…œèì¡Ôè€‹Šj€¡§…¹åé¥¬ˆ°•¸è€‹Šj€µ¥ÍÍ¥¹œˆô°(€€€±¥­A•ÉÍ½¹I½±”èì¡Ôè€‰-…ÑÑ¥¹ÑÌ•äÍé•·¥±åÉ”ˆ°•¸è€‰±¥¬½¸„Á•ÉÍ½¸ˆô°(€€€±¥­A•ÉÍ½¹I½±••ÍŒèì¡Ôè€‰„Íé•É•Á”µ•Ñ•­¥¹Ó¥Ï¥¡•èˆ°•¸è€‰Ñ¼Ù¥•ÜÑ¡•¥ÈÉ½±”ˆô°((€€€€¼¼I½±•¥Ñ5…ÀƒŠPé½¹”±…‰•±Ì(€€€é½¹•5•‘¥…Ñ½É1…‰•°èì¡Ôè€‰5•‘§…Ñ½Èˆ°•¸è€‰5•‘¥…Ñ½Èˆô°(€€€é½¹•%¹¹½Ù…Ñ½É1…‰•°èì¡Ôè€‰%¹¹½Û…Ñ½Èˆ°•¸è€‰%¹¹½Ù…Ñ½Èˆô°(€€€é½¹•á•ÕÑ½É1…‰•°èì¡Ôè€‰-¥Ù¥Ñ•±•ëDˆ°•¸è€‰á•ÕÑ½Èˆô°(€€€é½¹•¹…±åé•É1…‰•°èì¡Ôè€‰±•µëDˆ°•¸è€‰¹…±åé•Èˆô°(€€€é½¹•¹•É¥é•É1…‰•°èì¡Ôè€‰¹•É¥ë…³Ìˆ°•¸è€‰¹•É¥é•Èˆô°(€€€é½¹•MÑÉ…Ñ•¥ÍÑ1…‰•°èì¡Ôè€‰MÑÉ…Ó¥„ˆ°•¸è€‰MÑÉ…Ñ•¥ÍĞˆô°((€€€€¼¼Q•…µ%¹Ñ•±±¥•¹”ƒŠPÍÕˆµÑ…ˆ±…‰•±Ì(€€€ÍÕ‰5…Àèì¡Ôè€‹ŠF€Í…Á…ÑÓ¥É¯¥Àˆ°•¸è€‹ŠF€Q•…´5…Àˆô°(€€€ÍÕ‰å¹…µ¥Ìèì¡Ôè€‹ŠF„¥¹…µ¥­„ˆ°•¸è€‹ŠF„å¹…µ¥Ì5…Àˆô°(€€€ÍÕ‰I½±•Ìèì¡Ôè€‹ŠFˆMé•É•À¥±±•Íé­•“¥Ìˆ°•¸è€‹ŠFˆI½±”¥Ğˆô°(€€€•Ù¥‘•¹•å•‰É½Üèì¡Ôè€‰…‘…Ñµ¥»EÏ¥œˆ°•¸è€‰‘…Ñ„ÅÕ…±¥Ñäˆô°(€€€•Ù¥‘•¹•M½ÕÉ”èì¡Ôè€‰½ÉË…Ìˆ°•¸è€‰M½ÕÉ”ˆô°(€€€•Ù¥‘•¹•EÕ…±¥Ñäèì¡Ôè€‰5¥»EÏ¥œˆ°•¸è€‰EÕ…±¥Ñäˆô°(€€€•Ù¥‘•¹•½¹™¥‘•¹”èì¡Ôè€‰5•‹µé¡…ÓÍÏ…œˆ°•¸è€‰½¹™¥‘•¹”ˆô°(€€€•Ù¥‘•¹•M½ÕÉ•M•±˜èì¡Ôè€‹Y»¥ÉÓ¥­•³¥Ìˆ°•¸è€‰M•±˜…ÍÍ•ÍÍµ•¹Ğˆô°(€€€€¼¼‘¥¹…µ¥­„µ»¥é•Ğ·¥ÉĞƒ¥±”„	%i15$/YIA0«Ù¸°¹•´…è½‰Í•ÉÙ•È´(€€€€¼¼¯ÙÉ‹E°€¡™É¥Ñ¥½¸µµ½‘•°¥Í5•…ÍÕÉ•‘å¹…µ¥ÍM½ÕÉ”¤¸­½Ë…‰‰¤(€€€€¼¼ƒŠ{Y»¥ÉÓ¥­•³¥Ì€¬¯ñ±ÏDÙ¥ÍÍé…©•±ë¥Ìˆµµ­”½±å…¸™½ÉË…ÍĞƒ…±³µÑ½ÑĞ°…µ¤(€€€€¼¼¹•´«…ÉÕ±Ğ¡½éë„ƒŠP±¸Ñ•…´µ¥¹Ñ•±±¥•¹”¹ÑÌ¸(€€€•Ù¥‘•¹•M½ÕÉ•M•±™QÉÕÍĞèì¡Ôè€‹Y»¥ÉÓ¥­•³¥Ì€¬‰¥é…±µ¤¯ÙÈˆ°•¸è€‰M•±˜€¬ÑÉÕÍĞÉ½Õ¹ˆô°(€€€•Ù¥‘•¹•M½ÕÉ•%¹™•ÉÉ•èì¡Ôè€‰	•Ïñ±Ğµ½‘•±°ˆ°•¸è€‰%¹™•ÉÉ•µ½‘•°ˆô°(€€€€¼¼ƒŠRŠR Y¥ÍÍé…©•±ë¥Í¤­Õ±ÓéÉ„€¡Í…Á…Ğ½‰Í•ÉÙ•Èµ‰±½­¬¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€€€€¼¼¡…¹¹•´ÑÕ‘…Ñ½Ìè…è•±Ó¥Ë¥Ì¹•´¡¥‰„°¡…¹•´„Ù¥ÍÍé…©•±ë¥Ì(€€€€¼¼ƒ…É…µ³…Ï…ËÍ°ÍëÍ³Ì©•°¸M•µµ¥±å•¸ÍëÙÙ•œ¹•´µ¥»EÏµÑ¡•Ñ¤„Í…Á…Ñ½Ğ¸(€€€™••‘‰…­Õ±ÑÕÉ•å•‰É½Üèì¡Ôè€‰Y¥ÍÍé…©•±ë¥Í¤­Õ±ÓéÉ„ˆ°•¸è€‰••‘‰…¬Õ±ÑÕÉ”ˆô°(€€€™••‘‰…­Õ±ÑÕÉ•Q¥Ñ±”èì(€€€€€¡Ôè€‰5•¹¹å¥É”•å•é¥¬…èƒÙ¹¯¥À…éé…°°…¡½ä·…Í½¬³…Ñ¹…¬ˆ°(€€€€€•¸è€‰!½Ü±½Í•±äÍ•±˜µ¥µ…”µ…Ñ¡•Ì¡½Ü½Ñ¡•ÉÌÍ•”å½Ôˆ°(€€€ô°(€€€™••‘‰…­Õ±ÑÕÉ•1•…èì(€€€€€¡Ôè€‰í½Ù•É•‘ôÑ…¹…¬Ù…¸·¥ÉĞ¯ñ±ÏD¯¥Á”„íÑ½Ñ…±ô›E‹E°ƒŠP…è…³…‰‰¤‰½¹Ó…ÌÍ…¬Ë…©Õ¬Ù½¹…Ñ­½é¥¬¸ˆ°(€€€€€•¸è€‰í½Ù•É•‘ô½˜íÑ½Ñ…±ôµ•µ‰•ÉÌ¡…Ù”„µ•…ÍÕÉ••áÑ•É¹…°Ù¥•ÜƒŠPÑ¡”‰É•…­‘½İ¸‰•±½Ü½Ù•ÉÌ½¹±äÑ¡•´¸ˆ°(€€€ô°(€€€™••‘‰…­Õ±ÑÕÉ•±¥¹•èì¡Ôè€‰•å‰•Û…ŸÌƒÙ¹¯¥Àˆ°•¸è€‰µ…Ñ¡¥¹œÍ•±˜µ¥µ…”ˆô°(€€€™••‘‰…­Õ±ÑÕÉ•±¥¹•‘!¥¹Ğèì(€€€€€¡Ôè€‰èƒÙ»¥ÉÓ¥­•³¥Ì„·¥Ë¥Í¤¡¥‹…¸‰•³ñ°•å•é¥¬„­½±³¥Ÿ…¬¯¥Ã¥Ù•°¸ˆ°(€€€€€•¸è€‰M•±˜µ…ÍÍ•ÍÍµ•¹Ğµ…Ñ¡•Ì½±±•…Õ•ÌœÙ¥•Üİ¥Ñ¡¥¸µ•…ÍÕÉ•µ•¹Ğ•ÉÉ½È¸ˆ°(€€€ô°(€€€™••‘‰…­Õ±ÑÕÉ•…Àèì¡Ôè€‹¥É‘•µ¤•±Ó¥Ë¥Ìˆ°•¸è€‰µ•…¹¥¹™Õ°‘¥™™•É•¹”ˆô°(€€€™••‘‰…­Õ±ÑÕÉ•…Á!¥¹Ğèì(€€€€€¡Ôè€‰1•…³…‰ˆ•ä‘¥µ•¹é§Í¸„·¥Ë¥Í¤¡¥‹…Ğµ•¡…±…“Ì„¯ñ³Ù¹‰Ï¥œ¸è¹•´¡¥‰„ƒŠP©•±ë¥Ì°¡½ä½ÑĞƒ¥É‘•µ•Ì‰•Íë¥±•Ñ¹¤¸ˆ°(€€€€€•¸è€‰=¸…Ğ±•…ÍĞ½¹”‘¥µ•¹Í¥½¸Ñ¡”‘¥™™•É•¹”•á••‘Ìµ•…ÍÕÉ•µ•¹Ğ•ÉÉ½È¸9½Ğ„™…Õ±ĞƒŠP„Õ”Ñ¡…Ğ„½¹Ù•ÉÍ…Ñ¥½¸¥Ìİ½ÉÑ ¡…Ù¥¹œ¸ˆ°(€€€ô°(€€€™••‘‰…­Õ±ÑÕÉ•9½Ñ”èì(€€€€€¡Ôè€‰½ÉË…Ìè„Íé•ÉÙ•é•Ğ­…µÃ…¹å…¥‰…¸çÅ©ÓÙÑĞ¯ñ±ÏDÙ¥ÍÍé…©•±ë¥Ì€¡„Íé•·¥±å•Ì°­…µÃ…¹å½¸¯µÛñ±¤Ù¥ÍÍé…©•±ë¥Ì¹•´Íé•É•Á•°‰•¹¹”¤¸Q…½¹¯¥¹Ğ±•…³…‰ˆ€Ìƒ¥ÉÓ¥­•³D­•±°¡½éë„°ƒ¥ÌÍ…¬ƒÙÍÍé•ÏµÑ•ÑĞ‘…É…‰Íë…´³…ÑÍé¥¬ƒŠPÍ•´»¥Ø°Í•´•ç¥¹¤ƒ¥ÉÓ¥¬°Í•´‘¥µ•¹é§Ìµ‰½¹Ó…Ì¸ˆ°(€€€€€•¸è€‰M½ÕÉ”è•áÑ•É¹…°™••‘‰…¬½±±•Ñ•¥¸Ñ¡¥Ì½É…¹¥Í…Ñ¥½¸Ì…µÁ…¥¹Ì€¡Á•ÉÍ½¹…°°¹½¸µ…µÁ…¥¸™••‘‰…¬¥Ì•á±Õ‘•¤¸Ğ±•…ÍĞ€ÌÉ…Ñ•ÉÌÁ•Èµ•µ‰•È…É”É•ÅÕ¥É•°…¹½¹±ä…É•…Ñ”½Õ¹ÑÌ…É”Í¡½İ¸ƒŠP¹¼¹…µ•Ì°¥¹‘¥Ù¥‘Õ…°Ù…±Õ•Ì°½È‘¥µ•¹Í¥½¸‰É•…­‘½İ¸¸ˆ°(€€€ô°(€€€•Ù¥‘•¹•EÕ…±¥Ñå9½¹”èì¡Ôè€‰¹¥¹Ìˆ°•¸è€‰¹½¹”ˆô°(€€€•Ù¥‘•¹•EÕ…±¥ÑåA…ÉÑ¥…°èì¡Ôè€‰Ë¥Íé±••Ìˆ°•¸è€‰Á…ÉÑ¥…°ˆô°(€€€•Ù¥‘•¹•EÕ…±¥ÑåMÕ™™¥¥•¹Ğèì¡Ôè€‰•±••¹“Dˆ°•¸è€‰ÍÕ™™¥¥•¹Ğˆô°(€€€•Ù¥‘•¹•½¹™¥‘•¹•1½Üèì¡Ôè€‰…±…Í½¹äˆ°•¸è€‰±½Üˆô°(€€€•Ù¥‘•¹•½¹™¥‘•¹•5•‘¥Õ´èì¡Ôè€‰¯Ùé•Á•Ìˆ°•¸è€‰µ•‘¥Õ´ˆô°(€€€•Ù¥‘•¹•½¹™¥‘•¹•!¥ èì¡Ôè€‰µ……Ìˆ°•¸è€‰¡¥ ˆô°((€€€€¼¼Mé•É•Àµ¡§…¹äÁÉ¥½É¥Ó…Ì¥¹‘½­³…Í„ƒŠP™½ÉË…ÌµÑÕ‘…Ñ½ÌÛ…±Ñ½é…Ñ½¬(€€€€¼¼€¡¡¥Ñ•±•ÍÏ¥¤…±…Á•±Øè·¥ÉĞÍé•É•Á¯¥ÁÉ”¹•´ƒµÉ¡…Ñ©Õ¬°¡½äƒŠy‰•Ïñ±Ğˆ¤¸(€€€É½±•…ÁI•…Í½¹5•…ÍÕÉ•èì(€€€€€¡Ôè€‰·¥ÉĞÍé•É•Á¯¥Á‰•¸¹•´³…ÑÍé¥¬èíÉ½±•Íô¸ˆ°(€€€€€•¸è€‰Q¡”µ•…ÍÕÉ•É½±”µ…À¥Ìµ¥ÍÍ¥¹œèíÉ½±•Íô¸ˆ°(€€€ô°(€€€É½±•…ÁI•…Í½¹5¥á•èì(€€€€€¡Ôè€‰Ë¥Íé‰•¸·¥ÉĞ°Ë¥Íé‰•¸‰•Ïñ±ĞÍé•É•Á¯¥Á‰•¸¹•´³…ÑÍé¥¬èíÉ½±•Íô¸ˆ°(€€€€€•¸è€‰Q¡”Á…ÉÑ±äµ•…ÍÕÉ•°Á…ÉÑ±ä•ÍÑ¥µ…Ñ•É½±”µ…À¥Ìµ¥ÍÍ¥¹œèíÉ½±•Íô¸ˆ°(€€€ô°(€€€É½±•…ÁI•…Í½¹ÍÑ¥µ…Ñ•èì(€€€€€¡Ôè€‰‰•Ïñ±ĞÍé•É•Á¯¥Á‰•¸¹•´³…ÑÍé¥¬èíÉ½±•Íô¸ˆ°(€€€€€•¸è€‰ÍÑ¥µ…Ñ•É½±”µ…À¥Ìµ¥ÍÍ¥¹œèíÉ½±•Íô¸ˆ°(€€€ô°(€ô°((€€¼¼ƒŠRŠR Q•…´Á…•Ì€ ½Ñ•…´°€½Ñ•…´½m¥‘t¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€Ñ•…´èì(€€€™ˆèì(€€€€€•å•‰É½Üèì¡Ôè€‰Ù¥ÍÍé…©•±ë¥Ìˆ°•¸è€‰™••‘‰…¬ˆô°(€€€€€Ñ¥Ñ±”èì¡Ôè€‰•©±•ÍéÓDÙ¥ÍÍé…©•±ë¥Ìˆ°•¸è€‰•Ù•±½Áµ•¹Ğ™••‘‰…¬ˆô°(€€€€€¡¥¹Ğèì(€€€€€€€¡Ôè€‰/¥É¨Ù¥ÍÍé…©•±ë¥ÍĞ„Í…Á…ÑÓ…ÉÍ…¥‘ÓÍ°•ä­½¹­Ë¥ĞÓ¥·…‰…¸ƒŠPÑ”“Ù¹Ñ•Íè°­¤ƒ¥Ì»¥Ø»¥±¯ñ°Û…±…Íé½±¡…Ğµ”¸Û…±…Íé½¬Í…¬¹•­•©•±•¹¹•¬µ•œ¸ˆ°(€€€€€€€•¸è€‰Í¬å½ÕÈÑ•…µµ…Ñ•Ì™½È™••‘‰…¬½¸„ÍÁ•¥™¥ŒÑ½Á¥ŒƒŠPå½Ô‘•¥‘”İ¡¼…¸…¹Íİ•È…¹İ¡•Ñ¡•È…¹½¹åµ½ÕÍ±ä¸I•ÍÁ½¹Í•Ì…É”Ù¥Í¥‰±”½¹±äÑ¼å½Ô¸ˆ°(€€€€€ô°(€€€€€™½É5•1…‰•°èì¡Ôè€‰K…Û…ËÌ¯¥Ë¥Í•¬€¡í½Õ¹Ñô¤ˆ°•¸è€‰I•ÅÕ•ÍÑÌİ…¥Ñ¥¹œ™½Èå½Ô€¡í½Õ¹Ñô¤ˆô°(€€€€€…Í­Í‰½ÕĞèì¡Ôè€‰Ù¥ÍÍé…©•±ë¥ÍĞ¯¥Èèˆ°•¸è€‰…Í­Ì™½È™••‘‰…¬½¸èˆô°(€€€€€É•ÍÁ½¹èì¡Ôè€‰[…±…Íé½±½¬ˆ°•¸è€‰I•ÍÁ½¹ˆô°(€€€€€…¹•°èì¡Ôè€‰7¥Í”ˆ°•¸è€‰…¹•°ˆô°(€€€€€½¹Ñ¥¹Õ•1…‰•°èì¡Ôè€‰½±åÑ…Í°µ•ÉÓŠ˜ˆ°•¸è€‰-••À‘½¥¹œ°‰•…ÕÍ—Š˜ˆô°(€€€€€ÑÉå1…‰•°èì¡Ôè€‰+ÙÛEÉ”ÁËÍ‹…±“Š˜ˆ°•¸è€‰9•áĞÑ¥µ”°ÑÉçŠ˜ˆô°(€€€€€½µµ•¹Ñ1…‰•°èì¡Ôè€‰Mé…‰…µ•©•åë¥Ìˆ°•¸è€‰É•”½µµ•¹Ğˆô°(€€€€€½ÁÑ¥½¹…°èì¡Ôè€ˆ¡½Á¥½»…±¥Ì¤ˆ°•¸è€ˆ¡½ÁÑ¥½¹…°¤ˆô°(€€€€€É•ÍÁ½¹‘¹½¹åµ½ÕÍ±äèì¡Ôè€‰;¥Ø»¥±¯ñ°Û…±…Íé½±½¬ˆ°•¸è€‰I•ÍÁ½¹…¹½¹åµ½ÕÍ±äˆô°(€€€€€Í•¹‘I•ÍÁ½¹Í”èì¡Ôè€‰[…±…Íè¯ñ±“¥Í”ˆ°•¸è€‰M•¹É•ÍÁ½¹Í”ˆô°(€€€€€É•ÍÁ½¹‘ÉÉ½Èèì¡Ôè€‰Û…±…Íè¯ñ±“¥Í”¹•´Í¥­•Ëñ±ĞƒŠPÁËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M•¹‘¥¹œÑ¡”É•ÍÁ½¹Í”™…¥±•ƒŠPÑÉä……¥¸¸ˆô°(€€€€€¹•İI•ÅÕ•ÍÑQ¥Ñ±”èì¡Ôè€‰/¥É•¬Ù¥ÍÍé…©•±ë¥ÍĞˆ°•¸è€‰I•ÅÕ•ÍĞ™••‘‰…¬ˆô°(€€€€€Ñ½Á¥A±…•¡½±‘•Èèì¡Ôè€‰5¥ËE°¯¥ÉÍèÙ¥ÍÍé…©•±ë¥ÍĞüA°¸ƒŠy!…Íé¹½Í…¬„µ••Ñ¥¹©•¥´ÿŠtˆ°•¸è€‰]¡…Ğ‘¼å½Ôİ…¹Ğ™••‘‰…¬½¸ü¹œ¸p‰É”µäµ••Ñ¥¹ÌÕÍ•™Õ°ıpˆˆô°(€€€€€…±±½İ¹½¹åµ½ÕÌèì¡Ôè€‰;¥Ø»¥±¯ñ±¤Û…±…Íé½­…Ğ¥Ì•±™½…‘½¬ˆ°•¸è€‰$…±Í¼…•ÁĞ…¹½¹åµ½ÕÌÉ•ÍÁ½¹Í•Ìˆô°(€€€€€É•…Ñ”èì¡Ôè€‰/¥Ë¥Ì•±¯ñ±“¥Í”ˆ°•¸è€‰M•¹É•ÅÕ•ÍĞˆô°(€€€€€É•…Ñ•‘=¬èì¡Ôè€‰±¯ñ±‘Ù”ˆ°•¸è€‰M•¹Ğˆô°(€€€€€É•…Ñ•ÉÉ½Èèì¡Ôè€‰¯¥Ë¥Ì³¥ÑÉ•¡½ë…Í„¹•´Í¥­•Ëñ±Ğ¸ˆ°•¸è€‰É•…Ñ¥¹œÑ¡”É•ÅÕ•ÍĞ™…¥±•¸ˆô°(€€€€€µ¥¹•1…‰•°èì¡Ôè€‰/¥Ë¥Í•¥´ƒ¥Ì„Û…±…Íé½¬ˆ°•¸è€‰5äÉ•ÅÕ•ÍÑÌ…¹É•ÍÁ½¹Í•Ìˆô°(€€€€€É•ÅÕ•ÍÑ5•Ñ„èì¡Ôè€‰í½Õ¹Ñô½íÑ½Ñ…±ôÛ…±…Íèƒ¥É­•é•ÑĞˆ°•¸è€‰í½Õ¹Ñô½íÑ½Ñ…±ôÉ•ÍÁ½¹Í•ÌÉ••¥Ù•ˆô°(€€€€€…¹½¹	…‘”èì¡Ôè€‰»¥Ø»¥±¯ñ±¤Û…±…Íé½¬•¹•“¥±å•éÙ”ˆ°•¸è€‰…¹½¹åµ½ÕÌÉ•ÍÁ½¹Í•Ì…±±½İ•ˆô°(€€€€€½¹Ñ¥¹Õ•M¡½ÉĞèì¡Ôè€‰½±åÑ…Íˆ°•¸è€‰-••Àˆô°(€€€€€ÑÉåM¡½ÉĞèì¡Ôè€‰AËÍ‹…±ˆ°•¸è€‰QÉäˆô°(€€€€€…¹½¹åµ½ÕÍI•ÍÁ½¹‘•Èèì¡Ôè€‰»¥ÙÑ•±•¸Û…±…Íé…“Ìˆ°•¸è€‰…¹½¹åµ½ÕÌÉ•ÍÁ½¹‘•Èˆô°(€€€€€ÍÕ•ÍÑ¥½¹Í1…‰•°èì¡Ôè€‰7¥Ë¥Ìµ¯ÙÉ‹E°­…Á½ÑĞ©…Ù…Í±…Ñ…¥ˆ°•¸è€‰MÕ•ÍÑ¥½¹Ì™É½´µ•…ÍÕÉ•µ•¹ĞÉ½Õ¹‘Ìˆô°(€€€€€Á•¹‘¥¹¹½¹åµ½ÕÌèì(€€€€€€€¡Ôè€‰í½Õ¹Ñô»¥Ø»¥±¯ñ±¤©…Ù…Í±…ĞÛ…È·¥œƒŠP±•…³…‰ˆ€Ì‰•¯ñ±“E»¥°©•±•¹¥¬µ•œ°ƒÙÍÍé•ÏµÑÙ”¸ˆ°(€€€€€€€•¸è€‰í½Õ¹Ñô…¹½¹åµ½ÕÌÍÕ•ÍÑ¥½¹ÌÁ•¹‘¥¹œƒŠPÍ¡½İ¸…É•…Ñ•½¹”Ñ¡•É”…É”…Ğ±•…ÍĞ€ÌÍ•¹‘•ÉÌ¸ˆ°(€€€€€ô°(€€€ô°(€€€­Õ‘½Ìèì(€€€€€•å•‰É½Üèì¡Ôè€‰¯ÙÍëÙ¹•Ğˆ°•¸è€‰­Õ‘½Ìˆô°(€€€€€Ñ¥Ñ±”èì¡Ôè€‰/ÙÍëÙ¹•Ñ•¬ˆ°•¸è€‰-Õ‘½Ìˆô°(€€€€€¡¥¹Ğèì(€€€€€€€¡Ôè€‰/ñ±‘¨¹•Ù•ÏµÑ•ÑĞ¯ÙÍëÙ¹•Ñ•Ğ•äÍ…Á…ÑÓ…ÉÍ…‘¹…¬ƒŠP•ä­½¹­Ë¥Ğ¡•±åé•Ó¥ÉĞÙ…äÙ¥Í•±­•“¥Ï¥ÉĞ¸¯ÙÍëÙ¹•ĞÍ…¬„µµé•ÑÑ¹•¬©•±•¹¥¬µ•œ¸ˆ°(€€€€€€€•¸è€‰M•¹¹…µ•­Õ‘½ÌÑ¼„Ñ•…µµ…Ñ”ƒŠP™½È„ÍÁ•¥™¥ŒÍ¥ÑÕ…Ñ¥½¸½È‰•¡…Ù¥½ÕÈ¸-Õ‘½Ì…É”Ù¥Í¥‰±”½¹±äÑ¼Ñ¡”É•¥Á¥•¹Ğ¸ˆ°(€€€€€ô°(€€€€€Á¥­5•µ‰•Èèì¡Ôè€‰[…±…ÍÍèÍ…Á…ÑÓ…ÉÍ…ÓŠ˜ˆ°•¸è€‰A¥¬„Ñ•…µµ…Ñ—Š˜ˆô°(€€€€€‰…‘•1…‰•°èì¡Ôè€‰)•±Û¥¹äˆ°•¸è€‰	…‘”ˆô°(€€€€€Á±…•¡½±‘•Èèì¡Ôè€‰A°¸ƒŠy/ÙÍëÙ»Ù´°¡½ä„­•‘‘¤‘•·Ì•³EÑĞƒ…Ñ»¥éÑ•„ÁÉ•é¥µ•ĞƒŠPÍ½­…Ğ‘½‰½ÑĞÉ…©Ñ„»Štˆ°•¸è€‰¹œ¸p‰Q¡…¹­Ì™½ÈÉ•Ù¥•İ¥¹œµä‘•¬‰•™½É”QÕ•Í‘…äÌ‘•µ¼ƒŠP¥Ğµ…‘”„É•…°‘¥™™•É•¹”¹pˆˆô°(€€€€€Í•¹èì¡Ôè€‰/ÙÍëÙ¹•Ğ¯ñ±“¥Í”ˆ°•¸è€‰M•¹­Õ‘½Ìˆô°(€€€€€Í•¹Ñ=¬èì¡Ôè€‰±¯ñ±‘Ù”ˆ°•¸è€‰M•¹Ğˆô°(€€€€€Í•¹‘ÉÉ½Èèì¡Ôè€‰¯ñ±“¥Ì¹•´Í¥­•Ëñ±ĞƒŠPÁËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M•¹‘¥¹œ™…¥±•ƒŠPÑÉä……¥¸¸ˆô°(€€€€€É••¥Ù•‘1…‰•°èì¡Ôè€‰-…Á½ÑĞ¯ÙÍëÙ¹•Ñ•¥€¡í½Õ¹Ñô¤ˆ°•¸è€‰-Õ‘½Ìå½ÔÉ••¥Ù•€¡í½Õ¹Ñô¤ˆô°(€€€€€•µÁÑäèì¡Ôè€‰7¥œ¹¥¹Ì­…Á½ÑĞ¯ÙÍëÙ¹•Ñ•ƒŠP±•¡•Ğ°¡½äÑ”¯ñ±‘•Íè•±ÏE¯¥¹Ğüˆ°•¸è€‰9¼­Õ‘½ÌÉ••¥Ù•å•ĞƒŠPµ…å‰”å½Ô±°‰”Ñ¡”™¥ÉÍĞÑ¼Í•¹½¹”üˆô°(€€€ô°(€€€•å•‰É½Üèì¡Ôè€‰!H€˜Í…Á…Ğˆ°•¸è€‰!H€˜Q•…´ˆô°(€€€Ñ¥Ñ±”èì¡Ôè€‰Í…Á…Ñ…¥´ˆ°•¸è€‰5äQ•…µÌˆô°(€€€É•…Ñ•9•Üèì¡Ôè€‹i¨Í…Á…Ğ³¥ÑÉ•¡½ë…Í„ˆ°•¸è€‰É•…Ñ”„¹•ÜÑ•…´ˆô°(€€€É•…Ñ•9•İ•ÍŒèì(€€€€€¡Ôè€‰‘¨¹•Ù•Ğ„Í…Á…Ñ¹…¬°µ…©…‘¡½éë„„Ñ…½­…Ğ•µ…¥±µ´…±…Á«…¸¸ˆ°(€€€€€•¸è€‰¥Ù”å½ÕÈÑ•…´„¹…µ”°Ñ¡•¸…‘µ•µ‰•ÉÌ‰äÑ¡•¥È•µ…¥°…‘‘É•ÍÌ¸ˆ°(€€€ô°(€€€Ñ•…µÍ1…‰•°èì¡Ôè€‰Í…Á…Ñ½¬ˆ°•¸è€‰Q•…µÌˆô°(€€€¹½Q•…µÌèì(€€€€€¡Ôè€‰7¥œ¹¥¹ÌÍ…Á…Ñ½¸!½éè³¥ÑÉ”•å•Ğ™•¹Ñ•‰ˆ„ˆ°(€€€€€•¸è€‰9¼Ñ•…µÌå•Ğ¸É•…Ñ”½¹”…‰½Ù”„ˆ°(€€€ô°(€€€¹½Q•…µÍQ¥Ñ±”èì¡Ôè€‰7¥œ¹¥¹ÌÍ…Á…Ñ½ˆ°•¸è€‰e½Ô‘½¸Ğ¡…Ù”„Ñ•…´å•Ğˆô°(€€€¹½Q•…µÍ5•µ‰•Èèì(€€€€€¡Ôè€‰7¥œ¹•´­•Ëñ±Ó¥°Í…Á…Ñ‰„¸Íé•ÉÙ•é•Ñ¤µ•¹•‘éÍ•ÈÑÕ¡½éë……‘¹¤•å¡•è¸ˆ°(€€€€€•¸è€‰e½Ô¡…Ù•¸Ğ‰••¸…‘‘•Ñ¼„Ñ•…´å•Ğ¸¸½É…¹¥é…Ñ¥½¸µ…¹…•È…¸…‘å½Ô¸ˆ°(€€€ô°(€€€µ•µ‰•ÉQ…œèì¡Ôè€‰Ñ…œˆ°•¸è€‰µ•µ‰•Èˆô°(€€€µ•µ‰•ÉÍQ…œèì¡Ôè€‰Ñ…œˆ°•¸è€‰µ•µ‰•ÉÌˆô°(€€€É•…Ñ•‘AÉ•™¥àèì¡Ôè€‰3¥ÑÉ•¡½éÙ„è€ˆ°•¸è€‰É•…Ñ•€ˆô°(€€€½Á•¸èì¡Ôè€‰5•¹å¥Ó…Ìˆ°•¸è€‰=Á•¸ˆô°((€€€€¼¼Ñ•…´½m¥‘tƒŠP‘•Ñ…¥°Á…”(€€€‘•Ñ…¥±å•‰É½İAÉ•™¥àèì¡Ôè€‰Í…Á…Ğˆ°•¸è€‰Ñ•…´ˆô°(€€€É½±•5…¹…•Èèì¡Ôè€‰5•¹•‘éÍ•Èˆ°•¸è€‰5…¹…•Èˆô°(€€€É½±•5•µ‰•Èèì¡Ôè€‰Q…œˆ°•¸è€‰5•µ‰•Èˆô°(€€€…µÁ…¥¹	ÕÑÑ½¸èì¡Ôè€‰7¥Ë¥Ìˆ°•¸è€‰5•…ÍÕÉ•µ•¹Ğˆô°((€€€€¼¼ÍÑ…ĞÍÑÉ¥À±…‰•±Ì(€€€ÍÑ…Ñ5•µ‰•ÉÌèì¡Ôè€‰Q…½¬ˆ°•¸è€‰5•µ‰•ÉÌˆô°(€€€ÍÑ…Ñ½µÁ±•Ñ•èì¡Ôè€‰­¥ÓÙ±ÓÙÑÑ”ˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€ÍÑ…Ñ=‰Í•ÉÙ•É½Ù•É…”èì¡Ôè€‰=‰Í•ÉÙ•È±•™•‘•ÑÑÏ¥œˆ°•¸è€‰=‰Í•ÉÙ•È½Ù•É…”ˆô°(€€€ÍÑ…Ñ9½…µÁ…¥¸èì¡Ôè€‰¹¥¹Ì…­ÓµØ·¥Ë¥Ìˆ°•¸è€‰¹¼…Ñ¥Ù”µ•…ÍÕÉ•µ•¹Ğˆô°(€€€ÍÑ…Ñ…µÁ…¥¹…åÍÑ¥Ù”èì¡Ôè€‰í‘…åÍô¹…Á©„…­ÓµØˆ°•¸è€‰Ñ¥Ù”™½Èí‘…åÍô‘…åÌˆô°(€€€ÍÑ…ÑMÑ…ÉÑ…µÁ…¥¸èì(€€€€€¡Ôè€‰%¹“µÑÌ·¥Ë¥ÍĞ…èƒÙÍÍé•¡…Í½¹³µÓ…Í¡½èˆ°(€€€€€•¸è€‰MÑ…ÉĞ„€ÌØÃ
+À…µÁ…¥¸Ñ¼½µÁ…É”ˆ°(€€€ô°(€€€ÍÑ…ÑQ•…µMÑÉ•¹Ñ èì¡Ôè€‰Í…Á…Ğ•ËEÍÏ¥”ˆ°•¸è€‰Q•…´ÍÑÉ•¹Ñ ˆô°(€€€ÍÑ…ÑÉ½İÑ¡É•„èì¡Ôè€‰•©±•ÍéÓ¥Í¤Ñ•Ëñ±•Ğˆ°•¸è€‰É½İÑ …É•„ˆô°(€€€ÍÑ…ÑÑ¥Ù•…µÁ…¥¸èì¡Ôè€‰­ÓµØ·¥Ë¥Ìˆ°•¸è€‰Ñ¥Ù”µ•…ÍÕÉ•µ•¹Ğˆô°(€€€ÍÑ…Ñ%¹AÉ½É•ÍÌèì¡Ôè€‰™½±å…µ…Ñ‰…¸ˆ°•¸è€‰¥¸ÁÉ½É•ÍÌˆô°(€ô°((€€¼¼ƒŠRŠR )½¥¸Á…•Ì€ ½©½¥¸½mÑ½­•¹t°€½©½¥¸½½Éœ½m¥¹Ù¥Ñ•%‘t¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€©½¥¸èì(€€€€¼¼ƒŠRŠR M¡…É•ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€€€¥¹Ù¥Ñ•å•‰É½Üèì¡Ôè€‰µ•£µÛÌˆ°•¸è€‰¥¹Ù¥Ñ”ˆô°(€€€ÁÉ½™¥±•!¥¹Ğèì(€€€€€¡Ôè€‰é•­•Ğ…è…‘…Ñ½­…Ğ‹…Éµ¥­½È·Í‘½ÏµÑ¡…Ñ½„ÁÉ½™¥°½±‘…±½¸¸ˆ°(€€€€€•¸è€‰e½Ô…¸•‘¥ĞÑ¡•Í”‘•Ñ…¥±Ì…¹åÑ¥µ”½¸å½ÕÈÁÉ½™¥±”Á…”¸ˆ°(€€€ô°(€€€ÕÍ•É¹…µ•1…‰•°èì¡Ôè€‰5•©•±•»µÓ¥Í¤»¥Øˆ°•¸è€‰¥ÍÁ±…ä¹…µ”ˆô°(€€€ÕÍ•É¹…µ•A±…•¡½±‘•Èèì¡Ôè€‰Á°¸-½Û…ÌC¥Ñ•Èˆ°•¸è€‰”¹œ¸±•à]…±­•Èˆô°(€€€‰¥ÉÑ¡e•…É1…‰•°èì¡Ôè€‰Mëñ±•Ó¥Í¤ƒ¥Øˆ°•¸è€‰	¥ÉÑ å•…Èˆô°(€€€‰¥ÉÑ¡e•…ÉA±…•¡½±‘•Èèì¡Ôè€‰Á°¸í•á…µÁ±•ôˆ°•¸è€‰”¹œ¸í•á…µÁ±•ôˆô°(€€€‰¥ÉÑ¡e•…É!¥¹Ğèì¡Ôè€‰íµ¥¹÷ŠMíµ…áô¯ÙëÙÑĞˆ°•¸è€‰	•Ñİ••¸íµ¥¹ô…¹íµ…áôˆô°(€€€•¹‘•É1…‰•°èì¡Ôè€‰9•´ˆ°•¸è€‰•¹‘•Èˆô°(€€€½¹Í•¹ÑQ•áĞèì(€€€€€¡Ôè€‰!½éë…«…ÉÕ±½¬…‘…Ñ…¥´­•é•³¥Ï¥¡•è„ˆ°(€€€€€•¸è€‰$½¹Í•¹ĞÑ¼Ñ¡”ÁÉ½•ÍÍ¥¹œ½˜µä‘…Ñ„…½É‘¥¹œÑ¼Ñ¡”ˆ°(€€€ô°(€€€ÁÉ¥Ù…å1…‰•°èì¡Ôè€‰‘…ÑÛ¥‘•±µ¤Ó…«¥­½éÑ…ÓÌˆ°•¸è€‰AÉ¥Ù…äA½±¥äˆô°(€€€½¹Í•¹ÑMÕ™™¥àèì¡Ôè€‰…±…Á«…¸¸ˆ°•¸è€ˆ¸ˆô°(€€€ÍÕ‰µ¥ÑÑ¥¹œèì¡Ôè€‰Í…Ñ±…­½ë…Ì¸¸¸ˆ°•¸è€‰)½¥¹¥¹œ¸¸¸ˆô°(€€€ÍÕ‰µ¥ÑÉÉ½É•¹•É¥Œèì(€€€€€¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ°ÁËÍ‹…±ƒé©É„¸ˆ°(€€€€€•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸A±•…Í”ÑÉä……¥¸¸ˆ°(€€€ô°(€€€©½¥¹å•‰É½Üèì¡Ôè€‰Í…Ñ±…­½ë…Ìˆ°•¸è€‰©½¥¸ˆô°(€€€İ•±½µ•AÉ•™¥àèì¡Ôè€‰Mé¥„ˆ°•¸è€‰]•±½µ”ˆô°(€€€ÍÕ‰µ¥Ñ9•Üèì(€€€€€¡Ôè€‰Í…Ñ±…­½ë…Ìƒ¥Ì™•±·¥Ë¥Ì¥¹“µÓ…Í„ˆ°(€€€€€•¸è€‰)½¥¸…¹ÍÑ…ÉĞ…ÍÍ•ÍÍµ•¹Ğˆ°(€€€ô°(€€€ÍÕ‰µ¥Ñá¥ÍÑ¥¹œèì¡Ôè€‰Í…Ñ±…­½ë…Ìˆ°•¸è€‰)½¥¸ˆô°((€€€€¼¼ƒŠRŠR €½©½¥¸½mÑ½­•¹tƒŠPÑ•…´¥¹Ù¥Ñ”ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€€€Ñ•…µQ¥Ñ±”èì¡Ôè€‰Í…Ñ±…­½éè„Í…Á…Ñ¡½èˆ°•¸è€‰)½¥¸Ñ¡”Ñ•…´ˆô°(€€€ÍÑ•ÁAÉ½™¥±”èì¡Ôè€‰AÉ½™¥°ˆ°•¸è€‰AÉ½™¥±”ˆô°(€€€ÍÑ•Á½¹”èì¡Ôè€‰/¥Íèˆ°•¸è€‰½¹”ˆô°(€€€Íİ¥Ñ¡å•‰É½Üèì¡Ôè€‰Íé•ÉÙ•é•ÑÛ…±Ó…Ìˆ°•¸è€‰Íİ¥Ñ ½¹Ñ•áĞˆô°(€€€Íİ¥Ñ¡Q¥Ñ±”èì(€€€€€¡Ôè€‰7…ÈÑ…ÉÑ½é½°•äÍé•ÉÙ•é•Ñ¡•èˆ°(€€€€€•¸è€‰e½Ô…±É•…‘ä‰•±½¹œÑ¼…¸½É…¹¥é…Ñ¥½¸ˆ°(€€€ô°(€€€Íİ¥Ñ¡•ÍÉ¥ÁÑ¥½¸èì(€€€€€¡Ôè€‰)•±•¹±•œ„í•á¥ÍÑ¥¹=Éô…è…­ÓµØÍé•ÉÙ•é•Ñ¤­½¹Ñ•áÑÕÍ½¸!„Í…Ñ±…­½é½°„í½É9…µ•ôÍé•ÉÙ•é•Ñ¡•è°„­½Ë…‰‰¤Ñ…Ï…½µ•µ…É…°Í…¬…è…­ÓµØ­½¹Ñ•áÑÕÌÛ…±Ğƒ…Ğ¸ˆ°(€€€€€•¸è€‰e½ÕÈ…Ñ¥Ù”½Éœ½¹Ñ•áĞ¥Ìí•á¥ÍÑ¥¹=Éô¸%˜å½Ô©½¥¸í½É9…µ•ô°å½ÕÈÁÉ•Ù¥½ÕÌµ•µ‰•ÉÍ¡¥ÁÌÉ•µ…¥¸¥¹Ñ…Ğ…¹½¹±äå½ÕÈ…Ñ¥Ù”½¹Ñ•áĞ¡…¹•Ì¸ˆ°(€€€ô°(€€€Íİ¥Ñ¡AÉ¥µ…Éå1½…‘¥¹œèì¡Ôè€‰[…±Ó…Ì¸¸¸ˆ°•¸è€‰Mİ¥Ñ¡¥¹œ¸¸¸ˆô°(€€€Íİ¥Ñ¡AÉ¥µ…Éäèì(€€€€€¡Ôè€‹ÑÛ…±Ó…Ìèí½É9…µ•ôˆ°(€€€€€•¸è€‰Mİ¥Ñ Ñ¼í½É9…µ•ôˆ°(€€€ô°(€€€Íİ¥Ñ¡M•½¹‘…Éäèì(€€€€€¡Ôè€‰5…É…‘½¬„©•±•¹±•¤Íé•ÉÙ•é•Ñ‰•¸ˆ°(€€€€€•¸è€‰MÑ…ä¥¸ÕÉÉ•¹Ğ½É…¹¥é…Ñ¥½¸ˆ°(€€€ô°(€€€É•…‘åM…µ•=Éœèì(€€€€€¡Ôè€‰Í…Ñ±…­½é½°„íÑ•…µ9…µ•ôÍ…Á…Ñ¡½è„µ•³¥ÛDÍé•ÉÙ•é•Ñ¤Ñ…Ï…½‘‘…°¸ˆ°(€€€€€•¸è€‰e½Ô…É”©½¥¹¥¹œíÑ•…µ9…µ•ôİ¥Ñ å½ÕÈ•á¥ÍÑ¥¹œ½É…¹¥é…Ñ¥½¸µ•µ‰•ÉÍ¡¥À¸ˆ°(€€€ô°(€€€É•…‘å9•İ=Éœèì(€€€€€¡Ôè€‰Í…Ñ±…­½é½°„í½É9…µ•ôÍé•ÉÙ•é•Ñ¡•èƒ¥Ì„íÑ•…µ9…µ•ôÍ…Á…Ñ¡½è¸µ•³¥ÛD•É•‘·¥¹å•¥µ•µ…É…‘¹…¬¸ˆ°(€€€€€•¸è€‰e½Ô…É”©½¥¹¥¹œí½É9…µ•ô…¹Ñ¡”íÑ•…µ9…µ•ôÑ•…´¸e½ÕÈ•á¥ÍÑ¥¹œÉ•ÍÕ±ÑÌÍÑ…äİ¥Ñ å½Ô¸ˆ°(€€€ô°(€€€©½¥¹1½…‘¥¹œèì¡Ôè€‰Í…Ñ±…­½ë…Ì¸¸¸ˆ°•¸è€‰)½¥¹¥¹œ¸¸¸ˆô°(€€€©½¥¹Ñ„èì¡Ôè€‰Í…Ñ±…­½ë…Ìˆ°•¸è€‰)½¥¸ˆô°(€€€ÍÑ•ÀÅå•‰É½Üèì¡Ôè€ˆÀÄˆ°•¸è€ˆÀÄˆô°(€€€ÍÑ•ÀÅQ¥Ñ±”èì¡Ôè€‰Mé•·¥±å•Ì…‘…Ñ½¬ˆ°•¸è€‰	…Í¥ŒÁÉ½™¥±”ˆô°(€€€ÍÑ•ÀÅMÕˆèì(€€€€€¡Ôè€‰é•¬Íëñ­Ï¥•Í•¬„Íé•·¥±åÉ”Íé…‰½ÑĞÍ…Á…Ñ¯¥Á¡•è¸ˆ°(€€€€€•¸è€‰Q¡•Í”‘•Ñ…¥±Ì…É”É•ÅÕ¥É•™½ÈÁ•ÉÍ½¹…±¥é•Ñ•…´¥¹Í¥¡Ğ¸ˆ°(€€€ô°(€€€½¹Ñ¥¹Õ•Ñ„èì¡Ôè€‰Q½Û…‰ˆˆ°•¸è€‰½¹Ñ¥¹Õ”ˆô°(€€€ÍÑ•ÀÉå•‰É½Üèì¡Ôè€ˆÀÈˆ°•¸è€ˆÀÈˆô°(€€€ÍÑ•ÀÉQ¥Ñ±”èì¡Ôè€‰äÕÑ½±ÏÌ³¥Ã¥Ìˆ°•¸è€‰=¹”™¥¹…°ÍÑ•Àˆô°(€€€‰…­Ñ„èì¡Ôè€‰Y¥ÍÍé„ˆ°•¸è€‰	…¬ˆô°((€€€€¼¼ƒŠRŠR €½©½¥¸½½Éœ½m¥¹Ù¥Ñ•%‘tƒŠP½Éœ¥¹Ù¥Ñ”ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€€€½ÉQ¥Ñ±”èì¡Ôè€‰Í…Ñ±…­½éè„Íé•ÉÙ•é•Ñ¡•èˆ°•¸è€‰)½¥¸½É…¹¥é…Ñ¥½¸ˆô°(€€€ÁÉ½™¥±•å•‰É½Üèì¡Ôè€ˆÀÄˆ°•¸è€ˆÀÄˆô°(€€€ÁÉ½™¥±•Q¥Ñ±”èì¡Ôè€‰;¥£…¹ä…±…À…‘…Ğˆ°•¸è€‰™•Ü‰…Í¥Œ‘•Ñ…¥±Ìˆô°(€€€ÁÉ½™¥±•MÕˆèì(€€€€€¡Ôè€‰é•¬Íëñ­Ï¥•Í•¬„Íé•·¥±åÉ”Íé…‰½ÑĞÍ…Á…Ñ¯¥Á¡•è¸ˆ°(€€€€€•¸è€‰Q¡•Í”‘•Ñ…¥±Ì…É”É•ÅÕ¥É•™½ÈÁ•ÉÍ½¹…±¥é•Ñ•…´¥¹Í¥¡Ğ¸ˆ°(€€€ô°(€€€É•…‘åQ•áĞèì(€€€€€¡Ôè€‰/¥Íé•¸ƒ…±±ÍèÍ…Ñ±…­½é¹¤„í½É9…µ•ôÍé•ÉÙ•é•Ñ¡•è¸µ•³¥ÛDÍé•·¥±å•Ì•É•‘·¥¹å•¥µ•µ…É…‘¹…¬¸ˆ°(€€€€€•¸è€‰e½ÔÉ”É•…‘äÑ¼©½¥¸í½É9…µ•ô¸e½ÕÈ•á¥ÍÑ¥¹œÁ•ÉÍ½¹…°É•ÍÕ±ÑÌÉ•µ…¥¸…Ù…¥±…‰±”¸ˆ°(€€€ô°(€ô°((€€¼¼ƒŠRŠR Q•…´‘•Ñ…¥°Á…”€ ½Ñ•…´½m¥‘t¤ƒŠPÍ•ÉÙ•ÈÁ…”ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€Ñ•…µ•Ñ…¥°èì(€€€µ•Ñ…Q¥Ñ±”èì¡Ôè€‰Í…Á…ĞğÑÉ¥Ñ„ˆ°•¸è€‰Q•…´ğÑÉ¥Ñ„ˆô°((€€€€¼¼!•É¼(€€€¡•É½å•‰É½Üèì¡Ôè€‰Í…Á…Ñ»¥é•Ğˆ°•¸è€‰Q•…´Ù¥•Üˆô°(€€€¡•É½A…ÑÑ•É¹I•…‘äèì¡Ôè€‰Í…Á…Ñ¯¥À•³¥É¡•ÓDˆ°•¸è€‰A…ÑÑ•É¸É•…‘äˆô°(€€€¡•É½Y¥•İA…ÑÑ•É¸èì¡Ôè€‰Í…Á…Ñ¯¥Àµ•¹å¥Ó…Í„ˆ°•¸è€‰=Á•¸Ñ•…´Á¥ÑÕÉ”ˆô°(€€€¡•É½5…¹…•I½Õ¹èì¡Ôè€‰Y¥ÍÍé…©•±ë¥Í¤¯ÙÈ­•é•³¥Í”ˆ°•¸è€‰5…¹…”™••‘‰…¬É½Õ¹ˆô°(€€€¡•É½MÑ…ÉÑI½Õ¹èì¡Ôè€‰/ÙÈ¥¹“µÓ…Í„ˆ°•¸è€‰MÑ…ÉĞÉ½Õ¹ˆô°((€€€€¼¼1¥Ù”Í¹…ÁÍ¡½Ğ…Í¥‘”(€€€Í¹…ÁÍ¡½Ñ1…‰•°èì¡Ôè€‹%³DÁ¥±±…¹…Ñ¯¥Àˆ°•¸è€‰1¥Ù”Í¹…ÁÍ¡½Ğˆô°(€€€Í¹…ÁÍ¡½Ñ5•µ‰•ÉÌèì¡Ôè€‰Q…œˆ°•¸è€‰5•µ‰•ÉÌˆô°(€€€€¼¼/%Mh½[Hƒ¥Ì„‰…°½±‘…±¤çÅËÄ„Mi7%1e%O%µAI=%1IÙ½¹…Ñ­½é¥¬(€€€€¼¼€£Ù»¥ÉÓ¥­•³¥Ì¤ƒŠP„ÓÙ‰‰¤·¥Ë¥Ì¡…±…“…Í„„±•¹Ñ¤·¥Ë¥Ìµ‰½¹Ó…Í‰…¸ƒ¥°¸(€€€Í¹…ÁÍ¡½Ñ½¹”èì¡Ôè€‰AÉ½™¥°¯¥Íèˆ°•¸è€‰AÉ½™¥±”‘½¹”ˆô°(€€€Í¹…ÁÍ¡½Ñ]…¥Ğèì¡Ôè€‰AÉ½™¥°Û…Èˆ°•¸è€‰AÉ½™¥±”Á•¹‘¥¹œˆô°(€€€Í¹…ÁÍ¡½Ñ½µÁ±•Ñ¥½¹I…Ñ”èì¡Ôè€‰Mé•·¥±å¥Ï¥œµÁÉ½™¥°ˆ°•¸è€‰A•ÉÍ½¹…±¥ÑäÁÉ½™¥±”ˆô°(€€€Í¹…ÁÍ¡½Ñ½¹•%¹AÉ½É•ÍÌèì¡Ôè€‰í‘½¹•ô¯¥Íèƒ
+Üí¥¹AÉ½É•ÍÍô™½±å…µ…Ñ‰…¸ˆ°•¸è€‰í‘½¹•ô‘½¹”ƒ
+Üí¥¹AÉ½É•ÍÍô¥¸ÁÉ½É•ÍÌˆô°((€€€€¼¼M•½¹‘…ÉäÁÉ½É•ÍÌ(€€€Í•½¹‘…Éå••‘‰…­I½Õ¹èì¡Ôè€‰Y¥ÍÍé…©•±ë¥Í¤¯ÙÈˆ°•¸è€‰••‘‰…¬É½Õ¹ˆô°(€€€Í•½¹‘…ÉåA…ÑÑ•É¹I•…‘¥¹•ÍÌèì¡Ôè€‰Í…Á…Ñ¯¥À¯¥Íëñ±ÑÏ¥œˆ°•¸è€‰A…ÑÑ•É¸É•…‘¥¹•ÍÌˆô°(€€€Í•½¹‘…Éå=‰Í•ÉÙ•ÉAÉ½É•ÍÌèì¡Ôè€‰í‘½¹•ô¯¥Íèƒ
+ÜíÉ•µ…¥¹¥¹ô£…ÑÉ„ˆ°•¸è€‰í‘½¹•ô‘½¹”ƒ
+ÜíÉ•µ…¥¹¥¹ôÉ•µ…¥¹¥¹œˆô°(€€€Í•½¹‘…ÉåA…ÑÑ•É¹Ù…¥±…‰±”èì¡Ôè€‰Í…Á…Ñ¯¥À•³¥É¡•ÓDˆ°•¸è€‰Q•…´Á…ÑÑ•É¸¥Ì…Ù…¥±…‰±”ˆô°(€€€Í•½¹‘…ÉåA…ÑÑ•É¹AÉ½É•ÍÌèì¡Ôè€‰í‘½¹•ô½íÑ…É•Ñô¯¥Íèˆ°•¸è€‰í‘½¹•ô½íÑ…É•Ñô‘½¹”ˆô°((€€€€¼¼7¥Ë¥Ìµ‰½¹Ó…Ì€¡…­ÓµØ­…µÃ…¹ä³¥Ã¥Í•¤„Í…Á…Ğ·…±±…Á½Ñ¯¥Á‰•¸¤(€€€µ•…ÍÕÉ•µ•¹Ñ	É•…­‘½İ¹Q¥Ñ±”èì¡Ôè€‰7¥Ë¥Í•¬ƒ…±³…Í„ˆ°•¸è€‰5•…ÍÕÉ•µ•¹ĞÁÉ½É•ÍÌˆô°(€€€µ•…ÍÕÉ•µ•¹Ñ	É•…­‘½İ¹!¥¹Ğèì(€€€€€¡Ôè€‰7¥Ë¥Í•¹¯¥¹Ñ¤ƒ…±³…Ì•‰‰•¸„¯ÙÉ‰•¸èƒŠyí¹…µ•÷Št¸™•¹Ñ¤­¥ÓÙ±Ó¥Í¤…Ë…¹äÍ…¬„Íé•·¥±å¥Ï¥œµÁÉ½™¥±É„Ù½¹…Ñ­½é¥¬¸ˆ°(€€€€€•¸è€‰A•Èµ•…ÍÕÉ•µ•¹Ğ¥¸Ñ¡”p‰í¹…µ•õpˆÉ½Õ¹ƒŠPÑ¡”½µÁ±•Ñ¥½¸É…Ñ”…‰½Ù”½Ù•ÉÌÑ¡”Á•ÉÍ½¹…±¥ÑäÁÉ½™¥±”½¹±ä¸ˆ°(€€€ô°(€€€µ•…ÍÕÉ•µ•¹Ñ	É•…­‘½İ¹½¹”èì¡Ôè€‰í‘½¹•ô½íÑ½Ñ…±ô¯¥Íèˆ°•¸è€‰í‘½¹•ô½íÑ½Ñ…±ô‘½¹”ˆô°((€€€€¼¼I•½µµ•¹‘•…Ñ¥½¸(€€€¹•áÑMÑ•Àèì¡Ôè€‰/ÙÙ•Ñ­•ëD³¥Ã¥Ìˆ°•¸è€‰9•áĞÍÑ•Àˆô°(€€€…Ñ¥½¹=‰Í•ÉÙ•ÉÑ¥Ù”èì¡Ôè€‰Ù¥ÍÍé…©•±ë¥Í¤¯ÙÈ™ÕĞ°¯ÙÙ•Íƒ¥Ìë…É±”„¡§…¹åëÌÙ¥ÍÍé…©•±ë¥Í•­•Ğ¸ˆ°•¸è€‰Q¡”™••‘‰…¬É½Õ¹¥Ì…Ñ¥Ù”¸QÉ…¬…¹±½Í”É•µ…¥¹¥¹œ™••‘‰…¬¸ˆô°(€€€…Ñ¥½¹A…ÑÑ•É¹I•…‘äèì¡Ôè€‰Í…Á…Ñ¯¥À¯¥Íè°µ½ÍĞƒ¥É‘•µ•Ì•±¥¹“µÑ…¹¤„Ù¥ÍÍé…©•±ë¥Í¤¯ÙÉĞ¸ˆ°•¸è€‰Q•…´Á…ÑÑ•É¸¥ÌÉ•…‘ä¸1…Õ¹ Ñ¡”™••‘‰…¬É½Õ¹¹½Ü¸ˆô°(€€€…Ñ¥½¹±½Í•5¥ÍÍ¥¹œèì¡Ôè€‰³E‰ˆë…É«…Ñ½¬±”„¡§…¹åëÌ­¥ÓÙ±Ó¥Í•­•Ğ°ÕÓ…¹„¥¹“µÑÍ…Ñ½¬¯ÙÉĞ¸ˆ°•¸è€‰±½Í”µ¥ÍÍ¥¹œ…ÍÍ•ÍÍµ•¹ÑÌ™¥ÉÍĞ°Ñ¡•¸±…Õ¹ Ñ¡”É½Õ¹¸ˆô°(€€€…Ñ¥½¹5…¹…•I½Õ¹èì¡Ôè€‰/ÙÈ­•é•³¥Í”ˆ°•¸è€‰5…¹…”É½Õ¹ˆô°(€€€…Ñ¥½¹MÑ…ÉÑI½Õ¹èì¡Ôè€‰/ÙÈ¥¹“µÓ…Í„ˆ°•¸è€‰MÑ…ÉĞÉ½Õ¹ˆô°(€€€…Ñ¥½¹Y¥•İA…ÑÑ•É¸èì¡Ôè€‰Í…Á…Ñ¯¥Àµ•¹å¥Ó…Í„ˆ°•¸è€‰=Á•¸Ñ•…´Á¥ÑÕÉ”ˆô°(€€€…Ñ¥½¹A…ÑÑ•É¹Ù…¥±…‰±”èì¡Ôè€‰Í…Á…Ñ¯¥À·…È•³¥É¡•ÓD°»¥éƒ…Ğ„µ¥¹Ó…é…Ñ½­…Ğ„¯ÙÙ•Ñ­•ëD“Ù¹Ó¥Ì•³EÑĞ¸ˆ°•¸è€‰Q•…´Á…ÑÑ•É¸¥Ì…Ù…¥±…‰±”¸I•Ù¥•Ü¥Ğ‰•™½É”å½ÕÈ¹•áĞ‘•¥Í¥½¸¸ˆô°(€€€…Ñ¥½¹9••‘5½É”èì¡Ôè€‰Í…Á…Ñ¯¥À™•±½±“…Ï…¡½è·¥œ­¥ÓÙ±Ó¥Í•¬Íëñ­Ï¥•Í•¬¸ˆ°•¸è€‰5½É”½µÁ±•Ñ•…ÍÍ•ÍÍµ•¹ÑÌ…É”¹••‘•Ñ¼Õ¹±½¬Ñ•…´Á…ÑÑ•É¸¸ˆô°(€€€…Ñ¥½¹Y¥•İA…ÑÑ•É¹±Ğèì¡Ôè€‰Í…Á…Ñ¯¥Àµ•¹å¥Ó…Í„ˆ°•¸è€‰=Á•¸Ñ•…´Á¥ÑÕÉ”ˆô°(€€€…Ñ¥½¹=Á•¹5•µ‰•ÉÌèì¡Ôè€‰Q…½¬µ•¹å¥Ó…Í„ˆ°•¸è€‰=Á•¸µ•µ‰•ÉÌˆô°((€€€€¼¼MÕµµ…ÉäÍ•Ñ¥½¸(€€€Í•Ñ¥½¹M¹…ÁÍ¡½Ğèì¡Ôè€‹±±…Á½Ñ¯¥Àˆ°•¸è€‰M¹…ÁÍ¡½Ğˆô°(€€€ÍÕµµ…Éå1…‰•°èì¡Ôè€‹YMMi=13Lˆ°•¸è€‰MU55Idˆô°(€€€€¼¼¯…ÉÑå„„Mi7%1e%O%µAI=%0€£Ù»¥ÉÓ¥­•³¥Ì¤­¥ÓÙ±ÓÙÑÑÏ¥Ÿ¥ĞµÕÑ…Ñ©„ƒŠP(€€€€¼¼„µ´•éĞ­¥µ½¹‘©„°¡½ä¹”ÓÅ¹«Ù¸„Ñ•±©•Ì·¥Ë¥Ìµ¯ÙÈ…Ë…¹ç…¹…¬¸(€€€½µÁ±•Ñ¥½¹I…Ñ•Q¥Ñ±”èì¡Ôè€‰Mi7%1e%O%µAI=%0-%SY1SYQQO%ˆ°•¸è€‰AIM=91%QdAI=%1=5A1Q%=8ˆô°(€€€½µÁ±•Ñ¥½¹I…Ñ•MÕˆèì¡Ôè€‰í‘½¹•ô¯¥Íèƒ
+Üí¥¹AÉ½É•ÍÍô™½±å…µ…Ñ‰…¸ƒ
+Üíİ…¥Ñ¥¹ôÛ…É…­½é¥¬ˆ°•¸è€‰í‘½¹•ô‘½¹”ƒ
+Üí¥¹AÉ½É•ÍÍô¥¸ÁÉ½É•ÍÌƒ
+Üíİ…¥Ñ¥¹ôİ…¥Ñ¥¹œˆô°(€€€Ñ•…µA…ÑÑ•É¹Q¥Ñ±”èì¡Ôè€‰MAQ5%9SiPˆ°•¸è€‰Q4AQQI8ˆô°(€€€Ñ•…µA…ÑÑ•É¹Ù…¥±…‰±”èì¡Ôè€‰³¥É¡•ÓDˆ°•¸è€‰Ù…¥±…‰±”ˆô°(€€€Ñ•…µA…ÑÑ•É¹9½Ñe•Ğèì¡Ôè€‰7¥œ¹•´ˆ°•¸è€‰9½Ğå•Ğˆô°(€€€Ñ•…µA…ÑÑ•É¹AÉ½É•ÍÌèì¡Ôè€‰­¥ÓÙ±Ó¥Í•¬íÁÑô”·…»…°Ñ…ÉĞ¸5¥¹¥µÕ´€Ì­¥ÓÙ±Ó¥ÌÍëñ­Ï¥•Ì¸ˆ°•¸è€‰íÁÑô”½µÁ±•Ñ”¸5¥¹¥µÕ´€Ì…ÍÍ•ÍÍµ•¹ÑÌÉ•ÅÕ¥É•¸ˆô°(€€€Ñ•…µA…ÑÑ•É¹Y¥•İÑ„èì¡Ôè€‰Í…Á…Ñ¯¥Àµ•Ñ•­¥¹Ó¥Í”ˆ°•¸è€‰Y¥•ÜÑ•…´Á…ÑÑ•É¸ˆô°((€€€€¼¼)½ÕÉ¹•ä¡•­±¥ÍĞÍ•Ñ¥½¸(€€€Í•Ñ¥½¹)½ÕÉ¹•äèì¡Ôè€‰	•Ù•é•Ó¥Í¤³¥Ã¥Í•¬ˆ°•¸è€‰)½ÕÉ¹•ä¡•­±¥ÍĞˆô°(€€€©½ÕÉ¹•åAÉ½É•ÍÌèì¡Ôè€‰¡…±…“…Ìˆ°•¸è€‰ÁÉ½É•ÍÌˆô°(€€€©½ÕÉ¹•åQ¥Ñ±”èì¡Ôè€‰Í…Á…ÓéĞ¯ÙÙ•Ó¥Í”ˆ°•¸è€‰QÉ…¬Ñ•…´©½ÕÉ¹•äˆô°(€€€©½ÕÉ¹•å•ÍÉ¥ÁÑ¥½¸èì¡Ôè€‰Uå…¹…ÉÉ„„©½ÕÉ¹•ä±½¥¯…É„ƒ¥ÃµÑÙ”³…Ñ½°¡½°Ñ…ÉĞ„Í…Á…Ğƒ¥Ìµ¤¡§…¹åé¥¬„¯ÙÙ•Ñ­•ëDÍé¥¹Ñ¡•è¸ˆ°•¸è€‰	Õ¥±Ğ½¸Ñ¡”Í…µ”©½ÕÉ¹•ä±½¥Œ°Ñ¡¥ÌÍ¡½İÌİ¡•É”Ñ¡”Ñ•…´ÍÑ…¹‘Ì…¹İ¡…Ğ¥Ìµ¥ÍÍ¥¹œ™½ÈÑ¡”¹•áĞ±•Ù•°¸ˆô°(€€€©½ÕÉ¹•å9•áÑMÑ•Àèì¡Ôè€‰/ÙÙ•Ñ­•ëD³¥Ã¥Ìˆ°•¸è€‰9•áĞÍÑ•Àˆô°((€€€€¼¼¡•­±¥ÍĞ¥Ñ•µÌ(€€€¡•­½É•Q•…´èì¡Ôè€‰5…Í…Á…Ğ­¥…±…¯µÓ…Í„ˆ°•¸è€‰½É”Ñ•…´¥¸Á±…”ˆô°(€€€¡•­½É•Q•…µ•Ñ…¥°èì¡Ôè€‰í½Õ¹ÑôÑ…œ…­ÓµØ„Í…Á…Ñ‰…¸ˆ°•¸è€‰í½Õ¹Ñô…Ñ¥Ù”µ•µ‰•ÉÌ¥¸Ñ¡”Ñ•…´ˆô°(€€€¡•­½É•Q•…µÑ„èì¡Ôè€‰Q…½¬­•é•³¥Í”ˆ°•¸è€‰5…¹…”µ•µ‰•ÉÌˆô°(€€€¡•­ÍÍ•ÍÍµ•¹ÑÌèì¡Ôè€‰-¥ÓÙ±Ó¥Í•¬±•ë…Ë…Í„ˆ°•¸è€‰ÍÍ•ÍÍµ•¹ÑÌ½µÁ±•Ñ•ˆô°(€€€¡•­ÍÍ•ÍÍµ•¹ÑÍ•Ñ…¥°èì¡Ôè€‰í‘½¹•ô¼ÌÍëñ­Ï¥•Ì…è•±ÏDÍ…Á…Ñ¯¥Á¡•èˆ°•¸è€‰í‘½¹•ô¼Ì¹••‘•™½È™¥ÉÍĞÑ•…´Á…ÑÑ•É¸ˆô°(€€€¡•­ÍÍ•ÍÍµ•¹ÑÍÑ„èì¡Ôè€‰!§…¹åëÍ¬¯ÙÙ•Ó¥Í”ˆ°•¸è€‰QÉ…¬µ¥ÍÍ¥¹œµ•µ‰•ÉÌˆô°(€€€¡•­••‘‰…­I½Õ¹èì¡Ôè€‰Y¥ÍÍé…©•±ë¥Í¤¯ÙÈˆ°•¸è€‰••‘‰…¬É½Õ¹ˆô°(€€€¡•­••‘‰…­Ñ¥Ù”èì¡Ôè€‰­ÓµØ¯ÙÈ™ÕĞ„Í…Á…Ñ½¸¸ˆ°•¸è€‰¸…Ñ¥Ù”É½Õ¹¥ÌÉÕ¹¹¥¹œ¸ˆô°(€€€¡•­••‘‰…­9½¹”èì¡Ôè€‰7¥œ¹¥¹Ì…­ÓµØ½‰Í•ÉÙ•È¯ÙÈ¸ˆ°•¸è€‰9¼…Ñ¥Ù”½‰Í•ÉÙ•ÈÉ½Õ¹å•Ğ¸ˆô°(€€€¡•­••‘‰…­Ñ„èì¡Ôè€‰/ÙÈ¥¹“µÓ…Í„ˆ°•¸è€‰MÑ…ÉĞÉ½Õ¹ˆô°((€€€€¼¼€Ğ¬È±…å•ÈÍ•Ñ¥½¸(€€€Í•Ñ¥½¹1…å•ÉÌèì¡Ôè€ˆĞ¬ÈË¥Ñ•¯¥Íëñ±ÑÏ¥œˆ°•¸è€ˆĞ¬È±…å•ÈÉ•…‘¥¹•ÍÌˆô°(€€€±…å•ÉÍ1…‰•°èì¡Ôè€‰Í…Á…ÑÍé¥¹ÓÄË¥Ñ••¬ˆ°•¸è€‰Q•…´µ±•Ù•°±…å•ÉÌˆô°(€€€±…å•ÉÍ½¹•MÕ™™¥àèì¡Ôè€‰¯¥Íèˆ°•¸è€‰‘½¹”ˆô°(€€€ÍÑ…ÑÕÍ½µÁ±•Ñ•èì¡Ôè€‰/¥Íèˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€ÍÑ…ÑÕÍ%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€ÍÑ…ÑÕÍÙ…¥±…‰±”èì¡Ôè€‰³¥É¡•ÓDˆ°•¸è€‰Ù…¥±…‰±”ˆô°(€€€ÍÑ…ÑÕÍ1½­•èì¡Ôè€‰k…É½±Ğˆ°•¸è€‰1½­•ˆô°((€€€€¼¼A•½Á±”Í•Ñ¥½¸(€€€Í•Ñ¥½¹A•½Á±”èì¡Ôè€‰µ‰•É•¬ˆ°•¸è€‰A•½Á±”ˆô°(€€€µ•µ‰•ÉÍ1…‰•°èì¡Ôè€‰Q=,ˆ°•¸è€‰55	ILˆô°(€€€µ•µ‰•É½¹”èì¡Ôè€‰/¥Íèˆ°•¸è€‰½¹”ˆô°(€€€µ•µ‰•É%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€µ•µ‰•É]…¥Ñ¥¹œèì¡Ôè€‰[…É…­½é¥¬ˆ°•¸è€‰]…¥Ñ¥¹œˆô°(€€€µ•µ‰•ÉAÉ½™¥±•Ñ„èì¡Ôè€‰AÉ½™¥°ˆ°•¸è€‰AÉ½™¥±”ˆô°(€€€µ•µ‰•ÉI•µ¥¹‘Ñ„èì¡Ôè€‰µ°¸ˆ°•¸è€‰I•µ¥¹ˆô°((€€€€¼¼9•áĞÍÑ•ÀÍ•Ñ¥½¸(€€€Í•Ñ¥½¹9•áÑMÑ•Àèì¡Ôè€‰/ÙÙ•Ñ­•ëD³¥Ã¥Ìˆ°•¸è€‰9•áĞÍÑ•Àˆô°(€€€¹•áÑMÑ•ÁÑ¥Ù•••‘‰…¬èì¡Ôè€‰í½Õ¹Ñô…­ÓµØÙ¥ÍÍé…©•±ë¥Ìˆ°•¸è€‰í½Õ¹Ñô…Ñ¥Ù”™••‘‰…¬ˆô°(€€€¹•áÑMÑ•Á½ÕÍ%¹Í¥¡Ğèì¡Ôè€‰Í­ÕÍé‰…¸„Í…Á…Ñ¯¥Àˆ°•¸è€‰½ÕÌ½¸Ñ•…´¥¹Í¥¡Ğˆô°(€ô°((€€¼¼ƒŠRŠR =Éœ½¹‰½…É‘¥¹œİ¥é…É€ ½½¹‰½…É‘¥¹œ¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€½É=¹‰½…É‘¥¹œèì(€€€€¼¼!•…‘¥¹œ(€€€İ•±½µ•Q¥Ñ±”èì¡Ôè€‹q‘ÛÙé³ñ¹¬„ÑÉ¥Ó…‰…¸¸ˆ°•¸è€‰]•±½µ”Ñ¼ÑÉ¥Ñ„¸ˆô°(€€€İ•±½µ•MÕ‰Ñ¥Ñ±”èì¡Ôè€ˆÌÁ•ÉŒƒ¥Ì³…Ñ½…è•±ÏDÍ…Á…Ñ¯¥Á•Ğ¸ˆ°•¸è€‰%¸€Ìµ¥¹ÕÑ•Ìå½Ô±°Õ¹±½¬å½ÕÈ™¥ÉÍĞÑ•…´Í¹…ÁÍ¡½Ğ¸ˆô°((€€€€¼¼MÑ•À±…‰•±Ì(€€€ÍÑ•ÁAÉ½™¥±”èì¡Ôè€‰AÉ½™¥°ˆ°•¸è€‰AÉ½™¥±”ˆô°(€€€ÍÑ•Á½µÁ…¹äèì¡Ôè€‰¥œˆ°•¸è€‰½µÁ…¹äˆô°(€€€ÍÑ•ÁQ•…´èì¡Ôè€‰Í…Á…Ğˆ°•¸è€‰Q•…´ˆô°(€€€ÍÑ•Á½¹”èì¡Ôè€‰/¥Íèˆ°•¸è€‰½¹”ˆô°((€€€€¼¼1…å•ÈÉ½…‘µ…À(€€€±…å•ÉI½…‘µ…Àèì¡Ôè€‰7¥Ë¥Í¤ƒéÑ¥Ñ•ÉØˆ°•¸è€‰5•…ÍÕÉ•µ•¹ĞÉ½…‘µ…Àˆô°(€€€ÍÑ…ÑÕÍ½µÁ±•Ñ•èì¡Ôè€‰/¥Íèˆ°•¸è€‰½µÁ±•Ñ•ˆô°(€€€ÍÑ…ÑÕÍ%¹AÉ½É•ÍÌèì¡Ôè€‰½±å…µ…Ñ‰…¸ˆ°•¸è€‰%¸ÁÉ½É•ÍÌˆô°(€€€ÍÑ…ÑÕÍÙ…¥±…‰±”èì¡Ôè€‰³¥É¡•ÓDˆ°•¸è€‰Ù…¥±…‰±”ˆô°(€€€ÍÑ…ÑÕÍ1½­•èì¡Ôè€‰k…É½±Ğˆ°•¸è€‰1½­•ˆô°(€€€±…å•ÉA±ÕÍ9½Ñ”èì¡Ôè€‰€¬ÈË¥Ñ•œ½Á¥½»…±¥Ì·¥±çµÓ¥Í¯¥¹Ğ©•±•¹¥¬µ•œ°…µ¥­½È…è…±…ÀÍ•±˜ƒ¥ÌÑ•…´Ë¥Ñ••¬¯¥Íé•¸ƒ…±±¹…¬¸ˆ°•¸è€‰Q¡”€¬È±…å•ÉÌ…ÁÁ•…È…Ì½ÁÑ¥½¹…°‘••Á•¹¥¹œ½¹”Ñ¡”½É”Í•±˜…¹Ñ•…´±…å•ÉÌ…É”É•…‘ä¸ˆô°((€€€€¼¼MÑ•À€Ä(€€€ÍÑ•ÀÀÄèì¡Ôè€‰3¥Ã¥Ì€ÀÄˆ°•¸è€‰MÑ•À€ÀÄˆô°(€€€ÍÑ•ÀÀÅQ¥Ñ±”èì¡Ôè€‰Mé•·¥±å•Ì…‘…Ñ½¬ˆ°•¸è€‰A•ÉÍ½¹…°‘•Ñ…¥±Ìˆô°(€€€ÍÑ•ÀÀÅMÕ‰Ñ¥Ñ±”èì¡Ôè€‰é•¬Íëñ­Ï¥•Í•¬„Íé•·¥±åÉ”Íé…‰½ÑĞÍ…Á…Ñ¯¥Á¡•è¸ˆ°•¸è€‰Q¡•Í”‘•Ñ…¥±Ì…É”É•ÅÕ¥É•™½ÈÁ•ÉÍ½¹…±¥é•Ñ•…´¥¹Í¥¡Ğ¸ˆô°(€€€‘¥ÍÁ±…å9…µ”èì¡Ôè€‰5•©•±•»µÓ¥Í¤»¥Øˆ°•¸è€‰¥ÍÁ±…ä¹…µ”ˆô°(€€€‘¥ÍÁ±…å9…µ•A±…•¡½±‘•Èèì¡Ôè€‰Á°¸-½Û…ÌC¥Ñ•Èˆ°•¸è€‰”¹œ¸±•à]…±­•Èˆô°(€€€‰¥ÉÑ¡e•…Èèì¡Ôè€‰Mëñ±•Ó¥Í¤ƒ¥Øˆ°•¸è€‰	¥ÉÑ å•…Èˆô°(€€€‰¥ÉÑ¡e•…ÉA±…•¡½±‘•Èèì¡Ôè€‰Á°¸íå•…Éôˆ°•¸è€‰”¹œ¸íå•…Éôˆô°(€€€‰¥ÉÑ¡e•…ÉI…¹”èì¡Ôè€‰íµ¥¹÷ŠMíµ…áô¯ÙëÙÑĞˆ°•¸è€‰	•Ñİ••¸íµ¥¹ô…¹íµ…áôˆô°(€€€•¹‘•Èèì¡Ôè€‰9•´ˆ°•¸è€‰•¹‘•Èˆô°(€€€½Õ¹ÑÉäèì¡Ôè€‰=ÉÍë…œˆ°•¸è€‰½Õ¹ÑÉäˆô°(€€€½Õ¹ÑÉåA±…•¡½±‘•Èèì¡Ôè€‰[…±…ÍÍè½ÉÍë…½Ğˆ°•¸è€‰M•±•Ğ½Õ¹ÑÉäˆô°(€€€½¹Ñ¥¹Õ•	Ñ¸èì¡Ôè€‰Q½Û…‰ˆˆ°•¸è€‰½¹Ñ¥¹Õ”ˆô°((€€€€¼¼Y…±¥‘…Ñ¥½¸(€€€Ù…±5¥¹¡…ÉÌèì¡Ôè€‰1•…³…‰ˆ€È­…É…­Ñ•ÈÍëñ­Ï¥•Ìˆ°•¸è€‰Ğ±•…ÍĞ€È¡…É…Ñ•ÉÌ…É”É•ÅÕ¥É•ˆô°(€€€Ù…±5…á¡…ÉÌÈÀèì¡Ôè€‰5…á¥µÕ´€ÈÀ­…É…­Ñ•Èˆ°•¸è€‰5…á¥µÕ´€ÈÀ¡…É…Ñ•ÉÌˆô°(€€€Ù…±A±•…Í•¡½½Í”èì¡Ôè€‰[…±…ÍÍè•å•Ğˆ°•¸è€‰A±•…Í”¡½½Í”½¹”ˆô°(€€€Ù…±=É9…µ•I•ÅÕ¥É•èì¡Ôè€‰¥œ¹•Ù”¯ÙÑ•±•ëDˆ°•¸è€‰½µÁ…¹ä¹…µ”¥ÌÉ•ÅÕ¥É•ˆô°(€€€Ù…±5…á¡…ÉÌÄÀÀèì¡Ôè€‰5…á¥µÕ´€ÄÀÀ­…É…­Ñ•Èˆ°•¸è€‰5…á¥µÕ´€ÄÀÀ¡…É…Ñ•ÉÌˆô°(€€€Ù…±Q•…µ9…µ•I•ÅÕ¥É•èì¡Ôè€‰Í…Á…Ğ¹•Ù”¯ÙÑ•±•ëDˆ°•¸è€‰Q•…´¹…µ”¥ÌÉ•ÅÕ¥É•ˆô°(€€€Ù…±5…á¡…ÉÌØÀèì¡Ôè€‰5…á¥µÕ´€ØÀ­…É…­Ñ•Èˆ°•¸è€‰5…á¥µÕ´€ØÀ¡…É…Ñ•ÉÌˆô°(€€€Ù…±•¹•É¥ÉÉ½Èèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ°ÁËÍ‹…±ƒé©É„ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸A±•…Í”ÑÉä……¥¸¸ˆô°(€€€Ù…±½¹Í•¹ÑÉÉ½Èèì¡Ôè€‰!¥‰„ÓÙÉÓ¥¹Ğ°ÁËÍ‹…±ƒé©É„¸ˆ°•¸è€‰M½µ•Ñ¡¥¹œİ•¹ĞİÉ½¹œ¸A±•…Í”ÑÉä……¥¸¸ˆô°((€€€€¼¼MÑ•À€È(€€€ÍÑ•ÀÀÈèì¡Ôè€‰3¥Ã¥Ì€ÀÈˆ°•¸è€‰MÑ•À€ÀÈˆô°(€€€ÍÑ•ÀÀÉQ¥Ñ±”èì¡Ôè€‰¥•ˆ°•¸è€‰e½ÕÈ½µÁ…¹äˆô°(€€€ÍÑ•ÀÀÉMÕ‰Ñ¥Ñ±”èì¡Ôè€‰é•¬…è…‘…Ñ½¬Í•ŸµÑ•¹•¬Íé•·¥±åÉ”Íé…‰¹¤„Í…Á…Ñ¯¥Á•Ğ¸ˆ°•¸è€‰Q¡•Í”‘•Ñ…¥±Ì¡•±ÀÕÌÑ…¥±½ÈÑ¡”Ñ•…´¥¹Í¥¡Ğ¸ˆô°(€€€É½±•1…‰•°èì¡Ôè€‰5¤„Íé•É•Á¯ÙËÙüˆ°•¸è€‰]¡…Ğ¥Ìå½ÕÈÉ½±”üˆô°(€€€½ÁÑ¥½¹…°èì¡Ôè€ˆ¡½Á¥½»…±¥Ì¤ˆ°•¸è€ˆ¡½ÁÑ¥½¹…°¤ˆô°(€€€½µÁ…¹å9…µ”èì¡Ôè€‰¥œ¹•Ù”ˆ°•¸è€‰½µÁ…¹ä¹…µ”ˆô°(€€€½µÁ…¹å9…µ•A±…•¡½±‘•Èèì¡Ôè€‰Á°¸-½Û…Ìƒ¥ÌS…ÉÍ„-™Ğ¸ˆ°•¸è€‰”¹œ¸µ”%¹Œ¸ˆô°(€€€¥¹‘ÕÍÑÉå1…‰•°èì¡Ôè€‰%Á…Ë…œˆ°•¸è€‰%¹‘ÕÍÑÉäˆô°(€€€Ñ•…µM¥é•1…‰•°èì¡Ôè€‰Í…Á…Ğ·¥É•Ñ”ˆ°•¸è€‰Q•…´Í¥é”ˆô°(€€€‰…­	Ñ¸èì¡Ôè€‰Y¥ÍÍé„ˆ°•¸è€‰	…¬ˆô°(€€€É•…Ñ¥¹	Ñ¸èì¡Ôè€‰3¥ÑÉ•¡½ë…Ì¸¸¸ˆ°•¸è€‰É•…Ñ¥¹œ¸¸¸ˆô°((€€€€¼¼MÑ•À€Ì(€€€ÍÑ•ÀÀÌèì¡Ôè€‰3¥Ã¥Ì€ÀÌˆ°•¸è€‰MÑ•À€ÀÌˆô°(€€€ÍÑ•ÀÀÍQ¥Ñ±”èì¡Ôè€‰è•±ÏDÍ…Á…Ñ½ˆ°•¸è€‰e½ÕÈ™¥ÉÍĞÑ•…´ˆô°(€€€ÍÑ•ÀÀÍMÕ‰Ñ¥Ñ±”èì¡Ôè€‰‘¨¹•Ù•Ğ„Í…Á…Ñ¹…¬°µ…©½Íéµ•œ„µ•£µÛÌ±¥¹­•Ğ„Ñ…½­­…°¸ˆ°•¸è€‰9…µ”å½ÕÈÑ•…´°Ñ¡•¸Í¡…É”Ñ¡”¥¹Ù¥Ñ”±¥¹¬İ¥Ñ µ•µ‰•ÉÌ¸ˆô°(€€€Ñ•…µ9…µ”èì¡Ôè€‰Í…Á…Ğ¹•Ù”ˆ°•¸è€‰Q•…´¹…µ”ˆô°(€€€Ñ•…µ9…µ•A±…•¡½±‘•Èèì¡Ôè€‰Á°¸ƒ%ÉÓ¥­•ÏµÓ¥Í¤Í…Á…Ğˆ°•¸è€‰”¹œ¸M…±•ÌQ•…´ˆô°(€€€É•…Ñ•Q•…µ	Ñ¸èì¡Ôè€‰Í…Á…Ğ³¥ÑÉ•¡½ë…Í„ˆ°•¸è€‰É•…Ñ”Ñ•…´ˆô°(€€€Í­¥Á½É9½Üèì¡Ôè€‰-¥¡…å½´µ½ÍĞ°‰—…±³µÑ½´¯¥ÏE‰ˆˆ°•¸è€‰M­¥À™½È¹½Ü°Í•ĞÕÀ±…Ñ•Èˆô°(€€€‘•™…Õ±ÑQ•…µ9…µ”èì¡Ôè€‰±ÏDÍ…Á…Ñ½´ˆ°•¸è€‰5ä™¥ÉÍĞÑ•…´ˆô°((€€€€¼¼%¹Ù¥Ñ”±¥¹¬(€€€¥¹Ù¥Ñ•1¥¹­1…‰•°èì¡Ôè€‰5•£µÛÌ±¥¹¬ˆ°•¸è€‰%¹Ù¥Ñ”±¥¹¬ˆô°(€€€½Á¥•‘	Ñ¸èì¡Ôè€‹ŠrL7…Í½±Ù„„ˆ°•¸è€‹ŠrL½Á¥•„ˆô°(€€€½Áå	Ñ¸èì¡Ôè€‰7…Í½³…Ìˆ°•¸è€‰½Áäˆô°(€€€¥¹Ù¥Ñ•1¥¹­•ÍÉ¥ÁÑ¥½¸èì¡Ôè€‰/ñ±‘•°•éĞ„±¥¹­•Ğ„Í…Á…ÑÑ…©…¥‘¹…¬¸I•¥ÍéÑË…§ÌÕÓ…¸…ÕÑ½µ…Ñ¥­ÕÍ…¸Í…Ñ±…­½é¹…¬„Í…Á…Ñ¡½èƒ¥Ì•±­•é‘¡•Ñ¥¬„™•±·¥Ë¥ÍĞ¸ˆ°•¸è€‰M¡…É”Ñ¡¥Ì±¥¹¬İ¥Ñ å½ÕÈÑ•…µµ…Ñ•Ì¸™Ñ•ÈÉ•¥ÍÑÉ…Ñ¥½¸Ñ¡•äİ¥±°©½¥¸Ñ¡”Ñ•…´…ÕÑ½µ…Ñ¥…±±ä…¹…¸ÍÑ…ÉĞÑ¡”…ÍÍ•ÍÍµ•¹Ğ¸ˆô°(€€€¥¹Ù¥Ñ•EÉ±Ğèì¡Ôè€‰EHµ¯Í„Í…Á…Ğµµ•£µÛÌ±¥¹­¡•èˆ°•¸è€‰EH½‘”™½ÈÑ¡”Ñ•…´¥¹Ù¥Ñ”±¥¹¬ˆô°(€€€¥¹Ù¥Ñ•EÉ!¥¹Ğèì(€€€€€¡Ôè€‰!„•äÑ•É•µ‰•¸ƒñ±ÓÙ¬è„Í…Á…ÑÓ…ÉÍ…„Ñ•±•™½¹«…Ù…°‰•½±Ù…ÍÙ„•å‹E°„Í…Ñ±…­½ë…Í¤½±‘…±É„©ÕĞ¸ˆ°(€€€€€•¸è€‰%˜å½ÔÉ”¥¸Ñ¡”Í…µ”É½½´èå½ÕÈÑ•…µµ…Ñ”Í…¹Ì¥Ğİ¥Ñ Ñ¡•¥ÈÁ¡½¹”…¹±…¹‘ÌÍÑÉ…¥¡Ğ½¸Ñ¡”©½¥¸Á…”¸ˆ°(€€€ô°(€€€½Q½…Í¡‰½…Éèì¡Ôè€‰Q½Û…‰ˆ„Ù•ë¥É³EÉ”ˆ°•¸è€‰¼Ñ¼‘…Í¡‰½…Éˆô°((€€€€¼¼MÑ•À€Ğ(€€€ÍÑ•ÀÀĞèì¡Ôè€‰3¥Ã¥Ì€ÀĞˆ°•¸è€‰MÑ•À€ÀĞˆô°(€€€ÍÑ•ÀÀÑQ¥Ñ±”èì¡Ôè€‰äÕÑ½±ÏÌ³¥Ã¥Ìˆ°•¸è€‰=¹”™¥¹…°ÍÑ•Àˆô°(€€€½¹Í•¹ÑAÉ•™¥àèì¡Ôè€‰!½éë…«…ÉÕ±½¬…‘…Ñ…¥´­•é•³¥Ï¥¡•è…èˆ°•¸è€‰$½¹Í•¹ĞÑ¼Ñ¡”ÁÉ½•ÍÍ¥¹œ½˜µä‘…Ñ„…½É‘¥¹œÑ¼Ñ¡”ˆô°(€€€ÁÉ¥Ù…åA½±¥äèì¡Ôè€‰‘…ÑÛ¥‘•±µ¤Ó…«¥­½éÑ…ÓÌˆ°•¸è€‰AÉ¥Ù…äA½±¥äˆô°(€€€½¹Í•¹ÑMÕ™™¥àèì¡Ôè€‰…±…Á«…¸¸ˆ°•¸è€ˆ¸ˆô°(€€€Í…Ù¥¹	Ñ¸èì¡Ôè€‰5•¹Ó¥Ì¸¸¸ˆ°•¸è€‰M…Ù¥¹œ¸¸¸ˆô°(€€€Í…Ù•¹‘½¹Ñ¥¹Õ•	Ñ¸èì¡Ôè€‰	—…±³µÓ…Í½¬µ•¹Ó¥Í”ƒ¥ÌÑ½Û…‰ˆˆ°•¸è€‰M…Ù”Í•ÑÑ¥¹Ì…¹½¹Ñ¥¹Õ”ˆô°((€€€€¼¼½½Ñ•È(€€€™½½Ñ•É9½Ñ”èì¡Ôè€‰…Éµ¥­½È·Í‘½ÏµÑ¡…Ñ½•é•­•Ğ„‰—…±³µÓ…Í½­…Ğ„ÁÉ½™¥°½±‘…±½¸¸ˆ°•¸è€‰e½Ô…¸ÕÁ‘…Ñ”Ñ¡•Í”Í•ÑÑ¥¹Ì…¹åÑ¥µ”½¸å½ÕÈÁÉ½™¥±”Á…”¸ˆô°((€€€€¼¼½Õ¹ÑÉäÁ¥­•È(€€€½Õ¹ÑÉåA¥­•ÉQ¥Ñ±”èì¡Ôè€‰=ÉÍë…œˆ°•¸è€‰½Õ¹ÑÉäˆô°(€€€½Õ¹ÑÉåA¥­•ÉM•…É èì¡Ôè€‰-•É•Ï¥Ì¸¸¸ˆ°•¸è€‰M•…É ¸¸¸ˆô°(€ô°((€€¼¼ƒŠRŠR Q…œµ‘½ÍÍ§¤€ ½½Éœ½m¥‘t½µ•µ‰•ÉÌ½mÕÍ•É%‘t¤ƒŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠRŠR (€µ•µ‰•É½ÍÍ¥•Èèì(€€€€¼¼I…Ñ•Èµµ¥»EÏ¥œ…É•Ÿ…ÑÕ´ƒŠPÍ…¬‘…É…‰Íë…´°É…Ñ•É•¹¯¥¹Ñ¤™±…œÍ½¡„¸(€€€½‰Í•ÉÙ•ÉEÕ…±¥Ñå9½Ñ”èì(€€€€€¡Ôè€‰í¹ô¯ñ±ÏDƒ¥ÉÓ¥­•³¥Ì…±…Í½¹ä‘¥™™•É•¹§…±ÑÏ…ŸèƒŠP…è•±Ó¥Ë¥Í•­•ĞƒÍÙ…Ñ½Í…¸ƒ¥É‘•µ•Ì½±Ù…Í¹¤¸ˆ°(€€€€€•¸è€‰í¹ô•áÑ•É¹…°É…Ñ¥¹œ¡Ì¤Í¡½Ü±½Ü‘¥™™•É•¹Ñ¥…Ñ¥½¸ƒŠPÉ•…Ñ¡”‘¥™™•É•¹•Ìİ¥Ñ …ÕÑ¥½¸¸ˆ°(€€€ô°(€ô°)ô…Ì½¹ÍĞì(

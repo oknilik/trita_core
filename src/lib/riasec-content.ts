@@ -1,5 +1,5 @@
 // Holland-kód (RIASEC) értelmező tartalom. A hat betű John Holland
-// érdeklődés-tipológiája (Holland, 1997); a Trita a kódot a
+// érdeklődés-tipológiája (Holland, 1997); a trita a kódot a
 // karrier-iránytűben használja (mért kérdőív / címkék / becslés forrással).
 //
 // PARKOLVA (2026-08-07): a publikus értelmező lap kivezetve, mert a

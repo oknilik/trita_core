@@ -42,7 +42,7 @@ export const CAMPAIGN_PRESETS: Record<
   }
 > = {
   SCAN_V1: {
-    label: { hu: "Trita Team Scan v1", en: "Trita Team Scan v1" },
+    label: { hu: "trita Team Scan v1", en: "trita Team Scan v1" },
     description: {
       hu: "Önértékelés, bizalmi háló és pszichológiai biztonság pulse.",
       en: "Self-assessment, trust network and psychological safety pulse.",

@@ -70,7 +70,7 @@ ${enPosts
 > értelmezéssel. Az egyéni felmérés ingyenes; a csapat- és szervezeti
 > programok tanácsadói együttműködés keretében futnak, egyedi ajánlattal.
 
-> English: Trita is a personality and team intelligence platform for Hungarian
+> English: trita is a personality and team intelligence platform for Hungarian
 > teams — a six-dimension personality self-assessment, 360° observer feedback
 > and team diagnostics, delivered consulting-led.
 
@@ -91,10 +91,9 @@ ${enPosts
 
 ## Fő oldalak
 
-${line("/", "Főoldal", "Mit mér a Trita, kinek szól, hogyan épül fel az egyéni és a csapatszintű kép.", baseUrl)}
+${line("/", "Főoldal", "Mit mér a trita, kinek szól, hogyan épül fel az egyéni és a csapatszintű kép.", baseUrl)}
 ${line("/try", "Ingyenes személyiségteszt", "60 kérdéses személyiségteszt regisztráció nélkül, kb. 10 perc, azonnali visszajelzés hat dimenzió mentén.", baseUrl)}
-${line("/about", "Mi az a Trita", "A gondolat és a felépítés: „Ami mérhető, az megbeszélhető.” Négy mérési réteg (személyiség, külső visszajelzés, csapatszerepek, pszichológiai biztonság), tanácsadói validálás; egyéneknek ingyenes, csapatoknak program.", baseUrl)}
-${line("/rolunk", "Rólunk", "A Trita mögött tanácsadói műhely áll: a platformot a saját munkánkhoz építettük. Miért csináljuk, és hogyan dolgozunk a partnercsapatokkal.", baseUrl)}
+${line("/about", "Rólunk", "A trita mögött tanácsadói műhely áll. A mérésből tanácsadó vezette közös értelmezés és visszamérhető változtatás lesz; embereket nem rangsorolunk.", baseUrl)}
 ${line("/how-we-work", "Együttműködés és árazás", "Hogyan indul egy csapat- vagy szervezeti program, mi ingyenes, és mitől függ az ár. Gyakori kérdések.", baseUrl)}
 ${line("/pilot", "Pilotprogram", "Az első partnercsapatoknak szóló bevezető program feltételei.", baseUrl)}
 ${optionalMainLines}

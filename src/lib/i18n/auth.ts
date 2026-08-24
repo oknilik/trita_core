@@ -70,7 +70,7 @@ export const authTranslations = {
       en: "We sent a sign-in link to {email}. Click the button in the email to continue.",
     },
     magicLinkBack: { hu: "Más email cím megadása", en: "Use a different email" },
-    intentQuestion: { hu: "Mire használnád a Tritát?", en: "What will you use Trita for?" },
+    intentQuestion: { hu: "Mire használnád a tritát?", en: "What will you use trita for?" },
     errorBoundaryMessage: {
       hu: "Hiba történt. Frissítsd az oldalt.",
       en: "Something went wrong. Please refresh the page.",

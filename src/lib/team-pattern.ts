@@ -85,7 +85,7 @@ export interface TritanScores {
 }
 
 // ============================================================
-// KÜSZÖBÖK — 0–100 skálán (Trita normatív mintából kalibrálandó)
+// KÜSZÖBÖK — 0–100 skálán (trita normatív mintából kalibrálandó)
 // Konverzió: 1–5 Likert → ((v − 1) / 4) × 100
 //   3.2 → 55  |  3.4 → 60  |  3.5 → 62.5  |  3.3 → 57.5
 // ============================================================

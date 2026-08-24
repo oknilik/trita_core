@@ -2,7 +2,7 @@ import { View, Text } from "@react-pdf/renderer";
 import { colors } from "../styles";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Kanonikus Trita szójel PDF-ben — a webes TritaWordmark (TritaLogo.tsx) párja:
+// Kanonikus trita szójel PDF-ben — a webes TritaWordmark (TritaLogo.tsx) párja:
 // egyszínű „trıta" Fraunces Black-ben, EGYETLEN bronz akcentussal az i pontján.
 //
 // A korábbi PDF-változatok saját, ad-hoc felosztást használtak („tri" sage +

@@ -13,7 +13,7 @@ type SectionEyebrowTone =
 
 // 2026-08-05 (eyebrow-modernizálás): a korábbi „// szekció" mono
 // dev-esztétika kivezetve — az egységes eyebrow egy tónus-színű pötty +
-// letisztult label (a riport-fejlécekben már élő Trita-idióma). A "mono"
+// letisztult label (a riport-fejlécekben már élő trita-idióma). A "mono"
 // variáns alias marad a hívás-kompatibilitásért, és ugyanezt az alakot
 // rendereli; a tartalom-szintű „// " prefixeket a hívási helyek már nem
 // adják át. A pötty `aria-hidden`, a szöveg hordozza a jelentést.

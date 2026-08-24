@@ -11,7 +11,7 @@ describe("pilotNormActivationBlockers", () => {
       pilotNormActivationBlockers({
         campaignCount: 15,
         form: "short",
-        sourceLabel: "Trita magyar pilotkohorsz, 2026",
+        sourceLabel: "trita magyar pilotkohorsz, 2026",
         n: PILOT_NORM_MIN_N,
         invalidSdCodes: [],
       }),
@@ -35,4 +35,3 @@ describe("pilotNormActivationBlockers", () => {
     assert.ok(blockers.some((item) => item.includes("O")));
   });
 });
-

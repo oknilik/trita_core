@@ -1,383 +1,113 @@
 "use client";
 
-import Link from "next/link";
-import type { ReactNode } from "react";
 import { useLocale } from "@/components/LocaleProvider";
-import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { MarketingActions } from "@/components/marketing/MarketingActions";
-import { EditorialArt, SectionTransition, artKeyFrom } from "@/components/ui/EditorialArt";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { LayerDiagram, PathDiagram, PurposeDiagram } from "@/components/about/AboutDiagrams";
-import { t } from "@/lib/i18n/public";
+import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { t } from "@/lib/i18n/public";
 
 export function AboutContent() {
   const { locale } = useLocale();
-
-  const layers = [
-    {
-      number: "01",
-      title: t("about.layer1Title", locale),
-      desc: t("about.layer1Desc", locale),
-      tag: t("about.layer1Tag", locale),
-    },
-    {
-      number: "02",
-      title: t("about.layer2Title", locale),
-      desc: t("about.layer2Desc", locale),
-      tag: t("about.layer2Tag", locale),
-    },
-    {
-      number: "03",
-      title: t("about.layer3Title", locale),
-      desc: t("about.layer3Desc", locale),
-      tag: t("about.layer3Tag", locale),
-    },
-  ];
-
-  const pathSteps = [
-    { title: t("about.path1Title", locale), desc: t("about.path1Desc", locale) },
-    { title: t("about.path2Title", locale), desc: t("about.path2Desc", locale) },
-    { title: t("about.path3Title", locale), desc: t("about.path3Desc", locale) },
-    { title: t("about.path4Title", locale), desc: t("about.path4Desc", locale) },
-  ];
-
-  const values = [
-    { title: t("about.value1Title", locale), desc: t("about.value1Desc", locale) },
-    { title: t("about.value2Title", locale), desc: t("about.value2Desc", locale) },
-    { title: t("about.value3Title", locale), desc: t("about.value3Desc", locale) },
-    { title: t("about.value4Title", locale), desc: t("about.value4Desc", locale) },
-  ];
+  const principles = [1, 2, 3].map((number) => ({
+    number: `0${number}`,
+    title: t(`about.principle${number}Title`, locale),
+    description: t(`about.principle${number}Desc`, locale),
+  }));
+  const steps = [1, 2, 3, 4].map((number) => ({
+    number: `0${number}`,
+    title: t(`about.step${number}Title`, locale),
+    description: t(`about.step${number}Desc`, locale),
+  }));
 
   return (
-    <main className="bg-cream text-ink selection:bg-bronze/20">
-      {/* ── Hero ───────────────────────────────────────────────────── */}
-      <section>
-        <div className="mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.05fr)_380px] lg:items-start">
+    <main className="overflow-hidden bg-cream text-ink selection:bg-bronze/20">
+      <section className="relative">
+        <div aria-hidden className="absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-bronze/5 blur-3xl" />
+        <div className="relative mx-auto max-w-[1120px] px-7 pb-16 pt-12 md:pb-24 md:pt-20">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
             <div>
               <SectionEyebrow className="mb-6">{t("about.heroEyebrow", locale)}</SectionEyebrow>
-
-              <h1 className="max-w-[13ch] font-fraunces text-fluid-display tracking-tight text-ink">
+              <h1 className="max-w-[14ch] font-fraunces text-fluid-display tracking-tight text-ink">
                 {t("about.heroTitleBefore", locale)}
-                <em className="not-italic text-[var(--color-accent-primary-strong)]">
-                  {t("about.heroTitleEm", locale)}
-                </em>
+                <em className="not-italic text-[var(--color-accent-primary-strong)]">{t("about.heroTitleEm", locale)}</em>
               </h1>
-
-              <p className="mt-6 max-w-[620px] text-base leading-relaxed text-ink-body">
-                {t("about.heroBody", locale)}
-              </p>
-              <p className="mt-4 max-w-[620px] text-base leading-relaxed text-ink-body/85">
-                {t("about.heroLead", locale)}
-              </p>
-
+              <p className="mt-6 max-w-[620px] text-lg leading-relaxed text-ink-body">{t("about.heroBody", locale)}</p>
               <MarketingActions
                 className="mt-8"
                 primary={{ href: "/contact", label: t("about.heroCtaPrimary", locale) }}
-                secondary={{ href: "/try", label: t("about.heroCtaSecondary", locale) }}
+                secondary={{ href: "/how-we-work", label: t("about.heroCtaSecondary", locale), iconRight: <ChevronRightIcon className="h-4 w-4" /> }}
               />
-
-              <div className="mt-6 flex flex-wrap gap-2.5">
-                <MetaChip>{t("about.heroChip1", locale)}</MetaChip>
-                <MetaChip>{t("about.heroChip2", locale)}</MetaChip>
-                <MetaChip>{t("about.heroChip3", locale)}</MetaChip>
-              </div>
             </div>
 
-            <aside className="overflow-hidden rounded-[24px] border border-sand bg-surface-card shadow-[0_24px_60px_rgba(26,26,46,0.06)]">
-              {/* Szabad konstelláció — itt DEKORÁCIÓ, nem magyaráz semmit.
-                  Az oldal saját, jelentést hordozó ábrái lentebb élnek. */}
-              <div className="border-b border-sand bg-warm px-6 pb-2 pt-6">
-                <EditorialArt
-                  artKey={artKeyFrom("about", "hero")}
-                  width={400}
-                  height={132}
-                  className="mx-auto max-w-[320px]"
-                />
-              </div>
-              <div className="px-6 py-6">
-                <SectionEyebrow>{t("about.asideEyebrow", locale)}</SectionEyebrow>
-                <p className="mt-3 font-fraunces text-heading text-ink">
-                  {t("about.asideTitle", locale)}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-ink-body">{t("about.asideBody", locale)}</p>
-                <Link
-                  href="/rolunk"
-                  className="mt-4 inline-flex min-h-[44px] items-center font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
-                >
-                  {t("about.asideLink", locale)}
-                  <ChevronRightIcon className="ml-1 h-4 w-4" />
-                </Link>
+            <aside className="rounded-[28px] bg-[var(--color-surface-inverse)] px-7 py-8 text-[var(--color-text-on-inverse)] shadow-[0_28px_80px_rgba(26,26,46,0.16)]">
+              <SectionEyebrow tone="onDark">{t("about.principlesEyebrow", locale)}</SectionEyebrow>
+              <div className="mt-7 divide-y divide-white/10">
+                {principles.map((principle) => (
+                  <div key={principle.number} className="grid grid-cols-[34px_1fr] gap-3 py-5 first:pt-0 last:pb-0">
+                    <span className="text-label text-[var(--color-accent-primary)]">{principle.number}</span>
+                    <div>
+                      <h2 className="font-fraunces text-xl">{principle.title}</h2>
+                      <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">{principle.description}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </aside>
           </div>
         </div>
       </section>
 
-      {/* ── Kinek szól ─────────────────────────────────────────────────
-          Korán jön, mert a látogató első kérdése nem a módszertan, hanem
-          hogy „ez nekem szól-e". A két kártya a két réteg-színt viszi
-          (self = zsálya, team = réteg-bronz), ahogy a journey is. */}
-      <EditorialSection
-        eyebrow={t("about.audienceEyebrow", locale)}
-        title={t("about.audienceTitle", locale)}
-      >
-        <div className="grid gap-5 md:grid-cols-2">
-          <article className="flex flex-col rounded-[24px] border border-sage/15 bg-sage-soft px-6 py-6">
-            <SectionEyebrow tone="self">{t("about.audienceSelfTitle", locale)}</SectionEyebrow>
-            <p className="mt-3 flex-1 text-base leading-relaxed text-ink-body">
-              {t("about.audienceSelfDesc", locale)}
-            </p>
-            {/* A soft-zsálya alapon a világosabb text-sage kontrasztja kevés —
-                itt a sötét árnyalat az alap, a hover világosít. */}
-            <Link
-              href="/try"
-              className="mt-4 inline-flex min-h-[44px] items-center self-start font-medium text-sage-dark transition-colors hover:text-sage"
-            >
-              {t("about.audienceSelfCta", locale)}
-            </Link>
-          </article>
+      <PageWidthDivider />
 
-          <article className="flex flex-col rounded-[24px] border border-sand bg-surface-card px-6 py-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]">
-            <SectionEyebrow tone="team">{t("about.audienceTeamTitle", locale)}</SectionEyebrow>
-            <p className="mt-3 flex-1 text-base leading-relaxed text-ink-body">
-              {t("about.audienceTeamDesc", locale)}
-            </p>
-            <Link
-              href="/contact"
-              className="mt-4 inline-flex min-h-[44px] items-center self-start font-medium text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze"
-            >
-              {t("about.audienceTeamCta", locale)}
-            </Link>
-          </article>
+      <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
+        <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+          <SectionEyebrow>{t("about.storyEyebrow", locale)}</SectionEyebrow>
+          <div>
+            <h2 className="max-w-[18ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("about.storyTitle", locale)}</h2>
+            <p className="mt-6 max-w-[66ch] text-lg leading-relaxed text-ink-body">{t("about.storyBody", locale)}</p>
+          </div>
         </div>
-      </EditorialSection>
+      </section>
 
-      <div>
-        <PageWidthDivider />
-        <div className="py-10 md:py-12">
-          <SectionTransition artKey={artKeyFrom("about", "build")} />
-        </div>
-      </div>
-
-      {/* ── Hogyan épül fel — rétegábra ────────────────────────────── */}
-      <section id="felepites">
+      <section className="bg-warm">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-          <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
+          <div className="grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-12">
+            <SectionEyebrow>{t("about.stepsEyebrow", locale)}</SectionEyebrow>
             <div>
-              <SectionEyebrow>{t("about.buildEyebrow", locale)}</SectionEyebrow>
-            </div>
-            <div>
-              <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
-                {t("about.buildTitle", locale)}
-              </h2>
-              <p className="mt-5 max-w-[58ch] text-base leading-relaxed text-ink-body">
-                {t("about.buildLead", locale)}
-              </p>
-
-              <div className="mt-9 grid gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start lg:gap-10">
-                {/* Az ábra asztalon együtt görget a listával — a három kártya
-                    pont a három alapréteget mondja el szavakkal. */}
-                <div className="rounded-[24px] border border-sand bg-warm px-6 py-7 lg:sticky lg:top-24">
-                  <LayerDiagram
-                    label={t("about.buildDiagramAlt", locale)}
-                    className="mx-auto max-w-[240px]"
-                  />
-                </div>
-
-                <div className="grid gap-4">
-                  {layers.map((layer) => (
-                    <article
-                      key={layer.number}
-                      className="rounded-[22px] border border-sand bg-surface-card p-6 shadow-[0_16px_40px_rgba(26,26,46,0.04)]"
-                    >
-                      <div className="mb-3 flex flex-wrap items-center gap-3">
-                        <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-                          {layer.number}
-                        </span>
-                        <div className="h-px flex-1 bg-sand" />
-                        <span className="rounded-full border border-sand bg-warm px-3 py-1 text-caption text-ink-body">
-                          {layer.tag}
-                        </span>
-                      </div>
-                      <h3 className="font-fraunces text-heading text-ink">{layer.title}</h3>
-                      <p className="mt-3 text-base leading-relaxed text-ink-body">{layer.desc}</p>
-                    </article>
-                  ))}
-
-                  <div className="flex flex-wrap items-center gap-2.5 rounded-[18px] border border-sand bg-warm px-5 py-4">
-                    <span className="mr-1 font-dm-sans text-label uppercase tracking-widest text-ink-body">
-                      {t("about.optionalLabel", locale)}
-                    </span>
-                    {["about.optionalObserver", "about.optionalPeer", "about.optionalRoles"].map((key) => (
-                      <span
-                        key={key}
-                        className="rounded-full border border-sand bg-surface-card px-3 py-1.5 text-caption text-ink-body"
-                      >
-                        {t(key, locale)}
-                      </span>
-                    ))}
-                  </div>
-
-                  <article className="rounded-[22px] border border-sage/15 bg-sage-soft px-6 py-6">
-                    <SectionEyebrow tone="self">{t("about.buildOutcomeLabel", locale)}</SectionEyebrow>
-                    <h3 className="mt-2 font-fraunces text-heading text-ink">
-                      {t("about.buildOutcomeTitle", locale)}
-                    </h3>
-                    <p className="mt-3 text-base leading-relaxed text-ink-body">
-                      {t("about.buildOutcomeDesc", locale)}
-                    </p>
-                  </article>
-                </div>
-              </div>
+              <h2 className="max-w-[18ch] font-fraunces text-fluid-title tracking-tight text-ink">{t("about.stepsTitle", locale)}</h2>
+              <p className="mt-5 max-w-[62ch] text-base leading-relaxed text-ink-body">{t("about.stepsLead", locale)}</p>
+              <ol className="mt-9 divide-y divide-sand border-y border-sand">
+                {steps.map((step) => (
+                  <li key={step.number} className="grid gap-3 py-6 sm:grid-cols-[52px_190px_1fr] sm:items-baseline sm:gap-5">
+                    <span className="text-label text-[var(--color-accent-primary-strong)]">{step.number}</span>
+                    <h3 className="font-fraunces text-xl text-ink">{step.title}</h3>
+                    <p className="text-sm leading-relaxed text-ink-body">{step.description}</p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Az út — táguló kör ─────────────────────────────────────── */}
-      <EditorialSection eyebrow={t("about.pathEyebrow", locale)} title={t("about.pathTitle", locale)}>
-        <p className="-mt-3 mb-8 max-w-[58ch] text-base leading-relaxed text-ink-body">
-          {t("about.pathLead", locale)}
-        </p>
-
-        <div className="rounded-[24px] border border-sand bg-warm px-5 py-7 md:px-8">
-          <PathDiagram label={t("about.pathDiagramAlt", locale)} className="mx-auto max-w-[620px]" />
-        </div>
-
-        <ol className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {pathSteps.map((step, i) => (
-            <li
-              key={step.title}
-              className="rounded-[22px] border border-sand bg-surface-card p-5 shadow-[0_16px_40px_rgba(26,26,46,0.04)]"
-            >
-              <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
-                {`0${i + 1}`}
-              </span>
-              <h3 className="mt-2 font-fraunces text-heading text-ink">{step.title}</h3>
-              <p className="mt-2 text-caption leading-relaxed text-ink-body">{step.desc}</p>
-            </li>
-          ))}
-        </ol>
-      </EditorialSection>
-
-      {/* ── Amit betartunk ─────────────────────────────────────────── */}
-      <EditorialSection eyebrow={t("about.valuesEyebrow", locale)} title={t("about.valuesTitle", locale)}>
-        <div className="grid gap-4 md:grid-cols-2">
-          {values.map((value) => (
-            <article key={value.title} className="rounded-[24px] border border-sand bg-warm px-6 py-6">
-              <h3 className="font-fraunces text-heading text-ink">{value.title}</h3>
-              <p className="mt-3 text-base leading-relaxed text-ink-body">{value.desc}</p>
-            </article>
-          ))}
-        </div>
-      </EditorialSection>
-
-      <div>
-        <PageWidthDivider />
-        <div className="py-10 md:py-12">
-          <SectionTransition artKey={artKeyFrom("about", "goal")} />
-        </div>
-      </div>
-
-      {/* ── Mi a célunk ────────────────────────────────────────────── */}
-      <section>
+      <section className="bg-[var(--color-surface-inverse)] text-[var(--color-text-on-inverse)]">
         <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-          <div className="grid gap-10 lg:grid-cols-[220px_minmax(0,1fr)]">
-            <div>
-              <SectionEyebrow>{t("about.goalEyebrow", locale)}</SectionEyebrow>
-            </div>
-            <div>
-              <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
-                {t("about.goalTitle", locale)}
-              </h2>
-
-              <div className="mt-8 rounded-[24px] border border-sand bg-warm px-5 py-7 md:px-8">
-                <PurposeDiagram
-                  label={t("about.goalDiagramAlt", locale)}
-                  className="mx-auto max-w-[560px]"
-                />
-                <div className="mt-6 grid gap-4 border-t border-sand pt-6 md:grid-cols-2">
-                  <div>
-                    <SectionEyebrow tone="muted">{t("about.goalBeforeLabel", locale)}</SectionEyebrow>
-                    <p className="mt-2 text-base leading-relaxed text-ink-body">
-                      {t("about.goalBeforeText", locale)}
-                    </p>
-                  </div>
-                  <div>
-                    <SectionEyebrow>{t("about.goalAfterLabel", locale)}</SectionEyebrow>
-                    <p className="mt-2 text-base leading-relaxed text-ink">{t("about.goalAfterText", locale)}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 grid gap-5 md:grid-cols-2">
-                <p className="text-base leading-relaxed text-ink-body">{t("about.goalBody1", locale)}</p>
-                <p className="text-base leading-relaxed text-ink-body">{t("about.goalBody2", locale)}</p>
-              </div>
-            </div>
-          </div>
+          <blockquote className="max-w-[25ch] font-fraunces text-fluid-title tracking-tight">{t("about.statement", locale)}</blockquote>
         </div>
       </section>
 
-      {/* ── Záró CTA ───────────────────────────────────────────────── */}
-      <section>
-        <PageWidthDivider />
-        <div className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
-          <div className="rounded-[28px] border border-sand bg-surface-card px-6 py-10 text-center shadow-[0_24px_60px_rgba(26,26,46,0.06)] md:px-12">
-            <h2 className="mx-auto max-w-[18ch] font-fraunces text-fluid-title tracking-tight text-ink">
-              {t("about.ctaTitle", locale)}
-            </h2>
-            <p className="mx-auto mt-5 max-w-[52ch] text-base leading-relaxed text-ink-body">
-              {t("about.ctaBody", locale)}
-            </p>
-            <MarketingActions
-              className="mt-8"
-              align="center"
-              primary={{ href: "/contact", label: t("about.ctaPrimary", locale) }}
-              secondary={{ href: "/try", label: t("about.ctaSecondary", locale) }}
-            />
-          </div>
+      <section className="mx-auto max-w-[1120px] px-7 py-16 md:py-24">
+        <div className="rounded-[28px] border border-sand bg-surface-card px-7 py-10 shadow-[0_20px_60px_rgba(26,26,46,0.05)] md:px-12 md:py-12">
+          <h2 className="font-fraunces text-fluid-title tracking-tight text-ink">{t("about.ctaTitle", locale)}</h2>
+          <p className="mt-4 max-w-[62ch] text-base leading-relaxed text-ink-body">{t("about.ctaBody", locale)}</p>
+          <MarketingActions
+            className="mt-7"
+            primary={{ href: "/pilot", label: t("about.ctaPrimary", locale) }}
+            secondary={{ href: "/contact", label: t("about.ctaSecondary", locale) }}
+          />
         </div>
       </section>
     </main>
-  );
-}
-
-function EditorialSection({
-  id,
-  eyebrow,
-  title,
-  children,
-}: {
-  id?: string;
-  eyebrow: string;
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <section id={id}>
-      <PageWidthDivider />
-      <div className="mx-auto grid max-w-[1120px] gap-10 px-7 py-16 md:py-24 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <div>
-          <SectionEyebrow>{eyebrow}</SectionEyebrow>
-        </div>
-        <div>
-          <h2 className="max-w-[16ch] font-fraunces text-fluid-title tracking-tight text-ink">
-            {title}
-          </h2>
-          <div className="mt-8">{children}</div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function MetaChip({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-sand bg-surface-card px-3 py-1.5 text-caption text-ink-body">
-      {children}
-    </span>
   );
 }

@@ -240,7 +240,7 @@ export const PSYCH_SAFETY_ACTIONS: Record<string, { hu: string; en: string }> = 
     en: "Clarify role and responsibility boundaries, and address rivalry openly: the leader should handle signs of undermining privately but consistently.",
   },
   PS7: {
-    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős — a Trita-profilok ebben segítenek —, és a feladat kiosztásakor mondd ki, miért éppen ő kapja. A megbecsültség konkrét visszajelzésekből épül.",
+    hu: "Kösd össze a feladatokat az erősségekkel: térképezzétek fel, ki miben erős — a trita-profilok ebben segítenek —, és a feladat kiosztásakor mondd ki, miért éppen ő kapja. A megbecsültség konkrét visszajelzésekből épül.",
     en: "Connect tasks to strengths: map who is strong at what (trita profiles serve this), and when delegating, say why this person gets it — feeling valued is built from specifics.",
   },
   PS8: {

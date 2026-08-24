@@ -1,2337 +1,14 @@
-export const resultsTranslations = {
-  dashboard: {
-    metadataTitle: { hu: "Profilom | Trita", en: "My profile | Trita" },
-    personalTag: { hu: "Szem√©lyes profil", en: "Personal profile" },
-    continueDraftTitle: { hu: "F√©lbehagyott teszt", en: "Unfinished test" },
-    continueDraftBody: { hu: "Folytasd onnan, ahol abbahagytad ({answered}/{total} k√©rd√©s k√©sz).", en: "Continue where you left off ({answered}/{total} questions done)." },
-    noResultTitle: { hu: "M√©g nincs ki√©rt√©kel√©sed", en: "No results yet" },
-    noResultBody: { hu: "T√∂ltsd ki a {testName} tesztet, hogy l√°sd az eredm√©nyeidet.", en: "Complete the {testName} test to see your results." },
-    latestEvaluation: { hu: "Legut√≥bbi ki√©rt√©kel√©s", en: "Latest evaluation" },
-    guidedTag: { hu: "A te utad", en: "Your journey" },
-    nextStepTitle: { hu: "K√∂vetkez≈ë l√©p√©s", en: "Next step" },
-    guidedPraise: { hu: "Nem vagy egyed√ºl, l√©p√©sr≈ël l√©p√©sre vezet√ºnk.", en: "You are not alone. We will guide you step by step." },
-    journeyProgress: { hu: "Halad√°s", en: "Progress" },
-    journeyStepSelf: { hu: "Saj√°t eredm√©ny", en: "Self result" },
-    journeyStepInvite: { hu: "Megh√≠v√°sok", en: "Invitations" },
-    journeyStepObserver: { hu: "Visszajelz√©s m√°sokt√≥l", en: "Observer feedback" },
-    journeyStepFeedback: { hu: "Visszajelz√©sed", en: "Your feedback" },
-    nextStepInviteTitle: { hu: "Hogyan l√°tnak m√°sok?", en: "See how others see you" },
-    nextStepInviteBodyPre:       { hu: "H√≠vd meg koll√©g√°idat, bar√°taidat ‚Äî legal√°bb ", en: "Invite your colleagues and friends ‚Äî at least " },
-    nextStepInviteBodyHighlight: { hu: "2 visszajelz√©s", en: "2 responses" },
-    nextStepInviteBodyPost:      { hu: " kell az √∂sszehasonl√≠t√°shoz.", en: " are needed for the comparison." },
-    nextStepInviteNote: {
-      hu: "Ennyi kell, hogy √©rtelmezhet≈ë √∂sszehasonl√≠t√°st l√°ss (√°tlag alapj√°n).",
-      en: "That's the minimum needed for a meaningful comparison (based on an average).",
-    },
-    nextStepInviteCta: { hu: "Megh√≠v√≥ k√ºld√©se", en: "Send invite" },
-    nextStepWaitTitle: { hu: "V√°rjuk a visszajelz√©seket", en: "Waiting for feedback" },
-    nextStepWaitBody: { hu: "{received}/2 visszajelz√©s √©rkezett ¬∑ {pending} f√ºgg≈ëben", en: "{received}/2 responses received ¬∑ {pending} pending" },
-    nextStepManageInvitesCta: { hu: "Megh√≠v√≥k kezel√©se", en: "Manage invites" },
-    nextStepCompareTitle: { hu: "N√©zd meg a k√ºl√∂nbs√©geket", en: "See the differences" },
-    nextStepCompareBody: { hu: "Hasonl√≠tsd √∂ssze, hogyan l√°tod magad √©s hogyan l√°tnak m√°sok.", en: "Compare how you see yourself with how others see you." },
-    nextStepCompareCta: { hu: "Ugr√°s az √∂sszehasonl√≠t√°shoz", en: "Jump to comparison" },
-    nextStepFeedbackTitle: { hu: "Add a visszajelz√©sed", en: "Share your feedback" },
-    nextStepFeedbackBody: { hu: "P√°r k√©rd√©s arr√≥l, mennyire √©rtesz egyet az eredm√©nnyel.", en: "A few quick questions about how well the results match you." },
-    nextStepFeedbackCta: { hu: "Visszajelz√©s megad√°sa", en: "Give feedback" },
-    nextStepDoneTitle: { hu: "K√©szen is vagy!", en: "You're all set!" },
-    nextStepDoneBody: { hu: "Rem√©lj√ºk, hogy az eredm√©nyek √©s a visszajelz√©sek hasznos felismer√©seket hoztak!", en: "We hope the results and feedback brought you useful insights!" },
-    nextStepDoneCta: { hu: "Vissza az eredm√©nyekhez", en: "Back to results" },
-    nextStepSurveyTitle: { hu: "Seg√≠ts nek√ºnk!", en: "Help us improve" },
-    nextStepSurveyBody: { hu: "T√∂ltsd ki a r√∂vid visszajelz≈ë k√©rd≈ë√≠v√ºnket ‚Äî p√°r k√©rd√©s, nagy seg√≠ts√©g.", en: "Fill in our short feedback survey ‚Äî a few questions, a big help." },
-    nextStepSurveyCta: { hu: "Kit√∂lt√∂m", en: "Fill it out" },
-    nextStepTestTitle: { hu: "Kezdd el a tesztet", en: "Take the test" },
-    nextStepTestBody: { hu: "Az els≈ë l√©p√©s a saj√°t szem√©lyis√©g√©rt√©kel√©sed elv√©gz√©se.", en: "The first step is completing your own personality assessment." },
-    nextStepDraftTitle: { hu: "Folytasd a tesztet", en: "Continue the test" },
-    nextStepDraftBody: { hu: "M√°r elind√≠tottad a kit√∂lt√©st ‚Äî folytasd ott, ahol abbahagytad.", en: "You've already started the test ‚Äî continue where you left off." },
-    profileOverview: { hu: "Szem√©lyis√©gprofil √°ttekint√©s", en: "Personality profile overview" },
-    overviewLikert: { hu: "Gyors vizu√°lis √∂sszk√©p a f≈ë szem√©lyis√©gdimenzi√≥idr√≥l.", en: "A quick visual snapshot of your main personality dimensions." },
-    radarLegendSelf: { hu: "Saj√°t", en: "Self" },
-    radarLegendObservers: { hu: "M√°sok", en: "Others" },
-    spectrumHigh: { hu: "Magas", en: "High" },
-    spectrumLow: { hu: "Alacsony", en: "Low" },
-    detailedTitle: { hu: "R√©szletes ki√©rt√©kel√©s", en: "Detailed results" },
-    detailedBody: { hu: "A sk√°la√©rt√©kek √©s r√∂vid jellemz√©sed.", en: "Scale values and short interpretation." },
-    // (results.altruismTitle / altruismBody t√∂r√∂lve 2026-08-11 ‚Äî √°rva kulcsok
-    //  fogyaszt√≥ n√©lk√ºl; az √©l≈ë sz√∂vegek a `content.altruism*` n√©vt√©rben √©lnek.)
-    dimensionHint: { hu: "Kattints a r√©szletek√©rt", en: "Tap for details" },
-    openDetails: { hu: "R√©szletek", en: "Details" },
-    dimensionWhat: { hu: "Mit m√©r ez a dimenzi√≥?", en: "What does this dimension measure?" },
-    dimensionInterpretation: { hu: "Mit jelent az eredm√©nyed:", en: "What your result means:" },
-    dimensionLow: { hu: "Alacsony (40% alatt)", en: "Low (< 40%)" },
-    dimensionMid: { hu: "K√∂zepes (40‚Äì69%)", en: "Medium (40-69%)" },
-    dimensionHigh: { hu: "Magas (70% felett)", en: "High (>= 70%)" },
-    facetsTitle: { hu: "Alsk√°l√°k", en: "Facets" },
-    aspectsTitle: { hu: "Aspektusok", en: "Aspects" },
-    showSubScales: { hu: "Tov√°bbi r√©szletek", en: "Show details" },
-    hideSubScales: { hu: "R√©szletek elrejt√©se", en: "Hide details" },
-    dimension: {
-      feedbackTitle: {
-        hu: "Mennyire tal√°l√≥ ez a dimenzi√≥?",
-        en: "How accurate is this dimension?",
-      },
-      feedbackBackToDetails: {
-        hu: "Megn√©zem m√©g egyszer",
-        en: "Review again",
-      },
-      feedbackPrompt: {
-        hu: "Seg√≠ts pontos√≠tani a tesztet a visszajelz√©seddel.",
-        en: "Please help us improve the test accuracy with your feedback.",
-      },
-      feedbackVeryInaccurate: {
-        hu: "Nagyon pontatlan",
-        en: "Very inaccurate",
-      },
-      feedbackSomewhatInaccurate: {
-        hu: "Ink√°bb pontatlan",
-        en: "Somewhat inaccurate",
-      },
-      feedbackNeutral: {
-        hu: "Semleges",
-        en: "Neutral",
-      },
-      feedbackAccurate: {
-        hu: "Tal√°l√≥",
-        en: "Accurate",
-      },
-      feedbackVeryAccurate: {
-        hu: "Nagyon tal√°l√≥",
-        en: "Very accurate",
-      },
-      feedbackAddComment: {
-        hu: "+ Megjegyz√©s hozz√°ad√°sa (opcion√°lis)",
-        en: "+ Add comment (optional)",
-      },
-      feedbackHideComment: {
-        hu: "‚àí Megjegyz√©s elrejt√©se",
-        en: "‚àí Hide comment",
-      },
-      feedbackCommentPlaceholder: {
-        hu: "Mi volt tal√°l√≥ vagy pontatlan ebben a dimenzi√≥ban?",
-        en: "What felt accurate or inaccurate about this dimension?",
-      },
-      feedbackSubmit: {
-        hu: "Visszajelz√©s bek√ºld√©se",
-        en: "Submit feedback",
-      },
-      feedbackSubmitting: {
-        hu: "K√ºld√©s...",
-        en: "Submitting...",
-      },
-      feedbackThankYou: {
-        hu: "K√∂sz√∂nj√ºk!",
-        en: "Thank you!",
-      },
-      feedbackError: {
-        hu: "Nem siker√ºlt elk√ºldeni a visszajelz√©st. Pr√≥b√°ld √∫jra!",
-        en: "Could not submit feedback. Please try again.",
-      },
-      feedbackTagsLabel: {
-        hu: "Melyeket √©rzed igaznak a dimenzi√≥ kapcs√°n?",
-        en: "Which of these feel true for this dimension?",
-      },
-      feedbackRatingLabel: {
-        hu: "Hogyan √©rt√©keln√©d √∂sszess√©g√©ben ezt a dimenzi√≥t?",
-        en: "How would you rate this dimension overall?",
-      },
-    },
-    feedbackTitle: { hu: "Visszajelz√©s az eredm√©nyr≈ël", en: "Feedback on your results" },
-    feedbackBody: { hu: "Mondd el, mennyire √©rzed tal√°l√≥nak a ki√©rt√©kel√©st.", en: "Tell us how accurate the results feel." },
-    feedbackOpenCta: { hu: "Visszajelz√©s megad√°sa", en: "Give feedback" },
-    feedbackThanks: { hu: "K√∂sz√∂nj√ºk a visszajelz√©st!", en: "Thanks for your feedback!" },
-    feedbackAgreementLabel: { hu: "Mennyire ismert√©l magadra az eredm√©nyekben?", en: "How well did you recognize yourself in the results?" },
-    feedbackObserverUsefulnessLabel: { hu: "Mennyire voltak hasznosak sz√°modra a visszajelz√©sek a megh√≠vottakt√≥l?", en: "How useful was the feedback from the people you invited?" },
-    feedbackSiteUsefulnessLabel: { hu: "Hasznosnak tal√°ltad az oldalt?", en: "Did you find the site useful?" },
-    feedbackScaleVeryLow: { hu: "Egy√°ltal√°n nem", en: "Not at all" },
-    feedbackScaleLow: { hu: "Ink√°bb nem", en: "Rather not" },
-    feedbackScaleNeutral: { hu: "R√©szben", en: "Neutral" },
-    feedbackScaleHigh: { hu: "Nagyr√©szt", en: "Agree" },
-    feedbackScaleVeryHigh: { hu: "Teljes m√©rt√©kben", en: "Fully agree" },
-    feedbackContinuePrompt: { hu: "K√∂sz√∂nj√ºk! Ha van m√©g 30 m√°sodperced, seg√≠ts n√©h√°ny tov√°bbi k√©rd√©ssel.", en: "Thank you! If you have 30 more seconds, help us with a few more questions." },
-    feedbackContinueButton: { hu: "Folytatom", en: "Continue" },
-    feedbackWantsUpdatesYes: { hu: "Igen", en: "Yes" },
-    feedbackWantsUpdatesNo: { hu: "Nem", en: "No" },
-    feedbackFreeformLabel: { hu: "Ha van b√°rmilyen gondolatod vagy √©szrev√©teled, √≠rd meg nek√ºnk", en: "Please share any thoughts or comments you have" },
-    feedbackFreeformPlaceholder: { hu: "Mit v√°ltoztatn√°l? Mi volt igaz√°n tal√°l√≥?", en: "What would you change? What felt accurate?" },
-    feedbackUpdatesLabel: { hu: "√ârdekelnek a fejleszt√©s tov√°bbi r√©szletei", en: "I want updates about the project" },
-    feedbackSubmit: { hu: "Bek√ºld√©s", en: "Submit" },
-    feedbackSubmitLoading: { hu: "Ment√©s...", en: "Saving..." },
-    feedbackError: { hu: "Nem siker√ºlt bek√ºldeni. Pr√≥b√°ld √∫jra!", en: "Could not submit. Please try again." },
-    // ‚îÄ‚îÄ Research survey ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    surveyTitle: { hu: "Visszajelz√©s", en: "Feedback" },
-    surveySubtitle: { hu: "5‚Äì6 k√©rd√©s, ~1 perc ¬∑ seg√≠ts jobb√° tenni a Trit√°t", en: "5‚Äì6 questions, ~1 min ¬∑ help us make Trita better" },
-    surveyMultiHint: { hu: "T√∂bb is v√°laszthat√≥", en: "Multiple selections allowed" },
-    surveyNext: { hu: "Tov√°bb", en: "Next" },
-    surveySubmit: { hu: "Bek√ºld√©s", en: "Submit" },
-    surveySkip: { hu: "Kihagyom", en: "Skip" },
-    surveyThanks: { hu: "K√∂sz√∂nj√ºk a visszajelz√©st!", en: "Thanks for your feedback!" },
-    surveySubmitting: { hu: "Ment√©s...", en: "Saving..." },
-    surveyError: { hu: "Nem siker√ºlt bek√ºldeni. Pr√≥b√°ld √∫jra!", en: "Could not submit. Please try again." },
-    // Q1
-    surveyQ1Label: { hu: "Mennyire ismert√©l magadra az eredm√©nyekben?", en: "How well did you recognize yourself in the results?" },
-    // Q2
-    surveyQ2Label: { hu: "T√∂lt√∂tt√©l-e m√°r ki hasonl√≥ szem√©lyis√©gtesztet?", en: "Have you taken a similar personality test before?" },
-    surveyQ2Mbti: { hu: "MBTI", en: "MBTI" },
-    surveyQ2BigFive: { hu: "Big Five", en: "Big Five" },
-    surveyQ2Hexaco: { hu: "HEXACO", en: "HEXACO" },
-    surveyQ2Disc: { hu: "DISC", en: "DISC" },
-    surveyQ2Other: { hu: "Igen, m√°st", en: "Yes, another one" },
-    surveyQ2None: { hu: "M√©g nem", en: "Not yet" },
-    // Q3a ‚Äî employed
-    surveyQ3aLabel: { hu: "Milyen szint≈± poz√≠ci√≥ban dolgozol?", en: "What level is your current position?" },
-    surveyQ3aJunior: { hu: "Beosztott", en: "Individual contributor" },
-    surveyQ3aMiddle: { hu: "K√∂z√©pvezet≈ë", en: "Middle manager" },
-    surveyQ3aSenior: { hu: "Fels≈ëvezet≈ë", en: "Senior executive" },
-    surveyQ3aIndependent: { hu: "√ñn√°ll√≥ v√°llalkoz√≥", en: "Independent / Freelance" },
-    // Q3b ‚Äî student
-    surveyQ3bLabel: { hu: "Milyen ter√ºleten tanulsz?", en: "What field do you study?" },
-    surveyQ3bBusiness: { hu: "Gazdas√°g / √úzlet", en: "Business / Economics" },
-    surveyQ3bStem: { hu: "Term√©szettudom√°ny / Tech", en: "Science / Technology" },
-    surveyQ3bHumanities: { hu: "Hum√°n / T√°rsadalom", en: "Humanities / Social Sciences" },
-    surveyQ3bHealth: { hu: "Eg√©szs√©g√ºgy", en: "Healthcare" },
-    surveyQ3bOther: { hu: "M√°s", en: "Other" },
-    // Q4 industry
-    surveyQ4iLabel: { hu: "Milyen ipar√°gban dolgozol / tanulsz?", en: "What industry do you work or study in?" },
-    surveyQ4iTech: { hu: "Tech / IT", en: "Tech / IT" },
-    surveyQ4iFinance: { hu: "P√©nz√ºgy / Bank", en: "Finance / Banking" },
-    surveyQ4iHealth: { hu: "Eg√©szs√©g√ºgy / Gy√≥gyszer", en: "Healthcare / Pharma" },
-    surveyQ4iEducation: { hu: "Oktat√°s / Kutat√°s", en: "Education / Research" },
-    surveyQ4iRetail: { hu: "Kereskedelem / Logisztika", en: "Retail / Logistics" },
-    surveyQ4iManufacturing: { hu: "Gy√°rt√°s / Ipar", en: "Manufacturing / Industry" },
-    surveyQ4iConsulting: { hu: "Tan√°csad√°s / Marketing", en: "Consulting / Marketing" },
-    surveyQ4iPublic: { hu: "K√∂zszf√©ra / NGO", en: "Public sector / NGO" },
-    surveyQ4iOther: { hu: "M√°s", en: "Other" },
-    // Q5 motivation
-    surveyQ5Label: { hu: "Mi√©rt t√∂lt√∂tted ki a tesztet?", en: "What motivated you to take this assessment?" },
-    surveyQ5SelfKnowledge: { hu: "√ñnismeret ü™û", en: "Self-knowledge ü™û" },
-    surveyQ5Career: { hu: "Szakmai fejl≈ëd√©s üíº", en: "Career development üíº" },
-    surveyQ5ObserverFeedback: { hu: "Visszajelz√©s m√°sokt√≥l üëÅ", en: "Feedback from others üëÅ" },
-    surveyQ5HelpResearch: { hu: "Seg√≠teni akartam ü§ù", en: "Wanted to help ü§ù" },
-    surveyQ5Recommended: { hu: "Aj√°nlotta valaki üë•", en: "Someone recommended it üë•" },
-    surveyQ5Curiosity: { hu: "Csak kipr√≥b√°ltam üé≤", en: "Just curious üé≤" },
-    // Q6 sharing ‚Äî universal multi-select
-    surveyQ6Label: { hu: "Sz√≠vesen megosztan√°d az eredm√©nyeidet valakivel?", en: "Would you be happy to share your results with someone?" },
-    surveyQ6Manager: { hu: "F≈ën√∂k√∂mmel / vezet≈ëmmel", en: "My manager / boss" },
-    surveyQ6Hr: { hu: "HR-rel", en: "HR" },
-    surveyQ6Colleagues: { hu: "Munkat√°rsakkal", en: "Colleagues" },
-    surveyQ6Friends: { hu: "Bar√°tokkal / ismer≈ës√∂kkel", en: "Friends / acquaintances" },
-    surveyQ6Nobody: { hu: "Nem osztan√°m meg senkivel", en: "I wouldn't share it with anyone" },
-    // Q7 feedback sources ‚Äî employed only, multi-select
-    surveyQ7Label: { hu: "Ki szokott √°ltal√°ban visszajelz√©st adni neked?", en: "Who typically gives you feedback?" },
-    surveyQ7Manager: { hu: "K√∂zvetlen vezet≈ë", en: "Direct manager" },
-    surveyQ7Peers: { hu: "Koll√©g√°k / csapatt√°rsak", en: "Colleagues / teammates" },
-    surveyQ7Reports: { hu: "Beosztottak", en: "Direct reports" },
-    surveyQ7Clients: { hu: "√úgyfelek / partnerek", en: "Clients / partners" },
-    surveyQ7None: { hu: "Nincs rendszeres visszajelz≈ëm", en: "No regular feedback source" },
-    // Q8 360 process ‚Äî employed only
-    surveyQ8Label: { hu: "Van-e formaliz√°lt 360 fokos √©rt√©kel√©si folyamat a szervezetedben?", en: "Is there a formal 360-degree review process in your organisation?" },
-    surveyQ8Yes: { hu: "Igen, van", en: "Yes, there is" },
-    surveyQ8No: { hu: "Nem, nincs", en: "No, there isn't" },
-    surveyQ8Unknown: { hu: "Nem tudom / Nem relev√°ns", en: "I don't know / Not applicable" },
-    // Q9 personality importance ‚Äî everyone
-    surveyQ9Label: { hu: "Mennyire tartod fontosnak a szem√©lyis√©g szerep√©t a munkahelyi / tanulm√°nyi teljes√≠tm√©nyben?", en: "How important do you think personality is for workplace or academic performance?" },
-    // Q10 observer usefulness
-    surveyQ10Label: { hu: "Mennyire voltak hasznosak a m√°sokt√≥l kapott visszajelz√©sek?", en: "How useful was the feedback from the people you invited?" },
-    // Custom scale labels for Q9 / Q10
-    surveyScaleImportanceHigh: { hu: "Fontos", en: "Important" },
-    surveyScaleImportanceVeryHigh: { hu: "Nagyon fontos", en: "Very important" },
-    surveyScaleUsefulnessHigh: { hu: "Hasznos", en: "Useful" },
-    surveyScaleUsefulnessVeryHigh: { hu: "Nagyon hasznos", en: "Very useful" },
-    invitesReceivedTitle: { hu: "Megh√≠v√≥id", en: "Invitations you received" },
-    invitesReceivedBody: { hu: "Itt l√°tod azokat a megh√≠v√≥kat, amelyeket te kapt√°l.", en: "Here you can see the invitations you received." },
-    retake: { hu: "Teszt √∫jra kit√∂lt√©se", en: "Retake test" },
-    retakeConfirmTitle: {
-      hu: "Biztosan √∫jra kit√∂lt√∂d?",
-      en: "Retake the test?",
-    },
-    retakeConfirmBody: {
-      hu: "Az √∫j eredm√©ny fel√ºl√≠rja a kor√°bbit a profiloldaladon. A r√©gi eredm√©ny az adatb√°zisban megmarad.",
-      en: "The new result will replace the current one on your profile home. The old result is kept in the database.",
-    },
-    retakeConfirm: { hu: "√öjra kit√∂lt√∂m", en: "Retake" },
-    retakeCancel: { hu: "M√©gse", en: "Cancel" },
-    draftInProgressHint: {
-      hu: "A saj√°t profilodb√≥l k√©s≈ëbb k√©rhetsz observer-visszajelz√©st, √©s ha szeretn√©d, csapatk√©pet is √©p√≠thetsz.",
-      en: "From your self profile, you can later collect observer feedback and optionally build team insights.",
-    },
-    discardDraft: { hu: "F√©lk√©sz teszt elvet√©se", en: "Discard draft" },
-    discardDraftConfirmTitle: { hu: "Elveted a f√©lk√©sz tesztet?", en: "Discard this draft?" },
-    discardDraftConfirmBody: {
-      hu: "Az eddigi v√°laszaid elvesznek. Az el≈ëz≈ë eredm√©nyed megmarad.",
-      en: "Your current answers will be lost. Your previous result will remain.",
-    },
-    discardDraftConfirm: { hu: "Elvetem", en: "Discard" },
-    tabResults: { hu: "Eredm√©nyek", en: "Results" },
-    tabComparison: { hu: "K√ºls≈ë k√©p", en: "Outside view" },
-    tabInvites: { hu: "Megh√≠v√≥k", en: "Invites" },
-    tabComparisonEmptyTitle: { hu: "M√©g nincs √∂sszehasonl√≠t√°s", en: "No comparison yet" },
-    tabComparisonEmptyBody: { hu: "H√≠vj meg ismer≈ës√∂ket, hogy l√°sd, hogyan l√°tnak m√°sok.", en: "Invite people you know to see how others see you." },
-    tabComparisonEmptyCta: { hu: "Megh√≠v√≥k kezel√©se", en: "Manage invites" },
-  },
-  invite: {
-    title: { hu: "Ismer≈ës megh√≠v√°sa", en: "Invite someone" },
-    body: {
-      hu: "K√©rd meg koll√©g√°idat, bar√°taidat vagy csal√°dtagjaidat egy r√∂vid √©rt√©kel√©sre.",
-      en: "Ask colleagues, friends, or family for a quick rating.",
-    },
-    createNew: { hu: "√öj megh√≠v√≥ l√©trehoz√°sa", en: "Create new invitation" },
-    emailPlaceholder: { hu: "Email c√≠m (opcion√°lis)", en: "Email address (optional)" },
-    create: { hu: "L√©trehoz√°s", en: "Create" },
-    creating: { hu: "L√©trehoz√°s...", en: "Creating..." },
-    created: { hu: "L√©trehozva", en: "Created" },
-    completed: { hu: "Kit√∂ltve", en: "Completed" },
-    pending: { hu: "F√ºgg≈ëben", en: "Pending" },
-    limit: { hu: "Keret", en: "Limit" },
-    helpText: {
-      hu: "Egy link = egy kit√∂lt≈ë. Email n√©lk√ºl te osztod meg, email c√≠mmel mi k√ºldj√ºk ki.",
-      en: "One link, one person. No email: share it yourself. With email: we send it.",
-    },
-    privacyNote: {
-      hu: "A visszajelz√©sek n√©v n√©lk√ºl jelennek meg, √©s csak √∂sszes√≠tett √°tlagokat mutatunk.",
-      en: "Feedback is anonymous, and we show only aggregated averages.",
-    },
-    compareHint: {
-      hu: "Az √∂sszehasonl√≠t√°shoz legal√°bb 2 visszajelz√©s kell. ({count}/2 meg√©rkezett.)",
-      en: "For the comparison, you'll need at least 2 responses. ({count}/2 received.)",
-    },
-    noInvitations: { hu: "M√©g nincs megh√≠v√°sod", en: "No invitations yet" },
-    createPrompt: { hu: "Hozz l√©tre egyet a fenti ≈±rlappal", en: "Create one with the form above" },
-    createFailed: { hu: "Nem siker√ºlt megh√≠v√≥t l√©trehozni.", en: "Could not create invite." },
-    createLinkSuccess: { hu: "Megh√≠v√≥ link l√©trehozva.", en: "Invite link created." },
-    createEmailSuccess: { hu: "A megh√≠v√≥t emailben elk√ºldt√ºk.", en: "Invitation email sent." },
-    copied: { hu: "Link m√°solva!", en: "Link copied!" },
-    copyFailed: { hu: "Nem siker√ºlt a link m√°sol√°sa.", en: "Could not copy the link." },
-    deleteSuccess: { hu: "Megh√≠v√≥ t√∂r√∂lve.", en: "Invite canceled." },
-    deleteFailed: { hu: "Nem siker√ºlt t√∂r√∂lni a megh√≠v√≥t.", en: "Could not delete invite." },
-    byEmailTitle: { hu: "Megh√≠v√°s emailben", en: "Invite by email" },
-    byEmailPlaceholder: { hu: "ismer≈ës@email.com", en: "friend@email.com" },
-    activeLimit: { hu: "Egyszerre legfeljebb 5 akt√≠v megh√≠v√≥d lehet.", en: "Maximum 5 active invites at a time." },
-    stats: { hu: "{completed} kit√∂ltve, {pending} f√ºgg≈ëben, {canceled} t√∂r√∂lve", en: "{completed} completed, {pending} pending, {canceled} canceled" },
-  },
-  comparison: {
-    title: { hu: "M√°sok r√≥lad", en: "Others about you" },
-    body: { hu: "√ñn√©rt√©kel√©sed √©s az √©rt√©kel≈ëk ({count} f≈ë) √°tlag√°nak √∂sszehasonl√≠t√°sa.", en: "Comparison of your self-rating and the average from the people you invited ({count} people)." },
-    similar: { hu: "hasonl√≥", en: "similar" },
-    diffHigher: { hu: "+{diff} pont (m√°sok magasabbra √©rt√©kelnek)", en: "+{diff} pts (others rate you higher)" },
-    diffLower: { hu: "{diff} pont (m√°sok alacsonyabbra √©rt√©kelnek)", en: "{diff} pts (others rate you lower)" },
-    pointsUnitShort: { hu: "pont", en: "pts" },
-    self: { hu: "Te", en: "You" },
-    others: { hu: "M√°sok", en: "Others" },
-    othersCount: { hu: "M√°sok ({count})", en: "Others ({count})" },
-    avgConfidence: { hu: "√°tlagos magabiztoss√°g: {value}/5", en: "avg. confidence: {value}/5" },
-    typeLabel: { hu: "T√≠pusod", en: "Your type" },
-    confidenceLabel: { hu: "√Åtlagos magabiztoss√°g", en: "Avg. confidence" },
-    observersLabel: { hu: "√ârt√©kel≈ëk", en: "Raters" },
-    insightHigher: { hu: "M√°sok magasabbra √©rt√©kelnek ebben a dimenzi√≥ban, mint te magad.", en: "Others rate you higher in this dimension than you rate yourself." },
-    insightLower: { hu: "Te magasabbra √©rt√©keled magad ebben a dimenzi√≥ban, mint ahogy m√°sok l√°tnak t√©ged.", en: "You rate yourself higher in this dimension than others rate you." },
-    facetMapTitle: { hu: "Alsk√°l√°k √∂sszehasonl√≠t√°sa", en: "Sub-scale comparison" },
-    facetMapSubtitle: { hu: "√ñn√©rt√©kel√©sed √©s a k√ºls≈ë √°tlag alsk√°l√°nk√©nt, dimenzi√≥nk√©nt csoportos√≠tva. A k√ºl√∂nbs√©g: (m√°sok √°tlaga) ‚àí (te).", en: "Your self-rating and the outside average on each sub-scale, grouped by dimension. Difference is (others' average) ‚àí (you)." },
-    // M√©r√©si-hiba SZ√ÅM nem ker√ºl a fel√ºletre (2026-08-11 term√©kd√∂nt√©s) ‚Äî a
-    // jelz√©s kvalitat√≠v, a magyar√°zat a k√∂zponti m√≥dszertani le√≠r√°sban √©l.
-    facetMapAllMatch: { hu: "Minden lefedett alsk√°l√°n a m√©r√©si hib√°n bel√ºli az elt√©r√©s ‚Äî nincs kiugr√≥ k√ºl√∂nbs√©g.", en: "Every covered sub-scale agrees within the measurement error ‚Äî no notable gaps." },
-    facetMethodNote: { hu: "Az alsk√°la pontsz√°ma kev√©s k√©rd√©sb≈ël sz√°molt becsl√©s, ez√©rt a m√©r√©si hib√°ja nagyobb, mint a f≈ë dimenzi√≥k√©. A m√©r√©si hib√°n bel√ºli elt√©r√©st egyez√©sk√©nt jel√∂lj√ºk, √©s csak a mindk√©t oldalr√≥l lefedett alsk√°l√°k jelennek meg.", en: "Sub-scale scores are estimates based on only a few questions, so their measurement error is larger than for the main dimensions. Differences within the measurement error are marked as a match, and only sub-scales covered on both sides are shown." },
-    heatmapMatch: { hu: "K√∂zel azonos", en: "Close match" },
-    heatmapObsHigher: { hu: "M√°sok magasabbra √©rt√©kelnek", en: "Others rate higher" },
-    heatmapSelfHigher: { hu: "Te √©rt√©keled magasabbra", en: "You rate higher" },
-    deltaDirectionMatch: { hu: "K√∂zel azonos √©rt√©kel√©s", en: "Ratings are close" },
-    deltaDirectionHigher: { hu: "M√°sok itt magasabbra √©rt√©kelnek, mint te.", en: "Others rate this higher than you do." },
-    deltaDirectionLower: { hu: "Te itt magasabbra √©rt√©keled magad, mint az √©rt√©kel≈ëk.", en: "You rate yourself higher here than others do." },
-    showAll: { hu: "√ñsszes megjelen√≠t√©se", en: "Show all" },
-    showLess: { hu: "Csak a legnagyobb elt√©r√©sek megjelen√≠t√©se", en: "Show only largest gaps" },
-    anonGateTitle: { hu: "Az √∂sszehasonl√≠t√°s hamarosan el√©rhet≈ë", en: "Comparison almost ready" },
-    anonGateBody: { hu: "A n√©vtelens√©g v√©delme √©rdek√©ben legal√°bb 2 visszajelz√©s sz√ºks√©ges az eredm√©nyek megjelen√≠t√©s√©hez.", en: "To protect privacy, comparisons are shown only after at least 2 responses." },
-    anonGateProgress: { hu: "{count} / 2 visszajelz√©s meg√©rkezett.", en: "{count} / 2 responses received." },
-    anonGateCta: { hu: "Megh√≠v√≥k kezel√©se", en: "Manage invitations" },
-    nextActionTitle: { hu: "Mi legyen a k√∂vetkez≈ë l√©p√©s?", en: "What next?" },
-    nextActionBody: { hu: "Ha szeretn√©d, k√©rhetsz m√©g visszajelz√©st, vagy kit√∂ltheted a r√∂vid visszajelz≈ë k√©rd≈ë√≠vet.", en: "If you'd like, you can request more feedback or fill out the short feedback survey." },
-    nextActionBodyNoSurvey: { hu: "Ha szeretn√©d, k√©rhetsz m√©g visszajelz√©st.", en: "If you'd like, you can request more feedback." },
-    nextActionInvite: { hu: "K√©rek m√©g visszajelz√©st", en: "Request more feedback" },
-    nextActionSurvey: { hu: "Kit√∂lt√∂m a k√©rd≈ë√≠vet", en: "Fill out the survey" },
-    noDataTitle: { hu: "√ñsszehasonl√≠t√°s", en: "Comparison" },
-    noDataBody: { hu: "Legal√°bb 2 observer-visszajelz√©s sz√ºks√©ges az √∂sszehasonl√≠t√°shoz. K√ºldj megh√≠v√≥kat a Megh√≠v√≥k lapon.", en: "At least 2 observer responses are needed for comparison. Send invitations on the Invitations tab." },
-    headerEyebrow: { hu: "√ñnk√©p √©s visszajelz√©s", en: "Self vs. Feedback" },
-    headerTitle: { hu: "Hogyan l√°tnak m√°sok?", en: "How do others see you?" },
-    headerBody: { hu: "Az √∂n√©rt√©kel√©sed √∂sszehasonl√≠t√°sa a visszajelz√©sekkel ‚Äî dimenzi√≥r√≥l dimenzi√≥ra.", en: "Comparing your self-assessment with feedback ‚Äî dimension by dimension." },
-    observerBadge: { hu: "{count} observer-visszajelz√©s alapj√°n", en: "{count} observer responses" },
-    overviewGoodMatch: { hu: "√ñsszess√©g√©ben j√≥ egyez√©s", en: "Overall good match" },
-    overviewMixed: { hu: "Vegyes k√©p ‚Äî van mit felfedezni", en: "Mixed picture ‚Äî worth exploring" },
-    overviewGoodMatchBody: { hu: "Az √∂nk√©ped √©s az observer-visszajelz√©sek a legt√∂bb dimenzi√≥ban k√∂zel √°llnak egym√°shoz. Ez arra utal, hogy az √∂nk√©ped √©s a k√ºls≈ë benyom√°sok t√∂bb ponton √∂sszhangban vannak.", en: "Your self-image and observer feedback are close in most dimensions. This is rare and valuable ‚Äî it means you see yourself realistically." },
-    overviewMixedBody: { hu: "N√©h√°ny dimenzi√≥ban jelent≈ës elt√©r√©s van az √∂nk√©ped √©s m√°sok visszajelz√©se k√∂z√∂tt. Ez nem probl√©ma, hanem lehet≈ës√©g a m√©lyebb √∂nismeretre.", en: "There are significant differences in some dimensions. This isn't a problem ‚Äî it's an opportunity for deeper self-awareness." },
-    matchingDims: { hu: "egyez≈ë dimenzi√≥", en: "matching dims" },
-    differingDims: { hu: "elt√©r≈ë dimenzi√≥", en: "differing dims" },
-    avgGap: { hu: "√°tlagos elt√©r√©s", en: "avg. gap" },
-    legendSelf: { hu: "√ñn√©rt√©kel√©s (Te)", en: "Self-assessment (You)" },
-    legendObserver: { hu: "Observer-√°tlag (m√°sok)", en: "Observer avg. (Others)" },
-    gapMatch: { hu: "egyezik", en: "match" },
-    gapDiff: { hu: "elt√©r√©s", en: "gap" },
-    noObserverDim: { hu: "Ehhez a dimenzi√≥hoz m√©g nincs el√©g k√ºls≈ë visszajelz√©s.", en: "Not enough external feedback for this dimension yet." },
-    blindSpotEyebrow: { hu: "Vakfolt-elemz√©s", en: "Blind spot analysis" },
-    blindSpotTitle: { hu: "Amit m√°sok m√°sk√©pp l√°tnak", en: "What others see differently" },
-    blindSpotBody: { hu: "Olyan ter√ºletek, ahol az √∂nk√©ped √©s m√°sok visszajelz√©se k√∂z√∂tt √©rdemi k√ºl√∂nbs√©g van.", en: "Areas where your self-image and others' feedback differ meaningfully." },
-    possibleBlindSpot: { hu: "Lehets√©ges vakfolt", en: "Possible blind spot" },
-    // Ir√°ny-semleges megfogalmaz√°s (motor-audit v4, FIX 2): a ford√≠tott
-    // Emocionalit√°sn√°l az ‚Äûer≈ësebbnek/gyeng√©bbnek l√°t" √©rt√©kel≈ë nyelv
-    // megfordulna ‚Äî a ‚Äûmagasabbra/alacsonyabbra √©rt√©kel" sk√°la-nyelv nem.
-    blindSpotStronger: { hu: "m√°sok magasabbra √©rt√©kelnek", en: "others rate you higher" },
-    blindSpotWeaker: { hu: "m√°sok alacsonyabbra √©rt√©kelnek", en: "others rate you lower" },
-    selfAssessment: { hu: "√ñn√©rt√©kel√©s", en: "Self" },
-    noBlindSpot: { hu: "Nincs jelent≈ës elt√©r√©s", en: "No blind spot" },
-    noBlindSpotBody: { hu: "Ezekben a dimenzi√≥kban az √∂nk√©ped √©s m√°sok visszajelz√©se k√∂zel √°ll egym√°shoz.", en: "In these dimensions your self-image and others' feedback are nearly identical ‚Äî you see yourself realistically." },
-    summaryEyebrow: { hu: "√ñsszefoglal√≥", en: "Summary" },
-    summaryTitle: { hu: "Amit √©rdemes megjegyezni", en: "Worth noting" },
-    summaryMatchMany: { hu: "{count} dimenzi√≥ban az √∂nk√©ped √©s m√°sok visszajelz√©se szinte azonos.", en: "In {count} dimensions your self-image and others' feedback are nearly identical ‚Äî you see yourself realistically." },
-    summaryDiffStronger: { hu: "{name}: m√°sok magasabbra √©rt√©kelnek ({gap} pont elt√©r√©s).", en: "{name}: others rate you higher (a {gap}-point gap)." },
-    summaryDiffWeaker: { hu: "{name}: m√°sok alacsonyabbra √©rt√©kelnek ({gap} pont elt√©r√©s).", en: "{name}: others rate you lower (a {gap}-point gap)." },
-    summaryPerfectMatch: { hu: "Az √∂nk√©ped szinte teljesen egyezik m√°sok √©rt√©kel√©s√©vel.", en: "Rare and valuable: your self-image almost perfectly matches others' assessment." },
-  },
-  results: {
-    tabSummary: { hu: "√ñsszk√©p", en: "At a glance" },
-    tabDetails: { hu: "R√©szletes riport", en: "Detailed report" },
-    summaryEyebrow: { hu: "Gyors √∂sszk√©p", en: "Quick overview" },
-    summaryTitle: { hu: "Ezt √©rdemes elvinned az eredm√©nyedb≈ël.", en: "What to take away from your result." },
-    summaryBody: {
-      hu: "H√°rom kapaszkod√≥ az els≈ë olvas√°shoz. A teljes √©rtelmez√©s √©s az alsk√°l√°k a r√©szletes riportban v√°rnak.",
-      en: "Three anchors for your first read. The full interpretation and facets remain in the detailed report.",
-    },
-    summaryNatural: { hu: "Ami term√©szetesen megy", en: "What comes naturally" },
-    summaryAttention: { hu: "Ami t√∂bb figyelmet k√©rhet", en: "What may need more attention" },
-    summaryWork: { hu: "Munkahelyen ez sz√°m√≠t", en: "What matters at work" },
-    summaryGrowth: { hu: "Ahol a legt√∂bbet fejl≈ëdhetsz", en: "Where you can grow most" },
-    summaryBalancedAttention: {
-      hu: "Nincs olyan f≈ë dimenzi√≥d, amely √∂nmag√°ban er≈ës figyelmeztet≈ë jel lenne. A helyzetek k√∂z√∂tti egyens√∫ly a fontosabb k√©rd√©s.",
-      en: "None of your main dimensions is a strong warning sign on its own. The balance between situations matters more.",
-    },
-    summaryDimensionsEyebrow: { hu: "Hat dimenzi√≥", en: "Six dimensions" },
-    summaryDimensionsTitle: { hu: "Profilod egy pillant√°sra", en: "Your profile at a glance" },
-    summaryScaleNote: {
-      hu: "A s√°vok nem min≈ës√≠t√©sek √©s nem percentilisek; azt mutatj√°k, hol helyezkedsz el az egyes sk√°l√°kon.",
-      en: "The bars are neither grades nor percentiles; they show where you sit on each scale.",
-    },
-    summaryNextStep: { hu: "A k√∂vetkez≈ë l√©p√©sed", en: "Your next step" },
-    summaryOutsideFeedback: { hu: "K√ºls≈ë visszajelz√©sek", en: "Outside feedback" },
-    summaryOpenOutside: { hu: "K√ºls≈ë k√©p megnyit√°sa", en: "Open outside view" },
-    summaryPendingOrg: { hu: "Van egy f√ºgg≈ë szervezeti megh√≠v√°sod.", en: "You have a pending organization invitation." },
-    summaryOpenInvitation: { hu: "Megh√≠v√°s megnyit√°sa", en: "Open invitation" },
-    summaryAssessmentInProgress: { hu: "Van egy folyamatban l√©v≈ë √∫j kit√∂lt√©sed.", en: "You have a new assessment in progress." },
-    summaryContinue: { hu: "Folytat√°s", en: "Continue" },
-    summaryExploreEyebrow: { hu: "Felfedez√©s", en: "Explore" },
-    summaryExploreTitle: { hu: "Akkor m√©lyedj el a r√©szletekben, amikor szeretn√©l.", en: "Go deeper only when you want to." },
-    summaryDetailsPrompt: { hu: "Minden r√©szlet", en: "All details" },
-    summaryDetailsMeta: {
-      hu: "A teljes riport h√°rom tiszta fejezetben: radar, 6 dimenzi√≥, alsk√°l√°k, munkast√≠lus √©s fejl≈ëd√©s.",
-      en: "The complete report in three clear chapters: radar, 6 dimensions, facets, work style and growth.",
-    },
-    summaryDetailsBody: {
-      hu: "A r√©szletes riportban megkapod mind a hat dimenzi√≥ √©rtelmez√©s√©t, az alsk√°l√°kat, a munkast√≠lust √©s a fejl≈ëd√©si f√≥kuszt.",
-      en: "The detailed report includes all six interpretations, facets, work style and growth focus.",
-    },
-    summaryOpenDetails: { hu: "R√©szletes riport megnyit√°sa", en: "Open detailed report" },
-    summaryComparisonTitle: { hu: "K√ºls≈ë n√©z≈ëpont", en: "Outside perspective" },
-    summaryComparisonReadyBody: { hu: "N√©zd meg, hogyan l√°tnak m√°sok, √©s hol t√©r el az √∂nk√©ped.", en: "See how others perceive you and where it differs from your self-view." },
-    summaryComparisonStartBody: { hu: "K√©rj visszajelz√©st, hogy k√©s≈ëbb √∂sszevethesd az √∂nk√©ped m√°sok n√©z≈ëpontj√°val.", en: "Ask for feedback so you can compare your self-view with other perspectives later." },
-    interactionEntryEyebrow: { hu: "K√∂z√∂s m≈±k√∂d√©s", en: "Shared dynamics" },
-    interactionEntrySomeone: { hu: "Valaki m√°s", en: "Someone else" },
-    interactionEntryNewTitle: {
-      hu: "Mi t√∂rt√©nik, amikor k√©t profil tal√°lkozik?",
-      en: "What happens when two profiles meet?",
-    },
-    interactionEntryNewBody: {
-      hu: "N√©zd meg, mi megy mag√°t√≥l, hol lehet s√∫rl√≥d√°s, √©s mit √©rdemes el≈ëre megbesz√©lni.",
-      en: "See what comes naturally, where friction may appear, and what is worth discussing in advance.",
-    },
-    interactionEntryNewPrimary: { hu: "√ñsszehasonl√≠tok valakivel", en: "Compare with someone" },
-    interactionEntryNewSecondary: { hu: "Kipr√≥b√°lom egy karakterrel", en: "Try it with a character" },
-    interactionEntryPendingStatus: { hu: "{name} v√°lasz√°ra v√°r", en: "Waiting for {name}" },
-    interactionEntryPendingTitle: { hu: "A megh√≠v√°s √∫ton van.", en: "Your invitation is on its way." },
-    interactionEntryPendingBody: {
-      hu: "Amint {name} elfogadja, itt megnyithatod a k√©t val√≥di profil k√∂z√∂s k√©p√©t.",
-      en: "Once {name} accepts, you can open the shared picture of your two real profiles here.",
-    },
-    interactionEntryPendingPrimary: { hu: "Megh√≠v√°s megnyit√°sa", en: "Open invitation" },
-    interactionEntryPendingSecondary: { hu: "Addig kipr√≥b√°lom egy karakterrel", en: "Try it with a character meanwhile" },
-    interactionEntryReadyStatus: { hu: "{name} k√©szen √°ll", en: "{name} is ready" },
-    interactionEntryReadyTitle: {
-      hu: "Megn√©zhetitek, hogyan m≈±k√∂dt√∂k egy√ºtt.",
-      en: "See how you work together.",
-    },
-    interactionEntryReadyBody: {
-      hu: "{name} elfogadta a kapcsolatot. A k√∂z√∂s k√©petek m√°r k√©t val√≥di √∂n√©rt√©kel√©sb≈ël √©p√ºl fel.",
-      en: "{name} accepted the connection. Your shared picture is now based on two real self-assessments.",
-    },
-    interactionEntryReadyPrimary: { hu: "K√∂z√∂s k√©p megnyit√°sa", en: "Open shared picture" },
-    interactionEntryReadySecondary: { hu: "M√°sik √∂sszehasonl√≠t√°s", en: "Another comparison" },
-    summaryClarityQuestion: { hu: "√ârthet≈ë volt ez az els≈ë √∂sszk√©p?", en: "Was this first overview clear?" },
-    summaryClarityBody: { hu: "Egy koppint√°ssal seg√≠thetsz egyszer≈±bb√© tenni.", en: "One tap helps us make it simpler." },
-    summaryClarityNo: { hu: "Nem igaz√°n", en: "Not really" },
-    summaryClarityPartly: { hu: "R√©szben", en: "Partly" },
-    summaryClarityYes: { hu: "Igen", en: "Yes" },
-    summaryClarityThanks: { hu: "K√∂sz√∂nj√ºk ‚Äî ezt felhaszn√°ljuk a k√∂vetkez≈ë finom√≠t√°shoz.", en: "Thank you ‚Äî this will inform the next refinement." },
-    summaryClarityError: { hu: "Most nem siker√ºlt menteni. Pr√≥b√°ld √∫jra.", en: "We couldn't save that just now. Please try again." },
-    detailsExtensionsTitle: { hu: "M√°sik n√©z≈ëpont", en: "Another way to explore" },
-    detailsExtensionsBody: { hu: "N√©zd meg, milyen szakmai ir√°nyok illeszkedhetnek a term√©szetes m≈±k√∂d√©sedhez.", en: "See which professional directions may fit the way you naturally operate." },
-    reportChaptersLabel: { hu: "A r√©szletes riport fejezetei", en: "Detailed report chapters" },
-    reportChaptersEyebrow: { hu: "R√©szletes riport", en: "Detailed report" },
-    reportChapterNext: { hu: "K√∂vetkez≈ë fejezet", en: "Next chapter" },
-    reportChapterCount: { hu: "{current} / {total}", en: "{current} / {total}" },
-    reportChapterPicker: { hu: "Fejezetek", en: "Chapters" },
-    reportChapterPickerTitle: { hu: "Riport fejezetei", en: "Report chapters" },
-    reportChapterPickerClose: { hu: "Fejezetv√°laszt√≥ bez√°r√°sa", en: "Close chapter picker" },
-    reportChapterCurrent: { hu: "Aktu√°lis", en: "Current" },
-    reportBackToSummary: { hu: "Vissza az √∂sszk√©phez", en: "Back to overview" },
-    reportLinearEyebrow: { hu: "A teljes riportod", en: "Your complete report" },
-    reportLinearTitle: { hu: "A teljes riport √°ttekinthet≈ë fejezetekben.", en: "Every detail, in clear chapters." },
-    reportLinearBody: { hu: "A teljes szakmai m√©lys√©g megmarad, de egyszerre csak egy gondolati egys√©g k√©r figyelmet.", en: "The full professional depth remains, while only one idea asks for your attention at a time." },
-    reportCardOpen: { hu: "Megnyit√°s", en: "Open" },
-    reportCardClose: { hu: "Bez√°r√°s", en: "Close" },
-    viewSelectorLabel: { hu: "Eredm√©nyn√©zet", en: "Result view" },
-    viewSelectorLocked: { hu: "Plus", en: "Plus" },
-    reportOverviewTitle: { hu: "√Åttekint√©s", en: "Overview" },
-    reportOverviewBody: { hu: "A radar √©s a hat f≈ë dimenzi√≥ √°ttekinthet≈ëen, egy helyen.", en: "Your radar and six main dimensions, clearly presented in one place." },
-    reportOverviewQuestion: { hu: "Milyen mint√°zat rajzol√≥dik ki?", en: "What pattern emerges?" },
-    reportDimensionsTitle: { hu: "Dimenzi√≥k", en: "Dimensions" },
-    reportDimensionsBody: { hu: "Pontos √©rt√©kek, √©rtelmez√©sek √©s alsk√°l√°k dimenzi√≥nk√©nt.", en: "Exact scores, interpretations and facets for each dimension." },
-    reportDimensionsQuestion: { hu: "Mi van a profilod m√∂g√∂tt?", en: "What sits behind your profile?" },
-    reportWorkstyleTitle: { hu: "Munkast√≠lus √©s fejl≈ëd√©s", en: "Work style and growth" },
-    reportWorkstyleBody: { hu: "Munkak√∂rnyezet, szerepilleszked√©s, csapatszerepek √©s fejl≈ëd√©si f√≥kusz.", en: "Work environment, role fit, team roles and development focus." },
-    reportWorkstyleQuestion: { hu: "Hogyan ford√≠tsd ezt m≈±k√∂d√©sre?", en: "How can you put this into practice?" },
-    heroEyebrow: { hu: "A te profilod", en: "Your profile" },
-    heroShare: { hu: "Megoszt√°s", en: "Share" },
-    heroPdf: { hu: "PDF let√∂lt√©s", en: "Download PDF" },
-    heroGlyphEyebrow: { hu: "A te karakter√°br√°d", en: "Your character visual" },
-    heroGlyphGrammar: {
-      hu: "A nagy forma {primary}: {form}. A benne fut√≥ vonal {secondary}: {motif}. A kit√∂lt√©s a pontsz√°mot k√∂veti.",
-      en: "The large shape represents {primary}: the {form}. The line inside represents {secondary}: the {motif}. The fill follows the score.",
-    },
-    heroGlyphGrammarUncertain: {
-      hu: "A k√©t dimenzi√≥d k√∂zel azonos szint≈±. A nagy forma {form}, a benne fut√≥ vonal {motif}; a kit√∂lt√©s a pontsz√°mot k√∂veti.",
-      en: "The two dimensions are at a similar level. The large shape is the {form}, the line inside the {motif}; the fill follows the score.",
-    },
-    heroGlyphOpen: { hu: "Karakter√°bra", en: "Character visual" },
-    heroGlyphBack: { hu: "Profil", en: "Profile" },
-    heroGlyphOpenA11y: { hu: "Karakter√°bra megjelen√≠t√©se", en: "Show character visual" },
-    heroGlyphBackA11y: { hu: "Profil megjelen√≠t√©se", en: "Show profile" },
-    dimSectionEyebrow: { hu: "Dimenzi√≥k", en: "Dimensions" },
-    dimSectionTitle: { hu: "√çgy m≈±k√∂dsz a f≈ë dimenzi√≥k ment√©n", en: "How you work across key dimensions" },
-    dimSectionDesc: { hu: "A dimenzi√≥k nem skatuly√°k, min≈ës√≠t√©sek vagy percentilisek. A 0‚Äì100-as sk√°l√°n kirajzol√≥d√≥ mint√°zatok azt mutatj√°k meg, mi mozgat, mi ad stabilit√°st, √©s hol j√∂het fesz√ºlts√©g.", en: "Dimensions aren't boxes, grades or percentiles. Patterns on the 0‚Äì100 scale show what drives you, what keeps you steady, and where tension may arise." },
-    scoreOutOfHundred: { hu: "{value} / 100", en: "{value} / 100" },
-    facetLabel: { hu: "alsk√°la r√©szletesen", en: "facets in detail" },
-    facetUnlock: { hu: "Plus felold√°sa ‚Äî ‚Ç¨9", en: "Unlock Plus ‚Äî ‚Ç¨9" },
-    // LR-FACET ‚Äî nem-klinikai glossza a ‚ÄûSzorong√°s" facethez (kulcs-alap√∫
-    // felt√©tellel jelenik meg, csak az `anxiety` facet-k√≥dn√°l).
-    facetAnxietyGloss: {
-      hu: "Norm√°l szem√©lyis√©gvon√°s: azt mutatja, mennyire jellemz≈ë r√°d a h√©tk√∂znapi aggodalmaskod√°s ‚Äî nem klinikai √°llapotot jelez.",
-      en: "A normal personality trait: how prone you are to everyday worry ‚Äî it does not indicate a clinical condition.",
-    },
-    // A kor√°bbi scoreSemHint (¬±SEM a pontsz√°m mellett) 2026-08-11-√©n
-    // kivezetve: m√©r√©si-hiba SZ√ÅM nem jelenik meg a fel√ºleten (term√©kd√∂nt√©s);
-    // a bizonytalans√°g-kezel√©s kvalitat√≠v (f≈ën√©v-only c√≠mke, hedge-sz√∂vegek).
-    // Percentilis-sor ‚Äî CSAK akt√≠v norma-t√°bla mellett jelenik meg (norms.ts).
-    scorePercentileLine: {
-      hu: "Ez az √©rt√©k a kit√∂lt≈ëk k√∂r√ºlbel√ºl {p}%-√°nak eredm√©ny√©n√©l magasabb.",
-      en: "This score is higher than roughly {p}% of respondents.",
-    },
-    teamRoleEyebrow: { hu: "Csapatszerepek", en: "Team roles" },
-    teamRoleTitle: { hu: "√çgy jelenhetsz meg csapatban", en: "How you show up in teams" },
-    teamRoleSourceMeasured: { hu: "Kit√∂lt√∂tt k√©rd≈ë√≠v", en: "Completed questionnaire" },
-    teamRoleSourceEstimate: { hu: "Becsl√©s a szem√©lyis√©gprofilb√≥l", en: "Estimated from personality profile" },
-    teamRolePersonalityHarmony: { hu: "A m√©rt csapatszerepk√©ped √∂sszhangban van a szem√©lyis√©gprofiloddal ‚Äî az √°ltalad bet√∂lt√∂tt szerepek illenek ahhoz, ahogyan m≈±k√∂dsz.", en: "Your measured team-role picture is in harmony with your personality profile ‚Äî the roles you play fit how you operate." },
-    teamRolePersonalityDiverge: { hu: "A m√©rt szerepk√©ped elt√©r att√≥l, amit a szem√©lyis√©gprofilod jelezne ({roles}) ‚Äî ez nem hiba: gyakran a k√∂rnyezet vagy a csapat ig√©nyei h√≠vnak el≈ë m√°s szerepet. √ârdemes lehet √°tbesz√©lni a vezet≈ëddel vagy a tan√°csad√≥ddal.", en: "Your measured role picture differs from what your personality profile would predict ({roles}) ‚Äî that's not a flaw: the environment or team needs often call out a different role. Worth discussing with your lead or consultant." },
-    teamRolePeerTitle: { hu: "A csapatod √≠gy l√°t", en: "How your team sees you" },
-    teamRolePeerCount: { hu: "{n} visszajelz√©s", en: "{n} responses" },
-    teamRolePeerThreshold: { hu: "Eddig {n} csapatt√°rsi visszajelz√©s √©rkezett ‚Äî a csapatk√©p legal√°bb {min} √©rt√©kel≈ët≈ël √°ll √∂ssze, addig nem jelenik meg.", en: "{n} peer responses so far ‚Äî the team view forms from at least {min} raters and stays hidden until then." },
-    teamRolePeerHarmony: { hu: "Az √∂nk√©ped √©s a csapatk√©ped egybev√°g ‚Äî a csapatt√°rsaid ugyanazokat a szerepeket l√°tj√°k benned, amiket te is magadban.", en: "Your self-image and the team view align ‚Äî your teammates see the same roles in you that you see in yourself." },
-    teamRolePeerFrictionTitle: { hu: "√ñnk√©p‚Äìcsapatk√©p elt√©r√©s", en: "Self-image vs. team view gap" },
-    teamRolePeerSelfOnly: { hu: "Te l√°tod magadban, a csapat kev√©sb√©: {roles}.", en: "You see it in yourself, the team less so: {roles}." },
-    teamRolePeerPeerOnly: { hu: "A csapat l√°tja benned, te kev√©sb√©: {roles}.", en: "The team sees it in you, you less so: {roles}." },
-    teamRolePeerFrictionHint: { hu: "Az elt√©r√©s nem hiba, hanem besz√©lget√©sind√≠t√≥ ‚Äî a k√∂z√∂s √°tbesz√©l√©sen √©rdemes megn√©zni, mi√©rt kev√©sb√© l√°that√≥ az egyik szerep, vagy mi h√≠vja el≈ë a m√°sikat.", en: "The gap isn't a flaw but a conversation starter ‚Äî worth exploring in the debrief what hides one role or calls out the other." },
-    teamRolePrimary: { hu: "Els≈ëdleges", en: "Primary" },
-    teamRoleSecondary: { hu: "M√°sodlagos", en: "Secondary" },
-    teamRoleTertiary: { hu: "Harmadlagos", en: "Tertiary" },
-    upsellEyebrow: { hu: "Plus", en: "Plus" },
-    upsellTitle: { hu: "N√©zz a f≈ë dimenzi√≥k m√∂g√©.", en: "Look behind the key dimensions." },
-    upsellDesc: { hu: "Menj m√©lyebbre: alsk√°l√°k, vakfoltok, illeszked≈ë szerepk√∂r√∂k ‚Äî √©rtsd meg, mi mozgat val√≥j√°ban.", en: "Go deeper: subscales, blind spots, fitting roles ‚Äî understand what really drives you." },
-    upsellBuy: { hu: "Megveszem", en: "Buy now" },
-    upsellOnetime: { hu: "egyszeri v√°s√°rl√°s", en: "one-time purchase" },
-    upsellFeature1: { hu: "25 alsk√°la", en: "25 subscales" },
-    upsellFeature2: { hu: "Korl√°tlan sz√°m√∫ observer", en: "Unlimited observers" },
-    upsellFeature3: { hu: "Vakfolt-elemz√©s", en: "Blind spot analysis" },
-    upsellFeature4: { hu: "M≈±k√∂d√©sed √©s szereped a csapatban", en: "How you work and contribute in a team" },
-    lockPlus: { hu: "Mi √°ll a dimenzi√≥k m√∂g√∂tt? ¬∑ Milyen szerepet veszel fel a csapatban? ¬∑ Hol fejl≈ëdhetsz a leggyorsabban?", en: "What's behind your dimensions? ¬∑ Which role do you take on in a team? ¬∑ Where can you grow fastest?" },
-    lockReflect: { hu: "Hogyan l√°tnak m√°sok? ¬∑ Mik a vakfoltjaid? ¬∑ Observer-visszajelz√©sek elemz√©se", en: "How do others see you? ¬∑ What are your blind spots? ¬∑ Observer feedback analysis" },
-    lockPreviewText: { hu: "Mi √°ll a dimenzi√≥k m√∂g√∂tt? ¬∑ Milyen szerepet veszel fel a csapatban? ¬∑ Observer-visszajelz√©s ¬∑ Vakfolt-elemz√©s", en: "What's behind your dimensions? ¬∑ Which role do you take on in a team? ¬∑ Observer feedback ¬∑ Blind spot analysis" },
-    heroAssessment: { hu: "Teszt:", en: "Assessment:" },
-
-    // Csapat-√©rdekl≈ëd√©s banner (results oldal alja)
-    teamInterestEyebrow: { hu: "csapatszint", en: "team level" },
-    teamInterestTitle: {
-      hu: "K√≠v√°ncsi vagy, hogyan n√©z ki ez csapatszinten?",
-      en: "Curious what this looks like at team level?",
-    },
-    teamInterestBody: {
-      hu: "Mint√°zatok, szerepek, egy√ºttm≈±k√∂d√©si dinamika ‚Äî a teljes csapatr√≥l, tan√°csad√≥i k√≠s√©rettel. Jelezd, √©s felvessz√ºk veled a kapcsolatot.",
-      en: "Patterns, roles, collaboration dynamics ‚Äî for your whole team, with consultant guidance. Let us know and we'll reach out.",
-    },
-    teamInterestCta: { hu: "√ârdekel a csapatelemz√©s", en: "I'm interested in team analysis" },
-    teamInterestMessageLabel: {
-      hu: "Mes√©lj r√∂viden a csapatodr√≥l (opcion√°lis)",
-      en: "Tell us briefly about your team (optional)",
-    },
-    teamInterestMessagePlaceholder: {
-      hu: "pl. 8 f≈ës fejleszt≈ëcsapat, most alakultunk √°t‚Ä¶",
-      en: "e.g. an 8-person dev team going through changes‚Ä¶",
-    },
-    teamInterestSend: { hu: "K√ºld√©s", en: "Send" },
-    teamInterestSending: { hu: "K√ºld√©s‚Ä¶", en: "Sending‚Ä¶" },
-    teamInterestCancel: { hu: "M√©gse", en: "Cancel" },
-    teamInterestSuccess: {
-      hu: "K√∂sz√∂nj√ºk ‚Äî hamarosan jelentkez√ºnk a fi√≥kodhoz tartoz√≥ email-c√≠men.",
-      en: "Thank you ‚Äî we'll reach out at your account email soon.",
-    },
-    teamInterestAlready: {
-      hu: "M√°r jelezted az √©rdekl≈ëd√©sed ‚Äî hamarosan keres√ºnk.",
-      en: "You've already expressed interest ‚Äî we'll be in touch soon.",
-    },
-    teamInterestError: {
-      hu: "Nem siker√ºlt elk√ºldeni ‚Äî pr√≥b√°ld √∫jra.",
-      en: "Could not send ‚Äî please try again.",
-    },
-    draftInProgressTitle: { hu: "A teszted folyamatban van", en: "Your assessment is in progress" },
-    draftInProgressBody: { hu: "Mentett√ºk a halad√°sodat ‚Äî ott folytathatod, ahol abbahagytad.", en: "We saved your progress ‚Äî you can continue where you left off." },
-    draftInProgressHint: {
-      hu: "A v√°laszaidat automatikusan mentj√ºk, √≠gy semmi nem v√©sz el ‚Äî nyugodtan folytathatod k√©s≈ëbb is.",
-      en: "Your answers are saved automatically, nothing is lost ‚Äî feel free to continue later.",
-    },
-    draftInProgressCta: { hu: "Folytatom a tesztet", en: "Continue assessment" },
-    nextStepTestTitle: {
-      hu: "Ismerd meg a munkast√≠lusodat",
-      en: "Get to know your work style",
-    },
-    nextStepTestBody: {
-      hu: "Egy r√∂vid, k√∂r√ºlbel√ºl kilencperces teszt ut√°n letisztult k√©pet kapsz arr√≥l, mi visz el≈ëre, mi ad stabilit√°st, √©s mire √©rdemes figyelned. Nem c√≠mk√©z, hanem r√°vil√°g√≠t a jellemz≈ë m≈±k√∂d√©sedre.",
-      en: "A short assessment of about 9 minutes gives you a clear picture of what drives you, what keeps you steady, and what to watch for. It doesn't label you ‚Äî it sheds light.",
-    },
-    uniqueProfile: { hu: "Egyedi profil", en: "Unique profile" },
-    // A legacy PDF-√∂sszefoglal√≥ kulcsok (strengthsSuffix/watchPrefix/
-    // watchSuffix/noLowDim) 2026-08-11-√©n, az ≈ëket kiv√°lt√≥ bullet-kulcsok
-    // (insightStrengths/insightWatch, pdf.yourStrengths/watchAreas/
-    // summaryStrengths + content.noLowDimension) pedig 2026-08-18-√°n
-    // kivezetve: a bullet-v√°ltozat (buildInsightBullets) sem renderel≈ëd√∂tt
-    // soha, √©s pontsz√°m-s√°vhoz k√∂t√∂tt valenci√°t keretezett.
-    balancedProfile: { hu: "Kiegyens√∫lyozott profil, nincs kiugr√≥ dimenzi√≥.", en: "Balanced profile, no standout dimension." },
-    // Lapos-profil hero-mondat: ha a hat dimenzi√≥ terjedelme a m√©r√©si zajon
-    // bel√ºl van (HERO_RANGE_GATE_FACTOR¬∑SEM), a hero nem √°ll√≠that leger≈ësebbet
-    // ‚Äî a PDF ‚ÄûKiegyens√∫lyozott profil" sz√∂veg√©vel konzisztens keretez√©s.
-    heroBalancedInsight: {
-      hu: "Kiegyens√∫lyozott profil ‚Äî nincs kiugr√≥ dimenzi√≥, a dimenzi√≥id k√∂zel azonos szinten m≈±k√∂dnek.",
-      en: "Balanced profile ‚Äî no standout dimension; your dimensions operate at a similar level.",
-    },
-    sharedProfileLabel: { hu: "Megosztott profil", en: "Shared profile" },
-    shareHeroInsight: {
-      hu: "A profil legkarakteresebb jelz√©sei: {first} √©s {second}.",
-      en: "The profile's most distinctive signals are {first} and {second}.",
-    },
-    shareHeroInsightSingle: {
-      hu: "A profil legkarakteresebb jelz√©se: {first}.",
-      en: "The profile's most distinctive signal is {first}.",
-    },
-    shareSummaryEyebrow: { hu: "Gyors √∂sszk√©p", en: "Quick overview" },
-    shareSummaryTitle: {
-      hu: "Ezt √©rdemes el≈ësz√∂r elvinni {name} profilj√°b√≥l.",
-      en: "What to take away first from {name}'s profile.",
-    },
-    shareSummaryBody: {
-      hu: "H√°rom kapaszkod√≥ a k√∂z√∂s √©rtelmez√©shez.",
-      en: "Three anchors for making sense of the profile together.",
-    },
-    shareQuickNatural: { hu: "A legkarakteresebb jelz√©s", en: "Most distinctive signal" },
-    shareQuickNaturalText: {
-      hu: "{label}: {score}/100 ‚Äî ez a p√≥lus rajzol√≥dik ki a legkarakteresebben a profilban.",
-      en: "{label}: {score}/100 ‚Äî this is the profile's most distinctly expressed pole.",
-    },
-    shareQuickNuance: { hu: "A m√°sik karakteres jelz√©s", en: "Another distinctive signal" },
-    shareQuickNuanceText: {
-      hu: "{label}: {score}/100 ‚Äî egy m√°sik mark√°ns m≈±k√∂d√©si p√≥lus, nem min≈ës√≠t√©s vagy hi√°nyoss√°g.",
-      en: "{label}: {score}/100 ‚Äî another pronounced operating pole, not a rating or deficiency.",
-    },
-    shareQuickUse: { hu: "√çgy √©rdemes haszn√°lni", en: "How to use this" },
-    shareQuickUseText: {
-      hu: "A profil hipot√©zis √©s besz√©lget√©sind√≠t√≥, nem k√©sz √≠t√©let: k√∂z√∂s helyzetek √©s konkr√©t p√©ld√°k ment√©n v√°lik igaz√°n hasznoss√°.",
-      en: "Treat the profile as a hypothesis and conversation starter, not a verdict; ground it in shared situations and concrete examples.",
-    },
-    shareDimensionsTitle: { hu: "A hat f≈ë dimenzi√≥", en: "The six core dimensions" },
-    shareDimensionsBody: {
-      hu: "Nyisd le azt a dimenzi√≥t, amelyr≈ël t√∂bbet szeretn√©l tudni. A sz√≠n azonos√≠t, a sz√°m a m√©rt √©rt√©ket mutatja.",
-      en: "Open any dimension to learn more. Color identifies the dimension; the number shows the measured value.",
-    },
-    shareExploreEyebrow: { hu: "M√©lyebb k√©p", en: "Deeper view" },
-    shareExploreTitle: { hu: "Akkor m√©lyedj el a r√©szletekben, amikor szeretn√©l.", en: "Go deeper when you are ready." },
-    shareChapterWork: { hu: "Ahogy m≈±k√∂dik", en: "How this profile operates" },
-    shareChapterWorkBody: {
-      hu: "F≈ë mint√°zat, figyelend≈ë pont √©s kontextus a m√©rt dimenzi√≥kb√≥l.",
-      en: "Key pattern, what to watch, and context from the measured dimensions.",
-    },
-    shareChapterEnvironment: { hu: "Ide√°lis k√∂rnyezet", en: "Ideal environment" },
-    shareChapterEnvironmentBody: {
-      hu: "Azok a k√∂rnyezeti jellemz≈ëk, amelyek v√°rhat√≥an t√°mogatj√°k ezt a profilt.",
-      en: "Environmental poles that are likely to support this profile.",
-    },
-    shareChapterRoleFit: { hu: "Szerepilleszked√©s", en: "Role fit" },
-    shareChapterRoleFitBody: {
-      hu: "Milyen jelleg≈± munkak√∂r√∂kben m≈±k√∂dhet otthonosabban ez a profil, √©s mi ig√©nyelhet tudatosabb felk√©sz√ºl√©st.",
-      en: "The kinds of roles this profile moves in most naturally, and what needs more deliberate preparation.",
-    },
-    shareChapterRoles: { hu: "Val√≥sz√≠n≈± csapatszerepek", en: "Likely team roles" },
-    shareChapterRolesBody: {
-      hu: "A profilb√≥l sz√°molt becsl√©s arr√≥l, milyen m√≥don j√°rulhatsz hozz√° a csapat munk√°j√°hoz.",
-      en: "A profile-based estimate of likely contributions in a team.",
-    },
-    teamRoleHeading: { hu: "Csapatszerepek", en: "Team roles" },
-    howYouWorkEyebrow: { hu: "Ahogy m≈±k√∂dsz", en: "How you operate" },
-    howYouWorkMain: { hu: "F≈ë mint√°zat", en: "Key pattern" },
-    howYouWorkWatch: { hu: "Figyelend≈ë", en: "Watch area" },
-    // Semleges (‚Äûnote") slot: a ford√≠tott sk√°l√°j√∫ (Emocionalit√°s) p√°rok
-    // mint√°zat-megfigyel√©se + gyakorlati tan√°csa. SZ√ÅND√âKOSAN nem hordoz
-    // valenci√°t ‚Äî sem ‚ÄûFigyelend≈ë", sem ‚ÄûEr≈ëss√©g" (2026-08-11 d√∂nt√©s,
-    // score-valence.ts).
-    howYouWorkNote: { hu: "Jellemz≈ë mint√°zat", en: "Characteristic pattern" },
-    howYouWorkContext: { hu: "Kontextus", en: "Context" },
-    envEyebrow: { hu: "Ide√°lis k√∂rnyezet", en: "Ideal environment" },
-    // F3-hedge szint-sz√≥ sablon: a {label} a sor kanonikus szint-szava
-    // kisbet≈±vel (magas ‚Üí ‚ÄûInk√°bb magas", gyors ‚Üí ‚ÄûLeaning fast") ‚Äî a 65/70
-    // (ill. 30/35) egyet-nem-√©rt√©si s√°vban a kem√©ny √≠t√©let helyett.
-    envLeaningLabel: { hu: "Ink√°bb {label}", en: "Leaning {label}" },
-    // A `results.roleFitEyebrow` a shared-labels.ts-ben √©l: a publikus
-    // landing-hero is haszn√°lja, √©s √≠gy nem h√∫zza be ezt a 137 KB-os f√°jlt.
-    roleFitStrong: { hu: "Er≈ës illeszked√©s", en: "Strong fit" },
-    roleFitMight: { hu: "M≈±k√∂dhet, ha felk√©sz√ºlsz", en: "May work with preparation" },
-    roleFitPrep: { hu: "Ahol seg√≠t a felk√©sz√ºl√©s", en: "Where preparation helps" },
-    takeawaysEyebrow: { hu: "A legfontosabbak", en: "Key takeaways" },
-    tabResults: { hu: "Eredm√©nyek", en: "Results" },
-    tabWorkstyle: { hu: "Munkast√≠lus", en: "Work style" },
-    tabCareer: { hu: "Karrier", en: "Career" },
-    tabComparison: { hu: "√ñsszehasonl√≠t√°s", en: "Compare" },
-    tabInvites: { hu: "Megh√≠v√≥k", en: "Invitations" },
-    sectionOverview: { hu: "Profilod egy k√©pben", en: "Your profile at a glance" },
-    // T√≠pus-√°bra (type-glyph.ts nyelvtan) ‚Äî z√°rhat√≥ t√°bla az eredm√©nyek √©l√©n
-    glyphEyebrow: { hu: "A te √°br√°d", en: "Your glyph" },
-    glyphTabLabel: {
-      hu: "Mit jelent a karakter-√°br√°m?",
-      en: "What does my character glyph mean?",
-    },
-    glyphOpen: { hu: "Megnyit√°s", en: "Open" },
-    glyphClose: { hu: "Bez√°r√°s", en: "Close" },
-    // A n√©v-behelyettes√≠t√©sek m√°r n√©vel≈ëvel j√∂nnek (hu-grammar.ts) ‚Äî a
-    // sablonban ez√©rt NINCS ‚Äûa(z)‚Äù; ld. riport-jav√≠t√°si terv P1.2.
-    glyphGrammar: {
-      hu: "A nagy forma a legmagasabb pontsz√°m√∫ dimenzi√≥d ‚Äî {primary}: {form}. A benne fut√≥ v√©kony vonal a m√°sodik legmagasabb ‚Äî {secondary}: {motif}. A forma kit√∂lt√©se a pontsz√°mot k√∂veti.",
-      en: "The large shape is your highest-scoring dimension ‚Äî {primary}: the {form}. The thin line inside it is your second highest ‚Äî {secondary}: the {motif}. The fill weight follows the score.",
-    },
-    // S3-hedge (motor-audit v4, FIX 5): ha a top-2 sorrend a m√©r√©si hib√°n
-    // bel√ºl van, a pr√≥za nem √°ll√≠that sorrendet ‚Äî a k√©t dimenzi√≥ rendezetlen
-    // p√°rk√©nt jelenik meg, ‚Äûa m√°sodik leger≈ësebb" formula n√©lk√ºl.
-    glyphGrammarUncertain: {
-      hu: "A k√©t legmagasabb pontsz√°m√∫ dimenzi√≥d ‚Äî {primary} √©s {secondary} ‚Äî k√∂zel azonos szint≈±, sorrendj√ºk nem egy√©rtelm≈±. A nagy forma {form}, a benne fut√≥ v√©kony vonal {motif}; a forma kit√∂lt√©se a pontsz√°mot k√∂veti.",
-      en: "Your top two dimensions ‚Äî {primary} and {secondary} ‚Äî are at a similar level, so their order isn't clear-cut. The large shape is the {form}, the thin line inside it the {motif}; the fill weight follows the score.",
-    },
-    glyphPairUncertain: {
-      hu: "a k√©t legmagasabb: {a} ¬∑ {b}",
-      en: "top two: {a} ¬∑ {b}",
-    },
-    sectionDimensions: { hu: "Dimenzi√≥k r√©szletesen", en: "Dimensions in detail" },
-    sectionRoles: { hu: "Csapatszerep-hajlamok", en: "Team role tendencies" },
-    sectionGrowth: { hu: "Fejl≈ëd√©si f√≥kusz", en: "Growth focus" },
-    // ‚îÄ‚îÄ Interakci√≥-szimul√°ci√≥ (P5.7 / F3) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    sectionInteraction: {
-      hu: "Hogyan m≈±k√∂dn√©tek egy√ºtt?",
-      en: "How would you work together?",
-    },
-    interactionIntro: {
-      hu: "V√°laszd ki, kivel vagy milyen karakterrel szeretn√©d megn√©zni a k√∂z√∂s m≈±k√∂d√©seteket.",
-      en: "Choose who ‚Äî or what kind of character ‚Äî you'd like to explore your shared dynamic with.",
-    },
-    interactionPickDominant: { hu: "A legkifejezettebb von√°sa", en: "Their most pronounced trait" },
-    interactionPickDominantHint: {
-      hu: "Ez adja a nagy form√°t az √°br√°n ‚Äî √©s a t√≠pusn√©v f≈ënev√©t.",
-      en: "This gives the large shape in the figure ‚Äî and the noun in the type name.",
-    },
-    interactionPickSecondary: { hu: "A m√°sodik von√°sa", en: "Their second trait" },
-    interactionPickSecondaryHint: {
-      hu: "Ez a form√°n bel√ºl fut√≥ mot√≠vum ‚Äî √©s a t√≠pusn√©v jelz≈ëje.",
-      en: "This is the motif running inside the shape ‚Äî and the adjective in the name.",
-    },
-    interactionSameTitle: {
-      hu: "Ugyanaz a mint√°zat",
-      en: "The same pattern",
-    },
-    interactionSameBody: {
-      hu: "A hasonl√≥s√°g gyors meg√©rt√©st adhat: kev√©s magyar√°zat kell, √©s hasonl√≥an olvass√°tok a helyzeteket. Ugyanakkor a vakfoltok is k√∂z√∂sek lehetnek ‚Äî amit te nem veszel √©szre, azt j√≥ es√©llyel ≈ë sem. Ilyen p√°rosn√°l √©rdemes tudatosan beh√≠vni egy harmadik, m√°s m≈±k√∂d√©s≈± n√©z≈ëpontot a fontos d√∂nt√©sekhez.",
-      en: "Similarity can bring quick understanding: little explaining is needed and you may read situations alike. The blind spots can also be shared, though ‚Äî what you miss, they may miss too. With a pairing like this it's worth deliberately inviting a third, differently wired perspective into important decisions.",
-    },
-    interactionRelationQuestion: {
-      hu: "Milyen viszonyban vagytok?",
-      en: "What's your relationship?",
-    },
-    interactionRelationPeer: { hu: "Egyenrang√∫ kapcsolat", en: "Equal relationship" },
-    interactionRelationLeader: {
-      hu: "≈ê vezet vagy mentor√°l engem",
-      en: "They lead or mentor me",
-    },
-    interactionRelationPeerHint: {
-      hu: "A dinamika k√©t egyenrang√∫ f√©l k√∂z√∂tt ‚Äî nincs tart√≥s d√∂nt√©si f√∂l√©ny egyik oldalon sem.",
-      en: "The dynamic between two equal sides ‚Äî neither holds lasting decision power over the other.",
-    },
-    interactionRelationLeaderHint: {
-      hu: "Ilyenkor egy k√ºl√∂n blokk is megjelenik arr√≥l, milyen az ≈ë ir√°nymutat√°sa mellett m≈±k√∂dni.",
-      en: "This also adds a block on what it may be like to work with their guidance.",
-    },
-    interactionLeaderToggle: {
-      hu: "≈ê vezet vagy mentor√°l",
-      en: "They lead or mentor you",
-    },
-    // A p√°ros-fejl√©c: ‚ÄûTe (M√≥dszeres h√≠d√©p√≠t≈ë) √ó Energikus √∫j√≠t√≥" ‚Äî l√°that√≥v√°
-    // teszi, hogy KETT≈êT√ñK dinamik√°j√°r√≥l van sz√≥, √©s hogy a k√©t oldal ugyanazt
-    // a sz√≥kincset haszn√°lja.
-    interactionPairOther: { hu: "A m√°sik profil", en: "The other profile" },
-    interactionPairYou: { hu: "Te", en: "You" },
-    interactionEasy: { hu: "Ami mag√°t√≥l megy", en: "What comes easily" },
-    interactionFriction: {
-      hu: "Ahol s√∫rl√≥d√°s v√°rhat√≥",
-      en: "Where friction is likely",
-    },
-    interactionDiscuss: {
-      hu: "Mit besz√©ljetek meg el≈ëre",
-      en: "What to agree on up front",
-    },
-    interactionLeaderTitle: {
-      hu: "Milyen az ≈ë ir√°nymutat√°sa mellett m≈±k√∂dni",
-      en: "What it may be like to work with their guidance",
-    },
-    // A karakter-√∫t tartalmi hat√°ra, a tartalom EL≈êTT kimondva ‚Äî a konkr√©t k√©t
-    // dimenzi√≥ nev√©vel. A m√≥dszertani r√©szt (mit nem √°ll√≠tunk, hipot√©zis) nem
-    // ism√©tli: az az `interactionSourceNote` a lap alj√°n.
-    interactionTypeScopeNote: {
-      hu: "Ez a karakter a {dims} dimenzi√≥kra √©p√ºl ‚Äî ez√©rt egy val√≥di profillal t√∂bbet √©s m√°st is l√°thatsz, akkor is, ha ugyanaz a t√≠pusneve.",
-      en: "This character is built on {dims} ‚Äî so a real profile can show you more, and different things, even when it carries the same type name.",
-    },
-    interactionSparse: {
-      hu: "Kett≈ët√∂k k√∂z√∂tt nincs el√©g mark√°ns elt√©r√©s ahhoz, hogy megalapozott dinamik√°t √≠rjunk le ‚Äî ez arra utalhat, hogy sok helyzetben hasonl√≥an m≈±k√∂dn√©tek.",
-      en: "There isn't enough of a contrast between you two to state a grounded dynamic ‚Äî which is good news in itself: in most situations you'd operate similarly.",
-    },
-    // Hiteless√©gi jegyzet: en√©lk√ºl a ‚Äût√≠pus-szint≈± becsl√©s" √ºres udvariass√°g.
-    interactionSourceNote: {
-      hu: "T√≠pusszint≈± becsl√©s: a te val√≥s pontsz√°maidat egy olyan mintaprofillal vetj√ºk √∂ssze, amelynek csak a k√©t legmagasabb pontsz√°m√∫ dimenzi√≥j√°t ismerj√ºk ‚Äî a m√°sik n√©gyr≈ël nem √°ll√≠tunk semmit. Ez hipot√©zis, nem j√≥slat; a val√≥di p√°ros m≈±k√∂d√©s megismer√©s√©hez k√©t teljes profil √∂sszehasonl√≠t√°sa sz√ºks√©ges.",
-      en: "Type-level estimate: your real scores are compared against a type prototype for which only the two highest-scoring dimensions are known ‚Äî we claim nothing about the other four. A hypothesis, not a prediction; real measurement lives in the team view.",
-    },
-    // ‚îÄ‚îÄ Val√≥di p√°ros √∂sszehasonl√≠t√°s (B1) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    compareChooserEyebrow: {
-      hu: "√ñsszehasonl√≠t√°s alapja",
-      en: "Comparison basis",
-    },
-    compareChooserTitle: { hu: "Mib≈ël induljunk ki?", en: "Where should we start?" },
-    compareChooserBody: {
-      hu: "A k√©t lehet≈ës√©g pontoss√°ga elt√©r. El≈ësz√∂r v√°laszd ki az √∂sszehasonl√≠t√°s m√≥dj√°t, majd a konkr√©t profilt.",
-      en: "The two paths offer different levels of precision ‚Äî choose the path first, then the specific profile.",
-    },
-    // Se a ‚Äûpontosabb", se a ‚Äûmind a hat dimenzi√≥ sz√°m√≠t" nem volt igaz
-    // √≠g√©ret: mindkett≈ë T√ñBB tartalmat sugallt a val√≥di √∫ton. M√©rve ford√≠tva
-    // van ‚Äî a karakter-protot√≠pus maxim√°lisan p√≥lusos (86/74 a 65/35-√∂s
-    // k√ºsz√∂bn√©l), egy val√≥di ember 55‚Äì70 k√∂z√∂tt tet≈ëzik, √≠gy a karakter-√∫t
-    // √°tlagosan 2,53 atomot ad, a val√≥di 1,93-at. A k√°rty√°k ez√©rt azt mondj√°k
-    // meg, MI az adott √∫t, nem azt, melyik ad t√∂bbet.
-    compareChooserRealTitle: { hu: "Val√≥di szem√©llyel", en: "With a real person" },
-    compareChooserRealBody: {
-      hu: "K√©t kit√∂lt√∂tt profil ¬∑ a ti t√©nyleges dinamik√°tok",
-      en: "Two completed profiles ¬∑ your actual dynamic",
-    },
-    compareChooserTypeTitle: {
-      hu: "Karakterrel kipr√≥b√°lom",
-      en: "Try it with a character",
-    },
-    compareChooserTypeBody: {
-      hu: "Elm√©leti karakter ¬∑ gyors pr√≥ba megh√≠v√°s n√©lk√ºl",
-      en: "A hypothetical character ¬∑ a quick try, no invitation",
-    },
-    compareConnectionsTitle: {
-      hu: "V√°lassz a kapcsolataid k√∂z√ºl",
-      en: "Choose from your connections",
-    },
-    compareConnectionsBody: {
-      hu: "Az elfogadott kapcsolat azonnal √∂sszehasonl√≠that√≥.",
-      en: "An accepted connection is ready to compare immediately.",
-    },
-    compareConnectionsReady: {
-      hu: "{count} kapcsolat k√©szen √°ll",
-      en: "{count} ready to compare",
-    },
-    // Nulla kapcsolat: ott nincs mib≈ël v√°lasztani ‚Äî a megh√≠v√°s a feladat.
-    compareConnectionsEmptyTitle: {
-      hu: "H√≠vj meg valakit a k√∂z√∂s k√©phez",
-      en: "Invite someone for a shared picture",
-    },
-    compareConnectionsEmptyBody: {
-      hu: "Ha ≈ë is kit√∂lti a saj√°t tesztj√©t, mindketten a val√≥di profiljaitok dinamik√°j√°t l√°tj√°tok.",
-      en: "Once they complete their own assessment, you both see the dynamic of your real profiles.",
-    },
-    compareInvitePromptTitle: {
-      hu: "Valaki m√°ssal n√©zn√©d meg?",
-      en: "Want to explore it with someone else?",
-    },
-    compareInviteFirstTitle: {
-      hu: "K√ºldj egy megh√≠v√≥linket",
-      en: "Send an invitation link",
-    },
-    compareInvitePromptBody: {
-      hu: "K√©sz√≠ts neki megh√≠v√≥linket a val√≥di √∂sszehasonl√≠t√°shoz.",
-      en: "Create an invitation link for a real-profile comparison.",
-    },
-    compareInviteToggle: { hu: "Szem√©ly megh√≠v√°sa", en: "Invite someone" },
-    compareInviteHide: { hu: "Megh√≠v√°s elrejt√©se", en: "Hide invitation" },
-    comparePendingTitle: { hu: "F√ºgg≈ë megh√≠v√°sok", en: "Pending invitations" },
-    compareTypePickerTitle: { hu: "V√°lassz egy karaktert", en: "Choose a character" },
-    compareTypePickerBody: {
-      hu: "Gyors el≈ën√©zet a m√°sik f√©l teljes tesztje n√©lk√ºl.",
-      en: "A quick preview without the other person's full assessment.",
-    },
-    compareCardTitle: {
-      hu: "√ñsszehasonl√≠t√°s val√≥di szem√©llyel",
-      en: "Compare with a real person",
-    },
-    compareCardBody: {
-      hu: "K√ºldj egy linket valakinek, akivel rendszeresen k√∂z√∂s helyzetekben vagytok. Ha ≈ë is kit√∂lti a saj√°t tesztj√©t √©s elfogadja, mindketten a VAL√ìDI profiljaitok dinamik√°j√°t l√°tj√°tok ‚Äî nem t√≠pus-becsl√©st.",
-      en: "Send a link to someone you regularly share situations with. If they complete their own assessment and accept, you both see the dynamic of your REAL profiles ‚Äî not a type estimate.",
-    },
-    compareCreateCta: { hu: "√ñsszehasonl√≠t√≥ link k√©sz√≠t√©se", en: "Create compare link" },
-    compareLimitNote: {
-      hu: "Egyszerre legfeljebb 3 akt√≠v link lehet; a link 30 napig √©l.",
-      en: "Up to 3 active links at a time; a link lives for 30 days.",
-    },
-    compareCopy: { hu: "Link m√°sol√°sa", en: "Copy link" },
-    compareCopied: { hu: "M√°solva!", en: "Copied!" },
-    compareRevoke: { hu: "Visszavon√°s", en: "Revoke" },
-    // A visszavon√°s a M√ÅSIK f√©ln√©l is megsz√ºnteti a k√∂z√∂s k√©pet ‚Äî ez√©rt
-    // k√©rdez√ºnk r√°, miel≈ëtt lefut.
-    compareRevokeConfirmQuestion: {
-      hu: "Mindkett≈ët√∂kn√©l megsz≈±nik. Biztos?",
-      en: "It ends for both of you. Sure?",
-    },
-    compareRevokeConfirmYes: { hu: "Igen, visszavonom", en: "Yes, revoke" },
-    compareRevokeConfirmNo: { hu: "M√©gsem", en: "Cancel" },
-    compareStatePending: { hu: "f√ºgg≈ëben", en: "pending" },
-    compareStateAccepted: { hu: "elfogadva", en: "accepted" },
-    compareStateExpired: { hu: "lej√°rt", en: "expired" },
-    compareStateRevoked: { hu: "visszavonva", en: "revoked" },
-    compareOpenPair: { hu: "K√∂z√∂s k√©p megnyit√°sa", en: "Open shared picture" },
-    comparePartnerFallback: { hu: "m√°sik szem√©ly", en: "other person" },
-    compareListEmpty: {
-      hu: "M√©g nincs akt√≠v linked vagy elfogadott p√°rod.",
-      en: "No active links or accepted pairs yet.",
-    },
-    // Kik√ºld√∂tt, de m√©g el nem fogadott link mell√©: a ‚Äûnincs akt√≠v linked"
-    // ilyenkor ellentmond a k√∂zvetlen√ºl alatta l√°that√≥ f√ºgg≈ë list√°nak.
-    compareListPendingOnly: {
-      hu: "A kik√ºld√∂tt linkre v√°r ‚Äî amint elfogadja, itt megny√≠lik a k√∂z√∂s k√©p.",
-      en: "Waiting on the link you sent ‚Äî the shared picture opens here once they accept.",
-    },
-    compareError: {
-      hu: "Nem siker√ºlt ‚Äî pr√≥b√°ld √∫jra.",
-      en: "Something went wrong ‚Äî try again.",
-    },
-    compareLimitError: {
-      hu: "El√©rted a 3 akt√≠v link hat√°r√°t ‚Äî vonj vissza egyet el≈ëbb.",
-      en: "You've reached the 3 active-link limit ‚Äî revoke one first.",
-    },
-    compareConsentTitle: {
-      hu: "P√°ros √∂sszehasonl√≠t√°s",
-      en: "Pair comparison",
-    },
-    compareConsentBody: {
-      hu: "{name} megh√≠vott, hogy n√©zz√©tek meg egy√ºtt: hogyan m≈±k√∂dn√©tek p√°rban. Elfogad√°s ut√°n MINDKETTEN l√°tj√°tok a k√∂z√∂s dinamik√°t (ami mag√°t√≥l megy ¬∑ hol v√°rhat√≥ s√∫rl√≥d√°s ¬∑ mit √©rdemes el≈ëre megbesz√©lni).",
-      en: "{name} invited you to see how the two of you would work together. After accepting, BOTH of you see the shared dynamic (what comes easily ¬∑ where friction is likely ¬∑ what to agree on up front).",
-    },
-    compareConsentWhat: {
-      hu: "Amit a m√°sik f√©l l√°t: a t√≠pus-√°br√°d, az archet√≠pus-neved √©s a k√∂z√∂s dinamika sz√∂vege. A sz√°mszer≈± pontsz√°maid NEM jelennek meg neki. B√°rmikor visszavonhatod.",
-      en: "What the other side sees: your type figure, your archetype name and the shared dynamic text. Your numeric scores are NOT shown to them. You can revoke at any time.",
-    },
-    compareConsentAccept: { hu: "Elfogadom ‚Äî mutass√°tok", en: "Accept ‚Äî show us" },
-    compareConsentDecline: { hu: "Most nem", en: "Not now" },
-    compareNeedResultTitle: {
-      hu: "El≈ëbb a saj√°t tesztedet t√∂ltsd ki",
-      en: "Complete your own assessment first",
-    },
-    compareNeedResultBody: {
-      hu: "Az √∂sszehasonl√≠t√°s k√©t val√≥di profilb√≥l √©p√ºl ‚Äî a ti√©d m√©g hi√°nyzik. A kit√∂lt√©s ut√°n gyere vissza ugyanezzel a linkkel, √©s elfogadhatod a megh√≠v√°st.",
-      en: "The comparison is built from two real profiles ‚Äî yours is still missing. After completing it, return with this same link to accept the invite.",
-    },
-    compareNeedResultCta: { hu: "Kit√∂lt√∂m a tesztet", en: "Take the assessment" },
-    compareInvalidTitle: { hu: "Ez a link nem √©l", en: "This link is not active" },
-    compareInvalidBody: {
-      hu: "A megh√≠v√≥ lej√°rt, visszavont√°k, vagy m√°r valaki m√°s elfogadta. K√©rj √∫j linket a megh√≠v√≥dt√≥l.",
-      en: "The invite has expired, was revoked, or was already accepted by someone else. Ask your inviter for a fresh link.",
-    },
-    comparePairTitle: { hu: "Ti ketten", en: "The two of you" },
-    comparePairWith: { hu: "√ñsszehasonl√≠t√°s vele: {name}", en: "Comparing with: {name}" },
-    comparePairEyebrow: { hu: "K√©t val√≥di profil", en: "Two real profiles" },
-    comparePairHeading: { hu: "Te √©s {name}", en: "You and {name}" },
-    comparePairIntro: {
-      hu: "√çgy tal√°lkozik a m≈±k√∂d√©setek a k√∂z√∂s helyzetekben.",
-      en: "How your ways of working meet in shared situations.",
-    },
-    comparePairRealProfiles: {
-      hu: "K√©t val√≥di √∂n√©rt√©kel√©s",
-      en: "Two real self-assessments",
-    },
-    compareRelationLabel: { hu: "Kapcsolatotok", en: "Your relationship" },
-    compareRelationPeer: {
-      hu: "Egyenrang√∫ kapcsolat",
-      en: "Equal relationship",
-    },
-    compareRelationOtherLeads: {
-      hu: "{name} vezet vagy mentor√°l engem",
-      en: "{name} leads or mentors me",
-    },
-    compareRelationSelfLeadsNamed: {
-      hu: "√ân vezetem vagy mentor√°lom ≈ët ‚Äî {name}",
-      en: "I lead or mentor {name}",
-    },
-    compareCommonPicture: { hu: "K√∂z√∂s k√©p", en: "Shared picture" },
-    compareConnects: { hu: "Ami √∂sszek√∂t", en: "What connects you" },
-    compareAttention: { hu: "Amire figyeljetek", en: "What to watch" },
-    compareRelationSelfLeads: {
-      hu: "√ân vezetem vagy mentor√°lom ≈ët",
-      en: "I lead or mentor them",
-    },
-    // Egyetlen mark√°ns pont eset√©n (a val√≥di p√°rokn√°l ez ~30%) a k√©p r√∂vid.
-    // Ki kell mondani, k√ºl√∂nben hib√°nak l√°tszik a karakter-√∫thoz k√©pest ‚Äî
-    // a karakter-protot√≠pus ugyanis maxim√°lisan p√≥lusos, egy val√≥di ember nem.
-    comparePairThinNote: {
-      hu: "Kett≈ët√∂k profilja egyetlen mark√°ns ponton t√©r el, ez√©rt ez a k√©p r√∂vid. Egy karakter-szimul√°ci√≥ hosszabb lehet ‚Äî de a karakter kihegyezett, elm√©leti eset; ez itt r√≥latok sz√≥l.",
-      en: "Your profiles differ on a single pronounced point, so this picture is short. A character simulation can run longer ‚Äî but a character is a sharpened, hypothetical case; this one is about the two of you.",
-    },
-    comparePairSourceNote: {
-      hu: "K√©t kit√∂lt√∂tt √©s megosztott √∂n√©rt√©kel√©s √∂sszevet√©se ‚Äî pontosabb, mint a t√≠pusbecsl√©s, de tov√°bbra is √∂nbesz√°mol√≥n alapul. Hipot√©zis, nem √≠t√©let: besz√©lget√©sind√≠t√≥nak k√©sz√ºlt.",
-      en: "A comparison of two real, shared self-assessments ‚Äî more precise than a type estimate, yet still based on self-report. A hypothesis, not a verdict: built to start a conversation.",
-    },
-    // ‚îÄ‚îÄ Hat dimenzi√≥s √∂sszevet√©s-s√°v (2026-08-18) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    // A s√°v PONTSZ√ÅMOT NEM MUTAT: a partner nyers √©rt√©kei nem hagyj√°k el a
-    // szervert. A ‚Äûn√°la magasabb" dimenzi√≥nk√©nt egyetlen bit ‚Äî besz√©lget√©s-
-    // ind√≠t√°shoz el√©g, a profil visszafejt√©s√©hez nem.
-    //
-    // SZ√ìHASZN√ÅLAT: ‚Äûmagasabb", nem ‚Äûer≈ësebb". A 0‚Äì100 nem teljes√≠tm√©ny-sk√°la
-    // ‚Äî a magasabb √©rt√©k nem jobb (2026-08-18, valencia-mentes szint-
-    // besorol√°s). P√°r√∂sszevet√©sben ez k√ºl√∂n√∂sen √©lesen igaz: itt a sz√≥ k√©t
-    // EMBERT √°ll√≠tana sorrendbe, nem egy pontsz√°mot min≈ës√≠tene.
-    pairBandTitle: {
-      hu: "Mind a hat dimenzi√≥",
-      en: "All six dimensions",
-    },
-    pairBandSubtitle: {
-      hu: "Nem csak a legkifejezettebb von√°saitokat n√©zt√ºk meg ‚Äî itt mind a hat dimenzi√≥ szerepel, azok is, amelyekr≈ël nem sz√ºletett k√ºl√∂n bekezd√©s.",
-      en: "We didn't only look at your most pronounced traits ‚Äî all six dimensions are listed here, including the ones that didn't get their own paragraph.",
-    },
-    pairBandAligned: { hu: "Hasonl√≥", en: "Similar" },
-    pairBandSelfHigher: { hu: "N√°lad magasabb", en: "Higher with you" },
-    pairBandOtherHigher: { hu: "N√°la magasabb", en: "Higher with them" },
-    pairBandLegend: {
-      hu: "‚ÄûN√°la‚Äù = {name}",
-      en: "‚ÄúWith them‚Äù = {name}",
-    },
-    pairBandNote: {
-      hu: "A ‚Äûmagasabb‚Äù azt jelenti, hogy a k√ºl√∂nbs√©g meghaladja a m√©r√©s pontoss√°g√°t; a ‚Äûhasonl√≥‚Äù azt, hogy azon bel√ºl marad. Ez ir√°ny, nem rangsor: egyik √©rt√©k sem jobb a m√°sikn√°l. Pontsz√°mokat sz√°nd√©kosan nem mutatunk ‚Äî a m√°sik profilj√°nak sz√°mai nem hagyj√°k el a szervert.",
-      en: "‚ÄúHigher‚Äù means the difference exceeds the precision of the measurement; ‚Äúsimilar‚Äù means it stays within it. This is direction, not ranking: neither value is better than the other. We deliberately show no scores ‚Äî the other person's numbers never leave the server.",
-    },
-    // ‚îÄ‚îÄ Facet-attrib√∫ci√≥: ‚Äûhol fut az elt√©r√©s" ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    // Ez NEM √∂n√°ll√≥ √°ll√≠t√°s, hanem egy dimenzi√≥-szinten m√°r meg√°llap√≠tott
-    // elt√©r√©s hozz√°rendel√©se egyetlen alsk√°l√°hoz ‚Äî ez√©rt nem n√∂veli a
-    // hipot√©zis-tesztek sz√°m√°t. A sz√∂veg ir√°nytalan: az ir√°nyt a f√∂l√∂tte
-    // √°ll√≥ s√°v sora m√°r megadta, itt megism√©telni zaj volna.
-    pairDriverTitle: {
-      hu: "Hol jelenik meg az elt√©r√©s",
-      en: "Where the difference runs",
-    },
-    pairDriverBody: {
-      hu: "Ebben a dimenzi√≥ban csak ezen az alsk√°l√°n m√©rhet≈ë a k√ºl√∂nbs√©g; a t√∂bbin a m√©r√©s pontoss√°g√°n bel√ºl marad. Az elt√©r√©s teh√°t ehhez az alsk√°l√°hoz kapcsol√≥dik, nem a dimenzi√≥ eg√©sz√©hez.",
-      en: "Within this dimension, only this facet shows a measurable difference ‚Äî on the others it stays within the precision of the measurement. So the difference is concentrated here rather than spread across the dimension.",
-    },
-    // ‚îÄ‚îÄ Facet-n√ºansz: ‚Äûazonos c√≠mke, m√°s m≈±k√∂d√©s" ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    pairNuanceTitle: {
-      hu: "Azonos c√≠mke, m√°s m≈±k√∂d√©s",
-      en: "Same label, different engine",
-    },
-    pairNuanceSelf: {
-      hu: "Dimenzi√≥-szinten hasonl√≥an √°lltok, de ez az alsk√°la n√°lad hangs√∫lyosabb ‚Äî azonos c√≠mke m√∂g√∂tt elt√©r≈ë m≈±k√∂d√©s lehet.",
-      en: "At dimension level you sit close together, but this facet weighs more with you ‚Äî the same label can hide a different way of working.",
-    },
-    pairNuanceOther: {
-      hu: "Dimenzi√≥-szinten hasonl√≥an √°lltok, de ez az alsk√°la n√°la hangs√∫lyosabb ‚Äî azonos c√≠mke m√∂g√∂tt elt√©r≈ë m≈±k√∂d√©s lehet.",
-      en: "At dimension level you sit close together, but this facet weighs more with them ‚Äî the same label can hide a different way of working.",
-    },
-    pairNuanceNote: {
-      hu: "Ez a legbizonytalanabb r√©teg: egy alsk√°l√°t a r√∂vid k√©rd≈ë√≠v 2‚Äì3 √°ll√≠t√°ssal m√©r, ez√©rt csak a kifejezetten nagy elt√©r√©st jelezz√ºk, dimenzi√≥nk√©nt legfeljebb egyet. Besz√©lget√©sind√≠t√≥nak hasznos, √∂n√°ll√≥ k√∂vetkeztet√©sre kev√©sb√© alkalmas.",
-      en: "This is the least certain layer: the short questionnaire measures a facet with 2‚Äì3 items, so we only flag clearly large differences, and at most one per dimension. Good as a conversation starter, weak as a measurement.",
-    },
-    // A r√©s-alap√∫ sor gyeng√©bb bizony√≠t√©kon √°ll, mint a k√©toldali p√≥lusos ‚Äî
-    // ezt a fel√ºleten jel√∂lni kell (becs√ºlt vs m√©rt, CLAUDE.md).
-    pairBasisGap: {
-      hu: "M√©rhet≈ë k√ºl√∂nbs√©g",
-      en: "Measurable difference",
-    },
-    comparePairBack: {
-      hu: "Vissza a t√≠pus-v√°laszt√≥hoz",
-      en: "Back to the type picker",
-    },
-    comparePairBackToList: {
-      hu: "Vissza az √∂sszehasonl√≠t√°sokhoz",
-      en: "Back to comparisons",
-    },
-    comparePairBackContext: {
-      hu: "√ñsszehasonl√≠t√°sok",
-      en: "Comparisons",
-    },
-    // A3 ‚Äî archet√≠pus-k√°rtya k√©pk√©nt
-    shareCardDownload: {
-      hu: "K√°rtya let√∂lt√©se k√©pk√©nt",
-      en: "Download card as image",
-    },
-    shareCardCompact: { hu: "K√©p", en: "Image" },
-    shareCardWorking: { hu: "K√©p k√©sz√≠t√©se‚Ä¶", en: "Preparing image‚Ä¶" },
-    compareQrAlt: {
-      hu: "QR-k√≥d az √∂sszehasonl√≠t√≥ linkhez",
-      en: "QR code for the compare link",
-    },
-    compareQrHint: {
-      hu: "Mutasd meg neki ‚Äî a telefonj√°val beolvasva egyb≈ël az elfogad√≥ oldalra jut.",
-      en: "Show it to them ‚Äî scanning it takes them straight to the consent page.",
-    },
-    compareEmailPlaceholder: {
-      hu: "email@pelda.hu (nem k√∂telez≈ë)",
-      en: "email@example.com (optional)",
-    },
-    compareEmailOptionalNote: {
-      hu: "Ha megadsz egy c√≠met, a linket emailben is kik√ºldj√ºk.",
-      en: "If you add an address, we'll also send the link by email.",
-    },
-    compareEmailSent: {
-      hu: "A megh√≠v√≥t emailben elk√ºldt√ºk.",
-      en: "The invite was sent by email.",
-    },
-    compareEmailFailed: {
-      hu: "A link elk√©sz√ºlt, de az email k√ºld√©se nem siker√ºlt ‚Äî m√°sold ki √©s k√ºldd el k√©zzel.",
-      en: "The link was created, but the email failed to send ‚Äî copy it and share it manually.",
-    },
-    // √âletciklus-email be√°ll√≠t√°sok (/email-preferences)
-    emailPrefsEyebrow: { hu: "email-be√°ll√≠t√°sok", en: "email preferences" },
-    emailPrefsTitle: {
-      hu: "Milyen emaileket k√©rsz t≈ël√ºnk?",
-      en: "What emails would you like from us?",
-    },
-    emailPrefsBody: {
-      hu: "Ez a kapcsol√≥ a nem-tranzakcion√°lis, √©letciklus-jelleg≈± emaileket szab√°lyozza (pl. a kit√∂lt√©s ut√°ni reflexi√≥s √©rint√©s). A m≈±k√∂d√©shez k√∂t≈ëd≈ë emaileket ‚Äî megh√≠v√≥k, eredm√©ny-√©rtes√≠t≈ëk ‚Äî nem √©rinti.",
-      en: "This switch controls non-transactional, lifecycle emails (e.g. the post-assessment reflection touch). Operational emails ‚Äî invites, result notifications ‚Äî are unaffected.",
-    },
-    emailPrefsToggleLabel: {
-      hu: "√âletciklus-emailek enged√©lyez√©se",
-      en: "Allow lifecycle emails",
-    },
-    emailPrefsToggleHint: {
-      hu: "Kikapcsolva csak a m≈±k√∂d√©shez sz√ºks√©ges emaileket kapod.",
-      en: "When off, you only receive operational emails.",
-    },
-    emailPrefsSaved: { hu: "Elmentve.", en: "Saved." },
-    // H√≠rlev√©l-kapcsol√≥ ugyanezen az oldalon (2026-08-21). A fi√≥kos
-    // felhaszn√°l√≥nak nincs k√ºl√∂n feliratkoz√≥ ≈±rlap ‚Äî a lev√©lbe√°ll√≠t√°sai
-    // k√∂z√∂tt billenti √°t.
-    emailPrefsBlogLabel: {
-      hu: "√ârtes√≠t√©s √∫j blogbejegyz√©sr≈ël",
-      en: "Notify me about new articles",
-    },
-    emailPrefsBlogHint: {
-      hu: "K√ºl√∂n √©rtes√≠t√©s minden √∫j Trita-cikk megjelen√©sekor.",
-      en: "A separate notification whenever a new Trita article is published.",
-    },
-    emailPrefsDigestLabel: {
-      hu: "Id≈ëszaki, szerkesztett Trita-h√≠rlev√©l",
-      en: "Occasional curated Trita newsletter",
-    },
-    emailPrefsDigestHint: {
-      hu: "Ritka, v√°logatott √∂sszefoglal√≥ t√∂bb cikkel √©s gyakorlati gondolattal.",
-      en: "An occasional curated digest with several articles and practical notes.",
-    },
-    shareVisibleSummary: {
-      hu: "Aki megnyitja a linket, mind a hat dimenzi√≥dat l√°tja pontsz√°mmal √©s szem√©lyre szabott √©rtelmez√©ssel. Emellett megjelenik a munkast√≠lusod, a sz√°modra kedvez≈ë munkak√∂rnyezet jellemz√©se, a szerepilleszked√©sed √©s a becs√ºlt csapatszerepeid is. A megoszt√°st b√°rmikor visszavonhatod.",
-      en: "Whoever opens the link sees: all six of your dimensions with scores and personalized interpretation, your work-style narrative, your ideal environment and role fit, and your estimated team roles. You can revoke sharing at any time.",
-    },
-    radarNote: {
-      hu: "A hatsz√∂g az √∂n√©rt√©kel√©sed alapj√°n rajzolt profil ‚Äî min√©l kijjebb √©r egy pont, ann√°l magasabb az adott dimenzi√≥ √©rt√©ke. A bet≈±k fentr≈ël k√∂rben a hat szem√©lyis√©gdimenzi√≥t jel√∂lik: H ‚Äì Becs√ºletess√©g-Al√°zat ¬∑ E ‚Äì Emocionalit√°s ¬∑ X ‚Äì Extraverzi√≥ ¬∑ A ‚Äì Bar√°ts√°goss√°g ¬∑ C ‚Äì Lelkiismeretess√©g ¬∑ O ‚Äì Nyitotts√°g.",
-      en: "The hexagon is your self-assessment profile ‚Äî the further out a point, the stronger that dimension. Letters clockwise from top are the six personality dimensions: H ‚Äì Honesty-Humility ¬∑ E ‚Äì Emotionality ¬∑ X ‚Äì Extraversion ¬∑ A ‚Äì Agreeableness ¬∑ C ‚Äì Conscientiousness ¬∑ O ‚Äì Openness.",
-    },
-    // ≈êszinte megfogalmaz√°s (2026-08-11): a kiv√°laszt√≥ NEM a nyers minimumot
-    // veszi ‚Äî a stabilit√°st jelz≈ë (ford√≠tott Emocionalit√°s-) sk√°l√°k kimaradnak,
-    // √©s csak 60 pont alatti t√©tel ker√ºlhet be. A kor√°bbi ‚Äûa legalacsonyabbra
-    // √©rt√©kelted magad" ezt elhallgatta.
-    growthIntro: {
-      hu: "A fejl≈ëd√©si f√≥kuszba bevonhat√≥ ter√ºletek k√∂z√ºl ezeket √©rt√©kelted a legalacsonyabbra; a stabilit√°st jelz≈ë sk√°l√°kat itt nem vessz√ºk figyelembe. Ezek nem hib√°k, hanem lehets√©ges fejl≈ëd√©si ir√°nyok. V√°lassz egyet, √©s figyeld tudatosan egy h√©tig.",
-      en: "Among the questionnaire's growth-eligible areas, these are the ones you rated lowest ‚Äî stability-indicating scales excluded. Not flaws, but your fastest growth opportunities. Pick one and consciously observe it for a week.",
-    },
-    // H√°roml√©pcs≈ës fejl≈ëd√©si √≠v c√≠mk√©i ‚Äî a PDF-fel (pdf.growth*) egyez≈ë sz√∂vegek.
-    growthPlanBehavior: { hu: "Pr√≥b√°ld ki", en: "Try this" },
-    growthPlanReflection: { hu: "K√©rdezd meg magadt√≥l", en: "Ask yourself" },
-    growthPlanChallenge: { hu: "M√©rd le", en: "Measure it" },
-    observerCtaTitle: {
-      hu: "K√≠v√°ncsi vagy, m√°sok hogyan l√°tnak?",
-      en: "Curious how others see you?",
-    },
-    observerCtaBody: {
-      hu: "Az √∂nk√©p csak az egyik n√©z≈ëpont. K√©rj r√∂vid visszajelz√©st n√©h√°ny koll√©g√°t√≥l vagy ismer≈ëst≈ël ‚Äî az elt√©r√©sek hasznos besz√©lget√©si pontokat adhatnak.",
-      en: "Self-image is half the picture. Ask a few colleagues or friends for a short round of feedback ‚Äî the gap is the most interesting part.",
-    },
-    observerCtaButton: {
-      hu: "Visszajelz√©s k√©r√©se",
-      en: "Request feedback",
-    },
-    sectionIndustryFit: { hu: "Ipar√°gi illeszked√©s", en: "Industry fit" },
-    industryFitIntro: {
-      hu: "V√°lassz ipar√°gat vagy szakmak√∂rt ‚Äî megmutatjuk, a profilod alapj√°n mely szerepek illenek hozz√°d legink√°bb az adott ter√ºleten.",
-      en: "Pick an industry or field ‚Äî we'll show which roles fit your profile best in that area.",
-    },
-    industryFitEmpty: {
-      hu: "M√©g nem v√°lasztott√°l ipar√°gat ‚Äî kattints egy c√≠mk√©re fent.",
-      en: "No industry selected yet ‚Äî tap a chip above.",
-    },
-    industryFitDriver: { hu: "Ezt t√°mogatja:", en: "Supported by:" },
-    industryFitWatch: { hu: "√©rdemes figyelni:", en: "watch:" },
-    industryFitLeadToggle: { hu: "Vezet≈ëi szerepk√∂rben gondolkodom", en: "I'm considering a leadership role" },
-    industryFitPrefsTitle: { hu: "Mi fontos neked? ‚Äî opcion√°lis finomhangol√°s", en: "What matters to you? ‚Äî optional fine-tuning" },
-    industryFitPrefNeutral: { hu: "Mindegy", en: "Either" },
-    industryFitPrefPeople: { hu: "Adatokkal ‚Üî Emberekkel", en: "Data ‚Üî People" },
-    industryFitPrefPeopleLow: { hu: "Adatokkal", en: "With data" },
-    industryFitPrefPeopleHigh: { hu: "Emberekkel", en: "With people" },
-    industryFitPrefVarietyLow: { hu: "Stabilit√°s", en: "Stability" },
-    industryFitPrefVarietyHigh: { hu: "V√°ltozatoss√°g", en: "Variety" },
-    industryFitPrefAutonomyLow: { hu: "Csapatban", en: "In a team" },
-    industryFitPrefAutonomyHigh: { hu: "√ñn√°ll√≥an", en: "Independently" },
-    industryFitPrefCreationLow: { hu: "V√©grehajt√°s", en: "Execution" },
-    industryFitPrefCreationHigh: { hu: "Alkot√°s", en: "Creation" },
-    industryFitSourceMeasured: { hu: "k√ºls≈ë visszajelz√©ssel meger≈ës√≠tve", en: "confirmed with outside feedback" },
-    industryFitSourceSelf: { hu: "√∂n√©rt√©kel√©s alapj√°n", en: "based on self-assessment" },
-    industryFitPrefMatchLabel: { hu: "preferenci√°k illeszked√©se", en: "preference match" },
-    industryFitWhy: { hu: "Hogyan sz√°moltuk ki?", en: "Why this score?" },
-    industryFitExpectedHigh: { hu: "elv√°rt: magas", en: "expected: high" },
-    industryFitExpectedLow: { hu: "elv√°rt: alacsony", en: "expected: low" },
-    industryFitYourValue: { hu: "a te √©rt√©ked", en: "your value" },
-    industryFitBreakdownNote: {
-      hu: "A s√°v azt mutatja, mennyire van k√∂zel a te √©rt√©ked a szerepre jellemz≈ë tartom√°nyhoz. A t√©nyez≈ëket s√∫lyuk szerint rendezz√ºk.",
-      en: "The bar shows how much your value falls in the direction the role calls for (ordered by weight).",
-    },
-    industryFitFeedbackQ: { hu: "Dolgozt√°l m√°r hasonl√≥ szerepben? Tal√°l√≥nak √©rzed az eredm√©nyt?", en: "Worked in a similar role? Accurate?" },
-    industryFitFeedbackYes: { hu: "Tal√°l√≥", en: "Accurate" },
-    industryFitFeedbackNo: { hu: "Nem tal√°l√≥", en: "Not accurate" },
-    industryFitFeedbackThanks: { hu: "K√∂sz√∂nj√ºk a visszajelz√©st!", en: "Thanks for the feedback!" },
-    industryFitMissingTitle: { hu: "Nem tal√°lod a szakm√°dat?", en: "Can't find your profession?" },
-    industryFitMissingPlaceholder: { hu: "pl. √°llatorvos, pil√≥ta, s√©f‚Ä¶", en: "e.g. veterinarian, pilot, chef‚Ä¶" },
-    industryFitMissingSend: { hu: "Bek√ºld√∂m", en: "Send" },
-    industryFitMissingThanks: { hu: "K√∂sz√∂nj√ºk ‚Äî ezzel b≈ëv√≠tj√ºk a katal√≥gust.", en: "Thanks ‚Äî we'll use it to grow the catalog." },
-    // Karrier-motor v2 ‚Äî klaszteres eredm√©ny-n√©zet
-    cfTitle: { hu: "Ezek az ir√°nyok illenek hozz√°d", en: "These directions fit you" },
-    cfEmpty: {
-      hu: "Nincs el√©g adat az illeszked√©s kisz√°m√≠t√°s√°hoz ‚Äî t√∂ltsd ki a k√©rd≈ë√≠vet, √©s t√©rj vissza ide.",
-      en: "Not enough data to compute fit ‚Äî complete the questionnaire and come back.",
-    },
-    cfDemandLabel: { hu: "illeszked√©s a profilhoz", en: "profile fit" },
-    cfGeneral: {
-      hu: "√Åltal√°nos munkahelyi m≈±k√∂d√©s: {value}/100",
-      en: "General workplace base: {value}/100",
-    },
-    cfInterestMeasured: {
-      hu: "√ârdekl≈ëd√©s: m√©rt k√©rd≈ë√≠vb≈ël",
-      en: "Interests: from the completed inventory",
-    },
-    cfInterestTags: {
-      hu: "√ârdekl≈ëd√©s: a v√°lasztott c√≠mk√©kb≈ël",
-      en: "Interests: from your chosen tags",
-    },
-    cfInterestEstimated: {
-      hu: "√ârdekl≈ëd√©s: becsl√©s a szem√©lyis√©gprofilb√≥l",
-      en: "Interests: estimated from personality",
-    },
-    cfObserverWeight: {
-      hu: "K√ºls≈ë visszajelz√©s s√∫lya: {value}%",
-      en: "Outside feedback weight: {value}%",
-    },
-    cfLowDifferentiation: {
-      hu: "Az √©rdekl≈ëd√©sprofilod kiegyenl√≠tett: minden ter√ºlet nagyj√°b√≥l egyform√°n vonz. Ilyenkor az √©rdekl≈ëd√©s kev√©sb√© seg√≠t a tal√°latok rangsorol√°s√°ban, ez√©rt kisebb s√∫llyal sz√°m√≠t.",
-      en: "Your interest profile is flat: everything appeals about equally. Interests are then a weaker signal, so they count less here.",
-    },
-    cfSectionAtLevel: { hu: "Most el√©rhet≈ë ‚Äî a v√©gzetts√©gi szintednek megfelel≈ë", en: "Available now ‚Äî matching your education level" },
-    cfSectionAtLevelHint: {
-      hu: "Ezekhez megvan a sz√ºks√©ges v√©gzetts√©gi szinted. Ahol a szakir√°nyod is illik, azt k√ºl√∂n jel√∂lj√ºk ‚Äî a szint √∂nmag√°ban nem k√©pes√≠t minden munk√°ra.",
-      en: "Your education LEVEL covers these. Where your field of study also fits, we mark it ‚Äî level alone doesn't qualify you for everything.",
-    },
-    cfSectionTraining: { hu: "Tanul√°ssal, √°tk√©pz√©ssel el√©rhet≈ë", en: "Reachable with study or retraining" },
-    cfSectionTrainingHint: {
-      hu: "Ezekhez a szem√©lyis√©gprofilod illik, de a bel√©p√©shez m√©g k√©pz√©s vagy diploma kell.",
-      en: "Your profile fits these, but entry still needs training or a degree.",
-    },
-    cfSectionBelow: { hu: "A v√©gzetts√©ged alatti bel√©p√©si szint", en: "Below your education level" },
-    cfSectionBelowHint: {
-      hu: "El√©rhet≈ë, de a mostani v√©gzetts√©gedn√©l alacsonyabb bel√©p√©si k√ºsz√∂b≈± ‚Äî akkor relev√°ns, ha tudatosan v√°ltan√°l.",
-      en: "Open to you, but with a lower entry bar than your education ‚Äî relevant if you're deliberately changing tack.",
-    },
-    cfSectionShow: { hu: "Megn√©zem", en: "Show" },
-    cfStrategyScoped: {
-      hu: "A list√°t a bejel√∂lt ter√ºleteid alapj√°n sz≈±rj√ºk ({areas}). A f≈ë sorrendet az √©rdekl≈ëd√©si k√≥dod √©s a preferenci√°id, a csoportokon bel√ºli sorrendet pedig a szem√©lyis√©gprofilod adja. Ha egy tal√°lat valamelyik szempontt√≥l elt√©r, k√ºl√∂n jel√∂lj√ºk.",
-      en: "Your picked fields filter this list ({areas}). Your interest code and preferences set the order, personality orders within groups ‚Äî any divergence is flagged per item.",
-    },
-    // Scope-m√≥d, de gyenge (lapos/becs√ºlt) vagy hi√°nyz√≥ √©rdekl≈ëd√©s-jellel: a
-    // sorrendet ilyenkor NEM az √©rdekl≈ëd√©s vezeti (motor forr√°s- √©s
-    // differenci√°lts√°g-kapu) ‚Äî a sz√∂veg nem √°ll√≠that m√°st, mint ami rendez.
-    cfStrategyScopedComposite: {
-      hu: "A list√°t a bejel√∂lt ter√ºleteid alapj√°n sz≈±rj√ºk ({areas}). A sorrendet a megadott preferenci√°id √©s a szem√©lyis√©gprofilodhoz val√≥ illeszked√©s adja. Ha az √©rdekl≈ëd√©si jel gyenge vagy hi√°nyzik, csak kis s√∫llyal sz√°m√≠tjuk be.",
-      en: "Your picked fields filter this list ({areas}). Your stated preferences and personality fit set the order ‚Äî a weak or missing interest signal contributes at low weight only.",
-    },
-    cfScopeWidened: {
-      hu: "A bejel√∂lt ter√ºleteken kev√©s tal√°lat volt, ez√©rt a teljes katal√≥gusb√≥l mutatunk ‚Äî a bejel√∂lt ter√ºleteid kiemelve.",
-      en: "Your picked fields had too few matches, so we show the full catalog with your picks highlighted.",
-    },
-    cfScopeToggleOff: { hu: "Sz≈±r√©s n√©lk√ºl is megn√©zem", en: "Show without the filter" },
-    cfScopeToggleOn: { hu: "Vissza a sz≈±rt list√°hoz", en: "Back to the filtered list" },
-    cfIntersectBadge: {
-      hu: "t√∂bb bejel√∂lt ter√ºleted metszete",
-      en: "intersection of your picked fields",
-    },
-    cfInterestDiverges: {
-      hu: "elt√©r az √©rdekl≈ëd√©si k√≥dodt√≥l ({value}%)",
-      en: "diverges from your interest code ({value}%)",
-    },
-    cfPersonalityTension: {
-      hu: "a szem√©lyis√©geddel kev√©sb√© harmoniz√°l",
-      en: "less in harmony with your personality",
-    },
-    cfStrategyInterestLed: {
-      hu: "A list√°t az √©rdekl≈ëd√©sed √©s a munkak√∂rnyezeti preferenci√°id alapj√°n √°ll√≠tjuk √∂ssze ‚Äî ezek mutatj√°k legink√°bb, mely munk√°k tarthatj√°k fenn hosszabb t√°von az √©rdekl≈ëd√©sedet. Ezen bel√ºl a szem√©lyis√©gprofilod alapj√°n rendezz√ºk a tal√°latokat aszerint, melyik ig√©nyli t≈ëled a legkevesebb alkalmazkod√°st.",
-      en: "Your interests and work-setting preferences select the list ‚Äî they predict best what you'll stay with. Within that, your personality profile sets the order: where you'd have to work against yourself the least.",
-    },
-    cfStrategyComposite: {
-      hu: "A sorrendet a szem√©lyis√©gprofilod, az √©rdekl≈ëd√©sed √©s a preferenci√°id egy√ºtt adj√°k. Ha kit√∂lt√∂d az √©rdekl≈ëd√©si k√©rd≈ë√≠vet, a rendszer els≈ësorban az alapj√°n v√°logatja √∂ssze a list√°t, a szem√©lyis√©gprofilod pedig a tal√°latok sorrendj√©t finom√≠tja.",
-      en: "Personality, interests and preferences jointly set the order here. Complete the interest inventory and your interests will select the list, with personality setting the order within it.",
-    },
-    cfWhyInList: {
-      hu: "Az√©rt ker√ºlt a list√°ra, mert az √©rdekl≈ëd√©sed √©s a preferenci√°id ebbe az ir√°nyba mutatnak ({value}%).",
-      en: "It's on the list because your interests and preferences point here ({value}%).",
-    },
-    cfWhyThisOrder: {
-      // A {dim}-et a h√≠v√≥ adja √°t k√©sz n√©vel≈ëvel (withHuArticle) ‚Äî a
-      // sablonban ez√©rt nincs ‚Äûa(z)".
-      hu: "A tal√°lat hely√©t ez a dimenzi√≥ befoly√°solja legink√°bb: {dim}. A szerepre jellemz≈ë √©rt√©k {target} k√∂r√ºl van, a ti√©d pedig {user}.",
-      en: "It sits here in the order because the strongest component is {dim}: the role's typical range is around {target}, yours is {user}.",
-    },
-    cfYourHolland: { hu: "Az √©rdekl≈ëd√©si k√≥dod:", en: "Your interest code:" },
-    cfHollandWeight: {
-      hu: "ekkora s√∫llyal sz√°m√≠t a rangsorban: {value}%",
-      en: "weight in the ranking: {value}%",
-    },
-    cfHollandR: { hu: "R ‚Äî gyakorlati, t√°rgyakkal, g√©ppel", en: "R ‚Äî practical, hands-on" },
-    cfHollandI: { hu: "I ‚Äî kutat√≥, elemz≈ë", en: "I ‚Äî investigative, analytical" },
-    cfHollandA: { hu: "A ‚Äî alkot√≥, kifejez≈ë", en: "A ‚Äî artistic, expressive" },
-    cfHollandS: { hu: "S ‚Äî seg√≠t≈ë, emberekkel", en: "S ‚Äî social, helping" },
-    cfHollandE: { hu: "E ‚Äî v√°llalkoz√≥, meggy≈ëz≈ë", en: "E ‚Äî enterprising, persuasive" },
-    cfHollandC: { hu: "C ‚Äî rendszerez≈ë, szab√°lyk√∂vet≈ë", en: "C ‚Äî conventional, organising" },
-    cfIndustryPick: { hu: "a bejel√∂lt ter√ºleted", en: "your picked field" },
-    cfIndustryMismatch: {
-      hu: "A bejel√∂lt ter√ºleteid nem szerepelnek a legjobb tal√°latok k√∂z√∂tt: a kit√∂lt√∂tt √©rdekl≈ëd√©si k√©rd≈ë√≠ved m√°s ir√°nyba mutat. A bejel√∂l√©s kiemel egy ter√ºletet, de nem √≠rja fel√ºl a m√©rt eredm√©nyt.",
-      en: "Your picked fields aren't among the top matches: your COMPLETED interest inventory points elsewhere. A pick highlights, it doesn't override the measurement.",
-    },
-    cfClusterFirst: { hu: "A legjobban illeszked≈ë csoportod", en: "Your strongest group" },
-    cfClusterNth: { hu: "{n}. csoport", en: "Group {n}" },
-    cfClusterTie: {
-      hu: "{count} ir√°ny ‚Äî a k√ºl√∂nbs√©g a m√©r√©si hib√°n bel√ºl, teh√°t nincs sorrend",
-      en: "{count} directions ‚Äî the difference is within measurement error, so there is no ranking",
-    },
-    cfClusterMore: {
-      hu: "Tov√°bbi {count} ugyanilyen er≈ës ir√°ny",
-      en: "{count} more equally strong directions",
-    },
-    cfClusterOrder: {
-      hu: "A csoporton bel√ºl nincs sorrend ‚Äî el≈ëbb azok j√∂nnek, amikhez a v√©gzetts√©ged m√°r el√©g.",
-      en: "There is no ranking inside a group ‚Äî the ones your education already covers come first.",
-    },
-    cfWhy: { hu: "Hogyan sz√°moltuk ki?", en: "Why this score?" },
-    cfTargetHint: { hu: "szerep: {target} ¬∑ te: {user}", en: "target {target} ¬∑ you {user}" },
-    // Sk√°la-sz√©l jelz√©s: a nyers sk√°l√°ra visszatolt c√©l 0/100-ra szorult, a
-    // mutatott p√°r t√°vols√°ga ez√©rt kisebb a pontozottn√°l (engine targetAtEdge).
-    cfTargetAtEdge: {
-      hu: "a szerepre jellemz≈ë √©rt√©k a sk√°la sz√©l√©n t√∫l lenne ‚Äî a t√©nyleges elt√©r√©s nagyobb a megjelen√≠tettn√©l",
-      en: "target clipped at the scale edge ‚Äî the gap is larger than shown",
-    },
-    cfPositionIn: { hu: "s√°von bel√ºl", en: "in range" },
-    cfPositionOver: { hu: "c√©l f√∂l√∂tt", en: "above target" },
-    cfPositionUnder: { hu: "c√©l alatt", en: "below target" },
-    cfHFloorNote: {
-      hu: "Ebben a szerepben jellemz≈ë a saj√°t √©rdekek hat√°rozott k√©pviselete. A magas becs√ºletess√©g-al√°zatot itt nem tekintj√ºk h√°tr√°nynak ‚Äî hosszabb t√°von bizalmi el≈ënyt jelenthet, m√©g ha az indul√°s lassabb is.",
-      en: "Assertive self-promotion is typical in this role. High honesty-humility is NEVER counted against you here ‚Äî it is a long-term trust advantage, even if the start is slower.",
-    },
-    cfAboveTargetNote: {
-      hu: "Egy vagy t√∂bb von√°sod a szerepre jellemz≈ë tartom√°ny f√∂l√∂tt van. Ez nem hiba: √°ltal√°ban azt jelenti, hogy a szerep nem haszn√°lja ki teljesen a m≈±k√∂d√©sednek ezt az oldal√°t.",
-      en: "One or more traits sit ABOVE the role's typical range. That isn't a flaw: it usually means part of your strength stays unused.",
-    },
-    cfInterestMatch: { hu: "√©rdekl≈ëd√©s {value}%", en: "interests {value}%" },
-    cfPreferenceMatch: { hu: "munkak√∂rnyezet {value}%", en: "work setting {value}%" },
-    cfEntryOpen: { hu: "nincs form√°lis k√∂vetelm√©ny", en: "no formal requirement" },
-    cfEntryCourse: { hu: "tanfolyam / r√∂vid k√©pz√©s", en: "course / short training" },
-    cfEntryVocational: { hu: "szakma / technikus", en: "vocational / technician" },
-    cfEntryHigher: { hu: "fels≈ëfok√∫ diploma", en: "higher education degree" },
-    cfEntrySpecialized: { hu: "szakir√°ny√∫ diploma + szakvizsga", en: "specialised degree + licence" },
-    cfAccessFieldMatch: {
-      hu: "a szakir√°nyod illik hozz√°",
-      en: "your field of study fits",
-    },
-    cfAccessLevelOnly: {
-      hu: "a szinted megvan, de m√°s szakir√°ny",
-      en: "your level is enough, but a different field",
-    },
-    cfAccessLicence: {
-      hu: "szab√°lyozott szakma ‚Äî szakvizsga / kamarai tags√°g kell",
-      en: "regulated profession ‚Äî licence or chamber membership required",
-    },
-    cfAccessLicenceReady: {
-      hu: "a v√©gzetts√©ged megfelel, de a szakma enged√©ly- / kamarai k√∂telezetts√©ggel j√°r",
-      en: "your education fits, but this profession carries a licence / chamber obligation",
-    },
-    cfAccessTraining: {
-      hu: "k√©pz√©s kell hozz√°",
-      en: "needs training",
-    },
-    cfGapReady: { hu: "a szinted megvan", en: "your level is enough" },
-    cfGapCourse: { hu: "tanfolyam kell hozz√°", en: "needs a course" },
-    cfGapVocational: { hu: "szakk√©pz√©s kell hozz√°", en: "needs vocational training" },
-    cfGapDegree: { hu: "diploma kell hozz√°", en: "needs a degree" },
-    cfGapLicence: { hu: "diploma + szakvizsga kell hozz√°", en: "needs a degree + licence" },
-    cfCatalogNote: {
-      hu: "{count} foglalkoz√°sra sz√°moltuk (katal√≥gus-verzi√≥: {version}). Forr√°s: O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0) adataib√≥l sz√°rmaztatva, magyar megnevez√©sek √©s le√≠r√°sok: ESCO (Eur√≥pai Bizotts√°g), FEOR-08 besorol√°s: KSH.",
-      en: "Computed across {count} occupations (catalog version {version}). Derived from the O*NET 30.3 Database (U.S. Department of Labor/ETA, CC BY 4.0); Hungarian labels and descriptions from ESCO (European Commission); FEOR-08 codes from KSH.",
-    },
-    cfCurrentRoleTitle: { hu: "Mi a mostani munk√°d?", en: "What do you do now?" },
-    cfCurrentRoleBody: {
-      hu: "A v√°lasz nem k√∂telez≈ë, √©s nem befoly√°solja a rangsorodat. Az√©rt k√©rdezz√ºk, hogy ellen≈ërizni tudjuk a modellt: ha j√≥l m√©r, a jelenlegi szerepednek jellemz≈ëen el≈ëkel≈ëbb helyre kell ker√ºlnie a saj√°t list√°don.",
-      en: "Optional, and it does NOT affect your ranking. We ask so we can check the model: if it measures anything real, your current role should sit systematically higher in your own list.",
-    },
-    cfCurrentRolePlaceholder: { hu: "Kezdj el g√©pelni ‚Äî pl. √°pol√≥, fejleszt≈ë‚Ä¶", en: "Start typing ‚Äî e.g. nurse, developer‚Ä¶" },
-    cfCurrentRoleSearching: { hu: "Keres√©s‚Ä¶", en: "Searching‚Ä¶" },
-    cfCurrentRoleClear: { hu: "T√∂rl√©s", en: "Clear" },
-    cfReset: { hu: "Kezd√©s el√∂lr≈ël", en: "Start over" },
-    cfResetConfirm: {
-      hu: "Biztosan t√∂rl√∂d az √∂sszes eddigi v√°laszodat? A h√°tt√©rk√©rd√©sekre √©s a munkak√∂rnyezeti preferenci√°kra adott v√°laszaid, valamint a kit√∂lt√∂tt √©rdekl≈ëd√©si k√©rd≈ë√≠v (Holland-k√≥d) eredm√©nye is t√∂rl≈ëdnek. A szem√©lyis√©geredm√©nyed megmarad, √©s abb√≥l kiindulva kezdhetsz √∫jra.",
-      en: "Delete all your answers so far? Background questions, work-setting preferences and your completed interest inventory (Holland code) are all removed. Your personality result stays ‚Äî you start fresh with that.",
-    },
-    cfResetYes: { hu: "Igen, t√∂rl√∂m", en: "Yes, delete" },
-    cfResetBusy: { hu: "T√∂rl√©s‚Ä¶", en: "Deleting‚Ä¶" },
-    cfResetCancel: { hu: "M√©gse", en: "Cancel" },
-    cfLoading: { hu: "Sz√°moljuk az illeszked√©st‚Ä¶", en: "Computing your fit‚Ä¶" },
-    cfError: {
-      hu: "Nem siker√ºlt kisz√°molni az illeszked√©st. Pr√≥b√°ld √∫jra egy pillanat m√∫lva.",
-      en: "We couldn't compute the fit. Try again in a moment.",
-    },
-    cfRetry: { hu: "√öjrapr√≥b√°lom", en: "Try again" },
-    cfGrowthTitle: { hu: "Mit √©rdemes fejleszteni ezekhez az ir√°nyokhoz", en: "What to develop for these directions" },
-    cfGrowthIntro: {
-      hu: "A sz√°modra legjobban illeszked≈ë csoportok szerepeiben ezek az elt√©r√©sek fordulnak el≈ë a leggyakrabban. Az elt√©r√©s ir√°nya is sz√°m√≠t, mert m√°s fejleszt√©si l√©p√©st k√≠v√°n, ha a tipikus tartom√°ny alatt vagy f√∂l√∂tt helyezkedsz el.",
-      en: "These gaps come up most often in your top groups ‚Äî with their direction, because being below or above the typical range calls for different things.",
-    },
-    cfGrowthNoneTitle: {
-      hu: "Nincs jelent≈ës elt√©r√©s a top ir√°nyaidn√°l",
-      en: "No significant gaps in your top directions",
-    },
-    cfGrowthNoneBody: {
-      hu: "A sz√°modra legjobban illeszked≈ë csoport szerepeiben minden m√©rt von√°sod a tipikus tartom√°nyon bel√ºl van. Ilyenkor nem a fejleszt√©s a k√∂vetkez≈ë l√©p√©s, hanem a k√©p pontos√≠t√°sa: k√ºls≈ë visszajelz√©s vagy a kit√∂lt√∂tt √©rdekl≈ëd√©si k√©rd≈ë√≠v cs√∂kkentheti a bizonytalans√°got.",
-      en: "In your strongest group, every measured trait falls inside the typical range. The next step isn't development but sharpening the picture: outside feedback or the measured interest inventory narrows the uncertainty.",
-    },
-    cfGapUnder: { hu: "a tipikus s√°v alatt", en: "below the typical range" },
-    cfGapOver: { hu: "a tipikus s√°v f√∂l√∂tt", en: "above the typical range" },
-    cfGapRoles: { hu: "{count} szerepn√©l", en: "in {count} roles" },
-    // Karrier-ir√°nyt≈± wizard
-    ccTitle: { hu: "Karrier-ir√°nyt≈±", en: "Career compass" },
-    ccStart: { hu: "Kezdj√ºk", en: "Let's start" },
-    // Ind√≠t√≥ (kit√∂lt√©s el≈ëtti) n√©zet
-    // Profil n√©lk√ºli bel√©p≈ë (a karrier k√ºl√∂n oldal√°n): a gomb a kit√∂lt√©sre visz.
-    ccNeedsProfileCta: {
-      hu: "Fejezd be a szem√©lyis√©gprofilod",
-      en: "Finish your personality profile",
-    },
-    ccNeedsProfileNote: {
-      hu: "Az ir√°nyt≈± a szem√©lyis√©gprofilodb√≥l dolgozik ‚Äî ha ez megvan, itt folytathatod. A kit√∂lt√©s k√∂r√ºlbel√ºl kilenc percet vesz ig√©nybe.",
-      en: "The compass works from your personality profile ‚Äî once it's done, you can continue here. It takes about 9 minutes.",
-    },
-    // Szekci√≥-√°tvezet≈ë CTA-k az eredm√©ny-oldal alj√°n (2026-07-31): a karrier
-    // √©s a munkast√≠lus √∂n√°ll√≥ oldal lett, innen vezet√ºnk √°t r√°juk.
-    ctaCareerEyebrow: { hu: "Karrier-ir√°nyt≈±", en: "Career compass" },
-    ctaCareerTitle: {
-      hu: "Milyen munka illik a profilodhoz?",
-      en: "What kind of work fits your profile?",
-    },
-    ctaCareerBody: {
-      hu: "N√©h√°ny k√©rd√©s, √©s megn√©zz√ºk, milyen ir√°nyok illeszkednek a szem√©lyis√©gprofilodhoz ‚Äî szerept√≠pusok √©s k√∂rnyezetek, nem k√©sz v√°laszok.",
-      en: "A few questions and we look at which directions fit your personality profile ‚Äî role types and settings, not ready-made answers.",
-    },
-    ctaCareerButton: { hu: "Ir√°ny az ir√°nyt≈±", en: "Open the compass" },
-    ctaInteractionEyebrow: { hu: "K√©tszem√©lyes dinamika", en: "One-on-one dynamics" },
-    ctaInteractionTitle: {
-      hu: "Hogyan m≈±k√∂dn√©tek egy√ºtt?",
-      en: "How would you work together?",
-    },
-    ctaInteractionBody: {
-      hu: "V√°lassz egy m√°sik profilt, √©s n√©zd meg, hol m≈±k√∂dn√©tek k√∂nnyen egy√ºtt, hol alakulhatna ki s√∫rl√≥d√°s, √©s mi seg√≠thet ezekben a helyzetekben.",
-      en: "Pick another profile and we'll look at where you'd click, where you'd grate ‚Äî and what helps fastest.",
-    },
-    ctaInteractionButton: { hu: "Dinamika megn√©z√©se", en: "See the dynamics" },
-    ccIntroTitle: { hu: "Merre tov√°bb? N√©zz√ºk meg egy√ºtt.", en: "Where next? Let's look at it together." },
-    ccIntroLead: {
-      hu: "A szem√©lyis√©gprofilod √©s n√©h√°ny r√∂vid k√©rd√©s alapj√°n a rendszer megbecs√ºli, mely szakmai ir√°nyok illeszkedhetnek a term√©szetes m≈±k√∂d√©sedhez. Ez nem j√≥slat √©s nem min≈ës√≠t√©s, hanem kiindul√≥pont a gondolkod√°shoz.",
-      en: "Using your personality profile and a few short questions, the system attempts to map which career directions align with how you naturally operate. Not a prediction and not a verdict ‚Äî a starting point for thinking.",
-    },
-    ccIntroHowLabel: { hu: "Hogyan √°ll √∂ssze", en: "How it comes together" },
-    ccIntroStep1Title: { hu: "A profilod", en: "Your profile" },
-    ccIntroStep1Body: {
-      hu: "A kit√∂lt√∂tt k√©rd≈ë√≠vb≈ël sz√°rmaz√≥ szem√©lyis√©gdimenzi√≥k √©s alsk√°l√°k ‚Äî ez az alap.",
-      en: "The personality dimensions and facets from the questionnaire you completed ‚Äî that's the base.",
-    },
-    ccIntroStep2Title: { hu: "A v√°laszaid", en: "Your answers" },
-    ccIntroStep2Body: {
-      hu: "V√©gzetts√©g, √©rdekl≈ëd√©s, munkak√∂rnyezet √©s vezet≈ëi c√©lok ‚Äî n√©h√°ny kattint√°ssal megadhatod ≈ëket.",
-      en: "Education, interests, work environment, leadership ambition ‚Äî a few clicks.",
-    },
-    ccIntroStep3Title: { hu: "Az ir√°nyok", en: "The directions" },
-    ccIntroStep3Body: {
-      hu: "Szerepenk√©nti illeszked√©s, megb√≠zhat√≥s√°gi s√°vval, indokl√°ssal √©s fejl≈ëd√©si tervvel.",
-      en: "Role-level fit with a confidence band, reasoning and a development plan.",
-    },
-    ccIntroCaveatTitle: { hu: "Ez nem k≈ëbe v√©sett", en: "This isn't set in stone" },
-    ccIntroCaveat1: {
-      hu: "Becsl√©s, nem √≠t√©let ‚Äî az illeszked√©s ir√°nyt mutat, nem az alkalmass√°godat vagy a tehets√©ged fels≈ë hat√°r√°t m√©ri.",
-      en: "An estimate, not a verdict ‚Äî fit points in a direction; it doesn't measure suitability or a talent ceiling.",
-    },
-    ccIntroCaveat2: {
-      hu: "Az alacsony illeszked√©s nem tilalom: azt jelzi, hol kell majd t√∂bb tudatos energia.",
-      en: "A low fit isn't a ban: it flags where you'll need more deliberate energy.",
-    },
-    ccIntroCaveat3: {
-      hu: "A szem√©lyis√©g csak egy t√©nyez≈ë ‚Äî a tapasztalat, a k√©szs√©gek, a k√∂r√ºlm√©nyek √©s a motiv√°ci√≥ legal√°bb annyit sz√°m√≠tanak, ezeket a rendszer nem l√°tja.",
-      en: "Personality is only one factor ‚Äî experience, skills, circumstances and motivation matter at least as much, and the system can't see those.",
-    },
-    ccIntroCaveat4: {
-      hu: "A v√°laszaidat b√°rmikor m√≥dos√≠thatod, a k√©pet k√ºls≈ë visszajelz√©ssel pontos√≠thatod.",
-      en: "You can change your answers at any time and sharpen the picture with outside feedback.",
-    },
-    ccIntroRiasec: {
-      hu: "Ezut√°n lehet≈ës√©ged van kit√∂lteni egy {count} k√©rd√©ses √©rdekl≈ëd√©si tesztet (Holland-k√≥d). √çgy becsl√©s helyett m√©rt √©rdekl≈ëd√©si profil alapj√°n k√©sz√ºl a rangsor. Ez pontosabb sorrendet ad, mik√∂zben a szem√©lyis√©gprofilod v√°ltozatlan marad.",
-      en: "Afterwards you can optionally take a {count}-question interest inventory (Holland code): a measured interest then drives the ranking instead of an estimate ‚Äî sharper ordering, same profile.",
-    },
-    ccIntroRiasecDone: {
-      hu: "Az √©rdekl≈ëd√©si tesztet (Holland-k√≥d) m√°r kit√∂lt√∂tted ‚Äî a m√©rt √©rdekl≈ëd√©si k√≥dod alapj√°n rendezz√ºk az ir√°nyokat.",
-      en: "You've already taken the interest inventory (Holland code) ‚Äî your measured code drives the ranking.",
-    },
-    ccIntroMetaQuestions: { hu: "{count} r√∂vid k√©rd√©s", en: "{count} short questions" },
-    ccIntroMetaTime: { hu: "k√∂r√ºlbel√ºl 2 perc", en: "about 2 minutes" },
-    ccIntroMetaSaved: { hu: "a v√°laszaid ment≈ëdnek", en: "your answers are saved" },
-    ccIntroMetaNoWrong: { hu: "nincs j√≥ vagy rossz v√°lasz", en: "no right or wrong answers" },
-    ccStepStatus: { hu: "Mi jellemez most legink√°bb?", en: "What describes you best right now?" },
-    ccStatusStudying: { hu: "Tanulok", en: "I'm studying" },
-    ccStatusWorking: { hu: "Dolgozom", en: "I'm working" },
-    ccStatusSwitching: { hu: "V√°lt√°son gondolkodom", en: "Considering a change" },
-    ccStepEdu: { hu: "Mi a legmagasabb v√©gzetts√©ged √©s ter√ºlete?", en: "Your highest education and its field?" },
-    ccEduPrimary: { hu: "√Åltal√°nos iskola", en: "Primary" },
-    ccEduSecondary: { hu: "√âretts√©gi", en: "Secondary" },
-    ccEduVocational: { hu: "Szakma / technikus", en: "Vocational" },
-    ccEduHigher: { hu: "Fels≈ëfok√∫", en: "Higher education" },
-    ccEduSpecialized: {
-      hu: "Szakvizsga / kamarai tags√°g",
-      en: "Licence / chamber membership",
-    },
-    ccFieldLabel: { hu: "Ter√ºlet", en: "Field" },
-    ccFieldTech: { hu: "M≈±szaki / IT", en: "Tech / IT" },
-    ccFieldEconomics: { hu: "Gazdas√°gi", en: "Economics / business" },
-    ccFieldHealth: { hu: "Eg√©szs√©g√ºgyi", en: "Health" },
-    ccFieldHumanities: { hu: "B√∂lcs√©sz / t√°rsadalomtudom√°ny", en: "Humanities / social sciences" },
-    ccFieldScience: { hu: "Term√©szettudom√°ny", en: "Natural sciences" },
-    ccFieldLegal: { hu: "Jogi", en: "Legal" },
-    ccFieldArts: { hu: "M≈±v√©szeti", en: "Arts" },
-    ccFieldPedagogy: { hu: "Pedag√≥giai", en: "Pedagogy" },
-    ccFieldTrade: { hu: "Szakmunka / ipari", en: "Trade / industrial" },
-    ccFieldNone: { hu: "Egy√©b / nincs", en: "Other / none" },
-    ccStepAge: { hu: "Melyik koroszt√°lyba tartozol? (opcion√°lis)", en: "Your age band? (optional)" },
-    ccAgeSkip: { hu: "Ink√°bb kihagyom", en: "Skip" },
-    ccStepCurrent: { hu: "Melyik ter√ºleten dolgozol most?", en: "Which field do you work in now?" },
-    ccCurrentNone: { hu: "Egyik sem / egy√©b", en: "None of these / other" },
-    ccStepInterests: { hu: "Mi √©rdekel? V√°lassz legfeljebb h√°rmat.", en: "What interests you? Pick up to three." },
-    ccInterestsOpen: { hu: "Nyitott vagyok b√°rmire", en: "I'm open to anything" },
-    ccStepVeto: {
-      hu: "Mivel NEM szeretn√©l foglalkozni? (kihagyhat√≥)",
-      en: "What would you NOT want to do? (optional)",
-    },
-    ccWhyVeto: {
-      hu: "Amit itt bejel√∂lsz, azt biztosan nem aj√°nljuk ‚Äî az ilyen szerepek teljesen kimaradnak a list√°b√≥l. Legfeljebb 5-√∂t jel√∂lj, hogy maradjon mozg√°st√©r.",
-      en: "Anything you mark here is a hard no ‚Äî such roles are removed from the list entirely. Pick at most 5 so there's still room to explore.",
-    },
-    ccVetoChildren: { hu: "Gyerekekkel foglalkoz√°s", en: "Working with children" },
-    ccVetoCare: { hu: "Betegek, id≈ësek gondoz√°sa", en: "Caring for patients or the elderly" },
-    ccVetoBlood: { hu: "V√©r, fert≈ëz√©svesz√©ly", en: "Blood or infection exposure" },
-    ccVetoCustomers: { hu: "Sok √ºgyf√©l, idegen emberek", en: "Constant customer contact" },
-    ccVetoSales: { hu: "√ârt√©kes√≠t√©si nyom√°s", en: "Sales pressure" },
-    ccVetoConflict: { hu: "Konfliktusos helyzetek", en: "Conflict-heavy situations" },
-    ccVetoShift: { hu: "√âjszaka, szab√°lytalan munkarend", en: "Nights or irregular hours" },
-    ccVetoPhysical: { hu: "Neh√©z fizikai munka", en: "Heavy physical work" },
-    ccVetoOutdoor: { hu: "K√ºlt√©ri munka minden id≈ëben", en: "Outdoor work in all weather" },
-    ccVetoScreen: { hu: "Eg√©sz napos k√©perny≈ës √ºl≈ëmunka", en: "All-day screen-bound desk work" },
-    ccVetoDriving: { hu: "Vezet√©s, √∫ton lev√©s", en: "Driving or being on the road" },
-    ccVetoHeights: { hu: "Magasban v√©gzett munka", en: "Working at heights" },
-    ccVetoHazard: { hu: "Vesz√©lyes anyagok, g√©pek", en: "Hazardous materials or machinery" },
-    ccVetoMonotony: { hu: "Monoton, ism√©tl≈ëd≈ë feladatok", en: "Monotonous, repetitive tasks" },
-    ccVetoAnimals: { hu: "√Ållatokkal foglalkoz√°s", en: "Working with animals" },
-    ccVetoCount: {
-      hu: "{count}/5 kiz√°r√°s bejel√∂lve ‚Äî √ºresen is tov√°bbl√©phetsz.",
-      en: "{count}/5 exclusions selected ‚Äî you can also continue with none.",
-    },
-    cfVetoActive: {
-      hu: "Kiz√°rtad: {list} ‚Äî emiatt {count} szerep nem jelenik meg. A kiz√°r√°sokat a V√°laszok m√≥dos√≠t√°sa alatt tudod v√°ltoztatni.",
-      en: "You excluded: {list} ‚Äî {count} roles are hidden because of this. Change your exclusions under Edit answers.",
-    },
-    ccStepRiasec: {
-      hu: "Kit√∂lt√∂d az √©rdekl≈ëd√©si k√©rd≈ë√≠vet?",
-      en: "Want to take the interest inventory?",
-    },
-    ccWhyRiasec: {
-      hu: "Ez rendezi √°t a list√°t: kit√∂lt√©s ut√°n els≈ësorban a m√©rt √©rdekl≈ëd√©sed alapj√°n v√°logatjuk a szakm√°kat, a szem√©lyis√©gprofilod pedig a sorrendet finom√≠tja. Ha kihagyod, a szem√©lyis√©gedb≈ël becs√ºlj√ºk az √©rdekl≈ëd√©sedet, ami gyeng√©bb jel.",
-      en: "This reshapes the list: once completed, your INTERESTS select the occupations and personality only sets the order. If you skip it, we estimate interests from personality ‚Äî a weaker signal.",
-    },
-    ccRiasecStart: { hu: "Kit√∂lt√∂m most", en: "Take it now" },
-    ccRiasecStartSub: { hu: "{count} r√∂vid k√©rd√©s, k√∂r√ºlbel√ºl 3 perc", en: "{count} quick items, about 3 minutes" },
-    ccRiasecSkip: { hu: "Most kihagyom", en: "Skip for now" },
-    ccRiasecSkipSub: { hu: "Az eredm√©nyn√©l b√°rmikor p√≥tolhatod", en: "You can add it later from the results" },
-    ccStepPrefs: { hu: "Mi fontos neked a munk√°ban?", en: "What matters to you at work?" },
-    ccBack: { hu: "Vissza", en: "Back" },
-    ccNext: { hu: "Tov√°bb", en: "Next" },
-    ccFinish: { hu: "Mutasd az eredm√©nyt", en: "Show my results" },
-    ccResultTitle: { hu: "A v√°laszaid alapj√°n ezek illenek hozz√°d", en: "Based on your answers, these fit you" },
-    ccResultCurrent: { hu: "A mostani ter√ºleteden", en: "In your current field" },
-    ccEduBoostBadge: { hu: "v√©gzetts√©gedhez illik", en: "matches your education" },
-    ccDevelopTitle: { hu: "Ha ezekkel akarsz foglalkozni, ezt √©rdemes fejleszteni:", en: "If you want to pursue these, focus on developing:" },
-    ccEditAnswers: { hu: "V√°laszok m√≥dos√≠t√°sa", en: "Edit answers" },
-    ccSaving: { hu: "Ment√©s‚Ä¶", en: "Saving‚Ä¶" },
-    ccStepOf: { hu: "{current}/{total}. k√©rd√©s", en: "Question {current}/{total}" },
-    ccWhyStatus: {
-      hu: "Ez d√∂nti el, hogy a mostani ter√ºletedre vagy √∫j ir√°nyokra f√≥kusz√°ljunk.",
-      en: "This decides whether we focus on your current field or new directions.",
-    },
-    ccWhyEdu: {
-      hu: "A v√©gzetts√©ged nem sz≈±k√≠t semmit ‚Äî csak jelezz√ºk, hol alacsonyabb a bel√©p√©si k√ºsz√∂b.",
-      en: "Your education doesn't limit anything ‚Äî we only flag where the entry barrier is lower.",
-    },
-    ccWhyEduField: {
-      hu: "Ezzel tudjuk megmondani, hol illik a SZAKIR√ÅNYOD is ‚Äî nem csak a szinted. Diploma √∂nmag√°ban nem k√©pes√≠t m√°sik szakma gyakorl√°s√°ra.",
-      en: "This lets us say where your FIELD fits too ‚Äî not just your level. A degree alone doesn't qualify you for another profession.",
-    },
-    ccWhyAge: {
-      hu: "Csak a javaslatok hangol√°s√°hoz haszn√°ljuk, a pontsz√°mokat nem befoly√°solja.",
-      en: "Used only to frame suggestions; it doesn't affect any score.",
-    },
-    ccWhyCurrent: {
-      hu: "√çgy k√ºl√∂n megmutatjuk, milyen ir√°nyaid vannak a mostani ter√ºleteden bel√ºl is.",
-      en: "So we can also show your options within your current field.",
-    },
-    ccWhyInterests: {
-      hu: "Amit bejel√∂lsz, az SZ≈∞R≈ê: csak ezekr≈ël a ter√ºletekr≈ël mutatunk ir√°nyokat (az eredm√©nyn√©l kikapcsolhatod). √úresen hagyva minden ter√ºletr≈ël a legjobbakat hozzuk.",
-      en: "Your picks act as a FILTER: we only show directions from these fields (you can switch it off at the results). Leave empty to see the best from every field.",
-    },
-    ccWhyPrefs: {
-      hu: "A motiv√°ci√≥d nem a szem√©lyis√©ged ‚Äî ezek csak a sorrendet √°rnyalj√°k.",
-      en: "Motivation isn't personality ‚Äî these only refine the ordering.",
-    },
-    ccTopMatch: { hu: "A leger≈ësebb ir√°nyod", en: "Your strongest direction" },
-    ccStepEnv: { hu: "Milyen k√∂zegben dolgozn√°l sz√≠vesen?", en: "What kind of environment suits you?" },
-    ccWhyEnv: {
-      hu: "A munkak√∂rnyezet (temp√≥, keretek, helysz√≠n) legal√°bb annyit sz√°m√≠t a mindennapokban, mint a feladat maga.",
-      en: "The work environment (pace, structure, location) matters day to day at least as much as the task itself.",
-    },
-    ccEnvPaceLow: { hu: "Nyugodt √ºtem", en: "Calm pace" },
-    ccEnvPaceHigh: { hu: "P√∂rg≈ës, nyom√°s alatt is", en: "Fast-paced, even under pressure" },
-    ccEnvStructureLow: { hu: "Laza keretek", en: "Loose structure" },
-    ccEnvStructureHigh: { hu: "Vil√°gos szab√°lyok, rend", en: "Clear rules and order" },
-    ccEnvSettingLow: { hu: "Iroda / k√©perny≈ë", en: "Office / screen" },
-    ccEnvSettingHigh: { hu: "Terep, mozg√°s, emberek k√∂zt", en: "In the field, on the move" },
-    ccStepLead: { hu: "Vonz a vezet≈ëi szerep?", en: "Does leading others appeal to you?" },
-    ccWhyLead: {
-      hu: "Ha vezetn√©l, a rangsor a vezet≈ëi komponenseket (kezdem√©nyez√©s, nyom√°s√°ll√≥s√°g, egy√ºttm≈±k√∂d√©s) is s√∫lyozza.",
-      en: "If you want to lead, the ranking also weighs leadership components (initiative, composure, cooperation).",
-    },
-    ccLeadYes: { hu: "Igen, vezetn√©k", en: "Yes, I'd lead" },
-    ccLeadYesSub: { hu: "Csapatot √©s ir√°nyt vinn√©k", en: "I'd own a team and direction" },
-    ccLeadExpert: { hu: "Szak√©rt≈ëk√©nt m√©ly√ºln√©k", en: "I'd go deep as an expert" },
-    ccLeadExpertSub: { hu: "A m√©ly szakmai tud√°s vonz", en: "Deep craft appeals to me" },
-    ccLeadUnsure: { hu: "M√©g nem tudom", en: "Not sure yet" },
-    ccLeadUnsureSub: { hu: "Majd √∫tk√∂zben kider√ºl", en: "I'll find out along the way" },
-    ccStatusStudyingSub: { hu: "M√©g keresem az ir√°nyt", en: "Still finding my direction" },
-    ccStatusWorkingSub: { hu: "√âs nyitott vagyok a fejl≈ëd√©sre", en: "And open to growing" },
-    ccStatusSwitchingSub: { hu: "√öj ter√ºlet √©rdekel", en: "A new field interests me" },
-    ccEduReqLabel: { hu: "Bel√©p√©s", en: "Entry" },
-    ccEduReqOpen: { hu: "nem v√©gzetts√©ghez k√∂t√∂tt", en: "no formal qualification required" },
-    ccEduReqCourse: { hu: "tanfolyammal / √°tk√©pz√©ssel el√©rhet≈ë", en: "accessible via course / retraining" },
-    ccEduReqVocational: { hu: "szakk√©pzetts√©ghez k√∂t√∂tt", en: "requires vocational qualification" },
-    ccEduReqHigher: { hu: "jellemz≈ëen diplom√°hoz k√∂t√∂tt", en: "typically requires a degree" },
-    ccEduReqSpecialized: { hu: "szakir√°ny√∫ diploma + szakvizsga sz√ºks√©ges", en: "requires specialized degree + licensure" },
-    ccBandHint: {
-      hu: "Megb√≠zhat√≥s√°gi s√°v: a pontsz√°m √∂n√©rt√©kel√©sen alapul√≥ becsl√©s ‚Äî a s√°v a m√©r√©si bizonytalans√°got jelzi.",
-      en: "Confidence band: the score is a self-report estimate ‚Äî the band shows measurement uncertainty.",
-    },
-    ccFacetBadge: { hu: "alsk√°l√°kkal pontos√≠tva", en: "facet-refined" },
-    ccFacetBadgeHint: {
-      hu: "Enn√©l a szerepn√©l nem a dimenzi√≥√°tlag, hanem a szerepet t√©nylegesen el≈ëre jelz≈ë alsk√°l√°k sz√°m√≠tanak.",
-      en: "For this role, the facets that actually predict it are scored ‚Äî not the dimension average.",
-    },
-    ccObserverBadge: { hu: "k√ºls≈ë k√©ppel meger≈ës√≠tve", en: "observer-backed" },
-    ccObserverBadgeHint: {
-      hu: "Az illeszked√©s az √∂nk√©p √©s a k√ºls≈ë √©rt√©kel√©sek √°tlag√°b√≥l sz√°mol√≥dik ‚Äî a s√°v ez√©rt sz≈±kebb.",
-      en: "Fit is computed from the blend of self-image and observer ratings ‚Äî hence the narrower band.",
-    },
-    ccRiasecRoleHint: {
-      hu: "A szerep Holland-k√≥dja (RIASEC √©rdekl≈ëd√©si t√≠pusok)",
-      en: "The role's Holland code (RIASEC interest types)",
-    },
-    ccRiasecUserLabel: { hu: "Becs√ºlt √©rdekl≈ëd√©si k√≥dod:", en: "Your estimated interest code:" },
-    ccRiasecUserLabelTags: { hu: "√ârdekl≈ëd√©si k√≥dod:", en: "Your interest code:" },
-    // Karrier-plusz kereslet-m√©r√©s (painted door). A sz√∂vegek KIMONDJ√ÅK, hogy
-    // a funkci√≥ m√©g nincs k√©sz ‚Äî en√©lk√ºl a m√©r√©s megt√©veszt√©s lenne.
-    careerPlusBadge: { hu: "K√©sz√ºl≈ë funkci√≥", en: "In development" },
-    careerPlusTitle: {
-      hu: "Karrier-ir√°nyt≈±: milyen munk√°ban lenn√©l a helyeden?",
-      en: "Career compass: what work would suit you?",
-    },
-    careerPlusLead: {
-      hu: "A szem√©lyis√©gprofilod m√°r megvan. Ez a modul onnan indulna: megmutatn√°, milyen JELLEG≈∞ munka illik hozz√°d, milyen konkr√©t szerepek j√∂nnek ebb≈ël sz√≥ba, √©s mit √©rdemes kipr√≥b√°lnod. M√©g nem l√©tezik ‚Äî most azt m√©rj√ºk, √©rdemes-e meg√©p√≠teni.",
-      en: "You already have your personality profile. This module would start from there: what KIND of work fits you, which concrete roles follow from it, and what's worth trying next. It doesn't exist yet ‚Äî we're measuring whether it's worth building.",
-    },
-    careerPlusWhatTitle: { hu: "Mit tudna", en: "What it would do" },
-    careerPlusFeature1: {
-      hu: "Munka-ter√ºletek, amikben a profilod alapj√°n j√≥l √©rezhetn√©d magad ‚Äî mindegyikhez n√©h√°ny p√©lda-szerep, √©s k√ºl√∂n jel√∂lve, ami m√°r most el√©rhet≈ë, √©s ami k√©pz√©ssel.",
-      en: "Areas of work where your profile suggests you could thrive ‚Äî each with a few example roles, marked separately for what's reachable now and what needs training.",
-    },
-    careerPlusFeature2: {
-      hu: "Indokl√°s ter√ºletenk√©nt: melyik dimenzi√≥d h√∫zza arra, hol fesz√ºlhet, √©s mekkora a becsl√©s bizonytalans√°ga ‚Äî nem j√≥slat, hanem kiindul√≥pont.",
-      en: "A rationale per area: which of your dimensions pulls that way, where it may strain, and how uncertain the estimate is ‚Äî a starting point, not a prediction.",
-    },
-    careerPlusFeature3: {
-      hu: "K√≠s√©rlet-terv: 3-5 kipr√≥b√°lhat√≥ l√©p√©s, plusz √°ll√°shirdet√©s-kulcsszavak ‚Äî mit keress √©s mi legyen gyan√∫s.",
-      en: "An experiment plan: 3-5 things to try, plus job-ad keywords ‚Äî what to look for and what should raise a flag.",
-    },
-    careerPlusFeature4: {
-      hu: "Let√∂lthet≈ë PDF, amit el tudsz vinni egy besz√©lget√©sre ‚Äî vezet≈ëh√∂z, mentorhoz vagy tan√°csad√≥hoz.",
-      en: "A downloadable PDF you can take into a conversation ‚Äî with a manager, mentor or advisor.",
-    },
-    careerPlusPriceLabel: { hu: "Tervezett √°r", en: "Planned price" },
-    careerPlusPriceNote: {
-      hu: "Egyszeri d√≠j, nem el≈ëfizet√©s. Most nem k√©r√ºnk fizet√©st √©s bankk√°rtya-adatot ‚Äî csak azt szeretn√©nk tudni, meg√©rn√©-e neked ennyi√©rt.",
-      en: "A one-off fee, not a subscription. We're not taking payment or card details now ‚Äî we just want to know whether it would be worth that to you.",
-    },
-    careerPlusAskTitle: { hu: "√ârdekelne ez t√©ged?", en: "Would this interest you?" },
-    careerPlusAskNote: {
-      hu: "Egy kattint√°s, √©s tov√°bb is l√©phetsz. A v√°laszok d√∂ntik el, meg√©p√ºl-e ‚Äî a ‚Äûnem‚Äù ugyanolyan hasznos v√°lasz, mint az ‚Äûigen‚Äù.",
-      en: "One click and you can move on. The answers decide whether it gets built ‚Äî a ‚Äúno‚Äù is just as useful as a ‚Äúyes‚Äù.",
-    },
-    careerPlusYes: { hu: "√ârdekelne ennyi√©rt", en: "I'd be interested at that price" },
-    careerPlusNo: { hu: "Engem nem √©rdekel", en: "Not for me" },
-    careerPlusThanksYes: {
-      hu: "K√∂sz√∂nj√ºk ‚Äî feljegyezt√ºk.",
-      en: "Thanks ‚Äî noted.",
-    },
-    careerPlusThanksNo: {
-      hu: "K√∂sz√∂nj√ºk ‚Äî ez is fontos v√°lasz.",
-      en: "Thanks ‚Äî that's an important answer too.",
-    },
-    careerPlusThanksNote: {
-      hu: "Nem √≠g√©r√ºnk hat√°rid≈ët: ha nem lesz el√©g √©rdekl≈ëd√©s, ez a r√©teg nem √©p√ºl meg.",
-      en: "We're not promising a date: if there isn't enough interest, this layer won't be built.",
-    },
-    careerPlusChangeAnswer: { hu: "Meggondoltam magam", en: "I changed my mind" },
-    careerPlusError: { hu: "Nem siker√ºlt elmenteni, pr√≥b√°ld √∫jra.", en: "Couldn't save, please try again." },
-    careerPlusBack: { hu: "Vissza az eredm√©nyeidhez", en: "Back to your results" },
-    careerPlusCtaEyebrow: { hu: "K√©sz√ºl≈ë modul", en: "Module in development" },
-    careerPlusCtaTitle: {
-      hu: "Milyen munk√°ban lenn√©l a helyeden?",
-      en: "What work would suit you?",
-    },
-    careerPlusCtaBody: {
-      hu: "Karrier-ir√°nyt≈± k√©sz√ºl a profilodra: illeszked≈ë ter√ºletek, konkr√©t szerepek √©s kipr√≥b√°lhat√≥ l√©p√©sek. N√©zd meg, mit tudna ‚Äî √©s mondd meg, √©rdekel-e.",
-      en: "A career compass is in the works for your profile: fitting areas, concrete roles and steps you can try. See what it would do ‚Äî and tell us if it interests you.",
-    },
-    careerPlusCtaButton: { hu: "Megn√©zem, mit tudna", en: "See what it would do" },
-    ccRiasecWhatIs: { hu: "Mit jelentenek a bet≈±k?", en: "What do the letters mean?" },
-    ccRiasecUserLabelMeasured: { hu: "M√©rt √©rdekl≈ëd√©si k√≥dod:", en: "Your measured interest code:" },
-    ccRiasecTagsNote: {
-      hu: "(Holland/RIASEC ‚Äî a v√°lasztott √©rdekl≈ëd√©si c√≠mk√©id alapj√°n)",
-      en: "(Holland/RIASEC ‚Äî based on your chosen interest tags)",
-    },
-    ccRiasecMeasuredNote: {
-      hu: "(Holland/RIASEC ‚Äî a kit√∂lt√∂tt √©rdekl≈ëd√©si k√©rd≈ë√≠vb≈ël m√©rve)",
-      en: "(Holland/RIASEC ‚Äî measured from your completed interest inventory)",
-    },
-    ccRiasecCta: {
-      hu: "Pontos√≠tsd az √©rdekl≈ëd√©si k√≥dodat: 30 gyors k√©rd√©s, k√∂r√ºlbel√ºl 3 perc alatt. Ezut√°n becsl√©s helyett a m√©rt k√≥d alapj√°n k√©sz√ºl a rangsor.",
-      en: "Sharpen your interest code: 30 quick questions (~3 min) ‚Äî a measured code replaces the estimate in ranking.",
-    },
-    ccRiasecCtaBtn: { hu: "Kit√∂lt√∂m", en: "Take it" },
-    ccRiasecProgress: { hu: "{current} / {total}", en: "{current} / {total}" },
-    ccRiasecCancel: { hu: "K√©s≈ëbb", en: "Later" },
-    ccRiasecScale1: { hu: "Egy√°ltal√°n nem", en: "Not at all" },
-    ccRiasecScale3: { hu: "Tal√°n", en: "Maybe" },
-    ccRiasecScale5: { hu: "Nagyon sz√≠vesen", en: "Very much" },
-    ccStepTags: { hu: "Mi √©rdekel igaz√°n?", en: "What genuinely interests you?" },
-    ccWhyTags: {
-      hu: "V√°lassz legfeljebb 4 ter√ºletet ‚Äî az √©rdekl≈ëd√©sed a szem√©lyis√©gedn√©l is k√∂zvetlenebb√ºl jelzi, mi val√≥ neked.",
-      en: "Pick up to 4 ‚Äî your interests signal fit even more directly than personality.",
-    },
-    ccTagsCount: { hu: "{count} / 4 kiv√°lasztva (√°t is ugorhatod)", en: "{count} / 4 selected (you can skip this)" },
-    ccFieldLabelMulti: {
-      hu: "Ter√ºlet (legfeljebb 3 v√°laszthat√≥)",
-      en: "Field (choose up to 3)",
-    },
-    ccRiasecEstimateNote: {
-      hu: "(Holland/RIASEC ‚Äî a szem√©lyis√©ged √©s a preferenci√°id alapj√°n becs√ºlve, nem √©rdekl≈ëd√©si k√©rd≈ë√≠vvel m√©rve)",
-      en: "(Holland/RIASEC ‚Äî estimated from your personality and preferences, not a measured interest inventory)",
-    },
-    ccCompareCta: { hu: "√ñsszevet√©s", en: "Compare" },
-    ccCompareSelected: { hu: "Kiv√°lasztva ‚úì", en: "Selected ‚úì" },
-    ccCompareHint: {
-      hu: "V√°lassz ki m√©g egy ir√°nyt az √∂sszevet√©shez.",
-      en: "Select one more direction to compare.",
-    },
-    ccCompareTitle: { hu: "K√©t ir√°ny egym√°s mellett", en: "Two directions side by side" },
-    ccCompareClear: { hu: "Bez√°r√°s", en: "Close" },
-    ccCompareNote: {
-      hu: "A s√°vok azt mutatj√°k, az adott komponens mennyire t√°mogatja n√°lad a szerepet (0‚Äì100).",
-      en: "Bars show how strongly each component supports the role for you (0‚Äì100).",
-    },
-    ccPlan30Eyebrow: { hu: "30 napos mini-terv", en: "30-day mini plan" },
-    ccPlan30Title: {
-      hu: "A sz≈±k keresztmetszet a legt√∂bb top-ir√°nyodn√°l: {dim}. Ezzel √©rdemes kezdeni:",
-      en: "Across your top directions, {dim} is the bottleneck ‚Äî start here:",
-    },
-    ccPlan30Behavior: { hu: "Viselked√©s", en: "Behavior" },
-    ccPlan30Reflection: { hu: "Reflexi√≥", en: "Reflection" },
-    ccPlan30Challenge: { hu: "30 napos kih√≠v√°s", en: "30-day challenge" },
-    ccLeaderEyebrow: { hu: "Tipikus vezet√©si k√∂zeg", en: "Typical leadership context" },
-    ccLeaderTitle: {
-      hu: "{industry} ‚Äî ezen a ter√ºleten gyakran ilyen vezet√©ssel tal√°lkozol:",
-      en: "In {industry}, you'll often encounter this kind of leadership:",
-    },
-    ccLeaderNote: {
-      hu: "Ipar√°gi tipikus mint√°zat, nem szab√°ly ‚Äî a konkr√©t vezet≈ë ett≈ël elt√©rhet.",
-      en: "A typical industry pattern, not a rule ‚Äî your actual manager may differ.",
-    },
-    ccMethodTitle: { hu: "Mire √©p√ºl ez a becsl√©s?", en: "What is this estimate based on?" },
-    ccMethodBody1: {
-      hu: "Az illeszked√©s hatfaktoros szem√©lyis√©gmodellre √©p√ºl: minden szerephez a szakirodalom alapj√°n kulcs-dimenzi√≥k √©s alsk√°l√°k tartoznak ir√°nnyal √©s s√∫llyal, az illeszked√©s ezek s√∫lyozott √°tlaga (0‚Äì100).",
-      en: "Fit is based on a six-factor personality model: each role has key dimensions and facets with direction and weight, and fit is their weighted average (0‚Äì100).",
-    },
-    ccMethodBody2: {
-      hu: "A meta-anal√≠zisek szerint a lelkiismeretess√©g √©s a becs√ºletess√©g-al√°zat a leger≈ësebb √°ltal√°nos munkahelyi prediktorok; a t√∂bbi dimenzi√≥ szerept≈ël f√ºgg≈ëen sz√°m√≠t. A preferenci√°id (ember/adat, v√°ltozatoss√°g, √∂n√°ll√≥s√°g, alkot√°s) a rangsort √°rnyalj√°k, a Holland-k√≥d becsl√©s d√∂ntetlen-bont√≥.",
-      en: "Meta-analyses show conscientiousness and honesty-humility are the strongest general workplace predictors; other dimensions matter role by role. Your preferences (people/data, variety, autonomy, creation) shade the ranking; the Holland-code estimate breaks ties.",
-    },
-    ccMethodBody3: {
-      hu: "A pontsz√°m √∂n√©rt√©kel√©s-alap√∫ BECSL√âS, nem alkalmass√°g-√≠t√©let: a megb√≠zhat√≥s√°gi s√°v a m√©r√©si bizonytalans√°got mutatja (r√∂vid k√©rd≈ë√≠vn√©l sz√©lesebb, k√ºls≈ë √©rt√©kel√©ssel sz≈±kebb). Alacsony illeszked√©s nem jelenti, hogy egy p√°lya nem val√≥ neked ‚Äî azt jelzi, mi ig√©nyel t√∂bb tudatos energi√°t.",
-      en: "The score is a self-report ESTIMATE, not a verdict on suitability: the confidence band shows measurement uncertainty (wider on the short form, narrower with observer backing). A low fit doesn't mean a path isn't for you ‚Äî it signals what will take more deliberate energy.",
-    },
-    ccMethodRefs: {
-      hu: "Irodalom: Ashton & Lee (2007) ‚Äî HEXACO-modell; Barrick & Mount (1991) √©s Sackett et al. (2022) ‚Äî szem√©lyis√©g‚Äìteljes√≠tm√©ny meta-anal√≠zisek; Holland (1997) ‚Äî RIASEC.",
-      en: "References: Ashton & Lee (2007) ‚Äî HEXACO model; Barrick & Mount (1991) and Sackett et al. (2022) ‚Äî personality‚Äìperformance meta-analyses; Holland (1997) ‚Äî RIASEC.",
-    },
-    ccHeroLine: {
-      hu: "Er≈ës {d1} √©s {d2} profilod ebbe az ir√°nyba mutat.",
-      en: "Your strong {d1} and {d2} point in this direction.",
-    },
-    ccMoreOptions: { hu: "Tov√°bbi lehet≈ës√©gek", en: "More options" },
-    ccLessOptions: { hu: "Kevesebb mutat√°sa", en: "Show fewer" },
-    ccTierStrong: { hu: "Er≈ës illeszked√©s", en: "Strong fit" },
-    ccTierGood: { hu: "J√≥ illeszked√©s", en: "Good fit" },
-    ccTierConditional: { hu: "Felt√©teles ‚Äî felk√©sz√ºl√©ssel", en: "Conditional ‚Äî with preparation" },
-    ccDevPlanTitle: { hu: "Fejl≈ëd√©si terv ezekhez az ir√°nyokhoz", en: "Development plan for these directions" },
-    ccDevPlanIntro: {
-      hu: "A fenti ir√°nyok k√∂z√∂s figyelend≈ë ter√ºletei ‚Äî ha erre indulsz, itt t√©r√ºl meg leggyorsabban a tudatos gyakorl√°s.",
-      en: "The shared watch areas of the directions above ‚Äî if you head this way, deliberate practice pays off fastest here.",
-    },
-    ccObserverRefine: {
-      hu: "Pontos√≠tsd k√ºls≈ë visszajelz√©ssel ‚Äî az √∂nk√©p √©s a k√ºls≈ë k√©p √°tlaga megb√≠zhat√≥bb illeszked√©st ad.",
-      en: "Refine with outside feedback ‚Äî averaging self-image and outside view gives a more reliable fit.",
-    },
-    ccObserverRefineCta: { hu: "Visszajelz√©s k√©r√©se", en: "Request feedback" },
-    industryFitNote: {
-      hu: "Indikat√≠v jelz√©s az √∂n√©rt√©kel√©sed alapj√°n ‚Äî nem p√°lyav√°laszt√°si tan√°csad√°s. Az illeszked√©s a szerep tipikus munkast√≠lus-ig√©nyeit veti √∂ssze a profiloddal; a tapasztalat, tud√°s √©s motiv√°ci√≥ legal√°bb ilyen fontos.",
-      en: "An indicative signal based on your self-assessment ‚Äî not career advice. Fit compares a role's typical working-style demands with your profile; experience, skills and motivation matter at least as much.",
-    },
-  },
-  progress: {
-    title: { hu: "Profilod k√©sz√ºl≈ëben", en: "Your profile is in progress" },
-    done: { hu: "k√©sz", en: "done" },
-    next: { hu: "K√∂vetkez≈ë", en: "Next" },
-    stepTest: { hu: "Teszt kit√∂lt√©se", en: "Complete the assessment" },
-    stepTestDesc: { hu: "A szem√©lyis√©gteszted eredm√©nye elk√©sz√ºlt", en: "Your personality assessment results are ready" },
-    stepResults: { hu: "Eredm√©ny megtekint√©se", en: "View results" },
-    stepResultsDesc: { hu: "√Åttekinted a f≈ë dimenzi√≥kat", en: "You reviewed the key dimensions" },
-    deepenDivider: { hu: "Pontos√≠tsd a k√©pet", en: "Deepen your profile" },
-    unlock: { hu: "Feloldom", en: "Unlock" },
-    sendInvitations: { hu: "Visszajelz√©si megh√≠v√≥k k√ºld√©se", en: "Send feedback invitations" },
-    sendInvitationsDesc: { hu: "K√©rd meg 2-3 koll√©g√°dat, hogy adjanak visszajelz√©st r√≥lad", en: "Ask 2-3 colleagues to give feedback about you" },
-    afterPlus: { hu: "Plus felold√°sa ut√°n √©rhet≈ë el", en: "Available after unlocking Plus" },
-    sendInvitationCta: { hu: "Megh√≠v√≥ k√ºld√©se", en: "Send invitation" },
-    availableAfterPlus: { hu: "El√©rhet≈ë Plus ut√°n", en: "Available after Plus" },
-    receiveFeedback: { hu: "Visszajelz√©sek be√©rkez√©se √©s √©rtelmez√©se", en: "Receive and interpret feedback" },
-    afterSending: { hu: "Megh√≠v√≥k k√ºld√©se ut√°n el√©rhet≈ë", en: "Available after sending invitations" },
-    feedbackReceived: { hu: "visszajelz√©s √©rkezett", en: "feedback received" },
-    waiting: { hu: "V√°rakoz√°s...", en: "Waiting..." },
-    viewResults: { hu: "Megn√©zem", en: "View" },
-    active: { hu: "Akt√≠v", en: "Active" },
-    recommended: { hu: "Aj√°nlott", en: "Recommended" },
-    owned: { hu: "Megvan ‚úì", en: "Owned ‚úì" },
-    stepDone: { hu: "K√©sz", en: "Done" },
-    choosePlan: { hu: "v√°lassz csomagot", en: "choose a plan" },
-    unlockPlus: { hu: "Plus felold√°sa ‚Äî ‚Ç¨9", en: "Unlock Plus ‚Äî ‚Ç¨9" },
-    sendFeedback: { hu: "visszajelz√©si megh√≠v√≥k k√ºld√©se", en: "send feedback invitations" },
-    waitFeedback: { hu: "visszajelz√©sek be√©rkez√©se", en: "waiting for feedback" },
-    profileDone: { hu: "profilod k√©sz!", en: "profile complete!" },
-    plusFeature1: { hu: "25 alsk√°la r√©szletesen", en: "25 facets in detail" },
-    plusFeature2: { hu: "Korl√°tlan sz√°m√∫ observer", en: "Unlimited observers" },
-    plusFeature3: { hu: "Vakfolt-elemz√©s", en: "Blind spot analysis" },
-    plusFeature4: { hu: "M≈±k√∂d√©sed √©s szereped a csapatban", en: "How you work and contribute in a team" },
-    plusFeature5: { hu: "PDF let√∂lt√©se", en: "PDF export" },
-    buttonActive: { hu: "Akt√≠v", en: "Active" },
-    buttonUnlock: { hu: "Plus felold√°sa ‚Äî ‚Ç¨9", en: "Unlock Plus ‚Äî ‚Ç¨9" },
-  },
-  content: {
-    heroTopDims: { hu: "Leger≈ësebb", en: "Top dimensions" },
-    heroWatchDims: { hu: "Figyelend≈ë", en: "Watch area" },
-    stripLabel: { hu: "Gyors √°ttekint√©s ‚Äî a 6 f≈ë dimenzi√≥ ment√©n", en: "Quick overview ‚Äî across the 6 key dimensions" },
-    accPersonal: { hu: "Mit jelent ez r√≥lad?", en: "What this means for you" },
-    accWorkplace: { hu: "Munkahelyi helyzetekben", en: "In workplace situations" },
-    accFacetDetail: { hu: "R√©szletes bont√°s", en: "Detailed breakdown" },
-    howYouWorkSub: { hu: "Milyen k√∂rnyezetben m≈±k√∂dsz j√≥l ‚Äî √©s hol j√∂hetnek s√∫rl√≥d√°sok", en: "Where you thrive ‚Äî and where friction may arise" },
-    profileSummary: { hu: "Profil√∂sszefoglal√≥", en: "Profile summary" },
-    // A `content.roleFitStrong` a shared-labels.ts-ben √©l (publikus hero is).
-    roleFitMaybe: { hu: "M≈±k√∂dhet, ha felk√©sz√ºlsz", en: "May work with preparation" },
-    roleFitPrep: { hu: "Felk√©sz√ºl√©ssel m≈±k√∂dhet", en: "Works with preparation" },
-    teamRoleSub: { hu: "A szem√©lyis√©gmint√°zataid alapj√°n v√°rhat√≥an ezek a csapatszerepek illenek hozz√°d.", en: "Based on your personality patterns, these team roles suit you." },
-    altruismTitle: { hu: "Kieg√©sz√≠t≈ë sk√°la", en: "Supplementary scale" },
-    altruismName: { hu: "Seg√≠t≈ëk√©szs√©g", en: "Helpfulness" },
-    altruismInfo: { hu: "T√∂bb f≈ë dimenzi√≥hoz is kapcsol√≥dik, ez√©rt nem sz√°m√≠t bele a 6 f≈ëfaktor √°tlag√°ba. K√ºl√∂n pontsz√°mk√©nt √©rdemes n√©zni.", en: "This scale relates to multiple dimensions, so it's not included in the 6-factor average. Worth looking at as a separate score." },
-    // (content.altruismDetail t√∂r√∂lve 2026-08-11 ‚Äî egy sosem meg√©p√ºlt
-    //  facet-bont√°s felirata volt; a sk√°l√°nak egyetlen facetje van.)
-    // A k√°rtya saj√°t szint-sz√≥t√°ra (altruismLevelHigh/Mid/Low) 2026-08-18-√°n
-    // kivezetve: az√©rt l√©tezett, hogy a nem-valenci√°lt kieg√©sz√≠t≈ë sk√°la
-    // elker√ºlje az akkor m√©g valenci√°s badge-et. A kanonikus c√≠mke az√≥ta maga
-    // szint-sz√≥ (dimension-utils), a k√ºl√∂nsz√≥t√°r csak drift volt.
-    envLabelHigh: { hu: "Magas", en: "High" },
-    envLabelLow: { hu: "Alacsony", en: "Low" },
-    envLabelMedium: { hu: "K√∂zepes", en: "Medium" },
-    envLabelShort: { hu: "R√∂vid", en: "Short" },
-    envLabelLong: { hu: "Hossz√∫", en: "Long" },
-    envLabelFast: { hu: "Gyors", en: "Fast" },
-    // ProfileTabs ‚Äî layer status section
-    layerStatusEyebrow: { hu: "A profilod fel√©p√≠t√©se", en: "How your profile is built" },
-    layerStatusCompleted: { hu: "K√©sz", en: "Completed" },
-    layerStatusInProgress: { hu: "Folyamatban", en: "In progress" },
-    layerStatusAvailable: { hu: "El√©rhet≈ë", en: "Available" },
-    layerStatusLocked: { hu: "Z√°rolt", en: "Locked" },
-    // ProfileTabs ‚Äî bridge / journey
-    bridgeEyebrow: { hu: "K√∂vetkez≈ë l√©p√©s", en: "Next best action" },
-    bridgeJourney: { hu: "A te utad", en: "Your journey" },
-    bridgeFallbackStage: { hu: "K√∂vetkez≈ë l√©p√©s", en: "Next step" },
-    bridgeOptionalTeamHint: {
-      hu: "Ha szeretn√©l csapat- vagy szervezeti n√©zetre v√°ltani, ezt b√°rmikor megteheted.",
-      en: "If you want to switch to team or org mode, you can do it anytime.",
-    },
-    bridgeOptionalTeamCta: {
-      hu: "Csapat/szervezet ind√≠t√°sa",
-      en: "Start team/org setup",
-    },
-    // ProfileTabs ‚Äî stage labels
-    stageSelfCompleted: { hu: "√ñn√©rt√©kel√©s k√©sz", en: "Self completed" },
-    stageObserverPending: { hu: "K√ºls≈ë visszajelz√©s folyamatban", en: "Observer in progress" },
-    stageTeamNotJoined: { hu: "Nincs csapat", en: "No team yet" },
-    stageTeamPendingMembers: { hu: "Tagokra v√°r", en: "Waiting for members" },
-    stageTeamPartial: { hu: "Csapat r√©szben k√©sz", en: "Team partially ready" },
-    stageTeamReady: { hu: "Csapat k√©sz", en: "Team ready" },
-    stageOrgPartial: { hu: "Szervezet r√©szben k√©sz", en: "Org partially ready" },
-    stageOrgReady: { hu: "Szervezet k√©sz", en: "Org ready" },
-    stageSelfNotStarted: { hu: "√ñn√©rt√©kel√©s m√©g nem indult", en: "Self not started" },
-    stageSelfInProgress: { hu: "√ñn√©rt√©kel√©s folyamatban", en: "Self in progress" },
-    // ProfileTabs ‚Äî PDF profile character. Kapuzott (motor-audit v4, FIX 2):
-    // a ‚Äûmagas {dim}" mondat csak t√©nylegesen magas (‚â•70) dimenzi√≥kra megy ki
-    // (alatta a results.balancedProfile a fallback), a fejl≈ëd√©s-mondat pedig
-    // csak val√≥ban alacsony (<40), NEM ford√≠tott dimenzi√≥ra ‚Äî az alacsony
-    // Emocionalit√°s stabilit√°s, nem fejl≈ëd√©si ter√ºlet.
-    profileCharacterHigh: { hu: "A profilod f≈ë karaktere: magas {top1}{top2Suffix}.", en: "Your profile character: high {top1}{top2Suffix}." },
-    profileCharacterGrowth: { hu: " {bottom} ter√ºlet√©n ny√≠lhat t√©r a fejl≈ëd√©sre.", en: " {bottom} is where growth potential lies." },
-    profileCharacterTop2Suffix: { hu: ", magas {label}", en: ", high {label}" },
-    // ProfileTabs
-    paywallUnlock: { hu: "Felold√°s ‚Äî {price}", en: "Unlock ‚Äî {price}" },
-    paywallComparisonTeaser: {
-      hu: "Az observer-visszajelz√©sek √∂sszevet√©se megmutatja, hogyan l√°tnak m√°sok, √©s hol t√©r el ett≈ël az √∂nk√©ped.",
-      en: "Observer comparison shows how others see you ‚Äî and where your self-image diverges from external feedback.",
-    },
-    shareLinkCopied: { hu: "Link m√°solva a v√°g√≥lapra!", en: "Link copied to clipboard!" },
-    shareError: { hu: "Hiba t√∂rt√©nt", en: "An error occurred" },
-    // ShareModal
-    shareModalTitle: { hu: "Profil megoszt√°sa", en: "Share your profile" },
-    shareCreating: { hu: "Link l√©trehoz√°sa‚Ä¶", en: "Creating link‚Ä¶" },
-    shareCopyLink: { hu: "Link m√°sol√°sa", en: "Copy link" },
-    shareCopied: { hu: "M√°solva", en: "Copied" },
-    shareEmailCompact: { hu: "Email", en: "Email" },
-    shareEmailLabel: { hu: "C√≠mzett email-c√≠me", en: "Recipient email" },
-    shareEmailQrHint: {
-      hu: "A lev√©lben a profil linkje √©s egy QR-k√≥d is szerepel.",
-      en: "The email includes the profile link and a QR code.",
-    },
-    shareEmailPlaceholder: { hu: "nev@ceg.hu", en: "name@company.com" },
-    shareEmailSend: { hu: "K√ºld√©s", en: "Send" },
-    shareEmailSending: { hu: "K√ºld√©s‚Ä¶", en: "Sending‚Ä¶" },
-    shareEmailSentTo: { hu: "Elk√ºldt√ºk ide:", en: "Sent to:" },
-    shareAnotherRecipient: { hu: "M√°sik c√≠mzett", en: "Another recipient" },
-    shareEmailInvalid: { hu: "√ârv√©nytelen email-c√≠m", en: "Invalid email address" },
-    shareEmailError: { hu: "Az email k√ºld√©se nem siker√ºlt. A linket ett≈ël m√©g kim√°solhatod.", en: "The email could not be sent. You can still copy the link." },
-    shareStatusActive: { hu: "A megoszt√°si link akt√≠v", en: "Share link is active" },
-    shareRevokeShort: { hu: "Visszavon√°s", en: "Revoke" },
-    shareRevokeConfirmTitle: { hu: "Biztosan visszavonod?", en: "Revoke this share?" },
-    shareRevokeConfirmBody: {
-      hu: "A kor√°bbi link azonnal megsz≈±nik, √©s t√∂bb√© nem nyitja meg a profilodat.",
-      en: "The previous link will stop working immediately and will no longer open your profile.",
-    },
-    shareRevokeConfirm: { hu: "Igen, visszavonom", en: "Yes, revoke" },
-    shareRevoked: {
-      hu: "A megoszt√°s visszavonva ‚Äî a kor√°bbi link m√°r nem m≈±k√∂dik.",
-      en: "Sharing revoked ‚Äî the previous link no longer works.",
-    },
-    // Share page ‚Äî revoked/expired link
-    shareExpiredEyebrow: { hu: "Megosztott profil", en: "Shared profile" },
-    shareExpiredTitle: { hu: "Ez a link m√°r nem √©l", en: "This link is no longer active" },
-    shareExpiredDesc: {
-      hu: "A profil tulajdonosa visszavonta a megoszt√°st, vagy a link √©rv√©nytelen. Ha k√≠v√°ncsi vagy a saj√°t profilodra, n√©h√°ny perc alatt kit√∂ltheted a felm√©r√©st.",
-      en: "The profile owner revoked sharing, or the link is invalid. If you're curious about your own profile, you can complete the assessment in a few minutes.",
-    },
-    shareExpiredCtaTry: { hu: "Kipr√≥b√°lom a tesztet", en: "Try the assessment" },
-    shareExpiredCtaSignIn: { hu: "Bejelentkez√©s", en: "Sign in" },
-    // Share page ‚Äî footer CTA kijelentkezett l√°togat√≥nak
-    shareCtaTitle: { hu: "M√©g nincs Trita profilod?", en: "Don't have a Trita profile yet?" },
-    shareCtaDesc: {
-      hu: "N√©h√°ny perc alatt kit√∂ltheted a felm√©r√©st, √©s megkapod a saj√°t szem√©lyis√©g- √©s munkast√≠lus-profilodat.",
-      en: "Complete the assessment in a few minutes and get your own personality and work-style profile.",
-    },
-    shareCtaButton: { hu: "Elk√©sz√≠tem a saj√°tomat", en: "Create my own" },
-    personalityProfileFallback: { hu: "Szem√©lyis√©gprofil", en: "Personality profile" },
-    // TeamRoleTeaser
-    teamRoleTeaserEyebrow: { hu: "csapatszerepek", en: "team roles" },
-    teamRoleTeaserEstimate: { hu: "becsl√©s", en: "estimate" },
-    teamRoleTeaserTitle: { hu: "Val√≥sz√≠n≈± csapatszerepeid", en: "Your likely team roles" },
-    teamRoleTeaserDesc: {
-      hu: "Szem√©lyis√©gprofilod alapj√°n v√°rhat√≥an ezek a csapatszerepek illenek hozz√°d legink√°bb. A pontos m√©r√©shez t√∂ltsd ki a csapatszerep-k√©rd≈ë√≠vet.",
-      en: "Based on your personality profile, these team roles fit you best. Complete the team-role questionnaire for an exact measurement.",
-    },
-    teamRoleTeaserPrimary: { hu: "Els≈ëdleges", en: "Primary" },
-    teamRoleTeaserSecondary: { hu: "M√°sodlagos", en: "Secondary" },
-    teamRoleTeaserSupporting: { hu: "Kieg√©sz√≠t≈ë", en: "Supporting" },
-    teamRoleTeaserInfoNote: {
-      hu: "Ez egy becsl√©s a szem√©lyis√©gprofilodb√≥l. A teljes csapatszerep k√©rd≈ë√≠v kit√∂lt√©s√©vel csapatszint≈± √∂sszehasonl√≠t√°s is el√©rhet≈ëv√© v√°lik.",
-      en: "This is an estimate from your personality profile. Completing the full team-role questionnaire unlocks team-level comparison.",
-    },
-    teamRoleTeaserJoinTeam: { hu: "Csapatba l√©p√©s", en: "Join a team" },
-    // DimensionOverview
-    overviewEyebrow: { hu: "√°ttekint√©s", en: "overview" },
-    overviewTitle: { hu: "Szem√©lyis√©gprofilod", en: "Your personality profile" },
-    // DimensionDetail
-    detailEyebrow: { hu: "dimenzi√≥k", en: "dimensions" },
-    detailTitle: { hu: "A 6 dimenzi√≥ r√©szletesen", en: "6 dimensions in detail" },
-    // ObserverComparison
-    observerInviteTitle: { hu: "H√≠vj meg 2‚Äì5 embert observernek", en: "Invite 2‚Äì5 people as observers" },
-    observerInviteBody: {
-      hu: "Az √∂sszehasonl√≠t√°s csak akkor jelenik meg, ha legal√°bb 2 kit√∂lt√∂tt observer-visszajelz√©s be√©rkezett.",
-      en: "The comparison appears once at least 2 completed observer assessments have been received.",
-    },
-    observerManageInvites: { hu: "Megh√≠v√≥k kezel√©se", en: "Manage invitations" },
-    observerCountBasis: { hu: "{count} observer-visszajelz√©s √°tlaga alapj√°n", en: "Based on {count} observer assessments" },
-    observerGoodAlignment: {
-      hu: "J√≥ egyez√©s ‚Äî az √∂nk√©ped √©s az observer-visszajelz√©sek k√∂zel √°llnak egym√°shoz.",
-      en: "Good alignment ‚Äî your self-image and observer feedback are closely matched.",
-    },
-    observerSelfHigher: { hu: "Te magasabbra √©rt√©keled magadat, mint ahogyan m√°sok √©rt√©kelnek t√©ged.", en: "You rate yourself higher than observers do." },
-    observerObsHigher: { hu: "M√°sok magasabbra √©rt√©kelnek t√©ged, mint te saj√°t magadat.", en: "Observers rate you higher than you rate yourself." },
-    // CareerFit
-    careerFitLabel: { hu: "Illeszked√©s", en: "Fit" },
-  },
-  invitations: {
-    eyebrow: { hu: "Visszajelz√©si megh√≠v√≥k", en: "Feedback invitations" },
-    title: { hu: "K√©rd ki m√°sok v√©lem√©ny√©t", en: "Get others' perspective" },
-    sub: { hu: "H√≠vd meg koll√©g√°idat, bar√°taidat vagy csal√°dtagjaidat egy r√∂vid √©rt√©kel√©sre. A visszajelz√©sek n√©v n√©lk√ºl jelennek meg, √©s √∂sszes√≠tett √°tlagokat mutatunk.", en: "Invite your colleagues, friends, or family to a short assessment. Feedback is anonymous ‚Äî we show aggregated averages." },
-    statReceived: { hu: "be√©rkezett", en: "received" },
-    statPending: { hu: "f√ºgg≈ëben", en: "pending" },
-    statSent: { hu: "megh√≠v√≥ elk√ºldve", en: "invitations sent" },
-    infoNeeded: { hu: "Az √∂sszehasonl√≠t√°shoz legal√°bb 2 visszajelz√©s kell. A visszajelz√©sek n√©v n√©lk√ºl jelennek meg ‚Äî csak √∂sszes√≠tett √°tlagokat mutatunk.", en: "You need at least 2 responses for comparison. Feedback is anonymous ‚Äî we only show aggregated averages." },
-    infoNeededN: { hu: "Az √∂sszehasonl√≠t√°shoz legal√°bb {min} visszajelz√©s kell. A visszajelz√©sek n√©v n√©lk√ºl jelennek meg ‚Äî csak √∂sszes√≠tett √°tlagokat mutatunk.", en: "You need at least {min} responses for comparison. Feedback is anonymous ‚Äî we only show aggregated averages." },
-    infoReady: { hu: "visszajelz√©s be√©rkezett ‚Äî az √∂sszehasonl√≠t√°s el√©rhet≈ë az √ñsszehasonl√≠t√°s tabon.", en: "responses received ‚Äî comparison available on the Compare tab." },
-    formTitle: { hu: "√öj megh√≠v√≥ l√©trehoz√°sa", en: "Create new invitation" },
-    formPlaceholder: { hu: "Email c√≠m (opcion√°lis)", en: "Email address (optional)" },
-    formSubmit: { hu: "L√©trehoz√°s", en: "Create" },
-    formHintLink: { hu: "Egy link ‚Äî egy kit√∂lt≈ë. Email n√©lk√ºl te osztod meg a linket.", en: "One link ‚Äî one respondent. Without email you share the link yourself." },
-    formHintEmail: { hu: "Email c√≠m megad√°s√°val mi k√ºldj√ºk ki a megh√≠v√≥t.", en: "With an email we'll send the invitation." },
-    emptyTitle: { hu: "M√©g nincs megh√≠v√≥d", en: "No invitations yet" },
-    emptySub: { hu: "Hozz l√©tre egyet a fenti ≈±rlappal", en: "Create one with the form above" },
-    statusCompleted: { hu: "Kit√∂ltve", en: "Completed" },
-    statusPending: { hu: "V√°rakozik", en: "Waiting" },
-    actionRemind: { hu: "Eml√©keztet≈ë", en: "Remind" },
-    lockedTitle: { hu: "Visszajelz√©si megh√≠v√≥k", en: "Feedback invitations" },
-    lockedSub: { hu: "K√©rd meg koll√©g√°idat, bar√°taidat vagy csal√°dtagjaidat, hogy √©rt√©keljenek t√©ged ‚Äî √©s n√©zd meg, hogyan viszonyul az √∂nk√©ped m√°sok visszajelz√©s√©hez.", en: "Ask your colleagues, friends, or family to rate you ‚Äî and see how your self-image compares to others' feedback." },
-    lockedCta: { hu: "Plus felold√°sa ‚Äî ‚Ç¨9", en: "Unlock Plus ‚Äî ‚Ç¨9" },
-    groupReceived: { hu: "Be√©rkezett", en: "Received" },
-    groupPending: { hu: "F√ºgg≈ëben", en: "Pending" },
-    receivedSection: { hu: "Be√©rkez≈ë megh√≠v√≥k", en: "Received invitations" },
-    linkInvite: { hu: "Link megh√≠v√≥", en: "Link invitation" },
-    emailInvite: { hu: "Email megh√≠v√≥", en: "Email invitation" },
-    fillIn: { hu: "Kit√∂lt√∂m", en: "Fill in" },
-    limitReached: { hu: "El√©rted az 5 megh√≠v√≥ limitet.", en: "You've reached the 5 invitation limit." },
-    errorGeneric: { hu: "Hiba t√∂rt√©nt", en: "An error occurred" },
-    copyFailed: { hu: "M√°sol√°s sikertelen", en: "Copy failed" },
-    deleteFailed: { hu: "T√∂rl√©s sikertelen", en: "Delete failed" },
-    copied: { hu: "M√°solva!", en: "Copied!" },
-    linkButton: { hu: "Link", en: "Link" },
-    qrAlt: { hu: "QR-k√≥d az observer-megh√≠v√≥ linkhez", en: "QR code for the observer invite link" },
-    qrHint: {
-      hu: "Mutasd meg a megh√≠vottnak ‚Äî a telefonj√°val beolvasva egyb≈ël a kit√∂lt≈ë oldalra jut.",
-      en: "Show it to your invitee ‚Äî scanning it takes them straight to the questionnaire.",
-    },
-    sentLabel: { hu: "Elk√ºldve", en: "Sent" },
-    receivedLabel: { hu: "Be√©rkezett", en: "Received" },
-    anonymous: { hu: "N√©vtelen", en: "Anonymous" },
-    statusCanceled: { hu: "Visszavonva", en: "Canceled" },
-    statusExpired: { hu: "Lej√°rt", en: "Expired" },
-    statusPendingLower: { hu: "F√ºgg≈ëben", en: "Pending" },
-    statusAwaitingApproval: { hu: "J√≥v√°hagy√°sra v√°r", en: "Awaiting approval" },
-    colleagueSectionTitle: { hu: "Koll√©ga megh√≠v√°sa list√°b√≥l", en: "Invite a colleague from the list" },
-    colleagueSectionHint: { hu: "A szervezeted tagjai k√∂z√ºl v√°laszthatsz ‚Äî a csapatt√°rsaid el√∂l. A koll√©ga e-mailt √©s app-√©rtes√≠t√©st kap.", en: "Choose from your organization's members ‚Äî teammates first. They'll get an email and an in-app notification." },
-    colleagueSearchPlaceholder: { hu: "Keres√©s n√©v szerint‚Ä¶", en: "Search by name‚Ä¶" },
-    colleagueTeammateBadge: { hu: "csapatt√°rs", en: "teammate" },
-    colleagueInvitedBadge: { hu: "m√°r megh√≠vtad", en: "already invited" },
-    colleagueInviteButton: { hu: "Megh√≠vom", en: "Invite" },
-    colleagueEmpty: { hu: "Nincs megh√≠vhat√≥ koll√©ga.", en: "No colleagues available to invite." },
-    externalSectionTitle: { hu: "K√ºls≈ë megh√≠v√≥ (e-mail)", en: "External invite (email)" },
-    externalApprovalHint: { hu: "A fut√≥ m√©r√©s-k√∂r szab√°lya szerint a k√ºls≈ë megh√≠v√≥kat a vezet≈ëd hagyja j√≥v√° ‚Äî az e-mail a j√≥v√°hagy√°s ut√°n megy ki.", en: "Per the running measurement round's rules, external invites need your manager's approval ‚Äî the email goes out after approval." },
-    awaitingApprovalToast: { hu: "A megh√≠v√≥ j√≥v√°hagy√°sra v√°r ‚Äî a vezet≈ëd √©rtes√≠t√©st kapott.", en: "The invite awaits approval ‚Äî your manager has been notified." },
-    typeTeam: { hu: "Csapatt√°rs", en: "Teammate" },
-    typeOrg: { hu: "Szervezeti", en: "Organization" },
-    typeExternal: { hu: "K√ºls≈ë", en: "External" },
-    typePersonal: { hu: "Ismer≈ës", en: "Personal" },
-  },
-  pdf: {
-    // ‚îÄ‚îÄ StartPage ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    overview: { hu: "√Åttekint√©s", en: "Overview" },
-    personalityDimensions: { hu: "Szem√©lyis√©gdimenzi√≥k", en: "Personality dimensions" },
-    keyProfileCharacter: { hu: "A profil meghat√°roz√≥ jellemz≈ëje", en: "Key profile character" },
-    dimensionsInDetail: { hu: "Dimenzi√≥k r√©szletesen", en: "Dimensions in detail" },
-    teamRoles: { hu: "Csapatszerepek", en: "Team roles" },
-    wantToGoDeeper: { hu: "M√©lyebbre menn√©l?", en: "Want to go deeper?" },
-    upsellDescription: {
-      hu: "√ârtsd meg, mi van a f≈ë dimenzi√≥id m√∂g√∂tt ‚Äî alsk√°l√°k, observer-visszajelz√©s, vakfoltelemz√©s, valamint a m≈±k√∂d√©sed √©s szereped a csapatban.",
-      en: "Understand what's behind your dimensions ‚Äî subscales, observer feedback, blind spot analysis, and how you work and contribute in a team.",
-    },
-    upsellUnlock: { hu: "felold√°s", en: "unlock" },
-    // ‚îÄ‚îÄ PlusWorkStylePage ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    personalityProfile: { hu: "Szem√©lyis√©gprofil", en: "Personality profile" },
-    howYouWork: { hu: "Ahogy m≈±k√∂dsz", en: "How you work" },
-    roleFit: { hu: "Illeszked√©s a szerepk√∂r√∂kh√∂z", en: "Role fit" },
-    roleFitDisclaimer: {
-      hu: "A szerepk√∂r-illeszked√©s a szem√©lyis√©gprofilb√≥l k√©sz√ºlt becsl√©s. A t√©nyleges illeszked√©st a kompetenci√°k, a motiv√°ci√≥, a tapasztalat √©s a szakmai √©rdekl≈ëd√©s egy√ºtt hat√°rozz√°k meg ‚Äî a szem√©lyis√©g ezek k√∂z√ºl csak egy t√©nyez≈ë.",
-      en: "Role fit is an estimate based on your personality profile. Actual fit is determined jointly by competencies, motivation, experience, and professional interests ‚Äî personality is only one of these factors.",
-    },
-    pressureTitle: { hu: "Vakfoltok √©s m≈±k√∂d√©s nyom√°s alatt", en: "Blind spots & under pressure" },
-    growthTitle: { hu: "Fejl≈ëd√©si f√≥kusz", en: "Growth focus" },
-    growthBehavior: { hu: "Pr√≥b√°ld ki", en: "Try this" },
-    growthReflection: { hu: "K√©rdezd meg magadt√≥l", en: "Ask yourself" },
-    growthChallenge: { hu: "M√©rd le", en: "Measure it" },
-    // ‚îÄ‚îÄ SummaryPage (P3.1) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    summaryPageTitle: { hu: "√ñsszefoglal√≥ egy oldalon", en: "One-page summary" },
-    careerPageTitle: { hu: "Karrier-ir√°nyt≈±", en: "Career compass" },
-    careerTopDirections: { hu: "A leger≈ësebb ir√°nyaid", en: "Your strongest directions" },
-    careerDevelop: { hu: "Fejl≈ëd√©si f√≥kusz", en: "Development focus" },
-    careerMethod: { hu: "M√≥dszertani keret", en: "Methodological frame" },
-    summaryBlindspots: { hu: "Lehets√©ges vakfoltok", en: "Possible blind spots" },
-    summaryUnderPressure: { hu: "Nyom√°s alatt", en: "Under pressure" },
-    summaryInTeam: { hu: "Csapatban", en: "In a team" },
-    summaryTeamLine: { hu: "Els≈ëdleges csapatszereped jellemz≈ëen: {role}", en: "Your primary team role tends to be: {role}" },
-    summaryFootnote: {
-      hu: "Ez az oldal a riport r√∂vid√≠tett v√°ltozata. A r√©szleteket, az alsk√°l√°kat √©s a szerepk√∂r√∂kh√∂z val√≥ illeszked√©st a k√∂vetkez≈ë oldalakon tal√°lod. Az √°ll√≠t√°sok √∂njellemz√©sen alapul√≥ hipot√©zisek.",
-      en: "This page is the condensed report ‚Äî details, subscales, and role fit follow on the next pages. Statements are hypotheses based on self-report.",
-    },
-    pressureDisclaimer: {
-      hu: "Ezek hipot√©zisek, nem √≠t√©letek ‚Äî stressz alatt sokf√©le m≈±k√∂d√©s megjelenhet. Akkor hasznosak, ha megfigyeled, mikor igazak r√°d, √©s mikor nem.",
-      en: "These are hypotheses, not verdicts ‚Äî many patterns can appear under stress. They're useful if you observe when they hold for you and when they don't.",
-    },
-    // ‚îÄ‚îÄ CollabPage (P4.2) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    collabTitle: { hu: "Csapatban m≈±k√∂dve", en: "Working in a team" },
-    collabClick: { hu: "Term√©szetes partnerek", en: "Natural partners" },
-    collabFriction: { hu: "Lehets√©ges s√∫rl√≥d√°sok", en: "Possible frictions" },
-    collabNeeds: { hu: "Ami kihozza bel≈ëled a legjobbat", en: "What brings out your best" },
-    collabSourceNote: {
-      hu: "Ez a fejezet a szem√©lyis√©gprofilodb√≥l sz√°molt becsl√©s: azt jelzi, milyen k√∂r√ºlm√©nyek k√∂z√∂tt bontakozhatsz ki, √©s hol alakulhat ki s√∫rl√≥d√°s. A konkr√©t koll√©g√°iddal kialakul√≥ csapatdinamik√°t a Trita csapatk√©pe vizsg√°lja r√©szletesebben.",
-      en: "This chapter is a profile-based estimate: it signals which working styles you typically strengthen next to, or grate against. Real team dynamics ‚Äî with your actual colleagues ‚Äî are measured in the Trita team view.",
-    },
-    methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
-    methodNoteBody: {
-      hu: "Az eredm√©nyek √∂njellemz√©sen alapulnak: azt mutatj√°k, ahogyan a kit√∂lt√©skor magadat l√°ttad. A pontsz√°mok viselked√©si tendenci√°kat jeleznek, nem c√≠mk√©ket ‚Äî √©s egyik dimenzi√≥ egyik p√≥lusa sem ‚Äûj√≥\" vagy ‚Äûrossz\": mindegyiknek vannak el≈ënyei √©s k√∂lts√©gei, helyzett≈ël f√ºgg≈ëen. A k√∂rnyezet, a szerep √©s a stressz jelent≈ësen m√≥dos√≠thatja, hogyan jelennek meg a mindennapokban ‚Äî a riport √°ll√≠t√°sait ez√©rt kezeld hipot√©zisk√©nt: vesd √∂ssze a saj√°t tapasztalataiddal √©s m√°sok visszajelz√©s√©vel.",
-      en: "These results are based on self-report: they reflect how you saw yourself at the time of completion. Scores indicate behavioural tendencies, not labels ‚Äî and neither pole of any dimension is 'good' or 'bad': each has benefits and costs, depending on the situation. Context, role, and stress can significantly change how they show up day to day ‚Äî treat the statements in this report as hypotheses: test them against your own experience and feedback from others.",
-    },
-    // ‚îÄ‚îÄ ReflectPage ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    selfVsFeedback: { hu: "√ñnk√©p √©s visszajelz√©s", en: "Self-image vs. Feedback" },
-    howDoOthersSeeYou: { hu: "Hogyan l√°tnak m√°sok?", en: "How do others see you?" },
-    whatToDoWithThis: { hu: "Mit kezdj ezzel?", en: "What to do with this?" },
-    whatToDoDescription: {
-      hu: "Az elt√©r√©sek nem hib√°k, hanem jelz√©sek: ott √©rdemes m√©lyebbre menni, ahol te m√°st √©rzel magadr√≥l, mint amit m√°sok rendszeresen l√°tnak. Figyelj r√° a k√∂vetkez≈ë hetekben, √©s k√©rdezd meg a visszajelz≈ëidet, mire gondoltak konkr√©tan.",
-      en: "Differences aren't mistakes ‚Äî they're signals. It's worth going deeper where your self-perception differs from what others consistently see. Pay attention in the coming weeks and ask your observers what they had in mind specifically.",
-    },
-    // ‚îÄ‚îÄ ReflectPage topline summaries ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    toplineAligned: {
-      hu: "Az √∂nk√©ped √©s m√°sok visszajelz√©se a legt√∂bb dimenzi√≥ban k√∂zel √°ll egym√°shoz.",
-      en: "Your self-image and others' feedback align closely in most dimensions ‚Äî you see yourself realistically.",
-    },
-    toplineGapPrefix: {
-      // HU: a h√≠v√≥ m√°r n√©vel≈ëvel adja √°t a {names}-t (withHuArticle).
-      hu: "A legnagyobb elt√©r√©s {names} ter√ºlet√©n l√°tszik. √ârdemes ezekre k√ºl√∂n√∂sen odafigyelni.",
-      en: "The biggest gaps appear in {names}. These are worth paying close attention to.",
-    },
-    summaryGoodMatch: {
-      hu: "√ñsszess√©g√©ben az √∂nk√©ped √©s m√°sok visszajelz√©se a legt√∂bb dimenzi√≥ban k√∂zel √°ll egym√°shoz.",
-      en: "Overall, you see yourself realistically ‚Äî your self-image and others' feedback are closely aligned in most dimensions.",
-    },
-    summaryGoodMatchDeeper: {
-      // HU: a h√≠v√≥ nagybet≈±s n√©vel≈ëvel adja √°t a {name}-et (withHuArticle).
-      hu: " {name} ter√ºlet√©n √©rdemes m√©lyebbre n√©zni.",
-      en: " It's worth looking deeper at {name}.",
-    },
-    summaryMixed: {
-      hu: "N√©h√°ny dimenzi√≥ban jelent≈ës elt√©r√©s van az √∂nk√©ped √©s m√°sok visszajelz√©se k√∂z√∂tt. Ez nem probl√©ma, hanem lehet≈ës√©g a m√©lyebb √∂nismeretre.",
-      en: "There are significant gaps in some dimensions between your self-image and others' feedback. This isn't a problem ‚Äî it's an opportunity for deeper self-awareness.",
-    },
-    // ‚îÄ‚îÄ PlusFacetsPage ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    subscalesInDetail: { hu: "Alsk√°l√°k r√©szletesen", en: "Subscales in detail" },
-    topSubscales: { hu: "Legmagasabb pontsz√°m√∫ alsk√°l√°k", en: "Top subscales" },
-    facetStandout: {
-      hu: "Legmagasabb pontsz√°m√∫: {topNames}.",
-      en: "Standout: {topNames}.",
-    },
-    facetGrowth: {
-      hu: " Az alacsonyabb {bottomName} nem hi√°nyoss√°g, ink√°bb lehets√©ges fejl≈ëd√©si ir√°nyt jelez.",
-      en: " Lower {bottomName} isn't a weakness ‚Äî it signals where there's room for growth.",
-    },
-    facetSoWhat: { hu: "A gyakorlatban:", en: "In practice:" },
-    whatDoesThisMeanOverall: { hu: "Mit jelent ez √∂sszess√©g√©ben?", en: "What does this mean overall?" },
-    facetBalanced: {
-      hu: "Kiegyens√∫lyozott profil ‚Äî nincs sz√©ls≈ës√©gesen magas vagy alacsony dimenzi√≥. Ez nagyobb rugalmass√°ggal √©s kev√©sb√© kiugr√≥ m≈±k√∂d√©si mint√°kkal j√°rhat.",
-      en: "Balanced profile ‚Äî no extremely high or low dimensions. This means flexibility, but fewer natural 'superpowers'.",
-    },
-    facetHighAndLow: {
-      // HU: a h√≠v√≥ n√©vel≈ëvel adja √°t a neveket (withHuArticle; {lowNames} nagybet≈±s).
-      hu: "Profilod er≈ëss√©ge {highNames} ter√ºlet√©n koncentr√°l√≥dik. {lowNames} alacsonyabb szintje nem probl√©ma ‚Äî ink√°bb azt jelzi, hol √©rdemes tudatosabban m≈±k√∂dn√∂d.",
-      en: "Your profile's strength is concentrated in {highNames}. Lower {lowNames} isn't a problem ‚Äî it signals where to operate more consciously.",
-    },
-    facetHighOnly: {
-      // HU: a h√≠v√≥ n√©vel≈ëvel adja √°t a {highNames}-t (withHuArticle).
-      hu: "Karakteres profil ‚Äî {highNames} mark√°nsan kirajzol√≥dik, √©s nincs kifejezetten alacsony dimenzi√≥.",
-      en: "Strong, distinctive profile ‚Äî {highNames} stands out, with no critically low dimensions.",
-    },
-    facetLowOnly: {
-      // HU: a h√≠v√≥ nagybet≈±s n√©vel≈ëvel adja √°t a {lowNames}-t (withHuArticle).
-      hu: "{lowNames} alacsonyabb szintje tudatos figyelmet √©rdemel ‚Äî ezek a ter√ºletek fejl≈ëd√©si lehet≈ës√©get rejtenek.",
-      en: "Lower {lowNames} deserves conscious attention ‚Äî these areas hold growth potential.",
-    },
-    // ‚îÄ‚îÄ PdfHeader ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    headerAssessment: { hu: "Teszt:", en: "Assessment:" },
-    headerTop: { hu: "Leger≈ësebb:", en: "Top:" },
-    headerWatch: { hu: "Figyelend≈ë:", en: "Watch:" },
-    // ‚îÄ‚îÄ PdfComparison ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    overallGoodMatch: { hu: "√ñsszess√©g√©ben j√≥ egyez√©s", en: "Overall good match" },
-    mixedPicture: { hu: "Vegyes k√©p ‚Äî van mit felfedezni", en: "Mixed picture ‚Äî worth exploring" },
-    observerResponses: { hu: "observer-visszajelz√©s alapj√°n", en: "observer responses" },
-    matching: { hu: "egyez≈ë", en: "matching" },
-    different: { hu: "elt√©r≈ë", en: "different" },
-    avgGap: { hu: "√°tl. elt√©r√©s", en: "avg. gap" },
-    you: { hu: "Te", en: "You" },
-    others: { hu: "M√°sok", en: "Others" },
-    // Ir√°ny-semleges sk√°la-nyelv (FIX 2) ‚Äî a ford√≠tott Emocionalit√°sn√°l az
-    // ‚Äûer≈ësebbnek l√°t" √©rt√©kel≈ë megfogalmaz√°s megfordulna.
-    blindspotSignificantSelfHigher: {
-      hu: "Jelent≈ës elt√©r√©s ‚Äî te magasabbra √©rt√©keled magad",
-      en: "Significant gap ‚Äî you rate yourself higher",
-    },
-    blindspotSignificantObsHigher: {
-      hu: "Jelent≈ës elt√©r√©s ‚Äî m√°sok magasabbra √©rt√©kelnek",
-      en: "Significant gap ‚Äî others rate you higher",
-    },
-    blindspotModSelfHigher: {
-      hu: "M√°sok m√°shogy √©rz√©kelik",
-      en: "Others perceive it differently",
-    },
-    blindspotModObsHigher: {
-      hu: "√ârdemes ut√°nan√©zni",
-      en: "Worth investigating",
-    },
-    blindspotSlight: { hu: "Enyhe elt√©r√©s", en: "Slight difference" },
-    othersRateHigher: { hu: "m√°sok magasabbra √©rt√©kelnek", en: "others rate you higher" },
-    othersRateLower: { hu: "m√°sok alacsonyabbra √©rt√©kelnek", en: "others rate you lower" },
-    selfAssessment: { hu: "√ñn√©rt√©kel√©s", en: "Self" },
-    noBlindSpots: { hu: "Nincs jelent≈ës elt√©r√©s", en: "No blind spots" },
-    noBlindSpotsDesc: {
-      hu: "Ezekben a dimenzi√≥kban az √∂nk√©ped √©s m√°sok visszajelz√©se k√∂zel √°ll egym√°shoz.",
-      en: "You see yourself realistically in these dimensions.",
-    },
-    // ‚îÄ‚îÄ PdfHowYouWork ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    keyPattern: { hu: "F≈ë mint√°zat", en: "Key pattern" },
-    watchArea: { hu: "Figyelend≈ë", en: "Watch area" },
-    // Semleges (‚Äûnote") k√°rtya a PDF-ben ‚Äî ugyanaz a slot, mint a fel√ºleten.
-    patternNote: { hu: "Jellemz≈ë mint√°zat", en: "Characteristic pattern" },
-    context: { hu: "Kontextus", en: "Context" },
-    // ‚îÄ‚îÄ PdfAltruism ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    supplementaryScale: { hu: "Kieg√©sz√≠t≈ë sk√°la", en: "Supplementary scale" },
-    altruism: { hu: "Seg√≠t≈ëk√©szs√©g", en: "Helpfulness" },
-    // ‚îÄ‚îÄ PdfTakeaways ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    keyTakeaways: { hu: "A legfontosabbak", en: "Key takeaways" },
-    // ‚îÄ‚îÄ Riport-szerkezet (PDF ‚Üî web egys√©ges√≠t√©s, 2026-08-18) ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    // A fejezetc√≠mek/k√©rd√©sek/le√≠r√°sok a webes kulcsokb√≥l j√∂nnek
-    // (results.report*Title|Question|Body) ‚Äî itt csak a PDF-specifikus
-    // navig√°ci√≥s √©s mell√©klet-sz√∂vegek √©lnek.
-    contentsTitle: { hu: "Mi van a riportban?", en: "What's in this report?" },
-    contentsAppendices: { hu: "Mell√©kletek", en: "Appendices" },
-    quickOverviewTitle: { hu: "Gyors √∂sszk√©p", en: "Quick overview" },
-    appendixEyebrow: { hu: "Mell√©klet", en: "Appendix" },
-    appendixObserverTitle: { hu: "K√ºls≈ë n√©z≈ëpont", en: "Outside view" },
-    appendixObserverNote: {
-      hu: "M√©rt adat: a visszajelz≈ëid v√°laszainak √∂sszes√≠tett √°tlaga, az √∂nk√©peddel √∂sszevetve.",
-      en: "Measured data: the aggregated average of your observers' answers, compared with your self-image.",
-    },
-    appendixCareerTitle: { hu: "Karrier-ir√°nyt≈±", en: "Career compass" },
-    appendixCareerNote: {
-      hu: "A kit√∂lt√∂tt Karrier-ir√°nyt≈± eredm√©nye ‚Äî illeszked√©si becsl√©s megb√≠zhat√≥s√°gi s√°vval.",
-      en: "The result of the Career compass you completed ‚Äî a fit estimate with a confidence band.",
-    },
-    appendixRelationalTitle: { hu: "Kapcsolati dinamika", en: "Relational dynamics" },
-    appendixRelationalNote: {
-      hu: "Becsl√©s a szem√©lyis√©gprofilb√≥l, nem k√∂zvetlen m√©r√©s: a saj√°t pontsz√°maidb√≥l levezetett hipot√©zisek arr√≥l, kikkel m≈±k√∂dhetsz jellemz≈ëen j√≥l, hol alakulhat ki s√∫rl√≥d√°s, √©s mi jelenhet meg nyom√°s alatt.",
-      en: "A profile-based ESTIMATE, not a measurement: hypotheses derived from your own scores about who you typically work well with, where friction may appear, and what may show up under pressure.",
-    },
-    // ‚îÄ‚îÄ 01 ¬∑ √Åttekint√©s ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    overviewRadarTitle: { hu: "A profilod egy √°br√°n", en: "Your profile at a glance" },
-    // ‚îÄ‚îÄ 02 ¬∑ Dimenzi√≥k ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    dimensionSubscales: { hu: "Alsk√°l√°k", en: "Subscales" },
-    dimensionNoSubscales: {
-      hu: "Ehhez a dimenzi√≥hoz nincs alsk√°la-bont√°s ebben a kit√∂lt√©sben.",
-      en: "No subscale breakdown is available for this dimension in this completion.",
-    },
-    // ‚îÄ‚îÄ 03 ¬∑ Munkast√≠lus √©s fejl≈ëd√©s ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    idealEnvironment: { hu: "Ide√°lis k√∂rnyezet", en: "Ideal environment" },
-    idealEnvironmentNote: {
-      hu: "A sorok azt mutatj√°k, milyen munkak√∂rnyezet mellett m≈±k√∂dsz jellemz≈ëen a legjobban. A p√≥lusok k√∂z√∂tt nincs jobb √©s rosszabb ‚Äî a k√ºl√∂nbs√©g az, mit ig√©nyelnek t≈ëled.",
-      en: "These rows show the working environment you typically operate best in. Neither pole is better ‚Äî they simply ask different things of you.",
-    },
-    // ‚îÄ‚îÄ PdfFooter ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
-    footerTagline: { hu: "Szem√©lyis√©g √©s csapatintelligencia", en: "Personality and team intelligence" },
-  },
-} as const;
+Y™Áäx-ÆÈ‹j◊ù¢Îi∫⁄+äßj[hëÈ‹¢ÈÌÁø{È:-jZ.∂õ≠ñ)ﬁ≥VWá˜'B6ˆÁ7B&W7V«G5G&Á6∆FñˆÁ2“∞¢F6Ü&ˆ&C¢∞¢÷WFFFFóF∆S¢≤áS¢%&ˆfñ∆ˆ“¬G&óF"¬V„¢$◊í&ˆfñ∆R¬G&óF"“¿¢W'6ˆÊ≈Fs¢≤áS¢%7¶V‹:ñ«ñW2&ˆfñ¬"¬V„¢%W'6ˆÊ¬&ˆfñ∆R"“¿¢6ˆÁFñÁVTG&gEFóF∆S¢≤áS¢$l:ñ∆&VÜwñ˜GBFW7ßB"¬V„¢%VÊfñÊó6ÜVBFW7B"“¿¢6ˆÁFñÁVTG&gD&ˆGì¢≤áS¢$fˆ«óF6BˆÊÊ‚¬Üˆ¬&&ÜwóFBá∂Á7vW&VG“˜∑F˜F«“º:ó&L:ó2º:ó7¢í‚"¬V„¢$6ˆÁFñÁVRvÜW&Rñ˜R∆VgBˆfbá∂Á7vW&VG“˜∑F˜F«“VW7FñˆÁ2FˆÊRí‚"“¿¢Êı&W7V«EFóF∆S¢≤áS¢$‹:ñrÊñÊ72∂ú:ó'L:ñ∂VÃ:ó6VB"¬V„¢$ÊÚ&W7V«G2ñWB"“¿¢Êı&W7V«D&ˆGì¢≤áS¢%L;f«G6B∂í∑FW7DÊ÷W“FW7ßFWB¬ÜˆwíÃ:6B¢W&VF‹:ñÁñVñFWB‚"¬V„¢$6ˆ◊∆WFRFÜR∑FW7DÊ÷W“FW7BFÚ6VRñ˜W"&W7V«G2‚"“¿¢∆FW7DWf«VFñˆ„¢≤áS¢$∆VwWL;6&&í∂ú:ó'L:ñ∂VÃ:ó2"¬V„¢$∆FW7BWf«VFñˆ‚"“¿¢wVñFVEFs¢≤áS¢$FRWFB"¬V„¢%ñ˜W"¶˜W&ÊWí"“¿¢ÊWáE7FWFóF∆S¢≤áS¢$º;gfWF∂W¨YÃ:ó:ó2"¬V„¢$ÊWáB7FW"“¿¢wVñFVE&ó6S¢≤áS¢$ÊV“fwíVwñVL;∆¬¬Ã:ó:ó7,Y¬Ã:ó:ó7&RfW¶WL;∆Ê≤‚"¬V„¢%ñ˜R&RÊ˜B∆ˆÊR‚vRvñ∆¬wVñFRñ˜R7FW'í7FW‚"“¿¢¶˜W&ÊWï&ˆw&W73¢≤áS¢$Ü∆L:2"¬V„¢%&ˆw&W72"“¿¢¶˜W&ÊWï7FW6V∆c¢≤áS¢%6¨:BW&VF‹:ñÁí"¬V„¢%6V∆b&W7V«B"“¿¢¶˜W&ÊWï7FWñÁfóFS¢≤áS¢$÷Vvå:◊l:6ˆ≤"¬V„¢$ñÁfóFFñˆÁ2"“¿¢¶˜W&ÊWï7FWˆ'6W'fW#¢≤áS¢%fó77¶¶V«¨:ó2‹:6ˆ∑L;6¬"¬V„¢$ˆ'6W'fW"fVVF&6≤"“¿¢¶˜W&ÊWï7FWfVVF&6≥¢≤áS¢%fó77¶¶V«¨:ó6VB"¬V„¢%ñ˜W"fVVF&6≤"“¿¢ÊWáE7FWñÁfóFUFóF∆S¢≤áS¢$Üˆwñ‚Ã:FÊ≤‹:6ˆ≥Ú"¬V„¢%6VRÜ˜r˜FÜW'26VRñ˜R"“¿¢ÊWáE7FWñÁfóFT&ˆGï&S¢≤áS¢$å:◊fB÷Vr∂ˆ∆Ã:ñ|:ñFB¬&,:FñFB(	B∆VvÃ:&""¬V„¢$ñÁfóFRñ˜W"6ˆ∆∆VwVW2ÊBg&ñVÊG2(	BB∆V7B"“¿¢ÊWáE7FWñÁfóFT&ˆGîÜñvÜ∆ñváC¢≤áS¢#"fó77¶¶V«¨:ó2"¬V„¢#"&W7ˆÁ6W2"“¿¢ÊWáE7FWñÁfóFT&ˆGï˜7C¢≤áS¢"∂V∆¬¢;g77¶VÜ6ˆÊÃ:◊L:6Ü˜¢‚"¬V„¢"&RÊVVFVBf˜"FÜR6ˆ◊&ó6ˆ‚‚"“¿¢ÊWáE7FWñÁfóFTÊ˜FS¢∞¢áS¢$VÊÁñí∂V∆¬¬Üˆwí:ó'FV∆÷W¶ÜWLY;g77¶VÜ6ˆÊÃ:◊L:7BÃ:72å:F∆r∆¨:‚í‚"¿¢V„¢%FÜBw2FÜR÷ñÊñ◊V“ÊVVFVBf˜"÷VÊñÊvgV¬6ˆ◊&ó6ˆ‚Ü&6VBˆ‚‚fW&vRí‚"¿¢“¿¢ÊWáE7FWñÁfóFT7F¢≤áS¢$÷Vvå:◊l;2º;∆∆L:ó6R"¬V„¢%6VÊBñÁfóFR"“¿¢ÊWáE7FWvóEFóF∆S¢≤áS¢%l:&ßV≤fó77¶¶V«¨:ó6V∂WB"¬V„¢%vóFñÊrf˜"fVVF&6≤"“¿¢ÊWáE7FWvóD&ˆGì¢≤áS¢'∑&V6VófVG“Û"fó77¶¶V«¨:ó2:ó&∂W¶WGB+r∑VÊFñÊw“l;∆v|Y&V‚"¬V„¢'∑&V6VófVG“Û"&W7ˆÁ6W2&V6VófVB+r∑VÊFñÊw“VÊFñÊr"“¿¢ÊWáE7FW÷ÊvTñÁfóFW47F¢≤áS¢$÷Vvå:◊l;6≤∂W¶VÃ:ó6R"¬V„¢$÷ÊvRñÁfóFW2"“¿¢ÊWáE7FW6ˆ◊&UFóF∆S¢≤áS¢$Ï:ó¶B÷Vrº;∆Ã;fÊ'<:ñvV∂WB"¬V„¢%6VRFÜRFñffW&VÊ6W2"“¿¢ÊWáE7FW6ˆ◊&T&ˆGì¢≤áS¢$Ü6ˆÊÃ:◊G6B;g77¶R¬Üˆwñ‚Ã:FˆB÷vB:ó2Üˆwñ‚Ã:FÊ≤‹:6ˆ≤‚"¬V„¢$6ˆ◊&RÜ˜rñ˜R6VRñ˜W'6V∆bvóFÇÜ˜r˜FÜW'26VRñ˜R‚"“¿¢ÊWáE7FW6ˆ◊&T7F¢≤áS¢%Vw,:2¢;g77¶VÜ6ˆÊÃ:◊L:6Ü˜¢"¬V„¢$ßV◊FÚ6ˆ◊&ó6ˆ‚"“¿¢ÊWáE7FWfVVF&6µFóF∆S¢≤áS¢$FBfó77¶¶V«¨:ó6VB"¬V„¢%6Ü&Rñ˜W"fVVF&6≤"“¿¢ÊWáE7FWfVVF&6¥&ˆGì¢≤áS¢%:"º:ó&L:ó2',;6¬¬÷VÊÁñó&R:ó'FW7¢VwñWB¢W&VF‹:ñÊÁñV¬‚"¬V„¢$fWrVñ6≤VW7FñˆÁ2&˜WBÜ˜rvV∆¬FÜR&W7V«G2÷F6Çñ˜R‚"“¿¢ÊWáE7FWfVVF&6¥7F¢≤áS¢%fó77¶¶V«¨:ó2÷VvL:6"¬V„¢$vófRfVVF&6≤"“¿¢ÊWáE7FWFˆÊUFóF∆S¢≤áS¢$º:ó7¶V‚ó2fwí"¬V„¢%ñ˜Rw&R∆¬6WB"“¿¢ÊWáE7FWFˆÊT&ˆGì¢≤áS¢%&V‹:ñ∆¨;∆≤¬Üˆwí¢W&VF‹:ñÁñV≤:ó2fó77¶¶V«¨:ó6V≤Ü7¶Ê˜2fV∆ó6÷W,:ó6V∂WBÜ˜ßF≤"¬V„¢%vRÜ˜RFÜR&W7V«G2ÊBfVVF&6≤'&˜VváBñ˜RW6VgV¬ñÁ6ñváG2"“¿¢ÊWáE7FWFˆÊT7F¢≤áS¢%fó77¶¢W&VF‹:ñÁñV∂ÜW¢"¬V„¢$&6≤FÚ&W7V«G2"“¿¢ÊWáE7FW7W'fWïFóF∆S¢≤áS¢%6V|:◊G2ÊVº;∆Ê≤"¬V„¢$ÜV«W2ñ◊&˜fR"“¿¢ÊWáE7FW7W'fWî&ˆGì¢≤áS¢%L;f«G6B∂í,;gfñBfó77¶¶V«¨Yº:ó&LY:◊l;∆Ê∂WB(	B:"º:ó&L:ó2¬Êwí6V|:◊G<:ñr‚"¬V„¢$fñ∆¬ñ‚˜W"6Ü˜'BfVVF&6≤7W'fWí(	BfWrVW7FñˆÁ2¬&ñrÜV«‚"“¿¢ÊWáE7FW7W'fWî7F¢≤áS¢$∂óL;f«L;f“"¬V„¢$fñ∆¬óB˜WB"“¿¢ÊWáE7FWFW7EFóF∆S¢≤áS¢$∂W¶FBV¬FW7ßFWB"¬V„¢%F∂RFÜRFW7B"“¿¢ÊWáE7FWFW7D&ˆGì¢≤áS¢$¢V«<YÃ:ó:ó26¨:B7¶V‹:ñ«ñó<:ñ|:ó'L:ñ∂VÃ:ó6VBV«l:ñw¨:ó6R‚"¬V„¢%FÜRfó'7B7FWó26ˆ◊∆WFñÊrñ˜W"˜v‚W'6ˆÊ∆óGí76W76÷VÁB‚"“¿¢ÊWáE7FWG&gEFóF∆S¢≤áS¢$fˆ«óF6BFW7ßFWB"¬V„¢$6ˆÁFñÁVRFÜRFW7B"“¿¢ÊWáE7FWG&gD&ˆGì¢≤áS¢$‹:"V∆ñÊL:◊F˜GFB∂óL;f«L:ó7B(	Bfˆ«óF6B˜GB¬Üˆ¬&&ÜwóFB‚"¬V„¢%ñ˜RwfR«&VGí7F'FVBFÜRFW7B(	B6ˆÁFñÁVRvÜW&Rñ˜R∆VgBˆfb‚"“¿¢&ˆfñ∆T˜fW'fñWs¢≤áS¢%7¶V‹:ñ«ñó<:ñw&ˆfñ¬:GFV∂ñÁL:ó2"¬V„¢%W'6ˆÊ∆óGí&ˆfñ∆R˜fW'fñWr"“¿¢˜fW'fñWt∆ñ∂W'C¢≤áS¢$wñ˜'2fóß\:∆ó2;g77¶º:ólY7¶V‹:ñ«ñó<:ñvFñ÷VÁ¶ú;6ñG,;6¬‚"¬V„¢$Vñ6≤fó7V¬6Ê6Ü˜Bˆbñ˜W"÷ñ‚W'6ˆÊ∆óGíFñ÷VÁ6ñˆÁ2‚"“¿¢&F$∆VvVÊE6V∆c¢≤áS¢%6¨:B"¬V„¢%6V∆b"“¿¢&F$∆VvVÊDˆ'6W'fW'3¢≤áS¢$‹:6ˆ≤"¬V„¢$˜FÜW'2"“¿¢7V7G'V‘ÜñvÉ¢≤áS¢$÷v2"¬V„¢$ÜñvÇ"“¿¢7V7G'V‘∆˜s¢≤áS¢$∆76ˆÁí"¬V„¢$∆˜r"“¿¢FWFñ∆VEFóF∆S¢≤áS¢%,:ó7¶∆WFW2∂ú:ó'L:ñ∂VÃ:ó2"¬V„¢$FWFñ∆VB&W7V«G2"“¿¢FWFñ∆VD&ˆGì¢≤áS¢$6º:∆:ó'L:ñ∂V≤:ó2,;gfñB¶V∆∆V◊¨:ó6VB‚"¬V„¢%66∆Rf«VW2ÊB6Ü˜'BñÁFW'&WFFñˆ‚‚"“¿¢ÚÚá&W7V«G2Ê«G'Vó6’FóF∆RÚ«G'Vó6‘&ˆGíL;g,;f«fR##b”Ç”(	B:'f∑V∆76ˆ∞¢ÚÚfˆwñ7ßL;2Ï:ñ∆º;∆√≤¢:ñÃY7¨;gfVvV≤6ˆÁFVÁBÊ«G'Vó6“¶Ï:ógL:ó&&V‚:ñ∆ÊV≤‚ê¢Fñ÷VÁ6ñˆ‰ÜñÁC¢≤áS¢$∂GFñÁG2,:ó7¶∆WFVº:ó'B"¬V„¢%Ff˜"FWFñ«2"“¿¢˜V‰FWFñ«3¢≤áS¢%,:ó7¶∆WFV≤"¬V„¢$FWFñ«2"“¿¢Fñ÷VÁ6ñˆÂvÜC¢≤áS¢$÷óB‹:ó"W¢Fñ÷VÁ¶ú;3Ú"¬V„¢%vÜBFˆW2FÜó2Fñ÷VÁ6ñˆ‚÷V7W&SÚ"“¿¢Fñ÷VÁ6ñˆ‰ñÁFW'&WFFñˆ„¢≤áS¢$÷óB¶V∆VÁB¢W&VF‹:ñÁñVC¢"¬V„¢%vÜBñ˜W"&W7V«B÷VÁ3¢"“¿¢Fñ÷VÁ6ñˆ‰∆˜s¢≤áS¢$∆76ˆÁíÉCR∆GBí"¬V„¢$∆˜rÉ¬CRí"“¿¢Fñ÷VÁ6ñˆ‰÷ñC¢≤áS¢$º;g¶WW2ÉC(	3cíRí"¬V„¢$÷VFóV“ÉC”cíRí"“¿¢Fñ÷VÁ6ñˆ‰ÜñvÉ¢≤áS¢$÷v2ÉsRfV∆WGBí"¬V„¢$ÜñvÇÉ„“sRí"“¿¢f6WG5FóF∆S¢≤áS¢$«6º:Ã:≤"¬V„¢$f6WG2"“¿¢7V7G5FóF∆S¢≤áS¢$7V∑GW6ˆ≤"¬V„¢$7V7G2"“¿¢6Ü˜u7V%66∆W3¢≤áS¢%F˜l:&&í,:ó7¶∆WFV≤"¬V„¢%6Ü˜rFWFñ«2"“¿¢ÜñFU7V%66∆W3¢≤áS¢%,:ó7¶∆WFV≤V«&VßL:ó6R"¬V„¢$ÜñFRFWFñ«2"“¿¢Fñ÷VÁ6ñˆ„¢∞¢fVVF&6µFóF∆S¢∞¢áS¢$÷VÊÁñó&RFÃ:Ã;2W¢Fñ÷VÁ¶ú;3Ú"¿¢V„¢$Ü˜r67W&FRó2FÜó2Fñ÷VÁ6ñˆ„Ú"¿¢“¿¢fVVF&6¥&6µFÙFWFñ«3¢∞¢áS¢$÷VvÏ:ó¶V“‹:ñrVwó7¶W""¿¢V„¢%&WfñWrvñ‚"¿¢“¿¢fVVF&6µ&ˆ◊C¢∞¢áS¢%6V|:◊G2ˆÁF˜<:◊FÊíFW7ßFWBfó77¶¶V«¨:ó6VFFV¬‚"¿¢V„¢%∆V6RÜV«W2ñ◊&˜fRFÜRFW7B67W&7ívóFÇñ˜W"fVVF&6≤‚"¿¢“¿¢fVVF&6µfW'îñÊ67W&FS¢∞¢áS¢$Êwñˆ‚ˆÁFF∆‚"¿¢V„¢%fW'íñÊ67W&FR"¿¢“¿¢fVVF&6µ6ˆ÷WvÜDñÊ67W&FS¢∞¢áS¢$ñÊº:&"ˆÁFF∆‚"¿¢V„¢%6ˆ÷WvÜBñÊ67W&FR"¿¢“¿¢fVVF&6¥ÊWWG&√¢∞¢áS¢%6V÷∆VvW2"¿¢V„¢$ÊWWG&¬"¿¢“¿¢fVVF&6¥67W&FS¢∞¢áS¢%FÃ:Ã;2"¿¢V„¢$67W&FR"¿¢“¿¢fVVF&6µfW'î67W&FS¢∞¢áS¢$Êwñˆ‚FÃ:Ã;2"¿¢V„¢%fW'í67W&FR"¿¢“¿¢fVVF&6¥FD6ˆ÷÷VÁC¢∞¢áS¢"≤÷Vv¶Vwó¨:ó2Ü˜ß¨:L:6Ü˜6ñˆÏ:∆ó2í"¿¢V„¢"≤FB6ˆ÷÷VÁBÜ˜FñˆÊ¬í"¿¢“¿¢fVVF&6¥ÜñFT6ˆ÷÷VÁC¢∞¢áS¢.(â"÷Vv¶Vwó¨:ó2V«&VßL:ó6R"¿¢V„¢.(â"ÜñFR6ˆ÷÷VÁB"¿¢“¿¢fVVF&6¥6ˆ÷÷VÁE∆6VÜˆ∆FW#¢∞¢áS¢$÷ífˆ«BFÃ:Ã;2fwíˆÁFF∆‚V&&V‚Fñ÷VÁ¶ú;6&„Ú"¿¢V„¢%vÜBfV«B67W&FR˜"ñÊ67W&FR&˜WBFÜó2Fñ÷VÁ6ñˆ„Ú"¿¢“¿¢fVVF&6µ7V&÷óC¢∞¢áS¢%fó77¶¶V«¨:ó2&Vº;∆∆L:ó6R"¿¢V„¢%7V&÷óBfVVF&6≤"¿¢“¿¢fVVF&6µ7V&÷óGFñÊs¢∞¢áS¢$º;∆∆L:ó2‚‚‚"¿¢V„¢%7V&÷óGFñÊr‚‚‚"¿¢“¿¢fVVF&6µFÜÊµñ˜S¢∞¢áS¢$º;g7¨;fÊ¨;∆≤"¿¢V„¢%FÜÊ≤ñ˜R"¿¢“¿¢fVVF&6¥W'&˜#¢∞¢áS¢$ÊV“6ñ∂W,;∆«BV∆º;∆∆FVÊífó77¶¶V«¨:ó7B‚,;6,:∆B;¶ß&"¿¢V„¢$6˜V∆BÊ˜B7V&÷óBfVVF&6≤‚∆V6RG'ívñ‚‚"¿¢“¿¢fVVF&6µFw4∆&V√¢∞¢áS¢$÷V«ñV∂WB:ó'¶VBñv¶Ê≤Fñ÷VÁ¶ú;2∂7<:„Ú"¿¢V„¢%vÜñ6ÇˆbFÜW6RfVV¬G'VRf˜"FÜó2Fñ÷VÁ6ñˆ„Ú"¿¢“¿¢fVVF&6µ&FñÊt∆&V√¢∞¢áS¢$Üˆwñ‚:ó'L:ñ∂V∆Ï:ñB;g77¶W7<:ñ|:ñ&V‚WßBFñ÷VÁ¶ú;7CÚ"¿¢V„¢$Ü˜rv˜V∆Bñ˜R&FRFÜó2Fñ÷VÁ6ñˆ‚˜fW&∆√Ú"¿¢“¿¢“¿¢fVVF&6µFóF∆S¢≤áS¢%fó77¶¶V«¨:ó2¢W&VF‹:ñÁó,Y¬"¬V„¢$fVVF&6≤ˆ‚ñ˜W"&W7V«G2"“¿¢fVVF&6¥&ˆGì¢≤áS¢$÷ˆÊFBV¬¬÷VÊÁñó&R:ó'¶VBFÃ:Ã;6Ê≤∂ú:ó'L:ñ∂VÃ:ó7B‚"¬V„¢%FV∆¬W2Ü˜r67W&FRFÜR&W7V«G2fVV¬‚"“¿¢fVVF&6¥˜V‰7F¢≤áS¢%fó77¶¶V«¨:ó2÷VvL:6"¬V„¢$vófRfVVF&6≤"“¿¢fVVF&6µFÜÊ∑3¢≤áS¢$º;g7¨;fÊ¨;∆≤fó77¶¶V«¨:ó7B"¬V„¢%FÜÊ∑2f˜"ñ˜W"fVVF&6≤"“¿¢fVVF&6¥w&VV÷VÁD∆&V√¢≤áS¢$÷VÊÁñó&Ró6÷W'L:ñ¬÷vG&¢W&VF‹:ñÁñV∂&V„Ú"¬V„¢$Ü˜rvV∆¬FñBñ˜R&V6ˆvÊó¶Rñ˜W'6V∆bñ‚FÜR&W7V«G3Ú"“¿¢fVVF&6¥ˆ'6W'fW%W6VgV∆ÊW74∆&V√¢≤áS¢$÷VÊÁñó&Rfˆ«F≤Ü7¶Ê˜6≤7¨:÷ˆG&fó77¶¶V«¨:ó6V≤÷Vvå:◊f˜GF∑L;6√Ú"¬V„¢$Ü˜rW6VgV¬v2FÜRfVVF&6≤g&ˆ“FÜRV˜∆Rñ˜RñÁfóFVCÚ"“¿¢fVVF&6µ6óFUW6VgV∆ÊW74∆&V√¢≤áS¢$Ü7¶Ê˜6Ê≤FÃ:«FB¢ˆ∆F«CÚ"¬V„¢$FñBñ˜RfñÊBFÜR6óFRW6VgV√Ú"“¿¢fVVF&6µ66∆UfW'î∆˜s¢≤áS¢$Vwú:«FÃ:‚ÊV“"¬V„¢$Ê˜BB∆¬"“¿¢fVVF&6µ66∆T∆˜s¢≤áS¢$ñÊº:&"ÊV“"¬V„¢%&FÜW"Ê˜B"“¿¢fVVF&6µ66∆TÊWWG&√¢≤áS¢%,:ó7¶&V‚"¬V„¢$ÊWWG&¬"“¿¢fVVF&6µ66∆TÜñvÉ¢≤áS¢$Êwó,:ó7ßB"¬V„¢$w&VR"“¿¢fVVF&6µ66∆UfW'îÜñvÉ¢≤áS¢%FV∆¶W2‹:ó'L:ñ∂&V‚"¬V„¢$gV∆«íw&VR"“¿¢fVVF&6¥6ˆÁFñÁVU&ˆ◊C¢≤áS¢$º;g7¨;fÊ¨;∆≤Üf‚‹:ñr3‹:6ˆGW&6VB¬6V|:◊G2Ï:ñå:ÁíF˜l:&&íº:ó&L:ó76V¬‚"¬V„¢%FÜÊ≤ñ˜Rñbñ˜RÜfR3÷˜&R6V6ˆÊG2¬ÜV«W2vóFÇfWr÷˜&RVW7FñˆÁ2‚"“¿¢fVVF&6¥6ˆÁFñÁVT'WGFˆ„¢≤áS¢$fˆ«óFFˆ“"¬V„¢$6ˆÁFñÁVR"“¿¢fVVF&6µvÁG5WFFW5ñW3¢≤áS¢$ñvV‚"¬V„¢%ñW2"“¿¢fVVF&6µvÁG5WFFW4ÊÛ¢≤áS¢$ÊV“"¬V„¢$ÊÚ"“¿¢fVVF&6¥g&VVf˜&‘∆&V√¢≤áS¢$Üf‚,:&÷ñ«ñV‚vˆÊFˆ∆FˆBfwí:ó7ß&Wl:óFV∆VB¬:◊&B÷VrÊVº;∆Ê≤"¬V„¢%∆V6R6Ü&RÁíFÜ˜VváG2˜"6ˆ÷÷VÁG2ñ˜RÜfR"“¿¢fVVF&6¥g&VVf˜&’∆6VÜˆ∆FW#¢≤áS¢$÷óBl:«F˜ßFFÏ:√Ú÷ífˆ«Bñv¨:‚FÃ:Ã;3Ú"¬V„¢%vÜBv˜V∆Bñ˜R6ÜÊvSÚvÜBfV«B67W&FSÚ"“¿¢fVVF&6µWFFW4∆&V√¢≤áS¢,8ó&FV∂V∆ÊV≤fV¶∆W7ßL:ó2F˜l:&&í,:ó7¶∆WFVí"¬V„¢$ívÁBWFFW2&˜WBFÜR&ˆ¶V7B"“¿¢fVVF&6µ7V&÷óC¢≤áS¢$&Vº;∆∆L:ó2"¬V„¢%7V&÷óB"“¿¢fVVF&6µ7V&÷óD∆ˆFñÊs¢≤áS¢$÷VÁL:ó2‚‚‚"¬V„¢%6fñÊr‚‚‚"“¿¢fVVF&6¥W'&˜#¢≤áS¢$ÊV“6ñ∂W,;∆«B&Vº;∆∆FVÊí‚,;6,:∆B;¶ß&"¬V„¢$6˜V∆BÊ˜B7V&÷óB‚∆V6RG'ívñ‚‚"“¿¢ÚÚ)H)H&W6V&6Ç7W'fWí)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢7W'fWïFóF∆S¢≤áS¢%fó77¶¶V«¨:ó2"¬V„¢$fVVF&6≤"“¿¢7W'fWï7V'FóF∆S¢≤áS¢#^(	3bº:ó&L:ó2¬„W&2+r6V|:◊G2¶ˆ&,:FVÊÊíG&óL:B"¬V„¢#^(	3bVW7FñˆÁ2¬„÷ñ‚+rÜV«W2÷∂RG&óF&WGFW""“¿¢7W'fWî◊V«FîÜñÁC¢≤áS¢%L;f&"ó2l:∆7ßFÜL;2"¬V„¢$◊V«Fó∆R6V∆V7FñˆÁ2∆∆˜vVB"“¿¢7W'fWîÊWáC¢≤áS¢%F˜l:&""¬V„¢$ÊWáB"“¿¢7W'fWï7V&÷óC¢≤áS¢$&Vº;∆∆L:ó2"¬V„¢%7V&÷óB"“¿¢7W'fWï6∂ó¢≤áS¢$∂ñÜwñˆ“"¬V„¢%6∂ó"“¿¢7W'fWïFÜÊ∑3¢≤áS¢$º;g7¨;fÊ¨;∆≤fó77¶¶V«¨:ó7B"¬V„¢%FÜÊ∑2f˜"ñ˜W"fVVF&6≤"“¿¢7W'fWï7V&÷óGFñÊs¢≤áS¢$÷VÁL:ó2‚‚‚"¬V„¢%6fñÊr‚‚‚"“¿¢7W'fWîW'&˜#¢≤áS¢$ÊV“6ñ∂W,;∆«B&Vº;∆∆FVÊí‚,;6,:∆B;¶ß&"¬V„¢$6˜V∆BÊ˜B7V&÷óB‚∆V6RG'ívñ‚‚"“¿¢ÚÚ¢7W'fWï∆&V√¢≤áS¢$÷VÊÁñó&Ró6÷W'L:ñ¬÷vG&¢W&VF‹:ñÁñV∂&V„Ú"¬V„¢$Ü˜rvV∆¬FñBñ˜R&V6ˆvÊó¶Rñ˜W'6V∆bñ‚FÜR&W7V«G3Ú"“¿¢ÚÚ ¢7W'fWï$∆&V√¢≤áS¢%L;f«L;gGL:ñ¬÷R‹:"∂íÜ6ˆÊÃ;27¶V‹:ñ«ñó<:ñwFW7ßFWCÚ"¬V„¢$ÜfRñ˜RF∂V‚6ñ÷ñ∆"W'6ˆÊ∆óGíFW7B&Vf˜&SÚ"“¿¢7W'fWï$÷'Fì¢≤áS¢$‘%Dí"¬V„¢$‘%Dí"“¿¢7W'fWï$&ñtfófS¢≤áS¢$&ñrfófR"¬V„¢$&ñrfófR"“¿¢7W'fWï$ÜWÜ6Û¢≤áS¢$ÑUÑ4Ú"¬V„¢$ÑUÑ4Ú"“¿¢7W'fWï$Fó63¢≤áS¢$Dï42"¬V„¢$Dï42"“¿¢7W'fWï$˜FÜW#¢≤áS¢$ñvV‚¬‹:7B"¬V„¢%ñW2¬Ê˜FÜW"ˆÊR"“¿¢7W'fWï$ÊˆÊS¢≤áS¢$‹:ñrÊV“"¬V„¢$Ê˜BñWB"“¿¢ÚÚ6(	BV◊∆˜ñV@¢7W'fWï6∆&V√¢≤áS¢$÷ñ«ñV‚7¶ñÁL[˜¨:÷6ú;6&‚Fˆ∆v˜¶ˆ√Ú"¬V„¢%vÜB∆WfV¬ó2ñ˜W"7W'&VÁB˜6óFñˆ„Ú"“¿¢7W'fWï6ßVÊñ˜#¢≤áS¢$&V˜7ßF˜GB"¬V„¢$ñÊFófñGV¬6ˆÁG&ñ'WF˜""“¿¢7W'fWï6÷ñFF∆S¢≤áS¢$º;g¨:ófW¶WLY"¬V„¢$÷ñFF∆R÷ÊvW""“¿¢7W'fWï66VÊñ˜#¢≤áS¢$fV«<YfW¶WLY"¬V„¢%6VÊñ˜"WÜV7WFófR"“¿¢7W'fWï6ñÊFWVÊFVÁC¢≤áS¢,9fÏ:∆Ã;2l:∆∆∆∂˜¨;2"¬V„¢$ñÊFWVÊFVÁBÚg&VV∆Ê6R"“¿¢ÚÚ6"(	B7GVFVÁ@¢7W'fWï6$∆&V√¢≤áS¢$÷ñ«ñV‚FW,;∆∆WFV‚FÁV«7£Ú"¬V„¢%vÜBfñV∆BFÚñ˜R7GVGìÚ"“¿¢7W'fWï6$'W6ñÊW73¢≤áS¢$v¶F<:rÚ9«¶∆WB"¬V„¢$'W6ñÊW72ÚV6ˆÊˆ÷ñ72"“¿¢7W'fWï6%7FV”¢≤áS¢%FW&‹:ó7¶WGGVFˆ‹:ÁíÚFV6Ç"¬V„¢%66ñVÊ6RÚFV6ÜÊˆ∆ˆwí"“¿¢7W'fWï6$áV÷ÊóFñW3¢≤áS¢$áV‹:‚ÚL:'6F∆ˆ“"¬V„¢$áV÷ÊóFñW2Ú6ˆ6ñ¬66ñVÊ6W2"“¿¢7W'fWï6$ÜV«FÉ¢≤áS¢$V|:ó7ß<:ñ|;∆wí"¬V„¢$ÜV«FÜ6&R"“¿¢7W'fWï6$˜FÜW#¢≤áS¢$‹:2"¬V„¢$˜FÜW""“¿¢ÚÚBñÊGW7G'ê¢7W'fWïFî∆&V√¢≤áS¢$÷ñ«ñV‚ó,:v&‚Fˆ∆v˜¶ˆ¬ÚFÁV«7£Ú"¬V„¢%vÜBñÊGW7G'íFÚñ˜Rv˜&≤˜"7GVGíñ„Ú"“¿¢7W'fWïFïFV6É¢≤áS¢%FV6ÇÚïB"¬V„¢%FV6ÇÚïB"“¿¢7W'fWïFîfñÊÊ6S¢≤áS¢%:ñÁ¨;∆wíÚ&Ê≤"¬V„¢$fñÊÊ6RÚ&Ê∂ñÊr"“¿¢7W'fWïFîÜV«FÉ¢≤áS¢$V|:ó7ß<:ñ|;∆wíÚwú;6wó7¶W""¬V„¢$ÜV«FÜ6&RÚÜ&÷"“¿¢7W'fWïFîVGV6Fñˆ„¢≤áS¢$ˆ∑FL:2Ú∑WFL:2"¬V„¢$VGV6Fñˆ‚Ú&W6V&6Ç"“¿¢7W'fWïFï&WFñ√¢≤áS¢$∂W&W6∂VFV∆V“Ú∆ˆvó7ßFñ∂"¬V„¢%&WFñ¬Ú∆ˆvó7Fñ72"“¿¢7W'fWïFî÷ÁVf7GW&ñÊs¢≤áS¢$wú:'L:2Úó""¬V„¢$÷ÁVf7GW&ñÊrÚñÊGW7G'í"“¿¢7W'fWïFî6ˆÁ7V«FñÊs¢≤áS¢%FÏ:76L:2Ú÷&∂WFñÊr"¬V„¢$6ˆÁ7V«FñÊrÚ÷&∂WFñÊr"“¿¢7W'fWïFïV&∆ñ3¢≤áS¢$º;gß7¶l:ó&Ú‰tÚ"¬V„¢%V&∆ñ26V7F˜"Ú‰tÚ"“¿¢7W'fWïFî˜FÜW#¢≤áS¢$‹:2"¬V„¢$˜FÜW""“¿¢ÚÚR÷˜FófFñˆ‡¢7W'fWïT∆&V√¢≤áS¢$÷ú:ó'BL;f«L;gGFVB∂íFW7ßFWCÚ"¬V„¢%vÜB÷˜FófFVBñ˜RFÚF∂RFÜó276W76÷VÁCÚ"“¿¢7W'fWïU6V∆d∂Ê˜v∆VFvS¢≤áS¢,9fÊó6÷W&WB	˙©‚"¬V„¢%6V∆b÷∂Ê˜v∆VFvR	˙©‚"“¿¢7W'fWïT6&VW#¢≤áS¢%7¶∂÷ífV¶ÃYL:ó2	˘+¬"¬V„¢$6&VW"FWfV∆˜÷VÁB	˘+¬"“¿¢7W'fWïTˆ'6W'fW$fVVF&6≥¢≤áS¢%fó77¶¶V«¨:ó2‹:6ˆ∑L;6¬	˘"¬V„¢$fVVF&6≤g&ˆ“˜FÜW'2	˘"“¿¢7W'fWïTÜV«&W6V&6É¢≤áS¢%6V|:◊FVÊí∂'F“	˙I“"¬V„¢%vÁFVBFÚÜV«	˙I“"“¿¢7W'fWïU&V6ˆ÷÷VÊFVC¢≤áS¢$¨:Ê∆˜GFf∆∂í	˘R"¬V„¢%6ˆ÷VˆÊR&V6ˆ÷÷VÊFVBóB	˘R"“¿¢7W'fWïT7W&ñ˜6óGì¢≤áS¢$76≤∂ó,;6,:«F“	¯Î""¬V„¢$ßW7B7W&ñ˜W2	¯Î""“¿¢ÚÚb6Ü&ñÊr(	BVÊófW'6¬◊V«Fí◊6V∆V7@¢7W'fWïd∆&V√¢≤áS¢%7¨:◊fW6V‚÷Vv˜7ßFÏ:B¢W&VF‹:ñÁñVñFWBf∆∂ófV√Ú"¬V„¢%v˜V∆Bñ˜R&RÜíFÚ6Ü&Rñ˜W"&W7V«G2vóFÇ6ˆ÷VˆÊSÚ"“¿¢7W'fWïd÷ÊvW#¢≤áS¢$lYÏ;fº;f÷÷V¬ÚfW¶WLY÷÷V¬"¬V„¢$◊í÷ÊvW"Ú&˜72"“¿¢7W'fWïdá#¢≤áS¢$Ö"◊&V¬"¬V„¢$Ö""“¿¢7W'fWïd6ˆ∆∆VwVW3¢≤áS¢$◊VÊ∂L:'6∂∂¬"¬V„¢$6ˆ∆∆VwVW2"“¿¢7W'fWïdg&ñVÊG3¢≤áS¢$&,:Fˆ∂∂¬Úó6÷W,Y<;f∂∂V¬"¬V„¢$g&ñVÊG2Ú7VñÁFÊ6W2"“¿¢7W'fWïdÊˆ&ˆGì¢≤áS¢$ÊV“˜7ßFÏ:“÷Vr6VÊ∂ófV¬"¬V„¢$ív˜V∆F‚wB6Ü&RóBvóFÇÁñˆÊR"“¿¢ÚÚrfVVF&6≤6˜W&6W2(	BV◊∆˜ñVBˆÊ«í¬◊V«Fí◊6V∆V7@¢7W'fWït∆&V√¢≤áS¢$∂í7¶ˆ∂˜GB:«FÃ:&‚fó77¶¶V«¨:ó7BFÊíÊV∂VCÚ"¬V„¢%vÜÚGóñ6∆«ívófW2ñ˜RfVVF&6≥Ú"“¿¢7W'fWït÷ÊvW#¢≤áS¢$º;gßfWF∆V‚fW¶WLY"¬V„¢$Fó&V7B÷ÊvW""“¿¢7W'fWïuVW'3¢≤áS¢$∂ˆ∆Ã:ñ|:≤Ú76GL:'6≤"¬V„¢$6ˆ∆∆VwVW2ÚFV÷÷FW2"“¿¢7W'fWïu&W˜'G3¢≤áS¢$&V˜7ßF˜GF≤"¬V„¢$Fó&V7B&W˜'G2"“¿¢7W'fWït6∆ñVÁG3¢≤áS¢,9∆wñfV∆V≤Ú'FÊW&V≤"¬V„¢$6∆ñVÁG2Ú'FÊW'2"“¿¢7W'fWïtÊˆÊS¢≤áS¢$ÊñÊ72&VÊG7¶W&W2fó77¶¶V«¨Y“"¬V„¢$ÊÚ&VwV∆"fVVF&6≤6˜W&6R"“¿¢ÚÚÇ3c&ˆ6W72(	BV◊∆˜ñVBˆÊ«ê¢7W'fWïÑ∆&V√¢≤áS¢%f‚÷Rf˜&÷∆ó¨:«B3cfˆ∂˜2:ó'L:ñ∂VÃ:ó6ífˆ«ñ÷B7¶W'fW¶WFVF&V„Ú"¬V„¢$ó2FÜW&Rf˜&÷¬3c÷FVw&VR&WfñWr&ˆ6W72ñ‚ñ˜W"˜&vÊó6Fñˆ„Ú"“¿¢7W'fWïÖñW3¢≤áS¢$ñvV‚¬f‚"¬V„¢%ñW2¬FÜW&Ró2"“¿¢7W'fWïÑÊÛ¢≤áS¢$ÊV“¬ÊñÊ72"¬V„¢$ÊÚ¬FÜW&Ró6‚wB"“¿¢7W'fWïÖVÊ∂Ê˜v„¢≤áS¢$ÊV“GVFˆ“ÚÊV“&V∆Wl:Á2"¬V„¢$íFˆ‚wB∂Ê˜rÚÊ˜B∆ñ6&∆R"“¿¢ÚÚíW'6ˆÊ∆óGíñ◊˜'FÊ6R(	BWfW'ñˆÊP¢7W'fWïî∆&V√¢≤áS¢$÷VÊÁñó&RF'FˆBfˆÁF˜6Ê≤7¶V‹:ñ«ñó<:ñr7¶W&W:óB◊VÊ∂ÜV«ñíÚFÁV∆‹:ÁñíFV∆¶W<:◊F‹:ñÁñ&V„Ú"¬V„¢$Ü˜rñ◊˜'FÁBFÚñ˜RFÜñÊ≤W'6ˆÊ∆óGíó2f˜"v˜&∑∆6R˜"6FV÷ñ2W&f˜&÷Ê6SÚ"“¿¢ÚÚˆ'6W'fW"W6VgV∆ÊW70¢7W'fWï∆&V√¢≤áS¢$÷VÊÁñó&Rfˆ«F≤Ü7¶Ê˜6≤‹:6ˆ∑L;6¬∂˜GBfó77¶¶V«¨:ó6V≥Ú"¬V„¢$Ü˜rW6VgV¬v2FÜRfVVF&6≤g&ˆ“FÜRV˜∆Rñ˜RñÁfóFVCÚ"“¿¢ÚÚ7W7Fˆ“66∆R∆&V«2f˜"íÚ ¢7W'fWï66∆Tñ◊˜'FÊ6TÜñvÉ¢≤áS¢$fˆÁF˜2"¬V„¢$ñ◊˜'FÁB"“¿¢7W'fWï66∆Tñ◊˜'FÊ6UfW'îÜñvÉ¢≤áS¢$Êwñˆ‚fˆÁF˜2"¬V„¢%fW'íñ◊˜'FÁB"“¿¢7W'fWï66∆UW6VgV∆ÊW74ÜñvÉ¢≤áS¢$Ü7¶Ê˜2"¬V„¢%W6VgV¬"“¿¢7W'fWï66∆UW6VgV∆ÊW75fW'îÜñvÉ¢≤áS¢$Êwñˆ‚Ü7¶Ê˜2"¬V„¢%fW'íW6VgV¬"“¿¢ñÁfóFW5&V6VófVEFóF∆S¢≤áS¢$÷Vvå:◊l;6ñB"¬V„¢$ñÁfóFFñˆÁ2ñ˜R&V6VófVB"“¿¢ñÁfóFW5&V6VófVD&ˆGì¢≤áS¢$óGBÃ:FˆB¶ˆ∂B÷Vvå:◊l;6∂B¬÷V«ñV∂WBFR∂L:¬‚"¬V„¢$ÜW&Rñ˜R6‚6VRFÜRñÁfóFFñˆÁ2ñ˜R&V6VófVB‚"“¿¢&WF∂S¢≤áS¢%FW7ßB;¶ß&∂óL;f«L:ó6R"¬V„¢%&WF∂RFW7B"“¿¢&WF∂T6ˆÊfó&’FóF∆S¢∞¢áS¢$&óßF˜6‚;¶ß&∂óL;f«L;fCÚ"¿¢V„¢%&WF∂RFÜRFW7CÚ"¿¢“¿¢&WF∂T6ˆÊfó&‘&ˆGì¢∞¢áS¢$¢;¶¢W&VF‹:ñÁífVÃ;∆Ã:◊&¶∂˜,:&&óB&ˆfñ∆ˆ∆F∆Fˆ‚‚,:ñvíW&VF‹:ñÁí¢FF,:¶ó6&‚÷Vv÷&B‚"¿¢V„¢%FÜRÊWr&W7V«Bvñ∆¬&W∆6RFÜR7W'&VÁBˆÊRˆ‚ñ˜W"&ˆfñ∆RÜˆ÷R‚FÜRˆ∆B&W7V«Bó2∂WBñ‚FÜRFF&6R‚"¿¢“¿¢&WF∂T6ˆÊfó&”¢≤áS¢,9¶ß&∂óL;f«L;f“"¬V„¢%&WF∂R"“¿¢&WF∂T6Ê6V√¢≤áS¢$‹:ñw6R"¬V„¢$6Ê6V¬"“¿¢G&gDñÂ&ˆw&W74ÜñÁC¢∞¢áS¢$6¨:B&ˆfñ∆ˆF,;6¬º:ó<Y&"º:ó&ÜWG7¢ˆ'6W'fW"◊fó77¶¶V«¨:ó7B¬:ó2Ü7¶W&WFÏ:ñB¬76Fº:óWBó2:ó:◊FÜWG7¢‚"¿¢V„¢$g&ˆ“ñ˜W"6V∆b&ˆfñ∆R¬ñ˜R6‚∆FW"6ˆ∆∆V7Bˆ'6W'fW"fVVF&6≤ÊB˜FñˆÊ∆«í'Vñ∆BFV“ñÁ6ñváG2‚"¿¢“¿¢Fó66&DG&gC¢≤áS¢$l:ñ∆º:ó7¢FW7ßBV«fWL:ó6R"¬V„¢$Fó66&BG&gB"“¿¢Fó66&DG&gD6ˆÊfó&’FóF∆S¢≤áS¢$V«fWFVBl:ñ∆º:ó7¢FW7ßFWCÚ"¬V„¢$Fó66&BFÜó2G&gCÚ"“¿¢Fó66&DG&gD6ˆÊfó&‘&ˆGì¢∞¢áS¢$¢VFFñvíl:∆7¶ñBV«fW7¶ÊV≤‚¢VÃY¨YW&VF‹:ñÁñVB÷Vv÷&B‚"¿¢V„¢%ñ˜W"7W'&VÁBÁ7vW'2vñ∆¬&R∆˜7B‚ñ˜W"&Wfñ˜W2&W7V«Bvñ∆¬&V÷ñ‚‚"¿¢“¿¢Fó66&DG&gD6ˆÊfó&”¢≤áS¢$V«fWFV“"¬V„¢$Fó66&B"“¿¢F%&W7V«G3¢≤áS¢$W&VF‹:ñÁñV≤"¬V„¢%&W7V«G2"“¿¢F$6ˆ◊&ó6ˆ„¢≤áS¢$º;∆«<Yº:ó"¬V„¢$˜WG6ñFRfñWr"“¿¢F$ñÁfóFW3¢≤áS¢$÷Vvå:◊l;6≤"¬V„¢$ñÁfóFW2"“¿¢F$6ˆ◊&ó6ˆ‰V◊GïFóF∆S¢≤áS¢$‹:ñrÊñÊ72;g77¶VÜ6ˆÊÃ:◊L:2"¬V„¢$ÊÚ6ˆ◊&ó6ˆ‚ñWB"“¿¢F$6ˆ◊&ó6ˆ‰V◊Gî&ˆGì¢≤áS¢$å:◊f¢÷Vró6÷W,Y<;f∂WB¬ÜˆwíÃ:6B¬Üˆwñ‚Ã:FÊ≤‹:6ˆ≤‚"¬V„¢$ñÁfóFRV˜∆Rñ˜R∂Ê˜rFÚ6VRÜ˜r˜FÜW'26VRñ˜R‚"“¿¢F$6ˆ◊&ó6ˆ‰V◊Gî7F¢≤áS¢$÷Vvå:◊l;6≤∂W¶VÃ:ó6R"¬V„¢$÷ÊvRñÁfóFW2"“¿¢“¿¢ñÁfóFS¢∞¢FóF∆S¢≤áS¢$ó6÷W,Y2÷Vvå:◊l:6"¬V„¢$ñÁfóFR6ˆ÷VˆÊR"“¿¢&ˆGì¢∞¢áS¢$º:ó&B÷Vr∂ˆ∆Ã:ñ|:ñFB¬&,:FñFBfwí76Ã:GFv¶ñFBVwí,;gfñB:ó'L:ñ∂VÃ:ó7&R‚"¿¢V„¢$6≤6ˆ∆∆VwVW2¬g&ñVÊG2¬˜"f÷ñ«íf˜"Vñ6≤&FñÊr‚"¿¢“¿¢7&VFTÊWs¢≤áS¢,9¶¢÷Vvå:◊l;2Ã:óG&VÜ˜¨:6"¬V„¢$7&VFRÊWrñÁfóFFñˆ‚"“¿¢V÷ñ≈∆6VÜˆ∆FW#¢≤áS¢$V÷ñ¬<:÷“Ü˜6ñˆÏ:∆ó2í"¬V„¢$V÷ñ¬FG&W72Ü˜FñˆÊ¬í"“¿¢7&VFS¢≤áS¢$Ã:óG&VÜ˜¨:2"¬V„¢$7&VFR"“¿¢7&VFñÊs¢≤áS¢$Ã:óG&VÜ˜¨:2‚‚‚"¬V„¢$7&VFñÊr‚‚‚"“¿¢7&VFVC¢≤áS¢$Ã:óG&VÜ˜ßf"¬V„¢$7&VFVB"“¿¢6ˆ◊∆WFVC¢≤áS¢$∂óL;f«GfR"¬V„¢$6ˆ◊∆WFVB"“¿¢VÊFñÊs¢≤áS¢$l;∆v|Y&V‚"¬V„¢%VÊFñÊr"“¿¢∆ñ÷óC¢≤áS¢$∂W&WB"¬V„¢$∆ñ÷óB"“¿¢ÜV«FWáC¢∞¢áS¢$Vwí∆ñÊ≤“Vwí∂óL;f«LY‚V÷ñ¬Ï:ñ∆º;∆¬FR˜7ßFˆB÷Vr¬V÷ñ¬<:÷÷÷V¬÷íº;∆∆F¨;∆≤∂í‚"¿¢V„¢$ˆÊR∆ñÊ≤¬ˆÊRW'6ˆ‚‚ÊÚV÷ñ√¢6Ü&RóBñ˜W'6V∆b‚vóFÇV÷ñ√¢vR6VÊBóB‚"¿¢“¿¢&óf7îÊ˜FS¢∞¢áS¢$fó77¶¶V«¨:ó6V≤Ï:óbÏ:ñ∆º;∆¬¶V∆VÊÊV≤÷Vr¬:ó276≤;g77¶W<:◊FWGB:F∆vˆ∂B◊WFGVÊ≤‚"¿¢V„¢$fVVF&6≤ó2ÊˆÁñ÷˜W2¬ÊBvR6Ü˜rˆÊ«ívw&VvFVBfW&vW2‚"¿¢“¿¢6ˆ◊&TÜñÁC¢∞¢áS¢$¢;g77¶VÜ6ˆÊÃ:◊L:6Ü˜¢∆VvÃ:&""fó77¶¶V«¨:ó2∂V∆¬‚á∂6˜VÁG“Û"÷V|:ó&∂W¶WGB‚í"¿¢V„¢$f˜"FÜR6ˆ◊&ó6ˆ‚¬ñ˜Rv∆¬ÊVVBB∆V7B"&W7ˆÁ6W2‚á∂6˜VÁG“Û"&V6VófVB‚í"¿¢“¿¢ÊÙñÁfóFFñˆÁ3¢≤áS¢$‹:ñrÊñÊ72÷Vvå:◊l:6ˆB"¬V„¢$ÊÚñÁfóFFñˆÁ2ñWB"“¿¢7&VFU&ˆ◊C¢≤áS¢$Ü˜ß¢Ã:óG&RVwñWBfVÁFí[&∆¬"¬V„¢$7&VFRˆÊRvóFÇFÜRf˜&“&˜fR"“¿¢7&VFTfñ∆VC¢≤áS¢$ÊV“6ñ∂W,;∆«B÷Vvå:◊l;7BÃ:óG&VÜ˜¶Êí‚"¬V„¢$6˜V∆BÊ˜B7&VFRñÁfóFR‚"“¿¢7&VFT∆ñÊµ7V66W73¢≤áS¢$÷Vvå:◊l;2∆ñÊ≤Ã:óG&VÜ˜ßf‚"¬V„¢$ñÁfóFR∆ñÊ≤7&VFVB‚"“¿¢7&VFTV÷ñ≈7V66W73¢≤áS¢$÷Vvå:◊l;7BV÷ñ∆&V‚V∆º;∆∆GL;∆≤‚"¬V„¢$ñÁfóFFñˆ‚V÷ñ¬6VÁB‚"“¿¢6˜ñVC¢≤áS¢$∆ñÊ≤‹:6ˆ«f"¬V„¢$∆ñÊ≤6˜ñVB"“¿¢6˜îfñ∆VC¢≤áS¢$ÊV“6ñ∂W,;∆«B∆ñÊ≤‹:6ˆÃ:6‚"¬V„¢$6˜V∆BÊ˜B6˜íFÜR∆ñÊ≤‚"“¿¢FV∆WFU7V66W73¢≤áS¢$÷Vvå:◊l;2L;g,;f«fR‚"¬V„¢$ñÁfóFR6Ê6V∆VB‚"“¿¢FV∆WFTfñ∆VC¢≤áS¢$ÊV“6ñ∂W,;∆«BL;g,;f∆Êí÷Vvå:◊l;7B‚"¬V„¢$6˜V∆BÊ˜BFV∆WFRñÁfóFR‚"“¿¢'îV÷ñ≈FóF∆S¢≤áS¢$÷Vvå:◊l:2V÷ñ∆&V‚"¬V„¢$ñÁfóFR'íV÷ñ¬"“¿¢'îV÷ñ≈∆6VÜˆ∆FW#¢≤áS¢&ó6÷W,Y4V÷ñ¬Ê6ˆ“"¬V„¢&g&ñVÊDV÷ñ¬Ê6ˆ“"“¿¢7FófT∆ñ÷óC¢≤áS¢$Vwó7¶W'&R∆VvfV∆¶V&"R∑L:◊b÷Vvå:◊l;6B∆VÜWB‚"¬V„¢$÷Üñ◊V“R7FófRñÁfóFW2BFñ÷R‚"“¿¢7FG3¢≤áS¢'∂6ˆ◊∆WFVG“∂óL;f«GfR¬∑VÊFñÊw“l;∆v|Y&V‚¬∂6Ê6V∆VG“L;g,;f«fR"¬V„¢'∂6ˆ◊∆WFVG“6ˆ◊∆WFVB¬∑VÊFñÊw“VÊFñÊr¬∂6Ê6V∆VG“6Ê6V∆VB"“¿¢“¿¢6ˆ◊&ó6ˆ„¢∞¢FóF∆S¢≤áS¢$‹:6ˆ≤,;6∆B"¬V„¢$˜FÜW'2&˜WBñ˜R"“¿¢&ˆGì¢≤áS¢,9fÏ:ó'L:ñ∂VÃ:ó6VB:ó2¢:ó'L:ñ∂VÃY≤á∂6˜VÁG“lYí:F∆|:Ê≤;g77¶VÜ6ˆÊÃ:◊L:6‚"¬V„¢$6ˆ◊&ó6ˆ‚ˆbñ˜W"6V∆b◊&FñÊrÊBFÜRfW&vRg&ˆ“FÜRV˜∆Rñ˜RñÁfóFVBá∂6˜VÁG“V˜∆Rí‚"“¿¢6ñ÷ñ∆#¢≤áS¢&Ü6ˆÊÃ;2"¬V„¢'6ñ÷ñ∆""“¿¢FñfdÜñvÜW#¢≤áS¢"∑∂Fñfg“ˆÁBÜ‹:6ˆ≤÷v6&'&:ó'L:ñ∂V∆ÊV≤í"¬V„¢"∑∂Fñfg“G2Ü˜FÜW'2&FRñ˜RÜñvÜW"í"“¿¢Fñfd∆˜vW#¢≤áS¢'∂Fñfg“ˆÁBÜ‹:6ˆ≤∆76ˆÁñ&'&:ó'L:ñ∂V∆ÊV≤í"¬V„¢'∂Fñfg“G2Ü˜FÜW'2&FRñ˜R∆˜vW"í"“¿¢ˆñÁG5VÊóE6Ü˜'C¢≤áS¢'ˆÁB"¬V„¢'G2"“¿¢6V∆c¢≤áS¢%FR"¬V„¢%ñ˜R"“¿¢˜FÜW'3¢≤áS¢$‹:6ˆ≤"¬V„¢$˜FÜW'2"“¿¢˜FÜW'46˜VÁC¢≤áS¢$‹:6ˆ≤á∂6˜VÁG“í"¬V„¢$˜FÜW'2á∂6˜VÁG“í"“¿¢ft6ˆÊfñFVÊ6S¢≤áS¢,:F∆v˜2÷v&óßF˜7<:s¢∑f«VW“ÛR"¬V„¢&fr‚6ˆÊfñFVÊ6S¢∑f«VW“ÛR"“¿¢GóT∆&V√¢≤áS¢%L:◊W6ˆB"¬V„¢%ñ˜W"GóR"“¿¢6ˆÊfñFVÊ6T∆&V√¢≤áS¢,8F∆v˜2÷v&óßF˜7<:r"¬V„¢$fr‚6ˆÊfñFVÊ6R"“¿¢ˆ'6W'fW'4∆&V√¢≤áS¢,8ó'L:ñ∂VÃY≤"¬V„¢%&FW'2"“¿¢ñÁ6ñváDÜñvÜW#¢≤áS¢$‹:6ˆ≤÷v6&'&:ó'L:ñ∂V∆ÊV≤V&&V‚Fñ÷VÁ¶ú;6&‚¬÷ñÁBFR÷vB‚"¬V„¢$˜FÜW'2&FRñ˜RÜñvÜW"ñ‚FÜó2Fñ÷VÁ6ñˆ‚FÜ‚ñ˜R&FRñ˜W'6V∆b‚"“¿¢ñÁ6ñváD∆˜vW#¢≤áS¢%FR÷v6&'&:ó'L:ñ∂V∆VB÷vBV&&V‚Fñ÷VÁ¶ú;6&‚¬÷ñÁBÜˆwí‹:6ˆ≤Ã:FÊ≤L:ñvVB‚"¬V„¢%ñ˜R&FRñ˜W'6V∆bÜñvÜW"ñ‚FÜó2Fñ÷VÁ6ñˆ‚FÜ‚˜FÜW'2&FRñ˜R‚"“¿¢f6WD÷FóF∆S¢≤áS¢$«6º:Ã:≤;g77¶VÜ6ˆÊÃ:◊L:6"¬V„¢%7V"◊66∆R6ˆ◊&ó6ˆ‚"“¿¢f6WD÷7V'FóF∆S¢≤áS¢,9fÏ:ó'L:ñ∂VÃ:ó6VB:ó2º;∆«<Y:F∆r«6º:Ã:Êº:ñÁB¬Fñ÷VÁ¶ú;6Êº:ñÁB76˜˜'F˜<:◊Gf‚º;∆Ã;fÊ'<:ñs¢Ü‹:6ˆ≤:F∆ví(â"áFRí‚"¬V„¢%ñ˜W"6V∆b◊&FñÊrÊBFÜR˜WG6ñFRfW&vRˆ‚V6Ç7V"◊66∆R¬w&˜WVB'íFñ÷VÁ6ñˆ‚‚FñffW&VÊ6Ró2Ü˜FÜW'2rfW&vRí(â"áñ˜Rí‚"“¿¢ÚÚ‹:ó,:ó6í÷Üñ&5¨8“ÊV“∂W,;∆¬fVÃ;∆∆WG&RÉ##b”Ç”FW&‹:ñ∂L;fÁL:ó2í(	B¢ÚÚ¶V«¨:ó2∑f∆óFL:◊b¬÷wñ,:¶Bº;gßˆÁFí‹;6G7¶W'FÊí∆\:◊,:6&‚:ñ¬‡¢f6WD÷∆ƒ÷F6É¢≤áS¢$÷ñÊFV‚∆VfVFWGB«6º:Ã:‚‹:ó,:ó6íÜñ,:‚&VÃ;∆∆í¢V«L:ó,:ó2(	BÊñÊ72∂óVw,;2º;∆Ã;fÊ'<:ñr‚"¬V„¢$WfW'í6˜fW&VB7V"◊66∆Rw&VW2vóFÜñ‚FÜR÷V7W&V÷VÁBW'&˜"(	BÊÚÊ˜F&∆Rv2‚"“¿¢f6WD÷WFÜˆDÊ˜FS¢≤áS¢$¢«6º:∆ˆÁG7¨:÷∂Wl:ó2º:ó&L:ó6,Y¬7¨:÷ˆ«B&V76Ã:ó2¬W¨:ó'B‹:ó,:ó6íÜñ,:¶Êwñˆ&"¬÷ñÁBlYFñ÷VÁ¶ú;6º:í‚‹:ó,:ó6íÜñ,:‚&VÃ;∆∆íV«L:ó,:ó7BVwñW¨:ó6º:ñÁB¶VÃ;f∆¨;∆≤¬:ó276≤÷ñÊFº:óBˆ∆F«,;6¬∆VfVFWGB«6º:Ã:≤¶V∆VÊÊV≤÷Vr‚"¬V„¢%7V"◊66∆R66˜&W2&RW7Fñ÷FW2&6VBˆ‚ˆÊ«ífWrVW7FñˆÁ2¬6ÚFÜVó"÷V7W&V÷VÁBW'&˜"ó2∆&vW"FÜ‚f˜"FÜR÷ñ‚Fñ÷VÁ6ñˆÁ2‚FñffW&VÊ6W2vóFÜñ‚FÜR÷V7W&V÷VÁBW'&˜"&R÷&∂VB2÷F6Ç¬ÊBˆÊ«í7V"◊66∆W26˜fW&VBˆ‚&˜FÇ6ñFW2&R6Ü˜v‚‚"“¿¢ÜVF÷÷F6É¢≤áS¢$º;g¶V¬¶ˆÊ˜2"¬V„¢$6∆˜6R÷F6Ç"“¿¢ÜVF÷ˆ'4ÜñvÜW#¢≤áS¢$‹:6ˆ≤÷v6&'&:ó'L:ñ∂V∆ÊV≤"¬V„¢$˜FÜW'2&FRÜñvÜW""“¿¢ÜVF÷6V∆dÜñvÜW#¢≤áS¢%FR:ó'L:ñ∂V∆VB÷v6&'&"¬V„¢%ñ˜R&FRÜñvÜW""“¿¢FV«FFó&V7Fñˆ‰÷F6É¢≤áS¢$º;g¶V¬¶ˆÊ˜2:ó'L:ñ∂VÃ:ó2"¬V„¢%&FñÊw2&R6∆˜6R"“¿¢FV«FFó&V7Fñˆ‰ÜñvÜW#¢≤áS¢$‹:6ˆ≤óGB÷v6&'&:ó'L:ñ∂V∆ÊV≤¬÷ñÁBFR‚"¬V„¢$˜FÜW'2&FRFÜó2ÜñvÜW"FÜ‚ñ˜RFÚ‚"“¿¢FV«FFó&V7Fñˆ‰∆˜vW#¢≤áS¢%FRóGB÷v6&'&:ó'L:ñ∂V∆VB÷vB¬÷ñÁB¢:ó'L:ñ∂VÃY≤‚"¬V„¢%ñ˜R&FRñ˜W'6V∆bÜñvÜW"ÜW&RFÜ‚˜FÜW'2FÚ‚"“¿¢6Ü˜t∆√¢≤áS¢,9g77¶W2÷Vv¶V∆VÏ:◊L:ó6R"¬V„¢%6Ü˜r∆¬"“¿¢6Ü˜t∆W73¢≤áS¢$76≤∆VvÊwñˆ&"V«L:ó,:ó6V≤÷Vv¶V∆VÏ:◊L:ó6R"¬V„¢%6Ü˜rˆÊ«í∆&vW7Bv2"“¿¢Êˆ‰vFUFóF∆S¢≤áS¢$¢;g77¶VÜ6ˆÊÃ:◊L:2Ü÷&˜6‚VÃ:ó&ÜWLY"¬V„¢$6ˆ◊&ó6ˆ‚∆÷˜7B&VGí"“¿¢Êˆ‰vFT&ˆGì¢≤áS¢$Ï:ógFV∆VÁ<:ñrl:ñFV∆÷R:ó&FVº:ñ&V‚∆VvÃ:&""fó77¶¶V«¨:ó27¨;∆∑<:ñvW2¢W&VF‹:ñÁñV≤÷Vv¶V∆VÏ:◊L:ó<:ñÜW¢‚"¬V„¢%FÚ&˜FV7B&óf7í¬6ˆ◊&ó6ˆÁ2&R6Ü˜v‚ˆÊ«ígFW"B∆V7B"&W7ˆÁ6W2‚"“¿¢Êˆ‰vFU&ˆw&W73¢≤áS¢'∂6˜VÁG“Ú"fó77¶¶V«¨:ó2÷V|:ó&∂W¶WGB‚"¬V„¢'∂6˜VÁG“Ú"&W7ˆÁ6W2&V6VófVB‚"“¿¢Êˆ‰vFT7F¢≤áS¢$÷Vvå:◊l;6≤∂W¶VÃ:ó6R"¬V„¢$÷ÊvRñÁfóFFñˆÁ2"“¿¢ÊWáD7FñˆÂFóF∆S¢≤áS¢$÷í∆VwñV‚º;gfWF∂W¨YÃ:ó:ó3Ú"¬V„¢%vÜBÊWáCÚ"“¿¢ÊWáD7Fñˆ‰&ˆGì¢≤áS¢$Ü7¶W&WFÏ:ñB¬º:ó&ÜWG7¢‹:ñrfó77¶¶V«¨:ó7B¬fwí∂óL;f«FÜWFVB,;gfñBfó77¶¶V«¨Yº:ó&LY:◊fWB‚"¬V„¢$ñbñ˜RvB∆ñ∂R¬ñ˜R6‚&WVW7B÷˜&RfVVF&6≤˜"fñ∆¬˜WBFÜR6Ü˜'BfVVF&6≤7W'fWí‚"“¿¢ÊWáD7Fñˆ‰&ˆGîÊı7W'fWì¢≤áS¢$Ü7¶W&WFÏ:ñB¬º:ó&ÜWG7¢‹:ñrfó77¶¶V«¨:ó7B‚"¬V„¢$ñbñ˜RvB∆ñ∂R¬ñ˜R6‚&WVW7B÷˜&RfVVF&6≤‚"“¿¢ÊWáD7Fñˆ‰ñÁfóFS¢≤áS¢$º:ó&V≤‹:ñrfó77¶¶V«¨:ó7B"¬V„¢%&WVW7B÷˜&RfVVF&6≤"“¿¢ÊWáD7FñˆÂ7W'fWì¢≤áS¢$∂óL;f«L;f“º:ó&LY:◊fWB"¬V„¢$fñ∆¬˜WBFÜR7W'fWí"“¿¢ÊÙFFFóF∆S¢≤áS¢,9g77¶VÜ6ˆÊÃ:◊L:2"¬V„¢$6ˆ◊&ó6ˆ‚"“¿¢ÊÙFF&ˆGì¢≤áS¢$∆VvÃ:&""ˆ'6W'fW"◊fó77¶¶V«¨:ó27¨;∆∑<:ñvW2¢;g77¶VÜ6ˆÊÃ:◊L:6Ü˜¢‚º;∆∆F¢÷Vvå:◊l;6∂B÷Vvå:◊l;6≤∆ˆ‚‚"¬V„¢$B∆V7B"ˆ'6W'fW"&W7ˆÁ6W2&RÊVVFVBf˜"6ˆ◊&ó6ˆ‚‚6VÊBñÁfóFFñˆÁ2ˆ‚FÜRñÁfóFFñˆÁ2F"‚"“¿¢ÜVFW$WñV'&˜s¢≤áS¢,9fÊº:ó:ó2fó77¶¶V«¨:ó2"¬V„¢%6V∆bg2‚fVVF&6≤"“¿¢ÜVFW%FóF∆S¢≤áS¢$Üˆwñ‚Ã:FÊ≤‹:6ˆ≥Ú"¬V„¢$Ü˜rFÚ˜FÜW'26VRñ˜SÚ"“¿¢ÜVFW$&ˆGì¢≤áS¢$¢;fÏ:ó'L:ñ∂VÃ:ó6VB;g77¶VÜ6ˆÊÃ:◊L:6fó77¶¶V«¨:ó6V∂∂V¬(	BFñ÷VÁ¶ú;7,;6¬Fñ÷VÁ¶ú;7&‚"¬V„¢$6ˆ◊&ñÊrñ˜W"6V∆b÷76W76÷VÁBvóFÇfVVF&6≤(	BFñ÷VÁ6ñˆ‚'íFñ÷VÁ6ñˆ‚‚"“¿¢ˆ'6W'fW$&FvS¢≤áS¢'∂6˜VÁG“ˆ'6W'fW"◊fó77¶¶V«¨:ó2∆¨:‚"¬V„¢'∂6˜VÁG“ˆ'6W'fW"&W7ˆÁ6W2"“¿¢˜fW'fñWtvˆˆD÷F6É¢≤áS¢,9g77¶W7<:ñ|:ñ&V‚¨;2VwñW¨:ó2"¬V„¢$˜fW&∆¬vˆˆB÷F6Ç"“¿¢˜fW'fñWt÷óÜVC¢≤áS¢%fVwñW2º:ó(	Bf‚÷óBfV∆fVFW¶Êí"¬V„¢$÷óÜVBñ7GW&R(	Bv˜'FÇWá∆˜&ñÊr"“¿¢˜fW'fñWtvˆˆD÷F6Ñ&ˆGì¢≤áS¢$¢;fÊº:óVB:ó2¢ˆ'6W'fW"◊fó77¶¶V«¨:ó6V≤∆VwL;f&"Fñ÷VÁ¶ú;6&‚º;g¶V¬:∆∆Ê≤Vwñ‹:6Ü˜¢‚W¢'&WF¬¬Üˆwí¢;fÊº:óVB:ó2º;∆«<Y&VÁñˆ‹:6ˆ≤L;f&"ˆÁFˆ‚;g77¶ÜÊv&‚fÊÊ≤‚"¬V„¢%ñ˜W"6V∆b÷ñ÷vRÊBˆ'6W'fW"fVVF&6≤&R6∆˜6Rñ‚÷˜7BFñ÷VÁ6ñˆÁ2‚FÜó2ó2&&RÊBf«V&∆R(	BóB÷VÁ2ñ˜R6VRñ˜W'6V∆b&V∆ó7Fñ6∆«í‚"“¿¢˜fW'fñWt÷óÜVD&ˆGì¢≤áS¢$Ï:ñå:ÁíFñ÷VÁ¶ú;6&‚¶V∆VÁLY2V«L:ó,:ó2f‚¢;fÊº:óVB:ó2‹:6ˆ≤fó77¶¶V«¨:ó6Rº;g¨;gGB‚W¢ÊV“&ˆ&Ã:ñ÷¬ÜÊV“∆VÜWLY<:ñr‹:ñ«ñV&";fÊó6÷W&WG&R‚"¬V„¢%FÜW&R&R6ñvÊñfñ6ÁBFñffW&VÊ6W2ñ‚6ˆ÷RFñ÷VÁ6ñˆÁ2‚FÜó2ó6‚wB&ˆ&∆V“(	BóBw2‚˜˜'GVÊóGíf˜"FVWW"6V∆b÷v&VÊW72‚"“¿¢÷F6ÜñÊtFñ◊3¢≤áS¢&VwñW¨YFñ÷VÁ¶ú;2"¬V„¢&÷F6ÜñÊrFñ◊2"“¿¢FñffW&ñÊtFñ◊3¢≤áS¢&V«L:ó,YFñ÷VÁ¶ú;2"¬V„¢&FñffW&ñÊrFñ◊2"“¿¢ftv¢≤áS¢,:F∆v˜2V«L:ó,:ó2"¬V„¢&fr‚v"“¿¢∆VvVÊE6V∆c¢≤áS¢,9fÏ:ó'L:ñ∂VÃ:ó2ÖFRí"¬V„¢%6V∆b÷76W76÷VÁBÖñ˜Rí"“¿¢∆VvVÊDˆ'6W'fW#¢≤áS¢$ˆ'6W'fW"‹:F∆rÜ‹:6ˆ≤í"¬V„¢$ˆ'6W'fW"fr‚Ñ˜FÜW'2í"“¿¢v÷F6É¢≤áS¢&VwñW¶ñ≤"¬V„¢&÷F6Ç"“¿¢vFñfc¢≤áS¢&V«L:ó,:ó2"¬V„¢&v"“¿¢ÊÙˆ'6W'fW$Fñ”¢≤áS¢$VÜÜW¢Fñ÷VÁ¶ú;6Ü˜¢‹:ñrÊñÊ72VÃ:ñrº;∆«<Yfó77¶¶V«¨:ó2‚"¬V„¢$Ê˜BVÊ˜VvÇWáFW&Ê¬fVVF&6≤f˜"FÜó2Fñ÷VÁ6ñˆ‚ñWB‚"“¿¢&∆ñÊE7˜DWñV'&˜s¢≤áS¢%f∂fˆ«B÷V∆V◊¨:ó2"¬V„¢$&∆ñÊB7˜BÊ«ó6ó2"“¿¢&∆ñÊE7˜EFóF∆S¢≤áS¢$÷óB‹:6ˆ≤‹:6º:óÃ:FÊ≤"¬V„¢%vÜB˜FÜW'26VRFñffW&VÁF«í"“¿¢&∆ñÊE7˜D&ˆGì¢≤áS¢$ˆ«ñ‚FW,;∆∆WFV≤¬Üˆ¬¢;fÊº:óVB:ó2‹:6ˆ≤fó77¶¶V«¨:ó6Rº;g¨;gGB:ó&FV÷íº;∆Ã;fÊ'<:ñrf‚‚"¬V„¢$&V2vÜW&Rñ˜W"6V∆b÷ñ÷vRÊB˜FÜW'2rfVVF&6≤FñffW"÷VÊñÊvgV∆«í‚"“¿¢˜76ñ&∆T&∆ñÊE7˜C¢≤áS¢$∆VÜWG<:ñvW2f∂fˆ«B"¬V„¢%˜76ñ&∆R&∆ñÊB7˜B"“¿¢ÚÚó,:Áí◊6V÷∆VvW2÷Vvfˆv∆÷¨:2Ü÷˜F˜"÷VFóBcB¬dïÇ"ì¢f˜&L:◊F˜G@¢ÚÚV÷ˆ6ñˆÊ∆óL:6Ï:¬¢(	ÊW,Y6V&&ÊV≤ˆwñVÊ|:ñ&&ÊV≤Ã:B":ó'L:ñ∂VÃYÁñV«`¢ÚÚ÷Vvf˜&GV∆Ê(	B(	Ê÷v6&'&ˆ∆76ˆÁñ&'&:ó'L:ñ∂V¬"6º:∆÷ÁñV«bÊV“‡¢&∆ñÊE7˜E7G&ˆÊvW#¢≤áS¢&‹:6ˆ≤÷v6&'&:ó'L:ñ∂V∆ÊV≤"¬V„¢&˜FÜW'2&FRñ˜RÜñvÜW""“¿¢&∆ñÊE7˜EvV∂W#¢≤áS¢&‹:6ˆ≤∆76ˆÁñ&'&:ó'L:ñ∂V∆ÊV≤"¬V„¢&˜FÜW'2&FRñ˜R∆˜vW""“¿¢6V∆d76W76÷VÁC¢≤áS¢,9fÏ:ó'L:ñ∂VÃ:ó2"¬V„¢%6V∆b"“¿¢ÊÙ&∆ñÊE7˜C¢≤áS¢$ÊñÊ72¶V∆VÁLY2V«L:ó,:ó2"¬V„¢$ÊÚ&∆ñÊB7˜B"“¿¢ÊÙ&∆ñÊE7˜D&ˆGì¢≤áS¢$W¶V∂&V‚Fñ÷VÁ¶ú;6∂&‚¢;fÊº:óVB:ó2‹:6ˆ≤fó77¶¶V«¨:ó6Rº;g¶V¬:∆¬Vwñ‹:6Ü˜¢‚"¬V„¢$ñ‚FÜW6RFñ÷VÁ6ñˆÁ2ñ˜W"6V∆b÷ñ÷vRÊB˜FÜW'2rfVVF&6≤&RÊV&«íñFVÁFñ6¬(	Bñ˜R6VRñ˜W'6V∆b&V∆ó7Fñ6∆«í‚"“¿¢7V÷÷'îWñV'&˜s¢≤áS¢,9g77¶Vfˆv∆Ã;2"¬V„¢%7V÷÷'í"“¿¢7V÷÷'ïFóF∆S¢≤áS¢$÷óB:ó&FV÷W2÷Vv¶VwñW¶Êí"¬V„¢%v˜'FÇÊ˜FñÊr"“¿¢7V÷÷'î÷F6Ñ÷Áì¢≤áS¢'∂6˜VÁG“Fñ÷VÁ¶ú;6&‚¢;fÊº:óVB:ó2‹:6ˆ≤fó77¶¶V«¨:ó6R7¶ñÁFR¶ˆÊ˜2‚"¬V„¢$ñ‚∂6˜VÁG“Fñ÷VÁ6ñˆÁ2ñ˜W"6V∆b÷ñ÷vRÊB˜FÜW'2rfVVF&6≤&RÊV&«íñFVÁFñ6¬(	Bñ˜R6VRñ˜W'6V∆b&V∆ó7Fñ6∆«í‚"“¿¢7V÷÷'îFñfe7G&ˆÊvW#¢≤áS¢'∂Ê÷W”¢‹:6ˆ≤÷v6&'&:ó'L:ñ∂V∆ÊV≤á∂v“ˆÁBV«L:ó,:ó2í‚"¬V„¢'∂Ê÷W”¢˜FÜW'2&FRñ˜RÜñvÜW"Ü∂v“◊ˆñÁBví‚"“¿¢7V÷÷'îFñfevV∂W#¢≤áS¢'∂Ê÷W”¢‹:6ˆ≤∆76ˆÁñ&'&:ó'L:ñ∂V∆ÊV≤á∂v“ˆÁBV«L:ó,:ó2í‚"¬V„¢'∂Ê÷W”¢˜FÜW'2&FRñ˜R∆˜vW"Ü∂v“◊ˆñÁBví‚"“¿¢7V÷÷'ïW&fV7D÷F6É¢≤áS¢$¢;fÊº:óVB7¶ñÁFRFV∆¶W6V‚VwñW¶ñ≤‹:6ˆ≤:ó'L:ñ∂VÃ:ó<:ófV¬‚"¬V„¢%&&RÊBf«V&∆S¢ñ˜W"6V∆b÷ñ÷vR∆÷˜7BW&fV7F«í÷F6ÜW2˜FÜW'2r76W76÷VÁB‚"“¿¢“¿¢&W7V«G3¢∞¢F%7V÷÷'ì¢≤áS¢,9g77¶º:ó"¬V„¢$Bv∆Ê6R"“¿¢F$FWFñ«3¢≤áS¢%,:ó7¶∆WFW2&ó˜'B"¬V„¢$FWFñ∆VB&W˜'B"“¿¢7V÷÷'îWñV'&˜s¢≤áS¢$wñ˜'2;g77¶º:ó"¬V„¢%Vñ6≤˜fW'fñWr"“¿¢7V÷÷'ïFóF∆S¢≤áS¢$WßB:ó&FV÷W2V«fñÊÊVB¢W&VF‹:ñÁñVF,Y¬‚"¬V„¢%vÜBFÚF∂Rvíg&ˆ“ñ˜W"&W7V«B‚"“¿¢7V÷÷'î&ˆGì¢∞¢áS¢$å:&ˆ“∂7¶∂ˆL;2¢V«<Yˆ«f<:6Ü˜¢‚FV∆¶W2:ó'FV∆÷W¨:ó2:ó2¢«6º:Ã:≤,:ó7¶∆WFW2&ó˜'F&‚l:&Ê≤‚"¿¢V„¢%Fá&VRÊ6Ü˜'2f˜"ñ˜W"fó'7B&VB‚FÜRgV∆¬ñÁFW'&WFFñˆ‚ÊBf6WG2&V÷ñ‚ñ‚FÜRFWFñ∆VB&W˜'B‚"¿¢“¿¢7V÷÷'îÊGW&√¢≤áS¢$÷íFW&‹:ó7¶WFW6V‚÷Vwí"¬V„¢%vÜB6ˆ÷W2ÊGW&∆«í"“¿¢7V÷÷'îGFVÁFñˆ„¢≤áS¢$÷íL;f&"fñwñV∆÷WBº:ó&ÜWB"¬V„¢%vÜB÷íÊVVB÷˜&RGFVÁFñˆ‚"“¿¢7V÷÷'ïv˜&≥¢≤áS¢$◊VÊ∂ÜV«ñV‚W¢7¨:‹:◊B"¬V„¢%vÜB÷GFW'2Bv˜&≤"“¿¢7V÷÷'îw&˜wFÉ¢≤áS¢$Üˆ¬∆VwL;f&&WBfV¶ÃYFÜWG7¢"¬V„¢%vÜW&Rñ˜R6‚w&˜r÷˜7B"“¿¢7V÷÷'î&∆Ê6VDGFVÁFñˆ„¢∞¢áS¢$ÊñÊ72ˆ«ñ‚lYFñ÷VÁ¶ú;6B¬÷V«í;fÊ÷|:&‚W,Y2fñwñV∆÷WßFWLY¶V¬∆VÊÊR‚ÜV«ó¶WFV≤º;g¨;gGFíVwñVÁ<;¶«ífˆÁF˜6&"º:ó&L:ó2‚"¿¢V„¢$ÊˆÊRˆbñ˜W"÷ñ‚Fñ÷VÁ6ñˆÁ2ó27G&ˆÊrv&ÊñÊr6ñv‚ˆ‚óG2˜v‚‚FÜR&∆Ê6R&WGvVV‚6óGVFñˆÁ2÷GFW'2÷˜&R‚"¿¢“¿¢7V÷÷'îFñ÷VÁ6ñˆÁ4WñV'&˜s¢≤áS¢$ÜBFñ÷VÁ¶ú;2"¬V„¢%6óÇFñ÷VÁ6ñˆÁ2"“¿¢7V÷÷'îFñ÷VÁ6ñˆÁ5FóF∆S¢≤áS¢%&ˆfñ∆ˆBVwíñ∆∆ÁL:7&"¬V„¢%ñ˜W"&ˆfñ∆RBv∆Ê6R"“¿¢7V÷÷'ï66∆TÊ˜FS¢∞¢áS¢$<:fˆ≤ÊV“÷ñÏY<:◊L:ó6V≤:ó2ÊV“W&6VÁFñ∆ó6V≥≤ßB◊WFF¨:≤¬Üˆ¬ÜV«ñW¶∂VG7¢V¬¢VwñW26º:Ã:∂ˆ‚‚"¿¢V„¢%FÜR&'2&RÊVóFÜW"w&FW2Ê˜"W&6VÁFñ∆W3≤FÜWí6Ü˜rvÜW&Rñ˜R6óBˆ‚V6Ç66∆R‚"¿¢“¿¢7V÷÷'îÊWáE7FW¢≤áS¢$º;gfWF∂W¨YÃ:ó:ó6VB"¬V„¢%ñ˜W"ÊWáB7FW"“¿¢7V÷÷'î˜WG6ñFTfVVF&6≥¢≤áS¢$º;∆«<Yfó77¶¶V«¨:ó6V≤"¬V„¢$˜WG6ñFRfVVF&6≤"“¿¢7V÷÷'î˜V‰˜WG6ñFS¢≤áS¢$º;∆«<Yº:ó÷VvÁñóL:6"¬V„¢$˜V‚˜WG6ñFRfñWr"“¿¢7V÷÷'ïVÊFñÊt˜&s¢≤áS¢%f‚Vwíl;∆v|Y7¶W'fW¶WFí÷Vvå:◊l:6ˆB‚"¬V„¢%ñ˜RÜfRVÊFñÊr˜&vÊó¶Fñˆ‚ñÁfóFFñˆ‚‚"“¿¢7V÷÷'î˜V‰ñÁfóFFñˆ„¢≤áS¢$÷Vvå:◊l:2÷VvÁñóL:6"¬V„¢$˜V‚ñÁfóFFñˆ‚"“¿¢7V÷÷'î76W76÷VÁDñÂ&ˆw&W73¢≤áS¢%f‚Vwífˆ«ñ÷F&‚Ã:ólY;¶¢∂óL;f«L:ó6VB‚"¬V„¢%ñ˜RÜfRÊWr76W76÷VÁBñ‚&ˆw&W72‚"“¿¢7V÷÷'î6ˆÁFñÁVS¢≤áS¢$fˆ«óFL:2"¬V„¢$6ˆÁFñÁVR"“¿¢7V÷÷'îWá∆˜&TWñV'&˜s¢≤áS¢$fV∆fVFW¨:ó2"¬V„¢$Wá∆˜&R"“¿¢7V÷÷'îWá∆˜&UFóF∆S¢≤áS¢$∂∂˜"‹:ñ«ñVF¢V¬,:ó7¶∆WFV∂&V‚¬÷ñ∂˜"7¶W&WFÏ:ñ¬‚"¬V„¢$vÚFVWW"ˆÊ«ívÜV‚ñ˜RvÁBFÚ‚"“¿¢7V÷÷'îFWFñ«5&ˆ◊C¢≤áS¢$÷ñÊFV‚,:ó7¶∆WB"¬V„¢$∆¬FWFñ«2"“¿¢7V÷÷'îFWFñ«4÷WF¢∞¢áS¢$FV∆¶W2&ó˜'Bå:&ˆ“Fó7ßFfV¶W¶WF&V„¢&F"¬bFñ÷VÁ¶ú;2¬«6º:Ã:≤¬◊VÊ∂7L:÷«W2:ó2fV¶ÃYL:ó2‚"¿¢V„¢%FÜR6ˆ◊∆WFR&W˜'Bñ‚Fá&VR6∆V"6ÜFW'3¢&F"¬bFñ÷VÁ6ñˆÁ2¬f6WG2¬v˜&≤7Gñ∆RÊBw&˜wFÇ‚"¿¢“¿¢7V÷÷'îFWFñ«4&ˆGì¢∞¢áS¢$,:ó7¶∆WFW2&ó˜'F&‚÷Vv∂ˆB÷ñÊBÜBFñ÷VÁ¶ú;2:ó'FV∆÷W¨:ó<:óB¬¢«6º:Ã:∂B¬◊VÊ∂7L:÷«W7B:ó2fV¶ÃYL:ó6íl;6∑W7ßB‚"¿¢V„¢%FÜRFWFñ∆VB&W˜'BñÊ6«VFW2∆¬6óÇñÁFW'&WFFñˆÁ2¬f6WG2¬v˜&≤7Gñ∆RÊBw&˜wFÇfˆ7W2‚"¿¢“¿¢7V÷÷'î˜V‰FWFñ«3¢≤áS¢%,:ó7¶∆WFW2&ó˜'B÷VvÁñóL:6"¬V„¢$˜V‚FWFñ∆VB&W˜'B"“¿¢7V÷÷'î6ˆ◊&ó6ˆÂFóF∆S¢≤áS¢$º;∆«<YÏ:ó¨YˆÁB"¬V„¢$˜WG6ñFRW'7V7FófR"“¿¢7V÷÷'î6ˆ◊&ó6ˆÂ&VGî&ˆGì¢≤áS¢$Ï:ó¶B÷Vr¬Üˆwñ‚Ã:FÊ≤‹:6ˆ≤¬:ó2Üˆ¬L:ó"V¬¢;fÊº:óVB‚"¬V„¢%6VRÜ˜r˜FÜW'2W&6VófRñ˜RÊBvÜW&RóBFñffW'2g&ˆ“ñ˜W"6V∆b◊fñWr‚"“¿¢7V÷÷'î6ˆ◊&ó6ˆÂ7F'D&ˆGì¢≤áS¢$º:ó&¢fó77¶¶V«¨:ó7B¬Üˆwíº:ó<Y&";g77¶WfWFÜW6B¢;fÊº:óVB‹:6ˆ≤Ï:ó¨YˆÁF¨:f¬‚"¬V„¢$6≤f˜"fVVF&6≤6Úñ˜R6‚6ˆ◊&Rñ˜W"6V∆b◊fñWrvóFÇ˜FÜW"W'7V7FófW2∆FW"‚"“¿¢ñÁFW&7Fñˆ‰VÁG'îWñV'&˜s¢≤áS¢$º;g¨;g2‹[º;fL:ó2"¬V„¢%6Ü&VBGñÊ÷ñ72"“¿¢ñÁFW&7Fñˆ‰VÁG'ï6ˆ÷VˆÊS¢≤áS¢%f∆∂í‹:2"¬V„¢%6ˆ÷VˆÊRV«6R"“¿¢ñÁFW&7Fñˆ‰VÁG'îÊWuFóF∆S¢∞¢áS¢$÷íL;g'L:ñÊñ≤¬÷ñ∂˜"º:óB&ˆfñ¬FÃ:∆∂˜¶ñ≥Ú"¿¢V„¢%vÜBÜVÁ2vÜV‚GvÚ&ˆfñ∆W2÷VWCÚ"¿¢“¿¢ñÁFW&7Fñˆ‰VÁG'îÊWt&ˆGì¢∞¢áS¢$Ï:ó¶B÷Vr¬÷í÷Vwí÷|:L;6¬¬Üˆ¬∆VÜWB<;ß&Ã;6L:2¬:ó2÷óB:ó&FV÷W2VÃY&R÷Vv&W7¨:ñ∆Êí‚"¿¢V„¢%6VRvÜB6ˆ÷W2ÊGW&∆«í¬vÜW&Rg&ñ7Fñˆ‚÷íV"¬ÊBvÜBó2v˜'FÇFó67W76ñÊrñ‚GfÊ6R‚"¿¢“¿¢ñÁFW&7Fñˆ‰VÁG'îÊWu&ñ÷'ì¢≤áS¢,9g77¶VÜ6ˆÊÃ:◊Fˆ≤f∆∂ófV¬"¬V„¢$6ˆ◊&RvóFÇ6ˆ÷VˆÊR"“¿¢ñÁFW&7Fñˆ‰VÁG'îÊWu6V6ˆÊF'ì¢≤áS¢$∂ó,;6,:∆ˆ“Vwí∂&∑FW'&V¬"¬V„¢%G'íóBvóFÇ6Ü&7FW""“¿¢ñÁFW&7Fñˆ‰VÁG'ïVÊFñÊu7FGW3¢≤áS¢'∂Ê÷W“l:∆7¨:&l:""¬V„¢%vóFñÊrf˜"∂Ê÷W“"“¿¢ñÁFW&7Fñˆ‰VÁG'ïVÊFñÊuFóF∆S¢≤áS¢$÷Vvå:◊l:2;ßFˆ‚f‚‚"¬V„¢%ñ˜W"ñÁfóFFñˆ‚ó2ˆ‚óG2ví‚"“¿¢ñÁFW&7Fñˆ‰VÁG'ïVÊFñÊt&ˆGì¢∞¢áS¢$÷ñÁB∂Ê÷W“V∆fˆvF¶¬óGB÷VvÁñóFÜFˆBº:óBfÃ;6Fí&ˆfñ¬º;g¨;g2º:ó:óB‚"¿¢V„¢$ˆÊ6R∂Ê÷W“66WG2¬ñ˜R6‚˜V‚FÜR6Ü&VBñ7GW&Rˆbñ˜W"GvÚ&V¬&ˆfñ∆W2ÜW&R‚"¿¢“¿¢ñÁFW&7Fñˆ‰VÁG'ïVÊFñÊu&ñ÷'ì¢≤áS¢$÷Vvå:◊l:2÷VvÁñóL:6"¬V„¢$˜V‚ñÁfóFFñˆ‚"“¿¢ñÁFW&7Fñˆ‰VÁG'ïVÊFñÊu6V6ˆÊF'ì¢≤áS¢$FFñr∂ó,;6,:∆ˆ“Vwí∂&∑FW'&V¬"¬V„¢%G'íóBvóFÇ6Ü&7FW"÷VÁvÜñ∆R"“¿¢ñÁFW&7Fñˆ‰VÁG'ï&VGï7FGW3¢≤áS¢'∂Ê÷W“º:ó7¶V‚:∆¬"¬V„¢'∂Ê÷W“ó2&VGí"“¿¢ñÁFW&7Fñˆ‰VÁG'ï&VGïFóF∆S¢∞¢áS¢$÷VvÏ:ó¶ÜWFóFV≤¬Üˆwñ‚‹[º;fGL;f≤Vwú;«GB‚"¿¢V„¢%6VRÜ˜rñ˜Rv˜&≤FˆvWFÜW"‚"¿¢“¿¢ñÁFW&7Fñˆ‰VÁG'ï&VGî&ˆGì¢∞¢áS¢'∂Ê÷W“V∆fˆvGF∂76ˆ∆F˜B‚º;g¨;g2º:óWFV≤‹:"º:óBfÃ;6Fí;fÏ:ó'L:ñ∂VÃ:ó6,Y¬:ó;∆¬fV¬‚"¿¢V„¢'∂Ê÷W“66WFVBFÜR6ˆÊÊV7Fñˆ‚‚ñ˜W"6Ü&VBñ7GW&Ró2Ê˜r&6VBˆ‚GvÚ&V¬6V∆b÷76W76÷VÁG2‚"¿¢“¿¢ñÁFW&7Fñˆ‰VÁG'ï&VGï&ñ÷'ì¢≤áS¢$º;g¨;g2º:ó÷VvÁñóL:6"¬V„¢$˜V‚6Ü&VBñ7GW&R"“¿¢ñÁFW&7Fñˆ‰VÁG'ï&VGï6V6ˆÊF'ì¢≤áS¢$‹:6ñ≤;g77¶VÜ6ˆÊÃ:◊L:2"¬V„¢$Ê˜FÜW"6ˆ◊&ó6ˆ‚"“¿¢7V÷÷'î6∆&óGïVW7Fñˆ„¢≤áS¢,8ó'FÜWLYfˆ«BW¢¢V«<Y;g77¶º:óÚ"¬V„¢%v2FÜó2fó'7B˜fW'fñWr6∆V#Ú"“¿¢7V÷÷'î6∆&óGî&ˆGì¢≤áS¢$Vwí∂˜ñÁL:76¬6V|:◊FÜWG7¢Vwó7¶W,[&,:íFVÊÊí‚"¬V„¢$ˆÊRFÜV«2W2÷∂RóB6ñ◊∆W"‚"“¿¢7V÷÷'î6∆&óGîÊÛ¢≤áS¢$ÊV“ñv¨:‚"¬V„¢$Ê˜B&V∆«í"“¿¢7V÷÷'î6∆&óGï'F«ì¢≤áS¢%,:ó7¶&V‚"¬V„¢%'F«í"“¿¢7V÷÷'î6∆&óGïñW3¢≤áS¢$ñvV‚"¬V„¢%ñW2"“¿¢7V÷÷'î6∆&óGïFÜÊ∑3¢≤áS¢$º;g7¨;fÊ¨;∆≤(	BWßBfV∆Ü7¶Ï:∆ßV≤º;gfWF∂W¨YfñÊˆ‹:◊L:6Ü˜¢‚"¬V„¢%FÜÊ≤ñ˜R(	BFÜó2vñ∆¬ñÊf˜&“FÜRÊWáB&VfñÊV÷VÁB‚"“¿¢7V÷÷'î6∆&óGîW'&˜#¢≤áS¢$÷˜7BÊV“6ñ∂W,;∆«B÷VÁFVÊí‚,;6,:∆B;¶ß&‚"¬V„¢%vR6˜V∆F‚wB6fRFÜBßW7BÊ˜r‚∆V6RG'ívñ‚‚"“¿¢FWFñ«4WáFVÁ6ñˆÁ5FóF∆S¢≤áS¢$‹:6ñ≤Ï:ó¨YˆÁB"¬V„¢$Ê˜FÜW"víFÚWá∆˜&R"“¿¢FWFñ«4WáFVÁ6ñˆÁ4&ˆGì¢≤áS¢$Ï:ó¶B÷Vr¬÷ñ«ñV‚7¶∂÷íó,:Áñˆ≤ñ∆∆W7¶∂VFÜWFÊV≤FW&‹:ó7¶WFW2‹[º;fL:ó6VFÜW¢‚"¬V„¢%6VRvÜñ6Ç&ˆfW76ñˆÊ¬Fó&V7FñˆÁ2÷ífóBFÜRvíñ˜RÊGW&∆«í˜W&FR‚"“¿¢&W˜'D6ÜFW'4∆&V√¢≤áS¢$,:ó7¶∆WFW2&ó˜'BfV¶W¶WFVí"¬V„¢$FWFñ∆VB&W˜'B6ÜFW'2"“¿¢&W˜'D6ÜFW'4WñV'&˜s¢≤áS¢%,:ó7¶∆WFW2&ó˜'B"¬V„¢$FWFñ∆VB&W˜'B"“¿¢&W˜'D6ÜFW$ÊWáC¢≤áS¢$º;gfWF∂W¨YfV¶W¶WB"¬V„¢$ÊWáB6ÜFW""“¿¢&W˜'D6ÜFW$6˜VÁC¢≤áS¢'∂7W'&VÁG“Ú∑F˜F«“"¬V„¢'∂7W'&VÁG“Ú∑F˜F«“"“¿¢&W˜'D6ÜFW%ñ6∂W#¢≤áS¢$fV¶W¶WFV≤"¬V„¢$6ÜFW'2"“¿¢&W˜'D6ÜFW%ñ6∂W%FóF∆S¢≤áS¢%&ó˜'BfV¶W¶WFVí"¬V„¢%&W˜'B6ÜFW'2"“¿¢&W˜'D6ÜFW%ñ6∂W$6∆˜6S¢≤áS¢$fV¶W¶WGl:∆7ßL;2&W¨:,:6"¬V„¢$6∆˜6R6ÜFW"ñ6∂W""“¿¢&W˜'D6ÜFW$7W'&VÁC¢≤áS¢$∑G\:∆ó2"¬V„¢$7W'&VÁB"“¿¢&W˜'D&6µFı7V÷÷'ì¢≤áS¢%fó77¶¢;g77¶º:óÜW¢"¬V„¢$&6≤FÚ˜fW'fñWr"“¿¢&W˜'D∆ñÊV$WñV'&˜s¢≤áS¢$FV∆¶W2&ó˜'FˆB"¬V„¢%ñ˜W"6ˆ◊∆WFR&W˜'B"“¿¢&W˜'D∆ñÊV%FóF∆S¢≤áS¢$FV∆¶W2&ó˜'B:GFV∂ñÁFÜWLYfV¶W¶WFV∂&V‚‚"¬V„¢$WfW'íFWFñ¬¬ñ‚6∆V"6ÜFW'2‚"“¿¢&W˜'D∆ñÊV$&ˆGì¢≤áS¢$FV∆¶W27¶∂÷í‹:ñ«ó<:ñr÷Vv÷&B¬FRVwó7¶W'&R76≤VwívˆÊFˆ∆FíVwó<:ñrº:ó"fñwñV∆÷WB‚"¬V„¢%FÜRgV∆¬&ˆfW76ñˆÊ¬FWFÇ&V÷ñÁ2¬vÜñ∆RˆÊ«íˆÊRñFV6∑2f˜"ñ˜W"GFVÁFñˆ‚BFñ÷R‚"“¿¢&W˜'D6&D˜V„¢≤áS¢$÷VvÁñóL:2"¬V„¢$˜V‚"“¿¢&W˜'D6&D6∆˜6S¢≤áS¢$&W¨:,:2"¬V„¢$6∆˜6R"“¿¢fñWu6V∆V7F˜$∆&V√¢≤áS¢$W&VF‹:ñÁñÏ:ó¶WB"¬V„¢%&W7V«BfñWr"“¿¢fñWu6V∆V7F˜$∆ˆ6∂VC¢≤áS¢%«W2"¬V„¢%«W2"“¿¢&W˜'D˜fW'fñWuFóF∆S¢≤áS¢,8GFV∂ñÁL:ó2"¬V„¢$˜fW'fñWr"“¿¢&W˜'D˜fW'fñWt&ˆGì¢≤áS¢$&F":ó2ÜBlYFñ÷VÁ¶ú;2:GFV∂ñÁFÜWLYV‚¬VwíÜV«ñV‚‚"¬V„¢%ñ˜W"&F"ÊB6óÇ÷ñ‚Fñ÷VÁ6ñˆÁ2¬6∆V&«í&W6VÁFVBñ‚ˆÊR∆6R‚"“¿¢&W˜'D˜fW'fñWuVW7Fñˆ„¢≤áS¢$÷ñ«ñV‚÷ñÁL:¶B&ß¶ˆÃ;6Fñ≤∂ìÚ"¬V„¢%vÜBGFW&‚V÷W&vW3Ú"“¿¢&W˜'DFñ÷VÁ6ñˆÁ5FóF∆S¢≤áS¢$Fñ÷VÁ¶ú;6≤"¬V„¢$Fñ÷VÁ6ñˆÁ2"“¿¢&W˜'DFñ÷VÁ6ñˆÁ4&ˆGì¢≤áS¢%ˆÁF˜2:ó'L:ñ∂V≤¬:ó'FV∆÷W¨:ó6V≤:ó2«6º:Ã:≤Fñ÷VÁ¶ú;6Êº:ñÁB‚"¬V„¢$WÜ7B66˜&W2¬ñÁFW'&WFFñˆÁ2ÊBf6WG2f˜"V6ÇFñ÷VÁ6ñˆ‚‚"“¿¢&W˜'DFñ÷VÁ6ñˆÁ5VW7Fñˆ„¢≤áS¢$÷íf‚&ˆfñ∆ˆB‹;f|;gGCÚ"¬V„¢%vÜB6óG2&VÜñÊBñ˜W"&ˆfñ∆SÚ"“¿¢&W˜'Ev˜&∑7Gñ∆UFóF∆S¢≤áS¢$◊VÊ∂7L:÷«W2:ó2fV¶ÃYL:ó2"¬V„¢%v˜&≤7Gñ∆RÊBw&˜wFÇ"“¿¢&W˜'Ev˜&∑7Gñ∆T&ˆGì¢≤áS¢$◊VÊ∂º;g&ÁñW¶WB¬7¶W&Wñ∆∆W7¶∂VL:ó2¬76G7¶W&WV≤:ó2fV¶ÃYL:ó6íl;6∑W7¢‚"¬V„¢%v˜&≤VÁfó&ˆÊ÷VÁB¬&ˆ∆RfóB¬FV“&ˆ∆W2ÊBFWfV∆˜÷VÁBfˆ7W2‚"“¿¢&W˜'Ev˜&∑7Gñ∆UVW7Fñˆ„¢≤áS¢$Üˆwñ‚f˜&L:◊G6BWßB‹[º;fL:ó7&SÚ"¬V„¢$Ü˜r6‚ñ˜RWBFÜó2ñÁFÚ&7Fñ6SÚ"“¿¢ÜW&ÙWñV'&˜s¢≤áS¢$FR&ˆfñ∆ˆB"¬V„¢%ñ˜W"&ˆfñ∆R"“¿¢ÜW&ı6Ü&S¢≤áS¢$÷Vv˜7ßL:2"¬V„¢%6Ü&R"“¿¢ÜW&ıFc¢≤áS¢%Db∆WL;f«L:ó2"¬V„¢$F˜vÊ∆ˆBDb"“¿¢ÜW&Ùv«óÑWñV'&˜s¢≤áS¢$FR∂&∑FW,:',:B"¬V„¢%ñ˜W"6Ü&7FW"fó7V¬"“¿¢ÜW&Ùv«óÑw&÷÷#¢∞¢áS¢$Êwíf˜&÷∑&ñ÷'ó”¢∂f˜&◊“‚&VÊÊRgWL;2fˆÊ¬∑6V6ˆÊF'ó”¢∂÷˜Fñg“‚∂óL;f«L:ó2ˆÁG7¨:÷˜Bº;gfWFí‚"¿¢V„¢%FÜR∆&vR6ÜR&W&W6VÁG2∑&ñ÷'ó”¢FÜR∂f˜&◊“‚FÜR∆ñÊRñÁ6ñFR&W&W6VÁG2∑6V6ˆÊF'ó”¢FÜR∂÷˜Fñg“‚FÜRfñ∆¬fˆ∆∆˜w2FÜR66˜&R‚"¿¢“¿¢ÜW&Ùv«óÑw&÷÷%VÊ6W'Fñ„¢∞¢áS¢$º:óBFñ÷VÁ¶ú;6Bº;g¶V¬¶ˆÊ˜27¶ñÁL[‚Êwíf˜&÷∂f˜&◊“¬&VÊÊRgWL;2fˆÊ¬∂÷˜Fñg”≤∂óL;f«L:ó2ˆÁG7¨:÷˜Bº;gfWFí‚"¿¢V„¢%FÜRGvÚFñ÷VÁ6ñˆÁ2&RB6ñ÷ñ∆"∆WfV¬‚FÜR∆&vR6ÜRó2FÜR∂f˜&◊“¬FÜR∆ñÊRñÁ6ñFRFÜR∂÷˜Fñg”≤FÜRfñ∆¬fˆ∆∆˜w2FÜR66˜&R‚"¿¢“¿¢ÜW&Ùv«óÑ˜V„¢≤áS¢$∂&∑FW,:'&"¬V„¢$6Ü&7FW"fó7V¬"“¿¢ÜW&Ùv«óÑ&6≥¢≤áS¢%&ˆfñ¬"¬V„¢%&ˆfñ∆R"“¿¢ÜW&Ùv«óÑ˜V‰ì¢≤áS¢$∂&∑FW,:'&÷Vv¶V∆VÏ:◊L:ó6R"¬V„¢%6Ü˜r6Ü&7FW"fó7V¬"“¿¢ÜW&Ùv«óÑ&6¥ì¢≤áS¢%&ˆfñ¬÷Vv¶V∆VÏ:◊L:ó6R"¬V„¢%6Ü˜r&ˆfñ∆R"“¿¢Fñ’6V7Fñˆ‰WñV'&˜s¢≤áS¢$Fñ÷VÁ¶ú;6≤"¬V„¢$Fñ÷VÁ6ñˆÁ2"“¿¢Fñ’6V7FñˆÂFóF∆S¢≤áS¢,8÷wí‹[º;fG7¢lYFñ÷VÁ¶ú;6≤÷VÁL:ñ‚"¬V„¢$Ü˜rñ˜Rv˜&≤7&˜72∂WíFñ÷VÁ6ñˆÁ2"“¿¢Fñ’6V7Fñˆ‰FW63¢≤áS¢$Fñ÷VÁ¶ú;6≤ÊV“6∂GV«ú:≤¬÷ñÏY<:◊L:ó6V≤fwíW&6VÁFñ∆ó6V≤‚(	3÷26º:Ã:‚∂ó&ß¶ˆÃ;6L;2÷ñÁL:¶Fˆ≤ßB◊WFF¨:≤÷Vr¬÷í÷˜¶vB¬÷íB7F&ñ∆óL:7B¬:ó2Üˆ¬¨;fÜWBfW7¨;∆«G<:ñr‚"¬V„¢$Fñ÷VÁ6ñˆÁ2&V‚wB&˜ÜW2¬w&FW2˜"W&6VÁFñ∆W2‚GFW&Á2ˆ‚FÜR(	366∆R6Ü˜rvÜBG&ófW2ñ˜R¬vÜB∂VW2ñ˜R7FVGí¬ÊBvÜW&RFVÁ6ñˆ‚÷í&ó6R‚"“¿¢66˜&T˜WDˆdáVÊG&VC¢≤áS¢'∑f«VW“Ú"¬V„¢'∑f«VW“Ú"“¿¢f6WD∆&V√¢≤áS¢&«6º:∆,:ó7¶∆WFW6V‚"¬V„¢&f6WG2ñ‚FWFñ¬"“¿¢f6WEVÊ∆ˆ6≥¢≤áS¢%«W2fV∆ˆ∆L:6(	B(*√í"¬V„¢%VÊ∆ˆ6≤«W2(	B(*√í"“¿¢ÚÚ≈"‘d4UB(	BÊV“÷∂∆ñÊñ∂ív∆˜77¶(	Â7¶˜&ˆÊ|:2"f6WFÜW¢Ü∑V∆72÷∆;†¢ÚÚfV«L:óFV∆∆V¬¶V∆VÊñ≤÷Vr¬76≤¢ÁÜñWGñf6WB÷º;6FÏ:¬í‡¢f6WDÁÜñWGîv∆˜73¢∞¢áS¢$Ê˜&‹:¬7¶V‹:ñ«ñó<:ñwfˆÏ:3¢ßB◊WFF¶¬÷VÊÁñó&R¶V∆∆V◊¨Y,:Bå:óFº;g¶ÊívvˆF∆÷6∂ˆL:2(	BÊV“∂∆ñÊñ∂í:∆∆˜F˜B¶V∆W¢‚"¿¢V„¢$Ê˜&÷¬W'6ˆÊ∆óGíG&óC¢Ü˜r&ˆÊRñ˜R&RFÚWfW'ñFív˜''í(	BóBFˆW2Ê˜BñÊFñ6FR6∆ñÊñ6¬6ˆÊFóFñˆ‚‚"¿¢“¿¢ÚÚ∂˜,:&&í66˜&U6V‘ÜñÁBå+4T“ˆÁG7¨:“÷V∆∆WGBí##b”Ç”‹:ñ‡¢ÚÚ∂ófW¶WGfS¢‹:ó,:ó6í÷Üñ&5¨8“ÊV“¶V∆VÊñ≤÷VrfVÃ;∆∆WFV‚áFW&‹:ñ∂L;fÁL:ó2ì∞¢ÚÚ&ó¶ˆÁóF∆Á<:r÷∂W¶VÃ:ó2∑f∆óFL:◊bÜlYÏ:ób÷ˆÊ«í<:÷÷∂R¬ÜVFvR◊7¨;gfVvV≤í‡¢ÚÚW&6VÁFñ∆ó2◊6˜"(	B54≤∑L:◊bÊ˜&÷◊L:&∆÷V∆∆WGB¶V∆VÊñ≤÷VrÜÊ˜&◊2ÁG2í‡¢66˜&UW&6VÁFñ∆T∆ñÊS¢∞¢áS¢$W¢¢:ó'L:ñ≤∂óL;f«LY≤º;g,;∆∆&VÃ;∆¬∑“R‹:Ê≤W&VF‹:ñÁú:ñÏ:ñ¬÷v6&"‚"¿¢V„¢%FÜó266˜&Ró2ÜñvÜW"FÜ‚&˜VvÜ«í∑“Rˆb&W7ˆÊFVÁG2‚"¿¢“¿¢FV’&ˆ∆TWñV'&˜s¢≤áS¢$76G7¶W&WV≤"¬V„¢%FV“&ˆ∆W2"“¿¢FV’&ˆ∆UFóF∆S¢≤áS¢,8÷wí¶V∆VÊÜWG7¢÷Vr76F&‚"¬V„¢$Ü˜rñ˜R6Ü˜rWñ‚FV◊2"“¿¢FV’&ˆ∆U6˜W&6T÷V7W&VC¢≤áS¢$∂óL;f«L;gGBº:ó&LY:◊b"¬V„¢$6ˆ◊∆WFVBVW7FñˆÊÊó&R"“¿¢FV’&ˆ∆U6˜W&6TW7Fñ÷FS¢≤áS¢$&V76Ã:ó27¶V‹:ñ«ñó<:ñw&ˆfñ∆,;6¬"¬V„¢$W7Fñ÷FVBg&ˆ“W'6ˆÊ∆óGí&ˆfñ∆R"“¿¢FV’&ˆ∆UW'6ˆÊ∆óGîÜ&÷ˆÁì¢≤áS¢$‹:ó'B76G7¶W&Wº:óVB;g77¶ÜÊv&‚f‚7¶V‹:ñ«ñó<:ñw&ˆfñ∆ˆFF¬(	B¢:«F∆B&WL;f«L;gGB7¶W&WV≤ñ∆∆VÊV≤ÜÜ˜¢¬Üˆwñ‚‹[º;fG7¢‚"¬V„¢%ñ˜W"÷V7W&VBFV“◊&ˆ∆Rñ7GW&Ró2ñ‚Ü&÷ˆÁívóFÇñ˜W"W'6ˆÊ∆óGí&ˆfñ∆R(	BFÜR&ˆ∆W2ñ˜R∆ífóBÜ˜rñ˜R˜W&FR‚"“¿¢FV’&ˆ∆UW'6ˆÊ∆óGîFófW&vS¢≤áS¢$‹:ó'B7¶W&Wº:óVBV«L:ó"GL;6¬¬÷óB7¶V‹:ñ«ñó<:ñw&ˆfñ∆ˆB¶V∆W¶ÊRá∑&ˆ∆W7“í(	BW¢ÊV“Üñ&¢wñ∑&‚º;g&ÁñW¶WBfwí76Bñ|:ñÁñVíå:◊fÊ≤VÃY‹:27¶W&WWB‚8ó&FV÷W2∆VÜWB:F&W7¨:ñ∆ÊífW¶WLYFFV¬fwíFÏ:76L;6FF¬‚"¬V„¢%ñ˜W"÷V7W&VB&ˆ∆Rñ7GW&RFñffW'2g&ˆ“vÜBñ˜W"W'6ˆÊ∆óGí&ˆfñ∆Rv˜V∆B&VFñ7Bá∑&ˆ∆W7“í(	BFÜBw2Ê˜Bf∆s¢FÜRVÁfó&ˆÊ÷VÁB˜"FV“ÊVVG2ˆgFV‚6∆¬˜WBFñffW&VÁB&ˆ∆R‚v˜'FÇFó67W76ñÊrvóFÇñ˜W"∆VB˜"6ˆÁ7V«FÁB‚"“¿¢FV’&ˆ∆UVW%FóF∆S¢≤áS¢$76FˆB:÷wíÃ:B"¬V„¢$Ü˜rñ˜W"FV“6VW2ñ˜R"“¿¢FV’&ˆ∆UVW$6˜VÁC¢≤áS¢'∂Á“fó77¶¶V«¨:ó2"¬V„¢'∂Á“&W7ˆÁ6W2"“¿¢FV’&ˆ∆UVW%Fá&W6Üˆ∆C¢≤áS¢$VFFñr∂Á“76GL:'6ífó77¶¶V«¨:ó2:ó&∂W¶WGB(	B76Fº:ó∆VvÃ:&"∂÷ñÁ“:ó'L:ñ∂VÃYLY¬:∆¬;g77¶R¬FFñrÊV“¶V∆VÊñ≤÷Vr‚"¬V„¢'∂Á“VW"&W7ˆÁ6W26Úf"(	BFÜRFV“fñWrf˜&◊2g&ˆ“B∆V7B∂÷ñÁ“&FW'2ÊB7Fó2ÜñFFV‚VÁFñ¬FÜV‚‚"“¿¢FV’&ˆ∆UVW$Ü&÷ˆÁì¢≤áS¢$¢;fÊº:óVB:ó276Fº:óVBVwñ&Wl:r(	B76GL:'6ñBVwñÊ¶ˆ∂B7¶W&WV∂WBÃ:F¨:≤&VÊÊVB¬÷ñ∂WBFRó2÷vF&‚‚"¬V„¢%ñ˜W"6V∆b÷ñ÷vRÊBFÜRFV“fñWr∆ñv‚(	Bñ˜W"FV÷÷FW26VRFÜR6÷R&ˆ∆W2ñ‚ñ˜RFÜBñ˜R6VRñ‚ñ˜W'6V∆b‚"“¿¢FV’&ˆ∆UVW$g&ñ7FñˆÂFóF∆S¢≤áS¢,9fÊº:ó(	676Fº:óV«L:ó,:ó2"¬V„¢%6V∆b÷ñ÷vRg2‚FV“fñWrv"“¿¢FV’&ˆ∆UVW%6V∆dˆÊ«ì¢≤áS¢%FRÃ:FˆB÷vF&‚¬76B∂Wl:ó6,:ì¢∑&ˆ∆W7“‚"¬V„¢%ñ˜R6VRóBñ‚ñ˜W'6V∆b¬FÜRFV“∆W726Û¢∑&ˆ∆W7“‚"“¿¢FV’&ˆ∆UVW%VW$ˆÊ«ì¢≤áS¢$76BÃ:F¶&VÊÊVB¬FR∂Wl:ó6,:ì¢∑&ˆ∆W7“‚"¬V„¢%FÜRFV“6VW2óBñ‚ñ˜R¬ñ˜R∆W726Û¢∑&ˆ∆W7“‚"“¿¢FV’&ˆ∆UVW$g&ñ7Fñˆ‰ÜñÁC¢≤áS¢$¢V«L:ó,:ó2ÊV“Üñ&¬ÜÊV“&W7¨:ñ∆vWL:ó6ñÊL:◊L;2(	Bº;g¨;g2:F&W7¨:ñÃ:ó6V‚:ó&FV÷W2÷VvÏ:ó¶Êí¬÷ú:ó'B∂Wl:ó6,:íÃ:FÜL;2¢Vwññ≤7¶W&W¬fwí÷íå:◊f¶VÃY‹:6ñ∂B‚"¬V„¢%FÜRvó6‚wBf∆r'WB6ˆÁfW'6Fñˆ‚7F'FW"(	Bv˜'FÇWá∆˜&ñÊrñ‚FÜRFV'&ñVbvÜBÜñFW2ˆÊR&ˆ∆R˜"6∆«2˜WBFÜR˜FÜW"‚"“¿¢FV’&ˆ∆U&ñ÷'ì¢≤áS¢$V«<YF∆VvW2"¬V„¢%&ñ÷'í"“¿¢FV’&ˆ∆U6V6ˆÊF'ì¢≤áS¢$‹:6ˆF∆v˜2"¬V„¢%6V6ˆÊF'í"“¿¢FV’&ˆ∆UFW'Fñ'ì¢≤áS¢$Ü&÷F∆v˜2"¬V„¢%FW'Fñ'í"“¿¢W6V∆ƒWñV'&˜s¢≤áS¢%«W2"¬V„¢%«W2"“¿¢W6V∆≈FóF∆S¢≤áS¢$Ï:óß¢lYFñ÷VÁ¶ú;6≤‹;f|:í‚"¬V„¢$∆ˆˆ≤&VÜñÊBFÜR∂WíFñ÷VÁ6ñˆÁ2‚"“¿¢W6V∆ƒFW63¢≤áS¢$÷VÊ¢‹:ñ«ñV&'&S¢«6º:Ã:≤¬f∂fˆ«Fˆ≤¬ñ∆∆W7¶∂VLY7¶W&Wº;g,;f≤(	B:ó'G6B÷Vr¬÷í÷˜¶vBfÃ;6¨:&‚‚"¬V„¢$vÚFVWW#¢7V'66∆W2¬&∆ñÊB7˜G2¬fóGFñÊr&ˆ∆W2(	BVÊFW'7FÊBvÜB&V∆«íG&ófW2ñ˜R‚"“¿¢W6V∆ƒ'Wì¢≤áS¢$÷VwfW7¶V“"¬V„¢$'WíÊ˜r"“¿¢W6V∆ƒˆÊWFñ÷S¢≤áS¢&Vwó7¶W&íl:<:&Ã:2"¬V„¢&ˆÊR◊Fñ÷RW&6Ü6R"“¿¢W6V∆ƒfVGW&S¢≤áS¢##R«6º:∆"¬V„¢##R7V'66∆W2"“¿¢W6V∆ƒfVGW&S#¢≤áS¢$∂˜&Ã:F∆‚7¨:‹;¢ˆ'6W'fW""¬V„¢%VÊ∆ñ÷óFVBˆ'6W'fW'2"“¿¢W6V∆ƒfVGW&S3¢≤áS¢%f∂fˆ«B÷V∆V◊¨:ó2"¬V„¢$&∆ñÊB7˜BÊ«ó6ó2"“¿¢W6V∆ƒfVGW&SC¢≤áS¢$‹[º;fL:ó6VB:ó27¶W&WVB76F&‚"¬V„¢$Ü˜rñ˜Rv˜&≤ÊB6ˆÁG&ñ'WFRñ‚FV“"“¿¢∆ˆ6µ«W3¢≤áS¢$÷í:∆¬Fñ÷VÁ¶ú;6≤‹;f|;gGCÚ+r÷ñ«ñV‚7¶W&WWBfW7¶V¬fV¬76F&„Ú+rÜˆ¬fV¶ÃYFÜWG7¢∆Vvwñ˜'6&&„Ú"¬V„¢%vÜBw2&VÜñÊBñ˜W"Fñ÷VÁ6ñˆÁ3Ú+rvÜñ6Ç&ˆ∆RFÚñ˜RF∂Rˆ‚ñ‚FV”Ú+rvÜW&R6‚ñ˜Rw&˜rf7FW7CÚ"“¿¢∆ˆ6µ&Vf∆V7C¢≤áS¢$Üˆwñ‚Ã:FÊ≤‹:6ˆ≥Ú+r÷ñ≤f∂fˆ«F¶ñCÚ+rˆ'6W'fW"◊fó77¶¶V«¨:ó6V≤V∆V◊¨:ó6R"¬V„¢$Ü˜rFÚ˜FÜW'26VRñ˜SÚ+rvÜB&Rñ˜W"&∆ñÊB7˜G3Ú+rˆ'6W'fW"fVVF&6≤Ê«ó6ó2"“¿¢∆ˆ6µ&WfñWuFWáC¢≤áS¢$÷í:∆¬Fñ÷VÁ¶ú;6≤‹;f|;gGCÚ+r÷ñ«ñV‚7¶W&WWBfW7¶V¬fV¬76F&„Ú+rˆ'6W'fW"◊fó77¶¶V«¨:ó2+rf∂fˆ«B÷V∆V◊¨:ó2"¬V„¢%vÜBw2&VÜñÊBñ˜W"Fñ÷VÁ6ñˆÁ3Ú+rvÜñ6Ç&ˆ∆RFÚñ˜RF∂Rˆ‚ñ‚FV”Ú+rˆ'6W'fW"fVVF&6≤+r&∆ñÊB7˜BÊ«ó6ó2"“¿¢ÜW&Ù76W76÷VÁC¢≤áS¢%FW7ßC¢"¬V„¢$76W76÷VÁC¢"“¿†¢ÚÚ76B‹:ó&FV∂ÃYL:ó2&ÊÊW"á&W7V«G2ˆ∆F¬∆¶ê¢FV‘ñÁFW&W7DWñV'&˜s¢≤áS¢&76G7¶ñÁB"¬V„¢'FV“∆WfV¬"“¿¢FV‘ñÁFW&W7EFóF∆S¢∞¢áS¢$º:◊l:Ê76ífwí¬Üˆwñ‚Ï:ó¢∂íW¢76G7¶ñÁFV„Ú"¿¢V„¢$7W&ñ˜W2vÜBFÜó2∆ˆˆ∑2∆ñ∂RBFV“∆WfV√Ú"¿¢“¿¢FV‘ñÁFW&W7D&ˆGì¢∞¢áS¢$÷ñÁL:¶Fˆ≤¬7¶W&WV≤¬Vwú;«GF‹[º;fL:ó6íFñÊ÷ñ∂(	BFV∆¶W276G,;6¬¬FÏ:76L;6íº:◊<:ó&WGFV¬‚¶V∆W¶B¬:ó2fV«fW77¨;∆≤fV∆VB∂76ˆ∆F˜B‚"¿¢V„¢%GFW&Á2¬&ˆ∆W2¬6ˆ∆∆&˜&Fñˆ‚GñÊ÷ñ72(	Bf˜"ñ˜W"vÜˆ∆RFV“¬vóFÇ6ˆÁ7V«FÁBwVñFÊ6R‚∆WBW2∂Ê˜rÊBvRv∆¬&V6Ç˜WB‚"¿¢“¿¢FV‘ñÁFW&W7D7F¢≤áS¢,8ó&FV∂V¬76FV∆V◊¨:ó2"¬V„¢$ív“ñÁFW&W7FVBñ‚FV“Ê«ó6ó2"“¿¢FV‘ñÁFW&W7D÷W76vT∆&V√¢∞¢áS¢$÷W<:ñ∆¢,;gfñFV‚76FˆG,;6¬Ü˜6ñˆÏ:∆ó2í"¿¢V„¢%FV∆¬W2'&ñVf«í&˜WBñ˜W"FV“Ü˜FñˆÊ¬í"¿¢“¿¢FV‘ñÁFW&W7D÷W76vU∆6VÜˆ∆FW#¢∞¢áS¢'¬‚ÇlY2fV¶∆W7ßLY76B¬÷˜7B∆∑V«GVÊ≤:N(
+b"¿¢V„¢&RÊr‚‚Ç◊W'6ˆ‚FWbFV“vˆñÊrFá&˜VvÇ6ÜÊvW>(
+b"¿¢“¿¢FV‘ñÁFW&W7E6VÊC¢≤áS¢$º;∆∆L:ó2"¬V„¢%6VÊB"“¿¢FV‘ñÁFW&W7E6VÊFñÊs¢≤áS¢$º;∆∆L:ó>(
+b"¬V„¢%6VÊFñÊ~(
+b"“¿¢FV‘ñÁFW&W7D6Ê6V√¢≤áS¢$‹:ñw6R"¬V„¢$6Ê6V¬"“¿¢FV‘ñÁFW&W7E7V66W73¢∞¢áS¢$º;g7¨;fÊ¨;∆≤(	BÜ÷&˜6‚¶V∆VÁF∂W¨;∆Ê≤fú;6∂ˆFÜ˜¢F'F˜¨;2V÷ñ¬÷<:÷÷V‚‚"¿¢V„¢%FÜÊ≤ñ˜R(	BvRv∆¬&V6Ç˜WBBñ˜W"66˜VÁBV÷ñ¬6ˆˆ‚‚"¿¢“¿¢FV‘ñÁFW&W7D«&VGì¢∞¢áS¢$‹:"¶V∆WßFVB¢:ó&FV∂ÃYL:ó6VB(	BÜ÷&˜6‚∂W&W<;∆Ê≤‚"¿¢V„¢%ñ˜RwfR«&VGíWá&W76VBñÁFW&W7B(	BvRv∆¬&Rñ‚F˜V6Ç6ˆˆ‚‚"¿¢“¿¢FV‘ñÁFW&W7DW'&˜#¢∞¢áS¢$ÊV“6ñ∂W,;∆«BV∆º;∆∆FVÊí(	B,;6,:∆B;¶ß&‚"¿¢V„¢$6˜V∆BÊ˜B6VÊB(	B∆V6RG'ívñ‚‚"¿¢“¿¢G&gDñÂ&ˆw&W75FóF∆S¢≤áS¢$FW7ßFVBfˆ«ñ÷F&‚f‚"¬V„¢%ñ˜W"76W76÷VÁBó2ñ‚&ˆw&W72"“¿¢G&gDñÂ&ˆw&W74&ˆGì¢≤áS¢$÷VÁFWGL;∆≤Ü∆L:6ˆFB(	B˜GBfˆ«óFFÜFˆB¬Üˆ¬&&ÜwóFB‚"¬V„¢%vR6fVBñ˜W"&ˆw&W72(	Bñ˜R6‚6ˆÁFñÁVRvÜW&Rñ˜R∆VgBˆfb‚"“¿¢G&gDñÂ&ˆw&W74ÜñÁC¢∞¢áS¢$l:∆7¶ñFBWFˆ÷Fñ∑W6‚÷VÁF¨;∆≤¬:÷wí6V÷÷íÊV“l:ó7¢V¬(	BÁóVvˆGF‚fˆ«óFFÜFˆBº:ó<Y&"ó2‚"¿¢V„¢%ñ˜W"Á7vW'2&R6fVBWFˆ÷Fñ6∆«í¬Ê˜FÜñÊró2∆˜7B(	BfVV¬g&VRFÚ6ˆÁFñÁVR∆FW"‚"¿¢“¿¢G&gDñÂ&ˆw&W747F¢≤áS¢$fˆ«óFFˆ“FW7ßFWB"¬V„¢$6ˆÁFñÁVR76W76÷VÁB"“¿¢ÊWáE7FWFW7EFóF∆S¢∞¢áS¢$ó6÷W&B÷Vr◊VÊ∂7L:÷«W6ˆFB"¿¢V„¢$vWBFÚ∂Ê˜rñ˜W"v˜&≤7Gñ∆R"¿¢“¿¢ÊWáE7FWFW7D&ˆGì¢∞¢áS¢$Vwí,;gfñB¬º;g,;∆∆&VÃ;∆¬∂ñ∆VÊ7W&6W2FW7ßBWL:‚∆WFó7ßGV«Bº:óWB∂7¢',;6¬¬÷ífó7¢VÃY&R¬÷íB7F&ñ∆óL:7B¬:ó2÷ó&R:ó&FV÷W2fñwñV∆ÊVB‚ÊV“<:÷÷º:ó¢¬ÜÊV“,:fñÃ:|:◊B¶V∆∆V◊¨Y‹[º;fL:ó6VG&R‚"¿¢V„¢$6Ü˜'B76W76÷VÁBˆb&˜WBí÷ñÁWFW2vófW2ñ˜R6∆V"ñ7GW&RˆbvÜBG&ófW2ñ˜R¬vÜB∂VW2ñ˜R7FVGí¬ÊBvÜBFÚvF6Çf˜"‚óBFˆW6‚wB∆&V¬ñ˜R(	BóB6ÜVG2∆ñváB‚"¿¢“¿¢VÊóVU&ˆfñ∆S¢≤áS¢$VwñVFí&ˆfñ¬"¬V„¢%VÊóVR&ˆfñ∆R"“¿¢ÚÚ∆Vv7íDb‹;g77¶Vfˆv∆Ã;2∑V∆76ˆ≤á7G&VÊwFá57VffóÇ˜vF6Ö&VfóÇ¢ÚÚvF6Ö7VffóÇˆÊÙ∆˜tFñ“í##b”Ç”‹:ñ‚¬¢Y∂WB∂ól:«L;2'V∆∆WB÷∑V∆76ˆ∞¢ÚÚÜñÁ6ñváE7G&VÊwFá2ˆñÁ6ñváEvF6Ç¬FbÁñ˜W%7G&VÊwFá2˜vF6Ñ&V2¢ÚÚ7V÷÷'ï7G&VÊwFá2≤6ˆÁFVÁBÊÊÙ∆˜tFñ÷VÁ6ñˆ‚íVFñr##b”Ç”Ç‹:‡¢ÚÚ∂ófW¶WGfS¢'V∆∆WB◊l:«F˜¶BÜ'Vñ∆DñÁ6ñváD'V∆∆WG2í6V“&VÊFW&VÃYL;gG@¢ÚÚ6ˆÜ¬:ó2ˆÁG7¨:“◊<:fÜ˜¢º;gL;gGBf∆VÊ6ú:B∂W&WFW¶WGB‡¢&∆Ê6VE&ˆfñ∆S¢≤áS¢$∂ñVwñVÁ<;¶«ñ˜¶˜GB&ˆfñ¬¬ÊñÊ72∂óVw,;2Fñ÷VÁ¶ú;2‚"¬V„¢$&∆Ê6VB&ˆfñ∆R¬ÊÚ7FÊF˜WBFñ÷VÁ6ñˆ‚‚"“¿¢ÚÚ∆˜2◊&ˆfñ¬ÜW&Ú÷÷ˆÊFC¢ÜÜBFñ÷VÁ¶ú;2FW&¶VFV∆÷R‹:ó,:ó6í¶¶ˆ‡¢ÚÚ&VÃ;∆¬f‚ÑÑU$ıı$‰tUÙtDUÙd5Dı,+u4T“í¬ÜW&ÚÊV“:∆Ã:◊FÜB∆VvW,Y6V&&W@¢ÚÚ(	BDb(	‰∂ñVwñVÁ<;¶«ñ˜¶˜GB&ˆfñ¬"7¨;gfV|:ófV¬∂ˆÁ¶ó7ßFVÁ2∂W&WFW¨:ó2‡¢ÜW&Ù&∆Ê6VDñÁ6ñváC¢∞¢áS¢$∂ñVwñVÁ<;¶«ñ˜¶˜GB&ˆfñ¬(	BÊñÊ72∂óVw,;2Fñ÷VÁ¶ú;2¬Fñ÷VÁ¶ú;6ñBº;g¶V¬¶ˆÊ˜27¶ñÁFV‚‹[º;fFÊV≤‚"¿¢V„¢$&∆Ê6VB&ˆfñ∆R(	BÊÚ7FÊF˜WBFñ÷VÁ6ñˆ„≤ñ˜W"Fñ÷VÁ6ñˆÁ2˜W&FRB6ñ÷ñ∆"∆WfV¬‚"¿¢“¿¢6Ü&VE&ˆfñ∆T∆&V√¢≤áS¢$÷Vv˜7ßF˜GB&ˆfñ¬"¬V„¢%6Ü&VB&ˆfñ∆R"“¿¢6Ü&TÜW&ÙñÁ6ñváC¢∞¢áS¢$&ˆfñ¬∆Vv∂&∑FW&W6V&"¶V«¨:ó6Vì¢∂fó'7G“:ó2∑6V6ˆÊG“‚"¿¢V„¢%FÜR&ˆfñ∆Rw2÷˜7BFó7FñÊ7FófR6ñvÊ«2&R∂fó'7G“ÊB∑6V6ˆÊG“‚"¿¢“¿¢6Ü&TÜW&ÙñÁ6ñváE6ñÊv∆S¢∞¢áS¢$&ˆfñ¬∆Vv∂&∑FW&W6V&"¶V«¨:ó6S¢∂fó'7G“‚"¿¢V„¢%FÜR&ˆfñ∆Rw2÷˜7BFó7FñÊ7FófR6ñvÊ¬ó2∂fó'7G“‚"¿¢“¿¢6Ü&U7V÷÷'îWñV'&˜s¢≤áS¢$wñ˜'2;g77¶º:ó"¬V„¢%Vñ6≤˜fW'fñWr"“¿¢6Ü&U7V÷÷'ïFóF∆S¢∞¢áS¢$WßB:ó&FV÷W2VÃY7¨;g"V«fñÊÊí∂Ê÷W“&ˆfñ∆¨:,;6¬‚"¿¢V„¢%vÜBFÚF∂Rvífó'7Bg&ˆ“∂Ê÷W“w2&ˆfñ∆R‚"¿¢“¿¢6Ü&U7V÷÷'î&ˆGì¢∞¢áS¢$å:&ˆ“∂7¶∂ˆL;2º;g¨;g2:ó'FV∆÷W¨:ó6ÜW¢‚"¿¢V„¢%Fá&VRÊ6Ü˜'2f˜"÷∂ñÊr6VÁ6RˆbFÜR&ˆfñ∆RFˆvWFÜW"‚"¿¢“¿¢6Ü&UVñ6¥ÊGW&√¢≤áS¢$∆Vv∂&∑FW&W6V&"¶V«¨:ó2"¬V„¢$÷˜7BFó7FñÊ7FófR6ñvÊ¬"“¿¢6Ü&UVñ6¥ÊGW&≈FWáC¢∞¢áS¢'∂∆&V«”¢∑66˜&W“Û(	BW¢;6«W2&ß¶ˆÃ;6Fñ≤∂í∆Vv∂&∑FW&W6V&&V‚&ˆfñ∆&‚‚"¿¢V„¢'∂∆&V«”¢∑66˜&W“Û(	BFÜó2ó2FÜR&ˆfñ∆Rw2÷˜7BFó7FñÊ7F«íWá&W76VBˆ∆R‚"¿¢“¿¢6Ü&UVñ6¥ÁVÊ6S¢≤áS¢$‹:6ñ≤∂&∑FW&W2¶V«¨:ó2"¬V„¢$Ê˜FÜW"Fó7FñÊ7FófR6ñvÊ¬"“¿¢6Ü&UVñ6¥ÁVÊ6UFWáC¢∞¢áS¢'∂∆&V«”¢∑66˜&W“Û(	BVwí‹:6ñ≤÷&º:Á2‹[º;fL:ó6í;6«W2¬ÊV“÷ñÏY<:◊L:ó2fwíÜú:Áñ˜7<:r‚"¿¢V„¢'∂∆&V«”¢∑66˜&W“Û(	BÊ˜FÜW"&ˆÊ˜VÊ6VB˜W&FñÊrˆ∆R¬Ê˜B&FñÊr˜"FVfñ6ñVÊ7í‚"¿¢“¿¢6Ü&UVñ6µW6S¢≤áS¢,8÷wí:ó&FV÷W2Ü7¶Ï:∆Êí"¬V„¢$Ü˜rFÚW6RFÜó2"“¿¢6Ü&UVñ6µW6UFWáC¢∞¢áS¢$&ˆfñ¬Üó˜L:ó¶ó2:ó2&W7¨:ñ∆vWL:ó6ñÊL:◊L;2¬ÊV“º:ó7¢:◊L:ñ∆WC¢º;g¨;g2ÜV«ó¶WFV≤:ó2∂ˆÊ∑,:óB:ñ∆L:≤÷VÁL:ñ‚l:∆ñ≤ñv¨:‚Ü7¶Ê˜7<:‚"¿¢V„¢%G&VBFÜR&ˆfñ∆R2áó˜FÜW6ó2ÊB6ˆÁfW'6Fñˆ‚7F'FW"¬Ê˜BfW&Fñ7C≤w&˜VÊBóBñ‚6Ü&VB6óGVFñˆÁ2ÊB6ˆÊ7&WFRWÜ◊∆W2‚"¿¢“¿¢6Ü&TFñ÷VÁ6ñˆÁ5FóF∆S¢≤áS¢$ÜBlYFñ÷VÁ¶ú;2"¬V„¢%FÜR6óÇ6˜&RFñ÷VÁ6ñˆÁ2"“¿¢6Ü&TFñ÷VÁ6ñˆÁ4&ˆGì¢∞¢áS¢$Áñó6B∆RßBFñ÷VÁ¶ú;7B¬÷V«ó,Y¬L;f&&WB7¶W&WFÏ:ñ¬GVFÊí‚7¨:÷‚¶ˆÊ˜<:◊B¬7¨:“‹:ó'B:ó'L:ñ∂WB◊WFF¶‚"¿¢V„¢$˜V‚ÁíFñ÷VÁ6ñˆ‚FÚ∆V&‚÷˜&R‚6ˆ∆˜"ñFVÁFñfñW2FÜRFñ÷VÁ6ñˆ„≤FÜRÁV÷&W"6Ü˜w2FÜR÷V7W&VBf«VR‚"¿¢“¿¢6Ü&TWá∆˜&TWñV'&˜s¢≤áS¢$‹:ñ«ñV&"º:ó"¬V„¢$FVWW"fñWr"“¿¢6Ü&TWá∆˜&UFóF∆S¢≤áS¢$∂∂˜"‹:ñ«ñVF¢V¬,:ó7¶∆WFV∂&V‚¬÷ñ∂˜"7¶W&WFÏ:ñ¬‚"¬V„¢$vÚFVWW"vÜV‚ñ˜R&R&VGí‚"“¿¢6Ü&T6ÜFW%v˜&≥¢≤áS¢$Üˆwí‹[º;fFñ≤"¬V„¢$Ü˜rFÜó2&ˆfñ∆R˜W&FW2"“¿¢6Ü&T6ÜFW%v˜&¥&ˆGì¢∞¢áS¢$lY÷ñÁL:¶B¬fñwñV∆VÊLYˆÁB:ó2∂ˆÁFWáGW2‹:ó'BFñ÷VÁ¶ú;6∂,;6¬‚"¿¢V„¢$∂WíGFW&‚¬vÜBFÚvF6Ç¬ÊB6ˆÁFWáBg&ˆ“FÜR÷V7W&VBFñ÷VÁ6ñˆÁ2‚"¿¢“¿¢6Ü&T6ÜFW$VÁfó&ˆÊ÷VÁC¢≤áS¢$ñF\:∆ó2º;g&ÁñW¶WB"¬V„¢$ñFV¬VÁfó&ˆÊ÷VÁB"“¿¢6Ü&T6ÜFW$VÁfó&ˆÊ÷VÁD&ˆGì¢∞¢áS¢$¶ˆ≤º;g&ÁñW¶WFí¶V∆∆V◊¨Y≤¬÷V«ñV≤l:&ÜL;6‚L:÷ˆvF¨:≤WßB&ˆfñ«B‚"¿¢V„¢$VÁfó&ˆÊ÷VÁF¬ˆ∆W2FÜB&R∆ñ∂V«íFÚ7W˜'BFÜó2&ˆfñ∆R‚"¿¢“¿¢6Ü&T6ÜFW%&ˆ∆TfóC¢≤áS¢%7¶W&Wñ∆∆W7¶∂VL:ó2"¬V„¢%&ˆ∆RfóB"“¿¢6Ü&T6ÜFW%&ˆ∆TfóD&ˆGì¢∞¢áS¢$÷ñ«ñV‚¶V∆∆V|[◊VÊ∂º;g,;f∂&V‚‹[º;fFÜWB˜GFÜˆÊ˜6&&‚W¢&ˆfñ¬¬:ó2÷íñ|:ñÁñV∆ÜWBGVFF˜6&"fV∆º:ó7¨;∆Ã:ó7B‚"¿¢V„¢%FÜR∂ñÊG2ˆb&ˆ∆W2FÜó2&ˆfñ∆R÷˜fW2ñ‚÷˜7BÊGW&∆«í¬ÊBvÜBÊVVG2÷˜&RFV∆ñ&W&FR&W&Fñˆ‚‚"¿¢“¿¢6Ü&T6ÜFW%&ˆ∆W3¢≤áS¢%fÃ;77¨:÷Ï[76G7¶W&WV≤"¬V„¢$∆ñ∂V«íFV“&ˆ∆W2"“¿¢6Ü&T6ÜFW%&ˆ∆W4&ˆGì¢∞¢áS¢$&ˆfñ∆,;6¬7¨:÷ˆ«B&V76Ã:ó2',;6¬¬÷ñ«ñV‚‹;6Fˆ‚¨:'V∆ÜG7¢Ü˜ß¨:76B◊VÊº:¨:Ü˜¢‚"¿¢V„¢$&ˆfñ∆R÷&6VBW7Fñ÷FRˆb∆ñ∂V«í6ˆÁG&ñ'WFñˆÁ2ñ‚FV“‚"¿¢“¿¢FV’&ˆ∆TÜVFñÊs¢≤áS¢$76G7¶W&WV≤"¬V„¢%FV“&ˆ∆W2"“¿¢Ü˜uñ˜Uv˜&¥WñV'&˜s¢≤áS¢$Üˆwí‹[º;fG7¢"¬V„¢$Ü˜rñ˜R˜W&FR"“¿¢Ü˜uñ˜Uv˜&¥÷ñ„¢≤áS¢$lY÷ñÁL:¶B"¬V„¢$∂WíGFW&‚"“¿¢Ü˜uñ˜Uv˜&µvF6É¢≤áS¢$fñwñV∆VÊLY"¬V„¢%vF6Ç&V"“¿¢ÚÚ6V÷∆VvW2é(	ÊÊ˜FR"í6∆˜C¢f˜&L:◊F˜GB6º:Ã:¨;¢ÑV÷ˆ6ñˆÊ∆óL:2í:&ˆ∞¢ÚÚ÷ñÁL:¶B÷÷VvfñwñVÃ:ó6R≤wñ∂˜&∆FíFÏ:76‚5¨8‰L8î¥ı4‚ÊV“Ü˜&F˜†¢ÚÚf∆VÊ6ú:B(	B6V“(	‰fñwñV∆VÊLY"¬6V“(	‰W,Y7<:ñr"É##b”Ç”L;fÁL:ó2¿¢ÚÚ66˜&R◊f∆VÊ6RÁG2í‡¢Ü˜uñ˜Uv˜&¥Ê˜FS¢≤áS¢$¶V∆∆V◊¨Y÷ñÁL:¶B"¬V„¢$6Ü&7FW&ó7Fñ2GFW&‚"“¿¢Ü˜uñ˜Uv˜&¥6ˆÁFWáC¢≤áS¢$∂ˆÁFWáGW2"¬V„¢$6ˆÁFWáB"“¿¢VÁdWñV'&˜s¢≤áS¢$ñF\:∆ó2º;g&ÁñW¶WB"¬V„¢$ñFV¬VÁfó&ˆÊ÷VÁB"“¿¢ÚÚc2÷ÜVFvR7¶ñÁB◊7¨;26&∆ˆ„¢∂∆&V«“6˜"∂ÊˆÊñ∑W27¶ñÁB◊7¶f¢ÚÚ∂ó6&WL[fV¬Ü÷v2(i"(	‰ñÊº:&"÷v2"¬wñ˜'2(i"(	‰∆VÊñÊrf7B"í(	BcRÛs ¢ÚÚÜñ∆¬‚3Û3RíVwñWB÷ÊV“‹:ó'L:ó6í<:f&‚∂V‹:ñÁí:◊L:ñ∆WBÜV«ñWGB‡¢VÁd∆VÊñÊt∆&V√¢≤áS¢$ñÊº:&"∂∆&V«“"¬V„¢$∆VÊñÊr∂∆&V«“"“¿¢ÚÚ&W7V«G2Á&ˆ∆TfóDWñV'&˜v6Ü&VB÷∆&V«2ÁG2÷&V‚:ñ√¢V&∆ñ∑W0¢ÚÚ∆ÊFñÊr÷ÜW&Úó2Ü7¶Ï:∆¶¬:ó2:÷wíÊV“å;ßß¶&RWßB3r¥"÷˜2l:¶«B‡¢&ˆ∆TfóE7G&ˆÊs¢≤áS¢$W,Y2ñ∆∆W7¶∂VL:ó2"¬V„¢%7G&ˆÊrfóB"“¿¢&ˆ∆TfóD÷ñváC¢≤áS¢$‹[º;fFÜWB¬ÜfV∆º:ó7¨;∆«7¢"¬V„¢$÷ív˜&≤vóFÇ&W&Fñˆ‚"“¿¢&ˆ∆TfóE&W¢≤áS¢$Üˆ¬6V|:◊BfV∆º:ó7¨;∆Ã:ó2"¬V„¢%vÜW&R&W&Fñˆ‚ÜV«2"“¿¢F∂Vvó4WñV'&˜s¢≤áS¢$∆VvfˆÁF˜6&&≤"¬V„¢$∂WíF∂Vvó2"“¿¢F%&W7V«G3¢≤áS¢$W&VF‹:ñÁñV≤"¬V„¢%&W7V«G2"“¿¢F%v˜&∑7Gñ∆S¢≤áS¢$◊VÊ∂7L:÷«W2"¬V„¢%v˜&≤7Gñ∆R"“¿¢F$6&VW#¢≤áS¢$∂'&ñW""¬V„¢$6&VW""“¿¢F$6ˆ◊&ó6ˆ„¢≤áS¢,9g77¶VÜ6ˆÊÃ:◊L:2"¬V„¢$6ˆ◊&R"“¿¢F$ñÁfóFW3¢≤áS¢$÷Vvå:◊l;6≤"¬V„¢$ñÁfóFFñˆÁ2"“¿¢6V7Fñˆ‰˜fW'fñWs¢≤áS¢%&ˆfñ∆ˆBVwíº:ó&V‚"¬V„¢%ñ˜W"&ˆfñ∆RBv∆Ê6R"“¿¢ÚÚL:◊W2‹:'&áGóR÷v«óÇÁG2ÁñV«gF‚í(	B¨:&ÜL;2L:&∆¢W&VF‹:ñÁñV≤:ñÃ:ñ‡¢v«óÑWñV'&˜s¢≤áS¢$FR:',:B"¬V„¢%ñ˜W"v«óÇ"“¿¢v«óÖF$∆&V√¢∞¢áS¢$÷óB¶V∆VÁB∂&∑FW"‹:',:”Ú"¿¢V„¢%vÜBFˆW2◊í6Ü&7FW"v«óÇ÷V„Ú"¿¢“¿¢v«óÑ˜V„¢≤áS¢$÷VvÁñóL:2"¬V„¢$˜V‚"“¿¢v«óÑ6∆˜6S¢≤áS¢$&W¨:,:2"¬V„¢$6∆˜6R"“¿¢ÚÚÏ:ób÷&VÜV«ñWGFW<:◊L:ó6V≤‹:"Ï:ófVÃYfV¬¨;fÊÊV≤ÜáR÷w&÷÷"ÁG2í(	B¢ÚÚ6&∆ˆÊ&‚W¨:ó'B‰î‰52(	Êá¢û(	”≤∆B‚&ó˜'B÷¶l:◊L:6íFW'b„"‡¢v«óÑw&÷÷#¢∞¢áS¢$Êwíf˜&÷∆Vv÷v6&"ˆÁG7¨:‹;¢Fñ÷VÁ¶ú;6B(	B∑&ñ÷'ó”¢∂f˜&◊“‚&VÊÊRgWL;2l:ñ∂ˆÁífˆÊ¬‹:6ˆFñ≤∆Vv÷v6&"(	B∑6V6ˆÊF'ó”¢∂÷˜Fñg“‚f˜&÷∂óL;f«L:ó6RˆÁG7¨:÷˜Bº;gfWFí‚"¿¢V„¢%FÜR∆&vR6ÜRó2ñ˜W"ÜñvÜW7B◊66˜&ñÊrFñ÷VÁ6ñˆ‚(	B∑&ñ÷'ó”¢FÜR∂f˜&◊“‚FÜRFÜñ‚∆ñÊRñÁ6ñFRóBó2ñ˜W"6V6ˆÊBÜñvÜW7B(	B∑6V6ˆÊF'ó”¢FÜR∂÷˜Fñg“‚FÜRfñ∆¬vVñváBfˆ∆∆˜w2FÜR66˜&R‚"¿¢“¿¢ÚÚ32÷ÜVFvRÜ÷˜F˜"÷VFóBcB¬dïÇRì¢ÜF˜”"6˜'&VÊB‹:ó,:ó6íÜñ,:‡¢ÚÚ&VÃ;∆¬f‚¬,;7¶ÊV“:∆Ã:◊FÜB6˜'&VÊFWB(	Bº:óBFñ÷VÁ¶ú;2&VÊFW¶WF∆V‡¢ÚÚ:&º:ñÁB¶V∆VÊñ≤÷Vr¬(	Ê‹:6ˆFñ≤∆VvW,Y6V&""f˜&◊V∆Ï:ñ∆º;∆¬‡¢v«óÑw&÷÷%VÊ6W'Fñ„¢∞¢áS¢$º:óB∆Vv÷v6&"ˆÁG7¨:‹;¢Fñ÷VÁ¶ú;6B(	B∑&ñ÷'ó“:ó2∑6V6ˆÊF'ó“(	Bº;g¶V¬¶ˆÊ˜27¶ñÁL[¬6˜'&VÊF¨;∆≤ÊV“Vwú:ó'FV∆‹[‚Êwíf˜&÷∂f˜&◊“¬&VÊÊRgWL;2l:ñ∂ˆÁífˆÊ¬∂÷˜Fñg”≤f˜&÷∂óL;f«L:ó6RˆÁG7¨:÷˜Bº;gfWFí‚"¿¢V„¢%ñ˜W"F˜GvÚFñ÷VÁ6ñˆÁ2(	B∑&ñ÷'ó“ÊB∑6V6ˆÊF'ó“(	B&RB6ñ÷ñ∆"∆WfV¬¬6ÚFÜVó"˜&FW"ó6‚wB6∆V"÷7WB‚FÜR∆&vR6ÜRó2FÜR∂f˜&◊“¬FÜRFÜñ‚∆ñÊRñÁ6ñFRóBFÜR∂÷˜Fñg”≤FÜRfñ∆¬vVñváBfˆ∆∆˜w2FÜR66˜&R‚"¿¢“¿¢v«óÖó%VÊ6W'Fñ„¢∞¢áS¢&º:óB∆Vv÷v6&#¢∂“+r∂'“"¿¢V„¢'F˜GvÛ¢∂“+r∂'“"¿¢“¿¢6V7Fñˆ‰Fñ÷VÁ6ñˆÁ3¢≤áS¢$Fñ÷VÁ¶ú;6≤,:ó7¶∆WFW6V‚"¬V„¢$Fñ÷VÁ6ñˆÁ2ñ‚FWFñ¬"“¿¢6V7FñˆÂ&ˆ∆W3¢≤áS¢$76G7¶W&W÷Ü¶∆÷ˆ≤"¬V„¢%FV“&ˆ∆RFVÊFVÊ6ñW2"“¿¢6V7Fñˆ‰w&˜wFÉ¢≤áS¢$fV¶ÃYL:ó6íl;6∑W7¢"¬V„¢$w&˜wFÇfˆ7W2"“¿¢ÚÚ)H)HñÁFW&∂6ú;2◊7¶ñ◊VÃ:6ú;2ÖR„rÚc2í)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6V7Fñˆ‰ñÁFW&7Fñˆ„¢∞¢áS¢$Üˆwñ‚‹[º;fFÏ:óFV≤Vwú;«GCÚ"¿¢V„¢$Ü˜rv˜V∆Bñ˜Rv˜&≤FˆvWFÜW#Ú"¿¢“¿¢ñÁFW&7Fñˆ‰ñÁG&Û¢∞¢áS¢%l:∆7¶B∂í¬∂ófV¬fwí÷ñ«ñV‚∂&∑FW'&V¬7¶W&WFÏ:ñB÷VvÏ:ó¶Êíº;g¨;g2‹[º;fL:ó6WFV∂WB‚"¿¢V„¢$6Üˆ˜6RvÜÚ(	B˜"vÜB∂ñÊBˆb6Ü&7FW"(	Bñ˜RvB∆ñ∂RFÚWá∆˜&Rñ˜W"6Ü&VBGñÊ÷ñ2vóFÇ‚"¿¢“¿¢ñÁFW&7FñˆÂñ6¥Fˆ÷ñÊÁC¢≤áS¢$∆Vv∂ñfV¶W¶WGFV&"fˆÏ:6"¬V„¢%FÜVó"÷˜7B&ˆÊ˜VÊ6VBG&óB"“¿¢ñÁFW&7FñˆÂñ6¥Fˆ÷ñÊÁDÜñÁC¢∞¢áS¢$W¢F¶Êwíf˜&‹:B¢:',:‚(	B:ó2L:◊W6Ï:óblYÊWl:óB‚"¿¢V„¢%FÜó2vófW2FÜR∆&vR6ÜRñ‚FÜRfñwW&R(	BÊBFÜRÊ˜V‚ñ‚FÜRGóRÊ÷R‚"¿¢“¿¢ñÁFW&7FñˆÂñ6µ6V6ˆÊF'ì¢≤áS¢$‹:6ˆFñ≤fˆÏ:6"¬V„¢%FÜVó"6V6ˆÊBG&óB"“¿¢ñÁFW&7FñˆÂñ6µ6V6ˆÊF'îÜñÁC¢∞¢áS¢$W¢f˜&‹:‚&VÃ;∆¬gWL;2÷˜L:◊gV“(	B:ó2L:◊W6Ï:ób¶V«¨Y¶R‚"¿¢V„¢%FÜó2ó2FÜR÷˜Fñb'VÊÊñÊrñÁ6ñFRFÜR6ÜR(	BÊBFÜRF¶V7FófRñ‚FÜRÊ÷R‚"¿¢“¿¢ñÁFW&7FñˆÂ6÷UFóF∆S¢∞¢áS¢%VwñÊ¢÷ñÁL:¶B"¿¢V„¢%FÜR6÷RGFW&‚"¿¢“¿¢ñÁFW&7FñˆÂ6÷T&ˆGì¢∞¢áS¢$Ü6ˆÊÃ;7<:rwñ˜'2÷V|:ó'L:ó7BFÜC¢∂Wl:ó2÷wñ,:¶B∂V∆¬¬:ó2Ü6ˆÊÃ;6‚ˆ«f7<:Fˆ≤ÜV«ó¶WFV∂WB‚VwñÊ∂∂˜"f∂fˆ«Fˆ≤ó2º;g¨;g6V≤∆VÜWFÊV≤(	B÷óBFRÊV“fW7¶V¬:ó7ß&R¬ßB¨;2W<:ñ∆«ñV¬Y6V“‚ñ«ñV‚:&˜6Ï:¬:ó&FV÷W2GVFF˜6‚&Vå:◊fÊíVwíÜ&÷Fñ≤¬‹:2‹[º;fL:ó<[Ï:ó¨YˆÁF˜BfˆÁF˜2L;fÁL:ó6V∂ÜW¢‚"¿¢V„¢%6ñ÷ñ∆&óGí6‚'&ñÊrVñ6≤VÊFW'7FÊFñÊs¢∆óGF∆RWá∆ñÊñÊró2ÊVVFVBÊBñ˜R÷í&VB6óGVFñˆÁ2∆ñ∂R‚FÜR&∆ñÊB7˜G26‚«6Ú&R6Ü&VB¬FÜ˜VvÇ(	BvÜBñ˜R÷ó72¬FÜWí÷í÷ó72FˆÚ‚vóFÇó&ñÊr∆ñ∂RFÜó2óBw2v˜'FÇFV∆ñ&W&FV«íñÁfóFñÊrFÜó&B¬FñffW&VÁF«ívó&VBW'7V7FófRñÁFÚñ◊˜'FÁBFV6ó6ñˆÁ2‚"¿¢“¿¢ñÁFW&7FñˆÂ&V∆FñˆÂVW7Fñˆ„¢∞¢áS¢$÷ñ«ñV‚fó7¶ˆÁñ&‚fwóFˆ≥Ú"¿¢V„¢%vÜBw2ñ˜W"&V∆FñˆÁ6ÜóÚ"¿¢“¿¢ñÁFW&7FñˆÂ&V∆FñˆÂVW#¢≤áS¢$VwñVÁ&Ê|;¢∂76ˆ∆B"¬V„¢$WV¬&V∆FñˆÁ6Üó"“¿¢ñÁFW&7FñˆÂ&V∆Fñˆ‰∆VFW#¢∞¢áS¢,YfW¶WBfwí÷VÁF˜,:¬VÊvV“"¿¢V„¢%FÜWí∆VB˜"÷VÁF˜"÷R"¿¢“¿¢ñÁFW&7FñˆÂ&V∆FñˆÂVW$ÜñÁC¢∞¢áS¢$FñÊ÷ñ∂º:óBVwñVÁ&Ê|;¢l:ñ¬º;g¨;gGB(	BÊñÊ72F'L;72L;fÁL:ó6íl;fÃ:ñÁíVwññ≤ˆ∆F∆ˆ‚6V“‚"¿¢V„¢%FÜRGñÊ÷ñ2&WGvVV‚GvÚWV¬6ñFW2(	BÊVóFÜW"Üˆ∆G2∆7FñÊrFV6ó6ñˆ‚˜vW"˜fW"FÜR˜FÜW"‚"¿¢“¿¢ñÁFW&7FñˆÂ&V∆Fñˆ‰∆VFW$ÜñÁC¢∞¢áS¢$ñ«ñVÊ∂˜"Vwíº;∆Ã;f‚&∆ˆ∂≤ó2÷Vv¶V∆VÊñ≤',;6¬¬÷ñ«ñV‚¢Yó,:Áñ◊WFL:6÷V∆∆WGB‹[º;fFÊí‚"¿¢V„¢%FÜó2«6ÚFG2&∆ˆ6≤ˆ‚vÜBóB÷í&R∆ñ∂RFÚv˜&≤vóFÇFÜVó"wVñFÊ6R‚"¿¢“¿¢ñÁFW&7Fñˆ‰∆VFW%Fˆvv∆S¢∞¢áS¢,YfW¶WBfwí÷VÁF˜,:¬"¿¢V„¢%FÜWí∆VB˜"÷VÁF˜"ñ˜R"¿¢“¿¢ÚÚ:&˜2÷fV¶Ã:ñ3¢(	ÂFRÑ‹;6G7¶W&W2å:÷L:ó:◊LYí9rVÊW&vñ∑W2;¶¨:◊L;2"(	BÃ:FÜL;7l:¢ÚÚFW7¶í¬Üˆwí¥UELYL9d≤FñÊ÷ñº:¨:,;6¬f‚7¨;2¬:ó2Üˆwíº:óBˆ∆F¬VwñÊß@¢ÚÚ7¨;6∂ñÊ76WBÜ7¶Ï:∆¶‡¢ñÁFW&7FñˆÂó$˜FÜW#¢≤áS¢$‹:6ñ≤&ˆfñ¬"¬V„¢%FÜR˜FÜW"&ˆfñ∆R"“¿¢ñÁFW&7FñˆÂó%ñ˜S¢≤áS¢%FR"¬V„¢%ñ˜R"“¿¢ñÁFW&7Fñˆ‰V7ì¢≤áS¢$÷í÷|:L;6¬÷Vwí"¬V„¢%vÜB6ˆ÷W2V6ñ«í"“¿¢ñÁFW&7Fñˆ‰g&ñ7Fñˆ„¢∞¢áS¢$Üˆ¬<;ß&Ã;6L:2l:&ÜL;2"¿¢V„¢%vÜW&Rg&ñ7Fñˆ‚ó2∆ñ∂V«í"¿¢“¿¢ñÁFW&7Fñˆ‰Fó67W73¢∞¢áS¢$÷óB&W7¨:ñ∆¶WFV≤÷VrVÃY&R"¿¢V„¢%vÜBFÚw&VRˆ‚Wg&ˆÁB"¿¢“¿¢ñÁFW&7Fñˆ‰∆VFW%FóF∆S¢∞¢áS¢$÷ñ«ñV‚¢Yó,:Áñ◊WFL:6÷V∆∆WGB‹[º;fFÊí"¿¢V„¢%vÜBóB÷í&R∆ñ∂RFÚv˜&≤vóFÇFÜVó"wVñFÊ6R"¿¢“¿¢ÚÚ∂&∑FW"‹;ßBF'F∆÷íÜL:&¬F'F∆ˆ“TÃYEB∂ñ÷ˆÊGf(	B∂ˆÊ∑,:óBº:ó@¢ÚÚFñ÷VÁ¶ú;2ÊWl:ófV¬‚‹;6G7¶W'FÊí,:ó7ßBÜ÷óBÊV“:∆Ã:◊GVÊ≤¬Üó˜L:ó¶ó2íÊV–¢ÚÚó6‹:óF∆ì¢¢¢ñÁFW&7FñˆÂ6˜W&6TÊ˜FV∆∆¨:‚‡¢ñÁFW&7FñˆÂGóU66˜TÊ˜FS¢∞¢áS¢$W¢∂&∑FW"∂Fñ◊7“Fñ÷VÁ¶ú;6∑&:ó;∆¬(	BW¨:ó'BVwífÃ;6Fí&ˆfñ∆∆¬L;f&&WB:ó2‹:7Bó2Ã:FÜG7¢¬∂∂˜"ó2¬ÜVwñÊ¢L:◊W6ÊWfR‚"¿¢V„¢%FÜó26Ü&7FW"ó2'Vñ«Bˆ‚∂Fñ◊7“(	B6Ú&V¬&ˆfñ∆R6‚6Ü˜rñ˜R÷˜&R¬ÊBFñffW&VÁBFÜñÊw2¬WfV‚vÜV‚óB6'&ñW2FÜR6÷RGóRÊ÷R‚"¿¢“¿¢ñÁFW&7FñˆÂ7'6S¢∞¢áS¢$∂WGLYL;f≤º;g¨;gGBÊñÊ72VÃ:ñr÷&º:Á2V«L:ó,:ó2ÜÜ˜¢¬Üˆwí÷Vv∆˜¶˜GBFñÊ÷ñº:B:◊&ßVÊ≤∆R(	BW¢'&WF∆ÜB¬Üˆwí6ˆ≤ÜV«ó¶WF&V‚Ü6ˆÊÃ;6‚‹[º;fFÏ:óFV≤‚"¿¢V„¢%FÜW&Ró6‚wBVÊ˜VvÇˆb6ˆÁG&7B&WGvVV‚ñ˜RGvÚFÚ7FFRw&˜VÊFVBGñÊ÷ñ2(	BvÜñ6Çó2vˆˆBÊWw2ñ‚óG6V∆c¢ñ‚÷˜7B6óGVFñˆÁ2ñ˜RvB˜W&FR6ñ÷ñ∆&«í‚"¿¢“¿¢ÚÚÜóFV∆W7<:ñví¶Vwó¶WC¢VÏ:ñ∆º;∆¬(	ÁL:◊W2◊7¶ñÁL[&V76Ã:ó2";«&W2VGf&ñ7<:r‡¢ñÁFW&7FñˆÂ6˜W&6TÊ˜FS¢∞¢áS¢%L:◊W77¶ñÁL[&V76Ã:ó3¢FRfÃ;72ˆÁG7¨:÷ñFBVwíˆ«ñ‚÷ñÁF&ˆfñ∆∆¬fWF¨;∆≤;g77¶R¬÷V«ñÊV≤76≤º:óB∆Vv÷v6&"ˆÁG7¨:‹;¢Fñ÷VÁ¶ú;6¨:Bó6÷W&¨;∆≤(	B‹:6ñ≤Ï:ñwó,Y¬ÊV“:∆Ã:◊GVÊ≤6V÷÷óB‚W¢Üó˜L:ó¶ó2¬ÊV“¨;76∆C≤fÃ;6Fí:&˜2‹[º;fL:ó2÷Vvó6÷W,:ó<:ñÜW¢º:óBFV∆¶W2&ˆfñ¬;g77¶VÜ6ˆÊÃ:◊L:67¨;∆∑<:ñvW2‚"¿¢V„¢%GóR÷∆WfV¬W7Fñ÷FS¢ñ˜W"&V¬66˜&W2&R6ˆ◊&VBvñÁ7BGóR&˜F˜GóRf˜"vÜñ6ÇˆÊ«íFÜRGvÚÜñvÜW7B◊66˜&ñÊrFñ÷VÁ6ñˆÁ2&R∂Ê˜v‚(	BvR6∆ñ“Ê˜FÜñÊr&˜WBFÜR˜FÜW"f˜W"‚áó˜FÜW6ó2¬Ê˜B&VFñ7Fñˆ„≤&V¬÷V7W&V÷VÁB∆ófW2ñ‚FÜRFV“fñWr‚"¿¢“¿¢ÚÚ)H)HfÃ;6Fí:&˜2;g77¶VÜ6ˆÊÃ:◊L:2Ñ#í)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢6ˆ◊&T6Üˆ˜6W$WñV'&˜s¢∞¢áS¢,9g77¶VÜ6ˆÊÃ:◊L:2∆¶"¿¢V„¢$6ˆ◊&ó6ˆ‚&6ó2"¿¢“¿¢6ˆ◊&T6Üˆ˜6W%FóF∆S¢≤áS¢$÷ñ,Y¬ñÊGV∆ßVÊ≤∂ìÚ"¬V„¢%vÜW&R6Ü˜V∆BvR7F'CÚ"“¿¢6ˆ◊&T6Üˆ˜6W$&ˆGì¢∞¢áS¢$º:óB∆VÜWLY<:ñrˆÁF˜7<:vV«L:ó"‚VÃY7¨;g"l:∆7¶B∂í¢;g77¶VÜ6ˆÊÃ:◊L:2‹;6F¨:B¬÷¶B∂ˆÊ∑,:óB&ˆfñ«B‚"¿¢V„¢%FÜRGvÚFá2ˆffW"FñffW&VÁB∆WfV«2ˆb&V6ó6ñˆ‚(	B6Üˆ˜6RFÜRFÇfó'7B¬FÜV‚FÜR7V6ñfñ2&ˆfñ∆R‚"¿¢“¿¢ÚÚ6R(	ÁˆÁF˜6&""¬6R(	Ê÷ñÊBÜBFñ÷VÁ¶ú;27¨:‹:◊B"ÊV“fˆ«Bñv†¢ÚÚ:÷|:ó&WC¢÷ñÊF∂WGLYL9d$"F'F∆÷B7Vv∆«BfÃ;6Fí;ßFˆ‚‚‹:ó'fRf˜&L:◊Gf¢ÚÚf‚(	B∂&∑FW"◊&˜F˜L:◊W2÷Üñ‹:∆ó6‚;6«W6˜2ÉÉbÛsBcRÛ3R‹;g0¢ÚÚº;«7¨;f&Ï:ñ¬í¬VwífÃ;6FíV÷&W"S^(	3sº;g¨;gGBFWLY¶ñ≤¬:÷wí∂&∑FW"‹;ß@¢ÚÚ:F∆v˜6‚"√S2Fˆ÷˜BB¬fÃ;6Fí√ì2÷B‚º:'Gú:≤W¨:ó'BßB÷ˆÊF¨:∞¢ÚÚ÷Vr¬‘í¢F˜GB;ßB¬ÊV“ßB¬÷V«ññ≤BL;f&&WB‡¢6ˆ◊&T6Üˆ˜6W%&V≈FóF∆S¢≤áS¢%fÃ;6Fí7¶V‹:ñ∆«ñV¬"¬V„¢%vóFÇ&V¬W'6ˆ‚"“¿¢6ˆ◊&T6Üˆ˜6W%&Vƒ&ˆGì¢∞¢áS¢$º:óB∂óL;f«L;gGB&ˆfñ¬+rFíL:ñÁñ∆VvW2FñÊ÷ñº:Fˆ≤"¿¢V„¢%GvÚ6ˆ◊∆WFVB&ˆfñ∆W2+rñ˜W"7GV¬GñÊ÷ñ2"¿¢“¿¢6ˆ◊&T6Üˆ˜6W%GóUFóF∆S¢∞¢áS¢$∂&∑FW'&V¬∂ó,;6,:∆ˆ“"¿¢V„¢%G'íóBvóFÇ6Ü&7FW""¿¢“¿¢6ˆ◊&T6Üˆ˜6W%GóT&ˆGì¢∞¢áS¢$V∆‹:ñ∆WFí∂&∑FW"+rwñ˜'2,;6&÷Vvå:◊l:2Ï:ñ∆º;∆¬"¿¢V„¢$áó˜FÜWFñ6¬6Ü&7FW"+rVñ6≤G'í¬ÊÚñÁfóFFñˆ‚"¿¢“¿¢6ˆ◊&T6ˆÊÊV7FñˆÁ5FóF∆S¢∞¢áS¢%l:∆77¢∂76ˆ∆FñBº;g¨;∆¬"¿¢V„¢$6Üˆ˜6Rg&ˆ“ñ˜W"6ˆÊÊV7FñˆÁ2"¿¢“¿¢6ˆ◊&T6ˆÊÊV7FñˆÁ4&ˆGì¢∞¢áS¢$¢V∆fˆvF˜GB∂76ˆ∆B¶ˆÊÊ¬;g77¶VÜ6ˆÊÃ:◊FÜL;2‚"¿¢V„¢$‚66WFVB6ˆÊÊV7Fñˆ‚ó2&VGíFÚ6ˆ◊&Rñ÷÷VFñFV«í‚"¿¢“¿¢6ˆ◊&T6ˆÊÊV7FñˆÁ5&VGì¢∞¢áS¢'∂6˜VÁG“∂76ˆ∆Bº:ó7¶V‚:∆¬"¿¢V„¢'∂6˜VÁG“&VGíFÚ6ˆ◊&R"¿¢“¿¢ÚÚÁV∆∆∂76ˆ∆C¢˜GBÊñÊ72÷ñ,Y¬l:∆7ßFÊí(	B÷Vvå:◊l:2fV∆FB‡¢6ˆ◊&T6ˆÊÊV7FñˆÁ4V◊GïFóF∆S¢∞¢áS¢$å:◊f¢÷Vrf∆∂óBº;g¨;g2º:óÜW¢"¿¢V„¢$ñÁfóFR6ˆ÷VˆÊRf˜"6Ü&VBñ7GW&R"¿¢“¿¢6ˆ◊&T6ˆÊÊV7FñˆÁ4V◊Gî&ˆGì¢∞¢áS¢$ÜYó2∂óL;f«Fí6¨:BFW7ßF¨:óB¬÷ñÊF∂WGFV‚fÃ;6Fí&ˆfñ∆¶óFˆ≤FñÊ÷ñº:¨:BÃ:F¨:Fˆ≤‚"¿¢V„¢$ˆÊ6RFÜWí6ˆ◊∆WFRFÜVó"˜v‚76W76÷VÁB¬ñ˜R&˜FÇ6VRFÜRGñÊ÷ñ2ˆbñ˜W"&V¬&ˆfñ∆W2‚"¿¢“¿¢6ˆ◊&TñÁfóFU&ˆ◊EFóF∆S¢∞¢áS¢%f∆∂í‹:76¬Ï:ó¶Ï:ñB÷VsÚ"¿¢V„¢%vÁBFÚWá∆˜&RóBvóFÇ6ˆ÷VˆÊRV«6SÚ"¿¢“¿¢6ˆ◊&TñÁfóFTfó'7EFóF∆S¢∞¢áS¢$º;∆∆F¢Vwí÷Vvå:◊l;6∆ñÊ∂WB"¿¢V„¢%6VÊB‚ñÁfóFFñˆ‚∆ñÊ≤"¿¢“¿¢6ˆ◊&TñÁfóFU&ˆ◊D&ˆGì¢∞¢áS¢$º:ó7¨:◊G2ÊV∂í÷Vvå:◊l;6∆ñÊ∂WBfÃ;6Fí;g77¶VÜ6ˆÊÃ:◊L:6Ü˜¢‚"¿¢V„¢$7&VFR‚ñÁfóFFñˆ‚∆ñÊ≤f˜"&V¬◊&ˆfñ∆R6ˆ◊&ó6ˆ‚‚"¿¢“¿¢6ˆ◊&TñÁfóFUFˆvv∆S¢≤áS¢%7¶V‹:ñ«í÷Vvå:◊l:6"¬V„¢$ñÁfóFR6ˆ÷VˆÊR"“¿¢6ˆ◊&TñÁfóFTÜñFS¢≤áS¢$÷Vvå:◊l:2V«&VßL:ó6R"¬V„¢$ÜñFRñÁfóFFñˆ‚"“¿¢6ˆ◊&UVÊFñÊuFóF∆S¢≤áS¢$l;∆v|Y÷Vvå:◊l:6ˆ≤"¬V„¢%VÊFñÊrñÁfóFFñˆÁ2"“¿¢6ˆ◊&UGóUñ6∂W%FóF∆S¢≤áS¢%l:∆77¢Vwí∂&∑FW'B"¬V„¢$6Üˆ˜6R6Ü&7FW""“¿¢6ˆ◊&UGóUñ6∂W$&ˆGì¢∞¢áS¢$wñ˜'2VÃYÏ:ó¶WB‹:6ñ≤l:ñ¬FV∆¶W2FW7ßF¶RÏ:ñ∆º;∆¬‚"¿¢V„¢$Vñ6≤&WfñWrvóFÜ˜WBFÜR˜FÜW"W'6ˆ‚w2gV∆¬76W76÷VÁB‚"¿¢“¿¢6ˆ◊&T6&EFóF∆S¢∞¢áS¢,9g77¶VÜ6ˆÊÃ:◊L:2fÃ;6Fí7¶V‹:ñ∆«ñV¬"¿¢V„¢$6ˆ◊&RvóFÇ&V¬W'6ˆ‚"¿¢“¿¢6ˆ◊&T6&D&ˆGì¢∞¢áS¢$º;∆∆F¢Vwí∆ñÊ∂WBf∆∂ñÊV≤¬∂ófV¬&VÊG7¶W&W6V‚º;g¨;g2ÜV«ó¶WFV∂&V‚fwóFˆ≤‚ÜYó2∂óL;f«Fí6¨:BFW7ßF¨:óB:ó2V∆fˆvF¶¬÷ñÊF∂WGFV‚dÃ94Dí&ˆfñ∆¶óFˆ≤FñÊ÷ñº:¨:BÃ:F¨:Fˆ≤(	BÊV“L:◊W2÷&V76Ã:ó7B‚"¿¢V„¢%6VÊB∆ñÊ≤FÚ6ˆ÷VˆÊRñ˜R&VwV∆&«í6Ü&R6óGVFñˆÁ2vóFÇ‚ñbFÜWí6ˆ◊∆WFRFÜVó"˜v‚76W76÷VÁBÊB66WB¬ñ˜R&˜FÇ6VRFÜRGñÊ÷ñ2ˆbñ˜W"$T¬&ˆfñ∆W2(	BÊ˜BGóRW7Fñ÷FR‚"¿¢“¿¢6ˆ◊&T7&VFT7F¢≤áS¢,9g77¶VÜ6ˆÊÃ:◊L;2∆ñÊ≤º:ó7¨:◊L:ó6R"¬V„¢$7&VFR6ˆ◊&R∆ñÊ≤"“¿¢6ˆ◊&T∆ñ÷óDÊ˜FS¢∞¢áS¢$Vwó7¶W'&R∆VvfV∆¶V&"2∑L:◊b∆ñÊ≤∆VÜWC≤∆ñÊ≤3Êñr:ñ¬‚"¿¢V„¢%WFÚ27FófR∆ñÊ∑2BFñ÷S≤∆ñÊ≤∆ófW2f˜"3Fó2‚"¿¢“¿¢6ˆ◊&T6˜ì¢≤áS¢$∆ñÊ≤‹:6ˆÃ:6"¬V„¢$6˜í∆ñÊ≤"“¿¢6ˆ◊&T6˜ñVC¢≤áS¢$‹:6ˆ«f"¬V„¢$6˜ñVB"“¿¢6ˆ◊&U&Wfˆ∂S¢≤áS¢%fó77¶fˆÏ:2"¬V„¢%&Wfˆ∂R"“¿¢ÚÚfó77¶fˆÏ:2‹84î≤l:ñ∆Ï:ñ¬ó2÷Vw7¨;∆ÁFWFíº;g¨;g2º:óWB(	BW¨:ó'@¢ÚÚº:ó&FW¨;∆Ê≤,:¬÷ñVÃYGB∆VgWB‡¢6ˆ◊&U&Wfˆ∂T6ˆÊfó&’VW7Fñˆ„¢∞¢áS¢$÷ñÊF∂WGLYL;f∂Ï:ñ¬÷Vw7¨[Êñ≤‚&óßF˜3Ú"¿¢V„¢$óBVÊG2f˜"&˜FÇˆbñ˜R‚7W&SÚ"¿¢“¿¢6ˆ◊&U&Wfˆ∂T6ˆÊfó&’ñW3¢≤áS¢$ñvV‚¬fó77¶fˆÊˆ“"¬V„¢%ñW2¬&Wfˆ∂R"“¿¢6ˆ◊&U&Wfˆ∂T6ˆÊfó&‘ÊÛ¢≤áS¢$‹:ñw6V“"¬V„¢$6Ê6V¬"“¿¢6ˆ◊&U7FFUVÊFñÊs¢≤áS¢&l;∆v|Y&V‚"¬V„¢'VÊFñÊr"“¿¢6ˆ◊&U7FFT66WFVC¢≤áS¢&V∆fˆvGf"¬V„¢&66WFVB"“¿¢6ˆ◊&U7FFTWáó&VC¢≤áS¢&∆V¨:'B"¬V„¢&Wáó&VB"“¿¢6ˆ◊&U7FFU&Wfˆ∂VC¢≤áS¢'fó77¶fˆÁf"¬V„¢'&Wfˆ∂VB"“¿¢6ˆ◊&T˜VÂó#¢≤áS¢$º;g¨;g2º:ó÷VvÁñóL:6"¬V„¢$˜V‚6Ü&VBñ7GW&R"“¿¢6ˆ◊&U'FÊW$f∆∆&6≥¢≤áS¢&‹:6ñ≤7¶V‹:ñ«í"¬V„¢&˜FÜW"W'6ˆ‚"“¿¢6ˆ◊&T∆ó7DV◊Gì¢∞¢áS¢$‹:ñrÊñÊ72∑L:◊b∆ñÊ∂VBfwíV∆fˆvF˜GB:&ˆB‚"¿¢V„¢$ÊÚ7FófR∆ñÊ∑2˜"66WFVBó'2ñWB‚"¿¢“¿¢ÚÚ∂ñº;∆∆L;gGB¬FR‹:ñrV¬ÊV“fˆvF˜GB∆ñÊ≤÷V∆Ã:ì¢(	ÊÊñÊ72∑L:◊b∆ñÊ∂VB ¢ÚÚñ«ñVÊ∂˜"V∆∆VÁF÷ˆÊBº;gßfWF∆VÏ;∆¬∆GFÃ:FÜL;2l;∆v|Y∆ó7L:Ê≤‡¢6ˆ◊&T∆ó7EVÊFñÊtˆÊ«ì¢∞¢áS¢$∂ñº;∆∆L;gGB∆ñÊ∑&Rl:"(	B÷ñÁBV∆fˆvF¶¬óGB÷VvÁú:÷∆ñ≤º;g¨;g2º:ó‚"¿¢V„¢%vóFñÊrˆ‚FÜR∆ñÊ≤ñ˜R6VÁB(	BFÜR6Ü&VBñ7GW&R˜VÁ2ÜW&RˆÊ6RFÜWí66WB‚"¿¢“¿¢6ˆ◊&TW'&˜#¢∞¢áS¢$ÊV“6ñ∂W,;∆«B(	B,;6,:∆B;¶ß&‚"¿¢V„¢%6ˆ÷WFÜñÊrvVÁBw&ˆÊr(	BG'ívñ‚‚"¿¢“¿¢6ˆ◊&T∆ñ÷óDW'&˜#¢∞¢áS¢$VÃ:ó'FVB2∑L:◊b∆ñÊ≤ÜL:,:B(	BfˆÊ¢fó77¶VwñWBVÃY&"‚"¿¢V„¢%ñ˜RwfR&V6ÜVBFÜR27FófR÷∆ñÊ≤∆ñ÷óB(	B&Wfˆ∂RˆÊRfó'7B‚"¿¢“¿¢6ˆ◊&T6ˆÁ6VÁEFóF∆S¢∞¢áS¢%:&˜2;g77¶VÜ6ˆÊÃ:◊L:2"¿¢V„¢%ó"6ˆ◊&ó6ˆ‚"¿¢“¿¢6ˆ◊&T6ˆÁ6VÁD&ˆGì¢∞¢áS¢'∂Ê÷W“÷Vvå:◊f˜GB¬ÜˆwíÏ:óß¨:óFV≤÷VrVwú;«GC¢Üˆwñ‚‹[º;fFÏ:óFV≤:&&‚‚V∆fˆvL:2WL:‚‘î‰D¥UEDT‚Ã:F¨:Fˆ≤º;g¨;g2FñÊ÷ñº:BÜ÷í÷|:L;6¬÷Vwí+rÜˆ¬l:&ÜL;2<;ß&Ã;6L:2+r÷óB:ó&FV÷W2VÃY&R÷Vv&W7¨:ñ∆Êíí‚"¿¢V„¢'∂Ê÷W“ñÁfóFVBñ˜RFÚ6VRÜ˜rFÜRGvÚˆbñ˜Rv˜V∆Bv˜&≤FˆvWFÜW"‚gFW"66WFñÊr¬$ıDÇˆbñ˜R6VRFÜR6Ü&VBGñÊ÷ñ2ávÜB6ˆ÷W2V6ñ«í+rvÜW&Rg&ñ7Fñˆ‚ó2∆ñ∂V«í+rvÜBFÚw&VRˆ‚Wg&ˆÁBí‚"¿¢“¿¢6ˆ◊&T6ˆÁ6VÁEvÜC¢∞¢áS¢$÷óB‹:6ñ≤l:ñ¬Ã:C¢L:◊W2‹:',:B¬¢&6ÜWL:◊W2÷ÊWfVB:ó2º;g¨;g2FñÊ÷ñ∂7¨;gfVvR‚7¨:◊7¶W,[ˆÁG7¨:÷ñB‰T“¶V∆VÊÊV≤÷VrÊV∂í‚,:&÷ñ∂˜"fó77¶fˆÊÜFˆB‚"¿¢V„¢%vÜBFÜR˜FÜW"6ñFR6VW3¢ñ˜W"GóRfñwW&R¬ñ˜W"&6ÜWGóRÊ÷RÊBFÜR6Ü&VBGñÊ÷ñ2FWáB‚ñ˜W"ÁV÷W&ñ266˜&W2&R‰ıB6Ü˜v‚FÚFÜV“‚ñ˜R6‚&Wfˆ∂RBÁíFñ÷R‚"¿¢“¿¢6ˆ◊&T6ˆÁ6VÁD66WC¢≤áS¢$V∆fˆvFˆ“(	B◊WF7<:Fˆ≤"¬V„¢$66WB(	B6Ü˜rW2"“¿¢6ˆ◊&T6ˆÁ6VÁDFV6∆ñÊS¢≤áS¢$÷˜7BÊV“"¬V„¢$Ê˜BÊ˜r"“¿¢6ˆ◊&TÊVVE&W7V«EFóF∆S¢∞¢áS¢$VÃY&"6¨:BFW7ßFVFWBL;f«G6B∂í"¿¢V„¢$6ˆ◊∆WFRñ˜W"˜v‚76W76÷VÁBfó'7B"¿¢“¿¢6ˆ◊&TÊVVE&W7V«D&ˆGì¢∞¢áS¢$¢;g77¶VÜ6ˆÊÃ:◊L:2º:óBfÃ;6Fí&ˆfñ∆,;6¬:ó;∆¬(	BFú:ñB‹:ñrÜú:Áó¶ñ≤‚∂óL;f«L:ó2WL:‚wñW&Rfó77¶VwñÊWß¶V¬∆ñÊ∂∂V¬¬:ó2V∆fˆvFÜFˆB÷Vvå:◊l:7B‚"¿¢V„¢%FÜR6ˆ◊&ó6ˆ‚ó2'Vñ«Bg&ˆ“GvÚ&V¬&ˆfñ∆W2(	Bñ˜W'2ó27Fñ∆¬÷ó76ñÊr‚gFW"6ˆ◊∆WFñÊróB¬&WGW&‚vóFÇFÜó26÷R∆ñÊ≤FÚ66WBFÜRñÁfóFR‚"¿¢“¿¢6ˆ◊&TÊVVE&W7V«D7F¢≤áS¢$∂óL;f«L;f“FW7ßFWB"¬V„¢%F∂RFÜR76W76÷VÁB"“¿¢6ˆ◊&TñÁf∆ñEFóF∆S¢≤áS¢$W¢∆ñÊ≤ÊV“:ñ¬"¬V„¢%FÜó2∆ñÊ≤ó2Ê˜B7FófR"“¿¢6ˆ◊&TñÁf∆ñD&ˆGì¢∞¢áS¢$÷Vvå:◊l;2∆V¨:'B¬fó77¶fˆÁL:≤¬fwí‹:"f∆∂í‹:2V∆fˆvGF‚º:ó&¢;¶¢∆ñÊ∂WB÷Vvå:◊l;6GL;6¬‚"¿¢V„¢%FÜRñÁfóFRÜ2Wáó&VB¬v2&Wfˆ∂VB¬˜"v2«&VGí66WFVB'í6ˆ÷VˆÊRV«6R‚6≤ñ˜W"ñÁfóFW"f˜"g&W6Ç∆ñÊ≤‚"¿¢“¿¢6ˆ◊&Uó%FóF∆S¢≤áS¢%Fí∂WGFV‚"¬V„¢%FÜRGvÚˆbñ˜R"“¿¢6ˆ◊&Uó%vóFÉ¢≤áS¢,9g77¶VÜ6ˆÊÃ:◊L:2fV∆S¢∂Ê÷W“"¬V„¢$6ˆ◊&ñÊrvóFÉ¢∂Ê÷W“"“¿¢6ˆ◊&Uó$WñV'&˜s¢≤áS¢$º:óBfÃ;6Fí&ˆfñ¬"¬V„¢%GvÚ&V¬&ˆfñ∆W2"“¿¢6ˆ◊&Uó$ÜVFñÊs¢≤áS¢%FR:ó2∂Ê÷W“"¬V„¢%ñ˜RÊB∂Ê÷W“"“¿¢6ˆ◊&Uó$ñÁG&Û¢∞¢áS¢,8÷wíFÃ:∆∂˜¶ñ≤‹[º;fL:ó6WFV≤º;g¨;g2ÜV«ó¶WFV∂&V‚‚"¿¢V„¢$Ü˜rñ˜W"vó2ˆbv˜&∂ñÊr÷VWBñ‚6Ü&VB6óGVFñˆÁ2‚"¿¢“¿¢6ˆ◊&Uó%&V≈&ˆfñ∆W3¢∞¢áS¢$º:óBfÃ;6Fí;fÏ:ó'L:ñ∂VÃ:ó2"¿¢V„¢%GvÚ&V¬6V∆b÷76W76÷VÁG2"¿¢“¿¢6ˆ◊&U&V∆Fñˆ‰∆&V√¢≤áS¢$∂76ˆ∆F˜Fˆ≤"¬V„¢%ñ˜W"&V∆FñˆÁ6Üó"“¿¢6ˆ◊&U&V∆FñˆÂVW#¢∞¢áS¢$VwñVÁ&Ê|;¢∂76ˆ∆B"¿¢V„¢$WV¬&V∆FñˆÁ6Üó"¿¢“¿¢6ˆ◊&U&V∆Fñˆ‰˜FÜW$∆VG3¢∞¢áS¢'∂Ê÷W“fW¶WBfwí÷VÁF˜,:¬VÊvV“"¿¢V„¢'∂Ê÷W“∆VG2˜"÷VÁF˜'2÷R"¿¢“¿¢6ˆ◊&U&V∆FñˆÂ6V∆d∆VG4Ê÷VC¢∞¢áS¢,8ñ‚fW¶WFV“fwí÷VÁF˜,:∆ˆ“YB(	B∂Ê÷W“"¿¢V„¢$í∆VB˜"÷VÁF˜"∂Ê÷W“"¿¢“¿¢6ˆ◊&T6ˆ÷÷ˆÂñ7GW&S¢≤áS¢$º;g¨;g2º:ó"¬V„¢%6Ü&VBñ7GW&R"“¿¢6ˆ◊&T6ˆÊÊV7G3¢≤áS¢$÷í;g77¶Vº;gB"¬V„¢%vÜB6ˆÊÊV7G2ñ˜R"“¿¢6ˆ◊&TGFVÁFñˆ„¢≤áS¢$÷ó&RfñwñV∆¶WFV≤"¬V„¢%vÜBFÚvF6Ç"“¿¢6ˆ◊&U&V∆FñˆÂ6V∆d∆VG3¢∞¢áS¢,8ñ‚fW¶WFV“fwí÷VÁF˜,:∆ˆ“YB"¿¢V„¢$í∆VB˜"÷VÁF˜"FÜV“"¿¢“¿¢ÚÚVwñWF∆V‚÷&º:Á2ˆÁBW6WL:ñ‚ÜfÃ;6Fí:&ˆ∂Ï:¬W¢„3Ríº:ó,;gfñB‡¢ÚÚ∂í∂V∆¬÷ˆÊFÊí¬º;∆Ã;fÊ&V‚Üñ,:Ê≤Ã:G7¶ñ≤∂&∑FW"‹;ßFÜ˜¢º:óW7B(	@¢ÚÚ∂&∑FW"◊&˜F˜L:◊W2VwñÊó2÷Üñ‹:∆ó6‚;6«W6˜2¬VwífÃ;6FíV÷&W"ÊV“‡¢6ˆ◊&Uó%FÜñ‰Ê˜FS¢∞¢áS¢$∂WGLYL;f≤&ˆfñ∆¶VwñWF∆V‚÷&º:Á2ˆÁFˆ‚L:ó"V¬¬W¨:ó'BW¢º:ó,;gfñB‚Vwí∂&∑FW"◊7¶ñ◊VÃ:6ú;2Ü˜77¶&"∆VÜWB(	BFR∂&∑FW"∂ñÜVwñW¶WGB¬V∆‹:ñ∆WFíW6WC≤W¢óGB,;6∆Fˆ≤7¨;6¬‚"¿¢V„¢%ñ˜W"&ˆfñ∆W2FñffW"ˆ‚6ñÊv∆R&ˆÊ˜VÊ6VBˆñÁB¬6ÚFÜó2ñ7GW&Ró26Ü˜'B‚6Ü&7FW"6ñ◊V∆Fñˆ‚6‚'V‚∆ˆÊvW"(	B'WB6Ü&7FW"ó26Ü'VÊVB¬áó˜FÜWFñ6¬66S≤FÜó2ˆÊRó2&˜WBFÜRGvÚˆbñ˜R‚"¿¢“¿¢6ˆ◊&Uó%6˜W&6TÊ˜FS¢∞¢áS¢$º:óB∂óL;f«L;gGB:ó2÷Vv˜7ßF˜GB;fÏ:ó'L:ñ∂VÃ:ó2;g77¶WfWL:ó6R(	BˆÁF˜6&"¬÷ñÁBL:◊W6&V76Ã:ó2¬FRF˜l:&'&ó2;fÊ&W7¨:÷ˆÃ;6‚∆V¬‚Üó˜L:ó¶ó2¬ÊV“:◊L:ñ∆WC¢&W7¨:ñ∆vWL:ó6ñÊL:◊L;6Ê≤º:ó7¨;∆«B‚"¿¢V„¢$6ˆ◊&ó6ˆ‚ˆbGvÚ&V¬¬6Ü&VB6V∆b÷76W76÷VÁG2(	B÷˜&R&V6ó6RFÜ‚GóRW7Fñ÷FR¬ñWB7Fñ∆¬&6VBˆ‚6V∆b◊&W˜'B‚áó˜FÜW6ó2¬Ê˜BfW&Fñ7C¢'Vñ«BFÚ7F'B6ˆÁfW'6Fñˆ‚‚"¿¢“¿¢ÚÚ)H)HÜBFñ÷VÁ¶ú;72;g77¶WfWL:ó2◊<:bÉ##b”Ç”Çí)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H)H ¢ÚÚ<:bÙÂE5¨8‘ıB‰T“’UDC¢'FÊW"ÁñW'2:ó'L:ñ∂VíÊV“Üwñ¨:≤V¬¢ÚÚ7¶W'fW'B‚(	ÊÏ:∆÷v6&""Fñ÷VÁ¶ú;6Êº:ñÁBVwñWF∆V‚&óB(	B&W7¨:ñ∆vWL:ó2–¢ÚÚñÊL:◊L:6Ü˜¢VÃ:ñr¬&ˆfñ¬fó77¶fVßL:ó<:ñÜW¢ÊV“‡¢Ú¢ÚÚ5¨94Ñ5§Ï8ƒC¢(	Ê÷v6&""¬ÊV“(	ÊW,Y6V&""‚(	3ÊV“FV∆¶W<:◊F‹:ñÁí◊6º:∆¢ÚÚ(	B÷v6&":ó'L:ñ≤ÊV“¶ˆ&"É##b”Ç”Ç¬f∆VÊ6ñ÷÷VÁFW27¶ñÁB–¢ÚÚ&^˝Ô´hëÈÏ∂ªßq´^u—‰µ°’µ•±•—‰Å•ÃÅ9YHÅçΩ’π—ïêÅÖùÖ•πÕ–ÅÂΩ‘Å°ï…îÉäPÅ•–Å•ÃÅÑÅ±Ωπúµ—ï…¥Å—…’Õ–ÅÖëŸÖπ—Öùî∞ÅïŸï∏Å•òÅ—°îÅÕ—Ö…–Å•ÃÅÕ±Ω›ï»∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôâΩŸïQÖ…ùï—9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâù‰ÅŸÖù‰Å”ŸâàÅŸΩªÖÕΩêÅÑÅÕÈï…ï¡…îÅ©ï±±ïµÎDÅ—Ö…—Ω∑Öπ‰ÅõŸ≥Ÿ—–ÅŸÖ∏∏ÅËÅπï¥Å°•âÑËÉÖ±—Ö≥ÖâÖ∏ÅÖÈ–Å©ï±ïπ—§∞Å°Ωù‰ÅÑÅÕÈï…ï¿Åπï¥Å°ÖÕÈªÖ±©ÑÅ≠§Å—ï±©ïÕï∏ÅÑÅ∑≈ØŸì•Õïëπï¨ÅïÈ–ÅÖËÅΩ±ëÖ≥Ö–∏à∞(ÄÄÄÄÄÅï∏ËÄâ=πîÅΩ»ÅµΩ…îÅ—…Ö•—ÃÅÕ•–Å	=YÅ—°îÅ…Ω±îùÃÅ—Â¡•çÖ∞Å…Öπùî∏ÅQ°Ö–Å•Õ∏ù–ÅÑÅô±Ö‹ËÅ•–Å’Õ’Ö±±‰ÅµïÖπÃÅ¡Ö…–ÅΩòÅÂΩ’»ÅÕ—…ïπù—†ÅÕ—ÖÂÃÅ’π’Õïê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçô%π—ï…ïÕ—5Ö—ç†ËÅÏÅ°‘ËÄã•…ëï≠≥Eì•ÃÅÌŸÖ±’ïÙîà∞Åï∏ËÄâ•π—ï…ïÕ—ÃÅÌŸÖ±’ïÙîàÅÙ∞(ÄÄÄÅçôA…ïôï…ïπçï5Ö—ç†ËÅÏÅ°‘ËÄâµ’π≠ÖØŸ…πÂïÈï–ÅÌŸÖ±’ïÙîà∞Åï∏ËÄâ›Ω…¨ÅÕï——•πúÅÌŸÖ±’ïÙîàÅÙ∞(ÄÄÄÅçôπ—…Â=¡ï∏ËÅÏÅ°‘ËÄâπ•πçÃÅôΩ…∑Ö±•ÃÅØŸŸï—ï±∑•π‰à∞Åï∏ËÄâπºÅôΩ…µÖ∞Å…ï≈’•…ïµïπ–àÅÙ∞(ÄÄÄÅçôπ—…ÂΩ’…ÕîËÅÏÅ°‘ËÄâ—ÖπôΩ±ÂÖ¥ÄºÅÀŸŸ•êÅØ•¡Î•Ãà∞Åï∏ËÄâçΩ’…ÕîÄºÅÕ°Ω…–Å—…Ö•π•πúàÅÙ∞(ÄÄÄÅçôπ—…ÂYΩçÖ—•ΩπÖ∞ËÅÏÅ°‘ËÄâÕÈÖ≠µÑÄºÅ—ïç°π•≠’Ãà∞Åï∏ËÄâŸΩçÖ—•ΩπÖ∞ÄºÅ—ïç°π•ç•Ö∏àÅÙ∞(ÄÄÄÅçôπ—…Â!•ù°ï»ËÅÏÅ°‘ËÄâôï±œEôΩØËÅë•¡±ΩµÑà∞Åï∏ËÄâ°•ù°ï»Åïë’çÖ—•Ω∏Åëïù…ïîàÅÙ∞(ÄÄÄÅçôπ—…ÂM¡ïç•Ö±•ÈïêËÅÏÅ°‘ËÄâÕÈÖ≠•ÀÖπÁËÅë•¡±ΩµÑÄ¨ÅÕÈÖ≠Ÿ•ÈÕùÑà∞Åï∏ËÄâÕ¡ïç•Ö±•ÕïêÅëïù…ïîÄ¨Å±•çïπçîàÅÙ∞(ÄÄÄÅçôççïÕÕ•ï±ë5Ö—ç†ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÑÅÕÈÖ≠•ÀÖπÂΩêÅ•±±•¨Å°ΩÈÎÑà∞(ÄÄÄÄÄÅï∏ËÄâÂΩ’»Åô•ï±êÅΩòÅÕ—’ë‰Åô•—Ãà∞(ÄÄÄÅÙ∞(ÄÄÄÅçôççïÕÕ1ïŸï±=π±‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÑÅÕÈ•π—ïêÅµïùŸÖ∏∞ÅëîÅ∑ÖÃÅÕÈÖ≠•ÀÖπ‰à∞(ÄÄÄÄÄÅï∏ËÄâÂΩ’»Å±ïŸï∞Å•ÃÅïπΩ’ù†∞Åâ’–ÅÑÅë•ôôï…ïπ–Åô•ï±êà∞(ÄÄÄÅÙ∞(ÄÄÄÅçôççïÕÕ1•çïπçîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÕÈÖãÖ±ÂΩÈΩ—–ÅÕÈÖ≠µÑÉäPÅÕÈÖ≠Ÿ•ÈÕùÑÄºÅ≠ÖµÖ…Ö§Å—ÖùœÖúÅ≠ï±∞à∞(ÄÄÄÄÄÅï∏ËÄâ…ïù’±Ö—ïêÅ¡…ΩôïÕÕ•Ω∏ÉäPÅ±•çïπçîÅΩ»Åç°Öµâï»Åµïµâï…Õ°•¿Å…ï≈’•…ïêà∞(ÄÄÄÅÙ∞(ÄÄÄÅçôççïÕÕ1•çïπçïIïÖë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÑÅ€•ùÈï——œ•ùïêÅµïùôï±ï∞∞ÅëîÅÑÅÕÈÖ≠µÑÅïπùïì•±‰¥ÄºÅ≠ÖµÖ…Ö§ÅØŸ—ï±ïÈï——œ•ùùï∞Å´Ö»à∞(ÄÄÄÄÄÅï∏ËÄâÂΩ’»Åïë’çÖ—•Ω∏Åô•—Ã∞Åâ’–Å—°•ÃÅ¡…ΩôïÕÕ•Ω∏ÅçÖ……•ïÃÅÑÅ±•çïπçîÄºÅç°Öµâï»ÅΩâ±•ùÖ—•Ω∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôççïÕÕQ…Ö•π•πúËÅÏ(ÄÄÄÄÄÅ°‘ËÄâØ•¡Î•ÃÅ≠ï±∞Å°ΩÈÎÑà∞(ÄÄÄÄÄÅï∏ËÄâπïïëÃÅ—…Ö•π•πúà∞(ÄÄÄÅÙ∞(ÄÄÄÅçôÖ¡IïÖë‰ËÅÏÅ°‘ËÄâÑÅÕÈ•π—ïêÅµïùŸÖ∏à∞Åï∏ËÄâÂΩ’»Å±ïŸï∞Å•ÃÅïπΩ’ù†àÅÙ∞(ÄÄÄÅçôÖ¡Ω’…ÕîËÅÏÅ°‘ËÄâ—ÖπôΩ±ÂÖ¥Å≠ï±∞Å°ΩÈÎÑà∞Åï∏ËÄâπïïëÃÅÑÅçΩ’…ÕîàÅÙ∞(ÄÄÄÅçôÖ¡YΩçÖ—•ΩπÖ∞ËÅÏÅ°‘ËÄâÕÈÖ≠Ø•¡Î•ÃÅ≠ï±∞Å°ΩÈÎÑà∞Åï∏ËÄâπïïëÃÅŸΩçÖ—•ΩπÖ∞Å—…Ö•π•πúàÅÙ∞(ÄÄÄÅçôÖ¡ïù…ïîËÅÏÅ°‘ËÄâë•¡±ΩµÑÅ≠ï±∞Å°ΩÈÎÑà∞Åï∏ËÄâπïïëÃÅÑÅëïù…ïîàÅÙ∞(ÄÄÄÅçôÖ¡1•çïπçîËÅÏÅ°‘ËÄâë•¡±ΩµÑÄ¨ÅÕÈÖ≠Ÿ•ÈÕùÑÅ≠ï±∞Å°ΩÈÎÑà∞Åï∏ËÄâπïïëÃÅÑÅëïù…ïîÄ¨Å±•çïπçîàÅÙ∞(ÄÄÄÅçôÖ—Ö±Ωù9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÌçΩ’π—ÙÅôΩù±Ö±≠ΩÎÖÕ…ÑÅÕÎÖµΩ±—’¨Ä°≠Ö—Ö≥Õù’ÃµŸï…ÈßÃËÅÌŸï…Õ•ΩπÙ§∏ÅΩ…ÀÖÃËÅ<©9PÄÃ¿∏ÃÅÖ—ÖâÖÕîÄ°TπL∏Åï¡Ö…—µïπ–ÅΩòÅ1ÖâΩ»ΩQ∞ÅÅ	dÄ–∏¿§ÅÖëÖ—Ö•ãÕ∞ÅÕÎÖ…µÖÈ—Ö—ŸÑ∞ÅµÖùÂÖ»ÅµïùπïŸïÎ•Õï¨É•ÃÅ±óµÀÖÕΩ¨ËÅM<Ä°’ÀÕ¡Ö§Å	•ÈΩ——œÖú§∞Å=H¥¿‡ÅâïÕΩ…Ω≥ÖÃËÅ-M ∏à∞(ÄÄÄÄÄÅï∏ËÄâΩµ¡’—ïêÅÖç…ΩÕÃÅÌçΩ’π—ÙÅΩçç’¡Ö—•ΩπÃÄ°çÖ—Ö±ΩúÅŸï…Õ•Ω∏ÅÌŸï…Õ•ΩπÙ§∏Åï…•ŸïêÅô…Ω¥Å—°îÅ<©9PÄÃ¿∏ÃÅÖ—ÖâÖÕîÄ°TπL∏Åï¡Ö…—µïπ–ÅΩòÅ1ÖâΩ»ΩQ∞ÅÅ	dÄ–∏¿§ÏÅ!’πùÖ…•Ö∏Å±Öâï±ÃÅÖπêÅëïÕç…•¡—•ΩπÃÅô…Ω¥ÅM<Ä°’…Ω¡ïÖ∏ÅΩµµ•ÕÕ•Ω∏§ÏÅ=H¥¿‡ÅçΩëïÃÅô…Ω¥Å-M ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçô’……ïπ—IΩ±ïQ•—±îËÅÏÅ°‘ËÄâ5§ÅÑÅµΩÕ—Öπ§Åµ’πØÖê¸à∞Åï∏ËÄâ]°Ö–ÅëºÅÂΩ‘ÅëºÅπΩ‹¸àÅÙ∞(ÄÄÄÅçô’……ïπ—IΩ±ï	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ€Ö±ÖÕËÅπï¥ÅØŸ—ï±ïÎD∞É•ÃÅπï¥ÅâïôΩ±ÁÖÕΩ±©ÑÅÑÅ…ÖπùÕΩ…ΩëÖ–∏ÅÎ•…–ÅØ•…ëïÈÎÒ¨∞Å°Ωù‰Åï±±ïªE…•Èπ§Å—’ë©’¨ÅÑÅµΩëï±±–ËÅ°ÑÅ´Õ∞Å∑•»∞ÅÑÅ©ï±ïπ±ïù§ÅÕÈï…ï¡ïëπï¨Å©ï±±ïµÎEï∏Åï≥E≠ï≥EâàÅ°ï±Â…îÅ≠ï±∞Å≠ïÀÒ±π•îÅÑÅÕÖ´Ö–Å±•Õ”ÖëΩ∏∏à∞(ÄÄÄÄÄÅï∏ËÄâ=¡—•ΩπÖ∞∞ÅÖπêÅ•–ÅëΩïÃÅ9=PÅÖôôïç–ÅÂΩ’»Å…Öπ≠•πú∏Å]îÅÖÕ¨ÅÕºÅ›îÅçÖ∏Åç°ïç¨Å—°îÅµΩëï∞ËÅ•òÅ•–ÅµïÖÕ’…ïÃÅÖπÂ—°•πúÅ…ïÖ∞∞ÅÂΩ’»Åç’……ïπ–Å…Ω±îÅÕ°Ω’±êÅÕ•–ÅÕÂÕ—ïµÖ—•çÖ±±‰Å°•ù°ï»Å•∏ÅÂΩ’»ÅΩ›∏Å±•Õ–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçô’……ïπ—IΩ±ïA±Öçï°Ω±ëï»ËÅÏÅ°‘ËÄâ-ïÈë®Åï∞Åü•¡ï±π§ÉäPÅ¡∞∏ÉÖ¡Ω≥Ã∞Åôï©±ïÕÈ”Gäòà∞Åï∏ËÄâM—Ö…–Å—Â¡•πúÉäPÅîπú∏Åπ’…Õî∞ÅëïŸï±Ω¡ïÀäòàÅÙ∞(ÄÄÄÅçô’……ïπ—IΩ±ïMïÖ…ç°•πúËÅÏÅ°‘ËÄâ-ï…ïœ•œäòà∞Åï∏ËÄâMïÖ…ç°•πüäòàÅÙ∞(ÄÄÄÅçô’……ïπ—IΩ±ï±ïÖ»ËÅÏÅ°‘ËÄâSŸ…≥•Ãà∞Åï∏ËÄâ±ïÖ»àÅÙ∞(ÄÄÄÅçôIïÕï–ËÅÏÅ°‘ËÄâ-ïÈì•ÃÅï≥Ÿ±ÀE∞à∞Åï∏ËÄâM—Ö…–ÅΩŸï»àÅÙ∞(ÄÄÄÅçôIïÕï—Ωπô•…¥ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ	•È—ΩÕÖ∏Å”Ÿ…≥ŸêÅÖËÉŸÕÕÈïÃÅïëë•ù§Å€Ö±ÖÕÈΩëÖ–¸ÅÅ£Ö—”•…Ø•…ì•Õï≠…îÉ•ÃÅÑÅµ’π≠ÖØŸ…πÂïÈï—§Å¡…ïôï…ïπçßÖ≠…ÑÅÖëΩ—–Å€Ö±ÖÕÈÖ•ê∞ÅŸÖ±Öµ•π–ÅÑÅ≠•”Ÿ±”Ÿ—–É•…ëï≠≥Eì•Õ§ÅØ•…ìGµÿÄ°!Ω±±ÖπêµØÕê§Åï…ïë∑•πÂîÅ•ÃÅ”Ÿ…≥Eëπï¨∏ÅÅÕÈï∑•±Â•œ•ùï…ïë∑•πÂïêÅµïùµÖ…Öê∞É•ÃÅÖâãÕ∞Å≠••πë’±ŸÑÅ≠ïÈë°ï—ÕËÉÈ©…Ñ∏à∞(ÄÄÄÄÄÅï∏ËÄâï±ï—îÅÖ±∞ÅÂΩ’»ÅÖπÕ›ï…ÃÅÕºÅôÖ»¸Å	Öç≠ù…Ω’πêÅ≈’ïÕ—•ΩπÃ∞Å›Ω…¨µÕï——•πúÅ¡…ïôï…ïπçïÃÅÖπêÅÂΩ’»ÅçΩµ¡±ï—ïêÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰Ä°!Ω±±ÖπêÅçΩëî§ÅÖ…îÅÖ±∞Å…ïµΩŸïê∏ÅeΩ’»Å¡ï…ÕΩπÖ±•—‰Å…ïÕ’±–ÅÕ—ÖÂÃÉäPÅÂΩ‘ÅÕ—Ö…–Åô…ïÕ†Å›•—†Å—°Ö–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôIïÕï—eïÃËÅÏÅ°‘ËÄâ%ùï∏∞Å”Ÿ…≥Ÿ¥à∞Åï∏ËÄâeïÃ∞Åëï±ï—îàÅÙ∞(ÄÄÄÅçôIïÕï—	’Õ‰ËÅÏÅ°‘ËÄâSŸ…≥•œäòà∞Åï∏ËÄâï±ï—•πüäòàÅÙ∞(ÄÄÄÅçôIïÕï—Öπçï∞ËÅÏÅ°‘ËÄâ7•ùÕîà∞Åï∏ËÄâÖπçï∞àÅÙ∞(ÄÄÄÅçô1ΩÖë•πúËÅÏÅ°‘ËÄâMÎÖµΩ±©’¨ÅÖËÅ•±±ïÕÈ≠ïì•Õ”äòà∞Åï∏ËÄâΩµ¡’—•πúÅÂΩ’»Åô•”äòàÅÙ∞(ÄÄÄÅçô……Ω»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ9ï¥ÅÕ•≠ïÀÒ±–Å≠•ÕÎÖµΩ±π§ÅÖËÅ•±±ïÕÈ≠ïì•Õ–∏ÅAÀÕãÖ±êÉÈ©…ÑÅïù‰Å¡•±±ÖπÖ–Å∑È±ŸÑ∏à∞(ÄÄÄÄÄÅï∏ËÄâ]îÅçΩ’±ë∏ù–ÅçΩµ¡’—îÅ—°îÅô•–∏ÅQ…‰ÅÖùÖ•∏Å•∏ÅÑÅµΩµïπ–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôIï—…‰ËÅÏÅ°‘ËÄãi©…Ö¡ÀÕãÖ±Ω¥à∞Åï∏ËÄâQ…‰ÅÖùÖ•∏àÅÙ∞(ÄÄÄÅçô…Ω›—°Q•—±îËÅÏÅ°‘ËÄâ5•–É•…ëïµïÃÅôï©±ïÕÈ—ïπ§ÅïÈï≠°ïËÅÖËÅ•ÀÖπÂΩ≠°ΩËà∞Åï∏ËÄâ]°Ö–Å—ºÅëïŸï±Ω¿ÅôΩ»Å—°ïÕîÅë•…ïç—•ΩπÃàÅÙ∞(ÄÄÄÅçô…Ω›—°%π—…ºËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÎÖµΩë…ÑÅ±ïù©ΩââÖ∏Å•±±ïÕÈ≠ïìDÅçÕΩ¡Ω…—Ω¨ÅÕÈï…ï¡ï•âï∏ÅïÈï¨ÅÖËÅï±”•À•Õï¨ÅôΩ…ë’±πÖ¨Åï≥DÅÑÅ±ïùùÂÖ≠…ÖââÖ∏∏ÅËÅï±”•À•ÃÅ•ÀÖπÂÑÅ•ÃÅÕÎÖ∑µ–∞Åµï…–Å∑ÖÃÅôï©±ïÕÈ”•Õ§Å≥•√•Õ–ÅØµ€Ö∏∞Å°ÑÅÑÅ—•¡•≠’ÃÅ—Ö…—Ω∑Öπ‰ÅÖ±Ö—–ÅŸÖù‰ÅõŸ≥Ÿ—–Å°ï±ÂïÈ≠ïëÕËÅï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°ïÕîÅùÖ¡ÃÅçΩµîÅ’¿ÅµΩÕ–ÅΩô—ï∏Å•∏ÅÂΩ’»Å—Ω¿Åù…Ω’¡ÃÉäPÅ›•—†Å—°ï•»Åë•…ïç—•Ω∏∞ÅâïçÖ’ÕîÅâï•πúÅâï±Ω‹ÅΩ»ÅÖâΩŸîÅ—°îÅ—Â¡•çÖ∞Å…ÖπùîÅçÖ±±ÃÅôΩ»Åë•ôôï…ïπ–Å—°•πùÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçô…Ω›—°9ΩπïQ•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ9•πçÃÅ©ï±ïπ”EÃÅï±”•À•ÃÅÑÅ—Ω¿Å•ÀÖπÂÖ•ëªÖ∞à∞(ÄÄÄÄÄÅï∏ËÄâ9ºÅÕ•ùπ•ô•çÖπ–ÅùÖ¡ÃÅ•∏ÅÂΩ’»Å—Ω¿Åë•…ïç—•ΩπÃà∞(ÄÄÄÅÙ∞(ÄÄÄÅçô…Ω›—°9Ωπï	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÎÖµΩë…ÑÅ±ïù©ΩââÖ∏Å•±±ïÕÈ≠ïìDÅçÕΩ¡Ω…–ÅÕÈï…ï¡ï•âï∏Åµ•πëï∏Å∑•…–ÅŸΩªÖÕΩêÅÑÅ—•¡•≠’ÃÅ—Ö…—Ω∑ÖπÂΩ∏Åâï≥Ò∞ÅŸÖ∏∏Å%±Âïπ≠Ω»Åπï¥ÅÑÅôï©±ïÕÈ”•ÃÅÑÅØŸŸï—≠ïÎDÅ≥•√•Ã∞Å°Öπï¥ÅÑÅØ•¿Å¡Ωπ—Ωœµ”ÖÕÑËÅØÒ±œDÅŸ•ÕÕÈÖ©ï±Î•ÃÅŸÖù‰ÅÑÅ≠•”Ÿ±”Ÿ—–É•…ëï≠≥Eì•Õ§ÅØ•…ìGµÿÅçœŸ≠≠ïπ—°ï—§ÅÑÅâ•ÈΩπÂ—Ö±ÖπœÖùΩ–∏à∞(ÄÄÄÄÄÅï∏ËÄâ%∏ÅÂΩ’»ÅÕ—…ΩπùïÕ–Åù…Ω’¿∞ÅïŸï…‰ÅµïÖÕ’…ïêÅ—…Ö•–ÅôÖ±±ÃÅ•πÕ•ëîÅ—°îÅ—Â¡•çÖ∞Å…Öπùî∏ÅQ°îÅπï·–ÅÕ—ï¿Å•Õ∏ù–ÅëïŸï±Ω¡µïπ–Åâ’–ÅÕ°Ö…¡ïπ•πúÅ—°îÅ¡•ç—’…îËÅΩ’—Õ•ëîÅôïïëâÖç¨ÅΩ»Å—°îÅµïÖÕ’…ïêÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰ÅπÖ……Ω›ÃÅ—°îÅ’πçï…—Ö•π—‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôÖ¡Uπëï»ËÅÏÅ°‘ËÄâÑÅ—•¡•≠’ÃÅœÖÿÅÖ±Ö—–à∞Åï∏ËÄââï±Ω‹Å—°îÅ—Â¡•çÖ∞Å…ÖπùîàÅÙ∞(ÄÄÄÅçôÖ¡=Ÿï»ËÅÏÅ°‘ËÄâÑÅ—•¡•≠’ÃÅœÖÿÅõŸ≥Ÿ—–à∞Åï∏ËÄâÖâΩŸîÅ—°îÅ—Â¡•çÖ∞Å…ÖπùîàÅÙ∞(ÄÄÄÅçôÖ¡IΩ±ïÃËÅÏÅ°‘ËÄâÌçΩ’π—ÙÅÕÈï…ï¡ª•∞à∞Åï∏ËÄâ•∏ÅÌçΩ’π—ÙÅ…Ω±ïÃàÅÙ∞(ÄÄÄÄººÅ-Ö……•ï»µ•ÀÖπÂ”ƒÅ›•ÈÖ…ê(ÄÄÄÅççQ•—±îËÅÏÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒà∞Åï∏ËÄâÖ…ïï»ÅçΩµ¡ÖÕÃàÅÙ∞(ÄÄÄÅççM—Ö…–ËÅÏÅ°‘ËÄâ-ïÈë´Ò¨à∞Åï∏ËÄâ1ï–ùÃÅÕ—Ö…–àÅÙ∞(ÄÄÄÄººÅ%πìµ”ÃÄ°≠•”Ÿ±”•ÃÅï≥E——§§Åª•Èï–(ÄÄÄÄººÅA…Ωô•∞Åª•±ØÒ±§Åâï≥•√DÄ°ÑÅ≠Ö……•ï»ÅØÒ≥Ÿ∏ÅΩ±ëÖ≥Ö∏§ËÅÑÅùΩµàÅÑÅ≠•”Ÿ±”•Õ…îÅŸ•ÕË∏(ÄÄÄÅçç9ïïëÕA…Ωô•±ï—ÑËÅÏ(ÄÄÄÄÄÅ°‘ËÄâï©ïÈêÅâîÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±Ωêà∞(ÄÄÄÄÄÅï∏ËÄâ•π•Õ†ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±îà∞(ÄÄÄÅÙ∞(ÄÄÄÅçç9ïïëÕA…Ωô•±ï9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅ•ÀÖπÂ”ƒÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩëãÕ∞ÅëΩ±ùΩÈ•¨ÉäPÅ°ÑÅïËÅµïùŸÖ∏∞Å•—–ÅôΩ±Â—Ö—°Ö—Ωê∏ÅÅ≠•”Ÿ±”•ÃÅØŸÀÒ±âï≥Ò∞Å≠•±ïπåÅ¡ï…çï–ÅŸïÕËÅ•ü•πÂâî∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅçΩµ¡ÖÕÃÅ›Ω…≠ÃÅô…Ω¥ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±îÉäPÅΩπçîÅ•–ùÃÅëΩπî∞ÅÂΩ‘ÅçÖ∏ÅçΩπ—•π’îÅ°ï…î∏Å%–Å—Ö≠ïÃÅÖâΩ’–Ä‰Åµ•π’—ïÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÅMÈï≠çßÃ∑Ö—ŸïÈï”DÅQµ¨ÅÖËÅï…ïë∑•π‰µΩ±ëÖ∞ÅÖ±´Ö∏Ä†»¿»ÿ¥¿‹¥Ãƒ§ËÅÑÅ≠Ö……•ï»(ÄÄÄÄººÉ•ÃÅÑÅµ’π≠ÖÕ”µ±’ÃÉŸªÖ±≥ÃÅΩ±ëÖ∞Å±ï—–∞Å•ππï∏ÅŸïÈï”Òπ¨ÉÖ–ÅÀÖ©’¨∏(ÄÄÄÅç—ÖÖ…ïï…Âïâ…Ω‹ËÅÏÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒà∞Åï∏ËÄâÖ…ïï»ÅçΩµ¡ÖÕÃàÅÙ∞(ÄÄÄÅç—ÖÖ…ïï…Q•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5•±Âï∏Åµ’π≠ÑÅ•±±•¨ÅÑÅ¡…Ωô•±Ωë°ΩË¸à∞(ÄÄÄÄÄÅï∏ËÄâ]°Ö–Å≠•πêÅΩòÅ›Ω…¨Åô•—ÃÅÂΩ’»Å¡…Ωô•±î¸à∞(ÄÄÄÅÙ∞(ÄÄÄÅç—ÖÖ…ïï…	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ;•£Öπ‰ÅØ•…ì•Ã∞É•ÃÅµïùª•ÈÎÒ¨∞Åµ•±Âï∏Å•ÀÖπÂΩ¨Å•±±ïÕÈ≠ïëπï¨ÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±Ωë°ΩËÉäPÅÕÈï…ï¡”µ¡’ÕΩ¨É•ÃÅØŸ…πÂïÈï—ï¨∞Åπï¥ÅØ•ÕËÅ€Ö±ÖÕÈΩ¨∏à∞(ÄÄÄÄÄÅï∏ËÄâÅôï‹Å≈’ïÕ—•ΩπÃÅÖπêÅ›îÅ±ΩΩ¨ÅÖ–Å›°•ç†Åë•…ïç—•ΩπÃÅô•–ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±îÉäPÅ…Ω±îÅ—Â¡ïÃÅÖπêÅÕï——•πùÃ∞ÅπΩ–Å…ïÖë‰µµÖëîÅÖπÕ›ï…Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅç—ÖÖ…ïï…	’——Ω∏ËÅÏÅ°‘ËÄâ%ÀÖπ‰ÅÖËÅ•ÀÖπÂ”ƒà∞Åï∏ËÄâ=¡ï∏Å—°îÅçΩµ¡ÖÕÃàÅÙ∞(ÄÄÄÅç—Ö%π—ï…Öç—•ΩπÂïâ…Ω‹ËÅÏÅ°‘ËÄâ/•—ÕÈï∑•±ÂïÃÅë•πÖµ•≠Ñà∞Åï∏ËÄâ=πîµΩ∏µΩπîÅëÂπÖµ•çÃàÅÙ∞(ÄÄÄÅç—Ö%π—ï…Öç—•ΩπQ•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ!ΩùÂÖ∏Å∑≈ØŸëª•—ï¨ÅïùÁÒ—–¸à∞(ÄÄÄÄÄÅï∏ËÄâ!Ω‹Å›Ω’±êÅÂΩ‘Å›Ω…¨Å—Ωùï—°ï»¸à∞(ÄÄÄÅÙ∞(ÄÄÄÅç—Ö%π—ï…Öç—•Ωπ	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ[Ö±ÖÕÕËÅïù‰Å∑ÖÕ•¨Å¡…Ωô•±–∞É•ÃÅª•ÈêÅµïú∞Å°Ω∞Å∑≈ØŸëª•—ï¨ÅØŸππÂï∏ÅïùÁÒ—–∞Å°Ω∞ÅÖ±Ö≠’±°Ö—πÑÅ≠§ÅœÈ…≥ÕìÖÃ∞É•ÃÅµ§ÅÕïüµ—°ï–ÅïÈï≠âï∏ÅÑÅ°ï±ÂÈï—ï≠âï∏∏à∞(ÄÄÄÄÄÅï∏ËÄâA•ç¨ÅÖπΩ—°ï»Å¡…Ωô•±îÅÖπêÅ›îù±∞Å±ΩΩ¨ÅÖ–Å›°ï…îÅÂΩ‘ùêÅç±•ç¨∞Å›°ï…îÅÂΩ‘ùêÅù…Ö—îÉäPÅÖπêÅ›°Ö–Å°ï±¡ÃÅôÖÕ—ïÕ–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅç—Ö%π—ï…Öç—•Ωπ	’——Ω∏ËÅÏÅ°‘ËÄâ•πÖµ•≠ÑÅµïùª•Î•Õîà∞Åï∏ËÄâMïîÅ—°îÅëÂπÖµ•çÃàÅÙ∞(ÄÄÄÅçç%π—…ΩQ•—±îËÅÏÅ°‘ËÄâ5ï……îÅ—Ω€Öâà¸Å;•ÈÎÒ¨ÅµïúÅïùÁÒ—–∏à∞Åï∏ËÄâ]°ï…îÅπï·–¸Å1ï–ùÃÅ±ΩΩ¨ÅÖ–Å•–Å—Ωùï—°ï»∏àÅÙ∞(ÄÄÄÅçç%π—…Ω1ïÖêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩêÉ•ÃÅª•£Öπ‰ÅÀŸŸ•êÅØ•…ì•ÃÅÖ±Ö¡´Ö∏ÅÑÅ…ïπëÕÈï»ÅµïùâïçœÒ±§∞Åµï±‰ÅÕÈÖ≠µÖ§Å•ÀÖπÂΩ¨Å•±±ïÕÈ≠ïë°ï—πï¨ÅÑÅ—ï…∑•ÕÈï—ïÃÅ∑≈ØŸì•Õïë°ïË∏ÅËÅπï¥Å´ÕÕ±Ö–É•ÃÅπï¥Åµ•ªEœµ”•Ã∞Å°Öπï¥Å≠••πë’≥Õ¡Ωπ–ÅÑÅùΩπëΩ±≠ΩìÖÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâUÕ•πúÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±îÅÖπêÅÑÅôï‹ÅÕ°Ω…–Å≈’ïÕ—•ΩπÃ∞Å—°îÅÕÂÕ—ï¥ÅÖ——ïµ¡—ÃÅ—ºÅµÖ¿Å›°•ç†ÅçÖ…ïï»Åë•…ïç—•ΩπÃÅÖ±•ù∏Å›•—†Å°Ω‹ÅÂΩ‘ÅπÖ—’…Ö±±‰ÅΩ¡ï…Ö—î∏Å9Ω–ÅÑÅ¡…ïë•ç—•Ω∏ÅÖπêÅπΩ–ÅÑÅŸï…ë•ç–ÉäPÅÑÅÕ—Ö…—•πúÅ¡Ω•π–ÅôΩ»Å—°•π≠•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…Ω!Ω›1Öâï∞ËÅÏÅ°‘ËÄâ!ΩùÂÖ∏ÉÖ±∞ÉŸÕÕÈîà∞Åï∏ËÄâ!Ω‹Å•–ÅçΩµïÃÅ—Ωùï—°ï»àÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿≈Q•—±îËÅÏÅ°‘ËÄâÅ¡…Ωô•±Ωêà∞Åï∏ËÄâeΩ’»Å¡…Ωô•±îàÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿≈	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ≠•”Ÿ±”Ÿ—–ÅØ•…ìGµŸãE∞ÅÕÎÖ…µÖÎÃÅÕÈï∑•±Â•œ•ùë•µïπÈßÕ¨É•ÃÅÖ±ÕØÖ≥Ö¨ÉäPÅïËÅÖËÅÖ±Ö¿∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ¡ï…ÕΩπÖ±•—‰Åë•µïπÕ•ΩπÃÅÖπêÅôÖçï—ÃÅô…Ω¥Å—°îÅ≈’ïÕ—•ΩππÖ•…îÅÂΩ‘ÅçΩµ¡±ï—ïêÉäPÅ—°Ö–ùÃÅ—°îÅâÖÕî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿…Q•—±îËÅÏÅ°‘ËÄâÅ€Ö±ÖÕÈÖ•êà∞Åï∏ËÄâeΩ’»ÅÖπÕ›ï…ÃàÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿…	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ[•ùÈï——œ•ú∞É•…ëï≠≥Eì•Ã∞Åµ’π≠ÖØŸ…πÂïÈï–É•ÃÅŸïÈï”E§Åè•±Ω¨ÉäPÅª•£Öπ‰Å≠Ö——•π”ÖÕÕÖ∞ÅµïùÖë°Ö—ΩêÉE≠ï–∏à∞(ÄÄÄÄÄÅï∏ËÄâë’çÖ—•Ω∏∞Å•π—ï…ïÕ—Ã∞Å›Ω…¨ÅïπŸ•…Ωπµïπ–∞Å±ïÖëï…Õ°•¿ÅÖµâ•—•Ω∏ÉäPÅÑÅôï‹Åç±•ç≠Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿ÕQ•—±îËÅÏÅ°‘ËÄâËÅ•ÀÖπÂΩ¨à∞Åï∏ËÄâQ°îÅë•…ïç—•ΩπÃàÅÙ∞(ÄÄÄÅçç%π—…ΩM—ï¿Õ	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâMÈï…ï¡ïπØ•π—§Å•±±ïÕÈ≠ïì•Ã∞ÅµïùãµÈ°Ö”ÕœÖù§ÅœÖŸŸÖ∞∞Å•πëΩ≠≥ÖÕÕÖ∞É•ÃÅôï©≥Eì•Õ§Å—ï…ŸŸï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâIΩ±îµ±ïŸï∞Åô•–Å›•—†ÅÑÅçΩπô•ëïπçîÅâÖπê∞Å…ïÖÕΩπ•πúÅÖπêÅÑÅëïŸï±Ω¡µïπ–Å¡±Ö∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩÖŸïÖ—Q•—±îËÅÏÅ°‘ËÄâËÅπï¥ÅØEâîÅ€•Õï—–à∞Åï∏ËÄâQ°•ÃÅ•Õ∏ù–ÅÕï–Å•∏ÅÕ—ΩπîàÅÙ∞(ÄÄÄÅçç%π—…ΩÖŸïÖ–ƒËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ	ïçÕ≥•Ã∞Åπï¥Éµ”•±ï–ÉäPÅÖËÅ•±±ïÕÈ≠ïì•ÃÅ•ÀÖπÂ–Åµ’—Ö–∞Åπï¥ÅÖËÅÖ±≠Ö±µÖÕœÖùΩëÖ–ÅŸÖù‰ÅÑÅ—ï°ï—œ•ùïêÅôï±œDÅ°Ö”ÖÀÖ–Å∑•…§∏à∞(ÄÄÄÄÄÅï∏ËÄâ∏ÅïÕ—•µÖ—î∞ÅπΩ–ÅÑÅŸï…ë•ç–ÉäPÅô•–Å¡Ω•π—ÃÅ•∏ÅÑÅë•…ïç—•Ω∏ÏÅ•–ÅëΩïÕ∏ù–ÅµïÖÕ’…îÅÕ’•—Öâ•±•—‰ÅΩ»ÅÑÅ—Ö±ïπ–Åçï•±•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩÖŸïÖ–»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅÖ±ÖçÕΩπ‰Å•±±ïÕÈ≠ïì•ÃÅπï¥Å—•±Ö±Ω¥ËÅÖÈ–Å©ï±È§∞Å°Ω∞Å≠ï±∞ÅµÖ©êÅ”ŸâàÅ—’ëÖ—ΩÃÅïπï…ù•Ñ∏à∞(ÄÄÄÄÄÅï∏ËÄâÅ±Ω‹Åô•–Å•Õ∏ù–ÅÑÅâÖ∏ËÅ•–Åô±ÖùÃÅ›°ï…îÅÂΩ‘ù±∞ÅπïïêÅµΩ…îÅëï±•âï…Ö—îÅïπï…ù‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩÖŸïÖ–ÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÈï∑•±Â•œ•úÅçÕÖ¨Åïù‰Å”•πÂïÎDÉäPÅÑÅ—Ö¡ÖÕÈ—Ö±Ö–∞ÅÑÅØ•ÕÈœ•ùï¨∞ÅÑÅØŸÀÒ±∑•πÂï¨É•ÃÅÑÅµΩ—•€ÖçßÃÅ±ïùÖ≥ÖâàÅÖππÂ•–ÅÕÎÖ∑µ—ÖπÖ¨∞ÅïÈï≠ï–ÅÑÅ…ïπëÕÈï»Åπï¥Å≥Ö—©Ñ∏à∞(ÄÄÄÄÄÅï∏ËÄâAï…ÕΩπÖ±•—‰Å•ÃÅΩπ±‰ÅΩπîÅôÖç—Ω»ÉäPÅï·¡ï…•ïπçî∞ÅÕ≠•±±Ã∞Åç•…ç’µÕ—ÖπçïÃÅÖπêÅµΩ—•ŸÖ—•Ω∏ÅµÖ——ï»ÅÖ–Å±ïÖÕ–ÅÖÃÅµ’ç†∞ÅÖπêÅ—°îÅÕÂÕ—ï¥ÅçÖ∏ù–ÅÕïîÅ—°ΩÕî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩÖŸïÖ––ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ€Ö±ÖÕÈÖ•ëÖ–ÅãÖ…µ•≠Ω»Å∑ÕëΩœµ—°Ö—Ωê∞ÅÑÅØ•¡ï–ÅØÒ±œDÅŸ•ÕÕÈÖ©ï±Î•ÕÕï∞Å¡Ωπ—Ωœµ—°Ö—Ωê∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ‘ÅçÖ∏Åç°ÖπùîÅÂΩ’»ÅÖπÕ›ï…ÃÅÖ–ÅÖπ‰Å—•µîÅÖπêÅÕ°Ö…¡ï∏Å—°îÅ¡•ç—’…îÅ›•—†ÅΩ’—Õ•ëîÅôïïëâÖç¨∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩI•ÖÕïåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÈ’”Ö∏Å±ï°ï”Eœ•ùïêÅŸÖ∏Å≠•”Ÿ±—ïπ§Åïù‰ÅÌçΩ’π—ÙÅØ•…ì•ÕïÃÉ•…ëï≠≥Eì•Õ§Å—ïÕÈ—ï–Ä°!Ω±±ÖπêµØÕê§∏É5ù‰ÅâïçÕ≥•ÃÅ°ï±Âï—–Å∑•…–É•…ëï≠≥Eì•Õ§Å¡…Ωô•∞ÅÖ±Ö¡´Ö∏ÅØ•ÕÎÒ∞ÅÑÅ…ÖπùÕΩ»∏ÅËÅ¡Ωπ—ΩÕÖâàÅÕΩ……ïπëï–ÅÖê∞Åµ•ØŸÈâï∏ÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩêÅ€Ö±—ΩÈÖ—±Ö∏ÅµÖ…Öê∏à∞(ÄÄÄÄÄÅï∏ËÄâô—ï…›Ö…ëÃÅÂΩ‘ÅçÖ∏ÅΩ¡—•ΩπÖ±±‰Å—Ö≠îÅÑÅÌçΩ’π—Ùµ≈’ïÕ—•Ω∏Å•π—ï…ïÕ–Å•πŸïπ—Ω…‰Ä°!Ω±±ÖπêÅçΩëî§ËÅÑÅµïÖÕ’…ïêÅ•π—ï…ïÕ–Å—°ï∏Åë…•ŸïÃÅ—°îÅ…Öπ≠•πúÅ•πÕ—ïÖêÅΩòÅÖ∏ÅïÕ—•µÖ—îÉäPÅÕ°Ö…¡ï»ÅΩ…ëï…•πú∞ÅÕÖµîÅ¡…Ωô•±î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…ΩI•ÖÕïçΩπîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÉ•…ëï≠≥Eì•Õ§Å—ïÕÈ—ï–Ä°!Ω±±ÖπêµØÕê§Å∑Ö»Å≠•”Ÿ±”Ÿ——ïêÉäPÅÑÅ∑•…–É•…ëï≠≥Eì•Õ§ÅØÕëΩêÅÖ±Ö¡´Ö∏Å…ïπëïÈÎÒ¨ÅÖËÅ•ÀÖπÂΩ≠Ö–∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ‘ùŸîÅÖ±…ïÖë‰Å—Ö≠ï∏Å—°îÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰Ä°!Ω±±ÖπêÅçΩëî§ÉäPÅÂΩ’»ÅµïÖÕ’…ïêÅçΩëîÅë…•ŸïÃÅ—°îÅ…Öπ≠•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç%π—…Ω5ï—ÖE’ïÕ—•ΩπÃËÅÏÅ°‘ËÄâÌçΩ’π—ÙÅÀŸŸ•êÅØ•…ì•Ãà∞Åï∏ËÄâÌçΩ’π—ÙÅÕ°Ω…–Å≈’ïÕ—•ΩπÃàÅÙ∞(ÄÄÄÅçç%π—…Ω5ï—ÖQ•µîËÅÏÅ°‘ËÄâØŸÀÒ±âï≥Ò∞Ä»Å¡ï…åà∞Åï∏ËÄâÖâΩ’–Ä»Åµ•π’—ïÃàÅÙ∞(ÄÄÄÅçç%π—…Ω5ï—ÖMÖŸïêËÅÏÅ°‘ËÄâÑÅ€Ö±ÖÕÈÖ•êÅµïπ”Eëπï¨à∞Åï∏ËÄâÂΩ’»ÅÖπÕ›ï…ÃÅÖ…îÅÕÖŸïêàÅÙ∞(ÄÄÄÅçç%π—…Ω5ï—Ö9Ω]…ΩπúËÅÏÅ°‘ËÄâπ•πçÃÅ´ÃÅŸÖù‰Å…ΩÕÕËÅ€Ö±ÖÕËà∞Åï∏ËÄâπºÅ…•ù°–ÅΩ»Å›…ΩπúÅÖπÕ›ï…ÃàÅÙ∞(ÄÄÄÅççM—ï¡M—Ö—’ÃËÅÏÅ°‘ËÄâ5§Å©ï±±ïµïËÅµΩÕ–Å±ïù•πØÖâà¸à∞Åï∏ËÄâ]°Ö–ÅëïÕç…•âïÃÅÂΩ‘ÅâïÕ–Å…•ù°–ÅπΩ‹¸àÅÙ∞(ÄÄÄÅççM—Ö—’ÕM—’ëÂ•πúËÅÏÅ°‘ËÄâQÖπ’±Ω¨à∞Åï∏ËÄâ$ù¥ÅÕ—’ëÂ•πúàÅÙ∞(ÄÄÄÅççM—Ö—’Õ]Ω…≠•πúËÅÏÅ°‘ËÄâΩ±ùΩÈΩ¥à∞Åï∏ËÄâ$ù¥Å›Ω…≠•πúàÅÙ∞(ÄÄÄÅççM—Ö—’ÕM›•—ç°•πúËÅÏÅ°‘ËÄâ[Ö±”ÖÕΩ∏ÅùΩπëΩ±≠ΩëΩ¥à∞Åï∏ËÄâΩπÕ•ëï…•πúÅÑÅç°ÖπùîàÅÙ∞(ÄÄÄÅççM—ï¡ë‘ËÅÏÅ°‘ËÄâ5§ÅÑÅ±ïùµÖùÖÕÖâàÅ€•ùÈï——œ•ùïêÉ•ÃÅ—ïÀÒ±ï—î¸à∞Åï∏ËÄâeΩ’»Å°•ù°ïÕ–Åïë’çÖ—•Ω∏ÅÖπêÅ•—ÃÅô•ï±ê¸àÅÙ∞(ÄÄÄÅççë’A…•µÖ…‰ËÅÏÅ°‘ËÄã±—Ö≥ÖπΩÃÅ•Õ≠Ω±Ñà∞Åï∏ËÄâA…•µÖ…‰àÅÙ∞(ÄÄÄÅççë’MïçΩπëÖ…‰ËÅÏÅ°‘ËÄã%…ï——œ•ù§à∞Åï∏ËÄâMïçΩπëÖ…‰àÅÙ∞(ÄÄÄÅççë’YΩçÖ—•ΩπÖ∞ËÅÏÅ°‘ËÄâMÈÖ≠µÑÄºÅ—ïç°π•≠’Ãà∞Åï∏ËÄâYΩçÖ—•ΩπÖ∞àÅÙ∞(ÄÄÄÅççë’!•ù°ï»ËÅÏÅ°‘ËÄâï±œEôΩØËà∞Åï∏ËÄâ!•ù°ï»Åïë’çÖ—•Ω∏àÅÙ∞(ÄÄÄÅççë’M¡ïç•Ö±•ÈïêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâMÈÖ≠Ÿ•ÈÕùÑÄºÅ≠ÖµÖ…Ö§Å—ÖùœÖúà∞(ÄÄÄÄÄÅï∏ËÄâ1•çïπçîÄºÅç°Öµâï»Åµïµâï…Õ°•¿à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç•ï±ë1Öâï∞ËÅÏÅ°‘ËÄâQïÀÒ±ï–à∞Åï∏ËÄâ•ï±êàÅÙ∞(ÄÄÄÅçç•ï±ëQïç†ËÅÏÅ°‘ËÄâ7≈ÕÈÖ≠§ÄºÅ%Pà∞Åï∏ËÄâQïç†ÄºÅ%PàÅÙ∞(ÄÄÄÅçç•ï±ëçΩπΩµ•çÃËÅÏÅ°‘ËÄâÖÈëÖœÖù§à∞Åï∏ËÄâçΩπΩµ•çÃÄºÅâ’Õ•πïÕÃàÅÙ∞(ÄÄÄÅçç•ï±ë!ïÖ±—†ËÅÏÅ°‘ËÄâü•ÕÈœ•üÒùÂ§à∞Åï∏ËÄâ!ïÖ±—†àÅÙ∞(ÄÄÄÅçç•ï±ë!’µÖπ•—•ïÃËÅÏÅ°‘ËÄâŸ±çœ•ÕËÄºÅ”Ö…ÕÖëÖ±Ωµ—’ëΩ∑Öπ‰à∞Åï∏ËÄâ!’µÖπ•—•ïÃÄºÅÕΩç•Ö∞ÅÕç•ïπçïÃàÅÙ∞(ÄÄÄÅçç•ï±ëMç•ïπçîËÅÏÅ°‘ËÄâQï…∑•ÕÈï——’ëΩ∑Öπ‰à∞Åï∏ËÄâ9Ö—’…Ö∞ÅÕç•ïπçïÃàÅÙ∞(ÄÄÄÅçç•ï±ë1ïùÖ∞ËÅÏÅ°‘ËÄâ)Ωù§à∞Åï∏ËÄâ1ïùÖ∞àÅÙ∞(ÄÄÄÅçç•ï±ë…—ÃËÅÏÅ°‘ËÄâ7≈€•ÕÈï—§à∞Åï∏ËÄâ…—ÃàÅÙ∞(ÄÄÄÅçç•ï±ëAïëÖùΩù‰ËÅÏÅ°‘ËÄâAïëÖüÕù•Ö§à∞Åï∏ËÄâAïëÖùΩù‰àÅÙ∞(ÄÄÄÅçç•ï±ëQ…ÖëîËÅÏÅ°‘ËÄâMÈÖ≠µ’π≠ÑÄºÅ•¡Ö…§à∞Åï∏ËÄâQ…ÖëîÄºÅ•πë’Õ—…•Ö∞àÅÙ∞(ÄÄÄÅçç•ï±ë9ΩπîËÅÏÅ°‘ËÄâùÁ•àÄºÅπ•πçÃà∞Åï∏ËÄâ=—°ï»ÄºÅπΩπîàÅÙ∞(ÄÄÄÅççM—ï¡ùîËÅÏÅ°‘ËÄâ5ï±Â•¨Å≠Ω…ΩÕÈ”Ö±ÂâÑÅ—Ö…—ΩÈΩ∞¸Ä°Ω¡ç•ΩªÖ±•Ã§à∞Åï∏ËÄâeΩ’»ÅÖùîÅâÖπê¸Ä°Ω¡—•ΩπÖ∞§àÅÙ∞(ÄÄÄÅççùïM≠•¿ËÅÏÅ°‘ËÄâ%πØÖâàÅ≠•°ÖùÂΩ¥à∞Åï∏ËÄâM≠•¿àÅÙ∞(ÄÄÄÅççM—ï¡’……ïπ–ËÅÏÅ°‘ËÄâ5ï±Â•¨Å—ïÀÒ±ï—ï∏ÅëΩ±ùΩÈΩ∞ÅµΩÕ–¸à∞Åï∏ËÄâ]°•ç†Åô•ï±êÅëºÅÂΩ‘Å›Ω…¨Å•∏ÅπΩ‹¸àÅÙ∞(ÄÄÄÅçç’……ïπ—9ΩπîËÅÏÅ°‘ËÄâùÂ•¨ÅÕï¥ÄºÅïùÁ•àà∞Åï∏ËÄâ9ΩπîÅΩòÅ—°ïÕîÄºÅΩ—°ï»àÅÙ∞(ÄÄÄÅççM—ï¡%π—ï…ïÕ—ÃËÅÏÅ°‘ËÄâ5§É•…ëï≠ï∞¸Å[Ö±ÖÕÕËÅ±ïùôï±©ïâàÅ£Ö…µÖ–∏à∞Åï∏ËÄâ]°Ö–Å•π—ï…ïÕ—ÃÅÂΩ‘¸ÅA•ç¨Å’¿Å—ºÅ—°…ïî∏àÅÙ∞(ÄÄÄÅçç%π—ï…ïÕ—Õ=¡ï∏ËÅÏÅ°‘ËÄâ9Â•—Ω—–ÅŸÖùÂΩ¨ÅãÖ…µ•…îà∞Åï∏ËÄâ$ù¥ÅΩ¡ï∏Å—ºÅÖπÂ—°•πúàÅÙ∞(ÄÄÄÅççM—ï¡Yï—ºËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5•Ÿï∞Å94ÅÕÈï…ï—ª•∞ÅôΩù±Ö±≠ΩÈπ§¸Ä°≠•°ÖùÂ°Ö”Ã§à∞(ÄÄÄÄÄÅï∏ËÄâ]°Ö–Å›Ω’±êÅÂΩ‘Å9=PÅ›Öπ–Å—ºÅëº¸Ä°Ω¡—•ΩπÖ∞§à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°ÂYï—ºËÅÏ(ÄÄÄÄÄÅ°‘ËÄâµ•–Å•—–Åâï©ï≥Ÿ±ÕË∞ÅÖÈ–Åâ•È—ΩÕÖ∏Åπï¥ÅÖ´Öπ±©’¨ÉäPÅÖËÅ•±Âï∏ÅÕÈï…ï¡ï¨Å—ï±©ïÕï∏Å≠•µÖ…ÖëπÖ¨ÅÑÅ±•Õ”ÖãÕ∞∏Å1ïùôï±©ïâàÄ‘∑Ÿ–Å©ï≥Ÿ±®∞Å°Ωù‰ÅµÖ…Öë©Ω∏ÅµΩÈüÖÕ”•»∏à∞(ÄÄÄÄÄÅï∏ËÄâπÂ—°•πúÅÂΩ‘ÅµÖ…¨Å°ï…îÅ•ÃÅÑÅ°Ö…êÅπºÉäPÅÕ’ç†Å…Ω±ïÃÅÖ…îÅ…ïµΩŸïêÅô…Ω¥Å—°îÅ±•Õ–Åïπ—•…ï±‰∏ÅA•ç¨ÅÖ–ÅµΩÕ–Ä‘ÅÕºÅ—°ï…îùÃÅÕ—•±∞Å…ΩΩ¥Å—ºÅï·¡±Ω…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççYï—Ω°•±ë…ï∏ËÅÏÅ°‘ËÄâÂï…ï≠ï≠≠ï∞ÅôΩù±Ö±≠ΩÎÖÃà∞Åï∏ËÄâ]Ω…≠•πúÅ›•—†Åç°•±ë…ï∏àÅÙ∞(ÄÄÄÅççYï—ΩÖ…îËÅÏÅ°‘ËÄâ	ï—ïùï¨∞Å•ìEÕï¨ÅùΩπëΩÎÖÕÑà∞Åï∏ËÄâÖ…•πúÅôΩ»Å¡Ö—•ïπ—ÃÅΩ»Å—°îÅï±ëï…±‰àÅÙ∞(ÄÄÄÅççYï—Ω	±ΩΩêËÅÏÅ°‘ËÄâ[•»∞Åôï…”EÎ•ÕŸïÕÎ•±‰à∞Åï∏ËÄâ	±ΩΩêÅΩ»Å•πôïç—•Ω∏Åï·¡ΩÕ’…îàÅÙ∞(ÄÄÄÅççYï—Ω’Õ—Ωµï…ÃËÅÏÅ°‘ËÄâMΩ¨ÉÒùÂõ•∞∞Å•ëïùï∏Åïµâï…ï¨à∞Åï∏ËÄâΩπÕ—Öπ–Åç’Õ—Ωµï»ÅçΩπ—Öç–àÅÙ∞(ÄÄÄÅççYï—ΩMÖ±ïÃËÅÏÅ°‘ËÄã%…”•≠ïœµ”•Õ§ÅπÂΩ∑ÖÃà∞Åï∏ËÄâMÖ±ïÃÅ¡…ïÕÕ’…îàÅÙ∞(ÄÄÄÅççYï—ΩΩπô±•ç–ËÅÏÅ°‘ËÄâ-Ωπô±•≠—’ÕΩÃÅ°ï±ÂÈï—ï¨à∞Åï∏ËÄâΩπô±•ç–µ°ïÖŸ‰ÅÕ•—’Ö—•ΩπÃàÅÙ∞(ÄÄÄÅççYï—ΩM°•ô–ËÅÏÅ°‘ËÄã%©ÕÈÖ≠Ñ∞ÅÕÈÖãÖ±Â—Ö±Ö∏Åµ’π≠Ö…ïπêà∞Åï∏ËÄâ9•ù°—ÃÅΩ»Å•……ïù’±Ö»Å°Ω’…ÃàÅÙ∞(ÄÄÄÅççYï—ΩA°ÂÕ•çÖ∞ËÅÏÅ°‘ËÄâ9ï£•ËÅô•È•≠Ö§Åµ’π≠Ñà∞Åï∏ËÄâ!ïÖŸ‰Å¡°ÂÕ•çÖ∞Å›Ω…¨àÅÙ∞(ÄÄÄÅççYï—Ω=’—ëΩΩ»ËÅÏÅ°‘ËÄâ/Ò±”•…§Åµ’π≠ÑÅµ•πëï∏Å•ìEâï∏à∞Åï∏ËÄâ=’—ëΩΩ»Å›Ω…¨Å•∏ÅÖ±∞Å›ïÖ—°ï»àÅÙ∞(ÄÄÄÅççYï—ΩMç…ïï∏ËÅÏÅ°‘ËÄâü•ÕËÅπÖ¡ΩÃÅØ•¡ï…πÁEÃÉÒ≥Eµ’π≠Ñà∞Åï∏ËÄâ±∞µëÖ‰ÅÕç…ïï∏µâΩ’πêÅëïÕ¨Å›Ω…¨àÅÙ∞(ÄÄÄÅççYï—Ω…•Ÿ•πúËÅÏÅ°‘ËÄâYïÈï”•Ã∞ÉÈ—Ω∏Å±ï€•Ãà∞Åï∏ËÄâ…•Ÿ•πúÅΩ»Åâï•πúÅΩ∏Å—°îÅ…ΩÖêàÅÙ∞(ÄÄÄÅççYï—Ω!ï•ù°—ÃËÅÏÅ°‘ËÄâ5ÖùÖÕâÖ∏Å€•ùÈï—–Åµ’π≠Ñà∞Åï∏ËÄâ]Ω…≠•πúÅÖ–Å°ï•ù°—ÃàÅÙ∞(ÄÄÄÅççYï—Ω!ÖÈÖ…êËÅÏÅ°‘ËÄâYïÕÎ•±ÂïÃÅÖπÂÖùΩ¨∞Åü•¡ï¨à∞Åï∏ËÄâ!ÖÈÖ…ëΩ’ÃÅµÖ—ï…•Ö±ÃÅΩ»ÅµÖç°•πï…‰àÅÙ∞(ÄÄÄÅççYï—Ω5ΩπΩ—Ωπ‰ËÅÏÅ°‘ËÄâ5ΩπΩ—Ω∏∞Å•Õ∑•—≥EìDÅôï±ÖëÖ—Ω¨à∞Åï∏ËÄâ5ΩπΩ—ΩπΩ’Ã∞Å…ï¡ï—•—•ŸîÅ—ÖÕ≠ÃàÅÙ∞(ÄÄÄÅççYï—Ωπ•µÖ±ÃËÅÏÅ°‘ËÄã±±Ö—Ω≠≠Ö∞ÅôΩù±Ö±≠ΩÎÖÃà∞Åï∏ËÄâ]Ω…≠•πúÅ›•—†ÅÖπ•µÖ±ÃàÅÙ∞(ÄÄÄÅççYï—ΩΩ’π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÌçΩ’π—Ùº‘Å≠•ÎÖÀÖÃÅâï©ï≥Ÿ±ŸîÉäPÉÒ…ïÕï∏Å•ÃÅ—Ω€Öââ≥•¡°ï—ÕË∏à∞(ÄÄÄÄÄÅï∏ËÄâÌçΩ’π—Ùº‘Åï·ç±’Õ•ΩπÃÅÕï±ïç—ïêÉäPÅÂΩ‘ÅçÖ∏ÅÖ±ÕºÅçΩπ—•π’îÅ›•—†ÅπΩπî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçôYï—Ωç—•ŸîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ-•ÎÖ…—ÖêËÅÌ±•Õ—ÙÉäPÅïµ•Ö—–ÅÌçΩ’π—ÙÅÕÈï…ï¿Åπï¥Å©ï±ïπ•¨Åµïú∏ÅÅ≠•ÎÖÀÖÕΩ≠Ö–ÅÑÅ[Ö±ÖÕÈΩ¨Å∑ÕëΩœµ”ÖÕÑÅÖ±Ö—–Å—’ëΩêÅ€Ö±—ΩÈ—Ö—π§∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ‘Åï·ç±’ëïêËÅÌ±•Õ—ÙÉäPÅÌçΩ’π—ÙÅ…Ω±ïÃÅÖ…îÅ°•ëëï∏ÅâïçÖ’ÕîÅΩòÅ—°•Ã∏Å°ÖπùîÅÂΩ’»Åï·ç±’Õ•ΩπÃÅ’πëï»Åë•–ÅÖπÕ›ï…Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççM—ï¡I•ÖÕïåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ-•”Ÿ±”ŸêÅÖËÉ•…ëï≠≥Eì•Õ§ÅØ•…ìGµŸï–¸à∞(ÄÄÄÄÄÅï∏ËÄâ]Öπ–Å—ºÅ—Ö≠îÅ—°îÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰¸à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°ÂI•ÖÕïåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅ…ïπëïÈ§ÉÖ–ÅÑÅ±•Õ”Ö–ËÅ≠•”Ÿ±”•ÃÅ’”Ö∏Åï±œEÕΩ…âÖ∏ÅÑÅ∑•…–É•…ëï≠≥Eì•ÕïêÅÖ±Ö¡´Ö∏Å€Ö±ΩùÖ—©’¨ÅÑÅÕÈÖ≠∑Ö≠Ö–∞ÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩêÅ¡ïë•úÅÑÅÕΩ……ïπëï–Åô•πΩ∑µ—©Ñ∏Å!ÑÅ≠•°ÖùÂΩê∞ÅÑÅÕÈï∑•±Â•œ•ùïëãE∞ÅâïçœÒ±´Ò¨ÅÖËÉ•…ëï≠≥Eì•Õïëï–∞ÅÖµ§ÅùÂïπü•âàÅ©ï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅ…ïÕ°Ö¡ïÃÅ—°îÅ±•Õ–ËÅΩπçîÅçΩµ¡±ï—ïê∞ÅÂΩ’»Å%9QIMQLÅÕï±ïç–Å—°îÅΩçç’¡Ö—•ΩπÃÅÖπêÅ¡ï…ÕΩπÖ±•—‰ÅΩπ±‰ÅÕï—ÃÅ—°îÅΩ…ëï»∏Å%òÅÂΩ‘ÅÕ≠•¿Å•–∞Å›îÅïÕ—•µÖ—îÅ•π—ï…ïÕ—ÃÅô…Ω¥Å¡ï…ÕΩπÖ±•—‰ÉäPÅÑÅ›ïÖ≠ï»ÅÕ•ùπÖ∞∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïçM—Ö…–ËÅÏÅ°‘ËÄâ-•”Ÿ±”Ÿ¥ÅµΩÕ–à∞Åï∏ËÄâQÖ≠îÅ•–ÅπΩ‹àÅÙ∞(ÄÄÄÅççI•ÖÕïçM—Ö…—M’àËÅÏÅ°‘ËÄâÌçΩ’π—ÙÅÀŸŸ•êÅØ•…ì•Ã∞ÅØŸÀÒ±âï≥Ò∞ÄÃÅ¡ï…åà∞Åï∏ËÄâÌçΩ’π—ÙÅ≈’•ç¨Å•—ïµÃ∞ÅÖâΩ’–ÄÃÅµ•π’—ïÃàÅÙ∞(ÄÄÄÅççI•ÖÕïçM≠•¿ËÅÏÅ°‘ËÄâ5ΩÕ–Å≠•°ÖùÂΩ¥à∞Åï∏ËÄâM≠•¿ÅôΩ»ÅπΩ‹àÅÙ∞(ÄÄÄÅççI•ÖÕïçM≠•¡M’àËÅÏÅ°‘ËÄâËÅï…ïë∑•πÂª•∞ÅãÖ…µ•≠Ω»Å√Õ—Ω±°Ö—Ωêà∞Åï∏ËÄâeΩ‘ÅçÖ∏ÅÖëêÅ•–Å±Ö—ï»Åô…Ω¥Å—°îÅ…ïÕ’±—ÃàÅÙ∞(ÄÄÄÅççM—ï¡A…ïôÃËÅÏÅ°‘ËÄâ5§ÅôΩπ—ΩÃÅπï≠ïêÅÑÅµ’πØÖâÖ∏¸à∞Åï∏ËÄâ]°Ö–ÅµÖ——ï…ÃÅ—ºÅÂΩ‘ÅÖ–Å›Ω…¨¸àÅÙ∞(ÄÄÄÅçç	Öç¨ËÅÏÅ°‘ËÄâY•ÕÕÈÑà∞Åï∏ËÄâ	Öç¨àÅÙ∞(ÄÄÄÅçç9ï·–ËÅÏÅ°‘ËÄâQΩ€Öâàà∞Åï∏ËÄâ9ï·–àÅÙ∞(ÄÄÄÅçç•π•Õ†ËÅÏÅ°‘ËÄâ5’—ÖÕêÅÖËÅï…ïë∑•πÂ–à∞Åï∏ËÄâM°Ω‹Åµ‰Å…ïÕ’±—ÃàÅÙ∞(ÄÄÄÅççIïÕ’±—Q•—±îËÅÏÅ°‘ËÄâÅ€Ö±ÖÕÈÖ•êÅÖ±Ö¡´Ö∏ÅïÈï¨Å•±±ïπï¨Å°ΩÈÎÖêà∞Åï∏ËÄâ	ÖÕïêÅΩ∏ÅÂΩ’»ÅÖπÕ›ï…Ã∞Å—°ïÕîÅô•–ÅÂΩ‘àÅÙ∞(ÄÄÄÅççIïÕ’±—’……ïπ–ËÅÏÅ°‘ËÄâÅµΩÕ—Öπ§Å—ïÀÒ±ï—ïëï∏à∞Åï∏ËÄâ%∏ÅÂΩ’»Åç’……ïπ–Åô•ï±êàÅÙ∞(ÄÄÄÅççë’	ΩΩÕ—	ÖëùîËÅÏÅ°‘ËÄâ€•ùÈï——œ•ùïë°ïËÅ•±±•¨à∞Åï∏ËÄâµÖ—ç°ïÃÅÂΩ’»Åïë’çÖ—•Ω∏àÅÙ∞(ÄÄÄÅççïŸï±Ω¡Q•—±îËÅÏÅ°‘ËÄâ!ÑÅïÈï≠≠ï∞ÅÖ≠Ö…ÕËÅôΩù±Ö±≠ΩÈπ§∞ÅïÈ–É•…ëïµïÃÅôï©±ïÕÈ—ïπ§Ëà∞Åï∏ËÄâ%òÅÂΩ‘Å›Öπ–Å—ºÅ¡’…Õ’îÅ—°ïÕî∞ÅôΩç’ÃÅΩ∏ÅëïŸï±Ω¡•πúËàÅÙ∞(ÄÄÄÅççë•—πÕ›ï…ÃËÅÏÅ°‘ËÄâ[Ö±ÖÕÈΩ¨Å∑ÕëΩœµ”ÖÕÑà∞Åï∏ËÄâë•–ÅÖπÕ›ï…ÃàÅÙ∞(ÄÄÄÅççMÖŸ•πúËÅÏÅ°‘ËÄâ5ïπ”•œäòà∞Åï∏ËÄâMÖŸ•πüäòàÅÙ∞(ÄÄÄÅççM—ï¡=òËÅÏÅ°‘ËÄâÌç’……ïπ—ÙΩÌ—Ω—Ö±Ù∏ÅØ•…ì•Ãà∞Åï∏ËÄâE’ïÕ—•Ω∏ÅÌç’……ïπ—ÙΩÌ—Ω—Ö±ÙàÅÙ∞(ÄÄÄÅçç]°ÂM—Ö—’ÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅìŸπ—§Åï∞∞Å°Ωù‰ÅÑÅµΩÕ—Öπ§Å—ïÀÒ±ï—ïë…îÅŸÖù‰ÉÈ®Å•ÀÖπÂΩ≠…ÑÅõÕ≠’ÕÎÖ±©’π¨∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅëïç•ëïÃÅ›°ï—°ï»Å›îÅôΩç’ÃÅΩ∏ÅÂΩ’»Åç’……ïπ–Åô•ï±êÅΩ»Åπï‹Åë•…ïç—•ΩπÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°Âë‘ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ€•ùÈï——œ•ùïêÅπï¥ÅÕÎ≈Øµ–ÅÕïµµ•–ÉäPÅçÕÖ¨Å©ï±ïÈÎÒ¨∞Å°Ω∞ÅÖ±ÖçÕΩπÂÖâàÅÑÅâï≥•√•Õ§ÅØÒÕÎŸà∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ’»Åïë’çÖ—•Ω∏ÅëΩïÕ∏ù–Å±•µ•–ÅÖπÂ—°•πúÉäPÅ›îÅΩπ±‰Åô±ÖúÅ›°ï…îÅ—°îÅïπ—…‰ÅâÖ……•ï»Å•ÃÅ±Ω›ï»∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°Âë’•ï±êËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÈÈï∞Å—’ë©’¨ÅµïùµΩπëÖπ§∞Å°Ω∞Å•±±•¨ÅÑÅMi-%K9e=Å•ÃÉäPÅπï¥ÅçÕÖ¨ÅÑÅÕÈ•π—ïê∏Å•¡±ΩµÑÉŸπµÖüÖâÖ∏Åπï¥ÅØ•¡ïœµ–Å∑ÖÕ•¨ÅÕÈÖ≠µÑÅùÂÖ≠Ω…≥ÖœÖ…Ñ∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅ±ï—ÃÅ’ÃÅÕÖ‰Å›°ï…îÅÂΩ’»Å%1Åô•—ÃÅ—ΩºÉäPÅπΩ–Å©’Õ–ÅÂΩ’»Å±ïŸï∞∏ÅÅëïù…ïîÅÖ±ΩπîÅëΩïÕ∏ù–Å≈’Ö±•ô‰ÅÂΩ‘ÅôΩ»ÅÖπΩ—°ï»Å¡…ΩôïÕÕ•Ω∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°ÂùîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÕÖ¨ÅÑÅ©ÖŸÖÕ±Ö—Ω¨Å°ÖπùΩ≥ÖœÖ°ΩËÅ°ÖÕÈªÖ±©’¨∞ÅÑÅ¡Ωπ—ÕÎÖµΩ≠Ö–Åπï¥ÅâïôΩ±ÁÖÕΩ±©Ñ∏à∞(ÄÄÄÄÄÅï∏ËÄâUÕïêÅΩπ±‰Å—ºÅô…ÖµîÅÕ’ùùïÕ—•ΩπÃÏÅ•–ÅëΩïÕ∏ù–ÅÖôôïç–ÅÖπ‰ÅÕçΩ…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°Â’……ïπ–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄã5ù‰ÅØÒ≥Ÿ∏Åµïùµ’—Ö—©’¨∞Åµ•±Âï∏Å•ÀÖπÂÖ•êÅŸÖππÖ¨ÅÑÅµΩÕ—Öπ§Å—ïÀÒ±ï—ïëï∏Åâï≥Ò∞Å•Ã∏à∞(ÄÄÄÄÄÅï∏ËÄâMºÅ›îÅçÖ∏ÅÖ±ÕºÅÕ°Ω‹ÅÂΩ’»ÅΩ¡—•ΩπÃÅ›•—°•∏ÅÂΩ’»Åç’……ïπ–Åô•ï±ê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°Â%π—ï…ïÕ—ÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâµ•–Åâï©ï≥Ÿ±ÕË∞ÅÖËÅMk¡K@ËÅçÕÖ¨ÅïÈï≠ÀE∞ÅÑÅ—ïÀÒ±ï—ï≠ÀE∞Åµ’—Ö—’π¨Å•ÀÖπÂΩ≠Ö–Ä°ÖËÅï…ïë∑•πÂª•∞Å≠•≠Ö¡çÕΩ±°Ö—Ωê§∏Éq…ïÕï∏Å°ÖùÂŸÑÅµ•πëï∏Å—ïÀÒ±ï—ÀE∞ÅÑÅ±ïù©ΩââÖ≠Ö–Å°ΩÈÈ’¨∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ’»Å¡•ç≠ÃÅÖç–ÅÖÃÅÑÅ%1QHËÅ›îÅΩπ±‰ÅÕ°Ω‹Åë•…ïç—•ΩπÃÅô…Ω¥Å—°ïÕîÅô•ï±ëÃÄ°ÂΩ‘ÅçÖ∏ÅÕ›•—ç†Å•–ÅΩôòÅÖ–Å—°îÅ…ïÕ’±—Ã§∏Å1ïÖŸîÅïµ¡—‰Å—ºÅÕïîÅ—°îÅâïÕ–Åô…Ω¥ÅïŸï…‰Åô•ï±ê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç]°ÂA…ïôÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅµΩ—•€ÖçßÕêÅπï¥ÅÑÅÕÈï∑•±Â•œ•ùïêÉäPÅïÈï¨ÅçÕÖ¨ÅÑÅÕΩ……ïπëï–ÉÖ…πÂÖ±´Ö¨∏à∞(ÄÄÄÄÄÅï∏ËÄâ5Ω—•ŸÖ—•Ω∏Å•Õ∏ù–Å¡ï…ÕΩπÖ±•—‰ÉäPÅ—°ïÕîÅΩπ±‰Å…ïô•πîÅ—°îÅΩ…ëï…•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççQΩ¡5Ö—ç†ËÅÏÅ°‘ËÄâÅ±ïùïÀEÕïâàÅ•ÀÖπÂΩêà∞Åï∏ËÄâeΩ’»ÅÕ—…ΩπùïÕ–Åë•…ïç—•Ω∏àÅÙ∞(ÄÄÄÅççM—ï¡πÿËÅÏÅ°‘ËÄâ5•±Âï∏ÅØŸÈïùâï∏ÅëΩ±ùΩÈªÖ∞ÅÕÎµŸïÕï∏¸à∞Åï∏ËÄâ]°Ö–Å≠•πêÅΩòÅïπŸ•…Ωπµïπ–ÅÕ’•—ÃÅÂΩ‘¸àÅÙ∞(ÄÄÄÅçç]°ÂπÿËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅµ’π≠ÖØŸ…πÂïÈï–Ä°—ïµ√Ã∞Å≠ï…ï—ï¨∞Å°ï±ÂÕÎµ∏§Å±ïùÖ≥ÖâàÅÖππÂ•–ÅÕÎÖ∑µ–ÅÑÅµ•πëïππÖ¡Ω≠âÖ∏∞Åµ•π–ÅÑÅôï±ÖëÖ–ÅµÖùÑ∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ›Ω…¨ÅïπŸ•…Ωπµïπ–Ä°¡Öçî∞ÅÕ—…’ç—’…î∞Å±ΩçÖ—•Ω∏§ÅµÖ——ï…ÃÅëÖ‰Å—ºÅëÖ‰ÅÖ–Å±ïÖÕ–ÅÖÃÅµ’ç†ÅÖÃÅ—°îÅ—ÖÕ¨Å•—Õï±ò∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççπŸAÖçï1Ω‹ËÅÏÅ°‘ËÄâ9Â’ùΩë–ÉÒ—ï¥à∞Åï∏ËÄâÖ±¥Å¡ÖçîàÅÙ∞(ÄÄÄÅççπŸAÖçï!•ù†ËÅÏÅ°‘ËÄâCŸ…üEÃ∞ÅπÂΩ∑ÖÃÅÖ±Ö—–Å•Ãà∞Åï∏ËÄâÖÕ–µ¡Öçïê∞ÅïŸï∏Å’πëï»Å¡…ïÕÕ’…îàÅÙ∞(ÄÄÄÅççπŸM—…’ç—’…ï1Ω‹ËÅÏÅ°‘ËÄâ1ÖÈÑÅ≠ï…ï—ï¨à∞Åï∏ËÄâ1ΩΩÕîÅÕ—…’ç—’…îàÅÙ∞(ÄÄÄÅççπŸM—…’ç—’…ï!•ù†ËÅÏÅ°‘ËÄâY•≥ÖùΩÃÅÕÈÖãÖ±ÂΩ¨∞Å…ïπêà∞Åï∏ËÄâ±ïÖ»Å…’±ïÃÅÖπêÅΩ…ëï»àÅÙ∞(ÄÄÄÅççπŸMï——•πù1Ω‹ËÅÏÅ°‘ËÄâ%…ΩëÑÄºÅØ•¡ï…πÁDà∞Åï∏ËÄâ=ôô•çîÄºÅÕç…ïï∏àÅÙ∞(ÄÄÄÅççπŸMï——•πù!•ù†ËÅÏÅ°‘ËÄâQï…ï¿∞ÅµΩÈüÖÃ∞Åïµâï…ï¨ÅØŸÈ–à∞Åï∏ËÄâ%∏Å—°îÅô•ï±ê∞ÅΩ∏Å—°îÅµΩŸîàÅÙ∞(ÄÄÄÅççM—ï¡1ïÖêËÅÏÅ°‘ËÄâYΩπËÅÑÅŸïÈï”E§ÅÕÈï…ï¿¸à∞Åï∏ËÄâΩïÃÅ±ïÖë•πúÅΩ—°ï…ÃÅÖ¡¡ïÖ∞Å—ºÅÂΩ‘¸àÅÙ∞(ÄÄÄÅçç]°Â1ïÖêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ!ÑÅŸïÈï—ª•∞∞ÅÑÅ…ÖπùÕΩ»ÅÑÅŸïÈï”E§Å≠Ωµ¡ΩπïπÕï≠ï–Ä°≠ïÈëï∑•πÂïÎ•Ã∞ÅπÂΩ∑ÖœÖ±≥ÕœÖú∞ÅïùÁÒ——∑≈ØŸì•Ã§Å•ÃÅœÈ±ÂΩÈÈÑ∏à∞(ÄÄÄÄÄÅï∏ËÄâ%òÅÂΩ‘Å›Öπ–Å—ºÅ±ïÖê∞Å—°îÅ…Öπ≠•πúÅÖ±ÕºÅ›ï•ù°ÃÅ±ïÖëï…Õ°•¿ÅçΩµ¡Ωπïπ—ÃÄ°•π•—•Ö—•Ÿî∞ÅçΩµ¡ΩÕ’…î∞ÅçΩΩ¡ï…Ö—•Ω∏§∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç1ïÖëeïÃËÅÏÅ°‘ËÄâ%ùï∏∞ÅŸïÈï—ª•¨à∞Åï∏ËÄâeïÃ∞Å$ùêÅ±ïÖêàÅÙ∞(ÄÄÄÅçç1ïÖëeïÕM’àËÅÏÅ°‘ËÄâÕÖ¡Ö—Ω–É•ÃÅ•ÀÖπÂ–ÅŸ•πª•¨à∞Åï∏ËÄâ$ùêÅΩ›∏ÅÑÅ—ïÖ¥ÅÖπêÅë•…ïç—•Ω∏àÅÙ∞(ÄÄÄÅçç1ïÖë·¡ï…–ËÅÏÅ°‘ËÄâMÈÖØ•…”EØ•π–Å∑•±ÁÒ±ª•¨à∞Åï∏ËÄâ$ùêÅùºÅëïï¿ÅÖÃÅÖ∏Åï·¡ï…–àÅÙ∞(ÄÄÄÅçç1ïÖë·¡ï…—M’àËÅÏÅ°‘ËÄâÅ∑•±‰ÅÕÈÖ≠µÖ§Å—’ìÖÃÅŸΩπËà∞Åï∏ËÄâïï¿Åç…Öô–ÅÖ¡¡ïÖ±ÃÅ—ºÅµîàÅÙ∞(ÄÄÄÅçç1ïÖëUπÕ’…îËÅÏÅ°‘ËÄâ7•úÅπï¥Å—’ëΩ¥à∞Åï∏ËÄâ9Ω–ÅÕ’…îÅÂï–àÅÙ∞(ÄÄÄÅçç1ïÖëUπÕ’…ïM’àËÅÏÅ°‘ËÄâ5Ö©êÉÈ—ØŸÈâï∏Å≠•ëïÀÒ∞à∞Åï∏ËÄâ$ù±∞Åô•πêÅΩ’–ÅÖ±ΩπúÅ—°îÅ›Ö‰àÅÙ∞(ÄÄÄÅççM—Ö—’ÕM—’ëÂ•πùM’àËÅÏÅ°‘ËÄâ7•úÅ≠ï…ïÕï¥ÅÖËÅ•ÀÖπÂ–à∞Åï∏ËÄâM—•±∞Åô•πë•πúÅµ‰Åë•…ïç—•Ω∏àÅÙ∞(ÄÄÄÅççM—Ö—’Õ]Ω…≠•πùM’àËÅÏÅ°‘ËÄã%ÃÅπÂ•—Ω—–ÅŸÖùÂΩ¨ÅÑÅôï©≥Eì•Õ…îà∞Åï∏ËÄâπêÅΩ¡ï∏Å—ºÅù…Ω›•πúàÅÙ∞(ÄÄÄÅççM—Ö—’ÕM›•—ç°•πùM’àËÅÏÅ°‘ËÄãi®Å—ïÀÒ±ï–É•…ëï≠ï∞à∞Åï∏ËÄâÅπï‹Åô•ï±êÅ•π—ï…ïÕ—ÃÅµîàÅÙ∞(ÄÄÄÅççë’Iï≈1Öâï∞ËÅÏÅ°‘ËÄâ	ï≥•√•Ãà∞Åï∏ËÄâπ—…‰àÅÙ∞(ÄÄÄÅççë’Iï≈=¡ï∏ËÅÏÅ°‘ËÄâπï¥Å€•ùÈï——œ•ù°ïËÅØŸ”Ÿ—–à∞Åï∏ËÄâπºÅôΩ…µÖ∞Å≈’Ö±•ô•çÖ—•Ω∏Å…ï≈’•…ïêàÅÙ∞(ÄÄÄÅççë’Iï≈Ω’…ÕîËÅÏÅ°‘ËÄâ—ÖπôΩ±ÂÖµµÖ∞ÄºÉÖ—Ø•¡Î•ÕÕï∞Åï≥•…°ï”Dà∞Åï∏ËÄâÖççïÕÕ•â±îÅŸ•ÑÅçΩ’…ÕîÄºÅ…ï—…Ö•π•πúàÅÙ∞(ÄÄÄÅççë’Iï≈YΩçÖ—•ΩπÖ∞ËÅÏÅ°‘ËÄâÕÈÖ≠Ø•¡Èï——œ•ù°ïËÅØŸ”Ÿ—–à∞Åï∏ËÄâ…ï≈’•…ïÃÅŸΩçÖ—•ΩπÖ∞Å≈’Ö±•ô•çÖ—•Ω∏àÅÙ∞(ÄÄÄÅççë’Iï≈!•ù°ï»ËÅÏÅ°‘ËÄâ©ï±±ïµÎEï∏Åë•¡±Ω∑Ö°ΩËÅØŸ”Ÿ—–à∞Åï∏ËÄâ—Â¡•çÖ±±‰Å…ï≈’•…ïÃÅÑÅëïù…ïîàÅÙ∞(ÄÄÄÅççë’Iï≈M¡ïç•Ö±•ÈïêËÅÏÅ°‘ËÄâÕÈÖ≠•ÀÖπÁËÅë•¡±ΩµÑÄ¨ÅÕÈÖ≠Ÿ•ÈÕùÑÅÕÎÒ≠œ•ùïÃà∞Åï∏ËÄâ…ï≈’•…ïÃÅÕ¡ïç•Ö±•ÈïêÅëïù…ïîÄ¨Å±•çïπÕ’…îàÅÙ∞(ÄÄÄÅçç	Öπë!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5ïùãµÈ°Ö”ÕœÖù§ÅœÖÿËÅÑÅ¡Ωπ—ÕÎÖ¥ÉŸª•…”•≠ï≥•Õï∏ÅÖ±Ö¡’≥ÃÅâïçÕ≥•ÃÉäPÅÑÅœÖÿÅÑÅ∑•À•Õ§Åâ•ÈΩπÂ—Ö±ÖπœÖùΩ–Å©ï±È§∏à∞(ÄÄÄÄÄÅï∏ËÄâΩπô•ëïπçîÅâÖπêËÅ—°îÅÕçΩ…îÅ•ÃÅÑÅÕï±òµ…ï¡Ω…–ÅïÕ—•µÖ—îÉäPÅ—°îÅâÖπêÅÕ°Ω›ÃÅµïÖÕ’…ïµïπ–Å’πçï…—Ö•π—‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççÖçï—	ÖëùîËÅÏÅ°‘ËÄâÖ±ÕØÖ≥Ö≠≠Ö∞Å¡Ωπ—Ωœµ—ŸÑà∞Åï∏ËÄâôÖçï–µ…ïô•πïêàÅÙ∞(ÄÄÄÅççÖçï—	Öëùï!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâπª•∞ÅÑÅÕÈï…ï¡ª•∞Åπï¥ÅÑÅë•µïπÈßœÖ—±Öú∞Å°Öπï¥ÅÑÅÕÈï…ï¡ï–Å”•πÂ±ïùïÕï∏Åï≥E…îÅ©ï±ÎDÅÖ±ÕØÖ≥Ö¨ÅÕÎÖ∑µ—ÖπÖ¨∏à∞(ÄÄÄÄÄÅï∏ËÄâΩ»Å—°•ÃÅ…Ω±î∞Å—°îÅôÖçï—ÃÅ—°Ö–ÅÖç—’Ö±±‰Å¡…ïë•ç–Å•–ÅÖ…îÅÕçΩ…ïêÉäPÅπΩ–Å—°îÅë•µïπÕ•Ω∏ÅÖŸï…Öùî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç=âÕï…Ÿï…	ÖëùîËÅÏÅ°‘ËÄâØÒ±œDÅØ•¡¡ï∞ÅµïùïÀEœµ—Ÿîà∞Åï∏ËÄâΩâÕï…Ÿï»µâÖç≠ïêàÅÙ∞(ÄÄÄÅçç=âÕï…Ÿï…	Öëùï!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅ•±±ïÕÈ≠ïì•ÃÅÖËÉŸπØ•¿É•ÃÅÑÅØÒ±œDÉ•…”•≠ï≥•Õï¨ÉÖ—±ÖüÖãÕ∞ÅÕÎÖµΩ≥Õë•¨ÉäPÅÑÅœÖÿÅïÎ•…–ÅÕÎ≈≠ïâà∏à∞(ÄÄÄÄÄÅï∏ËÄâ•–Å•ÃÅçΩµ¡’—ïêÅô…Ω¥Å—°îÅâ±ïπêÅΩòÅÕï±òµ•µÖùîÅÖπêÅΩâÕï…Ÿï»Å…Ö—•πùÃÉäPÅ°ïπçîÅ—°îÅπÖ……Ω›ï»ÅâÖπê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïçIΩ±ï!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÈï…ï¿Å!Ω±±ÖπêµØÕë©ÑÄ°I%MÉ•…ëï≠≥Eì•Õ§Å”µ¡’ÕΩ¨§à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ…Ω±îùÃÅ!Ω±±ÖπêÅçΩëîÄ°I%MÅ•π—ï…ïÕ–Å—Â¡ïÃ§à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïçUÕï…1Öâï∞ËÅÏÅ°‘ËÄâ	ïçœÒ±–É•…ëï≠≥Eì•Õ§ÅØÕëΩêËà∞Åï∏ËÄâeΩ’»ÅïÕ—•µÖ—ïêÅ•π—ï…ïÕ–ÅçΩëîËàÅÙ∞(ÄÄÄÅççI•ÖÕïçUÕï…1Öâï±QÖùÃËÅÏÅ°‘ËÄã%…ëï≠≥Eì•Õ§ÅØÕëΩêËà∞Åï∏ËÄâeΩ’»Å•π—ï…ïÕ–ÅçΩëîËàÅÙ∞(ÄÄÄÄººÅ-Ö……•ï»µ¡±’ÕËÅ≠ï…ïÕ±ï–µ∑•À•ÃÄ°¡Ö•π—ïêÅëΩΩ»§∏ÅÅÕÎŸŸïùï¨Å-%5=9+,∞Å°Ωù‰(ÄÄÄÄººÅÑÅô’π≠çßÃÅ∑•úÅπ•πçÃÅØ•ÕËÉäPÅïª•±ØÒ∞ÅÑÅ∑•À•ÃÅµïù”•ŸïÕÈ”•ÃÅ±ïππî∏(ÄÄÄÅçÖ…ïï…A±’Õ	ÖëùîËÅÏÅ°‘ËÄâ/•ÕÎÒ≥DÅô’π≠çßÃà∞Åï∏ËÄâ%∏ÅëïŸï±Ω¡µïπ–àÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕQ•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒËÅµ•±Âï∏Åµ’πØÖâÖ∏Å±ïπª•∞ÅÑÅ°ï±Âïëï∏¸à∞(ÄÄÄÄÄÅï∏ËÄâÖ…ïï»ÅçΩµ¡ÖÕÃËÅ›°Ö–Å›Ω…¨Å›Ω’±êÅÕ’•–ÅÂΩ‘¸à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ1ïÖêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩêÅ∑Ö»ÅµïùŸÖ∏∏ÅËÅÑÅµΩë’∞ÅΩππÖ∏Å•πë’±πÑËÅµïùµ’—Ö—ªÑ∞Åµ•±Âï∏Å)11¿Åµ’π≠ÑÅ•±±•¨Å°ΩÈÎÖê∞Åµ•±Âï∏Å≠Ωπ≠À•–ÅÕÈï…ï¡ï¨Å´Ÿππï¨ÅïâãE∞ÅÕÎÕâÑ∞É•ÃÅµ•–É•…ëïµïÃÅ≠•¡ÀÕãÖ±πΩê∏Å7•úÅπï¥Å≥•—ïÈ•¨ÉäPÅµΩÕ–ÅÖÈ–Å∑•…´Ò¨∞É•…ëïµïÃµîÅµïü•√µ—ïπ§∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ‘ÅÖ±…ïÖë‰Å°ÖŸîÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±î∏ÅQ°•ÃÅµΩë’±îÅ›Ω’±êÅÕ—Ö…–Åô…Ω¥Å—°ï…îËÅ›°Ö–Å-%9ÅΩòÅ›Ω…¨Åô•—ÃÅÂΩ‘∞Å›°•ç†ÅçΩπç…ï—îÅ…Ω±ïÃÅôΩ±±Ω‹Åô…Ω¥Å•–∞ÅÖπêÅ›°Ö–ùÃÅ›Ω…—†Å—…Â•πúÅπï·–∏Å%–ÅëΩïÕ∏ù–Åï·•Õ–ÅÂï–ÉäPÅ›îù…îÅµïÖÕ’…•πúÅ›°ï—°ï»Å•–ùÃÅ›Ω…—†Åâ’•±ë•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ]°Ö—Q•—±îËÅÏÅ°‘ËÄâ5•–Å—’ëπÑà∞Åï∏ËÄâ]°Ö–Å•–Å›Ω’±êÅëºàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕïÖ—’…îƒËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5’π≠Ñµ—ïÀÒ±ï—ï¨∞ÅÖµ•≠âï∏ÅÑÅ¡…Ωô•±ΩêÅÖ±Ö¡´Ö∏Å´Õ∞É•…ïÈ°ï—ª•êÅµÖùÖêÉäPÅµ•πëïùÂ•≠°ïËÅª•£Öπ‰Å√•±ëÑµÕÈï…ï¿∞É•ÃÅØÒ≥Ÿ∏Å©ï≥Ÿ±Ÿî∞ÅÖµ§Å∑Ö»ÅµΩÕ–Åï≥•…°ï”D∞É•ÃÅÖµ§ÅØ•¡Î•ÕÕï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâ…ïÖÃÅΩòÅ›Ω…¨Å›°ï…îÅÂΩ’»Å¡…Ωô•±îÅÕ’ùùïÕ—ÃÅÂΩ‘ÅçΩ’±êÅ—°…•ŸîÉäPÅïÖç†Å›•—†ÅÑÅôï‹Åï·Öµ¡±îÅ…Ω±ïÃ∞ÅµÖ…≠ïêÅÕï¡Ö…Ö—ï±‰ÅôΩ»Å›°Ö–ùÃÅ…ïÖç°Öâ±îÅπΩ‹ÅÖπêÅ›°Ö–ÅπïïëÃÅ—…Ö•π•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕïÖ—’…î»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ%πëΩ≠≥ÖÃÅ—ïÀÒ±ï—ïπØ•π–ËÅµï±Â•¨Åë•µïπÈßÕêÅ£ÈÈÈÑÅÖ……Ñ∞Å°Ω∞ÅôïÕÎÒ±°ï–∞É•ÃÅµï≠≠Ω…ÑÅÑÅâïçÕ≥•ÃÅâ•ÈΩπÂ—Ö±ÖπœÖùÑÉäPÅπï¥Å´ÕÕ±Ö–∞Å°Öπï¥Å≠••πë’≥Õ¡Ωπ–∏à∞(ÄÄÄÄÄÅï∏ËÄâÅ…Ö—•ΩπÖ±îÅ¡ï»ÅÖ…ïÑËÅ›°•ç†ÅΩòÅÂΩ’»Åë•µïπÕ•ΩπÃÅ¡’±±ÃÅ—°Ö–Å›Ö‰∞Å›°ï…îÅ•–ÅµÖ‰ÅÕ—…Ö•∏∞ÅÖπêÅ°Ω‹Å’πçï…—Ö•∏Å—°îÅïÕ—•µÖ—îÅ•ÃÉäPÅÑÅÕ—Ö…—•πúÅ¡Ω•π–∞ÅπΩ–ÅÑÅ¡…ïë•ç—•Ω∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕïÖ—’…îÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ/µœ•…±ï–µ—ï…ÿËÄÃ¥‘Å≠•¡ÀÕãÖ±°Ö”ÃÅ≥•√•Ã∞Å¡±’ÕËÉÖ±≥ÖÕ°•…ëï”•Ãµ≠’±çÕÕÈÖŸÖ¨ÉäPÅµ•–Å≠ï…ïÕÃÉ•ÃÅµ§Å±ïùÂï∏ÅùÂÖªÈÃ∏à∞(ÄÄÄÄÄÅï∏ËÄâ∏Åï·¡ï…•µïπ–Å¡±Ö∏ËÄÃ¥‘Å—°•πùÃÅ—ºÅ—…‰∞Å¡±’ÃÅ©ΩàµÖêÅ≠ïÂ›Ω…ëÃÉäPÅ›°Ö–Å—ºÅ±ΩΩ¨ÅôΩ»ÅÖπêÅ›°Ö–ÅÕ°Ω’±êÅ…Ö•ÕîÅÑÅô±Öú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕïÖ—’…î–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ1ï”Ÿ±—°ï”DÅA∞ÅÖµ•–Åï∞Å—’ëÕËÅŸ•ππ§Åïù‰ÅâïÕÎ•±ùï”•Õ…îÉäPÅŸïÈï”E£ŸË∞Åµïπ—Ω…°ΩËÅŸÖù‰Å—ÖªÖçÕÖìÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâÅëΩ›π±ΩÖëÖâ±îÅAÅÂΩ‘ÅçÖ∏Å—Ö≠îÅ•π—ºÅÑÅçΩπŸï…ÕÖ—•Ω∏ÉäPÅ›•—†ÅÑÅµÖπÖùï»∞Åµïπ—Ω»ÅΩ»ÅÖëŸ•ÕΩ»∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕA…•çï1Öâï∞ËÅÏÅ°‘ËÄâQï…ŸïÈï—–ÉÖ»à∞Åï∏ËÄâA±ÖππïêÅ¡…•çîàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕA…•çï9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâùÂÕÈï…§Åìµ®∞Åπï¥Åï≥Eô•Èï”•Ã∏Å5ΩÕ–Åπï¥ÅØ•ÀÒπ¨Åô•Èï”•Õ–É•ÃÅâÖπ≠ØÖ…—ÂÑµÖëÖ—Ω–ÉäPÅçÕÖ¨ÅÖÈ–ÅÕÈï…ï—ª•π¨Å—’ëπ§∞Åµïü•…ª§µîÅπï≠ïêÅïππÂß•…–∏à∞(ÄÄÄÄÄÅï∏ËÄâÅΩπîµΩôòÅôïî∞ÅπΩ–ÅÑÅÕ’âÕç…•¡—•Ω∏∏Å]îù…îÅπΩ–Å—Ö≠•πúÅ¡ÖÂµïπ–ÅΩ»ÅçÖ…êÅëï—Ö•±ÃÅπΩ‹ÉäPÅ›îÅ©’Õ–Å›Öπ–Å—ºÅ≠πΩ‹Å›°ï—°ï»Å•–Å›Ω’±êÅâîÅ›Ω…—†Å—°Ö–Å—ºÅÂΩ‘∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕÕ≠Q•—±îËÅÏÅ°‘ËÄã%…ëï≠ï±πîÅïËÅ”•ùïê¸à∞Åï∏ËÄâ]Ω’±êÅ—°•ÃÅ•π—ï…ïÕ–ÅÂΩ‘¸àÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕÕ≠9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâù‰Å≠Ö——•π”ÖÃ∞É•ÃÅ—Ω€ÖâàÅ•ÃÅ≥•¡°ï—ÕË∏ÅÅ€Ö±ÖÕÈΩ¨ÅìŸπ—•¨Åï∞∞Åµïü•√Ò∞µîÉäPÅÑÉäyπï∑ätÅ’ùÂÖπΩ±ÂÖ∏Å°ÖÕÈπΩÃÅ€Ö±ÖÕË∞Åµ•π–ÅÖËÉäy•ùïªät∏à∞(ÄÄÄÄÄÅï∏ËÄâ=πîÅç±•ç¨ÅÖπêÅÂΩ‘ÅçÖ∏ÅµΩŸîÅΩ∏∏ÅQ°îÅÖπÕ›ï…ÃÅëïç•ëîÅ›°ï—°ï»Å•–Åùï—ÃÅâ’•±–ÉäPÅÑÉäqπøätÅ•ÃÅ©’Õ–ÅÖÃÅ’Õïô’∞ÅÖÃÅÑÉäqÂïœät∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕeïÃËÅÏÅ°‘ËÄã%…ëï≠ï±πîÅïππÂß•…–à∞Åï∏ËÄâ$ùêÅâîÅ•π—ï…ïÕ—ïêÅÖ–Å—°Ö–Å¡…•çîàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ9ºËÅÏÅ°‘ËÄâπùï¥Åπï¥É•…ëï≠ï∞à∞Åï∏ËÄâ9Ω–ÅôΩ»ÅµîàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕQ°Öπ≠ÕeïÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ/ŸÕÎŸπ´Ò¨ÉäPÅôï±©ïùÂïÈ”Ò¨∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°Öπ≠ÃÉäPÅπΩ—ïê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕQ°Öπ≠Õ9ºËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ/ŸÕÎŸπ´Ò¨ÉäPÅïËÅ•ÃÅôΩπ—ΩÃÅ€Ö±ÖÕË∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°Öπ≠ÃÉäPÅ—°Ö–ùÃÅÖ∏Å•µ¡Ω…—Öπ–ÅÖπÕ›ï»Å—Ωº∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’ÕQ°Öπ≠Õ9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ9ï¥Éµü•ÀÒπ¨Å°Ö”Ö…•ìE–ËÅ°ÑÅπï¥Å±ïÕËÅï≥•úÉ•…ëï≠≥Eì•Ã∞ÅïËÅÑÅÀ•—ïúÅπï¥É•√Ò∞Åµïú∏à∞(ÄÄÄÄÄÅï∏ËÄâ]îù…îÅπΩ–Å¡…Ωµ•Õ•πúÅÑÅëÖ—îËÅ•òÅ—°ï…îÅ•Õ∏ù–ÅïπΩ’ù†Å•π—ï…ïÕ–∞Å—°•ÃÅ±ÖÂï»Å›Ω∏ù–ÅâîÅâ’•±–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ°ÖπùïπÕ›ï»ËÅÏÅ°‘ËÄâ5ïùùΩπëΩ±—Ö¥ÅµÖùÖ¥à∞Åï∏ËÄâ$Åç°ÖπùïêÅµ‰Åµ•πêàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ……Ω»ËÅÏÅ°‘ËÄâ9ï¥ÅÕ•≠ïÀÒ±–Åï±µïπ—ïπ§∞Å¡ÀÕãÖ±êÉÈ©…Ñ∏à∞Åï∏ËÄâΩ’±ë∏ù–ÅÕÖŸî∞Å¡±ïÖÕîÅ—…‰ÅÖùÖ•∏∏àÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ	Öç¨ËÅÏÅ°‘ËÄâY•ÕÕÈÑÅÖËÅï…ïë∑•πÂï•ë°ïËà∞Åï∏ËÄâ	Öç¨Å—ºÅÂΩ’»Å…ïÕ’±—ÃàÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ—ÖÂïâ…Ω‹ËÅÏÅ°‘ËÄâ/•ÕÎÒ≥DÅµΩë’∞à∞Åï∏ËÄâ5Ωë’±îÅ•∏ÅëïŸï±Ω¡µïπ–àÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ—ÖQ•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5•±Âï∏Åµ’πØÖâÖ∏Å±ïπª•∞ÅÑÅ°ï±Âïëï∏¸à∞(ÄÄÄÄÄÅï∏ËÄâ]°Ö–Å›Ω…¨Å›Ω’±êÅÕ’•–ÅÂΩ‘¸à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ—Ö	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒÅØ•ÕÎÒ∞ÅÑÅ¡…Ωô•±Ωë…ÑËÅ•±±ïÕÈ≠ïìDÅ—ïÀÒ±ï—ï¨∞Å≠Ωπ≠À•–ÅÕÈï…ï¡ï¨É•ÃÅ≠•¡ÀÕãÖ±°Ö”ÃÅ≥•√•Õï¨∏Å;•ÈêÅµïú∞Åµ•–Å—’ëπÑÉäPÉ•ÃÅµΩπëêÅµïú∞É•…ëï≠ï∞µî∏à∞(ÄÄÄÄÄÅï∏ËÄâÅçÖ…ïï»ÅçΩµ¡ÖÕÃÅ•ÃÅ•∏Å—°îÅ›Ω…≠ÃÅôΩ»ÅÂΩ’»Å¡…Ωô•±îËÅô•——•πúÅÖ…ïÖÃ∞ÅçΩπç…ï—îÅ…Ω±ïÃÅÖπêÅÕ—ï¡ÃÅÂΩ‘ÅçÖ∏Å—…‰∏ÅMïîÅ›°Ö–Å•–Å›Ω’±êÅëºÉäPÅÖπêÅ—ï±∞Å’ÃÅ•òÅ•–Å•π—ï…ïÕ—ÃÅÂΩ‘∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçÖ…ïï…A±’Õ—Ö	’——Ω∏ËÅÏÅ°‘ËÄâ5ïùª•Èï¥∞Åµ•–Å—’ëπÑà∞Åï∏ËÄâMïîÅ›°Ö–Å•–Å›Ω’±êÅëºàÅÙ∞(ÄÄÄÅççI•ÖÕïç]°Ö—%ÃËÅÏÅ°‘ËÄâ5•–Å©ï±ïπ—ïπï¨ÅÑÅâï”≈¨¸à∞Åï∏ËÄâ]°Ö–ÅëºÅ—°îÅ±ï——ï…ÃÅµïÖ∏¸àÅÙ∞(ÄÄÄÅççI•ÖÕïçUÕï…1Öâï±5ïÖÕ’…ïêËÅÏÅ°‘ËÄâ7•…–É•…ëï≠≥Eì•Õ§ÅØÕëΩêËà∞Åï∏ËÄâeΩ’»ÅµïÖÕ’…ïêÅ•π—ï…ïÕ–ÅçΩëîËàÅÙ∞(ÄÄÄÅççI•ÖÕïçQÖùÕ9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄà°!Ω±±ÖπêΩI%MÉäPÅÑÅ€Ö±ÖÕÈ—Ω—–É•…ëï≠≥Eì•Õ§ÅèµµØ••êÅÖ±Ö¡´Ö∏§à∞(ÄÄÄÄÄÅï∏ËÄà°!Ω±±ÖπêΩI%MÉäPÅâÖÕïêÅΩ∏ÅÂΩ’»Åç°ΩÕï∏Å•π—ï…ïÕ–Å—ÖùÃ§à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïç5ïÖÕ’…ïë9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄà°!Ω±±ÖπêΩI%MÉäPÅÑÅ≠•”Ÿ±”Ÿ—–É•…ëï≠≥Eì•Õ§ÅØ•…ìGµŸãE∞Å∑•…Ÿî§à∞(ÄÄÄÄÄÅï∏ËÄà°!Ω±±ÖπêΩI%MÉäPÅµïÖÕ’…ïêÅô…Ω¥ÅÂΩ’»ÅçΩµ¡±ï—ïêÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰§à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïç—ÑËÅÏ(ÄÄÄÄÄÅ°‘ËÄâAΩπ—Ωœµ—ÕêÅÖËÉ•…ëï≠≥Eì•Õ§ÅØÕëΩëÖ–ËÄÃ¿ÅùÂΩ…ÃÅØ•…ì•Ã∞ÅØŸÀÒ±âï≥Ò∞ÄÃÅ¡ï…åÅÖ±Ö—–∏ÅÈ’”Ö∏ÅâïçÕ≥•ÃÅ°ï±Âï—–ÅÑÅ∑•…–ÅØÕêÅÖ±Ö¡´Ö∏ÅØ•ÕÎÒ∞ÅÑÅ…ÖπùÕΩ»∏à∞(ÄÄÄÄÄÅï∏ËÄâM°Ö…¡ï∏ÅÂΩ’»Å•π—ï…ïÕ–ÅçΩëîËÄÃ¿Å≈’•ç¨Å≈’ïÕ—•ΩπÃÄ°¯ÃÅµ•∏§ÉäPÅÑÅµïÖÕ’…ïêÅçΩëîÅ…ï¡±ÖçïÃÅ—°îÅïÕ—•µÖ—îÅ•∏Å…Öπ≠•πú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïç—Ö	—∏ËÅÏÅ°‘ËÄâ-•”Ÿ±”Ÿ¥à∞Åï∏ËÄâQÖ≠îÅ•–àÅÙ∞(ÄÄÄÅççI•ÖÕïçA…Ωù…ïÕÃËÅÏÅ°‘ËÄâÌç’……ïπ—ÙÄºÅÌ—Ω—Ö±Ùà∞Åï∏ËÄâÌç’……ïπ—ÙÄºÅÌ—Ω—Ö±ÙàÅÙ∞(ÄÄÄÅççI•ÖÕïçÖπçï∞ËÅÏÅ°‘ËÄâ/•œEâàà∞Åï∏ËÄâ1Ö—ï»àÅÙ∞(ÄÄÄÅççI•ÖÕïçMçÖ±îƒËÅÏÅ°‘ËÄâùÁÖ±—Ö≥Ö∏Åπï¥à∞Åï∏ËÄâ9Ω–ÅÖ–ÅÖ±∞àÅÙ∞(ÄÄÄÅççI•ÖÕïçMçÖ±îÃËÅÏÅ°‘ËÄâQÖ≥Ö∏à∞Åï∏ËÄâ5ÖÂâîàÅÙ∞(ÄÄÄÅççI•ÖÕïçMçÖ±î‘ËÅÏÅ°‘ËÄâ9ÖùÂΩ∏ÅÕÎµŸïÕï∏à∞Åï∏ËÄâYï…‰Åµ’ç†àÅÙ∞(ÄÄÄÅççM—ï¡QÖùÃËÅÏÅ°‘ËÄâ5§É•…ëï≠ï∞Å•ùÖÎÖ∏¸à∞Åï∏ËÄâ]°Ö–Åùïπ’•πï±‰Å•π—ï…ïÕ—ÃÅÂΩ‘¸àÅÙ∞(ÄÄÄÅçç]°ÂQÖùÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ[Ö±ÖÕÕËÅ±ïùôï±©ïâàÄ–Å—ïÀÒ±ï—ï–ÉäPÅÖËÉ•…ëï≠≥Eì•ÕïêÅÑÅÕÈï∑•±Â•œ•ùïëª•∞Å•ÃÅØŸÈŸï—±ïπïâãÒ∞Å©ï±È§∞Åµ§ÅŸÖ≥ÃÅπï≠ïê∏à∞(ÄÄÄÄÄÅï∏ËÄâA•ç¨Å’¿Å—ºÄ–ÉäPÅÂΩ’»Å•π—ï…ïÕ—ÃÅÕ•ùπÖ∞Åô•–ÅïŸï∏ÅµΩ…îÅë•…ïç—±‰Å—°Ö∏Å¡ï…ÕΩπÖ±•—‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççQÖùÕΩ’π–ËÅÏÅ°‘ËÄâÌçΩ’π—ÙÄºÄ–Å≠•€Ö±ÖÕÈ—ŸÑÄ£Ö–Å•ÃÅ’ùΩ…°Ö—Ωê§à∞Åï∏ËÄâÌçΩ’π—ÙÄºÄ–ÅÕï±ïç—ïêÄ°ÂΩ‘ÅçÖ∏ÅÕ≠•¿Å—°•Ã§àÅÙ∞(ÄÄÄÅçç•ï±ë1Öâï±5’±—§ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâQïÀÒ±ï–Ä°±ïùôï±©ïâàÄÃÅ€Ö±ÖÕÈ—°Ö”Ã§à∞(ÄÄÄÄÄÅï∏ËÄâ•ï±êÄ°ç°ΩΩÕîÅ’¿Å—ºÄÃ§à∞(ÄÄÄÅÙ∞(ÄÄÄÅççI•ÖÕïçÕ—•µÖ—ï9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄà°!Ω±±ÖπêΩI%MÉäPÅÑÅÕÈï∑•±Â•œ•ùïêÉ•ÃÅÑÅ¡…ïôï…ïπçßÖ•êÅÖ±Ö¡´Ö∏ÅâïçœÒ±Ÿî∞Åπï¥É•…ëï≠≥Eì•Õ§ÅØ•…ìGµŸŸï∞Å∑•…Ÿî§à∞(ÄÄÄÄÄÅï∏ËÄà°!Ω±±ÖπêΩI%MÉäPÅïÕ—•µÖ—ïêÅô…Ω¥ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰ÅÖπêÅ¡…ïôï…ïπçïÃ∞ÅπΩ–ÅÑÅµïÖÕ’…ïêÅ•π—ï…ïÕ–Å•πŸïπ—Ω…‰§à∞(ÄÄÄÅÙ∞(ÄÄÄÅççΩµ¡Ö…ï—ÑËÅÏÅ°‘ËÄãYÕÕÈïŸï”•Ãà∞Åï∏ËÄâΩµ¡Ö…îàÅÙ∞(ÄÄÄÅççΩµ¡Ö…ïMï±ïç—ïêËÅÏÅ°‘ËÄâ-•€Ö±ÖÕÈ—ŸÑÉärLà∞Åï∏ËÄâMï±ïç—ïêÉärLàÅÙ∞(ÄÄÄÅççΩµ¡Ö…ï!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ[Ö±ÖÕÕËÅ≠§Å∑•úÅïù‰Å•ÀÖπÂ–ÅÖËÉŸÕÕÈïŸï”•Õ°ïË∏à∞(ÄÄÄÄÄÅï∏ËÄâMï±ïç–ÅΩπîÅµΩ…îÅë•…ïç—•Ω∏Å—ºÅçΩµ¡Ö…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççΩµ¡Ö…ïQ•—±îËÅÏÅ°‘ËÄâ/•–Å•ÀÖπ‰ÅïùÂ∑ÖÃÅµï±±ï—–à∞Åï∏ËÄâQ›ºÅë•…ïç—•ΩπÃÅÕ•ëîÅâ‰ÅÕ•ëîàÅÙ∞(ÄÄÄÅççΩµ¡Ö…ï±ïÖ»ËÅÏÅ°‘ËÄâ	ïÎÖÀÖÃà∞Åï∏ËÄâ±ΩÕîàÅÙ∞(ÄÄÄÅççΩµ¡Ö…ï9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅœÖŸΩ¨ÅÖÈ–Åµ’—Ö—´Ö¨∞ÅÖËÅÖëΩ—–Å≠Ωµ¡ΩπïπÃÅµïππÂ•…îÅ”ÖµΩùÖ—©ÑÅªÖ±ÖêÅÑÅÕÈï…ï¡ï–Ä†√äLƒ¿¿§∏à∞(ÄÄÄÄÄÅï∏ËÄâ	Ö…ÃÅÕ°Ω‹Å°Ω‹ÅÕ—…Ωπù±‰ÅïÖç†ÅçΩµ¡Ωπïπ–ÅÕ’¡¡Ω…—ÃÅ—°îÅ…Ω±îÅôΩ»ÅÂΩ‘Ä†√äLƒ¿¿§∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅççA±Ö∏Ã¡Âïâ…Ω‹ËÅÏÅ°‘ËÄàÃ¿ÅπÖ¡ΩÃÅµ•π§µ—ï…ÿà∞Åï∏ËÄàÃ¿µëÖ‰Åµ•π§Å¡±Ö∏àÅÙ∞(ÄÄÄÅççA±Ö∏Ã¡Q•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÎ≈¨Å≠ï…ïÕÈ—µï—ÕÈï–ÅÑÅ±ïù”ŸâàÅ—Ω¿µ•ÀÖπÂΩëªÖ∞ËÅÌë•µÙ∏ÅÈÈï∞É•…ëïµïÃÅ≠ïÈëïπ§Ëà∞(ÄÄÄÄÄÅï∏ËÄâç…ΩÕÃÅÂΩ’»Å—Ω¿Åë•…ïç—•ΩπÃ∞ÅÌë•µÙÅ•ÃÅ—°îÅâΩ——±ïπïç¨ÉäPÅÕ—Ö…–Å°ï…îËà∞(ÄÄÄÅÙ∞(ÄÄÄÅççA±Ö∏Ã¡	ï°ÖŸ•Ω»ËÅÏÅ°‘ËÄâY•Õï±≠ïì•Ãà∞Åï∏ËÄâ	ï°ÖŸ•Ω»àÅÙ∞(ÄÄÄÅççA±Ö∏Ã¡Iïô±ïç—•Ω∏ËÅÏÅ°‘ËÄâIïô±ï·ßÃà∞Åï∏ËÄâIïô±ïç—•Ω∏àÅÙ∞(ÄÄÄÅççA±Ö∏Ã¡°Ö±±ïπùîËÅÏÅ°‘ËÄàÃ¿ÅπÖ¡ΩÃÅ≠•£µ€ÖÃà∞Åï∏ËÄàÃ¿µëÖ‰Åç°Ö±±ïπùîàÅÙ∞(ÄÄÄÅçç1ïÖëï…Âïâ…Ω‹ËÅÏÅ°‘ËÄâQ•¡•≠’ÃÅŸïÈï”•Õ§ÅØŸÈïúà∞Åï∏ËÄâQÂ¡•çÖ∞Å±ïÖëï…Õ°•¿ÅçΩπ—ï·–àÅÙ∞(ÄÄÄÅçç1ïÖëï…Q•—±îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÌ•πë’Õ—…ÂÙÉäPÅïÈï∏ÅÑÅ—ïÀÒ±ï—ï∏ÅùÂÖ≠…Ö∏Å•±Âï∏ÅŸïÈï”•ÕÕï∞Å—Ö≥Ö±≠ΩÈΩ∞Ëà∞(ÄÄÄÄÄÅï∏ËÄâ%∏ÅÌ•πë’Õ—…ÂÙ∞ÅÂΩ‘ù±∞ÅΩô—ï∏ÅïπçΩ’π—ï»Å—°•ÃÅ≠•πêÅΩòÅ±ïÖëï…Õ°•¿Ëà∞(ÄÄÄÅÙ∞(ÄÄÄÅçç1ïÖëï…9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ%¡ÖÀÖù§Å—•¡•≠’ÃÅµ•π”ÖÈÖ–∞Åπï¥ÅÕÈÖãÖ±‰ÉäPÅÑÅ≠Ωπ≠À•–ÅŸïÈï”DÅï—”E∞Åï±”•…°ï–∏à∞(ÄÄÄÄÄÅï∏ËÄâÅ—Â¡•çÖ∞Å•πë’Õ—…‰Å¡Ö——ï…∏∞ÅπΩ–ÅÑÅ…’±îÉäPÅÂΩ’»ÅÖç—’Ö∞ÅµÖπÖùï»ÅµÖ‰Åë•ôôï»∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç5ï—°ΩëQ•—±îËÅÏÅ°‘ËÄâ5•…îÉ•√Ò∞ÅïËÅÑÅâïçÕ≥•Ã¸à∞Åï∏ËÄâ]°Ö–Å•ÃÅ—°•ÃÅïÕ—•µÖ—îÅâÖÕïêÅΩ∏¸àÅÙ∞(ÄÄÄÅçç5ï—°Ωë	Ωë‰ƒËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅ•±±ïÕÈ≠ïì•ÃÅ°Ö—ôÖ≠—Ω…ΩÃÅÕÈï∑•±Â•œ•ùµΩëï±±…îÉ•√Ò∞ËÅµ•πëï∏ÅÕÈï…ï¡°ïËÅÑÅÕÈÖ≠•…ΩëÖ±Ω¥ÅÖ±Ö¡´Ö∏Å≠’±çÃµë•µïπÈßÕ¨É•ÃÅÖ±ÕØÖ≥Ö¨Å—Ö…—ΩÈπÖ¨Å•ÀÖππÂÖ∞É•ÃÅœÈ±±ÂÖ∞∞ÅÖËÅ•±±ïÕÈ≠ïì•ÃÅïÈï¨ÅœÈ±ÂΩÈΩ—–ÉÖ—±ÖùÑÄ†√äLƒ¿¿§∏à∞(ÄÄÄÄÄÅï∏ËÄâ•–Å•ÃÅâÖÕïêÅΩ∏ÅÑÅÕ•‡µôÖç—Ω»Å¡ï…ÕΩπÖ±•—‰ÅµΩëï∞ËÅïÖç†Å…Ω±îÅ°ÖÃÅ≠ï‰Åë•µïπÕ•ΩπÃÅÖπêÅôÖçï—ÃÅ›•—†Åë•…ïç—•Ω∏ÅÖπêÅ›ï•ù°–∞ÅÖπêÅô•–Å•ÃÅ—°ï•»Å›ï•ù°—ïêÅÖŸï…ÖùîÄ†√äLƒ¿¿§∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç5ï—°Ωë	Ωë‰»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅµï—ÑµÖπÖ≥µÈ•Õï¨ÅÕÈï…•π–ÅÑÅ±ï±≠••Õµï…ï—ïÕœ•úÉ•ÃÅÑÅâïçœÒ±ï—ïÕœ•úµÖ≥ÖÈÖ–ÅÑÅ±ïùïÀEÕïâàÉÖ±—Ö≥ÖπΩÃÅµ’π≠Ö°ï±Â§Å¡…ïë•≠—Ω…Ω¨ÏÅÑÅ”Ÿââ§Åë•µïπÈßÃÅÕÈï…ï¡”E∞ÅõÒùüEï∏ÅÕÎÖ∑µ–∏ÅÅ¡…ïôï…ïπçßÖ•êÄ°ïµâï»ΩÖëÖ–∞Å€Ö±—ΩÈÖ—ΩÕœÖú∞ÉŸªÖ±≥ÕœÖú∞ÅÖ±≠Ω”ÖÃ§ÅÑÅ…ÖπùÕΩ…–ÉÖ…πÂÖ±´Ö¨∞ÅÑÅ!Ω±±ÖπêµØÕêÅâïçÕ≥•ÃÅìŸπ—ï—±ï∏µâΩπ”Ã∏à∞(ÄÄÄÄÄÅï∏ËÄâ5ï—ÑµÖπÖ±ÂÕïÃÅÕ°Ω‹ÅçΩπÕç•ïπ—•Ω’ÕπïÕÃÅÖπêÅ°ΩπïÕ—‰µ°’µ•±•—‰ÅÖ…îÅ—°îÅÕ—…ΩπùïÕ–Åùïπï…Ö∞Å›Ω…≠¡±ÖçîÅ¡…ïë•ç—Ω…ÃÏÅΩ—°ï»Åë•µïπÕ•ΩπÃÅµÖ——ï»Å…Ω±îÅâ‰Å…Ω±î∏ÅeΩ’»Å¡…ïôï…ïπçïÃÄ°¡ïΩ¡±îΩëÖ—Ñ∞ÅŸÖ…•ï—‰∞ÅÖ’—ΩπΩµ‰∞Åç…ïÖ—•Ω∏§ÅÕ°ÖëîÅ—°îÅ…Öπ≠•πúÏÅ—°îÅ!Ω±±ÖπêµçΩëîÅïÕ—•µÖ—îÅâ…ïÖ≠ÃÅ—•ïÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç5ï—°Ωë	Ωë‰ÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ¡Ωπ—ÕÎÖ¥ÉŸª•…”•≠ï≥•ÃµÖ±Ö√ËÅ	M3%L∞Åπï¥ÅÖ±≠Ö±µÖÕœÖú∑µ”•±ï–ËÅÑÅµïùãµÈ°Ö”ÕœÖù§ÅœÖÿÅÑÅ∑•À•Õ§Åâ•ÈΩπÂ—Ö±ÖπœÖùΩ–Åµ’—Ö—©ÑÄ°ÀŸŸ•êÅØ•…ìGµŸª•∞ÅÕÎ•±ïÕïâà∞ÅØÒ±œDÉ•…”•≠ï≥•ÕÕï∞ÅÕÎ≈≠ïâà§∏Å±ÖçÕΩπ‰Å•±±ïÕÈ≠ïì•ÃÅπï¥Å©ï±ïπ—§∞Å°Ωù‰Åïù‰Å√Ö±ÂÑÅπï¥ÅŸÖ≥ÃÅπï≠ïêÉäPÅÖÈ–Å©ï±È§∞Åµ§Å•ü•πÂï∞Å”ŸâàÅ—’ëÖ—ΩÃÅïπï…ùßÖ–∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅÕçΩ…îÅ•ÃÅÑÅÕï±òµ…ï¡Ω…–ÅMQ%5Q∞ÅπΩ–ÅÑÅŸï…ë•ç–ÅΩ∏ÅÕ’•—Öâ•±•—‰ËÅ—°îÅçΩπô•ëïπçîÅâÖπêÅÕ°Ω›ÃÅµïÖÕ’…ïµïπ–Å’πçï…—Ö•π—‰Ä°›•ëï»ÅΩ∏Å—°îÅÕ°Ω…–ÅôΩ…¥∞ÅπÖ……Ω›ï»Å›•—†ÅΩâÕï…Ÿï»ÅâÖç≠•πú§∏ÅÅ±Ω‹Åô•–ÅëΩïÕ∏ù–ÅµïÖ∏ÅÑÅ¡Ö—†Å•Õ∏ù–ÅôΩ»ÅÂΩ‘ÉäPÅ•–ÅÕ•ùπÖ±ÃÅ›°Ö–Å›•±∞Å—Ö≠îÅµΩ…îÅëï±•âï…Ö—îÅïπï…ù‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç5ï—°ΩëIïôÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ%…ΩëÖ±Ω¥ËÅÕ°—Ω∏ÄòÅ1ïîÄ†»¿¿‹§ÉäPÅ!a<µµΩëï±∞ÏÅ	Ö……•ç¨ÄòÅ5Ω’π–Ä†ƒ‰‰ƒ§É•ÃÅMÖç≠ï—–Åï–ÅÖ∞∏Ä†»¿»»§ÉäPÅÕÈï∑•±Â•œ•üäM—ï±©ïœµ—∑•π‰Åµï—ÑµÖπÖ≥µÈ•Õï¨ÏÅ!Ω±±ÖπêÄ†ƒ‰‰‹§ÉäPÅI%M∏à∞(ÄÄÄÄÄÅï∏ËÄâIïôï…ïπçïÃËÅÕ°—Ω∏ÄòÅ1ïîÄ†»¿¿‹§ÉäPÅ!a<ÅµΩëï∞ÏÅ	Ö……•ç¨ÄòÅ5Ω’π–Ä†ƒ‰‰ƒ§ÅÖπêÅMÖç≠ï—–Åï–ÅÖ∞∏Ä†»¿»»§ÉäPÅ¡ï…ÕΩπÖ±•—ÁäM¡ï…ôΩ…µÖπçîÅµï—ÑµÖπÖ±ÂÕïÃÏÅ!Ω±±ÖπêÄ†ƒ‰‰‹§ÉäPÅI%M∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç!ï…Ω1•πîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÀEÃÅÌê≈ÙÉ•ÃÅÌê…ÙÅ¡…Ωô•±ΩêÅïââîÅÖËÅ•ÀÖπÂâÑÅµ’—Ö–∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ’»ÅÕ—…ΩπúÅÌê≈ÙÅÖπêÅÌê…ÙÅ¡Ω•π–Å•∏Å—°•ÃÅë•…ïç—•Ω∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç5Ω…ï=¡—•ΩπÃËÅÏÅ°‘ËÄâQΩ€Öââ§Å±ï°ï”Eœ•ùï¨à∞Åï∏ËÄâ5Ω…îÅΩ¡—•ΩπÃàÅÙ∞(ÄÄÄÅçç1ïÕÕ=¡—•ΩπÃËÅÏÅ°‘ËÄâ-ïŸïÕïâàÅµ’—Ö”ÖÕÑà∞Åï∏ËÄâM°Ω‹Åôï›ï»àÅÙ∞(ÄÄÄÅççQ•ï…M—…ΩπúËÅÏÅ°‘ËÄâÀEÃÅ•±±ïÕÈ≠ïì•Ãà∞Åï∏ËÄâM—…ΩπúÅô•–àÅÙ∞(ÄÄÄÅççQ•ï…ΩΩêËÅÏÅ°‘ËÄâ+ÃÅ•±±ïÕÈ≠ïì•Ãà∞Åï∏ËÄâΩΩêÅô•–àÅÙ∞(ÄÄÄÅççQ•ï…Ωπë•—•ΩπÖ∞ËÅÏÅ°‘ËÄâï±”•—ï±ïÃÉäPÅôï±Ø•ÕÎÒ≥•ÕÕï∞à∞Åï∏ËÄâΩπë•—•ΩπÖ∞ÉäPÅ›•—†Å¡…ï¡Ö…Ö—•Ω∏àÅÙ∞(ÄÄÄÅççïŸA±ÖπQ•—±îËÅÏÅ°‘ËÄâï©≥Eì•Õ§Å—ï…ÿÅïÈï≠°ïËÅÖËÅ•ÀÖπÂΩ≠°ΩËà∞Åï∏ËÄâïŸï±Ω¡µïπ–Å¡±Ö∏ÅôΩ»Å—°ïÕîÅë•…ïç—•ΩπÃàÅÙ∞(ÄÄÄÅççïŸA±Öπ%π—…ºËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅôïπ—§Å•ÀÖπÂΩ¨ÅØŸÎŸÃÅô•ùÂï±ïπìDÅ—ïÀÒ±ï—ï§ÉäPÅ°ÑÅï……îÅ•πë’±ÕË∞Å•—–Å”•ÀÒ∞ÅµïúÅ±ïùùÂΩ…ÕÖââÖ∏ÅÑÅ—’ëÖ—ΩÃÅùÂÖ≠Ω…≥ÖÃ∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅÕ°Ö…ïêÅ›Ö—ç†ÅÖ…ïÖÃÅΩòÅ—°îÅë•…ïç—•ΩπÃÅÖâΩŸîÉäPÅ•òÅÂΩ‘Å°ïÖêÅ—°•ÃÅ›Ö‰∞Åëï±•âï…Ö—îÅ¡…Öç—•çîÅ¡ÖÂÃÅΩôòÅôÖÕ—ïÕ–Å°ï…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç=âÕï…Ÿï…Iïô•πîËÅÏ(ÄÄÄÄÄÅ°‘ËÄâAΩπ—Ωœµ—ÕêÅØÒ±œDÅŸ•ÕÕÈÖ©ï±Î•ÕÕï∞ÉäPÅÖËÉŸπØ•¿É•ÃÅÑÅØÒ±œDÅØ•¿ÉÖ—±ÖùÑÅµïùãµÈ°Ö”ÕâàÅ•±±ïÕÈ≠ïì•Õ–ÅÖê∏à∞(ÄÄÄÄÄÅï∏ËÄâIïô•πîÅ›•—†ÅΩ’—Õ•ëîÅôïïëâÖç¨ÉäPÅÖŸï…Öù•πúÅÕï±òµ•µÖùîÅÖπêÅΩ’—Õ•ëîÅŸ•ï‹Åù•ŸïÃÅÑÅµΩ…îÅ…ï±•Öâ±îÅô•–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅçç=âÕï…Ÿï…Iïô•πï—ÑËÅÏÅ°‘ËÄâY•ÕÕÈÖ©ï±Î•ÃÅØ•À•Õîà∞Åï∏ËÄâIï≈’ïÕ–ÅôïïëâÖç¨àÅÙ∞(ÄÄÄÅ•πë’Õ—…Â•—9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ%πë•≠Ö”µÿÅ©ï±Î•ÃÅÖËÉŸª•…”•≠ï≥•ÕïêÅÖ±Ö¡´Ö∏ÉäPÅπï¥Å√Ö±ÂÖ€Ö±ÖÕÈ”ÖÕ§Å—ÖªÖçÕÖìÖÃ∏ÅËÅ•±±ïÕÈ≠ïì•ÃÅÑÅÕÈï…ï¿Å—•¡•≠’ÃÅµ’π≠ÖÕ”µ±’Ãµ•ü•πÂï•–ÅŸï—§ÉŸÕÕÈîÅÑÅ¡…Ωô•±ΩëëÖ∞ÏÅÑÅ—Ö¡ÖÕÈ—Ö±Ö–∞Å—’ìÖÃÉ•ÃÅµΩ—•€ÖçßÃÅ±ïùÖ≥ÖâàÅ•±Âï∏ÅôΩπ—ΩÃ∏à∞(ÄÄÄÄÄÅï∏ËÄâ∏Å•πë•çÖ—•ŸîÅÕ•ùπÖ∞ÅâÖÕïêÅΩ∏ÅÂΩ’»ÅÕï±òµÖÕÕïÕÕµïπ–ÉäPÅπΩ–ÅçÖ…ïï»ÅÖëŸ•çî∏Å•–ÅçΩµ¡Ö…ïÃÅÑÅ…Ω±îùÃÅ—Â¡•çÖ∞Å›Ω…≠•πúµÕ—Â±îÅëïµÖπëÃÅ›•—†ÅÂΩ’»Å¡…Ωô•±îÏÅï·¡ï…•ïπçî∞ÅÕ≠•±±ÃÅÖπêÅµΩ—•ŸÖ—•Ω∏ÅµÖ——ï»ÅÖ–Å±ïÖÕ–ÅÖÃÅµ’ç†∏à∞(ÄÄÄÅÙ∞(ÄÅÙ∞(ÄÅ¡…Ωù…ïÕÃËÅÏ(ÄÄÄÅ—•—±îËÅÏÅ°‘ËÄâA…Ωô•±ΩêÅØ•ÕÎÒ≥Eâï∏à∞Åï∏ËÄâeΩ’»Å¡…Ωô•±îÅ•ÃÅ•∏Å¡…Ωù…ïÕÃàÅÙ∞(ÄÄÄÅëΩπîËÅÏÅ°‘ËÄâØ•ÕËà∞Åï∏ËÄâëΩπîàÅÙ∞(ÄÄÄÅπï·–ËÅÏÅ°‘ËÄâ/ŸŸï—≠ïÎDà∞Åï∏ËÄâ9ï·–àÅÙ∞(ÄÄÄÅÕ—ï¡QïÕ–ËÅÏÅ°‘ËÄâQïÕÈ–Å≠•”Ÿ±”•Õîà∞Åï∏ËÄâΩµ¡±ï—îÅ—°îÅÖÕÕïÕÕµïπ–àÅÙ∞(ÄÄÄÅÕ—ï¡QïÕ—ïÕåËÅÏÅ°‘ËÄâÅÕÈï∑•±Â•œ•ù—ïÕÈ—ïêÅï…ïë∑•πÂîÅï±Ø•ÕÎÒ±–à∞Åï∏ËÄâeΩ’»Å¡ï…ÕΩπÖ±•—‰ÅÖÕÕïÕÕµïπ–Å…ïÕ’±—ÃÅÖ…îÅ…ïÖë‰àÅÙ∞(ÄÄÄÅÕ—ï¡IïÕ’±—ÃËÅÏÅ°‘ËÄâ…ïë∑•π‰Åµïù—ï≠•π”•Õîà∞Åï∏ËÄâY•ï‹Å…ïÕ’±—ÃàÅÙ∞(ÄÄÄÅÕ—ï¡IïÕ’±—ÕïÕåËÅÏÅ°‘ËÄã——ï≠•π—ïêÅÑÅõDÅë•µïπÈßÕ≠Ö–à∞Åï∏ËÄâeΩ‘Å…ïŸ•ï›ïêÅ—°îÅ≠ï‰Åë•µïπÕ•ΩπÃàÅÙ∞(ÄÄÄÅëïï¡ïπ•Ÿ•ëï»ËÅÏÅ°‘ËÄâAΩπ—Ωœµ—ÕêÅÑÅØ•¡ï–à∞Åï∏ËÄâïï¡ï∏ÅÂΩ’»Å¡…Ωô•±îàÅÙ∞(ÄÄÄÅ’π±Ωç¨ËÅÏÅ°‘ËÄâï±Ω±ëΩ¥à∞Åï∏ËÄâUπ±Ωç¨àÅÙ∞(ÄÄÄÅÕïπë%πŸ•—Ö—•ΩπÃËÅÏÅ°‘ËÄâY•ÕÕÈÖ©ï±Î•Õ§Åµïù£µ€Õ¨ÅØÒ±ì•Õîà∞Åï∏ËÄâMïπêÅôïïëâÖç¨Å•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅÕïπë%πŸ•—Ö—•ΩπÕïÕåËÅÏÅ°‘ËÄâ/•…êÅµïúÄ»¥ÃÅ≠Ω±≥•üÖëÖ–∞Å°Ωù‰ÅÖë©ÖπÖ¨ÅŸ•ÕÕÈÖ©ï±Î•Õ–ÅÀÕ±Öêà∞Åï∏ËÄâÕ¨Ä»¥ÃÅçΩ±±ïÖù’ïÃÅ—ºÅù•ŸîÅôïïëâÖç¨ÅÖâΩ’–ÅÂΩ‘àÅÙ∞(ÄÄÄÅÖô—ï…A±’ÃËÅÏÅ°‘ËÄâA±’ÃÅôï±Ω±ìÖÕÑÅ’”Ö∏É•…°ï”DÅï∞à∞Åï∏ËÄâŸÖ•±Öâ±îÅÖô—ï»Å’π±Ωç≠•πúÅA±’ÃàÅÙ∞(ÄÄÄÅÕïπë%πŸ•—Ö—•Ωπ—ÑËÅÏÅ°‘ËÄâ5ïù£µ€ÃÅØÒ±ì•Õîà∞Åï∏ËÄâMïπêÅ•πŸ•—Ö—•Ω∏àÅÙ∞(ÄÄÄÅÖŸÖ•±Öâ±ïô—ï…A±’ÃËÅÏÅ°‘ËÄâ≥•…°ï”DÅA±’ÃÅ’”Ö∏à∞Åï∏ËÄâŸÖ•±Öâ±îÅÖô—ï»ÅA±’ÃàÅÙ∞(ÄÄÄÅ…ïçï•ŸïïïëâÖç¨ËÅÏÅ°‘ËÄâY•ÕÕÈÖ©ï±Î•Õï¨Åâó•…≠ïÎ•ÕîÉ•ÃÉ•…—ï±µïÎ•Õîà∞Åï∏ËÄâIïçï•ŸîÅÖπêÅ•π—ï…¡…ï–ÅôïïëâÖç¨àÅÙ∞(ÄÄÄÅÖô—ï…Mïπë•πúËÅÏÅ°‘ËÄâ5ïù£µ€Õ¨ÅØÒ±ì•ÕîÅ’”Ö∏Åï≥•…°ï”Dà∞Åï∏ËÄâŸÖ•±Öâ±îÅÖô—ï»ÅÕïπë•πúÅ•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅôïïëâÖç≠Iïçï•ŸïêËÅÏÅ°‘ËÄâŸ•ÕÕÈÖ©ï±Î•ÃÉ•…≠ïÈï—–à∞Åï∏ËÄâôïïëâÖç¨Å…ïçï•ŸïêàÅÙ∞(ÄÄÄÅ›Ö•—•πúËÅÏÅ°‘ËÄâ[Ö…Ö≠ΩÎÖÃ∏∏∏à∞Åï∏ËÄâ]Ö•—•πú∏∏∏àÅÙ∞(ÄÄÄÅŸ•ï›IïÕ’±—ÃËÅÏÅ°‘ËÄâ5ïùª•Èï¥à∞Åï∏ËÄâY•ï‹àÅÙ∞(ÄÄÄÅÖç—•ŸîËÅÏÅ°‘ËÄâ≠”µÿà∞Åï∏ËÄâç—•ŸîàÅÙ∞(ÄÄÄÅ…ïçΩµµïπëïêËÅÏÅ°‘ËÄâ´Öπ±Ω—–à∞Åï∏ËÄâIïçΩµµïπëïêàÅÙ∞(ÄÄÄÅΩ›πïêËÅÏÅ°‘ËÄâ5ïùŸÖ∏ÉärLà∞Åï∏ËÄâ=›πïêÉärLàÅÙ∞(ÄÄÄÅÕ—ï¡ΩπîËÅÏÅ°‘ËÄâ/•ÕËà∞Åï∏ËÄâΩπîàÅÙ∞(ÄÄÄÅç°ΩΩÕïA±Ö∏ËÅÏÅ°‘ËÄâ€Ö±ÖÕÕËÅçÕΩµÖùΩ–à∞Åï∏ËÄâç°ΩΩÕîÅÑÅ¡±Ö∏àÅÙ∞(ÄÄÄÅ’π±Ωç≠A±’ÃËÅÏÅ°‘ËÄâA±’ÃÅôï±Ω±ìÖÕÑÉäPÉä
+∞‰à∞Åï∏ËÄâUπ±Ωç¨ÅA±’ÃÉäPÉä
+∞‰àÅÙ∞(ÄÄÄÅÕïπëïïëâÖç¨ËÅÏÅ°‘ËÄâŸ•ÕÕÈÖ©ï±Î•Õ§Åµïù£µ€Õ¨ÅØÒ±ì•Õîà∞Åï∏ËÄâÕïπêÅôïïëâÖç¨Å•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅ›Ö•—ïïëâÖç¨ËÅÏÅ°‘ËÄâŸ•ÕÕÈÖ©ï±Î•Õï¨Åâó•…≠ïÎ•Õîà∞Åï∏ËÄâ›Ö•—•πúÅôΩ»ÅôïïëâÖç¨àÅÙ∞(ÄÄÄÅ¡…Ωô•±ïΩπîËÅÏÅ°‘ËÄâ¡…Ωô•±ΩêÅØ•ÕËÑà∞Åï∏ËÄâ¡…Ωô•±îÅçΩµ¡±ï—îÑàÅÙ∞(ÄÄÄÅ¡±’ÕïÖ—’…îƒËÅÏÅ°‘ËÄà»‘ÅÖ±ÕØÖ±ÑÅÀ•ÕÈ±ï—ïÕï∏à∞Åï∏ËÄà»‘ÅôÖçï—ÃÅ•∏Åëï—Ö•∞àÅÙ∞(ÄÄÄÅ¡±’ÕïÖ—’…î»ËÅÏÅ°‘ËÄâ-Ω…≥Ö—±Ö∏ÅÕÎÖ∑ËÅΩâÕï…Ÿï»à∞Åï∏ËÄâUπ±•µ•—ïêÅΩâÕï…Ÿï…ÃàÅÙ∞(ÄÄÄÅ¡±’ÕïÖ—’…îÃËÅÏÅ°‘ËÄâYÖ≠ôΩ±–µï±ïµÎ•Ãà∞Åï∏ËÄâ	±•πêÅÕ¡Ω–ÅÖπÖ±ÂÕ•ÃàÅÙ∞(ÄÄÄÅ¡±’ÕïÖ—’…î–ËÅÏÅ°‘ËÄâ7≈ØŸì•ÕïêÉ•ÃÅÕÈï…ï¡ïêÅÑÅçÕÖ¡Ö—âÖ∏à∞Åï∏ËÄâ!Ω‹ÅÂΩ‘Å›Ω…¨ÅÖπêÅçΩπ—…•â’—îÅ•∏ÅÑÅ—ïÖ¥àÅÙ∞(ÄÄÄÅ¡±’ÕïÖ—’…î‘ËÅÏÅ°‘ËÄâAÅ±ï”Ÿ±”•Õîà∞Åï∏ËÄâAÅï·¡Ω…–àÅÙ∞(ÄÄÄÅâ’——Ωπç—•ŸîËÅÏÅ°‘ËÄâ≠”µÿà∞Åï∏ËÄâç—•ŸîàÅÙ∞(ÄÄÄÅâ’——ΩπUπ±Ωç¨ËÅÏÅ°‘ËÄâA±’ÃÅôï±Ω±ìÖÕÑÉäPÉä
+∞‰à∞Åï∏ËÄâUπ±Ωç¨ÅA±’ÃÉäPÉä
+∞‰àÅÙ∞(ÄÅÙ∞(ÄÅçΩπ—ïπ–ËÅÏ(ÄÄÄÅ°ï…ΩQΩ¡•µÃËÅÏÅ°‘ËÄâ1ïùïÀEÕïâàà∞Åï∏ËÄâQΩ¿Åë•µïπÕ•ΩπÃàÅÙ∞(ÄÄÄÅ°ï…Ω]Ö—ç°•µÃËÅÏÅ°‘ËÄâ•ùÂï±ïπìDà∞Åï∏ËÄâ]Ö—ç†ÅÖ…ïÑàÅÙ∞(ÄÄÄÅÕ—…•¡1Öâï∞ËÅÏÅ°‘ËÄâÂΩ…ÃÉÖ——ï≠•π”•ÃÉäPÅÑÄÿÅõDÅë•µïπÈßÃÅµïπ”•∏à∞Åï∏ËÄâE’•ç¨ÅΩŸï…Ÿ•ï‹ÉäPÅÖç…ΩÕÃÅ—°îÄÿÅ≠ï‰Åë•µïπÕ•ΩπÃàÅÙ∞(ÄÄÄÅÖççAï…ÕΩπÖ∞ËÅÏÅ°‘ËÄâ5•–Å©ï±ïπ–ÅïËÅÀÕ±Öê¸à∞Åï∏ËÄâ]°Ö–Å—°•ÃÅµïÖπÃÅôΩ»ÅÂΩ‘àÅÙ∞(ÄÄÄÅÖçç]Ω…≠¡±ÖçîËÅÏÅ°‘ËÄâ5’π≠Ö°ï±Â§Å°ï±ÂÈï—ï≠âï∏à∞Åï∏ËÄâ%∏Å›Ω…≠¡±ÖçîÅÕ•—’Ö—•ΩπÃàÅÙ∞(ÄÄÄÅÖççÖçï—ï—Ö•∞ËÅÏÅ°‘ËÄâK•ÕÈ±ï—ïÃÅâΩπ”ÖÃà∞Åï∏ËÄâï—Ö•±ïêÅâ…ïÖ≠ëΩ›∏àÅÙ∞(ÄÄÄÅ°Ω›eΩ’]Ω…≠M’àËÅÏÅ°‘ËÄâ5•±Âï∏ÅØŸ…πÂïÈï—âï∏Å∑≈ØŸëÕËÅ´Õ∞ÉäPÉ•ÃÅ°Ω∞Å´Ÿ°ï—πï¨ÅœÈ…≥ÕìÖÕΩ¨à∞Åï∏ËÄâ]°ï…îÅÂΩ‘Å—°…•ŸîÉäPÅÖπêÅ›°ï…îÅô…•ç—•Ω∏ÅµÖ‰ÅÖ…•ÕîàÅÙ∞(ÄÄÄÅ¡…Ωô•±ïM’µµÖ…‰ËÅÏÅ°‘ËÄâA…Ωô•≥ŸÕÕÈïôΩù±Ö≥Ãà∞Åï∏ËÄâA…Ωô•±îÅÕ’µµÖ…‰àÅÙ∞(ÄÄÄÄººÅÅÅçΩπ—ïπ–π…Ω±ï•—M—…ΩπùÄÅÑÅÕ°Ö…ïêµ±Öâï±Ãπ—Ãµâï∏É•∞Ä°¡’â±•≠’ÃÅ°ï…ºÅ•Ã§∏(ÄÄÄÅ…Ω±ï•—5ÖÂâîËÅÏÅ°‘ËÄâ7≈ØŸë°ï–∞Å°ÑÅôï±Ø•ÕÎÒ±ÕËà∞Åï∏ËÄâ5Ö‰Å›Ω…¨Å›•—†Å¡…ï¡Ö…Ö—•Ω∏àÅÙ∞(ÄÄÄÅ…Ω±ï•—A…ï¿ËÅÏÅ°‘ËÄâï±Ø•ÕÎÒ≥•ÕÕï∞Å∑≈ØŸë°ï–à∞Åï∏ËÄâ]Ω…≠ÃÅ›•—†Å¡…ï¡Ö…Ö—•Ω∏àÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïM’àËÅÏÅ°‘ËÄâÅÕÈï∑•±Â•œ•ùµ•π”ÖÈÖ—Ö•êÅÖ±Ö¡´Ö∏Å€Ö…°Ö”ÕÖ∏ÅïÈï¨ÅÑÅçÕÖ¡Ö—ÕÈï…ï¡ï¨Å•±±ïπï¨Å°ΩÈÎÖê∏à∞Åï∏ËÄâ	ÖÕïêÅΩ∏ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡Ö——ï…πÃ∞Å—°ïÕîÅ—ïÖ¥Å…Ω±ïÃÅÕ’•–ÅÂΩ‘∏àÅÙ∞(ÄÄÄÅÖ±—…’•ÕµQ•—±îËÅÏÅ°‘ËÄâ-•ïü•ÕÎµ”DÅÕØÖ±Ñà∞Åï∏ËÄâM’¡¡±ïµïπ—Ö…‰ÅÕçÖ±îàÅÙ∞(ÄÄÄÅÖ±—…’•Õµ9ÖµîËÅÏÅ°‘ËÄâMïüµ”EØ•ÕÈœ•úà∞Åï∏ËÄâ!ï±¡ô’±πïÕÃàÅÙ∞(ÄÄÄÅÖ±—…’•Õµ%πôºËÅÏÅ°‘ËÄâSŸâàÅõDÅë•µïπÈßÕ°ΩËÅ•ÃÅ≠Ö¡çÕΩ≥Õë•¨∞ÅïÎ•…–Åπï¥ÅÕÎÖ∑µ–Åâï±îÅÑÄÿÅõEôÖ≠—Ω»ÉÖ—±ÖüÖâÑ∏Å/Ò≥Ÿ∏Å¡Ωπ—ÕÎÖµØ•π–É•…ëïµïÃÅª•Èπ§∏à∞Åï∏ËÄâQ°•ÃÅÕçÖ±îÅ…ï±Ö—ïÃÅ—ºÅµ’±—•¡±îÅë•µïπÕ•ΩπÃ∞ÅÕºÅ•–ùÃÅπΩ–Å•πç±’ëïêÅ•∏Å—°îÄÿµôÖç—Ω»ÅÖŸï…Öùî∏Å]Ω…—†Å±ΩΩ≠•πúÅÖ–ÅÖÃÅÑÅÕï¡Ö…Ö—îÅÕçΩ…î∏àÅÙ∞(ÄÄÄÄººÄ°çΩπ—ïπ–πÖ±—…’•Õµï—Ö•∞Å”ŸÀŸ±ŸîÄ»¿»ÿ¥¿‡¥ƒƒÉäPÅïù‰ÅÕΩÕï¥Åµïü•√Ò±–(ÄÄÄÄººÄÅôÖçï–µâΩπ”ÖÃÅôï±•…Ö—ÑÅŸΩ±–ÏÅÑÅÕØÖ≥ÖπÖ¨ÅïùÂï—±ï∏ÅôÖçï—©îÅŸÖ∏∏§(ÄÄÄÄººÅÅØÖ…—ÂÑÅÕÖ´Ö–ÅÕÈ•π–µÕÎÕ”Ö…ÑÄ°Ö±—…’•Õµ1ïŸï±!•ù†Ω5•êΩ1Ω‹§Ä»¿»ÿ¥¿‡¥ƒ‡∑Ö∏(ÄÄÄÄººÅ≠•ŸïÈï—ŸîËÅÖÎ•…–Å≥•—ïÈï—–∞Å°Ωù‰ÅÑÅπï¥µŸÖ±ïπçßÖ±–Å≠•ïü•ÕÎµ”DÅÕØÖ±Ñ(ÄÄÄÄººÅï±≠ïÀÒ±©îÅÖËÅÖ≠≠Ω»Å∑•úÅŸÖ±ïπçßÖÃÅâÖëùîµï–∏ÅÅ≠ÖπΩπ•≠’ÃÅèµµ≠îÅÖÎÕ—ÑÅµÖùÑ(ÄÄÄÄººÅÕÈ•π–µÕÎÃÄ°ë•µïπÕ•Ω∏µ’—•±Ã§∞ÅÑÅØÒ≥ŸπÕÎÕ”Ö»ÅçÕÖ¨Åë…•ô–ÅŸΩ±–∏(ÄÄÄÅïπŸ1Öâï±!•ù†ËÅÏÅ°‘ËÄâ5ÖùÖÃà∞Åï∏ËÄâ!•ù†àÅÙ∞(ÄÄÄÅïπŸ1Öâï±1Ω‹ËÅÏÅ°‘ËÄâ±ÖçÕΩπ‰à∞Åï∏ËÄâ1Ω‹àÅÙ∞(ÄÄÄÅïπŸ1Öâï±5ïë•’¥ËÅÏÅ°‘ËÄâ/ŸÈï¡ïÃà∞Åï∏ËÄâ5ïë•’¥àÅÙ∞(ÄÄÄÅïπŸ1Öâï±M°Ω…–ËÅÏÅ°‘ËÄâKŸŸ•êà∞Åï∏ËÄâM°Ω…–àÅÙ∞(ÄÄÄÅïπŸ1Öâï±1ΩπúËÅÏÅ°‘ËÄâ!ΩÕÕÎËà∞Åï∏ËÄâ1ΩπúàÅÙ∞(ÄÄÄÅïπŸ1Öâï±ÖÕ–ËÅÏÅ°‘ËÄâÂΩ…Ãà∞Åï∏ËÄâÖÕ–àÅÙ∞(ÄÄÄÄººÅA…Ωô•±ïQÖâÃÉäPÅ±ÖÂï»ÅÕ—Ö—’ÃÅÕïç—•Ω∏(ÄÄÄÅ±ÖÂï…M—Ö—’ÕÂïâ…Ω‹ËÅÏÅ°‘ËÄâÅ¡…Ωô•±ΩêÅôï≥•√µ”•Õîà∞Åï∏ËÄâ!Ω‹ÅÂΩ’»Å¡…Ωô•±îÅ•ÃÅâ’•±–àÅÙ∞(ÄÄÄÅ±ÖÂï…M—Ö—’ÕΩµ¡±ï—ïêËÅÏÅ°‘ËÄâ/•ÕËà∞Åï∏ËÄâΩµ¡±ï—ïêàÅÙ∞(ÄÄÄÅ±ÖÂï…M—Ö—’Õ%πA…Ωù…ïÕÃËÅÏÅ°‘ËÄâΩ±ÂÖµÖ—âÖ∏à∞Åï∏ËÄâ%∏Å¡…Ωù…ïÕÃàÅÙ∞(ÄÄÄÅ±ÖÂï…M—Ö—’ÕŸÖ•±Öâ±îËÅÏÅ°‘ËÄâ≥•…°ï”Dà∞Åï∏ËÄâŸÖ•±Öâ±îàÅÙ∞(ÄÄÄÅ±ÖÂï…M—Ö—’Õ1Ωç≠ïêËÅÏÅ°‘ËÄâkÖ…Ω±–à∞Åï∏ËÄâ1Ωç≠ïêàÅÙ∞(ÄÄÄÄººÅA…Ωô•±ïQÖâÃÉäPÅâ…•ëùîÄºÅ©Ω’…πï‰(ÄÄÄÅâ…•ëùïÂïâ…Ω‹ËÅÏÅ°‘ËÄâ/ŸŸï—≠ïÎDÅ≥•√•Ãà∞Åï∏ËÄâ9ï·–ÅâïÕ–ÅÖç—•Ω∏àÅÙ∞(ÄÄÄÅâ…•ëùï)Ω’…πï‰ËÅÏÅ°‘ËÄâÅ—îÅ’—Öêà∞Åï∏ËÄâeΩ’»Å©Ω’…πï‰àÅÙ∞(ÄÄÄÅâ…•ëùïÖ±±âÖç≠M—ÖùîËÅÏÅ°‘ËÄâ/ŸŸï—≠ïÎDÅ≥•√•Ãà∞Åï∏ËÄâ9ï·–ÅÕ—ï¿àÅÙ∞(ÄÄÄÅâ…•ëùï=¡—•ΩπÖ±QïÖµ!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ!ÑÅÕÈï…ï—ª•∞ÅçÕÖ¡Ö–¥ÅŸÖù‰ÅÕÈï…ŸïÈï—§Åª•Èï—…îÅ€Ö±—Öπ§∞ÅïÈ–ÅãÖ…µ•≠Ω»Åµïù—ï°ï—ïê∏à∞(ÄÄÄÄÄÅï∏ËÄâ%òÅÂΩ‘Å›Öπ–Å—ºÅÕ›•—ç†Å—ºÅ—ïÖ¥ÅΩ»ÅΩ…úÅµΩëî∞ÅÂΩ‘ÅçÖ∏ÅëºÅ•–ÅÖπÂ—•µî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅâ…•ëùï=¡—•ΩπÖ±QïÖµ—ÑËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÕÖ¡Ö–ΩÕÈï…ŸïÈï–Å•πìµ”ÖÕÑà∞(ÄÄÄÄÄÅï∏ËÄâM—Ö…–Å—ïÖ¥ΩΩ…úÅÕï—’¿à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÅA…Ωô•±ïQÖâÃÉäPÅÕ—ÖùîÅ±Öâï±Ã(ÄÄÄÅÕ—ÖùïMï±ôΩµ¡±ï—ïêËÅÏÅ°‘ËÄãYª•…”•≠ï≥•ÃÅØ•ÕËà∞Åï∏ËÄâMï±òÅçΩµ¡±ï—ïêàÅÙ∞(ÄÄÄÅÕ—Öùï=âÕï…Ÿï…Aïπë•πúËÅÏÅ°‘ËÄâ/Ò±œDÅŸ•ÕÕÈÖ©ï±Î•ÃÅôΩ±ÂÖµÖ—âÖ∏à∞Åï∏ËÄâ=âÕï…Ÿï»Å•∏Å¡…Ωù…ïÕÃàÅÙ∞(ÄÄÄÅÕ—ÖùïQïÖµ9Ω—)Ω•πïêËÅÏÅ°‘ËÄâ9•πçÃÅçÕÖ¡Ö–à∞Åï∏ËÄâ9ºÅ—ïÖ¥ÅÂï–àÅÙ∞(ÄÄÄÅÕ—ÖùïQïÖµAïπë•πù5ïµâï…ÃËÅÏÅ°‘ËÄâQÖùΩ≠…ÑÅ€Ö»à∞Åï∏ËÄâ]Ö•—•πúÅôΩ»Åµïµâï…ÃàÅÙ∞(ÄÄÄÅÕ—ÖùïQïÖµAÖ…—•Ö∞ËÅÏÅ°‘ËÄâÕÖ¡Ö–ÅÀ•ÕÈâï∏ÅØ•ÕËà∞Åï∏ËÄâQïÖ¥Å¡Ö…—•Ö±±‰Å…ïÖë‰àÅÙ∞(ÄÄÄÅÕ—ÖùïQïÖµIïÖë‰ËÅÏÅ°‘ËÄâÕÖ¡Ö–ÅØ•ÕËà∞Åï∏ËÄâQïÖ¥Å…ïÖë‰àÅÙ∞(ÄÄÄÅÕ—Öùï=…ùAÖ…—•Ö∞ËÅÏÅ°‘ËÄâMÈï…ŸïÈï–ÅÀ•ÕÈâï∏ÅØ•ÕËà∞Åï∏ËÄâ=…úÅ¡Ö…—•Ö±±‰Å…ïÖë‰àÅÙ∞(ÄÄÄÅÕ—Öùï=…ùIïÖë‰ËÅÏÅ°‘ËÄâMÈï…ŸïÈï–ÅØ•ÕËà∞Åï∏ËÄâ=…úÅ…ïÖë‰àÅÙ∞(ÄÄÄÅÕ—ÖùïMï±ô9Ω—M—Ö…—ïêËÅÏÅ°‘ËÄãYª•…”•≠ï≥•ÃÅ∑•úÅπï¥Å•πë’±–à∞Åï∏ËÄâMï±òÅπΩ–ÅÕ—Ö…—ïêàÅÙ∞(ÄÄÄÅÕ—ÖùïMï±ô%πA…Ωù…ïÕÃËÅÏÅ°‘ËÄãYª•…”•≠ï≥•ÃÅôΩ±ÂÖµÖ—âÖ∏à∞Åï∏ËÄâMï±òÅ•∏Å¡…Ωù…ïÕÃàÅÙ∞(ÄÄÄÄººÅA…Ωô•±ïQÖâÃÉäPÅAÅ¡…Ωô•±îÅç°Ö…Öç—ï»∏Å-Ö¡’ÈΩ—–Ä°µΩ—Ω»µÖ’ë•–Åÿ–∞Å%`Ä»§Ë(ÄÄÄÄººÅÑÉäyµÖùÖÃÅÌë•µÙàÅµΩπëÖ–ÅçÕÖ¨Å”•πÂ±ïùïÕï∏ÅµÖùÖÃÄ£ä&î‹¿§Åë•µïπÈßÕ≠…ÑÅµïù‰Å≠§(ÄÄÄÄººÄ°Ö±Ö——ÑÅÑÅ…ïÕ’±—ÃπâÖ±ÖπçïëA…Ωô•±îÅÑÅôÖ±±âÖç¨§∞ÅÑÅôï©≥Eì•ÃµµΩπëÖ–Å¡ïë•ú(ÄÄÄÄººÅçÕÖ¨ÅŸÖ≥ÕâÖ∏ÅÖ±ÖçÕΩπ‰Ä†–¿§∞Å94ÅôΩ…ìµ—Ω—–Åë•µïπÈßÕ…ÑÉäPÅÖËÅÖ±ÖçÕΩπ‰(ÄÄÄÄººÅµΩç•ΩπÖ±•”ÖÃÅÕ—Öâ•±•”ÖÃ∞Åπï¥Åôï©≥Eì•Õ§Å—ïÀÒ±ï–∏(ÄÄÄÅ¡…Ωô•±ï°Ö…Öç—ï…!•ù†ËÅÏÅ°‘ËÄâÅ¡…Ωô•±ΩêÅõDÅ≠Ö…Ö≠—ï…îËÅµÖùÖÃÅÌ—Ω¿≈ıÌ—Ω¿…M’ôô•·Ù∏à∞Åï∏ËÄâeΩ’»Å¡…Ωô•±îÅç°Ö…Öç—ï»ËÅ°•ù†ÅÌ—Ω¿≈ıÌ—Ω¿…M’ôô•·Ù∏àÅÙ∞(ÄÄÄÅ¡…Ωô•±ï°Ö…Öç—ï……Ω›—†ËÅÏÅ°‘ËÄàÅÌâΩ——ΩµÙÅ—ïÀÒ±ï”•∏ÅπÁµ±°Ö–Å”•»ÅÑÅôï©≥Eì•Õ…î∏à∞Åï∏ËÄàÅÌâΩ——ΩµÙÅ•ÃÅ›°ï…îÅù…Ω›—†Å¡Ω—ïπ—•Ö∞Å±•ïÃ∏àÅÙ∞(ÄÄÄÅ¡…Ωô•±ï°Ö…Öç—ï…QΩ¿…M’ôô•‡ËÅÏÅ°‘ËÄà∞ÅµÖùÖÃÅÌ±Öâï±Ùà∞Åï∏ËÄà∞Å°•ù†ÅÌ±Öâï±ÙàÅÙ∞(ÄÄÄÄººÅA…Ωô•±ïQÖâÃ(ÄÄÄÅ¡ÖÂ›Ö±±Uπ±Ωç¨ËÅÏÅ°‘ËÄâï±Ω±ìÖÃÉäPÅÌ¡…•çïÙà∞Åï∏ËÄâUπ±Ωç¨ÉäPÅÌ¡…•çïÙàÅÙ∞(ÄÄÄÅ¡ÖÂ›Ö±±Ωµ¡Ö…•ÕΩπQïÖÕï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•Õï¨ÉŸÕÕÈïŸï”•ÕîÅµïùµ’—Ö—©Ñ∞Å°ΩùÂÖ∏Å≥Ö—πÖ¨Å∑ÖÕΩ¨∞É•ÃÅ°Ω∞Å”•»Åï∞Åï—”E∞ÅÖËÉŸπØ•¡ïê∏à∞(ÄÄÄÄÄÅï∏ËÄâ=âÕï…Ÿï»ÅçΩµ¡Ö…•ÕΩ∏ÅÕ°Ω›ÃÅ°Ω‹ÅΩ—°ï…ÃÅÕïîÅÂΩ‘ÉäPÅÖπêÅ›°ï…îÅÂΩ’»ÅÕï±òµ•µÖùîÅë•Ÿï…ùïÃÅô…Ω¥Åï·—ï…πÖ∞ÅôïïëâÖç¨∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ°Ö…ï1•π≠Ω¡•ïêËÅÏÅ°‘ËÄâ1•π¨Å∑ÖÕΩ±ŸÑÅÑÅ€ÖüÕ±Ö¡…ÑÑà∞Åï∏ËÄâ1•π¨ÅçΩ¡•ïêÅ—ºÅç±•¡âΩÖ…êÑàÅÙ∞(ÄÄÄÅÕ°Ö…ï……Ω»ËÅÏÅ°‘ËÄâ!•âÑÅ”Ÿ…”•π–à∞Åï∏ËÄâ∏Åï……Ω»ÅΩçç’……ïêàÅÙ∞(ÄÄÄÄººÅM°Ö…ï5ΩëÖ∞(ÄÄÄÅÕ°Ö…ï5ΩëÖ±Q•—±îËÅÏÅ°‘ËÄâA…Ωô•∞ÅµïùΩÕÈ”ÖÕÑà∞Åï∏ËÄâM°Ö…îÅÂΩ’»Å¡…Ωô•±îàÅÙ∞(ÄÄÄÅÕ°Ö…ï…ïÖ—•πúËÅÏÅ°‘ËÄâ1•π¨Å≥•—…ï°ΩÎÖÕáäòà∞Åï∏ËÄâ…ïÖ—•πúÅ±•πØäòàÅÙ∞(ÄÄÄÅÕ°Ö…ïΩ¡Â1•π¨ËÅÏÅ°‘ËÄâ1•π¨Å∑ÖÕΩ≥ÖÕÑà∞Åï∏ËÄâΩ¡‰Å±•π¨àÅÙ∞(ÄÄÄÅÕ°Ö…ïΩ¡•ïêËÅÏÅ°‘ËÄâ7ÖÕΩ±ŸÑà∞Åï∏ËÄâΩ¡•ïêàÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±Ωµ¡Öç–ËÅÏÅ°‘ËÄâµÖ•∞à∞Åï∏ËÄâµÖ•∞àÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±1Öâï∞ËÅÏÅ°‘ËÄâµµÈï—–ÅïµÖ•∞µèµµîà∞Åï∏ËÄâIïç•¡•ïπ–ÅïµÖ•∞àÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±E…!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ±ï€•±âï∏ÅÑÅ¡…Ωô•∞Å±•π≠©îÉ•ÃÅïù‰ÅEHµØÕêÅ•ÃÅÕÈï…ï¡ï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅïµÖ•∞Å•πç±’ëïÃÅ—°îÅ¡…Ωô•±îÅ±•π¨ÅÖπêÅÑÅEHÅçΩëî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±A±Öçï°Ω±ëï»ËÅÏÅ°‘ËÄâπïŸçïúπ°‘à∞Åï∏ËÄâπÖµïçΩµ¡Öπ‰πçΩ¥àÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±MïπêËÅÏÅ°‘ËÄâ/Ò±ì•Ãà∞Åï∏ËÄâMïπêàÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±Mïπë•πúËÅÏÅ°‘ËÄâ/Ò±ì•œäòà∞Åï∏ËÄâMïπë•πüäòàÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±Mïπ—QºËÅÏÅ°‘ËÄâ±ØÒ±ë”Ò¨Å•ëîËà∞Åï∏ËÄâMïπ–Å—ºËàÅÙ∞(ÄÄÄÅÕ°Ö…ïπΩ—°ï…Iïç•¡•ïπ–ËÅÏÅ°‘ËÄâ7ÖÕ•¨ÅèµµÈï—–à∞Åï∏ËÄâπΩ—°ï»Å…ïç•¡•ïπ–àÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±%πŸÖ±•êËÅÏÅ°‘ËÄã%…€•πÂ—ï±ï∏ÅïµÖ•∞µèµ¥à∞Åï∏ËÄâ%πŸÖ±•êÅïµÖ•∞ÅÖëë…ïÕÃàÅÙ∞(ÄÄÄÅÕ°Ö…ïµÖ•±……Ω»ËÅÏÅ°‘ËÄâËÅïµÖ•∞ÅØÒ±ì•ÕîÅπï¥ÅÕ•≠ïÀÒ±–∏ÅÅ±•π≠ï–Åï—”E∞Å∑•úÅ≠•∑ÖÕΩ±°Ö—Ωê∏à∞Åï∏ËÄâQ°îÅïµÖ•∞ÅçΩ’±êÅπΩ–ÅâîÅÕïπ–∏ÅeΩ‘ÅçÖ∏ÅÕ—•±∞ÅçΩ¡‰Å—°îÅ±•π¨∏àÅÙ∞(ÄÄÄÅÕ°Ö…ïM—Ö—’Õç—•ŸîËÅÏÅ°‘ËÄâÅµïùΩÕÈ”ÖÕ§Å±•π¨ÅÖ≠”µÿà∞Åï∏ËÄâM°Ö…îÅ±•π¨Å•ÃÅÖç—•ŸîàÅÙ∞(ÄÄÄÅÕ°Ö…ïIïŸΩ≠ïM°Ω…–ËÅÏÅ°‘ËÄâY•ÕÕÈÖŸΩªÖÃà∞Åï∏ËÄâIïŸΩ≠îàÅÙ∞(ÄÄÄÅÕ°Ö…ïIïŸΩ≠ïΩπô•…µQ•—±îËÅÏÅ°‘ËÄâ	•È—ΩÕÖ∏ÅŸ•ÕÕÈÖŸΩπΩê¸à∞Åï∏ËÄâIïŸΩ≠îÅ—°•ÃÅÕ°Ö…î¸àÅÙ∞(ÄÄÄÅÕ°Ö…ïIïŸΩ≠ïΩπô•…µ	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ≠ΩÀÖââ§Å±•π¨ÅÖÈΩππÖ∞ÅµïùÕÎ≈π•¨∞É•ÃÅ”Ÿâã§Åπï¥ÅπÂ•—©ÑÅµïúÅÑÅ¡…Ωô•±ΩëÖ–∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ¡…ïŸ•Ω’ÃÅ±•π¨Å›•±∞ÅÕ—Ω¿Å›Ω…≠•πúÅ•µµïë•Ö—ï±‰ÅÖπêÅ›•±∞ÅπºÅ±Ωπùï»ÅΩ¡ï∏ÅÂΩ’»Å¡…Ωô•±î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ°Ö…ïIïŸΩ≠ïΩπô•…¥ËÅÏÅ°‘ËÄâ%ùï∏∞ÅŸ•ÕÕÈÖŸΩπΩ¥à∞Åï∏ËÄâeïÃ∞Å…ïŸΩ≠îàÅÙ∞(ÄÄÄÅÕ°Ö…ïIïŸΩ≠ïêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅµïùΩÕÈ”ÖÃÅŸ•ÕÕÈÖŸΩπŸÑÉäPÅÑÅ≠ΩÀÖââ§Å±•π¨Å∑Ö»Åπï¥Å∑≈ØŸë•¨∏à∞(ÄÄÄÄÄÅï∏ËÄâM°Ö…•πúÅ…ïŸΩ≠ïêÉäPÅ—°îÅ¡…ïŸ•Ω’ÃÅ±•π¨ÅπºÅ±Ωπùï»Å›Ω…≠Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÅM°Ö…îÅ¡ÖùîÉäPÅ…ïŸΩ≠ïêΩï·¡•…ïêÅ±•π¨(ÄÄÄÅÕ°Ö…ï·¡•…ïëÂïâ…Ω‹ËÅÏÅ°‘ËÄâ5ïùΩÕÈ—Ω—–Å¡…Ωô•∞à∞Åï∏ËÄâM°Ö…ïêÅ¡…Ωô•±îàÅÙ∞(ÄÄÄÅÕ°Ö…ï·¡•…ïëQ•—±îËÅÏÅ°‘ËÄâËÅÑÅ±•π¨Å∑Ö»Åπï¥É•∞à∞Åï∏ËÄâQ°•ÃÅ±•π¨Å•ÃÅπºÅ±Ωπùï»ÅÖç—•ŸîàÅÙ∞(ÄÄÄÅÕ°Ö…ï·¡•…ïëïÕåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ¡…Ωô•∞Å—’±Ö©ëΩπΩÕÑÅŸ•ÕÕÈÖŸΩπ—ÑÅÑÅµïùΩÕÈ”ÖÕ–∞ÅŸÖù‰ÅÑÅ±•π¨É•…€•πÂ—ï±ï∏∏Å!ÑÅØµ€ÖπçÕ§ÅŸÖù‰ÅÑÅÕÖ´Ö–Å¡…Ωô•±Ωë…Ñ∞Åª•£Öπ‰Å¡ï…åÅÖ±Ö—–Å≠•”Ÿ±—°ï—ïêÅÑÅôï±∑•À•Õ–∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ¡…Ωô•±îÅΩ›πï»Å…ïŸΩ≠ïêÅÕ°Ö…•πú∞ÅΩ»Å—°îÅ±•π¨Å•ÃÅ•πŸÖ±•ê∏Å%òÅÂΩ‘ù…îÅç’…•Ω’ÃÅÖâΩ’–ÅÂΩ’»ÅΩ›∏Å¡…Ωô•±î∞ÅÂΩ‘ÅçÖ∏ÅçΩµ¡±ï—îÅ—°îÅÖÕÕïÕÕµïπ–Å•∏ÅÑÅôï‹Åµ•π’—ïÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ°Ö…ï·¡•…ïë—ÖQ…‰ËÅÏÅ°‘ËÄâ-•¡ÀÕãÖ±Ω¥ÅÑÅ—ïÕÈ—ï–à∞Åï∏ËÄâQ…‰Å—°îÅÖÕÕïÕÕµïπ–àÅÙ∞(ÄÄÄÅÕ°Ö…ï·¡•…ïë—ÖM•ùπ%∏ËÅÏÅ°‘ËÄâ	ï©ï±ïπ—≠ïÎ•Ãà∞Åï∏ËÄâM•ù∏Å•∏àÅÙ∞(ÄÄÄÄººÅM°Ö…îÅ¡ÖùîÉäPÅôΩΩ—ï»ÅQÅ≠•©ï±ïπ—≠ïÈï—–Å≥Ö—ΩùÖ”ÕπÖ¨(ÄÄÄÅÕ°Ö…ï—ÖQ•—±îËÅÏÅ°‘ËÄâ7•úÅπ•πçÃÅ—…•—ÑÅ¡…Ωô•±Ωê¸à∞Åï∏ËÄâΩ∏ù–Å°ÖŸîÅÑÅ—…•—ÑÅ¡…Ωô•±îÅÂï–¸àÅÙ∞(ÄÄÄÅÕ°Ö…ï—ÖïÕåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ;•£Öπ‰Å¡ï…åÅÖ±Ö—–Å≠•”Ÿ±—°ï—ïêÅÑÅôï±∑•À•Õ–∞É•ÃÅµïù≠Ö¡ΩêÅÑÅÕÖ´Ö–ÅÕÈï∑•±Â•œ•ú¥É•ÃÅµ’π≠ÖÕ”µ±’Ãµ¡…Ωô•±ΩëÖ–∏à∞(ÄÄÄÄÄÅï∏ËÄâΩµ¡±ï—îÅ—°îÅÖÕÕïÕÕµïπ–Å•∏ÅÑÅôï‹Åµ•π’—ïÃÅÖπêÅùï–ÅÂΩ’»ÅΩ›∏Å¡ï…ÕΩπÖ±•—‰ÅÖπêÅ›Ω…¨µÕ—Â±îÅ¡…Ωô•±î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ°Ö…ï—Ö	’——Ω∏ËÅÏÅ°‘ËÄâ±Ø•ÕÎµ—ï¥ÅÑÅÕÖ´Ö—ΩµÖ–à∞Åï∏ËÄâ…ïÖ—îÅµ‰ÅΩ›∏àÅÙ∞(ÄÄÄÅ¡ï…ÕΩπÖ±•—ÂA…Ωô•±ïÖ±±âÖç¨ËÅÏÅ°‘ËÄâMÈï∑•±Â•œ•ù¡…Ωô•∞à∞Åï∏ËÄâAï…ÕΩπÖ±•—‰Å¡…Ωô•±îàÅÙ∞(ÄÄÄÄººÅQïÖµIΩ±ïQïÖÕï»(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…Âïâ…Ω‹ËÅÏÅ°‘ËÄâçÕÖ¡Ö—ÕÈï…ï¡ï¨à∞Åï∏ËÄâ—ïÖ¥Å…Ω±ïÃàÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…Õ—•µÖ—îËÅÏÅ°‘ËÄââïçÕ≥•Ãà∞Åï∏ËÄâïÕ—•µÖ—îàÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…Q•—±îËÅÏÅ°‘ËÄâYÖ≥ÕÕÎµªƒÅçÕÖ¡Ö—ÕÈï…ï¡ï•êà∞Åï∏ËÄâeΩ’»Å±•≠ï±‰Å—ïÖ¥Å…Ω±ïÃàÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…ïÕåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâMÈï∑•±Â•œ•ù¡…Ωô•±ΩêÅÖ±Ö¡´Ö∏Å€Ö…°Ö”ÕÖ∏ÅïÈï¨ÅÑÅçÕÖ¡Ö—ÕÈï…ï¡ï¨Å•±±ïπï¨Å°ΩÈÎÖêÅ±ïù•πØÖâà∏ÅÅ¡Ωπ—ΩÃÅ∑•À•Õ°ïËÅ”Ÿ±—ÕêÅ≠§ÅÑÅçÕÖ¡Ö—ÕÈï…ï¿µØ•…ìGµŸï–∏à∞(ÄÄÄÄÄÅï∏ËÄâ	ÖÕïêÅΩ∏ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±î∞Å—°ïÕîÅ—ïÖ¥Å…Ω±ïÃÅô•–ÅÂΩ‘ÅâïÕ–∏ÅΩµ¡±ï—îÅ—°îÅ—ïÖ¥µ…Ω±îÅ≈’ïÕ—•ΩππÖ•…îÅôΩ»ÅÖ∏Åï·Öç–ÅµïÖÕ’…ïµïπ–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…A…•µÖ…‰ËÅÏÅ°‘ËÄâ±œEë±ïùïÃà∞Åï∏ËÄâA…•µÖ…‰àÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…MïçΩπëÖ…‰ËÅÏÅ°‘ËÄâ7ÖÕΩë±ÖùΩÃà∞Åï∏ËÄâMïçΩπëÖ…‰àÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…M’¡¡Ω…—•πúËÅÏÅ°‘ËÄâ-•ïü•ÕÎµ”Dà∞Åï∏ËÄâM’¡¡Ω…—•πúàÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…%πôΩ9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅïù‰ÅâïçÕ≥•ÃÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩëãÕ∞∏ÅÅ—ï±©ïÃÅçÕÖ¡Ö—ÕÈï…ï¿ÅØ•…ìGµÿÅ≠•”Ÿ±”•œ•Ÿï∞ÅçÕÖ¡Ö—ÕÈ•π”ƒÉŸÕÕÈï°ÖÕΩπ≥µ”ÖÃÅ•ÃÅï≥•…°ï”E€§Å€Ö±•¨∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅ•ÃÅÖ∏ÅïÕ—•µÖ—îÅô…Ω¥ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±î∏ÅΩµ¡±ï—•πúÅ—°îÅô’±∞Å—ïÖ¥µ…Ω±îÅ≈’ïÕ—•ΩππÖ•…îÅ’π±Ωç≠ÃÅ—ïÖ¥µ±ïŸï∞ÅçΩµ¡Ö…•ÕΩ∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïQïÖÕï…)Ω•πQïÖ¥ËÅÏÅ°‘ËÄâÕÖ¡Ö—âÑÅ≥•√•Ãà∞Åï∏ËÄâ)Ω•∏ÅÑÅ—ïÖ¥àÅÙ∞(ÄÄÄÄººÅ•µïπÕ•Ωπ=Ÿï…Ÿ•ï‹(ÄÄÄÅΩŸï…Ÿ•ï›Âïâ…Ω‹ËÅÏÅ°‘ËÄãÖ——ï≠•π”•Ãà∞Åï∏ËÄâΩŸï…Ÿ•ï‹àÅÙ∞(ÄÄÄÅΩŸï…Ÿ•ï›Q•—±îËÅÏÅ°‘ËÄâMÈï∑•±Â•œ•ù¡…Ωô•±Ωêà∞Åï∏ËÄâeΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±îàÅÙ∞(ÄÄÄÄººÅ•µïπÕ•Ωπï—Ö•∞(ÄÄÄÅëï—Ö•±Âïâ…Ω‹ËÅÏÅ°‘ËÄâë•µïπÈßÕ¨à∞Åï∏ËÄâë•µïπÕ•ΩπÃàÅÙ∞(ÄÄÄÅëï—Ö•±Q•—±îËÅÏÅ°‘ËÄâÄÿÅë•µïπÈßÃÅÀ•ÕÈ±ï—ïÕï∏à∞Åï∏ËÄàÿÅë•µïπÕ•ΩπÃÅ•∏Åëï—Ö•∞àÅÙ∞(ÄÄÄÄººÅ=âÕï…Ÿï…Ωµ¡Ö…•ÕΩ∏(ÄÄÄÅΩâÕï…Ÿï…%πŸ•—ïQ•—±îËÅÏÅ°‘ËÄâ#µŸ®ÅµïúÄÀäL‘Åïµâï…–ÅΩâÕï…Ÿï…πï¨à∞Åï∏ËÄâ%πŸ•—îÄÀäL‘Å¡ïΩ¡±îÅÖÃÅΩâÕï…Ÿï…ÃàÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…%πŸ•—ï	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÉŸÕÕÈï°ÖÕΩπ≥µ”ÖÃÅçÕÖ¨ÅÖ≠≠Ω»Å©ï±ïπ•¨Åµïú∞Å°ÑÅ±ïùÖ≥ÖâàÄ»Å≠•”Ÿ±”Ÿ—–ÅΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•ÃÅâó•…≠ïÈï—–∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅçΩµ¡Ö…•ÕΩ∏ÅÖ¡¡ïÖ…ÃÅΩπçîÅÖ–Å±ïÖÕ–Ä»ÅçΩµ¡±ï—ïêÅΩâÕï…Ÿï»ÅÖÕÕïÕÕµïπ—ÃÅ°ÖŸîÅâïï∏Å…ïçï•Ÿïê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…5ÖπÖùï%πŸ•—ïÃËÅÏÅ°‘ËÄâ5ïù£µ€Õ¨Å≠ïÈï≥•Õîà∞Åï∏ËÄâ5ÖπÖùîÅ•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…Ω’π—	ÖÕ•ÃËÅÏÅ°‘ËÄâÌçΩ’π—ÙÅΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•ÃÉÖ—±ÖùÑÅÖ±Ö¡´Ö∏à∞Åï∏ËÄâ	ÖÕïêÅΩ∏ÅÌçΩ’π—ÙÅΩâÕï…Ÿï»ÅÖÕÕïÕÕµïπ—ÃàÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…ΩΩë±•ùπµïπ–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ+ÃÅïùÂïÎ•ÃÉäPÅÖËÉŸπØ•¡ïêÉ•ÃÅÖËÅΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•Õï¨ÅØŸÈï∞ÉÖ±±πÖ¨ÅïùÂ∑ÖÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâΩΩêÅÖ±•ùπµïπ–ÉäPÅÂΩ’»ÅÕï±òµ•µÖùîÅÖπêÅΩâÕï…Ÿï»ÅôïïëâÖç¨ÅÖ…îÅç±ΩÕï±‰ÅµÖ—ç°ïê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…Mï±ô!•ù°ï»ËÅÏÅ°‘ËÄâQîÅµÖùÖÕÖââ…ÑÉ•…”•≠ï±ïêÅµÖùÖëÖ–∞Åµ•π–ÅÖ°ΩùÂÖ∏Å∑ÖÕΩ¨É•…”•≠ï±πï¨Å”•ùïê∏à∞Åï∏ËÄâeΩ‘Å…Ö—îÅÂΩ’…Õï±òÅ°•ù°ï»Å—°Ö∏ÅΩâÕï…Ÿï…ÃÅëº∏àÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…=âÕ!•ù°ï»ËÅÏÅ°‘ËÄâ7ÖÕΩ¨ÅµÖùÖÕÖââ…ÑÉ•…”•≠ï±πï¨Å”•ùïê∞Åµ•π–Å—îÅÕÖ´Ö–ÅµÖùÖëÖ–∏à∞Åï∏ËÄâ=âÕï…Ÿï…ÃÅ…Ö—îÅÂΩ‘Å°•ù°ï»Å—°Ö∏ÅÂΩ‘Å…Ö—îÅÂΩ’…Õï±ò∏àÅÙ∞(ÄÄÄÄººÅÖ…ïï…•–(ÄÄÄÅçÖ…ïï…•—1Öâï∞ËÅÏÅ°‘ËÄâ%±±ïÕÈ≠ïì•Ãà∞Åï∏ËÄâ•–àÅÙ∞(ÄÅÙ∞(ÄÅ•πŸ•—Ö—•ΩπÃËÅÏ(ÄÄÄÅïÂïâ…Ω‹ËÅÏÅ°‘ËÄâY•ÕÕÈÖ©ï±Î•Õ§Åµïù£µ€Õ¨à∞Åï∏ËÄâïïëâÖç¨Å•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅ—•—±îËÅÏÅ°‘ËÄâ/•…êÅ≠§Å∑ÖÕΩ¨Å€•±ï∑•πÁ•–à∞Åï∏ËÄâï–ÅΩ—°ï…ÃúÅ¡ï…Õ¡ïç—•ŸîàÅÙ∞(ÄÄÄÅÕ’àËÅÏÅ°‘ËÄâ#µŸêÅµïúÅ≠Ω±≥•üÖ•ëÖ–∞ÅâÖÀÖ—Ö•ëÖ–ÅŸÖù‰ÅçÕÖ≥Öë—Öù©Ö•ëÖ–Åïù‰ÅÀŸŸ•êÉ•…”•≠ï≥•Õ…î∏ÅÅŸ•ÕÕÈÖ©ï±Î•Õï¨Åª•ÿÅª•±ØÒ∞Å©ï±ïππï¨Åµïú∞É•ÃÉŸÕÕÈïœµ—ï—–ÉÖ—±ÖùΩ≠Ö–Åµ’—Ö—’π¨∏à∞Åï∏ËÄâ%πŸ•—îÅÂΩ’»ÅçΩ±±ïÖù’ïÃ∞Åô…•ïπëÃ∞ÅΩ»ÅôÖµ•±‰Å—ºÅÑÅÕ°Ω…–ÅÖÕÕïÕÕµïπ–∏ÅïïëâÖç¨Å•ÃÅÖπΩπÂµΩ’ÃÉäPÅ›îÅÕ°Ω‹ÅÖùù…ïùÖ—ïêÅÖŸï…ÖùïÃ∏àÅÙ∞(ÄÄÄÅÕ—Ö—Iïçï•ŸïêËÅÏÅ°‘ËÄââó•…≠ïÈï—–à∞Åï∏ËÄâ…ïçï•ŸïêàÅÙ∞(ÄÄÄÅÕ—Ö—Aïπë•πúËÅÏÅ°‘ËÄâõÒùüEâï∏à∞Åï∏ËÄâ¡ïπë•πúàÅÙ∞(ÄÄÄÅÕ—Ö—Mïπ–ËÅÏÅ°‘ËÄâµïù£µ€ÃÅï±ØÒ±ëŸîà∞Åï∏ËÄâ•πŸ•—Ö—•ΩπÃÅÕïπ–àÅÙ∞(ÄÄÄÅ•πôΩ9ïïëïêËÅÏÅ°‘ËÄâËÉŸÕÕÈï°ÖÕΩπ≥µ”ÖÕ°ΩËÅ±ïùÖ≥ÖâàÄ»ÅŸ•ÕÕÈÖ©ï±Î•ÃÅ≠ï±∞∏ÅÅŸ•ÕÕÈÖ©ï±Î•Õï¨Åª•ÿÅª•±ØÒ∞Å©ï±ïππï¨ÅµïúÉäPÅçÕÖ¨ÉŸÕÕÈïœµ—ï—–ÉÖ—±ÖùΩ≠Ö–Åµ’—Ö—’π¨∏à∞Åï∏ËÄâeΩ‘ÅπïïêÅÖ–Å±ïÖÕ–Ä»Å…ïÕ¡ΩπÕïÃÅôΩ»ÅçΩµ¡Ö…•ÕΩ∏∏ÅïïëâÖç¨Å•ÃÅÖπΩπÂµΩ’ÃÉäPÅ›îÅΩπ±‰ÅÕ°Ω‹ÅÖùù…ïùÖ—ïêÅÖŸï…ÖùïÃ∏àÅÙ∞(ÄÄÄÅ•πôΩ9ïïëïë8ËÅÏÅ°‘ËÄâËÉŸÕÕÈï°ÖÕΩπ≥µ”ÖÕ°ΩËÅ±ïùÖ≥ÖâàÅÌµ•πÙÅŸ•ÕÕÈÖ©ï±Î•ÃÅ≠ï±∞∏ÅÅŸ•ÕÕÈÖ©ï±Î•Õï¨Åª•ÿÅª•±ØÒ∞Å©ï±ïππï¨ÅµïúÉäPÅçÕÖ¨ÉŸÕÕÈïœµ—ï—–ÉÖ—±ÖùΩ≠Ö–Åµ’—Ö—’π¨∏à∞Åï∏ËÄâeΩ‘ÅπïïêÅÖ–Å±ïÖÕ–ÅÌµ•πÙÅ…ïÕ¡ΩπÕïÃÅôΩ»ÅçΩµ¡Ö…•ÕΩ∏∏ÅïïëâÖç¨Å•ÃÅÖπΩπÂµΩ’ÃÉäPÅ›îÅΩπ±‰ÅÕ°Ω‹ÅÖùù…ïùÖ—ïêÅÖŸï…ÖùïÃ∏àÅÙ∞(ÄÄÄÅ•πôΩIïÖë‰ËÅÏÅ°‘ËÄâŸ•ÕÕÈÖ©ï±Î•ÃÅâó•…≠ïÈï—–ÉäPÅÖËÉŸÕÕÈï°ÖÕΩπ≥µ”ÖÃÅï≥•…°ï”DÅÖËÉYÕÕÈï°ÖÕΩπ≥µ”ÖÃÅ—ÖâΩ∏∏à∞Åï∏ËÄâ…ïÕ¡ΩπÕïÃÅ…ïçï•ŸïêÉäPÅçΩµ¡Ö…•ÕΩ∏ÅÖŸÖ•±Öâ±îÅΩ∏Å—°îÅΩµ¡Ö…îÅ—Öà∏àÅÙ∞(ÄÄÄÅôΩ…µQ•—±îËÅÏÅ°‘ËÄãi®Åµïù£µ€ÃÅ≥•—…ï°ΩÎÖÕÑà∞Åï∏ËÄâ…ïÖ—îÅπï‹Å•πŸ•—Ö—•Ω∏àÅÙ∞(ÄÄÄÅôΩ…µA±Öçï°Ω±ëï»ËÅÏÅ°‘ËÄâµÖ•∞Åèµ¥Ä°Ω¡ç•ΩªÖ±•Ã§à∞Åï∏ËÄâµÖ•∞ÅÖëë…ïÕÃÄ°Ω¡—•ΩπÖ∞§àÅÙ∞(ÄÄÄÅôΩ…µM’âµ•–ËÅÏÅ°‘ËÄâ3•—…ï°ΩÎÖÃà∞Åï∏ËÄâ…ïÖ—îàÅÙ∞(ÄÄÄÅôΩ…µ!•π—1•π¨ËÅÏÅ°‘ËÄâù‰Å±•π¨ÉäPÅïù‰Å≠•”Ÿ±”D∏ÅµÖ•∞Åª•±ØÒ∞Å—îÅΩÕÈ—ΩêÅµïúÅÑÅ±•π≠ï–∏à∞Åï∏ËÄâ=πîÅ±•π¨ÉäPÅΩπîÅ…ïÕ¡Ωπëïπ–∏Å]•—°Ω’–ÅïµÖ•∞ÅÂΩ‘ÅÕ°Ö…îÅ—°îÅ±•π¨ÅÂΩ’…Õï±ò∏àÅÙ∞(ÄÄÄÅôΩ…µ!•π—µÖ•∞ËÅÏÅ°‘ËÄâµÖ•∞Åèµ¥ÅµïùÖìÖœÖŸÖ∞Åµ§ÅØÒ±ë´Ò¨Å≠§ÅÑÅµïù£µ€Õ–∏à∞Åï∏ËÄâ]•—†ÅÖ∏ÅïµÖ•∞Å›îù±∞ÅÕïπêÅ—°îÅ•πŸ•—Ö—•Ω∏∏àÅÙ∞(ÄÄÄÅïµ¡—ÂQ•—±îËÅÏÅ°‘ËÄâ7•úÅπ•πçÃÅµïù£µ€Õêà∞Åï∏ËÄâ9ºÅ•πŸ•—Ö—•ΩπÃÅÂï–àÅÙ∞(ÄÄÄÅïµ¡—ÂM’àËÅÏÅ°‘ËÄâ!ΩÈËÅ≥•—…îÅïùÂï–ÅÑÅôïπ—§É≈…±Ö¡¡Ö∞à∞Åï∏ËÄâ…ïÖ—îÅΩπîÅ›•—†Å—°îÅôΩ…¥ÅÖâΩŸîàÅÙ∞(ÄÄÄÅÕ—Ö—’ÕΩµ¡±ï—ïêËÅÏÅ°‘ËÄâ-•”Ÿ±—Ÿîà∞Åï∏ËÄâΩµ¡±ï—ïêàÅÙ∞(ÄÄÄÅÕ—Ö—’ÕAïπë•πúËÅÏÅ°‘ËÄâ[Ö…Ö≠ΩÈ•¨à∞Åï∏ËÄâ]Ö•—•πúàÅÙ∞(ÄÄÄÅÖç—•ΩπIïµ•πêËÅÏÅ°‘ËÄâµ≥•≠ïÈ—ï”Dà∞Åï∏ËÄâIïµ•πêàÅÙ∞(ÄÄÄÅ±Ωç≠ïëQ•—±îËÅÏÅ°‘ËÄâY•ÕÕÈÖ©ï±Î•Õ§Åµïù£µ€Õ¨à∞Åï∏ËÄâïïëâÖç¨Å•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅ±Ωç≠ïëM’àËÅÏÅ°‘ËÄâ/•…êÅµïúÅ≠Ω±≥•üÖ•ëÖ–∞ÅâÖÀÖ—Ö•ëÖ–ÅŸÖù‰ÅçÕÖ≥Öë—Öù©Ö•ëÖ–∞Å°Ωù‰É•…”•≠ï±©ïπï¨Å”•ùïêÉäPÉ•ÃÅª•ÈêÅµïú∞Å°ΩùÂÖ∏ÅŸ•ÕÈΩπÂ’∞ÅÖËÉŸπØ•¡ïêÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•œ•°ïË∏à∞Åï∏ËÄâÕ¨ÅÂΩ’»ÅçΩ±±ïÖù’ïÃ∞Åô…•ïπëÃ∞ÅΩ»ÅôÖµ•±‰Å—ºÅ…Ö—îÅÂΩ‘ÉäPÅÖπêÅÕïîÅ°Ω‹ÅÂΩ’»ÅÕï±òµ•µÖùîÅçΩµ¡Ö…ïÃÅ—ºÅΩ—°ï…ÃúÅôïïëâÖç¨∏àÅÙ∞(ÄÄÄÅ±Ωç≠ïë—ÑËÅÏÅ°‘ËÄâA±’ÃÅôï±Ω±ìÖÕÑÉäPÉä
+∞‰à∞Åï∏ËÄâUπ±Ωç¨ÅA±’ÃÉäPÉä
+∞‰àÅÙ∞(ÄÄÄÅù…Ω’¡Iïçï•ŸïêËÅÏÅ°‘ËÄâ	ó•…≠ïÈï—–à∞Åï∏ËÄâIïçï•ŸïêàÅÙ∞(ÄÄÄÅù…Ω’¡Aïπë•πúËÅÏÅ°‘ËÄâÒùüEâï∏à∞Åï∏ËÄâAïπë•πúàÅÙ∞(ÄÄÄÅ…ïçï•ŸïëMïç—•Ω∏ËÅÏÅ°‘ËÄâ	ó•…≠ïÎDÅµïù£µ€Õ¨à∞Åï∏ËÄâIïçï•ŸïêÅ•πŸ•—Ö—•ΩπÃàÅÙ∞(ÄÄÄÅ±•π≠%πŸ•—îËÅÏÅ°‘ËÄâ1•π¨Åµïù£µ€Ãà∞Åï∏ËÄâ1•π¨Å•πŸ•—Ö—•Ω∏àÅÙ∞(ÄÄÄÅïµÖ•±%πŸ•—îËÅÏÅ°‘ËÄâµÖ•∞Åµïù£µ€Ãà∞Åï∏ËÄâµÖ•∞Å•πŸ•—Ö—•Ω∏àÅÙ∞(ÄÄÄÅô•±±%∏ËÅÏÅ°‘ËÄâ-•”Ÿ±”Ÿ¥à∞Åï∏ËÄâ•±∞Å•∏àÅÙ∞(ÄÄÄÅ±•µ•—IïÖç°ïêËÅÏÅ°‘ËÄâ≥•…—ïêÅÖËÄ‘Åµïù£µ€ÃÅ±•µ•—ï–∏à∞Åï∏ËÄâeΩ‘ùŸîÅ…ïÖç°ïêÅ—°îÄ‘Å•πŸ•—Ö—•Ω∏Å±•µ•–∏àÅÙ∞(ÄÄÄÅï……Ω…ïπï…•åËÅÏÅ°‘ËÄâ!•âÑÅ”Ÿ…”•π–à∞Åï∏ËÄâ∏Åï……Ω»ÅΩçç’……ïêàÅÙ∞(ÄÄÄÅçΩ¡ÂÖ•±ïêËÅÏÅ°‘ËÄâ7ÖÕΩ≥ÖÃÅÕ•≠ï…—ï±ï∏à∞Åï∏ËÄâΩ¡‰ÅôÖ•±ïêàÅÙ∞(ÄÄÄÅëï±ï—ïÖ•±ïêËÅÏÅ°‘ËÄâSŸ…≥•ÃÅÕ•≠ï…—ï±ï∏à∞Åï∏ËÄâï±ï—îÅôÖ•±ïêàÅÙ∞(ÄÄÄÅçΩ¡•ïêËÅÏÅ°‘ËÄâ7ÖÕΩ±ŸÑÑà∞Åï∏ËÄâΩ¡•ïêÑàÅÙ∞(ÄÄÄÅ±•π≠	’——Ω∏ËÅÏÅ°‘ËÄâ1•π¨à∞Åï∏ËÄâ1•π¨àÅÙ∞(ÄÄÄÅ≈…±–ËÅÏÅ°‘ËÄâEHµØÕêÅÖËÅΩâÕï…Ÿï»µµïù£µ€ÃÅ±•π≠°ïËà∞Åï∏ËÄâEHÅçΩëîÅôΩ»Å—°îÅΩâÕï…Ÿï»Å•πŸ•—îÅ±•π¨àÅÙ∞(ÄÄÄÅ≈…!•π–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ5’—ÖÕêÅµïúÅÑÅµïù£µŸΩ——πÖ¨ÉäPÅÑÅ—ï±ïôΩπ´ÖŸÖ∞ÅâïΩ±ŸÖÕŸÑÅïùÂãE∞ÅÑÅ≠•”Ÿ±”DÅΩ±ëÖ±…ÑÅ©’–∏à∞(ÄÄÄÄÄÅï∏ËÄâM°Ω‹Å•–Å—ºÅÂΩ’»Å•πŸ•—ïîÉäPÅÕçÖππ•πúÅ•–Å—Ö≠ïÃÅ—°ï¥ÅÕ—…Ö•ù°–Å—ºÅ—°îÅ≈’ïÕ—•ΩππÖ•…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕïπ—1Öâï∞ËÅÏÅ°‘ËÄâ±ØÒ±ëŸîà∞Åï∏ËÄâMïπ–àÅÙ∞(ÄÄÄÅ…ïçï•Ÿïë1Öâï∞ËÅÏÅ°‘ËÄâ	ó•…≠ïÈï—–à∞Åï∏ËÄâIïçï•ŸïêàÅÙ∞(ÄÄÄÅÖπΩπÂµΩ’ÃËÅÏÅ°‘ËÄâ;•Ÿ—ï±ï∏à∞Åï∏ËÄâπΩπÂµΩ’ÃàÅÙ∞(ÄÄÄÅÕ—Ö—’ÕÖπçï±ïêËÅÏÅ°‘ËÄâY•ÕÕÈÖŸΩπŸÑà∞Åï∏ËÄâÖπçï±ïêàÅÙ∞(ÄÄÄÅÕ—Ö—’Õ·¡•…ïêËÅÏÅ°‘ËÄâ1ï´Ö…–à∞Åï∏ËÄâ·¡•…ïêàÅÙ∞(ÄÄÄÅÕ—Ö—’ÕAïπë•πù1Ω›ï»ËÅÏÅ°‘ËÄâÒùüEâï∏à∞Åï∏ËÄâAïπë•πúàÅÙ∞(ÄÄÄÅÕ—Ö—’Õ›Ö•—•πù¡¡…ΩŸÖ∞ËÅÏÅ°‘ËÄâ+Õ€Ö°ÖùÁÖÕ…ÑÅ€Ö»à∞Åï∏ËÄâ›Ö•—•πúÅÖ¡¡…ΩŸÖ∞àÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ïMïç—•ΩπQ•—±îËÅÏÅ°‘ËÄâ-Ω±≥•ùÑÅµïù£µ€ÖÕÑÅ±•Õ”ÖãÕ∞à∞Åï∏ËÄâ%πŸ•—îÅÑÅçΩ±±ïÖù’îÅô…Ω¥Å—°îÅ±•Õ–àÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ïMïç—•Ωπ!•π–ËÅÏÅ°‘ËÄâÅÕÈï…ŸïÈï—ïêÅ—Öù©Ö§ÅØŸÎÒ∞Å€Ö±ÖÕÈ—°Ö—ÕËÉäPÅÑÅçÕÖ¡Ö—”Ö…ÕÖ•êÅï≥Ÿ∞∏ÅÅ≠Ω±≥•ùÑÅîµµÖ•±–É•ÃÅÖ¡¿∑•…—ïœµ”•Õ–Å≠Ö¿∏à∞Åï∏ËÄâ°ΩΩÕîÅô…Ω¥ÅÂΩ’»ÅΩ…ùÖπ•ÈÖ—•Ω∏ùÃÅµïµâï…ÃÉäPÅ—ïÖµµÖ—ïÃÅô•…Õ–∏ÅQ°ï‰ù±∞Åùï–ÅÖ∏ÅïµÖ•∞ÅÖπêÅÖ∏Å•∏µÖ¡¿ÅπΩ—•ô•çÖ—•Ω∏∏àÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ïMïÖ…ç°A±Öçï°Ω±ëï»ËÅÏÅ°‘ËÄâ-ï…ïœ•ÃÅª•ÿÅÕÈï…•π”äòà∞Åï∏ËÄâMïÖ…ç†Åâ‰ÅπÖµóäòàÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ïQïÖµµÖ—ï	ÖëùîËÅÏÅ°‘ËÄâçÕÖ¡Ö—”Ö…Ãà∞Åï∏ËÄâ—ïÖµµÖ—îàÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ï%πŸ•—ïë	ÖëùîËÅÏÅ°‘ËÄâ∑Ö»Åµïù£µŸ—Öêà∞Åï∏ËÄâÖ±…ïÖë‰Å•πŸ•—ïêàÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ï%πŸ•—ï	’——Ω∏ËÅÏÅ°‘ËÄâ5ïù£µŸΩ¥à∞Åï∏ËÄâ%πŸ•—îàÅÙ∞(ÄÄÄÅçΩ±±ïÖù’ïµ¡—‰ËÅÏÅ°‘ËÄâ9•πçÃÅµïù£µŸ°Ö”ÃÅ≠Ω±≥•ùÑ∏à∞Åï∏ËÄâ9ºÅçΩ±±ïÖù’ïÃÅÖŸÖ•±Öâ±îÅ—ºÅ•πŸ•—î∏àÅÙ∞(ÄÄÄÅï·—ï…πÖ±Mïç—•ΩπQ•—±îËÅÏÅ°‘ËÄâ/Ò±œDÅµïù£µ€ÃÄ°îµµÖ•∞§à∞Åï∏ËÄâ·—ï…πÖ∞Å•πŸ•—îÄ°ïµÖ•∞§àÅÙ∞(ÄÄÄÅï·—ï…πÖ±¡¡…ΩŸÖ±!•π–ËÅÏÅ°‘ËÄâÅô’”ÃÅ∑•À•ÃµØŸ»ÅÕÈÖãÖ±ÂÑÅÕÈï…•π–ÅÑÅØÒ±œDÅµïù£µ€Õ≠Ö–ÅÑÅŸïÈï”EêÅ°ÖùÂ©ÑÅ´Õ€ÑÉäPÅÖËÅîµµÖ•∞ÅÑÅ´Õ€Ö°ÖùÁÖÃÅ’”Ö∏Åµïù‰Å≠§∏à∞Åï∏ËÄâAï»Å—°îÅ…’ππ•πúÅµïÖÕ’…ïµïπ–Å…Ω’πêùÃÅ…’±ïÃ∞Åï·—ï…πÖ∞Å•πŸ•—ïÃÅπïïêÅÂΩ’»ÅµÖπÖùï»ùÃÅÖ¡¡…ΩŸÖ∞ÉäPÅ—°îÅïµÖ•∞ÅùΩïÃÅΩ’–ÅÖô—ï»ÅÖ¡¡…ΩŸÖ∞∏àÅÙ∞(ÄÄÄÅÖ›Ö•—•πù¡¡…ΩŸÖ±QΩÖÕ–ËÅÏÅ°‘ËÄâÅµïù£µ€ÃÅ´Õ€Ö°ÖùÁÖÕ…ÑÅ€Ö»ÉäPÅÑÅŸïÈï”EêÉ•…—ïœµ”•Õ–Å≠Ö¡Ω—–∏à∞Åï∏ËÄâQ°îÅ•πŸ•—îÅÖ›Ö•—ÃÅÖ¡¡…ΩŸÖ∞ÉäPÅÂΩ’»ÅµÖπÖùï»Å°ÖÃÅâïï∏ÅπΩ—•ô•ïê∏àÅÙ∞(ÄÄÄÅ—Â¡ïQïÖ¥ËÅÏÅ°‘ËÄâÕÖ¡Ö—”Ö…Ãà∞Åï∏ËÄâQïÖµµÖ—îàÅÙ∞(ÄÄÄÅ—Â¡ï=…úËÅÏÅ°‘ËÄâMÈï…ŸïÈï—§à∞Åï∏ËÄâ=…ùÖπ•ÈÖ—•Ω∏àÅÙ∞(ÄÄÄÅ—Â¡ï·—ï…πÖ∞ËÅÏÅ°‘ËÄâ/Ò±œDà∞Åï∏ËÄâ·—ï…πÖ∞àÅÙ∞(ÄÄÄÅ—Â¡ïAï…ÕΩπÖ∞ËÅÏÅ°‘ËÄâ%ÕµïÀEÃà∞Åï∏ËÄâAï…ÕΩπÖ∞àÅÙ∞(ÄÅÙ∞(ÄÅ¡ëòËÅÏ(ÄÄÄÄººÉäRäR ÅM—Ö…—AÖùîÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅΩŸï…Ÿ•ï‹ËÅÏÅ°‘ËÄã——ï≠•π”•Ãà∞Åï∏ËÄâ=Ÿï…Ÿ•ï‹àÅÙ∞(ÄÄÄÅ¡ï…ÕΩπÖ±•—Â•µïπÕ•ΩπÃËÅÏÅ°‘ËÄâMÈï∑•±Â•œ•ùë•µïπÈßÕ¨à∞Åï∏ËÄâAï…ÕΩπÖ±•—‰Åë•µïπÕ•ΩπÃàÅÙ∞(ÄÄÄÅ≠ïÂA…Ωô•±ï°Ö…Öç—ï»ËÅÏÅ°‘ËÄâÅ¡…Ωô•∞Åµïù°Ö”Ö…ΩÎÃÅ©ï±±ïµÎE©îà∞Åï∏ËÄâ-ï‰Å¡…Ωô•±îÅç°Ö…Öç—ï»àÅÙ∞(ÄÄÄÅë•µïπÕ•ΩπÕ%πï—Ö•∞ËÅÏÅ°‘ËÄâ•µïπÈßÕ¨ÅÀ•ÕÈ±ï—ïÕï∏à∞Åï∏ËÄâ•µïπÕ•ΩπÃÅ•∏Åëï—Ö•∞àÅÙ∞(ÄÄÄÅ—ïÖµIΩ±ïÃËÅÏÅ°‘ËÄâÕÖ¡Ö—ÕÈï…ï¡ï¨à∞Åï∏ËÄâQïÖ¥Å…Ω±ïÃàÅÙ∞(ÄÄÄÅ›Öπ—QΩΩïï¡ï»ËÅÏÅ°‘ËÄâ7•±Âïââ…îÅµïπª•∞¸à∞Åï∏ËÄâ]Öπ–Å—ºÅùºÅëïï¡ï»¸àÅÙ∞(ÄÄÄÅ’¡Õï±±ïÕç…•¡—•Ω∏ËÅÏ(ÄÄÄÄÄÅ°‘ËÄã%…—ÕêÅµïú∞Åµ§ÅŸÖ∏ÅÑÅõDÅë•µïπÈßÕ•êÅ∑ŸüŸ—–ÉäPÅÖ±ÕØÖ≥Ö¨∞ÅΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•Ã∞ÅŸÖ≠ôΩ±—ï±ïµÎ•Ã∞ÅŸÖ±Öµ•π–ÅÑÅ∑≈ØŸì•ÕïêÉ•ÃÅÕÈï…ï¡ïêÅÑÅçÕÖ¡Ö—âÖ∏∏à∞(ÄÄÄÄÄÅï∏ËÄâUπëï…Õ—ÖπêÅ›°Ö–ùÃÅâï°•πêÅÂΩ’»Åë•µïπÕ•ΩπÃÉäPÅÕ’âÕçÖ±ïÃ∞ÅΩâÕï…Ÿï»ÅôïïëâÖç¨∞Åâ±•πêÅÕ¡Ω–ÅÖπÖ±ÂÕ•Ã∞ÅÖπêÅ°Ω‹ÅÂΩ‘Å›Ω…¨ÅÖπêÅçΩπ—…•â’—îÅ•∏ÅÑÅ—ïÖ¥∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ’¡Õï±±Uπ±Ωç¨ËÅÏÅ°‘ËÄâôï±Ω±ìÖÃà∞Åï∏ËÄâ’π±Ωç¨àÅÙ∞(ÄÄÄÄººÉäRäR ÅA±’Õ]Ω…≠M—Â±ïAÖùîÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ¡ï…ÕΩπÖ±•—ÂA…Ωô•±îËÅÏÅ°‘ËÄâMÈï∑•±Â•œ•ù¡…Ωô•∞à∞Åï∏ËÄâAï…ÕΩπÖ±•—‰Å¡…Ωô•±îàÅÙ∞(ÄÄÄÅ°Ω›eΩ’]Ω…¨ËÅÏÅ°‘ËÄâ°Ωù‰Å∑≈ØŸëÕËà∞Åï∏ËÄâ!Ω‹ÅÂΩ‘Å›Ω…¨àÅÙ∞(ÄÄÄÅ…Ω±ï•–ËÅÏÅ°‘ËÄâ%±±ïÕÈ≠ïì•ÃÅÑÅÕÈï…ï¡ØŸÀŸ≠£ŸËà∞Åï∏ËÄâIΩ±îÅô•–àÅÙ∞(ÄÄÄÅ…Ω±ï•—•Õç±Ö•µï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕÈï…ï¡ØŸ»µ•±±ïÕÈ≠ïì•ÃÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ãÕ∞ÅØ•ÕÎÒ±–ÅâïçÕ≥•Ã∏ÅÅ”•πÂ±ïùïÃÅ•±±ïÕÈ≠ïì•Õ–ÅÑÅ≠Ωµ¡ï—ïπçßÖ¨∞ÅÑÅµΩ—•€ÖçßÃ∞ÅÑÅ—Ö¡ÖÕÈ—Ö±Ö–É•ÃÅÑÅÕÈÖ≠µÖ§É•…ëï≠≥Eì•ÃÅïùÁÒ—–Å°Ö”Ö…ΩÈÎÖ¨ÅµïúÉäPÅÑÅÕÈï∑•±Â•œ•úÅïÈï¨ÅØŸÎÒ∞ÅçÕÖ¨Åïù‰Å”•πÂïÎD∏à∞(ÄÄÄÄÄÅï∏ËÄâIΩ±îÅô•–Å•ÃÅÖ∏ÅïÕ—•µÖ—îÅâÖÕïêÅΩ∏ÅÂΩ’»Å¡ï…ÕΩπÖ±•—‰Å¡…Ωô•±î∏Åç—’Ö∞Åô•–Å•ÃÅëï—ï…µ•πïêÅ©Ω•π—±‰Åâ‰ÅçΩµ¡ï—ïπç•ïÃ∞ÅµΩ—•ŸÖ—•Ω∏∞Åï·¡ï…•ïπçî∞ÅÖπêÅ¡…ΩôïÕÕ•ΩπÖ∞Å•π—ï…ïÕ—ÃÉäPÅ¡ï…ÕΩπÖ±•—‰Å•ÃÅΩπ±‰ÅΩπîÅΩòÅ—°ïÕîÅôÖç—Ω…Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ¡…ïÕÕ’…ïQ•—±îËÅÏÅ°‘ËÄâYÖ≠ôΩ±—Ω¨É•ÃÅ∑≈ØŸì•ÃÅπÂΩ∑ÖÃÅÖ±Ö—–à∞Åï∏ËÄâ	±•πêÅÕ¡Ω—ÃÄòÅ’πëï»Å¡…ïÕÕ’…îàÅÙ∞(ÄÄÄÅù…Ω›—°Q•—±îËÅÏÅ°‘ËÄâï©≥Eì•Õ§ÅõÕ≠’ÕËà∞Åï∏ËÄâ…Ω›—†ÅôΩç’ÃàÅÙ∞(ÄÄÄÅù…Ω›—°	ï°ÖŸ•Ω»ËÅÏÅ°‘ËÄâAÀÕãÖ±êÅ≠§à∞Åï∏ËÄâQ…‰Å—°•ÃàÅÙ∞(ÄÄÄÅù…Ω›—°Iïô±ïç—•Ω∏ËÅÏÅ°‘ËÄâ/•…ëïÈêÅµïúÅµÖùÖë”Õ∞à∞Åï∏ËÄâÕ¨ÅÂΩ’…Õï±òàÅÙ∞(ÄÄÄÅù…Ω›—°°Ö±±ïπùîËÅÏÅ°‘ËÄâ7•…êÅ±îà∞Åï∏ËÄâ5ïÖÕ’…îÅ•–àÅÙ∞(ÄÄÄÄººÉäRäR ÅM’µµÖ…ÂAÖùîÄ°@Ã∏ƒ§ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅÕ’µµÖ…ÂAÖùïQ•—±îËÅÏÅ°‘ËÄãYÕÕÈïôΩù±Ö≥ÃÅïù‰ÅΩ±ëÖ±Ω∏à∞Åï∏ËÄâ=πîµ¡ÖùîÅÕ’µµÖ…‰àÅÙ∞(ÄÄÄÅçÖ…ïï…AÖùïQ•—±îËÅÏÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒà∞Åï∏ËÄâÖ…ïï»ÅçΩµ¡ÖÕÃàÅÙ∞(ÄÄÄÅçÖ…ïï…QΩ¡•…ïç—•ΩπÃËÅÏÅ°‘ËÄâÅ±ïùïÀEÕïâàÅ•ÀÖπÂÖ•êà∞Åï∏ËÄâeΩ’»ÅÕ—…ΩπùïÕ–Åë•…ïç—•ΩπÃàÅÙ∞(ÄÄÄÅçÖ…ïï…ïŸï±Ω¿ËÅÏÅ°‘ËÄâï©≥Eì•Õ§ÅõÕ≠’ÕËà∞Åï∏ËÄâïŸï±Ω¡µïπ–ÅôΩç’ÃàÅÙ∞(ÄÄÄÅçÖ…ïï…5ï—°ΩêËÅÏÅ°‘ËÄâ7ÕëÕÈï…—Öπ§Å≠ï…ï–à∞Åï∏ËÄâ5ï—°ΩëΩ±Ωù•çÖ∞Åô…ÖµîàÅÙ∞(ÄÄÄÅÕ’µµÖ…Â	±•πëÕ¡Ω—ÃËÅÏÅ°‘ËÄâ1ï°ï—œ•ùïÃÅŸÖ≠ôΩ±—Ω¨à∞Åï∏ËÄâAΩÕÕ•â±îÅâ±•πêÅÕ¡Ω—ÃàÅÙ∞(ÄÄÄÅÕ’µµÖ…ÂUπëï…A…ïÕÕ’…îËÅÏÅ°‘ËÄâ9ÂΩ∑ÖÃÅÖ±Ö—–à∞Åï∏ËÄâUπëï»Å¡…ïÕÕ’…îàÅÙ∞(ÄÄÄÅÕ’µµÖ…Â%πQïÖ¥ËÅÏÅ°‘ËÄâÕÖ¡Ö—âÖ∏à∞Åï∏ËÄâ%∏ÅÑÅ—ïÖ¥àÅÙ∞(ÄÄÄÅÕ’µµÖ…ÂQïÖµ1•πîËÅÏÅ°‘ËÄâ±œEë±ïùïÃÅçÕÖ¡Ö—ÕÈï…ï¡ïêÅ©ï±±ïµÎEï∏ËÅÌ…Ω±ïÙà∞Åï∏ËÄâeΩ’»Å¡…•µÖ…‰Å—ïÖ¥Å…Ω±îÅ—ïπëÃÅ—ºÅâîËÅÌ…Ω±ïÙàÅÙ∞(ÄÄÄÅÕ’µµÖ…ÂΩΩ—πΩ—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅÖËÅΩ±ëÖ∞ÅÑÅ…•¡Ω…–ÅÀŸŸ•ìµ—ï—–Å€Ö±—ΩÈÖ—Ñ∏ÅÅÀ•ÕÈ±ï—ï≠ï–∞ÅÖËÅÖ±ÕØÖ≥Ö≠Ö–É•ÃÅÑÅÕÈï…ï¡ØŸÀŸ≠£ŸËÅŸÖ≥ÃÅ•±±ïÕÈ≠ïì•Õ–ÅÑÅØŸŸï—≠ïÎDÅΩ±ëÖ±Ö≠Ω∏Å—Ö≥Ö±Ωê∏ÅËÉÖ±≥µ”ÖÕΩ¨ÉŸπ©ï±±ïµÎ•Õï∏ÅÖ±Ö¡’≥ÃÅ°•¡Ω”•È•Õï¨∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅ¡ÖùîÅ•ÃÅ—°îÅçΩπëïπÕïêÅ…ï¡Ω…–ÉäPÅëï—Ö•±Ã∞ÅÕ’âÕçÖ±ïÃ∞ÅÖπêÅ…Ω±îÅô•–ÅôΩ±±Ω‹ÅΩ∏Å—°îÅπï·–Å¡ÖùïÃ∏ÅM—Ö—ïµïπ—ÃÅÖ…îÅ°Â¡Ω—°ïÕïÃÅâÖÕïêÅΩ∏ÅÕï±òµ…ï¡Ω…–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ¡…ïÕÕ’…ï•Õç±Ö•µï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÈï¨Å°•¡Ω”•È•Õï¨∞Åπï¥Éµ”•±ï—ï¨ÉäPÅÕ—…ïÕÕËÅÖ±Ö—–ÅÕΩ≠õ•±îÅ∑≈ØŸì•ÃÅµïù©ï±ïπ°ï–∏Å≠≠Ω»Å°ÖÕÈπΩÕÖ¨∞Å°ÑÅµïùô•ùÂï±ïê∞Åµ•≠Ω»Å•ùÖÈÖ¨ÅÀÖê∞É•ÃÅµ•≠Ω»Åπï¥∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°ïÕîÅÖ…îÅ°Â¡Ω—°ïÕïÃ∞ÅπΩ–ÅŸï…ë•ç—ÃÉäPÅµÖπ‰Å¡Ö——ï…πÃÅçÖ∏ÅÖ¡¡ïÖ»Å’πëï»ÅÕ—…ïÕÃ∏ÅQ°ï‰ù…îÅ’Õïô’∞Å•òÅÂΩ‘ÅΩâÕï…ŸîÅ›°ï∏Å—°ï‰Å°Ω±êÅôΩ»ÅÂΩ‘ÅÖπêÅ›°ï∏Å—°ï‰ÅëΩ∏ù–∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅΩ±±ÖâAÖùîÄ°@–∏»§ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅçΩ±±ÖâQ•—±îËÅÏÅ°‘ËÄâÕÖ¡Ö—âÖ∏Å∑≈ØŸëŸîà∞Åï∏ËÄâ]Ω…≠•πúÅ•∏ÅÑÅ—ïÖ¥àÅÙ∞(ÄÄÄÅçΩ±±Öâ±•ç¨ËÅÏÅ°‘ËÄâQï…∑•ÕÈï—ïÃÅ¡Ö…—πï…ï¨à∞Åï∏ËÄâ9Ö—’…Ö∞Å¡Ö…—πï…ÃàÅÙ∞(ÄÄÄÅçΩ±±Öâ…•ç—•Ω∏ËÅÏÅ°‘ËÄâ1ï°ï—œ•ùïÃÅœÈ…≥ÕìÖÕΩ¨à∞Åï∏ËÄâAΩÕÕ•â±îÅô…•ç—•ΩπÃàÅÙ∞(ÄÄÄÅçΩ±±Öâ9ïïëÃËÅÏÅ°‘ËÄâµ§Å≠•°ΩÈÈÑÅâï≥E±ïêÅÑÅ±ïù©ΩââÖ–à∞Åï∏ËÄâ]°Ö–Åâ…•πùÃÅΩ’–ÅÂΩ’»ÅâïÕ–àÅÙ∞(ÄÄÄÅçΩ±±ÖâMΩ’…çï9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅÑÅôï©ïÈï–ÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ΩëãÕ∞ÅÕÎÖµΩ±–ÅâïçÕ≥•ÃËÅÖÈ–Å©ï±È§∞Åµ•±Âï∏ÅØŸÀÒ±∑•πÂï¨ÅØŸÎŸ—–ÅâΩπ—Ö≠ΩÈ°Ö—ÕËÅ≠§∞É•ÃÅ°Ω∞ÅÖ±Ö≠’±°Ö–Å≠§ÅœÈ…≥ÕìÖÃ∏ÅÅ≠Ωπ≠À•–Å≠Ω±≥•üÖ•ëëÖ∞Å≠•Ö±Ö≠’≥ÃÅçÕÖ¡Ö—ë•πÖµ•ØÖ–ÅÑÅ—…•—ÑÅçÕÖ¡Ö—Ø•¡îÅŸ•ÈÕüÖ±©ÑÅÀ•ÕÈ±ï—ïÕïââï∏∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°•ÃÅç°Ö¡—ï»Å•ÃÅÑÅ¡…Ωô•±îµâÖÕïêÅïÕ—•µÖ—îËÅ•–ÅÕ•ùπÖ±ÃÅ›°•ç†Å›Ω…≠•πúÅÕ—Â±ïÃÅÂΩ‘Å—Â¡•çÖ±±‰ÅÕ—…ïπù—°ï∏Åπï·–Å—º∞ÅΩ»Åù…Ö—îÅÖùÖ•πÕ–∏ÅIïÖ∞Å—ïÖ¥ÅëÂπÖµ•çÃÉäPÅ›•—†ÅÂΩ’»ÅÖç—’Ö∞ÅçΩ±±ïÖù’ïÃÉäPÅÖ…îÅµïÖÕ’…ïêÅ•∏Å—°îÅ—…•—ÑÅ—ïÖ¥ÅŸ•ï‹∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅµï—°Ωë9Ω—ïQ•—±îËÅÏÅ°‘ËÄâ!ΩùÂÖ∏ÅΩ±ŸÖÕêÅïÈ–ÅÑÅ…•¡Ω…—Ω–¸à∞Åï∏ËÄâ!Ω‹Å—ºÅ…ïÖêÅ—°•ÃÅ…ï¡Ω…–àÅÙ∞(ÄÄÄÅµï—°Ωë9Ω—ï	Ωë‰ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅï…ïë∑•πÂï¨ÉŸπ©ï±±ïµÎ•Õï∏ÅÖ±Ö¡’±πÖ¨ËÅÖÈ–Åµ’—Ö—´Ö¨∞ÅÖ°ΩùÂÖ∏ÅÑÅ≠•”Ÿ±”•Õ≠Ω»ÅµÖùÖëÖ–Å≥Ö——Öê∏ÅÅ¡Ωπ—ÕÎÖµΩ¨ÅŸ•Õï±≠ïì•Õ§Å—ïπëïπçßÖ≠Ö–Å©ï±ïÈπï¨∞Åπï¥ÅèµµØ•≠ï–ÉäPÉ•ÃÅïùÂ•¨Åë•µïπÈßÃÅïùÂ•¨Å√Õ±’ÕÑÅÕï¥Éäy´ÕpàÅŸÖù‰Éäy…ΩÕÕÈpàËÅµ•πëïùÂ•≠πï¨ÅŸÖππÖ¨Åï≥EπÂï§É•ÃÅØŸ±—œ•ùï§∞Å°ï±ÂÈï—”E∞ÅõÒùüEï∏∏ÅÅØŸ…πÂïÈï–∞ÅÑÅÕÈï…ï¿É•ÃÅÑÅÕ—…ïÕÕËÅ©ï±ïπ”EÕï∏Å∑ÕëΩœµ—°Ö—©Ñ∞Å°ΩùÂÖ∏Å©ï±ïππï¨ÅµïúÅÑÅµ•πëïππÖ¡Ω≠âÖ∏ÉäPÅÑÅ…•¡Ω…–ÉÖ±≥µ”ÖÕÖ•–ÅïÎ•…–Å≠ïÈï±êÅ°•¡Ω”•È•ÕØ•π–ËÅŸïÕêÉŸÕÕÈîÅÑÅÕÖ´Ö–Å—Ö¡ÖÕÈ—Ö±Ö—Ö•ëëÖ∞É•ÃÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•œ•Ÿï∞∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°ïÕîÅ…ïÕ’±—ÃÅÖ…îÅâÖÕïêÅΩ∏ÅÕï±òµ…ï¡Ω…–ËÅ—°ï‰Å…ïô±ïç–Å°Ω‹ÅÂΩ‘ÅÕÖ‹ÅÂΩ’…Õï±òÅÖ–Å—°îÅ—•µîÅΩòÅçΩµ¡±ï—•Ω∏∏ÅMçΩ…ïÃÅ•πë•çÖ—îÅâï°ÖŸ•Ω’…Ö∞Å—ïπëïπç•ïÃ∞ÅπΩ–Å±Öâï±ÃÉäPÅÖπêÅπï•—°ï»Å¡Ω±îÅΩòÅÖπ‰Åë•µïπÕ•Ω∏Å•ÃÄùùΩΩêúÅΩ»ÄùâÖêúËÅïÖç†Å°ÖÃÅâïπïô•—ÃÅÖπêÅçΩÕ—Ã∞Åëï¡ïπë•πúÅΩ∏Å—°îÅÕ•—’Ö—•Ω∏∏ÅΩπ—ï·–∞Å…Ω±î∞ÅÖπêÅÕ—…ïÕÃÅçÖ∏ÅÕ•ùπ•ô•çÖπ—±‰Åç°ÖπùîÅ°Ω‹Å—°ï‰ÅÕ°Ω‹Å’¿ÅëÖ‰Å—ºÅëÖ‰ÉäPÅ—…ïÖ–Å—°îÅÕ—Ö—ïµïπ—ÃÅ•∏Å—°•ÃÅ…ï¡Ω…–ÅÖÃÅ°Â¡Ω—°ïÕïÃËÅ—ïÕ–Å—°ï¥ÅÖùÖ•πÕ–ÅÂΩ’»ÅΩ›∏Åï·¡ï…•ïπçîÅÖπêÅôïïëâÖç¨Åô…Ω¥ÅΩ—°ï…Ã∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅIïô±ïç—AÖùîÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅÕï±ôYÕïïëâÖç¨ËÅÏÅ°‘ËÄãYπØ•¿É•ÃÅŸ•ÕÕÈÖ©ï±Î•Ãà∞Åï∏ËÄâMï±òµ•µÖùîÅŸÃ∏ÅïïëâÖç¨àÅÙ∞(ÄÄÄÅ°Ω›Ω=—°ï…ÕMïïeΩ‘ËÅÏÅ°‘ËÄâ!ΩùÂÖ∏Å≥Ö—πÖ¨Å∑ÖÕΩ¨¸à∞Åï∏ËÄâ!Ω‹ÅëºÅΩ—°ï…ÃÅÕïîÅÂΩ‘¸àÅÙ∞(ÄÄÄÅ›°Ö—QΩΩ]•—°Q°•ÃËÅÏÅ°‘ËÄâ5•–Å≠ïÈë®ÅïÈÈï∞¸à∞Åï∏ËÄâ]°Ö–Å—ºÅëºÅ›•—†Å—°•Ã¸àÅÙ∞(ÄÄÄÅ›°Ö—QΩΩïÕç…•¡—•Ω∏ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÅï±”•À•Õï¨Åπï¥Å°•ãÖ¨∞Å°Öπï¥Å©ï±Î•Õï¨ËÅΩ—–É•…ëïµïÃÅ∑•±Âïââ…îÅµïππ§∞ÅÖ°Ω∞Å—îÅ∑ÖÕ–É•…Èï∞ÅµÖùÖëÀÕ∞∞Åµ•π–ÅÖµ•–Å∑ÖÕΩ¨Å…ïπëÕÈï…ïÕï∏Å≥Ö—πÖ¨∏Å•ùÂï±®ÅÀÑÅÑÅØŸŸï—≠ïÎDÅ°ï—ï≠âï∏∞É•ÃÅØ•…ëïÈêÅµïúÅÑÅŸ•ÕÕÈÖ©ï±ÎE•ëï–∞Åµ•…îÅùΩπëΩ±—Ö¨Å≠Ωπ≠À•—Ö∏∏à∞(ÄÄÄÄÄÅï∏ËÄâ•ôôï…ïπçïÃÅÖ…ï∏ù–Åµ•Õ—Ö≠ïÃÉäPÅ—°ï‰ù…îÅÕ•ùπÖ±Ã∏Å%–ùÃÅ›Ω…—†ÅùΩ•πúÅëïï¡ï»Å›°ï…îÅÂΩ’»ÅÕï±òµ¡ï…çï¡—•Ω∏Åë•ôôï…ÃÅô…Ω¥Å›°Ö–ÅΩ—°ï…ÃÅçΩπÕ•Õ—ïπ—±‰ÅÕïî∏ÅAÖ‰ÅÖ——ïπ—•Ω∏Å•∏Å—°îÅçΩµ•πúÅ›ïï≠ÃÅÖπêÅÖÕ¨ÅÂΩ’»ÅΩâÕï…Ÿï…ÃÅ›°Ö–Å—°ï‰Å°ÖêÅ•∏Åµ•πêÅÕ¡ïç•ô•çÖ±±‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅIïô±ïç—AÖùîÅ—Ω¡±•πîÅÕ’µµÖ…•ïÃÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ—Ω¡±•πï±•ùπïêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâËÉŸπØ•¡ïêÉ•ÃÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•ÕîÅÑÅ±ïù”ŸâàÅë•µïπÈßÕâÖ∏ÅØŸÈï∞ÉÖ±∞ÅïùÂ∑ÖÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ’»ÅÕï±òµ•µÖùîÅÖπêÅΩ—°ï…ÃúÅôïïëâÖç¨ÅÖ±•ù∏Åç±ΩÕï±‰Å•∏ÅµΩÕ–Åë•µïπÕ•ΩπÃÉäPÅÂΩ‘ÅÕïîÅÂΩ’…Õï±òÅ…ïÖ±•Õ—•çÖ±±‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅ—Ω¡±•πïÖ¡A…ïô•‡ËÅÏ(ÄÄÄÄÄÄººÅ!TËÅÑÅ£µ€ÃÅ∑Ö»Åª•Ÿï≥EŸï∞ÅÖë©ÑÉÖ–ÅÑÅÌπÖµïÕÙµ–Ä°›•—°!’…—•ç±î§∏(ÄÄÄÄÄÅ°‘ËÄâÅ±ïùπÖùÂΩâàÅï±”•À•ÃÅÌπÖµïÕÙÅ—ïÀÒ±ï”•∏Å≥Ö—ÕÈ•¨∏É%…ëïµïÃÅïÈï≠…îÅØÒ≥ŸªŸÕï∏ÅΩëÖô•ùÂï±π§∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅâ•ùùïÕ–ÅùÖ¡ÃÅÖ¡¡ïÖ»Å•∏ÅÌπÖµïÕÙ∏ÅQ°ïÕîÅÖ…îÅ›Ω…—†Å¡ÖÂ•πúÅç±ΩÕîÅÖ——ïπ—•Ω∏Å—º∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ’µµÖ…ÂΩΩë5Ö—ç†ËÅÏ(ÄÄÄÄÄÅ°‘ËÄãYÕÕÈïÕœ•ü•âï∏ÅÖËÉŸπØ•¡ïêÉ•ÃÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•ÕîÅÑÅ±ïù”ŸâàÅë•µïπÈßÕâÖ∏ÅØŸÈï∞ÉÖ±∞ÅïùÂ∑ÖÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâ=Ÿï…Ö±∞∞ÅÂΩ‘ÅÕïîÅÂΩ’…Õï±òÅ…ïÖ±•Õ—•çÖ±±‰ÉäPÅÂΩ’»ÅÕï±òµ•µÖùîÅÖπêÅΩ—°ï…ÃúÅôïïëâÖç¨ÅÖ…îÅç±ΩÕï±‰ÅÖ±•ùπïêÅ•∏ÅµΩÕ–Åë•µïπÕ•ΩπÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ’µµÖ…ÂΩΩë5Ö—ç°ïï¡ï»ËÅÏ(ÄÄÄÄÄÄººÅ!TËÅÑÅ£µ€ÃÅπÖùÂâï”≈ÃÅª•Ÿï≥EŸï∞ÅÖë©ÑÉÖ–ÅÑÅÌπÖµïÙµï–Ä°›•—°!’…—•ç±î§∏(ÄÄÄÄÄÅ°‘ËÄàÅÌπÖµïÙÅ—ïÀÒ±ï”•∏É•…ëïµïÃÅ∑•±Âïââ…îÅª•Èπ§∏à∞(ÄÄÄÄÄÅï∏ËÄàÅ%–ùÃÅ›Ω…—†Å±ΩΩ≠•πúÅëïï¡ï»ÅÖ–ÅÌπÖµïÙ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÕ’µµÖ…Â5•·ïêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ;•£Öπ‰Åë•µïπÈßÕâÖ∏Å©ï±ïπ”EÃÅï±”•À•ÃÅŸÖ∏ÅÖËÉŸπØ•¡ïêÉ•ÃÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•ÕîÅØŸÎŸ—–∏ÅËÅπï¥Å¡…Ωâ≥•µÑ∞Å°Öπï¥Å±ï°ï”Eœ•úÅÑÅ∑•±ÂïâàÉŸπ•Õµï…ï—…î∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°ï…îÅÖ…îÅÕ•ùπ•ô•çÖπ–ÅùÖ¡ÃÅ•∏ÅÕΩµîÅë•µïπÕ•ΩπÃÅâï—›ïï∏ÅÂΩ’»ÅÕï±òµ•µÖùîÅÖπêÅΩ—°ï…ÃúÅôïïëâÖç¨∏ÅQ°•ÃÅ•Õ∏ù–ÅÑÅ¡…Ωâ±ï¥ÉäPÅ•–ùÃÅÖ∏ÅΩ¡¡Ω…—’π•—‰ÅôΩ»Åëïï¡ï»ÅÕï±òµÖ›Ö…ïπïÕÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅA±’ÕÖçï—ÕAÖùîÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅÕ’âÕçÖ±ïÕ%πï—Ö•∞ËÅÏÅ°‘ËÄâ±ÕØÖ≥Ö¨ÅÀ•ÕÈ±ï—ïÕï∏à∞Åï∏ËÄâM’âÕçÖ±ïÃÅ•∏Åëï—Ö•∞àÅÙ∞(ÄÄÄÅ—Ω¡M’âÕçÖ±ïÃËÅÏÅ°‘ËÄâ1ïùµÖùÖÕÖâàÅ¡Ωπ—ÕÎÖ∑ËÅÖ±ÕØÖ≥Ö¨à∞Åï∏ËÄâQΩ¿ÅÕ’âÕçÖ±ïÃàÅÙ∞(ÄÄÄÅôÖçï—M—ÖπëΩ’–ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ1ïùµÖùÖÕÖâàÅ¡Ωπ—ÕÎÖ∑ËËÅÌ—Ω¡9ÖµïÕÙ∏à∞(ÄÄÄÄÄÅï∏ËÄâM—ÖπëΩ’–ËÅÌ—Ω¡9ÖµïÕÙ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅôÖçï—…Ω›—†ËÅÏ(ÄÄÄÄÄÅ°‘ËÄàÅËÅÖ±ÖçÕΩπÂÖâàÅÌâΩ——Ωµ9ÖµïÙÅπï¥Å°ßÖπÂΩÕœÖú∞Å•πØÖâàÅ±ï°ï—œ•ùïÃÅôï©≥Eì•Õ§Å•ÀÖπÂ–Å©ï±ïË∏à∞(ÄÄÄÄÄÅï∏ËÄàÅ1Ω›ï»ÅÌâΩ——Ωµ9ÖµïÙÅ•Õ∏ù–ÅÑÅ›ïÖ≠πïÕÃÉäPÅ•–ÅÕ•ùπÖ±ÃÅ›°ï…îÅ—°ï…îùÃÅ…ΩΩ¥ÅôΩ»Åù…Ω›—†∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅôÖçï—MΩ]°Ö–ËÅÏÅ°‘ËÄâÅùÂÖ≠Ω…±Ö—âÖ∏Ëà∞Åï∏ËÄâ%∏Å¡…Öç—•çîËàÅÙ∞(ÄÄÄÅ›°Ö—ΩïÕQ°•Õ5ïÖπ=Ÿï…Ö±∞ËÅÏÅ°‘ËÄâ5•–Å©ï±ïπ–ÅïËÉŸÕÕÈïÕœ•ü•âï∏¸à∞Åï∏ËÄâ]°Ö–ÅëΩïÃÅ—°•ÃÅµïÖ∏ÅΩŸï…Ö±∞¸àÅÙ∞(ÄÄÄÅôÖçï—	Ö±ÖπçïêËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ-•ïùÂïπœÈ±ÂΩÈΩ—–Å¡…Ωô•∞ÉäPÅπ•πçÃÅÕÎ•±œEœ•ùïÕï∏ÅµÖùÖÃÅŸÖù‰ÅÖ±ÖçÕΩπ‰Åë•µïπÈßÃ∏ÅËÅπÖùÂΩâàÅ…’ùÖ±µÖÕœÖùùÖ∞É•ÃÅ≠ï€•Õã§Å≠•’ùÀÃÅ∑≈ØŸì•Õ§Åµ•π”Ö≠≠Ö∞Å´Ö…°Ö–∏à∞(ÄÄÄÄÄÅï∏ËÄâ	Ö±ÖπçïêÅ¡…Ωô•±îÉäPÅπºÅï·—…ïµï±‰Å°•ù†ÅΩ»Å±Ω‹Åë•µïπÕ•ΩπÃ∏ÅQ°•ÃÅµïÖπÃÅô±ï·•â•±•—‰∞Åâ’–Åôï›ï»ÅπÖ—’…Ö∞ÄùÕ’¡ï…¡Ω›ï…Ãú∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅôÖçï—!•ù°πë1Ω‹ËÅÏ(ÄÄÄÄÄÄººÅ!TËÅÑÅ£µ€ÃÅª•Ÿï≥EŸï∞ÅÖë©ÑÉÖ–ÅÑÅπïŸï≠ï–Ä°›•—°!’…—•ç±îÏÅÌ±Ω›9ÖµïÕÙÅπÖùÂâï”≈Ã§∏(ÄÄÄÄÄÅ°‘ËÄâA…Ωô•±ΩêÅïÀEÕœ•ùîÅÌ°•ù°9ÖµïÕÙÅ—ïÀÒ±ï”•∏Å≠Ωπçïπ—ÀÖ≥Õë•¨∏ÅÌ±Ω›9ÖµïÕÙÅÖ±ÖçÕΩπÂÖâàÅÕÈ•π—©îÅπï¥Å¡…Ωâ≥•µÑÉäPÅ•πØÖâàÅÖÈ–Å©ï±È§∞Å°Ω∞É•…ëïµïÃÅ—’ëÖ—ΩÕÖââÖ∏Å∑≈ØŸëªŸê∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ’»Å¡…Ωô•±îùÃÅÕ—…ïπù—†Å•ÃÅçΩπçïπ—…Ö—ïêÅ•∏ÅÌ°•ù°9ÖµïÕÙ∏Å1Ω›ï»ÅÌ±Ω›9ÖµïÕÙÅ•Õ∏ù–ÅÑÅ¡…Ωâ±ï¥ÉäPÅ•–ÅÕ•ùπÖ±ÃÅ›°ï…îÅ—ºÅΩ¡ï…Ö—îÅµΩ…îÅçΩπÕç•Ω’Õ±‰∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅôÖçï—!•ù°=π±‰ËÅÏ(ÄÄÄÄÄÄººÅ!TËÅÑÅ£µ€ÃÅª•Ÿï≥EŸï∞ÅÖë©ÑÉÖ–ÅÑÅÌ°•ù°9ÖµïÕÙµ–Ä°›•—°!’…—•ç±î§∏(ÄÄÄÄÄÅ°‘ËÄâ-Ö…Ö≠—ï…ïÃÅ¡…Ωô•∞ÉäPÅÌ°•ù°9ÖµïÕÙÅµÖ…ØÖπÕÖ∏Å≠•…Ö©ÈΩ≥Õë•¨∞É•ÃÅπ•πçÃÅ≠•ôï©ïÈï——ï∏ÅÖ±ÖçÕΩπ‰Åë•µïπÈßÃ∏à∞(ÄÄÄÄÄÅï∏ËÄâM—…Ωπú∞Åë•Õ—•πç—•ŸîÅ¡…Ωô•±îÉäPÅÌ°•ù°9ÖµïÕÙÅÕ—ÖπëÃÅΩ’–∞Å›•—†ÅπºÅç…•—•çÖ±±‰Å±Ω‹Åë•µïπÕ•ΩπÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅôÖçï—1Ω›=π±‰ËÅÏ(ÄÄÄÄÄÄººÅ!TËÅÑÅ£µ€ÃÅπÖùÂâï”≈ÃÅª•Ÿï≥EŸï∞ÅÖë©ÑÉÖ–ÅÑÅÌ±Ω›9ÖµïÕÙµ–Ä°›•—°!’…—•ç±î§∏(ÄÄÄÄÄÅ°‘ËÄâÌ±Ω›9ÖµïÕÙÅÖ±ÖçÕΩπÂÖâàÅÕÈ•π—©îÅ—’ëÖ—ΩÃÅô•ùÂï±µï–É•…ëïµï∞ÉäPÅïÈï¨ÅÑÅ—ïÀÒ±ï—ï¨Åôï©≥Eì•Õ§Å±ï°ï”Eœ•ùï–Å…ï©—ïπï¨∏à∞(ÄÄÄÄÄÅï∏ËÄâ1Ω›ï»ÅÌ±Ω›9ÖµïÕÙÅëïÕï…ŸïÃÅçΩπÕç•Ω’ÃÅÖ——ïπ—•Ω∏ÉäPÅ—°ïÕîÅÖ…ïÖÃÅ°Ω±êÅù…Ω›—†Å¡Ω—ïπ—•Ö∞∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅAëô!ïÖëï»ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ°ïÖëï…ÕÕïÕÕµïπ–ËÅÏÅ°‘ËÄâQïÕÈ–Ëà∞Åï∏ËÄâÕÕïÕÕµïπ–ËàÅÙ∞(ÄÄÄÅ°ïÖëï…QΩ¿ËÅÏÅ°‘ËÄâ1ïùïÀEÕïâàËà∞Åï∏ËÄâQΩ¿ËàÅÙ∞(ÄÄÄÅ°ïÖëï…]Ö—ç†ËÅÏÅ°‘ËÄâ•ùÂï±ïπìDËà∞Åï∏ËÄâ]Ö—ç†ËàÅÙ∞(ÄÄÄÄººÉäRäR ÅAëôΩµ¡Ö…•ÕΩ∏ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅΩŸï…Ö±±ΩΩë5Ö—ç†ËÅÏÅ°‘ËÄãYÕÕÈïÕœ•ü•âï∏Å´ÃÅïùÂïÎ•Ãà∞Åï∏ËÄâ=Ÿï…Ö±∞ÅùΩΩêÅµÖ—ç†àÅÙ∞(ÄÄÄÅµ•·ïëA•ç—’…îËÅÏÅ°‘ËÄâYïùÂïÃÅØ•¿ÉäPÅŸÖ∏Åµ•–Åôï±ôïëïÈπ§à∞Åï∏ËÄâ5•·ïêÅ¡•ç—’…îÉäPÅ›Ω…—†Åï·¡±Ω…•πúàÅÙ∞(ÄÄÄÅΩâÕï…Ÿï…IïÕ¡ΩπÕïÃËÅÏÅ°‘ËÄâΩâÕï…Ÿï»µŸ•ÕÕÈÖ©ï±Î•ÃÅÖ±Ö¡´Ö∏à∞Åï∏ËÄâΩâÕï…Ÿï»Å…ïÕ¡ΩπÕïÃàÅÙ∞(ÄÄÄÅµÖ—ç°•πúËÅÏÅ°‘ËÄâïùÂïÎDà∞Åï∏ËÄâµÖ—ç°•πúàÅÙ∞(ÄÄÄÅë•ôôï…ïπ–ËÅÏÅ°‘ËÄâï±”•ÀDà∞Åï∏ËÄâë•ôôï…ïπ–àÅÙ∞(ÄÄÄÅÖŸùÖ¿ËÅÏÅ°‘ËÄãÖ—∞∏Åï±”•À•Ãà∞Åï∏ËÄâÖŸú∏ÅùÖ¿àÅÙ∞(ÄÄÄÅÂΩ‘ËÅÏÅ°‘ËÄâQîà∞Åï∏ËÄâeΩ‘àÅÙ∞(ÄÄÄÅΩ—°ï…ÃËÅÏÅ°‘ËÄâ7ÖÕΩ¨à∞Åï∏ËÄâ=—°ï…ÃàÅÙ∞(ÄÄÄÄººÅ%ÀÖπ‰µÕïµ±ïùïÃÅÕØÖ±ÑµπÂï±ÿÄ°%`Ä»§ÉäPÅÑÅôΩ…ìµ—Ω—–ÅµΩç•ΩπÖ±•”ÖÕªÖ∞ÅÖË(ÄÄÄÄººÉäyïÀEÕïââπï¨Å≥Ö–àÉ•…”•≠ï≥DÅµïùôΩùÖ±µÖÎÖÃÅµïùôΩ…ë’±πÑ∏(ÄÄÄÅâ±•πëÕ¡Ω—M•ùπ•ô•çÖπ—Mï±ô!•ù°ï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ)ï±ïπ”EÃÅï±”•À•ÃÉäPÅ—îÅµÖùÖÕÖââ…ÑÉ•…”•≠ï±ïêÅµÖùÖêà∞(ÄÄÄÄÄÅï∏ËÄâM•ùπ•ô•çÖπ–ÅùÖ¿ÉäPÅÂΩ‘Å…Ö—îÅÂΩ’…Õï±òÅ°•ù°ï»à∞(ÄÄÄÅÙ∞(ÄÄÄÅâ±•πëÕ¡Ω—M•ùπ•ô•çÖπ—=âÕ!•ù°ï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ)ï±ïπ”EÃÅï±”•À•ÃÉäPÅ∑ÖÕΩ¨ÅµÖùÖÕÖââ…ÑÉ•…”•≠ï±πï¨à∞(ÄÄÄÄÄÅï∏ËÄâM•ùπ•ô•çÖπ–ÅùÖ¿ÉäPÅΩ—°ï…ÃÅ…Ö—îÅÂΩ‘Å°•ù°ï»à∞(ÄÄÄÅÙ∞(ÄÄÄÅâ±•πëÕ¡Ω—5ΩëMï±ô!•ù°ï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ7ÖÕΩ¨Å∑ÖÕ°Ωù‰É•…Î•≠ï±•¨à∞(ÄÄÄÄÄÅï∏ËÄâ=—°ï…ÃÅ¡ï…çï•ŸîÅ•–Åë•ôôï…ïπ—±‰à∞(ÄÄÄÅÙ∞(ÄÄÄÅâ±•πëÕ¡Ω—5Ωë=âÕ!•ù°ï»ËÅÏ(ÄÄÄÄÄÅ°‘ËÄã%…ëïµïÃÅ’”ÖπÖª•Èπ§à∞(ÄÄÄÄÄÅï∏ËÄâ]Ω…—†Å•πŸïÕ—•ùÖ—•πúà∞(ÄÄÄÅÙ∞(ÄÄÄÅâ±•πëÕ¡Ω—M±•ù°–ËÅÏÅ°‘ËÄâπÂ°îÅï±”•À•Ãà∞Åï∏ËÄâM±•ù°–Åë•ôôï…ïπçîàÅÙ∞(ÄÄÄÅΩ—°ï…ÕIÖ—ï!•ù°ï»ËÅÏÅ°‘ËÄâ∑ÖÕΩ¨ÅµÖùÖÕÖââ…ÑÉ•…”•≠ï±πï¨à∞Åï∏ËÄâΩ—°ï…ÃÅ…Ö—îÅÂΩ‘Å°•ù°ï»àÅÙ∞(ÄÄÄÅΩ—°ï…ÕIÖ—ï1Ω›ï»ËÅÏÅ°‘ËÄâ∑ÖÕΩ¨ÅÖ±ÖçÕΩπÂÖââ…ÑÉ•…”•≠ï±πï¨à∞Åï∏ËÄâΩ—°ï…ÃÅ…Ö—îÅÂΩ‘Å±Ω›ï»àÅÙ∞(ÄÄÄÅÕï±ôÕÕïÕÕµïπ–ËÅÏÅ°‘ËÄãYª•…”•≠ï≥•Ãà∞Åï∏ËÄâMï±òàÅÙ∞(ÄÄÄÅπΩ	±•πëM¡Ω—ÃËÅÏÅ°‘ËÄâ9•πçÃÅ©ï±ïπ”EÃÅï±”•À•Ãà∞Åï∏ËÄâ9ºÅâ±•πêÅÕ¡Ω—ÃàÅÙ∞(ÄÄÄÅπΩ	±•πëM¡Ω—ÕïÕåËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÈï≠âï∏ÅÑÅë•µïπÈßÕ≠âÖ∏ÅÖËÉŸπØ•¡ïêÉ•ÃÅ∑ÖÕΩ¨ÅŸ•ÕÕÈÖ©ï±Î•ÕîÅØŸÈï∞ÉÖ±∞ÅïùÂ∑ÖÕ°ΩË∏à∞(ÄÄÄÄÄÅï∏ËÄâeΩ‘ÅÕïîÅÂΩ’…Õï±òÅ…ïÖ±•Õ—•çÖ±±‰Å•∏Å—°ïÕîÅë•µïπÕ•ΩπÃ∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅAëô!Ω›eΩ’]Ω…¨ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ≠ïÂAÖ——ï…∏ËÅÏÅ°‘ËÄâDÅµ•π”ÖÈÖ–à∞Åï∏ËÄâ-ï‰Å¡Ö——ï…∏àÅÙ∞(ÄÄÄÅ›Ö—ç°…ïÑËÅÏÅ°‘ËÄâ•ùÂï±ïπìDà∞Åï∏ËÄâ]Ö—ç†ÅÖ…ïÑàÅÙ∞(ÄÄÄÄººÅMïµ±ïùïÃÄ£äyπΩ—îà§ÅØÖ…—ÂÑÅÑÅAµâï∏ÉäPÅ’ùÂÖπÖËÅÑÅÕ±Ω–∞Åµ•π–ÅÑÅôï≥Ò±ï—ï∏∏(ÄÄÄÅ¡Ö——ï…π9Ω—îËÅÏÅ°‘ËÄâ)ï±±ïµÎDÅµ•π”ÖÈÖ–à∞Åï∏ËÄâ°Ö…Öç—ï…•Õ—•åÅ¡Ö——ï…∏àÅÙ∞(ÄÄÄÅçΩπ—ï·–ËÅÏÅ°‘ËÄâ-Ωπ—ï·—’Ãà∞Åï∏ËÄâΩπ—ï·–àÅÙ∞(ÄÄÄÄººÉäRäR ÅAëô±—…’•Õ¥ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅÕ’¡¡±ïµïπ—Ö…ÂMçÖ±îËÅÏÅ°‘ËÄâ-•ïü•ÕÎµ”DÅÕØÖ±Ñà∞Åï∏ËÄâM’¡¡±ïµïπ—Ö…‰ÅÕçÖ±îàÅÙ∞(ÄÄÄÅÖ±—…’•Õ¥ËÅÏÅ°‘ËÄâMïüµ”EØ•ÕÈœ•úà∞Åï∏ËÄâ!ï±¡ô’±πïÕÃàÅÙ∞(ÄÄÄÄººÉäRäR ÅAëôQÖ≠ïÖ›ÖÂÃÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ≠ïÂQÖ≠ïÖ›ÖÂÃËÅÏÅ°‘ËÄâÅ±ïùôΩπ—ΩÕÖââÖ¨à∞Åï∏ËÄâ-ï‰Å—Ö≠ïÖ›ÖÂÃàÅÙ∞(ÄÄÄÄººÉäRäR ÅI•¡Ω…–µÕÈï…≠ïÈï–Ä°AÉäPÅ›ïàÅïùÂœ•ùïœµ”•Ã∞Ä»¿»ÿ¥¿‡¥ƒ‡§ÉäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÄººÅÅôï©ïÈï—èµµï¨ΩØ•…ì•Õï¨Ω±óµÀÖÕΩ¨ÅÑÅ›ïâïÃÅ≠’±çÕΩ≠ãÕ∞Å´Ÿππï¨(ÄÄÄÄººÄ°…ïÕ’±—Ãπ…ï¡Ω…–©Q•—±ïÒE’ïÕ—•ΩπÒ	Ωë‰§ÉäPÅ•—–ÅçÕÖ¨ÅÑÅAµÕ¡ïç•ô•≠’Ã(ÄÄÄÄººÅπÖŸ•üÖçßÕÃÉ•ÃÅµï±≥•≠±ï–µÕÎŸŸïùï¨É•±πï¨∏(ÄÄÄÅçΩπ—ïπ—ÕQ•—±îËÅÏÅ°‘ËÄâ5§ÅŸÖ∏ÅÑÅ…•¡Ω…—âÖ∏¸à∞Åï∏ËÄâ]°Ö–ùÃÅ•∏Å—°•ÃÅ…ï¡Ω…–¸àÅÙ∞(ÄÄÄÅçΩπ—ïπ—Õ¡¡ïπë•çïÃËÅÏÅ°‘ËÄâ5ï±≥•≠±ï—ï¨à∞Åï∏ËÄâ¡¡ïπë•çïÃàÅÙ∞(ÄÄÄÅ≈’•ç≠=Ÿï…Ÿ•ï›Q•—±îËÅÏÅ°‘ËÄâÂΩ…ÃÉŸÕÕÈØ•¿à∞Åï∏ËÄâE’•ç¨ÅΩŸï…Ÿ•ï‹àÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·Âïâ…Ω‹ËÅÏÅ°‘ËÄâ5ï±≥•≠±ï–à∞Åï∏ËÄâ¡¡ïπë•‡àÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·=âÕï…Ÿï…Q•—±îËÅÏÅ°‘ËÄâ/Ò±œDÅª•ÎE¡Ωπ–à∞Åï∏ËÄâ=’—Õ•ëîÅŸ•ï‹àÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·=âÕï…Ÿï…9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ7•…–ÅÖëÖ–ËÅÑÅŸ•ÕÕÈÖ©ï±ÎE•êÅ€Ö±ÖÕÈÖ•πÖ¨ÉŸÕÕÈïœµ—ï—–ÉÖ—±ÖùÑ∞ÅÖËÉŸπØ•¡ïëëï∞ÉŸÕÕÈïŸï—Ÿî∏à∞(ÄÄÄÄÄÅï∏ËÄâ5ïÖÕ’…ïêÅëÖ—ÑËÅ—°îÅÖùù…ïùÖ—ïêÅÖŸï…ÖùîÅΩòÅÂΩ’»ÅΩâÕï…Ÿï…ÃúÅÖπÕ›ï…Ã∞ÅçΩµ¡Ö…ïêÅ›•—†ÅÂΩ’»ÅÕï±òµ•µÖùî∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·Ö…ïï…Q•—±îËÅÏÅ°‘ËÄâ-Ö……•ï»µ•ÀÖπÂ”ƒà∞Åï∏ËÄâÖ…ïï»ÅçΩµ¡ÖÕÃàÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·Ö…ïï…9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅ≠•”Ÿ±”Ÿ—–Å-Ö……•ï»µ•ÀÖπÂ”ƒÅï…ïë∑•πÂîÉäPÅ•±±ïÕÈ≠ïì•Õ§ÅâïçÕ≥•ÃÅµïùãµÈ°Ö”ÕœÖù§ÅœÖŸŸÖ∞∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°îÅ…ïÕ’±–ÅΩòÅ—°îÅÖ…ïï»ÅçΩµ¡ÖÕÃÅÂΩ‘ÅçΩµ¡±ï—ïêÉäPÅÑÅô•–ÅïÕ—•µÖ—îÅ›•—†ÅÑÅçΩπô•ëïπçîÅâÖπê∏à∞(ÄÄÄÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·Iï±Ö—•ΩπÖ±Q•—±îËÅÏÅ°‘ËÄâ-Ö¡çÕΩ±Ö—§Åë•πÖµ•≠Ñà∞Åï∏ËÄâIï±Ö—•ΩπÖ∞ÅëÂπÖµ•çÃàÅÙ∞(ÄÄÄÅÖ¡¡ïπë•·Iï±Ö—•ΩπÖ±9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ	ïçÕ≥•ÃÅÑÅÕÈï∑•±Â•œ•ù¡…Ωô•±ãÕ∞∞Åπï¥ÅØŸÈŸï—±ï∏Å∑•À•ÃËÅÑÅÕÖ´Ö–Å¡Ωπ—ÕÎÖµÖ•ëãÕ∞Å±ïŸïÈï—ï—–Å°•¡Ω”•È•Õï¨ÅÖ…ÀÕ∞∞Å≠•≠≠ï∞Å∑≈ØŸë°ï—ÕËÅ©ï±±ïµÎEï∏Å´Õ∞∞Å°Ω∞ÅÖ±Ö≠’±°Ö–Å≠§ÅœÈ…≥ÕìÖÃ∞É•ÃÅµ§Å©ï±ïπ°ï–ÅµïúÅπÂΩ∑ÖÃÅÖ±Ö—–∏à∞(ÄÄÄÄÄÅï∏ËÄâÅ¡…Ωô•±îµâÖÕïêÅMQ%5Q∞ÅπΩ–ÅÑÅµïÖÕ’…ïµïπ–ËÅ°Â¡Ω—°ïÕïÃÅëï…•ŸïêÅô…Ω¥ÅÂΩ’»ÅΩ›∏ÅÕçΩ…ïÃÅÖâΩ’–Å›°ºÅÂΩ‘Å—Â¡•çÖ±±‰Å›Ω…¨Å›ï±∞Å›•—†∞Å›°ï…îÅô…•ç—•Ω∏ÅµÖ‰ÅÖ¡¡ïÖ»∞ÅÖπêÅ›°Ö–ÅµÖ‰ÅÕ°Ω‹Å’¿Å’πëï»Å¡…ïÕÕ’…î∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR Ä¿ƒÉ
+‹É——ï≠•π”•ÃÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅΩŸï…Ÿ•ï›IÖëÖ…Q•—±îËÅÏÅ°‘ËÄâÅ¡…Ωô•±ΩêÅïù‰ÉÖâÀÖ∏à∞Åï∏ËÄâeΩ’»Å¡…Ωô•±îÅÖ–ÅÑÅù±ÖπçîàÅÙ∞(ÄÄÄÄººÉäRäR Ä¿»É
+‹Å•µïπÈßÕ¨ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅë•µïπÕ•ΩπM’âÕçÖ±ïÃËÅÏÅ°‘ËÄâ±ÕØÖ≥Ö¨à∞Åï∏ËÄâM’âÕçÖ±ïÃàÅÙ∞(ÄÄÄÅë•µïπÕ•Ωπ9ΩM’âÕçÖ±ïÃËÅÏ(ÄÄÄÄÄÅ°‘ËÄâ°°ïËÅÑÅë•µïπÈßÕ°ΩËÅπ•πçÃÅÖ±ÕØÖ±ÑµâΩπ”ÖÃÅïââï∏ÅÑÅ≠•”Ÿ±”•Õâï∏∏à∞(ÄÄÄÄÄÅï∏ËÄâ9ºÅÕ’âÕçÖ±îÅâ…ïÖ≠ëΩ›∏Å•ÃÅÖŸÖ•±Öâ±îÅôΩ»Å—°•ÃÅë•µïπÕ•Ω∏Å•∏Å—°•ÃÅçΩµ¡±ï—•Ω∏∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR Ä¿ÃÉ
+‹Å5’π≠ÖÕ”µ±’ÃÉ•ÃÅôï©≥Eì•ÃÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅ•ëïÖ±πŸ•…Ωπµïπ–ËÅÏÅ°‘ËÄâ%ëóÖ±•ÃÅØŸ…πÂïÈï–à∞Åï∏ËÄâ%ëïÖ∞ÅïπŸ•…Ωπµïπ–àÅÙ∞(ÄÄÄÅ•ëïÖ±πŸ•…Ωπµïπ—9Ω—îËÅÏ(ÄÄÄÄÄÅ°‘ËÄâÅÕΩ…Ω¨ÅÖÈ–Åµ’—Ö—´Ö¨∞Åµ•±Âï∏Åµ’π≠ÖØŸ…πÂïÈï–Åµï±±ï—–Å∑≈ØŸëÕËÅ©ï±±ïµÎEï∏ÅÑÅ±ïù©ΩââÖ∏∏ÅÅ√Õ±’ÕΩ¨ÅØŸÎŸ—–Åπ•πçÃÅ©ΩâàÉ•ÃÅ…ΩÕÕÈÖâàÉäPÅÑÅØÒ≥Ÿπâœ•úÅÖË∞Åµ•–Å•ü•πÂï±πï¨Å”E±ïê∏à∞(ÄÄÄÄÄÅï∏ËÄâQ°ïÕîÅ…Ω›ÃÅÕ°Ω‹Å—°îÅ›Ω…≠•πúÅïπŸ•…Ωπµïπ–ÅÂΩ‘Å—Â¡•çÖ±±‰ÅΩ¡ï…Ö—îÅâïÕ–Å•∏∏Å9ï•—°ï»Å¡Ω±îÅ•ÃÅâï——ï»ÉäPÅ—°ï‰ÅÕ•µ¡±‰ÅÖÕ¨Åë•ôôï…ïπ–Å—°•πùÃÅΩòÅÂΩ‘∏à∞(ÄÄÄÅÙ∞(ÄÄÄÄººÉäRäR ÅAëôΩΩ—ï»ÉäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäRäR (ÄÄÄÅôΩΩ—ï…QÖù±•πîËÅÏÅ°‘ËÄâMÈï∑•±Â•œ•úÉ•ÃÅçÕÖ¡Ö—•π—ï±±•ùïπç•Ñà∞Åï∏ËÄâAï…ÕΩπÖ±•—‰ÅÖπêÅ—ïÖ¥Å•π—ï±±•ùïπçîàÅÙ∞(ÄÅÙ∞)ÙÅÖÃÅçΩπÕ–Ï(

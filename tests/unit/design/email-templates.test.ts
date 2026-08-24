@@ -261,7 +261,7 @@ test("egyetlen kanonikus aláírás, egyetlen dokumentált kivétellel", async (
     const signOff = s.html.match(/<strong style="color:[^"]*">([^<]*)<\/strong>\s*<\/p>/)?.[1];
     assert.ok(signOff, `${s.id} (${s.locale}): nincs aláírás`);
     const expected = PERSONAL_SIGN_OFF_TEMPLATES.has(s.id)
-      ? "Leinad · Trita"
+      ? "Leinad · trita"
       : canonical[s.locale];
     assert.equal(signOff, expected, `${s.id} (${s.locale}): eltérő aláírás`);
   }
