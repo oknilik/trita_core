@@ -1,5 +1,5 @@
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
-import { blogStoreMode, githubConfigured } from "@/lib/blog-store";
+import { blogStoreBranch, blogStoreMode, githubConfigured } from "@/lib/blog-store";
 import { AdminBlogSection } from "@/app/(app)/admin/_components/AdminBlogSection";
 import { AdminNewsletterSection } from "@/app/(app)/admin/_components/AdminNewsletterSection";
 import { getDeliveryEngagement, getNewsletterStats } from "@/lib/newsletter";
@@ -34,6 +34,7 @@ export async function BlogTab() {
       artFamily: meta.artFamily,
       artConcept: meta.artConcept,
       artLineMode: meta.artLineMode,
+      coverImage: meta.coverImage,
       readingTime: meta.readingTime,
       body: full?.content?.trim() ?? "",
     };
@@ -84,6 +85,7 @@ export async function BlogTab() {
         posts={posts}
         storeMode={blogStoreMode()}
         githubReady={githubConfigured()}
+        branch={blogStoreBranch()}
       />
     </>
   );

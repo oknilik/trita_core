@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/primitives/Button";
 import { TextField } from "@/components/ui/primitives/TextField";
@@ -48,6 +48,14 @@ const formKey = (form: IssueForm) => JSON.stringify(form);
 
 export function AdminNewsletterIssueSection({ issues, posts }: Props) {
   const router = useRouter();
+  // A lista SAJÁT állapot, nem közvetlenül a prop (2026-08-24). A szerkesztő
+  // munkamenete alatt nem futtatunk `router.refresh()`-t — az újrarenderelés
+  // elvesztette a nyitott szerkesztőt (a piszkozat mentése után a felhasználó
+  // kiesett belőle, így az előnézetig el sem jutott). Mentés/előnézet után a
+  // sort helyben frissítjük, a szerver-refresh pedig a szerkesztő bezárásáig
+  // várakozik.
+  const [rows, setRows] = useState<IssueRow[]>(issues);
+  const pendingRefresh = useRef(false);
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<IssueForm>(EMPTY);
@@ -58,6 +66,10 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  useEffect(() => {
+    setRows(issues);
+  }, [issues]);
+
   const dirty = savedKey !== formKey(form);
   const localePosts = useMemo(
     () => posts.filter((post) => post.locale === form.locale),
@@ -67,6 +79,28 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
   const resetPreview = () => {
     setPreviewData(null);
     setConfirmOpen(false);
+  };
+
+  /** Szerver-refresh — nyitott szerkesztő mellett elhalasztva. */
+  const refreshList = (editorOpen: boolean) => {
+    if (editorOpen) {
+      pendingRefresh.current = true;
+      return;
+    }
+    pendingRefresh.current = false;
+    router.refresh();
+  };
+
+  const closeEditor = () => {
+    setOpen(false);
+    if (pendingRefresh.current) {
+      pendingRefresh.current = false;
+      router.refresh();
+    }
+  };
+
+  const patchRow = (id: string, patch: Partial<IssueRow>) => {
+    setRows((prev) => prev.map((row) => (row.id === id ? { ...row, ...patch } : row)));
   };
 
   const updateForm = (next: IssueForm) => {
@@ -132,11 +166,28 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
       ? await call("PATCH", { id: editingId, ...form })
       : await call("POST", { ...form });
     if (!data) return;
-    if (!editingId && typeof data.id === "string") setEditingId(data.id);
+    const id = editingId ?? (typeof data.id === "string" ? data.id : null);
+    if (!editingId && id) setEditingId(id);
+    if (id) {
+      setRows((prev) => (prev.some((row) => row.id === id)
+        ? prev.map((row) => (row.id === id ? { ...row, ...form, status: "DRAFT" } : row))
+        : [{
+            id,
+            locale: form.locale,
+            subject: form.subject,
+            intro: form.intro,
+            postSlugs: form.postSlugs,
+            status: "DRAFT",
+            sentAt: null,
+            recipients: 0,
+            failures: 0,
+            createdAt: new Date().toISOString(),
+          }, ...prev]));
+    }
     setSavedKey(formKey(form));
     resetPreview();
     setMessage("Piszkozat mentve. Most készíthetsz tényleges e-mail-előnézetet.");
-    router.refresh();
+    refreshList(true);
   };
 
   const preview = async () => {
@@ -153,10 +204,11 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
       items: (data.items as Array<{ title: string }> | undefined) ?? [],
     };
     setPreviewData(next);
+    patchRow(editingId, { status: "READY" });
     setMessage(
       `Előnézet kész: ${next.items.length} cikk, ${next.recipients} hátralévő címzett.`,
     );
-    router.refresh();
+    refreshList(true);
   };
 
   const send = async () => {
@@ -173,13 +225,16 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
     const failed = Number(data.failed ?? 0);
     setConfirmOpen(false);
     setPreviewData(null);
-    router.refresh();
+    patchRow(editingId, { status, recipients: accepted, failures: failed });
 
     if (status === "SENT") {
       setMessage(`A szolgáltató ${accepted} címzett levelét átvette. A szám lezárva.`);
-      setOpen(false);
+      pendingRefresh.current = true;
+      closeEditor();
       return;
     }
+
+    refreshList(true);
 
     setReadOnly(true);
     setMessage(
@@ -191,8 +246,13 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
   const remove = async (id: string) => {
     const data = await call("DELETE", { id });
     if (!data) return;
-    if (editingId === id) setOpen(false);
-    router.refresh();
+    setRows((prev) => prev.filter((row) => row.id !== id));
+    pendingRefresh.current = true;
+    if (editingId === id) {
+      closeEditor();
+      return;
+    }
+    refreshList(open);
   };
 
   return (
@@ -212,9 +272,9 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
         kapják meg a változtathatatlan számot.
       </p>
 
-      {issues.length > 0 ? (
+      {rows.length > 0 ? (
         <ul className="mt-4 flex flex-col gap-2">
-          {issues.map((issue) => (
+          {rows.map((issue) => (
             <li key={issue.id} className="flex flex-wrap items-center gap-2 rounded-xl border border-sand px-4 py-3">
               <span className={`rounded-full px-2 py-0.5 text-note font-medium ${statusTone(issue.status)}`}>
                 {statusLabel(issue.status)}
@@ -330,7 +390,7 @@ export function AdminNewsletterIssueSection({ issues, posts }: Props) {
             >
               Küldés ellenőrzése
             </Button>
-            <Button variant="ghost" disabled={busy} onClick={() => setOpen(false)}>
+            <Button variant="ghost" disabled={busy} onClick={closeEditor}>
               Bezárás
             </Button>
           </div>

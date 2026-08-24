@@ -42,7 +42,28 @@ export interface BlogPost {
   artConcept?: BlogArtConcept;
   /** Dekoratív tintavonal mennyisége. */
   artLineMode?: BlogArtLineMode;
+  /**
+   * Feltöltött borítókép publikus útja (`/blog-covers/<fájl>`). Ha van, ez
+   * VÁLTJA a generatív vizuált minden felületen — listán, cikk-fejlécen,
+   * OG-képen és a hírlevél borítóján is.
+   */
+  coverImage?: string;
   content: string;
+}
+
+
+/**
+ * Feltöltött borító útjának ellenőrzése.
+ *
+ * A frontmatter szerkeszthető (admin, .mdx-feltöltés), az érték pedig
+ * `<img src>`-ként és fájlútként is landol — ezért a `/blog-covers/` prefix
+ * és a szigorú fájlnév-alak kötelező. Bármi más (külső URL, `../`,
+ * `javascript:`) NINCS borító, nem pedig „majd valahogy".
+ */
+const COVER_IMAGE_RE = /^\/blog-covers\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/;
+
+export function isBlogCoverImage(value: unknown): value is string {
+  return typeof value === "string" && COVER_IMAGE_RE.test(value);
 }
 
 export function getAllPosts(
@@ -81,6 +102,7 @@ export function getAllPosts(
         artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
         artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
         artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
+        coverImage: isBlogCoverImage(data.coverImage) ? data.coverImage : undefined,
       };
     })
     .filter(Boolean)
@@ -152,6 +174,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     artFamily: isBlogArtFamily(data.artFamily) ? data.artFamily : undefined,
     artConcept: isBlogArtConcept(data.artConcept) ? data.artConcept : undefined,
     artLineMode: isBlogArtLineMode(data.artLineMode) ? data.artLineMode : undefined,
+    coverImage: isBlogCoverImage(data.coverImage) ? data.coverImage : undefined,
     content,
   };
 }

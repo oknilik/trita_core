@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLocale } from "@/components/LocaleProvider";
 import { DEFAULT_LOCALE, t, type Locale } from "@/lib/i18n/public";
 import type { BlogPost } from "@/lib/blog";
-import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import { BlogCoverVisual } from "@/components/blog/BlogCoverVisual";
 import {
   BLOG_TOPIC_QUERY_KEY,
   resolveBlogTopic,
@@ -297,7 +297,8 @@ export function BlogListContent({
                   {/* Bal: generatív vizuál + kulcs-állítás (a nagy percszám helyett) */}
                   <div className="relative flex min-h-[220px] flex-col justify-end overflow-hidden p-6 md:min-h-[250px]">
                     <div className="absolute inset-0">
-                      <BlogArtVisual
+                      <BlogCoverVisual
+                        coverImage={featured.coverImage}
                         slug={featured.slug}
                         title={featured.title}
                         tags={featured.tags}
@@ -377,8 +378,9 @@ export function BlogListContent({
                       href={`/blog/${post.slug}`}
                       className="group overflow-hidden rounded-2xl border border-sand bg-surface-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:shadow-black/[0.05]"
                     >
-                      <div className="h-[120px] overflow-hidden">
-                        <BlogArtVisual
+                      <div className="relative h-[120px] overflow-hidden">
+                        <BlogCoverVisual
+                          coverImage={post.coverImage}
                           slug={post.slug}
                           title={post.title}
                           tags={post.tags}
@@ -417,8 +419,9 @@ export function BlogListContent({
                   href={`/blog/${post.slug}`}
                   className="group flex items-center gap-5 border-t border-[var(--color-border-default)] py-6 transition-all hover:pl-2"
                 >
-                  <span className="hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
-                    <BlogArtVisual
+                  <span className="relative hidden h-[72px] w-[72px] shrink-0 overflow-hidden rounded-xl md:block">
+                    <BlogCoverVisual
+                      coverImage={post.coverImage}
                       slug={post.slug}
                       title={post.title}
                       tags={post.tags}

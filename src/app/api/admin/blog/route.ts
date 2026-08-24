@@ -4,12 +4,16 @@ import matter from "gray-matter";
 import { requireAdmin } from "@/lib/auth";
 import { getRequestLogger } from "@/lib/logger.server";
 import {
+  BLOG_CONFLICT,
+  blogStoreTarget,
   blogStoreMode,
   githubConfigured,
+  readBlogRevision,
   readBlogSource,
   saveBlogSource,
   deleteBlogSource,
 } from "@/lib/blog-store";
+import { isBlogCoverImage } from "@/lib/blog";
 import { BLOG_ART_CONCEPTS, BLOG_ART_FAMILIES, BLOG_ART_LINE_MODES } from "@/lib/blog-art";
 
 export const runtime = "nodejs";
@@ -41,6 +45,10 @@ const postSchema = z.object({
   artLineMode: z.enum(BLOG_ART_LINE_MODES).optional(),
   body: z.string().min(50).max(100_000),
   status: z.enum(["draft", "published"]),
+  /** Feltöltött borító publikus útja — a /api/admin/blog/cover adja vissza. */
+  coverImage: z.string().regex(/^\/blog-covers\/[a-z0-9]+(?:-[a-z0-9]+)*\.(?:jpg|png|webp)$/).optional(),
+  /** A szerkesztésre betöltéskor kapott sha; `null` = új cikk. */
+  baseSha: z.string().min(1).max(120).nullable().optional(),
 });
 
 type PostInput = z.infer<typeof postSchema>;
@@ -59,6 +67,7 @@ function buildMdx(p: PostInput): string {
     locale: p.locale,
     tags: p.tags,
   };
+  if (p.coverImage) data.coverImage = p.coverImage;
   if (p.translationSlug) data.translationSlug = p.translationSlug;
   if (p.heroQuote) data.heroQuote = p.heroQuote;
   if (p.startHere) data.startHere = p.startHere;
@@ -70,6 +79,66 @@ function buildMdx(p: PostInput): string {
   if (p.status === "draft") data.status = "draft";
 
   return matter.stringify("\n" + p.body.trim() + "\n", data);
+}
+
+function isConflict(error: unknown): boolean {
+  return error instanceof Error && error.message === BLOG_CONFLICT;
+}
+
+/**
+ * A tároló hibájának BESZÉDES, de biztonságos kódja a felületre.
+ *
+ * Korábban minden hiba `SAVE_FAILED`-ként ért ki: lejárt token, hiányzó
+ * repo-jog, nem létező ág és csak olvasható fájlrendszer ugyanúgy nézett ki,
+ * úgyhogy a hibakeresés a Vercel-logokban kezdődött. A kódok whitelistről
+ * jönnek — a hibaüzenet más részét nem adjuk vissza, hogy semmilyen
+ * belső részlet ne szivárogjon.
+ */
+function storeFailure(error: unknown): { detail: string; target: ReturnType<typeof blogStoreTarget> } {
+  const message = error instanceof Error ? error.message : "";
+  const known = /^(GITHUB_(READ|WRITE|DELETE)_FAILED_\d{3}|GITHUB_NOT_CONFIGURED|BLOG_STORE_READ_ONLY)$/;
+  return {
+    detail: known.test(message) ? message : "UNKNOWN",
+    target: blogStoreTarget(),
+  };
+}
+
+// ── Szerkesztésre betöltés (GET) ──────────────────────────────────────
+// A szerkesztő NEM a lista prop-jából tölt: github módban a futó példány
+// fájlrendszere a legutóbbi DEPLOY állapotát őrzi, a tároló igazsága
+// viszont a legutóbbi commit. A kettő a build alatt eltér, és a régiből
+// mentve az időközbeni módosítás némán visszaíródna. A `sha` a mentéskor
+// visszaküldve zárja a kört.
+export async function GET(req: NextRequest) {
+  const log = await getRequestLogger("admin-blog");
+  try {
+    await requireAdmin();
+  } catch {
+    return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
+  }
+
+  const slug = req.nextUrl.searchParams.get("slug") ?? "";
+  if (!SLUG_RE.test(slug) || slug.length > 120) {
+    return NextResponse.json({ error: "INVALID_SLUG" }, { status: 400 });
+  }
+
+  try {
+    const revision = await readBlogRevision(slug);
+    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+
+    const { data, content } = matter(revision.content);
+    return NextResponse.json({
+      ok: true,
+      slug,
+      sha: revision.sha,
+      mode: blogStoreMode(),
+      frontmatter: data,
+      body: content.trim(),
+    });
+  } catch (error) {
+    log.error({ event: "admin-blog.load_failed", err: error, slug }, "Load failed");
+    return NextResponse.json({ error: "LOAD_FAILED", ...storeFailure(error) }, { status: 500 });
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -101,11 +170,15 @@ export async function POST(req: NextRequest) {
       slug: p.slug,
       content: mdx,
       message: `content(blog): ${p.slug} (${p.status === "draft" ? "piszkozat" : "publikálás"})`,
+      ...(p.baseSha !== undefined ? { baseSha: p.baseSha } : {}),
     });
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
+    if (isConflict(error)) {
+      return NextResponse.json({ error: "CONFLICT", slug: p.slug }, { status: 409 });
+    }
     log.error({ event: "admin-blog.save_failed", err: error }, "Save failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -194,6 +267,9 @@ export async function PUT(req: NextRequest) {
     ...(Number.isInteger(Number(data.artSeed)) && Number(data.artSeed) > 0
       ? { artSeed: Number(data.artSeed) }
       : {}),
+    // Érvénytelen borító-út esetén NEM buktatjuk el a feltöltést: a mező
+    // kimarad, a cikk a generatív vizuált kapja.
+    ...(isBlogCoverImage(data.coverImage) ? { coverImage: data.coverImage } : {}),
     ...(typeof data.artMotif === "string" ? { artMotif: data.artMotif } : {}),
     ...(typeof data.artFamily === "string" ? { artFamily: data.artFamily } : {}),
     ...(typeof data.artConcept === "string" ? { artConcept: data.artConcept } : {}),
@@ -228,7 +304,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ ok: true, slug, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.upload_failed", err: error, slug }, "Upload failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -257,10 +333,10 @@ export async function PATCH(req: NextRequest) {
   }
 
   try {
-    const source = await readBlogSource(slug);
-    if (!source) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    const revision = await readBlogRevision(slug);
+    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
 
-    const { data, content } = matter(source);
+    const { data, content } = matter(revision.content);
     const wasDraft = data.status === "draft";
 
     if (action === "publish") {
@@ -275,11 +351,15 @@ export async function PATCH(req: NextRequest) {
       slug,
       content: matter.stringify(content, data),
       message: `content(blog): ${slug} (${action === "publish" ? "publikálás" : "visszavonás"})`,
+      baseSha: revision.sha,
     });
     return NextResponse.json({ ok: true, status: action === "publish" ? "published" : "draft", ...result });
   } catch (error) {
+    if (isConflict(error)) {
+      return NextResponse.json({ error: "CONFLICT", slug }, { status: 409 });
+    }
     log.error({ event: "admin-blog.status_change_failed", err: error }, "Status change failed");
-    return NextResponse.json({ error: "SAVE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "SAVE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }
 
@@ -314,6 +394,6 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true, ...result });
   } catch (error) {
     log.error({ event: "admin-blog.delete_failed", err: error }, "Delete failed");
-    return NextResponse.json({ error: "DELETE_FAILED" }, { status: 500 });
+    return NextResponse.json({ error: "DELETE_FAILED", ...storeFailure(error) }, { status: 500 });
   }
 }

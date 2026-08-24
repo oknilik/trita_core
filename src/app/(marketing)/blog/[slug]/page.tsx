@@ -19,7 +19,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ReadingProgress } from "@/components/blog/ReadingProgress";
 import { ArticleToc } from "@/components/blog/ArticleToc";
 import { ShareRow } from "@/components/blog/ShareRow";
-import { BlogArtVisual } from "@/components/blog/BlogArtVisual";
+import { BlogCoverVisual } from "@/components/blog/BlogCoverVisual";
 import { EditorialBackControl } from "@/components/ui/primitives/EditorialBackHeader";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
@@ -427,8 +427,10 @@ export default async function BlogPostPage({
             képernyőkép, amit megosztanak. Ugyanaz a determinisztikus
             kompozíció, mint a listán (azonos slug + family + concept + lineMode + seed),
             így a kártya és a cikk ugyanazt az arcot mutatja. */}
-        <div className="mb-8 h-[150px] overflow-hidden rounded-2xl border border-sand md:h-[190px]">
-          <BlogArtVisual
+        <div className="relative mb-8 h-[150px] overflow-hidden rounded-2xl border border-sand md:h-[190px]">
+          <BlogCoverVisual
+            coverImage={post.coverImage}
+            priority
             slug={post.slug}
             title={post.title}
             tags={post.tags}

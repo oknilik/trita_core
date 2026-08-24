@@ -43,6 +43,7 @@ interface AdminBlogPost {
   artFamily?: BlogArtFamily;
   artConcept?: BlogArtConcept;
   artLineMode?: BlogArtLineMode;
+  coverImage?: string;
   readingTime: string;
   body: string;
 }
@@ -62,6 +63,8 @@ interface FormState {
   artFamily: "" | BlogArtFamily;
   artConcept: "" | BlogArtConcept;
   artLineMode: "" | BlogArtLineMode;
+  /** Feltöltött borító publikus útja — üresen a generatív vizuál megy. */
+  coverImage: string;
   body: string;
 }
 
@@ -80,6 +83,7 @@ const EMPTY_FORM: FormState = {
   artFamily: "",
   artConcept: "",
   artLineMode: "",
+  coverImage: "",
   body: "",
 };
 
@@ -129,14 +133,21 @@ export function AdminBlogSection({
   posts,
   storeMode,
   githubReady,
+  branch,
 }: {
   posts: AdminBlogPost[];
   storeMode: "fs" | "github";
   githubReady: boolean;
+  /** Melyik ágra megy a commit — a futó deploy sajátja, ha nincs felülírva. */
+  branch: string;
 }) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [editingSlug, setEditingSlug] = useState<string | null>(null);
+  // A betöltéskori tároló-sha. Ezt visszük mentéskor: ha a tároló időközben
+  // megváltozott (pl. egy korábbi mentés commitja), a szerver 409-et ad
+  // némán felülíró commit helyett. `null` = új cikk (még nem létezhet).
+  const [baseSha, setBaseSha] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
@@ -151,6 +162,8 @@ export function AdminBlogSection({
   const [localeFilter, setLocaleFilter] = useState<"all" | "hu" | "en">("all");
   const [overwriteUploads, setOverwriteUploads] = useState(false);
   const [uploadBusy, setUploadBusy] = useState(false);
+  const [coverBusy, setCoverBusy] = useState(false);
+  const coverFileRef = useRef<HTMLInputElement | null>(null);
   const fileRef = useRef<HTMLInputElement | null>(null);
   // A portál csak kliensen létezik (SSR-en nincs document).
   const [mounted, setMounted] = useState(false);
@@ -241,6 +254,7 @@ export function AdminBlogSection({
 
   const resetForm = () => {
     setEditingSlug(null);
+    setBaseSha(null);
     setSlugTouched(false);
     setForm(EMPTY_FORM);
     setArtPreviewRound(0);
@@ -253,9 +267,7 @@ export function AdminBlogSection({
     setEditorOpen(true);
   };
 
-  const startEdit = (post: AdminBlogPost) => {
-    setEditingSlug(post.slug);
-    setSlugTouched(true);
+  const applyPost = (post: AdminBlogPost) => {
     setForm({
       slug: post.slug,
       title: post.title,
@@ -271,12 +283,70 @@ export function AdminBlogSection({
       artFamily: post.artFamily ?? "",
       artConcept: post.artConcept ?? "",
       artLineMode: post.artLineMode ?? "",
+      coverImage: post.coverImage ?? "",
       body: post.body,
     });
-    setArtPreviewRound(0);
+  };
+
+  /**
+   * Szerkesztésre nyitás — a tartalom a TÁROLÓBÓL jön, nem a listából.
+   *
+   * A lista a futó példány fájlrendszeréből épül, ami github módban a
+   * legutóbbi DEPLOY állapota. Ha a mentés utáni build még fut, ez a régi
+   * szöveg — abból mentve az imént mentett módosítás némán visszaíródna.
+   * A sha ugyanitt jön, és mentéskor zárja a kört.
+   */
+  const startEdit = async (post: AdminBlogPost) => {
     setNotice(null);
-    setConfirmEditorDiscard(false);
-    setEditorOpen(true);
+    setBusy(`load:${post.slug}`);
+    try {
+      const res = await fetch(`/api/admin/blog?slug=${encodeURIComponent(post.slug)}`);
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice({
+          kind: "error",
+          text: json.error === "NOT_FOUND"
+            ? "A cikk nincs meg a tárolóban — lehet, hogy időközben törölték."
+            : json.error === "LOAD_FAILED"
+              ? `${storeErrorText(json, res.status)} A biztonság kedvéért nem nyitom meg szerkesztésre.`
+              : `Nem sikerült betölteni a cikket a tárolóból: ${json.error ?? res.status}. A biztonság kedvéért nem nyitom meg szerkesztésre.`,
+        });
+        return;
+      }
+
+      const fm = (json.frontmatter ?? {}) as Record<string, unknown>;
+      const str = (value: unknown): string =>
+        typeof value === "string" ? value : typeof value === "number" ? String(value) : "";
+      const rawTags = fm.tags;
+
+      applyPost({
+        ...post,
+        title: str(fm.title) || post.title,
+        description: str(fm.description) || post.description,
+        locale: fm.locale === "en" ? "en" : "hu",
+        tags: Array.isArray(rawTags) ? rawTags.map(String) : post.tags,
+        publishedAt: str(fm.publishedAt) || post.publishedAt,
+        translationSlug: str(fm.translationSlug) || undefined,
+        heroQuote: str(fm.heroQuote) || undefined,
+        startHere: Number(fm.startHere) > 0 ? Number(fm.startHere) : undefined,
+        artSeed: Number(fm.artSeed) > 0 ? Number(fm.artSeed) : undefined,
+        coverImage: str(fm.coverImage) || undefined,
+        body: String(json.body ?? ""),
+      });
+      setBaseSha((json.sha as string | null) ?? null);
+      setEditingSlug(post.slug);
+      setSlugTouched(true);
+      setArtPreviewRound(0);
+      setConfirmEditorDiscard(false);
+      setEditorOpen(true);
+    } catch {
+      setNotice({
+        kind: "error",
+        text: "Hálózati hiba a cikk betöltésekor — nem nyitom meg szerkesztésre.",
+      });
+    } finally {
+      setBusy(null);
+    }
   };
 
   // Kész .mdx (vagy .md) fájlok feltöltése — a szerver olvassa a
@@ -353,6 +423,144 @@ export function AdminBlogSection({
     });
   };
 
+  /**
+   * A tároló hibájának emberi fordítása. A szerver `detail` mezője a
+   * whitelistelt kód (pl. GITHUB_WRITE_FAILED_401) — ebből itt lesz
+   * cselekvési utasítás, hogy ne a Vercel-logban kelljen kezdeni.
+   */
+  const storeErrorText = (json: Record<string, unknown>, fallbackStatus: number): string => {
+    const detail = typeof json.detail === "string" ? json.detail : "";
+    const target = (json.target ?? {}) as { repo?: string | null; branch?: string };
+    const where = target.repo
+      ? `${target.repo}${target.branch ? `@${target.branch}` : ""}`
+      : "a beállított repó";
+
+    if (detail === "BLOG_STORE_READ_ONLY") {
+      return "A szerver fájlrendszerbe próbált írni, ami élesben csak olvasható — "
+        + "vagyis hiányzik a GITHUB_TOKEN vagy a GITHUB_REPO env. Állítsd be őket a "
+        + "Vercelen, és indíts egy redeployt (az env-változás csak új deployban él).";
+    }
+    if (detail === "GITHUB_NOT_CONFIGURED") {
+      return "A GitHub-mentés nincs beállítva (GITHUB_TOKEN + GITHUB_REPO env kell).";
+    }
+
+    const httpMatch = /^GITHUB_(?:READ|WRITE|DELETE)_FAILED_(\d{3})$/.exec(detail);
+    if (httpMatch) {
+      const status = httpMatch[1];
+      if (status === "401") {
+        return `A GitHub elutasította a tokent (401) — jellemzően lejárt vagy visszavont `
+          + `GITHUB_TOKEN. Generálj újat, cseréld a Vercelen, és deployolj újra. (${where})`;
+      }
+      if (status === "403") {
+        return `A token nem kapott írásjogot (403) — a fine-grained PAT-on a `
+          + `Contents: Read and write engedély kell erre a repóra. (${where})`;
+      }
+      if (status === "404") {
+        return `A GitHub nem találja a célt (404) — vagy a GITHUB_REPO hibás, vagy a `
+          + `cél-ág nem létezik a repóban, vagy a token nem látja ezt a repót. (${where})`;
+      }
+      if (status === "409" || status === "422") {
+        return `A GitHub visszautasította az írást (${status}) — jellemzően időközbeni `
+          + `módosítás. Nyisd meg újra a cikket, és mentsd újra. (${where})`;
+      }
+      return `A GitHub hibát adott (${status}). (${where})`;
+    }
+
+    return `Mentés sikertelen: ${detail || fallbackStatus}`;
+  };
+
+  /**
+   * Saját borító feltöltése.
+   *
+   * A kép AZONNAL a tárolóba kerül (külön commit), a frontmatter `coverImage`
+   * mezőjét viszont a cikk következő mentése írja be — így a cikk állapota
+   * egyetlen helyen dől el, és egy feltöltés önmagában nem változtat a
+   * megjelenő cikken.
+   */
+  const uploadCover = async (file: File) => {
+    const slug = form.slug.trim() || slugify(form.title);
+    if (slug.length < 3) {
+      setNotice({ kind: "error", text: "Előbb adj címet vagy slugot — a borító fájlneve abból lesz." });
+      return;
+    }
+
+    setNotice(null);
+    setCoverBusy(true);
+    try {
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      let binary = "";
+      for (const byte of bytes) binary += String.fromCharCode(byte);
+
+      const res = await fetch("/api/admin/blog/cover", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug, filename: file.name, dataBase64: btoa(binary) }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice({
+          kind: "error",
+          text: json.error === "TOO_LARGE"
+            ? "A kép túl nagy (max. 3 MB). Kicsinyítsd le — 1600 px széles bőven elég."
+            : json.error === "UNSUPPORTED_FORMAT"
+              ? "Csak JPG, PNG vagy WebP tölthető fel. (A fájl tartalma dönt, nem a kiterjesztés.)"
+              : json.error === "SAVE_FAILED"
+                ? storeErrorText(json, res.status)
+                : `A borító feltöltése nem sikerült: ${json.error ?? res.status}`,
+        });
+        return;
+      }
+
+      set({ coverImage: String(json.path), slug });
+      setSlugTouched(true);
+      setNotice({
+        kind: "ok",
+        text: "Borító feltöltve. A cikk mentésével lép életbe — addig a régi kép megy ki.",
+      });
+    } catch {
+      setNotice({ kind: "error", text: "Hálózati hiba a borító feltöltésekor." });
+    } finally {
+      setCoverBusy(false);
+      if (coverFileRef.current) coverFileRef.current.value = "";
+    }
+  };
+
+  /** Borító eltávolítása: a fájl törlődik, a cikk visszakapja a generatív vizuált. */
+  const removeCover = async () => {
+    const current = form.coverImage;
+    const match = /^\/blog-covers\/(.+)\.(jpg|png|webp)$/.exec(current);
+    if (!match) {
+      set({ coverImage: "" });
+      return;
+    }
+
+    setNotice(null);
+    setCoverBusy(true);
+    try {
+      const res = await fetch("/api/admin/blog/cover", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: match[1], extension: match[2] }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNotice({
+          kind: "error",
+          text: json.error === "SAVE_FAILED"
+            ? storeErrorText(json, res.status)
+            : `A borító törlése nem sikerült: ${json.error ?? res.status}`,
+        });
+        return;
+      }
+      set({ coverImage: "" });
+      setNotice({ kind: "ok", text: "Borító eltávolítva. A cikk mentésével lép életbe." });
+    } catch {
+      setNotice({ kind: "error", text: "Hálózati hiba a borító törlésekor." });
+    } finally {
+      setCoverBusy(false);
+    }
+  };
+
   const successText = (mode: "fs" | "github", extra?: string) =>
     mode === "github"
       ? `Commit létrehozva — a Vercel buildel, a változás pár percen belül él.${extra ? ` (${extra})` : ""}`
@@ -372,6 +580,7 @@ export function AdminBlogSection({
       ...(form.publishedAt ? { publishedAt: form.publishedAt } : {}),
       ...(form.translationSlug.trim() ? { translationSlug: form.translationSlug.trim() } : {}),
       ...(form.heroQuote.trim() ? { heroQuote: form.heroQuote.trim() } : {}),
+      ...(form.coverImage ? { coverImage: form.coverImage } : {}),
       ...(form.startHere ? { startHere: Number(form.startHere) } : {}),
       ...(form.artSeed ? { artSeed: Number(form.artSeed) } : {}),
       ...(form.artFamily ? { artFamily: form.artFamily } : {}),
@@ -380,6 +589,7 @@ export function AdminBlogSection({
       ...(!form.artFamily && !form.artConcept && !form.artLineMode && form.artMotif ? { artMotif: form.artMotif } : {}),
       body: form.body,
       status,
+      baseSha: editingSlug ? baseSha : null,
     };
     setBusy(status === "draft" ? "save-draft" : "save-publish");
     try {
@@ -395,12 +605,19 @@ export function AdminBlogSection({
           text:
             json.error === "GITHUB_NOT_CONFIGURED"
               ? "A GitHub-mentés nincs beállítva (GITHUB_TOKEN + GITHUB_REPO env kell)."
-              : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
+              : json.error === "CONFLICT"
+                ? (editingSlug
+                    ? "A cikk a tárolóban időközben megváltozott (jellemzően egy korábbi mentés commitja). A mentés NEM történt meg, hogy ne írja felül. Zárd be a szerkesztőt, nyisd meg újra a cikket, és vidd át a módosítást."
+                    : "Ezen a sluggal már van cikk a tárolóban. Válassz másik slugot, vagy a listából nyisd meg a meglévőt.")
+                : json.error === "SAVE_FAILED"
+                  ? storeErrorText(json, res.status)
+                  : `Mentés sikertelen: ${json.detail ?? json.error ?? res.status}`,
         });
         return;
       }
       setNotice({ kind: "ok", text: successText(json.mode) });
       setEditingSlug(payload.slug);
+      setBaseSha((json.sha as string | null) ?? null);
       setSlugTouched(true);
       router.refresh();
     } finally {
@@ -419,7 +636,14 @@ export function AdminBlogSection({
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setNotice({ kind: "error", text: `Nem sikerült: ${json.error ?? res.status}` });
+        setNotice({
+          kind: "error",
+          text: json.error === "CONFLICT"
+            ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
+            : json.error === "SAVE_FAILED"
+              ? storeErrorText(json, res.status)
+              : `Nem sikerült: ${json.error ?? res.status}`,
+        });
         return;
       }
       setNotice({
@@ -494,7 +718,18 @@ export function AdminBlogSection({
       <div className="rounded-xl border border-sand bg-surface-card p-4 text-sm text-ink-body">
         <span className="font-semibold text-ink">Mentési mód: </span>
         {storeMode === "github" ? (
-          <>GitHub-commit → automatikus Vercel deploy (~pár perc a megjelenésig).</>
+          <>
+            GitHub-commit a{" "}
+            <span className="font-dm-mono text-caption text-ink">{branch}</span> ágra →
+            automatikus Vercel deploy (~pár perc a megjelenésig).
+            {branch !== "main" && (
+              <span className="text-muted">
+                {" "}
+                Ez nem az éles ág: a cikk a publikus blogon csak a main-be olvasztás
+                után jelenik meg.
+              </span>
+            )}
+          </>
         ) : (
           <>
             helyi fájlírás (content/blog) — dev-ben azonnal látszik, élesítés git push-sal.
@@ -656,6 +891,65 @@ export function AdminBlogSection({
                   </span>
                 </div>
 
+                {/* Saját borító — ha van, MINDEN felületen ez megy a rajz helyett. */}
+                <div className="mb-4 rounded-lg border border-sand bg-surface-card p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold text-text-primary">Saját borítókép</span>
+                    <span className="text-xs text-muted">
+                      {form.coverImage ? "feltöltve — a generatív vizuál helyett ez megy" : "nincs — a generatív vizuál megy"}
+                    </span>
+                  </div>
+
+                  {form.coverImage ? (
+                    <div className="mt-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={form.coverImage}
+                        alt=""
+                        className="h-[150px] w-full rounded-lg border border-sand object-cover"
+                      />
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          loading={coverBusy}
+                          disabled={coverBusy}
+                          onClick={() => void removeCover()}
+                        >
+                          Borító eltávolítása
+                        </Button>
+                        <span className="font-dm-mono text-xs text-muted">{form.coverImage}</span>
+                      </div>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <input
+                      ref={coverFileRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      disabled={coverBusy}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) void uploadCover(file);
+                      }}
+                      className="text-xs text-ink-body file:mr-3 file:min-h-[44px] file:rounded-full file:border file:border-sand file:bg-cream file:px-4 file:text-xs file:text-ink-body"
+                    />
+                  </div>
+                  <p className="mt-2 text-xs text-muted">
+                    JPG, PNG vagy WebP, legfeljebb 3 MB. Fekvő, ~1600×840 arányú kép a jó:
+                    ugyanez megy a listára, a cikk fejlécére, a link-előnézetre és a hírlevélbe.
+                    A kép a cikk mellé, a repóba kerül, és a cikk mentésekor lép életbe.
+                  </p>
+                </div>
+
+                {form.coverImage ? (
+                  <p className="text-xs text-muted">
+                    A generatív vizuál beállításai el vannak rejtve, amíg saját borító van
+                    a cikken. Vedd le a borítót, ha vissza szeretnél térni a rajzolt képhez.
+                  </p>
+                ) : (
+                  <>
                 {/* A mentett/automatikus kép két valódi felületi méretben. */}
                 <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
@@ -812,6 +1106,8 @@ export function AdminBlogSection({
                     </span>
                   )}
                 </div>
+                  </>
+                )}
               </div>
 
               <div className="mt-4">
@@ -1054,7 +1350,13 @@ export function AdminBlogSection({
                 </span>
               </span>
               <span className="flex shrink-0 items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => startEdit(post)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  loading={busy === `load:${post.slug}`}
+                  disabled={busy !== null}
+                  onClick={() => void startEdit(post)}
+                >
                   Szerkesztés
                 </Button>
                 {post.status === "draft" ? (
