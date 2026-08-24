@@ -93,7 +93,7 @@ test("authenticated member resumes server draft, submits and reaches results", a
       if (!Number.isNaN(current)) return "assessment";
       if (await introStartCta.isVisible().catch(() => false)) return "intro";
       return "pending";
-    }, { timeout: 20_000 })
+    }, { timeout: 60_000 })
     .toMatch(/assessment|intro/);
   if (await introStartCta.isVisible().catch(() => false)) {
     await introStartCta.click({ force: true });

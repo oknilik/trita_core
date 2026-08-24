@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs/server";
+import { getServerAuth } from "@/lib/auth-server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
@@ -15,7 +15,7 @@ function draftScope(campaignId?: string): string {
 }
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
