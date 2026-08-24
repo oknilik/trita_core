@@ -2,8 +2,9 @@ import { ProgressRing } from "@/components/ui/ProgressRing";
 
 // Készültség-kijelző a hero-pillanatképekhez (UX-audit #5): részleges
 // értéknél a megszokott gyűrű; 100%-nál viszont nem „még egy kör", hanem
-// kompakt pipa-jelvény — a kész állapot ne foglaljon annyi vizuális súlyt,
-// mint a folyamatban lévő.
+// kompakt pipa-jelvény — a kész állapot ne kapjon annyi vizuális súlyt,
+// mint a folyamatban lévő. A külső doboz ettől még a gyűrűvel azonos magas,
+// így a pillanatkép-kártyák alatta lévő feliratai egy vonalban maradnak.
 export function CompletionIndicator({
   percent,
   size = 76,
@@ -21,7 +22,7 @@ export function CompletionIndicator({
   return (
     <span
       className="flex items-center justify-center rounded-full"
-      style={{ width: size, height: size * 0.62 }}
+      style={{ width: size, height: size }}
     >
       <span
         className="flex h-9 w-9 items-center justify-center rounded-full"
