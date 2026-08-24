@@ -22,8 +22,8 @@ export default function AuthLeftPanel({ className }: AuthLeftPanelProps) {
         className,
       )}
     >
-      <div className="absolute size-[250px] rounded-full border border-white/[0.035] bg-black/[0.05]" />
-      <svg viewBox="0 0 320 520" className="relative h-auto w-full" focusable="false">
+      <div className="absolute size-[210px] rounded-full border border-white/[0.035] bg-black/[0.05]" />
+      <svg viewBox="0 0 320 520" className="relative h-auto w-[82%]" focusable="false">
         <circle cx="160" cy="260" r="94" fill="rgba(0,0,0,0.07)" />
         <g
           transform="translate(160 260)"
