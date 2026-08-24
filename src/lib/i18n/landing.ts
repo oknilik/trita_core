@@ -718,3 +718,4 @@ export const landingTranslations = {
     ctaPrimary: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
     ctaSecondary: { hu: "Kapcsolatfelvétel", en: "Get in touch" },
   },
+} as const;
