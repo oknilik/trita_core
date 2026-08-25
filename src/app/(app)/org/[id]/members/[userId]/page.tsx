@@ -33,8 +33,8 @@ export default async function MemberDossierPage({
   const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   if (!org) notFound();
 
-  // Kőbe vésett hozzáférés: csak org admin + tanácsadói kör. A guard env-t
-  // olvas (ADMIN_EMAILS) → szerver-oldal.
+  // Kőbe vésett hozzáférés: kizárólag tanácsadói kör. A guard env-t olvas
+  // (ADMIN_EMAILS) → szerver-oldal.
   const viewer = await prisma.userProfile.findUnique({
     where: { id: profileId },
     select: { email: true, isConsultant: true },

@@ -202,7 +202,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a saját eredmény-nézet szerep-szekcióját (/profile/results). 2. Vesd össze az önkép és a csapatkép top-3 listáját. 3. Tanácsadóként nézd meg ugyanezt a tag-dossziéban.",
     expected:
-      "A top-3 önkép és top-3 csapatkép egymás mellett jelenik meg; a közös, a csak-önkép és a csak-csapatkép szerepek megkülönböztetve; küszöb alatti peer-képnél az összevetés nem jelenik meg (csak a küszöb-szöveg); a dossziét csak org admin + tanácsadói kör éri el.",
+      "A top-3 önkép és top-3 csapatkép egymás mellett jelenik meg; a közös, a csak-önkép és a csak-csapatkép szerepek megkülönböztetve; küszöb alatti peer-képnél az összevetés nem jelenik meg (csak a küszöb-szöveg); a dossziét kizárólag a tanácsadói kör éri el, a sima org admin nem.",
     automated: "partial",
     coveredBy:
       "tests/unit/team/team-role-scoring.test.ts (self vs peer top-3) · tests/unit/policy/member-dossier.test.ts (dossier-hozzáférés)",

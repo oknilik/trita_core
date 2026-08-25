@@ -442,8 +442,8 @@ export function MemberDossierView({
 
       <p className="text-micro text-muted">
         {isHu
-          ? `Dossié generálva: ${fmtDate(dossier.generatedAt, isHu)} · csak org admin és tanácsadó látja.`
-          : `Dossier generated: ${fmtDate(dossier.generatedAt, isHu)} · visible to org admin and consultant only.`}
+          ? `Dossié generálva: ${fmtDate(dossier.generatedAt, isHu)} · csak tanácsadó látja.`
+          : `Dossier generated: ${fmtDate(dossier.generatedAt, isHu)} · visible to consultants only.`}
       </p>
     </div>
   );

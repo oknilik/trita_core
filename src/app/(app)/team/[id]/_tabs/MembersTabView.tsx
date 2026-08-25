@@ -102,10 +102,8 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
             ? `/org/${orgId}/members`
             : null
         }
-        memberDirectoryOnly={!isOrgManager && !canViewRaw}
         isHu={isHu}
         locale={locale}
-        dateLocale={isHu ? "hu-HU" : "en-US"}
       />
     </PlatformPageShell>
   );

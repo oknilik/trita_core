@@ -1,6 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
 
 const members = [
   {
@@ -8,7 +12,7 @@ const members = [
     userId: "kata",
     displayName: "Aurora Kata",
     email: "aurora-kata@trita.io",
-    role: "MANAGER",
+    role: "manager",
     joinedAt: "2026-08-18T10:00:00.000Z",
     hasAssessment: true,
     testType: "TRITAN",
@@ -18,7 +22,7 @@ const members = [
     userId: "bence",
     displayName: "Aurora Bence",
     email: "aurora-bence@trita.io",
-    role: "MEMBER",
+    role: "member",
     joinedAt: "2026-08-19T10:00:00.000Z",
     hasAssessment: false,
     testType: null,
@@ -31,17 +35,15 @@ describe("TeamMembersTab member directory", () => {
       <TeamMembersTab
         members={members}
         pendingInvites={[
-          { id: "invite-1", email: "pending@trita.io", createdAt: "2026-08-20T10:00:00.000Z" },
+          { id: "invite-1", email: "pending@trita.io" },
         ]}
         teamId="team-1"
         profileId="kata"
         isOrgManager={false}
         canEmailInvite={false}
         addableOrgMembers={[]}
-        memberDirectoryOnly
         isHu
         locale="hu"
-        dateLocale="hu-HU"
       />,
     );
 
@@ -55,5 +57,54 @@ describe("TeamMembersTab member directory", () => {
     expect(screen.queryByText("Kitöltve")).not.toBeInTheDocument();
     expect(screen.queryByText("pending@trita.io")).not.toBeInTheDocument();
     expect(screen.queryByText(/2026/)).not.toBeInTheDocument();
+  });
+
+  it("az org admin ugyanazokat a kártyákat kezeli, dosszié-hozzáférés nélkül", () => {
+    render(
+      <TeamMembersTab
+        members={members}
+        pendingInvites={[]}
+        teamId="team-1"
+        profileId="kata"
+        isOrgManager
+        canEmailInvite
+        addableOrgMembers={[]}
+        dossierBaseHref={null}
+        isHu
+        locale="hu"
+      />,
+    );
+
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(screen.getByRole("button", { name: /Tag hozzáadása/ })).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toHaveValue("member");
+    expect(screen.getByRole("button", { name: "Eltávolítás" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Dossié" })).not.toBeInTheDocument();
+    expect(screen.queryByText("Kitöltve")).not.toBeInTheDocument();
+    expect(screen.queryByText(/2026/)).not.toBeInTheDocument();
+  });
+
+  it("a dosszié-akciót csak a tanácsadói kártyák kapják meg", () => {
+    render(
+      <TeamMembersTab
+        members={members}
+        pendingInvites={[]}
+        teamId="team-1"
+        profileId="consultant"
+        isOrgManager
+        canEmailInvite={false}
+        addableOrgMembers={[]}
+        dossierBaseHref="/org/org-1/members"
+        isHu
+        locale="hu"
+      />,
+    );
+
+    const dossierLinks = screen.getAllByRole("link", { name: "Dossié" });
+    expect(dossierLinks).toHaveLength(2);
+    expect(dossierLinks[0]).toHaveAttribute(
+      "href",
+      "/org/org-1/members/kata",
+    );
   });
 });

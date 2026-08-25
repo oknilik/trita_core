@@ -2,19 +2,19 @@
 
 ## Kontextus és cél
 
-Read-only összesítő nézet egy szervezeti tagról az admin és a tanácsadó
-számára: kitöltései, önkép vs. külső kép, kapcsolati beágyazottság, kapott
+Read-only összesítő nézet egy szervezeti tagról a tanácsadó számára:
+kitöltései, önkép vs. külső kép, kapcsolati beágyazottság, kapott
 visszajelzések. **Nem új mérés** — a meglévő libek (team-stats,
 trust-network, team-role-peer, observer-aggregátum) személyre szűrt
 összeszerelése. Route: `/org/[id]/members/[userId]`.
 
-## Hozzáférési döntés (2026-07-28, kőbe vésve)
+## Hozzáférési döntés (2026-08-25, kőbe vésve)
 
-A dossziét KIZÁRÓLAG az org admin (`ORG_ADMIN`) és a tanácsadói kör
-(`ORG_CONSULTANT`, platform-tanácsadó `isConsultant`, platform-admin
-`ADMIN_EMAILS`) láthatja. Az `ORG_MANAGER` NEM, a tag a SAJÁT dossziéját SEM
-éri el. Guard: `canViewMemberDossier` (`src/lib/measurement-auth.ts`) —
-explicit allowlist, NEM rang-alapú.
+A dossziét KIZÁRÓLAG a tanácsadói kör (`ORG_CONSULTANT`, platform-tanácsadó
+`isConsultant`, platform-admin `ADMIN_EMAILS`) láthatja. Az `ORG_ADMIN` és az
+`ORG_MANAGER` NEM, a tag a SAJÁT dossziéját SEM éri el. Guard:
+`canViewMemberDossier` (`src/lib/measurement-auth.ts`) — explicit tanácsadói
+kapu, NEM rang-alapú.
 
 ## Láthatósági vörös vonalak
 
