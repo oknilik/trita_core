@@ -98,8 +98,8 @@ export const commonTranslations = {
 
   meta: {
     title: {
-      hu: "Trita - Személyiség- és csapatintelligencia",
-      en: "Trita - Personality and Team Intelligence",
+      hu: "trita - Személyiség- és csapatintelligencia",
+      en: "trita - Personality and Team Intelligence",
     },
     // SEO: a leírás a KERESETT kifejezéssel indul („személyiségteszt
     // magyarul"), nem a felszólítással — a snippet első
@@ -109,32 +109,32 @@ export const commonTranslations = {
       en: "A personality test across six dimensions: compare your self-image with feedback from people who know you, and see how your team really works.",
     },
     assessmentTitle: {
-      hu: "Teszt kitöltése | Trita",
-      en: "Take the test | Trita",
+      hu: "Teszt kitöltése | trita",
+      en: "Take the test | trita",
     },
     tryTitle: {
-      hu: "Ingyenes személyiségteszt — 60 kérdés, kb. 10 perc | Trita",
-      en: "Free personality test — 60 questions, about 10 minutes | Trita",
+      hu: "Ingyenes személyiségteszt — 60 kérdés, kb. 10 perc | trita",
+      en: "Free personality test — 60 questions, about 10 minutes | trita",
     },
     tryDescription: {
-      hu: "Töltsd ki a Trita személyiségtesztet regisztráció nélkül: 60 kérdés, körülbelül 10 perc, azonnali visszajelzés a hat személyiségdimenzió mentén.",
-      en: "Take the Trita personality assessment without registration: 60 questions, about 10 minutes, instant feedback across six personality dimensions.",
+      hu: "Töltsd ki a trita személyiségtesztet regisztráció nélkül: 60 kérdés, körülbelül 10 perc, azonnali visszajelzés a hat személyiségdimenzió mentén.",
+      en: "Take the trita personality assessment without registration: 60 questions, about 10 minutes, instant feedback across six personality dimensions.",
     },
     dashboardTitle: {
-      hu: "Vezérlő | Trita",
-      en: "Dashboard | Trita",
+      hu: "Vezérlő | trita",
+      en: "Dashboard | trita",
     },
     observeTitle: {
-      hu: "Visszajelzés kitöltése | Trita",
-      en: "Observer assessment | Trita",
+      hu: "Visszajelzés kitöltése | trita",
+      en: "Observer assessment | trita",
     },
     onboardingTitle: {
-      hu: "Személyes adatok | Trita",
-      en: "Personal details | Trita",
+      hu: "Személyes adatok | trita",
+      en: "Personal details | trita",
     },
     adminTitle: {
-      hu: "Admin | Trita",
-      en: "Admin | Trita",
+      hu: "Admin | trita",
+      en: "Admin | trita",
     },
   },
   nav: {
@@ -179,10 +179,7 @@ export const commonTranslations = {
     colAccount: { hu: "Fiók", en: "Account" },
     colLegal: { hu: "Jogi", en: "Legal" },
     blog: { hu: "Blog", en: "Blog" },
-    // A gondolat-oldal (/about) a termék-oszlop ELSŐ tétele: aki a láblécig
-    // görgetett, az sokszor még mindig azt kérdezi, mi ez az egész.
-    about: { hu: "Mi az a Trita", en: "What is Trita" },
-    aboutUs: { hu: "Rólunk", en: "About us" },
+    about: { hu: "Rólunk", en: "About" },
     pricing: { hu: "Együttműködés", en: "How we work" },
     pilot: { hu: "Pilotprogram", en: "Pilot program" },
     // A fogalmi/tartalmi lap eddig CSAK a sitemapben és belső
@@ -196,7 +193,7 @@ export const commonTranslations = {
     signUp: { hu: "Regisztráció", en: "Sign up" },
     privacy: { hu: "Adatvédelem", en: "Privacy" },
     contact: { hu: "Kapcsolat", en: "Contact" },
-    copyright: { hu: "© 2026 Trita. Minden jog fenntartva.", en: "© 2026 Trita. All rights reserved." },
+    copyright: { hu: "© 2026 trita. Minden jog fenntartva.", en: "© 2026 trita. All rights reserved." },
   },
   common: {
     or: { hu: "vagy", en: "or" },
@@ -339,7 +336,7 @@ export const commonTranslations = {
   },
   becomeCoach: {
     tag: { hu: "Coach program", en: "Coach program" },
-    title: { hu: "Csatlakozz coachként", en: "Become a coach on Trita" },
+    title: { hu: "Csatlakozz coachként", en: "Become a coach on trita" },
     subtitle: {
       hu: "Segíts ügyfeleidnek mélyebben megismerni önmagukat érvényes személyiségadatok és AI-támogatott kiértékelés segítségével.",
       en: "Help your clients understand themselves more deeply with validated personality data and AI-powered debriefs.",
@@ -381,8 +378,8 @@ export const commonTranslations = {
     },
     motivationLabel: { hu: "Motiváció", en: "Motivation" },
     motivationPlaceholder: {
-      hu: "Miért szeretnél coachként csatlakozni a Tritához? Hogyan tudnád hasznosítani a platformot az ügyfeleid számára?",
-      en: "Why do you want to join Trita as a coach? How would you use the platform with your clients?",
+      hu: "Miért szeretnél coachként csatlakozni a tritához? Hogyan tudnád hasznosítani a platformot az ügyfeleid számára?",
+      en: "Why do you want to join trita as a coach? How would you use the platform with your clients?",
     },
     specializationsLabel: { hu: "Szakterületek (opcionális)", en: "Specializations (optional)" },
     specializationsPlaceholder: {
@@ -403,10 +400,10 @@ export const commonTranslations = {
   },
   contact: {
     // Page
-    metaTitle: { hu: "Kapcsolat | Trita", en: "Contact | Trita" },
-    metaDescription: { hu: "Kapcsolatfelvétel a Trita csapatával.", en: "Get in touch with the Trita team." },
+    metaTitle: { hu: "Kapcsolat | trita", en: "Contact | trita" },
+    metaDescription: { hu: "Kapcsolatfelvétel a trita csapatával.", en: "Get in touch with the trita team." },
     eyebrow: { hu: "Kapcsolat", en: "Contact" },
-    title: { hu: "Beszéljünk arról, miben tud segíteni a Trita.", en: "Let's talk about how Trita can help." },
+    title: { hu: "Beszéljünk arról, miben tud segíteni a trita.", en: "Let's talk about how trita can help." },
     subtitle: {
       hu: "Demó, árazás, partneri együttműködés vagy támogatás — írj nekünk itt, és egy munkanapon belül válaszolunk.",
       en: "Demo, pricing, partnerships, or support — send us a note and we'll reply within one business day.",

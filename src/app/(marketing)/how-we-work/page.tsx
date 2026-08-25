@@ -45,7 +45,7 @@ export default function HowWeWorkPage() {
             description:
               "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel — validált összképpel és közös értelmezéssel.",
             serviceType: "Szervezetfejlesztés és csapatdiagnosztika",
-            catalogName: "Trita programelemek",
+            catalogName: "trita programelemek",
             offerings: [
               {
                 name: "Egyéni személyiségfelmérés",

@@ -32,7 +32,7 @@ import { DIMENSION_COLORS } from "@/lib/color-system";
  * SAJÁT ADAPTÁCIÓK (public domain forráson megengedett):
  * - E/1 alany hozzáadva (IPIP-formátum: „Keep things tidy." → „I keep
  *   things tidy."); 3 itemnél könnyű szövegigazítás (41, 50, 78).
- * - Magyar fordítás: saját (Trita, 2026) — az IPIP a fordítást engedély
+ * - Magyar fordítás: saját (trita, 2026) — az IPIP a fordítást engedély
  *   nélkül megengedi.
  * - Observer-változatok (singular they / E/3): saját nyelvtani derivátum —
  *   jogilag korlátlan; publikált observer-validálása nincs, a saját
@@ -53,7 +53,7 @@ import { DIMENSION_COLORS } from "@/lib/color-system";
  */
 export const tritanConfig: TestConfig = {
   type: "TRITAN",
-  name: "Trita személyiségteszt",
+  name: "trita személyiségteszt",
   // A user-facing szöveg NEM nevezi a modellt „HEXACO-nak" (CLAUDE.md) — a
   // getTestConfig amúgy is a lokalizált testLabels-re cseréli, de a nyers mező
   // se hordozza a tiltott megfogalmazást.

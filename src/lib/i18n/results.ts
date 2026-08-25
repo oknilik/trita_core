@@ -1,6 +1,6 @@
 export const resultsTranslations = {
   dashboard: {
-    metadataTitle: { hu: "Profilom | Trita", en: "My profile | Trita" },
+    metadataTitle: { hu: "Profilom | trita", en: "My profile | trita" },
     personalTag: { hu: "Személyes profil", en: "Personal profile" },
     continueDraftTitle: { hu: "Félbehagyott teszt", en: "Unfinished test" },
     continueDraftBody: { hu: "Folytasd onnan, ahol abbahagytad ({answered}/{total} kérdés kész).", en: "Continue where you left off ({answered}/{total} questions done)." },
@@ -158,7 +158,7 @@ export const resultsTranslations = {
     feedbackError: { hu: "Nem sikerült beküldeni. Próbáld újra!", en: "Could not submit. Please try again." },
     // ── Research survey ──────────────────────────────────────────────────────
     surveyTitle: { hu: "Visszajelzés", en: "Feedback" },
-    surveySubtitle: { hu: "5–6 kérdés, ~1 perc · segíts jobbá tenni a Tritát", en: "5–6 questions, ~1 min · help us make Trita better" },
+    surveySubtitle: { hu: "5–6 kérdés, ~1 perc · segíts jobbá tenni a tritát", en: "5–6 questions, ~1 min · help us make trita better" },
     surveyMultiHint: { hu: "Több is választható", en: "Multiple selections allowed" },
     surveyNext: { hu: "Tovább", en: "Next" },
     surveySubmit: { hu: "Beküldés", en: "Submit" },
@@ -1144,12 +1144,12 @@ export const resultsTranslations = {
       en: "Notify me about new articles",
     },
     emailPrefsBlogHint: {
-      hu: "Külön értesítés minden új Trita-cikk megjelenésekor.",
-      en: "A separate notification whenever a new Trita article is published.",
+      hu: "Külön értesítés minden új trita-cikk megjelenésekor.",
+      en: "A separate notification whenever a new trita article is published.",
     },
     emailPrefsDigestLabel: {
-      hu: "Időszaki, szerkesztett Trita-hírlevél",
-      en: "Occasional curated Trita newsletter",
+      hu: "Időszaki, szerkesztett trita-hírlevél",
+      en: "Occasional curated trita newsletter",
     },
     emailPrefsDigestHint: {
       hu: "Ritka, válogatott összefoglaló több cikkel és gyakorlati gondolattal.",
@@ -2014,7 +2014,7 @@ export const resultsTranslations = {
     shareExpiredCtaTry: { hu: "Kipróbálom a tesztet", en: "Try the assessment" },
     shareExpiredCtaSignIn: { hu: "Bejelentkezés", en: "Sign in" },
     // Share page — footer CTA kijelentkezett látogatónak
-    shareCtaTitle: { hu: "Még nincs Trita profilod?", en: "Don't have a Trita profile yet?" },
+    shareCtaTitle: { hu: "Még nincs trita profilod?", en: "Don't have a trita profile yet?" },
     shareCtaDesc: {
       hu: "Néhány perc alatt kitöltheted a felmérést, és megkapod a saját személyiség- és munkastílus-profilodat.",
       en: "Complete the assessment in a few minutes and get your own personality and work-style profile.",
@@ -2172,8 +2172,8 @@ export const resultsTranslations = {
     collabFriction: { hu: "Lehetséges súrlódások", en: "Possible frictions" },
     collabNeeds: { hu: "Ami kihozza belőled a legjobbat", en: "What brings out your best" },
     collabSourceNote: {
-      hu: "Ez a fejezet a személyiségprofilodból számolt becslés: azt jelzi, milyen körülmények között bontakozhatsz ki, és hol alakulhat ki súrlódás. A konkrét kollégáiddal kialakuló csapatdinamikát a Trita csapatképe vizsgálja részletesebben.",
-      en: "This chapter is a profile-based estimate: it signals which working styles you typically strengthen next to, or grate against. Real team dynamics — with your actual colleagues — are measured in the Trita team view.",
+      hu: "Ez a fejezet a személyiségprofilodból számolt becslés: azt jelzi, milyen körülmények között bontakozhatsz ki, és hol alakulhat ki súrlódás. A konkrét kollégáiddal kialakuló csapatdinamikát a trita csapatképe vizsgálja részletesebben.",
+      en: "This chapter is a profile-based estimate: it signals which working styles you typically strengthen next to, or grate against. Real team dynamics — with your actual colleagues — are measured in the trita team view.",
     },
     methodNoteTitle: { hu: "Hogyan olvasd ezt a riportot?", en: "How to read this report" },
     methodNoteBody: {

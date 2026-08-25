@@ -9,7 +9,7 @@ import { hashString } from "@/lib/miro-primitives";
  *
  * A tengelyek szétválasztása ad változatosságot anélkül, hogy négy egymástól
  * független arculatot építenénk. Egy "tension" jelenet például lehet
- * konstelláció vagy élő vonal, miközben mindkettő ugyanazt a Trita-palettát
+ * konstelláció vagy élő vonal, miközben mindkettő ugyanazt a trita-palettát
  * és kísérőjeleket használja.
  */
 export const BLOG_ART_FAMILIES = ["collage", "modular", "constellation", "flow"] as const;

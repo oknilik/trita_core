@@ -99,6 +99,18 @@ test("jelölt-oldal + blog: a dim-badge a HEXACO-betű, nem a nyers belső kód"
   }
 });
 
+test("blog: a sötét kulcsgondolat-blokk bekezdése kontrasztos színt örököl", () => {
+  const source = read(BLOG_PAGE);
+  assert.ok(
+    source.includes("text-[var(--color-text-on-inverse-muted)]"),
+    "a kulcsgondolat törzsszövege nem az inverz felület kontrasztos tokenjét használja",
+  );
+  assert.ok(
+    source.includes("[&_p]:text-inherit"),
+    "az MDX bekezdés felülírhatja a kulcsgondolat kontrasztos színét",
+  );
+});
+
 test("csapatszerep self-beküldő: a hiba nem nyelődik el, van újrapróbálás", () => {
   const source = read(TEAM_ROLES_CLIENT);
   assert.ok(

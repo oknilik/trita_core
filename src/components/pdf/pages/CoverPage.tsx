@@ -16,7 +16,7 @@ type Bookmark = string | { title: string; expanded?: boolean; top?: number; left
 // Borító — a webes/megosztó hero valódi párja (PDF-audit 2026-08-18, P1/13):
 // sötét-sage felület + a KARAKTERÁBRA (PdfTypeGlyph, ugyanaz a nyelvtan, mint
 // a képernyőn), ugyanaz az eyebrow / név / archetípus / hero-insight, és a
-// kanonikus Trita szójel (PdfWordmark).
+// kanonikus trita szójel (PdfWordmark).
 //
 // A borító számozáson kívül van: nincs rajta lábléc, és az oldalszámozás az
 // első TARTALMI oldalon indul 1 / N-nel (PdfFooter.coverPages).
@@ -145,7 +145,7 @@ export function CoverPage({
 
         <View>
           <Text style={c.eyebrow}>
-            {locale === "en" ? "Trita personality profile" : "Trita személyiségprofil"}
+            {locale === "en" ? "trita personality profile" : "trita személyiségprofil"}
           </Text>
           <Text style={c.name}>{identity.userName}</Text>
           <Text style={c.archetype}>{identity.personalityType}</Text>

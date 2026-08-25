@@ -34,7 +34,6 @@ export function Footer() {
       heading: t("footer.colProduct", locale),
       links: [
         { label: t("footer.about", locale), href: "/about" },
-        { label: t("footer.aboutUs", locale), href: "/rolunk" },
         ...(isPortfolioSurfaceActive("blog")
           ? [{ label: t("footer.blog", locale), href: "/blog" }]
           : []),

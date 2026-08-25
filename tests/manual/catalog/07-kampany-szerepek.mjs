@@ -143,7 +143,7 @@ export const cases = [
   {
     id: "ROLE-01",
     area: "Csapatszerep-360",
-    name: "Self szerep-kérdőív: 8–12 jelölés + pontosan 3 kiemelés, Trita-szerepnyelv",
+    name: "Self szerep-kérdőív: 8–12 jelölés + pontosan 3 kiemelés, trita-szerepnyelv",
     persona: "csapattag",
     emails: { fő: "AUTO" },
     preconditions:
@@ -151,7 +151,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a kitöltőt (/assessment/team-roles, értesítés-linkről vagy Feladataimból). 2. Próbálj 8-nál kevesebb jelöléssel beadni. 3. Jelölj 8–12 jellemző állítást, próbáld 2 vagy 4 kiemeléssel beadni. 4. Emelj ki pontosan 3-at, add be. 5. Nézd meg az eredményt és a szövegezést.",
     expected:
-      "Érvénytelen készlet (8 alatt, 12 felett, nem pontosan 3 kiemelt) nem adható be; sikeres beadás után a 9 Trita-szerep profilja + top-szerepek jelennek meg; a kampány-lépés teljesül, a következő lépés (ütem szerint) nyílik; a user-facing szövegben sehol nem szerepel a Belbin név — a mérés neve csapatszerep-kérdőív.",
+      "Érvénytelen készlet (8 alatt, 12 felett, nem pontosan 3 kiemelt) nem adható be; sikeres beadás után a 9 trita-szerep profilja + top-szerepek jelennek meg; a kampány-lépés teljesül, a következő lépés (ütem szerint) nyílik; a user-facing szövegben sehol nem szerepel a Belbin név — a mérés neve csapatszerep-kérdőív.",
     automated: "partial",
     coveredBy:
       "tests/unit/team/team-role-scoring.test.ts (itembank + validálás + pontozás)",

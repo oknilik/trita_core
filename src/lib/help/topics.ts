@@ -30,17 +30,17 @@ const MANAGING: HelpAudience[] = ["manager", "admin"];
 const TOPICS: HelpTopic[] = [
   {
     id: "about",
-    label: { hu: "Mi a Trita?", en: "What is Trita?" },
+    label: { hu: "Mi a trita?", en: "What is trita?" },
     entries: [
       {
         id: "what-is-trita",
         question: {
-          hu: "Mi a Trita és kinek való?",
-          en: "What is Trita and who is it for?",
+          hu: "Mi a trita és kinek való?",
+          en: "What is trita and who is it for?",
         },
         answer: {
-          hu: "A Trita személyiség- és csapatintelligencia platform: önértékelő felmérés, ismerősi visszajelzés és csapatszintű elemzések egy helyen. Egyéneknek önismereti eszköz, csapatoknak és cégeknek tanácsadói kísérettel zajló fejlesztési program alapja.",
-          en: "Trita is a personality and team intelligence platform: self-assessment, peer feedback and team-level analytics in one place. For individuals it is a self-awareness tool; for teams and companies it is the foundation of a consultant-guided development program.",
+          hu: "A trita személyiség- és csapatintelligencia platform: önértékelő felmérés, ismerősi visszajelzés és csapatszintű elemzések egy helyen. Egyéneknek önismereti eszköz, csapatoknak és cégeknek tanácsadói kísérettel zajló fejlesztési program alapja.",
+          en: "trita is a personality and team intelligence platform: self-assessment, peer feedback and team-level analytics in one place. For individuals it is a self-awareness tool; for teams and companies it is the foundation of a consultant-guided development program.",
         },
         audiences: ["public"],
       },

@@ -303,7 +303,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
             <div>
               <SectionEyebrow className="mb-1">advisory</SectionEyebrow>
               <h2 className="mb-3 font-fraunces text-2xl text-ink">
-                Trita Advisory
+                trita Advisory
               </h2>
               <p className="mb-5 text-sm leading-relaxed text-ink-body">
                 {t("advisory.upgradeDesc", locale)}

@@ -1,5 +1,5 @@
 /**
- * Trita Design Tokens — JS/SVG kontextushoz
+ * trita Design Tokens — JS/SVG kontextushoz
  *
  * Palettacsere esetén ezt a fájlt ÉS a globals.css @theme inline blokkját
  * kell módosítani. A HEX értékek itt és a CSS változókban szinkronban kell maradjanak.

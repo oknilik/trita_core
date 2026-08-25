@@ -50,7 +50,7 @@ export default async function OrgSettingsPage({
         user: { select: { id: true, email: true, username: true } },
       },
     }),
-    // CJ-CREDITS: read-only egyenleg — a kereteket a Trita tanácsadó kezeli,
+    // CJ-CREDITS: read-only egyenleg — a kereteket a trita tanácsadó kezeli,
     // a felület csak mutatja őket (consulting-led modell).
     hiringActive ? getCreditBalance(orgId) : Promise.resolve(null),
   ]);

@@ -1,5 +1,5 @@
 /**
- * Trita email-layout — közös vizuális keret MINDEN kimenő emailhez.
+ * trita email-layout — közös vizuális keret MINDEN kimenő emailhez.
  *
  * 2026-08-19 arculati átállás. A keret 2026-07-23-án készült el, és azóta
  * érintetlen maradt, miközben a felület megkapta a jelentés-alapú szín-

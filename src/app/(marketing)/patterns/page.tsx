@@ -9,7 +9,7 @@ import { PatternExplorer } from "./PatternExplorer";
 
 export const metadata: Metadata = buildPageMetadata({
   path: "/patterns",
-  title: "16 csapatminta mint értelmezési nyelv | Trita",
+  title: "16 csapatminta mint értelmezési nyelv | trita",
   description:
     "Négy csapattengely 16 lehetséges olvasata erősségekkel és kockázatokkal. Értelmezési nyelv, nem validált csapattipológia vagy diagnózis.",
   ogTitle: "16 csapatminta — értelmezési nyelv",

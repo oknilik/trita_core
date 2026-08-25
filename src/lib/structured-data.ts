@@ -9,7 +9,7 @@
  * 2. AI-keresők és válaszmotorok (ChatGPT Search, Perplexity, Google AI
  *    Overviews, Claude) — ezek NEM „rangsorolnak", hanem IDÉZNEK. Ami
  *    idézhetővé tesz: (a) explicit entitás-azonosság (`@id` horgonyok, hogy a
- *    Trita EGY entitás legyen a gráfban, ne oldalanként új), (b) gépi
+ *    trita EGY entitás legyen a gráfban, ne oldalanként új), (b) gépi
  *    olvasásra kész, tényszerű állítás-párok (kérdés → rövid, önmagában is
  *    megálló válasz), (c) a hatókör/nyelv/terület explicit jelölése
  *    (`inLanguage`, `areaServed`) — magyar piacon ez dönti el, hogy egy
@@ -36,7 +36,7 @@ import {
 export const CONTACT_EMAIL = "hello@trita.io";
 
 /** A márka megjelenített neve a strukturált adatban (a logó kisbetűs). */
-export const ORGANIZATION_NAME = "Trita";
+export const ORGANIZATION_NAME = "trita";
 
 /** BCP-47 nyelvi címkék a belső `Locale` értékekhez (schema.org `inLanguage`). */
 export const BCP47_LOCALES: Record<Locale, string> = {
@@ -48,7 +48,7 @@ export type JsonLdObject = Record<string, unknown>;
 
 // ── Entitás-horgonyok ───────────────────────────────────────────────────────
 // Az `@id` a legfontosabb — és leggyakrabban kihagyott — mező. Nélküle minden
-// oldal SAJÁT, névazonos Organization-t hirdet, és a gráfban N darab „Trita"
+// oldal SAJÁT, névazonos Organization-t hirdet, és a gráfban N darab „trita"
 // keletkezik egy helyett. A horgonyokkal minden oldal UGYANARRA az entitásra
 // hivatkozik, így az állítások (mit csinál, milyen nyelven, hol) összeadódnak.
 
@@ -75,8 +75,8 @@ export function webPageId(path: string): string {
  * hitelesít, a marketing-szövegben viszont csak zajt visz.
  */
 const ORG_DESCRIPTION: Record<Locale, string> = {
-  hu: "A Trita személyiség- és csapatintelligencia platform: személyiségfelmérés hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
-  en: "Trita is a personality and team intelligence platform: personality assessment across six dimensions, 360° feedback and team diagnostics with consultant-led interpretation.",
+  hu: "A trita személyiség- és csapatintelligencia platform: személyiségfelmérés hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika, tanácsadói értelmezéssel.",
+  en: "trita is a personality and team intelligence platform: personality assessment across six dimensions, 360° feedback and team diagnostics with consultant-led interpretation.",
 };
 
 /**
@@ -348,7 +348,7 @@ export interface ServiceOffering {
  * Ár NINCS benne, és ez szándékos: a platformon kívül, egyedi ajánlattal
  * számlázunk. Kitalált `price` mező hamis strukturált adat lenne; helyette a
  * `hasOfferCatalog` sorolja fel, MIT tartalmaz a program — pont ezt idézi
- * vissza egy „mit csinál a Trita?" típusú AI-válasz.
+ * vissza egy „mit csinál a trita?" típusú AI-válasz.
  */
 export function buildServiceJsonLd(input: {
   name: string;

@@ -206,7 +206,9 @@ function KeyInsight({ children, isHu = true }: { children: React.ReactNode; isHu
       <SectionEyebrow as="div" tone="onDark" className="mb-2">
         {isHu ? "kulcsgondolat" : "key insight"}
       </SectionEyebrow>
-      <div className="text-base leading-[1.75] text-white/85">{children}</div>
+      <div className="text-base leading-[1.75] text-[var(--color-text-on-inverse-muted)] [&_p]:mb-0 [&_p:not(:last-child)]:mb-4 [&_p]:text-base [&_p]:leading-[1.75] [&_p]:text-inherit [&_strong]:text-[var(--color-text-on-inverse)]">
+        {children}
+      </div>
     </div>
   );
 }

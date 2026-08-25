@@ -1,7 +1,7 @@
 import { COLORS } from "@/lib/design-tokens";
 
 /**
- * Trita szín-rendszer — szemantikus térképek (web + PDF + OG + email).
+ * trita szín-rendszer — szemantikus térképek (web + PDF + OG + email).
  *
  * Terv és leltár: docs/development/color-system-2026-08.md (2. fejezet +
  * 5. fejezet LEZÁRT döntési kör). Négy jelentés-osztály, egy hue csak egy

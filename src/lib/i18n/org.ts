@@ -238,8 +238,8 @@ export const orgTranslations = {
       en: "Who participates in the consultation?",
     },
     faqA3: {
-      hu: "Általában te (vezető, HR, vagy az ügyvezető) és a Trita tanácsadó. A csapatmenedzsereket nem kell bevonni — ők a platformon kapják meg a saját csapatuk elemzéseit.",
-      en: "Usually you (leader, HR, or CEO) and the Trita advisor. Team managers don't need to join — they receive their team's insights directly through the platform.",
+      hu: "Általában te (vezető, HR, vagy az ügyvezető) és a trita tanácsadó. A csapatmenedzsereket nem kell bevonni — ők a platformon kapják meg a saját csapatuk elemzéseit.",
+      en: "Usually you (leader, HR, or CEO) and the trita advisor. Team managers don't need to join — they receive their team's insights directly through the platform.",
     },
     faqQ4: {
       hu: "Mit kapok a konzultáció után?",
@@ -391,8 +391,8 @@ export const orgTranslations = {
         en: "{used} used · {total} granted in total",
       },
       creditsConsultantNote: {
-        hu: "A jelölt-felmérési kereteket a Trita tanácsadód kezeli: a consulting-együttműködés részeként állítja be és tölti fel őket. Ha új keretre van szükségetek, vagy kérdésed van az egyenlegről, jelezd nekünk.",
-        en: "Candidate assessment credits are managed by your Trita consultant — they are set up and topped up as part of the consulting engagement. If you need more credits or have a question about the balance, get in touch.",
+        hu: "A jelölt-felmérési kereteket a trita tanácsadód kezeli: a consulting-együttműködés részeként állítja be és tölti fel őket. Ha új keretre van szükségetek, vagy kérdésed van az egyenlegről, jelezd nekünk.",
+        en: "Candidate assessment credits are managed by your trita consultant — they are set up and topped up as part of the consulting engagement. If you need more credits or have a question about the balance, get in touch.",
       },
       creditsContactCta: { hu: "Kapcsolatfelvétel", en: "Contact us" },
       dangerEyebrow: { hu: "veszélyes zóna", en: "danger zone" },
@@ -694,7 +694,7 @@ export const orgTranslations = {
     forms: {
       // OrgCreateForm
       createOrgName: { hu: "Szervezet neve", en: "Organization name" },
-      createPlaceholder: { hu: "pl. Trita Kft.", en: "e.g. Acme Corp" },
+      createPlaceholder: { hu: "pl. trita Kft.", en: "e.g. Acme Corp" },
       createLoading: { hu: "Létrehozás...", en: "Creating..." },
       createButton: { hu: "Létrehozás", en: "Create" },
       alreadyInOrg: { hu: "Már tagja vagy egy szervezetnek.", en: "You already belong to an organization." },
@@ -943,14 +943,14 @@ export const orgTranslations = {
   },
 
   billing: {
-    checkoutMetaTitle: { hu: "Előfizetés | Trita", en: "Subscription | Trita" },
+    checkoutMetaTitle: { hu: "Előfizetés | trita", en: "Subscription | trita" },
     checkoutEyebrow: { hu: "előfizetés", en: "subscription" },
     checkoutTitle: { hu: "Előfizetés aktiválása", en: "Activate subscription" },
     checkoutSubtitle: {
       hu: "A fizetés biztonságos — a Stripe kezeli az adataidat.",
       en: "Payment is secure — handled by Stripe.",
     },
-    returnMetaTitle: { hu: "Fizetés eredménye | Trita", en: "Payment result | Trita" },
+    returnMetaTitle: { hu: "Fizetés eredménye | trita", en: "Payment result | trita" },
     returnSuccessEyebrow: { hu: "siker", en: "success" },
     returnSuccessTitle: { hu: "Köszönjük!", en: "Thank you!" },
     returnCandidateBody: {
@@ -971,7 +971,7 @@ export const orgTranslations = {
     returnExpiredCta: { hu: "Újrapróbálom", en: "Try again" },
   },
   candidate: {
-    metaTitle: { hu: "Személyiségfelmérés | Trita", en: "Personality Assessment | Trita" },
+    metaTitle: { hu: "Személyiségfelmérés | trita", en: "Personality Assessment | trita" },
     introEyebrow: { hu: "személyiségfelmérés", en: "personality assessment" },
     introTitlePosition: { hu: "{position} pozíció", en: "{position} position" },
     introTitleGeneric: { hu: "Személyiségfelmérés", en: "Personality Assessment" },
@@ -1393,8 +1393,8 @@ export const orgTranslations = {
     premiumFeature: { hu: "prémium funkció", en: "premium feature" },
     addonEyebrow: { hu: "kiegészítő modul", en: "add-on" },
     paywallDesc: {
-      hu: "Használd a Trita személyiségmérését a felvételi folyamatban — hívj meg jelölteket, hasonlítsd össze a profiljukat, és hozz adatalapú döntéseket.",
-      en: "Use Trita personality assessments in your hiring process — invite candidates, compare their profiles, and make data-driven decisions.",
+      hu: "Használd a trita személyiségmérését a felvételi folyamatban — hívj meg jelölteket, hasonlítsd össze a profiljukat, és hozz adatalapú döntéseket.",
+      en: "Use trita personality assessments in your hiring process — invite candidates, compare their profiles, and make data-driven decisions.",
     },
     addonPricing: {
       hu: "A jelölt-kreditek ára a program részeként, egyedi ajánlatban szerepel.",
@@ -1766,7 +1766,7 @@ export const orgTranslations = {
     addMember: { hu: "Tag hozzáadása", en: "Add a member" },
     addMemberDesc: {
       hu: "Add meg a csapattag emailcímét. A felhasználónak regisztrálva kell lennie.",
-      en: "Enter the member's email. They must already be registered on Trita.",
+      en: "Enter the member's email. They must already be registered on trita.",
     },
 
     // TeamMemberRoleEditor
@@ -2130,7 +2130,7 @@ export const orgTranslations = {
 
   // ── Team detail page (/team/[id]) — server page ──────────────────────────
   teamDetail: {
-    metaTitle: { hu: "Csapat | Trita", en: "Team | Trita" },
+    metaTitle: { hu: "Csapat | trita", en: "Team | trita" },
 
     // Hero
     heroEyebrow: { hu: "Csapatnézet", en: "Team view" },
@@ -2236,7 +2236,7 @@ export const orgTranslations = {
   // ── Org onboarding wizard (/onboarding) ──────────────────────────────────
   orgOnboarding: {
     // Heading
-    welcomeTitle: { hu: "Üdvözlünk a Tritában.", en: "Welcome to Trita." },
+    welcomeTitle: { hu: "Üdvözlünk a tritában.", en: "Welcome to trita." },
     welcomeSubtitle: { hu: "3 perc és látod az első csapatképet.", en: "In 3 minutes you'll unlock your first team snapshot." },
 
     // Step labels

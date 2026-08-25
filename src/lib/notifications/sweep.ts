@@ -282,7 +282,7 @@ async function runObserverReminderSweep(result: SweepResult): Promise<void> {
     try {
       await sendObserverInviteEmail({
         to: inv.observerEmail,
-        inviterName: inv.inviter.username ?? inv.inviter.email ?? "Trita",
+        inviterName: inv.inviter.username ?? inv.inviter.email ?? "trita",
         token: inv.token,
         recipientName: inv.observerName ?? undefined,
         locale: normalizeLocale(inv.inviter.locale),

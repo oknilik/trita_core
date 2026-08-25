@@ -9,8 +9,8 @@ const testConfigs: Partial<Record<TestType, TestConfig>> = {
 
 const testLabels: Partial<Record<TestType, Record<Locale, { name: string; description: string }>>> = {
   TRITAN: {
-    hu: { name: "Trita személyiségteszt", description: "Hatfaktoros, validált személyiségteszt." },
-    en: { name: "Trita personality assessment", description: "Six-factor, validated personality assessment." },
+    hu: { name: "trita személyiségteszt", description: "Hatfaktoros, validált személyiségteszt." },
+    en: { name: "trita personality assessment", description: "Six-factor, validated personality assessment." },
   },
 };
 

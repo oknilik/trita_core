@@ -11,7 +11,7 @@ const sizeClasses = {
 } as const;
 
 /**
- * A Trita egységes visszalépési jele: rövid chevron puha ikonkeretben.
+ * A trita egységes visszalépési jele: rövid chevron puha ikonkeretben.
  * A feliratot a hívó adja, az ikon mindenhol dekoratív marad.
  */
 export function BackChevronIcon({
