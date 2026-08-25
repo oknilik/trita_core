@@ -269,18 +269,18 @@ function KpiTile({
   progressPct?: number;
 }) {
   return (
-    <div className="min-w-0 px-1 py-1 md:px-4">
+    <div className="min-w-0 px-1 md:px-3">
       <p className="break-words text-note font-medium text-muted">
         {label}
       </p>
       <p
         title={value}
-        className={`mt-1.5 break-words font-fraunces text-xl leading-tight md:text-2xl md:leading-none ${accent ?? "text-ink"}`}
+        className={`mt-1 break-words font-fraunces text-xl leading-tight md:text-2xl md:leading-none ${accent ?? "text-ink"}`}
       >
         {value}
       </p>
       {typeof progressPct === "number" && (
-        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-sand">
+        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-sand">
           <div
             className="h-full rounded-full bg-sage"
             style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
@@ -378,17 +378,17 @@ export function TeamReportView({
   const secNo = () => String(++sectionCounter).padStart(2, "0");
 
   return (
-    <div className="flex flex-col gap-10 md:gap-12">
+    <div className="flex flex-col gap-8 md:gap-10">
       {/* Fejléc + KPI-sáv — gradiens sáv adja meg a riport alaphangját */}
       <DashboardPanel className="overflow-hidden p-0">
         <div
-          className={`p-6 ${
+          className={`p-5 md:p-6 ${
             isDraft
               ? "bg-gradient-to-r from-state-warning-bg/50 via-cream/70 to-[var(--color-surface-card)]"
               : "bg-gradient-to-r from-sage/15 via-cream/70 to-[var(--color-surface-card)]"
           }`}
         >
-          <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
             <div>
               <SectionEyebrow>
                 {isDraft
@@ -423,7 +423,7 @@ export function TeamReportView({
         </div>
 
         {agg && (
-          <div className="grid grid-cols-2 gap-x-3 gap-y-5 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-6 md:grid-cols-4 md:gap-0 md:divide-x md:divide-sand">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-3 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-4 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:divide-sand md:p-5">
             <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
             <KpiTile
               label={isHu ? "Kitöltöttség" : "Completion"}
