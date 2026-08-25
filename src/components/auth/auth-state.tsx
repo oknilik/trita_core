@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 // ─────────────────────────────────────────────────────────────────────
 // Közös auth-állapot a NAV-rétegnek — Clerk kliens-hookok NÉLKÜL.
@@ -23,21 +23,26 @@ export interface AuthState {
   email: string | null;
   /** true, amíg a kliens-oldali auth-lekérés fut (csak a fetch-provider állítja). */
   loading: boolean;
+  /** Azonnali kliens-oldali visszaállítás elindított kijelentkezéskor. */
+  markSignedOut: () => void;
 }
 
-const SIGNED_OUT: AuthState = {
+type AuthSnapshot = Omit<AuthState, "markSignedOut">;
+
+const SIGNED_OUT: AuthSnapshot = {
   isSignedIn: false,
   username: null,
   email: null,
   loading: false,
 };
 
-const AuthStateContext = createContext<AuthState | null>(null);
+const NOOP = () => {};
+const AuthStateContext = createContext<AuthState>({ ...SIGNED_OUT, markSignedOut: NOOP });
 
 export function useAuthState(): AuthState {
   // Provider nélkül biztonságos alap: kijelentkezett. Nem dobunk, hogy egy
   // elszigetelt render (pl. teszt) se törjön el.
-  return useContext(AuthStateContext) ?? SIGNED_OUT;
+  return useContext(AuthStateContext);
 }
 
 /**
@@ -56,7 +61,9 @@ export function ServerAuthStateProvider({
   children: React.ReactNode;
 }) {
   return (
-    <AuthStateContext.Provider value={{ isSignedIn, username, email, loading: false }}>
+    <AuthStateContext.Provider
+      value={{ isSignedIn, username, email, loading: false, markSignedOut: NOOP }}
+    >
       {children}
     </AuthStateContext.Provider>
   );
@@ -124,9 +131,12 @@ export function FetchAuthStateProvider({ children }: { children: React.ReactNode
   // SIGNED_OUT: a hidratálás kimenete változatlan (a `loading` bitet
   // kijelentkezett állapotban egyetlen fogyasztó sem olvassa — az UserMenu
   // csak `isSignedIn` mellett renderel).
-  const [state, setState] = useState<AuthState>(() =>
+  const [state, setState] = useState<AuthSnapshot>(() =>
     mayHaveSession() ? { ...SIGNED_OUT, loading: true } : SIGNED_OUT,
   );
+
+  const markSignedOut = useCallback(() => setState(SIGNED_OUT), []);
+  const value = useMemo(() => ({ ...state, markSignedOut }), [markSignedOut, state]);
 
   useEffect(() => {
     if (!mayHaveSession()) return;
@@ -160,5 +170,5 @@ export function FetchAuthStateProvider({ children }: { children: React.ReactNode
     };
   }, []);
 
-  return <AuthStateContext.Provider value={state}>{children}</AuthStateContext.Provider>;
+  return <AuthStateContext.Provider value={value}>{children}</AuthStateContext.Provider>;
 }

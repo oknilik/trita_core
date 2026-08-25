@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics/client";
 
-// Olvasási progress-bar a cikk tetején — halk, 3px, bronz gradiens.
+// Olvasási progress-bar a viewport tetején — halk, 3px, bronz gradiens.
 // rAF-fal fojtott scroll-listener; a dokumentum teljes görgethető
 // magasságához mér.
 export function ReadingProgress({ slug }: { slug?: string }) {
@@ -44,7 +44,7 @@ export function ReadingProgress({ slug }: { slug?: string }) {
   return (
     <div
       aria-hidden
-      className="sticky top-0 z-40 h-[3px] w-full bg-[var(--color-border-default)]"
+      className="pointer-events-none fixed inset-x-0 top-0 z-[60] h-[3px] bg-[var(--color-border-default)]"
     >
       <div
         className="h-full origin-left bg-gradient-to-r from-[var(--color-accent-primary)] to-[var(--color-accent-primary-mid)]"
