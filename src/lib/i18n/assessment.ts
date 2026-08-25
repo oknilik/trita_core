@@ -262,6 +262,21 @@ export const assessmentTranslations = {
     },
     doneTitle: { hu: "Köszönjük a részvételt!", en: "Thank you for participating!" },
     doneBody: { hu: "A válaszaidat elmentettük.", en: "Your answers were saved successfully." },
+    doneEyebrow: { hu: "Visszajelzés elküldve", en: "Feedback sent" },
+    donePrivacyNote: {
+      hu: "A válaszaid név nélkül kerülnek az összesített képbe.",
+      en: "Your answers are added to the overall picture anonymously.",
+    },
+    doneNextEyebrow: { hu: "Következő lépés", en: "Next step" },
+    doneSignedInTitle: { hu: "Minden rendben.", en: "You’re all set." },
+    doneSignedOutTitle: {
+      hu: "Kíváncsi vagy a saját mintázataidra?",
+      en: "Curious about your own patterns?",
+    },
+    doneMeta: {
+      hu: "A kitöltés befejeződött · a válaszok mentve",
+      en: "Assessment complete · answers saved",
+    },
     doneSignedInHint: { hu: "A meghívóid és eredményeid a profiloldaladon elérhetőek.", en: "Your invites and results are available on your profile home." },
     doneSignedOutHint: { hu: "Szeretnéd te is kitölteni a tesztet? Regisztrálj, vagy jelentkezz be, ha már van fiókod.", en: "Want to take the test yourself? Sign up, or sign in if you already have an account." },
     signInCta: { hu: "Bejelentkezés", en: "Sign in" },

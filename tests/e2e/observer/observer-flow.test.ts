@@ -180,6 +180,9 @@ async function completeObserverViaUi(
   await expect(
     page.getByRole("heading", { name: /Thank you for participating|Köszönjük a részvételt/i }),
   ).toBeVisible();
+  await expect(page.getByTestId("observer-done-layout")).toBeVisible();
+  await expect(page.getByTestId("assessment-focus-header")).toBeVisible();
+  await expect(page.locator("[data-site-footer]")).toHaveCount(0);
 }
 
 function buildObserverSubmitPayload(token: string, questionIds: number[]) {
@@ -234,7 +237,22 @@ test.describe("C5.6 Observer E2E happy path", () => {
   test("observer token link open -> submit -> completion persists in DB", async ({ page }) => {
     const fixture = await createObserverFixture({ invitationCount: 1 });
     try {
+      await page.setViewportSize({ width: 360, height: 800 });
       await completeObserverViaUi(page, fixture.invitationTokens[0], fixture.questionIds);
+
+      const completionPanels = page.getByTestId("observer-done-layout").locator(":scope > section");
+      await expect(completionPanels).toHaveCount(2);
+      const successPanelBox = await completionPanels.nth(0).boundingBox();
+      const nextStepPanelBox = await completionPanels.nth(1).boundingBox();
+      expect(successPanelBox).not.toBeNull();
+      expect(nextStepPanelBox).not.toBeNull();
+      expect(nextStepPanelBox!.y).toBeGreaterThanOrEqual(
+        successPanelBox!.y + successPanelBox!.height - 1,
+      );
+      const horizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(horizontalOverflow).toBeLessThanOrEqual(1);
 
       await expect
         .poll(

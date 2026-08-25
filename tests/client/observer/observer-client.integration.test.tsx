@@ -832,7 +832,7 @@ describe("C5.5 ObserverClient integration", () => {
   // ── Done phase ───────────────────────────────────────────────────────────
 
   describe("done phase", () => {
-    it("shows success emoji and title", async () => {
+    it("shows the redesigned split success view with a focus header", async () => {
       const user = userEvent.setup();
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
         new Response(JSON.stringify({ success: true }), { status: 200 }),
@@ -849,9 +849,13 @@ describe("C5.5 ObserverClient integration", () => {
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
-        expect(screen.getByText("🙏")).toBeInTheDocument();
-        expect(screen.getByText(t("observer.doneTitle", "en"))).toBeInTheDocument();
+        expect(screen.getByTestId("observer-done-layout")).toHaveClass(
+          "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]",
+        );
+        expect(screen.getByTestId("assessment-focus-header")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: t("observer.doneTitle", "en") })).toBeInTheDocument();
         expect(screen.getByText(t("observer.doneBody", "en"))).toBeInTheDocument();
+        expect(screen.getByText(t("observer.donePrivacyNote", "en"))).toBeInTheDocument();
       });
     });
 

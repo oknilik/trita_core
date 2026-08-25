@@ -732,52 +732,87 @@ export function ObserverClient({
 
   if (phase === "done") {
     return (
-      <div className="relative min-h-dvh bg-cream">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.doneTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.doneBody", locale)}
-            </p>
-            {isSignedIn ? (
-              <>
-                <p className="mt-4 text-sm leading-relaxed text-ink-body">
-                  {t("observer.doneSignedInHint", locale)}
+      <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+        <AssessmentFocusHeader homeHref={observerHomeHref}>
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
+
+        <main className="mx-auto flex w-full max-w-[1080px] flex-1 items-center px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+          <div
+            data-testid="observer-done-layout"
+            className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[540px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+          >
+            <section className="relative flex min-h-[350px] flex-col justify-between overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-7 py-9 text-[var(--color-text-on-inverse)] sm:min-h-[390px] sm:px-10 sm:py-11 lg:min-h-0 lg:px-12 lg:py-14">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-32 h-72 w-72 rounded-full bg-white/[0.05]" />
+              <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-white/[0.05]" />
+
+              <div className="relative z-10">
+                <span
+                  aria-hidden="true"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-primary)] text-2xl font-semibold text-[var(--color-accent-primary-deep)] shadow-sm"
+                >
+                  ✓
+                </span>
+                <p className="mt-8 text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                  {t("observer.doneEyebrow", locale)}
                 </p>
+                <h1 className="mt-3 max-w-[430px] font-fraunces text-display font-medium leading-[1.05] tracking-[-0.035em] text-[var(--color-text-on-inverse)] sm:text-hero">
+                  {t("observer.doneTitle", locale)}
+                </h1>
+                <p className="mt-5 max-w-[410px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)] sm:text-base">
+                  {t("observer.doneBody", locale)}
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-10 flex items-start gap-3 border-t border-white/15 pt-5">
+                <span aria-hidden="true" className="mt-0.5 text-[var(--color-accent-primary-soft)]">◇</span>
+                <p className="max-w-[390px] text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  {t("observer.donePrivacyNote", locale)}
+                </p>
+              </div>
+            </section>
+
+            <section className="flex flex-col justify-center px-5 py-9 sm:px-9 sm:py-11 lg:px-12 lg:py-12">
+              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                {t("observer.doneNextEyebrow", locale)}
+              </p>
+              <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">
+                {t(isSignedIn ? "observer.doneSignedInTitle" : "observer.doneSignedOutTitle", locale)}
+              </h2>
+              <p className="mt-4 max-w-[520px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {t(isSignedIn ? "observer.doneSignedInHint" : "observer.doneSignedOutHint", locale)}
+              </p>
+
+              {isSignedIn ? (
                 <a
                   href="/profile/results"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                  className={`mt-8 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-center text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
-              </>
-            ) : (
-              <>
-                <p className="mt-4 text-sm leading-relaxed text-ink-body">
-                  {t("observer.doneSignedOutHint", locale)}
-                </p>
-                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+              ) : (
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <a
                     href={`/sign-up?observeToken=${token}`}
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                    className={`inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-center text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
                   >
                     {t("observer.signUpCta", locale)}
                   </a>
                   <a
                     href={`/sign-in?observeToken=${token}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage-soft"
+                    className={`inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-[var(--color-action-primary-bg)] bg-transparent px-6 text-center text-sm font-semibold text-[var(--color-action-primary-bg)] transition hover:bg-[var(--color-surface-self-accent-soft)] ${FOCUS_RING_CLASS}`}
                   >
                     {t("observer.signInCta", locale)}
                   </a>
                 </div>
-              </>
-            )}
+              )}
+
+              <p className="mt-5 text-center text-note text-[var(--color-text-muted)]">
+                {t("observer.doneMeta", locale)}
+              </p>
+            </section>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
