@@ -48,13 +48,21 @@ describe("TeamFeedbackHub", () => {
     const user = userEvent.setup();
     render(<TeamFeedbackHub {...props} />);
 
-    await user.click(screen.getByRole("button", { name: "Megnézem →" }));
+    await user.click(screen.getByRole("button", { name: "Megnézem" }));
 
-    expect(screen.getByRole("heading", { name: "Beérkezett neked" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "A te visszajelzéseid" })).toBeInTheDocument();
     expect(screen.getByTestId("kudos-view")).toHaveTextContent("kudos:inbox:undefined");
     expect(screen.getByTestId("request-view")).toHaveTextContent("request:inbox:undefined");
 
     await user.click(screen.getByRole("button", { name: "Vissza a visszajelzési központba" }));
     expect(screen.getByRole("heading", { name: "Mit szeretnél tenni?" })).toBeInTheDocument();
+  });
+
+  it("értesítésből közvetlenül a beérkezett nézetet nyitja meg", () => {
+    render(<TeamFeedbackHub {...props} initialView="inbox" />);
+
+    expect(screen.getByRole("heading", { name: "A te visszajelzéseid" })).toBeInTheDocument();
+    expect(screen.getByTestId("kudos-view")).toHaveTextContent("kudos:inbox:undefined");
+    expect(screen.getByTestId("request-view")).toHaveTextContent("request:inbox:undefined");
   });
 });

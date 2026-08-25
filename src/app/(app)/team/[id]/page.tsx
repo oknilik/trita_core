@@ -89,7 +89,7 @@ export default async function TeamDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string; campaignId?: string }>;
+  searchParams: Promise<{ tab?: string; campaignId?: string; feedbackView?: string }>;
 }) {
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
     getServerLocale(), getServerAuth(), params, searchParams,
@@ -462,7 +462,10 @@ export default async function TeamDetailPage({
       return (
         <>
           {tabTracker}
-          <FeedbackTabView ctx={ctx} />
+          <FeedbackTabView
+            ctx={ctx}
+            initialView={resolvedSearchParams.feedbackView === "inbox" ? "inbox" : "overview"}
+          />
         </>
       );
     case "members":

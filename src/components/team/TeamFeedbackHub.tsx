@@ -5,6 +5,8 @@ import type { Locale } from "@/lib/i18n";
 import { Button } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { TeamKudos } from "@/components/team/TeamKudos";
 import { TeamFeedbackRequests } from "@/components/team/TeamFeedbackRequests";
 
@@ -14,10 +16,11 @@ interface TeamFeedbackHubProps {
   teamId: string;
   members: Array<{ userId: string; displayName: string }>;
   locale: Locale;
+  initialView?: FeedbackHubView;
 }
 
-export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProps) {
-  const [view, setView] = useState<FeedbackHubView>("overview");
+export function TeamFeedbackHub({ teamId, members, locale, initialView = "overview" }: TeamFeedbackHubProps) {
+  const [view, setView] = useState<FeedbackHubView>(initialView);
   const isHu = locale !== "en";
 
   const copy = isHu
@@ -32,8 +35,8 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
         requestTitle: "Visszajelzést kérek",
         requestScreenTitle: "Miről kérsz visszajelzést?",
         requestHint: "Kérdezd meg a csapatot egy konkrét témáról, akár név nélküli válasszal.",
-        inboxTitle: "Beérkezett neked",
-        inboxHint: "A köszönetek és fejlesztő visszajelzések egy közös helyen, jól elkülönítve jelennek meg.",
+        inboxTitle: "A te visszajelzéseid",
+        inboxHint: "Itt találod a neked küldött köszöneteket és a kéréseidre érkezett válaszokat.",
         inboxAction: "Megnézem",
         backLabel: "Vissza a visszajelzési központba",
         backPath: "Visszajelzés",
@@ -49,8 +52,8 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
         requestTitle: "Request feedback",
         requestScreenTitle: "What would you like feedback on?",
         requestHint: "Ask the team about a specific topic, with optional anonymous responses.",
-        inboxTitle: "Received for you",
-        inboxHint: "Kudos and development feedback appear together, while remaining clearly distinct.",
+        inboxTitle: "Your feedback",
+        inboxHint: "Find kudos sent to you and responses to your feedback requests here.",
         inboxAction: "View all",
         backLabel: "Back to the feedback hub",
         backPath: "Feedback",
@@ -82,9 +85,7 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
               </span>
               <span className="mt-5 block font-fraunces text-lg font-semibold text-ink">{copy.kudosTitle}</span>
               <span className="mt-1 block pr-7 text-caption leading-relaxed text-ink-body">{copy.kudosHint}</span>
-              <span className="absolute bottom-5 right-5 text-heading text-[var(--color-accent-primary-strong)] transition group-hover:translate-x-0.5" aria-hidden="true">
-                →
-              </span>
+              <ChevronRightIcon className="absolute bottom-5 right-5 h-5 w-5 text-[var(--color-accent-primary-strong)] transition group-hover:translate-x-0.5" />
             </button>
             <button
               type="button"
@@ -96,9 +97,7 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
               </span>
               <span className="mt-5 block font-fraunces text-lg font-semibold text-ink">{copy.requestTitle}</span>
               <span className="mt-1 block pr-7 text-caption leading-relaxed text-ink-body">{copy.requestHint}</span>
-              <span className="absolute bottom-5 right-5 text-heading text-[var(--color-accent-primary-strong)] transition group-hover:translate-x-0.5" aria-hidden="true">
-                →
-              </span>
+              <ChevronRightIcon className="absolute bottom-5 right-5 h-5 w-5 text-[var(--color-accent-primary-strong)] transition group-hover:translate-x-0.5" />
             </button>
           </div>
 
@@ -108,8 +107,15 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
                 <h3 className="font-fraunces text-lg text-ink">{copy.inboxTitle}</h3>
                 <p className="mt-1 text-caption leading-relaxed text-ink-body">{copy.inboxHint}</p>
               </div>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setView("inbox")}>
-                {copy.inboxAction} →
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                iconRight={<ChevronRightIcon />}
+                onClick={() => setView("inbox")}
+                style={{ color: "var(--color-accent-primary-strong)" }}
+              >
+                {copy.inboxAction}
               </Button>
             </div>
           </Card>
@@ -120,9 +126,9 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
             type="button"
             aria-label={copy.backLabel}
             onClick={() => setView("overview")}
-            className="mb-6 inline-flex items-center gap-2 rounded-lg px-1 py-1 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring"
+            className="group mb-6 inline-flex min-h-11 items-center gap-2 rounded-xl py-1 pl-1.5 pr-3 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring"
           >
-            <span aria-hidden="true">←</span>
+            <BackChevronIcon tone="accent" />
             <span>{copy.backPath}</span>
             <span className="font-normal text-muted" aria-hidden="true">/ {screenHeading.path}</span>
           </button>

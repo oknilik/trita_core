@@ -3,7 +3,13 @@ import { TeamFeedbackHub } from "@/components/team/TeamFeedbackHub";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
-export function FeedbackTabView({ ctx }: { ctx: TeamTabContext }) {
+export function FeedbackTabView({
+  ctx,
+  initialView,
+}: {
+  ctx: TeamTabContext;
+  initialView?: "overview" | "inbox";
+}) {
   const members = ctx.teamData.members.map((member) => ({
     userId: member.userId,
     displayName: member.displayName,
@@ -16,7 +22,12 @@ export function FeedbackTabView({ ctx }: { ctx: TeamTabContext }) {
     >
       <TeamHeroBlock ctx={ctx} active="feedback" />
       <section className="mx-auto w-full max-w-4xl">
-        <TeamFeedbackHub teamId={ctx.teamId} members={members} locale={ctx.locale} />
+        <TeamFeedbackHub
+          teamId={ctx.teamId}
+          members={members}
+          locale={ctx.locale}
+          initialView={initialView}
+        />
       </section>
     </PlatformPageShell>
   );
