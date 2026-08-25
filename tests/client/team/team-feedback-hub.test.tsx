@@ -35,22 +35,26 @@ describe("TeamFeedbackHub", () => {
 
     await user.click(screen.getByRole("button", { name: /Köszönetet küldök/ }));
 
-    expect(screen.getByRole("heading", { name: "Köszönetet küldök" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Kinek mondanál köszönetet?" })).toBeInTheDocument();
     expect(screen.getByTestId("kudos-view")).toHaveTextContent("kudos:compose:false");
     expect(screen.queryByTestId("request-view")).not.toBeInTheDocument();
+    expect(screen.queryByRole("navigation", { name: "Visszajelzés nézetek" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Vissza a visszajelzési központba" }));
+    expect(screen.getByRole("heading", { name: "Mit szeretnél tenni?" })).toBeInTheDocument();
   });
 
   it("a közös beérkező nézetben mindkét ág eredményeit eléri", async () => {
     const user = userEvent.setup();
     render(<TeamFeedbackHub {...props} />);
 
-    await user.click(screen.getByRole("button", { name: "Beérkezett visszajelzések megnyitása" }));
+    await user.click(screen.getByRole("button", { name: "Megnézem →" }));
 
     expect(screen.getByRole("heading", { name: "Beérkezett neked" })).toBeInTheDocument();
     expect(screen.getByTestId("kudos-view")).toHaveTextContent("kudos:inbox:undefined");
     expect(screen.getByTestId("request-view")).toHaveTextContent("request:inbox:undefined");
 
-    await user.click(screen.getByRole("button", { name: "Központ" }));
+    await user.click(screen.getByRole("button", { name: "Vissza a visszajelzési központba" }));
     expect(screen.getByRole("heading", { name: "Mit szeretnél tenni?" })).toBeInTheDocument();
   });
 });
