@@ -12,11 +12,11 @@ import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon, EyeIcon } from "@/
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
-// A hajtás feletti beúszás CSS-keyframe (`.animate-rise-in`, globals.css):
-// ugyanaz a 0.5s / y:20px / cubic-bezier(0.16,1,0.3,1) mozgás, mint a korábbi
-// framer-motion `fadeUp`, de már az ELSŐ festéskor fut — nem a hidratálás
-// után. A hero szövegoszlopa (benne az LCP-elem H1) ezért 0 késleltetést kap;
-// a stagger csak a H1 ALATTI blokkban marad, ahol nem az LCP-t késlelteti.
+// A hajtás feletti kísérőelemek CSS-keyframe-mel úsznak be. A H1 szándékosan
+// NEM kapja meg: ez az oldal LCP-eleme, és az opacity: 0 kezdőállapot még
+// nulla animation-delay mellett is későbbre tolja, mikor tekinti a böngésző
+// teljesen kirajzoltnak. A mozgás a kapcsolón, eyebrow-n és a H1 alatti
+// blokkokon marad meg, így a hero karaktere nem változik.
 const riseIn = "animate-rise-in";
 
 // ─── Self panel — a valódi eredménynézet kicsinyített mása ──────────────────
@@ -278,8 +278,9 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
       <div className="mx-auto max-w-[1120px] px-7 pb-6 pt-12">
         <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:items-start md:gap-10">
 
-          {/* 1. Switcher + Eyebrow + Headline — 0 késleltetés: itt van az
-              LCP-elem (H1), ezért semmi nem várhat rá JS-re. */}
+          {/* 1. Switcher + Eyebrow + Headline. A H1 az LCP-elem, ezért statikus
+              és az első festéskor teljesen látható; csak a kísérőelemek
+              animálnak. */}
           <div className="order-1 flex flex-col">
             <div className={`${riseIn} mb-4 lg:mb-5`}>
               <ModeSwitcher />
@@ -298,7 +299,7 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
               </span>
             </div>
 
-            <h1 className={`${riseIn} font-fraunces text-fluid-display font-medium tracking-tight text-ink`}>
+            <h1 className="font-fraunces text-fluid-display font-medium tracking-tight text-ink">
               {isSelf ? t("landing.selfHeadlineBefore", locale) : t("landing.teamHeadlineBefore", locale)}
               <em className="italic" style={{ color: headlineAccentColor }}>
                 {isSelf ? t("landing.selfHeadlineEm", locale) : t("landing.teamHeadlineEm", locale)}
