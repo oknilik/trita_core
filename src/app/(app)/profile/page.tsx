@@ -11,6 +11,7 @@ import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
+import { INDUSTRIES } from "@/lib/industry-fit";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 import { createClientLogger } from "@/lib/client-logger";
@@ -22,7 +23,15 @@ import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("profile");
 
-type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
+type FormSnapshot = {
+  username: string;
+  birthYear: string;
+  gender: string;
+  country: string;
+  eduLevel: string;
+  eduField: string;
+  currentIndustry: string;
+};
 type OrgMembershipInfo = {
   memberships: Array<{ orgId: string; role: string; orgName: string | null }>;
   teams: Array<{ id: string; name: string; orgId: string }>;
@@ -51,9 +60,15 @@ export default function ProfilePage() {
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
+  const [eduLevel, setEduLevel] = useState("");
+  const [eduField, setEduField] = useState("");
+  const [currentIndustry, setCurrentIndustry] = useState("");
   const [initialSnapshot, setInitialSnapshot] = useState<FormSnapshot | null>(null);
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
+  const [eduLevelPickerOpen, setEduLevelPickerOpen] = useState(false);
+  const [eduFieldPickerOpen, setEduFieldPickerOpen] = useState(false);
+  const [industryPickerOpen, setIndustryPickerOpen] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [selectedLocale, setSelectedLocale] = useState<Locale>(locale);
   const [savedLocale, setSavedLocale] = useState<Locale>(locale);
@@ -71,6 +86,29 @@ export default function ProfilePage() {
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const countryLabel = useMemo(() => countryOptions.find((c) => c.value === country)?.label, [country, countryOptions]);
+  const eduOptions = useMemo(() => ([
+    { value: "primary", label: t("results.ccEduPrimary", locale) },
+    { value: "secondary", label: t("results.ccEduSecondary", locale) },
+    { value: "vocational", label: t("results.ccEduVocational", locale) },
+    { value: "higher", label: t("results.ccEduHigher", locale) },
+    { value: "specialized", label: t("results.ccEduSpecialized", locale) },
+  ]), [locale]);
+  const eduFieldOptions = useMemo(() => ([
+    { value: "tech_engineering", label: t("results.ccFieldTech", locale) },
+    { value: "economics", label: t("results.ccFieldEconomics", locale) },
+    { value: "health", label: t("results.ccFieldHealth", locale) },
+    { value: "humanities", label: t("results.ccFieldHumanities", locale) },
+    { value: "natural_science", label: t("results.ccFieldScience", locale) },
+    { value: "legal", label: t("results.ccFieldLegal", locale) },
+    { value: "arts", label: t("results.ccFieldArts", locale) },
+    { value: "pedagogy", label: t("results.ccFieldPedagogy", locale) },
+    { value: "trade", label: t("results.ccFieldTrade", locale) },
+    { value: "none", label: t("results.ccFieldNone", locale) },
+  ]), [locale]);
+  const industryOptions = useMemo(() => ([
+    ...INDUSTRIES.map((industry) => ({ value: industry.key, label: locale === "hu" ? industry.hu : industry.en })),
+    { value: "", label: t("results.ccCurrentNone", locale) },
+  ]), [locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,6 +133,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/onboarding");
       if (!res.ok) return;
       const data = await res.json();
+      const careerBackground = (data.careerBackground ?? {}) as Record<string, unknown>;
       setEmail(data.email ?? null);
       setAccessLevel(data.accessLevel ?? null);
       const snap: FormSnapshot = {
@@ -102,11 +141,17 @@ export default function ProfilePage() {
         birthYear: data.birthYear ? String(data.birthYear) : "",
         gender: data.gender ?? "",
         country: data.country ?? "",
+        eduLevel: typeof careerBackground.eduLevel === "string" ? careerBackground.eduLevel : "",
+        eduField: typeof careerBackground.eduField === "string" ? careerBackground.eduField : "",
+        currentIndustry: typeof careerBackground.currentIndustry === "string" ? careerBackground.currentIndustry : "",
       };
       setUsername(snap.username);
       setBirthYear(snap.birthYear);
       setGender(snap.gender);
       setCountry(snap.country);
+      setEduLevel(snap.eduLevel);
+      setEduField(snap.eduField);
+      setCurrentIndustry(snap.currentIndustry);
       setInitialSnapshot(snap);
     } catch { /* silent */ }
     finally {
@@ -181,8 +226,9 @@ export default function ProfilePage() {
   const canSaveDemo = usernameValid && birthYearValid && gender !== "" && country !== "";
 
   const isDemographicsDirty = initialSnapshot != null && (username.trim() !== initialSnapshot.username || birthYear !== initialSnapshot.birthYear || gender !== initialSnapshot.gender || country !== initialSnapshot.country);
+  const isCareerDirty = initialSnapshot != null && (eduLevel !== initialSnapshot.eduLevel || eduField !== initialSnapshot.eduField || currentIndustry !== initialSnapshot.currentIndustry);
   const isLocaleDirty = selectedLocale !== savedLocale;
-  const isDirty = isDemographicsDirty || isLocaleDirty;
+  const isDirty = isDemographicsDirty || isCareerDirty || isLocaleDirty;
   const canSubmitDemo = !isSavingDemo && isDirty && (!isDemographicsDirty || canSaveDemo);
 
   const flashInvalidField = (field: InvalidField) => {
@@ -212,10 +258,22 @@ export default function ProfilePage() {
     if (!isDirty) return;
     setSaveState("saving"); setIsSavingDemo(true);
     try {
-      if (isDemographicsDirty) {
-        const res = await fetch("/api/profile/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: username.trim(), birthYear: Number(birthYear), gender, country }) });
+      if (isDemographicsDirty || isCareerDirty) {
+        const res = await fetch("/api/profile/onboarding", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username.trim(),
+            ...(isDemographicsDirty ? { birthYear: Number(birthYear), gender, country } : {}),
+            ...(isCareerDirty ? {
+              eduLevel: eduLevel || null,
+              eduField: eduLevel && eduLevel !== "primary" && eduField ? eduField : null,
+              currentIndustry: currentIndustry || null,
+            } : {}),
+          }),
+        });
         if (!res.ok) throw new Error("Save failed");
-        setInitialSnapshot({ username: username.trim(), birthYear, gender, country });
+        setInitialSnapshot({ username: username.trim(), birthYear, gender, country, eduLevel, eduField: eduLevel === "primary" ? "" : eduField, currentIndustry });
       }
       if (isLocaleDirty) { setLocale(selectedLocale); setSavedLocale(selectedLocale); }
       setSaveState("saved");
@@ -290,12 +348,13 @@ export default function ProfilePage() {
         <a href="#about" className={`shrink-0 border-b-2 border-[var(--color-action-primary-bg)] pb-3 font-semibold text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}>{t("profile.sectionAbout", locale)}</a>
         <a href="#language" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionLanguage", locale)}</a>
         {orgInfo && orgInfo.memberships.length > 0 ? <a href="#organization" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.orgSectionTitle", locale)}</a> : null}
+        <a href="#career-background" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{locale === "hu" ? "Háttér" : "Background"}</a>
         <a href="#account" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionAccount", locale)}</a>
       </nav>
 
       <div className="grid gap-5 md:grid-cols-[1.12fr_0.88fr]">
         <Card id="about" as="section" spacing="lg">
-          <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.sectionAbout", locale)}</h2>
+          <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.sectionAbout", locale)}</h2>
           <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
 
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
@@ -342,7 +401,7 @@ export default function ProfilePage() {
         <div className="flex flex-col gap-5">
           {orgInfo && orgInfo.memberships.length > 0 ? (
             <Card id="organization" as="section" spacing="lg">
-              <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.orgSectionTitle", locale)}</h2>
+              <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.orgSectionTitle", locale)}</h2>
               <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
               <div className="flex flex-col gap-3">
                 {orgInfo.memberships.map((m) => {
@@ -373,7 +432,7 @@ export default function ProfilePage() {
           ) : null}
 
           <Card id="language" as="section" spacing="lg">
-            <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.sectionLanguage", locale)}</h2>
+            <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.sectionLanguage", locale)}</h2>
             <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
             <div className="flex flex-wrap gap-[5px]">
               {SUPPORTED_LOCALES.map((loc) => (
@@ -390,6 +449,47 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      <Card id="career-background" as="section" spacing="lg">
+        <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">
+          {locale === "hu" ? "Tanulmányok és szakmai háttér" : "Education and professional background"}
+        </h2>
+        <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
+          {locale === "hu" ? "Ezekkel pontosabban tudjuk személyre szabni a későbbi eredményeidet." : "These details help us tailor your future results more precisely."}
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          <PickerTrigger
+            label={locale === "hu" ? "Legmagasabb végzettség" : "Highest education"}
+            value={eduOptions.find((option) => option.value === eduLevel)?.label}
+            placeholder={locale === "hu" ? "Válassz végzettséget" : "Choose education"}
+            onClick={() => setEduLevelPickerOpen(true)}
+            isOpen={eduLevelPickerOpen}
+          />
+          {eduLevel === "primary" ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-note font-medium text-[var(--color-text-secondary)]">{t("onboarding.eduFieldLabel", locale)}</span>
+              <div className="flex min-h-[44px] items-center rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] px-3.5 text-xs text-[var(--color-text-muted)]">
+                {locale === "hu" ? "Nem szükséges" : "Not needed"}
+              </div>
+            </div>
+          ) : (
+            <PickerTrigger
+              label={t("onboarding.eduFieldLabel", locale)}
+              value={eduFieldOptions.find((option) => option.value === eduField || (eduField === "none_other" && option.value === "none"))?.label}
+              placeholder={locale === "hu" ? "Válassz területet" : "Choose a field"}
+              onClick={() => setEduFieldPickerOpen(true)}
+              isOpen={eduFieldPickerOpen}
+            />
+          )}
+          <PickerTrigger
+            label={locale === "hu" ? "Jelenlegi iparág" : "Current industry"}
+            value={industryOptions.find((option) => option.value === currentIndustry)?.label}
+            placeholder={locale === "hu" ? "Válassz iparágat" : "Choose an industry"}
+            onClick={() => setIndustryPickerOpen(true)}
+            isOpen={industryPickerOpen}
+          />
+        </div>
+      </Card>
 
       <section className="flex flex-col gap-4 rounded-2xl bg-[var(--color-surface-inverse)] p-4 text-[var(--color-text-on-inverse)] sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-2 text-note">
@@ -463,6 +563,18 @@ export default function ProfilePage() {
         options={countryOptions} selectedValue={country} title={t("onboarding.countryLabel", locale)}
         closeLabel={t("common.close", locale)}
         searchable searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
+      />
+      <Picker isOpen={eduLevelPickerOpen} onClose={() => setEduLevelPickerOpen(false)} onSelect={(value) => { setEduLevel(value); if (value === "primary") setEduField(""); }}
+        options={eduOptions} selectedValue={eduLevel} title={locale === "hu" ? "Legmagasabb végzettség" : "Highest education"}
+        closeLabel={t("common.close", locale)}
+      />
+      <Picker isOpen={eduFieldPickerOpen} onClose={() => setEduFieldPickerOpen(false)} onSelect={setEduField}
+        options={eduFieldOptions} selectedValue={eduField} title={t("onboarding.eduFieldLabel", locale)}
+        closeLabel={t("common.close", locale)}
+      />
+      <Picker isOpen={industryPickerOpen} onClose={() => setIndustryPickerOpen(false)} onSelect={setCurrentIndustry}
+        options={industryOptions} selectedValue={currentIndustry} title={locale === "hu" ? "Jelenlegi iparág" : "Current industry"}
+        closeLabel={t("common.close", locale)} searchable
       />
     </PlatformPageShell>
   );

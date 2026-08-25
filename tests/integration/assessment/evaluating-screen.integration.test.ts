@@ -1,6 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildEvaluationViewModel } from "@/lib/assessment-evaluation";
+import {
+  buildEvaluationViewModel,
+  getRemainingEvaluationTime,
+} from "@/lib/assessment-evaluation";
 
 test("az eredménykészítő magyar nézete együtt mozgatja a progresszt és a narratívát", () => {
   const start = buildEvaluationViewModel(12, "hu");
@@ -24,4 +27,12 @@ test("az angol nézet ugyanazokat a fázisokat lokalizált szöveggel adja", () 
   assert.equal(finish.phase, 2);
   assert.match(finish.phaseMessage, /strengths you can use/);
   assert.equal(finish.kicker, "Your personal result is taking shape");
+});
+
+test("a kiértékelési folyamat a gyors válasz után is kitölti a minimum képernyőidőt", () => {
+  const requestStartedAt = 10_000;
+  const apiFinishedAt = 10_420;
+
+  assert.equal(getRemainingEvaluationTime(requestStartedAt, apiFinishedAt), 2_580);
+  assert.equal(getRemainingEvaluationTime(requestStartedAt, 13_400), 0);
 });

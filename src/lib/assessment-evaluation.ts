@@ -2,6 +2,8 @@ import type { Locale } from "@/lib/i18n";
 
 export type EvaluationPhase = 0 | 1 | 2;
 
+export const MIN_EVALUATION_SCREEN_MS = 3000;
+
 const PHASE_MESSAGES: Record<Locale, readonly [string, string, string]> = {
   hu: [
     "Megnézzük, hogyan kapcsolódsz másokhoz…",
@@ -25,6 +27,15 @@ export function getEvaluationPhase(progress: number): EvaluationPhase {
   if (safeProgress < 36) return 0;
   if (safeProgress < 72) return 1;
   return 2;
+}
+
+export function getRemainingEvaluationTime(
+  startedAt: number,
+  now: number,
+  minimumMs = MIN_EVALUATION_SCREEN_MS,
+): number {
+  if (!Number.isFinite(startedAt) || !Number.isFinite(now) || !Number.isFinite(minimumMs)) return 0;
+  return Math.max(0, minimumMs - Math.max(0, now - startedAt));
 }
 
 export function buildEvaluationViewModel(progress: number, locale: Locale) {

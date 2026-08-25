@@ -35,4 +35,14 @@ test("onboarding payload — progresszív profilozás", async (t) => {
     });
     assert.equal(result.success, false);
   });
+
+  await t.test("a profilbeállításokból a karrier-háttér mezői üríthetők", () => {
+    const result = schema.safeParse({
+      username: "Anna",
+      eduLevel: null,
+      eduField: null,
+      currentIndustry: null,
+    });
+    assert.equal(result.success, true);
+  });
 });

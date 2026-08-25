@@ -28,6 +28,7 @@ import {
 } from '@/lib/assessment-draft'
 import type { TestType } from '@prisma/client'
 import { createClientLogger } from "@/lib/client-logger";
+import { getRemainingEvaluationTime } from '@/lib/assessment-evaluation'
 
 const log = createClientLogger("assessment");
 type AssessmentQuestion = { id: number; text: string }
@@ -456,6 +457,7 @@ export function AssessmentClient({
     isSubmittingRef.current = true
     setIsSubmitting(true)
     setEvaluationProgress(0)
+    const evaluationStartedAt = Date.now()
 
     const progressInterval = setInterval(() => {
       setEvaluationProgress((prev) => {
@@ -467,10 +469,10 @@ export function AssessmentClient({
     try {
       if (guestMode) {
         // Guest mode: skip API submit, keep localStorage draft, redirect to registration gate.
-        // UX-A6: nincs kamu várakozás — egy rövid (~700 ms) ramp, aztán irány az eredmény.
+        // A vizuális lezárás kapjon elég időt: gyors eszközön se villanjon csak fel.
         clearInterval(progressInterval)
         setEvaluationProgress(100)
-        await new Promise((resolve) => setTimeout(resolve, 700))
+        await new Promise((resolve) => setTimeout(resolve, getRemainingEvaluationTime(evaluationStartedAt, Date.now())))
         router.push('/try/complete')
         return
       }
@@ -497,10 +499,10 @@ export function AssessmentClient({
       submittedRef.current = true
       clearAssessmentDraftFromStorage(testType, draftScope)
 
-      // UX-A6: az API már válaszolt — a korábbi 4,6 mp kamu „kiértékelés"
-      // helyett rövid lezáró ramp, és megyünk tovább.
+      // Az API válasza után is garantáljuk a nyugodtan érzékelhető minimumot;
+      // ha a valódi mentés lassabb, természetesen nem teszünk rá extra időt.
       setEvaluationProgress(100)
-      await new Promise((resolve) => setTimeout(resolve, 700))
+      await new Promise((resolve) => setTimeout(resolve, getRemainingEvaluationTime(evaluationStartedAt, Date.now())))
       // UX-A10: a team-roles lépés csak org-/csapat-tagnak szól — self-serve
       // usernél a team-roles oldal kapuja úgyis a journey-fallbackra dobna,
       // ezért közvetlenül a journey-elosztóra megyünk (friss, submit utáni
