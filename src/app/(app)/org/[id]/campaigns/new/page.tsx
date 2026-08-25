@@ -6,7 +6,7 @@ import { getServerLocale } from "@/lib/i18n-server";
 import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
-import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignWizard } from "@/components/campaign/CampaignWizard";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
@@ -66,8 +66,19 @@ export default async function NewCampaignPage({
 
   if (isReadOnly) {
     return (
-      <div className="min-h-dvh bg-cream">
-        <main className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
+      <PlatformPageShell
+        surface="org"
+        contentClassName="max-w-3xl gap-6 px-4 py-8"
+        chrome={{
+          breadcrumb: [
+            { label: org.name, href: `/org/${orgId}?tab=campaigns` },
+            { label: isHu ? "Mérések" : "Measurements", href: `/org/${orgId}?tab=campaigns` },
+            { label: t("org.campaign.newTitle", locale) },
+          ],
+          eyebrow: t("org.campaign.newEyebrow", locale),
+          title: t("org.campaign.newTitle", locale),
+        }}
+      >
           <OrgSubscriptionBanner
             state={bannerState ?? "restricted"}
             locale={locale}
@@ -92,8 +103,7 @@ export default async function NewCampaignPage({
               </Link>
             </div>
           </div>
-        </main>
-      </div>
+      </PlatformPageShell>
     );
   }
 
@@ -137,16 +147,20 @@ export default async function NewCampaignPage({
   }));
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto w-full max-w-2xl px-4 pt-10 pb-20">
-        <EditorialBackHeader
-          href={`/org/${orgId}?tab=campaigns`}
-          backLabel={tf("org.campaign.backWithName", locale, { orgName: org.name })}
-          eyebrow={t("org.campaign.newEyebrow", locale)}
-          title={t("org.campaign.newTitle", locale)}
-          className="mb-8"
-        />
-
+    <PlatformPageShell
+      surface="org"
+      contentClassName="max-w-3xl gap-7 px-4 py-8"
+      chrome={{
+        breadcrumb: [
+          { label: org.name, href: `/org/${orgId}?tab=campaigns` },
+          { label: isHu ? "Mérések" : "Measurements", href: `/org/${orgId}?tab=campaigns` },
+          { label: t("org.campaign.newTitle", locale) },
+        ],
+        eyebrow: t("org.campaign.newEyebrow", locale),
+        title: t("org.campaign.newTitle", locale),
+        subtitle: tf("org.campaign.backWithName", locale, { orgName: org.name }),
+      }}
+    >
         <CampaignWizard
           orgId={orgId}
           members={serializedMembers}
@@ -154,7 +168,6 @@ export default async function NewCampaignPage({
           preselectedTeamId={preselectedTeamId ?? null}
           locale={locale}
         />
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

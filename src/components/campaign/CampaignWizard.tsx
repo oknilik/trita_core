@@ -458,7 +458,7 @@ export function CampaignWizard({
               <span className="mt-2 block text-caption leading-relaxed text-ink-body">
                 {CAMPAIGN_PRESETS.SCAN_V1.description[locale]}
               </span>
-              <span className="mt-2 block font-mono text-micro uppercase tracking-wide text-muted">
+              <span className="mt-2 block text-note font-medium text-muted">
                 {t("campaignWiz.scanV1Meta", locale)}
               </span>
             </button>
@@ -520,7 +520,7 @@ export function CampaignWizard({
                         <div className="min-w-0 flex-1">
                           <p className="text-body font-semibold text-ink">{t(card.nameKey, locale)}</p>
                           {card.metaKey && (
-                            <p className="mt-0.5 font-mono text-micro uppercase tracking-wide text-muted">
+                            <p className="mt-0.5 text-note font-medium text-muted">
                               {t(card.metaKey, locale)}
                             </p>
                           )}
@@ -765,7 +765,7 @@ export function CampaignWizard({
 
           {teams.length > 0 && (
             <div className="mb-5">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+              <p className="mb-2 text-caption font-semibold text-ink">
                 {t("campaignWiz.teamsTitle", locale)}
               </p>
               <div className="flex flex-col gap-2">
@@ -807,7 +807,7 @@ export function CampaignWizard({
               {teams.length === 0 && (
                 <p className="mb-3 text-sm text-muted">{t("campaignWiz.noTeams", locale)}</p>
               )}
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+              <p className="mb-2 text-caption font-semibold text-ink">
                 {t("campaignWiz.individualTitle", locale)}
               </p>
               {members.length === 0 ? (

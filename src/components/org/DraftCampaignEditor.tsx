@@ -157,7 +157,7 @@ export function DraftCampaignEditor({
       </p>
 
       {/* Mérések */}
-      <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+      <p className="mb-2 text-caption font-semibold text-ink">
         {t("org.campaign.editTypesLabel", locale)}
       </p>
       <div className="mb-5 flex flex-col gap-2">
@@ -200,7 +200,7 @@ export function DraftCampaignEditor({
       </div>
 
       {/* Cél-csapat */}
-      <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+      <p className="mb-2 text-caption font-semibold text-ink">
         {t("org.campaign.editTeamLabel", locale)}
       </p>
       <div className="mb-2 flex flex-col gap-2">
@@ -248,7 +248,7 @@ export function DraftCampaignEditor({
       {/* Lépés-ütem */}
       {chosenSteps.length > 1 && (
         <>
-          <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+          <p className="mb-2 text-caption font-semibold text-ink">
             {t("campaignWiz.intervalLabel", locale)}
           </p>
           <div className="mb-5 flex flex-wrap gap-2">
