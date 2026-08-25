@@ -321,7 +321,7 @@ export default function ProfilePage() {
         </svg>
         <div className="relative flex flex-col gap-5 md:flex-row md:items-center">
           <span
-            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full font-fraunces text-2xl font-medium text-[var(--color-text-on-accent)] shadow-md"
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full font-fraunces text-2xl font-medium text-[var(--color-text-on-inverse)] shadow-md"
             style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
           >
             {initials}
