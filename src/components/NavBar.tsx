@@ -132,8 +132,12 @@ export function NavBar({
     setHasDraft(hasAssessmentDraftInStorage("TRITAN"));
   }, []);
 
-  // Hide on assessment/try pages (they have their own minimal nav)
-  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
+  // Hide on focused questionnaires (they render their own minimal progress header).
+  if (
+    currentPath.startsWith("/try") ||
+    currentPath.startsWith("/assessment") ||
+    currentPath.startsWith("/observe")
+  ) return null;
 
   const isTeamLanding = currentPath === "/" && siteMode === "team";
   const publicCtaHref = isTeamLanding ? "/pilot" : "/try";

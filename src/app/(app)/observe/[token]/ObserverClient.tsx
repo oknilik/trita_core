@@ -2,18 +2,19 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { TritaWordmark } from "@/components/TritaLogo";
+import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("observer");
 
@@ -97,6 +98,7 @@ export function ObserverClient({
   const { isSignedIn } = useUser();
   const { locale } = useLocale();
   const { showToast } = useToast();
+  const observerHomeHref = isSignedIn ? JOURNEY_HOME_HANDOFF_PATH : "/";
 
   const sanitizedInitialAnswers = sanitizeAnswersForQuestions(initialDraft?.answers, questions);
   const initialAllAnswered =
@@ -272,7 +274,7 @@ export function ObserverClient({
 
   useEffect(() => {
     if (phase !== "assessment") return;
-    const marks = [25, 50, 75];
+    const marks = [50];
     const percentage = (answeredCount / totalQuestions) * 100;
     const nextMark = marks.find(
       (mark) => percentage >= mark && !reachedCheckpoints.current.has(mark),
@@ -715,40 +717,53 @@ export function ObserverClient({
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
-      {/* ═══ MINIMAL NAV — a self-kitöltéssel azonos héj ═══ */}
-      <nav className="flex shrink-0 items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <Link href="/" className="text-[var(--color-text-primary)]">
-          <TritaWordmark className="text-2xl" />
-        </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-micro text-[var(--color-action-primary-bg)]">
-            ✓ {t("assessment.savedState", locale)}
-          </span>
-          {/* Az observer sosem lép be — a séma-választó csak itt érhető el. */}
-          <ThemeToggle variant="compact" />
+      <AssessmentFocusHeader
+        homeHref={observerHomeHref}
+        center={(
+          <div className="flex w-full items-center gap-2.5 lg:gap-3">
+            <div className="hidden shrink-0 items-baseline gap-1 sm:flex">
+              <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+            </div>
+            <div
+              role="progressbar"
+              aria-label={tf("assessment.progressLabel", locale, {
+                done: displayIndex,
+                total: totalQuestions,
+              })}
+              aria-valuemin={1}
+              aria-valuemax={totalQuestions}
+              aria-valuenow={displayIndex}
+              className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]"
+            >
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+                style={{ width: `${(Math.max(answeredCount, displayIndex) / totalQuestions) * 100}%` }}
+              />
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+                style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
+              />
+            </div>
+            <span className="hidden shrink-0 whitespace-nowrap text-note text-[var(--color-text-muted)] sm:inline">
+              {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
+            </span>
+          </div>
+        )}
+      >
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-baseline gap-1 sm:hidden">
+            <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
+            <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+          </div>
+          <div className="hidden items-center gap-2 sm:flex sm:gap-3">
+            <span className="text-micro text-[var(--color-action-primary-bg)]">
+              ✓ {t("assessment.savedState", locale)}
+            </span>
+            <ThemeToggle variant="compact" />
+          </div>
         </div>
-      </nav>
-
-      {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
-        <div className="flex items-baseline gap-1">
-          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
-          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
-        </div>
-        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
-            style={{ width: `${(Math.max(answeredCount, displayIndex) / totalQuestions) * 100}%` }}
-          />
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
-            style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
-          />
-        </div>
-        <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
-          {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
-        </span>
-      </div>
+      </AssessmentFocusHeader>
 
       {/* Observer-emlékeztető — kire gondolj válasz közben */}
       <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-xs text-[var(--color-accent-self-deep)]">
@@ -765,7 +780,7 @@ export function ObserverClient({
       </div>
 
       {/* ═══ QUESTION AREA (centered) ═══ */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
+      <div className="flex flex-1 flex-col items-center justify-center px-5 py-6 sm:px-6 sm:py-8 lg:py-12">
         <div ref={questionAreaRef} className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -803,12 +818,7 @@ export function ObserverClient({
                     {t("assessment.journeyMilestone", locale)}
                   </div>
                   <h2 className="mb-3 font-fraunces text-title leading-tight text-[var(--color-text-primary)] lg:text-title">
-                    {t(
-                      checkpoint === 25 ? "assessment.journeyMilestone25"
-                      : checkpoint === 50 ? "assessment.journeyMilestone50"
-                      : "assessment.journeyMilestone75",
-                      locale
-                    )}
+                    {t("assessment.journeyMilestone50", locale)}
                   </h2>
                   <div className="mb-5 flex w-full max-w-[280px] gap-[3px]">
                     {Array.from({ length: 10 }, (_, i) => {
@@ -830,12 +840,7 @@ export function ObserverClient({
                   <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
                     <p className="text-caption leading-[1.45] text-[var(--color-accent-self-deep)]">
-                      {t(
-                        checkpoint === 25 ? "assessment.journeyMilestone25Hint"
-                        : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
-                        : "assessment.journeyMilestone75Hint",
-                        locale
-                      )}
+                      {t("assessment.journeyMilestone50Hint", locale)}
                     </p>
                   </div>
                 </div>
@@ -859,15 +864,13 @@ export function ObserverClient({
         </p>
       </div>
 
-      {/* ═══ FOOTER BAR — a self-kitöltéssel azonos ═══ */}
-      {/* Mobilon a vezérlősor a viewport aljára tapad (az (app)-shell fejléce
-          alatt egyébként a hajtás alá csúszna); md-től a korábbi in-flow sáv. */}
-      <div className="sticky bottom-0 z-20 flex shrink-0 items-center justify-between gap-2 border-t border-[var(--color-border-default)] bg-surface-card px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:static md:z-auto md:px-7">
+      {/* ═══ FLOATING CONTROL DOCK — a self-kitöltéssel azonos ═══ */}
+      <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-2 items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:grid-cols-[1fr_auto_1fr] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`group inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
+          className={`group col-start-1 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-2 justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${FOCUS_RING_CLASS} ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "pointer-events-none border-transparent bg-transparent opacity-0"
@@ -877,7 +880,7 @@ export function ObserverClient({
           <span>{t("assessment.prevCta", locale)}</span>
         </button>
 
-        <label className="flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 px-1">
+        <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-state-focus-ring focus-within:ring-offset-2 focus-within:ring-offset-surface-canvas sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
@@ -891,10 +894,7 @@ export function ObserverClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          {/* Mobilon csak a jelölőnégyzet látszik (a felirat elférne, de a
-              három vezérlőt szétnyomná) — a szöveg sr-only marad, hogy a
-              kapcsolónak legyen elérhető neve. */}
-          <span className="sr-only whitespace-nowrap text-note text-[var(--color-text-muted)] md:not-sr-only">
+          <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
             {t("assessment.autoAdvance", locale)}
           </span>
         </label>
@@ -904,7 +904,7 @@ export function ObserverClient({
             type="button"
             onClick={handleFinish}
             disabled={isSubmitting}
-            className={`inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`col-start-2 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               !isSubmitting && confidence !== null
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -918,7 +918,7 @@ export function ObserverClient({
             onClick={handleNextStep}
             disabled={isSubmitting}
             aria-disabled={!canProceed || isSubmitting}
-            className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`col-start-2 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               canProceed && !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

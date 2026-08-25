@@ -429,7 +429,12 @@ function NavHeaderContent({
   // logó + „Vissza a vezérlőre" link.
   // A fő self-kitöltő a valós idejű progressz miatt saját kapszulát rajzol.
   // Az assessment alfolyamok továbbra is ezt a shell-fejlécet használják.
-  if (pathname === "/try" || pathname === "/assessment") {
+  if (
+    pathname === "/try" ||
+    pathname === "/assessment" ||
+    pathname === "/observe" ||
+    pathname.startsWith("/observe/")
+  ) {
     return null;
   }
 

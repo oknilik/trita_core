@@ -333,9 +333,11 @@ describe("C5.5 ObserverClient integration", () => {
       await passIntro(user);
 
       await waitFor(() => {
-        // Progress shows total question count
-        expect(screen.getByText(new RegExp(`${TOTAL_QUESTIONS}`))).toBeInTheDocument();
+        const progress = screen.getByRole("progressbar");
+        expect(progress).toHaveAttribute("aria-valuemax", String(TOTAL_QUESTIONS));
+        expect(progress).toHaveAttribute("aria-valuenow", "1");
       });
+      expect(screen.getByTestId("assessment-focus-header")).toBeInTheDocument();
     });
 
     it("answering a question persists to localStorage", async () => {
@@ -479,8 +481,10 @@ describe("C5.5 ObserverClient integration", () => {
 
       // Should skip intro and go straight to assessment phase (not intro)
       await waitFor(() => {
-        // Assessment phase shows progress bar with total count
-        expect(screen.getByText(new RegExp(`${TOTAL_QUESTIONS}`))).toBeInTheDocument();
+        expect(screen.getByRole("progressbar")).toHaveAttribute(
+          "aria-valuemax",
+          String(TOTAL_QUESTIONS),
+        );
       });
 
       // Verify answers were restored from localStorage
