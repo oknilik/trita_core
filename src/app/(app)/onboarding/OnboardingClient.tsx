@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/primitives/Button";
 import { t } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { INDUSTRIES } from "@/lib/industry-fit";
-import { TritaLogo } from "@/components/TritaLogo";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn } from "@/lib/onboarding-styles";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
@@ -242,10 +241,9 @@ export function OnboardingClient({
   return (
     <div className="min-h-dvh bg-cream px-0 py-0 md:px-5 md:py-8 lg:flex lg:items-center lg:justify-center">
       <div className="w-full overflow-hidden border-sand bg-surface-card md:mx-auto md:max-w-5xl md:rounded-3xl md:border md:shadow-[var(--ui-shadow-lg)] lg:grid lg:grid-cols-[minmax(300px,0.9fr)_minmax(460px,1.1fr)]">
-        <aside className="relative flex min-h-[350px] flex-col overflow-hidden bg-[var(--color-surface-self-accent-soft)] px-6 py-8 md:px-10 lg:min-h-[720px] lg:px-12 lg:py-12">
+        <aside className="relative hidden min-h-[720px] flex-col overflow-hidden bg-[var(--color-surface-self-accent-soft)] px-12 py-12 lg:flex">
           <div className="relative z-10">
-            <TritaLogo size={56} showText={false} className="items-start" />
-            <p className="mt-14 text-label uppercase text-[var(--color-accent-primary-strong)]">
+            <p className="mt-2 text-label uppercase text-[var(--color-accent-primary-strong)]">
               {isClaimActivation
                 ? t("onboarding.claimBlockHint", locale)
                 : locale === "hu" ? "Még egy rövid lépés" : "One short step"}
@@ -277,7 +275,7 @@ export function OnboardingClient({
           <div className="mb-7 flex items-start justify-between gap-4">
             <div>
               <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-                {t(isClaimActivation ? "onboarding.claimBlockHint" : "onboarding.blockBasicsHint", locale)}
+                {t(isClaimActivation ? "onboarding.claimNameHint" : "onboarding.blockBasicsHint", locale)}
               </p>
               <h2 className="mt-2 font-fraunces text-3xl leading-tight text-ink">
                 {t(isClaimActivation ? "onboarding.claimBlockTitle" : "onboarding.title", locale)}
