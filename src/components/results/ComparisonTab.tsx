@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/i18n";
 import { hexLetter } from "@/lib/hexaco";
 import { DIFF_MIN_GAP } from "@/lib/personality-type";
 import type { SerializedDimension } from "@/components/profile/ProfileTabs";
+import { AlertIcon, CheckIcon } from "@/components/ui/icons";
 
 // Önkép–külső kép eltérés-kapu: a kanonikus DIFF_MIN_GAP (= round(√2·SEM)) —
 // két hiba-terhelt pontszám KÜLÖNBSÉGÉNEK mérési hibája, nem egy ponté. A
@@ -427,7 +428,7 @@ export function ComparisonTab({
               color: isGoodMatch ? "var(--color-action-primary-bg)" : "var(--color-accent-primary)",
             }}
           >
-            {isGoodMatch ? "✓" : "⚠"}
+            {isGoodMatch ? <CheckIcon className="h-5 w-5" /> : <AlertIcon className="h-5 w-5" />}
           </div>
           <div>
             <p className="font-fraunces text-base text-[var(--color-text-primary)]">

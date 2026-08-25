@@ -12,6 +12,17 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 /** A halasztott/kitűzött next action napközi UTC-órája (bucket-semleges). */
 const NEXT_ACTION_UTC_HOUR = 9;
 
+// A sűrű CRM-felület közös vizuális primitívjei. Ezek ugyanazokat a
+// felület- és fókusztokeneket használják, mint a termék többi űrlapja, de
+// megtartják az admin munkanézet kompakt ritmusát.
+export const CRM_INPUT_CLASS =
+  "min-h-[44px] w-full rounded-[10px] border border-border-default bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze focus-visible:ring-2 focus-visible:ring-sage-ring/40";
+
+export const CRM_TEXTAREA_CLASS =
+  "w-full rounded-[10px] border border-border-default bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze focus-visible:ring-2 focus-visible:ring-sage-ring/40";
+
+export const CRM_FIELD_LABEL_CLASS = "text-note font-semibold text-ink-body";
+
 export const huf = (value: number): string =>
   new Intl.NumberFormat("hu-HU", {
     style: "currency",

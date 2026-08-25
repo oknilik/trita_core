@@ -7,7 +7,7 @@ import { t, tf } from "@/lib/i18n";
 import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { isConsultantSurface } from "@/lib/measurement-auth";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { EditorialBackHeader } from "@/components/ui/primitives/EditorialBackHeader";
+import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { CampaignStatusButton } from "@/components/org/CampaignStatusButton";
 import { CampaignDeleteButton } from "@/components/org/CampaignDeleteButton";
@@ -128,7 +128,7 @@ export default async function CampaignDetailPage({
     params,
   ]);
 
-  const { profileId, role: memberRole } = await requireOrgContext(orgId);
+  const { profileId, role: memberRole, org } = await requireOrgContext(orgId);
   // Kampány-felület: csak tanácsadó (ORG_CONSULTANT vagy platform-admin).
   const viewer = await prisma.userProfile.findUnique({
     where: { id: profileId },
@@ -215,17 +215,22 @@ export default async function CampaignDetailPage({
 
   if (isFrozen) {
     return (
-      <div className="min-h-dvh bg-cream">
-        <main className="mx-auto flex w-full max-w-3xl flex-col gap-6 px-4 pt-10 pb-20">
+      <PlatformPageShell
+        surface="org"
+        contentClassName="max-w-3xl gap-6 px-4 py-8"
+        chrome={{
+          breadcrumb: [
+            { label: org?.name ?? (isHu ? "Szervezet" : "Organization"), href: `/org/${orgId}?tab=campaigns` },
+            { label: isHu ? "Mérések" : "Measurements", href: `/org/${orgId}?tab=campaigns` },
+            { label: campaign.name },
+          ],
+          eyebrow: isHu ? "Mérés összegző" : "Measurement summary",
+          title: campaign.name,
+          subtitle: campaign.description,
+        }}
+      >
           <OrgSubscriptionBanner state="frozen" locale={locale} />
           <div className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
-            <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              {isHu ? "Mérés összegző" : "Measurement summary"}
-            </p>
-            <h1 className="mt-2 font-fraunces text-3xl text-ink">{campaign.name}</h1>
-            <p className="mt-2 text-sm text-ink-body">
-              {campaign.description ?? (isHu ? "Nincs leírás." : "No description.")}
-            </p>
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div className="rounded-xl border border-sand bg-cream px-4 py-3">
                 <p className="text-xs text-muted">{isHu ? "Állapot" : "Status"}</p>
@@ -245,8 +250,7 @@ export default async function CampaignDetailPage({
               </div>
             </div>
           </div>
-        </main>
-      </div>
+      </PlatformPageShell>
     );
   }
 
@@ -536,8 +540,20 @@ export default async function CampaignDetailPage({
     }));
 
   return (
-    <div className="min-h-dvh bg-cream">
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 pt-10 pb-20 md:gap-10">
+    <PlatformPageShell
+      surface="org"
+      contentClassName="max-w-5xl gap-8 px-4 py-8 md:gap-10"
+      chrome={{
+        breadcrumb: [
+          { label: org?.name ?? (isHu ? "Szervezet" : "Organization"), href: `/org/${orgId}?tab=campaigns` },
+          { label: isHu ? "Mérések" : "Measurements", href: `/org/${orgId}?tab=campaigns` },
+          { label: campaign.name },
+        ],
+        eyebrow: eyebrowLabel(campaign.status, locale),
+        title: campaign.name,
+        subtitle: campaign.description,
+      }}
+    >
         {isRestricted || isPastDue || isNone ? (
           <OrgSubscriptionBanner
             state={isNone ? "none" : "restricted"}
@@ -545,16 +561,7 @@ export default async function CampaignDetailPage({
           />
         ) : null}
 
-        {/* Header */}
-        <div>
-          <EditorialBackHeader
-            href={`/org/${orgId}?tab=campaigns`}
-            backLabel={t("org.backToOrg", locale)}
-            eyebrow={eyebrowLabel(campaign.status, locale)}
-            title={campaign.name}
-            description={campaign.description}
-          />
-          <div className="mt-3 flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-sand/80 bg-surface-card px-4 py-3">
             <StatusChip variant={statusBadgeVariant(campaign.status)}>
               {statusLabel(campaign.status, locale)}
             </StatusChip>
@@ -585,7 +592,6 @@ export default async function CampaignDetailPage({
               </span>
             )}
           </div>
-        </div>
 
         {pacingTile ? (
           <CampaignPacingTile
@@ -598,9 +604,9 @@ export default async function CampaignDetailPage({
         {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
         {showStepSection && totalCount > 0 && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <SectionEyebrow className="mb-1">
               {isHu ? "Mérés-lépések" : "Measurement steps"}
-            </p>
+            </SectionEyebrow>
             <p className="mb-5 text-xs text-ink-body/70">
               {isHu
                 ? "A lépések tagonként, sorban nyílnak meg — aki végez az egyikkel, annak (értesítéssel) megnyílik a következő."
@@ -665,10 +671,7 @@ export default async function CampaignDetailPage({
                 className="absolute left-0 right-0 top-0 h-[3px]"
                 style={{ backgroundColor: "var(--color-sage)" }}
               />
-              <p
-                className="font-mono text-micro uppercase tracking-widest"
-                style={{ color: "var(--color-muted)" }}
-              >
+              <p className="text-caption font-semibold text-ink">
                 {t("org.campaign.selfAssessment", locale)}
               </p>
               <p className="mt-1 font-fraunces text-3xl text-ink">
@@ -690,10 +693,7 @@ export default async function CampaignDetailPage({
                   className="absolute left-0 right-0 top-0 h-[3px]"
                   style={{ backgroundColor: "var(--color-state-success-solid)" }}
                 />
-                <p
-                  className="font-mono text-micro uppercase tracking-widest"
-                  style={{ color: "var(--color-muted)" }}
-                >
+                <p className="text-caption font-semibold text-ink">
                   {t("org.campaign.observerDone", locale)}
                 </p>
                 <p className="mt-1 font-fraunces text-3xl text-ink">
@@ -716,10 +716,7 @@ export default async function CampaignDetailPage({
                   className="absolute left-0 right-0 top-0 h-[3px]"
                   style={{ backgroundColor: "var(--color-layer-org-bright)" }}
                 />
-                <p
-                  className="font-mono text-micro uppercase tracking-widest"
-                  style={{ color: "var(--color-muted)" }}
-                >
+                <p className="text-caption font-semibold text-ink">
                   {t("org.campaign.fullyComplete", locale)}
                 </p>
                 <p className="mt-1 font-fraunces text-3xl text-ink">
@@ -740,9 +737,9 @@ export default async function CampaignDetailPage({
         {/* Pszich. biztonság: anonim csapatszintű összkép */}
         {hasPsychStep && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
-            <p className="mb-1 font-mono text-xs uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <SectionEyebrow className="mb-1">
               {t("org.campaign.psEyebrow", locale)}
-            </p>
+            </SectionEyebrow>
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <h2 className="font-fraunces text-xl text-ink">
                 {t("org.campaign.psIndexTitle", locale)}
@@ -781,7 +778,7 @@ export default async function CampaignDetailPage({
                 </div>
 
                 <div>
-                  <p className="mb-3 font-mono text-micro uppercase tracking-widest text-muted">
+                  <p className="mb-3 text-caption font-semibold text-ink">
                     {t("org.campaign.psItemsTitle", locale)}
                   </p>
                   <div className="flex flex-col gap-2.5">
@@ -1143,7 +1140,6 @@ export default async function CampaignDetailPage({
           </section>
         ) : null}
 
-      </main>
-    </div>
+    </PlatformPageShell>
   );
 }

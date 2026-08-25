@@ -11,6 +11,8 @@ import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { OBSERVER_INVITE_MAX_ACTIVE } from "@/lib/observer/invite-policy";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
+import { ClockIcon, LockIcon, MailIcon, ShareIcon } from "@/components/ui/icons";
+import { StatePanel } from "@/components/ui/primitives/StatePanel";
 
 interface InvitationsTabProps {
   sentInvitations: SerializedSentInvitation[];
@@ -57,23 +59,21 @@ function LockedInvitations() {
   const { locale } = useLocale();
 
   return (
-    <div className="rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-8 text-center">
-      <span className="mb-2.5 inline-block text-display opacity-20">🔒</span>
-      <h3 className="mb-1.5 font-fraunces text-heading text-[var(--color-text-primary)]">
-        {t("invitations.lockedTitle", locale)}
-      </h3>
-      <p className="mx-auto mb-4 max-w-[380px] text-caption leading-relaxed text-[var(--color-text-muted)]">
-        {t("invitations.lockedSub", locale)}
-      </p>
-      {/* UX-B8: eddig onClick nélküli halott gomb volt — consulting-led
-          konvenció szerint a /contact-ra visz. */}
-      <a
-        href="/contact"
-        className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
-      >
-        {t("invitations.lockedCta", locale)}
-      </a>
-    </div>
+    <StatePanel
+      tone="locked"
+      compact
+      className="rounded-2xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]"
+      title={t("invitations.lockedTitle", locale)}
+      body={t("invitations.lockedSub", locale)}
+      action={
+        <a
+          href="/contact"
+          className="inline-flex min-h-[44px] items-center rounded-[10px] bg-[var(--color-accent-primary)] px-6 py-2.5 text-caption font-semibold text-[var(--color-text-on-accent)] transition hover:brightness-110"
+        >
+          {t("invitations.lockedCta", locale)}
+        </a>
+      }
+    />
   );
 }
 
@@ -436,11 +436,11 @@ export function InvitationsTab({
               <p className="mt-2 text-xs text-[var(--color-accent-primary-strong)]">{createError}</p>
             )}
             <div className="mt-2.5 flex flex-col gap-1">
-              <span className="text-note text-[var(--color-text-muted)]">
-                🔗 {t("invitations.formHintLink", locale)}
+              <span className="flex items-center gap-1.5 text-note text-[var(--color-text-muted)]">
+                <ShareIcon className="h-3.5 w-3.5" /> {t("invitations.formHintLink", locale)}
               </span>
-              <span className="text-note text-[var(--color-text-muted)]">
-                📧 {t("invitations.formHintEmail", locale)}
+              <span className="flex items-center gap-1.5 text-note text-[var(--color-text-muted)]">
+                <MailIcon className="h-3.5 w-3.5" /> {t("invitations.formHintEmail", locale)}
               </span>
             </div>
           </>
@@ -454,20 +454,22 @@ export function InvitationsTab({
 
       {/* 5. Invitation list or empty state */}
       {active.length === 0 ? (
-        <div className="rounded-xl border-[1.5px] border-dashed border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-9 text-center">
-          <span className="mb-2 inline-block text-title opacity-25" style={{ color: "var(--color-text-muted)" }}>👥</span>
-          <p className="text-sm font-medium text-[var(--color-text-secondary)]">
-            {t("invitations.emptyTitle", locale)}
-          </p>
-          <p className="text-xs text-[var(--color-text-muted)]">
-            {t("invitations.emptySub", locale)}
-          </p>
-          <p className="mx-auto mt-2 max-w-[420px] text-note leading-relaxed text-[var(--color-ink-warm)]">
-            {locale === "hu"
-              ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
-              : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
-          </p>
-          <div className="mt-3">
+        <StatePanel
+          tone="empty"
+          compact
+          className="rounded-xl border-[1.5px] border-dashed border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)]"
+          title={t("invitations.emptyTitle", locale)}
+          body={
+            <>
+              {t("invitations.emptySub", locale)}
+              <span className="mt-2 block text-note text-[var(--color-ink-warm)]">
+                {locale === "hu"
+                  ? "A következő lépésed: indíts observer kört, majd kapcsolódj csapathoz, hogy a személyes insightból közös csapatkép legyen."
+                  : "Your next step: start an observer round, then connect to a team to turn self insight into a shared team picture."}
+              </span>
+            </>
+          }
+          action={
             <Link
               href={isConsultingLed() ? "/contact" : "/onboarding?intent=team"}
               className="inline-flex min-h-[40px] items-center rounded-[10px] border border-[var(--color-warm-dark)] bg-surface-card px-4 text-note font-semibold text-[var(--color-bronze-700)] transition hover:bg-[var(--color-bronze-100)]"
@@ -476,8 +478,8 @@ export function InvitationsTab({
                 ? (locale === "hu" ? "Beszéljünk a csapatodról" : "Talk to us about your team")
                 : (locale === "hu" ? "Csapat út megnyitása" : "Open team path")}
             </Link>
-          </div>
-        </div>
+          }
+        />
       ) : (
         <div className="grid gap-5 lg:grid-cols-2">
           {/* Completed group.
@@ -529,7 +531,7 @@ export function InvitationsTab({
                 <div key={inv.id} className="mb-2">
                   <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
                     <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
-                      {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
+                      {inv.status === "AWAITING_APPROVAL" ? <LockIcon /> : inv.observerEmail || inv.observerName ? <ClockIcon /> : <ShareIcon />}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">

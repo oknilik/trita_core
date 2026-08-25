@@ -12,6 +12,13 @@ import {
 } from "@/lib/psych-safety";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
+import {
+  AssessmentFlowHeader,
+  AssessmentFlowShell,
+  AssessmentIntro,
+  AssessmentStatus,
+  assessmentPrimaryActionClass,
+} from "@/components/assessment/AssessmentFlowShell";
 
 interface PsychSafetyClientProps {
   locale: Locale;
@@ -75,91 +82,60 @@ export function PsychSafetyClient({
 
   if (phase === "intro") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <p className="font-mono text-label uppercase text-[var(--color-accent-primary-strong)]">
-          {t("psafety.eyebrow", locale)}
-        </p>
-        <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
-          {t("psafety.introTitle", locale)}
-        </h1>
-        <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
-          {tf("psafety.introBody", locale, { count: PSYCH_SAFETY_ITEM_COUNT })}
-        </p>
-        <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
-          <p className="text-caption leading-relaxed text-ink-body">
+      <AssessmentIntro
+        eyebrow={t("psafety.eyebrow", locale)}
+        title={t("psafety.introTitle", locale)}
+        campaignName={campaignName}
+        body={tf("psafety.introBody", locale, { count: PSYCH_SAFETY_ITEM_COUNT })}
+        notice={
+          <>
             <span className="font-semibold text-ink">
               {t("psafety.anonTitle", locale)}
             </span>{" "}
             {t("psafety.anonBody", locale)}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setPhase("answering")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("psafety.start", locale)}
-        </button>
-        <p className="mt-3 font-mono text-micro uppercase tracking-wide text-muted">
-          {tf("psafety.meta", locale, { count: PSYCH_SAFETY_ITEM_COUNT })}
-        </p>
-      </div>
+          </>
+        }
+        action={<button type="button" onClick={() => setPhase("answering")} className={assessmentPrimaryActionClass}>{t("psafety.start", locale)}</button>}
+        meta={tf("psafety.meta", locale, { count: PSYCH_SAFETY_ITEM_COUNT })}
+      />
     );
   }
 
   if (phase === "done") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <div className="text-4xl">🌱</div>
-        <h1 className="mt-4 font-fraunces text-2xl text-ink">
-          {t("psafety.doneTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("psafety.doneBody", locale)}
-        </p>
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("psafety.backToDashboard", locale)}
-        </button>
-      </div>
+      <AssessmentStatus
+        tone="success"
+        title={t("psafety.doneTitle", locale)}
+        body={t("psafety.doneBody", locale)}
+        action={<button type="button" onClick={() => router.push("/dashboard")} className={assessmentPrimaryActionClass}>{t("psafety.backToDashboard", locale)}</button>}
+      />
     );
   }
 
   if (phase === "error") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <h1 className="font-fraunces text-2xl text-ink">
-          {t("psafety.errorTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("psafety.errorBody", locale)}
-        </p>
-        <button
+      <AssessmentStatus
+        tone="error"
+        title={t("psafety.errorTitle", locale)}
+        body={t("psafety.errorBody", locale)}
+        action={<button
           type="button"
           onClick={() => submit(answersRef.current)}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+          className={assessmentPrimaryActionClass}
         >
           {t("psafety.retry", locale)}
-        </button>
-      </div>
+        </button>}
+      />
     );
   }
 
   // answering / submitting
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-4 pt-8 pb-20">
-      <div className="flex items-center justify-between">
-        <p className="font-mono text-label uppercase text-[var(--color-accent-primary-strong)]">
-          {t("psafety.eyebrow", locale)}
-        </p>
-        <p className="font-mono text-note text-muted">
-          {index + 1} / {PSYCH_SAFETY_ITEM_COUNT}
-        </p>
-      </div>
+    <AssessmentFlowShell>
+      <AssessmentFlowHeader
+        eyebrow={t("psafety.eyebrow", locale)}
+        progress={`${index + 1} / ${PSYCH_SAFETY_ITEM_COUNT}`}
+      />
       <div className="mt-3">
         <ProgressBar current={index + 1} total={PSYCH_SAFETY_ITEM_COUNT} />
       </div>
@@ -183,6 +159,6 @@ export function PsychSafetyClient({
           </AnimatePresence>
         )}
       </div>
-    </div>
+    </AssessmentFlowShell>
   );
 }

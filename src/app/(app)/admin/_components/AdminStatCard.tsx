@@ -11,7 +11,7 @@ export function AdminStatCard({ title, value, subtitle, trend }: AdminStatCardPr
       className="rounded-xl border border-sand bg-surface-card p-6"
       style={{ borderTopWidth: "3px", borderTopColor: "var(--color-sage)" }}
     >
-      <p className="font-mono text-xs uppercase tracking-widest text-muted">
+      <p className="text-caption font-semibold text-ink-body">
         {title}
       </p>
       <p className="mt-3 text-3xl font-bold tabular-nums text-ink">{value}</p>

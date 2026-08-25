@@ -11,7 +11,13 @@ import { TEAM_ROLE_ITEM_COUNT } from "@/lib/team-role-questions";
 import type { TeamRoleSelections } from "@/lib/team-role-questions";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import {
+  AssessmentFlowHeader,
+  AssessmentFlowShell,
+  AssessmentIntro,
+  AssessmentStatus,
+  assessmentPrimaryActionClass,
+} from "@/components/assessment/AssessmentFlowShell";
 
 interface Teammate {
   userId: string;
@@ -87,73 +93,46 @@ export function TeamRolePeersClient({
 
   if (phase === "intro") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <SectionEyebrow>
-          {t("teamRolePeers.eyebrow", locale)}
-        </SectionEyebrow>
-        <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
-          {t("teamRolePeers.introTitle", locale)}
-        </h1>
-        <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
-          {tf("teamRolePeers.introBody", locale, { count: TEAM_ROLE_ITEM_COUNT })}
-        </p>
-        <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
-          <p className="text-caption leading-relaxed text-ink-body">
+      <AssessmentIntro
+        eyebrow={t("teamRolePeers.eyebrow", locale)}
+        title={t("teamRolePeers.introTitle", locale)}
+        campaignName={campaignName}
+        body={tf("teamRolePeers.introBody", locale, { count: TEAM_ROLE_ITEM_COUNT })}
+        notice={
+          <>
             <span className="font-semibold text-ink">
               {t("teamRolePeers.anonTitle", locale)}
             </span>{" "}
             {t("teamRolePeers.anonBody", locale)}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setPhase("rating")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("teamRolePeers.start", locale)}
-        </button>
-        <p className="mt-3 font-mono text-micro uppercase tracking-wide text-muted">
-          {tf("teamRolePeers.progress", locale, {
+          </>
+        }
+        action={<button type="button" onClick={() => setPhase("rating")} className={assessmentPrimaryActionClass}>{t("teamRolePeers.start", locale)}</button>}
+        meta={tf("teamRolePeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
-          })}
-        </p>
-      </div>
+        })}
+      />
     );
   }
 
   if (phase === "done") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <div className="text-4xl">💬</div>
-        <h1 className="mt-4 font-fraunces text-2xl text-ink">
-          {t("teamRolePeers.doneTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("teamRolePeers.doneBody", locale)}
-        </p>
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("teamRolePeers.backToDashboard", locale)}
-        </button>
-      </div>
+      <AssessmentStatus
+        tone="success"
+        title={t("teamRolePeers.doneTitle", locale)}
+        body={t("teamRolePeers.doneBody", locale)}
+        action={<button type="button" onClick={() => router.push("/dashboard")} className={assessmentPrimaryActionClass}>{t("teamRolePeers.backToDashboard", locale)}</button>}
+      />
     );
   }
 
   if (phase === "error") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <h1 className="font-fraunces text-2xl text-ink">
-          {t("teamRolePeers.errorTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("teamRolePeers.errorBody", locale)}
-        </p>
-        <button
+      <AssessmentStatus
+        tone="error"
+        title={t("teamRolePeers.errorTitle", locale)}
+        body={t("teamRolePeers.errorBody", locale)}
+        action={<button
           type="button"
           onClick={() => {
             setPhase("rating");
@@ -161,11 +140,11 @@ export function TeamRolePeersClient({
               void submitOne(lastFailed.aboutUserId, lastFailed.selections);
             }
           }}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+          className={assessmentPrimaryActionClass}
         >
           {t("teamRolePeers.retry", locale)}
-        </button>
-      </div>
+        </button>}
+      />
     );
   }
 
@@ -173,18 +152,14 @@ export function TeamRolePeersClient({
   if (!current) return null;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col px-4 pt-8 pb-20">
-      <div className="flex items-center justify-between">
-        <SectionEyebrow>
-          {t("teamRolePeers.eyebrow", locale)}
-        </SectionEyebrow>
-        <p className="font-mono text-note text-muted">
-          {tf("teamRolePeers.progress", locale, {
+    <AssessmentFlowShell>
+      <AssessmentFlowHeader
+        eyebrow={t("teamRolePeers.eyebrow", locale)}
+        progress={tf("teamRolePeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
-          })}
-        </p>
-      </div>
+        })}
+      />
 
       <div className="mt-4 flex items-center gap-3 rounded-2xl border border-sand bg-surface-card px-5 py-4">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage/15 font-fraunces text-lg text-sage">
@@ -207,6 +182,6 @@ export function TeamRolePeersClient({
           onComplete={(selections) => void submitOne(current.userId, selections)}
         />
       </div>
-    </div>
+    </AssessmentFlowShell>
   );
 }

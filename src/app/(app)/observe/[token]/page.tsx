@@ -15,6 +15,7 @@ import {
 } from "@/lib/observer/draft-cookie";
 import { ObserverClient } from "./ObserverClient";
 import { buildSignInPath } from "@/lib/navigation/auth-redirects";
+import { PageState } from "@/components/ui/primitives/StatePanel";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getServerLocale();
@@ -58,55 +59,31 @@ export default async function ObservePage({ params }: ObservePageProps) {
 
   if (lifecycle === "completed") {
     return (
-      <div className="min-h-screen bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">🎉</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.completeTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.completeBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="success"
+        title={t("observer.completeTitle", locale)}
+        body={t("observer.completeBody", locale)}
+      />
     );
   }
 
   if (lifecycle === "canceled") {
     return (
-      <div className="min-h-screen bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">😕</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.inactiveTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.inactiveBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="error"
+        title={t("observer.inactiveTitle", locale)}
+        body={t("observer.inactiveBody", locale)}
+      />
     );
   }
 
   if (lifecycle === "expired") {
     return (
-      <div className="min-h-screen bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sage-ring bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">⏰</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.expiredTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.expiredBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="error"
+        title={t("observer.expiredTitle", locale)}
+        body={t("observer.expiredBody", locale)}
+      />
     );
   }
 
@@ -114,19 +91,11 @@ export default async function ObservePage({ params }: ObservePageProps) {
   // 403 INVITE_NOT_APPROVED-dal el is utasítaná. Külön állapot-lap, nem az űrlap.
   if (lifecycle === "awaiting_approval") {
     return (
-      <div className="min-h-screen bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">⏳</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.awaitingTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.awaitingBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="pending"
+        title={t("observer.awaitingTitle", locale)}
+        body={t("observer.awaitingBody", locale)}
+      />
     );
   }
 
@@ -145,19 +114,11 @@ export default async function ObservePage({ params }: ObservePageProps) {
   // nincs). Kijelentkezve a külső-token self-eset a W2-vel közös maradék.
   if (viewer && viewer.id === invitation.inviterId) {
     return (
-      <div className="min-h-screen bg-cream">
-        <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">🔒</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.notAddresseeTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.notAddresseeBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="locked"
+        title={t("observer.notAddresseeTitle", locale)}
+        body={t("observer.notAddresseeBody", locale)}
+      />
     );
   }
 
@@ -171,19 +132,11 @@ export default async function ObservePage({ params }: ObservePageProps) {
     }
     if (!viewer || viewer.id !== invitation.observerProfileId) {
       return (
-        <div className="min-h-screen bg-cream">
-          <div className="mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-            <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
-              <div className="text-5xl leading-none">🔒</div>
-              <h1 className="mt-4 text-2xl font-bold text-ink">
-                {t("observer.notAddresseeTitle", locale)}
-              </h1>
-              <p className="mt-3 text-sm leading-relaxed text-ink-body">
-                {t("observer.notAddresseeBody", locale)}
-              </p>
-            </div>
-          </div>
-        </div>
+        <PageState
+          tone="locked"
+          title={t("observer.notAddresseeTitle", locale)}
+          body={t("observer.notAddresseeBody", locale)}
+        />
       );
     }
   }

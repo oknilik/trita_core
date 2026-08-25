@@ -23,7 +23,7 @@ export function AdminTableSection({
     <div className="rounded-xl border border-sand bg-surface-card p-6">
       <div className="mb-5 flex items-center justify-between">
         <div>
-          <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+          <h2 className="text-caption font-semibold text-ink">
             {title}
           </h2>
           {description && (

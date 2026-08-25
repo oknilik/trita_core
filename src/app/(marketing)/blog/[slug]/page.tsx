@@ -471,7 +471,7 @@ export default async function BlogPostPage({
                 href={`/blog/${olderPost.slug}`}
                 className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-3 flex items-center gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="mb-3 flex items-center gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
                   <BackChevronIcon size="sm" />
                   <span>{t("blog.prevArticle", locale)}</span>
                 </span>
@@ -487,7 +487,7 @@ export default async function BlogPostPage({
                 href={`/blog/${newerPost.slug}`}
                 className="group flex min-h-32 flex-col rounded-xl border border-sand bg-surface-card px-5 py-4 text-right transition-all hover:-translate-y-px hover:border-[var(--color-surface-self-border)]"
               >
-                <span className="mb-3 flex items-center justify-end gap-2 text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                <span className="mb-3 flex items-center justify-end gap-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
                   {t("blog.nextArticle", locale)}
                   <ChevronRightIcon className="h-3.5 w-3.5" />
                 </span>
@@ -502,12 +502,9 @@ export default async function BlogPostPage({
         {/* Related posts */}
         {relatedPosts.length > 0 && (
           <div className="mt-10 border-t border-[var(--color-border-default)] pt-7">
-            <div className="mb-4 flex items-center gap-3">
-              <div className="h-[1.5px] w-5 shrink-0 bg-[var(--color-accent-primary)]" />
-              <span className="font-dm-sans text-label uppercase text-[var(--color-accent-primary-strong)]">
+            <SectionEyebrow className="mb-4">
                 {t("blog.readNext", locale)}
-              </span>
-            </div>
+            </SectionEyebrow>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {relatedPosts.map((rel) => (
                 <Link

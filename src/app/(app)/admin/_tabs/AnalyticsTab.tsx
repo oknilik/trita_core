@@ -62,7 +62,7 @@ function Panel({
   return (
     <div className="rounded-xl border border-sand bg-surface-card p-6">
       <div className="mb-4">
-        <h2 className="font-mono text-xs uppercase tracking-widest text-muted">{title}</h2>
+        <h2 className="text-caption font-semibold text-ink">{title}</h2>
         {description && <p className="mt-1 text-xs text-ink-body">{description}</p>}
       </div>
       {children}
@@ -325,7 +325,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
 
       {/* ── Adatkezelési lábjegyzet ────────────────────────────────── */}
       <div className="rounded-xl border border-sand bg-cream p-6">
-        <h2 className="font-mono text-xs uppercase tracking-widest text-muted">
+        <h2 className="text-caption font-semibold text-ink">
           Mit mérünk — és mit nem
         </h2>
         <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-ink-body">

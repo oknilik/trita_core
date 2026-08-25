@@ -46,21 +46,21 @@ export function BlogJourneyCta({ locale, variant }: BlogJourneyCtaProps) {
   }
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl bg-gradient-to-br from-[var(--color-surface-inverse)] to-[var(--color-surface-inverse-soft)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
+    <div className="mt-8 flex flex-col items-center gap-5 rounded-2xl border border-[var(--color-surface-self-border)] bg-[var(--color-surface-self-accent-soft)] p-7 sm:flex-row sm:items-center sm:gap-6 sm:p-8">
       <div className="flex-1 text-center sm:text-left">
-        <p className="mb-1.5 font-dm-sans text-micro font-semibold uppercase tracking-widest text-[var(--color-accent-primary-soft)]">
+        <p className="mb-1.5 text-caption font-semibold text-[var(--color-accent-self-deep)]">
           {content.eyebrow}
         </p>
-        <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-white">
+        <h3 className="mb-1.5 font-fraunces text-xl leading-snug text-ink">
           {content.title}
         </h3>
-        <p className="text-caption leading-relaxed text-white/[0.55]">
+        <p className="text-caption leading-relaxed text-ink-body">
           {content.sub}
         </p>
       </div>
       <Link
         href={href}
-        className="shrink-0 rounded-[10px] bg-[var(--color-accent-primary)] px-7 py-3.5 text-sm font-semibold text-[var(--color-text-on-accent)] transition-all hover:-translate-y-px hover:brightness-[1.06]"
+        className="inline-flex min-h-[44px] shrink-0 items-center rounded-[10px] bg-[var(--color-action-primary-bg)] px-7 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
       >
         {content.cta}
       </Link>
