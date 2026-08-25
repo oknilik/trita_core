@@ -18,7 +18,6 @@ import { buildSignInPath } from "@/lib/navigation/auth-redirects";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
-import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("profile");
@@ -256,103 +255,50 @@ export default function ProfilePage() {
   return (
     <PlatformPageShell
       surface="self"
-      contentClassName="max-w-3xl gap-5 px-4 py-10"
-      chrome={{
-        breadcrumb: [
-          { label: t("nav.home", locale), href: "/dashboard" },
-          { label: t("profile.title", locale) },
-        ],
-        eyebrow: t("profile.title", locale),
-        title: (
-          <span className="flex min-w-0 items-center gap-3">
-            <span
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-fraunces text-xl font-medium text-white shadow-md"
-              style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-            >
-              {initials}
-            </span>
-            <span className="truncate">{displayName}</span>
+      contentClassName="max-w-4xl gap-5 px-4 py-8 md:py-10"
+    >
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-5 py-6 text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-lg)] md:px-8 md:py-7">
+        <svg aria-hidden="true" viewBox="0 0 60 60" className="absolute -right-4 -top-8 h-36 w-36 text-white/10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M30 5v50M5 30h50M12 12l36 36M48 12 12 48" />
+        </svg>
+        <div className="relative flex flex-col gap-5 md:flex-row md:items-center">
+          <span
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full font-fraunces text-2xl font-medium text-[var(--color-text-on-accent)] shadow-md"
+            style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+          >
+            {initials}
           </span>
-        ),
-        subtitle: t("profile.heroSubtitle", locale),
-        actions: (
+          <div className="min-w-0 flex-1">
+            <p className="text-label uppercase text-[var(--color-accent-primary-soft)]">
+              {locale === "hu" ? "A te tered" : "Your space"}
+            </p>
+            <h1 className="mt-1 truncate font-fraunces text-3xl font-medium tracking-tight">{displayName}</h1>
+            <p className="mt-1 truncate text-xs text-[var(--color-text-on-inverse-muted)]">
+              {[email, SELF_PAYWALL_ENABLED ? `${planLabel} ${locale === "hu" ? "csomag" : "plan"}` : null, locale === "hu" ? "Magyar" : "English"].filter(Boolean).join(" · ")}
+            </p>
+          </div>
           <Link
             href="/profile/results"
-            className={getButtonClassName({ size: "sm", variant: "secondary" })}
+            className={getButtonClassName({ size: "sm", variant: "secondary", onInverse: true, className: "relative shrink-0" })}
           >
-            {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"}
+            {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"} →
           </Link>
-        ),
-      }}
-    >
-      <div className="flex flex-wrap gap-2">
-        {SELF_PAYWALL_ENABLED ? <StatusChip>{planLabel}</StatusChip> : null}
-        <StatusChip variant="info">{locale === "hu" ? "Magyar" : "English"}</StatusChip>
-        {email ? <StatusChip className="max-w-full truncate">{email}</StatusChip> : null}
-      </div>
+        </div>
+      </section>
 
-        {/* ═══ SZERVEZETI TAGSÁG ═══ */}
-        {orgInfo && orgInfo.memberships.length > 0 && (
-          <Card as="section" spacing="lg">
-            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.orgSectionTitle", locale)}</h2>
-            <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
-            <div className="flex flex-col gap-3">
-              {orgInfo.memberships.map((m) => {
-                const roleLabel =
-                  m.role === "ORG_ADMIN"
-                    ? t("profile.orgRoleAdmin", locale)
-                    : m.role === "ORG_CONSULTANT"
-                      ? t("profile.orgRoleConsultant", locale)
-                      : m.role === "ORG_MANAGER"
-                      ? t("profile.orgRoleManager", locale)
-                      : t("profile.orgRoleMember", locale);
-                const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
-                const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
-                return (
-                  <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-surface-card p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      {canOpenOrg ? (
-                        <Link href={`/org/${m.orgId}`} className={`rounded-md text-caption font-semibold text-[var(--color-text-primary)] hover:underline ${FOCUS_RING_CLASS}`}>
-                          {m.orgName ?? m.orgId}
-                        </Link>
-                      ) : (
-                        <span className="text-caption font-semibold text-[var(--color-text-primary)]">{m.orgName ?? m.orgId}</span>
-                      )}
-                      <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-secondary)]">
-                        {roleLabel}
-                      </span>
-                    </div>
-                    {orgTeams.length > 0 && (
-                      <div className="mt-2.5">
-                        <p className="mb-1.5 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
-                          {t("profile.orgTeamsLabel", locale)}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {orgTeams.map((team) => (
-                            <Link
-                              key={team.id}
-                              href={`/team/${team.id}`}
-                              className={`rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-note text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
-                            >
-                              {team.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        )}
+      <nav aria-label={locale === "hu" ? "Profilbeállítások" : "Profile settings"} className="-mb-1 flex gap-6 overflow-x-auto border-b border-border-default px-1 text-xs text-text-muted">
+        <a href="#about" className={`shrink-0 border-b-2 border-[var(--color-action-primary-bg)] pb-3 font-semibold text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}>{t("profile.sectionAbout", locale)}</a>
+        <a href="#language" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionLanguage", locale)}</a>
+        {orgInfo && orgInfo.memberships.length > 0 ? <a href="#organization" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.orgSectionTitle", locale)}</a> : null}
+        <a href="#account" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionAccount", locale)}</a>
+      </nav>
 
-        {/* ═══ RÓLAD ═══ */}
-        <Card as="section" spacing="lg">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionAbout", locale)}</h2>
-          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
+      <div className="grid gap-5 md:grid-cols-[1.12fr_0.88fr]">
+        <Card id="about" as="section" spacing="lg">
+          <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.sectionAbout", locale)}</h2>
+          <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
 
-          <div className="mb-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-note font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.usernameLabel", locale)}
               <input
@@ -393,51 +339,83 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {/* ═══ MEGJELENÉS ÉS NYELV ═══ */}
-        <Card as="section" spacing="lg">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionLanguage", locale)}</h2>
-          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
-          <div className="flex gap-[5px]">
-            {SUPPORTED_LOCALES.map((loc) => (
-              <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
-                {t(`locale.${loc}` as const, loc)}
-              </button>
-            ))}
-          </div>
-        </Card>
+        <div className="flex flex-col gap-5">
+          {orgInfo && orgInfo.memberships.length > 0 ? (
+            <Card id="organization" as="section" spacing="lg">
+              <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.orgSectionTitle", locale)}</h2>
+              <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
+              <div className="flex flex-col gap-3">
+                {orgInfo.memberships.map((m) => {
+                  const roleLabel = m.role === "ORG_ADMIN"
+                    ? t("profile.orgRoleAdmin", locale)
+                    : m.role === "ORG_CONSULTANT"
+                      ? t("profile.orgRoleConsultant", locale)
+                      : m.role === "ORG_MANAGER"
+                        ? t("profile.orgRoleManager", locale)
+                        : t("profile.orgRoleMember", locale);
+                  const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
+                  const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
+                  return (
+                    <div key={m.orgId} className="rounded-xl bg-[var(--color-surface-self-accent-soft)] p-4">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-layer-org-accent)] text-micro font-bold text-[var(--color-text-on-inverse)]">{(m.orgName ?? "T").slice(0, 2).toUpperCase()}</span>
+                        <div className="min-w-0">
+                          {canOpenOrg ? <Link href={`/org/${m.orgId}`} className={`block truncate text-caption font-semibold text-text-primary hover:underline ${FOCUS_RING_CLASS}`}>{m.orgName ?? m.orgId}</Link> : <span className="block truncate text-caption font-semibold text-text-primary">{m.orgName ?? m.orgId}</span>}
+                          <span className="text-micro text-text-muted">{roleLabel}</span>
+                        </div>
+                      </div>
+                      {orgTeams.length > 0 ? <div className="mt-3 flex flex-wrap gap-1.5">{orgTeams.map((team) => <Link key={team.id} href={`/team/${team.id}`} className={`rounded-full border border-border-default bg-surface-card px-2.5 py-1 text-note text-text-secondary hover:text-text-primary ${FOCUS_RING_CLASS}`}>{team.name}</Link>)}</div> : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          ) : null}
 
-        {/* ═══ SAVE ROW ═══ */}
-        <Card as="section" spacing="sm" className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-[5px] text-note text-[var(--color-text-muted)]">
-            <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[var(--color-accent-primary)]" : "bg-[var(--color-action-primary-bg)]"}`} />
-            {isDirty
-              ? t("profile.saveUnsaved", locale)
-              : saveState === "saved"
-                ? t("profile.saveSaved", locale)
-                : t("profile.saveNoChanges", locale)}
+          <Card id="language" as="section" spacing="lg">
+            <h2 className="font-fraunces text-xl font-medium text-[var(--color-text-primary)]">{t("profile.sectionLanguage", locale)}</h2>
+            <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
+            <div className="flex flex-wrap gap-[5px]">
+              {SUPPORTED_LOCALES.map((loc) => (
+                <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
+                  {t(`locale.${loc}` as const, loc)}
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <div className="rounded-2xl bg-[var(--color-surface-soft-warm)] p-4 text-xs leading-relaxed text-[var(--color-accent-earth-strong)]">
+            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Az adataid nálad maradnak." : "Your data stays yours."}</strong><br />
+            {locale === "hu" ? "A profilod adatai bármikor módosíthatók vagy törölhetők." : "Your profile data can be edited or deleted at any time."}
           </div>
+        </div>
+      </div>
+
+      <section className="flex flex-col gap-4 rounded-2xl bg-[var(--color-surface-inverse)] p-4 text-[var(--color-text-on-inverse)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-2 text-note">
+          <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${isDirty ? "bg-[var(--color-accent-primary-soft)]" : "bg-[var(--color-sage-300)]"}`} />
+          <span>
+            <strong className="block text-[var(--color-text-on-inverse)]">
+              {isDirty ? t("profile.saveUnsaved", locale) : saveState === "saved" ? t("profile.saveSaved", locale) : t("profile.saveNoChanges", locale)}
+            </strong>
+            <span className="text-micro text-[var(--color-text-on-inverse-muted)]">{locale === "hu" ? "A módosításokat itt tudod menteni." : "Save your changes here."}</span>
+          </span>
+        </div>
           <Button
             type="button"
             onClick={handleSave}
             disabled={!canSubmitDemo}
             loading={isSavingDemo}
+            onInverse
             className="shrink-0"
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </Button>
-        </Card>
-        {saveState === "saved" ? (
-          <p role="status" className="text-note text-[var(--color-state-success-text)]">
-            {locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}
-          </p>
-        ) : saveState === "error" ? (
-          <p role="alert" className="text-note text-[var(--color-state-error-text)]">
-            {locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}
-          </p>
-        ) : null}
+      </section>
+      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
 
-        {/* ═══ DANGER BOX ═══ */}
         <Card
+          id="account"
           as="section"
           bordered={false}
           spacing="sm"

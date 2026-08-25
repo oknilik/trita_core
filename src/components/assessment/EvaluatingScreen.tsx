@@ -1,98 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
-
-const CX = 150;
-const CY = 150;
-const MAX_R = 100;
-const RINGS = [0.25, 0.5, 0.75, 1.0];
-const N = 6;
-
-function getPoint(index: number, radius: number) {
-  const angle = -Math.PI / 2 + (index * 2 * Math.PI) / N;
-  return {
-    x: CX + radius * Math.cos(angle),
-    y: CY + radius * Math.sin(angle),
-  };
-}
-
-/** Seed-based pseudo-random so wobble is stable per ring */
-function seededRandom(seed: number) {
-  const x = Math.sin(seed * 9301 + 49297) * 49297;
-  return x - Math.floor(x);
-}
-
-/** Create a hand-drawn wobbly path for a ring */
-function wobblyRingPath(radius: number, seed: number): string {
-  const pts = Array.from({ length: N }, (_, i) => getPoint(i, radius));
-  let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
-  for (let i = 0; i < N; i++) {
-    const from = pts[i];
-    const to = pts[(i + 1) % N];
-    const mx = (from.x + to.x) / 2;
-    const my = (from.y + to.y) / 2;
-    // Perpendicular offset for wobble
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const len = Math.sqrt(dx * dx + dy * dy);
-    const nx = -dy / len;
-    const ny = dx / len;
-    const wobble = (seededRandom(seed + i * 7) - 0.5) * radius * 0.12;
-    const cx1 = mx + nx * wobble;
-    const cy1 = my + ny * wobble;
-    d += ` Q ${cx1.toFixed(1)},${cy1.toFixed(1)} ${to.x.toFixed(1)},${to.y.toFixed(1)}`;
-  }
-  return d;
-}
-
-/** Create a hand-drawn wobbly axis line */
-function wobblyAxisPath(index: number, seed: number): string {
-  const p = getPoint(index, MAX_R);
-  const mx = (CX + p.x) / 2;
-  const my = (CY + p.y) / 2;
-  const dx = p.x - CX;
-  const dy = p.y - CY;
-  const len = Math.sqrt(dx * dx + dy * dy);
-  const nx = -dy / len;
-  const ny = dx / len;
-  const wobble = (seededRandom(seed + index * 13) - 0.5) * 6;
-  const cx1 = mx + nx * wobble;
-  const cy1 = my + ny * wobble;
-  return `M ${CX},${CY} Q ${cx1.toFixed(1)},${cy1.toFixed(1)} ${p.x.toFixed(1)},${p.y.toFixed(1)}`;
-}
-
-function randomRadii(): number[] {
-  return Array.from({ length: N }, () => 30 + Math.random() * 60);
-}
-
-function lerp(a: number, b: number, t: number) {
-  return a + (b - a) * t;
-}
-
-/** Build a smooth closed cubic bezier path through the data points (doodle feel) */
-function toSmoothPath(radii: number[]): string {
-  const pts = radii.map((r, i) => getPoint(i, r));
-  // Catmull-Rom → cubic bezier for smooth closed curve
-  const n = pts.length;
-  let d = `M ${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
-  for (let i = 0; i < n; i++) {
-    const p0 = pts[(i - 1 + n) % n];
-    const p1 = pts[i];
-    const p2 = pts[(i + 1) % n];
-    const p3 = pts[(i + 2) % n];
-    const tension = 0.3;
-    const cp1x = p1.x + (p2.x - p0.x) * tension;
-    const cp1y = p1.y + (p2.y - p0.y) * tension;
-    const cp2x = p2.x - (p3.x - p1.x) * tension;
-    const cp2y = p2.y - (p3.y - p1.y) * tension;
-    d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
-  }
-  d += " Z";
-  return d;
-}
+import { StarLoader } from "@/components/ui/StarLoader";
+import { TritaWordmark } from "@/components/TritaLogo";
 
 interface EvaluatingScreenProps {
   progress: number;
@@ -100,122 +12,69 @@ interface EvaluatingScreenProps {
 
 export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
   const { locale } = useLocale();
-  const currentRadii = useRef(randomRadii());
-  const targetRadii = useRef(randomRadii());
-  const progressRef = useRef(0); // 0→1 lerp progress
-  const [pathD, setPathD] = useState(() => toSmoothPath(currentRadii.current));
-  const rafRef = useRef<number>(0);
-  const lastTimeRef = useRef(0);
-
-  const animate = useCallback((time: number) => {
-    if (!lastTimeRef.current) lastTimeRef.current = time;
-    const delta = time - lastTimeRef.current;
-    lastTimeRef.current = time;
-
-    // Advance lerp progress (~3s per morph cycle)
-    progressRef.current += delta / 3000;
-
-    if (progressRef.current >= 1) {
-      // Arrived at target — pick a new target
-      currentRadii.current = targetRadii.current;
-      targetRadii.current = randomRadii();
-      progressRef.current = 0;
-    }
-
-    // Smooth easing (ease-in-out)
-    const t = progressRef.current;
-    const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-
-    const interpolated = currentRadii.current.map((c, i) =>
-      lerp(c, targetRadii.current[i], eased)
-    );
-    setPathD(toSmoothPath(interpolated));
-    // eslint-disable-next-line react-hooks/immutability
-    rafRef.current = requestAnimationFrame(animate);
-  }, []);
-
-  useEffect(() => {
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [animate]);
+  const safeProgress = Math.min(Math.max(progress, 0), 100);
+  const phase = safeProgress < 36 ? 0 : safeProgress < 72 ? 1 : 2;
+  const phaseMessages = locale === "hu"
+    ? [
+        "Megnézzük, hogyan kapcsolódsz másokhoz…",
+        "Összekötjük a döntési és munkastílusod jelzéseit…",
+        "Megfogalmazzuk, mire érdemes építened…",
+      ]
+    : [
+        "Looking at how you connect with others…",
+        "Connecting signals in your decisions and work style…",
+        "Turning the patterns into strengths you can use…",
+      ];
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-hidden bg-cream px-4">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed inset-0 z-40 flex items-center justify-center overflow-hidden bg-[var(--color-surface-inverse)] px-4 text-[var(--color-text-on-inverse)]"
+    >
+      <div aria-hidden className="absolute -right-48 -top-72 h-[34rem] w-[34rem] rounded-full bg-[var(--color-accent-primary)]/15 blur-3xl" />
+      <div aria-hidden className="absolute -bottom-72 -left-48 h-[30rem] w-[30rem] rounded-full bg-[var(--color-accent-candidate)]/10 blur-3xl" />
+      <TritaWordmark className="absolute left-6 top-6 text-3xl text-[var(--color-text-on-inverse)] md:left-10 md:top-8" />
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.96 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="flex w-full max-w-md flex-col items-center"
+        className="relative flex w-full max-w-xl flex-col items-center text-center"
       >
-        {/* Animated doodle hexagon */}
-        <div className="h-48 w-48 md:h-56 md:w-56">
-          <svg viewBox="0 0 300 300" className="h-full w-full">
-            <defs>
-              <linearGradient id="evalFill" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--color-accent-primary)" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="var(--color-bronze-700)" stopOpacity="0.1" />
-              </linearGradient>
-              <linearGradient id="evalStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="var(--color-accent-primary)" />
-                <stop offset="100%" stopColor="var(--color-bronze-700)" />
-              </linearGradient>
-            </defs>
-
-            {/* Wobbly grid rings */}
-            {RINGS.map((ring, ri) => (
-              <path
-                key={ring}
-                d={wobblyRingPath(MAX_R * ring, ri * 31)}
-                fill="none"
-                stroke={ring === 1 ? "var(--color-warm-dark)" : "var(--color-border-default)"}
-                strokeWidth={ring === 1 ? "1.2" : "0.7"}
-                strokeLinecap="round"
-                opacity="0.5"
-              />
-            ))}
-
-            {/* Wobbly axis lines */}
-            {Array.from({ length: N }, (_, i) => (
-              <path
-                key={i}
-                d={wobblyAxisPath(i, 42)}
-                fill="none"
-                stroke="var(--color-border-default)"
-                strokeWidth="0.7"
-                strokeLinecap="round"
-                opacity="0.5"
-              />
-            ))}
-
-            {/* Animated smooth data blob */}
-            <path
-              d={pathD}
-              fill="url(#evalFill)"
-              stroke="url(#evalStroke)"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <div className="relative flex h-52 w-52 items-center justify-center md:h-60 md:w-60">
+          <div aria-hidden className="absolute inset-5 animate-[pulse_3.6s_ease-in-out_infinite] rounded-full border border-white/15 shadow-[0_0_0_24px_rgba(255,255,255,0.025),0_0_0_50px_rgba(255,255,255,0.015)] motion-reduce:animate-none" />
+          <StarLoader size={112} color="var(--color-text-on-inverse)" />
         </div>
-
-        {/* Text */}
-        <h2 className="mt-6 text-center text-xl font-bold text-ink md:text-2xl">
+        <p className="text-label uppercase text-[var(--color-accent-primary-soft)]">
+          {locale === "hu" ? "A személyes eredményed készül" : "Your personal result is taking shape"}
+        </p>
+        <h2 className="mt-4 max-w-[14ch] font-fraunces text-3xl font-medium leading-tight tracking-tight md:text-4xl">
           {t("assessment.evaluatingTitle", locale)}
         </h2>
-        <p className="mt-2 text-center text-sm text-ink-body">
-          {t("assessment.evaluatingBody", locale)}
+        <p className="mt-3 text-sm text-[var(--color-text-on-inverse-muted)]">
+          {locale === "hu"
+            ? "Nem csak pontszámokat, hanem használható összefüggéseket keresünk."
+            : "We look beyond scores to find patterns you can actually use."}
         </p>
-
-        {/* Progress bar */}
-        <div className="mt-8 h-2 w-64 overflow-hidden rounded-full bg-sand md:w-80">
+        <motion.p
+          key={phase}
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-8 min-h-10 font-fraunces text-base text-[var(--color-accent-primary-soft)]"
+        >
+          {phaseMessages[phase]}
+        </motion.p>
+        <div className="mt-3 h-1 w-64 overflow-hidden rounded-full bg-white/15 md:w-80">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-sage to-sage-deep"
+            className="h-full rounded-full bg-[var(--color-accent-primary-soft)]"
             initial={{ width: 0 }}
-            animate={{ width: `${Math.min(progress, 100)}%` }}
+            animate={{ width: `${safeProgress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
+        <p className="mt-3 text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
+          {locale === "hu" ? "Mintázatok összekapcsolása" : "Connecting patterns"} · {Math.round(safeProgress)}%
+        </p>
       </motion.div>
     </div>
   );

@@ -14,9 +14,23 @@ import { GENDER_OPTIONS } from "@/lib/onboarding-options";
 import { toggleBtn } from "@/lib/onboarding-styles";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { ExternalLinkIcon } from "@/components/ui/icons";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
-
-
+function BrandStar({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 60 60"
+      aria-hidden="true"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="4"
+      strokeLinecap="round"
+    >
+      <path d="M30 5v50M5 30h50M12 12l36 36M48 12 12 48" />
+    </svg>
+  );
+}
 
 // ── Main component ───────────────────────────────────────────────────────────
 
@@ -226,39 +240,66 @@ export function OnboardingClient({
   // a consent-checkbox közvetlenül a submit gomb felett van.
 
   return (
-    <div className="min-h-dvh bg-cream flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-lg">
-
-        {/* Logo + title */}
-        <div className="mb-10 flex flex-col items-center gap-4">
-          <TritaLogo size={40} showText={false} />
-          <div className="text-center">
-            <h1 className="font-fraunces text-3xl text-ink">
-              {t(isClaimActivation ? "onboarding.claimTitle" : "onboarding.title", locale)}
+    <div className="min-h-dvh bg-cream px-0 py-0 md:px-5 md:py-8 lg:flex lg:items-center lg:justify-center">
+      <div className="w-full overflow-hidden border-sand bg-surface-card md:mx-auto md:max-w-5xl md:rounded-3xl md:border md:shadow-[var(--ui-shadow-lg)] lg:grid lg:grid-cols-[minmax(300px,0.9fr)_minmax(460px,1.1fr)]">
+        <aside className="relative flex min-h-[350px] flex-col overflow-hidden bg-[var(--color-surface-self-accent-soft)] px-6 py-8 md:px-10 lg:min-h-[720px] lg:px-12 lg:py-12">
+          <div className="relative z-10">
+            <TritaLogo size={56} showText={false} className="items-start" />
+            <p className="mt-14 text-label uppercase text-[var(--color-accent-primary-strong)]">
+              {isClaimActivation
+                ? t("onboarding.claimBlockHint", locale)
+                : locale === "hu" ? "Még egy rövid lépés" : "One short step"}
+            </p>
+            <h1 className="mt-4 max-w-[9ch] font-fraunces text-4xl leading-[1.02] tracking-[-0.035em] text-[var(--color-accent-self-deep)] md:text-5xl">
+              {isClaimActivation
+                ? t("onboarding.claimTitle", locale)
+                : locale === "hu" ? "A profilod rólad szól." : "Your profile is about you."}
             </h1>
-            <p className="mt-2 text-sm text-ink-body/70 max-w-sm">
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-ink-body">
               {t(isClaimActivation ? "onboarding.claimSubtitle" : "onboarding.subtitle", locale)}
             </p>
           </div>
-        </div>
 
-        {/* Card */}
+          <div aria-hidden className="absolute -right-28 top-48 h-72 w-72 rounded-full border border-sage/20 shadow-[0_0_0_40px_color-mix(in_srgb,var(--color-surface-self-accent)_6%,transparent),0_0_0_84px_color-mix(in_srgb,var(--color-surface-self-accent)_3%,transparent)]" />
+
+          <div className="relative z-10 mt-auto flex items-start gap-3 border-t border-[var(--color-surface-self-border)] pt-5">
+            <BrandStar className="h-7 w-7 shrink-0 text-[var(--color-action-primary-bg)]" />
+            <p className="text-xs leading-relaxed text-ink-body">
+              <strong className="block font-fraunces text-base font-medium text-[var(--color-accent-self-deep)]">
+                {locale === "hu" ? "Te rendelkezel az adataiddal." : "You stay in control of your data."}
+              </strong>
+              {locale === "hu" ? "Szerkeszthető és törölhető bármikor." : "Edit or delete it whenever you want."}
+            </p>
+          </div>
+        </aside>
+
+        <div className="bg-[var(--color-surface-card-soft)] px-5 py-8 md:px-10 lg:px-12 lg:py-11">
+          <div className="mb-7 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
+                {t(isClaimActivation ? "onboarding.claimBlockHint" : "onboarding.blockBasicsHint", locale)}
+              </p>
+              <h2 className="mt-2 font-fraunces text-3xl leading-tight text-ink">
+                {t(isClaimActivation ? "onboarding.claimBlockTitle" : "onboarding.title", locale)}
+              </h2>
+              <p className="mt-1 text-xs text-muted">
+                {isClaimActivation
+                  ? t("onboarding.claimOptionalHint", locale)
+                  : locale === "hu" ? "Ismerkedjünk meg néhány alapadaton keresztül." : "Let's start with a few basic details."}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-[var(--color-surface-chip-warm)] px-3 py-2 text-micro font-semibold text-[var(--color-accent-earth-strong)]">
+              {locale === "hu" ? "kb. 1 perc" : "about 1 min"}
+            </span>
+          </div>
+
         <form
           noValidate
           onSubmit={handleFormSubmit}
-          className="bg-surface-card rounded-2xl border border-sand p-6 md:p-8 shadow-sm"
+          className="rounded-2xl border border-sand bg-surface-card p-5 shadow-sm md:p-7"
         >
 
           <div className="flex flex-col gap-6">
-              <div>
-                <p className="font-fraunces text-xl text-ink">
-                  {t(isClaimActivation ? "onboarding.claimBlockTitle" : "onboarding.blockBasicsTitle", locale)}
-                </p>
-                <p className="text-xs text-muted mt-0.5">
-                  {t(isClaimActivation ? "onboarding.claimBlockHint" : "onboarding.blockBasicsHint", locale)}
-                </p>
-              </div>
-
               <div className="flex flex-col gap-5">
 
                 {/* Username */}
@@ -390,10 +431,14 @@ export function OnboardingClient({
                 </div>
 
                 {/* Karrier-háttér (opcionális) — a Karrier-iránytű előtöltéséhez */}
-                <div className="mt-2 border-t border-sand pt-4">
-                  <p className="mb-3 text-label uppercase text-muted">
-                    {t("onboarding.careerSectionLabel", locale)}
-                  </p>
+                <details className="group mt-2 border-t border-sand pt-4">
+                  <summary className={`flex min-h-[44px] cursor-pointer list-none items-center justify-between rounded-lg text-xs font-semibold text-ink-body ${FOCUS_RING_CLASS}`}>
+                    <span>
+                      {t("onboarding.careerSectionLabel", locale)}
+                      <span className="ml-1 font-normal text-muted">· {t("onboarding.optionalPlaceholder", locale)}</span>
+                    </span>
+                    <span aria-hidden className="text-lg text-sage transition-transform group-open:rotate-45">+</span>
+                  </summary>
                   <div className="flex flex-col gap-4">
                     <PickerTrigger
                       label={t("onboarding.eduLabel", locale)}
@@ -419,7 +464,7 @@ export function OnboardingClient({
                       isOpen={industryPickerOpen}
                     />
                   </div>
-                </div>
+                </details>
 
                   </>
                 ) : (
@@ -495,11 +540,10 @@ export function OnboardingClient({
 
         </form>
 
-        {/* Footer hint */}
-        <p className="mt-6 text-center text-xs text-muted">
+        <p className="mt-5 text-center text-xs text-muted">
           {t(isClaimActivation ? "onboarding.claimFooterHint" : "onboarding.footerHint", locale)}
         </p>
-
+        </div>
       </div>
 
       {/* A gyors aktiválásban ezek a pickerek nem nyithatók meg, de a
