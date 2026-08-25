@@ -8,7 +8,7 @@
  *  - a szakaszcímek `h2`-k, a lap címe `h1` (helyes címsor-hierarchia),
  *  - a táblázatok valódi `table`/`th`/`td` szerkezetben állnak (nem div-rács),
  *  - a tartalomjegyzék minden szakaszra mutat,
- *  - a cégadat-tervezet jelölése látszik, amíg a helykitöltők élnek.
+ *  - a hatályossági adatok a dokumentumállapot-kártyán megjelennek.
  */
 
 import { render, screen, within } from "@testing-library/react";
@@ -21,7 +21,6 @@ vi.mock("@/components/LocaleProvider", () => ({
 }));
 
 import { PrivacyContent } from "@/app/(marketing)/privacy/PrivacyContent";
-import { LEGAL_DOCS_ARE_DRAFT } from "@/lib/legal/company";
 import { getPrivacyPolicy } from "@/lib/legal/privacy-policy";
 
 const doc = getPrivacyPolicy("hu");
@@ -75,13 +74,10 @@ describe("PrivacyContent", () => {
     }
   });
 
-  it("jelzi, hogy a cégadatok még helykitöltők", () => {
+  it("megjeleníti a frissítés és a hatálybalépés dátumát", () => {
     renderPrivacy();
-    if (LEGAL_DOCS_ARE_DRAFT) {
-      expect(screen.getAllByText(doc.draftBadge).length).toBeGreaterThan(0);
-      expect(screen.getByText(doc.draftNote)).toBeInTheDocument();
-    } else {
-      expect(screen.queryByText(doc.draftNote)).not.toBeInTheDocument();
-    }
+    expect(screen.getByText("Dokumentum állapota")).toBeInTheDocument();
+    expect(screen.getByText(doc.lastUpdated)).toBeInTheDocument();
+    expect(screen.getByText(doc.effectiveFrom)).toBeInTheDocument();
   });
 });

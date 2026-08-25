@@ -1,40 +1,23 @@
 /**
  * Az adatkezelő (cég) azonosító adatai — a jogi oldalak EGYETLEN forrása.
- *
- * ⚠️ FIGYELEM — PLACEHOLDER ADATOK ⚠️
- * A cégnév, székhely, cégjegyzékszám, adószám és a képviselő MÉG NEM VALÓS.
- * Amíg a `LEGAL_DOCS_ARE_DRAFT` értéke `true`, az adatvédelmi tájékoztató
- * látható „tervezet" jelölést kap — mert egy joginak látszó, de kitalált
- * cégadatokat közlő oldal félrevezeti az érintettet, és a GDPR 13. cikke
- * szerinti tájékoztatási kötelezettséget sem teljesíti.
- *
- * ÉLESÍTÉS (egy menetben, ebben a fájlban):
- *   1. valós cégadatok bevezetése lentebb,
- *   2. a `privacyEmail` postafiók tényleges létrehozása,
- *   3. `LEGAL_DOCS_ARE_DRAFT = false`,
- *   4. a tájékoztató `lastUpdated` / `effectiveFrom` dátumának frissítése
- *      (`src/lib/legal/privacy-policy.ts`).
+ * A nyilvános cégadatok forrása a Nemzeti Cégtár, ellenőrizve: 2026-08-25.
  *
  * A `hello@trita.io` cím VALÓS és él (a /contact oldalon is ez szerepel) —
  * ezért a tájékoztató érdemi elérhetőségként ezt adja meg; a `privacyEmail`
  * addig ugyanide mutat, amíg dedikált postafiók nem készül.
  */
 
-export const LEGAL_DOCS_ARE_DRAFT = true;
-
 export const COMPANY = {
-  /** Teljes cégnév (placeholder). */
-  legalName: "Trita Technologies Kft.",
+  /** Rövidített, bejegyzett cégnév. */
+  legalName: "OKNILIK Kft.",
   /** Rövid, márkanév. */
   brandName: "Trita",
-  /** Székhely (placeholder). */
-  address: "1075 Budapest, Példa utca 12. 3. em. 4.",
-  /** Cégjegyzékszám (placeholder). */
-  registrationNumber: "01-09-999999",
-  /** Adószám (placeholder). */
-  taxNumber: "99999999-2-42",
-  /** Képviselő (placeholder). */
-  representative: "Példa Péter ügyvezető",
+  /** Székhely. */
+  address: "7632 Pécs, Tüskésréti út 5.",
+  /** Cégjegyzékszám. */
+  registrationNumber: "02-09-086218",
+  /** Adószám. */
+  taxNumber: "27455764-2-02",
   /** Valós, élő kapcsolati cím. */
   contactEmail: "hello@trita.io",
   /** Adatvédelmi ügyekre — jelenleg a fenti postafiókra fut be. */

@@ -21,9 +21,7 @@ import { COMPANY, SUPERVISORY_AUTHORITY } from "./company";
  * - A GDPR 13-14. cikk kötelező elemei mind szerepelnek: adatkezelő, célok,
  *   JOGALAPOK, címzettek, harmadik országba továbbítás, megőrzési idők,
  *   érintetti jogok, panaszjog (NAIH), automatizált döntéshozatal.
- * - A cégadatok jelenleg placeholderek (ld. `company.ts`), ezért a lap
- *   „tervezet" jelölést kap. Ez szándékos: kitalált cégadatokkal közölt
- *   tájékoztató nem teljesíti a tájékoztatási kötelezettséget.
+ * - Az adatkezelő azonosító adatai a `company.ts` egyetlen forrásából jönnek.
  */
 
 export type PolicyBlock =
@@ -46,8 +44,6 @@ export interface PolicyDocument {
   lead: string;
   lastUpdated: string;
   effectiveFrom: string;
-  draftBadge: string;
-  draftNote: string;
   tocLabel: string;
   eyebrow: string;
   backToTop: string;
@@ -60,11 +56,8 @@ const NAIH_LINE_EN = `${SUPERVISORY_AUTHORITY.nameEn} · ${SUPERVISORY_AUTHORITY
 const HU: PolicyDocument = {
   title: "Adatvédelmi tájékoztató",
   lead: "Ez a tájékoztató azt írja le, milyen személyes adatokat kezelünk, miért, milyen jogalapon, meddig, kivel osztjuk meg — és mit tehetsz, ha nem értesz egyet valamivel. Röviden: a felmérési eredményed a tiéd, egyéni válaszod soha nem jelenik meg csapatszintű nézetben, és a profilodat bármikor törölheted.",
-  lastUpdated: "Utoljára frissítve: 2026. augusztus 21.",
-  effectiveFrom: "Hatályos: 2026. augusztus 21-től",
-  draftBadge: "Tervezet",
-  draftNote:
-    "Ez a tájékoztató tartalmilag kész, de az adatkezelő cégadatai (cégnév, székhely, cégjegyzékszám, adószám) még véglegesítés alatt állnak — a lenti értékek helykitöltők. A végleges adatok bevezetéséig a dokumentumot tervezetként kezeld. Az adatkezelési gyakorlat, amit leír, a valós működésünk.",
+  lastUpdated: "Utoljára frissítve: 2026. augusztus 25.",
+  effectiveFrom: "Hatályos: 2026. augusztus 25-től",
   tocLabel: "Tartalom",
   eyebrow: "jogi",
   backToTop: "Vissza a tetejére",
@@ -84,7 +77,6 @@ const HU: PolicyDocument = {
             { term: "Székhely", description: COMPANY.address },
             { term: "Cégjegyzékszám", description: COMPANY.registrationNumber },
             { term: "Adószám", description: COMPANY.taxNumber },
-            { term: "Képviselő", description: COMPANY.representative },
             { term: "E-mail", description: COMPANY.privacyEmail },
             { term: "Weboldal", description: "https://trita.io" },
           ],
@@ -547,11 +539,8 @@ const HU: PolicyDocument = {
 const EN: PolicyDocument = {
   title: "Privacy Policy",
   lead: "This policy explains what personal data we process, why, on what legal basis, for how long, and who we share it with — and what you can do if you disagree with something. In short: your assessment results are yours, your individual answers never appear in a team-level view, and you can delete your profile at any time.",
-  lastUpdated: "Last updated: 21 August 2026",
-  effectiveFrom: "Effective from: 21 August 2026",
-  draftBadge: "Draft",
-  draftNote:
-    "The content of this policy is complete, but the controller's company details (legal name, registered address, company registration and tax numbers) are still being finalised — the values below are placeholders. Until the final details are in place, treat this document as a draft. The processing practices it describes are how we actually operate.",
+  lastUpdated: "Last updated: 25 August 2026",
+  effectiveFrom: "Effective from: 25 August 2026",
   tocLabel: "Contents",
   eyebrow: "legal",
   backToTop: "Back to top",
@@ -571,7 +560,6 @@ const EN: PolicyDocument = {
             { term: "Registered address", description: COMPANY.address },
             { term: "Company registration number", description: COMPANY.registrationNumber },
             { term: "Tax number", description: COMPANY.taxNumber },
-            { term: "Represented by", description: COMPANY.representative },
             { term: "Email", description: COMPANY.privacyEmail },
             { term: "Website", description: "https://trita.io" },
           ],
