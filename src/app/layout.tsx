@@ -67,11 +67,25 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
   icons: {
     icon: [
-      { url: "/icon", type: "image/png" },
-      { url: "/favicon.svg", type: "image/svg+xml" },
+      {
+        url: "/brand/trita-logo-512.png",
+        type: "image/png",
+        sizes: "512x512",
+      },
+      {
+        url: "/brand/trita-favicon-48.png",
+        type: "image/png",
+        sizes: "48x48",
+      },
     ],
-    shortcut: ["/favicon.svg"],
-    apple: [{ url: "/apple-icon" }],
+    shortcut: ["/favicon.ico"],
+    apple: [
+      {
+        url: "/brand/apple-touch-icon.png",
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
   },
 };
 
