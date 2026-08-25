@@ -80,3 +80,44 @@ export function MailIcon(props: IconProps) {
     </svg>
   );
 }
+
+export function LockIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <rect x="4" y="8.5" width="12" height="8.5" rx="2" />
+      <path d="M6.5 8.5V6a3.5 3.5 0 0 1 7 0v2.5M10 12v2" />
+    </svg>
+  );
+}
+
+export function RoleClusterIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="10" cy="5" r="2.5" />
+      <circle cx="5" cy="14" r="2.5" />
+      <circle cx="15" cy="14" r="2.5" />
+      <path d="m8.7 7.2-2.4 4.5M11.3 7.2l2.4 4.5M7.5 14h5" />
+    </svg>
+  );
+}
+
+export function NetworkIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="10" cy="4" r="2" />
+      <circle cx="4" cy="15" r="2" />
+      <circle cx="16" cy="15" r="2" />
+      <circle cx="10" cy="12" r="2" />
+      <path d="m9 5.8-4 7.4M11 5.8l4 7.4M10 6v4M6 14.3l2.2-1.4M14 14.3l-2.2-1.4" />
+    </svg>
+  );
+}
+
+export function SparklesIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M10 2.5c.4 3.1 1.9 4.6 5 5-3.1.4-4.6 1.9-5 5-.4-3.1-1.9-4.6-5-5 3.1-.4 4.6-1.9 5-5Z" />
+      <path d="M15.5 11.5c.2 1.8 1.1 2.7 3 3-1.9.3-2.8 1.2-3 3-.2-1.8-1.1-2.7-3-3 1.9-.3 2.8-1.2 3-3ZM4 2.5v3M2.5 4h3" />
+    </svg>
+  );
+}

@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "react";
 import { cn } from "@/lib/ui/cn";
 
 export type CardVariant = "default" | "elevated" | "muted" | "interactive";
-export type CardSpacing = "sm" | "md" | "lg";
+export type CardSpacing = "none" | "sm" | "md" | "lg";
 export type CardSurface = "self" | "team" | "org";
 
 export interface CardProps extends HTMLAttributes<HTMLElement> {
@@ -23,6 +23,7 @@ const VARIANT_CLASSES: Record<CardVariant, string> = {
 };
 
 const SPACING_CLASSES: Record<CardSpacing, string> = {
+  none: "p-0",
   sm: "p-[var(--ui-space-card-padding-sm)]",
   md: "p-[var(--ui-space-card-padding-md)]",
   lg: "p-[var(--ui-space-card-padding-lg)]",
