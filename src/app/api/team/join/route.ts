@@ -1,16 +1,16 @@
-import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import {
   joinMembershipFromInvite,
   MembershipOnboardingError,
 } from "@/lib/membership-onboarding/server";
+import { getServerAuth } from "@/lib/auth-server";
 
 const schema = z.object({ inviteId: z.string().min(1) });
 
 // POST /api/team/join — add authenticated user to team + org via invite token
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId } = await getServerAuth();
   if (!userId) return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
 
   const body = schema.safeParse(await req.json());

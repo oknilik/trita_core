@@ -1,10 +1,10 @@
-import { currentUser } from "@clerk/nextjs/server";
 import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import {
   resolveTeamJoinPageModel,
 } from "@/lib/acceptance/service";
 import { getServerLocale } from "@/lib/i18n-server";
+import { getServerAuth } from "@/lib/auth-server";
 import { JoinClient } from "./JoinClient";
 
 export const dynamic = "force-dynamic";
@@ -24,10 +24,10 @@ export default async function JoinPage({
 }) {
   const { token } = await params;
 
-  const clerkUser = await currentUser();
+  const { userId } = await getServerAuth();
   const model = await resolveTeamJoinPageModel({
     inviteId: token,
-    clerkId: clerkUser?.id ?? null,
+    clerkId: userId,
   });
 
   if (model.state === "invalid_token") notFound();
