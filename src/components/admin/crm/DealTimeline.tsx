@@ -8,6 +8,8 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
 import { ACTIVITY_KIND_LABELS, type ActivityKind } from "@/lib/crm/constants";
 import {
+  CRM_INPUT_CLASS,
+  CRM_TEXTAREA_CLASS,
   crmRequest,
   formatDateTime,
   formatDay,
@@ -176,7 +178,7 @@ export function DealTimeline({
                       onChange={(event) => setSummaryDraft(event.target.value)}
                       maxLength={300}
                       aria-label="Összefoglaló szerkesztése"
-                      className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                      className={CRM_INPUT_CLASS}
                     />
                     <textarea
                       value={bodyDraft}
@@ -185,7 +187,7 @@ export function DealTimeline({
                       maxLength={4000}
                       placeholder="Törzs (opcionális)"
                       aria-label="Törzs szerkesztése"
-                      className="w-full rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink-body outline-none transition focus:border-bronze"
+                      className={CRM_TEXTAREA_CLASS}
                     />
                     <div className="flex gap-2">
                       <Button type="button" size="sm" loading={busy} onClick={() => void saveEdit(activity.id)}>

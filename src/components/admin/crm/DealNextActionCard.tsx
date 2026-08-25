@@ -9,6 +9,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { POSTPONE_PRESETS } from "@/lib/crm/constants";
 import { isOpenStage, resolveDueBucket } from "@/lib/crm/guards";
 import {
+  CRM_INPUT_CLASS,
   computePostponeAt,
   crmRequest,
   dayInputToIso,
@@ -107,7 +108,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             value={dateDraft}
             onChange={(event) => setDateDraft(event.target.value)}
             aria-label="Következő lépés dátuma"
-            className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+            className={CRM_INPUT_CLASS}
           />
           <input
             type="text"
@@ -116,7 +117,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
             maxLength={1000}
             placeholder="Mi a lépés? (pl. follow-up hívás az ajánlatról)"
             aria-label="Következő lépés jegyzete"
-            className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+            className={CRM_INPUT_CLASS}
           />
           <div className="flex gap-2">
             <Button type="button" size="sm" loading={busy} disabled={!dateDraft} onClick={() => void saveEditor()}>

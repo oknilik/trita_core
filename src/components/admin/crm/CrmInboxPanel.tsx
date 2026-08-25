@@ -12,6 +12,8 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { INQUIRY_TOPIC_LABELS } from "@/lib/inquiry-topics";
 import { buildDealTitleFromInquiry } from "@/lib/crm/guards";
 import {
+  CRM_FIELD_LABEL_CLASS,
+  CRM_INPUT_CLASS,
   crmRequest,
   dayInputToIso,
   formatDateTime,
@@ -292,66 +294,66 @@ export function CrmInboxPanel({
             }}
           >
             <label className="flex flex-col gap-1">
-              <span className="text-label uppercase text-muted">Deal címe</span>
+              <span className={CRM_FIELD_LABEL_CLASS}>Deal címe</span>
               <input
                 type="text"
                 value={draft.title}
                 onChange={(event) => patchDraft({ title: event.target.value })}
                 maxLength={200}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className={CRM_INPUT_CLASS}
               />
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Kontakt neve</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Kontakt neve</span>
                 <input
                   type="text"
                   value={draft.contactName}
                   onChange={(event) => patchDraft({ contactName: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Email</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Email</span>
                 <input
                   type="email"
                   value={draft.contactEmail}
                   onChange={(event) => patchDraft({ contactEmail: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Telefon</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Telefon</span>
                 <input
                   type="tel"
                   value={draft.contactPhone}
                   onChange={(event) => patchDraft({ contactPhone: event.target.value })}
                   maxLength={50}
                   placeholder="+36 …"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Cég</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Cég</span>
                 <input
                   type="text"
                   value={draft.company}
                   onChange={(event) => patchDraft({ company: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
             </div>
             <label className="flex flex-col gap-1 sm:max-w-[220px]">
-              <span className="text-label uppercase text-muted">Becsült érték (nettó Ft)</span>
+              <span className={CRM_FIELD_LABEL_CLASS}>Becsült érték (nettó Ft)</span>
               <input
                 type="number"
                 min={0}
                 step={50_000}
                 value={draft.expectedValue}
                 onChange={(event) => patchDraft({ expectedValue: event.target.value })}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
+                className={`${CRM_INPUT_CLASS} tabular-nums`}
               />
             </label>
             <div className="rounded-xl border border-sand bg-cream/60 p-3">
@@ -362,7 +364,7 @@ export function CrmInboxPanel({
                   value={draft.nextDate}
                   onChange={(event) => patchDraft({ nextDate: event.target.value })}
                   aria-label="Következő lépés dátuma"
-                  className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
                 <input
                   type="text"
@@ -371,7 +373,7 @@ export function CrmInboxPanel({
                   maxLength={1000}
                   placeholder="pl. válasz-email + hívás egyeztetése"
                   aria-label="Következő lépés jegyzete"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </div>
             </div>

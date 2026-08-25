@@ -15,6 +15,7 @@ import {
 } from "@/lib/crm/constants";
 import { formatQuoteNo } from "@/lib/crm/guards";
 import {
+  CRM_INPUT_CLASS,
   crmRequest,
   formatDay,
   huf,
@@ -132,7 +133,7 @@ export function DealQuotesPanel({
                       maxLength={1000}
                       placeholder="Elutasítás oka (opcionális)"
                       aria-label="Elutasítás oka"
-                      className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                      className={`${CRM_INPUT_CLASS} flex-1`}
                     />
                     <div className="flex gap-2">
                       <Button

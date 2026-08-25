@@ -22,6 +22,8 @@ import {
 } from "@/lib/crm/constants";
 import { isOpenStage } from "@/lib/crm/guards";
 import {
+  CRM_FIELD_LABEL_CLASS,
+  CRM_INPUT_CLASS,
   crmRequest,
   formatDay,
   huf,
@@ -338,58 +340,58 @@ export function DealDetail({
             }}
           >
             <label className="flex flex-col gap-1">
-              <span className="text-label uppercase text-muted">Cím</span>
+              <span className={CRM_FIELD_LABEL_CLASS}>Cím</span>
               <input
                 type="text"
                 value={details.title}
                 onChange={(event) => setDetails({ ...details, title: event.target.value })}
                 maxLength={200}
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className={CRM_INPUT_CLASS}
               />
             </label>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Kontakt neve</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Kontakt neve</span>
                 <input
                   type="text"
                   value={details.contactName}
                   onChange={(event) => setDetails({ ...details, contactName: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Email</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Email</span>
                 <input
                   type="email"
                   value={details.contactEmail}
                   onChange={(event) => setDetails({ ...details, contactEmail: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Telefon</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Telefon</span>
                 <input
                   type="tel"
                   value={details.contactPhone}
                   onChange={(event) => setDetails({ ...details, contactPhone: event.target.value })}
                   maxLength={50}
                   placeholder="+36 …"
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Cég</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Cég</span>
                 <input
                   type="text"
                   value={details.company}
                   onChange={(event) => setDetails({ ...details, company: event.target.value })}
                   maxLength={200}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                  className={CRM_INPUT_CLASS}
                 />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Forrás</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Forrás</span>
                 <select
                   value={details.source}
                   onChange={(event) => setDetails({ ...details, source: event.target.value })}
@@ -403,14 +405,14 @@ export function DealDetail({
                 </select>
               </label>
               <label className="flex flex-col gap-1">
-                <span className="text-label uppercase text-muted">Becsült érték (Ft)</span>
+                <span className={CRM_FIELD_LABEL_CLASS}>Becsült érték (Ft)</span>
                 <input
                   type="number"
                   min={0}
                   step={50_000}
                   value={details.expectedValue}
                   onChange={(event) => setDetails({ ...details, expectedValue: event.target.value })}
-                  className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm tabular-nums text-ink outline-none transition focus:border-bronze"
+                  className={`${CRM_INPUT_CLASS} tabular-nums`}
                 />
               </label>
             </div>
@@ -446,7 +448,7 @@ export function DealDetail({
             </p>
           )}
           <label className="flex flex-col gap-1">
-            <span className="text-label uppercase text-muted">
+            <span className={CRM_FIELD_LABEL_CLASS}>
               Ok{closeOutcome === "LOST" ? " (kötelező)" : " (opcionális)"}
             </span>
             <select
@@ -464,7 +466,7 @@ export function DealDetail({
             </select>
           </label>
           <label className="flex flex-col gap-1">
-            <span className="text-label uppercase text-muted">Tanulság (opcionális)</span>
+            <span className={CRM_FIELD_LABEL_CLASS}>Tanulság (opcionális)</span>
             <textarea
               value={outcomeNote}
               onChange={(event) => setOutcomeNote(event.target.value)}

@@ -8,7 +8,12 @@ import {
   MANUAL_ACTIVITY_KINDS,
   type ManualActivityKind,
 } from "@/lib/crm/constants";
-import { crmRequest, dayInputToIso } from "@/components/admin/crm/crm-ui";
+import {
+  CRM_FIELD_LABEL_CLASS,
+  CRM_INPUT_CLASS,
+  crmRequest,
+  dayInputToIso,
+} from "@/components/admin/crm/crm-ui";
 
 // ─────────────────────────────────────────────────────────────────────
 // Gyors-naplózó — a napi 10 másodperces flow magja: kind-pill + egysoros
@@ -141,7 +146,7 @@ export function QuickLogForm({
           aria-label="Összefoglaló"
           maxLength={300}
           data-testid="quick-log-summary"
-          className="min-h-[44px] w-full flex-1 rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+          className={`${CRM_INPUT_CLASS} flex-1`}
         />
         <Button
           type="submit"
@@ -165,7 +170,7 @@ export function QuickLogForm({
       {expanded && (
         <div className="flex flex-col gap-3 rounded-xl border border-sand bg-cream/60 p-3">
           <label className="flex flex-col gap-1">
-            <span className="text-label uppercase text-muted">Részletek (opcionális)</span>
+            <span className={CRM_FIELD_LABEL_CLASS}>Részletek (opcionális)</span>
             <textarea
               value={body}
               onChange={(event) => setBody(event.target.value)}
@@ -178,13 +183,13 @@ export function QuickLogForm({
           </label>
 
           <label className="flex flex-col gap-1 sm:max-w-[220px]">
-            <span className="text-label uppercase text-muted">Mikor történt?</span>
+            <span className={CRM_FIELD_LABEL_CLASS}>Mikor történt?</span>
             <input
               type="date"
               value={occurredOn}
               onChange={(event) => setOccurredOn(event.target.value)}
               aria-label="Visszadátumozás"
-              className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+              className={CRM_INPUT_CLASS}
             />
             <span className="text-xs text-muted">Üresen hagyva: most.</span>
           </label>
@@ -198,7 +203,7 @@ export function QuickLogForm({
                 onChange={(event) => setNextDate(event.target.value)}
                 aria-label="Következő lépés dátuma"
                 data-testid="quick-log-next-date"
-                className="min-h-[44px] rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className={CRM_INPUT_CLASS}
               />
               <input
                 type="text"
@@ -208,7 +213,7 @@ export function QuickLogForm({
                 placeholder="Mi a következő lépés? (pl. ajánlat-follow-up hívás)"
                 aria-label="Következő lépés jegyzete"
                 data-testid="quick-log-next-note"
-                className="min-h-[44px] w-full rounded-lg border border-sand bg-surface-card px-3 text-sm text-ink outline-none transition focus:border-bronze"
+                className={CRM_INPUT_CLASS}
               />
             </div>
             <p className="mt-1.5 text-xs text-muted">
