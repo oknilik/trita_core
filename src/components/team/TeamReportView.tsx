@@ -209,7 +209,7 @@ export function NarrativeRich({
   return (
     <div>
       {label ? (
-        <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+        <p className="mb-2 text-caption font-semibold text-ink">
           {label}
         </p>
       ) : null}
@@ -269,18 +269,18 @@ function KpiTile({
   progressPct?: number;
 }) {
   return (
-    <div className="min-w-0 rounded-[14px] border border-sand bg-surface-card p-3.5">
-      <p className="break-words font-mono text-micro uppercase tracking-wide text-muted md:tracking-widest">
+    <div className="min-w-0 px-1 py-1 md:px-4">
+      <p className="break-words text-note font-medium text-muted">
         {label}
       </p>
       <p
         title={value}
-        className={`mt-1 break-words font-fraunces text-xl leading-tight md:text-2xl md:leading-none ${accent ?? "text-ink"}`}
+        className={`mt-1.5 break-words font-fraunces text-xl leading-tight md:text-2xl md:leading-none ${accent ?? "text-ink"}`}
       >
         {value}
       </p>
       {typeof progressPct === "number" && (
-        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-sand">
+        <div className="mt-2.5 h-1 w-full overflow-hidden rounded-full bg-sand">
           <div
             className="h-full rounded-full bg-sage"
             style={{ width: `${Math.max(0, Math.min(100, progressPct))}%` }}
@@ -303,15 +303,13 @@ function SectionHead({
   subtitle?: string;
 }) {
   return (
-    <div className="mb-4 flex items-start gap-3">
-      <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-[10px] bg-surface-card font-mono text-note font-bold text-[var(--color-accent-primary-strong)] shadow-sm ring-1 ring-sand">
+    <div className="mb-5 grid grid-cols-[2rem_minmax(0,1fr)] items-start gap-3 border-b border-sand/70 pb-4 md:mb-6 md:grid-cols-[2.5rem_minmax(0,1fr)] md:gap-4">
+      <span className="pt-0.5 font-fraunces text-heading leading-none tabular-nums text-[var(--color-accent-primary-strong)]/70">
         {no}
       </span>
-      <div className="min-w-0 pt-0.5">
-        <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
-          {label}
-        </p>
-        {subtitle ? <p className="mt-0.5 text-xs text-muted">{subtitle}</p> : null}
+      <div className="min-w-0">
+        <h2 className="font-fraunces text-heading leading-tight text-ink">{label}</h2>
+        {subtitle ? <p className="mt-1 max-w-2xl text-caption leading-relaxed text-muted">{subtitle}</p> : null}
       </div>
     </div>
   );
@@ -380,7 +378,7 @@ export function TeamReportView({
   const secNo = () => String(++sectionCounter).padStart(2, "0");
 
   return (
-    <div className="flex flex-col gap-7">
+    <div className="flex flex-col gap-10 md:gap-12">
       {/* Fejléc + KPI-sáv — gradiens sáv adja meg a riport alaphangját */}
       <DashboardPanel className="overflow-hidden p-0">
         <div
@@ -425,7 +423,7 @@ export function TeamReportView({
         </div>
 
         {agg && (
-          <div className="grid grid-cols-2 gap-3 p-6 pt-5 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-5 border-t border-sand bg-[var(--color-surface-subtle)]/45 p-6 md:grid-cols-4 md:gap-0 md:divide-x md:divide-sand">
             <KpiTile label={isHu ? "Tagok" : "Members"} value={String(agg.memberCount)} />
             <KpiTile
               label={isHu ? "Kitöltöttség" : "Completion"}
@@ -475,54 +473,56 @@ export function TeamReportView({
             </div>
             <p className="text-xs text-muted">{isHu ? "3 erősség · 3 kockázat · 3 akció" : "3 strengths · 3 risks · 3 actions"}</p>
           </div>
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-            {[
-              {
-                key: "strengths",
-                title: isHu ? "Erősségek" : "Strengths",
-                items: leadershipStrengths,
-                edge: "border-l-state-success-border",
-                marker: "bg-state-success-bg text-state-success-fg",
-              },
-              {
-                key: "risks",
-                title: isHu ? "Kockázatok" : "Risks",
-                items: leadershipRisks,
-                edge: "border-l-state-warning-border",
-                marker: "bg-state-warning-bg text-state-warning-fg",
-              },
-            ].map((column) => (
-              <DashboardPanel key={column.key} className={`border-l-4 p-4 ${column.edge}`}>
-                <p className="font-mono text-micro uppercase tracking-widest text-muted">{column.title}</p>
-                {column.items.length > 0 ? (
+          <DashboardPanel className="overflow-hidden p-0">
+            <div className="grid grid-cols-1 divide-y divide-sand lg:grid-cols-3 lg:divide-x lg:divide-y-0">
+              {[
+                {
+                  key: "strengths",
+                  title: isHu ? "Erősségek" : "Strengths",
+                  items: leadershipStrengths,
+                  edge: "border-l-state-success-border",
+                  marker: "bg-state-success-bg text-state-success-fg",
+                },
+                {
+                  key: "risks",
+                  title: isHu ? "Kockázatok" : "Risks",
+                  items: leadershipRisks,
+                  edge: "border-l-state-warning-border",
+                  marker: "bg-state-warning-bg text-state-warning-fg",
+                },
+              ].map((column) => (
+                <div key={column.key} className={`border-l-4 p-5 ${column.edge}`}>
+                  <p className="text-caption font-semibold text-ink">{column.title}</p>
+                  {column.items.length > 0 ? (
+                    <ol className="mt-3 flex flex-col gap-2.5">
+                      {column.items.map((item, index) => (
+                        <li key={`${column.key}-${index}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink-body">
+                          <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-micro font-semibold ${column.marker}`}>{index + 1}</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  ) : <p className="mt-3 text-xs text-muted">—</p>}
+                </div>
+              ))}
+              <div className="border-l-4 border-l-sage-soft p-5">
+                <p className="text-caption font-semibold text-ink">{isHu ? "Akciók" : "Actions"}</p>
+                {leadershipActions.length > 0 ? (
                   <ol className="mt-3 flex flex-col gap-2.5">
-                    {column.items.map((item, index) => (
-                      <li key={`${column.key}-${index}`} className="flex items-start gap-2.5 text-sm leading-relaxed text-ink-body">
-                        <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-micro font-semibold ${column.marker}`}>{index + 1}</span>
-                        <span>{item}</span>
+                    {leadershipActions.map((item, index) => (
+                      <li key={`${item.timeframe}-${index}`} className="flex items-start gap-2.5">
+                        <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage-soft px-1 text-micro font-semibold text-sage-dark">{item.timeframe}</span>
+                        <div>
+                          <p className="text-sm font-semibold leading-snug text-ink">{item.title}</p>
+                          <p className="mt-0.5 text-micro text-muted">{isHu ? "napos fókusz" : "day focus"}</p>
+                        </div>
                       </li>
                     ))}
                   </ol>
                 ) : <p className="mt-3 text-xs text-muted">—</p>}
-              </DashboardPanel>
-            ))}
-            <DashboardPanel className="border-l-4 border-l-sage-soft p-4">
-              <p className="font-mono text-micro uppercase tracking-widest text-muted">{isHu ? "Akciók" : "Actions"}</p>
-              {leadershipActions.length > 0 ? (
-                <ol className="mt-3 flex flex-col gap-2.5">
-                  {leadershipActions.map((item, index) => (
-                    <li key={`${item.timeframe}-${index}`} className="flex items-start gap-2.5">
-                      <span className="mt-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-sage-soft px-1 text-micro font-semibold text-sage-dark">{item.timeframe}</span>
-                      <div>
-                        <p className="text-sm font-semibold leading-snug text-ink">{item.title}</p>
-                        <p className="mt-0.5 text-micro text-muted">{isHu ? "napos fókusz" : "day focus"}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              ) : <p className="mt-3 text-xs text-muted">—</p>}
-            </DashboardPanel>
-          </div>
+              </div>
+            </div>
+          </DashboardPanel>
         </section>
       )}
 
@@ -551,7 +551,7 @@ export function TeamReportView({
               <div className="mb-5 rounded-[14px] border border-sand bg-cream/60 p-4">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
-                    <p className="font-mono text-micro uppercase tracking-widest text-muted">
+                    <p className="text-caption font-semibold text-ink">
                       {isHu ? "Csapatmintázat" : "Team pattern"}
                     </p>
                     <p className="mt-1 font-fraunces text-lg leading-tight text-ink">
@@ -674,7 +674,7 @@ export function TeamReportView({
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               {ROLE_MATRIX.map((column) => (
                 <div key={column.hu} className="flex flex-col gap-2">
-                  <p className="font-mono text-micro uppercase tracking-widest text-muted">
+                  <p className="text-caption font-semibold text-ink">
                     {isHu ? column.hu : column.en}
                   </p>
                   {column.roles.map((role) => {
@@ -749,7 +749,7 @@ export function TeamReportView({
 
             {agg.roleGaps && agg.roleGaps.length > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
-                <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+                <p className="mb-2 text-caption font-semibold text-ink">
                   {isHu ? "Valódi hiányok — mit jelenthet" : "True gaps — what it may mean"}
                 </p>
                 <ul className="flex flex-col gap-1">
@@ -782,7 +782,7 @@ export function TeamReportView({
 
             {agg.peerRoles && agg.peerRoles.ratedCount > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
-                <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
+                <p className="mb-2 text-caption font-semibold text-ink">
                   {isHu
                     ? "Csapatkép — társértékelésből (névtelen, összesített)"
                     : "Team view — from peer feedback (anonymous, aggregated)"}
@@ -1029,11 +1029,11 @@ export function TeamReportView({
                     : "Who carries the team's relational fabric — two key talking points for the consultant debrief."}
                 </p>
                 {agg.trustHighlights.source === "trust_round" ? (
-                  <span className="rounded-full bg-sage/15 px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-sage-dark">
+                  <span className="rounded-full bg-sage/15 px-2.5 py-1 text-note font-semibold text-sage-dark">
                     {isHu ? "mért" : "measured"}
                   </span>
                 ) : (
-                  <span className="rounded-full bg-state-warning-bg px-2.5 py-1 font-mono text-micro uppercase tracking-wide text-state-warning-fg">
+                  <span className="rounded-full bg-state-warning-bg px-2.5 py-1 text-note font-semibold text-state-warning-fg">
                     {isHu ? "becsült" : "estimated"}
                   </span>
                 )}
@@ -1042,7 +1042,7 @@ export function TeamReportView({
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {agg.trustHighlights.hubs.length > 0 && (
                   <div className="rounded-[14px] border border-sage/35 bg-sage/10 p-4">
-                    <p className="font-mono text-micro uppercase tracking-widest text-sage-dark">
+                    <p className="text-caption font-semibold text-sage-dark">
                       {isHu
                         ? agg.trustHighlights.hubs.length > 1
                           ? "A csapat összekötői"
@@ -1075,7 +1075,7 @@ export function TeamReportView({
 
                 {agg.trustHighlights.isolated.length > 0 && (
                   <div className="rounded-[14px] border border-state-warning-border bg-state-warning-bg/60 p-4">
-                    <p className="font-mono text-micro uppercase tracking-widest text-state-warning-fg">
+                    <p className="text-caption font-semibold text-state-warning-fg">
                       {isHu
                         ? agg.trustHighlights.isolated.length > 1
                           ? "Beágyazatlan tagok"
@@ -1272,7 +1272,7 @@ export function TeamReportView({
 
             {agg.psychSafety.weakItemIds.length > 0 ? (
               <div className="mt-5 flex flex-col gap-3">
-                <p className="font-mono text-micro uppercase tracking-widest text-state-warning-fg">
+                <p className="text-caption font-semibold text-state-warning-fg">
                   {isHu ? "Gyenge területek — javasolt lépések" : "Weak areas — suggested steps"}
                 </p>
                 {agg.psychSafety.weakItemIds.map((id) => {
@@ -1306,7 +1306,7 @@ export function TeamReportView({
                   if (traps.length === 0) return null;
                   return (
                     <details className="mt-1 rounded-[12px] border border-sand bg-surface-card">
-                      <summary className="cursor-pointer select-none px-4 py-2.5 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark">
+                      <summary className="cursor-pointer select-none px-4 py-2.5 text-caption font-semibold text-[var(--color-accent-primary-strong)] transition-colors hover:text-bronze-dark">
                         {isHu
                           ? `Vezetői akciókártyák (${traps.length})`
                           : `Leader action cards (${traps.length})`}
@@ -1375,78 +1375,81 @@ export function TeamReportView({
             English translation hasn&apos;t been approved yet.
           </p>
         ) : null}
-        <div className="flex flex-col gap-4">
+        <DashboardPanel className="overflow-hidden p-0">
           {report.summary && (
-            <DashboardPanel className="border-l-4 border-l-bronze/50 p-6">
-              <p className="mb-2 font-mono text-micro uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+            <div className="border-l-4 border-l-bronze/50 bg-[var(--color-surface-highlight-warm)]/35 p-6">
+              <p className="mb-2 text-caption font-semibold text-[var(--color-accent-primary-strong)]">
                 {isHu ? "Összefoglaló" : "Summary"}
               </p>
               {/* Lead-tipográfia: az összefoglaló a riport „első bekezdése". */}
               <p className="whitespace-pre-wrap font-fraunces text-base leading-relaxed text-ink">
                 {report.summary}
               </p>
-            </DashboardPanel>
+            </div>
           )}
           {(report.strengths || report.risks) && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="grid grid-cols-1 divide-y divide-sand border-t border-sand md:grid-cols-2 md:divide-x md:divide-y-0">
               {report.strengths && (
-                <DashboardPanel className="border-l-4 border-l-state-success-solid p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-success-fg">
+                <div className="border-l-4 border-l-state-success-solid p-5">
+                  <p className="mb-2 flex items-center gap-1.5 text-caption font-semibold text-state-success-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M3 8.5l3 3 7-7" />
                     </svg>
                     {isHu ? "Erősségek" : "Strengths"}
                   </p>
                   <NarrativeRich text={report.strengths} tone="emerald" card={false} />
-                </DashboardPanel>
+                </div>
               )}
               {report.risks && (
-                <DashboardPanel className="border-l-4 border-l-amber-500/60 p-5">
-                  <p className="mb-1.5 flex items-center gap-1.5 font-mono text-micro uppercase tracking-widest text-state-warning-fg">
+                <div className="border-l-4 border-l-amber-500/60 p-5">
+                  <p className="mb-2 flex items-center gap-1.5 text-caption font-semibold text-state-warning-fg">
                     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M8 3v6M8 12.5v.5" />
                     </svg>
                     {isHu ? "Kockázatok" : "Risks"}
                   </p>
                   <NarrativeRich text={report.risks} tone="amber" card={false} />
-                </DashboardPanel>
+                </div>
               )}
             </div>
           )}
           {(report.recommendations || report.interviewFindings || report.leadershipGuide || report.summary) ? (
-            <DashboardPanel className="flex flex-col gap-6 p-6">
+            <div className="flex flex-col gap-7 border-t border-sand p-6">
               <NarrativeRich
                 label={isHu ? "Ajánlások" : "Recommendations"}
                 text={report.recommendations}
                 tone="sage"
+                card={false}
               />
               <NarrativeRich
                 label={isHu ? "Interjúk tanulságai" : "Interview insights"}
                 text={report.interviewFindings}
                 tone="bronze"
+                card={false}
               />
               <NarrativeRich
                 label={isHu ? "Hogyan vezesd ezt a csapatot" : "How to lead this team"}
                 text={report.leadershipGuide}
                 tone="sky"
+                card={false}
               />
               {!report.recommendations && !report.interviewFindings && !report.leadershipGuide && (
                 <p className="text-sm text-muted">
                   {isHu ? "Nincs további narratív értékelés." : "No further narrative assessment."}
                 </p>
               )}
-            </DashboardPanel>
+            </div>
           ) : (
             !report.strengths &&
             !report.risks && (
-              <DashboardPanel className="p-6">
+              <div className="p-6">
                 <p className="text-sm text-muted">
                   {isHu ? "Nincs narratív értékelés." : "No narrative assessment."}
                 </p>
-              </DashboardPanel>
+              </div>
             )
           )}
-        </div>
+        </DashboardPanel>
       </section>
 
       {/* Akcióterv: 30/60/90 napos idővonal — oszloponként saját akcentus */}
@@ -1459,43 +1462,45 @@ export function TeamReportView({
               ? "Konkrét lépések 30 / 60 / 90 napos bontásban."
               : "Concrete steps across 30 / 60 / 90 days."}
           />
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            {(["30", "60", "90"] as const).map((timeframe) => {
-              const items = report.actionItems!.filter((item) => item.timeframe === timeframe);
-              const tone = TIMEFRAME_TONES[timeframe];
-              return (
-                <DashboardPanel key={timeframe} className={`border-l-4 p-5 ${tone.edge}`}>
-                  <p className={`mb-3 flex items-center gap-2 border-b border-sand pb-2 font-mono text-micro uppercase tracking-widest ${tone.text}`}>
-                    <span className={`h-2 w-2 rounded-full ${tone.dot}`} />
-                    {timeframe} {isHu ? "napon belül" : "days"}
-                  </p>
-                  {items.length === 0 ? (
-                    <p className="text-xs text-muted">—</p>
-                  ) : (
-                    <ul className="flex flex-col gap-3">
-                      {items.map((item, index) => (
-                        <li key={index} className="rounded-lg border border-sand bg-cream/40 p-3">
-                          <p className="text-sm font-semibold text-ink">{item.title}</p>
-                          {item.description && (
-                            <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-ink-body">
-                              {item.description}
-                            </p>
-                          )}
-                          {(item.owner || item.dueDate || item.status) ? (
-                            <p className="mt-2 text-micro text-muted">
-                              {item.owner ? `${isHu ? "Felelős" : "Owner"}: ${item.owner}` : ""}
-                              {item.owner && item.dueDate ? " · " : ""}
-                              {item.dueDate ? `${isHu ? "Határidő" : "Due"}: ${item.dueDate}` : ""}
-                            </p>
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </DashboardPanel>
-              );
-            })}
-          </div>
+          <DashboardPanel className="overflow-hidden p-0">
+            <div className="grid grid-cols-1 divide-y divide-sand md:grid-cols-3 md:divide-x md:divide-y-0">
+              {(["30", "60", "90"] as const).map((timeframe) => {
+                const items = report.actionItems!.filter((item) => item.timeframe === timeframe);
+                const tone = TIMEFRAME_TONES[timeframe];
+                return (
+                  <div key={timeframe} className={`border-l-4 p-5 ${tone.edge}`}>
+                    <p className={`mb-4 flex items-center gap-2 border-b border-sand pb-3 text-caption font-semibold ${tone.text}`}>
+                      <span className={`h-2 w-2 rounded-full ${tone.dot}`} />
+                      {timeframe} {isHu ? "napon belül" : "days"}
+                    </p>
+                    {items.length === 0 ? (
+                      <p className="text-xs text-muted">—</p>
+                    ) : (
+                      <ul className="flex flex-col gap-3">
+                        {items.map((item, index) => (
+                          <li key={index} className="border-b border-sand/70 pb-3 last:border-b-0 last:pb-0">
+                            <p className="text-sm font-semibold text-ink">{item.title}</p>
+                            {item.description && (
+                              <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-ink-body">
+                                {item.description}
+                              </p>
+                            )}
+                            {(item.owner || item.dueDate || item.status) ? (
+                              <p className="mt-2 text-micro text-muted">
+                                {item.owner ? `${isHu ? "Felelős" : "Owner"}: ${item.owner}` : ""}
+                                {item.owner && item.dueDate ? " · " : ""}
+                                {item.dueDate ? `${isHu ? "Határidő" : "Due"}: ${item.dueDate}` : ""}
+                              </p>
+                            ) : null}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </DashboardPanel>
         </section>
       )}
 
