@@ -12,11 +12,11 @@ import {
 import { HEXACO_DIMENSION_FACETS, HEXACO_ORDER } from "@/lib/hexaco";
 import { diffStandardError } from "@/lib/psychometrics";
 
-// A tag-dossié hozzáférés KŐBE VÉSETT (2026-07-28): kizárólag org admin +
-// tanácsadói kör. A manager NEM, a tag a sajátját SEM. Explicit allowlist.
+// A tag-dossié hozzáférés KŐBE VÉSETT (2026-08-25): kizárólag tanácsadói
+// kör. Az org admin, a manager és a tag NEM fér hozzá.
 describe("canViewMemberDossier — hozzáférési allowlist", () => {
-  it("ORG_ADMIN → true", () => {
-    assert.equal(canViewMemberDossier("ORG_ADMIN"), true);
+  it("ORG_ADMIN → false", () => {
+    assert.equal(canViewMemberDossier("ORG_ADMIN"), false);
   });
 
   it("ORG_CONSULTANT → true", () => {

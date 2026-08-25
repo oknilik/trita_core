@@ -184,6 +184,7 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
   const actionMap = buildActionMap(context);
   const orgRole = context.orgMembership?.role ?? null;
   const canManageOrg = Boolean(orgRole && hasOrgRole(orgRole, "ORG_MANAGER"));
+  const canLaunchOrgCampaign = context.canManageMeasurements;
   const canManageTeam =
     canManageOrg ||
     context.teamMembership?.role === "manager" ||
@@ -224,22 +225,37 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
     TEAM_READY: canManageTeam
       ? [
           "VIEW_TEAM_INSIGHTS",
-          ...(canManageOrg ? (["LAUNCH_ORG_CAMPAIGN"] as JourneyActionId[]) : []),
+          ...(canManageOrg && canLaunchOrgCampaign
+            ? (["LAUNCH_ORG_CAMPAIGN"] as JourneyActionId[])
+            : []),
           "INVITE_TEAM_MEMBERS",
         ]
       : ["VIEW_TEAM_INSIGHTS"],
     ORG_PARTIAL: canManageOrg
       ? [
+          ...(!canLaunchOrgCampaign && hasOrgInsights
+            ? (["VIEW_ORG_INSIGHTS"] as JourneyActionId[])
+            : []),
           "INVITE_ORG_MEMBERS",
           "CREATE_ORG_TEAM",
-          "LAUNCH_ORG_CAMPAIGN",
-          ...(hasOrgInsights ? (["VIEW_ORG_INSIGHTS"] as JourneyActionId[]) : []),
+          ...(canLaunchOrgCampaign
+            ? (["LAUNCH_ORG_CAMPAIGN"] as JourneyActionId[])
+            : []),
+          ...(canLaunchOrgCampaign && hasOrgInsights
+            ? (["VIEW_ORG_INSIGHTS"] as JourneyActionId[])
+            : []),
         ]
       : team.ready
         ? ["VIEW_TEAM_INSIGHTS"]
         : ["REVIEW_SELF_RESULTS"],
     ORG_READY: canManageOrg
-      ? ["VIEW_ORG_INSIGHTS", "LAUNCH_ORG_CAMPAIGN", "INVITE_ORG_MEMBERS"]
+      ? [
+          "VIEW_ORG_INSIGHTS",
+          ...(canLaunchOrgCampaign
+            ? (["LAUNCH_ORG_CAMPAIGN"] as JourneyActionId[])
+            : []),
+          "INVITE_ORG_MEMBERS",
+        ]
       : team.ready
         ? ["VIEW_TEAM_INSIGHTS"]
         : ["REVIEW_SELF_RESULTS"],

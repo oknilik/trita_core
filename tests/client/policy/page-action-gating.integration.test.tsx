@@ -89,6 +89,13 @@ const baseMembers = [
     joinedAt: "2026-03-01T00:00:00.000Z",
     user: { id: "u_1", email: "admin@trita.io", username: "admin" },
   },
+  {
+    id: "m_2",
+    userId: "u_2",
+    role: "ORG_MEMBER",
+    joinedAt: "2026-03-02T00:00:00.000Z",
+    user: { id: "u_2", email: "member@trita.io", username: "Member Name" },
+  },
 ];
 
 const noPendingInvites: Array<{ id: string; email: string; role: string; createdAt: string }> = [];
@@ -106,7 +113,6 @@ function renderMembersTab(canInviteMembers: boolean) {
       actionGateCopy={actionGateCopy}
       isHu={false}
       locale="en"
-      dateLocale="en-GB"
     />,
   );
 }
@@ -167,6 +173,17 @@ beforeEach(() => {
 });
 
 describe("E3 page action gating client tests", () => {
+  it("uses the same two-column member cards as the team directory", () => {
+    renderMembersTab(true);
+
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(screen.getByText("Member Name")).toBeInTheDocument();
+    expect(screen.getByText("member@trita.io")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toHaveValue("ORG_MEMBER");
+    expect(screen.getByRole("button", { name: "Remove member" })).toBeInTheDocument();
+    expect(screen.queryByText(/2026/)).not.toBeInTheDocument();
+  });
+
   describe("invite button gating", () => {
     it("active: invite form opens from the header button, no upsell gate (UX audit #18)", async () => {
       const user = userEvent.setup();

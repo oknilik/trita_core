@@ -8,7 +8,7 @@ import type { SerializedTeam } from "@/lib/org-stats";
 import { TeamCreateForm } from "@/components/manager/TeamCreateForm";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { Card } from "@/components/ui/primitives/Card";
-import { ChevronRightIcon } from "@/components/ui/icons";
+import { ChevronRightIcon, RoleClusterIcon } from "@/components/ui/icons";
 
 interface OrgTeamsTabProps {
   teams: SerializedTeam[];
@@ -32,6 +32,7 @@ export function OrgTeamsTab({
   isManager,
   canCreateTeam,
   actionGateCopy = null,
+  isHu,
 }: OrgTeamsTabProps) {
   const loc = locale as Locale;
   // Fejléc-gombos létrehozás (UX-audit #18): az űrlap nem a lista alján ül,
@@ -40,10 +41,16 @@ export function OrgTeamsTab({
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Fejléc: cím + elsődleges akció egy sorban */}
-      {isManager && canCreateTeam ? (
-        <div className="flex items-center justify-between gap-3">
-          <SectionEyebrow>{t("org.teams.newEyebrow", loc)}</SectionEyebrow>
+      {/* Fejléc: a team-nézettel azonos címhierarchia + elsődleges akció. */}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <SectionEyebrow tone="org">{isHu ? "csapatok" : "teams"}</SectionEyebrow>
+          <h2 className="mt-1 font-fraunces text-3xl text-ink">
+            {isHu ? "Csapatok" : "Teams"}{" "}
+            <span className="font-sans text-sm font-normal text-muted">({teams.length})</span>
+          </h2>
+        </div>
+        {isManager && canCreateTeam ? (
           <button
             type="button"
             onClick={() => setCreateOpen((v) => !v)}
@@ -53,8 +60,8 @@ export function OrgTeamsTab({
             <span aria-hidden>{createOpen ? "×" : "+"}</span>
             {t("org.teams.newTitle", loc)}
           </button>
-        </div>
-      ) : null}
+        ) : null}
+      </div>
 
       {isManager && canCreateTeam && createOpen && (
         <Card spacing="lg" className="md:p-8">
@@ -73,23 +80,46 @@ export function OrgTeamsTab({
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {teams.map((team) => (
             <Link
               key={team.id}
               href={`/team/${team.id}`}
-              className="group flex items-center justify-between rounded-xl border border-sand bg-surface-card p-4 shadow-sm transition-all hover:border-sage/30 hover:bg-cream"
+              className="group flex min-h-44 flex-col justify-between gap-5 rounded-2xl border border-surface-org-border bg-surface-card p-5 shadow-[var(--ui-shadow-sm)] transition hover:border-[var(--color-layer-org-bright)]/40 hover:shadow-[var(--ui-shadow-md)]"
             >
               <div>
-                <p className="font-semibold text-ink transition-colors group-hover:text-[var(--color-accent-primary-strong)]">
+                <div className="flex items-start justify-between gap-3">
+                  <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--color-layer-org-soft)] text-[var(--color-layer-org-bright)]">
+                    <RoleClusterIcon />
+                  </span>
+                  <span className="grid h-8 w-8 place-items-center rounded-lg text-muted transition group-hover:bg-[var(--color-layer-org-soft)] group-hover:text-[var(--color-layer-org-bright)]">
+                    <ChevronRightIcon className="h-4 w-4" />
+                  </span>
+                </div>
+                <h3 className="mt-4 truncate text-caption font-semibold text-ink transition-colors group-hover:text-[var(--color-layer-org-bright)]">
                   {team.name}
-                </p>
-                <p className="text-xs text-ink-body/60">
+                </h3>
+                <p className="mt-1 text-note text-muted">
                   {team._count.members}{" "}
                   {t(team._count.members === 1 ? "org.teams.memberCount" : "org.teams.membersCount", loc)}
                 </p>
               </div>
-              <ChevronRightIcon className="h-4 w-4 shrink-0 text-[var(--color-text-muted)] transition-colors group-hover:text-[var(--color-accent-primary-strong)]" />
+              <span
+                className={[
+                  "inline-flex self-start rounded-full px-2.5 py-1 text-micro font-semibold",
+                  team.hasPublishedReport
+                    ? "bg-state-success-bg text-state-success-fg"
+                    : "bg-surface-muted text-muted",
+                ].join(" ")}
+              >
+                {team.hasPublishedReport
+                  ? isHu
+                    ? "Riport elérhető"
+                    : "Report available"
+                  : isHu
+                    ? "Még nincs publikált riport"
+                    : "No published report yet"}
+              </span>
             </Link>
           ))}
         </div>

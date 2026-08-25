@@ -52,16 +52,13 @@ export function isConsultantSurface(
 }
 
 /**
- * Láthatja-e a tag-dossziét? DÖNTÖTT (2026-07-28): KIZÁRÓLAG org admin +
- * tanácsadói kör — a manager NEM, a tag a sajátját SEM. Szándékosan
- * explicit allowlist, NEM rang-alapú (a hasOrgRole a managert is beengedné).
+ * Láthatja-e a tag-dossziét? DÖNTÖTT (2026-08-25): KIZÁRÓLAG a tanácsadói
+ * kör — az org admin és a manager NEM, a tag a sajátját SEM.
  */
 export function canViewMemberDossier(
   orgRole: string | null | undefined,
   email?: string | null,
   isConsultant?: boolean | null,
 ): boolean {
-  return (
-    orgRole === "ORG_ADMIN" || isConsultantSurface(orgRole, email, isConsultant)
-  );
+  return isConsultantSurface(orgRole, email, isConsultant);
 }

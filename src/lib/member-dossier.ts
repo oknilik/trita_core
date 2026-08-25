@@ -3,8 +3,8 @@
 // importálható; a szerver-betöltő a member-dossier.server.ts-ben él, a
 // trust-network.ts / team-role-peer.ts mintája szerint).
 //
-// A dossié egy szervezeti tag READ-ONLY összesítője org admin + tanácsadó
-// számára. Láthatósági vörös vonalak (az assemblerben és a nézetben is
+// A dossié egy szervezeti tag READ-ONLY összesítője kizárólag tanácsadói
+// felületre. Láthatósági vörös vonalak (az assemblerben és a nézetben is
 // tartandók): irányított trust-válasz SOHA; pszich. biztonság pulse SOHA
 // személyi nézetben; anonim peer feedback tartalma SOHA (csak darabszám);
 // observer egyéni válasz SOHA (csak aggregátum, min. DOSSIER_OBSERVER_MIN).

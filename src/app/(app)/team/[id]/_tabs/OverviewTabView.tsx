@@ -17,6 +17,7 @@ import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { OrgSubscriptionBanner } from "@/components/subscription/OrgSubscriptionBanner";
 import { TeamMeasurementTimeline } from "@/components/team/TeamMeasurementTimeline";
 import { TeamOverviewNextAction } from "@/components/team/TeamOverviewNextAction";
+import { TeamMemberSnapshot } from "@/components/team/TeamMemberSnapshot";
 import { RadarChart } from "@/components/dashboard/RadarChart";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
@@ -67,6 +68,23 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
         />
 
         {/* ═══ ÖSSZEFOGLALÓ ═══ */}
+        {!canViewRaw ? (
+          <TeamMemberSnapshot
+            teamId={teamId}
+            isHu={isHu}
+            memberCount={teamData.memberCount}
+            completedCount={completedCount}
+            inProgressCount={inProgressCount}
+            waitingCount={waitingCount}
+            stepProgress={teamData.activeCampaign?.stepProgress ?? []}
+            report={publishedReport}
+            hasPersonalTask={Boolean(
+              pendingMeasurement ||
+                observerGathering ||
+                receivedFeedbackRequests.length > 0
+            )}
+          />
+        ) : (
         <section>
           <DashboardSectionHeader label={t("teamDetail.sectionSnapshot", locale)} className="mb-4" />
           <p className="mb-3 text-micro font-medium uppercase tracking-widest text-ink-body">
@@ -166,6 +184,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             </div>
           ) : null}
         </section>
+        )}
 
         {/* A korábbi „Csapatintelligencia" CTA-kártya és a nézet-linkkártyák
             (profil/tagok/szerepek) kikerültek (2026-07-29): a TeamTabBar a
@@ -173,7 +192,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             célokat duplikálták. Az adatminőség-infó az Intelligencia fülön él. */}
 
 
-        {!canViewRaw ? (
+        {!canViewRaw && publishedReport ? (
         <section>
           <DashboardSectionHeader label={t("teamComp.teamPatternEyebrow", locale)} className="mb-4" />
           {(

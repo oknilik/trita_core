@@ -3,15 +3,12 @@ import { canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { TeamKudos } from "@/components/team/TeamKudos";
-import { TeamFeedbackRequests } from "@/components/team/TeamFeedbackRequests";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
 // ── Members tab: member list + invites + invite form ────────────────────
 export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
-  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canViewRaw, canEmailInvite, isTeamMemberSelf } = ctx;
+  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canViewRaw, canEmailInvite } = ctx;
 
   const membersForTab = teamData.members.map((m) => ({
     id: m.id,
@@ -107,25 +104,7 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
         }
         isHu={isHu}
         locale={locale}
-        dateLocale={isHu ? "hu-HU" : "en-US"}
       />
-      {isTeamMemberSelf ? (
-        <section id="feedback" className="scroll-mt-6 border-t border-sand pt-8">
-          <SectionEyebrow>{isHu ? "visszajelzés" : "feedback"}</SectionEyebrow>
-          <h2 className="mt-1 font-fraunces text-3xl text-ink">
-            {isHu ? "Visszajelzések" : "Feedback"}
-          </h2>
-          <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-body">
-            {isHu
-              ? "Köszönet és fejlesztő visszajelzés a csapattársaidnak — egy helyen a csapat névsorával."
-              : "Kudos and development feedback for your teammates, in one place with the team roster."}
-          </p>
-          <div className="mt-6 flex flex-col gap-6">
-            <TeamKudos teamId={teamId} members={membersForTab} locale={locale} />
-            <TeamFeedbackRequests teamId={teamId} members={membersForTab} locale={locale} />
-          </div>
-        </section>
-      ) : null}
     </PlatformPageShell>
   );
 }

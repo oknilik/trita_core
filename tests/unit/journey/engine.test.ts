@@ -60,3 +60,69 @@ test("restriction flags hide detailed insights in frozen state", () => {
   assert.equal(resolution.restrictionFlags.readOnlyOrgViews, true);
   assert.equal(resolution.restrictionFlags.hideDetailedOrgInsights, true);
 });
+
+test("org admin receives a reachable insight CTA instead of campaign launch", () => {
+  const resolution = resolveJourneyFromContext(
+    buildJourneyContext({
+      currentContext: "org-admin",
+      orgId: "org1",
+      canManageMeasurements: false,
+      orgMembership: { orgId: "org1", role: "ORG_ADMIN", joinedAt: new Date() },
+      assessment: { started: true, completed: true, hasResult: true },
+      completionSummary: {
+        self: { started: true, completed: true },
+        org: {
+          joined: true,
+          orgId: "org1",
+          teamCount: 1,
+          memberCount: 4,
+          completedMemberCount: 4,
+          activeCampaignCount: 0,
+          ready: false,
+        },
+      },
+    }),
+    { locale: "hu" },
+  );
+
+  assert.equal(resolution.nextBestAction.primary.id, "VIEW_ORG_INSIGHTS");
+  assert.equal(resolution.nextBestAction.primary.href, "/org/org1");
+  assert.equal(
+    resolution.state.availableNextActions.some(
+      (action) => action.id === "LAUNCH_ORG_CAMPAIGN",
+    ),
+    false,
+  );
+});
+
+test("consultant still receives the campaign launch CTA", () => {
+  const resolution = resolveJourneyFromContext(
+    buildJourneyContext({
+      currentContext: "org-admin",
+      orgId: "org1",
+      canManageMeasurements: true,
+      orgMembership: {
+        orgId: "org1",
+        role: "ORG_CONSULTANT",
+        joinedAt: new Date(),
+      },
+      assessment: { started: true, completed: true, hasResult: true },
+      completionSummary: {
+        self: { started: true, completed: true },
+        org: {
+          joined: true,
+          orgId: "org1",
+          teamCount: 1,
+          memberCount: 4,
+          completedMemberCount: 4,
+          activeCampaignCount: 0,
+          ready: false,
+        },
+      },
+    }),
+    { locale: "hu" },
+  );
+
+  assert.equal(resolution.nextBestAction.primary.id, "LAUNCH_ORG_CAMPAIGN");
+  assert.equal(resolution.nextBestAction.primary.href, "/org/org1/campaigns/new");
+});

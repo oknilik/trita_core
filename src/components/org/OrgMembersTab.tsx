@@ -7,16 +7,28 @@ import type { Locale } from "@/lib/i18n";
 import type { SerializedMember, SerializedPendingInvite } from "@/lib/org-stats";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { SectionHeading } from "@/components/ui/primitives/SectionHeading";
 import { StatusChip, type StatusChipVariant } from "@/components/ui/primitives/StatusChip";
 import { OrgInviteForm } from "./OrgInviteForm";
+import { OrgMemberRoleEditor } from "./OrgMemberRoleEditor";
 import { OrgRemoveMemberButton } from "./OrgRemoveMemberButton";
 import { OrgPendingInviteCancelButton } from "./OrgPendingInviteCancelButton";
 
 function roleBadgeConfig(role: string): { variant: StatusChipVariant; className?: string } {
-  if (role === "ORG_ADMIN") return { variant: "info", className: "bg-sage/10 text-[var(--color-accent-primary-strong)]" };
-  if (role === "ORG_CONSULTANT") return { variant: "info", className: "bg-state-warning-bg text-state-warning-fg" };
-  if (role === "ORG_MANAGER") return { variant: "neutral", className: "bg-ink/10 text-ink" };
+  if (role === "ORG_ADMIN") {
+    return {
+      variant: "info",
+      className: "bg-sage/10 text-[var(--color-accent-primary-strong)]",
+    };
+  }
+  if (role === "ORG_CONSULTANT") {
+    return {
+      variant: "info",
+      className: "bg-state-warning-bg text-state-warning-fg",
+    };
+  }
+  if (role === "ORG_MANAGER") {
+    return { variant: "neutral", className: "bg-ink/10 text-ink" };
+  }
   return { variant: "neutral" };
 }
 
@@ -25,6 +37,16 @@ function roleLabel(role: string, loc: Locale) {
   if (role === "ORG_CONSULTANT") return t("org.members.roleConsultant", loc);
   if (role === "ORG_MANAGER") return t("org.members.roleManager", loc);
   return t("org.members.roleMember", loc);
+}
+
+function initials(displayName: string, locale: string): string {
+  return displayName
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0))
+    .join("")
+    .toLocaleUpperCase(locale === "en" ? "en-US" : "hu-HU");
 }
 
 interface OrgMembersTabProps {
@@ -41,12 +63,10 @@ interface OrgMembersTabProps {
     ctaLabel: string;
     ctaHref: string;
   } | null;
-  /** Tag-dossié bázis-URL (`/org/[id]/members`) VAGY null. A page számolja
-   *  ki a canViewMemberDossier-t (env-t olvas) — a kliens sosem hívja. */
+  /** Tag-dossié bázis-URL VAGY null — kizárólag tanácsadói jogosultságnál. */
   dossierBaseHref?: string | null;
   isHu: boolean;
   locale: string;
-  dateLocale: string;
 }
 
 export function OrgMembersTab({
@@ -61,118 +81,139 @@ export function OrgMembersTab({
   dossierBaseHref = null,
   isHu,
   locale,
-  dateLocale,
 }: OrgMembersTabProps) {
   const loc = locale as Locale;
-  // Fejléc-gombos meghívó (UX-audit #18): az űrlap nem a lista alatt ül,
-  // hanem a fejléc „+ Tag meghívása" gombjára nyíló panelben.
   const [inviteOpen, setInviteOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Members list */}
-      <Card spacing="lg" className="md:p-8">
-        <SectionEyebrow className="mb-1">
-          {t("org.members.eyebrow", loc)}
-        </SectionEyebrow>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <SectionHeading>
-            {t("org.members.title", loc)}{" "}
-            <span className="font-sans text-sm font-normal text-ink-body/50">
-              ({members.length})
-            </span>
-          </SectionHeading>
-          {isManager && canInviteMembers ? (
-            <button
-              type="button"
-              onClick={() => setInviteOpen((v) => !v)}
-              aria-expanded={inviteOpen}
-              className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+      <section className="pt-6" aria-labelledby="org-member-directory-title">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <SectionEyebrow className="mb-1">
+              {t("org.members.eyebrow", loc)}
+            </SectionEyebrow>
+            <h2
+              id="org-member-directory-title"
+              className="font-fraunces text-3xl text-ink"
             >
-              <span aria-hidden>{inviteOpen ? "×" : "+"}</span>
-              {t("org.members.inviteTitle", loc)}
-            </button>
-          ) : null}
+              {isHu ? "A szervezet tagjai" : "Organization members"}
+            </h2>
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-note text-muted">
+              {members.length} {isHu ? "tag" : members.length === 1 ? "member" : "members"}
+            </span>
+            {isManager && canInviteMembers ? (
+              <button
+                type="button"
+                onClick={() => setInviteOpen((open) => !open)}
+                aria-expanded={inviteOpen}
+                className="inline-flex min-h-[40px] items-center gap-1.5 rounded-lg bg-action-primary-bg px-4 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+              >
+                <span aria-hidden>{inviteOpen ? "×" : "+"}</span>
+                {t("org.members.inviteTitle", loc)}
+              </button>
+            ) : null}
+          </div>
         </div>
 
-        {isManager && canInviteMembers && inviteOpen && (
-          <div className="mb-5 rounded-xl border border-sand bg-cream/40 p-4">
-            <p className="mb-3 text-xs text-ink-body/60">
+        {isManager && canInviteMembers && inviteOpen ? (
+          <div className="mb-5 rounded-2xl border border-surface-org-border bg-surface-card p-5 shadow-[var(--ui-shadow-sm)]">
+            <p className="mb-3 text-note text-ink-body">
               {t("org.members.inviteDescription", loc)}
             </p>
             <OrgInviteForm orgId={orgId} locale={locale} canInviteManager={isAdmin} />
           </div>
+        ) : null}
+
+        {members.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {members.map((member) => {
+              const displayName = member.user.username ?? member.user.email ?? "—";
+              const badge = roleBadgeConfig(member.role);
+
+              return (
+                <article
+                  key={member.id}
+                  className="flex min-w-0 flex-col rounded-2xl border border-surface-org-border bg-surface-card p-4 shadow-[var(--ui-shadow-sm)]"
+                >
+                  <div className="flex min-w-0 items-center gap-4">
+                    <span
+                      aria-hidden="true"
+                      className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-[var(--color-layer-org-accent)]/15 bg-[var(--color-layer-org-soft)] font-fraunces text-xl text-[var(--color-layer-org-accent)]"
+                    >
+                      {initials(displayName, locale) || "·"}
+                    </span>
+                    <div className="min-w-0">
+                      <h3 className="truncate text-caption font-semibold text-ink">
+                        {displayName}
+                      </h3>
+                      <p
+                        className="mt-1 truncate text-note text-muted"
+                        title={member.user.email ?? undefined}
+                      >
+                        {member.user.email ?? "—"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-sand pt-3">
+                    {isAdmin ? (
+                      <OrgMemberRoleEditor
+                        orgId={orgId}
+                        userId={member.userId}
+                        currentRole={member.role}
+                        isSelf={member.userId === profileId}
+                        locale={locale}
+                      />
+                    ) : (
+                      <StatusChip variant={badge.variant} className={badge.className}>
+                        {roleLabel(member.role, loc)}
+                      </StatusChip>
+                    )}
+                    {dossierBaseHref ? (
+                      <Link
+                        href={`${dossierBaseHref}/${member.userId}`}
+                        className="inline-flex min-h-9 items-center rounded-lg border border-sand bg-surface-card px-3 text-note font-semibold text-ink-body transition hover:border-[var(--color-layer-org-accent)]/30 hover:text-ink"
+                      >
+                        {isHu ? "Dossié" : "Dossier"}
+                      </Link>
+                    ) : null}
+                    {isAdmin && member.userId !== profileId ? (
+                      <OrgRemoveMemberButton
+                        orgId={orgId}
+                        userId={member.userId}
+                        isHu={isHu}
+                      />
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-caption text-ink-body">
+            {t("org.members.noMembers", loc)}
+          </p>
         )}
 
-        <div className="flex flex-col divide-y divide-sand">
-          {members.map((m) => {
-            const badge = roleBadgeConfig(m.role);
-            return (
-              // Mobilon a név/e-mail saját sorba kerül, a szerep-chip +
-              // dátum + műveletek alatta tördelve — md-től az eredeti
-              // egysoros elrendezés.
-              <div
-                key={m.id}
-                className="flex flex-col gap-1.5 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-ink">
-                    {m.user.username ?? m.user.email ?? "—"}
-                  </p>
-                  {m.user.username && (
-                    <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
-                  )}
-                </div>
-                <div className="flex flex-wrap items-center gap-2 md:shrink-0">
-                  <StatusChip variant={badge.variant} className={badge.className}>
-                    {roleLabel(m.role, loc)}
-                  </StatusChip>
-                  <span className="text-xs text-ink-body/50">
-                    {new Date(m.joinedAt).toLocaleDateString(dateLocale)}
-                  </span>
-                  {dossierBaseHref && (
-                    // Láthatatlan 44px-es érintési sáv (before:-inset-y) —
-                    // a chip vizuális mérete nem nő, a sor nem feszül szét.
-                    <Link
-                      href={`${dossierBaseHref}/${m.userId}`}
-                      className="relative inline-flex items-center rounded-full border border-sand bg-cream px-2.5 py-0.5 text-xs text-ink-body transition-colors before:absolute before:inset-x-0 before:-inset-y-3 before:content-[''] hover:border-sage-ring hover:text-ink"
-                    >
-                      {isHu ? "Dossié" : "Dossier"}
-                    </Link>
-                  )}
-                  {isAdmin && m.userId !== profileId && (
-                    <OrgRemoveMemberButton orgId={orgId} userId={m.userId} isHu={isHu} />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-
-          {members.length === 0 && pendingInvites.length === 0 && (
-            <p className="py-6 text-center text-sm text-ink-body/50">
-              {t("org.members.noMembers", loc)}
-            </p>
-          )}
-        </div>
-
-        {/* Függő meghívók KÜLÖN, alapból zárt szekcióban (UX-audit #27) —
-            a valódi tagok és a várakozó meghívók két külön fogalom. */}
-        {pendingInvites.length > 0 && (
-          <details className="mt-4 rounded-xl border border-sand bg-cream/40">
+        {pendingInvites.length > 0 ? (
+          <details className="mt-5 rounded-xl border border-sand bg-surface-card">
             <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-ink-body">
               {isHu
                 ? `Függő meghívók (${pendingInvites.length})`
                 : `Pending invites (${pendingInvites.length})`}
             </summary>
             <div className="flex flex-col divide-y divide-sand border-t border-sand px-4">
-              {pendingInvites.map((inv) => (
+              {pendingInvites.map((invite) => (
                 <div
-                  key={inv.id}
-                  className="flex flex-col gap-1.5 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
+                  key={invite.id}
+                  className="flex flex-col gap-2 py-3 md:flex-row md:items-center md:justify-between md:gap-3"
                 >
                   <div className="min-w-0 opacity-60">
-                    <p className="truncate text-sm font-semibold text-ink" title={inv.email}>
-                      {inv.email}
+                    <p className="truncate text-sm font-semibold text-ink" title={invite.email}>
+                      {invite.email}
                     </p>
                     <p className="text-xs text-ink-body/60">
                       {t("org.members.invitePending", loc)}
@@ -182,18 +223,22 @@ export function OrgMembersTab({
                     <StatusChip variant="warning" className="text-state-warning-fg">
                       {t("org.members.pendingBadge", loc)}
                     </StatusChip>
-                    {isManager && canInviteMembers && (
-                      <OrgPendingInviteCancelButton orgId={orgId} inviteId={inv.id} isHu={isHu} />
-                    )}
+                    {isManager && canInviteMembers ? (
+                      <OrgPendingInviteCancelButton
+                        orgId={orgId}
+                        inviteId={invite.id}
+                        isHu={isHu}
+                      />
+                    ) : null}
                   </div>
                 </div>
               ))}
             </div>
           </details>
-        )}
-      </Card>
+        ) : null}
+      </section>
 
-      {isManager && !canInviteMembers && actionGateCopy && (
+      {isManager && !canInviteMembers && actionGateCopy ? (
         <Card spacing="lg" className="md:p-8">
           <SectionEyebrow className="mb-1">
             {t("org.members.inviteEyebrow", loc)}
@@ -214,7 +259,7 @@ export function OrgMembersTab({
             </a>
           </div>
         </Card>
-      )}
+      ) : null}
     </div>
   );
 }

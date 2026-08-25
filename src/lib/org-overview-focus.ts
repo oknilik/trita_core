@@ -19,7 +19,7 @@ export function resolveOrgOverviewFocus(input: {
   canInviteMembers: boolean;
   canLaunchCampaign: boolean;
   canViewCampaigns: boolean;
-}): OrgOverviewFocus {
+}): OrgOverviewFocus | null {
   const {
     locale,
     orgId,
@@ -101,6 +101,11 @@ export function resolveOrgOverviewFocus(input: {
       secondary: { label: hu ? "Csapatok áttekintése" : "Review teams", href: teamsHref },
     };
   }
+
+  // Nem-tanácsadói nézetben a csapatok az alapértelmezett, már megnyitott
+  // fül. Egy oda visszamutató „Csapatok megnyitása” CTA ezért nem akció,
+  // csak vizuális zaj.
+  if (!canViewCampaigns) return null;
 
   return {
     title: hu ? "Tekintsd át a csapatok állapotát" : "Review team status",

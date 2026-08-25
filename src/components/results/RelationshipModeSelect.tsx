@@ -184,54 +184,55 @@ export function RelationshipModeSelect({
           </span>
         </button>
 
-        {open ? (
-          <div
-            id={listboxId}
-            role="listbox"
-            aria-labelledby={labelId}
-            className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-1.5 shadow-[var(--ui-shadow-lg)]"
-          >
-            {options.map((option, index) => {
-              const active = option.value === value;
-              return (
-                <button
-                  key={option.value}
-                  ref={(node) => {
-                    optionRefs.current[index] = node;
-                  }}
-                  type="button"
-                  role="option"
-                  aria-selected={active}
-                  // A listbox EGY tab-stop: a nyitott lista opciói között
-                  // nyíllal lépünk (roving fókusz), nem Tabbal.
-                  tabIndex={-1}
-                  onClick={() => choose(option.value)}
-                  onKeyDown={(event) => handleOptionKeyDown(event, index)}
-                  className={`flex min-h-[48px] w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-caption transition-colors ${
+      </div>
+
+      {open ? (
+        <div
+          id={listboxId}
+          role="listbox"
+          aria-labelledby={labelId}
+          className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-[var(--color-border-default)] bg-surface-card p-1.5 shadow-[var(--ui-shadow-lg)]"
+        >
+          {options.map((option, index) => {
+            const active = option.value === value;
+            return (
+              <button
+                key={option.value}
+                ref={(node) => {
+                  optionRefs.current[index] = node;
+                }}
+                type="button"
+                role="option"
+                aria-selected={active}
+                // A listbox EGY tab-stop: a nyitott lista opciói között
+                // nyíllal lépünk (roving fókusz), nem Tabbal.
+                tabIndex={-1}
+                onClick={() => choose(option.value)}
+                onKeyDown={(event) => handleOptionKeyDown(event, index)}
+                className={`flex min-h-[48px] w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-caption transition-colors ${
+                  active
+                    ? "bg-[var(--color-surface-highlight-warm)] font-semibold text-[var(--color-text-primary)]"
+                    : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
                     active
-                      ? "bg-[var(--color-surface-highlight-warm)] font-semibold text-[var(--color-text-primary)]"
-                      : "text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)]"
+                      ? "border-[var(--color-accent-primary-strong)]"
+                      : "border-[var(--color-border-default)]"
                   }`}
                 >
-                  <span
-                    aria-hidden="true"
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-                      active
-                        ? "border-[var(--color-accent-primary-strong)]"
-                        : "border-[var(--color-border-default)]"
-                    }`}
-                  >
-                    {active ? (
-                      <span className="h-2 w-2 rounded-full bg-[var(--color-accent-primary-strong)]" />
-                    ) : null}
-                  </span>
-                  <span className="min-w-0 flex-1">{option.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        ) : null}
-      </div>
+                  {active ? (
+                    <span className="h-2 w-2 rounded-full bg-[var(--color-accent-primary-strong)]" />
+                  ) : null}
+                </span>
+                <span className="min-w-0 flex-1">{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 }

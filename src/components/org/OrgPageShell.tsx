@@ -206,7 +206,6 @@ export function OrgPageShell({
             dossierBaseHref={dossierBaseHref}
             isHu={isHu}
             locale={locale}
-            dateLocale={dateLocale}
           />
         )}
 

@@ -61,6 +61,7 @@ export interface SerializedTeam {
   name: string;
   createdAt: string;
   _count: { members: number };
+  hasPublishedReport?: boolean;
 }
 
 export interface OrgPageData {

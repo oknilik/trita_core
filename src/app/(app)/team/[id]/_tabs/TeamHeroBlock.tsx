@@ -4,6 +4,7 @@ import { createTeamDashboardIA } from "@/lib/dashboard/ia-contract";
 import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
 import { SurfaceHero, SURFACE_HERO_THEME } from "@/components/ui/patterns/SurfaceHero";
 import { TeamSwitcher } from "@/components/team/TeamSwitcher";
+import { DocumentIcon } from "@/components/ui/icons";
 import { TeamTabBar } from "./TeamTabBar";
 import { MIN_INTELLIGENCE_ASSESSMENTS } from "@/lib/team-intelligence";
 import { computeTeamCompletionBuckets } from "@/lib/team-stats";
@@ -177,8 +178,9 @@ export function TeamHeroBlock({
             {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
             {isTeamMember ? (
               <Link
-                href={`/team/${teamId}?tab=members#feedback`}
+                href={`/team/${teamId}?tab=feedback`}
                 scroll={false}
+                aria-current={active === "feedback" ? "page" : undefined}
                 // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
                 // 2,7:1-et adott, ami AA alatt van mindkét színsémán.
                 className={`${heroCtaSolidClass} gap-1.5`}
@@ -198,6 +200,17 @@ export function TeamHeroBlock({
                   <path d="M5.5 6h5M5.5 8.5H9" />
                 </svg>
                 {isHu ? "Visszajelzés" : "Feedback"}
+              </Link>
+            ) : null}
+            {isTeamMember && ctx.hasPublishedReport ? (
+              <Link
+                href={`/team/${teamId}?tab=report`}
+                scroll={false}
+                aria-current={active === "report" ? "page" : undefined}
+                className={`${heroCtaGhostClass} gap-1.5`}
+              >
+                <DocumentIcon className="h-3.5 w-3.5 shrink-0" />
+                {isHu ? "Riport" : "Report"}
               </Link>
             ) : null}
             {showPatternCta ? (

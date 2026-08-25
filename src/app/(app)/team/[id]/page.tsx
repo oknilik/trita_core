@@ -48,6 +48,7 @@ import type { TeamTabContext } from "./_tabs/types";
 import { OverviewTabView } from "./_tabs/OverviewTabView";
 import { IntelligenceTabView } from "./_tabs/IntelligenceTabView";
 import { MembersTabView } from "./_tabs/MembersTabView";
+import { FeedbackTabView } from "./_tabs/FeedbackTabView";
 import { ReportTabView } from "./_tabs/ReportTabView";
 import { TabViewTracker } from "@/components/analytics/TabViewTracker";
 
@@ -64,6 +65,7 @@ const TEAM_TAB_KEYS = [
   "overview",
   "intelligence",
   "members",
+  "feedback",
   "report",
 ] as const;
 
@@ -87,7 +89,7 @@ export default async function TeamDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ tab?: string; campaignId?: string }>;
+  searchParams: Promise<{ tab?: string; campaignId?: string; feedbackView?: string }>;
 }) {
   const [locale, { userId }, { id: teamId }, resolvedSearchParams] = await Promise.all([
     getServerLocale(), getServerAuth(), params, searchParams,
@@ -421,6 +423,9 @@ export default async function TeamDetailPage({
   if (!teamData) notFound();
 
   const isTeamMemberSelf = teamData.members.some((m) => m.userId === profile.id);
+  if (activeTab === "feedback" && !isTeamMemberSelf) {
+    redirect(`/team/${teamId}?tab=overview`);
+  }
 
   const ctx: TeamTabContext = {
     teamId,
@@ -453,6 +458,16 @@ export default async function TeamDetailPage({
   const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
 
   switch (activeTab) {
+    case "feedback":
+      return (
+        <>
+          {tabTracker}
+          <FeedbackTabView
+            ctx={ctx}
+            initialView={resolvedSearchParams.feedbackView === "inbox" ? "inbox" : "overview"}
+          />
+        </>
+      );
     case "members":
       return (
         <>

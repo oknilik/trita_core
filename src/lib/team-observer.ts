@@ -34,7 +34,7 @@ import { HEXACO_ORDER } from "@/lib/hexaco";
  * megjelenjen. A per-fős anonimitás-padló (n≥3 értékelő) önmagában NEM elég
  * csapat-szinten: 2 lefedett tagnál egy „1 eltérés" kimenet 1-az-2-höz szűkít.
  * A 4-es padlóval a legrosszabb eset 1-az-4-hez — a rater-padlóval azonos
- * nagyságrend. A dossziét amúgy is csak org admin/tanácsadó nyithatja
+ * nagyságrend. A dossziét amúgy is csak tanácsadó nyithatja
  * (canViewMemberDossier), a csapatnézetet viszont a manager is látja, ezért
  * a küszöbnek ITT is állnia kell, nem csak a dossziéban.
  */
