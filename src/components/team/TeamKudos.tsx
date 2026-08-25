@@ -19,8 +19,12 @@ interface KudosItem {
   toName: string;
   message: string;
   emoji: string | null;
+  teamVisible: boolean;
+  canHideFromTeam: boolean;
   createdAt: string;
 }
+
+type KudosList = "received" | "team";
 
 export function TeamKudos({
   teamId,
@@ -32,11 +36,14 @@ export function TeamKudos({
   locale: Locale;
 }) {
   const [items, setItems] = useState<KudosItem[]>([]);
+  const [teamItems, setTeamItems] = useState<KudosItem[]>([]);
   const [meId, setMeId] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [toUserId, setToUserId] = useState("");
   const [message, setMessage] = useState("");
   const [badge, setBadge] = useState<KudosBadge>("🙌");
+  const [shareWithTeam, setShareWithTeam] = useState(false);
+  const [activeList, setActiveList] = useState<KudosList>("received");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +54,7 @@ export function TeamKudos({
       if (!res.ok) return;
       const json = await res.json();
       setItems(json.items ?? []);
+      setTeamItems(json.teamItems ?? []);
       setMeId(json.meId ?? null);
     } finally {
       setLoaded(true);
@@ -68,7 +76,12 @@ export function TeamKudos({
       const res = await fetch(`/api/team/${teamId}/kudos`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ toUserId, message: message.trim(), emoji: badge }),
+        body: JSON.stringify({
+          toUserId,
+          message: message.trim(),
+          emoji: badge,
+          shareWithTeam,
+        }),
       });
       if (!res.ok) {
         setError(t("team.kudos.sendError", locale));
@@ -77,12 +90,64 @@ export function TeamKudos({
       setSent(true);
       setMessage("");
       setToUserId("");
+      setShareWithTeam(false);
       setTimeout(() => setSent(false), 3000);
       load();
     } finally {
       setSending(false);
     }
   };
+
+  const hideFromTeam = async (itemId: string) => {
+    setError(null);
+    const res = await fetch(`/api/team/${teamId}/kudos`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ itemId, action: "hideFromTeam" }),
+    });
+    if (!res.ok) {
+      setError(t("team.kudos.hideError", locale));
+      return;
+    }
+    await load();
+  };
+
+  const renderKudosItem = (item: KudosItem, teamFeed = false) => (
+    <li key={item.id} className="flex items-start gap-3 py-3">
+      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage-soft text-heading">
+        {item.emoji ?? "🙌"}
+      </span>
+      <span className="min-w-0 flex-1">
+        {teamFeed ? (
+          <p className="mb-1 text-caption font-semibold text-ink">
+            {item.fromName} → {item.toName}
+          </p>
+        ) : null}
+        <p className="text-sm leading-relaxed text-ink">„{item.message}”</p>
+        <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-micro text-muted">
+          {!teamFeed ? item.fromName : null}
+          {!teamFeed ? <span aria-hidden="true">·</span> : null}
+          {new Date(item.createdAt).toLocaleDateString(locale === "en" ? "en-GB" : "hu-HU")}
+          {item.teamVisible ? (
+            <span className="rounded-full bg-sage-soft px-2 py-0.5 text-[var(--color-accent-self-deep)]">
+              {t("team.kudos.teamVisibleBadge", locale)}
+            </span>
+          ) : null}
+        </span>
+        {teamFeed && item.canHideFromTeam ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="mt-1.5"
+            onClick={() => hideFromTeam(item.id)}
+          >
+            {t("team.kudos.hideFromTeam", locale)}
+          </Button>
+        ) : null}
+      </span>
+    </li>
+  );
 
   return (
     <Card as="section" spacing="lg">
@@ -140,6 +205,65 @@ export function TeamKudos({
         />
         <EmojiRow onPick={(emoji) => setMessage((prev) => `${prev}${emoji}`)} />
 
+        <fieldset className="mt-1">
+          <legend className="mb-2 text-micro uppercase tracking-widest text-muted">
+            {t("team.kudos.visibilityLabel", locale)}
+          </legend>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label
+              className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 transition ${
+                !shareWithTeam
+                  ? "border-sage-ring bg-sage-ghost"
+                  : "border-sand bg-surface-card hover:border-sage-ring"
+              }`}
+            >
+              <input
+                type="radio"
+                name="kudos-visibility"
+                checked={!shareWithTeam}
+                onChange={() => setShareWithTeam(false)}
+                className="mt-0.5 h-4 w-4 accent-sage"
+              />
+              <span>
+                <span className="block text-caption font-semibold text-ink">
+                  {t("team.kudos.privateTitle", locale)}
+                </span>
+                <span className="mt-0.5 block text-micro text-muted">
+                  {t("team.kudos.privateHint", locale)}
+                </span>
+              </span>
+            </label>
+            <label
+              className={`flex cursor-pointer items-start gap-2.5 rounded-xl border p-3 transition ${
+                shareWithTeam
+                  ? "border-sage-ring bg-sage-ghost"
+                  : "border-sand bg-surface-card hover:border-sage-ring"
+              }`}
+            >
+              <input
+                type="radio"
+                name="kudos-visibility"
+                checked={shareWithTeam}
+                onChange={() => setShareWithTeam(true)}
+                className="mt-0.5 h-4 w-4 accent-sage"
+              />
+              <span>
+                <span className="block text-caption font-semibold text-ink">
+                  {t("team.kudos.teamTitle", locale)}
+                </span>
+                <span className="mt-0.5 block text-micro text-muted">
+                  {t("team.kudos.teamHint", locale)}
+                </span>
+              </span>
+            </label>
+          </div>
+          {shareWithTeam ? (
+            <p className="mt-2 rounded-lg bg-cream px-3 py-2 text-micro leading-relaxed text-ink-body">
+              {t("team.kudos.teamConsent", locale)}
+            </p>
+          ) : null}
+        </fieldset>
+
         <div className="flex items-center gap-3">
           <Button
             type="button"
@@ -160,32 +284,43 @@ export function TeamKudos({
         </div>
       </div>
 
-      {/* Kapott köszönetek */}
+      <div className="mb-4 flex gap-1 rounded-xl bg-cream p-1">
+        <button
+          type="button"
+          onClick={() => setActiveList("received")}
+          className={`flex-1 rounded-lg px-3 py-2 text-caption font-semibold transition ${
+            activeList === "received" ? "bg-surface-card text-ink shadow-sm" : "text-muted hover:text-ink"
+          }`}
+        >
+          {t("team.kudos.receivedTab", locale)}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveList("team")}
+          className={`flex-1 rounded-lg px-3 py-2 text-caption font-semibold transition ${
+            activeList === "team" ? "bg-surface-card text-ink shadow-sm" : "text-muted hover:text-ink"
+          }`}
+        >
+          {t("team.kudos.teamTab", locale)}
+        </button>
+      </div>
+
       <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
-        {tf("team.kudos.receivedLabel", locale, { count: received.length })}
+        {activeList === "received"
+          ? tf("team.kudos.receivedLabel", locale, { count: received.length })
+          : tf("team.kudos.teamFeedLabel", locale, { count: teamItems.length })}
       </p>
       {!loaded ? (
         <p className="text-caption text-muted">…</p>
-      ) : received.length === 0 ? (
+      ) : activeList === "received" && received.length === 0 ? (
         <p className="text-caption text-muted">{t("team.kudos.empty", locale)}</p>
+      ) : activeList === "team" && teamItems.length === 0 ? (
+        <p className="text-caption text-muted">{t("team.kudos.teamFeedEmpty", locale)}</p>
       ) : (
         <ul className="flex flex-col divide-y divide-sand">
-          {received.slice(0, 8).map((item) => (
-            <li key={item.id} className="flex items-start gap-3 py-2.5">
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage-soft text-heading">
-                {item.emoji ?? "🙌"}
-              </span>
-              <span className="min-w-0">
-                <p className="text-sm leading-relaxed text-ink">„{item.message}”</p>
-                <p className="mt-0.5 text-micro text-muted">
-                  {item.fromName} ·{" "}
-                  {new Date(item.createdAt).toLocaleDateString(
-                    locale === "en" ? "en-GB" : "hu-HU",
-                  )}
-                </p>
-              </span>
-            </li>
-          ))}
+          {(activeList === "received" ? received.slice(0, 8) : teamItems).map((item) =>
+            renderKudosItem(item, activeList === "team"),
+          )}
         </ul>
       )}
     </Card>

@@ -791,16 +791,18 @@ model TeamRoleObservation {
 // felület soha nem mutatja. payload: strukturált mezők (message, roleTag…).
 // Terv: docs/product/peer-feedback-terv.md
 model PeerFeedbackItem {
-  id         String   @id @default(cuid())
-  teamId     String
-  campaignId String?
-  fromUserId String
-  toUserId   String
-  kind       String   @default("appreciation")
-  visibility String   @default("named")
-  payload    Json
-  requestId  String?
-  createdAt  DateTime @default(now())
+  id             String    @id @default(cuid())
+  teamId         String
+  campaignId     String?
+  fromUserId     String
+  toUserId       String
+  kind           String    @default("appreciation")
+  visibility     String    @default("named")
+  payload        Json
+  requestId      String?
+  teamVisible    Boolean   @default(false)
+  teamHiddenAt   DateTime?
+  createdAt      DateTime  @default(now())
 
   request  FeedbackRequest? @relation(fields: [requestId], references: [id], onDelete: SetNull)
   team     Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -809,6 +811,7 @@ model PeerFeedbackItem {
   to       UserProfile      @relation("PeerFeedbackTo", fields: [toUserId], references: [id], onDelete: Cascade)
 
   @@index([teamId, toUserId, createdAt])
+  @@index([teamId, teamVisible, createdAt])
   @@index([fromUserId, createdAt])
   @@index([campaignId])
   @@index([requestId])
