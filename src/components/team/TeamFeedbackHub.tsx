@@ -39,7 +39,7 @@ export function TeamFeedbackHub({ teamId, members, locale, initialView = "overvi
         inboxHint: "Itt találod a neked küldött köszöneteket és a kéréseidre érkezett válaszokat.",
         inboxAction: "Megnézem",
         backLabel: "Vissza a visszajelzési központba",
-        backPath: "Visszajelzés",
+        backPath: "Visszajelzési központ",
       }
     : {
         eyebrow: "feedback",
@@ -56,15 +56,15 @@ export function TeamFeedbackHub({ teamId, members, locale, initialView = "overvi
         inboxHint: "Find kudos sent to you and responses to your feedback requests here.",
         inboxAction: "View all",
         backLabel: "Back to the feedback hub",
-        backPath: "Feedback",
+        backPath: "Feedback hub",
       };
 
   const screenHeading =
     view === "kudos"
-      ? { eyebrow: isHu ? "köszönet" : "kudos", title: copy.kudosScreenTitle, hint: copy.kudosHint, path: copy.kudosTitle }
+      ? { eyebrow: isHu ? "köszönet" : "kudos", title: copy.kudosScreenTitle, hint: copy.kudosHint }
       : view === "request"
-        ? { eyebrow: isHu ? "fejlődés" : "growth", title: copy.requestScreenTitle, hint: copy.requestHint, path: copy.requestTitle }
-        : { eyebrow: copy.eyebrow, title: copy.inboxTitle, hint: copy.inboxHint, path: copy.inboxTitle };
+        ? { eyebrow: isHu ? "fejlődés" : "growth", title: copy.requestScreenTitle, hint: copy.requestHint }
+        : { eyebrow: isHu ? "beérkezett" : "received", title: copy.inboxTitle, hint: copy.inboxHint };
 
   return (
     <div>
@@ -122,16 +122,17 @@ export function TeamFeedbackHub({ teamId, members, locale, initialView = "overvi
         </>
       ) : (
         <>
-          <button
-            type="button"
-            aria-label={copy.backLabel}
-            onClick={() => setView("overview")}
-            className="group mb-6 inline-flex min-h-11 items-center gap-2 rounded-xl py-1 pl-1.5 pr-3 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring"
-          >
-            <BackChevronIcon tone="accent" />
-            <span>{copy.backPath}</span>
-            <span className="font-normal text-muted" aria-hidden="true">/ {screenHeading.path}</span>
-          </button>
+          <div className="mb-8">
+            <button
+              type="button"
+              aria-label={copy.backLabel}
+              onClick={() => setView("overview")}
+              className="group inline-flex min-h-11 items-center gap-2 rounded-xl py-1 pl-1.5 pr-3 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-[var(--color-surface-highlight-warm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-state-focus-ring"
+            >
+              <BackChevronIcon tone="accent" />
+              <span>{copy.backPath}</span>
+            </button>
+          </div>
           <SectionEyebrow>{screenHeading.eyebrow}</SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-3xl text-ink">{screenHeading.title}</h2>
           <p className="mt-2 mb-6 max-w-2xl text-sm leading-relaxed text-ink-body">{screenHeading.hint}</p>
