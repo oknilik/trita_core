@@ -14,6 +14,7 @@ import {
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 
 type PostMeta = Omit<BlogPost, "content">;
 
@@ -194,12 +195,9 @@ export function BlogListContent({
         />
         <div className="relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-9 md:grid-cols-[1.02fr_0.98fr] md:gap-12 lg:gap-16">
           <div>
-            <div className="mb-5 flex items-center gap-3">
-              <div className="h-px w-7 shrink-0 bg-[var(--color-accent-primary-strong)]" />
-              <span className="font-dm-sans text-label uppercase tracking-[0.15em] text-[var(--color-accent-primary-strong)]">
+            <SectionEyebrow className="mb-5">
                 {t("blog.editorialEyebrow", displayLocale)}
-              </span>
-            </div>
+            </SectionEyebrow>
             <h1 className="max-w-[720px] font-fraunces text-fluid-display font-medium leading-[0.98] tracking-[-0.045em] text-ink">
               {t("blog.heroTitle", displayLocale)}
               <em className="italic text-[var(--color-accent-primary-strong)]">
@@ -329,12 +327,9 @@ export function BlogListContent({
               {/* „Kezdd itt" sáv az új olvasónak */}
               {!activeTag && startHerePosts.length >= 2 && (
                 <div className="mb-10 rounded-[26px] border border-sand bg-[var(--color-surface-muted)] p-5 md:p-6">
-                  <div className="mb-3.5 flex items-center gap-2.5">
-                    <span className="h-px w-5 bg-[var(--color-accent-primary)]" />
-                    <span className="text-label uppercase tracking-widest text-[var(--color-accent-primary-strong)]">
+                  <SectionEyebrow className="mb-3.5">
                       {t("blog.selectedReads", displayLocale)}
-                    </span>
-                  </div>
+                  </SectionEyebrow>
                   <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                     {startHerePosts.map((post, i) => (
                       <Link
