@@ -702,7 +702,7 @@ export default async function ProfileResultsPage({
           tabokon kívüli elemeknek (pl. csapat-érdeklődés banner) is. */}
       <div className="flex flex-col gap-8 md:gap-12">
         {showRetakeBanner && (
-          <section className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <section className="flex flex-col gap-3 rounded-[18px] border border-sage/35 bg-sage/5 p-5 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-semibold text-ink">
                 {locale === "hu"
@@ -715,16 +715,16 @@ export default async function ProfileResultsPage({
                   : "If you retake it, your profile will be updated based on your new answers."}
               </p>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
+            <div className="flex w-full shrink-0 flex-col gap-2 md:w-auto md:flex-row md:items-center">
               <Link
                 href="/assessment?confirmed=true"
-                className={getButtonClassName({ variant: "primary", size: "sm" })}
+                className={`${getButtonClassName({ variant: "primary", size: "sm" })} w-full justify-center whitespace-nowrap md:w-auto`}
               >
                 {locale === "hu" ? "Újratöltés indítása" : "Start retake"}
               </Link>
               <Link
                 href="/profile/results"
-                className={getButtonClassName({ variant: "ghost", size: "sm" })}
+                className={`${getButtonClassName({ variant: "ghost", size: "sm" })} w-full justify-center whitespace-nowrap md:w-auto`}
               >
                 {locale === "hu" ? "Maradok az eredményeknél" : "Keep my results"}
               </Link>
