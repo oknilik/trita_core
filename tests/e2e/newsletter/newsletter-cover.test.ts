@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import sharp from "sharp";
 import { getAllPosts } from "../../../src/lib/blog";
 import { blogImageUrl } from "../../../src/lib/newsletter-links";
 
@@ -27,7 +28,11 @@ test("a levélbe írt borító-URL valódi képet ad", async ({ request }) => {
 
   expect(response.status()).toBe(200);
   expect(response.headers()["content-type"]).toContain("image/png");
-  expect((await response.body()).byteLength).toBeGreaterThan(1000);
+  const body = await response.body();
+  expect(body.byteLength).toBeGreaterThan(1000);
+  const metadata = await sharp(body).metadata();
+  expect(metadata.width).toBe(800);
+  expect(metadata.height).toBe(600);
 });
 
 test("ismeretlen slug a statikus márka-képre irányít, nem renderel újat", async ({ request }) => {

@@ -213,6 +213,12 @@ export interface EmailLayoutParams {
   eyebrow: string;
   /** Fraunces címsor a kártya tetején. Kötelező. */
   heading: string;
+  /**
+   * Mobilon elrejti a levélbeli címsort. Szerkesztett hírlevélnél a mobil
+   * kliens közvetlenül fölötte már kiírja ugyanazt a tárgyat; asztali
+   * levélnézetben viszont a belső címsor továbbra is hasznos tájékozódási pont.
+   */
+  hideHeadingOnMobile?: boolean;
   /** Rejtett inbox-előnézet a tárgy után. Kötelező. */
   preheader: string;
   bodyContent: string;
@@ -273,9 +279,10 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
       .email-container { width: 100% !important; max-width: 100% !important; }
       .padding-mobile { padding-left: 16px !important; padding-right: 16px !important; }
       .em-card-pad { padding: 28px 22px 26px !important; }
+      .em-mobile-hide { display: none !important; max-height: 0 !important; overflow: hidden !important; }
       .em-article-image, .em-article-copy { display: block !important; width: 100% !important; }
       .em-article-image { padding: 0 0 12px 0 !important; }
-      .em-article-image img { width: 100% !important; max-width: 100% !important; }
+      .em-article-image img { width: 100% !important; max-width: 100% !important; height: auto !important; }
     }
     /* Több kliens (Apple Mail, Outlook.com) sötét módban SAJÁT inverziót futtat
        a levélen. A color-scheme:light only ezt nem mindenhol állítja meg,
@@ -286,6 +293,7 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
       html, body     { background-color: ${EMAIL_COLORS.canvas} !important; }
       .em-canvas     { background-color: ${EMAIL_COLORS.canvas} !important; }
       .em-card       { background-color: ${EMAIL_COLORS.card} !important; }
+      .em-article-card { background-color: ${EMAIL_COLORS.surface} !important; }
       .em-heading    { color: ${EMAIL_COLORS.heading} !important; }
       .em-body, .em-body p, .em-body li, .em-body strong { color: ${EMAIL_COLORS.body} !important; }
       .em-muted, .em-quiet, .em-foot-link, .em-kind, .em-code-lbl { color: ${EMAIL_COLORS.muted} !important; }
@@ -330,7 +338,7 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
                 <tr>
                   <td class="em-card-pad em-body" style="padding:34px 36px 32px;font-family:${SANS_STACK};font-size:16px;line-height:26px;color:${EMAIL_COLORS.body}">
                     ${renderEyebrow({ label: params.eyebrow })}
-                    <h1 class="em-heading em-display" style="font-family:${DISPLAY_STACK};font-size:26px;line-height:32px;font-weight:600;letter-spacing:-0.012em;color:${EMAIL_COLORS.heading};margin:0 0 16px">${params.heading}</h1>
+                    ${params.hideHeadingOnMobile ? '<div class="em-mobile-hide">' : ""}<h1 class="em-heading em-display" style="font-family:${DISPLAY_STACK};font-size:26px;line-height:32px;font-weight:600;letter-spacing:-0.012em;color:${EMAIL_COLORS.heading};margin:0 0 16px">${params.heading}</h1>${params.hideHeadingOnMobile ? "</div>" : ""}
                     ${params.bodyContent}
                     ${quietNote}
                   </td>
