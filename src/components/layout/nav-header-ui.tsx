@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { useClerk } from "@clerk/nextjs";
 import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
+import { useAuthState } from "@/components/auth/auth-state";
 import { t } from "@/lib/i18n";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { TritaWordmark } from "@/components/TritaLogo";
@@ -202,6 +203,7 @@ function NavHeaderContent({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { signOut } = useClerk();
+  const { markSignedOut } = useAuthState();
   const { locale } = useLocale();
   const { count: notificationCount, ensureList: ensureNotificationList } = useNotifications();
 
@@ -641,7 +643,9 @@ function NavHeaderContent({
                 onClick={() => {
                   closeAll();
                   clearLocaleSyncFlag();
-                  signOut({ redirectUrl: "/" });
+                  const signOutPromise = signOut({ redirectUrl: "/" });
+                  markSignedOut();
+                  void signOutPromise;
                 }}
                 className={`flex w-full items-center gap-3 rounded-lg px-2.5 py-2.5 text-left text-caption font-medium text-[var(--color-text-muted)] transition-colors hover:bg-[var(--color-surface-subtle)] hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
               >
@@ -1083,7 +1087,9 @@ function NavHeaderContent({
                           type="button"
                           onClick={() => {
                             clearLocaleSyncFlag();
-                            signOut({ redirectUrl: "/" });
+                            const signOutPromise = signOut({ redirectUrl: "/" });
+                            markSignedOut();
+                            void signOutPromise;
                             setMobileMenu("closed");
                           }}
                           className={`flex min-h-[44px] w-full items-center justify-center rounded-lg border border-[var(--color-border-default)] bg-surface-card text-sm font-medium text-[var(--color-text-secondary)] transition-colors hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
