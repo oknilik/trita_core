@@ -5,6 +5,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
 import { StarLoader } from "@/components/ui/StarLoader";
 import { TritaWordmark } from "@/components/TritaLogo";
+import { buildEvaluationViewModel } from "@/lib/assessment-evaluation";
 
 interface EvaluatingScreenProps {
   progress: number;
@@ -12,19 +13,7 @@ interface EvaluatingScreenProps {
 
 export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
   const { locale } = useLocale();
-  const safeProgress = Math.min(Math.max(progress, 0), 100);
-  const phase = safeProgress < 36 ? 0 : safeProgress < 72 ? 1 : 2;
-  const phaseMessages = locale === "hu"
-    ? [
-        "Megnézzük, hogyan kapcsolódsz másokhoz…",
-        "Összekötjük a döntési és munkastílusod jelzéseit…",
-        "Megfogalmazzuk, mire érdemes építened…",
-      ]
-    : [
-        "Looking at how you connect with others…",
-        "Connecting signals in your decisions and work style…",
-        "Turning the patterns into strengths you can use…",
-      ];
+  const view = buildEvaluationViewModel(progress, locale);
 
   return (
     <div
@@ -46,34 +35,32 @@ export function EvaluatingScreen({ progress }: EvaluatingScreenProps) {
           <StarLoader size={112} color="var(--color-text-on-inverse)" />
         </div>
         <p className="text-label uppercase text-[var(--color-accent-primary-soft)]">
-          {locale === "hu" ? "A személyes eredményed készül" : "Your personal result is taking shape"}
+          {view.kicker}
         </p>
         <h2 className="mt-4 max-w-[14ch] font-fraunces text-3xl font-medium leading-tight tracking-tight md:text-4xl">
           {t("assessment.evaluatingTitle", locale)}
         </h2>
         <p className="mt-3 text-sm text-[var(--color-text-on-inverse-muted)]">
-          {locale === "hu"
-            ? "Nem csak pontszámokat, hanem használható összefüggéseket keresünk."
-            : "We look beyond scores to find patterns you can actually use."}
+          {view.body}
         </p>
         <motion.p
-          key={phase}
+          key={view.phase}
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-8 min-h-10 font-fraunces text-base text-[var(--color-accent-primary-soft)]"
         >
-          {phaseMessages[phase]}
+          {view.phaseMessage}
         </motion.p>
         <div className="mt-3 h-1 w-64 overflow-hidden rounded-full bg-white/15 md:w-80">
           <motion.div
             className="h-full rounded-full bg-[var(--color-accent-primary-soft)]"
             initial={{ width: 0 }}
-            animate={{ width: `${safeProgress}%` }}
+            animate={{ width: `${view.safeProgress}%` }}
             transition={{ duration: 0.4, ease: "easeOut" }}
           />
         </div>
         <p className="mt-3 text-micro uppercase tracking-widest text-[var(--color-text-on-inverse-muted)]">
-          {locale === "hu" ? "Mintázatok összekapcsolása" : "Connecting patterns"} · {Math.round(safeProgress)}%
+          {view.status} · {view.roundedProgress}%
         </p>
       </motion.div>
     </div>
