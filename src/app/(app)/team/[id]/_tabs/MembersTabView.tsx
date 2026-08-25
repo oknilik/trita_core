@@ -3,13 +3,12 @@ import { canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { TeamMembersTab } from "@/components/team/TeamMembersTab";
 import { ObserverApprovalCard } from "@/components/team/ObserverApprovalCard";
-import { TeamFeedbackHub } from "@/components/team/TeamFeedbackHub";
 import { TeamHeroBlock } from "./TeamHeroBlock";
 import type { TeamTabContext } from "./types";
 
 // ── Members tab: member list + invites + invite form ────────────────────
 export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
-  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canViewRaw, canEmailInvite, isTeamMemberSelf } = ctx;
+  const { teamId, orgId, teamData, locale, isHu, profile, orgMemberRole, isOrgManager, canViewRaw, canEmailInvite } = ctx;
 
   const membersForTab = teamData.members.map((m) => ({
     id: m.id,
@@ -107,11 +106,6 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
         locale={locale}
         dateLocale={isHu ? "hu-HU" : "en-US"}
       />
-      {isTeamMemberSelf ? (
-        <section id="feedback" className="scroll-mt-6 border-t border-sand pt-8">
-          <TeamFeedbackHub teamId={teamId} members={membersForTab} locale={locale} />
-        </section>
-      ) : null}
     </PlatformPageShell>
   );
 }

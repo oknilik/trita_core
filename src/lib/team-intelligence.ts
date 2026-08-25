@@ -54,9 +54,6 @@ export function resolveTeamTabRedirect(
   if (tab === "profile") {
     return { tab: "intelligence", anchor: "#team-profile" };
   }
-  if (tab === "feedback") {
-    return { tab: "members", anchor: "#feedback" };
-  }
   return null;
 }
 

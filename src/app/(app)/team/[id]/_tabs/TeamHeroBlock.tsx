@@ -175,9 +175,9 @@ export function TeamHeroBlock({
         actions={(
           <>
             {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
-            {isTeamMember ? (
+            {isTeamMember && active !== "feedback" ? (
               <Link
-                href={`/team/${teamId}?tab=members#feedback`}
+                href={`/team/${teamId}?tab=feedback`}
                 scroll={false}
                 // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
                 // 2,7:1-et adott, ami AA alatt van mindkét színsémán.

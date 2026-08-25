@@ -33,10 +33,9 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
         inboxTitle: "Beérkezett neked",
         inboxHint: "A köszönetek és fejlesztő visszajelzések egy közös helyen, jól elkülönítve jelennek meg.",
         inboxAction: "Beérkezett visszajelzések megnyitása",
-        back: "Vissza a központhoz",
         overviewNav: "Központ",
-        kudosNav: "Köszönet",
-        requestNav: "Fejlődés",
+        kudosNav: "Köszönet küldése",
+        requestNav: "Visszajelzés kérése",
         inboxNav: "Beérkezett",
       }
     : {
@@ -51,10 +50,9 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
         inboxTitle: "Received for you",
         inboxHint: "Kudos and development feedback appear together, while remaining clearly distinct.",
         inboxAction: "Open received feedback",
-        back: "Back to the hub",
         overviewNav: "Hub",
-        kudosNav: "Kudos",
-        requestNav: "Growth",
+        kudosNav: "Send kudos",
+        requestNav: "Request feedback",
         inboxNav: "Received",
       };
 
@@ -77,7 +75,7 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
       {view !== "overview" ? (
         <nav
           aria-label={isHu ? "Visszajelzés nézetek" : "Feedback views"}
-          className="mb-6 grid grid-cols-2 gap-1.5 rounded-xl bg-cream p-1 sm:grid-cols-4"
+          className="mb-8 flex flex-wrap gap-1.5 rounded-xl border border-sand bg-surface-card p-1.5 shadow-sm"
         >
           {navigation.map((item) => (
             <button
@@ -85,10 +83,10 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
               type="button"
               aria-current={view === item.id ? "page" : undefined}
               onClick={() => setView(item.id)}
-              className={`rounded-lg px-3 py-2.5 text-caption font-semibold transition ${
+              className={`rounded-lg px-3.5 py-2.5 text-caption font-semibold transition ${
                 view === item.id
-                  ? "bg-surface-card text-ink shadow-sm"
-                  : "text-muted hover:bg-surface-card/60 hover:text-ink"
+                  ? "bg-sage-soft text-ink shadow-sm"
+                  : "text-muted hover:bg-cream hover:text-ink"
               }`}
             >
               {item.label}
@@ -152,13 +150,6 @@ export function TeamFeedbackHub({ teamId, members, locale }: TeamFeedbackHubProp
         </>
       ) : (
         <>
-          <button
-            type="button"
-            onClick={() => setView("overview")}
-            className="mb-4 text-caption font-semibold text-[var(--color-accent-primary-strong)] hover:underline"
-          >
-            ← {copy.back}
-          </button>
           <SectionEyebrow>{screenHeading.eyebrow}</SectionEyebrow>
           <h2 className="mt-1 font-fraunces text-3xl text-ink">{screenHeading.title}</h2>
           <p className="mt-2 mb-6 max-w-2xl text-sm leading-relaxed text-ink-body">{screenHeading.hint}</p>

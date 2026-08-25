@@ -66,10 +66,7 @@ test("legacy team tabs redirect to their consolidated sections", () => {
     tab: "intelligence",
     anchor: "#team-profile",
   });
-  assert.deepEqual(resolveTeamTabRedirect("feedback"), {
-    tab: "members",
-    anchor: "#feedback",
-  });
+  assert.equal(resolveTeamTabRedirect("feedback"), null);
   assert.equal(resolveTeamTabRedirect("intelligence"), null);
   assert.equal(resolveTeamTabRedirect(undefined), null);
 });

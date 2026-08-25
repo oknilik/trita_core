@@ -17,7 +17,7 @@ export function TeamTabBar({
   ctx: TeamTabContext;
   active: string;
 }) {
-  const { teamId, teamData, locale, isHu, canViewRaw, hasPublishedReport } = ctx;
+  const { teamId, teamData, locale, isHu, canViewRaw, hasPublishedReport, isTeamMemberSelf } = ctx;
 
   const tabs: { key: string; label: string; shortLabel?: string; badge?: number }[] = [
     { key: "overview", label: isHu ? "Áttekintés" : "Overview" },
@@ -26,6 +26,9 @@ export function TeamTabBar({
       label: t("teamComp.tabMembers", locale),
       badge: teamData.memberCount + teamData.pendingInvites.length,
     },
+    ...(isTeamMemberSelf
+      ? [{ key: "feedback", label: isHu ? "Visszajelzés" : "Feedback" }]
+      : []),
     ...(canViewRaw
       ? [
           {
