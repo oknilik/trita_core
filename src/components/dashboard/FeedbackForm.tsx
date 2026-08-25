@@ -111,10 +111,10 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   };
 
   const optionButtonClass = (selected: boolean) =>
-    `flex min-h-[44px] items-center justify-center rounded-lg border transition-all duration-200 ${
+    `flex min-h-[48px] items-center justify-center rounded-[10px] border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-ring focus-visible:ring-offset-2 ${
       selected
-        ? "border-sage bg-sage text-[var(--color-action-primary-fg)] shadow-md"
-        : "border-sand bg-surface-card text-ink hover:-translate-y-0.5 hover:border-sage-ring hover:bg-sage-ghost hover:shadow-sm"
+        ? "border-sage bg-sage text-[var(--color-action-primary-fg)]"
+        : "border-sand bg-cream/55 text-ink hover:border-sage-ring hover:bg-sage-ghost"
     }`;
 
   const renderScale = (
@@ -122,22 +122,23 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
     onSelect: (value: number) => void,
   ) => (
     <>
-      <div className="mt-4 grid grid-cols-5 gap-2">
+      <div className="mt-5 grid grid-cols-5 gap-1.5 sm:gap-2.5">
         {scale.map((item) => (
           <button
             key={item.value}
             type="button"
             onClick={() => onSelect(item.value)}
             aria-label={item.label}
-            className={`${optionButtonClass(selectedValue === item.value)} font-fraunces text-lg tabular-nums`}
+            aria-pressed={selectedValue === item.value}
+            className={`${optionButtonClass(selectedValue === item.value)} font-fraunces text-xl tabular-nums sm:text-lg`}
           >
             {item.value}
           </button>
         ))}
       </div>
-      <div className="mt-1.5 flex justify-between text-micro text-muted">
+      <div className="mt-2 flex justify-between gap-4 text-micro leading-snug text-muted">
         <span>{scale[0].label}</span>
-        <span>{scale[scale.length - 1].label}</span>
+        <span className="text-right">{scale[scale.length - 1].label}</span>
       </div>
     </>
   );
@@ -145,9 +146,9 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   // Köszönő állapot — csak közvetlenül a beküldés után, majd pár mp múlva eltűnik
   if (submitted && !thanksHidden) {
     return (
-      <div className="animate-fade-in rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-[var(--color-surface-card)] p-6 md:p-8">
+      <div className="animate-fade-in rounded-[22px] border border-sage/30 bg-sage-ghost/70 p-6 md:p-8">
         <div className="flex items-center justify-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)] shadow-sm">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sage text-[var(--color-action-primary-fg)]">
             <svg
               viewBox="0 0 20 20"
               fill="none"
@@ -163,7 +164,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               />
             </svg>
           </span>
-          <span className="text-sm font-medium text-ink">
+          <span className="font-fraunces text-lg text-ink">
             {t("dashboard.feedbackThanks", locale)}
           </span>
         </div>
@@ -172,40 +173,38 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
   }
 
   return (
-    <div className="rounded-xl border border-sage-ring bg-gradient-to-br from-sage-ghost to-[var(--color-surface-card)] p-6 md:p-8">
-      <div className="mb-4 flex items-start justify-between gap-3">
+    <section className="relative overflow-hidden rounded-[22px] border border-sand bg-surface-card px-5 py-6 shadow-sm md:px-8 md:py-8">
+      <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-bronze via-sage to-sage-deep" />
+
+      <div className="flex items-start justify-between gap-5">
         <div>
-          <h2 className="text-xl font-semibold text-ink">
+          <h2 className="font-fraunces text-2xl leading-tight text-ink md:text-3xl">
             {t("dashboard.feedbackTitle", locale)}
           </h2>
-          <p className="mt-1 text-sm text-ink-body">
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-body">
             {t("dashboard.feedbackBody", locale)}
           </p>
         </div>
-        {/* Lépésjelző pöttyök */}
-        <div
-          className="mt-1.5 flex shrink-0 items-center gap-1.5"
-          aria-label={`${displayStep}/${totalSteps}`}
-        >
-          {Array.from({ length: totalSteps }, (_, i) => {
-            const step = i + 1;
-            return (
-              <span
-                key={step}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  step === displayStep
-                    ? "w-6 bg-sage"
-                    : step < displayStep
-                      ? "w-1.5 bg-sage-ring"
-                      : "w-1.5 bg-sand"
-                }`}
-              />
-            );
-          })}
-        </div>
+        <span className="shrink-0 font-mono text-micro tracking-wide text-[var(--color-accent-primary-strong)]">
+          {String(displayStep).padStart(2, "0")} / {String(totalSteps).padStart(2, "0")}
+        </span>
       </div>
 
-      <form onSubmit={handleNext} className="mt-6 flex flex-col gap-5">
+      <div
+        className="mt-5 h-1 overflow-hidden rounded-full bg-sand/80"
+        role="progressbar"
+        aria-label={`${displayStep}/${totalSteps}`}
+        aria-valuemin={1}
+        aria-valuemax={totalSteps}
+        aria-valuenow={displayStep}
+      >
+        <div
+          className="h-full rounded-full bg-sage transition-[width] duration-300"
+          style={{ width: `${(displayStep / totalSteps) * 100}%` }}
+        />
+      </div>
+
+      <form onSubmit={handleNext} className="mt-7 flex flex-col gap-6">
         {error && (
           <div className="rounded-lg border border-state-error-border bg-state-error-bg px-4 py-3 text-sm text-state-error-fg">
             {error}
@@ -215,7 +214,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 1: Recognition */}
         {currentQuestion === 1 && (
           <div key="q1" className="animate-fade-in">
-            <p className="text-sm font-semibold text-ink">
+            <p className="font-fraunces text-lg leading-snug text-ink">
               {t("dashboard.feedbackAgreementLabel", locale)}
             </p>
             {renderScale(agreementScore, setAgreementScore)}
@@ -225,7 +224,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 2: Observer feedback usefulness (only for users with observer feedback) */}
         {currentQuestion === 2 && hasObserverFeedback && (
           <div key="q2" className="animate-fade-in">
-            <p className="text-sm font-semibold text-ink">
+            <p className="font-fraunces text-lg leading-snug text-ink">
               {t("dashboard.feedbackObserverUsefulnessLabel", locale)}
             </p>
             {renderScale(observerUsefulness, setObserverUsefulness)}
@@ -235,7 +234,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 3: Site usefulness */}
         {currentQuestion === 3 && (
           <div key="q3" className="animate-fade-in">
-            <p className="text-sm font-semibold text-ink">
+            <p className="font-fraunces text-lg leading-snug text-ink">
               {t("dashboard.feedbackSiteUsefulnessLabel", locale)}
             </p>
             {renderScale(siteUsefulness, setSiteUsefulness)}
@@ -245,7 +244,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 4: Want updates */}
         {currentQuestion === 4 && (
           <div key="q4" className="animate-fade-in">
-            <p className="text-sm font-semibold text-ink">
+            <p className="font-fraunces text-lg leading-snug text-ink">
               {t("dashboard.feedbackUpdatesLabel", locale)}
             </p>
             <div className="mt-4 grid grid-cols-2 gap-3">
@@ -270,7 +269,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
         {/* Question 5: Free text feedback */}
         {currentQuestion === 5 && (
           <div key="q5" className="animate-fade-in">
-            <p className="text-sm font-semibold text-ink">
+            <p className="font-fraunces text-lg leading-snug text-ink">
               {t("dashboard.feedbackFreeformLabel", locale)}
             </p>
             <textarea
@@ -278,7 +277,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
               onChange={(e) => setFreeform(e.target.value)}
               rows={4}
               placeholder={t("dashboard.feedbackFreeformPlaceholder", locale)}
-              className="mt-3 w-full resize-none rounded-lg border border-sand bg-surface-card px-3 py-2 text-sm text-ink transition-colors focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage-ring/60"
+              className="mt-4 w-full resize-none rounded-[12px] border border-sand bg-cream/40 px-4 py-3 text-sm leading-relaxed text-ink transition-colors placeholder:text-muted focus:border-sage focus:outline-none focus:ring-2 focus:ring-sage-ring/60"
             />
           </div>
         )}
@@ -293,7 +292,7 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
             (currentQuestion === 3 && siteUsefulness == null) ||
             (currentQuestion === 4 && interested == null)
           }
-          className="inline-flex min-h-[48px] w-full items-center justify-center rounded-lg bg-gradient-to-r from-sage to-sage-deep px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:from-cream-300 disabled:to-cream-300 disabled:hover:scale-100"
+          className="inline-flex min-h-[50px] w-full items-center justify-center rounded-[10px] bg-action-primary-bg px-5 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sage-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-sand/80 disabled:text-muted disabled:hover:brightness-100"
         >
           {isSubmitting
             ? t("dashboard.feedbackSubmitLoading", locale)
@@ -303,6 +302,6 @@ export function FeedbackForm({ initialSubmitted, hasObserverFeedback = false }: 
           }
         </button>
       </form>
-    </div>
+    </section>
   );
 }
