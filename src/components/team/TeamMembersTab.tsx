@@ -47,6 +47,9 @@ interface TeamMembersTabProps {
   /** Tag-dossié bázis-URL (`/org/[id]/members`) VAGY null — a page számolja
    *  ki a canViewMemberDossier-t (env-t olvas); a kliens sosem hívja. */
   dossierBaseHref?: string | null;
+  /** Egyszerű csapattársi nézet: csak a személy azonosításához szükséges
+   * név és e-mail jelenik meg, adminisztratív vagy mérési metaadat nélkül. */
+  memberDirectoryOnly?: boolean;
   isHu: boolean;
   locale: string;
   dateLocale: string;
@@ -61,6 +64,7 @@ export function TeamMembersTab({
   canEmailInvite,
   addableOrgMembers,
   dossierBaseHref = null,
+  memberDirectoryOnly = false,
   isHu,
   locale,
   dateLocale,
@@ -69,6 +73,74 @@ export function TeamMembersTab({
   // Fejléc-gombos tag-felvétel (UX-audit #18): az űrlap nem a lista alján ül,
   // hanem a fejléc „+ Tag hozzáadása" gombjára nyíló panelben.
   const [addOpen, setAddOpen] = useState(false);
+
+  if (memberDirectoryOnly) {
+    return (
+      <section className="pt-6" aria-labelledby="team-member-directory-title">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <SectionEyebrow className="mb-1">
+              {t("teamComp.membersTabEyebrow", loc)}
+            </SectionEyebrow>
+            <h2
+              id="team-member-directory-title"
+              className="font-fraunces text-3xl text-ink"
+            >
+              {isHu ? "A csapat tagjai" : "Your teammates"}
+            </h2>
+          </div>
+          <span className="pb-1 text-note text-muted">
+            {members.length}{" "}
+            {isHu ? "csapattárs" : members.length === 1 ? "teammate" : "teammates"}
+          </span>
+        </div>
+
+        {members.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {members.map((member) => {
+              const initials = member.displayName
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map((part) => part.charAt(0))
+                .join("")
+                .toLocaleUpperCase(isHu ? "hu-HU" : "en-US");
+
+              return (
+                <article
+                  key={member.id}
+                  className="flex min-w-0 items-center gap-4 rounded-2xl border border-surface-team-border bg-surface-card p-4 shadow-[var(--ui-shadow-sm)]"
+                >
+                  <span
+                    aria-hidden="true"
+                    className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-[var(--color-layer-team-accent)]/15 bg-[var(--color-layer-team-soft)] font-fraunces text-xl text-[var(--color-layer-team-accent)]"
+                  >
+                    {initials || "·"}
+                  </span>
+                  <div className="min-w-0">
+                    <h3 className="truncate text-caption font-semibold text-ink">
+                      {member.displayName}
+                    </h3>
+                    <p
+                      className="mt-1 truncate text-note text-muted"
+                      title={member.email ?? undefined}
+                    >
+                      {member.email ?? "—"}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-caption text-ink-body">
+            {isHu ? "Még nincs csapattag." : "There are no teammates yet."}
+          </p>
+        )}
+      </section>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-8 pt-6">
       {/* Members section */}
