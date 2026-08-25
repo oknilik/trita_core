@@ -25,7 +25,7 @@ export function buildOnboardingSchema(currentYear = new Date().getFullYear()) {
       gender: z.enum(GENDERS).optional(),
       country: z.string().min(1).max(100).optional(),
       consentedAt: z.string().datetime().optional(),
-      eduLevel: z.enum(["primary", "secondary", "vocational", "higher"]).optional(),
+      eduLevel: z.enum(["primary", "secondary", "vocational", "higher", "specialized"]).nullable().optional(),
       eduField: z
         .enum([
           "tech_engineering",
@@ -38,9 +38,11 @@ export function buildOnboardingSchema(currentYear = new Date().getFullYear()) {
           "pedagogy",
           "trade",
           "none",
+          "none_other",
         ])
+        .nullable()
         .optional(),
-      currentIndustry: z.string().max(50).optional(),
+      currentIndustry: z.string().max(50).nullable().optional(),
     })
     .superRefine((data, ctx) => {
       const hasBirthYear = data.birthYear !== undefined;

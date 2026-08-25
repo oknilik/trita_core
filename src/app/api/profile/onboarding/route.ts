@@ -22,6 +22,7 @@ export async function GET() {
       birthYear: true,
       gender: true,
       country: true,
+      careerBackground: true,
       role: true,
       orgMemberships: {
         where: { leftAt: null },
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
   // JSON kulcsait megőrizzük, csak a most kapottakat írjuk felül.
   const { eduLevel, eduField, currentIndustry } = parsed.data;
   let careerBackgroundUpdate: Record<string, unknown> | undefined;
-  if (eduLevel || eduField || currentIndustry) {
+  if (eduLevel !== undefined || eduField !== undefined || currentIndustry !== undefined) {
     if (currentIndustry && !INDUSTRIES.some((i) => i.key === currentIndustry)) {
       return NextResponse.json({ error: "INVALID_INDUSTRY" }, { status: 400 });
     }
@@ -82,9 +83,9 @@ export async function POST(req: Request) {
     });
     careerBackgroundUpdate = {
       ...((existing?.careerBackground as Record<string, unknown> | null) ?? {}),
-      ...(eduLevel && { eduLevel }),
-      ...(eduField && { eduField }),
-      ...(currentIndustry && { currentIndustry }),
+      ...(eduLevel !== undefined && { eduLevel }),
+      ...(eduField !== undefined && { eduField }),
+      ...(currentIndustry !== undefined && { currentIndustry }),
     };
   }
 

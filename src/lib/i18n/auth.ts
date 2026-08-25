@@ -157,6 +157,10 @@ export const authTranslations = {
       hu: "Csak azt add meg, ami az induláshoz szükséges",
       en: "Only what is needed to get started",
     },
+    claimNameHint: {
+      hu: "Most csak a nevedet kérjük, hogy személyesen köszönthessünk",
+      en: "For now, we only need your name so we can welcome you personally",
+    },
     claimOptionalHint: {
       hu: "A további háttéradatokat később, opcionálisan adhatod meg a profilodban.",
       en: "You can add further background details later, optionally, from your profile.",

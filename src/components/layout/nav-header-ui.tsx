@@ -47,6 +47,18 @@ function ResultsIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   );
 }
 
+function InteractionIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="5" cy="5" r="2.25" />
+      <circle cx="11" cy="5" r="2.25" />
+      <path d="M1.5 14a3.5 3.5 0 0 1 7 0" />
+      <path d="M7.5 14a3.5 3.5 0 0 1 7 0" />
+      <path d="M6.5 8.5h3" />
+    </svg>
+  );
+}
+
 function TasksIcon({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
@@ -447,6 +459,8 @@ function NavHeaderContent({
         return <GridIcon className={className} />;
       case "results":
         return <ResultsIcon className={className} />;
+      case "interaction":
+        return <InteractionIcon className={className} />;
       case "tasks":
         return <TasksIcon className={className} />;
       case "teams":

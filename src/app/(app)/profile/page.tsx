@@ -11,6 +11,7 @@ import { clearLocaleSyncFlag, useLocale } from "@/components/LocaleProvider";
 import { t, type Locale, SUPPORTED_LOCALES } from "@/lib/i18n";
 import { getCountryOptions } from "@/lib/countries";
 import { GENDER_OPTIONS } from "@/lib/onboarding-options";
+import { INDUSTRIES } from "@/lib/industry-fit";
 import { getAvatarGradient, getAvatarMonogram } from "@/lib/ui/avatar";
 import { SELF_PAYWALL_ENABLED } from "@/lib/operating-mode";
 import { createClientLogger } from "@/lib/client-logger";
@@ -18,12 +19,19 @@ import { buildSignInPath } from "@/lib/navigation/auth-redirects";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { Button, getButtonClassName } from "@/components/ui/primitives/Button";
 import { Card } from "@/components/ui/primitives/Card";
-import { StatusChip } from "@/components/ui/primitives/StatusChip";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("profile");
 
-type FormSnapshot = { username: string; birthYear: string; gender: string; country: string };
+type FormSnapshot = {
+  username: string;
+  birthYear: string;
+  gender: string;
+  country: string;
+  eduLevel: string;
+  eduField: string;
+  currentIndustry: string;
+};
 type OrgMembershipInfo = {
   memberships: Array<{ orgId: string; role: string; orgName: string | null }>;
   teams: Array<{ id: string; name: string; orgId: string }>;
@@ -52,9 +60,15 @@ export default function ProfilePage() {
   const [birthYear, setBirthYear] = useState("");
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
+  const [eduLevel, setEduLevel] = useState("");
+  const [eduField, setEduField] = useState("");
+  const [currentIndustry, setCurrentIndustry] = useState("");
   const [initialSnapshot, setInitialSnapshot] = useState<FormSnapshot | null>(null);
   const [isSavingDemo, setIsSavingDemo] = useState(false);
   const [countryPickerOpen, setCountryPickerOpen] = useState(false);
+  const [eduLevelPickerOpen, setEduLevelPickerOpen] = useState(false);
+  const [eduFieldPickerOpen, setEduFieldPickerOpen] = useState(false);
+  const [industryPickerOpen, setIndustryPickerOpen] = useState(false);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [selectedLocale, setSelectedLocale] = useState<Locale>(locale);
   const [savedLocale, setSavedLocale] = useState<Locale>(locale);
@@ -72,6 +86,29 @@ export default function ProfilePage() {
 
   const countryOptions = useMemo(() => getCountryOptions(locale), [locale]);
   const countryLabel = useMemo(() => countryOptions.find((c) => c.value === country)?.label, [country, countryOptions]);
+  const eduOptions = useMemo(() => ([
+    { value: "primary", label: t("results.ccEduPrimary", locale) },
+    { value: "secondary", label: t("results.ccEduSecondary", locale) },
+    { value: "vocational", label: t("results.ccEduVocational", locale) },
+    { value: "higher", label: t("results.ccEduHigher", locale) },
+    { value: "specialized", label: t("results.ccEduSpecialized", locale) },
+  ]), [locale]);
+  const eduFieldOptions = useMemo(() => ([
+    { value: "tech_engineering", label: t("results.ccFieldTech", locale) },
+    { value: "economics", label: t("results.ccFieldEconomics", locale) },
+    { value: "health", label: t("results.ccFieldHealth", locale) },
+    { value: "humanities", label: t("results.ccFieldHumanities", locale) },
+    { value: "natural_science", label: t("results.ccFieldScience", locale) },
+    { value: "legal", label: t("results.ccFieldLegal", locale) },
+    { value: "arts", label: t("results.ccFieldArts", locale) },
+    { value: "pedagogy", label: t("results.ccFieldPedagogy", locale) },
+    { value: "trade", label: t("results.ccFieldTrade", locale) },
+    { value: "none", label: t("results.ccFieldNone", locale) },
+  ]), [locale]);
+  const industryOptions = useMemo(() => ([
+    ...INDUSTRIES.map((industry) => ({ value: industry.key, label: locale === "hu" ? industry.hu : industry.en })),
+    { value: "", label: t("results.ccCurrentNone", locale) },
+  ]), [locale]);
 
   useEffect(() => {
     let cancelled = false;
@@ -96,6 +133,7 @@ export default function ProfilePage() {
       const res = await fetch("/api/profile/onboarding");
       if (!res.ok) return;
       const data = await res.json();
+      const careerBackground = (data.careerBackground ?? {}) as Record<string, unknown>;
       setEmail(data.email ?? null);
       setAccessLevel(data.accessLevel ?? null);
       const snap: FormSnapshot = {
@@ -103,11 +141,17 @@ export default function ProfilePage() {
         birthYear: data.birthYear ? String(data.birthYear) : "",
         gender: data.gender ?? "",
         country: data.country ?? "",
+        eduLevel: typeof careerBackground.eduLevel === "string" ? careerBackground.eduLevel : "",
+        eduField: typeof careerBackground.eduField === "string" ? careerBackground.eduField : "",
+        currentIndustry: typeof careerBackground.currentIndustry === "string" ? careerBackground.currentIndustry : "",
       };
       setUsername(snap.username);
       setBirthYear(snap.birthYear);
       setGender(snap.gender);
       setCountry(snap.country);
+      setEduLevel(snap.eduLevel);
+      setEduField(snap.eduField);
+      setCurrentIndustry(snap.currentIndustry);
       setInitialSnapshot(snap);
     } catch { /* silent */ }
     finally {
@@ -182,8 +226,9 @@ export default function ProfilePage() {
   const canSaveDemo = usernameValid && birthYearValid && gender !== "" && country !== "";
 
   const isDemographicsDirty = initialSnapshot != null && (username.trim() !== initialSnapshot.username || birthYear !== initialSnapshot.birthYear || gender !== initialSnapshot.gender || country !== initialSnapshot.country);
+  const isCareerDirty = initialSnapshot != null && (eduLevel !== initialSnapshot.eduLevel || eduField !== initialSnapshot.eduField || currentIndustry !== initialSnapshot.currentIndustry);
   const isLocaleDirty = selectedLocale !== savedLocale;
-  const isDirty = isDemographicsDirty || isLocaleDirty;
+  const isDirty = isDemographicsDirty || isCareerDirty || isLocaleDirty;
   const canSubmitDemo = !isSavingDemo && isDirty && (!isDemographicsDirty || canSaveDemo);
 
   const flashInvalidField = (field: InvalidField) => {
@@ -213,10 +258,22 @@ export default function ProfilePage() {
     if (!isDirty) return;
     setSaveState("saving"); setIsSavingDemo(true);
     try {
-      if (isDemographicsDirty) {
-        const res = await fetch("/api/profile/onboarding", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: username.trim(), birthYear: Number(birthYear), gender, country }) });
+      if (isDemographicsDirty || isCareerDirty) {
+        const res = await fetch("/api/profile/onboarding", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: username.trim(),
+            ...(isDemographicsDirty ? { birthYear: Number(birthYear), gender, country } : {}),
+            ...(isCareerDirty ? {
+              eduLevel: eduLevel || null,
+              eduField: eduLevel && eduLevel !== "primary" && eduField ? eduField : null,
+              currentIndustry: currentIndustry || null,
+            } : {}),
+          }),
+        });
         if (!res.ok) throw new Error("Save failed");
-        setInitialSnapshot({ username: username.trim(), birthYear, gender, country });
+        setInitialSnapshot({ username: username.trim(), birthYear, gender, country, eduLevel, eduField: eduLevel === "primary" ? "" : eduField, currentIndustry });
       }
       if (isLocaleDirty) { setLocale(selectedLocale); setSavedLocale(selectedLocale); }
       setSaveState("saved");
@@ -256,103 +313,51 @@ export default function ProfilePage() {
   return (
     <PlatformPageShell
       surface="self"
-      contentClassName="max-w-3xl gap-5 px-4 py-10"
-      chrome={{
-        breadcrumb: [
-          { label: t("nav.home", locale), href: "/dashboard" },
-          { label: t("profile.title", locale) },
-        ],
-        eyebrow: t("profile.title", locale),
-        title: (
-          <span className="flex min-w-0 items-center gap-3">
-            <span
-              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full font-fraunces text-xl font-medium text-white shadow-md"
-              style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
-            >
-              {initials}
-            </span>
-            <span className="truncate">{displayName}</span>
+      contentClassName="max-w-4xl gap-5 px-4 py-8 md:py-10"
+    >
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-5 py-6 text-[var(--color-text-on-inverse)] shadow-[var(--ui-shadow-lg)] md:px-8 md:py-7">
+        <svg aria-hidden="true" viewBox="0 0 60 60" className="absolute -right-4 -top-8 h-36 w-36 text-white/10" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <path d="M30 5v50M5 30h50M12 12l36 36M48 12 12 48" />
+        </svg>
+        <div className="relative flex flex-col gap-5 md:flex-row md:items-center">
+          <span
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full font-fraunces text-2xl font-medium text-[var(--color-text-on-inverse)] shadow-md"
+            style={{ background: `linear-gradient(135deg, ${avatarFrom}, ${avatarTo})` }}
+          >
+            {initials}
           </span>
-        ),
-        subtitle: t("profile.heroSubtitle", locale),
-        actions: (
+          <div className="min-w-0 flex-1">
+            <p className="text-label uppercase text-[var(--color-accent-primary-soft)]">
+              {locale === "hu" ? "A te tered" : "Your space"}
+            </p>
+            <h1 className="mt-1 truncate font-fraunces text-3xl font-medium tracking-tight">{displayName}</h1>
+            <p className="mt-1 truncate text-xs text-[var(--color-text-on-inverse-muted)]">
+              {[email, SELF_PAYWALL_ENABLED ? `${planLabel} ${locale === "hu" ? "csomag" : "plan"}` : null, locale === "hu" ? "Magyar" : "English"].filter(Boolean).join(" · ")}
+            </p>
+          </div>
           <Link
             href="/profile/results"
-            className={getButtonClassName({ size: "sm", variant: "secondary" })}
+            className={getButtonClassName({ size: "sm", variant: "secondary", onInverse: true, className: "relative shrink-0" })}
           >
-            {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"}
+            {locale === "hu" ? "Eredményeim megnyitása" : "Open my results"} →
           </Link>
-        ),
-      }}
-    >
-      <div className="flex flex-wrap gap-2">
-        {SELF_PAYWALL_ENABLED ? <StatusChip>{planLabel}</StatusChip> : null}
-        <StatusChip variant="info">{locale === "hu" ? "Magyar" : "English"}</StatusChip>
-        {email ? <StatusChip className="max-w-full truncate">{email}</StatusChip> : null}
-      </div>
+        </div>
+      </section>
 
-        {/* ═══ SZERVEZETI TAGSÁG ═══ */}
-        {orgInfo && orgInfo.memberships.length > 0 && (
-          <Card as="section" spacing="lg">
-            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.orgSectionTitle", locale)}</h2>
-            <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
-            <div className="flex flex-col gap-3">
-              {orgInfo.memberships.map((m) => {
-                const roleLabel =
-                  m.role === "ORG_ADMIN"
-                    ? t("profile.orgRoleAdmin", locale)
-                    : m.role === "ORG_CONSULTANT"
-                      ? t("profile.orgRoleConsultant", locale)
-                      : m.role === "ORG_MANAGER"
-                      ? t("profile.orgRoleManager", locale)
-                      : t("profile.orgRoleMember", locale);
-                const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
-                const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
-                return (
-                  <div key={m.orgId} className="rounded-xl border border-[var(--color-border-default)] bg-surface-card p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      {canOpenOrg ? (
-                        <Link href={`/org/${m.orgId}`} className={`rounded-md text-caption font-semibold text-[var(--color-text-primary)] hover:underline ${FOCUS_RING_CLASS}`}>
-                          {m.orgName ?? m.orgId}
-                        </Link>
-                      ) : (
-                        <span className="text-caption font-semibold text-[var(--color-text-primary)]">{m.orgName ?? m.orgId}</span>
-                      )}
-                      <span className="rounded-full bg-[var(--color-surface-subtle)] px-2 py-0.5 text-micro font-semibold text-[var(--color-text-secondary)]">
-                        {roleLabel}
-                      </span>
-                    </div>
-                    {orgTeams.length > 0 && (
-                      <div className="mt-2.5">
-                        <p className="mb-1.5 text-micro font-medium uppercase tracking-widest text-[var(--color-text-muted)]">
-                          {t("profile.orgTeamsLabel", locale)}
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {orgTeams.map((team) => (
-                            <Link
-                              key={team.id}
-                              href={`/team/${team.id}`}
-                              className={`rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-2.5 py-1 text-note text-[var(--color-text-secondary)] transition-colors hover:text-[var(--color-text-primary)] ${FOCUS_RING_CLASS}`}
-                            >
-                              {team.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        )}
+      <nav aria-label={locale === "hu" ? "Profilbeállítások" : "Profile settings"} className="-mb-1 flex gap-6 overflow-x-auto border-b border-border-default px-1 text-xs text-text-muted">
+        <a href="#about" className={`shrink-0 border-b-2 border-[var(--color-action-primary-bg)] pb-3 font-semibold text-[var(--color-action-primary-bg)] ${FOCUS_RING_CLASS}`}>{t("profile.sectionAbout", locale)}</a>
+        <a href="#language" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionLanguage", locale)}</a>
+        {orgInfo && orgInfo.memberships.length > 0 ? <a href="#organization" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.orgSectionTitle", locale)}</a> : null}
+        <a href="#career-background" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{locale === "hu" ? "Háttér" : "Background"}</a>
+        <a href="#account" className={`shrink-0 pb-3 hover:text-text-primary ${FOCUS_RING_CLASS}`}>{t("profile.sectionAccount", locale)}</a>
+      </nav>
 
-        {/* ═══ RÓLAD ═══ */}
-        <Card as="section" spacing="lg">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionAbout", locale)}</h2>
-          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
+      <div className="grid gap-5 md:grid-cols-[1.12fr_0.88fr]">
+        <Card id="about" as="section" spacing="lg">
+          <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.sectionAbout", locale)}</h2>
+          <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">{t("profile.sectionAboutSub", locale)}</p>
 
-          <div className="mb-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-note font-medium text-[var(--color-text-secondary)]">
               {t("onboarding.usernameLabel", locale)}
               <input
@@ -393,51 +398,124 @@ export default function ProfilePage() {
           </div>
         </Card>
 
-        {/* ═══ MEGJELENÉS ÉS NYELV ═══ */}
-        <Card as="section" spacing="lg">
-          <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">{t("profile.sectionLanguage", locale)}</h2>
-          <p className="mb-4 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
-          <div className="flex gap-[5px]">
-            {SUPPORTED_LOCALES.map((loc) => (
-              <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
-                {t(`locale.${loc}` as const, loc)}
-              </button>
-            ))}
-          </div>
-        </Card>
+        <div className="flex flex-col gap-5">
+          {orgInfo && orgInfo.memberships.length > 0 ? (
+            <Card id="organization" as="section" spacing="lg">
+              <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.orgSectionTitle", locale)}</h2>
+              <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.orgSectionSub", locale)}</p>
+              <div className="flex flex-col gap-3">
+                {orgInfo.memberships.map((m) => {
+                  const roleLabel = m.role === "ORG_ADMIN"
+                    ? t("profile.orgRoleAdmin", locale)
+                    : m.role === "ORG_CONSULTANT"
+                      ? t("profile.orgRoleConsultant", locale)
+                      : m.role === "ORG_MANAGER"
+                        ? t("profile.orgRoleManager", locale)
+                        : t("profile.orgRoleMember", locale);
+                  const orgTeams = orgInfo.teams.filter((team) => team.orgId === m.orgId);
+                  const canOpenOrg = m.role === "ORG_ADMIN" || m.role === "ORG_CONSULTANT" || m.role === "ORG_MANAGER";
+                  return (
+                    <div key={m.orgId} className="rounded-xl bg-[var(--color-surface-self-accent-soft)] p-4">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--color-layer-org-accent)] text-micro font-bold text-[var(--color-text-on-inverse)]">{(m.orgName ?? "T").slice(0, 2).toUpperCase()}</span>
+                        <div className="min-w-0">
+                          {canOpenOrg ? <Link href={`/org/${m.orgId}`} className={`block truncate text-caption font-semibold text-text-primary hover:underline ${FOCUS_RING_CLASS}`}>{m.orgName ?? m.orgId}</Link> : <span className="block truncate text-caption font-semibold text-text-primary">{m.orgName ?? m.orgId}</span>}
+                          <span className="text-micro text-text-muted">{roleLabel}</span>
+                        </div>
+                      </div>
+                      {orgTeams.length > 0 ? <div className="mt-3 flex flex-wrap gap-1.5">{orgTeams.map((team) => <Link key={team.id} href={`/team/${team.id}`} className={`rounded-full border border-border-default bg-surface-card px-2.5 py-1 text-note text-text-secondary hover:text-text-primary ${FOCUS_RING_CLASS}`}>{team.name}</Link>)}</div> : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+          ) : null}
 
-        {/* ═══ SAVE ROW ═══ */}
-        <Card as="section" spacing="sm" className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-[5px] text-note text-[var(--color-text-muted)]">
-            <span className={`h-1.5 w-1.5 rounded-full ${isDirty ? "bg-[var(--color-accent-primary)]" : "bg-[var(--color-action-primary-bg)]"}`} />
-            {isDirty
-              ? t("profile.saveUnsaved", locale)
-              : saveState === "saved"
-                ? t("profile.saveSaved", locale)
-                : t("profile.saveNoChanges", locale)}
+          <Card id="language" as="section" spacing="lg">
+            <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">{t("profile.sectionLanguage", locale)}</h2>
+            <p className="mb-4 mt-1 text-xs text-[var(--color-text-muted)]">{t("profile.sectionLanguageSub", locale)}</p>
+            <div className="flex flex-wrap gap-[5px]">
+              {SUPPORTED_LOCALES.map((loc) => (
+                <button key={loc} type="button" onClick={() => setSelectedLocale(loc)} className={pillClass(selectedLocale === loc)}>
+                  {t(`locale.${loc}` as const, loc)}
+                </button>
+              ))}
+            </div>
+          </Card>
+
+          <div className="rounded-2xl bg-[var(--color-surface-soft-warm)] p-4 text-xs leading-relaxed text-[var(--color-accent-earth-strong)]">
+            <strong className="font-fraunces text-base font-medium">{locale === "hu" ? "Az adataid nálad maradnak." : "Your data stays yours."}</strong><br />
+            {locale === "hu" ? "A profilod adatai bármikor módosíthatók vagy törölhetők." : "Your profile data can be edited or deleted at any time."}
           </div>
+        </div>
+      </div>
+
+      <Card id="career-background" as="section" spacing="lg">
+        <h2 className="font-fraunces text-xl font-medium text-[var(--color-action-primary-bg)]">
+          {locale === "hu" ? "Tanulmányok és szakmai háttér" : "Education and professional background"}
+        </h2>
+        <p className="mb-5 mt-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
+          {locale === "hu" ? "Ezekkel pontosabban tudjuk személyre szabni a későbbi eredményeidet." : "These details help us tailor your future results more precisely."}
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          <PickerTrigger
+            label={locale === "hu" ? "Legmagasabb végzettség" : "Highest education"}
+            value={eduOptions.find((option) => option.value === eduLevel)?.label}
+            placeholder={locale === "hu" ? "Válassz végzettséget" : "Choose education"}
+            onClick={() => setEduLevelPickerOpen(true)}
+            isOpen={eduLevelPickerOpen}
+          />
+          {eduLevel === "primary" ? (
+            <div className="flex flex-col gap-1">
+              <span className="text-note font-medium text-[var(--color-text-secondary)]">{t("onboarding.eduFieldLabel", locale)}</span>
+              <div className="flex min-h-[44px] items-center rounded-lg border-[1.5px] border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] px-3.5 text-xs text-[var(--color-text-muted)]">
+                {locale === "hu" ? "Nem szükséges" : "Not needed"}
+              </div>
+            </div>
+          ) : (
+            <PickerTrigger
+              label={t("onboarding.eduFieldLabel", locale)}
+              value={eduFieldOptions.find((option) => option.value === eduField || (eduField === "none_other" && option.value === "none"))?.label}
+              placeholder={locale === "hu" ? "Válassz területet" : "Choose a field"}
+              onClick={() => setEduFieldPickerOpen(true)}
+              isOpen={eduFieldPickerOpen}
+            />
+          )}
+          <PickerTrigger
+            label={locale === "hu" ? "Jelenlegi iparág" : "Current industry"}
+            value={industryOptions.find((option) => option.value === currentIndustry)?.label}
+            placeholder={locale === "hu" ? "Válassz iparágat" : "Choose an industry"}
+            onClick={() => setIndustryPickerOpen(true)}
+            isOpen={industryPickerOpen}
+          />
+        </div>
+      </Card>
+
+      <section className="flex flex-col gap-4 rounded-2xl bg-[var(--color-surface-inverse)] p-4 text-[var(--color-text-on-inverse)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-start gap-2 text-note">
+          <span className={`mt-1 h-1.5 w-1.5 shrink-0 rounded-full ${isDirty ? "bg-[var(--color-accent-primary-soft)]" : "bg-[var(--color-sage-300)]"}`} />
+          <span>
+            <strong className="block text-[var(--color-text-on-inverse)]">
+              {isDirty ? t("profile.saveUnsaved", locale) : saveState === "saved" ? t("profile.saveSaved", locale) : t("profile.saveNoChanges", locale)}
+            </strong>
+            <span className="text-micro text-[var(--color-text-on-inverse-muted)]">{locale === "hu" ? "A módosításokat itt tudod menteni." : "Save your changes here."}</span>
+          </span>
+        </div>
           <Button
             type="button"
             onClick={handleSave}
             disabled={!canSubmitDemo}
             loading={isSavingDemo}
+            onInverse
             className="shrink-0"
           >
             {isSavingDemo ? t("actions.save", locale) : t("profile.saveButton", locale)}
           </Button>
-        </Card>
-        {saveState === "saved" ? (
-          <p role="status" className="text-note text-[var(--color-state-success-text)]">
-            {locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}
-          </p>
-        ) : saveState === "error" ? (
-          <p role="alert" className="text-note text-[var(--color-state-error-text)]">
-            {locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}
-          </p>
-        ) : null}
+      </section>
+      {saveState === "saved" ? <p role="status" className="text-note text-[var(--color-state-success-text)]">{locale === "hu" ? "A profil mentése sikerült." : "Profile saved successfully."}</p> : saveState === "error" ? <p role="alert" className="text-note text-[var(--color-state-error-text)]">{locale === "hu" ? "A mentés nem sikerült. Az adataid megmaradtak; próbáld újra." : "Save failed. Your changes are preserved; please try again."}</p> : null}
 
-        {/* ═══ DANGER BOX ═══ */}
         <Card
+          id="account"
           as="section"
           bordered={false}
           spacing="sm"
@@ -485,6 +563,18 @@ export default function ProfilePage() {
         options={countryOptions} selectedValue={country} title={t("onboarding.countryLabel", locale)}
         closeLabel={t("common.close", locale)}
         searchable searchPlaceholder={t("onboarding.countryPlaceholder", locale)}
+      />
+      <Picker isOpen={eduLevelPickerOpen} onClose={() => setEduLevelPickerOpen(false)} onSelect={(value) => { setEduLevel(value); if (value === "primary") setEduField(""); }}
+        options={eduOptions} selectedValue={eduLevel} title={locale === "hu" ? "Legmagasabb végzettség" : "Highest education"}
+        closeLabel={t("common.close", locale)}
+      />
+      <Picker isOpen={eduFieldPickerOpen} onClose={() => setEduFieldPickerOpen(false)} onSelect={setEduField}
+        options={eduFieldOptions} selectedValue={eduField} title={t("onboarding.eduFieldLabel", locale)}
+        closeLabel={t("common.close", locale)}
+      />
+      <Picker isOpen={industryPickerOpen} onClose={() => setIndustryPickerOpen(false)} onSelect={setCurrentIndustry}
+        options={industryOptions} selectedValue={currentIndustry} title={locale === "hu" ? "Jelenlegi iparág" : "Current industry"}
+        closeLabel={t("common.close", locale)} searchable
       />
     </PlatformPageShell>
   );
