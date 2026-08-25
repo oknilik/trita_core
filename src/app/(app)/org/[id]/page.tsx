@@ -10,10 +10,9 @@ import { requireOrgContext, hasOrgRole } from "@/lib/auth";
 import { getCapabilityGateCopy } from "@/lib/policy-ux";
 import { getOrgPageData } from "@/lib/org-stats";
 import { OrgPageShell } from "@/components/org/OrgPageShell";
-import { CompletionIndicator } from "@/components/ui/CompletionIndicator";
-import { ProgressRing } from "@/components/ui/ProgressRing";
 import { CampaignPacingTile } from "@/components/org/CampaignPacingTile";
 import { OrgOverviewNextAction } from "@/components/org/OrgOverviewNextAction";
+import { OrgOverviewSnapshot } from "@/components/org/OrgOverviewSnapshot";
 import { isConsultantSurface, canViewMemberDossier } from "@/lib/measurement-auth";
 import { PlatformPageShell } from "@/components/layout/PlatformPageShell";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -213,6 +212,11 @@ export default async function OrgDetailPage({
         name: true,
         createdAt: true,
         _count: { select: { members: true } },
+        reports: {
+          where: { status: "PUBLISHED" },
+          select: { id: true },
+          take: 1,
+        },
       },
     }),
   ]);
@@ -345,6 +349,7 @@ export default async function OrgDetailPage({
     name: tm.name,
     createdAt: tm.createdAt.toISOString(),
     _count: { members: tm._count.members },
+    hasPublishedReport: tm.reports.length > 0,
   }));
 
   // Élő aggregátum (tritanAvg) csak tanácsadónak — mindenki más a
@@ -353,10 +358,6 @@ export default async function OrgDetailPage({
     pageData.tritanAvg = null;
   }
 
-  const completionPct =
-    pageData.activeTotalParticipants > 0
-      ? Math.round((pageData.activeSelfDone / pageData.activeTotalParticipants) * 100)
-      : 0;
   const orgCompletionPct =
     pageData.memberCount > 0
       ? Math.round((pageData.completedMemberCount / pageData.memberCount) * 100)
@@ -378,10 +379,6 @@ export default async function OrgDetailPage({
     canLaunchCampaign: canLaunchCampaignActions,
     canViewCampaigns: isConsultantView,
   });
-  const activeRemainingCount = Math.max(
-    pageData.activeTotalParticipants - pageData.activeSelfDone,
-    0,
-  );
   const orgHeroTheme = SURFACE_HERO_THEME.org;
 
   return (
@@ -494,88 +491,45 @@ export default async function OrgDetailPage({
               </div>
             </div>
 
-            {/* Haladás-gyűrűk (F3) — a kitöltöttség kör-formában: a 75%
-                látványa húz a 100% felé. */}
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <CompletionIndicator percent={orgCompletionPct} size={76} color="var(--color-sage-300)" />
-                <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
-                  {t("orgHero.orgCompletion", locale)}
-                </p>
-                <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
-                  {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
-                </p>
+            {/* A hero csak az azonnal értelmezhető szervezeti alapmutatót
+                tartja meg; a részletes állapotkép közvetlenül alatta él. */}
+            <div className="mt-4 rounded-xl bg-white/[0.06] px-3 py-3">
+              <div className="flex items-center justify-between gap-3 text-micro text-[var(--color-text-on-inverse-muted)]">
+                <span>{t("orgHero.orgCompletion", locale)}</span>
+                <strong className="font-semibold text-[var(--color-text-on-inverse)]">
+                  {pageData.completedMemberCount} / {pageData.memberCount}
+                </strong>
               </div>
-              <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
-                <CompletionIndicator percent={completionPct} size={76} color={orgHeroTheme.primary} />
-                <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-[var(--color-text-on-inverse-muted)]">
-                  {t("orgHero.activeCampaignCompletion", locale)}
-                </p>
-                <p className="text-micro text-[var(--color-text-on-inverse-muted)]">
-                  {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
-                </p>
+              <div
+                className="mt-2 h-1 overflow-hidden rounded-full bg-white/[0.12]"
+                role="progressbar"
+                aria-label={t("orgHero.orgCompletion", locale)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={orgCompletionPct}
+              >
+                <div
+                  className="h-full rounded-full bg-sage-300"
+                  style={{ width: `${orgCompletionPct}%` }}
+                />
               </div>
+              <p className="mt-2 text-micro text-[var(--color-text-on-inverse-muted)]">
+                {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
+              </p>
             </div>
           </>
         )}
       />
 
-      {/* Élő pillanatkép mobilra/tabletre: a hero aside-ja csak lg-től
-          renderel, így 1024px alatt sehol nem látszott az org-szintű és az
-          aktív mérés kitöltöttsége. Ugyanaz a tartalom, világos témán. */}
-      <section className="rounded-2xl border border-sand bg-surface-card p-4 shadow-sm lg:hidden">
-        <p className="text-micro uppercase tracking-widest text-muted">
-          {t("orgHero.liveSnapshot", locale)}
-        </p>
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.membersLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.memberCount}</p>
-          </div>
-          <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.teamsLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.teamCount}</p>
-          </div>
-          <div className="rounded-xl bg-cream px-3 py-2">
-            <p className="min-h-10 text-micro uppercase tracking-widest text-muted">{t("orgHero.activeLabel", locale)}</p>
-            <p className="mt-1 font-fraunces text-heading leading-none tabular-nums text-ink">{pageData.activeCampaignCount}</p>
-          </div>
-        </div>
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
-            <ProgressRing
-              percent={orgCompletionPct}
-              size={68}
-              label={`${orgCompletionPct}%`}
-              color="var(--color-sage)"
-              trackColor="var(--color-sand)"
-              labelClassName="fill-ink"
-            />
-            <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-ink-body">
-              {t("orgHero.orgCompletion", locale)}
-            </p>
-            <p className="text-micro text-muted">
-              {pageData.completedMemberCount} {t("orgHero.done", locale)} · {orgRemainingCount} {t("orgHero.remaining", locale)}
-            </p>
-          </div>
-          <div className="flex flex-col items-center gap-1.5 rounded-xl bg-cream px-2 py-3 text-center">
-            <ProgressRing
-              percent={completionPct}
-              size={68}
-              label={`${completionPct}%`}
-              color="var(--color-bronze)"
-              trackColor="var(--color-sand)"
-              labelClassName="fill-ink"
-            />
-            <p className="flex min-h-8 items-start justify-center text-micro leading-tight text-ink-body">
-              {t("orgHero.activeCampaignCompletion", locale)}
-            </p>
-            <p className="text-micro text-muted">
-              {pageData.activeSelfDone} {t("orgHero.done", locale)} · {activeRemainingCount} {t("orgHero.remaining", locale)}
-            </p>
-          </div>
-        </div>
-      </section>
+      <OrgOverviewSnapshot
+        isHu={isHu}
+        memberCount={pageData.memberCount}
+        completedMemberCount={pageData.completedMemberCount}
+        teamCount={pageData.teamCount}
+        activeCampaignCount={pageData.activeCampaignCount}
+        activeDoneCount={pageData.activeSelfDone}
+        activeParticipantCount={pageData.activeTotalParticipants}
+      />
 
       <OrgOverviewNextAction focus={overviewFocus} isHu={isHu} />
 
