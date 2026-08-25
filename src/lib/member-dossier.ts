@@ -74,6 +74,14 @@ export interface DossierDimComparison {
   delta: number | null; // observer - self
 }
 
+export interface DossierFacetComparison {
+  dimensionCode: HexacoCode;
+  code: string;
+  self: number;
+  observer: number | null; // null = küszöb alatt / nincs facet-lefedettség
+  delta: number | null; // observer - self
+}
+
 export interface DossierSelfVsExternal {
   hasSelf: boolean;
   selfCompletedAt: string | null;
@@ -82,6 +90,7 @@ export interface DossierSelfVsExternal {
   observerSuspectCount: number; // rater-minőség flaggel érintett értékelések (observer/rater-quality.ts) — csak darabszám
   observerShown: boolean;
   dims: DossierDimComparison[];
+  facets: DossierFacetComparison[];
   topGaps: DossierDimComparison[]; // |delta| >= DOSSIER_GAP_MIN_DELTA (SEM), max 3
   teamRole: {
     selfTop: { role: TeamRoleCode; score: number }[] | null;
@@ -235,6 +244,35 @@ export function computeDimComparisons(
       },
     ];
   });
+}
+
+/**
+ * Önkép vs. külső kép facetenként, dimenzió- és kérdésbank-sorrendben.
+ * Csak a valóban mért self-facetek kerülnek ki; a külső érték hiánya null,
+ * nem 0. Az observer-oldali anonimitás-padlót a hívó által átadott,
+ * `computeObserverFacetAverages`-szel képzett aggregátum garantálja.
+ */
+export function computeFacetComparisons(
+  order: HexacoCode[],
+  selfFacets: Record<string, Record<string, number>>,
+  observerAvg: Record<string, Record<string, number>> | null,
+): DossierFacetComparison[] {
+  return order.flatMap((dimensionCode) =>
+    (HEXACO_DIMENSION_FACETS[dimensionCode] ?? []).flatMap((code) => {
+      const selfRaw = selfFacets[dimensionCode]?.[code];
+      if (typeof selfRaw !== "number") return [];
+      const self = Math.round(selfRaw);
+      const observerRaw = observerAvg?.[dimensionCode]?.[code];
+      const observer = typeof observerRaw === "number" ? observerRaw : null;
+      return [{
+        dimensionCode,
+        code,
+        self,
+        observer,
+        delta: observer === null ? null : observer - self,
+      }];
+    }),
+  );
 }
 
 /**
