@@ -266,7 +266,7 @@ const FIXTURES: SmokeFixture[] = [
       activeSurface: "team",
       stage: "ORG_PARTIAL",
       primaryCtaId: "VIEW_ORG_INSIGHTS",
-      homePrimaryCtaId: "INVITE_ORG_MEMBERS",
+      homePrimaryCtaId: "VIEW_ORG_INSIGHTS",
       progressScope: "team",
       progressValue: 0,
     },

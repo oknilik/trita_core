@@ -241,6 +241,9 @@ export interface JourneySubscriptionSnapshot {
 
 export interface JourneyContextSnapshot {
   profileId: string;
+  /** Kizárólag tanácsadói mérés-kezelési jogosultság. Az org-admin szerep
+   * önmagában nem adhat kampányindítási CTA-t. */
+  canManageMeasurements: boolean;
   entryIntent: JourneyEntryIntent;
   currentContext: JourneyCurrentContext;
   activeSurface: ActiveSurface;

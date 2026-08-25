@@ -90,6 +90,7 @@ function mergeCompletionSummary(
 function createBaseJourneyContext(): JourneyContextSnapshot {
   return {
     profileId: "profile_test_1",
+    canManageMeasurements: false,
     entryIntent: "explore",
     currentContext: "self-only",
     activeSurface: "personal",

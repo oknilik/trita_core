@@ -11,6 +11,7 @@ import {
   getOrgTeamCount,
 } from "@/lib/org-counts.server";
 import { getProfileCoreById } from "@/lib/profile.server";
+import { canManageMeasurements } from "@/lib/measurement-auth";
 import { getOrgSubscription, getSubscriptionState } from "@/lib/subscription";
 import { JOURNEY_TEAM_INTENT_FEATURE_KEY } from "@/lib/journey/intent";
 import {
@@ -217,6 +218,7 @@ async function resolveJourneyContextUncached(
     const completionSummary = createEmptyCompletionSummary();
     return {
       profileId,
+      canManageMeasurements: false,
       entryIntent,
       currentContext: "self-only",
       activeSurface: "personal",
@@ -528,6 +530,11 @@ async function resolveJourneyContextUncached(
 
   return {
     profileId,
+    canManageMeasurements: canManageMeasurements(
+      normalizedOrgMembership?.role,
+      profile.email,
+      profile.isConsultant,
+    ),
     entryIntent,
     currentContext,
     activeSurface,
