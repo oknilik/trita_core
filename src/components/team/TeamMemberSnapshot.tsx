@@ -58,9 +58,9 @@ function ProgressRow({
           {done !== null && total !== null ? `${done} / ${total}` : emptyLabel}
         </strong>
       </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-[var(--color-layer-team-accent)]/10">
+      <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-[var(--color-layer-team-accent)]/10">
         <div
-          className="h-full rounded-full bg-[var(--color-layer-team-accent)] transition-[width] duration-700"
+          className="h-full rounded-full bg-[var(--color-layer-team-accent)]/65 transition-[width] duration-700"
           style={{ width: `${value}%` }}
         />
       </div>
@@ -130,10 +130,10 @@ export function TeamMemberSnapshot({
         lockedTitle: "A riporttal nyílik meg",
         lockedRoles: "A szerepegyensúly a jóváhagyott, aggregált csapatkép része.",
         lockedPattern: "A közös mintázat a riport publikálása után válik láthatóvá.",
-        nextLabel: "Neked most",
+        nextLabel: "Következő lépés",
         nextTask: "Van nyitott teendőd — a részleteket a fenti teendőkártyán találod.",
         nextReady: reportReady
-          ? "A csapatriport elérhető — nézd át a közös felismeréseket."
+          ? "A csapatriport elkészült — nézd meg a közös felismeréseket."
           : "Minden saját feladatod kész — a riport publikálására vársz.",
         taskCta: "Feladataim",
         reportCta: "Riport megnyitása",
@@ -163,10 +163,10 @@ export function TeamMemberSnapshot({
         lockedTitle: "Unlocks with the report",
         lockedRoles: "Role balance is part of the approved, aggregate team picture.",
         lockedPattern: "The shared pattern becomes visible after the report is published.",
-        nextLabel: "For you now",
+        nextLabel: "Next step",
         nextTask: "You have an open task — find the details in the action card above.",
         nextReady: reportReady
-          ? "The team report is available — review the shared insights."
+          ? "The team report is ready — explore the shared insights."
           : "Your tasks are complete — you are waiting for the report to be published.",
         taskCta: "My tasks",
         reportCta: "Open report",
@@ -193,9 +193,12 @@ export function TeamMemberSnapshot({
         </span>
       </div>
 
-      <Card as="div" spacing="none" surface="team" className="grid overflow-hidden md:grid-cols-[1.35fr_.65fr]">
+      <Card
+        as="div"
+        spacing="none"
+        className="grid overflow-hidden border-surface-team-border md:grid-cols-[1.35fr_.65fr]"
+      >
         <div className="relative grid grid-cols-[auto_1fr] items-center gap-5 px-5 py-6 sm:px-7 sm:py-7">
-          <span aria-hidden="true" className="absolute inset-y-5 left-0 w-1 rounded-r-full bg-[var(--color-layer-team-accent)]" />
           <div
             className="grid h-24 w-24 place-items-center rounded-full p-2.5"
             style={{
