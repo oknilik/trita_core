@@ -2046,15 +2046,15 @@ export function renderNewsletterIssueEmail(params: NewsletterIssueRenderParams):
     .map((item) => `
     <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="margin:0 0 18px">
       <tr>
-        <td style="padding:14px 16px;border:1px solid ${EMAIL_COLORS.border};border-radius:12px">
+        <td class="em-article-card" bgcolor="${EMAIL_COLORS.surface}" style="padding:18px;background-color:${EMAIL_COLORS.surface};border-radius:16px">
           <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
             <tr>
               ${
                 item.imageUrl
-                  ? `<td class="em-article-image" width="154" valign="top" style="width:154px;padding:0 16px 0 0">
+                  ? `<td class="em-article-image" width="190" valign="top" style="width:190px;padding:0 18px 0 0">
                        <a href="${escapeHtml(item.url)}" style="display:block;text-decoration:none">
-                         <img src="${escapeHtml(item.imageUrl)}" width="154" alt="${escapeHtml(item.title)}"
-                              style="display:block;width:154px;max-width:100%;height:auto;border-radius:9px">
+                         <img src="${escapeHtml(item.imageUrl)}" width="190" height="143" alt="${escapeHtml(item.title)}"
+                              style="display:block;width:190px;max-width:100%;height:143px;border-radius:12px">
                        </a>
                      </td>`
                   : ""
@@ -2076,6 +2076,7 @@ export function renderNewsletterIssueEmail(params: NewsletterIssueRenderParams):
     kind: t.kind,
     eyebrow: t.eyebrow,
     heading: escapeHtml(params.subject),
+    hideHeadingOnMobile: true,
     preheader: params.items[0]?.title ?? params.subject,
     bodyContent: `
     ${introHtml}

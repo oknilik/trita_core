@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { withCapturedSend } from "../../../scripts/email-samples";
 import { blogImageUrl } from "@/lib/newsletter";
+import { EMAIL_COLORS } from "@/lib/design-tokens";
 
 // A küldő-modul induláskor kulcsot vár; a hálózatra nem megyünk ki, a
 // `withCapturedSend` elkapja a kérést (ugyanaz a minta, mint a levél-mintáknál).
@@ -69,4 +70,35 @@ test("a szerkesztett szam viszi a leiratkozo linket a torzsben es a fejlecben", 
     (payload.html ?? "").includes(blogImageUrl("https://trita.io", "cikk")),
     "a cikk képe bekerül",
   );
+});
+
+test("a szerkesztett szam mobilon nem ismetli a targyat es valodi kepkartyat keszit", async () => {
+  const { renderNewsletterIssueEmail } = await loadEmails();
+  const rendered = renderNewsletterIssueEmail({
+    subject: "Az első trita éles hírlevél teszt",
+    intro: "hello hello",
+    items: [{
+      title: "Toborzás helyett?",
+      description: "Leírás",
+      url: "https://trita.io/blog/cikk",
+      imageUrl: blogImageUrl("https://trita.io", "cikk"),
+      readingMinutes: 3,
+    }],
+    unsubUrl: "https://trita.io/newsletter/unsubscribe?token=t",
+    locale: "hu",
+  });
+
+  assert.match(
+    rendered.html,
+    /<div class="em-mobile-hide"><h1 class="em-heading em-display"/,
+    "a belső tárgycím csak mobilon legyen rejtve",
+  );
+  assert.match(rendered.html, /\.em-mobile-hide \{ display: none !important;/);
+  assert.ok(rendered.html.includes('class="em-article-card"'), "külön cikk-kártya kell");
+  assert.ok(
+    rendered.html.includes(`background-color:${EMAIL_COLORS.surface}`),
+    "a keret helyett meleg, kiemelt felület kell",
+  );
+  assert.ok(!rendered.html.includes(`padding:14px 16px;border:1px solid ${EMAIL_COLORS.border}`));
+  assert.match(rendered.html, /<img[^>]+width="190" height="143"/);
 });
