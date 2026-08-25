@@ -3,7 +3,6 @@
 import { useLocale } from "@/components/LocaleProvider";
 import { PageWidthDivider } from "@/components/marketing/PageWidthDivider";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
-import { LEGAL_DOCS_ARE_DRAFT } from "@/lib/legal/company";
 import { getPrivacyPolicy, type PolicyBlock } from "@/lib/legal/privacy-policy";
 
 /**
@@ -108,23 +107,26 @@ export function PrivacyContent() {
   return (
     <main id="top" className="min-h-dvh bg-cream">
       {/* ── Fejléc ── */}
-      <section className="bg-[var(--color-layer-self-hero-from)] px-6 py-14 lg:px-16 lg:py-16">
-        <div className="mx-auto max-w-6xl">
-          <SectionEyebrow tone="onDark" className="mb-4">
-            {doc.eyebrow}
-          </SectionEyebrow>
-          <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-fraunces text-fluid-title tracking-tight text-[var(--color-text-on-inverse)]">{doc.title}</h1>
-            {LEGAL_DOCS_ARE_DRAFT && (
-              <span className="rounded-full border border-[var(--color-text-on-inverse)]/30 px-2.5 py-1 text-label uppercase text-[var(--color-text-on-inverse-muted)]">
-                {doc.draftBadge}
-              </span>
-            )}
+      <section className="relative overflow-hidden bg-cream">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[5%] top-[8%] h-[76%] w-[42%] rounded-full bg-bronze/5 blur-3xl"
+        />
+        <div className="relative mx-auto grid max-w-[1120px] gap-10 px-7 pb-16 pt-12 md:pb-20 md:pt-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
+          <div>
+            <SectionEyebrow className="mb-6">{doc.eyebrow}</SectionEyebrow>
+            <h1 className="max-w-[16ch] font-fraunces text-fluid-display tracking-tight text-ink">{doc.title}</h1>
+            <p className="mt-6 max-w-[680px] text-lg leading-relaxed text-ink-body">{doc.lead}</p>
           </div>
-          <p className="mt-4 max-w-3xl text-body leading-relaxed text-[var(--color-text-on-inverse-muted)]">{doc.lead}</p>
-          <p className="mt-5 text-label uppercase text-[var(--color-text-on-inverse-muted)]">
-            {doc.lastUpdated} · {doc.effectiveFrom}
-          </p>
+          <aside className="rounded-[24px] border border-sand bg-surface-card/80 px-6 py-5 shadow-[0_20px_60px_rgba(26,26,46,0.05)] backdrop-blur-sm">
+            <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">
+              {locale === "hu" ? "Dokumentum állapota" : "Document status"}
+            </p>
+            <div className="mt-4 space-y-3 text-caption leading-relaxed text-ink-body">
+              <p>{doc.lastUpdated}</p>
+              <p className="border-t border-sand pt-3">{doc.effectiveFrom}</p>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -132,17 +134,6 @@ export function PrivacyContent() {
         <PageWidthDivider />
         <div className="px-6 py-10 lg:px-16 lg:py-14">
           <div className="mx-auto max-w-6xl">
-            {LEGAL_DOCS_ARE_DRAFT && (
-              // Amíg a cégadatok helykitöltők, ezt ki KELL mondani: egy joginak
-              // látszó, de kitalált azonosítókat közlő lap félrevezeti az
-              // érintettet. A jelölés a `company.ts` egyetlen konstansával
-              // tűnik el, amikor a valós adatok bekerülnek.
-              <div className="mb-8 rounded-lg border border-bronze/40 bg-surface-card px-5 py-4">
-                <p className="text-label uppercase text-[var(--color-accent-primary-strong)]">{doc.draftBadge}</p>
-                <p className="mt-2 text-caption leading-relaxed text-ink-body">{doc.draftNote}</p>
-              </div>
-            )}
-
           {/* min-w-0 a rács-elemeken: a grid-item alapértelmezett
               `min-width: auto` a TARTALOM min-content méretét veszi, és a
               jogalap-táblázat `min-w-[520px]`-je így 520px-re feszítette a

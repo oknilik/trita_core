@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSiteUrl, getTranslatedLanguageAlternates } from "@/lib/seo";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
-import { LEGAL_DOCS_ARE_DRAFT } from "@/lib/legal/company";
 import { isPortfolioSurfaceActive } from "@/lib/portfolio-parking";
 
 /**
@@ -83,21 +82,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ? [{ url: `${baseUrl}/blog`, lastModified: newestPostAt, changeFrequency: "weekly" as const, priority: 0.8 }]
       : []),
     ...blogUrls,
-    // A /privacy CSAK akkor kerül a sitemapbe, ha a jogi dokumentum már nem
-    // tervezet. Helykitöltő cégadatokkal indexelni egy jogi lapot félrevezető
-    // — a lapon lévő „Tervezet" jelölés az emberi olvasónak szól, a találati
-    // lista snippetjében nem látszik. A lap `robots: noindex`-et is kap
-    // ugyanezen a konstanson (`privacy/page.tsx`) — a kettő EGYÜTT mozog.
-    ...(LEGAL_DOCS_ARE_DRAFT
-      ? []
-      : [
-          {
-            url: `${baseUrl}/privacy`,
-            lastModified: reviewedAt,
-            changeFrequency: "yearly" as const,
-            priority: 0.4,
-          },
-        ]),
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: reviewedAt,
+      changeFrequency: "yearly" as const,
+      priority: 0.4,
+    },
     { url: `${baseUrl}/contact`, lastModified: reviewedAt, changeFrequency: "monthly", priority: 0.4 },
   ];
 }
