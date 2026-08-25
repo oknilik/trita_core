@@ -76,14 +76,15 @@ test("team invite keeps its public token from the page through acceptance", asyn
     if (!baseURL) throw new Error("Playwright baseURL is required for join E2E");
     await context.addCookies([
       { name: E2E_AUTH_COOKIE_NAME, value: inviteeClerkId, url: baseURL },
-      { name: "trita_locale", value: "en", url: baseURL },
     ]);
 
     await page.goto(`/join/${inviteToken}`, { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { name: "Join the team" })).toBeVisible({
-      timeout: 30_000,
-    });
-    await page.getByRole("button", { name: "Join" }).click();
+    await expect(
+      page.getByRole("heading", { name: /^(Csatlakozz a csapathoz|Join the team)$/ }),
+    ).toBeVisible({ timeout: 30_000 });
+    await page
+      .getByRole("button", { name: /^(Csatlakozás|Join)$/ })
+      .click();
 
     await expect
       .poll(
