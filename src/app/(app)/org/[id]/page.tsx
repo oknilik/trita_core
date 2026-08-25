@@ -531,7 +531,9 @@ export default async function OrgDetailPage({
         activeParticipantCount={pageData.activeTotalParticipants}
       />
 
-      <OrgOverviewNextAction focus={overviewFocus} isHu={isHu} />
+      {overviewFocus ? (
+        <OrgOverviewNextAction focus={overviewFocus} isHu={isHu} />
+      ) : null}
 
       {pacingTile ? (
         <CampaignPacingTile
