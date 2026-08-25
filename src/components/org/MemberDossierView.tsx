@@ -5,7 +5,7 @@ import type {
   DossierMeasurementKey,
   DossierEdgeType,
 } from "@/lib/member-dossier";
-import { HEXACO_DIMENSIONS } from "@/lib/hexaco";
+import { HEXACO_DIMENSIONS, HEXACO_FACETS } from "@/lib/hexaco";
 import { TEAM_ROLES, type TeamRoleCode } from "@/lib/team-role-scoring";
 import { TEAM_ROLE_PEER_MIN_RATERS } from "@/lib/team-role-peer";
 import { TRUST_MIN_RATERS } from "@/lib/trust-network";
@@ -207,27 +207,54 @@ export function MemberDossierView({
                   // zajon belül van. Ugyanaz a küszöb, mint a ComparisonTab /
                   // PDF összevetéseknél; a korábbi 10-es érték túl-jelzett.
                   const big = d.delta !== null && Math.abs(d.delta) >= DIFF_MIN_GAP;
-                  return (
-                    <tr key={d.code} className={big ? "bg-state-warning-bg/60" : undefined}>
-                      <td className="py-1.5 text-ink-body">
+                  const facets = sx.facets.filter((f) => f.dimensionCode === d.code);
+                  return [
+                    <tr
+                      key={d.code}
+                      className={big ? "bg-state-warning-bg/60" : "bg-cream/40"}
+                    >
+                      <td className="py-2 font-semibold text-ink-body">
                         {isHu ? HEXACO_DIMENSIONS[d.code].hu : HEXACO_DIMENSIONS[d.code].en}
                       </td>
-                      <td className="py-1.5 text-right tabular-nums text-ink">{d.self}</td>
-                      <td className="py-1.5 text-right tabular-nums text-ink">
+                      <td className="py-2 text-right font-semibold tabular-nums text-ink">{d.self}</td>
+                      <td className="py-2 text-right font-semibold tabular-nums text-ink">
                         {d.observer ?? "—"}
                       </td>
                       <td
-                        className={`py-1.5 text-right tabular-nums font-medium ${
+                        className={`py-2 text-right tabular-nums font-semibold ${
                           big ? "text-state-warning-fg" : "text-ink-body"
                         }`}
                       >
                         {d.delta === null ? "—" : d.delta > 0 ? `+${d.delta}` : d.delta}
                       </td>
-                    </tr>
-                  );
+                    </tr>,
+                    ...facets.map((f) => (
+                      <tr key={`${d.code}-${f.code}`}>
+                        <td className="py-1.5 pl-4 text-ink-body">
+                          <span className="mr-2 text-muted" aria-hidden="true">↳</span>
+                          {isHu ? HEXACO_FACETS[f.code]?.hu : HEXACO_FACETS[f.code]?.en}
+                        </td>
+                        <td className="py-1.5 text-right tabular-nums text-ink">{f.self}</td>
+                        <td className="py-1.5 text-right tabular-nums text-ink">
+                          {f.observer ?? "—"}
+                        </td>
+                        <td className="py-1.5 text-right tabular-nums font-medium text-ink-body">
+                          {f.delta === null ? "—" : f.delta > 0 ? `+${f.delta}` : f.delta}
+                        </td>
+                      </tr>
+                    )),
+                  ];
                 })}
               </tbody>
             </table>
+
+            {sx.facets.length === 0 ? (
+              <p className="mt-2 text-micro text-muted">
+                {isHu
+                  ? "Ehhez a kitöltéshez nem érhető el facet-szintű bontás."
+                  : "Facet-level breakdown is not available for this assessment."}
+              </p>
+            ) : null}
 
             <p className="mt-2 text-micro text-muted">
               {sx.observerShown

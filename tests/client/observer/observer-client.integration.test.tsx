@@ -240,13 +240,16 @@ describe("C5.5 ObserverClient integration", () => {
   // ── Intro phase ──────────────────────────────────────────────────────────
 
   describe("intro phase", () => {
-    it("renders intro with inviter name and welcome message", () => {
+    it("renders the split intro with inviter context", () => {
       renderObserver();
-      // Welcome text is inside h1 with emoji prefix: "👋 We're glad you're here!"
-      expect(screen.getByText((_content, el) =>
-        el?.tagName === "H1" && Boolean(el?.textContent?.includes(t("observer.introWelcome", "en"))),
-      )).toBeInTheDocument();
-      expect(screen.getByText(new RegExp(INVITER))).toBeInTheDocument();
+      expect(screen.getByRole("heading", {
+        level: 1,
+        name: t("observer.introHeroTitle", "en"),
+      })).toBeInTheDocument();
+      expect(screen.getAllByText(new RegExp(INVITER)).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByTestId("observer-intro-layout")).toHaveClass(
+        "lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]",
+      );
     });
 
     it("shows all 5 relationship type buttons", () => {
@@ -333,9 +336,11 @@ describe("C5.5 ObserverClient integration", () => {
       await passIntro(user);
 
       await waitFor(() => {
-        // Progress shows total question count
-        expect(screen.getByText(new RegExp(`${TOTAL_QUESTIONS}`))).toBeInTheDocument();
+        const progress = screen.getByRole("progressbar");
+        expect(progress).toHaveAttribute("aria-valuemax", String(TOTAL_QUESTIONS));
+        expect(progress).toHaveAttribute("aria-valuenow", "1");
       });
+      expect(screen.getByTestId("assessment-focus-header")).toBeInTheDocument();
     });
 
     it("answering a question persists to localStorage", async () => {
@@ -370,6 +375,19 @@ describe("C5.5 ObserverClient integration", () => {
 
       const prevBtn = screen.getByRole("button", { name: new RegExp(PREV_CTA, "i") });
       expect(prevBtn).toBeDisabled();
+    });
+
+    it("shows unambiguous truth labels at both ends of the response scale", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      expect(screen.getByText(t("assessment.endLeft", "en"))).toBeInTheDocument();
+      expect(screen.getByText(t("assessment.endRight", "en"))).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: `1 - ${t("assessment.scale1", "en")}` }))
+        .toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: `5 - ${t("assessment.scale5", "en")}` }))
+        .toBeInTheDocument();
     });
 
     it("next button navigates forward after answering", async () => {
@@ -442,6 +460,63 @@ describe("C5.5 ObserverClient integration", () => {
 
       expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
     });
+
+    it("keeps auto-advancing through the former 25 percent checkpoint", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      vi.useFakeTimers();
+      for (let questionNumber = 1; questionNumber <= 3; questionNumber += 1) {
+        expect(screen.getByText(new RegExp(`Observer Q${questionNumber}`))).toBeInTheDocument();
+        fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
+        act(() => {
+          vi.advanceTimersByTime(130);
+        });
+      }
+
+      expect(screen.getByText(/Observer Q4/)).toBeInTheDocument();
+    });
+
+    it("does not skip a question when manual navigation races auto-advance", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Observer Q1/)).toBeInTheDocument();
+      });
+
+      vi.useFakeTimers();
+      fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
+      fireEvent.click(screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }));
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+      expect(screen.queryByText(/Observer Q3/)).not.toBeInTheDocument();
+    });
+
+    it("ignores a rapid second manual next action", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      const autoAdvanceCheckbox = screen.getByRole("checkbox");
+      await user.click(autoAdvanceCheckbox);
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
+
+      const nextButton = screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") });
+      fireEvent.click(nextButton);
+      fireEvent.click(nextButton);
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+      expect(screen.queryByText(/Observer Q3/)).not.toBeInTheDocument();
+    });
   });
 
   // ── Draft resume ─────────────────────────────────────────────────────────
@@ -479,8 +554,10 @@ describe("C5.5 ObserverClient integration", () => {
 
       // Should skip intro and go straight to assessment phase (not intro)
       await waitFor(() => {
-        // Assessment phase shows progress bar with total count
-        expect(screen.getByText(new RegExp(`${TOTAL_QUESTIONS}`))).toBeInTheDocument();
+        expect(screen.getByRole("progressbar")).toHaveAttribute(
+          "aria-valuemax",
+          String(TOTAL_QUESTIONS),
+        );
       });
 
       // Verify answers were restored from localStorage
@@ -755,7 +832,7 @@ describe("C5.5 ObserverClient integration", () => {
   // ── Done phase ───────────────────────────────────────────────────────────
 
   describe("done phase", () => {
-    it("shows success emoji and title", async () => {
+    it("shows the redesigned split success view with a focus header", async () => {
       const user = userEvent.setup();
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
         new Response(JSON.stringify({ success: true }), { status: 200 }),
@@ -772,9 +849,13 @@ describe("C5.5 ObserverClient integration", () => {
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
-        expect(screen.getByText("🙏")).toBeInTheDocument();
-        expect(screen.getByText(t("observer.doneTitle", "en"))).toBeInTheDocument();
+        expect(screen.getByTestId("observer-done-layout")).toHaveClass(
+          "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]",
+        );
+        expect(screen.getByTestId("assessment-focus-header")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: t("observer.doneTitle", "en") })).toBeInTheDocument();
         expect(screen.getByText(t("observer.doneBody", "en"))).toBeInTheDocument();
+        expect(screen.getByText(t("observer.donePrivacyNote", "en"))).toBeInTheDocument();
       });
     });
 

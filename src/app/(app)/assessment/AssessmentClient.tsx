@@ -11,6 +11,7 @@ import { BackChevronIcon } from '@/components/ui/primitives/BackChevronIcon'
 import { ChevronRightIcon } from '@/components/ui/icons'
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
+import { useAssessmentStepController } from '@/components/assessment/useAssessmentStepController'
 import { useToast } from '@/components/ui/Toast'
 import { track } from '@/lib/analytics/client'
 import { useAuthState } from '@/components/auth/auth-state'
@@ -143,8 +144,17 @@ export function AssessmentClient({
   const milestoneOpenRef = useRef(milestoneOpen)
   const isSubmittingRef = useRef(isSubmitting)
   const localDraftRevisionRef = useRef(0)
-  const autoAdvanceTimerRef = useRef<number | null>(null)
-  const stepTransitionLockRef = useRef(false)
+  const {
+    cancelAutoAdvance,
+    runStepTransition,
+    scheduleAutoAdvance: scheduleGuardedAutoAdvance,
+  } = useAssessmentStepController({
+    getActiveQuestionId: () => questions[questionIndexRef.current]?.id ?? null,
+  })
+
+  useEffect(() => {
+    if (!autoAdvance) cancelAutoAdvance()
+  }, [autoAdvance, cancelAutoAdvance])
 
   // After hydration, check localStorage for guest draft and resolve showIntro
   useEffect(() => {
@@ -408,15 +418,6 @@ export function AssessmentClient({
     }
   }, [answeredCount, campaignId, guestMode, questionIndex])
 
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimerRef.current) {
-        clearTimeout(autoAdvanceTimerRef.current)
-        autoAdvanceTimerRef.current = null
-      }
-    }
-  }, [])
-
   // UX-A8: egyetlen milestone-képernyő félútnál.
   useEffect(() => {
     const percentage = (answeredCount / totalQuestions) * 100
@@ -525,14 +526,7 @@ export function AssessmentClient({
   }, [questions, setQuestionIndexSafe, highlightMissing, testType, locale, router, showToast, guestMode, draftScope, hasTeamContext, campaignId])
 
   const scheduleAutoAdvance = useCallback((questionId: number, nextAnsweredCount: number) => {
-    if (autoAdvanceTimerRef.current) {
-      clearTimeout(autoAdvanceTimerRef.current)
-      autoAdvanceTimerRef.current = null
-    }
-    autoAdvanceTimerRef.current = window.setTimeout(() => {
-      const liveQuestion = questions[questionIndexRef.current]
-      if (!liveQuestion || liveQuestion.id !== questionId) return
-
+    scheduleGuardedAutoAdvance(questionId, () => {
       const nextProgress = (nextAnsweredCount / totalQuestions) * 100
       const willTriggerMilestone =
         nextProgress >= MILESTONE_PERCENT && !milestoneSeenRef.current
@@ -543,8 +537,8 @@ export function AssessmentClient({
       } else {
         void handleFinish()
       }
-    }, 130)
-  }, [handleFinish, questions, setQuestionIndexSafe, totalQuestions])
+    })
+  }, [handleFinish, scheduleGuardedAutoAdvance, setQuestionIndexSafe, totalQuestions])
 
   const handleAnswer = useCallback((questionId: number, value: number) => {
     if (isSubmittingRef.current) return
@@ -562,15 +556,6 @@ export function AssessmentClient({
     if (!autoAdvance) return
     scheduleAutoAdvance(questionId, nextAnsweredCount)
   }, [autoAdvance, questions, scheduleAutoAdvance])
-
-  const runStepTransition = useCallback((action: () => void) => {
-    if (stepTransitionLockRef.current) return
-    stepTransitionLockRef.current = true
-    action()
-    window.setTimeout(() => {
-      stepTransitionLockRef.current = false
-    }, 120)
-  }, [])
 
   const handlePrevStep = useCallback(() => {
     if (milestoneOpenRef.current) {

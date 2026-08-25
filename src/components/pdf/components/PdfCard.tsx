@@ -94,11 +94,14 @@ export function PdfMiniHeader({
   planLabel,
   date,
   locale = "hu",
+  reportLabel,
 }: {
   userName: string;
   planLabel: string;
   date: string;
   locale?: Locale;
+  /** Alapból az egyéni profil megnevezése; csapatriportnál felülírható. */
+  reportLabel?: string;
 }) {
   return (
     // fixed + abszolút: minden lap tetején megjelenik, de NEM ül a flow-ban —
@@ -119,7 +122,9 @@ export function PdfMiniHeader({
       >
         <PdfWordmark size={11} color={colors.ink} />
         <Text style={{ fontSize: type.caption, color: colors.ink300 }}>
-          {userName} · {t("pdf.personalityProfile", locale)} · {planLabel} · {date}
+          {userName} · {reportLabel ?? t("pdf.personalityProfile", locale)}
+          {planLabel ? ` · ${planLabel}` : ""}
+          {date ? ` · ${date}` : ""}
         </Text>
       </View>
     </View>

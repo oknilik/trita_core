@@ -392,11 +392,13 @@ test("locale nélkül hívva magyarul megy ki a levél", async () => {
   const invite = await withCapturedSend(() =>
     emails.sendTeamInviteEmail({
       to: "valaki@gmail.com",
-      teamName: "Termék",
+      teamName: "Kék csapat",
       signUpUrl: "https://trita.io/join/x",
     }),
   );
-  assert.match(String(invite.subject), /Meghívtak/, "a csapat-meghívó nem magyarul ment");
+  assert.equal(invite.subject, "Csapatmeghívó: Kék csapat – trita");
+  assert.match(String(invite.html), /Meghívást kaptál: Kék csapat/);
+  assert.doesNotMatch(String(invite.html), /Kék csapat csapatba/);
 });
 
 test("a küldő-modulban nincs angolra eső alapértelmezés", () => {

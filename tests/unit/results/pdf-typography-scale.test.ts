@@ -6,7 +6,7 @@ import path from "node:path";
 import { type } from "@/components/pdf/styles";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Tipográfia- és glyph-guardrail az egyéni riport-PDF-re
+// Tipográfia- és glyph-guardrail az egyéni és szervezeti riport-PDF-re
 // (PDF-audit 2026-08-18, P1/10 + P0-hibák).
 //
 // A riportban korábban a lényegi szöveg zöme 5,5–7,5 pt volt: képernyőn és A4
@@ -14,9 +14,9 @@ import { type } from "@/components/pdf/styles";
 // (components/pdf/styles.ts → `type`), és a lapok/komponensek nem tehetnek
 // vissza apró inline méreteket.
 //
-// SCOPE: az egyéni profil-riport (pages/ + components/ + styles.ts).
-// A csapatriport (TeamReportPdf.tsx) SZÁNDÉKOSAN kimarad — az külön kimenet,
-// külön sűrűség-döntésekkel; az ő átskálázása nem ennek a körnek a tárgya.
+// SCOPE: a közös riport-rendszer (pages/ + components/), valamint a szervezeti
+// riport dokumentum-komponense. Mindkét kimenet ugyanazt a tipográfiai skálát
+// használja; egyikben sem térhet vissza a régi mikroszöveg.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ROOT = process.cwd();
@@ -38,6 +38,7 @@ function collectFiles(dir: string): string[] {
 }
 
 const FILES = SCOPE.flatMap(collectFiles);
+FILES.push("src/components/pdf/TeamReportPdf.tsx");
 
 test("a riport-komponensekben nincs 8 pt alatti inline betűméret", () => {
   assert.ok(FILES.length > 0, "nem találtam riport-komponenseket");

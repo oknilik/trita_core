@@ -7,6 +7,7 @@ import {
   computeObserverAverage,
   computeObserverFacetAverages,
   computeDimComparisons,
+  computeFacetComparisons,
   topGapDims,
 } from "@/lib/member-dossier";
 import { HEXACO_DIMENSION_FACETS, HEXACO_ORDER } from "@/lib/hexaco";
@@ -202,6 +203,40 @@ describe("computeDimComparisons — sorrend, delta, üres self", () => {
       HEXACO_ORDER.filter((c) => c !== "O"),
     );
     assert.ok(cmp.every((d) => d.delta === null || d.delta > -100));
+  });
+});
+
+describe("computeFacetComparisons — sorrend, delta, hiányzó értékek", () => {
+  it("dimenzió- és facet-sorrendben adja vissza a mért self-faceteket", () => {
+    const self = {
+      H: { fairness: 70, sincerity: 61 },
+      O: { creativity: 82 },
+    };
+    const observer = {
+      H: { sincerity: 66, fairness: 64 },
+      O: { creativity: 82 },
+    };
+    const cmp = computeFacetComparisons(HEXACO_ORDER, self, observer);
+    assert.deepEqual(
+      cmp.map((f) => `${f.dimensionCode}/${f.code}`),
+      ["H/sincerity", "H/fairness", "O/creativity"],
+    );
+    assert.deepEqual(cmp.map((f) => f.delta), [5, -6, 0]);
+  });
+
+  it("observer-facet nélkül null értéket ad, hiányzó self-facetet nem kohol", () => {
+    const cmp = computeFacetComparisons(
+      HEXACO_ORDER,
+      { C: { organization: 75 } },
+      { C: { diligence: 80 } },
+    );
+    assert.deepEqual(cmp, [{
+      dimensionCode: "C",
+      code: "organization",
+      self: 75,
+      observer: null,
+      delta: null,
+    }]);
   });
 });
 

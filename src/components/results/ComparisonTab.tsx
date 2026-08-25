@@ -378,43 +378,47 @@ export function ComparisonTab({
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* 1. Header */}
-      <div>
-        <div className="mb-1.5 flex items-center gap-2">
-          <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-          <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-            {t("comparison.headerEyebrow", locale)}
-          </span>
-        </div>
-        <h2 className="font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
-          {t("comparison.headerTitle", locale)}
-        </h2>
-        <p className="mt-1 text-caption leading-relaxed text-[var(--color-text-muted)]">
-          {t("comparison.headerBody", locale)}
-        </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-self-accent-soft)] px-2.5 py-0.5 text-note font-medium text-[var(--color-accent-self-deep)]">
-            {tf("comparison.observerBadge", locale, { count: observerCount })}
-          </span>
-          {avgConfidence != null && (
-            <span
-              title={t("comparison.confidenceLabel", locale)}
-              className="inline-flex items-center gap-1 rounded-md bg-[var(--color-surface-subtle)] px-2.5 py-0.5 text-note font-medium text-[var(--color-text-muted)]"
-            >
-              {tf("comparison.avgConfidence", locale, {
-                value:
-                  locale === "hu"
-                    ? String(avgConfidence).replace(".", ",")
-                    : String(avgConfidence),
-              })}
-            </span>
-          )}
-        </div>
-      </div>
+    <div className="flex flex-col gap-8" data-testid="observer-comparison-surface">
+      {/* 1–2. Új observer-nyitóblokk: narratíva + mérési összegzés. */}
+      <div
+        data-testid="observer-comparison-hero"
+        className="grid overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]"
+      >
+        <section className="relative overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 py-8 text-[var(--color-text-on-inverse)] sm:px-9 sm:py-10 lg:px-10 lg:py-11">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white/[0.05]" />
+          <div aria-hidden="true" className="pointer-events-none absolute -bottom-20 -left-16 h-44 w-44 rounded-full bg-white/[0.05]" />
+          <div className="relative z-10">
+            <p className="text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+              {t("comparison.headerEyebrow", locale)}
+            </p>
+            <h2 className="mt-4 max-w-[430px] font-fraunces text-title font-medium leading-[1.08] tracking-[-0.03em] text-[var(--color-text-on-inverse)] sm:text-display">
+              {t("comparison.headerTitle", locale)}
+            </h2>
+            <p className="mt-4 max-w-[440px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+              {t("comparison.headerBody", locale)}
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse)] ring-1 ring-white/15">
+                {tf("comparison.observerBadge", locale, { count: observerCount })}
+              </span>
+              {avgConfidence != null && (
+                <span
+                  title={t("comparison.confidenceLabel", locale)}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-note font-medium text-[var(--color-text-on-inverse-muted)] ring-1 ring-white/15"
+                >
+                  {tf("comparison.avgConfidence", locale, {
+                    value:
+                      locale === "hu"
+                        ? String(avgConfidence).replace(".", ",")
+                        : String(avgConfidence),
+                  })}
+                </span>
+              )}
+            </div>
+          </div>
+        </section>
 
-      {/* 2. Overview card */}
-      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-5">
+        <section className="flex flex-col justify-center px-5 py-7 sm:px-8 sm:py-9 lg:px-9">
         <div className="mb-4 flex items-center gap-3">
           <div
             className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg"
@@ -438,7 +442,7 @@ export function ComparisonTab({
             </p>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-1 gap-2.5 min-[420px]:grid-cols-3">
           <div className="rounded-[10px] bg-[var(--color-surface-subtle)] p-3 text-center">
             <p className="font-fraunces text-heading leading-none" style={{ color: "var(--color-action-primary-bg)" }}>{matchingCount}</p>
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.matchingDims", locale)}</p>
@@ -457,6 +461,7 @@ export function ComparisonTab({
             <p className="mt-1 text-micro text-[var(--color-text-muted)]">{t("comparison.avgGap", locale)}</p>
           </div>
         </div>
+        </section>
       </div>
 
       {/* 3. Dimension comparison cards */}

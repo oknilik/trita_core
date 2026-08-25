@@ -2,11 +2,13 @@ import "server-only";
 
 import { prisma } from "@/lib/prisma";
 import { HEXACO_ORDER } from "@/lib/hexaco";
-import { extractDimensionScores } from "@/lib/scoring";
+import { extractDimensionScores, extractFacetScores } from "@/lib/scoring";
 import {
   DOSSIER_OBSERVER_MIN,
   computeObserverAverage,
+  computeObserverFacetAverages,
   computeDimComparisons,
+  computeFacetComparisons,
   topGapDims,
   type SerializedMemberDossier,
   type DossierEdge,
@@ -170,11 +172,17 @@ export async function buildMemberDossier(
 
   // ── Önkép vs. külső kép ────────────────────────────────────────────
   const selfDims = selfLatest ? dimsOf(selfLatest.scores) : {};
+  const selfFacets = selfLatest ? extractFacetScores(selfLatest.scores) ?? {} : {};
   const observerAvg = computeObserverAverage(
     HEXACO_ORDER,
     observers.map((o) => dimsOf(o.scores)),
   );
+  const observerFacetAvg = computeObserverFacetAverages(
+    HEXACO_ORDER,
+    observers.map((o) => extractFacetScores(o.scores) ?? undefined),
+  );
   const dims = computeDimComparisons(HEXACO_ORDER, selfDims, observerAvg);
+  const facets = computeFacetComparisons(HEXACO_ORDER, selfFacets, observerFacetAvg);
   const topGaps = topGapDims(dims);
 
   // Rater-minőség (halo / straight-line / fordított-item konzisztencia) a
@@ -381,6 +389,7 @@ export async function buildMemberDossier(
       observerSuspectCount,
       observerShown,
       dims,
+      facets,
       topGaps,
       teamRole: {
         selfTop: roleSelfTop,

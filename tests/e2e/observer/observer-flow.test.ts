@@ -144,6 +144,17 @@ async function completeObserverViaUi(
   await page.goto(`/observe/${token}`, { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("radio", { name: /^4 - / }).first()).toBeVisible();
+  await expect(page.locator("[data-site-footer]")).toHaveCount(0);
+
+  const focusHeader = page.getByTestId("assessment-focus-header").locator(":scope > div");
+  const reminder = page.getByTestId("observer-think-of");
+  const focusHeaderBox = await focusHeader.boundingBox();
+  const reminderBox = await reminder.boundingBox();
+  expect(focusHeaderBox).not.toBeNull();
+  expect(reminderBox).not.toBeNull();
+  expect(Math.abs(reminderBox!.width - focusHeaderBox!.width)).toBeLessThanOrEqual(1);
+  expect(reminderBox!.y).toBeGreaterThanOrEqual(focusHeaderBox!.y + focusHeaderBox!.height);
+
   await page.getByRole("radio", { name: /^4 - / }).first().click();
 
   // Az utolsó válasz után az auto-advance (~130 ms) magától a confidence-
@@ -169,6 +180,9 @@ async function completeObserverViaUi(
   await expect(
     page.getByRole("heading", { name: /Thank you for participating|Köszönjük a részvételt/i }),
   ).toBeVisible();
+  await expect(page.getByTestId("observer-done-layout")).toBeVisible();
+  await expect(page.getByTestId("assessment-focus-header")).toBeVisible();
+  await expect(page.locator("[data-site-footer]")).toHaveCount(0);
 }
 
 function buildObserverSubmitPayload(token: string, questionIds: number[]) {
@@ -182,10 +196,63 @@ function buildObserverSubmitPayload(token: string, questionIds: number[]) {
 }
 
 test.describe("C5.6 Observer E2E happy path", () => {
+  test("observer intro stacks cleanly on a narrow mobile viewport", async ({ page }) => {
+    const fixture = await createObserverFixture({ invitationCount: 1 });
+    try {
+      await page.setViewportSize({ width: 360, height: 800 });
+      await page.addInitScript(() => {
+        window.localStorage.setItem("trita_locale", "hu");
+      });
+      await page.goto(`/observe/${fixture.invitationTokens[0]}`, {
+        waitUntil: "domcontentloaded",
+      });
+
+      const layout = page.getByTestId("observer-intro-layout");
+      await expect(layout).toBeVisible();
+      await expect(page.getByRole("heading", { name: /A te nézőpontod is számít/i })).toBeVisible();
+      await expect(page.getByRole("button", { name: /Kezdjük el/i })).toBeVisible();
+
+      const panels = layout.locator(":scope > section");
+      await expect(panels).toHaveCount(2);
+      const heroBox = await panels.nth(0).boundingBox();
+      const formBox = await panels.nth(1).boundingBox();
+      expect(heroBox).not.toBeNull();
+      expect(formBox).not.toBeNull();
+      expect(formBox!.y).toBeGreaterThanOrEqual(heroBox!.y + heroBox!.height - 1);
+
+      const relationshipButton = page.getByRole("button", { name: /Kolléga/i });
+      const relationshipButtonBox = await relationshipButton.boundingBox();
+      expect(relationshipButtonBox).not.toBeNull();
+      expect(relationshipButtonBox!.height).toBeGreaterThanOrEqual(44);
+
+      const horizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(horizontalOverflow).toBeLessThanOrEqual(1);
+    } finally {
+      await cleanupObserverFixture(fixture);
+    }
+  });
+
   test("observer token link open -> submit -> completion persists in DB", async ({ page }) => {
     const fixture = await createObserverFixture({ invitationCount: 1 });
     try {
+      await page.setViewportSize({ width: 360, height: 800 });
       await completeObserverViaUi(page, fixture.invitationTokens[0], fixture.questionIds);
+
+      const completionPanels = page.getByTestId("observer-done-layout").locator(":scope > section");
+      await expect(completionPanels).toHaveCount(2);
+      const successPanelBox = await completionPanels.nth(0).boundingBox();
+      const nextStepPanelBox = await completionPanels.nth(1).boundingBox();
+      expect(successPanelBox).not.toBeNull();
+      expect(nextStepPanelBox).not.toBeNull();
+      expect(nextStepPanelBox!.y).toBeGreaterThanOrEqual(
+        successPanelBox!.y + successPanelBox!.height - 1,
+      );
+      const horizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(horizontalOverflow).toBeLessThanOrEqual(1);
 
       await expect
         .poll(

@@ -2,18 +2,20 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import { QuestionCard } from "@/components/assessment/QuestionCard";
 import { useToast } from "@/components/ui/Toast";
 import { useUser } from "@clerk/nextjs";
 import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { TritaWordmark } from "@/components/TritaLogo";
+import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
+import { useAssessmentStepController } from "@/components/assessment/useAssessmentStepController";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
+import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
 const log = createClientLogger("observer");
 
@@ -97,6 +99,7 @@ export function ObserverClient({
   const { isSignedIn } = useUser();
   const { locale } = useLocale();
   const { showToast } = useToast();
+  const observerHomeHref = isSignedIn ? JOURNEY_HOME_HANDOFF_PATH : "/";
 
   const sanitizedInitialAnswers = sanitizeAnswersForQuestions(initialDraft?.answers, questions);
   const initialAllAnswered =
@@ -132,7 +135,7 @@ export function ObserverClient({
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
-      ? ([25, 50, 75] as const).filter(
+      ? ([50] as const).filter(
           (m) => (Object.keys(sanitizedInitialAnswers).length / questions.length) * 100 >= m,
         )
       : [],
@@ -140,14 +143,33 @@ export function ObserverClient({
   const initializedFocusPage = useRef<number | null>(null);
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestDraftRef = useRef({ phase, relationshipType, knownDuration, answers, currentPage });
+  const currentPageRef = useRef(currentPage);
+  const activeQuestionIndexRef = useRef(activeQuestionIndex);
   const questionAreaRef = useRef<HTMLDivElement>(null);
   const scrollMounted = useRef(false);
+  const {
+    cancelAutoAdvance,
+    runStepTransition,
+    scheduleAutoAdvance: scheduleGuardedAutoAdvance,
+  } = useAssessmentStepController({
+    getActiveQuestionId: () =>
+      questions[currentPageRef.current * QUESTIONS_PER_PAGE + activeQuestionIndexRef.current]?.id ??
+      null,
+  });
 
   const DRAFT_KEY = `trita_observer_draft_${token}`;
 
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
-  }, [phase, relationshipType, knownDuration, answers, currentPage]);
+    currentPageRef.current = currentPage;
+    activeQuestionIndexRef.current = activeQuestionIndex;
+  }, [phase, relationshipType, knownDuration, answers, currentPage, activeQuestionIndex]);
+
+  useEffect(() => {
+    if (!autoAdvance || phase !== "assessment" || checkpoint !== null) {
+      cancelAutoAdvance();
+    }
+  }, [autoAdvance, cancelAutoAdvance, checkpoint, phase]);
 
   useEffect(() => {
     if (!scrollMounted.current) { scrollMounted.current = true; return; }
@@ -172,7 +194,7 @@ export function ObserverClient({
         );
         setAnswers(sanitized);
         const pct = (Object.keys(sanitized).length / questions.length) * 100;
-        for (const m of [25, 50, 75] as const) {
+        for (const m of [50] as const) {
           if (pct >= m) reachedCheckpoints.current.add(m);
         }
         setCurrentPage(getResumePage(questions, sanitized, data.currentPage ?? 0));
@@ -272,7 +294,7 @@ export function ObserverClient({
 
   useEffect(() => {
     if (phase !== "assessment") return;
-    const marks = [25, 50, 75];
+    const marks = [50];
     const percentage = (answeredCount / totalQuestions) * 100;
     const nextMark = marks.find(
       (mark) => percentage >= mark && !reachedCheckpoints.current.has(mark),
@@ -331,11 +353,10 @@ export function ObserverClient({
     const currentAnsweredCount = Object.keys(latestDraftRef.current.answers).length;
     const nextAnsweredCount = wasUnanswered ? currentAnsweredCount + 1 : currentAnsweredCount;
     const nextProgress = (nextAnsweredCount / totalQuestions) * 100;
-    const willTriggerCheckpoint = [25, 50, 75].some(
-      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
-    );
+    const willTriggerCheckpoint =
+      nextProgress >= 50 && !reachedCheckpoints.current.has(50);
 
-    window.setTimeout(() => {
+    scheduleGuardedAutoAdvance(questionId, () => {
       if (willTriggerCheckpoint) return;
 
       if (canGoForwardWithinPage) {
@@ -362,7 +383,7 @@ export function ObserverClient({
         return;
       }
       setCurrentPage((prev) => prev + 1);
-    }, 130);
+    });
   }, [
     autoAdvance,
     activeQuestion,
@@ -372,63 +393,67 @@ export function ObserverClient({
     pageQuestions,
     isLastPage,
     handleGoToConfidence,
+    scheduleGuardedAutoAdvance,
   ]);
 
   const handlePrevStep = useCallback(() => {
-    if (phase === "confidence") {
-      setPhase("assessment");
-      return;
-    }
-    if (checkpointActive) {
-      setCheckpoint(null);
-      return;
-    }
-    if (canGoBackWithinPage) {
-      setActiveQuestionIndex((idx) => idx - 1);
-      return;
-    }
-    handlePreviousPage();
-  }, [phase, checkpointActive, canGoBackWithinPage, handlePreviousPage]);
+    runStepTransition(() => {
+      if (phase === "confidence") {
+        setPhase("assessment");
+        return;
+      }
+      if (checkpointActive) {
+        setCheckpoint(null);
+        return;
+      }
+      if (canGoBackWithinPage) {
+        setActiveQuestionIndex((idx) => idx - 1);
+        return;
+      }
+      handlePreviousPage();
+    });
+  }, [phase, checkpointActive, canGoBackWithinPage, handlePreviousPage, runStepTransition]);
 
   const handleNextStep = useCallback(() => {
-    if (checkpointActive) {
-      setCheckpoint(null);
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      );
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered);
-      } else if (isLastPage) {
-        handleGoToConfidence();
-      } else {
-        handleNextPage();
-      }
-      return;
-    }
     if (activeQuestion && answers[activeQuestion.id] === undefined) {
       highlightMissing(activeQuestion.id);
       return;
     }
-    if (canGoForwardWithinPage) {
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      );
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered);
-      } else {
-        if (isLastPage) {
+
+    runStepTransition(() => {
+      if (checkpointActive) {
+        setCheckpoint(null);
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+        );
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered);
+        } else if (isLastPage) {
           handleGoToConfidence();
         } else {
           handleNextPage();
         }
+        return;
       }
-      return;
-    }
-    if (isLastPage) {
-      handleGoToConfidence();
-      return;
-    }
-    handleNextPage();
+      if (canGoForwardWithinPage) {
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+        );
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered);
+        } else if (isLastPage) {
+          handleGoToConfidence();
+        } else {
+          handleNextPage();
+        }
+        return;
+      }
+      if (isLastPage) {
+        handleGoToConfidence();
+        return;
+      }
+      handleNextPage();
+    });
   }, [
     checkpointActive,
     activeQuestion,
@@ -440,6 +465,7 @@ export function ObserverClient({
     isLastPage,
     handleGoToConfidence,
     handleNextPage,
+    runStepTransition,
   ]);
 
   useEffect(() => {
@@ -540,29 +566,69 @@ export function ObserverClient({
 
   if (phase === "intro") {
     const canStart = relationshipType !== "" && knownDuration !== "";
+    const inviterInitials = inviterName
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toLocaleUpperCase(locale))
+      .join("");
 
     return (
-      <div className="relative min-h-dvh bg-cream">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-2xl px-4 pt-8 pb-20 md:pt-12">
-          <div className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
-            <h1 className="text-2xl font-bold text-ink">
-              👋 {t("observer.introWelcome", locale)}
-            </h1>
-            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-[var(--color-action-primary-fg)] shadow-sm">
-              {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">
-              {t("observer.introBodyShort", locale)}
-            </p>
-            <div className="mt-4 rounded-xl border border-sage-ring bg-sage-soft px-4 py-3 text-sm leading-relaxed text-bronze-dark">
-              {tf("observer.introPauseNote", locale, { count: questions.length })}
-            </div>
+      <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+        <AssessmentFocusHeader homeHref={observerHomeHref}>
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
 
-            <div className="mt-6 flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
-                {t("observer.relationshipLabel", locale)}
-                <div className="flex flex-wrap gap-2">
+        <main className="mx-auto flex w-full max-w-[1210px] flex-1 px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+          <div data-testid="observer-intro-layout" className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[680px] lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
+            <section className="relative flex min-h-[390px] flex-col justify-between overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-7 py-9 text-[var(--color-text-on-inverse)] sm:min-h-[430px] sm:px-10 sm:py-11 lg:min-h-0 lg:px-12 lg:py-14">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-32 h-72 w-72 rounded-full bg-white/[0.05]" />
+              <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-white/[0.05]" />
+
+              <div className="relative z-10">
+                <p className="text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                  {t("observer.introEyebrow", locale)}
+                </p>
+                <h1 className="mt-6 max-w-[470px] font-fraunces text-display font-medium leading-[1.03] tracking-[-0.035em] text-[var(--color-text-on-inverse)] lg:text-hero">
+                  {t("observer.introHeroTitle", locale)}
+                </h1>
+                <p className="mt-6 max-w-[430px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)] sm:text-base">
+                  {tf("observer.introHeroBody", locale, { inviter: inviterName })}
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-12 flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-primary)] text-caption font-semibold text-[var(--color-accent-primary-deep)]">
+                  {inviterInitials || "T"}
+                </span>
+                <span>
+                  <strong className="block text-caption font-semibold text-[var(--color-text-on-inverse)]">
+                    {tf("observer.introInviterMeta", locale, { inviter: inviterName })}
+                  </strong>
+                  <span className="mt-0.5 block text-note text-[var(--color-text-on-inverse-muted)]">
+                    {t("observer.introAnonymousMeta", locale)}
+                  </span>
+                </span>
+              </div>
+            </section>
+
+            <section className="flex flex-col justify-center px-5 py-8 sm:px-9 sm:py-10 lg:px-12 lg:py-12">
+              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                {t("observer.introFormEyebrow", locale)}
+              </p>
+              <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">
+                {t("observer.introFormTitle", locale)}
+              </h2>
+              <p className="mt-3 max-w-[560px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {t("observer.introFormBody", locale)}
+              </p>
+
+              <div className="mt-8 flex flex-col gap-7">
+                <fieldset>
+                  <legend className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {t("observer.relationshipLabel", locale)}
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                   {RELATIONSHIP_OPTIONS.map((opt) => {
                     const lockedOut =
                       lockedRelationship !== null && opt.value !== lockedRelationship;
@@ -572,67 +638,75 @@ export function ObserverClient({
                         type="button"
                         disabled={lockedOut}
                         onClick={() => !lockedOut && setRelationshipType(opt.value)}
-                        className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+                        aria-pressed={relationshipType === opt.value}
+                        className={`min-h-[50px] rounded-xl border px-3 text-caption font-medium transition-all ${FOCUS_RING_CLASS} ${
                           relationshipType === opt.value
-                            ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                            ? "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
                             : lockedOut
-                              ? "cursor-not-allowed border-sand bg-cream/50 text-muted opacity-60"
-                              : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
+                              ? "cursor-not-allowed border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] opacity-55"
+                              : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-action-primary-bg)] hover:bg-[var(--color-surface-subtle)]"
                         }`}
                       >
                         {t(opt.labelKey, locale)}
                       </button>
                     );
                   })}
-                </div>
-                {lockedRelationship !== null && (
-                  <span className="text-xs font-normal text-muted">
+                  </div>
+                  {lockedRelationship !== null && (
+                  <p className="mt-2 text-note text-[var(--color-text-muted)]">
                     {t("observer.relationLockedNote", locale)}
-                  </span>
-                )}
-              </label>
+                  </p>
+                  )}
+                </fieldset>
 
-              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
-                {t("observer.durationLabel", locale)}
-                <div className="flex flex-wrap gap-2">
+                <fieldset>
+                  <legend className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {t("observer.durationLabel", locale)}
+                  </legend>
+                  <div className="grid grid-cols-1 gap-2.5 min-[430px]:grid-cols-2">
                   {DURATION_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
                       type="button"
                       onClick={() => setKnownDuration(opt.value)}
-                      className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+                      aria-pressed={knownDuration === opt.value}
+                      className={`min-h-[50px] rounded-xl border px-3 text-caption font-medium transition-all ${FOCUS_RING_CLASS} ${
                         knownDuration === opt.value
-                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
-                          : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
+                          ? "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
+                          : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-action-primary-bg)] hover:bg-[var(--color-surface-subtle)]"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
                     </button>
                   ))}
-                </div>
-              </label>
-            </div>
+                  </div>
+                </fieldset>
+              </div>
 
-            {startAttempted && !canStart && (
-              <p className="mt-4 text-center text-xs text-state-warning-fg">
-                {t("observer.selectBothFields", locale)}
+              {startAttempted && !canStart && (
+                <p className="mt-5 text-center text-caption text-state-warning-fg" role="alert">
+                  {t("observer.selectBothFields", locale)}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canStart) {
+                    setStartAttempted(true);
+                    return;
+                  }
+                  setPhase("assessment");
+                }}
+                className={`mt-7 min-h-[52px] w-full rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
+              >
+                {t("observer.start", locale)}
+              </button>
+              <p className="mt-3 text-center text-note text-[var(--color-text-muted)]">
+                {tf("observer.introMeta", locale, { count: questions.length })}
               </p>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                if (!canStart) {
-                  setStartAttempted(true);
-                  return;
-                }
-                setPhase("assessment");
-              }}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
-            >
-              {t("observer.start", locale)}
-            </button>
+            </section>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -658,52 +732,87 @@ export function ObserverClient({
 
   if (phase === "done") {
     return (
-      <div className="relative min-h-dvh bg-cream">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-[#cfe2d6] bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">🙏</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.doneTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.doneBody", locale)}
-            </p>
-            {isSignedIn ? (
-              <>
-                <p className="mt-4 text-sm leading-relaxed text-ink-body">
-                  {t("observer.doneSignedInHint", locale)}
+      <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+        <AssessmentFocusHeader homeHref={observerHomeHref}>
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
+
+        <main className="mx-auto flex w-full max-w-[1080px] flex-1 items-center px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+          <div
+            data-testid="observer-done-layout"
+            className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[540px] lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+          >
+            <section className="relative flex min-h-[350px] flex-col justify-between overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-7 py-9 text-[var(--color-text-on-inverse)] sm:min-h-[390px] sm:px-10 sm:py-11 lg:min-h-0 lg:px-12 lg:py-14">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-32 h-72 w-72 rounded-full bg-white/[0.05]" />
+              <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-white/[0.05]" />
+
+              <div className="relative z-10">
+                <span
+                  aria-hidden="true"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-accent-primary)] text-2xl font-semibold text-[var(--color-accent-primary-deep)] shadow-sm"
+                >
+                  ✓
+                </span>
+                <p className="mt-8 text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                  {t("observer.doneEyebrow", locale)}
                 </p>
+                <h1 className="mt-3 max-w-[430px] font-fraunces text-display font-medium leading-[1.05] tracking-[-0.035em] text-[var(--color-text-on-inverse)] sm:text-hero">
+                  {t("observer.doneTitle", locale)}
+                </h1>
+                <p className="mt-5 max-w-[410px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)] sm:text-base">
+                  {t("observer.doneBody", locale)}
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-10 flex items-start gap-3 border-t border-white/15 pt-5">
+                <span aria-hidden="true" className="mt-0.5 text-[var(--color-accent-primary-soft)]">◇</span>
+                <p className="max-w-[390px] text-note leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+                  {t("observer.donePrivacyNote", locale)}
+                </p>
+              </div>
+            </section>
+
+            <section className="flex flex-col justify-center px-5 py-9 sm:px-9 sm:py-11 lg:px-12 lg:py-12">
+              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                {t("observer.doneNextEyebrow", locale)}
+              </p>
+              <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">
+                {t(isSignedIn ? "observer.doneSignedInTitle" : "observer.doneSignedOutTitle", locale)}
+              </h2>
+              <p className="mt-4 max-w-[520px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {t(isSignedIn ? "observer.doneSignedInHint" : "observer.doneSignedOutHint", locale)}
+              </p>
+
+              {isSignedIn ? (
                 <a
                   href="/profile/results"
-                  className="mt-4 inline-block min-h-[48px] rounded-lg bg-sage px-6 py-3 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                  className={`mt-8 inline-flex min-h-[52px] w-full items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-center text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
                 >
                   {t("observer.goDashboard", locale)}
                 </a>
-              </>
-            ) : (
-              <>
-                <p className="mt-4 text-sm leading-relaxed text-ink-body">
-                  {t("observer.doneSignedOutHint", locale)}
-                </p>
-                <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
+              ) : (
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <a
                     href={`/sign-up?observeToken=${token}`}
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
+                    className={`inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-center text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
                   >
                     {t("observer.signUpCta", locale)}
                   </a>
                   <a
                     href={`/sign-in?observeToken=${token}`}
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-sage bg-transparent px-6 text-sm font-semibold text-[var(--color-accent-primary-strong)] transition hover:bg-sage-soft"
+                    className={`inline-flex min-h-[52px] flex-1 items-center justify-center rounded-xl border border-[var(--color-action-primary-bg)] bg-transparent px-6 text-center text-sm font-semibold text-[var(--color-action-primary-bg)] transition hover:bg-[var(--color-surface-self-accent-soft)] ${FOCUS_RING_CLASS}`}
                   >
                     {t("observer.signInCta", locale)}
                   </a>
                 </div>
-              </>
-            )}
+              )}
+
+              <p className="mt-5 text-center text-note text-[var(--color-text-muted)]">
+                {t("observer.doneMeta", locale)}
+              </p>
+            </section>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
@@ -715,43 +824,56 @@ export function ObserverClient({
 
   return (
     <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
-      {/* ═══ MINIMAL NAV — a self-kitöltéssel azonos héj ═══ */}
-      <nav className="flex shrink-0 items-center justify-between bg-[var(--color-surface-header)]/95 px-6 py-3 backdrop-blur-[12px] sm:px-10 lg:px-16">
-        <Link href="/" className="text-[var(--color-text-primary)]">
-          <TritaWordmark className="text-2xl" />
-        </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-micro text-[var(--color-action-primary-bg)]">
-            ✓ {t("assessment.savedState", locale)}
-          </span>
-          {/* Az observer sosem lép be — a séma-választó csak itt érhető el. */}
-          <ThemeToggle variant="compact" />
+      <AssessmentFocusHeader
+        homeHref={observerHomeHref}
+        center={(
+          <div className="flex w-full items-center gap-2.5 lg:gap-3">
+            <div className="hidden shrink-0 items-baseline gap-1 sm:flex">
+              <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
+              <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+            </div>
+            <div
+              role="progressbar"
+              aria-label={tf("assessment.progressLabel", locale, {
+                done: displayIndex,
+                total: totalQuestions,
+              })}
+              aria-valuemin={1}
+              aria-valuemax={totalQuestions}
+              aria-valuenow={displayIndex}
+              className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]"
+            >
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
+                style={{ width: `${(Math.max(answeredCount, displayIndex) / totalQuestions) * 100}%` }}
+              />
+              <div
+                className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
+                style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
+              />
+            </div>
+            <span className="hidden shrink-0 whitespace-nowrap text-note text-[var(--color-text-muted)] sm:inline">
+              {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
+            </span>
+          </div>
+        )}
+      >
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex shrink-0 items-baseline gap-1 sm:hidden">
+            <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
+            <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
+          </div>
+          <div className="hidden items-center gap-2 sm:flex sm:gap-3">
+            <span className="text-micro text-[var(--color-action-primary-bg)]">
+              ✓ {t("assessment.savedState", locale)}
+            </span>
+            <ThemeToggle variant="compact" />
+          </div>
         </div>
-      </nav>
-
-      {/* ═══ PROGRESS BAR — single row ═══ */}
-      <div className="flex shrink-0 items-center gap-4 border-b border-[var(--color-border-default)] px-7 py-2.5">
-        <div className="flex items-baseline gap-1">
-          <span className="font-fraunces text-base font-medium text-[var(--color-text-primary)]">{displayIndex}</span>
-          <span className="text-xs text-[var(--color-text-muted)]">/ {totalQuestions}</span>
-        </div>
-        <div className="relative h-1 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]">
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)]/30 transition-all duration-300"
-            style={{ width: `${(Math.max(answeredCount, displayIndex) / totalQuestions) * 100}%` }}
-          />
-          <div
-            className="absolute left-0 top-0 h-full rounded-full bg-[var(--color-action-primary-bg)] transition-all duration-300"
-            style={{ width: `${(displayIndex / totalQuestions) * 100}%` }}
-          />
-        </div>
-        <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
-          {tf("assessment.etaRemaining", locale, { minutes: etaMinutes })}
-        </span>
-      </div>
+      </AssessmentFocusHeader>
 
       {/* Observer-emlékeztető — kire gondolj válasz közben */}
-      <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-xs text-[var(--color-accent-self-deep)]">
+      <div data-testid="observer-think-of" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-[1180px] shrink-0 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-4 py-2.5 text-center text-xs text-[var(--color-accent-self-deep)] sm:px-7">
         {thinkOfParts.length > 1 ? (
           thinkOfParts.map((part, index) => (
             <span key={`thinkof-${index}`}>
@@ -765,7 +887,7 @@ export function ObserverClient({
       </div>
 
       {/* ═══ QUESTION AREA (centered) ═══ */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 py-8 lg:py-12">
+      <div className="flex flex-1 flex-col items-center justify-center px-5 py-6 sm:px-6 sm:py-8 lg:py-12">
         <div ref={questionAreaRef} className="w-full max-w-xl">
           <AnimatePresence mode="wait">
             <motion.div
@@ -803,12 +925,7 @@ export function ObserverClient({
                     {t("assessment.journeyMilestone", locale)}
                   </div>
                   <h2 className="mb-3 font-fraunces text-title leading-tight text-[var(--color-text-primary)] lg:text-title">
-                    {t(
-                      checkpoint === 25 ? "assessment.journeyMilestone25"
-                      : checkpoint === 50 ? "assessment.journeyMilestone50"
-                      : "assessment.journeyMilestone75",
-                      locale
-                    )}
+                    {t("assessment.journeyMilestone50", locale)}
                   </h2>
                   <div className="mb-5 flex w-full max-w-[280px] gap-[3px]">
                     {Array.from({ length: 10 }, (_, i) => {
@@ -830,12 +947,7 @@ export function ObserverClient({
                   <div className="flex w-full max-w-[400px] items-start gap-2 rounded-lg bg-[var(--color-surface-self-accent-soft)] px-4 py-3 text-left">
                     <span className="mt-px shrink-0 text-sm">💡</span>
                     <p className="text-caption leading-[1.45] text-[var(--color-accent-self-deep)]">
-                      {t(
-                        checkpoint === 25 ? "assessment.journeyMilestone25Hint"
-                        : checkpoint === 50 ? "assessment.journeyMilestone50Hint"
-                        : "assessment.journeyMilestone75Hint",
-                        locale
-                      )}
+                      {t("assessment.journeyMilestone50Hint", locale)}
                     </p>
                   </div>
                 </div>
@@ -859,15 +971,13 @@ export function ObserverClient({
         </p>
       </div>
 
-      {/* ═══ FOOTER BAR — a self-kitöltéssel azonos ═══ */}
-      {/* Mobilon a vezérlősor a viewport aljára tapad (az (app)-shell fejléce
-          alatt egyébként a hajtás alá csúszna); md-től a korábbi in-flow sáv. */}
-      <div className="sticky bottom-0 z-20 flex shrink-0 items-center justify-between gap-2 border-t border-[var(--color-border-default)] bg-surface-card px-3 py-3 shadow-[0_-1px_4px_rgba(0,0,0,0.02)] md:static md:z-auto md:px-7">
+      {/* ═══ FLOATING CONTROL DOCK — a self-kitöltéssel azonos ═══ */}
+      <div className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] grid shrink-0 grid-cols-2 items-center gap-2 rounded-[20px] border border-[var(--color-border-default)] bg-[var(--color-surface-header)]/95 p-2 shadow-[0_10px_28px_rgba(26,26,46,0.10)] backdrop-blur-[14px] sm:grid-cols-[1fr_auto_1fr] md:mx-auto md:mb-3 md:w-[calc(100%-1.5rem)] md:max-w-[1180px] md:px-3">
         <button
           type="button"
           onClick={handlePrevStep}
           disabled={!canGoPrev}
-          className={`group inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-lg border px-3 py-2.5 text-caption transition-all md:px-5 ${
+          className={`group col-start-1 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-2 justify-self-start whitespace-nowrap rounded-xl border px-3 py-2.5 text-caption transition-all sm:min-h-[44px] sm:w-auto sm:px-4 md:px-5 ${FOCUS_RING_CLASS} ${
             canGoPrev
               ? "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-subtle)]"
               : "pointer-events-none border-transparent bg-transparent opacity-0"
@@ -877,7 +987,7 @@ export function ObserverClient({
           <span>{t("assessment.prevCta", locale)}</span>
         </button>
 
-        <label className="flex min-h-[44px] shrink-0 cursor-pointer items-center gap-2 px-1">
+        <label className="col-span-2 row-start-2 flex min-h-[36px] min-w-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg focus-within:outline-none focus-within:ring-2 focus-within:ring-state-focus-ring focus-within:ring-offset-2 focus-within:ring-offset-surface-canvas sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:min-h-[44px]">
           <div
             className={`flex h-3.5 w-3.5 items-center justify-center rounded-[3px] border-[1.5px] transition-all ${
               autoAdvance ? "border-[var(--color-action-primary-bg)] bg-[var(--color-action-primary-bg)]" : "border-[var(--color-border-default)] bg-surface-card"
@@ -891,10 +1001,7 @@ export function ObserverClient({
             onChange={(e) => setAutoAdvance(e.target.checked)}
             className="sr-only"
           />
-          {/* Mobilon csak a jelölőnégyzet látszik (a felirat elférne, de a
-              három vezérlőt szétnyomná) — a szöveg sr-only marad, hogy a
-              kapcsolónak legyen elérhető neve. */}
-          <span className="sr-only whitespace-nowrap text-note text-[var(--color-text-muted)] md:not-sr-only">
+          <span className="whitespace-nowrap text-note text-[var(--color-text-muted)]">
             {t("assessment.autoAdvance", locale)}
           </span>
         </label>
@@ -904,7 +1011,7 @@ export function ObserverClient({
             type="button"
             onClick={handleFinish}
             disabled={isSubmitting}
-            className={`inline-flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`col-start-2 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               !isSubmitting && confidence !== null
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"
@@ -918,7 +1025,7 @@ export function ObserverClient({
             onClick={handleNextStep}
             disabled={isSubmitting}
             aria-disabled={!canProceed || isSubmitting}
-            className={`min-h-[44px] whitespace-nowrap rounded-lg px-4 py-2.5 text-caption font-semibold transition-all md:px-6 ${
+            className={`col-start-2 row-start-1 inline-flex min-h-[48px] w-full items-center justify-center gap-1.5 justify-self-end whitespace-nowrap rounded-xl px-3 py-2.5 text-caption font-semibold transition-all sm:col-start-3 sm:min-h-[44px] sm:w-auto sm:px-4 md:px-6 ${FOCUS_RING_CLASS} ${
               canProceed && !isSubmitting
                 ? "bg-[var(--color-action-primary-bg)] text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/15 hover:brightness-[1.06]"
                 : "bg-[var(--color-action-primary-bg)]/30 text-white/50"

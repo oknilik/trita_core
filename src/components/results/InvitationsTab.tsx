@@ -9,6 +9,7 @@ import { QrCodeBadge } from "@/components/ui/QrCodeBadge";
 import { t, tf } from "@/lib/i18n";
 import { MIN_RATERS_FOR_ANONYMOUS_AGGREGATE } from "@/lib/anonymity";
 import { OBSERVER_INVITE_MAX_ACTIVE } from "@/lib/observer/invite-policy";
+import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 import type { SerializedSentInvitation, SerializedReceivedInvitation } from "@/components/profile/ProfileTabs";
 
 interface InvitationsTabProps {
@@ -260,46 +261,48 @@ export function InvitationsTab({
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString(locale === "hu" ? "hu-HU" : "en-GB", { year: "numeric", month: "short", day: "numeric" });
 
-  return (
-    <div className="flex flex-col gap-5">
-      {/* 1. Header */}
-      <div>
-        <div className="mb-1.5 flex items-center gap-2">
-          <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: "var(--color-action-primary-bg)" }} />
-          <span className="text-micro uppercase tracking-widest text-[var(--color-text-muted)]">
-            {t("invitations.eyebrow", locale)}
-          </span>
-        </div>
-        <h2 className="font-fraunces text-heading tracking-tight text-[var(--color-text-primary)]">
-          {t("invitations.title", locale)}
-        </h2>
-        <p className="mt-1 max-w-[480px] text-caption leading-relaxed text-[var(--color-text-muted)]">
-          {t("invitations.sub", locale)}
-        </p>
-      </div>
+  const showColleaguePicker = hasColleagueDirectory && (colleaguesLoading || colleagues.length > 0) && canCreate;
 
-      {/* 2. Stat cells */}
-      <div className="grid grid-cols-3 gap-2">
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
+  return (
+    <section className="flex flex-col gap-8" data-testid="observer-invitations-surface">
+      {/* 1–3. Fejezetnyitó: cél + állapot egyetlen, erős hierarchiában. */}
+      <div className="grid overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.08)] lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
+        <div className="relative overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-6 py-8 sm:px-9 sm:py-10 lg:px-10">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-56 w-56 rounded-full bg-white/[0.05]" />
+          <div className="relative z-10">
+            <p className="text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+              {t("invitations.eyebrow", locale)}
+            </p>
+            <h2 className="mt-4 font-fraunces text-title font-medium leading-[1.08] tracking-[-0.03em] text-[var(--color-text-on-inverse)] sm:text-display">
+              {t("invitations.title", locale)}
+            </h2>
+            <p className="mt-4 max-w-[430px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)]">
+              {t("invitations.sub", locale)}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-center px-5 py-7 sm:px-8 sm:py-9 lg:px-9">
+          <div className="grid grid-cols-3 gap-2.5">
+        <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: completed.length > 0 ? "var(--color-action-primary-bg)" : "var(--color-text-primary)" }}>
             {completed.length}
           </p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statReceived", locale)}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
+        <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5 text-center">
           <p className="font-fraunces text-2xl" style={{ color: pending.length > 0 ? "var(--color-accent-primary)" : "var(--color-text-primary)" }}>
             {pending.length}
           </p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statPending", locale)}</p>
         </div>
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-3.5 text-center">
+        <div className="rounded-xl bg-[var(--color-surface-subtle)] p-3.5 text-center">
           <p className="font-fraunces text-2xl text-[var(--color-text-primary)]">{active.length}</p>
           <p className="text-micro text-[var(--color-text-muted)]">{t("invitations.statSent", locale)}</p>
         </div>
       </div>
 
-      {/* 3. Info banner */}
-      <div className="flex items-start gap-2.5 rounded-xl border-[1.5px] border-[var(--color-action-primary-bg)]/15 bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4">
+      <div className="mt-4 flex items-start gap-2.5 rounded-xl border border-[var(--color-action-primary-bg)]/15 bg-[var(--color-surface-self-accent-soft)] p-3.5 px-4">
         <span className="shrink-0 text-sm" style={{ color: "var(--color-action-primary-bg)" }}>
           {completed.length >= minForReveal ? "✓" : "ℹ"}
         </span>
@@ -309,14 +312,17 @@ export function InvitationsTab({
             : tf("invitations.infoNeededN", locale, { min: minForReveal })}
         </p>
       </div>
+        </div>
+      </div>
 
       {/* 4a. Kolléga-picker (org-tagoknál) — B14: org-kontextusban a fetch
           alatt skeleton tartja a helyét, hogy a lenti form ne ugorjon el;
           nem org-tagnál (hasColleagueDirectory=false) skeleton sincs. */}
+      <div className="grid items-start gap-4 lg:grid-cols-2">
       {hasColleagueDirectory && colleaguesLoading && canCreate ? (
         <div
           aria-hidden="true"
-          className="animate-pulse rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5"
+          className="animate-pulse rounded-[18px] border border-[var(--color-border-default)] bg-surface-card p-5 shadow-sm"
         >
           <div className="h-4 w-48 max-w-full rounded bg-[var(--color-surface-subtle)]" />
           <div className="mt-2 h-3 w-72 max-w-full rounded bg-[var(--color-surface-subtle)]" />
@@ -326,10 +332,13 @@ export function InvitationsTab({
           </div>
         </div>
       ) : colleagues.length > 0 && canCreate ? (
-        <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5">
-          <p className="text-caption font-semibold text-[var(--color-text-primary)]">
-            + {t("invitations.colleagueSectionTitle", locale)}
-          </p>
+        <div className="rounded-[18px] border border-[var(--color-border-default)] bg-surface-card p-5 shadow-sm sm:p-6">
+          <div className="flex items-center gap-3">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-note font-semibold text-[var(--color-action-primary-bg)]">1</span>
+            <p className="text-caption font-semibold text-[var(--color-text-primary)]">
+              {t("invitations.colleagueSectionTitle", locale)}
+            </p>
+          </div>
           <p className="mt-1 text-note leading-relaxed text-[var(--color-text-muted)]">
             {t("invitations.colleagueSectionHint", locale)}
           </p>
@@ -339,7 +348,7 @@ export function InvitationsTab({
               value={colleagueSearch}
               onChange={(e) => setColleagueSearch(e.target.value)}
               placeholder={t("invitations.colleagueSearchPlaceholder", locale)}
-              className="mt-3 min-h-[44px] w-full rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none md:min-h-[40px] md:text-caption"
+              className={`mt-3 min-h-[48px] w-full rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-3.5 py-2 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] md:text-caption ${FOCUS_RING_CLASS}`}
             />
           ) : null}
           <div className="mt-3 flex max-h-[260px] flex-col gap-1.5 overflow-y-auto">
@@ -351,7 +360,7 @@ export function InvitationsTab({
               filteredColleagues.map((c) => (
                 <div
                   key={c.userId}
-                  className="flex items-center gap-3 rounded-lg border border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3 py-2"
+                  className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-3 py-2.5"
                 >
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-self-accent-soft)] text-xs font-bold text-[var(--color-action-primary-bg)]">
                     {c.name.slice(0, 1).toUpperCase()}
@@ -373,7 +382,7 @@ export function InvitationsTab({
                       type="button"
                       onClick={() => handleInviteColleague(c.userId)}
                       disabled={invitingColleagueId !== null}
-                      className="inline-flex min-h-[40px] shrink-0 items-center rounded-lg bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-note font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50 md:min-h-[32px]"
+                      className={`inline-flex min-h-[44px] shrink-0 items-center rounded-xl bg-[var(--color-action-primary-bg)] px-3.5 py-1 text-note font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-[1.06] disabled:opacity-50 ${FOCUS_RING_CLASS}`}
                     >
                       {invitingColleagueId === c.userId ? "…" : t("invitations.colleagueInviteButton", locale)}
                     </button>
@@ -388,12 +397,15 @@ export function InvitationsTab({
       {/* 4. Create form — B14: a cím a szerver-oldalon ismert org-kontextusból
           jön (hasColleagueDirectory prop), nem a kolléga-fetch kimenetelétől,
           így a szekció nem címkézi át magát menet közben. */}
-      <div className="rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-[18px] px-5">
-        <p className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
-          + {hasColleagueDirectory
-            ? t("invitations.externalSectionTitle", locale)
-            : t("invitations.formTitle", locale)}
-        </p>
+      <div className={`rounded-[18px] border border-[var(--color-border-default)] bg-surface-card p-5 shadow-sm sm:p-6 ${showColleaguePicker ? "" : "lg:col-span-2"}`}>
+        <div className="mb-3 flex items-center gap-3">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--color-surface-highlight-warm)] text-note font-semibold text-[var(--color-accent-primary-strong)]">{showColleaguePicker ? "2" : "1"}</span>
+          <p className="text-caption font-semibold text-[var(--color-text-primary)]">
+            {hasColleagueDirectory
+              ? t("invitations.externalSectionTitle", locale)
+              : t("invitations.formTitle", locale)}
+          </p>
+        </div>
         {hasColleagueDirectory ? (
           <p className="-mt-1 mb-3 text-note leading-relaxed text-[var(--color-text-muted)]">
             {t("invitations.externalApprovalHint", locale)}
@@ -402,20 +414,20 @@ export function InvitationsTab({
 
         {canCreate ? (
           <>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreate()}
                 placeholder={t("invitations.formPlaceholder", locale)}
-                className="min-h-[44px] min-w-0 flex-1 rounded-[10px] border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] focus:outline-none md:text-caption"
+                className={`min-h-[50px] min-w-0 flex-1 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-canvas)] px-3.5 py-2.5 text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] transition focus:border-[var(--color-action-primary-bg)] md:text-caption ${FOCUS_RING_CLASS}`}
               />
               <button
                 type="button"
                 onClick={handleCreate}
                 disabled={isCreating}
-                className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-[var(--color-sage-dark)] disabled:opacity-50"
+                className={`min-h-[50px] shrink-0 rounded-xl bg-[var(--color-action-primary-bg)] px-5 py-2.5 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-[1.06] disabled:opacity-50 ${FOCUS_RING_CLASS}`}
               >
                 {isCreating ? "..." : t("invitations.formSubmit", locale)}
               </button>
@@ -437,6 +449,7 @@ export function InvitationsTab({
             {t("invitations.limitReached", locale)}
           </p>
         )}
+      </div>
       </div>
 
       {/* 5. Invitation list or empty state */}
@@ -466,7 +479,7 @@ export function InvitationsTab({
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="grid gap-5 lg:grid-cols-2">
           {/* Completed group.
               W1 (differencia-támadás maradék felülete): ez a lista a meghívó
               (értékelt) SAJÁT meghívóit mutatja névvel + nap-pontos dátummal —
@@ -480,12 +493,12 @@ export function InvitationsTab({
               idő-finomság). Teljes zárás = zajos/kvantált aggregátum — ez
               pilot-kalibrációt igényel (ld. results reveal-küszöb jegyzet). */}
           {completed.length > 0 && (
-            <div>
+            <div className="rounded-[18px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-4 sm:p-5">
               <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
                 {`${t("invitations.groupReceived", locale)} (${completed.length})`}
               </p>
               {completed.map((inv) => (
-                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
+                <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-action-primary-bg)]/30 hover:shadow-sm">
                   <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: "var(--color-surface-self-accent-soft)", color: "var(--color-action-primary-bg)" }}>✓</div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-caption font-medium text-[var(--color-text-primary)]">
@@ -508,13 +521,13 @@ export function InvitationsTab({
 
           {/* Pending group */}
           {pending.length > 0 && (
-            <div>
+            <div className="rounded-[18px] border border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] p-4 sm:p-5">
               <p className="mb-2 text-label uppercase text-[var(--color-text-muted)]">
                 {`${t("invitations.groupPending", locale)} (${pending.length})`}
               </p>
               {pending.map((inv) => (
                 <div key={inv.id} className="mb-2">
-                  <div className="flex flex-wrap items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
+                  <div className="flex flex-wrap items-center gap-3 rounded-xl border border-[var(--color-border-default)] bg-surface-card px-4 py-3.5 transition-all hover:border-[var(--color-accent-primary)]/30 hover:shadow-sm">
                     <div className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm" style={{ backgroundColor: inv.observerEmail || inv.observerName ? "var(--color-surface-highlight-warm)" : "var(--color-surface-subtle)", color: inv.observerEmail || inv.observerName ? "var(--color-accent-primary)" : "var(--color-text-muted)" }}>
                       {inv.status === "AWAITING_APPROVAL" ? "🔒" : inv.observerEmail || inv.observerName ? "⏳" : "🔗"}
                     </div>
@@ -529,7 +542,7 @@ export function InvitationsTab({
                           : <>{" · "}{inv.observerEmail ? t("invitations.emailInvite", locale) : t("invitations.linkInvite", locale)}</>}
                       </p>
                     </div>
-                    <div className="flex shrink-0 items-center gap-2">
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:shrink-0">
                       <span className="rounded px-2 py-0.5 text-micro font-semibold" style={{ backgroundColor: "var(--color-surface-highlight-warm)", color: "var(--color-accent-primary-strong)" }}>
                         {inv.status === "AWAITING_APPROVAL"
                           ? t("invitations.statusAwaitingApproval", locale)
@@ -538,7 +551,7 @@ export function InvitationsTab({
                       <button
                         type="button"
                         onClick={() => handleCopy(inv.token)}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className={`inline-flex min-h-[44px] items-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                       >
                         {copiedToken === inv.token ? t("invitations.copied", locale) : t("invitations.linkButton", locale)}
                       </button>
@@ -548,7 +561,7 @@ export function InvitationsTab({
                         type="button"
                         onClick={() => setQrToken((prev) => (prev === inv.token ? null : inv.token))}
                         aria-expanded={qrToken === inv.token}
-                        className="inline-flex min-h-[40px] items-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] md:min-h-[32px]"
+                        className={`inline-flex min-h-[44px] items-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-3 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] ${FOCUS_RING_CLASS}`}
                       >
                         QR
                       </button>
@@ -557,7 +570,7 @@ export function InvitationsTab({
                         onClick={() => handleDelete(inv.id)}
                         disabled={deletingId === inv.id}
                         aria-label={t("actions.delete", locale)}
-                        className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-[var(--color-border-soft)] bg-surface-card px-2.5 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 md:min-h-[32px] md:min-w-0"
+                        className={`inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-[var(--color-border-default)] bg-surface-card px-2.5 py-1 text-note font-medium text-[var(--color-text-muted)] transition hover:bg-[var(--color-surface-subtle)] disabled:opacity-50 ${FOCUS_RING_CLASS}`}
                       >
                         {deletingId === inv.id ? "..." : "✕"}
                       </button>
@@ -581,7 +594,7 @@ export function InvitationsTab({
 
       {/* 6. Received invitations (where others invited this user) */}
       {receivedInvitations.length > 0 && (
-        <div className="border-t border-[var(--color-border-soft)] pt-5">
+        <div className="rounded-[18px] border border-[var(--color-border-default)] bg-surface-card p-4 sm:p-5">
           <p className="mb-3 text-label uppercase text-[var(--color-text-muted)]">
             {t("invitations.receivedSection", locale)}
           </p>
@@ -592,7 +605,7 @@ export function InvitationsTab({
             const isDone = inv.status === "COMPLETED";
 
             return (
-              <div key={inv.id} className="mb-2 flex items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card px-4 py-3.5">
+              <div key={inv.id} className="mb-2 flex flex-wrap items-center gap-3 rounded-xl bg-[var(--color-surface-subtle)] px-4 py-3.5">
                 <div
                   className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-sm"
                   style={{ backgroundColor: isDone ? "var(--color-surface-self-accent-soft)" : "var(--color-surface-subtle)", color: isDone ? "var(--color-action-primary-bg)" : "var(--color-text-muted)" }}
@@ -612,7 +625,7 @@ export function InvitationsTab({
                   </p>
                 </div>
                 {isPending && !isExpired && (
-                  <Link href={`/observe/${inv.token}`} className="min-h-[44px] shrink-0 rounded-[10px] bg-[var(--color-action-primary-bg)] px-4 py-2 text-note font-semibold text-[var(--color-action-primary-fg)]">
+                  <Link href={`/observe/${inv.token}`} className={`inline-flex min-h-[44px] shrink-0 items-center rounded-xl bg-[var(--color-action-primary-bg)] px-4 py-2 text-note font-semibold text-[var(--color-action-primary-fg)] ${FOCUS_RING_CLASS}`}>
                     {t("invitations.fillIn", locale)}
                   </Link>
                 )}
@@ -621,6 +634,6 @@ export function InvitationsTab({
           })}
         </div>
       )}
-    </div>
+    </section>
   );
 }

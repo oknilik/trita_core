@@ -70,6 +70,15 @@ function renderTab() {
 }
 
 describe("ComparisonTab — mérési-hiba kapu (DIFF_MIN_GAP)", () => {
+  it("az új observer-fejléc mobilon egymás alá, asztalon két oszlopba rendeződik", () => {
+    renderTab();
+    expect(screen.getByTestId("observer-comparison-surface")).toBeInTheDocument();
+    expect(screen.getByTestId("observer-comparison-hero")).toHaveClass(
+      "lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]",
+    );
+    expect(screen.getByRole("heading", { name: /Hogyan látnak mások/i })).toBeInTheDocument();
+  });
+
   it("a kapu a kanonikus √2·SEM konstans, nem a régi 10-es literál", () => {
     expect(DIFF_MIN_GAP).toBe(Math.round(diffStandardError("short")));
     expect(DIFF_MIN_GAP).toBeGreaterThan(10);
