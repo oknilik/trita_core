@@ -1144,10 +1144,10 @@ export async function sendMagicLinkEmail(params: {
 
 const teamInviteTranslations = {
   hu: {
-    subject: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba – trita`,
+    subject: (teamName: string) => `Csapatmeghívó: ${teamName} – trita`,
     kind: "Meghívó",
     eyebrow: "Csapat",
-    heading: (teamName: string) => `Meghívtak ${withHuArticle(teamName)} csapatba`,
+    heading: (teamName: string) => `Meghívást kaptál: ${teamName}`,
     body: "Személyiségprofilod megosztásával csatlakozhatsz a csapathoz. Regisztrálj a tritára, és automatikusan hozzáadunk!",
     cta: "Regisztráció és csatlakozás",
     footer: "Ha nem szeretnél csatlakozni, egyszerűen hagyd figyelmen kívül ezt az emailt.",
