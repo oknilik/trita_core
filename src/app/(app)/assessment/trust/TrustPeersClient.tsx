@@ -14,8 +14,14 @@ import {
 } from "@/lib/trust-network";
 import { t, tf } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
-import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
 import { ChevronRightIcon } from "@/components/ui/icons";
+import {
+  AssessmentFlowHeader,
+  AssessmentFlowShell,
+  AssessmentIntro,
+  AssessmentStatus,
+  assessmentPrimaryActionClass,
+} from "@/components/assessment/AssessmentFlowShell";
 
 interface Teammate {
   userId: string;
@@ -101,73 +107,50 @@ export function TrustPeersClient({
 
   if (phase === "intro") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-xl flex-col items-center justify-center px-4 py-12">
-        <SectionEyebrow tone="team">
-          {t("trustPeers.eyebrow", locale)}
-        </SectionEyebrow>
-        <h1 className="mt-3 text-center font-fraunces text-3xl leading-tight text-ink">
-          {t("trustPeers.introTitle", locale)}
-        </h1>
-        <p className="mt-2 text-center text-sm text-muted">{campaignName}</p>
-        <p className="mt-5 max-w-md text-center text-sm leading-relaxed text-ink-body">
-          {tf("trustPeers.introBody", locale, { count: TRUST_QUESTION_COUNT })}
-        </p>
-        <div className="mt-6 w-full rounded-xl border border-sage/30 bg-sage/5 px-4 py-3.5">
-          <p className="text-caption leading-relaxed text-ink-body">
+      <AssessmentIntro
+        eyebrow={t("trustPeers.eyebrow", locale)}
+        title={t("trustPeers.introTitle", locale)}
+        campaignName={campaignName}
+        body={tf("trustPeers.introBody", locale, { count: TRUST_QUESTION_COUNT })}
+        notice={
+          <>
             <span className="font-semibold text-ink">
               {t("trustPeers.consentTitle", locale)}
             </span>{" "}
             {t("trustPeers.consentBody", locale)}
-          </p>
-        </div>
-        <button
-          type="button"
-          onClick={() => setPhase("rating")}
-          className="mt-8 inline-flex min-h-[48px] items-center rounded-[10px] bg-action-primary-bg px-8 text-sm font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("trustPeers.start", locale)}
-        </button>
-        <p className="mt-3 font-mono text-micro uppercase tracking-wide text-muted">
-          {tf("trustPeers.progress", locale, {
+          </>
+        }
+        action={
+          <button type="button" onClick={() => setPhase("rating")} className={assessmentPrimaryActionClass}>
+            {t("trustPeers.start", locale)}
+          </button>
+        }
+        meta={tf("trustPeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
-          })}
-        </p>
-      </div>
+        })}
+      />
     );
   }
 
   if (phase === "done") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <div className="text-4xl">🤝</div>
-        <h1 className="mt-4 font-fraunces text-2xl text-ink">
-          {t("trustPeers.doneTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("trustPeers.doneBody", locale)}
-        </p>
-        <button
-          type="button"
-          onClick={() => router.push("/dashboard")}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
-        >
-          {t("trustPeers.backToDashboard", locale)}
-        </button>
-      </div>
+      <AssessmentStatus
+        tone="success"
+        title={t("trustPeers.doneTitle", locale)}
+        body={t("trustPeers.doneBody", locale)}
+        action={<button type="button" onClick={() => router.push("/dashboard")} className={assessmentPrimaryActionClass}>{t("trustPeers.backToDashboard", locale)}</button>}
+      />
     );
   }
 
   if (phase === "error") {
     return (
-      <div className="mx-auto flex min-h-dvh w-full max-w-md flex-col items-center justify-center px-4 text-center">
-        <h1 className="font-fraunces text-2xl text-ink">
-          {t("trustPeers.errorTitle", locale)}
-        </h1>
-        <p className="mt-3 text-sm leading-relaxed text-ink-body">
-          {t("trustPeers.errorBody", locale)}
-        </p>
-        <button
+      <AssessmentStatus
+        tone="error"
+        title={t("trustPeers.errorTitle", locale)}
+        body={t("trustPeers.errorBody", locale)}
+        action={<button
           type="button"
           onClick={() => {
             setPhase("rating");
@@ -175,11 +158,11 @@ export function TrustPeersClient({
               void submitOne(lastFailed.aboutUserId, lastFailed.answers);
             }
           }}
-          className="mt-6 inline-flex min-h-[44px] items-center rounded-[10px] bg-action-primary-bg px-6 text-caption font-semibold text-[var(--color-action-primary-fg)] transition hover:brightness-110"
+          className={assessmentPrimaryActionClass}
         >
           {t("trustPeers.retry", locale)}
-        </button>
-      </div>
+        </button>}
+      />
     );
   }
 
@@ -188,18 +171,14 @@ export function TrustPeersClient({
   const isLast = pending.length === 1;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col px-4 pt-8 pb-20">
-      <div className="flex items-center justify-between">
-        <SectionEyebrow tone="team">
-          {t("trustPeers.eyebrow", locale)}
-        </SectionEyebrow>
-        <p className="font-mono text-note text-muted">
-          {tf("trustPeers.progress", locale, {
+    <AssessmentFlowShell>
+      <AssessmentFlowHeader
+        eyebrow={t("trustPeers.eyebrow", locale)}
+        progress={tf("trustPeers.progress", locale, {
             done: doneCount,
             total: teammates.length,
-          })}
-        </p>
-      </div>
+        })}
+      />
 
       <section
         className="relative mt-5 grid grid-cols-[auto_minmax(0,1fr)] items-center gap-4 overflow-hidden rounded-2xl border border-[var(--color-layer-team-accent)]/25 px-5 py-5 shadow-[var(--ui-shadow-sm)] sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:gap-5 sm:px-6"
@@ -357,6 +336,6 @@ export function TrustPeersClient({
             : t("trustPeers.next", locale)}
         {!isLast && !submitting ? <ChevronRightIcon /> : null}
       </button>
-    </div>
+    </AssessmentFlowShell>
   );
 }

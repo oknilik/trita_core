@@ -47,6 +47,15 @@ export function CheckIcon(props: IconProps) {
   );
 }
 
+export function AlertIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M10 3 2.8 16h14.4L10 3Z" />
+      <path d="M10 7.5v4M10 14.2v.1" />
+    </svg>
+  );
+}
+
 export function PlusIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
