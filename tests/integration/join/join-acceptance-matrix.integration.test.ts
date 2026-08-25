@@ -6,6 +6,8 @@ import {
   MembershipOnboardingError,
   joinMembershipFromInvite,
   resolveAcceptance,
+  resolveOrgJoinPageModel,
+  resolveTeamJoinPageModel,
 } from "@/lib/acceptance/service";
 import { GET as candidateLookupGET } from "@/app/api/candidate/[token]/route";
 import { PATCH as candidateProgressPATCH } from "@/app/api/candidate/[token]/progress/route";
@@ -191,6 +193,46 @@ test("api.org.join valid token: creates org membership with invite role and cons
   assert.ok(orgMembership, "organization membership should exist");
   assert.equal(orgMembership?.role, "ORG_MANAGER");
   assert.equal(pendingInvite, null, "org invite should be consumed after successful join");
+});
+
+test("team join page keeps the public token for the submit handoff", async () => {
+  const { team } = await createOrgGraph();
+  const invite = await createTeamInvite(team.id);
+  const user = await createProfile({
+    clerkId: makeId("clerk_team_page_token"),
+    email: invite.email,
+    completeProfile: true,
+  });
+
+  const model = await resolveTeamJoinPageModel({
+    inviteId: invite.token,
+    clerkId: user.clerkId!,
+  });
+
+  assert.equal(model.state, "ready");
+  if (model.state !== "ready") return;
+  assert.equal(model.payload.inviteId, invite.token);
+  assert.notEqual(model.payload.inviteId, invite.id);
+});
+
+test("organization join page keeps the public token for the submit handoff", async () => {
+  const { org } = await createOrgGraph();
+  const invite = await createOrgInvite(org.id);
+  const user = await createProfile({
+    clerkId: makeId("clerk_org_page_token"),
+    email: invite.email,
+    completeProfile: true,
+  });
+
+  const model = await resolveOrgJoinPageModel({
+    inviteId: invite.token,
+    clerkId: user.clerkId!,
+  });
+
+  assert.equal(model.state, "ready");
+  if (model.state !== "ready") return;
+  assert.equal(model.payload.inviteId, invite.token);
+  assert.notEqual(model.payload.inviteId, invite.id);
 });
 
 test("api.team.join email mismatch: named invite rejects a different account", async () => {
@@ -452,4 +494,3 @@ test("relevant apply endpoint: /api/candidate/[token]/progress mutates draft pro
   assert.equal(updated?.draftAnsweredCount, 17);
   assert.ok(updated?.draftStartedAt, "draftStartedAt should be set when progress starts");
 });
-
