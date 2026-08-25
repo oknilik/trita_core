@@ -12,6 +12,8 @@ interface CampaignStatusButtonProps {
   label: string;
   isDanger: boolean;
   locale: Locale;
+  disabled?: boolean;
+  disabledReason?: string;
   /** Megerősítő szöveg a következményekkel — a szerver adja lokalizálva. */
   confirmMessage?: string;
 }
@@ -23,6 +25,8 @@ export function CampaignStatusButton({
   label,
   isDanger,
   locale,
+  disabled = false,
+  disabledReason,
   confirmMessage,
 }: CampaignStatusButtonProps) {
   const router = useRouter();
@@ -56,7 +60,7 @@ export function CampaignStatusButton({
     <div>
       <button
         onClick={handleClick}
-        disabled={loading}
+        disabled={loading || disabled}
         className={`min-h-[44px] rounded-lg px-5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
           isDanger
             ? "border border-state-error-border bg-surface-card text-state-error-fg hover:bg-state-error-bg"
@@ -65,6 +69,11 @@ export function CampaignStatusButton({
       >
         {loading ? "…" : label}
       </button>
+      {disabled && disabledReason ? (
+        <p className="mt-2 max-w-lg text-xs leading-relaxed text-state-warning-fg">
+          {disabledReason}
+        </p>
+      ) : null}
       {error && <p className="mt-2 text-xs text-state-error-fg">{error}</p>}
     </div>
   );

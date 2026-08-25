@@ -94,6 +94,10 @@ export const commonTranslations = {
       hu: "A tesztet időközben már kitöltötték.",
       en: "The assessment was completed in the meantime.",
     },
+    campaignMinimumParticipants: {
+      hu: "A mérés legalább 3 résztvevővel indítható. Adj még tagokat a méréshez, majd próbáld újra.",
+      en: "A measurement requires at least 3 participants. Add more members, then try again.",
+    },
   },
 
   meta: {

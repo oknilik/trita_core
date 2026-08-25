@@ -17,6 +17,7 @@ import {
   type CampaignPresetId,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
+import { MIN_CAMPAIGN_TEAM_PARTICIPANTS } from "@/lib/campaign-activation-core";
 
 interface Member {
   userId: string;
@@ -349,14 +350,19 @@ export function CampaignWizard({
       // Azonnali aktiválás — a meglévő PATCH útvonalon, hogy minden
       // mellékhatás (lépés-inicializálás, értesítések, szerep-kör flag)
       // ugyanúgy fusson, mint a kampány-oldali aktiválásnál.
-      if (activateNow) {
+      if (willActivateNow) {
         const activateRes = await fetch(`/api/org/${orgId}/campaigns/${campaignId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ status: "ACTIVE" }),
         });
         if (!activateRes.ok) {
-          errorKey = "campaignWiz.activateFailed";
+          const data = await activateRes.json().catch(() => ({}));
+          errorKey = presentUserError({
+            code: data.error,
+            status: activateRes.status,
+            fallbackKey: "campaignWiz.activateFailed",
+          });
           throw new Error("CAMPAIGN_ACTIVATE_FAILED");
         }
       }
@@ -389,6 +395,15 @@ export function CampaignWizard({
       tp === "PEER_FEEDBACK",
   );
   const canProceedTargeting = isTeamLocked ? targetTeamIds.size > 0 : true;
+  const activationParticipantMinimum =
+    targetTeamIds.size > 0 ? MIN_CAMPAIGN_TEAM_PARTICIPANTS : 1;
+  const canActivateImmediately =
+    selectedIds.size >= activationParticipantMinimum;
+  const activationMissingCount = Math.max(
+    0,
+    activationParticipantMinimum - selectedIds.size,
+  );
+  const willActivateNow = activateNow && canActivateImmediately;
 
   return (
     <div className="flex flex-col gap-6">
@@ -914,15 +929,15 @@ export function CampaignWizard({
             <label
               className={[
                 "flex items-start gap-3 rounded-xl border px-4 py-3.5",
-                selectedIds.size === 0
+                !canActivateImmediately
                   ? "cursor-not-allowed border-sand bg-cream/50 opacity-60"
                   : "cursor-pointer border-sand bg-cream/60",
               ].join(" ")}
             >
               <input
                 type="checkbox"
-                checked={activateNow}
-                disabled={selectedIds.size === 0}
+                checked={willActivateNow}
+                disabled={!canActivateImmediately}
                 onChange={(e) => setActivateNow(e.target.checked)}
                 className="mt-0.5 h-5 w-5 shrink-0 rounded accent-sage"
               />
@@ -932,6 +947,10 @@ export function CampaignWizard({
                 </span>{" "}
                 {selectedIds.size === 0
                   ? t("campaignWiz.activateNowNoParticipants", locale)
+                  : !canActivateImmediately
+                    ? tf("campaignWiz.activateNowMinimumParticipants", locale, {
+                        missing: activationMissingCount,
+                      })
                   : t("campaignWiz.activateNowHint", locale)}
               </span>
             </label>
@@ -944,7 +963,7 @@ export function CampaignWizard({
                 </svg>
               </span>
               <p className="text-note text-bronze-700">
-                {activateNow
+                {willActivateNow
                   ? t("campaignWiz.activateNowNote", locale)
                   : t("campaignWiz.draftNote", locale)}
               </p>
@@ -971,7 +990,7 @@ export function CampaignWizard({
             <Button type="button" onClick={handleSubmit} loading={loading} variant="primary">
               {loading
                 ? t("campaignWiz.creating", locale)
-                : activateNow
+                : willActivateNow
                   ? t("campaignWiz.createAndActivate", locale)
                   : t("campaignWiz.createCampaign", locale)}
             </Button>

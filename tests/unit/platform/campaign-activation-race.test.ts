@@ -13,7 +13,17 @@ test("az atomikus aktivacios validator a commit elotti aktualis konfiguraciot ve
       participantUserIds: ["a", "b"],
       targetMemberUserIds: ["a", "b"],
     }),
-    "ANONYMITY_THRESHOLD_NOT_MET",
+    "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET",
+  );
+  assert.equal(
+    getCampaignActivationPreconditionFailure({
+      presetId: null,
+      steps: ["SELF_ASSESSMENT"],
+      teamIds: ["team"],
+      participantUserIds: ["a", "b"],
+      targetMemberUserIds: ["a", "b"],
+    }),
+    "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET",
   );
   assert.equal(
     getCampaignActivationPreconditionFailure({

@@ -37,6 +37,7 @@ import {
   isCampaignStepType,
   type CampaignStepType,
 } from "@/lib/campaign-steps-core";
+import { MIN_CAMPAIGN_TEAM_PARTICIPANTS } from "@/lib/campaign-activation-core";
 import { DIMENSION_BASE } from "@/lib/color-system";
 import { extractDimensionScores } from "@/lib/scoring";
 
@@ -1085,6 +1086,20 @@ export default async function CampaignDetailPage({
               label={nextStatusLabel(nextStatus, locale)}
               isDanger={nextStatus === "CLOSED"}
               locale={locale}
+              disabled={
+                nextStatus === "ACTIVE" &&
+                getCampaignTeamIds(campaign).length > 0 &&
+                totalCount < MIN_CAMPAIGN_TEAM_PARTICIPANTS
+              }
+              disabledReason={
+                nextStatus === "ACTIVE" &&
+                getCampaignTeamIds(campaign).length > 0 &&
+                totalCount < MIN_CAMPAIGN_TEAM_PARTICIPANTS
+                  ? tf("campaignWiz.activateNowMinimumParticipants", locale, {
+                      missing: MIN_CAMPAIGN_TEAM_PARTICIPANTS - totalCount,
+                    })
+                  : undefined
+              }
               confirmMessage={t(
                 nextStatus === "CLOSED"
                   ? "campaignWiz.closeConfirm"
