@@ -16,8 +16,12 @@ export function Footer() {
   const currentPath = usePathname();
   const { isSignedIn } = useAuthState();
 
-  // Hide footer on assessment/try pages
-  if (currentPath.startsWith("/try") || currentPath.startsWith("/assessment")) return null;
+  // Hide the global footer in focused assessment flows.
+  if (
+    currentPath.startsWith("/try") ||
+    currentPath.startsWith("/assessment") ||
+    currentPath.startsWith("/observe")
+  ) return null;
 
   const accountLinks = isSignedIn
     ? [

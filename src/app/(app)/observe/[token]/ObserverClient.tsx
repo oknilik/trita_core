@@ -9,6 +9,7 @@ import { useLocale } from "@/components/LocaleProvider";
 import { t, tf } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { AssessmentFocusHeader } from "@/components/layout/AssessmentFocusHeader";
+import { useAssessmentStepController } from "@/components/assessment/useAssessmentStepController";
 import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { isLikertQuestion, type Question } from "@/lib/questions/types";
@@ -134,7 +135,7 @@ export function ObserverClient({
   const [checkpoint, setCheckpoint] = useState<number | null>(null);
   const reachedCheckpoints = useRef<Set<number>>(new Set(
     initialDraft
-      ? ([25, 50, 75] as const).filter(
+      ? ([50] as const).filter(
           (m) => (Object.keys(sanitizedInitialAnswers).length / questions.length) * 100 >= m,
         )
       : [],
@@ -142,14 +143,33 @@ export function ObserverClient({
   const initializedFocusPage = useRef<number | null>(null);
   const serverSaveDebounce = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestDraftRef = useRef({ phase, relationshipType, knownDuration, answers, currentPage });
+  const currentPageRef = useRef(currentPage);
+  const activeQuestionIndexRef = useRef(activeQuestionIndex);
   const questionAreaRef = useRef<HTMLDivElement>(null);
   const scrollMounted = useRef(false);
+  const {
+    cancelAutoAdvance,
+    runStepTransition,
+    scheduleAutoAdvance: scheduleGuardedAutoAdvance,
+  } = useAssessmentStepController({
+    getActiveQuestionId: () =>
+      questions[currentPageRef.current * QUESTIONS_PER_PAGE + activeQuestionIndexRef.current]?.id ??
+      null,
+  });
 
   const DRAFT_KEY = `trita_observer_draft_${token}`;
 
   useEffect(() => {
     latestDraftRef.current = { phase, relationshipType, knownDuration, answers, currentPage };
-  }, [phase, relationshipType, knownDuration, answers, currentPage]);
+    currentPageRef.current = currentPage;
+    activeQuestionIndexRef.current = activeQuestionIndex;
+  }, [phase, relationshipType, knownDuration, answers, currentPage, activeQuestionIndex]);
+
+  useEffect(() => {
+    if (!autoAdvance || phase !== "assessment" || checkpoint !== null) {
+      cancelAutoAdvance();
+    }
+  }, [autoAdvance, cancelAutoAdvance, checkpoint, phase]);
 
   useEffect(() => {
     if (!scrollMounted.current) { scrollMounted.current = true; return; }
@@ -174,7 +194,7 @@ export function ObserverClient({
         );
         setAnswers(sanitized);
         const pct = (Object.keys(sanitized).length / questions.length) * 100;
-        for (const m of [25, 50, 75] as const) {
+        for (const m of [50] as const) {
           if (pct >= m) reachedCheckpoints.current.add(m);
         }
         setCurrentPage(getResumePage(questions, sanitized, data.currentPage ?? 0));
@@ -333,11 +353,10 @@ export function ObserverClient({
     const currentAnsweredCount = Object.keys(latestDraftRef.current.answers).length;
     const nextAnsweredCount = wasUnanswered ? currentAnsweredCount + 1 : currentAnsweredCount;
     const nextProgress = (nextAnsweredCount / totalQuestions) * 100;
-    const willTriggerCheckpoint = [25, 50, 75].some(
-      (mark) => nextProgress >= mark && !reachedCheckpoints.current.has(mark),
-    );
+    const willTriggerCheckpoint =
+      nextProgress >= 50 && !reachedCheckpoints.current.has(50);
 
-    window.setTimeout(() => {
+    scheduleGuardedAutoAdvance(questionId, () => {
       if (willTriggerCheckpoint) return;
 
       if (canGoForwardWithinPage) {
@@ -364,7 +383,7 @@ export function ObserverClient({
         return;
       }
       setCurrentPage((prev) => prev + 1);
-    }, 130);
+    });
   }, [
     autoAdvance,
     activeQuestion,
@@ -374,63 +393,67 @@ export function ObserverClient({
     pageQuestions,
     isLastPage,
     handleGoToConfidence,
+    scheduleGuardedAutoAdvance,
   ]);
 
   const handlePrevStep = useCallback(() => {
-    if (phase === "confidence") {
-      setPhase("assessment");
-      return;
-    }
-    if (checkpointActive) {
-      setCheckpoint(null);
-      return;
-    }
-    if (canGoBackWithinPage) {
-      setActiveQuestionIndex((idx) => idx - 1);
-      return;
-    }
-    handlePreviousPage();
-  }, [phase, checkpointActive, canGoBackWithinPage, handlePreviousPage]);
+    runStepTransition(() => {
+      if (phase === "confidence") {
+        setPhase("assessment");
+        return;
+      }
+      if (checkpointActive) {
+        setCheckpoint(null);
+        return;
+      }
+      if (canGoBackWithinPage) {
+        setActiveQuestionIndex((idx) => idx - 1);
+        return;
+      }
+      handlePreviousPage();
+    });
+  }, [phase, checkpointActive, canGoBackWithinPage, handlePreviousPage, runStepTransition]);
 
   const handleNextStep = useCallback(() => {
-    if (checkpointActive) {
-      setCheckpoint(null);
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      );
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered);
-      } else if (isLastPage) {
-        handleGoToConfidence();
-      } else {
-        handleNextPage();
-      }
-      return;
-    }
     if (activeQuestion && answers[activeQuestion.id] === undefined) {
       highlightMissing(activeQuestion.id);
       return;
     }
-    if (canGoForwardWithinPage) {
-      const nextUnanswered = pageQuestions.findIndex(
-        (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
-      );
-      if (nextUnanswered !== -1) {
-        setActiveQuestionIndex(nextUnanswered);
-      } else {
-        if (isLastPage) {
+
+    runStepTransition(() => {
+      if (checkpointActive) {
+        setCheckpoint(null);
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+        );
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered);
+        } else if (isLastPage) {
           handleGoToConfidence();
         } else {
           handleNextPage();
         }
+        return;
       }
-      return;
-    }
-    if (isLastPage) {
-      handleGoToConfidence();
-      return;
-    }
-    handleNextPage();
+      if (canGoForwardWithinPage) {
+        const nextUnanswered = pageQuestions.findIndex(
+          (q, i) => i > activeQuestionIndex && answers[q.id] === undefined,
+        );
+        if (nextUnanswered !== -1) {
+          setActiveQuestionIndex(nextUnanswered);
+        } else if (isLastPage) {
+          handleGoToConfidence();
+        } else {
+          handleNextPage();
+        }
+        return;
+      }
+      if (isLastPage) {
+        handleGoToConfidence();
+        return;
+      }
+      handleNextPage();
+    });
   }, [
     checkpointActive,
     activeQuestion,
@@ -442,6 +465,7 @@ export function ObserverClient({
     isLastPage,
     handleGoToConfidence,
     handleNextPage,
+    runStepTransition,
   ]);
 
   useEffect(() => {
@@ -814,7 +838,7 @@ export function ObserverClient({
       </AssessmentFocusHeader>
 
       {/* Observer-emlékeztető — kire gondolj válasz közben */}
-      <div className="shrink-0 border-b border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-7 py-2 text-center text-xs text-[var(--color-accent-self-deep)]">
+      <div data-testid="observer-think-of" className="mx-auto mt-2 w-[calc(100%-1.5rem)] max-w-[1180px] shrink-0 rounded-xl border border-[var(--color-border-default)] bg-[var(--color-surface-self-accent-soft)]/50 px-4 py-2.5 text-center text-xs text-[var(--color-accent-self-deep)] sm:px-7">
         {thinkOfParts.length > 1 ? (
           thinkOfParts.map((part, index) => (
             <span key={`thinkof-${index}`}>

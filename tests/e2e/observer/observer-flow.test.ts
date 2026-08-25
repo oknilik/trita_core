@@ -144,6 +144,17 @@ async function completeObserverViaUi(
   await page.goto(`/observe/${token}`, { waitUntil: "domcontentloaded" });
 
   await expect(page.getByRole("radio", { name: /^4 - / }).first()).toBeVisible();
+  await expect(page.locator("[data-site-footer]")).toHaveCount(0);
+
+  const focusHeader = page.getByTestId("assessment-focus-header").locator(":scope > div");
+  const reminder = page.getByTestId("observer-think-of");
+  const focusHeaderBox = await focusHeader.boundingBox();
+  const reminderBox = await reminder.boundingBox();
+  expect(focusHeaderBox).not.toBeNull();
+  expect(reminderBox).not.toBeNull();
+  expect(Math.abs(reminderBox!.width - focusHeaderBox!.width)).toBeLessThanOrEqual(1);
+  expect(reminderBox!.y).toBeGreaterThanOrEqual(focusHeaderBox!.y + focusHeaderBox!.height);
+
   await page.getByRole("radio", { name: /^4 - / }).first().click();
 
   // Az utolsó válasz után az auto-advance (~130 ms) magától a confidence-

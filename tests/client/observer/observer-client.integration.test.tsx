@@ -447,6 +447,63 @@ describe("C5.5 ObserverClient integration", () => {
 
       expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
     });
+
+    it("keeps auto-advancing through the former 25 percent checkpoint", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      vi.useFakeTimers();
+      for (let questionNumber = 1; questionNumber <= 3; questionNumber += 1) {
+        expect(screen.getByText(new RegExp(`Observer Q${questionNumber}`))).toBeInTheDocument();
+        fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
+        act(() => {
+          vi.advanceTimersByTime(130);
+        });
+      }
+
+      expect(screen.getByText(/Observer Q4/)).toBeInTheDocument();
+    });
+
+    it("does not skip a question when manual navigation races auto-advance", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      await waitFor(() => {
+        expect(screen.getByText(/Observer Q1/)).toBeInTheDocument();
+      });
+
+      vi.useFakeTimers();
+      fireEvent.click(screen.getByRole("radio", { name: /^3 - / }));
+      fireEvent.click(screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") }));
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+
+      act(() => {
+        vi.advanceTimersByTime(150);
+      });
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+      expect(screen.queryByText(/Observer Q3/)).not.toBeInTheDocument();
+    });
+
+    it("ignores a rapid second manual next action", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      const autoAdvanceCheckbox = screen.getByRole("checkbox");
+      await user.click(autoAdvanceCheckbox);
+      await user.click(screen.getByRole("radio", { name: /^3 - / }));
+
+      const nextButton = screen.getByRole("button", { name: new RegExp(NEXT_CTA, "i") });
+      fireEvent.click(nextButton);
+      fireEvent.click(nextButton);
+
+      expect(screen.getByText(/Observer Q2/)).toBeInTheDocument();
+      expect(screen.queryByText(/Observer Q3/)).not.toBeInTheDocument();
+    });
   });
 
   // ── Draft resume ─────────────────────────────────────────────────────────
