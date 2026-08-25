@@ -16,6 +16,7 @@ import { isLikertQuestion, type Question } from "@/lib/questions/types";
 import { createClientLogger } from "@/lib/client-logger";
 import { JOURNEY_HOME_HANDOFF_PATH } from "@/lib/journey/routes";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
+import { PageState } from "@/components/ui/primitives/StatePanel";
 
 const log = createClientLogger("observer");
 
@@ -713,20 +714,11 @@ export function ObserverClient({
 
   if (phase === "inactive") {
     return (
-      <div className="relative min-h-dvh bg-cream">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto flex min-h-dvh max-w-2xl flex-col items-center justify-center px-4 py-16 text-center">
-          <div className="w-full rounded-2xl border border-sand bg-surface-card p-8 shadow-sm">
-            <div className="text-5xl leading-none">😕</div>
-            <h1 className="mt-4 text-2xl font-bold text-ink">
-              {t("observer.inactiveTitle", locale)}
-            </h1>
-            <p className="mt-3 text-sm leading-relaxed text-ink-body">
-              {t("observer.inactiveBody", locale)}
-            </p>
-          </div>
-        </div>
-      </div>
+      <PageState
+        tone="error"
+        title={t("observer.inactiveTitle", locale)}
+        body={t("observer.inactiveBody", locale)}
+      />
     );
   }
 

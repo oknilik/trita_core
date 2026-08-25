@@ -2,6 +2,7 @@
 
 import { useLocale } from "@/components/LocaleProvider";
 import { t } from "@/lib/i18n";
+import { LockIcon } from "@/components/ui/icons";
 
 interface LockedPreviewProps {
   isPlus?: boolean;
@@ -19,7 +20,7 @@ export function LockedPreview({ isPlus = false }: LockedPreviewProps) {
       <a
         href="/contact"
         className="flex cursor-pointer items-center gap-3 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] px-5 py-3.5 transition-colors hover:bg-[var(--color-border-default)]">
-        <span className="shrink-0 text-body opacity-25">🔒</span>
+        <LockIcon className="h-4 w-4 shrink-0 text-muted" />
         <span className="flex-1 text-xs leading-relaxed text-[var(--color-text-muted)]">
           {t("results.lockPreviewText", locale)}
         </span>

@@ -778,8 +778,8 @@ describe("C5.5 ObserverClient integration", () => {
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
-        expect(screen.getByText(t("observer.inactiveTitle", "en"))).toBeInTheDocument();
-        expect(screen.getByText("😕")).toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: t("observer.inactiveTitle", "en") })).toBeInTheDocument();
+        expect(screen.queryByText("😕")).not.toBeInTheDocument();
       });
     });
 
@@ -917,7 +917,7 @@ describe("C5.5 ObserverClient integration", () => {
   // ── Inactive phase ───────────────────────────────────────────────────────
 
   describe("inactive phase", () => {
-    it("shows inactive state with emoji and message", async () => {
+    it("shows the shared inactive state with its message", async () => {
       const user = userEvent.setup();
       vi.stubGlobal("fetch", vi.fn().mockResolvedValue(
         new Response(JSON.stringify({ error: "INVITE_CANCELED" }), { status: 400 }),
@@ -934,8 +934,8 @@ describe("C5.5 ObserverClient integration", () => {
       await user.click(screen.getByRole("button", { name: SUBMIT_CTA }));
 
       await waitFor(() => {
-        expect(screen.getByText("😕")).toBeInTheDocument();
-        expect(screen.getByText(t("observer.inactiveTitle", "en"))).toBeInTheDocument();
+        expect(screen.queryByText("😕")).not.toBeInTheDocument();
+        expect(screen.getByRole("heading", { name: t("observer.inactiveTitle", "en") })).toBeInTheDocument();
         expect(screen.getByText(t("observer.inactiveBody", "en"))).toBeInTheDocument();
       });
     });

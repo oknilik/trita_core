@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { AlertIcon, CheckIcon, SparklesIcon } from "@/components/ui/icons";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
+import { StatePanel } from "@/components/ui/primitives/StatePanel";
 
 type StatusTone = "success" | "error" | "empty";
 
@@ -96,27 +96,9 @@ export function AssessmentStatus({
   body: ReactNode;
   action?: ReactNode;
 }) {
-  const visualClass =
-    tone === "error"
-      ? "border-state-error-border bg-state-error-bg text-state-error-fg"
-      : tone === "success"
-        ? "border-sage/30 bg-sage/10 text-sage-dark"
-        : "border-sand bg-[var(--color-surface-subtle)] text-[var(--color-accent-primary-strong)]";
-
   return (
     <AssessmentFlowShell width="compact" centered>
-      <div className={`flex h-14 w-14 items-center justify-center rounded-full border ${visualClass}`}>
-        {tone === "success" ? (
-          <CheckIcon className="h-6 w-6" />
-        ) : tone === "error" ? (
-          <AlertIcon className="h-6 w-6" />
-        ) : (
-          <SparklesIcon className="h-6 w-6" />
-        )}
-      </div>
-      <h1 className="mt-5 text-center font-fraunces text-2xl text-ink">{title}</h1>
-      <p className="mt-3 max-w-md text-center text-sm leading-relaxed text-ink-body">{body}</p>
-      {action ? <div className="mt-7">{action}</div> : null}
+      <StatePanel tone={tone} title={title} body={body} action={action} />
     </AssessmentFlowShell>
   );
 }
