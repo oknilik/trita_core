@@ -16,6 +16,12 @@ vi.mock("@/lib/analytics/client", () => ({
 }));
 
 describe("landing CTA-hierarchia", () => {
+  it("a hero H1-et animáció nélkül, az első festéskor láthatóan rendereli", () => {
+    render(<HeroSection mode="self" />);
+
+    expect(screen.getByRole("heading", { level: 1 })).not.toHaveClass("animate-rise-in");
+  });
+
   it("csapatmódban a pilotprogram az elsődleges út, a kapcsolatfelvétel csendes másodlagos", () => {
     render(
       <>

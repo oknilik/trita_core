@@ -1051,11 +1051,10 @@ body {
 }
 
 /* ─── Landing beúszás (framer-motion helyett tiszta CSS) ──────────────────
-   Miért: a hero H1 az LCP-elem. A framer-motion `hidden: { opacity: 0 }`
-   → `visible` mintája a hidratálásig átlátszón tartotta, ami 4x CPU-
-   throttling mellett 6.5 s render-delay volt. A CSS-keyframe már az ELSŐ
-   festéskor fut, a mozgás jellege (0.5s, y:20px, ugyanaz az easing)
-   változatlan. Csak opacity + transform mozog → nincs layout-shift. */
+   A hero LCP-eleme (H1) nem használja ezt az osztályt: az opacity: 0
+   kezdőállapot a CSS-animáció alatt is késleltette az LCP-t. A keyframe a
+   kísérőelemeken és a hajtás alatti revealeken marad; csak opacity +
+   transform mozog, ezért nincs layout-shift. */
 @keyframes trita-rise-in {
   from {
     opacity: 0;
