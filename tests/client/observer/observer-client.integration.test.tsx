@@ -240,13 +240,16 @@ describe("C5.5 ObserverClient integration", () => {
   // ── Intro phase ──────────────────────────────────────────────────────────
 
   describe("intro phase", () => {
-    it("renders intro with inviter name and welcome message", () => {
+    it("renders the split intro with inviter context", () => {
       renderObserver();
-      // Welcome text is inside h1 with emoji prefix: "👋 We're glad you're here!"
-      expect(screen.getByText((_content, el) =>
-        el?.tagName === "H1" && Boolean(el?.textContent?.includes(t("observer.introWelcome", "en"))),
-      )).toBeInTheDocument();
-      expect(screen.getByText(new RegExp(INVITER))).toBeInTheDocument();
+      expect(screen.getByRole("heading", {
+        level: 1,
+        name: t("observer.introHeroTitle", "en"),
+      })).toBeInTheDocument();
+      expect(screen.getAllByText(new RegExp(INVITER)).length).toBeGreaterThanOrEqual(1);
+      expect(screen.getByTestId("observer-intro-layout")).toHaveClass(
+        "lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]",
+      );
     });
 
     it("shows all 5 relationship type buttons", () => {

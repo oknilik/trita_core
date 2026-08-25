@@ -182,6 +182,44 @@ function buildObserverSubmitPayload(token: string, questionIds: number[]) {
 }
 
 test.describe("C5.6 Observer E2E happy path", () => {
+  test("observer intro stacks cleanly on a narrow mobile viewport", async ({ page }) => {
+    const fixture = await createObserverFixture({ invitationCount: 1 });
+    try {
+      await page.setViewportSize({ width: 360, height: 800 });
+      await page.addInitScript(() => {
+        window.localStorage.setItem("trita_locale", "hu");
+      });
+      await page.goto(`/observe/${fixture.invitationTokens[0]}`, {
+        waitUntil: "domcontentloaded",
+      });
+
+      const layout = page.getByTestId("observer-intro-layout");
+      await expect(layout).toBeVisible();
+      await expect(page.getByRole("heading", { name: /A te nézőpontod is számít/i })).toBeVisible();
+      await expect(page.getByRole("button", { name: /Kezdjük el/i })).toBeVisible();
+
+      const panels = layout.locator(":scope > section");
+      await expect(panels).toHaveCount(2);
+      const heroBox = await panels.nth(0).boundingBox();
+      const formBox = await panels.nth(1).boundingBox();
+      expect(heroBox).not.toBeNull();
+      expect(formBox).not.toBeNull();
+      expect(formBox!.y).toBeGreaterThanOrEqual(heroBox!.y + heroBox!.height - 1);
+
+      const relationshipButton = page.getByRole("button", { name: /Kolléga/i });
+      const relationshipButtonBox = await relationshipButton.boundingBox();
+      expect(relationshipButtonBox).not.toBeNull();
+      expect(relationshipButtonBox!.height).toBeGreaterThanOrEqual(44);
+
+      const horizontalOverflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(horizontalOverflow).toBeLessThanOrEqual(1);
+    } finally {
+      await cleanupObserverFixture(fixture);
+    }
+  });
+
   test("observer token link open -> submit -> completion persists in DB", async ({ page }) => {
     const fixture = await createObserverFixture({ invitationCount: 1 });
     try {

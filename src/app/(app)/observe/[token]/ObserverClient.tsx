@@ -542,29 +542,69 @@ export function ObserverClient({
 
   if (phase === "intro") {
     const canStart = relationshipType !== "" && knownDuration !== "";
+    const inviterInitials = inviterName
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toLocaleUpperCase(locale))
+      .join("");
 
     return (
-      <div className="relative min-h-dvh bg-cream">
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-1/3 bg-gradient-to-b from-transparent to-cream" aria-hidden="true" />
-        <div className="relative z-10 mx-auto max-w-2xl px-4 pt-8 pb-20 md:pt-12">
-          <div className="rounded-2xl border border-sand bg-surface-card p-6 md:p-8">
-            <h1 className="text-2xl font-bold text-ink">
-              👋 {t("observer.introWelcome", locale)}
-            </h1>
-            <div className="mt-4 rounded-xl border border-sage-ring bg-gradient-to-r from-sage via-sage-dark to-sage-deep px-4 py-2 text-center text-sm font-medium text-[var(--color-action-primary-fg)] shadow-sm">
-              {tf("observer.introInvitedBy", locale, { inviter: inviterName })}
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-ink-body">
-              {t("observer.introBodyShort", locale)}
-            </p>
-            <div className="mt-4 rounded-xl border border-sage-ring bg-sage-soft px-4 py-3 text-sm leading-relaxed text-bronze-dark">
-              {tf("observer.introPauseNote", locale, { count: questions.length })}
-            </div>
+      <div className="flex min-h-dvh flex-col bg-[var(--color-surface-canvas)]">
+        <AssessmentFocusHeader homeHref={observerHomeHref}>
+          <ThemeToggle variant="compact" />
+        </AssessmentFocusHeader>
 
-            <div className="mt-6 flex flex-col gap-4">
-              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
-                {t("observer.relationshipLabel", locale)}
-                <div className="flex flex-wrap gap-2">
+        <main className="mx-auto flex w-full max-w-[1210px] flex-1 px-3 pb-3 pt-3 sm:px-5 sm:pb-5 lg:px-4 lg:pb-8 lg:pt-4">
+          <div data-testid="observer-intro-layout" className="grid w-full overflow-hidden rounded-[22px] border border-[var(--color-border-default)] bg-surface-card shadow-[0_18px_48px_rgba(26,26,46,0.10)] lg:min-h-[680px] lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
+            <section className="relative flex min-h-[390px] flex-col justify-between overflow-hidden bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-7 py-9 text-[var(--color-text-on-inverse)] sm:min-h-[430px] sm:px-10 sm:py-11 lg:min-h-0 lg:px-12 lg:py-14">
+              <div aria-hidden="true" className="pointer-events-none absolute -right-28 -top-32 h-72 w-72 rounded-full bg-white/[0.05]" />
+              <div aria-hidden="true" className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-white/[0.05]" />
+
+              <div className="relative z-10">
+                <p className="text-label uppercase tracking-[0.16em] text-[var(--color-accent-primary-soft)]">
+                  {t("observer.introEyebrow", locale)}
+                </p>
+                <h1 className="mt-6 max-w-[470px] font-fraunces text-display font-medium leading-[1.03] tracking-[-0.035em] text-[var(--color-text-on-inverse)] lg:text-hero">
+                  {t("observer.introHeroTitle", locale)}
+                </h1>
+                <p className="mt-6 max-w-[430px] text-sm leading-relaxed text-[var(--color-text-on-inverse-muted)] sm:text-base">
+                  {tf("observer.introHeroBody", locale, { inviter: inviterName })}
+                </p>
+              </div>
+
+              <div className="relative z-10 mt-12 flex items-center gap-3">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-accent-primary)] text-caption font-semibold text-[var(--color-accent-primary-deep)]">
+                  {inviterInitials || "T"}
+                </span>
+                <span>
+                  <strong className="block text-caption font-semibold text-[var(--color-text-on-inverse)]">
+                    {tf("observer.introInviterMeta", locale, { inviter: inviterName })}
+                  </strong>
+                  <span className="mt-0.5 block text-note text-[var(--color-text-on-inverse-muted)]">
+                    {t("observer.introAnonymousMeta", locale)}
+                  </span>
+                </span>
+              </div>
+            </section>
+
+            <section className="flex flex-col justify-center px-5 py-8 sm:px-9 sm:py-10 lg:px-12 lg:py-12">
+              <p className="text-label uppercase tracking-[0.12em] text-[var(--color-text-muted)]">
+                {t("observer.introFormEyebrow", locale)}
+              </p>
+              <h2 className="mt-2 font-fraunces text-title font-medium leading-tight tracking-[-0.025em] text-[var(--color-text-primary)] sm:text-display">
+                {t("observer.introFormTitle", locale)}
+              </h2>
+              <p className="mt-3 max-w-[560px] text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {t("observer.introFormBody", locale)}
+              </p>
+
+              <div className="mt-8 flex flex-col gap-7">
+                <fieldset>
+                  <legend className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {t("observer.relationshipLabel", locale)}
+                  </legend>
+                  <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                   {RELATIONSHIP_OPTIONS.map((opt) => {
                     const lockedOut =
                       lockedRelationship !== null && opt.value !== lockedRelationship;
@@ -574,67 +614,75 @@ export function ObserverClient({
                         type="button"
                         disabled={lockedOut}
                         onClick={() => !lockedOut && setRelationshipType(opt.value)}
-                        className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+                        aria-pressed={relationshipType === opt.value}
+                        className={`min-h-[50px] rounded-xl border px-3 text-caption font-medium transition-all ${FOCUS_RING_CLASS} ${
                           relationshipType === opt.value
-                            ? "border-sage-ring bg-sage-soft text-bronze-dark"
+                            ? "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
                             : lockedOut
-                              ? "cursor-not-allowed border-sand bg-cream/50 text-muted opacity-60"
-                              : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
+                              ? "cursor-not-allowed border-[var(--color-border-default)] bg-[var(--color-surface-subtle)] text-[var(--color-text-muted)] opacity-55"
+                              : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-action-primary-bg)] hover:bg-[var(--color-surface-subtle)]"
                         }`}
                       >
                         {t(opt.labelKey, locale)}
                       </button>
                     );
                   })}
-                </div>
-                {lockedRelationship !== null && (
-                  <span className="text-xs font-normal text-muted">
+                  </div>
+                  {lockedRelationship !== null && (
+                  <p className="mt-2 text-note text-[var(--color-text-muted)]">
                     {t("observer.relationLockedNote", locale)}
-                  </span>
-                )}
-              </label>
+                  </p>
+                  )}
+                </fieldset>
 
-              <label className="flex flex-col gap-2 text-sm font-semibold text-ink-body">
-                {t("observer.durationLabel", locale)}
-                <div className="flex flex-wrap gap-2">
+                <fieldset>
+                  <legend className="mb-3 text-caption font-semibold text-[var(--color-text-primary)]">
+                    {t("observer.durationLabel", locale)}
+                  </legend>
+                  <div className="grid grid-cols-1 gap-2.5 min-[430px]:grid-cols-2">
                   {DURATION_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
                       type="button"
                       onClick={() => setKnownDuration(opt.value)}
-                      className={`min-h-[44px] rounded-lg border px-4 text-sm font-medium transition ${
+                      aria-pressed={knownDuration === opt.value}
+                      className={`min-h-[50px] rounded-xl border px-3 text-caption font-medium transition-all ${FOCUS_RING_CLASS} ${
                         knownDuration === opt.value
-                          ? "border-sage-ring bg-sage-soft text-bronze-dark"
-                          : "border-sand bg-surface-card text-ink-body hover:border-warm-dark"
+                          ? "border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] text-[var(--color-action-primary-bg)]"
+                          : "border-[var(--color-border-default)] bg-surface-card text-[var(--color-text-secondary)] hover:border-[var(--color-action-primary-bg)] hover:bg-[var(--color-surface-subtle)]"
                       }`}
                     >
                       {t(opt.labelKey, locale)}
                     </button>
                   ))}
-                </div>
-              </label>
-            </div>
+                  </div>
+                </fieldset>
+              </div>
 
-            {startAttempted && !canStart && (
-              <p className="mt-4 text-center text-xs text-state-warning-fg">
-                {t("observer.selectBothFields", locale)}
+              {startAttempted && !canStart && (
+                <p className="mt-5 text-center text-caption text-state-warning-fg" role="alert">
+                  {t("observer.selectBothFields", locale)}
+                </p>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  if (!canStart) {
+                    setStartAttempted(true);
+                    return;
+                  }
+                  setPhase("assessment");
+                }}
+                className={`mt-7 min-h-[52px] w-full rounded-xl bg-[var(--color-action-primary-bg)] px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-sm shadow-[var(--color-action-primary-bg)]/20 transition-all hover:brightness-[1.06] ${FOCUS_RING_CLASS}`}
+              >
+                {t("observer.start", locale)}
+              </button>
+              <p className="mt-3 text-center text-note text-[var(--color-text-muted)]">
+                {tf("observer.introMeta", locale, { count: questions.length })}
               </p>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                if (!canStart) {
-                  setStartAttempted(true);
-                  return;
-                }
-                setPhase("assessment");
-              }}
-              className="mt-6 min-h-[48px] w-full rounded-lg bg-sage px-6 text-sm font-semibold text-[var(--color-action-primary-fg)] shadow-lg transition-all duration-300 hover:scale-105 hover:bg-sage-dark hover:shadow-xl"
-            >
-              {t("observer.start", locale)}
-            </button>
+            </section>
           </div>
-        </div>
+        </main>
       </div>
     );
   }
