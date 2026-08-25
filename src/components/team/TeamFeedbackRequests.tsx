@@ -44,14 +44,20 @@ interface Suggestion {
   tryText: string;
 }
 
+export type TeamFeedbackRequestsView = "all" | "compose" | "inbox";
+
 export function TeamFeedbackRequests({
   teamId,
   members,
   locale,
+  view = "all",
+  showHeader = true,
 }: {
   teamId: string;
   members: Array<{ userId: string; displayName: string }>;
   locale: Locale;
+  view?: TeamFeedbackRequestsView;
+  showHeader?: boolean;
 }) {
   const [meId, setMeId] = useState<string | null>(null);
   const [mine, setMine] = useState<MyRequest[]>([]);
@@ -167,14 +173,24 @@ export function TeamFeedbackRequests({
 
   return (
     <Card as="section" spacing="lg">
-      <SectionEyebrow className="mb-1">
-        {t("team.fb.eyebrow", locale)}
-      </SectionEyebrow>
-      <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.fb.title", locale)}</h2>
-      <p className="mb-4 text-caption leading-relaxed text-ink-body">{t("team.fb.hint", locale)}</p>
+      {showHeader ? (
+        <>
+          <SectionEyebrow className="mb-1">
+            {t("team.fb.eyebrow", locale)}
+          </SectionEyebrow>
+          <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.fb.title", locale)}</h2>
+          <p className="mb-4 text-caption leading-relaxed text-ink-body">{t("team.fb.hint", locale)}</p>
+        </>
+      ) : null}
+
+      {view === "inbox" && loaded && forMe.length === 0 && mine.length === 0 && suggestions.length === 0 && pendingAnonymous === 0 ? (
+        <p className="text-caption text-muted">
+          {locale === "en" ? "No development feedback has arrived yet." : "Még nem érkezett fejlesztő visszajelzésed."}
+        </p>
+      ) : null}
 
       {/* Rám váró kérések */}
-      {forMe.length > 0 && (
+      {view !== "compose" && forMe.length > 0 && (
         <div className="mb-5">
           <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {tf("team.fb.forMeLabel", locale, { count: forMe.length })}
@@ -257,6 +273,7 @@ export function TeamFeedbackRequests({
       )}
 
       {/* Új kérés */}
+      {view !== "inbox" ? (
       <div className="mb-5 rounded-xl border border-sand bg-cream/60 p-4">
         <p className="mb-2 text-caption font-semibold text-ink">{t("team.fb.newRequestTitle", locale)}</p>
         <input
@@ -310,9 +327,10 @@ export function TeamFeedbackRequests({
           {error && <span className="text-caption text-state-error-fg">{error}</span>}
         </div>
       </div>
+      ) : null}
 
       {/* Saját kéréseim + válaszok */}
-      {loaded && mine.length > 0 && (
+      {view !== "compose" && loaded && mine.length > 0 && (
         <div className="mb-5">
           <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {t("team.fb.mineLabel", locale)}
@@ -361,7 +379,7 @@ export function TeamFeedbackRequests({
       )}
 
       {/* Kampány-körből kapott javaslataim */}
-      {loaded && (suggestions.length > 0 || pendingAnonymous > 0) && (
+      {view !== "compose" && loaded && (suggestions.length > 0 || pendingAnonymous > 0) && (
         <div>
           <p className="mb-2 font-mono text-micro uppercase tracking-widest text-muted">
             {t("team.fb.suggestionsLabel", locale)}

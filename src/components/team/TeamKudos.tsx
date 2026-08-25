@@ -25,15 +25,20 @@ interface KudosItem {
 }
 
 type KudosList = "received" | "team";
+export type TeamKudosView = "all" | "compose" | "inbox";
 
 export function TeamKudos({
   teamId,
   members,
   locale,
+  view = "all",
+  showHeader = true,
 }: {
   teamId: string;
   members: Array<{ userId: string; displayName: string }>;
   locale: Locale;
+  view?: TeamKudosView;
+  showHeader?: boolean;
 }) {
   const [items, setItems] = useState<KudosItem[]>([]);
   const [teamItems, setTeamItems] = useState<KudosItem[]>([]);
@@ -151,16 +156,21 @@ export function TeamKudos({
 
   return (
     <Card as="section" spacing="lg">
-      <SectionEyebrow className="mb-1">
-        {t("team.kudos.eyebrow", locale)}
-      </SectionEyebrow>
-      <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.kudos.title", locale)}</h2>
-      <p className="mb-4 text-caption leading-relaxed text-ink-body">
-        {t("team.kudos.hint", locale)}
-      </p>
+      {showHeader ? (
+        <>
+          <SectionEyebrow className="mb-1">
+            {t("team.kudos.eyebrow", locale)}
+          </SectionEyebrow>
+          <h2 className="mb-1 font-fraunces text-lg text-ink">{t("team.kudos.title", locale)}</h2>
+          <p className="mb-4 text-caption leading-relaxed text-ink-body">
+            {t("team.kudos.hint", locale)}
+          </p>
+        </>
+      ) : null}
 
       {/* Küldés */}
-      <div className="mb-5 flex flex-col gap-2.5 rounded-xl border border-sand bg-cream/60 p-4">
+      {view !== "inbox" ? (
+      <div className={`${view === "all" ? "mb-5" : ""} flex flex-col gap-2.5 rounded-xl border border-sand bg-cream/60 p-4`}>
         <select
           value={toUserId}
           onChange={(e) => setToUserId(e.target.value)}
@@ -283,7 +293,10 @@ export function TeamKudos({
           {error && <span className="text-caption text-state-error-fg">{error}</span>}
         </div>
       </div>
+      ) : null}
 
+      {view !== "compose" ? (
+      <>
       <div className="mb-4 flex gap-1 rounded-xl bg-cream p-1">
         <button
           type="button"
@@ -323,6 +336,8 @@ export function TeamKudos({
           )}
         </ul>
       )}
+      </>
+      ) : null}
     </Card>
   );
 }
