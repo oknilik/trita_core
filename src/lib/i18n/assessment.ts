@@ -249,8 +249,12 @@ export const assessmentTranslations = {
     duration3to5: { hu: "3-5 éve", en: "3-5 years" },
     duration5p: { hu: "5 évnél régebben", en: "More than 5 years" },
     helpLikertAbout: {
-      hu: "Mennyire igaz az állítás {inviter} esetében? (1 = egyáltalán nem, 5 = teljesen)",
-      en: "Choose how much you agree regarding {inviter} (1 = not at all, 5 = completely)",
+      hu: "Mennyire igaz az állítás {inviter} esetében?",
+      en: "Choose how much you agree regarding {inviter}.",
+    },
+    helpLikertScale: {
+      hu: "(1 = egyáltalán nem, 5 = teljesen)",
+      en: "(1 = not at all, 5 = completely)",
     },
     helpBinaryAbout: {
       hu: "Válaszd ki, melyik jellemzőbb {inviter} esetében",

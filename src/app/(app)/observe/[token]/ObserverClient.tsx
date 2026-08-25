@@ -562,6 +562,7 @@ export function ObserverClient({
   };
 
   const helpText = tf("observer.helpLikertAbout", locale, { inviter: inviterName });
+  const helpScaleText = t("observer.helpLikertScale", locale);
   const thinkOfText = tf("observer.thinkOf", locale, { inviter: inviterName });
   const thinkOfParts = thinkOfText.split(inviterName);
 
@@ -959,7 +960,8 @@ export function ObserverClient({
         </div>
 
         <p className="mt-6 text-xs italic text-[var(--color-text-muted)]">
-          {helpText}
+          <span className="block">{helpText}</span>
+          <span className="mt-1 block text-note not-italic">{helpScaleText}</span>
         </p>
       </div>
 
