@@ -134,8 +134,10 @@ export function buildOrganizationJsonLd(locale: Locale = DEFAULT_LOCALE): JsonLd
     url: siteUrl,
     logo: {
       "@type": "ImageObject",
-      url: `${siteUrl}/icon`,
-      contentUrl: `${siteUrl}/icon`,
+      url: `${siteUrl}/brand/trita-logo-512.png`,
+      contentUrl: `${siteUrl}/brand/trita-logo-512.png`,
+      width: 512,
+      height: 512,
     },
     image: `${siteUrl}${DEFAULT_OG_IMAGE_PATH}`,
     description: ORG_DESCRIPTION[locale],
