@@ -1341,7 +1341,10 @@ async function resolveTeamJoinPageModelLegacy(params: {
           : resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
             ? "profile_completion_required"
             : "team_assignment_pending",
-      inviteId: resolution.invite.inviteId,
+      // The client must submit the public link token, not the database row id.
+      // Join endpoints resolve invitations by token before using the internal id
+      // to consume the row in the transaction.
+      inviteId: params.inviteId,
       teamName: resolution.invite.teamName,
       orgName: resolution.invite.orgName,
       alreadyInTargetOrg: Boolean(alreadyInTargetOrg),
@@ -1393,7 +1396,7 @@ async function resolveOrgJoinPageModelLegacy(params: {
         resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
           ? "profile_completion_required"
           : "ready",
-      inviteId: resolution.invite.inviteId,
+      inviteId: params.inviteId,
       orgName: resolution.invite.orgName,
       existingProfile:
         resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"
@@ -1489,7 +1492,8 @@ export async function resolveTeamJoinPageModel(params: {
           : acceptance.machineState === "profile_completion_required"
             ? "profile_completion_required"
             : "team_assignment_pending",
-      inviteId: resolution.invite.inviteId,
+      // Keep the public token across the page -> client -> API handoff.
+      inviteId: params.inviteId,
       teamName: resolution.invite.teamName,
       orgName: resolution.invite.orgName,
       alreadyInTargetOrg: Boolean(alreadyInTargetOrg),
@@ -1554,7 +1558,7 @@ export async function resolveOrgJoinPageModel(params: {
         acceptance.machineState === "profile_completion_required"
           ? "profile_completion_required"
           : "ready",
-      inviteId: resolution.invite.inviteId,
+      inviteId: params.inviteId,
       orgName: resolution.invite.orgName,
       existingProfile:
         resolution.inviteState === "INVITED_AUTHENTICATED_PROFILE_INCOMPLETE"

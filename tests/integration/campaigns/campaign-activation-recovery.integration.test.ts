@@ -36,6 +36,7 @@ async function createCampaign(options: {
   status: "DRAFT" | "ACTIVE";
   steps?: string[];
   withTeam?: boolean;
+  teamParticipantCount?: number;
 }) {
   const profile = await createProfile();
   const org = await prisma.organization.create({
@@ -79,6 +80,26 @@ async function createCampaign(options: {
   const participant = await prisma.campaignParticipant.create({
     data: { campaignId: campaign.id, userId: profile.id },
   });
+  if (team) {
+    const participantCount = options.teamParticipantCount ?? 3;
+    const additionalProfiles = await Promise.all(
+      Array.from({ length: Math.max(0, participantCount - 1) }, () => createProfile()),
+    );
+    if (additionalProfiles.length > 0) {
+      await prisma.teamMember.createMany({
+        data: additionalProfiles.map((additionalProfile) => ({
+          teamId: team.id,
+          userId: additionalProfile.id,
+        })),
+      });
+      await prisma.campaignParticipant.createMany({
+        data: additionalProfiles.map((additionalProfile) => ({
+          campaignId: campaign.id,
+          userId: additionalProfile.id,
+        })),
+      });
+    }
+  }
   return { profile, org, team, campaign, participant };
 }
 
@@ -113,7 +134,7 @@ test("kampányaktiválás és értesítés-helyreállítás", async (t) => {
       );
       assert.equal(
         results.reduce((sum, result) => sum + result.openings.length, 0),
-        1,
+        3,
         "csak az állapotfoglalás nyertese inicializálhat",
       );
 
@@ -213,6 +234,7 @@ test("kampányaktiválás és értesítés-helyreállítás", async (t) => {
         status: "DRAFT",
         steps: ["SELF_ASSESSMENT"],
         withTeam: true,
+        teamParticipantCount: 2,
       });
       assert.ok(invalidLatestConfig.team);
       await updateDraftCampaignAtomically(invalidLatestConfig.campaign.id, {
@@ -225,7 +247,7 @@ test("kampányaktiválás és értesítés-helyreállítás", async (t) => {
         activateCampaignAtomically(invalidLatestConfig.campaign.id),
         (error: unknown) =>
           isCampaignActivationPreconditionError(error) &&
-          error.code === "ANONYMITY_THRESHOLD_NOT_MET",
+          error.code === "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET",
       );
       const afterRejectedActivation = await prisma.campaign.findUniqueOrThrow({
         where: { id: invalidLatestConfig.campaign.id },

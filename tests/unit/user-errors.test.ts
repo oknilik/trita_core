@@ -23,6 +23,10 @@ test("recognizes stable API error codes only", () => {
 
 test("maps known codes and HTTP statuses to shared translation keys", () => {
   assert.equal(presentUserError({ code: "RATE_LIMITED" }), "userErrors.rateLimited");
+  assert.equal(
+    presentUserError({ code: "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET" }),
+    "userErrors.campaignMinimumParticipants",
+  );
   assert.equal(presentUserError({ status: 401 }), "userErrors.sessionExpired");
   assert.equal(presentUserError({ status: 503 }), "userErrors.temporary");
 });
@@ -60,6 +64,7 @@ test("every shared presentation key has Hungarian and English copy", () => {
     { code: "INVITATION_NOT_PENDING" },
     { code: "INVITATION_EXPIRED" },
     { code: "ASSESSMENT_ALREADY_COMPLETED" },
+    { code: "CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET" },
     { status: 503 },
     {},
   ];

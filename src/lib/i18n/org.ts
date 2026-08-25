@@ -1154,6 +1154,10 @@ export const orgTranslations = {
       hu: "Résztvevő nélkül nem aktiválható — előbb válassz résztvevőket, vagy aktiváld később a mérés oldaláról.",
       en: "Cannot activate without participants — select participants first, or activate later from the campaign page.",
     },
+    activateNowMinimumParticipants: {
+      hu: "A mérés legalább 3 résztvevővel indítható. Válassz még {missing} főt, vagy hozd létre most piszkozatként.",
+      en: "A measurement requires at least 3 participants. Select {missing} more, or create it as a draft for now.",
+    },
     activateNowNote: {
       hu: "A mérés létrejön ÉS azonnal aktiválódik: mindenki értesítést kap, az életciklus (piszkozat → aktív → lezárt) nem fordítható vissza.",
       en: "The campaign is created AND activated immediately: everyone is notified, and the lifecycle (DRAFT → ACTIVE → CLOSED) cannot be reversed.",

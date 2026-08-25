@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TritaLogo } from "@/components/TritaLogo";
 import { useLocale } from "@/components/LocaleProvider";
 import { Card } from "@/components/ui/primitives/Card";
 import { SectionEyebrow } from "@/components/ui/primitives/SectionEyebrow";
@@ -147,9 +146,8 @@ export function JoinOrgClient({
     <div className="flex min-h-dvh items-center justify-center bg-cream px-4 py-12">
       <div className="w-full max-w-lg">
 
-        {/* Logo + context */}
+        {/* Context — the global header already carries the trita wordmark. */}
         <div className="mb-10 flex flex-col items-center gap-4">
-          <TritaLogo size={48} showText={false} />
           <div className="text-center">
             <SectionEyebrow className="mb-1">
               {copy.inviteEyebrow}

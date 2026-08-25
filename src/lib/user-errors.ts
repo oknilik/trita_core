@@ -31,6 +31,9 @@ const GENERIC_ERROR_KEYS: Record<string, string> = {
   INVITATION_NOT_PENDING: "userErrors.invitationNotPending",
   INVITATION_EXPIRED: "userErrors.invitationExpired",
   ASSESSMENT_ALREADY_COMPLETED: "userErrors.assessmentAlreadyCompleted",
+  CAMPAIGN_PARTICIPANTS_REQUIRED: "userErrors.campaignMinimumParticipants",
+  CAMPAIGN_MINIMUM_PARTICIPANTS_NOT_MET: "userErrors.campaignMinimumParticipants",
+  ANONYMITY_THRESHOLD_NOT_MET: "userErrors.campaignMinimumParticipants",
 };
 
 const STATUS_ERROR_KEYS: Record<number, string> = {
