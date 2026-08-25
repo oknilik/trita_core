@@ -260,7 +260,11 @@ describe("PairInteractionView", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
 
     await user.click(relation);
-    expect(screen.getByRole("listbox", { name: "Kapcsolatotok" })).toBeInTheDocument();
+    const listbox = screen.getByRole("listbox", { name: "Kapcsolatotok" });
+    expect(listbox).toBeInTheDocument();
+    // A panel a teljes mezőhöz igazodik, nem csak a címke/érték belső
+    // oszlopához: így a két oldal pontosan egy vonalban marad.
+    expect(listbox.parentElement).toBe(relation.parentElement?.parentElement);
 
     await user.click(
       screen.getByRole("option", { name: "Anna vezet vagy mentorál engem" }),
