@@ -377,6 +377,19 @@ describe("C5.5 ObserverClient integration", () => {
       expect(prevBtn).toBeDisabled();
     });
 
+    it("shows unambiguous truth labels at both ends of the response scale", async () => {
+      const user = userEvent.setup();
+      renderObserver();
+      await passIntro(user);
+
+      expect(screen.getByText(t("assessment.endLeft", "en"))).toBeInTheDocument();
+      expect(screen.getByText(t("assessment.endRight", "en"))).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: `1 - ${t("assessment.scale1", "en")}` }))
+        .toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: `5 - ${t("assessment.scale5", "en")}` }))
+        .toBeInTheDocument();
+    });
+
     it("next button navigates forward after answering", async () => {
       const user = userEvent.setup();
       renderObserver();
