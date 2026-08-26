@@ -148,7 +148,12 @@ export async function GET(req: NextRequest) {
 
   try {
     const revision = await readBlogRevision(slug);
-    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    // A target a felületi üzenethez kell: NOT_FOUND-nál a leggyakoribb ok nem
+    // a törlés, hanem hogy a lista (a futó deploy fájlrendszere) előrébb jár,
+    // mint a tároló ága — pl. még nem merge-ölt ág előnézetéből szerkesztve.
+    if (!revision) {
+      return NextResponse.json({ error: "NOT_FOUND", target: blogStoreTarget() }, { status: 404 });
+    }
 
     const { data, content } = matter(revision.content);
     return NextResponse.json({
@@ -441,7 +446,9 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const revision = await readBlogRevision(slug);
-    if (!revision) return NextResponse.json({ error: "NOT_FOUND" }, { status: 404 });
+    if (!revision) {
+      return NextResponse.json({ error: "NOT_FOUND", target: blogStoreTarget() }, { status: 404 });
+    }
 
     const { data, content } = matter(revision.content);
     const wasDraft = data.status === "draft";

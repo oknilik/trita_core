@@ -17,7 +17,7 @@ test("a cikk témája szerkesztői fogalommá fordul", () => {
   );
   assert.equal(
     inferBlogArtConcept({
-      slug: "tritan-vs-mbti",
+      slug: "hexaco-vs-mbti",
       tags: ["pszichometria", "mérés"],
     }),
     "signal",

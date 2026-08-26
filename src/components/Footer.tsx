@@ -138,10 +138,15 @@ export function Footer() {
 
         </div>
 
-        {/* Feliratkozás — halkan, a link-oszlopok alatt. Minden publikus
-            oldalon ott van, de nem szakít félbe semmit. Az `onInverse` azért
-            kötelező, mert a lábléc MINDKÉT színsémán sötét. */}
-        {isPortfolioSurfaceActive("blog") && !currentPath.startsWith("/newsletter") ? (
+        {/* Feliratkozás — halkan, a link-oszlopok alatt, de NEM ott, ahol az
+            oldal már kínál saját űrlapot: a /blog lista és a cikkoldalak végén
+            dedikált feliratkozó-panel van, a /newsletter oldalak pedig maguk a
+            feliratkozás-visszajelzők — ott a második doboz csak duplikáció.
+            Az `onInverse` azért kötelező, mert a lábléc MINDKÉT színsémán
+            sötét. */}
+        {isPortfolioSurfaceActive("blog") &&
+        !currentPath.startsWith("/newsletter") &&
+        !currentPath.startsWith("/blog") ? (
           <div className="mt-10 border-t border-[var(--color-text-on-inverse)]/10 pt-6">
             <NewsletterForm source="footer" variant="inline" onInverse className="max-w-[420px]" />
           </div>

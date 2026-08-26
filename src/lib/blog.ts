@@ -85,7 +85,7 @@ export function blogCoverFocalPoint(value: unknown): number | undefined {
  *
  * A takarítás csak azt a fájlt törölheti, amit ehhez a cikkhez generáltunk
  * (`<slug>-<10 hex>.webp`). Puszta prefix-egyezés nem elég: a slugok között
- * van prefix-viszony (`tritan-vs-mbti` ⊂ `tritan-vs-mbti-why-it-matters`),
+ * van prefix-viszony (`hexaco-vs-mbti` ⊂ `hexaco-vs-mbti-why-it-matters`),
  * és a HU–EN párok kézzel felvett, közös illusztráción osztozhatnak — azokhoz
  * egy cikk törlése sem nyúlhat.
  */

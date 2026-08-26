@@ -46,16 +46,16 @@ test("a fokuszpont csak a 0-100 tartomanyban ervenyes", () => {
 // pedig kézzel felvett, közös illusztráción osztozhatnak.
 
 test("csak a slughoz generalt boritot ismerjuk sajatnak", () => {
-  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.webp", "tritan-vs-mbti"), true);
+  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-0123456789.webp", "hexaco-vs-mbti"), true);
   // Másik cikk generált borítója, aminek a slugja prefixként tartalmazza az enyémet.
   assert.equal(
-    isOwnedBlogCover("/blog-covers/tritan-vs-mbti-why-it-matters-0123456789.webp", "tritan-vs-mbti"),
+    isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-why-it-matters-0123456789.webp", "hexaco-vs-mbti"),
     false,
   );
   // Kézzel felvett, HU–EN páron megosztott illusztráció.
-  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-illustrated.webp", "tritan-vs-mbti"), false);
-  assert.equal(isOwnedBlogCover("/blog-covers/tritan-vs-mbti-0123456789.png", "tritan-vs-mbti"), false);
-  assert.equal(isOwnedBlogCover(undefined, "tritan-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-illustrated.webp", "hexaco-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover("/blog-covers/hexaco-vs-mbti-0123456789.png", "hexaco-vs-mbti"), false);
+  assert.equal(isOwnedBlogCover(undefined, "hexaco-vs-mbti"), false);
 });
 
 // ── Formátum-felismerés ───────────────────────────────────────────────

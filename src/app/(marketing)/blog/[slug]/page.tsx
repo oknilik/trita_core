@@ -25,6 +25,7 @@ import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
+import { TeamHeatmapFigure } from "@/components/blog/TeamHeatmapFigure";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -138,6 +139,10 @@ function DimBadge({ code, label }: { code: string; label: string }) {
       className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
     >
       <span className="font-dm-sans font-bold">{letter}</span>
+      {/* Csak-szóköz szövegcsomópont: flex-konténerben nem renderelődik, a
+          vágólapra másolt szövegben és a felolvasóban viszont elválasztja a
+          betűt a címkétől („H Becsületesség–Alázat”, nem „HBecsületesség…”). */}
+      {" "}
       <span>{label}</span>
     </span>
   );
@@ -274,6 +279,7 @@ const makeComponents = (isHu: boolean) => ({
   StatRow,
   DimBadge,
   CompareTable,
+  TeamHeatmapFigure,
   KeyInsight: ({ children }: { children: React.ReactNode }) => (
     <KeyInsight isHu={isHu}>{children}</KeyInsight>
   ),
