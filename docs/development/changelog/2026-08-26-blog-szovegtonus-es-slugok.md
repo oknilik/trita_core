@@ -64,7 +64,7 @@ mindkettő megy most, a kéthetes ritmus a következő cikkel indul):
 
 - **`egy-csapat-egy-hoterkep` / `one-team-one-heatmap`** (2026-08-26) —
   végigvezetett, anonimizált csapateset az aggregált riport közös
-  értelmezésétől a kipróbálható munkamegállapodásokig. A korábbi,
+  értelmezésétől a konkrét változtatások kipróbálásáig. A korábbi,
   név szerinti demópontokat mutató `TeamHeatmapFigure` helyét a
   `TeamReportFigure` MDX-komponens vette át
   (`src/components/blog/TeamReportFigure.tsx`): csapatátlagot és belső
