@@ -39,11 +39,11 @@ test("a csapatriport alapcikkek rögzítik a saját és aggregált nézet határ
     },
     {
       file: "egy-csapat-egy-hoterkep.mdx",
-      required: ["mindenki csak a saját profilját látta", "aggregált csapatképet"],
+      required: ["mindenki csak a saját profilját látta", "aggregált személyiségkép"],
     },
     {
       file: "one-team-one-heatmap.mdx",
-      required: ["each person saw only their own profile", "aggregate team picture"],
+      required: ["each person saw only their own profile", "aggregate personality picture"],
     },
   ];
 

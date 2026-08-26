@@ -22,7 +22,7 @@ const LABELS = {
     moderate: "mérsékelt",
     wide: "széles",
     caption:
-      "Szemléltető riportábra. A közös nézet csak aggregált csapatadatot mutat; más csapattag egyéni értéke nem látható.",
+      "A teljes csapatriport aggregált személyiségképet bemutató részének egyszerűsített ábrája. A közös nézet csak aggregált csapatadatot mutat; más csapattag egyéni értéke nem látható.",
   },
   en: {
     title: "Aggregate team profile",
@@ -33,7 +33,7 @@ const LABELS = {
     moderate: "moderate",
     wide: "wide",
     caption:
-      "Illustrative report figure. The shared view contains aggregate team data only; no other team member's individual values are visible.",
+      "A simplified illustration of the part of the full team report that presents the aggregate personality picture. The shared view contains aggregate team data only; no other team member's individual values are visible.",
   },
 } as const;
 
