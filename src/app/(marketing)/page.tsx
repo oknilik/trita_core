@@ -17,7 +17,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/",
   title: "Személyiségteszt és csapatdiagnosztika | trita",
   description:
-    "Személyiségteszt hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika magyarul: mérhető csapatdinamika, tanácsadói értelmezéssel. Az egyéni felmérés ingyenes.",
+    "Ismerd meg, hogyan működsz egyénileg és csapatban. Ingyenes magyar személyiségteszt 6 dimenzióval, 360°-os visszajelzés és csapatdiagnosztika.",
   ogTitle: "trita — személyiség- és csapatintelligencia",
   ogDescription:
     "Mérhető személyiség- és csapatdinamika insightok együttműködéshez, fejlesztéshez és döntéstámogatáshoz.",
@@ -41,7 +41,7 @@ export default function Home() {
             path: "/",
             title: "Személyiségteszt és csapatdiagnosztika | trita",
             description:
-              "Személyiségteszt hat dimenzió mentén, 360°-os visszajelzés és csapatdiagnosztika magyarul: mérhető csapatdinamika, tanácsadói értelmezéssel.",
+              "Ismerd meg, hogyan működsz egyénileg és csapatban. Ingyenes magyar személyiségteszt 6 dimenzióval, 360°-os visszajelzés és csapatdiagnosztika.",
             about: ["Személyiségteszt", "Csapatdiagnosztika", "Hatfaktoros személyiségmodell"],
           }),
         ]}

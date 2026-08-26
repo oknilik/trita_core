@@ -14,8 +14,6 @@
 // Kivételek (dokumentált döntések):
 //  - src/lib/riasec-content.ts — C-döntés: a RIASEC-paletta a karrier-réteg
 //    élesítéséig parkolva, nem migráljuk.
-//  - src/app/icon.tsx, src/app/apple-icon.tsx — E-döntés: a favicon/app-ikon
-//    palettája brand-döntésig marad.
 //  - sign-in/sign-up — Google-logó (harmadik fél brand-színei).
 //  - src/app/globals.css, src/lib/design-tokens.ts, src/lib/color-system.ts —
 //    token-definíciós fájlok (itt ÉLNEK a hexek).
