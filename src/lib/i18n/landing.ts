@@ -424,8 +424,8 @@ export const landingTranslations = {
     },
     heroTitleEm: { hu: "Vezetés.", en: "Leadership." },
     heroSub: {
-      hu: "Gyakorlati cikkek arról, hogyan tehető láthatóvá a csapatdinamika — és hogyan lehet jobb döntéseket hozni emberekről.",
-      en: "Practical articles on how to make team dynamics visible — and how to make better decisions about people.",
+      hu: "Gyakorlati cikkek arról, hogyan tehető láthatóvá a csapatdinamika – hogyan lehet jobb döntéseket hozni és fejlődni együtt.",
+      en: "Practical articles on how to make team dynamics visible – how to make better decisions and grow together.",
     },
     empty: { hu: "Hamarosan...", en: "Coming soon..." },
     featured: { hu: "Kiemelt cikk", en: "Featured" },
