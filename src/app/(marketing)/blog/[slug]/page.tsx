@@ -26,6 +26,7 @@ import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
 import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
+import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -280,6 +281,7 @@ const makeComponents = (isHu: boolean) => ({
   DimBadge,
   CompareTable,
   TeamReportFigure,
+  ResultAccessFigure,
   KeyInsight: ({ children }: { children: React.ReactNode }) => (
     <KeyInsight isHu={isHu}>{children}</KeyInsight>
   ),
