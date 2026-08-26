@@ -79,8 +79,8 @@ export const landingTranslations = {
     selfFadeCta: { hu: "Ízelítő a profilodból", en: "A taste of your profile" },
     // HeroSection — team
     teamEyebrow: { hu: "CSAPATINTELLIGENCIA PLATFORM", en: "TEAM INTELLIGENCE PLATFORM" },
-    teamHeadlineBefore: { hu: "Értsd meg jobban a ", en: "Better understand your " },
-    teamHeadlineEm: { hu: "csapatod működését.", en: "team's dynamics." },
+    teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
+    teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
     teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Még mielőtt a feszültségből konfliktus lenne.", en: "trita reveals what was previously invisible — your team's true dynamics. Before tension turns into conflict." },
     teamCta: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
     teamSecondaryCta: { hu: "Beszéljünk", en: "Talk to us" },
