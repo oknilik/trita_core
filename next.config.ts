@@ -159,12 +159,33 @@ const nextConfig: NextConfig = {
   },
 
   async redirects() {
+    // Blog-slug visszanevezések (2026-08-26): a `tritan-vs-mbti` pár a
+    // kivezetett brandet vitte publikus URL-ben (2026-08-23-i audit-lelet),
+    // a `miert-hazudik…`/`…-lies` pedig a régi, bulvárosabb címhez tartozott.
+    // A régi URL-ek kiküldött hírlevelekben és külső linkekben élnek, ezért
+    // a cikkoldal MELLETT a hírlevél-borító route is átirányít: a levélbe
+    // ágyazott <img> a régi slugos borító-URL-t hordozza örökre.
+    const blogSlugRenames: Record<string, string> = {
+      "tritan-vs-mbti": "hexaco-vs-mbti",
+      "tritan-vs-mbti-why-it-matters": "hexaco-vs-mbti-why-it-matters",
+      "miert-hazudik-az-onertekeles": "miert-nem-eleg-az-onertekeles",
+      "why-self-assessment-lies": "why-self-assessment-is-not-enough",
+    };
+
     return [
       {
         source: "/pricing",
         destination: "/how-we-work",
         permanent: true,
       },
+      ...Object.entries(blogSlugRenames).flatMap(([from, to]) => [
+        { source: `/blog/${from}`, destination: `/blog/${to}`, permanent: true },
+        {
+          source: `/api/newsletter/cover/${from}`,
+          destination: `/api/newsletter/cover/${to}`,
+          permanent: true,
+        },
+      ]),
     ];
   },
 

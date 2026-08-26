@@ -9,7 +9,7 @@ const PUBLIC_FOOTER_ROUTES = [
   "/privacy",
   "/contact",
   "/blog",
-  "/blog/tritan-vs-mbti",
+  "/blog/hexaco-vs-mbti",
 ] as const;
 
 const VIEWPORTS = [360, 390, 768, 1024, 1440] as const;

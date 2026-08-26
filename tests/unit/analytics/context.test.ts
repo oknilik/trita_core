@@ -51,8 +51,8 @@ test("a query string sosem kerül tárolásra", () => {
 
 test("a blog-slug megmarad — az tartalom-azonosító, nem személyes adat", () => {
   assert.equal(
-    normalizePath("/blog/miert-hazudik-az-onertekeles"),
-    "/blog/miert-hazudik-az-onertekeles",
+    normalizePath("/blog/miert-nem-eleg-az-onertekeles"),
+    "/blog/miert-nem-eleg-az-onertekeles",
   );
 });
 

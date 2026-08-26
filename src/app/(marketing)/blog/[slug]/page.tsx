@@ -138,6 +138,10 @@ function DimBadge({ code, label }: { code: string; label: string }) {
       className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold"
     >
       <span className="font-dm-sans font-bold">{letter}</span>
+      {/* Csak-szóköz szövegcsomópont: flex-konténerben nem renderelődik, a
+          vágólapra másolt szövegben és a felolvasóban viszont elválasztja a
+          betűt a címkétől („H Becsületesség–Alázat”, nem „HBecsületesség…”). */}
+      {" "}
       <span>{label}</span>
     </span>
   );
