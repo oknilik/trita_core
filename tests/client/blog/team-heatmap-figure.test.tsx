@@ -2,19 +2,10 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { TeamHeatmapFigure } from "@/components/blog/TeamHeatmapFigure";
 
-const DIMS = [
-  { code: "H", label: "Becsületesség–Alázat" },
-  { code: "C", label: "Lelkiismeretesség" },
-];
-
 function renderFigure(rows: { name: string; scores: (number | null)[] }[]) {
   return render(
     <TeamHeatmapFigure
-      memberLabel="Csapattag"
-      legendLabel="0 → 100 pont"
-      zoneLabels={{ high: "magas", mid: "közepes", low: "alacsony" }}
-      caption="Kitalált demó-adatok."
-      dims={DIMS}
+      locale="hu"
       rows={rows}
     />,
   );
@@ -42,8 +33,8 @@ describe("TeamHeatmapFigure", () => {
     expect(screen.getByText("alacsony")).toBeInTheDocument(); // 38
 
     // Legend + képaláírás
-    expect(screen.getByText("0 → 100 pont")).toBeInTheDocument();
-    expect(screen.getByText("Kitalált demó-adatok.")).toBeInTheDocument();
+    expect(screen.getByText("0 → 100 pont: halványtól telítettig")).toBeInTheDocument();
+    expect(screen.getByText(/Kitalált csapat, kézzel választott demó-pontszámok/)).toBeInTheDocument();
   });
 
   it("hiányzó kitöltést üres jelzéssel mutat, nem nullaként", () => {
