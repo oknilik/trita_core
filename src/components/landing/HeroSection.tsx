@@ -8,7 +8,7 @@ import { ModeSwitcher, type SiteMode } from "@/components/landing/ModeSwitcher";
 import { hasAssessmentDraftInStorage } from "@/lib/assessment-draft";
 import { getDimensionLabel } from "@/lib/dimension-utils";
 import { dimColorsCss } from "@/lib/color-system";
-import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon, EyeIcon } from "@/components/landing/icons";
+import { ClockIcon, FlaskIcon, BoltIcon, GiftIcon, CheckIcon } from "@/components/landing/icons";
 import { track } from "@/lib/analytics/client";
 import { FOCUS_RING_CLASS } from "@/lib/ui/focus";
 
@@ -382,7 +382,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                   { Icon: FlaskIcon, text: t("landing.selfMetaMethod", locale) },
                   { Icon: BoltIcon, text: t("landing.selfMetaInstant", locale) },
                   { Icon: GiftIcon, text: t("landing.selfMetaFree", locale) },
-                  { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                 ].map((m) => (
                   <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                     <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-accent-primary)]" />
@@ -397,7 +396,6 @@ export function HeroSection({ mode }: { mode: SiteMode }) {
                     { Icon: CheckIcon, text: t("landing.teamMetaOnboarding", locale) },
                     { Icon: ClockIcon, text: t("landing.teamMetaTiming", locale) },
                     { Icon: GiftIcon, text: t("landing.teamMetaOffer", locale) },
-                    { Icon: EyeIcon, text: t("landing.sampleBadge", locale) },
                   ].map((m) => (
                     <span key={m.text} className="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border-default)] bg-[var(--color-surface-card)]/60 px-3 py-1.5 text-note text-[var(--color-text-secondary)]">
                       <m.Icon className="h-3 w-3 shrink-0 text-[var(--color-layer-team-accent)]" />
