@@ -81,7 +81,7 @@ export const landingTranslations = {
     teamEyebrow: { hu: "CSAPATINTELLIGENCIA PLATFORM", en: "TEAM INTELLIGENCE PLATFORM" },
     teamHeadlineBefore: { hu: "Értsétek meg jobban a ", en: "Better understand your " },
     teamHeadlineEm: { hu: "csapatotok működését.", en: "team's dynamics." },
-    teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt — a csapatod valódi dinamikáját. Még mielőtt a feszültségből konfliktus lenne.", en: "trita reveals what was previously invisible — your team's true dynamics. Before tension turns into conflict." },
+    teamSub: { hu: "A trita megmutatja, ami eddig láthatatlan volt – a csapatotok valódi dinamikáját. Így még azelőtt felismerhetitek a feszültségeket, hogy konfliktussá válnának, és azt is, mire építhettek együtt.", en: "trita reveals what was previously invisible – your team's true dynamics. This helps you recognize tensions before they turn into conflict, while also showing what you can build on together." },
     teamCta: { hu: "Megnézem a pilotprogramot", en: "Explore the pilot program" },
     teamSecondaryCta: { hu: "Beszéljünk", en: "Talk to us" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
