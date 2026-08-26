@@ -1,4 +1,4 @@
-# 2026-08-26 — Blog: vezetői hangvétel, hírlevél-dedupe, slug-visszanevezés
+# 2026-08-26 — Blog: vezetői hangvétel, hírlevél-dedupe, slug-visszanevezés, két cikkvázlat
 
 ## Szövegtónus — mind a hét cikkpár átdolgozva
 
@@ -54,4 +54,27 @@ slugra permanens redirectet ad a cikkoldalon ÉS az
 a régi slugos borító-URL-t hordozza örökre. A sitemap és az `llms.txt` a
 fájlokból épül, automatikusan követi az új neveket; a slugot említő tesztek
 (blog-cover, blog-art, analytics-normalizePath, footer-clearance e2e)
-frissítve.
+frissítve, és új e2e fedi a redirect-szerződést
+(`tests/e2e/navigation/blog-slug-redirects.test.ts`).
+
+## Két új cikkpár piszkozatban (a tartalmi terv 1–2. tétele)
+
+A tartalmi terv szerint kéthetes ritmusban jön a folytatás; az első két
+cikkpár `status: draft` állapotban vár megjelenésre (élesben nem látszik,
+adminban és devben igen):
+
+- **`egy-csapat-egy-hoterkep` / `one-team-one-heatmap`** (terv: 2026-09-02) —
+  végigvezetett, jelölten kitalált hatfős eset: hőtérkép → három vezetői
+  kérdés → két munkaszabály. Hozzá készült a `TeamHeatmapFigure` MDX-komponens
+  (`src/components/blog/TeamHeatmapFigure.tsx`): a termék TeamHeatmap-jének
+  egyszerűsített mása CSS-változós dim-palettával (színsémát vált), a
+  cella-rámpa képlete azonos. Formabontás szándékosan: nincs StatRow.
+- **`mi-az-a-hexaco` / `what-is-hexaco`** (terv: 2026-09-16) — alapozó
+  hub-cikk: lexikai eredet (magyar szál!), a hat dimenzió érték-semleges
+  leírása munkahelyi példákkal, „fokozatok, nem fiókok”, gyakori
+  félreértések. A HEXACO-klaszter közepe, minden kapcsolódó cikkre linkel.
+
+Megjelenéskor teendő: a `status: draft` sor törlése, a `publishedAt`
+igazítása a tényleges naphoz, borítókép feltöltése az adminban, és a
+„Kezdd itt” sáv átrendezése (javaslat: 1. mi-az-a-hexaco, 2. önértékelés,
+3. hexaco-vs-mbti — a hőtérkép-olvasó a kapcsolódó-linkekből így is elérhető).

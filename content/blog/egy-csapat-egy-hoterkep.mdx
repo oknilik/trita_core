@@ -1,0 +1,100 @@
+---
+title: "Egy csapat, egy hőtérkép: három kérdés, két szabály"
+description: "Hatfős csapat, hat dimenzió, három vezetői kérdés. Végigvezetett, jelölten kitalált eset arról, hogyan lesz a hőtérképből beszélgetés és működő munkaszabály."
+publishedAt: "2026-09-02"
+locale: "hu"
+translationSlug: "one-team-one-heatmap"
+status: "draft"
+artFamily: "constellation"
+artConcept: "connection"
+artLineMode: "expressive"
+artSeed: 6541
+tags: ["csapatdinamika", "hőtérkép", "esettanulmány"]
+---
+
+Hat ember, egy szállítási határidő — és egy vezető, aki érzi, hogy valami rendszeresen elakad, csak azt nem tudja pontosan, hol. Ez a cikk egy ilyen csapat útját meséli el a hőtérképtől a működő munkaszabályokig.
+
+<Callout>
+A csapat kitalált: a nevek, a pontszámok és a párbeszédek is. A mintázatokat viszont pont azért választottuk, mert kis csapatokban újra és újra előkerülnek. Ha a sajátodra ismersz, az nem véletlen.
+</Callout>
+
+## A csapat: hat ember, egy határidő
+
+Vegyünk egy harmincfős szoftvercéget, és benne egy hatfős szállítócsapatot. Anna vezeti: ő a projektvezető, aki az ügyféllel is tárgyal. Bence a senior fejlesztő, Dávid a másik fejlesztő, Csilla a designer, Eszter viszi a tesztelést és az ügyfélkapcsolat napi részét, Feri pedig az account manager, aki a bővítéseket hozza.
+
+A csapat jól teljesít, de három dolog visszatérően súrlódik. A meetingek hosszúak, és mindig ugyanaz a két ember beszél. Dávid és a folyamatok viszonya feszült. És bár nyílt konfliktus szinte sosincs, a retrókon valahogy mégsem hangzik el semmi lényeges.
+
+Anna ezért vágott bele egy felméréssel támogatott csapatworkshopba — a [bevezetés szabályai szerint](/blog/pszichometriai-ertekeles-bevezetese): önkéntesen, előre rögzített céllal. A csapat a bevezető beszélgetésen maga döntött úgy, hogy a workshopon néven nevezve nézik az eredményeket. A kitöltés után ezt a képet látták:
+
+<TeamHeatmapFigure
+  memberLabel="Csapattag"
+  legendLabel="0 → 100 pont: halványtól telítettig"
+  zoneLabels={{ high: "magas", mid: "közepes", low: "alacsony" }}
+  caption="Kitalált csapat, kézzel választott demó-pontszámok — a megjelenítés a trita csapat-hőtérképének egyszerűsített mása. A 0–100-as érték megjelenítési skála, nem percentilis."
+  dims={[
+    { code: "H", label: "Becsületesség–Alázat" },
+    { code: "E", label: "Emocionalitás" },
+    { code: "X", label: "Extraverzió" },
+    { code: "A", label: "Barátságosság" },
+    { code: "C", label: "Lelkiismeretesség" },
+    { code: "O", label: "Nyitottság" },
+  ]}
+  rows={[
+    { name: "Anna", scores: [62, 55, 81, 74, 78, 58] },
+    { name: "Bence", scores: [78, 38, 26, 66, 84, 62] },
+    { name: "Csilla", scores: [45, 70, 58, 72, 71, 82] },
+    { name: "Dávid", scores: [70, 44, 49, 61, 38, 79] },
+    { name: "Eszter", scores: [83, 62, 44, 78, 75, 45] },
+    { name: "Feri", scores: [31, 30, 72, 58, 69, 51] },
+  ]}
+/>
+
+## Első ránézésre: három mintázat
+
+Ahogy a [hőtérkép-olvasó cikkünkben](/blog/csapatdinamika-olvasasa) írtuk, három pillantás: átlag, szórás, szélek. Anna ez alapján három dolgot emelt ki:
+
+- **Extraverzió: nagy szórás.** Anna 81, Feri 72 — Bence 26. A meeting-dinamika hirtelen nem jellemkérdés, hanem eloszlás.
+- **Lelkiismeretesség: öt magas, egy kilógó.** A csapat 69 és 84 között — Dávid 38-cal.
+- **Becsületesség–Alázat: a legszélesebb sáv.** Eszter 83 és Feri 31 között minden előfordul.
+
+Egyik sem diagnózis. Mindhárom egy-egy kérdés, amelyet érdemes feltenni.
+
+## Az első kérdés a vezetőé volt
+
+Anna első reakciója őszinte volt: „A meetingjeink azért néznek ki így, mert én és Feri visszük a szót — és ezt most látom is.” A workshopon nem Bencét kérdezték meg, miért hallgat; Anna mondta ki a saját mintázatát. Ez az a fajta vezetői gesztus, amelyről a [pszichológiai biztonság cikkünk](/blog/merheto-e-a-pszichologiai-biztonsag) is ír: az „ebben nem vagyok biztos, mit láttok ti?” többet nyit, mint egy kész válasz.
+
+A szabály, amelyben megállapodtak, egyszerű: döntés előtt mindenki írásban ad véleményt, és a meeting az írásos kör összefoglalásával indul. Két héttel később Bence írásban élesebben érvelt, mint szóban valaha.
+
+## A kilógó pontszám nem hibalista
+
+Dávid 38-as Lelkiismeretesség-pontszáma mellett ott volt egy másik szám is: 79-es Nyitottság, a csapat egyik legmagasabbja. A beszélgetésből kiderült, amit a hőtérkép csak sejtetett: Dávid nem „fegyelmezetlen” — ő az, aki minden folyamatlépésnél megkérdezi, minek. És kétszer igaza is volt: két riporting-lépést valóban senki nem olvasott.
+
+A megállapodás kétirányú lett. Dávid a részhatáridőit mostantól maga osztja be — cserébe a sprint végi státusz nála is szent. És ő lett a folyamat-egyszerűsítési javaslatok gazdája: a kritika munkakörré vált.
+
+## A legkényesebb téma: a láthatatlan munka
+
+A Becsületesség–Alázat szórásához a csapat óvatosan nyúlt — ez a dimenzió csúszik át a legkönnyebben erkölcsi ítéletbe, pedig nem az: az alacsonyabb pontszám nem etikátlanság, hanem az önérdek-érvényesítés és a szerénység más beállítása.
+
+A konkrét helyzet így nézett ki. Feri természetesnek veszi, hogy az eredményeket ő mutatja be az ügyfélnek. Eszter természetesnek veszi, hogy a demó előtti éjszakai tesztkört senki nem látja. Egyikük sem csinál semmi rosszat — csak másképp gondolkodnak a látszó és a láthatatlan munkáról.
+
+A szabály itt is explicit lett: kéthetente öt perc a retrón — „mit vittél, ami nem látszik?” —, az ügyfélprezentációban pedig név szerint szerepel, ki mit csinált.
+
+<KeyInsight>
+A hőtérkép egyik kérdést sem válaszolta meg — mindhármat feltette. A csapat három jó kérdésből és két kipróbálható szabályból többet profitált, mint húsz perc pontszám-nézegetésből.
+</KeyInsight>
+
+## Egy hónappal később
+
+A meetingek rövidebbek, mert az írásos kör elviszi a felvezetést. Dávid egy riporting-lépést hivatalosan is kivezetett. A „nem látszó munka” köre kétszer futott le — egyszer kifejezetten kínos csendből indult, és mindkétszer előkerült valami, amiről Anna nem tudott.
+
+Semmi nem lett tökéletes: a harmadik szabályjavaslat (meeting-mentes szerda) két hét után csendben kimúlt. Ez így egészséges. A workshop nem fogadalomtétel, hanem kísérletsorozat: egy hónap múlva ránéztek, kettő bevált, egy nem — mennek tovább.
+
+## Források és korlátok
+
+Ez a történet illusztráció, nem esettanulmány-bizonyíték: a csapat kitalált, a pontszámok kézzel választottak, és a valóságban ritkán rendeződik ennyi minden egyetlen hónap alatt. A mintázat → kérdés → kipróbálható szabály menet viszont élesben is pontosan így működik. A mögöttes kutatásokról és a korlátokról a kapcsolódó cikkek szólnak részletesen:
+
+- [Hogyan értelmezd a csapatod személyiségprofilját?](/blog/csapatdinamika-olvasasa)
+- [Hogyan vezess be pszichometriai felmérést a csapatodban?](/blog/pszichometriai-ertekeles-bevezetese)
+- [Mérhető-e a pszichológiai biztonság? Így becsüli a trita](/blog/merheto-e-a-pszichologiai-biztonsag)
+
+*A cikkben szereplő pontszámok 0–100-as megjelenítésű demóértékek — nem percentilisek, és nem valós személyek adatai. Valódi csapatban az egyéni eredmények megosztása mindig az érintettek döntése; ebben a történetben a csapat a folyamat elején közösen választotta a néven nevezett képet.*
