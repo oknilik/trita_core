@@ -460,7 +460,7 @@ export const landingTranslations = {
     resultOne: { hu: "cikk", en: "article" },
     resultMany: { hu: "cikk", en: "articles" },
     newBadge: { hu: "Új", en: "New" },
-    startHere: { hu: "Új itt? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
+    startHere: { hu: "Most jársz itt először? Kezdd ezzel a hárommal", en: "New here? Start with these three" },
     selectedReads: { hu: "Válogatott olvasmányok", en: "Selected reads" },
     inThisArticle: { hu: "Ebben a cikkben", en: "In this article" },
     minutesLeft: { hu: "még ~{m} perc olvasás", en: "~{m} min left" },
