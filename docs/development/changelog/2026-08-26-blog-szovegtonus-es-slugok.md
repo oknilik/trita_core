@@ -57,24 +57,43 @@ fájlokból épül, automatikusan követi az új neveket; a slugot említő tesz
 frissítve, és új e2e fedi a redirect-szerződést
 (`tests/e2e/navigation/blog-slug-redirects.test.ts`).
 
-## Két új cikkpár piszkozatban (a tartalmi terv 1–2. tétele)
+## Két új cikkpár (a tartalmi terv 1–2. tétele) — publikálva
 
-A tartalmi terv szerint kéthetes ritmusban jön a folytatás; az első két
-cikkpár `status: draft` állapotban vár megjelenésre (élesben nem látszik,
-adminban és devben igen):
+Először piszkozatként készültek, majd még aznap élesítve (döntés:
+mindkettő megy most, a kéthetes ritmus a következő cikkel indul):
 
-- **`egy-csapat-egy-hoterkep` / `one-team-one-heatmap`** (terv: 2026-09-02) —
+- **`egy-csapat-egy-hoterkep` / `one-team-one-heatmap`** (2026-08-26) —
   végigvezetett, jelölten kitalált hatfős eset: hőtérkép → három vezetői
   kérdés → két munkaszabály. Hozzá készült a `TeamHeatmapFigure` MDX-komponens
   (`src/components/blog/TeamHeatmapFigure.tsx`): a termék TeamHeatmap-jének
   egyszerűsített mása CSS-változós dim-palettával (színsémát vált), a
   cella-rámpa képlete azonos. Formabontás szándékosan: nincs StatRow.
-- **`mi-az-a-hexaco` / `what-is-hexaco`** (terv: 2026-09-16) — alapozó
+- **`mi-az-a-hexaco` / `what-is-hexaco`** (2026-08-26) — alapozó
   hub-cikk: lexikai eredet (magyar szál!), a hat dimenzió érték-semleges
   leírása munkahelyi példákkal, „fokozatok, nem fiókok”, gyakori
   félreértések. A HEXACO-klaszter közepe, minden kapcsolódó cikkre linkel.
 
-Megjelenéskor teendő: a `status: draft` sor törlése, a `publishedAt`
-igazítása a tényleges naphoz, borítókép feltöltése az adminban, és a
-„Kezdd itt” sáv átrendezése (javaslat: 1. mi-az-a-hexaco, 2. önértékelés,
-3. hexaco-vs-mbti — a hőtérkép-olvasó a kapcsolódó-linkekből így is elérhető).
+„Kezdd itt” sáv átrendezve: 1. mi-az-a-hexaco (a hőtérkép-olvasótól átvéve),
+2. önértékelés, 3. hexaco-vs-mbti. Hátralévő kézi teendő: borítókép
+feltöltése az adminban (addig a generatív vizuál él).
+
+## Admin blog: beszédesebb tároló-hibák (két éles lelet)
+
+A cikkvázlatok élesítése két lappangó konfigurációs ütközést hozott elő:
+
+1. **NOT_FOUND ág-eltérésből.** Egy még nem merge-ölt ág előnézetében az
+   admin listája (a futó deploy fájlrendszere) előrébb jár, mint a tároló
+   cél-ága (`GITHUB_BRANCH` → `VERCEL_GIT_COMMIT_REF` → `main`), így a
+   Szerkesztés/Publikálás „A cikk nincs meg a tárolóban — lehet, hogy
+   időközben törölték.” üzenettel állt meg, ami törlésnek látszott. A
+   NOT_FOUND válasz mostantól viszi a tároló-célt (`repo@ág`), a felület
+   kiírja, és megnevezi az ág-eltérés esetét is. (Ha a preview-nak a saját
+   ágára kellene írnia: Vercelen a system env-ek engedélyezése kell —
+   `VERCEL_GIT_COMMIT_REF` —, vagy explicit `GITHUB_BRANCH`.)
+2. **409 a védett main miatt.** A `main` branch-protection alatt áll, a
+   tároló Contents API-s commitját a GitHub 409-cel utasítja el — a
+   production adminból tehát a mentés/publikálás/visszavonás jelenleg
+   nem tud landolni. A 409/422-es hibaüzenet mostantól ezt az okot is
+   megnevezi a teendővel együtt (bypass a blog-tokennek a protection
+   szabályban, vagy másik cél-ág `GITHUB_BRANCH`-csel). Döntést igényel,
+   melyik utat járjuk — addig a blogtartalom útja a git + PR marad.

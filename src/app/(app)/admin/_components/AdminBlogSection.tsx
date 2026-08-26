@@ -361,7 +361,7 @@ export function AdminBlogSection({
         setNotice({
           kind: "error",
           text: json.error === "NOT_FOUND"
-            ? "A cikk nincs meg a tárolóban — lehet, hogy időközben törölték."
+            ? notFoundText(json)
             : json.error === "LOAD_FAILED"
               ? `${storeErrorText(json, res.status)} A biztonság kedvéért nem nyitom meg szerkesztésre.`
               : `Nem sikerült betölteni a cikket a tárolóból: ${json.error ?? res.status}. A biztonság kedvéért nem nyitom meg szerkesztésre.`,
@@ -499,6 +499,22 @@ export function AdminBlogSection({
   };
 
   /**
+   * NOT_FOUND a tárolóból — a leggyakoribb ok NEM a törlés, hanem hogy a
+   * lista a futó deploy fájlrendszeréből épül, a tároló viszont a cél-ágból
+   * olvas: egy még nem merge-ölt ág előnézetében a lista előrébb jár. A
+   * kettő megnevezése nélkül ez a helyzet törlésnek látszott (2026-08-26).
+   */
+  const notFoundText = (json: Record<string, unknown>): string => {
+    const target = (json.target ?? {}) as { repo?: string | null; branch?: string };
+    const where = target.repo
+      ? `${target.repo}${target.branch ? `@${target.branch}` : ""}`
+      : "a beállított tároló";
+    return `A cikk nincs meg a tárolóban (${where}). Ha az admin egy még nem `
+      + `merge-ölt ág előnézetén fut, a lista előrébb járhat a tároló ágánál — `
+      + `merge után újra működik. Egyébként lehet, hogy a cikket időközben törölték.`;
+  };
+
+  /**
    * A tároló hibájának emberi fordítása. A szerver `detail` mezője a
    * whitelistelt kód (pl. GITHUB_WRITE_FAILED_401) — ebből itt lesz
    * cselekvési utasítás, hogy ne a Vercel-logban kelljen kezdeni.
@@ -535,8 +551,10 @@ export function AdminBlogSection({
           + `cél-ág nem létezik a repóban, vagy a token nem látja ezt a repót. (${where})`;
       }
       if (status === "409" || status === "422") {
-        return `A GitHub visszautasította az írást (${status}) — jellemzően időközbeni `
-          + `módosítás. Nyisd meg újra a cikket, és mentsd újra. (${where})`;
+        return `A GitHub visszautasította az írást (${status}). Ha a cél-ág védett `
+          + `(branch protection), a tároló nem tud rá közvetlenül commitolni — engedj `
+          + `bypass-t a blog-tokennek, vagy célozz másik ágat (GITHUB_BRANCH). Egyébként `
+          + `jellemzően időközbeni módosítás: nyisd meg újra a cikket, és mentsd újra. (${where})`;
       }
       return `A GitHub hibát adott (${status}). (${where})`;
     }
@@ -711,11 +729,13 @@ export function AdminBlogSection({
       if (!res.ok) {
         setNotice({
           kind: "error",
-          text: json.error === "CONFLICT"
-            ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
-            : json.error === "SAVE_FAILED"
-              ? storeErrorText(json, res.status)
-              : `Nem sikerült: ${json.error ?? res.status}`,
+          text: json.error === "NOT_FOUND"
+            ? notFoundText(json)
+            : json.error === "CONFLICT"
+              ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
+              : json.error === "SAVE_FAILED"
+                ? storeErrorText(json, res.status)
+                : `Nem sikerült: ${json.error ?? res.status}`,
         });
         return;
       }
