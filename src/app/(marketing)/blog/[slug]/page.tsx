@@ -25,7 +25,8 @@ import { BackChevronIcon } from "@/components/ui/primitives/BackChevronIcon";
 import { ChevronRightIcon } from "@/components/ui/icons";
 import { NewsletterForm } from "@/components/newsletter/NewsletterForm";
 import { BlogJourneyCta } from "@/components/blog/BlogJourneyCta";
-import { TeamHeatmapFigure } from "@/components/blog/TeamHeatmapFigure";
+import { TeamReportFigure } from "@/components/blog/TeamReportFigure";
+import { ResultAccessFigure } from "@/components/blog/ResultAccessFigure";
 
 export async function generateStaticParams() {
   const huPosts = getAllPosts("hu");
@@ -279,7 +280,8 @@ const makeComponents = (isHu: boolean) => ({
   StatRow,
   DimBadge,
   CompareTable,
-  TeamHeatmapFigure,
+  TeamReportFigure,
+  ResultAccessFigure,
   KeyInsight: ({ children }: { children: React.ReactNode }) => (
     <KeyInsight isHu={isHu}>{children}</KeyInsight>
   ),

@@ -63,11 +63,13 @@ Először piszkozatként készültek, majd még aznap élesítve (döntés:
 mindkettő megy most, a kéthetes ritmus a következő cikkel indul):
 
 - **`egy-csapat-egy-hoterkep` / `one-team-one-heatmap`** (2026-08-26) —
-  végigvezetett, jelölten kitalált hatfős eset: hőtérkép → három vezetői
-  kérdés → két munkaszabály. Hozzá készült a `TeamHeatmapFigure` MDX-komponens
-  (`src/components/blog/TeamHeatmapFigure.tsx`): a termék TeamHeatmap-jének
-  egyszerűsített mása CSS-változós dim-palettával (színsémát vált), a
-  cella-rámpa képlete azonos. Formabontás szándékosan: nincs StatRow.
+  végigvezetett, anonimizált csapateset az aggregált riport közös
+  értelmezésétől a konkrét változtatások kipróbálásáig. A korábbi,
+  név szerinti demópontokat mutató `TeamHeatmapFigure` helyét a
+  `TeamReportFigure` MDX-komponens vette át
+  (`src/components/blog/TeamReportFigure.tsx`): csapatátlagot és belső
+  sokféleségi sávokat mutat, egyéni eredmények nélkül. Formabontás
+  szándékosan: nincs StatRow.
 - **`mi-az-a-hexaco` / `what-is-hexaco`** (2026-08-26) — alapozó
   hub-cikk: lexikai eredet (magyar szál!), a hat dimenzió érték-semleges
   leírása munkahelyi példákkal, „fokozatok, nem fiókok”, gyakori
