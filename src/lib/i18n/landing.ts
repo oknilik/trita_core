@@ -57,7 +57,6 @@ export const landingTranslations = {
     selfMetaInstant: { hu: "Azonnali eredmény", en: "Instant results" },
     selfMetaFree: { hu: "Ingyenes indulás", en: "Free to start" },
     selfPanelEyebrow: { hu: "A te profilod", en: "Your profile" },
-    sampleBadge: { hu: "Minta", en: "Sample" },
     selfPanelName: { hu: "Péter", en: "Peter" },
     selfPanelType: { hu: "Hídépítő", en: "Bridge-Builder" },
     // A domináns A-dimenzió A_high munkastílusához rendelt valós szerep.
@@ -86,8 +85,8 @@ export const landingTranslations = {
     teamSecondaryCta: { hu: "Beszéljünk", en: "Talk to us" },
     teamMicrocopy: { hu: "Személyes onboarding · egyedi ajánlat · első kép néhány napon belül", en: "Personal onboarding · custom offer · first picture within days" },
     teamMetaOnboarding: { hu: "Személyes onboarding", en: "Personal onboarding" },
-    teamMetaTiming: { hu: "Néhány nap az első képig", en: "First picture within days" },
-    teamMetaOffer: { hu: "Egyedi ajánlat", en: "Custom offer" },
+    teamMetaTiming: { hu: "Első csapatkép néhány napon belül", en: "First team picture within days" },
+    teamMetaOffer: { hu: "Csapatra szabott ajánlat", en: "Tailored team proposal" },
     teamFadeCta: { hu: "Ízelítő a csapatképből", en: "A taste of your team picture" },
     // Team hero panel — a valódi publikált riport (TeamReportView) kicsinyített mása
     teamPanelEyebrow: { hu: "jóváhagyott csapatkép", en: "reviewed team picture" },
