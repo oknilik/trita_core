@@ -48,7 +48,7 @@ export const landingTranslations = {
     selfEyebrow: { hu: "ÖNISMERET ÉS CSAPATMŰKÖDÉS", en: "SELF-AWARENESS AND TEAMWORK" },
     selfHeadlineBefore: { hu: "Értsd meg, hogyan működsz — és mit viszel a ", en: "Understand how you work — and what you bring to the " },
     selfHeadlineEm: { hu: "csapatba.", en: "team." },
-    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben vagy erős, és hogyan jelenik meg mindez a közös munkában — érthetően, egy helyen.", en: "See which patterns drive you, where your strengths lie, and how they show up when you work with others — clearly, in one place." },
+    selfSub: { hu: "Megmutatjuk, milyen mintázatok mozgatnak, miben lehetsz erős, és hogyan jelenik meg mindez a közös munkában — érthetően, egy helyen.", en: "See which patterns drive you, where your strengths may lie, and how they show up when you work with others — clearly, in one place." },
     selfCta: { hu: "Ingyenes teszt indítása", en: "Start free assessment" },
     selfCtaContinue: { hu: "Folytasd a tesztet", en: "Continue assessment" },
     selfCtaContinueShort: { hu: "Folytatom", en: "Continue" },
