@@ -66,7 +66,7 @@ export function resolveClerkCspOrigins(
   if (!host) return wildcards;
 
   const origin = `https://${host}`;
-  // A wildcard már fedheti (dev instance) — ilyenkor ne duplikáljunk.
+  // A wildcard már fedheti (dev instance) – ilyenkor ne duplikáljunk.
   if (host.endsWith(".clerk.accounts.dev") || host.endsWith(".clerk.com")) {
     return wildcards;
   }

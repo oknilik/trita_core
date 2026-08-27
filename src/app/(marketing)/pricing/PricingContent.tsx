@@ -31,7 +31,7 @@ function CollaborationVisual({ locale }: { locale: "hu" | "en" }) {
             {t("pricing.workflowEyebrow", locale)}
           </p>
           <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1 text-note text-[var(--color-text-on-inverse-muted)]">
-            01—03
+            01–03
           </span>
         </div>
 

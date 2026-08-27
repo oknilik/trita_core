@@ -663,11 +663,11 @@ export default async function ProfileResultsPage({
     const w =
       DIMENSION_WEAK_VERBS[pick.weakest.code]?.[locale] ??
       pick.weakest.label.toLowerCase();
-    return `${s} — ${w}.`;
+    return `${s} – ${w}.`;
   })();
 
   // A korábbi legacy strengths/watchAreas összefoglaló sorok kivezetve
-  // (2026-08-11): a PDF-be mentek, de ott semmi nem renderelte őket — a
+  // (2026-08-11): a PDF-be mentek, de ott semmi nem renderelte őket – a
   // bullet-alapú változat (strengthBullets/watchBullets, ProfileTabs) él.
 
   // ── Plus content (profile engine narratives) ──────────────────────────────
@@ -706,8 +706,8 @@ export default async function ProfileResultsPage({
             <div>
               <p className="text-sm font-semibold text-ink">
                 {locale === "hu"
-                  ? "A mérésed már készen van — ezt az eredményt látod itt."
-                  : "Your assessment is already complete — this is that result."}
+                  ? "A mérésed már készen van – ezt az eredményt látod itt."
+                  : "Your assessment is already complete – this is that result."}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-ink-body">
                 {locale === "hu"
@@ -782,7 +782,7 @@ export default async function ProfileResultsPage({
           interactionEntry={interactionEntry}
         />
 
-        {/* Csapat-érdeklődés (meleg lead) — csak consulting-led módban,
+        {/* Csapat-érdeklődés (meleg lead) – csak consulting-led módban,
             és csak ha a user még nem tagja csapatnak/szervezetnek. */}
         {isConsultingLed() &&
           !journeySnapshot.state.completionSummary.team.joined &&

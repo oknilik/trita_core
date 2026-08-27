@@ -62,7 +62,7 @@ export async function createQuote(params: CreateQuoteParams) {
   const { rate } = await loadRateCard();
   const today = new Date().toISOString().slice(0, 10);
   const title =
-    params.title?.trim() || `${deal.company ?? deal.contactName} — ${today}`;
+    params.title?.trim() || `${deal.company ?? deal.contactName} – ${today}`;
 
   return prisma.quote.create({
     data: {
@@ -74,7 +74,7 @@ export async function createQuote(params: CreateQuoteParams) {
   });
 }
 
-/** Csak DRAFT írható át (QUOTE_NOT_DRAFT) — friss rate carddal újraszámolva. */
+/** Csak DRAFT írható át (QUOTE_NOT_DRAFT) – friss rate carddal újraszámolva. */
 export async function updateDraftQuoteInput(quoteId: string, input: unknown) {
   const quote = await prisma.quote.findUnique({
     where: { id: quoteId },
@@ -153,7 +153,7 @@ export async function markQuoteAccepted(quoteId: string) {
       tx,
       deal.id,
       wonNow
-        ? `Ajánlat elfogadva (${quoteLabel(quote)}) — deal megnyerve`
+        ? `Ajánlat elfogadva (${quoteLabel(quote)}) – deal megnyerve`
         : `Ajánlat elfogadva (${quoteLabel(quote)})`,
     );
     return updated;
@@ -196,7 +196,7 @@ export async function expireQuote(quoteId: string) {
   });
 }
 
-/** Érvényesség állítása — csak amíg az ajánlat él (DRAFT/SENT). */
+/** Érvényesség állítása – csak amíg az ajánlat él (DRAFT/SENT). */
 export async function setQuoteValidUntil(quoteId: string, validUntil: Date | null) {
   const quote = await prisma.quote.findUnique({
     where: { id: quoteId },
@@ -211,7 +211,7 @@ export async function setQuoteValidUntil(quoteId: string, validUntil: Date | nul
 
 /**
  * Másolat új DRAFT-ként: az input átemelve, de FRISS rate carddal
- * újraszámolva — lejárt/elutasított ajánlat módosításának egyetlen útja.
+ * újraszámolva – lejárt/elutasított ajánlat módosításának egyetlen útja.
  */
 export async function duplicateQuote(quoteId: string) {
   const source = await prisma.quote.findUnique({ where: { id: quoteId } });
@@ -229,7 +229,7 @@ export async function duplicateQuote(quoteId: string) {
   });
 }
 
-/** Törlés csak DRAFT-on (ONLY_DRAFT_DELETABLE) — kiment ajánlat nyom marad. */
+/** Törlés csak DRAFT-on (ONLY_DRAFT_DELETABLE) – kiment ajánlat nyom marad. */
 export async function deleteDraftQuote(quoteId: string) {
   const quote = await prisma.quote.findUnique({
     where: { id: quoteId },

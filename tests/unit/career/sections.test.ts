@@ -81,7 +81,7 @@ test("SOHA nem mond ellent a feasibilitynek: atLevel ⇒ ready", () => {
 
 test("industryMismatch: univerzális-only top nem válthat ki ellentmondás-jelzést", () => {
   // Scope-módban a top-ot az univerzális (industries: []) szerepek dominálják:
-  // rajtuk sosincs industry-pick flag — a jelzés a SAJÁT bejelölt területeinek
+  // rajtuk sosincs industry-pick flag – a jelzés a SAJÁT bejelölt területeinek
   // listáján sütött el (2026-08-11, fix).
   const universalOnly = [
     { flags: [], industryTagged: false },

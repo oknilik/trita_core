@@ -46,7 +46,7 @@ export function CrmClosedPanel({
       <h2 className="mt-1 font-fraunces text-xl text-ink">Lezárt és parkolt dealek</h2>
       <p className="mt-1 text-xs text-ink-body">
         Megnyert/elveszett dealek az elmúlt 90 napból, plusz a parkoltak. Az
-        elveszett ügyek oka kötelezően rögzített — érdemes időnként visszaolvasni.
+        elveszett ügyek oka kötelezően rögzített – érdemes időnként visszaolvasni.
       </p>
 
       <div className="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label="Outcome-szűrő">

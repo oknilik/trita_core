@@ -17,7 +17,7 @@ const DIMS = {
   O: 90,
 };
 
-describe("buildShareOgModel — OG-kártya adatmodell", () => {
+describe("buildShareOgModel – OG-kártya adatmodell", () => {
   it("érvényes pontszámokból nevet, típust és glyph-párt ad", () => {
     const model = buildShareOgModel(DIMS, "Kata", "hu");
     assert.equal(model.displayName, "Kata");

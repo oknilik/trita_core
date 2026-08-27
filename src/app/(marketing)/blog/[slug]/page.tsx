@@ -58,7 +58,7 @@ export async function generateMetadata({
     path: `/blog/${slug}`,
     title: appendSiteSuffix(post.title, "trita blog"),
     // A frontmatter description a felületen is megjelenik (lead bekezdés),
-    // ezért ott hosszabb lehet — a meta-snippetbe mondathatáron vágjuk.
+    // ezért ott hosszabb lehet – a meta-snippetbe mondathatáron vágjuk.
     description: clampMetaDescription(post.description),
     ogTitle: post.title,
     ogDescription: post.description,
@@ -67,7 +67,7 @@ export async function generateMetadata({
     modifiedTime: post.publishedAt,
     locale: post.locale,
     languages,
-    // A cikknek SAJÁT `opengraph-image.tsx`-e van ebben a mappában — azt a
+    // A cikknek SAJÁT `opengraph-image.tsx`-e van ebben a mappában – azt a
     // Next a fájl-konvencióból teszi a fejlécbe. Kézzel is beállítva két
     // og:image kerülne ki, ezért itt kifejezetten nem adunk képet.
     ogImage: null,
@@ -110,7 +110,7 @@ function StatRow({ children }: { children: React.ReactNode }) {
 
 // Kanonikus HEXACO-paletta (color-system.ts): chip = strong szöveg soft
 // háttéren, base border. A korábbi negyedik (kevert) helyi paletta és a
-// hiba-piros N-badge kivezetve — az N (örökség-kód) neutrális.
+// hiba-piros N-badge kivezetve – az N (örökség-kód) neutrális.
 const DIM_COLORS: Record<string, { bg: string; text: string; border: string }> =
   Object.fromEntries(
     (Object.entries(DIMENSION_COLORS) as [string, { base: string; strong: string; soft: string }][])
@@ -126,7 +126,7 @@ const LETTER_TO_DIM: Record<string, HexacoCode> = Object.fromEntries(
 
 function DimBadge({ code, label }: { code: string; label: string }) {
   // A kódot a kanonikus térképen (tritan.ts) visszük át: belső kód (C/H)
-  // → HEXACO-betű, betű → önmaga — az olvasó SOHA nem lát nyers belső kódot.
+  // → HEXACO-betű, betű → önmaga – az olvasó SOHA nem lát nyers belső kódot.
   // A szín is a felismert dimenzióból jön, így a betűvel hívott badge-ek sem
   // esnek a neutrális fallbackre. Ismeretlen kód (pl. örökség-N) változatlanul,
   // neutrális színnel megy át.
@@ -159,7 +159,7 @@ function CompareTable({
   rows?: [string, string][];
 }) {
   // Mobilon a két hasáb egymás alá kerül, cellánként megismételt
-  // oszlopcímkével (a fejléc-sáv csak md:-től látszik) — 320px-en a
+  // oszlopcímkével (a fejléc-sáv csak md:-től látszik) – 320px-en a
   // 2×~92px-es hasábokban a hosszú szakkifejezések olvashatatlanok.
   return (
     <div className="my-8 overflow-hidden rounded-[10px] border border-[var(--color-border-default)]">
@@ -191,7 +191,7 @@ function CompareTable({
   );
 }
 
-// PullQuote — Fraunces italic idézet bronz vonallal, a szövegritmus
+// PullQuote – Fraunces italic idézet bronz vonallal, a szövegritmus
 // tördelésére (MDX-ben: <PullQuote source="kulcsgondolat">…</PullQuote>)
 function PullQuote({ children, source }: { children: React.ReactNode; source?: string }) {
   return (
@@ -295,19 +295,19 @@ export default async function BlogPostPage({
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
-  // Piszkozat élesben nem elérhető (dev-ben igen — ott az előnézet)
+  // Piszkozat élesben nem elérhető (dev-ben igen – ott az előnézet)
   if (post.status === "draft" && process.env.NODE_ENV !== "development") notFound();
 
   // Statikus oldal: a keret is a cikk nyelvén renderel; nyelvváltásnál a
   // TranslationRedirect kliens-oldalon visz a fordítás-párra.
   const locale = post.locale;
 
-  // Article JSON-LD — a `structured-data.ts` építőjével, hogy az `author` és a
+  // Article JSON-LD – a `structured-data.ts` építőjével, hogy az `author` és a
   // `publisher` a landing Organization-entitására MUTASSON (`@id`), ne egy
   // névazonos másolatot hirdessen minden cikk.
   //
   // A per-cikk `opengraph-image.tsx` VALÓS route-ja build-generált utótagot kap
-  // (`…/opengraph-image-<hash>`), amit oldalkódból nem lehet kiolvasni — az
+  // (`…/opengraph-image-<hash>`), amit oldalkódból nem lehet kiolvasni – az
   // utótag nélküli `/blog/<slug>/opengraph-image` 404. Ezért a JSON-LD a gyökér
   // `/opengraph-image` route stabil márka-képére mutat (ez az építő
   // alapértelmezése); a cikk-specifikus vizuált a fájl-konvenciós `og:image`
@@ -322,7 +322,7 @@ export default async function BlogPostPage({
     datePublished: post.publishedAt,
     // A frontmatterben nincs külön `updatedAt`; amíg egy cikket nem
     // szerkesztünk, a módosítás dátuma megegyezik a megjelenéssel. (Ha lesz
-    // `updatedAt` mező, ide kell bekötni — ld. src/lib/blog.ts.)
+    // `updatedAt` mező, ide kell bekötni – ld. src/lib/blog.ts.)
     dateModified: post.publishedAt,
     locale: post.locale,
     keywords: post.tags,
@@ -388,7 +388,7 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* Title — a landing headline léptékével */}
+        {/* Title – a landing headline léptékével */}
         <h1
           className="mb-3 font-fraunces text-fluid-title font-medium tracking-tight text-ink"
         >
@@ -400,7 +400,7 @@ export default async function BlogPostPage({
           {post.description}
         </p>
 
-        {/* Szerző-blokk + megosztás (E-E-A-T — összhangban az Article JSON-LD-vel) */}
+        {/* Szerző-blokk + megosztás (E-E-A-T – összhangban az Article JSON-LD-vel) */}
         <div className="mb-8 flex items-center gap-3 border-b border-t border-[var(--color-border-default)] py-3.5">
           <span
             aria-hidden
@@ -463,7 +463,7 @@ export default async function BlogPostPage({
           labels={tocLabels}
         />
 
-        {/* MDX Content — .blog-prose: iniciálé az első bekezdésen */}
+        {/* MDX Content – .blog-prose: iniciálé az első bekezdésen */}
         <div className="blog-prose">
           <MDXRemote source={post.content} components={makeComponents(post.locale !== "en")} />
         </div>
@@ -549,7 +549,7 @@ export default async function BlogPostPage({
             pontjára visz; kijelentkezve megmarad a kipróbálási ajánlat. */}
         <BlogJourneyCta locale={locale} variant="banner" />
 
-        {/* Feliratkozás — a cikk VÉGÉN, mert itt a legmagasabb a szándék:
+        {/* Feliratkozás – a cikk VÉGÉN, mert itt a legmagasabb a szándék:
             aki idáig eljutott, annak az „szólunk, ha új cikk jön" valódi
             ajánlat, nem megszakítás. */}
         <NewsletterForm source="blog_post" className="mt-6" />

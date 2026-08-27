@@ -108,7 +108,7 @@ export function PdfDimensionDetail({
                   borderRadius: 6,
                 }}
               >
-                {/* Név + szint-szó egymás alatt — a web DimensionAccordion
+                {/* Név + szint-szó egymás alatt – a web DimensionAccordion
                     facet-sorának párja. A szint-szó a NÉV alá kerül (nem a
                     szám mellé): a 48%-os hasábban a hosszú HU facet-nevek
                     („Esztétikai fogékonyság") mellett nincs vízszintes hely. */}

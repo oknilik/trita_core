@@ -147,7 +147,7 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onClose }: ToastItemProps) {
-  // Státusz-egykapu (2026-08): a state-* tokenek beszélnek — a korábbi
+  // Státusz-egykapu (2026-08): a state-* tokenek beszélnek – a korábbi
   // green/rose/indigo Tailwind-készlet (harmadik zöld-család, token-idegen
   // info-indigó) kivezetve.
   const styles = {
@@ -174,7 +174,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
   const style = styles[toast.type];
 
   // Be-/kilépés CSS-átmenettel (framer-motion helyett). A kiinduló állapotot
-  // az első festés után váltjuk „belépettre" — enélkül nem indulna átmenet.
+  // az első festés után váltjuk „belépettre" – enélkül nem indulna átmenet.
   const [isEntered, setIsEntered] = useState(false);
   useEffect(() => {
     let secondFrame = 0;

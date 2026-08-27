@@ -768,7 +768,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     lines.filter((l) => l.length > 0).map((l) => `• ${l}`).join("\n");
 
   // Összefoglaló: profil-mondat + dinamika-számok. A darabszám ÉL-szám
-  // (felmért kapcsolat), nem az összes tagpár — profil-él csak felmért tagok
+  // (felmért kapcsolat), nem az összes tagpár – profil-él csak felmért tagok
   // közt épül, a kapcsolat nélküli (disconnected) mért pár pedig kimarad.
   let summary = generateTeamSummary(avgs);
   if (agg.dynamics && dynamicsTotal > 0) {
@@ -781,7 +781,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
       ? "A hasonló munkastílusok gyors összecsiszolódást tehetnek lehetővé, és kevesebb egyeztetést igényelhetnek."
       : "",
     highTrustSignal
-      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat — ezek biztos alapot adhatnak az együttműködéshez."
+      ? "A mért bizalmi kör alapján sok az erős, kölcsönös bizalmi kapcsolat – ezek biztos alapot adhatnak az együttműködéshez."
       : "",
   ]);
 
@@ -789,19 +789,19 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     getWatchAreaInsight(bottomDim),
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     frictionShare >= 0.4
-      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílusbeli különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} — tisztázott normák nélkül ez visszatérő feszültség forrásává válhat.`
+      ? `A felmért kapcsolatok jelentős részénél nagy a munkastílusbeli különbség${frictionDimLabels ? ` (fő terület: ${frictionDimLabels})` : ""} – tisztázott normák nélkül ez visszatérő feszültség forrásává válhat.`
       : "",
     profileHomogeneitySignal
-      ? "A hasonló profilok közös vakfoltokat hordozhatnak — egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
+      ? "A hasonló profilok közös vakfoltokat hordozhatnak – egy külső nézőpont segíthet észrevenni azt, ami a csapaton belül rejtve marad."
       : "",
     gapRoleNames
-      ? `Lefedetlen csapatszerepek: ${gapRoleNames} — ezeket senki sem viszi elsődlegesen, és kijelölt helyettes sincs.`
+      ? `Lefedetlen csapatszerepek: ${gapRoleNames} – ezeket senki sem viszi elsődlegesen, és kijelölt helyettes sincs.`
       : "",
     ps && psWeakAreas.length > 0
-      ? `A pszichológiai biztonsági pulzusmérés (${ps.index}/100, ${ps.count} névtelen válasz) leggyengébb területei: ${psWeakAreas.join(", ")} — ezeken a területeken a tagok nem feltétlenül mondják ki őszintén a véleményüket, ami a többi mérés eredményét is torzíthatja.`
+      ? `A pszichológiai biztonsági pulzusmérés (${ps.index}/100, ${ps.count} névtelen válasz) leggyengébb területei: ${psWeakAreas.join(", ")} – ezeken a területeken a tagok nem feltétlenül mondják ki őszintén a véleményüket, ami a többi mérés eredményét is torzíthatja.`
       : "",
     ps && ps.spread >= 20
-      ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül — az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
+      ? "A pszichológiai biztonság megélése erősen eltér a csapaton belül – az átlag mögött nagyon különböző egyéni tapasztalatok állnak."
       : "",
     agg.pressure && agg.pressure.concentrations.length > 0
       ? `Nyomás alatti kollektív minta: ${agg.pressure.concentrations
@@ -815,22 +815,22 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
                     : "alacsony pólus"
               }, ${c.count}/${c.assessedCount} tag)`,
           )
-          .join(", ")} — az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
+          .join(", ")} – az egyéni túlterhelődések nyomás alatt összeadódhatnak (részletek a „Csapat nyomás alatt" fejezetben).`
       : "",
   ]);
 
   const recommendations = bullets([
     frictionShare >= 0.4 || frictionDimLabels
-      ? `Közös működési normák rögzítése (döntéshozatal, a határidők kezelése, kommunikáció)${frictionDimLabels ? ` — elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
+      ? `Közös működési normák rögzítése (döntéshozatal, a határidők kezelése, kommunikáció)${frictionDimLabels ? ` – elsősorban a következő területeken: ${frictionDimLabels}` : ""}.`
       : "",
     gapRoleNames
       ? `A hiányzó szerepek (${gapRoleNames}) tudatos pótlása: felelős kijelölése a csapaton belül vagy külső támogatás bevonása.`
       : "",
     measuredMissing
-      ? "Mért bizalmi kör (360°) indítása — a jelenlegi kapcsolati kép a profilokból számolt becslés, amelyet az új mérés megerősíthet vagy árnyalhat."
+      ? "Mért bizalmi kör (360°) indítása – a jelenlegi kapcsolati kép a profilokból számolt becslés, amelyet az új mérés megerősíthet vagy árnyalhat."
       : "",
     profileHomogeneitySignal
-      ? "Külső visszajelzés tudatos bevonása — például másik csapattól, ügyféltől vagy mentortól — a közös vakfoltok ellensúlyozására."
+      ? "Külső visszajelzés tudatos bevonása – például másik csapattól, ügyféltől vagy mentortól – a közös vakfoltok ellensúlyozására."
       : "",
     ...(ps && psWeakAreas.length > 0
       ? ps.weakItemIds.map(
@@ -838,15 +838,15 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
             `${getPsychSafetyItem(id)?.area.hu ?? id}: ${PSYCH_SAFETY_ACTIONS[id]?.hu ?? ""}`,
         )
       : []),
-    // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást —
+    // Több-csapatos futó pulse mellett NEM javaslunk új pulse-indítást –
     // a mérés fut, csak csapat-szintre nem bontható (psychSafetyMultiTeam).
     !ps && !agg.psychSafetyMultiTeam
-      ? "Pszichológiai biztonsági pulzusmérés indítása — névtelen, körülbelül kétperces mérés; enélkül a csapatkép csak a kimondott véleményekre épül, a visszatartott véleményekre viszont nem."
+      ? "Pszichológiai biztonsági pulzusmérés indítása – névtelen, körülbelül kétperces mérés; enélkül a csapatkép csak a kimondott véleményekre épül, a visszatartott véleményekre viszont nem."
       : "",
   ]);
 
   const leadershipGuide = bullets([
-    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} — az ehhez illő feladatoknál jellemzően kevesebb vezetői ráhatás is elég.`,
+    `Építs a csapat erősségére: ${topDims.map((d) => PREFILL_DIM_LABELS[d] ?? d).join(" és ")} – az ehhez illő feladatoknál jellemzően kevesebb vezetői ráhatás is elég.`,
     ...spreadDims.map((dim) => getDiversityInsight(dim)),
     getWatchAreaInsight(bottomDim),
     // Vezetői csapda-kártyák: a gyenge pulse-területek mögött tipikus
@@ -854,7 +854,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
     ...(ps
       ? leaderTrapsForWeakItems(ps.weakItemIds)
           .slice(0, 2)
-          .map((trap) => `${trap.title.hu} — ${trap.antidote.hu}`)
+          .map((trap) => `${trap.title.hu} – ${trap.antidote.hu}`)
       : []),
   ]);
 
@@ -891,7 +891,7 @@ export function buildDraftNarrativePrefill(agg: TeamReportAggregates): {
           {
             title: "Mért bizalmi kör",
             description:
-              "Bizalmi kör (360°) indítása a csapatban — a becsült kapcsolati elemek ellenőrzése mért adatokkal, hogy a következő riport pontosabb képet adhasson.",
+              "Bizalmi kör (360°) indítása a csapatban – a becsült kapcsolati elemek ellenőrzése mért adatokkal, hogy a következő riport pontosabb képet adhasson.",
             timeframe: "60" as const,
             targetMetric: { kind: "trust_coverage" as const },
           },

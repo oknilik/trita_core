@@ -158,7 +158,7 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
     if (!ctx.org) return null;
     const allTeamsHref = `/org/${ctx.org.id}?tab=teams`;
 
-    // Csapat nélküli szervezetben nincs mit lenyitni — marad a link a
+    // Csapat nélküli szervezetben nincs mit lenyitni – marad a link a
     // listára, ahol létre lehet hozni az elsőt.
     if (ctx.teams.length === 0) {
       return {
@@ -178,7 +178,7 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
     // Adminnál a `ctx.teams` a szervezet ÖSSZES csapata (getAccessibleTeams),
     // ezért kell a felső korlát: egy 20 csapatos szervezetben a menü
     // hosszabb lenne a képernyőnél. A levágottak az „Összes csapat" mögött
-    // vannak — a lista sosem néma, mert az a tétel mindig ott van.
+    // vannak – a lista sosem néma, mert az a tétel mindig ott van.
     const shown = ctx.teams.slice(0, ADMIN_TEAM_MENU_LIMIT);
     return {
       id: "teams",
@@ -207,13 +207,13 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
 
   // 2026-08-09: az egy-csapatos KÖZVETLEN LINK kivezetve (korábban UX-audit
   // #25). Az a szabály onnan nézve volt logikus, hogy egy elemű menü
-  // felesleges — a használatban viszont kiszámíthatatlanná tette a
+  // felesleges – a használatban viszont kiszámíthatatlanná tette a
   // menüpontot: ugyanaz a „Csapatok" gomb hol listát nyitott, hol azonnal
   // elnavigált egy csapatra. A menüpont mostantól MINDIG listát nyit,
   // szereptől és darabszámtól függetlenül.
 
   // A külön „Csapataim" lista-oldal tétel kivezetve (2026-07-29): a menü
-  // maga A lista — az elemek egyben AKTÍV CSAPATOT is váltanak (a Vezérlő
+  // maga A lista – az elemek egyben AKTÍV CSAPATOT is váltanak (a Vezérlő
   // ezután a kijelölt csapatra visz).
   const items: WorkspaceNavDestination[] = ctx.teams.map((team) => ({
     id: `team-${team.id}`,
@@ -232,7 +232,7 @@ function buildTeamsNav(role: WorkspaceNavRole, ctx: WorkspaceNavContext, locale:
   };
 }
 
-// Jelöltek: sima link (UX-audit #25) — a korábbi 3-elemű dropdown minden
+// Jelöltek: sima link (UX-audit #25) – a korábbi 3-elemű dropdown minden
 // tétele gyakorlatilag ugyanarra az oldalra vitt; az „Új jelölt" és a
 // „Kreditek" akciók a /hiring felület fejlécében élnek.
 function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole, locale: Locale): WorkspaceNavItem | null {
@@ -248,7 +248,7 @@ function buildHiringNav(ctx: WorkspaceNavContext, role: WorkspaceNavRole, locale
   };
 }
 
-// Szervezet: egyetlen link az egyszerű org-oldalra — a fülek (Csapatok ·
+// Szervezet: egyetlen link az egyszerű org-oldalra – a fülek (Csapatok ·
 // Kampányok · Tagok) és a Beállítások ott élnek. Badge: aktív mérések.
 function buildOrgNav(ctx: WorkspaceNavContext, locale: Locale): WorkspaceNavItem | null {
   if (!ctx.org) return null;
@@ -270,10 +270,10 @@ export function buildWorkspaceNavigation(
   const items: Array<WorkspaceNavItem | null> = [buildHomeItem(ctx.homeHref, locale)];
 
   if (canViewNavSection(role, "results")) items.push(buildResultsItem(locale));
-  // Az összehasonlítás a személyes réteg része — ugyanaz a kapu, mint az
+  // Az összehasonlítás a személyes réteg része – ugyanaz a kapu, mint az
   // Eredményeim.
   if (canViewNavSection(role, "results")) items.push(buildInteractionItem(locale));
-  // A karrier a személyes réteg része — ugyanaz a jogosultsági kapu, mint az
+  // A karrier a személyes réteg része – ugyanaz a jogosultsági kapu, mint az
   // Eredményeim, plusz az org-szintű kikapcsolhatóság.
   if (canViewNavSection(role, "results")) items.push(buildCareerItem(ctx, locale));
   if (canViewNavSection(role, "tasks")) items.push(buildTasksNav(ctx, locale));

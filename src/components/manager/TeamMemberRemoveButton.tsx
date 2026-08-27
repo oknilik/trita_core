@@ -52,7 +52,7 @@ export function TeamMemberRemoveButton({ teamId, userId, isHu }: Props) {
   }
 
   // Diszkrét trigger (UX-audit #16): a destruktív akció ne versenyezzen a
-  // sor többi elemével — halvány szöveg-link, hover-re válik piros hangsúlyúvá.
+  // sor többi elemével – halvány szöveg-link, hover-re válik piros hangsúlyúvá.
   // A megerősítő lépés (fenti confirm-ág) változatlanul kötelező.
   return (
     <button

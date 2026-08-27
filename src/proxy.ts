@@ -81,7 +81,7 @@ const handler = clerkMiddleware(async (auth, req) => {
 
   // SSO-callback: semmilyen redirect-logika nem futhat (dev/tunnel loop-ok
   // ellen), DE a clerkMiddleware-en belül maradunk, hogy a downstream
-  // auth()-hívások (pl. root layout) Clerk-kontextust kapjanak — enélkül
+  // auth()-hívások (pl. root layout) Clerk-kontextust kapjanak – enélkül
   // "auth() was called but Clerk can't detect clerkMiddleware()" hibát dob.
   if (req.nextUrl.pathname.includes("/sso-callback")) {
     return nextWithPathname(req);
@@ -105,7 +105,7 @@ const handler = clerkMiddleware(async (auth, req) => {
 
   // Bejelentkezett user a root-on: HTTP-redirect a journey-kapura még a
   // render előtt. A page-szintű szerver-redirect() Next 16 alatt kliens-
-  // oldali "Rendered more hooks" hibát dob (vercel/next.js#63121, #78396) —
+  // oldali "Rendered more hooks" hibát dob (vercel/next.js#63121, #78396) –
   // a middleware-redirect sima 307, nem érinti a kliens Routert.
   if (req.nextUrl.pathname === "/") {
     const { userId } = await auth();
@@ -141,7 +141,7 @@ const handler = clerkMiddleware(async (auth, req) => {
 
 export function proxy(req: NextRequest, event: import("next/server").NextFetchEvent) {
   // Az sso-callback speciális kezelése a clerkMiddleware-en BELÜL történik
-  // (ld. handler eleje) — a teljes bypass a layout auth() hívását törte el.
+  // (ld. handler eleje) – a teljes bypass a layout auth() hívását törte el.
   return handler(req, event);
 }
 

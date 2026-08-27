@@ -15,11 +15,11 @@ const NEUTRAL: DimScores = {
   H: 50, E: 50, X: 50, A: 50, C: 50, O: 50,
 };
 
-describe("buildPairSimulation — valódi páros mód (profile-profile)", () => {
+describe("buildPairSimulation – valódi páros mód (profile-profile)", () => {
   it("markáns párnál blokkokat ad, és a discuss sosem üres", () => {
     const sim = buildPairSimulation(STRUCTURED, EXPLORER, "hu");
     assert.equal(sim.sparse, false);
-    assert.ok(sim.discuss.length > 0, "a discuss a funkció magja — nem lehet üres");
+    assert.ok(sim.discuss.length > 0, "a discuss a funkció magja – nem lehet üres");
     for (const line of [...sim.easy, ...sim.friction, ...sim.discuss]) {
       assert.ok(line.text.length > 20);
       assert.ok(line.dimLabels.length >= 1);
@@ -55,7 +55,7 @@ describe("buildPairSimulation — valódi páros mód (profile-profile)", () => 
 
 // ── Kiterjesztett lefedettség (2026-08-18) ───────────────────────────
 
-describe("buildPairSimulation — hat dimenziós sáv és facet-nüansz", () => {
+describe("buildPairSimulation – hat dimenziós sáv és facet-nüansz", () => {
   it("mind a hat dimenzióra ad sort, lokalizált címkével", () => {
     const sim = buildPairSimulation(STRUCTURED, EXPLORER, "hu");
     assert.equal(sim.dimensions.length, 6);

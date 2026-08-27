@@ -70,7 +70,7 @@ function viewer(overrides: Partial<MemberViewerInput> = {}): MemberViewerInput {
 
 // ── roleSource a nézetmodellben (FIX 1) ─────────────────────────────────────
 
-describe("buildMemberReportViewModel — szerep-forrás (mért vs becsült)", () => {
+describe("buildMemberReportViewModel – szerep-forrás (mért vs becsült)", () => {
   it("kitöltött kérdőívnél roleSource = questionnaire, a mért top a szerep", () => {
     const vm = buildMemberReportViewModel(
       makeReport(),
@@ -85,7 +85,7 @@ describe("buildMemberReportViewModel — szerep-forrás (mért vs becsült)", ()
     assert.equal(vm.secondaryRole?.code, "MI");
   });
 
-  it("mért adat nélkül, teljes profilból roleSource = estimate — a nézetnek badge-elnie kell", () => {
+  it("mért adat nélkül, teljes profilból roleSource = estimate – a nézetnek badge-elnie kell", () => {
     const vm = buildMemberReportViewModel(makeReport(), viewer(), "hu");
     assert.equal(vm.roleSource, "estimate");
     assert.ok(vm.primaryRole, "teljes profilból kell becsült szerep");
@@ -102,7 +102,7 @@ describe("buildMemberReportViewModel — szerep-forrás (mért vs becsült)", ()
     assert.equal(vm.secondaryRole, null);
   });
 
-  it("részleges profilból nincs becslés (roleSource null) — nem gyártunk mért-kinézetű szerepet", () => {
+  it("részleges profilból nincs becslés (roleSource null) – nem gyártunk mért-kinézetű szerepet", () => {
     const vm = buildMemberReportViewModel(
       makeReport(),
       viewer({ scores: { H: 80, X: 20 } }),
@@ -115,7 +115,7 @@ describe("buildMemberReportViewModel — szerep-forrás (mért vs becsült)", ()
 
 // ── exact holtverseny-evidencia (FIX 2a) ────────────────────────────────────
 
-describe("buildMemberReportViewModel — S2: a kerekítetlen becslés-evidencia dönt", () => {
+describe("buildMemberReportViewModel – S2: a kerekítetlen becslés-evidencia dönt", () => {
   // KE és HA súlyai úgy vannak belőve, hogy a kerekített pontjuk azonos
   // legyen, a kerekítetlen összegük viszont eltérjen — az elsődleges
   // szerepnek az exact szerint kell dőlnie, nem a hash-fallback szerint,
@@ -133,7 +133,7 @@ describe("buildMemberReportViewModel — S2: a kerekítetlen becslés-evidencia 
     assert.equal(vm2.secondaryRole?.code, "KE");
   });
 
-  it("a tag-riport elsődleges szerepe azonos a kanonikus (exact-tudatos) rangsorral — felület-konzisztencia", () => {
+  it("a tag-riport elsődleges szerepe azonos a kanonikus (exact-tudatos) rangsorral – felület-konzisztencia", () => {
     for (const profile of [P1, P2]) {
       const vm = buildMemberReportViewModel(
         makeReport(),
@@ -151,7 +151,7 @@ describe("buildMemberReportViewModel — S2: a kerekítetlen becslés-evidencia 
 
 // ── roleFit a befagyasztott eloszlásból (meglévő viselkedés őre) ────────────
 
-describe("buildMemberReportViewModel — szerep-illeszkedés", () => {
+describe("buildMemberReportViewModel – szerep-illeszkedés", () => {
   it("ritka szerep (≤1 elsődleges a csapatban) → rare, megosztott (≥2) → shared", () => {
     const measured = viewer({
       teamRoleSource: "questionnaire",

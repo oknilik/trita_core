@@ -84,7 +84,7 @@ function CompassMotif() {
   );
 }
 
-/** Két összeérő kör: a metszet a közös működés — a dinamika-oldal előképe. */
+/** Két összeérő kör: a metszet a közös működés – a dinamika-oldal előképe. */
 function PairMotif() {
   return (
     <svg
@@ -99,7 +99,7 @@ function PairMotif() {
       <circle cx="152" cy="100" r="66" />
       <circle cx="88" cy="100" r="42" strokeDasharray="3 7" />
       <circle cx="152" cy="100" r="42" strokeDasharray="3 7" />
-      {/* A metszet kiemelve — ez az, amiről az oldal szól. */}
+      {/* A metszet kiemelve – ez az, amiről az oldal szól. */}
       <path
         d="M120 46 A66 66 0 0 1 120 154 A66 66 0 0 1 120 46 Z"
         fill="currentColor"

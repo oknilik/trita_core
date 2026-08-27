@@ -111,7 +111,7 @@ export default async function OrgSettingsPage({
               <div key={m.userId} className="flex items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-ink">
-                    {m.user.username ?? m.user.email ?? "—"}
+                    {m.user.username ?? m.user.email ?? "–"}
                   </p>
                   {m.user.username && (
                     <p className="truncate text-xs text-ink-body/60">{m.user.email}</p>
@@ -135,7 +135,7 @@ export default async function OrgSettingsPage({
           </div>
         </Card>
 
-        {/* Candidate credits — CJ-CREDITS: a hiring-felület „Kreditek
+        {/* Candidate credits – CJ-CREDITS: a hiring-felület „Kreditek
             kezelése" linkjének célja. Read-only blokk: a kereteket a
             tanácsadó állítja be, a CTA a /contact-ra visz (consulting-led
             modell); read-only org-state-ben is változatlanul működik. */}

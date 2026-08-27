@@ -101,7 +101,7 @@ export default async function CompareInvitePage({
   });
   if (!profile) return redirectToSignIn();
 
-  // Saját link megnyitása: nincs mit elfogadni — vissza a kezelő-kártyához.
+  // Saját link megnyitása: nincs mit elfogadni – vissza a kezelő-kártyához.
   if (invite.inviterId === profile.id) {
     redirect("/interaction");
   }

@@ -100,7 +100,7 @@ describe("computeGuestTeaserScores", () => {
   });
 
   it("azonos pontszámokra a teaser és a personality-type út top-2-je azonos", () => {
-    // Mind a hat dimenzió holtversenyben — a claim utáni archetípus nem
+    // Mind a hat dimenzió holtversenyben – a claim utáni archetípus nem
     // „nevezhető át" a regisztrációval.
     const fullMeta: TeaserScoringMetaItem[] = [
       { id: 1, dimension: "O", reversed: false },

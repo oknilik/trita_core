@@ -25,7 +25,7 @@ import {
 } from "@/lib/team-role-peer";
 
 describe("team-role itembank", () => {
-  it("has 27 items — 3 per role, ids prefixed with the role code", () => {
+  it("has 27 items – 3 per role, ids prefixed with the role code", () => {
     assert.equal(TEAM_ROLE_ITEM_COUNT, 27);
     const perRole = new Map<string, number>();
     for (const item of TEAM_ROLE_ITEMS) {
@@ -178,7 +178,7 @@ describe("peer aggregate (anonymity threshold)", () => {
     assert.deepEqual(diff.peerOnly, ["MV"]);
   });
 
-  it("azonos össz-súlyú koncentrált (2+2+2 egy raternél) és szórt (2 mindenkitől) jelölés EGYENLŐ evidencia — nem a per-rater kerekítés dönt", () => {
+  it("azonos össz-súlyú koncentrált (2+2+2 egy raternél) és szórt (2 mindenkitől) jelölés EGYENLŐ evidencia – nem a per-rater kerekítés dönt", () => {
     // MV: egy rater mindhárom itemet kiemeli (súly 6) → nyers 100, 0, 0;
     // OG: mindhárom rater 1-1 kiemelt itemet ad (súly 2) → nyers 33,33×3.
     // Össz-súly mindkettőnél 6 → a nyers átlag azonos (33,33) — VALÓDI
@@ -200,7 +200,7 @@ describe("peer aggregate (anonymity threshold)", () => {
     );
   });
 
-  it("a koncentrált dupla-súly (2+1+0) nem veszít a szórt szimplákkal (1+1+1) szemben — a nyers átlag a mérce (motor-audit v4)", () => {
+  it("a koncentrált dupla-súly (2+1+0) nem veszít a szórt szimplákkal (1+1+1) szemben – a nyers átlag a mérce (motor-audit v4)", () => {
     // Azonos össz-súly (3-3) → az MI–SZ relatív sorrendnek FÜGGETLENNEK kell
     // lennie attól, melyik szerep kapta a koncentrált jelölést. A régi kód
     // per-rater kerekített átlagot vett: 1+1+1 → 17,0 verte a 2+1+0 → 16,67-et,
@@ -233,7 +233,7 @@ describe("peer aggregate (anonymity threshold)", () => {
     assert.equal(
       order(aggA.topRoles),
       order(aggB.topRoles),
-      "a MI–SZ sorrend a koncentráció-iránytól függ — a per-rater kerekítés torzít",
+      "a MI–SZ sorrend a koncentráció-iránytól függ – a per-rater kerekítés torzít",
     );
   });
 
@@ -253,7 +253,7 @@ describe("peer aggregate (anonymity threshold)", () => {
   });
 });
 
-// ── S2: holtverseny-feloldás — determinisztikus, de kódsorrend-mentes ───────
+// ── S2: holtverseny-feloldás – determinisztikus, de kódsorrend-mentes ───────
 
 describe("getTopRoles tie-break (S2)", () => {
   const allTied = (value: number): TeamRoleScores =>
@@ -284,23 +284,23 @@ describe("getTopRoles tie-break (S2)", () => {
       0,
     );
     // Egyenletes eloszlásnál 33 lenne; a torzításmentesség őre egy laza sáv.
-    assert.ok(lateWins >= 15, `a késői kódok alig nyernek (${lateWins}/100) — kódsorrend-torzítás`);
+    assert.ok(lateWins >= 15, `a késői kódok alig nyernek (${lateWins}/100) – kódsorrend-torzítás`);
     assert.ok(
       (winners.get("OG") ?? 0) < 50,
-      `az OG nyeri a döntetlenek felét (${winners.get("OG")}/100) — kódsorrend-torzítás`,
+      `az OG nyeri a döntetlenek felét (${winners.get("OG")}/100) – kódsorrend-torzítás`,
     );
   });
 
   it("a finomabb evidencia (exact) felülírja a hash-t a kerekítés-azonos szerepeknél", () => {
     const scores = { OG: 33, KE: 0, KO: 0, HA: 0, ER: 0, CS: 0, MV: 33, MI: 0, SZ: 0 } as TeamRoleScores;
-    // Az exact szerint az MV mögött több a jel — neki kell nyernie, minden
+    // Az exact szerint az MV mögött több a jel – neki kell nyernie, minden
     // hash-kimenettől függetlenül.
     const top = getTopRoles(scores, 2, { OG: 33.0, MV: 33.4 });
     assert.equal(top[0].role, "MV");
     assert.equal(top[1].role, "OG");
     // A megjelenített pontszám a kerekített marad.
     assert.equal(top[0].score, 33);
-    // Fordított evidenciával fordul a sorrend — tehát tényleg az exact dönt.
+    // Fordított evidenciával fordul a sorrend – tehát tényleg az exact dönt.
     const flipped = getTopRoles(scores, 2, { OG: 33.4, MV: 33.0 });
     assert.equal(flipped[0].role, "OG");
   });

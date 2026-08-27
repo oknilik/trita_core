@@ -61,7 +61,7 @@ export function getAbsoluteUrl(path: string): string {
  * hreflang EGY URL-es, kliens-oldalon nyelvet váltó oldalakhoz.
  *
  * A marketing-fa minden lapja ugyanazon az URL-en szolgálja ki a HU és az EN
- * tartalmat (LocaleProvider, cookie/böngésző-nyelv alapján) — nincs `/en/…`
+ * tartalmat (LocaleProvider, cookie/böngésző-nyelv alapján) – nincs `/en/…`
  * változat. Ilyenkor a `hu -> /x` + `en -> /x` pár önmagára mutató, nulla
  * információt hordozó annotáció lenne, ráadásul félrevezető: a prerenderelt
  * HTML `lang="hu"`, tehát a crawler számára az „ez az EN oldal" állítás nem
@@ -94,7 +94,7 @@ export function getTranslatedLanguageAlternates(entries: Partial<Record<Locale, 
  * Meta-description hosszra vágása MONDATHATÁRON.
  *
  * Néhány oldal leírása egy hosszabb bevezető bekezdésből jön (i18n-kulcs,
- * ami a felületen is meg kell jelenjen) — a keresők ~155-165 karakternél
+ * ami a felületen is meg kell jelenjen) – a keresők ~155-165 karakternél
  * levágják. Itt az utolsó, még beleférő mondatvégnél vágunk, hogy a snippet
  * teljes mondat maradjon; ha nincs mondathatár, szóhatáron vágunk `…`-tal.
  * Nyelvfüggetlen, így HU és EN kulcson egyaránt működik.
@@ -116,7 +116,7 @@ export function clampMetaDescription(text: string, max = 165): string {
  *
  * A blogcikkek címe önmagában is 60-90 karakter; a fix „| trita blog" utótag
  * ilyenkor csak annyit ér el, hogy a kereső a találati listán elvágja a
- * címet — a márkanév pedig pont a levágott végén van. Ha nem fér bele, a
+ * címet – a márkanév pedig pont a levágott végén van. Ha nem fér bele, a
  * cikk saját címe marad (a márkát a `og:site_name` így is közli).
  */
 export function appendSiteSuffix(title: string, suffix: string, max = 60): string {
@@ -127,9 +127,9 @@ export function appendSiteSuffix(title: string, suffix: string, max = 60): strin
 export interface PageSeoInput {
   /** Kanonikus útvonal, pl. "/pricing". */
   path: string;
-  /** `<title>` — egyedi, ~60 karakter alatt. */
+  /** `<title>` – egyedi, ~60 karakter alatt. */
   title: string;
-  /** `<meta name="description">` — egyedi, ~150-160 karakter. */
+  /** `<meta name="description">` – egyedi, ~150-160 karakter. */
   description: string;
   /** Ha az OG-cím eltér a `<title>`-től (pl. a "| trita" utótag nélkül). */
   ogTitle?: string;
@@ -146,7 +146,7 @@ export interface PageSeoInput {
   languages?: Record<string, string>;
   /**
    * OG-kép útvonala. Alapértelmezés: a gyökér `/opengraph-image` route.
-   * `null` = ne állítsuk be — ezt CSAK az a szegmens használja, amelyiknek
+   * `null` = ne állítsuk be – ezt CSAK az a szegmens használja, amelyiknek
    * SAJÁT, egy mappában lévő `opengraph-image.tsx`-e van (blogcikkek), mert
    * ott a fájl-konvenció adja a képet, és a kézi beállítás duplázna.
    */
@@ -160,13 +160,13 @@ export interface PageSeoInput {
  * teljes openGraph (title/description/url/type/locale/siteName) és
  * twitter summary_large_image kártya.
  *
- * og:image — FONTOS: a fájl-konvenciós `opengraph-image.tsx` NEM öröklődik
+ * og:image – FONTOS: a fájl-konvenciós `opengraph-image.tsx` NEM öröklődik
  * lefelé abba a szegmensbe, amelyik saját `openGraph`-ot exportál: a Next a
  * metadata-objektumokat szegmensenként FELÜLÍRJA (nem mélyen mergeli), és a
  * fájl-konvenciós képet a saját szegmense metadata-jába teszi. Ezért a gyökér
  * `src/app/opengraph-image.tsx` képe kimaradt minden olyan lapról, amelyik
  * `openGraph`-ot ad meg (/pricing, /blog, /privacy, /contact, /pilot,
- * /patterns) — a `summary_large_image` twitter-kártya kép
+ * /patterns) – a `summary_large_image` twitter-kártya kép
  * nélkül maradt. Itt ezért explicit beállítjuk a gyökér-képet; ahol a
  * szegmensnek SAJÁT `opengraph-image.tsx`-e van (blogcikkek), a hívó
  * `ogImage: null`-t ad, és a fájl-konvenció marad az egyetlen forrás.

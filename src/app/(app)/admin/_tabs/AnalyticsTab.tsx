@@ -112,13 +112,13 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
             className="font-mono text-xs uppercase tracking-widest"
             style={{ color: "var(--color-state-warning-fg)" }}
           >
-            Beállítás hiányzik — ANALYTICS_SALT
+            Beállítás hiányzik – ANALYTICS_SALT
           </p>
           <p className="mt-2 text-sm font-semibold text-ink">
             A látogató-azonosító jelenleg PUBLIKUS sóval képződik.
           </p>
           <p className="mt-2 text-sm leading-relaxed text-ink-body">
-            A mérés működik, és az adat gyűlik — de a napi látogató-álnév egy
+            A mérés működik, és az adat gyűlik – de a napi látogató-álnév egy
             ismert IP + böngésző párból kitalálható, tehát az adatvédelmi
             tájékoztatóban vállalt pszeudonimitás jelenleg nem tartható.
             Beállítás:{" "}
@@ -145,7 +145,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
             hogy éles környezetben be van-e állítva az
             <code className="mx-1 rounded bg-cream px-1 py-0.5 text-xs">ANALYTICS_SALT</code>.
             A saját böngésződ nyomkövetés-tiltása (GPC / Do Not Track) is elnyeli a saját
-            látogatásaidat — ez szándékos.
+            látogatásaidat – ez szándékos.
           </p>
         </div>
       )}
@@ -155,7 +155,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
         <AdminStatCard
           title="Napi egyedi látogató (össz.)"
           value={traffic.totalVisitors}
-          subtitle="A látogató-azonosító naponta rotál — ez a napi értékek összege, nem havi egyedi ember."
+          subtitle="A látogató-azonosító naponta rotál – ez a napi értékek összege, nem havi egyedi ember."
         />
         <AdminStatCard
           title="Oldalletöltés"
@@ -166,7 +166,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
 
       <Panel
         title="Forgalom időben"
-        description="Eseményből számolt érték — ad-blocker és nyomkövetés-tiltás miatt alulmér."
+        description="Eseményből számolt érték – ad-blocker és nyomkövetés-tiltás miatt alulmér."
       >
         {traffic.hasData ? (
           <AdminTrendChart
@@ -208,11 +208,11 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
                 </div>
                 <div className="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-1">
                   <span className="text-2xl font-bold tabular-nums text-ink">
-                    {step.eventValue ?? "—"}
+                    {step.eventValue ?? "–"}
                     <span className="ml-1.5 text-xs font-normal text-muted">esemény</span>
                   </span>
                   <span className="text-2xl font-bold tabular-nums text-ink">
-                    {step.dbValue ?? "—"}
+                    {step.dbValue ?? "–"}
                     <span className="ml-1.5 text-xs font-normal text-muted">DB</span>
                   </span>
                   {share !== null && (
@@ -250,7 +250,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <AdminTableSection
           title="Legnézettebb útvonalak"
-          description="Normalizált útvonal — token és azonosító sosem kerül tárolásra."
+          description="Normalizált útvonal – token és azonosító sosem kerül tárolásra."
           rows={topPaths.map((row) => ({ label: row.label, value: row.value }))}
         />
         <AdminTableSection
@@ -263,7 +263,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       {campaigns.length > 0 && (
         <AdminTableSection
           title="Kampányok (UTM)"
-          description="Csak arra az oldalletöltésre kerül rá, ahol az URL-ben még ott volt az UTM — eszközön semmit nem tárolunk."
+          description="Csak arra az oldalletöltésre kerül rá, ahol az URL-ben még ott volt az UTM – eszközön semmit nem tárolunk."
           rows={campaigns.map((row) => ({ label: row.label, value: row.value }))}
         />
       )}
@@ -304,16 +304,16 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
                       {formatTime(row.occurredAt)}
                     </td>
                     <td className="py-2 pr-4 align-top text-xs font-semibold text-ink">{row.name}</td>
-                    <td className="py-2 pr-4 align-top text-xs text-ink-body">{row.path ?? "—"}</td>
+                    <td className="py-2 pr-4 align-top text-xs text-ink-body">{row.path ?? "–"}</td>
                     <td className="py-2 pr-4 align-top text-xs text-ink-body">
                       {row.origin}
                       {row.isAuthed ? " · belépve" : ""}
                     </td>
                     <td className="py-2 pr-4 align-top text-xs text-ink-body">
-                      {row.deviceClass ?? "—"}
+                      {row.deviceClass ?? "–"}
                     </td>
                     <td className="py-2 align-top font-mono text-note text-ink-body">
-                      {row.props ? JSON.stringify(row.props) : "—"}
+                      {row.props ? JSON.stringify(row.props) : "–"}
                     </td>
                   </tr>
                 ))}
@@ -326,7 +326,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
       {/* ── Adatkezelési lábjegyzet ────────────────────────────────── */}
       <div className="rounded-xl border border-sand bg-cream p-6">
         <h2 className="text-caption font-semibold text-ink">
-          Mit mérünk — és mit nem
+          Mit mérünk – és mit nem
         </h2>
         <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-ink-body">
           <li>
@@ -334,7 +334,7 @@ export async function AnalyticsTab({ range }: { range: AdminRange }) {
             rotáló pszeudonim (IP + böngésző hash), az IP-t nem tároljuk.
           </li>
           <li>
-            · A GPC / Do Not Track jelzést tiszteletben tartjuk — az így jelző látogatóktól
+            · A GPC / Do Not Track jelzést tiszteletben tartjuk – az így jelző látogatóktól
             semmit nem mérünk.
           </li>
           <li>

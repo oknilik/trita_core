@@ -102,7 +102,7 @@ export function PeerFeedbackClient({
       const firstIncomplete = teammates.findIndex((tm) => !entryComplete(restored[tm.userId]));
       setCurrentIdx(firstIncomplete === -1 ? Math.max(teammates.length - 1, 0) : firstIncomplete);
     } catch {
-      // sérült piszkozat — kezdjük tisztán
+      // sérült piszkozat – kezdjük tisztán
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- csak mountkor
   }, []);
@@ -115,7 +115,7 @@ export function PeerFeedbackClient({
           window.localStorage.setItem(draftKey(campaignId), JSON.stringify(next));
           setDraftSaved(true);
         } catch {
-          // pl. betelt tároló — a mentésjelzőt nem kapcsoljuk be
+          // pl. betelt tároló – a mentésjelzőt nem kapcsoljuk be
         }
       }, 400);
     },
@@ -185,7 +185,7 @@ export function PeerFeedbackClient({
     }
   };
 
-  // Egyetlen kész kártya beküldése (rész-mentés) — a szerver lefedettség
+  // Egyetlen kész kártya beküldése (rész-mentés) – a szerver lefedettség
   // alapján lépteti a kampány-lépést, így a részleges beadás biztonságos.
   const saveEntryToServer = async (targetUserId: string) => {
     const e = entries[targetUserId];
@@ -210,7 +210,7 @@ export function PeerFeedbackClient({
       });
       if (res.ok) setSavedIds((prev) => new Set(prev).add(targetUserId));
     } catch {
-      // hálózati hiba — a localStorage-piszkozat őrzi, a záró beadás pótolja
+      // hálózati hiba – a localStorage-piszkozat őrzi, a záró beadás pótolja
     }
   };
 
@@ -310,7 +310,7 @@ export function PeerFeedbackClient({
             style={{ width: `${(completedCount / teammates.length) * 100}%` }}
           />
         </div>
-        {/* Lépés-pöttyök: kész / aktuális / hátralévő — a készekre vissza
+        {/* Lépés-pöttyök: kész / aktuális / hátralévő – a készekre vissza
             lehet ugrani szerkeszteni. */}
         <div className="mt-2 flex flex-wrap items-center gap-1.5" aria-hidden="true">
           {teammates.map((tm, i) => {
@@ -325,7 +325,7 @@ export function PeerFeedbackClient({
                 onClick={() => goTo(i)}
                 className={[
                   // A pötty vizuálisan 8px, de a találati területét
-                  // láthatatlan pseudo-elem tolja ki érinthető méretre —
+                  // láthatatlan pseudo-elem tolja ki érinthető méretre –
                   // a sor magassága nem nő.
                   "relative h-2 rounded-full transition-all duration-200",
                   "before:absolute before:-inset-x-1.5 before:-inset-y-[18px] before:content-['']",

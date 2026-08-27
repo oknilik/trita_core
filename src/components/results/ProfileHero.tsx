@@ -504,7 +504,7 @@ export function ProfileHero({
             )}
             body={(
         <div>
-          {/* Az ál-percentilis badge végleg kivezetve (B17) — valós norma-
+          {/* Az ál-percentilis badge végleg kivezetve (B17) – valós norma-
               adattal térhet vissza (terv P4.3). */}
           <span className="font-fraunces text-heading italic text-[var(--color-accent-primary-soft)] md:text-heading">
             {personalityType}

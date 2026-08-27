@@ -69,7 +69,7 @@ export function AdminInquiriesSection({
       if (!res.ok) throw new Error("PATCH_FAILED");
       router.refresh();
     } catch {
-      setError("A módosítás nem sikerült — próbáld újra.");
+      setError("A módosítás nem sikerült – próbáld újra.");
     } finally {
       setBusyId(null);
     }
@@ -88,7 +88,7 @@ export function AdminInquiriesSection({
         </h2>
         <p className="mt-1 text-xs text-ink-body">
           A /contact űrlapról érkező megkeresések. Ha a beküldő email alapján
-          azonosítható, a user és a szervezete automatikusan hozzákötve — kézzel
+          azonosítható, a user és a szervezete automatikusan hozzákötve – kézzel
           is módosítható. A bekötött szervezet tanácsadója notifot kap az új
           kérdésekről.
         </p>

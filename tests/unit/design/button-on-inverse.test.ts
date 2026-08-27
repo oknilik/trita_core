@@ -36,7 +36,7 @@ test("az inverz ghost/secondary nem viszi a világos felület szövegszínét", 
     assert.equal(
       inverse.includes(LIGHT_SURFACE_FG),
       false,
-      `${variant}: a sötét panelen is a világos ${LIGHT_SURFACE_FG} megy ki — a gomb eltűnik`,
+      `${variant}: a sötét panelen is a világos ${LIGHT_SURFACE_FG} megy ki – a gomb eltűnik`,
     );
     assert.ok(
       inverse.includes("--color-text-on-inverse"),
@@ -65,7 +65,7 @@ test("az inverz készlet nem támaszkodik világos hover-háttérre", () => {
 
 test("az inverz primary világos töltést kap sötét felirattal", () => {
   const inverse = getButtonClassName({ variant: "primary", onInverse: true });
-  // A világos primary töltése az `action-primary-bg` (sötét zsálya) — pont
+  // A világos primary töltése az `action-primary-bg` (sötét zsálya) – pont
   // az a szín, ami a sötét herón beleolvadna.
   assert.equal(
     inverse.includes("bg-action-primary-bg"),
@@ -78,7 +78,7 @@ test("az inverz primary világos töltést kap sötét felirattal", () => {
 
 test("a világos és az inverz készlet KIZÁRJA egymást (nincs ütközés)", () => {
   // A javítás lényege: a sötét panel a világos HELYETT kapja a saját
-  // készletét, nem MELLÉ — így nincs mit feloldani a kaszkádban.
+  // készletét, nem MELLÉ – így nincs mit feloldani a kaszkádban.
   for (const variant of ["primary", "secondary", "ghost"] as const) {
     const inverse = getButtonClassName({ variant, onInverse: true });
     const lightOnly = getButtonClassName({ variant })
@@ -96,7 +96,7 @@ test("a világos és az inverz készlet KIZÁRJA egymást (nincs ütközés)", (
 
 // ── Forrás-szintű szerződés ────────────────────────────────────────────────
 //
-// A SurfaceHero `actions=` slotja MINDKÉT színsémán sötét gradiensen ül —
+// A SurfaceHero `actions=` slotja MINDKÉT színsémán sötét gradiensen ül –
 // minden odakerülő Button-nak `onInverse`-nek kell lennie.
 const SURFACE_HERO_CALLERS = [
   "src/components/results/ProfileHero.tsx",
@@ -163,7 +163,7 @@ test("a hero actions-slotjában minden Button onInverse", () => {
         checked += 1;
         assert.ok(
           /\bonInverse\b/.test(tag),
-          `${file}: hero-actions Button onInverse nélkül — sötét panelen világos készletet kapna\n${tag}`,
+          `${file}: hero-actions Button onInverse nélkül – sötét panelen világos készletet kapna\n${tag}`,
         );
       }
     }

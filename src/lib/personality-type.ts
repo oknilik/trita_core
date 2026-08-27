@@ -81,12 +81,12 @@ export function resolvePersonalityTypeLabel(
 }
 
 /**
- * Megjelenítésre kész FŐNÉVI archetípus („Újító", "Innovator") — ez a
+ * Megjelenítésre kész FŐNÉVI archetípus („Újító", "Innovator") – ez a
  * címke akkor jár egy dimenziónak, ha az a DOMINÁNS.
  *
  * Azért exportált, hogy a típust VÁLASZTÓ felületek (pl. az interakció-
  * szimuláció archetípus-választója) ugyanazt a szókincset kínálják, amit a
- * profil megjelenít — különben a felhasználónak fejben kellene leképeznie a
+ * profil megjelenít – különben a felhasználónak fejben kellene leképeznie a
  * dimenzió-nevet az archetípus-névre.
  */
 export function personalityNoun(
@@ -99,7 +99,7 @@ export function personalityNoun(
 }
 
 /**
- * Megjelenítésre kész MELLÉKNÉVI színezet („Energikus", "Energetic") — ez a
+ * Megjelenítésre kész MELLÉKNÉVI színezet („Energikus", "Energetic") – ez a
  * címke akkor jár egy dimenziónak, ha az a MÁSODIK legerősebb.
  */
 export function personalityAdjective(
@@ -119,7 +119,7 @@ export function personalityAdjective(
  * főnév-only, a próza nem nevezi meg a másodikat).
  *
  * Érték = Math.round(diffStandardError("short")) = round(√2·SEM): két pont
- * KÜLÖNBSÉGÉNEK hibája, nem egy ponté — a korábbi 10 (= 1×SEM) ~40%-kal
+ * KÜLÖNBSÉGÉNEK hibája, nem egy ponté – a korábbi 10 (= 1×SEM) ~40%-kal
  * alul-becsülte, ezért olyan sorrendeket is „biztosnak" vett, amik a mérési
  * hibán belül voltak. SZÁNDÉKOSAN literál: ezt a modult kliens-komponensek is
  * importálják (guest-teaser, TypeGlyphPlate…), a psychometrics a teljes
@@ -131,41 +131,41 @@ export function personalityAdjective(
  * (9,67 → 10 item/dimenzió), így α 0,7317 → 0,7383, SEM 10,36 → 10,23.
  *
  * 14 → 11 (2026-08-11, MÉRT reliabilitás): a psychometrics.ts kézi priorjai
- * (r̄ = 0,22, SD = 20) helyére mért értékek kerültek (r̄ = 0,264, SD = 16,2 —
+ * (r̄ = 0,22, SD = 20) helyére mért értékek kerültek (r̄ = 0,264, SD = 16,2 –
  * IPIP–HEXACO nyílt adat, n = 21 681, ld. docs/research/ipip-reference-2026-08.md
  * és a psychometrics.ts forrás-blokkja). A prior ~25%-kal pesszimista volt:
  * α 0,7383 → 0,7820, SEM 10,23 → 7,56, SE(diff) 14,47 → 10,70 → kerekítve 11.
  * A kapu nem „lazult": eddig a 11-13 pontos, VALÓS különbségeket is elnyeltük.
- * A minta nemzetközi, angol nyelvű, önszelektált — közelítő referencia; a
+ * A minta nemzetközi, angol nyelvű, önszelektált – közelítő referencia; a
  * magyar pilot adata ezt a számot felülírja.
  */
 export const DIFF_MIN_GAP = 11;
 
-/** @deprecated Használd a DIFF_MIN_GAP-et — azonos küszöb (√2·SEM). */
+/** @deprecated Használd a DIFF_MIN_GAP-et – azonos küszöb (√2·SEM). */
 export const TYPE_ADJECTIVE_MIN_GAP = DIFF_MIN_GAP;
 
 /**
  * Kényelmi wrapper: pontozott dimenzió-listából választja ki a top kettőt
- * (rankDimensionScores: pontszám csökkenő, holtversenynél HEXACO_ORDER —
+ * (rankDimensionScores: pontszám csökkenő, holtversenynél HEXACO_ORDER –
  * így a vendég-teaser és a belépett felületek azonos címkét adnak).
  * Kevesebb mint két (ismert) dimenziónál null.
  *
  * Csak az archetípus-nyelvtan által ismert kódok rangsorolódnak: az
- * intersticiális altruizmus-skála ("I") és bármely sérült kulcs kiesik —
+ * intersticiális altruizmus-skála ("I") és bármely sérült kulcs kiesik –
  * különben a rangsort és a gap-szabályt olyan skála torzítaná, amiből
  * címke úgysem képezhető (nyers scores.dimensions bemenetnél ez élő eset).
  *
  * Melléknév-óvatosság: ha a 2. és 3. helyezett közti különbség a mérési
  * hibán belül van (< TYPE_ADJECTIVE_MIN_GAP), csak a főnévi archetípus
- * megy ki ("Újító" / "Innovator") — a melléknévi színezet nem állítható
+ * megy ki ("Újító" / "Innovator") – a melléknévi színezet nem állítható
  * megbízhatóan.
  *
  * Top-pár óvatosság (motor-audit v3, interpr. S3): ugyanez a kapu az 1. és
- * 2. helyezettre is fut — ha a két LEGERŐSEBB dimenzió van egy SEM-en belül,
+ * 2. helyezettre is fut – ha a két LEGERŐSEBB dimenzió van egy SEM-en belül,
  * a főnév/melléknév kiosztás (melyik a domináns) a mérési hibán belüli
  * sorrend műterméke lenne, pedig pont ez határozza meg a fő archetípust.
  * Ilyenkor is főnév-only címke megy ki, a determinisztikus rangsor (pontszám,
- * holtversenynél HEXACO_ORDER) szerinti első főnevével — ugyanaz a
+ * holtversenynél HEXACO_ORDER) szerinti első főnevével – ugyanaz a
  * degradáció, ami a 2-3. helyezett közeli esetében már élt (a teljes
  * holtverseny eddig is így viselkedett). Pontosan két dimenziónál nincs
  * 3. helyezett, ott csak a top-pár kapu fut.
@@ -190,10 +190,10 @@ export function resolvePersonalityTypeFromScores(
 
 /**
  * Igaz, ha a két legerősebb (ismert) dimenzió pontkülönbsége a mérési hibán
- * belül van (< DIFF_MIN_GAP = √2·SEM) — ilyenkor a domináns/másodlagos sorrend
+ * belül van (< DIFF_MIN_GAP = √2·SEM) – ilyenkor a domináns/másodlagos sorrend
  * bizonytalan, és a próza (glyph-plate „a második legerősebb …", interakció-
  * subtitle „Energikus + Újító") NEM nevezheti meg a másodikat, hedge-elnie kell.
- * A címke-logika (resolvePersonalityTypeFromScores) ugyanezt a kaput futtatja —
+ * A címke-logika (resolvePersonalityTypeFromScores) ugyanezt a kaput futtatja –
  * így az ábra melletti szöveg és a címke sosem mond ellent egymásnak.
  * Ez BELSŐ jelzés: nem hoz felszínre mérési-hiba számot, csak a szöveget kapuzza.
  */
@@ -208,11 +208,11 @@ export function isTopPairUncertain(
 
 /**
  * Igaz, ha a MÁSODLAGOS dimenzió (a melléknévi színezet) megnevezése bizonytalan
- * — VAGY a top-pár van a mérési hibán belül (a domináns sem biztos), VAGY a 2–3.
+ * – VAGY a top-pár van a mérési hibán belül (a domináns sem biztos), VAGY a 2–3.
  * hely (a melléknév) van azon belül. Ez PONTOSAN a címke-lefokozás kapuja
  * (resolvePersonalityTypeFromScores: `topPairUncertain || adjectiveUncertain`),
  * ezért a prózát (glyph-plate „X × Y", „a második legerősebb …", archetípus-
- * sztori) EHHEZ kell kötni — az `isTopPairUncertain` csak a top-párt nézi, így a
+ * sztori) EHHEZ kell kötni – az `isTopPairUncertain` csak a top-párt nézi, így a
  * 2–3. bizonytalanság esetén a próza megnevezte a másodikat, miközben a címke már
  * főnév-only volt (motor-audit v6, interp F1). Belső jelzés: nem hoz ± számot.
  */

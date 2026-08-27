@@ -147,7 +147,7 @@ export function TypeGlyphPlate({
         intensity={intensity}
         secondaryUncertain={secondaryUncertain}
         variant="card"
-        // Mobilon a kép nem nőhet a képernyő fölé — a panel egészének be
+        // Mobilon a kép nem nőhet a képernyő fölé – a panel egészének be
         // kell férnie a kijelzőbe nyitás után.
         className="mx-auto w-full max-h-[46svh] rounded-xl border border-[var(--color-border-soft)] object-contain md:max-h-none"
       />
@@ -191,7 +191,7 @@ export function TypeGlyphPlate({
 
         {/* Nincs fül-alakzat. A felirat a hero ALSÓ sávjában áll (negatív
             margóval visszalógva), a vékony nyíl viszont már a banner ALATT,
-            a krém háttéren — ezért ott tinta-színű. Egyetlen kattintható
+            a krém háttéren – ezért ott tinta-színű. Egyetlen kattintható
             elem: a feliratra is nyílik. */}
         <div className={`relative -mt-8 flex justify-center ${open ? "z-50" : "z-30"}`}>
           <button
@@ -201,7 +201,7 @@ export function TypeGlyphPlate({
             className="group flex flex-col items-center gap-6 px-4"
           >
             {/* 11,5 px: a caption (13px) alatt, de a micro (10px) padló
-                fölött — kis metaadat-méret, ami még kényelmesen olvasható. */}
+                fölött – kis metaadat-méret, ami még kényelmesen olvasható. */}
             <span className="text-[11.5px] leading-none tracking-[0.01em] text-white/55 transition group-hover:text-white/85">
               {t("results.glyphTabLabel", locale)}
             </span>

@@ -138,7 +138,7 @@ export async function POST(
 
       // A `sendTeamInviteEmail` régebbi hívói a visszatérést nem nézték; a
       // kötegelt nézet viszont megkülönbözteti a „kiment" és a „meghívó
-      // létrejött, de a levél nem ment ki" esetet — utóbbinál a tanácsadónak
+      // létrejött, de a levél nem ment ki" esetet – utóbbinál a tanácsadónak
       // kézzel kell linket küldenie, és ezt látnia kell.
       return { status: emailSent === false ? "invited_no_email" : "invited" };
     }
@@ -165,7 +165,7 @@ export async function POST(
           })]),
     ]);
 
-    // A felvett (meglévő) user értesítése — a másik hozzáadási út
+    // A felvett (meglévő) user értesítése – a másik hozzáadási út
     // (members route) is ugyanezt küldi.
     import("@/lib/notifications").then(({ handleTeamMemberAdded }) =>
       handleTeamMemberAdded({ teamId, teamName: team!.name, userId: targetUser.id }).catch(
@@ -176,7 +176,7 @@ export async function POST(
     return { status: "added", member };
   }
 
-  // ── Egyelemű ág — a válasz-szerződés VÁLTOZATLAN ────────────────────
+  // ── Egyelemű ág – a válasz-szerződés VÁLTOZATLAN ────────────────────
   if (single.success) {
     const outcome = await inviteOne(single.data.email);
     if (outcome.status === "already_member") {

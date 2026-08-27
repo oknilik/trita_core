@@ -13,7 +13,7 @@ describe("mean", () => {
   });
 });
 
-describe("sampleStdDev — Bessel-korrekció (÷(n−1))", () => {
+describe("sampleStdDev – Bessel-korrekció (÷(n−1))", () => {
   it("n < 2 → 0", () => {
     assert.equal(sampleStdDev([]), 0);
     assert.equal(sampleStdDev([42]), 0);

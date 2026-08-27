@@ -16,7 +16,7 @@ function profile(overrides: Partial<Record<(typeof DIMS)[number], number>> = {})
   return { ...base, ...overrides };
 }
 
-describe("frictionToEdgeType — sávhatárok", () => {
+describe("frictionToEdgeType – sávhatárok", () => {
   it("12 alatt aligned, 12-től complementary, 22-től friction", () => {
     assert.equal(frictionToEdgeType(0), "aligned");
     assert.equal(frictionToEdgeType(11), "aligned");
@@ -27,12 +27,12 @@ describe("frictionToEdgeType — sávhatárok", () => {
   });
 });
 
-describe("calculatePairFriction — súlyozott eltérés", () => {
+describe("calculatePairFriction – súlyozott eltérés", () => {
   it("azonos teljes profil → 0", () => {
     assert.equal(calculatePairFriction(profile(), profile()), 0);
   });
 
-  it("teljes profilnál a súlyösszeg 1 — az eredmény a súlyozott átlag", () => {
+  it("teljes profilnál a súlyösszeg 1 – az eredmény a súlyozott átlag", () => {
     // Csak C tér el 30 ponttal: 0.30 × 30 = 9
     assert.equal(
       calculatePairFriction(profile({ C: 80 }), profile()),
@@ -69,7 +69,7 @@ describe("calculatePairFriction — súlyozott eltérés", () => {
   });
 });
 
-describe("computeAlignedHubIds — közös hub-definíció", () => {
+describe("computeAlignedHubIds – közös hub-definíció", () => {
   const aligned = (from: string, to: string) => ({ from, to, type: "aligned" });
 
   it("mindkét él-végpont számít a fokszámba", () => {
@@ -106,7 +106,7 @@ describe("computeAlignedHubIds — közös hub-definíció", () => {
   });
 });
 
-describe("trustToDynamicsEdge — mért trust-él → dinamika-él", () => {
+describe("trustToDynamicsEdge – mért trust-él → dinamika-él", () => {
   it("strong→aligned, moderate→complementary, weak→friction", () => {
     assert.equal(trustToDynamicsEdge("strong_trust"), "aligned");
     assert.equal(trustToDynamicsEdge("moderate"), "complementary");
@@ -118,7 +118,7 @@ describe("trustToDynamicsEdge — mért trust-él → dinamika-él", () => {
   });
 });
 
-describe("isMeasuredDynamicsSource — közös mért-forrás definíció", () => {
+describe("isMeasuredDynamicsSource – közös mért-forrás definíció", () => {
   it("trust_round és observer MÉRT; minden más becslés", () => {
     assert.equal(isMeasuredDynamicsSource("trust_round"), true);
     assert.equal(isMeasuredDynamicsSource("observer"), true);

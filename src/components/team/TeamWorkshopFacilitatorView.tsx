@@ -40,7 +40,7 @@ export function TeamWorkshopFacilitatorView({ report, isHu }: { report: Serializ
           </DashboardPanel>
           <DashboardPanel className="p-4">
             <p className="text-xs font-semibold text-ink">{isHu ? "Megvitatandó jelek" : "Signals to discuss"}</p>
-            <p className="mt-2 text-xs leading-relaxed text-ink-body">{[...strengths.slice(0, 1), ...risks.slice(0, 1)].join(" · ") || "—"}</p>
+            <p className="mt-2 text-xs leading-relaxed text-ink-body">{[...strengths.slice(0, 1), ...risks.slice(0, 1)].join(" · ") || "–"}</p>
           </DashboardPanel>
           <DashboardPanel className="p-4">
             <p className="text-xs font-semibold text-ink">{isHu ? "Kötelező kimenet" : "Required output"}</p>

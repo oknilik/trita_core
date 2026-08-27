@@ -80,7 +80,7 @@ export async function POST(
   }
 
   // Lépés-tudatos „nem kezdte" számítás (2026-07-29): a kampány SAJÁT
-  // lépéseiből semmit sem teljesítők — nem a self-teszt kitöltetlensége.
+  // lépéseiből semmit sem teljesítők – nem a self-teszt kitöltetlensége.
   // Újrafelvételi körben csak az aktiválás utáni self-eredmény számít.
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {

@@ -8,7 +8,7 @@ import {
   percentileFromNorm,
 } from "@/lib/norms";
 
-describe("norms — normál CDF (ismert értékek)", () => {
+describe("norms – normál CDF (ismert értékek)", () => {
   it("Φ(0) = 0.5, Φ(±1) a standard táblázati értékek", () => {
     assert.ok(Math.abs(normalCdf(0) - 0.5) < 1e-6);
     assert.ok(Math.abs(normalCdf(1) - 0.841345) < 1e-4);
@@ -23,7 +23,7 @@ describe("norms — normál CDF (ismert értékek)", () => {
   });
 });
 
-describe("norms — percentileFromNorm", () => {
+describe("norms – percentileFromNorm", () => {
   const norm = { mean: 50, sd: 10 };
 
   it("átlagon 50, ±1 szóráson 84 / 16", () => {
@@ -32,7 +32,7 @@ describe("norms — percentileFromNorm", () => {
     assert.equal(percentileFromNorm(40, norm), 16);
   });
 
-  it("1..99 közé vágva — 0%/100% állítás sosem megy ki", () => {
+  it("1..99 közé vágva – 0%/100% állítás sosem megy ki", () => {
     assert.equal(percentileFromNorm(100, { mean: 50, sd: 5 }), 99);
     assert.equal(percentileFromNorm(0, { mean: 50, sd: 5 }), 1);
   });
@@ -44,7 +44,7 @@ describe("norms — percentileFromNorm", () => {
   });
 });
 
-describe("norms — aktív tábla nélkül minden néma (null-ág)", () => {
+describe("norms – aktív tábla nélkül minden néma (null-ág)", () => {
   it("ma nincs aktív norma-tábla", () => {
     assert.equal(ACTIVE_NORM_TABLE, null);
     assert.equal(hasNorms(), false);

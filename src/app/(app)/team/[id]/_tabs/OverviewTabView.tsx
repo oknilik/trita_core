@@ -105,7 +105,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
               </div>
             </DashboardMetricCard>
 
-            {/* Csapatmintázat-állapot CSAK tanácsadónak (UX-audit #7) —
+            {/* Csapatmintázat-állapot CSAK tanácsadónak (UX-audit #7) –
                 és NEM metrika-kártyaként (UX-audit #28): az „Elérhető" nem
                 mennyiség, hanem státusz, ezért chip hordozza, nem nagy szám.
                 CTA nincs (UX-audit #3): a megnyitás útja a hero gombja. */}
@@ -136,7 +136,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
             ) : null}
           </div>
 
-          {/* Mérés-bontás: a kitöltési arány csak a személyiség-profilt méri —
+          {/* Mérés-bontás: a kitöltési arány csak a személyiség-profilt méri –
               futó kampánynál mérésenként is megmutatjuk, hol tart a csapat.
               A számok a kampány-részletezővel azonos lépés-logikából jönnek. */}
           {teamData.activeCampaign && teamData.activeCampaign.stepProgress.length > 0 ? (
@@ -188,7 +188,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
 
         {/* A korábbi „Csapatintelligencia" CTA-kártya és a nézet-linkkártyák
             (profil/tagok/szerepek) kikerültek (2026-07-29): a TeamTabBar a
-            navigáció egyetlen, kanonikus helye — a kártyák ugyanazokat a
+            navigáció egyetlen, kanonikus helye – a kártyák ugyanazokat a
             célokat duplikálták. Az adatminőség-infó az Intelligencia fülön él. */}
 
 
@@ -201,7 +201,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                 // Vizuális csapatkép-pillanatkép a publikált (befagyasztott)
                 // aggregátumból: mini radar + mintázat + kulcs-chipek. Ez az
                 // EGYETLEN mintázat-CTA a nem-tanácsadói overview-n (a fenti
-                // metric-csempe linkje ezért került ki — redundáns volt).
+                // metric-csempe linkje ezért került ki – redundáns volt).
                 publishedReport.aggregates?.dimensionAverages ? (
                   <div className="grid grid-cols-1 items-center gap-5 md:grid-cols-[220px_1fr]">
                     <div className="mx-auto w-full max-w-[220px]">
@@ -232,7 +232,7 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                         </p>
                       )}
                       {/* Szám-definíció (UX-audit #8): a chipek a PUBLIKÁLÁSKOR
-                          befagyasztott aggregátumot mutatják — az élő taglétszám
+                          befagyasztott aggregátumot mutatják – az élő taglétszám
                           (hero) ettől eltérhet, a címke ezt kimondja. */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         <span className="rounded-full border border-sand bg-surface-card px-2.5 py-1 text-note text-ink-body">
@@ -253,8 +253,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </div>
                       <p className="mt-2 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó által jóváhagyott, aggregált kép — egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
-                          : "Aggregate picture approved by your consultant — without individual results, frozen at publication."}
+                          ? "A tanácsadó által jóváhagyott, aggregált kép – egyéni eredmények nélkül, a publikálás pillanatában rögzítve."
+                          : "Aggregate picture approved by your consultant – without individual results, frozen at publication."}
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}
@@ -278,8 +278,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-ink-body">
                         {isHu
-                          ? "A tanácsadó véglegesítette a csapatképet — aggregált eredmények és értékelés."
-                          : "Your consultant has finalized the team picture — aggregate results and assessment."}
+                          ? "A tanácsadó véglegesítette a csapatképet – aggregált eredmények és értékelés."
+                          : "Your consultant has finalized the team picture – aggregate results and assessment."}
                       </p>
                       <Link
                         href={`/team/${teamId}?tab=report`}
@@ -305,8 +305,8 @@ export async function OverviewTabView({ ctx }: { ctx: TeamTabContext }) {
                   </p>
                   <p className="mt-1 text-xs leading-relaxed text-ink-body">
                     {isHu
-                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja — a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
-                      : "Team-level results are aggregated and approved by your consultant — they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
+                      ? "A csapatszintű eredményeket a tanácsadó összesíti és jóváhagyja – a személyes beszélgetések tanulságaival együtt, aggregált formában lesznek elérhetők. Addig a kitöltés haladását követheted ezen az oldalon."
+                      : "Team-level results are aggregated and approved by your consultant – they become available in aggregate form, together with insights from the personal interviews. Until then you can track completion progress on this page."}
                   </p>
                 </div>
               </div>

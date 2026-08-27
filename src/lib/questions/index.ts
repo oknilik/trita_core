@@ -91,7 +91,7 @@ export function getTestConfig(
 // id-halmazt adja be. Ezeket a beadásokat NEM utasítjuk el: a kitöltő
 // hiánytalanul végigment 60 itemen, a pontozás pedig item-szinten dolgozik,
 // tehát a régi halmaz ugyanúgy értelmes eredményt ad (a kivezetett skála
-// pontszáma is előáll — pont, ahogy a korábbi éles soroknál).
+// pontszáma is előáll – pont, ahogy a korábbi éles soroknál).
 //
 // SZÁNDÉKOSAN kimerevített id-listák, nem a mai bankból számolt delta: ha a
 // rövid forma megint változik, a történeti halmaz akkor is önmagát írja le.
@@ -99,7 +99,7 @@ const LEGACY_COMPLETE_FORM_ID_SETS: Partial<Record<TestType, readonly (readonly 
   // TSFI-S v1 (2026-07-16 – 2026-08-11): tartalmazta a kiegészítő
   // altruizmus-skála 98/99 itemét, és NEM tartalmazta a 77 (E/fearfulness)
   // és 79 (O/inquisitiveness) itemet. 2026-08-11-én a skála kikerült a
-  // rövid formából, a két fő-dimenziós item pedig beléptetve — az itemszám
+  // rövid formából, a két fő-dimenziós item pedig beléptetve – az itemszám
   // (60) és a forma-kód ("short") változatlan.
   TRITAN: [
     [
@@ -118,7 +118,7 @@ const LEGACY_COMPLETE_FORM_ID_SETS: Partial<Record<TestType, readonly (readonly 
  * a 0–100 skálán kezeli, így a kettő eredménye összevethető.
  *
  * Elfogadjuk a KORÁBBI rövid formák pontos id-halmazát is
- * (LEGACY_COMPLETE_FORM_ID_SETS) — egy forma-váltás pillanatában futó
+ * (LEGACY_COMPLETE_FORM_ID_SETS) – egy forma-váltás pillanatában futó
  * kitöltést elveszíteni rosszabb, mint egy kivezetett item-összetételt
  * pontozni. Hiányos halmazt továbbra sem fogad el.
  */
@@ -140,7 +140,7 @@ export function isCompleteFormAnswerSet(
 /**
  * A kitöltés-ellenőrzés által elfogadott ÖSSZES id (mai formák + történeti
  * rövid formák). Az API-rétegek ehhez szűrik a beérkező válaszokat, MIELŐTT
- * a teljesség-ellenőrzés fut — így a régi halmaz itemjei nem esnek ki a
+ * a teljesség-ellenőrzés fut – így a régi halmaz itemjei nem esnek ki a
  * szűrőn (a mai teljes bank amúgy is tartalmazza őket, de ez a kapu nem
  * feltételezi, hogy egy kivezetett item bent maradt a bankban).
  */

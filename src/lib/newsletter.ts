@@ -640,13 +640,13 @@ export async function markDeliveryFailure(
 }
 
 /**
- * Kattintás rögzítése — CSAK az elsőé.
+ * Kattintás rögzítése – CSAK az elsőé.
  *
  * A `clickedAt` nem számláló: az első linkkérést rögzíti. Ez hasznos, de nem
  * biztos emberi olvasás: linkscanner és továbbított levél is kiválthatja. Az `updateMany` a `null`
  * feltétellel egyben a versenyhelyzetet is kezeli (két gyors kattintás).
  *
- * Visszaadja a cikk slugját, ha a foglalás létezik — a hívó ebből építi a
+ * Visszaadja a cikk slugját, ha a foglalás létezik – a hívó ebből építi a
  * cél-URL-t, tehát a paraméterből SOHA nem lesz nyílt átirányítás.
  */
 export async function registerClick(deliveryId: string): Promise<boolean> {
@@ -668,7 +668,7 @@ export async function registerClick(deliveryId: string): Promise<boolean> {
 /**
  * Kézbesíthetetlen cím kivezetése a küldésből.
  *
- * A hívója a Resend bounce-webhookja (`/api/webhooks/resend`) — NEM a küldő
+ * A hívója a Resend bounce-webhookja (`/api/webhooks/resend`) – NEM a küldő
  * kód hibaága: egyetlen átmeneti API-hiba nem elég ok rá, mert a `BOUNCED`
  * állapotból nincs visszaút a felületről (a feliratkozó űrlap csendben
  * elnyeli az ilyen címet).
@@ -688,8 +688,8 @@ export async function markBounced(subscriberId: string): Promise<void> {
  * Kézbesítési visszajelzés feldolgozása cím alapján (webhook).
  *
  * A két eset szándékosan KÜLÖNBÖZŐ állapotba visz:
- *   · `bounce`    → BOUNCED — a cím nem létezik; technikai tény.
- *   · `complaint` → UNSUBSCRIBED — a címzett spamnek jelölte; ez SZÁNDÉK.
+ *   · `bounce`    → BOUNCED – a cím nem létezik; technikai tény.
+ *   · `complaint` → UNSUBSCRIBED – a címzett spamnek jelölte; ez SZÁNDÉK.
  *     Ilyenkor a leiratkozás a helyes válasz, nem a „hibás cím" könyvelése.
  */
 export async function applyDeliveryFeedback(
@@ -714,12 +714,12 @@ export async function applyDeliveryFeedback(
         },
       });
     }
-    log.info({ event: "newsletter.complaint", subscriberId: row.id }, "Spam complaint — unsubscribed");
+    log.info({ event: "newsletter.complaint", subscriberId: row.id }, "Spam complaint – unsubscribed");
     return true;
   }
 
   if (row.status !== "BOUNCED") await markBounced(row.id);
-  log.info({ event: "newsletter.bounce", subscriberId: row.id }, "Hard bounce — suppressed");
+  log.info({ event: "newsletter.bounce", subscriberId: row.id }, "Hard bounce – suppressed");
   return true;
 }
 
@@ -864,7 +864,7 @@ export interface NewsletterStats {
 }
 
 /**
- * Admin-számok. Üzleti szám mindig DB-ből — az analitikai esemény csak
+ * Admin-számok. Üzleti szám mindig DB-ből – az analitikai esemény csak
  * mintázatra való (ld. CLAUDE.md analitika-szabály).
  */
 export async function getNewsletterStats(): Promise<NewsletterStats> {
@@ -904,7 +904,7 @@ export interface SlugEngagement {
  * Küldési egységenkénti kattintási arány (cikk-slug vagy `issue:<id>`).
  *
  * EZ az egyetlen visszacsatolás arról, hogy melyik cím és melyik téma
- * működik — a feliratkozó-szám csak azt mondja, hányan mondtak igent egyszer.
+ * működik – a feliratkozó-szám csak azt mondja, hányan mondtak igent egyszer.
  */
 export async function getDeliveryEngagement(limit = 20): Promise<SlugEngagement[]> {
   const grouped = await prisma.newsletterDelivery.groupBy({

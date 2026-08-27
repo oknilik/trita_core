@@ -53,7 +53,7 @@ const DYNAMIC_KEY = /\b(?:t|tf)\(\s*`([^`]*)`/g;
 test("a publikus szótárt legalább egy publikus kliens-fájl használja", () => {
   assert.ok(
     publicFiles.length >= 10,
-    `csak ${publicFiles.length} fájl importál a @/lib/i18n/public-ból — elmozdult a szeletelés?`,
+    `csak ${publicFiles.length} fájl importál a @/lib/i18n/public-ból – elmozdult a szeletelés?`,
   );
 });
 
@@ -77,11 +77,11 @@ test("minden publikus felületen használt statikus kulcs feloldható (HU+EN)", 
     }
   }
 
-  assert.ok(checked > 50, `túl kevés kulcsot találtam (${checked}) — elromlott a minta-illesztés?`);
+  assert.ok(checked > 50, `túl kevés kulcsot találtam (${checked}) – elromlott a minta-illesztés?`);
   assert.deepEqual(
     missing,
     [],
-    `A publikus szótár nem oldja fel ezeket a kulcsokat — a felületen NYERS KULCS jelenne meg.\n` +
+    `A publikus szótár nem oldja fel ezeket a kulcsokat – a felületen NYERS KULCS jelenne meg.\n` +
       `Megoldás: vedd fel a hiányzó domént a src/lib/i18n/public.ts PUBLIC_TRANSLATION_DOMAINS listájába,\n` +
       `vagy tedd a kulcsot a shared-labels.ts-be, ha mindkét fa használja.\n` +
       missing.join("\n"),
@@ -90,7 +90,7 @@ test("minden publikus felületen használt statikus kulcs feloldható (HU+EN)", 
 
 test("a dinamikus kulcsok névtere is benne van a publikus szótárban", () => {
   // A sablon-literálos kulcsok (pl. `pricing.faqQ${i}`) konkrét értékét nem
-  // tudjuk statikusan feloldani, de a NÉVTERÜKET igen — és a valós kockázat
+  // tudjuk statikusan feloldani, de a NÉVTERÜKET igen – és a valós kockázat
   // pont az, hogy egy egész domén hiányzik a publikus szótárból.
   const publicNamespaces = new Set(
     PUBLIC_TRANSLATION_DOMAINS.flatMap((domain) => Object.keys(domain as object)),
@@ -107,17 +107,17 @@ test("a dinamikus kulcsok névtere is benne van a publikus szótárban", () => {
       const namespace = staticPrefix.split(".")[0];
       // Ha maga a névtér is dinamikus (`${x}.y`), azt nem tudjuk ellenőrizni.
       if (!namespace) {
-        bad.push(`${relative(ROOT, file)} :: \`${raw}\` — a NÉVTÉR is dinamikus, kézi ellenőrzés kell`);
+        bad.push(`${relative(ROOT, file)} :: \`${raw}\` – a NÉVTÉR is dinamikus, kézi ellenőrzés kell`);
         continue;
       }
       found += 1;
       if (!publicNamespaces.has(namespace)) {
-        bad.push(`${relative(ROOT, file)} :: \`${raw}\` — a(z) "${namespace}" névtér nincs a publikus szótárban`);
+        bad.push(`${relative(ROOT, file)} :: \`${raw}\` – a(z) "${namespace}" névtér nincs a publikus szótárban`);
       }
     }
   }
 
-  assert.ok(found > 0, "nem találtam dinamikus kulcsot — elromlott a minta-illesztés?");
+  assert.ok(found > 0, "nem találtam dinamikus kulcsot – elromlott a minta-illesztés?");
   assert.deepEqual(
     bad,
     [],
@@ -126,7 +126,7 @@ test("a dinamikus kulcsok névtere is benne van a publikus szótárban", () => {
 });
 
 test("a publikus és a teljes szótár ugyanazt adja a közös kulcsokra", () => {
-  // A shared-labels.ts-ben lévő kulcsok mindkét szótárban élnek — ha
+  // A shared-labels.ts-ben lévő kulcsok mindkét szótárban élnek – ha
   // elcsúsznának, a landing és az eredmény-oldal más szöveget mutatna.
   for (const key of ["results.roleFitEyebrow", "content.roleFitStrong"]) {
     for (const locale of ["hu", "en"] as const) {

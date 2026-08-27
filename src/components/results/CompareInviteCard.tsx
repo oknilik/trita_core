@@ -145,7 +145,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           {/* Nulla kapcsolatnál a „Válassz a kapcsolataid közül" cím
-              értelmetlen — ott a meghívás maga a feladat. */}
+              értelmetlen – ott a meghívás maga a feladat. */}
           <h2 className="font-fraunces text-title leading-tight text-[var(--color-text-primary)] sm:text-title">
             {hasAnyConnection
               ? t("results.compareConnectionsTitle", locale)
@@ -169,7 +169,7 @@ export function CompareInviteCard({ invites }: CompareInviteCardProps) {
 
       <div className={acceptedInvites.length > 0 ? "mt-5 flex flex-col gap-3" : ""}>
         {acceptedInvites.length === 0 ? (
-          // Ha van kiküldött link, akkor NEM igaz, hogy „nincs aktív linked" —
+          // Ha van kiküldött link, akkor NEM igaz, hogy „nincs aktív linked" –
           // az a lista közvetlenül alább ott van. Nulla kapcsolatnál pedig
           // egyáltalán nem kell placeholder: a nyitott meghívó-blokk a tartalom.
           pendingInvites.length > 0 ? (

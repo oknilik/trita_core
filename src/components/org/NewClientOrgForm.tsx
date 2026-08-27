@@ -39,8 +39,8 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
         setError(
           data.error === "NOT_CONSULTANT"
             ? isHu
-              ? "Nincs tanácsadói kijelölésed — a platform admin tud hozzárendelni."
-              : "You are not an assigned consultant — the platform admin can assign you."
+              ? "Nincs tanácsadói kijelölésed – a platform admin tud hozzárendelni."
+              : "You are not an assigned consultant – the platform admin can assign you."
             : isHu
               ? "Nem sikerült létrehozni a szervezetet."
               : "Could not create the organization.",
@@ -69,7 +69,7 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
           required
           disabled={loading}
         />
-        {/* ── Cégadatok (opcionális) — csak a név kötelező ── */}
+        {/* ── Cégadatok (opcionális) – csak a név kötelező ── */}
         <div className="rounded-xl border border-sand bg-cream/50 p-4">
           <button
             type="button"
@@ -77,12 +77,12 @@ export function NewClientOrgForm({ isHu }: { isHu: boolean }) {
             className="inline-flex items-center gap-1.5 text-caption font-semibold text-ink-body transition hover:text-[var(--color-accent-primary-strong)]"
           >
             <span>{billingOpen ? "▾" : "▸"}</span>
-            {isHu ? "Cégadatok — opcionális" : "Company details — optional"}
+            {isHu ? "Cégadatok – opcionális" : "Company details – optional"}
           </button>
           <p className="mt-1 text-note leading-relaxed text-muted">
             {isHu
-              ? "Ha kéznél vannak, már most megadhatod a számlázási adatokat — de később, az admin felületen is kitöltheted."
-              : "If you have them handy, add the billing details now — you can also fill them in later on the admin surface."}
+              ? "Ha kéznél vannak, már most megadhatod a számlázási adatokat – de később, az admin felületen is kitöltheted."
+              : "If you have them handy, add the billing details now – you can also fill them in later on the admin surface."}
           </p>
           {billingOpen && (
             <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">

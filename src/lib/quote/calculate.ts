@@ -185,7 +185,7 @@ export function calculateQuote(input: QuoteInput, rate: RateCard): QuoteResult {
   };
 }
 
-/** Üres bemenet — a felület ebből indul. */
+/** Üres bemenet – a felület ebből indul. */
 export function emptyQuoteInput(): QuoteInput {
   return {
     headcount: 12,

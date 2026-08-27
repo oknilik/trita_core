@@ -8,10 +8,10 @@ import { PilotContent } from "./PilotContent";
 // kliens-oldali LocaleProvider kezeli (PilotContent).
 export const metadata: Metadata = buildPageMetadata({
   path: "/pilot",
-  title: "Pilotprogram — az első partnercsapatainknak | trita",
+  title: "Pilotprogram – az első partnercsapatainknak | trita",
   description:
     "90 napos, személyesen kísért csapatprogram: közös mérés, értelmező workshop, konkrét vezetői lépés és visszamérés.",
-  ogTitle: "Pilotprogram — az első partnercsapatainknak",
+  ogTitle: "Pilotprogram – az első partnercsapatainknak",
   ogDescription:
     "90 napos, személyesen kísért csapatprogram az első partnercsapatoknak.",
 });
@@ -22,7 +22,7 @@ export default function PilotPage() {
       <JsonLd
         data={buildWebPageJsonLd({
           path: "/pilot",
-          title: "Pilotprogram — az első partnercsapatainknak",
+          title: "Pilotprogram – az első partnercsapatainknak",
           description:
             "90 nap teljes hozzáférés, személyes bevezetés és kiemelt figyelem az első partnercsapatoknak, egyedi feltételekkel.",
           about: ["Csapatdiagnosztika", "Pilotprogram"],

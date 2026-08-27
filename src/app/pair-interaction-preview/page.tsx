@@ -112,7 +112,7 @@ export default async function InteractionPairPreviewPage() {
     >
       <header>
         <p className="text-micro uppercase tracking-wide text-[var(--color-text-muted)]">
-          Fejlesztői előnézet — fixture-profilok, valódi motor
+          Fejlesztői előnézet – fixture-profilok, valódi motor
         </p>
         <h1 className="mt-1 font-fraunces text-title text-[var(--color-text-primary)]">
           Páros nézet

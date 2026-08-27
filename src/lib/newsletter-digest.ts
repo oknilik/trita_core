@@ -115,7 +115,7 @@ export async function runBlogDigest(options: DigestOptions = {}): Promise<Digest
 
         // FOGLALÁS a küldés ELŐTT: a levélbe kerülő kattintás-követő link a
         // delivery id-jét hordozza, tehát az id-nek már léteznie kell. Aki
-        // nem kap foglalást, azt egy korábbi futás már elvitte — kimarad.
+        // nem kap foglalást, azt egy korábbi futás már elvitte – kimarad.
         const reserved = await reserveDeliveries(post.slug, batch.map((r) => r.id));
         const sendable = batch.filter((r) => reserved.has(r.id));
         if (sendable.length === 0) continue;

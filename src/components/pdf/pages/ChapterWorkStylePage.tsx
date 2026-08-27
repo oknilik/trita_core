@@ -48,7 +48,7 @@ export function ChapterWorkStylePage({ model }: { model: ProfileReportViewModel 
           </PdfCard>
         ) : null}
 
-        {/* Ideális környezet — a webes IdealEnvironmentSection; a PdfData
+        {/* Ideális környezet – a webes IdealEnvironmentSection; a PdfData
             korábban elejtette ezt a szekciót (P0/4). */}
         {workstyle.envItems.length > 0 ? (
           <PdfCard eyebrow={t("pdf.idealEnvironment", locale)}>

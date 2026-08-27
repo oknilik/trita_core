@@ -141,16 +141,16 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                     </span>
                     <p className="text-sm leading-relaxed text-ink-body">
                       {isHu
-                        ? "Kérdésed megérkezett — hamarosan válaszolunk emailben."
-                        : "Your question has been received — we'll reply by email soon."}
+                        ? "Kérdésed megérkezett – hamarosan válaszolunk emailben."
+                        : "Your question has been received – we'll reply by email soon."}
                     </p>
                   </div>
                 ) : (
                   <>
                     <p className="mb-3 text-xs leading-relaxed text-muted">
                       {isHu
-                        ? "Írd le a kérdésed — a fiókodhoz kötve érkezik meg hozzánk, és emailben válaszolunk."
-                        : "Describe your question — it arrives linked to your account, and we'll reply by email."}
+                        ? "Írd le a kérdésed – a fiókodhoz kötve érkezik meg hozzánk, és emailben válaszolunk."
+                        : "Describe your question – it arrives linked to your account, and we'll reply by email."}
                     </p>
                     <textarea
                       value={askMessage}
@@ -164,7 +164,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
                     />
                     {askState === "error" && (
                       <p className="mt-2 text-xs text-state-error-fg">
-                        {isHu ? "A küldés nem sikerült — próbáld újra." : "Sending failed — please try again."}
+                        {isHu ? "A küldés nem sikerült – próbáld újra." : "Sending failed – please try again."}
                       </p>
                     )}
                     <button
@@ -228,7 +228,7 @@ export function HelpWidget({ audience }: { audience: HelpAudience }) {
             )}
           </div>
 
-          {/* Lábléc — kiút emberhez */}
+          {/* Lábléc – kiút emberhez */}
           {!askOpen && (
             <div className="border-t border-sand bg-cream px-4 py-3">
               <p className="text-xs text-muted">

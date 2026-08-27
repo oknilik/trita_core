@@ -75,8 +75,8 @@ function getDimensionInsight(
     // hozadék mellett az árát is kimondja.
     E: {
       high: {
-        hu: "Érzelmileg érzékeny: korán megérzi a helyzetek töltetét, és sokáig viszi magával. Stressz után lassabban regenerálódik — a kiszámítható tempó és a rendszeres visszajelzés segíti.",
-        en: "Emotionally sensitive: registers the charge of a situation early and carries it for a while. Recovers more slowly after stress — a predictable tempo and regular feedback help.",
+        hu: "Érzelmileg érzékeny: korán megérzi a helyzetek töltetét, és sokáig viszi magával. Stressz után lassabban regenerálódik – a kiszámítható tempó és a rendszeres visszajelzés segíti.",
+        en: "Emotionally sensitive: registers the charge of a situation early and carries it for a while. Recovers more slowly after stress – a predictable tempo and regular feedback help.",
       },
       medium: {
         hu: "Vegyes érzelmi intenzitás: a kapcsolati jelzések eljutnak hozzá, és nyomás alatt is működőképes marad.",
@@ -116,8 +116,8 @@ function getDimensionInsight(
         en: "Ready to compromise while still able to hold their own position. A good balance between accommodation and assertiveness.",
       },
       low: {
-        hu: "Egyenes, vitaképes: hamar szóvá teszi, ami nem stimmel, és kitart az álláspontja mellett — értékes ott, ahol őszinte visszajelzés és határozott képviselet kell. Cserébe a viták gyorsabban éleződhetnek, és provokációra hamar elfogy a türelme.",
-        en: "Direct and debate-ready: names what doesn't add up early and holds their position — valuable where honest feedback and a firm stance are the job. In exchange, debates can sharpen faster, and patience runs out quickly under provocation.",
+        hu: "Egyenes, vitaképes: hamar szóvá teszi, ami nem stimmel, és kitart az álláspontja mellett – értékes ott, ahol őszinte visszajelzés és határozott képviselet kell. Cserébe a viták gyorsabban éleződhetnek, és provokációra hamar elfogy a türelme.",
+        en: "Direct and debate-ready: names what doesn't add up early and holds their position – valuable where honest feedback and a firm stance are the job. In exchange, debates can sharpen faster, and patience runs out quickly under provocation.",
       },
     },
     C: {
@@ -210,21 +210,21 @@ export default async function CandidateResultPage({
 
   const candidateScores = extractDimensionScores(invite.result.scores) ?? {};
   const testType = invite.result.testType ?? "TRITAN";
-  // Kanonikus HEXACO-sorrend (tritan.ts) — nem helyi dim-lista.
+  // Kanonikus HEXACO-sorrend (tritan.ts) – nem helyi dim-lista.
   const dims: HexacoCode[] = HEXACO_ORDER;
   // Hiányzó dimenzió ≠ 0%: a korábbi `?? 0` egy csonka score-JSON-t valós
   // nullaként rajzolt ki (bar, radar, gap-sor). A hiányzó dimenziót kihagyjuk.
   const presentDims = dims.filter((d) => typeof candidateScores[d] === "number");
 
-  // A kérdőív-forma a tárolt pontozás-pecsétből — pecsét nélküli (örökség)
+  // A kérdőív-forma a tárolt pontozás-pecsétből – pecsét nélküli (örökség)
   // sorokra a konzervatívabb rövid formával számolunk (nagyobb SEM).
   const scoresRecord = invite.result.scores as { form?: unknown } | null;
   const candidateForm: AssessmentForm = scoresRecord?.form === "full" ? "full" : "short";
   // Két FÜGGETLEN pontszám (jelölt vs csapattag-átlag) különbségének hibája:
   // √2·SEM. Azonos valódi profilok mellett az |eltérés| várható értéke
-  // ~0,8·SE — ez alatt a „hasonlóság" a mérési hibán belüli megkülönböztet-
+  // ~0,8·SE – ez alatt a „hasonlóság" a mérési hibán belüli megkülönböztet-
   // hetetlenség, nem kiváló egyezés; eltérést pedig csak ~1,96·SE fölött
-  // állítunk. A SEM-szám a felületre nem kerül ki (2026-08-11 termékdöntés) —
+  // állítunk. A SEM-szám a felületre nem kerül ki (2026-08-11 termékdöntés) –
   // csak a címkéket kapuzza.
   const gapSe = diffStandardError(candidateForm);
   const gapNoiseFloor = gapSe * Math.sqrt(2 / Math.PI);
@@ -232,7 +232,7 @@ export default async function CandidateResultPage({
 
   // ÉRTÉKELŐ felület: a pár-hangnem a valencia-kapun (score-valence) ezzel a
   // kontextussal dől el. A jelölt-oldalon a feloldás-párok zöld „Erősség",
-  // a risk-párok narancs „Figyelendő" badge-et kapnak — a fordított skálát
+  // a risk-párok narancs „Figyelendő" badge-et kapnak – a fordított skálát
   // (Emocionalitás) érintő párok EGYIKBE SEM valók, azok semleges
   // „Jellemző mintázat" panelre kerülnek (tone: "note").
   const profileOutput = runProfileEngine(candidateScores, testType, "evaluative");
@@ -240,12 +240,12 @@ export default async function CandidateResultPage({
   // All high/low dims for the summary block.
   // E (Emocionalitás) FORDÍTOTT irányú: a magas pólus (érzelmi ráhangolódás)
   // NEM „erősség", az alacsony (érzelmi stabilitás) NEM „figyelendő". Ezért a
-  // valenciás erősség/figyelendő gyorsösszegzőből kizárjuk — különben egy
+  // valenciás erősség/figyelendő gyorsösszegzőből kizárjuk – különben egy
   // stabil, stressztűrő jelölt (E alacsony) stabilitása a narancs
   // „figyelendő" panelbe, egy reaktív jelölté a zöld „erősség" panelbe kerülne
   // (fordított döntéstámogatás). A pólus-tudatos dimenzió-szöveg lentebb külön,
   // helyesen jeleníti meg az emocionalitást.
-  // A szűrés a KANONIKUS valencia-kapun megy (score-valence.ts) — a korábbi
+  // A szűrés a KANONIKUS valencia-kapun megy (score-valence.ts) – a korábbi
   // kézi `d !== "E"` literál pontosan az a minta volt, amitől a szabály
   // felületenként szétcsúszott. Üres lista esetén a panel a
   // „kiegyensúlyozott profil" / „nincs figyelendő terület" szöveget adja,
@@ -305,7 +305,7 @@ export default async function CandidateResultPage({
     }
   }
 
-  // Gap analysis — sorted by absolute gap descending. Csak a jelöltnél TÉNYLEG
+  // Gap analysis – sorted by absolute gap descending. Csak a jelöltnél TÉNYLEG
   // mért dimenziókra: a hiányzó dim 0-ként −50 körüli hamis gapet adna.
   const gapAnalysis = teamAvg && presentDims.length > 0
     ? presentDims
@@ -319,8 +319,8 @@ export default async function CandidateResultPage({
         .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap))
     : null;
 
-  // Mért csapatszerepek — ha a jelölt kitöltötte az opcionális kérdőívet.
-  // Forrás-jelölés kötelező (mért vs. becsült) — termék-hitelességi elv.
+  // Mért csapatszerepek – ha a jelölt kitöltötte az opcionális kérdőívet.
+  // Forrás-jelölés kötelező (mért vs. becsült) – termék-hitelességi elv.
   const teamRoleSelections =
     (invite.result.teamRoleSelections as TeamRoleSelections | null) ?? null;
   const measuredRoles =
@@ -342,7 +342,7 @@ export default async function CandidateResultPage({
         backLabel={t("hiring.backHiring", locale)}
       />
 
-      {/* ═══ HERO — candidate (terrakotta) variáns ═══ */}
+      {/* ═══ HERO – candidate (terrakotta) variáns ═══ */}
       <SurfaceHero
         variant="candidate"
         eyebrow={(
@@ -451,7 +451,7 @@ export default async function CandidateResultPage({
                     <p key={d} className="text-sm text-ink">
                       <span className="font-semibold">{DIM_LABELS[d]?.[contentLocale] ?? d}</span>
                       <span className="text-ink-body">
-                        {" — "}{CATEGORY_LABELS.high[contentLocale]}
+                        {" – "}{CATEGORY_LABELS.high[contentLocale]}
                       </span>
                     </p>
                   ))
@@ -474,7 +474,7 @@ export default async function CandidateResultPage({
                     <p key={d} className="text-sm text-ink">
                       <span className="font-semibold">{DIM_LABELS[d]?.[contentLocale] ?? d}</span>
                       <span className="text-ink-body">
-                        {" — "}{CATEGORY_LABELS.low[contentLocale]}
+                        {" – "}{CATEGORY_LABELS.low[contentLocale]}
                       </span>
                     </p>
                   ))
@@ -496,11 +496,11 @@ export default async function CandidateResultPage({
                   gapAnalysis.reduce((sum, g) => sum + Math.abs(g.gap), 0) / gapAnalysis.length
                 );
                 // Mérési-hiba-tudatos címkézés: a korábbi nyers vágások
-                // (<10 „kiváló", <20 „jó") a mérési hibán BELÜL jártak — a mért
+                // (<10 „kiváló", <20 „jó") a mérési hibán BELÜL jártak – a mért
                 // SEM≈7,6 mellett azonos valódi profilok is ~8-9 pontos átlagos
                 // |gapet| adnak. Eltérést csak akkor állítunk, ha legalább egy
                 // dimenzió gapje ~1,96·SE fölött van; a zaj-padló alatti
-                // hasonlóság pedig „a mérési hibán belül egyezik" — nem
+                // hasonlóság pedig „a mérési hibán belül egyezik" – nem
                 // hamis precizitású „kiváló egyezés".
                 const significantGaps = gapAnalysis.filter(
                   (g) => Math.abs(g.gap) > assertableGap,
@@ -577,7 +577,7 @@ export default async function CandidateResultPage({
                   className="rounded-xl border border-warm-mid p-4 transition hover:bg-cream/50"
                 >
                   <div className="mb-2 flex items-center gap-3">
-                    {/* HEXACO-betű, NEM a belső dim-kód (H/E/…) — a
+                    {/* HEXACO-betű, NEM a belső dim-kód (H/E/…) – a
                         teljes címke mellette áll, a badge a kanonikus betű. */}
                     <div
                       className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg text-micro font-bold text-white"
@@ -636,7 +636,7 @@ export default async function CandidateResultPage({
             </h2>
 
             <div className="grid gap-6 md:grid-cols-2">
-              {/* Radar chart — candidate vs team overlay */}
+              {/* Radar chart – candidate vs team overlay */}
               <div className="flex flex-col items-center">
                 <div className="w-full max-w-[280px]">
                   <RadarChart
@@ -664,7 +664,7 @@ export default async function CandidateResultPage({
                 <div className="space-y-2">
                   {gapAnalysis.map((g) => (
                     <div key={g.dim} className="flex items-center gap-3">
-                      {/* HEXACO-betű, nem a belső kód — a címke mellette áll. */}
+                      {/* HEXACO-betű, nem a belső kód – a címke mellette áll. */}
                       <div
                         className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-micro font-bold text-white"
                         style={{ background: DIM_COLORS[g.dim] }}
@@ -718,7 +718,7 @@ export default async function CandidateResultPage({
         </DashboardPanel>
       )}
 
-      {/* Mért csapatszerepek — opcionális 2. lépés eredménye */}
+      {/* Mért csapatszerepek – opcionális 2. lépés eredménye */}
       {measuredRoles && measuredRoles.length > 0 && (
         <DashboardPanel className="p-6 md:p-8">
             <div className="mb-5 flex flex-wrap items-center gap-2">
@@ -730,7 +730,7 @@ export default async function CandidateResultPage({
                   {t("hiring.teamRolesTitle", locale)}
                 </h2>
               </div>
-              {/* Forrás-jelölés (mért vs. becsült) — termék-hitelességi elv */}
+              {/* Forrás-jelölés (mért vs. becsült) – termék-hitelességi elv */}
               <span className="ml-auto rounded-full bg-sage/10 px-2.5 py-1 text-micro font-semibold uppercase tracking-wide text-sage-dark">
                 {t("hiring.measuredBadge", locale)}
               </span>
@@ -813,7 +813,7 @@ export default async function CandidateResultPage({
                 );
               })}
 
-              {/* Figyelendő pair-ek (tone: "risk") — valenciát hordozó
+              {/* Figyelendő pair-ek (tone: "risk") – valenciát hordozó
                   dimenziókból; a fordított skálájú párok NEM ide jönnek. */}
               {profileOutput.block7Pairs.map((pair) => {
                 const narrative = RESOLUTION_NARRATIVES[pair.contentKey]?.[contentLocale] ?? "";
@@ -849,7 +849,7 @@ export default async function CandidateResultPage({
                 );
               })}
 
-              {/* Semleges mintázatok (tone: "note") — a fordított skálájú
+              {/* Semleges mintázatok (tone: "note") – a fordított skálájú
                   (Emocionalitás) párok. Sem erősség, sem figyelendő: leíró
                   mintázat + a gyakorlati tanács („így érdemes ezzel
                   dolgozni"), ami korábban egyáltalán nem jutott ki erre a
@@ -880,7 +880,7 @@ export default async function CandidateResultPage({
                         </span>
                       </div>
                       {/* TODO(koordinator): a badge-kulcs a results-névtérben él
-                          (i18n/results.ts) — az org.ts a párhuzamos kör másik
+                          (i18n/results.ts) – az org.ts a párhuzamos kör másik
                           gazdájánál van; érdemes később `hiring.patternBadge`
                           néven átvinni. */}
                       <span className="rounded-full bg-surface-card px-2 py-0.5 text-micro font-semibold text-ink-body">

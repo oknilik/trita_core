@@ -84,16 +84,16 @@ const DYNAMICS_SEGMENTS = [
     en: "Aligned",
     explain: {
       profile_estimate: {
-        hu: "hasonló munkastílusú páros — kevés egyeztetéssel is gördülékenyen dolgoznak együtt.",
-        en: "similar working styles — they collaborate smoothly with little alignment effort.",
+        hu: "hasonló munkastílusú páros – kevés egyeztetéssel is gördülékenyen dolgoznak együtt.",
+        en: "similar working styles – they collaborate smoothly with little alignment effort.",
       },
       trust_round: {
-        hu: "erős, kölcsönös bizalmi kapcsolat — a mért bizalmi kör szerint gördülékeny az együttműködésük.",
-        en: "a strong, mutual trust connection — per the measured trust round, their collaboration runs smoothly.",
+        hu: "erős, kölcsönös bizalmi kapcsolat – a mért bizalmi kör szerint gördülékeny az együttműködésük.",
+        en: "a strong, mutual trust connection – per the measured trust round, their collaboration runs smoothly.",
       },
       mixed: {
-        hu: "összehangolt páros — mért erős bizalom vagy hasonló munkastílus (a forrás páronként eltér).",
-        en: "an aligned pair — measured strong trust or similar working styles (the source varies by pair).",
+        hu: "összehangolt páros – mért erős bizalom vagy hasonló munkastílus (a forrás páronként eltér).",
+        en: "an aligned pair – measured strong trust or similar working styles (the source varies by pair).",
       },
     },
   },
@@ -105,16 +105,16 @@ const DYNAMICS_SEGMENTS = [
     en: "Complementary",
     explain: {
       profile_estimate: {
-        hu: "eltérő, de összeférő stílusok — más-más helyzetben erősek, jó munkamegosztás-alap.",
-        en: "different but compatible styles — strong in different situations, a good basis for dividing work.",
+        hu: "eltérő, de összeférő stílusok – más-más helyzetben erősek, jó munkamegosztás-alap.",
+        en: "different but compatible styles – strong in different situations, a good basis for dividing work.",
       },
       trust_round: {
-        hu: "közepes mért bizalom — működő kapcsolat, amelynek van tere mélyülni.",
-        en: "moderate measured trust — a working relationship with room to deepen.",
+        hu: "közepes mért bizalom – működő kapcsolat, amelynek van tere mélyülni.",
+        en: "moderate measured trust – a working relationship with room to deepen.",
       },
       mixed: {
-        hu: "köztes páros — közepes mért bizalom vagy eltérő, de összeférő stílusok (a forrás páronként eltér).",
-        en: "an in-between pair — moderate measured trust or different but compatible styles (the source varies by pair).",
+        hu: "köztes páros – közepes mért bizalom vagy eltérő, de összeférő stílusok (a forrás páronként eltér).",
+        en: "an in-between pair – moderate measured trust or different but compatible styles (the source varies by pair).",
       },
     },
   },
@@ -126,16 +126,16 @@ const DYNAMICS_SEGMENTS = [
     en: "Friction potential",
     explain: {
       profile_estimate: {
-        hu: "nagy munkastílus-különbség (pl. lelkiismeretesség, kommunikáció) — tisztázott normák nélkül feszültségforrás lehet. Nem jelent tényleges konfliktust.",
-        en: "big working-style differences (e.g. structure, communication) — a potential source of tension without agreed norms. It does not mean actual conflict.",
+        hu: "nagy munkastílus-különbség (pl. lelkiismeretesség, kommunikáció) – tisztázott normák nélkül feszültségforrás lehet. Nem jelent tényleges konfliktust.",
+        en: "big working-style differences (e.g. structure, communication) – a potential source of tension without agreed norms. It does not mean actual conflict.",
       },
       trust_round: {
-        hu: "alacsony mért bizalom a párban — figyelmet érdemlő kapcsolat. Nem jelent tényleges konfliktust.",
-        en: "low measured trust in the pair — a relationship worth attention. It does not mean actual conflict.",
+        hu: "alacsony mért bizalom a párban – figyelmet érdemlő kapcsolat. Nem jelent tényleges konfliktust.",
+        en: "low measured trust in the pair – a relationship worth attention. It does not mean actual conflict.",
       },
       mixed: {
-        hu: "feszültség-jelzés — alacsony mért bizalom vagy nagy munkastílus-különbség (a forrás páronként eltér). Nem jelent tényleges konfliktust.",
-        en: "a tension signal — low measured trust or big working-style differences (the source varies by pair). It does not mean actual conflict.",
+        hu: "feszültség-jelzés – alacsony mért bizalom vagy nagy munkastílus-különbség (a forrás páronként eltér). Nem jelent tényleges konfliktust.",
+        en: "a tension signal – low measured trust or big working-style differences (the source varies by pair). It does not mean actual conflict.",
       },
     },
   },
@@ -291,7 +291,7 @@ function KpiTile({
   );
 }
 
-// Számozott szekció-fejléc egy soros „mit nézz itt" alcímmel — a riport
+// Számozott szekció-fejléc egy soros „mit nézz itt" alcímmel – a riport
 // olvasási útvonalát vezeti (a sorszám a renderelt szekciók sorrendjét követi).
 function SectionHead({
   no,
@@ -315,7 +315,7 @@ function SectionHead({
   );
 }
 
-// A 30/60/90 akcióterv-oszlopok akcentus-színei — idővonal-érzet.
+// A 30/60/90 akcióterv-oszlopok akcentus-színei – idővonal-érzet.
 const TIMEFRAME_TONES: Record<
   "30" | "60" | "90",
   { dot: string; text: string; edge: string }
@@ -336,7 +336,7 @@ export function TeamReportView({
 }) {
   const loc: Locale = isHu ? "hu" : "en";
   // Angol lekérésnél a JÓVÁHAGYOTT tanácsadói fordítás mezői lépnek életbe
-  // (mezőnkénti fallback az eredetire) — ld. lib/team-report-i18n.ts.
+  // (mezőnkénti fallback az eredetire) – ld. lib/team-report-i18n.ts.
   const report = localizeTeamReport(reportInput, isHu);
   const agg = report.aggregates;
   const isDraft = report.status === "DRAFT";
@@ -354,9 +354,9 @@ export function TeamReportView({
   const dynamicsTotal = agg?.dynamics
     ? agg.dynamics.alignedCount + agg.dynamics.complementaryCount + agg.dynamics.frictionCount
     : 0;
-  // Dinamika-forrás — MINDEN hasonlóság-nyelvű értelmezés ezen kapuzik:
+  // Dinamika-forrás – MINDEN hasonlóság-nyelvű értelmezés ezen kapuzik:
   // mért bizalmi kör (trust_round) éle bizalmat kódol, nem munkastílus-
-  // hasonlóságot. Régi pillanatképben nincs source mező — azok a mért kör
+  // hasonlóságot. Régi pillanatképben nincs source mező – azok a mért kör
   // előtti korból valók, ott a profil-becslés a helyes olvasat.
   const dynSource: DynamicsSourceKind =
     agg?.dynamics?.source ?? "profile_estimate";
@@ -373,13 +373,13 @@ export function TeamReportView({
       }))
     : [];
 
-  // A renderelt szekciók futó sorszáma — a fejlécekben olvasási útvonalat ad.
+  // A renderelt szekciók futó sorszáma – a fejlécekben olvasási útvonalat ad.
   let sectionCounter = 0;
   const secNo = () => String(++sectionCounter).padStart(2, "0");
 
   return (
     <div className="flex flex-col gap-8 md:gap-10">
-      {/* Fejléc + KPI-sáv — gradiens sáv adja meg a riport alaphangját */}
+      {/* Fejléc + KPI-sáv – gradiens sáv adja meg a riport alaphangját */}
       <DashboardPanel className="overflow-hidden p-0">
         <div
           className={`p-5 md:p-6 ${
@@ -392,7 +392,7 @@ export function TeamReportView({
             <div>
               <SectionEyebrow>
                 {isDraft
-                  ? isHu ? "csapatkép — előnézet" : "team picture — preview"
+                  ? isHu ? "csapatkép – előnézet" : "team picture – preview"
                   : isHu ? "tanácsadó által jóváhagyott csapatkép" : "consultant-approved team picture"}
               </SectionEyebrow>
               <h2 className="mt-1 font-fraunces text-2xl text-ink">
@@ -411,7 +411,7 @@ export function TeamReportView({
               </span>
             ) : (
               <span className="flex flex-wrap items-center gap-2">
-                {/* P1.1: nyomtatható riport a vezetői debriefhez — csak
+                {/* P1.1: nyomtatható riport a vezetői debriefhez – csak
                     publikált állapotban, a lokalizált riport-objektumból. */}
                 <TeamReportPdfButton report={report} isHu={isHu} />
                 <span className="rounded-full bg-[var(--color-surface-card)]/80 px-3 py-1 text-xs font-semibold text-state-success-fg shadow-sm ring-1 ring-state-success-border">
@@ -502,7 +502,7 @@ export function TeamReportView({
                         </li>
                       ))}
                     </ol>
-                  ) : <p className="mt-3 text-xs text-muted">—</p>}
+                  ) : <p className="mt-3 text-xs text-muted">–</p>}
                 </div>
               ))}
               <div className="border-l-4 border-l-sage-soft p-5">
@@ -519,7 +519,7 @@ export function TeamReportView({
                       </li>
                     ))}
                   </ol>
-                ) : <p className="mt-3 text-xs text-muted">—</p>}
+                ) : <p className="mt-3 text-xs text-muted">–</p>}
               </div>
             </div>
           </DashboardPanel>
@@ -543,8 +543,8 @@ export function TeamReportView({
             no={secNo()}
             label={isHu ? "Aggregált csapatprofil" : "Aggregate team profile"}
             subtitle={isHu
-              ? "A csapat együttes karaktere — átlagok és a belső sokféleség."
-              : "The team's collective character — averages and internal diversity."}
+              ? "A csapat együttes karaktere – átlagok és a belső sokféleség."
+              : "The team's collective character – averages and internal diversity."}
           />
           <DashboardPanel className="p-6">
             {agg.pattern && (
@@ -566,7 +566,7 @@ export function TeamReportView({
                   ) : null}
                 </div>
                 {/* Stabilitás-jelzés a mintázat-motorból: küszöb-közeli tengelynél
-                    a mintázat kontextusfüggő — a tanácsadói debrifen ezt ki kell
+                    a mintázat kontextusfüggő – a tanácsadói debrifen ezt ki kell
                     mondani, ezért a riportban is látszania kell. */}
                 {agg.pattern.stability && agg.pattern.stability !== "stabil" && agg.pattern.stabilityNote ? (
                   <div className="mt-3 rounded-lg bg-state-warning-bg px-3 py-2 text-xs text-bronze-700">
@@ -591,8 +591,8 @@ export function TeamReportView({
                 agg.pattern.tensionMemberCount > 0 ? (
                   <p className="mt-2 text-micro text-muted">
                     {isHu
-                      ? `${agg.pattern.tensionMemberCount} tagnál 20+ pontos egyéni eltérés van a csapatmintától — a minta rájuk kevésbé illik (név nélkül, az egyéni riport tárgya).`
-                      : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern — the label fits them less (no names; that belongs to individual reports).`}
+                      ? `${agg.pattern.tensionMemberCount} tagnál 20+ pontos egyéni eltérés van a csapatmintától – a minta rájuk kevésbé illik (név nélkül, az egyéni riport tárgya).`
+                      : `${agg.pattern.tensionMemberCount} member(s) deviate 20+ points from the team pattern – the label fits them less (no names; that belongs to individual reports).`}
                   </p>
                 ) : null}
                 <p className="mt-3 border-t border-sand pt-3 text-micro leading-relaxed text-muted">
@@ -639,7 +639,7 @@ export function TeamReportView({
                             }}
                           />
                         </div>
-                        {/* Csak az átlag-szám látszik — a ±szórás-szám
+                        {/* Csak az átlag-szám látszik – a ±szórás-szám
                             2026-08-11-i termékdöntéssel lekerült a felületről;
                             a szórást a halvány sáv hordozza vizuálisan. */}
                         <span className="w-14 shrink-0 text-right font-mono text-xs text-ink">
@@ -750,7 +750,7 @@ export function TeamReportView({
             {agg.roleGaps && agg.roleGaps.length > 0 && (
               <div className="mt-4 border-t border-sand pt-4">
                 <p className="mb-2 text-caption font-semibold text-ink">
-                  {isHu ? "Valódi hiányok — mit jelenthet" : "True gaps — what it may mean"}
+                  {isHu ? "Valódi hiányok – mit jelenthet" : "True gaps – what it may mean"}
                 </p>
                 <ul className="flex flex-col gap-1">
                   {agg.roleGaps.map((role) => (
@@ -764,7 +764,7 @@ export function TeamReportView({
                       </span>
                       {ROLE_GAP_HINTS[role] && (
                         <span className="text-muted">
-                          {" — "}
+                          {" – "}
                           {isHu ? ROLE_GAP_HINTS[role].hu : ROLE_GAP_HINTS[role].en}
                         </span>
                       )}
@@ -784,8 +784,8 @@ export function TeamReportView({
               <div className="mt-4 border-t border-sand pt-4">
                 <p className="mb-2 text-caption font-semibold text-ink">
                   {isHu
-                    ? "Csapatkép — társértékelésből (névtelen, összesített)"
-                    : "Team view — from peer feedback (anonymous, aggregated)"}
+                    ? "Csapatkép – társértékelésből (névtelen, összesített)"
+                    : "Team view – from peer feedback (anonymous, aggregated)"}
                 </p>
                 <p className="text-xs leading-relaxed text-ink-body">
                   {isHu
@@ -795,8 +795,8 @@ export function TeamReportView({
                     <>
                       {" "}
                       {isHu
-                        ? `Önkép–csapatkép összevetés ${agg.peerRoles.comparedCount} tagnál: ${agg.peerRoles.mismatchCount} eltéréssel — az eltérések a vezetői debrief kiemelt beszélgetőpontjai.`
-                        : `Self-image vs. team view compared for ${agg.peerRoles.comparedCount} members: ${agg.peerRoles.mismatchCount} with differences — key talking points for the leadership debrief.`}
+                        ? `Önkép–csapatkép összevetés ${agg.peerRoles.comparedCount} tagnál: ${agg.peerRoles.mismatchCount} eltéréssel – az eltérések a vezetői debrief kiemelt beszélgetőpontjai.`
+                        : `Self-image vs. team view compared for ${agg.peerRoles.comparedCount} members: ${agg.peerRoles.mismatchCount} with differences – key talking points for the leadership debrief.`}
                     </>
                   )}
                 </p>
@@ -834,35 +834,35 @@ export function TeamReportView({
             subtitle={
               dynSource === "trust_round"
                 ? isHu
-                  ? "Milyen erősek a felmért munkakapcsolatok — összkép, egyéni párok nélkül."
-                  : "How strong the assessed working relationships are — an overview, without individual pairs."
+                  ? "Milyen erősek a felmért munkakapcsolatok – összkép, egyéni párok nélkül."
+                  : "How strong the assessed working relationships are – an overview, without individual pairs."
                 : dynSource === "mixed"
                   ? isHu
-                    ? "A felmért kapcsolatok együttműködési képe — részben mért, részben becsült; összkép, egyéni párok nélkül."
-                    : "The collaboration picture across the assessed relationships — partly measured, partly estimated; an overview, without individual pairs."
+                    ? "A felmért kapcsolatok együttműködési képe – részben mért, részben becsült; összkép, egyéni párok nélkül."
+                    : "The collaboration picture across the assessed relationships – partly measured, partly estimated; an overview, without individual pairs."
                   : isHu
-                    ? "Mennyire hasonlóan dolgoznak a felmért kapcsolatok tagjai — összkép, egyéni párok nélkül."
-                    : "How similarly people work across the assessed relationships — an overview, without individual pairs."
+                    ? "Mennyire hasonlóan dolgoznak a felmért kapcsolatok tagjai – összkép, egyéni párok nélkül."
+                    : "How similarly people work across the assessed relationships – an overview, without individual pairs."
             }
           />
           <DashboardPanel className="p-6">
             <p className="mb-3 text-sm text-ink-body">
               {/* Forrás-hű fejléc: mért bizalmi kör élei NEM munkastílus-
-                  összevetésből jönnek — annak nevezni hamis attribúció.
+                  összevetésből jönnek – annak nevezni hamis attribúció.
                   A darabszám FELMÉRT KAPCSOLAT (él), nem az összes tagpár:
                   profil-él csak felmért tagok közt épül, a kapcsolat nélküli
                   (disconnected) mért pár pedig nem kerül a képbe. */}
               {dynSource === "trust_round"
                 ? isHu
-                  ? `A csapat ${dynamicsTotal} felmért kapcsolatának mért bizalmi képe — milyen erős és kölcsönös a két ember munkakapcsolata.`
-                  : `A measured trust picture of the team's ${dynamicsTotal} assessed relationships — how strong and mutual each working relationship is.`
+                  ? `A csapat ${dynamicsTotal} felmért kapcsolatának mért bizalmi képe – milyen erős és kölcsönös a két ember munkakapcsolata.`
+                  : `A measured trust picture of the team's ${dynamicsTotal} assessed relationships – how strong and mutual each working relationship is.`
                 : dynSource === "mixed"
                   ? isHu
-                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának képe — részben mért bizalmi körből, részben profil-alapú munkastílus-összevetésből.`
-                    : `The picture of the team's ${dynamicsTotal} assessed relationships — partly from a measured trust round, partly from a profile-based working-style comparison.`
+                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának képe – részben mért bizalmi körből, részben profil-alapú munkastílus-összevetésből.`
+                    : `The picture of the team's ${dynamicsTotal} assessed relationships – partly from a measured trust round, partly from a profile-based working-style comparison.`
                   : isHu
-                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának munkastílus-összevetése — mennyire hasonlóan vagy eltérően dolgozik két ember.`
-                    : `A working-style comparison of the team's ${dynamicsTotal} assessed relationships — how similarly or differently two people work.`}
+                    ? `A csapat ${dynamicsTotal} felmért kapcsolatának munkastílus-összevetése – mennyire hasonlóan vagy eltérően dolgozik két ember.`
+                    : `A working-style comparison of the team's ${dynamicsTotal} assessed relationships – how similarly or differently two people work.`}
             </p>
 
             <div className="flex h-5 w-full gap-[2px] overflow-hidden rounded-full">
@@ -897,7 +897,7 @@ export function TeamReportView({
               })}
             </div>
 
-            {/* A kategória-magyarázó alapból csukva — a sűrűség csökkentésére. */}
+            {/* A kategória-magyarázó alapból csukva – a sűrűség csökkentésére. */}
             <details className="mt-4 rounded-[12px] border border-sand bg-cream/40">
               <summary className="cursor-pointer select-none px-4 py-2.5 text-xs font-semibold text-ink-body transition-colors hover:text-ink">
                 {isHu ? "Mit jelentenek a kategóriák?" : "What do the categories mean?"}
@@ -937,32 +937,32 @@ export function TeamReportView({
                   if (frictionShare >= 0.4) {
                     if (dynSource === "trust_round") {
                       return isHu
-                        ? "A párok jelentős részénél alacsony a mért bizalom. Érdemes a kapcsolatok minőségével közvetlenül foglalkozni — közös munka-alkalmak, világos elvárások és vezetői figyelem erősítik a hálót."
-                        : "A large share of pairs shows low measured trust. Work on relationship quality directly — shared working sessions, clear expectations and leadership attention strengthen the network.";
+                        ? "A párok jelentős részénél alacsony a mért bizalom. Érdemes a kapcsolatok minőségével közvetlenül foglalkozni – közös munka-alkalmak, világos elvárások és vezetői figyelem erősítik a hálót."
+                        : "A large share of pairs shows low measured trust. Work on relationship quality directly – shared working sessions, clear expectations and leadership attention strengthen the network.";
                     }
                     if (dynSource === "mixed") {
                       return isHu
-                        ? "A párok jelentős részénél feszültségre utal a kép — részben alacsony mért bizalom, részben nagy munkastílus-különbség. Tisztázott működési normák és a gyengébb kapcsolatok célzott erősítése együtt segít."
-                        : "A large share of pairs signals tension — partly low measured trust, partly big working-style differences. Agreed working norms together with targeted strengthening of the weaker relationships help.";
+                        ? "A párok jelentős részénél feszültségre utal a kép – részben alacsony mért bizalom, részben nagy munkastílus-különbség. Tisztázott működési normák és a gyengébb kapcsolatok célzott erősítése együtt segít."
+                        : "A large share of pairs signals tension – partly low measured trust, partly big working-style differences. Agreed working norms together with targeted strengthening of the weaker relationships help.";
                     }
                     return isHu
-                      ? "A párok jelentős részénél nagy a munkastílus-különbség. Tisztázott működési normák (döntéshozatal, határidő-kezelés, kommunikációs csatornák) nélkül ez visszatérő konfliktusforrás lehet — normákkal viszont a sokféleség szélesebb perspektívát ad."
-                      : "A large share of pairs shows big working-style differences. Without agreed working norms (decision-making, deadlines, communication channels) this can become a recurring source of conflict — with norms, the diversity brings broader perspective.";
+                      ? "A párok jelentős részénél nagy a munkastílus-különbség. Tisztázott működési normák (döntéshozatal, határidő-kezelés, kommunikációs csatornák) nélkül ez visszatérő konfliktusforrás lehet – normákkal viszont a sokféleség szélesebb perspektívát ad."
+                      : "A large share of pairs shows big working-style differences. Without agreed working norms (decision-making, deadlines, communication channels) this can become a recurring source of conflict – with norms, the diversity brings broader perspective.";
                   }
                   if (alignedShare >= 0.5) {
                     if (dynSource === "trust_round") {
                       return isHu
-                        ? "A párok többségénél erős, kölcsönös a mért bizalom — stabil együttműködési alap, amire építeni lehet. Ez a bizalom erejét mutatja, nem azt, hogy a tagok személyisége hasonló."
-                        : "Most pairs show strong, mutual measured trust — a stable collaboration base to build on. This reflects the strength of trust, not that members' personalities are similar.";
+                        ? "A párok többségénél erős, kölcsönös a mért bizalom – stabil együttműködési alap, amire építeni lehet. Ez a bizalom erejét mutatja, nem azt, hogy a tagok személyisége hasonló."
+                        : "Most pairs show strong, mutual measured trust – a stable collaboration base to build on. This reflects the strength of trust, not that members' personalities are similar.";
                     }
                     if (dynSource === "mixed") {
                       return isHu
-                        ? "A párok többsége összehangoltan működik — részben mért erős bizalom, részben hasonló munkastílus-becslés alapján. A vegyes adatforrásból profil-hasonlóságra (közös vakfoltra) nem következtetünk."
-                        : "Most pairs operate in an aligned way — partly from measured strong trust, partly from similar working-style estimates. From this mixed data source we do not infer profile similarity (shared blind spots).";
+                        ? "A párok többsége összehangoltan működik – részben mért erős bizalom, részben hasonló munkastílus-becslés alapján. A vegyes adatforrásból profil-hasonlóságra (közös vakfoltra) nem következtetünk."
+                        : "Most pairs operate in an aligned way – partly from measured strong trust, partly from similar working-style estimates. From this mixed data source we do not infer profile similarity (shared blind spots).";
                     }
                     return isHu
-                      ? "A párok többsége hasonló munkastílusú: gyors összecsiszolódás, kevés belső súrlódás várható. A kockázat a közös vakfolt — amit senki sem vesz észre a csapatban, az kimaradhat; külső visszajelzés tudatos behozása segít."
-                      : "Most pairs share a similar working style: quick gelling and little internal friction expected. The risk is shared blind spots — what no one in the team notices may get missed; deliberately inviting outside feedback helps.";
+                      ? "A párok többsége hasonló munkastílusú: gyors összecsiszolódás, kevés belső súrlódás várható. A kockázat a közös vakfolt – amit senki sem vesz észre a csapatban, az kimaradhat; külső visszajelzés tudatos behozása segít."
+                      : "Most pairs share a similar working style: quick gelling and little internal friction expected. The risk is shared blind spots – what no one in the team notices may get missed; deliberately inviting outside feedback helps.";
                   }
                   if (dynSource === "trust_round") {
                     return isHu
@@ -971,16 +971,16 @@ export function TeamReportView({
                   }
                   if (dynSource === "mixed") {
                     return isHu
-                      ? "A kapcsolati kép vegyes — mért és becsült jelzések egyaránt. Tudatos szereposztás, világos átadási pontok és a gyengébb kapcsolatok erősítése segíti, hogy az eltérések erősséggé forduljanak."
-                      : "The relationship picture is mixed — both measured and estimated signals. Deliberate role division, clear hand-off points and strengthening the weaker relationships help turn differences into strengths.";
+                      ? "A kapcsolati kép vegyes – mért és becsült jelzések egyaránt. Tudatos szereposztás, világos átadási pontok és a gyengébb kapcsolatok erősítése segíti, hogy az eltérések erősséggé forduljanak."
+                      : "The relationship picture is mixed – both measured and estimated signals. Deliberate role division, clear hand-off points and strengthening the weaker relationships help turn differences into strengths.";
                   }
                   return isHu
-                    ? "A csapat vegyes profilú: az eltérő munkastílusok tudatos szereposztással és világos átadási pontokkal erősséggé fordíthatók — enélkül koordinációs többletköltségként jelentkeznek."
-                    : "The team has a mixed profile: differing working styles can become a strength with deliberate role division and clear hand-off points — without those, they show up as coordination overhead.";
+                    ? "A csapat vegyes profilú: az eltérő munkastílusok tudatos szereposztással és világos átadási pontokkal erősséggé fordíthatók – enélkül koordinációs többletköltségként jelentkeznek."
+                    : "The team has a mixed profile: differing working styles can become a strength with deliberate role division and clear hand-off points – without those, they show up as coordination overhead.";
                 })()}
               </p>
               {/* Dimenzió-attribúció csak profil-alapú (vagy részben az)
-                  képnél — tisztán mért bizalmi él nem dimenzió-eltérésből
+                  képnél – tisztán mért bizalmi él nem dimenzió-eltérésből
                   jön, arra a szórás-magyarázat hamis ok-tulajdonítás lenne. */}
               {dynSource !== "trust_round" && agg.dynamics.topFrictionDims.length > 0 && (
                 <p className="mt-2 text-xs text-ink-body">
@@ -991,8 +991,8 @@ export function TeamReportView({
                       .join(", ")}
                   </span>
                   {isHu
-                    ? " — ezekben a legnagyobb a csapaton belüli szórás, itt érdemes közös minimum-szabályokat rögzíteni."
-                    : " — these dimensions show the widest in-team spread; agree on shared minimum rules here."}
+                    ? " – ezekben a legnagyobb a csapaton belüli szórás, itt érdemes közös minimum-szabályokat rögzíteni."
+                    : " – these dimensions show the widest in-team spread; agree on shared minimum rules here."}
                 </p>
               )}
             </div>
@@ -1002,13 +1002,13 @@ export function TeamReportView({
                 ? isHu ? "Mért bizalmi körön (360°) alapul." : "Based on a measured trust round (360°)."
                 : agg.dynamics.source === "mixed"
                   ? isHu ? "Részben mért bizalmi kör, részben profil-alapú becslés." : "Partly a measured trust round, partly profile-based estimate."
-                  : isHu ? "Profil-alapú becslés — kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate — pair-level data is not shown."}
+                  : isHu ? "Profil-alapú becslés – kapcsolatpáronkénti adatok nem jelennek meg." : "Profile-based estimate – pair-level data is not shown."}
             </p>
           </DashboardPanel>
         </section>
       )}
 
-      {/* Kapcsolati háló kiemelések — hub / beágyazatlan tag a debriefhez.
+      {/* Kapcsolati háló kiemelések – hub / beágyazatlan tag a debriefhez.
           Summary-orientált (viz-policy): névvel jelölt tagok, nem külön chart. */}
       {agg?.trustHighlights &&
         (agg.trustHighlights.hubs.length > 0 ||
@@ -1016,7 +1016,7 @@ export function TeamReportView({
           <section>
             <SectionHead
               no={secNo()}
-              label={isHu ? "Kapcsolati háló — kiemelések" : "Relationship network — highlights"}
+              label={isHu ? "Kapcsolati háló – kiemelések" : "Relationship network – highlights"}
               subtitle={isHu
                 ? "Ki köti össze a csapatot, és ki nincs még beágyazva."
                 : "Who connects the team, and who isn't embedded yet."}
@@ -1025,8 +1025,8 @@ export function TeamReportView({
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm text-ink-body">
                   {isHu
-                    ? "Kik viszik a csapat kapcsolati szövetét — a tanácsadói debrief két kiemelt beszélgetőpontja."
-                    : "Who carries the team's relational fabric — two key talking points for the consultant debrief."}
+                    ? "Kik viszik a csapat kapcsolati szövetét – a tanácsadói debrief két kiemelt beszélgetőpontja."
+                    : "Who carries the team's relational fabric – two key talking points for the consultant debrief."}
                 </p>
                 {agg.trustHighlights.source === "trust_round" ? (
                   <span className="rounded-full bg-sage/15 px-2.5 py-1 text-note font-semibold text-sage-dark">
@@ -1064,11 +1064,11 @@ export function TeamReportView({
                     <p className="mt-2 text-xs leading-relaxed text-ink-body">
                       {agg.trustHighlights.source === "trust_round"
                         ? isHu
-                          ? "A legtöbb erős, kölcsönös bizalmi kapcsolattal — rájuk támaszkodik a csapat információáramlása és összetartása."
-                          : "With the most strong, mutual trust connections — the team's information flow and cohesion rest on them."
+                          ? "A legtöbb erős, kölcsönös bizalmi kapcsolattal – rájuk támaszkodik a csapat információáramlása és összetartása."
+                          : "With the most strong, mutual trust connections – the team's information flow and cohesion rest on them."
                         : isHu
-                          ? "A legtöbb hasonló-profilú kapcsolattal (profil-alapú becslés) — mért bizalmi kör pontosítaná a képet."
-                          : "With the most similar-profile connections (profile-based estimate) — a measured trust round would sharpen this."}
+                          ? "A legtöbb hasonló-profilú kapcsolattal (profil-alapú becslés) – mért bizalmi kör pontosítaná a képet."
+                          : "With the most similar-profile connections (profile-based estimate) – a measured trust round would sharpen this."}
                     </p>
                   </div>
                 )}
@@ -1096,8 +1096,8 @@ export function TeamReportView({
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-ink-body">
                       {isHu
-                        ? "Több mért kapcsolatuk van, de egyetlen erős bizalmi él nélkül — érdemes megnézni, mi tartja őket a háló szélén. Nem teljesítmény-ítélet."
-                        : "They have several measured connections but no strong trust edge — worth exploring what keeps them at the network's edge. Not a performance judgment."}
+                        ? "Több mért kapcsolatuk van, de egyetlen erős bizalmi él nélkül – érdemes megnézni, mi tartja őket a háló szélén. Nem teljesítmény-ítélet."
+                        : "They have several measured connections but no strong trust edge – worth exploring what keeps them at the network's edge. Not a performance judgment."}
                     </p>
                   </div>
                 )}
@@ -1125,8 +1125,8 @@ export function TeamReportView({
                           : ""
                       }. Visibility matches the dynamics map; individual answers cannot be traced back.`
                   : isHu
-                    ? "Profil-alapú becslés — bizalmi kör (360°) indításával mért adatra cserélhető, ami a beágyazatlan-tag felismerést is elérhetővé teszi."
-                    : "Profile-based estimate — running a 360° trust round replaces it with measured data and also unlocks not-yet-embedded member detection."}
+                    ? "Profil-alapú becslés – bizalmi kör (360°) indításával mért adatra cserélhető, ami a beágyazatlan-tag felismerést is elérhetővé teszi."
+                    : "Profile-based estimate – running a 360° trust round replaces it with measured data and also unlocks not-yet-embedded member detection."}
               </p>
             </DashboardPanel>
           </section>
@@ -1142,8 +1142,8 @@ export function TeamReportView({
             no={secNo()}
             label={isHu ? "Csapat nyomás alatt" : "Team under pressure"}
             subtitle={isHu
-              ? "Békeidőben erősség — terhelés alatt összeadódó kollektív minta lehet."
-              : "A strength in calm times — under load it can compound into a collective pattern."}
+              ? "Békeidőben erősség – terhelés alatt összeadódó kollektív minta lehet."
+              : "A strength in calm times – under load it can compound into a collective pattern."}
           />
           <DashboardPanel className="p-6">
             <div className="flex flex-col gap-4">
@@ -1169,7 +1169,7 @@ export function TeamReportView({
                         style={{ backgroundColor: DIM_COLORS[c.dim] ?? "var(--color-sage)" }}
                       />
                       <p className="text-sm font-semibold text-ink">
-                        {dimLabel} —{" "}
+                        {dimLabel} –{" "}
                         {c.pole === "polarized"
                           ? t("teamComp.polePolarized", loc)
                           : c.pole === "high"
@@ -1189,14 +1189,14 @@ export function TeamReportView({
             </div>
             <p className="mt-4 text-micro text-muted">
               {isHu
-                ? "Önértékelésekből becsült kollektív minta — hipotézis, nem diagnózis. Kérdezd meg a vezetőt: ráismer-e; ha nem, az is adat. Egyéni értékek nem jelennek meg."
-                : "A collective pattern estimated from self-assessments — a hypothesis, not a diagnosis. Ask the leader whether they recognize it; if not, that is data too. Individual values are not shown."}
+                ? "Önértékelésekből becsült kollektív minta – hipotézis, nem diagnózis. Kérdezd meg a vezetőt: ráismer-e; ha nem, az is adat. Egyéni értékek nem jelennek meg."
+                : "A collective pattern estimated from self-assessments – a hypothesis, not a diagnosis. Ask the leader whether they recognize it; if not, that is data too. Individual values are not shown."}
             </p>
           </DashboardPanel>
         </section>
       )}
 
-      {/* Pszichológiai biztonság — anonim pulse-aggregátum */}
+      {/* Pszichológiai biztonság – anonim pulse-aggregátum */}
       {agg?.psychSafety && (
         <section>
           <SectionHead
@@ -1221,7 +1221,7 @@ export function TeamReportView({
                       : isHu ? "Törékeny biztonság-élmény" : "Fragile sense of safety"}
                 </p>
                 {/* A ±szóródás-szám nem jelenik meg (2026-08-11 termékdöntés)
-                    — az aggregátumban a spread tovább él, csak a kijelzés
+                    – az aggregátumban a spread tovább él, csak a kijelzés
                     szűnt meg. */}
                 <p className="mt-0.5 text-xs text-ink-body/60">
                   {agg.psychSafety.count}{" "}
@@ -1273,7 +1273,7 @@ export function TeamReportView({
             {agg.psychSafety.weakItemIds.length > 0 ? (
               <div className="mt-5 flex flex-col gap-3">
                 <p className="text-caption font-semibold text-state-warning-fg">
-                  {isHu ? "Gyenge területek — javasolt lépések" : "Weak areas — suggested steps"}
+                  {isHu ? "Gyenge területek – javasolt lépések" : "Weak areas – suggested steps"}
                 </p>
                 {agg.psychSafety.weakItemIds.map((id) => {
                   const item = getPsychSafetyItem(id);
@@ -1297,10 +1297,10 @@ export function TeamReportView({
                   );
                 })}
 
-                {/* Vezetői akciókártyák — a gyenge területek mögött tipikus
+                {/* Vezetői akciókártyák – a gyenge területek mögött tipikus
                     vezetői mintázat és ellenszere. Keret: HBR 2026/07
                     („4 Hidden Traps of Team Dynamics"), saját adaptáció.
-                    Alapból csukva — a sűrűség csökkentésére. */}
+                    Alapból csukva – a sűrűség csökkentésére. */}
                 {(() => {
                   const traps = leaderTrapsForWeakItems(agg.psychSafety!.weakItemIds);
                   if (traps.length === 0) return null;
@@ -1344,8 +1344,8 @@ export function TeamReportView({
             ) : (
               <p className="mt-5 rounded-xl bg-sage/5 px-4 py-3 text-xs leading-relaxed text-ink-body">
                 {isHu
-                  ? "Nincs kirívóan gyenge terület — a biztonság-élmény kiegyensúlyozott. Érdemes rendszeres pulse-szal követni, hogy így is maradjon."
-                  : "No conspicuously weak area — the sense of safety is balanced. Track it with a regular pulse to keep it that way."}
+                  ? "Nincs kirívóan gyenge terület – a biztonság-élmény kiegyensúlyozott. Érdemes rendszeres pulse-szal követni, hogy így is maradjon."
+                  : "No conspicuously weak area – the sense of safety is balanced. Track it with a regular pulse to keep it that way."}
               </p>
             )}
 
@@ -1371,7 +1371,7 @@ export function TeamReportView({
             tanácsadói szövegek magyar eredetiben jelennek meg. */}
         {!isHu && !hasApprovedEnTranslation(reportInput) && report.summary ? (
           <p className="mb-3 rounded-[10px] border border-state-warning-border bg-state-warning-bg/60 px-3.5 py-2 text-xs text-bronze-700">
-            Consultant-written sections below appear in the Hungarian original — the
+            Consultant-written sections below appear in the Hungarian original – the
             English translation hasn&apos;t been approved yet.
           </p>
         ) : null}
@@ -1452,7 +1452,7 @@ export function TeamReportView({
         </DashboardPanel>
       </section>
 
-      {/* Akcióterv: 30/60/90 napos idővonal — oszloponként saját akcentus */}
+      {/* Akcióterv: 30/60/90 napos idővonal – oszloponként saját akcentus */}
       {report.actionItems && report.actionItems.length > 0 && (
         <section>
           <SectionHead
@@ -1474,7 +1474,7 @@ export function TeamReportView({
                       {timeframe} {isHu ? "napon belül" : "days"}
                     </p>
                     {items.length === 0 ? (
-                      <p className="text-xs text-muted">—</p>
+                      <p className="text-xs text-muted">–</p>
                     ) : (
                       <ul className="flex flex-col gap-3">
                         {items.map((item, index) => (

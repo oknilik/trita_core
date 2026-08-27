@@ -60,7 +60,7 @@ test("hasonló nevű prop (pl. wrapperClassName) nem téveszt meg", () => {
   assert.equal(
     isPresentationOnlyChange("a/b.tsx", before, after),
     false,
-    "a wrapperClassName nem a `className` attribútum — nem eshet a kivétel alá",
+    "a wrapperClassName nem a `className` attribútum – nem eshet a kivétel alá",
   );
 });
 

@@ -21,7 +21,7 @@ export async function generateShareQrPng(url: string): Promise<Buffer | null> {
       color: { dark: COLORS.ink, light: "#ffffff" },
     });
   } catch (err) {
-    log.warn({ event: "share_qr.generate_failed", err }, "Share QR generation failed — email goes out without QR");
+    log.warn({ event: "share_qr.generate_failed", err }, "Share QR generation failed – email goes out without QR");
     return null;
   }
 }

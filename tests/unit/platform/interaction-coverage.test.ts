@@ -104,7 +104,7 @@ test("a dimenzió-összevetés mind a hat dimenzióról nyilatkozik", () => {
   assert.deepEqual(
     result.dimensions.map((row) => row.dim),
     HEXACO_ORDER,
-    "kanonikus HEXACO-sorrend — ugyanaz, mint a radaron és az akkordeonon",
+    "kanonikus HEXACO-sorrend – ugyanaz, mint a radaron és az akkordeonon",
   );
   const byDim = new Map(result.dimensions.map((row) => [row.dim, row]));
   // |70 − 52| = 18 ≥ 11 → eltérés, a self oldalán magasabb.
@@ -145,7 +145,7 @@ test("a dimenzió-összevetés SEMMILYEN pontszámot nem hordoz", () => {
 // ── Facet-nüansz ─────────────────────────────────────────────────────
 
 const FACET_GAP = 17; // a rövid forma √2·facet-SEM értéke
-// Az ÖNÁLLÓ nüansz-állítás kapuja ennek a többszöröse — sok facetre egyszerre
+// Az ÖNÁLLÓ nüansz-állítás kapuja ennek a többszöröse – sok facetre egyszerre
 // fut, ezért szigorúbb. Az attribúció az 1×-es kapun áll (ott a „pontosan egy
 // alskála lépi át" feltétel a szűrő).
 const NUANCE_GAP = FACET_GAP * NUANCE_GATE_MULTIPLIER;
@@ -171,7 +171,7 @@ test("facet-nüansz csak DIMENZIÓ-SZINTEN EGYEZŐ dimenzióban születik", () =
 });
 
 test("eltérő dimenzióban nem nüansz, hanem ATTRIBÚCIÓ születik", () => {
-  // Ott a dimenzió-szint már megállapította az eltérést — a facet nem új
+  // Ott a dimenzió-szint már megállapította az eltérést – a facet nem új
   // állítást tesz, hanem megmondja, hol fut a különbség.
   const result = simulateInteraction({
     self: scores({ C: 80 }),
@@ -187,7 +187,7 @@ test("eltérő dimenzióban nem nüansz, hanem ATTRIBÚCIÓ születik", () => {
 });
 
 test("attribúció NEM születik, ha az eltérés több alskálán is mérhető", () => {
-  // „Az eltérés főleg itt fut" hamis volna, ha kettő is átlépi a küszöböt —
+  // „Az eltérés főleg itt fut" hamis volna, ha kettő is átlépi a küszöböt –
   // ilyenkor a különbség nem koncentrálódik, tehát hallgatunk.
   const result = simulateInteraction({
     self: scores({ C: 80 }),
@@ -202,7 +202,7 @@ test("attribúció NEM születik, ha az eltérés több alskálán is mérhető"
 
 test("attribúció csak a dimenzió IRÁNYÁBA mutató alskálára születik", () => {
   // A self magasabb a dimenzión, de a küszöböt egyedül egy ELLENTÉTES irányú
-  // facet lépi át — az nem magyarázhatja a dimenzió-szintű eltérést.
+  // facet lépi át – az nem magyarázhatja a dimenzió-szintű eltérést.
   const result = simulateInteraction({
     self: scores({ C: 80 }),
     other: scores({ C: 40 }),
@@ -308,7 +308,7 @@ test("a facet-nüansz dimenziónként egy, összesen legfeljebb MAX_FACET_NUANCE
   for (const dim of HEXACO_ORDER) {
     // A motor CSAK a kanonikus facet-térkép kódjait nézi (koholt kódra nem
     // épít állítást), ezért itt valódi facetekkel dolgozunk. Dimenziónként
-    // KETTŐ lépi át a küszöböt — akkor is csak egy sor jár belőlük.
+    // KETTŐ lépi át a küszöböt – akkor is csak egy sor jár belőlük.
     const [first, second] = HEXACO_DIMENSION_FACETS[dim];
     selfFacets[dim] = { [first]: 95, [second]: 93 };
     otherFacets[dim] = { [first]: 20, [second]: 22 };
@@ -331,7 +331,7 @@ test("a facet-nüansz dimenziónként egy, összesen legfeljebb MAX_FACET_NUANCE
 });
 
 test("az attribúciók száma is korlátos", () => {
-  // Hat eltérő dimenzió, mindegyiken pontosan egy koncentrált alskála —
+  // Hat eltérő dimenzió, mindegyiken pontosan egy koncentrált alskála –
   // attól még nem kaphat a felhasználó hat bekezdést a legbizonytalanabb
   // rétegből.
   const selfFacets: FacetScores = {};

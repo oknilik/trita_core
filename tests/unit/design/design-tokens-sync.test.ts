@@ -31,7 +31,7 @@ function assertPair(tsValue: string, cssName: string, label: string) {
   assert.equal(
     tsValue.toLowerCase(),
     fromCss,
-    `${label} (${tsValue}) ≠ --color-${cssName} (${fromCss}) — ` +
+    `${label} (${tsValue}) ≠ --color-${cssName} (${fromCss}) – ` +
       "palettacsere esetén mindkét forrást frissítsd",
   );
 }
@@ -95,7 +95,7 @@ test("DIMENSION_COLORS szinkronban a --color-dim-* tokenekkel", () => {
   }
 });
 
-test("E/O hue-döntés érvényben (E=viola, O=mályva — doksi 5. fejezet)", () => {
+test("E/O hue-döntés érvényben (E=viola, O=mályva – doksi 5. fejezet)", () => {
   assert.equal(DIMENSION_COLORS.E.base, "#7b5fae");
   assert.equal(DIMENSION_COLORS.O.base, "#b4688a");
 });
@@ -149,7 +149,7 @@ test("a kivezetett tokenek nem térnek vissza a globals.css-be", () => {
   ]) {
     assert.ok(
       !RAW_CSS.includes(`${legacy}:`),
-      `${legacy} kivezetett token — ne definiáld újra (color-system-2026-08.md)`,
+      `${legacy} kivezetett token – ne definiáld újra (color-system-2026-08.md)`,
     );
   }
 });

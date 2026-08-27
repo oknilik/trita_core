@@ -41,7 +41,7 @@ export function ChapterOverviewPage({ model }: { model: ProfileReportViewModel }
         />
 
         {/* Radar + sávlista két külön kártyán: a webes kétoszlopos áttekintés
-            A4-en függőlegesen ritmizálva — a korábbi egyetlen, felső harmadba
+            A4-en függőlegesen ritmizálva – a korábbi egyetlen, felső harmadba
             zsúfolt blokk helyett (P1/12). */}
         <PdfCard eyebrow={t("pdf.personalityDimensions", locale)} title={t("pdf.overviewRadarTitle", locale)}>
           <View style={{ alignItems: "center", paddingVertical: 2 }}>

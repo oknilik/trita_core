@@ -49,7 +49,7 @@
       "key": "jog",
       "hu": "Jog és hatósági munka",
       "en": "Law and regulatory work",
-      "defHu": "Szabályt értelmez és érvényesít — az ő döntése másokra nézve kötelező.",
+      "defHu": "Szabályt értelmez és érvényesít – az ő döntése másokra nézve kötelező.",
       "defEn": "Interprets and enforces rules; their decision binds others.",
       "anchors": [
         "Ügyvéd",
@@ -125,7 +125,7 @@
       "key": "tudomany",
       "hu": "Tudomány és labor",
       "en": "Science and laboratory",
-      "defHu": "Kísérletez, mér, bizonyít — a válasz nála az adatból jön.",
+      "defHu": "Kísérletez, mér, bizonyít – a válasz nála az adatból jön.",
       "defEn": "Experiments, measures, proves; answers come from evidence.",
       "anchors": [
         "Vegyész",

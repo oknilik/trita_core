@@ -36,7 +36,7 @@ export function observerDraftCookieName(invitationId: string): string {
 
 /**
  * A cookie értéke: HMAC-SHA256(invitationId, titok) hexben. Az érték nem
- * hordoz adatot — csak azt bizonyítja, hogy a szerver állította be ehhez a
+ * hordoz adatot – csak azt bizonyítja, hogy a szerver állította be ehhez a
  * meghívóhoz (a kliens nem tudja más meghívóra hamisítani).
  */
 export function observerDraftCookieValue(invitationId: string): string {
@@ -45,7 +45,7 @@ export function observerDraftCookieValue(invitationId: string): string {
     .digest("hex");
 }
 
-/** Konstans idejű összevetés — a cookie-érték nem találgatható ki bájtonként. */
+/** Konstans idejű összevetés – a cookie-érték nem találgatható ki bájtonként. */
 export function isValidObserverDraftCookie(
   invitationId: string,
   cookieValue: string | null | undefined,

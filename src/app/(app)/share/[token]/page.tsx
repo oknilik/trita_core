@@ -46,7 +46,7 @@ export async function generateMetadata({
   const model = await loadShareOgModel(token, isHu ? "hu" : "en");
   const title =
     model.displayName && model.typeLabel
-      ? `${model.displayName} — ${model.typeLabel} | trita`
+      ? `${model.displayName} – ${model.typeLabel} | trita`
       : model.typeLabel
         ? `${model.typeLabel} | trita`
         : isHu
@@ -55,13 +55,13 @@ export async function generateMetadata({
   return {
     title,
     description: isHu
-      ? "Személyiségprofil a trita platformról — önértékelés és külső visszajelzés, tudományos alapon."
-      : "A personality profile from the trita platform — self-assessment and external feedback, on a scientific basis.",
+      ? "Személyiségprofil a trita platformról – önértékelés és külső visszajelzés, tudományos alapon."
+      : "A personality profile from the trita platform – self-assessment and external feedback, on a scientific basis.",
     robots: { index: false },
   };
 }
 
-// A dimenzió személyre szabott értelmezése — a megosztott lapon ugyanaz a
+// A dimenzió személyre szabott értelmezése – a megosztott lapon ugyanaz a
 // sáv-választás fut, mint a saját eredmény-oldalon: a szám mellé MINDIG a
 // pontszámhoz tartozó szöveg megy ki, nem a dimenzió általános definíciója.
 function getInsight(
@@ -96,7 +96,7 @@ export default async function SharedProfilePage({
   });
 
   // Visszavont vagy érvénytelen link: nem 404, hanem barátságos állapot-oldal
-  // — magyarázat + CTA a saját kitöltésre vagy bejelentkezésre.
+  // – magyarázat + CTA a saját kitöltésre vagy bejelentkezésre.
   if (!result) {
     return (
       <main className="flex min-h-dvh items-center justify-center bg-cream px-4">
@@ -131,10 +131,10 @@ export default async function SharedProfilePage({
   const displayName = result.userProfile?.username ?? t("common.userFallback", locale);
 
   // FIX 4 kiterjesztés (0 mint „nincs mérve"): a score-JSON-ból hiányzó
-  // dimenzió NEM 0 pont — a korábbi `?? 0` valódi 0-ként renderelte
+  // dimenzió NEM 0 pont – a korábbi `?? 0` valódi 0-ként renderelte
   // („figyelendő" badge, 0-ból generált low-próza). A nem mért dimenzió
   // kimarad a megosztott nézetből is.
-  // Kanonikus olvasó — az örökség-kulcsos (INTE/RESO/…) sorok is
+  // Kanonikus olvasó – az örökség-kulcsos (INTE/RESO/…) sorok is
   // megjeleníthetők maradnak, a megosztott link nem ürül ki.
   const dimensionScores = extractDimensionScores(result.scores) ?? {};
 
@@ -160,7 +160,7 @@ export default async function SharedProfilePage({
     { year: "numeric", month: "long", day: "numeric" },
   );
 
-  // Személyiség-típus — a közös archetípus-nyelvtanból (personality-type.ts),
+  // Személyiség-típus – a közös archetípus-nyelvtanból (personality-type.ts),
   // a korábban itt duplikált mechanikus címke-összefűzés helyett.
   const personalityType =
     resolvePersonalityTypeFromScores(
@@ -172,12 +172,12 @@ export default async function SharedProfilePage({
     dimensions.map((d) => ({ code: d.code, score: d.score })),
   );
   // S3-hedge: az ábra aria-labelje ugyanazzal a kapuval degradál rendezetlen
-  // párrá, mint a címke (isSecondaryUncertain) — erősorrend-állítás nélkül.
+  // párrá, mint a címke (isSecondaryUncertain) – erősorrend-állítás nélkül.
   const glyphUncertain = isSecondaryUncertain(
     dimensions.map((d) => ({ code: d.code, score: d.score })),
   );
 
-  // Munkastílus — ugyanabból a generátorból, mint a saját eredmény-oldal
+  // Munkastílus – ugyanabból a generátorból, mint a saját eredmény-oldal
   // workstyle tabja (lib/workstyle-content.ts), hogy a megosztott nézet
   // tartalma sose csússzon el a belső nézettől.
   const workstyle = buildWorkstyleContent(
@@ -189,7 +189,7 @@ export default async function SharedProfilePage({
   // TeamRole
   const hexScores = Object.fromEntries(dimensions.map((d) => [d.code, d.score]));
   const hasTeamRole = "H" in hexScores && "X" in hexScores;
-  // resolveDisplayRoleScores: exact (nyers evidencia) tie-break — a fő szerep
+  // resolveDisplayRoleScores: exact (nyers evidencia) tie-break – a fő szerep
   // egyezik a többi felülettel; részleges dim-sornál null (nincs becslés
   // kitalált 50-esekből), így a szekció üresen marad.
   const resolvedRole = hasTeamRole
@@ -356,7 +356,7 @@ export default async function SharedProfilePage({
                       {getDimensionLabel(dimension.score, locale)}
                     </span>
                     {/* Előbb a személyre szabott értelmezés (ez a megosztás
-                        tétje), utána halkabban a dimenzió definíciója —
+                        tétje), utána halkabban a dimenzió definíciója –
                         az adja a kontextust annak, aki most találkozik vele. */}
                     <p className="mt-3 max-w-2xl text-caption font-medium leading-relaxed text-ink">
                       {dimension.insight}
@@ -388,7 +388,7 @@ export default async function SharedProfilePage({
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
               </summary>
               {/* A saját eredmény-oldallal AZONOS narratíva (közös producer:
-                  workstyle-content) — a korábbi sablonmondat helyett, ami
+                  workstyle-content) – a korábbi sablonmondat helyett, ami
                   minden profilnak ugyanazt a két dimenzió-nevet mondta fel. */}
               <div className="border-t border-[var(--color-border-soft)] px-5 py-5">
                 <HowYouWorkSection parts={workstyle.howYouWorkParts} isUnlocked hideHeading />
@@ -404,7 +404,7 @@ export default async function SharedProfilePage({
                 <span aria-hidden="true" className="text-lg text-sage-dark transition-transform group-open:rotate-180">⌄</span>
               </summary>
               {/* A szint-szó a kanonikus feloldóból jön (resolveEnvLevel), nem
-                  az érték-szöveg vágásából — a hedge-sáv („Inkább magas") és a
+                  az érték-szöveg vágásából – a hedge-sáv („Inkább magas") és a
                   magyarázó fél mondat így nem esik ki a megosztott nézetből. */}
               <div className="border-t border-[var(--color-border-soft)] px-5 py-5">
                 <IdealEnvironmentSection items={workstyle.envItems} isUnlocked hideHeading />
@@ -462,7 +462,7 @@ export default async function SharedProfilePage({
           </div>
         </section>
 
-        {/* Footer CTA — csak kijelentkezett látogatónak (bejelentkezett
+        {/* Footer CTA – csak kijelentkezett látogatónak (bejelentkezett
             usernek nincs értelme a "készíts profilt" felhívásnak) */}
         {!userId && (
           <div className="rounded-[20px] border border-sand bg-surface-card p-8 text-center shadow-[var(--ui-shadow-sm)] md:p-10">

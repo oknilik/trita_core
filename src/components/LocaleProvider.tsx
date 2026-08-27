@@ -94,7 +94,7 @@ export function LocaleProvider({
   // localStorage-ból; új látogatónál a DEFAULT_LOCALE marad érvényben.
 
   // Szerver-oldali nyelv-szinkron: a DB a mérvadó a belépett usernek, a
-  // getServerLocale() viszont csak a sütit látja — ezért egyszer le kell
+  // getServerLocale() viszont csak a sütit látja – ezért egyszer le kell
   // kérni. Korábban ez MINDEN teljes oldalbetöltéskor lefutott (kijelentkezve
   // is), pedig csak akkor számít, ha a süti és a DB eltér: új eszköz, törölt
   // süti, első belépés. Böngésző-munkamenetenként egyszer futtatjuk.
@@ -102,7 +102,7 @@ export function LocaleProvider({
     try {
       if (window.sessionStorage.getItem(LOCALE_SYNC_FLAG)) return;
     } catch {
-      // sessionStorage letiltva (privát mód, süti-szabály) — ilyenkor a
+      // sessionStorage letiltva (privát mód, süti-szabály) – ilyenkor a
       // korábbi viselkedés marad: minden betöltéskor szinkronizálunk.
     }
 

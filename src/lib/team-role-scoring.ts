@@ -143,16 +143,16 @@ function tieBreakHash(role: TeamRoleCode, seed: string): number {
 /**
  * Top-N szerep egy pontszám-profilból.
  *
- * HOLTVERSENY-SZABÁLY (S2) — dokumentált döntés:
+ * HOLTVERSENY-SZABÁLY (S2) – dokumentált döntés:
  *  1. Elsődleges rendezés: pontszám szerint csökkenő.
- *  2. Ha van finomabb evidencia (`exact` — pl. kerekítetlen peer-átlag vagy
+ *  2. Ha van finomabb evidencia (`exact` – pl. kerekítetlen peer-átlag vagy
  *     becslés-összeg), az dönt: két azonosra KEREKÍTETT szerep közül az áll
  *     előrébb, amelyik mögött ténylegesen több jel van.
  *  3. Pontosan egyenlő evidenciánál egy determinisztikus, profil-függő hash
- *     dönt — SZÁNDÉKOSAN NEM a szerep-kód sorrendje. A korábbi stabil sort a
+ *     dönt – SZÁNDÉKOSAN NEM a szerep-kód sorrendje. A korábbi stabil sort a
  *     TEAM_ROLES deklarációs sorrendjét örökítette, ami minden holtversenyt
  *     a korai kódok (OG/KE/KO) javára döntött el a későiek (MV/MI/SZ)
- *     rovására — kis mintánál (3 peer) ez látható, szisztematikus torzítás.
+ *     rovására – kis mintánál (3 peer) ez látható, szisztematikus torzítás.
  *     A hash a teljes pontszám-vektorból magvazódik, így ugyanarra a
  *     profilra ismételt rendereléskor stabil (determinisztikus), a
  *     populáció szintjén viszont egyik szerep sem élvez fix előnyt

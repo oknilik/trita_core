@@ -257,7 +257,7 @@ export async function IntelligenceTabView({ ctx }: { ctx: TeamTabContext }) {
       </section>
 
       {/* A számított 16-os csapatminta teljes nézete: tengelysávok, stabilitás-
-          jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja —
+          jegyzet, confidence-badge. A fenti státusz-csempe csak a címkét adja –
           a részletes kártya eddig árva komponens volt (nem volt importálója). */}
       <TeamPatternCard
         patternResult={teamData.patternResult}

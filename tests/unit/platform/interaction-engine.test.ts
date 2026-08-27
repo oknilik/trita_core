@@ -313,7 +313,7 @@ test("30 archetípus-pár, mind egyedi, önmagával nem párosítva", () => {
   }
 });
 
-test("a prototípus pontosan két pólusos dimenziót ad — a többi néma", () => {
+test("a prototípus pontosan két pólusos dimenziót ad – a többi néma", () => {
   for (const pair of ARCHETYPE_PAIRS) {
     const prototype = archetypePrototype(pair);
     assert.equal(prototype[pair.dominant], ARCHETYPE_DOMINANT_SCORE);

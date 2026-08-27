@@ -81,7 +81,7 @@ describe("trust instrument", () => {
   });
 });
 
-describe("computeTrustNetwork — élek", () => {
+describe("computeTrustNetwork – élek", () => {
   it("averages both directions into one undirected, mutual edge", () => {
     const net = computeTrustNetwork([
       obs("u1", "u2", answersAt("max")),
@@ -118,7 +118,7 @@ describe("computeTrustNetwork — élek", () => {
   });
 });
 
-describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
+describe("computeTrustNetwork – csomópontok, hub, izolált", () => {
   it("withholds inbound aggregate below the rater threshold", () => {
     const net = computeTrustNetwork([
       obs("u1", "u3", answersAt("max")),
@@ -188,7 +188,7 @@ describe("computeTrustNetwork — csomópontok, hub, izolált", () => {
 // értékelt oldalán). A csak-kifelé él a SAJÁT kiosztott értékelése — abból
 // róla nem állítható semmi.
 
-describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () => {
+describe("computeTrustNetwork – befelé evidenciált hub/beágyazatlan", () => {
   it("regresszió: két szigorú KIFELÉ értékelés nem bélyegzi az értékelőt beágyazatlan tagnak", () => {
     // "attacker" két csapattársat értékel mélyre, őt senki — a régi logika
     // a 2 (csak-kifelé) gyenge éle alapján névvel „beágyazatlan tagként"
@@ -245,7 +245,7 @@ describe("computeTrustNetwork — befelé evidenciált hub/beágyazatlan", () =>
 
 // ── FIX 4: kilépett tagok megfigyelései nem szennyezik a hálót ──────────────
 
-describe("computeTrustNetwork — kilépett tagok szűrése", () => {
+describe("computeTrustNetwork – kilépett tagok szűrése", () => {
   const strong = () => answersAt("max");
   const weak = () => answersAt("min");
 
@@ -275,7 +275,7 @@ describe("computeTrustNetwork — kilépett tagok szűrése", () => {
     assert.equal(net.measuredPairCount, 1);
   });
 
-  it("lefedettség 100% felett nem lehet — kilépett-párok az élszámot sem növelik", () => {
+  it("lefedettség 100% felett nem lehet – kilépett-párok az élszámot sem növelik", () => {
     // 2 jelenlegi tag → 1 lehetséges pár; a kilépettel együtt 3 megfigyelt
     // pár maradt hátra. Szűrés nélkül a lefedettség 3/1 = 300% lenne.
     const net = computeTrustNetwork(
@@ -308,7 +308,7 @@ describe("computeTrustNetwork — kilépett tagok szűrése", () => {
     assert.deepEqual(net.isolatedUserIds, []);
   });
 
-  it("taglista nélkül a szűrés nem fut (a hívó felel a scope-ért) — kompatibilitás", () => {
+  it("taglista nélkül a szűrés nem fut (a hívó felel a scope-ért) – kompatibilitás", () => {
     const net = computeTrustNetwork([
       obs("x", "y", strong()),
       obs("y", "x", strong()),

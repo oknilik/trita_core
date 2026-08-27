@@ -76,7 +76,7 @@ describe("csapatszerep self-beküldő", () => {
     expect(fetchBodies()[0]).toMatchObject({ selections: STUB_SELECTIONS });
   });
 
-  it("4xx válasznál NEM navigál el — hibaképernyőt mutat", async () => {
+  it("4xx válasznál NEM navigál el – hibaképernyőt mutat", async () => {
     globalThis.fetch = vi.fn(
       async () =>
         new Response(JSON.stringify({ error: "INVALID_INPUT" }), { status: 400 }),

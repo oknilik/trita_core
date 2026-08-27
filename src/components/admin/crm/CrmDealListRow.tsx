@@ -117,7 +117,7 @@ export function CrmDealListRow({
           </StatusChip>
         )}
         <span className="text-sm font-semibold tabular-nums text-ink">
-          {value != null ? huf(value) : "—"}
+          {value != null ? huf(value) : "–"}
         </span>
       </div>
     </div>

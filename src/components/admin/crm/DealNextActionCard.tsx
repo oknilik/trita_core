@@ -175,7 +175,7 @@ export function DealNextActionCard({ deal }: { deal: CrmDealDetailData }) {
       ) : (
         <>
           <p className="mt-2 text-sm text-ink-body" data-testid="crm-next-action-missing">
-            Ennek a dealnek nincs következő lépése — így könnyen elfelejtődik.
+            Ennek a dealnek nincs következő lépése – így könnyen elfelejtődik.
             Tűzz ki egyet, és megjelenik a „Ma” panelen, amikor esedékes.
           </p>
           <Button type="button" size="sm" className="mt-3" onClick={openEditor}>

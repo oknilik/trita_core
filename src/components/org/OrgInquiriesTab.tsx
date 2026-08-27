@@ -66,7 +66,7 @@ export function OrgInquiriesTab({
       if (!res.ok) throw new Error("PATCH_FAILED");
       router.refresh();
     } catch {
-      setError(isHu ? "A módosítás nem sikerült — próbáld újra." : "Update failed — please try again.");
+      setError(isHu ? "A módosítás nem sikerült – próbáld újra." : "Update failed – please try again.");
     } finally {
       setBusyId(null);
     }
@@ -82,8 +82,8 @@ export function OrgInquiriesTab({
       </h2>
       <p className="mt-1 text-xs text-ink-body">
         {isHu
-          ? "A szervezet tagjaitól érkezett megkeresések — az új kérdésekről értesítést kapsz."
-          : "Inquiries from members of this organization — you're notified of new ones."}
+          ? "A szervezet tagjaitól érkezett megkeresések – az új kérdésekről értesítést kapsz."
+          : "Inquiries from members of this organization – you're notified of new ones."}
       </p>
 
       {error && (
@@ -115,7 +115,7 @@ export function OrgInquiriesTab({
                     {TOPIC_LABELS[row.topic] ?? row.topic}
                   </span>
                   <span className="text-sm font-semibold text-ink">{row.name}</span>
-                  {/* Az e-mail egyetlen törhetetlen token — break-all nélkül
+                  {/* Az e-mail egyetlen törhetetlen token – break-all nélkül
                       320px-en kilógott a kártyából. */}
                   <a
                     href={`mailto:${row.email}`}

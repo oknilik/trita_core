@@ -62,7 +62,7 @@ test("örökség-kulcsos tárolt sor a bank HEXACO-kódjaival indexelhető", () 
     assert.equal(
       typeof dims[dim.code],
       "number",
-      `a(z) ${dim.code} dimenzió üres maradt — a felület üres profilt renderelne`,
+      `a(z) ${dim.code} dimenzió üres maradt – a felület üres profilt renderelne`,
     );
   }
 
@@ -99,7 +99,7 @@ test("a kanonikus és az örökség-alak azonos profilt ad", () => {
 //
 // Minden felület, amely TÁROLT score-JSON-t olvas, a kanonikus olvasón megy
 // át. A nyers `scores.dimensions[…]` / `.facets[…]` indexelés örökség-soron
-// üres képet ad — pontosan ez volt a regresszió.
+// üres képet ad – pontosan ez volt a regresszió.
 const STORED_SCORE_READERS = [
   "src/app/(app)/profile/results/page.tsx",
   "src/app/(app)/share/[token]/page.tsx",
@@ -126,7 +126,7 @@ test("a tárolt score-JSON olvasói a kanonikus olvasót használják", () => {
 });
 
 test("nyers scores.dimensions / scores.facets indexelés nem tér vissza", () => {
-  // Nyers `<bármi>.dimensions[…]` és `<bármi>.facets?.[…]` indexelés — a
+  // Nyers `<bármi>.dimensions[…]` és `<bármi>.facets?.[…]` indexelés – a
   // normalizálás megkerülése. (A `.dimensions` puszta ÁTADÁSA rendben van:
   // a tilalom az indexelésre szól, mert ott dől el a kulcs-egyezés.)
   const rawDimIndex = /\.dimensions\s*\??\.?\[/;
@@ -136,12 +136,12 @@ test("nyers scores.dimensions / scores.facets indexelés nem tér vissza", () =>
     assert.equal(
       rawDimIndex.test(source),
       false,
-      `${file}: nyers dimensions-indexelés — örökség-soron üres profilt ad`,
+      `${file}: nyers dimensions-indexelés – örökség-soron üres profilt ad`,
     );
     assert.equal(
       rawFacetIndex.test(source),
       false,
-      `${file}: nyers facets-indexelés — örökség-soron üres facet-listát ad`,
+      `${file}: nyers facets-indexelés – örökség-soron üres facet-listát ad`,
     );
   }
 });

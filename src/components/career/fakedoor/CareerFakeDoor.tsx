@@ -131,7 +131,7 @@ export function CareerFakeDoor({
           }}
         />
 
-        {/* Sarok-illesztőjelek — műszaki rajz nyelvtana. */}
+        {/* Sarok-illesztőjelek – műszaki rajz nyelvtana. */}
         {["left-3 top-3", "right-3 top-3", "left-3 bottom-3", "right-3 bottom-3"].map(
           (position) => (
             <span

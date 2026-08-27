@@ -58,15 +58,15 @@ function buildPriorities(members: SerializedTeamMember[]) {
 
 // ── FIX 5: a szerep-lefedettség MINDEN tagból számolódik ────────────────────
 
-describe("buildTeamIntelligencePriorities — szerep-lefedettség minden tagból", () => {
-  it("regresszió: teszt nélküli tag MÉRT kulcsszerepe lefedettségnek számít — nincs hamis 'Hiányzó kulcsszerep'", () => {
+describe("buildTeamIntelligencePriorities – szerep-lefedettség minden tagból", () => {
+  it("regresszió: teszt nélküli tag MÉRT kulcsszerepe lefedettségnek számít – nincs hamis 'Hiányzó kulcsszerep'", () => {
     const members = [
       member("u1", { scores: { ...FULL_SCORES }, teamRoleSource: "questionnaire", teamRoleScores: measuredTop("HA") }),
       member("u2", { scores: { ...FULL_SCORES }, teamRoleSource: "questionnaire", teamRoleScores: measuredTop("ER") }),
       member("u3", { scores: { ...FULL_SCORES }, teamRoleSource: "questionnaire", teamRoleScores: measuredTop("MV") }),
       member("u4", { scores: { ...FULL_SCORES }, teamRoleSource: "questionnaire", teamRoleScores: measuredTop("CS") }),
       // KO-t az a tag hozza, akinek NINCS személyiség-tesztje, csak mért
-      // szerep-kérdőíve — a régi kód (csak scores-os tagok) őt eldobta.
+      // szerep-kérdőíve – a régi kód (csak scores-os tagok) őt eldobta.
       member("u5", { scores: null, teamRoleSource: "questionnaire", teamRoleScores: measuredTop("KO") }),
     ];
     const priorities = buildPriorities(members);

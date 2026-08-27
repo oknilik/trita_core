@@ -143,7 +143,7 @@ export function InteractionSection({
     setDominant(next);
     setDominantSelected(true);
     setSecondarySelected(false);
-    // A két dimenzió nem eshet egybe — ilyenkor a másodikat léptetjük.
+    // A két dimenzió nem eshet egybe – ilyenkor a másodikat léptetjük.
     if (next === secondary) {
       setSecondary(HEXACO_ORDER.find((dim) => dim !== next) ?? secondary);
     }
@@ -158,7 +158,7 @@ export function InteractionSection({
     ? byKey.get(archetypeKey(dominant, secondary))
     : undefined;
 
-  // A kapcsolat-választó szövege ugyanaz, mint a valódi páros nézetben —
+  // A kapcsolat-választó szövege ugyanaz, mint a valódi páros nézetben –
   // ott a partner neve, itt a karakter neve kerül a helyére.
   const characterName = current?.label ?? "";
   const modeOptions: Array<{ value: RelationshipMode; label: string }> = [
@@ -185,7 +185,7 @@ export function InteractionSection({
 
   // Ugyanaz az archetípus, mint a sajátod. Ez a leggyakoribb választás (a
   // felhasználó először magát nézi meg), és a legfélrevezethetőbb: a
-  // hasonlóság gyors megértést ad, de a vakfoltok is közösek — erre külön
+  // hasonlóság gyors megértést ad, de a vakfoltok is közösek – erre külön
   // ki kell térni, mert az atomok maguktól csak az egyezést dicsérnék.
   const isSameArchetype =
     Boolean(selfGlyph) &&
@@ -195,7 +195,7 @@ export function InteractionSection({
   // S3-hedge (motor-audit v4, FIX 5): ha a saját címke főnév-only (a
   // personality-type resolver a mérési hibán belüli top-2/2-3. sorrendnél
   // nem ad melléknevet), a „Melléknév + Főnév" összeállítás-sor sem
-  // állíthatja a második dimenziót — csak a főnév megy ki. A jelet magából
+  // állíthatja a második dimenziót – csak a főnév megy ki. A jelet magából
   // a címkéből olvassuk, így a szekció nem mondhat ellent a fejlécnek.
   const selfNoun = selfGlyph
     ? personalityNoun(selfGlyph.primaryCode, locale)
@@ -230,7 +230,7 @@ export function InteractionSection({
       {current && (
         <>
           {/* Páros-fejléc: két ábra egymás mellett. Az összehasonlítást a KÉP
-              viszi, a név alatt pedig ott a összeállítás — így látszik, hogy a
+              viszi, a név alatt pedig ott a összeállítás – így látszik, hogy a
               két oldal ugyanabból a szókincsből épül. */}
           <div className="mb-4 flex flex-col items-stretch gap-2 md:flex-row md:items-center md:gap-3">
             {selfLabel && (
@@ -239,7 +239,7 @@ export function InteractionSection({
                   eyebrow={t("results.interactionPairYou", locale)}
                   label={selfLabel}
                   glyph={selfGlyph}
-                  // Főnév-only címkénél a teljes összeállítás-sor elmarad —
+                  // Főnév-only címkénél a teljes összeállítás-sor elmarad –
                   // a puszta főnév a fenti címkét ismételné.
                   nounPart={selfLabelIsNounOnly ? null : selfNoun}
                   adjectivePart={
@@ -264,7 +264,7 @@ export function InteractionSection({
               glyph={{
                 primaryCode: dominant,
                 secondaryCode: secondary,
-                // A választott típusnak nincs pontszáma — közepes intenzitás,
+                // A választott típusnak nincs pontszáma – közepes intenzitás,
                 // hogy az ábra ne sugalljon mért erősséget.
                 intensity: 3,
               }}
@@ -286,7 +286,7 @@ export function InteractionSection({
           )}
 
           {/* A kapcsolat-választó ugyanaz a kontroll, mint a valódi páros
-              nézetben — és most három állapotú: az „én vezetem őt" irány
+              nézetben – és most három állapotú: az „én vezetem őt" irány
               korábban itt egyáltalán nem volt elérhető. */}
           <RelationshipModeSelect
             label={t("results.compareRelationLabel", locale)}
@@ -300,7 +300,7 @@ export function InteractionSection({
 
           {/* A karakter-út tartalmi HATÁRA, a tartalom ELŐTT: a prototípus a
               hat dimenzióból kettőt állít pólusosra, a másik négyet a
-              középvonalra — azokról tehát nem mondhat semmit. Enélkül a
+              középvonalra – azokról tehát nem mondhat semmit. Enélkül a
               valódi úthoz képesti eltérés hibának látszik, nem korlátnak.
               A módszertani rész a lap alján van, ez csak a konkrét keret. */}
           <p className="mb-5 max-w-prose text-caption leading-relaxed text-[var(--color-text-muted)]">
@@ -324,7 +324,7 @@ export function InteractionSection({
         </>
       )}
 
-      {/* Módszertani jegyzet — a valódi páros nézettel azonos kezelésben,
+      {/* Módszertani jegyzet – a valódi páros nézettel azonos kezelésben,
           hogy a két felület egy rendszerként olvasson. */}
       <div className="mt-7 flex items-start gap-3 rounded-xl border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-4">
         <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[var(--color-accent-primary-strong)] text-caption text-[var(--color-accent-primary-strong)]">

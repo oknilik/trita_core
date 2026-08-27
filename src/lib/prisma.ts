@@ -44,7 +44,7 @@ function createPrismaClient(): PrismaClient {
   });
 
   // DB_METRICS=1 esetén kérésenkénti query-számláló (src/lib/db-metrics.ts).
-  // Kikapcsolva az extension rá sem kerül a kliensre — nulla költség.
+  // Kikapcsolva az extension rá sem kerül a kliensre – nulla költség.
   // A cast azért biztonságos, mert az extension CSAK `query` hookot ad,
   // a kliens típus-felülete változatlan.
   if (!isDbMetricsEnabled()) return client;

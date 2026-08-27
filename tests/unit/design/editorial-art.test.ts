@@ -63,7 +63,7 @@ test("a sötét panel készlete külön vonal- és ellensúlyszínt ad", () => {
   assert.notEqual(ART_COLORS.counterweight, ART_COLORS_ON_INVERSE.counterweight);
 });
 
-test("a kompozíció determinisztikus — ugyanaz a kulcs ugyanazt adja", () => {
+test("a kompozíció determinisztikus – ugyanaz a kulcs ugyanazt adja", () => {
   const a = buildConstellation("landing:how-features:self", 1120, 96);
   const b = buildConstellation("landing:how-features:self", 1120, 96);
   assert.deepEqual(a, b);
@@ -98,7 +98,7 @@ test("kis méreten egyetlen forma marad, kíséret nélkül", () => {
   assert.deepEqual(shape, buildCompactShape("slug", 100, 100));
 });
 
-test("a széles, lapos sáv NEM compact — ott van hely a teljes kompozíciónak", () => {
+test("a széles, lapos sáv NEM compact – ott van hely a teljes kompozíciónak", () => {
   // Regresszió: a küszöb a rövidebb oldalra nézett, ezért az 1120×96-os
   // landing-átkötőből egyetlen apró forma maradt (2026-08-09).
   assert.equal(resolveArtScale(1120, 96), "card");
@@ -111,7 +111,7 @@ test("a széles, lapos sáv NEM compact — ott van hely a teljes kompozícióna
 });
 
 test("a hero kísérete a jobb félen marad, a vágáson belül", () => {
-  // A kiemelt panelen bal fent a „kiemelt" chip ül — oda nem kerülhet jel.
+  // A kiemelt panelen bal fent a „kiemelt" chip ül – oda nem kerülhet jel.
   // A jobb szél pedig mobilon levágódik (`slice`): a 420×260-as vászonból
   // egy ~358×270-es panelben oldalanként ~9% tűnik el (2026-08-09).
   const w = 420;

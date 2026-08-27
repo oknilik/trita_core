@@ -40,7 +40,7 @@ test("a jelölt-flow forma-itemszáma a progress-plafon és a hiring-nevező for
   assert.equal(shortCount, 60, "a TSFI-S rövid forma nem 60 itemes");
   // A kliens-állította 500 a plafonra vágva már nem jelenhet meg tényként.
   assert.equal(Math.min(500, shortCount), 60);
-  // A teljes forma nagyobb — a plafonnak formakövetőnek kell lennie.
+  // A teljes forma nagyobb – a plafonnak formakövetőnek kell lennie.
   const fullCount = getTestConfig("TRITAN", "hu", "full").questions.length;
   assert.ok(fullCount > shortCount);
 });

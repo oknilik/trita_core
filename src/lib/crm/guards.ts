@@ -70,7 +70,7 @@ export function buildNextActionDueDedupeKey(dealId: string, isoDay: string): str
   return `CRM_NEXT_ACTION_DUE:${dealId}:${isoDay}`;
 }
 
-/** Ajánlatonként egyszer szól — a lejárat közeledte nem ismétlődő hír. */
+/** Ajánlatonként egyszer szól – a lejárat közeledte nem ismétlődő hír. */
 export function buildQuoteExpiringDedupeKey(quoteId: string): string {
   return `CRM_QUOTE_EXPIRING:${quoteId}`;
 }
@@ -78,7 +78,7 @@ export function buildQuoteExpiringDedupeKey(quoteId: string): string {
 // ── Cím- és sorszám-formázók ────────────────────────────────────────────────
 
 /**
- * Deal-cím javaslat inquiry-ből: "{cég ?? név} — {téma-címke}".
+ * Deal-cím javaslat inquiry-ből: "{cég ?? név} – {téma-címke}".
  * A topicLabel a hívótól jön (INQUIRY_TOPIC_LABELS), hogy a guard pure maradjon.
  */
 export function buildDealTitleFromInquiry(inquiry: {
@@ -88,12 +88,12 @@ export function buildDealTitleFromInquiry(inquiry: {
 }): string {
   const base = inquiry.company?.trim() || inquiry.name.trim();
   const topic = inquiry.topicLabel?.trim();
-  return topic ? `${base} — ${topic}` : base;
+  return topic ? `${base} – ${topic}` : base;
 }
 
 /**
  * Ajánlat-sorszám megjelenítése: "TRT-2026-0007". A sorszám globálisan
- * folyamatos (autoincrement) — az évszám csak megjelenítés (a létrejövés
+ * folyamatos (autoincrement) – az évszám csak megjelenítés (a létrejövés
  * UTC-éve), nem évente újrainduló számláló.
  */
 export function formatQuoteNo(no: number, createdAt: Date): string {

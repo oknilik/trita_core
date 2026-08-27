@@ -164,15 +164,15 @@ interface NavHeaderUIProps {
   hasHiringAccess: boolean;
   /** Org-szintű kapcsoló: rejtve van-e a karrier-iránytű. */
   careerModuleHidden?: boolean;
-  /** Platform-admin (ADMIN_EMAILS) — az Admin vezérlő menüpont kapuja. */
+  /** Platform-admin (ADMIN_EMAILS) – az Admin vezérlő menüpont kapuja. */
   isPlatformAdmin?: boolean;
-  /** Szerverről jövő kezdőérték — így a harang mountkor nem hív API-t. */
+  /** Szerverről jövő kezdőérték – így a harang mountkor nem hív API-t. */
   unreadNotificationCount?: number;
 }
 
 /**
  * A harang és a panel két helyen renderelődik (desktop + mobil ág), ezért a
- * notification-állapot egy providerben él — egy poll, egy lista-lekérés.
+ * notification-állapot egy providerben él – egy poll, egy lista-lekérés.
  */
 // Modul-szinten deklarálva: a szülő testében minden render új komponens-
 // típust adott, ami a nyitott lenyílót le- és újraszerelte (animáció-újrafutás).
@@ -221,7 +221,7 @@ function NavHeaderContent({
 
   type DropdownKey = WorkspaceNavItem["id"] | "user" | "notifications" | null;
   // Egy menüszint (UX-audit #26): a korábbi quickview→expanded kétlépcső
-  // plusz koppintást és tanulást kért — a hamburger egyből a teljes menüt nyitja.
+  // plusz koppintást és tanulást kért – a hamburger egyből a teljes menüt nyitja.
   type MobileMenuState = "closed" | "open";
 
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null);
@@ -288,13 +288,13 @@ function NavHeaderContent({
    * Aktív csapat kijelölése a Csapatok-menüből.
    *
    * MINDKÉT hívási helye egy `<Link>`-en ül, ami közben a csapatoldalra
-   * navigál — ezért itt SEM `await`, SEM `router.refresh()` nincs:
+   * navigál – ezért itt SEM `await`, SEM `router.refresh()` nincs:
    *
    *  – A `refresh()` a JELENLEGI útvonalat rendereli újra. Amíg a POST
    *    válaszára vártunk, a Link navigációja már elindult, és a beérkező
    *    refresh visszarántotta a felhasználót arra az oldalra, ahonnan a
    *    menüt nyitotta. Az org-oldalról indulva ez pontosan úgy nézett ki,
-   *    mintha a menü a szervezetre vinne — mobilon a lassabb hálózat miatt
+   *    mintha a menü a szervezetre vinne – mobilon a lassabb hálózat miatt
    *    szinte mindig ez nyert (2026-08-09).
    *  – A frissítés amúgy is felesleges: a cél-oldal a navigációval újra
    *    renderel, a csapatoldal pedig URL-ből azonosítja a csapatot, nem a
@@ -310,7 +310,7 @@ function NavHeaderContent({
       body: JSON.stringify({ teamId }),
       keepalive: true,
     }).catch(() => {
-      // A kijelölés ilyenkor marad a régi — a navigáció mehet tovább.
+      // A kijelölés ilyenkor marad a régi – a navigáció mehet tovább.
     });
   }
 
@@ -319,7 +319,7 @@ function NavHeaderContent({
 
   /**
    * Épp ezen a célponton állunk-e? A menü-hivatkozások `?tab=` paraméterrel
-   * jönnek, az útvonal-egyezéshez viszont csak a path számít — a csapatoldal
+   * jönnek, az útvonal-egyezéshez viszont csak a path számít – a csapatoldal
    * bármelyik fülén állva ugyanaz a csapat az aktív.
    */
   function isMobileChildActive(href: string): boolean {
@@ -381,7 +381,7 @@ function NavHeaderContent({
   const toggle = useCallback(
     (key: DropdownKey) => {
       // A user-menü tartalmazza az org-váltót és a tanácsadói „új ügyfél-org"
-      // linket — a tagság-listát itt töltjük be, nem mountkor.
+      // linket – a tagság-listát itt töltjük be, nem mountkor.
       if (key === "user") ensureOrgMemberships();
       setOpenDropdown((prev) => (prev === key ? null : key));
     },
@@ -391,7 +391,7 @@ function NavHeaderContent({
   // A nyitott menüt CSAK valódi navigációra zárjuk. A useSearchParams()
   // minden router-frissítéskor ÚJ objektum-identitást ad (akkor is, ha a
   // query változatlan), így a puszta referencia-figyelés egy háttérben
-  // befutó re-render miatt is becsukta a lenyílót — a felhasználó keze
+  // befutó re-render miatt is becsukta a lenyílót – a felhasználó keze
   // alól tűnt el a menüpont (CI-ben E2E-bukásként jelent meg). A query
   // szöveges alakja stabil: csak tényleges változásra fut le.
   const searchParamsKey = searchParams.toString();
@@ -425,7 +425,7 @@ function NavHeaderContent({
   }, [refreshIdentity]);
 
   // Fókusz-mód a kitöltő felületeken: a teljes navigáció zavaró lenne,
-  // de vissza-út mindig kell (design-akciólista #3) — minimál fejléc:
+  // de vissza-út mindig kell (design-akciólista #3) – minimál fejléc:
   // logó + „Vissza a vezérlőre" link.
   // A fő self-kitöltő a valós idejű progressz miatt saját kapszulát rajzol.
   // Az assessment alfolyamok továbbra is ezt a shell-fejlécet használják.
@@ -514,7 +514,7 @@ function NavHeaderContent({
   // Komponensként (a szülő testében deklarálva) minden szülő-render új
   // függvény-identitást adott neki, ezért React más TÍPUSKÉNT látta: a nyitott
   // menüt leszerelte és újra felépítette, a `fade-in` animáció pedig újra
-  // lefutott — ez volt a kattintás utáni „ugrás". Változóként a nyitott menü
+  // lefutott – ez volt a kattintás utáni „ugrás". Változóként a nyitott menü
   // ugyanaz a DOM-részfa marad.
   const userDropdown =
     openDropdown !== "user" ? null : (
@@ -608,7 +608,7 @@ function NavHeaderContent({
             </div>
           ) : null}
 
-          {/* Platform-admin belépő — az org-váltó alatt, csak ADMIN_EMAILS usernek */}
+          {/* Platform-admin belépő – az org-váltó alatt, csak ADMIN_EMAILS usernek */}
           {isPlatformAdmin ? (
             <Link
               href="/admin"
@@ -628,7 +628,7 @@ function NavHeaderContent({
             </Link>
           ) : null}
 
-          {/* Tanácsadói ügyfél-org létrehozás — csak consulting-led módban */}
+          {/* Tanácsadói ügyfél-org létrehozás – csak consulting-led módban */}
           {isConsultingLed() &&
           orgMemberships?.some((m) => m.role === "ORG_CONSULTANT") ? (
             <Link
@@ -791,7 +791,7 @@ function NavHeaderContent({
               <button
                 // A tagság-listát már a gomb fölé éréskor / fókuszkor
                 // betöltjük: kattintáskor indítva a válasz a MEGNYITOTT menübe
-                // érkezett, és az org-váltó blokk utólag nőtt bele — ez volt a
+                // érkezett, és az org-váltó blokk utólag nőtt bele – ez volt a
                 // másik oka a „megugrik" érzésnek. A hívás továbbra is
                 // egyszer fut le (ensureOrgMemberships őrzi).
                 onPointerEnter={ensureOrgMemberships}
@@ -834,7 +834,7 @@ function NavHeaderContent({
               aria-label={t("nav.menu", locale)}
               aria-expanded={mobileMenu !== "closed"}
               onClick={() => {
-                // A mobil menü is mutatja az org-váltót — lusta betöltés.
+                // A mobil menü is mutatja az org-váltót – lusta betöltés.
                 ensureOrgMemberships();
                 setMobileMenu((prev) => (prev === "closed" ? "open" : "closed"));
               }}
@@ -854,7 +854,7 @@ function NavHeaderContent({
         </div>
       </header>
 
-      {/* Egyetlen menüszint (UX-audit #26) — a közös MobileMenuShell
+      {/* Egyetlen menüszint (UX-audit #26) – a közös MobileMenuShell
           kártya-panelben (menü-konvergencia: a kijelentkezett NavBar
           ugyanezt a vázat használja). */}
       <MobileMenuShell
@@ -938,7 +938,7 @@ function NavHeaderContent({
                 </button>
 
                 {/* Link-típusú nav-elem (pl. Jelöltek, Szervezet, egy-csapatos
-                    Csapatom) KATTINTHATÓ sorként renderel — a dropdown-elem
+                    Csapatom) KATTINTHATÓ sorként renderel – a dropdown-elem
                     szekció-cím + gyerek-linkek. (Bugfix: a #26-os összevonás
                     után a link-elemek csak címkeként jelentek meg.) */}
                 {navItems
@@ -1032,7 +1032,7 @@ function NavHeaderContent({
 
                     {/* Org-váltó mobilon is (bugfix): több tagságnál eddig
                         csak a desktop user-dropdownban lehetett szervezetet
-                        váltani — a mobilmenüből teljesen hiányzott. */}
+                        váltani – a mobilmenüből teljesen hiányzott. */}
                     {orgMemberships && orgMemberships.length > 1 ? (
                       <div className="mt-1 rounded-lg px-3 py-3">
                         <p className="pb-1.5 font-fraunces text-base text-[var(--color-text-primary)]">
@@ -1078,7 +1078,7 @@ function NavHeaderContent({
                       </div>
                     ) : null}
 
-                    {/* Platform-admin belépő mobilon is — desktop-paritás. */}
+                    {/* Platform-admin belépő mobilon is – desktop-paritás. */}
                     {isPlatformAdmin ? (
                       <Link
                         href="/admin"
@@ -1097,7 +1097,7 @@ function NavHeaderContent({
                       </Link>
                     ) : null}
 
-                    {/* Kijelentkezés — a no-auth menü „Belépés" gombjának
+                    {/* Kijelentkezés – a no-auth menü „Belépés" gombjának
                         stílusában és pozíciójában (a Nyelv-szekció előtt):
                         teljes szélességű keretes gomb, azonos anatómia. */}
                     {showSignOutMenuItem ? (

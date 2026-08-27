@@ -59,7 +59,7 @@ async function createCapabilityGateFixture(): Promise<CapabilityGateFixture> {
 
   const now = new Date();
   // Relatív dátum: a fixture ne évüljön el. A `past_due` amúgy is dátumtól
-  // függetlenül `restricted` (getSubscriptionState) — a frozen ág kizárólag
+  // függetlenül `restricted` (getSubscriptionState) – a frozen ág kizárólag
   // `canceled` + 30 napnál régebbi periódusvég esetén nyílna.
   const currentPeriodEnd = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
 
@@ -177,7 +177,7 @@ async function openTeamPage(page: Page, teamId: string) {
     .toBe(`/team/${teamId}`);
 }
 
-test.describe("Capability-gate indoklás — szerep az előfizetés előtt", () => {
+test.describe("Capability-gate indoklás – szerep az előfizetés előtt", () => {
   let fixture: CapabilityGateFixture | undefined;
 
   test.beforeAll(async () => {
@@ -185,7 +185,7 @@ test.describe("Capability-gate indoklás — szerep az előfizetés előtt", () 
   });
 
   test.afterAll(async () => {
-    // Ha a beforeAll dobott, nincs mit takarítani — guard nélkül a cleanup
+    // Ha a beforeAll dobott, nincs mit takarítani – guard nélkül a cleanup
     // maga is elhalna, és elfedné az eredeti hibát.
     if (!fixture) return;
     await cleanupCapabilityGateFixture(fixture);
@@ -218,7 +218,7 @@ test.describe("Capability-gate indoklás — szerep az előfizetés előtt", () 
     await openTeamPage(page, fixture.teamId);
 
     // Az ellenpróba: a sorrend-csere NEM nyelheti el az előfizetés-indokot
-    // ott, ahol a szerep elegendő — különben a restricted org managere sem
+    // ott, ahol a szerep elegendő – különben a restricted org managere sem
     // kapna reaktiválási teendőt.
     await expect(page.getByText(subscriptionCopy.description)).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText(roleCopy.description)).toHaveCount(0);

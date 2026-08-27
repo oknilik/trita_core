@@ -56,13 +56,13 @@ test("getDimensionLabel: a szint-szó valencia-mentes, minden sávon", () => {
 test("a szint-címke nem kap vissza dimenzió-függő különesetet", () => {
   // A kivezetett poleAwareDimensionLabel azért kellett, mert a valenciás
   // címke a fordított Emocionalitáson hamis volt. Szint-szónál nincs olyan
-  // dimenzió, amelyiken a „magas"/„alacsony" ne lenne igaz — a foltnak nem
+  // dimenzió, amelyiken a „magas"/„alacsony" ne lenne igaz – a foltnak nem
   // szabad visszaszivárognia sem itt, sem a profile-content-ben.
   const code = readCode("src/lib/dimension-utils.ts");
   assert.equal(
     /isReverseValenced|REVERSE_DIM_CODE/.test(code),
     false,
-    "a szint-címke újra pólus-függő lett — a besorolás megint valenciát hordoz",
+    "a szint-címke újra pólus-függő lett – a besorolás megint valenciát hordoz",
   );
   assert.equal(
     /poleAwareDimensionLabel/.test(readCode("src/lib/profile-content.ts")),
@@ -79,7 +79,7 @@ test("a szint-címke egyetlen sávja sem hordoz értékelő szót", () => {
       const label = getDimensionLabel(score, locale);
       assert.ok(
         !banned.includes(label),
-        `${locale}/${score}: „${label}" értékelő szó — a szint-címkének leírónak kell lennie`,
+        `${locale}/${score}: „${label}" értékelő szó – a szint-címkének leírónak kell lennie`,
       );
     }
   }
@@ -120,7 +120,7 @@ test("getEnvRows: X=33 (épphogy pólus-low, tükör-sáv) → hedged; 25-nél n
   assert.equal(Boolean(firm?.hedged), false);
 });
 
-test("getEnvRows: fordított tengelyű sor (load) — a kiváltó E-pólus sávja dönt", () => {
+test("getEnvRows: fordított tengelyű sor (load) – a kiváltó E-pólus sávja dönt", () => {
   // E 67 (high pólus a sávban) → a „Terhelhetőség" low-verdikt hedged.
   const rows = getEnvRows(CATS({ E: "high" }), { E: 67 });
   const load = rows.find((r) => r.key === "load");

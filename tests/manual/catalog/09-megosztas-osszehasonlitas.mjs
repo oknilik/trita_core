@@ -17,7 +17,7 @@ export const cases = [
     steps:
       "1. A /profile/results hero-jában nyisd meg a megosztás-modalt. 2. Nézd meg a link-mezőt kattintás nélkül. 3. Zárd be a modalt bármilyen művelet nélkül, majd nyisd meg újra.",
     expected:
-      "A modal előnézeti kártyát (név + típuscímke + top-2 dimenzió chip) mutat, de a link-mező csak „…” placeholder-t tartalmaz — publikus URL csak az első tényleges megosztási szándéknál (másolás/küldés) készül. Újranyitáskor sincs kész link.",
+      "A modal előnézeti kártyát (név + típuscímke + top-2 dimenzió chip) mutat, de a link-mező csak „…” placeholder-t tartalmaz – publikus URL csak az első tényleges megosztási szándéknál (másolás/küldés) készül. Újranyitáskor sincs kész link.",
     automated: "full",
     coveredBy: "tests/client/results/share-modal.integration.test.tsx",
     priority: "P2",
@@ -94,7 +94,7 @@ export const cases = [
     steps:
       "1. Kattints az „Új link létrehozása” gombra, majd másold ki az új linket. 2. Hasonlítsd össze a régi URL-lel. 3. Nyisd meg mindkettőt inkognitóban.",
     expected:
-      "Az új token KÜLÖNBÖZIK a régitől; az új link a profilt mutatja, a régi továbbra is a „link már nem él” oldalt adja — a visszavonás nem éled újra.",
+      "Az új token KÜLÖNBÖZIK a régitől; az új link a profilt mutatja, a régi továbbra is a „link már nem él” oldalt adja – a visszavonás nem éled újra.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -140,7 +140,7 @@ export const cases = [
     steps:
       "1. Illeszd be a /share/<token> linket egy előnézet-generálóba (pl. Slack/Discord üzenet vagy opengraph.xyz). 2. Nézd meg a kapott képet. 3. Ismételd meg a token utolsó karakterét elrontva.",
     expected:
-      "Az érvényes link előnézeti képe a megosztó nevét, típuscímkéjét és a domináns dimenzió glyph-sziluettjét mutatja (1200×630). Az elrontott tokenre generikus trita brand-kép jön — nem hibaoldal és nem 500-as kép.",
+      "Az érvényes link előnézeti képe a megosztó nevét, típuscímkéjét és a domináns dimenzió glyph-sziluettjét mutatja (1200×630). Az elrontott tokenre generikus trita brand-kép jön – nem hibaoldal és nem 500-as kép.",
     automated: "partial",
     coveredBy: "tests/unit/results/share-og.test.ts",
     priority: "P2",
@@ -155,7 +155,7 @@ export const cases = [
     steps:
       "1. A modal előnézeti kártyája alatt kattints a kép-letöltés gombra (mobilon a natív megosztásra). 2. Nyisd meg a letöltött képet.",
     expected:
-      "PNG-kártya töltődik le a névvel, típuscímkével és a karakter-ábrával — kliens-oldali render, számszerű pontszám nem szerepel a képen, és a letöltéshez publikus link nem jön létre.",
+      "PNG-kártya töltődik le a névvel, típuscímkével és a karakter-ábrával – kliens-oldali render, számszerű pontszám nem szerepel a képen, és a letöltéshez publikus link nem jön létre.",
     automated: "none",
     coveredBy: "",
     priority: "P3",
@@ -231,7 +231,7 @@ export const cases = [
     steps:
       "1. Hibára állított email-küldés mellett készíts meghívót email-címmel. 2. Nézd meg a visszajelzést és a listát. 3. Másold ki és nyisd meg a linket.",
     expected:
-      "A felület jelzi, hogy az email küldése nem sikerült, de a meghívó LÉTREJÖTT: a függő sor ott van, a link másolható és működik — a kézbesítési hiba nem nyeli el a linket.",
+      "A felület jelzi, hogy az email küldése nem sikerült, de a meghívó LÉTREJÖTT: a függő sor ott van, a link másolható és működik – a kézbesítési hiba nem nyeli el a linket.",
     automated: "none",
     coveredBy: "",
     priority: "P3",
@@ -261,7 +261,7 @@ export const cases = [
     steps:
       "1. Készíts egymás után 3 meghívó-linket (email nélkül). 2. Próbálj negyediket készíteni. 3. Vonj vissza egyet, és próbáld újra.",
     expected:
-      "Az első 3 létrejön; a 4. kérésre hibaüzenet jön a limitről (max 3 aktív meghívó), új sor NEM keletkezik. Egy meghívó visszavonása után a készítés újra működik — a visszavont/lejárt nem számít bele a limitbe.",
+      "Az első 3 létrejön; a 4. kérésre hibaüzenet jön a limitről (max 3 aktív meghívó), új sor NEM keletkezik. Egy meghívó visszavonása után a készítés újra működik – a visszavont/lejárt nem számít bele a limitbe.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -277,7 +277,7 @@ export const cases = [
     steps:
       "1. Kijelentkezett böngészőben nyisd meg a kapott /interaction/compare/<token> linket. 2. Jelentkezz be a partner-fiókkal a felkínált sign-in oldalon.",
     expected:
-      "A link a /sign-in oldalra visz redirect_url-lel; a belépés után automatikusan a consent-oldalra kerülsz (a token nem veszik el útközben) — a meghívó nevével és elfogadás/elutasítás gombokkal.",
+      "A link a /sign-in oldalra visz redirect_url-lel; a belépés után automatikusan a consent-oldalra kerülsz (a token nem veszik el útközben) – a meghívó nevével és elfogadás/elutasítás gombokkal.",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -291,9 +291,9 @@ export const cases = [
     preconditions:
       "Függő meghívó; mindkét fiókban kitöltött saját eredmény; a partner a consent-oldalon áll.",
     steps:
-      "1. Partnerként olvasd el a consent-kártyát (mit lát a másik fél), kattints az „Elfogadom — mutassátok” gombra. 2. Nézd meg a betöltő oldalt. 3. A meghívó fiókjában frissítsd a /interaction oldalt, nyisd meg a párt.",
+      "1. Partnerként olvasd el a consent-kártyát (mit lát a másik fél), kattints az „Elfogadom – mutassátok” gombra. 2. Nézd meg a betöltő oldalt. 3. A meghívó fiókjában frissítsd a /interaction oldalt, nyisd meg a párt.",
     expected:
-      "Elfogadás után a partner a /interaction?pair=<id> páros nézetre kerül. A meghívó oldalán a sor „elfogadva” állapotra vált a partner nevével és „megnyitás” linkkel — ugyanaz a páros nézet nyílik. A meghívó in-app értesítést is kap az elfogadásról.",
+      "Elfogadás után a partner a /interaction?pair=<id> páros nézetre kerül. A meghívó oldalán a sor „elfogadva” állapotra vált a partner nevével és „megnyitás” linkkel – ugyanaz a páros nézet nyílik. A meghívó in-app értesítést is kap az elfogadásról.",
     automated: "partial",
     coveredBy: "tests/unit/results/pair-simulation.test.ts",
     priority: "P1",
@@ -402,7 +402,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a páros nézetet (/interaction?pair=<id>) a meghívó fiókjával. 2. Nézd végig a fejlécet és a szöveg-blokkokat. 3. Keresd meg, szerepel-e bárhol a partner számszerű dimenzió-pontszáma.",
     expected:
-      "A fejléc mindkét felet mutatja: karakter-ábra + típuscímke + név mindkét oldalon. A dinamika-szimuláció szöveges blokkokat ad (erősségek/súrlódás/beszéljétek meg). A partner NUMERIKUS pontszámai sehol nem jelennek meg — csak a szimuláció szövege és az ábra.",
+      "A fejléc mindkét felet mutatja: karakter-ábra + típuscímke + név mindkét oldalon. A dinamika-szimuláció szöveges blokkokat ad (erősségek/súrlódás/beszéljétek meg). A partner NUMERIKUS pontszámai sehol nem jelennek meg – csak a szimuláció szövege és az ábra.",
     automated: "partial",
     coveredBy:
       "tests/unit/results/pair-simulation.test.ts; tests/unit/results/interaction-language.test.ts",
@@ -418,7 +418,7 @@ export const cases = [
     steps:
       "1. A PARTNER fiókjával a /interaction listában kattints a pár melletti visszavonásra. 2. Frissítsd a meghívó fiókjában a /interaction oldalt. 3. Mindkét fiókkal próbáld megnyitni a feljegyzett /interaction?pair=<id> URL-t.",
     expected:
-      "A pár mindkét fél listájából eltűnik (a visszavonás nem csak a meghívó joga). A pair-URL egyik oldalon sem mutat páros nézetet többé — az alap szimulátor-nézet jön, a partner adataihoz nincs további hozzáférés.",
+      "A pár mindkét fél listájából eltűnik (a visszavonás nem csak a meghívó joga). A pair-URL egyik oldalon sem mutat páros nézetet többé – az alap szimulátor-nézet jön, a partner adataihoz nincs további hozzáférés.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

@@ -73,7 +73,7 @@ export function ObserverApprovalCard({
               className="flex flex-col gap-2 rounded-xl border border-sand bg-cream/50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
             >
               <div className="min-w-0">
-                {/* A címkék gyakran nyers e-mail címek — törés nélkül
+                {/* A címkék gyakran nyers e-mail címek – törés nélkül
                     kifutnának a kártyából (oldal-szintű vízszintes scroll). */}
                 <p className="break-words text-caption text-ink">
                   <span className="font-semibold">{a.inviterName}</span>

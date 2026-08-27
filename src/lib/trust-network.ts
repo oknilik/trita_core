@@ -192,11 +192,11 @@ export interface TrustNodeStat {
   userId: string;
   /** Hányan értékelték (befelé irányuló megfigyelések). */
   inboundCount: number;
-  /** Befelé irányuló bizalom átlaga (0–100) — null a küszöb alatt. */
+  /** Befelé irányuló bizalom átlaga (0–100) – null a küszöb alatt. */
   inboundMean: number | null;
   /**
    * Hány erős (strong_trust), BEFELÉ evidenciált él kapcsolódik hozzá
-   * (kölcsönös, vagy egyoldalú, ahol ő az értékelt) — a fejléc-kontrakt
+   * (kölcsönös, vagy egyoldalú, ahol ő az értékelt) – a fejléc-kontrakt
    * szerint a csak-kifelé él nem számít.
    */
   strongEdgeCount: number;
@@ -218,19 +218,19 @@ export interface TrustNetwork {
   measuredPairCount: number;
   /** Az összes lehetséges pár (ha ismert a taglista), különben null. */
   possiblePairCount: number | null;
-  /** measuredPairCount / possiblePairCount — null, ha a taglista nem ismert. */
+  /** measuredPairCount / possiblePairCount – null, ha a taglista nem ismert. */
   coverage: number | null;
 }
 
 /**
  * A bizalmi háló felépítése érvényes megfigyelésekből. A hívó felel a
  * (aboutUserId, raterUserId) páronkénti dedupe-ért (legfrissebb kör
- * nyer) — ld. trust-network.server.ts.
+ * nyer) – ld. trust-network.server.ts.
  *
  * Ha `memberIds` adott, a megfigyelések a JELENLEGI tag-halmazra szűkülnek
  * (értékelő ÉS értékelt is tag legyen): a kilépett tagok korábbi körökből
  * ittmaradt válaszai nélkül nem duzzad az él-/erős-él-szám, a hub- és
- * beágyazatlan-jelölés, az inbound-átlag — és a lefedettség (mért pár /
+ * beágyazatlan-jelölés, az inbound-átlag – és a lefedettség (mért pár /
  * lehetséges pár a jelenlegi tagokból) sem lépheti túl a 100%-ot.
  */
 export function computeTrustNetwork(
@@ -271,7 +271,7 @@ export function computeTrustNetwork(
     return [{ a, b, score, type: trustEdgeType(score), mutual: true }];
   });
 
-  // Csomópont-statisztikák — minden érintett (vagy megadott) tagra.
+  // Csomópont-statisztikák – minden érintett (vagy megadott) tagra.
   const nodeIds = new Set<string>(memberIds ?? []);
   if (!memberIds) {
     for (const obs of valid) {

@@ -189,8 +189,8 @@ const DEFAULT_ROLE_FIT: Record<Locale, { strong: string; medium: string; watchOu
   },
   en: {
     strong: "With a balanced profile you can thrive in many roles: generalist, coordinating, and bridge positions where flexibility and stability are the value.",
-    medium: "Specialized roles built on a single strong trait can also work — there your motivation and experience decide, not your personality profile.",
-    watchOut: "Extreme settings (intense pressure, full isolation, or constant spotlight) draw less on your balance — they require deliberate preparation.",
+    medium: "Specialized roles built on a single strong trait can also work – there your motivation and experience decide, not your personality profile.",
+    watchOut: "Extreme settings (intense pressure, full isolation, or constant spotlight) draw less on your balance – they require deliberate preparation.",
   },
 };
 
@@ -227,7 +227,7 @@ export function buildWorkstyleContent(
     return `${DIM_LABELS[dim]?.[lang] ?? dim} · ${levelLabel}`;
   };
 
-  // "Ahogy működsz" narratives — a narratívák és a risk-szövegek KÜLÖN
+  // "Ahogy működsz" narratives – a narratívák és a risk-szövegek KÜLÖN
   // gyűjtve, hogy a nevesített slotok (howYouWorkParts) ne pozícióból
   // találgassák, melyik bekezdés kockázat.
   const narratives: string[] = [];
@@ -246,10 +246,10 @@ export function buildWorkstyleContent(
   }
   // Nem-feloldás párok (risk + note): az összefoglaló után a gyakorlati tanács
   // is bekerül külön bekezdésként, és strukturáltan is (riskParts). A két
-  // hangnem UGYANAZT a tartalmat kapja — csak a slot és a keretezés más.
+  // hangnem UGYANAZT a tartalmat kapja – csak a slot és a keretezés más.
   const riskParts: WorkstyleContent["riskParts"] = [];
   const riskTexts: string[] = [];
-  // Fél-pár (csak summary VAGY csak tanács van a deckben) — nevesített
+  // Fél-pár (csak summary VAGY csak tanács van a deckben) – nevesített
   // kártyára nem való, de a kontextusból sem veszhet el.
   const orphanRiskTexts: string[] = [];
   for (const pair of engine.pairs) {
@@ -270,7 +270,7 @@ export function buildWorkstyleContent(
       if (advice) orphanRiskTexts.push(advice);
     }
   }
-  // Kiegyensúlyozott profil: se pár, se pólusos solo-dim — a lapos profil is
+  // Kiegyensúlyozott profil: se pár, se pólusos solo-dim – a lapos profil is
   // kapjon értelmes nyitó bekezdést.
   if (narratives.length === 0 && riskTexts.length === 0) {
     narratives.push(DEFAULT_NARRATIVE[lang]);
@@ -282,8 +282,8 @@ export function buildWorkstyleContent(
   // narratíva; watch = CSAK `tone: "risk"` pár (summary + tanács együtt);
   // notes = a `tone: "note"` párok (semleges kártya); context = a többi.
   // A slot-választás a HANGNEMBŐL jön (score-valence): a korábbi
-  // `reverseValenced` szűrő — amely utólag emelte ki a fordított skálájú
-  // párokat a watch-slotból — ezzel feleslegessé vált és kivezetve.
+  // `reverseValenced` szűrő – amely utólag emelte ki a fordított skálájú
+  // párokat a watch-slotból – ezzel feleslegessé vált és kivezetve.
   const riskOnly = riskParts.filter((p) => p.tone === "risk");
   const noteOnly = riskParts.filter((p) => p.tone === "note");
   const partText = (part: (typeof riskParts)[number]) =>
@@ -291,7 +291,7 @@ export function buildWorkstyleContent(
   const firstRiskText = riskOnly[0] ? partText(riskOnly[0]) : null;
   const firstNoteText = noteOnly[0] ? partText(noteOnly[0]) : null;
   // Defenzív fallback: ha (hiányos deck miatt) egyetlen narratíva sincs, a
-  // main a risk/note szövegre esik vissza — üres main mellett a szekció el sem
+  // main a risk/note szövegre esik vissza – üres main mellett a szekció el sem
   // készülne, és a tartalom veszne el.
   const mainText =
     narratives[0] ?? orphanRiskTexts[0] ?? firstRiskText ?? firstNoteText ?? "";
@@ -306,7 +306,7 @@ export function buildWorkstyleContent(
     ],
   };
 
-  // Vakfolt + nyomás alatti működés — a legmarkánsabb (top-2) dimenzióból,
+  // Vakfolt + nyomás alatti működés – a legmarkánsabb (top-2) dimenzióból,
   // pároktól függetlenül, hipotézis-keretezéssel (P2.1). A részletes kártya
   // összefűzött szöveget kap, az executive summary a strukturált részeket.
   const pressure: string[] = [];
@@ -320,11 +320,11 @@ export function buildWorkstyleContent(
     }
   }
 
-  // Fejlődési javaslat (P2.4, P5.5) — a legalacsonyabb dimenzióhoz, csak ha
+  // Fejlődési javaslat (P2.4, P5.5) – a legalacsonyabb dimenzióhoz, csak ha
   // ténylegesen alacsony sávban van (kiegyensúlyozott profilnál nincs tipp).
   // growthTip: rövid forma (summary-oldal); growthPlan: háromlépcsős ív.
   // A fordított E KIMARAD a legalacsonyabb-választásból (motor-audit v6,
-  // M4a): az alacsony Emocionalitás stabilitás (erőforrás), nem deficit — a
+  // M4a): az alacsony Emocionalitás stabilitás (erőforrás), nem deficit – a
   // „Fejlődési fókusz · Emocionalitás · alacsony" forrás-chip egy stabil
   // kitöltőnél hamis keretezés volt. A választás a legalacsonyabb NEM-E
   // dimenzióra esik (ugyanaz a pólus-szabály, mint a selectGrowthFocusItems).
@@ -343,10 +343,10 @@ export function buildWorkstyleContent(
     };
   })();
 
-  // „Csapatban működve" fejezet (P4.2) — dimenzió-szintű kompozíció:
+  // „Csapatban működve" fejezet (P4.2) – dimenzió-szintű kompozíció:
   //  - click: a top-2 markáns dimenzió;
   //  - friction: pólusos dimenziók a súrlódás-jóslók súly-sorrendjében
-  //    (C > A > H > E > X > O — a team-stats
+  //    (C > A > H > E > X > O – a team-stats
   //    FRICTION_WEIGHTS sorrendje, hogy a riport és a csapat-felület
   //    ugyanazt a modellt mondja), legfeljebb kettő;
   //  - needs: a legmarkánsabb dimenzió + a legalacsonyabb (ha low sávos).
@@ -398,7 +398,7 @@ export function buildWorkstyleContent(
     ? (ROLE_TAGS[lang]?.[roleFitSource] ?? SOLO_ROLE_TAGS[lang]?.[roleFitSource])
     : null;
 
-  // P2.2 — a második legerősebb dimenzió árnyalása solo-dim ágon:
+  // P2.2 – a második legerősebb dimenzió árnyalása solo-dim ágon:
   // (1) módosító mondat, (2) a másodlagos dimenzió top szereptagjaiból
   // legfeljebb kettő a „Működhet" sávba (dedup). Pár-alapú ágon nem fut,
   // ott a narratíva eleve két dimenzióból épül.
@@ -419,7 +419,7 @@ export function buildWorkstyleContent(
     }
   }
 
-  // Environment rows — a dimScores a hedge-sávok (F3) feloldásához megy át:
+  // Environment rows – a dimScores a hedge-sávok (F3) feloldásához megy át:
   // pólus-ítélet a 65/70 ill. 30/35 közti sávból → „Inkább …" szint-szó.
   const envItems = getEnvRows(engine.categories, dimScores).map((r) => ({
     label: r.label[lang],
@@ -434,7 +434,7 @@ export function buildWorkstyleContent(
     if (text) takeaways.push(text);
   }
   if (takeaways.length === 0) {
-    // Solo-dim ágon a rövid SOLO_DIM_SUMMARIES megy ide, NEM a narratívák —
+    // Solo-dim ágon a rövid SOLO_DIM_SUMMARIES megy ide, NEM a narratívák –
     // különben a „Kulcs-tanulságok" szó szerint megismételné az
     // „Ahogy működsz" blokkot (javítási terv 2026-07, P1.3).
     for (const sd of engine.topSoloDims) {
@@ -468,14 +468,14 @@ export function buildWorkstyleContent(
 }
 
 // ─────────────────────────────────────────────────────────────────────
-// Fejlődési fókusz — kiválasztási szabály (results-oldal „Fejlődési fókusz"
+// Fejlődési fókusz – kiválasztási szabály (results-oldal „Fejlődési fókusz"
 // szekciója). Motor-audit v4:
 //  - FIX 2 (E fordított skála): a deficit-logika („a legalacsonyabb
-//    pontszám = fejlesztendő") a fordított Emocionalitásra hamis — az
+//    pontszám = fejlesztendő") a fordított Emocionalitásra hamis – az
 //    alacsony E stabilitás (erőforrás), nem hiány. Egy stabil kitöltőnél
 //    a Félelem/Szorongás 20 pont nem „első számú fejlődési terület", ezért a
 //    E-facetek és a E-dimenzió KIMARADNAK a deficit-választásból.
-//  - FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-bontás —
+//  - FIX 4 (0 mint „nincs mérve"): örökség-eredményben nincs facet-bontás –
 //    a hiányzó facet nem 0 pont. A hívó csak VALÓDI facet-pontszámokat adjon
 //    át (üres facets tömb = nincs adat), ilyenkor a dimenzió-szintű fallback
 //    fut, koholt 0-facet nem kerülhet a fókuszba.
@@ -495,7 +495,7 @@ interface GrowthFocusDimensionInput {
   label: string;
   color: string;
   score: number;
-  /** Csak MÉRT facet-pontszámok — örökség-sorra üres tömb. */
+  /** Csak MÉRT facet-pontszámok – örökség-sorra üres tömb. */
   facets: { code: string; label: string; score: number }[];
 }
 
@@ -504,7 +504,7 @@ export function selectGrowthFocusItems(
 ): GrowthFocusItem[] {
   const allFacets: GrowthFocusItem[] = [];
   for (const dim of mainDimensions) {
-    if (!deficitSlotEligible(dim.code)) continue; // fordított skála — nem deficit
+    if (!deficitSlotEligible(dim.code)) continue; // fordított skála – nem deficit
     for (const f of dim.facets) {
       allFacets.push({
         code: f.code,
@@ -532,7 +532,7 @@ export function selectGrowthFocusItems(
   }
   if (facetItems.length >= 1) return facetItems;
 
-  // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) —
+  // Dimenzió-szintű fallback (nincs facet-adat vagy minden facet ≥60) –
   // ugyanaz a pólus-szabály: az alacsony E itt sem „fejlesztendő".
   return mainDimensions
     .filter((d) => deficitSlotEligible(d.code) && d.score < 60)
@@ -551,12 +551,12 @@ export function selectGrowthFocusItems(
 // ─────────────────────────────────────────────────────────────────────
 // Hero-mondat dimenzió-választása (results-oldal „heroInsight"). Motor-audit
 // v6, M4c: a „leggyengébb" slot korábban nyers `.sort`-tal a fordított E-t
-// is kiválaszthatta — egy stabil (alacsony Emocionalitású) kitöltő hero-
+// is kiválaszthatta – egy stabil (alacsony Emocionalitású) kitöltő hero-
 // mondata a stabilitását nevezte meg gyengeségként. Szabályok:
 //  - rangsor a kanonikus rankDimensionScores-szal (determinista tie-break);
 //  - a leggyengébb slot a legalacsonyabb NEM-E dimenzió;
 //  - lapos profilnál (max−min < HERO_RANGE_GATE_FACTOR·SEM) nincs
-//    „leggyengébb" — csak az erősség megy ki (weakest: null).
+//    „leggyengébb" – csak az erősség megy ki (weakest: null).
 // ─────────────────────────────────────────────────────────────────────
 
 /**
@@ -566,7 +566,7 @@ export function selectGrowthFocusItems(
  * dimenzió TERJEDELMÉT (max−min): a „legerősebb/leggyengébb" állításhoz a
  * szélsőértékeket utólag, a zajt is beleértve választjuk ki. Hat független
  * pontszám várható terjedelme tiszta zaj mellett ≈ 2,5·SEM, ezért a
- * páronkénti √2-nél szigorúbb, 2·SEM-es kapu a szándékos minimum — a
+ * páronkénti √2-nél szigorúbb, 2·SEM-es kapu a szándékos minimum – a
  * korábbi komment tévesen nevezte ezt „a két pontszám hibájának".
  * Viselkedés-változás nincs; a értéket unit-teszt rögzíti.
  */
@@ -584,10 +584,10 @@ export function selectHeroInsightDims<T extends { code: string; score: number }>
   if (!weakest || weakest.code === strongest.code) {
     return { strongest, weakest: null, flat: false };
   }
-  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne — a terjedelem-
+  // Lapos profilnál a „leggyengébb" kijelölése műtermék lenne – a terjedelem-
   // kapu indoklása a HERO_RANGE_GATE_FACTOR kommentjében (range-statisztika,
   // nem páronkénti különbség). ÉS: ugyanez a kapu az ERŐSSÉG-állítást is
-  // érvényteleníti — egy 2·SEM-en belüli mezőnyből a „legerősebb" kiemelése
+  // érvényteleníti – egy 2·SEM-en belüli mezőnyből a „legerősebb" kiemelése
   // ugyanúgy zaj-műtermék, miközben a strip csupa-közepest, a PDF pedig
   // „Kiegyensúlyozott profil"-t mond. A flat jelzésre a hívó a
   // kiegyensúlyozott-profil hero-mondatot rendereli erősség-ige helyett.

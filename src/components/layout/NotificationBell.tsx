@@ -46,7 +46,7 @@ export function NotificationBell({ isOpen, onToggle }: NotificationBellProps) {
         <path d="M10 2a5 5 0 0 0-5 5v3l-1.5 2.5h13L15 10V7a5 5 0 0 0-5-5Z" />
         <path d="M8 16a2 2 0 0 0 4 0" />
       </svg>
-      {/* Badge háttere: bronze-dark — a világosabb accent-primary fehér
+      {/* Badge háttere: bronze-dark – a világosabb accent-primary fehér
           10px-es számmal csak 3.28:1 (AA-bukó); a bronze-dark 4.89:1. */}
       {count > 0 && (
         <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center lg:-right-0.5 lg:-top-0.5 rounded-full bg-[var(--color-bronze-dark)] px-1 text-micro font-bold leading-none text-[var(--color-text-on-accent-deep)]">

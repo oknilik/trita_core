@@ -115,7 +115,7 @@ export const s = StyleSheet.create({
   // A kártya-közöket a KONTÉNER gap-je adja, nem a kártyák marginBottom-ja.
   // Ok: az utolsó kártya alsó margója túllóghat a tartalom-dobozon (a törzs
   // 795 pt-nál ér véget, +12 pt margó = 808 = a doboz alja), és a react-pdf
-  // ilyenkor ÜRES folytatás-oldalt nyit — a szemmel látható hézag miatt
+  // ilyenkor ÜRES folytatás-oldalt nyit – a szemmel látható hézag miatt
   // indokolatlannak tűnő lebegő lap. Gap-pel az utolsó elem után nincs margó.
   body: {
     padding: "8 32 0 32",
@@ -123,7 +123,7 @@ export const s = StyleSheet.create({
     flexDirection: "column",
     gap: cardShape.gap,
   },
-  // Fehér kártya — az élő felület Card/DashboardPanel megfelelője.
+  // Fehér kártya – az élő felület Card/DashboardPanel megfelelője.
   card: {
     backgroundColor: colors.white,
     borderRadius: cardShape.radius,
@@ -150,7 +150,7 @@ export const s = StyleSheet.create({
     color: colors.bronze,
     fontWeight: 600,
   },
-  // Szekciócím a fejezeten belül — Fraunces, valódi második szint.
+  // Szekciócím a fejezeten belül – Fraunces, valódi második szint.
   sectionTitle: {
     fontFamily: "Fraunces",
     fontSize: type.section,
@@ -182,7 +182,7 @@ export const s = StyleSheet.create({
     marginTop: 12,
     fontWeight: 600,
   },
-  // First eyebrow after header — no top margin
+  // First eyebrow after header – no top margin
   sectionEyebrowFirst: {
     fontSize: type.eyebrow,
     letterSpacing: type.eyebrowTracking,
@@ -197,7 +197,7 @@ export const s = StyleSheet.create({
     marginTop: 8,
     marginBottom: 8,
   },
-  // Divider line between major sections — bigger spacing
+  // Divider line between major sections – bigger spacing
   sectionDivider: {
     borderTop: `1 solid ${colors.sand}`,
     marginTop: 14,

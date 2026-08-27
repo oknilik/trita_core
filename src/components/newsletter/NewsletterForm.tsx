@@ -220,7 +220,7 @@ export function NewsletterForm({
           }
         />
 
-        {/* Mézesbödön — a botok kitöltik, az emberek nem látják. */}
+        {/* Mézesbödön – a botok kitöltik, az emberek nem látják. */}
         <input
           id={`${fieldIdPrefix}-newsletter-website`}
           type="text"

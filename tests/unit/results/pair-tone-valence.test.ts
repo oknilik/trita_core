@@ -84,7 +84,7 @@ test("resolvePairTone: fordított skálájú feloldás-pár értékelő felület
   // Önismereti felületen a feloldás-narratíva folyó szöveg, nincs valenciás
   // címke, amit kapuzni kellene.
   assert.equal(resolvePairTone("resolution", members, "self"), "resolution");
-  // Értékelő (jelölt-)felületen viszont zöld „Erősség" badge-et kapna — az
+  // Értékelő (jelölt-)felületen viszont zöld „Erősség" badge-et kapna – az
   // alacsony E-t erősségként címkézni ugyanaz a valencia, csak tükrözve.
   assert.equal(resolvePairTone("resolution", members, "evaluative"), "note");
 });
@@ -160,7 +160,7 @@ test("minden pár tartalma kimegy valamelyik slotba (self felület, hu+en)", () 
         assert.ok(narrative, `${def.contentKey}/${lang}: hiányzó narratíva`);
         assert.ok(all.includes(narrative), `${def.contentKey}/${lang}: narratíva elveszett`);
       } else {
-        // A deklarált risk-párok (mind E-vezéreltek) note-ként jelennek meg —
+        // A deklarált risk-párok (mind E-vezéreltek) note-ként jelennek meg –
         // az összefoglaló ÉS a gyakorlati tanács is kimegy.
         assert.ok(summary && advice, `${def.contentKey}/${lang}: hiányos deck`);
         assert.ok(all.includes(summary), `${def.contentKey}/${lang}: összefoglaló elveszett`);
@@ -172,7 +172,7 @@ test("minden pár tartalma kimegy valamelyik slotba (self felület, hu+en)", () 
 
 test("értékelő felület: a note-párokhoz van renderelhető szöveg (hu+en)", () => {
   // A jelölt-oldal a notePairs-hez RESOLUTION_NARRATIVES-t (+ ha van,
-  // RISK_TEXTS tanácsot) rendel — a semleges panel nem maradhat üresen.
+  // RISK_TEXTS tanácsot) rendel – a semleges panel nem maradhat üresen.
   for (const def of TENSION_PAIRS) {
     const engine = runProfileEngine(profileForPair(def), "TRITAN", "evaluative");
     for (const pair of engine.notePairs) {

@@ -53,7 +53,7 @@ export function TeamTabBar({
               key={tab.key}
               href={`/team/${teamId}?tab=${tab.key}`}
               // scroll={false}: fülváltásnál a viewport marad, a tartalom a
-              // fül-sor alatt cserélődik — nem „külön oldal betöltése" érzés.
+              // fül-sor alatt cserélődik – nem „külön oldal betöltése" érzés.
               scroll={false}
               aria-current={isActive ? "page" : undefined}
               className={[

@@ -22,7 +22,7 @@ const RISK = "Valódi kockázati összefoglaló. Mitigációs tanács hozzá.";
 const NOTE = "Semleges mintázat-megfigyelés. Így érdemes ezzel dolgozni.";
 
 describe("HowYouWorkSection", () => {
-  it("watch-slot nélkül NINCS Figyelendő kártya — a második narratíva kontextus", () => {
+  it("watch-slot nélkül NINCS Figyelendő kártya – a második narratíva kontextus", () => {
     render(
       <HowYouWorkSection
         parts={{ main: MAIN, watch: null, notes: [], context: [SECOND_NARRATIVE] }}

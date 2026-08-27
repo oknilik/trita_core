@@ -20,13 +20,13 @@ test("observer draft cookie helper", async (t) => {
     assert.equal(observerDraftCookieName("inv_abc123"), "trita_obsdraft_inv_abc123");
   });
 
-  await t.test("az érték determinisztikus hex HMAC — meghívónként különböző", () => {
+  await t.test("az érték determinisztikus hex HMAC – meghívónként különböző", () => {
     const a1 = observerDraftCookieValue("inv_a");
     const a2 = observerDraftCookieValue("inv_a");
     const b = observerDraftCookieValue("inv_b");
 
     assert.equal(a1, a2, "ugyanarra az id-ra stabil");
-    assert.notEqual(a1, b, "más meghívóra más érték — nem vihető át");
+    assert.notEqual(a1, b, "más meghívóra más érték – nem vihető át");
     assert.match(a1, /^[0-9a-f]{64}$/, "SHA-256 hex");
   });
 

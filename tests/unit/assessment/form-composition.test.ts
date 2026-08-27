@@ -75,7 +75,7 @@ describe("TSFI-S rövid forma összetétele", () => {
   });
 });
 
-describe("isCompleteFormAnswerSet — forma-váltás átmenete", () => {
+describe("isCompleteFormAnswerSet – forma-váltás átmenete", () => {
   it("a mai rövid és teljes forma pontos id-halmazát elfogadja", () => {
     assert.ok(isCompleteFormAnswerSet("TRITAN", new Set(shortItems.map((q) => q.id))));
     assert.ok(isCompleteFormAnswerSet("TRITAN", new Set(fullItems.map((q) => q.id))));
@@ -83,7 +83,7 @@ describe("isCompleteFormAnswerSet — forma-váltás átmenete", () => {
 
   it("a KORÁBBI rövid forma (98/99-cel, 77/79 nélkül) beadását elfogadja", () => {
     // Beragadt kliens-bundle, több napos vendég-draft, régi observer-fül.
-    // Ezek hiánytalanul kitöltött 60 itemes beadások — elutasítani annyi
+    // Ezek hiánytalanul kitöltött 60 itemes beadások – elutasítani annyi
     // lenne, mint eldobni egy kész kitöltést.
     assert.equal(legacyShortIds.size, 60);
     assert.ok(isCompleteFormAnswerSet("TRITAN", legacyShortIds));

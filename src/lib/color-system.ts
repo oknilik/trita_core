@@ -297,10 +297,10 @@ export function layerHeroGradient(layer: LayerKey): string {
  *
  * MIÉRT KELL KÜLÖN: a hero mindkét sémán sötét panel, de NEM ugyanaz a
  * sötét. Világosban a krém vászon fölött ül (7–8:1 elválás), sötéten a
- * majdnem-fekete vászon fölött — ott ugyanaz a hex 1,0–1,3:1-et adna a
+ * majdnem-fekete vászon fölött – ott ugyanaz a hex 1,0–1,3:1-et adna a
  * lap saját réteg-tónusához képest, vagyis a hero alsó fele eltűnne. A
  * sötét készlet ezért MEGEMELT stopokat kap (2,3 / 1,85 / 1,45 a
- * lap-tónushoz mérve) — a figura-háttér viszony így mindkét sémán él.
+ * lap-tónushoz mérve) – a figura-háttér viszony így mindkét sémán él.
  */
 export function layerHeroGradientCss(layer: LayerKey): string {
   return (
@@ -311,7 +311,7 @@ export function layerHeroGradientCss(layer: LayerKey): string {
 }
 
 // ─── Értékelő ramp (tier / fit / verdict / confidence / adat-minőség) ────────
-// Szándékos értékelés színe: zsálya→bronz→neutrális — „hangosabb→halkabb",
+// Szándékos értékelés színe: zsálya→bronz→neutrális – „hangosabb→halkabb",
 // sosem „jó→rossz-piros". Piros ezen a skálán TILOS (a piros kizárólag
 // hiba-állapot és destruktív megerősítés).
 
@@ -331,7 +331,7 @@ export const EVAL_RAMP: Record<EvalLevel, EvalStop> = {
   high: { fg: "#1e3d34", accent: COLORS.sage, bg: COLORS.sageSoft },
   /** bronz */
   mid: { fg: "#8a5530", accent: COLORS.bronze, bg: "#fdf5ee" },
-  /** meleg neutrális (homok-család) — nem „hiány-szürke" */
+  /** meleg neutrális (homok-család) – nem „hiány-szürke" */
   low: { fg: COLORS.muted, accent: "#8a8a9a", bg: "#f2ede6" },
 };
 
@@ -348,7 +348,7 @@ export const STATE_SOLID = {
 } as const;
 
 /**
- * Dinamika-trió (aligned / complementary / friction) — dokumentált KIVÉTEL:
+ * Dinamika-trió (aligned / complementary / friction) – dokumentált KIVÉTEL:
  * státusz-jellegű kódolás adat-kontextusban, mindig felirattal és a
  * „nem jelent tényleges konfliktust" magyarázattal (doksi 2.5).
  */
@@ -362,7 +362,7 @@ export const DYNAMICS_COLORS = {
  * Ugyanaz DOM-hoz: CSS-változóként, hogy kövesse a színsémát.
  *
  * Miért két térkép: a fenti literál kell a fix médiumoknak (PDF, email,
- * OG-kép — ott nincs CSS-változó), ez pedig az inline style-hoz és az
+ * OG-kép – ott nincs CSS-változó), ez pedig az inline style-hoz és az
  * SVG-attribútumokhoz a felületen. A kettő szinkronját unit-teszt őrzi
  * (tests/unit/design/ts-color-maps.test.ts).
  */
@@ -374,13 +374,13 @@ export const DYNAMICS_COLORS_CSS = {
 
 // ─── Avatar-paletta (identitás) ──────────────────────────────────────────────
 //
-// 2026-08-09 — a MÉRÉS palettájáról a MÁRKA palettájára állítva.
+// 2026-08-09 – a MÉRÉS palettájáról a MÁRKA palettájára állítva.
 //
 // Az avatar eddig a hat dimenzió-base színt kapta (indigó, lila, arany,
 // oliva, petrol, rózsa). Két baja volt ennek:
 //
 //  1. JELENTÉS. A dimenzió-színek mérési eredményt jelölnek. Ha a monogram
-//     az „Emocionalitás lilát" viseli, az olvasó jelentést lát bele — pedig
+//     az „Emocionalitás lilát" viseli, az olvasó jelentést lát bele – pedig
 //     az avatar színe a névből hasheltet, nem a profilból. Ugyanaz a hiba,
 //     mint amikor a jelentő formák dekorációba kerülnek: a jel elveszti a
 //     hitelét. (Ezért került ki korábban a success/warning is.)
@@ -389,7 +389,7 @@ export const DYNAMICS_COLORS_CSS = {
 // Az új készlet kizárólag a márka saját tónusaiból áll (COLORS), és minden
 // alapszín ≥ 4,5:1 FEHÉR monogram-szöveggel. A hat érték szándékosan a
 // mélység és a hőfok mentén szóródik (két zöld, barna, pala, meleg szürke,
-// tinta), nem hat különböző hue mentén — így megkülönböztethetők, de nem
+// tinta), nem hat különböző hue mentén – így megkülönböztethetők, de nem
 // esnek szét szivárvánnyá.
 //
 // FONTOS: ezek nyers hexek, mert inline gradiens-háttérként utaznak, tehát
@@ -407,7 +407,7 @@ export const AVATAR_COLORS: readonly string[] = [
 
 export const AVATAR_GRADIENT_PAIRS: readonly (readonly [string, string])[] = [
   [COLORS.sage, COLORS.sageDeep],
-  // A márka két akcentje egy gradiensben — a készlet „aláírás" darabja.
+  // A márka két akcentje egy gradiensben – a készlet „aláírás" darabja.
   [COLORS.bronzeDark, COLORS.sageDeep],
   [COLORS.inkBody, COLORS.ink],
   [COLORS.sageDark, COLORS.ink],

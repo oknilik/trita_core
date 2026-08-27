@@ -28,7 +28,7 @@ type GlyphVariant = "hero" | "card" | "badge";
 const VIEWBOX: Record<GlyphVariant, string> = {
   hero: `0 0 ${GLYPH_CANVAS.width} ${GLYPH_CANVAS.height}`,
   // A card-kivágás a talajvonalat is tartalmazza (családi elem), a felirat
-  // sávját nem — a nevet a körülvevő UI adja.
+  // sávját nem – a nevet a körülvevő UI adja.
   card: "96 118 616 682",
   badge: "296 246 348 348",
 };
@@ -38,7 +38,7 @@ interface TypeGlyphProps {
   primaryCode: string;
   /** Második legerősebb dimenzió kódja. Egyezés = „tiszta" típus. */
   secondaryCode: string;
-  /** A típus neve — feliratként (hero) és aria-labelben. */
+  /** A típus neve – feliratként (hero) és aria-labelben. */
   typeLabel: string;
   /** Alcím a hero-változatban, pl. „Extraverzió × Nyitottság”. */
   dimensionLabel?: string;
@@ -47,7 +47,7 @@ interface TypeGlyphProps {
   intensity?: number;
   /**
    * S3-hedge: a másodlagos dimenzió megnevezése bizonytalan
-   * (personality-type.isSecondaryUncertain) — az aria-label ilyenkor
+   * (personality-type.isSecondaryUncertain) – az aria-label ilyenkor
    * rendezetlen párként írja le a két dimenziót, erősorrend-állítás nélkül
    * (a látható tábla/címke ugyanígy degradál).
    */
@@ -56,7 +56,7 @@ interface TypeGlyphProps {
   /**
    * Kitöltött krém alaplap. Alapból igen (kártya-szerű ábra); ha a
    * befoglaló felületnek saját háttere van, false-szal a forma beleolvad
-   * — így nem lesz „doboz a dobozban" hatás.
+   * – így nem lesz „doboz a dobozban" hatás.
    */
   canvas?: boolean;
   className?: string;
@@ -157,7 +157,7 @@ function motifElements(
 }
 
 /**
- * Csak a vonalmotívum, átlátszó alapon — legendához, szövegközi
+ * Csak a vonalmotívum, átlátszó alapon – legendához, szövegközi
  * jelöléshez, dimenzió-fejlécekhez. A motívum a MÁSODLAGOS dimenziót
  * jelöli a nyelvtanban.
  */
@@ -264,7 +264,7 @@ export function TypeGlyph({
         </>
       )}
 
-      {/* Alapforma — a domináns dimenzió */}
+      {/* Alapforma – a domináns dimenzió */}
       {geometry.path && (
         <path
           d={geometry.path}
@@ -309,7 +309,7 @@ export function TypeGlyph({
         />
       )}
 
-      {/* Vonalmotívum — a második legerősebb dimenzió.
+      {/* Vonalmotívum – a második legerősebb dimenzió.
           Tiszta típusnál (domináns = második) a motívum duplázva és
           felerősítve jelenik meg: két kisebb példány egymás alatt,
           vastagabb vonallal. */}

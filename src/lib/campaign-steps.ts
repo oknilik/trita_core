@@ -215,7 +215,7 @@ export async function resolveActiveSelfAssessmentCampaign(
  * adatot hamisítana. A zárt ütemezési kaput közvetlen API-beadással sem
  * lehet megkerülni.
  *
- * A beküldő API-k hívják (self assessment, szerep-kérdőív, pulse) —
+ * A beküldő API-k hívják (self assessment, szerep-kérdőív, pulse) –
  * fire-and-forget jelleggel is biztonságos (idempotens: ha a user már
  * túlhaladt a lépésen, nem történik semmi).
  */
@@ -255,7 +255,7 @@ export async function advanceCampaignStepForUser(
 
     const nextStep = p.currentStep + 1;
     const nextType = steps[nextStep];
-    // Ütemezés: a következő kérdőív ne azonnal érkezzen — default napi egy
+    // Ütemezés: a következő kérdőív ne azonnal érkezzen – default napi egy
     // (stepIntervalHours, 0 = azonnal). A kapu-időpontig a lépés zárva,
     // az értesítést a release (esedékesség / küldés-most) küldi ki.
     const intervalHours = Math.max(0, p.campaign.stepIntervalHours ?? 0);
@@ -568,7 +568,7 @@ export async function releaseDueCampaignSteps(options?: {
   force?: boolean;
   /**
    * A lépés-nyitási értesítés email-párjának kérése. A cron- és a „Küldés
-   * most" (force) út adja meg — ott a user nincs jelen. Az oldalbetöltéses
+   * most" (force) út adja meg – ott a user nincs jelen. Az oldalbetöltéses
    * user-szintű release NEM emailez (a user épp a felületen van).
    */
   emailNotify?: boolean;
@@ -639,7 +639,7 @@ export async function releaseDueCampaignSteps(options?: {
 /**
  * Résztvevők haladásának inicializálása aktiváláskor (vagy utólagos
  * hozzáadáskor). Szabály: a selfet tartalmazó lépés "előre teljesítettnek"
- * számít, ha a usernek már van elfogadható self-eredménye — így a nem-fresh
+ * számít, ha a usernek már van elfogadható self-eredménye – így a nem-fresh
  * kör nem ragad be az első lépésnél. Minden más lépést a kampány alatt kell
  * teljesíteni.
  *

@@ -42,7 +42,7 @@ function assertSameMap(
     assert.equal(
       resolved,
       literal[key].toLowerCase(),
-      `${label}.${key}: a CSS-alak (${cssValue} → ${resolved}) ≠ a literál (${literal[key]}) — ` +
+      `${label}.${key}: a CSS-alak (${cssValue} → ${resolved}) ≠ a literál (${literal[key]}) – ` +
         "a fix médiumok és a felület elcsúszna",
     );
   }
@@ -57,7 +57,7 @@ test("GLYPH_COLORS_CSS a literál térkép pontos tükre", () => {
 });
 
 test("DIMENSION_COLORS_CSS a literál paletta pontos tükre", () => {
-  // A dimenzió-paletta hármas (base/strong/soft) — laposítva mérjük, hogy
+  // A dimenzió-paletta hármas (base/strong/soft) – laposítva mérjük, hogy
   // ugyanaz az összevetés fusson rá, mint a többi térképre.
   const flatten = (map: Record<string, { base: string; strong: string; soft: string }>) =>
     Object.fromEntries(

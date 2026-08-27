@@ -36,7 +36,7 @@ function assertNonEmptyLabels<K extends string>(
   for (const value of values) {
     assert.ok(
       typeof labels[value] === "string" && labels[value].trim().length > 0,
-      `${name}: hiányzó címke — ${value}`,
+      `${name}: hiányzó címke – ${value}`,
     );
   }
   assert.equal(Object.keys(labels).length, values.length, `${name}: fölös kulcs a címke-mapban`);
@@ -46,7 +46,7 @@ test("CRM constants registry", async (t) => {
   await t.test("deal stage: címke + tone minden értékre; O ⊂ ALL", () => {
     assertNonEmptyLabels(DEAL_STAGES, DEAL_STAGE_LABELS, "DEAL_STAGE_LABELS");
     for (const stage of DEAL_STAGES) {
-      assert.ok(DEAL_STAGE_TONES[stage], `hiányzó tone — ${stage}`);
+      assert.ok(DEAL_STAGE_TONES[stage], `hiányzó tone – ${stage}`);
     }
     for (const stage of OPEN_DEAL_STAGES) {
       assert.ok((DEAL_STAGES as readonly string[]).includes(stage));
@@ -66,7 +66,7 @@ test("CRM constants registry", async (t) => {
   await t.test("quote státusz: címke + tone minden értékre", () => {
     assertNonEmptyLabels(QUOTE_STATUSES, QUOTE_STATUS_LABELS, "QUOTE_STATUS_LABELS");
     for (const status of QUOTE_STATUSES) {
-      assert.ok(QUOTE_STATUS_TONES[status], `hiányzó tone — ${status}`);
+      assert.ok(QUOTE_STATUS_TONES[status], `hiányzó tone – ${status}`);
     }
   });
 
@@ -89,7 +89,7 @@ test("CRM constants registry", async (t) => {
   await t.test("CRM notification-meta + i18n kulcsok léteznek (HU+EN)", () => {
     for (const type of ["CRM_NEXT_ACTION_DUE", "CRM_QUOTE_EXPIRING"] as const) {
       const meta = NOTIFICATION_TYPE_META[type];
-      assert.ok(meta, `hiányzó meta — ${type}`);
+      assert.ok(meta, `hiányzó meta – ${type}`);
       assert.ok(meta.titleKey.startsWith("notifications."));
       assert.ok(meta.bodyKey.startsWith("notifications."));
     }

@@ -13,7 +13,7 @@ import { COLORS } from "@/lib/design-tokens";
 // archetípus-kártyája a generikus site-kártya helyett. A robots noindex a
 // page-en marad — az OG-kép attól még működik előnézetként. Érvénytelen vagy
 // visszavont tokenre generikus brand-képet adunk (sosem 500).
-export const alt = "trita — személyiségprofil";
+export const alt = "trita – személyiségprofil";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 

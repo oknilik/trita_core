@@ -93,7 +93,7 @@ test("indoklás nélküli kedvezmény akkor is jelez, ha a kereten belül van", 
   assert.ok(!modest.warnings.includes("DISCOUNT_OVER_CAP"));
 });
 
-test("az utánkövetés hiánya jelzés — ebből lesz az egyszeri munka", () => {
+test("az utánkövetés hiánya jelzés – ebből lesz az egyszeri munka", () => {
   const oneOff = calculateQuote(
     input({ waves: 0, retainerMonths: 0 }),
     DEFAULT_RATE_CARD,

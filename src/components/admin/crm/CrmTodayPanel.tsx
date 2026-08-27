@@ -45,7 +45,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
       body: {
         action: "set_next_action",
         at: computePostponeAt(days),
-        // A jegyzet megmarad a halasztásnál — a lépés nem változott, csak a nap.
+        // A jegyzet megmarad a halasztásnál – a lépés nem változott, csak a nap.
         ...(deal.nextActionNote ? { note: deal.nextActionNote } : {}),
       },
     });
@@ -65,7 +65,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
       </h2>
       <p className="mt-1 text-xs text-ink-body">
         Lejárt és ma esedékes következő lépések. „Kész” = naplózod, mi történt,
-        és rögtön kitűzöd a következőt — egy mentésben.
+        és rögtön kitűzöd a következőt – egy mentésben.
       </p>
 
       {error && (
@@ -79,7 +79,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
           data-testid="crm-today-empty"
           className="mt-4"
           title="Minden esedékes lépés megvan mára."
-          description="Új teendő a Pipeline nézetben tűzhető ki — nyitott deal ne maradjon következő lépés nélkül."
+          description="Új teendő a Pipeline nézetben tűzhető ki – nyitott deal ne maradjon következő lépés nélkül."
         />
       ) : (
         <div className="mt-4 flex flex-col gap-3">
@@ -168,7 +168,7 @@ export function CrmTodayPanel({ deals }: { deals: CrmDealRow[] }) {
         onClose={() => setDoneDeal(null)}
         eyebrow="lépés elintézve"
         title={doneDeal?.title ?? ""}
-        description="Naplózd, mi történt, és tűzd ki a következő lépést — egy mentés."
+        description="Naplózd, mi történt, és tűzd ki a következő lépést – egy mentés."
       >
         {doneDeal && (
           <QuickLogForm

@@ -290,7 +290,7 @@ export async function POST(req: NextRequest) {
 
 // ── Közvetlen .mdx feltöltés (PUT) ────────────────────────────────────
 // A kész fájl frontmatterét a szerver olvassa (gray-matter), így a kliens
-// nem YAML-parsolgat. A feltöltött cikk MINDIG piszkozatként landol — a
+// nem YAML-parsolgat. A feltöltött cikk MINDIG piszkozatként landol – a
 // publikálás külön, tudatos lépés a listából.
 const uploadSchema = z.object({
   filename: z.string().min(1).max(200),
@@ -342,7 +342,7 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: "FRONTMATTER_PARSE_FAILED" }, { status: 400 });
   }
 
-  // YAML dátum-objektum vagy string — mindkettőt ISO-napra normalizáljuk
+  // YAML dátum-objektum vagy string – mindkettőt ISO-napra normalizáljuk
   const rawDate = data.publishedAt;
   const publishedAt =
     rawDate instanceof Date

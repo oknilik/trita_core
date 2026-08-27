@@ -41,6 +41,6 @@ if (
 ) {
   log.warn(
     { event: "resend.from_email_missing", fallback: DEFAULT_EMAIL_FROM },
-    "RESEND_FROM_EMAIL nincs beállítva — a küldés a defaultra esik; nem verifikált domainnél az admin-értesítők némán elhalnak",
+    "RESEND_FROM_EMAIL nincs beállítva – a küldés a defaultra esik; nem verifikált domainnél az admin-értesítők némán elhalnak",
   );
 }

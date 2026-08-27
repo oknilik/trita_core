@@ -622,7 +622,7 @@ async function runJoinTransaction(
   import("@/lib/notifications").then(({ handleOrgInviteAccepted }) =>
     handleOrgInviteAccepted({
       orgId: invite.orgId,
-      memberName: actor.username ?? "—",
+      memberName: actor.username ?? "–",
       memberUserId: actor.profileId,
     }).catch((err) => log.error({ event: "acceptance.org_invite_accepted_error", err: err }, "Org invite accepted error")),
   );
@@ -693,7 +693,7 @@ export async function resolveMembershipInviteResolution(params: {
         select: { id: true },
       });
       if (existingTeamMember) {
-        // A címzett már csapattag — a lógva maradt meghívó-sort eltakarítjuk,
+        // A címzett már csapattag – a lógva maradt meghívó-sort eltakarítjuk,
         // különben a journey pending-join prioritása redirect-hurkot okoz
         // (join-oldal → journey → join-oldal). A next path-ot CSAK a törlés
         // után oldjuk fel, hogy már a meghívó nélküli állapotot lássa.
@@ -724,7 +724,7 @@ export async function resolveMembershipInviteResolution(params: {
       ? "INVITE_ACCEPTED"
       : "INVITED_READY_TO_JOIN";
     if (inviteState === "INVITE_ACCEPTED") {
-      // A címzett már org-tag — a lógva maradt meghívó-sort eltakarítjuk,
+      // A címzett már org-tag – a lógva maradt meghívó-sort eltakarítjuk,
       // különben a journey pending-join prioritása redirect-hurkot okoz
       // (join-oldal → journey → join-oldal). A next path-ot CSAK a törlés
       // után oldjuk fel, hogy már a meghívó nélküli állapotot lássa.
@@ -787,7 +787,7 @@ async function notifyCandidateCompleted(inviteId: string): Promise<void> {
   const orgId = invite?.orgId ?? invite?.team?.orgId ?? null;
   if (!invite || !orgId) return;
 
-  const candidateName = invite.name ?? invite.email ?? "—";
+  const candidateName = invite.name ?? invite.email ?? "–";
 
   const { handleCandidateCompleted } = await import("@/lib/notifications");
   await handleCandidateCompleted({
@@ -1215,7 +1215,7 @@ export async function completeAcceptance(input: CompleteAcceptanceInput): Promis
     };
   }
 
-  // Értesítés a tanácsadóknak + org adminoknak (notif + email) —
+  // Értesítés a tanácsadóknak + org adminoknak (notif + email) –
   // fire-and-forget, a jelölt válaszát nem blokkolja és nem buktatja.
   void notifyCandidateCompleted(candidateContext.id).catch((err) =>
     log.error({ event: "acceptance.completion_notify_error", err: err }, "completion notify error"),

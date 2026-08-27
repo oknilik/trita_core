@@ -108,7 +108,7 @@ export default async function MyMeasurementsPage() {
         : 0;
     return {
       token: inv.token,
-      inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
+      inviterName: inv.inviter.username ?? inv.inviter.email ?? "–",
       expiresAt: inv.expiresAt,
       answered: Math.min(answered, total),
       total,
@@ -333,7 +333,7 @@ export default async function MyMeasurementsPage() {
                         : "/dashboard";
                       const started = isCurrent && card.started;
                       // OBSERVER_360: a lépés a self-kitöltéssel teljesül, de a
-                      // külső kép gyűjtése tovább fut — min. 3 beérkezésig a
+                      // külső kép gyűjtése tovább fut – min. 3 beérkezésig a
                       // sor a meghívó-haladást és a meghívó-CTA-t mutatja.
                       const observerGathering =
                         stepType === "OBSERVER_360" &&

@@ -373,7 +373,7 @@ export interface CloseDealParams {
 }
 
 /**
- * Deal lezárása. LOST-hoz az outcomeKind KÖTELEZŐ (LOST_REASON_REQUIRED) —
+ * Deal lezárása. LOST-hoz az outcomeKind KÖTELEZŐ (LOST_REASON_REQUIRED) –
  * a strukturált win/loss tanulság a termék-visszacsatolás alapja.
  * Záráskor a next action törlődik: lezárt ügy nem ülhet a „Ma” panelen.
  */
@@ -444,8 +444,8 @@ export interface OrgAccessGrantedResult {
 
 /**
  * /api/admin/org-access hook: activate/trial a linkelt nyitott dealt WON-ra
- * zárja (SYSTEM-activityvel); már lezárt WON dealen — és extend/set_credits
- * esetén — csak activity kerül az idővonalra (ügyfél-történet). Nincs
+ * zárja (SYSTEM-activityvel); már lezárt WON dealen – és extend/set_credits
+ * esetén – csak activity kerül az idővonalra (ügyfél-történet). Nincs
  * linkelt deal → no-op. Idempotens: a WON-váltás legfeljebb egyszer fut.
  */
 export async function handleOrgAccessGranted(
@@ -476,12 +476,12 @@ export async function handleOrgAccessGranted(
           nextActionNote: null,
         },
       });
-      await createSystemActivity(tx, openDeal.id, `${summaryByAction[action]} — deal megnyerve`);
+      await createSystemActivity(tx, openDeal.id, `${summaryByAction[action]} – deal megnyerve`);
       return { dealId: openDeal.id, transitionedToWon: true };
     }
 
     // Nyitott deal nélkül (vagy extend/set_credits ágon): a legfrissebb WON
-    // deal idővonalára kerül az esemény — az ügyfél-történet folytonos marad.
+    // deal idővonalára kerül az esemény – az ügyfél-történet folytonos marad.
     const targetDeal =
       openDeal ??
       (await tx.deal.findFirst({

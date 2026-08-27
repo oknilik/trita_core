@@ -43,7 +43,7 @@ export default function HowWeWorkPage() {
           buildServiceJsonLd({
             name: "Csapatdiagnosztika és csapatfejlesztő program",
             description:
-              "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel — validált összképpel és közös értelmezéssel.",
+              "Tanácsadó-vezérelt csapatprogram személyiség-alapú csapatképpel, mért csapatszerep-térképpel és pszichológiai biztonság pulzusméréssel – validált összképpel és közös értelmezéssel.",
             serviceType: "Szervezetfejlesztés és csapatdiagnosztika",
             catalogName: "trita programelemek",
             offerings: [

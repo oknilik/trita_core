@@ -59,7 +59,7 @@ function Block({
 
 export function PdfHowYouWork({ parts, locale = "hu" }: PdfHowYouWorkProps) {
   const watch = parts.watch ?? "";
-  // Semleges „Jellemző mintázat" kártya (tone: "note", fordított skála) — a
+  // Semleges „Jellemző mintázat" kártya (tone: "note", fordított skála) – a
   // felülettel azonos slot, hogy a PDF és a képernyő ne csússzon szét.
   const notes = parts.notes.join(" ");
   const context = parts.context.join(" ");

@@ -297,7 +297,7 @@ export default async function CampaignDetailPage({
       : null;
 
   // Self-assessment completion (fresh-tudatos). A distinct a RENDEZETT
-  // eredmény első sorát tartja meg — orderBy nélkül nem determinisztikus,
+  // eredmény első sorát tartja meg – orderBy nélkül nem determinisztikus,
   // melyik kitöltés számítana (org-stats mintája: legutolsó nyer).
   const selfDoneResults = await prisma.assessmentResult.findMany({
     where: {
@@ -336,7 +336,7 @@ export default async function CampaignDetailPage({
     observerCountMap.set(inv.inviterId, (observerCountMap.get(inv.inviterId) ?? 0) + 1);
   }
 
-  // Lépés-teljesítés: közös helper (campaign-steps-core) — a selfDoneSet
+  // Lépés-teljesítés: közös helper (campaign-steps-core) – a selfDoneSet
   // már fresh-tudatos, így a legacy OBSERVER_360 fallback is az.
   const isStepDoneFor = (
     p: (typeof campaign.participants)[number],
@@ -346,7 +346,7 @@ export default async function CampaignDetailPage({
     countCampaignStepsDone(campaignSteps, p, selfDoneSet.has(p.userId));
 
   // Lépésen belüli rész-haladás (értékelős lépések): ki hány csapattársat
-  // értékelt már — a „megkezdte, de nem fejezte be" állapot is látszik.
+  // értékelt már – a „megkezdte, de nem fejezte be" állapot is látszik.
   const partialTeamIds = getCampaignTeamIds(campaign);
   const teamMemberRows =
     partialTeamIds.length > 0
@@ -478,7 +478,7 @@ export default async function CampaignDetailPage({
     currentAvgScores = computeAvgScores(selfDoneResults);
 
     // Find the previous CLOSED campaign (before this one). Elvetett
-    // (nem aktivált ÉS haladás nélküli) kör nem összehasonlítási alap —
+    // (nem aktivált ÉS haladás nélküli) kör nem összehasonlítási alap –
     // a legacy futott körök activatedAt-ja NULL, őket a résztvevő-haladás
     // azonosítja (ld. org-stats visibleCampaigns szűrő).
     const prevCandidates = await prisma.campaign.findMany({
@@ -509,7 +509,7 @@ export default async function CampaignDetailPage({
       if (prevParticipantIds.length > 0) {
         // A „korábbi" eredmény a JELENLEGI kör indulása ELŐTTI legutolsó
         // kitöltés. Időhatár + orderBy nélkül a distinct rendezetlen sort
-        // adott vissza — a „korábbi" akár ugyanaz a sor lehetett, mint a
+        // adott vissza – a „korábbi" akár ugyanaz a sor lehetett, mint a
         // jelenlegi, és a fejlődési ív hamis nullát mutatott.
         const currentCampaignStart = campaign.activatedAt ?? campaign.createdAt;
         const prevResults = await prisma.assessmentResult.findMany({
@@ -602,7 +602,7 @@ export default async function CampaignDetailPage({
           />
         ) : null}
 
-        {/* Lépésenkénti haladás — a kampány SAJÁT mérései */}
+        {/* Lépésenkénti haladás – a kampány SAJÁT mérései */}
         {showStepSection && totalCount > 0 && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
@@ -610,8 +610,8 @@ export default async function CampaignDetailPage({
             </SectionEyebrow>
             <p className="mb-5 text-xs text-ink-body/70">
               {isHu
-                ? "A lépések tagonként, sorban nyílnak meg — aki végez az egyikkel, annak (értesítéssel) megnyílik a következő."
-                : "Steps open per member, in order — when someone finishes one, the next opens for them (with a notification)."}
+                ? "A lépések tagonként, sorban nyílnak meg – aki végez az egyikkel, annak (értesítéssel) megnyílik a következő."
+                : "Steps open per member, in order – when someone finishes one, the next opens for them (with a notification)."}
             </p>
             <div className="flex flex-col gap-3">
               {campaignSteps.map((stepType, idx) => {
@@ -857,7 +857,7 @@ export default async function CampaignDetailPage({
                         />
                       </div>
                       {/* Irány-jelzés moralizáló zöld/piros nélkül (a
-                          személyiség-pontszám változása nem jó/rossz) —
+                          személyiség-pontszám változása nem jó/rossz) –
                           zsálya/bronz + előjel hordozza az irányt. */}
                       <span
                         className={`w-14 shrink-0 text-right text-xs tabular-nums font-semibold ${
@@ -900,7 +900,7 @@ export default async function CampaignDetailPage({
             <div className="flex flex-col divide-y divide-sand">
               {campaign.participants.map((p) => {
                 const obsCount = observerCountMap.get(p.userId) ?? 0;
-                // Lépés-alapú állapot: hol tart a KAMPÁNY lépéseiben —
+                // Lépés-alapú állapot: hol tart a KAMPÁNY lépéseiben –
                 // nem a személyiség-teszt kitöltöttségében.
                 const stepsDone = stepsDoneFor(p);
                 const isAllDone = stepsDone >= campaignSteps.length;
@@ -921,7 +921,7 @@ export default async function CampaignDetailPage({
                   >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-ink">
-                        {p.user.username ?? p.user.email ?? "—"}
+                        {p.user.username ?? p.user.email ?? "–"}
                       </p>
                       {p.user.username && (
                         <p className="truncate text-xs text-ink-body/60">{p.user.email}</p>
@@ -1002,7 +1002,7 @@ export default async function CampaignDetailPage({
           ) : null}
         </section>
 
-        {/* Peer feedback kör — részvételi statisztika (F4, tartalom nélkül) */}
+        {/* Peer feedback kör – részvételi statisztika (F4, tartalom nélkül) */}
         {(campaign.steps.length > 0 ? campaign.steps : [campaign.type]).includes(
           "PEER_FEEDBACK",
         ) &&
@@ -1107,14 +1107,14 @@ export default async function CampaignDetailPage({
                 locale,
               )}
             />
-            {/* Mérés törlése — nem-DRAFT is (a vázlat-elvetés a szerkesztőben él) */}
+            {/* Mérés törlése – nem-DRAFT is (a vázlat-elvetés a szerkesztőben él) */}
             {campaign.status !== "DRAFT" && (
               <CampaignDeleteButton orgId={orgId} campaignId={campaign.id} locale={locale} />
             )}
           </section>
         )}
 
-        {/* Lezárt mérésnél nincs státusz-átmenet — a törlés külön kártyán */}
+        {/* Lezárt mérésnél nincs státusz-átmenet – a törlés külön kártyán */}
         {canManageCampaign && campaign.status === "CLOSED" && (
           <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm md:p-8">
             <SectionEyebrow className="mb-1">
@@ -1139,7 +1139,7 @@ export default async function CampaignDetailPage({
                   className="text-sm font-semibold text-sage-dark transition hover:text-ink"
                 >
                   {t("campaignWiz.closedReportCta", locale)}
-                  {team && getCampaignTeamIds(campaign).length > 1 ? ` — ${team.name}` : ""}
+                  {team && getCampaignTeamIds(campaign).length > 1 ? ` – ${team.name}` : ""}
                 </Link>
               );
             })}

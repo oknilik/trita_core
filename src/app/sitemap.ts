@@ -61,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // A bloglista frissessége a legfrissebb cikk dátuma (nem a build ideje, és
   // nem is a `reviewedAt`): ha `reviewedAt`-tel indítanánk a reduce-t, az
   // felső korlátként viselkedne, és a /blog lastmodja mindig a felülvizsgálat
-  // napját mondaná akkor is, ha a lista hetek óta változatlan — pont az a
+  // napját mondaná akkor is, ha a lista hetek óta változatlan – pont az a
   // „megbízhatatlan lastmod", amit a fenti konstans elkerülni hivatott.
   const newestPostAt =
     posts.reduce<Date | null>((acc, post) => {

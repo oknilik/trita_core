@@ -149,7 +149,7 @@ export function getAllPosts(
 
 /**
  * Kanonikus slug-alak: kisbetűs szó-darabok kötőjellel. Ugyanaz a minta, amit
- * az admin blog-API és a hírlevél-szám validál — itt is kimondjuk, mert ez az
+ * az admin blog-API és a hírlevél-szám validál – itt is kimondjuk, mert ez az
  * EGYETLEN hely, ahol slugból fájlrendszer-út lesz.
  */
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -159,13 +159,13 @@ const SLUG_MAX_LENGTH = 120;
  * Slug → fájlút, KÖNYVTÁRHATÁRRAL.
  *
  * MIÉRT KELL (2026-08-21): a slug útvonal-paraméterből jön, és a Next
- * dekódolja — a `placeholder%2f..%2fvalodi-cikk` alak tehát `../`-ként ér ide,
+ * dekódolja – a `placeholder%2f..%2fvalodi-cikk` alak tehát `../`-ként ér ide,
  * és a `path.join` engedelmesen kilép a `content/blog` mappából. Ma nincs
  * máshol becsomagolt `.mdx`, ezért nem szivárgott adat, de a lehetőség valódi
  * volt. Két, egymástól független kapu:
  *
  *   1. alak- és hosszellenőrzés (a `/`, `.` és `\` szerkezetileg kizárva),
- *   2. `path.resolve` utáni prefix-vizsgálat — ez akkor is tart, ha a minta
+ *   2. `path.resolve` utáni prefix-vizsgálat – ez akkor is tart, ha a minta
  *      valaha megengedőbbre változik.
  */
 function resolvePostPath(slug: string): string | null {
@@ -218,7 +218,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
 
 // ─── TOC-segédek ─────────────────────────────────────────────────────────────
 // A h2 fejezetcímek id-ját a TOC-nak és az MDX h2-komponensnek UGYANÍGY kell
-// képeznie — ez a közös forrás.
+// képeznie – ez a közös forrás.
 
 export function slugifyHeading(text: string): string {
   return text

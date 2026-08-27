@@ -32,7 +32,7 @@ function invite(overrides: Partial<ObserverReminderRow> = {}): ObserverReminderR
   };
 }
 
-describe("selectObserverReminderCandidates — kiválasztási szabályok", () => {
+describe("selectObserverReminderCandidates – kiválasztási szabályok", () => {
   it("alap-eset: elég régi, függő, e-mailes meghívó jelölt", () => {
     const candidates = selectObserverReminderCandidates([invite()], NOW);
     assert.equal(candidates.length, 1);

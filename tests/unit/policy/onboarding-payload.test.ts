@@ -4,7 +4,7 @@ import { buildOnboardingSchema } from "@/lib/onboarding-payload";
 
 const schema = buildOnboardingSchema(2026);
 
-test("onboarding payload — progresszív profilozás", async (t) => {
+test("onboarding payload – progresszív profilozás", async (t) => {
   await t.test("gyors aktiválásnál a név és hozzájárulás elegendő", () => {
     const result = schema.safeParse({
       username: "Anna",

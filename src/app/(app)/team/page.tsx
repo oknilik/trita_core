@@ -101,7 +101,7 @@ export default async function TeamListPage() {
         ) : undefined,
       }}
     >
-        {/* Create new team — csak menedzser+ / tanácsadói felületen. */}
+        {/* Create new team – csak menedzser+ / tanácsadói felületen. */}
         {canCreateTeam ? (
           <Card as="section" spacing="lg" className="md:p-8" id="create-team">
             <SectionEyebrow className="mb-1 text-micro tracking-widest">

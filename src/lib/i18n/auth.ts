@@ -59,7 +59,7 @@ export const authTranslations = {
     resetRequestError: { hu: "Nem sikerült elküldeni a kódot.", en: "Could not send the code." },
     resetVerifyError: { hu: "Nem sikerült frissíteni a jelszót.", en: "Could not reset the password." },
     backToSignIn: { hu: "Vissza a bejelentkezéshez", en: "Back to sign in" },
-    errorSecondFactorRequired: { hu: "Kétlépcsős azonosítás szükséges — jelentkezz be a második lépcsővel is.", en: "Second factor required. Please complete 2FA." },
+    errorSecondFactorRequired: { hu: "Kétlépcsős azonosítás szükséges – jelentkezz be a második lépcsővel is.", en: "Second factor required. Please complete 2FA." },
     submitSendLink: { hu: "Link küldése", en: "Send link" },
     submitSendLinkLoading: { hu: "Küldés...", en: "Sending..." },
     submitSendCode: { hu: "Kód küldése és folytatás", en: "Send code & continue" },

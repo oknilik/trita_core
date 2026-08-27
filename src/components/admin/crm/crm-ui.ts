@@ -59,7 +59,7 @@ export function relativeDayLabel(iso: string, now: Date = new Date()): string {
 
 /**
  * Halasztó chip cél-időpontja: a MAI naptól számított +N nap (UTC nap-
- * határokkal, napközi órával) — nem a régi esedékességtől, hogy a lejárt
+ * határokkal, napközi órával) – nem a régi esedékességtől, hogy a lejárt
  * lépés is előre kerüljön. A guards.resolveDueBucket ablakaival konzisztens.
  */
 export function computePostponeAt(days: number, now: Date = new Date()): string {
@@ -85,7 +85,7 @@ export function toneToChipVariant(tone: CrmTone): StatusChipVariant {
 // ── Hibakód → HU szöveg (a szerver rövid kódot küld, a kliens lokalizál) ────
 
 const CRM_ERROR_TEXT: Record<string, string> = {
-  DEAL_NOT_FOUND: "A deal nem található — lehet, hogy időközben törölték.",
+  DEAL_NOT_FOUND: "A deal nem található – lehet, hogy időközben törölték.",
   INQUIRY_NOT_FOUND: "A megkeresés nem található.",
   QUOTE_NOT_FOUND: "Az ajánlat nem található.",
   ACTIVITY_NOT_FOUND: "A bejegyzés nem található.",
@@ -95,15 +95,15 @@ const CRM_ERROR_TEXT: Record<string, string> = {
   INVALID_TRANSITION: "Ez az állapotváltás nem engedélyezett.",
   LOST_REASON_REQUIRED: "Elveszett lezáráshoz kötelező okot választani.",
   QUOTE_NOT_DRAFT: "Csak piszkozat állapotú ajánlat szerkeszthető.",
-  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető — kiment ajánlat nyom marad.",
+  ONLY_DRAFT_DELETABLE: "Csak piszkozat törölhető – kiment ajánlat nyom marad.",
   NOT_EDITABLE: "Rendszer-bejegyzés nem módosítható és nem törölhető.",
   INQUIRY_ALREADY_LINKED: "Ez a megkeresés már egy dealhez kapcsolódik.",
-  VALIDATION_ERROR: "Érvénytelen adat — ellenőrizd a mezőket.",
+  VALIDATION_ERROR: "Érvénytelen adat – ellenőrizd a mezőket.",
   UNAUTHORIZED: "Nincs jogosultság a művelethez.",
 };
 
 export function crmErrorText(code: string | null | undefined): string {
-  return (code && CRM_ERROR_TEXT[code]) || "A művelet nem sikerült — próbáld újra.";
+  return (code && CRM_ERROR_TEXT[code]) || "A művelet nem sikerült – próbáld újra.";
 }
 
 /**

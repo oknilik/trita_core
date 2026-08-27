@@ -307,7 +307,7 @@ export function DealDetail({
       {/* ── Tartalom: bal (naplózó + idővonal) · jobb (lépés, ajánlat, linkek) ── */}
       <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <div className="flex flex-col gap-4">
-          {/* Mindig látható — lezárt (WON) dealen is naplózható ügyfél-történet. */}
+          {/* Mindig látható – lezárt (WON) dealen is naplózható ügyfél-történet. */}
           <DashboardPanel tone="cream" className="p-5">
             <SectionEyebrow>gyors-naplózó</SectionEyebrow>
             <div className="mt-3">
@@ -443,7 +443,7 @@ export function DealDetail({
         <div className="flex flex-col gap-3">
           {closeOutcome === "WON" && !deal.organization && (
             <p className="rounded-lg bg-state-warning-bg px-3 py-2 text-sm text-state-warning-fg">
-              Nincs szervezet linkelve — az org-hozzáférés aktiválása így nem
+              Nincs szervezet linkelve – az org-hozzáférés aktiválása így nem
               találja meg automatikusan ezt a dealt. Egyéni ügynél ez rendben van.
             </p>
           )}

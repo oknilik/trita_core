@@ -67,8 +67,8 @@ const TOPICS: HelpTopic[] = [
           en: "How does the assessment work?",
         },
         answer: {
-          hu: "A felmérés hat személyiségdimenziót mér — szabadon felhasználható, kutatásban használt kérdésekkel —, és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
-          en: "The assessment measures six personality dimensions — using freely available, research-grade items — and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
+          hu: "A felmérés hat személyiségdimenziót mér – szabadon felhasználható, kutatásban használt kérdésekkel –, és kb. 8-10 perc alatt kitölthető. Az önértékelést opcionálisan ismerősi visszajelzésekkel egészítheted ki, így az önkép és a külső kép összevethető.",
+          en: "The assessment measures six personality dimensions – using freely available, research-grade items – and takes about 8-10 minutes. You can optionally complement your self-assessment with peer feedback, so your self-image and how others see you can be compared.",
         },
         audiences: ["public"],
       },
@@ -85,8 +85,8 @@ const TOPICS: HelpTopic[] = [
           en: "What does a team get?",
         },
         answer: {
-          hu: "A csapat tagjai kitöltik a felmérést, majd aggregált csapatprofil készül: dimenzió-átlagok, csapatmintázat és csapatszerep-eloszlás. Az eredményeket tanácsadó értékeli és validálja, személyes interjúk tanulságaival kiegészítve — egyéni eredmény soha nem kerül a csapatképbe.",
-          en: "Team members complete the assessment, then an aggregate team profile is built: dimension averages, team pattern and team role distribution. A consultant reviews and validates the results, enriched with insights from personal interviews — individual results never appear in the team picture.",
+          hu: "A csapat tagjai kitöltik a felmérést, majd aggregált csapatprofil készül: dimenzió-átlagok, csapatmintázat és csapatszerep-eloszlás. Az eredményeket tanácsadó értékeli és validálja, személyes interjúk tanulságaival kiegészítve – egyéni eredmény soha nem kerül a csapatképbe.",
+          en: "Team members complete the assessment, then an aggregate team profile is built: dimension averages, team pattern and team role distribution. A consultant reviews and validates the results, enriched with insights from personal interviews – individual results never appear in the team picture.",
         },
         audiences: ["public"],
       },
@@ -151,8 +151,8 @@ const TOPICS: HelpTopic[] = [
           en: "How should I answer?",
         },
         answer: {
-          hu: "Nincsenek jó vagy rossz válaszok. Az első benyomásod alapján, őszintén válaszolj — ne azt jelöld, aminek látszani szeretnél, hanem ami valóban jellemző rád. Így lesz a kép pontos és használható.",
-          en: "There are no right or wrong answers. Answer honestly based on your first impression — mark what is actually true of you, not what you would like to appear. That is what makes the picture accurate and useful.",
+          hu: "Nincsenek jó vagy rossz válaszok. Az első benyomásod alapján, őszintén válaszolj – ne azt jelöld, aminek látszani szeretnél, hanem ami valóban jellemző rád. Így lesz a kép pontos és használható.",
+          en: "There are no right or wrong answers. Answer honestly based on your first impression – mark what is actually true of you, not what you would like to appear. That is what makes the picture accurate and useful.",
         },
         audiences: SIGNED_IN,
       },
@@ -185,8 +185,8 @@ const TOPICS: HelpTopic[] = [
           en: "Who can see my individual results?",
         },
         answer: {
-          hu: "Az egyéni eredményedet alapesetben csak te látod. Szervezeti programban a tanácsadó a munkája részeként hozzáfér, a vezetők és a csapattagok viszont csak aggregált, névtelenített csapatképet látnak — a te egyéni értékeid abban nem jelennek meg.",
-          en: "By default only you can see your individual results. In an organizational program the consultant has access as part of their work, but managers and teammates only see an aggregated, anonymized team picture — your individual values never appear in it.",
+          hu: "Az egyéni eredményedet alapesetben csak te látod. Szervezeti programban a tanácsadó a munkája részeként hozzáfér, a vezetők és a csapattagok viszont csak aggregált, névtelenített csapatképet látnak – a te egyéni értékeid abban nem jelennek meg.",
+          en: "By default only you can see your individual results. In an organizational program the consultant has access as part of their work, but managers and teammates only see an aggregated, anonymized team picture – your individual values never appear in it.",
         },
         audiences: SIGNED_IN,
       },
@@ -235,8 +235,8 @@ const TOPICS: HelpTopic[] = [
           en: "Whom should I ask?",
         },
         answer: {
-          hu: "Olyanokat, akik különböző közegből ismernek: kolléga, barát, családtag. Minél változatosabb a kör, annál árnyaltabb a külső kép — egy-egy visszajelzés önmagában csak egy nézőpont.",
-          en: "People who know you from different contexts: a colleague, a friend, a family member. The more varied the circle, the more nuanced the external picture — a single response is just one perspective.",
+          hu: "Olyanokat, akik különböző közegből ismernek: kolléga, barát, családtag. Minél változatosabb a kör, annál árnyaltabb a külső kép – egy-egy visszajelzés önmagában csak egy nézőpont.",
+          en: "People who know you from different contexts: a colleague, a friend, a family member. The more varied the circle, the more nuanced the external picture – a single response is just one perspective.",
         },
         audiences: SIGNED_IN,
       },
@@ -283,8 +283,8 @@ const TOPICS: HelpTopic[] = [
           en: "How do I track completion progress?",
         },
         answer: {
-          hu: "A vezérlőn és a csapatoldalon látod, hányan töltötték ki a felmérést és kik vannak még hátra. A kitöltés alatt szándékosan csak a haladás látszik — a tartalmi eredmények a tanácsadói validálás után nyílnak meg.",
-          en: "The cockpit and the team page show how many members have completed the assessment and who is still pending. During collection only progress is shown by design — content results open up after consultant validation.",
+          hu: "A vezérlőn és a csapatoldalon látod, hányan töltötték ki a felmérést és kik vannak még hátra. A kitöltés alatt szándékosan csak a haladás látszik – a tartalmi eredmények a tanácsadói validálás után nyílnak meg.",
+          en: "The cockpit and the team page show how many members have completed the assessment and who is still pending. During collection only progress is shown by design – content results open up after consultant validation.",
         },
         link: {
           href: "/dashboard",
@@ -299,8 +299,8 @@ const TOPICS: HelpTopic[] = [
           en: "Why can't I see team results immediately?",
         },
         answer: {
-          hu: "Két okból: a részleges adat félrevezető képet adna a csapatról, és a nyers számok tanácsadói értelmezés nélkül könnyen félreérthetők. Ezért a csapatképet a tanácsadó validálja és publikálja — aggregált formában, az interjúk tanulságaival együtt.",
-          en: "Two reasons: partial data would paint a misleading picture of the team, and raw numbers are easy to misread without consultant interpretation. That is why the team picture is validated and published by the consultant — in aggregate form, together with interview insights.",
+          hu: "Két okból: a részleges adat félrevezető képet adna a csapatról, és a nyers számok tanácsadói értelmezés nélkül könnyen félreérthetők. Ezért a csapatképet a tanácsadó validálja és publikálja – aggregált formában, az interjúk tanulságaival együtt.",
+          en: "Two reasons: partial data would paint a misleading picture of the team, and raw numbers are easy to misread without consultant interpretation. That is why the team picture is validated and published by the consultant – in aggregate form, together with interview insights.",
         },
         audiences: MANAGING,
       },
@@ -311,8 +311,8 @@ const TOPICS: HelpTopic[] = [
           en: "How do I launch a feedback campaign?",
         },
         answer: {
-          hu: "A kampányok felületen tudsz visszajelzés-kört indítani a csapatnak. A kampány vázlatként indul, aktiválás után gyűjti a válaszokat, lezárás után pedig nem nyitható újra — a lezárással várj, amíg mindenki végzett.",
-          en: "You can launch a feedback round for your team on the campaigns screen. A campaign starts as a draft, collects responses once activated, and cannot be reopened after closing — wait to close until everyone is done.",
+          hu: "A kampányok felületen tudsz visszajelzés-kört indítani a csapatnak. A kampány vázlatként indul, aktiválás után gyűjti a válaszokat, lezárás után pedig nem nyitható újra – a lezárással várj, amíg mindenki végzett.",
+          en: "You can launch a feedback round for your team on the campaigns screen. A campaign starts as a draft, collects responses once activated, and cannot be reopened after closing – wait to close until everyone is done.",
         },
         audiences: MANAGING,
       },

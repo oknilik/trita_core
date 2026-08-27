@@ -74,7 +74,7 @@ function dimLabel(code: string, isHu: boolean): string {
   return `${dim.letter} ${isHu ? dim.hu : dim.en}`;
 }
 
-// Illeszkedés-szín az értékelő rampról (zsálya→bronz→neutrális) — a korábbi
+// Illeszkedés-szín az értékelő rampról (zsálya→bronz→neutrális) – a korábbi
 // emerald/amber (státusz-hue-k + AA-bukó amber) kivezetve.
 function fitColor(score: number): string {
   if (score >= 70) return "var(--color-eval-high-accent)";
@@ -91,7 +91,7 @@ function OccupationCard({
   fit: CareerFitView;
   hero: boolean;
   delayMs?: number;
-  /** az érdeklődés-pontszám hibája (mért: 6, egyéb forrás: 12) — a címke-kapuhoz */
+  /** az érdeklődés-pontszám hibája (mért: 6, egyéb forrás: 12) – a címke-kapuhoz */
   interestSe?: number;
 }) {
   const { locale } = useLocale();
@@ -101,7 +101,7 @@ function OccupationCard({
   // SE-tudatos figyelmeztetés-kapuk (2026-08-11, fix): negatív verdiktet csak
   // akkor mondunk ki, ha az érték INTERVALLUMA (sáv, ill. ±SE) is egyértelműen
   // a vágás alatt van. Egy 54-es demandFit 46–62-es sávval nem „feszültség",
-  // hanem küszöb-környéki érték — ott a semleges chip (a mindig látható
+  // hanem küszöb-környéki érték – ott a semleges chip (a mindig látható
   // pontszám + sáv) beszél, verdikt nélkül. A demandFit sávja (band = ±1 SE)
   // a payloadban jön; az érdeklődés margója a forrás SE-je.
   const interestDiverges =
@@ -117,7 +117,7 @@ function OccupationCard({
   async function sendFeedback(verdict: "accurate" | "inaccurate") {
     setFeedback("sent");
     try {
-      // A fitScore-t a szerver számolja újra a tárolt profilból — a kliens
+      // A fitScore-t a szerver számolja újra a tárolt profilból – a kliens
       // által állított pontszám hamisítható lenne, és a kalibrációs adatot
       // mérgezné (a verdict + a szerver-oldali pontszám együtt a jel).
       await fetch("/api/industry-fit/feedback", {
@@ -129,7 +129,7 @@ function OccupationCard({
         }),
       });
     } catch {
-      /* kalibrációs jel — hiba esetén csendben elengedjük */
+      /* kalibrációs jel – hiba esetén csendben elengedjük */
     }
   }
 
@@ -197,7 +197,7 @@ function OccupationCard({
         >
           {t(ACCESS_KEY[fit.feasibility.state] ?? ACCESS_KEY["level-only"], locale)}
           {fit.feasibility.state === "training-needed" &&
-            ` — ${t(GAP_KEY[fit.feasibility.gap] ?? GAP_KEY.ready, locale)}`}
+            ` – ${t(GAP_KEY[fit.feasibility.gap] ?? GAP_KEY.ready, locale)}`}
         </span>
         {/* Szabályozott szakma, amire a végzettség már „elég" (field-match): a
             licenc/kamarai kötelezettség a zöld chip MELLETT külön figyelmeztet. */}
@@ -224,7 +224,7 @@ function OccupationCard({
             {t("results.cfIndustryPick", locale)}
           </span>
         )}
-        {/* Negatív verdikt csak az intervallum-kapun át — küszöb-környéki
+        {/* Negatív verdikt csak az intervallum-kapun át – küszöb-környéki
             értéknél a semleges pontszám-chip beszél, verdikt nélkül. */}
         {interestDiverges && fit.interest !== null && (
           <span className="rounded-full bg-state-warning-bg px-2 py-0.5 text-micro font-medium text-bronze-700">
@@ -263,7 +263,7 @@ function OccupationCard({
                       értéket mutatni ellentmondana neki (nyers 90 → „te 58"). A
                       cél ugyanazzal az eltolással jön, a távolság változatlan.
                       Ha a visszatolt cél a skála szélére szorult (targetAtEdge),
-                      a mutatott pár távolsága KISEBB a pontozottnál — ezt
+                      a mutatott pár távolsága KISEBB a pontozottnál – ezt
                       kimondjuk, nem hagyjuk ellentmondani a pozíció-címkének. */}
                   {tf("results.cfTargetHint", locale, {
                     target: component.targetRaw,
@@ -308,7 +308,7 @@ function OccupationCard({
                   dim: isHu
                     ? withHuArticle(dimLabel(fit.components[0].dim, isHu))
                     : dimLabel(fit.components[0].dim, isHu),
-                  // Nyers pár — a results-oldali pontszámmal azonos skálán.
+                  // Nyers pár – a results-oldali pontszámmal azonos skálán.
                   target: fit.components[0].targetRaw,
                   user: fit.components[0].userRaw,
                 })}
@@ -498,7 +498,7 @@ export function CareerResults({
   const [confirmReset, setConfirmReset] = useState(false);
   const [resetting, setResetting] = useState(false);
   // Az érdeklődés-verdikt margója a forrás SE-je (mért kérdőív: 6, címke/
-  // becslés: 12) — a motor rangSe-terjesztésével azonos konstansok.
+  // becslés: 12) – a motor rangSe-terjesztésével azonos konstansok.
   const interestSe =
     result.interestSource === "measured" ? INTEREST_SE_MEASURED : INTEREST_SE_OTHER;
   const totalClusters =
@@ -542,7 +542,7 @@ export function CareerResults({
         </div>
       </div>
 
-      {/* Teljes visszaállítás — kétlépcsős, mert minden mentett választ töröl */}
+      {/* Teljes visszaállítás – kétlépcsős, mert minden mentett választ töröl */}
       {onReset && confirmReset && (
         <div className="mt-3 rounded-[12px] border border-state-warning-border bg-state-warning-bg/70 p-3.5">
           <p className="text-xs leading-relaxed text-accent-earth-strong">
@@ -598,7 +598,7 @@ export function CareerResults({
         )}
       </div>
 
-      {/* A user Holland-kódja — enélkül nem látszik, mi alapján rangsorolunk */}
+      {/* A user Holland-kódja – enélkül nem látszik, mi alapján rangsorolunk */}
       {result.interests && (
         <div className="mt-3 rounded-[12px] border border-[var(--color-border-soft)] bg-[var(--color-surface-subtle)] p-3.5">
           <div className="flex flex-wrap items-center gap-2">
@@ -634,14 +634,14 @@ export function CareerResults({
         </div>
       )}
 
-      {/* Mi rendezi a listát — a jelszint-hierarchia kimondva */}
+      {/* Mi rendezi a listát – a jelszint-hierarchia kimondva */}
       <div className="mt-3 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
         <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
           {result.scope.active
             ? tf(
                 // A motor scoped forrás- és differenciáltság-kapujának tükre:
                 // csak MÉRT és DIFFERENCIÁLT érdeklődésnél rendez az érdeklődés
-                // — gyenge/hiányzó jelnél a kompozit alap, és a szöveg ezt
+                // – gyenge/hiányzó jelnél a kompozit alap, és a szöveg ezt
                 // mondja ki (nem állíthat mást, mint ami tényleg rendezett).
                 result.interestSource === "measured" &&
                   result.interestDifferentiation !== "low"
@@ -685,7 +685,7 @@ export function CareerResults({
         )}
       </div>
 
-      {/* Vétók — a kizárás LÁTHATÓ: mit zártál ki, és hány szerep esett ki miatta */}
+      {/* Vétók – a kizárás LÁTHATÓ: mit zártál ki, és hány szerep esett ki miatta */}
       {result.veto.keys.length > 0 && (
         <div className="mt-2 rounded-[10px] bg-[var(--color-surface-subtle)] p-2.5">
           <p className="text-xs leading-relaxed text-[var(--color-text-secondary)]">

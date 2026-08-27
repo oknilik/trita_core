@@ -68,7 +68,7 @@ export function CampaignCard({
   const [remindResult, setRemindResult] = useState<string | null>(null);
 
   // Lépés-alapú haladás (2026-07-29): a kártya a kampány SAJÁT lépéseinek
-  // teljesítését mutatja — nem a személyiség-teszt kitöltöttségét.
+  // teljesítését mutatja – nem a személyiség-teszt kitöltöttségét.
   const fullyDoneCount = campaign.fullyDoneCount;
   const notStartedCount = campaign.participants.filter(
     (p) => p.stepsDone === 0
@@ -109,7 +109,7 @@ export function CampaignCard({
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // CLOSED VARIANT — compact row
+  // CLOSED VARIANT – compact row
   // ──────────────────────────────────────────────────────────────────────────
   if (variant === "closed") {
     const completionPct =
@@ -145,7 +145,7 @@ export function CampaignCard({
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // DRAFT VARIANT — compact card
+  // DRAFT VARIANT – compact card
   // ──────────────────────────────────────────────────────────────────────────
   if (variant === "draft") {
     return (
@@ -186,7 +186,7 @@ export function CampaignCard({
   }
 
   // ──────────────────────────────────────────────────────────────────────────
-  // ACTIVE VARIANT — full card
+  // ACTIVE VARIANT – full card
   // ──────────────────────────────────────────────────────────────────────────
   const inProgressCount = campaign.participants.filter(
     (p) => p.stepsDone > 0 && !p.doneAll
@@ -242,7 +242,7 @@ export function CampaignCard({
 
       {/* Egy pillantásos állapot (UX-audit #23): a három párhuzamos számláló
           helyett EGY szegmentált sáv + egy szám; a lépésenkénti bontás és az
-          avatar-sor lenyílóban él — a kártya magassága feleződik. */}
+          avatar-sor lenyílóban él – a kártya magassága feleződik. */}
       {campaign.totalCount > 0 && (
         <div className="mb-4">
           <div className="mb-1.5 flex items-center justify-between text-xs">
@@ -271,7 +271,7 @@ export function CampaignCard({
               {isHu ? "Részletek lépésenként" : "Step-by-step detail"}
             </summary>
             <div className="mt-3 flex flex-col gap-2.5">
-              {/* A kampány saját lépései — mindegyik a maga kitöltöttségével */}
+              {/* A kampány saját lépései – mindegyik a maga kitöltöttségével */}
               {campaign.stepProgress.map((step, idx) => (
                 <ProgressBar
                   key={step.type}

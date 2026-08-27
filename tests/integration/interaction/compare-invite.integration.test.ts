@@ -43,7 +43,7 @@ function makeId(prefix: string): string {
   return `${prefix}_${randomUUID().replace(/-/g, "").slice(0, 10)}`;
 }
 
-// Erősen pólusos, egymással ellentétes profilpár — a páros szimuláció
+// Erősen pólusos, egymással ellentétes profilpár – a páros szimuláció
 // garantáltan nem sparse (minden dimenzió a HIGH 65 / LOW 35 küszöbön túl).
 const POLAR_SELF = { H: 80, E: 25, X: 78, A: 30, C: 82, O: 74 };
 const POLAR_OTHER = { H: 22, E: 76, X: 24, A: 72, C: 20, O: 28 };
@@ -470,7 +470,7 @@ test("B1 Compare-invite lifecycle", async (t) => {
     assert.ok(sim.easy.length + sim.friction.length + sim.discuss.length > 0);
     assert.ok(Array.isArray(sim.leaderNotesSelf));
     assert.ok(Array.isArray(sim.leaderNotesOther));
-    // A nézet-modell sima JSON (RSC-szerializálható) — nincs benne Date/fn.
+    // A nézet-modell sima JSON (RSC-szerializálható) – nincs benne Date/fn.
     assert.deepEqual(JSON.parse(JSON.stringify(sim)), sim);
   });
 

@@ -232,7 +232,7 @@ test("C5.2 Observer token link + acceptance", async (t) => {
     assert.equal(linked.ok, true);
 
     // Mai viselkedés: a nevesített (linkelt) meghívót csak a bejelentkezett
-    // címzett adhatja be — bejelentkezés nélkül NOT_ADDRESSEE.
+    // címzett adhatja be – bejelentkezés nélkül NOT_ADDRESSEE.
     const restoreAnon = __setObserverSubmitViewerResolverForTests(async () => null);
     try {
       const anonRes = await submitObserverToken(invitation.token);

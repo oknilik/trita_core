@@ -22,8 +22,8 @@ const CARD = "rounded-[22px] border border-sand bg-surface-card p-5 shadow-sm md
 const MEASUREMENT_LABELS: Record<DossierMeasurementKey, { hu: string; en: string }> = {
   self: { hu: "Önfelmérés", en: "Self-assessment" },
   observer: { hu: "Külső (observer) kép", en: "Observer feedback" },
-  teamRoleSelf: { hu: "Csapatszerep — önkép", en: "Team role — self" },
-  teamRolePeer: { hu: "Csapatszerep — peer", en: "Team role — peer" },
+  teamRoleSelf: { hu: "Csapatszerep – önkép", en: "Team role – self" },
+  teamRolePeer: { hu: "Csapatszerep – peer", en: "Team role – peer" },
   trustGiven: { hu: "Adott bizalmi értékelés", en: "Trust given" },
   peerFeedback: { hu: "Kapott visszajelzés", en: "Feedback received" },
 };
@@ -202,7 +202,7 @@ export function MemberDossierView({
               <tbody className="divide-y divide-sand/70">
                 {sx.dims.map((d) => {
                   // Önkép–külső kép eltérés kiemelése CSAK a kanonikus
-                  // difference-kapu (DIFF_MIN_GAP = round(√2·SEM)) felett — a
+                  // difference-kapu (DIFF_MIN_GAP = round(√2·SEM)) felett – a
                   // 10–14 pontos Δ két pontszám különbségeként még a mérési
                   // zajon belül van. Ugyanaz a küszöb, mint a ComparisonTab /
                   // PDF összevetéseknél; a korábbi 10-es érték túl-jelzett.
@@ -218,14 +218,14 @@ export function MemberDossierView({
                       </td>
                       <td className="py-2 text-right font-semibold tabular-nums text-ink">{d.self}</td>
                       <td className="py-2 text-right font-semibold tabular-nums text-ink">
-                        {d.observer ?? "—"}
+                        {d.observer ?? "–"}
                       </td>
                       <td
                         className={`py-2 text-right tabular-nums font-semibold ${
                           big ? "text-state-warning-fg" : "text-ink-body"
                         }`}
                       >
-                        {d.delta === null ? "—" : d.delta > 0 ? `+${d.delta}` : d.delta}
+                        {d.delta === null ? "–" : d.delta > 0 ? `+${d.delta}` : d.delta}
                       </td>
                     </tr>,
                     ...facets.map((f) => (
@@ -236,10 +236,10 @@ export function MemberDossierView({
                         </td>
                         <td className="py-1.5 text-right tabular-nums text-ink">{f.self}</td>
                         <td className="py-1.5 text-right tabular-nums text-ink">
-                          {f.observer ?? "—"}
+                          {f.observer ?? "–"}
                         </td>
                         <td className="py-1.5 text-right tabular-nums font-medium text-ink-body">
-                          {f.delta === null ? "—" : f.delta > 0 ? `+${f.delta}` : f.delta}
+                          {f.delta === null ? "–" : f.delta > 0 ? `+${f.delta}` : f.delta}
                         </td>
                       </tr>
                     )),
@@ -259,14 +259,14 @@ export function MemberDossierView({
             <p className="mt-2 text-micro text-muted">
               {sx.observerShown
                 ? isHu
-                  ? `${sx.observerCount} értékelő aggregált átlaga — egyéni válasz nem jelenik meg.`
-                  : `Aggregated average of ${sx.observerCount} raters — no individual response is shown.`
+                  ? `${sx.observerCount} értékelő aggregált átlaga – egyéni válasz nem jelenik meg.`
+                  : `Aggregated average of ${sx.observerCount} raters – no individual response is shown.`
                 : isHu
                   ? `Külső oszlophoz legalább ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} lezárt observer-értékelés kell (jelenleg: ${sx.observerCount}).`
                   : `The external column needs at least ${MIN_RATERS_FOR_ANONYMOUS_AGGREGATE} completed observer ratings (currently: ${sx.observerCount}).`}
             </p>
 
-            {/* Rater-minőség jelzés — aggregált darabszám, raterenkénti flag soha. */}
+            {/* Rater-minőség jelzés – aggregált darabszám, raterenkénti flag soha. */}
             {sx.observerSuspectCount >= 1 ? (
               <p className="mt-1 text-micro text-muted">
                 {tf("memberDossier.observerQualityNote", locale, {
@@ -304,7 +304,7 @@ export function MemberDossierView({
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-micro font-semibold uppercase tracking-wide text-muted">
-                  {isHu ? "Csapatszerep — önkép (top 3)" : "Team role — self (top 3)"}
+                  {isHu ? "Csapatszerep – önkép (top 3)" : "Team role – self (top 3)"}
                 </p>
                 {sx.teamRole.selfTop && sx.teamRole.selfTop.length > 0 ? (
                   <ul className="mt-1.5 flex flex-col gap-1">
@@ -323,7 +323,7 @@ export function MemberDossierView({
               </div>
               <div>
                 <p className="text-micro font-semibold uppercase tracking-wide text-muted">
-                  {isHu ? "Csapatszerep — peer (top 3)" : "Team role — peer (top 3)"}
+                  {isHu ? "Csapatszerep – peer (top 3)" : "Team role – peer (top 3)"}
                 </p>
                 {sx.teamRole.peerTop.length > 0 ? (
                   <ul className="mt-1.5 flex flex-col gap-1">
@@ -418,8 +418,8 @@ export function MemberDossierView({
 
         <p className="mt-4 text-micro text-muted">
           {isHu
-            ? "A kapcsolatok pár-szintű aggregátumok — egyéni (irányított) bizalmi válasz soha nem jelenik meg."
-            : "Relationships are pair-level aggregates — no individual (directed) trust response is ever shown."}
+            ? "A kapcsolatok pár-szintű aggregátumok – egyéni (irányított) bizalmi válasz soha nem jelenik meg."
+            : "Relationships are pair-level aggregates – no individual (directed) trust response is ever shown."}
         </p>
       </section>
 

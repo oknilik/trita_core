@@ -198,7 +198,7 @@ function computeActions(stage: JourneyStage, context: JourneyContextSnapshot): J
   if (hasPendingMembershipInvite) {
     teamBridgeActions.push("JOIN_TEAM");
   }
-  // Consulting-led módban a self-serve csapat-létrehozás nem elérhető út —
+  // Consulting-led módban a self-serve csapat-létrehozás nem elérhető út –
   // a team-irányú terelést az érdeklődés-banner (TeamInterestBanner) végzi.
   if (!isConsultingLed() && (self.explicitTeamIntent || !hasPendingMembershipInvite)) {
     teamBridgeActions.push("CREATE_TEAM");

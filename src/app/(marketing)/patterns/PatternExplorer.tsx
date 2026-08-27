@@ -247,7 +247,7 @@ function HybridCard({
           Két mintázat határán
         </h2>
         <p className="mt-1 text-sm" style={{ color: T.muted }}>
-          A csúszkák kiegyensúlyozott állásban vannak — a csapat működése a kontextustól függ.
+          A csúszkák kiegyensúlyozott állásban vannak – a csapat működése a kontextustól függ.
           Kattints valamelyikre a részletes leíráshoz.
         </p>
 
@@ -418,7 +418,7 @@ function AlternativeSection({
           <span className="font-semibold" style={{ color: T.text }}>
             {axis.name}
           </span>{" "}
-          tengelyen van — ha a csapat inkább{" "}
+          tengelyen van – ha a csapat inkább{" "}
           <span className="font-semibold" style={{ color: T.text }}>
             {secondHigh ? axis.high : axis.low}
           </span>{" "}
@@ -475,7 +475,7 @@ export function PatternExplorer() {
     }
   }
 
-  // P6: melyik mintázatot dobja ki a felfedező — ebből derül ki, mi hozza
+  // P6: melyik mintázatot dobja ki a felfedező – ebből derül ki, mi hozza
   // vissza a látogatót, és melyik minta a beszélgetés-indító. Mintánként
   // egyszer, a csúszka-mozgatás közben ne szórjunk eseményt.
   const trackedPatternsRef = useRef<Set<string>>(new Set());
@@ -503,7 +503,7 @@ export function PatternExplorer() {
           className="mt-1 font-fraunces text-3xl leading-tight md:text-4xl"
           style={{ color: T.heading }}
         >
-          16 értelmezési minta — hogyan olvasható a csapat?
+          16 értelmezési minta – hogyan olvasható a csapat?
         </h1>
         <p
           className="mt-3 max-w-2xl text-base leading-relaxed"
@@ -560,7 +560,7 @@ export function PatternExplorer() {
               </span>
               A narancssárga sáv jelzi a{" "}
               <span style={{ color: T.text, fontWeight: 600 }}>kiegyensúlyozott zónát</span>{" "}
-              (35–65%). Ha 2+ tengely ott áll, a csapat működése kontextusfüggő — nem egyetlen
+              (35–65%). Ha 2+ tengely ott áll, a csapat működése kontextusfüggő – nem egyetlen
               domináns minta jellemzi.
             </div>
           </div>
@@ -681,7 +681,7 @@ export function PatternExplorer() {
             <p className="mt-3 text-sm leading-relaxed" style={{ color: T.muted }}>
               Ez az interaktív eszköz csak egy értelmezési nyelvet mutat. A Team Scan
               döntési alapja a mért bizalmi háló, a pszichológiai biztonság és a
-              forrásjelölt csapatkép — nem önmagában a 16-as címke.
+              forrásjelölt csapatkép – nem önmagában a 16-as címke.
             </p>
             <a
               href="/advisory"

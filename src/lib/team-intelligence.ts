@@ -149,12 +149,12 @@ export function buildTeamIntelligenceEvidence({
         hasMeasuredDynamics
           ? "A kapcsolati minta részben a bizalmi körben gyűjtött adatokból épül."
           : hasDynamicsData
-            ? "A kapcsolati minta a profilok alapján készült becslés — mért adatokhoz bizalmi körre van szükség."
+            ? "A kapcsolati minta a profilok alapján készült becslés – mért adatokhoz bizalmi körre van szükség."
             : "A kapcsolati nézethez observer-visszajelzésekből vagy csapattársaktól származó kapcsolati adatokra van szükség.",
         hasMeasuredDynamics
           ? "The relationship map partly builds on measured trust-round data."
           : hasDynamicsData
-            ? "The relationship map is a profile-based estimate — a trust round provides measured data."
+            ? "The relationship map is a profile-based estimate – a trust round provides measured data."
             : "Relationship view requires observer or peer-connection data.",
       ),
     },
@@ -250,7 +250,7 @@ export function buildTeamIntelligencePriorities({
       if (resolved.source === "questionnaire") measuredRoleCount += 1;
       else estimatedRoleCount += 1;
       // S2: becslés-ágon az exact (kerekítetlen összeg) a holtverseny-
-      // evidencia — enélkül a hash-fallback más elsődleges szerepet adhatna,
+      // evidencia – enélkül a hash-fallback más elsődleges szerepet adhatna,
       // mint a többi felület.
       const top = getTopRoles(resolved.scores, 1, resolved.exact)[0]?.role;
       if (top) presentTopRoles.add(top);
@@ -262,7 +262,7 @@ export function buildTeamIntelligencePriorities({
         .map((role) => (locale === "hu" ? TEAM_ROLES[role].hu : TEAM_ROLES[role].en))
         .join(", ");
       // Forrás-tudatos indoklás: tisztán mért szerepképre nem írhatjuk,
-      // hogy „becsült" (hitelességi alapelv — forrás-jelölés kötelező).
+      // hogy „becsült" (hitelességi alapelv – forrás-jelölés kötelező).
       const roleGapReasonKey =
         measuredRoleCount > 0 && estimatedRoleCount === 0
           ? "teamComp.roleGapReasonMeasured"
@@ -285,7 +285,7 @@ export function buildTeamIntelligencePriorities({
     const cohesionAverage = mean(cohesionValues);
     // A szórás továbbra is a kockázat-jelzés EGYIK kiváltója (magas belső
     // eltérés alacsony átlag nélkül is kohéziós kockázat), de számként nem
-    // jelenik meg a szövegben — 2026-08-11 termékdöntés: ± szám nincs a UI-n.
+    // jelenik meg a szövegben – 2026-08-11 termékdöntés: ± szám nincs a UI-n.
     const cohesionSpread = sampleStdDev(cohesionValues);
     if (cohesionAverage < 45 || cohesionSpread > 18) {
       priorities.push({
@@ -295,7 +295,7 @@ export function buildTeamIntelligencePriorities({
         reason: tr(
           locale,
           `A kohézió közelítő értéke ${Math.round(clamp(cohesionAverage, 0, 100))}%. Ez a barátságosság és a becsületesség-alázat átlagából számolt becslés.`,
-          `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% — an estimate computed from the agreeableness and honesty-humility averages.`,
+          `The cohesion proxy averages ${Math.round(clamp(cohesionAverage, 0, 100))}% – an estimate computed from the agreeableness and honesty-humility averages.`,
         ),
         ctaLabel: tr(locale, "Személyiségprofil megnyitása", "Open personality profile"),
         ctaHref: `/team/${teamId}?tab=intelligence#team-profile`,
@@ -330,8 +330,8 @@ export function buildTeamIntelligencePriorities({
         // „(N pont)" kikerül a szövegből.
         reason: tr(
           locale,
-          `${withHuArticle(HEXACO_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} — ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
-          `${HEXACO_DIMENSIONS[maxSpread.dim].en} — this axis shows a wide spread within the team, which may point to differing work styles.`,
+          `${withHuArticle(HEXACO_DIMENSIONS_LOWER[maxSpread.dim].hu, { capitalize: true })} – ezen a tengelyen nagy a csapaton belüli eltérés, ami eltérő munkastílusokra utalhat.`,
+          `${HEXACO_DIMENSIONS[maxSpread.dim].en} – this axis shows a wide spread within the team, which may point to differing work styles.`,
         ),
         ctaLabel: tr(locale, "Csapatprofil megnyitása", "Open team profile"),
         ctaHref: `/team/${teamId}?tab=intelligence#team-profile`,
@@ -339,7 +339,7 @@ export function buildTeamIntelligencePriorities({
     }
 
     // A TeamMember.role kötött értékkészletű ("member" | "manager" | "admin",
-    // ld. prisma séma) — a vezető a csapat-szintű kezelő szerep viselője.
+    // ld. prisma séma) – a vezető a csapat-szintű kezelő szerep viselője.
     const leaderWithScores = membersWithScores.find((member) =>
       isTeamManagerRole(member.role),
     );
@@ -375,8 +375,8 @@ export function buildTeamIntelligencePriorities({
           // 2026-08-11 termékdöntés: a delta SZÁMKÉNT nem jelenik meg a UI-n.
           reason: tr(
             locale,
-            `A vezető Becsületesség–Alázat és a Barátságosság dimenzióban elért értékei láthatóan eltérnek a csapatátlagtól. Ez becslés — érdemes beszélgetésben ellenőrizni.`,
-            `The leader's honesty-humility and agreeableness scores visibly differ from the team average. This is an estimate — worth validating in conversation.`,
+            `A vezető Becsületesség–Alázat és a Barátságosság dimenzióban elért értékei láthatóan eltérnek a csapatátlagtól. Ez becslés – érdemes beszélgetésben ellenőrizni.`,
+            `The leader's honesty-humility and agreeableness scores visibly differ from the team average. This is an estimate – worth validating in conversation.`,
           ),
           ctaLabel: tr(locale, "Részletes csapatszerepek", "Open detailed team roles"),
           ctaHref: `/team/${teamId}?tab=intelligence#team-roles`,

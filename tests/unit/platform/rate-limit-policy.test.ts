@@ -210,13 +210,13 @@ test("a bulk invite saját fail-closed tierben fut, nem a 3/perces contact keret
 
 // ─────────────────────────────────────────────────────────────────────
 // Clerk-host feloldás a publishable key-ből (a preconnect fejléc és a CSP
-// forrása). A bedrótozott dev-host volt az eredeti hiba — ezek a tesztek
+// forrása). A bedrótozott dev-host volt az eredeti hiba – ezek a tesztek
 // rögzítik, hogy a feloldás a kulcsból megy, és hogy szemétre nem dob.
 // ─────────────────────────────────────────────────────────────────────
 
-/** base64("clerk.trita.io$") — éles instance saját domainen. */
+/** base64("clerk.trita.io$") – éles instance saját domainen. */
 const LIVE_KEY = `pk_live_${Buffer.from("clerk.trita.io$").toString("base64")}`;
-/** base64("perfect-elf-67.clerk.accounts.dev$") — fejlesztői instance. */
+/** base64("perfect-elf-67.clerk.accounts.dev$") – fejlesztői instance. */
 const DEV_KEY = `pk_test_${Buffer.from("perfect-elf-67.clerk.accounts.dev$").toString("base64")}`;
 
 test("az éles kulcsból a saját domain oldódik fel", () => {
@@ -232,7 +232,7 @@ test("hiányzó vagy értelmezhetetlen kulcs null-t ad, nem dob", () => {
   assert.equal(resolveClerkFrontendApiHost(""), null);
   assert.equal(resolveClerkFrontendApiHost("nem_clerk_kulcs"), null);
   assert.equal(resolveClerkFrontendApiHost("pk_live_"), null);
-  // Base64-ként dekódolható, de nem host — nem kerülhet fejlécbe/CSP-be.
+  // Base64-ként dekódolható, de nem host – nem kerülhet fejlécbe/CSP-be.
   assert.equal(
     resolveClerkFrontendApiHost(`pk_live_${Buffer.from("nem host; script-src *$").toString("base64")}`),
     null,
@@ -246,7 +246,7 @@ test("az éles host a CSP-origin listába kerül, a wildcardok mellé", () => {
   assert.ok(origins.includes("https://*.clerk.com"));
 });
 
-test("a dev hostot a wildcard már fedi — nem duplikálunk", () => {
+test("a dev hostot a wildcard már fedi – nem duplikálunk", () => {
   assert.deepEqual(resolveClerkCspOrigins(DEV_KEY), [
     "https://*.clerk.accounts.dev",
     "https://*.clerk.com",

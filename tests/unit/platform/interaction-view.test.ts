@@ -90,11 +90,11 @@ test("vezetői kiegészítő minden archetípushoz jár (a prototípus két pól
   }
 });
 
-test("mindkét vezető-irány elő van számolva — a karakter-úton is választható", () => {
+test("mindkét vezető-irány elő van számolva – a karakter-úton is választható", () => {
   const sims = buildArchetypeSimulations(PROFILE, "hu");
   for (const sim of sims) {
     // A self-irány a SAJÁT profiltól függ, tehát minden archetípusnál ugyanaz
-    // és nem üres — korábban ez az irány a felületen egyáltalán nem létezett.
+    // és nem üres – korábban ez az irány a felületen egyáltalán nem létezett.
     assert.ok(
       sim.leaderNotesSelf.length > 0,
       `${sim.key}: az „én vezetem" irány kiegészítője hiányzik`,
@@ -103,7 +103,7 @@ test("mindkét vezető-irány elő van számolva — a karakter-úton is válasz
   }
 });
 
-test("lapos profilnál mind a 30 sparse — a felület külön üzenetet ad", () => {
+test("lapos profilnál mind a 30 sparse – a felület külön üzenetet ad", () => {
   const sims = buildArchetypeSimulations(FLAT, "hu");
   assert.equal(sims.filter((sim) => sim.sparse).length, 30);
   for (const sim of sims) {

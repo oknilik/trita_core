@@ -173,7 +173,7 @@ export function MobileMenuRow({
 
 export function MobileMenuSectionLabel({ children }: { children: React.ReactNode }) {
   // Fraunces szekció-cím (stílus-transzfer): a mono-eyebrow helyett a
-  // marketing-oldal szerkesztőségi karaktere — a szerkezet utility marad.
+  // marketing-oldal szerkesztőségi karaktere – a szerkezet utility marad.
   return (
     <p className="px-4 pb-1.5 pt-4 font-fraunces text-base text-[var(--color-text-primary)]">
       {children}

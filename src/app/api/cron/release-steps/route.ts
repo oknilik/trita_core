@@ -38,10 +38,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
     }
   }
-  // emailNotify: a cron-release a user jelenléte nélkül nyit — itt megy ki a
+  // emailNotify: a cron-release a user jelenléte nélkül nyit – itt megy ki a
   // lépés-nyitási email is (in-app értesítés + email-pár).
   const released = await releaseDueCampaignSteps({ emailNotify: true });
-  // Napi notification-sweep ugyanebből a cronból (Hobby csomag: 1 cron) —
+  // Napi notification-sweep ugyanebből a cronból (Hobby csomag: 1 cron) –
   // trial-ellenőrzések + reflexiós utókövetés (D1). A sweep hibái a
   // válaszban jelennek meg, a lépés-nyitást nem borítják.
   const sweep = await runNotificationSweep();

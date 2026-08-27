@@ -187,7 +187,7 @@ test("kampánylépés-léptető motor", async (t) => {
     await advanceCampaignStepForUser(profile.id, "SELF_ASSESSMENT", {
       campaignId: campaign.id,
     });
-    // A kaput a múltba állítjuk — mintha letelt volna a 24 óra.
+    // A kaput a múltba állítjuk – mintha letelt volna a 24 óra.
     await prisma.campaignParticipant.update({
       where: { id: participant.id },
       data: { nextStepOpensAt: new Date(Date.now() - 60_000) },

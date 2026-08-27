@@ -207,7 +207,7 @@ export async function handleCampaignLaunched(params: {
 }) {
   const meta = NOTIFICATION_TYPE_META.CAMPAIGN_LAUNCHED;
   const recipients = await resolveOrgRecipients(params.orgId, "CAMPAIGN_LAUNCHED");
-  // Szerep-tudatos link (2026-07-29): a kampány-fül tanácsadói felület —
+  // Szerep-tudatos link (2026-07-29): a kampány-fül tanácsadói felület –
   // a sima tag onnan redirectet kapna, őt a saját feladat-nézete várja.
   const memberships = await prisma.organizationMember.findMany({
     where: { orgId: params.orgId, userId: { in: recipients }, leftAt: null },
@@ -243,14 +243,14 @@ export async function handleMeasurementStepOpened(params: {
   stepType: string;
   /**
    * Email-pár küldése az in-app értesítés mellé. Csak akkor true, ha a lépés
-   * a user JELENLÉTE NÉLKÜL nyílt ki (cron-release, „Küldés most" force) —
+   * a user JELENLÉTE NÉLKÜL nyílt ki (cron-release, „Küldés most" force) –
    * a user-jelenlétű utak (oldalbetöltéses release, azonnali advance) nem
    * emaileznek, mert a user épp a felületen van.
    */
   sendEmail?: boolean;
 }) {
   const meta = NOTIFICATION_TYPE_META.MEASUREMENT_STEP_OPENED;
-  // OBSERVER_360: ha a self már kész, a teendő a MEGHÍVÓK küldése — a
+  // OBSERVER_360: ha a self már kész, a teendő a MEGHÍVÓK küldése – a
   // link ilyenkor a Külső kép fülre visz, nem az (üres) kitöltőre.
   let link = isCampaignStepType(params.stepType)
     ? getCampaignStepLink(params.stepType, params.campaignId)
@@ -287,7 +287,7 @@ export async function handleMeasurementStepOpened(params: {
     },
   ]);
 
-  // Email-pár — best effort, MŰKÖDÉSI email (a lifecycle-kapcsoló nem érinti).
+  // Email-pár – best effort, MŰKÖDÉSI email (a lifecycle-kapcsoló nem érinti).
   // Aki nem lép be magától, e nélkül soha nem tudja meg, hogy nyitott lépése
   // van (playbook S1–S3 részvételi célok).
   if (params.sendEmail) {
@@ -375,7 +375,7 @@ export async function handleCampaignProgressMilestone(campaignId: string) {
 }
 
 /**
- * Meglévő user csapatba felvétele — az ÉRINTETT kap értesítést, linkkel a
+ * Meglévő user csapatba felvétele – az ÉRINTETT kap értesítést, linkkel a
  * csapat-oldalra. A szöveg kimondja: a korábbi eredményei megmaradnak.
  */
 export async function handleTeamMemberAdded(params: {
@@ -411,7 +411,7 @@ export async function handleTeamReportPublished(params: {
     select: { userId: true },
   });
   // Az org vezetői (manager/admin) akkor is kapjanak értesítést, ha nem
-  // tagjai a csapatnak — a riport nekik (is) készül. Tanácsadó nem címzett.
+  // tagjai a csapatnak – a riport nekik (is) készül. Tanácsadó nem címzett.
   const orgLeads = params.orgId
     ? await prisma.organizationMember.findMany({
         where: {
@@ -440,7 +440,7 @@ export async function handleTeamReportPublished(params: {
   );
 
   // Email-pár az in-app értesítéshez: aki nem lép be, e nélkül nem tudja meg,
-  // hogy elkészült a riport. Best effort — az email-hiba nem törheti a
+  // hogy elkészült a riport. Best effort – az email-hiba nem törheti a
   // publikálást. Eredmény-értesítő = MŰKÖDÉSI email (az email-preferences
   // ígérete szerint a lifecycle-kapcsoló ezt nem érinti).
   try {
@@ -473,7 +473,7 @@ export async function handleTeamReportPublished(params: {
 // ── Trial events ────────────────────────────────────────────────────────────
 
 /**
- * Lazy trial check — call on org dashboard load.
+ * Lazy trial check – call on org dashboard load.
  * Creates TRIAL_ENDING_SOON or TRIAL_EXPIRED if not already notified.
  */
 export async function checkTrialNotifications(orgId: string) {
@@ -607,7 +607,7 @@ export async function handleObserverInviteDecision(params: {
 
 /**
  * Új kérdés/érdeklődés érkezett (contact form). Címzettek: a platform-adminok,
- * és — ha a kérdés szervezethez kötött — az org tanácsadói (ORG_CONSULTANT).
+ * és – ha a kérdés szervezethez kötött – az org tanácsadói (ORG_CONSULTANT).
  */
 /** Kudos érkezett: a címzett kap in-app értesítést (a feladó nevével). */
 export async function handlePeerKudosReceived(params: {
@@ -657,7 +657,7 @@ export async function handlePeerFeedbackRequested(params: {
   );
 }
 
-/** Válasz érkezett a visszajelzés-kérésre — a szöveg nem nevesít
+/** Válasz érkezett a visszajelzés-kérésre – a szöveg nem nevesít
  * (anonim válasznál a feladó kiléte az értesítésből sem derülhet ki). */
 export async function handlePeerFeedbackResponse(params: {
   itemId: string;
@@ -729,7 +729,7 @@ export async function handleInquiryReceived(params: {
 // ── CRM events (admin-only) ─────────────────────────────────────────────────
 
 /**
- * Esedékes (lejárt vagy mai) next action egy nyitott dealen — a napi
+ * Esedékes (lejárt vagy mai) next action egy nyitott dealen – a napi
  * CRM-sweep hívja, címzettek a platform-adminok (a handleInquiryReceived
  * admin-címzési mintája szerint). A dedupeDay-alapú kulcs miatt dealenként
  * naponta legfeljebb egyszer szól, amíg a lépés nincs elintézve.
@@ -737,9 +737,9 @@ export async function handleInquiryReceived(params: {
 export async function handleCrmNextActionDue(params: {
   dealId: string;
   dealTitle: string;
-  /** A next action dátuma (YYYY-MM-DD) — a szövegben jelenik meg. */
+  /** A next action dátuma (YYYY-MM-DD) – a szövegben jelenik meg. */
   dueDateIso: string;
-  /** A sweep-futás napja (YYYY-MM-DD) — a napi dedupe-kulcs része. */
+  /** A sweep-futás napja (YYYY-MM-DD) – a napi dedupe-kulcs része. */
   dedupeDay: string;
   adminUserIds: string[];
 }) {
@@ -760,7 +760,7 @@ export async function handleCrmNextActionDue(params: {
 }
 
 /**
- * Kiküldött ajánlat érvényessége hamarosan lejár — a napi CRM-sweep hívja.
+ * Kiküldött ajánlat érvényessége hamarosan lejár – a napi CRM-sweep hívja.
  * Ajánlatonként egyszer szól (quoteId-alapú dedupe).
  */
 export async function handleCrmQuoteExpiring(params: {
@@ -769,7 +769,7 @@ export async function handleCrmQuoteExpiring(params: {
   quoteLabel: string;
   dealId: string;
   dealTitle: string;
-  /** Az érvényesség vége (YYYY-MM-DD) — a szövegben jelenik meg. */
+  /** Az érvényesség vége (YYYY-MM-DD) – a szövegben jelenik meg. */
   validUntilIso: string;
   adminUserIds: string[];
 }) {
@@ -792,7 +792,7 @@ export async function handleCrmQuoteExpiring(params: {
 // ── Candidate events ────────────────────────────────────────────────────────
 
 /**
- * Jelölt kitöltötte a felmérést — értesítés az org tanácsadóinak
+ * Jelölt kitöltötte a felmérést – értesítés az org tanácsadóinak
  * (ORG_CONSULTANT) és adminjainak (ORG_ADMIN). A link a jelölt-részletezőre
  * mutat (kitöltés után az eredmény már él).
  */

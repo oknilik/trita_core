@@ -73,7 +73,7 @@ const FULL_VIEWBOX = "0 0 140 140";
 
 /**
  * Ágankénti fázis-eltolás. A pulzus 1,15 s, a nyolc ág eltolása a ciklus
- * negyedét fedi le, tehát a kinyúlás KÖRBEFUT a csillagon — ez adja a
+ * negyedét fedi le, tehát a kinyúlás KÖRBEFUT a csillagon – ez adja a
  * szikrázó karakterét. Egyszerre lüktető ágak sima méret-pumpálásnak
  * látszanának.
  */
@@ -81,13 +81,13 @@ const PHASE_STEP_MS = 36;
 
 export function StarLoader({
   /**
-   * A CSILLAG mérete pixelben — nem a teljes jelé. Kísérettel a vászon 40%-kal
+   * A CSILLAG mérete pixelben – nem a teljes jelé. Kísérettel a vászon 40%-kal
    * nagyobb lesz körülötte, hogy a csillag ugyanakkora maradjon. 48 alatt a
    * kíséret automatikusan elmarad.
    */
   size = 48,
   /**
-   * A csillag színe. Alapból a tinta — ami sötét sémán VILÁGOSSÁ fordul,
+   * A csillag színe. Alapból a tinta – ami sötét sémán VILÁGOSSÁ fordul,
    * mert egy szó szerint fekete csillag a sötét vásznon láthatatlan lenne.
    * Olyan panelen, ami MINDKÉT sémán sötét, adj át explicit értéket.
    */
@@ -122,7 +122,7 @@ export function StarLoader({
       aria-hidden={label ? undefined : true}
       focusable="false"
     >
-      {/* Nap — a csillag mögé kerül, hogy a metszés a tinta javára dőljön,
+      {/* Nap – a csillag mögé kerül, hogy a metszés a tinta javára dőljön,
           ha a pulzus a legnagyobb kinyúláshoz ér. */}
       {withAccompaniment && (
         <circle
@@ -149,7 +149,7 @@ export function StarLoader({
         ))}
       </g>
 
-      {/* Ellensúly — a nappal ellentétes oldalon, késleltetve lélegzik, hogy
+      {/* Ellensúly – a nappal ellentétes oldalon, késleltetve lélegzik, hogy
           a két kísérőjel ne egyszerre mozduljon. */}
       {withAccompaniment && (
         <circle
@@ -166,11 +166,11 @@ export function StarLoader({
  * Teljes képernyős töltőállapot: vászon + csillag, felirat nélkül.
  *
  * A wordmark szándékosan NINCS alatta: a töltés másodperc töredéke, és a
- * logó ott csak visszaigazolja, amit a felhasználó úgyis tud (hol van) —
+ * logó ott csak visszaigazolja, amit a felhasználó úgyis tud (hol van) –
  * a jel egyedül tisztább, és nagyobbra vehető.
  *
  * A `status` szerep + `aria-live="polite"` azért kell, hogy a képernyőolvasó
- * bemondja a várakozást — a néma spinner úgy viselkedik, mintha az oldal
+ * bemondja a várakozást – a néma spinner úgy viselkedik, mintha az oldal
  * befagyott volna.
  */
 export function StarLoaderScreen({ label }: { label: string }) {

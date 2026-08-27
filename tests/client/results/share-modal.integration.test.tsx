@@ -211,7 +211,7 @@ describe("ShareModal", () => {
 
   it("offers revocation for a share that lives on an older result (no current token)", async () => {
     // Újrakitöltés után a legutóbbi eredményhez nem tartozik token, a korábbi
-    // eredmény linkje viszont még nyílik — és a DELETE azt is visszavonja.
+    // eredmény linkje viszont még nyílik – és a DELETE azt is visszavonja.
     // Ha a visszavonás a látható tokenhez lenne kötve, a kint maradt link a
     // felületről nem lenne visszavonható.
     const user = userEvent.setup();

@@ -51,7 +51,7 @@ export function PatternDirectory() {
       <p className="mt-2 max-w-2xl text-body leading-relaxed" style={{ color: T.muted }}>
         A mintázatokat négy tengely metszete adja:{" "}
         {AXIS_META.map((axis) => axis.name.toLowerCase()).join(", ")}. Minden
-        működésnek van előnye és ára — nincs jó vagy rossz minta, csak olyan,
+        működésnek van előnye és ára – nincs jó vagy rossz minta, csak olyan,
         ami illeszkedik a feladathoz, és olyan, ami nem.
       </p>
       <p

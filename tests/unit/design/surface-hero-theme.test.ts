@@ -36,9 +36,9 @@ function contrast(a: string, b: string): number {
   return (light + 0.05) / (dark + 0.05);
 }
 
-/** A gradiens ELSŐ megállója — a szöveg zöme ezen a sávon ül. */
+/** A gradiens ELSŐ megállója – a szöveg zöme ezen a sávon ül. */
 function firstStop(background: string): string | null {
-  // A self téma CSS-változókból építi a gradienst — ott nincs mit számolni.
+  // A self téma CSS-változókból építi a gradienst – ott nincs mit számolni.
   return /#[0-9a-f]{6}/i.exec(background)?.[0] ?? null;
 }
 
@@ -51,7 +51,7 @@ test("minden felület saját alapszínt kap", () => {
 
 test("a hex akcentus olvasható a saját alapján (WCAG AA)", () => {
   for (const [variant, theme] of Object.entries(SURFACE_HERO_THEME)) {
-    // A self téma CSS-változót használ, azt itt nem tudjuk kiszámolni —
+    // A self téma CSS-változót használ, azt itt nem tudjuk kiszámolni –
     // a hexszel megadott témák viszont ellenőrizhetők.
     const ground = firstStop(theme.background);
     if (!theme.badgeText.startsWith("#") || !ground) continue;

@@ -134,7 +134,7 @@ export async function submitInquiry(params: SubmitInquiryParams): Promise<Submit
       from: EMAIL_FROM,
       to: [to],
       replyTo: senderEmail,
-      subject: `[trita kérdés] ${topicLabel} — ${params.name}`,
+      subject: `[trita kérdés] ${topicLabel} – ${params.name}`,
       text,
     });
     if (error) {

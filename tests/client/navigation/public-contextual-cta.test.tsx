@@ -19,7 +19,7 @@ vi.mock("@/components/LanguageSwitcher", () => ({ LanguageSwitcher: () => null }
 vi.mock("@/components/ThemeToggle", () => ({ ThemeToggle: () => null }));
 vi.mock("@/components/UserMenu", () => ({ UserMenu: () => null }));
 
-describe("publikus fejléc — landing kontextusú CTA", () => {
+describe("publikus fejléc – landing kontextusú CTA", () => {
   beforeEach(() => {
     window.history.replaceState({}, "", "/");
     window.scrollTo = vi.fn();

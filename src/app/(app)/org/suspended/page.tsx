@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 // Az INACTIVE org tagjait az auth-réteg ide tereli (auth.ts). A linkek
 // szándékosan NEM org-kontextusú oldalra mutatnak: a korábbi „Szervezetek"
-// gomb a /org-ra vitt, ami az aktív (inaktív) org miatt visszairányított ide —
+// gomb a /org-ra vitt, ami az aktív (inaktív) org miatt visszairányított ide –
 // hurok volt. A /profile/results és a /contact org-kontextus nélkül is él.
 export default async function OrgSuspendedPage() {
   const locale = await getServerLocale();

@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
       appliedNow = await applyConsultantInviteIfAny(existing.id, email);
     }
 
-    // Értesítő email a meghívottnak — best effort (a meghívó-rekord már él;
+    // Értesítő email a meghívottnak – best effort (a meghívó-rekord már él;
     // korábban semmilyen email nem ment, az admin csak remélhette, hogy a
     // meghívott magától regisztrál).
     let emailSent = false;

@@ -383,7 +383,7 @@ function ResultsTab({
 
   return (
     <div className="flex flex-col gap-10 md:gap-14">
-      {/* 2. Dimenziók részletesen — a legerősebb alapból nyitva */}
+      {/* 2. Dimenziók részletesen – a legerősebb alapból nyitva */}
       <section>
         <DimensionAccordion
           dimensions={accordionDims}
@@ -393,7 +393,7 @@ function ResultsTab({
         />
       </section>
 
-      {/* Altruism — supplementary scale */}
+      {/* Altruism – supplementary scale */}
       {(() => {
         const altDim = dimensions.find((d) => d.code === "I");
         if (!altDim) return null;
@@ -405,12 +405,12 @@ function ResultsTab({
         );
       })()}
 
-      {/* 3. Kulcs-tanulságok — rövid zárás; a részletes munkastílus külön tabon */}
+      {/* 3. Kulcs-tanulságok – rövid zárás; a részletes munkastílus külön tabon */}
       {isPlus && plusContent && (
         <KeyTakeawaysSection paragraphs={plusContent.takeaways} isUnlocked={true} />
       )}
 
-      {/* Observer kontextus-CTA — ha még nincs külső visszajelzés. Zárolt
+      {/* Observer kontextus-CTA – ha még nincs külső visszajelzés. Zárolt
           observer-folyamatnál (org-tag, kampány előtt) rejtve: a cél-tab ott
           csak állapot-kártyát mutat, a CTA zsákutcába vinne (B5). */}
       {!hasObserverData && observerFlow?.state !== "locked" && (
@@ -433,16 +433,16 @@ function ResultsTab({
         </div>
       )}
 
-      {/* Inline upsell — csak aktív paywallnál */}
+      {/* Inline upsell – csak aktív paywallnál */}
       {!isPlus && <InlineUpsell />}
 
-      {/* Locked content preview — csak aktív paywallnál */}
+      {/* Locked content preview – csak aktív paywallnál */}
       {!isPlus && <LockedPreview isPlus={false} />}
     </div>
   );
 }
 
-// „Hogyan dolgozom?" — munkastílus, ideális környezet, szerep-illeszkedés,
+// „Hogyan dolgozom?" – munkastílus, ideális környezet, szerep-illeszkedés,
 // csapatszerep-hajlamok.
 function WorkStyleTab({
   dimensions,
@@ -501,7 +501,7 @@ function WorkStyleTab({
         />
       </section>
 
-      {/* Fejlődési fókusz (UX-audit B2) — a három legalacsonyabb alskála,
+      {/* Fejlődési fókusz (UX-audit B2) – a három legalacsonyabb alskála,
           plusz a háromlépcsős fejlődési ív; eddig csak a PDF-ben élt. */}
       {growthFocusItems.length > 0 && (
         <section>
@@ -598,7 +598,7 @@ export function ProfileTabs({
       if (el) {
         const top = el.getBoundingClientRect().top;
         // Addig igazítunk, amíg a cél ténylegesen a viewport tetejére nem
-        // kerül — a streaming/hydration közbeni layout-shift és a háttér-tab
+        // kerül – a streaming/hydration közbeni layout-shift és a háttér-tab
         // (0 magasságú layout) esetét is lefedi.
         if (Math.abs(top - 16) <= 60 && window.innerHeight > 0) return;
         el.scrollIntoView({ behavior: "auto", block: "start" });
@@ -653,7 +653,7 @@ export function ProfileTabs({
           : undefined}
         onDownloadPdf={async () => {
           // A6: melyik riport-kimenetet viszik el magukkal. A letöltés
-          // SZÁNDÉKÁT mérjük (a kattintást), nem a fájl elkészültét — a
+          // SZÁNDÉKÁT mérjük (a kattintást), nem a fájl elkészültét – a
           // generálás megszakadása is a szándékról szól.
           track("results.export", { format: "pdf" });
           setPdfLoading(true);
@@ -674,7 +674,7 @@ export function ProfileTabs({
               if (top.length === 0) return undefined;
               // „Leggyakoribb eltérés": dimenzió+irány szerinti számlálás a
               // top klasztereken (a CareerGrowthPlan.collectGaps szabályával
-              // egyezően: count, holtversenynél összsúly dönt) — a korábbi
+              // egyezően: count, holtversenynél összsúly dönt) – a korábbi
               // gaps[0] csupán az ELSŐ eltérés volt, nem a leggyakoribb.
               const gapBuckets = new Map<
                 string,
@@ -714,8 +714,8 @@ export function ProfileTabs({
                 })),
                 developNote: firstGap
                   ? isHu
-                    ? `A top irányaidnál a leggyakoribb eltérés: ${dimLabel(firstGap.dim)} — a tipikus sáv ${firstGap.position === "under" ? "alatt" : "fölött"}.`
-                    : `The most common gap across your top directions: ${dimLabel(firstGap.dim)} — ${firstGap.position === "under" ? "below" : "above"} the typical range.`
+                    ? `A top irányaidnál a leggyakoribb eltérés: ${dimLabel(firstGap.dim)} – a tipikus sáv ${firstGap.position === "under" ? "alatt" : "fölött"}.`
+                    : `The most common gap across your top directions: ${dimLabel(firstGap.dim)} – ${firstGap.position === "under" ? "below" : "above"} the typical range.`
                   : undefined,
               };
             })();
@@ -723,7 +723,7 @@ export function ProfileTabs({
             // A riport-adat összeállítása a KÖZÖS view-modellen keresztül
             // (src/lib/profile-report-view-model.ts): fejezetsorrend, összkép-
             // insightok, bulletek, archetípus-sztori és csapatszerep-precedencia
-            // egyetlen forrásból — a képernyővel és a persona-generátorral
+            // egyetlen forrásból – a képernyővel és a persona-generátorral
             // szinkronban. Itt már csak a NYERS adatot adjuk át.
             await downloadPdf({
               locale,
@@ -736,7 +736,7 @@ export function ProfileTabs({
               personalityType: personalityType ?? "",
               heroInsight: heroInsight ?? "",
               // A `dimensions` prop már csak MÉRT dimenziókat tartalmaz
-              // (results/page.tsx: a score nélküli dimenzió kimarad) — a
+              // (results/page.tsx: a score nélküli dimenzió kimarad) – a
               // kiegészítő „I" skála így hiányzó adatból soha nem lesz 0%.
               // A facet-lista Start-planban üres: a PDF ilyenkor nem mutat
               // alskála-bontást, koholt 0-facetet meg végképp nem.
@@ -757,7 +757,7 @@ export function ProfileTabs({
                 growthTip: plusContent.growthTip,
                 growthPlan: plusContent.growthPlan,
                 collaboration: plusContent.collaboration,
-                // „Ideális környezet" — a webes IdealEnvironmentSection adata;
+                // „Ideális környezet" – a webes IdealEnvironmentSection adata;
                 // korábban a PdfData típusa elejtette (PDF-audit P0/4).
                 envItems: plusContent.envItems,
                 roleFit: plusContent.roleFit,
@@ -773,7 +773,7 @@ export function ProfileTabs({
                   observerFlow.state === "self_serve" ||
                   observerFlow.state === "available") ? {
                 count: observerCount,
-                // Lefedetlen dimenzió (nincs observer-érték) kimarad — a
+                // Lefedetlen dimenzió (nincs observer-érték) kimarad – a
                 // hiányzó külső adat nem „tökéletes egyezés".
                 dimensions: mainDims.flatMap((d) =>
                   d.observerScore == null
@@ -814,7 +814,7 @@ export function ProfileTabs({
         />
       ) : null}
 
-      {/* A4: melyik eredmény-fület nézik — a kezdő fület is beleértve
+      {/* A4: melyik eredmény-fület nézik – a kezdő fület is beleértve
           (a váltás-kezelő azt nem látná). */}
       <TabViewTracker surface="results" tab={activeTab} />
 
@@ -991,7 +991,7 @@ export function ProfileTabs({
               />
               <div id="invitations" className="scroll-mt-24">
                 {/* minForReveal a szerver-oldali kanonikus küszöbből
-                    (observer-flow → anonimitás-padló) — a self-serve ág is
+                    (observer-flow → anonimitás-padló) – a self-serve ág is
                     ezt kapja, hogy az info-banner ne mondjon mást, mint a
                     reveal-kapu (a korábbi kliens-default 2 volt, a kapu 3). */}
                 <InvitationsTab

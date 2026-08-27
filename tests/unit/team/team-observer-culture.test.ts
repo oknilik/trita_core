@@ -34,7 +34,7 @@ const gapMember = (): TeamObserverMemberInput => ({
   observerDimSets: raters(DOSSIER_OBSERVER_MIN, 50 + DOSSIER_GAP_MIN_DELTA + 5),
 });
 
-describe("computeTeamFeedbackCulture — anonimitás-padló", () => {
+describe("computeTeamFeedbackCulture – anonimitás-padló", () => {
   it("a padló alatt NEM ad vissza semmit (nem 0-t)", () => {
     const members = Array.from({ length: TEAM_OBSERVER_MIN_COVERED - 1 }, alignedMember);
     assert.equal(computeTeamFeedbackCulture(members), null);
@@ -69,7 +69,7 @@ describe("computeTeamFeedbackCulture — anonimitás-padló", () => {
   });
 });
 
-describe("computeTeamFeedbackCulture — besorolás", () => {
+describe("computeTeamFeedbackCulture – besorolás", () => {
   it("a per-fős rater-padló alatti tag nem számít lefedettnek", () => {
     const members = [
       ...Array.from({ length: TEAM_OBSERVER_MIN_COVERED }, alignedMember),
@@ -169,7 +169,7 @@ describe("computeTeamFeedbackCulture — besorolás", () => {
   });
 });
 
-describe("kimenet-szerződés — mit NEM ad vissza", () => {
+describe("kimenet-szerződés – mit NEM ad vissza", () => {
   it("nincs dimenzió-bontás, nincs tag-szintű érték, nincs nagyságrend", () => {
     const members = Array.from({ length: TEAM_OBSERVER_MIN_COVERED }, gapMember);
     const result = computeTeamFeedbackCulture(members);

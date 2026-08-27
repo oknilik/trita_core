@@ -57,7 +57,7 @@ export function TeamReportPdfButton({
       </button>
       {failed && (
         <span role="status" className="text-micro text-state-error-fg">
-          {isHu ? "A PDF-készítés nem sikerült — próbáld újra." : "PDF export failed — try again."}
+          {isHu ? "A PDF-készítés nem sikerült – próbáld újra." : "PDF export failed – try again."}
         </span>
       )}
     </span>

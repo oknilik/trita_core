@@ -38,7 +38,7 @@ function profileEdge(a: string, b: string): TeamDynamicsEdge {
   };
 }
 
-describe("mergeTrustEdges — disconnected nem súrlódás (D2)", () => {
+describe("mergeTrustEdges – disconnected nem súrlódás (D2)", () => {
   it("a disconnected mért él a profil-becslést törli, NEM friction-né alakítja", () => {
     const merged = mergeTrustEdges(
       [profileEdge("u1", "u2")],
@@ -89,7 +89,7 @@ describe("mergeTrustEdges — disconnected nem súrlódás (D2)", () => {
 
 // ── FIX 4: a kilépett tag hátrahagyott mért párja nem éri el a térképet ─────
 
-describe("mergeTrustEdges — kilépett tag mért párjai (a szűrt trust-hálón át)", () => {
+describe("mergeTrustEdges – kilépett tag mért párjai (a szűrt trust-hálón át)", () => {
   const maxAnswers = (): TrustAnswerSet =>
     Object.fromEntries(TRUST_QUESTIONS.map((q) => [q.id, q.max]));
 
@@ -142,7 +142,7 @@ describe("computeTeamCompletionBuckets", () => {
     });
   });
 
-  it("regresszió: a 'vár' szegmens nem szerkezetileg 0 — a vázlat nélküli tag oda esik", () => {
+  it("regresszió: a 'vár' szegmens nem szerkezetileg 0 – a vázlat nélküli tag oda esik", () => {
     // A régi képlet (scores === null && joinedAt → folyamatban) minden
     // kitöltetlen tagot folyamatban-nak számolt, a waiting mindig 0 volt.
     const buckets = computeTeamCompletionBuckets([

@@ -105,7 +105,7 @@ test("known-groups: a validáció a TELJES katalóguson fut, nem a motor saját 
   // Mért érdeklődésnél az alapértelmezett ág (interest-led) 30–60 tételre
   // csonkolja a rangsort. Ha a validáció ezen futna, egy pool-on kívüli saját
   // foglalkozás null-ként kiesne, a percentilis pedig egy ELŐSZŰRT halmazon
-  // számolódna — a nevező pont azokból a súlyokból származna, amiket validálunk.
+  // számolódna – a nevező pont azokból a súlyokból származna, amiket validálunk.
   const person: PersonInput = {
     dims: { H: 55, E: 45, X: 70, A: 60, C: 55, O: 50 },
     form: "short",
@@ -119,7 +119,7 @@ test("known-groups: a validáció a TELJES katalóguson fut, nem a motor saját 
   assert.equal(defaultRun.meta.strategy, "interest-led");
   assert.ok(
     defaultRun.ranked.length < getOccupations().length,
-    "az interest-led ág nem csonkolt — a teszt előfeltétele sérült",
+    "az interest-led ág nem csonkolt – a teszt előfeltétele sérült",
   );
   const inPool = new Set(defaultRun.ranked.map((fit) => fit.id));
   const outsider = getOccupations().find((occupation) => !inPool.has(occupation.id));

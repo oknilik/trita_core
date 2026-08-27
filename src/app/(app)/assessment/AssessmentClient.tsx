@@ -647,7 +647,7 @@ export function AssessmentClient({
       <div className={`flex ${shellMinHeight} flex-col bg-[var(--color-surface-canvas)]`}>
         <AssessmentFocusHeader homeHref={assessmentHomeHref}>
           {/* A NavBar ezen az útvonalon szándékosan null (krómmentes fókusz),
-              ezért a séma-választó ide kerül — kijelentkezve is elérhető. */}
+              ezért a séma-választó ide kerül – kijelentkezve is elérhető. */}
           <ThemeToggle variant="compact" />
         </AssessmentFocusHeader>
 
@@ -672,7 +672,7 @@ export function AssessmentClient({
               </p>
               <div className="mb-6 max-w-[520px] rounded-r-lg border-l-2 border-[var(--color-action-primary-bg)] bg-[var(--color-surface-self-accent-soft)] px-4 py-3.5 lg:px-5 lg:py-4">
                 <p className="text-xs leading-relaxed text-[var(--color-accent-self-deep)] lg:text-sm">
-                  {/* P1.6: vendégnek nem ígérünk szerver-mentést — a draft
+                  {/* P1.6: vendégnek nem ígérünk szerver-mentést – a draft
                       csak ebben a böngészőben él (localStorage). */}
                   {t(guestMode ? "assessment.introInfoGuest" : "assessment.introInfo", locale)}
                 </p>
@@ -702,7 +702,7 @@ export function AssessmentClient({
                   </div>
                 </div>
               ))}
-              {/* Dekoratív miniatűr eredmény-teaser — a törpe, halvány szöveg
+              {/* Dekoratív miniatűr eredmény-teaser – a törpe, halvány szöveg
                   szándékos „thumbnail"-hatás, nem olvasásra szánt tartalom,
                   ezért aria-hidden és mentesül a 10px-es a11y-padló alól. */}
               <div aria-hidden className="mt-1 rounded-[12px] bg-gradient-to-br from-[var(--color-layer-self-hero-from)] via-[var(--color-layer-self-hero-mid)] to-[var(--color-layer-self-hero-to)] px-4 py-3.5 lg:px-5 lg:py-4">
@@ -756,7 +756,7 @@ export function AssessmentClient({
               aria-valuenow={questionIndex + 1}
               className="relative h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--color-border-default)]"
             >
-              {/* Answered reach — light sage: up to last answered question position */}
+              {/* Answered reach – light sage: up to last answered question position */}
               {(() => {
                 let lastAnsweredIdx = -1;
                 for (let i = questions.length - 1; i >= 0; i--) {
@@ -830,7 +830,7 @@ export function AssessmentClient({
                     {t('assessment.journeyMilestone50Sub', locale)}
                   </p>
 
-                  {/* Segmented progress — 10 segments */}
+                  {/* Segmented progress – 10 segments */}
                   <div className="mb-5 flex w-full max-w-[280px] gap-[3px]">
                     {Array.from({ length: 10 }, (_, i) => {
                       const filledSegments = Math.round((answeredCount / totalQuestions) * 10);
@@ -857,7 +857,7 @@ export function AssessmentClient({
                     </p>
                   </div>
 
-                  {/* UX-A8: saját továbblépő gomb — a milestone nem függ a
+                  {/* UX-A8: saját továbblépő gomb – a milestone nem függ a
                       lábléc „Tovább" gombjától. */}
                   <Button
                     type="button"
@@ -882,7 +882,7 @@ export function AssessmentClient({
           </AnimatePresence>
         </div>
 
-        {/* P1.5: szerver-mentés-hiba jelzés — nem blokkol, csak tájékoztat */}
+        {/* P1.5: szerver-mentés-hiba jelzés – nem blokkol, csak tájékoztat */}
         {serverSaveFailed && !guestMode && (
           <p role="status" className="mt-4 text-xs text-state-warning-fg">
             {t('assessment.saveErrorHint', locale)}
@@ -894,7 +894,7 @@ export function AssessmentClient({
           {t('assessment.helpLikert', locale)}
         </p>
         {/* UX-A12: a billentyű-gyorsítók léteztek, de sehol nem voltak
-            elmagyarázva — asztali nézetben megmutatjuk. */}
+            elmagyarázva – asztali nézetben megmutatjuk. */}
         <p className="mt-1 hidden text-xs text-[var(--color-text-muted)] md:block">
           {t('assessment.keyboardHint', locale)}
         </p>
@@ -935,7 +935,7 @@ export function AssessmentClient({
           </span>
         </label>
 
-        {/* UX-A7: az autosave fire-and-forget — a fő gombot nem tiltjuk le
+        {/* UX-A7: az autosave fire-and-forget – a fő gombot nem tiltjuk le
             miatta (lassú neten random kiszürkült magyarázat nélkül). */}
         {!showEvaluateButton ? (
           <button

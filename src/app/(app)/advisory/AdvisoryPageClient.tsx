@@ -152,7 +152,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
                     <p className="font-semibold text-ink">{team?.name}</p>
                     <p className="mt-0.5 text-sm text-ink-body">
                       {p.patternName}
-                      {p.diversitySuffix ? ` — ${p.diversitySuffix}` : ""}
+                      {p.diversitySuffix ? ` – ${p.diversitySuffix}` : ""}
                       <span className="mx-2 text-sand">·</span>
                       {team?.memberCount} {t("advisory.members", locale)}
                     </p>
@@ -260,7 +260,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
         </div>
       </Card>
 
-      {/* ── CTA — tanácsadói konzultáció ──────────────────── */}
+      {/* ── CTA – tanácsadói konzultáció ──────────────────── */}
       {isAdvisory && !requestSent && (
         <div className="mb-10 rounded-2xl border border-sage/20 bg-surface-card p-8 text-center shadow-sm">
           <SectionEyebrow className="mb-2">
@@ -296,7 +296,7 @@ export function AdvisoryPageClient({ userName, tier, isHu, teams }: Props) {
         </div>
       )}
 
-      {/* ── CTA — upgrade ────────────────────────────────── */}
+      {/* ── CTA – upgrade ────────────────────────────────── */}
       {isUpgrade && (
         <div className="mb-10 rounded-2xl border-2 border-sage/20 bg-surface-card p-8 shadow-sm">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:items-center">

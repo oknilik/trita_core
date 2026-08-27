@@ -63,7 +63,7 @@ test("minden deklarált eseménynek van hívóhelye", () => {
   assert.deepEqual(
     missing,
     [],
-    `deklarált, de sehol nem küldött esemény: ${missing.join(", ")} — vagy kösd be, vagy vedd ki a katalógusból`,
+    `deklarált, de sehol nem küldött esemény: ${missing.join(", ")} – vagy kösd be, vagy vedd ki a katalógusból`,
   );
 });
 
@@ -75,7 +75,7 @@ test("nincs hívás nem létező esemény-névre", () => {
 });
 
 test("a szerver-only eseményeket csak szerver-oldali kód küldi", () => {
-  // A hívóhelynek `trackServerEvent`-et kell használnia — a kliens-oldali
+  // A hívóhelynek `trackServerEvent`-et kell használnia – a kliens-oldali
   // `track()` amúgy is elbukna a végponton, de itt már fordítás előtt szólunk.
   for (const name of ANALYTICS_EVENT_NAMES) {
     if (ANALYTICS_EVENTS[name].origin !== "server") continue;

@@ -96,7 +96,7 @@ const publicEvents = {
       })
       .strict(),
     origin: "client",
-    description: "GYIK-tétel kinyitása — melyik a valódi vásárlói kétely.",
+    description: "GYIK-tétel kinyitása – melyik a valódi vásárlói kétely.",
     question: "P4",
   }),
 
@@ -159,7 +159,7 @@ const publicEvents = {
   "newsletter.confirm": spec({
     schema: z.object({}).strict(),
     origin: "server",
-    description: "Double opt-in megerősítés — a feliratkozás aktívvá vált.",
+    description: "Double opt-in megerősítés – a feliratkozás aktívvá vált.",
     question: "P5",
   }),
 
@@ -209,7 +209,7 @@ const assessmentEvents = {
       })
       .strict(),
     origin: "client",
-    description: "Egy kérdés megjelenése — a lemorzsolódás-görbe forrása.",
+    description: "Egy kérdés megjelenése – a lemorzsolódás-görbe forrása.",
     question: "P3 / A2",
   }),
 
@@ -312,7 +312,7 @@ const appEvents = {
       })
       .strict(),
     origin: "client",
-    description: "Fül-váltás a bejelentkezett felületeken — mit használnak.",
+    description: "Fül-váltás a bejelentkezett felületeken – mit használnak.",
     question: "A4 / A5",
   }),
 
@@ -387,12 +387,12 @@ export function parseEventProps(
     return { ok: false, issue: result.error.issues.map((i) => `${i.path.join(".")}: ${i.code}`).join(", ") };
   }
   // A katalógus minden sémája `.strict()` és csak skalár mezőket deklarál,
-  // ezért a szűkítés itt igaz állítás — a zod típusa csak nem tudja kimondani.
+  // ezért a szűkítés itt igaz állítás – a zod típusa csak nem tudja kimondani.
   return { ok: true, props: result.data as ValidatedEventProps };
 }
 
 /**
- * TILTOTT TULAJDONSÁG-NEVEK — a katalógus-teszt őrzi
+ * TILTOTT TULAJDONSÁG-NEVEK – a katalógus-teszt őrzi
  * (tests/unit/analytics/event-catalog.test.ts).
  *
  * Nem futásidejű szűrő: ha valaki ilyen nevű kulcsot venne fel a

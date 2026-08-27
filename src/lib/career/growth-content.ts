@@ -20,24 +20,24 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Kiszámíthatóság és átláthatóság",
         action:
-          "Egy hónapig írd fel minden vállalásodat, és jelöld, hogy teljesült-e. Ha csúszás várható, te jelezd először — a bizalom az ilyen kiszámítható lépésekből épül.",
+          "Egy hónapig írd fel minden vállalásodat, és jelöld, hogy teljesült-e. Ha csúszás várható, te jelezd először – a bizalom az ilyen kiszámítható lépésekből épül.",
       },
       en: {
         headline: "Predictability and transparency",
         action:
-          "For a month, write down every commitment and mark whether you kept it. Where it slips, raise it first — trust is built there.",
+          "For a month, write down every commitment and mark whether you kept it. Where it slips, raise it first – trust is built there.",
       },
     },
     over: {
       hu: {
         headline: "Az érdekeid képviselete",
         action:
-          "A szerénységed erő, de az érdemeidet valakinek ki kell mondania. Havonta egyszer foglald össze írásban, mit vittél véghez — tényszerűen, mentegetőzés nélkül.",
+          "A szerénységed erő, de az érdemeidet valakinek ki kell mondania. Havonta egyszer foglald össze írásban, mit vittél véghez – tényszerűen, mentegetőzés nélkül.",
       },
       en: {
         headline: "Speaking for your own interests",
         action:
-          "Modesty is a strength, but someone has to name your results. Once a month, write down what you delivered — factually, without apology.",
+          "Modesty is a strength, but someone has to name your results. Once a month, write down what you delivered – factually, without apology.",
       },
     },
   },
@@ -51,19 +51,19 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       en: {
         headline: "Tuning in to how others feel",
         action:
-          "Before a hard conversation, ask yourself what the other person might be feeling — and say your guess out loud: “this seems frustrating for you”.",
+          "Before a hard conversation, ask yourself what the other person might be feeling – and say your guess out loud: “this seems frustrating for you”.",
       },
     },
     over: {
       hu: {
         headline: "Nyomás alatti stabilitás",
         action:
-          "Éles helyzetben várj tíz percet, mielőtt reagálsz. Írd le a legrosszabb reális következményt — általában kezelhetőbb, mint amilyennek elsőre tűnik.",
+          "Éles helyzetben várj tíz percet, mielőtt reagálsz. Írd le a legrosszabb reális következményt – általában kezelhetőbb, mint amilyennek elsőre tűnik.",
       },
       en: {
         headline: "Steadiness under pressure",
         action:
-          "In a heated moment, give yourself a 10-minute delay before responding. Write down the realistic worst case — it is usually smaller than it first feels.",
+          "In a heated moment, give yourself a 10-minute delay before responding. Write down the realistic worst case – it is usually smaller than it first feels.",
       },
     },
   },
@@ -72,24 +72,24 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Láthatóság és kezdeményezés",
         action:
-          "Hetente egyszer szólalj meg olyan fórumon, ahol eddig hallgattál. Készíts elő egy mondatot — a spontaneitás nem előfeltétel.",
+          "Hetente egyszer szólalj meg olyan fórumon, ahol eddig hallgattál. Készíts elő egy mondatot – a spontaneitás nem előfeltétel.",
       },
       en: {
         headline: "Visibility and initiative",
         action:
-          "Once a week, speak up in a forum where you usually stay quiet. Prepare one sentence in advance — spontaneity is not a prerequisite.",
+          "Once a week, speak up in a forum where you usually stay quiet. Prepare one sentence in advance – spontaneity is not a prerequisite.",
       },
     },
     over: {
       hu: {
         headline: "Teret hagyni másoknak",
         action:
-          "Megbeszéléseken számold, hányszor szólaltál meg elsőként. Próbáld ki, hogy egy körben szándékosan utolsóként beszélsz — a lendületed így nem nyomja el a csendesebbeket.",
+          "Megbeszéléseken számold, hányszor szólaltál meg elsőként. Próbáld ki, hogy egy körben szándékosan utolsóként beszélsz – a lendületed így nem nyomja el a csendesebbeket.",
       },
       en: {
         headline: "Leaving room for others",
         action:
-          "In meetings, count how often you speak first. Try deliberately speaking last in one round — your energy then stops crowding out quieter people.",
+          "In meetings, count how often you speak first. Try deliberately speaking last in one round – your energy then stops crowding out quieter people.",
       },
     },
   },
@@ -124,19 +124,19 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       hu: {
         headline: "Következetesség és lezárás",
         action:
-          "Válassz egy visszatérő feladatot, és készíts hozzá kétperces ellenőrzőlistát. Egy hónapig minden alkalommal használd — a kialakított rendszer akkor is továbbvisz, amikor kevésbé érzed a lendületet.",
+          "Válassz egy visszatérő feladatot, és készíts hozzá kétperces ellenőrzőlistát. Egy hónapig minden alkalommal használd – a kialakított rendszer akkor is továbbvisz, amikor kevésbé érzed a lendületet.",
       },
       en: {
         headline: "Consistency and finishing",
         action:
-          "Pick one recurring task and build a two-minute checklist for it. Use it every time for a month — the system substitutes for momentum.",
+          "Pick one recurring task and build a two-minute checklist for it. Use it every time for a month – the system substitutes for momentum.",
       },
     },
     over: {
       hu: {
         headline: "A tökéletesség ára",
         action:
-          "A szerep gyors, kellően megalapozott döntéseket kíván, nem hibátlanokat. Egy feladatnál előre írd le, mit jelent az, hogy „elég jó”, és állj meg ezen a ponton — mérd meg, mennyi időt nyertél.",
+          "A szerep gyors, kellően megalapozott döntéseket kíván, nem hibátlanokat. Egy feladatnál előre írd le, mit jelent az, hogy „elég jó”, és állj meg ezen a ponton – mérd meg, mennyi időt nyertél.",
       },
       en: {
         headline: "The cost of perfection",
@@ -155,19 +155,19 @@ export const GROWTH_BY_POLE: Record<DimCode, Record<Pole, GrowthText>> = {
       en: {
         headline: "Experimenting and new angles",
         action:
-          "Once a month, run one proven process a different way, at low stakes. The goal isn't a better result — it's having something to compare against.",
+          "Once a month, run one proven process a different way, at low stakes. The goal isn't a better result – it's having something to compare against.",
       },
     },
     over: {
       hu: {
         headline: "Az ötletek megvalósítása",
         action:
-          "A szerep stabilitást kíván. Válaszd ki a legjobb ötletedet, és három hétig csak annak megvalósításával foglalkozz — a többit írd egy „később” listára, hogy ne vesszen el.",
+          "A szerep stabilitást kíván. Válaszd ki a legjobb ötletedet, és három hétig csak annak megvalósításával foglalkozz – a többit írd egy „később” listára, hogy ne vesszen el.",
       },
       en: {
         headline: "Landing the ideas",
         action:
-          "This role needs stability. Pick your best idea and run only that for three weeks — park the rest on a “later” list so nothing is lost.",
+          "This role needs stability. Pick your best idea and run only that for three weeks – park the rest on a “later” list so nothing is lost.",
       },
     },
   },

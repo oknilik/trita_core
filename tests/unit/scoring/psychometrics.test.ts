@@ -23,7 +23,7 @@ import { DOSSIER_GAP_MIN_DELTA } from "@/lib/member-dossier";
 // A korábbi kézzel átlagolt konstansok (9.5 / 2.5) driftelhettek a banktól;
 // itt függetlenül újraszámoljuk a bankból, és ahhoz kötjük a modult.
 
-describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
+describe("psychometrics – item-szám invariánsok a TSFI bankból", () => {
   const mainCodes = new Set<string>(HEXACO_ORDER);
   const mainItems = tritanConfig.questions.filter((q) => mainCodes.has(q.dimension));
   const shortItems = mainItems.filter((q) => q.short === true);
@@ -64,7 +64,7 @@ describe("psychometrics — item-szám invariánsok a TSFI bankból", () => {
   });
 });
 
-describe("psychometrics — SEM és a rá épülő küszöbök", () => {
+describe("psychometrics – SEM és a rá épülő küszöbök", () => {
   it("több item = magasabb alfa, kisebb hiba; facet mindig bizonytalanabb", () => {
     assert.ok(alphaFromItems(16) > alphaFromItems(10));
     assert.ok(alphaFromItems(10) > alphaFromItems(58 / 6));
@@ -90,7 +90,7 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.equal(Math.round(dimStandardError("short")), 8);
   });
 
-  it("diffStandardError = √2·SEM — két pont KÜLÖNBSÉGÉNEK hibája (~10,70)", () => {
+  it("diffStandardError = √2·SEM – két pont KÜLÖNBSÉGÉNEK hibája (~10,70)", () => {
     assert.equal(diffStandardError("short"), Math.SQRT2 * dimStandardError("short"));
     assert.equal(Math.round(diffStandardError("short")), 11);
     assert.ok(diffStandardError("short") > dimStandardError("short"));
@@ -157,7 +157,7 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
     assert.equal(diffStandardError("short", "I"), diffStandardError("short"));
   });
 
-  it("DOSSIER_GAP_MIN_DELTA = round(√2·SEM short) — önkép–külső kép különbség", () => {
+  it("DOSSIER_GAP_MIN_DELTA = round(√2·SEM short) – önkép–külső kép különbség", () => {
     assert.equal(DOSSIER_GAP_MIN_DELTA, Math.round(diffStandardError("short")));
     assert.equal(DOSSIER_GAP_MIN_DELTA, 11);
   });
@@ -178,7 +178,7 @@ describe("psychometrics — SEM és a rá épülő küszöbök", () => {
   });
 });
 
-describe("career/psychometrics — a közös mag re-exportja azonos", () => {
+describe("career/psychometrics – a közös mag re-exportja azonos", () => {
   it("ugyanazok a függvény-referenciák és értékek", () => {
     assert.equal(careerPsychometrics.dimStandardError, dimStandardError);
     assert.equal(careerPsychometrics.facetStandardError, facetStandardError);

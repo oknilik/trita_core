@@ -40,8 +40,8 @@ export function ObserverFlowStatusCard({
             </h2>
             <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
               {isHu
-                ? `${flow.receivedCount} kollégád adott visszajelzést a csapat-folyamatban — az önképed és a külső kép összevetése elérhető.`
-                : `${flow.receivedCount} colleagues gave feedback in the team process — your self-image vs. outside view comparison is available.`}
+                ? `${flow.receivedCount} kollégád adott visszajelzést a csapat-folyamatban – az önképed és a külső kép összevetése elérhető.`
+                : `${flow.receivedCount} colleagues gave feedback in the team process – your self-image vs. outside view comparison is available.`}
             </p>
             {onOpenComparison ? (
               <button
@@ -70,13 +70,13 @@ export function ObserverFlowStatusCard({
           {isHu ? "csapat-folyamat" : "team process"}
         </SectionEyebrow>
         <h2 className="mt-1 font-fraunces text-xl text-ink">
-          {isHu ? "Külső visszajelzés — folyamatban" : "Outside feedback — in progress"}
+          {isHu ? "Külső visszajelzés – folyamatban" : "Outside feedback – in progress"}
         </h2>
         <p className="mt-1.5 text-sm leading-relaxed text-ink-body">
           {flow.activeCampaignName
             ? isHu
-              ? `${huArticle(flow.activeCampaignName) === "az" ? "Az" : "A"} „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek — ők egy publikus linken, belépés nélkül töltenek ki rólad.`
-              : `As part of the "${flow.activeCampaignName}" measurement you can request outside feedback: use the invite manager below to ask colleagues or external partners — they fill it in about you via a public link, no login needed.`
+              ? `${huArticle(flow.activeCampaignName) === "az" ? "Az" : "A"} „${flow.activeCampaignName}" mérés keretében kérhetsz külső visszajelzést: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek – ők egy publikus linken, belépés nélkül töltenek ki rólad.`
+              : `As part of the "${flow.activeCampaignName}" measurement you can request outside feedback: use the invite manager below to ask colleagues or external partners – they fill it in about you via a public link, no login needed.`
             : isHu
               ? "A szervezeted mérésében te kéred fel az értékelőidet: az alábbi meghívó-kezelőből küldj felkérést kollégáknak vagy külső partnereknek."
               : "In your organization's measurement you choose your raters: use the invite manager below to ask colleagues or external partners."}
@@ -128,8 +128,8 @@ export function ObserverFlowStatusCard({
         )}
         <p className="mt-2 text-xs text-muted">
           {isHu
-            ? `Az összevetés ${flow.minForReveal} beérkezett visszajelzésnél nyílik meg — így egyik kollégád válasza sem visszakereshető.`
-            : `The comparison opens at ${flow.minForReveal} received responses — so no single colleague's answer can be traced back.`}
+            ? `Az összevetés ${flow.minForReveal} beérkezett visszajelzésnél nyílik meg – így egyik kollégád válasza sem visszakereshető.`
+            : `The comparison opens at ${flow.minForReveal} received responses – so no single colleague's answer can be traced back.`}
         </p>
       </section>
     );
@@ -156,8 +156,8 @@ export function ObserverFlowStatusCard({
           </p>
           <p className="mt-2 text-xs text-muted">
             {isHu
-              ? "A saját eredményed ettől függetlenül teljes — a kitöltéssel a személyes utad kerek."
-              : "Your own result is complete regardless — finishing the assessment completes your personal journey."}
+              ? "A saját eredményed ettől függetlenül teljes – a kitöltéssel a személyes utad kerek."
+              : "Your own result is complete regardless – finishing the assessment completes your personal journey."}
           </p>
         </div>
       </div>
@@ -186,8 +186,8 @@ export function ObserverFlowStrip({
         className="inline-flex items-center gap-1.5 rounded-full bg-sage px-3 py-1.5 text-xs font-semibold text-[var(--color-action-primary-fg)] transition hover:bg-sage-dark"
       >
         {isHu
-          ? `Külső visszajelzés megérkezett (${flow.receivedCount}) — összevetés`
-          : `Outside feedback arrived (${flow.receivedCount}) — comparison`}
+          ? `Külső visszajelzés megérkezett (${flow.receivedCount}) – összevetés`
+          : `Outside feedback arrived (${flow.receivedCount}) – comparison`}
         <ChevronRightIcon className="h-3.5 w-3.5" />
       </button>
     ) : flow.state === "in_progress" ? (

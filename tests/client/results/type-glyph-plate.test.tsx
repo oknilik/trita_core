@@ -101,7 +101,7 @@ describe("TypeGlyphPlate", () => {
     // erősséget mondja ki.
     expect(screen.queryByText(/a második legmagasabb/)).toBeNull();
     expect(
-      screen.getByText(/A két legmagasabb pontszámú dimenziód — a Nyitottság és a Lelkiismeretesség/),
+      screen.getByText(/A két legmagasabb pontszámú dimenziód – a Nyitottság és a Lelkiismeretesség/),
     ).toBeInTheDocument();
     // Mérési-hiba SZÁM nem jelenik meg a hedge-szövegben sem.
     expect(document.body.textContent).not.toContain("±");
@@ -140,7 +140,7 @@ describe("TypeGlyphPlate", () => {
       screen.getAllByText(/a két legmagasabb: Nyitottság · Lelkiismeretesség/).length,
     ).toBeGreaterThan(0);
     expect(
-      screen.getByText(/A két legmagasabb pontszámú dimenziód — a Nyitottság és a Lelkiismeretesség/),
+      screen.getByText(/A két legmagasabb pontszámú dimenziód – a Nyitottság és a Lelkiismeretesség/),
     ).toBeInTheDocument();
   });
 });

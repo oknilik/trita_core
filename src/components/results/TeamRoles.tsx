@@ -36,15 +36,15 @@ const ROLE_SUBTITLES: Record<TeamRoleCode, { hu: string; en: string }> = {
 };
 
 const ROLE_DESCRIPTIONS: Record<TeamRoleCode, { hu: string; en: string }> = {
-  OG: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz — de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions — but can lose touch with practical implementation." },
-  KE: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket — de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities — but follow-through isn't their strength." },
-  KO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot — de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals — but may over-delegate." },
-  HA: { hu: "Hajtott, kihívásokat kereső típus. Nyomás alatt is teljesít, előre viszi a csapatot — de néha türelmetlenül.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward — but sometimes impatiently." },
-  ER: { hu: "Tárgyilagosan elemez, jó döntéseket hoz — de lassú reagálású és túl kritikus lehet.", en: "Analyzes objectively, makes good decisions — but can be slow to react and overly critical." },
-  CS: { hu: "Segítőkész és diplomata, enyhíti a feszültséget — de döntéshelyzetben határozatlan lehet.", en: "Helpful and diplomatic, eases tension — but can be indecisive in decision moments." },
-  MV: { hu: "Rendszeres és megbízható, terveket valósít meg — de rugalmatlan lehet új helyzetekben.", en: "Systematic and reliable, turns plans into action — but can be inflexible in new situations." },
-  MI: { hu: "Precíz és alapos, hibákat kiszűr a végén — de aggódhat a határidők miatt.", en: "Precise and thorough, catches errors at the end — but may worry about deadlines." },
-  SZ: { hu: "Mélyreható szaktudás, nélkülözhetetlen egy területen — de szűk fókuszú lehet.", en: "Deep expertise, indispensable in one area — but can have a narrow focus." },
+  OG: { hu: "Eredeti gondolkodó, aki új megoldásokat hoz – de néha elszakad a gyakorlati megvalósítástól.", en: "Original thinker who brings new solutions – but can lose touch with practical implementation." },
+  KE: { hu: "Könnyen teremt kapcsolatokat és hoz külső lehetőségeket – de az utánkövetés nem az erőssége.", en: "Easily builds connections and brings external opportunities – but follow-through isn't their strength." },
+  KO: { hu: "Természetes facilitátor, aki célra fókuszálja a csapatot – de delegálhat túl sokat.", en: "Natural facilitator who focuses the team on goals – but may over-delegate." },
+  HA: { hu: "Hajtott, kihívásokat kereső típus. Nyomás alatt is teljesít, előre viszi a csapatot – de néha türelmetlenül.", en: "Driven, challenge-seeking type. Performs under pressure, pushes the team forward – but sometimes impatiently." },
+  ER: { hu: "Tárgyilagosan elemez, jó döntéseket hoz – de lassú reagálású és túl kritikus lehet.", en: "Analyzes objectively, makes good decisions – but can be slow to react and overly critical." },
+  CS: { hu: "Segítőkész és diplomata, enyhíti a feszültséget – de döntéshelyzetben határozatlan lehet.", en: "Helpful and diplomatic, eases tension – but can be indecisive in decision moments." },
+  MV: { hu: "Rendszeres és megbízható, terveket valósít meg – de rugalmatlan lehet új helyzetekben.", en: "Systematic and reliable, turns plans into action – but can be inflexible in new situations." },
+  MI: { hu: "Precíz és alapos, hibákat kiszűr a végén – de aggódhat a határidők miatt.", en: "Precise and thorough, catches errors at the end – but may worry about deadlines." },
+  SZ: { hu: "Mélyreható szaktudás, nélkülözhetetlen egy területen – de szűk fókuszú lehet.", en: "Deep expertise, indispensable in one area – but can have a narrow focus." },
 };
 
 const RANK_LABELS = [
@@ -179,7 +179,7 @@ export function TeamRoles({
                 }`}
               >
                 {/* Becslés-ágon NINCS szám: a súlyozott összeg nem százalék,
-                    kiírva álprecizitás lenne (a PDF is elnyomja) — ott csak
+                    kiírva álprecizitás lenne (a PDF is elnyomja) – ott csak
                     a rang/sáv jelenik meg. */}
                 {isMeasured ? `${rank[lang]} · ${score}%` : rank[lang]}
               </span>
@@ -207,7 +207,7 @@ export function TeamRoles({
         })}
       </div>
 
-      {/* ── „A csapatod így lát" — kampányból érkező társ-visszajelzés ── */}
+      {/* ── „A csapatod így lát" – kampányból érkező társ-visszajelzés ── */}
       {peer && peer.raterCount > 0 ? (
         <div className="mt-6 rounded-xl border-[1.5px] border-[var(--color-border-soft)] bg-surface-card p-5">
           <div className="flex flex-wrap items-center gap-2">

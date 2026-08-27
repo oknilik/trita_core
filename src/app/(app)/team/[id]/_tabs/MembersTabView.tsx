@@ -73,8 +73,8 @@ export async function MembersTabView({ ctx }: { ctx: TeamTabContext }) {
           })
         ).map((inv) => ({
           id: inv.id,
-          inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
-          targetLabel: inv.observerName ?? inv.observerEmail ?? "—",
+          inviterName: inv.inviter.username ?? inv.inviter.email ?? "–",
+          targetLabel: inv.observerName ?? inv.observerEmail ?? "–",
           createdAt: inv.createdAt.toISOString(),
           campaignName: inv.campaign?.name ?? "",
         }))

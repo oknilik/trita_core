@@ -76,7 +76,7 @@ export function LanguageSwitcher({ variant = "dropdown" }: { variant?: "dropdown
         onClick={() => setOpen((v) => !v)}
         // A11y (label-content-name-mismatch): a gomb LÁTHATÓ szövege a
         // nyelvkód ("HU"/"EN"), ezért az akadálymentes névnek EZZEL kell
-        // kezdődnie — különben a hangvezérlés („kattints a HU-ra") nem
+        // kezdődnie – különben a hangvezérlés („kattints a HU-ra") nem
         // találja meg. A kód után jön a szerep-címke az i18n-kulcsból.
         aria-label={`${locale.toUpperCase()} – ${t("locale.label", locale)}`}
         aria-expanded={open}

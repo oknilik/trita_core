@@ -90,7 +90,7 @@ export function escapeHtml(input: string): string {
  * küldéskor kiszámolt `NEXT_PUBLIC_APP_URL` nem feltétlenül az a hoszt, ahová
  * az eszköz kikerült, a preview-deployt pedig a Vercel deployment protection
  * amúgy sem engedi kép-kérésre. A `data:` URI-t a Gmail eltávolítja. A `cid:`
- * az egyetlen forma, amit a levél MAGÁVAL VISZ — nincs hoszt-, deploy- vagy
+ * az egyetlen forma, amit a levél MAGÁVAL VISZ – nincs hoszt-, deploy- vagy
  * env-függése.
  *
  * A csatolmányokat a küldő rakja a levélre (`emailArtAttachments`); a
@@ -126,7 +126,7 @@ export function emailArtAttachments(): Array<{
 /**
  * Bulletproof elsődleges CTA: table + td bgcolor Outlookra.
  *
- * Zsálya felület, fehér felirat — az app `action-primary` párja. A 15px-es
+ * Zsálya felület, fehér felirat – az app `action-primary` párja. A 15px-es
  * függőleges padding + 16/1.3 sor együtt 49px magas célt ad, tehát a 44px-es
  * érintő-minimum fölött van.
  */
@@ -136,7 +136,7 @@ export function renderCtaButton(params: { href: string; label: string }): string
 
 /**
  * MÁSODLAGOS AKCIÓ (ma nincs hívója): bronz felület TINTA felirattal
- * (5,20:1) — az `actionSecondary*` tokenek. A fehér felirat ott 3,28:1
+ * (5,20:1) – az `actionSecondary*` tokenek. A fehér felirat ott 3,28:1
  * lenne; ugyanezért tartja a web is sötéten a `--palette-text-on-accent`-et.
  * A szabályt a kontraszt-teszt őrzi, a gomb maga ehhez a két tokenhez
  * három sor.
@@ -163,12 +163,12 @@ function renderButton(params: {
 }
 
 /**
- * Eyebrow — a `SectionEyebrow` primitív levél-párja: tónus-színű pötty +
+ * Eyebrow – a `SectionEyebrow` primitív levél-párja: tónus-színű pötty +
  * 11px/0,14em/600 verzál felirat.
  *
  * Két cellás táblázat, nem `inline-block` span: az Outlook Word-renderelője
  * nem sorolja be megbízhatóan az inline-block elemeket. A pötty egy 5×5-ös
- * színezett cella — a `border-radius`-t nem támogató kliensben apró négyzet
+ * színezett cella – a `border-radius`-t nem támogató kliensben apró négyzet
  * lesz belőle, ami ezen a méreten nem megkülönböztethető.
  */
 function renderEyebrow(params: { label: string }): string {
@@ -224,7 +224,7 @@ export interface EmailLayoutParams {
   bodyContent: string;
   /** Halk zárás a kártya alján: feltétel, időkorlát, „nem te voltál". */
   quietNote?: string;
-  /** Életciklus-levél leiratkozó-linkje — a láblécbe kerül, nem a törzsbe. */
+  /** Életciklus-levél leiratkozó-linkje – a láblécbe kerül, nem a törzsbe. */
   optOut?: { href: string; label: string };
   signOff: { thanks: string; team: string };
 }
@@ -233,9 +233,9 @@ export function buildEmailLayout(params: EmailLayoutParams): string {
   const preheader = `<div style="display:none!important;visibility:hidden;mso-hide:all;font-size:1px;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden">${escapeHtml(params.preheader)}${"&nbsp;&zwnj;".repeat(90)}</div>`;
 
   // A formanyelv 3. szintje: csillag + bronz nap + zsálya ellensúly. MINDEN
-  // levél láblécében, kivétel nélkül — az aláírás fölött.
+  // levél láblécében, kivétel nélkül – az aláírás fölött.
   //
-  // `cid:` inline csatolmány, NEM data: URI — a Gmail eltávolítja a data-URI
+  // `cid:` inline csatolmány, NEM data: URI – a Gmail eltávolítja a data-URI
   // képforrásokat, és az inline SVG-t sem rendereli. `alt=""` +
   // `role="presentation"`: kikapcsolt képeknél nyomtalanul eltűnik.
   const artMark = `<img src="${cidRef(EMAIL_ART.mark)}" width="${EMAIL_ART.mark.width}" height="${EMAIL_ART.mark.height}" alt="" role="presentation" style="display:block;margin:0 auto 16px;border:0;width:${EMAIL_ART.mark.width}px;height:${EMAIL_ART.mark.height}px">`;

@@ -85,7 +85,7 @@ test("minden sablon ad eyebrow-t, Fraunces címsort és preheadert", async () =>
       `${label}: nincs rejtett preheader`,
     );
 
-    // A címsor és az eyebrow ne legyen üres — a típus megköveteli a mezőt,
+    // A címsor és az eyebrow ne legyen üres – a típus megköveteli a mezőt,
     // de üres stringgel is átmenne.
     const heading = s.html.match(/<h1 class="em-heading em-display"[^>]*>([\s\S]*?)<\/h1>/)?.[1];
     assert.ok(heading && heading.trim().length > 2, `${label}: üres címsor`);
@@ -117,7 +117,7 @@ test("az akciógombok felirata teljesíti az AA-t (4,5:1)", () => {
 });
 
 test("a szöveg-szerepek olvashatók a vásznon ÉS a kártyán is", () => {
-  // A lábléc a KRÉM vásznon ül, a törzs a FEHÉR kártyán — a halk szerepnek
+  // A lábléc a KRÉM vásznon ül, a törzs a FEHÉR kártyán – a halk szerepnek
   // mindkettőn át kell mennie. A korábbi `mutedWarm` fehéren 4,40:1-et adott.
   for (const surface of [EMAIL_COLORS.canvas, EMAIL_COLORS.card] as const) {
     for (const [role, color] of [
@@ -129,7 +129,7 @@ test("a szöveg-szerepek olvashatók a vásznon ÉS a kártyán is", () => {
       assert.ok(ratio >= 4.5, `${role} a ${surface} felületen: ${ratio.toFixed(2)}:1`);
     }
   }
-  // Az eyebrow a fehér kártyán ül — a brand-bronz itt megbukna, ezért van
+  // Az eyebrow a fehér kártyán ül – a brand-bronz itt megbukna, ezért van
   // külön `accentText` szerep.
   const eyebrow = contrast(EMAIL_COLORS.card, EMAIL_COLORS.accentText);
   assert.ok(eyebrow >= 4.5, `eyebrow a kártyán: ${eyebrow.toFixed(2)}:1`);
@@ -137,7 +137,7 @@ test("a szöveg-szerepek olvashatók a vásznon ÉS a kártyán is", () => {
 
 // ─── 3. Tokenek ──────────────────────────────────────────────────────────────
 
-test("a levél-modulokban nincs nyers hex — minden szín a design-tokens.ts-ből jön", () => {
+test("a levél-modulokban nincs nyers hex – minden szín a design-tokens.ts-ből jön", () => {
   for (const file of ["src/lib/email-layout.ts", "src/lib/emails.ts"]) {
     const source = readFileSync(join(process.cwd(), file), "utf8");
     const hexes = source.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
@@ -152,7 +152,7 @@ test("a renderelt levélben csak EMAIL_COLORS-értékek szerepelnek színként",
     for (const hex of s.html.match(/#[0-9a-fA-F]{6}\b/g) ?? []) {
       assert.ok(
         allowed.has(hex.toLowerCase()),
-        `${s.id} (${s.locale}): ismeretlen szín ${hex} — vedd fel EMAIL_COLORS szerepként`,
+        `${s.id} (${s.locale}): ismeretlen szín ${hex} – vedd fel EMAIL_COLORS szerepként`,
       );
     }
   }
@@ -201,9 +201,9 @@ test("a kanonikus szójel megy ki, a kivezetett elemek nem térnek vissza", asyn
       `${label}: nincs kanonikus szójel`,
     );
     assert.match(s.html, /alt="trita"/, `${label}: a szójelnek alt-szöveg kell (kikapcsolt kép)`);
-    // A háromszínű szójel a homok plaketten — 2026-08-19-én kivezetve.
+    // A háromszínű szójel a homok plaketten – 2026-08-19-én kivezetve.
     assert.ok(!s.html.includes(">rit<"), `${label}: visszatért a háromszínű szójel`);
-    // A bronz CTA (fehér felirattal 3,28:1) — kivezetve.
+    // A bronz CTA (fehér felirattal 3,28:1) – kivezetve.
     assert.ok(
       !s.html.includes(`background-color:${EMAIL_COLORS.accent};border-radius:12px`),
       `${label}: az elsődleges gomb nem lehet bronz`,
@@ -237,7 +237,7 @@ test("a webfont-réteg mso-feltételes (az Outlook különben Times-ra esik)", a
 
 // 2026-08-20: korábban a jel csak az „ügyfél" családon volt ott, a kód- és
 // magic-link-levélen nem. Ez a felületen egyenetlenségként jelentkezett, ezért
-// a család-fogalom kivezetve. Ez a teszt KIVÉTEL NÉLKÜL kéri a jelet — ha
+// a család-fogalom kivezetve. Ez a teszt KIVÉTEL NÉLKÜL kéri a jelet – ha
 // bárki visszavezetne egy feltételt, itt bukik.
 test("formanyelvi jel MINDEN levélen ott van, és dekorációként", async () => {
   const samples = await samplesPromise;
@@ -340,7 +340,7 @@ test("külső kép csak a hírlevél trita.io-s cikkborítója lehet", async () 
       assert.equal(url.hostname, "trita.io", `${s.id}: idegen kép-host (${url.hostname})`);
       // STABIL route kell, nem a blog metadata-image útja: azt a Next
       // build-generált utótaggal szolgálja ki (`…/opengraph-image-<hash>`),
-      // az utótag nélküli alak pedig 404 — a levélben törött kép lenne belőle
+      // az utótag nélküli alak pedig 404 – a levélben törött kép lenne belőle
       // (2026-08-21, mérve prod buildon).
       assert.match(
         url.pathname,
@@ -408,11 +408,11 @@ test("a küldő-modulban nincs angolra eső alapértelmezés", () => {
     .replace(/^\s*\/\/.*$/gm, "");
   assert.ok(
     !/\?\?\s*"en"/.test(source),
-    'emails.ts: `?? "en"` alapértelmezés — a feloldás a normalizeLocale dolga',
+    'emails.ts: `?? "en"` alapértelmezés – a feloldás a normalizeLocale dolga',
   );
   assert.ok(
     !source.includes("endsWith(\".hu\")"),
-    "emails.ts: a levélcím TLD-je nem nyelvi jelzés — a heurisztika kivezetve",
+    "emails.ts: a levélcím TLD-je nem nyelvi jelzés – a heurisztika kivezetve",
   );
 });
 

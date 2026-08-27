@@ -19,7 +19,7 @@ function LocaleProbe() {
   );
 }
 
-describe("LocaleProvider — magyar alapállapot", () => {
+describe("LocaleProvider – magyar alapállapot", () => {
   beforeEach(() => {
     refresh.mockClear();
     window.localStorage.clear();

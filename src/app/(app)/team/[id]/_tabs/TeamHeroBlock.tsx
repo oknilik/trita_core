@@ -123,7 +123,7 @@ export function TeamHeroBlock({
 
   // ── Hero CTA-kezelések ─────────────────────────────────────────────
   // A hero ELSŐDLEGES CTA-ja mindig a tömör, világos (glow-háttér + sötét
-  // tinta) kezelést kapja — a 8%-os fehér szellem-gomb a sötét réteg-
+  // tinta) kezelést kapja – a 8%-os fehér szellem-gomb a sötét réteg-
   // gradiensen gyakorlatilag eltűnik, az CSAK másodlagos akcióként állhat
   // egy tömör gomb MELLETT. Ha a kör-kezelés az egyetlen renderelt akció
   // (nem-tag vezető/tanácsadó, még nincs csapatkép), az örökli az
@@ -139,7 +139,7 @@ export function TeamHeroBlock({
 
   return (
     <>
-      {/* ═══ HERO — minden fülön azonos ═══ */}
+      {/* ═══ HERO – minden fülön azonos ═══ */}
       <SurfaceHero
         variant="team"
         eyebrow={(
@@ -175,13 +175,13 @@ export function TeamHeroBlock({
         ))}
         actions={(
           <>
-            {/* Visszajelzés — kitüntetett belépő, csak csapattagnak */}
+            {/* Visszajelzés – kitüntetett belépő, csak csapattagnak */}
             {isTeamMember ? (
               <Link
                 href={`/team/${teamId}?tab=feedback`}
                 scroll={false}
                 aria-current={active === "feedback" ? "page" : undefined}
-                // Sötét tinta a glow-hátterén — ld. org cockpit: a fehér
+                // Sötét tinta a glow-hátterén – ld. org cockpit: a fehér
                 // 2,7:1-et adott, ami AA alatt van mindkét színsémán.
                 className={`${heroCtaSolidClass} gap-1.5`}
                 style={{ backgroundColor: teamHeroTheme.primary }}
@@ -279,7 +279,7 @@ export function TeamHeroBlock({
               </div>
             </div>
 
-            {/* Haladás-gyűrűk — az org-hero élő pillanatképével azonos nyelv */}
+            {/* Haladás-gyűrűk – az org-hero élő pillanatképével azonos nyelv */}
             <div className="mt-4 grid grid-cols-2 gap-2">
               <div className="flex flex-col items-center gap-1.5 rounded-xl bg-white/[0.06] px-2 py-3 text-center">
                 <CompletionIndicator percent={completionPct} size={76} color="var(--color-sage-300)" />

@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "SUBMIT_FAILED" }, { status: 502 });
   }
 
-  // Visszaigazoló email a jelentkezőnek — best effort, a lead már perzisztált.
+  // Visszaigazoló email a jelentkezőnek – best effort, a lead már perzisztált.
   try {
     await sendPilotApplyConfirmationEmail({
       to: email,

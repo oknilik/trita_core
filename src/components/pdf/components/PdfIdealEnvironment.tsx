@@ -30,7 +30,7 @@ function levelPosition(level: EnvLevel | null): number {
 
 function getDescription(value: string): string {
   const dashIdx = value.indexOf(" – ");
-  const dashIdx2 = value.indexOf(" — ");
+  const dashIdx2 = value.indexOf(" – ");
   const idx = dashIdx2 >= 0 ? dashIdx2 : dashIdx;
   return idx >= 0 ? value.slice(idx + 3).trim() : value;
 }
@@ -132,7 +132,7 @@ export function PdfIdealEnvironment({
               }}
             >
               <Text style={{ fontWeight: 600, color: colors.ink }}>{shortLabel}</Text>
-              {" — "}
+              {" – "}
               {getDescription(item.value)}
             </Text>
           </View>

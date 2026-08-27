@@ -73,7 +73,7 @@ function repoPath(slug: string): string {
   return `content/blog/${slug}.mdx`;
 }
 
-/** A feltöltött borítók helye — a repóban és a publikus úton is. */
+/** A feltöltött borítók helye – a repóban és a publikus úton is. */
 export const BLOG_COVER_DIR = "public/blog-covers";
 
 function githubHeaders(cfg: GithubConfig): Record<string, string> {
@@ -127,7 +127,7 @@ export interface BlogRevision {
  * Csak a sha egy tetszőleges repó-útra (bináris fájlokhoz).
  *
  * A tartalmat szándékosan nem dekódoljuk: egy borítókép base64-ben
- * fölöslegesen nagy, és 1 MB fölött a GitHub amúgy sem adja vissza inline —
+ * fölöslegesen nagy, és 1 MB fölött a GitHub amúgy sem adja vissza inline –
  * a sha viszont mindig ott van, és az írásnak csak az kell.
  */
 async function githubGetFileMeta(
@@ -150,7 +150,7 @@ async function githubGetFileMeta(
  * A szerkesztő ezen az úton töltsön (ne a build-időben becsomagolt
  * `content/blog` fájlrendszerről): github módban a legutóbbi commit
  * számít igazságnak, a futó példány fájlrendszere pedig a legutóbbi
- * DEPLOY állapotát őrzi — a kettő a build ideje alatt eltér.
+ * DEPLOY állapotát őrzi – a kettő a build ideje alatt eltér.
  */
 export async function readBlogRevision(slug: string): Promise<BlogRevision | null> {
   if (blogStoreMode() === "github") {
@@ -164,7 +164,7 @@ export async function readBlogRevision(slug: string): Promise<BlogRevision | nul
   return { content: fs.readFileSync(filePath, "utf-8"), sha: null };
 }
 
-/** A cikk nyers .mdx tartalma (frontmatter + törzs) — módnak megfelelő forrásból. */
+/** A cikk nyers .mdx tartalma (frontmatter + törzs) – módnak megfelelő forrásból. */
 export async function readBlogSource(slug: string): Promise<string | null> {
   return (await readBlogRevision(slug))?.content ?? null;
 }
@@ -194,13 +194,13 @@ function assertWritableFs(): void {
   throw new Error(BLOG_STORE_READ_ONLY);
 }
 
-/** Cikk mentése — fs módban fájlírás, github módban commit (create vagy update). */
+/** Cikk mentése – fs módban fájlírás, github módban commit (create vagy update). */
 export async function saveBlogSource(params: {
   slug: string;
   content: string;
   message: string;
   /**
-   * A betöltéskori sha — ütközés-ellenőrzéshez. `null` = a hívó úgy tudja,
+   * A betöltéskori sha – ütközés-ellenőrzéshez. `null` = a hívó úgy tudja,
    * a cikk még nem létezik. Ha nincs megadva, nincs ellenőrzés (feltöltés,
    * migrációs utak). fs módban nincs sha, ott az ellenőrzés kimarad.
    */
@@ -250,7 +250,7 @@ export async function saveBlogSource(params: {
   return { mode };
 }
 
-/** Cikk törlése (elvetés) — github módban törlő-commit, a git-történelemből
+/** Cikk törlése (elvetés) – github módban törlő-commit, a git-történelemből
  * bármikor visszaállítható; fs módban fájltörlés. */
 export async function deleteBlogSource(params: {
   slug: string;
@@ -295,7 +295,7 @@ export async function deleteBlogSource(params: {
 //
 // A kép ugyanazon az úton megy, mint a cikk: `github` módban commit,
 // `fs` módban fájlírás. Így a borító a cikkel EGY deployban élesedik, és
-// ugyanúgy visszaállítható a git-történelemből — nem kell külön
+// ugyanúgy visszaállítható a git-történelemből – nem kell külön
 // objektumtároló egy blogra, aminek pár tucat képe lesz.
 
 /** Feltöltött borító mentése. `fileName` már ellenőrzött alak. */

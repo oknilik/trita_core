@@ -93,7 +93,7 @@ export default async function QuoteCalculatorPage({
         backLabel={deal ? `Vissza a dealhez: ${deal.title}` : "Vissza az adminhoz"}
         eyebrow="belső eszköz"
         title="Ajánlat-kalkulátor"
-        description="Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze — belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
+        description="Programdíj + degresszív fejenkénti mérési díj + utánkövetés. A vevőnek szánt összefoglaló a jobb alsó dobozban áll össze – belső számok (óradíj, padló, kedvezmény-keret) nincsenek benne."
       />
 
       <QuoteCalculator

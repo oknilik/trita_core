@@ -16,7 +16,7 @@ vi.mock("@/components/ui/Toast", () => ({
   useToast: () => ({ showToast: toastMock }),
 }));
 
-describe("OnboardingClient — claim aktiválás", () => {
+describe("OnboardingClient – claim aktiválás", () => {
   beforeEach(() => {
     completeMock.mockReset();
     toastMock.mockReset();

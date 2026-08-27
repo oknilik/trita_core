@@ -66,11 +66,11 @@ test("csupa közepes profil: a DEFAULT_NARRATIVE az első howYouWork-bekezdés",
   }
 });
 
-// ─── howYouWorkParts — nevesített slotok (motor-audit v4, FIX 3) ────────────
+// ─── howYouWorkParts – nevesített slotok (motor-audit v4, FIX 3) ────────────
 
 test("E-vezérelt pár: nincs Figyelendő-kártya, a tartalom a semleges notes-slotba megy", () => {
   // 2026-08-11 valencia-döntés + a `risk: boolean` → `tone` átállás: a
-  // fordított skálát (E) érintő párok hangneme "note" — sem deficit-keretes
+  // fordított skálát (E) érintő párok hangneme "note" – sem deficit-keretes
   // („Figyelendő"), sem kontextusba söpört maradék: saját, semleges slot.
   for (const lang of LOCALES) {
     const ws = buildWorkstyleContent(scores({ E: 80, X: 80 }), "TRITAN", lang);
@@ -96,7 +96,7 @@ test("E-vezérelt pár: nincs Figyelendő-kártya, a tartalom a semleges notes-s
 
 test("MINDEN E-vezérelt pár-profil: a watch-slot üres, a tartalom megvan", () => {
   // A három deklarált risk-pár mind E-magas (supportedVisibility /
-  // structuredStability / safeExperimentation) — egyik sem kaphat
+  // structuredStability / safeExperimentation) – egyik sem kaphat
   // deficit-keretes slotot egyetlen nyelven sem.
   const cases: [string, Record<string, number>][] = [
     ["supportedVisibility", { E: 80, X: 80 }],

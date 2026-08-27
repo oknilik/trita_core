@@ -25,7 +25,7 @@ describe("TeamMemberSnapshot", () => {
     expect(screen.getByText("A csapat készen áll")).toBeInTheDocument();
     expect(screen.getAllByText("A riporttal nyílik meg")).toHaveLength(2);
     expect(screen.getByText("Már 4 / 5 csapattárs kitöltötte a kapcsolati kört.")).toBeInTheDocument();
-    expect(screen.getByText("Minden saját feladatod kész — a riport publikálására vársz.")).toBeInTheDocument();
+    expect(screen.getByText("Minden saját feladatod kész – a riport publikálására vársz.")).toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Feladataim/ })).not.toBeInTheDocument();
   });
 
@@ -61,7 +61,7 @@ describe("TeamMemberSnapshot", () => {
     expect(screen.getByText("Megvalósító · 2")).toBeInTheDocument();
     expect(screen.getByText("Kapcsolódó megvalósítók")).toBeInTheDocument();
     expect(screen.getByText("Következő lépés")).toBeInTheDocument();
-    expect(screen.getByText("A csapatriport elkészült — nézd meg a közös felismeréseket.")).toBeInTheDocument();
+    expect(screen.getByText("A csapatriport elkészült – nézd meg a közös felismeréseket.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Riport megnyitása/ })).toHaveAttribute(
       "href",
       "/team/team-1?tab=report",

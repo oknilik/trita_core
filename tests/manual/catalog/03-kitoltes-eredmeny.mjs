@@ -49,7 +49,7 @@ export const cases = [
     steps:
       "1. Nyiss egy MÁSIK böngészőt/profilt (B), jelentkezz be ugyanazzal a fiókkal. 2. Nyisd meg az /assessment oldalt.",
     expected:
-      "A B böngészőben is az első megválaszolatlan kérdésnél folytatódik a kitöltés a szerver-draftból — az intro kimarad, a válaszok száma egyezik az A böngészőben hagyottal.",
+      "A B böngészőben is az első megválaszolatlan kérdésnél folytatódik a kitöltés a szerver-draftból – az intro kimarad, a válaszok száma egyezik az A böngészőben hagyottal.",
     automated: "partial",
     coveredBy: "tests/client/assessment/assessment-client.integration.test.tsx",
     priority: "P2",
@@ -92,7 +92,7 @@ export const cases = [
     emails: { fő: "AUTO" },
     preconditions: "Kitöltés folyamatban.",
     steps:
-      "1. Alapállapotban válassz egy értéket — figyeld a lépést. 2. Kapcsold KI a lábléc „automatikus továbblépés” pipáját. 3. Válassz értéket a következő kérdésen. 4. Módosítsd a választ, majd kattints a Tovább gombra.",
+      "1. Alapállapotban válassz egy értéket – figyeld a lépést. 2. Kapcsold KI a lábléc „automatikus továbblépés” pipáját. 3. Válassz értéket a következő kérdésen. 4. Módosítsd a választ, majd kattints a Tovább gombra.",
     expected:
       "Bekapcsolva a válasz után rögtön (töredék mp) a következő kérdés jön. Kikapcsolva a kérdésen maradsz, a válasz szabadon módosítható, és csak a Tovább gomb léptet.",
     automated: "partial",
@@ -155,7 +155,7 @@ export const cases = [
     steps:
       "1. Az utolsó válasz ELŐTT kapcsold ki a hálózatot. 2. Add meg az utolsó választ / kattints a „Kiértékelés” gombra. 3. Figyeld a visszajelzést. 4. Kapcsold vissza a hálózatot és próbáld újra.",
     expected:
-      "A kiértékelő animáció megszakad, hiba-toast jelenik meg; a kérdéssor válaszai MEGMARADNAK (nem nullázódik), és a Kiértékelés újra megnyomható — online állapotban a beküldés lefut, az eredmény létrejön.",
+      "A kiértékelő animáció megszakad, hiba-toast jelenik meg; a kérdéssor válaszai MEGMARADNAK (nem nullázódik), és a Kiértékelés újra megnyomható – online állapotban a beküldés lefut, az eredmény létrejön.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -171,7 +171,7 @@ export const cases = [
     steps:
       "1. Bejelentkezve válaszolj kb. 10 kérdésre az /assessment oldalon. 2. Jelentkezz ki. 3. Nyisd meg vendégként a /try oldalt. 4. Jelentkezz be a MÁSIK teszt-fiókkal és nyisd meg az /assessment oldalt.",
     expected:
-      "A vendég-teszt üresen, az intróval indul (nem örökli a user válaszait), és a másik fiók kitöltése is tiszta lappal kezdődik — a bejelentkezett draft profil-azonosítóval szigetelt kulcson tárolódik.",
+      "A vendég-teszt üresen, az intróval indul (nem örökli a user válaszait), és a másik fiók kitöltése is tiszta lappal kezdődik – a bejelentkezett draft profil-azonosítóval szigetelt kulcson tárolódik.",
     automated: "partial",
     coveredBy: "tests/unit/assessment/assessment-draft-storage.test.ts",
     priority: "P3",
@@ -186,7 +186,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a /profile/results oldalt. 2. Menj végig a hero-n és az „Eredmények” fül szekcióin. 3. Ellenőrizd a dimenzió-kártyákat és a munkastílus-szekciókat.",
     expected:
-      "A hero a neved + kitöltés-dátum + típuscímke + karakter-ábra kombinációt mutatja. Mind a 6 HEXACO-dimenzió pontszámmal és sávos megjelenítéssel + szöveges insighttal jelenik meg; a fejlődési fókusz és a Plus-tartalom (hogyan dolgozol, nyomás alatt, ideális környezet, szerep-illeszkedés) is látszik — kapuzás/paywall NINCS (a paywall kikapcsolt).",
+      "A hero a neved + kitöltés-dátum + típuscímke + karakter-ábra kombinációt mutatja. Mind a 6 HEXACO-dimenzió pontszámmal és sávos megjelenítéssel + szöveges insighttal jelenik meg; a fejlődési fókusz és a Plus-tartalom (hogyan dolgozol, nyomás alatt, ideális környezet, szerep-illeszkedés) is látszik – kapuzás/paywall NINCS (a paywall kikapcsolt).",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -218,7 +218,7 @@ export const cases = [
     steps:
       "1. A /profile/results oldalon válts a „Külső kép” (összehasonlítás) fülre. 2. Nézd meg az összevetés-blokkot és a meghívó-szekciót.",
     expected:
-      "Az összevetés observer-adat nélküli állapotot mutat (nem üres/törött diagram, hanem magyarázat, hogy külső visszajelzéssel nyílik meg), és ugyanazon a fülön ott a meghívó-kezelő, ahonnan ismerős hívható meg — zsákutca nélkül.",
+      "Az összevetés observer-adat nélküli állapotot mutat (nem üres/törött diagram, hanem magyarázat, hogy külső visszajelzéssel nyílik meg), és ugyanazon a fülön ott a meghívó-kezelő, ahonnan ismerős hívható meg – zsákutca nélkül.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -248,7 +248,7 @@ export const cases = [
     steps:
       "1. Nyisd meg sorban: /profile/results?tab=career, ?tab=workstyle, ?tab=invites URL-eket.",
     expected:
-      "A ?tab=career a /career oldalra irányít át; a ?tab=workstyle az Eredmények fület nyitja (a munkastílus ott szekció); a ?tab=invites a Külső kép fülre esik — egyik régi link sem fut 404-re vagy üres fülre.",
+      "A ?tab=career a /career oldalra irányít át; a ?tab=workstyle az Eredmények fület nyitja (a munkastílus ott szekció); a ?tab=invites a Külső kép fülre esik – egyik régi link sem fut 404-re vagy üres fülre.",
     automated: "none",
     coveredBy: "",
     priority: "P3",

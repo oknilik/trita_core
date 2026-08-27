@@ -76,7 +76,7 @@ export const RadarChart = memo(function RadarChart({
         (a, b) => TRITAN_RADAR_ORDER.indexOf(a.code) - TRITAN_RADAR_ORDER.indexOf(b.code),
       )
     : dimensions;
-  // Tengelycímke: mindig a 3 betűs, EGYEDI rövidítés (TÁR/TER stb.) —
+  // Tengelycímke: mindig a 3 betűs, EGYEDI rövidítés (TÁR/TER stb.) –
   // az egybetűs változatban két „T" is volt, ami önmagában nem
   // azonosította a dimenziót (design-akciólista #9).
   const axisLabel = (code: string): string =>
@@ -164,7 +164,7 @@ export const RadarChart = memo(function RadarChart({
           <stop offset="100%" stopColor="var(--color-dim-o-base)" />
         </linearGradient>
 
-        {/* Observer: bronz — a külső perspektíva a brand meleg akcentusa,
+        {/* Observer: bronz – a külső perspektíva a brand meleg akcentusa,
             nem siker-zöld (a visszajelzés nem osztályzat). */}
         <linearGradient id={observerFillId} x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="var(--color-bronze)" stopOpacity="0.24" />

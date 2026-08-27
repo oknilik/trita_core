@@ -19,7 +19,7 @@ function likert(dims: Record<string, number>) {
 
 const DIMS = { H: 50, E: 50, X: 82, A: 50, C: 60, O: 40 };
 
-describe("selectReflectionCandidates — 7–10 napos ablak", () => {
+describe("selectReflectionCandidates – 7–10 napos ablak", () => {
   it("az ablakban lévő legfrissebb eredmény jelölt, a legerősebb dimenzióval", () => {
     const candidates = selectReflectionCandidates(
       [{ userProfileId: "u1", createdAt: daysAgo(8), scores: likert(DIMS) }],

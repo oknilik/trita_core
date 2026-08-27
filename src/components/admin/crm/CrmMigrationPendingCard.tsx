@@ -20,10 +20,10 @@ export function CrmMigrationPendingCard({ detail }: { detail: SchemaOutOfSyncDet
         {detail.target ? (
           <>
             {" "}
-            — hiányzó elem: <span className="font-semibold">{detail.target}</span>
+            – hiányzó elem: <span className="font-semibold">{detail.target}</span>
           </>
         ) : null}
-        ). Ez deploy és migráció-futtatás közti eltérés — nem felhasználói hiba.
+        ). Ez deploy és migráció-futtatás közti eltérés – nem felhasználói hiba.
       </p>
       <p className="mt-3 text-body text-ink-body/80">
         Teendő: futtasd a migrációkat ennek a környezetnek az adatbázisán
@@ -33,7 +33,7 @@ export function CrmMigrationPendingCard({ detail }: { detail: SchemaOutOfSyncDet
         pnpm exec prisma migrate deploy
       </pre>
       <p className="mt-3 text-caption text-ink-body/60">
-        A migrációk lefutása után ez a felület magától helyreáll — nincs
+        A migrációk lefutása után ez a felület magától helyreáll – nincs
         további teendő. Amíg a séma hiányzik, a Kérdések fül és a /contact
         űrlap mentése is hibázhat (az Inquiry.dealId oszlop ugyanebben a
         migráció-csomagban érkezik).

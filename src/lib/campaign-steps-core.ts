@@ -131,13 +131,13 @@ export function normalizeCampaignSteps(types: string[]): CampaignStepType[] {
   return CAMPAIGN_STEP_ORDER.filter((t) => set.has(t));
 }
 
-/** A kampány effektív lépései — üres steps-nél a legacy `type` az egyetlen lépés. */
+/** A kampány effektív lépései – üres steps-nél a legacy `type` az egyetlen lépés. */
 export function getCampaignSteps(campaign: { type: string; steps: string[] }): string[] {
   return campaign.steps.length > 0 ? campaign.steps : [campaign.type];
 }
 
 /**
- * A kampány cél-csapatai — a teamIds lista az igazság, üres listánál a
+ * A kampány cél-csapatai – a teamIds lista az igazság, üres listánál a
  * legacy egy-csapatos teamId (2026-07-29 előtti kampányok).
  */
 export function getCampaignTeamIds(campaign: {
@@ -160,7 +160,7 @@ export function getCurrentStepType(
 /**
  * Lépés-ütemezési kapu: az aktuális lépés csak akkor nyitott, ha nincs
  * jövőbeli nyitási időpontja (nextStepOpensAt). A mező hiánya (régi hívók,
- * régi rekordok) nyitottnak számít — visszafelé kompatibilis.
+ * régi rekordok) nyitottnak számít – visszafelé kompatibilis.
  */
 export function isStepGateOpen(
   participant: { nextStepOpensAt?: Date | string | null },
@@ -172,8 +172,8 @@ export function isStepGateOpen(
 
 /**
  * Lépés-teljesítés egy résztvevőnél: túlhaladt rajta (currentStep) VAGY
- * lekönyvelt teljesítés (stepCompletions) VAGY — selfet tartalmazó
- * kampánylépésnél, ahol a léptetés még nem futott — kész (fresh-tudatosan
+ * lekönyvelt teljesítés (stepCompletions) VAGY – selfet tartalmazó
+ * kampánylépésnél, ahol a léptetés még nem futott – kész (fresh-tudatosan
  * szűrt) self-eredmény. A hasFreshSelfResult-ot a hívó számolja:
  * újrafelvételi körben (requireFreshResults) csak az aktiválás utáni
  * self-eredményre lehet igaz.
@@ -211,7 +211,7 @@ export function countCampaignStepsDone(
 
 /**
  * Igaz, ha a résztvevő aktuális lépése a megadott típus ÉS az ütemezési
- * kapu nyitva van (a hívó felelőssége a nextStepOpensAt select-elése —
+ * kapu nyitva van (a hívó felelőssége a nextStepOpensAt select-elése –
  * enélkül a kapu mindig nyitottnak számít).
  */
 export function isStepOpenFor(

@@ -54,7 +54,7 @@ export function TeamMemberAddPicker({
       setSelected("");
       router.refresh();
     } catch {
-      setError(isHu ? "Hálózati hiba — próbáld újra." : "Network error — try again.");
+      setError(isHu ? "Hálózati hiba – próbáld újra." : "Network error – try again.");
     } finally {
       setLoading(false);
     }

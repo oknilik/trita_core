@@ -338,7 +338,7 @@ test("C5.2 Observer token acceptance", async (t) => {
 
     assert.equal(res.status, 200);
 
-    // A draft a submit-tranzakcióban törlődik — nem maradhat árva sor.
+    // A draft a submit-tranzakcióban törlődik – nem maradhat árva sor.
     const draft = await prisma.observerDraft.findUnique({
       where: { invitationId: invitation.id },
     });
@@ -354,7 +354,7 @@ test("C5.2 Observer token acceptance", async (t) => {
     const res1 = await callSubmit(payload);
     assert.equal(res1.status, 200);
 
-    // Second submit — should fail
+    // Second submit – should fail
     const res2 = await callSubmit(payload);
     const body2 = await res2.json();
 
@@ -395,7 +395,7 @@ async function callDraftDelete(token: string) {
   return observerDraftDELETE(req);
 }
 
-test("Observer draft route — lifecycle + cookie", async (t) => {
+test("Observer draft route – lifecycle + cookie", async (t) => {
   await t.test("aktív külső tokenre a draft-írás megy, és HMAC-cookie-t kap", async () => {
     const inviter = await createInviterProfile();
     const invitation = await createInvitation(inviter.id);
@@ -409,7 +409,7 @@ test("Observer draft route — lifecycle + cookie", async (t) => {
     assert.ok(draft, "a draft mentődik");
 
     // A válasz beállítja a birtoklás-bizonyíték cookie-t (fix: logged-out
-    // draft-szivárgás — a draftot csak az író böngésző olvashatja vissza).
+    // draft-szivárgás – a draftot csak az író böngésző olvashatja vissza).
     const setCookie = res.headers.get("set-cookie") ?? "";
     assert.ok(
       setCookie.includes(
@@ -417,7 +417,7 @@ test("Observer draft route — lifecycle + cookie", async (t) => {
       ),
       "a külső meghívó draft-POST-ja HMAC-cookie-t állít",
     );
-    assert.match(setCookie, /httponly/i, "httpOnly — JS-ből nem olvasható");
+    assert.match(setCookie, /httponly/i, "httpOnly – JS-ből nem olvasható");
   });
 
   await t.test("LEJÁRT (de PENDING) tokenre a draft-írás 400 INVITE_EXPIRED", async () => {

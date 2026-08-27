@@ -114,7 +114,7 @@ export async function GET(
         const anonymous = item.visibility === "anonymous_aggregated";
         return {
           id: item.id,
-          fromName: anonymous ? null : item.from.username ?? item.from.email ?? "—",
+          fromName: anonymous ? null : item.from.username ?? item.from.email ?? "–",
           continueText: payload.continueText ?? "",
           tryText: payload.tryText ?? "",
           comment: anonymous ? null : payload.comment ?? null,
@@ -135,7 +135,7 @@ export async function GET(
       id: request.id,
       topic: request.topic,
       allowAnonymous: request.allowAnonymous,
-      askerName: request.asker.username ?? request.asker.email ?? "—",
+      askerName: request.asker.username ?? request.asker.email ?? "–",
       createdAt: request.createdAt.toISOString(),
     }));
 
@@ -162,7 +162,7 @@ export async function GET(
       const payload = item.payload as { continueText?: string; tryText?: string };
       suggestions.push({
         id: item.id,
-        fromName: item.from.username ?? item.from.email ?? "—",
+        fromName: item.from.username ?? item.from.email ?? "–",
         continueText: payload.continueText ?? "",
         tryText: payload.tryText ?? "",
       });
@@ -232,7 +232,7 @@ export async function POST(
     handlePeerFeedbackRequested({
       requestId: request.id,
       teamId,
-      askerName: me.username ?? me.email ?? "—",
+      askerName: me.username ?? me.email ?? "–",
       topic: body.data.topic,
       audienceIds,
     }).catch((err) => log.error({ event: "team.feedback_request_error", err: err }, "Feedback request error")),

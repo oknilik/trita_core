@@ -181,7 +181,7 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
       continue;
     }
 
-    // Email-láb (életciklus): csak opt-out nélkül, best-effort — az email-hiba
+    // Email-láb (életciklus): csak opt-out nélkül, best-effort – az email-hiba
     // nem érinti az in-app értesítést, és nem ismétlődik (a dedupe az in-app
     // rekordon ül, ami ekkor már létrejött).
     const profile = profileById.get(candidate.userId);
@@ -205,7 +205,7 @@ async function runReflectionSweep(result: SweepResult): Promise<void> {
 
 // ── Observer-emlékeztető sweep ──────────────────────────────────────────────
 // A reminderCount/lastReminderSentAt oszlopok eddig csak a kézi admin-gombot
-// szolgálták ki — az automata kör ugyanazon az e-mail úton (isReminder) megy,
+// szolgálták ki – az automata kör ugyanazon az e-mail úton (isReminder) megy,
 // a meglévő napi cronból. A plafonok szándékosan óvatosak: max 2 automata
 // emlékeztető meghívónként, futásonként max 50 küldés (határos cron-idő).
 
@@ -227,7 +227,7 @@ export interface ObserverReminderRow {
 
 /**
  * Pure kiválasztó: mely függő meghívókra megy automata emlékeztető.
- * A DB-lekérdezés durván előszűr, de MINDEN szabály itt is érvényesül —
+ * A DB-lekérdezés durván előszűr, de MINDEN szabály itt is érvényesül –
  * a viselkedés egy helyen, unit-tesztelhetően él.
  */
 export function selectObserverReminderCandidates<T extends ObserverReminderRow>(
@@ -302,7 +302,7 @@ async function runObserverReminderSweep(result: SweepResult): Promise<void> {
         data: { reminderCount: { increment: 1 }, lastReminderSentAt: new Date() },
       });
     } catch (err) {
-      // A levél már KIMENT — a számláló-hiba külön jelölést kap, mert a
+      // A levél már KIMENT – a számláló-hiba külön jelölést kap, mert a
       // következő futás emiatt ismételhet (a max-plafon a rekordolt
       // küldésekre garantált, a kézbesítettekre nem).
       result.errors.push(
@@ -320,7 +320,7 @@ async function runObserverReminderSweep(result: SweepResult): Promise<void> {
 // SYSTEM-activity; (a) esedékes (lejárt/mai) next action → admin-notif
 // (napi dedupe dealenként); (b) 3 napon belül lejáró SENT ajánlat →
 // admin-notif (ajánlatonként egyszer). A létrejött értesítés-sorok számát
-// a repository dedupe-ja határozza meg — a CrmSweepStats a feldolgozott
+// a repository dedupe-ja határozza meg – a CrmSweepStats a feldolgozott
 // tételeket számolja, nem a sorokat.
 
 // Az ADMIN_EMAILS feloldása helyben, hívás-időben (a lib/auth getAdminEmails
@@ -339,7 +339,7 @@ async function runCrmSweep(result: SweepResult): Promise<void> {
   result.crm = crm;
   const now = new Date();
 
-  // (c) Auto-expire ELŐBB — ami már lejárt, arról nem szólunk „hamarosan
+  // (c) Auto-expire ELŐBB – ami már lejárt, arról nem szólunk „hamarosan
   // lejár”-t, és a kint lévő összeg-metrikából is kikerül.
   const expiredQuotes = await prisma.quote.findMany({
     where: { status: "SENT", validUntil: { lt: now } },
@@ -356,7 +356,7 @@ async function runCrmSweep(result: SweepResult): Promise<void> {
     }
   }
 
-  // Címzettek: platform-adminok (ADMIN_EMAILS) — a submitInquiry mintája.
+  // Címzettek: platform-adminok (ADMIN_EMAILS) – a submitInquiry mintája.
   const adminEmails = resolveAdminEmails();
   const adminProfiles = adminEmails.length
     ? await prisma.userProfile.findMany({
@@ -451,7 +451,7 @@ export async function runNotificationSweep(): Promise<SweepResult> {
     }
   }
 
-  // Reflexiós utókövetés — a saját hibáit a result.errors-ba gyűjti,
+  // Reflexiós utókövetés – a saját hibáit a result.errors-ba gyűjti,
   // a trial-ellenőrzést nem boríthatja.
   try {
     await runReflectionSweep(result);
@@ -461,7 +461,7 @@ export async function runNotificationSweep(): Promise<SweepResult> {
     );
   }
 
-  // Observer-emlékeztetők — szintén hibatűrő, a többi lépést nem boríthatja.
+  // Observer-emlékeztetők – szintén hibatűrő, a többi lépést nem boríthatja.
   try {
     await runObserverReminderSweep(result);
   } catch (err) {
@@ -470,7 +470,7 @@ export async function runNotificationSweep(): Promise<SweepResult> {
     );
   }
 
-  // CRM napi kör (next-action esedékesség, ajánlat-lejárat) — szintén
+  // CRM napi kör (next-action esedékesség, ajánlat-lejárat) – szintén
   // hibatűrő: a CRM hibája a többi sweep-feladatot nem boríthatja.
   if (isPortfolioSurfaceActive("crm")) {
     try {

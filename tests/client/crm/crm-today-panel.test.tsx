@@ -51,7 +51,7 @@ const fetchMock = vi.fn();
 function makeDeal(overrides: Partial<CrmDealRow> = {}): CrmDealRow {
   return {
     id: "deal1",
-    title: "Acme Kft. — Demó igény",
+    title: "Acme Kft. – Demó igény",
     company: "Acme Kft.",
     contactName: "Kovács Anna",
     contactEmail: "anna@acme.hu",

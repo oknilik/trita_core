@@ -118,11 +118,11 @@ async function handleLead(data: Extract<FeatureInterestPostBody, { mode: "lead" 
       from: EMAIL_FROM,
       to: [to],
       ...(profile.email ? { replyTo: profile.email } : {}),
-      subject: `[trita lead] ${featureInterestLabel(featureKey)} — ${profile.email ?? profile.username ?? profile.id}`,
+      subject: `[trita lead] ${featureInterestLabel(featureKey)} – ${profile.email ?? profile.username ?? profile.id}`,
       text,
     });
     if (error) {
-      // A lead-rekord megvan — az email-hiba nem veszíti el az érdeklődést.
+      // A lead-rekord megvan – az email-hiba nem veszíti el az érdeklődést.
       log.error({ event: "features.resend_error", err: error }, "Resend error");
     }
   } catch (error) {
@@ -132,14 +132,14 @@ async function handleLead(data: Extract<FeatureInterestPostBody, { mode: "lead" 
   return NextResponse.json({ ok: true });
 }
 
-// WISHLIST — rate limit auth után, userId-kulccsal ("api" tier).
+// WISHLIST – rate limit auth után, userId-kulccsal ("api" tier).
 async function handleWishlist(data: Extract<FeatureInterestPostBody, { mode: "wishlist" }>) {
   const { userId } = await auth();
   if (!userId) {
     return NextResponse.json({ error: "UNAUTHORIZED" }, { status: 401 });
   }
 
-  // DB-írás user-inputból — rate limit az abúzus ellen
+  // DB-írás user-inputból – rate limit az abúzus ellen
   const rateLimited = await checkRateLimit("api", userId);
   if (rateLimited) return rateLimited;
 

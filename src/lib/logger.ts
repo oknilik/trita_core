@@ -152,7 +152,7 @@ function makeLogger(bindings: LogFields): Logger {
   };
 }
 
-/** Modul-szintű logger — a `module` mező minden sorba bekerül. */
+/** Modul-szintű logger – a `module` mező minden sorba bekerül. */
 export function createLogger(module: string): Logger {
   return makeLogger({ module });
 }

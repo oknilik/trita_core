@@ -10,7 +10,7 @@ const NOW = new Date("2026-08-04T12:00:00Z");
 const FUTURE = new Date("2026-08-20T12:00:00Z");
 const PAST = new Date("2026-08-01T12:00:00Z");
 
-describe("resolveCompareInviteState — lusta lejárat", () => {
+describe("resolveCompareInviteState – lusta lejárat", () => {
   it("PENDING + jövőbeli lejárat → PENDING", () => {
     assert.equal(
       resolveCompareInviteState({ status: "PENDING", expiresAt: FUTURE }, NOW),

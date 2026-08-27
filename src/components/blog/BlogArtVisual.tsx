@@ -142,7 +142,7 @@ function BarsSubject({
       {Array.from({ length: count }, (_, i) => {
         const h = R * (0.45 + rnd() * 1.25);
         const x = x0 + i * (barWidth + gap);
-        // A kiugró érték kontúrossá válik — a magnitúdó formában is látszik,
+        // A kiugró érték kontúrossá válik – a magnitúdó formában is látszik,
         // nem csak méretben.
         const outlined = h > R * 1.2;
         return (
@@ -725,7 +725,7 @@ export function BlogArtVisual({
   variant?: "featured" | "card" | "mini";
   /** Variáció-seed (frontmatter artSeed). */
   seed?: number;
-  /** Régi motívum-felülbírálás — kizárólag visszafelé kompatibilitáshoz. */
+  /** Régi motívum-felülbírálás – kizárólag visszafelé kompatibilitáshoz. */
   motif?: Motif;
   family?: BlogArtFamily;
   concept?: BlogArtConcept;
@@ -757,14 +757,14 @@ export function BlogArtVisual({
     // borítóképet kapja. Automatikus módban a slugból képzett seed továbbra
     // is egyedivé teszi a cikkeket.
     : `${seed ? "curated" : slug}#${resolved.seed}:${resolved.family}:${resolved.concept}`;
-  // SEEDET adunk át, nem generátort — ld. mulberry32() a miro-primitives-ben.
+  // SEEDET adunk át, nem generátort – ld. mulberry32() a miro-primitives-ben.
   const artSeed = hashString(seededKey);
 
   const scale: ArtScale = variant === "featured" ? "hero" : variant === "mini" ? "compact" : "card";
   const { w, h } = VIEWBOX[scale];
   const { strokeWidth, radius } = metrics(scale, w, h);
   // A kiemelt panel MINDKÉT színsémán sötét (fehér idézet ül rajta), ezért
-  // ott a fix ink olvashatatlan lenne — külön készlet kell.
+  // ott a fix ink olvashatatlan lenne – külön készlet kell.
   const p: ArtPalette = palette ?? (variant === "featured" ? ART_COLORS_ON_INVERSE : ART_COLORS);
 
   const cx = w * (scale === "compact" ? 0.5 : scale === "hero" ? 0.66 : 0.54);
@@ -784,7 +784,7 @@ export function BlogArtVisual({
   );
 
   // A gradiens-id-nek dokumentumon belül egyedinek ÉS szerver/kliens
-  // azonosnak kell lennie — ezért a magból képezzük, nem futásidejű
+  // azonosnak kell lennie – ezért a magból képezzük, nem futásidejű
   // számlálóból (a useId() nem opció: ez szerver-komponensként is renderel).
   const scrimSideId = `art-scrim-x-${artSeed.toString(36)}`;
   const scrimBottomId = `art-scrim-y-${artSeed.toString(36)}`;
@@ -820,7 +820,7 @@ export function BlogArtVisual({
       style={{ background: bg, display: "block", width: "100%", height: "100%" }}
       aria-hidden
     >
-      {/* Színpad — a formanyelv kísérete. Kis méreten (mini) elmarad: 72
+      {/* Színpad – a formanyelv kísérete. Kis méreten (mini) elmarad: 72
           pixelen a csillag, a nap és a talajvonal masszává olvad, és a
           tárgy sem marad felismerhető. */}
       {parts && (
@@ -862,7 +862,7 @@ export function BlogArtVisual({
           tiszta mezőt.
           Geometriával ez nem oldható meg. Az idézet hossza nem korlátozható
           (a `heroQuote` szabad szöveg), és mobilon öt sorra nyúlva a panel
-          alsó kétharmadát elfoglalja — nincs olyan sarok, amit szabadon
+          alsó kétharmadát elfoglalja – nincs olyan sarok, amit szabadon
           lehetne hagyni. Ezért a kompozíció felmegy a felső harmadba, alatta
           pedig egy erős, alulról induló fátyol ad egyenletes szövegmezőt.
           A fátyol a hero SAJÁT alapszínéből dolgozik, tehát a panel tónusa

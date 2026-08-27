@@ -98,7 +98,7 @@ function extractViolations(payload: unknown): ExtractedViolation[] {
 export async function POST(req: Request) {
   // Diagnosztikai tier: bőkezű keret, és SZÁNDÉKOSAN fail-open. Egy CSP-
   // sértés jelentése pont akkor a legértékesebb, amikor a rendszerben baj
-  // van — ha a hiányzó Redis miatt eldobnánk, a látásunkat veszítenénk el.
+  // van – ha a hiányzó Redis miatt eldobnánk, a látásunkat veszítenénk el.
   const rateLimited = await checkRateLimit("diagnostics");
   if (rateLimited) return new NextResponse(null, { status: 204 });
 
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
     });
   }
 
-  // 204 mindig — a böngésző nem vár tartalmat, és a hallgatás nem ad
+  // 204 mindig – a böngésző nem vár tartalmat, és a hallgatás nem ad
   // visszajelzést egy végpont-tapogató szkriptnek sem.
   return new NextResponse(null, { status: 204 });
 }

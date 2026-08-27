@@ -69,7 +69,7 @@ function RoleChip({
 /**
  * Forrás-badge (S1): mért kitöltés vs profil-alapú becslés. A vizuális
  * konvenció a meglévő intelligence-mintát követi (TeamIntelligence):
- * sage = mért, amber (warning) = becsült — nem új vizuális nyelv.
+ * sage = mért, amber (warning) = becsült – nem új vizuális nyelv.
  */
 function SourceBadge({
   source,
@@ -97,7 +97,7 @@ function SourceBadge({
 
 /**
  * Forrás-összetétel egy aggregált kimenethez (S1): hány tag adata mért és
- * hány becsült. Minden kevert forrású intelligence-kimeneten kötelező —
+ * hány becsült. Minden kevert forrású intelligence-kimeneten kötelező –
  * enélkül az aggregátum mértnek látszana akkor is, ha becslésből áll.
  */
 function RoleSourceMixChips({
@@ -138,7 +138,7 @@ function TeamRoleCompletionStatus({
   isHu: boolean;
 }) {
   // A kártya szövege a SZEMÉLYISÉGPROFIL meglétéről szól („X/Y tagnak van
-  // személyiségprofilja") — a számláló ezért a valódi (teljes hat dimenziós)
+  // személyiségprofilja") – a számláló ezért a valódi (teljes hat dimenziós)
   // profil-meglétet számolja, NEM a szerep-adat meglétét: egy kérdőív-only
   // tag szerep-adattal, de profil nélkül nem tartozik bele.
   const withProfile = members.filter((m) => m.hasPersonalityProfile).length;
@@ -341,14 +341,14 @@ function IndividualTeamRoleTable({
                 <span className="text-sm font-semibold text-ink">
                   {m.displayName}
                 </span>
-                {/* S1: mért vs becsült forrás — a közös sage/amber konvencióval */}
+                {/* S1: mért vs becsült forrás – a közös sage/amber konvencióval */}
                 {m.source ? (
                   <span className="ml-2 inline-block align-middle">
                     <SourceBadge source={m.source} isHu={isHu} />
                   </span>
                 ) : null}
                 {/* Mobil: a másodlagos/támogató szerep-oszlop rejtve van, ezért
-                    a chipek ide, a név alá kerülnek — így a top-3 profil egyik
+                    a chipek ide, a név alá kerülnek – így a top-3 profil egyik
                     breakpointon sem vész el. */}
                 {m.top3[1] || m.top3[2] ? (
                   <div className="mt-1.5 flex flex-wrap gap-1.5 sm:hidden">
@@ -479,7 +479,7 @@ function CrossAnalysis({
   );
 }
 
-// ── PeerComparison — önkép vs. csapatkép ────────────────────────────────────
+// ── PeerComparison – önkép vs. csapatkép ────────────────────────────────────
 
 /** Szerializált peer-profil (team-role-peer.ts PeerRoleProfile alakja). */
 export interface SerializedPeerRoleProfile {
@@ -620,7 +620,7 @@ export function TeamRoleSection({ members, isHu, peerProfiles = {} }: TeamRoleSe
       const measured =
         m.teamRoleSource === "questionnaire" ? m.teamRoleScores : null;
       const resolved = resolveDisplayRoleScores(measured, m.scores);
-      // Teljes hat dimenziós profil — a becslés-kapuval azonos definíció.
+      // Teljes hat dimenziós profil – a becslés-kapuval azonos definíció.
       const hasPersonalityProfile = hasCompleteTritanDims(m.scores);
       if (!resolved) {
         return {

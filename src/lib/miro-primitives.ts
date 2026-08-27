@@ -174,7 +174,7 @@ export function groundPath(seed: number, width: number, baseY: number, amplitude
 
 /**
  * A kíséret elhelyezése. A csillag és a nap MINDIG ellentétes oldalra
- * kerül, különben a kompozíció felső sávja egymásra csúszik — ugyanaz a
+ * kerül, különben a kompozíció felső sávja egymásra csúszik – ugyanaz a
  * szabály, mint a típus-ábránál.
  */
 export interface Accompaniment {
@@ -195,12 +195,12 @@ export function accompanimentLayout(
   const rnd = mulberry32(seed);
   const topBand = scale === "hero" ? 0.2 : 0.25;
 
-  // A hero-panelen SZÖVEG ül: bal fent a „kiemelt" chip, lent az idézet —
+  // A hero-panelen SZÖVEG ül: bal fent a „kiemelt" chip, lent az idézet –
   // ami mobilon 5 sorra nyúlva a panel nagy részét elfoglalja. Ott a
   // kíséret nem sorsolható a bal oldalra: a csillag pont a chip alá került
   // (2026-08-09). A hero mindkét kísérőjelet a JOBB félre teszi, egymás
   // alá nem csúszva; a bal felső sarok szabadon marad.
-  // A hero vászna 420×260, de a panel mobilon ~358×270 — a `slice`
+  // A hero vászna 420×260, de a panel mobilon ~358×270 – a `slice`
   // illesztés ott oldalanként ~9%-ot levág. Ami 0.9-nél ül, az telefonon
   // félbevágódik (a csillag 2026-08-09-ig így járt), ezért a jobb szélső
   // horgony 0.86-nál van: az a vágás után is bent marad.

@@ -108,19 +108,19 @@ export default async function TeamDetailPage({
 
   await requireOnboardedByClerkId(userId);
 
-  // Közös, kérés-szinten memoizált profil — a requireOnboardedByClerkId
+  // Közös, kérés-szinten memoizált profil – a requireOnboardedByClerkId
   // ugyanezt hívta az imént, tehát ez már nem indít új kört.
   const profile = await getProfileCoreByClerkId(userId);
   if (!profile) redirect(JOURNEY_HOME_HANDOFF_PATH);
   // A fallback-cél kiszámítása a TELJES journey-motort futtatja (~25 query),
-  // de csak a redirect-ágakban kell — ezért lusta. Korábban feltétel nélkül
+  // de csak a redirect-ágakban kell – ezért lusta. Korábban feltétel nélkül
   // futott le minden csapat-nézetnél.
   const deepLinkFallback = () => resolveJourneyFallbackForProfileId(profile.id);
 
-  // 1. HULLÁM — a csapat és a NÉZŐ org-szerepe EGY lekérdezésben (beágyazott
+  // 1. HULLÁM – a csapat és a NÉZŐ org-szerepe EGY lekérdezésben (beágyazott
   // select), mellette a saját, esedékes kampány-lépések kinyitása.
   // A `releaseDueCampaignSteps` kizárólag a HÍVÓ SAJÁT résztvevő-sorait
-  // érinti (userId: profile.id), tehát nem idegen adat — nyugodtan futhat a
+  // érinti (userId: profile.id), tehát nem idegen adat – nyugodtan futhat a
   // csapat-kapu előtt; a látogatás maga a trigger, ez eddig is így volt.
   const [team] = await Promise.all([
     prisma.team.findUnique({
@@ -147,7 +147,7 @@ export default async function TeamDetailPage({
   const orgMemberRole = team.org?.members[0]?.role ?? null;
   if (!orgMemberRole) redirect(await deepLinkFallback());
 
-  // 2. HULLÁM — a néző SAJÁT, egymástól független adatai egyszerre.
+  // 2. HULLÁM – a néző SAJÁT, egymástól független adatai egyszerre.
   // Mind a hívó saját sora (résztvevői lépések, tagsági szerep, nekem szóló
   // visszajelzés-kérések), tehát a csapat-kapu előtt is biztonságos; a
   // CSAPAT adatai (riport, policy, aggregátumok) továbbra is a kapu mögött
@@ -212,14 +212,14 @@ export default async function TeamDetailPage({
         : null;
     })
     .find((v): v is NonNullable<typeof v> => v !== null) ?? null;
-  // Futó observer-kör: a self-kitöltés után a meghívó-gyűjtés még tart —
+  // Futó observer-kör: a self-kitöltés után a meghívó-gyűjtés még tart –
   // a csapat-nézeten is kiemeljük (n/3 beérkezett + meghívó-CTA), amíg a
   // küszöb (OBSERVER_MIN_FOR_REVEAL) nincs meg.
   const observerCampaign = stepCandidates.find((p) =>
     getCampaignSteps(p.campaign).includes("OBSERVER_360"),
   );
 
-  // 3. HULLÁM — mindkettő a stepCandidates-től függ, de EGYMÁSTÓL nem:
+  // 3. HULLÁM – mindkettő a stepCandidates-től függ, de EGYMÁSTÓL nem:
   // a „megkezdte" jelzés és az observer-gyűjtés állása egyszerre indul.
   const [stepStarted, observerInvitations] = await Promise.all([
     pendingMeasurementBase && !pendingMeasurementBase.opensAt
@@ -284,7 +284,7 @@ export default async function TeamDetailPage({
   }
 
   // Tőlem kért observer-visszajelzések EBBŐL a csapatból: ki kért, hol
-  // tartok a kitöltésben (szerver-draft) — a csapat-nézetről indítható/
+  // tartok a kitöltésben (szerver-draft) – a csapat-nézetről indítható/
   // folytatható. (A lekérés a 2. hullámban ment ki.)
   const receivedFeedbackRequests = receivedFeedbackRaw.map((inv) => {
     const total = getTestConfig(
@@ -300,7 +300,7 @@ export default async function TeamDetailPage({
         : 0;
     return {
       token: inv.token,
-      inviterName: inv.inviter.username ?? inv.inviter.email ?? "—",
+      inviterName: inv.inviter.username ?? inv.inviter.email ?? "–",
       answered: Math.min(answered, total),
       total,
     };
@@ -316,7 +316,7 @@ export default async function TeamDetailPage({
 
   // A kapu után minden független lekérés EGY hullámban (korábban négy,
   // egymást váró await volt):
-  //  - a megnyitott csapat kijelölése aktívnak (csak tagnál — tanácsadó/
+  //  - a megnyitott csapat kijelölése aktívnak (csak tagnál – tanácsadó/
   //    admin idegen csapatot is nézhet, annak nem írjuk felül a kijelölést),
   //  - a néző csapatai a hero csapat-váltójához,
   //  - a publikált (validált) riport,
@@ -342,7 +342,7 @@ export default async function TeamDetailPage({
   ]);
   const memberTeams = memberTeamRows.map((m) => ({ id: m.team.id, name: m.team.name }));
   // Tanácsadói felület: ORG_CONSULTANT szerep VAGY platform-admin fiók
-  // (konzultáció-vezérelt működés — lásd lib/measurement-auth.ts).
+  // (konzultáció-vezérelt működés – lásd lib/measurement-auth.ts).
   const canViewRaw =
     canViewRawTeamResults(orgMemberRole) ||
     profile.isConsultant ||
@@ -355,7 +355,7 @@ export default async function TeamDetailPage({
   if (!canViewRaw && activeTab === "report" && !publishedReport) {
     redirect(`/team/${teamId}?tab=overview`);
   }
-  // A publikált riport BEFAGYASZTOTT (validált) mintázata — a nem-tanácsadói
+  // A publikált riport BEFAGYASZTOTT (validált) mintázata – a nem-tanácsadói
   // overview ezt mutatja „validálás alatt" helyett. A kaput maga a PUBLIKÁLT
   // riport nyitja (nem a pillanatkép mező).
   const hasPublishedReport = Boolean(publishedReport);
@@ -370,7 +370,7 @@ export default async function TeamDetailPage({
   const isFrozen = policy.policyState === "frozen";
   const canManageTeamActions = policy.capabilities.has("teamManage");
   // Org-szintű kampány-felületek (observer-kör az org oldalán): ez org-jog,
-  // nem csapat-jog — szerep-alapú láthatóság, a szerver kapuzza a műveletet.
+  // nem csapat-jog – szerep-alapú láthatóság, a szerver kapuzza a műveletet.
   const canReachOrgCampaigns = hasOrgRole(orgMemberRole, "ORG_MANAGER");
   // E-mailes csapat-meghívó: csak admin-paritás (racionalizálás, 2026-07-22).
   const canEmailInvite = hasOrgRole(orgMemberRole, "ORG_ADMIN");
@@ -453,7 +453,7 @@ export default async function TeamDetailPage({
   };
 
   // A4: a csapat-fülek a szerveren oldódnak fel (`?tab=`), ezért nincs
-  // kliens-oldali váltás-kezelő, amibe be lehetne kötni — a mérőt a
+  // kliens-oldali váltás-kezelő, amibe be lehetne kötni – a mérőt a
   // fül-nézet MELLÉ rendereljük.
   const tabTracker = <TabViewTracker surface="team" tab={activeTab} />;
 

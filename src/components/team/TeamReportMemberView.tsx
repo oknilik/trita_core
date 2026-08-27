@@ -91,7 +91,7 @@ export function TeamReportMemberView({
                   {isHu ? "a te nézeted" : "your view"}
                 </SectionEyebrow>
                 <h2 className="mt-0.5 font-fraunces text-2xl text-ink">
-                  {isHu ? `${title} — a te szemszögedből` : `${title} — from your perspective`}
+                  {isHu ? `${title} – a te szemszögedből` : `${title} – from your perspective`}
                 </h2>
                 <p className="mt-1 text-xs text-muted">
                   {isHu
@@ -107,7 +107,7 @@ export function TeamReportMemberView({
         </div>
       </DashboardPanel>
 
-      {/* 1. Te a csapatban — radar-összevetés + színes sávok */}
+      {/* 1. Te a csapatban – radar-összevetés + színes sávok */}
       {vm.hasSelfComparison ? (
         <section>
           <DashboardSectionHeader
@@ -117,7 +117,7 @@ export function TeamReportMemberView({
           <DashboardPanel className="p-6">
             <p className="mb-5 text-sm text-ink-body">
               {isHu
-                ? "A te profilod a csapat összesített képéhez mérve. Itt csak a saját értékeid láthatók — másokéi nem."
+                ? "A te profilod a csapat összesített képéhez mérve. Itt csak a saját értékeid láthatók – másokéi nem."
                 : "Your profile measured against the team's aggregate picture. Only your own values are shown here."}
             </p>
 
@@ -185,7 +185,7 @@ export function TeamReportMemberView({
                   );
                 })}
                 {/* A sáv-magyarázat ±-jel nélkül (2026-08-11 termékdöntés:
-                    ± jelölés nem kerül a felületre) — a sáv grafika marad. */}
+                    ± jelölés nem kerül a felületre) – a sáv grafika marad. */}
                 <p className="mt-1 text-micro text-muted">
                   {isHu
                     ? "Színes pont = a te értéked · halvány sáv = a csapat átlaga körüli jellemző tartomány."
@@ -207,8 +207,8 @@ export function TeamReportMemberView({
                   </span>
                   {vm.complementLabels.join(isHu ? " és " : " and ")}
                   {isHu
-                    ? " — ezekben te viszed előre a csapatot. A többi dimenzióban közel vagy a csapat átlagához."
-                    : " — you lead the team here. In the other dimensions you're close to the team average."}
+                    ? " – ezekben te viszed előre a csapatot. A többi dimenzióban közel vagy a csapat átlagához."
+                    : " – you lead the team here. In the other dimensions you're close to the team average."}
                 </p>
               </div>
             )}
@@ -236,7 +236,7 @@ export function TeamReportMemberView({
         </section>
       )}
 
-      {/* 2. A te szereped — medál + illeszkedés-kártya */}
+      {/* 2. A te szereped – medál + illeszkedés-kártya */}
       {vm.primaryRole && (
         <section>
           <DashboardSectionHeader
@@ -264,7 +264,7 @@ export function TeamReportMemberView({
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-fraunces text-xl text-ink">{vm.primaryRole.label}</span>
                   {/* Forrás-badge (hitelességi alapelv): mért kitöltés vs
-                      profil-alapú becslés — a TeamRoleSection sage/amber
+                      profil-alapú becslés – a TeamRoleSection sage/amber
                       konvenciójával. Becsült szerep jelöletlenül mértnek
                       látszana. */}
                   {vm.roleSource && (
@@ -290,13 +290,13 @@ export function TeamReportMemberView({
                 {vm.roleSource === "estimate" && (
                   <p className="mt-1 text-micro text-muted">
                     {isHu
-                      ? "A személyiségprofilodból becsült szerep — a csapatszerep-kérdőív kitöltésével mért adatra cserélheted."
-                      : "A role estimated from your personality profile — complete the team-role questionnaire to replace it with measured data."}
+                      ? "A személyiségprofilodból becsült szerep – a csapatszerep-kérdőív kitöltésével mért adatra cserélheted."
+                      : "A role estimated from your personality profile – complete the team-role questionnaire to replace it with measured data."}
                   </p>
                 )}
                 {vm.roleFit === "rare" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
-                    {isHu ? "Ez a szerep a csapatban ritka — " : "This role is rare in the team — "}
+                    {isHu ? "Ez a szerep a csapatban ritka – " : "This role is rare in the team – "}
                     <span className="font-semibold text-sage-dark">
                       {isHu ? "rád ebben különösen számítanak" : "they especially rely on you here"}
                     </span>
@@ -307,8 +307,8 @@ export function TeamReportMemberView({
                 ) : vm.roleFit === "shared" ? (
                   <p className="mt-2 text-sm leading-relaxed text-ink-body">
                     {isHu
-                      ? "Ezt a szerepet többen is viszitek — jó a lefedettség, oszthatjátok a terhet és támogathatjátok egymást."
-                      : "Several of you carry this role — good coverage, you can share the load and support each other."}
+                      ? "Ezt a szerepet többen is viszitek – jó a lefedettség, oszthatjátok a terhet és támogathatjátok egymást."
+                      : "Several of you carry this role – good coverage, you can share the load and support each other."}
                   </p>
                 ) : null}
               </div>
@@ -317,7 +317,7 @@ export function TeamReportMemberView({
         </section>
       )}
 
-      {/* 3. Milyen a csapatotok — mintázat + erősségek */}
+      {/* 3. Milyen a csapatotok – mintázat + erősségek */}
       {(vm.patternLabel || vm.strengths) && (
         <section>
           <DashboardSectionHeader
@@ -350,7 +350,7 @@ export function TeamReportMemberView({
                     eredeti magyar szöveg látszik. */}
                 {!isHu && !hasApprovedEnTranslation(reportInput) ? (
                   <p className="mb-2 text-micro text-state-warning-fg">
-                    Shown in the Hungarian original — English translation pending
+                    Shown in the Hungarian original – English translation pending
                     consultant approval.
                   </p>
                 ) : null}
@@ -388,7 +388,7 @@ export function TeamReportMemberView({
         </section>
       )}
 
-      {/* Lábléc — módszertan + átláthatóság */}
+      {/* Lábléc – módszertan + átláthatóság */}
       <DashboardPanel tone="cream" className="p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs text-ink-body">
           <span className="rounded-full bg-surface-card px-2.5 py-1 font-mono text-note text-muted ring-1 ring-sand">

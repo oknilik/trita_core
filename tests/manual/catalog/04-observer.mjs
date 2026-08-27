@@ -32,7 +32,7 @@ export const cases = [
     steps:
       "1. A /profile/results?tab=comparison meghívó-blokkjában küldj ki 5 meghívót (email-es és üres/link-alapú vegyesen). 2. Figyeld a Kiküldve számlálót és az űrlapot. 3. Próbálj 6.-at küldeni. 4. Törölj (✕) egy függő meghívót, nézd meg újra az űrlapot.",
     expected:
-      "5 aktív meghívónál a számláló 5/5, az űrlap helyén a limit-üzenet jelenik meg — 6. meghívó nem adható fel (API-szinten INVITE_LIMIT_REACHED). A limitbe minden nem-visszavont meghívó beleszámít (függő és kitöltött is); egy meghívó visszavonása után az űrlap újra elérhető (4/5).",
+      "5 aktív meghívónál a számláló 5/5, az űrlap helyén a limit-üzenet jelenik meg – 6. meghívó nem adható fel (API-szinten INVITE_LIMIT_REACHED). A limitbe minden nem-visszavont meghívó beleszámít (függő és kitöltött is); egy meghívó visszavonása után az űrlap újra elérhető (4/5).",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -47,7 +47,7 @@ export const cases = [
     steps:
       "1. A meghívó-űrlapba írd be újra ugyanazt az observer-emailt, küldd el. 2. Ismételd meg a címet eltérő kis/nagybetűkkel (pl. csupa nagybetűs local part). 3. Ellenőrizd a listát.",
     expected:
-      "Mindkét próbára lokalizált hibaüzenet jön (DUPLICATE_INVITE_EMAIL kód alapján), új sor nem keletkezik — az egyezés kis/nagybetű-független. Visszavont (törölt) meghívó címére viszont újra lehet küldeni.",
+      "Mindkét próbára lokalizált hibaüzenet jön (DUPLICATE_INVITE_EMAIL kód alapján), új sor nem keletkezik – az egyezés kis/nagybetű-független. Visszavont (törölt) meghívó címére viszont újra lehet küldeni.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -62,7 +62,7 @@ export const cases = [
     steps:
       "1. A meghívó-űrlapba írd be a fő fiók SAJÁT email-címét, küldd el. 2. Próbáld meg eltérő kis/nagybetűzéssel is.",
     expected:
-      "Lokalizált hibaüzenet (SELF_INVITE kód alapján), meghívó nem jön létre egyik írásmóddal sem — saját magát senki nem hívhatja meg observernek.",
+      "Lokalizált hibaüzenet (SELF_INVITE kód alapján), meghívó nem jön létre egyik írásmóddal sem – saját magát senki nem hívhatja meg observernek.",
     automated: "none",
     coveredBy: "",
     priority: "P2",
@@ -93,7 +93,7 @@ export const cases = [
     persona: "vendég (observer)",
     emails: { fő: "AUTO" },
     preconditions:
-      "Teszt-DB-ben egy meghívó expiresAt mezője a múltba állítva (dev-segítség kell — a lejárat normál úton a küldéstől 30 nap).",
+      "Teszt-DB-ben egy meghívó expiresAt mezője a múltba állítva (dev-segítség kell – a lejárat normál úton a küldéstől 30 nap).",
     steps:
       "1. Nyisd meg a lejáratott meghívó /observe/<token> linkjét inkognitóban. 2. Próbálj bármilyen módon kitöltést indítani.",
     expected:
@@ -144,7 +144,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a /observe/<token> intro-oldalát. 2. NE válassz se kapcsolat-típust, se időtartamot, kattints a Kezdés gombra. 3. Válaszd ki csak az egyiket, kattints újra. 4. Válaszd ki mindkettőt, kattints újra.",
     expected:
-      "A figyelmeztető szöveg („válaszd ki mindkettőt”) CSAK a blokkolt indítási kísérlet UTÁN jelenik meg — előre nem szidjuk a kitöltőt, és a gomb nem letiltott állapotú. Mindkét mező kiválasztása után az indítás továbbengedi a kérdőívre.",
+      "A figyelmeztető szöveg („válaszd ki mindkettőt”) CSAK a blokkolt indítási kísérlet UTÁN jelenik meg – előre nem szidjuk a kitöltőt, és a gomb nem letiltott állapotú. Mindkét mező kiválasztása után az indítás továbbengedi a kérdőívre.",
     automated: "full",
     coveredBy:
       "tests/client/observer/observer-client.integration.test.tsx (UX-B20: blocked start + hint only after attempt)",
@@ -178,7 +178,7 @@ export const cases = [
     steps:
       "1. Az utolsó kérdés után érkezz a confidence-képernyőre („mennyire magabiztosan ítélted meg…”). 2. Kattints a Beküldés gombra kiválasztott érték NÉLKÜL. 3. Válassz egy 1–5 értéket, küldd be. 4. Ellenőrizd a Vissza gombot is: a confidence-ről visszaléphetsz a kérdésekhez.",
     expected:
-      "Érték nélkül a beküldés nem fut le — a confidence-kártya kiemelést kap (highlight), a gomb halvány. Érték kiválasztása után a beküldés sikeres (a válasz a beadással együtt tárolódik); a Vissza gomb a kérdőívhez visz válaszvesztés nélkül.",
+      "Érték nélkül a beküldés nem fut le – a confidence-kártya kiemelést kap (highlight), a gomb halvány. Érték kiválasztása után a beküldés sikeres (a válasz a beadással együtt tárolódik); a Vissza gomb a kérdőívhez visz válaszvesztés nélkül.",
     automated: "partial",
     coveredBy:
       "tests/integration/observer/observer-token-acceptance.integration.test.ts (confidence tárolás/null) + tests/client/observer/observer-client.integration.test.tsx (confidence fázis)",
@@ -244,7 +244,7 @@ export const cases = [
     preconditions:
       "OBS-14 lefutott (annak fiókjaival folytatod): van jóváhagyásra váró külső meghívó.",
     steps:
-      "1. A vezetővel nyisd meg a /team/<id>?tab=members oldalt — „Jóváhagyásra váró külső értékelők” kártya. 2. Kattints a jóváhagyásra. 3. Nézd meg az observer postafiókját. 4. A fő fiókkal ellenőrizd a harangot és a meghívó-listát.",
+      "1. A vezetővel nyisd meg a /team/<id>?tab=members oldalt – „Jóváhagyásra váró külső értékelők” kártya. 2. Kattints a jóváhagyásra. 3. Nézd meg az observer postafiókját. 4. A fő fiókkal ellenőrizd a harangot és a meghívó-listát.",
     expected:
       "A kártyáról a tétel eltűnik, a meghívó Függőben státuszra vált. Az observer MOST kapja meg a meghívó-emailt működő linkkel (a 30 napos lejárat a jóváhagyástól számít). A fő „jóváhagyva” app-értesítést kap, amely az eredmény-oldal Külső kép fülére linkel.",
     automated: "none",
@@ -280,7 +280,7 @@ export const cases = [
     steps:
       "1. A fő fiókkal nyisd meg a /profile/results?tab=comparison oldalt. 2. Nézd meg az állapot-kártyát és a foglaltság-jelzőt. 3. Keresd az összevetés-grafikonokat. 4. Nézd meg a meghívó-blokk info-sávját.",
     expected:
-      "Önkép–külső kép grafikon MÉG NINCS: „Külső visszajelzés — folyamatban” kártya jelenik meg 3 helyből 2 kipipált körrel (2/3 számláló), alatta a meghívó-kezelő él (további felkérés küldhető). Az info-sáv a min. 3 értékelős küszöböt kommunikálja — 2 kitöltés tehát nem fedi fel az aggregátumot (anonimitás-védelem).",
+      "Önkép–külső kép grafikon MÉG NINCS: „Külső visszajelzés – folyamatban” kártya jelenik meg 3 helyből 2 kipipált körrel (2/3 számláló), alatta a meghívó-kezelő él (további felkérés küldhető). Az info-sáv a min. 3 értékelős küszöböt kommunikálja – 2 kitöltés tehát nem fedi fel az aggregátumot (anonimitás-védelem).",
     automated: "none",
     coveredBy: "",
     priority: "P1",
@@ -327,7 +327,7 @@ export const cases = [
     steps:
       "1. Nyisd meg a /profile/results?tab=comparison oldalt. 2. Nézd meg, megjelenik-e grafikon. 3. Olvasd el a meghívó-blokk info-sávját és a Beérkezett számlálót.",
     expected:
-      "Egyetlen kitöltésnél az összevetés-grafikon MÉG NEM jelenik meg (egy értékelő beazonosítható lenne) — az üres-állapot kártya marad. A Beérkezett számláló 1-et mutat, az info-sáv jelzi, hogy self-serve-ben legalább 2 beérkezett kitöltés kell.",
+      "Egyetlen kitöltésnél az összevetés-grafikon MÉG NEM jelenik meg (egy értékelő beazonosítható lenne) – az üres-állapot kártya marad. A Beérkezett számláló 1-et mutat, az info-sáv jelzi, hogy self-serve-ben legalább 2 beérkezett kitöltés kell.",
     automated: "partial",
     coveredBy:
       "tests/integration/observer/observer-result-linkage.integration.test.ts (1 observer → küszöb alatt)",
@@ -361,7 +361,7 @@ export const cases = [
     steps:
       "1. Az 1. observer-kitöltés után nézd meg a fő postafiókját. 2. Töltesd ki a 2. meghívót inkognitóban. 3. Nézd meg újra a fő postafiókját.",
     expected:
-      "Az 1. kitöltés után NEM megy e-mail a főnek (in-app értesítés viszont van). A 2. beérkezett kitöltéstől a fő observer-összefoglaló e-mailt kap a saját nyelvén, amely az eredmény-oldalra hív — így a levél csak akkor jön, amikor már van megnézhető összevetés.",
+      "Az 1. kitöltés után NEM megy e-mail a főnek (in-app értesítés viszont van). A 2. beérkezett kitöltéstől a fő observer-összefoglaló e-mailt kap a saját nyelvén, amely az eredmény-oldalra hív – így a levél csak akkor jön, amikor már van megnézhető összevetés.",
     automated: "none",
     coveredBy: "",
     priority: "P2",

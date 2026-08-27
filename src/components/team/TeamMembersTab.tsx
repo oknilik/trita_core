@@ -153,7 +153,7 @@ export function TeamMembersTab({
                     className="mt-1 truncate text-note text-muted"
                     title={member.email ?? undefined}
                   >
-                    {member.email ?? "—"}
+                    {member.email ?? "–"}
                   </p>
                 </div>
               </div>

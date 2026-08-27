@@ -335,12 +335,12 @@ export function accompaniment(primaryCode: string, secondaryCode: string): Accom
 }
 
 /**
- * Ábra-pár a pontozott dimenzió-listából — ugyanabból a sorrendből, mint a
+ * Ábra-pár a pontozott dimenzió-listából – ugyanabból a sorrendből, mint a
  * típusnév (resolvePersonalityTypeFromScores): a legerősebb adja a formát,
  * a második a motívumot. Az intenzitás a domináns dimenzió pontszámából jön.
  *
  * FONTOS (interp S2): a rangsor a KÖZÖS rankDimensionScores-t használja
- * (pontszám csökkenő, holtversenynél HEXACO_ORDER) — pontosan úgy, ahogy a
+ * (pontszám csökkenő, holtversenynél HEXACO_ORDER) – pontosan úgy, ahogy a
  * típusnév. A korábbi nyers `.sort((a,b) => b.score - a.score)` holtversenynél
  * a bemenet sorrendjétől függő, NEM determinisztikus párt adott, így a rajzolt
  * ábra és a szöveges címke a top-2 azonos pontszámánál ELTÉRHETETT egymástól.
@@ -360,13 +360,13 @@ export function resolveGlyphPair(
 }
 
 /**
- * A típus-ábra leíró szövege (aria-label / alt) — nem dekoráció, hanem
+ * A típus-ábra leíró szövege (aria-label / alt) – nem dekoráció, hanem
  * tartalom.
  *
  * `uncertain` (S3-hedge, motor-audit v9): ha a másodlagos dimenzió
- * megnevezése bizonytalan (isSecondaryUncertain — a látható tábla ilyenkor
+ * megnevezése bizonytalan (isSecondaryUncertain – a látható tábla ilyenkor
  * rendezetlen/hedge-elt szöveget mutat), az aria-label sem állíthat
- * „alapforma + motívum" erősorrendet — rendezetlen párként írja le a két
+ * „alapforma + motívum" erősorrendet – rendezetlen párként írja le a két
  * dimenziót. A szövegek szándékosan helyben élnek (a glyphGrammar i18n-
  * kulcsokkal tartalmilag egyeztetve): a teljes i18n-szótár behúzása ide az
  * OG-kép route-ot és minden glyph-fogyasztót ~110 KB-tal terhelne.
@@ -383,12 +383,12 @@ export function glyphDescription(
   if (!primary || !secondary) return typeLabel;
   if (uncertain) {
     if (locale === "hu") {
-      return `${typeLabel} — absztrakt típus-ábra a két legerősebb, közel azonos erősségű dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
+      return `${typeLabel} – absztrakt típus-ábra a két legerősebb, közel azonos erősségű dimenzióból: ${primary.formName.hu} (${primary.hexaco}) és ${secondary.motifName.hu} (${secondary.hexaco}); a sorrendjük nem egyértelmű.`;
     }
-    return `${typeLabel} — abstract type glyph of the two strongest, closely matched dimensions: ${primary.formName.en} (${primary.hexaco}) and ${secondary.motifName.en} (${secondary.hexaco}); their order isn't clear-cut.`;
+    return `${typeLabel} – abstract type glyph of the two strongest, closely matched dimensions: ${primary.formName.en} (${primary.hexaco}) and ${secondary.motifName.en} (${secondary.hexaco}); their order isn't clear-cut.`;
   }
   if (locale === "hu") {
-    return `${typeLabel} — absztrakt típus-ábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
+    return `${typeLabel} – absztrakt típus-ábra: ${primary.formName.hu} alapforma (${primary.hexaco}) ${secondary.motifName.hu} motívummal (${secondary.hexaco}).`;
   }
-  return `${typeLabel} — abstract type glyph: ${primary.formName.en} form (${primary.hexaco}) with ${secondary.motifName.en} motif (${secondary.hexaco}).`;
+  return `${typeLabel} – abstract type glyph: ${primary.formName.en} form (${primary.hexaco}) with ${secondary.motifName.en} motif (${secondary.hexaco}).`;
 }

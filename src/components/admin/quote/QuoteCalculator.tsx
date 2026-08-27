@@ -50,10 +50,10 @@ const huf = (value: number) =>
 const WARNING_TEXT: Record<QuoteWarning, string> = {
   BELOW_TARGET_HOURLY:
     "Az effektív óradíj a cél alatt van. Ez az ajánlat a saját idődből fizet.",
-  DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a keretet — ez külön döntés.",
+  DISCOUNT_OVER_CAP: "A kedvezmény meghaladja a keretet – ez külön döntés.",
   DISCOUNT_WITHOUT_REASON: "Indoklás nélküli kedvezmény: később nem lesz mire hivatkozni.",
   NO_FOLLOW_UP:
-    "Nincs utánkövetés. Egyszeri mérésből nem lesz üzlet — legalább egy hullámot érdemes betenni.",
+    "Nincs utánkövetés. Egyszeri mérésből nem lesz üzlet – legalább egy hullámot érdemes betenni.",
 };
 
 function NumberField({
@@ -136,7 +136,7 @@ export function QuoteCalculator({
   const today = new Date().toISOString().slice(0, 10);
   const [quoteTitle, setQuoteTitle] = useState(
     sourceQuote?.title ??
-      (deal ? `${deal.company ?? deal.contactName} — ${today}` : ""),
+      (deal ? `${deal.company ?? deal.contactName} – ${today}` : ""),
   );
   const [validUntilDay, setValidUntilDay] = useState(
     sourceQuote?.validUntil ? isoToDayInput(sourceQuote.validUntil) : "",
@@ -156,13 +156,13 @@ export function QuoteCalculator({
 
   async function saveQuote() {
     if (!deal || quoteSaving) return;
-    // Kliens-oldali előszűrés a szerver zod-sémájával — pl. a fél workshop-nap
+    // Kliens-oldali előszűrés a szerver zod-sémájával – pl. a fél workshop-nap
     // a sandboxban számolható, de menteni csak egész napokat lehet.
     const parsed = quoteInputSchema.safeParse(input);
     if (!parsed.success) {
       const fields = [...new Set(parsed.error.issues.map((issue) => issue.path.join(".")))];
       setQuoteError(
-        `A mentéshez érvényes (egész számú) bemenet kell — ellenőrizd: ${fields.join(", ")}`,
+        `A mentéshez érvényes (egész számú) bemenet kell – ellenőrizd: ${fields.join(", ")}`,
       );
       return;
     }
@@ -273,14 +273,14 @@ export function QuoteCalculator({
   }
 
   // Ajánlat-szöveg: a vevőnek szánt összefoglaló. SZÁNDÉKOSAN nincs benne
-  // óradíj, fedezet és kedvezmény-százalék — azok belső számok. Mentés után
+  // óradíj, fedezet és kedvezmény-százalék – azok belső számok. Mentés után
   // a sorszám (quoteNo) és az érvényesség is bekerül.
   const quoteText = useMemo(() => {
     const rows = result.lines
       .filter((line) => line.key !== "travel")
       .map((line) => `· ${line.label}: ${huf(line.amount)}`);
     const parts = [
-      `Ajánlat${savedQuote ? ` (${savedQuote.label})` : ""} — ${input.headcount} fő, ${input.teams} csapat`,
+      `Ajánlat${savedQuote ? ` (${savedQuote.label})` : ""} – ${input.headcount} fő, ${input.teams} csapat`,
       "",
       ...rows,
       result.passThroughSubtotal > 0
@@ -385,7 +385,7 @@ export function QuoteCalculator({
         <section className="rounded-2xl border border-sand bg-surface-card p-6 shadow-sm">
           <h2 className="font-fraunces text-lg text-ink">Kedvezmény</h2>
           <p className="mt-1 max-w-prose text-xs leading-relaxed text-muted">
-            Nevesített, lejáró kedvezmény — ad-hoc alku helyett. Keret:{" "}
+            Nevesített, lejáró kedvezmény – ad-hoc alku helyett. Keret:{" "}
             {rate.maxDiscountPct}%.
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -442,7 +442,7 @@ export function QuoteCalculator({
           </div>
           {!saved && (
             <p className="mt-2 rounded-lg border border-bronze-edge bg-bronze-soft/40 p-3 text-xs leading-relaxed text-ink-body">
-              Ezek még a beépített PLACEHOLDER értékek — nincs mögöttük valós költségadat.
+              Ezek még a beépített PLACEHOLDER értékek – nincs mögöttük valós költségadat.
               Állítsd át és mentsd el, mielőtt ajánlatot adsz belőle.
             </p>
           )}
@@ -667,9 +667,9 @@ export function QuoteCalculator({
             <SectionEyebrow>mentés a dealhez</SectionEyebrow>
             <p className="mt-2 text-xs leading-relaxed text-ink-body">
               {draftMode && sourceQuote
-                ? `Piszkozat szerkesztése: ${sourceQuote.label} — a mentés a friss díjtételekkel újraszámolva frissíti.`
+                ? `Piszkozat szerkesztése: ${sourceQuote.label} – a mentés a friss díjtételekkel újraszámolva frissíti.`
                 : sourceQuote
-                  ? `Másolat-alap: ${sourceQuote.label} — a mentés ÚJ piszkozatot hoz létre friss díjtételekkel.`
+                  ? `Másolat-alap: ${sourceQuote.label} – a mentés ÚJ piszkozatot hoz létre friss díjtételekkel.`
                   : `Új piszkozat a dealhez: ${deal.title}.`}
             </p>
 
@@ -680,7 +680,7 @@ export function QuoteCalculator({
                 </p>
                 <p className="mt-1 text-xs text-ink-body">
                   A vevő-szöveg lentről másolható (sorszámmal, belső számok
-                  nélkül). Kiküldés után jelöld kiküldöttnek — onnantól az
+                  nélkül). Kiküldés után jelöld kiküldöttnek – onnantól az
                   ajánlat nem módosítható, csak másolható.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -760,7 +760,7 @@ export function QuoteCalculator({
               result.warnings.includes("BELOW_TARGET_HOURLY") ? "text-bronze-dark" : "text-ink"
             }`}
           >
-            {result.effectiveHourlyRate == null ? "—" : huf(result.effectiveHourlyRate)}
+            {result.effectiveHourlyRate == null ? "–" : huf(result.effectiveHourlyRate)}
           </p>
           <p className="mt-1 text-xs text-muted">
             {result.estimatedHours} becsült óra · cél {huf(rate.targetHourlyRate)} · padló{" "}
@@ -799,7 +799,7 @@ export function QuoteCalculator({
             </button>
           </div>
           {/* Belső számok (óradíj, fedezet, kedvezmény-keret) SZÁNDÉKOSAN
-              nincsenek benne — ez a szöveg a vevőnek megy. */}
+              nincsenek benne – ez a szöveg a vevőnek megy. */}
           <textarea
             readOnly
             value={quoteText}

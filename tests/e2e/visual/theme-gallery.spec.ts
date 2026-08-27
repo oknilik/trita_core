@@ -64,12 +64,12 @@ function hasBaseline(theme: string): boolean {
 }
 
 for (const theme of THEMES) {
-  test.describe(`token-galéria — ${theme} színséma`, () => {
+  test.describe(`token-galéria – ${theme} színséma`, () => {
     // A döntés a teszt TÖRZSÉN KÍVÜL: így baseline hiányában böngésző sem
     // indul (a törzsben lévő skip már a fixture létrehozása után futna).
     test.skip(
       !UPDATING && !hasBaseline(theme),
-      "nincs commitolt baseline — hozd létre a CI platformján: " +
+      "nincs commitolt baseline – hozd létre a CI platformján: " +
         "UPDATE_VISUAL_BASELINE=1 pnpm exec playwright test tests/e2e/visual --update-snapshots",
     );
 
@@ -86,7 +86,7 @@ for (const theme of THEMES) {
         .poll(() => page.evaluate(() => document.documentElement.dataset.theme))
         .toBe(theme);
 
-      // Betűk betöltve — enélkül az első felvétel fallback-fonttal készülne.
+      // Betűk betöltve – enélkül az első felvétel fallback-fonttal készülne.
       await page.evaluate(() => document.fonts.ready);
 
       // Animáció/átmenet kikapcsolva: két felvétel különben más fázisban

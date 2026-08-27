@@ -76,7 +76,7 @@ export function BlogListContent({
   const { locale } = useLocale();
   // Hydration-stabil nyelvválasztás: az SSR-HTML mindig a default nyelvvel
   // készül (statikus oldal), a LocaleProvider viszont már hydration KÖZBEN
-  // átválthat (localStorage-effekt) — ha a lista-részfa később hydrálódik,
+  // átválthat (localStorage-effekt) – ha a lista-részfa később hydrálódik,
   // a szerver-HTML és a kliens-render széttart (hydration mismatch a
   // generatív SVG-kben). Ezért az első renderben mindig a defaultot
   // mutatjuk, és csak mount UTÁN váltunk a tényleges nyelvre.
@@ -445,7 +445,7 @@ export function BlogListContent({
             </>
           )}
 
-          {/* Feliratkozás a lista alján — aki végigpörgette a listát, de nem
+          {/* Feliratkozás a lista alján – aki végigpörgette a listát, de nem
               nyitott meg cikket, itt még megfogható. */}
           <div className="mt-16 rounded-[28px] bg-[var(--color-surface-inverse)] p-2 md:p-3">
             <NewsletterForm source="blog_index" onInverse className="rounded-[22px] md:p-8" />

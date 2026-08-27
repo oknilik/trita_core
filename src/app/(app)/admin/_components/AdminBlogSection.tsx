@@ -185,7 +185,7 @@ export function AdminBlogSection({
   posts: AdminBlogPost[];
   storeMode: "fs" | "github";
   githubReady: boolean;
-  /** Melyik ágra megy a commit — a futó deploy sajátja, ha nincs felülírva. */
+  /** Melyik ágra megy a commit – a futó deploy sajátja, ha nincs felülírva. */
   branch: string;
 }) {
   const router = useRouter();
@@ -344,11 +344,11 @@ export function AdminBlogSection({
   };
 
   /**
-   * Szerkesztésre nyitás — a tartalom a TÁROLÓBÓL jön, nem a listából.
+   * Szerkesztésre nyitás – a tartalom a TÁROLÓBÓL jön, nem a listából.
    *
    * A lista a futó példány fájlrendszeréből épül, ami github módban a
    * legutóbbi DEPLOY állapota. Ha a mentés utáni build még fut, ez a régi
-   * szöveg — abból mentve az imént mentett módosítás némán visszaíródna.
+   * szöveg – abból mentve az imént mentett módosítás némán visszaíródna.
    * A sha ugyanitt jön, és mentéskor zárja a kört.
    */
   const startEdit = async (post: AdminBlogPost) => {
@@ -417,14 +417,14 @@ export function AdminBlogSection({
     } catch {
       setNotice({
         kind: "error",
-        text: "Hálózati hiba a cikk betöltésekor — nem nyitom meg szerkesztésre.",
+        text: "Hálózati hiba a cikk betöltésekor – nem nyitom meg szerkesztésre.",
       });
     } finally {
       setBusy(null);
     }
   };
 
-  // Kész .mdx (vagy .md) fájlok feltöltése — a szerver olvassa a
+  // Kész .mdx (vagy .md) fájlok feltöltése – a szerver olvassa a
   // frontmattert, minden feltöltött cikk piszkozatként landol.
   const uploadFiles = async (files: File[]) => {
     if (files.length === 0) return;
@@ -451,13 +451,13 @@ export function AdminBlogSection({
             : json.error === "INVALID_SLUG"
               ? "a fájlnév nem érvényes slug (kisbetű, kötőjel, min. 3 karakter)"
               : json.error === "INVALID_FRONTMATTER"
-                ? `hiányos frontmatter — ${json.detail ?? "nézd meg a title/description/törzs mezőket"}`
+                ? `hiányos frontmatter – ${json.detail ?? "nézd meg a title/description/törzs mezőket"}`
                 : json.error === "FRONTMATTER_PARSE_FAILED"
                   ? "a frontmatter nem olvasható (YAML-hiba)"
                   : json.error === "GITHUB_NOT_CONFIGURED"
                     ? "a GitHub-mentés nincs beállítva"
                     : `hiba: ${json.error ?? res.status}`;
-        failed.push(`${file.name} — ${reason}`);
+        failed.push(`${file.name} – ${reason}`);
       }
       setNotice(
         failed.length === 0
@@ -499,7 +499,7 @@ export function AdminBlogSection({
   };
 
   /**
-   * NOT_FOUND a tárolóból — a leggyakoribb ok NEM a törlés, hanem hogy a
+   * NOT_FOUND a tárolóból – a leggyakoribb ok NEM a törlés, hanem hogy a
    * lista a futó deploy fájlrendszeréből épül, a tároló viszont a cél-ágból
    * olvas: egy még nem merge-ölt ág előnézetében a lista előrébb jár. A
    * kettő megnevezése nélkül ez a helyzet törlésnek látszott (2026-08-26).
@@ -510,13 +510,13 @@ export function AdminBlogSection({
       ? `${target.repo}${target.branch ? `@${target.branch}` : ""}`
       : "a beállított tároló";
     return `A cikk nincs meg a tárolóban (${where}). Ha az admin egy még nem `
-      + `merge-ölt ág előnézetén fut, a lista előrébb járhat a tároló ágánál — `
+      + `merge-ölt ág előnézetén fut, a lista előrébb járhat a tároló ágánál – `
       + `merge után újra működik. Egyébként lehet, hogy a cikket időközben törölték.`;
   };
 
   /**
    * A tároló hibájának emberi fordítása. A szerver `detail` mezője a
-   * whitelistelt kód (pl. GITHUB_WRITE_FAILED_401) — ebből itt lesz
+   * whitelistelt kód (pl. GITHUB_WRITE_FAILED_401) – ebből itt lesz
    * cselekvési utasítás, hogy ne a Vercel-logban kelljen kezdeni.
    */
   const storeErrorText = (json: Record<string, unknown>, fallbackStatus: number): string => {
@@ -527,7 +527,7 @@ export function AdminBlogSection({
       : "a beállított repó";
 
     if (detail === "BLOG_STORE_READ_ONLY") {
-      return "A szerver fájlrendszerbe próbált írni, ami élesben csak olvasható — "
+      return "A szerver fájlrendszerbe próbált írni, ami élesben csak olvasható – "
         + "vagyis hiányzik a GITHUB_TOKEN vagy a GITHUB_REPO env. Állítsd be őket a "
         + "Vercelen, és indíts egy redeployt (az env-változás csak új deployban él).";
     }
@@ -539,20 +539,20 @@ export function AdminBlogSection({
     if (httpMatch) {
       const status = httpMatch[1];
       if (status === "401") {
-        return `A GitHub elutasította a tokent (401) — jellemzően lejárt vagy visszavont `
+        return `A GitHub elutasította a tokent (401) – jellemzően lejárt vagy visszavont `
           + `GITHUB_TOKEN. Generálj újat, cseréld a Vercelen, és deployolj újra. (${where})`;
       }
       if (status === "403") {
-        return `A token nem kapott írásjogot (403) — a fine-grained PAT-on a `
+        return `A token nem kapott írásjogot (403) – a fine-grained PAT-on a `
           + `Contents: Read and write engedély kell erre a repóra. (${where})`;
       }
       if (status === "404") {
-        return `A GitHub nem találja a célt (404) — vagy a GITHUB_REPO hibás, vagy a `
+        return `A GitHub nem találja a célt (404) – vagy a GITHUB_REPO hibás, vagy a `
           + `cél-ág nem létezik a repóban, vagy a token nem látja ezt a repót. (${where})`;
       }
       if (status === "409" || status === "422") {
         return `A GitHub visszautasította az írást (${status}). Ha a cél-ág védett `
-          + `(branch protection), a tároló nem tud rá közvetlenül commitolni — engedj `
+          + `(branch protection), a tároló nem tud rá közvetlenül commitolni – engedj `
           + `bypass-t a blog-tokennek, vagy célozz másik ágat (GITHUB_BRANCH). Egyébként `
           + `jellemzően időközbeni módosítás: nyisd meg újra a cikket, és mentsd újra. (${where})`;
       }
@@ -570,11 +570,11 @@ export function AdminBlogSection({
   const stageCover = async (file: File) => {
     const slug = form.slug.trim() || slugify(form.title);
     if (slug.length < 3) {
-      setNotice({ kind: "error", text: "Előbb adj címet vagy slugot — a borító fájlneve abból lesz." });
+      setNotice({ kind: "error", text: "Előbb adj címet vagy slugot – a borító fájlneve abból lesz." });
       return;
     }
     if (file.size > 3 * 1024 * 1024) {
-      setNotice({ kind: "error", text: "A kép túl nagy (max. 3 MB). Kicsinyítsd le — 1600 px széles bőven elég." });
+      setNotice({ kind: "error", text: "A kép túl nagy (max. 3 MB). Kicsinyítsd le – 1600 px széles bőven elég." });
       return;
     }
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
@@ -633,8 +633,8 @@ export function AdminBlogSection({
 
   const successText = (mode: "fs" | "github", extra?: string) =>
     mode === "github"
-      ? `Commit létrehozva — a Vercel buildel, a változás pár percen belül él.${extra ? ` (${extra})` : ""}`
-      : "Fájl mentve a content/blog mappába — a dev /blog oldalon azonnal látszik; élesítés git push-sal.";
+      ? `Commit létrehozva – a Vercel buildel, a változás pár percen belül él.${extra ? ` (${extra})` : ""}`
+      : "Fájl mentve a content/blog mappába – a dev /blog oldalon azonnal látszik; élesítés git push-sal.";
 
   const save = async (status: "draft" | "published") => {
     setNotice(null);
@@ -710,7 +710,7 @@ export function AdminBlogSection({
       setSlugTouched(true);
       router.refresh();
     } catch {
-      setNotice({ kind: "error", text: "Hálózati hiba a cikk mentésekor — a módosítás nem veszett el." });
+      setNotice({ kind: "error", text: "Hálózati hiba a cikk mentésekor – a módosítás nem veszett el." });
     } finally {
       setBusy(null);
     }
@@ -732,7 +732,7 @@ export function AdminBlogSection({
           text: json.error === "NOT_FOUND"
             ? notFoundText(json)
             : json.error === "CONFLICT"
-              ? "A cikk a tárolóban időközben megváltozott — a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
+              ? "A cikk a tárolóban időközben megváltozott – a státusz-váltás nem történt meg. Frissítsd az oldalt, és próbáld újra."
               : json.error === "SAVE_FAILED"
                 ? storeErrorText(json, res.status)
                 : `Nem sikerült: ${json.error ?? res.status}`,
@@ -741,7 +741,7 @@ export function AdminBlogSection({
       }
       setNotice({
         kind: "ok",
-        text: `${action === "publish" ? "Publikálva" : "Visszavonva (piszkozat)"} — ${successText(json.mode)}`,
+        text: `${action === "publish" ? "Publikálva" : "Visszavonva (piszkozat)"} – ${successText(json.mode)}`,
       });
       router.refresh();
     } finally {
@@ -767,8 +767,8 @@ export function AdminBlogSection({
         kind: "ok",
         text:
           json.mode === "github"
-            ? "Cikk elvetve — törlő-commit létrejött (a git-történelemből visszaállítható), a deploy után tűnik el élesből."
-            : "Cikk elvetve — a fájl törölve a content/blog mappából (gitből visszaállítható).",
+            ? "Cikk elvetve – törlő-commit létrejött (a git-történelemből visszaállítható), a deploy után tűnik el élesből."
+            : "Cikk elvetve – a fájl törölve a content/blog mappából (gitből visszaállítható).",
       });
       if (editingSlug === slug) {
         resetForm();
@@ -790,7 +790,7 @@ export function AdminBlogSection({
     }
     resetForm();
     setEditorOpen(false);
-    setNotice({ kind: "ok", text: "Piszkozat elvetve — nem volt mentve, nem törlődött semmi." });
+    setNotice({ kind: "ok", text: "Piszkozat elvetve – nem volt mentve, nem törlődött semmi." });
   };
 
   const hasEditorContent =
@@ -825,7 +825,7 @@ export function AdminBlogSection({
           </>
         ) : (
           <>
-            helyi fájlírás (content/blog) — dev-ben azonnal látszik, élesítés git push-sal.
+            helyi fájlírás (content/blog) – dev-ben azonnal látszik, élesítés git push-sal.
             {!githubReady && (
               <span className="text-muted">
                 {" "}
@@ -853,7 +853,7 @@ export function AdminBlogSection({
         </div>
       )}
 
-      {/* Szerkesztő — gombra nyíló oldalpanel, a lista nézete nem mozdul.
+      {/* Szerkesztő – gombra nyíló oldalpanel, a lista nézete nem mozdul.
           Portálban megy (document.body), így semmilyen szülő-konténer
           overflow/stacking szabálya nem vágja el. */}
       {editorOpen && mounted && createPortal(
@@ -953,7 +953,7 @@ export function AdminBlogSection({
                   value={form.description}
                   onChange={(e) => set({ description: e.target.value })}
                   rows={2}
-                  placeholder="1–2 mondatos összefoglaló — ez megy a keresőbe és a listakártyára."
+                  placeholder="1–2 mondatos összefoglaló – ez megy a keresőbe és a listakártyára."
                 />
               </div>
 
@@ -962,7 +962,7 @@ export function AdminBlogSection({
                   label="Featured-idézet (opcionális)"
                   value={form.heroQuote}
                   onChange={(e) => set({ heroQuote: e.target.value })}
-                  helpText="A kiemelt kártya nagy idézete — enélkül a leírás első mondata megy."
+                  helpText="A kiemelt kártya nagy idézete – enélkül a leírás első mondata megy."
                 />
                 <TextField
                   label="„Kezdd itt” sorrend (1–3, opcionális)"
@@ -990,10 +990,10 @@ export function AdminBlogSection({
                     <span className="text-xs font-semibold text-text-primary">Szerkesztői borítókép</span>
                     <span className="text-xs text-muted">
                       {pendingCover
-                        ? "új kép előkészítve — mentéskor kerül fel"
+                        ? "új kép előkészítve – mentéskor kerül fel"
                         : activeCoverImage
-                          ? "feltöltve — minden blogfelületen ez jelenik meg"
-                          : "nincs — a trita generatív tartalékképe jelenik meg"}
+                          ? "feltöltve – minden blogfelületen ez jelenik meg"
+                          : "nincs – a trita generatív tartalékképe jelenik meg"}
                     </span>
                   </div>
 
@@ -1088,7 +1088,7 @@ export function AdminBlogSection({
                   {form.translationSlug.trim() && (pendingCover || form.coverImage) ? (
                     <p className="mt-2 text-xs text-ink-body">
                       A párcikk (<span className="font-dm-mono">{form.translationSlug.trim()}</span>)
-                      borítója ettől NEM változik — ha ugyanazt a képet szeretnéd ott is, töltsd fel
+                      borítója ettől NEM változik – ha ugyanazt a képet szeretnéd ott is, töltsd fel
                       külön, és állítsd be ugyanezt a fókuszpontot.
                     </p>
                   ) : null}
@@ -1362,7 +1362,7 @@ export function AdminBlogSection({
         document.body,
       )}
 
-      {/* Cikk-lista — ez a fő nézet */}
+      {/* Cikk-lista – ez a fő nézet */}
       <section className="rounded-2xl border border-sand bg-surface-card">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-sand px-6 py-4">
           <h2 className="font-fraunces text-xl text-ink">
@@ -1466,7 +1466,7 @@ export function AdminBlogSection({
         {filtered.length === 0 && (
           <p className="px-6 py-8 text-center text-sm text-muted">
             {sorted.length === 0
-              ? "Még nincs cikk — kezdj egy újat, vagy tölts fel egy .mdx fájlt."
+              ? "Még nincs cikk – kezdj egy újat, vagy tölts fel egy .mdx fájlt."
               : "Nincs a szűrőkre illeszkedő cikk."}
           </p>
         )}
@@ -1489,7 +1489,7 @@ export function AdminBlogSection({
               {isFutureDated(post) && (
                 <span
                   className="rounded-full bg-state-warning-bg px-2 py-0.5 text-note font-semibold text-state-warning-fg"
-                  title="Publikált cikk jövőbeli dátummal — élesben már látszik."
+                  title="Publikált cikk jövőbeli dátummal – élesben már látszik."
                 >
                   jövő dátum
                 </span>

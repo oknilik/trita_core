@@ -33,7 +33,7 @@ const MEASURED = { R: 60, I: 75, A: 66, S: 42, E: 48, C: 64 };
 const questionChip = (count: number) =>
   tf("results.ccIntroMetaQuestions", "hu", { count });
 
-describe("CareerCompass — mért Holland-kód", () => {
+describe("CareerCompass – mért Holland-kód", () => {
   it("mért kód nélkül a kérdőív a lépéssor része", () => {
     // A wizard belépője kiírja, hány kérdés jön — ez a `flow` hossza.
     render(<CareerCompass hasSelfResult />);

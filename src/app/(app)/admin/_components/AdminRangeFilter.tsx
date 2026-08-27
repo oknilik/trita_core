@@ -51,7 +51,7 @@ function Pills<T extends string>({
         <Link
           key={r.id}
           href={makeHref(r.id)}
-          // Szűrő-váltás ne ugorjon az oldal tetejére — a görgetési
+          // Szűrő-váltás ne ugorjon az oldal tetejére – a görgetési
           // pozíció marad, csak a chart-adat frissül.
           scroll={false}
           aria-current={active === r.id ? "true" : undefined}
@@ -74,7 +74,7 @@ export function AdminRangeFilter({
   tab = "overview",
 }: {
   active: AdminRange;
-  /** A Vezérlőn kívül nincs szegmens-bontás — ott az alapérték marad. */
+  /** A Vezérlőn kívül nincs szegmens-bontás – ott az alapérték marad. */
   segment?: AdminSegment;
   tab?: AdminTabId;
 }) {

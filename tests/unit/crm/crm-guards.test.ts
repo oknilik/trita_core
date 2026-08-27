@@ -84,7 +84,7 @@ test("CRM guards", async (t) => {
     assert.equal(dueBefore.toISOString(), "2026-08-06T00:00:00.000Z");
     assert.equal(isoDay, "2026-08-05");
 
-    // Nap eleje ugyanoda esik — az ablak a naptári naptól függ, nem az órától.
+    // Nap eleje ugyanoda esik – az ablak a naptári naptól függ, nem az órától.
     const early = resolveCrmDueWindow(new Date("2026-08-05T00:00:00.000Z"));
     assert.equal(early.dueBefore.toISOString(), "2026-08-06T00:00:00.000Z");
     assert.equal(early.isoDay, "2026-08-05");
@@ -101,11 +101,11 @@ test("CRM guards", async (t) => {
   await t.test("buildDealTitleFromInquiry: cég > név, téma opcionális", () => {
     assert.equal(
       buildDealTitleFromInquiry({ name: "Kiss Anna", company: "Acme Kft.", topicLabel: "Demó igény" }),
-      "Acme Kft. — Demó igény",
+      "Acme Kft. – Demó igény",
     );
     assert.equal(
       buildDealTitleFromInquiry({ name: "Kiss Anna", company: null, topicLabel: "Árazás" }),
-      "Kiss Anna — Árazás",
+      "Kiss Anna – Árazás",
     );
     assert.equal(
       buildDealTitleFromInquiry({ name: "Kiss Anna", company: "  ", topicLabel: null }),
@@ -116,7 +116,7 @@ test("CRM guards", async (t) => {
   await t.test("formatQuoteNo: padding + évváltás a createdAt-ból", () => {
     assert.equal(formatQuoteNo(7, new Date("2026-08-05T12:00:00.000Z")), "TRT-2026-0007");
     assert.equal(formatQuoteNo(7, new Date("2027-01-01T00:00:00.000Z")), "TRT-2027-0007");
-    // A sorszám globálisan folytonos — 4 jegy fölött nem csonkul.
+    // A sorszám globálisan folytonos – 4 jegy fölött nem csonkul.
     assert.equal(formatQuoteNo(12345, new Date("2026-08-05T12:00:00.000Z")), "TRT-2026-12345");
     assert.equal(formatQuoteNo(1, new Date("2026-12-31T23:59:59.000Z")), "TRT-2026-0001");
   });
