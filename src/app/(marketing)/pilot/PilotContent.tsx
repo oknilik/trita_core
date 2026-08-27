@@ -58,34 +58,35 @@ function PartnerVisual({ locale }: { locale: Locale }) {
 
         <div
           aria-hidden="true"
-          className="relative mx-auto mt-7 h-[215px] w-full max-w-[340px]"
+          className="relative mx-auto mt-7 h-[190px] w-full max-w-[340px]"
         >
-          <div className="absolute left-[10%] top-3 flex size-44 items-center justify-center rounded-full border border-white/15 bg-sage/75 p-5">
-            <div className="-translate-x-7 text-center">
-              <p className="text-sm font-semibold">{t("pilot.partnerTeamTitle", locale)}</p>
-              <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
-                {t("pilot.partnerTeamBody", locale)}
-              </p>
-            </div>
-          </div>
+          <div className="absolute left-[6%] top-0 size-44 rounded-full border border-white/15 bg-sage/75" />
+          <div className="absolute right-[6%] top-0 size-44 rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70" />
 
-          <div className="absolute right-[10%] top-3 flex size-44 items-center justify-center rounded-full border border-white/15 bg-[var(--color-layer-team-bright)]/70 p-5">
-            <div className="translate-x-7 text-center">
-              <p className="text-sm font-semibold">{t("pilot.partnerTritaTitle", locale)}</p>
-              <p className="mt-1 max-w-[7rem] text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
-                {t("pilot.partnerTritaBody", locale)}
-              </p>
-            </div>
-          </div>
+          <p className="absolute left-[4%] top-[72px] z-10 w-[32%] text-center text-sm font-semibold leading-tight">
+            {t("pilot.partnerTeamTitle", locale)}
+          </p>
+          <p className="absolute right-[4%] top-[72px] z-10 w-[32%] text-center text-sm font-semibold leading-tight">
+            {t("pilot.partnerTritaTitle", locale)}
+          </p>
 
-          <div className="absolute left-1/2 top-[64px] z-10 w-24 -translate-x-1/2 text-center">
-            <span className="mx-auto mb-1.5 flex size-7 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-xs text-[var(--color-layer-team-hero-to)]">
+          <div className="absolute left-1/2 top-[58px] z-20 w-28 -translate-x-1/2 text-center">
+            <span className="mx-auto mb-6 flex size-7 items-center justify-center rounded-full bg-[var(--color-layer-team-badge)] font-fraunces text-xs text-[var(--color-layer-team-hero-to)] shadow-[0_4px_14px_rgba(26,26,46,0.16)]">
               ✦
             </span>
-            <p className="text-xs font-semibold leading-tight">
+            <p className="text-xs font-semibold leading-tight text-white">
               {t("pilot.partnerResultTitle", locale)}
             </p>
           </div>
+        </div>
+
+        <div aria-hidden="true" className="-mt-1 mb-4 grid grid-cols-2 gap-5 text-center">
+          <p className="text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
+            {t("pilot.partnerTeamBody", locale)}
+          </p>
+          <p className="text-note leading-snug text-[var(--color-text-on-inverse-muted)]">
+            {t("pilot.partnerTritaBody", locale)}
+          </p>
         </div>
 
         <div className="border-t border-white/10 pt-4">
